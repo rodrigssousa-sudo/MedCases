@@ -1,11 +1,8 @@
-import 'dart:async';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'firebase_options.dart';
 import 'providers/app_provider.dart';
 import 'services/auth_service.dart';
@@ -20,23 +17,19 @@ import 'screens/cases_screen.dart';
 import 'screens/admin_screen.dart';
 import 'widgets/brand_mark.dart';
 
-// Future global — _AuthGate aguarda antes de ouvir authStateChanges
-late final Future<void> _firebaseReady;
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  // ── Inicializa Firebase ANTES de tudo — await garante que está pronto ──────
+  // Esta é a única abordagem correta: sem await = Firebase não inicializado
+  // quando AuthService tenta usar FirebaseAuth → stream nunca emite → tela cinza
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
+  // Carrega preferências locais
   final provider = AppProvider();
   await provider.loadPrefs();
-
-  // Guarda o Future para _AuthGate usar — não bloqueia runApp()
-  _firebaseReady = Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  ).then((_) {
-    if (kDebugMode) debugPrint('✅ Firebase inicializado');
-  }).catchError((e) {
-    if (kDebugMode) debugPrint('❌ Firebase init erro: $e');
-  });
 
   runApp(
     ChangeNotifierProvider.value(
@@ -52,13 +45,12 @@ class MedCasesApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final p = context.watch<AppProvider>();
-    if (kDebugMode) debugPrint('📱 MedCasesApp.build() — darkMode: ${p.darkMode}');
     return MaterialApp(
       title: 'MedCases Pro',
       debugShowCheckedModeBanner: false,
       theme: _buildTheme(false),
       darkTheme: _buildTheme(true),
-      themeMode: ThemeMode.dark, // Forçar dark sempre para evitar flash
+      themeMode: p.darkMode ? ThemeMode.dark : ThemeMode.light,
       home: const _AuthGate(),
     );
   }
@@ -80,13 +72,9 @@ class MedCasesApp extends StatelessWidget {
             surface: const Color(0xFFFFFDF8),
             onSurface: const Color(0xFF07110d),
           ),
-    // scaffoldBackgroundColor neutro — cada tela define seu próprio fundo
-    // para evitar flash verde/escuro antes das telas de auth carregarem
     scaffoldBackgroundColor: dark ? const Color(0xFF0A1510) : const Color(0xFFF5F0E8),
   );
 
-  // Tema forçado claro — usado nas telas de auth (splash, login, pending)
-  // para garantir que o scaffold nunca apareça verde no Safari/iOS
   static ThemeData get _authTheme => ThemeData(
     useMaterial3: true,
     fontFamily: 'Roboto',
@@ -101,87 +89,66 @@ class MedCasesApp extends StatelessWidget {
   );
 }
 
-// ── Auth Gate — gerencia estados: loading / login / pendente / aprovado ───────
+// ── Auth Gate ─────────────────────────────────────────────────────────────────
+// Firebase já está inicializado quando chegamos aqui (await no main)
+// Só precisamos ouvir o stream de auth — sem FutureBuilder necessário
 class _AuthGate extends StatelessWidget {
   const _AuthGate();
 
-  /// Envolve uma tela de auth com tema escuro fixo (#07110d)
-  /// para garantir que o scaffold nunca mostre o fundo verde do tema escuro
-  /// do sistema antes de qualquer widget renderizar.
-  Widget _wrapAuth(Widget child) {
-    return Theme(
-      data: MedCasesApp._authTheme,
-      child: child,
-    );
-  }
+  Widget _wrapAuth(Widget child) => Theme(
+    data: MedCasesApp._authTheme,
+    child: child,
+  );
 
   @override
   Widget build(BuildContext context) {
-    // ── Passo 1: aguarda Firebase inicializar antes de ouvir authStateChanges
-    // Sem isso, FirebaseAuth.instance acessa Firebase não-inicializado
-    // → stream nunca emite → ConnectionState.waiting eterno → tela cinza
-    return FutureBuilder<void>(
-      future: _firebaseReady,
-      builder: (context, firebaseSnap) {
-        // Firebase ainda carregando → splash
-        if (firebaseSnap.connectionState != ConnectionState.done) {
+    // Firebase já inicializado — ouve stream de autenticação diretamente
+    return StreamBuilder<User?>(
+      stream: AuthService.authStateChanges,
+      builder: (context, authSnap) {
+        // Aguardando primeira emissão do stream
+        if (authSnap.connectionState == ConnectionState.waiting) {
           return _wrapAuth(const _SplashScreen());
         }
 
-        // Firebase com erro → vai para login mesmo assim (Firebase pode
-        // já estar inicializado de uma sessão anterior no browser)
-        // ── Passo 2: agora sim ouvir o stream de auth
-        return StreamBuilder<User?>(
-          stream: AuthService.authStateChanges,
-          builder: (context, authSnap) {
-            // Carregando estado de auth
-            if (authSnap.connectionState == ConnectionState.waiting) {
+        // Não autenticado → login
+        if (authSnap.data == null) {
+          return _wrapAuth(const LoginScreen());
+        }
+
+        // Autenticado → buscar perfil Firestore
+        return StreamBuilder<UserModel?>(
+          stream: AuthService.currentUserStream(),
+          builder: (context, userSnap) {
+            if (userSnap.connectionState == ConnectionState.waiting) {
               return _wrapAuth(const _SplashScreen());
             }
 
-            // Não autenticado → tela de login
-            if (authSnap.data == null) {
+            final user = userSnap.data;
+
+            if (user == null) {
+              AuthService.logout();
               return _wrapAuth(const LoginScreen());
             }
 
-            // Autenticado → buscar perfil no Firestore
-            return StreamBuilder<UserModel?>(
-              stream: AuthService.currentUserStream(),
-              builder: (context, userSnap) {
-                if (userSnap.connectionState == ConnectionState.waiting) {
-                  return _wrapAuth(const _SplashScreen());
-                }
+            if (user.isBlocked) {
+              AuthService.logout();
+              return _wrapAuth(_BlockedScreen(user: user));
+            }
 
-                final user = userSnap.data;
+            if (user.isPending) {
+              return _wrapAuth(_PendingScreen(user: user));
+            }
 
-                // Perfil não encontrado → login novamente
-                if (user == null) {
-                  AuthService.logout();
-                  return _wrapAuth(const LoginScreen());
-                }
+            // Aprovado → atualiza provider e abre o app
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              final p = context.read<AppProvider>();
+              if (p.currentUser?.uid != user.uid) {
+                p.setUser(user);
+              }
+            });
 
-                // Usuário bloqueado
-                if (user.isBlocked) {
-                  AuthService.logout();
-                  return _wrapAuth(_BlockedScreen(user: user));
-                }
-
-                // Usuário pendente de aprovação
-                if (user.isPending) {
-                  return _wrapAuth(_PendingScreen(user: user));
-                }
-
-                // Aprovado → atualizar provider e abrir app
-                WidgetsBinding.instance.addPostFrameCallback((_) {
-                  final p = context.read<AppProvider>();
-                  if (p.currentUser?.uid != user.uid) {
-                    p.setUser(user);
-                  }
-                });
-
-                return const MainShell();
-              },
-            );
+            return const MainShell();
           },
         );
       },
@@ -211,7 +178,11 @@ class _SplashScreen extends StatelessWidget {
           const SizedBox(height: 16),
           Text(
             'Carregando MedCases Pro...',
-            style: TextStyle(fontSize: 12, color: Colors.white.withValues(alpha: 0.4), fontWeight: FontWeight.w600),
+            style: TextStyle(
+              fontSize: 12,
+              color: Colors.white.withValues(alpha: 0.4),
+              fontWeight: FontWeight.w600,
+            ),
           ),
         ]),
       ),
@@ -219,7 +190,7 @@ class _SplashScreen extends StatelessWidget {
   }
 }
 
-// ── Tela de conta pendente ────────────────────────────────────────────────────
+// ── Tela pendente ─────────────────────────────────────────────────────────────
 class _PendingScreen extends StatelessWidget {
   final UserModel user;
   const _PendingScreen({required this.user});
@@ -275,9 +246,7 @@ class _PendingScreen extends StatelessWidget {
               ),
               const SizedBox(height: 32),
               OutlinedButton.icon(
-                onPressed: () async {
-                  await AuthService.logout();
-                },
+                onPressed: () async { await AuthService.logout(); },
                 icon: const Icon(Icons.logout_rounded, size: 16),
                 label: const Text('Sair e fazer novo login'),
                 style: OutlinedButton.styleFrom(
@@ -295,7 +264,7 @@ class _PendingScreen extends StatelessWidget {
   }
 }
 
-// ── Tela de conta bloqueada ───────────────────────────────────────────────────
+// ── Tela bloqueada ────────────────────────────────────────────────────────────
 class _BlockedScreen extends StatelessWidget {
   final UserModel user;
   const _BlockedScreen({required this.user});
@@ -356,7 +325,7 @@ class _BlockedScreen extends StatelessWidget {
   }
 }
 
-// ── Shell principal (após aprovação) ─────────────────────────────────────────
+// ── Shell principal ───────────────────────────────────────────────────────────
 class MainShell extends StatefulWidget {
   const MainShell({super.key});
 
@@ -393,10 +362,6 @@ class _MainShellState extends State<MainShell> {
       const CasesScreen(),
     ];
 
-    // Ordem: Cockpit | Fármacos | [IA central] | Protocolos | Calculadoras
-    // índice IA = 4 na lista screens, mas fica no centro visualmente
-    // Mapeamento: visual [0,1,2=IA,3,4] → screens [0,1,4,2,3]
-    // Simplificado: reordenar screens para que IA fique no índice 2
     final reorderedScreens = [
       screens[0], // Cockpit
       screens[1], // Fármacos
@@ -404,10 +369,6 @@ class _MainShellState extends State<MainShell> {
       screens[2], // Protocolos
       screens[3], // Calculadoras
     ];
-
-    // Tradução do índice visual para índice original (para openProtocol)
-    // Se _tab == 3 (visual Protocolos), o índice original era 2
-    // Tratamos isso atualizando _openProtocol para usar índice visual
 
     return Scaffold(
       backgroundColor: bg,
@@ -421,9 +382,7 @@ class _MainShellState extends State<MainShell> {
       bottomNavigationBar: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          // ── Barra de segurança jurídica ──────────────────────────────────
           _LegalBar(dark: dark),
-          // ── Navegação principal ──────────────────────────────────────────
           Container(
             decoration: BoxDecoration(
               color: navBg,
@@ -444,19 +403,16 @@ class _MainShellState extends State<MainShell> {
                   clipBehavior: Clip.none,
                   alignment: Alignment.topCenter,
                   children: [
-                    // ── Linha de botões regulares ──────────────────────────
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         _buildNavBtn(0, Icons.home_rounded, p.t('cockpit'), dark, p),
                         _buildNavBtn(1, Icons.medication_rounded, p.t('drugs'), dark, p),
-                        // Espaço reservado para o botão IA flutuante
                         const SizedBox(width: 76),
                         _buildNavBtn(3, Icons.emergency_rounded, p.t('protocols'), dark, p),
                         _buildNavBtn(4, Icons.calculate_rounded, p.t('tools'), dark, p),
                       ],
                     ),
-                    // ── Botão IA flutuante central ─────────────────────────
                     Positioned(
                       top: -22,
                       child: _buildAiNavBtn(dark, p),
@@ -522,7 +478,6 @@ class _MainShellState extends State<MainShell> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            // ── Círculo flutuante principal ──────────────────────────────────
             AnimatedContainer(
               duration: const Duration(milliseconds: 220),
               curve: Curves.easeOutBack,
@@ -572,7 +527,6 @@ class _MainShellState extends State<MainShell> {
               ),
             ),
             const SizedBox(height: 4),
-            // ── Label ──────────────────────────────────────────────────────
             AnimatedDefaultTextStyle(
               duration: const Duration(milliseconds: 180),
               style: TextStyle(
@@ -592,14 +546,14 @@ class _MainShellState extends State<MainShell> {
   }
 }
 
-// ── Barra legal / segurança jurídica ─────────────────────────────────────────
+// ── Barra legal ───────────────────────────────────────────────────────────────
 class _LegalBar extends StatelessWidget {
   final bool dark;
   const _LegalBar({required this.dark});
 
   @override
   Widget build(BuildContext context) {
-    final bg   = dark ? const Color(0xFF060E09) : const Color(0xFFEFEADF);
+    final bg     = dark ? const Color(0xFF060E09) : const Color(0xFFEFEADF);
     final border = dark ? const Color(0xFF1A2E20) : const Color(0xFFD8D0C0);
     final textColor = dark
         ? Colors.white.withValues(alpha: 0.32)
@@ -612,38 +566,25 @@ class _LegalBar extends StatelessWidget {
         border: Border(top: BorderSide(color: border, width: 0.5)),
       ),
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
-      child: Row(
-        children: [
-          Icon(Icons.info_outline_rounded, size: 10, color: textColor),
-          const SizedBox(width: 5),
-          Expanded(
-            child: Text(
-              'Fins educacionais. Não substitui julgamento clínico. '
-              'Baseado em: AHA 2020, ESC 2023, Harrison\'s 21ª ed., '
-              'ANVISA, ACLS/ATLS, SBEM, Micromedex.',
-              style: TextStyle(
-                fontSize: 8.5,
-                color: textColor,
-                height: 1.4,
-                letterSpacing: 0.1,
-              ),
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-            ),
+      child: Row(children: [
+        Icon(Icons.info_outline_rounded, size: 10, color: textColor),
+        const SizedBox(width: 5),
+        Expanded(
+          child: Text(
+            'Fins educacionais. Não substitui julgamento clínico. '
+            'Baseado em: AHA 2020, ESC 2023, Harrison\'s 21ª ed., '
+            'ANVISA, ACLS/ATLS, SBEM, Micromedex.',
+            style: TextStyle(fontSize: 8.5, color: textColor, height: 1.4, letterSpacing: 0.1),
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
           ),
-        ],
-      ),
+        ),
+      ]),
     );
   }
 }
 
-class _NavItem {
-  final IconData icon;
-  final String label;
-  const _NavItem({required this.icon, required this.label});
-}
-
-// ── Botão Admin com badge de pendentes em tempo real ──────────────────────────
+// ── Botão Admin com badge ─────────────────────────────────────────────────────
 class _AdminBadgeButton extends StatelessWidget {
   final UserModel currentAdmin;
   const _AdminBadgeButton({required this.currentAdmin});
@@ -683,7 +624,6 @@ class _AdminBadgeButton extends StatelessWidget {
                   color: count > 0 ? const Color(0xFFFF8C00) : const Color(0xFFFFE8A6),
                 ),
               ),
-              // Badge com número de pendentes
               if (count > 0)
                 Positioned(
                   top: -5,
@@ -746,7 +686,6 @@ class _AppHeader extends StatelessWidget {
                     style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w900, color: Colors.white),
                     overflow: TextOverflow.ellipsis),
                 ),
-                // Badge de Admin
                 if (p.isAdmin)
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
@@ -761,12 +700,10 @@ class _AppHeader extends StatelessWidget {
               Text(p.lang == 'es' ? 'Apoyo clínico educativo' : 'Apoio clínico educacional',
                 style: TextStyle(fontSize: 10, color: Colors.white.withValues(alpha: 0.55), fontWeight: FontWeight.w600)),
             ])),
-            // Botão Admin com badge de pendentes (apenas para admins)
             if (p.isAdmin) ...[
               _AdminBadgeButton(currentAdmin: p.currentUser!),
               const SizedBox(width: 8),
             ],
-            // Lang toggle
             GestureDetector(
               onTap: () => p.setLang(p.lang == 'pt' ? 'es' : 'pt'),
               child: Container(
@@ -781,7 +718,6 @@ class _AppHeader extends StatelessWidget {
               ),
             ),
             const SizedBox(width: 8),
-            // Dark mode
             GestureDetector(
               onTap: () => p.toggleDarkMode(),
               child: Container(
@@ -791,11 +727,11 @@ class _AppHeader extends StatelessWidget {
                   color: Colors.white.withValues(alpha: 0.1),
                   border: Border.all(color: Colors.white.withValues(alpha: 0.2)),
                 ),
-                child: Icon(dark ? Icons.light_mode_rounded : Icons.dark_mode_rounded, size: 16, color: const Color(0xFFFFE8A6)),
+                child: Icon(dark ? Icons.light_mode_rounded : Icons.dark_mode_rounded,
+                  size: 16, color: const Color(0xFFFFE8A6)),
               ),
             ),
             const SizedBox(width: 8),
-            // Logout
             GestureDetector(
               onTap: () async {
                 await AuthService.logout();
@@ -812,74 +748,6 @@ class _AppHeader extends StatelessWidget {
               ),
             ),
           ]),
-        ),
-      ),
-    );
-  }
-}
-
-// ── Tela de erro Firebase ─────────────────────────────────────────────────────
-class _FirebaseErrorScreen extends StatelessWidget {
-  const _FirebaseErrorScreen();
-
-  @override
-  Widget build(BuildContext context) {
-    return Theme(
-      data: MedCasesApp._authTheme,
-      child: Scaffold(
-        backgroundColor: const Color(0xFF07110d),
-        body: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.all(32),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                const BrandMark(small: false),
-                const SizedBox(height: 40),
-                Container(
-                  padding: const EdgeInsets.all(24),
-                  decoration: BoxDecoration(
-                    color: Colors.red.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(color: Colors.red.withValues(alpha: 0.3)),
-                  ),
-                  child: Column(children: [
-                    const Icon(Icons.cloud_off_rounded, color: Colors.red, size: 48),
-                    const SizedBox(height: 16),
-                    const Text(
-                      'Erro ao conectar Firebase',
-                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900, color: Colors.white),
-                      textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(height: 12),
-                    Text(
-                      'Não foi possível conectar aos serviços do Firebase.\n\nVerifique sua conexão e tente novamente.',
-                      style: TextStyle(fontSize: 13, color: Colors.white.withValues(alpha: 0.7), height: 1.6),
-                      textAlign: TextAlign.center,
-                    ),
-                  ]),
-                ),
-                const SizedBox(height: 24),
-                ElevatedButton.icon(
-                  onPressed: () {
-                    // Força refresh da página no web
-                    if (kIsWeb) {
-                      launchUrl(Uri.parse(Uri.base.toString()));
-                    }
-                  },
-                  icon: const Icon(Icons.refresh_rounded),
-                  label: const Text('Recarregar app'),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.red,
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-                  ),
-                ),
-              ],
-            ),
-          ),
         ),
       ),
     );
