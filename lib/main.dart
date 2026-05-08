@@ -21,16 +21,35 @@ import 'widgets/brand_mark.dart';
 late final Future<void> _firebaseInit;
 
 void main() async {
+  // Captura erros silenciosos do Flutter antes de qualquer coisa
+  FlutterError.onError = (FlutterErrorDetails details) {
+    FlutterError.dumpErrorToConsole(details);
+  };
+
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Firebase init em paralelo — NÃO bloqueamos runApp()
-  _firebaseInit = Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  // Suspeito 2: Firebase pode lançar UnsupportedError se web não configurada
+  // Envolvemos em try/catch para não matar o boot
+  try {
+    _firebaseInit = Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+  } catch (e) {
+    // Firebase falhou na configuração — criamos um Future já completo com erro
+    // _AuthGate vai tratar hasError e redirecionar para LoginScreen
+    _firebaseInit = Future.error(e);
+  }
 
-  // Carrega preferências locais (rápido — só shared_preferences)
   final provider = AppProvider();
-  await provider.loadPrefs();
+
+  // Suspeito 1: SharedPreferences falha em abas anônimas (localStorage bloqueado)
+  // Sem try/catch aqui → app morre antes do runApp. Com try/catch → abre normalmente.
+  try {
+    await provider.loadPrefs();
+  } catch (e) {
+    // Aba anônima ou localStorage bloqueado — continua com preferências padrão
+    debugPrint('[MedCases] SharedPreferences indisponível: $e');
+  }
 
   // runApp() imediato — Flutter renderiza splash enquanto Firebase sobe
   runApp(
