@@ -31,10 +31,12 @@ void main() async {
   Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   ).then((_) {
-    if (kDebugMode) debugPrint('✅ Firebase inicializado');
+    if (kDebugMode) debugPrint('✅ Firebase inicializado com sucesso');
   }).catchError((e) {
-    if (kDebugMode) debugPrint('❌ Erro Firebase: $e');
+    if (kDebugMode) debugPrint('❌ Erro Firebase init: $e');
   });
+
+  if (kDebugMode) debugPrint('🚀 runApp() iniciando...');
 
   runApp(
     ChangeNotifierProvider.value(
@@ -50,12 +52,13 @@ class MedCasesApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final p = context.watch<AppProvider>();
+    if (kDebugMode) debugPrint('📱 MedCasesApp.build() — darkMode: ${p.darkMode}');
     return MaterialApp(
       title: 'MedCases Pro',
       debugShowCheckedModeBanner: false,
       theme: _buildTheme(false),
       darkTheme: _buildTheme(true),
-      themeMode: p.darkMode ? ThemeMode.dark : ThemeMode.light,
+      themeMode: ThemeMode.dark, // Forçar dark sempre para evitar flash
       home: const _AuthGate(),
     );
   }
@@ -117,13 +120,19 @@ class _AuthGate extends StatelessWidget {
     return StreamBuilder<User?>(
       stream: AuthService.authStateChanges,
       builder: (context, authSnap) {
+        if (kDebugMode) {
+          debugPrint('🔐 _AuthGate: connectionState=${authSnap.connectionState}, hasData=${authSnap.hasData}, data=${authSnap.data?.uid}');
+        }
+
         // Carregando estado de auth
         if (authSnap.connectionState == ConnectionState.waiting) {
+          if (kDebugMode) debugPrint('⏳ Mostrando SplashScreen (waiting)');
           return _wrapAuth(const _SplashScreen());
         }
 
         // Não autenticado → tela de login
         if (authSnap.data == null) {
+          if (kDebugMode) debugPrint('🔓 Mostrando LoginScreen (não autenticado)');
           return _wrapAuth(const LoginScreen());
         }
 
