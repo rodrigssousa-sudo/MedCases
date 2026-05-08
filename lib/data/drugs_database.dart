@@ -2425,4 +2425,170 @@ const List<DrugModel> drugsDatabase = [
     },
   ),
 
+  // ─────────────────────────────────────────────
+  //  NOVOS FÁRMACOS ESSENCIAIS (guia de bolso)
+  // ─────────────────────────────────────────────
+
+  DrugModel(
+    id: 'tiamina',
+    name: 'Tiamina (Vitamina B1)',
+    className: {'pt': 'Vitamina / coenzima essencial', 'es': 'Vitamina / coenzima esencial'},
+    category: {'pt': 'Neurologia / UTI', 'es': 'Neurología / UCI'},
+    route: 'IV / IM / VO',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': 'Wernicke (urgência): 500 mg IV 3×/dia × 2–3 dias, depois 100 mg/dia VO. Profilaxia em alcoólatra antes de glicose: 200 mg IV. Reposição crônica: 100 mg/dia VO.',
+      'es': 'Encefalopatía Wernicke (urgencia): 500 mg IV 3×/día × 2–3 días, después 100 mg/día VO. Profilaxis en alcohólico antes de glucosa: 200 mg IV.',
+    },
+    renalAlert: {'pt': 'Hidrossolúvel — sem ajuste renal.', 'es': 'Hidrosoluble — sin ajuste renal.'},
+    elderlyAlert: {'pt': 'Wernicke subdiagnosticado em idosos — suspeitar em confusão + desnutrição.', 'es': 'Wernicke infradiagnosticado en ancianos — sospechar en confusión + desnutrición.'},
+    mechanism: {
+      'pt': 'Coenzima da piruvato desidrogenase e alfa-cetoglutarato desidrogenase — essencial no metabolismo oxidativo da glicose. Deficiência → falência energética cerebral → lesão irreversível.',
+      'es': 'Coenzima de piruvato deshidrogenasa — esencial en metabolismo oxidativo glucosa. Deficiencia → fallo energético cerebral → lesión irreversible.',
+    },
+    warning: {
+      'pt': 'SEMPRE antes da glicose em alcoólatras ou desnutridos — glicose sem tiamina pode precipitar encefalopatia de Wernicke. Tríade: confusão + oftalmoplegia + ataxia (incompleta em 90% dos casos).',
+      'es': 'SIEMPRE antes de glucosa en alcohólicos/desnutridos — la glucosa sin tiamina puede precipitar Wernicke. Tríada: confusión + oftalmoplegia + ataxia.',
+    },
+    adverse: {
+      'pt': ['Anafilaxia (IV rápido — raro)', 'Calor local (IM)', 'Náuseas (VO)', 'Prurido'],
+      'es': ['Anafilaxia (IV rápido — raro)', 'Calor local (IM)', 'Náuseas (VO)'],
+    },
+  ),
+
+  DrugModel(
+    id: 'flumazenil',
+    name: 'Flumazenil',
+    className: {'pt': 'Antagonista benzodiazepínico', 'es': 'Antagonista benzodiazepínico'},
+    category: {'pt': 'Antídotos / Emergência', 'es': 'Antídotos / Emergencia'},
+    route: 'IV',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': '0,2 mg IV em 30 s; sem resposta: +0,3 mg em 30 s; depois +0,5 mg a cada 60 s (máx. 3 mg). Manutenção se re-sedação: 0,1–0,4 mg/h IV contínuo.',
+      'es': '0,2 mg IV en 30 s; sin respuesta: +0,3 mg; después +0,5 mg cada 60 s (máx. 3 mg). Mantenimiento: 0,1–0,4 mg/h IV.',
+    },
+    renalAlert: {'pt': 'Sem ajuste — metabolismo hepático.', 'es': 'Sin ajuste — metabolismo hepático.'},
+    elderlyAlert: {'pt': 'Re-sedação mais frequente — monitorar 2–4h. Meia-vida curta (1h) < BZDs usuais.', 'es': 'Re-sedación más frecuente — monitorizar 2–4h. Semivida corta (1h).'},
+    mechanism: {
+      'pt': 'Antagonista competitivo seletivo do receptor GABA-A no sítio BZD → reverte sedação, amnésia e depressão respiratória por BZDs em 1–2 min.',
+      'es': 'Antagonista competitivo GABA-A sitio BZD → revierte sedación/depresión respiratoria BZD en 1–2 min.',
+    },
+    warning: {
+      'pt': 'CONTRAINDICADO em dependentes de BZD — risco de convulsões graves. Meia-vida 1h menor que maioria dos BZDs: re-sedação quase certa após dose única. NÃO reverte opioides nem barbitúricos. Monitorar 2–4h após uso.',
+      'es': 'CONTRAINDICADO en dependientes BZD → convulsiones graves. Semivida 1h < BZDs. NO revierte opioides ni barbitúricos. Monitorizar 2–4h.',
+    },
+    adverse: {
+      'pt': ['Convulsões (dependentes de BZD)', 'Re-sedação', 'Náuseas/vômitos', 'Agitação, ansiedade', 'HAS transitória'],
+      'es': ['Convulsiones (dependientes BZD)', 'Re-sedación', 'Náuseas/vómitos', 'Agitación', 'HTA transitoria'],
+    },
+  ),
+
+  DrugModel(
+    id: 'propofol',
+    name: 'Propofol',
+    className: {'pt': 'Hipnótico / sedativo IV', 'es': 'Hipnótico / sedante IV'},
+    category: {'pt': 'UTI / Anestesia', 'es': 'UCI / Anestesia'},
+    route: 'IV',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': 'Indução: 1,5–2,5 mg/kg IV (idosos: 1–1,5 mg/kg). Sedação UTI: 5–50 µg/kg/min IV contínuo (titular pelo RASS alvo). Procedimento: 0,5–1 mg/kg IV titulado.',
+      'es': 'Inducción: 1,5–2,5 mg/kg IV (ancianos: 1–1,5 mg/kg). Sedación UCI: 5–50 µg/kg/min IV. Procedimiento: 0,5–1 mg/kg IV titulado.',
+    },
+    renalAlert: {'pt': 'Sem ajuste renal — metabolismo hepático/extrahepático. Monitorar triglicerídeos (veículo lipídico).', 'es': 'Sin ajuste renal. Monitorizar triglicéridos (vehículo lipídico).'},
+    elderlyAlert: {'pt': 'Reduzir dose 30–50%. Hipotensão e apneia mais frequentes. Titulação lenta obrigatória.', 'es': 'Reducir dosis 30–50%. Hipotensión y apnea más frecuentes. Titulación lenta obligatoria.'},
+    mechanism: {
+      'pt': 'Potencializa receptor GABA-A → ↑ condutância Cl⁻ → hiperpolarização neuronal → sedação e hipnose dose-dependente. Início em 30–60 s. Despertar rápido por redistribuição (5–10 min).',
+      'es': 'Potencia GABA-A → hiperpolarización → sedación/hipnosis. Inicio 30–60 s. Despertar rápido por redistribución.',
+    },
+    warning: {
+      'pt': 'Hipotensão grave na indução (esp. hipovolêmicos) — ter vasopressor à beira. PRIS (Síndrome de Infusão): acidose metabólica + rabdomiólise + IC com doses >4 mg/kg/h por >48h — monitorar CK e pH. Dor à injeção em veia periférica.',
+      'es': 'Hipotensión grave en inducción — vasopressor disponible. PRIS: acidosis + rabdomiólisis + IC (>4 mg/kg/h >48h) — monitorizar CK y pH.',
+    },
+    adverse: {
+      'pt': ['Hipotensão (injeção rápida)', 'Apneia', 'Bradicardia', 'Dor à injeção', 'Hipertrigliceridemia', 'PRIS (doses altas)', 'Urina verde (raro)'],
+      'es': ['Hipotensión', 'Apnea', 'Bradicardia', 'Dolor inyección', 'Hipertrigliceridemia', 'PRIS (dosis altas)', 'Orina verde (raro)'],
+    },
+  ),
+
+  DrugModel(
+    id: 'hidrocortisona',
+    name: 'Hidrocortisona',
+    className: {'pt': 'Corticosteroide natural / mineralocorticoide', 'es': 'Corticosteroide natural / mineralocorticoide'},
+    category: {'pt': 'Corticosteroides / UTI', 'es': 'Corticosteroides / UCI'},
+    route: 'IV / IM',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': 'Choque séptico refratário: 200 mg/dia IV contínuo (ou 50 mg IV a cada 6h). Anafilaxia grave: 200–300 mg IV em bolus. Crise addisoniana: 100 mg IV bolus + 100 mg IV a cada 8h.',
+      'es': 'Choque séptico refractario: 200 mg/día IV continuo. Anafilaxia grave: 200–300 mg IV bolus. Crisis addisoniana: 100 mg IV + 100 mg IV cada 8h.',
+    },
+    renalAlert: {'pt': 'Sem ajuste específico. Monitorar eletrólitos (retenção Na+, perda K+).', 'es': 'Sin ajuste específico. Monitorizar electrólitos (retención Na+, pérdida K+).'},
+    elderlyAlert: {'pt': 'Confusão, hiperglicemia e infecção mais frequentes. Atividade mineralocorticoide causa edema e hipopotassemia.', 'es': 'Confusión, hiperglucemia e infección más frecuentes. Actividad mineralocorticoide → edema e hipopotasemia.'},
+    mechanism: {
+      'pt': 'Glicocorticoide + mineralocorticoide natural → ativa receptores GC → resposta anti-inflamatória ampla + retenção de Na+. No choque séptico refratário restaura responsividade vascular às catecolaminas.',
+      'es': 'Glucocorticoide + mineralocorticoide → anti-inflamatorio + retención Na+. En choque séptico refractario restaura respuesta vascular a catecolaminas.',
+    },
+    warning: {
+      'pt': 'No choque séptico: usar APENAS se refratário a vasopressores (SSC 2021 — grau fraco). Monitorar hiperglicemia, infecção secundária e sangramento GI. Redução gradual para evitar insuficiência adrenal de rebote.',
+      'es': 'En choque séptico: solo si refractario a vasopresores (SSC 2021 — débil). Monitorizar hiperglucemia, infección secundaria y sangrado GI. Reducción gradual obligatoria.',
+    },
+    adverse: {
+      'pt': ['Hiperglicemia', 'Hipopotassemia', 'Edema', 'Infecção oportunista', 'Psicose esteroidea', 'HAS', 'Sangramento GI'],
+      'es': ['Hiperglucemia', 'Hipopotasemia', 'Edema', 'Infección oportunista', 'Psicosis esteroidea', 'HTA', 'Sangrado GI'],
+    },
+  ),
+
+  DrugModel(
+    id: 'oxigenio',
+    name: 'Oxigênio Suplementar',
+    className: {'pt': 'Terapia respiratória', 'es': 'Terapia respiratoria'},
+    category: {'pt': 'UTI / Emergência', 'es': 'UCI / Emergencia'},
+    route: 'Inalatória',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': 'Cateter nasal: 1–6 L/min (FiO₂ ~24–44%). Máscara simples: 5–10 L/min (FiO₂ ~40–60%). Máscara com reservatório: 10–15 L/min (FiO₂ ~60–90%). DPOC: SpO₂ alvo 88–92%. Demais: SpO₂ 94–98%.',
+      'es': 'Cánula nasal: 1–6 L/min (FiO₂ ~24–44%). Máscara simple: 5–10 L/min. Reservorio: 10–15 L/min (FiO₂ ~90%). EPOC: SpO₂ 88–92%. Otros: 94–98%.',
+    },
+    renalAlert: {'pt': 'Sem ajuste necessário.', 'es': 'Sin ajuste necesario.'},
+    elderlyAlert: {'pt': 'DPOC oculto frequente em idosos — iniciar O₂ controlado e monitorar CO₂ (gasometria).', 'es': 'EPOC oculta frecuente — iniciar O₂ controlado y monitorizar CO₂ (gasometría).'},
+    mechanism: {
+      'pt': 'Aumenta FiO₂ alveolar → ↑ gradiente de difusão O₂ → ↑ PaO₂ → ↑ SaO₂ → ↑ entrega tecidual de O₂ (DO₂ = DC × CaO₂).',
+      'es': 'Aumenta FiO₂ alveolar → ↑ PaO₂ → ↑ SaO₂ → ↑ DO₂ tisular.',
+    },
+    warning: {
+      'pt': 'DPOC: risco de hipercapnia se SpO₂ >92% (abolição do drive hipóxico). Hiperóxia prolongada → ARDS e lesão pulmonar. SpO₂ alvos individualizados. Não usar FiO₂ >60% por >48h sem avaliação.',
+      'es': 'EPOC: riesgo hipercapnia si SpO₂ >92% (abolición drive hipóxico). Hiperoxia → lesión pulmonar. No usar FiO₂ >60% >48h sin evaluación.',
+    },
+    adverse: {
+      'pt': ['Ressecamento de mucosa (alta vazão sem umidificação)', 'Hipercapnia em DPOC', 'Atelectasia de absorção', 'Toxicidade pulmonar (FiO₂ >60% >48h)'],
+      'es': ['Sequedad mucosa (sin humidificación)', 'Hipercapnia en EPOC', 'Atelectasia absorción', 'Toxicidad pulmonar (FiO₂ >60% >48h)'],
+    },
+  ),
+
+  DrugModel(
+    id: 'glicose_hipertonica',
+    name: 'Glicose Hipertônica 50%',
+    className: {'pt': 'Solução glicosada hipertônica', 'es': 'Solución glucosada hipertónica'},
+    category: {'pt': 'UTI / Emergência', 'es': 'UCI / Emergencia'},
+    route: 'IV',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': 'Hipoglicemia grave (glicemia <50 mg/dL + sintomas): 50 mL (25 g) IV em 2–5 min; repetir até glicemia >80 mg/dL. Par obrigatório com insulina na hipercalemia: 50 mL + 10 UI insulina regular IV.',
+      'es': 'Hipoglucemia grave (<50 mg/dL con síntomas): 50 mL (25 g) IV en 2–5 min; repetir hasta glucemia >80 mg/dL. Par con insulina en hiperpotasemia: 50 mL + 10 UI insulina IV.',
+    },
+    renalAlert: {'pt': 'Sem ajuste. Monitorar glicemia a cada 30–60 min.', 'es': 'Sin ajuste. Monitorizar glucemia cada 30–60 min.'},
+    elderlyAlert: {'pt': 'Hiperglicemia rebote frequente. Monitorar 60 min após administração.', 'es': 'Hiperglucemia rebote frecuente. Monitorizar 60 min post-administración.'},
+    mechanism: {
+      'pt': 'Fonte direta de glicose → restaura glicemia. Associada à insulina, redistribui K+ para intracelular via Na+/K+-ATPase (tratamento da hipercalemia aguda).',
+      'es': 'Fuente directa de glucosa → restaura glucemia. Con insulina, redistribuye K+ intracelular vía Na+/K+-ATPasa (hiperpotasemia aguda).',
+    },
+    warning: {
+      'pt': 'Via periférica causa flebite grave (osmolaridade ~2700 mOsm/L) — preferir veia central. Em alcoólatras/desnutridos: sempre administrar tiamina ANTES para prevenir encefalopatia de Wernicke.',
+      'es': 'Vía periférica → flebitis grave (osmolaridad ~2700). Preferir vena central. En alcohólicos/desnutridos: tiamina ANTES para prevenir Wernicke.',
+    },
+    adverse: {
+      'pt': ['Flebite (via periférica)', 'Hiperglicemia rebote', 'Hiponatremia dilucional (grandes volumes)', 'Hipopotassemia'],
+      'es': ['Flebitis (vía periférica)', 'Hiperglucemia rebote', 'Hiponatremia dilucional', 'Hipopotasemia'],
+    },
+  ),
+
 ];
