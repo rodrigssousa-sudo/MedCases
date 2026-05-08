@@ -4,9 +4,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../models/drug_model.dart';
 import '../models/protocol_model.dart';
 import '../models/clinical_case_model.dart';
+import '../models/user_model.dart';
 import '../data/drugs_database.dart';
 import '../data/protocols_database.dart';
 import '../data/cases_database.dart';
+import '../services/firestore_service.dart';
 
 class DoseInfo {
   final String main;
@@ -22,7 +24,6 @@ class PatientData {
   String weight;
   String height;
   String creatinine;
-
   PatientData({
     this.patientId = 'Leito / Box',
     this.age = '68',
@@ -36,19 +37,19 @@ class PatientData {
 class HemoData {
   String sbp, dbp, na, cl, hco3, glucose;
   HemoData({
-    this.sbp = '120',
-    this.dbp = '80',
-    this.na = '140',
-    this.cl = '104',
-    this.hco3 = '24',
-    this.glucose = '100',
+    this.sbp = '120', this.dbp = '80',
+    this.na = '140', this.cl = '104',
+    this.hco3 = '24', this.glucose = '100',
   });
 }
 
 class AppProvider extends ChangeNotifier {
+  // ── Estado Firebase ───────────────────────────────────────────────────────
+  UserModel? _currentUser;
+  bool _firebaseReady = false;
+
+  // ── Estado local ──────────────────────────────────────────────────────────
   String _lang = 'pt';
-  bool _loggedIn = false;
-  String _userName = '';
   bool _darkMode = false;
 
   PatientData _patient = PatientData();
@@ -61,9 +62,15 @@ class AppProvider extends ChangeNotifier {
   Set<String> _favDrugs = {};
   Set<String> _favProtocols = {};
 
+  // ── Getters públicos ──────────────────────────────────────────────────────
+  UserModel? get currentUser => _currentUser;
+  bool get firebaseReady => _firebaseReady;
+  bool get loggedIn => _currentUser != null && _currentUser!.isApproved;
+  bool get isPending => _currentUser != null && _currentUser!.isPending;
+  bool get isAdmin => _currentUser?.isAdmin ?? false;
+  String get userName => _currentUser?.displayName ?? '';
+  String get userEmail => _currentUser?.email ?? '';
   String get lang => _lang;
-  bool get loggedIn => _loggedIn;
-  String get userName => _userName;
   bool get darkMode => _darkMode;
   PatientData get patient => _patient;
   HemoData get hemo => _hemo;
@@ -83,6 +90,86 @@ class AppProvider extends ChangeNotifier {
   List<DrugModel> get selectedDrugs =>
       _selectedDrugIds.map((id) => drugsDatabase.firstWhere((d) => d.id == id, orElse: () => drugsDatabase[0])).toList();
 
+  // ── Login com usuário do Firebase ─────────────────────────────────────────
+  Future<void> setUser(UserModel user) async {
+    _currentUser = user;
+    _lang = user.lang;
+    _darkMode = user.darkMode;
+    _firebaseReady = true;
+    notifyListeners();
+    // Carregar dados do Firestore
+    await _loadFromFirestore(user.uid);
+  }
+
+  void clearUser() {
+    _currentUser = null;
+    _firebaseReady = false;
+    _favDrugs = {};
+    _favProtocols = {};
+    _customCases = [];
+    _selectedDrugIds = ['furosemida'];
+    _activeDrugId = 'furosemida';
+    _patient = PatientData();
+    _hemo = HemoData();
+    notifyListeners();
+  }
+
+  void setFirebaseReady() {
+    _firebaseReady = true;
+    notifyListeners();
+  }
+
+  // ── Carregar dados do Firestore ───────────────────────────────────────────
+  Future<void> _loadFromFirestore(String uid) async {
+    try {
+      final favDrugs = await FirestoreService.loadFavDrugs(uid);
+      final favProtocols = await FirestoreService.loadFavProtocols(uid);
+      final cases = await FirestoreService.loadCases(uid);
+      _favDrugs = favDrugs;
+      _favProtocols = favProtocols;
+      _customCases = cases;
+      notifyListeners();
+    } catch (_) {
+      // Fallback para SharedPreferences se offline
+      await _loadFromLocal();
+    }
+  }
+
+  // ── Fallback local ────────────────────────────────────────────────────────
+  Future<void> loadPrefs() async {
+    await _loadFromLocal();
+  }
+
+  Future<void> _loadFromLocal() async {
+    try {
+      final p = await SharedPreferences.getInstance();
+      _lang = p.getString('lang') ?? 'pt';
+      _darkMode = p.getBool('darkMode') ?? false;
+      _favDrugs = (p.getStringList('favDrugs') ?? []).toSet();
+      _favProtocols = (p.getStringList('favProtocols') ?? []).toSet();
+      final casesJson = p.getString('customCases');
+      if (casesJson != null) {
+        try {
+          final list = jsonDecode(casesJson) as List;
+          _customCases = list.map((e) => ClinicalCaseModel.fromJson(e as Map<String, dynamic>)).toList();
+        } catch (_) {}
+      }
+    } catch (_) {}
+    notifyListeners();
+  }
+
+  Future<void> _saveLocal() async {
+    try {
+      final p = await SharedPreferences.getInstance();
+      await p.setString('lang', _lang);
+      await p.setBool('darkMode', _darkMode);
+      await p.setStringList('favDrugs', _favDrugs.toList());
+      await p.setStringList('favProtocols', _favProtocols.toList());
+      await p.setString('customCases', jsonEncode(_customCases.map((c) => c.toJson()).toList()));
+    } catch (_) {}
+  }
+
+  // ── i18n helpers ──────────────────────────────────────────────────────────
   String tDB(Map<String, String>? field) {
     if (field == null) return '';
     return field[_lang] ?? field['pt'] ?? field['es'] ?? '';
@@ -92,8 +179,7 @@ class AppProvider extends ChangeNotifier {
     return _translations[_lang]?[key] ?? _translations['pt']?[key] ?? key;
   }
 
-  // ── Clinical calculations ──────────────────────────────────────────────────
-
+  // ── Cálculos clínicos ─────────────────────────────────────────────────────
   double? _parseNum(String val) {
     final v = double.tryParse(val.replaceAll(',', '.'));
     return (v != null && v.isFinite) ? v : null;
@@ -102,9 +188,7 @@ class AppProvider extends ChangeNotifier {
   String _fmt(double v) {
     if (!v.isFinite) return '—';
     if (v.abs() >= 100) return v.round().toString();
-    return (v * 10).round() / 10 == (v * 10).round() / 10
-        ? ((v * 10).round() / 10).toString().replaceAll('.', ',')
-        : v.toStringAsFixed(1).replaceAll('.', ',');
+    return ((v * 10).round() / 10).toString().replaceAll('.', ',');
   }
 
   String? get bmi {
@@ -163,7 +247,7 @@ class AppProvider extends ChangeNotifier {
     if (clcrVal != null && clcrVal > 0 && clcrVal < 50 && renalAlert.isNotEmpty &&
         !renalAlert.toLowerCase().contains('sem ajuste') &&
         !renalAlert.toLowerCase().contains('sin ajuste')) {
-      alerts.add('${_lang == 'es' ? 'Ajuste renal: ClCr ' : 'Ajuste renal: ClCr '}${clcr ?? '—'} mL/min. $renalAlert');
+      alerts.add('Ajuste renal: ClCr ${clcr ?? '—'} mL/min. $renalAlert');
     }
 
     final elderlyAlert = drug.getField(drug.elderlyAlert, _lang);
@@ -174,7 +258,7 @@ class AppProvider extends ChangeNotifier {
     if (drug.doseType == 'weight' && w != null && drug.mgKg != null) {
       return DoseInfo(
         main: '${_fmt(w * drug.mgKg!)} mg/dose',
-        detail: '${drug.mgKg} mg/kg. ${drug.getField(drug.frequency, _lang).isNotEmpty ? drug.getField(drug.frequency, _lang) : (_lang == 'es' ? 'Frecuencia según protocolo.' : 'Frequência conforme protocolo.')}',
+        detail: '${drug.mgKg} mg/kg. ${drug.getField(drug.frequency, _lang)}',
         alerts: alerts,
       );
     }
@@ -188,10 +272,11 @@ class AppProvider extends ChangeNotifier {
     }
 
     final fixedDose = drug.getField(drug.fixedDose, _lang);
-    final doseNote = '';
     return DoseInfo(
       main: fixedDose.isNotEmpty ? fixedDose : (_lang == 'es' ? 'Dosis según protocolo local' : 'Dose conforme protocolo local'),
-      detail: doseNote.isNotEmpty ? doseNote : (_lang == 'es' ? 'Individualizar por indicación, función renal/hepática, alergias y presentación disponible.' : 'Individualizar por indicação, função renal/hepática, alergias e apresentação disponível.'),
+      detail: _lang == 'es'
+          ? 'Individualizar por indicación, función renal/hepática, alergias y presentación disponible.'
+          : 'Individualizar por indicação, função renal/hepática, alergias e apresentação disponível.',
       alerts: alerts,
     );
   }
@@ -199,10 +284,8 @@ class AppProvider extends ChangeNotifier {
   List<String> get interactionRisks {
     final ids = _selectedDrugIds.toSet();
     final risks = <String>[];
-
     bool has(String a, String b) => ids.contains(a) && ids.contains(b);
     bool hasAny(List<String> a, List<String> b) => a.any((x) => ids.contains(x)) && b.any((y) => ids.contains(y));
-
     if (hasAny(['aas', 'clopidogrel'], ['rivaroxabana', 'apixabana', 'enoxaparina', 'heparina_nf'])) {
       risks.add(_lang == 'es'
           ? 'Antiagregante + anticoagulante: aumenta bastante el riesgo de sangrado.'
@@ -228,43 +311,35 @@ class AppProvider extends ChangeNotifier {
           ? 'Opioide + pregabalina: mayor riesgo de sedación y depresión respiratoria.'
           : 'Opioide + pregabalina: maior risco de sedação e depressão respiratória.');
     }
-
     return risks;
   }
 
-  // ── State mutations ────────────────────────────────────────────────────────
-
-  void login(String name) {
-    _loggedIn = true;
-    _userName = name;
-    notifyListeners();
-  }
-
-  void logout() {
-    _loggedIn = false;
-    _userName = '';
-    notifyListeners();
-  }
-
+  // ── Mutations de estado ───────────────────────────────────────────────────
   void setLang(String l) {
     _lang = l;
-    _savePrefs();
+    _saveLocal();
+    if (_currentUser != null) {
+      FirestoreService.updateUserProfile(_currentUser!.uid, lang: l);
+    }
     notifyListeners();
   }
 
   void toggleDarkMode() {
     _darkMode = !_darkMode;
-    _savePrefs();
+    _saveLocal();
+    if (_currentUser != null) {
+      FirestoreService.updateUserProfile(_currentUser!.uid, darkMode: _darkMode);
+    }
     notifyListeners();
   }
 
   void updatePatient(String key, String value) {
     switch (key) {
       case 'patientId': _patient.patientId = value; break;
-      case 'age': _patient.age = value; break;
-      case 'sex': _patient.sex = value; break;
-      case 'weight': _patient.weight = value; break;
-      case 'height': _patient.height = value; break;
+      case 'age':       _patient.age = value; break;
+      case 'sex':       _patient.sex = value; break;
+      case 'weight':    _patient.weight = value; break;
+      case 'height':    _patient.height = value; break;
       case 'creatinine': _patient.creatinine = value; break;
     }
     notifyListeners();
@@ -277,11 +352,11 @@ class AppProvider extends ChangeNotifier {
 
   void updateHemo(String key, String value) {
     switch (key) {
-      case 'sbp': _hemo.sbp = value; break;
-      case 'dbp': _hemo.dbp = value; break;
-      case 'na': _hemo.na = value; break;
-      case 'cl': _hemo.cl = value; break;
-      case 'hco3': _hemo.hco3 = value; break;
+      case 'sbp':     _hemo.sbp = value; break;
+      case 'dbp':     _hemo.dbp = value; break;
+      case 'na':      _hemo.na = value; break;
+      case 'cl':      _hemo.cl = value; break;
+      case 'hco3':    _hemo.hco3 = value; break;
       case 'glucose': _hemo.glucose = value; break;
     }
     notifyListeners();
@@ -289,9 +364,7 @@ class AppProvider extends ChangeNotifier {
 
   void setActiveDrug(String id) {
     _activeDrugId = id;
-    if (!_selectedDrugIds.contains(id)) {
-      _selectedDrugIds.add(id);
-    }
+    if (!_selectedDrugIds.contains(id)) _selectedDrugIds.add(id);
     notifyListeners();
   }
 
@@ -311,68 +384,43 @@ class AppProvider extends ChangeNotifier {
   }
 
   void toggleFavDrug(String id) {
-    if (_favDrugs.contains(id)) _favDrugs.remove(id);
-    else _favDrugs.add(id);
-    _savePrefs();
+    if (_favDrugs.contains(id)) _favDrugs.remove(id); else _favDrugs.add(id);
+    _saveLocal();
+    if (_currentUser != null) FirestoreService.saveFavDrugs(_currentUser!.uid, _favDrugs);
     notifyListeners();
   }
 
   void toggleFavProtocol(String id) {
-    if (_favProtocols.contains(id)) _favProtocols.remove(id);
-    else _favProtocols.add(id);
-    _savePrefs();
+    if (_favProtocols.contains(id)) _favProtocols.remove(id); else _favProtocols.add(id);
+    _saveLocal();
+    if (_currentUser != null) FirestoreService.saveFavProtocols(_currentUser!.uid, _favProtocols);
     notifyListeners();
   }
 
   void saveCase(ClinicalCaseModel c) {
     final idx = _customCases.indexWhere((x) => x.id == c.id);
-    if (idx >= 0) _customCases[idx] = c;
-    else _customCases.insert(0, c);
-    _savePrefs();
+    if (idx >= 0) _customCases[idx] = c; else _customCases.insert(0, c);
+    _saveLocal();
+    if (_currentUser != null) FirestoreService.saveCase(_currentUser!.uid, c);
     notifyListeners();
   }
 
   void deleteCase(String id) {
     _customCases.removeWhere((c) => c.id == id);
-    _savePrefs();
+    _saveLocal();
+    if (_currentUser != null) FirestoreService.deleteCase(_currentUser!.uid, id);
     notifyListeners();
   }
 
-  // ── Persistence ────────────────────────────────────────────────────────────
-
-  Future<void> loadPrefs() async {
-    try {
-      final p = await SharedPreferences.getInstance();
-      _lang = p.getString('lang') ?? 'pt';
-      _darkMode = p.getBool('darkMode') ?? false;
-      _favDrugs = (p.getStringList('favDrugs') ?? []).toSet();
-      _favProtocols = (p.getStringList('favProtocols') ?? []).toSet();
-      final casesJson = p.getString('customCases');
-      if (casesJson != null) {
-        try {
-          final list = jsonDecode(casesJson) as List;
-          _customCases = list.map((e) => ClinicalCaseModel.fromJson(e as Map<String, dynamic>)).toList();
-        } catch (_) {}
-      }
-    } catch (_) {}
-    notifyListeners();
+  // ── Logout ────────────────────────────────────────────────────────────────
+  void logout() {
+    clearUser();
   }
 
-  Future<void> _savePrefs() async {
-    final p = await SharedPreferences.getInstance();
-    await p.setString('lang', _lang);
-    await p.setBool('darkMode', _darkMode);
-    await p.setStringList('favDrugs', _favDrugs.toList());
-    await p.setStringList('favProtocols', _favProtocols.toList());
-    await p.setString('customCases', jsonEncode(_customCases.map((c) => c.toJson()).toList()));
-  }
-
-  // ── AI ─────────────────────────────────────────────────────────────────────
-
+  // ── IA Clínica ────────────────────────────────────────────────────────────
   String buildAIAnswer(String input) {
     final q = _normalize(input);
     final buf = StringBuffer();
-
     final suspected = <String>[];
     if (_has(q, ['dor torac', 'peito', 'iam', 'infarto', 'angina'])) suspected.add('Síndrome coronariana aguda / IAM');
     if (_has(q, ['dispne', 'falta de ar', 'crepit', 'congest', 'edema pulm', 'ortopneia'])) suspected.add('IC descompensada / congestão pulmonar');
@@ -413,9 +461,9 @@ class AppProvider extends ChangeNotifier {
       for (final a in matchedProtocol.getActions(_lang)) buf.writeln('• $a');
       buf.writeln('\nNão fazer: ${tDB(matchedProtocol.avoid)}\n');
 
-      final suggestedDrugs = matchedProtocol.drugs.take(4).map((id) {
-        try { return drugsDatabase.firstWhere((d) => d.id == id); } catch (_) { return null; }
-      }).whereType<DrugModel>().toList();
+      final suggestedDrugs = matchedProtocol.drugs.take(4)
+          .map((id) { try { return drugsDatabase.firstWhere((d) => d.id == id); } catch (_) { return null; } })
+          .whereType<DrugModel>().toList();
 
       if (suggestedDrugs.isNotEmpty) {
         buf.writeln('Doses pela base do app:');
@@ -432,12 +480,18 @@ class AppProvider extends ChangeNotifier {
     return buf.toString();
   }
 
-  String _normalize(String s) => s.toLowerCase().replaceAll(RegExp(r'[àáâãäå]'), 'a').replaceAll(RegExp(r'[èéêë]'), 'e').replaceAll(RegExp(r'[ìíîï]'), 'i').replaceAll(RegExp(r'[òóôõö]'), 'o').replaceAll(RegExp(r'[ùúûü]'), 'u').replaceAll(RegExp(r'[ç]'), 'c').replaceAll(RegExp(r'[ñ]'), 'n');
+  String _normalize(String s) => s.toLowerCase()
+      .replaceAll(RegExp(r'[àáâãäå]'), 'a')
+      .replaceAll(RegExp(r'[èéêë]'), 'e')
+      .replaceAll(RegExp(r'[ìíîï]'), 'i')
+      .replaceAll(RegExp(r'[òóôõö]'), 'o')
+      .replaceAll(RegExp(r'[ùúûü]'), 'u')
+      .replaceAll(RegExp(r'[ç]'), 'c')
+      .replaceAll(RegExp(r'[ñ]'), 'n');
 
   bool _has(String q, List<String> words) => words.any((w) => q.contains(w));
 
-  // ── i18n ───────────────────────────────────────────────────────────────────
-
+  // ── Translations ──────────────────────────────────────────────────────────
   static const Map<String, Map<String, String>> _translations = {
     'pt': {
       'age': 'Idade', 'sex': 'Sexo', 'weight': 'Peso', 'height': 'Altura',
@@ -452,6 +506,7 @@ class AppProvider extends ChangeNotifier {
       'logout': 'Sair', 'login': 'Entrar', 'save': 'Salvar',
       'back': 'Voltar', 'delete': 'Excluir', 'edit': 'Editar',
       'new': 'Novo', 'cancel': 'Cancelar', 'search': 'Pesquisar',
+      'admin': 'Admin',
     },
     'es': {
       'age': 'Edad', 'sex': 'Sexo', 'weight': 'Peso', 'height': 'Altura',
@@ -466,6 +521,7 @@ class AppProvider extends ChangeNotifier {
       'logout': 'Salir', 'login': 'Acceder', 'save': 'Guardar',
       'back': 'Volver', 'delete': 'Eliminar', 'edit': 'Editar',
       'new': 'Nuevo', 'cancel': 'Cancelar', 'search': 'Buscar',
+      'admin': 'Admin',
     },
   };
 }

@@ -52,3 +52,7 @@ android/key.properties
 android/release-key.jks
 *.jks
 *.keystore
+
+# Firebase Admin SDK — NUNCA commitar
+firebase-adminsdk.json
+*adminsdk*.json

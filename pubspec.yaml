@@ -9,10 +9,23 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+
+  # State management
   provider: 6.1.5+1
+
+  # Local storage (fallback offline)
   shared_preferences: 2.5.3
+
+  # HTTP
   http: 1.5.0
+
+  # Icons
   cupertino_icons: ^1.0.8
+
+  # Firebase — versões fixas testadas com Flutter 3.35.4
+  firebase_core: 3.6.0
+  firebase_auth: 5.3.1
+  cloud_firestore: 5.4.3
 
 dev_dependencies:
   flutter_test:

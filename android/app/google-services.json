@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1076800980330",
+    "project_id": "medcases-pro",
+    "storage_bucket": "medcases-pro.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1076800980330:android:458a6b1f05871619711113",
+        "android_client_info": {
+          "package_name": "com.medcasespro.med"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDPY3OH6KMoPdEp85i_y69_bKqc3wK2340"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
