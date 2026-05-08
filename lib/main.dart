@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'firebase_options.dart';
 import 'providers/app_provider.dart';
 import 'services/auth_service.dart';
@@ -408,6 +409,77 @@ class _NavItem {
   const _NavItem({required this.icon, required this.label});
 }
 
+// ── Botão Admin com badge de pendentes em tempo real ──────────────────────────
+class _AdminBadgeButton extends StatelessWidget {
+  final UserModel currentAdmin;
+  const _AdminBadgeButton({required this.currentAdmin});
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<QuerySnapshot>(
+      stream: FirebaseFirestore.instance
+          .collection('users')
+          .where('status', isEqualTo: 'pending')
+          .snapshots(),
+      builder: (context, snap) {
+        final count = snap.data?.docs.length ?? 0;
+        return GestureDetector(
+          onTap: () => Navigator.push(context, MaterialPageRoute(
+            builder: (_) => AdminScreen(currentAdmin: currentAdmin),
+          )),
+          child: Stack(
+            clipBehavior: Clip.none,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(7),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: count > 0
+                      ? const Color(0xFFFF8C00).withValues(alpha: 0.2)
+                      : const Color(0xFFC5A365).withValues(alpha: 0.15),
+                  border: Border.all(
+                    color: count > 0
+                        ? const Color(0xFFFF8C00).withValues(alpha: 0.6)
+                        : const Color(0xFFC5A365).withValues(alpha: 0.35),
+                  ),
+                ),
+                child: Icon(
+                  Icons.admin_panel_settings_rounded,
+                  size: 16,
+                  color: count > 0 ? const Color(0xFFFF8C00) : const Color(0xFFFFE8A6),
+                ),
+              ),
+              // Badge com número de pendentes
+              if (count > 0)
+                Positioned(
+                  top: -5,
+                  right: -5,
+                  child: Container(
+                    width: 18,
+                    height: 18,
+                    decoration: const BoxDecoration(
+                      color: Color(0xFFFF3B30),
+                      shape: BoxShape.circle,
+                    ),
+                    alignment: Alignment.center,
+                    child: Text(
+                      count > 99 ? '99+' : '$count',
+                      style: const TextStyle(
+                        fontSize: 9,
+                        fontWeight: FontWeight.w900,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+}
+
 // ── Header do app ─────────────────────────────────────────────────────────────
 class _AppHeader extends StatelessWidget {
   final ValueChanged<int> onTabChange;
@@ -455,22 +527,9 @@ class _AppHeader extends StatelessWidget {
               Text(p.lang == 'es' ? 'Apoyo clínico educativo' : 'Apoio clínico educacional',
                 style: TextStyle(fontSize: 10, color: Colors.white.withValues(alpha: 0.55), fontWeight: FontWeight.w600)),
             ])),
-            // Botão Admin (apenas para admins)
+            // Botão Admin com badge de pendentes (apenas para admins)
             if (p.isAdmin) ...[
-              GestureDetector(
-                onTap: () => Navigator.push(context, MaterialPageRoute(
-                  builder: (_) => AdminScreen(currentAdmin: p.currentUser!),
-                )),
-                child: Container(
-                  padding: const EdgeInsets.all(7),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    color: const Color(0xFFC5A365).withValues(alpha: 0.15),
-                    border: Border.all(color: const Color(0xFFC5A365).withValues(alpha: 0.35)),
-                  ),
-                  child: const Icon(Icons.admin_panel_settings_rounded, size: 16, color: Color(0xFFFFE8A6)),
-                ),
-              ),
+              _AdminBadgeButton(currentAdmin: p.currentUser!),
               const SizedBox(width: 8),
             ],
             // Lang toggle
