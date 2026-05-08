@@ -19,7 +19,7 @@ const RESOURCES = {"canvaskit/chromium/canvaskit.js": "5e27aae346eee469027c80af0
 "flutter_bootstrap.js": "b5e5e5774df7405ea30bc1924526bf28",
 "index.html": "90e7c624f56a6c0633625cd1108b6346",
 "/": "90e7c624f56a6c0633625cd1108b6346",
-"main.dart.js": "c13019792f36fac84a5492d9bbe3fbe3",
+"main.dart.js": "f3717982475d296f7dd6ef1c5b0f7ae2",
 "version.json": "322dfa94430cc69aa45ce83495f46466",
 "assets/packages/cupertino_icons/assets/CupertinoIcons.ttf": "33b7d9392238c04c131b6ce224e13711",
 "assets/fonts/MaterialIcons-Regular.otf": "b3579d62d521d5fd64cba81dd91b6cab",
