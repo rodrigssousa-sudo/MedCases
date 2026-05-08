@@ -1,35 +1,21 @@
-# ── Stage 1: Build Flutter Web ──────────────────────────────────────────────
-FROM ghcr.io/cirruslabs/flutter:3.24.0 AS builder
+# ── Dockerfile simples: apenas nginx servindo build pré-compilado ────────────
+# O Flutter web já foi compilado localmente e commitado em build/web/
+# O DigitalOcean NÃO precisa instalar Flutter — apenas serve os arquivos estáticos
 
-WORKDIR /app
-
-# Copiar dependências primeiro (cache layer)
-COPY pubspec.yaml pubspec.lock ./
-RUN flutter pub get
-
-# Copiar código fonte
-COPY . .
-
-# Build Flutter web release otimizado
-RUN flutter build web --release \
-    --dart-define=flutter.inspector.structuredErrors=false \
-    --dart-define=debugShowCheckedModeBanner=false
-
-# ── Stage 2: Nginx para servir arquivos estáticos ───────────────────────────
 FROM nginx:1.25-alpine
 
-# Remover config padrão do nginx
+# Remover config padrão
 RUN rm /etc/nginx/conf.d/default.conf
 
-# Copiar nossa config customizada
+# Copiar nossa config nginx customizada
 COPY nginx/nginx.conf /etc/nginx/conf.d/default.conf
 
-# Copiar build gerado pelo Flutter
-COPY --from=builder /app/build/web /usr/share/nginx/html
+# Copiar o build Flutter pré-compilado
+COPY build/web /usr/share/nginx/html
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-  CMD wget -qO- http://localhost:8080/index.html || exit 1
+  CMD wget -qO- http://localhost:8080/health || exit 1
 
 EXPOSE 8080
 

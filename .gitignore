@@ -30,7 +30,10 @@ migrate_working_dir/
 .flutter-plugins-dependencies
 .pub-cache/
 .pub/
+# /build/ — ignorado exceto build/web (necessário para deploy no DigitalOcean)
 /build/
+!build/web
+!build/web/**
 /coverage/
 
 # Symbolication related
