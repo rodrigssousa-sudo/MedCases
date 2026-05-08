@@ -107,7 +107,13 @@ class AuthService {
     } on FirebaseAuthException catch (e) {
       return AuthResult.error(_authErrorMessage(e.code));
     } catch (e) {
-      return AuthResult.error('Erro ao fazer login. Verifique sua conexão.');
+      // Mostra o erro real para facilitar diagnóstico
+      final msg = e.toString();
+      if (msg.contains('unauthorized-domain') || msg.contains('auth/unauthorized')) {
+        return AuthResult.error(
+          'Domínio não autorizado no Firebase.\n\nAdicione o domínio do app em:\nFirebase Console → Authentication → Settings → Authorized domains.');
+      }
+      return AuthResult.error('Erro ao fazer login: $msg');
     }
   }
 
@@ -211,6 +217,8 @@ class AuthService {
         return 'Sem conexão. Verifique sua internet.';
       case 'operation-not-allowed':
         return 'Login por e-mail desabilitado. Contate o admin.';
+      case 'unauthorized-domain':
+        return 'Domínio não autorizado.\nAdicione em: Firebase Console → Authentication → Settings → Authorized domains.';
       default:
         return 'Erro de autenticação ($code). Tente novamente.';
     }
