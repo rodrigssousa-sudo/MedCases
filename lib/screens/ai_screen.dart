@@ -434,6 +434,8 @@ class _InputBar extends StatelessWidget {
               maxLines: 3,
               minLines: 1,
               textInputAction: TextInputAction.newline,
+              spellCheckConfiguration: const SpellCheckConfiguration.disabled(),
+              autocorrect: false,
               style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: dark ? Colors.white : kDark),
               decoration: InputDecoration(
                 hintText: hint,

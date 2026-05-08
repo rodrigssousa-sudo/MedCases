@@ -260,6 +260,8 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
       controller: ctrl,
       keyboardType: keyboard,
       validator: validator,
+      spellCheckConfiguration: const SpellCheckConfiguration.disabled(),
+      autocorrect: false,
       style: const TextStyle(fontSize: 14, color: kDark, fontWeight: FontWeight.w600),
       decoration: InputDecoration(
         labelText: label,
@@ -281,6 +283,8 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
     return TextFormField(
       controller: _passCtrl,
       obscureText: _obscure,
+      spellCheckConfiguration: const SpellCheckConfiguration.disabled(),
+      autocorrect: false,
       validator: _mode == _Mode.register
           ? (v) => (v?.length ?? 0) < 6 ? 'Mínimo 6 caracteres' : null
           : (v) => (v?.isEmpty ?? true) ? 'Informe a senha' : null,

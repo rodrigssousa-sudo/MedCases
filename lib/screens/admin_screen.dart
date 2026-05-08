@@ -66,6 +66,8 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
             padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
             child: TextField(
               onChanged: (v) => setState(() => _search = v.toLowerCase()),
+              spellCheckConfiguration: const SpellCheckConfiguration.disabled(),
+              autocorrect: false,
               style: const TextStyle(color: Colors.white, fontSize: 13),
               decoration: InputDecoration(
                 hintText: 'Buscar por nome ou e-mail...',

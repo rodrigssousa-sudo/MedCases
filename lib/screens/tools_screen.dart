@@ -912,6 +912,8 @@ class _ScoresTabState extends State<_ScoresTab> {
                   child: TextField(
                     controller: _psiAgeCtrl,
                     keyboardType: TextInputType.number,
+                    spellCheckConfiguration: const SpellCheckConfiguration.disabled(),
+                    autocorrect: false,
                     style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w900, color: kToolDark),
                     textAlign: TextAlign.center,
                     decoration: InputDecoration(

@@ -244,6 +244,8 @@ class MedInput extends StatelessWidget {
       keyboardType: keyboardType,
       onChanged: onChanged,
       maxLines: maxLines,
+      spellCheckConfiguration: const SpellCheckConfiguration.disabled(),
+      autocorrect: false,
       style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 15, color: kDark),
       decoration: InputDecoration(
         hintText: hintText,
