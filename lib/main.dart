@@ -17,20 +17,20 @@ import 'screens/cases_screen.dart';
 import 'screens/admin_screen.dart';
 import 'widgets/brand_mark.dart';
 
+// Future global — inicialização não bloqueia runApp()
+final Future<void> _firebaseInit = Firebase.initializeApp(
+  options: DefaultFirebaseOptions.currentPlatform,
+);
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // ── Inicializa Firebase ANTES de tudo — await garante que está pronto ──────
-  // Esta é a única abordagem correta: sem await = Firebase não inicializado
-  // quando AuthService tenta usar FirebaseAuth → stream nunca emite → tela cinza
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
-
-  // Carrega preferências locais
+  // Carrega preferências locais (rápido — só shared_preferences)
   final provider = AppProvider();
   await provider.loadPrefs();
 
+  // runApp() é chamado IMEDIATAMENTE — Flutter renderiza a splash
+  // enquanto o Firebase inicializa em paralelo na rede
   runApp(
     ChangeNotifierProvider.value(
       value: provider,
@@ -91,7 +91,8 @@ class MedCasesApp extends StatelessWidget {
 
 // ── Auth Gate ─────────────────────────────────────────────────────────────────
 // Firebase já está inicializado quando chegamos aqui (await no main)
-// Só precisamos ouvir o stream de auth — sem FutureBuilder necessário
+// _AuthGate: aguarda Firebase inicializar via FutureBuilder,
+// depois ouve o stream de auth — runApp() já aconteceu, splash aparece imediatamente
 class _AuthGate extends StatelessWidget {
   const _AuthGate();
 
@@ -102,53 +103,70 @@ class _AuthGate extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Firebase já inicializado — ouve stream de autenticação diretamente
-    return StreamBuilder<User?>(
-      stream: AuthService.authStateChanges,
-      builder: (context, authSnap) {
-        // Aguardando primeira emissão do stream
-        if (authSnap.connectionState == ConnectionState.waiting) {
+    // Etapa 1: aguarda Firebase init (em paralelo ao runApp)
+    return FutureBuilder<void>(
+      future: _firebaseInit,
+      builder: (context, firebaseSnap) {
+        // Firebase ainda inicializando → splash nativa Flutter (sem tela verde)
+        if (firebaseSnap.connectionState != ConnectionState.done) {
           return _wrapAuth(const _SplashScreen());
         }
 
-        // Não autenticado → login
-        if (authSnap.data == null) {
-          return _wrapAuth(const LoginScreen());
+        // Firebase falhou (sem rede, config errada, etc.)
+        if (firebaseSnap.hasError) {
+          return _wrapAuth(_FirebaseErrorScreen(
+            error: firebaseSnap.error.toString(),
+          ));
         }
 
-        // Autenticado → buscar perfil Firestore
-        return StreamBuilder<UserModel?>(
-          stream: AuthService.currentUserStream(),
-          builder: (context, userSnap) {
-            if (userSnap.connectionState == ConnectionState.waiting) {
+        // Etapa 2: Firebase OK → ouve stream de autenticação
+        return StreamBuilder<User?>(
+          stream: AuthService.authStateChanges,
+          builder: (context, authSnap) {
+            if (authSnap.connectionState == ConnectionState.waiting) {
               return _wrapAuth(const _SplashScreen());
             }
 
-            final user = userSnap.data;
-
-            if (user == null) {
-              AuthService.logout();
+            // Não autenticado → login
+            if (authSnap.data == null) {
               return _wrapAuth(const LoginScreen());
             }
 
-            if (user.isBlocked) {
-              AuthService.logout();
-              return _wrapAuth(_BlockedScreen(user: user));
-            }
+            // Autenticado → buscar perfil Firestore
+            return StreamBuilder<UserModel?>(
+              stream: AuthService.currentUserStream(),
+              builder: (context, userSnap) {
+                if (userSnap.connectionState == ConnectionState.waiting) {
+                  return _wrapAuth(const _SplashScreen());
+                }
 
-            if (user.isPending) {
-              return _wrapAuth(_PendingScreen(user: user));
-            }
+                final user = userSnap.data;
 
-            // Aprovado → atualiza provider e abre o app
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              final p = context.read<AppProvider>();
-              if (p.currentUser?.uid != user.uid) {
-                p.setUser(user);
-              }
-            });
+                if (user == null) {
+                  AuthService.logout();
+                  return _wrapAuth(const LoginScreen());
+                }
 
-            return const MainShell();
+                if (user.isBlocked) {
+                  AuthService.logout();
+                  return _wrapAuth(_BlockedScreen(user: user));
+                }
+
+                if (user.isPending) {
+                  return _wrapAuth(_PendingScreen(user: user));
+                }
+
+                // Aprovado → atualiza provider e abre o app
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  final p = context.read<AppProvider>();
+                  if (p.currentUser?.uid != user.uid) {
+                    p.setUser(user);
+                  }
+                });
+
+                return const MainShell();
+              },
+            );
           },
         );
       },
@@ -185,6 +203,70 @@ class _SplashScreen extends StatelessWidget {
             ),
           ),
         ]),
+      ),
+    );
+  }
+}
+
+// ── Tela de erro Firebase ─────────────────────────────────────────────────────
+class _FirebaseErrorScreen extends StatelessWidget {
+  final String error;
+  const _FirebaseErrorScreen({required this.error});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: const Color(0xFF07110d),
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(32),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              const BrandMark(small: false),
+              const SizedBox(height: 32),
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: Colors.red.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(color: Colors.red.withValues(alpha: 0.3)),
+                ),
+                child: Column(children: [
+                  const Icon(Icons.wifi_off_rounded, color: Color(0xFFFF8888), size: 40),
+                  const SizedBox(height: 12),
+                  const Text('Sem conexão com o servidor',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w900, color: Colors.white)),
+                  const SizedBox(height: 8),
+                  const Text('Verifique sua conexão e tente novamente.',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 13, color: Color(0xFFAAAAAA))),
+                ]),
+              ),
+              const SizedBox(height: 24),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF075f45),
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                ),
+                onPressed: () {
+                  // Recarrega a página
+                  // ignore: avoid_web_libraries_in_flutter
+                  // Usa Navigator para forçar rebuild
+                  Navigator.of(context).pushAndRemoveUntil(
+                    MaterialPageRoute(builder: (_) => const _AuthGate()),
+                    (_) => false,
+                  );
+                },
+                child: const Text('Tentar novamente', style: TextStyle(fontWeight: FontWeight.w900, fontSize: 15)),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
