@@ -20,23 +20,23 @@ import 'screens/cases_screen.dart';
 import 'screens/admin_screen.dart';
 import 'widgets/brand_mark.dart';
 
+// Future global — _AuthGate aguarda antes de ouvir authStateChanges
+late final Future<void> _firebaseReady;
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  
+
   final provider = AppProvider();
   await provider.loadPrefs();
 
-  // Inicializa Firebase em background — não bloqueia o runApp()
-  // Safari/iOS pode demorar, mas o app aparece imediatamente
-  Firebase.initializeApp(
+  // Guarda o Future para _AuthGate usar — não bloqueia runApp()
+  _firebaseReady = Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   ).then((_) {
-    if (kDebugMode) debugPrint('✅ Firebase inicializado com sucesso');
+    if (kDebugMode) debugPrint('✅ Firebase inicializado');
   }).catchError((e) {
-    if (kDebugMode) debugPrint('❌ Erro Firebase init: $e');
+    if (kDebugMode) debugPrint('❌ Firebase init erro: $e');
   });
-
-  if (kDebugMode) debugPrint('🚀 runApp() iniciando...');
 
   runApp(
     ChangeNotifierProvider.value(
@@ -117,61 +117,71 @@ class _AuthGate extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<User?>(
-      stream: AuthService.authStateChanges,
-      builder: (context, authSnap) {
-        if (kDebugMode) {
-          debugPrint('🔐 _AuthGate: connectionState=${authSnap.connectionState}, hasData=${authSnap.hasData}, data=${authSnap.data?.uid}');
-        }
-
-        // Carregando estado de auth
-        if (authSnap.connectionState == ConnectionState.waiting) {
-          if (kDebugMode) debugPrint('⏳ Mostrando SplashScreen (waiting)');
+    // ── Passo 1: aguarda Firebase inicializar antes de ouvir authStateChanges
+    // Sem isso, FirebaseAuth.instance acessa Firebase não-inicializado
+    // → stream nunca emite → ConnectionState.waiting eterno → tela cinza
+    return FutureBuilder<void>(
+      future: _firebaseReady,
+      builder: (context, firebaseSnap) {
+        // Firebase ainda carregando → splash
+        if (firebaseSnap.connectionState != ConnectionState.done) {
           return _wrapAuth(const _SplashScreen());
         }
 
-        // Não autenticado → tela de login
-        if (authSnap.data == null) {
-          if (kDebugMode) debugPrint('🔓 Mostrando LoginScreen (não autenticado)');
-          return _wrapAuth(const LoginScreen());
-        }
-
-        // Autenticado → buscar perfil no Firestore
-        return StreamBuilder<UserModel?>(
-          stream: AuthService.currentUserStream(),
-          builder: (context, userSnap) {
-            if (userSnap.connectionState == ConnectionState.waiting) {
+        // Firebase com erro → vai para login mesmo assim (Firebase pode
+        // já estar inicializado de uma sessão anterior no browser)
+        // ── Passo 2: agora sim ouvir o stream de auth
+        return StreamBuilder<User?>(
+          stream: AuthService.authStateChanges,
+          builder: (context, authSnap) {
+            // Carregando estado de auth
+            if (authSnap.connectionState == ConnectionState.waiting) {
               return _wrapAuth(const _SplashScreen());
             }
 
-            final user = userSnap.data;
-
-            // Perfil não encontrado → login novamente
-            if (user == null) {
-              AuthService.logout();
+            // Não autenticado → tela de login
+            if (authSnap.data == null) {
               return _wrapAuth(const LoginScreen());
             }
 
-            // Usuário bloqueado
-            if (user.isBlocked) {
-              AuthService.logout();
-              return _wrapAuth(_BlockedScreen(user: user));
-            }
+            // Autenticado → buscar perfil no Firestore
+            return StreamBuilder<UserModel?>(
+              stream: AuthService.currentUserStream(),
+              builder: (context, userSnap) {
+                if (userSnap.connectionState == ConnectionState.waiting) {
+                  return _wrapAuth(const _SplashScreen());
+                }
 
-            // Usuário pendente de aprovação
-            if (user.isPending) {
-              return _wrapAuth(_PendingScreen(user: user));
-            }
+                final user = userSnap.data;
 
-            // Aprovado → atualizar provider e abrir app
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              final p = context.read<AppProvider>();
-              if (p.currentUser?.uid != user.uid) {
-                p.setUser(user);
-              }
-            });
+                // Perfil não encontrado → login novamente
+                if (user == null) {
+                  AuthService.logout();
+                  return _wrapAuth(const LoginScreen());
+                }
 
-            return const MainShell();
+                // Usuário bloqueado
+                if (user.isBlocked) {
+                  AuthService.logout();
+                  return _wrapAuth(_BlockedScreen(user: user));
+                }
+
+                // Usuário pendente de aprovação
+                if (user.isPending) {
+                  return _wrapAuth(_PendingScreen(user: user));
+                }
+
+                // Aprovado → atualizar provider e abrir app
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  final p = context.read<AppProvider>();
+                  if (p.currentUser?.uid != user.uid) {
+                    p.setUser(user);
+                  }
+                });
+
+                return const MainShell();
+              },
+            );
           },
         );
       },
