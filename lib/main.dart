@@ -65,13 +65,40 @@ class MedCasesApp extends StatelessWidget {
             surface: const Color(0xFFFFFDF8),
             onSurface: const Color(0xFF07110d),
           ),
+    // scaffoldBackgroundColor neutro — cada tela define seu próprio fundo
+    // para evitar flash verde/escuro antes das telas de auth carregarem
     scaffoldBackgroundColor: dark ? const Color(0xFF0A1510) : const Color(0xFFF5F0E8),
+  );
+
+  // Tema forçado claro — usado nas telas de auth (splash, login, pending)
+  // para garantir que o scaffold nunca apareça verde no Safari/iOS
+  static ThemeData get _authTheme => ThemeData(
+    useMaterial3: true,
+    fontFamily: 'Roboto',
+    brightness: Brightness.dark,
+    scaffoldBackgroundColor: const Color(0xFF07110d),
+    colorScheme: const ColorScheme.dark(
+      primary: Color(0xFFC5A365),
+      secondary: Color(0xFF075f45),
+      surface: Color(0xFF07110d),
+      onSurface: Colors.white,
+    ),
   );
 }
 
 // ── Auth Gate — gerencia estados: loading / login / pendente / aprovado ───────
 class _AuthGate extends StatelessWidget {
   const _AuthGate();
+
+  /// Envolve uma tela de auth com tema escuro fixo (#07110d)
+  /// para garantir que o scaffold nunca mostre o fundo verde do tema escuro
+  /// do sistema antes de qualquer widget renderizar.
+  Widget _wrapAuth(Widget child) {
+    return Theme(
+      data: MedCasesApp._authTheme,
+      child: child,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -80,12 +107,12 @@ class _AuthGate extends StatelessWidget {
       builder: (context, authSnap) {
         // Carregando estado de auth
         if (authSnap.connectionState == ConnectionState.waiting) {
-          return const _SplashScreen();
+          return _wrapAuth(const _SplashScreen());
         }
 
         // Não autenticado → tela de login
         if (authSnap.data == null) {
-          return const LoginScreen();
+          return _wrapAuth(const LoginScreen());
         }
 
         // Autenticado → buscar perfil no Firestore
@@ -93,7 +120,7 @@ class _AuthGate extends StatelessWidget {
           stream: AuthService.currentUserStream(),
           builder: (context, userSnap) {
             if (userSnap.connectionState == ConnectionState.waiting) {
-              return const _SplashScreen();
+              return _wrapAuth(const _SplashScreen());
             }
 
             final user = userSnap.data;
@@ -101,18 +128,18 @@ class _AuthGate extends StatelessWidget {
             // Perfil não encontrado → login novamente
             if (user == null) {
               AuthService.logout();
-              return const LoginScreen();
+              return _wrapAuth(const LoginScreen());
             }
 
             // Usuário bloqueado
             if (user.isBlocked) {
               AuthService.logout();
-              return _BlockedScreen(user: user);
+              return _wrapAuth(_BlockedScreen(user: user));
             }
 
             // Usuário pendente de aprovação
             if (user.isPending) {
-              return _PendingScreen(user: user);
+              return _wrapAuth(_PendingScreen(user: user));
             }
 
             // Aprovado → atualizar provider e abrir app
