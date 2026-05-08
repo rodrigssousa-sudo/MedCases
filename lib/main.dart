@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'dart:html' as html show window;
+import 'package:url_launcher/url_launcher.dart';
 import 'firebase_options.dart';
 import 'providers/app_provider.dart';
 import 'services/auth_service.dart';
@@ -679,7 +679,7 @@ class _FirebaseErrorScreen extends StatelessWidget {
                   onPressed: () {
                     // Força refresh da página no web
                     if (kIsWeb) {
-                      html.window.location.reload();
+                      launchUrl(Uri.parse(Uri.base.toString()));
                     }
                   },
                   icon: const Icon(Icons.refresh_rounded),

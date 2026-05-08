@@ -19,6 +19,9 @@ dependencies:
   # HTTP
   http: 1.5.0
 
+  # URL launcher (web navigation)
+  url_launcher: 6.3.1
+
   # Icons
   cupertino_icons: ^1.0.8
 
