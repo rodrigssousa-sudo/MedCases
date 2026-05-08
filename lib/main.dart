@@ -114,11 +114,10 @@ class _AuthGate extends StatelessWidget {
           return _wrapAuth(const _SplashScreen());
         }
 
-        // Firebase falhou (sem rede, config errada, etc.)
+        // Firebase falhou (Safari/iOS: cookies, IndexedDB, CORS)
+        // → abre LoginScreen normalmente; Auth falhará graciosamente ao tentar logar
         if (firebaseSnap.hasError) {
-          return _wrapAuth(_FirebaseErrorScreen(
-            error: firebaseSnap.error.toString(),
-          ));
+          return _wrapAuth(const LoginScreen());
         }
 
         // Etapa 2: Firebase OK → ouve stream de autenticação
