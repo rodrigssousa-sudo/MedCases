@@ -3,7 +3,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/clinical_case_model.dart';
 
 class FirestoreService {
-  static final FirebaseFirestore _db = FirebaseFirestore.instance;
+  // Getter lazy — só acessa Firestore APÓS Firebase.initializeApp() completar
+  static FirebaseFirestore get _db => FirebaseFirestore.instance;
 
   // ── Referências por usuário ───────────────────────────────────────────────
   static DocumentReference<Map<String, dynamic>> _userDoc(String uid) =>

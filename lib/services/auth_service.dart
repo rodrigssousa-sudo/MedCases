@@ -4,8 +4,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/user_model.dart';
 
 class AuthService {
-  static final FirebaseAuth _auth = FirebaseAuth.instance;
-  static final FirebaseFirestore _db = FirebaseFirestore.instance;
+  // Getters lazy — só acessam FirebaseAuth/Firestore APÓS Firebase.initializeApp()
+  // NUNCA usar campos estáticos inicializados na declaração, pois a classe é
+  // carregada antes do Firebase inicializar → exceção silenciosa → tela cinza.
+  static FirebaseAuth get _auth => FirebaseAuth.instance;
+  static FirebaseFirestore get _db => FirebaseFirestore.instance;
 
   // Email do admin fixo — será promovido automaticamente no primeiro login
   static const String adminEmail = 'rodrigssousa@gmail.com'; // ← seu email
