@@ -1798,4 +1798,1088 @@ const List<DrugModel> drugsDatabase = [
     },
   ),
 
+  // ═══════════════════════════════════════════════════════════════
+  //  ANTIBIÓTICOS / ANTIMICROBIANOS
+  // ═══════════════════════════════════════════════════════════════
+
+  DrugModel(
+    id: 'amoxicilina_clavulanato',
+    name: 'Amoxicilina + Clavulanato',
+    className: {'pt': 'Penicilina + inibidor de β-lactamase', 'es': 'Penicilina + inhibidor de β-lactamasa'},
+    category: {'pt': 'Antibióticos', 'es': 'Antibióticos'},
+    route: 'VO / IV',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': 'Leve-moderado: 875/125 mg 12/12h ou 500/125 mg 8/8h VO. Grave/IV: 1,2 g (1000/200 mg) 8/8h IV. Duração: 5–10 dias conforme indicação.',
+      'es': 'Leve-moderado: 875/125 mg 12/12 h VO. Grave/IV: 1,2 g (1000/200 mg) c/8 h IV.',
+    },
+    renalAlert: {
+      'pt': 'ClCr 10–30 mL/min: 875/125 mg 12/12h. ClCr <10 mL/min: 500/125 mg 12/12h. Hemodiálise: dose extra após sessão.',
+      'es': 'ClCr 10–30: 875/125 mg c/12 h. ClCr <10: 500/125 mg c/12 h.',
+    },
+    elderlyAlert: {
+      'pt': 'Diarreia e colite por C. difficile mais frequentes. Monitorar função renal. Dose padrão salvo IR.',
+      'es': 'Diarrea y colitis C. difficile más frecuentes. Monitorizar función renal.',
+    },
+    mechanism: {
+      'pt': 'Amoxicilina inibe síntese de parede celular (PBP). Clavulanato inibe β-lactamases bacterianas, ampliando espectro.',
+      'es': 'Amoxicilina inhibe síntesis de pared celular (PBP). Clavulanato inhibe β-lactamasas bacterianas.',
+    },
+    warning: {
+      'pt': 'Hepatotoxicidade (clavulanato) — icterícia colestática, geralmente reversível. Risco aumentado em idosos e uso prolongado. Verificar alergia a penicilinas (reação cruzada 1–2% com cefalosporinas).',
+      'es': 'Hepatotoxicidad (clavulanato) — ictericia colestática. Verificar alergia a penicilinas.',
+    },
+    adverse: {
+      'pt': ['Diarreia (10–15%)', 'Náuseas/vômitos', 'Rash cutâneo', 'Hepatotoxicidade colestática (raro)', 'C. difficile'],
+      'es': ['Diarrea (10–15%)', 'Náuseas/vómitos', 'Rash cutáneo', 'Hepatotoxicidad colestática (raro)', 'C. difficile'],
+    },
+  ),
+
+  DrugModel(
+    id: 'azitromicina',
+    name: 'Azitromicina',
+    className: {'pt': 'Macrolídeo – antibiótico', 'es': 'Macrólido – antibiótico'},
+    category: {'pt': 'Antibióticos', 'es': 'Antibióticos'},
+    route: 'VO / IV',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': 'PAC: 500 mg/dia por 3–5 dias. DST (Clamídia): 1 g dose única. IV: 500 mg/dia em 250 mL SF em 1h. Faringite/Sinusite: 500 mg D1, depois 250 mg D2–5.',
+      'es': 'PAC: 500 mg/día por 3–5 días. ETS (Clamidia): 1 g dosis única. IV: 500 mg/día en 1 h.',
+    },
+    renalAlert: {
+      'pt': 'Sem ajuste necessário em IR leve-moderada. Usar com cautela em IR grave (dados limitados).',
+      'es': 'Sin ajuste en IR leve-moderada. Precaución en IR grave.',
+    },
+    elderlyAlert: {
+      'pt': 'Risco aumentado de prolongamento do QT. Revisar medicamentos concomitantes (sotalol, haloperidol). Monitorar ECG em cardiopatas.',
+      'es': 'Mayor riesgo de prolongación QT. Revisar medicamentos concomitantes. ECG en cardíacos.',
+    },
+    mechanism: {
+      'pt': 'Liga-se à subunidade 50S ribossomal → inibe translocação → bacteriostático (bactericida em altas concentrações). Longa meia-vida tecidual (~68h).',
+      'es': 'Se une a subunidad 50S ribosomal → inhibe translocación → bacteriostático.',
+    },
+    warning: {
+      'pt': 'Prolongamento do QT e risco de Torsades de Pointes — contraindicado com QTc >500 ms ou uso de outros QT-prolongadores. Hepatotoxicidade (icterícia colestática, raro). Interação com varfarina (↑ INR).',
+      'es': 'Prolongación QT y riesgo de Torsades — contraindicado con QTc >500 ms. Interacción con warfarina (↑ INR).',
+    },
+    adverse: {
+      'pt': ['Diarreia', 'Náuseas', 'Dor abdominal', 'Prolongamento QT', 'Hepatotoxicidade (raro)', 'Ototoxicidade (doses altas)'],
+      'es': ['Diarrea', 'Náuseas', 'Dolor abdominal', 'Prolongación QT', 'Hepatotoxicidad (raro)'],
+    },
+  ),
+
+  DrugModel(
+    id: 'ciprofloxacino',
+    name: 'Ciprofloxacino',
+    className: {'pt': 'Fluorquinolona – antibiótico', 'es': 'Fluoroquinolona – antibiótico'},
+    category: {'pt': 'Antibióticos', 'es': 'Antibióticos'},
+    route: 'VO / IV',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': 'ITU complicada: 500 mg 12/12h VO ou 400 mg 12/12h IV. Infecções sistêmicas graves: 400 mg 8/8h IV. Antraz: 500 mg 12/12h VO por 60 dias. Duração: 7–14 dias conforme foco.',
+      'es': 'ITU complicada: 500 mg c/12 h VO o 400 mg c/12 h IV. Infecciones sistémicas graves: 400 mg c/8 h IV.',
+    },
+    renalAlert: {
+      'pt': 'ClCr 30–50: reduzir intervalo para 12–18h. ClCr <30: 250–500 mg 18/18h. HD: dose após cada sessão.',
+      'es': 'ClCr 30–50: intervalo 12–18 h. ClCr <30: 250–500 mg c/18 h.',
+    },
+    elderlyAlert: {
+      'pt': 'Maior risco de tendinopatia/ruptura de tendão (especialmente Aquiles). Prolongamento QT. Nefrotoxicidade aumentada.',
+      'es': 'Mayor riesgo de tendinopatía/ruptura de tendón (Aquiles). Prolongación QT.',
+    },
+    mechanism: {
+      'pt': 'Inibe DNA-girase (topoisomerase II) e topoisomerase IV → impede replicação e reparo do DNA bacteriano → bactericida.',
+      'es': 'Inhibe DNA-girasa (topoisomerasa II) y topoisomerasa IV → bactericida.',
+    },
+    warning: {
+      'pt': 'Ruptura de tendão (principalmente Aquiles) — risco elevado com corticosteroides, > 60 anos, IR, transplante. Prolongamento QT. Alucinações/convulsões (SNC). Fotossensibilidade. Interação com anticoagulantes (↑ INR) e antiácidos (reduzem absorção oral).',
+      'es': 'Ruptura de tendón (Aquiles) — riesgo elevado con corticoides, >60 años. Prolongación QT. Fotosensibilidad.',
+    },
+    adverse: {
+      'pt': ['Náuseas/diarreia', 'Tendinopatia/ruptura (0,5%)', 'Prolongamento QT', 'Convulsões (raro)', 'Fotossensibilidade', 'Elevação transaminases'],
+      'es': ['Náuseas/diarrea', 'Tendinopatía/ruptura (0,5%)', 'Prolongación QT', 'Convulsiones (raro)', 'Fotosensibilidad'],
+    },
+  ),
+
+  DrugModel(
+    id: 'vancomicina',
+    name: 'Vancomicina',
+    className: {'pt': 'Glicopeptídeo – antibiótico', 'es': 'Glucopéptido – antibiótico'},
+    category: {'pt': 'Antibióticos', 'es': 'Antibióticos'},
+    route: 'IV / VO (colite C. diff)',
+    doseType: 'weight',
+    fixedDose: {
+      'pt': '15–20 mg/kg IV 8/8–12/12h (adulto). Meta AUC/MIC 400–600 (guias ASHP 2020). Infusão: mínimo 60 min (≥1g em 60–90 min). VO para C. difficile: 125 mg 6/6h por 10 dias.',
+      'es': '15–20 mg/kg IV c/8–12 h. Meta AUC/MIC 400–600. VO para C. difficile: 125 mg c/6 h × 10 días.',
+    },
+    renalAlert: {
+      'pt': 'Ajuste obrigatório por nível sérico/AUC ou ClCr. ClCr 40–60: 1 g 12/12–24h. ClCr 20–40: 1 g 24/24–48h. Hemodiálise: variável — dosar nível pré-HD.',
+      'es': 'Ajuste obligatorio por nivel sérico/AUC o ClCr. Hemodiálisis: dosificar según nivel.',
+    },
+    elderlyAlert: {
+      'pt': 'Nefrotoxicidade aumentada — monitorar creatinina 2–3x/semana. Ototoxicidade (nível >80 mg/L). Ajustar frequentemente pela função renal.',
+      'es': 'Nefrotoxicidad aumentada. Monitorizar creatinina 2–3×/semana. Ototoxicidad (nivel >80 mg/L).',
+    },
+    mechanism: {
+      'pt': 'Liga-se ao D-Ala-D-Ala do peptidoglicano → inibe transpeptidação e transglicosilação → bactericida. Sem ação em gram-negativos (parede externa).',
+      'es': 'Se une al D-Ala-D-Ala del peptidoglucano → inhibe transpeptidación → bactericida.',
+    },
+    warning: {
+      'pt': 'Síndrome do Homem Vermelho (infusão rápida <60 min) — flushing, eritema, hipotensão; tratar com anti-histamínico e reduzir velocidade. Nefrotoxicidade dose-dependente. Ototoxicidade (reversível ou permanente).',
+      'es': 'Síndrome del Hombre Rojo (infusión rápida). Nefrotoxicidad dosis-dependiente. Ototoxicidad.',
+    },
+    adverse: {
+      'pt': ['Síndrome do Homem Vermelho', 'Nefrotoxicidade (5–7%)', 'Ototoxicidade', 'Flebite', 'Neutropenia (uso prolongado)', 'Trombocitopenia'],
+      'es': ['Síndrome del Hombre Rojo', 'Nefrotoxicidad (5–7%)', 'Ototoxicidad', 'Flebitis', 'Neutropenia (uso prolongado)'],
+    },
+  ),
+
+  DrugModel(
+    id: 'meropenem',
+    name: 'Meropenem',
+    className: {'pt': 'Carbapenêmico – antibiótico', 'es': 'Carbapenémico – antibiótico'},
+    category: {'pt': 'Antibióticos', 'es': 'Antibióticos'},
+    route: 'IV',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': 'Infecções moderadas: 1 g IV 8/8h. Meningite/infecções graves: 2 g IV 8/8h. Infusão estendida: 1–2 g IV em 3h 8/8h (otimiza PK/PD para MIC elevado). Duração: 7–14 dias.',
+      'es': 'Infecciones moderadas: 1 g IV c/8 h. Meningitis/graves: 2 g IV c/8 h. Infusión extendida: 1–2 g en 3 h c/8 h.',
+    },
+    renalAlert: {
+      'pt': 'ClCr 26–50: 1 g 12/12h. ClCr 10–25: 500 mg 12/12h. ClCr <10/HD: 500 mg 24/24h (dose após HD). TRRC: 1 g 12/12h.',
+      'es': 'ClCr 26–50: 1 g c/12 h. ClCr 10–25: 500 mg c/12 h. ClCr <10/HD: 500 mg c/24 h.',
+    },
+    elderlyAlert: {
+      'pt': 'Reduzir dose proporcionalmente à ClCr. Risco aumentado de convulsões em IR e dose excessiva. Monitorar função renal.',
+      'es': 'Reducir dosis según ClCr. Mayor riesgo de convulsiones en IR.',
+    },
+    mechanism: {
+      'pt': 'Liga-se às PBPs (proteínas ligantes de penicilinas) da parede bacteriana → inibe síntese de peptidoglicano → bactericida de amplo espectro (gram+, gram-, anaeróbios). Resistente a maioria das β-lactamases exceto MBL.',
+      'es': 'Se une a PBPs → inhibe síntesis de peptidoglucano → bactericida de amplio espectro.',
+    },
+    warning: {
+      'pt': 'Convulsões (especialmente IR, dose excessiva, meningite prévia). Seleciona KPC/MBL se uso indiscriminado. Não misturar com outras drogas na mesma linha. Clostridium difficile.',
+      'es': 'Convulsiones (IR, dosis excesiva). Selecciona KPC/MBL. C. difficile.',
+    },
+    adverse: {
+      'pt': ['Diarreia', 'Náuseas/vômitos', 'Convulsões (1–3% com IR)', 'Elevação transaminases', 'Trombocitose', 'C. difficile'],
+      'es': ['Diarrea', 'Náuseas/vómitos', 'Convulsiones (1–3% con IR)', 'Elevación transaminasas', 'C. difficile'],
+    },
+  ),
+
+  DrugModel(
+    id: 'metronidazol',
+    name: 'Metronidazol',
+    className: {'pt': 'Nitroimidazol – antibiótico / antiparasitário', 'es': 'Nitroimidazol – antibiótico / antiparasitario'},
+    category: {'pt': 'Antibióticos', 'es': 'Antibióticos'},
+    route: 'VO / IV',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': 'Infecções anaeróbias: 500 mg 8/8h VO ou IV. Vaginose bacteriana: 500 mg 12/12h × 7d VO. Tricomoníase: 2 g dose única. C. difficile leve-mod: 500 mg 8/8h VO × 10–14d. IV: 500 mg em 100 mL em 30 min.',
+      'es': 'Infecciones anaerobias: 500 mg c/8 h VO o IV. Vaginosis: 500 mg c/12 h × 7d. Tricomoniasis: 2 g dosis única.',
+    },
+    renalAlert: {
+      'pt': 'Sem ajuste necessário em IR leve-moderada. Em IR grave e HD, metabólitos podem acumular (hepatotóxico/neurotóxico); usar com cautela.',
+      'es': 'Sin ajuste en IR leve-moderada. En IR grave y HD, metabolitos pueden acumularse.',
+    },
+    elderlyAlert: {
+      'pt': 'Risco de neuropatia periférica com uso prolongado. Encefalopatia (raro). Monitorar sintomas neurológicos.',
+      'es': 'Riesgo de neuropatía periférica con uso prolongado. Encefalopatía (raro).',
+    },
+    mechanism: {
+      'pt': 'Produto nitroso após redução intracelular em anaeróbios/protozoários → dano ao DNA → bactericida seletivo para anaeróbios.',
+      'es': 'Producto nitroso tras reducción intracelular → daño al DNA → bactericida selectivo para anaerobios.',
+    },
+    warning: {
+      'pt': 'Efeito antabuse com álcool (vômitos intensos, flushing) — proibir álcool e xaropes alcoólicos. Neuropatia periférica com uso >10 dias. Encefalopatia cerebelar (rara). Potencial carcinogênico em altas doses prolongadas (relevância clínica incerta).',
+      'es': 'Efecto antabuse con alcohol. Neuropatía periférica con uso >10 días. Evitar alcohol.',
+    },
+    adverse: {
+      'pt': ['Náuseas/sabor metálico', 'Neuropatia periférica (prolongado)', 'Efeito antabuse (álcool)', 'Encefalopatia cerebelar (raro)', 'Leucopenia (raro)', 'Urina escurecida'],
+      'es': ['Náuseas/sabor metálico', 'Neuropatía periférica', 'Efecto antabuse (alcohol)', 'Encefalopatía cerebelar (raro)'],
+    },
+  ),
+
+  DrugModel(
+    id: 'fluconazol',
+    name: 'Fluconazol',
+    className: {'pt': 'Antifúngico triazólico', 'es': 'Antifúngico triazólico'},
+    category: {'pt': 'Antifúngicos', 'es': 'Antifúngicos'},
+    route: 'VO / IV',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': 'Candidíase oral/esofagiana: 100–200 mg/dia × 7–14d. Candidíase vaginal: 150 mg dose única. Candidemia (não-neutropênicos): 800 mg ataque + 400 mg/dia. Meningite criptocócica: 400–800 mg/dia manutenção.',
+      'es': 'Candidiasis oral: 100–200 mg/día × 7–14d. Vaginal: 150 mg dosis única. Candidemia: 800 mg ataque + 400 mg/día.',
+    },
+    renalAlert: {
+      'pt': 'ClCr <50 mL/min: reduzir 50% da dose. Hemodiálise: 100% da dose habitual após sessão (dose única diária).',
+      'es': 'ClCr <50: reducir 50% de la dosis. Hemodiálisis: 100% tras la sesión.',
+    },
+    elderlyAlert: {
+      'pt': 'Múltiplas interações medicamentosas (CYP2C9, CYP3A4). Revisar polifarmácia. Prolongamento QT com azóis + amiodarona/quinolonas.',
+      'es': 'Múltiples interacciones medicamentosas (CYP2C9, CYP3A4). Prolongación QT.',
+    },
+    mechanism: {
+      'pt': 'Inibe CYP51 (lanosterol 14α-desmetilase) → ↓ ergosterol → alteração da membrana fúngica → fungistático (fungicida em altas doses).',
+      'es': 'Inhibe CYP51 (lanosterol 14α-desmetilasa) → ↓ ergosterol → fungistático.',
+    },
+    warning: {
+      'pt': 'Múltiplas interações via CYP2C9 e CYP3A4 (varfarina ↑, sirolimo ↑, ciclosporina ↑, estatinas ↑, benzodiazepínicos ↑). Prolongamento QT com amiodarona. Hepatotoxicidade (raro).',
+      'es': 'Múltiples interacciones CYP2C9/3A4. Prolongación QT con amiodarona. Hepatotoxicidad (raro).',
+    },
+    adverse: {
+      'pt': ['Náuseas/dor abdominal', 'Elevação transaminases', 'Prolongamento QT', 'Rash (raro)', 'Hepatotoxicidade (raro)', 'Alopecia (uso prolongado)'],
+      'es': ['Náuseas/dolor abdominal', 'Elevación transaminasas', 'Prolongación QT', 'Rash (raro)', 'Hepatotoxicidad (raro)'],
+    },
+  ),
+
+  // ═══════════════════════════════════════════════════════════════
+  //  CARDIOVASCULARES
+  // ═══════════════════════════════════════════════════════════════
+
+  DrugModel(
+    id: 'atenolol',
+    name: 'Atenolol',
+    className: {'pt': 'β-bloqueador cardioseletivo (β1)', 'es': 'β-bloqueador cardioselectivo (β1)'},
+    category: {'pt': 'Cardiovasculares', 'es': 'Cardiovasculares'},
+    route: 'VO',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': 'HAS/angina: 25–100 mg 1x/dia. FC alvo: 55–65 bpm repouso. Pós-IAM: 50–100 mg/dia. Arritmia: 25–100 mg/dia. Iniciar com 25 mg em idosos ou ICC.',
+      'es': 'HAS/angina: 25–100 mg 1×/día. FC objetivo: 55–65 lpm. Post-IAM: 50–100 mg/día.',
+    },
+    renalAlert: {
+      'pt': 'ClCr 15–35: máx. 50 mg/dia. ClCr <15 ou HD: 25 mg/dia ou 50 mg a cada 2 dias.',
+      'es': 'ClCr 15–35: máx. 50 mg/día. ClCr <15 o HD: 25 mg/día.',
+    },
+    elderlyAlert: {
+      'pt': 'Iniciar com 25 mg/dia. Risco de bradicardia, hipotensão postural e quedas. Pode mascarar hipoglicemia em diabéticos.',
+      'es': 'Iniciar con 25 mg/día. Riesgo de bradicardia, hipotensión postural y caídas.',
+    },
+    mechanism: {
+      'pt': 'Bloqueia seletivamente receptores β1-adrenérgicos → ↓ FC, ↓ contratilidade, ↓ condução AV, ↓ PA. Ação anti-isquêmica e antiarrítmica.',
+      'es': 'Bloquea selectivamente receptores β1 → ↓ FC, ↓ contractilidad, ↓ conducción AV, ↓ PA.',
+    },
+    warning: {
+      'pt': 'Contraindicado: BAV 2º/3º grau, bradicardia <50 bpm, choque cardiogênico, asma (relativo). Retirada abrupta pode precipitar angina/IAM. Mascaramento de hipoglicemia em diabéticos.',
+      'es': 'Contraindicado: BAV 2°/3°, bradicardia <50 lpm, choque cardiogénico, asma (relativo). Retirada abrupta puede precipitar IAM.',
+    },
+    adverse: {
+      'pt': ['Bradicardia', 'Fadiga/astenia', 'Extremidades frias', 'Broncoespasmo (asma)', 'Hipotensão', 'Depressão', 'Disfunção erétil'],
+      'es': ['Bradicardia', 'Fatiga/astenia', 'Extremidades frías', 'Broncoespasmo (asma)', 'Hipotensión', 'Disfunción eréctil'],
+    },
+  ),
+
+  DrugModel(
+    id: 'losartana',
+    name: 'Losartana',
+    className: {'pt': 'Antagonista do receptor AT1 (ARA II)', 'es': 'Antagonista del receptor AT1 (ARA II)'},
+    category: {'pt': 'Cardiovasculares', 'es': 'Cardiovasculares'},
+    route: 'VO',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': 'HAS: 50 mg 1x/dia (pode aumentar para 100 mg/dia). Nefropatia diabética: 50–100 mg/dia. ICC (intolerância a IECA): 25 mg 2x/dia. Iniciar 25 mg em idosos.',
+      'es': 'HAS: 50 mg 1×/día (hasta 100 mg/día). Nefropatía diabética: 50–100 mg/día.',
+    },
+    renalAlert: {
+      'pt': 'Monitorar K+ e creatinina 1–2 semanas após início ou ajuste. Redução do fluxo renal pode piorar função em estenose de artéria renal bilateral ou rim único.',
+      'es': 'Monitorizar K+ y creatinina 1–2 semanas tras inicio. Contraindicado en estenosis bilateral de arteria renal.',
+    },
+    elderlyAlert: {
+      'pt': 'Risco de hiperpotassemia com IECA/diuréticos poupadores/suplementos de K+. Hipotensão na 1ª dose em idosos desidratados.',
+      'es': 'Riesgo de hiperpotasemia con IECA/diuréticos ahorradores/suplementos K+. Hipotensión 1ª dosis.',
+    },
+    mechanism: {
+      'pt': 'Bloqueia receptor AT1 da angiotensina II → vasodilatação, ↓ aldosterona, ↓ PA, proteção renal e cardíaca. Não aumenta bradicinina (sem tosse).',
+      'es': 'Bloquea receptor AT1 de angiotensina II → vasodilatación, ↓ aldosterona. No aumenta bradicinina (sin tos).',
+    },
+    warning: {
+      'pt': 'Contraindicado na gravidez (2º e 3º trimestres — teratogênico grave). Hiperpotassemia em combinação com IECA, diuréticos poupadores, suplementos de K+. Monitorar função renal e K+ periodicamente.',
+      'es': 'Contraindicado en embarazo (2°/3° trimestre — teratogénico). Hiperpotasemia con IECA/diuréticos ahorradores.',
+    },
+    adverse: {
+      'pt': ['Hiperpotassemia', 'Tontura/hipotensão', 'Insuficiência renal (estenose renal bilateral)', 'Angioedema (raro — menos que IECA)', 'Astenia'],
+      'es': ['Hiperpotasemia', 'Mareo/hipotensión', 'Insuficiencia renal', 'Angioedema (raro)', 'Astenia'],
+    },
+  ),
+
+  DrugModel(
+    id: 'amlodipino',
+    name: 'Amlodipino',
+    className: {'pt': 'Bloqueador de canal de cálcio (di-hidropiridínico)', 'es': 'Bloqueador de canal de calcio (dihidropiridínico)'},
+    category: {'pt': 'Cardiovasculares', 'es': 'Cardiovasculares'},
+    route: 'VO',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': 'HAS/angina: 5 mg/dia. Pode aumentar para 10 mg/dia após 7–14 dias se necessário. Iniciar com 2,5 mg em idosos, hepatopatas ou ICC.',
+      'es': 'HAS/angina: 5 mg/día. Puede aumentarse a 10 mg/día. Iniciar 2,5 mg en ancianos/hepatópatas.',
+    },
+    renalAlert: {
+      'pt': 'Sem ajuste em IR (metabolismo hepático). Seguro em hemodiálise.',
+      'es': 'Sin ajuste en IR (metabolismo hepático). Seguro en hemodiálisis.',
+    },
+    elderlyAlert: {
+      'pt': 'Edema periférico frequente (vasodilatação arteriolar). Hipotensão postural. Iniciar 2,5 mg/dia. Taquicardia reflexa geralmente mínima (longa meia-vida).',
+      'es': 'Edema periférico frecuente. Hipotensión postural. Iniciar 2,5 mg/día.',
+    },
+    mechanism: {
+      'pt': 'Bloqueia canais L de cálcio nas células musculares lisas vasculares → vasodilatação arterial → ↓ resistência vascular → ↓ PA. Longa meia-vida (~35–50h).',
+      'es': 'Bloquea canales L de calcio vasculares → vasodilatación arterial → ↓ resistencia vascular → ↓ PA.',
+    },
+    warning: {
+      'pt': 'Edema periférico (não indica sobrecarga hídrica — é vasodilatação local). Rubor facial. Interação com inibidores de CYP3A4 (cetoconazol, claritromicina) pode elevar nível sérico. Pode piorar angina no início do tratamento (vasoespástica).',
+      'es': 'Edema periférico (vasodilatación local, no sobrecarga). Rubor facial. Interacción CYP3A4.',
+    },
+    adverse: {
+      'pt': ['Edema periférico (10–15%)', 'Cefaleia', 'Rubor facial', 'Palpitações', 'Hipotensão', 'Hiperplasia gengival (raro)'],
+      'es': ['Edema periférico (10–15%)', 'Cefalea', 'Rubor facial', 'Palpitaciones', 'Hipotensión'],
+    },
+  ),
+
+  DrugModel(
+    id: 'espironolactona',
+    name: 'Espironolactona',
+    className: {'pt': 'Diurético poupador de potássio – antagonista de aldosterona', 'es': 'Diurético ahorrador de potasio – antagonista de aldosterona'},
+    category: {'pt': 'Cardiovasculares', 'es': 'Cardiovasculares'},
+    route: 'VO',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': 'ICC com FE reduzida: 25 mg/dia (titular até 50 mg/dia). Hiperaldosteronismo primário: 100–400 mg/dia. Ascite por cirrose: 100 mg/dia (até 400 mg). HAS resistente: 25–100 mg/dia.',
+      'es': 'ICC FE reducida: 25 mg/día (hasta 50 mg/día). Hiperaldosteronismo: 100–400 mg/día. Ascitis: 100 mg/día.',
+    },
+    renalAlert: {
+      'pt': 'Contraindicada se K+ >5,0 mEq/L ou ClCr <30 mL/min. Risco de hiperpotassemia grave. Monitorar K+ e creatinina frequentemente.',
+      'es': 'Contraindicada si K+ >5,0 mEq/L o ClCr <30 mL/min. Riesgo de hiperpotasemia grave.',
+    },
+    elderlyAlert: {
+      'pt': 'Hiperpotassemia mais frequente (menor reserva renal). Ginecomastia dolorosa em homens. Iniciar 12,5–25 mg. Monitorar eletrólitos e função renal.',
+      'es': 'Hiperpotasemia más frecuente. Ginecomastia dolorosa en hombres. Iniciar 12,5–25 mg.',
+    },
+    mechanism: {
+      'pt': 'Antagonista competitivo da aldosterona no TCD/TC → ↓ reabsorção de Na+, ↓ excreção de K+ → diurético poupador de K+. Efeito hemodinâmico e anti-fibrótico na ICC.',
+      'es': 'Antagonista competitivo de aldosterona → ↓ reabsorción Na+, ↓ excreción K+. Efecto anti-fibrótico en ICC.',
+    },
+    warning: {
+      'pt': 'Hiperpotassemia potencialmente fatal — monitorar K+ e creatinina 1 semana após início e mensalmente. Ginecomastia em homens (até 10%). Evitar associação com IECA + ARA II (tripla bloqueio).',
+      'es': 'Hiperpotasemia potencialmente fatal — monitorizar K+ y creatinina. Ginecomastia en hombres (hasta 10%).',
+    },
+    adverse: {
+      'pt': ['Hiperpotassemia', 'Ginecomastia/mastalgia (homens)', 'Irregularidade menstrual', 'Disfunção erétil', 'Câimbras', 'Confusão (idosos)'],
+      'es': ['Hiperpotasemia', 'Ginecomastia/mastalgia (hombres)', 'Irregularidad menstrual', 'Disfunción eréctil'],
+    },
+  ),
+
+  DrugModel(
+    id: 'digoxina',
+    name: 'Digoxina',
+    className: {'pt': 'Glicosídeo cardíaco – inotrópico positivo', 'es': 'Glucósido cardíaco – inotrópico positivo'},
+    category: {'pt': 'Cardiovasculares', 'es': 'Cardiovasculares'},
+    route: 'VO / IV',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': 'FA com resposta ventricular rápida: 0,125–0,25 mg/dia VO. Nível sérico alvo: 0,5–0,9 ng/mL (ICC) ou 0,8–2,0 ng/mL (FA). Ataque IV: 0,25–0,5 mg IV lento em 20 min (monitoração ECG).',
+      'es': 'FA con respuesta ventricular rápida: 0,125–0,25 mg/día VO. Nivel sérico: 0,5–0,9 ng/mL (ICC). IV ataque: 0,25–0,5 mg en 20 min.',
+    },
+    renalAlert: {
+      'pt': 'Eliminação 70% renal — ajuste obrigatório. ClCr 10–50: 0,0625–0,125 mg/dia. ClCr <10 ou HD: 0,0625 mg/dia ou dias alternados. Dosar nível sérico frequentemente.',
+      'es': 'Eliminación 70% renal. ClCr 10–50: 0,0625–0,125 mg/día. ClCr <10/HD: 0,0625 mg/día.',
+    },
+    elderlyAlert: {
+      'pt': 'Índice terapêutico estreito. Nível tóxico em idosos mesmo com doses baixas (↓ ClCr, ↓ massa muscular, ↓ volume de distribuição). Monitorar nível sérico mensalmente. Hipocalemia amplifica toxicidade.',
+      'es': 'Índice terapéutico estrecho. Niveles tóxicos con dosis bajas en ancianos. Monitorizar nivel sérico mensualmente.',
+    },
+    mechanism: {
+      'pt': 'Inibe Na+/K+-ATPase → ↑ Ca²+ intracelular → ↑ contratilidade. Aumenta tônus vagal (↓ FC, ↓ condução AV) — útil na FA.',
+      'es': 'Inhibe Na+/K+-ATPasa → ↑ Ca²+ intracelular → ↑ contractilidad. Aumenta tono vagal → ↓ FC en FA.',
+    },
+    warning: {
+      'pt': 'Janela terapêutica estreita. Intoxicação: náuseas, visão amarelada, arritmias (BAV, TV). Hipocalemia e hipomagnessemia aumentam toxicidade. Antídoto: anticorpos anti-digoxina (Digibind). Múltiplas interações (amiodarona, verapamil, quinidina elevam nível).',
+      'es': 'Ventana terapéutica estrecha. Intoxicación: náuseas, visión amarilla, arritmias. Antídoto: anticuerpos anti-digoxina (Digibind).',
+    },
+    adverse: {
+      'pt': ['Intoxicação digitálica (náuseas, visão amarelada)', 'Bradiarritmias', 'BAV 2º/3º grau', 'TV/FV (tóxico)', 'Ginecomastia (raro)', 'Anorexia'],
+      'es': ['Intoxicación digitálica (náuseas, visión amarilla)', 'Bradiarritmias', 'BAV 2°/3°', 'TV/FV (tóxico)', 'Ginecomastia (raro)'],
+    },
+  ),
+
+  DrugModel(
+    id: 'nitroglicerina',
+    name: 'Nitroglicerina',
+    className: {'pt': 'Nitrato orgânico – vasodilatador', 'es': 'Nitrato orgánico – vasodilatador'},
+    category: {'pt': 'Cardiovasculares', 'es': 'Cardiovasculares'},
+    route: 'SL / IV / Transdérmico',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': 'Angina (SL): 0,3–0,6 mg SL; repetir a cada 5 min, máx. 3 doses. IV (SCA/EAP): iniciar 5–10 mcg/min; titular 5–10 mcg/min a cada 3–5 min até alívio sintomático ou PAS <90 mmHg. Patch: 0,2–0,8 mg/h (período livre 10–12h para evitar tolerância).',
+      'es': 'Angina (SL): 0,3–0,6 mg SL c/5 min, máx. 3 dosis. IV (SCA/EAP): 5–10 mcg/min, titular. Parche: 0,2–0,8 mg/h.',
+    },
+    renalAlert: {
+      'pt': 'Sem ajuste necessário. Hipotensão pode reduzir perfusão renal em pacientes com IR.',
+      'es': 'Sin ajuste necesario. Hipotensión puede reducir perfusión renal.',
+    },
+    elderlyAlert: {
+      'pt': 'Hipotensão severa — monitorar PA continuamente. Cefaleia intensa frequente. Tolerância com uso contínuo. Síncope ortostática.',
+      'es': 'Hipotensión severa — monitorizar PA continuamente. Cefalea intensa frecuente. Síncope ortostática.',
+    },
+    mechanism: {
+      'pt': 'Libera NO (óxido nítrico) → ativa guanilil-ciclase → ↑ GMPc → relaxamento do músculo liso vascular → vasodilatação predominantemente venosa (↓ pré-carga) e arteriolar coronariana.',
+      'es': 'Libera NO → activa guanilil-ciclasa → ↑ GMPc → vasodilatación venosa (↓ precarga) y coronaria.',
+    },
+    warning: {
+      'pt': 'Hipotensão grave — PAS <90 mmHg suspender. Contraindicada com inibidores de PDE5 (sildenafil, tadalafil) — hipotensão fatal. Tolerância desenvolve em 24–48h de infusão contínua (período livre obrigatório). Cefaleia intensa.',
+      'es': 'Hipotensión grave — PAS <90 mmHg suspender. Contraindicada con inhibidores PDE5 (sildenafil) — hipotensión fatal. Tolerancia en 24–48 h.',
+    },
+    adverse: {
+      'pt': ['Cefaleia (50–60%)', 'Hipotensão', 'Taquicardia reflexa', 'Tolerância farmacológica', 'Rubor facial', 'Síncope'],
+      'es': ['Cefalea (50–60%)', 'Hipotensión', 'Taquicardia refleja', 'Tolerancia farmacológica', 'Rubor facial'],
+    },
+  ),
+
+  // ═══════════════════════════════════════════════════════════════
+  //  NEUROLÓGICOS / PSIQUIÁTRICOS
+  // ═══════════════════════════════════════════════════════════════
+
+  DrugModel(
+    id: 'haloperidol',
+    name: 'Haloperidol',
+    className: {'pt': 'Antipsicótico típico – butirofenonas', 'es': 'Antipsicótico típico – butirofenonas'},
+    category: {'pt': 'Neurológicos / Psiquiátricos', 'es': 'Neurológicos / Psiquiátricos'},
+    route: 'VO / IM / IV',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': 'Psicose aguda: 5–10 mg IM/IV (repetir a cada 30–60 min; máx. 30 mg/24h). Agitação (delírio): 0,5–2 mg IV lento; titular. Manutenção VO: 0,5–5 mg 12/12h ou 8/8h. Idosos: 0,25–1 mg IM/IV; máx. 3,5 mg/24h.',
+      'es': 'Psicosis aguda: 5–10 mg IM/IV c/30–60 min; máx. 30 mg/24 h. Agitación: 0,5–2 mg IV lento. Mantenimiento VO: 0,5–5 mg c/12 h.',
+    },
+    renalAlert: {
+      'pt': 'Sem ajuste necessário. Usar com cautela em IR grave (metabólitos podem acumular).',
+      'es': 'Sin ajuste necesario. Precaución en IR grave.',
+    },
+    elderlyAlert: {
+      'pt': 'Risco alto de síndrome extrapiramidal, sedação excessiva, quedas, hipotensão ortostática. Prolongamento QT. Usar menor dose possível (0,25–1 mg). Evitar em demência (↑ mortalidade).',
+      'es': 'Alto riesgo de síndrome extrapiramidal, sedación, caídas, hipotensión ortostática, QT prolongado. Evitar en demencia (↑ mortalidad).',
+    },
+    mechanism: {
+      'pt': 'Antagonista D2 no sistema mesolímbico e mesocortical → ↓ dopamina → efeito antipsicótico. Também bloqueia receptores α1, H1, muscarínicos.',
+      'es': 'Antagonista D2 en sistema mesolímbico → ↓ dopamina → efecto antipsicótico.',
+    },
+    warning: {
+      'pt': 'Síndrome maligna dos neurolépticos (hipertermia, rigidez, instabilidade autonômica, rabdomiólise — descontinuar imediatamente). Prolongamento QT → Torsades. Discinesia tardia com uso crônico. Evitar em Parkinson e corpos de Lewy.',
+      'es': 'Síndrome maligno de los neurolépticos (hipertermia, rigidez — suspender). Prolongación QT → Torsades. Discinesia tardía crónica.',
+    },
+    adverse: {
+      'pt': ['Distonia aguda', 'Acatisia', 'Parkinsonismo', 'Sedação', 'Hipotensão ortostática', 'Prolongamento QT', 'Discinesia tardia (crônico)', 'Hiperprolactinemia'],
+      'es': ['Distonía aguda', 'Acatisia', 'Parkinsonismo', 'Sedación', 'Hipotensión ortostática', 'QT prolongado', 'Discinesia tardía'],
+    },
+  ),
+
+  DrugModel(
+    id: 'clonazepam',
+    name: 'Clonazepam',
+    className: {'pt': 'Benzodiazepínico antiepiléptico', 'es': 'Benzodiacepina antiepiléptica'},
+    category: {'pt': 'Neurológicos / Psiquiátricos', 'es': 'Neurológicos / Psiquiátricos'},
+    route: 'VO / IV',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': 'Epilepsia: 0,5 mg 3x/dia inicial; titular até 20 mg/dia em adultos. Status epilepticus (IV): 0,015 mg/kg IV lento (1–2 mg adulto) — repetir se necessário. Pânico/ansiedade: 0,25–2 mg 2x/dia.',
+      'es': 'Epilepsia: 0,5 mg 3×/día inicial; titular hasta 20 mg/día. Status epilepticus IV: 0,015 mg/kg IV lento. Pánico: 0,25–2 mg 2×/día.',
+    },
+    renalAlert: {
+      'pt': 'Sem ajuste necessário. Monitorar sedação excessiva em IR grave.',
+      'es': 'Sin ajuste necesario. Monitorizar sedación excesiva en IR grave.',
+    },
+    elderlyAlert: {
+      'pt': 'Alto risco de quedas, confusão, sedação excessiva e dependência. Evitar como primeira linha em idosos (Beers criteria). Usar menor dose por menor período possível.',
+      'es': 'Alto riesgo de caídas, confusión, sedación y dependencia (criterios Beers). Usar menor dosis por menor tiempo posible.',
+    },
+    mechanism: {
+      'pt': 'Potencializa GABA-A → ↑ frequência de abertura do canal Cl- → hiperpolarização neuronal → efeito anticonvulsivante, ansiolítico, miorrelaxante e hipnótico.',
+      'es': 'Potencia GABA-A → ↑ frecuencia apertura canal Cl- → hiperpolarización neuronal → anticonvulsivante, ansiolítico.',
+    },
+    warning: {
+      'pt': 'Dependência física e síndrome de abstinência grave (convulsões, delirium). Nunca interromper abruptamente após uso prolongado. Risco de abuso. Depressão respiratória em associação com opioides, álcool ou barbitúricos. Antídoto: flumazenil.',
+      'es': 'Dependencia física y síndrome de abstinencia (convulsiones, delirium). Nunca suspender abruptamente. Antídoto: flumazenil.',
+    },
+    adverse: {
+      'pt': ['Sedação', 'Ataxia', 'Confusão/amnésia', 'Depressão respiratória', 'Dependência/abstinência', 'Tolerância', 'Hipersalivação'],
+      'es': ['Sedación', 'Ataxia', 'Confusión/amnesia', 'Depresión respiratoria', 'Dependencia/abstinencia'],
+    },
+  ),
+
+  DrugModel(
+    id: 'amitriptilina',
+    name: 'Amitriptilina',
+    className: {'pt': 'Antidepressivo tricíclico (ADT)', 'es': 'Antidepresivo tricíclico (ADT)'},
+    category: {'pt': 'Neurológicos / Psiquiátricos', 'es': 'Neurológicos / Psiquiátricos'},
+    route: 'VO',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': 'Depressão: 25–75 mg/dia inicial (à noite); titular até 150–300 mg/dia. Dor neuropática/profilaxia migrânea: 10–75 mg/dia (doses menores são eficazes). Enurese: 10–25 mg à noite.',
+      'es': 'Depresión: 25–75 mg/día (por la noche); hasta 150–300 mg/día. Dolor neuropático: 10–75 mg/día.',
+    },
+    renalAlert: {
+      'pt': 'Sem ajuste em IR leve-moderada. Usar com cautela em IR grave (metabólitos ativos).',
+      'es': 'Sin ajuste en IR leve-moderada. Precaución en IR grave.',
+    },
+    elderlyAlert: {
+      'pt': 'Efeitos anticolinérgicos pronunciados: confusão, retenção urinária, constipação, visão turva. Hipotensão ortostática grave (quedas). Cardiotoxicidade (arritmias, QT↑). Evitar em idosos (Beers criteria). Preferir nortriptilina se ADT necessário.',
+      'es': 'Efectos anticolinérgicos pronunciados: confusión, retención urinaria, constipación. Hipotensión ortostática grave. Evitar en ancianos (criterios Beers).',
+    },
+    mechanism: {
+      'pt': 'Inibe recaptação de noradrenalina e serotonina (NET >> SERT). Também bloqueia receptores H1, muscarínicos, α1 e canais de Na+ cardíacos.',
+      'es': 'Inhibe recaptación de noradrenalina y serotonina. Bloquea receptores H1, muscarínicos, α1.',
+    },
+    warning: {
+      'pt': 'Cardiotoxicidade em superdose (↑ QRS, arritmias, morte). Janela terapêutica estreita em overdose. Evitar com IMAOs (intervalo 14 dias). Rebaixamento do limiar convulsivo. Síndrome serotoninérgica com ISSRs.',
+      'es': 'Cardiotoxicidad en sobredosis (↑ QRS, arritmias, muerte). Ventana estrecha. Evitar con IMAOs. Síndrome serotoninérgico con ISRSs.',
+    },
+    adverse: {
+      'pt': ['Sedação/sonolência', 'Boca seca', 'Constipação', 'Retenção urinária', 'Visão turva', 'Hipotensão ortostática', 'Taquicardia', 'Ganho de peso', 'QT prolongado'],
+      'es': ['Sedación/somnolencia', 'Boca seca', 'Constipación', 'Retención urinaria', 'Hipotensión ortostática', 'Taquicardia', 'QT prolongado'],
+    },
+  ),
+
+  DrugModel(
+    id: 'sertralina',
+    name: 'Sertralina',
+    className: {'pt': 'Inibidor seletivo da recaptação de serotonina (ISRS)', 'es': 'Inhibidor selectivo de la recaptación de serotonina (ISRS)'},
+    category: {'pt': 'Neurológicos / Psiquiátricos', 'es': 'Neurológicos / Psiquiátricos'},
+    route: 'VO',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': 'Depressão/TAG: 50 mg/dia inicial; titular 25–50 mg a cada 1–2 semanas; máx. 200 mg/dia. TOC: até 200 mg/dia. TEPT/pânico: 25 mg/dia inicial, titular para 50–200 mg/dia.',
+      'es': 'Depresión/TAG: 50 mg/día inicial; hasta 200 mg/día. TOC: hasta 200 mg/día. TEPT: iniciar 25 mg/día.',
+    },
+    renalAlert: {
+      'pt': 'Sem ajuste necessário. Usar com cautela em IR grave (dados limitados).',
+      'es': 'Sin ajuste necesario. Precaución en IR grave.',
+    },
+    elderlyAlert: {
+      'pt': 'Hiponatremia/SIADH (especialmente com diuréticos tiazídicos). Risco de sangramento GI com AINEs/anticoagulantes. Menor tolerabilidade em idosos frágeis. Titulação lenta.',
+      'es': 'Hiponatremia/SIADH (especialmente con tiazidas). Riesgo de sangrado GI con AINEs/anticoagulantes. Titulación lenta en ancianos.',
+    },
+    mechanism: {
+      'pt': 'Inibe transportador SERT → ↑ serotonina sináptica → adaptação de receptores 5-HT1A (onset terapêutico 2–4 semanas). Efeito ansiolítico, antidepressivo e antiobsessivo.',
+      'es': 'Inhibe SERT → ↑ serotonina sináptica. Onset terapéutico 2–4 semanas.',
+    },
+    warning: {
+      'pt': 'Síndrome serotoninérgica (com tramadol, triptanos, IMAOs, linezolida — evitar). Hiponatremia (SIADH). Sangramento (↓ serotonina plaquetária). Ideação suicida em < 25 anos (primeiras semanas). Síndrome de descontinuação (não interromper abruptamente).',
+      'es': 'Síndrome serotoninérgico (con tramadol, triptanos, IMAOs). Hiponatremia (SIADH). Sangrado. Ideación suicida en <25 años.',
+    },
+    adverse: {
+      'pt': ['Náuseas (início)', 'Insônia ou hipersonia', 'Disfunção sexual', 'Cefaleia', 'Diarreia', 'Inquietação (início)', 'Hiponatremia', 'Síndrome de descontinuação'],
+      'es': ['Náuseas (inicio)', 'Insomnio', 'Disfunción sexual', 'Cefalea', 'Diarrea', 'Hiponatremia', 'Síndrome de discontinuación'],
+    },
+  ),
+
+  // ═══════════════════════════════════════════════════════════════
+  //  ENDÓCRINOS / METABÓLICOS
+  // ═══════════════════════════════════════════════════════════════
+
+  DrugModel(
+    id: 'levotiroxina',
+    name: 'Levotiroxina (T4)',
+    className: {'pt': 'Hormônio tireoidiano sintético', 'es': 'Hormona tiroidea sintética'},
+    category: {'pt': 'Endócrinos / Metabólicos', 'es': 'Endócrinos / Metabólicos'},
+    route: 'VO / IV',
+    doseType: 'weight',
+    fixedDose: {
+      'pt': 'Hipotireoidismo adulto: 1,6 mcg/kg/dia VO em jejum. Idosos/cardiopatas: iniciar 12,5–25 mcg/dia, titular lentamente. TSH alvo: 0,5–2,5 mUI/L (variável por condição). IV (mixedema): 200–400 mcg bolus + 50–100 mcg/dia.',
+      'es': 'Hipotiroidismo adulto: 1,6 mcg/kg/día VO en ayunas. Ancianos/cardíacos: iniciar 12,5–25 mcg/día. IV (mixedema): 200–400 mcg bolo.',
+    },
+    renalAlert: {
+      'pt': 'Sem ajuste em IR — metabolismo hepático. Hipotiroidismo pode reduzir débito cardíaco e perfusão renal.',
+      'es': 'Sin ajuste en IR — metabolismo hepático.',
+    },
+    elderlyAlert: {
+      'pt': 'Risco de fibrilação atrial, angina e ICC se titulação rápida. Iniciar SEMPRE com 12,5–25 mcg/dia em idosos cardiopatas. TSH alvo mais alto em idosos (0,5–4,0 mUI/L). Revisar dose regularmente.',
+      'es': 'Riesgo de FA, angina e ICC si titulación rápida. Iniciar SIEMPRE con 12,5–25 mcg/día. TSH objetivo 0,5–4,0 mUI/L en ancianos.',
+    },
+    mechanism: {
+      'pt': 'Pró-hormônio convertido a T3 ativo perifericamente → liga-se a receptores nucleares TRα/TRβ → regula expressão gênica → controla metabolismo basal, crescimento, sistema cardíaco, nervoso e muscular.',
+      'es': 'Prehormona convertida a T3 activo → receptores nucleares TRα/TRβ → regula metabolismo basal, función cardíaca y nerviosa.',
+    },
+    warning: {
+      'pt': 'Administrar 30–60 min antes do café da manhã (jejum). Separar 4h de carbonato de cálcio, antiácidos, colestiramina, ferro (↓ absorção). Hiperdosagem → taquicardia, perda de peso, FA, insônia.',
+      'es': 'Administrar 30–60 min antes del desayuno (ayunas). Separar 4 h de calcio, antiácidos, colestiramina, hierro (↓ absorción).',
+    },
+    adverse: {
+      'pt': ['Taquicardia/palpitações (supradose)', 'Fibrilação atrial', 'Angina (cardiopatas)', 'Insônia', 'Tremor', 'Perda de peso', 'Sudorese', 'Osteoporose (TSH suprimido)'],
+      'es': ['Taquicardia/palpitaciones (sobredosis)', 'Fibrilación auricular', 'Angina (cardíacos)', 'Insomnio', 'Temblor', 'Pérdida de peso'],
+    },
+  ),
+
+  DrugModel(
+    id: 'metformina',
+    name: 'Metformina',
+    className: {'pt': 'Biguanida – antidiabético oral', 'es': 'Biguanida – antidiabético oral'},
+    category: {'pt': 'Endócrinos / Metabólicos', 'es': 'Endócrinos / Metabólicos'},
+    route: 'VO',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': 'DM2: 500 mg 2x/dia ou 850 mg 1x/dia (durante refeição); titular semana a semana. Máx. 2550 mg/dia (usual 1500–2000 mg/dia). XR: 500–2000 mg 1x/dia à noite.',
+      'es': 'DM2: 500 mg 2×/día (con comida); titular semana a semana. Máx. 2550 mg/día. XR: 500–2000 mg 1×/noche.',
+    },
+    renalAlert: {
+      'pt': 'ClCr ≥ 45: dose normal. ClCr 30–44: reduzir dose; máx. 1000 mg/dia — monitorar. ClCr <30: CONTRAINDICADA (risco de acidose lática). Suspender antes de contraste iodado se ClCr <60 e reintroduzir 48h depois.',
+      'es': 'ClCr ≥ 45: dosis normal. ClCr 30–44: reducir; máx. 1000 mg/día. ClCr <30: CONTRAINDICADA (acidosis láctica). Suspender antes de contraste yodado.',
+    },
+    elderlyAlert: {
+      'pt': 'Reavaliar dose com queda da ClCr (comum em idosos). Deficiência de vitamina B12 com uso prolongado (monitorar). Risco de acidose lática em desidratação, cirurgia, contraste.',
+      'es': 'Reevaluar dosis con caída de ClCr. Deficiencia vitamina B12 con uso prolongado. Riesgo acidosis láctica en deshidratación/cirugía/contraste.',
+    },
+    mechanism: {
+      'pt': 'Ativa AMPK → ↓ gliconeogênese hepática, ↑ captação periférica de glicose, ↓ absorção intestinal de glicose. Sem risco de hipoglicemia em monoterapia.',
+      'es': 'Activa AMPK → ↓ gluconeogénesis hepática, ↑ captación periférica de glucosa. Sin hipoglucemia en monoterapia.',
+    },
+    warning: {
+      'pt': 'Acidose lática (rara, mas fatal) — fatores de risco: IR, insuficiência hepática, insuficiência cardíaca descompensada, sepse, desidratação, alcoólicos, contraste iodado. Suspender em cirurgias/exames com contraste.',
+      'es': 'Acidosis láctica (rara, pero fatal) — factores de riesgo: IR, IC descompensada, sepsis, deshidratación, contraste yodado.',
+    },
+    adverse: {
+      'pt': ['Náuseas/diarreia (início — reduzir com alimento)', 'Sabor metálico', 'Déficit B12 (uso prolongado)', 'Acidose lática (raro)', 'Anorexia'],
+      'es': ['Náuseas/diarrea (inicio)', 'Sabor metálico', 'Déficit B12 (uso prolongado)', 'Acidosis láctica (raro)'],
+    },
+  ),
+
+  DrugModel(
+    id: 'glibenclamida',
+    name: 'Glibenclamida (Gliburida)',
+    className: {'pt': 'Sulfonilureia – secretagogo de insulina', 'es': 'Sulfonilurea – secretagogo de insulina'},
+    category: {'pt': 'Endócrinos / Metabólicos', 'es': 'Endócrinos / Metabólicos'},
+    route: 'VO',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': 'Iniciar 2,5–5 mg/dia com o café da manhã. Titular a cada 1–2 semanas. Máx. 20 mg/dia (10 mg 2x/dia). Monitorar glicemia em jejum e pós-prandial regularmente.',
+      'es': 'Iniciar 2,5–5 mg/día con desayuno. Titular c/1–2 semanas. Máx. 20 mg/día.',
+    },
+    renalAlert: {
+      'pt': 'EVITAR em ClCr <30 (metabólitos ativos acumulam → hipoglicemia prolongada). Preferir gliclazida ou glipizida em IR.',
+      'es': 'EVITAR con ClCr <30 (metabolitos activos acumulan → hipoglucemia prolongada). Preferir gliclazida en IR.',
+    },
+    elderlyAlert: {
+      'pt': 'Alto risco de hipoglicemia grave e prolongada em idosos (Beers criteria — evitar). Preferir sulfonilureia de ação curta (glipizida) ou IDPP-4/SGLT2. Risco de quedas por hipoglicemia.',
+      'es': 'Alto riesgo de hipoglucemia grave en ancianos (criterios Beers — evitar). Preferir glipizida o IDPP-4/SGLT2.',
+    },
+    mechanism: {
+      'pt': 'Liga-se aos canais K+-ATP das células β pancreáticas → despolarização → ↑ Ca²+ → liberação de insulina. Efeito dependente de células β funcionais.',
+      'es': 'Se une a canales K+-ATP de células β → despolarización → ↑ Ca²+ → liberación de insulina.',
+    },
+    warning: {
+      'pt': 'Hipoglicemia grave e prolongada (especialmente em idosos, insuficiência renal, jejum, álcool). Ganho de peso. Interações com sulfonamidas, fluconazol, fenofibrato (↑ hipoglicemia). Fotossensibilidade.',
+      'es': 'Hipoglucemia grave y prolongada (ancianos, IR, ayuno, alcohol). Ganancia de peso. Fotosensibilidad.',
+    },
+    adverse: {
+      'pt': ['Hipoglicemia', 'Ganho de peso', 'Náuseas/epigastralgia', 'Fotossensibilidade', 'Icterícia colestática (raro)', 'Agranulocitose (muito raro)'],
+      'es': ['Hipoglucemia', 'Aumento de peso', 'Náuseas/epigastralgia', 'Fotosensibilidad', 'Ictericia colestática (raro)'],
+    },
+  ),
+
+  // ═══════════════════════════════════════════════════════════════
+  //  GASTROENTEROLÓGICOS
+  // ═══════════════════════════════════════════════════════════════
+
+  DrugModel(
+    id: 'pantoprazol',
+    name: 'Pantoprazol',
+    className: {'pt': 'Inibidor da bomba de prótons (IBP)', 'es': 'Inhibidor de la bomba de protones (IBP)'},
+    category: {'pt': 'Gastroenterológicos', 'es': 'Gastroenterológicos'},
+    route: 'VO / IV',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': 'DRGE/úlcera: 40 mg/dia VO. Úlcera H. pylori: 40 mg 12/12h × 7–14d (tripla terapia). Hemorragia digestiva alta: 80 mg IV bolus + 8 mg/h por 72h. Profilaxia úlcera de estresse UTI: 40 mg/dia IV ou VO.',
+      'es': 'DRGE/úlcera: 40 mg/día VO. H. pylori: 40 mg c/12 h × 7–14d. HDA: 80 mg IV bolo + 8 mg/h por 72 h.',
+    },
+    renalAlert: {
+      'pt': 'Sem ajuste necessário em IR — metabolismo hepático.',
+      'es': 'Sin ajuste en IR — metabolismo hepático.',
+    },
+    elderlyAlert: {
+      'pt': 'Uso crônico: risco de hipomagnesemia, déficit de B12, osteoporose/fraturas (↓ absorção Ca2+), infecção por C. difficile e pneumonia. Usar pelo menor tempo possível.',
+      'es': 'Uso crónico: hipomagnesemia, déficit B12, osteoporosis/fracturas, C. difficile. Usar el menor tiempo posible.',
+    },
+    mechanism: {
+      'pt': 'Pró-fármaco ativado em ambiente ácido → inibe irreversivelmente a H+/K+-ATPase (bomba de prótons) da célula parietal → supressão potente e prolongada do ácido gástrico.',
+      'es': 'Profármaco activado en ambiente ácido → inhibe irreversiblemente H+/K+-ATPasa (bomba de protones) → supresión ácido gástrico.',
+    },
+    warning: {
+      'pt': 'Hipomagnesemia com uso > 3 meses (monitorar Mg2+ em uso prolongado). Reduz absorção de clopidogrel (interação CYP2C19 — preferir pantoprazol/rabeprazol). Aumenta risco C. difficile. Interação com metotrexato (↑ toxicidade).',
+      'es': 'Hipomagnesemia con uso >3 meses. Reduce absorción de clopidogrel (CYP2C19). Aumenta riesgo C. difficile.',
+    },
+    adverse: {
+      'pt': ['Cefaleia', 'Diarreia', 'Náuseas', 'Hipomagnesemia (crônico)', 'Déficit B12 (crônico)', 'Osteoporose (crônico)', 'Nefrite intersticial (raro)'],
+      'es': ['Cefalea', 'Diarrea', 'Náuseas', 'Hipomagnesemia (crónico)', 'Déficit B12 (crónico)', 'Osteoporosis (crónico)'],
+    },
+  ),
+
+  DrugModel(
+    id: 'ondansetrona',
+    name: 'Ondansetrona',
+    className: {'pt': 'Antiemético – antagonista 5-HT3', 'es': 'Antiemético – antagonista 5-HT3'},
+    category: {'pt': 'Gastroenterológicos', 'es': 'Gastroenterológicos'},
+    route: 'VO / IV / SL',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': 'Náuseas/vômitos cirurgia ou QT: 4–8 mg IV lento (2–5 min) ou 8 mg VO 30 min antes de QT. Pós-op: 4 mg IV. Comprimido SL: 4–8 mg. Pode repetir 4–8 mg a cada 8h (máx. 24 mg/dia).',
+      'es': 'Náuseas/vómitos cirugía o QT: 4–8 mg IV lento o 8 mg VO 30 min antes. Pós-op: 4 mg IV. Máx. 24 mg/día.',
+    },
+    renalAlert: {
+      'pt': 'Sem ajuste necessário em IR.',
+      'es': 'Sin ajuste en IR.',
+    },
+    elderlyAlert: {
+      'pt': 'Prolongamento QT (maior risco com IC, hipocalemia, hipomagnessemia e outros QT-prolongadores). Monitorar ECG em cardiopatas.',
+      'es': 'Prolongación QT (mayor riesgo con IC, hipopotasemia, hipomagnasemia). Monitorizar ECG en cardíacos.',
+    },
+    mechanism: {
+      'pt': 'Antagonista competitivo de receptores 5-HT3 no trato GI e zona gatilho quimiorreceptora (CTZ) → bloqueia impulsos vagais emeto-indutores → antiemético eficaz.',
+      'es': 'Antagonista de receptores 5-HT3 en TGI y zona gatillo quimiorreceptora → bloquea impulsos vagales eméticos.',
+    },
+    warning: {
+      'pt': 'Prolongamento QT — evitar com outros QT-prolongadores (haloperidol, azitromicina, amiodarona). Estreiteza serotonérgica com ISSRs/IMAOs (síndrome serotoninérgica, raro). Constipação. Pode mascarar obstrução intestinal.',
+      'es': 'Prolongación QT — evitar con otros QT-prolongadores. Síndrome serotoninérgico (raro) con ISRSs/IMAOs.',
+    },
+    adverse: {
+      'pt': ['Cefaleia (9%)', 'Constipação', 'Prolongamento QT', 'Rubor', 'Elevação transaminases (raro)', 'Reações extrapiramidais (raro)'],
+      'es': ['Cefalea (9%)', 'Constipación', 'Prolongación QT', 'Rubor', 'Elevación transaminasas (raro)'],
+    },
+  ),
+
+  DrugModel(
+    id: 'lactulose',
+    name: 'Lactulose',
+    className: {'pt': 'Laxante osmótico / tratamento encefalopatia hepática', 'es': 'Laxante osmótico / tratamiento encefalopatia hepática'},
+    category: {'pt': 'Gastroenterológicos', 'es': 'Gastroenterológicos'},
+    route: 'VO / Retal',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': 'Constipação: 15–30 mL (10–20 g) 1–3x/dia. Encefalopatia hepática (EH) aguda: 30–45 mL a cada 1–2h até evacuação; depois 15–45 mL 3–4x/dia (meta: 2–3 evacuações pastosas/dia). Retal (EH grave): enema 300 mL + 700 mL SF.',
+      'es': 'Constipación: 15–30 mL 1–3×/día. EH aguda: 30–45 mL c/1–2 h hasta evacuación; mantenimiento 15–45 mL 3–4×/día.',
+    },
+    renalAlert: {
+      'pt': 'Sem ajuste necessário. Hipernatremia/desidratação em IR com diarreia excessiva.',
+      'es': 'Sin ajuste necesario. Precaución con diarrea excesiva en IR.',
+    },
+    elderlyAlert: {
+      'pt': 'Diarreia excessiva → desidratação e distúrbios eletrolíticos. Monitorar hidratação e eletrólitos em idosos.',
+      'es': 'Diarrea excesiva → deshidratación y trastornos electrolíticos. Monitorizar hidratación.',
+    },
+    mechanism: {
+      'pt': 'Dissacarídeo sintético não absorvível → metabolizado por bactérias colônicas → ácidos orgânicos → acidificação do cólon → converte NH3 (tóxico) em NH4+ (não absorvível) → reduz hiperamonemia na EH.',
+      'es': 'Disacárido no absorbible → bactérias colónicas → acidificación cólica → convierte NH3 en NH4+ no absorbible → reduce hiperamonemia.',
+    },
+    warning: {
+      'pt': 'Cólicas abdominais intensas nos primeiros dias. Hipernatremia se uso excessivo com baixa ingestão hídrica. Diabéticos: contém galactose e lactose (glicemia elevada).',
+      'es': 'Cólicos abdominales intensos al inicio. Hipernatremia con uso excesivo. Diabéticos: contiene galactosa y lactosa.',
+    },
+    adverse: {
+      'pt': ['Flatulência/meteorismo', 'Cólicas abdominais', 'Diarreia', 'Náuseas', 'Desidratação (excessivo)', 'Hipernatremia (excessivo)'],
+      'es': ['Flatulencia/meteorismo', 'Cólicos abdominales', 'Diarrea', 'Náuseas', 'Deshidratación (excesivo)'],
+    },
+  ),
+
+  // ═══════════════════════════════════════════════════════════════
+  //  HEMATOLÓGICOS / ANTICOAGULANTES
+  // ═══════════════════════════════════════════════════════════════
+
+  DrugModel(
+    id: 'enoxaparina',
+    name: 'Enoxaparina (HBPM)',
+    className: {'pt': 'Heparina de baixo peso molecular (HBPM)', 'es': 'Heparina de bajo peso molecular (HBPM)'},
+    category: {'pt': 'Hematológicos / Anticoagulantes', 'es': 'Hematológicos / Anticoagulantes'},
+    route: 'SC',
+    doseType: 'weight',
+    fixedDose: {
+      'pt': 'Profilaxia TVP: 40 mg SC 1x/dia. Tratamento TEV: 1 mg/kg SC 12/12h ou 1,5 mg/kg SC 1x/dia. SCA (IAM STEMI, NSTEMI): 1 mg/kg SC 12/12h (+ bolus 30 mg IV se < 75 anos). Máx. 100 mg/dose.',
+      'es': 'Profilaxis TVP: 40 mg SC 1×/día. Tratamiento TEV: 1 mg/kg SC c/12 h. SCA: 1 mg/kg SC c/12 h (+ bolo 30 mg IV si <75 años).',
+    },
+    renalAlert: {
+      'pt': 'ClCr 15–29: reduzir 50% (profilaxia: 20 mg/dia; terapêutica: 1 mg/kg 1x/dia). ClCr <15 ou HD: evitar ou usar heparina não-fracionada com controle de TTPa. Dosagem anti-Xa se disponível.',
+      'es': 'ClCr 15–29: reducir 50%. ClCr <15/HD: evitar o usar HNF con control TTPa.',
+    },
+    elderlyAlert: {
+      'pt': 'Risco hemorrágico aumentado (queda da ClCr). Monitorar anti-Xa se > 75 anos e peso <50 kg ou >100 kg. Evitar bolus IV em > 75 anos (SCA).',
+      'es': 'Mayor riesgo hemorrágico (↓ ClCr). Monitorizar anti-Xa si >75 años, <50 kg o >100 kg. Evitar bolo IV en >75 años.',
+    },
+    mechanism: {
+      'pt': 'Liga-se à antitrombina III (ATIII) → inibe fator Xa (principalmente) e IIa (trombina) → anticoagulação. Maior ação anti-Xa/anti-IIa que HNF → efeito mais previsível.',
+      'es': 'Se une a ATIII → inhibe factor Xa (principalmente) e IIa → anticoagulación más predecible que HNF.',
+    },
+    warning: {
+      'pt': 'Sangramento (principal risco). Trombocitopenia induzida por heparina (TIH) — menos frequente que HNF mas possível (monitorar plaquetas a cada 2–3 dias primeiros 14 dias). Antídoto parcial: sulfato de protamina (neutraliza ~60% anti-Xa).',
+      'es': 'Sangrado (principal riesgo). TIH — menos frecuente que HNF. Antídoto parcial: sulfato de protamina.',
+    },
+    adverse: {
+      'pt': ['Sangramento', 'Trombocitopenia (TIH — <1%)', 'Hematoma no local SC', 'Hiperpotassemia (hipoaldosteronismo)', 'Elevação transaminases', 'Osteoporose (uso prolongado)'],
+      'es': ['Sangrado', 'Trombocitopenia (TIH <1%)', 'Hematoma local SC', 'Hiperpotasemia', 'Osteoporosis (uso prolongado)'],
+    },
+  ),
+
+  DrugModel(
+    id: 'rivaroxabana',
+    name: 'Rivaroxabana',
+    className: {'pt': 'Anticoagulante oral direto – inibidor do fator Xa', 'es': 'Anticoagulante oral directo – inhibidor del factor Xa'},
+    category: {'pt': 'Hematológicos / Anticoagulantes', 'es': 'Hematológicos / Anticoagulantes'},
+    route: 'VO',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': 'FA não-valvar (↓ AVC): 20 mg 1x/dia (com jantar). TEV (tratamento inicial): 15 mg 12/12h × 21 dias, depois 20 mg/dia. Profilaxia TEV pós-ortopedia: 10 mg/dia × 35 dias (quadril) ou 14 dias (joelho).',
+      'es': 'FA no valvular: 20 mg 1×/día (con cena). TEV: 15 mg c/12 h × 21 días, luego 20 mg/día. Profilaxis TEV: 10 mg/día.',
+    },
+    renalAlert: {
+      'pt': 'FA: ClCr 15–49: reduzir para 15 mg/dia. ClCr <15: CONTRAINDICADO. TEV: ClCr <30: CONTRAINDICADO. Monitorar função renal trimestralmente.',
+      'es': 'FA: ClCr 15–49: reducir a 15 mg/día. ClCr <15: CONTRAINDICADO. TEV: ClCr <30: CONTRAINDICADO.',
+    },
+    elderlyAlert: {
+      'pt': 'Risco hemorrágico aumentado. Avaliar função renal frequentemente. Antídoto disponível: andexanet alfa (aprovado no Brasil). Interação com inibidores/indutores de P-gp e CYP3A4.',
+      'es': 'Mayor riesgo hemorrágico. Evaluar función renal frecuentemente. Antídoto: andexanet alfa.',
+    },
+    mechanism: {
+      'pt': 'Inibe diretamente e seletivamente o fator Xa livre e ligado ao coágulo → bloqueia conversão de protrombina a trombina → anticoagulação previsível sem monitoração rotineira.',
+      'es': 'Inhibe directamente el factor Xa libre y unido al coágulo → bloquea conversión protrombina a trombina.',
+    },
+    warning: {
+      'pt': 'Sangramento grave (sem antídoto de acesso fácil — andexanet alfa disponível, custo alto). Evitar com anticoagulantes/antiplaquetários combinados sem indicação clara. Sem monitoração rotineira de coagulação. Evitar em gravidez.',
+      'es': 'Sangrado grave (antídoto andexanet alfa disponible, alto costo). Evitar en embarazo. Sin monitoreo rutinario de coagulación.',
+    },
+    adverse: {
+      'pt': ['Sangramento (GI, intracraniano, outros)', 'Anemia', 'Elevação transaminases', 'Náuseas', 'Prurido', 'Hematomas'],
+      'es': ['Sangrado (GI, intracraneal, otros)', 'Anemia', 'Elevación transaminasas', 'Náuseas'],
+    },
+  ),
+
+  DrugModel(
+    id: 'acido_tranexamico',
+    name: 'Ácido Tranexâmico',
+    className: {'pt': 'Antifibrinolítico', 'es': 'Antifibrinolítico'},
+    category: {'pt': 'Hematológicos / Anticoagulantes', 'es': 'Hematológicos / Anticoagulantes'},
+    route: 'IV / VO',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': 'Trauma com hemorragia: 1 g IV em 10 min nas primeiras 3h do trauma, seguido de 1 g IV em 8h. PPH (hemorragia pós-parto): 1 g IV em 10 min; se persistir, 2ª dose de 1 g após 30 min. Epistaxe/oral VO: 500–1000 mg 3x/dia.',
+      'es': 'Trauma hemorrágico: 1 g IV en 10 min primeras 3 h; seguido de 1 g IV en 8 h. HPP: 1 g IV en 10 min; 2ª dosis 1 g si persiste. VO: 500–1000 mg 3×/día.',
+    },
+    renalAlert: {
+      'pt': 'Ajuste necessário: ClCr 20–50: 10 mg/kg 12/12h. ClCr 10–20: 10 mg/kg 24/24h. ClCr <10: 5 mg/kg 24/24h.',
+      'es': 'Ajuste necesario: ClCr 20–50: 10 mg/kg c/12 h. ClCr 10–20: c/24 h. ClCr <10: 5 mg/kg c/24 h.',
+    },
+    elderlyAlert: {
+      'pt': 'Ajustar pela ClCr. Risco trombótico aumentado (TEV, AVE). Usar com cautela em história de tromboembolismo.',
+      'es': 'Ajustar por ClCr. Mayor riesgo trombótico (TEV, ACV). Precaución en historia de tromboembolismo.',
+    },
+    mechanism: {
+      'pt': 'Liga-se aos sítios de ligação ao lisina do plasminogênio e plasmina → inibe fibrinólise → estabiliza o coágulo formado. Não coagulante direto.',
+      'es': 'Se une a sitios de lisina del plasminógeno y plasmina → inhibe fibrinólisis → estabiliza el coágulo.',
+    },
+    warning: {
+      'pt': 'Contraindicado se hemorragia subaracnóidea (vasoespasmo). Contraindicado em TVP ativa/TEP/CIVD com predominância fibrinolítica. Após 3h do trauma — evidências de benefício diminuem (estudo CRASH-2). Risco de convulsões em doses altas IV.',
+      'es': 'Contraindicado en HSA (vasoespasmo). Contraindicado en TVP activa/TEP/CIVD. Beneficio disminuye >3 h del trauma (CRASH-2). Convulsiones con dosis altas.',
+    },
+    adverse: {
+      'pt': ['Náuseas/vômitos', 'Diarreia', 'Hipotensão (IV rápido)', 'Convulsões (doses altas)', 'Trombose (TEV, TVP)', 'Visão cromática alterada (raro)'],
+      'es': ['Náuseas/vómitos', 'Hipotensión (IV rápido)', 'Convulsiones (dosis altas)', 'Trombosis (TEV)', 'Cambio visión cromática (raro)'],
+    },
+  ),
+
+  // ═══════════════════════════════════════════════════════════════
+  //  ANESTESIOLOGIA / SEDAÇÃO / EMERGÊNCIA
+  // ═══════════════════════════════════════════════════════════════
+
+  DrugModel(
+    id: 'ketamina',
+    name: 'Ketamina',
+    className: {'pt': 'Anestésico dissociativo – antagonista NMDA', 'es': 'Anestésico disociativo – antagonista NMDA'},
+    category: {'pt': 'Anestesiologia / Sedação', 'es': 'Anestesiología / Sedación'},
+    route: 'IV / IM',
+    doseType: 'weight',
+    fixedDose: {
+      'pt': 'Anestesia IV: 1–2 mg/kg IV lento. IM: 4–6 mg/kg. Sedação procedimento: 0,5–1 mg/kg IV. Analgesia subanestésica: 0,1–0,5 mg/kg IV. Broncoespasmo severo: 1–2 mg/kg IV. Associar midazolam (0,03–0,05 mg/kg) para ↓ reações emergentes.',
+      'es': 'Anestesia IV: 1–2 mg/kg IV lento. IM: 4–6 mg/kg. Sedación: 0,5–1 mg/kg IV. Analgesia: 0,1–0,5 mg/kg IV. Broncoespasmo: 1–2 mg/kg IV.',
+    },
+    renalAlert: {
+      'pt': 'Sem ajuste necessário. Metabólitos renais — acumulam em IR grave (sedação prolongada).',
+      'es': 'Sin ajuste necesario. Metabolitos renales — acumulan en IR grave.',
+    },
+    elderlyAlert: {
+      'pt': 'Alucinações e reações emergentes mais frequentes. Hipertensão e taquicardia marcantes. Reduzir dose 30–50%. Titulação lenta.',
+      'es': 'Alucinaciones y reacciones emergentes más frecuentes. HAS y taquicardia marcadas. Reducir dosis 30–50%.',
+    },
+    mechanism: {
+      'pt': 'Antagonista não-competitivo dos receptores NMDA (glutamato) → anestesia dissociativa, analgesia, amnésia. Mantém reflexos de proteção de vias aéreas. Simpaticomiméticas endógenas → ↑ PA, ↑ FC, broncodilatação.',
+      'es': 'Antagonista NMDA (glutamato) → anestesia disociativa, analgesia, amnesia. Mantiene reflejos de vía aérea. Simpaticomiméticas endógenas → ↑ PA, ↑ FC, broncodilatación.',
+    },
+    warning: {
+      'pt': 'Reações emergentes (alucinações, delirium, pesadelos) — profilaxia com benzodiazepínico. Contraindicada em HAS descontrolada grave, trauma cranioencefálico com PIC elevada (relativo), doença coronariana instável. ↑ Secreções (atropina profilática opcional).',
+      'es': 'Reacciones emergentes (alucinaciones, delirium) — profilaxis con benzodiacepina. Contraindicada en HAS grave descontrolada, TCE con PIC elevada (relativo).',
+    },
+    adverse: {
+      'pt': ['Reações emergentes (15–30%)', 'Hipertensão/taquicardia', 'Hipersecreção', 'Diplopia', 'Laringoespasmo (raro)', 'Vômitos', 'Aumento da PIC (relativo)'],
+      'es': ['Reacciones emergentes (15–30%)', 'Hipertensión/taquicardia', 'Hipersecreción', 'Laringoespasmo (raro)', 'Vómitos'],
+    },
+  ),
+
+  DrugModel(
+    id: 'succinilcolina',
+    name: 'Succinilcolina (Suxametônio)',
+    className: {'pt': 'Bloqueador neuromuscular despolarizante', 'es': 'Bloqueante neuromuscular despolarizante'},
+    category: {'pt': 'Anestesiologia / Sedação', 'es': 'Anestesiología / Sedación'},
+    route: 'IV',
+    doseType: 'weight',
+    fixedDose: {
+      'pt': 'IRS (adulto): 1,5 mg/kg IV rápido. Máx. 150 mg. Criança: 2 mg/kg IV. Início: 30–60 s. Duração: 6–12 min. Pré-oxigenar 3–5 min. Pré-tratar atropina 0,01 mg/kg se < 1 ano (bradicardia).',
+      'es': 'IRS (adulto): 1,5 mg/kg IV rápido. Máx. 150 mg. Niño: 2 mg/kg IV. Inicio: 30–60 s. Duración: 6–12 min.',
+    },
+    renalAlert: {
+      'pt': 'CONTRAINDICADA em hiperpotassemia (K+ ≥ 5,5 mEq/L) ou risco alto de hiperpotassemia — libera K+ (0,5–1 mEq/L na resposta normal). Alternativa: rocurônio 1,2 mg/kg.',
+      'es': 'CONTRAINDICADA en hiperpotasemia (K+ ≥5,5 mEq/L). Libera K+ (0,5–1 mEq/L). Alternativa: rocurônio.',
+    },
+    elderlyAlert: {
+      'pt': 'Usar com cautela — pseudocolinesterase reduzida pode prolongar bloqueio. Hiperpotassemia em imobilização prolongada.',
+      'es': 'Precaución — pseudocolinesterasa reducida puede prolongar bloqueo. Hiperpotasemia en inmovilización.',
+    },
+    mechanism: {
+      'pt': 'Liga-se permanentemente ao receptor nicotínico de acetilcolina na placa motora → despolarização persistente → bloqueio (fase I) → início ultrarrápido. Degradado pela pseudocolinesterase plasmática.',
+      'es': 'Se une permanentemente al receptor nicotínico → despolarización persistente → bloqueo ultrarrápido. Degradado por pseudocolinesterasa.',
+    },
+    warning: {
+      'pt': 'Hipertermia maligna (associada a anestésicos inalatórios — evitar combinação). Hiperpotassemia grave em queimados (> 24h), lesão medular, denervação, sepse prolongada, miopatias. Bradicardia (especialmente 2ª dose IV, crianças). Trismo (raro, preditor de hipertermia maligna).',
+      'es': 'Hipertermia maligna (con anestésicos inhalados). Hiperpotasemia grave en quemados/lesión medular/sepsis. Bradicardia (2ª dosis, niños).',
+    },
+    adverse: {
+      'pt': ['Hiperpotassemia', 'Bradicardia/assistolia (especialmente crianças)', 'Hipertermia maligna (genético)', 'Mialgia pós-operatória', 'Aumento PIC/POI/PG', 'Bloqueio prolongado (pseudo-colinesterase deficiente)'],
+      'es': ['Hiperpotasemia', 'Bradicardia/asistolia (niños)', 'Hipertermia maligna (genético)', 'Mialgia post-op', 'Bloqueo prolongado'],
+    },
+  ),
+
+  DrugModel(
+    id: 'noradrenalina',
+    name: 'Noradrenalina (Norepinefrina)',
+    className: {'pt': 'Vasopressor – catecolamina α1/β1', 'es': 'Vasopresor – catecolamina α1/β1'},
+    category: {'pt': 'UTI / Emergência', 'es': 'UCI / Emergencia'},
+    route: 'IV (infusão contínua)',
+    doseType: 'weight',
+    fixedDose: {
+      'pt': 'Choque séptico/distributivo: 0,01–3 mcg/kg/min IV contínuo (usual 0,1–0,5 mcg/kg/min). Titular pela PAM alvo ≥ 65 mmHg. Via central preferencial. Pode iniciar periférica se urgência (diluir bem; máx. 4h periférica).',
+      'es': 'Choque séptico: 0,01–3 mcg/kg/min IV continuo. Titular por PAM ≥ 65 mmHg. Vía central preferencial.',
+    },
+    renalAlert: {
+      'pt': 'Não há ajuste de dose, mas vasoconstricção periférica pode reduzir perfusão renal. Monitorar diurese e creatinina. Evitar doses muito altas sem necessidade.',
+      'es': 'Sin ajuste, pero vasoconstricción puede reducir perfusión renal. Monitorizar diuresis y creatinina.',
+    },
+    elderlyAlert: {
+      'pt': 'Vasoconstrição periférica intensa → risco de isquemia de extremidades, mesentérica e renal. Usar menor dose eficaz. Monitorar sinais de isquemia periférica.',
+      'es': 'Vasoconstricción intensa → riesgo de isquemia de extremidades, mesentérica y renal. Usar menor dosis eficaz.',
+    },
+    mechanism: {
+      'pt': 'Agonista α1 (vasoconstrição intensa) >> β1 (↑ contratilidade) e β2 mínimo → ↑ PAM, ↑ RVS. Droga de escolha no choque séptico (SSC 2021).',
+      'es': 'Agonista α1 (vasoconstricción intensa) >> β1 (↑ contractilidad) → ↑ PAM. Droga de elección en choque séptico (SSC 2021).',
+    },
+    warning: {
+      'pt': 'Necrose tissular se extravasamento — usar via central preferencial. Taquiarritmias. Isquemia mesentérica em doses altas. Evitar hipoperfusão periférica prolongada. Não usar em solução alcalina (inativada).',
+      'es': 'Necrosis tisular si extravasación — vía central preferida. Taquiarritmias. Isquemia mesentérica en dosis altas.',
+    },
+    adverse: {
+      'pt': ['Hipertensão', 'Bradicardia reflexa', 'Isquemia periférica', 'Necrose por extravasamento', 'Isquemia mesentérica', 'Taquiarritmias'],
+      'es': ['Hipertensión', 'Bradicardia refleja', 'Isquemia periférica', 'Necrosis por extravasación', 'Isquemia mesentérica'],
+    },
+  ),
+
+  DrugModel(
+    id: 'dobutamina',
+    name: 'Dobutamina',
+    className: {'pt': 'Inotrópico positivo – agonista β1 seletivo', 'es': 'Inotrópico positivo – agonista β1 selectivo'},
+    category: {'pt': 'UTI / Emergência', 'es': 'UCI / Emergencia'},
+    route: 'IV (infusão contínua)',
+    doseType: 'weight',
+    fixedDose: {
+      'pt': 'Choque cardiogênico/ICC descompensada: 2–20 mcg/kg/min IV contínuo. Iniciar 2–5 mcg/kg/min e titular pelo débito cardíaco/PA. Efeito inotrópico predominante 2–10 mcg/kg/min.',
+      'es': 'Choque cardiogénico/ICC descompensada: 2–20 mcg/kg/min IV continuo. Iniciar 2–5 mcg/kg/min, titular por DC/PA.',
+    },
+    renalAlert: {
+      'pt': 'Sem ajuste necessário. ↑ Débito cardíaco pode melhorar perfusão renal no choque cardiogênico.',
+      'es': 'Sin ajuste necesario. ↑ Gasto cardíaco puede mejorar perfusión renal en choque cardiogénico.',
+    },
+    elderlyAlert: {
+      'pt': 'Taquiarritmias mais frequentes (FA, ESV). Usar menor dose eficaz. Monitorar ECG continuamente.',
+      'es': 'Taquiarritmias más frecuentes (FA, ESV). Usar menor dosis eficaz. Monitorizar ECG continuamente.',
+    },
+    mechanism: {
+      'pt': 'Agonista β1 seletivo → ↑ contratilidade, ↑ DC, ↓ RVS (vasodilatação β2 leve). Sem efeito dopaminérgico. Cronotrópico positivo moderado. Não aumenta PA como vasopressores.',
+      'es': 'Agonista β1 selectivo → ↑ contractilidad, ↑ DC, ↓ RVS (vasodilatación β2 leve). Sin efecto dopaminérgico.',
+    },
+    warning: {
+      'pt': 'Taquicardia (25%) e taquiarritmias — reduzir dose ou suspender se FC > 130 bpm. Não usa como vasopressor (não aumenta PAM de forma confiável). Tolerância após 72–96h uso contínuo. Não melhorou prognóstico em estudos — usar na menor dose por menor tempo.',
+      'es': 'Taquicardia (25%) y taquiarritmias — reducir si FC >130 lpm. No es vasopresor. Tolerancia tras 72–96 h de uso continuo.',
+    },
+    adverse: {
+      'pt': ['Taquicardia', 'Taquiarritmias (FA, TVNS)', 'Hipertensão leve', 'Cefaleia', 'Piloereção', 'Tolerância (uso prolongado)'],
+      'es': ['Taquicardia', 'Taquiarritmias (FA, TVNS)', 'Hipertensión leve', 'Cefalea', 'Tolerancia (uso prolongado)'],
+    },
+  ),
+
+  DrugModel(
+    id: 'adenosina',
+    name: 'Adenosina',
+    className: {'pt': 'Antiarrítmico – purina endógena (Classe V)', 'es': 'Antiarrítmico – purina endógena (Clase V)'},
+    category: {'pt': 'UTI / Emergência', 'es': 'UCI / Emergencia'},
+    route: 'IV rápido (bolus)',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': 'TPSV: 6 mg IV rápido em 1–3 s + flush 20 mL SF imediato. Se sem resposta em 1–2 min: 12 mg IV rápido. Repetir 12 mg se necessário. Máx. 30 mg total. Via central: reduzir dose pela metade.',
+      'es': 'TPSV: 6 mg IV rápido + flush 20 mL SF. Sin respuesta en 1–2 min: 12 mg IV. Repetir 12 mg si necesario. Máx. 30 mg total.',
+    },
+    renalAlert: {
+      'pt': 'Sem ajuste necessário — meia-vida < 10 s (metabolismo eritrócitos/endotélio).',
+      'es': 'Sin ajuste — semivida <10 s (metabolismo eritrocitos/endotelio).',
+    },
+    elderlyAlert: {
+      'pt': 'Maior sensibilidade — iniciar com 3 mg se suspeita de doença do nó sinusal ou bloqueio AV. Monitorar ECG e PA.',
+      'es': 'Mayor sensibilidad — iniciar con 3 mg si sospecha disfunción nodo sinusal o BAV. Monitorizar ECG y PA.',
+    },
+    mechanism: {
+      'pt': 'Liga-se ao receptor A1 no nó AV → ↑ condutância K+ e ↓ corrente If → bloqueia condução AV transitoriamente (6–12 s) → interrompe reentrada no nó AV → converte TPSV.',
+      'es': 'Se une al receptor A1 en nodo AV → bloqueo transitorio conducción AV (6–12 s) → interrumpe reentrada → convierte TPSV.',
+    },
+    warning: {
+      'pt': 'Broncoespasmo grave (contraindicada em asma e DPOC grave). Assistolia transitória (5–15 s) esperada. Informar paciente antes. Padrão de pré-excitação (WPW) pode converter em FA com alta resposta ventricular. ECG contínuo obrigatório.',
+      'es': 'Broncoespasmo grave — contraindicada en asma y EPOC grave. Asistolia transitoria esperada (5–15 s). Síndrome WPW puede convertir en FA con alta respuesta.',
+    },
+    adverse: {
+      'pt': ['Flushing/calor (75%)', 'Dispneia (50%)', 'Dor torácica', 'Assistolia transitória', 'Broncoespasmo (asma)', 'Náuseas', 'Bradicardia reflexa pós-conversão'],
+      'es': ['Flushing/calor (75%)', 'Disnea (50%)', 'Dolor torácico', 'Asistolia transitoria', 'Broncoespasmo (asma)', 'Náuseas'],
+    },
+  ),
+
+  DrugModel(
+    id: 'sulfato_magnesio',
+    name: 'Sulfato de Magnésio (MgSO₄)',
+    className: {'pt': 'Eletrólito / anticonvulsivante / tocolítico / antiarrítmico', 'es': 'Electrolito / anticonvulsivante / tocolítico / antiarrítmico'},
+    category: {'pt': 'UTI / Emergência', 'es': 'UCI / Emergencia'},
+    route: 'IV / IM',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': 'Pré-eclâmpsia/eclâmpsia: 4–6 g IV em 20 min (ataque) + 1–2 g/h (manutenção). Torsades de Pointes: 2 g IV em 5–15 min. Exacerbação grave de asma: 2 g IV em 20 min. Hipomagnesemia: 1–2 g IV em 15–60 min.',
+      'es': 'Preeclampsia/eclampsia: 4–6 g IV en 20 min + 1–2 g/h. Torsades: 2 g IV en 5–15 min. Asma grave: 2 g IV en 20 min.',
+    },
+    renalAlert: {
+      'pt': 'Eliminação renal exclusiva — acúmulo em IR leve-moderada. Monitorar reflexos patelares, FR e nível sérico. ClCr <30: máx. 50% da dose usual. Antídoto: gluconato de cálcio 1 g IV.',
+      'es': 'Eliminación renal exclusiva — acumulación en IR. Monitorizar reflejos patelares, FR y nivel sérico. Antídoto: gluconato de calcio 1 g IV.',
+    },
+    elderlyAlert: {
+      'pt': 'Toxicidade rápida em idosos (↓ ClCr). Monitorar: reflejos (desaparecem >5 mEq/L), FR (paralisia >10 mEq/L), PA. Ter gluconato de cálcio à beira.',
+      'es': 'Toxicidad rápida en ancianos (↓ ClCr). Monitorizar: reflejos (desaparecen >5 mEq/L), FR (parálisis >10 mEq/L). Gluconato de calcio a la cabecera.',
+    },
+    mechanism: {
+      'pt': 'Antagonista fisiológico do Ca²+ → ↓ excitabilidade neuromuscular → efeito anticonvulsivante, tocolítico e antiarrítmico. Cofator enzimático essencial (300+ reações metabólicas).',
+      'es': 'Antagonista fisiológico del Ca²+ → ↓ excitabilidad neuromuscular → anticonvulsivante, tocolítico y antiarrítmico.',
+    },
+    warning: {
+      'pt': 'Toxicidade em escala: ↓ reflexos patelares (4–5 mEq/L) → FR < 12/min (5–10 mEq/L) → parada cardiorrespiratória (> 15 mEq/L). Antídoto: gluconato de cálcio 1 g IV lento. Monitorar nível sérico se IR.',
+      'es': 'Toxicidad escalonada: ↓ reflejos (4–5 mEq/L) → FR <12/min (5–10 mEq/L) → parada (>15 mEq/L). Antídoto: gluconato calcio 1 g IV.',
+    },
+    adverse: {
+      'pt': ['Flushing/calor', 'Náuseas', 'Hipotensão', 'Bloqueio neuromuscular', 'Depressão respiratória', 'Parada cardíaca (tóxico)', 'Bradicardia'],
+      'es': ['Flushing/calor', 'Náuseas', 'Hipotensión', 'Bloqueo neuromuscular', 'Depresión respiratoria', 'Parada cardíaca (tóxico)'],
+    },
+  ),
+
 ];

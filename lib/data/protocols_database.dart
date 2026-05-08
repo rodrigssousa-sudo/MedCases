@@ -640,4 +640,384 @@ const List<ProtocolModel> protocolsDatabase = [
     drugs: ['ceftriaxona', 'omeprazol', 'noradrenalina'],
   ),
 
+  // ─────────────────────────────────────────────
+  //  NEUROLÓGICO
+  // ─────────────────────────────────────────────
+  ProtocolModel(
+    id: 'avc_isquemico',
+    title: {'pt': 'AVC Isquêmico Agudo — Janela Trombolítica', 'es': 'ACV Isquémico Agudo — Ventana Trombolítica'},
+    severity: {'pt': 'Crítico', 'es': 'Crítico'},
+    recognize: {
+      'pt': 'Déficit neurológico focal de início súbito (NIHSS). TC crânio sem contraste: excluir hemorragia. Janela: ≤4,5h (alteplase) ou ≤24h wake-up (avaliação imagem). Escala FAST: Face/Arm/Speech/Time.',
+      'es': 'Déficit neurológico focal de inicio súbito (NIHSS). TC cráneo sin contraste: excluir hemorragia. Ventana: ≤4,5 h (alteplase). Escala FAST.',
+    },
+    actions: {
+      'pt': [
+        '1. CÓDIGO AVC: TC crânio SEM CONTRASTE em <25 min da chegada',
+        '2. Glicemia capilar imediata (tratar hipo/hiperglicemia grave)',
+        '3. Monitorar ECG, PA, SpO2 — manter SpO2 >94%, O2 apenas se necessário',
+        '4. NIHSS à beira do leito para determinar elegibilidade e monitorar',
+        '5. Alteplase IV 0,9 mg/kg (máx. 90 mg): 10% em bolo 1 min, 90% em 60 min — se elegível ≤4,5h',
+        '6. Contraindicações absolutas alteplase: hemorragia, PA >185/110 mmHg não controlada, glicemia <50 ou >400 mg/dL, cirurgia recente <14d, AVC/TCE <3 meses',
+        '7. Trombectomia mecânica: NIHSS ≥6, oclusão de grande vaso, janela ≤24h (com imagem adequada)',
+        '8. Não iniciar anticoagulação/antiagregação nas primeiras 24h pós-alteplase',
+      ],
+      'es': [
+        '1. CÓDIGO ACV: TC cráneo SIN CONTRASTE en <25 min de llegada',
+        '2. Glucemia capilar inmediata',
+        '3. Monitorizar ECG, PA, SpO2 — manter SpO2 >94%',
+        '4. NIHSS para determinar elegibilidad',
+        '5. Alteplase IV 0,9 mg/kg (máx. 90 mg): 10% en bolo 1 min, 90% en 60 min — si elegible ≤4,5 h',
+        '6. Contraindicaciones alteplase: hemorragia, PA >185/110 mmHg, glucemia <50 o >400, cirugía <14d',
+        '7. Trombectomía mecánica: NIHSS ≥6, oclusión vaso grande, ventana ≤24 h',
+        '8. No iniciar anticoagulación en primeras 24 h post-alteplase',
+      ],
+    },
+    avoid: {
+      'pt': 'EVITAR: anti-hipertensivos agressivos antes de alteplase (meta PA ≤185/110 mmHg apenas). Não baixar PA <180/105 mmHg nas primeiras 24h pós-alteplase (risco extensão isquêmica). Evitar glicose IV desnecessária (hiperglicemia piora prognóstico). Não administrar heparina ou antiagregante nas primeiras 24h após trombólise.',
+      'es': 'EVITAR: antihipertensivos agresivos antes de alteplase. No bajar PA <180/105 mmHg en primeras 24 h post-alteplase. Evitar glucosa IV innecesaria. No dar heparina/antiagregante primeras 24 h post-trombólisis.',
+    },
+    drugs: ['alteplase', 'atenolol', 'acido_acetilsalicilico'],
+  ),
+
+  ProtocolModel(
+    id: 'status_epilepticus',
+    title: {'pt': 'Estado de Mal Epiléptico (Status Epilepticus)', 'es': 'Estado Epiléptico (Status Epilepticus)'},
+    severity: {'pt': 'Crítico', 'es': 'Crítico'},
+    recognize: {
+      'pt': 'Convulsão contínua ≥5 min OU ≥2 crises sem recuperação completa da consciência. Urgência absoluta — mortalidade 10–20%. Verificar: hipoglicemia, eletrólitos, febre, histórico de epilepsia, AAS, trauma.',
+      'es': 'Convulsión continua ≥5 min O ≥2 crisis sin recuperación completa. Urgencia absoluta — mortalidad 10–20%.',
+    },
+    actions: {
+      'pt': [
+        '1. 0–5 min: Via aérea, O2, acesso IV, glicemia capilar — tratar hipoglicemia (50 mL glicose 50% IV)',
+        '2. 0–5 min: Colher: gasometria, eletrólitos, glicose, hemograma, antiepilépticos séricos',
+        '3. 5–20 min (1ª linha — benzodiazepínico): Diazepam 10 mg IV OU Midazolam 10 mg IM/IV OU Clonazepam 1–2 mg IV',
+        '4. 20–40 min (2ª linha — antiepiléptico IV): Fenitoína 20 mg/kg IV 50 mg/min OU Levetiracetam 60 mg/kg IV (máx. 4500 mg) OU Valproato 40 mg/kg IV',
+        '5. >40 min (Status refratário): Anestesia geral com intubação — midazolam infusão 0,1–2 mg/kg/h OU propofol OU tiopental',
+        '6. Identificar e tratar causa subjacente: infecção, AVC, metabólico, tóxico',
+        '7. EEG contínuo se status não-convulsivo ou anestesia geral',
+      ],
+      'es': [
+        '1. 0–5 min: Vía aérea, O2, acceso IV, glucemia — tratar hipoglucemia',
+        '2. 0–5 min: Gasometría, electrolitos, glucosa, hemograma, antiepilépticos séricos',
+        '3. 5–20 min (1ª línea): Diazepam 10 mg IV O Midazolam 10 mg IM/IV O Clonazepam 1–2 mg IV',
+        '4. 20–40 min (2ª línea): Fenitoína 20 mg/kg IV OU Levetiracetam 60 mg/kg IV OU Valproato 40 mg/kg IV',
+        '5. >40 min (Status refractario): Anestesia general + intubación — midazolam 0,1–2 mg/kg/h',
+        '6. Identificar y tratar causa subyacente',
+        '7. EEG continuo en status no convulsivo o anestesia general',
+      ],
+    },
+    avoid: {
+      'pt': 'EVITAR: atraso na 1ª dose — cada minuto aumenta refratariedade. Não esperar acesso IV para dar midazolam (IM é eficaz). Fenitoína: infusão >50 mg/min causa bradiarritmia. Não usar fenitoína em crises alcoólicas ou metabólicas (baixa eficácia). Evitar hiperventilação agressiva sem ITÁ.',
+      'es': 'EVITAR: demora en 1ª dosis. No esperar acceso IV para midazolam (IM es eficaz). Fenitoína: infusión >50 mg/min causa bradiarritmia. No usar fenitoína en crisis alcohólicas o metabólicas.',
+    },
+    drugs: ['diazepam', 'midazolam', 'fenitoina', 'levetiracetam', 'clonazepam'],
+  ),
+
+  ProtocolModel(
+    id: 'meningite_bacteriana',
+    title: {'pt': 'Meningite Bacteriana Aguda', 'es': 'Meningitis Bacteriana Aguda'},
+    severity: {'pt': 'Crítico', 'es': 'Crítico'},
+    recognize: {
+      'pt': 'Tríade: cefaleia + febre + rigidez de nuca. Sinais Kernig e Brudzinski. Alteração do nível de consciência. Petéquias/púrpura (meningococo). Fotofobia, fonofobia. Liquor: pleocitose PMN, proteína ↑, glicose ↓.',
+      'es': 'Tríada: cefalea + fiebre + rigidez de nuca. Kernig y Brudzinski. Petequias (meningococo). LCR: pleocitosis PMN, proteína ↑, glucosa ↓.',
+    },
+    actions: {
+      'pt': [
+        '1. NÃO ATRASAR ANTIBIÓTICO para esperar TC (se sem papiledema e Glasgow ≥13)',
+        '2. Hemocultura (2 amostras) ANTES do antibiótico — 5 min no máximo',
+        '3. Dexametasona 0,15 mg/kg IV imediatamente ANTES ou COM 1ª dose de antibiótico',
+        '4. Ceftriaxona 2 g IV 12/12h (adulto) — cobertura pneumo/meningo',
+        '5. Ampicilina 2 g IV 4/4h se >50 anos ou imunossuprimido (cobertura Listeria)',
+        '6. TC crânio: realizar se papiledema, Glasgow <13, crise, déficit focal — ANTES da punção',
+        '7. Punção lombar com análise do LCR (após TC se indicada)',
+        '8. Suporte: correção de eletrólitos, controle de PA, cabeceira 30°, monitorar hidrocefalia',
+      ],
+      'es': [
+        '1. NO RETRASAR ANTIBIÓTICO para esperar TC (si sin papiledema y Glasgow ≥13)',
+        '2. Hemocultivo (2 muestras) ANTES del antibiótico — máx. 5 min',
+        '3. Dexametasona 0,15 mg/kg IV ANTES o CON 1ª dosis de antibiótico',
+        '4. Ceftriaxona 2 g IV c/12 h (adulto)',
+        '5. Ampicilina 2 g IV c/4 h si >50 años o inmunosuprimido (cobertura Listeria)',
+        '6. TC cráneo si papiledema, Glasgow <13, crisis, déficit focal — ANTES de punción',
+        '7. Punción lumbar con análisis de LCR',
+        '8. Soporte: electrolitos, PA, cabecera 30°, monitorar hidrocefalia',
+      ],
+    },
+    avoid: {
+      'pt': 'NUNCA atrasar antibiótico esperando TC sem indicação. Não realizar punção lombar se suspeita de hipertensão intracraniana sem TC prévia. Dexametasona: eficácia máxima apenas se iniciada antes/com antibiótico — não usar após. Evitar hipotensão e hiponatremia (piora edema cerebral).',
+      'es': 'NUNCA retrasar antibiótico esperando TC sin indicación. No realizar PL sin TC previa si sospecha HIC. Dexametasona: máxima eficacia solo si antes/con antibiótico. Evitar hipotensión e hiponatremia.',
+    },
+    drugs: ['ceftriaxona', 'dexametasona', 'meropenem'],
+  ),
+
+  // ─────────────────────────────────────────────
+  //  ENDÓCRINO / METABÓLICO
+  // ─────────────────────────────────────────────
+  ProtocolModel(
+    id: 'cetoacidose_diabetica',
+    title: {'pt': 'Cetoacidose Diabética (CAD)', 'es': 'Cetoacidosis Diabética (CAD)'},
+    severity: {'pt': 'Alto', 'es': 'Alto'},
+    recognize: {
+      'pt': 'Glicemia >250 mg/dL + pH <7,3 OU HCO3 <18 mEq/L + cetonúria/cetonemia. Tríade: poliúria, polidipsia, vômitos + dor abdominal. Respiração de Kussmaul (acidose grave). Hálito cetônico.',
+      'es': 'Glucemia >250 mg/dL + pH <7,3 O HCO3 <18 mEq/L + cetonuria/cetonemia. Respiración de Kussmaul. Aliento cetónico.',
+    },
+    actions: {
+      'pt': [
+        '1. Hidratação: SF 0,9% — 1L em 1h, depois 250–500 mL/h (ajustar pela resposta)',
+        '2. K+ sérico: se K+ <3,5 repor KCl antes da insulina! Se K+ 3,5–5,5: KCl 20–40 mEq/h com insulina',
+        '3. Insulina Regular IV contínua: 0,14 UI/kg/h (sem bolus se K+ reposto). Trocar para SC após anion gap normalizado',
+        '4. Glicemia-alvo queda 50–75 mg/dL/h. Adicionar SG 5–10% quando glicemia <250 mg/dL para manter infusão de insulina',
+        '5. Bicarbonato APENAS se pH <6,9: 100 mEq NaHCO3 em 1–2h',
+        '6. Monitorar: glicemia horária, eletrólitos e gasometria a cada 2–4h',
+        '7. Identificar e tratar fator precipitante: infecção, omissão de insulina, IAM',
+        '8. Critérios de resolução: glicemia <200 + HCO3 ≥15 + pH ≥7,3 + anion gap ≤12',
+      ],
+      'es': [
+        '1. Hidratación: SF 0,9% — 1L en 1h, luego 250–500 mL/h',
+        '2. K+ sérico: si K+ <3,5 reponer KCl ANTES de insulina. Si K+ 3,5–5,5: KCl 20–40 mEq/h',
+        '3. Insulina Regular IV: 0,14 UI/kg/h (sin bolo si K+ repuesto)',
+        '4. Glucemia objetivo: caída 50–75 mg/dL/h. Agregar SG 5% cuando <250 mg/dL',
+        '5. Bicarbonato SOLO si pH <6,9: 100 mEq NaHCO3 en 1–2 h',
+        '6. Monitorizar: glucemia horaria, electrolitos y gasometría c/2–4 h',
+        '7. Identificar y tratar factor precipitante',
+        '8. Resolución: glucemia <200 + HCO3 ≥15 + pH ≥7,3',
+      ],
+    },
+    avoid: {
+      'pt': 'EVITAR: insulina sem reposição prévia de K+ (hipopotassemia grave fatal). Não usar bicarbonato rotineiramente (piora hipopotassemia, acidose paradoxal intracraniana). Evitar queda rápida de osmolaridade (edema cerebral, especialmente crianças). Não suspender insulina até anion gap normalizar.',
+      'es': 'EVITAR: insulina sin reposición K+ (hipopotasemia fatal). No usar bicarbonato rutinariamente. Evitar caída rápida de osmolaridad (edema cerebral). No suspender insulina hasta normalizar anion gap.',
+    },
+    drugs: ['insulina_regular', 'cloreto_potassio', 'bicarbonato_sodio'],
+  ),
+
+  ProtocolModel(
+    id: 'crise_hipertensiva',
+    title: {'pt': 'Crise Hipertensiva — Emergência vs. Urgência', 'es': 'Crisis Hipertensiva — Emergencia vs. Urgencia'},
+    severity: {'pt': 'Alto', 'es': 'Alto'},
+    recognize: {
+      'pt': 'Emergência hipertensiva: PA muito elevada + lesão aguda de órgão-alvo (LOA): encefalopatia, EAP, SCA, AVC, eclâmpsia, disseção de aorta. Urgência: PA muito elevada SEM LOA (assintomático/sintomas menores).',
+      'es': 'Emergencia hipertensiva: PA muy elevada + lesión aguda de órgano diana (LOA). Urgencia: PA muy elevada SIN LOA.',
+    },
+    actions: {
+      'pt': [
+        '1. Emergência hipertensiva: internação UTI, monitoração invasiva de PA',
+        '2. Meta redução PA: -20–25% nas primeiras 1–2h (NÃO normalizar abruptamente)',
+        '3. Encefalopatia/EAP: Nitroprussiato de sódio 0,5–10 µg/kg/min IV OU Nicardipino 5 mg/h IV',
+        '4. SCA + hipertensão: Nitroglicerina 5–200 µg/min IV',
+        '5. Disseção de aorta: Esmolol IV (meta FC <60 bpm) + Nitroprussiato IV — meta PA sistólica ≤120 mmHg',
+        '6. Eclâmpsia: MgSO4 4–6 g IV (ataque) + 1–2 g/h + Hidralazina 5–10 mg IV ou Labetalol IV',
+        '7. Urgência hipertensiva: reduzir PA em 24–48h com medicação VO (captopril, atenolol, amlodipino)',
+        '8. Investigar causas secundárias: feocromocitoma, hiperaldosteronismo, uso de cocaína',
+      ],
+      'es': [
+        '1. Emergencia hipertensiva: internación UTI, monitoreo invasivo de PA',
+        '2. Meta reducción PA: -20–25% en primeras 1–2 h (NO normalizar abruptamente)',
+        '3. Encefalopatía/EAP: Nitroprusiato 0,5–10 µg/kg/min IV O Nicardipino 5 mg/h IV',
+        '4. SCA + HAS: Nitroglicerina 5–200 µg/min IV',
+        '5. Disección aórtica: Esmolol IV (meta FC <60 lpm) + Nitroprusiato IV',
+        '6. Eclampsia: MgSO4 4–6 g IV + 1–2 g/h + Hidralazina 5–10 mg IV',
+        '7. Urgencia: reducir PA en 24–48 h con VO (captopril, atenolol, amlodipino)',
+        '8. Investigar causas secundarias',
+      ],
+    },
+    avoid: {
+      'pt': 'NUNCA normalizar PA rapidamente na emergência (AVC isquêmico: meta apenas <185/110 para trombólise). Sublingual nifedipino: CONTRAINDICADO (queda abrupta e imprevisível da PA → isquemia cerebral/coronariana). Evitar diuréticos em disseção de aorta. Não usar IECA/ARA II no AVC agudo.',
+      'es': 'NUNCA normalizar PA rápido en emergencia (ACV isquémico: meta solo <185/110). Nifedipino SL: CONTRAINDICADO. Evitar diuréticos en disección aórtica.',
+    },
+    drugs: ['nitroglicerina', 'metoprolol', 'atenolol', 'amlodipino', 'sulfato_magnesio'],
+  ),
+
+  // ─────────────────────────────────────────────
+  //  PNEUMOLOGIA / RESPIRATÓRIO
+  // ─────────────────────────────────────────────
+  ProtocolModel(
+    id: 'tromboembolismo_pulmonar',
+    title: {'pt': 'Tromboembolismo Pulmonar (TEP) — Diagnóstico e Tratamento', 'es': 'Tromboembolismo Pulmonar (TEP) — Diagnóstico y Tratamiento'},
+    severity: {'pt': 'Crítico', 'es': 'Crítico'},
+    recognize: {
+      'pt': 'Dispneia súbita, dor pleurítica, hemoptise. Escore de Wells e Escore de Genebra para probabilidade pré-teste. D-dímero negativo (<500 µg/L): exclui TEP em baixa probabilidade. Angiotomografia (gold standard). ECG: S1Q3T3, BDRCD, taquicardia sinusal.',
+      'es': 'Disnea súbita, dolor pleurítico, hemoptisis. Escores Wells y Ginebra para probabilidad pre-test. D-dímero negativo: excluye TEP en baja probabilidad. Angiotomografía (gold standard).',
+    },
+    actions: {
+      'pt': [
+        '1. TEP de baixo risco: Anticoagulação + alta precoce se PESI classe I–II',
+        '2. Anticoagulação imediata: Rivaroxabana 15 mg 12/12h × 21d ou Enoxaparina 1 mg/kg 12/12h',
+        '3. TEP de alto risco (choque/hipotensão): Trombólise sistêmica — Alteplase 100 mg IV em 2h (Contraindicações: AVC <3m, cirurgia <10d)',
+        '4. Se contraindicação à trombólise: Embolectomia cirúrgica ou Trombectomia mecânica percutânea',
+        '5. Suporte hemodinâmico: Noradrenalina 0,1–0,5 µg/kg/min, Dobutamina se disfunção VD',
+        '6. O2 suplementar: SpO2 ≥ 94%. VNI ou IOT se insuficiência respiratória grave',
+        '7. Filtro de VCI: apenas em contraindicação absoluta à anticoagulação',
+        '8. Monitorar: ecocardiograma (disfunção VD?), troponina, BNP, lactato',
+      ],
+      'es': [
+        '1. TEP bajo riesgo: Anticoagulación + alta precoz si PESI I–II',
+        '2. Anticoagulación inmediata: Rivaroxabana 15 mg c/12 h × 21d o Enoxaparina 1 mg/kg c/12 h',
+        '3. TEP alto riesgo (choque/hipotensión): Trombólisis — Alteplase 100 mg IV en 2 h',
+        '4. Si contraindicación a trombólisis: Embolectomía quirúrgica',
+        '5. Soporte hemodinámico: Noradrenalina + Dobutamina si disfunción VD',
+        '6. O2: SpO2 ≥ 94%. VNI o IOT si insuficiencia respiratoria grave',
+        '7. Filtro VCI: solo en contraindicación absoluta a anticoagulación',
+        '8. Monitorizar: ecocardiograma, troponina, BNP, lactato',
+      ],
+    },
+    avoid: {
+      'pt': 'EVITAR heparina IM (usar SC ou IV). Não realizar trombólise em TEP hemodinamicamente estável (risco sangramento > benefício). Não interromper anticoagulação precocemente (mínimo 3 meses). Evitar repouso absoluto desnecessário (↑ risco TVP). Não usar D-dímero isolado em alta probabilidade pré-teste.',
+      'es': 'EVITAR heparina IM. No realizar trombólisis en TEP hemodinámicamente estable. No interrumpir anticoagulación precoz (mín. 3 meses). No usar D-dímero aislado en alta probabilidad.',
+    },
+    drugs: ['enoxaparina', 'rivaroxabana', 'noradrenalina', 'dobutamina'],
+  ),
+
+  ProtocolModel(
+    id: 'pneumonia_grave',
+    title: {'pt': 'Pneumonia Adquirida na Comunidade (PAC) Grave — UTI', 'es': 'Neumonía Adquirida en la Comunidad (NAC) Grave — UTI'},
+    severity: {'pt': 'Alto', 'es': 'Alto'},
+    recognize: {
+      'pt': 'Critérios de gravidade (ATS/IDSA): escore CURB-65 ≥3 ou critérios maiores (VM, choque séptico). Critérios menores: FR >30, PaO2/FiO2 <250, multilobar, confusão, ureia >20, leucopenia, trombocitopenia, hipotermia, hipotensão.',
+      'es': 'Criterios CURB-65 ≥3 o criterios mayores (VM, choque séptico). Criterios menores: FR >30, PaO2/FiO2 <250, multilobar, confusión, urea >20.',
+    },
+    actions: {
+      'pt': [
+        '1. Antibiótico em <1h do diagnóstico (impacto em mortalidade)',
+        '2. PAC-UTI sem risco Pseudomonas: Ceftriaxona 1–2 g IV/dia + Azitromicina 500 mg IV/dia',
+        '3. PAC-UTI com risco Pseudomonas (DPOC, bronquiectasias, corticoterapia): Pip-Tazo + Azitromicina OU Cefepima + Azitromicina',
+        '4. Moxifloxacino ou Levofloxacino (monoterapia) se betametol alérgico',
+        '5. O2 suplementar: SpO2 92–96%. HFNI (high flow) ou VNI se hipoxemia refratária',
+        '6. Sepse associada: bundle de sepse (ver protocolo sepse grave)',
+        '7. Corticosteroide: Dexametasona 6 mg/dia × 5d se ventilado e PaO2/FiO2 <150',
+        '8. Oseltamivir 75 mg 12/12h se suspeita de influenza grave',
+      ],
+      'es': [
+        '1. Antibiótico en <1 h del diagnóstico',
+        '2. NAC-UTI sin riesgo Pseudomonas: Ceftriaxona 1–2 g IV + Azitromicina 500 mg IV',
+        '3. NAC-UTI con riesgo Pseudomonas: Pip-Tazo + Azitromicina O Cefepima + Azitromicina',
+        '4. Moxifloxacino o Levofloxacino si alergia a betalactámico',
+        '5. O2: SpO2 92–96%. HFNI o VNI si hipoxemia refractaria',
+        '6. Sepsis asociada: bundle de sepsis',
+        '7. Corticoide: Dexametasona 6 mg/día × 5d si ventilado y PaO2/FiO2 <150',
+        '8. Oseltamivir 75 mg c/12 h si sospecha influenza grave',
+      ],
+    },
+    avoid: {
+      'pt': 'EVITAR atraso no antibiótico (cada hora de atraso aumenta mortalidade). Não usar cobertura anaeróbica de rotina (exceto broncoaspiração documentada). Evitar corticosteróide sistêmico fora das indicações (piora em influenza não complicada). Não manter antibióticos por mais de 5–7 dias se boa resposta clínica (risco de resistência e C. difficile).',
+      'es': 'EVITAR retraso en antibiótico. No usar cobertura anaeróbica de rutina. Evitar corticoide sistémico fuera de indicaciones. No mantener antibióticos >5–7 días si buena respuesta.',
+    },
+    drugs: ['azitromicina', 'ceftriaxona', 'dexametasona', 'meropenem'],
+  ),
+
+  // ─────────────────────────────────────────────
+  //  EMERGÊNCIA / UTI
+  // ─────────────────────────────────────────────
+  ProtocolModel(
+    id: 'choque_septico_avancado',
+    title: {'pt': 'Sepse Grave e Choque Séptico — Bundle SSC 2021', 'es': 'Sepsis Grave y Choque Séptico — Bundle SSC 2021'},
+    severity: {'pt': 'Crítico', 'es': 'Crítico'},
+    recognize: {
+      'pt': 'Sepse: disfunção orgânica ameaçadora (SOFA ≥2 pontos) causada por infecção suspeita/confirmada. Choque séptico: sepse + necessidade de vasopressor para PAM ≥65 mmHg + lactato >2 mmol/L na ausência de hipovolemia.',
+      'es': 'Sepsis: disfunción orgánica (SOFA ≥2) causada por infección. Choque séptico: sepsis + vasopresor para PAM ≥65 mmHg + lactato >2 mmol/L sin hipovolemia.',
+    },
+    actions: {
+      'pt': [
+        '1. HORA 1 (bundle 1h): coletar culturas, dosar lactato, iniciar antibiótico',
+        '2. Hemocultura 2 amostras de sítios diferentes ANTES do antibiótico',
+        '3. Antibiótico empírico de amplo espectro em <1h: Pip-Tazo 4,5 g 6/6h + Vancomicina OU Meropenem 1–2g 8/8h',
+        '4. Ressuscitação volêmica: SF/Ringer Lactato 30 mL/kg em ≤3h (avaliar responsividade)',
+        '5. Noradrenalina: iniciar se PAM <65 após reposição volêmica — titular (0,01–1 µg/kg/min)',
+        '6. Hidrocortisona 200 mg/dia IV contínuo (ou 50 mg 6/6h) se choque refratário (≥2 vasopressores)',
+        '7. Controle glicêmico: alvo 140–180 mg/dL (protocolo insulina)',
+        '8. Pacote 24h: ventilação protetora se IOT, controle de foco infeccioso, hemodiálise se necessário',
+      ],
+      'es': [
+        '1. HORA 1 (bundle): cultivos, lactato, iniciar antibiótico',
+        '2. Hemocultivo 2 muestras de sitios diferentes ANTES del antibiótico',
+        '3. Antibiótico empírico amplio en <1 h: Pip-Tazo 4,5 g c/6 h + Vancomicina O Meropenem 1–2 g c/8 h',
+        '4. Resucitación volémica: SF/Ringer Lactato 30 mL/kg en ≤3 h',
+        '5. Noradrenalina: iniciar si PAM <65 tras reposición volémica',
+        '6. Hidrocortisona 200 mg/día IV continuo si choque refractario (≥2 vasopresores)',
+        '7. Control glucémico: objetivo 140–180 mg/dL',
+        '8. Paquete 24 h: ventilación protectora si IOT, control foco infeccioso, hemodiálisis si necesario',
+      ],
+    },
+    avoid: {
+      'pt': 'EVITAR: atraso no antibiótico (>1h aumenta mortalidade ~7% por hora). Não usar coloides de amido (HES) — nefrotóxicos. Evitar ressuscitação volêmica excessiva (síndrome compartimental abdominal, EAP). Não usar corticosteroide como terapia primária (apenas em choque refratário). Evitar hiperglicemia e hipoglicemia (ambas pioram prognóstico).',
+      'es': 'EVITAR: demora en antibiótico. No usar coloides de almidón (HES). Evitar resucitación volémica excesiva. No usar corticoide como terapia primaria. Evitar hiper e hipoglucemia.',
+    },
+    drugs: ['noradrenalina', 'meropenem', 'vancomicina', 'hidrocortisona', 'insulina_regular'],
+  ),
+
+  ProtocolModel(
+    id: 'hiperpotassemia_grave',
+    title: {'pt': 'Hiperpotassemia Grave (K+ ≥6,0 mEq/L)', 'es': 'Hiperpotasemia Grave (K+ ≥6,0 mEq/L)'},
+    severity: {'pt': 'Alto', 'es': 'Alto'},
+    recognize: {
+      'pt': 'K+ ≥6,0 mEq/L (ou >5,5 com alterações ECG). ECG: ondas T apiculadas (>5,5) → PR longo, QRS largo, onda P desaparece → padrão sinusoidal → FV/assistolia. Causas: IRC, IECA/ARA2, espironolactona, betabloqueadores, hemólise, rabdomiólise.',
+      'es': 'K+ ≥6,0 mEq/L o >5,5 con cambios ECG. ECG: ondas T picudas → PR largo, QRS ancho → patrón sinusoidal → FV/asistolia. Causas: IRC, IECA/ARA2, espironolactona.',
+    },
+    actions: {
+      'pt': [
+        '1. ECG imediato — qualquer alteração = EMERGÊNCIA',
+        '2. Se alterações ECG (QRS largo, onda sinusoidal): Gluconato de Cálcio 1 g IV em 2–3 min (estabiliza membrana; repetir em 5 min se sem melhora)',
+        '3. Shift K+ para intracelular: Insulina Regular 10 UI IV + Glicose 50% 50 mL (onset 15–30 min)',
+        '4. Salbutamol nebulização 10–20 mg (agonista β2 — shift K+ intracelular)',
+        '5. Bicarbonato de Sódio 50–100 mEq IV se acidose metabólica concomitante (pH <7,2)',
+        '6. Remoção de K+: Resina de troca (patirômero/SPS) VO ou Hemodiálise (K+ >7 ou refratário)',
+        '7. Suspender imediatamente: IECA, ARA2, poupadores de K+, suplementos de K+, AINEs',
+        '8. Monitorar ECG continuamente e K+ a cada 2h até <5,5 mEq/L',
+      ],
+      'es': [
+        '1. ECG inmediato — cualquier alteración = EMERGENCIA',
+        '2. Si alteraciones ECG (QRS ancho): Gluconato de Calcio 1 g IV en 2–3 min',
+        '3. Shift K+ intracelular: Insulina Regular 10 UI IV + Glucosa 50% 50 mL',
+        '4. Salbutamol nebulización 10–20 mg (agonista β2)',
+        '5. Bicarbonato de Sodio 50–100 mEq IV si acidosis metabólica (pH <7,2)',
+        '6. Eliminación K+: Resina de intercambio (patirómero) VO o Hemodiálisis (K+ >7)',
+        '7. Suspender: IECA, ARA2, ahorradores K+, AINEs',
+        '8. ECG continuo y K+ c/2 h hasta <5,5 mEq/L',
+      ],
+    },
+    avoid: {
+      'pt': 'EVITAR: gluconato de cálcio em intoxicação digitálica (precipita arritmias fatais). Não tratar hiperpotassemia leve assintomática sem ECG. Não usar resinas como única medida em K+ >7 com alterações ECG (demora). Bicarbonato: eficácia limitada na ausência de acidose. Evitar IECA + ARA II + espironolactona juntos (tripla bloqueio do SRAA).',
+      'es': 'EVITAR: gluconato de calcio en intoxicación digitálica (arritmias fatales). No usar resinas como única medida con K+ >7 y alteraciones ECG. Bicarbonato: eficacia limitada sin acidosis.',
+    },
+    drugs: ['bicarbonato_sodio', 'insulina_regular', 'cloreto_potassio'],
+  ),
+
+  ProtocolModel(
+    id: 'intoxicacao_exogena',
+    title: {'pt': 'Intoxicação Exógena Aguda — Abordagem Geral', 'es': 'Intoxicación Exógena Aguda — Abordaje General'},
+    severity: {'pt': 'Alto', 'es': 'Alto'},
+    recognize: {
+      'pt': 'Identificar: substância, quantidade, tempo de exposição, via. Síndromes tóxicas: colinérgica (SLUDGE: salivação, lacrimejamento, diurese, GI, edema pulmonar — organofosforados), simpaticomimética (taquicardia, HAS, midríase — cocaína), anticolinérgica (seca, retro, confusão, midríase), opioide (tríade: coma + miose + FR↓).',
+      'es': 'Identificar: sustancia, cantidad, tiempo, vía. Síndromes tóxicas: colinérgica (SLUDGE — organofosforados), simpaticomimética (cocaína), anticolinérgica, opioide (tríada: coma + miosis + FR↓).',
+    },
+    actions: {
+      'pt': [
+        '1. ABCDE: via aérea, IOT se Glasgow ≤8 ou aspiração',
+        '2. Glicemia capilar + tiamina 100 mg IV (se alcoolismo) + Naloxona 0,4–2 mg IV/IM (se opioide)',
+        '3. Carvão ativado 1 g/kg VO (até 50 g): eficaz se <1–2h ingesta, consciência preservada, sem cáustico/hidrocarboneto',
+        '4. Organofosforados: Atropina 2–4 mg IV (titular pelos sintomas muscarínicos — secretomimético), Pralidoxima 1–2 g IV',
+        '5. BZD: Flumazenil (cautela — convulsões em dependentes)',
+        '6. Paracetamol: N-acetilcisteína 150 mg/kg IV em 60 min (nomograma Rumack-Matthew)',
+        '7. Tricíclicos: Bicarbonato de sódio se QRS >120ms; Diazepam nas convulsões',
+        '8. Contato com Centro de Informação Toxicológica: 0800-722-6001 (Brasil)',
+      ],
+      'es': [
+        '1. ABCDE: vía aérea, IOT si Glasgow ≤8',
+        '2. Glucemia + tiamina 100 mg IV (alcoholismo) + Naloxona 0,4–2 mg IV/IM (opioide)',
+        '3. Carbón activado 1 g/kg VO (máx. 50 g): eficaz si <1–2 h ingesta, consciencia preservada',
+        '4. Organofosforados: Atropina 2–4 mg IV, Pralidoxima 1–2 g IV',
+        '5. BZD: Flumazenil (precaución — convulsiones en dependientes)',
+        '6. Paracetamol: N-acetilcisteína 150 mg/kg IV en 60 min',
+        '7. Tricíclicos: Bicarbonato si QRS >120ms; Diazepam en convulsiones',
+        '8. Centro de información toxicológica local',
+      ],
+    },
+    avoid: {
+      'pt': 'EVITAR: lavagem gástrica de rotina (apenas seletivamente, <1h, proteger VA). Nunca carvão ativado em cáusticos/hidrocarbonetos/coma sem VA protegida. Flumazenil contraindicado em dependentes de BZD (convulsões) e uso crônico de epilépticos. Não induzir vômito (risco broncoaspiração). Evitar diálise sem indicação específica.',
+      'es': 'EVITAR: lavado gástrico de rutina. Nunca carbón activado en cáusticos/hidrocarburos/coma. Flumazenil contraindicado en dependientes BZD. No inducir vómito.',
+    },
+    drugs: ['diazepam', 'midazolam', 'bicarbonato_sodio', 'noradrenalina'],
+  ),
+
 ];

@@ -383,14 +383,21 @@ class _MainShellState extends State<MainShell> {
       const CasesScreen(),
     ];
 
-    final navItems = [
-      _NavItem(icon: Icons.home_rounded, label: p.t('cockpit')),
-      _NavItem(icon: Icons.medication_rounded, label: p.t('drugs')),
-      _NavItem(icon: Icons.emergency_rounded, label: p.t('protocols')),
-      _NavItem(icon: Icons.calculate_rounded, label: p.t('tools')),
-      _NavItem(icon: Icons.psychology_rounded, label: p.t('ai')),
-      _NavItem(icon: Icons.folder_open_rounded, label: p.t('cases')),
+    // Ordem: Cockpit | Fármacos | [IA central] | Protocolos | Calculadoras
+    // índice IA = 4 na lista screens, mas fica no centro visualmente
+    // Mapeamento: visual [0,1,2=IA,3,4] → screens [0,1,4,2,3]
+    // Simplificado: reordenar screens para que IA fique no índice 2
+    final reorderedScreens = [
+      screens[0], // Cockpit
+      screens[1], // Fármacos
+      screens[4], // IA ← centro
+      screens[2], // Protocolos
+      screens[3], // Calculadoras
     ];
+
+    // Tradução do índice visual para índice original (para openProtocol)
+    // Se _tab == 3 (visual Protocolos), o índice original era 2
+    // Tratamos isso atualizando _openProtocol para usar índice visual
 
     return Scaffold(
       backgroundColor: bg,
@@ -399,53 +406,222 @@ class _MainShellState extends State<MainShell> {
           onTabChange: (t) => setState(() => _tab = t),
           currentTab: _tab,
         ),
-        Expanded(child: IndexedStack(index: _tab, children: screens)),
+        Expanded(child: IndexedStack(index: _tab, children: reorderedScreens)),
       ]),
-      bottomNavigationBar: Container(
-        decoration: BoxDecoration(
-          color: navBg,
-          border: Border(top: BorderSide(color: navBorder, width: 1)),
-          boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.08), blurRadius: 16, offset: const Offset(0, -4))],
-        ),
-        child: SafeArea(
-          top: false,
-          child: SizedBox(
-            height: 62,
-            child: Row(
-              children: navItems.asMap().entries.map((e) {
-                final idx = e.key;
-                final item = e.value;
-                final active = _tab == idx;
-                return Expanded(
-                  child: GestureDetector(
-                    behavior: HitTestBehavior.opaque,
-                    onTap: () => setState(() => _tab = idx),
-                    child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-                      AnimatedContainer(
-                        duration: const Duration(milliseconds: 180),
-                        padding: const EdgeInsets.all(6),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(12),
-                          color: active ? const Color(0xFF07110d) : Colors.transparent,
-                        ),
-                        child: Icon(item.icon, size: 20,
-                          color: active ? const Color(0xFFFFE8A6) : (dark ? Colors.white38 : const Color(0xFF888888))),
-                      ),
-                      const SizedBox(height: 2),
-                      Text(item.label,
-                        style: TextStyle(
-                          fontSize: 9, fontWeight: active ? FontWeight.w900 : FontWeight.w600,
-                          color: active ? const Color(0xFF07110d) : (dark ? Colors.white38 : const Color(0xFF888888)),
-                        ),
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ]),
-                  ),
-                );
-              }).toList(),
+      bottomNavigationBar: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // ── Barra de segurança jurídica ──────────────────────────────────
+          _LegalBar(dark: dark),
+          // ── Navegação principal ──────────────────────────────────────────
+          Container(
+            decoration: BoxDecoration(
+              color: navBg,
+              border: Border(top: BorderSide(color: navBorder, width: 1)),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.12),
+                  blurRadius: 20,
+                  offset: const Offset(0, -4),
+                ),
+              ],
+            ),
+            child: SafeArea(
+              top: false,
+              child: SizedBox(
+                height: 72,
+                child: Stack(
+                  clipBehavior: Clip.none,
+                  alignment: Alignment.topCenter,
+                  children: [
+                    // ── Linha de botões regulares ──────────────────────────
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        _buildNavBtn(0, Icons.home_rounded, p.t('cockpit'), dark, p),
+                        _buildNavBtn(1, Icons.medication_rounded, p.t('drugs'), dark, p),
+                        // Espaço reservado para o botão IA flutuante
+                        const SizedBox(width: 76),
+                        _buildNavBtn(3, Icons.emergency_rounded, p.t('protocols'), dark, p),
+                        _buildNavBtn(4, Icons.calculate_rounded, p.t('tools'), dark, p),
+                      ],
+                    ),
+                    // ── Botão IA flutuante central ─────────────────────────
+                    Positioned(
+                      top: -22,
+                      child: _buildAiNavBtn(dark, p),
+                    ),
+                  ],
+                ),
+              ),
             ),
           ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildNavBtn(int idx, IconData icon, String label, bool dark, dynamic p) {
+    final active = _tab == idx;
+    return Expanded(
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: () => setState(() => _tab = idx),
+        child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+          AnimatedContainer(
+            duration: const Duration(milliseconds: 180),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12),
+              color: active
+                  ? const Color(0xFF07110d).withValues(alpha: 0.12)
+                  : Colors.transparent,
+            ),
+            child: Icon(
+              icon,
+              size: 22,
+              color: active
+                  ? (dark ? const Color(0xFFFFE8A6) : const Color(0xFF07110d))
+                  : (dark ? Colors.white38 : const Color(0xFFAAAAAA)),
+            ),
+          ),
+          const SizedBox(height: 2),
+          AnimatedDefaultTextStyle(
+            duration: const Duration(milliseconds: 180),
+            style: TextStyle(
+              fontSize: 9,
+              fontWeight: active ? FontWeight.w800 : FontWeight.w500,
+              color: active
+                  ? (dark ? const Color(0xFFFFE8A6) : const Color(0xFF07110d))
+                  : (dark ? Colors.white38 : const Color(0xFFAAAAAA)),
+            ),
+            child: Text(label, overflow: TextOverflow.ellipsis),
+          ),
+        ]),
+      ),
+    );
+  }
+
+  Widget _buildAiNavBtn(bool dark, dynamic p) {
+    final active = _tab == 2;
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: () => setState(() => _tab = 2),
+      child: SizedBox(
+        width: 76,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // ── Círculo flutuante principal ──────────────────────────────────
+            AnimatedContainer(
+              duration: const Duration(milliseconds: 220),
+              curve: Curves.easeOutBack,
+              width: active ? 60 : 56,
+              height: active ? 60 : 56,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: active
+                      ? [const Color(0xFFD4AF5A), const Color(0xFFC5A365), const Color(0xFF8B6914)]
+                      : [const Color(0xFF0D2018), const Color(0xFF07110d), const Color(0xFF075f45)],
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: active
+                        ? const Color(0xFFC5A365).withValues(alpha: 0.65)
+                        : const Color(0xFF075f45).withValues(alpha: 0.5),
+                    blurRadius: active ? 22 : 14,
+                    spreadRadius: active ? 3 : 1,
+                    offset: const Offset(0, 2),
+                  ),
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.35),
+                    blurRadius: 8,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
+                border: Border.all(
+                  color: active
+                      ? const Color(0xFFFFE8A6).withValues(alpha: 0.6)
+                      : const Color(0xFF1A3528).withValues(alpha: 0.8),
+                  width: active ? 2.5 : 1.5,
+                ),
+              ),
+              child: Center(
+                child: AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 200),
+                  child: Icon(
+                    Icons.psychology_rounded,
+                    key: ValueKey(active),
+                    size: active ? 30 : 27,
+                    color: active ? const Color(0xFF07110d) : const Color(0xFFFFE8A6),
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 4),
+            // ── Label ──────────────────────────────────────────────────────
+            AnimatedDefaultTextStyle(
+              duration: const Duration(milliseconds: 180),
+              style: TextStyle(
+                fontSize: 9,
+                fontWeight: FontWeight.w900,
+                letterSpacing: 0.3,
+                color: active
+                    ? const Color(0xFFC5A365)
+                    : (dark ? Colors.white54 : const Color(0xFF777777)),
+              ),
+              child: Text(p.t('ai')),
+            ),
+          ],
         ),
+      ),
+    );
+  }
+}
+
+// ── Barra legal / segurança jurídica ─────────────────────────────────────────
+class _LegalBar extends StatelessWidget {
+  final bool dark;
+  const _LegalBar({required this.dark});
+
+  @override
+  Widget build(BuildContext context) {
+    final bg   = dark ? const Color(0xFF060E09) : const Color(0xFFEFEADF);
+    final border = dark ? const Color(0xFF1A2E20) : const Color(0xFFD8D0C0);
+    final textColor = dark
+        ? Colors.white.withValues(alpha: 0.32)
+        : const Color(0xFF888070);
+
+    return Container(
+      width: double.infinity,
+      decoration: BoxDecoration(
+        color: bg,
+        border: Border(top: BorderSide(color: border, width: 0.5)),
+      ),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
+      child: Row(
+        children: [
+          Icon(Icons.info_outline_rounded, size: 10, color: textColor),
+          const SizedBox(width: 5),
+          Expanded(
+            child: Text(
+              'Fins educacionais. Não substitui julgamento clínico. '
+              'Baseado em: AHA 2020, ESC 2023, Harrison\'s 21ª ed., '
+              'ANVISA, ACLS/ATLS, SBEM, Micromedex.',
+              style: TextStyle(
+                fontSize: 8.5,
+                color: textColor,
+                height: 1.4,
+                letterSpacing: 0.1,
+              ),
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        ],
       ),
     );
   }
