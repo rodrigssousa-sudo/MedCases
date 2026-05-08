@@ -80,18 +80,44 @@
   </div>
 
   <script>
-    // ── Limpar Service Worker antigo IMEDIATAMENTE — antes de qualquer coisa ──
-    // SW stale é a causa mais comum de tela cinza em Safari/iOS mobile
-    if ('serviceWorker' in navigator) {
+    // ══════════════════════════════════════════════════════════════════
+    // ETAPA 1 — Destruir TODOS os Service Workers existentes
+    // Isso resolve: "flutter_service_worker.js Failed to fetch"
+    // e "FetchEvent resulted in network error"
+    // ══════════════════════════════════════════════════════════════════
+    (function() {
+      if (!('serviceWorker' in navigator)) return;
+
+      // 1a) Desregistrar todos os SWs registrados
       navigator.serviceWorker.getRegistrations().then(function(regs) {
-        for (var i = 0; i < regs.length; i++) {
-          regs[i].unregister();
-          console.log('[MedCases] SW removido:', regs[i].scope);
+        var count = regs.length;
+        if (count === 0) return;
+        console.log('[MedCases] Removendo ' + count + ' Service Worker(s) em cache...');
+        regs.forEach(function(reg) {
+          reg.unregister().then(function(ok) {
+            console.log('[MedCases] SW removido:', reg.scope, ok);
+          });
+        });
+        // 1b) Limpar todos os caches do browser
+        if ('caches' in window) {
+          caches.keys().then(function(keys) {
+            keys.forEach(function(key) {
+              caches.delete(key);
+              console.log('[MedCases] Cache deletado:', key);
+            });
+          });
         }
       });
-    }
 
-    // ── Loading screen ────────────────────────────────────────────────────────
+      // 1c) Se houver SW ativo controlando a página, forçar skipWaiting
+      if (navigator.serviceWorker.controller) {
+        navigator.serviceWorker.controller.postMessage({ type: 'SKIP_WAITING' });
+      }
+    })();
+
+    // ══════════════════════════════════════════════════════════════════
+    // ETAPA 2 — Loading screen (remove quando Flutter renderizar)
+    // ══════════════════════════════════════════════════════════════════
     var _loadingRemoved = false;
     function removeLoading() {
       if (_loadingRemoved) return;
@@ -102,10 +128,10 @@
       setTimeout(function() { if (el && el.parentNode) el.parentNode.removeChild(el); }, 450);
     }
 
-    // Estratégia 1: evento oficial Flutter
+    // Evento oficial Flutter
     window.addEventListener('flutter-first-frame', removeLoading);
 
-    // Estratégia 2: MutationObserver — canvas inserido = app rodando
+    // MutationObserver — canvas/flt-glass-pane inserido = app rodando
     var observer = new MutationObserver(function(mutations) {
       for (var i = 0; i < mutations.length; i++) {
         var nodes = mutations[i].addedNodes;
@@ -125,30 +151,39 @@
     });
     observer.observe(document.body, { childList: true, subtree: true });
 
-    // Estratégia 3: fallback 15s — remove loading mesmo se Flutter travar
+    // Fallback 20s — garante remoção mesmo se algo travar
     setTimeout(function() {
       if (!_loadingRemoved) {
-        console.warn('[MedCases] Timeout 15s — forçando remoção da loading screen');
+        console.warn('[MedCases] Timeout 20s — forçando remoção da loading screen');
         removeLoading();
       }
-    }, 15000);
+    }, 20000);
   </script>
 
-  <!-- Flutter bootstrap — sem async para garantir carregamento síncrono -->
+  <!-- Flutter bootstrap — carregado de forma síncrona -->
   <script src="flutter_bootstrap.js"></script>
 
   <script>
-    // ── Carregar Flutter SEM Service Worker (evita cache stale em todos browsers) ──
+    // ══════════════════════════════════════════════════════════════════
+    // ETAPA 3 — Iniciar Flutter SEM Service Worker
+    // serviceWorkerSettings omitido = SW desabilitado completamente
+    // Resolve: conflito SES/lockdown + cache stale em Safari/iOS/Chrome
+    // ══════════════════════════════════════════════════════════════════
     (function() {
+      var _attempts = 0;
       function startFlutter() {
+        _attempts++;
         if (!window._flutter || !window._flutter.loader) {
-          // Ainda não disponível — tentar novamente
-          setTimeout(startFlutter, 50);
+          if (_attempts < 100) {
+            setTimeout(startFlutter, 50);
+          } else {
+            console.error('[MedCases] Flutter loader não disponível após 5s');
+          }
           return;
         }
         window._flutter.loader.load({
-          // serviceWorkerSettings OMITIDO = sem Service Worker
-          // Isso evita cache stale que causa tela cinza no Safari/iOS/Chrome mobile
+          // NÃO passar serviceWorkerSettings = Service Worker desabilitado
+          // Isso elimina: flutter_service_worker.js, COOP/COEP, SES conflicts
         });
       }
       startFlutter();
