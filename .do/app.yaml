@@ -1,0 +1,25 @@
+name: medcases-pro
+region: nyc
+services:
+  - name: medcases-web
+    github:
+      repo: rodrigssousa-sudo/MedCases
+      branch: main
+      deploy_on_push: true
+    dockerfile_path: Dockerfile
+    http_port: 8080
+    instance_count: 1
+    instance_size_slug: apps-s-1vcpu-0.5gb
+    health_check:
+      http_path: /health
+      initial_delay_seconds: 10
+      period_seconds: 30
+      timeout_seconds: 5
+      success_threshold: 1
+      failure_threshold: 3
+    routes:
+      - path: /
+    envs:
+      - key: FLUTTER_ENV
+        value: production
+        scope: RUN_TIME
