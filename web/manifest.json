@@ -1,11 +1,11 @@
 {
-    "name": "flutter_app",
-    "short_name": "flutter_app",
+    "name": "MedCases Pro",
+    "short_name": "MedCases",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "background_color": "#07110d",
+    "theme_color": "#07110d",
+    "description": "MedCases Pro — Apoio clínico educacional para médicos e estudantes de medicina.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

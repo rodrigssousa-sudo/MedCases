@@ -1,38 +1,115 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-BR">
 <head>
-  <!--
-    If you are serving your web app in a path other than the root, change the
-    href value below to reflect the base path you are serving from.
-
-    The path provided below has to start and end with a slash "/" in order for
-    it to work correctly.
-
-    For more details:
-    * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base
-
-    This is a placeholder for base href that will be replaced by the value of
-    the `--base-href` argument provided to `flutter build`.
-  -->
   <base href="/">
 
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <meta content="IE=Edge" http-equiv="X-UA-Compatible">
-  <meta name="description" content="A new Flutter project.">
+  <meta name="description" content="MedCases Pro — Apoio clínico educacional para médicos e estudantes de medicina.">
 
-  <!-- iOS meta tags & icons -->
+  <!-- iOS / Safari meta tags -->
   <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black">
-  <meta name="apple-mobile-web-app-title" content="flutter_app">
-  <link rel="apple-touch-icon" href="icons/Icon-192.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="MedCases Pro">
+  <meta name="theme-color" content="#07110d">
+
+  <!-- Apple touch icons -->
+  <link rel="apple-touch-icon" sizes="192x192" href="icons/Icon-192.png">
+  <link rel="apple-touch-icon" sizes="512x512" href="icons/Icon-512.png">
 
   <!-- Favicon -->
   <link rel="icon" type="image/png" href="favicon.png"/>
 
-  <title>flutter_app</title>
+  <title>MedCases Pro</title>
   <link rel="manifest" href="manifest.json">
+
+  <style>
+    /* Evitar flash branco no Safari durante carregamento */
+    html, body {
+      background-color: #07110d;
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      width: 100%;
+      overscroll-behavior: none;
+    }
+    /* Spinner de loading enquanto Flutter inicializa */
+    #loading {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      background-color: #07110d;
+    }
+    #loading-logo {
+      width: 72px;
+      height: 72px;
+      border-radius: 18px;
+      background: linear-gradient(135deg, #075f45, #07110d);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 24px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    }
+    #loading-logo span {
+      color: #FFE8A6;
+      font-size: 32px;
+      font-weight: 900;
+      font-family: serif;
+    }
+    #loading-text {
+      color: #C5A365;
+      font-size: 18px;
+      font-weight: 700;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      letter-spacing: 0.5px;
+    }
+    #loading-sub {
+      color: rgba(255,255,255,0.4);
+      font-size: 12px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      margin-top: 6px;
+    }
+    #loading-spinner {
+      margin-top: 32px;
+      width: 32px;
+      height: 32px;
+      border: 3px solid rgba(197,163,101,0.2);
+      border-top-color: #C5A365;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
 </head>
 <body>
+
+  <!-- Tela de loading nativa (aparece antes do Flutter carregar) -->
+  <div id="loading">
+    <div id="loading-logo"><span>M</span></div>
+    <div id="loading-text">MedCases Pro</div>
+    <div id="loading-sub">Apoio clínico educacional</div>
+    <div id="loading-spinner"></div>
+  </div>
+
+  <script>
+    // Remove loading screen quando Flutter estiver pronto
+    window.addEventListener('flutter-first-frame', function() {
+      var loading = document.getElementById('loading');
+      if (loading) {
+        loading.style.opacity = '0';
+        loading.style.transition = 'opacity 0.3s ease';
+        setTimeout(function() { loading.remove(); }, 300);
+      }
+    });
+  </script>
+
   <script src="flutter_bootstrap.js" async></script>
 </body>
 </html>
