@@ -17,20 +17,22 @@ import 'screens/cases_screen.dart';
 import 'screens/admin_screen.dart';
 import 'widgets/brand_mark.dart';
 
-// Future global — inicialização não bloqueia runApp()
-final Future<void> _firebaseInit = Firebase.initializeApp(
-  options: DefaultFirebaseOptions.currentPlatform,
-);
+// Future global preenchido dentro do main() após ensureInitialized
+late final Future<void> _firebaseInit;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Firebase init em paralelo — NÃO bloqueamos runApp()
+  _firebaseInit = Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
 
   // Carrega preferências locais (rápido — só shared_preferences)
   final provider = AppProvider();
   await provider.loadPrefs();
 
-  // runApp() é chamado IMEDIATAMENTE — Flutter renderiza a splash
-  // enquanto o Firebase inicializa em paralelo na rede
+  // runApp() imediato — Flutter renderiza splash enquanto Firebase sobe
   runApp(
     ChangeNotifierProvider.value(
       value: provider,
