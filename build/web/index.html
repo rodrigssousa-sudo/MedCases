@@ -26,7 +26,6 @@
   <link rel="manifest" href="manifest.json">
 
   <style>
-    /* Evitar flash branco no Safari durante carregamento */
     html, body {
       background-color: #07110d;
       margin: 0;
@@ -35,14 +34,20 @@
       width: 100%;
       overscroll-behavior: none;
     }
-    /* Spinner de loading enquanto Flutter inicializa */
     #loading {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      height: 100vh;
       background-color: #07110d;
+      z-index: 9999;
+      transition: opacity 0.4s ease;
+    }
+    #loading.fade-out {
+      opacity: 0;
+      pointer-events: none;
     }
     #loading-logo {
       width: 72px;
@@ -86,11 +91,16 @@
     @keyframes spin {
       to { transform: rotate(360deg); }
     }
+    /* Garante que o canvas Flutter fique visível */
+    flt-glass-pane, flutter-view {
+      display: block !important;
+      visibility: visible !important;
+      opacity: 1 !important;
+    }
   </style>
 </head>
 <body>
 
-  <!-- Tela de loading nativa (aparece antes do Flutter carregar) -->
   <div id="loading">
     <div id="loading-logo"><span>M</span></div>
     <div id="loading-text">MedCases Pro</div>
@@ -99,17 +109,100 @@
   </div>
 
   <script>
-    // Remove loading screen quando Flutter estiver pronto
-    window.addEventListener('flutter-first-frame', function() {
-      var loading = document.getElementById('loading');
-      if (loading) {
-        loading.style.opacity = '0';
-        loading.style.transition = 'opacity 0.3s ease';
-        setTimeout(function() { loading.remove(); }, 300);
+    // ── Função central para remover a loading screen ──────────────────────
+    var _loadingRemoved = false;
+    function removeLoading() {
+      if (_loadingRemoved) return;
+      _loadingRemoved = true;
+      var el = document.getElementById('loading');
+      if (!el) return;
+      el.classList.add('fade-out');
+      setTimeout(function() {
+        if (el && el.parentNode) el.parentNode.removeChild(el);
+      }, 450);
+    }
+
+    // ── Estratégia 1: evento oficial do Flutter ───────────────────────────
+    window.addEventListener('flutter-first-frame', removeLoading);
+
+    // ── Estratégia 2: MutationObserver — detecta quando Flutter insere o canvas
+    var observer = new MutationObserver(function(mutations) {
+      for (var i = 0; i < mutations.length; i++) {
+        var nodes = mutations[i].addedNodes;
+        for (var j = 0; j < nodes.length; j++) {
+          var n = nodes[j];
+          if (n.tagName && (
+            n.tagName.toLowerCase() === 'flt-glass-pane' ||
+            n.tagName.toLowerCase() === 'flutter-view' ||
+            n.tagName.toLowerCase() === 'canvas'
+          )) {
+            setTimeout(removeLoading, 300);
+            observer.disconnect();
+            return;
+          }
+        }
       }
     });
+    observer.observe(document.body, { childList: true, subtree: true });
+
+    // ── Estratégia 3: fallback por timeout (10s) ─────────────────────────
+    // Se Flutter não disparar nenhum evento em 10s, remove a loading screen
+    // para não deixar o usuário preso (Safari pode engolir eventos)
+    setTimeout(function() {
+      if (!_loadingRemoved) {
+        console.warn('[MedCases] Flutter não disparou flutter-first-frame em 10s — forçando remoção da loading screen.');
+        removeLoading();
+      }
+    }, 10000);
+
+    // ── Desabilitar Service Worker no Safari para evitar cache stale ──────
+    // Safari tem bugs conhecidos com SW + CanvasKit que causam tela presa
+    var isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+    var isIOS    = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+
+    if (isSafari || isIOS) {
+      console.log('[MedCases] Safari/iOS detectado — desabilitando Service Worker.');
+      // Sobrescreve serviceWorker.register para Safari (não usar SW)
+      if ('serviceWorker' in navigator) {
+        // Desregistra qualquer SW existente que possa ter ficado stale
+        navigator.serviceWorker.getRegistrations().then(function(registrations) {
+          for (var i = 0; i < registrations.length; i++) {
+            registrations[i].unregister();
+          }
+        });
+      }
+    }
   </script>
 
   <script src="flutter_bootstrap.js" async></script>
+
+  <script>
+    // ── Sobrescreve _flutter.loader.load para Safari: sem serviceWorker ───
+    // Executado após flutter_bootstrap.js definir o loader
+    (function patchFlutterLoader() {
+      var isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+      var isIOS    = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+      if (!isSafari && !isIOS) return;
+
+      // Aguarda o loader estar disponível
+      var attempts = 0;
+      var interval = setInterval(function() {
+        attempts++;
+        if (attempts > 50) { clearInterval(interval); return; }
+        if (window._flutter && window._flutter.loader) {
+          clearInterval(interval);
+          var originalLoad = window._flutter.loader.load.bind(window._flutter.loader);
+          window._flutter.loader.load = function(config) {
+            // Remove serviceWorkerSettings para Safari
+            var safariConfig = Object.assign({}, config || {});
+            delete safariConfig.serviceWorkerSettings;
+            console.log('[MedCases] Safari: carregando Flutter sem Service Worker.');
+            return originalLoad(safariConfig);
+          };
+        }
+      }, 50);
+    })();
+  </script>
+
 </body>
 </html>
