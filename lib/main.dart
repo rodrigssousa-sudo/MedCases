@@ -1,8 +1,11 @@
+import 'dart:async';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'dart:html' as html show window;
 import 'firebase_options.dart';
 import 'providers/app_provider.dart';
 import 'services/auth_service.dart';
@@ -19,10 +22,19 @@ import 'widgets/brand_mark.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-
+  
   final provider = AppProvider();
   await provider.loadPrefs();
+
+  // Inicializa Firebase em background — não bloqueia o runApp()
+  // Safari/iOS pode demorar, mas o app aparece imediatamente
+  Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  ).then((_) {
+    if (kDebugMode) debugPrint('✅ Firebase inicializado');
+  }).catchError((e) {
+    if (kDebugMode) debugPrint('❌ Erro Firebase: $e');
+  });
 
   runApp(
     ChangeNotifierProvider.value(
@@ -605,6 +617,74 @@ class _AppHeader extends StatelessWidget {
               ),
             ),
           ]),
+        ),
+      ),
+    );
+  }
+}
+
+// ── Tela de erro Firebase ─────────────────────────────────────────────────────
+class _FirebaseErrorScreen extends StatelessWidget {
+  const _FirebaseErrorScreen();
+
+  @override
+  Widget build(BuildContext context) {
+    return Theme(
+      data: MedCasesApp._authTheme,
+      child: Scaffold(
+        backgroundColor: const Color(0xFF07110d),
+        body: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.all(32),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                const BrandMark(small: false),
+                const SizedBox(height: 40),
+                Container(
+                  padding: const EdgeInsets.all(24),
+                  decoration: BoxDecoration(
+                    color: Colors.red.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(color: Colors.red.withValues(alpha: 0.3)),
+                  ),
+                  child: Column(children: [
+                    const Icon(Icons.cloud_off_rounded, color: Colors.red, size: 48),
+                    const SizedBox(height: 16),
+                    const Text(
+                      'Erro ao conectar Firebase',
+                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900, color: Colors.white),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 12),
+                    Text(
+                      'Não foi possível conectar aos serviços do Firebase.\n\nVerifique sua conexão e tente novamente.',
+                      style: TextStyle(fontSize: 13, color: Colors.white.withValues(alpha: 0.7), height: 1.6),
+                      textAlign: TextAlign.center,
+                    ),
+                  ]),
+                ),
+                const SizedBox(height: 24),
+                ElevatedButton.icon(
+                  onPressed: () {
+                    // Força refresh da página no web
+                    if (kIsWeb) {
+                      html.window.location.reload();
+                    }
+                  },
+                  icon: const Icon(Icons.refresh_rounded),
+                  label: const Text('Recarregar app'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.red,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                  ),
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );
