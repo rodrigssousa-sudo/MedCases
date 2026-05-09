@@ -80,17 +80,37 @@
   </div>
 
   <script>
-    // ── Limpar SWs legados (sessões anteriores que ainda tenham SW em cache) ──
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.getRegistrations().then(function(regs) {
-        regs.forEach(function(reg) { reg.unregister(); });
-      });
-      if ('caches' in window) {
-        caches.keys().then(function(keys) {
-          keys.forEach(function(key) { caches.delete(key); });
-        });
+    // ── CRÍTICO: Limpar TODOS os SWs e caches ANTES de carregar o Flutter ────
+    // Resolve o problema de cache agressivo no Safari/iPhone onde o SW antigo
+    // intercepta requests e serve JS desatualizado (erro de login).
+    // O Flutter só é carregado APÓS a limpeza completa.
+    (function() {
+      function loadFlutter() {
+        var s = document.createElement('script');
+        s.src = 'flutter_bootstrap.js';
+        document.head.appendChild(s);
       }
-    }
+
+      if (!('serviceWorker' in navigator)) {
+        loadFlutter();
+        return;
+      }
+
+      // Desregistrar TODOS os SWs e apagar TODOS os caches, depois carregar Flutter
+      var swClean = navigator.serviceWorker.getRegistrations().then(function(regs) {
+        return Promise.all(regs.map(function(reg) { return reg.unregister(); }));
+      });
+
+      var cacheClean = ('caches' in window)
+        ? caches.keys().then(function(keys) {
+            return Promise.all(keys.map(function(k) { return caches.delete(k); }));
+          })
+        : Promise.resolve();
+
+      Promise.all([swClean, cacheClean])
+        .catch(function() {})
+        .then(function() { loadFlutter(); });
+    })();
 
     // ── Loading screen: remove quando Flutter renderizar ─────────────────────
     var _loadingRemoved = false;
@@ -130,9 +150,8 @@
     }, 20000);
   </script>
 
-  <!-- flutter_bootstrap.js gerado com --pwa-strategy=none -->
-  <!-- É o ÚNICO responsável por inicializar o Flutter. Não chamar loader.load() aqui. -->
-  <script src="flutter_bootstrap.js" async></script>
+  <!-- flutter_bootstrap.js carregado dinamicamente APÓS limpeza de SW/cache acima -->
+  <!-- NÃO usar async aqui — o script é injetado via JS após a limpeza completar -->
 
 </body>
 </html>
