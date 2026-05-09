@@ -122,8 +122,11 @@ class AuthService {
 
       final result = _buildResultFromDoc(exists: true, data: data, uid: uid, email: email);
 
-      // ✅ CRITICAL FIX: atualiza ValueNotifier para o _AuthGate navegar
-      if (result.success && result.user != null) {
+      // ✅ CRITICAL FIX: publica no ValueNotifier para QUALQUER usuário autenticado
+      // (approved, pending, blocked) — _buildWebAuthGate decide qual tela mostrar.
+      // Antes só publicava se result.success → pending/blocked ficavam travados na
+      // LoginScreen porque webUser.value permanecia null.
+      if (result.user != null) {
         webUser.value = result.user;
       }
 
@@ -342,7 +345,12 @@ class AuthService {
     );
   }
 
-  /// Monta AuthResult a partir de um Map de campos Firestore
+  /// Monta AuthResult a partir de um Map de campos Firestore.
+  ///
+  /// IMPORTANTE: sempre retorna o [user] no resultado, independente do status
+  /// (approved, pending, blocked). Isso permite que o ValueNotifier webUser
+  /// seja populado e o _buildWebAuthGate decida qual tela exibir.
+  /// A distinção de tela fica 100% no _AuthGate — não aqui.
   static AuthResult _buildResultFromDoc({
     required bool exists,
     required Map<String, dynamic> data,
@@ -357,13 +365,9 @@ class AuthService {
 
     final user = UserModel.fromMap(data);
 
-    if (user.isBlocked) {
-      return AuthResult.error('Sua conta foi suspensa. Entre em contato com o administrador.');
-    }
-    if (user.isPending) {
-      return AuthResult.error(
-          'Sua conta está aguardando aprovação do administrador.\n\nVocê receberá acesso em breve.');
-    }
+    // Sempre retorna success com o user — o _AuthGate filtra isBlocked / isPending.
+    // Retornar error sem user impede webUser.value de ser setado e o _AuthGate
+    // fica preso na LoginScreen para usuários pending/blocked.
     return AuthResult.success(user);
   }
 

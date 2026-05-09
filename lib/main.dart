@@ -167,6 +167,26 @@ class _AuthGate extends StatelessWidget {
 
   // ── Etapa final: manutenção → MainShell ──────────────────────────────────
   Widget _buildMaintenanceGate(BuildContext context, UserModel user) {
+    // ── Web: NÃO abre stream do Firestore SDK ────────────────────────────
+    // FirestoreService.maintenanceStream() usa .snapshots() do SDK do Firestore.
+    // No domínio medcasespro.com (não autorizado no Firebase Console), esse SDK
+    // falha com CORS silencioso → StreamBuilder fica em ConnectionState.waiting
+    // para sempre → MainShell nunca é exibido.
+    //
+    // Solução: no Web, vamos direto para MainShell sem abrir o stream.
+    // Manutenção é feature de admin — admins/masters têm bypass de qualquer forma,
+    // e usuários comuns não precisam do stream ativo durante o login inicial.
+    if (kIsWeb) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        final p = context.read<AppProvider>();
+        if (p.currentUser?.uid != user.uid) {
+          p.setUser(user);
+        }
+      });
+      return const MainShell();
+    }
+
+    // ── Android: stream normal do Firestore SDK (sem CORS) ───────────────
     return StreamBuilder<Map<String, dynamic>>(
       stream: FirestoreService.maintenanceStream(),
       builder: (context, maintSnap) {
