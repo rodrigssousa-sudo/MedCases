@@ -309,21 +309,14 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
             color: const Color(0xFFFFB800).withValues(alpha: 0.12),
             border: Border.all(color: const Color(0xFFFFB800).withValues(alpha: 0.55), width: 1.5),
           ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Icon(Icons.science_outlined, size: 13, color: Color(0xFFFFCC44)),
-              const SizedBox(width: 6),
-              Text(
-                _isEs ? '⚠  VERSIÓN BETA — App en fase de pruebas' : '⚠  VERSÃO BETA — App em fase de testes',
-                style: const TextStyle(
-                  fontSize: 11,
-                  fontWeight: FontWeight.w800,
-                  color: Color(0xFFFFCC44),
-                  letterSpacing: 0.4,
-                ),
-              ),
-            ],
+          child: Text(
+            'VERSÃO BETA — App em fase de testes',
+            style: const TextStyle(
+              fontSize: 11,
+              fontWeight: FontWeight.w800,
+              color: Color(0xFFFFCC44),
+              letterSpacing: 0.4,
+            ),
           ),
         ),
       ],
