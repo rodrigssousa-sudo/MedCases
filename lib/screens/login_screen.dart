@@ -16,6 +16,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
   bool _loading = false;
   bool _obscure = true;
   bool _rememberEmail = false;
+  bool _keepLoggedIn  = false;   // "Manter conectado" — persiste sessão completa
   String? _error;
   String? _success;
 
@@ -34,8 +35,11 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
   static const kGoldL  = Color(0xFFFFE8A6);
   static const kCream  = Color(0xFFFFFDF8);
 
-  static const _kPrefEmail  = 'login_saved_email';
-  static const _kPrefRemember = 'login_remember_email';
+  static const _kPrefEmail      = 'login_saved_email';
+  static const _kPrefRemember   = 'login_remember_email';
+  // _kKeepLoggedIn espelha AuthService._kKeepLoggedIn — lido aqui apenas para
+  // inicializar o checkbox; a escrita real é feita pelo AuthService.saveSession().
+  static const _kKeepLoggedIn   = 'session_keep_logged_in';
 
   @override
   void initState() {
@@ -49,14 +53,17 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
   Future<void> _loadSavedEmail() async {
     try {
       final p = await SharedPreferences.getInstance();
-      final remember = p.getBool(_kPrefRemember) ?? false;
-      final email    = p.getString(_kPrefEmail) ?? '';
-      if (remember && email.isNotEmpty) {
-        setState(() {
-          _rememberEmail = true;
+      final remember     = p.getBool(_kPrefRemember)  ?? false;
+      final keepLoggedIn = p.getBool(_kKeepLoggedIn)  ?? false;
+      final email        = p.getString(_kPrefEmail)   ?? '';
+      setState(() {
+        _keepLoggedIn  = keepLoggedIn;
+        // Se "Manter conectado" está ativo, "Lembrar e-mail" também fica marcado
+        _rememberEmail = remember || keepLoggedIn;
+        if (_rememberEmail && email.isNotEmpty) {
           _emailCtrl.text = email;
-        });
-      }
+        }
+      });
     } catch (_) {}
   }
 
@@ -70,7 +77,20 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
         await p.remove(_kPrefRemember);
         await p.remove(_kPrefEmail);
       }
+      // Se "Manter conectado" NÃO está marcado, garante que a chave de sessão
+      // seja removida agora (antes do login bem-sucedido limpar qualquer resíduo).
+      if (!_keepLoggedIn) {
+        await AuthService.clearSession();
+      }
     } catch (_) {}
+  }
+
+  /// Chamado APÓS login bem-sucedido com "Manter conectado" marcado.
+  /// Persiste refreshToken + userMap no SharedPreferences via AuthService.
+  Future<void> _saveSessionIfRequested(AuthResult result) async {
+    if (_keepLoggedIn && result.user != null) {
+      await AuthService.saveSession(result.user!);
+    }
   }
 
   @override
@@ -99,6 +119,8 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
         email: _emailCtrl.text,
         password: _passCtrl.text,
       );
+      // Se login OK e "Manter conectado" marcado → salva sessão completa
+      if (result.success) await _saveSessionIfRequested(result);
     } else if (_mode == _Mode.register) {
       result = await AuthService.register(
         email: _emailCtrl.text,
@@ -209,16 +231,23 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                           const SizedBox(height: 8),
                         ],
 
-                        // Checkbox "Lembrar e-mail" — só no modo login
+                        // Checkbox "Manter conectado" — só no modo login
                         if (_mode == _Mode.login) ...[
                           GestureDetector(
-                            onTap: () => setState(() => _rememberEmail = !_rememberEmail),
+                            onTap: () => setState(() {
+                              _keepLoggedIn  = !_keepLoggedIn;
+                              // "Manter conectado" implica "Lembrar e-mail"
+                              if (_keepLoggedIn) _rememberEmail = true;
+                            }),
                             child: Row(children: [
                               SizedBox(
                                 width: 20, height: 20,
                                 child: Checkbox(
-                                  value: _rememberEmail,
-                                  onChanged: (v) => setState(() => _rememberEmail = v ?? false),
+                                  value: _keepLoggedIn,
+                                  onChanged: (v) => setState(() {
+                                    _keepLoggedIn  = v ?? false;
+                                    if (_keepLoggedIn) _rememberEmail = true;
+                                  }),
                                   activeColor: kGreen,
                                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
                                   side: BorderSide(color: kDark.withValues(alpha: 0.3), width: 1.5),
@@ -227,7 +256,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                               ),
                               const SizedBox(width: 8),
                               Text(
-                                _rememberEmailLabel,
+                                _keepLoggedInLabel,
                                 style: TextStyle(fontSize: 12, color: kDark.withValues(alpha: 0.65), fontWeight: FontWeight.w600),
                               ),
                             ]),
@@ -481,6 +510,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
     }
   }
 
+  String get _keepLoggedInLabel   => _isEs ? 'Mantener sesión iniciada'              : 'Manter conectado';
   String get _rememberEmailLabel  => _isEs ? 'Recordar correo'                      : 'Lembrar e-mail';
   String get _fullNameLabel       => _isEs ? 'Nombre completo'                      : 'Nome completo';
   String get _nameRequiredMsg     => _isEs ? 'Ingresa tu nombre'                    : 'Informe seu nome';

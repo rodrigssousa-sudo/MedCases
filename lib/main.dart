@@ -57,6 +57,16 @@ void main() async {
     debugPrint('[MedCases] SharedPreferences indisponível: $e');
   }
 
+  // ── Restauração silenciosa de sessão ("Manter conectado") ──────────────────
+  // Tenta renovar o refreshToken antes do runApp — se bem-sucedido, webUser.value
+  // já estará preenchido quando _AuthGate construir, saltando direto ao MainShell.
+  // Timeout de 8 s está dentro de restoreSession(); rede falha → LoginScreen normal.
+  if (kIsWeb) {
+    try {
+      await AuthService.restoreSession();
+    } catch (_) {}
+  }
+
   runApp(
     ChangeNotifierProvider.value(
       value: provider,
@@ -543,14 +553,16 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
     super.dispose();
   }
 
-  // Força logout quando o app é fechado/encerrado pelo SO.
+  // Força logout quando o app é fechado/encerrado pelo SO —
+  // MAS só se o usuário NÃO marcou "Manter conectado".
+  // iOS: paused → background definitivo (detached raramente dispara no iOS)
   // Android: detached → processo encerrado
-  // iOS: paused → app mandado para background definitivamente (detached não dispara no iOS)
-  // Resultado: na próxima abertura Firebase Auth não tem sessão → volta para LoginScreen
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.detached || state == AppLifecycleState.paused) {
-      AuthService.logout();
+      AuthService.isKeepLoggedInEnabled().then((keep) {
+        if (!keep) AuthService.logout();
+      });
     }
   }
 

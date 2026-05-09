@@ -6,6 +6,7 @@ import 'package:flutter/widgets.dart' show ValueNotifier;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 import '../models/user_model.dart';
 
 class AuthService {
@@ -76,6 +77,103 @@ class AuthService {
     _cachedRefreshTk = refreshToken;
     // idToken do Firebase tem vida de 1h; guardamos 55 min para ter margem
     _tokenExpiresAt  = DateTime.now().add(const Duration(minutes: 55));
+  }
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // SESSION PERSISTENCE — "Manter conectado"
+  // ─────────────────────────────────────────────────────────────────────────
+  // Chaves SharedPreferences usadas para persistência de sessão entre reloads.
+  // Armazenamos apenas o refreshToken (nunca o idToken — ele expira em 1h).
+  // Na próxima abertura, trocamos o refreshToken por um idToken novo via
+  // securetoken.googleapis.com/v1/token antes de exibir qualquer UI.
+  // ═══════════════════════════════════════════════════════════════════════════
+
+  static const _kRefreshToken = 'session_refresh_token';
+  static const _kUserJson     = 'session_user_json';
+  static const _kKeepLoggedIn = 'session_keep_logged_in';
+
+  /// Persiste a sessão no SharedPreferences.
+  /// Chamado pelo LoginScreen imediatamente após login bem-sucedido,
+  /// apenas quando o usuário marcou "Manter conectado".
+  static Future<void> saveSession(UserModel user) async {
+    try {
+      final p = await SharedPreferences.getInstance();
+      await p.setBool(_kKeepLoggedIn, true);
+      await p.setString(_kRefreshToken, _cachedRefreshTk);
+      await p.setString(_kUserJson, jsonEncode(user.toMap()));
+    } catch (_) {}
+  }
+
+  /// Lê a sessão persistida e, se válida, renova o idToken silenciosamente.
+  /// Retorna o [UserModel] restaurado, ou null se não há sessão salva.
+  /// Deve ser chamado em main() antes de runApp(), no contexto de um Future.
+  static Future<UserModel?> restoreSession() async {
+    try {
+      final p = await SharedPreferences.getInstance();
+      final keepLoggedIn = p.getBool(_kKeepLoggedIn) ?? false;
+      if (!keepLoggedIn) return null;
+
+      final refreshToken = p.getString(_kRefreshToken) ?? '';
+      final userJson     = p.getString(_kUserJson)     ?? '';
+      if (refreshToken.isEmpty || userJson.isEmpty) return null;
+
+      // Troca o refreshToken por um novo idToken
+      final resp = await http.post(
+        Uri.parse('https://securetoken.googleapis.com/v1/token?key=$_webApiKey'),
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: 'grant_type=refresh_token&refresh_token=$refreshToken',
+      ).timeout(const Duration(seconds: 8));
+
+      if (resp.statusCode != 200) {
+        // Token inválido/expirado — limpa sessão e força novo login
+        await clearSession();
+        return null;
+      }
+
+      final body = jsonDecode(resp.body) as Map<String, dynamic>;
+      final newIdToken      = body['id_token']      as String? ?? '';
+      final newRefreshToken = body['refresh_token'] as String? ?? refreshToken;
+      final expiresIn       = int.tryParse(body['expires_in']?.toString() ?? '3600') ?? 3600;
+
+      // Atualiza cache em memória
+      _cachedIdToken   = newIdToken;
+      _cachedRefreshTk = newRefreshToken;
+      _tokenExpiresAt  = DateTime.now().add(Duration(seconds: expiresIn - 300));
+
+      // Persiste o novo refreshToken
+      await p.setString(_kRefreshToken, newRefreshToken);
+
+      // Reconstrói o UserModel a partir do JSON salvo
+      final rawMap = jsonDecode(userJson) as Map<String, dynamic>;
+      final user   = UserModel.fromMap(rawMap);
+
+      // Seta webUser para que _AuthGate roteie direto ao MainShell
+      if (kIsWeb) webUser.value = user;
+
+      return user;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  /// Remove todos os dados de sessão persistida (logout explícito ou token expirado).
+  static Future<void> clearSession() async {
+    try {
+      final p = await SharedPreferences.getInstance();
+      await p.remove(_kKeepLoggedIn);
+      await p.remove(_kRefreshToken);
+      await p.remove(_kUserJson);
+    } catch (_) {}
+  }
+
+  /// Verifica se o usuário marcou "Manter conectado" anteriormente.
+  static Future<bool> isKeepLoggedInEnabled() async {
+    try {
+      final p = await SharedPreferences.getInstance();
+      return p.getBool(_kKeepLoggedIn) ?? false;
+    } catch (_) {
+      return false;
+    }
   }
 
   // ═══════════════════════════════════════════════════════════════════════════
@@ -297,6 +395,9 @@ class AuthService {
     _cachedIdToken   = '';
     _cachedRefreshTk = '';
     _tokenExpiresAt  = DateTime(2000);
+
+    // Limpa sessão persistida (SharedPreferences)
+    await clearSession();
 
     if (kIsWeb) webUser.value = null;
     try { await _auth.signOut(); } catch (_) {}
