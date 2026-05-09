@@ -15,9 +15,10 @@ class _AiScreenState extends State<AiScreen> {
   final _scrollCtrl = ScrollController();
   final _focusNode  = FocusNode();
   final List<_ChatMsg> _messages = [];
-  bool _thinking = false;
+  bool _thinking  = false;
+  bool _hasFocus  = false;
+  int  _selGroup  = 0;
 
-  // Grupos de sugestões rápidas: (categoria, [(label_pt, label_es, prompt_pt, prompt_es)])
   static const _groups = [
     (
       'Cardio',
@@ -65,13 +66,13 @@ class _AiScreenState extends State<AiScreen> {
     (
       'Resp.',
       [
-        ('TEP / embolia',        'TEP / embolia',
+        ('TEP / embolia',     'TEP / embolia',
          'Embolia pulmonar com dispneia súbita, PA 85/50, SatO2 85%.',
          'Embolia pulmonar con disnea súbita, PA 85/50, SatO2 85%.'),
-        ('DPOC exacerbação',     'EPOC exacerbación',
+        ('DPOC exacerbação',  'EPOC exacerbación',
          'DPOC com piora de dispneia, PaCO2 68, pH 7,28.',
          'EPOC con empeoramiento de disnea, PaCO2 68, pH 7,28.'),
-        ('Asma grave',           'Asma grave',
+        ('Asma grave',        'Asma grave',
          'Crise de asma grave, silêncio auscultório, SpO2 88%.',
          'Crisis de asma grave, silencio auscultatorio, SpO2 88%.'),
       ]
@@ -79,16 +80,16 @@ class _AiScreenState extends State<AiScreen> {
     (
       'Neuro',
       [
-        ('AVC isquêmico',        'ACV isquémico',
+        ('AVC isquêmico',      'ACV isquémico',
          'AVC isquêmico agudo, hemiplegia direita, NIHSS 14, 1h45 de evolução.',
          'ACV isquémico agudo, hemiplejía derecha, NIHSS 14, 1h45 de evolución.'),
-        ('Convulsão / status',   'Convulsión / status',
+        ('Convulsão / status', 'Convulsión / status',
          'Convulsão há 8 min sem pausa. Estado de mal epiléptico.',
          'Convulsión de 8 min sin pausa. Estado epiléptico.'),
-        ('Delirium / confusão',  'Delirium / confusión',
+        ('Delirium',           'Delirium',
          'Confusão mental aguda, agitação, rebaixamento. Idoso de 78 anos.',
-         'Confusión mental aguda, agitación, bradipsiquia. Anciano de 78 años.'),
-        ('Meningite',            'Meningitis',
+         'Confusión mental aguda, agitación. Anciano de 78 años.'),
+        ('Meningite',          'Meningitis',
          'Febre, cefaleia em trovoada, rigidez de nuca, petéquias.',
          'Fiebre, cefalea en trueno, rigidez de nuca, petequias.'),
       ]
@@ -96,15 +97,23 @@ class _AiScreenState extends State<AiScreen> {
     (
       'Endócrino',
       [
-        ('Cetoacidose / CAD',    'Cetoacidosis / CAD',
+        ('Cetoacidose',       'Cetoacidosis',
          'Cetoacidose diabética. Glicemia 480, pH 7,18, K+ 3,2.',
          'Cetoacidosis diabética. Glucemia 480, pH 7,18, K+ 3,2.'),
-        ('Hipoglicemia grave',   'Hipoglucemia grave',
+        ('Hipoglicemia',      'Hipoglucemia',
          'Hipoglicemia grave, Glasgow 8, glicemia 28 mg/dL.',
          'Hipoglucemia grave, Glasgow 8, glucemia 28 mg/dL.'),
       ]
     ),
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    _focusNode.addListener(() {
+      setState(() => _hasFocus = _focusNode.hasFocus);
+    });
+  }
 
   @override
   void dispose() {
@@ -136,9 +145,7 @@ class _AiScreenState extends State<AiScreen> {
     });
     _queryCtrl.clear();
     _scrollDown();
-
     await Future.delayed(const Duration(milliseconds: 600));
-
     final answer = p.buildAIAnswer(trimmed);
     setState(() {
       _messages.add(_ChatMsg(role: 'ai', text: answer));
@@ -159,12 +166,25 @@ class _AiScreenState extends State<AiScreen> {
     );
   }
 
-  void _clearChat() => setState(() => _messages.clear());
+  void _clearChat() {
+    setState(() => _messages.clear());
+    _focusNode.unfocus();
+  }
+
+  // Insere chip no campo (sem enviar)
+  void _insertChip(String prompt) {
+    _queryCtrl.text = prompt;
+    _queryCtrl.selection = TextSelection.fromPosition(
+      TextPosition(offset: prompt.length),
+    );
+    _focusNode.requestFocus();
+  }
 
   @override
   Widget build(BuildContext context) {
     final p    = context.watch<AppProvider>();
     final dark = p.darkMode;
+    final isEs = p.lang == 'es';
     final bg   = dark ? const Color(0xFF070F0A) : const Color(0xFFF5F3EE);
 
     return Column(children: [
@@ -208,185 +228,310 @@ class _AiScreenState extends State<AiScreen> {
         ]),
       ),
 
-      // ── Body ─────────────────────────────────────────────────────────────
+      // ── Corpo principal ─────────────────────────────────────────────────
       Expanded(
         child: Container(
           color: bg,
           child: _messages.isEmpty
-              ? _EmptyState(
-                  groups: _groups,
-                  lang: p.lang,
-                  onTap: (prompt) => _send(prompt, p),
-                  dark: dark,
-                )
-              : ListView.builder(
-                  controller: _scrollCtrl,
-                  padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
-                  itemCount: _messages.length + (_thinking ? 1 : 0),
-                  itemBuilder: (context, i) {
-                    if (_thinking && i == _messages.length) {
-                      return _ThinkingBubble(dark: dark);
-                    }
-                    final msg = _messages[i];
-                    return msg.role == 'user'
-                        ? _UserBubble(text: msg.text)
-                        : _AiBubble(
-                            text: msg.text,
-                            dark: dark,
-                            onCopy: () => _copyMsg(msg.text),
-                          );
-                  },
-                ),
+              ? _buildEmptyWithInput(p, dark, isEs)
+              : _buildChatWithInput(p, dark, isEs),
         ),
-      ),
-
-      // ── Input ─────────────────────────────────────────────────────────────
-      _InputBar(
-        ctrl: _queryCtrl,
-        focusNode: _focusNode,
-        dark: dark,
-        onSend: (t) => _send(t, p),
-        hint: p.t('ai_placeholder'),
       ),
     ]);
   }
-}
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Empty state — clean, focus on writing
-// ─────────────────────────────────────────────────────────────────────────────
-class _EmptyState extends StatefulWidget {
-  final List<(String, List<(String, String, String, String)>)> groups;
-  final String lang;
-  final void Function(String) onTap;
-  final bool dark;
-  const _EmptyState({
-    required this.groups,
-    required this.lang,
-    required this.onTap,
-    required this.dark,
-  });
-  @override
-  State<_EmptyState> createState() => _EmptyStateState();
-}
-
-class _EmptyStateState extends State<_EmptyState> {
-  int _selectedGroup = 0;
-
-  @override
-  Widget build(BuildContext context) {
-    final isEs   = widget.lang == 'es';
-    final dark   = widget.dark;
-    final textSub = dark ? Colors.white38 : Colors.black38;
-    final textMain = dark ? Colors.white70 : const Color(0xFF2A2A2A);
+  // ── Estado vazio: input NO TOPO + sugestões embaixo ──────────────────────
+  Widget _buildEmptyWithInput(AppProvider p, bool dark, bool isEs) {
+    final border   = dark ? const Color(0xFF1A2820) : const Color(0xFFDDD8CE);
+    final fieldBg  = dark ? const Color(0xFF0D1A12) : Colors.white;
+    final textCol  = dark ? Colors.white : const Color(0xFF1A1A1A);
+    final hintCol  = dark ? Colors.white30 : Colors.black26;
 
     return Column(children: [
-      const SizedBox(height: 20),
-
-      // Ícone + texto central minimalista
-      Icon(Icons.psychology_outlined,
-        size: 40, color: dark ? Colors.white24 : Colors.black12),
-      const SizedBox(height: 10),
-      Text(
-        isEs ? 'Describa el caso clínico' : 'Descreva o caso clínico',
-        style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: textMain),
-      ),
-      const SizedBox(height: 4),
-      Text(
-        isEs ? 'síntomas · signos vitales · exámenes' : 'sintomas · sinais vitais · exames',
-        style: TextStyle(fontSize: 12, color: textSub, fontWeight: FontWeight.w500),
-      ),
-
-      const SizedBox(height: 24),
-
-      // Abas de categoria — scroll horizontal
-      SizedBox(
-        height: 32,
-        child: ListView.builder(
-          scrollDirection: Axis.horizontal,
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          itemCount: widget.groups.length,
-          itemBuilder: (context, i) {
-            final selected = i == _selectedGroup;
-            return GestureDetector(
-              onTap: () => setState(() => _selectedGroup = i),
-              child: AnimatedContainer(
-                duration: const Duration(milliseconds: 180),
-                margin: const EdgeInsets.only(right: 8),
-                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
-                  color: selected
-                      ? const Color(0xFF0E3624)
-                      : (dark ? const Color(0xFF1A2820) : Colors.white),
-                  border: Border.all(
-                    color: selected
-                        ? const Color(0xFF0E3624)
-                        : (dark ? const Color(0xFF2A3830) : const Color(0xFFDDD8CE)),
-                  ),
-                ),
-                child: Text(
-                  widget.groups[i].$1,
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w700,
-                    color: selected
-                        ? const Color(0xFFFFE8A6)
-                        : (dark ? Colors.white54 : Colors.black54),
-                  ),
+      // ── Campo de texto FIXO NO TOPO ──────────────────────────────────
+      Container(
+        color: dark ? const Color(0xFF0A150E) : Colors.white,
+        padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
+        child: Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
+          Expanded(
+            child: Container(
+              decoration: BoxDecoration(
+                color: fieldBg,
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(
+                  color: _hasFocus ? const Color(0xFF0D5C3A) : border,
+                  width: _hasFocus ? 1.5 : 1.0,
                 ),
               ),
-            );
+              child: TextField(
+                controller: _queryCtrl,
+                focusNode: _focusNode,
+                maxLines: 4,
+                minLines: 2,
+                textInputAction: TextInputAction.newline,
+                spellCheckConfiguration: const SpellCheckConfiguration.disabled(),
+                autocorrect: false,
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                  color: textCol,
+                  height: 1.5,
+                ),
+                decoration: InputDecoration(
+                  hintText: p.t('ai_placeholder'),
+                  hintStyle: TextStyle(
+                    fontSize: 13,
+                    color: hintCol,
+                    fontWeight: FontWeight.w400,
+                  ),
+                  border: InputBorder.none,
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(width: 8),
+          // Botão enviar
+          GestureDetector(
+            onTap: () {
+              final p2 = context.read<AppProvider>();
+              _send(_queryCtrl.text, p2);
+            },
+            child: Container(
+              width: 44, height: 44,
+              decoration: const BoxDecoration(
+                shape: BoxShape.circle,
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [Color(0xFF0B2318), Color(0xFF0D5C3A)],
+                ),
+              ),
+              child: const Center(
+                child: Icon(Icons.arrow_upward_rounded, color: Color(0xFFFFE8A6), size: 18),
+              ),
+            ),
+          ),
+        ]),
+      ),
+
+      // Divisor
+      Divider(height: 1, color: dark ? const Color(0xFF1A2820) : const Color(0xFFE5E0D8)),
+
+      // ── Sugestões abaixo do campo ────────────────────────────────────
+      Expanded(
+        child: SingleChildScrollView(
+          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            const SizedBox(height: 14),
+
+            // Label sugestões
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Text(
+                isEs ? 'SUGERENCIAS RÁPIDAS' : 'SUGESTÕES RÁPIDAS',
+                style: TextStyle(
+                  fontSize: 10,
+                  fontWeight: FontWeight.w800,
+                  letterSpacing: 1.2,
+                  color: dark ? Colors.white30 : Colors.black38,
+                ),
+              ),
+            ),
+            const SizedBox(height: 10),
+
+            // Abas de categoria
+            SizedBox(
+              height: 34,
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                itemCount: _groups.length,
+                itemBuilder: (context, i) {
+                  final sel = i == _selGroup;
+                  return GestureDetector(
+                    onTap: () => setState(() => _selGroup = i),
+                    child: AnimatedContainer(
+                      duration: const Duration(milliseconds: 150),
+                      margin: const EdgeInsets.only(right: 8),
+                      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        color: sel
+                            ? const Color(0xFF0E3624)
+                            : (dark ? const Color(0xFF1A2820) : Colors.white),
+                        border: Border.all(
+                          color: sel
+                              ? const Color(0xFF0E3624)
+                              : (dark ? const Color(0xFF2A3830) : const Color(0xFFDDD8CE)),
+                        ),
+                      ),
+                      child: Text(
+                        _groups[i].$1,
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w700,
+                          color: sel
+                              ? const Color(0xFFFFE8A6)
+                              : (dark ? Colors.white54 : Colors.black54),
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+
+            const SizedBox(height: 10),
+
+            // Chips do grupo selecionado
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: _groups[_selGroup].$2.map((item) {
+                  final label  = isEs ? item.$2 : item.$1;
+                  final prompt = isEs ? item.$4 : item.$3;
+                  return GestureDetector(
+                    onTap: () => _insertChip(prompt),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 9),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(22),
+                        color: dark ? const Color(0xFF1A2820) : Colors.white,
+                        border: Border.all(
+                          color: dark ? const Color(0xFF2A3830) : const Color(0xFFDDD8CE),
+                        ),
+                        boxShadow: dark ? null : [
+                          BoxShadow(color: Colors.black.withValues(alpha: 0.04), blurRadius: 4, offset: const Offset(0, 1)),
+                        ],
+                      ),
+                      child: Row(mainAxisSize: MainAxisSize.min, children: [
+                        Text(
+                          label,
+                          style: TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w600,
+                            color: dark ? Colors.white70 : const Color(0xFF1A1A1A),
+                          ),
+                        ),
+                        const SizedBox(width: 6),
+                        Icon(Icons.north_east_rounded,
+                          size: 12,
+                          color: dark ? Colors.white24 : Colors.black26),
+                      ]),
+                    ),
+                  );
+                }).toList(),
+              ),
+            ),
+
+            const SizedBox(height: 20),
+          ]),
+        ),
+      ),
+    ]);
+  }
+
+  // ── Chat com input fixo no rodapé ────────────────────────────────────────
+  Widget _buildChatWithInput(AppProvider p, bool dark, bool isEs) {
+    final border  = dark ? const Color(0xFF1A2820) : const Color(0xFFE5E0D8);
+    final fieldBg = dark ? const Color(0xFF0D1A12) : Colors.white;
+    final barBg   = dark ? const Color(0xFF0A150E) : Colors.white;
+    final textCol = dark ? Colors.white : const Color(0xFF1A1A1A);
+    final hintCol = dark ? Colors.white30 : Colors.black26;
+
+    return Column(children: [
+      // Lista de mensagens
+      Expanded(
+        child: ListView.builder(
+          controller: _scrollCtrl,
+          padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
+          itemCount: _messages.length + (_thinking ? 1 : 0),
+          itemBuilder: (context, i) {
+            if (_thinking && i == _messages.length) {
+              return _ThinkingBubble(dark: dark);
+            }
+            final msg = _messages[i];
+            return msg.role == 'user'
+                ? _UserBubble(text: msg.text)
+                : _AiBubble(
+                    text: msg.text,
+                    dark: dark,
+                    onCopy: () => _copyMsg(msg.text),
+                  );
           },
         ),
       ),
 
-      const SizedBox(height: 12),
-
-      // Chips do grupo selecionado
-      Expanded(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Wrap(
-            spacing: 8,
-            runSpacing: 8,
-            children: widget.groups[_selectedGroup].$2.map((item) {
-              final label  = isEs ? item.$2 : item.$1;
-              final prompt = isEs ? item.$4 : item.$3;
-              return GestureDetector(
-                onTap: () => widget.onTap(prompt),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 9),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(22),
-                    color: dark ? const Color(0xFF1A2820) : Colors.white,
-                    border: Border.all(
-                      color: dark ? const Color(0xFF2A3830) : const Color(0xFFDDD8CE),
-                    ),
-                    boxShadow: dark ? null : [
-                      BoxShadow(color: Colors.black.withValues(alpha: 0.04), blurRadius: 4, offset: const Offset(0, 1)),
-                    ],
-                  ),
-                  child: Text(
-                    label,
-                    style: TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w600,
-                      color: dark ? Colors.white70 : const Color(0xFF1A1A1A),
-                    ),
+      // Barra de input fixa no rodapé
+      Container(
+        decoration: BoxDecoration(
+          color: barBg,
+          border: Border(top: BorderSide(color: border)),
+        ),
+        padding: const EdgeInsets.fromLTRB(14, 10, 14, 10),
+        child: SafeArea(
+          top: false,
+          child: Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
+            Expanded(
+              child: Container(
+                decoration: BoxDecoration(
+                  color: fieldBg,
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(
+                    color: _hasFocus ? const Color(0xFF0D5C3A) : border,
+                    width: _hasFocus ? 1.5 : 1.0,
                   ),
                 ),
-              );
-            }).toList(),
-          ),
+                child: TextField(
+                  controller: _queryCtrl,
+                  focusNode: _focusNode,
+                  maxLines: 4,
+                  minLines: 1,
+                  textInputAction: TextInputAction.newline,
+                  spellCheckConfiguration: const SpellCheckConfiguration.disabled(),
+                  autocorrect: false,
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                    color: textCol,
+                    height: 1.5,
+                  ),
+                  decoration: InputDecoration(
+                    hintText: p.t('ai_placeholder'),
+                    hintStyle: TextStyle(fontSize: 13, color: hintCol, fontWeight: FontWeight.w400),
+                    border: InputBorder.none,
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(width: 8),
+            GestureDetector(
+              onTap: () => _send(_queryCtrl.text, p),
+              child: Container(
+                width: 42, height: 42,
+                decoration: const BoxDecoration(
+                  shape: BoxShape.circle,
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [Color(0xFF0B2318), Color(0xFF0D5C3A)],
+                  ),
+                ),
+                child: const Center(
+                  child: Icon(Icons.arrow_upward_rounded, color: Color(0xFFFFE8A6), size: 18),
+                ),
+              ),
+            ),
+          ]),
         ),
       ),
     ]);
   }
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Chat data
 // ─────────────────────────────────────────────────────────────────────────────
 class _ChatMsg {
   final String role;
@@ -394,8 +539,6 @@ class _ChatMsg {
   const _ChatMsg({required this.role, required this.text});
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// User bubble
 // ─────────────────────────────────────────────────────────────────────────────
 class _UserBubble extends StatelessWidget {
   final String text;
@@ -424,19 +567,14 @@ class _UserBubble extends StatelessWidget {
           ),
           child: Text(text,
             style: const TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w500,
-              color: Colors.white,
-              height: 1.5,
-            )),
+              fontSize: 14, fontWeight: FontWeight.w500,
+              color: Colors.white, height: 1.5)),
         ),
       ),
     );
   }
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// AI bubble
 // ─────────────────────────────────────────────────────────────────────────────
 class _AiBubble extends StatelessWidget {
   final String text;
@@ -453,13 +591,10 @@ class _AiBubble extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(bottom: 14, right: 24),
       child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        // Avatar
         Container(
           width: 28, height: 28,
           decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              colors: [Color(0xFF0B2318), Color(0xFF0D5C3A)],
-            ),
+            gradient: LinearGradient(colors: [Color(0xFF0B2318), Color(0xFF0D5C3A)]),
             shape: BoxShape.circle,
           ),
           child: const Center(
@@ -468,8 +603,6 @@ class _AiBubble extends StatelessWidget {
           ),
         ),
         const SizedBox(width: 8),
-
-        // Bubble
         Expanded(child: Container(
           padding: const EdgeInsets.fromLTRB(14, 12, 14, 10),
           decoration: BoxDecoration(
@@ -492,8 +625,7 @@ class _AiBubble extends StatelessWidget {
               alignment: Alignment.centerRight,
               child: GestureDetector(
                 onTap: onCopy,
-                child: Icon(Icons.copy_rounded,
-                  size: 15,
+                child: Icon(Icons.copy_rounded, size: 15,
                   color: dark ? Colors.white24 : Colors.black26),
               ),
             ),
@@ -504,10 +636,9 @@ class _AiBubble extends StatelessWidget {
   }
 
   Widget _buildFormattedText(String text, Color textColor) {
-    final lines = text.split('\n');
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: lines.map((line) {
+      children: text.split('\n').map((line) {
         if (line.startsWith('🧠') || line.startsWith('##')) {
           return Padding(
             padding: const EdgeInsets.only(bottom: 6, top: 2),
@@ -535,8 +666,6 @@ class _AiBubble extends StatelessWidget {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Thinking bubble
-// ─────────────────────────────────────────────────────────────────────────────
 class _ThinkingBubble extends StatefulWidget {
   final bool dark;
   const _ThinkingBubble({required this.dark});
@@ -554,7 +683,8 @@ class _ThinkingBubbleState extends State<_ThinkingBubble>
     super.initState();
     _ctrl = AnimationController(vsync: this, duration: const Duration(milliseconds: 700))
       ..repeat(reverse: true);
-    _anim = Tween(begin: 0.25, end: 1.0).animate(CurvedAnimation(parent: _ctrl, curve: Curves.easeInOut));
+    _anim = Tween(begin: 0.25, end: 1.0).animate(
+      CurvedAnimation(parent: _ctrl, curve: Curves.easeInOut));
   }
 
   @override
@@ -573,7 +703,8 @@ class _ThinkingBubbleState extends State<_ThinkingBubble>
             shape: BoxShape.circle,
           ),
           child: const Center(
-            child: Text('AI', style: TextStyle(fontSize: 8, fontWeight: FontWeight.w900, color: Color(0xFFFFE8A6))),
+            child: Text('AI',
+              style: TextStyle(fontSize: 8, fontWeight: FontWeight.w900, color: Color(0xFFFFE8A6))),
           ),
         ),
         const SizedBox(width: 8),
@@ -582,123 +713,25 @@ class _ThinkingBubbleState extends State<_ThinkingBubble>
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(18),
             color: bg,
-            border: Border.all(color: widget.dark ? const Color(0xFF1E2E23) : const Color(0xFFE8E3DA)),
+            border: Border.all(
+              color: widget.dark ? const Color(0xFF1E2E23) : const Color(0xFFE8E3DA)),
           ),
-          child: Row(mainAxisSize: MainAxisSize.min, children: List.generate(3, (i) {
-            return Padding(
+          child: Row(mainAxisSize: MainAxisSize.min,
+            children: List.generate(3, (i) => Padding(
               padding: EdgeInsets.only(left: i > 0 ? 5 : 0),
               child: FadeTransition(
                 opacity: _anim,
                 child: Container(
                   width: 6, height: 6,
                   decoration: BoxDecoration(
-                    color: const Color(0xFF0D5C3A).withValues(alpha: 0.7 + i * 0.1),
+                    color: const Color(0xFF0D5C3A).withValues(alpha: 0.6 + i * 0.15),
                     shape: BoxShape.circle,
                   ),
                 ),
               ),
-            );
-          })),
+            ))),
         ),
       ]),
-    );
-  }
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// Input bar — limpo e respirado
-// ─────────────────────────────────────────────────────────────────────────────
-class _InputBar extends StatelessWidget {
-  final TextEditingController ctrl;
-  final FocusNode focusNode;
-  final bool dark;
-  final ValueChanged<String> onSend;
-  final String hint;
-  const _InputBar({
-    required this.ctrl,
-    required this.focusNode,
-    required this.dark,
-    required this.onSend,
-    required this.hint,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final bg     = dark ? const Color(0xFF0A150E) : Colors.white;
-    final border = dark ? const Color(0xFF1A2820) : const Color(0xFFEAE5DB);
-    final fieldBg = dark ? const Color(0xFF0D1A12) : const Color(0xFFF7F5F0);
-
-    return Container(
-      decoration: BoxDecoration(
-        color: bg,
-        border: Border(top: BorderSide(color: border)),
-      ),
-      padding: const EdgeInsets.fromLTRB(14, 10, 14, 10),
-      child: SafeArea(
-        top: false,
-        child: Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
-          // Campo de texto
-          Expanded(
-            child: Container(
-              decoration: BoxDecoration(
-                color: fieldBg,
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: border),
-              ),
-              child: TextField(
-                controller: ctrl,
-                focusNode: focusNode,
-                maxLines: 5,
-                minLines: 1,
-                textInputAction: TextInputAction.newline,
-                spellCheckConfiguration: const SpellCheckConfiguration.disabled(),
-                autocorrect: false,
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                  color: dark ? Colors.white : const Color(0xFF1A1A1A),
-                  height: 1.5,
-                ),
-                decoration: InputDecoration(
-                  hintText: hint,
-                  hintStyle: TextStyle(
-                    fontSize: 14,
-                    color: dark ? Colors.white30 : Colors.black26,
-                    fontWeight: FontWeight.w400,
-                  ),
-                  border: InputBorder.none,
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 11),
-                ),
-                onSubmitted: (t) {
-                  if (t.trim().isNotEmpty) onSend(t);
-                },
-              ),
-            ),
-          ),
-          const SizedBox(width: 8),
-
-          // Botão enviar
-          GestureDetector(
-            onTap: () {
-              if (ctrl.text.trim().isNotEmpty) onSend(ctrl.text);
-            },
-            child: Container(
-              width: 42, height: 42,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                gradient: const LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [Color(0xFF0B2318), Color(0xFF0D5C3A)],
-                ),
-              ),
-              child: const Center(
-                child: Icon(Icons.arrow_upward_rounded, color: Color(0xFFFFE8A6), size: 18),
-              ),
-            ),
-          ),
-        ]),
-      ),
     );
   }
 }
