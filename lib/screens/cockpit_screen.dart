@@ -65,7 +65,7 @@ class _CockpitScreenState extends State<CockpitScreen> {
 
   void _copyToClipboard(AppProvider p) async {
     final buf = StringBuffer();
-    buf.writeln('=== MEDCASES PRO: COCKPIT CLÍNICO ===');
+    buf.writeln('=== MEDCASES PRO: RESUMO CLÍNICO ===');
     buf.writeln('Paciente: ${p.patient.patientId}');
     buf.writeln('Idade: ${p.patient.age} | Sexo: ${p.patient.sex} | Peso: ${p.patient.weight} kg | Creatinina: ${p.patient.creatinine} mg/dL');
     buf.writeln('ClCr: ${p.clcr ?? '—'} mL/min | IMC: ${p.bmi ?? '—'} kg/m²');
@@ -212,7 +212,7 @@ class _HeroHeader extends StatelessWidget {
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Row(children: [
           Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            const Text('COCKPIT CLÍNICO', style: TextStyle(
+            const Text('RESUMO CLÍNICO', style: TextStyle(
               fontSize: 9, fontWeight: FontWeight.w900,
               color: Color(0xBFFFE8A6), letterSpacing: 2.5,
             )),

@@ -84,10 +84,17 @@ class MedCasesApp extends StatelessWidget {
     brightness: dark ? Brightness.dark : Brightness.light,
     colorScheme: dark
         ? ColorScheme.dark(
-            primary: const Color(0xFFC5A365),
-            secondary: const Color(0xFF075f45),
-            surface: const Color(0xFF0E1A14),
-            onSurface: Colors.white,
+            primary: const Color(0xFFD4A96A),
+            onPrimary: const Color(0xFF1A1A1A),
+            secondary: const Color(0xFF2E7D5E),
+            onSecondary: Colors.white,
+            surface: const Color(0xFF1C1C1E),
+            onSurface: const Color(0xFFE8E8EA),
+            surfaceContainerHighest: const Color(0xFF2C2C2E),
+            outline: const Color(0xFF48484A),
+            outlineVariant: const Color(0xFF3A3A3C),
+            error: const Color(0xFFFF6B6B),
+            onError: Colors.white,
           )
         : ColorScheme.light(
             primary: const Color(0xFF07110d),
@@ -95,7 +102,9 @@ class MedCasesApp extends StatelessWidget {
             surface: const Color(0xFFFFFDF8),
             onSurface: const Color(0xFF07110d),
           ),
-    scaffoldBackgroundColor: dark ? const Color(0xFF0A1510) : const Color(0xFFF7F8FA),
+    scaffoldBackgroundColor: dark ? const Color(0xFF111113) : const Color(0xFFF7F8FA),
+    cardColor: dark ? const Color(0xFF1C1C1E) : Colors.white,
+    dividerColor: dark ? const Color(0xFF3A3A3C) : const Color(0xFFE2E6EA),
   );
 
   static ThemeData get _authTheme => ThemeData(
@@ -1388,24 +1397,12 @@ class _AppHeader extends StatelessWidget {
                     style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w900, color: Colors.white),
                     overflow: TextOverflow.ellipsis),
                 ),
-                if (p.isAdmin)
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      color: const Color(0xFFC5A365).withValues(alpha: 0.2),
-                      border: Border.all(color: const Color(0xFFC5A365).withValues(alpha: 0.5)),
-                    ),
-                    child: const Text('ADMIN', style: TextStyle(fontSize: 8, fontWeight: FontWeight.w900, color: Color(0xFFFFE8A6), letterSpacing: 0.5)),
-                  ),
+
               ]),
               Text(p.lang == 'es' ? 'Apoyo clínico educativo' : 'Apoio clínico educacional',
                 style: TextStyle(fontSize: 10, color: Colors.white.withValues(alpha: 0.55), fontWeight: FontWeight.w600)),
             ])),
-            if (p.isAdmin) ...[
-              _AdminBadgeButton(currentAdmin: p.currentUser!),
-              const SizedBox(width: 8),
-            ],
+
             // Botão hamburguer → abre Drawer lateral direito
             GestureDetector(
               onTap: () => Scaffold.of(context).openEndDrawer(),

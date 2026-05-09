@@ -452,12 +452,10 @@ class _HistoryCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final completion = h.completionRatio;
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 0, 16, 10),
-      child: GestureDetector(
+    return GestureDetector(
         onTap: onTap,
         child: Container(
-          padding: const EdgeInsets.all(14),
+          padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
           decoration: const BoxDecoration(border: Border(bottom: BorderSide(color: kBorder))),
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Row(children: [
@@ -640,7 +638,6 @@ class _HistoryCard extends StatelessWidget {
             ],
           ]),
         ),
-      ),
     );
   }
 }
@@ -755,84 +752,124 @@ class _HistoryDetailState extends State<_HistoryDetail> {
 </div>
 ''');
 
-    if (history.finalDiagnosis.isNotEmpty || history.workingDiagnosis.isNotEmpty) {
-      final dx = history.finalDiagnosis.isNotEmpty ? history.finalDiagnosis : history.workingDiagnosis;
-      final label = history.finalDiagnosis.isNotEmpty ? 'DIAGNÓSTICO FINAL' : 'HIPÓTESE DIAGNÓSTICA';
-      buf.write('<div class="dx-box"><h2>$label</h2><p>${_esc(dx)}</p>');
-      if (history.cid.isNotEmpty) buf.write('<div style="font-size:11px;color:#065F46;margin-top:4px">CID: ${_esc(history.cid)}</div>');
-      if (history.differentialDx.isNotEmpty) buf.write('<div style="font-size:11px;color:#555;margin-top:6px">DD: ${_esc(history.differentialDx)}</div>');
-      buf.write('</div>');
-    }
-
     void section(String title, List<(String, String)> fields, {String? allergyText}) {
       final hasContent = fields.any((f) => f.$2.isNotEmpty) || (allergyText?.isNotEmpty ?? false);
       if (!hasContent) return;
       buf.write('<div class="section"><div class="section-title">$title</div>');
+      if (allergyText != null && allergyText.isNotEmpty) {
+        buf.write('<div class="allergy-box"><div class="label">⚠ ALERGIAS</div><p>${_esc(allergyText)}</p></div>');
+      }
       for (final f in fields) {
         if (f.$2.isEmpty) continue;
         buf.write('<div class="field-label">${f.$1}</div><div class="field-value">${_escNl(f.$2)}</div>');
       }
-      if (allergyText != null && allergyText.isNotEmpty) {
-        buf.write('<div class="allergy-box"><div class="label">⚠ ALERGIAS</div><p>${_esc(allergyText)}</p></div>');
-      }
       buf.write('</div>');
     }
 
-    // Paciente
+    // ── 1. IDENTIFICAÇÃO DO PACIENTE ──────────────────────────────────────
     if (history.patientInitials.isNotEmpty || history.patientAge.isNotEmpty) {
-      buf.write('<div class="section"><div class="section-title">Identificação do Paciente</div>');
-      if (history.patientInitials.isNotEmpty) buf.write('<div class="field-label">Iniciais</div><div class="field-value">${_esc(history.patientInitials)}</div>');
-      buf.write('<div class="field-label">Dados</div><div class="field-value">${history.patientAge.isNotEmpty ? "${history.patientAge} anos" : ""} • ${history.patientSex}${history.patientWeight.isNotEmpty ? " • ${history.patientWeight} kg" : ""}${history.patientRecord.isNotEmpty ? " • Pront. ${history.patientRecord}" : ""}</div>');
+      buf.write('<div class="section"><div class="section-title">1. Identificação do Paciente</div>');
+      if (history.patientInitials.isNotEmpty)
+        buf.write('<div class="field-label">Iniciais</div><div class="field-value">${_esc(history.patientInitials)}</div>');
+      buf.write('<div class="field-label">Dados demográficos</div><div class="field-value">'
+          '${history.patientAge.isNotEmpty ? "${history.patientAge} anos" : ""}${history.patientAge.isNotEmpty ? " • " : ""}${history.patientSex}'
+          '${history.patientWeight.isNotEmpty ? " • ${history.patientWeight} kg" : ""}'
+          '${history.patientHeight.isNotEmpty ? " • ${history.patientHeight} cm" : ""}'
+          '${history.patientRecord.isNotEmpty ? " • Pront. ${_esc(history.patientRecord)}" : ""}'
+          '</div>');
       buf.write('</div>');
     }
 
-    section('Anamnese', [
-      ('Queixa principal', history.chiefComplaint),
+    // ── 2. QUEIXA PRINCIPAL ────────────────────────────────────────────────
+    if (history.chiefComplaint.isNotEmpty) {
+      buf.write('<div class="section"><div class="section-title">2. Queixa Principal</div>');
+      buf.write('<div class="field-value" style="font-size:15px;font-weight:700">${_esc(history.chiefComplaint)}</div>');
+      buf.write('</div>');
+    }
+
+    // ── 3. ANAMNESE ────────────────────────────────────────────────────────
+    section('3. Anamnese', [
       ('História da doença atual', history.hpi),
       ('Antecedentes pessoais', history.pastHistory),
       ('Antecedentes familiares', history.familyHistory),
-      ('História social', history.socialHistory),
-      ('Medicamentos em uso', history.medications),
+      ('História social (tabagismo, etilismo, ocupação)', history.socialHistory),
       ('Revisão de sistemas', history.reviewOfSystems),
+      ('Medicamentos em uso', history.medications),
     ], allergyText: history.allergies);
 
-    section('Exame Físico', [
+    // ── 4. EXAME FÍSICO ────────────────────────────────────────────────────
+    section('4. Exame Físico', [
       ('Sinais vitais', history.vitalSigns),
       ('Exame físico por sistemas', history.physicalExam),
     ]);
 
-    section('Exames', [
-      ('Exames laboratoriais', history.labResults),
-      ('Exames de imagem', history.imagingResults),
-      ('Outros (ECG, biópsia...)', history.otherResults),
-    ]);
-
-    section('Conduta e Tratamento', [
-      ('Plano terapêutico', history.treatmentPlan),
-      ('Procedimentos realizados', history.procedures),
-    ]);
-
-    if (history.evolutions.isNotEmpty) {
-      buf.write('<div class="section"><div class="section-title">Evolução Clínica</div>');
-      for (final e in history.evolutions) {
-        final dt = DateTime.tryParse(e.date)?.toLocal();
-        final ds = dt != null ? '${dt.day.toString().padLeft(2,'0')}/${dt.month.toString().padLeft(2,'0')} ${dt.hour.toString().padLeft(2,'0')}:${dt.minute.toString().padLeft(2,'0')}' : '';
-        final typeMap = {'evolution': 'Evolução', 'nursing': 'Enfermagem', 'lab': 'Lab', 'imaging': 'Imagem', 'procedure': 'Procedimento'};
-        buf.write('<div class="evolution"><div class="evo-meta">${typeMap[e.type] ?? 'Evolução'} — $ds${e.author.isNotEmpty ? " — ${_esc(e.author)}" : ""}</div><div class="field-value" style="margin-top:4px">${_escNl(e.text)}</div></div>');
+    // ── 5. HIPÓTESES DIAGNÓSTICAS ──────────────────────────────────────────
+    if (history.workingDiagnosis.isNotEmpty || history.differentialDx.isNotEmpty) {
+      buf.write('<div class="section"><div class="section-title">5. Hipóteses Diagnósticas</div>');
+      if (history.workingDiagnosis.isNotEmpty) {
+        buf.write('<div class="field-label">Hipótese principal</div>');
+        buf.write('<div class="field-value" style="font-size:14px;font-weight:700;color:#064E3B">${_esc(history.workingDiagnosis)}</div>');
+      }
+      if (history.differentialDx.isNotEmpty) {
+        buf.write('<div class="field-label" style="margin-top:10px">Diagnósticos diferenciais</div>');
+        buf.write('<div class="field-value">${_escNl(history.differentialDx)}</div>');
       }
       buf.write('</div>');
     }
 
-    if (history.outcome != 'internado' || history.dischargeCondition.isNotEmpty || history.followUp.isNotEmpty) {
-      final outcomeMap = {'alta': 'Alta hospitalar', 'obito': 'Óbito', 'transferencia': 'Transferência'};
-      buf.write('<div class="section"><div class="section-title">Desfecho e Alta</div>');
-      if (history.outcome != 'internado') buf.write('<div class="outcome">${outcomeMap[history.outcome] ?? history.outcome}</div>');
-      if (history.dischargeCondition.isNotEmpty) buf.write('<div class="field-label">Condições de alta</div><div class="field-value">${_escNl(history.dischargeCondition)}</div>');
-      if (history.followUp.isNotEmpty) buf.write('<div class="field-label">Seguimento</div><div class="field-value">${_escNl(history.followUp)}</div>');
+    // ── 6. EXAMES COMPLEMENTARES ──────────────────────────────────────────
+    section('6. Exames Complementares', [
+      ('Exames laboratoriais', history.labResults),
+      ('ECG / Outros (biópsia, EEG...)', history.otherResults),
+      ('Exames de imagem', history.imagingResults),
+    ]);
+
+    // ── 7. DIAGNÓSTICO FINAL ───────────────────────────────────────────────
+    if (history.finalDiagnosis.isNotEmpty) {
+      buf.write('<div class="dx-box">');
+      buf.write('<h2>7. DIAGNÓSTICO FINAL</h2>');
+      buf.write('<p>${_esc(history.finalDiagnosis)}</p>');
+      if (history.cid.isNotEmpty)
+        buf.write('<div style="font-size:12px;color:#065F46;margin-top:6px;font-weight:700">CID-10: ${_esc(history.cid)}</div>');
       buf.write('</div>');
     }
 
-    buf.write('''<div class="footer">Gerado por MedCases Pro — Uso educacional e de apoio clínico. Não substitui avaliação médica individual.</div>
+    // ── 8. CONDUTA / TRATAMENTO ────────────────────────────────────────────
+    section('8. Conduta e Plano Terapêutico', [
+      ('Plano terapêutico', history.treatmentPlan),
+      ('Procedimentos realizados', history.procedures),
+    ]);
+
+    // ── 9. EVOLUÇÃO CLÍNICA ────────────────────────────────────────────────
+    if (history.evolutions.isNotEmpty) {
+      buf.write('<div class="section"><div class="section-title">9. Evolução Clínica</div>');
+      for (final e in history.evolutions) {
+        final dt = DateTime.tryParse(e.date)?.toLocal();
+        final ds = dt != null
+            ? '${dt.day.toString().padLeft(2,'0')}/${dt.month.toString().padLeft(2,'0')}/${dt.year} ${dt.hour.toString().padLeft(2,'0')}:${dt.minute.toString().padLeft(2,'0')}'
+            : '';
+        final typeMap = {'evolution': 'Evolução Médica', 'nursing': 'Nota de Enfermagem', 'lab': 'Resultado Lab', 'imaging': 'Laudo Imagem', 'procedure': 'Procedimento'};
+        buf.write('<div class="evolution">');
+        buf.write('<div class="evo-meta">${typeMap[e.type] ?? 'Evolução'} — $ds${e.author.isNotEmpty ? " — ${_esc(e.author)}" : ""}</div>');
+        buf.write('<div class="field-value" style="margin-top:4px">${_escNl(e.text)}</div>');
+        buf.write('</div>');
+      }
+      buf.write('</div>');
+    }
+
+    // ── 10. DESFECHO E ALTA ────────────────────────────────────────────────
+    final outcomeMap = {'internado': 'Internado', 'alta': 'Alta hospitalar', 'obito': 'Óbito', 'transferencia': 'Transferência'};
+    if (history.outcome != 'internado' || history.dischargeCondition.isNotEmpty || history.followUp.isNotEmpty) {
+      buf.write('<div class="section"><div class="section-title">10. Desfecho e Alta</div>');
+      buf.write('<div class="outcome">${outcomeMap[history.outcome] ?? history.outcome}</div>');
+      if (history.dischargeCondition.isNotEmpty)
+        buf.write('<div class="field-label">Condições de alta</div><div class="field-value">${_escNl(history.dischargeCondition)}</div>');
+      if (history.followUp.isNotEmpty)
+        buf.write('<div class="field-label">Seguimento / Orientações</div><div class="field-value">${_escNl(history.followUp)}</div>');
+      buf.write('</div>');
+    }
+
+    buf.write('''<div class="footer">Gerado por MedCases Pro — Uso exclusivamente educacional e de apoio clínico. Não substitui avaliação médica individual presencial.</div>
 </body></html>''');
 
     // Abre janela de impressão (PDF via browser)
@@ -1125,71 +1162,121 @@ class _HistoryEditorState extends State<_HistoryEditor> {
   void _startStt(String key) {
     // Toggle: parar se já está ouvindo este campo
     if (_sttListening && _sttActiveKey == key) {
-      _sttRecog?.callMethod('stop', []);
-      setState(() { _sttListening = false; _sttActiveKey = null; _sttInterim = ''; });
+      try { _sttRecog?.callMethod('stop', []); } catch (_) {}
+      if (mounted) setState(() { _sttListening = false; _sttActiveKey = null; _sttInterim = ''; });
       return;
     }
     // Se estava ouvindo outro campo, parar antes
     if (_sttListening) {
-      _sttRecog?.callMethod('stop', []);
+      try { _sttRecog?.callMethod('stop', []); } catch (_) {}
     }
     // Verificar suporte do browser via dart:js
     final jsWin = js.context;
     final hasSR = jsWin.hasProperty('SpeechRecognition') || jsWin.hasProperty('webkitSpeechRecognition');
     if (!hasSR) {
+      if (!mounted) return;
       showDialog(
         context: context,
         builder: (_) => AlertDialog(
-          title: const Text('Ditado não suportado'),
-          content: const Text('Seu navegador não suporta reconhecimento de voz.\nUse Chrome ou Edge para usar o ditado.'),
+          title: Text(widget.p.t('dictation_not_supported')),
+          content: Text(widget.p.t('dictation_browser_msg')),
           actions: [TextButton(onPressed: () => Navigator.pop(context), child: const Text('OK'))],
         ),
       );
       return;
     }
-    // Criar instância do SpeechRecognition via dart:js
+    // Registrar bridge JS antes de criar a instância
+    // Usa eval para injetar handler seguro que evita erros de cast no Dart
+    try {
+      js.context.callMethod('eval', ['''
+        window.__sttBridge = function(transcript, isFinal) {};
+      ''']);
+    } catch (_) {}
+
     final ctorName = jsWin.hasProperty('SpeechRecognition') ? 'SpeechRecognition' : 'webkitSpeechRecognition';
-    final recog = js.JsObject(jsWin[ctorName] as js.JsFunction, []);
-    // Idioma dinâmico baseado na configuração do app
+    js.JsObject recog;
+    try {
+      recog = js.JsObject(jsWin[ctorName] as js.JsFunction, []);
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Erro ao iniciar ditado: $e'), backgroundColor: Colors.red),
+        );
+      }
+      return;
+    }
+
     final appLang = widget.p.lang;
     recog['lang'] = appLang == 'es' ? 'es-ES' : 'pt-BR';
     recog['continuous'] = true;
     recog['interimResults'] = true;
     recog['maxAlternatives'] = 1;
 
+    // Usar callMethod para acessar resultados — mais seguro que cast direto
     recog['onresult'] = js.allowInterop((dynamic event) {
-      final results = (event as js.JsObject)['results'] as js.JsObject;
-      final length = results['length'] as int;
-      String interim = '';
-      for (int i = 0; i < length; i++) {
-        final result = results[i] as js.JsObject;
-        final transcript = (result[0] as js.JsObject)['transcript'] as String? ?? '';
-        if (result['isFinal'] as bool? ?? false) {
-          final ctrl = _ctrls[key];
-          if (ctrl != null) {
-            final current = ctrl.text;
-            final spacer = current.isNotEmpty && !current.endsWith(' ') && !current.endsWith('\n') ? ' ' : '';
-            ctrl.text = current + spacer + transcript;
-            ctrl.selection = TextSelection.fromPosition(TextPosition(offset: ctrl.text.length));
+      try {
+        final jsEvent = event as js.JsObject;
+        final results = jsEvent['results'] as js.JsObject;
+        final length = (results['length'] as num).toInt();
+        String interim = '';
+        // Percorrer apenas os novos resultados (a partir do resultIndex)
+        final startIdx = jsEvent.hasProperty('resultIndex')
+            ? (jsEvent['resultIndex'] as num).toInt()
+            : 0;
+        for (int i = startIdx; i < length; i++) {
+          final result = js.JsObject.fromBrowserObject(results.callMethod('item', [i]) ?? results[i]);
+          final isFinal = result['isFinal'] as bool? ?? false;
+          final alt = js.JsObject.fromBrowserObject(result.callMethod('item', [0]) ?? result[0]);
+          final transcript = alt['transcript'] as String? ?? '';
+          if (isFinal) {
+            final ctrl = _ctrls[key];
+            if (ctrl != null && transcript.isNotEmpty) {
+              final current = ctrl.text;
+              final spacer = current.isNotEmpty && !current.endsWith(' ') && !current.endsWith('\n') ? ' ' : '';
+              ctrl.text = current + spacer + transcript;
+              ctrl.selection = TextSelection.fromPosition(TextPosition(offset: ctrl.text.length));
+            }
+          } else {
+            interim += transcript;
           }
-        } else {
-          interim += transcript;
         }
+        if (mounted) setState(() => _sttInterim = interim);
+      } catch (e) {
+        // Ignorar erros de parsing de resultados intermediários
       }
-      if (mounted) setState(() => _sttInterim = interim);
     });
 
     recog['onerror'] = js.allowInterop((dynamic event) {
+      // Ignorar erros de 'no-speech' (usuário não falou nada) — não encerrar
+      String? errorCode;
+      try { errorCode = (event as js.JsObject)['error'] as String?; } catch (_) {}
+      if (errorCode == 'no-speech') return; // continuar ouvindo
       if (mounted) setState(() { _sttListening = false; _sttActiveKey = null; _sttInterim = ''; });
     });
 
     recog['onend'] = js.allowInterop((dynamic event) {
-      if (mounted) setState(() { _sttListening = false; _sttActiveKey = null; _sttInterim = ''; });
+      // Se ainda está em modo listening (não foi parado manualmente), reiniciar
+      // para simular modo contínuo (browsers param após silêncio)
+      if (mounted && _sttListening && _sttActiveKey == key) {
+        try { recog.callMethod('start', []); } catch (_) {
+          setState(() { _sttListening = false; _sttActiveKey = null; _sttInterim = ''; });
+        }
+      } else {
+        if (mounted) setState(() { _sttListening = false; _sttActiveKey = null; _sttInterim = ''; });
+      }
     });
 
-    recog.callMethod('start', []);
-    _sttRecog = recog;
-    setState(() { _sttListening = true; _sttActiveKey = key; _sttInterim = ''; });
+    try {
+      recog.callMethod('start', []);
+      _sttRecog = recog;
+      if (mounted) setState(() { _sttListening = true; _sttActiveKey = key; _sttInterim = ''; });
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Falha ao iniciar microfone. Verifique as permissões do navegador.'), backgroundColor: Colors.red),
+        );
+      }
+    }
   }
 
   void _save() {
@@ -1425,7 +1512,11 @@ class _HistoryEditorState extends State<_HistoryEditor> {
 
   // ── Seção 2: Exame físico ──────────────────────────────────────────────────
   Widget _buildPhysicalExamSection() => Column(children: [
-    _EditorField('Sinais vitais', _ctrls['vitalSigns']!, hint: 'PA 130/80 | FC 88 | FR 18 | Temp 36,8°C | SpO2 97% | Peso 78kg', multiline: true, onMic: () => _startStt('vitalSigns')),
+    // ── Sinais Vitais Estruturados ─────────────────────────────────────────
+    _VitalSignsWidget(
+      controller: _ctrls['vitalSigns']!,
+      onMic: () => _startStt('vitalSigns'),
+    ),
     const SizedBox(height: 10),
     _EditorField('Exame físico por sistemas', _ctrls['physicalExam']!, hint: 'Geral: BEG, corado, hidratado...\nCV: RCR 2T, sem sopros...\nTórax: MV+ bilateral, sem RA...\nAbdome: RHA+, indolor...', multiline: true, lines: 8, onMic: () => _startStt('physicalExam')),
     const SizedBox(height: 10),
@@ -1443,11 +1534,14 @@ class _HistoryEditorState extends State<_HistoryEditor> {
 
   // ── Seção 3: Exames ───────────────────────────────────────────────────────
   Widget _buildExamsSection() => Column(children: [
-    _EditorField('Exames laboratoriais', _ctrls['labResults']!, hint: 'Troponina: 2,4 ng/mL (↑)\nHb: 12,8 g/dL | Leuco: 14.200\nCreatinina: 1,1 mg/dL | K+: 4,2...', multiline: true, lines: 6),
+    // ── Lab Estruturado + OCR ──────────────────────────────────────────────
+    _LabStructuredWidget(controller: _ctrls['labResults']!),
     const SizedBox(height: 10),
-    _EditorField('Exames de imagem', _ctrls['imagingResults']!, hint: 'ECG: supra ST V1-V4, QRS 95ms...\nRX tórax: sem congestão, ICT normal...\nEco: FE 48%, hipocinesia anterior...', multiline: true, lines: 5),
+    // ── ECG Estruturado ────────────────────────────────────────────────────
+    _EcgStructuredWidget(controller: _ctrls['otherResults']!),
     const SizedBox(height: 10),
-    _EditorField('Outros exames (ECG, biópsia, EEG...)', _ctrls['otherResults']!, hint: 'Biópsia renal: glomerulonefrite focal...', multiline: true),
+    // ── Exames de imagem ───────────────────────────────────────────────────
+    _EditorField('Exames de imagem / Outros', _ctrls['imagingResults']!, hint: 'RX tórax: sem congestão, ICT normal...\nEco: FE 48%, hipocinesia anterior...\nTC crânio: sem lesões agudas...', multiline: true, lines: 5),
   ]);
 
   // ── Seção 4: Conduta / Tratamento ────────────────────────────────────────
@@ -1898,5 +1992,601 @@ class _EmptyCommunityState extends StatelessWidget {
         child: const Text('Atualizar', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w900, color: kGoldLight)),
       )),
     ]));
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// SINAIS VITAIS ESTRUTURADOS
+// Campos pré-definidos; texto livre gerado automaticamente no controller
+// ─────────────────────────────────────────────────────────────────────────────
+class _VitalSignsWidget extends StatefulWidget {
+  final TextEditingController controller;
+  final VoidCallback? onMic;
+  const _VitalSignsWidget({required this.controller, this.onMic});
+  @override
+  State<_VitalSignsWidget> createState() => _VitalSignsWidgetState();
+}
+
+class _VitalSignsWidgetState extends State<_VitalSignsWidget> {
+  final _pas   = TextEditingController();
+  final _pad   = TextEditingController();
+  final _fc    = TextEditingController();
+  final _fr    = TextEditingController();
+  final _temp  = TextEditingController();
+  final _spo2  = TextEditingController();
+  final _dext  = TextEditingController();
+  final _peso  = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    // Parse existing text back into fields on open
+    _parseExisting(widget.controller.text);
+    for (final c in [_pas,_pad,_fc,_fr,_temp,_spo2,_dext,_peso]) {
+      c.addListener(_syncToController);
+    }
+  }
+
+  void _parseExisting(String text) {
+    final regexPA  = RegExp(r'PA[:\s]+(\d+)[/\\](\d+)', caseSensitive: false);
+    final regexFC  = RegExp(r'FC[:\s]+(\d+)', caseSensitive: false);
+    final regexFR  = RegExp(r'FR[:\s]+(\d+)', caseSensitive: false);
+    final regexT   = RegExp(r'[Tt]emp[:\s]+([\d,\.]+)', caseSensitive: false);
+    final regexSp  = RegExp(r'SpO2[:\s]+([\d,\.]+)', caseSensitive: false);
+    final regexDx  = RegExp(r'[Dd]extro[:\s]+([\d,\.]+)', caseSensitive: false);
+    final regexP   = RegExp(r'[Pp]eso[:\s]+([\d,\.]+)', caseSensitive: false);
+    final mPA  = regexPA.firstMatch(text);
+    if (mPA != null) { _pas.text = mPA.group(1) ?? ''; _pad.text = mPA.group(2) ?? ''; }
+    final mFC  = regexFC.firstMatch(text);  if (mFC  != null) _fc.text   = mFC.group(1)  ?? '';
+    final mFR  = regexFR.firstMatch(text);  if (mFR  != null) _fr.text   = mFR.group(1)  ?? '';
+    final mT   = regexT.firstMatch(text);   if (mT   != null) _temp.text = mT.group(1)   ?? '';
+    final mSp  = regexSp.firstMatch(text);  if (mSp  != null) _spo2.text = mSp.group(1)  ?? '';
+    final mDx  = regexDx.firstMatch(text);  if (mDx  != null) _dext.text = mDx.group(1)  ?? '';
+    final mP   = regexP.firstMatch(text);   if (mP   != null) _peso.text = mP.group(1)   ?? '';
+  }
+
+  void _syncToController() {
+    final parts = <String>[];
+    if (_pas.text.isNotEmpty || _pad.text.isNotEmpty) parts.add('PA ${_pas.text.isNotEmpty ? _pas.text : "?"}/${_pad.text.isNotEmpty ? _pad.text : "?"} mmHg');
+    if (_fc.text.isNotEmpty)   parts.add('FC ${_fc.text} bpm');
+    if (_fr.text.isNotEmpty)   parts.add('FR ${_fr.text} irpm');
+    if (_temp.text.isNotEmpty) parts.add('Temp ${_temp.text}°C');
+    if (_spo2.text.isNotEmpty) parts.add('SpO2 ${_spo2.text}%');
+    if (_dext.text.isNotEmpty) parts.add('Dextro ${_dext.text} mg/dL');
+    if (_peso.text.isNotEmpty) parts.add('Peso ${_peso.text} kg');
+    widget.controller.text = parts.join(' | ');
+  }
+
+  @override
+  void dispose() {
+    for (final c in [_pas,_pad,_fc,_fr,_temp,_spo2,_dext,_peso]) c.dispose();
+    super.dispose();
+  }
+
+  Widget _vsField(String label, TextEditingController ctrl, String unit, {String hint = '', bool wide = false}) {
+    return SizedBox(
+      width: wide ? double.infinity : null,
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Text(label, style: const TextStyle(fontSize: 8, fontWeight: FontWeight.w900, letterSpacing: 1.0, color: Color(0xFF888888))),
+        const SizedBox(height: 3),
+        Row(children: [
+          SizedBox(
+            width: wide ? 80 : 56,
+            height: 36,
+            child: TextField(
+              controller: ctrl,
+              keyboardType: TextInputType.number,
+              style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w800),
+              decoration: InputDecoration(
+                isDense: true,
+                contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                hintText: hint,
+                hintStyle: const TextStyle(fontSize: 11, color: Color(0xFFBBBBBB)),
+                filled: true,
+                fillColor: const Color(0xFFF8F8F8),
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: const BorderSide(color: kBorder)),
+                enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: const BorderSide(color: kBorder)),
+                focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: const BorderSide(color: kGreen, width: 1.5)),
+              ),
+            ),
+          ),
+          const SizedBox(width: 3),
+          Text(unit, style: const TextStyle(fontSize: 9, color: Color(0xFF888888), fontWeight: FontWeight.w700)),
+        ]),
+      ]),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: kBorder),
+        color: const Color(0xFFF8FBFA),
+      ),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Row(children: [
+          const Icon(Icons.monitor_heart_rounded, size: 14, color: kGreen),
+          const SizedBox(width: 6),
+          const Text('SINAIS VITAIS', style: TextStyle(fontSize: 9, fontWeight: FontWeight.w900, letterSpacing: 1.4, color: Color(0xFF555555))),
+          const Spacer(),
+          if (widget.onMic != null)
+            GestureDetector(
+              onTap: widget.onMic,
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                decoration: BoxDecoration(borderRadius: BorderRadius.circular(8), color: const Color(0xFFDC2626).withValues(alpha: 0.08), border: Border.all(color: const Color(0xFFDC2626).withValues(alpha: 0.25))),
+                child: const Row(mainAxisSize: MainAxisSize.min, children: [
+                  Icon(Icons.mic_rounded, size: 11, color: Color(0xFFDC2626)),
+                  SizedBox(width: 3),
+                  Text('Ditar', style: TextStyle(fontSize: 9, fontWeight: FontWeight.w800, color: Color(0xFFDC2626))),
+                ]),
+              ),
+            ),
+        ]),
+        const SizedBox(height: 10),
+        // Linha 1: PA (2 campos) + FC + FR
+        Wrap(spacing: 10, runSpacing: 10, children: [
+          Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            const Text('PA', style: TextStyle(fontSize: 8, fontWeight: FontWeight.w900, letterSpacing: 1.0, color: Color(0xFF888888))),
+            const SizedBox(height: 3),
+            Row(children: [
+              SizedBox(width: 50, height: 36, child: TextField(
+                controller: _pas, keyboardType: TextInputType.number,
+                style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w800),
+                decoration: InputDecoration(isDense: true, contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8), hintText: '120',
+                  hintStyle: const TextStyle(fontSize: 11, color: Color(0xFFBBBBBB)), filled: true, fillColor: const Color(0xFFF8F8F8),
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: const BorderSide(color: kBorder)),
+                  enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: const BorderSide(color: kBorder)),
+                  focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: const BorderSide(color: kGreen, width: 1.5))),
+              )),
+              const Padding(padding: EdgeInsets.symmetric(horizontal: 3), child: Text('/', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w300, color: Color(0xFF888888)))),
+              SizedBox(width: 50, height: 36, child: TextField(
+                controller: _pad, keyboardType: TextInputType.number,
+                style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w800),
+                decoration: InputDecoration(isDense: true, contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8), hintText: '80',
+                  hintStyle: const TextStyle(fontSize: 11, color: Color(0xFFBBBBBB)), filled: true, fillColor: const Color(0xFFF8F8F8),
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: const BorderSide(color: kBorder)),
+                  enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: const BorderSide(color: kBorder)),
+                  focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: const BorderSide(color: kGreen, width: 1.5))),
+              )),
+              const SizedBox(width: 4),
+              const Text('mmHg', style: TextStyle(fontSize: 9, color: Color(0xFF888888), fontWeight: FontWeight.w700)),
+            ]),
+          ]),
+          _vsField('FC', _fc, 'bpm', hint: '80'),
+          _vsField('FR', _fr, 'irpm', hint: '16'),
+          _vsField('Temp', _temp, '°C', hint: '36,5'),
+          _vsField('SpO₂', _spo2, '%', hint: '98'),
+          _vsField('Dextro', _dext, 'mg/dL', hint: '100'),
+          _vsField('Peso', _peso, 'kg', hint: '70', wide: true),
+        ]),
+        if (widget.controller.text.isNotEmpty) ...[
+          const SizedBox(height: 8),
+          Container(
+            width: double.infinity, padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+            decoration: BoxDecoration(borderRadius: BorderRadius.circular(8), color: const Color(0xFF065F46).withValues(alpha: 0.06)),
+            child: Text(widget.controller.text, style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: Color(0xFF065F46))),
+          ),
+        ],
+      ]),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// ECG ESTRUTURADO
+// ─────────────────────────────────────────────────────────────────────────────
+class _EcgStructuredWidget extends StatefulWidget {
+  final TextEditingController controller;
+  const _EcgStructuredWidget({required this.controller});
+  @override
+  State<_EcgStructuredWidget> createState() => _EcgStructuredWidgetState();
+}
+
+class _EcgStructuredWidgetState extends State<_EcgStructuredWidget> {
+  bool _expanded = false;
+  String _ritmo = 'Sinusal';
+  final _fc    = TextEditingController();
+  final _pr    = TextEditingController();
+  final _qrs   = TextEditingController();
+  final _qt    = TextEditingController();
+  final _eixo  = TextEditingController();
+  final _st    = TextEditingController();
+  final _outros = TextEditingController();
+
+  static const _ritmos = ['Sinusal', 'FA', 'Flutter', 'BAV 1º', 'BAV 2º', 'BAV 3º', 'ESSV', 'TV', 'FV', 'Marcapasso', 'Outro'];
+
+  @override
+  void dispose() {
+    for (final c in [_fc, _pr, _qrs, _qt, _eixo, _st, _outros]) c.dispose();
+    super.dispose();
+  }
+
+  void _sync() {
+    final parts = <String>[];
+    parts.add('Ritmo: $_ritmo');
+    if (_fc.text.isNotEmpty)    parts.add('FC: ${_fc.text} bpm');
+    if (_pr.text.isNotEmpty)    parts.add('PR: ${_pr.text} ms');
+    if (_qrs.text.isNotEmpty)   parts.add('QRS: ${_qrs.text} ms');
+    if (_qt.text.isNotEmpty)    parts.add('QTc: ${_qt.text} ms');
+    if (_eixo.text.isNotEmpty)  parts.add('Eixo: ${_eixo.text}°');
+    if (_st.text.isNotEmpty)    parts.add('ST/T: ${_st.text}');
+    if (_outros.text.isNotEmpty) parts.add('Outros: ${_outros.text}');
+    widget.controller.text = 'ECG — ${parts.join(' | ')}';
+    setState(() {});
+  }
+
+  Widget _numField(String label, TextEditingController ctrl, {String hint = ''}) {
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      Text(label, style: const TextStyle(fontSize: 8, fontWeight: FontWeight.w900, letterSpacing: 0.8, color: Color(0xFF888888))),
+      const SizedBox(height: 3),
+      SizedBox(width: 64, height: 34, child: TextField(
+        controller: ctrl, keyboardType: TextInputType.number, onChanged: (_) => _sync(),
+        style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w800),
+        decoration: InputDecoration(isDense: true, contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 7), hintText: hint,
+          hintStyle: const TextStyle(fontSize: 10, color: Color(0xFFBBBBBB)), filled: true, fillColor: const Color(0xFFF8F8F8),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: const BorderSide(color: kBorder)),
+          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: const BorderSide(color: kBorder)),
+          focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: const BorderSide(color: kGold, width: 1.5))),
+      )),
+    ]);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(borderRadius: BorderRadius.circular(14), border: Border.all(color: kBorder), color: const Color(0xFFFFFBF2)),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        // Header clicável
+        GestureDetector(
+          onTap: () => setState(() => _expanded = !_expanded),
+          child: Padding(padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10), child: Row(children: [
+            const Icon(Icons.monitor_rounded, size: 14, color: kGold),
+            const SizedBox(width: 6),
+            const Text('ECG', style: TextStyle(fontSize: 9, fontWeight: FontWeight.w900, letterSpacing: 1.4, color: Color(0xFF555555))),
+            const SizedBox(width: 8),
+            if (widget.controller.text.isNotEmpty)
+              Expanded(child: Text(widget.controller.text, style: const TextStyle(fontSize: 10, color: Color(0xFF888888), fontWeight: FontWeight.w600), overflow: TextOverflow.ellipsis)),
+            const Spacer(),
+            Icon(_expanded ? Icons.expand_less_rounded : Icons.expand_more_rounded, size: 18, color: const Color(0xFF888888)),
+          ])),
+        ),
+        if (_expanded) ...[
+          const Divider(height: 1, color: kBorder),
+          Padding(padding: const EdgeInsets.all(12), child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            // Ritmo
+            const Text('RITMO', style: TextStyle(fontSize: 8, fontWeight: FontWeight.w900, letterSpacing: 0.8, color: Color(0xFF888888))),
+            const SizedBox(height: 6),
+            SingleChildScrollView(scrollDirection: Axis.horizontal, child: Row(children: _ritmos.map((r) {
+              final sel = r == _ritmo;
+              return Padding(padding: const EdgeInsets.only(right: 6), child: GestureDetector(
+                onTap: () { setState(() => _ritmo = r); _sync(); },
+                child: Container(padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(8), color: sel ? kDark : Colors.white, border: Border.all(color: sel ? kDark : kBorder)),
+                  child: Text(r, style: TextStyle(fontSize: 10, fontWeight: FontWeight.w800, color: sel ? kGoldLight : const Color(0xFF666666)))),
+              ));
+            }).toList())),
+            const SizedBox(height: 10),
+            // Intervalos
+            Wrap(spacing: 10, runSpacing: 10, children: [
+              _numField('FC (bpm)', _fc, hint: '72'),
+              _numField('PR (ms)', _pr, hint: '160'),
+              _numField('QRS (ms)', _qrs, hint: '90'),
+              _numField('QTc (ms)', _qt, hint: '440'),
+              _numField('Eixo (°)', _eixo, hint: '60'),
+            ]),
+            const SizedBox(height: 10),
+            // ST livre
+            Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              const Text('ALTERAÇÕES ST/T', style: TextStyle(fontSize: 8, fontWeight: FontWeight.w900, letterSpacing: 0.8, color: Color(0xFF888888))),
+              const SizedBox(height: 3),
+              TextField(controller: _st, onChanged: (_) => _sync(),
+                style: const TextStyle(fontSize: 12),
+                decoration: InputDecoration(isDense: true, contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                  hintText: 'Supra V1-V4, infra lateral, invertida...',
+                  hintStyle: const TextStyle(fontSize: 11, color: Color(0xFFBBBBBB)), filled: true, fillColor: const Color(0xFFF8F8F8),
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: const BorderSide(color: kBorder)),
+                  enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: const BorderSide(color: kBorder)),
+                  focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: const BorderSide(color: kGold, width: 1.5)))),
+            ]),
+            const SizedBox(height: 8),
+            Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              const Text('OUTROS ACHADOS', style: TextStyle(fontSize: 8, fontWeight: FontWeight.w900, letterSpacing: 0.8, color: Color(0xFF888888))),
+              const SizedBox(height: 3),
+              TextField(controller: _outros, onChanged: (_) => _sync(),
+                style: const TextStyle(fontSize: 12),
+                decoration: InputDecoration(isDense: true, contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                  hintText: 'BRD, BRE, HVE, ESSV, ondas Q...',
+                  hintStyle: const TextStyle(fontSize: 11, color: Color(0xFFBBBBBB)), filled: true, fillColor: const Color(0xFFF8F8F8),
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: const BorderSide(color: kBorder)),
+                  enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: const BorderSide(color: kBorder)),
+                  focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: const BorderSide(color: kGold, width: 1.5)))),
+            ]),
+          ])),
+        ],
+      ]),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// LAB ESTRUTURADO + OCR via FILE INPUT
+// ─────────────────────────────────────────────────────────────────────────────
+class _LabStructuredWidget extends StatefulWidget {
+  final TextEditingController controller;
+  const _LabStructuredWidget({required this.controller});
+  @override
+  State<_LabStructuredWidget> createState() => _LabStructuredWidgetState();
+}
+
+class _LabStructuredWidgetState extends State<_LabStructuredWidget> {
+  bool _expanded = false;
+  bool _ocrLoading = false;
+  String _ocrStatus = '';
+
+  final _hb    = TextEditingController();
+  final _ht    = TextEditingController();
+  final _leuco = TextEditingController();
+  final _plaq  = TextEditingController();
+  final _na    = TextEditingController();
+  final _k     = TextEditingController();
+  final _cr    = TextEditingController();
+  final _ur    = TextEditingController();
+  final _gli   = TextEditingController();
+  final _pcr   = TextEditingController();
+  final _tni   = TextEditingController();
+  final _bnp   = TextEditingController();
+  final _lac   = TextEditingController();
+  final _tp    = TextEditingController();
+  final _tgo   = TextEditingController();
+  final _tgp   = TextEditingController();
+  final _outros = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    for (final c in [_hb,_ht,_leuco,_plaq,_na,_k,_cr,_ur,_gli,_pcr,_tni,_bnp,_lac,_tp,_tgo,_tgp,_outros]) {
+      c.addListener(_sync);
+    }
+  }
+
+  @override
+  void dispose() {
+    for (final c in [_hb,_ht,_leuco,_plaq,_na,_k,_cr,_ur,_gli,_pcr,_tni,_bnp,_lac,_tp,_tgo,_tgp,_outros]) {
+      c.dispose();
+    }
+    super.dispose();
+  }
+
+  void _sync() {
+    final parts = <String>[];
+    void add(String label, TextEditingController ctrl, String unit) {
+      if (ctrl.text.isNotEmpty) parts.add('$label: ${ctrl.text} $unit'.trim());
+    }
+    add('Hb', _hb, 'g/dL'); add('Ht', _ht, '%'); add('Leuco', _leuco, '/mm³'); add('Plaq', _plaq, '×10³');
+    add('Na⁺', _na, 'mEq/L'); add('K⁺', _k, 'mEq/L'); add('Cr', _cr, 'mg/dL'); add('Ur', _ur, 'mg/dL');
+    add('Gli', _gli, 'mg/dL'); add('PCR', _pcr, 'mg/L'); add('TnI', _tni, 'ng/mL'); add('BNP', _bnp, 'pg/mL');
+    add('Lactato', _lac, 'mmol/L'); add('TP', _tp, '%'); add('TGO', _tgo, 'U/L'); add('TGP', _tgp, 'U/L');
+    if (_outros.text.isNotEmpty) parts.add(_outros.text.trim());
+    widget.controller.text = parts.join('\n');
+    if (mounted) setState(() {});
+  }
+
+  // ── OCR via File Input (Web) ──────────────────────────────────────────────
+  void _openOcrPicker() {
+    try {
+      final input = html.FileUploadInputElement()
+        ..accept = 'image/*'
+        ..style.display = 'none';
+      html.document.body!.append(input);
+      input.onChange.listen((e) async {
+        final files = input.files;
+        if (files == null || files.isEmpty) { input.remove(); return; }
+        final file = files[0];
+        setState(() { _ocrLoading = true; _ocrStatus = 'Lendo imagem...'; });
+        // Ler como DataURL e usar API do browser
+        final reader = html.FileReader();
+        reader.readAsDataUrl(file);
+        reader.onLoadEnd.listen((_) async {
+          try {
+            final dataUrl = reader.result as String;
+            await _runOcr(dataUrl);
+          } catch (err) {
+            if (mounted) setState(() { _ocrLoading = false; _ocrStatus = 'Erro: $err'; });
+          }
+          input.remove();
+        });
+      });
+      input.click();
+    } catch (e) {
+      if (mounted) setState(() { _ocrStatus = 'OCR não disponível: $e'; });
+    }
+  }
+
+  // Simples OCR via heurística de texto da imagem usando tesseract.js via JS interop
+  // Fallback: copia imagem para campo de texto livre para edição manual
+  Future<void> _runOcr(String dataUrl) async {
+    try {
+      // Tenta usar tesseract.js se disponível no browser
+      final hasTess = js.context.hasProperty('Tesseract');
+      if (hasTess) {
+        if (mounted) setState(() { _ocrStatus = 'Extraindo texto (OCR)...'; });
+        final result = await js.JsObject.fromBrowserObject(
+          js.context.callMethod('eval', [
+            '''(function() { return Tesseract.recognize("$dataUrl", "por+spa").then(r => r.data.text); })()'''
+          ])
+        );
+        final text = result?.toString() ?? '';
+        _applyOcrText(text);
+        if (mounted) setState(() { _ocrLoading = false; _ocrStatus = 'Texto extraído! Revise os campos.'; });
+      } else {
+        // Sem tesseract.js: copia texto de exemplo / abre para edição manual
+        if (mounted) setState(() {
+          _ocrLoading = false;
+          _ocrStatus = 'Imagem carregada — preencha os campos manualmente ou instale Tesseract.js';
+          // Deixa o campo "outros" pronto para edição
+          _outros.text = '(Laudo de imagem — edite os valores acima)';
+        });
+      }
+    } catch (e) {
+      if (mounted) setState(() { _ocrLoading = false; _ocrStatus = 'Falha OCR: $e'; });
+    }
+  }
+
+  void _applyOcrText(String text) {
+    // Heurística para extrair valores comuns de laudos
+    final t = text.toLowerCase();
+    void extract(TextEditingController c, List<String> patterns) {
+      for (final p in patterns) {
+        final m = RegExp('$p[:\\s]+(\\d+[,.]?\\d*)').firstMatch(t);
+        if (m != null && c.text.isEmpty) { c.text = m.group(1)?.replaceAll(',', '.') ?? ''; break; }
+      }
+    }
+    extract(_hb,   ['hemoglobina', 'hb']);
+    extract(_ht,   ['hematocrito', 'ht']);
+    extract(_leuco,['leucocitos', 'leuco', 'glóbulos blancos']);
+    extract(_plaq, ['plaquetas', 'plaq', 'trombocitos']);
+    extract(_na,   ['sodio', 'na']);
+    extract(_k,    ['potasio', 'potássio', 'kalium', '\\bk\\b']);
+    extract(_cr,   ['creatinina', 'cr']);
+    extract(_ur,   ['ureia', 'urea', 'ur']);
+    extract(_gli,  ['glicose', 'glucosa', 'glucose']);
+    extract(_pcr,  ['pcr', 'proteina c reativa', 'proteína c reactiva']);
+    extract(_tni,  ['troponina', 'tni', 'tnI']);
+    extract(_bnp,  ['bnp', 'nt-probnp', 'proBNP']);
+    extract(_lac,  ['lactato', 'lactic']);
+    extract(_tp,   ['tp', 'tp%', 'atividade protrombinica']);
+    extract(_tgo,  ['tgo', 'ast', 'aspartato']);
+    extract(_tgp,  ['tgp', 'alt', 'alanino']);
+    // Restante vai para "outros" se houver linhas relevantes
+    if (_outros.text.isEmpty && text.length > 50) {
+      _outros.text = text.substring(0, text.length > 300 ? 300 : text.length).trim();
+    }
+  }
+
+  Widget _labField(String label, TextEditingController ctrl, String hint, {Color? flagColor}) {
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      Text(label, style: const TextStyle(fontSize: 8, fontWeight: FontWeight.w900, letterSpacing: 0.8, color: Color(0xFF888888))),
+      const SizedBox(height: 3),
+      SizedBox(width: 68, height: 34, child: TextField(
+        controller: ctrl, keyboardType: TextInputType.numberWithOptions(decimal: true),
+        style: TextStyle(fontSize: 12, fontWeight: FontWeight.w800, color: flagColor ?? const Color(0xFF1A1A1A)),
+        decoration: InputDecoration(isDense: true, contentPadding: const EdgeInsets.symmetric(horizontal: 7, vertical: 7), hintText: hint,
+          hintStyle: const TextStyle(fontSize: 10, color: Color(0xFFBBBBBB)), filled: true, fillColor: const Color(0xFFF8F8F8),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide(color: flagColor?.withValues(alpha: 0.4) ?? kBorder)),
+          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide(color: flagColor?.withValues(alpha: 0.4) ?? kBorder)),
+          focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide(color: flagColor ?? const Color(0xFF065F46), width: 1.5))),
+      )),
+    ]);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(borderRadius: BorderRadius.circular(14), border: Border.all(color: kBorder), color: const Color(0xFFF7FFFE)),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        // Header
+        GestureDetector(
+          onTap: () => setState(() => _expanded = !_expanded),
+          child: Padding(padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10), child: Row(children: [
+            const Icon(Icons.science_rounded, size: 14, color: Color(0xFF065F46)),
+            const SizedBox(width: 6),
+            const Text('EXAMES LABORATORIAIS', style: TextStyle(fontSize: 9, fontWeight: FontWeight.w900, letterSpacing: 1.2, color: Color(0xFF555555))),
+            const SizedBox(width: 8),
+            if (widget.controller.text.isNotEmpty && !_expanded)
+              const Expanded(child: Text('preenchido', style: TextStyle(fontSize: 10, color: Color(0xFF065F46), fontWeight: FontWeight.w700))),
+            const Spacer(),
+            // Botão OCR
+            GestureDetector(
+              onTap: _ocrLoading ? null : _openOcrPicker,
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                decoration: BoxDecoration(borderRadius: BorderRadius.circular(8), color: const Color(0xFF065F46).withValues(alpha: 0.08), border: Border.all(color: const Color(0xFF065F46).withValues(alpha: 0.25))),
+                child: Row(mainAxisSize: MainAxisSize.min, children: [
+                  if (_ocrLoading)
+                    const SizedBox(width: 10, height: 10, child: CircularProgressIndicator(strokeWidth: 1.5, color: Color(0xFF065F46)))
+                  else
+                    const Icon(Icons.document_scanner_rounded, size: 11, color: Color(0xFF065F46)),
+                  const SizedBox(width: 3),
+                  Text(_ocrLoading ? 'Lendo...' : 'Foto/OCR', style: const TextStyle(fontSize: 9, fontWeight: FontWeight.w800, color: Color(0xFF065F46))),
+                ]),
+              ),
+            ),
+            const SizedBox(width: 6),
+            Icon(_expanded ? Icons.expand_less_rounded : Icons.expand_more_rounded, size: 18, color: const Color(0xFF888888)),
+          ])),
+        ),
+        if (_ocrStatus.isNotEmpty)
+          Padding(padding: const EdgeInsets.fromLTRB(12, 0, 12, 8),
+            child: Text(_ocrStatus, style: TextStyle(fontSize: 10, color: _ocrStatus.startsWith('Erro') || _ocrStatus.startsWith('Falha') ? Colors.red : const Color(0xFF065F46), fontWeight: FontWeight.w700))),
+        if (_expanded) ...[
+          const Divider(height: 1, color: kBorder),
+          Padding(padding: const EdgeInsets.all(12), child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            // Hemograma
+            const Text('HEMOGRAMA', style: TextStyle(fontSize: 8, fontWeight: FontWeight.w900, letterSpacing: 1.0, color: Color(0xFFAAAAAA))),
+            const SizedBox(height: 6),
+            Wrap(spacing: 8, runSpacing: 8, children: [
+              _labField('Hb (g/dL)', _hb, '12–16'),
+              _labField('Ht (%)', _ht, '36–48'),
+              _labField('Leuco (/mm³)', _leuco, '4–11k'),
+              _labField('Plaq (×10³)', _plaq, '150–400'),
+            ]),
+            const SizedBox(height: 10),
+            // Eletrólitos / Função Renal
+            const Text('ELETRÓLITOS / FUNÇÃO RENAL', style: TextStyle(fontSize: 8, fontWeight: FontWeight.w900, letterSpacing: 1.0, color: Color(0xFFAAAAAA))),
+            const SizedBox(height: 6),
+            Wrap(spacing: 8, runSpacing: 8, children: [
+              _labField('Na⁺ (mEq/L)', _na, '135–145'),
+              _labField('K⁺ (mEq/L)', _k, '3.5–5.0'),
+              _labField('Cr (mg/dL)', _cr, '<1.2'),
+              _labField('Ur (mg/dL)', _ur, '15–40'),
+              _labField('Gli (mg/dL)', _gli, '70–100'),
+            ]),
+            const SizedBox(height: 10),
+            // Marcadores
+            const Text('MARCADORES / OUTROS', style: TextStyle(fontSize: 8, fontWeight: FontWeight.w900, letterSpacing: 1.0, color: Color(0xFFAAAAAA))),
+            const SizedBox(height: 6),
+            Wrap(spacing: 8, runSpacing: 8, children: [
+              _labField('PCR (mg/L)', _pcr, '<5'),
+              _labField('TnI (ng/mL)', _tni, '<0.04'),
+              _labField('BNP (pg/mL)', _bnp, '<100'),
+              _labField('Lactato', _lac, '<2.0'),
+              _labField('TP (%)', _tp, '70–120'),
+              _labField('TGO (U/L)', _tgo, '<40'),
+              _labField('TGP (U/L)', _tgp, '<40'),
+            ]),
+            const SizedBox(height: 10),
+            // Campo livre
+            Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              const Text('OUTROS / OBSERVAÇÕES', style: TextStyle(fontSize: 8, fontWeight: FontWeight.w900, letterSpacing: 0.8, color: Color(0xFFAAAAAA))),
+              const SizedBox(height: 3),
+              TextField(controller: _outros,
+                maxLines: 3,
+                style: const TextStyle(fontSize: 12),
+                decoration: InputDecoration(isDense: true, contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                  hintText: 'Gasometria, hormônios, sorologia, culturas...',
+                  hintStyle: const TextStyle(fontSize: 11, color: Color(0xFFBBBBBB)), filled: true, fillColor: const Color(0xFFF8F8F8),
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: const BorderSide(color: kBorder)),
+                  enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: const BorderSide(color: kBorder)),
+                  focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: const BorderSide(color: Color(0xFF065F46), width: 1.5)))),
+            ]),
+          ])),
+        ],
+        // Preview resumo
+        if (widget.controller.text.isNotEmpty && !_expanded) ...[
+          Padding(
+            padding: const EdgeInsets.fromLTRB(12, 0, 12, 10),
+            child: Container(
+              width: double.infinity, padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(borderRadius: BorderRadius.circular(8), color: const Color(0xFF065F46).withValues(alpha: 0.06)),
+              child: Text(widget.controller.text, style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: Color(0xFF065F46), height: 1.5), maxLines: 4, overflow: TextOverflow.ellipsis),
+            ),
+          ),
+        ],
+      ]),
+    );
   }
 }
