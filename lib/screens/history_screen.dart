@@ -93,20 +93,6 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
         child: PremiumCard(
           padding: const EdgeInsets.fromLTRB(12, 14, 16, 14),
           child: Row(children: [
-            // Botão voltar
-            GestureDetector(
-              onTap: () => Navigator.of(context).maybePop(),
-              child: Container(
-                padding: const EdgeInsets.all(7),
-                margin: const EdgeInsets.only(right: 10),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: Colors.white.withValues(alpha: 0.12),
-                  border: Border.all(color: Colors.white.withValues(alpha: 0.2)),
-                ),
-                child: const Icon(Icons.arrow_back_rounded, size: 16, color: Colors.white),
-              ),
-            ),
             Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               const Text('HISTÓRIA CLÍNICA', style: TextStyle(fontSize: 9, fontWeight: FontWeight.w900, color: Color(0xBFFFE8A6), letterSpacing: 2)),
               const SizedBox(height: 3),
@@ -208,7 +194,7 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
                   itemCount: pub.length,
                   itemBuilder: (_, i) => _HistoryCard(
                     h: pub[i], p: p,
-                    onTap: () => setState(() { _viewing = pub[i]; _viewingPublic: true; }),
+                    onTap: () => setState(() { _viewing = pub[i]; _viewingPublic = true; }),
                     readOnly: true,
                   ),
                 ),

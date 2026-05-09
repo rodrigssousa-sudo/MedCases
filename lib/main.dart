@@ -437,7 +437,7 @@ class MainShell extends StatefulWidget {
 }
 
 class _MainShellState extends State<MainShell> {
-  // tabs: 0=Cockpit, 1=Rx/Proto combo, 2=IA(centro), 3=HC, 4=Calculadoras
+  // tabs: 0=Cockpit 1=Rx/Proto 2=IA(FAB) 3=H.Clínica 4=Calculadoras
   int _tab = 0;
   // sub-tab dentro do combo Rx+Proto: 0=Rx, 1=Protocolos
   int _rxProtoSub = 0;
@@ -449,23 +449,6 @@ class _MainShellState extends State<MainShell> {
       _rxProtoSub = 1;
       _pendingProtocolId = id;
     });
-  }
-
-  void _openHistory() {
-    Navigator.push(
-      context,
-      PageRouteBuilder(
-        pageBuilder: (_, __, ___) => const HistoryScreen(),
-        transitionsBuilder: (_, anim, __, child) => SlideTransition(
-          position: Tween<Offset>(
-            begin: const Offset(1.0, 0.0),
-            end: Offset.zero,
-          ).animate(CurvedAnimation(parent: anim, curve: Curves.easeOutCubic)),
-          child: child,
-        ),
-        transitionDuration: const Duration(milliseconds: 280),
-      ),
-    );
   }
 
   @override
@@ -485,16 +468,18 @@ class _MainShellState extends State<MainShell> {
     );
 
     // Ordem das telas no IndexedStack
-    // 0=Cockpit | 1=Rx+Proto | 2=IA | 3=HC(push) | 4=Calculadoras
+    // tab: 0=Cockpit | 1=Rx+Proto | 2=IA(FAB) | 3=H.Clínica | 4=Calculadoras
+    // stack: 0=Cockpit | 1=Rx+Proto | 2=IA | 3=H.Clínica | 4=Calculadoras
     final mainScreens = [
       CockpitScreen(openProtocol: _openProtocol), // 0
       rxProtoScreen,                               // 1
-      const AiScreen(),                            // 2 — centro FAB
-      const ToolsScreen(),                         // 3
+      const AiScreen(),                            // 2 — FAB central
+      const HistoryScreen(),                       // 3 — H.Clínica integrada
+      const ToolsScreen(),                         // 4
     ];
 
-    // Índice real para o IndexedStack (HC é push, não tem índice)
-    final stackIdx = _tab <= 1 ? _tab : _tab - 1; // 0→0, 1→1, 2→2(IA), 3→3(Tools) — tab=3 é HC(push)
+    // stackIdx = _tab direto (todas as telas no stack agora)
+    final stackIdx = _tab.clamp(0, mainScreens.length - 1);
 
     return Scaffold(
       backgroundColor: bg,
@@ -508,7 +493,7 @@ class _MainShellState extends State<MainShell> {
       bottomNavigationBar: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          _LegalBar(dark: dark),
+          // ── Barra de navegação principal ─────────────────────────────────
           Container(
             decoration: BoxDecoration(
               color: navBg,
@@ -523,6 +508,7 @@ class _MainShellState extends State<MainShell> {
             ),
             child: SafeArea(
               top: false,
+              bottom: false, // LegalBar cuida do padding inferior
               child: SizedBox(
                 height: 72,
                 child: Stack(
@@ -536,12 +522,12 @@ class _MainShellState extends State<MainShell> {
                         _buildNavBtn(0, Icons.home_rounded, p.t('cockpit'), dark, p),
                         // 1 — Rx + Protocolos (combo)
                         _buildNavBtn(1, Icons.layers_rounded, 'Rx & Proto', dark, p),
-                        // espaço para o FAB central
+                        // espaço para o FAB central (IA)
                         const SizedBox(width: 76),
-                        // 3 — História Clínica (push route)
-                        _buildNavBtnAction(Icons.folder_shared_rounded, 'H. Clínica', dark, p, _openHistory),
+                        // 3 — História Clínica (tab no stack)
+                        _buildNavBtn(3, Icons.folder_shared_rounded, 'H. Clínica', dark, p),
                         // 4 — Calculadoras
-                        _buildNavBtn(3, Icons.calculate_rounded, p.t('tools'), dark, p),
+                        _buildNavBtn(4, Icons.calculate_rounded, p.t('tools'), dark, p),
                       ],
                     ),
                     Positioned(
@@ -553,6 +539,8 @@ class _MainShellState extends State<MainShell> {
               ),
             ),
           ),
+          // ── Disclaimer legal — ABAIXO da nav bar ─────────────────────────
+          _LegalBar(dark: dark),
         ],
       ),
     );
