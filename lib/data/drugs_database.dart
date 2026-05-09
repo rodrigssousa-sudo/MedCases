@@ -6413,4 +6413,789 @@ const List<DrugModel> drugsDatabase = [
     },
   ),
 
+
+  // ── NOVOS FÁRMACOS ────────────────────────────────────────────────────────
+
+  DrugModel(
+    id: 'propinoxato',
+    group: 'Gastroenterología',
+    name: 'Propinoxato',
+    className: {'pt': 'Antiespasmódico / Anticolinérgico', 'es': 'Antiespasmódico / Anticolinérgico'},
+    category: {'pt': 'Gastrointestinais', 'es': 'Gastrointestinales'},
+    route: 'VO / IV / IM',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': '10–20 mg a cada 6–8h. IV/IM: 10 mg (1 ampola) lento.',
+      'es': '10–20 mg cada 6–8 h. IV/IM: 10 mg (1 ampolla) lento.',
+    },
+    renalAlert: {
+      'pt': 'Sem ajuste necessário, mas monitorar retenção urinária.',
+      'es': 'Sin ajuste necesario, pero monitorear retención urinaria.',
+    },
+    elderlyAlert: {
+      'pt': 'Risco de confusão mental, boca seca e retenção urinária (efeitos anticolinérgicos).',
+      'es': 'Riesgo de confusión mental, boca seca y retención urinaria (efectos anticolinérgicos).',
+    },
+    mechanism: {
+      'pt': 'Antagonista muscarínico e relaxante direto da musculatura lisa visceral.',
+      'es': 'Antagonista muscarínico y relajante directo de la musculatura lisa visceral.',
+    },
+    warning: {
+      'pt': 'Contraindicado em glaucoma de ângulo fechado e hipertrofia prostática.',
+      'es': 'Contraindicado en glaucoma de ángulo cerrado e hipertrofia prostática.',
+    },
+    adverse: {
+      'pt': ['Boca seca', 'Visão turva', 'Taquicardia', 'Constipação'],
+      'es': ['Boca seca', 'Visión borrosa', 'Taquicardia', 'Constipación'],
+    },
+  ),
+
+  DrugModel(
+    id: 'ketorolac',
+    group: 'Analgésicos y Antipiréticos',
+    name: 'Ketorolac Trometamina',
+    className: {'pt': 'AINE / Analgésico potente', 'es': 'AINE / Analgésico potente'},
+    category: {'pt': 'Analgésicos', 'es': 'Analgésicos'},
+    route: 'VO / SL / IV / IM',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': '10–20 mg (VO/SL). IV/IM: 30–60 mg. Máx. 90 mg/dia. Uso máx. 5 dias.',
+      'es': '10–20 mg (VO/SL). IV/IM: 30–60 mg. Máx. 90 mg/día. Uso máx. 5 días.',
+    },
+    renalAlert: {
+      'pt': 'Contraindicado em insuficiência renal moderada a grave. Alto risco de nefrotoxicidade.',
+      'es': 'Contraindicado en insuficiencia renal moderada a grave. Alto riesgo de nefrotoxicidad.',
+    },
+    elderlyAlert: {
+      'pt': 'Reduzir dose para 30 mg/dia total. Alto risco de sangramento digestivo.',
+      'es': 'Reducir dosis a 30 mg/día total. Alto riesgo de sangrado digestivo.',
+    },
+    mechanism: {
+      'pt': 'Inibidor potente das ciclooxigenases COX-1 e COX-2.',
+      'es': 'Inhibidor potente de las ciclooxigenasas COX-1 y COX-2.',
+    },
+    warning: {
+      'pt': 'Potencial para úlcera gástrica e sangramento. Evitar em risco de sangramento pós-cirúrgico.',
+      'es': 'Potencial para úlcera gástrica y sangrado. Evitar en riesgo de sangrado post-quirúrgico.',
+    },
+    adverse: {
+      'pt': ['Gastrite', 'Hemorragia digestiva', 'Insuficiência renal aguda', 'Edema'],
+      'es': ['Gastritis', 'Hemorragia digestiva', 'Insuficiencia renal aguda', 'Edema'],
+    },
+  ),
+
+  DrugModel(
+    id: 'pridinol',
+    group: 'Neurología y Psiquiatría',
+    name: 'Pridinol',
+    className: {'pt': 'Relaxante muscular central', 'es': 'Relajante muscular central'},
+    category: {'pt': 'Músculo-esquelético', 'es': 'Músculo-esquelético'},
+    route: 'VO / IM',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': '4 mg a cada 8–12h. Frequentemente associado ao Diclofenaco.',
+      'es': '4 mg cada 8–12 h. Frecuentemente asociado al Diclofenaco.',
+    },
+    renalAlert: {
+      'pt': 'Usar com precaução em insuficiência renal grave.',
+      'es': 'Usar con precaución en insuficiencia renal grave.',
+    },
+    elderlyAlert: {
+      'pt': 'Pode causar tontura e quedas. Efeitos anticolinérgicos potencializados.',
+      'es': 'Puede causar mareos y caídas. Efectos anticolinérgicos potenciados.',
+    },
+    mechanism: {
+      'pt': 'Ação miorrelaxante central via efeito anticolinérgico nos centros motores.',
+      'es': 'Acción miorrelajante central vía efecto anticolinérgico en los centros motores.',
+    },
+    warning: {
+      'pt': 'Evitar em casos de miastenia gravis.',
+      'es': 'Evitar en casos de miastenia gravis.',
+    },
+    adverse: {
+      'pt': ['Tontura', 'Fraqueza muscular', 'Boca seca', 'Sonolência'],
+      'es': ['Mareos', 'Debilidad muscular', 'Boca seca', 'Somnolencia'],
+    },
+  ),
+
+  DrugModel(
+    id: 'meprednisona',
+    group: 'Varios / Antídotos / Otros',
+    name: 'Meprednisona',
+    className: {'pt': 'Glicocorticoide', 'es': 'Glucocorticoide'},
+    category: {'pt': 'Corticoides', 'es': 'Corticosteroides'},
+    route: 'VO',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': 'Adulto: 4–60 mg/dia conforme patologia. Pediatria: 0,5–2 mg/kg/dia.',
+      'es': 'Adulto: 4–60 mg/día según patología. Pediatría: 0,5–2 mg/kg/día.',
+    },
+    renalAlert: {
+      'pt': 'Geralmente seguro. Pode causar retenção hídrica.',
+      'es': 'Generalmente seguro. Puede causar retención hídrica.',
+    },
+    elderlyAlert: {
+      'pt': 'Monitorar glicemia e PA. Risco de osteoporose em uso crônico.',
+      'es': 'Monitorear glucemia y PA. Riesgo de osteoporosis en uso crónico.',
+    },
+    mechanism: {
+      'pt': 'Agonista dos receptores de glicocorticoides; inibe transcrição de citocinas inflamatórias.',
+      'es': 'Agonista de los receptores de glucocorticoides; inhibe transcripción de citoquinas inflamatorias.',
+    },
+    warning: {
+      'pt': 'Não interromper abruptamente se uso prolongado (risco de insuficiência adrenal).',
+      'es': 'No suspender abruptamente si el uso es prolongado (riesgo de insuficiencia adrenal).',
+    },
+    adverse: {
+      'pt': ['Hiperglicemia', 'Síndrome de Cushing', 'Insônia', 'Gastrite'],
+      'es': ['Hiperglucemia', 'Síndrome de Cushing', 'Insomnio', 'Gastritis'],
+    },
+  ),
+
+  DrugModel(
+    id: 'labetalol',
+    group: 'Cardiovascular y HTA',
+    name: 'Labetalol',
+    className: {'pt': 'Alfa e Beta bloqueador', 'es': 'Alfa y Beta bloqueante'},
+    category: {'pt': 'Anti-hipertensivos', 'es': 'Antihipertensivos'},
+    route: 'VO / IV',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': 'VO: 100–400 mg 2x/dia. IV bolo: 20 mg lento (2 min); repetir se necessário.',
+      'es': 'VO: 100–400 mg 2 veces/día. IV bolo: 20 mg lento (2 min); repetir si necesario.',
+    },
+    renalAlert: {
+      'pt': 'Ajuste não necessário na insuficiência renal.',
+      'es': 'Ajuste no necesario en insuficiencia renal.',
+    },
+    elderlyAlert: {
+      'pt': 'Risco elevado de hipotensão ortostática e bradicardia.',
+      'es': 'Riesgo elevado de hipotensión ortostática y bradicardia.',
+    },
+    mechanism: {
+      'pt': 'Bloqueio seletivo alfa-1 e não seletivo beta (proporção 1:7 IV).',
+      'es': 'Bloqueo selectivo alfa-1 y no selectivo beta (proporción 1:7 IV).',
+    },
+    warning: {
+      'pt': 'Contraindicado em asma, DPOC e bloqueios cardíacos 2º/3º grau.',
+      'es': 'Contraindicado en asma, EPOC y bloqueos cardíacos de 2º/3º grado.',
+    },
+    adverse: {
+      'pt': ['Hipotensão postural', 'Bradicardia', 'Broncoespasmo', 'Fadiga'],
+      'es': ['Hipotensión postural', 'Bradicardia', 'Broncoespasmo', 'Fatiga'],
+    },
+  ),
+
+  DrugModel(
+    id: 'trimebutina',
+    group: 'Gastroenterología',
+    name: 'Trimebutina',
+    className: {'pt': 'Modulador da motilidade gastrointestinal', 'es': 'Modulador de la motilidad gastrointestinal'},
+    category: {'pt': 'Gastrointestinais', 'es': 'Gastrointestinales'},
+    route: 'VO',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': '200 mg 3 vezes ao dia, antes das refeições.',
+      'es': '200 mg 3 veces al día, antes de las comidas.',
+    },
+    renalAlert: {
+      'pt': 'Sem dados de ajuste; usar com cautela em insuficiência grave.',
+      'es': 'Sin datos de ajuste; usar con cautela en insuficiencia grave.',
+    },
+    elderlyAlert: {
+      'pt': 'Geralmente bem tolerado.',
+      'es': 'Generalmente bien tolerado.',
+    },
+    mechanism: {
+      'pt': 'Agonista encefalinérgico periférico (receptores mu, delta e kappa); modula motilidade.',
+      'es': 'Agonista encefalinérgico periférico (receptores mu, delta y kappa); modula motilidad.',
+    },
+    warning: {
+      'pt': 'Uso seguro na maioria dos pacientes com Síndrome do Intestino Irritável.',
+      'es': 'Uso seguro en la mayoría de los pacientes con Síndrome de Intestino Irritable.',
+    },
+    adverse: {
+      'pt': ['Constipação', 'Diarreia', 'Boca seca', 'Tontura'],
+      'es': ['Constipación', 'Diarrea', 'Boca seca', 'Mareos'],
+    },
+  ),
+
+  DrugModel(
+    id: 'cefadroxilo',
+    group: 'Antibióticos',
+    name: 'Cefadroxilo',
+    className: {'pt': 'Cefalosporina de 1ª geração', 'es': 'Cefalosporina de 1ª generación'},
+    category: {'pt': 'Antibióticos', 'es': 'Antibióticos'},
+    route: 'VO',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': 'Adulto: 500 mg–1 g a cada 12h. Pediatria: 30 mg/kg/dia em 1 ou 2 doses.',
+      'es': 'Adulto: 500 mg–1 g cada 12 h. Pediatría: 30 mg/kg/día en 1 o 2 dosis.',
+    },
+    renalAlert: {
+      'pt': 'ClCr <50 mL/min: aumentar intervalo para 24h.',
+      'es': 'ClCr <50 mL/min: aumentar intervalo a 24 h.',
+    },
+    elderlyAlert: {
+      'pt': 'Monitorar função renal para ajuste de dose.',
+      'es': 'Monitorear función renal para ajuste de dosis.',
+    },
+    mechanism: {
+      'pt': 'Inibe a síntese da parede celular bacteriana (betalactâmico).',
+      'es': 'Inhibe la síntesis de la pared celular bacteriana (betalactámico).',
+    },
+    warning: {
+      'pt': 'Reação cruzada em alérgicos à penicilina (5–10%).',
+      'es': 'Reacción cruzada en alérgicos a penicilina (5–10%).',
+    },
+    adverse: {
+      'pt': ['Diarreia', 'Náuseas', 'Exantema', 'Candidíase'],
+      'es': ['Diarrea', 'Náuseas', 'Exantema', 'Candidiasis'],
+    },
+  ),
+
+  DrugModel(
+    id: 'etamsilato',
+    group: 'Hematología y Vitaminas',
+    name: 'Etamsilato',
+    className: {'pt': 'Hemostático / Vasoprotetor', 'es': 'Hemostático / Vasoprotector'},
+    category: {'pt': 'Hematológicos', 'es': 'Hematológicos'},
+    route: 'VO / IV / IM',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': '500 mg a cada 6–8h. IV/IM: 250–500 mg.',
+      'es': '500 mg cada 6–8 h. IV/IM: 250–500 mg.',
+    },
+    renalAlert: {
+      'pt': 'Usar com cautela na insuficiência renal.',
+      'es': 'Usar con cautela en insuficiencia renal.',
+    },
+    elderlyAlert: {
+      'pt': 'Seguro; monitorar possíveis reações de hipersensibilidade.',
+      'es': 'Seguro; monitorear posibles reacciones de hipersensibilidad.',
+    },
+    mechanism: {
+      'pt': 'Aumenta a adesividade plaquetária e a resistência capilar.',
+      'es': 'Aumenta la adhesividad plaquetaria y la resistencia capilar.',
+    },
+    warning: {
+      'pt': 'Não é procoagulante sistêmico; não atua na cascata de coagulação.',
+      'es': 'No es procoagulante sistémico; no actúa en la cascada de coagulación.',
+    },
+    adverse: {
+      'pt': ['Cefaleia', 'Náuseas', 'Rash cutâneo', 'Hipotensão (se IV rápido)'],
+      'es': ['Cefalea', 'Náuseas', 'Rash cutáneo', 'Hipotensión (si IV rápido)'],
+    },
+  ),
+
+  DrugModel(
+    id: 'levosulpirida',
+    group: 'Gastroenterología',
+    name: 'Levosulpirida',
+    className: {'pt': 'Procinético / Neuroléptico', 'es': 'Procinético / Neuroléptico'},
+    category: {'pt': 'Gastrointestinais', 'es': 'Gastrointestinales'},
+    route: 'VO',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': '25 mg 3 vezes ao dia, antes das refeições.',
+      'es': '25 mg 3 veces al día, antes de las comidas.',
+    },
+    renalAlert: {
+      'pt': 'Reduzir dose ou evitar na insuficiência renal grave.',
+      'es': 'Reducir dosis o evitar en insuficiencia renal grave.',
+    },
+    elderlyAlert: {
+      'pt': 'Risco de síndrome extrapiramidal (Parkinsonismo medicamentoso).',
+      'es': 'Riesgo de síndrome extrapiramidal (Parkinsonismo medicamentoso).',
+    },
+    mechanism: {
+      'pt': 'Antagonista seletivo dos receptores dopaminérgicos D2 periféricos e centrais.',
+      'es': 'Antagonista selectivo de los receptores dopaminérgicos D2 periféricos y centrales.',
+    },
+    warning: {
+      'pt': 'Pode causar hiperprolactinemia (galactorreia/amenorreia).',
+      'es': 'Puede causar hiperprolactinemia (galactorrea/amenorrea).',
+    },
+    adverse: {
+      'pt': ['Sonolência', 'Tremores', 'Tensão mamária', 'Fadiga'],
+      'es': ['Somnolencia', 'Temblores', 'Tensión mamaria', 'Fatiga'],
+    },
+  ),
+
+  DrugModel(
+    id: 'celecoxib',
+    group: 'Analgésicos y Antipiréticos',
+    name: 'Celecoxib',
+    className: {'pt': 'AINE Seletivo COX-2', 'es': 'AINE Selectivo COX-2'},
+    category: {'pt': 'Analgésicos', 'es': 'Analgésicos'},
+    route: 'VO',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': '100–200 mg 1 a 2 vezes ao dia.',
+      'es': '100–200 mg 1 a 2 veces al día.',
+    },
+    renalAlert: {
+      'pt': 'Contraindicado em ClCr <30 mL/min.',
+      'es': 'Contraindicado en ClCr <30 mL/min.',
+    },
+    elderlyAlert: {
+      'pt': 'Monitorar função renal e risco cardiovascular (trombose).',
+      'es': 'Monitorear función renal y riesgo cardiovascular.',
+    },
+    mechanism: {
+      'pt': 'Inibição seletiva da COX-2 (poupando COX-1 gástrica).',
+      'es': 'Inhibición selectiva de la COX-2 (respetando COX-1 gástrica).',
+    },
+    warning: {
+      'pt': 'Aumenta risco cardiovascular em uso prolongado. Cuidado em hipertensos.',
+      'es': 'Aumenta riesgo cardiovascular en uso prolongado.',
+    },
+    adverse: {
+      'pt': ['Edema periférico', 'Hipertensão', 'Dispepsia', 'Tontura'],
+      'es': ['Edema periférico', 'Hipertensión', 'Dispepsia', 'Mareos'],
+    },
+  ),
+
+  DrugModel(
+    id: 'racecadotril',
+    group: 'Gastroenterología',
+    name: 'Racecadotril',
+    className: {'pt': 'Antidiarreico antissecretor', 'es': 'Antidiarreico antisecretor'},
+    category: {'pt': 'Gastrointestinais', 'es': 'Gastrointestinales'},
+    route: 'VO',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': 'Pediatria: 1,5 mg/kg por dose 3x/dia. Adulto: 100 mg 3x/dia.',
+      'es': 'Pediatría: 1,5 mg/kg por dosis 3 veces/día. Adulto: 100 mg 3 veces/día.',
+    },
+    renalAlert: {
+      'pt': 'Usar com precaução.',
+      'es': 'Usar con precaución.',
+    },
+    elderlyAlert: {
+      'pt': 'Seguro na dose padrão.',
+      'es': 'Seguro en la dosis estándar.',
+    },
+    mechanism: {
+      'pt': 'Inibidor da encefalinase intestinal; reduz hipersecreção de água e eletrólitos.',
+      'es': 'Inhibidor de la encefalinasa intestinal; reduce hipersecreción de agua y electrolitos.',
+    },
+    warning: {
+      'pt': 'Não substitui a reidratação oral. Indicado para tratamento sintomático.',
+      'es': 'No reemplaza la rehidratación oral. Indicado para tratamiento sintomático.',
+    },
+    adverse: {
+      'pt': ['Cefaleia', 'Vômitos (raro)', 'Rash'],
+      'es': ['Cefalea', 'Vómitos (raro)', 'Rash'],
+    },
+  ),
+
+  DrugModel(
+    id: 'diclofenac_sodico',
+    group: 'Analgésicos y Antipiréticos',
+    name: 'Diclofenac Sódico',
+    className: {'pt': 'AINE', 'es': 'AINE'},
+    category: {'pt': 'Analgésicos', 'es': 'Analgésicos'},
+    route: 'VO / IM / IV / Tópico',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': '50–75 mg a cada 8–12h. IM: 75 mg profunda. IV: 75 mg diluído em 100 mL SF em 30 min.',
+      'es': '50–75 mg cada 8–12 h. IM: 75 mg profunda. IV: 75 mg diluido en 100 mL SF en 30 min.',
+    },
+    renalAlert: {
+      'pt': 'Evitar se ClCr <30 mL/min. Risco de nefrite intersticial e retenção de sódio.',
+      'es': 'Evitar si ClCr <30 mL/min. Riesgo de nefritis intersticial y retención de sodio.',
+    },
+    elderlyAlert: {
+      'pt': 'Aumenta risco de hemorragia digestiva e insuficiência cardíaca. Usar dose mínima.',
+      'es': 'Aumenta riesgo de hemorragia digestiva e insuficiencia cardíaca. Usar dosis mínima.',
+    },
+    mechanism: {
+      'pt': 'Inibidor não seletivo da COX-1 e COX-2; reduz síntese de prostaglandinas.',
+      'es': 'Inhibidor no selectivo de COX-1 y COX-2; reduce síntesis de prostaglandinas.',
+    },
+    warning: {
+      'pt': 'Contraindicado em insuficiência cardíaca grave (Classe IV) e úlcera péptica ativa.',
+      'es': 'Contraindicado en insuficiencia cardíaca grave (Clase IV) y úlcera péptica activa.',
+    },
+    adverse: {
+      'pt': ['Dispepsia', 'Epigastralgia', 'Elevação de transaminases', 'Edema'],
+      'es': ['Dispepsia', 'Epigastralgia', 'Elevación de transaminasas', 'Edema'],
+    },
+  ),
+
+  DrugModel(
+    id: 'amoxicilina_sulbactam',
+    group: 'Antibióticos',
+    name: 'Amoxicilina + Sulbactam',
+    className: {'pt': 'Betalactâmico + Inibidor de betalactamase', 'es': 'Betalactámico + Inhibidor de betalactamasa'},
+    category: {'pt': 'Antibióticos', 'es': 'Antibióticos'},
+    route: 'VO / IV / IM',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': 'Adulto: 875/125 mg a cada 12h. Pediatria: 40–90 mg/kg/dia (base amox) cada 12h.',
+      'es': 'Adulto: 875/125 mg cada 12 h. Pediatría: 40–90 mg/kg/día (base amox) cada 12 h.',
+    },
+    renalAlert: {
+      'pt': 'ClCr <30 mL/min: ajustar intervalo para 12–24h conforme gravidade.',
+      'es': 'ClCr <30 mL/min: ajustar intervalo a 12–24 h según gravedad.',
+    },
+    elderlyAlert: {
+      'pt': 'Ajustar conforme função renal; monitorar diarreia (risco de C. difficile).',
+      'es': 'Ajustar según función renal; monitorear diarrea (riesgo de C. difficile).',
+    },
+    mechanism: {
+      'pt': 'Inibe síntese da parede bacteriana (amoxicilina) e protege contra betalactamases (sulbactam).',
+      'es': 'Inhibe síntesis de pared bacteriana (amoxicilina) y protege contra betalactamasas (sulbactam).',
+    },
+    warning: {
+      'pt': 'O sulbactam tem atividade intrínseca contra Acinetobacter spp. (diferente da clavulanato).',
+      'es': 'El sulbactam tiene actividad intrínseca contra Acinetobacter spp. (diferente al clavulanato).',
+    },
+    adverse: {
+      'pt': ['Diarreia', 'Exantema', 'Náuseas', 'Candidíase oral/vaginal'],
+      'es': ['Diarrea', 'Exantema', 'Náuseas', 'Candidiasis oral/vaginal'],
+    },
+  ),
+
+  DrugModel(
+    id: 'tamsulosina',
+    group: 'Varios / Antídotos / Otros',
+    name: 'Tamsulosina',
+    className: {'pt': 'Bloqueador Alfa-1 adrenérgico', 'es': 'Bloqueante Alfa-1 adrenérgico'},
+    category: {'pt': 'Urológicos', 'es': 'Urológicos'},
+    route: 'VO',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': '0,4 mg uma vez ao dia, após refeição.',
+      'es': '0,4 mg una vez al día, después de la comida.',
+    },
+    renalAlert: {
+      'pt': 'Sem ajuste se ClCr >10 mL/min.',
+      'es': 'Sin ajuste si ClCr >10 mL/min.',
+    },
+    elderlyAlert: {
+      'pt': 'Risco de hipotensão ortostática. Cuidado em cirurgia de catarata (síndrome da íris flácida).',
+      'es': 'Riesgo de hipotensión ortostática. Cuidado en cirugía de catarata (síndrome de iris flácido).',
+    },
+    mechanism: {
+      'pt': 'Bloqueio seletivo de receptores alfa-1 no colo vesical e uretra; facilita micção e expulsão de cálculo.',
+      'es': 'Bloqueo selectivo de receptores alfa-1 en cuello vesical y uretra; facilita micción y expulsión de cálculo.',
+    },
+    warning: {
+      'pt': 'Pode causar efeito de primeira dose (hipotensão súbita). Tomar à noite.',
+      'es': 'Puede causar efecto de primera dosis (hipotensión súbita). Tomar de noche.',
+    },
+    adverse: {
+      'pt': ['Tontura', 'Ejaculação retrógrada', 'Cefaleia', 'Congestão nasal'],
+      'es': ['Mareos', 'Eyaculación retrógrada', 'Cefalea', 'Congestión nasal'],
+    },
+  ),
+
+  DrugModel(
+    id: 'ciprofloxacina',
+    group: 'Antibióticos',
+    name: 'Ciprofloxacina',
+    className: {'pt': 'Fluoroquinolona', 'es': 'Fluoroquinolona'},
+    category: {'pt': 'Antibióticos', 'es': 'Antibióticos'},
+    route: 'VO / IV',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': '500 mg cada 12h (VO). IV: 400 mg cada 12h.',
+      'es': '500 mg cada 12 h (VO). IV: 400 mg cada 12 h.',
+    },
+    renalAlert: {
+      'pt': 'ClCr 30–50 mL/min: 250–500 mg/12h. ClCr <30 mL/min: 250–500 mg/24h.',
+      'es': 'ClCr 30–50 mL/min: 250–500 mg/12h. ClCr <30 mL/min: 250–500 mg/24h.',
+    },
+    elderlyAlert: {
+      'pt': 'Risco aumentado de tendinite e ruptura do tendão de Aquiles. Risco de confusão mental.',
+      'es': 'Riesgo aumentado de tendinitis y ruptura del tendón de Aquiles. Riesgo de confusión.',
+    },
+    mechanism: {
+      'pt': 'Inibe a DNA girase bacteriana e topoisomerase IV, bloqueando replicação do DNA.',
+      'es': 'Inhibe la DNA girasa bacteriana y topoisomerasa IV, bloqueando replicación del DNA.',
+    },
+    warning: {
+      'pt': 'Evitar em crianças (risco articular). Pode prolongar intervalo QT.',
+      'es': 'Evitar en niños (riesgo articular). Puede prolongar intervalo QT.',
+    },
+    adverse: {
+      'pt': ['Náuseas', 'Diarreia', 'Artralgia', 'Prolongamento do QT'],
+      'es': ['Náuseas', 'Diarrea', 'Artralgia', 'Prolongamiento del QT'],
+    },
+  ),
+
+  DrugModel(
+    id: 'ambroxol',
+    group: 'Respiratorio',
+    name: 'Ambroxol',
+    className: {'pt': 'Mucolítico / Expectorante', 'es': 'Mucolítico / Expectorante'},
+    category: {'pt': 'Respiratórios', 'es': 'Respiratorios'},
+    route: 'VO / Inalatório',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': 'Adulto: 30–60 mg cada 8–12h. Pediatria: 1,25–2,5 mg/kg/dia.',
+      'es': 'Adulto: 30–60 mg cada 8–12 h. Pediatría: 1,25–2,5 mg/kg/día.',
+    },
+    renalAlert: {
+      'pt': 'Ajuste geralmente não necessário.',
+      'es': 'Ajuste generalmente no necesario.',
+    },
+    elderlyAlert: {
+      'pt': 'Geralmente seguro.',
+      'es': 'Generalmente seguro.',
+    },
+    mechanism: {
+      'pt': 'Diminui a viscosidade do muco e estimula a síntese de surfactante pulmonar.',
+      'es': 'Disminuye la viscosidad del moco y estimula la síntesis de surfactante pulmonar.',
+    },
+    warning: {
+      'pt': 'Pode causar irritação gástrica. Tomar após as refeições.',
+      'es': 'Puede causar irritación gástrica. Tomar después de las comidas.',
+    },
+    adverse: {
+      'pt': ['Náuseas', 'Pirose', 'Dispepsia', 'Erupção cutânea'],
+      'es': ['Náuseas', 'Pirosis', 'Dispepsia', 'Erupción cutánea'],
+    },
+  ),
+
+  DrugModel(
+    id: 'rosuvastatina',
+    group: 'Cardiovascular y HTA',
+    name: 'Rosuvastatina',
+    className: {'pt': 'Inibidor da HMG-CoA redutase / Estatina', 'es': 'Inhibidor de HMG-CoA reductasa / Estatina'},
+    category: {'pt': 'Cardiovascular', 'es': 'Cardiovascular'},
+    route: 'VO',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': '5–20 mg uma vez ao dia. Máx: 40 mg/dia.',
+      'es': '5–20 mg una vez al día. Máx: 40 mg/día.',
+    },
+    renalAlert: {
+      'pt': 'ClCr <30 mL/min: contraindicado ou dose máx 5 mg/dia.',
+      'es': 'ClCr <30 mL/min: contraindicado o dosis máx 5 mg/día.',
+    },
+    elderlyAlert: {
+      'pt': 'Risco aumentado de miopatia. Iniciar com 5 mg.',
+      'es': 'Riesgo aumentado de miopatía. Iniciar con 5 mg.',
+    },
+    mechanism: {
+      'pt': 'Inibe a HMG-CoA redutase, diminuindo síntese de colesterol hepático.',
+      'es': 'Inhibe la HMG-CoA reductasa, disminuyendo síntesis de colesterol hepático.',
+    },
+    warning: {
+      'pt': 'Monitorar CPK se houver mialgia. Risco de rabdomiólise.',
+      'es': 'Monitorear CPK si hay mialgia. Riesgo de rabdomiólisis.',
+    },
+    adverse: {
+      'pt': ['Mialgia', 'Cefaleia', 'Aumento de transaminases', 'Diabetes mellitus (novo início)'],
+      'es': ['Mialgia', 'Cefalea', 'Aumento de transaminasas', 'Diabetes mellitus (nuevo inicio)'],
+    },
+  ),
+
+  DrugModel(
+    id: 'metoclopramida',
+    group: 'Gastroenterología',
+    name: 'Metoclopramida',
+    className: {'pt': 'Procinético / Antiemético', 'es': 'Procinético / Antiemético'},
+    category: {'pt': 'Gastrointestinais', 'es': 'Gastrointestinales'},
+    route: 'VO / IV / IM',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': 'Adulto: 10 mg a cada 8h. IV: infundir lentamente (risco de acatisia).',
+      'es': 'Adulto: 10 mg cada 8 h. IV: infundir lentamente (riesgo de acatisia).',
+    },
+    renalAlert: {
+      'pt': 'ClCr <40 mL/min: reduzir dose em 50%.',
+      'es': 'ClCr <40 mL/min: reducir dosis al 50%.',
+    },
+    elderlyAlert: {
+      'pt': 'Alto risco de reações extrapiramidais e discinesia tardia. Evitar uso crônico.',
+      'es': 'Alto riesgo de reacciones extrapiramidales y discinesia tardía. Evitar uso crónico.',
+    },
+    mechanism: {
+      'pt': 'Antagonista D2 e agonista 5-HT4; aumenta tônus do esfíncter esofágico inferior.',
+      'es': 'Antagonista D2 y agonista 5-HT4; aumenta el tono del esfínter esofágico inferior.',
+    },
+    warning: {
+      'pt': 'Pode causar reações distônicas agudas, especialmente em jovens e crianças.',
+      'es': 'Puede causar reacciones distónicas agudas, especialmente en jóvenes y niños.',
+    },
+    adverse: {
+      'pt': ['Sonolência', 'Acatisia', 'Diarreia', 'Sintomas extrapiramidais'],
+      'es': ['Somnolencia', 'Acatisia', 'Diarrea', 'Síntomas extrapiramidales'],
+    },
+  ),
+
+  DrugModel(
+    id: 'alprazolam',
+    group: 'Neurología y Psiquiatría',
+    name: 'Alprazolam',
+    className: {'pt': 'Benzodiazepínico de ação curta', 'es': 'Benzodiazepina de acción corta'},
+    category: {'pt': 'Psicotrópicos', 'es': 'Psicotrópicos'},
+    route: 'VO / SL',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': '0,25–0,5 mg a cada 8h. Máx: 4 mg/dia.',
+      'es': '0,25–0,5 mg cada 8 h. Máx: 4 mg/día.',
+    },
+    renalAlert: {
+      'pt': 'Usar com cautela em insuficiência renal grave.',
+      'es': 'Usar con cautela en insuficiencia renal grave.',
+    },
+    elderlyAlert: {
+      'pt': 'Aumenta significativamente o risco de quedas e confusão mental aguda.',
+      'es': 'Aumenta significativamente el riesgo de caídas y confusión mental aguda.',
+    },
+    mechanism: {
+      'pt': 'Potencializa a atividade do GABA no SNC, aumentando a frequência de abertura dos canais de cloro.',
+      'es': 'Potencia la actividad del GABA en el SNC, aumentando la frecuencia de apertura de los canales de cloro.',
+    },
+    warning: {
+      'pt': 'Alto potencial de abuso e síndrome de abstinência severa com retirada abrupta.',
+      'es': 'Alto potencial de abuso y síndrome de abstinencia severa con retirada abrupta.',
+    },
+    adverse: {
+      'pt': ['Sonolência', 'Ataxia', 'Boca seca', 'Fadiga'],
+      'es': ['Somnolencia', 'Ataxia', 'Boca seca', 'Fatiga'],
+    },
+  ),
+
+  DrugModel(
+    id: 'carvedilol',
+    group: 'Cardiovascular y HTA',
+    name: 'Carvedilol',
+    className: {'pt': 'Betabloqueador não seletivo / Alfa-1 bloqueador', 'es': 'Betabloqueante no selectivo / Alfa-1 bloqueante'},
+    category: {'pt': 'Cardiovascular', 'es': 'Cardiovascular'},
+    route: 'VO',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': 'Início: 3,125–6,25 mg 2x/dia. Alvo (se tolerado): 25–50 mg 2x/dia.',
+      'es': 'Inicio: 3,125–6,25 mg 2 veces/día. Meta: 25–50 mg 2 veces/día.',
+    },
+    renalAlert: {
+      'pt': 'Sem ajuste necessário.',
+      'es': 'Sin ajuste necesario.',
+    },
+    elderlyAlert: {
+      'pt': 'Risco de bradicardia e bloqueios. Titular dose lentamente.',
+      'es': 'Riesgo de bradicardia y bloqueos. Titular dosis lentamente.',
+    },
+    mechanism: {
+      'pt': 'Antagonista adrenérgico não seletivo β e seletivo α-1; reduz resistência periférica e protege o miocárdio.',
+      'es': 'Antagonista adrenérgico no selectivo β y selectivo α-1; reduce resistencia periférica y protege el miocardio.',
+    },
+    warning: {
+      'pt': 'Pode mascarar sintomas de hipoglicemia em diabéticos. Não suspender abruptamente.',
+      'es': 'Puede enmascarar síntomas de hipoglucemia en diabéticos. No suspender abruptamente.',
+    },
+    adverse: {
+      'pt': ['Tontura', 'Bradicardia', 'Hipotensão postural', 'Fadiga'],
+      'es': ['Mareos', 'Bradicardia', 'Hipotensión postural', 'Fatiga'],
+    },
+  ),
+
+  DrugModel(
+    id: 'ceftriaxone',
+    group: 'Antibióticos',
+    name: 'Ceftriaxone',
+    className: {'pt': 'Cefalosporina de 3ª geração', 'es': 'Cefalosporina de 3ª generación'},
+    category: {'pt': 'Antibióticos', 'es': 'Antibióticos'},
+    route: 'IV / IM',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': 'Adulto: 1–2 g a cada 24h. Meningite: 2 g a cada 12h.',
+      'es': 'Adulto: 1–2 g cada 24 h. Meningitis: 2 g cada 12 h.',
+    },
+    renalAlert: {
+      'pt': 'Geralmente não requer ajuste se função hepática preservada.',
+      'es': 'Generalmente no requiere ajuste si función hepática preservada.',
+    },
+    elderlyAlert: {
+      'pt': 'Seguro; monitorar superinfecções fúngicas.',
+      'es': 'Seguro; monitorear superinfecciones fúngicas.',
+    },
+    mechanism: {
+      'pt': 'Inibe a síntese de peptidoglicano da parede celular bacteriana.',
+      'es': 'Inhibe la síntesis de peptidoglicano de la pared celular bacteriana.',
+    },
+    warning: {
+      'pt': 'Incompatível com soluções contendo cálcio (Ringer Lactato). Risco de colelitíase medicamentosa.',
+      'es': 'Incompatible con soluciones que contienen calcio (Ringer Lactato). Riesgo de colelitiasis medicamentosa.',
+    },
+    adverse: {
+      'pt': ['Diarreia', 'Lama biliar / Colelitíase', 'Anemia hemolítica', 'Flebite (IV)'],
+      'es': ['Diarrea', 'Barro biliar / Colelitiasis', 'Anemia hemolítica', 'Flebitis (IV)'],
+    },
+  ),
+
+  DrugModel(
+    id: 'lansoprazol',
+    group: 'Gastroenterología',
+    name: 'Lansoprazol',
+    className: {'pt': 'Inibidor da Bomba de Prótons (IBP)', 'es': 'Inhibidor de la Bomba de Protones (IBP)'},
+    category: {'pt': 'Gastrointestinais', 'es': 'Gastrointestinales'},
+    route: 'VO',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': '15–30 mg uma vez ao dia, 30 min antes do café da manhã.',
+      'es': '15–30 mg una vez al día, 30 min antes del desayuno.',
+    },
+    renalAlert: {
+      'pt': 'Sem ajuste necessário.',
+      'es': 'Sin ajuste necesario.',
+    },
+    elderlyAlert: {
+      'pt': 'Uso prolongado aumenta risco de osteoporose e infecções (pneumonia / C. difficile).',
+      'es': 'Uso prolongado aumenta riesgo de osteoporosis e infecciones (neumonía / C. difficile).',
+    },
+    mechanism: {
+      'pt': 'Bloqueio irreversível da H+/K+ ATPase na célula parietal gástrica.',
+      'es': 'Bloqueo irreversible de la H+/K+ ATPase en la célula parietal gástrica.',
+    },
+    warning: {
+      'pt': 'Pode reduzir absorção de vitamina B12 e magnésio em uso crônico.',
+      'es': 'Puede reducir absorción de vitamina B12 y magnesio en uso crónico.',
+    },
+    adverse: {
+      'pt': ['Cefaleia', 'Diarreia', 'Dor abdominal', 'Prurido'],
+      'es': ['Cefalea', 'Diarrea', 'Dolor abdominal', 'Prurito'],
+    },
+  ),
+
+  DrugModel(
+    id: 'nitazoxanida',
+    group: 'Infectología (Antifúngicos / Antivirales / TBC)',
+    name: 'Nitazoxanida',
+    className: {'pt': 'Antiparasitário de amplo espectro', 'es': 'Antiparasitario de amplio espectro'},
+    category: {'pt': 'Antiparasitários', 'es': 'Antiparasitarios'},
+    route: 'VO',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': '500 mg a cada 12h por 3 dias.',
+      'es': '500 mg cada 12 h por 3 días.',
+    },
+    renalAlert: {
+      'pt': 'Sem estudos suficientes; usar com precaução em insuficiência renal grave.',
+      'es': 'Sin estudios suficientes; usar con precaución en insuficiencia renal grave.',
+    },
+    elderlyAlert: {
+      'pt': 'Geralmente bem tolerado.',
+      'es': 'Generalmente bien tolerado.',
+    },
+    mechanism: {
+      'pt': 'Interfere na transferência de elétrons essencial para o metabolismo anaeróbio dos parasitas.',
+      'es': 'Interfiere en la transferencia de electrones esencial para el metabolismo anaerobio de los parásitos.',
+    },
+    warning: {
+      'pt': 'Eficaz contra Giardia, Cryptosporidium e diversos helmintos. Tomar com alimentos.',
+      'es': 'Eficaz contra Giardia, Cryptosporidium y diversos helmintos. Tomar con alimentos.',
+    },
+    adverse: {
+      'pt': ['Urina amarelo-esverdeada (normal)', 'Náuseas', 'Dor abdominal', 'Cefaleia'],
+      'es': ['Orina amarillo-verdosa (normal)', 'Náuseas', 'Dolor abdominal', 'Cefalea'],
+    },
+  ),
+
 ];
