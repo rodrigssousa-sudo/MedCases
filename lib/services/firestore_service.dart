@@ -1,11 +1,19 @@
 // firestore_service.dart — dados por usuário no Firestore
+import 'dart:async';
+import 'dart:convert';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:http/http.dart' as http;
 import '../models/clinical_case_model.dart';
 import '../models/clinical_history_model.dart';
+import 'auth_service.dart';
 
 class FirestoreService {
   // Getter lazy — só acessa Firestore APÓS Firebase.initializeApp() completar
   static FirebaseFirestore get _db => FirebaseFirestore.instance;
+
+  static const _projectId = 'medcases-pro';
+  static const _fsBase    = 'https://firestore.googleapis.com/v1/projects/$_projectId/databases/(default)/documents';
 
   // ── Referências por usuário ───────────────────────────────────────────────
   static DocumentReference<Map<String, dynamic>> _userDoc(String uid) =>
@@ -262,27 +270,131 @@ class FirestoreService {
   static DocumentReference<Map<String, dynamic>> get _maintenanceDoc =>
       _db.collection('app_config').doc('maintenance');
 
-  /// Stream em tempo real do estado de manutenção.
-  /// Emite um Map com: { enabled: bool, message: String, updatedBy: String, updatedAt: String }
-  /// Se o documento não existir, emite { enabled: false }.
+  /// Stream unificado do estado de manutenção.
+  /// Web  → REST polling a cada 10 s (sem WebSocket/SDK)
+  /// Nativo → SDK Firestore com snapshots() em tempo real
+  /// Emite Map com: { enabled: bool, message: String, updatedBy: String, updatedAt: String }
   static Stream<Map<String, dynamic>> maintenanceStream() {
+    if (kIsWeb) return _maintenanceStreamRest();
     return _maintenanceDoc.snapshots().map((snap) {
       if (!snap.exists) return {'enabled': false};
       return snap.data() ?? {'enabled': false};
     });
   }
 
+  /// REST polling para manutenção — busca app_config/maintenance a cada 10 s.
+  static Stream<Map<String, dynamic>> _maintenanceStreamRest() {
+    late StreamController<Map<String, dynamic>> ctrl;
+    Timer? timer;
+
+    Future<void> fetch() async {
+      try {
+        final token = await AuthService.getAdminToken();
+        if (token.isEmpty) {
+          if (!ctrl.isClosed) ctrl.add({'enabled': false});
+          return;
+        }
+
+        final resp = await http.get(
+          Uri.parse('$_fsBase/app_config/maintenance'),
+          headers: {'Authorization': 'Bearer $token'},
+        );
+
+        if (resp.statusCode == 404) {
+          if (!ctrl.isClosed) ctrl.add({'enabled': false});
+          return;
+        }
+
+        if (resp.statusCode != 200) return;
+
+        final body   = jsonDecode(resp.body) as Map<String, dynamic>;
+        final fields = body['fields'] as Map<String, dynamic>? ?? {};
+        final data   = <String, dynamic>{};
+
+        fields.forEach((key, value) {
+          final v = value as Map<String, dynamic>;
+          if (v.containsKey('booleanValue')) {
+            data[key] = v['booleanValue'];
+          } else if (v.containsKey('stringValue')) {
+            data[key] = v['stringValue'];
+          } else if (v.containsKey('nullValue')) {
+            data[key] = null;
+          }
+        });
+
+        if (!ctrl.isClosed) ctrl.add(data.isEmpty ? {'enabled': false} : data);
+      } catch (_) {
+        if (!ctrl.isClosed) ctrl.add({'enabled': false});
+      }
+    }
+
+    ctrl = StreamController<Map<String, dynamic>>(
+      onListen: () {
+        fetch();
+        timer = Timer.periodic(const Duration(seconds: 10), (_) => fetch());
+      },
+      onCancel: () {
+        timer?.cancel();
+        timer = null;
+      },
+    );
+
+    return ctrl.stream;
+  }
+
   /// Ativa ou desativa o modo de manutenção.
+  /// Web  → REST PATCH (sem SDK)
+  /// Nativo → SDK Firestore set()
   static Future<void> setMaintenance({
     required bool enabled,
     required String updatedBy,
     String message = '',
   }) async {
+    if (kIsWeb) {
+      await _setMaintenanceRest(
+        enabled: enabled,
+        updatedBy: updatedBy,
+        message: message,
+      );
+      return;
+    }
     await _maintenanceDoc.set({
       'enabled': enabled,
       'message': message.trim(),
       'updatedBy': updatedBy,
       'updatedAt': DateTime.now().toIso8601String(),
     });
+  }
+
+  /// Escreve/atualiza app_config/maintenance via REST PATCH.
+  static Future<void> _setMaintenanceRest({
+    required bool enabled,
+    required String updatedBy,
+    String message = '',
+  }) async {
+    final token = await AuthService.getAdminToken();
+    if (token.isEmpty) return;
+
+    final fields = {
+      'enabled':   {'booleanValue': enabled},
+      'message':   {'stringValue': message.trim()},
+      'updatedBy': {'stringValue': updatedBy},
+      'updatedAt': {'stringValue': DateTime.now().toUtc().toIso8601String()},
+    };
+
+    // updateMask: atualiza apenas os 4 campos (não sobrescreve outros)
+    const mask = 'updateMask.fieldPaths=enabled'
+        '&updateMask.fieldPaths=message'
+        '&updateMask.fieldPaths=updatedBy'
+        '&updateMask.fieldPaths=updatedAt';
+
+    await http.patch(
+      Uri.parse('$_fsBase/app_config/maintenance?$mask'),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode({'fields': fields}),
+    );
   }
 }

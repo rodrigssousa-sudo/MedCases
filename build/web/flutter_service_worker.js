@@ -1,31 +1,9 @@
-// MedCases Pro — SW Destruidor
-// Substitui o flutter_service_worker.js gerado automaticamente.
-// Ao ser instalado pelo browser, apaga todos os caches e se remove.
-// Isso quebra o ciclo vicioso de SW antigo servindo arquivos em cache.
-
-'use strict';
-
-self.addEventListener('install', function(event) {
-  // Ativa imediatamente sem esperar abas fecharem
-  self.skipWaiting();
-});
-
-self.addEventListener('activate', function(event) {
+// SW destruidor — desregistra qualquer service worker anterior e limpa caches
+self.addEventListener('install', () => self.skipWaiting());
+self.addEventListener('activate', event => {
   event.waitUntil(
-    caches.keys()
-      .then(function(keys) {
-        return Promise.all(keys.map(function(key) {
-          return caches.delete(key);
-        }));
-      })
-      .then(function() {
-        // Remove este próprio SW após limpar tudo
-        return self.registration.unregister();
-      })
+    caches.keys().then(keys =>
+      Promise.all(keys.map(k => caches.delete(k)))
+    ).then(() => self.clients.claim())
   );
-});
-
-// Passa todas as requisições direto para a rede — sem cache
-self.addEventListener('fetch', function(event) {
-  event.respondWith(fetch(event.request));
 });

@@ -1,4 +1,5 @@
-// auth_service.dart — Firebase Auth + Firestore via REST (Web) e SDK (Android)
+// auth_service.dart — Firebase Auth + Firestore via REST (Web) e SDK (nativo)
+import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/widgets.dart' show ValueNotifier;
@@ -17,14 +18,65 @@ class AuthService {
   static const String adminEmail = 'rodrigssousa@gmail.com';
 
   // ── Estado de autenticação Web (ValueNotifier) ─────────────────────────────
-  // StreamController broadcast perde eventos emitidos antes do subscriber
-  // existir. ValueNotifier persiste o último valor — qualquer widget que
-  // subscrever depois ainda recebe o estado atual imediatamente.
   static final ValueNotifier<UserModel?> webUser = ValueNotifier<UserModel?>(null);
 
-  // ── Stream de estado de autenticação (usado no Android via SDK nativo) ────
+  // ── Cache de idToken para operações admin REST ─────────────────────────────
+  // O idToken do Firebase expira em 1h. Armazenamos token + refreshToken +
+  // timestamp para fazer refresh automático antes de cada chamada admin.
+  static String _cachedIdToken    = '';
+  static String _cachedRefreshTk  = '';
+  static DateTime _tokenExpiresAt = DateTime(2000); // forçar refresh na primeira chamada
+
+  // ── Stream de estado de autenticação (Android/iOS via SDK nativo) ──────────
   static Stream<User?> get authStateChanges => _auth.authStateChanges();
   static User? get currentUser => _auth.currentUser;
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // TOKEN ADMIN — cache + refresh automático
+  // ═══════════════════════════════════════════════════════════════════════════
+
+  /// Retorna um idToken válido para chamadas admin REST.
+  /// - Se o token ainda não expirou, devolve o cache.
+  /// - Se expirou (ou nunca foi setado), usa o refreshToken para obter novo token.
+  /// - Margem de segurança de 5 min antes do vencimento real (55 min de vida útil).
+  /// Público para que FirestoreService possa reutilizar o mesmo cache.
+  static Future<String> getAdminToken() => _getAdminToken();
+
+  static Future<String> _getAdminToken() async {
+    final now = DateTime.now();
+    if (_cachedIdToken.isNotEmpty && now.isBefore(_tokenExpiresAt)) {
+      return _cachedIdToken;
+    }
+    // Precisa de refresh
+    if (_cachedRefreshTk.isNotEmpty) {
+      try {
+        final resp = await http.post(
+          Uri.parse('https://securetoken.googleapis.com/v1/token?key=$_webApiKey'),
+          headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+          body: 'grant_type=refresh_token&refresh_token=$_cachedRefreshTk',
+        );
+        if (resp.statusCode == 200) {
+          final body = jsonDecode(resp.body) as Map<String, dynamic>;
+          _cachedIdToken   = body['id_token']      as String? ?? '';
+          _cachedRefreshTk = body['refresh_token'] as String? ?? _cachedRefreshTk;
+          // expires_in vem em segundos; subtraímos 5 min como margem
+          final expiresIn  = int.tryParse(body['expires_in']?.toString() ?? '3600') ?? 3600;
+          _tokenExpiresAt  = DateTime.now().add(Duration(seconds: expiresIn - 300));
+          return _cachedIdToken;
+        }
+      } catch (_) {}
+    }
+    // Sem token válido — retorna vazio; a chamada vai falhar com 401
+    return _cachedIdToken;
+  }
+
+  /// Armazena o par idToken + refreshToken após login/registro bem-sucedido.
+  static void _cacheTokens({required String idToken, required String refreshToken}) {
+    _cachedIdToken   = idToken;
+    _cachedRefreshTk = refreshToken;
+    // idToken do Firebase tem vida de 1h; guardamos 55 min para ter margem
+    _tokenExpiresAt  = DateTime.now().add(const Duration(minutes: 55));
+  }
 
   // ═══════════════════════════════════════════════════════════════════════════
   // LOGIN
@@ -33,15 +85,11 @@ class AuthService {
     required String email,
     required String password,
   }) async {
-    if (kIsWeb) {
-      // Web: sempre via REST para evitar bloqueio de domínio
-      return _loginWeb(email: email, password: password);
-    }
-    // Android / iOS: SDK nativo
+    if (kIsWeb) return _loginWeb(email: email, password: password);
     return _loginNative(email: email, password: password);
   }
 
-  // ── Login nativo (Android) ─────────────────────────────────────────────────
+  // ── Login nativo (Android / iOS) ───────────────────────────────────────────
   static Future<AuthResult> _loginNative({
     required String email,
     required String password,
@@ -95,8 +143,12 @@ class AuthService {
         return AuthResult.error('E-mail ou senha incorretos.');
       }
 
-      final uid     = authBody['localId'] as String;
-      final idToken = authBody['idToken']  as String;
+      final uid          = authBody['localId']      as String;
+      final idToken      = authBody['idToken']       as String;
+      final refreshToken = authBody['refreshToken']  as String? ?? '';
+
+      // Salva tokens em cache para uso posterior (operações admin REST)
+      _cacheTokens(idToken: idToken, refreshToken: refreshToken);
 
       // Passo 2 — Firestore REST: ler documento users/{uid}
       final fsResp = await http.get(
@@ -105,10 +157,8 @@ class AuthService {
       );
 
       if (fsResp.statusCode == 404) {
-        // Usuário existe no Auth mas não no Firestore — criar documento
         final user = _buildNewUser(uid: uid, email: email);
         await _createUserDocRest(user: user, idToken: idToken);
-        // Atualiza ValueNotifier ANTES de retornar
         webUser.value = user;
         return AuthResult.success(user);
       }
@@ -119,16 +169,9 @@ class AuthService {
 
       final fsBody = jsonDecode(fsResp.body) as Map<String, dynamic>;
       final data   = _firestoreDocToMap(fsBody);
-
       final result = _buildResultFromDoc(exists: true, data: data, uid: uid, email: email);
 
-      // ✅ CRITICAL FIX: publica no ValueNotifier para QUALQUER usuário autenticado
-      // (approved, pending, blocked) — _buildWebAuthGate decide qual tela mostrar.
-      // Antes só publicava se result.success → pending/blocked ficavam travados na
-      // LoginScreen porque webUser.value permanecia null.
-      if (result.user != null) {
-        webUser.value = result.user;
-      }
+      if (result.user != null) webUser.value = result.user;
 
       return result;
     } catch (e) {
@@ -199,14 +242,17 @@ class AuthService {
         return AuthResult.error('Não foi possível criar a conta. Tente novamente.');
       }
 
-      final uid     = body['localId'] as String;
-      final idToken = body['idToken']  as String;
-      final user    = _buildNewUser(
+      final uid          = body['localId']     as String;
+      final idToken      = body['idToken']      as String;
+      final refreshToken = body['refreshToken'] as String? ?? '';
+
+      _cacheTokens(idToken: idToken, refreshToken: refreshToken);
+
+      final user = _buildNewUser(
         uid: uid, email: email, displayName: displayName,
         profession: profession, institution: institution,
       );
       await _createUserDocRest(user: user, idToken: idToken);
-      // Atualiza ValueNotifier (usuário recém-criado via REST)
       webUser.value = user;
       return AuthResult.success(user);
     } catch (e) {
@@ -247,15 +293,17 @@ class AuthService {
   // LOGOUT
   // ═══════════════════════════════════════════════════════════════════════════
   static Future<void> logout() async {
-    // Limpa o ValueNotifier Web PRIMEIRO (antes do signOut)
-    if (kIsWeb) {
-      webUser.value = null;
-    }
+    // Limpa tokens em cache
+    _cachedIdToken   = '';
+    _cachedRefreshTk = '';
+    _tokenExpiresAt  = DateTime(2000);
+
+    if (kIsWeb) webUser.value = null;
     try { await _auth.signOut(); } catch (_) {}
   }
 
   // ═══════════════════════════════════════════════════════════════════════════
-  // STREAMS — usados pelo _AuthGate (Android / Web com SDK OK)
+  // STREAMS — SDK nativo (Android / iOS)
   // ═══════════════════════════════════════════════════════════════════════════
   static Future<UserModel?> fetchCurrentUser() async {
     final uid = _auth.currentUser?.uid;
@@ -277,8 +325,16 @@ class AuthService {
         .map((doc) => doc.exists ? UserModel.fromDoc(doc) : null);
   }
 
-  // ── Admin: listar todos os usuários ──────────────────────────────────────
+  // ═══════════════════════════════════════════════════════════════════════════
+  // ADMIN — STREAM DE USUÁRIOS
+  // ─────────────────────────────────────────────────────────────────────────
+  // Web → REST polling a cada 8 s (sem WebSocket/SDK)
+  // Nativo → SDK Firestore com snapshots() em tempo real
+  // ═══════════════════════════════════════════════════════════════════════════
+
+  /// Stream unificado: escolhe REST (web) ou SDK (nativo) automaticamente.
   static Stream<List<UserModel>> allUsersStream() {
+    if (kIsWeb) return _allUsersStreamRest();
     return _db
         .collection('users')
         .orderBy('createdAt', descending: true)
@@ -286,89 +342,186 @@ class AuthService {
         .map((snap) => snap.docs.map(UserModel.fromDoc).toList());
   }
 
+  /// REST polling — busca até 500 usuários a cada 8 segundos.
+  /// Usa runZonedGuarded internamente para capturar exceções async.
+  static Stream<List<UserModel>> _allUsersStreamRest() {
+    // StreamController com auto-cancel para não vazar quando não há listeners
+    late StreamController<List<UserModel>> ctrl;
+    Timer? timer;
+
+    Future<void> fetch() async {
+      try {
+        final token = await _getAdminToken();
+        if (token.isEmpty) return; // sem token, aguarda próximo ciclo
+
+        // Firestore REST — listar coleção users com pageSize máximo
+        final resp = await http.get(
+          Uri.parse('$_fsBase/users?pageSize=500'),
+          headers: {'Authorization': 'Bearer $token'},
+        );
+
+        if (resp.statusCode != 200) return;
+
+        final body = jsonDecode(resp.body) as Map<String, dynamic>;
+        final docs  = body['documents'] as List<dynamic>? ?? [];
+
+        final users = <UserModel>[];
+        for (final doc in docs) {
+          try {
+            final data = _firestoreDocToMap(doc as Map<String, dynamic>);
+            // Extrair uid do name: "projects/.../documents/users/{uid}"
+            final name = doc['name'] as String? ?? '';
+            final uid  = name.split('/').last;
+            data['uid'] = uid;
+            users.add(UserModel.fromMap(data));
+          } catch (_) {
+            // pula documento com formato inesperado
+          }
+        }
+
+        // Ordena por createdAt decrescente (equivalente ao orderBy SDK)
+        users.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+
+        if (!ctrl.isClosed) ctrl.add(users);
+      } catch (_) {
+        // falha silenciosa — tenta novamente no próximo ciclo
+      }
+    }
+
+    ctrl = StreamController<List<UserModel>>(
+      onListen: () {
+        fetch(); // chamada imediata ao abrir o stream
+        timer = Timer.periodic(const Duration(seconds: 8), (_) => fetch());
+      },
+      onCancel: () {
+        timer?.cancel();
+        timer = null;
+      },
+    );
+
+    return ctrl.stream;
+  }
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // ADMIN — OPERAÇÕES DE GESTÃO DE USUÁRIOS
+  // ─────────────────────────────────────────────────────────────────────────
+  // Cada operação roteia para REST (web) ou SDK (nativo) automaticamente.
+  // ═══════════════════════════════════════════════════════════════════════════
+
   static Future<void> approveUser(String uid, String adminUid) async {
+    if (kIsWeb) {
+      await _patchUserRest(uid, {
+        'status':     UserStatus.approved.name,
+        'approvedAt': DateTime.now().toUtc().toIso8601String(),
+        'approvedBy': adminUid,
+      });
+      return;
+    }
     await _db.collection('users').doc(uid).update({
-      'status': UserStatus.approved.name,
+      'status':     UserStatus.approved.name,
       'approvedAt': Timestamp.fromDate(DateTime.now()),
       'approvedBy': adminUid,
     });
   }
 
   static Future<void> blockUser(String uid) async {
+    if (kIsWeb) {
+      await _patchUserRest(uid, {'status': UserStatus.blocked.name});
+      return;
+    }
     await _db.collection('users').doc(uid).update({'status': UserStatus.blocked.name});
   }
 
   static Future<void> unblockUser(String uid, String adminUid) async {
+    if (kIsWeb) {
+      await _patchUserRest(uid, {
+        'status':     UserStatus.approved.name,
+        'approvedAt': DateTime.now().toUtc().toIso8601String(),
+        'approvedBy': adminUid,
+      });
+      return;
+    }
     await _db.collection('users').doc(uid).update({
-      'status': UserStatus.approved.name,
+      'status':     UserStatus.approved.name,
       'approvedAt': Timestamp.fromDate(DateTime.now()),
       'approvedBy': adminUid,
     });
   }
 
   static Future<void> promoteToAdmin(String uid) async {
+    if (kIsWeb) {
+      await _patchUserRest(uid, {'role': UserRole.admin.name});
+      return;
+    }
     await _db.collection('users').doc(uid).update({'role': UserRole.admin.name});
   }
 
   static Future<void> promoteToSupervisor(String uid) async {
+    if (kIsWeb) {
+      await _patchUserRest(uid, {'role': UserRole.supervisor.name});
+      return;
+    }
     await _db.collection('users').doc(uid).update({'role': UserRole.supervisor.name});
   }
 
   static Future<void> demoteToUser(String uid) async {
+    if (kIsWeb) {
+      await _patchUserRest(uid, {'role': UserRole.user.name});
+      return;
+    }
     await _db.collection('users').doc(uid).update({'role': UserRole.user.name});
   }
 
   // ═══════════════════════════════════════════════════════════════════════════
-  // HELPERS INTERNOS
+  // HELPERS REST INTERNOS
   // ═══════════════════════════════════════════════════════════════════════════
 
-  /// Cria um UserModel novo com as permissões corretas
-  static UserModel _buildNewUser({
-    required String uid,
-    required String email,
-    String? displayName,
-    String? profession,
-    String? institution,
-  }) {
-    final isAdmin = email.trim().toLowerCase() == adminEmail.toLowerCase();
-    return UserModel(
-      uid: uid,
-      email: email.trim().toLowerCase(),
-      displayName: displayName?.trim() ?? email.split('@').first,
-      role: isAdmin ? UserRole.admin : UserRole.user,
-      status: isAdmin ? UserStatus.approved : UserStatus.pending,
-      createdAt: DateTime.now(),
-      approvedAt: isAdmin ? DateTime.now() : null,
-      approvedBy: isAdmin ? 'system' : null,
-      profession: profession,
-      institution: institution,
-    );
-  }
-
-  /// Monta AuthResult a partir de um Map de campos Firestore.
+  /// PATCH genérico para atualizar campos de um documento users/{uid} via REST.
   ///
-  /// IMPORTANTE: sempre retorna o [user] no resultado, independente do status
-  /// (approved, pending, blocked). Isso permite que o ValueNotifier webUser
-  /// seja populado e o _buildWebAuthGate decida qual tela exibir.
-  /// A distinção de tela fica 100% no _AuthGate — não aqui.
-  static AuthResult _buildResultFromDoc({
-    required bool exists,
-    required Map<String, dynamic> data,
-    required String uid,
-    required String email,
-  }) {
-    if (!exists || data.isEmpty) {
-      // Cria registro local sem ir ao Firestore (será criado pelo SDK/REST já chamado antes)
-      final user = _buildNewUser(uid: uid, email: email);
-      return AuthResult.success(user);
+  /// Suporta valores String, bool, int, double e null.
+  /// Usa updateMask para atualizar apenas os campos informados (não sobrescreve
+  /// o documento inteiro — equivalente ao SDK update()).
+  static Future<void> _patchUserRest(
+    String uid,
+    Map<String, dynamic> fields,
+  ) async {
+    try {
+      final token = await _getAdminToken();
+      if (token.isEmpty) return;
+
+      // Monta os campos no formato Firestore REST
+      final fsFields = <String, dynamic>{};
+      fields.forEach((k, v) {
+        if (v == null) {
+          fsFields[k] = {'nullValue': null};
+        } else if (v is bool) {
+          fsFields[k] = {'booleanValue': v};
+        } else if (v is int) {
+          fsFields[k] = {'integerValue': v.toString()};
+        } else if (v is double) {
+          fsFields[k] = {'doubleValue': v};
+        } else {
+          // String (inclui timestamps ISO8601, status, role, etc.)
+          fsFields[k] = {'stringValue': v.toString()};
+        }
+      });
+
+      // updateMask: garante que apenas os campos informados são atualizados
+      final maskParams = fields.keys
+          .map((k) => 'updateMask.fieldPaths=${Uri.encodeComponent(k)}')
+          .join('&');
+
+      await http.patch(
+        Uri.parse('$_fsBase/users/$uid?$maskParams'),
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode({'fields': fsFields}),
+      );
+    } catch (_) {
+      // falha silenciosa — o stream de polling vai refletir o estado correto
     }
-
-    final user = UserModel.fromMap(data);
-
-    // Sempre retorna success com o user — o _AuthGate filtra isBlocked / isPending.
-    // Retornar error sem user impede webUser.value de ser setado e o _AuthGate
-    // fica preso na LoginScreen para usuários pending/blocked.
-    return AuthResult.success(user);
   }
 
   /// Cria documento de usuário no Firestore via REST (Web)
@@ -379,7 +532,6 @@ class AuthService {
     try {
       final fields = <String, dynamic>{};
       final m = user.toMap();
-      // Converter para formato Firestore REST
       m.forEach((k, v) {
         if (v == null) {
           fields[k] = {'nullValue': null};
@@ -404,47 +556,88 @@ class AuthService {
         },
         body: jsonEncode({'fields': fields}),
       );
-    } catch (_) {
-      // Falha silenciosa — o SDK vai tentar criar depois quando o domínio for autorizado
-    }
+    } catch (_) {}
   }
 
-  /// Converte resposta REST do Firestore para Map<String, dynamic> compatível com UserModel.fromMap
+  /// Converte resposta REST do Firestore para Map compatível com UserModel.fromMap
   static Map<String, dynamic> _firestoreDocToMap(Map<String, dynamic> doc) {
     final fields = doc['fields'] as Map<String, dynamic>? ?? {};
     final result = <String, dynamic>{};
 
     fields.forEach((key, value) {
       final v = value as Map<String, dynamic>;
-      if (v.containsKey('stringValue'))    result[key] = v['stringValue'];
-      else if (v.containsKey('booleanValue')) result[key] = v['booleanValue'];
-      else if (v.containsKey('integerValue')) result[key] = int.tryParse(v['integerValue'].toString());
-      else if (v.containsKey('doubleValue'))  result[key] = v['doubleValue'];
-      else if (v.containsKey('timestampValue')) {
-        // Converte para Timestamp do Firestore SDK
+      if (v.containsKey('stringValue')) {
+        result[key] = v['stringValue'];
+      } else if (v.containsKey('booleanValue')) {
+        result[key] = v['booleanValue'];
+      } else if (v.containsKey('integerValue')) {
+        result[key] = int.tryParse(v['integerValue'].toString());
+      } else if (v.containsKey('doubleValue')) {
+        result[key] = v['doubleValue'];
+      } else if (v.containsKey('timestampValue')) {
         result[key] = Timestamp.fromDate(DateTime.parse(v['timestampValue'] as String));
+      } else {
+        result[key] = null;
       }
-      else if (v.containsKey('nullValue'))  result[key] = null;
-      else result[key] = null;
     });
 
     return result;
   }
 
+  // ═══════════════════════════════════════════════════════════════════════════
+  // HELPERS DE CONSTRUÇÃO DE MODELO
+  // ═══════════════════════════════════════════════════════════════════════════
+
+  static UserModel _buildNewUser({
+    required String uid,
+    required String email,
+    String? displayName,
+    String? profession,
+    String? institution,
+  }) {
+    final isAdmin = email.trim().toLowerCase() == adminEmail.toLowerCase();
+    return UserModel(
+      uid: uid,
+      email: email.trim().toLowerCase(),
+      displayName: displayName?.trim() ?? email.split('@').first,
+      role: isAdmin ? UserRole.admin : UserRole.user,
+      status: isAdmin ? UserStatus.approved : UserStatus.pending,
+      createdAt: DateTime.now(),
+      approvedAt: isAdmin ? DateTime.now() : null,
+      approvedBy: isAdmin ? 'system' : null,
+      profession: profession,
+      institution: institution,
+    );
+  }
+
+  static AuthResult _buildResultFromDoc({
+    required bool exists,
+    required Map<String, dynamic> data,
+    required String uid,
+    required String email,
+  }) {
+    if (!exists || data.isEmpty) {
+      final user = _buildNewUser(uid: uid, email: email);
+      return AuthResult.success(user);
+    }
+    final user = UserModel.fromMap(data);
+    return AuthResult.success(user);
+  }
+
   // ── Mensagens de erro amigáveis ───────────────────────────────────────────
   static String _authErrorMessage(String code) {
     switch (code) {
-      case 'user-not-found':        return 'Nenhuma conta encontrada com este e-mail.';
+      case 'user-not-found':         return 'Nenhuma conta encontrada com este e-mail.';
       case 'wrong-password':
-      case 'invalid-credential':    return 'E-mail ou senha incorretos.';
-      case 'email-already-in-use':  return 'Este e-mail já está cadastrado.';
-      case 'weak-password':         return 'Senha fraca. Use ao menos 6 caracteres.';
-      case 'invalid-email':         return 'Endereço de e-mail inválido.';
-      case 'too-many-requests':     return 'Muitas tentativas. Aguarde alguns minutos.';
+      case 'invalid-credential':     return 'E-mail ou senha incorretos.';
+      case 'email-already-in-use':   return 'Este e-mail já está cadastrado.';
+      case 'weak-password':          return 'Senha fraca. Use ao menos 6 caracteres.';
+      case 'invalid-email':          return 'Endereço de e-mail inválido.';
+      case 'too-many-requests':      return 'Muitas tentativas. Aguarde alguns minutos.';
       case 'network-request-failed': return 'Sem conexão. Verifique sua internet.';
-      case 'operation-not-allowed': return 'Login por e-mail desabilitado. Contate o admin.';
-      case 'user-disabled':         return 'Conta desativada. Entre em contato com o administrador.';
-      default: return 'Erro de autenticação. Tente novamente.';
+      case 'operation-not-allowed':  return 'Login por e-mail desabilitado. Contate o admin.';
+      case 'user-disabled':          return 'Conta desativada. Entre em contato com o administrador.';
+      default:                       return 'Erro de autenticação. Tente novamente.';
     }
   }
 }

@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/user_model.dart';
@@ -121,9 +120,7 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
                   controller: _tabs,
                   children: [
                     // ── Tab 0: Pendentes ──────────────────────────────────
-                    kIsWeb
-                        ? _WebOnlyBanner(isEs: _isEs)
-                        : StreamBuilder<List<UserModel>>(
+                    StreamBuilder<List<UserModel>>(
                       stream: AuthService.allUsersStream(),
                       builder: (context, snap) {
                         if (snap.connectionState == ConnectionState.waiting) {
@@ -147,9 +144,7 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
                       },
                     ),
                     // ── Tab 1: Aprovados ──────────────────────────────────
-                    kIsWeb
-                        ? _WebOnlyBanner(isEs: _isEs)
-                        : StreamBuilder<List<UserModel>>(
+                    StreamBuilder<List<UserModel>>(
                       stream: AuthService.allUsersStream(),
                       builder: (context, snap) {
                         if (snap.connectionState == ConnectionState.waiting) {
@@ -175,9 +170,7 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
                       },
                     ),
                     // ── Tab 2: Bloqueados ─────────────────────────────────
-                    kIsWeb
-                        ? _WebOnlyBanner(isEs: _isEs)
-                        : StreamBuilder<List<UserModel>>(
+                    StreamBuilder<List<UserModel>>(
                       stream: AuthService.allUsersStream(),
                       builder: (context, snap) {
                         if (snap.connectionState == ConnectionState.waiting) {
@@ -200,11 +193,9 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
                       },
                     ),
                     // ── Tab 3: Sistema ────────────────────────────────────
-                    // iOS e Android usam SDK nativo (sem CORS) → _SystemTab funciona
-                    // Web usa REST e não tem acesso ao SDK → banner informativo
-                    kIsWeb
-                        ? _WebOnlyBanner(isEs: _isEs)
-                        : _SystemTab(
+                    // Web → maintenanceStream() usa REST polling
+                    // Nativo → SDK Firestore snapshots()
+                    _SystemTab(
                       currentAdmin: widget.currentAdmin,
                       isMaster: _isMaster,
                       maintEnabled: _maintEnabled,
@@ -220,10 +211,8 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
           );
         },
       ),
-      // FAB com estatísticas — Android e iOS usam SDK Firestore nativo
-      floatingActionButton: kIsWeb
-          ? null
-          : StreamBuilder<List<UserModel>>(
+      // FAB com contagem de pendentes — funciona em web (REST) e nativo (SDK)
+      floatingActionButton: StreamBuilder<List<UserModel>>(
         stream: AuthService.allUsersStream(),
         builder: (context, snap) {
           final all = snap.data ?? [];
@@ -401,85 +390,6 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
 }
 
 
-// ── Banner: funcionalidade disponível apenas no app Android ──────────────────
-class _WebOnlyBanner extends StatelessWidget {
-  final bool isEs;
-  const _WebOnlyBanner({required this.isEs});
-
-  static const kDark  = Color(0xFF07110d);
-  static const kGreen = Color(0xFF075f45);
-  static const kGold  = Color(0xFFC5A365);
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(32),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                color: kGold.withValues(alpha: 0.08),
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: kGold.withValues(alpha: 0.30)),
-              ),
-              child: Icon(Icons.smartphone_rounded, size: 48, color: kGold.withValues(alpha: 0.6)),
-            ),
-            const SizedBox(height: 20),
-            Text(
-              isEs ? 'Solo disponible en la app Android' : 'Disponível apenas no app Android',
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w800,
-                color: kDark,
-              ),
-            ),
-            const SizedBox(height: 10),
-            Text(
-              isEs
-                  ? 'La gestión de usuarios requiere el SDK de Firestore, que no está disponible en la versión web por restricciones de seguridad (CORS).'
-                  : 'O gerenciamento de usuários requer o SDK do Firestore, que não está disponível na versão web por restrições de segurança (CORS).',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.w500,
-                color: kDark.withValues(alpha: 0.55),
-                height: 1.6,
-              ),
-            ),
-            const SizedBox(height: 20),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-              decoration: BoxDecoration(
-                color: kGreen.withValues(alpha: 0.08),
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: kGreen.withValues(alpha: 0.25)),
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(Icons.android_rounded, size: 14, color: kGreen.withValues(alpha: 0.7)),
-                  const SizedBox(width: 6),
-                  Text(
-                    isEs ? 'Use el app MedCases Pro en Android' : 'Use o app MedCases Pro no Android',
-                    style: TextStyle(
-                      fontSize: 11,
-                      fontWeight: FontWeight.w700,
-                      color: kGreen.withValues(alpha: 0.8),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
 
 // ── Tab Sistema — toggle de manutenção ────────────────────────────────────────
 class _SystemTab extends StatefulWidget {
@@ -841,7 +751,6 @@ class _UserList extends StatelessWidget {
 
   static const kDark  = Color(0xFF07110d);
   static const kGreen = Color(0xFF075f45);
-  static const kGold  = Color(0xFFC5A365);
 
   const _UserList({
     required this.users,
@@ -1064,7 +973,6 @@ class _StatusBadge extends StatelessWidget {
 class _RoleBadge extends StatelessWidget {
   final UserModel user;
   static const kGold  = Color(0xFFC5A365);
-  static const kGoldL = Color(0xFFFFE8A6);
   const _RoleBadge(this.user);
 
   @override
