@@ -1160,7 +1160,7 @@ class _AppDrawer extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                   ),
                 ],
-                if (p.isAdmin) ...[
+                if (p.isAdmin || p.isMaster) ...[
                   const SizedBox(height: 8),
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
@@ -1169,7 +1169,10 @@ class _AppDrawer extends StatelessWidget {
                       color: _kGold.withValues(alpha: 0.2),
                       border: Border.all(color: _kGold.withValues(alpha: 0.5)),
                     ),
-                    child: const Text('ADMIN', style: TextStyle(fontSize: 9, fontWeight: FontWeight.w900, color: _kGoldL, letterSpacing: 0.5)),
+                    child: Text(
+                      p.isMaster ? 'MASTER' : 'ADMIN',
+                      style: const TextStyle(fontSize: 9, fontWeight: FontWeight.w900, color: _kGoldL, letterSpacing: 0.5),
+                    ),
                   ),
                 ],
               ]),
@@ -1268,8 +1271,8 @@ class _AppDrawer extends StatelessWidget {
 
                   Divider(height: 1, color: divider, indent: 16, endIndent: 16),
 
-                  // ── Admin (apenas para admins) ───────────────────────────
-                  if (p.isAdmin) ...[
+                  // ── Admin (apenas para admins e master) ─────────────────
+                  if (p.isAdmin || p.isMaster) ...[
                     _DrawerItem(
                       icon: Icons.admin_panel_settings_rounded,
                       iconColor: const Color(0xFFFF8C00),
@@ -1726,6 +1729,16 @@ class _MaintenanceToggleItem extends StatefulWidget {
 class _MaintenanceToggleItemState extends State<_MaintenanceToggleItem> {
   bool _loading = false;
 
+  // Stream subscrito no initState — evita novo stream a cada rebuild
+  late final Stream<Map<String, dynamic>> _stream;
+  Map<String, dynamic> _maintData = {'enabled': false};
+
+  @override
+  void initState() {
+    super.initState();
+    _stream = FirestoreService.maintenanceStream();
+  }
+
   // ── Ativa manutenção: abre bottom sheet para escolher mensagem ─────────────
   Future<void> _askMessageAndEnable() async {
     final isEs        = widget.lang == 'es';
@@ -2003,13 +2016,18 @@ class _MaintenanceToggleItemState extends State<_MaintenanceToggleItem> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<Map<String, dynamic>>(
-      stream: FirestoreService.maintenanceStream(),
+      stream: _stream,
       builder: (context, snap) {
-        final isEnabled = snap.data?['enabled'] == true;
+        // Atualiza cache local apenas quando há dados reais (evita rebote no loading)
+        if (snap.hasData && snap.data != null) {
+          _maintData = snap.data!;
+        }
+        final isEnabled = _maintData['enabled'] == true;
+        final isLoading = _loading || snap.connectionState == ConnectionState.waiting;
         final isEs      = widget.lang == 'es';
 
         return InkWell(
-          onTap: _loading
+          onTap: isLoading
               ? null
               : () => isEnabled ? _disable() : _askMessageAndEnable(),
           child: Padding(
@@ -2063,8 +2081,8 @@ class _MaintenanceToggleItemState extends State<_MaintenanceToggleItem> {
                   ],
                 ),
               ),
-              // Switch ou loading
-              _loading
+              // Switch ou spinner de loading
+              isLoading
                   ? const SizedBox(
                       width: 22, height: 22,
                       child: CircularProgressIndicator(
@@ -2072,9 +2090,7 @@ class _MaintenanceToggleItemState extends State<_MaintenanceToggleItem> {
                     )
                   : Switch(
                       value: isEnabled,
-                      onChanged: _loading
-                          ? null
-                          : (v) => v ? _askMessageAndEnable() : _disable(),
+                      onChanged: (v) => v ? _askMessageAndEnable() : _disable(),
                       activeThumbColor: Colors.orange,
                       activeTrackColor: Colors.orange.withValues(alpha: 0.25),
                       inactiveThumbColor: const Color(0xFF075f45),
