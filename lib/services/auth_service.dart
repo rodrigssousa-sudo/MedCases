@@ -1,4 +1,4 @@
-// auth_service.dart — Firebase Auth + controle de usuários MedCases Pro
+// auth_service.dart — Firebase Auth + Firestore via REST (Web) e SDK (Android)
 import 'dart:convert';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:firebase_auth/firebase_auth.dart';
@@ -10,178 +10,116 @@ class AuthService {
   static FirebaseAuth get _auth => FirebaseAuth.instance;
   static FirebaseFirestore get _db => FirebaseFirestore.instance;
 
-  // API key Web do Firebase (usada apenas no fallback REST — não é segredo crítico)
-  static const _webApiKey = 'AIzaSyB0qklzhpRDAuppvieY3dy8hiPLQDucF18';
-
-  // Email do admin fixo
+  static const _webApiKey    = 'AIzaSyB0qklzhpRDAuppvieY3dy8hiPLQDucF18';
+  static const _projectId    = 'medcases-pro';
+  static const _fsBase       = 'https://firestore.googleapis.com/v1/projects/$_projectId/databases/(default)/documents';
   static const String adminEmail = 'rodrigssousa@gmail.com';
 
   // ── Stream de estado de autenticação ──────────────────────────────────────
   static Stream<User?> get authStateChanges => _auth.authStateChanges();
   static User? get currentUser => _auth.currentUser;
 
-  // ── LOGIN — SDK primeiro; se falhar por domínio, usa REST API ─────────────
+  // ═══════════════════════════════════════════════════════════════════════════
+  // LOGIN
+  // ═══════════════════════════════════════════════════════════════════════════
   static Future<AuthResult> login({
     required String email,
     required String password,
   }) async {
-    // Tenta SDK nativo primeiro (Android / domínio autorizado)
+    if (kIsWeb) {
+      // Web: sempre via REST para evitar bloqueio de domínio
+      return _loginWeb(email: email, password: password);
+    }
+    // Android / iOS: SDK nativo
+    return _loginNative(email: email, password: password);
+  }
+
+  // ── Login nativo (Android) ─────────────────────────────────────────────────
+  static Future<AuthResult> _loginNative({
+    required String email,
+    required String password,
+  }) async {
     try {
       await _auth.signInWithEmailAndPassword(
         email: email.trim(),
         password: password,
       );
-      return _loadUserAfterAuth(email);
+      final uid = _auth.currentUser!.uid;
+      final doc = await _db.collection('users').doc(uid).get();
+      return _buildResultFromDoc(
+        exists: doc.exists,
+        data: doc.exists ? (doc.data() ?? {}) : {},
+        uid: uid,
+        email: email,
+      );
     } on FirebaseAuthException catch (e) {
-      // Erros definitivos do SDK — não tentar REST
-      if (e.code == 'user-not-found' ||
-          e.code == 'wrong-password' ||
-          e.code == 'invalid-credential' ||
-          e.code == 'too-many-requests' ||
-          e.code == 'user-disabled' ||
-          e.code == 'invalid-email') {
-        return AuthResult.error(_authErrorMessage(e.code));
-      }
-      // unauthorized-domain ou outros → tenta fallback REST (só no Web)
-      if (kIsWeb) {
-        return _loginViaRestApi(email: email, password: password);
-      }
       return AuthResult.error(_authErrorMessage(e.code));
     } catch (e) {
-      final msg = e.toString();
-      // Domínio não autorizado ou Firebase SDK bloqueado → REST fallback
-      if (kIsWeb &&
-          (msg.contains('unauthorized-domain') ||
-              msg.contains('auth/unauthorized') ||
-              msg.contains('no-app') ||
-              msg.contains('No Firebase App') ||
-              msg.contains('core/') ||
-              msg.contains('network') ||
-              msg.contains('XMLHttpRequest'))) {
-        return _loginViaRestApi(email: email, password: password);
-      }
       return AuthResult.error('Não foi possível fazer login. Tente novamente.');
     }
   }
 
-  // ── LOGIN via REST API (sem restrição de domínio) ─────────────────────────
-  // Usado quando o Firebase Web SDK bloqueia por domínio não autorizado.
-  // Autentica via Identity Toolkit, depois usa signInWithCustomToken para
-  // registrar a sessão no SDK local (mantendo streams de auth funcionando).
-  static Future<AuthResult> _loginViaRestApi({
+  // ── Login Web via REST ─────────────────────────────────────────────────────
+  static Future<AuthResult> _loginWeb({
     required String email,
     required String password,
   }) async {
     try {
-      // Passo 1: autenticar via REST e obter idToken
-      final signInUrl = Uri.parse(
-        'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=$_webApiKey',
-      );
-      final signInResp = await http.post(
-        signInUrl,
+      // Passo 1 — Auth REST
+      final authResp = await http.post(
+        Uri.parse('https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=$_webApiKey'),
         headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({
-          'email': email.trim(),
-          'password': password,
-          'returnSecureToken': true,
-        }),
+        body: jsonEncode({'email': email.trim(), 'password': password, 'returnSecureToken': true}),
       );
+      final authBody = jsonDecode(authResp.body) as Map<String, dynamic>;
 
-      final signInBody = jsonDecode(signInResp.body) as Map<String, dynamic>;
-
-      if (signInResp.statusCode != 200) {
-        final code = (signInBody['error']?['message'] as String? ?? '').toLowerCase();
-        if (code.contains('email_not_found') || code.contains('invalid_login_credentials')) {
+      if (authResp.statusCode != 200) {
+        final msg = ((authBody['error']?['message'] as String?) ?? '').toUpperCase();
+        if (msg.contains('EMAIL_NOT_FOUND') || msg.contains('INVALID_LOGIN_CREDENTIALS') ||
+            msg.contains('WRONG_PASSWORD') || msg.contains('INVALID_PASSWORD')) {
           return AuthResult.error('E-mail ou senha incorretos.');
         }
-        if (code.contains('too_many_attempts') || code.contains('too_many_requests')) {
+        if (msg.contains('TOO_MANY_ATTEMPTS') || msg.contains('TOO_MANY_REQUESTS')) {
           return AuthResult.error('Muitas tentativas. Aguarde alguns minutos.');
         }
-        if (code.contains('user_disabled')) {
+        if (msg.contains('USER_DISABLED')) {
           return AuthResult.error('Conta desativada. Entre em contato com o administrador.');
         }
         return AuthResult.error('E-mail ou senha incorretos.');
       }
 
-      final uid      = signInBody['localId'] as String;
-      final idToken  = signInBody['idToken'] as String;
+      final uid     = authBody['localId'] as String;
+      final idToken = authBody['idToken']  as String;
 
-      // Passo 2: trocar idToken por customToken via Cloud Function (se disponível)
-      // OU: usar signInWithCustomToken se houver. Aqui usamos signInWithCredential
-      // com EmailAuthProvider para registrar no SDK sem precisar do domínio.
-      try {
-        final credential = EmailAuthProvider.credential(
-          email: email.trim(),
-          password: password,
-        );
-        await _auth.signInWithCredential(credential);
-      } catch (_) {
-        // Se ainda falhar por domínio, continua sem sessão SDK
-        // — o app funciona via Firestore com o uid obtido do REST
+      // Passo 2 — Firestore REST: ler documento users/{uid}
+      final fsResp = await http.get(
+        Uri.parse('$_fsBase/users/$uid'),
+        headers: {'Authorization': 'Bearer $idToken'},
+      );
+
+      if (fsResp.statusCode == 404) {
+        // Usuário existe no Auth mas não no Firestore — criar documento
+        final user = _buildNewUser(uid: uid, email: email);
+        await _createUserDocRest(user: user, idToken: idToken);
+        return AuthResult.success(user);
       }
 
-      // Passo 3: buscar dados do usuário no Firestore usando o uid
-      return _loadUserByUid(uid: uid, email: email, idToken: idToken);
+      if (fsResp.statusCode != 200) {
+        return AuthResult.error('Erro ao carregar perfil. Tente novamente.');
+      }
+
+      final fsBody = jsonDecode(fsResp.body) as Map<String, dynamic>;
+      final data   = _firestoreDocToMap(fsBody);
+
+      return _buildResultFromDoc(exists: true, data: data, uid: uid, email: email);
     } catch (e) {
       return AuthResult.error('Falha na conexão. Verifique sua internet e tente novamente.');
     }
   }
 
-  // ── Carrega UserModel após signIn bem-sucedido via SDK ────────────────────
-  static Future<AuthResult> _loadUserAfterAuth(String email) async {
-    try {
-      final uid = _auth.currentUser!.uid;
-      return _loadUserByUid(uid: uid, email: email);
-    } catch (e) {
-      return AuthResult.error('Erro ao carregar dados do usuário.');
-    }
-  }
-
-  // ── Busca / cria UserModel no Firestore pelo uid ──────────────────────────
-  static Future<AuthResult> _loadUserByUid({
-    required String uid,
-    required String email,
-    String? idToken,
-  }) async {
-    try {
-      final doc = await _db.collection('users').doc(uid).get();
-
-      if (!doc.exists) {
-        final isAdmin = email.trim().toLowerCase() == adminEmail.toLowerCase();
-        final user = UserModel(
-          uid: uid,
-          email: email.trim().toLowerCase(),
-          displayName: _auth.currentUser?.displayName ?? email.split('@').first,
-          role: isAdmin ? UserRole.admin : UserRole.user,
-          status: isAdmin ? UserStatus.approved : UserStatus.pending,
-          createdAt: DateTime.now(),
-          approvedAt: isAdmin ? DateTime.now() : null,
-          approvedBy: isAdmin ? 'system' : null,
-        );
-        await _db.collection('users').doc(uid).set(user.toMap());
-        return AuthResult.success(user);
-      }
-
-      final user = UserModel.fromDoc(doc);
-
-      if (user.isBlocked) {
-        await _auth.signOut();
-        return AuthResult.error('Sua conta foi suspensa. Entre em contato com o administrador.');
-      }
-
-      if (user.isPending) {
-        await _auth.signOut();
-        return AuthResult.error(
-            'Sua conta está aguardando aprovação do administrador.\n\nVocê receberá acesso em breve.');
-      }
-
-      return AuthResult.success(user);
-    } catch (e) {
-      return AuthResult.error('Erro ao carregar dados do usuário. Tente novamente.');
-    }
-  }
-
-  // ── Cadastro ──────────────────────────────────────────────────────────────
+  // ═══════════════════════════════════════════════════════════════════════════
+  // CADASTRO
+  // ═══════════════════════════════════════════════════════════════════════════
   static Future<AuthResult> register({
     required String email,
     required String password,
@@ -189,154 +127,89 @@ class AuthService {
     String? profession,
     String? institution,
   }) async {
-    // Tenta via SDK primeiro
+    if (kIsWeb) {
+      return _registerWeb(
+        email: email, password: password, displayName: displayName,
+        profession: profession, institution: institution,
+      );
+    }
+    return _registerNative(
+      email: email, password: password, displayName: displayName,
+      profession: profession, institution: institution,
+    );
+  }
+
+  static Future<AuthResult> _registerNative({
+    required String email, required String password,
+    required String displayName, String? profession, String? institution,
+  }) async {
     try {
       final cred = await _auth.createUserWithEmailAndPassword(
-        email: email.trim(),
-        password: password,
+        email: email.trim(), password: password,
       );
       await cred.user?.updateDisplayName(displayName.trim());
-      return _createUserDoc(
-        uid: cred.user!.uid,
-        email: email,
-        displayName: displayName,
-        profession: profession,
-        institution: institution,
+      final user = _buildNewUser(
+        uid: cred.user!.uid, email: email,
+        displayName: displayName, profession: profession, institution: institution,
       );
+      await _db.collection('users').doc(user.uid).set(user.toMap());
+      return AuthResult.success(user);
     } on FirebaseAuthException catch (e) {
-      if (e.code == 'email-already-in-use' ||
-          e.code == 'weak-password' ||
-          e.code == 'invalid-email') {
-        return AuthResult.error(_authErrorMessage(e.code));
-      }
-      // Domínio bloqueado → REST fallback
-      if (kIsWeb) {
-        return _registerViaRestApi(
-          email: email,
-          password: password,
-          displayName: displayName,
-          profession: profession,
-          institution: institution,
-        );
-      }
       return AuthResult.error(_authErrorMessage(e.code));
     } catch (e) {
-      if (kIsWeb) {
-        return _registerViaRestApi(
-          email: email,
-          password: password,
-          displayName: displayName,
-          profession: profession,
-          institution: institution,
-        );
-      }
       return AuthResult.error('Erro inesperado. Tente novamente.');
     }
   }
 
-  // ── Cadastro via REST API ─────────────────────────────────────────────────
-  static Future<AuthResult> _registerViaRestApi({
-    required String email,
-    required String password,
-    required String displayName,
-    String? profession,
-    String? institution,
+  static Future<AuthResult> _registerWeb({
+    required String email, required String password,
+    required String displayName, String? profession, String? institution,
   }) async {
     try {
-      final url = Uri.parse(
-        'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=$_webApiKey',
-      );
       final resp = await http.post(
-        url,
+        Uri.parse('https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=$_webApiKey'),
         headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({
-          'email': email.trim(),
-          'password': password,
-          'returnSecureToken': true,
-        }),
+        body: jsonEncode({'email': email.trim(), 'password': password, 'returnSecureToken': true}),
       );
-
       final body = jsonDecode(resp.body) as Map<String, dynamic>;
 
       if (resp.statusCode != 200) {
-        final code = (body['error']?['message'] as String? ?? '').toLowerCase();
-        if (code.contains('email_exists')) {
-          return AuthResult.error('Este e-mail já está cadastrado.');
-        }
-        if (code.contains('weak_password')) {
-          return AuthResult.error('Senha fraca. Use ao menos 6 caracteres.');
-        }
+        final msg = ((body['error']?['message'] as String?) ?? '').toUpperCase();
+        if (msg.contains('EMAIL_EXISTS')) return AuthResult.error('Este e-mail já está cadastrado.');
+        if (msg.contains('WEAK_PASSWORD'))  return AuthResult.error('Senha fraca. Use ao menos 6 caracteres.');
         return AuthResult.error('Não foi possível criar a conta. Tente novamente.');
       }
 
-      final uid = body['localId'] as String;
-      return _createUserDoc(
-        uid: uid,
-        email: email,
-        displayName: displayName,
-        profession: profession,
-        institution: institution,
+      final uid     = body['localId'] as String;
+      final idToken = body['idToken']  as String;
+      final user    = _buildNewUser(
+        uid: uid, email: email, displayName: displayName,
+        profession: profession, institution: institution,
       );
+      await _createUserDocRest(user: user, idToken: idToken);
+      return AuthResult.success(user);
     } catch (e) {
       return AuthResult.error('Falha na conexão. Verifique sua internet e tente novamente.');
     }
   }
 
-  // ── Cria documento do usuário no Firestore ────────────────────────────────
-  static Future<AuthResult> _createUserDoc({
-    required String uid,
-    required String email,
-    required String displayName,
-    String? profession,
-    String? institution,
-  }) async {
-    final isAdmin = email.trim().toLowerCase() == adminEmail.toLowerCase();
-    final user = UserModel(
-      uid: uid,
-      email: email.trim().toLowerCase(),
-      displayName: displayName.trim(),
-      role: isAdmin ? UserRole.admin : UserRole.user,
-      status: isAdmin ? UserStatus.approved : UserStatus.pending,
-      createdAt: DateTime.now(),
-      approvedAt: isAdmin ? DateTime.now() : null,
-      approvedBy: isAdmin ? 'system' : null,
-      profession: profession,
-      institution: institution,
-    );
-    await _db.collection('users').doc(uid).set(user.toMap());
-    return AuthResult.success(user);
-  }
-
-  // ── Logout ────────────────────────────────────────────────────────────────
-  static Future<void> logout() async {
-    await _auth.signOut();
-  }
-
-  // ── Reset de senha ────────────────────────────────────────────────────────
+  // ═══════════════════════════════════════════════════════════════════════════
+  // RESET DE SENHA
+  // ═══════════════════════════════════════════════════════════════════════════
   static Future<AuthResult> resetPassword(String email) async {
-    // Tenta SDK
+    if (kIsWeb) return _resetPasswordWeb(email);
     try {
       await _auth.sendPasswordResetEmail(email: email.trim());
       return AuthResult.success(null, message: 'E-mail de redefinição enviado!');
     } on FirebaseAuthException catch (e) {
-      if (e.code == 'user-not-found' || e.code == 'invalid-email') {
-        return AuthResult.error(_authErrorMessage(e.code));
-      }
-      if (kIsWeb) return _resetPasswordViaRest(email);
       return AuthResult.error(_authErrorMessage(e.code));
-    } catch (_) {
-      if (kIsWeb) return _resetPasswordViaRest(email);
-      return AuthResult.error('Erro ao enviar e-mail. Tente novamente.');
     }
   }
 
-  static Future<AuthResult> _resetPasswordViaRest(String email) async {
+  static Future<AuthResult> _resetPasswordWeb(String email) async {
     try {
-      final url = Uri.parse(
-        'https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key=$_webApiKey',
-      );
       final resp = await http.post(
-        url,
+        Uri.parse('https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key=$_webApiKey'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({'requestType': 'PASSWORD_RESET', 'email': email.trim()}),
       );
@@ -349,7 +222,16 @@ class AuthService {
     }
   }
 
-  // ── Buscar dados do usuário atual ─────────────────────────────────────────
+  // ═══════════════════════════════════════════════════════════════════════════
+  // LOGOUT
+  // ═══════════════════════════════════════════════════════════════════════════
+  static Future<void> logout() async {
+    try { await _auth.signOut(); } catch (_) {}
+  }
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // STREAMS — usados pelo _AuthGate (Android / Web com SDK OK)
+  // ═══════════════════════════════════════════════════════════════════════════
   static Future<UserModel?> fetchCurrentUser() async {
     final uid = _auth.currentUser?.uid;
     if (uid == null) return null;
@@ -357,12 +239,9 @@ class AuthService {
       final doc = await _db.collection('users').doc(uid).get();
       if (!doc.exists) return null;
       return UserModel.fromDoc(doc);
-    } catch (_) {
-      return null;
-    }
+    } catch (_) { return null; }
   }
 
-  // ── Stream do usuário atual ───────────────────────────────────────────────
   static Stream<UserModel?> currentUserStream() {
     final uid = _auth.currentUser?.uid;
     if (uid == null) return Stream.value(null);
@@ -382,7 +261,6 @@ class AuthService {
         .map((snap) => snap.docs.map(UserModel.fromDoc).toList());
   }
 
-  // ── Admin: aprovar usuário ────────────────────────────────────────────────
   static Future<void> approveUser(String uid, String adminUid) async {
     await _db.collection('users').doc(uid).update({
       'status': UserStatus.approved.name,
@@ -391,12 +269,10 @@ class AuthService {
     });
   }
 
-  // ── Admin: bloquear usuário ───────────────────────────────────────────────
   static Future<void> blockUser(String uid) async {
     await _db.collection('users').doc(uid).update({'status': UserStatus.blocked.name});
   }
 
-  // ── Admin: desbloquear usuário ────────────────────────────────────────────
   static Future<void> unblockUser(String uid, String adminUid) async {
     await _db.collection('users').doc(uid).update({
       'status': UserStatus.approved.name,
@@ -405,45 +281,144 @@ class AuthService {
     });
   }
 
-  // ── Admin: promover a admin ───────────────────────────────────────────────
   static Future<void> promoteToAdmin(String uid) async {
     await _db.collection('users').doc(uid).update({'role': UserRole.admin.name});
   }
 
-  // ── Master: promover a supervisor ─────────────────────────────────────────
   static Future<void> promoteToSupervisor(String uid) async {
     await _db.collection('users').doc(uid).update({'role': UserRole.supervisor.name});
   }
 
-  // ── Master/Admin: rebaixar para usuário comum ─────────────────────────────
   static Future<void> demoteToUser(String uid) async {
     await _db.collection('users').doc(uid).update({'role': UserRole.user.name});
+  }
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // HELPERS INTERNOS
+  // ═══════════════════════════════════════════════════════════════════════════
+
+  /// Cria um UserModel novo com as permissões corretas
+  static UserModel _buildNewUser({
+    required String uid,
+    required String email,
+    String? displayName,
+    String? profession,
+    String? institution,
+  }) {
+    final isAdmin = email.trim().toLowerCase() == adminEmail.toLowerCase();
+    return UserModel(
+      uid: uid,
+      email: email.trim().toLowerCase(),
+      displayName: displayName?.trim() ?? email.split('@').first,
+      role: isAdmin ? UserRole.admin : UserRole.user,
+      status: isAdmin ? UserStatus.approved : UserStatus.pending,
+      createdAt: DateTime.now(),
+      approvedAt: isAdmin ? DateTime.now() : null,
+      approvedBy: isAdmin ? 'system' : null,
+      profession: profession,
+      institution: institution,
+    );
+  }
+
+  /// Monta AuthResult a partir de um Map de campos Firestore
+  static AuthResult _buildResultFromDoc({
+    required bool exists,
+    required Map<String, dynamic> data,
+    required String uid,
+    required String email,
+  }) {
+    if (!exists || data.isEmpty) {
+      // Cria registro local sem ir ao Firestore (será criado pelo SDK/REST já chamado antes)
+      final user = _buildNewUser(uid: uid, email: email);
+      return AuthResult.success(user);
+    }
+
+    final user = UserModel.fromMap(data);
+
+    if (user.isBlocked) {
+      return AuthResult.error('Sua conta foi suspensa. Entre em contato com o administrador.');
+    }
+    if (user.isPending) {
+      return AuthResult.error(
+          'Sua conta está aguardando aprovação do administrador.\n\nVocê receberá acesso em breve.');
+    }
+    return AuthResult.success(user);
+  }
+
+  /// Cria documento de usuário no Firestore via REST (Web)
+  static Future<void> _createUserDocRest({
+    required UserModel user,
+    required String idToken,
+  }) async {
+    try {
+      final fields = <String, dynamic>{};
+      final m = user.toMap();
+      // Converter para formato Firestore REST
+      m.forEach((k, v) {
+        if (v == null) {
+          fields[k] = {'nullValue': null};
+        } else if (v is bool) {
+          fields[k] = {'booleanValue': v};
+        } else if (v is int) {
+          fields[k] = {'integerValue': v.toString()};
+        } else if (v is double) {
+          fields[k] = {'doubleValue': v};
+        } else if (v is Timestamp) {
+          fields[k] = {'timestampValue': v.toDate().toUtc().toIso8601String()};
+        } else {
+          fields[k] = {'stringValue': v.toString()};
+        }
+      });
+
+      await http.patch(
+        Uri.parse('$_fsBase/users/${user.uid}'),
+        headers: {
+          'Authorization': 'Bearer $idToken',
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode({'fields': fields}),
+      );
+    } catch (_) {
+      // Falha silenciosa — o SDK vai tentar criar depois quando o domínio for autorizado
+    }
+  }
+
+  /// Converte resposta REST do Firestore para Map<String, dynamic> compatível com UserModel.fromMap
+  static Map<String, dynamic> _firestoreDocToMap(Map<String, dynamic> doc) {
+    final fields = doc['fields'] as Map<String, dynamic>? ?? {};
+    final result = <String, dynamic>{};
+
+    fields.forEach((key, value) {
+      final v = value as Map<String, dynamic>;
+      if (v.containsKey('stringValue'))    result[key] = v['stringValue'];
+      else if (v.containsKey('booleanValue')) result[key] = v['booleanValue'];
+      else if (v.containsKey('integerValue')) result[key] = int.tryParse(v['integerValue'].toString());
+      else if (v.containsKey('doubleValue'))  result[key] = v['doubleValue'];
+      else if (v.containsKey('timestampValue')) {
+        // Converte para Timestamp do Firestore SDK
+        result[key] = Timestamp.fromDate(DateTime.parse(v['timestampValue'] as String));
+      }
+      else if (v.containsKey('nullValue'))  result[key] = null;
+      else result[key] = null;
+    });
+
+    return result;
   }
 
   // ── Mensagens de erro amigáveis ───────────────────────────────────────────
   static String _authErrorMessage(String code) {
     switch (code) {
-      case 'user-not-found':
-        return 'Nenhuma conta encontrada com este e-mail.';
+      case 'user-not-found':        return 'Nenhuma conta encontrada com este e-mail.';
       case 'wrong-password':
-      case 'invalid-credential':
-        return 'E-mail ou senha incorretos.';
-      case 'email-already-in-use':
-        return 'Este e-mail já está cadastrado.';
-      case 'weak-password':
-        return 'Senha fraca. Use ao menos 6 caracteres.';
-      case 'invalid-email':
-        return 'Endereço de e-mail inválido.';
-      case 'too-many-requests':
-        return 'Muitas tentativas. Aguarde alguns minutos.';
-      case 'network-request-failed':
-        return 'Sem conexão. Verifique sua internet.';
-      case 'operation-not-allowed':
-        return 'Login por e-mail desabilitado. Contate o admin.';
-      case 'unauthorized-domain':
-        return 'Acesso não autorizado neste domínio.';
-      default:
-        return 'Erro de autenticação. Tente novamente.';
+      case 'invalid-credential':    return 'E-mail ou senha incorretos.';
+      case 'email-already-in-use':  return 'Este e-mail já está cadastrado.';
+      case 'weak-password':         return 'Senha fraca. Use ao menos 6 caracteres.';
+      case 'invalid-email':         return 'Endereço de e-mail inválido.';
+      case 'too-many-requests':     return 'Muitas tentativas. Aguarde alguns minutos.';
+      case 'network-request-failed': return 'Sem conexão. Verifique sua internet.';
+      case 'operation-not-allowed': return 'Login por e-mail desabilitado. Contate o admin.';
+      case 'user-disabled':         return 'Conta desativada. Entre em contato com o administrador.';
+      default: return 'Erro de autenticação. Tente novamente.';
     }
   }
 }
