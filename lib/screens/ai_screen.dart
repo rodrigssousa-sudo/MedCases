@@ -11,65 +11,106 @@ class AiScreen extends StatefulWidget {
 }
 
 class _AiScreenState extends State<AiScreen> {
-  final _queryCtrl = TextEditingController();
+  final _queryCtrl  = TextEditingController();
   final _scrollCtrl = ScrollController();
+  final _focusNode  = FocusNode();
   final List<_ChatMsg> _messages = [];
   bool _thinking = false;
 
-  // Prompts rápidos bilíngues: (label_pt, prompt_pt, label_es, prompt_es)
-  static const _quickPrompts = [
-    // Cardiovascular
-    ('IAM / dor torácica',   'Paciente com dor torácica intensa, diaforese e irradiação para braço esquerdo. Suspeita de IAM.',
-     'IAM / dolor torácico', 'Paciente con dolor torácico intenso, diaforesis e irradiación al brazo izquierdo. Sospecha de IAM.'),
-    ('Choque + hipotensão',  'Paciente em choque com hipotensão, taquicardia e pele fria.',
-     'Choque + hipotensión', 'Paciente en choque con hipotensión, taquicardia y piel fría.'),
-    ('TPSV / taquicardia',   'Taquicardia paroxística supraventricular, QRS estreito, FC 180.',
-     'TPSV / taquicardia',   'Taquicardia paroxística supraventricular, QRS estrecho, FC 180.'),
-    ('FA / fibrilação atrial','Fibrilação atrial com resposta ventricular rápida, FC 145 irregular.',
-     'FA / fibrilación atrial','Fibrilación auricular con respuesta ventricular rápida, FC 145 irregular.'),
-    ('Crise hipertensiva',   'PA 210/120 com cefaleia intensa e confusão mental.',
-     'Crisis hipertensiva',  'PA 210/120 con cefalea intensa y confusión mental.'),
-    // Emergência
-    ('Anafilaxia',           'Reação anafilática aguda após contraste. PA 80/50, broncoespasmo.',
-     'Anafilaxia',           'Reacción anafiláctica aguda tras contraste. PA 80/50, broncoespasmo.'),
-    ('PCR / parada cardíaca','Parada cardiorrespiratória. Sem pulso. Monitor: fibrilação ventricular.',
-     'PCR / parada cardíaca','Parada cardiorrespiratoria. Sin pulso. Monitor: fibrilación ventricular.'),
-    ('K\u207a alto / hipercalemia','Hipercalemia grave K+ 7,1 com ondas T apiculadas no ECG.',
-     'K\u207a alto / hipercalemia','Hipercalemia grave K+ 7,1 con ondas T picudas en el ECG.'),
-    // Respiratório
-    ('Sepse / febre',        'Febre alta, hipotensão, taquicardia e suspeita de sepse.',
-     'Sepsis / fiebre',      'Fiebre alta, hipotensión, taquicardia y sospecha de sepsis.'),
-    ('TEP / embolia',        'Embolia pulmonar com dispneia súbita, PA 85/50, SatO2 85%.',
-     'TEP / embolia',        'Embolia pulmonar con disnea súbita, PA 85/50, SatO2 85%.'),
-    ('DPOC exacerbação',     'DPOC com piora de dispneia, PaCO2 68, pH 7,28.',
-     'EPOC exacerbación',    'EPOC con empeoramiento de disnea, PaCO2 68, pH 7,28.'),
-    ('Asma grave',           'Crise de asma grave, silêncio auscultório, SpO2 88%.',
-     'Asma grave',           'Crisis de asma grave, silencio auscultatorio, SpO2 88%.'),
-    // Neurologia
-    ('AVC isquêmico',        'AVC isquêmico agudo, hemiplegia direita, NIHSS 14, 1h45 de evolução.',
-     'ACV isquémico',        'ACV isquémico agudo, hemiplejía derecha, NIHSS 14, 1h45 de evolución.'),
-    ('Convulsão / status',   'Convulsão há 8 min sem pausa. Estado de mal epiléptico.',
-     'Convulsión / status',  'Convulsión de 8 min sin pausa. Estado epiléptico.'),
-    ('Delirium / confusão',  'Confusão mental aguda, agitação, rebaixamento. Idoso de 78 anos.',
-     'Delirium / confusión', 'Confusión mental aguda, agitación, bradipsiquia. Anciano de 78 años.'),
-    // Endocrinologia
-    ('Cetoacidose / CAD',    'Cetoacidose diabética. Glicemia 480, pH 7,18, K+ 3,2.',
-     'Cetoacidosis / CAD',   'Cetoacidosis diabética. Glucemia 480, pH 7,18, K+ 3,2.'),
-    ('Hipoglicemia grave',   'Hipoglicemia grave, Glasgow 8, glicemia 28 mg/dL.',
-     'Hipoglucemia grave',   'Hipoglucemia grave, Glasgow 8, glucemia 28 mg/dL.'),
-    // Gastro / outros
-    ('Hemorragia digestiva', 'Hematêmese, Hb 7,2, instabilidade hemodinâmica.',
-     'Hemorragia digestiva', 'Hematemesis, Hb 7,2, inestabilidad hemodinámica.'),
-    ('Meningite',            'Febre, cefaleia em trovoada, rigidez de nuca, petéquias.',
-     'Meningitis',           'Fiebre, cefalea en trueno, rigidez de nuca, petequias.'),
-    ('Insuf. cardíaca',      'IC descompensada, ortopneia, SatO2 91%, crepitações bibasais.',
-     'Insuf. cardíaca',      'IC descompensada, ortopnea, SatO2 91%, crepitantes bibasales.'),
+  // Grupos de sugestões rápidas: (categoria, [(label_pt, label_es, prompt_pt, prompt_es)])
+  static const _groups = [
+    (
+      'Cardio',
+      [
+        ('IAM / dor torácica',   'IAM / dolor torácico',
+         'Paciente com dor torácica intensa, diaforese e irradiação para braço esquerdo. Suspeita de IAM.',
+         'Paciente con dolor torácico intenso, diaforesis e irradiación al brazo izquierdo. Sospecha de IAM.'),
+        ('Choque + hipotensão',  'Choque + hipotensión',
+         'Paciente em choque com hipotensão, taquicardia e pele fria.',
+         'Paciente en choque con hipotensión, taquicardia y piel fría.'),
+        ('TPSV / taquicardia',   'TPSV / taquicardia',
+         'Taquicardia paroxística supraventricular, QRS estreito, FC 180.',
+         'Taquicardia paroxística supraventricular, QRS estrecho, FC 180.'),
+        ('FA / fibrilação',      'FA / fibrilación',
+         'Fibrilação atrial com resposta ventricular rápida, FC 145 irregular.',
+         'Fibrilación auricular con respuesta ventricular rápida, FC 145 irregular.'),
+        ('Crise hipertensiva',   'Crisis hipertensiva',
+         'PA 210/120 com cefaleia intensa e confusão mental.',
+         'PA 210/120 con cefalea intensa y confusión mental.'),
+        ('Insuf. cardíaca',      'Insuf. cardíaca',
+         'IC descompensada, ortopneia, SatO2 91%, crepitações bibasais.',
+         'IC descompensada, ortopnea, SatO2 91%, crepitantes bibasales.'),
+      ]
+    ),
+    (
+      'Emergência',
+      [
+        ('Anafilaxia',           'Anafilaxia',
+         'Reação anafilática aguda após contraste. PA 80/50, broncoespasmo.',
+         'Reacción anafiláctica aguda tras contraste. PA 80/50, broncoespasmo.'),
+        ('PCR / parada',         'PCR / parada',
+         'Parada cardiorrespiratória. Sem pulso. Monitor: fibrilação ventricular.',
+         'Parada cardiorrespiratoria. Sin pulso. Monitor: fibrilación ventricular.'),
+        ('K⁺ alto',              'K⁺ alto',
+         'Hipercalemia grave K+ 7,1 com ondas T apiculadas no ECG.',
+         'Hipercalemia grave K+ 7,1 con ondas T picudas en el ECG.'),
+        ('Sepse / febre',        'Sepsis / fiebre',
+         'Febre alta, hipotensão, taquicardia e suspeita de sepse.',
+         'Fiebre alta, hipotensión, taquicardia y sospecha de sepsis.'),
+        ('Hemorragia digestiva', 'Hemorragia digestiva',
+         'Hematêmese, Hb 7,2, instabilidade hemodinâmica.',
+         'Hematemesis, Hb 7,2, inestabilidad hemodinámica.'),
+      ]
+    ),
+    (
+      'Resp.',
+      [
+        ('TEP / embolia',        'TEP / embolia',
+         'Embolia pulmonar com dispneia súbita, PA 85/50, SatO2 85%.',
+         'Embolia pulmonar con disnea súbita, PA 85/50, SatO2 85%.'),
+        ('DPOC exacerbação',     'EPOC exacerbación',
+         'DPOC com piora de dispneia, PaCO2 68, pH 7,28.',
+         'EPOC con empeoramiento de disnea, PaCO2 68, pH 7,28.'),
+        ('Asma grave',           'Asma grave',
+         'Crise de asma grave, silêncio auscultório, SpO2 88%.',
+         'Crisis de asma grave, silencio auscultatorio, SpO2 88%.'),
+      ]
+    ),
+    (
+      'Neuro',
+      [
+        ('AVC isquêmico',        'ACV isquémico',
+         'AVC isquêmico agudo, hemiplegia direita, NIHSS 14, 1h45 de evolução.',
+         'ACV isquémico agudo, hemiplejía derecha, NIHSS 14, 1h45 de evolución.'),
+        ('Convulsão / status',   'Convulsión / status',
+         'Convulsão há 8 min sem pausa. Estado de mal epiléptico.',
+         'Convulsión de 8 min sin pausa. Estado epiléptico.'),
+        ('Delirium / confusão',  'Delirium / confusión',
+         'Confusão mental aguda, agitação, rebaixamento. Idoso de 78 anos.',
+         'Confusión mental aguda, agitación, bradipsiquia. Anciano de 78 años.'),
+        ('Meningite',            'Meningitis',
+         'Febre, cefaleia em trovoada, rigidez de nuca, petéquias.',
+         'Fiebre, cefalea en trueno, rigidez de nuca, petequias.'),
+      ]
+    ),
+    (
+      'Endócrino',
+      [
+        ('Cetoacidose / CAD',    'Cetoacidosis / CAD',
+         'Cetoacidose diabética. Glicemia 480, pH 7,18, K+ 3,2.',
+         'Cetoacidosis diabética. Glucemia 480, pH 7,18, K+ 3,2.'),
+        ('Hipoglicemia grave',   'Hipoglucemia grave',
+         'Hipoglicemia grave, Glasgow 8, glicemia 28 mg/dL.',
+         'Hipoglucemia grave, Glasgow 8, glucemia 28 mg/dL.'),
+      ]
+    ),
   ];
 
   @override
   void dispose() {
     _queryCtrl.dispose();
     _scrollCtrl.dispose();
+    _focusNode.dispose();
     super.dispose();
   }
 
@@ -86,18 +127,19 @@ class _AiScreenState extends State<AiScreen> {
   }
 
   Future<void> _send(String text, AppProvider p) async {
-    if (text.trim().isEmpty) return;
+    final trimmed = text.trim();
+    if (trimmed.isEmpty) return;
+    _focusNode.unfocus();
     setState(() {
-      _messages.add(_ChatMsg(role: 'user', text: text.trim()));
+      _messages.add(_ChatMsg(role: 'user', text: trimmed));
       _thinking = true;
     });
     _queryCtrl.clear();
     _scrollDown();
 
-    // Simulate slight delay for UX
     await Future.delayed(const Duration(milliseconds: 600));
 
-    final answer = p.buildAIAnswer(text.trim());
+    final answer = p.buildAIAnswer(trimmed);
     setState(() {
       _messages.add(_ChatMsg(role: 'ai', text: answer));
       _thinking = false;
@@ -107,9 +149,13 @@ class _AiScreenState extends State<AiScreen> {
 
   void _copyMsg(String text) {
     Clipboard.setData(ClipboardData(text: text));
-    final p = context.read<AppProvider>();
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(p.t('copied')), duration: const Duration(seconds: 1)),
+      SnackBar(
+        content: Text(context.read<AppProvider>().t('copied')),
+        duration: const Duration(seconds: 1),
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      ),
     );
   }
 
@@ -117,151 +163,240 @@ class _AiScreenState extends State<AiScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final p = context.watch<AppProvider>();
+    final p    = context.watch<AppProvider>();
     final dark = p.darkMode;
-    final bubbleBg = dark ? const Color(0xFF0E1A14) : Colors.white;
+    final bg   = dark ? const Color(0xFF070F0A) : const Color(0xFFF5F3EE);
 
     return Column(children: [
-      // Header
+      // ── Header ──────────────────────────────────────────────────────────
       PremiumCard(
-          padding: const EdgeInsets.fromLTRB(16, 14, 16, 14),
-          child: Row(children: [
-            Container(
-              padding: const EdgeInsets.all(10),
-              decoration: BoxDecoration(borderRadius: BorderRadius.circular(14), color: Colors.white.withValues(alpha: 0.1)),
-              child: const Icon(Icons.psychology_rounded, color: Color(0xFFFFE8A6), size: 22),
+        padding: const EdgeInsets.fromLTRB(16, 14, 16, 14),
+        child: Row(children: [
+          Container(
+            width: 36, height: 36,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              color: Colors.white.withValues(alpha: 0.12),
             ),
-            const SizedBox(width: 12),
-            Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text(p.t('ai'), style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w900, color: Colors.white)),
+            child: const Center(
+              child: Icon(Icons.psychology_rounded, color: Color(0xFFFFE8A6), size: 20),
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(p.t('ai'),
+                style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w900, color: Colors.white)),
               Text(p.t('ai_subtitle'),
-                style: TextStyle(fontSize: 10, color: Colors.white.withValues(alpha: 0.6), fontWeight: FontWeight.w600)),
-            ])),
-            if (_messages.isNotEmpty)
-              GestureDetector(
-                onTap: _clearChat,
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: Colors.white.withValues(alpha: 0.1), border: Border.all(color: Colors.white.withValues(alpha: 0.2))),
-                  child: Text(p.t('clear'), style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w900, color: Color(0xFFFFE8A6))),
+                style: TextStyle(fontSize: 10, color: Colors.white.withValues(alpha: 0.55), fontWeight: FontWeight.w500)),
+            ],
+          )),
+          if (_messages.isNotEmpty)
+            GestureDetector(
+              onTap: _clearChat,
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8),
+                  color: Colors.white.withValues(alpha: 0.1),
                 ),
+                child: Text(p.t('clear'),
+                  style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: Color(0xFFFFE8A6))),
               ),
-          ]),
-        ),
+            ),
+        ]),
+      ),
 
-      // Chat messages or empty state
+      // ── Body ─────────────────────────────────────────────────────────────
       Expanded(
-        child: _messages.isEmpty ? _emptyState(p) : ListView.builder(
-          controller: _scrollCtrl,
-          padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
-          itemCount: _messages.length + (_thinking ? 1 : 0),
-          itemBuilder: (context, i) {
-            if (_thinking && i == _messages.length) {
-              return _ThinkingBubble(dark: dark, bubbleBg: bubbleBg);
-            }
-            final msg = _messages[i];
-            return msg.role == 'user'
-              ? _UserBubble(text: msg.text)
-              : _AiBubble(text: msg.text, dark: dark, bubbleBg: bubbleBg, onCopy: () => _copyMsg(msg.text));
-          },
+        child: Container(
+          color: bg,
+          child: _messages.isEmpty
+              ? _EmptyState(
+                  groups: _groups,
+                  lang: p.lang,
+                  onTap: (prompt) => _send(prompt, p),
+                  dark: dark,
+                )
+              : ListView.builder(
+                  controller: _scrollCtrl,
+                  padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
+                  itemCount: _messages.length + (_thinking ? 1 : 0),
+                  itemBuilder: (context, i) {
+                    if (_thinking && i == _messages.length) {
+                      return _ThinkingBubble(dark: dark);
+                    }
+                    final msg = _messages[i];
+                    return msg.role == 'user'
+                        ? _UserBubble(text: msg.text)
+                        : _AiBubble(
+                            text: msg.text,
+                            dark: dark,
+                            onCopy: () => _copyMsg(msg.text),
+                          );
+                  },
+                ),
         ),
       ),
 
-      // Input area
+      // ── Input ─────────────────────────────────────────────────────────────
       _InputBar(
         ctrl: _queryCtrl,
+        focusNode: _focusNode,
         dark: dark,
         onSend: (t) => _send(t, p),
-        label: p.t('send'),
         hint: p.t('ai_placeholder'),
       ),
     ]);
   }
+}
 
-  Widget _emptyState(AppProvider p) {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
-      child: Column(children: [
-        // Safety disclaimer
-        Container(
-          padding: const EdgeInsets.all(12),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(16),
-            color: const Color(0xFFFFF8E7),
-            border: Border.all(color: const Color(0xFFFFE0A0)),
-          ),
-          child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            const Text('⚠️', style: TextStyle(fontSize: 14)),
-            const SizedBox(width: 8),
-            Expanded(child: Text(
-              p.t('ai_disclaimer'),
-              style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: Color(0xFF7A5F00), height: 1.45),
-            )),
-          ]),
-        ),
-        const SizedBox(height: 16),
-        Align(
-          alignment: Alignment.centerLeft,
-          child: Text(
-            p.t('quick_suggestions'),
-            style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w900, letterSpacing: 1.4, color: Color(0xFF888888)),
-          ),
-        ),
-        const SizedBox(height: 10),
-        Wrap(
-          spacing: 8,
-          runSpacing: 8,
-          children: _quickPrompts.map((q) {
-            final isEs = p.lang == 'es';
-            final label  = isEs ? q.$3 : q.$1;
-            final prompt = isEs ? q.$4 : q.$2;
+// ─────────────────────────────────────────────────────────────────────────────
+// Empty state — clean, focus on writing
+// ─────────────────────────────────────────────────────────────────────────────
+class _EmptyState extends StatefulWidget {
+  final List<(String, List<(String, String, String, String)>)> groups;
+  final String lang;
+  final void Function(String) onTap;
+  final bool dark;
+  const _EmptyState({
+    required this.groups,
+    required this.lang,
+    required this.onTap,
+    required this.dark,
+  });
+  @override
+  State<_EmptyState> createState() => _EmptyStateState();
+}
+
+class _EmptyStateState extends State<_EmptyState> {
+  int _selectedGroup = 0;
+
+  @override
+  Widget build(BuildContext context) {
+    final isEs   = widget.lang == 'es';
+    final dark   = widget.dark;
+    final textSub = dark ? Colors.white38 : Colors.black38;
+    final textMain = dark ? Colors.white70 : const Color(0xFF2A2A2A);
+
+    return Column(children: [
+      const SizedBox(height: 20),
+
+      // Ícone + texto central minimalista
+      Icon(Icons.psychology_outlined,
+        size: 40, color: dark ? Colors.white24 : Colors.black12),
+      const SizedBox(height: 10),
+      Text(
+        isEs ? 'Describa el caso clínico' : 'Descreva o caso clínico',
+        style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: textMain),
+      ),
+      const SizedBox(height: 4),
+      Text(
+        isEs ? 'síntomas · signos vitales · exámenes' : 'sintomas · sinais vitais · exames',
+        style: TextStyle(fontSize: 12, color: textSub, fontWeight: FontWeight.w500),
+      ),
+
+      const SizedBox(height: 24),
+
+      // Abas de categoria — scroll horizontal
+      SizedBox(
+        height: 32,
+        child: ListView.builder(
+          scrollDirection: Axis.horizontal,
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          itemCount: widget.groups.length,
+          itemBuilder: (context, i) {
+            final selected = i == _selectedGroup;
             return GestureDetector(
-              onTap: () {
-                _queryCtrl.text = prompt;
-                final prov = context.read<AppProvider>();
-                _send(prompt, prov);
-              },
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              onTap: () => setState(() => _selectedGroup = i),
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 180),
+                margin: const EdgeInsets.only(right: 8),
+                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20),
-                  color: const Color(0xFF07110d),
-                  boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.1), blurRadius: 6, offset: const Offset(0, 2))],
+                  color: selected
+                      ? const Color(0xFF0E3624)
+                      : (dark ? const Color(0xFF1A2820) : Colors.white),
+                  border: Border.all(
+                    color: selected
+                        ? const Color(0xFF0E3624)
+                        : (dark ? const Color(0xFF2A3830) : const Color(0xFFDDD8CE)),
+                  ),
                 ),
-                child: Text(label, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: Color(0xFFFFE8A6))),
+                child: Text(
+                  widget.groups[i].$1,
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w700,
+                    color: selected
+                        ? const Color(0xFFFFE8A6)
+                        : (dark ? Colors.white54 : Colors.black54),
+                  ),
+                ),
               ),
             );
-          }).toList(),
+          },
         ),
-        const SizedBox(height: 20),
-        Container(
-          padding: const EdgeInsets.all(14),
-          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text(p.t('ai_provides').toUpperCase(), style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w900, letterSpacing: 1.4, color: kGold)),
-            const SizedBox(height: 10),
-            ...[
-              p.t('ai_feat_dx'),
-              p.t('ai_feat_protocol'),
-              p.t('ai_feat_doses'),
-              p.t('ai_feat_flags'),
-              p.t('ai_feat_exams'),
-            ].map((s) => Padding(
-              padding: const EdgeInsets.only(bottom: 6),
-              child: Text(s, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: kDark, height: 1.4)),
-            )),
-          ]),
+      ),
+
+      const SizedBox(height: 12),
+
+      // Chips do grupo selecionado
+      Expanded(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: widget.groups[_selectedGroup].$2.map((item) {
+              final label  = isEs ? item.$2 : item.$1;
+              final prompt = isEs ? item.$4 : item.$3;
+              return GestureDetector(
+                onTap: () => widget.onTap(prompt),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 9),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(22),
+                    color: dark ? const Color(0xFF1A2820) : Colors.white,
+                    border: Border.all(
+                      color: dark ? const Color(0xFF2A3830) : const Color(0xFFDDD8CE),
+                    ),
+                    boxShadow: dark ? null : [
+                      BoxShadow(color: Colors.black.withValues(alpha: 0.04), blurRadius: 4, offset: const Offset(0, 1)),
+                    ],
+                  ),
+                  child: Text(
+                    label,
+                    style: TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600,
+                      color: dark ? Colors.white70 : const Color(0xFF1A1A1A),
+                    ),
+                  ),
+                ),
+              );
+            }).toList(),
+          ),
         ),
-      ]),
-    );
+      ),
+    ]);
   }
 }
 
+// ─────────────────────────────────────────────────────────────────────────────
+// Chat data
+// ─────────────────────────────────────────────────────────────────────────────
 class _ChatMsg {
   final String role;
   final String text;
   const _ChatMsg({required this.role, required this.text});
 }
 
+// ─────────────────────────────────────────────────────────────────────────────
+// User bubble
+// ─────────────────────────────────────────────────────────────────────────────
 class _UserBubble extends StatelessWidget {
   final String text;
   const _UserBubble({required this.text});
@@ -269,53 +404,74 @@ class _UserBubble extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 12, left: 40),
+      padding: const EdgeInsets.only(bottom: 12, left: 48),
       child: Align(
         alignment: Alignment.centerRight,
         child: Container(
-          padding: const EdgeInsets.all(12),
-          decoration: BoxDecoration(
-            borderRadius: const BorderRadius.only(
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+          decoration: const BoxDecoration(
+            borderRadius: BorderRadius.only(
               topLeft: Radius.circular(18),
               topRight: Radius.circular(18),
               bottomLeft: Radius.circular(18),
               bottomRight: Radius.circular(4),
             ),
-            gradient: const LinearGradient(
-              colors: [Color(0xFF07110d), Color(0xFF075f45)],
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [Color(0xFF0B2318), Color(0xFF0D5C3A)],
             ),
           ),
-          child: Text(text, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: Colors.white, height: 1.45)),
+          child: Text(text,
+            style: const TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
+              color: Colors.white,
+              height: 1.5,
+            )),
         ),
       ),
     );
   }
 }
 
+// ─────────────────────────────────────────────────────────────────────────────
+// AI bubble
+// ─────────────────────────────────────────────────────────────────────────────
 class _AiBubble extends StatelessWidget {
   final String text;
   final bool dark;
-  final Color bubbleBg;
   final VoidCallback onCopy;
-  const _AiBubble({required this.text, required this.dark, required this.bubbleBg, required this.onCopy});
+  const _AiBubble({required this.text, required this.dark, required this.onCopy});
 
   @override
   Widget build(BuildContext context) {
-    final textColor = dark ? Colors.white : kDark;
+    final bubbleBg  = dark ? const Color(0xFF111D16) : Colors.white;
+    final textColor = dark ? Colors.white : const Color(0xFF1A1A1A);
+    final borderCol = dark ? const Color(0xFF1E2E23) : const Color(0xFFE8E3DA);
+
     return Padding(
-      padding: const EdgeInsets.only(bottom: 12, right: 20),
+      padding: const EdgeInsets.only(bottom: 14, right: 24),
       child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        // Avatar
         Container(
-          width: 32, height: 32,
+          width: 28, height: 28,
           decoration: const BoxDecoration(
-            gradient: LinearGradient(colors: [Color(0xFF07110d), Color(0xFF075f45)]),
+            gradient: LinearGradient(
+              colors: [Color(0xFF0B2318), Color(0xFF0D5C3A)],
+            ),
             shape: BoxShape.circle,
           ),
-          child: const Center(child: Text('AI', style: TextStyle(fontSize: 9, fontWeight: FontWeight.w900, color: Color(0xFFFFE8A6)))),
+          child: const Center(
+            child: Text('AI',
+              style: TextStyle(fontSize: 8, fontWeight: FontWeight.w900, color: Color(0xFFFFE8A6))),
+          ),
         ),
         const SizedBox(width: 8),
+
+        // Bubble
         Expanded(child: Container(
-          padding: const EdgeInsets.all(14),
+          padding: const EdgeInsets.fromLTRB(14, 12, 14, 10),
           decoration: BoxDecoration(
             borderRadius: const BorderRadius.only(
               topLeft: Radius.circular(4),
@@ -324,54 +480,53 @@ class _AiBubble extends StatelessWidget {
               bottomRight: Radius.circular(18),
             ),
             color: bubbleBg,
-            border: Border.all(color: dark ? const Color(0xFF1A2E20) : kBorder),
-            boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.06), blurRadius: 8, offset: const Offset(0, 2))],
+            border: Border.all(color: borderCol),
+            boxShadow: dark ? null : [
+              BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 6, offset: const Offset(0, 2)),
+            ],
           ),
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            _buildText(text, textColor),
-            const SizedBox(height: 10),
-            Row(children: [
-              const Spacer(),
-              GestureDetector(
+            _buildFormattedText(text, textColor),
+            const SizedBox(height: 8),
+            Align(
+              alignment: Alignment.centerRight,
+              child: GestureDetector(
                 onTap: onCopy,
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: const Color(0xFF07110d)),
-                  child: Row(children: [
-                    const Icon(Icons.copy_rounded, size: 11, color: Color(0xFFFFE8A6)),
-                    const SizedBox(width: 4),
-                    Builder(builder: (ctx) { final prov = ctx.read<AppProvider>(); return Text(prov.t('copy'), style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w900, color: Color(0xFFFFE8A6))); }),
-                  ]),
-                ),
+                child: Icon(Icons.copy_rounded,
+                  size: 15,
+                  color: dark ? Colors.white24 : Colors.black26),
               ),
-            ]),
+            ),
           ]),
         )),
       ]),
     );
   }
 
-  Widget _buildText(String text, Color textColor) {
+  Widget _buildFormattedText(String text, Color textColor) {
     final lines = text.split('\n');
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: lines.map((line) {
         if (line.startsWith('🧠') || line.startsWith('##')) {
           return Padding(
-            padding: const EdgeInsets.only(bottom: 6),
-            child: Text(line, style: TextStyle(fontSize: 14, fontWeight: FontWeight.w900, color: textColor, height: 1.3)),
+            padding: const EdgeInsets.only(bottom: 6, top: 2),
+            child: Text(line,
+              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w800, color: textColor, height: 1.35)),
           );
         } else if (line.startsWith('•') || line.startsWith('-')) {
           return Padding(
             padding: const EdgeInsets.only(bottom: 3),
-            child: Text(line, style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: textColor, height: 1.45)),
+            child: Text(line,
+              style: TextStyle(fontSize: 13, fontWeight: FontWeight.w500, color: textColor, height: 1.5)),
           );
         } else if (line.trim().isEmpty) {
-          return const SizedBox(height: 6);
+          return const SizedBox(height: 5);
         } else {
           return Padding(
             padding: const EdgeInsets.only(bottom: 2),
-            child: Text(line, style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: textColor, height: 1.45)),
+            child: Text(line,
+              style: TextStyle(fontSize: 13, fontWeight: FontWeight.w500, color: textColor, height: 1.5)),
           );
         }
       }).toList(),
@@ -379,132 +534,167 @@ class _AiBubble extends StatelessWidget {
   }
 }
 
+// ─────────────────────────────────────────────────────────────────────────────
+// Thinking bubble
+// ─────────────────────────────────────────────────────────────────────────────
 class _ThinkingBubble extends StatefulWidget {
   final bool dark;
-  final Color bubbleBg;
-  const _ThinkingBubble({required this.dark, required this.bubbleBg});
-
+  const _ThinkingBubble({required this.dark});
   @override
   State<_ThinkingBubble> createState() => _ThinkingBubbleState();
 }
 
-class _ThinkingBubbleState extends State<_ThinkingBubble> with SingleTickerProviderStateMixin {
+class _ThinkingBubbleState extends State<_ThinkingBubble>
+    with SingleTickerProviderStateMixin {
   late final AnimationController _ctrl;
   late final Animation<double> _anim;
 
   @override
   void initState() {
     super.initState();
-    _ctrl = AnimationController(vsync: this, duration: const Duration(milliseconds: 800))..repeat(reverse: true);
-    _anim = Tween(begin: 0.3, end: 1.0).animate(_ctrl);
+    _ctrl = AnimationController(vsync: this, duration: const Duration(milliseconds: 700))
+      ..repeat(reverse: true);
+    _anim = Tween(begin: 0.25, end: 1.0).animate(CurvedAnimation(parent: _ctrl, curve: Curves.easeInOut));
   }
 
   @override
-  void dispose() {
-    _ctrl.dispose();
-    super.dispose();
-  }
+  void dispose() { _ctrl.dispose(); super.dispose(); }
 
   @override
   Widget build(BuildContext context) {
+    final bg = widget.dark ? const Color(0xFF111D16) : Colors.white;
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
       child: Row(children: [
         Container(
-          width: 32, height: 32,
+          width: 28, height: 28,
           decoration: const BoxDecoration(
-            gradient: LinearGradient(colors: [Color(0xFF07110d), Color(0xFF075f45)]),
+            gradient: LinearGradient(colors: [Color(0xFF0B2318), Color(0xFF0D5C3A)]),
             shape: BoxShape.circle,
           ),
-          child: const Center(child: Text('AI', style: TextStyle(fontSize: 9, fontWeight: FontWeight.w900, color: Color(0xFFFFE8A6)))),
+          child: const Center(
+            child: Text('AI', style: TextStyle(fontSize: 8, fontWeight: FontWeight.w900, color: Color(0xFFFFE8A6))),
+          ),
         ),
         const SizedBox(width: 8),
-        FadeTransition(
-          opacity: _anim,
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(18),
-              color: widget.bubbleBg,
-              border: Border.all(color: widget.dark ? const Color(0xFF1A2E20) : kBorder),
-            ),
-            child: Row(children: [
-              for (int i = 0; i < 3; i++) ...[
-                if (i > 0) const SizedBox(width: 4),
-                Container(width: 7, height: 7, decoration: const BoxDecoration(color: kGold, shape: BoxShape.circle)),
-              ],
-            ]),
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(18),
+            color: bg,
+            border: Border.all(color: widget.dark ? const Color(0xFF1E2E23) : const Color(0xFFE8E3DA)),
           ),
+          child: Row(mainAxisSize: MainAxisSize.min, children: List.generate(3, (i) {
+            return Padding(
+              padding: EdgeInsets.only(left: i > 0 ? 5 : 0),
+              child: FadeTransition(
+                opacity: _anim,
+                child: Container(
+                  width: 6, height: 6,
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF0D5C3A).withValues(alpha: 0.7 + i * 0.1),
+                    shape: BoxShape.circle,
+                  ),
+                ),
+              ),
+            );
+          })),
         ),
       ]),
     );
   }
 }
 
+// ─────────────────────────────────────────────────────────────────────────────
+// Input bar — limpo e respirado
+// ─────────────────────────────────────────────────────────────────────────────
 class _InputBar extends StatelessWidget {
   final TextEditingController ctrl;
+  final FocusNode focusNode;
   final bool dark;
   final ValueChanged<String> onSend;
-  final String label;
   final String hint;
-  const _InputBar({required this.ctrl, required this.dark, required this.onSend, required this.label, required this.hint});
+  const _InputBar({
+    required this.ctrl,
+    required this.focusNode,
+    required this.dark,
+    required this.onSend,
+    required this.hint,
+  });
 
   @override
   Widget build(BuildContext context) {
-    final bg = dark ? const Color(0xFF0E1A14) : Colors.white;
-    final border = dark ? const Color(0xFF1A2E20) : const Color(0xFFE8E1D2);
+    final bg     = dark ? const Color(0xFF0A150E) : Colors.white;
+    final border = dark ? const Color(0xFF1A2820) : const Color(0xFFEAE5DB);
+    final fieldBg = dark ? const Color(0xFF0D1A12) : const Color(0xFFF7F5F0);
+
     return Container(
       decoration: BoxDecoration(
         color: bg,
         border: Border(top: BorderSide(color: border)),
-        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.06), blurRadius: 12, offset: const Offset(0, -4))],
       ),
-      padding: const EdgeInsets.fromLTRB(12, 10, 12, 14),
+      padding: const EdgeInsets.fromLTRB(14, 10, 14, 10),
       child: SafeArea(
         top: false,
-        child: Row(children: [
+        child: Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
+          // Campo de texto
           Expanded(
-            child: TextField(
-              controller: ctrl,
-              maxLines: 3,
-              minLines: 1,
-              textInputAction: TextInputAction.newline,
-              spellCheckConfiguration: const SpellCheckConfiguration.disabled(),
-              autocorrect: false,
-              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: dark ? Colors.white : kDark),
-              decoration: InputDecoration(
-                hintText: hint,
-                hintStyle: TextStyle(color: dark ? Colors.white38 : Colors.grey[400], fontWeight: FontWeight.w500),
-                filled: true,
-                fillColor: dark ? const Color(0xFF0A1510) : const Color(0xFFFAF8F4),
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(16), borderSide: BorderSide(color: border)),
-                enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(16), borderSide: BorderSide(color: border)),
-                focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(16), borderSide: const BorderSide(color: kGold, width: 1.5)),
-                contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-                isDense: true,
+            child: Container(
+              decoration: BoxDecoration(
+                color: fieldBg,
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(color: border),
               ),
-              onSubmitted: (t) {
-                if (t.trim().isNotEmpty) onSend(t);
-              },
+              child: TextField(
+                controller: ctrl,
+                focusNode: focusNode,
+                maxLines: 5,
+                minLines: 1,
+                textInputAction: TextInputAction.newline,
+                spellCheckConfiguration: const SpellCheckConfiguration.disabled(),
+                autocorrect: false,
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                  color: dark ? Colors.white : const Color(0xFF1A1A1A),
+                  height: 1.5,
+                ),
+                decoration: InputDecoration(
+                  hintText: hint,
+                  hintStyle: TextStyle(
+                    fontSize: 14,
+                    color: dark ? Colors.white30 : Colors.black26,
+                    fontWeight: FontWeight.w400,
+                  ),
+                  border: InputBorder.none,
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 11),
+                ),
+                onSubmitted: (t) {
+                  if (t.trim().isNotEmpty) onSend(t);
+                },
+              ),
             ),
           ),
           const SizedBox(width: 8),
+
+          // Botão enviar
           GestureDetector(
             onTap: () {
               if (ctrl.text.trim().isNotEmpty) onSend(ctrl.text);
             },
             child: Container(
-              width: 46, height: 46,
+              width: 42, height: 42,
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(14),
+                shape: BoxShape.circle,
                 gradient: const LinearGradient(
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
-                  colors: [Color(0xFF07110d), Color(0xFF075f45)],
+                  colors: [Color(0xFF0B2318), Color(0xFF0D5C3A)],
                 ),
-                boxShadow: [BoxShadow(color: const Color(0xFF07110d).withValues(alpha: 0.3), blurRadius: 10, offset: const Offset(0, 4))],
               ),
-              child: const Center(child: Icon(Icons.send_rounded, color: Color(0xFFFFE8A6), size: 20)),
+              child: const Center(
+                child: Icon(Icons.arrow_upward_rounded, color: Color(0xFFFFE8A6), size: 18),
+              ),
             ),
           ),
         ]),
