@@ -16,6 +16,8 @@ class ProtocolsScreen extends StatefulWidget {
 class _ProtocolsScreenState extends State<ProtocolsScreen> {
   final _searchCtrl = TextEditingController();
   ProtocolModel? _selected;
+  // Grupos expandidos por padrão — todos fechados
+  final Set<String> _expanded = {};
 
   @override
   void initState() {
@@ -53,7 +55,8 @@ class _ProtocolsScreenState extends State<ProtocolsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final p = context.watch<AppProvider>();
+    final p    = context.watch<AppProvider>();
+    final isEs = p.lang == 'es';
 
     if (_selected != null) {
       return _ProtocolDetailView(
@@ -63,27 +66,39 @@ class _ProtocolsScreenState extends State<ProtocolsScreen> {
       );
     }
 
-    final q = _searchCtrl.text.toLowerCase();
-    final filtered = p.protocolsDB.where((proto) {
-      if (q.isEmpty) return true;
-      return p.tDB(proto.title).toLowerCase().contains(q) ||
-          p.tDB(proto.severity).toLowerCase().contains(q) ||
-          p.tDB(proto.recognize).toLowerCase().contains(q) ||
-          proto.getActions(p.lang).any((a) => a.toLowerCase().contains(q));
-    }).toList();
+    final q          = _searchCtrl.text.toLowerCase().trim();
+    final isSearching = q.isNotEmpty;
 
-    filtered.sort((a, b) {
-      final aFav = p.favProtocols.contains(a.id) ? 0 : 1;
-      final bFav = p.favProtocols.contains(b.id) ? 0 : 1;
-      return aFav.compareTo(bFav);
-    });
+    // ── Lista completa de protocolos (deduplicada por id) ──────────────────
+    final seen   = <String>{};
+    final allDB  = p.protocolsDB.where((x) => seen.add(x.id)).toList();
+
+    // ── Filtro de busca ────────────────────────────────────────────────────
+    final filtered = isSearching
+        ? allDB.where((proto) {
+            return p.tDB(proto.title).toLowerCase().contains(q) ||
+                p.tDB(proto.severity).toLowerCase().contains(q) ||
+                p.tDB(proto.recognize).toLowerCase().contains(q) ||
+                proto.getActions(p.lang).any((a) => a.toLowerCase().contains(q));
+          }).toList()
+        : allDB;
 
     return SingleChildScrollView(
       padding: const EdgeInsets.fromLTRB(0, 8, 0, 100),
       child: Column(children: [
-        PremiumCard(child: SectionTitle(eyebrow: 'Clinical Flow', title: p.t('protocols'), subtitle: p.t('protocols_subtitle'), light: true)),
+
+        // ── Header premium ─────────────────────────────────────────────────
+        PremiumCard(child: SectionTitle(
+          eyebrow: 'Clinical Flow',
+          title: p.t('protocols'),
+          subtitle: p.t('protocols_subtitle'),
+          light: true,
+        )),
         const SizedBox(height: 12),
-        StandardCard(
+
+        // ── Busca ──────────────────────────────────────────────────────────
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             MedInput(
               controller: _searchCtrl,
@@ -91,45 +106,476 @@ class _ProtocolsScreenState extends State<ProtocolsScreen> {
               onChanged: (_) => setState(() {}),
             ),
             const SizedBox(height: 8),
-            Text('${filtered.length} ${p.t("protocols_found")}', style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: Color(0xFF888888))),
+            Text(
+              '${filtered.length} ${p.t("protocols_found")}',
+              style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: Color(0xFF888888)),
+            ),
           ]),
         ),
-        const SizedBox(height: 12),
-        ...filtered.map((proto) {
-          final isFav = p.favProtocols.contains(proto.id);
-          return Padding(
-            padding: const EdgeInsets.fromLTRB(16, 0, 16, 10),
-            child: GestureDetector(
-              onTap: () => setState(() => _selected = proto),
-              child: Container(
-                padding: const EdgeInsets.all(14),
-                decoration: const BoxDecoration(border: Border(bottom: BorderSide(color: kBorder))),
-                child: Row(children: [
-                  Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                    Row(children: [
-                      if (isFav) const Padding(padding: EdgeInsets.only(right: 4), child: Text('⭐', style: TextStyle(fontSize: 12))),
-                      Text(p.tDB(proto.severity), style: const TextStyle(fontSize: 9, fontWeight: FontWeight.w900, color: kGold, letterSpacing: 1.4)),
-                    ]),
-                    const SizedBox(height: 4),
-                    Text(p.tDB(proto.title), style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w900, color: kDark), overflow: TextOverflow.ellipsis),
-                    const SizedBox(height: 4),
-                    Text(p.tDB(proto.recognize), style: const TextStyle(fontSize: 12, color: Color(0xFF777777), fontWeight: FontWeight.w600, height: 1.4), maxLines: 2, overflow: TextOverflow.ellipsis),
-                  ])),
-                  const SizedBox(width: 8),
-                  Column(children: [
-                    GestureDetector(
-                      onTap: () => p.toggleFavProtocol(proto.id),
-                      child: Padding(padding: const EdgeInsets.all(4), child: Text(isFav ? '⭐' : '☆', style: const TextStyle(fontSize: 18))),
-                    ),
-                    const SizedBox(height: 4),
-                    Container(padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6), decoration: BoxDecoration(color: kDark, borderRadius: BorderRadius.circular(20)), child: Text(p.t('open'), style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w900, color: kGoldLight))),
-                  ]),
-                ]),
+        const SizedBox(height: 16),
+
+        // ── Modo busca: lista flat ─────────────────────────────────────────
+        if (isSearching) ...[
+          ...filtered.map((proto) => _ProtocolListTile(
+            proto: proto,
+            p: p,
+            isLast: proto == filtered.last,
+            onTap: () => setState(() => _selected = proto),
+          )),
+        ]
+
+        // ── Modo normal: acordeão por sistema clínico ──────────────────────
+        else ...[
+
+          // Favoritos no topo
+          if (p.favProtocols.isNotEmpty) ...[
+            _ProtocolGroupAccordion(
+              groupKey: '__fav__',
+              icon: '⭐',
+              titlePt: 'Favoritos',
+              titleEs: 'Favoritos',
+              color: const Color(0xFFFFFBF0),
+              borderColor: const Color(0xFFE8D8A0),
+              iconColor: const Color(0xFFC5A365),
+              protocols: allDB.where((d) => p.favProtocols.contains(d.id)).toList(),
+              isExpanded: _expanded.contains('__fav__'),
+              p: p,
+              isEs: isEs,
+              onToggle: () => setState(() {
+                _expanded.contains('__fav__')
+                    ? _expanded.remove('__fav__')
+                    : _expanded.add('__fav__');
+              }),
+              onSelect: (proto) => setState(() => _selected = proto),
+            ),
+            const SizedBox(height: 8),
+          ],
+
+          // ── Reanimação & Choque ──────────────────────────────────────────
+          _ProtocolGroupAccordion(
+            groupKey: 'reanimacao',
+            icon: '🔴',
+            titlePt: 'Reanimação & Choque',
+            titleEs: 'Reanimación & Shock',
+            color: const Color(0xFFFFF5F5),
+            borderColor: const Color(0xFFFFCCCC),
+            iconColor: const Color(0xFFCC2222),
+            protocols: allDB.where((d) => {
+              'pcr_adulto', 'anafilaxia', 'choque_cardiogenico', 'choque_septico_avancado',
+            }.contains(d.id)).toList(),
+            isExpanded: _expanded.contains('reanimacao'),
+            p: p, isEs: isEs,
+            onToggle: () => setState(() {
+              _expanded.contains('reanimacao')
+                  ? _expanded.remove('reanimacao')
+                  : _expanded.add('reanimacao');
+            }),
+            onSelect: (proto) => setState(() => _selected = proto),
+          ),
+          const SizedBox(height: 8),
+
+          // ── Cardiovascular ───────────────────────────────────────────────
+          _ProtocolGroupAccordion(
+            groupKey: 'cardio',
+            icon: '🫀',
+            titlePt: 'Cardiovascular',
+            titleEs: 'Cardiovascular',
+            color: const Color(0xFFFFF0F5),
+            borderColor: const Color(0xFFFFCCDD),
+            iconColor: const Color(0xFFAA1144),
+            protocols: allDB.where((d) => {
+              'iam_congestao', 'tpsv', 'fa_aguda', 'crise_hipertensiva',
+              'bradiarritmia_grave',
+            }.contains(d.id)).toList(),
+            isExpanded: _expanded.contains('cardio'),
+            p: p, isEs: isEs,
+            onToggle: () => setState(() {
+              _expanded.contains('cardio')
+                  ? _expanded.remove('cardio')
+                  : _expanded.add('cardio');
+            }),
+            onSelect: (proto) => setState(() => _selected = proto),
+          ),
+          const SizedBox(height: 8),
+
+          // ── Respiratório ─────────────────────────────────────────────────
+          _ProtocolGroupAccordion(
+            groupKey: 'resp',
+            icon: '🫁',
+            titlePt: 'Respiratório',
+            titleEs: 'Respiratorio',
+            color: const Color(0xFFF0F8FF),
+            borderColor: const Color(0xFFBBD6F0),
+            iconColor: const Color(0xFF1A5E8A),
+            protocols: allDB.where((d) => {
+              'asma_grave', 'dpoc_exacerbacao', 'tep_agudo',
+              'tromboembolismo_pulmonar', 'pneumonia_grave',
+            }.contains(d.id)).toList(),
+            isExpanded: _expanded.contains('resp'),
+            p: p, isEs: isEs,
+            onToggle: () => setState(() {
+              _expanded.contains('resp')
+                  ? _expanded.remove('resp')
+                  : _expanded.add('resp');
+            }),
+            onSelect: (proto) => setState(() => _selected = proto),
+          ),
+          const SizedBox(height: 8),
+
+          // ── Neurológico ──────────────────────────────────────────────────
+          _ProtocolGroupAccordion(
+            groupKey: 'neuro',
+            icon: '🧠',
+            titlePt: 'Neurológico',
+            titleEs: 'Neurológico',
+            color: const Color(0xFFF5F0FF),
+            borderColor: const Color(0xFFCCBBEE),
+            iconColor: const Color(0xFF5C2D91),
+            protocols: allDB.where((d) => {
+              'avc_isquemico', 'avc_hemorragico', 'status_epilepticus',
+              'meningite_bacteriana', 'agitacao_psicomotora',
+            }.contains(d.id)).toList(),
+            isExpanded: _expanded.contains('neuro'),
+            p: p, isEs: isEs,
+            onToggle: () => setState(() {
+              _expanded.contains('neuro')
+                  ? _expanded.remove('neuro')
+                  : _expanded.add('neuro');
+            }),
+            onSelect: (proto) => setState(() => _selected = proto),
+          ),
+          const SizedBox(height: 8),
+
+          // ── Infeccioso & Sepse ───────────────────────────────────────────
+          _ProtocolGroupAccordion(
+            groupKey: 'infec',
+            icon: '🦠',
+            titlePt: 'Infeccioso & Sepse',
+            titleEs: 'Infeccioso & Sepsis',
+            color: const Color(0xFFF0FFF4),
+            borderColor: const Color(0xFFBBE8CC),
+            iconColor: const Color(0xFF075F45),
+            protocols: allDB.where((d) => {
+              'sepse', 'neutropenia_febril',
+            }.contains(d.id)).toList(),
+            isExpanded: _expanded.contains('infec'),
+            p: p, isEs: isEs,
+            onToggle: () => setState(() {
+              _expanded.contains('infec')
+                  ? _expanded.remove('infec')
+                  : _expanded.add('infec');
+            }),
+            onSelect: (proto) => setState(() => _selected = proto),
+          ),
+          const SizedBox(height: 8),
+
+          // ── Metabólico & Endócrino ───────────────────────────────────────
+          _ProtocolGroupAccordion(
+            groupKey: 'metab',
+            icon: '⚗️',
+            titlePt: 'Metabólico & Endócrino',
+            titleEs: 'Metabólico & Endócrino',
+            color: const Color(0xFFFFF8EC),
+            borderColor: const Color(0xFFEED8A0),
+            iconColor: const Color(0xFF8B6000),
+            protocols: allDB.where((d) => {
+              'cad_shh', 'cetoacidose_diabetica', 'hiperpotassemia_grave',
+              'crise_adrenal',
+            }.contains(d.id)).toList(),
+            isExpanded: _expanded.contains('metab'),
+            p: p, isEs: isEs,
+            onToggle: () => setState(() {
+              _expanded.contains('metab')
+                  ? _expanded.remove('metab')
+                  : _expanded.add('metab');
+            }),
+            onSelect: (proto) => setState(() => _selected = proto),
+          ),
+          const SizedBox(height: 8),
+
+          // ── Gastro & Trauma ──────────────────────────────────────────────
+          _ProtocolGroupAccordion(
+            groupKey: 'gastro',
+            icon: '🏥',
+            titlePt: 'Gastro, Trauma & Cirúrgico',
+            titleEs: 'Gastro, Trauma & Quirúrgico',
+            color: const Color(0xFFF5F5F0),
+            borderColor: const Color(0xFFD8D4C0),
+            iconColor: const Color(0xFF555544),
+            protocols: allDB.where((d) => {
+              'hda_varizeal', 'hda_nao_varicosa', 'pancreatite_aguda_grave',
+              'politrauma_atls',
+            }.contains(d.id)).toList(),
+            isExpanded: _expanded.contains('gastro'),
+            p: p, isEs: isEs,
+            onToggle: () => setState(() {
+              _expanded.contains('gastro')
+                  ? _expanded.remove('gastro')
+                  : _expanded.add('gastro');
+            }),
+            onSelect: (proto) => setState(() => _selected = proto),
+          ),
+          const SizedBox(height: 8),
+
+          // ── Nefrologia, Hemato & Obstetrícia ─────────────────────────────
+          _ProtocolGroupAccordion(
+            groupKey: 'outros',
+            icon: '🧬',
+            titlePt: 'Nefrologia, Hemato & Obstetrícia',
+            titleEs: 'Nefrología, Hemato & Obstetricia',
+            color: const Color(0xFFF0F5FF),
+            borderColor: const Color(0xFFBBCCEE),
+            iconColor: const Color(0xFF1A3A7A),
+            protocols: allDB.where((d) => {
+              'lesao_renal_aguda', 'coagulacao_intravascular',
+              'eclampsia_hellp', 'intoxicacao_exogena',
+            }.contains(d.id)).toList(),
+            isExpanded: _expanded.contains('outros'),
+            p: p, isEs: isEs,
+            onToggle: () => setState(() {
+              _expanded.contains('outros')
+                  ? _expanded.remove('outros')
+                  : _expanded.add('outros');
+            }),
+            onSelect: (proto) => setState(() => _selected = proto),
+          ),
+          const SizedBox(height: 8),
+        ],
+      ]),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// ACORDEÃO DE GRUPO DE PROTOCOLOS
+// ─────────────────────────────────────────────────────────────────────────────
+class _ProtocolGroupAccordion extends StatelessWidget {
+  final String groupKey;
+  final String icon;
+  final String titlePt;
+  final String titleEs;
+  final Color color;
+  final Color borderColor;
+  final Color iconColor;
+  final List<ProtocolModel> protocols;
+  final bool isExpanded;
+  final bool isEs;
+  final AppProvider p;
+  final VoidCallback onToggle;
+  final ValueChanged<ProtocolModel> onSelect;
+
+  const _ProtocolGroupAccordion({
+    required this.groupKey,
+    required this.icon,
+    required this.titlePt,
+    required this.titleEs,
+    required this.color,
+    required this.borderColor,
+    required this.iconColor,
+    required this.protocols,
+    required this.isExpanded,
+    required this.isEs,
+    required this.p,
+    required this.onToggle,
+    required this.onSelect,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    if (protocols.isEmpty) return const SizedBox.shrink();
+    final title = isEs ? titleEs : titlePt;
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(14),
+        child: Column(children: [
+
+          // ── Cabeçalho do grupo ───────────────────────────────────────────
+          GestureDetector(
+            onTap: onToggle,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+              decoration: BoxDecoration(
+                color: color,
+                border: Border.all(color: borderColor),
+                borderRadius: isExpanded
+                    ? const BorderRadius.vertical(top: Radius.circular(14))
+                    : BorderRadius.circular(14),
+              ),
+              child: Row(children: [
+                // Ícone
+                Container(
+                  width: 38, height: 38,
+                  decoration: BoxDecoration(
+                    color: borderColor.withValues(alpha: 0.5),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Center(child: Text(icon, style: const TextStyle(fontSize: 19))),
+                ),
+                const SizedBox(width: 12),
+                // Título + contagem
+                Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  Text(title,
+                    style: TextStyle(
+                      fontSize: 13, fontWeight: FontWeight.w900,
+                      color: iconColor, letterSpacing: -0.2)),
+                  const SizedBox(height: 2),
+                  Text(
+                    '${protocols.length} ${protocols.length == 1
+                        ? (isEs ? 'protocolo' : 'protocolo')
+                        : (isEs ? 'protocolos' : 'protocolos')}',
+                    style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600,
+                      color: iconColor.withValues(alpha: 0.55))),
+                ])),
+                // Chevron animado
+                AnimatedRotation(
+                  turns: isExpanded ? 0.5 : 0.0,
+                  duration: const Duration(milliseconds: 200),
+                  child: Icon(Icons.keyboard_arrow_down_rounded,
+                    size: 22, color: iconColor.withValues(alpha: 0.55)),
+                ),
+              ]),
+            ),
+          ),
+
+          // ── Lista expandida ──────────────────────────────────────────────
+          AnimatedCrossFade(
+            duration: const Duration(milliseconds: 220),
+            crossFadeState: isExpanded
+                ? CrossFadeState.showFirst
+                : CrossFadeState.showSecond,
+            firstChild: Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                border: Border(
+                  left: BorderSide(color: borderColor),
+                  right: BorderSide(color: borderColor),
+                  bottom: BorderSide(color: borderColor),
+                ),
+                borderRadius: const BorderRadius.vertical(bottom: Radius.circular(14)),
+              ),
+              child: Column(
+                children: protocols.asMap().entries.map((entry) {
+                  final isLast = entry.key == protocols.length - 1;
+                  return _ProtocolListTile(
+                    proto: entry.value,
+                    p: p,
+                    isLast: isLast,
+                    onTap: () => onSelect(entry.value),
+                  );
+                }).toList(),
               ),
             ),
-          );
-        }),
-      ]),
+            secondChild: const SizedBox(width: double.infinity),
+          ),
+        ]),
+      ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// TILE DE PROTOCOLO (lista flat — busca e dentro do acordeão)
+// ─────────────────────────────────────────────────────────────────────────────
+class _ProtocolListTile extends StatelessWidget {
+  final ProtocolModel proto;
+  final AppProvider p;
+  final bool isLast;
+  final VoidCallback onTap;
+
+  const _ProtocolListTile({
+    required this.proto,
+    required this.p,
+    this.isLast = false,
+    required this.onTap,
+  });
+
+  // Cor do badge de severidade
+  Color _severityColor(String sev) {
+    final lower = sev.toLowerCase();
+    if (lower.contains('crít') || lower.contains('crít')) return const Color(0xFFCC2222);
+    if (lower.contains('alto') || lower.contains('alto')) return const Color(0xFFE07000);
+    return kGold;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final isFav    = p.favProtocols.contains(proto.id);
+    final sevText  = p.tDB(proto.severity);
+    final sevColor = _severityColor(sevText);
+
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 13),
+        decoration: BoxDecoration(
+          border: isLast
+              ? null
+              : const Border(bottom: BorderSide(color: Color(0xFFEEEAE0), width: 0.8)),
+        ),
+        child: Row(children: [
+          Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+
+            // Severidade + favorito
+            Row(children: [
+              if (isFav)
+                const Padding(
+                  padding: EdgeInsets.only(right: 5),
+                  child: Text('⭐', style: TextStyle(fontSize: 10)),
+                ),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                decoration: BoxDecoration(
+                  color: sevColor.withValues(alpha: 0.10),
+                  borderRadius: BorderRadius.circular(4),
+                ),
+                child: Text(sevText,
+                  style: TextStyle(fontSize: 8.5, fontWeight: FontWeight.w900,
+                    color: sevColor, letterSpacing: 1.2)),
+              ),
+            ]),
+            const SizedBox(height: 5),
+
+            // Título
+            Text(p.tDB(proto.title),
+              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w900,
+                color: kDark),
+              overflow: TextOverflow.ellipsis,
+              maxLines: 2),
+            const SizedBox(height: 4),
+
+            // Reconhecer — preview resumido
+            Text(p.tDB(proto.recognize),
+              style: const TextStyle(fontSize: 11.5, color: Color(0xFF777777),
+                fontWeight: FontWeight.w500, height: 1.4),
+              maxLines: 2, overflow: TextOverflow.ellipsis),
+          ])),
+
+          const SizedBox(width: 10),
+
+          // Ações: favorito + abrir
+          Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+            GestureDetector(
+              onTap: () => p.toggleFavProtocol(proto.id),
+              child: Padding(
+                padding: const EdgeInsets.all(4),
+                child: Text(isFav ? '⭐' : '☆',
+                  style: const TextStyle(fontSize: 18)),
+              ),
+            ),
+            const SizedBox(height: 4),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+              decoration: BoxDecoration(
+                color: kDark, borderRadius: BorderRadius.circular(20)),
+              child: Text(p.t('open'),
+                style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w900,
+                  color: kGoldLight)),
+            ),
+          ]),
+        ]),
+      ),
     );
   }
 }
