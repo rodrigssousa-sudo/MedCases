@@ -325,10 +325,8 @@ class _MetricTile extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(18),
-        color: alert ? const Color(0xFFFFF8E6) : Colors.white,
-        border: Border.all(color: alert ? const Color(0xFFFFD580) : kBorder),
-        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.04), blurRadius: 8)],
+        color: alert ? const Color(0xFFFFF8E6) : Colors.transparent,
+        border: alert ? Border.all(color: const Color(0xFFFFD580)) : null,
       ),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Row(children: [
@@ -366,14 +364,7 @@ class _CollapsibleSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(22),
-        border: Border.all(color: kBorder),
-        color: Colors.white,
-        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.045), blurRadius: 14, offset: const Offset(0, 4))],
-      ),
-      child: Column(children: [
+    return Column(children: [
         // Header clicável
         GestureDetector(
           onTap: onToggle,
@@ -412,13 +403,12 @@ class _CollapsibleSection extends StatelessWidget {
           firstChild: const SizedBox(width: double.infinity, height: 0),
           secondChild: Column(children: [
             Divider(height: 1, color: kBorder),
-            Padding(padding: const EdgeInsets.fromLTRB(14, 14, 14, 14), child: child),
+            Padding(padding: const EdgeInsets.fromLTRB(14, 10, 14, 10), child: child),
           ]),
           crossFadeState: isOpen ? CrossFadeState.showSecond : CrossFadeState.showFirst,
           duration: const Duration(milliseconds: 220),
         ),
-      ]),
-    );
+      ]);
   }
 }
 
@@ -667,11 +657,9 @@ class _DrugDoseCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: kBorder),
-        color: Colors.white,
+      margin: const EdgeInsets.only(bottom: 8),
+      decoration: const BoxDecoration(
+        border: Border(bottom: BorderSide(color: kBorder)),
       ),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Padding(
@@ -736,7 +724,6 @@ class _MiniStat extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-      decoration: BoxDecoration(borderRadius: BorderRadius.circular(12), color: kSurface, border: Border.all(color: kBorder)),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Text(label, style: const TextStyle(fontSize: 9, fontWeight: FontWeight.w900, letterSpacing: 1, color: Color(0xFF888888))),
         const SizedBox(height: 2),
@@ -1158,27 +1145,27 @@ class _ReminderCardState extends State<_ReminderCard> {
     final hasReminder = widget.reminderMinutes != null;
     final expired = widget.reminderExpired;
 
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 0, 16, 10),
-      child: Container(
-        padding: const EdgeInsets.all(14),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(18),
-          border: Border.all(
+    return Container(
+      margin: const EdgeInsets.only(bottom: 8),
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: expired
+            ? const Color(0xFFFFF0F0)
+            : hasReminder
+                ? const Color(0xFFECFDF5)
+                : Colors.transparent,
+        border: Border(
+          left: BorderSide(
             color: expired
                 ? const Color(0xFFFF8888)
                 : hasReminder
-                    ? const Color(0xFF075f45).withValues(alpha: 0.4)
-                    : kBorder,
-            width: expired ? 1.5 : 1,
+                    ? const Color(0xFF075f45)
+                    : Colors.transparent,
+            width: 3,
           ),
-          color: expired
-              ? const Color(0xFFFFF0F0)
-              : hasReminder
-                  ? const Color(0xFFECFDF5)
-                  : Colors.white,
         ),
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      ),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           // Título + ícone
           Row(children: [
             Icon(
@@ -1283,7 +1270,6 @@ class _ReminderCardState extends State<_ReminderCard> {
             ),
           ],
         ]),
-      ),
     );
   }
 }

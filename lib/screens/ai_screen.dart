@@ -239,7 +239,6 @@ class _AiScreenState extends State<AiScreen> {
         const SizedBox(height: 20),
         Container(
           padding: const EdgeInsets.all(14),
-          decoration: BoxDecoration(borderRadius: BorderRadius.circular(18), border: Border.all(color: kBorder), color: kCream),
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Text(p.t('ai_provides').toUpperCase(), style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w900, letterSpacing: 1.4, color: kGold)),
             const SizedBox(height: 10),

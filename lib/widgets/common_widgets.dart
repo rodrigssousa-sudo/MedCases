@@ -18,17 +18,14 @@ class PremiumCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      margin: margin ?? const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+      margin: margin ?? const EdgeInsets.symmetric(vertical: 0),
       padding: padding ?? const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(26),
-        border: Border.all(color: const Color(0x70D7C59A)),
-        gradient: const LinearGradient(
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [kDark, Color(0xFF123326), kGreen],
         ),
-        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.20), blurRadius: 28, offset: const Offset(0, 12))],
       ),
       child: child,
     );
@@ -43,16 +40,8 @@ class StandardCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      margin: margin ?? const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+    return Padding(
       padding: padding ?? const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(22),
-        border: Border.all(color: kBorder),
-        color: kCream,
-        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.055), blurRadius: 22, offset: const Offset(0, 8))],
-      ),
       child: child,
     );
   }

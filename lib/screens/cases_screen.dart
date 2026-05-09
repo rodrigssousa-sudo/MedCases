@@ -192,12 +192,7 @@ class _CaseCard extends StatelessWidget {
         onTap: onTap,
         child: Container(
           padding: const EdgeInsets.all(14),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(18),
-            border: Border.all(color: kBorder),
-            color: Colors.white,
-            boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.04), blurRadius: 8)],
-          ),
+          decoration: const BoxDecoration(border: Border(bottom: BorderSide(color: kBorder))),
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Row(children: [
               Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -298,15 +293,11 @@ class _CaseDetail extends StatelessWidget {
       child: Column(children: [
         GestureDetector(
           onTap: onBack,
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-            decoration: BoxDecoration(borderRadius: BorderRadius.circular(14), border: Border.all(color: kBorder), color: Colors.white),
-            child: Row(children: [
-              const Icon(Icons.arrow_back_ios, size: 14, color: kDark),
-              const SizedBox(width: 4),
-              Text(p.t('back_cases'), style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w900, color: kDark)),
-            ]),
-          ),
+          child: Row(children: [
+            const Icon(Icons.arrow_back_ios, size: 14, color: kDark),
+            const SizedBox(width: 4),
+            Text(p.t('back_cases'), style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w900, color: kDark)),
+          ]),
         ),
         const SizedBox(height: 12),
         PremiumCard(
@@ -462,7 +453,7 @@ class _DetailBlock extends StatelessWidget {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(borderRadius: BorderRadius.circular(14), color: const Color(0xFFF8F8F8), border: Border.all(color: kBorder)),
+      decoration: const BoxDecoration(border: Border(bottom: BorderSide(color: kBorder))),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Text(label, style: const TextStyle(fontSize: 9, fontWeight: FontWeight.w900, letterSpacing: 1.4, color: Color(0xFF888888))),
         const SizedBox(height: 6),

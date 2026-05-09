@@ -72,7 +72,7 @@ class _DrugsScreenState extends State<DrugsScreen> {
               onTap: () => setState(() => _selected = drug),
               child: Container(
                 padding: const EdgeInsets.all(14),
-                decoration: BoxDecoration(borderRadius: BorderRadius.circular(18), border: Border.all(color: kBorder), color: Colors.white, boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.04), blurRadius: 8)]),
+                decoration: const BoxDecoration(border: Border(bottom: BorderSide(color: kBorder))),
                 child: Row(children: [
                   Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                     Row(children: [
@@ -283,11 +283,6 @@ class _DrugDetailViewState extends State<_DrugDetailView> {
 
         // ── Card de dose — campos locais editáveis ───────────────────────────
         Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(18),
-            border: Border.all(color: border),
-            color: cardBg,
-          ),
           padding: const EdgeInsets.all(16),
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
 
@@ -363,11 +358,9 @@ class _DrugDetailViewState extends State<_DrugDetailView> {
               width: double.infinity,
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(12),
                 color: dark
                   ? const Color(0xFF07110d).withValues(alpha: 0.6)
                   : const Color(0xFFF5F2EC),
-                border: Border.all(color: border),
               ),
               child: Row(children: [
                 _DerivedChip(label: 'IMC', value: _bmiLocal, unit: 'kg/m²', dark: dark),
@@ -383,9 +376,8 @@ class _DrugDetailViewState extends State<_DrugDetailView> {
             Container(
               width: double.infinity,
               padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(16),
-                gradient: const LinearGradient(
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                   colors: [kDark, Color(0xFF123326), kGreen],
@@ -444,11 +436,6 @@ class _DrugDetailViewState extends State<_DrugDetailView> {
 
         // ── Ficha técnica ────────────────────────────────────────────────────
         Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(18),
-            border: Border.all(color: border),
-            color: cardBg,
-          ),
           padding: const EdgeInsets.all(16),
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Text(p.t('drug_sheet'),

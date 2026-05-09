@@ -222,7 +222,7 @@ class _BiometricsTabState extends State<_BiometricsTab> {
               onTap: () => setState(() => _sexFem = !_sexFem),
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-                decoration: BoxDecoration(borderRadius: BorderRadius.circular(14), border: Border.all(color: kToolBorder), color: Colors.white),
+                decoration: BoxDecoration(border: Border.all(color: kToolBorder)),
                 child: Row(children: [
                   Icon(_sexFem ? Icons.female : Icons.male, size: 18, color: _sexFem ? Colors.pink : const Color(0xFF1565C0)),
                   const SizedBox(width: 8),
@@ -584,7 +584,7 @@ class _ScoresTabState extends State<_ScoresTab> {
       Expanded(child: Text(label, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: kToolDark))),
       Container(
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-        decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), border: Border.all(color: kToolBorder), color: Colors.white),
+        decoration: BoxDecoration(border: Border.all(color: kToolBorder)),
         child: DropdownButtonHideUnderline(
           child: DropdownButton<int>(
             value: value,
@@ -1151,7 +1151,7 @@ class _PressureConvWidgetState extends State<_PressureConvWidget> {
           const SizedBox(height: 5),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-            decoration: BoxDecoration(borderRadius: BorderRadius.circular(12), border: Border.all(color: kToolBorder), color: Colors.white),
+            decoration: BoxDecoration(border: Border.all(color: kToolBorder)),
             child: DropdownButtonHideUnderline(
               child: DropdownButton<String>(
                 value: _from,
@@ -1566,7 +1566,7 @@ class _VasoRefRow extends StatelessWidget {
     padding: const EdgeInsets.only(bottom: 8),
     child: Container(
       padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(borderRadius: BorderRadius.circular(12), color: const Color(0xFFF8F8F8), border: Border.all(color: kToolBorder)),
+      decoration: const BoxDecoration(border: Border(bottom: BorderSide(color: kToolBorder))),
       child: Row(children: [
         Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Text(drug, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w900, color: kToolDark)),
@@ -2049,7 +2049,7 @@ class _AccessRow extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: 8),
       child: Container(
         padding: const EdgeInsets.all(12),
-        decoration: BoxDecoration(borderRadius: BorderRadius.circular(12), color: const Color(0xFFF8F8F8), border: Border.all(color: kToolBorder)),
+        decoration: const BoxDecoration(border: Border(bottom: BorderSide(color: kToolBorder))),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Text(site, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w900, color: kToolDark)),
           const SizedBox(height: 4),

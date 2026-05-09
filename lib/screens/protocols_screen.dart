@@ -88,7 +88,7 @@ class _ProtocolsScreenState extends State<ProtocolsScreen> {
               onTap: () => setState(() => _selected = proto),
               child: Container(
                 padding: const EdgeInsets.all(14),
-                decoration: BoxDecoration(borderRadius: BorderRadius.circular(18), border: Border.all(color: kBorder), color: Colors.white, boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.04), blurRadius: 8)]),
+                decoration: const BoxDecoration(border: Border(bottom: BorderSide(color: kBorder))),
                 child: Row(children: [
                   Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                     Row(children: [
@@ -133,14 +133,10 @@ class _ProtocolDetailView extends StatelessWidget {
       child: Column(children: [
         GestureDetector(
           onTap: onBack,
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-            decoration: BoxDecoration(borderRadius: BorderRadius.circular(14), border: Border.all(color: kBorder), color: Colors.white),
-            child: Row(children: const [
-              Icon(Icons.arrow_back_ios, size: 14, color: kDark),
-              SizedBox(width: 4),
-            ] + [Text(p.t('back_protocols'), style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w900, color: kDark))]),
-          ),
+          child: Row(children: const [
+            Icon(Icons.arrow_back_ios, size: 14, color: kDark),
+            SizedBox(width: 4),
+          ] + [Text(p.t('back_protocols'), style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w900, color: kDark))]),
         ),
         const SizedBox(height: 12),
         StandardCard(

@@ -347,12 +347,7 @@ class _HistoryCard extends StatelessWidget {
         onTap: onTap,
         child: Container(
           padding: const EdgeInsets.all(14),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(18),
-            border: Border.all(color: kBorder),
-            color: Colors.white,
-            boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.04), blurRadius: 8)],
-          ),
+          decoration: const BoxDecoration(border: Border(bottom: BorderSide(color: kBorder))),
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Row(children: [
               // Categoria badge
@@ -1521,8 +1516,7 @@ class _DetailCard extends StatelessWidget {
     if (!filled) return const SizedBox();
     return Container(
       padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(borderRadius: BorderRadius.circular(18), border: Border.all(color: kBorder), color: Colors.white,
-        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.04), blurRadius: 8)]),
+      decoration: const BoxDecoration(border: Border(bottom: BorderSide(color: kBorder))),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Row(children: [
           Container(padding: const EdgeInsets.all(7), decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: kDark),
@@ -1649,8 +1643,6 @@ class _EvolutionSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(borderRadius: BorderRadius.circular(18), border: Border.all(color: kBorder), color: Colors.white,
-        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.04), blurRadius: 8)]),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         const Row(children: [
           Icon(Icons.timeline_rounded, size: 16, color: kGold),
