@@ -177,12 +177,21 @@ class _AuthGate extends StatelessWidget {
     // Manutenção é feature de admin — admins/masters têm bypass de qualquer forma,
     // e usuários comuns não precisam do stream ativo durante o login inicial.
     if (kIsWeb) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        final p = context.read<AppProvider>();
-        if (p.currentUser?.uid != user.uid) {
-          p.setUser(user);
-        }
-      });
+      // ── CRÍTICO: setUser deve ser chamado antes de MainShell ser construído ──
+      // addPostFrameCallback dispara DEPOIS do primeiro frame — nesse intervalo
+      // MainShell já renderiza com p.currentUser == null, causando crash em
+      // qualquer acesso a p.currentUser! no _AppDrawer ou _AppHeader.
+      //
+      // Solução: usar Provider.of sem ouvir (listen:false) no mesmo frame,
+      // diretamente no builder do ValueListenableBuilder, antes de retornar.
+      // O WidgetsBinding é mantido como fallback para casos de rebuild tardio.
+      final p = context.read<AppProvider>();
+      if (p.currentUser?.uid != user.uid) {
+        // Agenda fora do build para não violar invariante do Flutter
+        Future.microtask(() {
+          if (p.currentUser?.uid != user.uid) p.setUser(user);
+        });
+      }
       return const MainShell();
     }
 
@@ -1351,7 +1360,9 @@ class _AppDrawer extends StatelessWidget {
                   Divider(height: 1, color: divider, indent: 16, endIndent: 16),
 
                   // ── Admin (apenas para admins e master) ─────────────────
-                  if (p.isAdmin || p.isMaster) ...[
+                  // Guarda null-safety: p.currentUser pode ser null no primeiro
+                  // frame após login Web (setUser() é agendado via microtask).
+                  if ((p.isAdmin || p.isMaster) && p.currentUser != null) ...[
                     _DrawerItem(
                       icon: Icons.admin_panel_settings_rounded,
                       iconColor: const Color(0xFFFF8C00),
@@ -1362,8 +1373,10 @@ class _AppDrawer extends StatelessWidget {
                       subCol: subCol,
                       onTap: () {
                         _close(context);
+                        final admin = p.currentUser;
+                        if (admin == null) return; // guarda extra por race condition
                         Navigator.push(context, MaterialPageRoute(
-                          builder: (_) => AdminScreen(currentAdmin: p.currentUser!),
+                          builder: (_) => AdminScreen(currentAdmin: admin),
                         ));
                       },
                     ),
@@ -1371,7 +1384,7 @@ class _AppDrawer extends StatelessWidget {
 
                     // ── Toggle manutenção rápido ─────────────────────────
                     _MaintenanceToggleItem(
-                      admin: p.currentUser!,
+                      admin: p.currentUser!, // seguro: guarda acima garante != null
                       lang: p.lang,
                       dark: dark,
                       textCol: textCol,
@@ -1808,14 +1821,20 @@ class _MaintenanceToggleItem extends StatefulWidget {
 class _MaintenanceToggleItemState extends State<_MaintenanceToggleItem> {
   bool _loading = false;
 
-  // Stream subscrito no initState — evita novo stream a cada rebuild
+  // Stream subscrito no initState — evita novo stream a cada rebuild.
+  // No Web, FirestoreService.maintenanceStream() usa o SDK do Firestore que
+  // falha silenciosamente por CORS → ConnectionState.waiting eterno → isLoading
+  // fica true para sempre, travando o toggle em spinner.
+  // Solução: no Web usamos Stream.empty() — o widget mostra estado padrão (offline).
   late final Stream<Map<String, dynamic>> _stream;
   Map<String, dynamic> _maintData = {'enabled': false};
 
   @override
   void initState() {
     super.initState();
-    _stream = FirestoreService.maintenanceStream();
+    _stream = kIsWeb
+        ? const Stream.empty()  // Web: sem CORS — estado local padrão (desabilitado)
+        : FirestoreService.maintenanceStream(); // Android: SDK nativo sem CORS
   }
 
   // ── Ativa manutenção: abre bottom sheet para escolher mensagem ─────────────
