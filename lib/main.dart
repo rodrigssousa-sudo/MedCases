@@ -1286,6 +1286,16 @@ class _AppDrawer extends StatelessWidget {
                       },
                     ),
                     Divider(height: 1, color: divider, indent: 16, endIndent: 16),
+
+                    // ── Toggle manutenção rápido ─────────────────────────
+                    _MaintenanceToggleItem(
+                      admin: p.currentUser!,
+                      lang: p.lang,
+                      dark: dark,
+                      textCol: textCol,
+                      subCol: subCol,
+                    ),
+                    Divider(height: 1, color: divider, indent: 16, endIndent: 16),
                   ],
 
                   const SizedBox(height: 8),
@@ -1689,6 +1699,138 @@ class _SheetField extends StatelessWidget {
         focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: Color(0xFFC5A365), width: 1.5)),
         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       ),
+    );
+  }
+}
+
+// ── Toggle de manutenção no Drawer ────────────────────────────────────────────
+class _MaintenanceToggleItem extends StatefulWidget {
+  final UserModel admin;
+  final String lang;
+  final bool dark;
+  final Color textCol;
+  final Color subCol;
+
+  const _MaintenanceToggleItem({
+    required this.admin,
+    required this.lang,
+    required this.dark,
+    required this.textCol,
+    required this.subCol,
+  });
+
+  @override
+  State<_MaintenanceToggleItem> createState() => _MaintenanceToggleItemState();
+}
+
+class _MaintenanceToggleItemState extends State<_MaintenanceToggleItem> {
+  bool _loading = false;
+
+  Future<void> _toggle(bool value) async {
+    setState(() => _loading = true);
+    try {
+      await FirestoreService.setMaintenance(
+        enabled: value,
+        updatedBy: widget.admin.uid,
+      );
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text('Erro: $e'),
+          backgroundColor: Colors.red,
+          behavior: SnackBarBehavior.floating,
+        ));
+      }
+    } finally {
+      if (mounted) setState(() => _loading = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<Map<String, dynamic>>(
+      stream: FirestoreService.maintenanceStream(),
+      builder: (context, snap) {
+        final isEnabled = snap.data?['enabled'] == true;
+        final isEs = widget.lang == 'es';
+
+        return InkWell(
+          onTap: _loading ? null : () => _toggle(!isEnabled),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            child: Row(children: [
+              // Ícone
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: isEnabled
+                      ? Colors.orange.withValues(alpha: 0.15)
+                      : const Color(0xFF075f45).withValues(alpha: 0.12),
+                  border: Border.all(
+                    color: isEnabled
+                        ? Colors.orange.withValues(alpha: 0.45)
+                        : const Color(0xFF075f45).withValues(alpha: 0.30),
+                  ),
+                ),
+                child: Icon(
+                  isEnabled
+                      ? Icons.construction_rounded
+                      : Icons.check_circle_outline_rounded,
+                  size: 18,
+                  color: isEnabled ? Colors.orange : const Color(0xFF075f45),
+                ),
+              ),
+              const SizedBox(width: 14),
+              // Texto
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      isEs ? 'Mantenimiento' : 'Manutenção',
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w700,
+                        color: isEnabled ? Colors.orange : widget.textCol,
+                      ),
+                    ),
+                    Text(
+                      isEnabled
+                          ? (isEs ? 'Sistema fuera de línea' : 'Sistema offline agora')
+                          : (isEs ? 'Sistema en línea' : 'Sistema online'),
+                      style: TextStyle(
+                        fontSize: 11,
+                        color: isEnabled
+                            ? Colors.orange.withValues(alpha: 0.8)
+                            : widget.subCol,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              // Switch ou loading
+              _loading
+                  ? const SizedBox(
+                      width: 22, height: 22,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2.5,
+                        color: Colors.orange,
+                      ),
+                    )
+                  : Switch(
+                      value: isEnabled,
+                      onChanged: _toggle,
+                      activeThumbColor: Colors.orange,
+                      activeTrackColor: Colors.orange.withValues(alpha: 0.25),
+                      inactiveThumbColor: const Color(0xFF075f45),
+                      inactiveTrackColor: const Color(0xFF075f45).withValues(alpha: 0.2),
+                    ),
+            ]),
+          ),
+        );
+      },
     );
   }
 }
