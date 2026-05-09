@@ -498,7 +498,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
   String get _passwordRequiredMsg => _isEs ? 'Ingresa la contraseña'                : 'Informe a senha';
   String get _legalDisclaimer     => _isEs
       ? 'Uso educativo y de apoyo clínico. No reemplaza la evaluación médica individual ni las directrices institucionales.'
-      : _isEs ? 'Uso educacional y de apoyo clínico. No sustituye la evaluación médica individual ni las directrices institucionales.' : 'Uso educacional e de apoio clínico. Não substitui avaliação médica individual nem diretrizes institucionais.';
+      : 'Uso educacional e de apoio clínico. Não substitui avaliação médica individual nem diretrizes institucionais.';
 
   String _registerSuccessMsg() => _isEs
       ? '✅ ¡Registro realizado!\n\nTu cuenta está pendiente de aprobación del administrador. Recibirás acceso en breve.'

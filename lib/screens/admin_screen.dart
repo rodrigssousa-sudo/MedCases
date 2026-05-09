@@ -1,9 +1,9 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/user_model.dart';
 import '../services/auth_service.dart';
 import '../services/firestore_service.dart';
-import '../widgets/common_widgets.dart';
 
 class AdminScreen extends StatefulWidget {
   final UserModel currentAdmin;
@@ -121,7 +121,9 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
                   controller: _tabs,
                   children: [
                     // ── Tab 0: Pendentes ──────────────────────────────────
-                    StreamBuilder<List<UserModel>>(
+                    kIsWeb
+                        ? _WebOnlyBanner(isEs: _isEs)
+                        : StreamBuilder<List<UserModel>>(
                       stream: AuthService.allUsersStream(),
                       builder: (context, snap) {
                         if (snap.connectionState == ConnectionState.waiting) {
@@ -145,7 +147,9 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
                       },
                     ),
                     // ── Tab 1: Aprovados ──────────────────────────────────
-                    StreamBuilder<List<UserModel>>(
+                    kIsWeb
+                        ? _WebOnlyBanner(isEs: _isEs)
+                        : StreamBuilder<List<UserModel>>(
                       stream: AuthService.allUsersStream(),
                       builder: (context, snap) {
                         if (snap.connectionState == ConnectionState.waiting) {
@@ -171,7 +175,9 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
                       },
                     ),
                     // ── Tab 2: Bloqueados ─────────────────────────────────
-                    StreamBuilder<List<UserModel>>(
+                    kIsWeb
+                        ? _WebOnlyBanner(isEs: _isEs)
+                        : StreamBuilder<List<UserModel>>(
                       stream: AuthService.allUsersStream(),
                       builder: (context, snap) {
                         if (snap.connectionState == ConnectionState.waiting) {
@@ -194,7 +200,9 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
                       },
                     ),
                     // ── Tab 3: Sistema ────────────────────────────────────
-                    _SystemTab(
+                    kIsWeb
+                        ? _WebOnlyBanner(isEs: _isEs)
+                        : _SystemTab(
                       currentAdmin: widget.currentAdmin,
                       isMaster: _isMaster,
                       maintEnabled: _maintEnabled,
@@ -210,8 +218,10 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
           );
         },
       ),
-      // FAB com estatísticas
-      floatingActionButton: StreamBuilder<List<UserModel>>(
+      // FAB com estatísticas — apenas no Android (SDK Firestore)
+      floatingActionButton: kIsWeb
+          ? null
+          : StreamBuilder<List<UserModel>>(
         stream: AuthService.allUsersStream(),
         builder: (context, snap) {
           final all = snap.data ?? [];
@@ -240,12 +250,12 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
 
   Future<void> _approve(UserModel u) async {
     await AuthService.approveUser(u.uid, widget.currentAdmin.uid);
-    if (mounted) _snack('✅ \${u.displayName} $_approvedSnack', Colors.green);
+    if (mounted) _snack('✅ ${u.displayName} $_approvedSnack', Colors.green);
   }
 
   Future<void> _unblock(UserModel u) async {
     await AuthService.unblockUser(u.uid, widget.currentAdmin.uid);
-    if (mounted) _snack('✅ \${u.displayName} $_unblockedSnack', Colors.green);
+    if (mounted) _snack('✅ ${u.displayName} $_unblockedSnack', Colors.green);
   }
 
   Future<void> _block(UserModel u) async {
@@ -255,7 +265,7 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
     );
     if (!confirm) return;
     await AuthService.blockUser(u.uid);
-    if (mounted) _snack('🚫 \${u.displayName} $_blockedSnack', Colors.orange);
+    if (mounted) _snack('🚫 ${u.displayName} $_blockedSnack', Colors.orange);
   }
 
   Future<void> _promote(UserModel u) async {
@@ -267,7 +277,7 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
       );
       if (!confirm) return;
       await AuthService.promoteToAdmin(u.uid);
-      if (mounted) _snack('⭐ \${u.displayName} $_promotedAdminSnack', kGold);
+      if (mounted) _snack('⭐ ${u.displayName} $_promotedAdminSnack', kGold);
     } else {
       // Admin normal só pode promover a supervisor
       await _promoteSupervisor(u);
@@ -281,7 +291,7 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
     );
     if (!confirm) return;
     await AuthService.promoteToSupervisor(u.uid);
-    if (mounted) _snack('🔰 \${u.displayName} $_promotedSupervisorSnack', Colors.blue);
+    if (mounted) _snack('🔰 ${u.displayName} $_promotedSupervisorSnack', Colors.blue);
   }
 
   Future<void> _demote(UserModel u) async {
@@ -291,7 +301,7 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
     );
     if (!confirm) return;
     await AuthService.demoteToUser(u.uid);
-    if (mounted) _snack('↘ \${u.displayName} $_demotedSnack', Colors.grey);
+    if (mounted) _snack('↘ ${u.displayName} $_demotedSnack', Colors.grey);
   }
 
   Future<bool> _confirmDialog(String title, String body) async {
@@ -388,6 +398,86 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
   }
 }
 
+
+// ── Banner: funcionalidade disponível apenas no app Android ──────────────────
+class _WebOnlyBanner extends StatelessWidget {
+  final bool isEs;
+  const _WebOnlyBanner({required this.isEs});
+
+  static const kDark  = Color(0xFF07110d);
+  static const kGreen = Color(0xFF075f45);
+  static const kGold  = Color(0xFFC5A365);
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(32),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                color: kGold.withValues(alpha: 0.08),
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: kGold.withValues(alpha: 0.30)),
+              ),
+              child: Icon(Icons.smartphone_rounded, size: 48, color: kGold.withValues(alpha: 0.6)),
+            ),
+            const SizedBox(height: 20),
+            Text(
+              isEs ? 'Solo disponible en la app Android' : 'Disponível apenas no app Android',
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w800,
+                color: kDark,
+              ),
+            ),
+            const SizedBox(height: 10),
+            Text(
+              isEs
+                  ? 'La gestión de usuarios requiere el SDK de Firestore, que no está disponible en la versión web por restricciones de seguridad (CORS).'
+                  : 'O gerenciamento de usuários requer o SDK do Firestore, que não está disponível na versão web por restrições de segurança (CORS).',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w500,
+                color: kDark.withValues(alpha: 0.55),
+                height: 1.6,
+              ),
+            ),
+            const SizedBox(height: 20),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+              decoration: BoxDecoration(
+                color: kGreen.withValues(alpha: 0.08),
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: kGreen.withValues(alpha: 0.25)),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.android_rounded, size: 14, color: kGreen.withValues(alpha: 0.7)),
+                  const SizedBox(width: 6),
+                  Text(
+                    isEs ? 'Use el app MedCases Pro en Android' : 'Use o app MedCases Pro no Android',
+                    style: TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w700,
+                      color: kGreen.withValues(alpha: 0.8),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
 
 // ── Tab Sistema — toggle de manutenção ────────────────────────────────────────
 class _SystemTab extends StatefulWidget {

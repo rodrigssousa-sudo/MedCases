@@ -1079,6 +1079,28 @@ class _AdminBadgeButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // No Web, o SDK Firestore falha silenciosamente por CORS—exibe botão simples
+    if (kIsWeb) {
+      return GestureDetector(
+        onTap: () => Navigator.push(context, MaterialPageRoute(
+          builder: (_) => AdminScreen(currentAdmin: currentAdmin),
+        )),
+        child: Container(
+          padding: const EdgeInsets.all(7),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            color: const Color(0xFFC5A365).withValues(alpha: 0.15),
+            border: Border.all(color: const Color(0xFFC5A365).withValues(alpha: 0.35)),
+          ),
+          child: const Icon(
+            Icons.admin_panel_settings_rounded,
+            size: 16,
+            color: Color(0xFFFFE8A6),
+          ),
+        ),
+      );
+    }
+
     return StreamBuilder<QuerySnapshot>(
       stream: FirebaseFirestore.instance
           .collection('users')

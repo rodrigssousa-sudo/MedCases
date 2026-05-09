@@ -394,7 +394,7 @@ class _EmptyChat extends StatelessWidget {
           const SizedBox(height: 6),
           Text(
             isEs
-              ? 'Use as sugestões abaixo ou escreva livremente'
+              ? 'Use las sugerencias de abajo o escriba libremente'
               : 'Use as sugestões abaixo ou escreva livremente',
             style: TextStyle(
               fontSize: 12,
