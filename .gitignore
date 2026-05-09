@@ -34,6 +34,9 @@ migrate_working_dir/
 /build/
 !build/web
 !build/web/**
+# CanvasKit — servido pelo CDN do Google (não commitar)
+build/web/canvaskit/
+build/web/*.symbols
 /coverage/
 
 # Symbolication related

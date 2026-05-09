@@ -22,6 +22,14 @@
   <title>MedCases Pro</title>
   <link rel="manifest" href="manifest.json">
 
+  <!-- Pré-conectar ao CDN do Google antes de qualquer download -->
+  <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
+  <link rel="dns-prefetch" href="https://www.gstatic.com">
+
+  <!-- Pré-carregar os recursos críticos de boot -->
+  <link rel="preload" href="flutter_bootstrap.js" as="script">
+  <link rel="preload" href="main.dart.js" as="script">
+
   <style>
     html, body {
       background-color: #07110d;
