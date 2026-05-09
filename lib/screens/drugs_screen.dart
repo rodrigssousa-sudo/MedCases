@@ -921,40 +921,72 @@ class _DoseCard extends StatelessWidget {
   const _DoseCard({required this.dose});
 
   /// Quebra o texto da dose em segmentos lógicos.
-  /// Divide por ". " mantendo o ponto no final de cada segmento.
+  /// Suporta os 3 padrões do banco:
+  ///   1. " | "  → fármacos novos (dabigatrana, ticagrelor, etc.)
+  ///   2. ". "   → fármacos antigos (adenosina, amiodarona, etc.)
+  ///   3. "; "   → fármacos com ponto-e-vírgula (valproato, lítio, etc.)
   List<String> _parseSegments(String text) {
-    // Divide por ". " mas preserva abreviações comuns (IV, IM, SC, SF, VO, SL)
-    final raw = text.split(RegExp(r'\.\s+(?=[A-ZÁÉÍÓÚ0-9])'));
-    return raw
-        .map((s) => s.trim())
-        .where((s) => s.isNotEmpty)
-        .toList();
+    List<String> parts;
+
+    // 1. Pipe tem prioridade — padrão explícito dos fármacos mais recentes
+    if (text.contains(' | ')) {
+      parts = text.split(' | ');
+    }
+    // 2. Ponto final + espaço + letra maiúscula ou dígito
+    else if (RegExp(r'\.\s+[A-ZÁÉÍÓÚÀÈÌÒÙÂÊÎÔÛÃÕÜÇ0-9]').hasMatch(text)) {
+      parts = text.split(RegExp(r'\.\s+(?=[A-ZÁÉÍÓÚÀÈÌÒÙÂÊÎÔÛÃÕÜÇ0-9])'));
+    }
+    // 3. Ponto-e-vírgula + espaço (qualquer conteúdo após)
+    else if (text.contains('; ')) {
+      parts = text.split(RegExp(r';\s+'));
+    }
+    // 4. Dose simples — exibe como bloco único
+    else {
+      parts = [text];
+    }
+
+    return parts.map((s) => s.trim()).where((s) => s.isNotEmpty).toList();
   }
 
-  /// Classifica o segmento para determinar o estilo visual
+  /// Classifica o segmento para determinar o estilo visual.
+  /// Cobre os 3 padrões do banco: pipe " | ", ponto ". " e ponto-e-vírgula "; ".
   _SegmentType _classifySegment(String seg, int index) {
     final lower = seg.toLowerCase();
-    // Máximo / limite
-    if (lower.contains('máx') || lower.contains('max') ||
+
+    // ── Dose máxima / limite absoluto ──────────────────────────────────────
+    if (lower.startsWith('máx') || lower.startsWith('max') ||
+        lower.contains('máx.') || lower.contains('máximo') ||
+        lower.contains('dose máx') || lower.contains('dosis máx') ||
         lower.contains('não ultrapassar') || lower.contains('no exceder') ||
-        lower.contains('dose máx') || lower.contains('dosis máx')) {
+        lower.contains('limite') || lower.contains('teto')) {
       return _SegmentType.max;
     }
-    // Repetição / segunda dose
-    if (lower.contains('repetir') || lower.contains('sin respuesta') ||
-        lower.contains('sem resposta') || lower.contains('se necessário') ||
-        lower.contains('si necesario') || lower.contains('2ª') ||
-        lower.contains('segunda')) {
-      return _SegmentType.repeat;
-    }
-    // Manutenção / infusão contínua
-    if (lower.contains('manutenção') || lower.contains('mantenimiento') ||
-        lower.contains('infusão') || lower.contains('infusión') ||
-        lower.contains('bomba') || lower.contains('contínua')) {
+
+    // ── Manutenção / infusão / titular ─────────────────────────────────────
+    if (lower.startsWith('manutenção') || lower.startsWith('mantenimiento') ||
+        lower.startsWith('manutenção:') || lower.startsWith('mantenimiento:') ||
+        lower.startsWith('infusão') || lower.startsWith('infusión') ||
+        lower.startsWith('infusão contínua') || lower.startsWith('infusión continua') ||
+        lower.startsWith('titular') || lower.startsWith('manutenção') ||
+        lower.contains('em bomba') || lower.contains('contínua:') ||
+        lower.contains('contínuo:') || lower.contains('manutenção:')) {
       return _SegmentType.maintenance;
     }
-    // Primeiro segmento = dose inicial (destaque máximo)
+
+    // ── Repetição / segunda dose / sem resposta ────────────────────────────
+    if (lower.startsWith('repetir') || lower.startsWith('2ª dose') ||
+        lower.startsWith('se sem resposta') || lower.startsWith('sin respuesta') ||
+        lower.startsWith('se necessário') || lower.startsWith('si necesario') ||
+        lower.contains('sem resposta') || lower.contains('sin respuesta') ||
+        lower.contains('repetir') || lower.contains('2ª dose') ||
+        lower.contains('segunda dose') || lower.contains('segunda dosis')) {
+      return _SegmentType.repeat;
+    }
+
+    // ── Primeiro segmento sempre = destaque primário ───────────────────────
     if (index == 0) return _SegmentType.primary;
+
+    // ── Demais segmentos = secundário ──────────────────────────────────────
     return _SegmentType.secondary;
   }
 
