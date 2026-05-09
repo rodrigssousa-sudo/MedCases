@@ -257,4 +257,32 @@ class FirestoreService {
           .set(data, SetOptions(merge: true));
     } catch (_) {}
   }
+
+  // ── Manutenção do sistema ─────────────────────────────────────────────────
+  static DocumentReference<Map<String, dynamic>> get _maintenanceDoc =>
+      _db.collection('app_config').doc('maintenance');
+
+  /// Stream em tempo real do estado de manutenção.
+  /// Emite um Map com: { enabled: bool, message: String, updatedBy: String, updatedAt: String }
+  /// Se o documento não existir, emite { enabled: false }.
+  static Stream<Map<String, dynamic>> maintenanceStream() {
+    return _maintenanceDoc.snapshots().map((snap) {
+      if (!snap.exists) return {'enabled': false};
+      return snap.data() ?? {'enabled': false};
+    });
+  }
+
+  /// Ativa ou desativa o modo de manutenção.
+  static Future<void> setMaintenance({
+    required bool enabled,
+    required String updatedBy,
+    String message = '',
+  }) async {
+    await _maintenanceDoc.set({
+      'enabled': enabled,
+      'message': message.trim(),
+      'updatedBy': updatedBy,
+      'updatedAt': DateTime.now().toIso8601String(),
+    });
+  }
 }

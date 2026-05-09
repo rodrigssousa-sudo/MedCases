@@ -16,6 +16,8 @@ import 'screens/tools_screen.dart';
 import 'screens/ai_screen.dart';
 import 'screens/admin_screen.dart';
 import 'screens/history_screen.dart';
+import 'screens/maintenance_screen.dart';
+import 'services/firestore_service.dart';
 import 'widgets/brand_mark.dart';
 
 // Future global — já resolvido quando runApp() é chamado
@@ -150,52 +152,71 @@ class _AuthGate extends StatelessWidget {
           return _wrapAuth(const LoginScreen());
         }
 
-        // Etapa 2: Firebase OK → ouve stream de autenticação
-        return StreamBuilder<User?>(
-          stream: AuthService.authStateChanges,
-          builder: (context, authSnap) {
-            if (authSnap.connectionState == ConnectionState.waiting) {
-              return _wrapAuth(const _SplashScreen());
-            }
+        // Etapa 2: Firebase OK → ouve stream de manutenção em tempo real
+        return StreamBuilder<Map<String, dynamic>>(
+          stream: FirestoreService.maintenanceStream(),
+          builder: (context, maintSnap) {
+            final isMaintenanceEnabled = maintSnap.data?['enabled'] == true;
+            final maintenanceMessage =
+                maintSnap.data?['message'] as String? ?? '';
 
-            // Não autenticado → login
-            if (authSnap.data == null) {
-              return _wrapAuth(const LoginScreen());
-            }
-
-            // Autenticado → buscar perfil Firestore
-            return StreamBuilder<UserModel?>(
-              stream: AuthService.currentUserStream(),
-              builder: (context, userSnap) {
-                if (userSnap.connectionState == ConnectionState.waiting) {
+            // Etapa 3: ouve stream de autenticação
+            return StreamBuilder<User?>(
+              stream: AuthService.authStateChanges,
+              builder: (context, authSnap) {
+                if (authSnap.connectionState == ConnectionState.waiting) {
                   return _wrapAuth(const _SplashScreen());
                 }
 
-                final user = userSnap.data;
-
-                if (user == null) {
-                  AuthService.logout();
+                // Não autenticado → login (manutenção não bloqueia login)
+                if (authSnap.data == null) {
                   return _wrapAuth(const LoginScreen());
                 }
 
-                if (user.isBlocked) {
-                  AuthService.logout();
-                  return _wrapAuth(_BlockedScreen(user: user));
-                }
+                // Autenticado → buscar perfil Firestore
+                return StreamBuilder<UserModel?>(
+                  stream: AuthService.currentUserStream(),
+                  builder: (context, userSnap) {
+                    if (userSnap.connectionState == ConnectionState.waiting) {
+                      return _wrapAuth(const _SplashScreen());
+                    }
 
-                if (user.isPending) {
-                  return _wrapAuth(_PendingScreen(user: user));
-                }
+                    final user = userSnap.data;
 
-                // Aprovado → atualiza provider e abre o app
-                WidgetsBinding.instance.addPostFrameCallback((_) {
-                  final p = context.read<AppProvider>();
-                  if (p.currentUser?.uid != user.uid) {
-                    p.setUser(user);
-                  }
-                });
+                    if (user == null) {
+                      AuthService.logout();
+                      return _wrapAuth(const LoginScreen());
+                    }
 
-                return const MainShell();
+                    if (user.isBlocked) {
+                      AuthService.logout();
+                      return _wrapAuth(_BlockedScreen(user: user));
+                    }
+
+                    if (user.isPending) {
+                      return _wrapAuth(_PendingScreen(user: user));
+                    }
+
+                    // Admin / Master passam pela manutenção direto
+                    final bypassMaintenance = user.isAdmin || user.isMaster;
+
+                    if (isMaintenanceEnabled && !bypassMaintenance) {
+                      return _wrapAuth(
+                        MaintenanceScreen(message: maintenanceMessage),
+                      );
+                    }
+
+                    // Aprovado → atualiza provider e abre o app
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      final p = context.read<AppProvider>();
+                      if (p.currentUser?.uid != user.uid) {
+                        p.setUser(user);
+                      }
+                    });
+
+                    return const MainShell();
+                  },
+                );
               },
             );
           },

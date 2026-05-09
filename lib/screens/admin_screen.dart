@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/user_model.dart';
 import '../services/auth_service.dart';
+import '../services/firestore_service.dart';
 import '../widgets/common_widgets.dart';
 
 class AdminScreen extends StatefulWidget {
@@ -24,16 +25,22 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
   // Atalho: o admin atual é Master?
   bool get _isMaster => widget.currentAdmin.isMaster;
 
+  // ── Estado do tab Sistema ────────────────────────────────────────────────
+  bool _maintEnabled = false;
+  bool _maintLoading = false;
+  final TextEditingController _maintMsgCtrl = TextEditingController();
+
   @override
   void initState() {
     super.initState();
-    _tabs = TabController(length: 3, vsync: this);
+    _tabs = TabController(length: 4, vsync: this);
     _loadLang();
   }
 
   @override
   void dispose() {
     _tabs.dispose();
+    _maintMsgCtrl.dispose();
     super.dispose();
   }
 
@@ -75,6 +82,7 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
             Tab(icon: const Icon(Icons.pending_actions_rounded, size: 18), text: _pendingLabel),
             Tab(icon: const Icon(Icons.people_rounded, size: 18), text: _approvedLabel),
             Tab(icon: const Icon(Icons.block_rounded, size: 18), text: _blockedLabel),
+            Tab(icon: const Icon(Icons.settings_rounded, size: 18), text: _systemLabel),
           ],
         ),
       ),
@@ -153,6 +161,15 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
                       onApprove: _unblock,
                       showApprove: true,
                       approveBtnLabel: _unblockLabel,
+                    ),
+                    _SystemTab(
+                      currentAdmin: widget.currentAdmin,
+                      isMaster: _isMaster,
+                      maintEnabled: _maintEnabled,
+                      maintLoading: _maintLoading,
+                      maintMsgCtrl: _maintMsgCtrl,
+                      isEs: _isEs,
+                      onToggle: _toggleMaintenance,
                     ),
                   ],
                 );
@@ -285,11 +302,37 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
     } catch (_) {}
   }
 
+  // ── Toggle de manutenção ───────────────────────────────────────────────
+  Future<void> _toggleMaintenance(bool value) async {
+    setState(() => _maintLoading = true);
+    try {
+      await FirestoreService.setMaintenance(
+        enabled: value,
+        updatedBy: widget.currentAdmin.uid,
+        message: _maintMsgCtrl.text.trim(),
+      );
+      setState(() => _maintEnabled = value);
+      if (mounted) {
+        _snack(
+          value
+              ? (_isEs ? '🔴 Modo mantenimiento activado' : '🔴 Modo manutenção ativado')
+              : (_isEs ? '🟢 Sistema en línea nuevamente' : '🟢 Sistema online novamente'),
+          value ? Colors.orange : kGreen,
+        );
+      }
+    } catch (e) {
+      if (mounted) _snack('Erro: $e', Colors.red);
+    } finally {
+      if (mounted) setState(() => _maintLoading = false);
+    }
+  }
+
   String get _masterPanelLabel       => _isEs ? 'Panel Master'                 : 'Painel Master';
   String get _adminPanelLabel        => _isEs ? 'Panel Admin'                  : 'Painel Admin';
   String get _pendingLabel           => _isEs ? 'Pendientes'                   : 'Pendentes';
   String get _approvedLabel          => _isEs ? 'Aprobados'                    : 'Aprovados';
   String get _blockedLabel           => _isEs ? 'Bloqueados'                   : 'Bloqueados';
+  String get _systemLabel            => _isEs ? 'Sistema'                      : 'Sistema';
   String get _searchHint             => _isEs ? 'Buscar por nombre o correo...' : 'Buscar por nome ou e-mail...';
   String get _emptyPendingMsg        => _isEs ? 'Ningún usuario pendiente'     : 'Nenhum usuário pendente';
   String get _emptyApprovedMsg       => _isEs ? 'Ningún usuario aprobado'      : 'Nenhum usuário aprovado';
@@ -313,6 +356,347 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
   }
 }
 
+
+// ── Tab Sistema — toggle de manutenção ────────────────────────────────────────
+class _SystemTab extends StatefulWidget {
+  final UserModel currentAdmin;
+  final bool isMaster;
+  final bool maintEnabled;
+  final bool maintLoading;
+  final TextEditingController maintMsgCtrl;
+  final bool isEs;
+  final Future<void> Function(bool) onToggle;
+
+  const _SystemTab({
+    required this.currentAdmin,
+    required this.isMaster,
+    required this.maintEnabled,
+    required this.maintLoading,
+    required this.maintMsgCtrl,
+    required this.isEs,
+    required this.onToggle,
+  });
+
+  @override
+  State<_SystemTab> createState() => _SystemTabState();
+}
+
+class _SystemTabState extends State<_SystemTab> {
+  static const kDark  = Color(0xFF07110d);
+  static const kGreen = Color(0xFF075f45);
+  static const kGold  = Color(0xFFC5A365);
+  static const kGoldL = Color(0xFFFFE8A6);
+
+  @override
+  Widget build(BuildContext context) {
+    // Lê o estado de manutenção em tempo real direto do Firestore
+    return StreamBuilder<Map<String, dynamic>>(
+      stream: FirestoreService.maintenanceStream(),
+      builder: (context, snap) {
+        final isEnabled = snap.data?['enabled'] == true;
+
+        final lastUpdatedAt = snap.data?['updatedAt'] as String? ?? '';
+        final storedMessage = snap.data?['message'] as String? ?? '';
+
+        // Preenche o campo de mensagem com o valor salvo (apenas uma vez)
+        if (widget.maintMsgCtrl.text.isEmpty && storedMessage.isNotEmpty) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            widget.maintMsgCtrl.text = storedMessage;
+          });
+        }
+
+        return ListView(
+          padding: const EdgeInsets.all(20),
+          children: [
+            // ── Card de Manutenção ─────────────────────────────────────────
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(
+                  color: isEnabled
+                      ? Colors.orange.withValues(alpha: 0.4)
+                      : kGreen.withValues(alpha: 0.2),
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.05),
+                    blurRadius: 10,
+                    offset: const Offset(0, 3),
+                  ),
+                ],
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // ── Header do card ───────────────────────────────────────
+                  Container(
+                    padding: const EdgeInsets.fromLTRB(16, 14, 16, 14),
+                    decoration: BoxDecoration(
+                      borderRadius: const BorderRadius.vertical(
+                        top: Radius.circular(16),
+                      ),
+                      color: isEnabled
+                          ? Colors.orange.withValues(alpha: 0.07)
+                          : kGreen.withValues(alpha: 0.06),
+                    ),
+                    child: Row(children: [
+                      Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: isEnabled
+                              ? Colors.orange.withValues(alpha: 0.12)
+                              : kGreen.withValues(alpha: 0.12),
+                          border: Border.all(
+                            color: isEnabled
+                                ? Colors.orange.withValues(alpha: 0.35)
+                                : kGreen.withValues(alpha: 0.35),
+                          ),
+                        ),
+                        child: Icon(
+                          isEnabled
+                              ? Icons.construction_rounded
+                              : Icons.check_circle_outline_rounded,
+                          size: 18,
+                          color: isEnabled ? Colors.orange : kGreen,
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              widget.isEs
+                                  ? 'Modo de Mantenimiento'
+                                  : 'Modo de Manutenção',
+                              style: const TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w900,
+                                color: kDark,
+                              ),
+                            ),
+                            const SizedBox(height: 2),
+                            Text(
+                              isEnabled
+                                  ? (widget.isEs ? 'Sistema fuera de línea para usuarios' : 'Sistema offline para usuários')
+                                  : (widget.isEs ? 'Sistema en línea — acceso normal' : 'Sistema online — acesso normal'),
+                              style: TextStyle(
+                                fontSize: 11,
+                                fontWeight: FontWeight.w500,
+                                color: isEnabled ? Colors.orange : kGreen,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      // ── Toggle ────────────────────────────────────────────
+                      widget.maintLoading
+                          ? const SizedBox(
+                              width: 24, height: 24,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2.5,
+                                color: Colors.orange,
+                              ),
+                            )
+                          : Switch(
+                              value: isEnabled,
+                              onChanged: widget.onToggle,
+                              activeThumbColor: Colors.orange,
+                              activeTrackColor: Colors.orange.withValues(alpha: 0.25),
+                              inactiveThumbColor: kGreen,
+                              inactiveTrackColor: kGreen.withValues(alpha: 0.2),
+                            ),
+                    ]),
+                  ),
+
+                  // ── Campo de mensagem ─────────────────────────────────────
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 14, 16, 0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          widget.isEs
+                              ? 'Mensaje para usuarios (opcional)'
+                              : 'Mensagem para usuários (opcional)',
+                          style: TextStyle(
+                            fontSize: 11,
+                            fontWeight: FontWeight.w700,
+                            color: kDark.withValues(alpha: 0.55),
+                            letterSpacing: 0.2,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        TextField(
+                          controller: widget.maintMsgCtrl,
+                          maxLines: 3,
+                          maxLength: 280,
+                          autocorrect: false,
+                          spellCheckConfiguration:
+                              const SpellCheckConfiguration.disabled(),
+                          style: const TextStyle(
+                            fontSize: 13,
+                            color: kDark,
+                            fontWeight: FontWeight.w500,
+                          ),
+                          decoration: InputDecoration(
+                            hintText: widget.isEs
+                                ? 'Ej: Estaremos disponibles a las 18h...'
+                                : 'Ex: Voltamos às 18h com melhorias...',
+                            hintStyle: TextStyle(
+                              fontSize: 12,
+                              color: kDark.withValues(alpha: 0.35),
+                            ),
+                            filled: true,
+                            fillColor: const Color(0xFFF5F0E8),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              borderSide: BorderSide.none,
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              borderSide: BorderSide(
+                                color: kDark.withValues(alpha: 0.1),
+                              ),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              borderSide: const BorderSide(
+                                color: kGold,
+                                width: 1.5,
+                              ),
+                            ),
+                            contentPadding: const EdgeInsets.all(12),
+                            counterStyle: TextStyle(
+                              fontSize: 10,
+                              color: kDark.withValues(alpha: 0.3),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        // Botão Salvar mensagem
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: GestureDetector(
+                            onTap: widget.maintLoading
+                                ? null
+                                : () => widget.onToggle(isEnabled),
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 16, vertical: 9,
+                              ),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(9),
+                                color: kDark,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: kDark.withValues(alpha: 0.3),
+                                    blurRadius: 8,
+                                    offset: const Offset(0, 3),
+                                  ),
+                                ],
+                              ),
+                              child: Row(mainAxisSize: MainAxisSize.min, children: [
+                                const Icon(
+                                  Icons.save_rounded,
+                                  size: 14,
+                                  color: kGoldL,
+                                ),
+                                const SizedBox(width: 6),
+                                Text(
+                                  widget.isEs ? 'Guardar mensaje' : 'Salvar mensagem',
+                                  style: const TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w800,
+                                    color: kGoldL,
+                                  ),
+                                ),
+                              ]),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 14),
+                      ],
+                    ),
+                  ),
+
+                  // ── Info de última atualização ────────────────────────────
+                  if (lastUpdatedAt.isNotEmpty) ...[
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(16, 0, 16, 14),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10, vertical: 7,
+                        ),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(8),
+                          color: kDark.withValues(alpha: 0.04),
+                        ),
+                        child: Row(children: [
+                          Icon(
+                            Icons.history_rounded,
+                            size: 12,
+                            color: kDark.withValues(alpha: 0.35),
+                          ),
+                          const SizedBox(width: 6),
+                          Expanded(
+                            child: Text(
+                              '${widget.isEs ? "Última actualización" : "Última atualização"}: $lastUpdatedAt',
+                              style: TextStyle(
+                                fontSize: 10,
+                                fontWeight: FontWeight.w500,
+                                color: kDark.withValues(alpha: 0.40),
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ]),
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+            ),
+
+            const SizedBox(height: 16),
+
+            // ── Aviso sobre bypass de admin ────────────────────────────────
+            Container(
+              padding: const EdgeInsets.all(14),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12),
+                color: kGold.withValues(alpha: 0.07),
+                border: Border.all(color: kGold.withValues(alpha: 0.25)),
+              ),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Icon(Icons.info_outline_rounded, size: 14, color: kGold),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      widget.isEs
+                          ? 'Los administradores y el Master siempre tienen acceso, incluso durante el mantenimiento.'
+                          : 'Administradores e Master sempre têm acesso, mesmo durante a manutenção.',
+                      style: TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w500,
+                        color: kDark.withValues(alpha: 0.60),
+                        height: 1.5,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+}
 
 // ── Lista de usuários ──────────────────────────────────────────────────────
 class _UserList extends StatelessWidget {
