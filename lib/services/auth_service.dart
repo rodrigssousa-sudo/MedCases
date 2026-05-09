@@ -1,4 +1,5 @@
 // auth_service.dart — Firebase Auth + Firestore via REST (Web) e SDK (Android)
+import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:firebase_auth/firebase_auth.dart';
@@ -15,7 +16,18 @@ class AuthService {
   static const _fsBase       = 'https://firestore.googleapis.com/v1/projects/$_projectId/databases/(default)/documents';
   static const String adminEmail = 'rodrigssousa@gmail.com';
 
-  // ── Stream de estado de autenticação ──────────────────────────────────────
+  // ── Stream próprio para Web (contorna authStateChanges do Firebase SDK) ───
+  // No Web fazemos login via REST — o Firebase SDK não registra sessão,
+  // então authStateChanges nunca emite User. Este StreamController é a ponte
+  // entre o login REST bem-sucedido e o _AuthGate.
+  static final StreamController<UserModel?> _webUserController =
+      StreamController<UserModel?>.broadcast();
+
+  /// Stream que o _AuthGate escuta no Web.
+  /// Emite UserModel após login REST bem-sucedido e null após logout.
+  static Stream<UserModel?> get webUserStream => _webUserController.stream;
+
+  // ── Stream de estado de autenticação (usado no Android via SDK nativo) ────
   static Stream<User?> get authStateChanges => _auth.authStateChanges();
   static User? get currentUser => _auth.currentUser;
 
@@ -101,6 +113,8 @@ class AuthService {
         // Usuário existe no Auth mas não no Firestore — criar documento
         final user = _buildNewUser(uid: uid, email: email);
         await _createUserDocRest(user: user, idToken: idToken);
+        // Publicar no stream próprio ANTES de retornar
+        _webUserController.add(user);
         return AuthResult.success(user);
       }
 
@@ -111,7 +125,14 @@ class AuthService {
       final fsBody = jsonDecode(fsResp.body) as Map<String, dynamic>;
       final data   = _firestoreDocToMap(fsBody);
 
-      return _buildResultFromDoc(exists: true, data: data, uid: uid, email: email);
+      final result = _buildResultFromDoc(exists: true, data: data, uid: uid, email: email);
+
+      // ✅ CRITICAL FIX: publicar usuário no stream próprio para o _AuthGate navegar
+      if (result.success && result.user != null) {
+        _webUserController.add(result.user);
+      }
+
+      return result;
     } catch (e) {
       return AuthResult.error('Falha na conexão. Verifique sua internet e tente novamente.');
     }
@@ -187,6 +208,8 @@ class AuthService {
         profession: profession, institution: institution,
       );
       await _createUserDocRest(user: user, idToken: idToken);
+      // Publicar no stream próprio (usuário recém-criado via REST)
+      _webUserController.add(user);
       return AuthResult.success(user);
     } catch (e) {
       return AuthResult.error('Falha na conexão. Verifique sua internet e tente novamente.');
@@ -226,6 +249,10 @@ class AuthService {
   // LOGOUT
   // ═══════════════════════════════════════════════════════════════════════════
   static Future<void> logout() async {
+    // Limpa o stream próprio do Web PRIMEIRO (antes do signOut)
+    if (kIsWeb) {
+      _webUserController.add(null);
+    }
     try { await _auth.signOut(); } catch (_) {}
   }
 

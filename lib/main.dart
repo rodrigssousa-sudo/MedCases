@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -135,6 +136,71 @@ class _AuthGate extends StatelessWidget {
     child: child,
   );
 
+  // ── Web: ouve stream próprio (REST login) ─────────────────────────────────
+  // authStateChanges do Firebase SDK nunca emite no Web pois o login é via REST.
+  // webUserStream é alimentado diretamente pelo _loginWeb() após sucesso.
+  Widget _buildWebAuthGate(BuildContext context) {
+    return StreamBuilder<UserModel?>(
+      stream: AuthService.webUserStream,
+      builder: (context, webSnap) {
+        // Ainda aguardando primeiro evento → mostra login imediatamente
+        // (connectionState.waiting no broadcast stream = nenhum evento ainda)
+        if (webSnap.connectionState == ConnectionState.waiting) {
+          return _wrapAuth(const LoginScreen());
+        }
+
+        final user = webSnap.data;
+
+        // Sem usuário → login
+        if (user == null) {
+          return _wrapAuth(const LoginScreen());
+        }
+
+        // Usuário bloqueado
+        if (user.isBlocked) {
+          AuthService.logout();
+          return _wrapAuth(_BlockedScreen(user: user));
+        }
+
+        // Usuário pendente
+        if (user.isPending) {
+          return _wrapAuth(_PendingScreen(user: user));
+        }
+
+        // Usuário aprovado → stream de manutenção
+        return _buildMaintenanceGate(context, user);
+      },
+    );
+  }
+
+  // ── Etapa final: manutenção → MainShell ──────────────────────────────────
+  Widget _buildMaintenanceGate(BuildContext context, UserModel user) {
+    return StreamBuilder<Map<String, dynamic>>(
+      stream: FirestoreService.maintenanceStream(),
+      builder: (context, maintSnap) {
+        final isMaintenanceEnabled = maintSnap.data?['enabled'] == true;
+        final maintenanceMessage   = maintSnap.data?['message'] as String? ?? '';
+
+        // Admin / Master passam pela manutenção direto
+        final bypassMaintenance = user.isAdmin || user.isMaster;
+
+        if (isMaintenanceEnabled && !bypassMaintenance) {
+          return _wrapAuth(MaintenanceScreen(message: maintenanceMessage));
+        }
+
+        // Aprovado → atualiza provider e abre o app
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          final p = context.read<AppProvider>();
+          if (p.currentUser?.uid != user.uid) {
+            p.setUser(user);
+          }
+        });
+
+        return const MainShell();
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     // Etapa 1: aguarda Firebase init (em paralelo ao runApp)
@@ -153,6 +219,11 @@ class _AuthGate extends StatelessWidget {
         }
 
         // Etapa 2: Firebase OK → ouve stream de autenticação
+        // WEB: usa webUserStream próprio (login REST não registra sessão no Firebase SDK)
+        // ANDROID: usa authStateChanges do Firebase SDK + currentUserStream
+        if (kIsWeb) {
+          return _buildWebAuthGate(context);
+        }
         return StreamBuilder<User?>(
           stream: AuthService.authStateChanges,
           builder: (context, authSnap) {
@@ -190,35 +261,7 @@ class _AuthGate extends StatelessWidget {
                 }
 
                 // Etapa 4: perfil OK → stream de manutenção (só para usuários logados)
-                // Abrimos o stream AQUI para garantir que Firebase já está 100% pronto
-                return StreamBuilder<Map<String, dynamic>>(
-                  stream: FirestoreService.maintenanceStream(),
-                  builder: (context, maintSnap) {
-                    final isMaintenanceEnabled =
-                        maintSnap.data?['enabled'] == true;
-                    final maintenanceMessage =
-                        maintSnap.data?['message'] as String? ?? '';
-
-                    // Admin / Master passam pela manutenção direto
-                    final bypassMaintenance = user.isAdmin || user.isMaster;
-
-                    if (isMaintenanceEnabled && !bypassMaintenance) {
-                      return _wrapAuth(
-                        MaintenanceScreen(message: maintenanceMessage),
-                      );
-                    }
-
-                    // Aprovado → atualiza provider e abre o app
-                    WidgetsBinding.instance.addPostFrameCallback((_) {
-                      final p = context.read<AppProvider>();
-                      if (p.currentUser?.uid != user.uid) {
-                        p.setUser(user);
-                      }
-                    });
-
-                    return const MainShell();
-                  },
-                );
+                return _buildMaintenanceGate(context, user);
               },
             );
           },
