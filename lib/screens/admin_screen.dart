@@ -86,82 +86,112 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
           ],
         ),
       ),
-      body: Column(
-        children: [
-          // Barra de busca
-          Container(
-            color: kDark,
-            padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
-            child: TextField(
-              onChanged: (v) => setState(() => _search = v.toLowerCase()),
-              spellCheckConfiguration: const SpellCheckConfiguration.disabled(),
-              autocorrect: false,
-              style: const TextStyle(color: Colors.white, fontSize: 13),
-              decoration: InputDecoration(
-                hintText: _searchHint,
-                hintStyle: TextStyle(color: Colors.white38, fontSize: 13),
-                prefixIcon: const Icon(Icons.search_rounded, color: Colors.white38, size: 18),
-                filled: true,
-                fillColor: Colors.white.withValues(alpha: 0.08),
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide.none),
-                contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-              ),
-            ),
-          ),
-          // Lista de usuários
-          Expanded(
-            child: StreamBuilder<List<UserModel>>(
-              stream: AuthService.allUsersStream(),
-              builder: (context, snap) {
-                if (snap.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator(color: kGreen));
-                }
-                if (snap.hasError) {
-                  return Center(child: Text('Erro: ${snap.error}', style: const TextStyle(color: Colors.red)));
-                }
-
-                final all = snap.data ?? [];
-                final pending  = _filter(all, UserStatus.pending);
-                final approved = _filter(all, UserStatus.approved);
-                final blocked  = _filter(all, UserStatus.blocked);
-
-                return TabBarView(
+      body: AnimatedBuilder(
+        animation: _tabs,
+        builder: (context, _) {
+          final isSystemTab = _tabs.index == 3;
+          return Column(
+            children: [
+              // Barra de busca — só nas tabs de usuários (0, 1, 2)
+              if (!isSystemTab)
+                Container(
+                  color: kDark,
+                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+                  child: TextField(
+                    onChanged: (v) => setState(() => _search = v.toLowerCase()),
+                    spellCheckConfiguration: const SpellCheckConfiguration.disabled(),
+                    autocorrect: false,
+                    style: const TextStyle(color: Colors.white, fontSize: 13),
+                    decoration: InputDecoration(
+                      hintText: _searchHint,
+                      hintStyle: TextStyle(color: Colors.white38, fontSize: 13),
+                      prefixIcon: const Icon(Icons.search_rounded, color: Colors.white38, size: 18),
+                      filled: true,
+                      fillColor: Colors.white.withValues(alpha: 0.08),
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide.none),
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                    ),
+                  ),
+                ),
+              // Conteúdo das tabs
+              Expanded(
+                child: TabBarView(
                   controller: _tabs,
                   children: [
-                    _UserList(
-                      users: pending,
-                      emptyMsg: _emptyPendingMsg,
-                      emptyIcon: Icons.check_circle_outline_rounded,
-                      currentAdmin: widget.currentAdmin,
-                      isMaster: _isMaster,
-                      onApprove: _approve,
-                      onBlock: _block,
-                      showApprove: true,
-                      showBlock: true,
+                    // ── Tab 0: Pendentes ──────────────────────────────────
+                    StreamBuilder<List<UserModel>>(
+                      stream: AuthService.allUsersStream(),
+                      builder: (context, snap) {
+                        if (snap.connectionState == ConnectionState.waiting) {
+                          return const Center(child: CircularProgressIndicator(color: kGreen));
+                        }
+                        if (snap.hasError) {
+                          return Center(child: Text('Erro: ${snap.error}', style: const TextStyle(color: Colors.red)));
+                        }
+                        final pending = _filter(snap.data ?? [], UserStatus.pending);
+                        return _UserList(
+                          users: pending,
+                          emptyMsg: _emptyPendingMsg,
+                          emptyIcon: Icons.check_circle_outline_rounded,
+                          currentAdmin: widget.currentAdmin,
+                          isMaster: _isMaster,
+                          onApprove: _approve,
+                          onBlock: _block,
+                          showApprove: true,
+                          showBlock: true,
+                        );
+                      },
                     ),
-                    _UserList(
-                      users: approved,
-                      emptyMsg: _emptyApprovedMsg,
-                      emptyIcon: Icons.people_outline_rounded,
-                      currentAdmin: widget.currentAdmin,
-                      isMaster: _isMaster,
-                      onBlock: _block,
-                      onPromote: _promote,
-                      onPromoteSupervisor: _isMaster ? _promoteSupervisor : null,
-                      onDemote: _isMaster ? _demote : null,
-                      showBlock: true,
-                      showPromote: true,
+                    // ── Tab 1: Aprovados ──────────────────────────────────
+                    StreamBuilder<List<UserModel>>(
+                      stream: AuthService.allUsersStream(),
+                      builder: (context, snap) {
+                        if (snap.connectionState == ConnectionState.waiting) {
+                          return const Center(child: CircularProgressIndicator(color: kGreen));
+                        }
+                        if (snap.hasError) {
+                          return Center(child: Text('Erro: ${snap.error}', style: const TextStyle(color: Colors.red)));
+                        }
+                        final approved = _filter(snap.data ?? [], UserStatus.approved);
+                        return _UserList(
+                          users: approved,
+                          emptyMsg: _emptyApprovedMsg,
+                          emptyIcon: Icons.people_outline_rounded,
+                          currentAdmin: widget.currentAdmin,
+                          isMaster: _isMaster,
+                          onBlock: _block,
+                          onPromote: _promote,
+                          onPromoteSupervisor: _isMaster ? _promoteSupervisor : null,
+                          onDemote: _isMaster ? _demote : null,
+                          showBlock: true,
+                          showPromote: true,
+                        );
+                      },
                     ),
-                    _UserList(
-                      users: blocked,
-                      emptyMsg: _emptyBlockedMsg,
-                      emptyIcon: Icons.verified_user_outlined,
-                      currentAdmin: widget.currentAdmin,
-                      isMaster: _isMaster,
-                      onApprove: _unblock,
-                      showApprove: true,
-                      approveBtnLabel: _unblockLabel,
+                    // ── Tab 2: Bloqueados ─────────────────────────────────
+                    StreamBuilder<List<UserModel>>(
+                      stream: AuthService.allUsersStream(),
+                      builder: (context, snap) {
+                        if (snap.connectionState == ConnectionState.waiting) {
+                          return const Center(child: CircularProgressIndicator(color: kGreen));
+                        }
+                        if (snap.hasError) {
+                          return Center(child: Text('Erro: ${snap.error}', style: const TextStyle(color: Colors.red)));
+                        }
+                        final blocked = _filter(snap.data ?? [], UserStatus.blocked);
+                        return _UserList(
+                          users: blocked,
+                          emptyMsg: _emptyBlockedMsg,
+                          emptyIcon: Icons.verified_user_outlined,
+                          currentAdmin: widget.currentAdmin,
+                          isMaster: _isMaster,
+                          onApprove: _unblock,
+                          showApprove: true,
+                          approveBtnLabel: _unblockLabel,
+                        );
+                      },
                     ),
+                    // ── Tab 3: Sistema ────────────────────────────────────
                     _SystemTab(
                       currentAdmin: widget.currentAdmin,
                       isMaster: _isMaster,
@@ -172,11 +202,11 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
                       onToggle: _toggleMaintenance,
                     ),
                   ],
-                );
-              },
-            ),
-          ),
-        ],
+                ),
+              ),
+            ],
+          );
+        },
       ),
       // FAB com estatísticas
       floatingActionButton: StreamBuilder<List<UserModel>>(
