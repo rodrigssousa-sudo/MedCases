@@ -4,9 +4,9 @@ const kDark = Color(0xFF07110d);
 const kGold = Color(0xFFC5A365);
 const kGoldLight = Color(0xFFFFE8A6);
 const kGreen = Color(0xFF075f45);
-const kCream = Color(0xFFFFFDF8);
-const kBorder = Color(0xFFE8E1D2);
-const kSurface = Color(0xFFFBF7EE);
+const kCream = Color(0xFFF7F8FA);
+const kBorder = Color(0xFFE2E6EA);
+const kSurface = Color(0xFFF0F2F5);
 
 class PremiumCard extends StatelessWidget {
   final Widget child;

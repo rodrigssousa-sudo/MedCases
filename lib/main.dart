@@ -95,7 +95,7 @@ class MedCasesApp extends StatelessWidget {
             surface: const Color(0xFFFFFDF8),
             onSurface: const Color(0xFF07110d),
           ),
-    scaffoldBackgroundColor: dark ? const Color(0xFF0A1510) : const Color(0xFFF5F0E8),
+    scaffoldBackgroundColor: dark ? const Color(0xFF0A1510) : const Color(0xFFF7F8FA),
   );
 
   static ThemeData get _authTheme => ThemeData(
@@ -621,6 +621,8 @@ class _MainShellState extends State<MainShell> {
   // sub-tab dentro do combo Rx+Proto: 0=Rx, 1=Protocolos
   int _rxProtoSub = 0;
   String? _pendingProtocolId;
+  // Header recolhível: visível apenas na tab 0 (Cockpit/Início)
+  bool get _headerVisible => _tab == 0;
 
   void _openProtocol(String id) {
     setState(() {
@@ -634,7 +636,7 @@ class _MainShellState extends State<MainShell> {
   Widget build(BuildContext context) {
     final p = context.watch<AppProvider>();
     final dark = p.darkMode;
-    final bg = dark ? const Color(0xFF0A1510) : const Color(0xFFF5F0E8);
+    final bg = dark ? const Color(0xFF0A1510) : const Color(0xFFF7F8FA);
     final navBg = dark ? const Color(0xFF0E1A14) : Colors.white;
     final navBorder = dark ? const Color(0xFF1A2E20) : const Color(0xFFE8E1D2);
 
@@ -663,9 +665,19 @@ class _MainShellState extends State<MainShell> {
     return Scaffold(
       backgroundColor: bg,
       body: Column(children: [
-        _AppHeader(
-          onTabChange: (t) => setState(() => _tab = t),
-          currentTab: _tab,
+        AnimatedSize(
+          duration: const Duration(milliseconds: 260),
+          curve: Curves.easeInOut,
+          child: _headerVisible
+              ? _AppHeader(
+                  onTabChange: (t) => setState(() => _tab = t),
+                  currentTab: _tab,
+                )
+              : _MiniContextBar(
+                  tab: _tab,
+                  dark: dark,
+                  onHome: () => setState(() => _tab = 0),
+                ),
         ),
         Expanded(child: IndexedStack(index: stackIdx.clamp(0, mainScreens.length - 1), children: mainScreens)),
       ]),
@@ -689,7 +701,7 @@ class _MainShellState extends State<MainShell> {
               top: false,
               bottom: false, // LegalBar cuida do padding inferior
               child: SizedBox(
-                height: 56,
+                height: 48,
                 child: Stack(
                   clipBehavior: Clip.none,
                   alignment: Alignment.topCenter,
@@ -702,7 +714,7 @@ class _MainShellState extends State<MainShell> {
                         // 1 — Rx + Protocolos (combo)
                         _buildNavBtn(1, Icons.layers_rounded, 'Fármaco', dark, p),
                         // espaço para o FAB central (IA)
-                        const SizedBox(width: 76),
+                        const SizedBox(width: 68),
                         // 3 — História Clínica (tab no stack)
                         _buildNavBtn(3, Icons.folder_shared_rounded, 'H. Clínica', dark, p),
                         // 4 — Calculadoras
@@ -710,7 +722,7 @@ class _MainShellState extends State<MainShell> {
                       ],
                     ),
                     Positioned(
-                      top: -22,
+                      top: -18,
                       child: _buildAiNavBtn(dark, p),
                     ),
                   ],
@@ -734,26 +746,26 @@ class _MainShellState extends State<MainShell> {
         child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
           AnimatedContainer(
             duration: const Duration(milliseconds: 180),
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 3),
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(10),
               color: active
                   ? const Color(0xFF07110d).withValues(alpha: 0.12)
                   : Colors.transparent,
             ),
             child: Icon(
               icon,
-              size: 22,
+              size: 20,
               color: active
                   ? (dark ? const Color(0xFFFFE8A6) : const Color(0xFF07110d))
                   : (dark ? Colors.white38 : const Color(0xFFAAAAAA)),
             ),
           ),
-          const SizedBox(height: 2),
+          const SizedBox(height: 1),
           AnimatedDefaultTextStyle(
             duration: const Duration(milliseconds: 180),
             style: TextStyle(
-              fontSize: 9,
+              fontSize: 8.5,
               fontWeight: active ? FontWeight.w800 : FontWeight.w500,
               color: active
                   ? (dark ? const Color(0xFFFFE8A6) : const Color(0xFF07110d))
@@ -813,8 +825,8 @@ class _MainShellState extends State<MainShell> {
             AnimatedContainer(
               duration: const Duration(milliseconds: 220),
               curve: Curves.easeOutBack,
-              width: active ? 60 : 56,
-              height: active ? 60 : 56,
+              width: active ? 52 : 48,
+              height: active ? 52 : 48,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 gradient: LinearGradient(
@@ -858,11 +870,11 @@ class _MainShellState extends State<MainShell> {
                 ),
               ),
             ),
-            const SizedBox(height: 4),
+            const SizedBox(height: 2),
             AnimatedDefaultTextStyle(
               duration: const Duration(milliseconds: 180),
               style: TextStyle(
-                fontSize: 9,
+                fontSize: 8.5,
                 fontWeight: FontWeight.w900,
                 letterSpacing: 0.3,
                 color: active
@@ -896,18 +908,18 @@ class _RxProtoCombo extends StatelessWidget {
   Widget build(BuildContext context) {
     final p = context.watch<AppProvider>();
     final dark = p.darkMode;
-    final bg = dark ? const Color(0xFF0A1510) : const Color(0xFFF5F0E8);
-    final borderCol = dark ? const Color(0xFF1A2E20) : const Color(0xFFE8E1D2);
+    final bg = dark ? const Color(0xFF0A1510) : const Color(0xFFF7F8FA);
+    final borderCol = dark ? const Color(0xFF1A2E20) : const Color(0xFFE2E6EA);
 
     return Column(children: [
       // ── Seletor de sub-tab ────────────────────────────────────────────────
       Container(
         color: bg,
-        padding: const EdgeInsets.fromLTRB(16, 10, 16, 6),
+        padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
         child: Container(
-          height: 42,
+          height: 38,
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(14),
+            borderRadius: BorderRadius.circular(12),
             color: dark ? const Color(0xFF0E1A14) : Colors.white,
             border: Border.all(color: borderCol),
           ),
@@ -1001,6 +1013,81 @@ class _SubTabBtn extends StatelessWidget {
   }
 }
 
+// ── Mini barra de contexto (header recolhido nas sub-telas) ─────────────────
+class _MiniContextBar extends StatelessWidget {
+  final int tab;
+  final bool dark;
+  final VoidCallback onHome;
+  const _MiniContextBar({required this.tab, required this.dark, required this.onHome});
+
+  static const _tabNames = [
+    '',
+    'Fármacos',
+    'IA Clínica',
+    'H. Clínica',
+    'Calculadoras',
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    final name = tab < _tabNames.length ? _tabNames[tab] : '';
+    return Container(
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          begin: Alignment.topLeft, end: Alignment.bottomRight,
+          colors: [Color(0xFF07110d), Color(0xFF123326), Color(0xFF075f45)],
+        ),
+      ),
+      child: SafeArea(
+        bottom: false,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(12, 6, 16, 6),
+          child: Row(children: [
+            GestureDetector(
+              onTap: onHome,
+              child: Row(mainAxisSize: MainAxisSize.min, children: [
+                const BrandMark(small: true),
+                const SizedBox(width: 8),
+                Icon(Icons.chevron_right_rounded, size: 14,
+                    color: Colors.white.withValues(alpha: 0.45)),
+                const SizedBox(width: 4),
+                Text(name,
+                  style: const TextStyle(
+                    fontSize: 13, fontWeight: FontWeight.w800,
+                    color: Colors.white, letterSpacing: -0.2,
+                  )),
+              ]),
+            ),
+            const Spacer(),
+            // Botão home
+            GestureDetector(
+              onTap: onHome,
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8),
+                  color: Colors.white.withValues(alpha: 0.1),
+                  border: Border.all(color: Colors.white.withValues(alpha: 0.18)),
+                ),
+                child: Row(mainAxisSize: MainAxisSize.min, children: [
+                  Icon(Icons.home_rounded, size: 13,
+                      color: const Color(0xFFFFE8A6).withValues(alpha: 0.9)),
+                  const SizedBox(width: 4),
+                  const Text('Início',
+                    style: TextStyle(
+                      fontSize: 10, fontWeight: FontWeight.w700,
+                      color: Color(0xFFFFE8A6),
+                    )),
+                ]),
+              ),
+            ),
+          ]),
+        ),
+      ),
+    );
+  }
+}
+
 // ── Barra legal ───────────────────────────────────────────────────────────────
 class _LegalBar extends StatelessWidget {
   final bool dark;
@@ -1008,11 +1095,11 @@ class _LegalBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bg     = dark ? const Color(0xFF060E09) : const Color(0xFFEFEADF);
-    final border = dark ? const Color(0xFF1A2E20) : const Color(0xFFD8D0C0);
+    final bg     = dark ? const Color(0xFF060E09) : const Color(0xFFEFF1F3);
+    final border = dark ? const Color(0xFF1A2E20) : const Color(0xFFDDE0E4);
     final textColor = dark
         ? Colors.white.withValues(alpha: 0.32)
-        : const Color(0xFF888070);
+        : const Color(0xFF9098A0);
 
     return Container(
       width: double.infinity,
@@ -1020,17 +1107,15 @@ class _LegalBar extends StatelessWidget {
         color: bg,
         border: Border(top: BorderSide(color: border, width: 0.5)),
       ),
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 3),
       child: Row(children: [
-        Icon(Icons.info_outline_rounded, size: 10, color: textColor),
-        const SizedBox(width: 5),
+        Icon(Icons.info_outline_rounded, size: 9, color: textColor),
+        const SizedBox(width: 4),
         Expanded(
           child: Text(
-            'Fins educacionais. Não substitui julgamento clínico. '
-            'Baseado em: AHA 2020, ESC 2023, Harrison\'s 21ª ed., '
-            'ANVISA, ACLS/ATLS, SBEM, Micromedex.',
-            style: TextStyle(fontSize: 8.5, color: textColor, height: 1.4, letterSpacing: 0.1),
-            maxLines: 2,
+            'Fins educacionais · Não substitui julgamento clínico · AHA 2020 · ESC 2023 · Harrison\'s 21ed · ANVISA · ACLS/ATLS',
+            style: TextStyle(fontSize: 7.5, color: textColor, height: 1.2, letterSpacing: 0.1),
+            maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),
         ),

@@ -7,6 +7,28 @@ class BrandMark extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final size = small ? 36.0 : 48.0;
+
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(small ? 10.0 : 14.0),
+      child: Image.asset(
+        'assets/icon/app_icon.png',
+        width: size,
+        height: size,
+        fit: BoxFit.cover,
+        errorBuilder: (_, __, ___) => _Fallback(small: small),
+      ),
+    );
+  }
+}
+
+// Fallback caso a imagem não carregue
+class _Fallback extends StatelessWidget {
+  final bool small;
+  const _Fallback({required this.small});
+
+  @override
+  Widget build(BuildContext context) {
+    final size = small ? 36.0 : 48.0;
     final fontSize = small ? 11.0 : 13.0;
     final borderRadius = small ? 10.0 : 14.0;
     final innerRadius = small ? 7.0 : 10.0;
@@ -16,13 +38,11 @@ class BrandMark extends StatelessWidget {
       width: size, height: size,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(borderRadius),
-        border: Border.all(color: const Color(0x33FFFFFF), width: 0.5),
         gradient: const LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [Colors.white, Color(0xFFF8EDD1)],
+          colors: [Color(0xFF07110d), Color(0xFF075f45)],
         ),
-        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.12), blurRadius: 8, offset: const Offset(0, 4))],
       ),
       child: Center(
         child: Container(
@@ -36,7 +56,11 @@ class BrandMark extends StatelessWidget {
             ),
           ),
           child: Center(
-            child: Text('M+', style: TextStyle(fontSize: fontSize, fontWeight: FontWeight.w900, color: const Color(0xFFFFE8A6))),
+            child: Text('M+', style: TextStyle(
+              fontSize: fontSize,
+              fontWeight: FontWeight.w900,
+              color: const Color(0xFFFFE8A6),
+            )),
           ),
         ),
       ),
