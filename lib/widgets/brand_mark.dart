@@ -8,15 +8,12 @@ class BrandMark extends StatelessWidget {
   Widget build(BuildContext context) {
     final size = small ? 36.0 : 48.0;
 
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(small ? 10.0 : 14.0),
-      child: Image.asset(
-        'assets/icon/app_icon.png',
-        width: size,
-        height: size,
-        fit: BoxFit.cover,
-        errorBuilder: (_, __, ___) => _Fallback(small: small),
-      ),
+    return Image.asset(
+      'assets/icon/app_icon.png',
+      width: size,
+      height: size,
+      fit: BoxFit.contain,
+      errorBuilder: (_, __, ___) => _Fallback(small: small),
     );
   }
 }

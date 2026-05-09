@@ -289,14 +289,11 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
     return Column(
       children: [
         // ── Ícone M+ grande ────────────────────────────────────────────────
-        ClipRRect(
-          borderRadius: BorderRadius.circular(28),
-          child: Image.asset(
-            'assets/icon/app_icon.png',
-            width: 100,
-            height: 100,
-            fit: BoxFit.cover,
-          ),
+        Image.asset(
+          'assets/icon/app_icon.png',
+          width: 110,
+          height: 110,
+          fit: BoxFit.contain,
         ),
         const SizedBox(height: 16),
         const Text(
