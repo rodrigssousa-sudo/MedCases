@@ -17,14 +17,32 @@ class _AiScreenState extends State<AiScreen> {
   bool _thinking = false;
 
   static const _quickPrompts = [
-    ('Dor torácica + dispneia', 'Paciente com dor torácica e dispneia.'),
-    ('Choque + hipotensão', 'Paciente em choque com hipotensão.'),
-    ('Anafilaxia', 'Reação anafilática aguda.'),
-    ('TPSV / taquicardia', 'Taquicardia paroxística supraventricular.'),
-    ('K⁺ alto / hipercalemia', 'Hipercalemia grave com alterações de ECG.'),
-    ('Cetoacidose diabética', 'Cetoacidose diabética em triagem.'),
-    ('Sepse / febre', 'Febre alta, hipotensão e suspeita de sepse.'),
-    ('TEP / embolia', 'Embolia pulmonar com desconforto respiratório.'),
+    // Cardiovascular
+    ('🫀 IAM / dor torácica', 'Paciente com dor torácica intensa, diaforese e irradiação para braço esquerdo. Suspeita de IAM.'),
+    ('💔 Choque + hipotensão', 'Paciente em choque com hipotensão, taquicardia e pele fria.'),
+    ('⚡ TPSV / taquicardia', 'Taquicardia paroxística supraventricular, QRS estreito, FC 180.'),
+    ('🔴 FA / fibrilação atrial', 'Fibrilação atrial com resposta ventricular rápida, FC 145 irregular.'),
+    ('📈 Crise hipertensiva', 'PA 210/120 com cefaleia intensa e confusão mental.'),
+    // Emergência
+    ('🚨 Anafilaxia', 'Reação anafilática aguda após contraste. PA 80/50, broncoespasmo.'),
+    ('💀 PCR / parada cardíaca', 'Parada cardiorrespiratória. Sem pulso. Monitor: fibrilação ventricular.'),
+    ('🧪 K⁺ alto / hipercalemia', 'Hipercalemia grave K+ 7,1 com ondas T apiculadas no ECG.'),
+    // Respiratório
+    ('🫁 Sepse / febre', 'Febre alta, hipotensão, taquicardia e suspeita de sepse.'),
+    ('🌬️ TEP / embolia', 'Embolia pulmonar com dispneia súbita, PA 85/50, SatO2 85%.'),
+    ('💨 DPOC exacerbação', 'DPOC com piora de dispneia, PaCO2 68, pH 7,28.'),
+    ('🫧 Asma grave', 'Crise de asma grave, silêncio auscultório, SpO2 88%.'),
+    // Neurologia
+    ('🧠 AVC isquêmico', 'AVC isquêmico agudo, hemiplegia direita, NIHSS 14, 1h45 de evolução.'),
+    ('⚡ Convulsão / status', 'Convulsão há 8 min sem pausa. Estado de mal epiléptico.'),
+    ('😵 Delirium / confusão', 'Confusão mental aguda, agitação, rebaixamento. Idoso de 78 anos.'),
+    // Endocrinologia
+    ('🩸 Cetoacidose / CAD', 'Cetoacidose diabética. Glicemia 480, pH 7,18, K+ 3,2.'),
+    ('📉 Hipoglicemia grave', 'Hipoglicemia grave, Glasgow 8, glicemia 28 mg/dL.'),
+    // Gastro / outros
+    ('🩹 Hemorragia digestiva', 'Hematêmese, Hb 7,2, instabilidade hemodinâmica.'),
+    ('🦠 Meningite', 'Febre, cefaleia em trovoada, rigidez de nuca, petéquias.'),
+    ('🫀 Insuf. cardíaca', 'IC descompensada, ortopneia, SatO2 91%, crepitações bibasais.'),
   ];
 
   @override

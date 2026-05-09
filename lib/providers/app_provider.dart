@@ -704,42 +704,140 @@ class AppProvider extends ChangeNotifier {
       redFlags.addAll(['Encefalopatia + PA >180 → emergência (redução controlada IV)', 'NÃO reduzir PA >25% na 1ª hora']);
     }
 
-    if (suspected.isEmpty) {
-      suspected.add('Síndrome clínica inespecífica — insira mais informações clínicas');
-      examSuggestions.addAll(['Sinais vitais completos', 'Glicemia capilar', 'ECG', 'Hemograma', 'Eletrólitos', 'Função renal']);
+    // ── Cardiologia adicional ──────────────────────────────────────────────
+    if (_has(q, ['fa ', 'fibrilac atrial', 'fibril atri', 'auricular', 'rr irregular', 'flutter', 'fibrilacao'])) {
+      suspected.add('Fibrilação Atrial / Flutter Atrial');
+      protocolIds.add('fa_aguda');
+      examSuggestions.addAll(['ECG 12 derivações', 'TSH', 'Eletrólitos (K+, Mg2+)', 'Ecocardiograma', 'Coagulação', 'Score CHA₂DS₂-VASc']);
+      redFlags.addAll(['FC > 150 + instabilidade hemodinâmica → cardioversão elétrica imediata', 'FA > 48h sem anticoagulação → risco de AVC por trombo']);
+    }
+    if (_has(q, ['ic ', 'insuf cardiac', 'ortopneia', 'edema pulmonar', 'crepitac', 'dispne', 'bnp', 'fej', 'frac ejec'])) {
+      suspected.add('Insuficiência Cardíaca Descompensada / Edema Agudo de Pulmão');
+      protocolIds.add('iam_congestao');
+      examSuggestions.addAll(['BNP/NT-proBNP', 'RX tórax', 'Ecocardiograma', 'Eletrólitos', 'Função renal', 'Hemograma']);
+      redFlags.addAll(['SpO2 < 90% + esforço respiratório → VNI (CPAP/BIPAP) imediata', 'Hipotensão + IC → choque cardiogênico: cuidado com diurético agressivo']);
+    }
+    if (_has(q, ['crise hipert', 'pa muito alta', 'pa > 180', 'emergencia hiperten', 'encefalopatia hiperten', 'urgencia hiperten', 'hipertensao grave'])) {
+      suspected.add('Crise Hipertensiva (Urgência / Emergência)');
+      protocolIds.add('crise_hipertensiva');
+      examSuggestions.addAll(['PA em ambos os braços', 'ECG', 'Fundo de olho', 'Creatinina/ureia', 'EAS', 'TC crânio se sintomas neurológicos']);
+      redFlags.addAll(['Encefalopatia/AVC/IAM/IRA + PA > 180 → emergência: redução IV controlada', 'NÃO reduzir PA > 25% na 1ª hora — risco de AVC isquêmico por hipoperfusão']);
     }
 
-    // ── Montar resposta ─────────────────────────────────────────────────
+    // ── Hematologia / Coagulação ───────────────────────────────────────────
+    if (_has(q, ['hematemes', 'hemorrag digest', 'melena', 'hematoquezia', 'sangr gi', 'ulcera sangr', 'varizes esof'])) {
+      suspected.add('Hemorragia Digestiva Alta (HDA) — Ulcerosa / Varicosa');
+      protocolIds.add('hda_varizeal');
+      examSuggestions.addAll(['Hemograma (Hb, Ht)', 'Coagulação (TP, TTPA)', 'Tipagem sanguínea', 'Função renal', 'EDA urgente em < 24h', 'Score de Blatchford']);
+      redFlags.addAll(['PA sistólica < 100 + FC > 100 → 2 acessos calibrosos + SF imediato', 'Hb alvo pós-transfusão 7–8 g/dL (transfusão restritiva)', 'Cirrose + HDA → octreotida + ATB profilático + Terlipressina']);
+    }
+    if (_has(q, ['anticoagulac', 'sangramento ativo', 'heparina reverter', 'varfarina', 'warfarin', 'reverter anticoag'])) {
+      suspected.add('Sangramento em Uso de Anticoagulante / Reversão de Anticoagulação');
+      protocolIds.add('hda_varizeal');
+      examSuggestions.addAll(['INR/TP/TTPA', 'Hemograma', 'Tipagem', 'Função renal']);
+      redFlags.addAll(['Varfarina + sangramento grave → vitamina K 10 mg EV + CCP (4 fatores)', 'Heparina → protamina 1 mg / 100 UI heparina EV', 'DOAC → agentes específicos: idarucizumabe (dabigatrana), andexanete alfa (rivaroxabana/apixabana)']);
+    }
+
+    // ── Dor abdominal / Cirúrgico ──────────────────────────────────────────
+    if (_has(q, ['dor abdom', 'abdome agudo', 'peritonite', 'rigidez abd', 'defesa abdom', 'apendicite', 'colecistite', 'obstru intestinal'])) {
+      suspected.add('Abdome Agudo / Peritonite / Síndrome Abdominal Cirúrgica');
+      protocolIds.add('sepse');
+      examSuggestions.addAll(['RX abdome em pé', 'TC abdome+pelve com contraste', 'Hemograma', 'PCR', 'Lipase/amilase', 'Ureia/Cr', 'Urina I']);
+      redFlags.addAll(['Sinais peritoneais + instabilidade → cirurgia de emergência', 'Pneumoperitônio no RX → perfuração visceral: cirurgia imediata']);
+    }
+    if (_has(q, ['pancreatite', 'dor epigast irrad dorso', 'lipase elev', 'amilase elev', 'pancreat'])) {
+      suspected.add('Pancreatite Aguda');
+      protocolIds.add('sepse');
+      examSuggestions.addAll(['Lipase (> 3× LSN diagnóstico)', 'TC abdome (Balthazar/CTSI — se grave ou dúvida)', 'Eletrólitos', 'Cálcio', 'Glicemia', 'TGO/TGP/FA', 'Score BISAP']);
+      redFlags.addAll(['Score BISAP ≥ 3 ou APACHE II alto → UTI (pancreatite grave)', 'Necroinfeção: febre + piora clínica após 48–72h → TC + ATB (imipenem/meropeném)']);
+    }
+
+    // ── Delirium / Intoxicação / Psiquiátrico ──────────────────────────────
+    if (_has(q, ['delirium', 'confusao aguda', 'agitac', 'rebaixamento conscien', 'glasgow baixo', 'confusao mental'])) {
+      suspected.add('Delirium / Rebaixamento de Consciência (investigar causa base)');
+      protocolIds.add('status_epilepticus');
+      examSuggestions.addAll(['Glicemia capilar URGENTE', 'TC crânio', 'Eletrólitos (Na+, K+, Mg2+, Ca2+)', 'Função renal e hepática', 'Hemoculturas + Urina I', 'Gasometria', 'Revisão de medicamentos (polifarmácia)']);
+      redFlags.addAll(['Excluir SEMPRE: hipoglicemia, AVC, meningite, IRA, intoxicação', 'Glasgow ≤ 8 → proteger via aérea (IOT)', 'CAM positivo + idoso → delirium: tratar causa base, evitar haloperidol em QT longo']);
+    }
+    if (_has(q, ['intoxicac', 'overdose', 'envenenam', 'ingestao', 'organofosf', 'benzodiaz+depressao resp', 'intoxicacao'])) {
+      suspected.add('Intoxicação Exógena / Overdose');
+      protocolIds.add('pcr_adulto');
+      examSuggestions.addAll(['Toxicológico urinário', 'Gasometria', 'Eletrólitos', 'ECG (QT longo, arritmia)', 'Paracetamol e salicilato séricos', 'Glicemia', 'Função renal e hepática']);
+      redFlags.addAll(['Contato imediato: Centro de Informação Toxicológica (0800 722 6001)', 'Antídotos: naloxona (opioides), flumazenil (BZD), N-acetilcisteína (paracetamol), atropina (organofosforados)', 'Carvão ativado 1 g/kg VO se < 1h da ingestão e via aérea protegida']);
+    }
+
+    // ── Reumatologia / MSK ─────────────────────────────────────────────────
+    if (_has(q, ['artrite septic', 'articulacao quente', 'monoartrite', 'artrite infec', 'artralgia febre'])) {
+      suspected.add('Artrite Séptica / Artropatia Inflamatória Aguda');
+      protocolIds.add('sepse');
+      examSuggestions.addAll(['Artrocentese + análise do líquido sinovial', 'Hemoculturas', 'PCR/VHS', 'Hemograma', 'Ácido úrico', 'Rx articulação']);
+      redFlags.add('Artrite séptica → artrocentese + ATB em < 6h (S. aureus mais comum)');
+    }
+
+    // ── Dermatologia / Lesão de pele ───────────────────────────────────────
+    if (_has(q, ['eritroderm', 'fasciite necros', 'steven johnson', 'ten', 'necrolise epider', 'celulite extensa'])) {
+      suspected.add('Dermatose Grave / Fasciíte Necrosante / Síndrome de Stevens-Johnson');
+      protocolIds.add('sepse');
+      examSuggestions.addAll(['Hemograma', 'PCR', 'Creatinina', 'Coagulação', 'Hemocultura', 'Biopsia se necessário']);
+      redFlags.addAll(['Fasciíte necrosante → cirurgia de desbridamento URGENTE + ATB broad-spectrum', 'SJS/TEN → UTI, suspender medicamento causador, cuidados como queimado']);
+    }
+
+    // ── Obstétrica / Ginecológica ──────────────────────────────────────────
+    if (_has(q, ['eclamps', 'pre-eclamps', 'pressao gestac', 'gestante hiperten', 'convulsao gravida', 'hellp'])) {
+      suspected.add('Pré-eclâmpsia Grave / Eclâmpsia / Síndrome HELLP');
+      protocolIds.add('crise_hipertensiva');
+      examSuggestions.addAll(['PA seriada', 'Proteinúria 24h ou razão Pr/Cr', 'Hemograma + plaquetas', 'TGO/TGP', 'LDH', 'Creatinina', 'Ácido úrico']);
+      redFlags.addAll(['PA ≥ 160/110 em gestante → anti-hipertensivo imediato (hidralazina/nifedipina)', 'Convulsão → sulfato de magnésio 4–6 g EV (ataque) + 1–2 g/h manutenção', 'HELLP → parto imediato se ≥ 34 semanas']);
+    }
+
+    if (suspected.isEmpty) {
+      suspected.add('Síndrome clínica inespecífica — descreva mais detalhes do caso');
+      examSuggestions.addAll(['Sinais vitais completos (PA, FC, FR, Temp, SpO2)', 'Glicemia capilar', 'ECG 12 derivações', 'Hemograma completo', 'Eletrólitos (Na+, K+, Ca2+)', 'Função renal (Cr, Ureia)', 'Gasometria arterial se grave']);
+    }
+
+    // ── Montar resposta ──────────────────────────────────────────────────
     final isEs = _lang == 'es';
-    buf.writeln(isEs ? '🧠 IA Clínica — Razonamiento Diagnóstico\n' : '🧠 IA Clínica — Raciocínio Diagnóstico\n');
 
-    // Dados do paciente
+    // Cabeçalho
+    buf.writeln('🧠 IA Clínica — Raciocínio Diagnóstico');
+    buf.writeln('');
+
+    // Perfil do paciente
     final age = _patient.age.isNotEmpty ? '${_patient.age} anos' : '—';
-    final wt = _patient.weight.isNotEmpty ? '${_patient.weight} kg' : '—';
-    buf.writeln(isEs
-      ? 'Paciente: $age | ${_patient.sex} | $wt | ClCr ${clcr ?? '—'} mL/min | IMC ${bmi ?? '—'}\n'
-      : 'Paciente: $age | ${_patient.sex} | $wt | ClCr ${clcr ?? '—'} mL/min | IMC ${bmi ?? '—'}\n');
+    final wt  = _patient.weight.isNotEmpty ? '${_patient.weight} kg' : '—';
+    final clcrStr = clcr ?? '—';
+    final bmiStr  = bmi  ?? '—';
+    buf.writeln('👤 Paciente: $age | ${_patient.sex} | $wt');
+    buf.writeln('   ClCr: $clcrStr mL/min | IMC: $bmiStr kg/m²');
+    buf.writeln('');
 
-    // Hipóteses
-    buf.writeln(isEs ? '📋 Hipóteses diagnósticas:' : '📋 Hipóteses diagnósticas:');
+    // Hipóteses diagnósticas
+    buf.writeln('📋 Hipóteses diagnósticas:');
     for (int i = 0; i < suspected.length && i < 5; i++) {
       buf.writeln('  ${i + 1}. ${suspected[i]}');
     }
+    buf.writeln('');
 
     // Red Flags
     if (redFlags.isNotEmpty) {
-      buf.writeln(isEs ? '\n🚨 Red Flags / Alertas imediatos:' : '\n🚨 Red Flags / Alertas imediatos:');
-      for (final f in redFlags.take(4)) buf.writeln('  ⛔ $f');
+      buf.writeln('🚨 Alertas imediatos:');
+      for (final f in redFlags.take(5)) {
+        buf.writeln('  ⛔ $f');
+      }
+      buf.writeln('');
     }
 
     // Exames
     if (examSuggestions.isNotEmpty) {
       final uniqExams = examSuggestions.toSet().toList();
-      buf.writeln(isEs ? '\n🔬 Exames prioritários:' : '\n🔬 Exames prioritários:');
-      for (final e in uniqExams.take(6)) buf.writeln('  • $e');
+      buf.writeln('🔬 Exames prioritários:');
+      for (final e in uniqExams.take(8)) {
+        buf.writeln('  • $e');
+      }
+      buf.writeln('');
     }
 
-    // Protocolo
+    // Protocolo aplicável
     ProtocolModel? matchedProtocol;
     for (final pid in protocolIds) {
       try {
@@ -749,36 +847,80 @@ class AppProvider extends ChangeNotifier {
     }
 
     if (matchedProtocol != null) {
-      buf.writeln(isEs ? '\n📌 Protocolo aplicável: ${tDB(matchedProtocol.title)}' : '\n📌 Protocolo aplicável: ${tDB(matchedProtocol.title)}');
-      buf.writeln(isEs ? '\nConduta imediata (primeiros passos):' : '\nConduta imediata (primeiros passos):');
+      buf.writeln('📌 Protocolo: ${tDB(matchedProtocol.title)}');
+      buf.writeln('');
+      buf.writeln('🩺 Conduta imediata:');
       final actions = matchedProtocol.getActions(_lang);
-      for (int i = 0; i < actions.length && i < 5; i++) {
+      for (int i = 0; i < actions.length && i < 6; i++) {
         buf.writeln('  ${actions[i]}');
       }
-      if (actions.length > 5) buf.writeln('  ... (ver protocolo completo na aba Protocolos)');
+      if (actions.length > 6) {
+        buf.writeln('  → Ver protocolo completo na aba Protocolos');
+      }
+      buf.writeln('');
+      buf.writeln('🚫 Não fazer: ${tDB(matchedProtocol.avoid)}');
+      buf.writeln('');
 
-      buf.writeln(isEs ? '\n⚠ Não fazer: ${tDB(matchedProtocol.avoid)}' : '\n⚠ Não fazer: ${tDB(matchedProtocol.avoid)}');
-
-      final suggestedDrugs = matchedProtocol.drugs.take(3)
-          .map((id) { try { return drugsDatabase.firstWhere((d) => d.id == id); } catch (_) { return null; } })
+      // Fármacos com dose calculada para o paciente atual
+      final suggestedDrugs = matchedProtocol.drugs.take(4)
+          .map((id) {
+            try { return drugsDatabase.firstWhere((d) => d.id == id); }
+            catch (_) { return null; }
+          })
           .whereType<DrugModel>().toList();
 
       if (suggestedDrugs.isNotEmpty) {
-        buf.writeln(isEs ? '\n💊 Fármacos principais (doses calculadas):' : '\n💊 Fármacos principais (doses calculadas):');
+        buf.writeln('💊 Fármacos (dose para ESTE paciente):');
         for (final drug in suggestedDrugs) {
           final dose = calculateDose(drug);
-          buf.writeln('  • ${drug.name}: ${dose.main}');
-          if (dose.alerts.isNotEmpty) buf.writeln('    ⚠ ${dose.alerts.join(' | ')}');
+          buf.writeln('  • ${drug.name}');
+          buf.writeln('    Dose: ${dose.main}');
+          if (dose.detail.isNotEmpty) {
+            buf.writeln('    ${dose.detail}');
+          }
+          if (dose.alerts.isNotEmpty) {
+            for (final a in dose.alerts) {
+              buf.writeln('    ⚠ $a');
+            }
+          }
         }
+        buf.writeln('');
       }
     }
 
-    buf.writeln(isEs
-      ? '\n─────────────────────────────'
-      : '\n─────────────────────────────');
-    buf.writeln(isEs
-      ? '⚕ Apoio educacional — não substitui avaliação clínica presencial. Verificar alergias, gestação, ECG, eletrólitos, função renal/hepática, interações e protocolo institucional antes de prescrever.'
-      : '⚕ Apoio educacional — não substitui avaliação clínica presencial. Verificar alergias, gestação, ECG, eletrólitos, função renal/hepática, interações e protocolo local antes de prescrever.');
+    // Alertas renais personalizados
+    final clcrVal = double.tryParse(clcrStr.replaceAll(',', '.'));
+    if (clcrVal != null && clcrVal > 0 && clcrVal < 60) {
+      buf.writeln('🫘 Alerta renal (ClCr $clcrStr mL/min):');
+      if (clcrVal < 15) {
+        buf.writeln('  ⛔ IRC grave/terminal — ajuste obrigatório em TODOS os fármacos');
+        buf.writeln('  ⛔ Evitar: AINE, metformina, aminoglicosídeos, nitrofurantoína');
+        buf.writeln('  ⛔ Dosar nível sérico: vancomicina, digoxina, lítio');
+      } else if (clcrVal < 30) {
+        buf.writeln('  ⚠ IRC moderada-grave — revisar doses e intervalos');
+        buf.writeln('  ⚠ Evitar: AINE, metformina, doses plenas de HBPM');
+      } else {
+        buf.writeln('  ⚠ IRC leve-moderada — atenção a nefrotóxicos e doses');
+        buf.writeln('  ⚠ Monitorar: creatinina, eletrólitos, diurese');
+      }
+      buf.writeln('');
+    }
+
+    // Alerta de idade
+    final ageVal = int.tryParse(_patient.age);
+    if (ageVal != null && ageVal >= 75) {
+      buf.writeln('👴 Alerta idoso (${_patient.age} anos):');
+      buf.writeln('  • Polifarmácia — revisar lista completa de medicamentos');
+      buf.writeln('  • Doses reduzidas: opioides, benzodiazepínicos, anticolinérgicos');
+      buf.writeln('  • Risco aumentado: delirium, quedas, hipotensão ortostática');
+      buf.writeln('  • Usar critérios de Beers para medicamentos inapropriados');
+      buf.writeln('');
+    }
+
+    // Rodapé
+    buf.writeln('─────────────────────────────────────');
+    buf.writeln('⚕ Apoio educacional. NÃO substitui avaliação médica presencial.');
+    buf.writeln('Revisar: alergias, gestação, ECG, função renal/hepática, interações e protocolo institucional.');
     return buf.toString();
   }
 
