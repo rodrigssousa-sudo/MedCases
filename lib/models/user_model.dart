@@ -42,7 +42,45 @@ class UserModel {
   bool get isPending => status == UserStatus.pending;
   bool get isBlocked => status == UserStatus.blocked;
 
-  // ── Serialização ──────────────────────────────────────────────────────────
+  // ── Serialização JSON pura (SharedPreferences / sem Firestore SDK) ─────────
+  // Usado por AuthService.saveSession() / restoreSession().
+  // Datas como ISO8601 String — jsonEncode/jsonDecode seguro.
+
+  Map<String, dynamic> toJson() => {
+    'uid': uid,
+    'email': email,
+    'displayName': displayName,
+    'role': role.name,
+    'status': status.name,
+    'createdAt': createdAt.toUtc().toIso8601String(),
+    'approvedAt': approvedAt?.toUtc().toIso8601String(),
+    'approvedBy': approvedBy,
+    'profession': profession,
+    'institution': institution,
+    'lang': lang,
+    'darkMode': darkMode,
+  };
+
+  factory UserModel.fromJson(Map<String, dynamic> m) => UserModel(
+    uid: m['uid'] as String? ?? '',
+    email: m['email'] as String? ?? '',
+    displayName: m['displayName'] as String? ?? '',
+    role: _parseRole(m['role'] as String?),
+    status: _parseStatus(m['status'] as String?),
+    createdAt: m['createdAt'] != null
+        ? DateTime.parse(m['createdAt'] as String)
+        : DateTime.now(),
+    approvedAt: m['approvedAt'] != null
+        ? DateTime.parse(m['approvedAt'] as String)
+        : null,
+    approvedBy: m['approvedBy'] as String?,
+    profession: m['profession'] as String?,
+    institution: m['institution'] as String?,
+    lang: m['lang'] as String? ?? 'pt',
+    darkMode: m['darkMode'] as bool? ?? false,
+  );
+
+  // ── Serialização Firestore SDK (Timestamp nativo) ─────────────────────────
 
   Map<String, dynamic> toMap() => {
     'uid': uid,

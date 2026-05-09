@@ -100,7 +100,7 @@ class AuthService {
       final p = await SharedPreferences.getInstance();
       await p.setBool(_kKeepLoggedIn, true);
       await p.setString(_kRefreshToken, _cachedRefreshTk);
-      await p.setString(_kUserJson, jsonEncode(user.toMap()));
+      await p.setString(_kUserJson, jsonEncode(user.toJson()));
     } catch (_) {}
   }
 
@@ -145,7 +145,7 @@ class AuthService {
 
       // Reconstrói o UserModel a partir do JSON salvo
       final rawMap = jsonDecode(userJson) as Map<String, dynamic>;
-      final user   = UserModel.fromMap(rawMap);
+      final user   = UserModel.fromJson(rawMap);
 
       // Seta webUser para que _AuthGate roteie direto ao MainShell
       if (kIsWeb) webUser.value = user;
