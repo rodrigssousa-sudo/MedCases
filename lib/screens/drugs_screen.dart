@@ -677,36 +677,7 @@ class _DrugDetailViewState extends State<_DrugDetailView> {
             ),
             const SizedBox(height: 14),
 
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(16),
-              decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [kDark, Color(0xFF123326), kGreen],
-                ),
-              ),
-              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                const Text('DOSE',
-                  style: TextStyle(fontSize: 9, fontWeight: FontWeight.w900,
-                    color: Color(0xBFFFE8A6), letterSpacing: 1.8)),
-                const SizedBox(height: 6),
-                Text(dose.main,
-                  style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w900,
-                    color: Colors.white, letterSpacing: -0.3, height: 1.25)),
-                if (dose.detail.isNotEmpty) ...[
-                  const SizedBox(height: 8),
-                  Container(height: 1, color: Colors.white.withValues(alpha: 0.12)),
-                  const SizedBox(height: 8),
-                  Text(
-                    dose.detail.replaceAll(': ', ':\n').replaceAll('; ', ';\n'),
-                    style: TextStyle(fontSize: 12,
-                      color: Colors.white.withValues(alpha: 0.72),
-                      fontWeight: FontWeight.w600, height: 1.6)),
-                ],
-              ]),
-            ),
+            _DoseCard(dose: dose),
 
             ClinicalAlertBox(messages: dose.alerts),
             const SizedBox(height: 14),
@@ -940,4 +911,305 @@ class _Divider extends StatelessWidget {
     height: 1,
     color: dark ? Colors.white.withValues(alpha: 0.07) : const Color(0xFFEEEAE0),
   );
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Card de dose com hierarquia visual
+// ─────────────────────────────────────────────────────────────────────────────
+class _DoseCard extends StatelessWidget {
+  final DoseInfo dose;
+  const _DoseCard({required this.dose});
+
+  /// Quebra o texto da dose em segmentos lógicos.
+  /// Divide por ". " mantendo o ponto no final de cada segmento.
+  List<String> _parseSegments(String text) {
+    // Divide por ". " mas preserva abreviações comuns (IV, IM, SC, SF, VO, SL)
+    final raw = text.split(RegExp(r'\.\s+(?=[A-ZÁÉÍÓÚ0-9])'));
+    return raw
+        .map((s) => s.trim())
+        .where((s) => s.isNotEmpty)
+        .toList();
+  }
+
+  /// Classifica o segmento para determinar o estilo visual
+  _SegmentType _classifySegment(String seg, int index) {
+    final lower = seg.toLowerCase();
+    // Máximo / limite
+    if (lower.contains('máx') || lower.contains('max') ||
+        lower.contains('não ultrapassar') || lower.contains('no exceder') ||
+        lower.contains('dose máx') || lower.contains('dosis máx')) {
+      return _SegmentType.max;
+    }
+    // Repetição / segunda dose
+    if (lower.contains('repetir') || lower.contains('sin respuesta') ||
+        lower.contains('sem resposta') || lower.contains('se necessário') ||
+        lower.contains('si necesario') || lower.contains('2ª') ||
+        lower.contains('segunda')) {
+      return _SegmentType.repeat;
+    }
+    // Manutenção / infusão contínua
+    if (lower.contains('manutenção') || lower.contains('mantenimiento') ||
+        lower.contains('infusão') || lower.contains('infusión') ||
+        lower.contains('bomba') || lower.contains('contínua')) {
+      return _SegmentType.maintenance;
+    }
+    // Primeiro segmento = dose inicial (destaque máximo)
+    if (index == 0) return _SegmentType.primary;
+    return _SegmentType.secondary;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final segments = _parseSegments(dose.main);
+    final isSingleLine = segments.length == 1;
+
+    return Container(
+      width: double.infinity,
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [kDark, Color(0xFF123326), kGreen],
+        ),
+      ),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+
+        // ── Header label ──────────────────────────────────────────────────
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 14, 16, 0),
+          child: Row(children: [
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+              decoration: BoxDecoration(
+                color: const Color(0xFFFFE8A6).withValues(alpha: 0.18),
+                borderRadius: BorderRadius.circular(4),
+              ),
+              child: const Text('DOSE',
+                style: TextStyle(fontSize: 9, fontWeight: FontWeight.w900,
+                  color: Color(0xFFFFE8A6), letterSpacing: 2.0)),
+            ),
+          ]),
+        ),
+
+        const SizedBox(height: 10),
+
+        // ── Segmentos da dose ─────────────────────────────────────────────
+        if (isSingleLine)
+          // Dose simples: exibe grande sem numeração
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
+            child: Text(segments.first,
+              style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w900,
+                color: Colors.white, letterSpacing: -0.5, height: 1.2)),
+          )
+        else
+          // Dose multi-etapa: linha por linha com hierarquia
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 14),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: List.generate(segments.length, (i) {
+                final seg = segments[i];
+                final type = _classifySegment(seg, i);
+                return _DoseSegmentRow(
+                  index: i,
+                  text: seg,
+                  type: type,
+                  isLast: i == segments.length - 1,
+                );
+              }),
+            ),
+          ),
+
+        // ── Linha separadora + detalhe ────────────────────────────────────
+        if (dose.detail.isNotEmpty) ...[
+          const SizedBox(height: 12),
+          Container(height: 1, color: Colors.white.withValues(alpha: 0.10)),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 10, 16, 14),
+            child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Icon(Icons.info_outline_rounded, size: 13,
+                color: Colors.white.withValues(alpha: 0.5)),
+              const SizedBox(width: 6),
+              Expanded(
+                child: Text(dose.detail,
+                  style: TextStyle(fontSize: 11.5,
+                    color: Colors.white.withValues(alpha: 0.65),
+                    fontWeight: FontWeight.w500, height: 1.55)),
+              ),
+            ]),
+          ),
+        ] else
+          const SizedBox(height: 14),
+
+      ]),
+    );
+  }
+}
+
+enum _SegmentType { primary, secondary, repeat, maintenance, max }
+
+class _DoseSegmentRow extends StatelessWidget {
+  final int index;
+  final String text;
+  final _SegmentType type;
+  final bool isLast;
+
+  const _DoseSegmentRow({
+    required this.index,
+    required this.text,
+    required this.type,
+    required this.isLast,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    // Configurações visuais por tipo
+    final cfg = _segmentConfig(type);
+
+    return IntrinsicHeight(
+      child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        // Linha vertical conectora + badge
+        Column(children: [
+          // Badge numerado
+          Container(
+            width: 22, height: 22,
+            decoration: BoxDecoration(
+              color: cfg.badgeBg,
+              shape: BoxShape.circle,
+              border: Border.all(color: cfg.badgeBorder, width: 1.5),
+            ),
+            child: Center(
+              child: cfg.badgeIcon != null
+                ? Icon(cfg.badgeIcon, size: 11, color: cfg.badgeFg)
+                : Text('${index + 1}',
+                    style: TextStyle(fontSize: 10, fontWeight: FontWeight.w900,
+                      color: cfg.badgeFg)),
+            ),
+          ),
+          // Linha vertical (exceto último)
+          if (!isLast)
+            Expanded(
+              child: Container(
+                width: 1.5,
+                margin: const EdgeInsets.symmetric(vertical: 3),
+                color: Colors.white.withValues(alpha: 0.15),
+              ),
+            ),
+          if (isLast) const SizedBox(height: 12),
+        ]),
+
+        const SizedBox(width: 10),
+
+        // Conteúdo do segmento
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.only(top: 2, bottom: 4),
+            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              // Label da etapa
+              if (cfg.label != null) ...[
+                Text(cfg.label!,
+                  style: TextStyle(
+                    fontSize: 8.5, fontWeight: FontWeight.w800,
+                    color: cfg.labelColor, letterSpacing: 1.4)),
+                const SizedBox(height: 2),
+              ],
+              // Texto da dose
+              Text(text,
+                style: TextStyle(
+                  fontSize: cfg.fontSize,
+                  fontWeight: cfg.fontWeight,
+                  color: cfg.textColor,
+                  height: 1.3,
+                  letterSpacing: -0.2)),
+              const SizedBox(height: 10),
+            ]),
+          ),
+        ),
+      ]),
+    );
+  }
+
+  _SegCfg _segmentConfig(_SegmentType t) {
+    switch (t) {
+      case _SegmentType.primary:
+        return _SegCfg(
+          label: 'DOSE INICIAL',
+          labelColor: const Color(0xFFFFE8A6),
+          fontSize: 19,
+          fontWeight: FontWeight.w900,
+          textColor: Colors.white,
+          badgeBg: const Color(0xFFFFE8A6).withValues(alpha: 0.25),
+          badgeBorder: const Color(0xFFFFE8A6).withValues(alpha: 0.7),
+          badgeFg: const Color(0xFFFFE8A6),
+        );
+      case _SegmentType.repeat:
+        return _SegCfg(
+          label: 'SE SEM RESPOSTA',
+          labelColor: const Color(0xFF90CDD9),
+          fontSize: 14.5,
+          fontWeight: FontWeight.w700,
+          textColor: Colors.white.withValues(alpha: 0.92),
+          badgeBg: const Color(0xFF90CDD9).withValues(alpha: 0.15),
+          badgeBorder: const Color(0xFF90CDD9).withValues(alpha: 0.5),
+          badgeFg: const Color(0xFF90CDD9),
+        );
+      case _SegmentType.maintenance:
+        return _SegCfg(
+          label: 'MANUTENÇÃO',
+          labelColor: const Color(0xFF90CDD9),
+          fontSize: 14.5,
+          fontWeight: FontWeight.w700,
+          textColor: Colors.white.withValues(alpha: 0.92),
+          badgeBg: const Color(0xFF90CDD9).withValues(alpha: 0.15),
+          badgeBorder: const Color(0xFF90CDD9).withValues(alpha: 0.5),
+          badgeFg: const Color(0xFF90CDD9),
+        );
+      case _SegmentType.max:
+        return _SegCfg(
+          label: 'DOSE MÁXIMA',
+          labelColor: const Color(0xFFFFB3B3),
+          fontSize: 13,
+          fontWeight: FontWeight.w700,
+          textColor: const Color(0xFFFFB3B3),
+          badgeBg: const Color(0xFFFF6B6B).withValues(alpha: 0.15),
+          badgeBorder: const Color(0xFFFF6B6B).withValues(alpha: 0.4),
+          badgeFg: const Color(0xFFFFB3B3),
+          badgeIcon: Icons.block_rounded,
+        );
+      case _SegmentType.secondary:
+        return _SegCfg(
+          fontSize: 13.5,
+          fontWeight: FontWeight.w600,
+          textColor: Colors.white.withValues(alpha: 0.80),
+          badgeBg: Colors.white.withValues(alpha: 0.08),
+          badgeBorder: Colors.white.withValues(alpha: 0.20),
+          badgeFg: Colors.white.withValues(alpha: 0.6),
+        );
+    }
+  }
+}
+
+class _SegCfg {
+  final String? label;
+  final Color labelColor;
+  final double fontSize;
+  final FontWeight fontWeight;
+  final Color textColor;
+  final Color badgeBg;
+  final Color badgeBorder;
+  final Color badgeFg;
+  final IconData? badgeIcon;
+
+  const _SegCfg({
+    this.label,
+    this.labelColor = Colors.white,
+    required this.fontSize,
+    required this.fontWeight,
+    required this.textColor,
+    required this.badgeBg,
+    required this.badgeBorder,
+    required this.badgeFg,
+    this.badgeIcon,
+  });
 }
