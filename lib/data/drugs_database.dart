@@ -7403,4 +7403,210 @@ const List<DrugModel> drugsDatabase = [
     },
   ),
 
+  // --- LOTE 4: 6 novos fármacos ---
+
+  DrugModel(
+    id: 'valproato_iv',
+    group: 'Neurología',
+    name: 'Valproato de Sódio / Ácido Valproico',
+    className: {'pt': 'Antiepiléptico', 'es': 'Antiepiléptico'},
+    category: {'pt': 'Neurologia', 'es': 'Neurología'},
+    route: 'VO / IV',
+    doseType: 'weightBased',
+    fixedDose: {
+      'pt': 'Carga IV: 20–40 mg/kg. Manutenção: 15–60 mg/kg/dia.',
+      'es': 'Carga IV: 20–40 mg/kg. Mantenimiento: 15–60 mg/kg/día.',
+    },
+    renalAlert: {
+      'pt': 'Sem ajuste necessário; mas monitorar fração livre (proteínas).',
+      'es': 'Sin ajuste necesario; monitorear fracción libre.',
+    },
+    elderlyAlert: {
+      'pt': 'Risco de sonolência excessiva e trombocitopenia.',
+      'es': 'Riesgo de somnolencia excesiva y trombocitopenia.',
+    },
+    mechanism: {
+      'pt': 'Aumenta níveis de GABA, bloqueia canais de sódio e cálcio tipo T.',
+      'es': 'Aumenta niveles de GABA, bloquea canales de sodio y calcio tipo T.',
+    },
+    warning: {
+      'pt': 'Contraindicado em hepatopatias graves.',
+      'es': 'Contraindicado en hepatopatías graves.',
+    },
+    adverse: {
+      'pt': ['Hepatotoxicidade', 'Trombocitopenia', 'Náuseas', 'Tremor'],
+      'es': ['Hepatotoxicidad', 'Trombocitopenia', 'Náuseas', 'Tremor'],
+    },
+  ),
+
+  DrugModel(
+    id: 'esmolol',
+    group: 'Cardiovascular',
+    name: 'Esmolol',
+    className: {'pt': 'Betabloqueador seletivo Beta-1 de curta ação', 'es': 'Beta-bloqueante selectivo Beta-1 de acción corta'},
+    category: {'pt': 'Cardiovascular', 'es': 'Cardiovascular'},
+    route: 'IV',
+    doseType: 'weightBased',
+    fixedDose: {
+      'pt': 'Carga: 500 mcg/kg em 1 min. Manutenção: 50–200 mcg/kg/min.',
+      'es': 'Carga: 500 mcg/kg en 1 min. Mantenimiento: 50–200 mcg/kg/min.',
+    },
+    renalAlert: {
+      'pt': 'Sem ajuste necessário.',
+      'es': 'Sin ajuste necesario.',
+    },
+    elderlyAlert: {
+      'pt': 'Risco de hipotensão severa. Titular com cautela.',
+      'es': 'Riesgo de hipotensión severa. Titular con cautela.',
+    },
+    mechanism: {
+      'pt': 'Bloqueio seletivo Beta-1; meia-vida de 9 minutos.',
+      'es': 'Bloqueo selectivo Beta-1; vida media de 9 minutos.',
+    },
+    warning: {
+      'pt': 'Ideal para controle de FC em dissecção aórtica ou tireotoxicose.',
+      'es': 'Ideal para control de FC en disección aórtica o tirotoxicosis.',
+    },
+    adverse: {
+      'pt': ['Hipotensão', 'Bradicardia', 'Flebite no local', 'Broncoespasmo'],
+      'es': ['Hipotensión', 'Bradicardia', 'Flebitis', 'Broncoespasmo'],
+    },
+  ),
+
+  DrugModel(
+    id: 'milrinona',
+    group: 'Cardiovascular',
+    name: 'Milrinona',
+    className: {'pt': 'Inodilatador / Inibidor da Fosfodiesterase III', 'es': 'Inodilatador / Inhibidor de la Fosfodiesterasa III'},
+    category: {'pt': 'Cardiovascular', 'es': 'Cardiovascular'},
+    route: 'IV',
+    doseType: 'weightBased',
+    fixedDose: {
+      'pt': 'Carga: 50 mcg/kg em 10 min. Manutenção: 0,375–0,75 mcg/kg/min.',
+      'es': 'Carga: 50 mcg/kg en 10 min. Mantenimiento: 0,375–0,75 mcg/kg/min.',
+    },
+    renalAlert: {
+      'pt': 'Ajuste obrigatório; ClCr <50 requer redução significativa da dose.',
+      'es': 'Ajuste obligatorio; ClCr <50 requiere reducción de dosis.',
+    },
+    elderlyAlert: {
+      'pt': 'Alto risco de hipotensão e arritmias ventriculares.',
+      'es': 'Alto riesgo de hipotensión y arritmias ventriculares.',
+    },
+    mechanism: {
+      'pt': 'Inibe PDE-III, aumentando AMPc cardíaco (inotropismo) e vascular (vasodilatação).',
+      'es': 'Inhibe PDE-III; inotropismo (+) y vasodilatación.',
+    },
+    warning: {
+      'pt': 'Pode causar hipotensão severa se administrado em bolo rápido.',
+      'es': 'Puede causar hipotensión severa si se da en bolo rápido.',
+    },
+    adverse: {
+      'pt': ['Hipotensão', 'Arritmias ventriculares', 'Cefaleia', 'Trombocitopenia'],
+      'es': ['Hipotensión', 'Arritmias ventriculares', 'Cefalea', 'Trombocitopenia'],
+    },
+  ),
+
+  DrugModel(
+    id: 'fosfomicina',
+    group: 'Antibióticos y Antiinfecciosos',
+    name: 'Fosfomicina Trometamol',
+    className: {'pt': 'Antibiótico / Derivado do ácido fosfônico', 'es': 'Antibiótico / Derivado del ácido fosfónico'},
+    category: {'pt': 'Antibióticos', 'es': 'Antibióticos'},
+    route: 'VO (Sache)',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': 'Adulto: 3 g em dose única. Pediatria (>12 anos): 3 g dose única.',
+      'es': 'Adulto: 3 g en dosis única. Pediatría (>12 años): 3 g dosis única.',
+    },
+    renalAlert: {
+      'pt': 'Não recomendado se ClCr <10 mL/min.',
+      'es': 'No recomendado si ClCr <10 mL/min.',
+    },
+    elderlyAlert: {
+      'pt': 'Seguro; útil em ITUs não complicadas.',
+      'es': 'Seguro; útil en ITUs no complicadas.',
+    },
+    mechanism: {
+      'pt': 'Inibe a síntese da parede celular bacteriana em estágio inicial (Enolpiruvil transferase).',
+      'es': 'Inhibe la síntesis de pared celular bacteriana en etapa inicial.',
+    },
+    warning: {
+      'pt': 'Tomar com estômago vazio, preferencialmente ao deitar após esvaziar a bexiga.',
+      'es': 'Tomar con estómago vacío, preferentemente al acostarse.',
+    },
+    adverse: {
+      'pt': ['Diarreia', 'Náuseas', 'Cefaleia', 'Vaginite'],
+      'es': ['Diarrea', 'Náuseas', 'Cefalea', 'Vaginitis'],
+    },
+  ),
+
+  DrugModel(
+    id: 'acetazolamida',
+    group: 'Neurología',
+    name: 'Acetazolamida',
+    className: {'pt': 'Inibidor da Anidrase Carbônica', 'es': 'Inhibidor de la Anidrasa Carbónica'},
+    category: {'pt': 'Neurologia / Oftalmologia', 'es': 'Neurología / Oftalmología'},
+    route: 'VO / IV',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': 'Glaucoma: 250 mg cada 6–12h. Mal de montanha: 125 mg cada 12h.',
+      'es': 'Glaucoma: 250 mg cada 6–12 h. Mal de montaña: 125 mg cada 12 h.',
+    },
+    renalAlert: {
+      'pt': 'Não recomendado se ClCr <10 mL/min.',
+      'es': 'No recomendado si ClCr <10 mL/min.',
+    },
+    elderlyAlert: {
+      'pt': 'Risco de acidose metabólica e hipocalemia.',
+      'es': 'Riesgo de acidosis metabólica e hipopotasemia.',
+    },
+    mechanism: {
+      'pt': 'Reduz a secreção de humor aquoso e aumenta a excreção de bicarbonato.',
+      'es': 'Reduce la secreción de humor acuoso.',
+    },
+    warning: {
+      'pt': 'Pode causar parestesias nas extremidades.',
+      'es': 'Puede causar parestesias en extremidades.',
+    },
+    adverse: {
+      'pt': ['Parestesias', 'Acidose metabólica', 'Hipocalemia', 'Poliúria'],
+      'es': ['Parestesias', 'Acidosis metabólica', 'Hipopotasemia', 'Poliuria'],
+    },
+  ),
+
+  DrugModel(
+    id: 'kayexalate',
+    group: 'UCI – Críticos y Sedoanalgesia',
+    name: 'Poliestirenossulfonato de Sódio',
+    className: {'pt': 'Resina de troca catiônica', 'es': 'Resina de intercambio catiónico'},
+    category: {'pt': 'Emergência', 'es': 'Emergencia'},
+    route: 'VO / Retal',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': '15–30 g cada 6–12h, diluído em água ou manitol.',
+      'es': '15–30 g cada 6–12 h, diluido en agua o manitol.',
+    },
+    renalAlert: {
+      'pt': 'Usado especificamente na insuficiência renal (hipercalemia).',
+      'es': 'Usado en falla renal para hiperpotasemia.',
+    },
+    elderlyAlert: {
+      'pt': 'Risco elevado de necrose intestinal e constipação grave.',
+      'es': 'Riesgo de necrosis intestinal y constipación grave.',
+    },
+    mechanism: {
+      'pt': 'Troca íons sódio por íons potássio no intestino grosso.',
+      'es': 'Intercambia iones sodio por potasio en el intestino.',
+    },
+    warning: {
+      'pt': 'Não usar em pacientes com obstrução intestinal ou pós-operatório.',
+      'es': 'No usar en obstrucción intestinal.',
+    },
+    adverse: {
+      'pt': ['Constipação', 'Náuseas', 'Hipocalemia', 'Necrose colônica (raro)'],
+      'es': ['Constipación', 'Náuseas', 'Hipopotasemia', 'Necrosis colónica'],
+    },
+  ),
+
 ];
