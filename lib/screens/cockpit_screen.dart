@@ -1118,14 +1118,57 @@ class _ReminderCard extends StatefulWidget {
   State<_ReminderCard> createState() => _ReminderCardState();
 }
 
-class _ReminderCardState extends State<_ReminderCard> {
-  // Atualiza o contador a cada 30 segundos
+class _ReminderCardState extends State<_ReminderCard>
+    with SingleTickerProviderStateMixin {
+  // Ticker para atualizar o contador a cada 30 segundos
   late final Stream<int> _ticker;
+
+  // Flash visual ao expirar — anima a borda e o fundo do card
+  late final AnimationController _flashCtrl;
+  late final Animation<double> _flashAnim;
+  bool _wasExpired = false;
 
   @override
   void initState() {
     super.initState();
     _ticker = Stream.periodic(const Duration(seconds: 30), (i) => i);
+
+    // 4 pulsos de 500ms cada
+    _flashCtrl = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 500),
+    );
+    _flashAnim = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _flashCtrl, curve: Curves.easeInOut),
+    );
+  }
+
+  @override
+  void didUpdateWidget(_ReminderCard oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // Detecta transição para "expirado" e dispara o flash
+    if (widget.reminderExpired && !_wasExpired) {
+      _wasExpired = true;
+      _triggerFlash();
+    } else if (!widget.reminderExpired) {
+      _wasExpired = false;
+      _flashCtrl.reset();
+    }
+  }
+
+  Future<void> _triggerFlash() async {
+    for (int i = 0; i < 4; i++) {
+      if (!mounted) return;
+      await _flashCtrl.forward();
+      if (!mounted) return;
+      await _flashCtrl.reverse();
+    }
+  }
+
+  @override
+  void dispose() {
+    _flashCtrl.dispose();
+    super.dispose();
   }
 
   String _remaining() {
@@ -1145,131 +1188,167 @@ class _ReminderCardState extends State<_ReminderCard> {
     final hasReminder = widget.reminderMinutes != null;
     final expired = widget.reminderExpired;
 
-    return Container(
-      margin: const EdgeInsets.only(bottom: 8),
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: expired
-            ? const Color(0xFFFFF0F0)
-            : hasReminder
-                ? const Color(0xFFECFDF5)
-                : Colors.transparent,
-        border: Border(
-          left: BorderSide(
-            color: expired
-                ? const Color(0xFFFF8888)
+    // Conteúdo interno do card (estático — não reconstruído pelo AnimatedBuilder)
+    final cardContent = Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Título + ícone
+        Row(children: [
+          Icon(
+            expired
+                ? Icons.alarm_off_rounded
                 : hasReminder
-                    ? const Color(0xFF075f45)
-                    : Colors.transparent,
-            width: 3,
+                    ? Icons.alarm_on_rounded
+                    : Icons.alarm_add_rounded,
+            size: 16,
+            color: expired
+                ? const Color(0xFFCC2222)
+                : hasReminder
+                    ? const Color(0xFF065F46)
+                    : const Color(0xFF888888),
           ),
-        ),
-      ),
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          // Título + ícone
-          Row(children: [
-            Icon(
-              expired
-                  ? Icons.alarm_off_rounded
-                  : hasReminder
-                      ? Icons.alarm_on_rounded
-                      : Icons.alarm_add_rounded,
-              size: 16,
+          const SizedBox(width: 6),
+          Text(
+            expired
+                ? p.t('reminder_expired')
+                : hasReminder
+                    ? p.t('reminder_active')
+                    : p.t('reminder_label'),
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w900,
               color: expired
                   ? const Color(0xFFCC2222)
                   : hasReminder
                       ? const Color(0xFF065F46)
                       : const Color(0xFF888888),
+              letterSpacing: 0.2,
             ),
-            const SizedBox(width: 6),
-            Text(
-              expired
-                  ? p.t('reminder_expired')
-                  : hasReminder
-                      ? p.t('reminder_active')
-                      : p.t('reminder_label'),
-              style: TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.w900,
-                color: expired
-                    ? const Color(0xFFCC2222)
-                    : hasReminder
-                        ? const Color(0xFF065F46)
-                        : const Color(0xFF888888),
-                letterSpacing: 0.2,
-              ),
-            ),
-            if (hasReminder && !expired) ...[
-              const Spacer(),
-              StreamBuilder<int>(
-                stream: _ticker,
-                builder: (context, _) => Text(
-                  _remaining(),
-                  style: const TextStyle(
-                    fontSize: 13, fontWeight: FontWeight.w900,
-                    color: Color(0xFF065F46),
-                  ),
-                ),
-              ),
-            ],
-          ]),
-
-          // Botões de tempo (quando sem lembrete ativo)
-          if (!hasReminder) ...[
-            const SizedBox(height: 10),
-            Row(children: [
-              for (final min in [5, 10, 15, 30, 60]) ...[
-                if (min != 5) const SizedBox(width: 6),
-                Expanded(
-                  child: GestureDetector(
-                    onTap: () => widget.onSet(min),
-                    child: Container(
-                      height: 36,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        color: kDark,
-                      ),
-                      child: Center(
-                        child: Text(
-                          min >= 60 ? '1h' : '${min}m',
-                          style: const TextStyle(
-                            fontSize: 12, fontWeight: FontWeight.w900,
-                            color: kGoldLight,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ]),
-          ],
-
-          // Botão cancelar (quando há lembrete ativo)
-          if (hasReminder) ...[
-            const SizedBox(height: 10),
-            GestureDetector(
-              onTap: widget.onCancel,
-              child: Container(
-                height: 36,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all(color: kBorder),
-                  color: Colors.white,
-                ),
-                child: Center(
-                  child: Text(
-                    p.t('reminder_cancel'),
-                    style: const TextStyle(
-                      fontSize: 12, fontWeight: FontWeight.w700,
-                      color: Color(0xFF888888),
-                    ),
-                  ),
+          ),
+          if (hasReminder && !expired) ...[
+            const Spacer(),
+            StreamBuilder<int>(
+              stream: _ticker,
+              builder: (context, _) => Text(
+                _remaining(),
+                style: const TextStyle(
+                  fontSize: 13, fontWeight: FontWeight.w900,
+                  color: Color(0xFF065F46),
                 ),
               ),
             ),
           ],
         ]),
+
+        // Botões de tempo (quando sem lembrete ativo)
+        if (!hasReminder) ...[
+          const SizedBox(height: 10),
+          Row(children: [
+            for (final min in [5, 10, 15, 30, 60]) ...[
+              if (min != 5) const SizedBox(width: 6),
+              Expanded(
+                child: GestureDetector(
+                  onTap: () => widget.onSet(min),
+                  child: Container(
+                    height: 36,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: kDark,
+                    ),
+                    child: Center(
+                      child: Text(
+                        min >= 60 ? '1h' : '${min}m',
+                        style: const TextStyle(
+                          fontSize: 12, fontWeight: FontWeight.w900,
+                          color: kGoldLight,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ]),
+        ],
+
+        // Botão cancelar (quando há lembrete ativo)
+        if (hasReminder) ...[
+          const SizedBox(height: 10),
+          GestureDetector(
+            onTap: widget.onCancel,
+            child: Container(
+              height: 36,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: kBorder),
+                color: Colors.white,
+              ),
+              child: Center(
+                child: Text(
+                  p.t('reminder_cancel'),
+                  style: const TextStyle(
+                    fontSize: 12, fontWeight: FontWeight.w700,
+                    color: Color(0xFF888888),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ],
+    );
+
+    // AnimatedBuilder anima apenas a decoração do container (flash de borda)
+    return AnimatedBuilder(
+      animation: _flashCtrl,
+      builder: (context, child) {
+        final flashVal = _flashAnim.value;
+        final bgColor = expired
+            ? Color.lerp(
+                const Color(0xFFFFF0F0),
+                const Color(0xFFFFDDDD),
+                flashVal,
+              )!
+            : hasReminder
+                ? const Color(0xFFECFDF5)
+                : Colors.transparent;
+
+        final borderColor = expired
+            ? Color.lerp(
+                const Color(0xFFFF8888),
+                const Color(0xFFCC0000),
+                flashVal,
+              )!
+            : hasReminder
+                ? const Color(0xFF075f45)
+                : Colors.transparent;
+
+        return Container(
+          margin: const EdgeInsets.only(bottom: 8),
+          padding: const EdgeInsets.all(14),
+          decoration: BoxDecoration(
+            color: bgColor,
+            border: Border(
+              left: BorderSide(
+                color: borderColor,
+                width: expired ? 4.0 + flashVal * 2 : 3,
+              ),
+            ),
+            boxShadow: expired && flashVal > 0.4
+                ? [
+                    BoxShadow(
+                      color: const Color(0xFFFF4444)
+                          .withValues(alpha: flashVal * 0.25),
+                      blurRadius: 14,
+                      spreadRadius: 2,
+                    ),
+                  ]
+                : null,
+          ),
+          child: child,
+        );
+      },
+      child: cardContent,
     );
   }
 }
