@@ -110,13 +110,19 @@ class AuthService {
     } on FirebaseAuthException catch (e) {
       return AuthResult.error(_authErrorMessage(e.code));
     } catch (e) {
-      // Mostra o erro real para facilitar diagnóstico
       final msg = e.toString();
       if (msg.contains('unauthorized-domain') || msg.contains('auth/unauthorized')) {
         return AuthResult.error(
           'Domínio não autorizado no Firebase.\n\nAdicione o domínio do app em:\nFirebase Console → Authentication → Settings → Authorized domains.');
       }
-      return AuthResult.error('Erro ao fazer login: $msg');
+      // [core/no-app] ou outros erros internos do Firebase SDK
+      // → exibir mensagem genérica amigável (não expor stack interno)
+      if (msg.contains('no-app') || msg.contains('No Firebase App') ||
+          msg.contains('core/') || msg.contains('FirebaseException')) {
+        return AuthResult.error(
+          'Falha na conexão com o servidor.\nVerifique sua internet e tente novamente.');
+      }
+      return AuthResult.error('Não foi possível fazer login. Tente novamente.');
     }
   }
 
