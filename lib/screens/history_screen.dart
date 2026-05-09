@@ -1044,7 +1044,9 @@ class _HistoryEditorState extends State<_HistoryEditor> {
     // Criar instância do SpeechRecognition via dart:js
     final ctorName = jsWin.hasProperty('SpeechRecognition') ? 'SpeechRecognition' : 'webkitSpeechRecognition';
     final recog = js.JsObject(jsWin[ctorName] as js.JsFunction, []);
-    recog['lang'] = 'pt-BR';
+    // Idioma dinâmico baseado na configuração do app
+    final appLang = widget.p.lang;
+    recog['lang'] = appLang == 'es' ? 'es-ES' : 'pt-BR';
     recog['continuous'] = true;
     recog['interimResults'] = true;
     recog['maxAlternatives'] = 1;

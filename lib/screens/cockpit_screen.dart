@@ -123,10 +123,11 @@ class _CockpitScreenState extends State<CockpitScreen> {
         // ── CALCULADORA DE DOSE (colapsável) ────────────────────────────────
         _CollapsibleSection(
           icon: Icons.calculate_outlined,
-          title: 'Calculadora de dose',
+          title: p.t('dose_calc'),
           subtitle: p.selectedDrugs.isEmpty
-              ? 'Nenhum fármaco selecionado'
-              : '${p.selectedDrugs.length} fármaco${p.selectedDrugs.length > 1 ? 's' : ''} ativo${p.selectedDrugs.length > 1 ? 's' : ''}',
+              ? p.t('no_drug_selected')
+              : '${p.selectedDrugs.length} ${p.t('drug_active')}${p.selectedDrugs.length > 1 ? 's' : ''}',
+
           isOpen: _doseOpen,
           onToggle: () => setState(() => _doseOpen = !_doseOpen),
           badgeCount: p.selectedDrugs.length,
@@ -485,7 +486,7 @@ class _BiometricsBody extends StatelessWidget {
       const SizedBox(height: 10),
       // Medicamentos em uso
       _FieldRow(
-        label: 'Medicamentos em uso (opcional)',
+        label: p.t('medications_optional'),
         child: MedInput(
           hintText: 'Ex: AAS 100mg, Enalapril 10mg...',
           initialValue: p.patient.medications,
@@ -523,11 +524,11 @@ class _DoseBody extends StatelessWidget {
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       // Drug picker sempre visível
       _FieldRow(
-        label: 'Selecionar fármaco',
+        label: p.t('select_drug'),
         child: Column(children: [
           MedInput(
             controller: drugQueryCtrl,
-            hintText: 'Buscar fármaco...',
+            hintText: p.t('search_drug_hint'),
             onChanged: (v) => onDrugPickerChanged(v.isNotEmpty),
           ),
           if (drugPickerOpen && filteredDrugs.isNotEmpty)
@@ -546,7 +547,7 @@ class _DoseBody extends StatelessWidget {
                 trailing: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(color: kDark, borderRadius: BorderRadius.circular(8)),
-                  child: const Text('Usar', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w900, color: kGoldLight)),
+                  child: Text(p.t('use'), style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w900, color: kGoldLight)),
                 ),
                 onTap: () {
                   p.addDrug(d.id);
@@ -563,18 +564,18 @@ class _DoseBody extends StatelessWidget {
         Center(child: Column(children: [
           Icon(Icons.medication_outlined, size: 40, color: Colors.grey[300]),
           const SizedBox(height: 10),
-          const Text('Nenhum fármaco selecionado', style: TextStyle(fontSize: 13, color: Color(0xFFAAAAAA), fontWeight: FontWeight.w700)),
+          Text(p.t('no_drug_selected'), style: const TextStyle(fontSize: 13, color: Color(0xFFAAAAAA), fontWeight: FontWeight.w700)),
           const SizedBox(height: 4),
-          const Text('Busque e selecione um fármaco acima', style: TextStyle(fontSize: 11, color: Color(0xFFBBBBBB))),
+          Text(p.t('search_add_above'), style: const TextStyle(fontSize: 11, color: Color(0xFFBBBBBB))),
         ])),
         const SizedBox(height: 16),
       ] else ...[
         const SizedBox(height: 14),
         // Métricas mini
         Row(children: [
-          Expanded(child: _MiniStat(label: 'Peso', value: p.patient.weight.isNotEmpty ? '${p.patient.weight} kg' : '—')),
+          Expanded(child: _MiniStat(label: p.t('weight'), value: p.patient.weight.isNotEmpty ? '${p.patient.weight} kg' : '—')),
           const SizedBox(width: 6),
-          Expanded(child: _MiniStat(label: 'Altura', value: p.patient.height.isNotEmpty ? '${p.patient.height} cm' : '—')),
+          Expanded(child: _MiniStat(label: p.t('height'), value: p.patient.height.isNotEmpty ? '${p.patient.height} cm' : '—')),
           const SizedBox(width: 6),
           Expanded(child: _MiniStat(label: 'ClCr', value: '${p.clcr ?? '—'} mL/min')),
         ]),
@@ -607,7 +608,7 @@ class _DoseBody extends StatelessWidget {
               boxShadow: copied ? null : [BoxShadow(color: kDark.withValues(alpha: 0.25), blurRadius: 12, offset: const Offset(0, 4))],
             ),
             child: Center(child: Text(
-              copied ? 'Copiado para prontuário!' : 'Copiar para prontuário',
+              copied ? p.t('copied_record') : p.t('copy_record'),
               style: TextStyle(fontSize: 14, fontWeight: FontWeight.w900, color: copied ? const Color(0xFF065F46) : kGoldLight),
             )),
           ),
@@ -647,7 +648,7 @@ class _DrugDoseCard extends StatelessWidget {
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                 decoration: BoxDecoration(color: kDark, borderRadius: BorderRadius.circular(20)),
-                child: const Text('principal', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w900, color: kGoldLight)),
+                child: Text(p.t('set_main'), style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w900, color: kGoldLight)),
               ),
             ),
             const SizedBox(width: 6),
@@ -670,7 +671,7 @@ class _DrugDoseCard extends StatelessWidget {
             gradient: const LinearGradient(begin: Alignment.topLeft, end: Alignment.bottomRight, colors: [kDark, Color(0xFF123326), kGreen]),
           ),
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            const Text('DOSE CALCULADA', style: TextStyle(fontSize: 9, fontWeight: FontWeight.w900, color: Color(0xBFFFE8A6), letterSpacing: 1.4)),
+            Text(p.t('calculated_dose'), style: const TextStyle(fontSize: 9, fontWeight: FontWeight.w900, color: Color(0xBFFFE8A6), letterSpacing: 1.4)),
             const SizedBox(height: 4),
             Text(dose.main, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w900, color: Colors.white, letterSpacing: -0.5)),
             const SizedBox(height: 5),
