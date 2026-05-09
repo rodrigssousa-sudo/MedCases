@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../models/user_model.dart';
 import '../services/auth_service.dart';
 import '../widgets/common_widgets.dart';
@@ -27,6 +28,7 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
   void initState() {
     super.initState();
     _tabs = TabController(length: 3, vsync: this);
+    _loadLang();
   }
 
   @override
@@ -47,7 +49,7 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
           Icon(Icons.admin_panel_settings_rounded, color: kGoldL, size: 20),
           const SizedBox(width: 8),
           Text(
-            _isMaster ? 'Painel Master' : 'Painel Admin',
+            _isMaster ? _masterPanelLabel : _adminPanelLabel,
             style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w900, color: Colors.white),
           ),
           if (_isMaster) ...[
@@ -69,10 +71,10 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
           labelColor: kGoldL,
           unselectedLabelColor: Colors.white54,
           labelStyle: const TextStyle(fontSize: 11, fontWeight: FontWeight.w800),
-          tabs: const [
-            Tab(icon: Icon(Icons.pending_actions_rounded, size: 18), text: 'Pendentes'),
-            Tab(icon: Icon(Icons.people_rounded, size: 18), text: 'Aprovados'),
-            Tab(icon: Icon(Icons.block_rounded, size: 18), text: 'Bloqueados'),
+          tabs: [
+            Tab(icon: const Icon(Icons.pending_actions_rounded, size: 18), text: _pendingLabel),
+            Tab(icon: const Icon(Icons.people_rounded, size: 18), text: _approvedLabel),
+            Tab(icon: const Icon(Icons.block_rounded, size: 18), text: _blockedLabel),
           ],
         ),
       ),
@@ -88,7 +90,7 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
               autocorrect: false,
               style: const TextStyle(color: Colors.white, fontSize: 13),
               decoration: InputDecoration(
-                hintText: 'Buscar por nome ou e-mail...',
+                hintText: _searchHint,
                 hintStyle: TextStyle(color: Colors.white38, fontSize: 13),
                 prefixIcon: const Icon(Icons.search_rounded, color: Colors.white38, size: 18),
                 filled: true,
@@ -120,7 +122,7 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
                   children: [
                     _UserList(
                       users: pending,
-                      emptyMsg: 'Nenhum usuário pendente',
+                      emptyMsg: _emptyPendingMsg,
                       emptyIcon: Icons.check_circle_outline_rounded,
                       currentAdmin: widget.currentAdmin,
                       isMaster: _isMaster,
@@ -131,7 +133,7 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
                     ),
                     _UserList(
                       users: approved,
-                      emptyMsg: 'Nenhum usuário aprovado',
+                      emptyMsg: _emptyApprovedMsg,
                       emptyIcon: Icons.people_outline_rounded,
                       currentAdmin: widget.currentAdmin,
                       isMaster: _isMaster,
@@ -144,13 +146,13 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
                     ),
                     _UserList(
                       users: blocked,
-                      emptyMsg: 'Nenhum usuário bloqueado',
+                      emptyMsg: _emptyBlockedMsg,
                       emptyIcon: Icons.verified_user_outlined,
                       currentAdmin: widget.currentAdmin,
                       isMaster: _isMaster,
                       onApprove: _unblock,
                       showApprove: true,
-                      approveBtnLabel: 'Desbloquear',
+                      approveBtnLabel: _unblockLabel,
                     ),
                   ],
                 );
@@ -170,7 +172,7 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
             onPressed: () => _tabs.animateTo(0),
             backgroundColor: Colors.orange,
             icon: const Icon(Icons.notification_important_rounded, color: Colors.white),
-            label: Text('$pendingCount pendente${pendingCount > 1 ? 's' : ''}',
+            label: Text('$pendingCount ${_pendingCountLabel(pendingCount)}',
                 style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w800)),
           );
         },
@@ -189,12 +191,12 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
 
   Future<void> _approve(UserModel u) async {
     await AuthService.approveUser(u.uid, widget.currentAdmin.uid);
-    if (mounted) _snack('✅ ${u.displayName} aprovado!', Colors.green);
+    if (mounted) _snack('✅ \${u.displayName} $_approvedSnack', Colors.green);
   }
 
   Future<void> _unblock(UserModel u) async {
     await AuthService.unblockUser(u.uid, widget.currentAdmin.uid);
-    if (mounted) _snack('✅ ${u.displayName} desbloqueado!', Colors.green);
+    if (mounted) _snack('✅ \${u.displayName} $_unblockedSnack', Colors.green);
   }
 
   Future<void> _block(UserModel u) async {
@@ -204,7 +206,7 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
     );
     if (!confirm) return;
     await AuthService.blockUser(u.uid);
-    if (mounted) _snack('🚫 ${u.displayName} bloqueado.', Colors.orange);
+    if (mounted) _snack('🚫 \${u.displayName} $_blockedSnack', Colors.orange);
   }
 
   Future<void> _promote(UserModel u) async {
@@ -216,7 +218,7 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
       );
       if (!confirm) return;
       await AuthService.promoteToAdmin(u.uid);
-      if (mounted) _snack('⭐ ${u.displayName} promovido a Admin!', kGold);
+      if (mounted) _snack('⭐ \${u.displayName} $_promotedAdminSnack', kGold);
     } else {
       // Admin normal só pode promover a supervisor
       await _promoteSupervisor(u);
@@ -230,7 +232,7 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
     );
     if (!confirm) return;
     await AuthService.promoteToSupervisor(u.uid);
-    if (mounted) _snack('🔰 ${u.displayName} promovido a Supervisor!', Colors.blue);
+    if (mounted) _snack('🔰 \${u.displayName} $_promotedSupervisorSnack', Colors.blue);
   }
 
   Future<void> _demote(UserModel u) async {
@@ -240,7 +242,7 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
     );
     if (!confirm) return;
     await AuthService.demoteToUser(u.uid);
-    if (mounted) _snack('↘ ${u.displayName} rebaixado para Usuário.', Colors.grey);
+    if (mounted) _snack('↘ \${u.displayName} $_demotedSnack', Colors.grey);
   }
 
   Future<bool> _confirmDialog(String title, String body) async {
@@ -254,18 +256,52 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(context, false),
-                child: const Text('Cancelar', style: TextStyle(color: Colors.grey)),
+                child: const Text('Cancelar / Cancel', style: TextStyle(color: Colors.grey)),
               ),
               ElevatedButton(
                 onPressed: () => Navigator.pop(context, true),
                 style: ElevatedButton.styleFrom(backgroundColor: kDark, foregroundColor: kGoldL),
-                child: const Text('Confirmar'),
+                child: const Text('Confirmar / Confirm'),
               ),
             ],
           ),
         ) ??
         false;
   }
+
+
+  // ── Helpers de idioma ──────────────────────────────────────────────────────
+  // AdminScreen não tem AppProvider; usa preferência salva localmente.
+  String _currentLang = 'pt';
+  bool get _isEs => _currentLang == 'es';
+
+  void _loadLang() {
+    // ignorar erro se SharedPreferences não disponível
+    try {
+      SharedPreferences.getInstance().then((prefs) {
+        final lang = prefs.getString('lang') ?? 'pt';
+        if (mounted && lang != _currentLang) setState(() => _currentLang = lang);
+      });
+    } catch (_) {}
+  }
+
+  String get _masterPanelLabel       => _isEs ? 'Panel Master'                 : 'Painel Master';
+  String get _adminPanelLabel        => _isEs ? 'Panel Admin'                  : 'Painel Admin';
+  String get _pendingLabel           => _isEs ? 'Pendientes'                   : 'Pendentes';
+  String get _approvedLabel          => _isEs ? 'Aprobados'                    : 'Aprovados';
+  String get _blockedLabel           => _isEs ? 'Bloqueados'                   : 'Bloqueados';
+  String get _searchHint             => _isEs ? 'Buscar por nombre o correo...' : 'Buscar por nome ou e-mail...';
+  String get _emptyPendingMsg        => _isEs ? 'Ningún usuario pendiente'     : 'Nenhum usuário pendente';
+  String get _emptyApprovedMsg       => _isEs ? 'Ningún usuario aprobado'      : 'Nenhum usuário aprovado';
+  String get _emptyBlockedMsg        => _isEs ? 'Ningún usuario bloqueado'     : 'Nenhum usuário bloqueado';
+  String get _unblockLabel           => _isEs ? 'Desbloquear'                  : 'Desbloquear';
+  String get _approvedSnack          => _isEs ? 'aprobado!'                    : 'aprovado!';
+  String get _unblockedSnack         => _isEs ? 'desbloqueado!'                : 'desbloqueado!';
+  String get _blockedSnack           => _isEs ? 'bloqueado.'                   : 'bloqueado.';
+  String get _promotedAdminSnack     => _isEs ? 'promovido a Admin!'           : 'promovido a Admin!';
+  String get _promotedSupervisorSnack=> _isEs ? 'promovido a Supervisor!'      : 'promovido a Supervisor!';
+  String get _demotedSnack           => _isEs ? 'rebajado a Usuario.'          : 'rebaixado para Usuário.';
+  String _pendingCountLabel(int n)   => _isEs ? 'pendiente\${n > 1 ? "s" : ""}' : 'pendente\${n > 1 ? "s" : ""}';
 
   void _snack(String msg, Color color) {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -276,6 +312,7 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
     ));
   }
 }
+
 
 // ── Lista de usuários ──────────────────────────────────────────────────────
 class _UserList extends StatelessWidget {
@@ -434,7 +471,7 @@ class _UserCard extends StatelessWidget {
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                       decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), color: kGold.withValues(alpha: 0.15), border: Border.all(color: kGold.withValues(alpha: 0.4))),
-                      child: const Text('Você', style: TextStyle(fontSize: 9, fontWeight: FontWeight.w900, color: kGold)),
+                      child: const Text('Você / You', style: TextStyle(fontSize: 9, fontWeight: FontWeight.w900, color: kGold)),
                     ),
                   const SizedBox(width: 4),
                   _StatusBadge(user.status),
@@ -460,7 +497,7 @@ class _UserCard extends StatelessWidget {
           // Data de cadastro
           const SizedBox(height: 6),
           Text(
-            'Cadastro: ${_formatDate(user.createdAt)}${user.approvedAt != null ? '  •  Aprovado: ${_formatDate(user.approvedAt!)}' : ''}',
+            'Reg: ${_formatDate(user.createdAt)}${user.approvedAt != null ? '  •  Aprov: ${_formatDate(user.approvedAt!)}' : ''}',
             style: TextStyle(fontSize: 10, color: kDark.withValues(alpha: 0.35), fontWeight: FontWeight.w500),
           ),
 
@@ -474,13 +511,13 @@ class _UserCard extends StatelessWidget {
                 if (onApprove != null)
                   _ActionBtn(label: approveBtnLabel, icon: Icons.check_circle_outline_rounded, color: kGreen, onTap: onApprove!),
                 if (onPromote != null)
-                  _ActionBtn(label: isMaster ? 'Tornar Admin' : 'Tornar Supervisor', icon: Icons.star_outline_rounded, color: kGold, onTap: onPromote!),
+                  _ActionBtn(label: isMaster ? 'Admin' : 'Supervisor', icon: Icons.star_outline_rounded, color: kGold, onTap: onPromote!),
                 if (onPromoteSupervisor != null && onPromote == null)
-                  _ActionBtn(label: 'Tornar Supervisor', icon: Icons.shield_outlined, color: Colors.blue, onTap: onPromoteSupervisor!),
+                  _ActionBtn(label: 'Supervisor', icon: Icons.shield_outlined, color: Colors.blue, onTap: onPromoteSupervisor!),
                 if (onDemote != null)
-                  _ActionBtn(label: 'Rebaixar', icon: Icons.arrow_downward_rounded, color: Colors.orange, onTap: onDemote!),
+                  _ActionBtn(label: '↘', icon: Icons.arrow_downward_rounded, color: Colors.orange, onTap: onDemote!),
                 if (onBlock != null)
-                  _ActionBtn(label: 'Bloquear', icon: Icons.block_rounded, color: Colors.red, onTap: onBlock!),
+                  _ActionBtn(label: '✕', icon: Icons.block_rounded, color: Colors.red, onTap: onBlock!),
               ],
             ),
           ],
@@ -502,11 +539,11 @@ class _StatusBadge extends StatelessWidget {
     Color bg; Color fg; String label;
     switch (status) {
       case UserStatus.approved:
-        bg = Colors.green.withValues(alpha: 0.1); fg = Colors.green; label = 'Aprovado'; break;
+        bg = Colors.green.withValues(alpha: 0.1); fg = Colors.green; label = 'Aprobado/Aprovado'; break;
       case UserStatus.pending:
-        bg = Colors.orange.withValues(alpha: 0.12); fg = Colors.orange; label = 'Pendente'; break;
+        bg = Colors.orange.withValues(alpha: 0.12); fg = Colors.orange; label = '⏳'; break;
       case UserStatus.blocked:
-        bg = Colors.red.withValues(alpha: 0.1); fg = Colors.red; label = 'Bloqueado'; break;
+        bg = Colors.red.withValues(alpha: 0.1); fg = Colors.red; label = '🚫'; break;
     }
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),

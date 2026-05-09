@@ -66,17 +66,17 @@ class _ProtocolsScreenState extends State<ProtocolsScreen> {
     return SingleChildScrollView(
       padding: const EdgeInsets.fromLTRB(0, 8, 0, 100),
       child: Column(children: [
-        PremiumCard(child: SectionTitle(eyebrow: 'Clinical Flow', title: p.t('protocols'), subtitle: 'Pesquise e abra o protocolo completo só quando precisar.', light: true)),
+        PremiumCard(child: SectionTitle(eyebrow: 'Clinical Flow', title: p.t('protocols'), subtitle: p.t('protocols_subtitle'), light: true)),
         const SizedBox(height: 12),
         StandardCard(
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             MedInput(
               controller: _searchCtrl,
-              hintText: 'Pesquisar protocolo: IAM, TEP, choque, hipercalemia...',
+              hintText: p.t('search_protocol_hint'),
               onChanged: (_) => setState(() {}),
             ),
             const SizedBox(height: 8),
-            Text('${filtered.length} protocolo(s) encontrado(s)', style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: Color(0xFF888888))),
+            Text('${filtered.length} ${p.t("protocols_found")}', style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: Color(0xFF888888))),
           ]),
         ),
         const SizedBox(height: 12),
@@ -107,7 +107,7 @@ class _ProtocolsScreenState extends State<ProtocolsScreen> {
                       child: Padding(padding: const EdgeInsets.all(4), child: Text(isFav ? '⭐' : '☆', style: const TextStyle(fontSize: 18))),
                     ),
                     const SizedBox(height: 4),
-                    Container(padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6), decoration: BoxDecoration(color: kDark, borderRadius: BorderRadius.circular(20)), child: const Text('abrir', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w900, color: kGoldLight))),
+                    Container(padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6), decoration: BoxDecoration(color: kDark, borderRadius: BorderRadius.circular(20)), child: Text(p.t('open'), style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w900, color: kGoldLight))),
                   ]),
                 ]),
               ),
@@ -136,11 +136,10 @@ class _ProtocolDetailView extends StatelessWidget {
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             decoration: BoxDecoration(borderRadius: BorderRadius.circular(14), border: Border.all(color: kBorder), color: Colors.white),
-            child: const Row(children: [
+            child: Row(children: const [
               Icon(Icons.arrow_back_ios, size: 14, color: kDark),
               SizedBox(width: 4),
-              Text('Voltar para protocolos', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w900, color: kDark)),
-            ]),
+            ] + [Text(p.t('back_protocols'), style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w900, color: kDark))]),
           ),
         ),
         const SizedBox(height: 12),

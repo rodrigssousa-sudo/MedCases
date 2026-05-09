@@ -86,8 +86,9 @@ class _AiScreenState extends State<AiScreen> {
 
   void _copyMsg(String text) {
     Clipboard.setData(ClipboardData(text: text));
+    final p = context.read<AppProvider>();
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Copiado para a área de transferência'), duration: Duration(seconds: 1)),
+      SnackBar(content: Text(p.t('copied')), duration: const Duration(seconds: 1)),
     );
   }
 
@@ -114,9 +115,7 @@ class _AiScreenState extends State<AiScreen> {
             const SizedBox(width: 12),
             Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Text(p.t('ai'), style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w900, color: Colors.white)),
-              Text(p.lang == 'es'
-                ? 'Razonamiento clínico • Solo apoyo educativo'
-                : 'Raciocínio clínico • Somente apoio educacional',
+              Text(p.t('ai_subtitle'),
                 style: TextStyle(fontSize: 10, color: Colors.white.withValues(alpha: 0.6), fontWeight: FontWeight.w600)),
             ])),
             if (_messages.isNotEmpty)
@@ -156,9 +155,7 @@ class _AiScreenState extends State<AiScreen> {
         dark: dark,
         onSend: (t) => _send(t, p),
         label: p.t('send'),
-        hint: p.lang == 'es'
-          ? 'Describir el caso clínico...'
-          : 'Descrever o caso clínico...',
+        hint: p.t('ai_placeholder'),
       ),
     ]);
   }
@@ -179,9 +176,7 @@ class _AiScreenState extends State<AiScreen> {
             const Text('⚠️', style: TextStyle(fontSize: 14)),
             const SizedBox(width: 8),
             Expanded(child: Text(
-              p.lang == 'es'
-                ? 'IA clínica de apoyo educativo. NO reemplaza evaluación médica, protocolos institucionales ni la decisión del profesional de salud. Siempre revisar alergias, gestación, interacciones y contexto antes de prescribir.'
-                : 'IA clínica de apoio educacional. NÃO substitui avaliação médica, protocolos institucionais nem decisão do profissional de saúde. Sempre revisar alergias, gestação, interações e contexto antes de prescrever.',
+              p.t('ai_disclaimer'),
               style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: Color(0xFF7A5F00), height: 1.45),
             )),
           ]),
@@ -190,7 +185,7 @@ class _AiScreenState extends State<AiScreen> {
         Align(
           alignment: Alignment.centerLeft,
           child: Text(
-            p.lang == 'es' ? 'Sugerencias rápidas' : 'Sugestões rápidas',
+            p.t('quick_suggestions'),
             style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w900, letterSpacing: 1.4, color: Color(0xFF888888)),
           ),
         ),
@@ -220,14 +215,14 @@ class _AiScreenState extends State<AiScreen> {
           padding: const EdgeInsets.all(14),
           decoration: BoxDecoration(borderRadius: BorderRadius.circular(18), border: Border.all(color: kBorder), color: kCream),
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            const Text('O QUE A IA FORNECE', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w900, letterSpacing: 1.4, color: kGold)),
+            Text(p.t('ai_provides').toUpperCase(), style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w900, letterSpacing: 1.4, color: kGold)),
             const SizedBox(height: 10),
             ...[
-              p.lang == 'es' ? 'Hipótesis diagnósticas por síntoma' : 'Hipóteses diagnósticas pelo sintoma',
-              p.lang == 'es' ? 'Protocolo clínico sugerido' : 'Protocolo clínico sugerido',
-              p.lang == 'es' ? 'Dosis individualizadas (peso, ClCr, edad)' : 'Doses individualizadas (peso, ClCr, idade)',
-              p.lang == 'es' ? 'Red flags y criterios de urgencia' : 'Red flags e critérios de urgência',
-              p.lang == 'es' ? 'Exámenes complementarios útiles' : 'Exames complementares úteis',
+              p.t('ai_feat_dx'),
+              p.t('ai_feat_protocol'),
+              p.t('ai_feat_doses'),
+              p.t('ai_feat_flags'),
+              p.t('ai_feat_exams'),
             ].map((s) => Padding(
               padding: const EdgeInsets.only(bottom: 6),
               child: Text(s, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: kDark, height: 1.4)),
@@ -323,7 +318,7 @@ class _AiBubble extends StatelessWidget {
                   child: Row(children: [
                     const Icon(Icons.copy_rounded, size: 11, color: Color(0xFFFFE8A6)),
                     const SizedBox(width: 4),
-                    const Text('Copiar', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w900, color: Color(0xFFFFE8A6))),
+                    Builder(builder: (ctx) { final prov = ctx.read<AppProvider>(); return Text(prov.t('copy'), style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w900, color: Color(0xFFFFE8A6))); }),
                   ]),
                 ),
               ),

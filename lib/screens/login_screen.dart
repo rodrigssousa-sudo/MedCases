@@ -111,7 +111,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
       if (result.success && result.user != null && result.user!.isPending) {
         setState(() {
           _loading = false;
-          _success = '✅ Cadastro realizado!\n\nSua conta está aguardando aprovação do administrador. Você receberá acesso em breve.';
+          _success = _registerSuccessMsg();
           _mode = _Mode.login;
         });
         return;
@@ -121,7 +121,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
       if (result.success) {
         setState(() {
           _loading = false;
-          _success = '✅ E-mail de redefinição enviado para ${_emailCtrl.text}.\n\nVerifique sua caixa de entrada.';
+          _success = _resetSuccessMsg(_emailCtrl.text);
         });
         return;
       }
@@ -189,17 +189,17 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
 
                         // Nome (só no cadastro)
                         if (_mode == _Mode.register) ...[
-                          _field('Nome completo', _nameCtrl, Icons.person_outline_rounded,
-                            validator: (v) => (v?.trim().isEmpty ?? true) ? 'Informe seu nome' : null),
+                          _field(_fullNameLabel, _nameCtrl, Icons.person_outline_rounded,
+                            validator: (v) => (v?.trim().isEmpty ?? true) ? _nameRequiredMsg : null),
                           const SizedBox(height: 12),
                         ],
 
                         // E-mail
-                        _field('E-mail profissional', _emailCtrl, Icons.email_outlined,
+                        _field(_emailLabel, _emailCtrl, Icons.email_outlined,
                           keyboard: TextInputType.emailAddress,
                           validator: (v) {
-                            if (v?.trim().isEmpty ?? true) return 'Informe o e-mail';
-                            if (!RegExp(r'^[\w.-]+@[\w.-]+\.\w+$').hasMatch(v!.trim())) return 'E-mail inválido';
+                            if (v?.trim().isEmpty ?? true) return _emailRequiredMsg;
+                            if (!RegExp(r'^[\w.-]+@[\w.-]+\.\w+$').hasMatch(v!.trim())) return _emailInvalidMsg;
                             return null;
                           }),
                         const SizedBox(height: 12),
@@ -228,7 +228,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                               ),
                               const SizedBox(width: 8),
                               Text(
-                                'Lembrar e-mail',
+                                _rememberEmailLabel,
                                 style: TextStyle(fontSize: 12, color: kDark.withValues(alpha: 0.65), fontWeight: FontWeight.w600),
                               ),
                             ]),
@@ -238,9 +238,9 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
 
                         // Profissão + Instituição (só no cadastro)
                         if (_mode == _Mode.register) ...[
-                          _field('Profissão (ex: Médico, Residente)', _profCtrl, Icons.work_outline_rounded),
+                          _field(_professionLabel, _profCtrl, Icons.work_outline_rounded),
                           const SizedBox(height: 12),
-                          _field('Instituição / Hospital', _instCtrl, Icons.local_hospital_outlined),
+                          _field(_institutionLabel, _instCtrl, Icons.local_hospital_outlined),
                           const SizedBox(height: 12),
                         ],
 
@@ -273,7 +273,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                 const SizedBox(height: 24),
                 // Aviso legal
                 Text(
-                  'Uso educacional e de apoio clínico. Não substitui avaliação médica individual nem diretrizes institucionais.',
+                  _legalDisclaimer,
                   textAlign: TextAlign.center,
                   style: TextStyle(fontSize: 10, color: Colors.white.withValues(alpha: 0.35), fontWeight: FontWeight.w500, height: 1.5),
                 ),
@@ -304,7 +304,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
             color: kGold.withValues(alpha: 0.1),
           ),
           child: Text(
-            'Clínica Médica  •  Doses  •  Protocolos',
+            _isEs ? 'Medicina Clínica  •  Dosis  •  Protocolos' : 'Clínica Médica  •  Doses  •  Protocolos',
             style: TextStyle(fontSize: 11, color: kGoldL.withValues(alpha: 0.85), fontWeight: FontWeight.w700, letterSpacing: 0.3),
           ),
         ),
@@ -352,11 +352,11 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
       spellCheckConfiguration: const SpellCheckConfiguration.disabled(),
       autocorrect: false,
       validator: _mode == _Mode.register
-          ? (v) => (v?.length ?? 0) < 6 ? 'Mínimo 6 caracteres' : null
-          : (v) => (v?.isEmpty ?? true) ? 'Informe a senha' : null,
+          ? (v) => (v?.length ?? 0) < 6 ? _passwordMinMsg : null
+          : (v) => (v?.isEmpty ?? true) ? _passwordRequiredMsg : null,
       style: const TextStyle(fontSize: 14, color: kDark, fontWeight: FontWeight.w600),
       decoration: InputDecoration(
-        labelText: 'Senha',
+        labelText: _passwordLabel,
         labelStyle: TextStyle(fontSize: 12, color: kDark.withValues(alpha: 0.55), fontWeight: FontWeight.w600),
         prefixIcon: const Icon(Icons.lock_outline_rounded, size: 18, color: kGreen),
         suffixIcon: IconButton(
@@ -401,15 +401,15 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
         children: [
           TextButton(
             onPressed: () => _switchMode(_Mode.reset),
-            child: Text('Esqueceu a senha?', style: TextStyle(fontSize: 12, color: kGreen, fontWeight: FontWeight.w700)),
+            child: Text(_forgotPasswordLabel, style: TextStyle(fontSize: 12, color: kGreen, fontWeight: FontWeight.w700)),
           ),
           const Divider(height: 1),
           const SizedBox(height: 12),
           Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-            Text('Não tem conta?  ', style: TextStyle(fontSize: 12, color: kDark.withValues(alpha: 0.55))),
+            Text(_noAccountLabel, style: TextStyle(fontSize: 12, color: kDark.withValues(alpha: 0.55))),
             GestureDetector(
               onTap: () => _switchMode(_Mode.register),
-              child: const Text('Cadastrar-se', style: TextStyle(fontSize: 12, color: kGreen, fontWeight: FontWeight.w900)),
+              child: Text(_signUpLabel, style: const TextStyle(fontSize: 12, color: kGreen, fontWeight: FontWeight.w900)),
             ),
           ]),
         ],
@@ -417,32 +417,74 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
     } else {
       return TextButton(
         onPressed: () => _switchMode(_Mode.login),
-        child: Text('← Voltar para o login', style: TextStyle(fontSize: 12, color: kGreen, fontWeight: FontWeight.w700)),
+        child: Text(_backToLoginLabel, style: TextStyle(fontSize: 12, color: kGreen, fontWeight: FontWeight.w700)),
       );
     }
   }
 
+  // ── Helpers de idioma ────────────────────────────────────────────────────
+  // LoginScreen não tem AppProvider (pré-auth); lê a pref salva localmente.
+  String _currentLang = 'pt';
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    SharedPreferences.getInstance().then((prefs) {
+      final lang = prefs.getString('lang') ?? 'pt';
+      if (mounted && lang != _currentLang) setState(() => _currentLang = lang);
+    });
+  }
+
+  bool get _isEs => _currentLang == 'es';
+
   String get _modeTitle {
     switch (_mode) {
-      case _Mode.login:    return 'Entrar na sua conta';
-      case _Mode.register: return 'Criar conta';
-      case _Mode.reset:    return 'Redefinir senha';
+      case _Mode.login:    return _isEs ? 'Iniciar sesión'           : 'Entrar na sua conta';
+      case _Mode.register: return _isEs ? 'Crear cuenta'             : 'Criar conta';
+      case _Mode.reset:    return _isEs ? 'Restablecer contraseña'   : 'Redefinir senha';
     }
   }
 
   String get _modeSubtitle {
     switch (_mode) {
-      case _Mode.login:    return 'Use seu e-mail e senha cadastrados';
-      case _Mode.register: return 'Cadastro sujeito à aprovação do administrador';
-      case _Mode.reset:    return 'Enviaremos um link para seu e-mail';
+      case _Mode.login:    return _isEs ? 'Usa tu correo y contraseña registrados'                   : 'Use seu e-mail e senha cadastrados';
+      case _Mode.register: return _isEs ? 'Registro sujeto a aprobación del administrador'           : 'Cadastro sujeito à aprovação do administrador';
+      case _Mode.reset:    return _isEs ? 'Enviaremos un enlace a tu correo'                         : 'Enviaremos um link para seu e-mail';
     }
   }
 
   String get _modeBtn {
     switch (_mode) {
-      case _Mode.login:    return 'Entrar';
-      case _Mode.register: return 'Solicitar acesso';
-      case _Mode.reset:    return 'Enviar link';
+      case _Mode.login:    return _isEs ? 'Iniciar sesión'   : 'Entrar';
+      case _Mode.register: return _isEs ? 'Solicitar acceso' : 'Solicitar acesso';
+      case _Mode.reset:    return _isEs ? 'Enviar enlace'    : 'Enviar link';
     }
   }
+
+  String get _rememberEmailLabel  => _isEs ? 'Recordar correo'                      : 'Lembrar e-mail';
+  String get _fullNameLabel       => _isEs ? 'Nombre completo'                      : 'Nome completo';
+  String get _nameRequiredMsg     => _isEs ? 'Ingresa tu nombre'                    : 'Informe seu nome';
+  String get _emailLabel          => _isEs ? 'Correo profesional'                   : 'E-mail profissional';
+  String get _emailRequiredMsg    => _isEs ? 'Ingresa el correo'                    : 'Informe o e-mail';
+  String get _emailInvalidMsg     => _isEs ? 'Correo inválido'                      : 'E-mail inválido';
+  String get _professionLabel     => _isEs ? 'Profesión (ej: Médico, Residente)'    : 'Profissão (ex: Médico, Residente)';
+  String get _institutionLabel    => _isEs ? 'Institución / Hospital'               : 'Instituição / Hospital';
+  String get _forgotPasswordLabel => _isEs ? '¿Olvidaste tu contraseña?'            : 'Esqueceu a senha?';
+  String get _noAccountLabel      => _isEs ? '¿No tienes cuenta?  '                : 'Não tem conta?  ';
+  String get _signUpLabel         => _isEs ? 'Registrarse'                          : 'Cadastrar-se';
+  String get _backToLoginLabel    => _isEs ? '← Volver al inicio de sesión'        : '← Voltar para o login';
+  String get _passwordLabel       => _isEs ? 'Contraseña'                           : 'Senha';
+  String get _passwordMinMsg      => _isEs ? 'Mínimo 6 caracteres'                  : 'Mínimo 6 caracteres';
+  String get _passwordRequiredMsg => _isEs ? 'Ingresa la contraseña'                : 'Informe a senha';
+  String get _legalDisclaimer     => _isEs
+      ? 'Uso educativo y de apoyo clínico. No reemplaza la evaluación médica individual ni las directrices institucionales.'
+      : _isEs ? 'Uso educacional y de apoyo clínico. No sustituye la evaluación médica individual ni las directrices institucionales.' : 'Uso educacional e de apoio clínico. Não substitui avaliação médica individual nem diretrizes institucionais.';
+
+  String _registerSuccessMsg() => _isEs
+      ? '✅ ¡Registro realizado!\n\nTu cuenta está pendiente de aprobación del administrador. Recibirás acceso en breve.'
+      : '✅ Cadastro realizado!\n\nSua conta está aguardando aprovação do administrador. Você receberá acesso em breve.';
+
+  String _resetSuccessMsg(String email) => _isEs
+      ? '✅ Correo de restablecimiento enviado a $email.\n\nRevisa tu bandeja de entrada.'
+      : '✅ E-mail de redefinição enviado para $email.\n\nVerifique sua caixa de entrada.';
 }

@@ -50,17 +50,17 @@ class _DrugsScreenState extends State<DrugsScreen> {
     return SingleChildScrollView(
       padding: const EdgeInsets.fromLTRB(0, 8, 0, 100),
       child: Column(children: [
-        PremiumCard(child: SectionTitle(eyebrow: 'Knowledge Base', title: p.t('drugs'), subtitle: 'Pesquise, abra o card e veja a ficha completa do fármaco.', light: true)),
+        PremiumCard(child: SectionTitle(eyebrow: 'Knowledge Base', title: p.t('drugs'), subtitle: p.t('drugs_subtitle'), light: true)),
         const SizedBox(height: 12),
         StandardCard(
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             MedInput(
               controller: _searchCtrl,
-              hintText: 'Pesquisar fármaco, classe, mecanismo ou alerta...',
+              hintText: p.t('drugs_search_hint'),
               onChanged: (_) => setState(() {}),
             ),
             const SizedBox(height: 8),
-            Text('${unique.length} fármaco(s) encontrado(s)', style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: Color(0xFF888888))),
+            Text('${unique.length} ${p.t('drugs_found')}', style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: Color(0xFF888888))),
           ]),
         ),
         const SizedBox(height: 12),
@@ -91,7 +91,7 @@ class _DrugsScreenState extends State<DrugsScreen> {
                       child: Padding(padding: const EdgeInsets.all(4), child: Text(isFav ? '⭐' : '☆', style: const TextStyle(fontSize: 18))),
                     ),
                     const SizedBox(height: 4),
-                    Container(padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6), decoration: BoxDecoration(color: kDark, borderRadius: BorderRadius.circular(20)), child: const Text('abrir', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w900, color: kGoldLight))),
+                    Container(padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6), decoration: BoxDecoration(color: kDark, borderRadius: BorderRadius.circular(20)), child: Text(p.t('open'), style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w900, color: kGoldLight))),
                   ]),
                 ]),
               ),
@@ -237,7 +237,7 @@ class _DrugDetailViewState extends State<_DrugDetailView> {
             child: Row(children: [
               Icon(Icons.arrow_back_ios, size: 14, color: dark ? Colors.white70 : kDark),
               const SizedBox(width: 4),
-              Text('Voltar para fármacos',
+              Text(p.t('back_drugs'),
                 style: TextStyle(fontSize: 14, fontWeight: FontWeight.w900,
                   color: dark ? Colors.white70 : kDark)),
             ]),
@@ -292,29 +292,29 @@ class _DrugDetailViewState extends State<_DrugDetailView> {
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
 
             // Título da seção
-            Text('DOSE CALCULADA',
+            Text(p.t('calculated_dose'),
               style: TextStyle(fontSize: 9, fontWeight: FontWeight.w900,
                 letterSpacing: 1.8, color: dark ? const Color(0xFFFFE8A6) : kDark)),
             const SizedBox(height: 2),
-            Text('Edite os dados abaixo para recalcular',
+            Text(p.t('edit_to_recalc'),
               style: TextStyle(fontSize: 11,
                 color: dark ? Colors.white38 : const Color(0xFF999999),
                 fontWeight: FontWeight.w600)),
             const SizedBox(height: 14),
 
             // ── Linha 1: Sexo toggle ────────────────────────────────────────
-            _FieldLabel('Sexo biológico'),
+            _FieldLabel(p.t('bio_sex')),
             const SizedBox(height: 6),
             Row(children: [
               _SexToggleBtn(
-                label: 'Masculino',
+                label: p.t('male'),
                 active: _sex == 'M',
                 dark: dark,
                 onTap: () => setState(() => _sex = 'M'),
               ),
               const SizedBox(width: 8),
               _SexToggleBtn(
-                label: 'Feminino',
+                label: p.t('female'),
                 active: _sex == 'F',
                 dark: dark,
                 onTap: () => setState(() => _sex = 'F'),
@@ -404,10 +404,12 @@ class _DrugDetailViewState extends State<_DrugDetailView> {
                   Container(height: 1,
                     color: Colors.white.withValues(alpha: 0.12)),
                   const SizedBox(height: 8),
-                  Text(dose.detail,
+                  Text(
+                    dose.detail
+                      .replaceAll(': ', ':\n').replaceAll('; ', ';\n'),
                     style: TextStyle(fontSize: 12,
                       color: Colors.white.withValues(alpha: 0.72),
-                      fontWeight: FontWeight.w600, height: 1.5)),
+                      fontWeight: FontWeight.w600, height: 1.6)),
                 ],
               ]),
             ),
@@ -429,9 +431,9 @@ class _DrugDetailViewState extends State<_DrugDetailView> {
                     color: kDark.withValues(alpha: 0.35),
                     blurRadius: 12, offset: const Offset(0, 4))],
                 ),
-                child: const Center(
-                  child: Text('Usar este fármaco no Cockpit',
-                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w900,
+                child: Center(
+                  child: Text(p.t('use_in_cockpit'),
+                    style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w900,
                       color: kGoldLight)),
                 ),
               ),
@@ -449,7 +451,7 @@ class _DrugDetailViewState extends State<_DrugDetailView> {
           ),
           padding: const EdgeInsets.all(16),
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text('FICHA TÉCNICA',
+            Text(p.t('drug_sheet'),
               style: TextStyle(fontSize: 9, fontWeight: FontWeight.w900,
                 letterSpacing: 1.8, color: dark ? const Color(0xFFFFE8A6) : kDark)),
             const SizedBox(height: 14),
@@ -461,11 +463,11 @@ class _DrugDetailViewState extends State<_DrugDetailView> {
             const SizedBox(height: 10),
             _Divider(dark: dark),
             const SizedBox(height: 10),
-            InfoBlock(label: 'Alerta renal', text: p.tDB(drug.renalAlert)),
+            InfoBlock(label: p.t('renal_alert'), text: p.tDB(drug.renalAlert)),
             const SizedBox(height: 10),
             _Divider(dark: dark),
             const SizedBox(height: 10),
-            InfoBlock(label: 'Alerta em idosos', text: p.tDB(drug.elderlyAlert)),
+            InfoBlock(label: p.t('elderly_alert'), text: p.tDB(drug.elderlyAlert)),
             if (adverse.isNotEmpty) ...[
               const SizedBox(height: 10),
               _Divider(dark: dark),
@@ -479,8 +481,8 @@ class _DrugDetailViewState extends State<_DrugDetailView> {
                   border: Border.all(color: const Color(0xFFFFCCCC)),
                 ),
                 child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  const Text('EVENTOS ADVERSOS',
-                    style: TextStyle(fontSize: 9, fontWeight: FontWeight.w900,
+                  Text(p.t('adverse_events'),
+                    style: const TextStyle(fontSize: 9, fontWeight: FontWeight.w900,
                       letterSpacing: 1.4, color: Color(0xFFCC0000))),
                   const SizedBox(height: 8),
                   Wrap(

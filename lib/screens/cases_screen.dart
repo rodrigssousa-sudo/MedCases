@@ -78,7 +78,7 @@ class _CasesScreenState extends State<CasesScreen> with SingleTickerProviderStat
             Expanded(child: SectionTitle(
               eyebrow: 'Case Manager',
               title: p.t('cases'),
-              subtitle: p.lang == 'es' ? 'Casos guardados y templates educativos.' : 'Casos salvos e templates educativos.',
+              subtitle: p.t('cases_subtitle'),
               light: true,
             )),
             GestureDetector(
@@ -89,7 +89,7 @@ class _CasesScreenState extends State<CasesScreen> with SingleTickerProviderStat
                 child: Row(children: [
                   const Icon(Icons.add_rounded, size: 16, color: Color(0xFFFFE8A6)),
                   const SizedBox(width: 4),
-                  Text(p.t('new'), style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w900, color: Color(0xFFFFE8A6))),
+                  Text(p.t('new_case'), style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w900, color: Color(0xFFFFE8A6))),
                 ]),
               ),
             ),
@@ -112,8 +112,8 @@ class _CasesScreenState extends State<CasesScreen> with SingleTickerProviderStat
             unselectedLabelColor: const Color(0xFF888888),
             dividerColor: Colors.transparent,
             tabs: [
-              Tab(text: p.lang == 'es' ? 'Mis casos (${customFiltered.length})' : 'Meus casos (${customFiltered.length})'),
-              Tab(text: p.lang == 'es' ? 'Biblioteca (${dbFiltered.length})' : 'Biblioteca (${dbFiltered.length})'),
+              Tab(text: '${p.t("my_cases")} (${customFiltered.length})'),
+              Tab(text: '${p.t("library")} (${dbFiltered.length})'),
             ],
           ),
         ),
@@ -124,7 +124,7 @@ class _CasesScreenState extends State<CasesScreen> with SingleTickerProviderStat
         padding: const EdgeInsets.fromLTRB(16, 10, 16, 0),
         child: MedInput(
           controller: _searchCtrl,
-          hintText: p.lang == 'es' ? 'Buscar casos...' : 'Pesquisar casos...',
+          hintText: p.t('search_cases'),
           onChanged: (_) => setState(() {}),
         ),
       ),
@@ -139,8 +139,8 @@ class _CasesScreenState extends State<CasesScreen> with SingleTickerProviderStat
             // My cases
             customFiltered.isEmpty
               ? _EmptyState(
-                  text: p.lang == 'es' ? 'Sin casos guardados aún.' : 'Nenhum caso salvo ainda.',
-                  actionText: p.t('new'),
+                  text: p.t('no_cases'),
+                  actionText: p.t('new_case'),
                   onAction: () => setState(() => _editing = ClinicalCaseModel.blank()),
                 )
               : ListView.builder(
@@ -156,7 +156,7 @@ class _CasesScreenState extends State<CasesScreen> with SingleTickerProviderStat
                 ),
             // Library
             dbFiltered.isEmpty
-              ? _EmptyState(text: p.lang == 'es' ? 'Sin casos en la biblioteca.' : 'Nenhum caso na biblioteca.')
+              ? _EmptyState(text: p.t('no_library_cases'))
               : ListView.builder(
                   padding: const EdgeInsets.fromLTRB(0, 8, 0, 100),
                   itemCount: dbFiltered.length,
@@ -204,7 +204,7 @@ class _CaseCard extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                     decoration: BoxDecoration(borderRadius: BorderRadius.circular(8), color: kDark),
-                    child: Text(c.category.isNotEmpty ? c.category : (p.lang == 'es' ? 'Caso' : 'Caso'),
+                    child: Text(c.category.isNotEmpty ? c.category : p.t('case_label'),
                       style: const TextStyle(fontSize: 9, fontWeight: FontWeight.w900, color: kGoldLight)),
                   ),
                   if (c.patientAge.isNotEmpty) ...[
@@ -222,11 +222,11 @@ class _CaseCard extends StatelessWidget {
                   onTap: () {
                     if (onDelete != null) {
                       showDialog(context: context, builder: (_) => AlertDialog(
-                        title: const Text('Excluir caso?'),
-                        content: Text('Deseja excluir "${c.title}"?'),
+                        title: Text(p.t('delete_case_q')),
+                        content: Text('${p.t("delete_case_confirm")} "${c.title}"?'),
                         actions: [
-                          TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancelar')),
-                          TextButton(onPressed: () { Navigator.pop(context); onDelete!(); }, child: const Text('Excluir', style: TextStyle(color: Colors.red))),
+                          TextButton(onPressed: () => Navigator.pop(context), child: Text(p.t('cancel'))),
+                          TextButton(onPressed: () { Navigator.pop(context); onDelete!(); }, child: Text(p.t('delete'), style: const TextStyle(color: Colors.red))),
                         ],
                       ));
                     }
@@ -237,7 +237,7 @@ class _CaseCard extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                 decoration: BoxDecoration(color: kDark, borderRadius: BorderRadius.circular(20)),
-                child: const Text('ver', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w900, color: kGoldLight)),
+                child: Text(p.t('open'), style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w900, color: kGoldLight)),
               ),
             ]),
             if (c.diagnosis.isNotEmpty) ...[
@@ -270,15 +270,15 @@ class _CaseDetail extends StatelessWidget {
 
   void _copy(BuildContext context) {
     final buf = StringBuffer();
-    buf.writeln('=== MEDCASES PRO: CASO CLÍNICO ===');
-    buf.writeln('Título: ${caseModel.title}');
-    if (caseModel.patientAge.isNotEmpty) buf.writeln('Paciente: ${caseModel.patientAge} anos | ${caseModel.patientSex}');
-    if (caseModel.history.isNotEmpty) buf.writeln('\nHistória:\n${caseModel.history}');
-    if (caseModel.diagnosis.isNotEmpty) buf.writeln('\nDiagnóstico: ${caseModel.diagnosis}');
-    if (caseModel.plan.isNotEmpty) buf.writeln('\nConduta:\n${caseModel.plan}');
-    if (caseModel.notes.isNotEmpty) buf.writeln('\nNotas:\n${caseModel.notes}');
+    buf.writeln('=== MEDCASES PRO: ${p.t('clinical_case_header').toUpperCase()} ===');
+    buf.writeln('${p.t('title_label')}: ${caseModel.title}');
+    if (caseModel.patientAge.isNotEmpty) buf.writeln('${p.t('patient_label')}: ${caseModel.patientAge} ${p.t('years')} | ${caseModel.patientSex}');
+    if (caseModel.history.isNotEmpty) buf.writeln('\n${p.t('clinical_history')}:\n${caseModel.history}');
+    if (caseModel.diagnosis.isNotEmpty) buf.writeln('\n${p.t('diagnosis')}: ${caseModel.diagnosis}');
+    if (caseModel.plan.isNotEmpty) buf.writeln('\n${p.t('plan_conduct')}:\n${caseModel.plan}');
+    if (caseModel.notes.isNotEmpty) buf.writeln('\n${p.t('notes')}:\n${caseModel.notes}');
     Clipboard.setData(ClipboardData(text: buf.toString()));
-    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Caso copiado'), duration: Duration(seconds: 1)));
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(p.t('copied')), duration: const Duration(seconds: 1)));
   }
 
   @override
@@ -294,7 +294,7 @@ class _CaseDetail extends StatelessWidget {
             child: Row(children: [
               const Icon(Icons.arrow_back_ios, size: 14, color: kDark),
               const SizedBox(width: 4),
-              Text(p.lang == 'es' ? 'Volver a casos' : 'Voltar para casos', style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w900, color: kDark)),
+              Text(p.t('back_cases'), style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w900, color: kDark)),
             ]),
           ),
         ),
@@ -322,7 +322,7 @@ class _CaseDetail extends StatelessWidget {
               const SizedBox(height: 12),
               Row(children: [
                 if (caseModel.patientAge.isNotEmpty)
-                  _MetaChip(label: '${caseModel.patientAge} ${p.lang == 'es' ? 'años' : 'anos'}'),
+                  _MetaChip(label: "${caseModel.patientAge} ${p.t('years')}"),
                 if (caseModel.patientSex.isNotEmpty) ...[
                   const SizedBox(width: 8),
                   _MetaChip(label: caseModel.patientSex),
@@ -338,14 +338,14 @@ class _CaseDetail extends StatelessWidget {
         const SizedBox(height: 12),
         StandardCard(
           child: Column(children: [
-            if (caseModel.history.isNotEmpty) _DetailBlock(label: p.lang == 'es' ? 'Historia clínica' : 'História clínica', text: caseModel.history),
+            if (caseModel.history.isNotEmpty) _DetailBlock(label: p.t('clinical_history'), text: caseModel.history),
             if (caseModel.diagnosis.isNotEmpty) ...[
               const SizedBox(height: 10),
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(borderRadius: BorderRadius.circular(14), color: const Color(0xFFECFDF5), border: Border.all(color: const Color(0xFFBBF7D0))),
                 child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  const Text('DIAGNÓSTICO', style: TextStyle(fontSize: 9, fontWeight: FontWeight.w900, letterSpacing: 1.4, color: Color(0xFF065F46))),
+                  Text(p.t('diagnosis').toUpperCase(), style: const TextStyle(fontSize: 9, fontWeight: FontWeight.w900, letterSpacing: 1.4, color: Color(0xFF065F46))),
                   const SizedBox(height: 4),
                   Text(caseModel.diagnosis, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w900, color: Color(0xFF064E3B))),
                 ]),
@@ -353,16 +353,16 @@ class _CaseDetail extends StatelessWidget {
             ],
             if (caseModel.plan.isNotEmpty) ...[
               const SizedBox(height: 10),
-              _DetailBlock(label: p.lang == 'es' ? 'Plan / Conducta' : 'Plano / Conduta', text: caseModel.plan),
+              _DetailBlock(label: p.t('plan_conduct'), text: caseModel.plan),
             ],
             if (caseModel.notes.isNotEmpty) ...[
               const SizedBox(height: 10),
-              _DetailBlock(label: p.lang == 'es' ? 'Notas' : 'Notas', text: caseModel.notes),
+              _DetailBlock(label: p.t('notes'), text: caseModel.notes),
             ],
             if (caseModel.drugIds.isNotEmpty) ...[
               const SizedBox(height: 10),
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                const Text('FÁRMACOS', style: TextStyle(fontSize: 9, fontWeight: FontWeight.w900, letterSpacing: 1.4, color: Color(0xFF888888))),
+                Text(p.t('drugs').toUpperCase(), style: const TextStyle(fontSize: 9, fontWeight: FontWeight.w900, letterSpacing: 1.4, color: Color(0xFF888888))),
                 const SizedBox(height: 6),
                 Wrap(spacing: 6, runSpacing: 6, children: caseModel.drugIds.map((id) {
                   final drug = p.drugsDB.where((d) => d.id == id).firstOrNull;
@@ -382,7 +382,7 @@ class _CaseDetail extends StatelessWidget {
                   child: Container(
                     height: 44,
                     decoration: BoxDecoration(borderRadius: BorderRadius.circular(14), color: kDark),
-                    child: const Center(child: Text('Copiar caso', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w900, color: kGoldLight))),
+                    child: Center(child: Text(p.t('copy_case'), style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w900, color: kGoldLight))),
                   ),
                 ),
               ),
@@ -391,10 +391,10 @@ class _CaseDetail extends StatelessWidget {
                 GestureDetector(
                   onTap: () {
                     showDialog(context: context, builder: (_) => AlertDialog(
-                      title: const Text('Excluir?'),
+                      title: Text(p.t('delete_case_q')),
                       actions: [
-                        TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancelar')),
-                        TextButton(onPressed: () { Navigator.pop(context); onDelete!(); }, child: const Text('Excluir', style: TextStyle(color: Colors.red))),
+                        TextButton(onPressed: () => Navigator.pop(context), child: Text(p.t('cancel'))),
+                        TextButton(onPressed: () { Navigator.pop(context); onDelete!(); }, child: Text(p.t('delete'), style: const TextStyle(color: Colors.red))),
                       ],
                     ));
                   },
@@ -491,7 +491,7 @@ class _CaseEditorState extends State<_CaseEditor> {
 
   void _save() {
     if (_titleCtrl.text.trim().isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Informe um título para o caso')));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(widget.p.t('case_title_required'))));
       return;
     }
     widget.onSave(widget.initial.copyWith(
@@ -526,7 +526,7 @@ class _CaseEditorState extends State<_CaseEditor> {
             ),
             const SizedBox(width: 12),
             Expanded(child: Text(
-              widget.initial.title.isEmpty ? (p.lang == 'es' ? 'Nuevo caso' : 'Novo caso') : (p.lang == 'es' ? 'Editar caso' : 'Editar caso'),
+              widget.initial.title.isEmpty ? p.t('new_case') : p.t('edit_case'),
               style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w900, color: Colors.white),
             )),
             GestureDetector(
@@ -542,10 +542,10 @@ class _CaseEditorState extends State<_CaseEditor> {
         const SizedBox(height: 12),
         StandardCard(
           child: Column(children: [
-            _EditorField(label: p.lang == 'es' ? 'Título del caso *' : 'Título do caso *', ctrl: _titleCtrl, hint: p.lang == 'es' ? 'Ex: IAM anterior extenso' : 'Ex: IAM anterior extenso'),
+            _EditorField(label: p.t('case_title_field'), ctrl: _titleCtrl, hint: 'Ex: IAM anterior extenso'),
             const SizedBox(height: 10),
             Row(children: [
-              Expanded(child: _EditorField(label: p.lang == 'es' ? 'Edad' : 'Idade', ctrl: _ageCtrl, hint: '68', numeric: true)),
+              Expanded(child: _EditorField(label: p.t('age'), ctrl: _ageCtrl, hint: '68', numeric: true)),
               const SizedBox(width: 10),
               Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                 const Text('SEXO', style: TextStyle(fontSize: 9, fontWeight: FontWeight.w900, letterSpacing: 1.4, color: Color(0xFF888888))),
@@ -584,16 +584,16 @@ class _CaseEditorState extends State<_CaseEditor> {
               ])),
             ]),
             const SizedBox(height: 10),
-            _EditorField(label: p.lang == 'es' ? 'Historia clínica' : 'História clínica', ctrl: _histCtrl,
-              hint: p.lang == 'es' ? 'Síntomas, evolución, antecedentes...' : 'Sintomas, evolução, antecedentes...', multiline: true),
+            _EditorField(label: p.t('clinical_history'), ctrl: _histCtrl,
+              hint: p.t('history_hint'), multiline: true),
             const SizedBox(height: 10),
-            _EditorField(label: p.lang == 'es' ? 'Diagnóstico' : 'Diagnóstico', ctrl: _dxCtrl, hint: 'IAM com supradesnivelamento de ST'),
+            _EditorField(label: p.t('diagnosis'), ctrl: _dxCtrl, hint: 'IAM com supradesnivelamento de ST'),
             const SizedBox(height: 10),
-            _EditorField(label: p.lang == 'es' ? 'Plan / Conducta' : 'Plano / Conduta', ctrl: _planCtrl,
-              hint: p.lang == 'es' ? 'AAS, clopidogrel, heparina, cateterismo...' : 'AAS, clopidogrel, heparina, cateterismo...', multiline: true),
+            _EditorField(label: p.t('plan_conduct'), ctrl: _planCtrl,
+              hint: 'AAS, clopidogrel, heparina, cateterismo...', multiline: true),
             const SizedBox(height: 10),
-            _EditorField(label: p.lang == 'es' ? 'Notas adicionales' : 'Notas adicionais', ctrl: _notesCtrl,
-              hint: p.lang == 'es' ? 'Observaciones, seguimiento...' : 'Observações, seguimento...', multiline: true),
+            _EditorField(label: p.t('additional_notes'), ctrl: _notesCtrl,
+              hint: p.t('notes_hint'), multiline: true),
             const SizedBox(height: 14),
             MedButton(label: p.t('save'), onTap: _save, fullWidth: true),
           ]),
