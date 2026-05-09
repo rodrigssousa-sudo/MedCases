@@ -152,50 +152,52 @@ class _AuthGate extends StatelessWidget {
           return _wrapAuth(const LoginScreen());
         }
 
-        // Etapa 2: Firebase OK → ouve stream de manutenção em tempo real
-        return StreamBuilder<Map<String, dynamic>>(
-          stream: FirestoreService.maintenanceStream(),
-          builder: (context, maintSnap) {
-            final isMaintenanceEnabled = maintSnap.data?['enabled'] == true;
-            final maintenanceMessage =
-                maintSnap.data?['message'] as String? ?? '';
+        // Etapa 2: Firebase OK → ouve stream de autenticação
+        return StreamBuilder<User?>(
+          stream: AuthService.authStateChanges,
+          builder: (context, authSnap) {
+            if (authSnap.connectionState == ConnectionState.waiting) {
+              return _wrapAuth(const _SplashScreen());
+            }
 
-            // Etapa 3: ouve stream de autenticação
-            return StreamBuilder<User?>(
-              stream: AuthService.authStateChanges,
-              builder: (context, authSnap) {
-                if (authSnap.connectionState == ConnectionState.waiting) {
+            // Não autenticado → login direto, sem abrir stream de manutenção
+            if (authSnap.data == null) {
+              return _wrapAuth(const LoginScreen());
+            }
+
+            // Etapa 3: autenticado → busca perfil Firestore
+            return StreamBuilder<UserModel?>(
+              stream: AuthService.currentUserStream(),
+              builder: (context, userSnap) {
+                if (userSnap.connectionState == ConnectionState.waiting) {
                   return _wrapAuth(const _SplashScreen());
                 }
 
-                // Não autenticado → login (manutenção não bloqueia login)
-                if (authSnap.data == null) {
+                final user = userSnap.data;
+
+                if (user == null) {
+                  AuthService.logout();
                   return _wrapAuth(const LoginScreen());
                 }
 
-                // Autenticado → buscar perfil Firestore
-                return StreamBuilder<UserModel?>(
-                  stream: AuthService.currentUserStream(),
-                  builder: (context, userSnap) {
-                    if (userSnap.connectionState == ConnectionState.waiting) {
-                      return _wrapAuth(const _SplashScreen());
-                    }
+                if (user.isBlocked) {
+                  AuthService.logout();
+                  return _wrapAuth(_BlockedScreen(user: user));
+                }
 
-                    final user = userSnap.data;
+                if (user.isPending) {
+                  return _wrapAuth(_PendingScreen(user: user));
+                }
 
-                    if (user == null) {
-                      AuthService.logout();
-                      return _wrapAuth(const LoginScreen());
-                    }
-
-                    if (user.isBlocked) {
-                      AuthService.logout();
-                      return _wrapAuth(_BlockedScreen(user: user));
-                    }
-
-                    if (user.isPending) {
-                      return _wrapAuth(_PendingScreen(user: user));
-                    }
+                // Etapa 4: perfil OK → stream de manutenção (só para usuários logados)
+                // Abrimos o stream AQUI para garantir que Firebase já está 100% pronto
+                return StreamBuilder<Map<String, dynamic>>(
+                  stream: FirestoreService.maintenanceStream(),
+                  builder: (context, maintSnap) {
+                    final isMaintenanceEnabled =
+                        maintSnap.data?['enabled'] == true;
+                    final maintenanceMessage =
+                        maintSnap.data?['message'] as String? ?? '';
 
                     // Admin / Master passam pela manutenção direto
                     final bypassMaintenance = user.isAdmin || user.isMaster;
