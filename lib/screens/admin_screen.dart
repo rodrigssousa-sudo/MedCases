@@ -77,12 +77,14 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
           indicatorColor: kGoldL,
           labelColor: kGoldL,
           unselectedLabelColor: Colors.white54,
-          labelStyle: const TextStyle(fontSize: 11, fontWeight: FontWeight.w800),
+          labelStyle: const TextStyle(fontSize: 10, fontWeight: FontWeight.w800),
+          isScrollable: true,
+          tabAlignment: TabAlignment.fill,
           tabs: [
-            Tab(icon: const Icon(Icons.pending_actions_rounded, size: 18), text: _pendingLabel),
-            Tab(icon: const Icon(Icons.people_rounded, size: 18), text: _approvedLabel),
-            Tab(icon: const Icon(Icons.block_rounded, size: 18), text: _blockedLabel),
-            Tab(icon: const Icon(Icons.settings_rounded, size: 18), text: _systemLabel),
+            Tab(icon: const Icon(Icons.pending_actions_rounded, size: 16), text: _pendingLabel),
+            Tab(icon: const Icon(Icons.people_rounded, size: 16), text: _approvedLabel),
+            Tab(icon: const Icon(Icons.block_rounded, size: 16), text: _blockedLabel),
+            Tab(icon: const Icon(Icons.settings_rounded, size: 16), text: _systemLabel),
           ],
         ),
       ),
@@ -374,7 +376,7 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
   String get _promotedAdminSnack     => _isEs ? 'promovido a Admin!'           : 'promovido a Admin!';
   String get _promotedSupervisorSnack=> _isEs ? 'promovido a Supervisor!'      : 'promovido a Supervisor!';
   String get _demotedSnack           => _isEs ? 'rebajado a Usuario.'          : 'rebaixado para Usuário.';
-  String _pendingCountLabel(int n)   => _isEs ? 'pendiente\${n > 1 ? "s" : ""}' : 'pendente\${n > 1 ? "s" : ""}';
+  String _pendingCountLabel(int n)   => _isEs ? (n > 1 ? 'pendientes' : 'pendiente') : (n > 1 ? 'pendentes' : 'pendente');
 
   void _snack(String msg, Color color) {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
