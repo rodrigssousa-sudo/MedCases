@@ -21,17 +21,29 @@ class _ProtocolsScreenState extends State<ProtocolsScreen> {
   void initState() {
     super.initState();
     if (widget.initialProtocolId != null) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        final p = context.read<AppProvider>();
-        try {
-          final found = p.protocolsDB.firstWhere((x) => x.id == widget.initialProtocolId);
-          if (mounted) {
-            setState(() => _selected = found);
-            widget.onConsumed?.call();
-          }
-        } catch (_) {}
-      });
+      WidgetsBinding.instance.addPostFrameCallback((_) => _openById(widget.initialProtocolId!));
     }
+  }
+
+  @override
+  void didUpdateWidget(ProtocolsScreen old) {
+    super.didUpdateWidget(old);
+    // IndexedStack mantém o widget vivo — captura mudanças no pendingProtocolId
+    if (widget.initialProtocolId != null &&
+        widget.initialProtocolId != old.initialProtocolId) {
+      WidgetsBinding.instance.addPostFrameCallback((_) => _openById(widget.initialProtocolId!));
+    }
+  }
+
+  void _openById(String id) {
+    final p = context.read<AppProvider>();
+    try {
+      final found = p.protocolsDB.firstWhere((x) => x.id == id);
+      if (mounted) {
+        setState(() => _selected = found);
+        widget.onConsumed?.call();
+      }
+    } catch (_) {}
   }
 
   @override
