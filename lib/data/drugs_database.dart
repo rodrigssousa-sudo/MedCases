@@ -7198,4 +7198,209 @@ const List<DrugModel> drugsDatabase = [
     },
   ),
 
+
+  DrugModel(
+    id: 'atorvastatina',
+    group: 'Cardiovascular y HTA',
+    name: 'Atorvastatina',
+    className: {'pt': 'Inibidor da HMG-CoA redutase / Estatina', 'es': 'Inhibidor de HMG-CoA reductasa / Estatina'},
+    category: {'pt': 'Cardiovascular', 'es': 'Cardiovascular'},
+    route: 'VO',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': '10–80 mg uma vez ao dia, a qualquer hora.',
+      'es': '10–80 mg una vez al día, en cualquier horario.',
+    },
+    renalAlert: {
+      'pt': 'Sem ajuste necessário.',
+      'es': 'Sin ajuste necesario.',
+    },
+    elderlyAlert: {
+      'pt': 'Monitorar mialgia e interações com múltiplas medicações.',
+      'es': 'Monitorear mialgia e interacción con múltiples medicaciones.',
+    },
+    mechanism: {
+      'pt': 'Inibe competitivamente a HMG-CoA redutase; reduz LDL e triglicerídeos.',
+      'es': 'Inhibe competitivamente la HMG-CoA reductasa; reduce LDL y triglicéridos.',
+    },
+    warning: {
+      'pt': 'Contraindicado em doença hepática ativa. Monitorar CPK se mialgia.',
+      'es': 'Contraindicado en enfermedad hepática activa. Monitorear CPK si mialgia.',
+    },
+    adverse: {
+      'pt': ['Mialgia', 'Diarreia', 'Nasofaringite', 'Elevação de transaminases'],
+      'es': ['Mialgia', 'Diarrea', 'Nasofaringitis', 'Elevación de transaminasas'],
+    },
+  ),
+
+  DrugModel(
+    id: 'simeticona',
+    group: 'Gastroenterología',
+    name: 'Simeticona',
+    className: {'pt': 'Antiflatulento', 'es': 'Antiflatulento'},
+    category: {'pt': 'Gastrointestinais', 'es': 'Gastrointestinales'},
+    route: 'VO',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': 'Adulto: 40–125 mg a cada 6–8h. Pediatria (gotas): 1 gota/kg/dose até 3x/dia.',
+      'es': 'Adulto: 40–125 mg cada 6–8 h. Pediatría (gotas): 1 gota/kg/dosis hasta 3 veces/día.',
+    },
+    renalAlert: {
+      'pt': 'Sem ajuste necessário (não absorvida sistemicamente).',
+      'es': 'Sin ajuste necesario (no se absorbe sistémicamente).',
+    },
+    elderlyAlert: {
+      'pt': 'Seguro.',
+      'es': 'Seguro.',
+    },
+    mechanism: {
+      'pt': 'Altera a tensão superficial das bolhas de gás intestinal, facilitando sua eliminação.',
+      'es': 'Altera la tensión superficial de las burbujas de gas intestinal, facilitando su eliminación.',
+    },
+    warning: {
+      'pt': 'Não trata a causa base (aerofagia, intolerâncias), apenas o sintoma.',
+      'es': 'No trata la causa base, solo el síntoma.',
+    },
+    adverse: {
+      'pt': ['Constipação leve', 'Náuseas'],
+      'es': ['Constipación leve', 'Náuseas'],
+    },
+  ),
+
+  DrugModel(
+    id: 'gliclazida',
+    group: 'Endocrinología y Metabolismo',
+    name: 'Gliclazida MR',
+    className: {'pt': 'Hipoglicemiante / Sulfonilureia de 2ª geração', 'es': 'Hipoglucemiante / Sulfonilurea de 2ª generación'},
+    category: {'pt': 'Endocrinologia', 'es': 'Endocrinología'},
+    route: 'VO',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': '30–120 mg uma vez ao dia, preferencialmente no café da manhã.',
+      'es': '30–120 mg una vez al día, preferentemente en el desayuno.',
+    },
+    renalAlert: {
+      'pt': 'ClCr <30 mL/min: uso com precaução ou contraindicado conforme a fonte.',
+      'es': 'ClCr <30 mL/min: uso con precaución o contraindicado.',
+    },
+    elderlyAlert: {
+      'pt': 'Sulfonilureia mais segura para idosos, mas requer cautela com hipoglicemia.',
+      'es': 'Sulfonilurea más segura para ancianos, pero requiere cautela con hipoglucemia.',
+    },
+    mechanism: {
+      'pt': 'Estimula a secreção de insulina pelas células beta pancreáticas (bloqueia canais de K+).',
+      'es': 'Estimula la secreción de insulina por las células beta pancreáticas (bloquea canales de K+).',
+    },
+    warning: {
+      'pt': 'Não utilizar em jejum prolongado. Risco de hipoglicemia prolongada.',
+      'es': 'No usar en ayuno prolongado. Riesgo de hipoglucemia prolongada.',
+    },
+    adverse: {
+      'pt': ['Hipoglicemia', 'Ganho de peso', 'Náuseas', 'Reações cutâneas'],
+      'es': ['Hipoglucemia', 'Aumento de peso', 'Náuseas', 'Reacciones cutáneas'],
+    },
+  ),
+
+  DrugModel(
+    id: 'trifamox_ibl_iv',
+    group: 'Antibióticos',
+    name: 'Amoxicilina + Sulbactam IV',
+    className: {'pt': 'Betalactâmico + Inibidor de betalactamase (IV)', 'es': 'Betalactámico + Inhibidor de betalactamasa (IV)'},
+    category: {'pt': 'Antibióticos', 'es': 'Antibióticos'},
+    route: 'IV / IM',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': 'Adulto: 1,5 g (1g/0,5g) a cada 8h ou 3 g (2g/1g) a cada 12h IV.',
+      'es': 'Adulto: 1,5 g (1g/0,5g) cada 8 h o 3 g (2g/1g) cada 12 h IV.',
+    },
+    renalAlert: {
+      'pt': 'ClCr <30 mL/min: ajustar para cada 12 ou 24h conforme gravidade.',
+      'es': 'ClCr <30 mL/min: ajustar cada 12 o 24 h según gravedad.',
+    },
+    elderlyAlert: {
+      'pt': 'Ajustar pela função renal para evitar neurotoxicidade por betalactâmicos.',
+      'es': 'Ajustar por función renal para evitar neurotoxicidad por betalactámicos.',
+    },
+    mechanism: {
+      'pt': 'Bactericida; inibe síntese da parede celular e bloqueia betalactamases bacterianas.',
+      'es': 'Bactericida; inhibe síntesis de pared celular y bloquea betalactamasas bacterianas.',
+    },
+    warning: {
+      'pt': 'Muito utilizado em profilaxia cirúrgica e pneumonias na Argentina (Trifamox IBL).',
+      'es': 'Muy utilizado en profilaxis quirúrgica y neumonías en Argentina (Trifamox IBL).',
+    },
+    adverse: {
+      'pt': ['Flebite no local da infusão', 'Diarreia', 'Elevação de transaminases', 'Rash'],
+      'es': ['Flebitis en sitio de infusión', 'Diarrea', 'Elevación de transaminasas', 'Rash'],
+    },
+  ),
+
+  DrugModel(
+    id: 'ceftazidima',
+    group: 'Antibióticos',
+    name: 'Ceftazidima',
+    className: {'pt': 'Cefalosporina de 3ª geração (antipseudomonal)', 'es': 'Cefalosporina de 3ª generación (antipseudomonal)'},
+    category: {'pt': 'Antibióticos', 'es': 'Antibióticos'},
+    route: 'IV / IM',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': 'Adulto: 1–2 g a cada 8h. Máx 6 g/dia.',
+      'es': 'Adulto: 1–2 g cada 8 h. Máx 6 g/día.',
+    },
+    renalAlert: {
+      'pt': 'Ajuste obrigatório se ClCr <50 mL/min.',
+      'es': 'Ajuste obligatorio si ClCr <50 mL/min.',
+    },
+    elderlyAlert: {
+      'pt': 'Monitorar função renal para evitar estados confusionais por acúmulo.',
+      'es': 'Monitorear función renal para evitar confusión por acumulación.',
+    },
+    mechanism: {
+      'pt': 'Inibe a síntese de peptidoglicano da parede celular; alta atividade contra Pseudomonas aeruginosa.',
+      'es': 'Inhibe la síntesis de peptidoglicano de la pared celular; alta actividad contra Pseudomonas aeruginosa.',
+    },
+    warning: {
+      'pt': 'Baixa atividade contra Gram-positivos em comparação ao Ceftriaxone.',
+      'es': 'Baja actividad contra Gram-positivos en comparación con Ceftriaxone.',
+    },
+    adverse: {
+      'pt': ['Flebite', 'Eosinofilia', 'Diarreia', 'Teste de Coombs positivo'],
+      'es': ['Flebitis', 'Eosinofilia', 'Diarrea', 'Test de Coombs positivo'],
+    },
+  ),
+
+  DrugModel(
+    id: 'ketotifeno',
+    group: 'Respiratorio',
+    name: 'Ketotifeno',
+    className: {'pt': 'Anti-histamínico / Estabilizador de mastócitos', 'es': 'Antihistamínico / Estabilizador de mastocitos'},
+    category: {'pt': 'Antialérgicos', 'es': 'Antialérgicos'},
+    route: 'VO',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': 'Pediatria: 0,05 mg/kg por dose 2x/dia. Adulto: 1 mg 2x/dia.',
+      'es': 'Pediatría: 0,05 mg/kg por dosis 2 veces/día. Adulto: 1 mg 2 veces/día.',
+    },
+    renalAlert: {
+      'pt': 'Usar com cautela em insuficiência renal grave.',
+      'es': 'Usar con cautela en insuficiencia renal grave.',
+    },
+    elderlyAlert: {
+      'pt': 'Pode causar sedação excessiva. Não é a primeira escolha.',
+      'es': 'Puede causar sedación excesiva. No es la primera elección.',
+    },
+    mechanism: {
+      'pt': 'Bloqueia receptores H1 e impede a liberação de mediadores inflamatórios por mastócitos.',
+      'es': 'Bloquea receptores H1 e impide liberación de mediadores inflamatorios por mastocitos.',
+    },
+    warning: {
+      'pt': 'Uso profilático — não é eficaz para abortar crise asmática aguda.',
+      'es': 'Uso profiláctico — no eficaz para abortar crisis asmática aguda.',
+    },
+    adverse: {
+      'pt': ['Sedação', 'Aumento de apetite', 'Boca seca', 'Tontura'],
+      'es': ['Sedación', 'Aumento de apetito', 'Boca seca', 'Mareos'],
+    },
+  ),
+
 ];
