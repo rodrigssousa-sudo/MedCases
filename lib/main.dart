@@ -941,6 +941,154 @@ class _AdminBadgeButton extends StatelessWidget {
   }
 }
 
+// ── Menu compacto do header (PT/ES + dark mode + logout) ─────────────────────
+class _HeaderMenu extends StatelessWidget {
+  final AppProvider p;
+  const _HeaderMenu({required this.p});
+
+  @override
+  Widget build(BuildContext context) {
+    final dark = p.darkMode;
+    return PopupMenuButton<String>(
+      offset: const Offset(0, 40),
+      color: dark ? const Color(0xFF0E1A14) : Colors.white,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(14),
+        side: BorderSide(
+          color: dark ? const Color(0xFF1A3528) : const Color(0xFFE0D9CC),
+          width: 1,
+        ),
+      ),
+      elevation: 12,
+      shadowColor: Colors.black.withValues(alpha: 0.35),
+      onSelected: (value) async {
+        if (value == 'lang') {
+          p.setLang(p.lang == 'pt' ? 'es' : 'pt');
+        } else if (value == 'dark') {
+          p.toggleDarkMode();
+        } else if (value == 'logout') {
+          await AuthService.logout();
+          if (context.mounted) context.read<AppProvider>().clearUser();
+        }
+      },
+      itemBuilder: (_) {
+        final textStyle = TextStyle(
+          fontSize: 13,
+          fontWeight: FontWeight.w700,
+          color: dark ? Colors.white : const Color(0xFF07110d),
+        );
+        final subStyle = TextStyle(
+          fontSize: 11,
+          fontWeight: FontWeight.w500,
+          color: dark ? Colors.white38 : const Color(0xFFAAAAAA),
+        );
+        return [
+          // Idioma
+          PopupMenuItem<String>(
+            value: 'lang',
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+            child: Row(children: [
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8),
+                  color: const Color(0xFFC5A365).withValues(alpha: 0.15),
+                  border: Border.all(color: const Color(0xFFC5A365).withValues(alpha: 0.4)),
+                ),
+                child: Text(
+                  p.lang.toUpperCase(),
+                  style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w900, color: Color(0xFFC5A365), letterSpacing: 1),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Text('Idioma', style: textStyle),
+                Text(p.lang == 'pt' ? 'Trocar para Español' : 'Cambiar a Português', style: subStyle),
+              ]),
+            ]),
+          ),
+          // Separador
+          PopupMenuDivider(height: 1),
+          // Tema
+          PopupMenuItem<String>(
+            value: 'dark',
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+            child: Row(children: [
+              Container(
+                padding: const EdgeInsets.all(6),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8),
+                  color: Colors.white.withValues(alpha: dark ? 0.08 : 0.0),
+                  border: Border.all(color: dark ? Colors.white24 : const Color(0xFFDDD8CE)),
+                ),
+                child: Icon(
+                  dark ? Icons.light_mode_rounded : Icons.dark_mode_rounded,
+                  size: 15,
+                  color: dark ? const Color(0xFFFFE8A6) : const Color(0xFF555555),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Text('Aparência', style: textStyle),
+                Text(dark ? 'Modo Claro' : 'Modo Escuro', style: subStyle),
+              ]),
+            ]),
+          ),
+          // Separador
+          PopupMenuDivider(height: 1),
+          // Sair
+          PopupMenuItem<String>(
+            value: 'logout',
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+            child: Row(children: [
+              Container(
+                padding: const EdgeInsets.all(6),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8),
+                  color: Colors.red.withValues(alpha: 0.1),
+                  border: Border.all(color: Colors.red.withValues(alpha: 0.25)),
+                ),
+                child: const Icon(Icons.logout_rounded, size: 15, color: Color(0xFFFF6B6B)),
+              ),
+              const SizedBox(width: 12),
+              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Text('Sair', style: textStyle),
+                Text(p.userName.isNotEmpty ? p.userName.split(' ').first : 'Conta', style: subStyle),
+              ]),
+            ]),
+          ),
+        ];
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+          color: Colors.white.withValues(alpha: 0.1),
+          border: Border.all(color: Colors.white.withValues(alpha: 0.2)),
+        ),
+        child: Row(mainAxisSize: MainAxisSize.min, children: [
+          Text(
+            p.lang.toUpperCase(),
+            style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w900, color: Color(0xFFFFE8A6), letterSpacing: 0.8),
+          ),
+          const SizedBox(width: 5),
+          Icon(
+            dark ? Icons.dark_mode_rounded : Icons.light_mode_rounded,
+            size: 13,
+            color: const Color(0xFFFFE8A6).withValues(alpha: 0.8),
+          ),
+          const SizedBox(width: 4),
+          Icon(
+            Icons.keyboard_arrow_down_rounded,
+            size: 14,
+            color: const Color(0xFFFFE8A6).withValues(alpha: 0.6),
+          ),
+        ]),
+      ),
+    );
+  }
+}
+
 // ── Header do app ─────────────────────────────────────────────────────────────
 class _AppHeader extends StatelessWidget {
   final ValueChanged<int> onTabChange;
@@ -991,49 +1139,7 @@ class _AppHeader extends StatelessWidget {
               _AdminBadgeButton(currentAdmin: p.currentUser!),
               const SizedBox(width: 8),
             ],
-            GestureDetector(
-              onTap: () => p.setLang(p.lang == 'pt' ? 'es' : 'pt'),
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: Colors.white.withValues(alpha: 0.1),
-                  border: Border.all(color: Colors.white.withValues(alpha: 0.2)),
-                ),
-                child: Text(p.lang.toUpperCase(),
-                  style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w900, color: Color(0xFFFFE8A6), letterSpacing: 1)),
-              ),
-            ),
-            const SizedBox(width: 8),
-            GestureDetector(
-              onTap: () => p.toggleDarkMode(),
-              child: Container(
-                padding: const EdgeInsets.all(7),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: Colors.white.withValues(alpha: 0.1),
-                  border: Border.all(color: Colors.white.withValues(alpha: 0.2)),
-                ),
-                child: Icon(dark ? Icons.light_mode_rounded : Icons.dark_mode_rounded,
-                  size: 16, color: const Color(0xFFFFE8A6)),
-              ),
-            ),
-            const SizedBox(width: 8),
-            GestureDetector(
-              onTap: () async {
-                await AuthService.logout();
-                if (context.mounted) context.read<AppProvider>().clearUser();
-              },
-              child: Container(
-                padding: const EdgeInsets.all(7),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: Colors.red.withValues(alpha: 0.15),
-                  border: Border.all(color: Colors.red.withValues(alpha: 0.25)),
-                ),
-                child: const Icon(Icons.logout_rounded, size: 16, color: Color(0xFFFFAAAA)),
-              ),
-            ),
+            _HeaderMenu(p: p),
           ]),
         ),
       ),

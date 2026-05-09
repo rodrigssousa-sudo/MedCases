@@ -384,7 +384,7 @@ class _CaseDetail extends StatelessWidget {
                   child: Container(
                     height: 44,
                     decoration: BoxDecoration(borderRadius: BorderRadius.circular(14), color: kDark),
-                    child: const Center(child: Text('📋 Copiar caso', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w900, color: kGoldLight))),
+                    child: const Center(child: Text('Copiar caso', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w900, color: kGoldLight))),
                   ),
                 ),
               ),

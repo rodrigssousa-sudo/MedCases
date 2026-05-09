@@ -18,31 +18,31 @@ class _AiScreenState extends State<AiScreen> {
 
   static const _quickPrompts = [
     // Cardiovascular
-    ('🫀 IAM / dor torácica', 'Paciente com dor torácica intensa, diaforese e irradiação para braço esquerdo. Suspeita de IAM.'),
-    ('💔 Choque + hipotensão', 'Paciente em choque com hipotensão, taquicardia e pele fria.'),
-    ('⚡ TPSV / taquicardia', 'Taquicardia paroxística supraventricular, QRS estreito, FC 180.'),
-    ('🔴 FA / fibrilação atrial', 'Fibrilação atrial com resposta ventricular rápida, FC 145 irregular.'),
-    ('📈 Crise hipertensiva', 'PA 210/120 com cefaleia intensa e confusão mental.'),
+    ('IAM / dor torácica', 'Paciente com dor torácica intensa, diaforese e irradiação para braço esquerdo. Suspeita de IAM.'),
+    ('Choque + hipotensão', 'Paciente em choque com hipotensão, taquicardia e pele fria.'),
+    ('TPSV / taquicardia', 'Taquicardia paroxística supraventricular, QRS estreito, FC 180.'),
+    ('FA / fibrilação atrial', 'Fibrilação atrial com resposta ventricular rápida, FC 145 irregular.'),
+    ('Crise hipertensiva', 'PA 210/120 com cefaleia intensa e confusão mental.'),
     // Emergência
-    ('🚨 Anafilaxia', 'Reação anafilática aguda após contraste. PA 80/50, broncoespasmo.'),
-    ('💀 PCR / parada cardíaca', 'Parada cardiorrespiratória. Sem pulso. Monitor: fibrilação ventricular.'),
-    ('🧪 K⁺ alto / hipercalemia', 'Hipercalemia grave K+ 7,1 com ondas T apiculadas no ECG.'),
+    ('Anafilaxia', 'Reação anafilática aguda após contraste. PA 80/50, broncoespasmo.'),
+    ('PCR / parada cardíaca', 'Parada cardiorrespiratória. Sem pulso. Monitor: fibrilação ventricular.'),
+    ('K\u207a alto / hipercalemia', 'Hipercalemia grave K+ 7,1 com ondas T apiculadas no ECG.'),
     // Respiratório
-    ('🫁 Sepse / febre', 'Febre alta, hipotensão, taquicardia e suspeita de sepse.'),
-    ('🌬️ TEP / embolia', 'Embolia pulmonar com dispneia súbita, PA 85/50, SatO2 85%.'),
-    ('💨 DPOC exacerbação', 'DPOC com piora de dispneia, PaCO2 68, pH 7,28.'),
-    ('🫧 Asma grave', 'Crise de asma grave, silêncio auscultório, SpO2 88%.'),
+    ('Sepse / febre', 'Febre alta, hipotensão, taquicardia e suspeita de sepse.'),
+    ('TEP / embolia', 'Embolia pulmonar com dispneia súbita, PA 85/50, SatO2 85%.'),
+    ('DPOC exacerbação', 'DPOC com piora de dispneia, PaCO2 68, pH 7,28.'),
+    ('Asma grave', 'Crise de asma grave, silêncio auscultório, SpO2 88%.'),
     // Neurologia
-    ('🧠 AVC isquêmico', 'AVC isquêmico agudo, hemiplegia direita, NIHSS 14, 1h45 de evolução.'),
-    ('⚡ Convulsão / status', 'Convulsão há 8 min sem pausa. Estado de mal epiléptico.'),
-    ('😵 Delirium / confusão', 'Confusão mental aguda, agitação, rebaixamento. Idoso de 78 anos.'),
+    ('AVC isquêmico', 'AVC isquêmico agudo, hemiplegia direita, NIHSS 14, 1h45 de evolução.'),
+    ('Convulsão / status', 'Convulsão há 8 min sem pausa. Estado de mal epiléptico.'),
+    ('Delirium / confusão', 'Confusão mental aguda, agitação, rebaixamento. Idoso de 78 anos.'),
     // Endocrinologia
-    ('🩸 Cetoacidose / CAD', 'Cetoacidose diabética. Glicemia 480, pH 7,18, K+ 3,2.'),
-    ('📉 Hipoglicemia grave', 'Hipoglicemia grave, Glasgow 8, glicemia 28 mg/dL.'),
+    ('Cetoacidose / CAD', 'Cetoacidose diabética. Glicemia 480, pH 7,18, K+ 3,2.'),
+    ('Hipoglicemia grave', 'Hipoglicemia grave, Glasgow 8, glicemia 28 mg/dL.'),
     // Gastro / outros
-    ('🩹 Hemorragia digestiva', 'Hematêmese, Hb 7,2, instabilidade hemodinâmica.'),
-    ('🦠 Meningite', 'Febre, cefaleia em trovoada, rigidez de nuca, petéquias.'),
-    ('🫀 Insuf. cardíaca', 'IC descompensada, ortopneia, SatO2 91%, crepitações bibasais.'),
+    ('Hemorragia digestiva', 'Hematêmese, Hb 7,2, instabilidade hemodinâmica.'),
+    ('Meningite', 'Febre, cefaleia em trovoada, rigidez de nuca, petéquias.'),
+    ('Insuf. cardíaca', 'IC descompensada, ortopneia, SatO2 91%, crepitações bibasais.'),
   ];
 
   @override
@@ -223,11 +223,11 @@ class _AiScreenState extends State<AiScreen> {
             const Text('O QUE A IA FORNECE', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w900, letterSpacing: 1.4, color: kGold)),
             const SizedBox(height: 10),
             ...[
-              p.lang == 'es' ? '🔍 Hipótesis diagnósticas por síntoma' : '🔍 Hipóteses diagnósticas pelo sintoma',
-              p.lang == 'es' ? '📋 Protocolo clínico sugerido' : '📋 Protocolo clínico sugerido',
-              p.lang == 'es' ? '💊 Dosis individualizadas (peso, ClCr, edad)' : '💊 Doses individualizadas (peso, ClCr, idade)',
-              p.lang == 'es' ? '⚠️ Red flags y criterios de urgencia' : '⚠️ Red flags e critérios de urgência',
-              p.lang == 'es' ? '🧪 Exámenes complementarios útiles' : '🧪 Exames complementares úteis',
+              p.lang == 'es' ? 'Hipótesis diagnósticas por síntoma' : 'Hipóteses diagnósticas pelo sintoma',
+              p.lang == 'es' ? 'Protocolo clínico sugerido' : 'Protocolo clínico sugerido',
+              p.lang == 'es' ? 'Dosis individualizadas (peso, ClCr, edad)' : 'Doses individualizadas (peso, ClCr, idade)',
+              p.lang == 'es' ? 'Red flags y criterios de urgencia' : 'Red flags e critérios de urgência',
+              p.lang == 'es' ? 'Exámenes complementarios útiles' : 'Exames complementares úteis',
             ].map((s) => Padding(
               padding: const EdgeInsets.only(bottom: 6),
               child: Text(s, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: kDark, height: 1.4)),

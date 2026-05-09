@@ -167,7 +167,7 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
         padding: const EdgeInsets.fromLTRB(16, 10, 16, 0),
         child: MedInput(
           controller: _searchCtrl,
-          hintText: '🔍  Buscar por diagnóstico, queixa, tags...',
+          hintText: 'Buscar por diagnóstico, queixa, tags...',
           onChanged: (_) => setState(() {}),
         ),
       ),
@@ -551,7 +551,7 @@ class _HistoryDetail extends StatelessWidget {
           Expanded(child: GestureDetector(
             onTap: () => _copy(context),
             child: Container(height: 48, decoration: BoxDecoration(borderRadius: BorderRadius.circular(14), color: kDark, boxShadow: [BoxShadow(color: kDark.withValues(alpha: 0.25), blurRadius: 10, offset: const Offset(0,4))]),
-              child: const Center(child: Text('📋  Copiar HC', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w900, color: kGoldLight)))),
+              child: const Center(child: Text('Copiar HC', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w900, color: kGoldLight)))),
           )),
           if (!readOnly && onDelete != null) ...[
             const SizedBox(width: 10),
@@ -589,13 +589,13 @@ class _HistoryEditorState extends State<_HistoryEditor> {
   late final Map<String, TextEditingController> _ctrls;
 
   static const _sections = [
-    ('👤', 'Paciente'),
-    ('📋', 'Anamnese'),
-    ('🫀', 'Exame Físico'),
-    ('🔬', 'Exames'),
-    ('💊', 'Conduta'),
-    ('📈', 'Evolução'),
-    ('🏁', 'Desfecho'),
+    ('', 'Paciente'),
+    ('', 'Anamnese'),
+    ('', 'Exame Físico'),
+    ('', 'Exames'),
+    ('', 'Conduta'),
+    ('', 'Evolução'),
+    ('', 'Desfecho'),
   ];
 
   static const _categories = ['Clínica Geral', 'Cardiology', 'Emergência', 'Pneumologia', 'Neurologia', 'Gastro', 'Endocrinologia', 'Nefrologia', 'Infectologia', 'Cirurgia', 'Pediatria', 'Ginecologia', 'Ortopedia', 'Outro'];
@@ -721,7 +721,7 @@ class _HistoryEditorState extends State<_HistoryEditor> {
                       color: active ? kGold : Colors.white.withValues(alpha: 0.1),
                       border: Border.all(color: active ? kGold : Colors.white.withValues(alpha: 0.15)),
                     ),
-                    child: Text('${_sections[i].$1} ${_sections[i].$2}',
+                    child: Text(_sections[i].$2,
                       style: TextStyle(fontSize: 11, fontWeight: FontWeight.w800,
                         color: active ? const Color(0xFF07110d) : Colors.white.withValues(alpha: 0.85))),
                   ),
@@ -836,7 +836,7 @@ class _HistoryEditorState extends State<_HistoryEditor> {
     const SizedBox(height: 10),
     _EditorField('Medicamentos em uso', _ctrls['medications']!, hint: 'AAS 100mg/dia, metformina 850mg 2x/dia...', multiline: true),
     const SizedBox(height: 10),
-    _EditorField('⚠️  Alergias', _ctrls['allergies']!, hint: 'Penicilina (urticária), dipirona (angioedema)...', multiline: true),
+    _EditorField('Alergias', _ctrls['allergies']!, hint: 'Penicilina (urticária), dipirona (angioedema)...', multiline: true),
     const SizedBox(height: 10),
     _EditorField('Revisão de sistemas', _ctrls['reviewOfSystems']!, hint: 'Cardiovascular, respiratório, GI, neurológico...', multiline: true),
   ]);
@@ -1142,7 +1142,7 @@ class _EvolutionSection extends StatelessWidget {
           final dateStr = dt != null
             ? '${dt.day.toString().padLeft(2,'0')}/${dt.month.toString().padLeft(2,'0')} às ${dt.hour.toString().padLeft(2,'0')}:${dt.minute.toString().padLeft(2,'0')}'
             : '';
-          final typeLabels = {'evolution': '📋 Evolução', 'nursing': '🩺 Enfermagem', 'lab': '🔬 Lab', 'imaging': '📷 Imagem', 'procedure': '⚕️ Procedimento'};
+          final typeLabels = {'evolution': 'Evolução', 'nursing': 'Enfermagem', 'lab': 'Lab', 'imaging': 'Imagem', 'procedure': 'Procedimento'};
           return Padding(
             padding: const EdgeInsets.only(bottom: 12),
             child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -1153,7 +1153,7 @@ class _EvolutionSection extends StatelessWidget {
               const SizedBox(width: 10),
               Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                 Row(children: [
-                  Text(typeLabels[e.type] ?? '📋 Evolução', style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w900, color: kGold)),
+                  Text(typeLabels[e.type] ?? 'Evolução', style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w900, color: kGold)),
                   const Spacer(),
                   Text(dateStr, style: const TextStyle(fontSize: 10, color: Color(0xFF888888), fontWeight: FontWeight.w600)),
                 ]),
@@ -1184,7 +1184,7 @@ class _EvolutionEditorCardState extends State<_EvolutionEditorCard> {
   late String _type;
 
   static const _types = ['evolution', 'nursing', 'lab', 'imaging', 'procedure'];
-  static const _typeLabels = ['📋 Evolução', '🩺 Enfermagem', '🔬 Lab', '📷 Imagem', '⚕️ Procedimento'];
+  static const _typeLabels = ['Evolução', 'Enfermagem', 'Lab', 'Imagem', 'Procedimento'];
 
   @override
   void initState() {

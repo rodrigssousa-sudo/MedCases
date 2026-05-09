@@ -25,13 +25,15 @@ class PatientData {
   String weight;
   String height;
   String creatinine;
+  String medications; // medicamentos em uso atual
   PatientData({
-    this.patientId = 'Leito / Box',
-    this.age = '68',
-    this.sex = 'Masculino',
-    this.weight = '78',
-    this.height = '171',
-    this.creatinine = '1.0',
+    this.patientId = '',
+    this.age = '',
+    this.sex = 'M',
+    this.weight = '',
+    this.height = '',
+    this.creatinine = '',
+    this.medications = '',
   });
 }
 
@@ -56,8 +58,8 @@ class AppProvider extends ChangeNotifier {
   PatientData _patient = PatientData();
   HemoData _hemo = HemoData();
 
-  List<String> _selectedDrugIds = ['furosemida'];
-  String _activeDrugId = 'furosemida';
+  List<String> _selectedDrugIds = [];
+  String _activeDrugId = '';
 
   List<ClinicalCaseModel> _customCases = [];
   Set<String> _favDrugs = {};
@@ -93,8 +95,9 @@ class AppProvider extends ChangeNotifier {
   List<ProtocolModel> get protocolsDB => protocolsDatabase;
   List<ClinicalCaseModel> get casesDB => casesDatabase;
 
-  DrugModel get activeDrug =>
-      drugsDatabase.firstWhere((d) => d.id == _activeDrugId, orElse: () => drugsDatabase[0]);
+  DrugModel? get activeDrug => _activeDrugId.isEmpty
+      ? null
+      : drugsDatabase.firstWhere((d) => d.id == _activeDrugId, orElse: () => drugsDatabase[0]);
 
   List<DrugModel> get selectedDrugs =>
       _selectedDrugIds.map((id) => drugsDatabase.firstWhere((d) => d.id == id, orElse: () => drugsDatabase[0])).toList();
@@ -118,8 +121,8 @@ class AppProvider extends ChangeNotifier {
     _customCases = [];
     _myHistories = [];
     _publicHistories = [];
-    _selectedDrugIds = ['furosemida'];
-    _activeDrugId = 'furosemida';
+    _selectedDrugIds = [];
+    _activeDrugId = '';
     _patient = PatientData();
     _hemo = HemoData();
     notifyListeners();
@@ -435,18 +438,21 @@ class AppProvider extends ChangeNotifier {
 
   void updatePatient(String key, String value) {
     switch (key) {
-      case 'patientId': _patient.patientId = value; break;
-      case 'age':       _patient.age = value; break;
-      case 'sex':       _patient.sex = value; break;
-      case 'weight':    _patient.weight = value; break;
-      case 'height':    _patient.height = value; break;
-      case 'creatinine': _patient.creatinine = value; break;
+      case 'patientId':    _patient.patientId = value; break;
+      case 'age':           _patient.age = value; break;
+      case 'sex':           _patient.sex = value; break;
+      case 'weight':        _patient.weight = value; break;
+      case 'height':        _patient.height = value; break;
+      case 'creatinine':    _patient.creatinine = value; break;
+      case 'medications':   _patient.medications = value; break;
     }
     notifyListeners();
   }
 
   void resetPatient() {
-    _patient = PatientData(patientId: '', age: '', sex: 'Masculino', weight: '', height: '', creatinine: '');
+    _patient = PatientData();
+    _selectedDrugIds = [];
+    _activeDrugId = '';
     notifyListeners();
   }
 
@@ -478,8 +484,11 @@ class AppProvider extends ChangeNotifier {
 
   void removeDrug(String id) {
     _selectedDrugIds.remove(id);
-    if (_selectedDrugIds.isEmpty) _selectedDrugIds.add(drugsDatabase[0].id);
-    if (_activeDrugId == id) _activeDrugId = _selectedDrugIds.first;
+    if (_selectedDrugIds.isEmpty) {
+      _activeDrugId = '';
+    } else if (_activeDrugId == id) {
+      _activeDrugId = _selectedDrugIds.first;
+    }
     notifyListeners();
   }
 

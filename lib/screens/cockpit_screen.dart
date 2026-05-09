@@ -17,14 +17,19 @@ class _CockpitScreenState extends State<CockpitScreen> {
   final _drugQueryCtrl = TextEditingController();
   bool _drugPickerOpen = false;
 
-  // Seções colapsáveis
-  bool _bioOpen = true;
-  bool _doseOpen = true;
+  // Seções colapsáveis — todas fechadas por padrão
+  bool _bioOpen = false;
+  bool _doseOpen = false;
   bool _protOpen = false;
+
+  // Drug picker na calculadora
+  final _calcDrugQueryCtrl = TextEditingController();
+  bool _calcDrugPickerOpen = false;
 
   @override
   void dispose() {
     _drugQueryCtrl.dispose();
+    _calcDrugQueryCtrl.dispose();
     super.dispose();
   }
 
@@ -66,6 +71,25 @@ class _CockpitScreenState extends State<CockpitScreen> {
       return false;
     }).take(8).toList();
 
+    // Drug picker filtrado para a calculadora
+    final calcFilteredDrugs = p.drugsDB.where((d) {
+      if (!p.selectedDrugIds.contains(d.id)) {
+        final q = _calcDrugQueryCtrl.text.toLowerCase();
+        if (q.isEmpty) return true;
+        return d.name.toLowerCase().contains(q) ||
+            (d.className[p.lang] ?? '').toLowerCase().contains(q) ||
+            (d.category[p.lang] ?? '').toLowerCase().contains(q);
+      }
+      return false;
+    }).take(8).toList();
+
+    // Subtítulo dinâmico do card de paciente
+    final bioSubtitle = [
+      if (p.patient.age.isNotEmpty) '${p.patient.age} anos',
+      if (p.patient.weight.isNotEmpty) '${p.patient.weight} kg',
+      p.patient.sex,
+    ].join(' · ');
+
     return SingleChildScrollView(
       padding: const EdgeInsets.fromLTRB(16, 8, 16, 100),
       child: Column(children: [
@@ -82,7 +106,7 @@ class _CockpitScreenState extends State<CockpitScreen> {
         _CollapsibleSection(
           icon: Icons.person_outline_rounded,
           title: 'Dados do paciente',
-          subtitle: 'Idade, peso, creatinina, sexo',
+          subtitle: bioSubtitle.isEmpty ? 'Toque para preencher' : bioSubtitle,
           isOpen: _bioOpen,
           onToggle: () => setState(() => _bioOpen = !_bioOpen),
           child: _BiometricsBody(
@@ -105,7 +129,15 @@ class _CockpitScreenState extends State<CockpitScreen> {
           isOpen: _doseOpen,
           onToggle: () => setState(() => _doseOpen = !_doseOpen),
           badgeCount: p.selectedDrugs.length,
-          child: _DoseBody(p: p, copied: _copied, onCopy: () => _copyToClipboard(p)),
+          child: _DoseBody(
+            p: p,
+            copied: _copied,
+            onCopy: () => _copyToClipboard(p),
+            drugQueryCtrl: _calcDrugQueryCtrl,
+            drugPickerOpen: _calcDrugPickerOpen,
+            filteredDrugs: calcFilteredDrugs,
+            onDrugPickerChanged: (v) => setState(() => _calcDrugPickerOpen = v),
+          ),
         ),
         const SizedBox(height: 10),
 
@@ -154,7 +186,7 @@ class _HeroHeader extends StatelessWidget {
         ]),
         const SizedBox(height: 14),
         // Safety status inline
-        _SafetyStatus(clcr: p.clcr, doseAlerts: p.calculateDose(p.activeDrug).alerts),
+        _SafetyStatus(clcr: p.clcr, doseAlerts: p.activeDrug != null ? p.calculateDose(p.activeDrug!).alerts : []),
         const SizedBox(height: 14),
         // Quick access chips
         const Text('ACESSO IMEDIATO', style: TextStyle(
@@ -166,12 +198,12 @@ class _HeroHeader extends StatelessWidget {
           scrollDirection: Axis.horizontal,
           child: Row(children: [
             for (final item in [
-              ('🫀 Anafilaxia', 'anafilaxia'),
-              ('💔 Choque', 'choque_cardiogenico'),
-              ('⚡ TPSV', 'tpsv'),
-              ('🧪 K+ alto', 'hipercalemia'),
-              ('🧠 AVC', 'avc_isquemico'),
-              ('🫁 Sepse', 'sepse'),
+              ('Anafilaxia', 'anafilaxia'),
+              ('Choque', 'choque_cardiogenico'),
+              ('TPSV', 'tpsv'),
+              ('K+ alto', 'hipercalemia'),
+              ('AVC', 'avc_isquemico'),
+              ('Sepse', 'sepse'),
             ])
               Padding(
                 padding: const EdgeInsets.only(right: 8),
@@ -367,8 +399,9 @@ class _BiometricsBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isMale = p.patient.sex == 'M';
     return Column(children: [
-      // Linha paciente + limpar
+      // Paciente + Limpar
       Row(children: [
         Expanded(child: _FieldRow(label: 'Paciente / Leito',
           child: MedInput(hintText: 'Ex: Leito 05', initialValue: p.patient.patientId,
@@ -385,58 +418,115 @@ class _BiometricsBody extends StatelessWidget {
         ),
       ]),
       const SizedBox(height: 10),
-      // Idade + Peso
+      // Idade + Sexo toggle
       Row(children: [
         Expanded(child: _FieldRow(label: p.t('age'),
           child: MedInput(hintText: '68', initialValue: p.patient.age,
             keyboardType: TextInputType.number, onChanged: (v) => p.updatePatient('age', v)))),
         const SizedBox(width: 10),
+        Expanded(child: _FieldRow(
+          label: p.t('sex'),
+          child: GestureDetector(
+            onTap: () => p.updatePatient('sex', isMale ? 'F' : 'M'),
+            child: Container(
+              height: 44,
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(14),
+                border: Border.all(color: kBorder),
+                color: Colors.white,
+              ),
+              child: Row(children: [
+                AnimatedContainer(
+                  duration: const Duration(milliseconds: 160),
+                  width: 30, height: 30,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: isMale ? const Color(0xFFDCEEFF) : const Color(0xFFFFE4F0),
+                  ),
+                  child: Center(child: Text(
+                    isMale ? 'M' : 'F',
+                    style: TextStyle(
+                      fontSize: 13, fontWeight: FontWeight.w900,
+                      color: isMale ? const Color(0xFF1565C0) : const Color(0xFFC2185B),
+                    ),
+                  )),
+                ),
+                const SizedBox(width: 8),
+                Text(
+                  isMale ? 'Masculino' : 'Feminino',
+                  style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: kDark),
+                ),
+                const Spacer(),
+                Icon(Icons.swap_horiz_rounded, size: 15, color: Colors.grey[400]),
+              ]),
+            ),
+          ),
+        )),
+      ]),
+      const SizedBox(height: 10),
+      // Peso + Altura
+      Row(children: [
         Expanded(child: _FieldRow(label: 'Peso (kg)',
           child: MedInput(hintText: '78', initialValue: p.patient.weight,
             keyboardType: TextInputType.number, onChanged: (v) => p.updatePatient('weight', v)))),
-      ]),
-      const SizedBox(height: 10),
-      // Altura + Creatinina
-      Row(children: [
+        const SizedBox(width: 10),
         Expanded(child: _FieldRow(label: 'Altura (cm)',
           child: MedInput(hintText: '171', initialValue: p.patient.height,
             keyboardType: TextInputType.number, onChanged: (v) => p.updatePatient('height', v)))),
-        const SizedBox(width: 10),
-        Expanded(child: _FieldRow(label: p.t('creatinine'),
-          child: MedInput(hintText: '1.0', initialValue: p.patient.creatinine,
-            keyboardType: const TextInputType.numberWithOptions(decimal: true),
-            onChanged: (v) => p.updatePatient('creatinine', v)))),
       ]),
       const SizedBox(height: 10),
-      // Sexo
+      // Creatinina
+      _FieldRow(label: p.t('creatinine'),
+        child: MedInput(hintText: '1.0 mg/dL', initialValue: p.patient.creatinine,
+          keyboardType: const TextInputType.numberWithOptions(decimal: true),
+          onChanged: (v) => p.updatePatient('creatinine', v))),
+      const SizedBox(height: 10),
+      // Medicamentos em uso
       _FieldRow(
-        label: p.t('sex'),
-        child: Container(
-          height: 44,
-          padding: const EdgeInsets.symmetric(horizontal: 12),
-          decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(14), border: Border.all(color: kBorder)),
-          child: DropdownButtonHideUnderline(
-            child: DropdownButton<String>(
-              value: p.patient.sex,
-              isExpanded: true,
-              style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 15, color: kDark),
-              items: const [
-                DropdownMenuItem(value: 'Masculino', child: Text('Masculino')),
-                DropdownMenuItem(value: 'Feminino', child: Text('Feminino')),
-              ],
-              onChanged: (v) => p.updatePatient('sex', v ?? 'Masculino'),
-            ),
-          ),
+        label: 'Medicamentos em uso (opcional)',
+        child: MedInput(
+          hintText: 'Ex: AAS 100mg, Enalapril 10mg...',
+          initialValue: p.patient.medications,
+          maxLines: 3,
+          onChanged: (v) => p.updatePatient('medications', v),
         ),
       ),
-      const SizedBox(height: 14),
-      // Drug picker
+    ]);
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// DOSE BODY
+// ─────────────────────────────────────────────────────────────────────────────
+class _DoseBody extends StatelessWidget {
+  final AppProvider p;
+  final bool copied;
+  final VoidCallback onCopy;
+  final TextEditingController drugQueryCtrl;
+  final bool drugPickerOpen;
+  final List filteredDrugs;
+  final ValueChanged<bool> onDrugPickerChanged;
+  const _DoseBody({
+    required this.p,
+    required this.copied,
+    required this.onCopy,
+    required this.drugQueryCtrl,
+    required this.drugPickerOpen,
+    required this.filteredDrugs,
+    required this.onDrugPickerChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      // Drug picker sempre visível
       _FieldRow(
-        label: 'Adicionar fármaco',
+        label: 'Selecionar fármaco',
         child: Column(children: [
           MedInput(
             controller: drugQueryCtrl,
-            hintText: '🔍  Buscar fármaco...',
+            hintText: 'Buscar fármaco...',
             onChanged: (v) => onDrugPickerChanged(v.isNotEmpty),
           ),
           if (drugPickerOpen && filteredDrugs.isNotEmpty)
@@ -451,11 +541,11 @@ class _BiometricsBody extends StatelessWidget {
               child: Column(children: filteredDrugs.map((d) => ListTile(
                 dense: true,
                 title: Text(d.name, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w900)),
-                subtitle: Text('${p.tDB(d.className)} • ${d.route}', style: const TextStyle(fontSize: 11)),
+                subtitle: Text('${p.tDB(d.className)} · ${d.route}', style: const TextStyle(fontSize: 11)),
                 trailing: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(color: kDark, borderRadius: BorderRadius.circular(8)),
-                  child: const Text('usar', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w900, color: kGoldLight)),
+                  child: const Text('Usar', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w900, color: kGoldLight)),
                 ),
                 onTap: () {
                   p.addDrug(d.id);
@@ -466,75 +556,38 @@ class _BiometricsBody extends StatelessWidget {
             ),
         ]),
       ),
-      if (p.selectedDrugs.isNotEmpty) ...[
-        const SizedBox(height: 12),
-        // Chips de fármacos selecionados
-        Container(
-          width: double.infinity,
-          padding: const EdgeInsets.all(12),
-          decoration: BoxDecoration(borderRadius: BorderRadius.circular(14), border: Border.all(color: kBorder), color: kSurface),
-          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            const Text('SELECIONADOS — toque para remover', style: TextStyle(fontSize: 9, fontWeight: FontWeight.w900, letterSpacing: 1.2, color: Color(0xFF888888))),
-            const SizedBox(height: 8),
-            Wrap(spacing: 6, runSpacing: 6, children: p.selectedDrugs.map((d) => GestureDetector(
-              onTap: () => p.removeDrug(d.id),
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), color: const Color(0xFFECFDF5), border: Border.all(color: const Color(0xFFBBF7D0))),
-                child: Text('${d.name}  ×', style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w900, color: Color(0xFF065F46))),
-              ),
-            )).toList()),
-          ]),
-        ),
-      ],
-    ]);
-  }
-}
 
-// ─────────────────────────────────────────────────────────────────────────────
-// DOSE BODY
-// ─────────────────────────────────────────────────────────────────────────────
-class _DoseBody extends StatelessWidget {
-  final AppProvider p;
-  final bool copied;
-  final VoidCallback onCopy;
-  const _DoseBody({required this.p, required this.copied, required this.onCopy});
-
-  @override
-  Widget build(BuildContext context) {
-    if (p.selectedDrugs.isEmpty) {
-      return Column(children: [
-        const SizedBox(height: 8),
+      if (p.selectedDrugs.isEmpty) ...[
+        const SizedBox(height: 20),
         Center(child: Column(children: [
           Icon(Icons.medication_outlined, size: 40, color: Colors.grey[300]),
           const SizedBox(height: 10),
           const Text('Nenhum fármaco selecionado', style: TextStyle(fontSize: 13, color: Color(0xFFAAAAAA), fontWeight: FontWeight.w700)),
           const SizedBox(height: 4),
-          const Text('Adicione um fármaco na seção acima', style: TextStyle(fontSize: 11, color: Color(0xFFBBBBBB))),
+          const Text('Busque e selecione um fármaco acima', style: TextStyle(fontSize: 11, color: Color(0xFFBBBBBB))),
         ])),
-        const SizedBox(height: 8),
-      ]);
-    }
+        const SizedBox(height: 16),
+      ] else ...[
+        const SizedBox(height: 14),
+        // Métricas mini
+        Row(children: [
+          Expanded(child: _MiniStat(label: 'Peso', value: p.patient.weight.isNotEmpty ? '${p.patient.weight} kg' : '—')),
+          const SizedBox(width: 6),
+          Expanded(child: _MiniStat(label: 'Altura', value: p.patient.height.isNotEmpty ? '${p.patient.height} cm' : '—')),
+          const SizedBox(width: 6),
+          Expanded(child: _MiniStat(label: 'ClCr', value: '${p.clcr ?? '—'} mL/min')),
+        ]),
+        const SizedBox(height: 14),
 
-    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      // Métricas mini
-      Row(children: [
-        Expanded(child: _MiniStat(label: 'Peso', value: '${p.patient.weight} kg')),
-        const SizedBox(width: 6),
-        Expanded(child: _MiniStat(label: 'Altura', value: '${p.patient.height} cm')),
-        const SizedBox(width: 6),
-        Expanded(child: _MiniStat(label: 'ClCr', value: '${p.clcr ?? '—'} mL/min')),
-      ]),
-      const SizedBox(height: 14),
+        // Cards de fármaco
+        ...p.selectedDrugs.map((drug) {
+          final dose = p.calculateDose(drug);
+          return _DrugDoseCard(drug: drug, dose: dose, p: p);
+        }),
 
-      // Cards de fármaco
-      ...p.selectedDrugs.map((drug) {
-        final dose = p.calculateDose(drug);
-        return _DrugDoseCard(drug: drug, dose: dose, p: p);
-      }),
 
-      // Interações
-      if (p.interactionRisks.isNotEmpty) ...[
+        // Interações
+        if (p.interactionRisks.isNotEmpty) ...[
         const SizedBox(height: 4),
         Container(
           padding: const EdgeInsets.all(12),
@@ -552,8 +605,8 @@ class _DoseBody extends StatelessWidget {
             )),
           ]),
         ),
-        const SizedBox(height: 10),
-      ] else ...[
+          const SizedBox(height: 10),
+        ] else ...[
         const SizedBox(height: 4),
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
@@ -564,30 +617,31 @@ class _DoseBody extends StatelessWidget {
             Expanded(child: Text('Sem interação crítica detectada na base local.', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: Color(0xFF065F46)))),
           ]),
         ),
-        const SizedBox(height: 10),
-      ],
+          const SizedBox(height: 10),
+        ],
 
-      // Info do fármaco ativo
-      _DrugSafetyPanel(p: p),
-      const SizedBox(height: 14),
+        // Info do fármaco ativo
+        _DrugSafetyPanel(p: p),
+        const SizedBox(height: 14),
 
-      // Botão copiar
-      GestureDetector(
-        onTap: onCopy,
-        child: Container(
-          width: double.infinity, height: 50,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(16),
-            color: copied ? const Color(0xFFECFDF5) : kDark,
-            border: copied ? Border.all(color: const Color(0xFF86EFAC)) : null,
-            boxShadow: copied ? null : [BoxShadow(color: kDark.withValues(alpha: 0.25), blurRadius: 12, offset: const Offset(0, 4))],
+        // Botão copiar
+        GestureDetector(
+          onTap: onCopy,
+          child: Container(
+            width: double.infinity, height: 50,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(16),
+              color: copied ? const Color(0xFFECFDF5) : kDark,
+              border: copied ? Border.all(color: const Color(0xFF86EFAC)) : null,
+              boxShadow: copied ? null : [BoxShadow(color: kDark.withValues(alpha: 0.25), blurRadius: 12, offset: const Offset(0, 4))],
+            ),
+            child: Center(child: Text(
+              copied ? 'Copiado para prontuário!' : 'Copiar para prontuário',
+              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w900, color: copied ? const Color(0xFF065F46) : kGoldLight),
+            )),
           ),
-          child: Center(child: Text(
-            copied ? '✓  Copiado para prontuário!' : '📋  Copiar para prontuário',
-            style: TextStyle(fontSize: 14, fontWeight: FontWeight.w900, color: copied ? const Color(0xFF065F46) : kGoldLight),
-          )),
         ),
-      ),
+      ],
     ]);
   }
 }
@@ -763,6 +817,7 @@ class _DrugSafetyPanel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final drug = p.activeDrug;
+    if (drug == null) return const SizedBox.shrink();
     final adverse = drug.getAdverse(p.lang);
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       InfoBlock(label: p.t('mechanism'), text: p.tDB(drug.mechanism)),
