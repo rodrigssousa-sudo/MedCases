@@ -70,3 +70,14 @@ echo "Verificando resultado:"
 grep "loader.load" build/web/flutter_bootstrap.js | tail -3
 echo ""
 head -2 build/web/flutter_service_worker.js
+
+echo ""
+echo "📦 Commitando build/web no git (necessário para deploy DigitalOcean)..."
+git add -f build/web/
+# Só faz commit se houver mudanças staged
+if git diff --cached --quiet; then
+  echo "  ℹ️  Nenhuma mudança no build/web — nada a commitar"
+else
+  git commit -m "build: atualiza build/web para deploy [$(date '+%Y-%m-%d %H:%M')]"
+  echo "  ✅ build/web commitado"
+fi
