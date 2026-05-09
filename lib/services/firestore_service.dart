@@ -184,6 +184,36 @@ class FirestoreService {
     } catch (_) {}
   }
 
+  // ── Moderação: ocultar HC pública (reversível) ──────────────────────────
+  static Future<void> hideHistory(String historyId, String moderatorUid) async {
+    try {
+      final now = DateTime.now().toIso8601String();
+      await _publicHistories.doc(historyId).update({
+        'isHidden': true,
+        'hiddenBy': moderatorUid,
+        'hiddenAt': now,
+      });
+    } catch (_) {}
+  }
+
+  // ── Moderação: desocultar HC pública ─────────────────────────────────────
+  static Future<void> unhideHistory(String historyId) async {
+    try {
+      await _publicHistories.doc(historyId).update({
+        'isHidden': false,
+        'hiddenBy': null,
+        'hiddenAt': null,
+      });
+    } catch (_) {}
+  }
+
+  // ── Moderação: admin/supervisor excluir HC pública de outro usuário ───────
+  static Future<void> adminDeletePublicHistory(String historyId) async {
+    try {
+      await _publicHistories.doc(historyId).delete();
+    } catch (_) {}
+  }
+
   static Future<List<ClinicalHistoryModel>> loadPublicHistories() async {
     try {
       final snap = await _publicHistories

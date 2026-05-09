@@ -105,6 +105,11 @@ class ClinicalHistoryModel {
   final String category;            // Especialidade
   final String tags;                // Tags livres (ex: "sepse, UTI, pediatria")
 
+  // ── Moderação (admin/supervisor) ─────────────────────────────────────────
+  final bool isHidden;              // Oculto por moderador (reversível)
+  final String? hiddenBy;           // UID do moderador que ocultou
+  final String? hiddenAt;           // ISO8601 quando foi ocultado
+
   const ClinicalHistoryModel({
     required this.id,
     required this.createdAt,
@@ -146,6 +151,9 @@ class ClinicalHistoryModel {
     this.followUp = '',
     this.category = 'Clínica Geral',
     this.tags = '',
+    this.isHidden = false,
+    this.hiddenBy,
+    this.hiddenAt,
   });
 
   factory ClinicalHistoryModel.blank({required String authorUid, String authorName = '', String authorEmail = ''}) {
@@ -175,6 +183,7 @@ class ClinicalHistoryModel {
     List<EvolutionEntry>? evolutions,
     String? outcome, String? dischargeCondition, String? followUp,
     String? category, String? tags,
+    bool? isHidden, String? hiddenBy, String? hiddenAt,
   }) {
     return ClinicalHistoryModel(
       id: id ?? this.id,
@@ -217,6 +226,9 @@ class ClinicalHistoryModel {
       followUp: followUp ?? this.followUp,
       category: category ?? this.category,
       tags: tags ?? this.tags,
+      isHidden: isHidden ?? this.isHidden,
+      hiddenBy: hiddenBy ?? this.hiddenBy,
+      hiddenAt: hiddenAt ?? this.hiddenAt,
     );
   }
 
@@ -242,6 +254,9 @@ class ClinicalHistoryModel {
     'evolutions': evolutions.map((e) => e.toJson()).toList(),
     'outcome': outcome, 'dischargeCondition': dischargeCondition,
     'followUp': followUp, 'category': category, 'tags': tags,
+    'isHidden': isHidden,
+    'hiddenBy': hiddenBy,
+    'hiddenAt': hiddenAt,
   };
 
   factory ClinicalHistoryModel.fromJson(Map<String, dynamic> j) {
@@ -287,6 +302,9 @@ class ClinicalHistoryModel {
       followUp: j['followUp'] ?? '',
       category: j['category'] ?? 'Clínica Geral',
       tags: j['tags'] ?? '',
+      isHidden: j['isHidden'] as bool? ?? false,
+      hiddenBy: j['hiddenBy'] as String?,
+      hiddenAt: j['hiddenAt'] as String?,
     );
   }
 

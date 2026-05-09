@@ -200,6 +200,20 @@ class AuthService {
     });
   }
 
+  // ── Master: promover a supervisor ─────────────────────────────────────────
+  static Future<void> promoteToSupervisor(String uid) async {
+    await _db.collection('users').doc(uid).update({
+      'role': UserRole.supervisor.name,
+    });
+  }
+
+  // ── Master/Admin: rebaixar para usuário comum ─────────────────────────────
+  static Future<void> demoteToUser(String uid) async {
+    await _db.collection('users').doc(uid).update({
+      'role': UserRole.user.name,
+    });
+  }
+
   // ── Mensagens de erro amigáveis ───────────────────────────────────────────
   static String _authErrorMessage(String code) {
     switch (code) {

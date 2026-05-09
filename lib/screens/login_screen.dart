@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../services/auth_service.dart';
 import '../widgets/brand_mark.dart';
 
@@ -15,6 +16,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
   _Mode _mode = _Mode.login;
   bool _loading = false;
   bool _obscure = true;
+  bool _rememberEmail = false;
   String? _error;
   String? _success;
 
@@ -33,12 +35,43 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
   static const kGoldL  = Color(0xFFFFE8A6);
   static const kCream  = Color(0xFFFFFDF8);
 
+  static const _kPrefEmail  = 'login_saved_email';
+  static const _kPrefRemember = 'login_remember_email';
+
   @override
   void initState() {
     super.initState();
     _anim = AnimationController(vsync: this, duration: const Duration(milliseconds: 350));
     _fade = CurvedAnimation(parent: _anim, curve: Curves.easeOut);
     _anim.forward();
+    _loadSavedEmail();
+  }
+
+  Future<void> _loadSavedEmail() async {
+    try {
+      final p = await SharedPreferences.getInstance();
+      final remember = p.getBool(_kPrefRemember) ?? false;
+      final email    = p.getString(_kPrefEmail) ?? '';
+      if (remember && email.isNotEmpty) {
+        setState(() {
+          _rememberEmail = true;
+          _emailCtrl.text = email;
+        });
+      }
+    } catch (_) {}
+  }
+
+  Future<void> _persistEmail(String email) async {
+    try {
+      final p = await SharedPreferences.getInstance();
+      if (_rememberEmail && email.isNotEmpty) {
+        await p.setBool(_kPrefRemember, true);
+        await p.setString(_kPrefEmail, email);
+      } else {
+        await p.remove(_kPrefRemember);
+        await p.remove(_kPrefEmail);
+      }
+    } catch (_) {}
   }
 
   @override
@@ -61,6 +94,8 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
     AuthResult result;
 
     if (_mode == _Mode.login) {
+      // Persiste email antes de fazer o login
+      await _persistEmail(_emailCtrl.text.trim());
       result = await AuthService.login(
         email: _emailCtrl.text,
         password: _passCtrl.text,
@@ -172,6 +207,32 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                         // Senha (não no reset)
                         if (_mode != _Mode.reset) ...[
                           _fieldPassword(),
+                          const SizedBox(height: 8),
+                        ],
+
+                        // Checkbox "Lembrar e-mail" — só no modo login
+                        if (_mode == _Mode.login) ...[
+                          GestureDetector(
+                            onTap: () => setState(() => _rememberEmail = !_rememberEmail),
+                            child: Row(children: [
+                              SizedBox(
+                                width: 20, height: 20,
+                                child: Checkbox(
+                                  value: _rememberEmail,
+                                  onChanged: (v) => setState(() => _rememberEmail = v ?? false),
+                                  activeColor: kGreen,
+                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+                                  side: BorderSide(color: kDark.withValues(alpha: 0.3), width: 1.5),
+                                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                ),
+                              ),
+                              const SizedBox(width: 8),
+                              Text(
+                                'Lembrar e-mail',
+                                style: TextStyle(fontSize: 12, color: kDark.withValues(alpha: 0.65), fontWeight: FontWeight.w600),
+                              ),
+                            ]),
+                          ),
                           const SizedBox(height: 12),
                         ],
 
@@ -243,7 +304,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
             color: kGold.withValues(alpha: 0.1),
           ),
           child: Text(
-            'Cockpit Clínico  •  Doses  •  Protocolos',
+            'Clínica Médica  •  Doses  •  Protocolos',
             style: TextStyle(fontSize: 11, color: kGoldL.withValues(alpha: 0.85), fontWeight: FontWeight.w700, letterSpacing: 0.3),
           ),
         ),

@@ -20,6 +20,9 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
   static const kGold  = Color(0xFFC5A365);
   static const kGoldL = Color(0xFFFFE8A6);
 
+  // Atalho: o admin atual é Master?
+  bool get _isMaster => widget.currentAdmin.isMaster;
+
   @override
   void initState() {
     super.initState();
@@ -40,10 +43,25 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
         backgroundColor: kDark,
         foregroundColor: Colors.white,
         elevation: 0,
-        title: const Row(children: [
+        title: Row(children: [
           Icon(Icons.admin_panel_settings_rounded, color: kGoldL, size: 20),
-          SizedBox(width: 8),
-          Text('Painel Admin', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w900, color: Colors.white)),
+          const SizedBox(width: 8),
+          Text(
+            _isMaster ? 'Painel Master' : 'Painel Admin',
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w900, color: Colors.white),
+          ),
+          if (_isMaster) ...[
+            const SizedBox(width: 8),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20),
+                color: Colors.amber.withValues(alpha: 0.2),
+                border: Border.all(color: Colors.amber.withValues(alpha: 0.5)),
+              ),
+              child: const Text('MASTER', style: TextStyle(fontSize: 8, fontWeight: FontWeight.w900, color: Colors.amber)),
+            ),
+          ],
         ]),
         bottom: TabBar(
           controller: _tabs,
@@ -104,7 +122,8 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
                       users: pending,
                       emptyMsg: 'Nenhum usuário pendente',
                       emptyIcon: Icons.check_circle_outline_rounded,
-                      adminUid: widget.currentAdmin.uid,
+                      currentAdmin: widget.currentAdmin,
+                      isMaster: _isMaster,
                       onApprove: _approve,
                       onBlock: _block,
                       showApprove: true,
@@ -114,9 +133,12 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
                       users: approved,
                       emptyMsg: 'Nenhum usuário aprovado',
                       emptyIcon: Icons.people_outline_rounded,
-                      adminUid: widget.currentAdmin.uid,
+                      currentAdmin: widget.currentAdmin,
+                      isMaster: _isMaster,
                       onBlock: _block,
                       onPromote: _promote,
+                      onPromoteSupervisor: _isMaster ? _promoteSupervisor : null,
+                      onDemote: _isMaster ? _demote : null,
                       showBlock: true,
                       showPromote: true,
                     ),
@@ -124,7 +146,8 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
                       users: blocked,
                       emptyMsg: 'Nenhum usuário bloqueado',
                       emptyIcon: Icons.verified_user_outlined,
-                      adminUid: widget.currentAdmin.uid,
+                      currentAdmin: widget.currentAdmin,
+                      isMaster: _isMaster,
                       onApprove: _unblock,
                       showApprove: true,
                       approveBtnLabel: 'Desbloquear',
@@ -185,13 +208,39 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
   }
 
   Future<void> _promote(UserModel u) async {
+    // Admin pode promover a supervisor; Master pode promover a admin
+    if (_isMaster) {
+      final confirm = await _confirmDialog(
+        'Promover ${u.displayName} a Admin?',
+        'Ele terá acesso ao painel de administração.',
+      );
+      if (!confirm) return;
+      await AuthService.promoteToAdmin(u.uid);
+      if (mounted) _snack('⭐ ${u.displayName} promovido a Admin!', kGold);
+    } else {
+      // Admin normal só pode promover a supervisor
+      await _promoteSupervisor(u);
+    }
+  }
+
+  Future<void> _promoteSupervisor(UserModel u) async {
     final confirm = await _confirmDialog(
-      'Promover ${u.displayName} a Admin?',
-      'Ele terá acesso total ao painel de administração.',
+      'Promover ${u.displayName} a Supervisor?',
+      'Ele poderá ocultar e excluir histórias clínicas públicas.',
     );
     if (!confirm) return;
-    await AuthService.promoteToAdmin(u.uid);
-    if (mounted) _snack('⭐ ${u.displayName} promovido a Admin!', kGold);
+    await AuthService.promoteToSupervisor(u.uid);
+    if (mounted) _snack('🔰 ${u.displayName} promovido a Supervisor!', Colors.blue);
+  }
+
+  Future<void> _demote(UserModel u) async {
+    final confirm = await _confirmDialog(
+      'Rebaixar ${u.displayName}?',
+      'O usuário voltará a ser um usuário comum, sem poderes administrativos.',
+    );
+    if (!confirm) return;
+    await AuthService.demoteToUser(u.uid);
+    if (mounted) _snack('↘ ${u.displayName} rebaixado para Usuário.', Colors.grey);
   }
 
   Future<bool> _confirmDialog(String title, String body) async {
@@ -233,10 +282,13 @@ class _UserList extends StatelessWidget {
   final List<UserModel> users;
   final String emptyMsg;
   final IconData emptyIcon;
-  final String adminUid;
+  final UserModel currentAdmin;
+  final bool isMaster;
   final void Function(UserModel)? onApprove;
   final void Function(UserModel)? onBlock;
   final void Function(UserModel)? onPromote;
+  final void Function(UserModel)? onPromoteSupervisor;
+  final void Function(UserModel)? onDemote;
   final bool showApprove;
   final bool showBlock;
   final bool showPromote;
@@ -250,10 +302,13 @@ class _UserList extends StatelessWidget {
     required this.users,
     required this.emptyMsg,
     required this.emptyIcon,
-    required this.adminUid,
+    required this.currentAdmin,
+    required this.isMaster,
     this.onApprove,
     this.onBlock,
     this.onPromote,
+    this.onPromoteSupervisor,
+    this.onDemote,
     this.showApprove = false,
     this.showBlock = false,
     this.showPromote = false,
@@ -275,24 +330,45 @@ class _UserList extends StatelessWidget {
     return ListView.builder(
       padding: const EdgeInsets.all(16),
       itemCount: users.length,
-      itemBuilder: (ctx, i) => _UserCard(
-        user: users[i],
-        adminUid: adminUid,
-        onApprove: showApprove && onApprove != null ? () => onApprove!(users[i]) : null,
-        onBlock: showBlock && onBlock != null && users[i].uid != adminUid ? () => onBlock!(users[i]) : null,
-        onPromote: showPromote && onPromote != null && users[i].role != UserRole.admin ? () => onPromote!(users[i]) : null,
-        approveBtnLabel: approveBtnLabel,
-      ),
+      itemBuilder: (ctx, i) {
+        final u = users[i];
+        final isMe = u.uid == currentAdmin.uid;
+        // Não pode promover a si mesmo ou ao master
+        final canPromote = showPromote && onPromote != null
+            && !isMe && !u.isMaster
+            && u.role != UserRole.admin; // já é admin, não precisa promover novamente
+        final canPromoteSupervisor = isMaster && onPromoteSupervisor != null
+            && !isMe && !u.isMaster
+            && u.role == UserRole.user;
+        final canDemote = isMaster && onDemote != null
+            && !isMe && !u.isMaster
+            && (u.role == UserRole.admin || u.role == UserRole.supervisor);
+
+        return _UserCard(
+          user: u,
+          currentAdmin: currentAdmin,
+          isMaster: isMaster,
+          onApprove: showApprove && onApprove != null ? () => onApprove!(u) : null,
+          onBlock: showBlock && onBlock != null && !isMe && !u.isMaster ? () => onBlock!(u) : null,
+          onPromote: canPromote ? () => onPromote!(u) : null,
+          onPromoteSupervisor: canPromoteSupervisor ? () => onPromoteSupervisor!(u) : null,
+          onDemote: canDemote ? () => onDemote!(u) : null,
+          approveBtnLabel: approveBtnLabel,
+        );
+      },
     );
   }
 }
 
 class _UserCard extends StatelessWidget {
   final UserModel user;
-  final String adminUid;
+  final UserModel currentAdmin;
+  final bool isMaster;
   final VoidCallback? onApprove;
   final VoidCallback? onBlock;
   final VoidCallback? onPromote;
+  final VoidCallback? onPromoteSupervisor;
+  final VoidCallback? onDemote;
   final String approveBtnLabel;
 
   static const kDark  = Color(0xFF07110d);
@@ -302,16 +378,19 @@ class _UserCard extends StatelessWidget {
 
   const _UserCard({
     required this.user,
-    required this.adminUid,
+    required this.currentAdmin,
+    required this.isMaster,
     this.onApprove,
     this.onBlock,
     this.onPromote,
+    this.onPromoteSupervisor,
+    this.onDemote,
     required this.approveBtnLabel,
   });
 
   @override
   Widget build(BuildContext context) {
-    final isMe = user.uid == adminUid;
+    final isMe = user.uid == currentAdmin.uid;
 
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
@@ -329,9 +408,9 @@ class _UserCard extends StatelessWidget {
             // Avatar
             Container(
               width: 40, height: 40,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 shape: BoxShape.circle,
-                gradient: const LinearGradient(
+                gradient: LinearGradient(
                   colors: [Color(0xFF07110d), Color(0xFF075f45)],
                 ),
               ),
@@ -359,10 +438,8 @@ class _UserCard extends StatelessWidget {
                     ),
                   const SizedBox(width: 4),
                   _StatusBadge(user.status),
-                  if (user.isAdmin) ...[
-                    const SizedBox(width: 4),
-                    _RoleBadge(),
-                  ],
+                  const SizedBox(width: 4),
+                  _RoleBadge(user),
                 ]),
                 Text(user.email, style: TextStyle(fontSize: 11, color: kDark.withValues(alpha: 0.5), fontWeight: FontWeight.w500)),
               ]),
@@ -388,35 +465,24 @@ class _UserCard extends StatelessWidget {
           ),
 
           // Botões de ação
-          if (onApprove != null || onBlock != null || onPromote != null) ...[
+          if (onApprove != null || onBlock != null || onPromote != null || onPromoteSupervisor != null || onDemote != null) ...[
             const SizedBox(height: 10),
-            Row(children: [
-              if (onApprove != null)
-                Expanded(child: _ActionBtn(
-                  label: approveBtnLabel,
-                  icon: Icons.check_circle_outline_rounded,
-                  color: kGreen,
-                  onTap: onApprove!,
-                )),
-              if (onApprove != null && (onBlock != null || onPromote != null))
-                const SizedBox(width: 8),
-              if (onPromote != null)
-                Expanded(child: _ActionBtn(
-                  label: 'Tornar Admin',
-                  icon: Icons.star_outline_rounded,
-                  color: kGold,
-                  onTap: onPromote!,
-                )),
-              if (onPromote != null && onBlock != null)
-                const SizedBox(width: 8),
-              if (onBlock != null)
-                Expanded(child: _ActionBtn(
-                  label: 'Bloquear',
-                  icon: Icons.block_rounded,
-                  color: Colors.red,
-                  onTap: onBlock!,
-                )),
-            ]),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: [
+                if (onApprove != null)
+                  _ActionBtn(label: approveBtnLabel, icon: Icons.check_circle_outline_rounded, color: kGreen, onTap: onApprove!),
+                if (onPromote != null)
+                  _ActionBtn(label: isMaster ? 'Tornar Admin' : 'Tornar Supervisor', icon: Icons.star_outline_rounded, color: kGold, onTap: onPromote!),
+                if (onPromoteSupervisor != null && onPromote == null)
+                  _ActionBtn(label: 'Tornar Supervisor', icon: Icons.shield_outlined, color: Colors.blue, onTap: onPromoteSupervisor!),
+                if (onDemote != null)
+                  _ActionBtn(label: 'Rebaixar', icon: Icons.arrow_downward_rounded, color: Colors.orange, onTap: onDemote!),
+                if (onBlock != null)
+                  _ActionBtn(label: 'Bloquear', icon: Icons.block_rounded, color: Colors.red, onTap: onBlock!),
+              ],
+            ),
           ],
         ]),
       ),
@@ -451,19 +517,49 @@ class _StatusBadge extends StatelessWidget {
 }
 
 class _RoleBadge extends StatelessWidget {
+  final UserModel user;
   static const kGold  = Color(0xFFC5A365);
   static const kGoldL = Color(0xFFFFE8A6);
-  const _RoleBadge();
+  const _RoleBadge(this.user);
+
   @override
   Widget build(BuildContext context) {
+    if (user.role == UserRole.user) return const SizedBox.shrink();
+
+    Color bg; Color fg; Color border; String label; IconData icon;
+    if (user.isMaster) {
+      bg = Colors.amber.withValues(alpha: 0.15);
+      fg = Colors.amber.shade700;
+      border = Colors.amber.withValues(alpha: 0.5);
+      label = 'Master';
+      icon = Icons.workspace_premium_rounded;
+    } else if (user.role == UserRole.admin) {
+      bg = kGold.withValues(alpha: 0.12);
+      fg = kGold;
+      border = kGold.withValues(alpha: 0.4);
+      label = 'Admin';
+      icon = Icons.star_rounded;
+    } else {
+      // supervisor
+      bg = Colors.blue.withValues(alpha: 0.1);
+      fg = Colors.blue;
+      border = Colors.blue.withValues(alpha: 0.3);
+      label = 'Supervisor';
+      icon = Icons.shield_rounded;
+    }
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20),
-        color: kGold.withValues(alpha: 0.12),
-        border: Border.all(color: kGold.withValues(alpha: 0.4)),
+        color: bg,
+        border: Border.all(color: border),
       ),
-      child: const Text('Admin', style: TextStyle(fontSize: 9, fontWeight: FontWeight.w900, color: kGold)),
+      child: Row(mainAxisSize: MainAxisSize.min, children: [
+        Icon(icon, size: 9, color: fg),
+        const SizedBox(width: 3),
+        Text(label, style: TextStyle(fontSize: 9, fontWeight: FontWeight.w900, color: fg)),
+      ]),
     );
   }
 }
@@ -503,13 +599,13 @@ class _ActionBtn extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
           color: color.withValues(alpha: 0.08),
           border: Border.all(color: color.withValues(alpha: 0.25)),
         ),
-        child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+        child: Row(mainAxisSize: MainAxisSize.min, children: [
           Icon(icon, size: 14, color: color),
           const SizedBox(width: 5),
           Text(label, style: TextStyle(fontSize: 11, fontWeight: FontWeight.w800, color: color)),

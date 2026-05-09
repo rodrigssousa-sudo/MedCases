@@ -76,6 +76,9 @@ class AppProvider extends ChangeNotifier {
   bool get loggedIn => _currentUser != null && _currentUser!.isApproved;
   bool get isPending => _currentUser != null && _currentUser!.isPending;
   bool get isAdmin => _currentUser?.isAdmin ?? false;
+  bool get isSupervisor => _currentUser?.isSupervisor ?? false;
+  bool get isMaster => _currentUser?.isMaster ?? false;
+  bool get canModerateContent => (_currentUser?.isAdmin ?? false) || (_currentUser?.isSupervisor ?? false);
   String get userName => _currentUser?.displayName ?? '';
   String get userEmail => _currentUser?.email ?? '';
   String get lang => _lang;

@@ -5,8 +5,11 @@ import 'package:provider/provider.dart';
 import 'dart:ui' as ui;
 // ignore: avoid_web_libraries_in_flutter
 import 'dart:html' as html;
+// ignore: avoid_web_libraries_in_flutter
+import 'dart:js' as js;
 import '../providers/app_provider.dart';
 import '../models/clinical_history_model.dart';
+import '../services/firestore_service.dart';
 import '../widgets/common_widgets.dart';
 
 // Helper global — formata ISO para 'dd/mm/yyyy às hh:mm'
@@ -210,11 +213,35 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
               : ListView.builder(
                   padding: const EdgeInsets.fromLTRB(0, 8, 0, 100),
                   itemCount: pub.length,
-                  itemBuilder: (_, i) => _HistoryCard(
-                    h: pub[i], p: p,
-                    onTap: () => setState(() { _viewing = pub[i]; _viewingPublic = true; }),
-                    readOnly: true,
-                  ),
+                  itemBuilder: (ctx, i) {
+                    final h = pub[i];
+                    final canModerate = p.canModerateContent;
+                    // Usuários comuns não veem HCs ocultas
+                    if (h.isHidden && !canModerate) return const SizedBox.shrink();
+                    return _HistoryCard(
+                      h: h, p: p,
+                      onTap: () => setState(() { _viewing = h; _viewingPublic = true; }),
+                      readOnly: true,
+                      onModHide: canModerate ? () async {
+                        final uid = p.currentUser?.uid ?? '';
+                        if (h.isHidden) {
+                          await FirestoreService.unhideHistory(h.id);
+                          if (context.mounted) _showModSnack(context, 'HC visível novamente');
+                        } else {
+                          await FirestoreService.hideHistory(h.id, uid);
+                          if (context.mounted) _showModSnack(context, 'HC ocultada da comunidade');
+                        }
+                        p.loadPublicHistories();
+                      } : null,
+                      onModDelete: canModerate ? () async {
+                        final confirm = await _confirmModDelete(context);
+                        if (!confirm) return;
+                        await FirestoreService.adminDeletePublicHistory(h.id);
+                        p.loadPublicHistories();
+                        if (context.mounted) _showModSnack(context, 'HC excluída permanentemente', isError: true);
+                      } : null,
+                    );
+                  },
                 ),
           ],
         ),
@@ -236,6 +263,41 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
       ),
     ) ?? false;
   }
+
+  Future<bool> _confirmModDelete(BuildContext context) async {
+    return await showDialog<bool>(
+      context: context,
+      builder: (_) => AlertDialog(
+        backgroundColor: const Color(0xFFFFFDF8),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: const Text('Excluir HC da Comunidade?',
+          style: TextStyle(fontWeight: FontWeight.w900, fontSize: 16, color: Color(0xFF07110d))),
+        content: const Text(
+          'Esta ação é permanente e remove a história clínica de todos os usuários.\n\nProceder com a exclusão?',
+          style: TextStyle(fontSize: 13, color: Color(0xFF444444))),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Cancelar', style: TextStyle(color: Colors.grey)),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.pop(context, true),
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.red, foregroundColor: Colors.white),
+            child: const Text('Excluir permanentemente'),
+          ),
+        ],
+      ),
+    ) ?? false;
+  }
+
+  void _showModSnack(BuildContext context, String msg, {bool isError = false}) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text(msg, style: const TextStyle(fontWeight: FontWeight.w700)),
+      backgroundColor: isError ? Colors.red : Colors.green,
+      behavior: SnackBarBehavior.floating,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+    ));
+  }
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -249,9 +311,13 @@ class _HistoryCard extends StatelessWidget {
   final VoidCallback? onDelete;
   final VoidCallback? onTogglePublic;
   final bool readOnly;
+  // Controles de moderação (admin/supervisor)
+  final VoidCallback? onModHide;
+  final VoidCallback? onModDelete;
   const _HistoryCard({
     required this.h, required this.p, required this.onTap,
     this.onEdit, this.onDelete, this.onTogglePublic, this.readOnly = false,
+    this.onModHide, this.onModDelete,
   });
 
   Color get _outcomeColor {
@@ -385,6 +451,23 @@ class _HistoryCard extends StatelessWidget {
                 ),
               ]),
             ] else ...[
+              // Banner de HC oculta (visível apenas para moderadores)
+              if (h.isHidden) ...[
+                const SizedBox(height: 8),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: Colors.orange.withValues(alpha: 0.1),
+                    border: Border.all(color: Colors.orange.withValues(alpha: 0.4)),
+                  ),
+                  child: Row(children: [
+                    const Icon(Icons.visibility_off_rounded, size: 12, color: Colors.orange),
+                    const SizedBox(width: 6),
+                    const Text('Oculta por moderador', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w800, color: Colors.orange)),
+                  ]),
+                ),
+              ],
               const SizedBox(height: 8),
               Row(children: [
                 Icon(Icons.person_outline_rounded, size: 12, color: Colors.grey[400]),
@@ -406,6 +489,48 @@ class _HistoryCard extends StatelessWidget {
                   child: const Text('Ver', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w900, color: kGoldLight)),
                 ),
               ]),
+              // Botões de moderação
+              if (onModHide != null || onModDelete != null) ...[
+                const SizedBox(height: 8),
+                Row(children: [
+                  if (onModHide != null)
+                    GestureDetector(
+                      onTap: onModHide,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: Colors.orange.withValues(alpha: 0.08),
+                          border: Border.all(color: Colors.orange.withValues(alpha: 0.3)),
+                        ),
+                        child: Row(mainAxisSize: MainAxisSize.min, children: [
+                          Icon(h.isHidden ? Icons.visibility_rounded : Icons.visibility_off_rounded, size: 12, color: Colors.orange),
+                          const SizedBox(width: 4),
+                          Text(h.isHidden ? 'Mostrar' : 'Ocultar',
+                            style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w800, color: Colors.orange)),
+                        ]),
+                      ),
+                    ),
+                  if (onModHide != null && onModDelete != null) const SizedBox(width: 8),
+                  if (onModDelete != null)
+                    GestureDetector(
+                      onTap: onModDelete,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: Colors.red.withValues(alpha: 0.07),
+                          border: Border.all(color: Colors.red.withValues(alpha: 0.25)),
+                        ),
+                        child: const Row(mainAxisSize: MainAxisSize.min, children: [
+                          Icon(Icons.delete_forever_rounded, size: 12, color: Colors.red),
+                          SizedBox(width: 4),
+                          Text('Excluir', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w800, color: Colors.red)),
+                        ]),
+                      ),
+                    ),
+                ]),
+              ],
             ],
           ]),
         ),
@@ -880,8 +1005,83 @@ class _HistoryEditorState extends State<_HistoryEditor> {
 
   @override
   void dispose() {
+    _sttRecog?.callMethod('stop', []);
     for (final c in _ctrls.values) c.dispose();
     super.dispose();
+  }
+
+  // ── STT (Speech-to-Text via Web Speech API) ───────────────────────────────
+  String? _sttActiveKey;   // chave do campo atualmente ouvindo
+  bool _sttListening = false;
+  String _sttInterim = '';
+  js.JsObject? _sttRecog;
+
+  void _startStt(String key) {
+    // Toggle: parar se já está ouvindo este campo
+    if (_sttListening && _sttActiveKey == key) {
+      _sttRecog?.callMethod('stop', []);
+      setState(() { _sttListening = false; _sttActiveKey = null; _sttInterim = ''; });
+      return;
+    }
+    // Se estava ouvindo outro campo, parar antes
+    if (_sttListening) {
+      _sttRecog?.callMethod('stop', []);
+    }
+    // Verificar suporte do browser via dart:js
+    final jsWin = js.context;
+    final hasSR = jsWin.hasProperty('SpeechRecognition') || jsWin.hasProperty('webkitSpeechRecognition');
+    if (!hasSR) {
+      showDialog(
+        context: context,
+        builder: (_) => AlertDialog(
+          title: const Text('Ditado não suportado'),
+          content: const Text('Seu navegador não suporta reconhecimento de voz.\nUse Chrome ou Edge para usar o ditado.'),
+          actions: [TextButton(onPressed: () => Navigator.pop(context), child: const Text('OK'))],
+        ),
+      );
+      return;
+    }
+    // Criar instância do SpeechRecognition via dart:js
+    final ctorName = jsWin.hasProperty('SpeechRecognition') ? 'SpeechRecognition' : 'webkitSpeechRecognition';
+    final recog = js.JsObject(jsWin[ctorName] as js.JsFunction, []);
+    recog['lang'] = 'pt-BR';
+    recog['continuous'] = true;
+    recog['interimResults'] = true;
+    recog['maxAlternatives'] = 1;
+
+    recog['onresult'] = js.allowInterop((dynamic event) {
+      final results = (event as js.JsObject)['results'] as js.JsObject;
+      final length = results['length'] as int;
+      String interim = '';
+      for (int i = 0; i < length; i++) {
+        final result = results[i] as js.JsObject;
+        final transcript = (result[0] as js.JsObject)['transcript'] as String? ?? '';
+        if (result['isFinal'] as bool? ?? false) {
+          final ctrl = _ctrls[key];
+          if (ctrl != null) {
+            final current = ctrl.text;
+            final spacer = current.isNotEmpty && !current.endsWith(' ') && !current.endsWith('\n') ? ' ' : '';
+            ctrl.text = current + spacer + transcript;
+            ctrl.selection = TextSelection.fromPosition(TextPosition(offset: ctrl.text.length));
+          }
+        } else {
+          interim += transcript;
+        }
+      }
+      if (mounted) setState(() => _sttInterim = interim);
+    });
+
+    recog['onerror'] = js.allowInterop((dynamic event) {
+      if (mounted) setState(() { _sttListening = false; _sttActiveKey = null; _sttInterim = ''; });
+    });
+
+    recog['onend'] = js.allowInterop((dynamic event) {
+      if (mounted) setState(() { _sttListening = false; _sttActiveKey = null; _sttInterim = ''; });
+    });
+
+    recog.callMethod('start', []);
+    _sttRecog = recog;
+    setState(() { _sttListening = true; _sttActiveKey = key; _sttInterim = ''; });
   }
 
   void _save() {
@@ -972,6 +1172,39 @@ class _HistoryEditorState extends State<_HistoryEditor> {
           ),
         ]),
       ),
+
+      // ── Banner de ditado ativo ──────────────────────────────────────────
+      if (_sttListening)
+        AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          margin: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(14),
+            color: const Color(0xFFDC2626).withValues(alpha: 0.08),
+            border: Border.all(color: const Color(0xFFDC2626).withValues(alpha: 0.35)),
+          ),
+          child: Row(children: [
+            // Ícone pulsante
+            _PulseDot(),
+            const SizedBox(width: 10),
+            Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              const Text('Ouvindo...', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w900, color: Color(0xFFDC2626), letterSpacing: 0.5)),
+              if (_sttInterim.isNotEmpty)
+                Text(_sttInterim, style: const TextStyle(fontSize: 12, color: Color(0xFF555555), fontWeight: FontWeight.w600, fontStyle: FontStyle.italic),
+                  maxLines: 2, overflow: TextOverflow.ellipsis),
+            ])),
+            const SizedBox(width: 8),
+            GestureDetector(
+              onTap: () { _sttRecog?.callMethod('stop', []); setState(() { _sttListening = false; _sttActiveKey = null; _sttInterim = ''; }); },
+              child: Container(
+                padding: const EdgeInsets.all(6),
+                decoration: BoxDecoration(borderRadius: BorderRadius.circular(8), color: const Color(0xFFDC2626).withValues(alpha: 0.12)),
+                child: const Icon(Icons.mic_off_rounded, size: 16, color: Color(0xFFDC2626)),
+              ),
+            ),
+          ]),
+        ),
 
       // Conteúdo da seção
       Expanded(child: SingleChildScrollView(
@@ -1065,28 +1298,28 @@ class _HistoryEditorState extends State<_HistoryEditor> {
 
   // ── Seção 1: Anamnese ─────────────────────────────────────────────────────
   Widget _buildAnamnesisSection() => Column(children: [
-    _EditorField('Queixa principal *', _ctrls['chiefComplaint']!, hint: 'Dor torácica há 2h', multiline: true),
+    _EditorField('Queixa principal *', _ctrls['chiefComplaint']!, hint: 'Dor torácica há 2h', multiline: true, onMic: () => _startStt('chiefComplaint')),
     const SizedBox(height: 10),
-    _EditorField('História da doença atual (HDA)', _ctrls['hpi']!, hint: 'Descrever cronologia, características, fatores...', multiline: true, lines: 5),
+    _EditorField('História da doença atual (HDA)', _ctrls['hpi']!, hint: 'Descrever cronologia, características, fatores...', multiline: true, lines: 5, onMic: () => _startStt('hpi')),
     const SizedBox(height: 10),
-    _EditorField('Antecedentes pessoais', _ctrls['pastHistory']!, hint: 'HAS, DM2, IAM prévio, cirurgias...', multiline: true),
+    _EditorField('Antecedentes pessoais', _ctrls['pastHistory']!, hint: 'HAS, DM2, IAM prévio, cirurgias...', multiline: true, onMic: () => _startStt('pastHistory')),
     const SizedBox(height: 10),
-    _EditorField('Antecedentes familiares', _ctrls['familyHistory']!, hint: 'Pai: IAM aos 55 anos. Mãe: DM2...', multiline: true),
+    _EditorField('Antecedentes familiares', _ctrls['familyHistory']!, hint: 'Pai: IAM aos 55 anos. Mãe: DM2...', multiline: true, onMic: () => _startStt('familyHistory')),
     const SizedBox(height: 10),
-    _EditorField('História social', _ctrls['socialHistory']!, hint: 'Tabagismo, etilismo, drogas, atividade física, profissão...', multiline: true),
+    _EditorField('História social', _ctrls['socialHistory']!, hint: 'Tabagismo, etilismo, drogas, atividade física, profissão...', multiline: true, onMic: () => _startStt('socialHistory')),
     const SizedBox(height: 10),
-    _EditorField('Medicamentos em uso', _ctrls['medications']!, hint: 'AAS 100mg/dia, metformina 850mg 2x/dia...', multiline: true),
+    _EditorField('Medicamentos em uso', _ctrls['medications']!, hint: 'AAS 100mg/dia, metformina 850mg 2x/dia...', multiline: true, onMic: () => _startStt('medications')),
     const SizedBox(height: 10),
-    _EditorField('Alergias', _ctrls['allergies']!, hint: 'Penicilina (urticária), dipirona (angioedema)...', multiline: true),
+    _EditorField('Alergias', _ctrls['allergies']!, hint: 'Penicilina (urticária), dipirona (angioedema)...', multiline: true, onMic: () => _startStt('allergies')),
     const SizedBox(height: 10),
-    _EditorField('Revisão de sistemas', _ctrls['reviewOfSystems']!, hint: 'Cardiovascular, respiratório, GI, neurológico...', multiline: true),
+    _EditorField('Revisão de sistemas', _ctrls['reviewOfSystems']!, hint: 'Cardiovascular, respiratório, GI, neurológico...', multiline: true, onMic: () => _startStt('reviewOfSystems')),
   ]);
 
   // ── Seção 2: Exame físico ──────────────────────────────────────────────────
   Widget _buildPhysicalExamSection() => Column(children: [
-    _EditorField('Sinais vitais', _ctrls['vitalSigns']!, hint: 'PA 130/80 | FC 88 | FR 18 | Temp 36,8°C | SpO2 97% | Peso 78kg', multiline: true),
+    _EditorField('Sinais vitais', _ctrls['vitalSigns']!, hint: 'PA 130/80 | FC 88 | FR 18 | Temp 36,8°C | SpO2 97% | Peso 78kg', multiline: true, onMic: () => _startStt('vitalSigns')),
     const SizedBox(height: 10),
-    _EditorField('Exame físico por sistemas', _ctrls['physicalExam']!, hint: 'Geral: BEG, corado, hidratado...\nCV: RCR 2T, sem sopros...\nTórax: MV+ bilateral, sem RA...\nAbdome: RHA+, indolor...', multiline: true, lines: 8),
+    _EditorField('Exame físico por sistemas', _ctrls['physicalExam']!, hint: 'Geral: BEG, corado, hidratado...\nCV: RCR 2T, sem sopros...\nTórax: MV+ bilateral, sem RA...\nAbdome: RHA+, indolor...', multiline: true, lines: 8, onMic: () => _startStt('physicalExam')),
     const SizedBox(height: 10),
     // Diagnóstico logo após o exame físico
     _EditorField('Hipótese diagnóstica principal', _ctrls['workingDiagnosis']!, hint: 'Síndrome Coronariana Aguda STEMI anterior'),
@@ -1111,9 +1344,9 @@ class _HistoryEditorState extends State<_HistoryEditor> {
 
   // ── Seção 4: Conduta / Tratamento ────────────────────────────────────────
   Widget _buildTreatmentSection() => Column(children: [
-    _EditorField('Plano terapêutico / Conduta', _ctrls['treatmentPlan']!, hint: '1. AAS 300mg VO imediato\n2. Ticagrelor 180mg VO\n3. Heparina NF EV\n4. Ativar hemodinâmica (meta porta-balão < 90min)...', multiline: true, lines: 7),
+    _EditorField('Plano terapêutico / Conduta', _ctrls['treatmentPlan']!, hint: '1. AAS 300mg VO imediato\n2. Ticagrelor 180mg VO\n3. Heparina NF EV\n4. Ativar hemodinâmica (meta porta-balão < 90min)...', multiline: true, lines: 7, onMic: () => _startStt('treatmentPlan')),
     const SizedBox(height: 10),
-    _EditorField('Procedimentos realizados', _ctrls['procedures']!, hint: 'Cateterismo + angioplastia com stent em DA proximal...', multiline: true),
+    _EditorField('Procedimentos realizados', _ctrls['procedures']!, hint: 'Cateterismo + angioplastia com stent em DA proximal...', multiline: true, onMic: () => _startStt('procedures')),
   ]);
 
   // ── Seção 5: Evolução ─────────────────────────────────────────────────────
@@ -1203,17 +1436,62 @@ class _EditorField extends StatelessWidget {
   final String hint;
   final bool multiline, numeric;
   final int lines;
-  const _EditorField(this.label, this.ctrl, {required this.hint, this.multiline = false, this.numeric = false, this.lines = 3});
+  final VoidCallback? onMic;  // null = sem botão de mic
+  const _EditorField(this.label, this.ctrl, {required this.hint, this.multiline = false, this.numeric = false, this.lines = 3, this.onMic});
 
   @override
   Widget build(BuildContext context) {
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      Text(label, style: const TextStyle(fontSize: 9, fontWeight: FontWeight.w900, letterSpacing: 1.4, color: Color(0xFF888888))),
+      Row(children: [
+        Text(label, style: const TextStyle(fontSize: 9, fontWeight: FontWeight.w900, letterSpacing: 1.4, color: Color(0xFF888888))),
+        if (onMic != null) ...[
+          const Spacer(),
+          GestureDetector(
+            onTap: onMic,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(8),
+                color: const Color(0xFFDC2626).withValues(alpha: 0.08),
+                border: Border.all(color: const Color(0xFFDC2626).withValues(alpha: 0.25)),
+              ),
+              child: const Row(mainAxisSize: MainAxisSize.min, children: [
+                Icon(Icons.mic_rounded, size: 11, color: Color(0xFFDC2626)),
+                SizedBox(width: 4),
+                Text('Ditar', style: TextStyle(fontSize: 9, fontWeight: FontWeight.w800, color: Color(0xFFDC2626))),
+              ]),
+            ),
+          ),
+        ],
+      ]),
       const SizedBox(height: 5),
       MedInput(controller: ctrl, hintText: hint, maxLines: multiline ? lines : 1,
         keyboardType: numeric ? TextInputType.number : multiline ? TextInputType.multiline : null),
     ]);
   }
+}
+
+// Widget de ponto pulsante para o banner de ditado
+class _PulseDot extends StatefulWidget {
+  @override
+  State<_PulseDot> createState() => _PulseDotState();
+}
+class _PulseDotState extends State<_PulseDot> with SingleTickerProviderStateMixin {
+  late AnimationController _ctrl;
+  late Animation<double> _anim;
+  @override
+  void initState() {
+    super.initState();
+    _ctrl = AnimationController(vsync: this, duration: const Duration(milliseconds: 700))..repeat(reverse: true);
+    _anim = Tween<double>(begin: 0.4, end: 1.0).animate(CurvedAnimation(parent: _ctrl, curve: Curves.easeInOut));
+  }
+  @override
+  void dispose() { _ctrl.dispose(); super.dispose(); }
+  @override
+  Widget build(BuildContext context) => FadeTransition(
+    opacity: _anim,
+    child: Container(width: 10, height: 10, decoration: const BoxDecoration(shape: BoxShape.circle, color: Color(0xFFDC2626))),
+  );
 }
 
 class _MetaChip extends StatelessWidget {

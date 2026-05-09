@@ -510,7 +510,7 @@ class _MainShellState extends State<MainShell> {
               top: false,
               bottom: false, // LegalBar cuida do padding inferior
               child: SizedBox(
-                height: 72,
+                height: 56,
                 child: Stack(
                   clipBehavior: Clip.none,
                   alignment: Alignment.topCenter,
@@ -555,7 +555,7 @@ class _MainShellState extends State<MainShell> {
         child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
           AnimatedContainer(
             duration: const Duration(milliseconds: 180),
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 3),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(12),
               color: active
@@ -595,7 +595,7 @@ class _MainShellState extends State<MainShell> {
         onTap: onTap,
         child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 3),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(12),
               color: Colors.transparent,
