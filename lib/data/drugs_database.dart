@@ -8,6 +8,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'paracetamol',
+    group: 'Analgésicos y Antipiréticos',
     name: 'Paracetamol / Acetaminofeno',
     className: {'pt': 'Analgésico / antipirético', 'es': 'Analgésico / antipirético'},
     category: {'pt': 'Analgésicos', 'es': 'Analgésicos'},
@@ -41,6 +42,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'dipirona',
+    group: 'Analgésicos y Antipiréticos',
     name: 'Dipirona / Metamizol',
     className: {'pt': 'Analgésico / antipirético não-opioide', 'es': 'Analgésico / antipirético no opioide'},
     category: {'pt': 'Analgésicos', 'es': 'Analgésicos'},
@@ -74,6 +76,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'cetorolaco',
+    group: 'Analgésicos y Antipiréticos',
     name: 'Cetorolaco / Ketorolac',
     className: {'pt': 'AINE – analgésico potente', 'es': 'AINE – analgésico potente'},
     category: {'pt': 'Analgésicos', 'es': 'Analgésicos'},
@@ -107,6 +110,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'morfina',
+    group: 'Analgésicos y Antipiréticos',
     name: 'Morfina',
     className: {'pt': 'Opioide forte – agonista µ', 'es': 'Opioide fuerte – agonista µ'},
     category: {'pt': 'Opioides', 'es': 'Opioides'},
@@ -140,6 +144,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'fentanil',
+    group: 'Analgésicos y Antipiréticos',
     name: 'Fentanil / Fentanila',
     className: {'pt': 'Opioide forte – agonista µ', 'es': 'Opioide fuerte – agonista µ'},
     category: {'pt': 'Opioides', 'es': 'Opioides'},
@@ -173,6 +178,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'tramadol',
+    group: 'Analgésicos y Antipiréticos',
     name: 'Tramadol',
     className: {'pt': 'Opioide fraco + inibidor de recaptação de serotonina/noradrenalina', 'es': 'Opioide débil + inhibidor de recaptación de serotonina/noradrenalina'},
     category: {'pt': 'Opioides', 'es': 'Opioides'},
@@ -206,6 +212,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'pregabalina',
+    group: 'Analgésicos y Antipiréticos',
     name: 'Pregabalina',
     className: {'pt': 'Anticonvulsivante / dor neuropática', 'es': 'Anticonvulsivante / dolor neuropático'},
     category: {'pt': 'Analgésicos adjuvantes', 'es': 'Analgésicos adyuvantes'},
@@ -239,6 +246,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'ceftriaxona',
+    group: 'Antibióticos',
     name: 'Ceftriaxona',
     className: {'pt': 'Cefalosporina de 3ª geração', 'es': 'Cefalosporina de 3ª generación'},
     category: {'pt': 'Antibióticos', 'es': 'Antibióticos'},
@@ -272,6 +280,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'vancomicina',
+    group: 'Antibióticos',
     name: 'Vancomicina',
     className: {'pt': 'Glicopeptídeo', 'es': 'Glucopéptido'},
     category: {'pt': 'Antibióticos', 'es': 'Antibióticos'},
@@ -306,6 +315,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'piperacilina_tazobactam',
+    group: 'Antibióticos',
     name: 'Piperacilina-Tazobactam (Pip-Taz)',
     className: {'pt': 'Penicilina + inibidor de β-lactamase', 'es': 'Penicilina + inhibidor de β-lactamasa'},
     category: {'pt': 'Antibióticos', 'es': 'Antibióticos'},
@@ -339,6 +349,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'meropenem',
+    group: 'Antibióticos',
     name: 'Meropenem',
     className: {'pt': 'Carbapenêmico', 'es': 'Carbapenémico'},
     category: {'pt': 'Antibióticos', 'es': 'Antibióticos'},
@@ -372,6 +383,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'azitromicina',
+    group: 'Antibióticos',
     name: 'Azitromicina',
     className: {'pt': 'Macrolídeo – antibiótico de amplo espectro', 'es': 'Macrólido – antibiótico de amplio espectro'},
     category: {'pt': 'Antibióticos', 'es': 'Antibióticos'},
@@ -405,6 +417,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'ciprofloxacino',
+    group: 'Antibióticos',
     name: 'Ciprofloxacino',
     className: {'pt': 'Fluoroquinolona de 2ª geração', 'es': 'Fluoroquinolona de 2ª generación'},
     category: {'pt': 'Antibióticos', 'es': 'Antibióticos'},
@@ -438,6 +451,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'metronidazol',
+    group: 'Antibióticos',
     name: 'Metronidazol',
     className: {'pt': 'Nitroimidazol – antibiótico/antiprotozoário', 'es': 'Nitroimidazol – antibiótico/antiprotozoario'},
     category: {'pt': 'Antibióticos', 'es': 'Antibióticos'},
@@ -471,6 +485,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'noradrenalina',
+    group: 'Cardiovascular y HTA',
     name: 'Noradrenalina / Norepinefrina',
     className: {'pt': 'Vasopressor – agonista α1 predominante', 'es': 'Vasopresor – agonista α1 predominante'},
     category: {'pt': 'Vasopressores', 'es': 'Vasopresores'},
@@ -506,6 +521,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'dobutamina',
+    group: 'Cardiovascular y HTA',
     name: 'Dobutamina',
     className: {'pt': 'Inotrópico – agonista β1', 'es': 'Inotrópico – agonista β1'},
     category: {'pt': 'Inotrópicos', 'es': 'Inotrópicos'},
@@ -541,6 +557,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'adrenalina',
+    group: 'UCI – Críticos y Sedoanalgesia',
     name: 'Adrenalina / Epinefrina',
     className: {'pt': 'Catecolamina – agonista α e β', 'es': 'Catecolamina – agonista α y β'},
     category: {'pt': 'Vasopressores / Emergência', 'es': 'Vasopresores / Emergencia'},
@@ -574,6 +591,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'vasopressina',
+    group: 'Cardiovascular y HTA',
     name: 'Vasopressina',
     className: {'pt': 'Vasopressor – hormônio antidiurético análogo', 'es': 'Vasopresor – análogo de hormona antidiurética'},
     category: {'pt': 'Vasopressores', 'es': 'Vasopresores'},
@@ -607,6 +625,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'furosemida',
+    group: 'Cardiovascular y HTA',
     name: 'Furosemida',
     className: {'pt': 'Diurético de alça', 'es': 'Diurético de asa'},
     category: {'pt': 'Diuréticos', 'es': 'Diuréticos'},
@@ -640,6 +659,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'metoprolol',
+    group: 'Cardiovascular y HTA',
     name: 'Metoprolol',
     className: {'pt': 'Betabloqueador β1 seletivo', 'es': 'Betabloqueador β1 selectivo'},
     category: {'pt': 'Cardiovasculares', 'es': 'Cardiovasculares'},
@@ -673,6 +693,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'amiodarona',
+    group: 'Cardiovascular y HTA',
     name: 'Amiodarona',
     className: {'pt': 'Antiarrítmico classe III', 'es': 'Antiarrítmico clase III'},
     category: {'pt': 'Antiarrítmicos', 'es': 'Antiarrítmicos'},
@@ -706,6 +727,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'heparina_nf',
+    group: 'Anticoagulantes y Hemostasia',
     name: 'Heparina Não Fracionada (HNF)',
     className: {'pt': 'Anticoagulante – inibidor indireto da trombina/Xa', 'es': 'Anticoagulante – inhibidor indirecto de trombina/Xa'},
     category: {'pt': 'Anticoagulantes', 'es': 'Anticoagulantes'},
@@ -740,6 +762,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'enoxaparina',
+    group: 'Anticoagulantes y Hemostasia',
     name: 'Enoxaparina (HBPM)',
     className: {'pt': 'Heparina de Baixo Peso Molecular – anticoagulante', 'es': 'Heparina de Bajo Peso Molecular – anticoagulante'},
     category: {'pt': 'Anticoagulantes', 'es': 'Anticoagulantes'},
@@ -774,6 +797,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'enalapril',
+    group: 'Cardiovascular y HTA',
     name: 'Enalapril',
     className: {'pt': 'IECA – Inibidor da Enzima Conversora de Angiotensina', 'es': 'IECA – Inhibidor de la Enzima Convertidora de Angiotensina'},
     category: {'pt': 'Anti-hipertensivos', 'es': 'Antihipertensivos'},
@@ -807,6 +831,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'nitroglicerina',
+    group: 'Cardiovascular y HTA',
     name: 'Nitroglicerina / Nitrato',
     className: {'pt': 'Nitrato – vasodilatador', 'es': 'Nitrato – vasodilatador'},
     category: {'pt': 'Anti-anginosos / Cardiovasculares', 'es': 'Antianginosos / Cardiovasculares'},
@@ -840,6 +865,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'salbutamol',
+    group: 'Respiratorio',
     name: 'Salbutamol / Albuterol',
     className: {'pt': 'β2-agonista de curta ação (SABA)', 'es': 'β2-agonista de acción corta (SABA)'},
     category: {'pt': 'Broncodilatadores', 'es': 'Broncodilatadores'},
@@ -873,6 +899,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'dexametasona',
+    group: 'Endocrinología y Metabolismo',
     name: 'Dexametasona',
     className: {'pt': 'Corticosteroide – glicocorticoide potente', 'es': 'Corticosteroide – glucocorticoide potente'},
     category: {'pt': 'Corticosteroides', 'es': 'Corticosteroides'},
@@ -906,6 +933,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'metilprednisolona',
+    group: 'Endocrinología y Metabolismo',
     name: 'Metilprednisolona',
     className: {'pt': 'Corticosteroide – glicocorticoide de potência intermediária', 'es': 'Corticosteroide – glucocorticoide de potencia intermedia'},
     category: {'pt': 'Corticosteroides', 'es': 'Corticosteroides'},
@@ -939,6 +967,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'midazolam',
+    group: 'Neurología y Psiquiatría',
     name: 'Midazolam',
     className: {'pt': 'Benzodiazepínico – sedativo/ansiolítico de ação curta', 'es': 'Benzodiazepínico – sedante/ansiolítico de acción corta'},
     category: {'pt': 'Sedativos / Ansiolíticos', 'es': 'Sedantes / Ansiolíticos'},
@@ -972,6 +1001,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'diazepam',
+    group: 'Neurología y Psiquiatría',
     name: 'Diazepam',
     className: {'pt': 'Benzodiazepínico – sedativo/anticonvulsivante de longa ação', 'es': 'Benzodiazepínico – sedante/anticonvulsivante de larga acción'},
     category: {'pt': 'Sedativos / Anticonvulsivantes', 'es': 'Sedantes / Anticonvulsivantes'},
@@ -1005,6 +1035,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'fenitoina',
+    group: 'Neurología y Psiquiatría',
     name: 'Fenitoína / Phenytoin',
     className: {'pt': 'Anticonvulsivante – bloqueador de canal de Na+', 'es': 'Anticonvulsivante – bloqueador de canal de Na+'},
     category: {'pt': 'Anticonvulsivantes', 'es': 'Anticonvulsivantes'},
@@ -1039,6 +1070,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'levetiracetam',
+    group: 'Neurología y Psiquiatría',
     name: 'Levetiracetam',
     className: {'pt': 'Anticonvulsivante – modula SV2A', 'es': 'Anticonvulsivante – modula SV2A'},
     category: {'pt': 'Anticonvulsivantes', 'es': 'Anticonvulsivantes'},
@@ -1073,6 +1105,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'omeprazol',
+    group: 'Gastroenterología',
     name: 'Omeprazol / Pantoprazol',
     className: {'pt': 'Inibidor da Bomba de Prótons (IBP)', 'es': 'Inhibidor de la Bomba de Protones (IBP)'},
     category: {'pt': 'Gastrintestinais', 'es': 'Gastrointestinales'},
@@ -1106,6 +1139,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'insulina_regular',
+    group: 'Endocrinología y Metabolismo',
     name: 'Insulina Regular (Humana)',
     className: {'pt': 'Insulina de ação curta – hipoglicemiante', 'es': 'Insulina de acción corta – hipoglucemiante'},
     category: {'pt': 'Endócrinos / Metabólicos', 'es': 'Endócrinos / Metabólicos'},
@@ -1140,6 +1174,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'bicarbonato_sodio',
+    group: 'Endocrinología y Metabolismo',
     name: 'Bicarbonato de Sódio',
     className: {'pt': 'Tampão alcalinizante sistêmico', 'es': 'Tampón alcalinizante sistémico'},
     category: {'pt': 'Eletrólitos / Equilíbrio Ácido-Base', 'es': 'Electrolitos / Equilibrio Ácido-Base'},
@@ -1173,6 +1208,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'cloreto_potassio',
+    group: 'Endocrinología y Metabolismo',
     name: 'Cloreto de Potássio (KCl)',
     className: {'pt': 'Eletrólito – reposição de potássio', 'es': 'Electrolito – reposición de potasio'},
     category: {'pt': 'Eletrólitos', 'es': 'Electrolitos'},
@@ -1206,6 +1242,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'atenolol',
+    group: 'Cardiovascular y HTA',
     name: 'Atenolol',
     className: {'pt': 'Betabloqueador cardiosseletivo', 'es': 'Betabloqueador cardioselectivo'},
     category: {'pt': 'Cardiovasculares', 'es': 'Cardiovasculares'},
@@ -1239,6 +1276,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'losartana',
+    group: 'Cardiovascular y HTA',
     name: 'Losartana',
     className: {'pt': 'BRA (Bloqueador Receptor AT1)', 'es': 'ARA-II (Antagonista Receptor AT1)'},
     category: {'pt': 'Cardiovasculares', 'es': 'Cardiovasculares'},
@@ -1272,6 +1310,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'espironolactona',
+    group: 'Cardiovascular y HTA',
     name: 'Espironolactona',
     className: {'pt': 'Diurético poupador de potássio (antagonista aldosterona)', 'es': 'Diurético ahorrador de potasio'},
     category: {'pt': 'Cardiovasculares', 'es': 'Cardiovasculares'},
@@ -1305,6 +1344,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'anlodipino',
+    group: 'Cardiovascular y HTA',
     name: 'Anlodipino',
     className: {'pt': 'Bloqueador de canal de cálcio (di-hidropiridina)', 'es': 'Bloqueador de canal de calcio (dihidropiridina)'},
     category: {'pt': 'Cardiovasculares', 'es': 'Cardiovasculares'},
@@ -1338,6 +1378,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'digoxina',
+    group: 'Cardiovascular y HTA',
     name: 'Digoxina',
     className: {'pt': 'Glicosídeo cardíaco (inotrópico + cronotrópico negativo)', 'es': 'Glucósido cardíaco'},
     category: {'pt': 'Cardiovasculares', 'es': 'Cardiovasculares'},
@@ -1371,6 +1412,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'amoxicilina_clavulanato',
+    group: 'Antibióticos',
     name: 'Amoxicilina + Clavulanato',
     className: {'pt': 'Penicilina + inibidor β-lactamase', 'es': 'Penicilina + inhibidor β-lactamasa'},
     category: {'pt': 'Antibióticos', 'es': 'Antibióticos'},
@@ -1404,6 +1446,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'ipratropio',
+    group: 'Respiratorio',
     name: 'Ipratrópio',
     className: {'pt': 'Broncodilatador anticolinérgico', 'es': 'Broncodilatador anticolinérgico'},
     category: {'pt': 'Respiratórios', 'es': 'Respiratorios'},
@@ -1437,6 +1480,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'prednisolona',
+    group: 'Endocrinología y Metabolismo',
     name: 'Prednisolona',
     className: {'pt': 'Corticosteroide sistêmico', 'es': 'Corticosteroide sistémico'},
     category: {'pt': 'Respiratórios', 'es': 'Respiratorios'},
@@ -1470,6 +1514,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'montelucaste',
+    group: 'Respiratorio',
     name: 'Montelucaste',
     className: {'pt': 'Antagonista leucotrienos', 'es': 'Antagonista leucotrienos'},
     category: {'pt': 'Respiratórios', 'es': 'Respiratorios'},
@@ -1503,6 +1548,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'fluconazol',
+    group: 'Infectología (Antifúngicos / Antivirales / TBC)',
     name: 'Fluconazol',
     className: {'pt': 'Antifúngico triazólico', 'es': 'Antifúngico triazólico'},
     category: {'pt': 'Antifúngicos', 'es': 'Antifúngicos'},
@@ -1536,6 +1582,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'amlodipino',
+    group: 'Cardiovascular y HTA',
     name: 'Amlodipino',
     className: {'pt': 'Bloqueador de canal de cálcio (di-hidropiridínico)', 'es': 'Bloqueador de canal de calcio (dihidropiridínico)'},
     category: {'pt': 'Cardiovasculares', 'es': 'Cardiovasculares'},
@@ -1569,6 +1616,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'haloperidol',
+    group: 'Neurología y Psiquiatría',
     name: 'Haloperidol',
     className: {'pt': 'Antipsicótico típico – butirofenonas', 'es': 'Antipsicótico típico – butirofenonas'},
     category: {'pt': 'Neurológicos / Psiquiátricos', 'es': 'Neurológicos / Psiquiátricos'},
@@ -1602,6 +1650,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'clonazepam',
+    group: 'Neurología y Psiquiatría',
     name: 'Clonazepam',
     className: {'pt': 'Benzodiazepínico antiepiléptico', 'es': 'Benzodiacepina antiepiléptica'},
     category: {'pt': 'Neurológicos / Psiquiátricos', 'es': 'Neurológicos / Psiquiátricos'},
@@ -1635,6 +1684,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'amitriptilina',
+    group: 'Neurología y Psiquiatría',
     name: 'Amitriptilina',
     className: {'pt': 'Antidepressivo tricíclico (ADT)', 'es': 'Antidepresivo tricíclico (ADT)'},
     category: {'pt': 'Neurológicos / Psiquiátricos', 'es': 'Neurológicos / Psiquiátricos'},
@@ -1668,6 +1718,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'sertralina',
+    group: 'Neurología y Psiquiatría',
     name: 'Sertralina',
     className: {'pt': 'Inibidor seletivo da recaptação de serotonina (ISRS)', 'es': 'Inhibidor selectivo de la recaptación de serotonina (ISRS)'},
     category: {'pt': 'Neurológicos / Psiquiátricos', 'es': 'Neurológicos / Psiquiátricos'},
@@ -1701,6 +1752,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'levotiroxina',
+    group: 'Endocrinología y Metabolismo',
     name: 'Levotiroxina (T4)',
     className: {'pt': 'Hormônio tireoidiano sintético', 'es': 'Hormona tiroidea sintética'},
     category: {'pt': 'Endócrinos / Metabólicos', 'es': 'Endócrinos / Metabólicos'},
@@ -1734,6 +1786,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'metformina',
+    group: 'Endocrinología y Metabolismo',
     name: 'Metformina',
     className: {'pt': 'Biguanida – antidiabético oral', 'es': 'Biguanida – antidiabético oral'},
     category: {'pt': 'Endócrinos / Metabólicos', 'es': 'Endócrinos / Metabólicos'},
@@ -1767,6 +1820,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'glibenclamida',
+    group: 'Endocrinología y Metabolismo',
     name: 'Glibenclamida (Gliburida)',
     className: {'pt': 'Sulfonilureia – secretagogo de insulina', 'es': 'Sulfonilurea – secretagogo de insulina'},
     category: {'pt': 'Endócrinos / Metabólicos', 'es': 'Endócrinos / Metabólicos'},
@@ -1800,6 +1854,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'pantoprazol',
+    group: 'Gastroenterología',
     name: 'Pantoprazol',
     className: {'pt': 'Inibidor da bomba de prótons (IBP)', 'es': 'Inhibidor de la bomba de protones (IBP)'},
     category: {'pt': 'Gastroenterológicos', 'es': 'Gastroenterológicos'},
@@ -1833,6 +1888,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'ondansetrona',
+    group: 'Gastroenterología',
     name: 'Ondansetrona',
     className: {'pt': 'Antiemético – antagonista 5-HT3', 'es': 'Antiemético – antagonista 5-HT3'},
     category: {'pt': 'Gastroenterológicos', 'es': 'Gastroenterológicos'},
@@ -1866,6 +1922,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'lactulose',
+    group: 'Gastroenterología',
     name: 'Lactulose',
     className: {'pt': 'Laxante osmótico / tratamento encefalopatia hepática', 'es': 'Laxante osmótico / tratamiento encefalopatia hepática'},
     category: {'pt': 'Gastroenterológicos', 'es': 'Gastroenterológicos'},
@@ -1899,6 +1956,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'rivaroxabana',
+    group: 'Anticoagulantes y Hemostasia',
     name: 'Rivaroxabana',
     className: {'pt': 'Anticoagulante oral direto – inibidor do fator Xa', 'es': 'Anticoagulante oral directo – inhibidor del factor Xa'},
     category: {'pt': 'Hematológicos / Anticoagulantes', 'es': 'Hematológicos / Anticoagulantes'},
@@ -1932,6 +1990,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'acido_tranexamico',
+    group: 'Anticoagulantes y Hemostasia',
     name: 'Ácido Tranexâmico',
     className: {'pt': 'Antifibrinolítico', 'es': 'Antifibrinolítico'},
     category: {'pt': 'Hematológicos / Anticoagulantes', 'es': 'Hematológicos / Anticoagulantes'},
@@ -1965,6 +2024,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'ketamina',
+    group: 'UCI – Críticos y Sedoanalgesia',
     name: 'Ketamina',
     className: {'pt': 'Anestésico dissociativo – antagonista NMDA', 'es': 'Anestésico disociativo – antagonista NMDA'},
     category: {'pt': 'Anestesiologia / Sedação', 'es': 'Anestesiología / Sedación'},
@@ -1998,6 +2058,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'succinilcolina',
+    group: 'UCI – Críticos y Sedoanalgesia',
     name: 'Succinilcolina (Suxametônio)',
     className: {'pt': 'Bloqueador neuromuscular despolarizante', 'es': 'Bloqueante neuromuscular despolarizante'},
     category: {'pt': 'Anestesiologia / Sedação', 'es': 'Anestesiología / Sedación'},
@@ -2031,6 +2092,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'adenosina',
+    group: 'Cardiovascular y HTA',
     name: 'Adenosina',
     className: {'pt': 'Antiarrítmico – purina endógena (Classe V)', 'es': 'Antiarrítmico – purina endógena (Clase V)'},
     category: {'pt': 'UTI / Emergência', 'es': 'UCI / Emergencia'},
@@ -2064,6 +2126,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'sulfato_magnesio',
+    group: 'Neurología y Psiquiatría',
     name: 'Sulfato de Magnésio (MgSO₄)',
     className: {'pt': 'Eletrólito / anticonvulsivante / tocolítico / antiarrítmico', 'es': 'Electrolito / anticonvulsivante / tocolítico / antiarrítmico'},
     category: {'pt': 'UTI / Emergência', 'es': 'UCI / Emergencia'},
@@ -2097,6 +2160,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'ampicilina_sulbactam',
+    group: 'Antibióticos',
     name: 'Ampicilina-Sulbactam',
     className: {'pt': 'Aminopenicilina + inibidor β-lactamase', 'es': 'Aminopenicilina + inhibidor β-lactamasa'},
     category: {'pt': 'Antibióticos', 'es': 'Antibióticos'},
@@ -2130,6 +2194,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'doxiciclina',
+    group: 'Antibióticos',
     name: 'Doxiciclina',
     className: {'pt': 'Tetraciclina', 'es': 'Tetraciclina'},
     category: {'pt': 'Antibióticos', 'es': 'Antibióticos'},
@@ -2163,6 +2228,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'nitrofurantoina',
+    group: 'Antibióticos',
     name: 'Nitrofurantoína',
     className: {'pt': 'Nitrofurano — antibiótico urinário', 'es': 'Nitrofurano — antibiótico urinario'},
     category: {'pt': 'Antibióticos', 'es': 'Antibióticos'},
@@ -2196,6 +2262,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'bisoprolol',
+    group: 'Cardiovascular y HTA',
     name: 'Bisoprolol',
     className: {'pt': 'Betabloqueador β1-seletivo', 'es': 'Betabloqueador β1-selectivo'},
     category: {'pt': 'Cardiovascular', 'es': 'Cardiovascular'},
@@ -2229,6 +2296,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'hidralazina',
+    group: 'Cardiovascular y HTA',
     name: 'Hidralazina',
     className: {'pt': 'Vasodilatador arterial direto', 'es': 'Vasodilatador arterial directo'},
     category: {'pt': 'Cardiovascular', 'es': 'Cardiovascular'},
@@ -2262,6 +2330,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'acido_valproico',
+    group: 'Neurología y Psiquiatría',
     name: 'Ácido Valproico / Valproato',
     className: {'pt': 'Anticonvulsivante / estabilizador de humor', 'es': 'Anticonvulsivante / estabilizador del humor'},
     category: {'pt': 'Neurológico', 'es': 'Neurológico'},
@@ -2295,6 +2364,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'atropina',
+    group: 'Cardiovascular y HTA',
     name: 'Atropina',
     className: {'pt': 'Anticolinérgico — antagonista muscarínico', 'es': 'Anticolinérgico — antagonista muscarínico'},
     category: {'pt': 'UTI / Emergência', 'es': 'UCI / Emergencia'},
@@ -2328,6 +2398,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'naloxona',
+    group: 'Varios / Antídotos / Otros',
     name: 'Naloxona',
     className: {'pt': 'Antagonista opioide — antídoto', 'es': 'Antagonista opioide — antídoto'},
     category: {'pt': 'UTI / Emergência', 'es': 'UCI / Emergencia'},
@@ -2361,6 +2432,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'gluconato_calcio',
+    group: 'Endocrinología y Metabolismo',
     name: 'Gluconato de Cálcio',
     className: {'pt': 'Eletrólito — estabilizador de membrana cardíaca', 'es': 'Electrolito — estabilizador de membrana cardíaca'},
     category: {'pt': 'UTI / Emergência', 'es': 'UCI / Emergencia'},
@@ -2394,6 +2466,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'fentanila',
+    group: 'Analgésicos y Antipiréticos',
     name: 'Fentanila',
     className: {'pt': 'Opioide potente — analgésico/sedativo', 'es': 'Opioide potente — analgésico/sedativo'},
     category: {'pt': 'UTI / Emergência', 'es': 'UCI / Emergencia'},
@@ -2431,6 +2504,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'tiamina',
+    group: 'Hematología y Vitaminas',
     name: 'Tiamina (Vitamina B1)',
     className: {'pt': 'Vitamina / coenzima essencial', 'es': 'Vitamina / coenzima esencial'},
     category: {'pt': 'Neurologia / UTI', 'es': 'Neurología / UCI'},
@@ -2458,6 +2532,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'flumazenil',
+    group: 'Varios / Antídotos / Otros',
     name: 'Flumazenil',
     className: {'pt': 'Antagonista benzodiazepínico', 'es': 'Antagonista benzodiazepínico'},
     category: {'pt': 'Antídotos / Emergência', 'es': 'Antídotos / Emergencia'},
@@ -2485,6 +2560,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'propofol',
+    group: 'UCI – Críticos y Sedoanalgesia',
     name: 'Propofol',
     className: {'pt': 'Hipnótico / sedativo IV', 'es': 'Hipnótico / sedante IV'},
     category: {'pt': 'UTI / Anestesia', 'es': 'UCI / Anestesia'},
@@ -2512,6 +2588,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'hidrocortisona',
+    group: 'Endocrinología y Metabolismo',
     name: 'Hidrocortisona',
     className: {'pt': 'Corticosteroide natural / mineralocorticoide', 'es': 'Corticosteroide natural / mineralocorticoide'},
     category: {'pt': 'Corticosteroides / UTI', 'es': 'Corticosteroides / UCI'},
@@ -2539,6 +2616,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'oxigenio',
+    group: 'UCI – Críticos y Sedoanalgesia',
     name: 'Oxigênio Suplementar',
     className: {'pt': 'Terapia respiratória', 'es': 'Terapia respiratoria'},
     category: {'pt': 'UTI / Emergência', 'es': 'UCI / Emergencia'},
@@ -2566,6 +2644,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'glicose_hipertonica',
+    group: 'Endocrinología y Metabolismo',
     name: 'Glicose Hipertônica 50%',
     className: {'pt': 'Solução glicosada hipertônica', 'es': 'Solución glucosada hipertónica'},
     category: {'pt': 'UTI / Emergência', 'es': 'UCI / Emergencia'},
@@ -2596,6 +2675,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'ibuprofeno',
+    group: 'Analgésicos y Antipiréticos',
     name: 'Ibuprofeno',
     className: {'pt': 'AINE – Inibidor COX não seletivo', 'es': 'AINE – Inhibidor COX no selectivo'},
     category: {'pt': 'Analgésicos / Anti-inflamatórios', 'es': 'Analgésicos / Antiinflamatorios'},
@@ -2629,6 +2709,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'cetoprofeno',
+    group: 'Analgésicos y Antipiréticos',
     name: 'Cetoprofeno',
     className: {'pt': 'AINE – Inibidor COX não seletivo (derivado do ácido propiônico)', 'es': 'AINE – Inhibidor COX no selectivo (derivado del ácido propiónico)'},
     category: {'pt': 'Analgésicos / Anti-inflamatórios', 'es': 'Analgésicos / Antiinflamatorios'},
@@ -2662,6 +2743,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'diclofenaco',
+    group: 'Analgésicos y Antipiréticos',
     name: 'Diclofenaco de Sódio / Potássio',
     className: {'pt': 'AINE – Inibidor COX preferencial COX-2 (derivado do ácido fenilacético)', 'es': 'AINE – Inhibidor COX preferencial COX-2'},
     category: {'pt': 'Analgésicos / Anti-inflamatórios', 'es': 'Analgésicos / Antiinflamatorios'},
@@ -2695,6 +2777,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'tenoxicam',
+    group: 'Analgésicos y Antipiréticos',
     name: 'Tenoxicam',
     className: {'pt': 'AINE – Oxicam (inibidor COX não seletivo de longa ação)', 'es': 'AINE – Oxicam (inhibidor COX no selectivo de larga acción)'},
     category: {'pt': 'Analgésicos / Anti-inflamatórios', 'es': 'Analgésicos / Antiinflamatorios'},
@@ -2728,6 +2811,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'naproxeno',
+    group: 'Analgésicos y Antipiréticos',
     name: 'Naproxeno',
     className: {'pt': 'AINE – Inibidor COX não seletivo (derivado do ácido propiônico)', 'es': 'AINE – Inhibidor COX no selectivo (derivado del ácido propiónico)'},
     category: {'pt': 'Analgésicos / Anti-inflamatórios', 'es': 'Analgésicos / Antiinflamatorios'},
@@ -2761,6 +2845,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'nimesulida',
+    group: 'Analgésicos y Antipiréticos',
     name: 'Nimesulida',
     className: {'pt': 'AINE – Inibidor COX-2 preferencial (sulfonamida)', 'es': 'AINE – Inhibidor COX-2 preferencial (sulfonamida)'},
     category: {'pt': 'Analgésicos / Anti-inflamatórios', 'es': 'Analgésicos / Antiinflamatorios'},
@@ -2794,6 +2879,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'celecoxibe',
+    group: 'Analgésicos y Antipiréticos',
     name: 'Celecoxibe',
     className: {'pt': 'AINE – Inibidor seletivo COX-2 (coxibe)', 'es': 'AINE – Inhibidor selectivo COX-2 (coxib)'},
     category: {'pt': 'Analgésicos / Anti-inflamatórios', 'es': 'Analgésicos / Antiinflamatorios'},
@@ -2827,6 +2913,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'aas',
+    group: 'Cardiovascular y HTA',
     name: 'Ácido Acetilsalicílico (AAS / Aspirina)',
     className: {'pt': 'AINE – Salicilato / Antiagregante plaquetário irreversível', 'es': 'AINE – Salicilato / Antiagregante plaquetario irreversible'},
     category: {'pt': 'Analgésicos / Antiagregantes', 'es': 'Analgésicos / Antiagregantes'},
@@ -2860,6 +2947,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'indometacina',
+    group: 'Analgésicos y Antipiréticos',
     name: 'Indometacina',
     className: {'pt': 'AINE – Derivado indolacético (inibidor COX potente não seletivo)', 'es': 'AINE – Derivado indolacético (inhibidor COX potente no selectivo)'},
     category: {'pt': 'Analgésicos / Anti-inflamatórios', 'es': 'Analgésicos / Antiinflamatorios'},
@@ -2893,6 +2981,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'piroxicam',
+    group: 'Analgésicos y Antipiréticos',
     name: 'Piroxicam',
     className: {'pt': 'AINE – Oxicam (inibidor COX não seletivo de longa ação)', 'es': 'AINE – Oxicam (inhibidor COX no selectivo de larga acción)'},
     category: {'pt': 'Analgésicos / Anti-inflamatórios', 'es': 'Analgésicos / Antiinflamatorios'},
@@ -2926,6 +3015,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'etoricoxibe',
+    group: 'Analgésicos y Antipiréticos',
     name: 'Etoricoxibe',
     className: {'pt': 'AINE – Inibidor seletivo COX-2 (coxibe de 2ª geração)', 'es': 'AINE – Inhibidor selectivo COX-2 (coxib 2ª generación)'},
     category: {'pt': 'Analgésicos / Anti-inflamatórios', 'es': 'Analgésicos / Antiinflamatorios'},
@@ -2959,6 +3049,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'codeina',
+    group: 'Analgésicos y Antipiréticos',
     name: 'Codeína',
     className: {'pt': 'Opioide fraco – Agonista µ (pró-fármaco da morfina)', 'es': 'Opioide débil – Agonista µ (profármaco de morfina)'},
     category: {'pt': 'Analgésicos Opioides', 'es': 'Analgésicos Opioides'},
@@ -2992,6 +3083,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'remifentanil',
+    group: 'UCI – Críticos y Sedoanalgesia',
     name: 'Remifentanil',
     className: {'pt': 'Opioide potente – Agonista µ de ação ultracurta', 'es': 'Opioide potente – Agonista µ de acción ultracorta'},
     category: {'pt': 'Analgésicos Opioides / Sedoanalgesia', 'es': 'Analgésicos Opioides / Sedoanalgesia'},
@@ -3026,6 +3118,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'petidina',
+    group: 'Analgésicos y Antipiréticos',
     name: 'Petidina / Meperidina',
     className: {'pt': 'Opioide – Agonista µ (fenilpiperidina)', 'es': 'Opioide – Agonista µ (fenilpiperidina)'},
     category: {'pt': 'Analgésicos Opioides', 'es': 'Analgésicos Opioides'},
@@ -3059,6 +3152,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'metadona',
+    group: 'Analgésicos y Antipiréticos',
     name: 'Metadona',
     className: {'pt': 'Opioide – Agonista µ de longa ação / Antagonista NMDA', 'es': 'Opioide – Agonista µ de larga acción / Antagonista NMDA'},
     category: {'pt': 'Analgésicos Opioides / Dependência', 'es': 'Analgésicos Opioides / Dependencia'},
@@ -3092,6 +3186,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'buprenorfina',
+    group: 'Analgésicos y Antipiréticos',
     name: 'Buprenorfina',
     className: {'pt': 'Opioide – Agonista parcial µ / Antagonista κ', 'es': 'Opioide – Agonista parcial µ / Antagonista κ'},
     category: {'pt': 'Analgésicos Opioides / Dependência', 'es': 'Analgésicos Opioides / Dependencia'},
@@ -3127,6 +3222,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'fenoterol',
+    group: 'Respiratorio',
     name: 'Fenoterol (Berotec)',
     className: {'pt': 'Beta-2 agonista de ação curta (SABA)', 'es': 'Beta-2 agonista de acción corta (SABA)'},
     category: {'pt': 'Sistema Respiratório', 'es': 'Sistema Respiratorio'},
@@ -3160,6 +3256,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'fluticasona',
+    group: 'Respiratorio',
     name: 'Fluticasona',
     className: {'pt': 'Corticoide inalatório (ICS) – Propionato/Furoato', 'es': 'Corticoide inhalado (ICS) – Propionato/Furoato'},
     category: {'pt': 'Sistema Respiratório', 'es': 'Sistema Respiratorio'},
@@ -3193,6 +3290,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'budesonida',
+    group: 'Respiratorio',
     name: 'Budesonida',
     className: {'pt': 'Corticoide inalatório (ICS) + uso sistêmico / nasal', 'es': 'Corticoide inhalado (ICS) + uso sistémico / nasal'},
     category: {'pt': 'Sistema Respiratório', 'es': 'Sistema Respiratorio'},
@@ -3226,6 +3324,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'aminofilina',
+    group: 'Respiratorio',
     name: 'Aminofilina',
     className: {'pt': 'Xantina / Broncodilatador – Inibidor de fosfodiesterase', 'es': 'Xantina / Broncodilatador – Inhibidor de fosfodiesterasa'},
     category: {'pt': 'Sistema Respiratório', 'es': 'Sistema Respiratorio'},
@@ -3260,6 +3359,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'acebrofilina',
+    group: 'Respiratorio',
     name: 'Acebrofilina',
     className: {'pt': 'Xantina associada a mucolítico (teofilina + bromexina)', 'es': 'Xantina asociada a mucolítico (teofilina + bromexina)'},
     category: {'pt': 'Sistema Respiratório', 'es': 'Sistema Respiratorio'},
@@ -3293,6 +3393,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'tiotropio',
+    group: 'Respiratorio',
     name: 'Tiotrópio',
     className: {'pt': 'Anticolinérgico de longa ação (LAMA) – Brometo de tiotrópio', 'es': 'Anticolinérgico de larga acción (LAMA) – Bromuro de tiotropio'},
     category: {'pt': 'Sistema Respiratório / DPOC', 'es': 'Sistema Respiratorio / EPOC'},
@@ -3326,6 +3427,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'salmeterol',
+    group: 'Respiratorio',
     name: 'Salmeterol',
     className: {'pt': 'Beta-2 agonista de longa ação (LABA) – uso combinado com ICS', 'es': 'Beta-2 agonista de larga acción (LABA) – uso combinado con ICS'},
     category: {'pt': 'Sistema Respiratório', 'es': 'Sistema Respiratorio'},
@@ -3359,6 +3461,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'formoterol',
+    group: 'Respiratorio',
     name: 'Formoterol',
     className: {'pt': 'Beta-2 agonista de longa ação (LABA) – início rápido', 'es': 'Beta-2 agonista de larga acción (LABA) – inicio rápido'},
     category: {'pt': 'Sistema Respiratório', 'es': 'Sistema Respiratorio'},
@@ -3392,6 +3495,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'acetilcisteina',
+    group: 'Hematología y Vitaminas',
     name: 'N-Acetilcisteína (NAC)',
     className: {'pt': 'Mucolítico / Antídoto para paracetamol / Antioxidante', 'es': 'Mucolítico / Antídoto para paracetamol / Antioxidante'},
     category: {'pt': 'Sistema Respiratório / Toxicologia', 'es': 'Sistema Respiratorio / Toxicología'},
@@ -3425,6 +3529,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'captopril',
+    group: 'Cardiovascular y HTA',
     name: 'Captopril',
     className: {'pt': 'IECA – Inibidor da enzima conversora de angiotensina (ação curta)', 'es': 'IECA – Inhibidor de la enzima convertidora de angiotensina (acción corta)'},
     category: {'pt': 'Cardiovascular / Anti-hipertensivo', 'es': 'Cardiovascular / Antihipertensivo'},
@@ -3458,6 +3563,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'nifedipino',
+    group: 'Cardiovascular y HTA',
     name: 'Nifedipino',
     className: {'pt': 'Bloqueador de canal de cálcio (BCC) – Di-hidropiridina', 'es': 'Bloqueador de canal de calcio (BCC) – Dihidropiridina'},
     category: {'pt': 'Cardiovascular / Anti-hipertensivo', 'es': 'Cardiovascular / Antihipertensivo'},
@@ -3491,6 +3597,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'propranolol',
+    group: 'Cardiovascular y HTA',
     name: 'Propranolol',
     className: {'pt': 'Betabloqueador não seletivo (β1 + β2) – sem ASI', 'es': 'Betabloqueador no selectivo (β1 + β2) – sin ASI'},
     category: {'pt': 'Cardiovascular / Antiarrítmico', 'es': 'Cardiovascular / Antiarrítmico'},
@@ -3524,6 +3631,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'hidroclorotiazida',
+    group: 'Cardiovascular y HTA',
     name: 'Hidroclorotiazida (HCTZ)',
     className: {'pt': 'Diurético tiazídico – Inibidor da cotransportadora Na-Cl no túbulo distal', 'es': 'Diurético tiazídico – Inhibidor cotransportador Na-Cl en túbulo distal'},
     category: {'pt': 'Cardiovascular / Diurético', 'es': 'Cardiovascular / Diurético'},
@@ -3557,6 +3665,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'clortalidona',
+    group: 'Cardiovascular y HTA',
     name: 'Clortalidona',
     className: {'pt': 'Diurético tiazídico-símile – Ação prolongada', 'es': 'Diurético tiazídico-símil – Acción prolongada'},
     category: {'pt': 'Cardiovascular / Diurético', 'es': 'Cardiovascular / Diurético'},
@@ -3590,6 +3699,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'clonidina',
+    group: 'Cardiovascular y HTA',
     name: 'Clonidina',
     className: {'pt': 'Anti-hipertensivo de ação central – Agonista alfa-2 adrenérgico', 'es': 'Antihipertensivo de acción central – Agonista alfa-2 adrenérgico'},
     category: {'pt': 'Cardiovascular / Anti-hipertensivo', 'es': 'Cardiovascular / Antihipertensivo'},
@@ -3623,6 +3733,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'nitroprussiato',
+    group: 'Cardiovascular y HTA',
     name: 'Nitroprussiato de Sódio (Nipride)',
     className: {'pt': 'Vasodilatador arterial e venoso direto – Doador de NO', 'es': 'Vasodilatador arterial y venoso directo – Donador de NO'},
     category: {'pt': 'Emergência / Cardiovascular', 'es': 'Emergencia / Cardiovascular'},
@@ -3659,6 +3770,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'lorazepam',
+    group: 'Neurología y Psiquiatría',
     name: 'Lorazepam',
     className: {'pt': 'Benzodiazepínico', 'es': 'Benzodiazepínico'},
     category: {'pt': 'SNC / Ansiolítico', 'es': 'SNC / Ansiolítico'},
@@ -3693,6 +3805,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'fenobarbital',
+    group: 'Neurología y Psiquiatría',
     name: 'Fenobarbital',
     className: {'pt': 'Barbitúrico antiepiléptico', 'es': 'Barbitúrico antiepiléptico'},
     category: {'pt': 'SNC / Anticonvulsivante', 'es': 'SNC / Anticonvulsivante'},
@@ -3727,6 +3840,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'clorpromazina',
+    group: 'Neurología y Psiquiatría',
     name: 'Clorpromazina',
     className: {'pt': 'Antipsicótico típico (fenotiazínico)', 'es': 'Antipsicótico típico (fenotiazínico)'},
     category: {'pt': 'SNC / Antipsicótico', 'es': 'SNC / Antipsicótico'},
@@ -3761,6 +3875,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'quetiapina',
+    group: 'Neurología y Psiquiatría',
     name: 'Quetiapina',
     className: {'pt': 'Antipsicótico atípico (dibenzotiazepínico)', 'es': 'Antipsicótico atípico (dibenzotiazepínico)'},
     category: {'pt': 'SNC / Antipsicótico', 'es': 'SNC / Antipsicótico'},
@@ -3795,6 +3910,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'risperidona',
+    group: 'Neurología y Psiquiatría',
     name: 'Risperidona',
     className: {'pt': 'Antipsicótico atípico (benzisoxazol)', 'es': 'Antipsicótico atípico (benzisoxazol)'},
     category: {'pt': 'SNC / Antipsicótico', 'es': 'SNC / Antipsicótico'},
@@ -3829,6 +3945,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'fluoxetina',
+    group: 'Neurología y Psiquiatría',
     name: 'Fluoxetina',
     className: {'pt': 'ISRS (Inibidor Seletivo da Recaptação de Serotonina)', 'es': 'ISRS (Inhibidor Selectivo de Recaptación de Serotonina)'},
     category: {'pt': 'SNC / Antidepressivo', 'es': 'SNC / Antidepresivo'},
@@ -3863,6 +3980,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'etomidato',
+    group: 'UCI – Críticos y Sedoanalgesia',
     name: 'Etomidato',
     className: {'pt': 'Anestésico IV (imidazol)', 'es': 'Anestésico IV (imidazol)'},
     category: {'pt': 'Anestesia / Indução', 'es': 'Anestesia / Inducción'},
@@ -3900,6 +4018,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'amoxicilina',
+    group: 'Antibióticos',
     name: 'Amoxicilina',
     className: {'pt': 'Aminopenicilina', 'es': 'Aminopenicilina'},
     category: {'pt': 'Antibiótico / β-lactâmico', 'es': 'Antibiótico / β-lactámico'},
@@ -3934,6 +4053,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'ampicilina',
+    group: 'Antibióticos',
     name: 'Ampicilina',
     className: {'pt': 'Aminopenicilina IV', 'es': 'Aminopenicilina IV'},
     category: {'pt': 'Antibiótico / β-lactâmico', 'es': 'Antibiótico / β-lactámico'},
@@ -3968,6 +4088,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'penicilina_benzatina',
+    group: 'Antibióticos',
     name: 'Penicilina G Benzatina / Penicilina G Benzatínica',
     className: {'pt': 'Penicilina de depósito (benzatina)', 'es': 'Penicilina de depósito (benzatínica)'},
     category: {'pt': 'Antibiótico / β-lactâmico', 'es': 'Antibiótico / β-lactámico'},
@@ -4002,6 +4123,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'cefalexina',
+    group: 'Antibióticos',
     name: 'Cefalexina',
     className: {'pt': 'Cefalosporina 1ª geração (oral)', 'es': 'Cefalosporina 1ª generación (oral)'},
     category: {'pt': 'Antibiótico / Cefalosporina', 'es': 'Antibiótico / Cefalosporina'},
@@ -4036,6 +4158,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'cefalotina',
+    group: 'Antibióticos',
     name: 'Cefalotina',
     className: {'pt': 'Cefalosporina 1ª geração (IV)', 'es': 'Cefalosporina 1ª generación (IV)'},
     category: {'pt': 'Antibiótico / Cefalosporina', 'es': 'Antibiótico / Cefalosporina'},
@@ -4070,6 +4193,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'cefuroxima',
+    group: 'Antibióticos',
     name: 'Cefuroxima',
     className: {'pt': 'Cefalosporina 2ª geração', 'es': 'Cefalosporina 2ª generación'},
     category: {'pt': 'Antibiótico / Cefalosporina', 'es': 'Antibiótico / Cefalosporina'},
@@ -4104,6 +4228,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'cefepime',
+    group: 'Antibióticos',
     name: 'Cefepime',
     className: {'pt': 'Cefalosporina 4ª geração', 'es': 'Cefalosporina 4ª generación'},
     category: {'pt': 'Antibiótico / Cefalosporina', 'es': 'Antibiótico / Cefalosporina'},
@@ -4138,6 +4263,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'claritromicina',
+    group: 'Antibióticos',
     name: 'Claritromicina',
     className: {'pt': 'Macrolídeo', 'es': 'Macrólido'},
     category: {'pt': 'Antibiótico / Macrolídeo', 'es': 'Antibiótico / Macrólido'},
@@ -4172,6 +4298,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'clindamicina',
+    group: 'Antibióticos',
     name: 'Clindamicina',
     className: {'pt': 'Lincosamídeo', 'es': 'Lincosamida'},
     category: {'pt': 'Antibiótico / Lincosamídeo', 'es': 'Antibiótico / Lincosamida'},
@@ -4206,6 +4333,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'levofloxacino',
+    group: 'Antibióticos',
     name: 'Levofloxacino',
     className: {'pt': 'Fluoroquinolona (3ª geração)', 'es': 'Fluoroquinolona (3ª generación)'},
     category: {'pt': 'Antibiótico / Quinolona', 'es': 'Antibiótico / Quinolona'},
@@ -4240,6 +4368,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'sulfametoxazol_trimetoprima',
+    group: 'Antibióticos',
     name: 'Sulfametoxazol + Trimetoprima (SMX-TMP)',
     className: {'pt': 'Sulfonamida + Inibidor dihidrofolato redutase', 'es': 'Sulfonamida + Inhibidor dihidrofolato reductasa'},
     category: {'pt': 'Antibiótico / Sulfonamida', 'es': 'Antibiótico / Sulfonamida'},
@@ -4274,6 +4403,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'gentamicina',
+    group: 'Antibióticos',
     name: 'Gentamicina',
     className: {'pt': 'Aminoglicosídeo', 'es': 'Aminoglucósido'},
     category: {'pt': 'Antibiótico / Aminoglicosídeo', 'es': 'Antibiótico / Aminoglucósido'},
@@ -4309,6 +4439,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'linezolida',
+    group: 'Antibióticos',
     name: 'Linezolida',
     className: {'pt': 'Oxazolidinona', 'es': 'Oxazolidinona'},
     category: {'pt': 'Antibiótico / Gram-positivo resistente', 'es': 'Antibiótico / Gram-positivo resistente'},
@@ -4343,6 +4474,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'imipenem',
+    group: 'Antibióticos',
     name: 'Imipenem-Cilastatina',
     className: {'pt': 'Carbapenêmico', 'es': 'Carbapenémico'},
     category: {'pt': 'Antibiótico / Carbapenêmico', 'es': 'Antibiótico / Carbapenémico'},
@@ -4377,6 +4509,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'ertapenem',
+    group: 'Antibióticos',
     name: 'Ertapenem',
     className: {'pt': 'Carbapenêmico (1×/dia, sem anti-Pseudomonas)', 'es': 'Carbapenémico (1×/día, sin anti-Pseudomonas)'},
     category: {'pt': 'Antibiótico / Carbapenêmico', 'es': 'Antibiótico / Carbapenémico'},
@@ -4411,6 +4544,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'polimixina_b',
+    group: 'Antibióticos',
     name: 'Polimixina B',
     className: {'pt': 'Polimixina (lipopeptídeo catiônico)', 'es': 'Polimixina (lipopéptido catiónico)'},
     category: {'pt': 'Antibiótico / Último recurso (gram-negativo MDR)', 'es': 'Antibiótico / Último recurso (gram-negativo MDR)'},
@@ -4447,6 +4581,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'esomeprazol',
+    group: 'Gastroenterología',
     name: 'Esomeprazol',
     className: {'pt': 'Inibidor da Bomba de Prótons (IBP)', 'es': 'Inhibidor de la Bomba de Protones (IBP)'},
     category: {'pt': 'Digestivo / IBP', 'es': 'Digestivo / IBP'},
@@ -4481,6 +4616,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'ranitidina',
+    group: 'Gastroenterología',
     name: 'Ranitidina (referência histórica) / Ranitidina (referencia histórica)',
     className: {'pt': 'Antagonista H2 (histamínico)', 'es': 'Antagonista H2 (histamínico)'},
     category: {'pt': 'Digestivo / Antiácido', 'es': 'Digestivo / Antiácido'},
@@ -4515,6 +4651,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'metoclopramida',
+    group: 'Gastroenterología',
     name: 'Metoclopramida',
     className: {'pt': 'Procinético / Antiemético (antagonista D2)', 'es': 'Procinético / Antiemético (antagonista D2)'},
     category: {'pt': 'Digestivo / Antiemético', 'es': 'Digestivo / Antiemético'},
@@ -4549,6 +4686,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'domperidona',
+    group: 'Gastroenterología',
     name: 'Domperidona',
     className: {'pt': 'Procinético / Antiemético (antagonista D2 periférico)', 'es': 'Procinético / Antiemético (antagonista D2 periférico)'},
     category: {'pt': 'Digestivo / Procinético', 'es': 'Digestivo / Procinético'},
@@ -4583,6 +4721,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'escopolamina',
+    group: 'Gastroenterología',
     name: 'Escopolamina (Hioscina)',
     className: {'pt': 'Anticolinérgico / Antiespasmódico', 'es': 'Anticolinérgico / Antiespasmódico'},
     category: {'pt': 'Digestivo / Antiespasmódico', 'es': 'Digestivo / Antiespasmódico'},
@@ -4617,6 +4756,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'loperamida',
+    group: 'Gastroenterología',
     name: 'Loperamida',
     className: {'pt': 'Antidiarreico (opioide periférico)', 'es': 'Antidiarreico (opioide periférico)'},
     category: {'pt': 'Digestivo / Antidiarreico', 'es': 'Digestivo / Antidiarreico'},
@@ -4651,6 +4791,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'mesalazina',
+    group: 'Gastroenterología',
     name: 'Mesalazina (5-aminossalicílico) / Mesalazina (5-aminosalicílico)',
     className: {'pt': 'Anti-inflamatório intestinal (aminossalicilato)', 'es': 'Antiinflamatorio intestinal (aminosalicilato)'},
     category: {'pt': 'Digestivo / Doença Inflamatória Intestinal', 'es': 'Digestivo / Enfermedad Inflamatoria Intestinal'},
@@ -4685,6 +4826,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'octreotida',
+    group: 'Gastroenterología',
     name: 'Octreotida',
     className: {'pt': 'Análogo da somatostatina', 'es': 'Análogo de somatostatina'},
     category: {'pt': 'Digestivo / Emergência GI / Endocrino', 'es': 'Digestivo / Emergencia GI / Endocrino'},
@@ -4719,6 +4861,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'terlipressina',
+    group: 'Cardiovascular y HTA',
     name: 'Terlipressina / Terlipresina',
     className: {'pt': 'Análogo da vasopressina (vasoconstritor esplâncnico)', 'es': 'Análogo de vasopresina (vasoconstrictor esplácnico)'},
     category: {'pt': 'Emergência / Digestivo', 'es': 'Emergencia / Digestivo'},
@@ -4753,6 +4896,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'dopamina',
+    group: 'Cardiovascular y HTA',
     name: 'Dopamina',
     className: {'pt': 'Catecolamina vasoativa endógena', 'es': 'Catecolamina vasoactiva endógena'},
     category: {'pt': 'Emergência / UTI / Vasoativo', 'es': 'Emergencia / UTI / Vasoactivo'},
@@ -4789,6 +4933,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'manitol',
+    group: 'Neurología y Psiquiatría',
     name: 'Manitol',
     className: {'pt': 'Diurético osmótico', 'es': 'Diurético osmótico'},
     category: {'pt': 'Emergência / Neurológico / Diurético', 'es': 'Emergencia / Neurológico / Diurético'},
@@ -4824,6 +4969,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'varfarina',
+    group: 'Anticoagulantes y Hemostasia',
     name: 'Varfarina / Warfarina',
     className: {'pt': 'Anticoagulante oral (antagonista vitamina K)', 'es': 'Anticoagulante oral (antagonista vitamina K)'},
     category: {'pt': 'Hematologia / Anticoagulante', 'es': 'Hematología / Anticoagulante'},
@@ -4858,6 +5004,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'clopidogrel',
+    group: 'Cardiovascular y HTA',
     name: 'Clopidogrel',
     className: {'pt': 'Antiplaquetário (inibidor P2Y12 irreversível)', 'es': 'Antiplaquetario (inhibidor P2Y12 irreversible)'},
     category: {'pt': 'Hematologia / Antiplaquetário', 'es': 'Hematología / Antiplaquetario'},
@@ -4892,6 +5039,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'fitomenadiona',
+    group: 'Anticoagulantes y Hemostasia',
     name: 'Fitomenadiona (Vitamina K1)',
     className: {'pt': 'Vitamina K / Antídoto anticoagulante AVK', 'es': 'Vitamina K / Antídoto anticoagulante AVK'},
     category: {'pt': 'Hematologia / Antídoto / Vitamina', 'es': 'Hematología / Antídoto / Vitamina'},
@@ -4926,6 +5074,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'acido_ursodesoxicolico',
+    group: 'Gastroenterología',
     name: 'Ácido Ursodesoxicólico (UDCA)',
     className: {'pt': 'Ácido biliar hidrofílico / Hepatoprotetor', 'es': 'Ácido biliar hidrofílico / Hepatoprotector'},
     category: {'pt': 'Digestivo / Hepatologia', 'es': 'Digestivo / Hepatología'},
@@ -4963,6 +5112,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'insulina_nph',
+    group: 'Endocrinología y Metabolismo',
     name: 'Insulina NPH',
     className: {'pt': 'Insulina de ação intermediária', 'es': 'Insulina de acción intermedia'},
     category: {'pt': 'Endocrino / Antidiabético', 'es': 'Endocrino / Antidiabético'},
@@ -4997,6 +5147,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'insulina_glargina',
+    group: 'Endocrinología y Metabolismo',
     name: 'Insulina Glargina (Lantus/Toujeo)',
     className: {'pt': 'Insulina de ação prolongada (análogo)', 'es': 'Insulina de acción prolongada (análogo)'},
     category: {'pt': 'Endocrino / Antidiabético', 'es': 'Endocrino / Antidiabético'},
@@ -5031,6 +5182,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'glucagon',
+    group: 'Endocrinología y Metabolismo',
     name: 'Glucagon / Glucagón',
     className: {'pt': 'Hormônio pancreático / Antídoto hipoglicemia', 'es': 'Hormona pancreática / Antídoto hipoglucemia'},
     category: {'pt': 'Endocrino / Emergência', 'es': 'Endocrino / Emergencia'},
@@ -5065,6 +5217,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'metimazol',
+    group: 'Endocrinología y Metabolismo',
     name: 'Metimazol (Tiamazol)',
     className: {'pt': 'Antitireoidiano (tionamida)', 'es': 'Antitiroideo (tionamida)'},
     category: {'pt': 'Endocrino / Tireóide', 'es': 'Endocrino / Tiroides'},
@@ -5099,6 +5252,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'alopurinol',
+    group: 'Endocrinología y Metabolismo',
     name: 'Alopurinol',
     className: {'pt': 'Inibidor da xantina oxidase / Hipouricemiante', 'es': 'Inhibidor de xantina oxidasa / Hipouricemiante'},
     category: {'pt': 'Reumatologia / Gota', 'es': 'Reumatología / Gota'},
@@ -5133,6 +5287,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'colchicina',
+    group: 'Endocrinología y Metabolismo',
     name: 'Colchicina',
     className: {'pt': 'Alcaloide / Anti-inflamatório (inibidor da polimerização da tubulina)', 'es': 'Alcaloide / Antiinflamatorio (inhibidor de polimerización de tubulina)'},
     category: {'pt': 'Reumatologia / Gota / Pericardite', 'es': 'Reumatología / Gota / Pericarditis'},
@@ -5167,6 +5322,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'hidroxicloroquina',
+    group: 'Infectología (Antifúngicos / Antivirales / TBC)',
     name: 'Hidroxicloroquina',
     className: {'pt': 'Antimalárico / DMARD (doença do tecido conjuntivo)', 'es': 'Antipalúdico / FAME (enfermedad del tejido conjuntivo)'},
     category: {'pt': 'Reumatologia / Antimalárico', 'es': 'Reumatología / Antipalúdico'},
@@ -5204,6 +5360,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'loratadina',
+    group: 'Varios / Antídotos / Otros',
     name: 'Loratadina',
     className: {'pt': 'Anti-histamínico H1 de 2ª geração (não sedativo)', 'es': 'Antihistamínico H1 de 2ª generación (no sedativo)'},
     category: {'pt': 'Alergia / Anti-histamínico', 'es': 'Alergia / Antihistamínico'},
@@ -5238,6 +5395,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'dexclorfeniramina',
+    group: 'Varios / Antídotos / Otros',
     name: 'Dexclorfeniramina',
     className: {'pt': 'Anti-histamínico H1 de 1ª geração (sedativo)', 'es': 'Antihistamínico H1 de 1ª generación (sedativo)'},
     category: {'pt': 'Alergia / Anti-histamínico', 'es': 'Alergia / Antihistamínico'},
@@ -5272,6 +5430,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'prometazina',
+    group: 'Varios / Antídotos / Otros',
     name: 'Prometazina',
     className: {'pt': 'Fenotiazínico / Anti-histamínico H1 + antipsicótico fraco', 'es': 'Fenotiazínico / Antihistamínico H1 + antipsicótico débil'},
     category: {'pt': 'Alergia / Antiemético / Sedação', 'es': 'Alergia / Antiemético / Sedación'},
@@ -5308,6 +5467,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'aciclovir',
+    group: 'Infectología (Antifúngicos / Antivirales / TBC)',
     name: 'Aciclovir',
     className: {'pt': 'Antiviral (inibidor DNA polimerase herpética)', 'es': 'Antiviral (inhibidor DNA polimerasa herpética)'},
     category: {'pt': 'Antiviral / Herpes', 'es': 'Antiviral / Herpes'},
@@ -5342,6 +5502,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'oseltamivir',
+    group: 'Respiratorio',
     name: 'Oseltamivir (Tamiflu)',
     className: {'pt': 'Inibidor da neuraminidase (antiviral influenza)', 'es': 'Inhibidor de neuraminidasa (antiviral influenza)'},
     category: {'pt': 'Antiviral / Influenza', 'es': 'Antiviral / Influenza'},
@@ -5376,6 +5537,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'anfotericina_b',
+    group: 'Infectología (Antifúngicos / Antivirales / TBC)',
     name: 'Anfotericina B',
     className: {'pt': 'Antifúngico poliênico / Antiprotozoário', 'es': 'Antifúngico poliénico / Antiprotozoario'},
     category: {'pt': 'Antifúngico / Infecção fúngica grave', 'es': 'Antifúngico / Infección fúngica grave'},
@@ -5411,6 +5573,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'albendazol',
+    group: 'Infectología (Antifúngicos / Antivirales / TBC)',
     name: 'Albendazol',
     className: {'pt': 'Anti-helmíntico (benzimidazol)', 'es': 'Antihelmíntico (benzimidazol)'},
     category: {'pt': 'Antiparasitário / Anti-helmíntico', 'es': 'Antiparasitario / Antihelmíntico'},
@@ -5445,6 +5608,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'ivermectina',
+    group: 'Infectología (Antifúngicos / Antivirales / TBC)',
     name: 'Ivermectina',
     className: {'pt': 'Anti-helmíntico / Antiparasitário (avermectina)', 'es': 'Antihelmíntico / Antiparasitario (avermectina)'},
     category: {'pt': 'Antiparasitário', 'es': 'Antiparasitario'},
@@ -5482,6 +5646,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'sacubitril_valsartana',
+    group: 'Cardiovascular y HTA',
     name: 'Sacubitril/Valsartana / Sacubitrilo/Valsartán',
     className: {'pt': 'ARNI (Inibidor de Neprilisina + BRA)', 'es': 'ARNI (Inhibidor de Neprilisina + ARA)'},
     category: {'pt': 'Cardiovascular', 'es': 'Cardiovascular'},
@@ -5501,6 +5666,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'dapagliflozina',
+    group: 'Endocrinología y Metabolismo',
     name: 'Dapagliflozina',
     className: {'pt': 'Inibidor SGLT-2', 'es': 'Inhibidor SGLT-2'},
     category: {'pt': 'Cardiovascular / Endócrino', 'es': 'Cardiovascular / Endocrino'},
@@ -5520,6 +5686,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'empagliflozina',
+    group: 'Endocrinología y Metabolismo',
     name: 'Empagliflozina',
     className: {'pt': 'Inibidor SGLT-2', 'es': 'Inhibidor SGLT-2'},
     category: {'pt': 'Cardiovascular / Endócrino', 'es': 'Cardiovascular / Endocrino'},
@@ -5539,6 +5706,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'ivabradina',
+    group: 'Cardiovascular y HTA',
     name: 'Ivabradina',
     className: {'pt': 'Inibidor If (canal HCN)', 'es': 'Inhibidor If (canal HCN)'},
     category: {'pt': 'Cardiovascular', 'es': 'Cardiovascular'},
@@ -5558,6 +5726,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'isossorbida',
+    group: 'Cardiovascular y HTA',
     name: 'Isossorbida (Dinitrato/Mononitrato) / Isosorbida (Dinitrato/Mononitrato)',
     className: {'pt': 'Nitrato Orgânico', 'es': 'Nitrato Orgánico'},
     category: {'pt': 'Cardiovascular', 'es': 'Cardiovascular'},
@@ -5577,6 +5746,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'verapamil',
+    group: 'Cardiovascular y HTA',
     name: 'Verapamil / Verapamilo',
     className: {'pt': 'Bloqueador de Canal de Cálcio (não-diidropiridínico)', 'es': 'Bloqueador de Canal de Calcio (no dihidropiridínico)'},
     category: {'pt': 'Cardiovascular', 'es': 'Cardiovascular'},
@@ -5596,6 +5766,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'diltiazem',
+    group: 'Cardiovascular y HTA',
     name: 'Diltiazem',
     className: {'pt': 'Bloqueador de Canal de Cálcio (benzotiazepínico)', 'es': 'Bloqueador de Canal de Calcio (benzotiazepínico)'},
     category: {'pt': 'Cardiovascular', 'es': 'Cardiovascular'},
@@ -5615,6 +5786,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'dabigatrana',
+    group: 'Anticoagulantes y Hemostasia',
     name: 'Dabigatrana / Dabigatrán',
     className: {'pt': 'Anticoagulante Oral Direto — Inibidor Direto da Trombina (IDT)', 'es': 'Anticoagulante Oral Directo — Inhibidor Directo de Trombina (IDT)'},
     category: {'pt': 'Hematologia', 'es': 'Hematología'},
@@ -5634,6 +5806,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'apixabana',
+    group: 'Anticoagulantes y Hemostasia',
     name: 'Apixabana / Apixabán',
     className: {'pt': 'Anticoagulante Oral Direto — Inibidor Direto do Fator Xa', 'es': 'Anticoagulante Oral Directo — Inhibidor Directo del Factor Xa'},
     category: {'pt': 'Hematologia', 'es': 'Hematología'},
@@ -5653,6 +5826,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'ticagrelor',
+    group: 'Cardiovascular y HTA',
     name: 'Ticagrelor',
     className: {'pt': 'Antiagregante Plaquetário — Inibidor P2Y12 (reversível)', 'es': 'Antiagregante Plaquetario — Inhibidor P2Y12 (reversible)'},
     category: {'pt': 'Hematologia / Cardiovascular', 'es': 'Hematología / Cardiovascular'},
@@ -5672,6 +5846,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'alteplase',
+    group: 'Cardiovascular y HTA',
     name: 'Alteplase (rt-PA)',
     className: {'pt': 'Trombolítico — Ativador do Plasminogênio Tecidual Recombinante', 'es': 'Trombolítico — Activador del Plasminógeno Tisular Recombinante'},
     category: {'pt': 'Hematologia / Emergência', 'es': 'Hematología / Emergencia'},
@@ -5694,6 +5869,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'carbamazepina',
+    group: 'Neurología y Psiquiatría',
     name: 'Carbamazepina',
     className: {'pt': 'Antiepiléptico — Bloqueador de Canal de Sódio', 'es': 'Antiepiléptico — Bloqueador de Canal de Sodio'},
     category: {'pt': 'Neurologia', 'es': 'Neurología'},
@@ -5713,6 +5889,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'oxcarbazepina',
+    group: 'Neurología y Psiquiatría',
     name: 'Oxcarbazepina',
     className: {'pt': 'Antiepiléptico — Bloqueador de Canal de Sódio (análogo da carbamazepina)', 'es': 'Antiepiléptico — Bloqueador de Canal de Sodio (análogo de carbamazepina)'},
     category: {'pt': 'Neurologia', 'es': 'Neurología'},
@@ -5732,6 +5909,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'lamotrigina',
+    group: 'Neurología y Psiquiatría',
     name: 'Lamotrigina',
     className: {'pt': 'Antiepiléptico / Estabilizador de Humor — Bloqueador de Canal de Sódio', 'es': 'Antiepiléptico / Estabilizador del Humor — Bloqueador de Canal de Sodio'},
     category: {'pt': 'Neurologia / Psiquiatria', 'es': 'Neurología / Psiquiatría'},
@@ -5751,6 +5929,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'topiramato',
+    group: 'Neurología y Psiquiatría',
     name: 'Topiramato',
     className: {'pt': 'Antiepiléptico Multimodal', 'es': 'Antiepiléptico Multimodal'},
     category: {'pt': 'Neurologia', 'es': 'Neurología'},
@@ -5770,6 +5949,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'olanzapina',
+    group: 'Neurología y Psiquiatría',
     name: 'Olanzapina',
     className: {'pt': 'Antipsicótico Atípico — Tienobenzodiazepínico', 'es': 'Antipsicótico Atípico — Tienobenzodiazepínico'},
     category: {'pt': 'Psiquiatria', 'es': 'Psiquiatría'},
@@ -5789,6 +5969,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'litio',
+    group: 'Neurología y Psiquiatría',
     name: 'Lítio (Carbonato de Lítio) / Litio (Carbonato de Litio)',
     className: {'pt': 'Estabilizador de Humor — Sal de Lítio', 'es': 'Estabilizador del Humor — Sal de Litio'},
     category: {'pt': 'Psiquiatria', 'es': 'Psiquiatría'},
@@ -5808,6 +5989,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'venlafaxina',
+    group: 'Neurología y Psiquiatría',
     name: 'Venlafaxina',
     className: {'pt': 'Antidepressivo IRSN (Inibidor de Recaptura de Serotonina e Noradrenalina)', 'es': 'Antidepresivo IRSN (Inhibidor de Recaptación de Serotonina y Noradrenalina)'},
     category: {'pt': 'Psiquiatria', 'es': 'Psiquiatría'},
@@ -5827,6 +6009,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'duloxetina',
+    group: 'Neurología y Psiquiatría',
     name: 'Duloxetina',
     className: {'pt': 'Antidepressivo IRSN', 'es': 'Antidepresivo IRSN'},
     category: {'pt': 'Psiquiatria / Dor', 'es': 'Psiquiatría / Dolor'},
@@ -5846,6 +6029,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'escitalopram',
+    group: 'Neurología y Psiquiatría',
     name: 'Escitalopram',
     className: {'pt': 'Antidepressivo ISRS', 'es': 'Antidepresivo ISRS'},
     category: {'pt': 'Psiquiatria', 'es': 'Psiquiatría'},
@@ -5865,6 +6049,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'mirtazapina',
+    group: 'Neurología y Psiquiatría',
     name: 'Mirtazapina',
     className: {'pt': 'Antidepressivo NaSSA (Antagonista Noradrenérgico e Serotoninérgico Específico)', 'es': 'Antidepresivo NaSSA (Antagonista Noradrenérgico y Serotoninérgico Específico)'},
     category: {'pt': 'Psiquiatria', 'es': 'Psiquiatría'},
@@ -5884,6 +6069,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'zolpidem',
+    group: 'Neurología y Psiquiatría',
     name: 'Zolpidem',
     className: {'pt': 'Hipnótico não-benzodiazepínico (Fármaco-Z)', 'es': 'Hipnótico no benzodiacepínico (Fármaco-Z)'},
     category: {'pt': 'Psiquiatria / Neurologia', 'es': 'Psiquiatría / Neurología'},
@@ -5903,6 +6089,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'biperideno',
+    group: 'Neurología y Psiquiatría',
     name: 'Biperideno',
     className: {'pt': 'Anticolinérgico — Antiparkinsônico', 'es': 'Anticolinérgico — Antiparkinsónico'},
     category: {'pt': 'Neurologia / Psiquiatria', 'es': 'Neurología / Psiquiatría'},
@@ -5924,6 +6111,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'propiltiuracil',
+    group: 'Endocrinología y Metabolismo',
     name: 'Propiltiuracil (PTU) / Propiltiouracilo (PTU)',
     className: {'pt': 'Antitireoidiano — Tionamida', 'es': 'Antitiroideo — Tionamida'},
     category: {'pt': 'Endocrinologia', 'es': 'Endocrinología'},
@@ -5943,6 +6131,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'prednisona',
+    group: 'Endocrinología y Metabolismo',
     name: 'Prednisona',
     className: {'pt': 'Corticosteroide Sistêmico — Glicocorticoide', 'es': 'Corticosteroide Sistémico — Glucocorticoide'},
     category: {'pt': 'Reumatologia / Imunologia', 'es': 'Reumatología / Inmunología'},
@@ -5962,6 +6151,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'metotrexato',
+    group: 'Hematología y Vitaminas',
     name: 'Metotrexato',
     className: {'pt': 'Imunossupressor / Antimetabólito — Antagonista do Folato', 'es': 'Inmunosupresor / Antimetabolito — Antagonista del Folato'},
     category: {'pt': 'Reumatologia / Oncologia', 'es': 'Reumatología / Oncología'},
@@ -5981,6 +6171,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'desloratadina',
+    group: 'Varios / Antídotos / Otros',
     name: 'Desloratadina',
     className: {'pt': 'Anti-histamínico H1 de 3ª Geração (Não-sedativo)', 'es': 'Antihistamínico H1 de 3ª Generación (No sedante)'},
     category: {'pt': 'Alergologia', 'es': 'Alergología'},
@@ -6000,6 +6191,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'hidroxizina',
+    group: 'Varios / Antídotos / Otros',
     name: 'Hidroxizina',
     className: {'pt': 'Anti-histamínico H1 de 1ª Geração / Ansiolítico', 'es': 'Antihistamínico H1 de 1ª Generación / Ansiolítico'},
     category: {'pt': 'Alergologia / Psiquiatria', 'es': 'Alergología / Psiquiatría'},
@@ -6021,6 +6213,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'lidocaina',
+    group: 'UCI – Críticos y Sedoanalgesia',
     name: 'Lidocaína',
     className: {'pt': 'Anestésico Local / Antiarrítmico Classe IB', 'es': 'Anestésico Local / Antiarrítmico Clase IB'},
     category: {'pt': 'Emergência / Anestesiologia', 'es': 'Emergencia / Anestesiología'},
@@ -6041,6 +6234,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'carvao_ativado',
+    group: 'Varios / Antídotos / Otros',
     name: 'Carvão Ativado / Carbón Activado',
     className: {'pt': 'Adsorvente — Antídoto Geral', 'es': 'Adsorbente — Antídoto General'},
     category: {'pt': 'Toxicologia / Emergência', 'es': 'Toxicología / Emergencia'},
@@ -6061,6 +6255,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'nistatina',
+    group: 'Infectología (Antifúngicos / Antivirales / TBC)',
     name: 'Nistatina',
     className: {'pt': 'Antifúngico Poliênico (Uso Tópico/Oral)', 'es': 'Antifúngico Poliénico (Uso Tópico/Oral)'},
     category: {'pt': 'Infectologia', 'es': 'Infectología'},
@@ -6080,6 +6275,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'carbonato_calcio',
+    group: 'Endocrinología y Metabolismo',
     name: 'Carbonato de Cálcio / Carbonato de Calcio',
     className: {'pt': 'Suplemento Mineral / Antiácido', 'es': 'Suplemento Mineral / Antiácido'},
     category: {'pt': 'Gastroenterologia / Endocrinologia', 'es': 'Gastroenterología / Endocrinología'},
@@ -6099,6 +6295,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'albumina',
+    group: 'Endocrinología y Metabolismo',
     name: 'Albumina Humana / Albúmina Humana',
     className: {'pt': 'Expansor Plasmático — Coloide Natural', 'es': 'Expansor Plasmático — Coloide Natural'},
     category: {'pt': 'Emergência / Hepatologia', 'es': 'Emergencia / Hepatología'},
@@ -6118,6 +6315,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'piridoxina',
+    group: 'Hematología y Vitaminas',
     name: 'Piridoxina (Vitamina B6)',
     className: {'pt': 'Vitamina / Antídoto', 'es': 'Vitamina / Antídoto'},
     category: {'pt': 'Toxicologia / Nutrição', 'es': 'Toxicología / Nutrición'},
@@ -6137,6 +6335,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'sulfadiazina_prata',
+    group: 'Varios / Antídotos / Otros',
     name: 'Sulfadiazina de Prata / Sulfadiazina de Plata',
     className: {'pt': 'Antibacteriano Tópico — Sulfonamida + Prata', 'es': 'Antibacteriano Tópico — Sulfonamida + Plata'},
     category: {'pt': 'Dermatologia / Queimados', 'es': 'Dermatología / Quemados'},
@@ -6156,6 +6355,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'mupirocina',
+    group: 'Varios / Antídotos / Otros',
     name: 'Mupirocina',
     className: {'pt': 'Antibacteriano Tópico — Inibidor de Isoleucil-tRNA Sintetase', 'es': 'Antibacteriano Tópico — Inhibidor de Isoleucil-tRNA Sintetasa'},
     category: {'pt': 'Dermatologia', 'es': 'Dermatología'},
@@ -6175,6 +6375,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'permetrina',
+    group: 'Varios / Antídotos / Otros',
     name: 'Permetrina',
     className: {'pt': 'Antiparasitário Tópico — Piretroide Sintético', 'es': 'Antiparasitario Tópico — Piretroide Sintético'},
     category: {'pt': 'Dermatologia / Parasitologia', 'es': 'Dermatología / Parasitología'},
@@ -6194,6 +6395,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'clobetasol',
+    group: 'Varios / Antídotos / Otros',
     name: 'Clobetasol',
     className: {'pt': 'Corticosteroide Tópico de Alta Potência (Classe I)', 'es': 'Corticosteroide Tópico de Alta Potencia (Clase I)'},
     category: {'pt': 'Dermatologia', 'es': 'Dermatología'},

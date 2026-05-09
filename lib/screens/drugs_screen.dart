@@ -13,6 +13,8 @@ class DrugsScreen extends StatefulWidget {
 class _DrugsScreenState extends State<DrugsScreen> {
   final _searchCtrl = TextEditingController();
   DrugModel? _selected;
+  // Grupos expandidos — por padrão todos fechados
+  final Set<String> _expanded = {};
 
   @override
   void dispose() {
@@ -25,34 +27,60 @@ class _DrugsScreenState extends State<DrugsScreen> {
     final p = context.watch<AppProvider>();
 
     if (_selected != null) {
-      return _DrugDetailView(drug: _selected!, onBack: () => setState(() => _selected = null), p: p);
+      return _DrugDetailView(
+        drug: _selected!,
+        onBack: () => setState(() => _selected = null),
+        p: p,
+      );
     }
 
-    final q = _searchCtrl.text.toLowerCase();
-    final filtered = p.drugsDB.where((d) {
-      if (q.isEmpty) return true;
-      return d.name.toLowerCase().contains(q) ||
-          (d.className[p.lang] ?? '').toLowerCase().contains(q) ||
-          (d.category[p.lang] ?? '').toLowerCase().contains(q) ||
-          (d.warning?[p.lang] ?? '').toLowerCase().contains(q);
-    }).toList();
+    final q = _searchCtrl.text.toLowerCase().trim();
+    final isSearching = q.isNotEmpty;
 
-    filtered.sort((a, b) {
-      final aFav = p.favDrugs.contains(a.id) ? 0 : 1;
-      final bFav = p.favDrugs.contains(b.id) ? 0 : 1;
-      return aFav.compareTo(bFav);
-    });
+    // Filtro global
+    final allDrugs = p.drugsDB;
+    final filtered = isSearching
+        ? allDrugs.where((d) {
+            return d.name.toLowerCase().contains(q) ||
+                (d.className[p.lang] ?? '').toLowerCase().contains(q) ||
+                (d.category[p.lang] ?? '').toLowerCase().contains(q) ||
+                d.group.toLowerCase().contains(q) ||
+                (d.warning?[p.lang] ?? '').toLowerCase().contains(q);
+          }).toList()
+        : allDrugs;
 
-    // Deduplicate by id (furosemida appears twice in DB)
+    // Deduplicar por id
     final seen = <String>{};
     final unique = filtered.where((d) => seen.add(d.id)).toList();
+
+    // Ordenar: favoritos primeiro, depois alfabético
+    unique.sort((a, b) {
+      final aFav = p.favDrugs.contains(a.id) ? 0 : 1;
+      final bFav = p.favDrugs.contains(b.id) ? 0 : 1;
+      if (aFav != bFav) return aFav.compareTo(bFav);
+      return a.name.compareTo(b.name);
+    });
+
+    final dark = p.darkMode;
 
     return SingleChildScrollView(
       padding: const EdgeInsets.fromLTRB(0, 8, 0, 100),
       child: Column(children: [
-        PremiumCard(child: SectionTitle(eyebrow: 'Knowledge Base', title: p.t('drugs'), subtitle: p.t('drugs_subtitle'), light: true)),
+
+        // ── Header premium ────────────────────────────────────────────────────
+        PremiumCard(
+          child: SectionTitle(
+            eyebrow: 'Knowledge Base',
+            title: p.t('drugs'),
+            subtitle: p.t('drugs_subtitle'),
+            light: true,
+          ),
+        ),
         const SizedBox(height: 12),
-        StandardCard(
+
+        // ── Busca ─────────────────────────────────────────────────────────────
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             MedInput(
               controller: _searchCtrl,
@@ -60,45 +88,333 @@ class _DrugsScreenState extends State<DrugsScreen> {
               onChanged: (_) => setState(() {}),
             ),
             const SizedBox(height: 8),
-            Text('${unique.length} ${p.t('drugs_found')}', style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: Color(0xFF888888))),
-          ]),
-        ),
-        const SizedBox(height: 12),
-        ...unique.map((drug) {
-          final isFav = p.favDrugs.contains(drug.id);
-          return Padding(
-            padding: const EdgeInsets.fromLTRB(16, 0, 16, 10),
-            child: GestureDetector(
-              onTap: () => setState(() => _selected = drug),
-              child: Container(
-                padding: const EdgeInsets.all(14),
-                decoration: const BoxDecoration(border: Border(bottom: BorderSide(color: kBorder))),
-                child: Row(children: [
-                  Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                    Row(children: [
-                      if (isFav) const Padding(padding: EdgeInsets.only(right: 4), child: Text('⭐', style: TextStyle(fontSize: 11))),
-                      Flexible(child: Text(drug.name, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w900, color: kDark), overflow: TextOverflow.ellipsis)),
-                    ]),
-                    const SizedBox(height: 3),
-                    Text('${p.tDB(drug.className)} • ${drug.route}', style: const TextStyle(fontSize: 11, color: Color(0xFF888888), fontWeight: FontWeight.w600)),
-                    const SizedBox(height: 4),
-                    Text(p.tDB(drug.warning), style: const TextStyle(fontSize: 12, color: Color(0xFF777777), fontWeight: FontWeight.w600, height: 1.3), maxLines: 2, overflow: TextOverflow.ellipsis),
-                  ])),
-                  const SizedBox(width: 8),
-                  Column(children: [
-                    GestureDetector(
-                      onTap: () => p.toggleFavDrug(drug.id),
-                      child: Padding(padding: const EdgeInsets.all(4), child: Text(isFav ? '⭐' : '☆', style: const TextStyle(fontSize: 18))),
-                    ),
-                    const SizedBox(height: 4),
-                    Container(padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6), decoration: BoxDecoration(color: kDark, borderRadius: BorderRadius.circular(20)), child: Text(p.t('open'), style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w900, color: kGoldLight))),
-                  ]),
-                ]),
+            Text(
+              '${unique.length} ${p.t('drugs_found')}',
+              style: const TextStyle(
+                fontSize: 12, fontWeight: FontWeight.w700, color: Color(0xFF888888),
               ),
             ),
-          );
-        }),
+          ]),
+        ),
+        const SizedBox(height: 16),
+
+        // ── Modo busca: lista flat ────────────────────────────────────────────
+        if (isSearching)
+          ...unique.map((drug) => _DrugListTile(
+            drug: drug,
+            p: p,
+            dark: dark,
+            onTap: () => setState(() => _selected = drug),
+          ))
+
+        // ── Modo normal: acordeão por grupo ──────────────────────────────────
+        else ...[
+          // Favoritos no topo (se existirem)
+          if (p.favDrugs.isNotEmpty) ...[
+            _GroupAccordion(
+              groupName: p.lang == 'es' ? 'Favoritos' : 'Favoritos',
+              icon: '⭐',
+              drugs: unique.where((d) => p.favDrugs.contains(d.id)).toList(),
+              isExpanded: _expanded.contains('__fav__'),
+              dark: dark,
+              p: p,
+              onToggle: () => setState(() {
+                if (_expanded.contains('__fav__')) {
+                  _expanded.remove('__fav__');
+                } else {
+                  _expanded.add('__fav__');
+                }
+              }),
+              onSelect: (drug) => setState(() => _selected = drug),
+            ),
+            const SizedBox(height: 4),
+          ],
+
+          // Grupos clínicos em ordem definida em DrugGroup.all
+          ...DrugGroup.all.map((groupName) {
+            final drugsInGroup = unique
+                .where((d) => d.group == groupName)
+                .toList();
+            if (drugsInGroup.isEmpty) return const SizedBox.shrink();
+            final isExp = _expanded.contains(groupName);
+            return Column(children: [
+              _GroupAccordion(
+                groupName: groupName,
+                icon: DrugGroup.icon(groupName),
+                drugs: drugsInGroup,
+                isExpanded: isExp,
+                dark: dark,
+                p: p,
+                onToggle: () => setState(() {
+                  if (isExp) {
+                    _expanded.remove(groupName);
+                  } else {
+                    _expanded.add(groupName);
+                  }
+                }),
+                onSelect: (drug) => setState(() => _selected = drug),
+              ),
+              const SizedBox(height: 4),
+            ]);
+          }),
+        ],
       ]),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// ACORDEÃO DE GRUPO
+// ─────────────────────────────────────────────────────────────────────────────
+class _GroupAccordion extends StatelessWidget {
+  final String groupName;
+  final String icon;
+  final List<DrugModel> drugs;
+  final bool isExpanded;
+  final bool dark;
+  final AppProvider p;
+  final VoidCallback onToggle;
+  final ValueChanged<DrugModel> onSelect;
+
+  const _GroupAccordion({
+    required this.groupName,
+    required this.icon,
+    required this.drugs,
+    required this.isExpanded,
+    required this.dark,
+    required this.p,
+    required this.onToggle,
+    required this.onSelect,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final headerBg = dark ? const Color(0xFF0E1A14) : const Color(0xFFF5F2EB);
+    final headerBorder = dark ? const Color(0xFF1A2E20) : const Color(0xFFDDD8CC);
+    final titleColor = dark ? Colors.white : kDark;
+    final countColor = dark ? Colors.white38 : const Color(0xFF999999);
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(14),
+        child: Column(children: [
+
+          // ── Cabeçalho do grupo ──────────────────────────────────────────────
+          GestureDetector(
+            onTap: onToggle,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+              decoration: BoxDecoration(
+                color: headerBg,
+                border: Border.all(color: headerBorder),
+                borderRadius: isExpanded
+                    ? const BorderRadius.vertical(top: Radius.circular(14))
+                    : BorderRadius.circular(14),
+              ),
+              child: Row(children: [
+                // Ícone do grupo
+                Container(
+                  width: 36,
+                  height: 36,
+                  decoration: BoxDecoration(
+                    color: dark
+                        ? const Color(0xFF162B1E)
+                        : const Color(0xFFECE9E0),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Center(
+                    child: Text(icon, style: const TextStyle(fontSize: 18)),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                // Nome e contagem
+                Expanded(child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      groupName,
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w900,
+                        color: titleColor,
+                        letterSpacing: -0.2,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      '${drugs.length} ${drugs.length == 1 ? 'fármaco' : 'fármacos'}',
+                      style: TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w600,
+                        color: countColor,
+                      ),
+                    ),
+                  ],
+                )),
+                // Chevron animado
+                AnimatedRotation(
+                  turns: isExpanded ? 0.5 : 0.0,
+                  duration: const Duration(milliseconds: 200),
+                  child: Icon(
+                    Icons.keyboard_arrow_down_rounded,
+                    size: 22,
+                    color: countColor,
+                  ),
+                ),
+              ]),
+            ),
+          ),
+
+          // ── Lista de fármacos expandida ──────────────────────────────────────
+          AnimatedCrossFade(
+            duration: const Duration(milliseconds: 220),
+            crossFadeState: isExpanded
+                ? CrossFadeState.showFirst
+                : CrossFadeState.showSecond,
+            firstChild: Container(
+              decoration: BoxDecoration(
+                color: dark ? const Color(0xFF081510) : Colors.white,
+                border: Border(
+                  left: BorderSide(color: headerBorder),
+                  right: BorderSide(color: headerBorder),
+                  bottom: BorderSide(color: headerBorder),
+                ),
+                borderRadius: const BorderRadius.vertical(
+                  bottom: Radius.circular(14),
+                ),
+              ),
+              child: Column(
+                children: drugs.asMap().entries.map((entry) {
+                  final idx = entry.key;
+                  final drug = entry.value;
+                  final isLast = idx == drugs.length - 1;
+                  return _DrugListTile(
+                    drug: drug,
+                    p: p,
+                    dark: dark,
+                    isLast: isLast,
+                    onTap: () => onSelect(drug),
+                  );
+                }).toList(),
+              ),
+            ),
+            secondChild: const SizedBox(width: double.infinity),
+          ),
+        ]),
+      ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// TILE DE FÁRMACO (usado em ambos os modos)
+// ─────────────────────────────────────────────────────────────────────────────
+class _DrugListTile extends StatelessWidget {
+  final DrugModel drug;
+  final AppProvider p;
+  final bool dark;
+  final bool isLast;
+  final VoidCallback onTap;
+
+  const _DrugListTile({
+    required this.drug,
+    required this.p,
+    required this.dark,
+    this.isLast = false,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final isFav = p.favDrugs.contains(drug.id);
+    final divColor = dark ? const Color(0xFF1A2E20) : const Color(0xFFEEEAE0);
+    final nameColor = dark ? Colors.white : kDark;
+    final subColor = dark ? Colors.white38 : const Color(0xFF888888);
+    final warnColor = dark ? Colors.white54 : const Color(0xFF777777);
+
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 13),
+        decoration: BoxDecoration(
+          border: isLast
+              ? null
+              : Border(bottom: BorderSide(color: divColor, width: 0.8)),
+        ),
+        child: Row(children: [
+          Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Row(children: [
+              if (isFav)
+                const Padding(
+                  padding: EdgeInsets.only(right: 5),
+                  child: Text('⭐', style: TextStyle(fontSize: 11)),
+                ),
+              Flexible(
+                child: Text(
+                  drug.name,
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w900,
+                    color: nameColor,
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ]),
+            const SizedBox(height: 3),
+            Text(
+              '${p.tDB(drug.className)} • ${drug.route}',
+              style: TextStyle(
+                fontSize: 11,
+                color: subColor,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              p.tDB(drug.warning),
+              style: TextStyle(
+                fontSize: 11,
+                color: warnColor,
+                fontWeight: FontWeight.w500,
+                height: 1.35,
+              ),
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ])),
+          const SizedBox(width: 10),
+          Column(children: [
+            GestureDetector(
+              onTap: () => p.toggleFavDrug(drug.id),
+              child: Padding(
+                padding: const EdgeInsets.all(4),
+                child: Text(
+                  isFav ? '⭐' : '☆',
+                  style: const TextStyle(fontSize: 18),
+                ),
+              ),
+            ),
+            const SizedBox(height: 4),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+              decoration: BoxDecoration(
+                color: kDark,
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Text(
+                p.t('open'),
+                style: const TextStyle(
+                  fontSize: 10,
+                  fontWeight: FontWeight.w900,
+                  color: kGoldLight,
+                ),
+              ),
+            ),
+          ]),
+        ]),
+      ),
     );
   }
 }
@@ -117,7 +433,6 @@ class _DrugDetailView extends StatefulWidget {
 }
 
 class _DrugDetailViewState extends State<_DrugDetailView> {
-  // Controladores locais — inicializados com dados do Cockpit
   late final TextEditingController _weightCtrl;
   late final TextEditingController _heightCtrl;
   late final TextEditingController _ageCtrl;
@@ -128,11 +443,11 @@ class _DrugDetailViewState extends State<_DrugDetailView> {
   void initState() {
     super.initState();
     final pt = widget.p.patient;
-    _weightCtrl  = TextEditingController(text: pt.weight);
-    _heightCtrl  = TextEditingController(text: pt.height);
-    _ageCtrl     = TextEditingController(text: pt.age);
-    _creatCtrl   = TextEditingController(text: pt.creatinine);
-    _sex         = pt.sex.isNotEmpty ? pt.sex : 'M';
+    _weightCtrl = TextEditingController(text: pt.weight);
+    _heightCtrl = TextEditingController(text: pt.height);
+    _ageCtrl    = TextEditingController(text: pt.age);
+    _creatCtrl  = TextEditingController(text: pt.creatinine);
+    _sex        = pt.sex.isNotEmpty ? pt.sex : 'M';
   }
 
   @override
@@ -144,7 +459,6 @@ class _DrugDetailViewState extends State<_DrugDetailView> {
     super.dispose();
   }
 
-  // Cálculo local de IMC e ClCr com os dados deste card
   double? get _w  => double.tryParse(_weightCtrl.text.replaceAll(',', '.'));
   double? get _h  => double.tryParse(_heightCtrl.text.replaceAll(',', '.'));
   double? get _a  => double.tryParse(_ageCtrl.text.replaceAll(',', '.'));
@@ -165,7 +479,6 @@ class _DrugDetailViewState extends State<_DrugDetailView> {
     return v.toStringAsFixed(1);
   }
 
-  // Cálculo de dose com dados locais (sem depender do Cockpit)
   DoseInfo _calcDose() {
     final drug  = widget.drug;
     final lang  = widget.p.lang;
@@ -199,10 +512,13 @@ class _DrugDetailViewState extends State<_DrugDetailView> {
         alerts: alerts,
       );
     }
-    if (drug.doseType == 'infusion' && w != null && drug.mcgKgMinStart != null && drug.mcgKgMinMax != null) {
+    if (drug.doseType == 'infusion' && w != null &&
+        drug.mcgKgMinStart != null && drug.mcgKgMinMax != null) {
       return DoseInfo(
-        main: '${(w * drug.mcgKgMinStart!).toStringAsFixed(1)}–${(w * drug.mcgKgMinMax!).toStringAsFixed(1)} mcg/min',
-        detail: '${drug.mcgKgMinStart}–${drug.mcgKgMinMax} mcg/kg/min em bomba. Titular por resposta clínica.',
+        main: '${(w * drug.mcgKgMinStart!).toStringAsFixed(1)}–'
+              '${(w * drug.mcgKgMinMax!).toStringAsFixed(1)} mcg/min',
+        detail: '${drug.mcgKgMinStart}–${drug.mcgKgMinMax} mcg/kg/min em bomba. '
+                'Titular por resposta clínica.',
         alerts: alerts,
       );
     }
@@ -235,7 +551,8 @@ class _DrugDetailViewState extends State<_DrugDetailView> {
               color: cardBg,
             ),
             child: Row(children: [
-              Icon(Icons.arrow_back_ios, size: 14, color: dark ? Colors.white70 : kDark),
+              Icon(Icons.arrow_back_ios, size: 14,
+                  color: dark ? Colors.white70 : kDark),
               const SizedBox(width: 4),
               Text(p.t('back_drugs'),
                 style: TextStyle(fontSize: 14, fontWeight: FontWeight.w900,
@@ -244,6 +561,27 @@ class _DrugDetailViewState extends State<_DrugDetailView> {
           ),
         ),
         const SizedBox(height: 12),
+
+        // ── Grupo pill ───────────────────────────────────────────────────────
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20),
+            color: dark
+                ? const Color(0xFF162B1E)
+                : const Color(0xFFECE9E0),
+          ),
+          child: Text(
+            '${DrugGroup.icon(drug.group)}  ${drug.group}',
+            style: TextStyle(
+              fontSize: 11,
+              fontWeight: FontWeight.w800,
+              color: dark ? Colors.white54 : const Color(0xFF666666),
+              letterSpacing: 0.2,
+            ),
+          ),
+        ),
+        const SizedBox(height: 10),
 
         // ── Header premium ───────────────────────────────────────────────────
         PremiumCard(
@@ -259,7 +597,8 @@ class _DrugDetailViewState extends State<_DrugDetailView> {
               const SizedBox(height: 5),
               Text(p.tDB(drug.className),
                 style: TextStyle(fontSize: 13,
-                  color: Colors.white.withValues(alpha: 0.65), fontWeight: FontWeight.w600)),
+                  color: Colors.white.withValues(alpha: 0.65),
+                  fontWeight: FontWeight.w600)),
             ])),
             GestureDetector(
               onTap: () => p.toggleFavDrug(drug.id),
@@ -286,10 +625,10 @@ class _DrugDetailViewState extends State<_DrugDetailView> {
           padding: const EdgeInsets.all(16),
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
 
-            // Título da seção
             Text(p.t('calculated_dose'),
               style: TextStyle(fontSize: 9, fontWeight: FontWeight.w900,
-                letterSpacing: 1.8, color: dark ? const Color(0xFFFFE8A6) : kDark)),
+                letterSpacing: 1.8,
+                color: dark ? const Color(0xFFFFE8A6) : kDark)),
             const SizedBox(height: 2),
             Text(p.t('edit_to_recalc'),
               style: TextStyle(fontSize: 11,
@@ -297,73 +636,39 @@ class _DrugDetailViewState extends State<_DrugDetailView> {
                 fontWeight: FontWeight.w600)),
             const SizedBox(height: 14),
 
-            // ── Linha 1: Sexo toggle ────────────────────────────────────────
             _FieldLabel(p.t('bio_sex')),
             const SizedBox(height: 6),
             Row(children: [
-              _SexToggleBtn(
-                label: p.t('male'),
-                active: _sex == 'M',
-                dark: dark,
-                onTap: () => setState(() => _sex = 'M'),
-              ),
+              _SexToggleBtn(label: p.t('male'),   active: _sex == 'M', dark: dark, onTap: () => setState(() => _sex = 'M')),
               const SizedBox(width: 8),
-              _SexToggleBtn(
-                label: p.t('female'),
-                active: _sex == 'F',
-                dark: dark,
-                onTap: () => setState(() => _sex = 'F'),
-              ),
+              _SexToggleBtn(label: p.t('female'), active: _sex == 'F', dark: dark, onTap: () => setState(() => _sex = 'F')),
             ]),
             const SizedBox(height: 12),
 
-            // ── Linha 2: Peso + Altura ──────────────────────────────────────
             Row(children: [
-              Expanded(child: _LocalField(
-                label: 'Peso (kg)',
-                ctrl: _weightCtrl,
-                dark: dark,
-                onChanged: (_) => setState(() {}),
-              )),
+              Expanded(child: _LocalField(label: 'Peso (kg)',    ctrl: _weightCtrl, dark: dark, onChanged: (_) => setState(() {}))),
               const SizedBox(width: 8),
-              Expanded(child: _LocalField(
-                label: 'Altura (cm)',
-                ctrl: _heightCtrl,
-                dark: dark,
-                onChanged: (_) => setState(() {}),
-              )),
+              Expanded(child: _LocalField(label: 'Altura (cm)',  ctrl: _heightCtrl, dark: dark, onChanged: (_) => setState(() {}))),
             ]),
             const SizedBox(height: 8),
 
-            // ── Linha 3: Idade + Creatinina ─────────────────────────────────
             Row(children: [
-              Expanded(child: _LocalField(
-                label: 'Idade (anos)',
-                ctrl: _ageCtrl,
-                dark: dark,
-                onChanged: (_) => setState(() {}),
-              )),
+              Expanded(child: _LocalField(label: 'Idade (anos)', ctrl: _ageCtrl,    dark: dark, onChanged: (_) => setState(() {}))),
               const SizedBox(width: 8),
-              Expanded(child: _LocalField(
-                label: 'Creatinina (mg/dL)',
-                ctrl: _creatCtrl,
-                dark: dark,
-                onChanged: (_) => setState(() {}),
-              )),
+              Expanded(child: _LocalField(label: 'Creatinina (mg/dL)', ctrl: _creatCtrl, dark: dark, onChanged: (_) => setState(() {}))),
             ]),
             const SizedBox(height: 12),
 
-            // ── Valores derivados (IMC + ClCr) — empilhados ─────────────────
             Container(
               width: double.infinity,
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
               decoration: BoxDecoration(
                 color: dark
-                  ? const Color(0xFF07110d).withValues(alpha: 0.6)
-                  : const Color(0xFFF5F2EC),
+                    ? const Color(0xFF07110d).withValues(alpha: 0.6)
+                    : const Color(0xFFF5F2EC),
               ),
               child: Row(children: [
-                _DerivedChip(label: 'IMC', value: _bmiLocal, unit: 'kg/m²', dark: dark),
+                _DerivedChip(label: 'IMC',  value: _bmiLocal,  unit: 'kg/m²',  dark: dark),
                 Container(width: 1, height: 28,
                   color: dark ? Colors.white12 : const Color(0xFFDDD8CC),
                   margin: const EdgeInsets.symmetric(horizontal: 12)),
@@ -372,7 +677,6 @@ class _DrugDetailViewState extends State<_DrugDetailView> {
             ),
             const SizedBox(height: 14),
 
-            // ── Resultado da dose ────────────────────────────────────────────
             Container(
               width: double.infinity,
               padding: const EdgeInsets.all(16),
@@ -393,12 +697,10 @@ class _DrugDetailViewState extends State<_DrugDetailView> {
                     color: Colors.white, letterSpacing: -0.3, height: 1.25)),
                 if (dose.detail.isNotEmpty) ...[
                   const SizedBox(height: 8),
-                  Container(height: 1,
-                    color: Colors.white.withValues(alpha: 0.12)),
+                  Container(height: 1, color: Colors.white.withValues(alpha: 0.12)),
                   const SizedBox(height: 8),
                   Text(
-                    dose.detail
-                      .replaceAll(': ', ':\n').replaceAll('; ', ';\n'),
+                    dose.detail.replaceAll(': ', ':\n').replaceAll('; ', ';\n'),
                     style: TextStyle(fontSize: 12,
                       color: Colors.white.withValues(alpha: 0.72),
                       fontWeight: FontWeight.w600, height: 1.6)),
@@ -406,11 +708,9 @@ class _DrugDetailViewState extends State<_DrugDetailView> {
               ]),
             ),
 
-            // Alertas clínicos
             ClinicalAlertBox(messages: dose.alerts),
             const SizedBox(height: 14),
 
-            // ── Botão usar no Cockpit ────────────────────────────────────────
             GestureDetector(
               onTap: () => p.setActiveDrug(drug.id),
               child: Container(
@@ -440,17 +740,18 @@ class _DrugDetailViewState extends State<_DrugDetailView> {
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Text(p.t('drug_sheet'),
               style: TextStyle(fontSize: 9, fontWeight: FontWeight.w900,
-                letterSpacing: 1.8, color: dark ? const Color(0xFFFFE8A6) : kDark)),
+                letterSpacing: 1.8,
+                color: dark ? const Color(0xFFFFE8A6) : kDark)),
             const SizedBox(height: 14),
-            InfoBlock(label: p.t('mechanism'), text: p.tDB(drug.mechanism)),
+            InfoBlock(label: p.t('mechanism'),    text: p.tDB(drug.mechanism)),
             const SizedBox(height: 10),
             _Divider(dark: dark),
             const SizedBox(height: 10),
-            InfoBlock(label: p.t('warning'), text: p.tDB(drug.warning)),
+            InfoBlock(label: p.t('warning'),      text: p.tDB(drug.warning)),
             const SizedBox(height: 10),
             _Divider(dark: dark),
             const SizedBox(height: 10),
-            InfoBlock(label: p.t('renal_alert'), text: p.tDB(drug.renalAlert)),
+            InfoBlock(label: p.t('renal_alert'),  text: p.tDB(drug.renalAlert)),
             const SizedBox(height: 10),
             _Divider(dark: dark),
             const SizedBox(height: 10),
@@ -480,7 +781,8 @@ class _DrugDetailViewState extends State<_DrugDetailView> {
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(20),
                         boxShadow: [BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.05), blurRadius: 4)],
+                          color: Colors.black.withValues(alpha: 0.05),
+                          blurRadius: 4)],
                       ),
                       child: Text(a,
                         style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w900,
@@ -584,9 +886,9 @@ class _SexToggleBtn extends StatelessWidget {
           child: Center(
             child: Text(label,
               style: TextStyle(
-                fontSize: 13,
-                fontWeight: FontWeight.w900,
-                color: active ? kGoldLight : (dark ? Colors.white38 : const Color(0xFF999999)),
+                fontSize: 13, fontWeight: FontWeight.w900,
+                color: active ? kGoldLight
+                    : (dark ? Colors.white38 : const Color(0xFF999999)),
               )),
           ),
         ),
