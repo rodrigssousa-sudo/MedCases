@@ -136,21 +136,13 @@ class _AuthGate extends StatelessWidget {
     child: child,
   );
 
-  // ── Web: ouve stream próprio (REST login) ─────────────────────────────────
-  // authStateChanges do Firebase SDK nunca emite no Web pois o login é via REST.
-  // webUserStream é alimentado diretamente pelo _loginWeb() após sucesso.
+  // ── Web: ouve ValueNotifier (persiste valor entre rebuilds) ─────────────
+  // StreamBuilder perde eventos emitidos ANTES de subscrever.
+  // ValueListenableBuilder lê o valor atual imediatamente — sem race condition.
   Widget _buildWebAuthGate(BuildContext context) {
-    return StreamBuilder<UserModel?>(
-      stream: AuthService.webUserStream,
-      builder: (context, webSnap) {
-        // Ainda aguardando primeiro evento → mostra login imediatamente
-        // (connectionState.waiting no broadcast stream = nenhum evento ainda)
-        if (webSnap.connectionState == ConnectionState.waiting) {
-          return _wrapAuth(const LoginScreen());
-        }
-
-        final user = webSnap.data;
-
+    return ValueListenableBuilder<UserModel?>(
+      valueListenable: AuthService.webUser,
+      builder: (context, user, _) {
         // Sem usuário → login
         if (user == null) {
           return _wrapAuth(const LoginScreen());

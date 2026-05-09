@@ -1,7 +1,7 @@
 // auth_service.dart — Firebase Auth + Firestore via REST (Web) e SDK (Android)
-import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter/widgets.dart' show ValueNotifier;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:http/http.dart' as http;
@@ -16,16 +16,11 @@ class AuthService {
   static const _fsBase       = 'https://firestore.googleapis.com/v1/projects/$_projectId/databases/(default)/documents';
   static const String adminEmail = 'rodrigssousa@gmail.com';
 
-  // ── Stream próprio para Web (contorna authStateChanges do Firebase SDK) ───
-  // No Web fazemos login via REST — o Firebase SDK não registra sessão,
-  // então authStateChanges nunca emite User. Este StreamController é a ponte
-  // entre o login REST bem-sucedido e o _AuthGate.
-  static final StreamController<UserModel?> _webUserController =
-      StreamController<UserModel?>.broadcast();
-
-  /// Stream que o _AuthGate escuta no Web.
-  /// Emite UserModel após login REST bem-sucedido e null após logout.
-  static Stream<UserModel?> get webUserStream => _webUserController.stream;
+  // ── Estado de autenticação Web (ValueNotifier) ─────────────────────────────
+  // StreamController broadcast perde eventos emitidos antes do subscriber
+  // existir. ValueNotifier persiste o último valor — qualquer widget que
+  // subscrever depois ainda recebe o estado atual imediatamente.
+  static final ValueNotifier<UserModel?> webUser = ValueNotifier<UserModel?>(null);
 
   // ── Stream de estado de autenticação (usado no Android via SDK nativo) ────
   static Stream<User?> get authStateChanges => _auth.authStateChanges();
@@ -113,8 +108,8 @@ class AuthService {
         // Usuário existe no Auth mas não no Firestore — criar documento
         final user = _buildNewUser(uid: uid, email: email);
         await _createUserDocRest(user: user, idToken: idToken);
-        // Publicar no stream próprio ANTES de retornar
-        _webUserController.add(user);
+        // Atualiza ValueNotifier ANTES de retornar
+        webUser.value = user;
         return AuthResult.success(user);
       }
 
@@ -127,9 +122,9 @@ class AuthService {
 
       final result = _buildResultFromDoc(exists: true, data: data, uid: uid, email: email);
 
-      // ✅ CRITICAL FIX: publicar usuário no stream próprio para o _AuthGate navegar
+      // ✅ CRITICAL FIX: atualiza ValueNotifier para o _AuthGate navegar
       if (result.success && result.user != null) {
-        _webUserController.add(result.user);
+        webUser.value = result.user;
       }
 
       return result;
@@ -208,8 +203,8 @@ class AuthService {
         profession: profession, institution: institution,
       );
       await _createUserDocRest(user: user, idToken: idToken);
-      // Publicar no stream próprio (usuário recém-criado via REST)
-      _webUserController.add(user);
+      // Atualiza ValueNotifier (usuário recém-criado via REST)
+      webUser.value = user;
       return AuthResult.success(user);
     } catch (e) {
       return AuthResult.error('Falha na conexão. Verifique sua internet e tente novamente.');
@@ -249,9 +244,9 @@ class AuthService {
   // LOGOUT
   // ═══════════════════════════════════════════════════════════════════════════
   static Future<void> logout() async {
-    // Limpa o stream próprio do Web PRIMEIRO (antes do signOut)
+    // Limpa o ValueNotifier Web PRIMEIRO (antes do signOut)
     if (kIsWeb) {
-      _webUserController.add(null);
+      webUser.value = null;
     }
     try { await _auth.signOut(); } catch (_) {}
   }
