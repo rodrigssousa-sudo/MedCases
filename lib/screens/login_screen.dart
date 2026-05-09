@@ -31,7 +31,6 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
 
   static const kDark   = Color(0xFF07110d);
   static const kGreen  = Color(0xFF075f45);
-  static const kGold   = Color(0xFFC5A365);
   static const kGoldL  = Color(0xFFFFE8A6);
   static const kCream  = Color(0xFFFFFDF8);
 
@@ -352,15 +351,6 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
     );
   }
 
-  Future<void> _switchLang(String lang) async {
-    if (_currentLang == lang) return;
-    setState(() => _currentLang = lang);
-    try {
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.setString('lang', lang);
-    } catch (_) {}
-  }
-
   // ── Campo de texto ────────────────────────────────────────────────────────
   Widget _field(String label, TextEditingController ctrl, IconData icon, {
     TextInputType keyboard = TextInputType.text,
@@ -511,7 +501,6 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
   }
 
   String get _keepLoggedInLabel   => _isEs ? 'Mantener sesión iniciada'              : 'Manter conectado';
-  String get _rememberEmailLabel  => _isEs ? 'Recordar correo'                      : 'Lembrar e-mail';
   String get _fullNameLabel       => _isEs ? 'Nombre completo'                      : 'Nome completo';
   String get _nameRequiredMsg     => _isEs ? 'Ingresa tu nombre'                    : 'Informe seu nome';
   String get _emailLabel          => _isEs ? 'Correo profesional'                   : 'E-mail profissional';
@@ -539,42 +528,4 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
       : '✅ E-mail de redefinição enviado para $email.\n\nVerifique sua caixa de entrada.';
 }
 
-// ── Widget auxiliar: chip de idioma ──────────────────────────────────────────
-class _LangChip extends StatelessWidget {
-  final String label;
-  final bool selected;
-  final VoidCallback onTap;
-  const _LangChip({required this.label, required this.selected, required this.onTap});
 
-  static const kDark  = Color(0xFF07110d);
-  static const kGold  = Color(0xFFC5A365);
-  static const kGoldL = Color(0xFFFFE8A6);
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(20),
-          color: selected ? kGold.withValues(alpha: 0.18) : Colors.transparent,
-          border: Border.all(
-            color: selected ? kGold : kGold.withValues(alpha: 0.25),
-            width: selected ? 1.5 : 1,
-          ),
-        ),
-        child: Text(
-          label,
-          style: TextStyle(
-            fontSize: 13,
-            fontWeight: selected ? FontWeight.w900 : FontWeight.w600,
-            color: selected ? kGoldL : kGoldL.withValues(alpha: 0.45),
-            letterSpacing: 0.4,
-          ),
-        ),
-      ),
-    );
-  }
-}

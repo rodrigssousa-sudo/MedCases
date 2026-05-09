@@ -2609,7 +2609,6 @@ class _RenalGuideRow extends StatelessWidget {
 // Extension helpers
 extension on double {
   double get sqrt => _sqrt(this);
-  double pow(num exp) => _pow(this, exp);
 }
 
 double _sqrt(double x) {

@@ -773,7 +773,6 @@ class AppProvider extends ChangeNotifier {
     }
 
     // ── Montar resposta ──────────────────────────────────────────────────
-    final isEs = _lang == 'es';
 
     // Cabeçalho
     buf.writeln('🧠 IA Clínica — Raciocínio Diagnóstico');

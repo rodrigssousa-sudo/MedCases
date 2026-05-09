@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
+import 'dart:async';
 import 'dart:ui' as ui;
 // ignore: avoid_web_libraries_in_flutter
 import 'dart:html' as html;
@@ -1504,7 +1505,7 @@ class _HistoryEditorState extends State<_HistoryEditor> {
             const Text('Toque para alternar. Dados do paciente são anonimizados (iniciais).', style: TextStyle(fontSize: 10, color: Color(0xFF888888), fontWeight: FontWeight.w600)),
           ])),
           Switch(value: _draft.isPublic, onChanged: (v) => setState(() => _draft = _draft.copyWith(isPublic: v)),
-            activeColor: const Color(0xFF1E40AF)),
+            activeThumbColor: const Color(0xFF1E40AF)),
         ]),
       ),
     ),
@@ -2433,12 +2434,18 @@ class _LabStructuredWidgetState extends State<_LabStructuredWidget> {
       final hasTess = js.context.hasProperty('Tesseract');
       if (hasTess) {
         if (mounted) setState(() { _ocrStatus = 'Extraindo texto (OCR)...'; });
-        final result = await js.JsObject.fromBrowserObject(
-          js.context.callMethod('eval', [
-            '''(function() { return Tesseract.recognize("$dataUrl", "por+spa").then(r => r.data.text); })()'''
-          ])
-        );
-        final text = result?.toString() ?? '';
+        final jsPromise = js.context.callMethod('eval', [
+          '''(function() { return Tesseract.recognize("$dataUrl", "por+spa").then(r => r.data.text); })()'''
+        ]);
+        final completer = Completer<String>();
+        final promiseObj = js.JsObject.fromBrowserObject(jsPromise);
+        promiseObj.callMethod('then', [
+          js.allowInterop((dynamic val) => completer.complete(val?.toString() ?? '')),
+        ]);
+        promiseObj.callMethod('catch', [
+          js.allowInterop((dynamic err) => completer.completeError(err?.toString() ?? 'OCR error')),
+        ]);
+        final text = await completer.future;
         _applyOcrText(text);
         if (mounted) setState(() { _ocrLoading = false; _ocrStatus = 'Texto extraído! Revise os campos.'; });
       } else {

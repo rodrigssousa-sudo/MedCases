@@ -1,5 +1,3 @@
-import 'package:flutter/foundation.dart';
-
 /// Seção de evolução/nota de progresso
 class EvolutionEntry {
   final String id;

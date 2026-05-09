@@ -3,7 +3,6 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'firebase_options.dart';
 import 'providers/app_provider.dart';
@@ -320,70 +319,6 @@ class _SplashScreen extends StatelessWidget {
             ),
           ),
         ]),
-      ),
-    );
-  }
-}
-
-// ── Tela de erro Firebase ─────────────────────────────────────────────────────
-class _FirebaseErrorScreen extends StatelessWidget {
-  final String error;
-  const _FirebaseErrorScreen({required this.error});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFF07110d),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(32),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              const BrandMark(small: false),
-              const SizedBox(height: 32),
-              Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: Colors.red.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: Colors.red.withValues(alpha: 0.3)),
-                ),
-                child: Column(children: [
-                  const Icon(Icons.wifi_off_rounded, color: Color(0xFFFF8888), size: 40),
-                  const SizedBox(height: 12),
-                  const Text('Sem conexão com o servidor',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w900, color: Colors.white)),
-                  const SizedBox(height: 8),
-                  const Text('Verifique sua conexão e tente novamente.',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 13, color: Color(0xFFAAAAAA))),
-                ]),
-              ),
-              const SizedBox(height: 24),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF075f45),
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-                ),
-                onPressed: () {
-                  // Recarrega a página
-                  // ignore: avoid_web_libraries_in_flutter
-                  // Usa Navigator para forçar rebuild
-                  Navigator.of(context).pushAndRemoveUntil(
-                    MaterialPageRoute(builder: (_) => const _AuthGate()),
-                    (_) => false,
-                  );
-                },
-                child: const Text('Tentar novamente', style: TextStyle(fontWeight: FontWeight.w900, fontSize: 15)),
-              ),
-            ],
-          ),
-        ),
       ),
     );
   }
@@ -723,40 +658,6 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
     );
   }
 
-  // Botão de ação (sem índice de tab — faz push de rota)
-  Widget _buildNavBtnAction(IconData icon, String label, bool dark, dynamic p, VoidCallback onTap) {
-    return Expanded(
-      child: GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onTap: onTap,
-        child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 3),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(12),
-              color: Colors.transparent,
-            ),
-            child: Icon(
-              icon,
-              size: 22,
-              color: dark ? Colors.white38 : const Color(0xFFAAAAAA),
-            ),
-          ),
-          const SizedBox(height: 2),
-          Text(
-            label,
-            overflow: TextOverflow.ellipsis,
-            style: TextStyle(
-              fontSize: 9,
-              fontWeight: FontWeight.w500,
-              color: dark ? Colors.white38 : const Color(0xFFAAAAAA),
-            ),
-          ),
-        ]),
-      ),
-    );
-  }
-
   Widget _buildAiNavBtn(bool dark, dynamic p) {
     final active = _tab == 2;
     return GestureDetector(
@@ -1084,98 +985,6 @@ class _LegalBar extends StatelessWidget {
   }
 }
 
-// ── Botão Admin com badge ─────────────────────────────────────────────────────
-class _AdminBadgeButton extends StatelessWidget {
-  final UserModel currentAdmin;
-  const _AdminBadgeButton({required this.currentAdmin});
-
-  @override
-  Widget build(BuildContext context) {
-    // No Web, o SDK Firestore falha silenciosamente por CORS—exibe botão simples
-    if (kIsWeb) {
-      return GestureDetector(
-        onTap: () => Navigator.push(context, MaterialPageRoute(
-          builder: (_) => AdminScreen(currentAdmin: currentAdmin),
-        )),
-        child: Container(
-          padding: const EdgeInsets.all(7),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
-            color: const Color(0xFFC5A365).withValues(alpha: 0.15),
-            border: Border.all(color: const Color(0xFFC5A365).withValues(alpha: 0.35)),
-          ),
-          child: const Icon(
-            Icons.admin_panel_settings_rounded,
-            size: 16,
-            color: Color(0xFFFFE8A6),
-          ),
-        ),
-      );
-    }
-
-    return StreamBuilder<QuerySnapshot>(
-      stream: FirebaseFirestore.instance
-          .collection('users')
-          .where('status', isEqualTo: 'pending')
-          .snapshots(),
-      builder: (context, snap) {
-        final count = snap.data?.docs.length ?? 0;
-        return GestureDetector(
-          onTap: () => Navigator.push(context, MaterialPageRoute(
-            builder: (_) => AdminScreen(currentAdmin: currentAdmin),
-          )),
-          child: Stack(
-            clipBehavior: Clip.none,
-            children: [
-              Container(
-                padding: const EdgeInsets.all(7),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: count > 0
-                      ? const Color(0xFFFF8C00).withValues(alpha: 0.2)
-                      : const Color(0xFFC5A365).withValues(alpha: 0.15),
-                  border: Border.all(
-                    color: count > 0
-                        ? const Color(0xFFFF8C00).withValues(alpha: 0.6)
-                        : const Color(0xFFC5A365).withValues(alpha: 0.35),
-                  ),
-                ),
-                child: Icon(
-                  Icons.admin_panel_settings_rounded,
-                  size: 16,
-                  color: count > 0 ? const Color(0xFFFF8C00) : const Color(0xFFFFE8A6),
-                ),
-              ),
-              if (count > 0)
-                Positioned(
-                  top: -5,
-                  right: -5,
-                  child: Container(
-                    width: 18,
-                    height: 18,
-                    decoration: const BoxDecoration(
-                      color: Color(0xFFFF3B30),
-                      shape: BoxShape.circle,
-                    ),
-                    alignment: Alignment.center,
-                    child: Text(
-                      count > 99 ? '99+' : '$count',
-                      style: const TextStyle(
-                        fontSize: 9,
-                        fontWeight: FontWeight.w900,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-}
-
 // ── Drawer lateral estilo banco (desliza da direita) ─────────────────────────
 class _AppDrawer extends StatelessWidget {
   final AppProvider p;
@@ -1492,7 +1301,6 @@ class _AppHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final p = context.watch<AppProvider>();
-    final dark = p.darkMode;
     return Container(
       decoration: BoxDecoration(
         gradient: const LinearGradient(
