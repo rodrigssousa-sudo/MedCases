@@ -27,6 +27,35 @@ class _CockpitScreenState extends State<CockpitScreen> {
   final _calcDrugQueryCtrl = TextEditingController();
   bool _calcDrugPickerOpen = false;
 
+  // ── Lembrete de reavaliação ───────────────────────────────────────────────
+  int? _reminderMinutes;      // null = sem lembrete ativo
+  DateTime? _reminderAt;      // quando o lembrete foi definido
+  bool _reminderExpired = false;
+
+  void _setReminder(int minutes) {
+    setState(() {
+      _reminderMinutes = minutes;
+      _reminderAt = DateTime.now();
+      _reminderExpired = false;
+    });
+    // Dispara callback após o tempo escolhido
+    Future.delayed(Duration(minutes: minutes), () {
+      if (mounted && _reminderMinutes == minutes &&
+          _reminderAt != null &&
+          DateTime.now().difference(_reminderAt!).inMinutes >= minutes) {
+        setState(() => _reminderExpired = true);
+      }
+    });
+  }
+
+  void _cancelReminder() {
+    setState(() {
+      _reminderMinutes = null;
+      _reminderAt = null;
+      _reminderExpired = false;
+    });
+  }
+
   @override
   void dispose() {
     _drugQueryCtrl.dispose();
@@ -86,9 +115,9 @@ class _CockpitScreenState extends State<CockpitScreen> {
 
     // Subtítulo dinâmico do card de paciente
     final bioSubtitle = [
-      if (p.patient.age.isNotEmpty) '${p.patient.age} anos',
+      if (p.patient.age.isNotEmpty) '${p.patient.age} ${p.t("years")}',
       if (p.patient.weight.isNotEmpty) '${p.patient.weight} kg',
-      p.patient.sex,
+      p.patient.sex == 'M' ? p.t('male') : p.t('female'),
     ].join(' · ');
 
     return SingleChildScrollView(
@@ -106,8 +135,8 @@ class _CockpitScreenState extends State<CockpitScreen> {
         // ── BIOMETRIA (colapsável) ───────────────────────────────────────────
         _CollapsibleSection(
           icon: Icons.person_outline_rounded,
-          title: 'Dados do paciente',
-          subtitle: bioSubtitle.isEmpty ? 'Toque para preencher' : bioSubtitle,
+          title: p.t('patient_data'),
+          subtitle: bioSubtitle.isEmpty ? p.t('tap_to_fill') : bioSubtitle,
           isOpen: _bioOpen,
           onToggle: () => setState(() => _bioOpen = !_bioOpen),
           child: _BiometricsBody(
@@ -146,11 +175,22 @@ class _CockpitScreenState extends State<CockpitScreen> {
         // ── PROTOCOLOS RÁPIDOS (colapsável) ─────────────────────────────────
         _CollapsibleSection(
           icon: Icons.bolt_rounded,
-          title: 'Protocolos de emergência',
-          subtitle: 'Acesso rápido a condutas críticas',
+          title: p.t('emergency_protocols'),
+          subtitle: p.t('quick_access_protocols'),
           isOpen: _protOpen,
           onToggle: () => setState(() => _protOpen = !_protOpen),
           child: _ProtocolsBody(p: p, openProtocol: widget.openProtocol),
+        ),
+        const SizedBox(height: 10),
+
+        // ── LEMBRETE DE REAVALIAÇÃO ──────────────────────────────────────────
+        _ReminderCard(
+          p: p,
+          reminderMinutes: _reminderMinutes,
+          reminderAt: _reminderAt,
+          reminderExpired: _reminderExpired,
+          onSet: _setReminder,
+          onCancel: _cancelReminder,
         ),
       ]),
     );
@@ -178,7 +218,7 @@ class _HeroHeader extends StatelessWidget {
             )),
             const SizedBox(height: 4),
             Text(
-              p.patient.patientId.isNotEmpty ? p.patient.patientId : 'Paciente / Leito',
+              p.patient.patientId.isNotEmpty ? p.patient.patientId : p.t('patient_bed'),
               style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w900, color: Colors.white, letterSpacing: -0.5),
               overflow: TextOverflow.ellipsis,
             ),
@@ -405,8 +445,8 @@ class _BiometricsBody extends StatelessWidget {
     return Column(children: [
       // Paciente + Limpar
       Row(children: [
-        Expanded(child: _FieldRow(label: 'Paciente / Leito',
-          child: MedInput(hintText: 'Ex: Leito 05', initialValue: p.patient.patientId,
+        Expanded(child: _FieldRow(label: p.t('patient_bed'),
+          child: MedInput(hintText: p.t('hint_bed'), initialValue: p.patient.patientId,
             onChanged: (v) => p.updatePatient('patientId', v)))),
         const SizedBox(width: 8),
         GestureDetector(
@@ -415,7 +455,7 @@ class _BiometricsBody extends StatelessWidget {
             margin: const EdgeInsets.only(top: 18),
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
             decoration: BoxDecoration(borderRadius: BorderRadius.circular(14), border: Border.all(color: kBorder), color: Colors.white),
-            child: const Text('Limpar', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w900, color: Color(0xFF555555))),
+            child: Text(p.t('clear'), style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w900, color: Color(0xFF555555))),
           ),
         ),
       ]),
@@ -456,7 +496,7 @@ class _BiometricsBody extends StatelessWidget {
                 ),
                 const SizedBox(width: 8),
                 Text(
-                  isMale ? 'Masculino' : 'Feminino',
+                  isMale ? p.t('male') : p.t('female'),
                   style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: kDark),
                 ),
                 const Spacer(),
@@ -469,11 +509,11 @@ class _BiometricsBody extends StatelessWidget {
       const SizedBox(height: 10),
       // Peso + Altura
       Row(children: [
-        Expanded(child: _FieldRow(label: 'Peso (kg)',
+        Expanded(child: _FieldRow(label: p.t('weight_kg'),
           child: MedInput(hintText: '78', initialValue: p.patient.weight,
             keyboardType: TextInputType.number, onChanged: (v) => p.updatePatient('weight', v)))),
         const SizedBox(width: 10),
-        Expanded(child: _FieldRow(label: 'Altura (cm)',
+        Expanded(child: _FieldRow(label: p.t('height_cm'),
           child: MedInput(hintText: '171', initialValue: p.patient.height,
             keyboardType: TextInputType.number, onChanged: (v) => p.updatePatient('height', v)))),
       ]),
@@ -488,7 +528,7 @@ class _BiometricsBody extends StatelessWidget {
       _FieldRow(
         label: p.t('medications_optional'),
         child: MedInput(
-          hintText: 'Ex: AAS 100mg, Enalapril 10mg...',
+          hintText: p.t('hint_meds'),
           initialValue: p.patient.medications,
           maxLines: 3,
           onChanged: (v) => p.updatePatient('medications', v),
@@ -1066,5 +1106,184 @@ class _IxRow extends StatelessWidget {
         Text(text, style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: Color(0xFF333333), height: 1.45)),
       ])),
     ]);
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// REMINDER CARD — Lembrete de reavaliação do paciente
+// ─────────────────────────────────────────────────────────────────────────────
+class _ReminderCard extends StatefulWidget {
+  final AppProvider p;
+  final int? reminderMinutes;
+  final DateTime? reminderAt;
+  final bool reminderExpired;
+  final void Function(int) onSet;
+  final VoidCallback onCancel;
+  const _ReminderCard({
+    required this.p,
+    required this.reminderMinutes,
+    required this.reminderAt,
+    required this.reminderExpired,
+    required this.onSet,
+    required this.onCancel,
+  });
+  @override
+  State<_ReminderCard> createState() => _ReminderCardState();
+}
+
+class _ReminderCardState extends State<_ReminderCard> {
+  // Atualiza o contador a cada 30 segundos
+  late final Stream<int> _ticker;
+
+  @override
+  void initState() {
+    super.initState();
+    _ticker = Stream.periodic(const Duration(seconds: 30), (i) => i);
+  }
+
+  String _remaining() {
+    if (widget.reminderAt == null || widget.reminderMinutes == null) return '';
+    final elapsed = DateTime.now().difference(widget.reminderAt!).inSeconds;
+    final totalSec = widget.reminderMinutes! * 60;
+    final left = totalSec - elapsed;
+    if (left <= 0) return '0 ${widget.p.t("reminder_minutes")}';
+    final m = (left ~/ 60);
+    final s = left % 60;
+    return m > 0 ? '$m ${widget.p.t("reminder_minutes")}' : '${s}s';
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final p = widget.p;
+    final hasReminder = widget.reminderMinutes != null;
+    final expired = widget.reminderExpired;
+
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 0, 16, 10),
+      child: Container(
+        padding: const EdgeInsets.all(14),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(18),
+          border: Border.all(
+            color: expired
+                ? const Color(0xFFFF8888)
+                : hasReminder
+                    ? const Color(0xFF075f45).withValues(alpha: 0.4)
+                    : kBorder,
+            width: expired ? 1.5 : 1,
+          ),
+          color: expired
+              ? const Color(0xFFFFF0F0)
+              : hasReminder
+                  ? const Color(0xFFECFDF5)
+                  : Colors.white,
+        ),
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          // Título + ícone
+          Row(children: [
+            Icon(
+              expired
+                  ? Icons.alarm_off_rounded
+                  : hasReminder
+                      ? Icons.alarm_on_rounded
+                      : Icons.alarm_add_rounded,
+              size: 16,
+              color: expired
+                  ? const Color(0xFFCC2222)
+                  : hasReminder
+                      ? const Color(0xFF065F46)
+                      : const Color(0xFF888888),
+            ),
+            const SizedBox(width: 6),
+            Text(
+              expired
+                  ? p.t('reminder_expired')
+                  : hasReminder
+                      ? p.t('reminder_active')
+                      : p.t('reminder_label'),
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w900,
+                color: expired
+                    ? const Color(0xFFCC2222)
+                    : hasReminder
+                        ? const Color(0xFF065F46)
+                        : const Color(0xFF888888),
+                letterSpacing: 0.2,
+              ),
+            ),
+            if (hasReminder && !expired) ...[
+              const Spacer(),
+              StreamBuilder<int>(
+                stream: _ticker,
+                builder: (context, _) => Text(
+                  _remaining(),
+                  style: const TextStyle(
+                    fontSize: 13, fontWeight: FontWeight.w900,
+                    color: Color(0xFF065F46),
+                  ),
+                ),
+              ),
+            ],
+          ]),
+
+          // Botões de tempo (quando sem lembrete ativo)
+          if (!hasReminder) ...[
+            const SizedBox(height: 10),
+            Row(children: [
+              for (final min in [5, 10, 15, 30, 60]) ...[
+                if (min != 5) const SizedBox(width: 6),
+                Expanded(
+                  child: GestureDetector(
+                    onTap: () => widget.onSet(min),
+                    child: Container(
+                      height: 36,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: kDark,
+                      ),
+                      child: Center(
+                        child: Text(
+                          min >= 60 ? '1h' : '${min}m',
+                          style: const TextStyle(
+                            fontSize: 12, fontWeight: FontWeight.w900,
+                            color: kGoldLight,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ]),
+          ],
+
+          // Botão cancelar (quando há lembrete ativo)
+          if (hasReminder) ...[
+            const SizedBox(height: 10),
+            GestureDetector(
+              onTap: widget.onCancel,
+              child: Container(
+                height: 36,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(color: kBorder),
+                  color: Colors.white,
+                ),
+                child: Center(
+                  child: Text(
+                    p.t('reminder_cancel'),
+                    style: const TextStyle(
+                      fontSize: 12, fontWeight: FontWeight.w700,
+                      color: Color(0xFF888888),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ]),
+      ),
+    );
   }
 }

@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'firebase_options.dart';
 import 'providers/app_provider.dart';
 import 'services/auth_service.dart';
@@ -73,7 +74,7 @@ class MedCasesApp extends StatelessWidget {
       theme: _buildTheme(false),
       darkTheme: _buildTheme(true),
       themeMode: p.darkMode ? ThemeMode.dark : ThemeMode.light,
-      home: const _AuthGate(),
+      home: const _OnboardingGate(),
     );
   }
 
@@ -109,6 +110,184 @@ class MedCasesApp extends StatelessWidget {
       onSurface: Colors.white,
     ),
   );
+}
+
+// ── Onboarding Gate ───────────────────────────────────────────────────────────
+// Exibe a tela de seleção de idioma apenas na 1ª abertura do app.
+// Após a escolha, salva 'onboarding_done' = true nas prefs e segue para _AuthGate.
+class _OnboardingGate extends StatelessWidget {
+  const _OnboardingGate();
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<bool>(
+      future: _checkOnboardingDone(),
+      builder: (context, snap) {
+        if (snap.connectionState != ConnectionState.done) {
+          return Theme(data: MedCasesApp._authTheme, child: const _SplashScreen());
+        }
+        final done = snap.data ?? false;
+        if (done) return const _AuthGate();
+        return Theme(
+          data: MedCasesApp._authTheme,
+          child: _LangOnboardingScreen(
+            onDone: (lang) async {
+              final prefs = await SharedPreferences.getInstance();
+              await prefs.setString('lang', lang);
+              await prefs.setBool('onboarding_done', true);
+              // Atualiza o provider com o idioma escolhido
+              if (context.mounted) {
+                context.read<AppProvider>().setLang(lang);
+                Navigator.of(context).pushAndRemoveUntil(
+                  MaterialPageRoute(builder: (_) => const _AuthGate()),
+                  (_) => false,
+                );
+              }
+            },
+          ),
+        );
+      },
+    );
+  }
+
+  static Future<bool> _checkOnboardingDone() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      return prefs.getBool('onboarding_done') ?? false;
+    } catch (_) {
+      return true; // fallback seguro: pula onboarding se prefs falhar
+    }
+  }
+}
+
+// ── Tela de onboarding de idioma ──────────────────────────────────────────────
+class _LangOnboardingScreen extends StatefulWidget {
+  final void Function(String lang) onDone;
+  const _LangOnboardingScreen({required this.onDone});
+
+  @override
+  State<_LangOnboardingScreen> createState() => _LangOnboardingScreenState();
+}
+
+class _LangOnboardingScreenState extends State<_LangOnboardingScreen>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _anim;
+  late Animation<double> _fade;
+
+  static const kDark  = Color(0xFF07110d);
+  static const kGreen = Color(0xFF075f45);
+  static const kGold  = Color(0xFFC5A365);
+  static const kGoldL = Color(0xFFFFE8A6);
+
+  @override
+  void initState() {
+    super.initState();
+    _anim = AnimationController(vsync: this, duration: const Duration(milliseconds: 500));
+    _fade = CurvedAnimation(parent: _anim, curve: Curves.easeOut);
+    _anim.forward();
+  }
+
+  @override
+  void dispose() {
+    _anim.dispose();
+    super.dispose();
+  }
+
+  Widget _langButton({
+    required String flag,
+    required String label,
+    required String sublabel,
+    required String lang,
+  }) {
+    return GestureDetector(
+      onTap: () => widget.onDone(lang),
+      child: Container(
+        padding: const EdgeInsets.all(24),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: kGold.withValues(alpha: 0.35), width: 1.5),
+          color: Colors.white.withValues(alpha: 0.05),
+        ),
+        child: Row(children: [
+          Text(flag, style: const TextStyle(fontSize: 36)),
+          const SizedBox(width: 16),
+          Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Text(label, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w900, color: Colors.white)),
+            const SizedBox(height: 2),
+            Text(sublabel, style: TextStyle(fontSize: 12, color: Colors.white.withValues(alpha: 0.55), fontWeight: FontWeight.w500)),
+          ])),
+          Icon(Icons.arrow_forward_ios_rounded, size: 16, color: kGold.withValues(alpha: 0.7)),
+        ]),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: kDark,
+      body: SafeArea(
+        child: FadeTransition(
+          opacity: _fade,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 40),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                // Logo
+                const BrandMark(small: false),
+                const SizedBox(height: 28),
+                // Título bilíngue
+                const Text(
+                  'MedCases Pro',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 30, fontWeight: FontWeight.w900, color: Colors.white, letterSpacing: -0.5),
+                ),
+                const SizedBox(height: 8),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(color: kGold.withValues(alpha: 0.3)),
+                    color: kGold.withValues(alpha: 0.08),
+                  ),
+                  child: Text(
+                    'Selecione o idioma  •  Selecciona el idioma',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 11, color: kGoldL.withValues(alpha: 0.8), fontWeight: FontWeight.w700, letterSpacing: 0.3),
+                  ),
+                ),
+                const SizedBox(height: 48),
+                // Botão Português
+                _langButton(
+                  flag: '🇧🇷',
+                  label: 'Português',
+                  sublabel: 'Continuar em português',
+                  lang: 'pt',
+                ),
+                const SizedBox(height: 16),
+                // Botão Español
+                _langButton(
+                  flag: '🇪🇸',
+                  label: 'Español',
+                  sublabel: 'Continuar en español',
+                  lang: 'es',
+                ),
+                const SizedBox(height: 40),
+                // Rodapé legal
+                Text(
+                  'Uso educacional e de apoio clínico.\nUso educativo y de apoyo clínico.',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 10, color: Colors.white.withValues(alpha: 0.3), fontWeight: FontWeight.w500, height: 1.5),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 }
 
 // ── Auth Gate ─────────────────────────────────────────────────────────────────

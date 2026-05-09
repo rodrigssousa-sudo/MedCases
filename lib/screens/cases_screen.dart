@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:share_plus/share_plus.dart';
 import '../providers/app_provider.dart';
 import '../models/clinical_case_model.dart';
 import '../widgets/common_widgets.dart';
@@ -268,7 +269,7 @@ class _CaseDetail extends StatelessWidget {
   final AppProvider p;
   const _CaseDetail({required this.caseModel, required this.onBack, this.onEdit, this.onDelete, required this.p});
 
-  void _copy(BuildContext context) {
+  String _buildCaseText() {
     final buf = StringBuffer();
     buf.writeln('=== MEDCASES PRO: ${p.t('clinical_case_header').toUpperCase()} ===');
     buf.writeln('${p.t('title_label')}: ${caseModel.title}');
@@ -277,8 +278,17 @@ class _CaseDetail extends StatelessWidget {
     if (caseModel.diagnosis.isNotEmpty) buf.writeln('\n${p.t('diagnosis')}: ${caseModel.diagnosis}');
     if (caseModel.plan.isNotEmpty) buf.writeln('\n${p.t('plan_conduct')}:\n${caseModel.plan}');
     if (caseModel.notes.isNotEmpty) buf.writeln('\n${p.t('notes')}:\n${caseModel.notes}');
-    Clipboard.setData(ClipboardData(text: buf.toString()));
+    buf.writeln('\n— MedCases Pro');
+    return buf.toString();
+  }
+
+  void _copy(BuildContext context) {
+    Clipboard.setData(ClipboardData(text: _buildCaseText()));
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(p.t('copied')), duration: const Duration(seconds: 1)));
+  }
+
+  void _share() {
+    SharePlus.instance.share(ShareParams(text: _buildCaseText()));
   }
 
   @override
@@ -376,6 +386,7 @@ class _CaseDetail extends StatelessWidget {
             ],
             const SizedBox(height: 12),
             Row(children: [
+              // Copiar
               Expanded(
                 child: GestureDetector(
                   onTap: () => _copy(context),
@@ -386,8 +397,22 @@ class _CaseDetail extends StatelessWidget {
                   ),
                 ),
               ),
+              // Compartilhar
+              const SizedBox(width: 8),
+              GestureDetector(
+                onTap: _share,
+                child: Container(
+                  height: 44, width: 44,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(14),
+                    border: Border.all(color: kBorder),
+                    color: Colors.white,
+                  ),
+                  child: const Center(child: Icon(Icons.share_rounded, size: 18, color: kDark)),
+                ),
+              ),
               if (onDelete != null) ...[
-                const SizedBox(width: 10),
+                const SizedBox(width: 8),
                 GestureDetector(
                   onTap: () {
                     showDialog(context: context, builder: (_) => AlertDialog(
@@ -399,8 +424,7 @@ class _CaseDetail extends StatelessWidget {
                     ));
                   },
                   child: Container(
-                    height: 44,
-                    width: 44,
+                    height: 44, width: 44,
                     decoration: BoxDecoration(borderRadius: BorderRadius.circular(14), border: Border.all(color: const Color(0xFFFFCCCC)), color: const Color(0xFFFFF0F0)),
                     child: const Center(child: Icon(Icons.delete_rounded, size: 18, color: Color(0xFFCC2222))),
                   ),

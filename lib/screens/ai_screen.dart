@@ -16,33 +16,54 @@ class _AiScreenState extends State<AiScreen> {
   final List<_ChatMsg> _messages = [];
   bool _thinking = false;
 
+  // Prompts rápidos bilíngues: (label_pt, prompt_pt, label_es, prompt_es)
   static const _quickPrompts = [
     // Cardiovascular
-    ('IAM / dor torácica', 'Paciente com dor torácica intensa, diaforese e irradiação para braço esquerdo. Suspeita de IAM.'),
-    ('Choque + hipotensão', 'Paciente em choque com hipotensão, taquicardia e pele fria.'),
-    ('TPSV / taquicardia', 'Taquicardia paroxística supraventricular, QRS estreito, FC 180.'),
-    ('FA / fibrilação atrial', 'Fibrilação atrial com resposta ventricular rápida, FC 145 irregular.'),
-    ('Crise hipertensiva', 'PA 210/120 com cefaleia intensa e confusão mental.'),
+    ('IAM / dor torácica',   'Paciente com dor torácica intensa, diaforese e irradiação para braço esquerdo. Suspeita de IAM.',
+     'IAM / dolor torácico', 'Paciente con dolor torácico intenso, diaforesis e irradiación al brazo izquierdo. Sospecha de IAM.'),
+    ('Choque + hipotensão',  'Paciente em choque com hipotensão, taquicardia e pele fria.',
+     'Choque + hipotensión', 'Paciente en choque con hipotensión, taquicardia y piel fría.'),
+    ('TPSV / taquicardia',   'Taquicardia paroxística supraventricular, QRS estreito, FC 180.',
+     'TPSV / taquicardia',   'Taquicardia paroxística supraventricular, QRS estrecho, FC 180.'),
+    ('FA / fibrilação atrial','Fibrilação atrial com resposta ventricular rápida, FC 145 irregular.',
+     'FA / fibrilación atrial','Fibrilación auricular con respuesta ventricular rápida, FC 145 irregular.'),
+    ('Crise hipertensiva',   'PA 210/120 com cefaleia intensa e confusão mental.',
+     'Crisis hipertensiva',  'PA 210/120 con cefalea intensa y confusión mental.'),
     // Emergência
-    ('Anafilaxia', 'Reação anafilática aguda após contraste. PA 80/50, broncoespasmo.'),
-    ('PCR / parada cardíaca', 'Parada cardiorrespiratória. Sem pulso. Monitor: fibrilação ventricular.'),
-    ('K\u207a alto / hipercalemia', 'Hipercalemia grave K+ 7,1 com ondas T apiculadas no ECG.'),
+    ('Anafilaxia',           'Reação anafilática aguda após contraste. PA 80/50, broncoespasmo.',
+     'Anafilaxia',           'Reacción anafiláctica aguda tras contraste. PA 80/50, broncoespasmo.'),
+    ('PCR / parada cardíaca','Parada cardiorrespiratória. Sem pulso. Monitor: fibrilação ventricular.',
+     'PCR / parada cardíaca','Parada cardiorrespiratoria. Sin pulso. Monitor: fibrilación ventricular.'),
+    ('K\u207a alto / hipercalemia','Hipercalemia grave K+ 7,1 com ondas T apiculadas no ECG.',
+     'K\u207a alto / hipercalemia','Hipercalemia grave K+ 7,1 con ondas T picudas en el ECG.'),
     // Respiratório
-    ('Sepse / febre', 'Febre alta, hipotensão, taquicardia e suspeita de sepse.'),
-    ('TEP / embolia', 'Embolia pulmonar com dispneia súbita, PA 85/50, SatO2 85%.'),
-    ('DPOC exacerbação', 'DPOC com piora de dispneia, PaCO2 68, pH 7,28.'),
-    ('Asma grave', 'Crise de asma grave, silêncio auscultório, SpO2 88%.'),
+    ('Sepse / febre',        'Febre alta, hipotensão, taquicardia e suspeita de sepse.',
+     'Sepsis / fiebre',      'Fiebre alta, hipotensión, taquicardia y sospecha de sepsis.'),
+    ('TEP / embolia',        'Embolia pulmonar com dispneia súbita, PA 85/50, SatO2 85%.',
+     'TEP / embolia',        'Embolia pulmonar con disnea súbita, PA 85/50, SatO2 85%.'),
+    ('DPOC exacerbação',     'DPOC com piora de dispneia, PaCO2 68, pH 7,28.',
+     'EPOC exacerbación',    'EPOC con empeoramiento de disnea, PaCO2 68, pH 7,28.'),
+    ('Asma grave',           'Crise de asma grave, silêncio auscultório, SpO2 88%.',
+     'Asma grave',           'Crisis de asma grave, silencio auscultatorio, SpO2 88%.'),
     // Neurologia
-    ('AVC isquêmico', 'AVC isquêmico agudo, hemiplegia direita, NIHSS 14, 1h45 de evolução.'),
-    ('Convulsão / status', 'Convulsão há 8 min sem pausa. Estado de mal epiléptico.'),
-    ('Delirium / confusão', 'Confusão mental aguda, agitação, rebaixamento. Idoso de 78 anos.'),
+    ('AVC isquêmico',        'AVC isquêmico agudo, hemiplegia direita, NIHSS 14, 1h45 de evolução.',
+     'ACV isquémico',        'ACV isquémico agudo, hemiplejía derecha, NIHSS 14, 1h45 de evolución.'),
+    ('Convulsão / status',   'Convulsão há 8 min sem pausa. Estado de mal epiléptico.',
+     'Convulsión / status',  'Convulsión de 8 min sin pausa. Estado epiléptico.'),
+    ('Delirium / confusão',  'Confusão mental aguda, agitação, rebaixamento. Idoso de 78 anos.',
+     'Delirium / confusión', 'Confusión mental aguda, agitación, bradipsiquia. Anciano de 78 años.'),
     // Endocrinologia
-    ('Cetoacidose / CAD', 'Cetoacidose diabética. Glicemia 480, pH 7,18, K+ 3,2.'),
-    ('Hipoglicemia grave', 'Hipoglicemia grave, Glasgow 8, glicemia 28 mg/dL.'),
+    ('Cetoacidose / CAD',    'Cetoacidose diabética. Glicemia 480, pH 7,18, K+ 3,2.',
+     'Cetoacidosis / CAD',   'Cetoacidosis diabética. Glucemia 480, pH 7,18, K+ 3,2.'),
+    ('Hipoglicemia grave',   'Hipoglicemia grave, Glasgow 8, glicemia 28 mg/dL.',
+     'Hipoglucemia grave',   'Hipoglucemia grave, Glasgow 8, glucemia 28 mg/dL.'),
     // Gastro / outros
-    ('Hemorragia digestiva', 'Hematêmese, Hb 7,2, instabilidade hemodinâmica.'),
-    ('Meningite', 'Febre, cefaleia em trovoada, rigidez de nuca, petéquias.'),
-    ('Insuf. cardíaca', 'IC descompensada, ortopneia, SatO2 91%, crepitações bibasais.'),
+    ('Hemorragia digestiva', 'Hematêmese, Hb 7,2, instabilidade hemodinâmica.',
+     'Hemorragia digestiva', 'Hematemesis, Hb 7,2, inestabilidad hemodinámica.'),
+    ('Meningite',            'Febre, cefaleia em trovoada, rigidez de nuca, petéquias.',
+     'Meningitis',           'Fiebre, cefalea en trueno, rigidez de nuca, petequias.'),
+    ('Insuf. cardíaca',      'IC descompensada, ortopneia, SatO2 91%, crepitações bibasais.',
+     'Insuf. cardíaca',      'IC descompensada, ortopnea, SatO2 91%, crepitantes bibasales.'),
   ];
 
   @override
@@ -193,22 +214,27 @@ class _AiScreenState extends State<AiScreen> {
         Wrap(
           spacing: 8,
           runSpacing: 8,
-          children: _quickPrompts.map((q) => GestureDetector(
-            onTap: () {
-              _queryCtrl.text = q.$2;
-              final prov = context.read<AppProvider>();
-              _send(q.$2, prov);
-            },
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20),
-                color: const Color(0xFF07110d),
-                boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.1), blurRadius: 6, offset: const Offset(0, 2))],
+          children: _quickPrompts.map((q) {
+            final isEs = p.lang == 'es';
+            final label  = isEs ? q.$3 : q.$1;
+            final prompt = isEs ? q.$4 : q.$2;
+            return GestureDetector(
+              onTap: () {
+                _queryCtrl.text = prompt;
+                final prov = context.read<AppProvider>();
+                _send(prompt, prov);
+              },
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
+                  color: const Color(0xFF07110d),
+                  boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.1), blurRadius: 6, offset: const Offset(0, 2))],
+                ),
+                child: Text(label, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: Color(0xFFFFE8A6))),
               ),
-              child: Text(q.$1, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: Color(0xFFFFE8A6))),
-            ),
-          )).toList(),
+            );
+          }).toList(),
         ),
         const SizedBox(height: 20),
         Container(
