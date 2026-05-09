@@ -37,12 +37,12 @@ class DefaultFirebaseOptions {
 
   // ── iOS ─────────────────────────────────────────────────────────────────────
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyDPY3OH6KMoPdEp85i_y69_bKqc3wK2340',
+    apiKey: 'AIzaSyDiAWiD_Jgi02OGsH1erNZLqswdth-gaVg',
     authDomain: 'medcases-pro.firebaseapp.com',
     projectId: 'medcases-pro',
     storageBucket: 'medcases-pro.firebasestorage.app',
     messagingSenderId: '1076800980330',
-    appId: '1:1076800980330:ios:458a6b1f05871619711113',
-    iosBundleId: 'com.medcasespro.flutterApp',
+    appId: '1:1076800980330:ios:15758cfa2b974297711113',
+    iosBundleId: 'com.medcasespro.med',
   );
 }
