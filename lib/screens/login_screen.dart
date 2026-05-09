@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../services/auth_service.dart';
-import '../widgets/brand_mark.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -289,34 +288,20 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
   Widget _buildHeader() {
     return Column(
       children: [
-        const BrandMark(small: false),
+        // ── Ícone M+ grande ────────────────────────────────────────────────
+        ClipRRect(
+          borderRadius: BorderRadius.circular(28),
+          child: Image.asset(
+            'assets/icon/app_icon.png',
+            width: 100,
+            height: 100,
+            fit: BoxFit.cover,
+          ),
+        ),
         const SizedBox(height: 16),
-        Text(
+        const Text(
           'MedCases Pro',
-          style: const TextStyle(fontSize: 28, fontWeight: FontWeight.w900, color: Colors.white, letterSpacing: -0.5),
-        ),
-        const SizedBox(height: 4),
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 5),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: kGold.withValues(alpha: 0.4)),
-            color: kGold.withValues(alpha: 0.1),
-          ),
-          child: Text(
-            _isEs ? 'Medicina Clínica  •  Dosis  •  Protocolos' : 'Clínica Médica  •  Doses  •  Protocolos',
-            style: TextStyle(fontSize: 11, color: kGoldL.withValues(alpha: 0.85), fontWeight: FontWeight.w700, letterSpacing: 0.3),
-          ),
-        ),
-        const SizedBox(height: 14),
-        // ── Switch PT / ES ─────────────────────────────────────────────────
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            _LangChip(label: '🇧🇷 PT', selected: !_isEs, onTap: () => _switchLang('pt')),
-            const SizedBox(width: 8),
-            _LangChip(label: '🇪🇸 ES', selected: _isEs,  onTap: () => _switchLang('es')),
-          ],
+          style: TextStyle(fontSize: 28, fontWeight: FontWeight.w900, color: Colors.white, letterSpacing: -0.5),
         ),
         const SizedBox(height: 14),
         // ── Badge VERSÃO BETA ──────────────────────────────────────────────
