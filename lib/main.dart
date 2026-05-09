@@ -13,7 +13,6 @@ import 'screens/drugs_screen.dart';
 import 'screens/protocols_screen.dart';
 import 'screens/tools_screen.dart';
 import 'screens/ai_screen.dart';
-import 'screens/cases_screen.dart';
 import 'screens/admin_screen.dart';
 import 'screens/history_screen.dart';
 import 'widgets/brand_mark.dart';
@@ -437,16 +436,34 @@ class MainShell extends StatefulWidget {
 }
 
 class _MainShellState extends State<MainShell> {
+  // tabs: 0=Cockpit, 1=Rx/Proto combo, 2=IA(centro), 3=HC, 4=Calculadoras
   int _tab = 0;
+  // sub-tab dentro do combo Rx+Proto: 0=Rx, 1=Protocolos
+  int _rxProtoSub = 0;
   String? _pendingProtocolId;
+
   void _openProtocol(String id) {
-    setState(() { _tab = 2; _pendingProtocolId = id; });
+    setState(() {
+      _tab = 1;
+      _rxProtoSub = 1;
+      _pendingProtocolId = id;
+    });
   }
 
   void _openHistory() {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (_) => const HistoryScreen()),
+      PageRouteBuilder(
+        pageBuilder: (_, __, ___) => const HistoryScreen(),
+        transitionsBuilder: (_, anim, __, child) => SlideTransition(
+          position: Tween<Offset>(
+            begin: const Offset(1.0, 0.0),
+            end: Offset.zero,
+          ).animate(CurvedAnimation(parent: anim, curve: Curves.easeOutCubic)),
+          child: child,
+        ),
+        transitionDuration: const Duration(milliseconds: 280),
+      ),
     );
   }
 
@@ -458,26 +475,25 @@ class _MainShellState extends State<MainShell> {
     final navBg = dark ? const Color(0xFF0E1A14) : Colors.white;
     final navBorder = dark ? const Color(0xFF1A2E20) : const Color(0xFFE8E1D2);
 
-    final screens = [
-      CockpitScreen(openProtocol: _openProtocol),
-      const DrugsScreen(),
-      ProtocolsScreen(
-        key: ValueKey(_pendingProtocolId),
-        initialProtocolId: _pendingProtocolId,
-        onConsumed: () => setState(() => _pendingProtocolId = null),
-      ),
-      const ToolsScreen(),
-      const AiScreen(),
-      const CasesScreen(),
+    // Tela combo Rx + Protocolos com TabBar interna
+    final rxProtoScreen = _RxProtoCombo(
+      subTab: _rxProtoSub,
+      onSubTabChange: (i) => setState(() => _rxProtoSub = i),
+      pendingProtocolId: _pendingProtocolId,
+      onProtocolConsumed: () => setState(() => _pendingProtocolId = null),
+    );
+
+    // Ordem das telas no IndexedStack
+    // 0=Cockpit | 1=Rx+Proto | 2=IA | 3=HC(push) | 4=Calculadoras
+    final mainScreens = [
+      CockpitScreen(openProtocol: _openProtocol), // 0
+      rxProtoScreen,                               // 1
+      const AiScreen(),                            // 2 — centro FAB
+      const ToolsScreen(),                         // 3
     ];
 
-    final reorderedScreens = [
-      screens[0], // Cockpit
-      screens[1], // Fármacos
-      screens[4], // IA ← centro
-      screens[2], // Protocolos
-      screens[3], // Calculadoras
-    ];
+    // Índice real para o IndexedStack (HC é push, não tem índice)
+    final stackIdx = _tab <= 1 ? _tab : _tab - 1; // 0→0, 1→1, 2→2(IA), 3→3(Tools) — tab=3 é HC(push)
 
     return Scaffold(
       backgroundColor: bg,
@@ -485,9 +501,8 @@ class _MainShellState extends State<MainShell> {
         _AppHeader(
           onTabChange: (t) => setState(() => _tab = t),
           currentTab: _tab,
-          onOpenHistory: _openHistory,
         ),
-        Expanded(child: IndexedStack(index: _tab, children: reorderedScreens)),
+        Expanded(child: IndexedStack(index: stackIdx.clamp(0, mainScreens.length - 1), children: mainScreens)),
       ]),
       bottomNavigationBar: Column(
         mainAxisSize: MainAxisSize.min,
@@ -516,11 +531,16 @@ class _MainShellState extends State<MainShell> {
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
+                        // 0 — Início
                         _buildNavBtn(0, Icons.home_rounded, p.t('cockpit'), dark, p),
-                        _buildNavBtn(1, Icons.medication_rounded, p.t('drugs'), dark, p),
+                        // 1 — Rx + Protocolos (combo)
+                        _buildNavBtn(1, Icons.layers_rounded, 'Rx & Proto', dark, p),
+                        // espaço para o FAB central
                         const SizedBox(width: 76),
-                        _buildNavBtn(3, Icons.emergency_rounded, p.t('protocols'), dark, p),
-                        _buildNavBtn(4, Icons.calculate_rounded, p.t('tools'), dark, p),
+                        // 3 — História Clínica (push route)
+                        _buildNavBtnAction(Icons.folder_shared_rounded, 'H. Clínica', dark, p, _openHistory),
+                        // 4 — Calculadoras
+                        _buildNavBtn(3, Icons.calculate_rounded, p.t('tools'), dark, p),
                       ],
                     ),
                     Positioned(
@@ -572,6 +592,40 @@ class _MainShellState extends State<MainShell> {
                   : (dark ? Colors.white38 : const Color(0xFFAAAAAA)),
             ),
             child: Text(label, overflow: TextOverflow.ellipsis),
+          ),
+        ]),
+      ),
+    );
+  }
+
+  // Botão de ação (sem índice de tab — faz push de rota)
+  Widget _buildNavBtnAction(IconData icon, String label, bool dark, dynamic p, VoidCallback onTap) {
+    return Expanded(
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: onTap,
+        child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12),
+              color: Colors.transparent,
+            ),
+            child: Icon(
+              icon,
+              size: 22,
+              color: dark ? Colors.white38 : const Color(0xFFAAAAAA),
+            ),
+          ),
+          const SizedBox(height: 2),
+          Text(
+            label,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(
+              fontSize: 9,
+              fontWeight: FontWeight.w500,
+              color: dark ? Colors.white38 : const Color(0xFFAAAAAA),
+            ),
           ),
         ]),
       ),
@@ -650,6 +704,129 @@ class _MainShellState extends State<MainShell> {
               child: Text(p.t('ai')),
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+// ── Combo Rx + Protocolos ─────────────────────────────────────────────────────
+class _RxProtoCombo extends StatelessWidget {
+  final int subTab;
+  final ValueChanged<int> onSubTabChange;
+  final String? pendingProtocolId;
+  final VoidCallback onProtocolConsumed;
+
+  const _RxProtoCombo({
+    required this.subTab,
+    required this.onSubTabChange,
+    this.pendingProtocolId,
+    required this.onProtocolConsumed,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final p = context.watch<AppProvider>();
+    final dark = p.darkMode;
+    final bg = dark ? const Color(0xFF0A1510) : const Color(0xFFF5F0E8);
+    final borderCol = dark ? const Color(0xFF1A2E20) : const Color(0xFFE8E1D2);
+
+    return Column(children: [
+      // ── Seletor de sub-tab ────────────────────────────────────────────────
+      Container(
+        color: bg,
+        padding: const EdgeInsets.fromLTRB(16, 10, 16, 6),
+        child: Container(
+          height: 42,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(14),
+            color: dark ? const Color(0xFF0E1A14) : Colors.white,
+            border: Border.all(color: borderCol),
+          ),
+          child: Row(children: [
+            _SubTabBtn(
+              icon: Icons.medication_rounded,
+              label: p.t('drugs'),
+              active: subTab == 0,
+              dark: dark,
+              onTap: () => onSubTabChange(0),
+            ),
+            Container(width: 1, height: 24, color: borderCol),
+            _SubTabBtn(
+              icon: Icons.emergency_rounded,
+              label: p.t('protocols'),
+              active: subTab == 1,
+              dark: dark,
+              onTap: () => onSubTabChange(1),
+            ),
+          ]),
+        ),
+      ),
+      // ── Conteúdo ──────────────────────────────────────────────────────────
+      Expanded(
+        child: IndexedStack(
+          index: subTab,
+          children: [
+            const DrugsScreen(),
+            ProtocolsScreen(
+              key: ValueKey(pendingProtocolId),
+              initialProtocolId: pendingProtocolId,
+              onConsumed: onProtocolConsumed,
+            ),
+          ],
+        ),
+      ),
+    ]);
+  }
+}
+
+class _SubTabBtn extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final bool active;
+  final bool dark;
+  final VoidCallback onTap;
+
+  const _SubTabBtn({
+    required this.icon,
+    required this.label,
+    required this.active,
+    required this.dark,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final activeColor = dark ? const Color(0xFFFFE8A6) : const Color(0xFF07110d);
+    final inactiveColor = dark ? Colors.white38 : const Color(0xFFAAAAAA);
+    final activeBg = dark
+        ? const Color(0xFF1A3528)
+        : const Color(0xFF07110d).withValues(alpha: 0.08);
+
+    return Expanded(
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: onTap,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 180),
+          margin: const EdgeInsets.all(4),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            color: active ? activeBg : Colors.transparent,
+          ),
+          child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+            Icon(icon, size: 16,
+              color: active ? activeColor : inactiveColor),
+            const SizedBox(width: 6),
+            Text(
+              label,
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: active ? FontWeight.w800 : FontWeight.w500,
+                color: active ? activeColor : inactiveColor,
+              ),
+            ),
+          ]),
         ),
       ),
     );
@@ -768,8 +945,7 @@ class _AdminBadgeButton extends StatelessWidget {
 class _AppHeader extends StatelessWidget {
   final ValueChanged<int> onTabChange;
   final int currentTab;
-  final VoidCallback? onOpenHistory;
-  const _AppHeader({required this.onTabChange, required this.currentTab, this.onOpenHistory});
+  const _AppHeader({required this.onTabChange, required this.currentTab});
 
   @override
   Widget build(BuildContext context) {
@@ -815,20 +991,6 @@ class _AppHeader extends StatelessWidget {
               _AdminBadgeButton(currentAdmin: p.currentUser!),
               const SizedBox(width: 8),
             ],
-            // ── Botão Histórias Clínicas ──────────────────────────────────
-            GestureDetector(
-              onTap: onOpenHistory,
-              child: Container(
-                padding: const EdgeInsets.all(7),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: const Color(0xFF075f45).withValues(alpha: 0.25),
-                  border: Border.all(color: const Color(0xFF4CAF7A).withValues(alpha: 0.45)),
-                ),
-                child: const Icon(Icons.folder_shared_rounded, size: 16, color: Color(0xFF7DFFB3)),
-              ),
-            ),
-            const SizedBox(width: 8),
             GestureDetector(
               onTap: () => p.setLang(p.lang == 'pt' ? 'es' : 'pt'),
               child: Container(
