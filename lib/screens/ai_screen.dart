@@ -123,9 +123,7 @@ class _AiScreenState extends State<AiScreen> {
 
     return Column(children: [
       // Header
-      Container(
-        padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
-        child: PremiumCard(
+      PremiumCard(
           padding: const EdgeInsets.fromLTRB(16, 14, 16, 14),
           child: Row(children: [
             Container(
@@ -150,7 +148,6 @@ class _AiScreenState extends State<AiScreen> {
               ),
           ]),
         ),
-      ),
 
       // Chat messages or empty state
       Expanded(

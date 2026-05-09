@@ -164,8 +164,7 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
     return Column(children: [
       // Header
       PremiumCard(
-        margin: const EdgeInsets.fromLTRB(16, 8, 16, 0),
-        padding: const EdgeInsets.fromLTRB(12, 14, 16, 14),
+        padding: const EdgeInsets.fromLTRB(16, 14, 16, 14),
           child: Row(children: [
             Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               const Text('HISTÓRIA CLÍNICA', style: TextStyle(fontSize: 9, fontWeight: FontWeight.w900, color: Color(0xBFFFE8A6), letterSpacing: 2)),
