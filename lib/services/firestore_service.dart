@@ -1,6 +1,7 @@
 // firestore_service.dart — dados por usuário no Firestore
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/clinical_case_model.dart';
+import '../models/clinical_history_model.dart';
 
 class FirestoreService {
   // Getter lazy — só acessa Firestore APÓS Firebase.initializeApp() completar
@@ -130,6 +131,65 @@ class FirestoreService {
       cases.sort((a, b) => (b.createdAt ?? '').compareTo(a.createdAt ?? ''));
       return cases;
     });
+  }
+
+  // ── Histórias clínicas do usuário ────────────────────────────────────────
+  static CollectionReference<Map<String, dynamic>> _userHistories(String uid) =>
+      _db.collection('users').doc(uid).collection('clinical_histories');
+
+  static CollectionReference<Map<String, dynamic>> get _publicHistories =>
+      _db.collection('public_histories');
+
+  static Future<List<ClinicalHistoryModel>> loadHistories(String uid) async {
+    try {
+      final snap = await _userHistories(uid).orderBy('updatedAt', descending: true).get();
+      return snap.docs.map((d) => ClinicalHistoryModel.fromJson(d.data())).toList();
+    } catch (_) {
+      return [];
+    }
+  }
+
+  static Future<void> saveHistory(String uid, ClinicalHistoryModel h) async {
+    try {
+      await _userHistories(uid).doc(h.id).set(h.toJson());
+      // Se público, espelha na coleção global
+      if (h.isPublic) {
+        await _publicHistories.doc(h.id).set(h.toJson());
+      } else {
+        // Remove do público se deixou de ser público
+        try { await _publicHistories.doc(h.id).delete(); } catch (_) {}
+      }
+    } catch (_) {}
+  }
+
+  static Future<void> deleteHistory(String uid, String hid, {bool wasPublic = false}) async {
+    try {
+      await _userHistories(uid).doc(hid).delete();
+      if (wasPublic) {
+        try { await _publicHistories.doc(hid).delete(); } catch (_) {}
+      }
+    } catch (_) {}
+  }
+
+  static Future<List<ClinicalHistoryModel>> loadPublicHistories() async {
+    try {
+      final snap = await _publicHistories
+          .orderBy('updatedAt', descending: true)
+          .limit(50)
+          .get();
+      return snap.docs.map((d) => ClinicalHistoryModel.fromJson(d.data())).toList();
+    } catch (_) {
+      return [];
+    }
+  }
+
+  static Stream<List<ClinicalHistoryModel>> historiesStream(String uid) {
+    return _userHistories(uid)
+        .orderBy('updatedAt', descending: true)
+        .snapshots()
+        .map((snap) => snap.docs
+            .map((d) => ClinicalHistoryModel.fromJson(d.data()))
+            .toList());
   }
 
   // ── Último paciente (cockpit) ─────────────────────────────────────────────

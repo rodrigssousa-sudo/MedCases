@@ -15,6 +15,7 @@ import 'screens/tools_screen.dart';
 import 'screens/ai_screen.dart';
 import 'screens/cases_screen.dart';
 import 'screens/admin_screen.dart';
+import 'screens/history_screen.dart';
 import 'widgets/brand_mark.dart';
 
 // Future global preenchido dentro do main() após ensureInitialized
@@ -438,9 +439,15 @@ class MainShell extends StatefulWidget {
 class _MainShellState extends State<MainShell> {
   int _tab = 0;
   String? _pendingProtocolId;
-
   void _openProtocol(String id) {
     setState(() { _tab = 2; _pendingProtocolId = id; });
+  }
+
+  void _openHistory() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => const HistoryScreen()),
+    );
   }
 
   @override
@@ -478,6 +485,7 @@ class _MainShellState extends State<MainShell> {
         _AppHeader(
           onTabChange: (t) => setState(() => _tab = t),
           currentTab: _tab,
+          onOpenHistory: _openHistory,
         ),
         Expanded(child: IndexedStack(index: _tab, children: reorderedScreens)),
       ]),
@@ -760,7 +768,8 @@ class _AdminBadgeButton extends StatelessWidget {
 class _AppHeader extends StatelessWidget {
   final ValueChanged<int> onTabChange;
   final int currentTab;
-  const _AppHeader({required this.onTabChange, required this.currentTab});
+  final VoidCallback? onOpenHistory;
+  const _AppHeader({required this.onTabChange, required this.currentTab, this.onOpenHistory});
 
   @override
   Widget build(BuildContext context) {
@@ -806,6 +815,20 @@ class _AppHeader extends StatelessWidget {
               _AdminBadgeButton(currentAdmin: p.currentUser!),
               const SizedBox(width: 8),
             ],
+            // ── Botão Histórias Clínicas ──────────────────────────────────
+            GestureDetector(
+              onTap: onOpenHistory,
+              child: Container(
+                padding: const EdgeInsets.all(7),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: const Color(0xFF075f45).withValues(alpha: 0.25),
+                  border: Border.all(color: const Color(0xFF4CAF7A).withValues(alpha: 0.45)),
+                ),
+                child: const Icon(Icons.folder_shared_rounded, size: 16, color: Color(0xFF7DFFB3)),
+              ),
+            ),
+            const SizedBox(width: 8),
             GestureDetector(
               onTap: () => p.setLang(p.lang == 'pt' ? 'es' : 'pt'),
               child: Container(

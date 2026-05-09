@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../models/drug_model.dart';
 import '../models/protocol_model.dart';
 import '../models/clinical_case_model.dart';
+import '../models/clinical_history_model.dart';
 import '../models/user_model.dart';
 import '../data/drugs_database.dart';
 import '../data/protocols_database.dart';
@@ -62,6 +63,10 @@ class AppProvider extends ChangeNotifier {
   Set<String> _favDrugs = {};
   Set<String> _favProtocols = {};
 
+  // ── Estado — Histórias Clínicas ───────────────────────────────────────────
+  List<ClinicalHistoryModel> _myHistories = [];
+  List<ClinicalHistoryModel> _publicHistories = [];
+
   // ── Getters públicos ──────────────────────────────────────────────────────
   UserModel? get currentUser => _currentUser;
   bool get firebaseReady => _firebaseReady;
@@ -79,6 +84,10 @@ class AppProvider extends ChangeNotifier {
   Set<String> get favDrugs => _favDrugs;
   Set<String> get favProtocols => _favProtocols;
   List<ClinicalCaseModel> get customCases => _customCases;
+
+  // ── Getters — Histórias Clínicas ─────────────────────────────────────────
+  List<ClinicalHistoryModel> get myHistories => _myHistories;
+  List<ClinicalHistoryModel> get publicHistories => _publicHistories;
 
   List<DrugModel> get drugsDB => drugsDatabase;
   List<ProtocolModel> get protocolsDB => protocolsDatabase;
@@ -107,6 +116,8 @@ class AppProvider extends ChangeNotifier {
     _favDrugs = {};
     _favProtocols = {};
     _customCases = [];
+    _myHistories = [];
+    _publicHistories = [];
     _selectedDrugIds = ['furosemida'];
     _activeDrugId = 'furosemida';
     _patient = PatientData();
@@ -129,6 +140,8 @@ class AppProvider extends ChangeNotifier {
       _favProtocols = favProtocols;
       _customCases = cases;
       notifyListeners();
+      // Carrega histórias clínicas em paralelo (sem bloquear UI)
+      loadHistories().catchError((_) {});
     } catch (_) {
       // Fallback para SharedPreferences se offline
       await _loadFromLocal();
@@ -497,6 +510,46 @@ class AppProvider extends ChangeNotifier {
     _saveLocal();
     if (_currentUser != null) FirestoreService.deleteCase(_currentUser!.uid, id);
     notifyListeners();
+  }
+
+  // ── Histórias Clínicas ────────────────────────────────────────────────────
+  Future<void> loadHistories() async {
+    if (_currentUser == null) return;
+    try {
+      _myHistories = await FirestoreService.loadHistories(_currentUser!.uid);
+      notifyListeners();
+    } catch (_) {}
+  }
+
+  Future<void> saveHistory(ClinicalHistoryModel h) async {
+    if (_currentUser == null) return;
+    await FirestoreService.saveHistory(_currentUser!.uid, h);
+    final idx = _myHistories.indexWhere((x) => x.id == h.id);
+    if (idx >= 0) {
+      _myHistories[idx] = h;
+    } else {
+      _myHistories.insert(0, h);
+    }
+    notifyListeners();
+  }
+
+  Future<void> deleteHistory(String id, {bool wasPublic = false}) async {
+    if (_currentUser == null) return;
+    await FirestoreService.deleteHistory(_currentUser!.uid, id, wasPublic: wasPublic);
+    _myHistories.removeWhere((h) => h.id == id);
+    notifyListeners();
+  }
+
+  Future<void> toggleHistoryPublic(ClinicalHistoryModel h) async {
+    final updated = h.copyWith(isPublic: !h.isPublic);
+    await saveHistory(updated);
+  }
+
+  Future<void> loadPublicHistories() async {
+    try {
+      _publicHistories = await FirestoreService.loadPublicHistories();
+      notifyListeners();
+    } catch (_) {}
   }
 
   // ── Logout ────────────────────────────────────────────────────────────────
