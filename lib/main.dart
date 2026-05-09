@@ -1970,6 +1970,16 @@ class _MaintenanceToggleItemState extends State<_MaintenanceToggleItem> {
     );
 
     if (confirmed == true && mounted) {
+      // Guard de segurança: só admin ou master podem ativar
+      if (!widget.admin.isAdmin && !widget.admin.isMaster) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text('Acesso negado: apenas administradores podem alterar a manutenção.'),
+          backgroundColor: Colors.red,
+          behavior: SnackBarBehavior.floating,
+        ));
+        msgCtrl.dispose();
+        return;
+      }
       setState(() => _loading = true);
       try {
         await FirestoreService.setMaintenance(
@@ -1980,7 +1990,7 @@ class _MaintenanceToggleItemState extends State<_MaintenanceToggleItem> {
       } catch (e) {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: Text('Erro: $e'),
+            content: Text('Erro ao ativar manutenção: $e'),
             backgroundColor: Colors.red,
             behavior: SnackBarBehavior.floating,
           ));
@@ -1994,6 +2004,17 @@ class _MaintenanceToggleItemState extends State<_MaintenanceToggleItem> {
 
   // ── Desativa direto, sem perguntar ────────────────────────────────────────
   Future<void> _disable() async {
+    // Guard de segurança: só admin ou master podem desativar
+    if (!widget.admin.isAdmin && !widget.admin.isMaster) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text('Acesso negado: apenas administradores podem alterar a manutenção.'),
+          backgroundColor: Colors.red,
+          behavior: SnackBarBehavior.floating,
+        ));
+      }
+      return;
+    }
     setState(() => _loading = true);
     try {
       await FirestoreService.setMaintenance(
@@ -2003,7 +2024,7 @@ class _MaintenanceToggleItemState extends State<_MaintenanceToggleItem> {
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text('Erro: $e'),
+          content: Text('Erro ao desativar manutenção: $e'),
           backgroundColor: Colors.red,
           behavior: SnackBarBehavior.floating,
         ));
