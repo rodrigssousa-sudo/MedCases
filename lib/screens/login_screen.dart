@@ -318,6 +318,32 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
             _LangChip(label: '🇪🇸 ES', selected: _isEs,  onTap: () => _switchLang('es')),
           ],
         ),
+        const SizedBox(height: 14),
+        // ── Badge VERSÃO BETA ──────────────────────────────────────────────
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20),
+            color: const Color(0xFFFFB800).withValues(alpha: 0.12),
+            border: Border.all(color: const Color(0xFFFFB800).withValues(alpha: 0.55), width: 1.5),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Icon(Icons.science_outlined, size: 13, color: Color(0xFFFFCC44)),
+              const SizedBox(width: 6),
+              Text(
+                _isEs ? '⚠  VERSIÓN BETA — App en fase de pruebas' : '⚠  VERSÃO BETA — App em fase de testes',
+                style: const TextStyle(
+                  fontSize: 11,
+                  fontWeight: FontWeight.w800,
+                  color: Color(0xFFFFCC44),
+                  letterSpacing: 0.4,
+                ),
+              ),
+            ],
+          ),
+        ),
       ],
     );
   }
