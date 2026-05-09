@@ -11,12 +11,14 @@ const kSurface = Color(0xFFFBF7EE);
 class PremiumCard extends StatelessWidget {
   final Widget child;
   final EdgeInsets? padding;
-  const PremiumCard({super.key, required this.child, this.padding});
+  final EdgeInsets? margin;
+  const PremiumCard({super.key, required this.child, this.padding, this.margin});
 
   @override
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
+      margin: margin ?? const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
       padding: padding ?? const EdgeInsets.all(16),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(26),
@@ -36,12 +38,14 @@ class PremiumCard extends StatelessWidget {
 class StandardCard extends StatelessWidget {
   final Widget child;
   final EdgeInsets? padding;
-  const StandardCard({super.key, required this.child, this.padding});
+  final EdgeInsets? margin;
+  const StandardCard({super.key, required this.child, this.padding, this.margin});
 
   @override
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
+      margin: margin ?? const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
       padding: padding ?? const EdgeInsets.all(14),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(22),
@@ -235,7 +239,8 @@ class MedInput extends StatelessWidget {
   final ValueChanged<String>? onChanged;
   final String? initialValue;
   final int? maxLines;
-  const MedInput({super.key, this.controller, this.hintText, this.keyboardType, this.onChanged, this.initialValue, this.maxLines = 1});
+  final TextInputAction? textInputAction;
+  const MedInput({super.key, this.controller, this.hintText, this.keyboardType, this.onChanged, this.initialValue, this.maxLines = 1, this.textInputAction});
 
   @override
   Widget build(BuildContext context) {
@@ -244,6 +249,8 @@ class MedInput extends StatelessWidget {
       keyboardType: keyboardType,
       onChanged: onChanged,
       maxLines: maxLines,
+      textInputAction: textInputAction ?? (maxLines == 1 ? TextInputAction.next : TextInputAction.newline),
+      enableSuggestions: false,
       spellCheckConfiguration: const SpellCheckConfiguration.disabled(),
       autocorrect: false,
       style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 15, color: kDark),

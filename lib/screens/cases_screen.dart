@@ -71,10 +71,9 @@ class _CasesScreenState extends State<CasesScreen> with SingleTickerProviderStat
 
     return Column(children: [
       // Header
-      Padding(
-        padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
-        child: PremiumCard(
-          padding: const EdgeInsets.fromLTRB(16, 14, 16, 14),
+      PremiumCard(
+        margin: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+        padding: const EdgeInsets.fromLTRB(16, 14, 16, 14),
           child: Row(children: [
             Expanded(child: SectionTitle(
               eyebrow: 'Case Manager',
@@ -96,7 +95,6 @@ class _CasesScreenState extends State<CasesScreen> with SingleTickerProviderStat
             ),
           ]),
         ),
-      ),
 
       // Tabs
       Padding(
@@ -146,7 +144,7 @@ class _CasesScreenState extends State<CasesScreen> with SingleTickerProviderStat
                   onAction: () => setState(() => _editing = ClinicalCaseModel.blank()),
                 )
               : ListView.builder(
-                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 100),
+                  padding: const EdgeInsets.fromLTRB(0, 8, 0, 100),
                   itemCount: customFiltered.length,
                   itemBuilder: (context, i) => _CaseCard(
                     c: customFiltered[i],
@@ -160,7 +158,7 @@ class _CasesScreenState extends State<CasesScreen> with SingleTickerProviderStat
             dbFiltered.isEmpty
               ? _EmptyState(text: p.lang == 'es' ? 'Sin casos en la biblioteca.' : 'Nenhum caso na biblioteca.')
               : ListView.builder(
-                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 100),
+                  padding: const EdgeInsets.fromLTRB(0, 8, 0, 100),
                   itemCount: dbFiltered.length,
                   itemBuilder: (context, i) => _CaseCard(
                     c: dbFiltered[i],
@@ -188,7 +186,7 @@ class _CaseCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 10),
+      padding: const EdgeInsets.fromLTRB(16, 0, 16, 10),
       child: GestureDetector(
         onTap: onTap,
         child: Container(

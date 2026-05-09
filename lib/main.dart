@@ -955,6 +955,15 @@ class _HeaderMenu extends StatelessWidget {
           p.setLang(p.lang == 'pt' ? 'es' : 'pt');
         } else if (value == 'dark') {
           p.toggleDarkMode();
+        } else if (value == 'profile') {
+          if (context.mounted) {
+            showModalBottomSheet(
+              context: context,
+              isScrollControlled: true,
+              backgroundColor: Colors.transparent,
+              builder: (_) => _ProfileEditSheet(p: p),
+            );
+          }
         } else if (value == 'logout') {
           await AuthService.logout();
           if (context.mounted) context.read<AppProvider>().clearUser();
@@ -972,6 +981,29 @@ class _HeaderMenu extends StatelessWidget {
           color: dark ? Colors.white38 : const Color(0xFFAAAAAA),
         );
         return [
+          // Editar perfil
+          PopupMenuItem<String>(
+            value: 'profile',
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+            child: Row(children: [
+              Container(
+                padding: const EdgeInsets.all(6),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8),
+                  color: const Color(0xFFC5A365).withValues(alpha: 0.15),
+                  border: Border.all(color: const Color(0xFFC5A365).withValues(alpha: 0.4)),
+                ),
+                child: const Icon(Icons.person_outline_rounded, size: 15, color: Color(0xFFC5A365)),
+              ),
+              const SizedBox(width: 12),
+              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Text('Editar perfil', style: textStyle),
+                Text('Nome, profissão, instituição', style: subStyle),
+              ]),
+            ]),
+          ),
+          // Separador
+          const PopupMenuDivider(height: 1),
           // Idioma
           PopupMenuItem<String>(
             value: 'lang',
@@ -1101,7 +1133,10 @@ class _AppHeader extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.fromLTRB(16, 10, 16, 12),
           child: Row(children: [
-            const BrandMark(small: true),
+            GestureDetector(
+              onTap: () => onTabChange(0),
+              child: const BrandMark(small: true),
+            ),
             const SizedBox(width: 12),
             Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Row(children: [
@@ -1131,6 +1166,245 @@ class _AppHeader extends StatelessWidget {
             _HeaderMenu(p: p),
           ]),
         ),
+      ),
+    );
+  }
+}
+
+// ── Bottom sheet de edição de perfil ─────────────────────────────────────────
+class _ProfileEditSheet extends StatefulWidget {
+  final AppProvider p;
+  const _ProfileEditSheet({required this.p});
+
+  @override
+  State<_ProfileEditSheet> createState() => _ProfileEditSheetState();
+}
+
+class _ProfileEditSheetState extends State<_ProfileEditSheet> {
+  late final TextEditingController _nameCtrl;
+  late final TextEditingController _profCtrl;
+  late final TextEditingController _instCtrl;
+  bool _saving = false;
+  String? _error;
+
+  @override
+  void initState() {
+    super.initState();
+    final u = widget.p.currentUser;
+    _nameCtrl = TextEditingController(text: u?.displayName ?? '');
+    _profCtrl = TextEditingController(text: u?.profession ?? '');
+    _instCtrl = TextEditingController(text: u?.institution ?? '');
+  }
+
+  @override
+  void dispose() {
+    _nameCtrl.dispose();
+    _profCtrl.dispose();
+    _instCtrl.dispose();
+    super.dispose();
+  }
+
+  Future<void> _save() async {
+    final name = _nameCtrl.text.trim();
+    if (name.isEmpty) {
+      setState(() => _error = 'O nome não pode ficar em branco.');
+      return;
+    }
+    setState(() { _saving = true; _error = null; });
+    try {
+      await widget.p.updateProfile(
+        displayName: name,
+        profession: _profCtrl.text.trim(),
+        institution: _instCtrl.text.trim(),
+      );
+      if (mounted) Navigator.pop(context);
+    } catch (e) {
+      if (mounted) setState(() { _saving = false; _error = 'Erro ao salvar. Tente novamente.'; });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final dark = widget.p.darkMode;
+    final bg = dark ? const Color(0xFF0E1A14) : Colors.white;
+    final titleColor = dark ? Colors.white : const Color(0xFF07110d);
+    final subColor = dark ? Colors.white54 : const Color(0xFF888888);
+    final borderColor = dark ? const Color(0xFF1A3528) : const Color(0xFFE8E1D2);
+
+    return Padding(
+      padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+      child: Container(
+        decoration: BoxDecoration(
+          color: bg,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+          border: Border(top: BorderSide(color: borderColor, width: 1)),
+        ),
+        padding: const EdgeInsets.fromLTRB(24, 20, 24, 32),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Handle bar
+            Center(
+              child: Container(
+                width: 36, height: 4,
+                decoration: BoxDecoration(
+                  color: dark ? Colors.white24 : const Color(0xFFDDD8CE),
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+
+            // Título
+            Row(children: [
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: const Color(0xFFC5A365).withValues(alpha: 0.15),
+                  border: Border.all(color: const Color(0xFFC5A365).withValues(alpha: 0.4)),
+                ),
+                child: const Icon(Icons.person_outline_rounded, size: 18, color: Color(0xFFC5A365)),
+              ),
+              const SizedBox(width: 12),
+              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Text('Editar perfil', style: TextStyle(fontSize: 17, fontWeight: FontWeight.w900, color: titleColor)),
+                Text('Suas informações profissionais', style: TextStyle(fontSize: 11, color: subColor, fontWeight: FontWeight.w500)),
+              ]),
+            ]),
+            const SizedBox(height: 24),
+
+            // Campo — Nome
+            _SheetField(
+              label: 'Nome completo',
+              controller: _nameCtrl,
+              icon: Icons.badge_outlined,
+              dark: dark,
+              textInputAction: TextInputAction.next,
+            ),
+            const SizedBox(height: 12),
+
+            // Campo — Profissão
+            _SheetField(
+              label: 'Profissão (ex: Médico, Residente)',
+              controller: _profCtrl,
+              icon: Icons.work_outline_rounded,
+              dark: dark,
+              textInputAction: TextInputAction.next,
+            ),
+            const SizedBox(height: 12),
+
+            // Campo — Instituição
+            _SheetField(
+              label: 'Instituição / Hospital',
+              controller: _instCtrl,
+              icon: Icons.local_hospital_outlined,
+              dark: dark,
+              textInputAction: TextInputAction.done,
+              onSubmitted: (_) => _save(),
+            ),
+
+            // Erro
+            if (_error != null) ...[
+              const SizedBox(height: 12),
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: Colors.red.withValues(alpha: 0.08),
+                  border: Border.all(color: Colors.red.withValues(alpha: 0.3)),
+                ),
+                child: Text(_error!, style: const TextStyle(fontSize: 12, color: Colors.red, fontWeight: FontWeight.w600)),
+              ),
+            ],
+
+            const SizedBox(height: 20),
+
+            // Botões
+            Row(children: [
+              Expanded(
+                child: GestureDetector(
+                  onTap: _saving ? null : () => Navigator.pop(context),
+                  child: Container(
+                    height: 46,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: borderColor),
+                    ),
+                    alignment: Alignment.center,
+                    child: Text('Cancelar', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: subColor)),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: GestureDetector(
+                  onTap: _saving ? null : _save,
+                  child: Container(
+                    height: 46,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12),
+                      color: const Color(0xFF07110d),
+                      boxShadow: [BoxShadow(color: const Color(0xFF07110d).withValues(alpha: 0.35), blurRadius: 12, offset: const Offset(0, 4))],
+                    ),
+                    alignment: Alignment.center,
+                    child: _saving
+                        ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2, color: Color(0xFFFFE8A6)))
+                        : const Text('Salvar', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w900, color: Color(0xFFFFE8A6))),
+                  ),
+                ),
+              ),
+            ]),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ── Campo de texto interno do sheet de perfil ─────────────────────────────────
+class _SheetField extends StatelessWidget {
+  final String label;
+  final TextEditingController controller;
+  final IconData icon;
+  final bool dark;
+  final TextInputAction textInputAction;
+  final ValueChanged<String>? onSubmitted;
+  const _SheetField({
+    required this.label,
+    required this.controller,
+    required this.icon,
+    required this.dark,
+    this.textInputAction = TextInputAction.next,
+    this.onSubmitted,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final fillColor = dark ? const Color(0xFF162820) : const Color(0xFFF5F0E8);
+    final textColor = dark ? Colors.white : const Color(0xFF07110d);
+    final hintColor = dark ? Colors.white38 : const Color(0xFFAAAAAA);
+    final borderColor = dark ? const Color(0xFF1A3528) : const Color(0xFFE8E1D2);
+
+    return TextField(
+      controller: controller,
+      textInputAction: textInputAction,
+      enableSuggestions: false,
+      autocorrect: false,
+      spellCheckConfiguration: const SpellCheckConfiguration.disabled(),
+      onSubmitted: onSubmitted,
+      style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: textColor),
+      decoration: InputDecoration(
+        labelText: label,
+        labelStyle: TextStyle(fontSize: 12, color: hintColor, fontWeight: FontWeight.w600),
+        prefixIcon: Icon(icon, size: 18, color: const Color(0xFFC5A365)),
+        filled: true,
+        fillColor: fillColor,
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
+        enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide(color: borderColor)),
+        focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: Color(0xFFC5A365), width: 1.5)),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       ),
     );
   }

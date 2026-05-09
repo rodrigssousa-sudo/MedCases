@@ -106,10 +106,9 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
 
     return Column(children: [
       // Header
-      Padding(
-        padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
-        child: PremiumCard(
-          padding: const EdgeInsets.fromLTRB(12, 14, 16, 14),
+      PremiumCard(
+        margin: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+        padding: const EdgeInsets.fromLTRB(12, 14, 16, 14),
           child: Row(children: [
             Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               const Text('HISTÓRIA CLÍNICA', style: TextStyle(fontSize: 9, fontWeight: FontWeight.w900, color: Color(0xBFFFE8A6), letterSpacing: 2)),
@@ -142,7 +141,6 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
             ),
           ]),
         ),
-      ),
 
       // Tabs
       Padding(
@@ -192,7 +190,7 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
                   setState(() => _editing = ClinicalHistoryModel.blank(authorUid: uid, authorName: name, authorEmail: email));
                 })
               : ListView.builder(
-                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 100),
+                  padding: const EdgeInsets.fromLTRB(0, 8, 0, 100),
                   itemCount: mine.length,
                   itemBuilder: (_, i) => _HistoryCard(
                     h: mine[i], p: p,
@@ -210,7 +208,7 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
             p.publicHistories.isEmpty
               ? _EmptyCommunityState(onRefresh: () => p.loadPublicHistories())
               : ListView.builder(
-                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 100),
+                  padding: const EdgeInsets.fromLTRB(0, 8, 0, 100),
                   itemCount: pub.length,
                   itemBuilder: (_, i) => _HistoryCard(
                     h: pub[i], p: p,
@@ -278,7 +276,7 @@ class _HistoryCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final completion = h.completionRatio;
     return Padding(
-      padding: const EdgeInsets.only(bottom: 10),
+      padding: const EdgeInsets.fromLTRB(16, 0, 16, 10),
       child: GestureDetector(
         onTap: onTap,
         child: Container(

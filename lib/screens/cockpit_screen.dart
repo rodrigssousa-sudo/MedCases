@@ -92,7 +92,7 @@ class _CockpitScreenState extends State<CockpitScreen> {
     ].join(' · ');
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.fromLTRB(16, 8, 16, 100),
+      padding: const EdgeInsets.fromLTRB(0, 8, 0, 100),
       child: Column(children: [
 
         // ── HERO HEADER ──────────────────────────────────────────────────────

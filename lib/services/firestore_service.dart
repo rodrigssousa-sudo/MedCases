@@ -43,15 +43,23 @@ class FirestoreService {
     bool? darkMode,
     String? profession,
     String? institution,
+    String? displayName,
   }) async {
     final data = <String, dynamic>{};
     if (lang != null) data['lang'] = lang;
     if (darkMode != null) data['darkMode'] = darkMode;
     if (profession != null) data['profession'] = profession;
     if (institution != null) data['institution'] = institution;
+    if (displayName != null) data['displayName'] = displayName;
     if (data.isEmpty) return;
     try {
       await _userDoc(uid).update(data);
+    } catch (_) {}
+  }
+
+  static Future<void> updateDisplayName(String uid, String displayName) async {
+    try {
+      await _userDoc(uid).update({'displayName': displayName});
     } catch (_) {}
   }
 

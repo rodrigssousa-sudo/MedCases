@@ -313,6 +313,23 @@ class AppProvider extends ChangeNotifier {
       drugInteractions.map((i) => '${i.drug1} + ${i.drug2}: ${i.effect}').toList();
 
   // ── Mutations de estado ───────────────────────────────────────────────────
+  /// Atualiza nome, profissão e instituição do usuário logado
+  Future<void> updateProfile({String? displayName, String? profession, String? institution}) async {
+    if (_currentUser == null) return;
+    _currentUser = _currentUser!.copyWith(
+      displayName: displayName,
+      profession: profession,
+      institution: institution,
+    );
+    notifyListeners();
+    await FirestoreService.updateUserProfile(
+      _currentUser!.uid,
+      displayName: displayName,
+      profession: profession,
+      institution: institution,
+    );
+  }
+
   void setLang(String l) {
     _lang = l;
     _saveLocal();

@@ -64,7 +64,7 @@ class _ProtocolsScreenState extends State<ProtocolsScreen> {
     });
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.fromLTRB(16, 8, 16, 100),
+      padding: const EdgeInsets.fromLTRB(0, 8, 0, 100),
       child: Column(children: [
         PremiumCard(child: SectionTitle(eyebrow: 'Clinical Flow', title: p.t('protocols'), subtitle: 'Pesquise e abra o protocolo completo só quando precisar.', light: true)),
         const SizedBox(height: 12),
@@ -83,7 +83,7 @@ class _ProtocolsScreenState extends State<ProtocolsScreen> {
         ...filtered.map((proto) {
           final isFav = p.favProtocols.contains(proto.id);
           return Padding(
-            padding: const EdgeInsets.only(bottom: 10),
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 10),
             child: GestureDetector(
               onTap: () => setState(() => _selected = proto),
               child: Container(

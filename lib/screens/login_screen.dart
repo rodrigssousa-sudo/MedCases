@@ -254,12 +254,15 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
   // ── Campo de texto ────────────────────────────────────────────────────────
   Widget _field(String label, TextEditingController ctrl, IconData icon, {
     TextInputType keyboard = TextInputType.text,
+    TextInputAction textInputAction = TextInputAction.next,
     String? Function(String?)? validator,
   }) {
     return TextFormField(
       controller: ctrl,
       keyboardType: keyboard,
+      textInputAction: textInputAction,
       validator: validator,
+      enableSuggestions: false,
       spellCheckConfiguration: const SpellCheckConfiguration.disabled(),
       autocorrect: false,
       style: const TextStyle(fontSize: 14, color: kDark, fontWeight: FontWeight.w600),
@@ -283,6 +286,8 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
     return TextFormField(
       controller: _passCtrl,
       obscureText: _obscure,
+      textInputAction: TextInputAction.done,
+      enableSuggestions: false,
       spellCheckConfiguration: const SpellCheckConfiguration.disabled(),
       autocorrect: false,
       validator: _mode == _Mode.register

@@ -48,7 +48,7 @@ class _DrugsScreenState extends State<DrugsScreen> {
     final unique = filtered.where((d) => seen.add(d.id)).toList();
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.fromLTRB(16, 8, 16, 100),
+      padding: const EdgeInsets.fromLTRB(0, 8, 0, 100),
       child: Column(children: [
         PremiumCard(child: SectionTitle(eyebrow: 'Knowledge Base', title: p.t('drugs'), subtitle: 'Pesquise, abra o card e veja a ficha completa do fármaco.', light: true)),
         const SizedBox(height: 12),
@@ -67,7 +67,7 @@ class _DrugsScreenState extends State<DrugsScreen> {
         ...unique.map((drug) {
           final isFav = p.favDrugs.contains(drug.id);
           return Padding(
-            padding: const EdgeInsets.only(bottom: 10),
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 10),
             child: GestureDetector(
               onTap: () => setState(() => _selected = drug),
               child: Container(
