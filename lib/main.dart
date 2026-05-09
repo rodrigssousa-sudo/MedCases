@@ -1726,11 +1726,265 @@ class _MaintenanceToggleItem extends StatefulWidget {
 class _MaintenanceToggleItemState extends State<_MaintenanceToggleItem> {
   bool _loading = false;
 
-  Future<void> _toggle(bool value) async {
+  // ── Ativa manutenção: abre bottom sheet para escolher mensagem ─────────────
+  Future<void> _askMessageAndEnable() async {
+    final isEs        = widget.lang == 'es';
+    final msgCtrl     = TextEditingController();
+    final suggestions = isEs
+        ? [
+            'Sistema en mantenimiento. Volvemos pronto.',
+            'Actualización en curso. Regresamos en breve.',
+            'Mantenimiento programado. Gracias por su paciencia.',
+          ]
+        : [
+            'Sistema em manutenção. Voltamos em breve.',
+            'Atualização em andamento. Aguarde alguns minutos.',
+            'Manutenção programada. Obrigado pela paciência.',
+          ];
+
+    final confirmed = await showModalBottomSheet<bool>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) => StatefulBuilder(
+        builder: (ctx, setSheetState) {
+          return Padding(
+            padding: EdgeInsets.only(
+              bottom: MediaQuery.of(ctx).viewInsets.bottom,
+            ),
+            child: Container(
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+              ),
+              padding: const EdgeInsets.fromLTRB(20, 12, 20, 28),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Handle
+                  Center(
+                    child: Container(
+                      width: 36, height: 4,
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFDDDDDD),
+                        borderRadius: BorderRadius.circular(2),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+
+                  // Título
+                  Row(children: [
+                    Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: Colors.orange.withValues(alpha: 0.12),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: const Icon(Icons.construction_rounded,
+                          size: 20, color: Colors.orange),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          isEs ? 'Activar mantenimiento' : 'Ativar manutenção',
+                          style: const TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.w900,
+                            color: Color(0xFF07110d)),
+                        ),
+                        Text(
+                          isEs
+                              ? 'Los usuarios verán esta pantalla'
+                              : 'Os usuários verão esta tela',
+                          style: const TextStyle(
+                            fontSize: 11, color: Color(0xFF888888),
+                            fontWeight: FontWeight.w500),
+                        ),
+                      ],
+                    )),
+                  ]),
+                  const SizedBox(height: 18),
+
+                  // Label campo
+                  Text(
+                    isEs ? 'Mensaje para los usuarios' : 'Mensagem para os usuários',
+                    style: const TextStyle(
+                      fontSize: 11, fontWeight: FontWeight.w800,
+                      color: Color(0xFF888888), letterSpacing: 0.4),
+                  ),
+                  const SizedBox(height: 6),
+
+                  // Campo de texto
+                  TextField(
+                    controller: msgCtrl,
+                    maxLines: 3,
+                    maxLength: 280,
+                    autofocus: true,
+                    style: const TextStyle(
+                      fontSize: 14, fontWeight: FontWeight.w600,
+                      color: Color(0xFF07110d)),
+                    decoration: InputDecoration(
+                      hintText: isEs
+                          ? 'Ej: Sistema en mantenimiento. Volvemos pronto.'
+                          : 'Ex: Sistema em manutenção. Voltamos em breve.',
+                      hintStyle: const TextStyle(
+                        color: Color(0xFFBBBBBB), fontWeight: FontWeight.w400),
+                      filled: true,
+                      fillColor: const Color(0xFFF8F8F8),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: const BorderSide(color: Color(0xFFE0E0E0)),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: const BorderSide(color: Color(0xFFE0E0E0)),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: const BorderSide(
+                            color: Colors.orange, width: 1.5),
+                      ),
+                      contentPadding: const EdgeInsets.all(12),
+                      counterStyle: const TextStyle(
+                          fontSize: 10, color: Color(0xFFBBBBBB)),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+
+                  // Sugestões rápidas
+                  Text(
+                    isEs ? 'Sugerencias rápidas:' : 'Sugestões rápidas:',
+                    style: const TextStyle(
+                      fontSize: 10, fontWeight: FontWeight.w800,
+                      color: Color(0xFF999999), letterSpacing: 0.4),
+                  ),
+                  const SizedBox(height: 6),
+                  Wrap(
+                    spacing: 6, runSpacing: 6,
+                    children: suggestions.map((s) => GestureDetector(
+                      onTap: () => setSheetState(() {
+                        msgCtrl.text = s;
+                        msgCtrl.selection = TextSelection.fromPosition(
+                            TextPosition(offset: s.length));
+                      }),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 10, vertical: 6),
+                        decoration: BoxDecoration(
+                          color: Colors.orange.withValues(alpha: 0.08),
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(
+                              color: Colors.orange.withValues(alpha: 0.30)),
+                        ),
+                        child: Text(s,
+                          style: const TextStyle(
+                            fontSize: 11, fontWeight: FontWeight.w600,
+                            color: Color(0xFFB85C00)),
+                        ),
+                      ),
+                    )).toList(),
+                  ),
+                  const SizedBox(height: 20),
+
+                  // Botões
+                  Row(children: [
+                    // Cancelar
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: () => Navigator.pop(ctx, false),
+                        child: Container(
+                          height: 46,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(color: const Color(0xFFDDDDDD)),
+                          ),
+                          child: Center(
+                            child: Text(
+                              isEs ? 'Cancelar' : 'Cancelar',
+                              style: const TextStyle(
+                                fontSize: 14, fontWeight: FontWeight.w700,
+                                color: Color(0xFF666666)),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    // Ativar
+                    Expanded(
+                      flex: 2,
+                      child: GestureDetector(
+                        onTap: () => Navigator.pop(ctx, true),
+                        child: Container(
+                          height: 46,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(12),
+                            color: Colors.orange,
+                            boxShadow: [BoxShadow(
+                              color: Colors.orange.withValues(alpha: 0.35),
+                              blurRadius: 10, offset: const Offset(0, 4),
+                            )],
+                          ),
+                          child: Center(
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                const Icon(Icons.construction_rounded,
+                                    size: 16, color: Colors.white),
+                                const SizedBox(width: 6),
+                                Text(
+                                  isEs ? 'Activar ahora' : 'Ativar agora',
+                                  style: const TextStyle(
+                                    fontSize: 14, fontWeight: FontWeight.w900,
+                                    color: Colors.white),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ]),
+                ],
+              ),
+            ),
+          );
+        },
+      ),
+    );
+
+    if (confirmed == true && mounted) {
+      setState(() => _loading = true);
+      try {
+        await FirestoreService.setMaintenance(
+          enabled: true,
+          updatedBy: widget.admin.uid,
+          message: msgCtrl.text.trim(),
+        );
+      } catch (e) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text('Erro: $e'),
+            backgroundColor: Colors.red,
+            behavior: SnackBarBehavior.floating,
+          ));
+        }
+      } finally {
+        if (mounted) setState(() => _loading = false);
+      }
+    }
+    msgCtrl.dispose();
+  }
+
+  // ── Desativa direto, sem perguntar ────────────────────────────────────────
+  Future<void> _disable() async {
     setState(() => _loading = true);
     try {
       await FirestoreService.setMaintenance(
-        enabled: value,
+        enabled: false,
         updatedBy: widget.admin.uid,
       );
     } catch (e) {
@@ -1752,10 +2006,12 @@ class _MaintenanceToggleItemState extends State<_MaintenanceToggleItem> {
       stream: FirestoreService.maintenanceStream(),
       builder: (context, snap) {
         final isEnabled = snap.data?['enabled'] == true;
-        final isEs = widget.lang == 'es';
+        final isEs      = widget.lang == 'es';
 
         return InkWell(
-          onTap: _loading ? null : () => _toggle(!isEnabled),
+          onTap: _loading
+              ? null
+              : () => isEnabled ? _disable() : _askMessageAndEnable(),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
             child: Row(children: [
@@ -1790,22 +2046,19 @@ class _MaintenanceToggleItemState extends State<_MaintenanceToggleItem> {
                     Text(
                       isEs ? 'Mantenimiento' : 'Manutenção',
                       style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w700,
-                        color: isEnabled ? Colors.orange : widget.textCol,
-                      ),
+                        fontSize: 14, fontWeight: FontWeight.w700,
+                        color: isEnabled ? Colors.orange : widget.textCol),
                     ),
                     Text(
                       isEnabled
-                          ? (isEs ? 'Sistema fuera de línea' : 'Sistema offline agora')
-                          : (isEs ? 'Sistema en línea' : 'Sistema online'),
+                          ? (isEs ? 'Toca para desactivar' : 'Toque para desativar')
+                          : (isEs ? 'Toca para activar' : 'Toque para ativar'),
                       style: TextStyle(
                         fontSize: 11,
                         color: isEnabled
                             ? Colors.orange.withValues(alpha: 0.8)
                             : widget.subCol,
-                        fontWeight: FontWeight.w500,
-                      ),
+                        fontWeight: FontWeight.w500),
                     ),
                   ],
                 ),
@@ -1815,17 +2068,18 @@ class _MaintenanceToggleItemState extends State<_MaintenanceToggleItem> {
                   ? const SizedBox(
                       width: 22, height: 22,
                       child: CircularProgressIndicator(
-                        strokeWidth: 2.5,
-                        color: Colors.orange,
-                      ),
+                        strokeWidth: 2.5, color: Colors.orange),
                     )
                   : Switch(
                       value: isEnabled,
-                      onChanged: _toggle,
+                      onChanged: _loading
+                          ? null
+                          : (v) => v ? _askMessageAndEnable() : _disable(),
                       activeThumbColor: Colors.orange,
                       activeTrackColor: Colors.orange.withValues(alpha: 0.25),
                       inactiveThumbColor: const Color(0xFF075f45),
-                      inactiveTrackColor: const Color(0xFF075f45).withValues(alpha: 0.2),
+                      inactiveTrackColor:
+                          const Color(0xFF075f45).withValues(alpha: 0.2),
                     ),
             ]),
           ),
