@@ -22,15 +22,6 @@ self.addEventListener('activate', function(event) {
         // Remove este próprio SW após limpar tudo
         return self.registration.unregister();
       })
-      .then(function() {
-        // Força reload em todas as abas para carregar o app fresh
-        return self.clients.matchAll({ type: 'window' });
-      })
-      .then(function(clients) {
-        clients.forEach(function(client) {
-          client.navigate(client.url);
-        });
-      })
   );
 });
 
