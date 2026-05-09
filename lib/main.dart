@@ -518,20 +518,22 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
       backgroundColor: bg,
       endDrawer: _AppDrawer(p: p),
       body: Column(children: [
-        AnimatedSize(
-          duration: const Duration(milliseconds: 260),
-          curve: Curves.easeInOut,
-          child: _headerVisible
-              ? _AppHeader(
-                  onTabChange: (t) => setState(() => _tab = t),
-                  currentTab: _tab,
-                )
-              : _MiniContextBar(
-                  tab: _tab,
-                  dark: dark,
-                  onHome: () => setState(() => _tab = 0),
-                ),
-        ),
+        // Na aba IA (tab 2) esconde o header global — a tela tem seu próprio header
+        if (_tab != 2)
+          AnimatedSize(
+            duration: const Duration(milliseconds: 260),
+            curve: Curves.easeInOut,
+            child: _headerVisible
+                ? _AppHeader(
+                    onTabChange: (t) => setState(() => _tab = t),
+                    currentTab: _tab,
+                  )
+                : _MiniContextBar(
+                    tab: _tab,
+                    dark: dark,
+                    onHome: () => setState(() => _tab = 0),
+                  ),
+          ),
         Expanded(child: IndexedStack(index: stackIdx.clamp(0, mainScreens.length - 1), children: mainScreens)),
       ]),
       bottomNavigationBar: Column(
