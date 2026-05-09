@@ -17,41 +17,42 @@ import 'screens/admin_screen.dart';
 import 'screens/history_screen.dart';
 import 'widgets/brand_mark.dart';
 
-// Future global preenchido dentro do main() após ensureInitialized
+// Future global — já resolvido quando runApp() é chamado
+// Mantido para compatibilidade com _AuthGate FutureBuilder
 late final Future<void> _firebaseInit;
 
 void main() async {
-  // Captura erros silenciosos do Flutter antes de qualquer coisa
   FlutterError.onError = (FlutterErrorDetails details) {
     FlutterError.dumpErrorToConsole(details);
   };
 
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Suspeito 2: Firebase pode lançar UnsupportedError se web não configurada
-  // Envolvemos em try/catch para não matar o boot
+  // Firebase DEVE ser inicializado com await ANTES do runApp()
+  // Sem isso, qualquer uso de Auth/Firestore explode com [core/no-app]
+  // mesmo dentro de FutureBuilder — porque streams internos disparam cedo
   try {
-    _firebaseInit = Firebase.initializeApp(
+    await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
+    // Já concluído — Future.value() resolve imediatamente no FutureBuilder
+    _firebaseInit = Future.value();
   } catch (e) {
-    // Firebase falhou na configuração — criamos um Future já completo com erro
-    // _AuthGate vai tratar hasError e redirecionar para LoginScreen
+    // Falha real de configuração (ex: firebase_options errado)
+    // _AuthGate mostra LoginScreen graciosamente
+    debugPrint('[MedCases] Firebase.initializeApp falhou: $e');
     _firebaseInit = Future.error(e);
   }
 
   final provider = AppProvider();
 
-  // Suspeito 1: SharedPreferences falha em abas anônimas (localStorage bloqueado)
-  // Sem try/catch aqui → app morre antes do runApp. Com try/catch → abre normalmente.
+  // SharedPreferences falha em abas anônimas (localStorage bloqueado)
   try {
     await provider.loadPrefs();
   } catch (e) {
-    // Aba anônima ou localStorage bloqueado — continua com preferências padrão
     debugPrint('[MedCases] SharedPreferences indisponível: $e');
   }
 
-  // runApp() imediato — Flutter renderiza splash enquanto Firebase sobe
   runApp(
     ChangeNotifierProvider.value(
       value: provider,
