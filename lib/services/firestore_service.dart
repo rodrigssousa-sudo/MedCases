@@ -152,9 +152,14 @@ class FirestoreService {
   static Future<void> saveHistory(String uid, ClinicalHistoryModel h) async {
     try {
       await _userHistories(uid).doc(h.id).set(h.toJson());
-      // Se público, espelha na coleção global
+      // Se público, espelha na coleção global com uploadedAt
       if (h.isPublic) {
-        await _publicHistories.doc(h.id).set(h.toJson());
+        final publicData = h.toJson();
+        // Só atualiza uploadedAt se ainda não tem (primeira publicação)
+        if (h.uploadedAt.isEmpty) {
+          publicData['uploadedAt'] = DateTime.now().toIso8601String();
+        }
+        await _publicHistories.doc(h.id).set(publicData);
       } else {
         // Remove do público se deixou de ser público
         try { await _publicHistories.doc(h.id).delete(); } catch (_) {}

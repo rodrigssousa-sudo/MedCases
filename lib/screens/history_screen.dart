@@ -1,9 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
+import 'dart:ui' as ui;
+// ignore: avoid_web_libraries_in_flutter
+import 'dart:html' as html;
 import '../providers/app_provider.dart';
 import '../models/clinical_history_model.dart';
 import '../widgets/common_widgets.dart';
+
+// Helper global — formata ISO para 'dd/mm/yyyy às hh:mm'
+String _formatUploadedAt(String iso) {
+  try {
+    final dt = DateTime.parse(iso).toLocal();
+    final d = dt.day.toString().padLeft(2, '0');
+    final m = dt.month.toString().padLeft(2, '0');
+    final h = dt.hour.toString().padLeft(2, '0');
+    final min = dt.minute.toString().padLeft(2, '0');
+    return 'Publicado $d/$m/${dt.year} \u00e0s $h:$min';
+  } catch (_) {
+    return '';
+  }
+}
 
 class HistoryScreen extends StatefulWidget {
   const HistoryScreen({super.key});
@@ -105,7 +123,8 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
               onTap: () {
                 final uid = p.currentUser?.uid ?? 'local';
                 final name = p.currentUser?.displayName ?? p.currentUser?.email ?? 'Anônimo';
-                setState(() => _editing = ClinicalHistoryModel.blank(authorUid: uid, authorName: name));
+                final email = p.currentUser?.email ?? '';
+                setState(() => _editing = ClinicalHistoryModel.blank(authorUid: uid, authorName: name, authorEmail: email));
               },
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
@@ -169,7 +188,8 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
               ? _EmptyHistoryState(onNew: () {
                   final uid = p.currentUser?.uid ?? 'local';
                   final name = p.currentUser?.displayName ?? p.currentUser?.email ?? 'Anônimo';
-                  setState(() => _editing = ClinicalHistoryModel.blank(authorUid: uid, authorName: name));
+                  final email = p.currentUser?.email ?? '';
+                  setState(() => _editing = ClinicalHistoryModel.blank(authorUid: uid, authorName: name, authorEmail: email));
                 })
               : ListView.builder(
                   padding: const EdgeInsets.fromLTRB(16, 8, 16, 100),
@@ -371,9 +391,17 @@ class _HistoryCard extends StatelessWidget {
               Row(children: [
                 Icon(Icons.person_outline_rounded, size: 12, color: Colors.grey[400]),
                 const SizedBox(width: 4),
-                Text(h.authorName.isNotEmpty ? h.authorName : 'Anônimo',
-                  style: const TextStyle(fontSize: 10, color: Color(0xFF888888), fontWeight: FontWeight.w600)),
-                const Spacer(),
+                Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  Text(h.authorName.isNotEmpty ? h.authorName : 'Anônimo',
+                    style: const TextStyle(fontSize: 10, color: Color(0xFF333333), fontWeight: FontWeight.w700)),
+                  if (h.authorEmail.isNotEmpty)
+                    Text(h.authorEmail,
+                      style: const TextStyle(fontSize: 9, color: Color(0xFF888888), fontWeight: FontWeight.w500)),
+                  if (h.uploadedAt.isNotEmpty)
+                    Text(_formatUploadedAt(h.uploadedAt),
+                      style: const TextStyle(fontSize: 9, color: Color(0xFF888888), fontWeight: FontWeight.w500)),
+                ])),
+                const SizedBox(width: 8),
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                   decoration: BoxDecoration(color: kDark, borderRadius: BorderRadius.circular(10)),
@@ -391,7 +419,7 @@ class _HistoryCard extends StatelessWidget {
 // ─────────────────────────────────────────────────────────────────────────────
 // VISUALIZADOR COMPLETO
 // ─────────────────────────────────────────────────────────────────────────────
-class _HistoryDetail extends StatelessWidget {
+class _HistoryDetail extends StatefulWidget {
   final ClinicalHistoryModel history;
   final AppProvider p;
   final bool readOnly;
@@ -400,10 +428,23 @@ class _HistoryDetail extends StatelessWidget {
   final VoidCallback? onDelete;
   const _HistoryDetail({required this.history, required this.p, required this.readOnly, required this.onBack, this.onEdit, this.onDelete});
 
-  void _copy(BuildContext context) {
+  @override
+  State<_HistoryDetail> createState() => _HistoryDetailState();
+}
+
+class _HistoryDetailState extends State<_HistoryDetail> {
+  final _printKey = GlobalKey();
+  bool _exporting = false;
+
+  ClinicalHistoryModel get history => widget.history;
+  AppProvider get p => widget.p;
+  bool get readOnly => widget.readOnly;
+
+  void _copy() {
     final buf = StringBuffer();
     buf.writeln('=== MEDCASES PRO — HISTÓRIA CLÍNICA ===');
     buf.writeln('Data: ${history.formattedDate}');
+    if (history.authorName.isNotEmpty) buf.writeln('Autor: ${history.authorName}${history.authorEmail.isNotEmpty ? " (${history.authorEmail})" : ""}');
     if (history.patientInitials.isNotEmpty) buf.writeln('Paciente: ${history.patientInitials} • ${history.patientAge} anos • ${history.patientSex}');
     if (history.chiefComplaint.isNotEmpty) buf.writeln('\nQUEIXA PRINCIPAL:\n${history.chiefComplaint}');
     if (history.hpi.isNotEmpty) buf.writeln('\nHISTÓRIA DA DOENÇA ATUAL:\n${history.hpi}');
@@ -428,6 +469,166 @@ class _HistoryDetail extends StatelessWidget {
     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('História copiada'), duration: Duration(seconds: 1)));
   }
 
+  // ── Exportar como PNG (web: download direto) ──────────────────────────────
+  Future<void> _exportPng() async {
+    setState(() => _exporting = true);
+    try {
+      final boundary = _printKey.currentContext?.findRenderObject() as RenderRepaintBoundary?;
+      if (boundary == null) return;
+      final image = await boundary.toImage(pixelRatio: 2.5);
+      final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+      if (byteData == null) return;
+      final bytes = byteData.buffer.asUint8List();
+      _downloadBytes(bytes, '${_safeFilename()}.png', 'image/png');
+      if (mounted) ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('PNG gerado — verifique seus downloads'), duration: Duration(seconds: 2)));
+    } catch (e) {
+      if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Erro ao exportar PNG: $e')));
+    } finally {
+      if (mounted) setState(() => _exporting = false);
+    }
+  }
+
+  // ── Exportar como PDF (web: janela de impressão) ──────────────────────────
+  void _exportPdf() {
+    final buf = StringBuffer();
+    buf.write('''<!DOCTYPE html><html><head>
+<meta charset="utf-8">
+<title>História Clínica — MedCases Pro</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: Georgia, serif; font-size: 13px; color: #111; background: #fff; padding: 40px; line-height: 1.6; }
+  .header { background: #07110d; color: #FFE8A6; padding: 20px 24px; border-radius: 10px; margin-bottom: 24px; }
+  .header h1 { font-size: 22px; font-weight: 900; margin-bottom: 4px; }
+  .header .meta { font-size: 11px; opacity: 0.75; }
+  .section { margin-bottom: 18px; border: 1px solid #ddd; border-radius: 8px; padding: 14px 16px; }
+  .section-title { font-size: 10px; font-weight: 900; letter-spacing: 1.5px; color: #555; text-transform: uppercase; margin-bottom: 8px; border-bottom: 1px solid #eee; padding-bottom: 6px; }
+  .field-label { font-size: 9px; font-weight: 700; color: #888; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 2px; margin-top: 10px; }
+  .field-value { font-size: 13px; color: #222; line-height: 1.6; }
+  .dx-box { background: #ECFDF5; border: 1px solid #BBF7D0; border-radius: 8px; padding: 12px 14px; margin-bottom: 18px; }
+  .dx-box h2 { font-size: 10px; font-weight: 900; color: #065F46; letter-spacing: 1.2px; margin-bottom: 4px; }
+  .dx-box p { font-size: 16px; font-weight: 900; color: #064E3B; }
+  .allergy-box { background: #FFF0F0; border: 1px solid #FFCCCC; border-radius: 8px; padding: 10px 12px; margin-top: 8px; }
+  .allergy-box .label { color: #CC2222; font-size: 9px; font-weight: 900; letter-spacing: 1px; }
+  .allergy-box p { color: #CC2222; font-weight: 700; }
+  .author-row { font-size: 11px; color: #555; margin-top: 6px; }
+  .evolution { border-left: 3px solid #C5A365; padding-left: 10px; margin-bottom: 12px; }
+  .evolution .evo-meta { font-size: 10px; color: #888; font-weight: 700; }
+  .outcome { display: inline-block; padding: 5px 12px; border-radius: 6px; font-size: 12px; font-weight: 900; background: #ECFDF5; color: #065F46; margin-bottom: 10px; }
+  .footer { margin-top: 30px; font-size: 10px; color: #aaa; text-align: center; border-top: 1px solid #eee; padding-top: 12px; }
+  @media print { body { padding: 20px; } }
+</style>
+</head><body>
+<div class="header">
+  <div class="meta">MedCases Pro • História Clínica</div>
+  <h1>${_esc(history.displayTitle)}</h1>
+  <div class="meta">${history.category} &nbsp;|&nbsp; ${history.formattedDate}</div>
+  ${history.authorName.isNotEmpty ? '<div class="meta" style="margin-top:4px">Autor: ${_esc(history.authorName)}${history.authorEmail.isNotEmpty ? " &lt;${_esc(history.authorEmail)}&gt;" : ""}${history.uploadedAt.isNotEmpty ? " — Publicado: ${_formatUploadedAt(history.uploadedAt)}" : ""}</div>' : ''}
+</div>
+''');
+
+    if (history.finalDiagnosis.isNotEmpty || history.workingDiagnosis.isNotEmpty) {
+      final dx = history.finalDiagnosis.isNotEmpty ? history.finalDiagnosis : history.workingDiagnosis;
+      final label = history.finalDiagnosis.isNotEmpty ? 'DIAGNÓSTICO FINAL' : 'HIPÓTESE DIAGNÓSTICA';
+      buf.write('<div class="dx-box"><h2>$label</h2><p>${_esc(dx)}</p>');
+      if (history.cid.isNotEmpty) buf.write('<div style="font-size:11px;color:#065F46;margin-top:4px">CID: ${_esc(history.cid)}</div>');
+      if (history.differentialDx.isNotEmpty) buf.write('<div style="font-size:11px;color:#555;margin-top:6px">DD: ${_esc(history.differentialDx)}</div>');
+      buf.write('</div>');
+    }
+
+    void section(String title, List<(String, String)> fields, {String? allergyText}) {
+      final hasContent = fields.any((f) => f.$2.isNotEmpty) || (allergyText?.isNotEmpty ?? false);
+      if (!hasContent) return;
+      buf.write('<div class="section"><div class="section-title">$title</div>');
+      for (final f in fields) {
+        if (f.$2.isEmpty) continue;
+        buf.write('<div class="field-label">${f.$1}</div><div class="field-value">${_escNl(f.$2)}</div>');
+      }
+      if (allergyText != null && allergyText.isNotEmpty) {
+        buf.write('<div class="allergy-box"><div class="label">⚠ ALERGIAS</div><p>${_esc(allergyText)}</p></div>');
+      }
+      buf.write('</div>');
+    }
+
+    // Paciente
+    if (history.patientInitials.isNotEmpty || history.patientAge.isNotEmpty) {
+      buf.write('<div class="section"><div class="section-title">Identificação do Paciente</div>');
+      if (history.patientInitials.isNotEmpty) buf.write('<div class="field-label">Iniciais</div><div class="field-value">${_esc(history.patientInitials)}</div>');
+      buf.write('<div class="field-label">Dados</div><div class="field-value">${history.patientAge.isNotEmpty ? "${history.patientAge} anos" : ""} • ${history.patientSex}${history.patientWeight.isNotEmpty ? " • ${history.patientWeight} kg" : ""}${history.patientRecord.isNotEmpty ? " • Pront. ${history.patientRecord}" : ""}</div>');
+      buf.write('</div>');
+    }
+
+    section('Anamnese', [
+      ('Queixa principal', history.chiefComplaint),
+      ('História da doença atual', history.hpi),
+      ('Antecedentes pessoais', history.pastHistory),
+      ('Antecedentes familiares', history.familyHistory),
+      ('História social', history.socialHistory),
+      ('Medicamentos em uso', history.medications),
+      ('Revisão de sistemas', history.reviewOfSystems),
+    ], allergyText: history.allergies);
+
+    section('Exame Físico', [
+      ('Sinais vitais', history.vitalSigns),
+      ('Exame físico por sistemas', history.physicalExam),
+    ]);
+
+    section('Exames', [
+      ('Exames laboratoriais', history.labResults),
+      ('Exames de imagem', history.imagingResults),
+      ('Outros (ECG, biópsia...)', history.otherResults),
+    ]);
+
+    section('Conduta e Tratamento', [
+      ('Plano terapêutico', history.treatmentPlan),
+      ('Procedimentos realizados', history.procedures),
+    ]);
+
+    if (history.evolutions.isNotEmpty) {
+      buf.write('<div class="section"><div class="section-title">Evolução Clínica</div>');
+      for (final e in history.evolutions) {
+        final dt = DateTime.tryParse(e.date)?.toLocal();
+        final ds = dt != null ? '${dt.day.toString().padLeft(2,'0')}/${dt.month.toString().padLeft(2,'0')} ${dt.hour.toString().padLeft(2,'0')}:${dt.minute.toString().padLeft(2,'0')}' : '';
+        final typeMap = {'evolution': 'Evolução', 'nursing': 'Enfermagem', 'lab': 'Lab', 'imaging': 'Imagem', 'procedure': 'Procedimento'};
+        buf.write('<div class="evolution"><div class="evo-meta">${typeMap[e.type] ?? 'Evolução'} — $ds${e.author.isNotEmpty ? " — ${_esc(e.author)}" : ""}</div><div class="field-value" style="margin-top:4px">${_escNl(e.text)}</div></div>');
+      }
+      buf.write('</div>');
+    }
+
+    if (history.outcome != 'internado' || history.dischargeCondition.isNotEmpty || history.followUp.isNotEmpty) {
+      final outcomeMap = {'alta': 'Alta hospitalar', 'obito': 'Óbito', 'transferencia': 'Transferência'};
+      buf.write('<div class="section"><div class="section-title">Desfecho e Alta</div>');
+      if (history.outcome != 'internado') buf.write('<div class="outcome">${outcomeMap[history.outcome] ?? history.outcome}</div>');
+      if (history.dischargeCondition.isNotEmpty) buf.write('<div class="field-label">Condições de alta</div><div class="field-value">${_escNl(history.dischargeCondition)}</div>');
+      if (history.followUp.isNotEmpty) buf.write('<div class="field-label">Seguimento</div><div class="field-value">${_escNl(history.followUp)}</div>');
+      buf.write('</div>');
+    }
+
+    buf.write('''<div class="footer">Gerado por MedCases Pro — Uso educacional e de apoio clínico. Não substitui avaliação médica individual.</div>
+</body></html>''');
+
+    // Abre janela de impressão (PDF via browser)
+    final blob = html.Blob([buf.toString()], 'text/html');
+    final url = html.Url.createObjectUrlFromBlob(blob);
+    html.window.open(url, '_blank');
+    // O usuário usa Ctrl+P / Imprimir do browser para gerar o PDF
+    Future.delayed(const Duration(milliseconds: 1500), () {
+      html.Url.revokeObjectUrl(url);
+    });
+  }
+
+  String _esc(String s) => s.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;');
+  String _escNl(String s) => _esc(s).replaceAll('\n', '<br>');
+  String _safeFilename() => 'HC_${history.displayTitle.replaceAll(RegExp(r'[^a-zA-Z0-9\u00C0-\u024F ]'), '').trim().replaceAll(' ', '_').substring(0, history.displayTitle.length.clamp(0, 30))}_${history.formattedDate.replaceAll('/', '-')}';
+
+  void _downloadBytes(Uint8List bytes, String filename, String mime) {
+    final blob = html.Blob([bytes], mime);
+    final url = html.Url.createObjectUrlFromBlob(blob);
+    html.AnchorElement(href: url)
+      ..setAttribute('download', filename)
+      ..click();
+    html.Url.revokeObjectUrl(url);
+  }
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -435,7 +636,7 @@ class _HistoryDetail extends StatelessWidget {
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         // Botão voltar
         GestureDetector(
-          onTap: onBack,
+          onTap: widget.onBack,
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 11),
             decoration: BoxDecoration(borderRadius: BorderRadius.circular(14), border: Border.all(color: kBorder), color: Colors.white),
@@ -448,105 +649,161 @@ class _HistoryDetail extends StatelessWidget {
         ),
         const SizedBox(height: 12),
 
-        // Header hero
-        PremiumCard(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Row(children: [
-            Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text(history.category.toUpperCase(), style: const TextStyle(fontSize: 8, fontWeight: FontWeight.w900, color: Color(0xBFFFE8A6), letterSpacing: 2)),
-              const SizedBox(height: 4),
-              Text(history.displayTitle, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w900, color: Colors.white, height: 1.2)),
-            ])),
-            if (!readOnly && onEdit != null)
-              GestureDetector(
-                onTap: onEdit,
-                child: Container(padding: const EdgeInsets.all(8), decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: Colors.white.withValues(alpha: 0.1)), child: const Icon(Icons.edit_rounded, size: 18, color: Color(0xFFFFE8A6))),
-              ),
-          ]),
-          if (history.patientInitials.isNotEmpty || history.patientAge.isNotEmpty) ...[
-            const SizedBox(height: 12),
-            Wrap(spacing: 8, runSpacing: 6, children: [
-              if (history.patientInitials.isNotEmpty) _MetaChip(history.patientInitials),
-              if (history.patientAge.isNotEmpty) _MetaChip('${history.patientAge} anos'),
-              _MetaChip(history.patientSex),
-              if (history.patientWeight.isNotEmpty) _MetaChip('${history.patientWeight} kg'),
-              if (history.patientRecord.isNotEmpty) _MetaChip('Pront. ${history.patientRecord}'),
+        // Tudo que será capturado como PNG
+        RepaintBoundary(
+          key: _printKey,
+          child: Container(
+            color: const Color(0xFFF8F5EF),
+            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+
+              // Header hero
+              PremiumCard(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Row(children: [
+                  Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                    Text(history.category.toUpperCase(), style: const TextStyle(fontSize: 8, fontWeight: FontWeight.w900, color: Color(0xBFFFE8A6), letterSpacing: 2)),
+                    const SizedBox(height: 4),
+                    Text(history.displayTitle, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w900, color: Colors.white, height: 1.2)),
+                  ])),
+                  if (!readOnly && widget.onEdit != null)
+                    GestureDetector(
+                      onTap: widget.onEdit,
+                      child: Container(padding: const EdgeInsets.all(8), decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: Colors.white.withValues(alpha: 0.1)), child: const Icon(Icons.edit_rounded, size: 18, color: Color(0xFFFFE8A6))),
+                    ),
+                ]),
+                // Linha do autor
+                if (history.authorName.isNotEmpty) ...[
+                  const SizedBox(height: 8),
+                  Row(children: [
+                    Icon(Icons.person_outline_rounded, size: 11, color: Colors.white.withValues(alpha: 0.55)),
+                    const SizedBox(width: 5),
+                    Expanded(child: Text(
+                      '${history.authorName}${history.authorEmail.isNotEmpty ? " • ${history.authorEmail}" : ""}${history.uploadedAt.isNotEmpty ? " • ${_formatUploadedAt(history.uploadedAt)}" : ""}',
+                      style: TextStyle(fontSize: 10, color: Colors.white.withValues(alpha: 0.65), fontWeight: FontWeight.w600),
+                      overflow: TextOverflow.ellipsis,
+                    )),
+                  ]),
+                ],
+                if (history.patientInitials.isNotEmpty || history.patientAge.isNotEmpty) ...[
+                  const SizedBox(height: 10),
+                  Wrap(spacing: 8, runSpacing: 6, children: [
+                    if (history.patientInitials.isNotEmpty) _MetaChip(history.patientInitials),
+                    if (history.patientAge.isNotEmpty) _MetaChip('${history.patientAge} anos'),
+                    _MetaChip(history.patientSex),
+                    if (history.patientWeight.isNotEmpty) _MetaChip('${history.patientWeight} kg'),
+                    if (history.patientRecord.isNotEmpty) _MetaChip('Pront. ${history.patientRecord}'),
+                  ]),
+                ],
+                if (history.tags.isNotEmpty) ...[
+                  const SizedBox(height: 8),
+                  Text(history.tags, style: TextStyle(fontSize: 10, color: Colors.white.withValues(alpha: 0.55), fontWeight: FontWeight.w600)),
+                ],
+              ])),
+              const SizedBox(height: 12),
+
+              // Diagnóstico em destaque
+              if (history.finalDiagnosis.isNotEmpty || history.workingDiagnosis.isNotEmpty)
+                _DxBanner(final_: history.finalDiagnosis, working: history.workingDiagnosis, cid: history.cid, differential: history.differentialDx),
+              if (history.finalDiagnosis.isNotEmpty || history.workingDiagnosis.isNotEmpty) const SizedBox(height: 12),
+
+              // Seções em cards
+              _DetailCard(icon: Icons.record_voice_over_rounded, title: 'ANAMNESE', children: [
+                if (history.chiefComplaint.isNotEmpty) _SectionBlock('Queixa principal', history.chiefComplaint),
+                if (history.hpi.isNotEmpty) _SectionBlock('História da doença atual', history.hpi),
+                if (history.pastHistory.isNotEmpty) _SectionBlock('Antecedentes pessoais', history.pastHistory),
+                if (history.familyHistory.isNotEmpty) _SectionBlock('Antecedentes familiares', history.familyHistory),
+                if (history.socialHistory.isNotEmpty) _SectionBlock('História social', history.socialHistory),
+                if (history.medications.isNotEmpty) _SectionBlock('Medicamentos em uso', history.medications),
+                if (history.allergies.isNotEmpty) _AllergyBanner(history.allergies),
+                if (history.reviewOfSystems.isNotEmpty) _SectionBlock('Revisão de sistemas', history.reviewOfSystems),
+              ]),
+              const SizedBox(height: 10),
+
+              _DetailCard(icon: Icons.monitor_heart_rounded, title: 'EXAME FÍSICO', children: [
+                if (history.vitalSigns.isNotEmpty) _SectionBlock('Sinais vitais', history.vitalSigns),
+                if (history.physicalExam.isNotEmpty) _SectionBlock('Exame físico', history.physicalExam),
+              ]),
+              const SizedBox(height: 10),
+
+              _DetailCard(icon: Icons.science_rounded, title: 'EXAMES', children: [
+                if (history.labResults.isNotEmpty) _SectionBlock('Laboratório', history.labResults),
+                if (history.imagingResults.isNotEmpty) _SectionBlock('Imagem', history.imagingResults),
+                if (history.otherResults.isNotEmpty) _SectionBlock('Outros (ECG, biopsia...)', history.otherResults),
+              ]),
+              const SizedBox(height: 10),
+
+              _DetailCard(icon: Icons.medical_services_rounded, title: 'CONDUTA E TRATAMENTO', children: [
+                if (history.treatmentPlan.isNotEmpty) _SectionBlock('Plano terapêutico', history.treatmentPlan),
+                if (history.procedures.isNotEmpty) _SectionBlock('Procedimentos', history.procedures),
+                if (history.drugIds.isNotEmpty) _DrugChips(history.drugIds, p),
+              ]),
+              const SizedBox(height: 10),
+
+              // Evoluções
+              if (history.evolutions.isNotEmpty) ...[
+                _EvolutionSection(evolutions: history.evolutions),
+                const SizedBox(height: 10),
+              ],
+
+              // Desfecho
+              if (history.outcome != 'internado' || history.dischargeCondition.isNotEmpty || history.followUp.isNotEmpty)
+                _DetailCard(icon: Icons.flag_rounded, title: 'DESFECHO E ALTA', children: [
+                  _OutcomeBadge(history.outcome),
+                  if (history.dischargeCondition.isNotEmpty) _SectionBlock('Condições de alta', history.dischargeCondition),
+                  if (history.followUp.isNotEmpty) _SectionBlock('Seguimento', history.followUp),
+                ]),
+              const SizedBox(height: 10),
             ]),
-          ],
-          if (history.tags.isNotEmpty) ...[
-            const SizedBox(height: 8),
-            Text(history.tags, style: TextStyle(fontSize: 10, color: Colors.white.withValues(alpha: 0.55), fontWeight: FontWeight.w600)),
-          ],
-        ])),
+          ),
+        ),
+
         const SizedBox(height: 12),
 
-        // Diagnóstico em destaque
-        if (history.finalDiagnosis.isNotEmpty || history.workingDiagnosis.isNotEmpty)
-          _DxBanner(final_: history.finalDiagnosis, working: history.workingDiagnosis, cid: history.cid, differential: history.differentialDx),
-        if (history.finalDiagnosis.isNotEmpty || history.workingDiagnosis.isNotEmpty) const SizedBox(height: 12),
-
-        // Seções em cards
-        _DetailCard(icon: Icons.record_voice_over_rounded, title: 'ANAMNESE', children: [
-          if (history.chiefComplaint.isNotEmpty) _SectionBlock('Queixa principal', history.chiefComplaint),
-          if (history.hpi.isNotEmpty) _SectionBlock('História da doença atual', history.hpi),
-          if (history.pastHistory.isNotEmpty) _SectionBlock('Antecedentes pessoais', history.pastHistory),
-          if (history.familyHistory.isNotEmpty) _SectionBlock('Antecedentes familiares', history.familyHistory),
-          if (history.socialHistory.isNotEmpty) _SectionBlock('História social', history.socialHistory),
-          if (history.medications.isNotEmpty) _SectionBlock('Medicamentos em uso', history.medications),
-          if (history.allergies.isNotEmpty) _AllergyBanner(history.allergies),
-          if (history.reviewOfSystems.isNotEmpty) _SectionBlock('Revisão de sistemas', history.reviewOfSystems),
-        ]),
-        const SizedBox(height: 10),
-
-        _DetailCard(icon: Icons.monitor_heart_rounded, title: 'EXAME FÍSICO', children: [
-          if (history.vitalSigns.isNotEmpty) _SectionBlock('Sinais vitais', history.vitalSigns),
-          if (history.physicalExam.isNotEmpty) _SectionBlock('Exame físico', history.physicalExam),
-        ]),
-        const SizedBox(height: 10),
-
-        _DetailCard(icon: Icons.science_rounded, title: 'EXAMES', children: [
-          if (history.labResults.isNotEmpty) _SectionBlock('Laboratório', history.labResults),
-          if (history.imagingResults.isNotEmpty) _SectionBlock('Imagem', history.imagingResults),
-          if (history.otherResults.isNotEmpty) _SectionBlock('Outros (ECG, biopsia...)', history.otherResults),
-        ]),
-        const SizedBox(height: 10),
-
-        _DetailCard(icon: Icons.medical_services_rounded, title: 'CONDUTA E TRATAMENTO', children: [
-          if (history.treatmentPlan.isNotEmpty) _SectionBlock('Plano terapêutico', history.treatmentPlan),
-          if (history.procedures.isNotEmpty) _SectionBlock('Procedimentos', history.procedures),
-          if (history.drugIds.isNotEmpty) _DrugChips(history.drugIds, p),
-        ]),
-        const SizedBox(height: 10),
-
-        // Evoluções
-        if (history.evolutions.isNotEmpty) ...[
-          _EvolutionSection(evolutions: history.evolutions),
-          const SizedBox(height: 10),
-        ],
-
-        // Desfecho
-        if (history.outcome != 'internado' || history.dischargeCondition.isNotEmpty || history.followUp.isNotEmpty)
-          _DetailCard(icon: Icons.flag_rounded, title: 'DESFECHO E ALTA', children: [
-            _OutcomeBadge(history.outcome),
-            if (history.dischargeCondition.isNotEmpty) _SectionBlock('Condições de alta', history.dischargeCondition),
-            if (history.followUp.isNotEmpty) _SectionBlock('Seguimento', history.followUp),
-          ]),
-        const SizedBox(height: 10),
-
-        // Ações
+        // ── Ações ────────────────────────────────────────────────────────────
         Row(children: [
+          // Copiar HC
           Expanded(child: GestureDetector(
-            onTap: () => _copy(context),
+            onTap: _copy,
             child: Container(height: 48, decoration: BoxDecoration(borderRadius: BorderRadius.circular(14), color: kDark, boxShadow: [BoxShadow(color: kDark.withValues(alpha: 0.25), blurRadius: 10, offset: const Offset(0,4))]),
               child: const Center(child: Text('Copiar HC', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w900, color: kGoldLight)))),
           )),
-          if (!readOnly && onDelete != null) ...[
-            const SizedBox(width: 10),
+          const SizedBox(width: 8),
+          // PDF
+          GestureDetector(
+            onTap: _exportPdf,
+            child: Container(
+              height: 48, width: 48,
+              decoration: BoxDecoration(borderRadius: BorderRadius.circular(14), color: const Color(0xFF1E40AF), boxShadow: [BoxShadow(color: const Color(0xFF1E40AF).withValues(alpha: 0.3), blurRadius: 8, offset: const Offset(0,3))]),
+              child: const Center(child: Icon(Icons.picture_as_pdf_rounded, size: 20, color: Colors.white)),
+            ),
+          ),
+          const SizedBox(width: 8),
+          // PNG
+          GestureDetector(
+            onTap: _exporting ? null : _exportPng,
+            child: Container(
+              height: 48, width: 48,
+              decoration: BoxDecoration(borderRadius: BorderRadius.circular(14), color: const Color(0xFF065F46), boxShadow: [BoxShadow(color: const Color(0xFF065F46).withValues(alpha: 0.3), blurRadius: 8, offset: const Offset(0,3))]),
+              child: Center(child: _exporting
+                ? const SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
+                : const Icon(Icons.image_rounded, size: 20, color: Colors.white)),
+            ),
+          ),
+          if (!readOnly && widget.onDelete != null) ...[
+            const SizedBox(width: 8),
             GestureDetector(
-              onTap: onDelete,
+              onTap: widget.onDelete,
               child: Container(height: 48, width: 48, decoration: BoxDecoration(borderRadius: BorderRadius.circular(14), border: Border.all(color: const Color(0xFFFFCCCC)), color: const Color(0xFFFFF0F0)),
                 child: const Center(child: Icon(Icons.delete_rounded, size: 18, color: Color(0xFFCC2222)))),
             ),
           ],
+        ]),
+
+        // Legenda dos botões de exportação
+        const SizedBox(height: 8),
+        Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+          Icon(Icons.info_outline_rounded, size: 11, color: Colors.grey[400]),
+          const SizedBox(width: 4),
+          Text('PDF abre janela de impressão  •  PNG salva imagem da HC', style: TextStyle(fontSize: 10, color: Colors.grey[400], fontWeight: FontWeight.w500)),
         ]),
       ]),
     );

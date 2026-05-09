@@ -51,6 +51,8 @@ class ClinicalHistoryModel {
   final String updatedAt;
   final String authorUid;      // uid do criador
   final String authorName;     // nome exibível
+  final String authorEmail;    // e-mail do criador
+  final String uploadedAt;     // timestamp de quando foi publicado
   final bool isPublic;         // compartilhado com todos
 
   // ── Identificação do paciente ───────────────────────────────────────────
@@ -109,6 +111,8 @@ class ClinicalHistoryModel {
     required this.updatedAt,
     required this.authorUid,
     this.authorName = '',
+    this.authorEmail = '',
+    this.uploadedAt = '',
     this.isPublic = false,
     this.patientInitials = '',
     this.patientAge = '',
@@ -144,7 +148,7 @@ class ClinicalHistoryModel {
     this.tags = '',
   });
 
-  factory ClinicalHistoryModel.blank({required String authorUid, String authorName = ''}) {
+  factory ClinicalHistoryModel.blank({required String authorUid, String authorName = '', String authorEmail = ''}) {
     final now = DateTime.now().toIso8601String();
     return ClinicalHistoryModel(
       id: 'hc_${DateTime.now().millisecondsSinceEpoch}',
@@ -152,12 +156,13 @@ class ClinicalHistoryModel {
       updatedAt: now,
       authorUid: authorUid,
       authorName: authorName,
+      authorEmail: authorEmail,
     );
   }
 
   ClinicalHistoryModel copyWith({
     String? id, String? createdAt, String? updatedAt, String? authorUid,
-    String? authorName, bool? isPublic,
+    String? authorName, String? authorEmail, String? uploadedAt, bool? isPublic,
     String? patientInitials, String? patientAge, String? patientSex,
     String? patientWeight, String? patientHeight, String? patientRecord,
     String? chiefComplaint, String? hpi, String? pastHistory,
@@ -177,6 +182,8 @@ class ClinicalHistoryModel {
       updatedAt: updatedAt ?? DateTime.now().toIso8601String(),
       authorUid: authorUid ?? this.authorUid,
       authorName: authorName ?? this.authorName,
+      authorEmail: authorEmail ?? this.authorEmail,
+      uploadedAt: uploadedAt ?? this.uploadedAt,
       isPublic: isPublic ?? this.isPublic,
       patientInitials: patientInitials ?? this.patientInitials,
       patientAge: patientAge ?? this.patientAge,
@@ -215,7 +222,9 @@ class ClinicalHistoryModel {
 
   Map<String, dynamic> toJson() => {
     'id': id, 'createdAt': createdAt, 'updatedAt': updatedAt,
-    'authorUid': authorUid, 'authorName': authorName, 'isPublic': isPublic,
+    'authorUid': authorUid, 'authorName': authorName,
+    'authorEmail': authorEmail, 'uploadedAt': uploadedAt,
+    'isPublic': isPublic,
     'patientInitials': patientInitials, 'patientAge': patientAge,
     'patientSex': patientSex, 'patientWeight': patientWeight,
     'patientHeight': patientHeight, 'patientRecord': patientRecord,
@@ -243,6 +252,8 @@ class ClinicalHistoryModel {
       updatedAt: j['updatedAt'] ?? DateTime.now().toIso8601String(),
       authorUid: j['authorUid'] ?? '',
       authorName: j['authorName'] ?? '',
+      authorEmail: j['authorEmail'] ?? '',
+      uploadedAt: j['uploadedAt'] ?? '',
       isPublic: j['isPublic'] ?? false,
       patientInitials: j['patientInitials'] ?? '',
       patientAge: j['patientAge'] ?? '',

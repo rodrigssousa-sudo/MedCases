@@ -10,6 +10,7 @@ import '../data/drugs_database.dart';
 import '../data/protocols_database.dart';
 import '../data/cases_database.dart';
 import '../services/firestore_service.dart';
+import '../services/drug_interaction_service.dart';
 
 class DoseInfo {
   final String main;
@@ -297,125 +298,19 @@ class AppProvider extends ChangeNotifier {
     );
   }
 
-  List<String> get interactionRisks {
-    final ids = _selectedDrugIds.toSet();
-    final risks = <String>[];
-    bool has(String a, String b) => ids.contains(a) && ids.contains(b);
-    bool hasAny(List<String> a, List<String> b) => a.any((x) => ids.contains(x)) && b.any((y) => ids.contains(y));
-
-    final pt = _lang == 'pt';
-
-    // ── Antiagregante + anticoagulante ──────────────────────────
-    if (hasAny(['aas', 'clopidogrel'], ['rivaroxabana', 'apixabana', 'enoxaparina', 'heparina_nf'])) {
-      risks.add(pt
-          ? '⚠ Antiagregante + anticoagulante: risco de sangramento grave (gastrointestinal, intracraniano). Avaliar relação risco-benefício.'
-          : '⚠ Antiagregante + anticoagulante: riesgo de sangrado grave (GI, intracraneal). Evaluar riesgo-beneficio.');
-    }
-    // ── AINEs + anticoagulante/antiagregante ────────────────────
-    if (hasAny(['cetorolaco', 'ibuprofeno', 'diclofenaco'], ['aas', 'rivaroxabana', 'apixabana', 'enoxaparina', 'clopidogrel'])) {
-      risks.add(pt
-          ? '⚠ AINE + anticoagulante/antiagregante: risco MUITO alto de sangramento gastrointestinal. Associar IBP (omeprazol).'
-          : '⚠ AINE + anticoagulante/antiagregante: riesgo MUY alto de sangrado GI. Asociar IBP.');
-    }
-    // ── Diurético de alça + digoxina ────────────────────────────
-    if (hasAny(['furosemida'], ['digoxina'])) {
-      risks.add(pt
-          ? '⚠ Furosemida + digoxina: hipocalemia induzida pelo diurético aumenta toxicidade digitálica. Monitorar K+ sérico.'
-          : '⚠ Furosemida + digoxina: hipopotasemia aumenta toxicidad digitálica. Monitorizar K sérico.');
-    }
-    // ── IECA/BRA + espironolactona ───────────────────────────────
-    if (hasAny(['enalapril', 'losartana', 'ramipril'], ['espironolactona'])) {
-      risks.add(pt
-          ? '⚠ IECA/BRA + espironolactona: risco de hipercalemia grave, especialmente em DRC e idosos. Monitorar K+ e função renal.'
-          : '⚠ IECA/BRA + espironolactona: riesgo de hiperpotasemia grave en ERC y ancianos. Monitorizar K y función renal.');
-    }
-    // ── Opioides + depressores do SNC ────────────────────────────
-    if (hasAny(['morfina', 'fentanila', 'tramadol', 'codeina'], ['midazolam', 'diazepam', 'clonazepam', 'pregabalina', 'gabapentina'])) {
-      risks.add(pt
-          ? '⛔ Opioide + benzodiazepínico/gabapentinoide: risco CRÍTICO de depressão respiratória e morte. FDA Black Box Warning.'
-          : '⛔ Opioide + benzodiacepina/gabapentinoide: riesgo CRÍTICO de depresión respiratoria y muerte. FDA Black Box Warning.');
-    }
-    // ── Amiodarona + digoxina ────────────────────────────────────
-    if (has('amiodarona', 'digoxina')) {
-      risks.add(pt
-          ? '⚠ Amiodarona + digoxina: amiodarona duplica nível sérico da digoxina → toxicidade digitálica. Reduzir dose de digoxina em 30–50%.'
-          : '⚠ Amiodarona + digoxina: amiodarona duplica nivel de digoxina → toxicidad digitálica. Reducir dosis de digoxina 30–50%.');
-    }
-    // ── Amiodarona + varfarina ───────────────────────────────────
-    if (has('amiodarona', 'varfarina')) {
-      risks.add(pt
-          ? '⚠ Amiodarona + varfarina: amiodarona inibe CYP2C9 → duplica INR. Reduzir varfarina em 30–50% e monitorar INR frequentemente.'
-          : '⚠ Amiodarona + varfarina: amiodarona inhibe CYP2C9 → duplica INR. Reducir warfarina 30–50% y monitorizar INR.');
-    }
-    // ── Sotalol/antiarrítmico classe III + prolongadores QT ─────
-    if (hasAny(['amiodarona', 'sotalol'], ['haloperidol', 'metoclopramida', 'ondansetrona', 'azitromicina', 'ciprofloxacino', 'cloroquina'])) {
-      risks.add(pt
-          ? '⛔ Combinação de fármacos que prolongam QT: risco de Torsades de Pointes e FV. Monitorar ECG continuamente.'
-          : '⛔ Combinación de fármacos que prolongan QT: riesgo de Torsades de Pointes y FV. Monitorizar ECG.');
-    }
-    // ── Gluconato de Ca²+ + digoxina ────────────────────────────
-    if (has('gluconato_calcio', 'digoxina')) {
-      risks.add(pt
-          ? '⛔ Gluconato de cálcio + digoxina: hipercalcemia potencializa toxicidade digitálica. Monitorar ECG e Ca sérico.'
-          : '⛔ Gluconato de calcio + digoxina: hipercalcemia potencia toxicidad digitálica. Monitorizar ECG y Ca sérico.');
-    }
-    // ── Metformina + contraste iodado ───────────────────────────
-    if (has('metformina', 'contraste_iodado')) {
-      risks.add(pt
-          ? '⚠ Metformina + contraste iodado: risco de acidose lática. Suspender metformina 48h antes e após contraste se ClCr <60.'
-          : '⚠ Metformina + contraste yodado: riesgo de acidosis láctica. Suspender metformina 48h antes y después si ClCr <60.');
-    }
-    // ── IECA + AINEs ─────────────────────────────────────────────
-    if (hasAny(['enalapril', 'losartana', 'ramipril'], ['cetorolaco', 'ibuprofeno', 'diclofenaco'])) {
-      risks.add(pt
-          ? '⚠ IECA/BRA + AINE: risco de lesão renal aguda (tripla whammy com diurético). Evitar combinação em pacientes de risco.'
-          : '⚠ IECA/BRA + AINE: riesgo de lesión renal aguda (triple whammy con diurético). Evitar en pacientes de riesgo.');
-    }
-    // ── Vancomicina + aminoglicosídeo ───────────────────────────
-    if (hasAny(['vancomicina'], ['amicacina', 'gentamicina', 'tobramicina'])) {
-      risks.add(pt
-          ? '⚠ Vancomicina + aminoglicosídeo: nefrotoxicidade e ototoxicidade ADITIVAS. Monitorar função renal, nível sérico e audiometria.'
-          : '⚠ Vancomicina + aminoglicósido: nefrotoxicidad y ototoxicidad ADITIVAS. Monitorizar función renal y nivel sérico.');
-    }
-    // ── Metotrexato + AINEs/AAS ──────────────────────────────────
-    if (hasAny(['metotrexato'], ['aas', 'cetorolaco', 'ibuprofeno', 'diclofenaco'])) {
-      risks.add(pt
-          ? '⛔ Metotrexato + AINE/AAS: ↓ excreção renal do MTX → toxicidade grave (mucosites, pancitopenia). Associação perigosa.'
-          : '⛔ Metotrexato + AINE/AAS: ↓ excreción renal MTX → toxicidad grave (mucositis, pancitopenia). Asociación peligrosa.');
-    }
-    // ── Fenitoína + fluconazol ───────────────────────────────────
-    if (has('fenitoina', 'fluconazol')) {
-      risks.add(pt
-          ? '⚠ Fenitoína + fluconazol: fluconazol inibe CYP2C9 → ↑ nível de fenitoína → toxicidade (nistagmo, ataxia). Monitorar nível sérico.'
-          : '⚠ Fenitoína + fluconazol: fluconazol inhibe CYP2C9 → ↑ nivel fenitoína → toxicidad. Monitorizar nivel sérico.');
-    }
-    // ── Sildenafil + nitratos ────────────────────────────────────
-    if (hasAny(['nitroglicerina', 'nitroprussiato'], ['sildenafil', 'tadalafil'])) {
-      risks.add(pt
-          ? '⛔ Nitrato + inibidor PDE5 (sildenafil/tadalafil): hipotensão GRAVE e potencialmente fatal. Contraindicado absolutamente.'
-          : '⛔ Nitrato + inhibidor PDE5 (sildenafil/tadalafil): hipotensión GRAVE y potencialmente fatal. Contraindicado absolutamente.');
-    }
-    // ── Succinilcolina + hipercalemia ────────────────────────────
-    if (has('succinilcolina', 'sulfato_magnesio')) {
-      risks.add(pt
-          ? '⚠ Succinilcolina + MgSO₄: magnésio potencializa o bloqueio neuromuscular → paralisia prolongada.'
-          : '⚠ Succinilcolina + MgSO₄: magnesio potencia bloqueo neuromuscular → parálisis prolongada.');
-    }
-    // ── Bicarbonato + gluconato de cálcio ────────────────────────
-    if (has('bicarbonato_sodio', 'gluconato_calcio')) {
-      risks.add(pt
-          ? '⚠ Bicarbonato + gluconato de cálcio: precipitação se misturados na mesma via IV (CaCO₃ insolúvel). Administrar em vias separadas.'
-          : '⚠ Bicarbonato + gluconato de calcio: precipitación si mezclados en misma vía IV. Administrar en vías separadas.');
-    }
-    // ── Noradrenalina + vasopressina ─────────────────────────────
-    if (has('noradrenalina', 'vasopressina')) {
-      risks.add(pt
-          ? 'ℹ Noradrenalina + vasopressina: combinação válida no choque séptico refratário (SSC 2021). Monitorar isquemia periférica e mesentérica.'
-          : 'ℹ Noradrenalina + vasopresina: combinación válida en shock séptico refractario (SSC 2021). Monitorizar isquemia periférica y mesentérica.');
-    }
-
-    return risks;
+  /// Interações detectadas via DrugInteractionService (fármacos selecionados + medicamentos do paciente)
+  List<DrugInteraction> get drugInteractions {
+    if (_selectedDrugIds.isEmpty) return [];
+    final selectedNames = selectedDrugs.map((d) => d.name).toList();
+    return DrugInteractionService.checkInteractions(
+      selectedDrugNames: selectedNames,
+      patientMedicationsText: _patient.medications,
+    );
   }
+
+  /// Compatibilidade legada — retorna strings simples para widgets antigos
+  List<String> get interactionRisks =>
+      drugInteractions.map((i) => '${i.drug1} + ${i.drug2}: ${i.effect}').toList();
 
   // ── Mutations de estado ───────────────────────────────────────────────────
   void setLang(String l) {
