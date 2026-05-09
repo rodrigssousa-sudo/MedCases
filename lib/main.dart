@@ -543,11 +543,13 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
     super.dispose();
   }
 
-  // Força logout quando o app é mandado para background (fechado/minimizado)
-  // Na próxima abertura, Firebase Auth não terá sessão ativa → volta para LoginScreen
+  // Força logout quando o app é fechado/encerrado pelo SO.
+  // Android: detached → processo encerrado
+  // iOS: paused → app mandado para background definitivamente (detached não dispara no iOS)
+  // Resultado: na próxima abertura Firebase Auth não tem sessão → volta para LoginScreen
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.detached) {
+    if (state == AppLifecycleState.detached || state == AppLifecycleState.paused) {
       AuthService.logout();
     }
   }

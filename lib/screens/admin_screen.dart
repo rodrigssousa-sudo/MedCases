@@ -200,6 +200,8 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
                       },
                     ),
                     // ── Tab 3: Sistema ────────────────────────────────────
+                    // iOS e Android usam SDK nativo (sem CORS) → _SystemTab funciona
+                    // Web usa REST e não tem acesso ao SDK → banner informativo
                     kIsWeb
                         ? _WebOnlyBanner(isEs: _isEs)
                         : _SystemTab(
@@ -218,7 +220,7 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
           );
         },
       ),
-      // FAB com estatísticas — apenas no Android (SDK Firestore)
+      // FAB com estatísticas — Android e iOS usam SDK Firestore nativo
       floatingActionButton: kIsWeb
           ? null
           : StreamBuilder<List<UserModel>>(
