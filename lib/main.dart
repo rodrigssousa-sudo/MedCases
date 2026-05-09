@@ -518,8 +518,8 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
       backgroundColor: bg,
       endDrawer: _AppDrawer(p: p),
       body: Column(children: [
-        // Na aba IA (tab 2) esconde o header global — a tela tem seu próprio header
-        if (_tab != 2)
+        // Nas abas IA (2) e H. Clínica (3) esconde o header global — cada tela tem o seu
+        if (_tab != 2 && _tab != 3)
           AnimatedSize(
             duration: const Duration(milliseconds: 260),
             curve: Curves.easeInOut,

@@ -162,41 +162,61 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
     final pub  = _applyFilters(p.publicHistories);
 
     return Column(children: [
-      // Header
-      PremiumCard(
-        padding: const EdgeInsets.fromLTRB(16, 14, 16, 14),
-          child: Row(children: [
-            Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              const Text('HISTÓRIA CLÍNICA', style: TextStyle(fontSize: 9, fontWeight: FontWeight.w900, color: Color(0xBFFFE8A6), letterSpacing: 2)),
-              const SizedBox(height: 3),
-              const Text('Registro clínico completo', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900, color: Colors.white)),
-              const SizedBox(height: 2),
-              Text('${mine.length} minhas • ${pub.length} públicas',
-                style: TextStyle(fontSize: 11, color: Colors.white.withValues(alpha: 0.55), fontWeight: FontWeight.w600)),
-            ])),
-            GestureDetector(
-              onTap: () {
-                final uid = p.currentUser?.uid ?? 'local';
-                final name = p.currentUser?.displayName ?? p.currentUser?.email ?? 'Anônimo';
-                final email = p.currentUser?.email ?? '';
-                setState(() => _editing = ClinicalHistoryModel.blank(authorUid: uid, authorName: name, authorEmail: email));
-              },
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(14),
-                  color: Colors.white.withValues(alpha: 0.15),
-                  border: Border.all(color: Colors.white.withValues(alpha: 0.2)),
-                ),
-                child: const Row(children: [
-                  Icon(Icons.add_rounded, size: 16, color: Color(0xFFFFE8A6)),
-                  SizedBox(width: 5),
-                  Text('Nova HC', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w900, color: Color(0xFFFFE8A6))),
-                ]),
-              ),
-            ),
-          ]),
+      // Header — SafeArea próprio (header global removido para tab 3)
+      Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [Color(0xFF07110d), Color(0xFF123326), Color(0xFF075f45)],
+          ),
         ),
+        child: SafeArea(
+          bottom: false,
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(16, 10, 16, 12),
+            child: Row(children: [
+              Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                const Text('HISTÓRIA CLÍNICA', style: TextStyle(
+                  fontSize: 9, fontWeight: FontWeight.w900,
+                  color: Color(0xBFFFE8A6), letterSpacing: 2)),
+                const SizedBox(height: 2),
+                const Text('Registro clínico completo', style: TextStyle(
+                  fontSize: 17, fontWeight: FontWeight.w900, color: Colors.white)),
+                const SizedBox(height: 2),
+                Text('${mine.length} minhas • ${pub.length} públicas',
+                  style: TextStyle(fontSize: 11,
+                    color: Colors.white.withValues(alpha: 0.55),
+                    fontWeight: FontWeight.w500)),
+              ])),
+              GestureDetector(
+                onTap: () {
+                  final uid  = p.currentUser?.uid ?? 'local';
+                  final name = p.currentUser?.displayName ?? p.currentUser?.email ?? 'Anônimo';
+                  final email = p.currentUser?.email ?? '';
+                  setState(() => _editing = ClinicalHistoryModel.blank(
+                    authorUid: uid, authorName: name, authorEmail: email));
+                },
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                    color: Colors.white.withValues(alpha: 0.15),
+                    border: Border.all(color: Colors.white.withValues(alpha: 0.2)),
+                  ),
+                  child: const Row(children: [
+                    Icon(Icons.add_rounded, size: 15, color: Color(0xFFFFE8A6)),
+                    SizedBox(width: 4),
+                    Text('Nova HC', style: TextStyle(
+                      fontSize: 12, fontWeight: FontWeight.w800,
+                      color: Color(0xFFFFE8A6))),
+                  ]),
+                ),
+              ),
+            ]),
+          ),
+        ),
+      ),
 
       // Tabs
       Padding(
