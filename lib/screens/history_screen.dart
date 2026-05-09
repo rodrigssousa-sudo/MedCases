@@ -38,6 +38,8 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
   ClinicalHistoryModel? _viewing;
   ClinicalHistoryModel? _editing;
   bool _viewingPublic = false;
+  // Filtro por intervalo de datas (null = sem filtro)
+  DateTimeRange? _dateFilter;
 
   @override
   void initState() {
@@ -53,6 +55,71 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
     _tabCtrl.dispose();
     _searchCtrl.dispose();
     super.dispose();
+  }
+
+  // Abre o seletor de intervalo de datas
+  Future<void> _showDateFilter() async {
+    final picked = await showDateRangePicker(
+      context: context,
+      firstDate: DateTime(2020),
+      lastDate: DateTime.now().add(const Duration(days: 1)),
+      initialDateRange: _dateFilter,
+      locale: const Locale('pt', 'BR'),
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: const ColorScheme.light(
+              primary: Color(0xFF07110d),
+              onPrimary: Color(0xFFFFE8A6),
+              surface: Colors.white,
+              onSurface: Color(0xFF07110d),
+            ),
+          ),
+          child: child!,
+        );
+      },
+    );
+    if (picked != null) {
+      setState(() => _dateFilter = picked);
+    }
+  }
+
+  void _clearDateFilter() => setState(() => _dateFilter = null);
+
+  // Aplica filtro de texto + data em uma lista de histórias
+  List<ClinicalHistoryModel> _applyFilters(List<ClinicalHistoryModel> list) {
+    final q = _searchCtrl.text.toLowerCase();
+    return list.where((h) {
+      // Filtro de texto
+      final textOk = q.isEmpty ||
+          h.displayTitle.toLowerCase().contains(q) ||
+          h.finalDiagnosis.toLowerCase().contains(q) ||
+          h.workingDiagnosis.toLowerCase().contains(q) ||
+          h.tags.toLowerCase().contains(q);
+      if (!textOk) return false;
+      // Filtro de data
+      if (_dateFilter != null) {
+        try {
+          final dt = DateTime.parse(h.createdAt).toLocal();
+          final start = DateTime(_dateFilter!.start.year, _dateFilter!.start.month, _dateFilter!.start.day);
+          final end   = DateTime(_dateFilter!.end.year,   _dateFilter!.end.month,   _dateFilter!.end.day, 23, 59, 59);
+          if (dt.isBefore(start) || dt.isAfter(end)) return false;
+        } catch (_) {
+          // Se não puder parsear a data, não filtra esse item
+        }
+      }
+      return true;
+    }).toList();
+  }
+
+  // Texto formatado do filtro ativo
+  String get _dateFilterLabel {
+    if (_dateFilter == null) return '';
+    final s = _dateFilter!.start;
+    final e = _dateFilter!.end;
+    final fmt = (DateTime d) => '${d.day.toString().padLeft(2,'0')}/${d.month.toString().padLeft(2,'0')}/${d.year}';
+    if (s.year == e.year && s.month == e.month && s.day == e.day) return fmt(s);
+    return '${fmt(s)} – ${fmt(e)}';
   }
 
   @override
@@ -91,21 +158,8 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
     }
 
     // ── Lista ───────────────────────────────────────────────────────────────
-    final q = _searchCtrl.text.toLowerCase();
-    final mine = p.myHistories.where((h) =>
-      q.isEmpty ||
-      h.displayTitle.toLowerCase().contains(q) ||
-      h.finalDiagnosis.toLowerCase().contains(q) ||
-      h.workingDiagnosis.toLowerCase().contains(q) ||
-      h.tags.toLowerCase().contains(q)
-    ).toList();
-
-    final pub = p.publicHistories.where((h) =>
-      q.isEmpty ||
-      h.displayTitle.toLowerCase().contains(q) ||
-      h.finalDiagnosis.toLowerCase().contains(q) ||
-      h.tags.toLowerCase().contains(q)
-    ).toList();
+    final mine = _applyFilters(p.myHistories);
+    final pub  = _applyFilters(p.publicHistories);
 
     return Column(children: [
       // Header
@@ -168,15 +222,72 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
         ),
       ),
 
-      // Busca
+      // Busca + Filtro por data
       Padding(
         padding: const EdgeInsets.fromLTRB(16, 10, 16, 0),
-        child: MedInput(
-          controller: _searchCtrl,
-          hintText: 'Buscar por diagnóstico, queixa, tags...',
-          onChanged: (_) => setState(() {}),
-        ),
+        child: Row(children: [
+          Expanded(
+            child: MedInput(
+              controller: _searchCtrl,
+              hintText: 'Buscar por diagnóstico, queixa, tags...',
+              onChanged: (_) => setState(() {}),
+            ),
+          ),
+          const SizedBox(width: 8),
+          // Botão filtro por data
+          GestureDetector(
+            onTap: _showDateFilter,
+            child: Container(
+              height: 46,
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12),
+                color: _dateFilter != null
+                    ? const Color(0xFF07110d)
+                    : Colors.white,
+                border: Border.all(
+                  color: _dateFilter != null
+                      ? const Color(0xFF07110d)
+                      : kBorder,
+                ),
+              ),
+              child: Row(mainAxisSize: MainAxisSize.min, children: [
+                Icon(Icons.date_range_rounded, size: 16,
+                    color: _dateFilter != null
+                        ? const Color(0xFFFFE8A6)
+                        : const Color(0xFF888888)),
+              ]),
+            ),
+          ),
+        ]),
       ),
+
+      // Chip do filtro de data ativo
+      if (_dateFilter != null)
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+          child: Row(children: [
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20),
+                color: const Color(0xFF07110d).withValues(alpha: 0.08),
+                border: Border.all(color: const Color(0xFF07110d).withValues(alpha: 0.2)),
+              ),
+              child: Row(mainAxisSize: MainAxisSize.min, children: [
+                const Icon(Icons.date_range_rounded, size: 12, color: Color(0xFF07110d)),
+                const SizedBox(width: 6),
+                Text(_dateFilterLabel,
+                    style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: Color(0xFF07110d))),
+                const SizedBox(width: 8),
+                GestureDetector(
+                  onTap: _clearDateFilter,
+                  child: const Icon(Icons.close_rounded, size: 13, color: Color(0xFF555555)),
+                ),
+              ]),
+            ),
+          ]),
+        ),
 
       const SizedBox(height: 4),
 

@@ -74,7 +74,7 @@ class MedCasesApp extends StatelessWidget {
       theme: _buildTheme(false),
       darkTheme: _buildTheme(true),
       themeMode: p.darkMode ? ThemeMode.dark : ThemeMode.light,
-      home: const _OnboardingGate(),
+      home: const _AuthGate(),
     );
   }
 
@@ -110,184 +110,6 @@ class MedCasesApp extends StatelessWidget {
       onSurface: Colors.white,
     ),
   );
-}
-
-// ── Onboarding Gate ───────────────────────────────────────────────────────────
-// Exibe a tela de seleção de idioma apenas na 1ª abertura do app.
-// Após a escolha, salva 'onboarding_done' = true nas prefs e segue para _AuthGate.
-class _OnboardingGate extends StatelessWidget {
-  const _OnboardingGate();
-
-  @override
-  Widget build(BuildContext context) {
-    return FutureBuilder<bool>(
-      future: _checkOnboardingDone(),
-      builder: (context, snap) {
-        if (snap.connectionState != ConnectionState.done) {
-          return Theme(data: MedCasesApp._authTheme, child: const _SplashScreen());
-        }
-        final done = snap.data ?? false;
-        if (done) return const _AuthGate();
-        return Theme(
-          data: MedCasesApp._authTheme,
-          child: _LangOnboardingScreen(
-            onDone: (lang) async {
-              final prefs = await SharedPreferences.getInstance();
-              await prefs.setString('lang', lang);
-              await prefs.setBool('onboarding_done', true);
-              // Atualiza o provider com o idioma escolhido
-              if (context.mounted) {
-                context.read<AppProvider>().setLang(lang);
-                Navigator.of(context).pushAndRemoveUntil(
-                  MaterialPageRoute(builder: (_) => const _AuthGate()),
-                  (_) => false,
-                );
-              }
-            },
-          ),
-        );
-      },
-    );
-  }
-
-  static Future<bool> _checkOnboardingDone() async {
-    try {
-      final prefs = await SharedPreferences.getInstance();
-      return prefs.getBool('onboarding_done') ?? false;
-    } catch (_) {
-      return true; // fallback seguro: pula onboarding se prefs falhar
-    }
-  }
-}
-
-// ── Tela de onboarding de idioma ──────────────────────────────────────────────
-class _LangOnboardingScreen extends StatefulWidget {
-  final void Function(String lang) onDone;
-  const _LangOnboardingScreen({required this.onDone});
-
-  @override
-  State<_LangOnboardingScreen> createState() => _LangOnboardingScreenState();
-}
-
-class _LangOnboardingScreenState extends State<_LangOnboardingScreen>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _anim;
-  late Animation<double> _fade;
-
-  static const kDark  = Color(0xFF07110d);
-  static const kGreen = Color(0xFF075f45);
-  static const kGold  = Color(0xFFC5A365);
-  static const kGoldL = Color(0xFFFFE8A6);
-
-  @override
-  void initState() {
-    super.initState();
-    _anim = AnimationController(vsync: this, duration: const Duration(milliseconds: 500));
-    _fade = CurvedAnimation(parent: _anim, curve: Curves.easeOut);
-    _anim.forward();
-  }
-
-  @override
-  void dispose() {
-    _anim.dispose();
-    super.dispose();
-  }
-
-  Widget _langButton({
-    required String flag,
-    required String label,
-    required String sublabel,
-    required String lang,
-  }) {
-    return GestureDetector(
-      onTap: () => widget.onDone(lang),
-      child: Container(
-        padding: const EdgeInsets.all(24),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: kGold.withValues(alpha: 0.35), width: 1.5),
-          color: Colors.white.withValues(alpha: 0.05),
-        ),
-        child: Row(children: [
-          Text(flag, style: const TextStyle(fontSize: 36)),
-          const SizedBox(width: 16),
-          Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text(label, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w900, color: Colors.white)),
-            const SizedBox(height: 2),
-            Text(sublabel, style: TextStyle(fontSize: 12, color: Colors.white.withValues(alpha: 0.55), fontWeight: FontWeight.w500)),
-          ])),
-          Icon(Icons.arrow_forward_ios_rounded, size: 16, color: kGold.withValues(alpha: 0.7)),
-        ]),
-      ),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: kDark,
-      body: SafeArea(
-        child: FadeTransition(
-          opacity: _fade,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 40),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                // Logo
-                const BrandMark(small: false),
-                const SizedBox(height: 28),
-                // Título bilíngue
-                const Text(
-                  'MedCases Pro',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 30, fontWeight: FontWeight.w900, color: Colors.white, letterSpacing: -0.5),
-                ),
-                const SizedBox(height: 8),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(color: kGold.withValues(alpha: 0.3)),
-                    color: kGold.withValues(alpha: 0.08),
-                  ),
-                  child: Text(
-                    'Selecione o idioma  •  Selecciona el idioma',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 11, color: kGoldL.withValues(alpha: 0.8), fontWeight: FontWeight.w700, letterSpacing: 0.3),
-                  ),
-                ),
-                const SizedBox(height: 48),
-                // Botão Português
-                _langButton(
-                  flag: '🇧🇷',
-                  label: 'Português',
-                  sublabel: 'Continuar em português',
-                  lang: 'pt',
-                ),
-                const SizedBox(height: 16),
-                // Botão Español
-                _langButton(
-                  flag: '🇪🇸',
-                  label: 'Español',
-                  sublabel: 'Continuar en español',
-                  lang: 'es',
-                ),
-                const SizedBox(height: 40),
-                // Rodapé legal
-                Text(
-                  'Uso educacional e de apoio clínico.\nUso educativo y de apoyo clínico.',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 10, color: Colors.white.withValues(alpha: 0.3), fontWeight: FontWeight.w500, height: 1.5),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
 }
 
 // ── Auth Gate ─────────────────────────────────────────────────────────────────
@@ -615,7 +437,7 @@ class MainShell extends StatefulWidget {
   State<MainShell> createState() => _MainShellState();
 }
 
-class _MainShellState extends State<MainShell> {
+class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
   // tabs: 0=Cockpit 1=Rx/Proto 2=IA(FAB) 3=H.Clínica 4=Calculadoras
   int _tab = 0;
   // sub-tab dentro do combo Rx+Proto: 0=Rx, 1=Protocolos
@@ -623,6 +445,27 @@ class _MainShellState extends State<MainShell> {
   String? _pendingProtocolId;
   // Header recolhível: visível apenas na tab 0 (Cockpit/Início)
   bool get _headerVisible => _tab == 0;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  // Força logout quando o app é mandado para background (fechado/minimizado)
+  // Na próxima abertura, Firebase Auth não terá sessão ativa → volta para LoginScreen
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.detached) {
+      AuthService.logout();
+    }
+  }
 
   void _openProtocol(String id) {
     setState(() {
@@ -664,6 +507,7 @@ class _MainShellState extends State<MainShell> {
 
     return Scaffold(
       backgroundColor: bg,
+      endDrawer: _AppDrawer(p: p),
       body: Column(children: [
         AnimatedSize(
           duration: const Duration(milliseconds: 260),
@@ -1041,7 +885,7 @@ class _MiniContextBar extends StatelessWidget {
       child: SafeArea(
         bottom: false,
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(12, 6, 16, 6),
+          padding: const EdgeInsets.fromLTRB(12, 6, 8, 6),
           child: Row(children: [
             GestureDetector(
               onTap: onHome,
@@ -1079,6 +923,21 @@ class _MiniContextBar extends StatelessWidget {
                       color: Color(0xFFFFE8A6),
                     )),
                 ]),
+              ),
+            ),
+            const SizedBox(width: 8),
+            // Botão menu lateral
+            GestureDetector(
+              onTap: () => Scaffold.of(context).openEndDrawer(),
+              child: Container(
+                padding: const EdgeInsets.all(7),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8),
+                  color: Colors.white.withValues(alpha: 0.1),
+                  border: Border.all(color: Colors.white.withValues(alpha: 0.18)),
+                ),
+                child: Icon(Icons.menu_rounded, size: 16,
+                    color: const Color(0xFFFFE8A6).withValues(alpha: 0.9)),
               ),
             ),
           ]),
@@ -1194,180 +1053,300 @@ class _AdminBadgeButton extends StatelessWidget {
   }
 }
 
-// ── Menu compacto do header (PT/ES + dark mode + logout) ─────────────────────
-class _HeaderMenu extends StatelessWidget {
+// ── Drawer lateral estilo banco (desliza da direita) ─────────────────────────
+class _AppDrawer extends StatelessWidget {
   final AppProvider p;
-  const _HeaderMenu({required this.p});
+  const _AppDrawer({required this.p});
+
+  static const _kDark  = Color(0xFF07110d);
+  static const _kGreen = Color(0xFF075f45);
+  static const _kGold  = Color(0xFFC5A365);
+  static const _kGoldL = Color(0xFFFFE8A6);
+
+  void _close(BuildContext context) => Navigator.of(context).pop();
 
   @override
   Widget build(BuildContext context) {
     final dark = p.darkMode;
-    return PopupMenuButton<String>(
-      offset: const Offset(0, 40),
-      color: dark ? const Color(0xFF0E1A14) : Colors.white,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(14),
-        side: BorderSide(
-          color: dark ? const Color(0xFF1A3528) : const Color(0xFFE0D9CC),
-          width: 1,
+    final bg      = dark ? const Color(0xFF0D1A12) : Colors.white;
+    final divider = dark ? const Color(0xFF1A2E20) : const Color(0xFFEEEBE4);
+    final textCol = dark ? Colors.white : _kDark;
+    final subCol  = dark ? Colors.white38 : const Color(0xFF888888);
+
+    return Drawer(
+      width: 290,
+      backgroundColor: bg,
+      child: SafeArea(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            // ── Cabeçalho do drawer ─────────────────────────────────────────
+            Container(
+              padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft, end: Alignment.bottomRight,
+                  colors: [_kDark, Color(0xFF123326), _kGreen],
+                ),
+              ),
+              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Row(children: [
+                  const BrandMark(small: false),
+                  const Spacer(),
+                  GestureDetector(
+                    onTap: () => _close(context),
+                    child: Container(
+                      padding: const EdgeInsets.all(6),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8),
+                        color: Colors.white.withValues(alpha: 0.1),
+                      ),
+                      child: Icon(Icons.close_rounded, size: 16,
+                          color: Colors.white.withValues(alpha: 0.7)),
+                    ),
+                  ),
+                ]),
+                const SizedBox(height: 14),
+                Text(
+                  p.userName.isNotEmpty ? p.userName : 'MedCases Pro',
+                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w900, color: Colors.white),
+                  overflow: TextOverflow.ellipsis,
+                ),
+                if (p.currentUser?.profession?.isNotEmpty ?? false) ...[
+                  const SizedBox(height: 2),
+                  Text(
+                    p.currentUser!.profession!,
+                    style: TextStyle(fontSize: 11, color: Colors.white.withValues(alpha: 0.55), fontWeight: FontWeight.w500),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+                if (p.currentUser?.institution?.isNotEmpty ?? false) ...[
+                  const SizedBox(height: 1),
+                  Text(
+                    p.currentUser!.institution!,
+                    style: TextStyle(fontSize: 10, color: Colors.white.withValues(alpha: 0.4), fontWeight: FontWeight.w500),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+                if (p.isAdmin) ...[
+                  const SizedBox(height: 8),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20),
+                      color: _kGold.withValues(alpha: 0.2),
+                      border: Border.all(color: _kGold.withValues(alpha: 0.5)),
+                    ),
+                    child: const Text('ADMIN', style: TextStyle(fontSize: 9, fontWeight: FontWeight.w900, color: _kGoldL, letterSpacing: 0.5)),
+                  ),
+                ],
+              ]),
+            ),
+
+            // ── Itens do menu ────────────────────────────────────────────────
+            Expanded(
+              child: ListView(
+                padding: const EdgeInsets.symmetric(vertical: 8),
+                children: [
+
+                  // ── Editar perfil ───────────────────────────────────────
+                  _DrawerItem(
+                    icon: Icons.person_outline_rounded,
+                    iconColor: _kGold,
+                    title: p.lang == 'es' ? 'Editar perfil' : 'Editar perfil',
+                    subtitle: p.lang == 'es' ? 'Nombre, profesión, institución' : 'Nome, profissão, instituição',
+                    dark: dark,
+                    textCol: textCol,
+                    subCol: subCol,
+                    onTap: () {
+                      _close(context);
+                      showModalBottomSheet(
+                        context: context,
+                        isScrollControlled: true,
+                        backgroundColor: Colors.transparent,
+                        builder: (_) => _ProfileEditSheet(p: p),
+                      );
+                    },
+                  ),
+
+                  Divider(height: 1, color: divider, indent: 16, endIndent: 16),
+
+                  // ── Idioma ──────────────────────────────────────────────
+                  _DrawerItem(
+                    icon: Icons.language_rounded,
+                    iconColor: const Color(0xFF1E88E5),
+                    title: p.lang == 'es' ? 'Idioma' : 'Idioma',
+                    subtitle: p.lang == 'pt' ? 'Trocar para Español' : 'Cambiar a Português',
+                    dark: dark,
+                    textCol: textCol,
+                    subCol: subCol,
+                    trailing: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 4),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8),
+                        color: _kGold.withValues(alpha: 0.12),
+                        border: Border.all(color: _kGold.withValues(alpha: 0.4)),
+                      ),
+                      child: Text(
+                        p.lang.toUpperCase(),
+                        style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w900, color: _kGold, letterSpacing: 1),
+                      ),
+                    ),
+                    onTap: () {
+                      final newLang = p.lang == 'pt' ? 'es' : 'pt';
+                      p.setLang(newLang);
+                      // Salva permanentemente nas prefs
+                      SharedPreferences.getInstance().then((prefs) {
+                        prefs.setString('lang', newLang);
+                      });
+                    },
+                  ),
+
+                  Divider(height: 1, color: divider, indent: 16, endIndent: 16),
+
+                  // ── Modo escuro / claro ─────────────────────────────────
+                  _DrawerItem(
+                    icon: dark ? Icons.light_mode_rounded : Icons.dark_mode_rounded,
+                    iconColor: dark ? const Color(0xFFFFCC44) : const Color(0xFF555577),
+                    title: p.lang == 'es' ? 'Apariencia' : 'Aparência',
+                    subtitle: dark
+                        ? (p.lang == 'es' ? 'Cambiar a modo claro' : 'Mudar para modo claro')
+                        : (p.lang == 'es' ? 'Cambiar a modo oscuro' : 'Mudar para modo escuro'),
+                    dark: dark,
+                    textCol: textCol,
+                    subCol: subCol,
+                    trailing: Container(
+                      width: 42, height: 24,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(12),
+                        color: dark ? _kGreen : const Color(0xFFDDDDDD),
+                      ),
+                      child: AnimatedAlign(
+                        duration: const Duration(milliseconds: 200),
+                        alignment: dark ? Alignment.centerRight : Alignment.centerLeft,
+                        child: Container(
+                          width: 20, height: 20,
+                          margin: const EdgeInsets.symmetric(horizontal: 2),
+                          decoration: const BoxDecoration(shape: BoxShape.circle, color: Colors.white),
+                        ),
+                      ),
+                    ),
+                    onTap: () => p.toggleDarkMode(),
+                  ),
+
+                  Divider(height: 1, color: divider, indent: 16, endIndent: 16),
+
+                  // ── Admin (apenas para admins) ───────────────────────────
+                  if (p.isAdmin) ...[
+                    _DrawerItem(
+                      icon: Icons.admin_panel_settings_rounded,
+                      iconColor: const Color(0xFFFF8C00),
+                      title: 'Painel Admin',
+                      subtitle: p.lang == 'es' ? 'Gestión de usuarios' : 'Gestão de usuários',
+                      dark: dark,
+                      textCol: textCol,
+                      subCol: subCol,
+                      onTap: () {
+                        _close(context);
+                        Navigator.push(context, MaterialPageRoute(
+                          builder: (_) => AdminScreen(currentAdmin: p.currentUser!),
+                        ));
+                      },
+                    ),
+                    Divider(height: 1, color: divider, indent: 16, endIndent: 16),
+                  ],
+
+                  const SizedBox(height: 8),
+
+                  // ── Sair ─────────────────────────────────────────────────
+                  _DrawerItem(
+                    icon: Icons.logout_rounded,
+                    iconColor: const Color(0xFFCC3333),
+                    title: p.lang == 'es' ? 'Cerrar sesión' : 'Sair',
+                    subtitle: p.userName.isNotEmpty
+                        ? p.userName.split(' ').first
+                        : (p.lang == 'es' ? 'Cerrar cuenta' : 'Encerrar sessão'),
+                    dark: dark,
+                    textCol: const Color(0xFFCC3333),
+                    subCol: subCol,
+                    onTap: () async {
+                      _close(context);
+                      await AuthService.logout();
+                      if (context.mounted) context.read<AppProvider>().clearUser();
+                    },
+                  ),
+                ],
+              ),
+            ),
+
+            // ── Rodapé ───────────────────────────────────────────────────────
+            Container(
+              padding: const EdgeInsets.fromLTRB(16, 10, 16, 12),
+              decoration: BoxDecoration(
+                border: Border(top: BorderSide(color: divider, width: 0.5)),
+              ),
+              child: Text(
+                'MedCases Pro · Uso educacional',
+                style: TextStyle(fontSize: 10, color: subCol, fontWeight: FontWeight.w500),
+                textAlign: TextAlign.center,
+              ),
+            ),
+          ],
         ),
       ),
-      elevation: 12,
-      shadowColor: Colors.black.withValues(alpha: 0.35),
-      onSelected: (value) async {
-        if (value == 'lang') {
-          p.setLang(p.lang == 'pt' ? 'es' : 'pt');
-        } else if (value == 'dark') {
-          p.toggleDarkMode();
-        } else if (value == 'profile') {
-          if (context.mounted) {
-            showModalBottomSheet(
-              context: context,
-              isScrollControlled: true,
-              backgroundColor: Colors.transparent,
-              builder: (_) => _ProfileEditSheet(p: p),
-            );
-          }
-        } else if (value == 'logout') {
-          await AuthService.logout();
-          if (context.mounted) context.read<AppProvider>().clearUser();
-        }
-      },
-      itemBuilder: (_) {
-        final textStyle = TextStyle(
-          fontSize: 13,
-          fontWeight: FontWeight.w700,
-          color: dark ? Colors.white : const Color(0xFF07110d),
-        );
-        final subStyle = TextStyle(
-          fontSize: 11,
-          fontWeight: FontWeight.w500,
-          color: dark ? Colors.white38 : const Color(0xFFAAAAAA),
-        );
-        return [
-          // Editar perfil
-          PopupMenuItem<String>(
-            value: 'profile',
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-            child: Row(children: [
-              Container(
-                padding: const EdgeInsets.all(6),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8),
-                  color: const Color(0xFFC5A365).withValues(alpha: 0.15),
-                  border: Border.all(color: const Color(0xFFC5A365).withValues(alpha: 0.4)),
-                ),
-                child: const Icon(Icons.person_outline_rounded, size: 15, color: Color(0xFFC5A365)),
-              ),
-              const SizedBox(width: 12),
-              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Text('Editar perfil', style: textStyle),
-                Text('Nome, profissão, instituição', style: subStyle),
-              ]),
-            ]),
+    );
+  }
+}
+
+// ── Item de linha do Drawer ────────────────────────────────────────────────────
+class _DrawerItem extends StatelessWidget {
+  final IconData icon;
+  final Color iconColor;
+  final String title;
+  final String subtitle;
+  final bool dark;
+  final Color textCol;
+  final Color subCol;
+  final Widget? trailing;
+  final VoidCallback onTap;
+
+  const _DrawerItem({
+    required this.icon,
+    required this.iconColor,
+    required this.title,
+    required this.subtitle,
+    required this.dark,
+    required this.textCol,
+    required this.subCol,
+    required this.onTap,
+    this.trailing,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        child: Row(children: [
+          Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              color: iconColor.withValues(alpha: 0.12),
+              border: Border.all(color: iconColor.withValues(alpha: 0.3)),
+            ),
+            child: Icon(icon, size: 18, color: iconColor),
           ),
-          // Separador
-          const PopupMenuDivider(height: 1),
-          // Idioma
-          PopupMenuItem<String>(
-            value: 'lang',
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-            child: Row(children: [
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8),
-                  color: const Color(0xFFC5A365).withValues(alpha: 0.15),
-                  border: Border.all(color: const Color(0xFFC5A365).withValues(alpha: 0.4)),
-                ),
-                child: Text(
-                  p.lang.toUpperCase(),
-                  style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w900, color: Color(0xFFC5A365), letterSpacing: 1),
-                ),
-              ),
-              const SizedBox(width: 12),
-              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Text('Idioma', style: textStyle),
-                Text(p.lang == 'pt' ? 'Trocar para Español' : 'Cambiar a Português', style: subStyle),
-              ]),
-            ]),
-          ),
-          // Separador
-          PopupMenuDivider(height: 1),
-          // Tema
-          PopupMenuItem<String>(
-            value: 'dark',
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-            child: Row(children: [
-              Container(
-                padding: const EdgeInsets.all(6),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8),
-                  color: Colors.white.withValues(alpha: dark ? 0.08 : 0.0),
-                  border: Border.all(color: dark ? Colors.white24 : const Color(0xFFDDD8CE)),
-                ),
-                child: Icon(
-                  dark ? Icons.light_mode_rounded : Icons.dark_mode_rounded,
-                  size: 15,
-                  color: dark ? const Color(0xFFFFE8A6) : const Color(0xFF555555),
-                ),
-              ),
-              const SizedBox(width: 12),
-              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Text('Aparência', style: textStyle),
-                Text(dark ? 'Modo Claro' : 'Modo Escuro', style: subStyle),
-              ]),
-            ]),
-          ),
-          // Separador
-          PopupMenuDivider(height: 1),
-          // Sair
-          PopupMenuItem<String>(
-            value: 'logout',
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-            child: Row(children: [
-              Container(
-                padding: const EdgeInsets.all(6),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8),
-                  color: Colors.red.withValues(alpha: 0.1),
-                  border: Border.all(color: Colors.red.withValues(alpha: 0.25)),
-                ),
-                child: const Icon(Icons.logout_rounded, size: 15, color: Color(0xFFFF6B6B)),
-              ),
-              const SizedBox(width: 12),
-              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Text('Sair', style: textStyle),
-                Text(p.userName.isNotEmpty ? p.userName.split(' ').first : 'Conta', style: subStyle),
-              ]),
-            ]),
-          ),
-        ];
-      },
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10),
-          color: Colors.white.withValues(alpha: 0.1),
-          border: Border.all(color: Colors.white.withValues(alpha: 0.2)),
-        ),
-        child: Row(mainAxisSize: MainAxisSize.min, children: [
-          Text(
-            p.lang.toUpperCase(),
-            style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w900, color: Color(0xFFFFE8A6), letterSpacing: 0.8),
-          ),
-          const SizedBox(width: 5),
-          Icon(
-            dark ? Icons.dark_mode_rounded : Icons.light_mode_rounded,
-            size: 13,
-            color: const Color(0xFFFFE8A6).withValues(alpha: 0.8),
-          ),
-          const SizedBox(width: 4),
-          Icon(
-            Icons.keyboard_arrow_down_rounded,
-            size: 14,
-            color: const Color(0xFFFFE8A6).withValues(alpha: 0.6),
-          ),
+          const SizedBox(width: 14),
+          Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Text(title, style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: textCol)),
+            Text(subtitle, style: TextStyle(fontSize: 11, color: subCol, fontWeight: FontWeight.w500)),
+          ])),
+          if (trailing != null) ...[
+            const SizedBox(width: 8),
+            trailing!,
+          ],
         ]),
       ),
     );
@@ -1427,7 +1406,27 @@ class _AppHeader extends StatelessWidget {
               _AdminBadgeButton(currentAdmin: p.currentUser!),
               const SizedBox(width: 8),
             ],
-            _HeaderMenu(p: p),
+            // Botão hamburguer → abre Drawer lateral direito
+            GestureDetector(
+              onTap: () => Scaffold.of(context).openEndDrawer(),
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: Colors.white.withValues(alpha: 0.1),
+                  border: Border.all(color: Colors.white.withValues(alpha: 0.2)),
+                ),
+                child: Row(mainAxisSize: MainAxisSize.min, children: [
+                  Text(
+                    p.lang.toUpperCase(),
+                    style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w900, color: Color(0xFFFFE8A6), letterSpacing: 0.8),
+                  ),
+                  const SizedBox(width: 6),
+                  Icon(Icons.menu_rounded, size: 15,
+                      color: const Color(0xFFFFE8A6).withValues(alpha: 0.85)),
+                ]),
+              ),
+            ),
           ]),
         ),
       ),
