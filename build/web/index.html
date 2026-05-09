@@ -160,6 +160,17 @@
     }, 20000);
   </script>
 
+  <!-- ══════════════════════════════════════════════════════════════════
+       ETAPA 2.5 — Desabilitar Service Worker via flutterConfiguration
+       Resolve: "TypeError: Failed to fetch" em abas anônimas
+       O Flutter loader respeita essa config ANTES de iniciar o SW
+       ══════════════════════════════════════════════════════════════════ -->
+  <script>
+    window.flutterConfiguration = {
+      serviceWorkerVersion: null
+    };
+  </script>
+
   <!-- Flutter bootstrap — carregado de forma síncrona -->
   <script src="flutter_bootstrap.js"></script>
 
