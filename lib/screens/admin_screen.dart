@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/user_model.dart';
@@ -21,8 +22,13 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
   static const kGold  = Color(0xFFC5A365);
   static const kGoldL = Color(0xFFFFE8A6);
 
-  // Atalho: o admin atual é Master?
   bool get _isMaster => widget.currentAdmin.isMaster;
+
+  // ── Stream único compartilhado — evita N polls paralelos por tab ──────────
+  // Um único StreamSubscription alimenta _allUsers; as tabs filtram localmente.
+  StreamSubscription<List<UserModel>>? _usersSub;
+  List<UserModel> _allUsers  = [];
+  bool            _usersLoading = true;
 
   // ── Estado do tab Sistema ────────────────────────────────────────────────
   bool _maintEnabled = false;
@@ -34,12 +40,25 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
     super.initState();
     _tabs = TabController(length: 4, vsync: this);
     _loadLang();
+    _subscribeUsers();
+  }
+
+  void _subscribeUsers() {
+    _usersSub = AuthService.allUsersStream().listen(
+      (users) {
+        if (mounted) setState(() { _allUsers = users; _usersLoading = false; });
+      },
+      onError: (_) {
+        if (mounted) setState(() => _usersLoading = false);
+      },
+    );
   }
 
   @override
   void dispose() {
     _tabs.dispose();
     _maintMsgCtrl.dispose();
+    _usersSub?.cancel();
     super.dispose();
   }
 
@@ -114,87 +133,52 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
                     ),
                   ),
                 ),
+              // Indicador de carregamento inicial (só na primeira carga)
+              if (_usersLoading && _allUsers.isEmpty && !isSystemTab)
+                const LinearProgressIndicator(color: kGreen, backgroundColor: Colors.transparent),
               // Conteúdo das tabs
               Expanded(
                 child: TabBarView(
                   controller: _tabs,
                   children: [
                     // ── Tab 0: Pendentes ──────────────────────────────────
-                    StreamBuilder<List<UserModel>>(
-                      stream: AuthService.allUsersStream(),
-                      builder: (context, snap) {
-                        if (snap.connectionState == ConnectionState.waiting) {
-                          return const Center(child: CircularProgressIndicator(color: kGreen));
-                        }
-                        if (snap.hasError) {
-                          return Center(child: Text('Erro: ${snap.error}', style: const TextStyle(color: Colors.red)));
-                        }
-                        final pending = _filter(snap.data ?? [], UserStatus.pending);
-                        return _UserList(
-                          users: pending,
-                          emptyMsg: _emptyPendingMsg,
-                          emptyIcon: Icons.check_circle_outline_rounded,
-                          currentAdmin: widget.currentAdmin,
-                          isMaster: _isMaster,
-                          onApprove: _approve,
-                          onBlock: _block,
-                          showApprove: true,
-                          showBlock: true,
-                        );
-                      },
+                    _UserList(
+                      users: _filter(_allUsers, UserStatus.pending),
+                      emptyMsg: _emptyPendingMsg,
+                      emptyIcon: Icons.check_circle_outline_rounded,
+                      currentAdmin: widget.currentAdmin,
+                      isMaster: _isMaster,
+                      onApprove: _approve,
+                      onBlock: _block,
+                      showApprove: true,
+                      showBlock: true,
                     ),
                     // ── Tab 1: Aprovados ──────────────────────────────────
-                    StreamBuilder<List<UserModel>>(
-                      stream: AuthService.allUsersStream(),
-                      builder: (context, snap) {
-                        if (snap.connectionState == ConnectionState.waiting) {
-                          return const Center(child: CircularProgressIndicator(color: kGreen));
-                        }
-                        if (snap.hasError) {
-                          return Center(child: Text('Erro: ${snap.error}', style: const TextStyle(color: Colors.red)));
-                        }
-                        final approved = _filter(snap.data ?? [], UserStatus.approved);
-                        return _UserList(
-                          users: approved,
-                          emptyMsg: _emptyApprovedMsg,
-                          emptyIcon: Icons.people_outline_rounded,
-                          currentAdmin: widget.currentAdmin,
-                          isMaster: _isMaster,
-                          onBlock: _block,
-                          onPromote: _promote,
-                          onPromoteSupervisor: _isMaster ? _promoteSupervisor : null,
-                          onDemote: _isMaster ? _demote : null,
-                          showBlock: true,
-                          showPromote: true,
-                        );
-                      },
+                    _UserList(
+                      users: _filter(_allUsers, UserStatus.approved),
+                      emptyMsg: _emptyApprovedMsg,
+                      emptyIcon: Icons.people_outline_rounded,
+                      currentAdmin: widget.currentAdmin,
+                      isMaster: _isMaster,
+                      onBlock: _block,
+                      onPromote: _promote,
+                      onPromoteSupervisor: _isMaster ? _promoteSupervisor : null,
+                      onDemote: _isMaster ? _demote : null,
+                      showBlock: true,
+                      showPromote: true,
                     ),
                     // ── Tab 2: Bloqueados ─────────────────────────────────
-                    StreamBuilder<List<UserModel>>(
-                      stream: AuthService.allUsersStream(),
-                      builder: (context, snap) {
-                        if (snap.connectionState == ConnectionState.waiting) {
-                          return const Center(child: CircularProgressIndicator(color: kGreen));
-                        }
-                        if (snap.hasError) {
-                          return Center(child: Text('Erro: ${snap.error}', style: const TextStyle(color: Colors.red)));
-                        }
-                        final blocked = _filter(snap.data ?? [], UserStatus.blocked);
-                        return _UserList(
-                          users: blocked,
-                          emptyMsg: _emptyBlockedMsg,
-                          emptyIcon: Icons.verified_user_outlined,
-                          currentAdmin: widget.currentAdmin,
-                          isMaster: _isMaster,
-                          onApprove: _unblock,
-                          showApprove: true,
-                          approveBtnLabel: _unblockLabel,
-                        );
-                      },
+                    _UserList(
+                      users: _filter(_allUsers, UserStatus.blocked),
+                      emptyMsg: _emptyBlockedMsg,
+                      emptyIcon: Icons.verified_user_outlined,
+                      currentAdmin: widget.currentAdmin,
+                      isMaster: _isMaster,
+                      onApprove: _unblock,
+                      showApprove: true,
+                      approveBtnLabel: _unblockLabel,
                     ),
                     // ── Tab 3: Sistema ────────────────────────────────────
-                    // Web → maintenanceStream() usa REST polling
-                    // Nativo → SDK Firestore snapshots()
                     _SystemTab(
                       currentAdmin: widget.currentAdmin,
                       isMaster: _isMaster,
@@ -211,22 +195,18 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
           );
         },
       ),
-      // FAB com contagem de pendentes — funciona em web (REST) e nativo (SDK)
-      floatingActionButton: StreamBuilder<List<UserModel>>(
-        stream: AuthService.allUsersStream(),
-        builder: (context, snap) {
-          final all = snap.data ?? [];
-          final pendingCount = all.where((u) => u.isPending).length;
-          if (pendingCount == 0) return const SizedBox.shrink();
-          return FloatingActionButton.extended(
-            onPressed: () => _tabs.animateTo(0),
-            backgroundColor: Colors.orange,
-            icon: const Icon(Icons.notification_important_rounded, color: Colors.white),
-            label: Text('$pendingCount ${_pendingCountLabel(pendingCount)}',
-                style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w800)),
-          );
-        },
-      ),
+      // FAB com contagem de pendentes — lê do estado local, sem stream extra
+      floatingActionButton: Builder(builder: (_) {
+        final pendingCount = _allUsers.where((u) => u.isPending).length;
+        if (pendingCount == 0) return const SizedBox.shrink();
+        return FloatingActionButton.extended(
+          onPressed: () => _tabs.animateTo(0),
+          backgroundColor: Colors.orange,
+          icon: const Icon(Icons.notification_important_rounded, color: Colors.white),
+          label: Text('$pendingCount ${_pendingCountLabel(pendingCount)}',
+              style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w800)),
+        );
+      }),
     );
   }
 
