@@ -47,7 +47,15 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
     super.initState();
     _tabCtrl = TabController(length: 2, vsync: this);
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<AppProvider>().loadHistories();
+      final p = context.read<AppProvider>();
+      p.loadHistories();
+      p.loadPublicHistories(); // carrega comunidade logo na abertura da tela
+    });
+    // Quando o usuário muda para a aba Comunidade (índice 1), recarrega
+    _tabCtrl.addListener(() {
+      if (_tabCtrl.index == 1 && mounted) {
+        context.read<AppProvider>().loadPublicHistories();
+      }
     });
   }
 

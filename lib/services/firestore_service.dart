@@ -182,8 +182,13 @@ class FirestoreService {
 
   static Future<List<ClinicalHistoryModel>> loadHistories(String uid) async {
     try {
-      final snap = await _userHistories(uid).orderBy('updatedAt', descending: true).get();
-      return snap.docs.map((d) => ClinicalHistoryModel.fromJson(d.data())).toList();
+      // Sem orderBy — evita índice composto. Ordenação em memória.
+      final snap = await _userHistories(uid).get();
+      final list = snap.docs
+          .map((d) => ClinicalHistoryModel.fromJson(d.data()))
+          .toList();
+      list.sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
+      return list;
     } catch (_) {
       return [];
     }
@@ -248,11 +253,14 @@ class FirestoreService {
 
   static Future<List<ClinicalHistoryModel>> loadPublicHistories() async {
     try {
-      final snap = await _publicHistories
-          .orderBy('updatedAt', descending: true)
-          .limit(50)
-          .get();
-      return snap.docs.map((d) => ClinicalHistoryModel.fromJson(d.data())).toList();
+      // Sem orderBy — evita exigência de índice composto no Firestore.
+      // Ordenação feita em memória após o fetch.
+      final snap = await _publicHistories.limit(100).get();
+      final list = snap.docs
+          .map((d) => ClinicalHistoryModel.fromJson(d.data()))
+          .toList();
+      list.sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
+      return list.take(50).toList();
     } catch (_) {
       return [];
     }
