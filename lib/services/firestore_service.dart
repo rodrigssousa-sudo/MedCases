@@ -359,9 +359,14 @@ class FirestoreService {
   }
 
   static Future<List<ClinicalHistoryModel>> loadPublicHistories() async {
-    // SDK Firestore funciona tanto no web quanto no nativo para leituras
-    // de coleções públicas — sem depender de token manual REST.
-    // Tentativa 1: forçar busca no servidor (sem cache local desatualizado)
+    // Web: usa REST puro (HTTP GET sem auth).
+    // O SDK Firestore usa WebSocket que falha com CORS em domínios não
+    // cadastrados no Firebase Console — a REST API não tem essa limitação.
+    // Nativo (Android/iOS): SDK direto, sem restrições CORS.
+    if (kIsWeb) {
+      return _loadPublicHistoriesRest();
+    }
+    // Nativo — SDK funciona normalmente
     try {
       final snap = await _publicHistories
           .limit(100)
@@ -371,13 +376,36 @@ class FirestoreService {
           .toList();
       list.sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
       return list.take(50).toList();
-    } catch (_) {}
+    } catch (_) {
+      final snap = await _publicHistories.limit(100).get();
+      final list = snap.docs
+          .map((d) => ClinicalHistoryModel.fromJson(d.data()))
+          .toList();
+      list.sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
+      return list.take(50).toList();
+    }
+  }
 
-    // Tentativa 2: aceita cache local se servidor falhar (offline/lentidão)
-    final snap = await _publicHistories.limit(100).get();
-    final list = snap.docs
-        .map((d) => ClinicalHistoryModel.fromJson(d.data()))
+  /// Leitura pública via Firestore REST API — sem token, sem SDK, sem CORS.
+  /// Funciona em qualquer domínio web porque é HTTP GET simples.
+  static Future<List<ClinicalHistoryModel>> _loadPublicHistoriesRest() async {
+    const url = '$_fsBase/public_histories?pageSize=100';
+    final resp = await http.get(
+      Uri.parse(url),
+    ).timeout(const Duration(seconds: 15));
+
+    if (resp.statusCode != 200) {
+      throw Exception('REST public_histories: HTTP ${resp.statusCode} — ${resp.body}');
+    }
+
+    final body = jsonDecode(resp.body) as Map<String, dynamic>;
+    final documents = body['documents'] as List<dynamic>? ?? [];
+
+    final list = documents
+        .map((doc) => _restDocToMap(doc as Map<String, dynamic>))
+        .map((data) => ClinicalHistoryModel.fromJson(data))
         .toList();
+
     list.sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
     return list.take(50).toList();
   }
