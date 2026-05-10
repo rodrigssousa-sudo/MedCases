@@ -65,6 +65,30 @@ class FirestoreService {
     } catch (_) {}
   }
 
+  // ── Chave OpenAI — vinculada ao perfil do usuário no Firestore ────────────
+  /// Carrega a chave OpenAI do perfil do usuário.
+  /// Armazenada em users/{uid}/prefs/settings campo 'openAiKey'.
+  static Future<String> loadAiKey(String uid) async {
+    try {
+      final doc = await _userPrefs(uid).get();
+      if (!doc.exists) return '';
+      return (doc.data()?['openAiKey'] as String?) ?? '';
+    } catch (_) {
+      return '';
+    }
+  }
+
+  /// Salva (ou remove) a chave OpenAI no perfil Firestore do usuário.
+  /// Passa [key] vazio para remover a chave (modo local).
+  static Future<void> saveAiKey(String uid, String key) async {
+    try {
+      await _userPrefs(uid).set(
+        {'openAiKey': key},
+        SetOptions(merge: true),
+      );
+    } catch (_) {}
+  }
+
   static Future<void> updateDisplayName(String uid, String displayName) async {
     try {
       await _userDoc(uid).update({'displayName': displayName});

@@ -128,6 +128,9 @@ class AppProvider extends ChangeNotifier {
 
     // 2️⃣ Sincroniza Firestore em background — não bloqueia a UI
     _syncFromFirestore(user.uid);
+
+    // 3️⃣ Carrega chave OpenAI do Firestore em background (per-user)
+    _loadAiKeyFromFirestore(user.uid);
   }
 
   void clearUser() {
@@ -142,12 +145,36 @@ class AppProvider extends ChangeNotifier {
     _activeDrugId = '';
     _patient = PatientData();
     _hemo = HemoData();
+    // Limpa chave e histórico de IA ao fazer logout
+    _openAiKey = '';
+    _aiHistory.clear();
     notifyListeners();
   }
 
   void setFirebaseReady() {
     _firebaseReady = true;
     notifyListeners();
+  }
+
+  // ── Chave OpenAI — carregada do Firestore por UID ──────────────────────────
+  Future<void> _loadAiKeyFromFirestore(String uid) async {
+    try {
+      final key = await FirestoreService.loadAiKey(uid);
+      if (key.isNotEmpty) {
+        _openAiKey = key;
+        notifyListeners();
+        // Também persiste no cache local como fallback offline
+        final p = await SharedPreferences.getInstance();
+        await p.setString(_k('openAiKey', uid), key);
+      }
+    } catch (_) {
+      // Sem rede: tenta cache local com prefixo do usuário
+      try {
+        final p = await SharedPreferences.getInstance();
+        _openAiKey = p.getString(_k('openAiKey', uid)) ?? '';
+        if (_openAiKey.isNotEmpty) notifyListeners();
+      } catch (_) {}
+    }
   }
 
   // ── Sincronização background com Firestore ────────────────────────────────
@@ -195,8 +222,10 @@ class AppProvider extends ChangeNotifier {
       // Preferências globais (independentes de usuário)
       _lang     = p.getString('lang')     ?? 'es';
       _darkMode = p.getBool('darkMode')   ?? false;
-      // Chave de IA (global, não por usuário — é uma preferência do dispositivo)
-      _openAiKey = p.getString('openAiKey') ?? '';
+      // Chave de IA — lida com prefixo de usuário se disponível (fallback offline)
+      if (uid != null) {
+        _openAiKey = p.getString(_k('openAiKey', uid)) ?? '';
+      }
 
       // Dados por usuário (se uid disponível usa cache dedicado)
       final favKey   = _k('favDrugs',      uid);
@@ -237,7 +266,10 @@ class AppProvider extends ChangeNotifier {
       final p = await SharedPreferences.getInstance();
       await p.setString('lang',     _lang);
       await p.setBool('darkMode',   _darkMode);
-      await p.setString('openAiKey', _openAiKey);
+      // Chave de IA só persiste com prefixo de usuário (nunca global)
+      if (u != null && _openAiKey.isNotEmpty) {
+        await p.setString(_k('openAiKey', u), _openAiKey);
+      }
       await p.setStringList(_k('favDrugs',     u), _favDrugs.toList());
       await p.setStringList(_k('favProtocols', u), _favProtocols.toList());
       await p.setString(_k('customCases', u),
@@ -559,11 +591,20 @@ class AppProvider extends ChangeNotifier {
 
   // ── IA Clínica ────────────────────────────────────────────────────────────
 
-  /// Salva a chave OpenAI no estado e persiste localmente
+  /// Salva a chave OpenAI vinculada ao UID do usuário logado.
+  /// Persiste no Firestore (sync entre dispositivos) + cache local (offline).
   Future<void> setAiKey(String key) async {
+    if (_currentUser == null) return;
     _openAiKey = key.trim();
     notifyListeners();
-    await _saveLocal();
+    final uid = _currentUser!.uid;
+    // Persiste no Firestore do usuário
+    FirestoreService.saveAiKey(uid, _openAiKey).catchError((_) {});
+    // Persiste no cache local com prefixo do usuário (funciona offline)
+    try {
+      final p = await SharedPreferences.getInstance();
+      await p.setString(_k('openAiKey', uid), _openAiKey);
+    } catch (_) {}
   }
 
   /// Limpa o histórico de conversa da IA (nova conversa)

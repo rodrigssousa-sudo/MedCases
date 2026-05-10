@@ -190,14 +190,17 @@ class _AiScreenState extends State<AiScreen> {
 
   // ── Sheet de configuração da API key ────────────────────────────────────
   void _openAiSettings() {
+    final p = context.read<AppProvider>();
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (_) => _AiSettingsSheet(
-        initialKey: context.read<AppProvider>().openAiKey,
-        lang: context.read<AppProvider>().lang,
-        dark: context.read<AppProvider>().darkMode,
+        initialKey:  p.openAiKey,
+        userEmail:   p.userEmail,
+        userName:    p.userName,
+        lang:        p.lang,
+        dark:        p.darkMode,
         onSave: (key) async {
           await context.read<AppProvider>().setAiKey(key);
         },
@@ -890,15 +893,19 @@ class _AiErrorBanner extends StatelessWidget {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Sheet de configuração da API key
+// Sheet de configuração da API key — conta vinculada ao usuário logado
 // ─────────────────────────────────────────────────────────────────────────────
 class _AiSettingsSheet extends StatefulWidget {
   final String initialKey;
+  final String userEmail;   // e-mail da conta Firebase (já logada)
+  final String userName;    // nome do usuário (já logado)
   final String lang;
   final bool dark;
   final Future<void> Function(String key) onSave;
   const _AiSettingsSheet({
     required this.initialKey,
+    required this.userEmail,
+    required this.userName,
     required this.lang,
     required this.dark,
     required this.onSave,
@@ -913,37 +920,37 @@ class _AiSettingsSheetState extends State<_AiSettingsSheet> {
   bool _obscure    = true;
   bool _validating = false;
   bool _saved      = false;
+  bool _showField  = false; // começa escondido se já tem chave
   String? _error;
+
+  bool get _hasKey   => widget.initialKey.isNotEmpty;
+  bool get _isEs     => widget.lang == 'es';
 
   @override
   void initState() {
     super.initState();
     _ctrl = TextEditingController(text: widget.initialKey);
+    // Se ainda não tem chave, mostra o campo direto
+    _showField = !_hasKey;
   }
 
   @override
   void dispose() { _ctrl.dispose(); super.dispose(); }
 
-  bool get _isEs => widget.lang == 'es';
-
   Future<void> _save() async {
     final key = _ctrl.text.trim();
     if (key.isEmpty) {
-      // Limpar chave — volta ao modo local
       await widget.onSave('');
       if (mounted) {
         setState(() => _saved = true);
-        await Future.delayed(const Duration(milliseconds: 800));
+        await Future.delayed(const Duration(milliseconds: 700));
         if (mounted) Navigator.pop(context);
       }
       return;
     }
-
-    // Validar a chave antes de salvar
     setState(() { _validating = true; _error = null; });
     final valid = await AiService.validateKey(key);
     if (!mounted) return;
-
     if (valid) {
       await widget.onSave(key);
       setState(() { _validating = false; _saved = true; });
@@ -959,13 +966,32 @@ class _AiSettingsSheetState extends State<_AiSettingsSheet> {
     }
   }
 
+  Future<void> _disconnect() async {
+    await widget.onSave('');
+    if (mounted) Navigator.pop(context);
+  }
+
+  void _showInstructions() {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text(_isEs
+          ? 'Ve a platform.openai.com → API keys → Create new secret key'
+          : 'Acesse platform.openai.com → API keys → Create new secret key'),
+      behavior: SnackBarBehavior.floating,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      margin: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+      duration: const Duration(seconds: 6),
+    ));
+  }
+
   @override
   Widget build(BuildContext context) {
     final dark   = widget.dark;
     final bg     = dark ? const Color(0xFF0F1A14) : Colors.white;
     final cardBg = dark ? const Color(0xFF1A2820) : const Color(0xFFF5F7F5);
+    final divCol = dark ? Colors.white12 : Colors.black.withValues(alpha: 0.08);
     final text   = dark ? Colors.white : const Color(0xFF1A1A1A);
     final sub    = dark ? Colors.white54 : Colors.black54;
+    final green  = const Color(0xFF075f45);
 
     return Container(
       decoration: BoxDecoration(
@@ -973,198 +999,397 @@ class _AiSettingsSheetState extends State<_AiSettingsSheet> {
         borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
       ),
       padding: EdgeInsets.fromLTRB(
-        20, 12, 20, MediaQuery.of(context).viewInsets.bottom + 24),
-      child: Column(mainAxisSize: MainAxisSize.min, children: [
-        // Drag handle
-        Container(
-          width: 36, height: 4,
-          margin: const EdgeInsets.only(bottom: 20),
-          decoration: BoxDecoration(
-            color: dark ? Colors.white24 : Colors.black12,
-            borderRadius: BorderRadius.circular(2)),
-        ),
+          20, 12, 20, MediaQuery.of(context).viewInsets.bottom + 28),
+      child: SingleChildScrollView(
+        child: Column(mainAxisSize: MainAxisSize.min, children: [
 
-        // Título
-        Row(children: [
+          // ── Drag handle ──────────────────────────────────────────────────
           Container(
-            width: 38, height: 38,
+            width: 36, height: 4,
+            margin: const EdgeInsets.only(bottom: 18),
+            decoration: BoxDecoration(
+              color: dark ? Colors.white24 : Colors.black12,
+              borderRadius: BorderRadius.circular(2)),
+          ),
+
+          // ── Card de conta vinculada ──────────────────────────────────────
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: _hasKey
+                    ? [const Color(0xFF064E35), const Color(0xFF075f45)]
+                    : [
+                        dark ? const Color(0xFF1A2820) : const Color(0xFFF0F4F1),
+                        dark ? const Color(0xFF1E2E22) : const Color(0xFFE8F0EA),
+                      ],
+              ),
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              // Avatar + info da conta
+              Row(children: [
+                // Avatar com inicial do nome
+                Container(
+                  width: 42, height: 42,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: _hasKey
+                        ? Colors.white.withValues(alpha: 0.15)
+                        : green.withValues(alpha: 0.12),
+                  ),
+                  child: Center(
+                    child: Text(
+                      widget.userName.isNotEmpty
+                          ? widget.userName[0].toUpperCase()
+                          : (widget.userEmail.isNotEmpty
+                              ? widget.userEmail[0].toUpperCase()
+                              : '?'),
+                      style: TextStyle(
+                        fontSize: 18, fontWeight: FontWeight.w800,
+                        color: _hasKey ? Colors.white : green),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    if (widget.userName.isNotEmpty)
+                      Text(widget.userName,
+                        style: TextStyle(
+                          fontSize: 15, fontWeight: FontWeight.w700,
+                          color: _hasKey ? Colors.white : text),
+                        maxLines: 1, overflow: TextOverflow.ellipsis),
+                    Text(
+                      widget.userEmail.isNotEmpty
+                          ? widget.userEmail
+                          : (_isEs ? 'Sin cuenta' : 'Sem conta'),
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: _hasKey
+                            ? Colors.white.withValues(alpha: 0.7)
+                            : sub),
+                      maxLines: 1, overflow: TextOverflow.ellipsis),
+                  ],
+                )),
+                // Badge de status
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                    color: _hasKey
+                        ? Colors.white.withValues(alpha: 0.15)
+                        : green.withValues(alpha: 0.1),
+                    border: Border.all(
+                      color: _hasKey
+                          ? Colors.white.withValues(alpha: 0.3)
+                          : green.withValues(alpha: 0.25)),
+                  ),
+                  child: Row(mainAxisSize: MainAxisSize.min, children: [
+                    Container(
+                      width: 6, height: 6,
+                      margin: const EdgeInsets.only(right: 5),
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: _hasKey
+                            ? const Color(0xFF4ADE80)
+                            : (dark ? Colors.white38 : Colors.black26),
+                      ),
+                    ),
+                    Text(
+                      _hasKey
+                          ? (_isEs ? 'IA activa' : 'IA ativa')
+                          : (_isEs ? 'Sin clave' : 'Sem chave'),
+                      style: TextStyle(
+                        fontSize: 10, fontWeight: FontWeight.w700,
+                        color: _hasKey ? Colors.white : sub),
+                    ),
+                  ]),
+                ),
+              ]),
+
+              if (_hasKey) ...[
+                const SizedBox(height: 14),
+                Divider(color: Colors.white.withValues(alpha: 0.15), height: 1),
+                const SizedBox(height: 12),
+                // Chave mascarada
+                Row(children: [
+                  Icon(Icons.key_rounded, size: 13,
+                    color: Colors.white.withValues(alpha: 0.6)),
+                  const SizedBox(width: 6),
+                  Text(
+                    _isEs ? 'Clave OpenAI vinculada' : 'Chave OpenAI vinculada',
+                    style: TextStyle(
+                      fontSize: 11,
+                      color: Colors.white.withValues(alpha: 0.6))),
+                  const Spacer(),
+                  // Últimos 4 chars da chave
+                  Text(
+                    '••••${widget.initialKey.length > 4 ? widget.initialKey.substring(widget.initialKey.length - 4) : "••••"}',
+                    style: TextStyle(
+                      fontSize: 12, fontWeight: FontWeight.w700,
+                      color: Colors.white.withValues(alpha: 0.8),
+                      fontFamily: 'monospace')),
+                ]),
+                const SizedBox(height: 4),
+                // Modelo ativo
+                Row(children: [
+                  Icon(Icons.psychology_rounded, size: 13,
+                    color: Colors.white.withValues(alpha: 0.6)),
+                  const SizedBox(width: 6),
+                  Text('GPT-4o mini',
+                    style: TextStyle(
+                      fontSize: 11,
+                      color: Colors.white.withValues(alpha: 0.6))),
+                  const Spacer(),
+                  Text(
+                    _isEs ? 'Sinc. con tu cuenta' : 'Sync com sua conta',
+                    style: TextStyle(
+                      fontSize: 10,
+                      color: Colors.white.withValues(alpha: 0.5))),
+                ]),
+              ],
+            ]),
+          ),
+
+          const SizedBox(height: 16),
+
+          // ── Se tem chave: ações de gerenciamento ─────────────────────────
+          if (_hasKey && !_showField) ...[
+            // Trocar chave
+            _ActionTile(
+              dark: dark,
+              icon: Icons.edit_rounded,
+              iconColor: green,
+              label: _isEs ? 'Cambiar clave API' : 'Trocar chave API',
+              sub: _isEs
+                  ? 'Vincular una nueva clave a tu cuenta'
+                  : 'Vincular uma nova chave à sua conta',
+              onTap: () => setState(() { _showField = true; _ctrl.clear(); }),
+            ),
+            const SizedBox(height: 8),
+            // Desconectar
+            _ActionTile(
+              dark: dark,
+              icon: Icons.link_off_rounded,
+              iconColor: const Color(0xFFEF4444),
+              label: _isEs ? 'Desconectar IA' : 'Desconectar IA',
+              sub: _isEs
+                  ? 'Volver al modo local (reglas clínicas integradas)'
+                  : 'Voltar ao modo local (regras clínicas integradas)',
+              onTap: _disconnect,
+              danger: true,
+            ),
+          ],
+
+          // ── Campo de chave (primeira vez ou ao trocar) ───────────────────
+          if (_showField) ...[
+            // Info rápida
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: cardBg,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: divCol)),
+              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Row(children: [
+                  const Icon(Icons.info_outline_rounded, size: 13, color: Color(0xFF075f45)),
+                  const SizedBox(width: 6),
+                  Text(
+                    _isEs ? 'Clave vinculada a tu cuenta' : 'Chave vinculada à sua conta',
+                    style: const TextStyle(
+                      fontSize: 12, fontWeight: FontWeight.w700,
+                      color: Color(0xFF075f45))),
+                ]),
+                const SizedBox(height: 5),
+                Text(
+                  _isEs
+                      ? 'A chave fica salva no teu perfil Firebase — disponível em todos os dispositivos automaticamente.'
+                      : 'A chave fica salva no seu perfil Firebase — disponível em todos os dispositivos automaticamente.',
+                  style: TextStyle(fontSize: 11, color: sub, height: 1.55)),
+              ]),
+            ),
+            const SizedBox(height: 12),
+
+            // Campo
+            TextField(
+              controller: _ctrl,
+              obscureText: _obscure,
+              autofocus: true,
+              style: TextStyle(
+                fontSize: 13, color: text, fontFamily: 'monospace'),
+              decoration: InputDecoration(
+                hintText: 'sk-...',
+                hintStyle: TextStyle(
+                  color: sub, fontFamily: 'monospace', fontSize: 13),
+                labelText: _isEs
+                    ? 'Clave OpenAI (sk-...)'
+                    : 'Chave OpenAI (sk-...)',
+                labelStyle: TextStyle(color: sub, fontSize: 13),
+                filled: true, fillColor: cardBg,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide.none),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(color: green, width: 1.5)),
+                suffixIcon: IconButton(
+                  icon: Icon(
+                    _obscure
+                        ? Icons.visibility_off_rounded
+                        : Icons.visibility_rounded,
+                    size: 18, color: sub),
+                  onPressed: () => setState(() => _obscure = !_obscure)),
+                errorText: _error,
+                errorMaxLines: 2,
+              ),
+            ),
+            const SizedBox(height: 10),
+
+            // Link para obter chave
+            GestureDetector(
+              onTap: _showInstructions,
+              child: Row(mainAxisSize: MainAxisSize.min, children: [
+                Icon(Icons.open_in_new_rounded, size: 12, color: green),
+                const SizedBox(width: 4),
+                Text(
+                  _isEs
+                      ? 'Obtener clave en platform.openai.com'
+                      : 'Obter chave em platform.openai.com',
+                  style: TextStyle(
+                    fontSize: 11, color: green,
+                    fontWeight: FontWeight.w600)),
+              ]),
+            ),
+            const SizedBox(height: 16),
+
+            // Botões
+            Row(children: [
+              if (_hasKey) ...[
+                Expanded(
+                  child: OutlinedButton(
+                    onPressed: _validating
+                        ? null
+                        : () => setState(() { _showField = false; _error = null; }),
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: sub,
+                      side: BorderSide(color: dark ? Colors.white24 : Colors.black12),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12)),
+                      padding: const EdgeInsets.symmetric(vertical: 13)),
+                    child: Text(_isEs ? 'Cancelar' : 'Cancelar',
+                      style: const TextStyle(fontSize: 13)),
+                  ),
+                ),
+                const SizedBox(width: 10),
+              ],
+              Expanded(
+                flex: 2,
+                child: ElevatedButton.icon(
+                  onPressed: _validating ? null : _save,
+                  icon: _saved
+                      ? const Icon(Icons.check_rounded, size: 16)
+                      : _validating
+                          ? const SizedBox(
+                              width: 16, height: 16,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2, color: Colors.white))
+                          : const Icon(Icons.link_rounded, size: 16),
+                  label: Text(
+                    _saved
+                        ? (_isEs ? '¡Conectado!' : 'Conectado!')
+                        : _validating
+                            ? (_isEs ? 'Validando...' : 'Validando...')
+                            : (_isEs ? 'Conectar IA' : 'Conectar IA'),
+                    style: const TextStyle(
+                      fontSize: 13, fontWeight: FontWeight.w700)),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: _saved
+                        ? const Color(0xFF16A34A)
+                        : green,
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12)),
+                    padding: const EdgeInsets.symmetric(vertical: 14)),
+                ),
+              ),
+            ]),
+          ],
+        ]),
+      ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Tile de ação reutilizável dentro do settings sheet
+// ─────────────────────────────────────────────────────────────────────────────
+class _ActionTile extends StatelessWidget {
+  final bool dark;
+  final IconData icon;
+  final Color iconColor;
+  final String label;
+  final String sub;
+  final VoidCallback onTap;
+  final bool danger;
+  const _ActionTile({
+    required this.dark,
+    required this.icon,
+    required this.iconColor,
+    required this.label,
+    required this.sub,
+    required this.onTap,
+    this.danger = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final bg   = dark ? const Color(0xFF1A2820) : const Color(0xFFF5F7F5);
+    final text = dark ? Colors.white : const Color(0xFF1A1A1A);
+    final subC = dark ? Colors.white54 : Colors.black45;
+
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 13),
+        decoration: BoxDecoration(
+          color: bg,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: danger
+                ? const Color(0xFFEF4444).withValues(alpha: 0.25)
+                : (dark ? Colors.white10 : Colors.black.withValues(alpha: 0.08))),
+        ),
+        child: Row(children: [
+          Container(
+            width: 34, height: 34,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: const Color(0xFF075f45).withValues(alpha: 0.15),
-            ),
-            child: const Center(
-              child: Icon(Icons.key_rounded, color: Color(0xFF075f45), size: 20)),
+              color: iconColor.withValues(alpha: 0.12)),
+            child: Center(child: Icon(icon, size: 17, color: iconColor)),
           ),
           const SizedBox(width: 12),
           Expanded(child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                _isEs ? 'Configuración de IA' : 'Configuração de IA',
+              Text(label,
                 style: TextStyle(
-                  fontSize: 17, fontWeight: FontWeight.w800, color: text)),
-              Text(
-                _isEs ? 'Conecta tu clave OpenAI' : 'Conecte sua chave OpenAI',
-                style: TextStyle(fontSize: 12, color: sub)),
+                  fontSize: 14, fontWeight: FontWeight.w600,
+                  color: danger ? const Color(0xFFEF4444) : text)),
+              Text(sub,
+                style: TextStyle(fontSize: 11, color: subC)),
             ],
           )),
+          Icon(Icons.chevron_right_rounded, size: 18,
+            color: danger
+                ? const Color(0xFFEF4444).withValues(alpha: 0.6)
+                : subC),
         ]),
-
-        const SizedBox(height: 20),
-
-        // Info card
-        Container(
-          padding: const EdgeInsets.all(14),
-          decoration: BoxDecoration(
-            color: cardBg,
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Row(children: [
-              const Icon(Icons.info_outline_rounded,
-                size: 14, color: Color(0xFF075f45)),
-              const SizedBox(width: 6),
-              Text(
-                _isEs ? '¿Cómo funciona?' : 'Como funciona?',
-                style: const TextStyle(
-                  fontSize: 12, fontWeight: FontWeight.w700,
-                  color: Color(0xFF075f45))),
-            ]),
-            const SizedBox(height: 6),
-            Text(
-              _isEs
-                  ? '• Sin clave: modo local (reglas clínicas integradas)\n'
-                    '• Con clave: GPT-4o mini real con contexto de protocolos y fármacos del app\n'
-                    '• La clave se guarda solo en este dispositivo'
-                  : '• Sem chave: modo local (regras clínicas integradas)\n'
-                    '• Com chave: GPT-4o mini real com contexto de protocolos e fármacos do app\n'
-                    '• A chave é salva somente neste dispositivo',
-              style: TextStyle(fontSize: 11, color: sub, height: 1.6)),
-          ]),
-        ),
-
-        const SizedBox(height: 16),
-
-        // Campo de chave
-        TextField(
-          controller: _ctrl,
-          obscureText: _obscure,
-          style: TextStyle(fontSize: 13, color: text, fontFamily: 'monospace'),
-          decoration: InputDecoration(
-            hintText: 'sk-...',
-            hintStyle: TextStyle(color: sub, fontFamily: 'monospace', fontSize: 13),
-            labelText: _isEs ? 'Clave OpenAI (sk-...)' : 'Chave OpenAI (sk-...)',
-            labelStyle: TextStyle(color: sub, fontSize: 13),
-            filled: true,
-            fillColor: cardBg,
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide.none),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: Color(0xFF075f45), width: 1.5)),
-            suffixIcon: IconButton(
-              icon: Icon(
-                _obscure ? Icons.visibility_off_rounded : Icons.visibility_rounded,
-                size: 18, color: sub),
-              onPressed: () => setState(() => _obscure = !_obscure),
-            ),
-            errorText: _error,
-            errorMaxLines: 2,
-          ),
-        ),
-
-        const SizedBox(height: 12),
-
-        // Instrução de onde obter a chave
-        GestureDetector(
-          onTap: () {
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: Text(_isEs
-                  ? 'Ve a platform.openai.com → API keys → Create new secret key'
-                  : 'Acesse platform.openai.com → API keys → Create new secret key'),
-              behavior: SnackBarBehavior.floating,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10)),
-              margin: const EdgeInsets.fromLTRB(16, 0, 16, 12),
-              duration: const Duration(seconds: 5),
-            ));
-          },
-          child: Row(mainAxisSize: MainAxisSize.min, children: [
-            const Icon(Icons.open_in_new_rounded,
-              size: 13, color: Color(0xFF075f45)),
-            const SizedBox(width: 4),
-            Text(
-              _isEs
-                  ? 'Obtener clave en platform.openai.com'
-                  : 'Obter chave em platform.openai.com',
-              style: const TextStyle(
-                fontSize: 11, color: Color(0xFF075f45),
-                fontWeight: FontWeight.w600)),
-          ]),
-        ),
-
-        const SizedBox(height: 20),
-
-        // Botões
-        Row(children: [
-          // Remover chave (modo local)
-          if (widget.initialKey.isNotEmpty) ...[
-            Expanded(
-              child: OutlinedButton.icon(
-                onPressed: _validating ? null : () async {
-                  _ctrl.clear();
-                  await widget.onSave('');
-                  if (mounted) Navigator.pop(context);
-                },
-                icon: const Icon(Icons.key_off_rounded, size: 16),
-                label: Text(_isEs ? 'Modo local' : 'Modo local',
-                  style: const TextStyle(fontSize: 13)),
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: sub,
-                  side: BorderSide(color: dark ? Colors.white24 : Colors.black12),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12)),
-                  padding: const EdgeInsets.symmetric(vertical: 12),
-                ),
-              ),
-            ),
-            const SizedBox(width: 10),
-          ],
-          // Salvar/Validar
-          Expanded(
-            flex: 2,
-            child: ElevatedButton.icon(
-              onPressed: _validating ? null : _save,
-              icon: _saved
-                  ? const Icon(Icons.check_rounded, size: 16)
-                  : _validating
-                      ? const SizedBox(
-                          width: 16, height: 16,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2, color: Colors.white))
-                      : const Icon(Icons.save_rounded, size: 16),
-              label: Text(
-                _saved
-                    ? (_isEs ? '¡Guardado!' : 'Salvo!')
-                    : _validating
-                        ? (_isEs ? 'Validando...' : 'Validando...')
-                        : (_isEs ? 'Guardar y conectar' : 'Salvar e conectar'),
-                style: const TextStyle(
-                  fontSize: 13, fontWeight: FontWeight.w700)),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: _saved
-                    ? const Color(0xFF16A34A)
-                    : const Color(0xFF075f45),
-                foregroundColor: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12)),
-                padding: const EdgeInsets.symmetric(vertical: 14),
-              ),
-            ),
-          ),
-        ]),
-      ]),
+      ),
     );
   }
 }
