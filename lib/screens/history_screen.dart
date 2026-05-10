@@ -11,6 +11,7 @@ import 'dart:js' as js;
 import '../providers/app_provider.dart';
 import '../models/clinical_history_model.dart';
 import '../services/firestore_service.dart';
+import '../services/suggestion_service.dart';
 import '../widgets/common_widgets.dart';
 
 // Helper global — formata ISO para 'dd/mm/yyyy às hh:mm'
@@ -1521,21 +1522,21 @@ class _HistoryEditorState extends State<_HistoryEditor> {
 
   // ── Seção 1: Anamnese ─────────────────────────────────────────────────────
   Widget _buildAnamnesisSection() => Column(children: [
-    _EditorField('Queixa principal *', _ctrls['chiefComplaint']!, hint: 'Dor torácica há 2h', multiline: true, onMic: () => _startStt('chiefComplaint')),
+    _EditorField('Queixa principal *', _ctrls['chiefComplaint']!, hint: 'Dor torácica há 2h', multiline: true, onMic: () => _startStt('chiefComplaint'), fieldKey: 'chiefComplaint'),
     const SizedBox(height: 10),
-    _EditorField('História da doença atual (HDA)', _ctrls['hpi']!, hint: 'Descrever cronologia, características, fatores...', multiline: true, lines: 5, onMic: () => _startStt('hpi')),
+    _EditorField('História da doença atual (HDA)', _ctrls['hpi']!, hint: 'Descrever cronologia, características, fatores...', multiline: true, lines: 5, onMic: () => _startStt('hpi'), fieldKey: 'hpi'),
     const SizedBox(height: 10),
-    _EditorField('Antecedentes pessoais', _ctrls['pastHistory']!, hint: 'HAS, DM2, IAM prévio, cirurgias...', multiline: true, onMic: () => _startStt('pastHistory')),
+    _EditorField('Antecedentes pessoais', _ctrls['pastHistory']!, hint: 'HAS, DM2, IAM prévio, cirurgias...', multiline: true, onMic: () => _startStt('pastHistory'), fieldKey: 'pastHistory'),
     const SizedBox(height: 10),
-    _EditorField('Antecedentes familiares', _ctrls['familyHistory']!, hint: 'Pai: IAM aos 55 anos. Mãe: DM2...', multiline: true, onMic: () => _startStt('familyHistory')),
+    _EditorField('Antecedentes familiares', _ctrls['familyHistory']!, hint: 'Pai: IAM aos 55 anos. Mãe: DM2...', multiline: true, onMic: () => _startStt('familyHistory'), fieldKey: 'familyHistory'),
     const SizedBox(height: 10),
-    _EditorField('História social', _ctrls['socialHistory']!, hint: 'Tabagismo, etilismo, drogas, atividade física, profissão...', multiline: true, onMic: () => _startStt('socialHistory')),
+    _EditorField('História social', _ctrls['socialHistory']!, hint: 'Tabagismo, etilismo, drogas, atividade física, profissão...', multiline: true, onMic: () => _startStt('socialHistory'), fieldKey: 'socialHistory'),
     const SizedBox(height: 10),
-    _EditorField('Medicamentos em uso', _ctrls['medications']!, hint: 'AAS 100mg/dia, metformina 850mg 2x/dia...', multiline: true, onMic: () => _startStt('medications')),
+    _EditorField('Medicamentos em uso', _ctrls['medications']!, hint: 'AAS 100mg/dia, metformina 850mg 2x/dia...', multiline: true, onMic: () => _startStt('medications'), fieldKey: 'medications'),
     const SizedBox(height: 10),
-    _EditorField('Alergias', _ctrls['allergies']!, hint: 'Penicilina (urticária), dipirona (angioedema)...', multiline: true, onMic: () => _startStt('allergies')),
+    _EditorField('Alergias', _ctrls['allergies']!, hint: 'Penicilina (urticária), dipirona (angioedema)...', multiline: true, onMic: () => _startStt('allergies'), fieldKey: 'allergies'),
     const SizedBox(height: 10),
-    _EditorField('Revisão de sistemas', _ctrls['reviewOfSystems']!, hint: 'Cardiovascular, respiratório, GI, neurológico...', multiline: true, onMic: () => _startStt('reviewOfSystems')),
+    _EditorField('Revisão de sistemas', _ctrls['reviewOfSystems']!, hint: 'Cardiovascular, respiratório, GI, neurológico...', multiline: true, onMic: () => _startStt('reviewOfSystems'), fieldKey: 'reviewOfSystems'),
   ]);
 
   // ── Seção 2: Exame físico ──────────────────────────────────────────────────
@@ -1546,12 +1547,12 @@ class _HistoryEditorState extends State<_HistoryEditor> {
       onMic: () => _startStt('vitalSigns'),
     ),
     const SizedBox(height: 10),
-    _EditorField('Exame físico por sistemas', _ctrls['physicalExam']!, hint: 'Geral: BEG, corado, hidratado...\nCV: RCR 2T, sem sopros...\nTórax: MV+ bilateral, sem RA...\nAbdome: RHA+, indolor...', multiline: true, lines: 8, onMic: () => _startStt('physicalExam')),
+    _EditorField('Exame físico por sistemas', _ctrls['physicalExam']!, hint: 'Geral: BEG, corado, hidratado...\nCV: RCR 2T, sem sopros...\nTórax: MV+ bilateral, sem RA...\nAbdome: RHA+, indolor...', multiline: true, lines: 8, onMic: () => _startStt('physicalExam'), fieldKey: 'physicalExam'),
     const SizedBox(height: 10),
     // Diagnóstico logo após o exame físico
-    _EditorField('Hipótese diagnóstica principal', _ctrls['workingDiagnosis']!, hint: 'Síndrome Coronariana Aguda STEMI anterior'),
+    _EditorField('Hipótese diagnóstica principal', _ctrls['workingDiagnosis']!, hint: 'Síndrome Coronariana Aguda STEMI anterior', fieldKey: 'workingDiagnosis'),
     const SizedBox(height: 10),
-    _EditorField('Diagnóstico diferencial', _ctrls['differentialDx']!, hint: 'Pericardite aguda, dissecção aórtica, TEP...', multiline: true),
+    _EditorField('Diagnóstico diferencial', _ctrls['differentialDx']!, hint: 'Pericardite aguda, dissecção aórtica, TEP...', multiline: true, fieldKey: 'differentialDx'),
     const SizedBox(height: 10),
     Row(children: [
       Expanded(flex: 2, child: _EditorField('Diagnóstico final', _ctrls['finalDiagnosis']!, hint: 'IAM STEMI anterior')),
@@ -1569,14 +1570,14 @@ class _HistoryEditorState extends State<_HistoryEditor> {
     _EcgStructuredWidget(controller: _ctrls['otherResults']!),
     const SizedBox(height: 10),
     // ── Exames de imagem ───────────────────────────────────────────────────
-    _EditorField('Exames de imagem / Outros', _ctrls['imagingResults']!, hint: 'RX tórax: sem congestão, ICT normal...\nEco: FE 48%, hipocinesia anterior...\nTC crânio: sem lesões agudas...', multiline: true, lines: 5),
+    _EditorField('Exames de imagem / Outros', _ctrls['imagingResults']!, hint: 'RX tórax: sem congestão, ICT normal...\nEco: FE 48%, hipocinesia anterior...\nTC crânio: sem lesões agudas...', multiline: true, lines: 5, fieldKey: 'imagingResults'),
   ]);
 
   // ── Seção 4: Conduta / Tratamento ────────────────────────────────────────
   Widget _buildTreatmentSection() => Column(children: [
-    _EditorField('Plano terapêutico / Conduta', _ctrls['treatmentPlan']!, hint: '1. AAS 300mg VO imediato\n2. Ticagrelor 180mg VO\n3. Heparina NF EV\n4. Ativar hemodinâmica (meta porta-balão < 90min)...', multiline: true, lines: 7, onMic: () => _startStt('treatmentPlan')),
+    _EditorField('Plano terapêutico / Conduta', _ctrls['treatmentPlan']!, hint: '1. AAS 300mg VO imediato\n2. Ticagrelor 180mg VO\n3. Heparina NF EV\n4. Ativar hemodinâmica (meta porta-balão < 90min)...', multiline: true, lines: 7, onMic: () => _startStt('treatmentPlan'), fieldKey: 'treatmentPlan'),
     const SizedBox(height: 10),
-    _EditorField('Procedimentos realizados', _ctrls['procedures']!, hint: 'Cateterismo + angioplastia com stent em DA proximal...', multiline: true, onMic: () => _startStt('procedures')),
+    _EditorField('Procedimentos realizados', _ctrls['procedures']!, hint: 'Cateterismo + angioplastia com stent em DA proximal...', multiline: true, onMic: () => _startStt('procedures'), fieldKey: 'procedures'),
   ]);
 
   // ── Seção 5: Evolução ─────────────────────────────────────────────────────
@@ -1650,9 +1651,9 @@ class _HistoryEditorState extends State<_HistoryEditor> {
       ));
     })),
     const SizedBox(height: 14),
-    _EditorField('Condições de alta', _ctrls['dischargeCondition']!, hint: 'BEG, estável, orientado, tolerando VO...', multiline: true),
+    _EditorField('Condições de alta', _ctrls['dischargeCondition']!, hint: 'BEG, estável, orientado, tolerando VO...', multiline: true, fieldKey: 'dischargeCondition'),
     const SizedBox(height: 10),
-    _EditorField('Seguimento / Orientações', _ctrls['followUp']!, hint: 'Retorno em 7 dias com cardiologista. Manter AAS + ticagrelor por 12 meses...', multiline: true),
+    _EditorField('Seguimento / Orientações', _ctrls['followUp']!, hint: 'Retorno em 7 dias com cardiologista. Manter AAS + ticagrelor por 12 meses...', multiline: true, fieldKey: 'followUp'),
   ]);
 }
 
@@ -1660,24 +1661,120 @@ class _HistoryEditorState extends State<_HistoryEditor> {
 // WIDGETS AUXILIARES
 // ─────────────────────────────────────────────────────────────────────────────
 
-class _EditorField extends StatelessWidget {
+class _EditorField extends StatefulWidget {
   final String label;
   final TextEditingController ctrl;
   final String hint;
   final bool multiline, numeric;
   final int lines;
-  final VoidCallback? onMic;  // null = sem botão de mic
-  const _EditorField(this.label, this.ctrl, {required this.hint, this.multiline = false, this.numeric = false, this.lines = 3, this.onMic});
+  final VoidCallback? onMic;
+  /// Chave usada para persistir sugestões adaptativas (ex: 'hpi', 'physicalExam').
+  /// Se null, autocomplete não é habilitado para este campo.
+  final String? fieldKey;
+
+  const _EditorField(this.label, this.ctrl, {
+    required this.hint,
+    this.multiline = false,
+    this.numeric = false,
+    this.lines = 3,
+    this.onMic,
+    this.fieldKey,
+  });
+
+  @override
+  State<_EditorField> createState() => _EditorFieldState();
+}
+
+class _EditorFieldState extends State<_EditorField> {
+  List<String> _suggestions = [];
+  bool _showSuggestions = false;
+  Timer? _debounce;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.fieldKey != null) {
+      widget.ctrl.addListener(_onTextChanged);
+    }
+  }
+
+  @override
+  void dispose() {
+    _debounce?.cancel();
+    if (widget.fieldKey != null) {
+      widget.ctrl.removeListener(_onTextChanged);
+    }
+    super.dispose();
+  }
+
+  void _onTextChanged() {
+    if (!mounted) return;
+    _debounce?.cancel();
+    _debounce = Timer(const Duration(milliseconds: 300), () async {
+      if (!mounted) return;
+      final text = widget.ctrl.text;
+      // Pega a última palavra/frase digitada após pontuação ou quebra de linha
+      final query = _getActiveQuery(text);
+      if (query.length < 3) {
+        if (_showSuggestions) setState(() { _showSuggestions = false; _suggestions = []; });
+        return;
+      }
+      final sugs = await SuggestionService.getSuggestions(widget.fieldKey!, query, limit: 5);
+      if (!mounted) return;
+      setState(() {
+        _suggestions = sugs;
+        _showSuggestions = sugs.isNotEmpty;
+      });
+    });
+  }
+
+  /// Extrai o fragmento de texto atual que o usuário está digitando
+  /// (texto após o último ponto, vírgula, quebra de linha ou início).
+  String _getActiveQuery(String text) {
+    if (text.isEmpty) return '';
+    final segments = text.split(RegExp(r'[.;\n,]'));
+    final last = segments.last.trim();
+    return last;
+  }
+
+  /// Aplica a sugestão selecionada pelo usuário.
+  void _applySuggestion(String suggestion) {
+    final text = widget.ctrl.text;
+    // Encontra onde começa o fragmento atual
+    final lastBreak = text.lastIndexOf(RegExp(r'[.;\n,]'));
+    String newText;
+    if (lastBreak == -1) {
+      // Campo inteiro é o fragmento atual
+      newText = suggestion;
+    } else {
+      // Preserva tudo antes do último separador + adiciona sugestão
+      newText = '${text.substring(0, lastBreak + 1)} $suggestion';
+    }
+    widget.ctrl.text = newText;
+    // Posiciona cursor no final
+    widget.ctrl.selection = TextSelection.collapsed(offset: newText.length);
+    setState(() { _showSuggestions = false; _suggestions = []; });
+  }
+
+  /// Salva o conteúdo do campo ao perder foco (quando o usuário termina de digitar).
+  void _saveSuggestions() {
+    final key = widget.fieldKey;
+    if (key == null) return;
+    final text = widget.ctrl.text.trim();
+    if (text.length < 3) return;
+    SuggestionService.saveEntry(key, text);
+  }
 
   @override
   Widget build(BuildContext context) {
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      // ── Header: label + botão mic ──────────────────────────────────────────
       Row(children: [
-        Text(label, style: const TextStyle(fontSize: 9, fontWeight: FontWeight.w900, letterSpacing: 1.4, color: Color(0xFF888888))),
-        if (onMic != null) ...[
+        Text(widget.label, style: const TextStyle(fontSize: 9, fontWeight: FontWeight.w900, letterSpacing: 1.4, color: Color(0xFF888888))),
+        if (widget.onMic != null) ...[
           const Spacer(),
           GestureDetector(
-            onTap: onMic,
+            onTap: widget.onMic,
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
               decoration: BoxDecoration(
@@ -1695,8 +1792,71 @@ class _EditorField extends StatelessWidget {
         ],
       ]),
       const SizedBox(height: 5),
-      MedInput(controller: ctrl, hintText: hint, maxLines: multiline ? lines : 1,
-        keyboardType: numeric ? TextInputType.number : multiline ? TextInputType.multiline : null),
+      // ── Campo de texto ─────────────────────────────────────────────────────
+      Focus(
+        onFocusChange: (hasFocus) {
+          if (!hasFocus) {
+            _saveSuggestions();
+            if (_showSuggestions) setState(() { _showSuggestions = false; });
+          }
+        },
+        child: MedInput(
+          controller: widget.ctrl,
+          hintText: widget.hint,
+          maxLines: widget.multiline ? widget.lines : 1,
+          keyboardType: widget.numeric
+              ? TextInputType.number
+              : widget.multiline
+                  ? TextInputType.multiline
+                  : null,
+        ),
+      ),
+      // ── Chips de sugestão adaptativa ───────────────────────────────────────
+      if (_showSuggestions && _suggestions.isNotEmpty) ...[
+        const SizedBox(height: 6),
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            children: [
+              // Ícone indicador
+              const Padding(
+                padding: EdgeInsets.only(right: 6),
+                child: Icon(Icons.auto_awesome_rounded, size: 12, color: Color(0xFFC5A365)),
+              ),
+              ..._suggestions.map((sug) => Padding(
+                padding: const EdgeInsets.only(right: 6),
+                child: GestureDetector(
+                  onTap: () => _applySuggestion(sug),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20),
+                      color: const Color(0xFFC5A365).withValues(alpha: 0.10),
+                      border: Border.all(color: const Color(0xFFC5A365).withValues(alpha: 0.40)),
+                    ),
+                    child: Text(
+                      sug.length > 40 ? '${sug.substring(0, 40)}…' : sug,
+                      style: const TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w700,
+                        color: Color(0xFF8B6914),
+                      ),
+                    ),
+                  ),
+                ),
+              )),
+              // Botão para dispensar sugestões
+              GestureDetector(
+                onTap: () => setState(() { _showSuggestions = false; }),
+                child: const Padding(
+                  padding: EdgeInsets.only(left: 2),
+                  child: Icon(Icons.close_rounded, size: 14, color: Color(0xFFBBBBBB)),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
     ]);
   }
 }
@@ -2091,7 +2251,7 @@ class _VitalSignsWidgetState extends State<_VitalSignsWidget> {
     super.dispose();
   }
 
-  Widget _vsField(String label, TextEditingController ctrl, String unit, {String hint = '', bool wide = false}) {
+  Widget _vsField(String label, TextEditingController ctrl, String unit, {String hint = '', bool wide = false, bool decimal = false}) {
     return SizedBox(
       width: wide ? double.infinity : null,
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -2103,7 +2263,12 @@ class _VitalSignsWidgetState extends State<_VitalSignsWidget> {
             height: 36,
             child: TextField(
               controller: ctrl,
-              keyboardType: TextInputType.number,
+              keyboardType: decimal
+                  ? const TextInputType.numberWithOptions(decimal: true, signed: false)
+                  : TextInputType.number,
+              inputFormatters: decimal
+                  ? [FilteringTextInputFormatter.allow(RegExp(r'[0-9.,]'))]
+                  : [FilteringTextInputFormatter.digitsOnly],
               style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w800),
               decoration: InputDecoration(
                 isDense: true,
@@ -2186,10 +2351,10 @@ class _VitalSignsWidgetState extends State<_VitalSignsWidget> {
           ]),
           _vsField('FC', _fc, 'bpm', hint: '80'),
           _vsField('FR', _fr, 'irpm', hint: '16'),
-          _vsField('Temp', _temp, '°C', hint: '36,5'),
-          _vsField('SpO₂', _spo2, '%', hint: '98'),
-          _vsField('Dextro', _dext, 'mg/dL', hint: '100'),
-          _vsField('Peso', _peso, 'kg', hint: '70', wide: true),
+          _vsField('Temp', _temp, '°C', hint: '36,5', decimal: true),
+          _vsField('SpO₂', _spo2, '%', hint: '98', decimal: true),
+          _vsField('Dextro', _dext, 'mg/dL', hint: '100', decimal: true),
+          _vsField('Peso', _peso, 'kg', hint: '70', wide: true, decimal: true),
         ]),
         if (widget.controller.text.isNotEmpty) ...[
           const SizedBox(height: 8),

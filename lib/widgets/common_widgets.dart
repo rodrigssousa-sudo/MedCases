@@ -239,9 +239,8 @@ class MedInput extends StatelessWidget {
       onChanged: onChanged,
       maxLines: maxLines,
       textInputAction: textInputAction ?? (maxLines == 1 ? TextInputAction.next : TextInputAction.newline),
-      enableSuggestions: false,
-      spellCheckConfiguration: const SpellCheckConfiguration.disabled(),
-      autocorrect: false,
+      enableSuggestions: true,
+      autocorrect: true,
       style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 15, color: kDark),
       decoration: InputDecoration(
         hintText: hintText,
