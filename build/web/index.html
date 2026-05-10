@@ -26,6 +26,12 @@
   <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
   <link rel="dns-prefetch" href="https://www.gstatic.com">
 
+  <!-- Firebase JS SDK — OBRIGATÓRIO para flutter_web_plugin do firebase_core funcionar -->
+  <!-- Deve estar no <head> ANTES do flutter_bootstrap.js ser carregado              -->
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+
   <!-- Pré-carregar os recursos críticos de boot -->
   <link rel="preload" href="flutter_bootstrap.js" as="script">
   <link rel="preload" href="main.dart.js" as="script">

@@ -44,10 +44,15 @@ void main() async {
     // Já concluído — Future.value() resolve imediatamente no FutureBuilder
     _firebaseInit = Future.value();
   } catch (e) {
-    // Falha real de configuração (ex: firebase_options errado)
-    // _AuthGate mostra LoginScreen graciosamente
+    // Falha real de configuração (ex: firebase_options errado, JS SDK ausente)
+    // _AuthGate mostra LoginScreen graciosamente via snapshot.hasError
     debugPrint('[MedCases] Firebase.initializeApp falhou: $e');
-    _firebaseInit = Future.error(e);
+    // CRÍTICO: usar Future.error() direto sem .catchError() faz o Dart emitir
+    // um "Uncaught Error" na zona global quando nenhum listener consome o erro
+    // antes do GC. Resolvemos capturando o erro antecipadamente com catchError,
+    // tornando o Future "consumido" e seguro para o FutureBuilder.
+    _firebaseInit = Future<void>.error(e)
+      ..catchError((_) {/* erro capturado — FutureBuilder lida via hasError */});
   }
 
   final provider = AppProvider();
