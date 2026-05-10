@@ -463,13 +463,13 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
 
   // ── Helpers de idioma ────────────────────────────────────────────────────
   // LoginScreen não tem AppProvider (pré-auth); lê a pref salva localmente.
-  String _currentLang = 'pt';
+  String _currentLang = 'es';
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     SharedPreferences.getInstance().then((prefs) {
-      final lang = prefs.getString('lang') ?? 'pt';
+      final lang = prefs.getString('lang') ?? 'es';
       if (mounted && lang != _currentLang) setState(() => _currentLang = lang);
     });
   }

@@ -1345,11 +1345,11 @@ class _HistoryEditorState extends State<_HistoryEditor> {
               child: Container(padding: const EdgeInsets.all(8), decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: Colors.white.withValues(alpha: 0.1)),
                 child: const Icon(Icons.close_rounded, size: 16, color: Colors.white))),
             const SizedBox(width: 10),
-            Expanded(child: Text(_draft.chiefComplaint.isNotEmpty ? _draft.chiefComplaint : 'Nova história clínica',
+            Expanded(child: Text(_draft.chiefComplaint.isNotEmpty ? _draft.chiefComplaint : (widget.p.lang == 'es' ? 'Nueva historia clínica' : 'Nova história clínica'),
               style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w900, color: Colors.white), overflow: TextOverflow.ellipsis)),
             GestureDetector(onTap: _save,
               child: Container(padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8), decoration: BoxDecoration(borderRadius: BorderRadius.circular(12), color: kGold),
-                child: const Text('Salvar', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w900, color: Color(0xFF07110d))))),
+                child: Text(widget.p.lang == 'es' ? 'Guardar' : 'Salvar', style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w900, color: Color(0xFF07110d))))),
           ]),
           const SizedBox(height: 10),
           // Barra de progresso

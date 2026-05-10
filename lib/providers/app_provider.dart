@@ -53,7 +53,7 @@ class AppProvider extends ChangeNotifier {
   bool _firebaseReady = false;
 
   // ── Estado local ──────────────────────────────────────────────────────────
-  String _lang = 'pt';
+  String _lang = 'es';
   bool _darkMode = false;
 
   PatientData _patient = PatientData();
@@ -163,7 +163,7 @@ class AppProvider extends ChangeNotifier {
   Future<void> _loadFromLocal() async {
     try {
       final p = await SharedPreferences.getInstance();
-      _lang = p.getString('lang') ?? 'pt';
+      _lang = p.getString('lang') ?? 'es';
       _darkMode = p.getBool('darkMode') ?? false;
       _favDrugs = (p.getStringList('favDrugs') ?? []).toSet();
       _favProtocols = (p.getStringList('favProtocols') ?? []).toSet();
@@ -192,11 +192,11 @@ class AppProvider extends ChangeNotifier {
   // ── i18n helpers ──────────────────────────────────────────────────────────
   String tDB(Map<String, String>? field) {
     if (field == null) return '';
-    return field[_lang] ?? field['pt'] ?? field['es'] ?? '';
+    return field[_lang] ?? field['es'] ?? field['pt'] ?? '';
   }
 
   String t(String key) {
-    return _translations[_lang]?[key] ?? _translations['pt']?[key] ?? key;
+    return _translations[_lang]?[key] ?? _translations['es']?[key] ?? key;
   }
 
   // ── Cálculos clínicos ─────────────────────────────────────────────────────

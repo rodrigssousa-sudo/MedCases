@@ -311,7 +311,7 @@ class _SplashScreen extends StatelessWidget {
           ),
           const SizedBox(height: 16),
           Text(
-            'Carregando MedCases Pro...',
+            'Cargando MedCases Pro...',
             style: TextStyle(
               fontSize: 12,
               color: Colors.white.withValues(alpha: 0.4),
@@ -353,13 +353,13 @@ class _PendingScreen extends StatelessWidget {
                   const Icon(Icons.hourglass_top_rounded, color: Colors.orange, size: 48),
                   const SizedBox(height: 16),
                   const Text(
-                    'Cadastro em análise',
+                    'Registro en revisión',
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900, color: Colors.white),
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 12),
                   Text(
-                    'Olá, ${user.displayName.split(' ').first}!\n\nSua conta está aguardando aprovação do administrador. Você receberá acesso assim que for aprovado.',
+                    '¡Hola, ${user.displayName.split(' ').first}!\n\nTu cuenta está pendiente de aprobación del administrador. Recibirás acceso en cuanto sea aprobada.',
                     style: TextStyle(fontSize: 13, color: Colors.white.withValues(alpha: 0.7), height: 1.6),
                     textAlign: TextAlign.center,
                   ),
@@ -373,7 +373,7 @@ class _PendingScreen extends StatelessWidget {
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  Text('E-mail cadastrado:', style: TextStyle(fontSize: 11, color: Colors.white.withValues(alpha: 0.4), fontWeight: FontWeight.w600)),
+                  Text('Correo registrado:', style: TextStyle(fontSize: 11, color: Colors.white.withValues(alpha: 0.4), fontWeight: FontWeight.w600)),
                   const SizedBox(height: 4),
                   Text(user.email, style: const TextStyle(fontSize: 13, color: Colors.white, fontWeight: FontWeight.w700)),
                 ]),
@@ -382,7 +382,7 @@ class _PendingScreen extends StatelessWidget {
               OutlinedButton.icon(
                 onPressed: () async { await AuthService.logout(); },
                 icon: const Icon(Icons.logout_rounded, size: 16),
-                label: const Text('Sair e fazer novo login'),
+                label: const Text('Salir e iniciar nueva sesión'),
                 style: OutlinedButton.styleFrom(
                   foregroundColor: Colors.white60,
                   side: BorderSide(color: Colors.white.withValues(alpha: 0.2)),
@@ -427,13 +427,13 @@ class _BlockedScreen extends StatelessWidget {
                   const Icon(Icons.block_rounded, color: Colors.redAccent, size: 48),
                   const SizedBox(height: 16),
                   const Text(
-                    'Acesso suspenso',
+                    'Acceso suspendido',
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900, color: Colors.white),
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 12),
                   Text(
-                    'Sua conta foi suspensa pelo administrador.\n\nEntre em contato para mais informações.',
+                    'Tu cuenta ha sido suspendida por el administrador.\n\nComunícate con soporte para más información.',
                     style: TextStyle(fontSize: 13, color: Colors.white.withValues(alpha: 0.7), height: 1.6),
                     textAlign: TextAlign.center,
                   ),
@@ -443,7 +443,7 @@ class _BlockedScreen extends StatelessWidget {
               OutlinedButton.icon(
                 onPressed: () async { await AuthService.logout(); },
                 icon: const Icon(Icons.logout_rounded, size: 16),
-                label: const Text('Voltar ao login'),
+                label: const Text('Volver al inicio de sesión'),
                 style: OutlinedButton.styleFrom(
                   foregroundColor: Colors.white60,
                   side: BorderSide(color: Colors.white.withValues(alpha: 0.2)),
@@ -919,7 +919,7 @@ class _MiniContextBar extends StatelessWidget {
                   Icon(Icons.home_rounded, size: 13,
                       color: const Color(0xFFFFE8A6).withValues(alpha: 0.9)),
                   const SizedBox(width: 4),
-                  const Text('Início',
+                  const Text('Inicio',
                     style: TextStyle(
                       fontSize: 10, fontWeight: FontWeight.w700,
                       color: Color(0xFFFFE8A6),
@@ -1088,7 +1088,7 @@ class _AppDrawer extends StatelessWidget {
                   _DrawerItem(
                     icon: Icons.person_outline_rounded,
                     iconColor: _kGold,
-                    title: p.lang == 'es' ? 'Editar perfil' : 'Editar perfil',
+                    title: 'Editar perfil',
                     subtitle: p.lang == 'es' ? 'Nombre, profesión, institución' : 'Nome, profissão, instituição',
                     dark: dark,
                     textCol: textCol,
@@ -1110,7 +1110,7 @@ class _AppDrawer extends StatelessWidget {
                   _DrawerItem(
                     icon: Icons.language_rounded,
                     iconColor: const Color(0xFF1E88E5),
-                    title: p.lang == 'es' ? 'Idioma' : 'Idioma',
+                    title: 'Idioma',
                     subtitle: p.lang == 'pt' ? 'Trocar para Español' : 'Cambiar a Português',
                     dark: dark,
                     textCol: textCol,
@@ -1178,7 +1178,7 @@ class _AppDrawer extends StatelessWidget {
                     _DrawerItem(
                       icon: Icons.admin_panel_settings_rounded,
                       iconColor: const Color(0xFFFF8C00),
-                      title: 'Painel Admin',
+                      title: p.lang == 'es' ? 'Panel Admin' : 'Painel Admin',
                       subtitle: p.lang == 'es' ? 'Gestión de usuarios' : 'Gestão de usuários',
                       dark: dark,
                       textCol: textCol,
@@ -1396,7 +1396,7 @@ class _ProfileEditSheetState extends State<_ProfileEditSheet> {
   Future<void> _save() async {
     final name = _nameCtrl.text.trim();
     if (name.isEmpty) {
-      setState(() => _error = 'O nome não pode ficar em branco.');
+      setState(() => _error = widget.p.lang == 'es' ? 'El nombre no puede estar vacío.' : 'O nome não pode ficar em branco.');
       return;
     }
     setState(() { _saving = true; _error = null; });
@@ -1408,7 +1408,7 @@ class _ProfileEditSheetState extends State<_ProfileEditSheet> {
       );
       if (mounted) Navigator.pop(context);
     } catch (e) {
-      if (mounted) setState(() { _saving = false; _error = 'Erro ao salvar. Tente novamente.'; });
+      if (mounted) setState(() { _saving = false; _error = widget.p.lang == 'es' ? 'Error al guardar. Intente nuevamente.' : 'Erro ao salvar. Tente novamente.'; });
     }
   }
 
@@ -1458,15 +1458,15 @@ class _ProfileEditSheetState extends State<_ProfileEditSheet> {
               ),
               const SizedBox(width: 12),
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Text('Editar perfil', style: TextStyle(fontSize: 17, fontWeight: FontWeight.w900, color: titleColor)),
-                Text('Suas informações profissionais', style: TextStyle(fontSize: 11, color: subColor, fontWeight: FontWeight.w500)),
+                Text(widget.p.lang == 'es' ? 'Editar perfil' : 'Editar perfil', style: TextStyle(fontSize: 17, fontWeight: FontWeight.w900, color: titleColor)),
+                Text(widget.p.lang == 'es' ? 'Tu información profesional' : 'Suas informações profissionais', style: TextStyle(fontSize: 11, color: subColor, fontWeight: FontWeight.w500)),
               ]),
             ]),
             const SizedBox(height: 24),
 
             // Campo — Nome
             _SheetField(
-              label: 'Nome completo',
+              label: widget.p.lang == 'es' ? 'Nombre completo' : 'Nome completo',
               controller: _nameCtrl,
               icon: Icons.badge_outlined,
               dark: dark,
@@ -1476,7 +1476,7 @@ class _ProfileEditSheetState extends State<_ProfileEditSheet> {
 
             // Campo — Profissão
             _SheetField(
-              label: 'Profissão (ex: Médico, Residente)',
+              label: widget.p.lang == 'es' ? 'Profesión (ej: Médico, Residente)' : 'Profissão (ex: Médico, Residente)',
               controller: _profCtrl,
               icon: Icons.work_outline_rounded,
               dark: dark,
@@ -1486,7 +1486,7 @@ class _ProfileEditSheetState extends State<_ProfileEditSheet> {
 
             // Campo — Instituição
             _SheetField(
-              label: 'Instituição / Hospital',
+              label: widget.p.lang == 'es' ? 'Institución / Hospital' : 'Instituição / Hospital',
               controller: _instCtrl,
               icon: Icons.local_hospital_outlined,
               dark: dark,
@@ -1522,7 +1522,7 @@ class _ProfileEditSheetState extends State<_ProfileEditSheet> {
                       border: Border.all(color: borderColor),
                     ),
                     alignment: Alignment.center,
-                    child: Text('Cancelar', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: subColor)),
+                    child: Text(widget.p.lang == 'es' ? 'Cancelar' : 'Cancelar', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: subColor)),
                   ),
                 ),
               ),
@@ -1540,7 +1540,7 @@ class _ProfileEditSheetState extends State<_ProfileEditSheet> {
                     alignment: Alignment.center,
                     child: _saving
                         ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2, color: Color(0xFFFFE8A6)))
-                        : const Text('Salvar', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w900, color: Color(0xFFFFE8A6))),
+                        : Text(widget.p.lang == 'es' ? 'Guardar' : 'Salvar', style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w900, color: Color(0xFFFFE8A6))),
                   ),
                 ),
               ),
