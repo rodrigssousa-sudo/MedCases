@@ -70,6 +70,7 @@ class AppProvider extends ChangeNotifier {
   // ── Estado — Histórias Clínicas ───────────────────────────────────────────
   List<ClinicalHistoryModel> _myHistories = [];
   List<ClinicalHistoryModel> _publicHistories = [];
+  bool _isLoadingPublic = false;
 
   // ── Estado — IA Clínica ──────────────────────────────────────────────────
   String _openAiKey = '';
@@ -100,6 +101,7 @@ class AppProvider extends ChangeNotifier {
   // ── Getters — Histórias Clínicas ─────────────────────────────────────────
   List<ClinicalHistoryModel> get myHistories => _myHistories;
   List<ClinicalHistoryModel> get publicHistories => _publicHistories;
+  bool get isLoadingPublic => _isLoadingPublic;
 
   // ── Getters — IA ─────────────────────────────────────────────────────────
   String get openAiKey => _openAiKey;
@@ -548,22 +550,69 @@ class AppProvider extends ChangeNotifier {
 
   Future<void> saveHistory(ClinicalHistoryModel h) async {
     if (_currentUser == null) return;
+
+    // ── 1. Atualiza _myHistories na memória ──────────────────────────────────
     final idx = _myHistories.indexWhere((x) => x.id == h.id);
     if (idx >= 0) {
       _myHistories[idx] = h;
     } else {
       _myHistories.insert(0, h);
     }
-    // Persiste no cache local imediatamente (funciona offline)
+
+    // ── 2. Atualiza _publicHistories na memória imediatamente ────────────────
+    // Faz isso ANTES do Firestore para que o criador veja a própria HC
+    // na aba Comunidade sem precisar recarregar.
+    if (h.isPublic) {
+      final pubIdx = _publicHistories.indexWhere((x) => x.id == h.id);
+      // Garante uploadedAt não-vazio para a exibição local
+      final uploadedAt = h.uploadedAt.isNotEmpty
+          ? h.uploadedAt
+          : DateTime.now().toIso8601String();
+      final publicVersion = h.copyWith(uploadedAt: uploadedAt, isHidden: false);
+      if (pubIdx >= 0) {
+        _publicHistories[pubIdx] = publicVersion;
+      } else {
+        _publicHistories.insert(0, publicVersion);
+      }
+      // Re-ordena para manter consistência
+      _publicHistories.sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
+    } else {
+      // Removeu o isPublic: tira da lista pública local imediatamente
+      _publicHistories.removeWhere((x) => x.id == h.id);
+    }
+
+    // ── 3. Persiste no cache local e notifica UI ─────────────────────────────
     await _saveHistoriesLocal(_currentUser!.uid);
     notifyListeners();
-    // Sincroniza com Firestore em background
-    FirestoreService.saveHistory(_currentUser!.uid, h).catchError((_) {});
+
+    // ── 4. Sincroniza com Firestore em background ────────────────────────────
+    // Agora awaita + propaga o uploadedAt real de volta ao modelo local
+    FirestoreService.saveHistory(_currentUser!.uid, h).then((uploadedAt) {
+      if (uploadedAt != null && uploadedAt.isNotEmpty && h.isPublic) {
+        // Atualiza uploadedAt no modelo local com o valor confirmado pelo servidor
+        final pubIdx = _publicHistories.indexWhere((x) => x.id == h.id);
+        if (pubIdx >= 0 && _publicHistories[pubIdx].uploadedAt != uploadedAt) {
+          _publicHistories[pubIdx] = _publicHistories[pubIdx].copyWith(uploadedAt: uploadedAt);
+          // Também sincroniza em _myHistories
+          final myIdx = _myHistories.indexWhere((x) => x.id == h.id);
+          if (myIdx >= 0) {
+            _myHistories[myIdx] = _myHistories[myIdx].copyWith(uploadedAt: uploadedAt);
+          }
+          _saveHistoriesLocal(_currentUser!.uid).catchError((_) {});
+          notifyListeners();
+        }
+      }
+    }).catchError((_) {
+      // Falha no Firestore: dados já estão na memória/cache local.
+      // Na próxima conexão, loadHistories() sincroniza automaticamente.
+    });
   }
 
   Future<void> deleteHistory(String id, {bool wasPublic = false}) async {
     if (_currentUser == null) return;
     _myHistories.removeWhere((h) => h.id == id);
+    // Remove da lista pública local também (independente de wasPublic)
+    _publicHistories.removeWhere((h) => h.id == id);
     // Atualiza cache local imediatamente
     await _saveHistoriesLocal(_currentUser!.uid);
     notifyListeners();
@@ -578,10 +627,33 @@ class AppProvider extends ChangeNotifier {
   }
 
   Future<void> loadPublicHistories() async {
+    if (_isLoadingPublic) return; // Evita chamadas paralelas
+    _isLoadingPublic = true;
+    notifyListeners();
     try {
-      _publicHistories = await FirestoreService.loadPublicHistories();
+      final fetched = await FirestoreService.loadPublicHistories();
+      // Mescla: preserva HCs locais do criador que ainda não chegaram ao servidor
+      // (ex: acabou de publicar mas o fetch foi mais rápido que a escrita)
+      final mergedIds = <String>{};
+      final merged = <ClinicalHistoryModel>[];
+      for (final h in fetched) {
+        merged.add(h);
+        mergedIds.add(h.id);
+      }
+      // Adiciona HCs públicas locais que não vieram do servidor
+      for (final local in _publicHistories) {
+        if (!mergedIds.contains(local.id) && local.isPublic) {
+          merged.add(local);
+        }
+      }
+      merged.sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
+      _publicHistories = merged;
+    } catch (_) {
+      // Mantém o que já está em memória — não limpa a lista
+    } finally {
+      _isLoadingPublic = false;
       notifyListeners();
-    } catch (_) {}
+    }
   }
 
   // ── Logout ────────────────────────────────────────────────────────────────

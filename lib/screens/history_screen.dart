@@ -348,41 +348,57 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
                 ),
 
             // ── Comunidade ───────────────────────────────────────────────
-            p.publicHistories.isEmpty
-              ? _EmptyCommunityState(onRefresh: () => p.loadPublicHistories())
-              : ListView.builder(
-                  padding: const EdgeInsets.fromLTRB(0, 8, 0, 100),
-                  itemCount: pub.length,
-                  itemBuilder: (ctx, i) {
-                    final h = pub[i];
-                    final canModerate = p.canModerateContent;
-                    // Usuários comuns não veem HCs ocultas
-                    if (h.isHidden && !canModerate) return const SizedBox.shrink();
-                    return _HistoryCard(
-                      h: h, p: p,
-                      onTap: () => setState(() { _viewing = h; _viewingPublic = true; }),
-                      readOnly: true,
-                      onModHide: canModerate ? () async {
-                        final uid = p.currentUser?.uid ?? '';
-                        if (h.isHidden) {
-                          await FirestoreService.unhideHistory(h.id);
-                          if (context.mounted) _showModSnack(context, 'HC visível novamente');
-                        } else {
-                          await FirestoreService.hideHistory(h.id, uid);
-                          if (context.mounted) _showModSnack(context, 'HC ocultada da comunidade');
-                        }
-                        p.loadPublicHistories();
-                      } : null,
-                      onModDelete: canModerate ? () async {
-                        final confirm = await _confirmModDelete(context);
-                        if (!confirm) return;
-                        await FirestoreService.adminDeletePublicHistory(h.id);
-                        p.loadPublicHistories();
-                        if (context.mounted) _showModSnack(context, 'HC excluída permanentemente', isError: true);
-                      } : null,
-                    );
-                  },
-                ),
+            p.isLoadingPublic
+              ? const Center(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      CircularProgressIndicator(color: kGreen, strokeWidth: 2.5),
+                      SizedBox(height: 14),
+                      Text('Carregando histórias da comunidade…',
+                        style: TextStyle(fontSize: 12, color: Color(0xFF888888), fontWeight: FontWeight.w600)),
+                    ],
+                  ),
+                )
+              : pub.isEmpty
+                ? _EmptyCommunityState(onRefresh: () => p.loadPublicHistories())
+                : RefreshIndicator(
+                    color: kGreen,
+                    onRefresh: () => p.loadPublicHistories(),
+                    child: ListView.builder(
+                      padding: const EdgeInsets.fromLTRB(0, 8, 0, 100),
+                      itemCount: pub.length,
+                      itemBuilder: (ctx, i) {
+                        final h = pub[i];
+                        final canModerate = p.canModerateContent;
+                        // Usuários comuns não veem HCs ocultas
+                        if (h.isHidden && !canModerate) return const SizedBox.shrink();
+                        return _HistoryCard(
+                          h: h, p: p,
+                          onTap: () => setState(() { _viewing = h; _viewingPublic = true; }),
+                          readOnly: true,
+                          onModHide: canModerate ? () async {
+                            final uid = p.currentUser?.uid ?? '';
+                            if (h.isHidden) {
+                              await FirestoreService.unhideHistory(h.id);
+                              if (context.mounted) _showModSnack(context, 'HC visível novamente');
+                            } else {
+                              await FirestoreService.hideHistory(h.id, uid);
+                              if (context.mounted) _showModSnack(context, 'HC ocultada da comunidade');
+                            }
+                            p.loadPublicHistories();
+                          } : null,
+                          onModDelete: canModerate ? () async {
+                            final confirm = await _confirmModDelete(context);
+                            if (!confirm) return;
+                            await FirestoreService.adminDeletePublicHistory(h.id);
+                            p.loadPublicHistories();
+                            if (context.mounted) _showModSnack(context, 'HC excluída permanentemente', isError: true);
+                          } : null,
+                        );
+                      },
+                    ),
+                  ),
           ],
         ),
       ),

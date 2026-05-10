@@ -194,22 +194,43 @@ class FirestoreService {
     }
   }
 
-  static Future<void> saveHistory(String uid, ClinicalHistoryModel h) async {
-    try {
-      await _userHistories(uid).doc(h.id).set(h.toJson());
-      // Se público, espelha na coleção global com uploadedAt
-      if (h.isPublic) {
-        final publicData = h.toJson();
-        // Só atualiza uploadedAt se ainda não tem (primeira publicação)
-        if (h.uploadedAt.isEmpty) {
-          publicData['uploadedAt'] = DateTime.now().toIso8601String();
+  /// Salva a história do usuário e, se pública, espelha em public_histories.
+  /// Retorna o uploadedAt definitivo (para o provider atualizar o modelo local).
+  static Future<String?> saveHistory(String uid, ClinicalHistoryModel h) async {
+    // 1 — Salva na coleção privada do usuário
+    await _userHistories(uid).doc(h.id).set(h.toJson());
+
+    if (h.isPublic) {
+      // 2 — Determina uploadedAt: preserva o existente ou cria novo
+      String uploadedAt = h.uploadedAt;
+      if (uploadedAt.isEmpty) {
+        // Primeira publicação: verifica se já existe no Firestore
+        // (pode ter sido publicado de outro dispositivo)
+        try {
+          final existing = await _publicHistories.doc(h.id).get();
+          if (existing.exists) {
+            final existingAt = existing.data()?['uploadedAt'];
+            if (existingAt is String && existingAt.isNotEmpty) {
+              uploadedAt = existingAt; // Preserva o original
+            }
+          }
+        } catch (_) {}
+        if (uploadedAt.isEmpty) {
+          uploadedAt = DateTime.now().toIso8601String();
         }
-        await _publicHistories.doc(h.id).set(publicData);
-      } else {
-        // Remove do público se deixou de ser público
-        try { await _publicHistories.doc(h.id).delete(); } catch (_) {}
       }
-    } catch (_) {}
+
+      // 3 — Grava em public_histories com uploadedAt correto e isHidden garantido
+      final publicData = h.toJson();
+      publicData['uploadedAt'] = uploadedAt;
+      publicData['isHidden'] = publicData['isHidden'] ?? false;
+      await _publicHistories.doc(h.id).set(publicData);
+      return uploadedAt;
+    } else {
+      // 4 — Não é mais pública: remove da coleção global
+      try { await _publicHistories.doc(h.id).delete(); } catch (_) {}
+      return null;
+    }
   }
 
   static Future<void> deleteHistory(String uid, String hid, {bool wasPublic = false}) async {
@@ -252,17 +273,29 @@ class FirestoreService {
   }
 
   static Future<List<ClinicalHistoryModel>> loadPublicHistories() async {
+    // Força leitura do servidor, ignorando cache Firestore local.
+    // Garante que todos os usuários vejam a versão mais recente.
     try {
-      // Sem orderBy — evita exigência de índice composto no Firestore.
-      // Ordenação feita em memória após o fetch.
-      final snap = await _publicHistories.limit(100).get();
+      final snap = await _publicHistories
+          .limit(100)
+          .get(const GetOptions(source: Source.server));
       final list = snap.docs
           .map((d) => ClinicalHistoryModel.fromJson(d.data()))
           .toList();
       list.sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
       return list.take(50).toList();
     } catch (_) {
-      return [];
+      // Fallback: tenta cache local se servidor não responder
+      try {
+        final snap = await _publicHistories.limit(100).get();
+        final list = snap.docs
+            .map((d) => ClinicalHistoryModel.fromJson(d.data()))
+            .toList();
+        list.sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
+        return list.take(50).toList();
+      } catch (_) {
+        return [];
+      }
     }
   }
 
