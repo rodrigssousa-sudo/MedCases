@@ -180,6 +180,63 @@ class FirestoreService {
   static CollectionReference<Map<String, dynamic>> get _publicHistories =>
       _db.collection('public_histories');
 
+  // ── Helpers REST para public_histories ───────────────────────────────────
+
+  /// Converte um documento Firestore REST em Map<String, dynamic> Dart.
+  static Map<String, dynamic> _restDocToMap(Map<String, dynamic> doc) {
+    final fields = doc['fields'] as Map<String, dynamic>? ?? {};
+    return _decodeFields(fields);
+  }
+
+  static Map<String, dynamic> _decodeFields(Map<String, dynamic> fields) {
+    final result = <String, dynamic>{};
+    fields.forEach((key, val) {
+      result[key] = _decodeValue(val as Map<String, dynamic>);
+    });
+    return result;
+  }
+
+  static dynamic _decodeValue(Map<String, dynamic> v) {
+    if (v.containsKey('stringValue'))  return v['stringValue'];
+    if (v.containsKey('booleanValue')) return v['booleanValue'];
+    if (v.containsKey('integerValue')) return int.tryParse(v['integerValue'].toString()) ?? 0;
+    if (v.containsKey('doubleValue'))  return (v['doubleValue'] as num).toDouble();
+    if (v.containsKey('nullValue'))    return null;
+    if (v.containsKey('mapValue')) {
+      final f = v['mapValue']['fields'] as Map<String, dynamic>? ?? {};
+      return _decodeFields(f);
+    }
+    if (v.containsKey('arrayValue')) {
+      final vals = v['arrayValue']['values'] as List<dynamic>? ?? [];
+      return vals.map((e) => _decodeValue(e as Map<String, dynamic>)).toList();
+    }
+    return null;
+  }
+
+  /// Converte Map<String, dynamic> Dart em payload de campos REST Firestore.
+  static Map<String, dynamic> _encodeFields(Map<String, dynamic> data) {
+    final result = <String, dynamic>{};
+    data.forEach((key, val) {
+      result[key] = _encodeValue(val);
+    });
+    return result;
+  }
+
+  static Map<String, dynamic> _encodeValue(dynamic val) {
+    if (val == null)          return {'nullValue': null};
+    if (val is bool)          return {'booleanValue': val};
+    if (val is int)           return {'integerValue': val.toString()};
+    if (val is double)        return {'doubleValue': val};
+    if (val is String)        return {'stringValue': val};
+    if (val is List) {
+      return {'arrayValue': {'values': val.map(_encodeValue).toList()}};
+    }
+    if (val is Map<String, dynamic>) {
+      return {'mapValue': {'fields': _encodeFields(val)}};
+    }
+    return {'stringValue': val.toString()};
+  }
+
   static Future<List<ClinicalHistoryModel>> loadHistories(String uid) async {
     try {
       // Sem orderBy — evita índice composto. Ordenação em memória.
@@ -195,42 +252,71 @@ class FirestoreService {
   }
 
   /// Salva a história do usuário e, se pública, espelha em public_histories.
-  /// Retorna o uploadedAt definitivo (para o provider atualizar o modelo local).
+  /// Usa REST no web e SDK no nativo para máxima compatibilidade.
+  /// Retorna o uploadedAt definitivo.
   static Future<String?> saveHistory(String uid, ClinicalHistoryModel h) async {
-    // 1 — Salva na coleção privada do usuário
+    // 1 — Salva na sub-coleção privada do usuário (SDK — sempre funciona)
     await _userHistories(uid).doc(h.id).set(h.toJson());
 
     if (h.isPublic) {
-      // 2 — Determina uploadedAt: preserva o existente ou cria novo
-      String uploadedAt = h.uploadedAt;
-      if (uploadedAt.isEmpty) {
-        // Primeira publicação: verifica se já existe no Firestore
-        // (pode ter sido publicado de outro dispositivo)
-        try {
-          final existing = await _publicHistories.doc(h.id).get();
-          if (existing.exists) {
-            final existingAt = existing.data()?['uploadedAt'];
-            if (existingAt is String && existingAt.isNotEmpty) {
-              uploadedAt = existingAt; // Preserva o original
-            }
-          }
-        } catch (_) {}
-        if (uploadedAt.isEmpty) {
-          uploadedAt = DateTime.now().toIso8601String();
-        }
-      }
+      final uploadedAt = h.uploadedAt.isNotEmpty
+          ? h.uploadedAt
+          : DateTime.now().toIso8601String();
 
-      // 3 — Grava em public_histories com uploadedAt correto e isHidden garantido
       final publicData = h.toJson();
       publicData['uploadedAt'] = uploadedAt;
-      publicData['isHidden'] = publicData['isHidden'] ?? false;
-      await _publicHistories.doc(h.id).set(publicData);
+      publicData['isHidden']   = publicData['isHidden'] ?? false;
+
+      if (kIsWeb) {
+        // Web: REST PATCH (não depende de WebSocket do SDK)
+        await _savePublicHistoryRest(h.id, publicData);
+      } else {
+        await _publicHistories.doc(h.id).set(publicData);
+      }
       return uploadedAt;
     } else {
-      // 4 — Não é mais pública: remove da coleção global
-      try { await _publicHistories.doc(h.id).delete(); } catch (_) {}
+      // Não é mais pública: remove da coleção global
+      if (kIsWeb) {
+        await _deletePublicHistoryRest(h.id);
+      } else {
+        try { await _publicHistories.doc(h.id).delete(); } catch (_) {}
+      }
       return null;
     }
+  }
+
+  /// Grava/atualiza um documento em public_histories via REST (web).
+  static Future<void> _savePublicHistoryRest(
+      String docId, Map<String, dynamic> data) async {
+    try {
+      final token = await AuthService.getAdminToken();
+      if (token.isEmpty) return;
+      final fields = _encodeFields(data);
+      // Monta updateMask com todos os campos
+      final mask = data.keys
+          .map((k) => 'updateMask.fieldPaths=${Uri.encodeComponent(k)}')
+          .join('&');
+      await http.patch(
+        Uri.parse('$_fsBase/public_histories/$docId?$mask'),
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode({'fields': fields}),
+      );
+    } catch (_) {}
+  }
+
+  /// Remove um documento de public_histories via REST (web).
+  static Future<void> _deletePublicHistoryRest(String docId) async {
+    try {
+      final token = await AuthService.getAdminToken();
+      if (token.isEmpty) return;
+      await http.delete(
+        Uri.parse('$_fsBase/public_histories/$docId'),
+        headers: {'Authorization': 'Bearer $token'},
+      );
+    } catch (_) {}
   }
 
   static Future<void> deleteHistory(String uid, String hid, {bool wasPublic = false}) async {
@@ -273,8 +359,10 @@ class FirestoreService {
   }
 
   static Future<List<ClinicalHistoryModel>> loadPublicHistories() async {
-    // Força leitura do servidor, ignorando cache Firestore local.
-    // Garante que todos os usuários vejam a versão mais recente.
+    if (kIsWeb) {
+      return _loadPublicHistoriesRest();
+    }
+    // Nativo: SDK com Source.server
     try {
       final snap = await _publicHistories
           .limit(100)
@@ -285,7 +373,6 @@ class FirestoreService {
       list.sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
       return list.take(50).toList();
     } catch (_) {
-      // Fallback: tenta cache local se servidor não responder
       try {
         final snap = await _publicHistories.limit(100).get();
         final list = snap.docs
@@ -296,6 +383,34 @@ class FirestoreService {
       } catch (_) {
         return [];
       }
+    }
+  }
+
+  /// Lê public_histories via REST (web) — sem depender do SDK/WebSocket.
+  static Future<List<ClinicalHistoryModel>> _loadPublicHistoriesRest() async {
+    try {
+      final token = await AuthService.getAdminToken();
+      if (token.isEmpty) return [];
+
+      final resp = await http.get(
+        Uri.parse('$_fsBase/public_histories?pageSize=100'),
+        headers: {'Authorization': 'Bearer $token'},
+      );
+
+      if (resp.statusCode != 200) return [];
+
+      final body = jsonDecode(resp.body) as Map<String, dynamic>;
+      final rawDocs = body['documents'] as List<dynamic>? ?? [];
+
+      final list = rawDocs
+          .map((d) => ClinicalHistoryModel.fromJson(
+              _restDocToMap(d as Map<String, dynamic>)))
+          .toList();
+
+      list.sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
+      return list.take(50).toList();
+    } catch (_) {
+      return [];
     }
   }
 
