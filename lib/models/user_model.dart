@@ -103,8 +103,8 @@ class UserModel {
     displayName: m['displayName'] as String? ?? '',
     role: _parseRole(m['role'] as String?),
     status: _parseStatus(m['status'] as String?),
-    createdAt: (m['createdAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
-    approvedAt: (m['approvedAt'] as Timestamp?)?.toDate(),
+    createdAt: _parseDate(m['createdAt']) ?? DateTime.now(),
+    approvedAt: _parseDate(m['approvedAt']),
     approvedBy: m['approvedBy'] as String?,
     profession: m['profession'] as String?,
     institution: m['institution'] as String?,
@@ -142,6 +142,17 @@ class UserModel {
       );
 
   // ── Helpers ───────────────────────────────────────────────────────────────
+
+  /// Aceita Timestamp (SDK), String ISO8601 (REST patch) ou null.
+  /// Retorna DateTime ou null — nunca lança exceção.
+  static DateTime? _parseDate(dynamic v) {
+    if (v == null) return null;
+    if (v is Timestamp) return v.toDate();
+    if (v is String && v.isNotEmpty) {
+      try { return DateTime.parse(v); } catch (_) {}
+    }
+    return null;
+  }
 
   static UserRole _parseRole(String? s) {
     switch (s) {

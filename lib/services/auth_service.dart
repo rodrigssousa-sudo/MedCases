@@ -707,23 +707,45 @@ class AuthService {
     } catch (_) {}
   }
 
-  /// Converte resposta REST do Firestore para Map compatível com UserModel.fromMap
+  /// Converte resposta REST do Firestore para Map compatível com UserModel.fromMap.
+  ///
+  /// Campos de data (createdAt, approvedAt e qualquer campo com sufixo 'At'/'Date')
+  /// são sempre convertidos para [Timestamp], independente de virem como
+  /// `timestampValue` (cadastro via SDK) ou `stringValue` ISO8601
+  /// (atualização via _patchUserRest). Isso evita ClassCastException no fromMap.
   static Map<String, dynamic> _firestoreDocToMap(Map<String, dynamic> doc) {
     final fields = doc['fields'] as Map<String, dynamic>? ?? {};
     final result = <String, dynamic>{};
 
+    // Campos que devem sempre ser tratados como Timestamp
+    const dateFields = {'createdAt', 'approvedAt', 'updatedAt', 'deletedAt'};
+
     fields.forEach((key, value) {
       final v = value as Map<String, dynamic>;
-      if (v.containsKey('stringValue')) {
-        result[key] = v['stringValue'];
+      if (v.containsKey('timestampValue')) {
+        // Timestamp nativo do Firestore → converte para Timestamp do SDK
+        result[key] = Timestamp.fromDate(
+          DateTime.parse(v['timestampValue'] as String),
+        );
+      } else if (v.containsKey('stringValue')) {
+        final str = v['stringValue'] as String;
+        // Se é um campo de data salvo como ISO8601 string (ex: via _patchUserRest)
+        // converte para Timestamp para manter compatibilidade com UserModel.fromMap
+        if (dateFields.contains(key)) {
+          try {
+            result[key] = Timestamp.fromDate(DateTime.parse(str));
+          } catch (_) {
+            result[key] = str; // fallback: mantém string se parse falhar
+          }
+        } else {
+          result[key] = str;
+        }
       } else if (v.containsKey('booleanValue')) {
         result[key] = v['booleanValue'];
       } else if (v.containsKey('integerValue')) {
         result[key] = int.tryParse(v['integerValue'].toString());
       } else if (v.containsKey('doubleValue')) {
         result[key] = v['doubleValue'];
-      } else if (v.containsKey('timestampValue')) {
-        result[key] = Timestamp.fromDate(DateTime.parse(v['timestampValue'] as String));
       } else {
         result[key] = null;
       }
