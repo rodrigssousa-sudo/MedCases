@@ -7407,7 +7407,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'valproato_iv',
-    group: 'Neurología',
+    group: 'Neurología y Psiquiatría',
     name: 'Valproato de Sódio / Ácido Valproico',
     className: {'pt': 'Antiepiléptico', 'es': 'Antiepiléptico'},
     category: {'pt': 'Neurologia', 'es': 'Neurología'},
@@ -7441,7 +7441,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'esmolol',
-    group: 'Cardiovascular',
+    group: 'UCI – Críticos y Sedoanalgesia',
     name: 'Esmolol',
     className: {'pt': 'Betabloqueador seletivo Beta-1 de curta ação', 'es': 'Beta-bloqueante selectivo Beta-1 de acción corta'},
     category: {'pt': 'Cardiovascular', 'es': 'Cardiovascular'},
@@ -7475,7 +7475,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'milrinona',
-    group: 'Cardiovascular',
+    group: 'UCI – Críticos y Sedoanalgesia',
     name: 'Milrinona',
     className: {'pt': 'Inodilatador / Inibidor da Fosfodiesterase III', 'es': 'Inodilatador / Inhibidor de la Fosfodiesterasa III'},
     category: {'pt': 'Cardiovascular', 'es': 'Cardiovascular'},
@@ -7509,7 +7509,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'fosfomicina',
-    group: 'Antibióticos y Antiinfecciosos',
+    group: 'Antibióticos',
     name: 'Fosfomicina Trometamol',
     className: {'pt': 'Antibiótico / Derivado do ácido fosfônico', 'es': 'Antibiótico / Derivado del ácido fosfónico'},
     category: {'pt': 'Antibióticos', 'es': 'Antibióticos'},
@@ -7543,7 +7543,7 @@ const List<DrugModel> drugsDatabase = [
 
   DrugModel(
     id: 'acetazolamida',
-    group: 'Neurología',
+    group: 'Varios / Antídotos / Otros',
     name: 'Acetazolamida',
     className: {'pt': 'Inibidor da Anidrase Carbônica', 'es': 'Inhibidor de la Anidrasa Carbónica'},
     category: {'pt': 'Neurologia / Oftalmologia', 'es': 'Neurología / Oftalmología'},
