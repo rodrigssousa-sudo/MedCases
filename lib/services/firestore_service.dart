@@ -359,10 +359,9 @@ class FirestoreService {
   }
 
   static Future<List<ClinicalHistoryModel>> loadPublicHistories() async {
-    if (kIsWeb) {
-      return _loadPublicHistoriesRest();
-    }
-    // Nativo: SDK com Source.server
+    // SDK Firestore funciona tanto no web quanto no nativo para leituras
+    // de coleções públicas — sem depender de token manual REST.
+    // Tentativa 1: forçar busca no servidor (sem cache local desatualizado)
     try {
       final snap = await _publicHistories
           .limit(100)
@@ -372,62 +371,15 @@ class FirestoreService {
           .toList();
       list.sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
       return list.take(50).toList();
-    } catch (_) {
-      try {
-        final snap = await _publicHistories.limit(100).get();
-        final list = snap.docs
-            .map((d) => ClinicalHistoryModel.fromJson(d.data()))
-            .toList();
-        list.sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
-        return list.take(50).toList();
-      } catch (_) {
-        return [];
-      }
-    }
-  }
+    } catch (_) {}
 
-  /// Lê public_histories via REST (web) — sem depender do SDK/WebSocket.
-  static Future<List<ClinicalHistoryModel>> _loadPublicHistoriesRest() async {
-    try {
-      final token = await AuthService.getAdminToken();
-      if (token.isEmpty) {
-        debugPrint('[FirestoreService] _loadPublicHistoriesRest: token vazio');
-        return [];
-      }
-
-      final resp = await http.get(
-        Uri.parse('$_fsBase/public_histories?pageSize=100'),
-        headers: {'Authorization': 'Bearer $token'},
-      );
-
-      debugPrint('[FirestoreService] public_histories HTTP ${resp.statusCode}');
-
-      if (resp.statusCode != 200) {
-        debugPrint('[FirestoreService] body erro: ${resp.body.substring(0, resp.body.length.clamp(0, 300))}');
-        return [];
-      }
-
-      final body = jsonDecode(resp.body) as Map<String, dynamic>;
-      final rawDocs = body['documents'] as List<dynamic>? ?? [];
-      debugPrint('[FirestoreService] rawDocs: ${rawDocs.length} documentos');
-
-      final list = <ClinicalHistoryModel>[];
-      for (final d in rawDocs) {
-        try {
-          final map = _restDocToMap(d as Map<String, dynamic>);
-          list.add(ClinicalHistoryModel.fromJson(map));
-        } catch (e) {
-          debugPrint('[FirestoreService] fromJson falhou: $e');
-        }
-      }
-
-      debugPrint('[FirestoreService] parsed: ${list.length} HCs');
-      list.sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
-      return list.take(50).toList();
-    } catch (e) {
-      debugPrint('[FirestoreService] _loadPublicHistoriesRest erro: $e');
-      return [];
-    }
+    // Tentativa 2: aceita cache local se servidor falhar (offline/lentidão)
+    final snap = await _publicHistories.limit(100).get();
+    final list = snap.docs
+        .map((d) => ClinicalHistoryModel.fromJson(d.data()))
+        .toList();
+    list.sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
+    return list.take(50).toList();
   }
 
   static Stream<List<ClinicalHistoryModel>> historiesStream(String uid) {
