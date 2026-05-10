@@ -6827,40 +6827,6 @@ const List<DrugModel> drugsDatabase = [
   ),
 
   DrugModel(
-    id: 'metoclopramida',
-    group: 'Gastroenterología',
-    name: 'Metoclopramida',
-    className: {'pt': 'Procinético / Antiemético', 'es': 'Procinético / Antiemético'},
-    category: {'pt': 'Gastrointestinais', 'es': 'Gastrointestinales'},
-    route: 'VO / IV / IM',
-    doseType: 'fixed',
-    fixedDose: {
-      'pt': 'Adulto: 10 mg a cada 8h. IV: infundir lentamente (risco de acatisia).',
-      'es': 'Adulto: 10 mg cada 8 h. IV: infundir lentamente (riesgo de acatisia).',
-    },
-    renalAlert: {
-      'pt': 'ClCr <40 mL/min: reduzir dose em 50%.',
-      'es': 'ClCr <40 mL/min: reducir dosis al 50%.',
-    },
-    elderlyAlert: {
-      'pt': 'Alto risco de reações extrapiramidais e discinesia tardia. Evitar uso crônico.',
-      'es': 'Alto riesgo de reacciones extrapiramidales y discinesia tardía. Evitar uso crónico.',
-    },
-    mechanism: {
-      'pt': 'Antagonista D2 e agonista 5-HT4; aumenta tônus do esfíncter esofágico inferior.',
-      'es': 'Antagonista D2 y agonista 5-HT4; aumenta el tono del esfínter esofágico inferior.',
-    },
-    warning: {
-      'pt': 'Pode causar reações distônicas agudas, especialmente em jovens e crianças.',
-      'es': 'Puede causar reacciones distónicas agudas, especialmente en jóvenes y niños.',
-    },
-    adverse: {
-      'pt': ['Sonolência', 'Acatisia', 'Diarreia', 'Sintomas extrapiramidais'],
-      'es': ['Somnolencia', 'Acatisia', 'Diarrea', 'Síntomas extrapiramidales'],
-    },
-  ),
-
-  DrugModel(
     id: 'alprazolam',
     group: 'Neurología y Psiquiatría',
     name: 'Alprazolam',
@@ -7873,28 +7839,6 @@ const List<DrugModel> drugsDatabase = [
     adverse: {
       'pt': ['Hiponatremia', 'Hipocalemia', 'Hiperglicemia', 'Hiperuricemia', 'Câimbras'],
       'es': ['Hiponatremia', 'Hipopotasemia', 'Hiperglucemia', 'Hiperuricemia', 'Calambres'],
-    },
-  ),
-
-  DrugModel(
-    id: 'sildenafil_p',
-    group: 'Cardiovascular y HTA',
-    name: 'Sildenafila (Viagra/Revatio)',
-    className: {'pt': 'Inibidor da PDE-5', 'es': 'Inhibidor de la PDE-5'},
-    category: {'pt': 'HAP / Disfunção Erétil', 'es': 'HAP / Disfunción Eréctil'},
-    route: 'VO / IV',
-    doseType: 'weight',
-    fixedDose: {
-      'pt': 'HAP Adulto: 20 mg 3x/dia. Pediátrico: 0.5-2 mg/kg/dose 3-4x/dia.',
-      'es': 'HAP Adulto: 20 mg 3 veces/día. Pediátrico: 0.5-2 mg/kg/dosis 3-4 veces/día.',
-    },
-    renalAlert: {'pt': 'TFG < 30: iniciar com dose menor.', 'es': 'TFG < 30: iniciar con dosis menor.'},
-    elderlyAlert: {'pt': 'Cuidado com hipotensão.', 'es': 'Cuidado con hipotensión.'},
-    mechanism: {'pt': 'Aumenta GMPc promovendo relaxamento da musculatura lisa e vasodilatação.', 'es': 'Aumenta GMPc promoviendo vasodilatación.'},
-    warning: {'pt': 'CONTRAINDICADO o uso concomitante com nitratos.', 'es': 'CONTRAINDICADO el uso concomitante con nitratos.'},
-    adverse: {
-      'pt': ['Cefaleia', 'Rubor facial', 'Dispepsia', 'Distúrbios visuais', 'Congestão nasal'],
-      'es': ['Cefalea', 'Rubor facial', 'Dispepsia', 'Disturbios visuales', 'Congestión nasal'],
     },
   ),
 
