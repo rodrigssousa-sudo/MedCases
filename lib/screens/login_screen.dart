@@ -120,6 +120,12 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
       );
       // Se login OK e "Manter conectado" marcado → salva sessão completa
       if (result.success) await _saveSessionIfRequested(result);
+      // FIX: no Web, LoginScreen pode ser empilhada via Navigator.push
+      // pela _PreLoginPreview. Fazer pop ANTES de webUser.value mudar evita
+      // a race condition onde _PreLoginPreview é destruída antes do popUntil.
+      if (result.success && mounted && Navigator.of(context).canPop()) {
+        Navigator.of(context).pop();
+      }
     } else if (_mode == _Mode.register) {
       result = await AuthService.register(
         email: _emailCtrl.text,

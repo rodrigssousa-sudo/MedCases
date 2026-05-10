@@ -317,42 +317,24 @@ class _PreLoginPreviewState extends State<_PreLoginPreview> {
   static const _kGold    = Color(0xFFC5A365);
   static const _kGoldL   = Color(0xFFFFE8A6);
 
-
   @override
   void initState() {
     super.initState();
     _loadPublic();
+    // Sem listener de webUser aqui — o pop() é feito na LoginScreen antes
+    // de webUser.value mudar, eliminando a race condition.
   }
 
   Future<void> _loadPublic() async {
     setState(() { _loading = true; _error = null; });
     try {
-      final snap = await FirebaseFirestore.instance
-          .collection('public_histories')
-          .limit(20)
-          .get(const GetOptions(source: Source.server));
-      final list = snap.docs.map((d) => d.data()).toList();
-      // Ordena por updatedAt desc (string ISO ou Timestamp)
-      list.sort((a, b) {
-        String ts(Map m) {
-          final v = m['updatedAt'] ?? m['createdAt'] ?? '';
-          return v is Timestamp ? v.toDate().toIso8601String() : v.toString();
-        }
-        return ts(b).compareTo(ts(a));
-      });
-      if (mounted) setState(() { _histories = list; _loading = false; });
+      // FIX: usa FirestoreService REST em vez do SDK Firestore diretamente.
+      // SDK usa WebSocket que é bloqueado por CORS em domínios externos.
+      final list = await FirestoreService.loadPublicHistories();
+      final maps = list.map((h) => h.toJson()).toList();
+      if (mounted) setState(() { _histories = maps; _loading = false; });
     } catch (e) {
-      // Tenta cache local como fallback
-      try {
-        final snap = await FirebaseFirestore.instance
-            .collection('public_histories')
-            .limit(20)
-            .get();
-        final list = snap.docs.map((d) => d.data()).toList();
-        if (mounted) setState(() { _histories = list; _loading = false; });
-      } catch (e2) {
-        if (mounted) setState(() { _loading = false; _error = e2.toString(); });
-      }
+      if (mounted) setState(() { _loading = false; _error = e.toString(); });
     }
   }
 
