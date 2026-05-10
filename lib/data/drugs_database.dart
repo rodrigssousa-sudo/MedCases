@@ -5787,7 +5787,7 @@ const List<DrugModel> drugsDatabase = [
   DrugModel(
     id: 'dabigatrana',
     group: 'Anticoagulantes y Hemostasia',
-    name: 'Dabigatrana / Dabigatrán',
+    name: 'Dabigatrán (Pradaxa)',
     className: {'pt': 'Anticoagulante Oral Direto — Inibidor Direto da Trombina (IDT)', 'es': 'Anticoagulante Oral Directo — Inhibidor Directo de Trombina (IDT)'},
     category: {'pt': 'Hematologia', 'es': 'Hematología'},
     route: 'Oral',
@@ -8515,28 +8515,6 @@ const List<DrugModel> drugsDatabase = [
     adverse: {
       'pt': ['Cefaleia', 'Rubor facial', 'Dispepsia', 'Distúrbios visuais', 'Congestão nasal'],
       'es': ['Cefalea', 'Rubor facial', 'Dispepsia', 'Disturbios visuales', 'Congestión nasal'],
-    },
-  ),
-
-  DrugModel(
-    id: 'dabigatrana_f',
-    group: 'Anticoagulantes y Hemostasia',
-    name: 'Dabigatrana (Pradaxa)',
-    className: {'pt': 'Anticoagulante (Inibidor Direto da Trombina)', 'es': 'Anticoagulante (Inhibidor Directo de Trombina)'},
-    category: {'pt': 'Hematologia', 'es': 'Hematología'},
-    route: 'VO',
-    doseType: 'fixed',
-    fixedDose: {
-      'pt': 'Adulto: 150 mg 2x/dia. Reduzir para 110 mg 2x/dia se >75 anos.',
-      'es': 'Adulto: 150 mg 2 veces/día. Reducir a 110 mg 2 veces/día si >75 años.',
-    },
-    renalAlert: {'pt': 'Contraindicado se ClCr < 30 mL/min.', 'es': 'Contraindicado si ClCr < 30 mL/min.'},
-    elderlyAlert: {'pt': 'Alto risco de sangramento gastrointestinal.', 'es': 'Alto riesgo de sangrado gastrointestinal.'},
-    mechanism: {'pt': 'Inibição direta e reversível da trombina livre e ligada ao coágulo.', 'es': 'Inhibición directa y reversible de la trombina.'},
-    warning: {'pt': 'Não abrir as cápsulas. Antídoto: Idarucizumabe.', 'es': 'No abrir las cápsulas. Antídoto: Idarucizumab.'},
-    adverse: {
-      'pt': ['Hemorragia', 'Dispepsia', 'Gastrite', 'Dor abdominal', 'Náuseas'],
-      'es': ['Hemorragia', 'Dispepsia', 'Gastritis', 'Dolor abdominal', 'Náuseas'],
     },
   ),
 
