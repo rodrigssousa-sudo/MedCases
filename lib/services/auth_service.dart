@@ -742,13 +742,28 @@ class AuthService {
       } else if (v.containsKey('stringValue')) {
         final str = v['stringValue'] as String;
         // Se é um campo de data salvo como ISO8601 string (ex: via _patchUserRest)
-        // converte para Timestamp para manter compatibilidade com UserModel.fromMap
+        // converte para Timestamp para manter compatibilidade com UserModel.fromMap.
+        // O _patchUserRest salva o approvedAt como ISO8601 com 'Z' no final,
+        // ex: "2026-05-10T14:08:10.162Z" — DateTime.parse() aceita esse formato.
+        // Tentamos também substituir espaço por 'T' para robustez extra.
         if (dateFields.contains(key)) {
-          try {
-            result[key] = Timestamp.fromDate(DateTime.parse(str));
-          } catch (_) {
-            result[key] = str; // fallback: mantém string se parse falhar
+          DateTime? parsed;
+          // Tentativa 1: parse direto
+          try { parsed = DateTime.parse(str); } catch (_) {}
+          // Tentativa 2: substitui espaço por T (formato alternativo do Firestore)
+          if (parsed == null) {
+            try { parsed = DateTime.parse(str.replaceFirst(' ', 'T')); } catch (_) {}
           }
+          // Tentativa 3: remove milissegundos e tenta de novo
+          if (parsed == null) {
+            try {
+              final clean = str.replaceAll(RegExp(r'\.\d+'), '');
+              parsed = DateTime.parse(clean);
+            } catch (_) {}
+          }
+          result[key] = parsed != null
+              ? Timestamp.fromDate(parsed)
+              : null; // campo de data inválido → null (UserModel._parseDate aceita null)
         } else {
           result[key] = str;
         }
