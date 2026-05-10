@@ -472,7 +472,6 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
   int _tab = 0;
   // sub-tab dentro do combo Rx+Proto: 0=Rx, 1=Protocolos
   int _rxProtoSub = 0;
-  String? _pendingProtocolId;
   // Header recolhível: visível apenas na tab 0 (Cockpit/Início)
   bool get _headerVisible => _tab == 0;
 
@@ -502,11 +501,9 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
   }
 
   void _openProtocol(String id) {
-    setState(() {
-      _tab = 1;
-      _rxProtoSub = 1;
-      _pendingProtocolId = id;
-    });
+    // Abre o detalhe do protocolo diretamente via bottom sheet
+    // sem precisar trocar de aba ou gerenciar pendingId
+    openProtocolById(context, id);
   }
 
   @override
@@ -521,8 +518,6 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
     final rxProtoScreen = _RxProtoCombo(
       subTab: _rxProtoSub,
       onSubTabChange: (i) => setState(() => _rxProtoSub = i),
-      pendingProtocolId: _pendingProtocolId,
-      onProtocolConsumed: () => setState(() => _pendingProtocolId = null),
     );
 
     // Ordem das telas no IndexedStack
@@ -740,14 +735,10 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
 class _RxProtoCombo extends StatelessWidget {
   final int subTab;
   final ValueChanged<int> onSubTabChange;
-  final String? pendingProtocolId;
-  final VoidCallback onProtocolConsumed;
 
   const _RxProtoCombo({
     required this.subTab,
     required this.onSubTabChange,
-    this.pendingProtocolId,
-    required this.onProtocolConsumed,
   });
 
   @override
@@ -794,11 +785,7 @@ class _RxProtoCombo extends StatelessWidget {
           index: subTab,
           children: [
             const DrugsScreen(),
-            ProtocolsScreen(
-              key: ValueKey(pendingProtocolId),
-              initialProtocolId: pendingProtocolId,
-              onConsumed: onProtocolConsumed,
-            ),
+            const ProtocolsScreen(),
           ],
         ),
       ),

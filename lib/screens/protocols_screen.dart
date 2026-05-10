@@ -4,10 +4,33 @@ import '../providers/app_provider.dart';
 import '../models/protocol_model.dart';
 import '../widgets/common_widgets.dart';
 
+// ─────────────────────────────────────────────────────────────────────────────
+// FUNÇÃO GLOBAL — abre detalhe de protocolo como bottom sheet
+// Pode ser chamada de qualquer tela do app (cockpit, chips, lista)
+// ─────────────────────────────────────────────────────────────────────────────
+void showProtocolDetail(BuildContext context, ProtocolModel protocol) {
+  showModalBottomSheet(
+    context: context,
+    isScrollControlled: true,
+    backgroundColor: Colors.transparent,
+    builder: (_) => _ProtocolDetailSheet(protocol: protocol),
+  );
+}
+
+// Busca protocolo por ID no provider e abre o detalhe direto
+void openProtocolById(BuildContext context, String id) {
+  final p = context.read<AppProvider>();
+  try {
+    final found = p.protocolsDB.firstWhere((x) => x.id == id);
+    showProtocolDetail(context, found);
+  } catch (_) {}
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// TELA DE PROTOCOLOS — lista por grupos (acordeão)
+// ─────────────────────────────────────────────────────────────────────────────
 class ProtocolsScreen extends StatefulWidget {
-  final String? initialProtocolId;
-  final VoidCallback? onConsumed;
-  const ProtocolsScreen({super.key, this.initialProtocolId, this.onConsumed});
+  const ProtocolsScreen({super.key});
 
   @override
   State<ProtocolsScreen> createState() => _ProtocolsScreenState();
@@ -15,37 +38,8 @@ class ProtocolsScreen extends StatefulWidget {
 
 class _ProtocolsScreenState extends State<ProtocolsScreen> {
   final _searchCtrl = TextEditingController();
-  ProtocolModel? _selected;
   // Grupos expandidos por padrão — todos fechados
   final Set<String> _expanded = {};
-
-  @override
-  void initState() {
-    super.initState();
-    if (widget.initialProtocolId != null) {
-      WidgetsBinding.instance.addPostFrameCallback((_) => _openById(widget.initialProtocolId!));
-    }
-  }
-
-  @override
-  void didUpdateWidget(ProtocolsScreen old) {
-    super.didUpdateWidget(old);
-    if (widget.initialProtocolId != null &&
-        widget.initialProtocolId != old.initialProtocolId) {
-      WidgetsBinding.instance.addPostFrameCallback((_) => _openById(widget.initialProtocolId!));
-    }
-  }
-
-  void _openById(String id) {
-    final p = context.read<AppProvider>();
-    try {
-      final found = p.protocolsDB.firstWhere((x) => x.id == id);
-      if (mounted) {
-        setState(() => _selected = found);
-        widget.onConsumed?.call();
-      }
-    } catch (_) {}
-  }
 
   @override
   void dispose() {
@@ -58,20 +52,12 @@ class _ProtocolsScreenState extends State<ProtocolsScreen> {
     final p    = context.watch<AppProvider>();
     final isEs = p.lang == 'es';
 
-    if (_selected != null) {
-      return _ProtocolDetailView(
-        protocol: _selected!,
-        onBack: () => setState(() => _selected = null),
-        p: p,
-      );
-    }
-
-    final q          = _searchCtrl.text.toLowerCase().trim();
+    final q           = _searchCtrl.text.toLowerCase().trim();
     final isSearching = q.isNotEmpty;
 
     // ── Lista completa de protocolos (deduplicada por id) ──────────────────
-    final seen   = <String>{};
-    final allDB  = p.protocolsDB.where((x) => seen.add(x.id)).toList();
+    final seen  = <String>{};
+    final allDB = p.protocolsDB.where((x) => seen.add(x.id)).toList();
 
     // ── Filtro de busca ────────────────────────────────────────────────────
     final filtered = isSearching
@@ -120,7 +106,7 @@ class _ProtocolsScreenState extends State<ProtocolsScreen> {
             proto: proto,
             p: p,
             isLast: proto == filtered.last,
-            onTap: () => setState(() => _selected = proto),
+            onTap: () => showProtocolDetail(context, proto),
           )),
         ]
 
@@ -146,7 +132,7 @@ class _ProtocolsScreenState extends State<ProtocolsScreen> {
                     ? _expanded.remove('__fav__')
                     : _expanded.add('__fav__');
               }),
-              onSelect: (proto) => setState(() => _selected = proto),
+              onSelect: (proto) => showProtocolDetail(context, proto),
             ),
             const SizedBox(height: 8),
           ],
@@ -170,7 +156,7 @@ class _ProtocolsScreenState extends State<ProtocolsScreen> {
                   ? _expanded.remove('reanimacao')
                   : _expanded.add('reanimacao');
             }),
-            onSelect: (proto) => setState(() => _selected = proto),
+            onSelect: (proto) => showProtocolDetail(context, proto),
           ),
           const SizedBox(height: 8),
 
@@ -194,7 +180,7 @@ class _ProtocolsScreenState extends State<ProtocolsScreen> {
                   ? _expanded.remove('cardio')
                   : _expanded.add('cardio');
             }),
-            onSelect: (proto) => setState(() => _selected = proto),
+            onSelect: (proto) => showProtocolDetail(context, proto),
           ),
           const SizedBox(height: 8),
 
@@ -218,7 +204,7 @@ class _ProtocolsScreenState extends State<ProtocolsScreen> {
                   ? _expanded.remove('resp')
                   : _expanded.add('resp');
             }),
-            onSelect: (proto) => setState(() => _selected = proto),
+            onSelect: (proto) => showProtocolDetail(context, proto),
           ),
           const SizedBox(height: 8),
 
@@ -242,7 +228,7 @@ class _ProtocolsScreenState extends State<ProtocolsScreen> {
                   ? _expanded.remove('neuro')
                   : _expanded.add('neuro');
             }),
-            onSelect: (proto) => setState(() => _selected = proto),
+            onSelect: (proto) => showProtocolDetail(context, proto),
           ),
           const SizedBox(height: 8),
 
@@ -265,7 +251,7 @@ class _ProtocolsScreenState extends State<ProtocolsScreen> {
                   ? _expanded.remove('infec')
                   : _expanded.add('infec');
             }),
-            onSelect: (proto) => setState(() => _selected = proto),
+            onSelect: (proto) => showProtocolDetail(context, proto),
           ),
           const SizedBox(height: 8),
 
@@ -289,7 +275,7 @@ class _ProtocolsScreenState extends State<ProtocolsScreen> {
                   ? _expanded.remove('metab')
                   : _expanded.add('metab');
             }),
-            onSelect: (proto) => setState(() => _selected = proto),
+            onSelect: (proto) => showProtocolDetail(context, proto),
           ),
           const SizedBox(height: 8),
 
@@ -313,7 +299,7 @@ class _ProtocolsScreenState extends State<ProtocolsScreen> {
                   ? _expanded.remove('gastro')
                   : _expanded.add('gastro');
             }),
-            onSelect: (proto) => setState(() => _selected = proto),
+            onSelect: (proto) => showProtocolDetail(context, proto),
           ),
           const SizedBox(height: 8),
 
@@ -337,7 +323,7 @@ class _ProtocolsScreenState extends State<ProtocolsScreen> {
                   ? _expanded.remove('outros')
                   : _expanded.add('outros');
             }),
-            onSelect: (proto) => setState(() => _selected = proto),
+            onSelect: (proto) => showProtocolDetail(context, proto),
           ),
           const SizedBox(height: 8),
         ],
@@ -476,7 +462,7 @@ class _ProtocolGroupAccordion extends StatelessWidget {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// TILE DE PROTOCOLO (lista flat — busca e dentro do acordeão)
+// TILE DE PROTOCOLO — clique em qualquer área abre o detalhe diretamente
 // ─────────────────────────────────────────────────────────────────────────────
 class _ProtocolListTile extends StatelessWidget {
   final ProtocolModel proto;
@@ -506,10 +492,11 @@ class _ProtocolListTile extends StatelessWidget {
     final sevColor = _severityColor(sevText);
 
     return GestureDetector(
-      onTap: onTap,
+      onTap: onTap,   // clique em qualquer área → abre o detalhe direto
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 13),
         decoration: BoxDecoration(
+          color: Colors.transparent,
           border: isLast
               ? null
               : const Border(bottom: BorderSide(color: Color(0xFFEEEAE0), width: 0.8)),
@@ -554,7 +541,7 @@ class _ProtocolListTile extends StatelessWidget {
 
           const SizedBox(width: 10),
 
-          // Ações: favorito + abrir
+          // Ações: favorito + seta de abertura
           Column(mainAxisAlignment: MainAxisAlignment.center, children: [
             GestureDetector(
               onTap: () => p.toggleFavProtocol(proto.id),
@@ -564,14 +551,15 @@ class _ProtocolListTile extends StatelessWidget {
                   style: const TextStyle(fontSize: 18)),
               ),
             ),
-            const SizedBox(height: 4),
+            const SizedBox(height: 6),
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+              width: 32, height: 32,
               decoration: BoxDecoration(
-                color: kDark, borderRadius: BorderRadius.circular(20)),
-              child: Text(p.t('open'),
-                style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w900,
-                  color: kGoldLight)),
+                color: kDark,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: const Icon(Icons.arrow_forward_ios_rounded,
+                size: 13, color: kGoldLight),
             ),
           ]),
         ]),
@@ -581,96 +569,127 @@ class _ProtocolListTile extends StatelessWidget {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// DETALHE DO PROTOCOLO — hierarquia visual igual ao card de dose dos fármacos
+// BOTTOM SHEET — detalhe completo do protocolo
+// Abre a partir de qualquer ponto do app via showProtocolDetail()
 // ─────────────────────────────────────────────────────────────────────────────
-class _ProtocolDetailView extends StatelessWidget {
+class _ProtocolDetailSheet extends StatelessWidget {
   final ProtocolModel protocol;
-  final VoidCallback onBack;
-  final AppProvider p;
-  const _ProtocolDetailView({required this.protocol, required this.onBack, required this.p});
+  const _ProtocolDetailSheet({required this.protocol});
 
   @override
   Widget build(BuildContext context) {
-    final actions  = protocol.getActions(p.lang);
-    final isFav    = p.favProtocols.contains(protocol.id);
+    final p       = context.watch<AppProvider>();
+    final actions = protocol.getActions(p.lang);
+    final isFav   = p.favProtocols.contains(protocol.id);
     final avoidTxt = p.tDB(protocol.avoid);
-    final drugs    = protocol.drugs;
+    final drugs   = protocol.drugs;
 
-    return SingleChildScrollView(
-      padding: const EdgeInsets.fromLTRB(16, 8, 16, 100),
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+    // Altura: ocupa quase toda a tela para exibir o conteúdo completo
+    final maxH = MediaQuery.of(context).size.height * 0.92;
 
-        // ── Voltar ──────────────────────────────────────────────────────────
-        GestureDetector(
-          onTap: onBack,
+    return Container(
+      height: maxH,
+      decoration: const BoxDecoration(
+        color: Color(0xFFF7F8FA),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      child: Column(children: [
+
+        // ── Alça de arraste ────────────────────────────────────────────────
+        Padding(
+          padding: const EdgeInsets.only(top: 10, bottom: 4),
           child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 11),
+            width: 40, height: 4,
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(14),
-              border: Border.all(color: kBorder),
-              color: Colors.white,
+              color: Colors.black.withValues(alpha: 0.15),
+              borderRadius: BorderRadius.circular(2),
             ),
-            child: Row(children: [
-              const Icon(Icons.arrow_back_ios, size: 14, color: kDark),
-              const SizedBox(width: 4),
-              Text(p.t('back_protocols'),
-                style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w900, color: kDark)),
+          ),
+        ),
+
+        // ── Conteúdo scrollável ────────────────────────────────────────────
+        Expanded(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.fromLTRB(16, 4, 16, 32),
+            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+
+              // ── Header premium ───────────────────────────────────────────
+              PremiumCard(
+                child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                    Text(p.tDB(protocol.severity),
+                      style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w900,
+                        color: Color(0xBFFFE8A6), letterSpacing: 1.4)),
+                    const SizedBox(height: 4),
+                    Text(p.tDB(protocol.title),
+                      style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w900,
+                        color: Colors.white, letterSpacing: -0.5, height: 1.2)),
+                  ])),
+                  // Favorito
+                  GestureDetector(
+                    onTap: () => p.toggleFavProtocol(protocol.id),
+                    child: Container(
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(12),
+                        color: Colors.white.withValues(alpha: 0.1),
+                        border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
+                      ),
+                      child: Icon(
+                        isFav ? Icons.star_rounded : Icons.star_border_rounded,
+                        size: 22,
+                        color: isFav ? const Color(0xFFFFE8A6) : Colors.white54,
+                      ),
+                    ),
+                  ),
+                ]),
+              ),
+              const SizedBox(height: 12),
+
+              // ── Reconhecer ───────────────────────────────────────────────
+              _RecognizeCard(text: p.tDB(protocol.recognize), p: p),
+              const SizedBox(height: 10),
+
+              // ── Conduta imediata ─────────────────────────────────────────
+              _ActionsCard(actions: actions, p: p),
+              const SizedBox(height: 10),
+
+              // ── Evitar ───────────────────────────────────────────────────
+              if (avoidTxt.isNotEmpty) ...[
+                _AvoidCard(text: avoidTxt, p: p),
+                const SizedBox(height: 10),
+              ],
+
+              // ── Fármacos relacionados ────────────────────────────────────
+              if (drugs.isNotEmpty) ...[
+                _DrugsChipsCard(drugs: drugs, p: p),
+                const SizedBox(height: 10),
+              ],
+
+              // ── Botão fechar ─────────────────────────────────────────────
+              GestureDetector(
+                onTap: () => Navigator.of(context).pop(),
+                child: Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(14),
+                    border: Border.all(color: const Color(0xFFDDD8CC)),
+                    color: Colors.white,
+                  ),
+                  child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                    const Icon(Icons.keyboard_arrow_down_rounded, size: 18, color: kDark),
+                    const SizedBox(width: 6),
+                    Text(
+                      p.lang == 'es' ? 'Cerrar' : 'Fechar',
+                      style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w800, color: kDark),
+                    ),
+                  ]),
+                ),
+              ),
             ]),
           ),
         ),
-        const SizedBox(height: 12),
-
-        // ── Header premium ───────────────────────────────────────────────────
-        PremiumCard(
-          child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text(p.tDB(protocol.severity),
-                style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w900,
-                  color: Color(0xBFFFE8A6), letterSpacing: 1.4)),
-              const SizedBox(height: 4),
-              Text(p.tDB(protocol.title),
-                style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w900,
-                  color: Colors.white, letterSpacing: -0.5, height: 1.2)),
-            ])),
-            GestureDetector(
-              onTap: () => p.toggleFavProtocol(protocol.id),
-              child: Container(
-                padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
-                  color: Colors.white.withValues(alpha: 0.1),
-                  border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
-                ),
-                child: Icon(
-                  isFav ? Icons.star_rounded : Icons.star_border_rounded,
-                  size: 22,
-                  color: isFav ? const Color(0xFFFFE8A6) : Colors.white54,
-                ),
-              ),
-            ),
-          ]),
-        ),
-        const SizedBox(height: 12),
-
-        // ── Reconhecer ───────────────────────────────────────────────────────
-        _RecognizeCard(text: p.tDB(protocol.recognize), p: p),
-        const SizedBox(height: 10),
-
-        // ── Conduta imediata — hierarquia visual ─────────────────────────────
-        _ActionsCard(actions: actions, p: p),
-        const SizedBox(height: 10),
-
-        // ── Evitar ──────────────────────────────────────────────────────────
-        if (avoidTxt.isNotEmpty) ...[
-          _AvoidCard(text: avoidTxt, p: p),
-          const SizedBox(height: 10),
-        ],
-
-        // ── Fármacos relacionados ────────────────────────────────────────────
-        if (drugs.isNotEmpty) ...[
-          _DrugsChipsCard(drugs: drugs, p: p),
-          const SizedBox(height: 10),
-        ],
       ]),
     );
   }
