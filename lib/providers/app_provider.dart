@@ -112,9 +112,12 @@ class AppProvider extends ChangeNotifier {
     _lang = user.lang;
     _darkMode = user.darkMode;
     _firebaseReady = true;
-    notifyListeners();
-    // Carregar dados do Firestore
-    await _loadFromFirestore(user.uid);
+
+    // 1️⃣ Carrega cache local IMEDIATAMENTE — app responde sem esperar rede
+    await _loadFromLocal(uid: user.uid);
+
+    // 2️⃣ Sincroniza Firestore em background — não bloqueia a UI
+    _syncFromFirestore(user.uid);
   }
 
   void clearUser() {
@@ -137,55 +140,104 @@ class AppProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  // ── Carregar dados do Firestore ───────────────────────────────────────────
-  Future<void> _loadFromFirestore(String uid) async {
+  // ── Sincronização background com Firestore ────────────────────────────────
+  // Chamado APÓS _loadFromLocal — atualiza silenciosamente quando há rede
+  Future<void> _syncFromFirestore(String uid) async {
     try {
-      final favDrugs = await FirestoreService.loadFavDrugs(uid);
+      final favDrugs     = await FirestoreService.loadFavDrugs(uid);
       final favProtocols = await FirestoreService.loadFavProtocols(uid);
-      final cases = await FirestoreService.loadCases(uid);
-      _favDrugs = favDrugs;
+      final cases        = await FirestoreService.loadCases(uid);
+      _favDrugs     = favDrugs;
       _favProtocols = favProtocols;
-      _customCases = cases;
+      _customCases  = cases;
       notifyListeners();
-      // Carrega histórias clínicas em paralelo (sem bloquear UI)
-      loadHistories().catchError((_) {});
+      // Persiste no cache local para próxima abertura offline
+      await _saveLocal();
+      // Histórias clínicas em paralelo (não bloqueia)
+      _syncHistoriesFromFirestore(uid);
     } catch (_) {
-      // Fallback para SharedPreferences se offline
-      await _loadFromLocal();
+      // Sem rede: mantém dados do cache — nenhuma ação necessária
     }
   }
 
-  // ── Fallback local ────────────────────────────────────────────────────────
+  Future<void> _syncHistoriesFromFirestore(String uid) async {
+    try {
+      final histories = await FirestoreService.loadHistories(uid);
+      _myHistories = histories;
+      notifyListeners();
+      // Persiste histórias no cache local
+      await _saveHistoriesLocal(uid);
+    } catch (_) {}
+  }
+
+  // ── Cache local (SharedPreferences) ──────────────────────────────────────
+  // Prefixo por uid garante que usuários diferentes não compartilhem cache
+  String _k(String key, String? uid) => uid != null ? '${uid}_$key' : key;
+
   Future<void> loadPrefs() async {
     await _loadFromLocal();
   }
 
-  Future<void> _loadFromLocal() async {
+  Future<void> _loadFromLocal({String? uid}) async {
     try {
       final p = await SharedPreferences.getInstance();
-      _lang = p.getString('lang') ?? 'es';
-      _darkMode = p.getBool('darkMode') ?? false;
-      _favDrugs = (p.getStringList('favDrugs') ?? []).toSet();
-      _favProtocols = (p.getStringList('favProtocols') ?? []).toSet();
-      final casesJson = p.getString('customCases');
+
+      // Preferências globais (independentes de usuário)
+      _lang     = p.getString('lang')     ?? 'es';
+      _darkMode = p.getBool('darkMode')   ?? false;
+
+      // Dados por usuário (se uid disponível usa cache dedicado)
+      final favKey   = _k('favDrugs',      uid);
+      final protKey  = _k('favProtocols',  uid);
+      final caseKey  = _k('customCases',   uid);
+      final histKey  = _k('myHistories',   uid);
+
+      _favDrugs     = (p.getStringList(favKey)  ?? p.getStringList('favDrugs')  ?? []).toSet();
+      _favProtocols = (p.getStringList(protKey) ?? p.getStringList('favProtocols') ?? []).toSet();
+
+      final casesJson = p.getString(caseKey) ?? p.getString('customCases');
       if (casesJson != null) {
         try {
           final list = jsonDecode(casesJson) as List;
-          _customCases = list.map((e) => ClinicalCaseModel.fromJson(e as Map<String, dynamic>)).toList();
+          _customCases = list
+              .map((e) => ClinicalCaseModel.fromJson(e as Map<String, dynamic>))
+              .toList();
+        } catch (_) {}
+      }
+
+      // Histórias clínicas em cache
+      final histJson = p.getString(histKey);
+      if (histJson != null) {
+        try {
+          final list = jsonDecode(histJson) as List;
+          _myHistories = list
+              .map((e) => ClinicalHistoryModel.fromJson(e as Map<String, dynamic>))
+              .toList();
         } catch (_) {}
       }
     } catch (_) {}
     notifyListeners();
   }
 
-  Future<void> _saveLocal() async {
+  Future<void> _saveLocal({String? uid}) async {
+    final u = uid ?? _currentUser?.uid;
     try {
       final p = await SharedPreferences.getInstance();
-      await p.setString('lang', _lang);
-      await p.setBool('darkMode', _darkMode);
-      await p.setStringList('favDrugs', _favDrugs.toList());
-      await p.setStringList('favProtocols', _favProtocols.toList());
-      await p.setString('customCases', jsonEncode(_customCases.map((c) => c.toJson()).toList()));
+      await p.setString('lang',     _lang);
+      await p.setBool('darkMode',   _darkMode);
+      await p.setStringList(_k('favDrugs',     u), _favDrugs.toList());
+      await p.setStringList(_k('favProtocols', u), _favProtocols.toList());
+      await p.setString(_k('customCases', u),
+          jsonEncode(_customCases.map((c) => c.toJson()).toList()));
+    } catch (_) {}
+  }
+
+  // Salva apenas as histórias no cache (chamado após sync ou write)
+  Future<void> _saveHistoriesLocal(String uid) async {
+    try {
+      final p = await SharedPreferences.getInstance();
+      await p.setString(_k('myHistories', uid),
+          jsonEncode(_myHistories.map((h) => h.toJson()).toList()));
     } catch (_) {}
   }
 
@@ -442,26 +494,37 @@ class AppProvider extends ChangeNotifier {
     try {
       _myHistories = await FirestoreService.loadHistories(_currentUser!.uid);
       notifyListeners();
-    } catch (_) {}
+      // Persiste no cache para uso offline
+      await _saveHistoriesLocal(_currentUser!.uid);
+    } catch (_) {
+      // Sem rede: histórias já carregadas do cache em _loadFromLocal()
+    }
   }
 
   Future<void> saveHistory(ClinicalHistoryModel h) async {
     if (_currentUser == null) return;
-    await FirestoreService.saveHistory(_currentUser!.uid, h);
     final idx = _myHistories.indexWhere((x) => x.id == h.id);
     if (idx >= 0) {
       _myHistories[idx] = h;
     } else {
       _myHistories.insert(0, h);
     }
+    // Persiste no cache local imediatamente (funciona offline)
+    await _saveHistoriesLocal(_currentUser!.uid);
     notifyListeners();
+    // Sincroniza com Firestore em background
+    FirestoreService.saveHistory(_currentUser!.uid, h).catchError((_) {});
   }
 
   Future<void> deleteHistory(String id, {bool wasPublic = false}) async {
     if (_currentUser == null) return;
-    await FirestoreService.deleteHistory(_currentUser!.uid, id, wasPublic: wasPublic);
     _myHistories.removeWhere((h) => h.id == id);
+    // Atualiza cache local imediatamente
+    await _saveHistoriesLocal(_currentUser!.uid);
     notifyListeners();
+    // Sincroniza deleção com Firestore em background
+    FirestoreService.deleteHistory(_currentUser!.uid, id, wasPublic: wasPublic)
+        .catchError((_) {});
   }
 
   Future<void> toggleHistoryPublic(ClinicalHistoryModel h) async {
