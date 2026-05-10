@@ -2099,8 +2099,8 @@ const List<DrugModel> drugsDatabase = [
     route: 'IV rápido (bolus)',
     doseType: 'fixed',
     fixedDose: {
-      'pt': 'TPSV: 6 mg IV rápido em 1–3 s + flush 20 mL SF imediato. Se sem resposta em 1–2 min: 12 mg IV rápido. Repetir 12 mg se necessário. Máx. 30 mg total. Via central: reduzir dose pela metade.',
-      'es': 'TPSV: 6 mg IV rápido + flush 20 mL SF. Sin respuesta en 1–2 min: 12 mg IV. Repetir 12 mg si necesario. Máx. 30 mg total.',
+      'pt': 'Adulto — TPSV: 6 mg IV rápido em 1–3 s + flush 20 mL SF imediato. Se sem resposta em 1–2 min: 12 mg IV. Repetir 12 mg se necessário. Máx. 30 mg total. Via central: reduzir dose pela metade. | Pediátrico: 0,1 mg/kg (máx 6 mg) → 0,2 mg/kg (máx 12 mg), flush imediato após cada dose.',
+      'es': 'Adulto — TPSV: 6 mg IV rápido + flush 20 mL SF. Sin respuesta en 1–2 min: 12 mg IV. Repetir 12 mg si necesario. Máx. 30 mg total. | Pediátrico: 0,1 mg/kg (máx 6 mg) → 0,2 mg/kg (máx 12 mg), flush inmediato.',
     },
     renalAlert: {
       'pt': 'Sem ajuste necessário — meia-vida < 10 s (metabolismo eritrócitos/endotélio).',
@@ -2119,8 +2119,8 @@ const List<DrugModel> drugsDatabase = [
       'es': 'Broncoespasmo grave — contraindicada en asma y EPOC grave. Asistolia transitoria esperada (5–15 s). Síndrome WPW puede convertir en FA con alta respuesta.',
     },
     adverse: {
-      'pt': ['Flushing/calor (75%)', 'Dispneia (50%)', 'Dor torácica', 'Assistolia transitória', 'Broncoespasmo (asma)', 'Náuseas', 'Bradicardia reflexa pós-conversão'],
-      'es': ['Flushing/calor (75%)', 'Disnea (50%)', 'Dolor torácico', 'Asistolia transitoria', 'Broncoespasmo (asma)', 'Náuseas'],
+      'pt': ['Flushing/calor (75%)', 'Dispneia (50%)', 'Dor torácica', 'Assistolia transitória', 'Sensação de morte iminente', 'Broncoespasmo (asma)', 'Náuseas', 'Bradicardia reflexa pós-conversão'],
+      'es': ['Flushing/calor (75%)', 'Disnea (50%)', 'Dolor torácico', 'Asistolia transitoria', 'Sensación de muerte inminente', 'Broncoespasmo (asma)', 'Náuseas'],
     },
   ),
 
@@ -2371,8 +2371,8 @@ const List<DrugModel> drugsDatabase = [
     route: 'IV / IM / SC',
     doseType: 'fixed',
     fixedDose: {
-      'pt': 'Bradicardia sintomática (ACLS): 1 mg IV, repetir a cada 3–5 min (máx. 3 mg). Intoxicação organofosforado: 2–4 mg IV, repetir a cada 5–10 min até secar secreções (doses altas podem ser necessárias: 20–100 mg). Pré-medicação anestesia: 0,4–0,6 mg IM/IV.',
-      'es': 'Bradicardia sintomática (ACLS): 1 mg IV, repetir cada 3–5 min (máx. 3 mg). Intox. organofosforado: 2–4 mg IV, repetir hasta secar secreciones.',
+      'pt': 'Adulto — Bradicardia sintomática (ACLS): 1 mg IV, repetir a cada 3–5 min (máx. 3 mg). Intoxicação organofosforado: 2–4 mg IV, repetir a cada 5–10 min até secar secreções (doses altas: 20–100 mg). Pré-medicação anestesia: 0,4–0,6 mg IM/IV. | Pediátrico: 0,02 mg/kg IV/IM (mín. 0,1 mg; máx. 0,5 mg lactente / 1 mg criança), repetir a cada 5 min se necessário.',
+      'es': 'Adulto — Bradicardia sintomática (ACLS): 1 mg IV, repetir cada 3–5 min (máx. 3 mg). Intox. organofosforado: 2–4 mg IV, repetir hasta secar secreciones. | Pediátrico: 0,02 mg/kg IV/IM (mín. 0,1 mg; máx. 0,5 mg lactante / 1 mg niño), repetir cada 5 min si necesario.',
     },
     renalAlert: {
       'pt': 'Eliminação renal — monitorar em IR grave. Efeitos anticolinérgicos mais intensos e prolongados.',
@@ -2391,8 +2391,8 @@ const List<DrugModel> drugsDatabase = [
       'es': 'Dosis subóptimas (<0,5 mg) pueden causar bradicardia paradójica. Contraindicada en glaucoma ángulo cerrado.',
     },
     adverse: {
-      'pt': ['Taquicardia', 'Boca seca', 'Retenção urinária', 'Visão turva (midríase)', 'Constipação', 'Delirium (idosos)', 'Glaucoma ângulo fechado'],
-      'es': ['Taquicardia', 'Boca seca', 'Retención urinaria', 'Visión borrosa (midriasis)', 'Estreñimiento', 'Delirium (ancianos)'],
+      'pt': ['Taquicardia', 'Boca seca', 'Retenção urinária', 'Visão turva (midríase)', 'Pele seca e quente', 'Constipação', 'Delirium (idosos)', 'Glaucoma ângulo fechado', 'Confusão mental'],
+      'es': ['Taquicardia', 'Boca seca', 'Retención urinaria', 'Visión borrosa (midriasis)', 'Piel seca y caliente', 'Estreñimiento', 'Delirium (ancianos)', 'Confusión mental'],
     },
   ),
 
@@ -7073,28 +7073,28 @@ const List<DrugModel> drugsDatabase = [
     route: 'IV / IM',
     doseType: 'fixed',
     fixedDose: {
-      'pt': 'Adulto: 1–2 g a cada 8h. Máx 6 g/dia.',
-      'es': 'Adulto: 1–2 g cada 8 h. Máx 6 g/día.',
+      'pt': 'Adulto: 1–2 g a cada 8h (máx. 6 g/dia). | Pediátrico: 100–150 mg/kg/dia dividido em 3 doses (máx. 6 g/dia). Meningite: 150–200 mg/kg/dia ÷ 3.',
+      'es': 'Adulto: 1–2 g cada 8 h (máx. 6 g/día). | Pediátrico: 100–150 mg/kg/día ÷ 3 dosis (máx. 6 g/día). Meningitis: 150–200 mg/kg/día ÷ 3.',
     },
     renalAlert: {
-      'pt': 'Ajuste obrigatório se ClCr <50 mL/min.',
-      'es': 'Ajuste obligatorio si ClCr <50 mL/min.',
+      'pt': 'Ajuste obrigatório se ClCr <50 mL/min. Risco de neurotoxicidade (convulsões, encéfalopatia) por acúmulo em IR grave.',
+      'es': 'Ajuste obligatorio si ClCr <50 mL/min. Riesgo de neurotoxicidad (convulsiones, encefalopatia) por acumulación en IR grave.',
     },
     elderlyAlert: {
-      'pt': 'Monitorar função renal para evitar estados confusionais por acúmulo.',
-      'es': 'Monitorear función renal para evitar confusión por acumulación.',
+      'pt': 'Monitorar função renal para evitar estados confusionais e neurotoxicidade por acúmulo.',
+      'es': 'Monitorear función renal para evitar confusión y neurotoxicidad por acumulación.',
     },
     mechanism: {
-      'pt': 'Inibe a síntese de peptidoglicano da parede celular; alta atividade contra Pseudomonas aeruginosa.',
-      'es': 'Inhibe la síntesis de peptidoglicano de la pared celular; alta actividad contra Pseudomonas aeruginosa.',
+      'pt': 'Inibe a síntese de peptidoglicano da parede celular bacteriana (ligação às PBPs); alta atividade contra Pseudomonas aeruginosa e Gram-negativos.',
+      'es': 'Inhibe la síntesis de peptidoglicano de la pared celular (unión a PBPs); alta actividad contra Pseudomonas aeruginosa y Gram-negativos.',
     },
     warning: {
-      'pt': 'Baixa atividade contra Gram-positivos em comparação ao Ceftriaxone.',
-      'es': 'Baja actividad contra Gram-positivos en comparación con Ceftriaxone.',
+      'pt': 'Baixa atividade contra Gram-positivos (preferír ceftriaxona nesse contexto). Convulsões em doses altas ou IR não ajustada.',
+      'es': 'Baja actividad contra Gram-positivos (preferir ceftriaxona en ese contexto). Convulsiones en dosis altas o IR no ajustada.',
     },
     adverse: {
-      'pt': ['Flebite', 'Eosinofilia', 'Diarreia', 'Teste de Coombs positivo'],
-      'es': ['Flebitis', 'Eosinofilia', 'Diarrea', 'Test de Coombs positivo'],
+      'pt': ['Flebite', 'Eosinofilia', 'Diarreia', 'Náuseas', 'Teste de Coombs positivo', 'Convulsão (doses altas / IR)'],
+      'es': ['Flebitis', 'Eosinofilia', 'Diarrea', 'Náuseas', 'Test de Coombs positivo', 'Convulsión (dosis altas / IR)'],
     },
   ),
 
@@ -7428,21 +7428,21 @@ const List<DrugModel> drugsDatabase = [
     id: 'fexofenadina_f',
     group: 'Varios / Antídotos / Otros',
     name: 'Fexofenadina (Allegra)',
-    className: {'pt': 'Anti-histamínico H1 de 2ª geração', 'es': 'Antihistamínico H1 de 2ª generación'},
+    className: {'pt': 'Anti-histamínico H1 de 2ª geração (não sedativo)', 'es': 'Antihistamínico H1 de 2ª generación (no sedativo)'},
     category: {'pt': 'Antialérgicos', 'es': 'Antialérgicos'},
     route: 'VO',
     doseType: 'weight',
     fixedDose: {
-      'pt': 'Adulto: 120-180 mg 1x/dia. Pediátrico (>2 anos): 30 mg 2x/dia; (>12 anos): 60 mg 2x/dia ou 120 mg/dia.',
-      'es': 'Adulto: 120-180 mg 1 vez/día. Pediátrico (>2 años): 30 mg 2 veces/día; (>12 años): 60 mg 2 veces/día.',
+      'pt': 'Adulto: 120 mg 1×/dia ou 180 mg 1×/dia (rinite alérgica grave). | Pediátrico (2–11 anos): 30 mg 2×/dia; (≥12 anos): 60 mg 2×/dia ou 120 mg/dia.',
+      'es': 'Adulto: 120 mg 1×/día o 180 mg 1×/día (rinitis alérgica grave). | Pediátrico (2–11 años): 30 mg 2×/día; (≥12 años): 60 mg 2×/día o 120 mg/día.',
     },
-    renalAlert: {'pt': 'ClCr < 80 mL/min: dose inicial recomendada de 60 mg 1x/dia.', 'es': 'ClCr < 80 mL/min: dosis inicial recomendada de 60 mg 1 vez/día.'},
-    elderlyAlert: {'pt': 'Fármaco de escolha em idosos por não ter efeito anticolinérgico.', 'es': 'Fármaco de elección en ancianos por no tener efecto anticolinérgico.'},
-    mechanism: {'pt': 'Antagonista seletivo do receptor H1 periférico. Não atravessa a barreira hematoencefálica (não sedativo).', 'es': 'Antagonista selectivo del receptor H1 periférico. No sedativo.'},
-    warning: {'pt': 'Não tomar com suco de frutas (reduz absorção).', 'es': 'No tomar con jugo de frutas (reduce absorción).'},
+    renalAlert: {'pt': 'ClCr < 80 mL/min: dose inicial de 60 mg 1×/dia. Reduzir conforme função renal.', 'es': 'ClCr < 80 mL/min: dosis inicial 60 mg 1×/día. Reducir según función renal.'},
+    elderlyAlert: {'pt': 'Fármaco de escolha em idosos — sem efeito anticolinérgico, sem sedação.', 'es': 'Fármaco de elección en ancianos — sin efecto anticolinérgico, sin sedación.'},
+    mechanism: {'pt': 'Antagonista seletivo do receptor H1 periférico. Não atravessa a barreira hematoencefálica → sem sedação nem efeitos anticolinérgicos.', 'es': 'Antagonista selectivo del receptor H1 periférico. No atraviesa la barrera hematoencefálica → sin sedación ni efectos anticolinérgicos.'},
+    warning: {'pt': 'Não ingerir com suco de toranja, laranja ou maçã (reduz absorção em até 36%). Tomar com água.', 'es': 'No tomar con jugo de toronja, naranja o manzana (reduce absorción hasta 36%). Tomar con agua.'},
     adverse: {
-      'pt': ['Cefaleia', 'Sonolência (raro)', 'Náuseas', 'Vertigem', 'Fadiga'],
-      'es': ['Cefalea', 'Somnolencia (raro)', 'Náuseas', 'Vértigo', 'Fatiga'],
+      'pt': ['Cefaleia', 'Náuseas', 'Boca seca (raro)', 'Vertigem', 'Fadiga', 'Tontura', 'Sonolência (raro)'],
+      'es': ['Cefalea', 'Náuseas', 'Boca seca (raro)', 'Vértigo', 'Fatiga', 'Mareo', 'Somnolencia (raro)'],
     },
   ),
 
@@ -7579,28 +7579,6 @@ const List<DrugModel> drugsDatabase = [
   ),
 
   DrugModel(
-    id: 'adenosina_f',
-    group: 'Cardiovascular y HTA',
-    name: 'Adenosina',
-    className: {'pt': 'Antiarrítmico Classe V', 'es': 'Antiarrítmico Clase V'},
-    category: {'pt': 'Emergência', 'es': 'Emergencia'},
-    route: 'IV (Bólus Rápido)',
-    doseType: 'weight',
-    fixedDose: {
-      'pt': 'Adulto: 6 mg → 12 mg → 12 mg. Pediátrico: 0.1 mg/kg (máx 6 mg) → 0.2 mg/kg (máx 12 mg).',
-      'es': 'Adulto: 6 mg → 12 mg → 12 mg. Pediátrico: 0.1 mg/kg (máx 6 mg) → 0.2 mg/kg (máx 12 mg).',
-    },
-    renalAlert: {'pt': 'Sem ajuste necessário.', 'es': 'Sin ajuste necesario.'},
-    elderlyAlert: {'pt': 'Risco de assistolia prolongada; usar dose menor se via central.', 'es': 'Riesgo de asistolia prolongada; usar dosis menor si es vía central.'},
-    mechanism: {'pt': 'Bloqueio temporário do nó AV por ativação de receptores A1 de purina.', 'es': 'Bloqueo temporal del nodo AV por activación de receptores A1.'},
-    warning: {'pt': 'Administrar em veia calibrosa com flush de 20ml SF imediato.', 'es': 'Administrar en vena de gran calibre con flush de 20ml SF inmediato.'},
-    adverse: {
-      'pt': ['Assistolia transitória', 'Sensação de morte iminente', 'Rubor facial', 'Dispneia', 'Dor torácica'],
-      'es': ['Asistolia transitoria', 'Sensación de muerte inminente', 'Rubor facial', 'Disnea', 'Dolor torácico'],
-    },
-  ),
-
-  DrugModel(
     id: 'salbutamol_gotas_f',
     group: 'Respiratorio',
     name: 'Salbutamol (Ventolin - Gotas)',
@@ -7707,28 +7685,6 @@ const List<DrugModel> drugsDatabase = [
     adverse: {
       'pt': ['Gosto metálico', 'Náuseas', 'Glossite', 'Cefaleia', 'Urina escura'],
       'es': ['Sabor metálico', 'Náuseas', 'Glositis', 'Cefalea', 'Orina oscura'],
-    },
-  ),
-
-  DrugModel(
-    id: 'atropina_f',
-    group: 'Cardiovascular y HTA',
-    name: 'Atropina',
-    className: {'pt': 'Anticolinérgico', 'es': 'Anticolinérgico'},
-    category: {'pt': 'Emergência', 'es': 'Emergencia'},
-    route: 'IV / IM / SC',
-    doseType: 'weight',
-    fixedDose: {
-      'pt': 'Bradicardia Adulto: 1 mg cada 3-5 min. Pediátrico: 0.02 mg/kg (mín 0.1 mg).',
-      'es': 'Bradicardia Adulto: 1 mg cada 3-5 min. Pediátrico: 0.02 mg/kg (mín 0.1 mg).',
-    },
-    renalAlert: {'pt': 'Sem ajuste necessário.', 'es': 'Sin ajuste necesario.'},
-    elderlyAlert: {'pt': 'Pode causar delirium e retenção urinária aguda.', 'es': 'Puede causar delirium y retención urinaria aguda.'},
-    mechanism: {'pt': 'Antagonista muscarínico competitivo; aumenta FC e relaxa musculatura lisa.', 'es': 'Antagonista muscarínico competitivo; aumenta FC.'},
-    warning: {'pt': 'Doses < 0.5 mg no adulto podem causar bradicardia paradoxal.', 'es': 'Dosis < 0.5 mg en el adulto pueden causar bradicardia paradojal.'},
-    adverse: {
-      'pt': ['Taquicardia', 'Midríase', 'Boca seca', 'Pele seca e quente', 'Confusão mental'],
-      'es': ['Taquicardia', 'Midriasis', 'Boca seca', 'Piel seca y caliente', 'Confusión mental'],
     },
   ),
 
@@ -7953,28 +7909,6 @@ const List<DrugModel> drugsDatabase = [
   ),
 
   DrugModel(
-    id: 'oseltamivir_f',
-    group: 'Respiratorio',
-    name: 'Oseltamivir (Tamiflu)',
-    className: {'pt': 'Antiviral (Inibidor da Neuraminidase)', 'es': 'Antiviral (Inhibidor de Neuraminidasa)'},
-    category: {'pt': 'Respiratório', 'es': 'Respiratorio'},
-    route: 'VO',
-    doseType: 'weight',
-    fixedDose: {
-      'pt': 'Adulto: 75 mg 2x/dia por 5 dias. Pediátrico: conforme peso (ex: <15kg: 30 mg 2x/dia).',
-      'es': 'Adulto: 75 mg 2 veces/día por 5 días. Pediátrico: según peso (ej: <15kg: 30 mg 2 veces/día).',
-    },
-    renalAlert: {'pt': 'Ajustar dose se ClCr < 30 mL/min.', 'es': 'Ajustar dosis si ClCr < 30 mL/min.'},
-    elderlyAlert: {'pt': 'Bem tolerado; monitorar função renal.', 'es': 'Bien tolerado; monitorear función renal.'},
-    mechanism: {'pt': 'Impede a liberação de novos vírions de influenza das células infectadas.', 'es': 'Impide la liberación de nuevos viriones.'},
-    warning: {'pt': 'Eficaz apenas contra vírus Influenza A e B.', 'es': 'Eficaz solo contra virus Influenza A y B.'},
-    adverse: {
-      'pt': ['Náuseas', 'Vômitos', 'Cefaleia', 'Dor abdominal', 'Insônia'],
-      'es': ['Náuseas', 'Vómitos', 'Cefalea', 'Dolor abdominal', 'Insomnio'],
-    },
-  ),
-
-  DrugModel(
     id: 'mupirocina_f',
     group: 'Varios / Antídotos / Otros',
     name: 'Mupirocina (Bactroban - Pomada)',
@@ -8103,28 +8037,6 @@ const List<DrugModel> drugsDatabase = [
     adverse: {
       'pt': ['Fácies de lua cheia', 'Hiperglicemia', 'Osteoporose', 'Estrias', 'Catarata'],
       'es': ['Fascie lunar', 'Hiperglucemia', 'Osteoporosis', 'Estrías', 'Catarata'],
-    },
-  ),
-
-  DrugModel(
-    id: 'ceftazidima_f',
-    group: 'Antibióticos',
-    name: 'Ceftazidima',
-    className: {'pt': 'Cefalosporina de 3ª Geração', 'es': 'Cefalosporina de 3ª Generación'},
-    category: {'pt': 'Antibióticos', 'es': 'Antibióticos'},
-    route: 'IV / IM',
-    doseType: 'weight',
-    fixedDose: {
-      'pt': 'Adulto: 1-2 g cada 8h. Pediátrico: 100-150 mg/kg/dia ÷ 3 doses.',
-      'es': 'Adulto: 1-2 g cada 8h. Pediatría: 100-150 mg/kg/día ÷ 3 dosis.',
-    },
-    renalAlert: {'pt': 'Ajuste rigoroso em insuficiência renal.', 'es': 'Ajuste riguroso en insuficiencia renal.'},
-    elderlyAlert: {'pt': 'Risco de neurotoxicidade.', 'es': 'Riesgo de neurotoxicidad.'},
-    mechanism: {'pt': 'Inibe síntese de parede; alta cobertura para Pseudomonas.', 'es': 'Inhibe síntesis de pared; activo contra Pseudomonas.'},
-    warning: {'pt': 'Pobre cobertura para Gram positivos.', 'es': 'Pobre cobertura para Gram positivos.'},
-    adverse: {
-      'pt': ['Flebite', 'Eosinofilia', 'Náusea', 'Coombs +', 'Convulsão (em doses altas)'],
-      'es': ['Flebitis', 'Eosinofilia', 'Náusea', 'Coombs +', 'Convulsión (dosis altas)'],
     },
   ),
 
@@ -8499,28 +8411,6 @@ const List<DrugModel> drugsDatabase = [
     adverse: {
       'pt': ['Flatulência', 'Náuseas', 'Dor abdominal', 'Tenesmo', 'Cefaleia'],
       'es': ['Flatulencia', 'Náuseas', 'Dolor abdominal', 'Tenesmo', 'Cefalea'],
-    },
-  ),
-
-  DrugModel(
-    id: 'fexofenadina_p',
-    group: 'Varios / Antídotos / Otros',
-    name: 'Fexofenadina (Allegra)',
-    className: {'pt': 'Anti-histamínico 2ª gen', 'es': 'Antihistamínico 2ª gen'},
-    category: {'pt': 'Alergia', 'es': 'Alergia'},
-    route: 'VO',
-    doseType: 'weight',
-    fixedDose: {
-      'pt': 'Adulto: 120-180 mg/dia. Ped: 30 mg cada 12h (2-11 anos).',
-      'es': 'Adulto: 120-180 mg/día. Ped: 30 mg cada 12h (2-11 años).',
-    },
-    renalAlert: {'pt': 'Reduzir dose em insuficiência renal.', 'es': 'Reducir dosis en falla renal.'},
-    elderlyAlert: {'pt': 'Fármaco de escolha para evitar sedação.', 'es': 'Elección sin sedación.'},
-    mechanism: {'pt': 'Bloqueador H1 seletivo periférico.', 'es': 'Bloqueador H1 selectivo.'},
-    warning: {'pt': 'Não sedativo.', 'es': 'No sedativo.'},
-    adverse: {
-      'pt': ['Cefaleia', 'Boca seca', 'Náusea', 'Tontura', 'Sonolência (raro)'],
-      'es': ['Cefalea', 'Boca seca', 'Náusea', 'Mareo', 'Somnolencia (raro)'],
     },
   ),
 
