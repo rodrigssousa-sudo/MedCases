@@ -72,6 +72,9 @@ class AppProvider extends ChangeNotifier {
   List<ClinicalHistoryModel> _myHistories = [];
   List<ClinicalHistoryModel> _publicHistories = [];
   bool _isLoadingPublic = false;
+  String _publicLoadError = '';
+
+  String get publicLoadError => _publicLoadError;
 
   // ── Estado — IA Clínica ──────────────────────────────────────────────────
   String _openAiKey = '';
@@ -660,6 +663,7 @@ class AppProvider extends ChangeNotifier {
 
     _publicHistoriesCompleter = Completer<void>();
     _isLoadingPublic = true;
+    _publicLoadError = '';
     notifyListeners();
     try {
       final fetched = await FirestoreService.loadPublicHistories();
@@ -677,8 +681,8 @@ class AppProvider extends ChangeNotifier {
       }
       merged.sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
       _publicHistories = merged;
-    } catch (_) {
-      // Mantém o que já está em memória
+    } catch (e, st) {
+      _publicLoadError = '$e\n$st';
     } finally {
       _isLoadingPublic = false;
       _publicHistoriesCompleter!.complete();

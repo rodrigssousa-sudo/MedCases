@@ -365,7 +365,37 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
                   ),
                 )
               : pub.isEmpty
-                ? _EmptyCommunityState(onRefresh: () => p.loadPublicHistories())
+                ? p.publicLoadError.isNotEmpty
+                  ? Center(child: SingleChildScrollView(
+                      padding: const EdgeInsets.all(16),
+                      child: Column(mainAxisSize: MainAxisSize.min, children: [
+                        const Icon(Icons.bug_report_rounded, size: 32, color: Colors.red),
+                        const SizedBox(height: 8),
+                        const Text('ERRO AO CARREGAR (debug)',
+                          style: TextStyle(fontSize: 12, fontWeight: FontWeight.w900, color: Colors.red)),
+                        const SizedBox(height: 8),
+                        Container(
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFFFF0F0),
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(color: Colors.red.withValues(alpha: 0.3)),
+                          ),
+                          child: SelectableText(p.publicLoadError,
+                            style: const TextStyle(fontSize: 10, color: Color(0xFF880000), fontFamily: 'monospace', height: 1.4)),
+                        ),
+                        const SizedBox(height: 12),
+                        GestureDetector(
+                          onTap: () => p.loadPublicHistories(),
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                            decoration: BoxDecoration(color: kDark, borderRadius: BorderRadius.circular(12)),
+                            child: const Text('Tentar novamente', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w900, color: kGoldLight)),
+                          ),
+                        ),
+                      ]),
+                    ))
+                  : _EmptyCommunityState(onRefresh: () => p.loadPublicHistories())
                 : RefreshIndicator(
                     color: kGreen,
                     onRefresh: () => p.loadPublicHistories(),
