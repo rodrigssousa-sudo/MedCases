@@ -1,7 +1,7 @@
 // firestore_service.dart — dados por usuário no Firestore
 import 'dart:async';
 import 'dart:convert';
-import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter/foundation.dart' show kIsWeb, debugPrint;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:http/http.dart' as http;
 import '../models/clinical_case_model.dart';
@@ -390,26 +390,42 @@ class FirestoreService {
   static Future<List<ClinicalHistoryModel>> _loadPublicHistoriesRest() async {
     try {
       final token = await AuthService.getAdminToken();
-      if (token.isEmpty) return [];
+      if (token.isEmpty) {
+        debugPrint('[FirestoreService] _loadPublicHistoriesRest: token vazio');
+        return [];
+      }
 
       final resp = await http.get(
         Uri.parse('$_fsBase/public_histories?pageSize=100'),
         headers: {'Authorization': 'Bearer $token'},
       );
 
-      if (resp.statusCode != 200) return [];
+      debugPrint('[FirestoreService] public_histories HTTP ${resp.statusCode}');
+
+      if (resp.statusCode != 200) {
+        debugPrint('[FirestoreService] body erro: ${resp.body.substring(0, resp.body.length.clamp(0, 300))}');
+        return [];
+      }
 
       final body = jsonDecode(resp.body) as Map<String, dynamic>;
       final rawDocs = body['documents'] as List<dynamic>? ?? [];
+      debugPrint('[FirestoreService] rawDocs: ${rawDocs.length} documentos');
 
-      final list = rawDocs
-          .map((d) => ClinicalHistoryModel.fromJson(
-              _restDocToMap(d as Map<String, dynamic>)))
-          .toList();
+      final list = <ClinicalHistoryModel>[];
+      for (final d in rawDocs) {
+        try {
+          final map = _restDocToMap(d as Map<String, dynamic>);
+          list.add(ClinicalHistoryModel.fromJson(map));
+        } catch (e) {
+          debugPrint('[FirestoreService] fromJson falhou: $e');
+        }
+      }
 
+      debugPrint('[FirestoreService] parsed: ${list.length} HCs');
       list.sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
       return list.take(50).toList();
-    } catch (_) {
+    } catch (e) {
+      debugPrint('[FirestoreService] _loadPublicHistoriesRest erro: $e');
       return [];
     }
   }

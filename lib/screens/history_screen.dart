@@ -50,7 +50,8 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final p = context.read<AppProvider>();
       p.loadHistories();
-      p.loadPublicHistories(); // carrega comunidade logo na abertura da tela
+      // loadPublicHistories() é chamado pelo setUser() no provider,
+      // garantindo que o token já existe antes da chamada REST no web.
     });
     // Quando o usuário muda para a aba Comunidade (índice 1), recarrega
     _tabCtrl.addListener(() {

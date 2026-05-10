@@ -48,6 +48,7 @@ class AuthService {
     if (_cachedIdToken.isNotEmpty && now.isBefore(_tokenExpiresAt)) {
       return _cachedIdToken;
     }
+
     // Precisa de refresh
     if (_cachedRefreshTk.isNotEmpty) {
       try {
@@ -60,14 +61,13 @@ class AuthService {
           final body = jsonDecode(resp.body) as Map<String, dynamic>;
           _cachedIdToken   = body['id_token']      as String? ?? '';
           _cachedRefreshTk = body['refresh_token'] as String? ?? _cachedRefreshTk;
-          // expires_in vem em segundos; subtraímos 5 min como margem
           final expiresIn  = int.tryParse(body['expires_in']?.toString() ?? '3600') ?? 3600;
           _tokenExpiresAt  = DateTime.now().add(Duration(seconds: expiresIn - 300));
           return _cachedIdToken;
         }
       } catch (_) {}
     }
-    // Sem token válido — retorna vazio; a chamada vai falhar com 401
+    // Sem token válido — retorna vazio
     return _cachedIdToken;
   }
 
@@ -291,7 +291,7 @@ class AuthService {
       }
 
       if (fsResp.statusCode != 200) {
-        return AuthResult.error('Erro ao carregar perfil. Tente novamente.');
+        return AuthResult.error('Erro ao carregar perfil (HTTP ${fsResp.statusCode}). Tente novamente.');
       }
 
       final fsBody = jsonDecode(fsResp.body) as Map<String, dynamic>;

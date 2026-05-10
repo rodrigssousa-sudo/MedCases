@@ -148,6 +148,11 @@ class AppProvider extends ChangeNotifier {
 
     // 3️⃣ Carrega chave OpenAI do Firestore em background (per-user)
     _loadAiKeyFromFirestore(user.uid);
+
+    // 4️⃣ Carrega histórias públicas AQUI — token já está cacheado neste ponto.
+    // No web, o initState da HistoryScreen rodava ANTES do token existir,
+    // causando retorno silencioso de [] sem nem chegar na chamada REST.
+    loadPublicHistories();
   }
 
   void clearUser() {
