@@ -7609,4 +7609,294 @@ const List<DrugModel> drugsDatabase = [
     },
   ),
 
+// ─────────────────────────────────────────────────────────
+  // NOVOS FÁRMACOS - GUARDIA, EMERGENCIA Y PEDIATRÍA (DETALHADOS)
+  // ─────────────────────────────────────────────────────────
+
+  DrugModel(
+    id: 'rocuronio',
+    group: 'UCI – Críticos y Sedoanalgesia',
+    name: 'Rocurônio / Rocuronio',
+    className: {'pt': 'Bloqueador neuromuscular não despolarizante', 'es': 'Bloqueante neuromuscular no despolarizante'},
+    category: {'pt': 'Emergência', 'es': 'Emergencia'},
+    route: 'IV',
+    doseType: 'weight',
+    fixedDose: {
+      'pt': 'Adulto/Pediátrico (IOT): 0.6-1.2 mg/kg IV. Manutenção: 0.1-0.2 mg/kg conforme monitorização (TOF).',
+      'es': 'Adulto/Pediátrico (IOT): 0.6-1.2 mg/kg IV. Mantenimiento: 0.1-0.2 mg/kg según monitoreo (TOF).',
+    },
+    renalAlert: {'pt': 'Eliminação renal (30%). Duração do bloqueio pode ser prolongada em ClCr < 30 mL/min.', 'es': 'Eliminación renal (30%). La duración puede prolongarse en ClCr < 30 mL/min.'},
+    elderlyAlert: {'pt': 'Maior sensibilidade; risco de bloqueio residual e aspiração pós-extubação.', 'es': 'Mayor sensibilidad; riesgo de bloqueo residual y aspiración post-extubación.'},
+    mechanism: {'pt': 'Antagonista competitivo da acetilcolina nos receptores nicotínicos da junção neuromuscular.', 'es': 'Antagonista competitivo de la acetilcolina en los receptores nicotínicos de la unión neuromuscular.'},
+    warning: {'pt': 'Obrigatório garantir via aérea e ventilação. Antídoto: Sugamadex ou Neostigmina.', 'es': 'Obligatorio asegurar vía aérea y ventilación. Antídoto: Sugamadex o Neostigmina.'},
+    adverse: {
+      'pt': ['Hipotensão', 'Hipertensão transitória', 'Broncoespasmo', 'Taquicardia', 'Reação anafilática'],
+      'es': ['Hipotensión', 'Hipertensión transitoria', 'Broncoespasmo', 'Taquicardia', 'Reacción anafiláctica'],
+    },
+  ),
+
+  DrugModel(
+    id: 'dexmedetomidina',
+    group: 'UCI – Críticos y Sedoanalgesia',
+    name: 'Dexmedetomidina (Precedex)',
+    className: {'pt': 'Agonista alfa-2 adrenérgico seletivo', 'es': 'Agonista alfa-2 adrenérgico selectivo'},
+    category: {'pt': 'Sedação', 'es': 'Sedación'},
+    route: 'IV (Infusão)',
+    doseType: 'weight',
+    fixedDose: {
+      'pt': 'Adulto: Ataque 1 mcg/kg em 10 min; Manutenção 0.2-0.7 mcg/kg/h. Pediátrico: 0.1-0.5 mcg/kg/h.',
+      'es': 'Adulto: Carga 1 mcg/kg en 10 min; Mantenimiento 0.2-0.7 mcg/kg/h. Pediátrico: 0.1-0.5 mcg/kg/h.',
+    },
+    renalAlert: {'pt': 'Sem ajuste de dose, mas metabólitos podem se acumular em insuficiência renal grave.', 'es': 'Sin ajuste de dosis, pero los metabolitos pueden acumularse en falla renal grave.'},
+    elderlyAlert: {'pt': 'Alto risco de bradicardia e hipotensão ortostática. Reduzir dose inicial.', 'es': 'Alto riesgo de bradicardia e hipotensión ortostática. Reducir dosis inicial.'},
+    mechanism: {'pt': 'Agonista seletivo de receptores alfa-2 centrais no locus coeruleus, gerando sedação e analgesia sem depressão respiratória.', 'es': 'Agonista selectivo de receptores alfa-2 centrales en el locus coeruleus, generando sedación y analgesia.'},
+    warning: {'pt': 'Evitar bólus rápido para prevenir hipertensão paradoxal e bradicardia severa.', 'es': 'Evitar bolo rápido para prevenir hipertensión paradojal y bradicardia severa.'},
+    adverse: {
+      'pt': ['Bradicardia', 'Hipotensão', 'Hipertensão transitória (bólus)', 'Boca seca', 'Náuseas'],
+      'es': ['Bradicardia', 'Hipotensión', 'Hipertensión transitoria (bolo)', 'Boca seca', 'Náuseas'],
+    },
+  ),
+
+  DrugModel(
+    id: 'betametasona_f',
+    group: 'Endocrinología y Metabolismo',
+    name: 'Betametasona (Celestamine / Corticas)',
+    className: {'pt': 'Glicocorticoide sistêmico potente', 'es': 'Glucocorticoide sistémico potente'},
+    category: {'pt': 'Corticosteroides', 'es': 'Corticosteroides'},
+    route: 'VO / IM / IV',
+    doseType: 'weight',
+    fixedDose: {
+      'pt': 'Adulto: 0.6-6 mg/dia. Pediátrico: 0.02-0.25 mg/kg/dia. Laringite (Argentina): 0.15 mg/kg dose única.',
+      'es': 'Adulto: 0.6-6 mg/día. Pediátrico: 0.02-0.25 mg/kg/día. Laringitis (Argentina): 0.15 mg/kg dosis única.',
+    },
+    renalAlert: {'pt': 'Sem ajuste necessário. Pode causar retenção de sódio e edema.', 'es': 'Sin ajuste necesario. Puede causar retención de sodio y edema.'},
+    elderlyAlert: {'pt': 'Risco de psicose esteroide, hipertensão e descompensação de Diabetes.', 'es': 'Riesgo de psicosis esteroidea, hipertensión y descompensación de Diabetes.'},
+    mechanism: {'pt': 'Modula a transcrição gênica inibindo mediadores inflamatórios e a cascata do ácido araquidônico.', 'es': 'Modula la transcripción génica inhibiendo mediadores inflamatorios.'},
+    warning: {'pt': 'Uso prolongado requer desmame para evitar insuficiência adrenal.', 'es': 'Uso prolongado requiere retiro gradual para evitar insuficiencia adrenal.'},
+    adverse: {
+      'pt': ['Hiperglicemia', 'Insônia', 'Aumento de apetite', 'Hipertensão', 'Miopatia'],
+      'es': ['Hiperglucemia', 'Insomnio', 'Aumento de apetite', 'Hipertensión', 'Miopatía'],
+    },
+  ),
+
+  DrugModel(
+    id: 'mebendazol_f',
+    group: 'Infectología (Antifúngicos / Antivirales / TBC)',
+    name: 'Mebendazol',
+    className: {'pt': 'Anti-helmíntico benzimidazol', 'es': 'Antihelmíntico benzimidazol'},
+    category: {'pt': 'Antiparasitários', 'es': 'Antiparasitarios'},
+    route: 'VO',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': 'Adulto/Pediátrico: 100 mg 2x/dia por 3 dias (Enterobíase, Ascaridíase). Repetir em 15 dias.',
+      'es': 'Adulto/Pediátrico: 100 mg 2 veces/día por 3 días. Repetir en 15 días.',
+    },
+    renalAlert: {'pt': 'Sem ajuste necessário.', 'es': 'Sin ajuste necesario.'},
+    elderlyAlert: {'pt': 'Geralmente seguro.', 'es': 'Generalmente seguro.'},
+    mechanism: {'pt': 'Bloqueia a captação de glicose e formação de microtúbulos no parasita, causando morte por inanição.', 'es': 'Bloquea la captación de glucosa y formación de microtúbulos en el parásito.'},
+    warning: {'pt': 'Não recomendado no primeiro trimestre da gestação.', 'es': 'No recomendado en el primer trimestre del embarazo.'},
+    adverse: {
+      'pt': ['Dor abdominal', 'Diarreia', 'Elevação de transaminases', 'Exantema', 'Neutropenia (uso prolongado)'],
+      'es': ['Dolor abdominal', 'Diarrea', 'Elevación de transaminasas', 'Exantema', 'Neutropenia (uso prolongado)'],
+    },
+  ),
+
+  DrugModel(
+    id: 'fexofenadina_f',
+    group: 'Varios / Antídotos / Otros',
+    name: 'Fexofenadina (Allegra)',
+    className: {'pt': 'Anti-histamínico H1 de 2ª geração', 'es': 'Antihistamínico H1 de 2ª generación'},
+    category: {'pt': 'Antialérgicos', 'es': 'Antialérgicos'},
+    route: 'VO',
+    doseType: 'weight',
+    fixedDose: {
+      'pt': 'Adulto: 120-180 mg 1x/dia. Pediátrico (>2 anos): 30 mg 2x/dia; (>12 anos): 60 mg 2x/dia ou 120 mg/dia.',
+      'es': 'Adulto: 120-180 mg 1 vez/día. Pediátrico (>2 años): 30 mg 2 veces/día; (>12 años): 60 mg 2 veces/día.',
+    },
+    renalAlert: {'pt': 'ClCr < 80 mL/min: dose inicial recomendada de 60 mg 1x/dia.', 'es': 'ClCr < 80 mL/min: dosis inicial recomendada de 60 mg 1 vez/día.'},
+    elderlyAlert: {'pt': 'Fármaco de escolha em idosos por não ter efeito anticolinérgico.', 'es': 'Fármaco de elección en ancianos por no tener efecto anticolinérgico.'},
+    mechanism: {'pt': 'Antagonista seletivo do receptor H1 periférico. Não atravessa a barreira hematoencefálica (não sedativo).', 'es': 'Antagonista selectivo del receptor H1 periférico. No sedativo.'},
+    warning: {'pt': 'Não tomar com suco de frutas (reduz absorção).', 'es': 'No tomar con jugo de frutas (reduce absorción).'},
+    adverse: {
+      'pt': ['Cefaleia', 'Sonolência (raro)', 'Náuseas', 'Vertigem', 'Fadiga'],
+      'es': ['Cefalea', 'Somnolencia (raro)', 'Náuseas', 'Vértigo', 'Fatiga'],
+    },
+  ),
+
+  DrugModel(
+    id: 'levosimendan_f',
+    group: 'Cardiovascular y HTA',
+    name: 'Levosimendan (Simdax)',
+    className: {'pt': 'Inodilatador / Sensibilizador de cálcio', 'es': 'Inodilatador / Sensibilizador de calcio'},
+    category: {'pt': 'Vasoativo', 'es': 'Vasoactivo'},
+    route: 'IV (Infusão)',
+    doseType: 'weight',
+    fixedDose: {
+      'pt': 'Adulto: 0.1-0.2 mcg/kg/min por 24h. Pediátrico: 0.1-0.2 mcg/kg/min (Uso off-label em choque cardiogênico).',
+      'es': 'Adulto: 0.1-0.2 mcg/kg/min por 24h. Pediátrico: 0.1-0.2 mcg/kg/min (Uso off-label en shock cardiogénico).',
+    },
+    renalAlert: {'pt': 'Contraindicado em insuficiência renal grave (ClCr < 30 mL/min).', 'es': 'Contraindicado en insuficiencia renal grave (ClCr < 30 mL/min).'},
+    elderlyAlert: {'pt': 'Monitorar rigorosamente PA e FC devido ao risco de hipotensão e arritmias.', 'es': 'Monitorear rigurosamente PA y FC debido al riesgo de hipotensión.'},
+    mechanism: {'pt': 'Sensibiliza troponina C ao cálcio (inotropismo) e abre canais de K+ (vasodilatação).', 'es': 'Sensibiliza troponina C al calcio (inotropismo) y abre canales de K+ (vasodilatación).'},
+    warning: {'pt': 'Monitorar potássio (risco de hipocalemia). Efeito dura até 7 dias após parar infusão.', 'es': 'Monitorear potasio. El efecto dura hasta 7 días tras suspender la infusión.'},
+    adverse: {
+      'pt': ['Hipotensão', 'Taquicardia atrial', 'Hipocalemia', 'Cefaleia', 'Insônia'],
+      'es': ['Hipotensión', 'Taquicardia atrial', 'Hipopotasemia', 'Cefalea', 'Insomnio'],
+    },
+  ),
+
+  DrugModel(
+    id: 'tigeciclina_f',
+    group: 'Antibióticos',
+    name: 'Tigeciclina (Tygacil)',
+    className: {'pt': 'Glicilciclina (Amplo espectro)', 'es': 'Glicilciclina (Amplio espectro)'},
+    category: {'pt': 'Antibióticos', 'es': 'Antibióticos'},
+    route: 'IV',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': 'Adulto: 100 mg ataque → 50 mg cada 12h. Pediátrico (>8 anos): 1.2 mg/kg cada 12h (máx 50 mg).',
+      'es': 'Adulto: 100 mg carga → 50 mg cada 12h. Pediátrico (>8 años): 1.2 mg/kg cada 12h (máx 50 mg).',
+    },
+    renalAlert: {'pt': 'Sem ajuste necessário.', 'es': 'Sin ajuste necesario.'},
+    elderlyAlert: {'pt': 'Geralmente bem tolerada.', 'es': 'Generalmente bien tolerada.'},
+    mechanism: {'pt': 'Inibe a síntese proteica ligando-se à subunidade 30S do ribossomo. Ativa contra MRSA, VRE e carbapenem-resistentes.', 'es': 'Inhibe la síntesis proteica uniéndose a la subunidad 30S.'},
+    warning: {'pt': 'Aumenta mortalidade em todas as causas (usar apenas se não houver alternativa). Não usar em infecções urinárias.', 'es': 'Aumenta la mortalidad (usar solo si no hay alternativa). No usar en infecciones urinarias.'},
+    adverse: {
+      'pt': ['Náusea intensa', 'Vômitos', 'Diarreia', 'Prolongamento de TTP', 'Pancreatite'],
+      'es': ['Náusea intensa', 'Vómitos', 'Diarrea', 'Prolongamiento de TTP', 'Pancreatitis'],
+    },
+  ),
+
+  DrugModel(
+    id: 'sildenafil_p',
+    group: 'Cardiovascular y HTA',
+    name: 'Sildenafila (Revatio)',
+    className: {'pt': 'Inibidor da fosfodiesterase tipo 5 (PDE5)', 'es': 'Inhibidor de la fosfodiesterasa tipo 5 (PDE5)'},
+    category: {'pt': 'Hipertensão Pulmonar', 'es': 'Hipertensión Pulmonar'},
+    route: 'VO / IV',
+    doseType: 'weight',
+    fixedDose: {
+      'pt': 'Adulto: 20 mg 3x/dia. Pediátrico (HAP): 0.5-2 mg/kg/dose 3-4x/dia (máx 20 mg/dose).',
+      'es': 'Adulto: 20 mg 3 veces/día. Pediátrico (HAP): 0.5-2 mg/kg/dosis 3-4 veces/día.',
+    },
+    renalAlert: {'pt': 'Sem ajuste necessário em insuficiência leve-moderada.', 'es': 'Sin ajuste necesario en insuficiencia leve-moderada.'},
+    elderlyAlert: {'pt': 'Risco de hipotensão postural. Monitorar com outros anti-hipertensivos.', 'es': 'Riesgo de hipotensión postural. Monitorear con otros antihipertensivos.'},
+    mechanism: {'pt': 'Aumenta o GMPc nas células musculares lisas vasculares, promovendo relaxamento e vasodilatação pulmonar.', 'es': 'Aumenta el GMPc promoviendo relajación y vasodilatación pulmonar.'},
+    warning: {'pt': 'NUNCA usar com nitratos. Risco de colapso cardiovascular fatal.', 'es': 'NUNCA usar con nitratos. Riesgo de colapso cardiovascular fatal.'},
+    adverse: {
+      'pt': ['Cefaleia', 'Rubor facial', 'Dispepsia', 'Epistaxe', 'Distúrbios visuais (visão azulada)'],
+      'es': ['Cefalea', 'Rubor facial', 'Dispepsia', 'Epistaxis', 'Disturbios visuales (visión azulada)'],
+    },
+  ),
+
+  DrugModel(
+    id: 'ceftolozana_taz',
+    group: 'Antibióticos',
+    name: 'Ceftolozana-Tazobactam (Zerbaxa)',
+    className: {'pt': 'Cefalosporina + Inibidor de Beta-lactamase', 'es': 'Cefalosporina + Inhibidor de Beta-lactamasa'},
+    category: {'pt': 'Antibióticos', 'es': 'Antibióticos'},
+    route: 'IV',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': 'Adulto: 1.5 g a cada 8h. Pediátrico: 30-40 mg/kg a cada 8h (máx 1.5 g).',
+      'es': 'Adulto: 1.5 g cada 8h. Pediátrico: 30-40 mg/kg cada 8h (máx 1.5 g).',
+    },
+    renalAlert: {'pt': 'Ajuste obrigatório para ClCr < 50 mL/min.', 'es': 'Ajuste obligatorio para ClCr < 50 mL/min.'},
+    elderlyAlert: {'pt': 'Monitorar função renal para ajuste de dose.', 'es': 'Monitorear función renal para ajuste de dosis.'},
+    mechanism: {'pt': 'Potente ação contra Pseudomonas aeruginosa multirresistente e Enterobacteriaceae produtoras de ESBL.', 'es': 'Potente acción contra Pseudomonas aeruginosa multirresistente.'},
+    warning: {'pt': 'Reservar para infecções graves complicadas (intra-abdominal ou urinária).', 'es': 'Reservar para infecciones graves complicadas.'},
+    adverse: {
+      'pt': ['Náusea', 'Diarreia', 'Cefaleia', 'Elevação de transaminases', 'Hipocalemia'],
+      'es': ['Náusea', 'Diarrea', 'Cefalea', 'Elevación de transaminasas', 'Hipopotasemia'],
+    },
+  ),
+
+  DrugModel(
+    id: 'propinoxato_f',
+    group: 'Gastroenterología',
+    name: 'Propinoxato (Sertala / Viadil)',
+    className: {'pt': 'Antiespasmódico / Anticolinérgico', 'es': 'Antiespasmódico / Anticolinérgico'},
+    category: {'pt': 'Gastroenterologia', 'es': 'Gastroenterología'},
+    route: 'VO / IV / IM',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': 'Adulto: 10-20 mg cada 8h. Pediátrico (>12 anos): 10 mg cada 8h. Gotas: 1-2 gotas/kg/dia.',
+      'es': 'Adulto: 10-20 mg cada 8h. Pediátrico (>12 años): 10 mg cada 8h. Gotas: 1-2 gotas/kg/día.',
+    },
+    renalAlert: {'pt': 'Usar com cautela em casos de retenção urinária.', 'es': 'Usar con cautela en casos de retención urinaria.'},
+    elderlyAlert: {'pt': 'Alto risco de confusão, glaucoma de ângulo fechado e boca seca.', 'es': 'Alto riesgo de confusión, glaucoma y boca seca.'},
+    mechanism: {'pt': 'Ação musculotrópica direta e anticolinérgica no músculo liso visceral.', 'es': 'Acción musculotrópica directa y anticolinérgica en músculo liso visceral.'},
+    warning: {'pt': 'Medicamento de uso extremamente comum na Argentina.', 'es': 'Medicamento de uso muy común en Argentina.'},
+    adverse: {
+      'pt': ['Taquicardia', 'Visão turva', 'Boca seca', 'Constipação', 'Retenção urinária'],
+      'es': ['Taquicardia', 'Visión borrosa', 'Boca seca', 'Estreñimiento', 'Retención urinaria'],
+    },
+  ),
+
+  DrugModel(
+    id: 'sulfato_ferroso_f',
+    group: 'Hematología y Vitaminas',
+    name: 'Sulfato Ferroso',
+    className: {'pt': 'Suplemento mineral de ferro', 'es': 'Suplemento mineral de hierro'},
+    category: {'pt': 'Hematologia', 'es': 'Hematología'},
+    route: 'VO',
+    doseType: 'weight',
+    fixedDose: {
+      'pt': 'Tratamento Anemia: Adulto 200 mg 1-3x/dia. Pediátrico: 3-6 mg/kg/dia de ferro elementar.',
+      'es': 'Tratamiento Anemia: Adulto 200 mg 1-3 veces/día. Pediátrico: 3-6 mg/kg/día de hierro elemental.',
+    },
+    renalAlert: {'pt': 'Sem ajuste necessário.', 'es': 'Sin ajuste necesario.'},
+    elderlyAlert: {'pt': 'Monitorar constipação severa e impacto fecal.', 'es': 'Monitorear estreñimiento severo e impacto fecal.'},
+    mechanism: {'pt': 'Fornece o ferro necessário para a produção de hemoglobina e transporte de oxigênio.', 'es': 'Proporciona el hierro necesario para la producción de hemoglobina.'},
+    warning: {'pt': 'Tomar 1h antes ou 2h depois das refeições. Vitamina C aumenta a absorção.', 'es': 'Tomar 1h antes o 2h después de comer. Vitamina C aumenta la absorción.'},
+    adverse: {
+      'pt': ['Fezes escuras', 'Constipação', 'Dor abdominal', 'Náuseas', 'Dano ao esmalte dentário (líquido)'],
+      'es': ['Heces oscuras', 'Estreñimiento', 'Dolor abdominal', 'Náuseas', 'Daño al esmalte dental (líquido)'],
+    },
+  ),
+
+  DrugModel(
+    id: 'racecadotril_f',
+    group: 'Gastroenterología',
+    name: 'Racecadotril (Hidrasec)',
+    className: {'pt': 'Antidiarreico antissecretor', 'es': 'Antidiarreico antisecretor'},
+    category: {'pt': 'Gastroenterologia', 'es': 'Gastroenterología'},
+    route: 'VO',
+    doseType: 'weight',
+    fixedDose: {
+      'pt': 'Adulto: 100 mg 3x/dia. Pediátrico (>3 meses): 1.5 mg/kg por dose 3x/dia.',
+      'es': 'Adulto: 100 mg 3 veces/día. Pediátrico (>3 meses): 1.5 mg/kg por dosis 3 veces/día.',
+    },
+    renalAlert: {'pt': 'Usar com cautela em insuficiência renal.', 'es': 'Usar con cautela en insuficiencia renal.'},
+    elderlyAlert: {'pt': 'Geralmente seguro e bem tolerado.', 'es': 'Generalmente seguro y bien tolerado.'},
+    mechanism: {'pt': 'Inibidor da encefalinase intestinal; reduz a secreção excessiva de água e eletrólitos sem afetar o trânsito intestinal.', 'es': 'Inhibidor de la encefalinasa intestinal; reduce secreción de agua y electrolitos.'},
+    warning: {'pt': 'Não substitui a reidratação oral. Útil em diarreia aquosa aguda.', 'es': 'No reemplaza la rehidratación oral. Útil en diarrea acuosa aguda.'},
+    adverse: {
+      'pt': ['Cefaleia', 'Vômitos', 'Prurido', 'Rash cutâneo', 'Tontura'],
+      'es': ['Cefalea', 'Vómitos', 'Prurito', 'Rash cutáneo', 'Mareo'],
+    },
+  ),
+  
+  DrugModel(
+    id: 'nitazoxanida_f',
+    group: 'Infectología (Antifúngicos / Antivirales / TBC)',
+    name: 'Nitazoxanida',
+    className: {'pt': 'Antiparasitário de amplo espectro', 'es': 'Antiparasitario de amplio espectro'},
+    category: {'pt': 'Antiparasitários', 'es': 'Antiparasitarios'},
+    route: 'VO',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': 'Adulto: 500 mg 2x/dia por 3 dias. Pediátrico (1-3 anos): 100 mg 2x/dia; (4-11 anos): 200 mg 2x/dia.',
+      'es': 'Adulto: 500 mg 2 veces/día por 3 días. Pediátrico (1-3 años): 100 mg 2 veces/día; (4-11 años): 200 mg 2 veces/día.',
+    },
+    renalAlert: {'pt': 'Sem dados suficientes; usar com precaução em insuficiência grave.', 'es': 'Sin datos suficientes; usar con precaución en falla grave.'},
+    elderlyAlert: {'pt': 'Monitorar função hepática e renal.', 'es': 'Monitorear función hepática y renal.'},
+    mechanism: {'pt': 'Interfere na transferência de elétrons essencial para o metabolismo anaeróbio do parasita.', 'es': 'Interfiere en la transferencia de electrones del metabolismo anaerobio.'},
+    warning: {'pt': 'Tomar com alimentos para melhorar a absorção.', 'es': 'Tomar con alimentos para mejorar la absorción.'},
+    adverse: {
+      'pt': ['Náuseas', 'Dor abdominal', 'Urina de cor amarela intensa/verde', 'Cefaleia', 'Anorexia'],
+      'es': ['Náuseas', 'Dolor abdominal', 'Orina de color amarillo intenso/verde', 'Cefalea', 'Anorexia'],
+    },
+  ),
+
 ];
