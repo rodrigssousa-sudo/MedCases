@@ -2346,8 +2346,11 @@ class _VitalSignsWidgetState extends State<_VitalSignsWidget> {
             height: 36,
             child: TextField(
               controller: ctrl,
+              // iOS: numberWithOptions(decimal:true) não garante ponto no teclado
+              // quando locale usa vírgula. TextInputType.text força teclado QWERTY
+              // completo onde ponto/vírgula estão sempre disponíveis.
               keyboardType: decimal
-                  ? const TextInputType.numberWithOptions(decimal: true, signed: false)
+                  ? TextInputType.text
                   : const TextInputType.numberWithOptions(decimal: false, signed: false),
               inputFormatters: decimal
                   ? [_DecimalInputFormatter()]
