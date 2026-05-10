@@ -782,11 +782,77 @@ class AppProvider extends ChangeNotifier {
       examSuggestions.addAll(['Glicemia', 'Eletrólitos (Na+, Mg2+, Ca2+)', 'TC crânio', 'EEG se status refratário']);
       redFlags.add('Crise >5 min → benzodiazepínico IMEDIATO');
     }
-    if (_has(q, ['cefal', 'dor cabeca', 'trovoada', 'pior cefaleia', 'meningismo', 'rigidez nuca'])) {
-      suspected.add('Cefaleia Grave (Hemorragia Subaracnóidea / Meningite)');
-      protocolIds.add('avc_hemorragico');
-      examSuggestions.addAll(['TC crânio (excluir HSA)', 'Punção lombar se TC negativa', 'Hemoculturas se meningismo', 'PCR/hemograma']);
-      redFlags.add('"Pior cefaleia da vida" ou início súbito → excluir HSA urgente');
+
+    // ── Cefaleia — raciocínio em 2 níveis ────────────────────────────────
+    // Nível 1: keyword genérico → hipótese comum (enxaqueca/tensional/viral)
+    // Nível 2: qualificador de gravidade → escala para HSA/meningite
+    if (_has(q, ['cefal', 'dor de cabeca', 'dor cabeca', 'dor de cabe'])) {
+      // Qualificadores que indicam alto risco neurológico
+      final hasHighRiskHeadache = _has(q, [
+        'trovoada', 'pior cefaleia', 'pior dor', 'inicio subito',
+        'rigidez', 'meningismo', 'petequi', 'nucal',
+        'inconsciente', 'perda de consciencia',
+      ]);
+      // Combinação febre + cefaleia (suspeita de meningite)
+      final hasFeverHeadache = _has(q, ['febre']) &&
+          _has(q, ['cefal', 'dor de cabeca', 'dor cabeca']);
+      // Sinal neurológico focal associado
+      final hasFocalSign = _has(q, [
+        'deficit focal', 'afasia', 'hemiplegi', 'hemiparesia',
+        'glasgow', 'confusao', 'alteracao de consciencia',
+      ]);
+
+      if (hasHighRiskHeadache || hasFocalSign) {
+        suspected.add('Cefaleia de alto risco — excluir HSA / Meningite');
+        protocolIds.add('avc_hemorragico');
+        examSuggestions.addAll(['TC crânio sem contraste (excluir HSA)', 'Punção lombar se TC negativa', 'Hemoculturas + PCR se febre', 'Hemograma']);
+        redFlags.addAll(['"Pior cefaleia da vida" ou início súbito → excluir HSA urgente', 'Déficit focal + cefaleia → descartar AVC/hemorragia']);
+      } else if (hasFeverHeadache) {
+        suspected.add('Cefaleia com febre — investigar: viral, bacteriana, meningite');
+        examSuggestions.addAll(['Temperatura', 'Hemograma', 'PCR', 'Avaliar rigidez nucal no exame físico']);
+        redFlags.add('Rigidez nucal + febre + cefaleia → suspeitar meningite e acionar avaliação urgente');
+      } else {
+        // Sem qualificadores → hipóteses comuns, sem protocolo de emergência
+        suspected.add('Cefaleia — causas comuns: enxaqueca, tensional, viral, hipertensão');
+        examSuggestions.addAll(['PA (descartar crise hipertensiva)', 'Temperatura', 'Intensidade (EVA 0–10) e padrão temporal']);
+        redFlags.add('Se início súbito "em trovoada" ou pior da vida → avaliar urgência');
+      }
+    }
+
+    // ── Náusea / Vômito — raciocínio em 2 níveis ─────────────────────────
+    // Nível 1: sintoma isolado ou com cefaleia simples → causas comuns
+    // Nível 2: combinação com red flags específicos → deixa bloco especializado agir
+    if (_has(q, ['nause', 'vomit', 'enjoo', 'emese'])) {
+      final hasAbdominalEmergency = _has(q, [
+        'dor abdom', 'rigidez abdom', 'defesa abdom', 'peritonite',
+        'melena', 'hematemes', 'sangue nas fezes', 'hemorrag digest',
+      ]);
+      final hasNeuroGravity = _has(q, [
+        'trovoada', 'pior cefaleia', 'rigidez nuca', 'meningismo',
+        'petequi', 'glasgow', 'perda de consciencia', 'deficit focal',
+        'afasia', 'hemiplegi', 'hemiparesia',
+      ]);
+      final hasCardioGravity = _has(q, [
+        'dor torac', 'dor no peito', 'infarto', 'sudorese fria',
+        'hipotens', 'choque', 'sem pulso',
+      ]);
+      final hasMetabolicGravity = _has(q, [
+        'cetoacid', 'hiperglicemi', 'hipoglicemi', 'insuf renal',
+        'anuria', 'uremia',
+      ]);
+
+      if (!hasAbdominalEmergency && !hasNeuroGravity && !hasCardioGravity && !hasMetabolicGravity) {
+        // Sem red flags → causas comuns (síndrome viral, gastroenterite, enxaqueca)
+        suspected.add('Síndrome emética — causas comuns: gastroenterite viral, alimentar, enxaqueca, medicamentosa');
+        examSuggestions.addAll([
+          'Temperatura (febre sugere causa infecciosa)',
+          'PA e FC (desidratação / hipotensão ortostática)',
+          'Glicemia capilar',
+          'Avaliar sinais de desidratação (turgor, mucosas)',
+        ]);
+        redFlags.add('Se dor abdominal intensa, sangramento, rigidez ou rebaixamento → urgência');
+      }
+      // Se há red flags: os blocos cardiovascular, neurológico etc. já adicionam a hipótese correta
     }
 
     // ── Respiratórios ──────────────────────────────────────────────────────
