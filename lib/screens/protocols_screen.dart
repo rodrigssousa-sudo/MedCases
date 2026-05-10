@@ -147,7 +147,9 @@ class _ProtocolsScreenState extends State<ProtocolsScreen> {
             borderColor: const Color(0xFFFFCCCC),
             iconColor: const Color(0xFFCC2222),
             protocols: allDB.where((d) => {
-              'pcr_adulto', 'anafilaxia', 'choque_cardiogenico', 'choque_septico_avancado',
+              'pcr_adulto', 'pcr_pediatrica', 'parada_respiratoria',
+              'anafilaxia', 'anafilaxia_refrataria',
+              'choque_cardiogenico', 'choque_septico_avancado', 'choque_hipovolemico',
             }.contains(d.id)).toList(),
             isExpanded: _expanded.contains('reanimacao'),
             p: p, isEs: isEs,
@@ -170,8 +172,10 @@ class _ProtocolsScreenState extends State<ProtocolsScreen> {
             borderColor: const Color(0xFFFFCCDD),
             iconColor: const Color(0xFFAA1144),
             protocols: allDB.where((d) => {
-              'iam_congestao', 'tpsv', 'fa_aguda', 'crise_hipertensiva',
-              'bradiarritmia_grave',
+              'iam_congestao', 'sindrome_coronariana_sem_st',
+              'insuficiencia_cardiaca_descomp', 'edema_agudo_pulmao',
+              'tpsv', 'fa_aguda', 'bradiarritmia_grave',
+              'crise_hipertensiva', 'miocardite_aguda', 'pericardite_aguda',
             }.contains(d.id)).toList(),
             isExpanded: _expanded.contains('cardio'),
             p: p, isEs: isEs,
@@ -194,8 +198,11 @@ class _ProtocolsScreenState extends State<ProtocolsScreen> {
             borderColor: const Color(0xFFBBD6F0),
             iconColor: const Color(0xFF1A5E8A),
             protocols: allDB.where((d) => {
-              'asma_grave', 'dpoc_exacerbacao', 'tep_agudo',
-              'tromboembolismo_pulmonar', 'pneumonia_grave',
+              'asma_grave', 'crise_asmatica_quase_fatal',
+              'dpoc_exacerbacao',
+              'tep_agudo', 'tromboembolismo_pulmonar',
+              'pneumonia_grave', 'pneumonia_aspirativa',
+              'hemoptise_macica',
             }.contains(d.id)).toList(),
             isExpanded: _expanded.contains('resp'),
             p: p, isEs: isEs,
@@ -208,18 +215,21 @@ class _ProtocolsScreenState extends State<ProtocolsScreen> {
           ),
           const SizedBox(height: 8),
 
-          // ── Neurológico ──────────────────────────────────────────────────
+          // ── Neurológico & Psiquiátrico ───────────────────────────────────
           _ProtocolGroupAccordion(
             groupKey: 'neuro',
             icon: '🧠',
-            titlePt: 'Neurológico',
-            titleEs: 'Neurológico',
+            titlePt: 'Neurológico & Psiquiátrico',
+            titleEs: 'Neurológico & Psiquiátrico',
             color: const Color(0xFFF5F0FF),
             borderColor: const Color(0xFFCCBBEE),
             iconColor: const Color(0xFF5C2D91),
             protocols: allDB.where((d) => {
-              'avc_isquemico', 'avc_hemorragico', 'status_epilepticus',
-              'meningite_bacteriana', 'agitacao_psicomotora',
+              'avc_isquemico', 'avc_hemorragico',
+              'status_epilepticus',
+              'meningite_bacteriana',
+              'agitacao_psicomotora', 'delirium_tremens',
+              'encefalopatia_hepatica',
             }.contains(d.id)).toList(),
             isExpanded: _expanded.contains('neuro'),
             p: p, isEs: isEs,
@@ -242,7 +252,11 @@ class _ProtocolsScreenState extends State<ProtocolsScreen> {
             borderColor: const Color(0xFFBBE8CC),
             iconColor: const Color(0xFF075F45),
             protocols: allDB.where((d) => {
-              'sepse', 'neutropenia_febril',
+              'sepse', 'sepse_foco_urinario',
+              'neutropenia_febril',
+              'pielonefrite_aguda', 'celulite_erisipela',
+              'dengue_manejo', 'colangite_aguda',
+              'pbe_cirrose',
             }.contains(d.id)).toList(),
             isExpanded: _expanded.contains('infec'),
             p: p, isEs: isEs,
@@ -265,8 +279,11 @@ class _ProtocolsScreenState extends State<ProtocolsScreen> {
             borderColor: const Color(0xFFEED8A0),
             iconColor: const Color(0xFF8B6000),
             protocols: allDB.where((d) => {
-              'cad_shh', 'cetoacidose_diabetica', 'hiperpotassemia_grave',
-              'crise_adrenal',
+              'cad_shh', 'cetoacidose_diabetica',
+              'hipoglicemia_grave',
+              'hipercalemia_grave', 'hiperpotassemia_grave',
+              'hipocalcemia_grave', 'hiponatremia_grave', 'hipernatremia_grave',
+              'crise_adrenal', 'crise_tireotoxica',
             }.contains(d.id)).toList(),
             isExpanded: _expanded.contains('metab'),
             p: p, isEs: isEs,
@@ -279,7 +296,7 @@ class _ProtocolsScreenState extends State<ProtocolsScreen> {
           ),
           const SizedBox(height: 8),
 
-          // ── Gastro & Trauma ──────────────────────────────────────────────
+          // ── Gastro, Trauma & Cirúrgico ───────────────────────────────────
           _ProtocolGroupAccordion(
             groupKey: 'gastro',
             icon: '🏥',
@@ -289,8 +306,12 @@ class _ProtocolsScreenState extends State<ProtocolsScreen> {
             borderColor: const Color(0xFFD8D4C0),
             iconColor: const Color(0xFF555544),
             protocols: allDB.where((d) => {
-              'hda_varizeal', 'hda_nao_varicosa', 'pancreatite_aguda_grave',
-              'politrauma_atls',
+              'hda_varizeal', 'hda_nao_varicosa', 'hemorragia_digestiva_baixa',
+              'pancreatite_aguda', 'pancreatite_aguda_grave',
+              'apendicite_aguda', 'obstrucao_intestinal',
+              'hemorragia_intra_abdominal',
+              'politrauma_atls', 'sindrome_compartimental',
+              'colica_nefretica',
             }.contains(d.id)).toList(),
             isExpanded: _expanded.contains('gastro'),
             p: p, isEs: isEs,
@@ -313,8 +334,12 @@ class _ProtocolsScreenState extends State<ProtocolsScreen> {
             borderColor: const Color(0xFFBBCCEE),
             iconColor: const Color(0xFF1A3A7A),
             protocols: allDB.where((d) => {
-              'lesao_renal_aguda', 'coagulacao_intravascular',
-              'eclampsia_hellp', 'intoxicacao_exogena',
+              'lesao_renal_aguda', 'rabdomiolise_aguda',
+              'coagulacao_intravascular',
+              'crise_de_anemia_falciforme',
+              'eclampsia_hellp', 'hemorragia_pos_parto', 'descolamento_placenta',
+              'tromboembolismo_venoso_ped',
+              'crise_gota', 'priapismo_emergencia',
             }.contains(d.id)).toList(),
             isExpanded: _expanded.contains('outros'),
             p: p, isEs: isEs,
@@ -322,6 +347,66 @@ class _ProtocolsScreenState extends State<ProtocolsScreen> {
               _expanded.contains('outros')
                   ? _expanded.remove('outros')
                   : _expanded.add('outros');
+            }),
+            onSelect: (proto) => showProtocolDetail(context, proto),
+          ),
+          const SizedBox(height: 8),
+
+          // ── Intoxicações ─────────────────────────────────────────────────
+          _ProtocolGroupAccordion(
+            groupKey: 'intox',
+            icon: '☠️',
+            titlePt: 'Intoxicações & Overdose',
+            titleEs: 'Intoxicaciones & Sobredosis',
+            color: const Color(0xFFF8F0FF),
+            borderColor: const Color(0xFFDDBBFF),
+            iconColor: const Color(0xFF6A0DAD),
+            protocols: allDB.where((d) => {
+              'intoxicacao_exogena',
+              'intox_opioides', 'intox_benzodiazepinas',
+              'intox_paracetamol', 'intox_organofosforados',
+              'intox_triciclicos', 'intox_betabloqueadores',
+              'intox_metanol_etilenoglicol', 'intox_monoxido_carbono',
+              'sindrome_abst_opioides', 'delirium_tremens',
+            }.contains(d.id)).toList(),
+            isExpanded: _expanded.contains('intox'),
+            p: p, isEs: isEs,
+            onToggle: () => setState(() {
+              _expanded.contains('intox')
+                  ? _expanded.remove('intox')
+                  : _expanded.add('intox');
+            }),
+            onSelect: (proto) => showProtocolDetail(context, proto),
+          ),
+          const SizedBox(height: 8),
+
+          // ── Pediatria ────────────────────────────────────────────────────
+          _ProtocolGroupAccordion(
+            groupKey: 'ped',
+            icon: '👶',
+            titlePt: 'Pediatria',
+            titleEs: 'Pediatría',
+            color: const Color(0xFFF0FFFA),
+            borderColor: const Color(0xFFAADDCC),
+            iconColor: const Color(0xFF0A7060),
+            protocols: allDB.where((d) => {
+              'pcr_pediatrica',
+              'anafilaxia_ped',
+              'crise_asmatica_ped', 'mal_asmatico_ped',
+              'bronquiolite_aguda', 'laringite_estridulosa',
+              'convulsao_febril_ped',
+              'meningite_pediatrica',
+              'crise_hipertensiva_ped',
+              'sinusite_bacteriana_ped', 'faringite_estrep',
+              'mastoidite_aguda',
+              'tromboembolismo_venoso_ped',
+            }.contains(d.id)).toList(),
+            isExpanded: _expanded.contains('ped'),
+            p: p, isEs: isEs,
+            onToggle: () => setState(() {
+              _expanded.contains('ped')
+                  ? _expanded.remove('ped')
+                  : _expanded.add('ped');
             }),
             onSelect: (proto) => showProtocolDetail(context, proto),
           ),

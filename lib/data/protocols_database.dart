@@ -233,47 +233,6 @@ const List<ProtocolModel> protocolsDatabase = [
   //  NEUROLÓGICO
   // ─────────────────────────────────────────────
   ProtocolModel(
-    id: 'avc_isquemico',
-    title: {'pt': 'AVC Isquêmico Agudo — Protocolo de Reperfusão', 'es': 'AVC Isquémico Agudo — Protocolo de Reperfusión'},
-    severity: {'pt': 'Crítico', 'es': 'Crítico'},
-    recognize: {
-      'pt': 'Déficit neurológico focal de início súbito (hemiplegia, afasia, hemianopsia, ataxia, desvio do olhar). NIHSS para quantificar. Tempo é CÉREBRO.',
-      'es': 'Déficit neurológico focal de inicio súbito (hemiplejía, afasia, hemianopsia, ataxia). NIHSS para cuantificar. El tiempo es CEREBRO.',
-    },
-    actions: {
-      'pt': [
-        '1. TEMPO: "Call to needle" <60 min; AVC code ativo',
-        '2. Glicemia imediata (corrigir hipoglicemia <60 mg/dL antes de qualquer decisão)',
-        '3. TC crânio sem contraste URGENTE (excluir hemorragia)',
-        '4. Exames: hemograma, coagulação, eletrólitos, ECG, SpO2',
-        '5. O2 se SpO2 <94%; controle glicêmico (alvo 140–180 mg/dL)',
-        '6. TROMBOLÍTICO (alteplase): 0,9 mg/kg IV (máx. 90 mg); 10% em bolus, 90% em 60 min. Janela: <4,5h dos sintomas. Verificar CONTRAINDICAÇÕES',
-        '7. TROMBECTOMIA MECÂNICA: oclusão de grande vaso + <24h selecionados (ASPECTS ≥6)',
-        '8. Controle de PA: se alteplase planejado: manter <185/110. Se sem alteplase: tratar apenas se >220/120',
-        '9. Internação em Unidade de AVC (reduz mortalidade e sequelas)',
-        '10. AAS 300 mg VO (se sem trombolítico e >24h do evento) + estatina'
-      ],
-      'es': [
-        '1. TIEMPO: "Call to needle" <60 min; código AVC activo',
-        '2. Glucemia inmediata (corregir hipoglucemia <60 mg/dL)',
-        '3. TC cráneo sin contraste URGENTE (excluir hemorragia)',
-        '4. Exámenes: hemograma, coagulación, electrolitos, ECG, SpO2',
-        '5. O2 si SpO2 <94%; control glucémico (objetivo 140–180 mg/dL)',
-        '6. TROMBOLÍTICO (alteplase): 0,9 mg/kg IV (máx. 90 mg); ventana: <4,5 h',
-        '7. TROMBECTOMÍA MECÁNICA: oclusión de gran vaso + <24 h seleccionados',
-        '8. Control de PA: si alteplase planeado: mantener <185/110',
-        '9. Internación en Unidad de AVC',
-        '10. AAS 300 mg VO (si sin trombolítico y >24 h del evento) + estatina'
-      ],
-    },
-    avoid: {
-      'pt': 'NUNCA dar alteplase sem excluir hemorragia (TC). Contraindicações absolutas alteplase: sangramento recente, cirurgia <14 dias, INR >1,7, plaquetas <100.000. Não hiperhidratar. Evitar febre (piora neurológica).',
-      'es': 'NUNCA dar alteplase sin excluir hemorragia. Contraindicaciones absolutas alteplase: sangrado reciente, cirugía <14 días, INR >1,7, plaquetas <100.000.',
-    },
-    drugs: ['heparina_nf', 'enoxaparina'],
-  ),
-
-  ProtocolModel(
     id: 'avc_hemorragico',
     title: {'pt': 'AVC Hemorrágico (Hemorragia Intracerebral)', 'es': 'AVC Hemorrágico (Hemorragia Intracerebral)'},
     severity: {'pt': 'Crítico', 'es': 'Crítico'},
@@ -312,42 +271,6 @@ const List<ProtocolModel> protocolsDatabase = [
     drugs: ['dexametasona', 'metoprolol', 'levetiracetam', 'fenitoina'],
   ),
 
-  ProtocolModel(
-    id: 'status_epilepticus',
-    title: {'pt': 'Status Epilepticus Convulsivo', 'es': 'Status Epiléptico Convulsivo'},
-    severity: {'pt': 'Crítico', 'es': 'Crítico'},
-    recognize: {
-      'pt': 'Convulsão contínua ≥5 min OU 2 crises sem recuperação da consciência. Emergência neurológica — risco de morte e lesão neuronal permanente após 30 min.',
-      'es': 'Convulsión continua ≥5 min O 2 crisis sin recuperación de consciencia. Emergencia neurológica.',
-    },
-    actions: {
-      'pt': [
-        '0–5 min: ABCDE, O2 10 L/min, acesso venoso/IO, glicemia capilar (glicose IV se hipoglicemia)',
-        '5–20 min (1ª linha): Midazolam 10 mg IM (adulto) OU Diazepam 10 mg IV lento OU Lorazepam 4 mg IV (se disponível)',
-        '20–40 min (2ª linha): Levetiracetam 60 mg/kg IV (máx. 4500 mg) em 15 min — 1ª escolha atual (AHA/ESE 2021); ou Valproato 40 mg/kg IV; ou Fenitoína 20 mg/kg IV lento (<50 mg/min)',
-        '40–60 min (status refratário): Anestesia geral — Propofol 2 mg/kg IV + infusão; ou Midazolam 0,2 mg/kg IV + infusão; ou Fenobarbital 20 mg/kg IV',
-        'Monitoração EEG contínua em status refratário',
-        'Investigar causa: TC, PL, eletrólitos, toxicologia, neuroimagem'
-      ],
-      'es': [
-        '0–5 min: ABCDE, O2 10 L/min, acceso venoso/IO, glucemia capilar',
-        '5–20 min (1ª línea): Midazolam 10 mg IM (adulto) O Diazepam 10 mg IV lento',
-        '20–40 min (2ª línea): Levetiracetam 60 mg/kg IV (máx. 4500 mg) en 15 min; o Valproato 40 mg/kg IV; o Fenitoína 20 mg/kg IV lento',
-        '40–60 min (refractario): Anestesia general — Propofol 2 mg/kg IV + infusión; o Midazolam 0,2 mg/kg IV + infusión',
-        'Monitorización EEG continua en status refractario',
-        'Investigar causa: TC, PL, electrolitos, toxicología, neuroimagen'
-      ],
-    },
-    avoid: {
-      'pt': 'NUNCA atrasar benzodiazepínico. Não usar fenitoína como primeira linha em ausência típica ou espasmos infantis. Evitar hiperventilação (precipita convulsão). Monitorar depressão respiratória.',
-      'es': 'NUNCA retrasar benzodiacepina. Monitorar depresión respiratoria.',
-    },
-    drugs: ['midazolam', 'diazepam', 'fenitoina', 'levetiracetam'],
-  ),
-
-  // ─────────────────────────────────────────────
-  //  RESPIRATÓRIO
-  // ─────────────────────────────────────────────
   ProtocolModel(
     id: 'asma_grave',
     title: {'pt': 'Asma Aguda Grave / Quase Fatal', 'es': 'Asma Aguda Grave / Casi Fatal'},
@@ -792,46 +715,6 @@ const List<ProtocolModel> protocolsDatabase = [
     drugs: ['insulina_regular', 'cloreto_potassio', 'bicarbonato_sodio'],
   ),
 
-  ProtocolModel(
-    id: 'crise_hipertensiva',
-    title: {'pt': 'Crise Hipertensiva — Emergência vs. Urgência', 'es': 'Crisis Hipertensiva — Emergencia vs. Urgencia'},
-    severity: {'pt': 'Alto', 'es': 'Alto'},
-    recognize: {
-      'pt': 'Emergência hipertensiva: PA muito elevada + lesão aguda de órgão-alvo (LOA): encefalopatia, EAP, SCA, AVC, eclâmpsia, disseção de aorta. Urgência: PA muito elevada SEM LOA (assintomático/sintomas menores).',
-      'es': 'Emergencia hipertensiva: PA muy elevada + lesión aguda de órgano diana (LOA). Urgencia: PA muy elevada SIN LOA.',
-    },
-    actions: {
-      'pt': [
-        '1. Emergência hipertensiva: internação UTI, monitoração invasiva de PA',
-        '2. Meta redução PA: -20–25% nas primeiras 1–2h (NÃO normalizar abruptamente)',
-        '3. Encefalopatia/EAP: Nitroprussiato de sódio 0,5–10 µg/kg/min IV OU Nicardipino 5 mg/h IV',
-        '4. SCA + hipertensão: Nitroglicerina 5–200 µg/min IV',
-        '5. Disseção de aorta: Esmolol IV (meta FC <60 bpm) + Nitroprussiato IV — meta PA sistólica ≤120 mmHg',
-        '6. Eclâmpsia: MgSO4 4–6 g IV (ataque) + 1–2 g/h + Hidralazina 5–10 mg IV ou Labetalol IV',
-        '7. Urgência hipertensiva: reduzir PA em 24–48h com medicação VO (captopril, atenolol, amlodipino)',
-        '8. Investigar causas secundárias: feocromocitoma, hiperaldosteronismo, uso de cocaína',
-      ],
-      'es': [
-        '1. Emergencia hipertensiva: internación UTI, monitoreo invasivo de PA',
-        '2. Meta reducción PA: -20–25% en primeras 1–2 h (NO normalizar abruptamente)',
-        '3. Encefalopatía/EAP: Nitroprusiato 0,5–10 µg/kg/min IV O Nicardipino 5 mg/h IV',
-        '4. SCA + HAS: Nitroglicerina 5–200 µg/min IV',
-        '5. Disección aórtica: Esmolol IV (meta FC <60 lpm) + Nitroprusiato IV',
-        '6. Eclampsia: MgSO4 4–6 g IV + 1–2 g/h + Hidralazina 5–10 mg IV',
-        '7. Urgencia: reducir PA en 24–48 h con VO (captopril, atenolol, amlodipino)',
-        '8. Investigar causas secundarias',
-      ],
-    },
-    avoid: {
-      'pt': 'NUNCA normalizar PA rapidamente na emergência (AVC isquêmico: meta apenas <185/110 para trombólise). Sublingual nifedipino: CONTRAINDICADO (queda abrupta e imprevisível da PA → isquemia cerebral/coronariana). Evitar diuréticos em disseção de aorta. Não usar IECA/ARA II no AVC agudo.',
-      'es': 'NUNCA normalizar PA rápido en emergencia (ACV isquémico: meta solo <185/110). Nifedipino SL: CONTRAINDICADO. Evitar diuréticos en disección aórtica.',
-    },
-    drugs: ['nitroglicerina', 'metoprolol', 'atenolol', 'amlodipino', 'sulfato_magnesio'],
-  ),
-
-  // ─────────────────────────────────────────────
-  //  PNEUMOLOGIA / RESPIRATÓRIO
-  // ─────────────────────────────────────────────
   ProtocolModel(
     id: 'tromboembolismo_pulmonar',
     title: {'pt': 'Tromboembolismo Pulmonar (TEP) — Diagnóstico e Tratamento', 'es': 'Tromboembolismo Pulmonar (TEP) — Diagnóstico y Tratamiento'},
