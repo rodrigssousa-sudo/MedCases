@@ -4,7 +4,8 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart' show Timestamp;
+import 'package:cloud_firestore/cloud_firestore.dart'
+    show Timestamp, FirebaseFirestore, GetOptions, Source;
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'firebase_options.dart';
@@ -160,9 +161,9 @@ class _AuthGate extends StatelessWidget {
     return ValueListenableBuilder<UserModel?>(
       valueListenable: AuthService.webUser,
       builder: (context, user, _) {
-        // Sem usuário → login
+        // Sem usuário → preview pré-login com histórias públicas
         if (user == null) {
-          return _wrapAuth(const LoginScreen());
+          return _wrapAuth(const _PreLoginPreview());
         }
 
         // Usuário bloqueado
@@ -291,6 +292,446 @@ class _AuthGate extends StatelessWidget {
           },
         );
       },
+    );
+  }
+}
+
+// ── Preview pré-login ─────────────────────────────────────────────────────────
+// Mostra histórias clínicas públicas antes do usuário fazer login.
+// A leitura do Firestore é anônima — as regras de segurança já permitem
+// leitura da coleção public_histories sem autenticação.
+class _PreLoginPreview extends StatefulWidget {
+  const _PreLoginPreview();
+
+  @override
+  State<_PreLoginPreview> createState() => _PreLoginPreviewState();
+}
+
+class _PreLoginPreviewState extends State<_PreLoginPreview> {
+  List<Map<String, dynamic>> _histories = [];
+  bool _loading = true;
+  String? _error;
+
+  static const _kDark    = Color(0xFF07110d);
+  static const _kGreen   = Color(0xFF075f45);
+  static const _kGold    = Color(0xFFC5A365);
+  static const _kGoldL   = Color(0xFFFFE8A6);
+
+
+  @override
+  void initState() {
+    super.initState();
+    _loadPublic();
+  }
+
+  Future<void> _loadPublic() async {
+    setState(() { _loading = true; _error = null; });
+    try {
+      final snap = await FirebaseFirestore.instance
+          .collection('public_histories')
+          .limit(20)
+          .get(const GetOptions(source: Source.server));
+      final list = snap.docs.map((d) => d.data()).toList();
+      // Ordena por updatedAt desc (string ISO ou Timestamp)
+      list.sort((a, b) {
+        String ts(Map m) {
+          final v = m['updatedAt'] ?? m['createdAt'] ?? '';
+          return v is Timestamp ? v.toDate().toIso8601String() : v.toString();
+        }
+        return ts(b).compareTo(ts(a));
+      });
+      if (mounted) setState(() { _histories = list; _loading = false; });
+    } catch (e) {
+      // Tenta cache local como fallback
+      try {
+        final snap = await FirebaseFirestore.instance
+            .collection('public_histories')
+            .limit(20)
+            .get();
+        final list = snap.docs.map((d) => d.data()).toList();
+        if (mounted) setState(() { _histories = list; _loading = false; });
+      } catch (e2) {
+        if (mounted) setState(() { _loading = false; _error = e2.toString(); });
+      }
+    }
+  }
+
+  void _goLogin() {
+    Navigator.of(context).push(
+      PageRouteBuilder(
+        pageBuilder: (_, __, ___) => Theme(
+          data: MedCasesApp._authTheme,
+          child: const LoginScreen(),
+        ),
+        transitionsBuilder: (_, anim, __, child) =>
+            FadeTransition(opacity: anim, child: child),
+        transitionDuration: const Duration(milliseconds: 280),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: _kDark,
+      body: Column(children: [
+        // ── Header compacto ──────────────────────────────────────────────────
+        Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [_kDark, Color(0xFF123326), _kGreen],
+            ),
+          ),
+          child: SafeArea(
+            bottom: false,
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(16, 14, 16, 16),
+              child: Row(children: [
+                // Logo + nome
+                const BrandMark(small: true),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                    const Text('COMUNIDADE', style: TextStyle(
+                      fontSize: 9, fontWeight: FontWeight.w900,
+                      color: Color(0xBFFFE8A6), letterSpacing: 2)),
+                    const SizedBox(height: 1),
+                    Text('Histórias clínicas públicas',
+                      style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700,
+                          color: Colors.white.withValues(alpha: 0.85))),
+                  ]),
+                ),
+                // Botão "Entrar"
+                GestureDetector(
+                  onTap: _goLogin,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 9),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12),
+                      gradient: const LinearGradient(
+                        colors: [Color(0xFFD4AF5A), _kGold],
+                      ),
+                      boxShadow: [
+                        BoxShadow(color: _kGold.withValues(alpha: 0.4), blurRadius: 10, offset: const Offset(0, 3)),
+                      ],
+                    ),
+                    child: const Text('Entrar', style: TextStyle(
+                      fontSize: 13, fontWeight: FontWeight.w900, color: _kDark)),
+                  ),
+                ),
+              ]),
+            ),
+          ),
+        ),
+
+        // ── Banner teaser ────────────────────────────────────────────────────
+        Container(
+          margin: const EdgeInsets.fromLTRB(16, 12, 16, 0),
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 11),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(14),
+            color: _kGold.withValues(alpha: 0.12),
+            border: Border.all(color: _kGold.withValues(alpha: 0.35)),
+          ),
+          child: Row(children: [
+            const Icon(Icons.lock_open_rounded, size: 18, color: _kGold),
+            const SizedBox(width: 10),
+            Expanded(
+              child: RichText(
+                text: TextSpan(
+                  style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, height: 1.4),
+                  children: [
+                    TextSpan(text: 'Preview gratuito — ', style: TextStyle(color: _kGoldL.withValues(alpha: 0.9), fontWeight: FontWeight.w800)),
+                    TextSpan(text: 'faça login para criar, salvar e compartilhar suas próprias histórias clínicas.',
+                        style: TextStyle(color: Colors.white.withValues(alpha: 0.65))),
+                  ],
+                ),
+              ),
+            ),
+          ]),
+        ),
+
+        // ── Lista de histórias ────────────────────────────────────────────────
+        Expanded(
+          child: _loading
+              ? const Center(child: CircularProgressIndicator(color: _kGold, strokeWidth: 2.5))
+              : _error != null
+                  ? _buildError()
+                  : _histories.isEmpty
+                      ? _buildEmpty()
+                      : RefreshIndicator(
+                          color: _kGold,
+                          onRefresh: _loadPublic,
+                          child: ListView.builder(
+                            padding: const EdgeInsets.fromLTRB(0, 10, 0, 100),
+                            itemCount: _histories.length,
+                            itemBuilder: (_, i) => _PreviewCard(
+                              data: _histories[i],
+                              onTap: _goLogin,
+                            ),
+                          ),
+                        ),
+        ),
+      ]),
+
+      // ── FAB fixo "Criar conta / Entrar" ─────────────────────────────────────
+      floatingActionButton: _loading
+          ? null
+          : GestureDetector(
+              onTap: _goLogin,
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(16),
+                  color: _kDark,
+                  border: Border.all(color: _kGold.withValues(alpha: 0.5), width: 1.5),
+                  boxShadow: [
+                    BoxShadow(color: Colors.black.withValues(alpha: 0.4), blurRadius: 20, offset: const Offset(0, 6)),
+                    BoxShadow(color: _kGold.withValues(alpha: 0.2), blurRadius: 12, offset: const Offset(0, 2)),
+                  ],
+                ),
+                child: Row(mainAxisSize: MainAxisSize.min, children: [
+                  const Icon(Icons.login_rounded, size: 18, color: _kGoldL),
+                  const SizedBox(width: 8),
+                  const Text('Entrar ou criar conta', style: TextStyle(
+                    fontSize: 14, fontWeight: FontWeight.w900, color: _kGoldL)),
+                ]),
+              ),
+            ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+    );
+  }
+
+  Widget _buildError() {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(24),
+        child: Column(mainAxisSize: MainAxisSize.min, children: [
+          Icon(Icons.wifi_off_rounded, size: 40, color: Colors.white.withValues(alpha: 0.3)),
+          const SizedBox(height: 12),
+          Text('Não foi possível carregar as histórias.',
+            style: TextStyle(fontSize: 14, color: Colors.white.withValues(alpha: 0.55), fontWeight: FontWeight.w600),
+            textAlign: TextAlign.center),
+          const SizedBox(height: 16),
+          GestureDetector(
+            onTap: _loadPublic,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+              decoration: BoxDecoration(borderRadius: BorderRadius.circular(12), color: _kGold),
+              child: const Text('Tentar novamente', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w800, color: _kDark)),
+            ),
+          ),
+          const SizedBox(height: 20),
+          GestureDetector(
+            onTap: _goLogin,
+            child: Text('Ir para login →', style: TextStyle(fontSize: 13, color: _kGold.withValues(alpha: 0.8), fontWeight: FontWeight.w700)),
+          ),
+        ]),
+      ),
+    );
+  }
+
+  Widget _buildEmpty() {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(32),
+        child: Column(mainAxisSize: MainAxisSize.min, children: [
+          Icon(Icons.folder_open_rounded, size: 48, color: Colors.white.withValues(alpha: 0.2)),
+          const SizedBox(height: 16),
+          Text('Ainda sem histórias públicas.',
+            style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: Colors.white.withValues(alpha: 0.5)),
+            textAlign: TextAlign.center),
+          const SizedBox(height: 8),
+          Text('Faça login e seja o primeiro a compartilhar!',
+            style: TextStyle(fontSize: 12, color: Colors.white.withValues(alpha: 0.35), fontWeight: FontWeight.w500),
+            textAlign: TextAlign.center),
+          const SizedBox(height: 24),
+          GestureDetector(
+            onTap: _goLogin,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+              decoration: BoxDecoration(borderRadius: BorderRadius.circular(12), color: _kGold),
+              child: const Text('Entrar agora', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w800, color: _kDark)),
+            ),
+          ),
+        ]),
+      ),
+    );
+  }
+}
+
+// ── Card de preview pré-login ─────────────────────────────────────────────────
+class _PreviewCard extends StatelessWidget {
+  final Map<String, dynamic> data;
+  final VoidCallback onTap;
+  const _PreviewCard({required this.data, required this.onTap});
+
+  static const _kDark   = Color(0xFF07110d);
+  static const _kGold   = Color(0xFFC5A365);
+  static const _kGoldL  = Color(0xFFFFE8A6);
+  static const _kCardBorder = Color(0xFF1A2E20);
+
+  String _str(String key) => (data[key] ?? '').toString();
+
+  String get _title {
+    final cc = _str('chiefComplaint');
+    final fd = _str('finalDiagnosis');
+    final wd = _str('workingDiagnosis');
+    if (cc.isNotEmpty) return cc;
+    if (fd.isNotEmpty) return fd;
+    if (wd.isNotEmpty) return wd;
+    return 'História Clínica';
+  }
+
+  String get _category => _str('category').isNotEmpty ? _str('category') : 'Clínica Geral';
+  String get _finalDx  => _str('finalDiagnosis');
+  String get _workingDx => _str('workingDiagnosis');
+  String get _author   => _str('authorName').isNotEmpty ? _str('authorName') : 'Anônimo';
+  String get _age      => _str('patientAge');
+  String get _sex      => _str('patientSex');
+  String get _outcome  => _str('outcome');
+
+  Color get _outcomeColor {
+    switch (_outcome) {
+      case 'alta':         return const Color(0xFF065F46);
+      case 'obito':        return const Color(0xFFCC2222);
+      case 'transferencia': return const Color(0xFF1E40AF);
+      default:             return const Color(0xFFC5A365);
+    }
+  }
+  String get _outcomeLabel {
+    switch (_outcome) {
+      case 'alta':         return 'Alta';
+      case 'obito':        return 'Óbito';
+      case 'transferencia': return 'Transferência';
+      default:             return 'Internado';
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        margin: const EdgeInsets.fromLTRB(16, 0, 16, 10),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(16),
+          color: const Color(0xFF0E1A14),
+          border: Border.all(color: _kCardBorder),
+        ),
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          // ── Topo com categoria + outcome ──────────────────────────────────
+          Container(
+            padding: const EdgeInsets.fromLTRB(14, 12, 14, 10),
+            decoration: const BoxDecoration(
+              border: Border(bottom: BorderSide(color: Color(0xFF1A2E20))),
+            ),
+            child: Row(children: [
+              // Categoria
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                decoration: BoxDecoration(borderRadius: BorderRadius.circular(8), color: _kDark),
+                child: Text(_category, style: const TextStyle(fontSize: 9, fontWeight: FontWeight.w900, color: _kGoldL)),
+              ),
+              const SizedBox(width: 6),
+              // Outcome
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8),
+                  color: _outcomeColor.withValues(alpha: 0.15),
+                  border: Border.all(color: _outcomeColor.withValues(alpha: 0.4)),
+                ),
+                child: Text(_outcomeLabel, style: TextStyle(fontSize: 9, fontWeight: FontWeight.w900, color: _outcomeColor)),
+              ),
+              const Spacer(),
+              // Ícone "ver" — indica que precisa de login
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8),
+                  color: _kGold.withValues(alpha: 0.12),
+                  border: Border.all(color: _kGold.withValues(alpha: 0.3)),
+                ),
+                child: const Row(mainAxisSize: MainAxisSize.min, children: [
+                  Icon(Icons.login_rounded, size: 10, color: _kGold),
+                  SizedBox(width: 4),
+                  Text('Ver completo', style: TextStyle(fontSize: 9, fontWeight: FontWeight.w800, color: _kGold)),
+                ]),
+              ),
+            ]),
+          ),
+
+          // ── Corpo do card ─────────────────────────────────────────────────
+          Padding(
+            padding: const EdgeInsets.fromLTRB(14, 10, 14, 14),
+            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              // Título
+              Text(_title,
+                style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w900, color: Colors.white, height: 1.2),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
+              // Dados do paciente
+              if (_age.isNotEmpty || _sex.isNotEmpty) ...[
+                const SizedBox(height: 5),
+                Text(
+                  [if (_age.isNotEmpty) '$_age anos', if (_sex.isNotEmpty) _sex].join(' • '),
+                  style: TextStyle(fontSize: 11, color: Colors.white.withValues(alpha: 0.45), fontWeight: FontWeight.w600),
+                ),
+              ],
+              // Diagnóstico final
+              if (_finalDx.isNotEmpty) ...[
+                const SizedBox(height: 8),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: const Color(0xFF065F46).withValues(alpha: 0.15),
+                    border: Border.all(color: const Color(0xFF065F46).withValues(alpha: 0.4)),
+                  ),
+                  child: Text('Dx: $_finalDx',
+                    style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: Color(0xFF6BCCA0)),
+                    overflow: TextOverflow.ellipsis),
+                ),
+              ] else if (_workingDx.isNotEmpty) ...[
+                const SizedBox(height: 8),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: const Color(0xFF92400E).withValues(alpha: 0.15),
+                    border: Border.all(color: const Color(0xFF92400E).withValues(alpha: 0.4)),
+                  ),
+                  child: Text('Hipótese: $_workingDx',
+                    style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: Color(0xFFFFB347)),
+                    overflow: TextOverflow.ellipsis),
+                ),
+              ],
+              // Autor
+              const SizedBox(height: 10),
+              Row(children: [
+                Icon(Icons.person_outline_rounded, size: 12, color: Colors.white.withValues(alpha: 0.3)),
+                const SizedBox(width: 5),
+                Expanded(
+                  child: Text(_author,
+                    style: TextStyle(fontSize: 10, color: Colors.white.withValues(alpha: 0.4), fontWeight: FontWeight.w600),
+                    overflow: TextOverflow.ellipsis),
+                ),
+                // Indicador "bloqueado" — conteúdo completo só com login
+                Row(mainAxisSize: MainAxisSize.min, children: [
+                  Icon(Icons.lock_rounded, size: 10, color: Colors.white.withValues(alpha: 0.2)),
+                  const SizedBox(width: 4),
+                  Text('Login para ler tudo',
+                    style: TextStyle(fontSize: 9, color: Colors.white.withValues(alpha: 0.25), fontWeight: FontWeight.w600)),
+                ]),
+              ]),
+            ]),
+          ),
+        ]),
+      ),
     );
   }
 }
