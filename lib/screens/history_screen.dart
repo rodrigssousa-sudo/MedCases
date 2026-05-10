@@ -2234,6 +2234,39 @@ class _EmptyCommunityState extends StatelessWidget {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
+// DECIMAL INPUT FORMATTER
+// Permite apenas dígitos + um único separador decimal (ponto ou vírgula).
+// Normaliza vírgula → ponto para consistência no parse posterior.
+// ─────────────────────────────────────────────────────────────────────────────
+class _DecimalInputFormatter extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
+    final text = newValue.text;
+
+    // Permite vazio
+    if (text.isEmpty) return newValue;
+
+    // Substitui vírgula por ponto
+    final normalized = text.replaceAll(',', '.');
+
+    // Bloqueia se tiver mais de um ponto após normalização
+    if ('.'.allMatches(normalized).length > 1) return oldValue;
+
+    // Bloqueia caracteres que não sejam dígitos ou ponto
+    if (!RegExp(r'^[0-9.]*$').hasMatch(normalized)) return oldValue;
+
+    // Retorna com cursor ajustado ao novo texto (normalizado)
+    return newValue.copyWith(
+      text: normalized,
+      selection: TextSelection.collapsed(offset: normalized.length),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 // SINAIS VITAIS ESTRUTURADOS
 // Campos pré-definidos; texto livre gerado automaticamente no controller
 // ─────────────────────────────────────────────────────────────────────────────
@@ -2315,9 +2348,9 @@ class _VitalSignsWidgetState extends State<_VitalSignsWidget> {
               controller: ctrl,
               keyboardType: decimal
                   ? const TextInputType.numberWithOptions(decimal: true, signed: false)
-                  : TextInputType.number,
+                  : const TextInputType.numberWithOptions(decimal: false, signed: false),
               inputFormatters: decimal
-                  ? [FilteringTextInputFormatter.allow(RegExp(r'[0-9.,]'))]
+                  ? [_DecimalInputFormatter()]
                   : [FilteringTextInputFormatter.digitsOnly],
               style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w800),
               decoration: InputDecoration(
