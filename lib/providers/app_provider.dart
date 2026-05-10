@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -646,21 +647,29 @@ class AppProvider extends ChangeNotifier {
     await saveHistory(updated);
   }
 
+  // Completer ativo enquanto um fetch está em andamento.
+  // Chamadas concorrentes aguardam o mesmo Future em vez de retornar [] silenciosamente.
+  Completer<void>? _publicHistoriesCompleter;
+
   Future<void> loadPublicHistories() async {
-    if (_isLoadingPublic) return; // Evita chamadas paralelas
+    // Já há um fetch em andamento — aguarda ele terminar (não cancela nem ignora)
+    if (_publicHistoriesCompleter != null) {
+      await _publicHistoriesCompleter!.future;
+      return;
+    }
+
+    _publicHistoriesCompleter = Completer<void>();
     _isLoadingPublic = true;
     notifyListeners();
     try {
       final fetched = await FirestoreService.loadPublicHistories();
       // Mescla: preserva HCs locais do criador que ainda não chegaram ao servidor
-      // (ex: acabou de publicar mas o fetch foi mais rápido que a escrita)
       final mergedIds = <String>{};
       final merged = <ClinicalHistoryModel>[];
       for (final h in fetched) {
         merged.add(h);
         mergedIds.add(h.id);
       }
-      // Adiciona HCs públicas locais que não vieram do servidor
       for (final local in _publicHistories) {
         if (!mergedIds.contains(local.id) && local.isPublic) {
           merged.add(local);
@@ -669,9 +678,11 @@ class AppProvider extends ChangeNotifier {
       merged.sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
       _publicHistories = merged;
     } catch (_) {
-      // Mantém o que já está em memória — não limpa a lista
+      // Mantém o que já está em memória
     } finally {
       _isLoadingPublic = false;
+      _publicHistoriesCompleter!.complete();
+      _publicHistoriesCompleter = null;
       notifyListeners();
     }
   }

@@ -190,15 +190,12 @@ class _AuthGate extends StatelessWidget {
     // falha com CORS silencioso → StreamBuilder fica em ConnectionState.waiting
     // para sempre → MainShell nunca é exibido.
     //
-    // Solução: no Web, vamos direto para MainShell sem abrir o stream.
-    // Manutenção é feature de admin — admins/masters têm bypass de qualquer forma,
-    // e usuários comuns não precisam do stream ativo durante o login inicial.
+    // Solução: no Web, usamos _WebMainShellGate — um StatefulWidget que chama
+    // setUser() no initState e só exibe MainShell após o Future completar.
+    // Isso garante que o token está cacheado ANTES de qualquer tela tentar
+    // chamar loadPublicHistories(), eliminando a race condition.
     if (kIsWeb) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        final p = context.read<AppProvider>();
-        if (p.currentUser?.uid != user.uid) p.setUser(user);
-      });
-      return const MainShell();
+      return _WebMainShellGate(user: user);
     }
 
     // ── Android: stream normal do Firestore SDK (sem CORS) ───────────────
@@ -598,6 +595,56 @@ class _BlockedScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+// ── Web Main Shell Gate ───────────────────────────────────────────────────────
+// Chama setUser() de forma assíncrona no initState e só exibe MainShell após
+// o Future completar. Isso garante que o token está cacheado no AuthService
+// ANTES de qualquer tela (ex: HistoryScreen) tentar chamar loadPublicHistories().
+//
+// SEM este widget, o fluxo era:
+//   addPostFrameCallback → MainShell já na tela → HistoryScreen.initState já rodou
+//   → loadPublicHistories() chamado → setUser ainda não rodou → token vazio → []
+//
+// COM este widget:
+//   initState → await setUser() → setState(_ready=true) → MainShell exibido
+//   → loadPublicHistories() chamado no listener da tab → token já existe → ✅
+class _WebMainShellGate extends StatefulWidget {
+  final UserModel user;
+  const _WebMainShellGate({required this.user});
+
+  @override
+  State<_WebMainShellGate> createState() => _WebMainShellGateState();
+}
+
+class _WebMainShellGateState extends State<_WebMainShellGate> {
+  bool _ready = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _initUser();
+  }
+
+  Future<void> _initUser() async {
+    final p = context.read<AppProvider>();
+    // Só chama setUser se o provider ainda não tem este usuário — evita
+    // chamar duas vezes durante rebuilds do ValueListenableBuilder.
+    if (p.currentUser?.uid != widget.user.uid) {
+      await p.setUser(widget.user);
+    }
+    if (mounted) setState(() => _ready = true);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // Enquanto setUser não completou, exibe splash — evita que HistoryScreen
+    // monte e tente ler publicHistories antes do token existir.
+    if (!_ready) {
+      return const _SplashScreen();
+    }
+    return const MainShell();
   }
 }
 
