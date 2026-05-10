@@ -473,7 +473,6 @@ class AuthService {
   }
 
   /// REST polling — busca até 500 usuários a cada 8 segundos.
-  /// Usa runZonedGuarded internamente para capturar exceções async.
   static Stream<List<UserModel>> _allUsersStreamRest() {
     // StreamController com auto-cancel para não vazar quando não há listeners
     late StreamController<List<UserModel>> ctrl;
@@ -482,15 +481,23 @@ class AuthService {
     Future<void> fetch() async {
       try {
         final token = await _getAdminToken();
-        if (token.isEmpty) return; // sem token, aguarda próximo ciclo
 
-        // Firestore REST — listar coleção users com pageSize máximo
+        // Token vazio: emite lista vazia para tirar o loading e agenda retry
+        if (token.isEmpty) {
+          if (!ctrl.isClosed) ctrl.add([]);
+          return;
+        }
+
         final resp = await http.get(
           Uri.parse('$_fsBase/users?pageSize=500'),
           headers: {'Authorization': 'Bearer $token'},
-        );
+        ).timeout(const Duration(seconds: 10));
 
-        if (resp.statusCode != 200) return;
+        if (resp.statusCode != 200) {
+          // HTTP erro (403, 401, etc.) — emite lista vazia para sair do loading
+          if (!ctrl.isClosed) ctrl.add([]);
+          return;
+        }
 
         final body = jsonDecode(resp.body) as Map<String, dynamic>;
         final docs  = body['documents'] as List<dynamic>? ?? [];
@@ -498,14 +505,17 @@ class AuthService {
         final users = <UserModel>[];
         for (final doc in docs) {
           try {
-            final data = _firestoreDocToMap(doc as Map<String, dynamic>);
-            // Extrair uid do name: "projects/.../documents/users/{uid}"
-            final name = doc['name'] as String? ?? '';
-            final uid  = name.split('/').last;
-            data['uid'] = uid;
-            users.add(UserModel.fromMap(data));
+            final docMap = doc as Map<String, dynamic>;
+            final data   = _firestoreDocToMap(docMap);
+            final name   = docMap['name'] as String? ?? '';
+            // name = "projects/.../documents/users/{uid}"
+            final uid    = name.split('/').last;
+            if (uid.isEmpty) continue;
+            data['uid']  = uid;
+            final u      = UserModel.fromMap(data);
+            users.add(u);
           } catch (_) {
-            // pula documento com formato inesperado
+            // doc malformado — ignora e continua
           }
         }
 
@@ -514,7 +524,9 @@ class AuthService {
 
         if (!ctrl.isClosed) ctrl.add(users);
       } catch (_) {
-        // falha silenciosa — tenta novamente no próximo ciclo
+        // Falha de rede / timeout — emite lista vazia para sair do loading;
+        // o timer periódico tentará novamente em 8 s.
+        if (!ctrl.isClosed) ctrl.add([]);
       }
     }
 
