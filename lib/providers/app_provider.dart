@@ -11,6 +11,7 @@ import '../data/protocols_database.dart';
 import '../data/cases_database.dart';
 import '../services/firestore_service.dart';
 import '../services/drug_interaction_service.dart';
+import '../services/ai_service.dart';
 
 class DoseInfo {
   final String main;
@@ -70,6 +71,11 @@ class AppProvider extends ChangeNotifier {
   List<ClinicalHistoryModel> _myHistories = [];
   List<ClinicalHistoryModel> _publicHistories = [];
 
+  // ── Estado — IA Clínica ──────────────────────────────────────────────────
+  String _openAiKey = '';
+  // Histórico de conversa para contexto multi-turn (máx 10 pares)
+  final List<Map<String, String>> _aiHistory = [];
+
   // ── Getters públicos ──────────────────────────────────────────────────────
   UserModel? get currentUser => _currentUser;
   bool get firebaseReady => _firebaseReady;
@@ -94,6 +100,10 @@ class AppProvider extends ChangeNotifier {
   // ── Getters — Histórias Clínicas ─────────────────────────────────────────
   List<ClinicalHistoryModel> get myHistories => _myHistories;
   List<ClinicalHistoryModel> get publicHistories => _publicHistories;
+
+  // ── Getters — IA ─────────────────────────────────────────────────────────
+  String get openAiKey => _openAiKey;
+  bool get hasAiKey => _openAiKey.isNotEmpty;
 
   List<DrugModel> get drugsDB => drugsDatabase;
   List<ProtocolModel> get protocolsDB => protocolsDatabase;
@@ -185,6 +195,8 @@ class AppProvider extends ChangeNotifier {
       // Preferências globais (independentes de usuário)
       _lang     = p.getString('lang')     ?? 'es';
       _darkMode = p.getBool('darkMode')   ?? false;
+      // Chave de IA (global, não por usuário — é uma preferência do dispositivo)
+      _openAiKey = p.getString('openAiKey') ?? '';
 
       // Dados por usuário (se uid disponível usa cache dedicado)
       final favKey   = _k('favDrugs',      uid);
@@ -225,6 +237,7 @@ class AppProvider extends ChangeNotifier {
       final p = await SharedPreferences.getInstance();
       await p.setString('lang',     _lang);
       await p.setBool('darkMode',   _darkMode);
+      await p.setString('openAiKey', _openAiKey);
       await p.setStringList(_k('favDrugs',     u), _favDrugs.toList());
       await p.setStringList(_k('favProtocols', u), _favProtocols.toList());
       await p.setString(_k('customCases', u),
@@ -545,7 +558,118 @@ class AppProvider extends ChangeNotifier {
   }
 
   // ── IA Clínica ────────────────────────────────────────────────────────────
-  String buildAIAnswer(String input) {
+
+  /// Salva a chave OpenAI no estado e persiste localmente
+  Future<void> setAiKey(String key) async {
+    _openAiKey = key.trim();
+    notifyListeners();
+    await _saveLocal();
+  }
+
+  /// Limpa o histórico de conversa da IA (nova conversa)
+  void clearAiHistory() => _aiHistory.clear();
+
+  /// Retorna sumários dos protocolos cujos títulos/reconhecer contenham keywords da query
+  List<String> _matchProtocols(String normalizedQuery) {
+    final results = <String>[];
+    for (final p in protocolsDatabase) {
+      final title    = _normalize(tDB(p.title));
+      final recognize = _normalize(tDB(p.recognize));
+      // Verifica se alguma palavra significativa (>3 chars) da query aparece no protocolo
+      final words = normalizedQuery.split(RegExp(r'\s+'))
+          .where((w) => w.length > 3).toList();
+      if (words.any((w) => title.contains(w) || recognize.contains(w))) {
+        final actions = p.getActions(_lang).take(3).join(' | ');
+        results.add('• [${tDB(p.title)}] Reconhecer: ${tDB(p.recognize).substring(0, tDB(p.recognize).length.clamp(0, 120))}... Conduta: $actions');
+        if (results.length >= 4) break; // máx 4 protocolos para não exceder tokens
+      }
+    }
+    return results;
+  }
+
+  /// Retorna sumários dos fármacos que correspondem à query
+  List<String> _matchDrugs(String normalizedQuery) {
+    final results = <String>[];
+    for (final d in drugsDatabase) {
+      final name  = _normalize(d.name);
+      final cls   = _normalize(d.getField(d.className, _lang));
+      final mech  = _normalize(d.getField(d.mechanism, _lang));
+      final words = normalizedQuery.split(RegExp(r'\s+'))
+          .where((w) => w.length > 3).toList();
+      if (words.any((w) => name.contains(w) || cls.contains(w) || mech.contains(w))) {
+        final dose = d.getField(d.fixedDose, _lang);
+        final warn = d.getField(d.warning, _lang);
+        results.add('• [${d.name}] Classe: ${d.getField(d.className, _lang)} | Dose: ${dose.isNotEmpty ? dose : "ver ficha"} | Alerta: ${warn.isNotEmpty ? warn.substring(0, warn.length.clamp(0, 80)) : "—"}');
+        if (results.length >= 5) break; // máx 5 fármacos
+      }
+    }
+    return results;
+  }
+
+  /// Chamada principal — retorna resposta real da IA ou fallback local
+  Future<String> buildAIAnswer(String input) async {
+    // Se não tem chave → usa resposta local (rule-based) como fallback
+    if (_openAiKey.isEmpty) {
+      return _buildLocalAnswer(input);
+    }
+
+    final normalized = _normalize(input);
+    final protocols  = _matchProtocols(normalized);
+    final drugs      = _matchDrugs(normalized);
+
+    final systemPrompt = AiService.buildClinicalSystemPrompt(
+      lang: _lang,
+      matchedProtocolSummaries: protocols,
+      matchedDrugSummaries: drugs,
+      patientAge: _patient.age.isNotEmpty ? _patient.age : null,
+      patientSex: _patient.sex.isNotEmpty ? _patient.sex : null,
+      patientWeight: _patient.weight.isNotEmpty ? _patient.weight : null,
+      patientClcr: clcr,
+      patientMedications: _patient.medications.isNotEmpty ? _patient.medications : null,
+    );
+
+    final result = await AiService.chat(
+      apiKey: _openAiKey,
+      userMessage: input,
+      systemPrompt: systemPrompt,
+      history: List.unmodifiable(_aiHistory),
+    );
+
+    if (result.isError) {
+      // Erros específicos com mensagem amigável
+      switch (result.errorCode) {
+        case 'no_key':
+          return _buildLocalAnswer(input);
+        case 'invalid_key':
+          return _lang == 'es'
+              ? '❌ Clave de API inválida.\n\nVerifica que tu clave OpenAI sea correcta en Configuración de IA.\n\n⚕ Apoyo educativo. No sustituye evaluación médica presencial.'
+              : '❌ Chave de API inválida.\n\nVerifique que sua chave OpenAI esteja correta em Configurações de IA.\n\n⚕ Apoio educacional. NÃO substitui avaliação médica presencial.';
+        case 'quota':
+          return _lang == 'es'
+              ? '⚠️ Límite de uso de la API alcanzado.\n\nRevisa tu cuenta OpenAI o usa el modo local.\n\n⚕ Apoyo educativo. No sustituye evaluación médica presencial.'
+              : '⚠️ Limite de uso da API atingido.\n\nVerifique sua conta OpenAI ou use o modo local.\n\n⚕ Apoio educacional. NÃO substitui avaliação médica presencial.';
+        case 'network':
+          // Sem rede → fallback local silencioso
+          return _buildLocalAnswer(input);
+        default:
+          return _buildLocalAnswer(input);
+      }
+    }
+
+    // Adiciona ao histórico de conversa (contexto multi-turn)
+    _aiHistory
+      ..add({'role': 'user', 'content': input})
+      ..add({'role': 'assistant', 'content': result.text});
+    // Limita a 10 pares (20 mensagens) para não explodir tokens
+    while (_aiHistory.length > 20) {
+      _aiHistory.removeAt(0);
+    }
+
+    return result.text;
+  }
+
+  /// Resposta local (rule-based) — fallback quando não há chave ou sem rede
+  String _buildLocalAnswer(String input) {
     final q = _normalize(input);
     final buf = StringBuffer();
     final suspected = <String>[];
@@ -963,6 +1087,7 @@ class AppProvider extends ChangeNotifier {
     return buf.toString();
   }
 
+  // _normalize exposto internamente para uso em _matchProtocols / _matchDrugs
   String _normalize(String s) => s.toLowerCase()
       .replaceAll(RegExp(r'[àáâãäå]'), 'a')
       .replaceAll(RegExp(r'[èéêë]'), 'e')

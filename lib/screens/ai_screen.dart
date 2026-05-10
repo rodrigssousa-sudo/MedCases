@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '../providers/app_provider.dart';
+import '../services/ai_service.dart';
 
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -99,6 +100,7 @@ class _AiScreenState extends State<AiScreen> {
   final List<_ChatMsg> _messages = [];
   bool _thinking  = false;
   bool _hasFocus  = false;
+  bool _aiError   = false; // true quando a última resposta foi um erro de chave
 
   // Sugestões ficam visíveis apenas no estado vazio + sem foco
   bool get _showSuggestions => _messages.isEmpty && !_hasFocus;
@@ -139,19 +141,26 @@ class _AiScreenState extends State<AiScreen> {
 
   Future<void> _send(String text, AppProvider p) async {
     final trimmed = text.trim();
-    if (trimmed.isEmpty) return;
+    if (trimmed.isEmpty || _thinking) return;
     _focusNode.unfocus();
     setState(() {
       _messages.add(_ChatMsg(role: 'user', text: trimmed));
       _thinking = true;
+      _aiError  = false;
     });
     _queryCtrl.clear();
     _scrollDown();
-    await Future.delayed(const Duration(milliseconds: 600));
-    final answer = p.buildAIAnswer(trimmed);
+
+    // Chamada real (ou fallback local se sem chave)
+    final answer = await p.buildAIAnswer(trimmed);
+
+    if (!mounted) return;
+    // Detecta se foi erro de chave inválida para mostrar banner
+    final isKeyError = answer.startsWith('❌') && answer.contains('API');
     setState(() {
       _messages.add(_ChatMsg(role: 'ai', text: answer));
       _thinking = false;
+      _aiError  = isKeyError;
     });
     _scrollDown();
   }
@@ -170,9 +179,30 @@ class _AiScreenState extends State<AiScreen> {
   }
 
   void _clearChat() {
-    setState(() => _messages.clear());
+    setState(() {
+      _messages.clear();
+      _aiError = false;
+    });
     _queryCtrl.clear();
     _focusNode.unfocus();
+    context.read<AppProvider>().clearAiHistory();
+  }
+
+  // ── Sheet de configuração da API key ────────────────────────────────────
+  void _openAiSettings() {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => _AiSettingsSheet(
+        initialKey: context.read<AppProvider>().openAiKey,
+        lang: context.read<AppProvider>().lang,
+        dark: context.read<AppProvider>().darkMode,
+        onSave: (key) async {
+          await context.read<AppProvider>().setAiKey(key);
+        },
+      ),
+    );
   }
 
   // Insere sugestão no campo sem enviar — usuário pode editar
@@ -197,8 +227,18 @@ class _AiScreenState extends State<AiScreen> {
         dark: dark,
         hasMessages: _messages.isNotEmpty,
         onClear: _clearChat,
+        onSettings: _openAiSettings,
         lang: p.lang,
+        hasRealAi: p.hasAiKey,
       ),
+
+      // ── Banner de erro de chave ───────────────────────────────────────────
+      if (_aiError)
+        _AiErrorBanner(
+          dark: dark,
+          lang: p.lang,
+          onFix: _openAiSettings,
+        ),
 
       // ── Área de chat ─────────────────────────────────────────────────────
       Expanded(
@@ -260,12 +300,16 @@ class _WaHeader extends StatelessWidget {
   final bool dark;
   final bool hasMessages;
   final VoidCallback onClear;
+  final VoidCallback onSettings;
   final String lang;
+  final bool hasRealAi;
   const _WaHeader({
     required this.dark,
     required this.hasMessages,
     required this.onClear,
+    required this.onSettings,
     required this.lang,
+    required this.hasRealAi,
   });
 
   @override
@@ -305,17 +349,47 @@ class _WaHeader extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 15, fontWeight: FontWeight.w800,
                     color: Colors.white, letterSpacing: -0.2)),
-                Text(
-                  lang == 'es'
-                    ? 'Razonamiento clínico • apoyo educativo'
-                    : 'Raciocínio clínico • apoio educacional',
-                  style: TextStyle(
-                    fontSize: 10,
-                    color: Colors.white.withValues(alpha: 0.55),
-                    fontWeight: FontWeight.w500,
-                  )),
+                Row(mainAxisSize: MainAxisSize.min, children: [
+                  Container(
+                    width: 6, height: 6,
+                    margin: const EdgeInsets.only(right: 5),
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: hasRealAi
+                          ? const Color(0xFF4ADE80)   // verde = IA real ativa
+                          : Colors.white.withValues(alpha: 0.35), // cinza = modo local
+                    ),
+                  ),
+                  Text(
+                    hasRealAi
+                        ? (lang == 'es' ? 'GPT-4o mini activo' : 'GPT-4o mini ativo')
+                        : (lang == 'es' ? 'Modo local • sin clave API' : 'Modo local • sem chave API'),
+                    style: TextStyle(
+                      fontSize: 10,
+                      color: Colors.white.withValues(alpha: 0.55),
+                      fontWeight: FontWeight.w500,
+                    )),
+                ]),
               ],
             )),
+            // Botão configurações da IA
+            GestureDetector(
+              onTap: onSettings,
+              child: Container(
+                padding: const EdgeInsets.all(6),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8),
+                  color: Colors.white.withValues(alpha: 0.1),
+                ),
+                child: Icon(
+                  hasRealAi ? Icons.key_rounded : Icons.key_off_rounded,
+                  size: 18,
+                  color: hasRealAi
+                      ? const Color(0xFF4ADE80)
+                      : Colors.white.withValues(alpha: 0.6)),
+              ),
+            ),
+            const SizedBox(width: 6),
             // Limpar conversa
             if (hasMessages)
               GestureDetector(
@@ -333,7 +407,7 @@ class _WaHeader extends StatelessWidget {
                       color: Color(0xFFFFE8A6))),
                 ),
               ),
-            if (!hasMessages) ...[
+            if (!hasMessages) ...[  
               // Botão menu
               GestureDetector(
                 onTap: () => Scaffold.of(context).openEndDrawer(),
@@ -773,6 +847,324 @@ class _InputBar extends StatelessWidget {
           ),
         ]),
       ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Banner de erro de chave — aparece abaixo do header quando chave inválida
+// ─────────────────────────────────────────────────────────────────────────────
+class _AiErrorBanner extends StatelessWidget {
+  final bool dark;
+  final String lang;
+  final VoidCallback onFix;
+  const _AiErrorBanner({required this.dark, required this.lang, required this.onFix});
+
+  @override
+  Widget build(BuildContext context) {
+    final isEs = lang == 'es';
+    return GestureDetector(
+      onTap: onFix,
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        color: const Color(0xFFB91C1C).withValues(alpha: 0.12),
+        child: Row(children: [
+          const Icon(Icons.error_outline_rounded, color: Color(0xFFEF4444), size: 16),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              isEs
+                  ? 'Clave API inválida — toca para configurar'
+                  : 'Chave API inválida — toque para configurar',
+              style: const TextStyle(
+                fontSize: 12, fontWeight: FontWeight.w600,
+                color: Color(0xFFEF4444)),
+            ),
+          ),
+          const Icon(Icons.chevron_right_rounded, color: Color(0xFFEF4444), size: 16),
+        ]),
+      ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Sheet de configuração da API key
+// ─────────────────────────────────────────────────────────────────────────────
+class _AiSettingsSheet extends StatefulWidget {
+  final String initialKey;
+  final String lang;
+  final bool dark;
+  final Future<void> Function(String key) onSave;
+  const _AiSettingsSheet({
+    required this.initialKey,
+    required this.lang,
+    required this.dark,
+    required this.onSave,
+  });
+
+  @override
+  State<_AiSettingsSheet> createState() => _AiSettingsSheetState();
+}
+
+class _AiSettingsSheetState extends State<_AiSettingsSheet> {
+  late final TextEditingController _ctrl;
+  bool _obscure    = true;
+  bool _validating = false;
+  bool _saved      = false;
+  String? _error;
+
+  @override
+  void initState() {
+    super.initState();
+    _ctrl = TextEditingController(text: widget.initialKey);
+  }
+
+  @override
+  void dispose() { _ctrl.dispose(); super.dispose(); }
+
+  bool get _isEs => widget.lang == 'es';
+
+  Future<void> _save() async {
+    final key = _ctrl.text.trim();
+    if (key.isEmpty) {
+      // Limpar chave — volta ao modo local
+      await widget.onSave('');
+      if (mounted) {
+        setState(() => _saved = true);
+        await Future.delayed(const Duration(milliseconds: 800));
+        if (mounted) Navigator.pop(context);
+      }
+      return;
+    }
+
+    // Validar a chave antes de salvar
+    setState(() { _validating = true; _error = null; });
+    final valid = await AiService.validateKey(key);
+    if (!mounted) return;
+
+    if (valid) {
+      await widget.onSave(key);
+      setState(() { _validating = false; _saved = true; });
+      await Future.delayed(const Duration(milliseconds: 900));
+      if (mounted) Navigator.pop(context);
+    } else {
+      setState(() {
+        _validating = false;
+        _error = _isEs
+            ? 'Clave inválida o sin conexión. Verifica y vuelve a intentar.'
+            : 'Chave inválida ou sem conexão. Verifique e tente novamente.';
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final dark   = widget.dark;
+    final bg     = dark ? const Color(0xFF0F1A14) : Colors.white;
+    final cardBg = dark ? const Color(0xFF1A2820) : const Color(0xFFF5F7F5);
+    final text   = dark ? Colors.white : const Color(0xFF1A1A1A);
+    final sub    = dark ? Colors.white54 : Colors.black54;
+
+    return Container(
+      decoration: BoxDecoration(
+        color: bg,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      padding: EdgeInsets.fromLTRB(
+        20, 12, 20, MediaQuery.of(context).viewInsets.bottom + 24),
+      child: Column(mainAxisSize: MainAxisSize.min, children: [
+        // Drag handle
+        Container(
+          width: 36, height: 4,
+          margin: const EdgeInsets.only(bottom: 20),
+          decoration: BoxDecoration(
+            color: dark ? Colors.white24 : Colors.black12,
+            borderRadius: BorderRadius.circular(2)),
+        ),
+
+        // Título
+        Row(children: [
+          Container(
+            width: 38, height: 38,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: const Color(0xFF075f45).withValues(alpha: 0.15),
+            ),
+            child: const Center(
+              child: Icon(Icons.key_rounded, color: Color(0xFF075f45), size: 20)),
+          ),
+          const SizedBox(width: 12),
+          Expanded(child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                _isEs ? 'Configuración de IA' : 'Configuração de IA',
+                style: TextStyle(
+                  fontSize: 17, fontWeight: FontWeight.w800, color: text)),
+              Text(
+                _isEs ? 'Conecta tu clave OpenAI' : 'Conecte sua chave OpenAI',
+                style: TextStyle(fontSize: 12, color: sub)),
+            ],
+          )),
+        ]),
+
+        const SizedBox(height: 20),
+
+        // Info card
+        Container(
+          padding: const EdgeInsets.all(14),
+          decoration: BoxDecoration(
+            color: cardBg,
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Row(children: [
+              const Icon(Icons.info_outline_rounded,
+                size: 14, color: Color(0xFF075f45)),
+              const SizedBox(width: 6),
+              Text(
+                _isEs ? '¿Cómo funciona?' : 'Como funciona?',
+                style: const TextStyle(
+                  fontSize: 12, fontWeight: FontWeight.w700,
+                  color: Color(0xFF075f45))),
+            ]),
+            const SizedBox(height: 6),
+            Text(
+              _isEs
+                  ? '• Sin clave: modo local (reglas clínicas integradas)\n'
+                    '• Con clave: GPT-4o mini real con contexto de protocolos y fármacos del app\n'
+                    '• La clave se guarda solo en este dispositivo'
+                  : '• Sem chave: modo local (regras clínicas integradas)\n'
+                    '• Com chave: GPT-4o mini real com contexto de protocolos e fármacos do app\n'
+                    '• A chave é salva somente neste dispositivo',
+              style: TextStyle(fontSize: 11, color: sub, height: 1.6)),
+          ]),
+        ),
+
+        const SizedBox(height: 16),
+
+        // Campo de chave
+        TextField(
+          controller: _ctrl,
+          obscureText: _obscure,
+          style: TextStyle(fontSize: 13, color: text, fontFamily: 'monospace'),
+          decoration: InputDecoration(
+            hintText: 'sk-...',
+            hintStyle: TextStyle(color: sub, fontFamily: 'monospace', fontSize: 13),
+            labelText: _isEs ? 'Clave OpenAI (sk-...)' : 'Chave OpenAI (sk-...)',
+            labelStyle: TextStyle(color: sub, fontSize: 13),
+            filled: true,
+            fillColor: cardBg,
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide.none),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: const BorderSide(color: Color(0xFF075f45), width: 1.5)),
+            suffixIcon: IconButton(
+              icon: Icon(
+                _obscure ? Icons.visibility_off_rounded : Icons.visibility_rounded,
+                size: 18, color: sub),
+              onPressed: () => setState(() => _obscure = !_obscure),
+            ),
+            errorText: _error,
+            errorMaxLines: 2,
+          ),
+        ),
+
+        const SizedBox(height: 12),
+
+        // Instrução de onde obter a chave
+        GestureDetector(
+          onTap: () {
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text(_isEs
+                  ? 'Ve a platform.openai.com → API keys → Create new secret key'
+                  : 'Acesse platform.openai.com → API keys → Create new secret key'),
+              behavior: SnackBarBehavior.floating,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10)),
+              margin: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+              duration: const Duration(seconds: 5),
+            ));
+          },
+          child: Row(mainAxisSize: MainAxisSize.min, children: [
+            const Icon(Icons.open_in_new_rounded,
+              size: 13, color: Color(0xFF075f45)),
+            const SizedBox(width: 4),
+            Text(
+              _isEs
+                  ? 'Obtener clave en platform.openai.com'
+                  : 'Obter chave em platform.openai.com',
+              style: const TextStyle(
+                fontSize: 11, color: Color(0xFF075f45),
+                fontWeight: FontWeight.w600)),
+          ]),
+        ),
+
+        const SizedBox(height: 20),
+
+        // Botões
+        Row(children: [
+          // Remover chave (modo local)
+          if (widget.initialKey.isNotEmpty) ...[
+            Expanded(
+              child: OutlinedButton.icon(
+                onPressed: _validating ? null : () async {
+                  _ctrl.clear();
+                  await widget.onSave('');
+                  if (mounted) Navigator.pop(context);
+                },
+                icon: const Icon(Icons.key_off_rounded, size: 16),
+                label: Text(_isEs ? 'Modo local' : 'Modo local',
+                  style: const TextStyle(fontSize: 13)),
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: sub,
+                  side: BorderSide(color: dark ? Colors.white24 : Colors.black12),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12)),
+                  padding: const EdgeInsets.symmetric(vertical: 12),
+                ),
+              ),
+            ),
+            const SizedBox(width: 10),
+          ],
+          // Salvar/Validar
+          Expanded(
+            flex: 2,
+            child: ElevatedButton.icon(
+              onPressed: _validating ? null : _save,
+              icon: _saved
+                  ? const Icon(Icons.check_rounded, size: 16)
+                  : _validating
+                      ? const SizedBox(
+                          width: 16, height: 16,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2, color: Colors.white))
+                      : const Icon(Icons.save_rounded, size: 16),
+              label: Text(
+                _saved
+                    ? (_isEs ? '¡Guardado!' : 'Salvo!')
+                    : _validating
+                        ? (_isEs ? 'Validando...' : 'Validando...')
+                        : (_isEs ? 'Guardar y conectar' : 'Salvar e conectar'),
+                style: const TextStyle(
+                  fontSize: 13, fontWeight: FontWeight.w700)),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: _saved
+                    ? const Color(0xFF16A34A)
+                    : const Color(0xFF075f45),
+                foregroundColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12)),
+                padding: const EdgeInsets.symmetric(vertical: 14),
+              ),
+            ),
+          ),
+        ]),
+      ]),
     );
   }
 }
