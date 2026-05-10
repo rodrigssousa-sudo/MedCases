@@ -1195,6 +1195,7 @@ class _ElectrolytesTabState extends State<_ElectrolytesTab> {
   final _glucCtrl = TextEditingController();
   final _albumCtrl= TextEditingController();
   final _caCtrl   = TextEditingController();
+  final _bunCtrl  = TextEditingController();
   final _phCtrl   = TextEditingController();
   final _pco2Ctrl = TextEditingController();
   final _beCtrl   = TextEditingController();
@@ -1202,7 +1203,7 @@ class _ElectrolytesTabState extends State<_ElectrolytesTab> {
 
   @override
   void dispose() {
-    for (final c in [_naCtrl, _clCtrl, _hco3Ctrl, _glucCtrl, _albumCtrl, _caCtrl, _phCtrl, _pco2Ctrl, _beCtrl, _wCtrl]) {
+    for (final c in [_naCtrl, _clCtrl, _hco3Ctrl, _glucCtrl, _albumCtrl, _caCtrl, _bunCtrl, _phCtrl, _pco2Ctrl, _beCtrl, _wCtrl]) {
       c.dispose();
     }
     super.dispose();
@@ -1235,7 +1236,7 @@ class _ElectrolytesTabState extends State<_ElectrolytesTab> {
   String? get _osmolarity {
     final na = _n(_naCtrl), g = _n(_glucCtrl);
     if (na == null || g == null) return null;
-    final bun = 0.0;
+    final bun = _n(_bunCtrl) ?? 0.0; // campo BUN real; omitido → 0
     return _fmt(2 * na + g / 18 + bun / 2.8, dec: 0);
   }
 
@@ -1327,6 +1328,12 @@ class _ElectrolytesTabState extends State<_ElectrolytesTab> {
               Expanded(child: _LabeledInput(label: isEs ? 'Ca²⁺ total (mg/dL)' : 'Ca²⁺ total (mg/dL)', ctrl: _caCtrl, onChanged: (_) => setState(() {}), hint: '9,5')),
               const SizedBox(width: 10),
               Expanded(child: _LabeledInput(label: isEs ? 'Albúmina (g/dL)' : 'Albumina (g/dL)', ctrl: _albumCtrl, onChanged: (_) => setState(() {}), hint: '4,0')),
+            ]),
+            const SizedBox(height: 10),
+            Row(children: [
+              Expanded(child: _LabeledInput(label: isEs ? 'BUN (mg/dL)' : 'BUN/Ureia (mg/dL)', ctrl: _bunCtrl, onChanged: (_) => setState(() {}), hint: '14')),
+              const SizedBox(width: 10),
+              Expanded(child: SizedBox()), // espaço reservado para simetria
             ]),
             const SizedBox(height: 14),
             Row(children: [

@@ -111,12 +111,27 @@ class AppProvider extends ChangeNotifier {
   List<ProtocolModel> get protocolsDB => protocolsDatabase;
   List<ClinicalCaseModel> get casesDB => casesDatabase;
 
-  DrugModel? get activeDrug => _activeDrugId.isEmpty
-      ? null
-      : drugsDatabase.firstWhere((d) => d.id == _activeDrugId, orElse: () => drugsDatabase[0]);
+  DrugModel? get activeDrug {
+    if (_activeDrugId.isEmpty) return null;
+    try {
+      return drugsDatabase.firstWhere((d) => d.id == _activeDrugId);
+    } catch (_) {
+      return null; // id obsoleto — não retorna drug errado
+    }
+  }
 
-  List<DrugModel> get selectedDrugs =>
-      _selectedDrugIds.map((id) => drugsDatabase.firstWhere((d) => d.id == id, orElse: () => drugsDatabase[0])).toList();
+  List<DrugModel> get selectedDrugs {
+    final result = <DrugModel>[];
+    for (final id in _selectedDrugIds) {
+      try {
+        result.add(drugsDatabase.firstWhere((d) => d.id == id));
+      } catch (_) {
+        // id não encontrado no banco — ignora silenciosamente
+        // (evita retornar drug errado ou crash com RangeError)
+      }
+    }
+    return result;
+  }
 
   // ── Login com usuário do Firebase ─────────────────────────────────────────
   Future<void> setUser(UserModel user) async {
