@@ -683,12 +683,12 @@ class AppProvider extends ChangeNotifier {
           return _buildLocalAnswer(input);
         case 'invalid_key':
           return _lang == 'es'
-              ? '❌ Clave de API inválida.\n\nVerifica que tu clave OpenAI sea correcta en Configuración de IA.\n\n⚕ Apoyo educativo. No sustituye evaluación médica presencial.'
-              : '❌ Chave de API inválida.\n\nVerifique que sua chave OpenAI esteja correta em Configurações de IA.\n\n⚕ Apoio educacional. NÃO substitui avaliação médica presencial.';
+              ? '❌ Clave API inválida. Verifica la configuración en el ícono 🔑 del chat.'
+              : '❌ Chave API inválida. Verifique a configuração no ícone 🔑 do chat.';
         case 'quota':
           return _lang == 'es'
-              ? '⚠️ Límite de uso de la API alcanzado.\n\nRevisa tu cuenta OpenAI o usa el modo local.\n\n⚕ Apoyo educativo. No sustituye evaluación médica presencial.'
-              : '⚠️ Limite de uso da API atingido.\n\nVerifique sua conta OpenAI ou use o modo local.\n\n⚕ Apoio educacional. NÃO substitui avaliação médica presencial.';
+              ? '⚠️ Límite de uso de la API alcanzado. Revisa tu cuenta en platform.openai.com.'
+              : '⚠️ Limite de uso da API atingido. Verifique sua conta em platform.openai.com.';
         case 'network':
           // Sem rede → fallback local silencioso
           return _buildLocalAnswer(input);
@@ -995,53 +995,38 @@ class AppProvider extends ChangeNotifier {
       redFlags.addAll(['PA ≥ 160/110 em gestante → anti-hipertensivo imediato (hidralazina/nifedipina)', 'Convulsão → sulfato de magnésio 4–6 g EV (ataque) + 1–2 g/h manutenção', 'HELLP → parto imediato se ≥ 34 semanas']);
     }
 
+    // ── Input vago: pede contexto em vez de despejar tudo ──────────────────
     if (suspected.isEmpty) {
-      suspected.add('Síndrome clínica inespecífica — descreva mais detalhes do caso');
-      examSuggestions.addAll(['Sinais vitais completos (PA, FC, FR, Temp, SpO2)', 'Glicemia capilar', 'ECG 12 derivações', 'Hemograma completo', 'Eletrólitos (Na+, K+, Ca2+)', 'Função renal (Cr, Ureia)', 'Gasometria arterial se grave']);
+      final ask = _lang == 'es'
+          ? 'Puedo ayudarte mejor si me cuentas más. ¿Cuáles son los síntomas principales? ¿Hay signos vitales, tiempo de evolución o antecedentes relevantes?'
+          : 'Posso ajudar melhor se você me contar mais. Quais são os sintomas principais? Há sinais vitais, tempo de evolução ou antecedentes relevantes?';
+      return '$ask\n\n⚕ Apoio educacional.';
     }
 
     // ── Montar resposta ──────────────────────────────────────────────────
-
-    // Cabeçalho
-    buf.writeln('🧠 IA Clínica — Raciocínio Diagnóstico');
-    buf.writeln('');
-
-    // Perfil do paciente
-    final age = _patient.age.isNotEmpty ? '${_patient.age} anos' : '—';
-    final wt  = _patient.weight.isNotEmpty ? '${_patient.weight} kg' : '—';
     final clcrStr = clcr ?? '—';
-    final bmiStr  = bmi  ?? '—';
-    buf.writeln('👤 Paciente: $age | ${_patient.sex} | $wt');
-    buf.writeln('   ClCr: $clcrStr mL/min | IMC: $bmiStr kg/m²');
-    buf.writeln('');
 
-    // Hipóteses diagnósticas
-    buf.writeln('📋 Hipóteses diagnósticas:');
-    for (int i = 0; i < suspected.length && i < 5; i++) {
-      buf.writeln('  ${i + 1}. ${suspected[i]}');
+    // Hipóteses — só as 3 mais relevantes
+    if (suspected.length == 1) {
+      buf.writeln('🧠 ${suspected[0]}');
+    } else {
+      buf.writeln('📋 Hipóteses:');
+      for (int i = 0; i < suspected.length && i < 3; i++) {
+        buf.writeln('  ${i + 1}. ${suspected[i]}');
+      }
     }
     buf.writeln('');
 
-    // Red Flags
+    // Red Flags — máx 3, apenas os mais críticos
     if (redFlags.isNotEmpty) {
-      buf.writeln('🚨 Alertas imediatos:');
-      for (final f in redFlags.take(5)) {
+      buf.writeln('🚨 Alertas:');
+      for (final f in redFlags.take(3)) {
         buf.writeln('  ⛔ $f');
       }
       buf.writeln('');
     }
 
-    // Exames
-    if (examSuggestions.isNotEmpty) {
-      final uniqExams = examSuggestions.toSet().toList();
-      buf.writeln('🔬 Exames prioritários:');
-      for (final e in uniqExams.take(8)) {
-        buf.writeln('  • $e');
-      }
-      buf.writeln('');
-    }
-
-    // Protocolo aplicável
+    // Protocolo + conduta (o mais valioso)
     ProtocolModel? matchedProtocol;
     for (final pid in protocolIds) {
       try {
@@ -1051,80 +1036,64 @@ class AppProvider extends ChangeNotifier {
     }
 
     if (matchedProtocol != null) {
-      buf.writeln('📌 Protocolo: ${tDB(matchedProtocol.title)}');
-      buf.writeln('');
-      buf.writeln('🩺 Conduta imediata:');
+      buf.writeln('🩺 ${tDB(matchedProtocol.title)}:');
       final actions = matchedProtocol.getActions(_lang);
-      for (int i = 0; i < actions.length && i < 6; i++) {
+      for (int i = 0; i < actions.length && i < 5; i++) {
         buf.writeln('  ${actions[i]}');
       }
-      if (actions.length > 6) {
-        buf.writeln('  → Ver protocolo completo na aba Protocolos');
+      if (actions.length > 5) {
+        buf.writeln(_lang == 'es'
+            ? '  → Ver protocolo completo en la pestaña Protocolos'
+            : '  → Ver protocolo completo na aba Protocolos');
       }
       buf.writeln('');
-      buf.writeln('🚫 Não fazer: ${tDB(matchedProtocol.avoid)}');
-      buf.writeln('');
 
-      // Fármacos com dose calculada para o paciente atual
-      final suggestedDrugs = matchedProtocol.drugs.take(4)
+      // Fármacos — só se tem paciente com peso (dose personalizada tem valor real)
+      final suggestedDrugs = matchedProtocol.drugs.take(3)
           .map((id) {
             try { return drugsDatabase.firstWhere((d) => d.id == id); }
             catch (_) { return null; }
           })
           .whereType<DrugModel>().toList();
 
-      if (suggestedDrugs.isNotEmpty) {
-        buf.writeln('💊 Fármacos (dose para ESTE paciente):');
+      if (suggestedDrugs.isNotEmpty && _patient.weight.isNotEmpty) {
+        buf.writeln('💊 ${_lang == 'es' ? 'Dosis para este paciente:' : 'Dose para este paciente:'}');
         for (final drug in suggestedDrugs) {
           final dose = calculateDose(drug);
-          buf.writeln('  • ${drug.name}');
-          buf.writeln('    Dose: ${dose.main}');
-          if (dose.detail.isNotEmpty) {
-            buf.writeln('    ${dose.detail}');
-          }
-          if (dose.alerts.isNotEmpty) {
-            for (final a in dose.alerts) {
-              buf.writeln('    ⚠ $a');
-            }
-          }
+          final alerts = dose.alerts.take(1).join(' | ');
+          buf.writeln('  • ${drug.name}: ${dose.main}${alerts.isNotEmpty ? '  ⚠ $alerts' : ''}');
         }
         buf.writeln('');
+      } else if (suggestedDrugs.isNotEmpty) {
+        // Sem peso: lista fármacos sem calcular dose
+        final names = suggestedDrugs.map((d) => d.name).join(', ');
+        buf.writeln('💊 ${_lang == 'es' ? 'Fármacos: ' : 'Fármacos: '}$names');
+        buf.writeln('');
       }
-    }
-
-    // Alertas renais personalizados
-    final clcrVal = double.tryParse(clcrStr.replaceAll(',', '.'));
-    if (clcrVal != null && clcrVal > 0 && clcrVal < 60) {
-      buf.writeln('🫘 Alerta renal (ClCr $clcrStr mL/min):');
-      if (clcrVal < 15) {
-        buf.writeln('  ⛔ IRC grave/terminal — ajuste obrigatório em TODOS os fármacos');
-        buf.writeln('  ⛔ Evitar: AINE, metformina, aminoglicosídeos, nitrofurantoína');
-        buf.writeln('  ⛔ Dosar nível sérico: vancomicina, digoxina, lítio');
-      } else if (clcrVal < 30) {
-        buf.writeln('  ⚠ IRC moderada-grave — revisar doses e intervalos');
-        buf.writeln('  ⚠ Evitar: AINE, metformina, doses plenas de HBPM');
-      } else {
-        buf.writeln('  ⚠ IRC leve-moderada — atenção a nefrotóxicos e doses');
-        buf.writeln('  ⚠ Monitorar: creatinina, eletrólitos, diurese');
-      }
+    } else if (examSuggestions.isNotEmpty) {
+      // Sem protocolo direto: mostra só os exames mais relevantes (máx 4)
+      final uniq = examSuggestions.toSet().take(4).toList();
+      buf.writeln('🔬 ${_lang == 'es' ? 'Exámenes clave:' : 'Exames-chave:'}');
+      for (final e in uniq) buf.writeln('  • $e');
       buf.writeln('');
     }
 
-    // Alerta de idade
+    // Alerta renal — só se ClCr relevantemente baixo
+    final clcrVal = double.tryParse(clcrStr.replaceAll(',', '.'));
+    if (clcrVal != null && clcrVal > 0 && clcrVal < 45) {
+      final level = clcrVal < 15 ? '⛔' : '⚠';
+      buf.writeln('🫘 $level ${_lang == 'es' ? 'ClCr $clcrStr — ajustar dosis renales' : 'ClCr $clcrStr — ajustar doses renais'}');
+      buf.writeln('');
+    }
+
+    // Alerta de idade — só uma linha compacta
     final ageVal = int.tryParse(_patient.age);
     if (ageVal != null && ageVal >= 75) {
-      buf.writeln('👴 Alerta idoso (${_patient.age} anos):');
-      buf.writeln('  • Polifarmácia — revisar lista completa de medicamentos');
-      buf.writeln('  • Doses reduzidas: opioides, benzodiazepínicos, anticolinérgicos');
-      buf.writeln('  • Risco aumentado: delirium, quedas, hipotensão ortostática');
-      buf.writeln('  • Usar critérios de Beers para medicamentos inapropriados');
+      buf.writeln('👴 ${_lang == 'es' ? 'Anciano: reducir dosis opioides/BZD, vigilar delirium.' : 'Idoso: reduzir dose opioides/BZD, vigilar delirium.'}');
       buf.writeln('');
     }
 
-    // Rodapé
-    buf.writeln('─────────────────────────────────────');
-    buf.writeln('⚕ Apoio educacional. NÃO substitui avaliação médica presencial.');
-    buf.writeln('Revisar: alergias, gestação, ECG, função renal/hepática, interações e protocolo institucional.');
+    buf.writeln('⚕ Apoio educacional.');
     return buf.toString();
   }
 
