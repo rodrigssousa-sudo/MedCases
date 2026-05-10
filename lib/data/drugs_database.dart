@@ -2465,44 +2465,6 @@ const List<DrugModel> drugsDatabase = [
   ),
 
   DrugModel(
-    id: 'fentanila',
-    group: 'Analgésicos y Antipiréticos',
-    name: 'Fentanila',
-    className: {'pt': 'Opioide potente — analgésico/sedativo', 'es': 'Opioide potente — analgésico/sedativo'},
-    category: {'pt': 'UTI / Emergência', 'es': 'UCI / Emergencia'},
-    route: 'IV / IN',
-    doseType: 'fixed',
-    fixedDose: {
-      'pt': 'Analgesia aguda (bolus): 25–100 mcg IV lento a cada 30–60 min. Sedoanalgesia em UTI (infusão): 25–200 mcg/h IV. Procedimentos (intransal): 1,5–2 mcg/kg IN. IOT: 2–3 mcg/kg IV 3 min antes. Conversão: 100 mcg IV = 10 mg morfina IV.',
-      'es': 'Analgesia aguda (bolus): 25–100 mcg IV lento cada 30–60 min. Sedoanalgesia UTI: 25–200 mcg/h IV. IOT: 2–3 mcg/kg IV. Conversión: 100 mcg IV = 10 mg morfina IV.',
-    },
-    renalAlert: {
-      'pt': 'Preferível à morfina em IR grave — sem metabólito ativo acumulável. Meia-vida pode prolongar com repetição (acúmulo no tecido adiposo).',
-      'es': 'Preferible a morfina en IR grave — sin metabolito activo acumulable. Semivida puede prolongarse con repetición.',
-    },
-    elderlyAlert: {
-      'pt': 'Iniciar com 25 mcg. Depressão respiratória mais intensa e prolongada. Sem liberação de histamina (vantagem sobre morfina).',
-      'es': 'Iniciar con 25 mcg. Depresión respiratoria más intensa y prolongada. Sin liberación de histamina (ventaja sobre morfina).',
-    },
-    mechanism: {
-      'pt': 'Agonista seletivo receptor μ-opioide → analgesia espinal e supraespinal, sedação, euforia, depressão respiratória. 100× mais potente que morfina. Lipossolúvel → rápido início (1–2 min IV), curta duração (30–60 min dose única) mas acúmulo com infusão prolongada.',
-      'es': 'Agonista selectivo receptor μ-opioide. 100× más potente que morfina. Liposoluble → inicio rápido (1–2 min IV), corta duración (30–60 min dosis única). Acumulación con infusión prolongada.',
-    },
-    warning: {
-      'pt': 'Rigidez torácica ("chest wall rigidity") em bolus IV rápido — impede ventilação → tratamento: naloxona ou succinilcolina. Depressão respiratória — ter naloxona à beira. Antídoto: naloxona. Tolerância e dependência com uso prolongado.',
-      'es': 'Rigidez torácica ("chest wall rigidity") en bolus IV rápido → impide ventilación → antídoto: naloxona o succinilcolina. Depresión respiratoria. Antídoto: naloxona.',
-    },
-    adverse: {
-      'pt': ['Depressão respiratória', 'Rigidez torácica (bolus rápido)', 'Bradicardia', 'Hipotensão', 'Náuseas/vômitos', 'Prurido', 'Sedação excessiva', 'Constipação'],
-      'es': ['Depresión respiratoria', 'Rigidez torácica (bolus rápido)', 'Bradicardia', 'Hipotensión', 'Náuseas/vómitos', 'Prurito'],
-    },
-  ),
-
-  // ─────────────────────────────────────────────
-  //  NOVOS FÁRMACOS ESSENCIAIS (guia de bolso)
-  // ─────────────────────────────────────────────
-
-  DrugModel(
     id: 'tiamina',
     group: 'Hematología y Vitaminas',
     name: 'Tiamina (Vitamina B1)',
@@ -2669,9 +2631,6 @@ const List<DrugModel> drugsDatabase = [
       'es': ['Flebitis (vía periférica)', 'Hiperglucemia rebote', 'Hiponatremia dilucional', 'Hipopotasemia'],
     },
   ),
-
-
-// BLOCO 1 — AINES novos + Opioides novos
 
   DrugModel(
     id: 'ibuprofeno',
@@ -3217,8 +3176,6 @@ const List<DrugModel> drugsDatabase = [
       'es': ['Estreñimiento', 'Náuseas / vómitos', 'Mareo / cefalea', 'Sedación', 'Sudoración', 'Reacción local (parche)'],
     },
   ),
-
-// BLOCO 2 — Respiratório + Cardiovascular novos
 
   DrugModel(
     id: 'fenoterol',
@@ -3766,8 +3723,6 @@ const List<DrugModel> drugsDatabase = [
     },
   ),
 
-  // ── BLOCO 3: SNC NOVOS + ANTIBIÓTICOS NOVOS ──────────────────────────────
-
   DrugModel(
     id: 'lorazepam',
     group: 'Neurología y Psiquiatría',
@@ -4013,8 +3968,6 @@ const List<DrugModel> drugsDatabase = [
       'es': ['Mioclonías (30–60%)', 'Supresión adrenal', 'Náusea/vómito al despertar', 'Dolor en la inyección', 'Apnea transitoria', 'Hiperventilación'],
     },
   ),
-
-  // ── ANTIBIÓTICOS NOVOS ────────────────────────────────────────────────────
 
   DrugModel(
     id: 'amoxicilina',
@@ -4577,8 +4530,6 @@ const List<DrugModel> drugsDatabase = [
     },
   ),
 
-  // ── BLOCO 4: DIGESTIVO + EMERGÊNCIA + HEMATOLOGIA NOVOS ──────────────────
-
   DrugModel(
     id: 'esomeprazol',
     group: 'Gastroenterología',
@@ -5108,8 +5059,6 @@ const List<DrugModel> drugsDatabase = [
     },
   ),
 
-  // ── BLOCO 5A: ENDOCRINO + ANTI-HISTAMÍNICOS + ANTIVIRAIS/ANTIFÚNGICOS ────
-
   DrugModel(
     id: 'insulina_nph',
     group: 'Endocrinología y Metabolismo',
@@ -5356,8 +5305,6 @@ const List<DrugModel> drugsDatabase = [
     },
   ),
 
-  // ── ANTI-HISTAMÍNICOS ─────────────────────────────────────────────────────
-
   DrugModel(
     id: 'loratadina',
     group: 'Varios / Antídotos / Otros',
@@ -5462,8 +5409,6 @@ const List<DrugModel> drugsDatabase = [
       'es': ['Sedación intensa', 'Boca seca', 'Hipotensión ortostática', 'EPS (distonías)', 'Retención urinaria', 'Confusión (ancianos)', 'SMN (raro)', 'Apnea (< 2 años)'],
     },
   ),
-
-  // ── ANTIVIRAIS / ANTIFÚNGICOS ─────────────────────────────────────────────
 
   DrugModel(
     id: 'aciclovir',
@@ -5641,8 +5586,6 @@ const List<DrugModel> drugsDatabase = [
       'es': ['Náusea', 'Diarrea', 'Mareo', 'Síndrome de Mazzotti (oncocercosis)', 'Prurito', 'Cefalea', 'Somnolencia'],
     },
   ),
-
-  // ── BLOCK 5b: Cardiovascular Expandido ──────────────────────────────────────
 
   DrugModel(
     id: 'sacubitril_valsartana',
@@ -5864,8 +5807,6 @@ const List<DrugModel> drugsDatabase = [
       'es': ['Hemorragia intracraneal (3–6%)', 'Sangrado en sitios de punción', 'Hemorragia GI', 'Angioedema orolingual', 'Hipotensión', 'Fiebre'],
     },
   ),
-
-  // ── BLOCK 5b: Neurológico/Psiquiátrico Expandido ───────────────────────────
 
   DrugModel(
     id: 'carbamazepina',
@@ -6107,8 +6048,6 @@ const List<DrugModel> drugsDatabase = [
     },
   ),
 
-  // ── BLOCK 5b: Endócrino / Reumatologia restantes ──────────────────────────
-
   DrugModel(
     id: 'propiltiuracil',
     group: 'Endocrinología y Metabolismo',
@@ -6208,8 +6147,6 @@ const List<DrugModel> drugsDatabase = [
       'es': ['Sedación (intensa)', 'Boca seca', 'Mareo', 'Visión borrosa', 'Estreñimiento', 'Retención urinaria', 'QT prolongado', 'Confusión (ancianos)'],
     },
   ),
-
-  // ── BLOCK 5b: Antídotos / Emergência / Tópicos ─────────────────────────────
 
   DrugModel(
     id: 'lidocaina',
@@ -6413,9 +6350,6 @@ const List<DrugModel> drugsDatabase = [
     },
   ),
 
-
-  // ── NOVOS FÁRMACOS ────────────────────────────────────────────────────────
-
   DrugModel(
     id: 'propinoxato',
     group: 'Gastroenterología',
@@ -6447,40 +6381,6 @@ const List<DrugModel> drugsDatabase = [
     adverse: {
       'pt': ['Boca seca', 'Visão turva', 'Taquicardia', 'Constipação'],
       'es': ['Boca seca', 'Visión borrosa', 'Taquicardia', 'Constipación'],
-    },
-  ),
-
-  DrugModel(
-    id: 'ketorolac',
-    group: 'Analgésicos y Antipiréticos',
-    name: 'Ketorolac Trometamina',
-    className: {'pt': 'AINE / Analgésico potente', 'es': 'AINE / Analgésico potente'},
-    category: {'pt': 'Analgésicos', 'es': 'Analgésicos'},
-    route: 'VO / SL / IV / IM',
-    doseType: 'fixed',
-    fixedDose: {
-      'pt': '10–20 mg (VO/SL). IV/IM: 30–60 mg. Máx. 90 mg/dia. Uso máx. 5 dias.',
-      'es': '10–20 mg (VO/SL). IV/IM: 30–60 mg. Máx. 90 mg/día. Uso máx. 5 días.',
-    },
-    renalAlert: {
-      'pt': 'Contraindicado em insuficiência renal moderada a grave. Alto risco de nefrotoxicidade.',
-      'es': 'Contraindicado en insuficiencia renal moderada a grave. Alto riesgo de nefrotoxicidad.',
-    },
-    elderlyAlert: {
-      'pt': 'Reduzir dose para 30 mg/dia total. Alto risco de sangramento digestivo.',
-      'es': 'Reducir dosis a 30 mg/día total. Alto riesgo de sangrado digestivo.',
-    },
-    mechanism: {
-      'pt': 'Inibidor potente das ciclooxigenases COX-1 e COX-2.',
-      'es': 'Inhibidor potente de las ciclooxigenasas COX-1 y COX-2.',
-    },
-    warning: {
-      'pt': 'Potencial para úlcera gástrica e sangramento. Evitar em risco de sangramento pós-cirúrgico.',
-      'es': 'Potencial para úlcera gástrica y sangrado. Evitar en riesgo de sangrado post-quirúrgico.',
-    },
-    adverse: {
-      'pt': ['Gastrite', 'Hemorragia digestiva', 'Insuficiência renal aguda', 'Edema'],
-      'es': ['Gastritis', 'Hemorragia digestiva', 'Insuficiencia renal aguda', 'Edema'],
     },
   ),
 
@@ -6723,40 +6623,6 @@ const List<DrugModel> drugsDatabase = [
   ),
 
   DrugModel(
-    id: 'celecoxib',
-    group: 'Analgésicos y Antipiréticos',
-    name: 'Celecoxib',
-    className: {'pt': 'AINE Seletivo COX-2', 'es': 'AINE Selectivo COX-2'},
-    category: {'pt': 'Analgésicos', 'es': 'Analgésicos'},
-    route: 'VO',
-    doseType: 'fixed',
-    fixedDose: {
-      'pt': '100–200 mg 1 a 2 vezes ao dia.',
-      'es': '100–200 mg 1 a 2 veces al día.',
-    },
-    renalAlert: {
-      'pt': 'Contraindicado em ClCr <30 mL/min.',
-      'es': 'Contraindicado en ClCr <30 mL/min.',
-    },
-    elderlyAlert: {
-      'pt': 'Monitorar função renal e risco cardiovascular (trombose).',
-      'es': 'Monitorear función renal y riesgo cardiovascular.',
-    },
-    mechanism: {
-      'pt': 'Inibição seletiva da COX-2 (poupando COX-1 gástrica).',
-      'es': 'Inhibición selectiva de la COX-2 (respetando COX-1 gástrica).',
-    },
-    warning: {
-      'pt': 'Aumenta risco cardiovascular em uso prolongado. Cuidado em hipertensos.',
-      'es': 'Aumenta riesgo cardiovascular en uso prolongado.',
-    },
-    adverse: {
-      'pt': ['Edema periférico', 'Hipertensão', 'Dispepsia', 'Tontura'],
-      'es': ['Edema periférico', 'Hipertensión', 'Dispepsia', 'Mareos'],
-    },
-  ),
-
-  DrugModel(
     id: 'racecadotril',
     group: 'Gastroenterología',
     name: 'Racecadotril',
@@ -6787,40 +6653,6 @@ const List<DrugModel> drugsDatabase = [
     adverse: {
       'pt': ['Cefaleia', 'Vômitos (raro)', 'Rash'],
       'es': ['Cefalea', 'Vómitos (raro)', 'Rash'],
-    },
-  ),
-
-  DrugModel(
-    id: 'diclofenac_sodico',
-    group: 'Analgésicos y Antipiréticos',
-    name: 'Diclofenac Sódico',
-    className: {'pt': 'AINE', 'es': 'AINE'},
-    category: {'pt': 'Analgésicos', 'es': 'Analgésicos'},
-    route: 'VO / IM / IV / Tópico',
-    doseType: 'fixed',
-    fixedDose: {
-      'pt': '50–75 mg a cada 8–12h. IM: 75 mg profunda. IV: 75 mg diluído em 100 mL SF em 30 min.',
-      'es': '50–75 mg cada 8–12 h. IM: 75 mg profunda. IV: 75 mg diluido en 100 mL SF en 30 min.',
-    },
-    renalAlert: {
-      'pt': 'Evitar se ClCr <30 mL/min. Risco de nefrite intersticial e retenção de sódio.',
-      'es': 'Evitar si ClCr <30 mL/min. Riesgo de nefritis intersticial y retención de sodio.',
-    },
-    elderlyAlert: {
-      'pt': 'Aumenta risco de hemorragia digestiva e insuficiência cardíaca. Usar dose mínima.',
-      'es': 'Aumenta riesgo de hemorragia digestiva e insuficiencia cardíaca. Usar dosis mínima.',
-    },
-    mechanism: {
-      'pt': 'Inibidor não seletivo da COX-1 e COX-2; reduz síntese de prostaglandinas.',
-      'es': 'Inhibidor no selectivo de COX-1 y COX-2; reduce síntesis de prostaglandinas.',
-    },
-    warning: {
-      'pt': 'Contraindicado em insuficiência cardíaca grave (Classe IV) e úlcera péptica ativa.',
-      'es': 'Contraindicado en insuficiencia cardíaca grave (Clase IV) y úlcera péptica activa.',
-    },
-    adverse: {
-      'pt': ['Dispepsia', 'Epigastralgia', 'Elevação de transaminases', 'Edema'],
-      'es': ['Dispepsia', 'Epigastralgia', 'Elevación de transaminasas', 'Edema'],
     },
   ),
 
@@ -7097,40 +6929,6 @@ const List<DrugModel> drugsDatabase = [
   ),
 
   DrugModel(
-    id: 'ceftriaxone',
-    group: 'Antibióticos',
-    name: 'Ceftriaxone',
-    className: {'pt': 'Cefalosporina de 3ª geração', 'es': 'Cefalosporina de 3ª generación'},
-    category: {'pt': 'Antibióticos', 'es': 'Antibióticos'},
-    route: 'IV / IM',
-    doseType: 'fixed',
-    fixedDose: {
-      'pt': 'Adulto: 1–2 g a cada 24h. Meningite: 2 g a cada 12h.',
-      'es': 'Adulto: 1–2 g cada 24 h. Meningitis: 2 g cada 12 h.',
-    },
-    renalAlert: {
-      'pt': 'Geralmente não requer ajuste se função hepática preservada.',
-      'es': 'Generalmente no requiere ajuste si función hepática preservada.',
-    },
-    elderlyAlert: {
-      'pt': 'Seguro; monitorar superinfecções fúngicas.',
-      'es': 'Seguro; monitorear superinfecciones fúngicas.',
-    },
-    mechanism: {
-      'pt': 'Inibe a síntese de peptidoglicano da parede celular bacteriana.',
-      'es': 'Inhibe la síntesis de peptidoglicano de la pared celular bacteriana.',
-    },
-    warning: {
-      'pt': 'Incompatível com soluções contendo cálcio (Ringer Lactato). Risco de colelitíase medicamentosa.',
-      'es': 'Incompatible con soluciones que contienen calcio (Ringer Lactato). Riesgo de colelitiasis medicamentosa.',
-    },
-    adverse: {
-      'pt': ['Diarreia', 'Lama biliar / Colelitíase', 'Anemia hemolítica', 'Flebite (IV)'],
-      'es': ['Diarrea', 'Barro biliar / Colelitiasis', 'Anemia hemolítica', 'Flebitis (IV)'],
-    },
-  ),
-
-  DrugModel(
     id: 'lansoprazol',
     group: 'Gastroenterología',
     name: 'Lansoprazol',
@@ -7197,7 +6995,6 @@ const List<DrugModel> drugsDatabase = [
       'es': ['Orina amarillo-verdosa (normal)', 'Náuseas', 'Dolor abdominal', 'Cefalea'],
     },
   ),
-
 
   DrugModel(
     id: 'atorvastatina',
@@ -7302,40 +7099,6 @@ const List<DrugModel> drugsDatabase = [
   ),
 
   DrugModel(
-    id: 'trifamox_ibl_iv',
-    group: 'Antibióticos',
-    name: 'Amoxicilina + Sulbactam IV',
-    className: {'pt': 'Betalactâmico + Inibidor de betalactamase (IV)', 'es': 'Betalactámico + Inhibidor de betalactamasa (IV)'},
-    category: {'pt': 'Antibióticos', 'es': 'Antibióticos'},
-    route: 'IV / IM',
-    doseType: 'fixed',
-    fixedDose: {
-      'pt': 'Adulto: 1,5 g (1g/0,5g) a cada 8h ou 3 g (2g/1g) a cada 12h IV.',
-      'es': 'Adulto: 1,5 g (1g/0,5g) cada 8 h o 3 g (2g/1g) cada 12 h IV.',
-    },
-    renalAlert: {
-      'pt': 'ClCr <30 mL/min: ajustar para cada 12 ou 24h conforme gravidade.',
-      'es': 'ClCr <30 mL/min: ajustar cada 12 o 24 h según gravedad.',
-    },
-    elderlyAlert: {
-      'pt': 'Ajustar pela função renal para evitar neurotoxicidade por betalactâmicos.',
-      'es': 'Ajustar por función renal para evitar neurotoxicidad por betalactámicos.',
-    },
-    mechanism: {
-      'pt': 'Bactericida; inibe síntese da parede celular e bloqueia betalactamases bacterianas.',
-      'es': 'Bactericida; inhibe síntesis de pared celular y bloquea betalactamasas bacterianas.',
-    },
-    warning: {
-      'pt': 'Muito utilizado em profilaxia cirúrgica e pneumonias na Argentina (Trifamox IBL).',
-      'es': 'Muy utilizado en profilaxis quirúrgica y neumonías en Argentina (Trifamox IBL).',
-    },
-    adverse: {
-      'pt': ['Flebite no local da infusão', 'Diarreia', 'Elevação de transaminases', 'Rash'],
-      'es': ['Flebitis en sitio de infusión', 'Diarrea', 'Elevación de transaminasas', 'Rash'],
-    },
-  ),
-
-  DrugModel(
     id: 'ceftazidima',
     group: 'Antibióticos',
     name: 'Ceftazidima',
@@ -7402,8 +7165,6 @@ const List<DrugModel> drugsDatabase = [
       'es': ['Sedación', 'Aumento de apetito', 'Boca seca', 'Mareos'],
     },
   ),
-
-  // --- LOTE 4: 6 novos fármacos ---
 
   DrugModel(
     id: 'valproato_iv',
@@ -7608,10 +7369,6 @@ const List<DrugModel> drugsDatabase = [
       'es': ['Constipación', 'Náuseas', 'Hipopotasemia', 'Necrosis colónica'],
     },
   ),
-
-// ─────────────────────────────────────────────────────────
-  // NOVOS FÁRMACOS - GUARDIA, EMERGENCIA Y PEDIATRÍA (DETALHADOS)
-  // ─────────────────────────────────────────────────────────
 
   DrugModel(
     id: 'rocuronio',
@@ -7856,53 +7613,6 @@ const List<DrugModel> drugsDatabase = [
   ),
 
   DrugModel(
-    id: 'racecadotril_f',
-    group: 'Gastroenterología',
-    name: 'Racecadotril (Hidrasec)',
-    className: {'pt': 'Antidiarreico antissecretor', 'es': 'Antidiarreico antisecretor'},
-    category: {'pt': 'Gastroenterologia', 'es': 'Gastroenterología'},
-    route: 'VO',
-    doseType: 'weight',
-    fixedDose: {
-      'pt': 'Adulto: 100 mg 3x/dia. Pediátrico (>3 meses): 1.5 mg/kg por dose 3x/dia.',
-      'es': 'Adulto: 100 mg 3 veces/día. Pediátrico (>3 meses): 1.5 mg/kg por dosis 3 veces/día.',
-    },
-    renalAlert: {'pt': 'Usar com cautela em insuficiência renal.', 'es': 'Usar con cautela en insuficiencia renal.'},
-    elderlyAlert: {'pt': 'Geralmente seguro e bem tolerado.', 'es': 'Generalmente seguro y bien tolerado.'},
-    mechanism: {'pt': 'Inibidor da encefalinase intestinal; reduz a secreção excessiva de água e eletrólitos sem afetar o trânsito intestinal.', 'es': 'Inhibidor de la encefalinasa intestinal; reduce secreción de agua y electrolitos.'},
-    warning: {'pt': 'Não substitui a reidratação oral. Útil em diarreia aquosa aguda.', 'es': 'No reemplaza la rehidratación oral. Útil en diarrea acuosa aguda.'},
-    adverse: {
-      'pt': ['Cefaleia', 'Vômitos', 'Prurido', 'Rash cutâneo', 'Tontura'],
-      'es': ['Cefalea', 'Vómitos', 'Prurito', 'Rash cutáneo', 'Mareo'],
-    },
-  ),
-  
-  DrugModel(
-    id: 'nitazoxanida_f',
-    group: 'Infectología (Antifúngicos / Antivirales / TBC)',
-    name: 'Nitazoxanida',
-    className: {'pt': 'Antiparasitário de amplo espectro', 'es': 'Antiparasitario de amplio espectro'},
-    category: {'pt': 'Antiparasitários', 'es': 'Antiparasitarios'},
-    route: 'VO',
-    doseType: 'fixed',
-    fixedDose: {
-      'pt': 'Adulto: 500 mg 2x/dia por 3 dias. Pediátrico (1-3 anos): 100 mg 2x/dia; (4-11 anos): 200 mg 2x/dia.',
-      'es': 'Adulto: 500 mg 2 veces/día por 3 días. Pediátrico (1-3 años): 100 mg 2 veces/día; (4-11 años): 200 mg 2 veces/día.',
-    },
-    renalAlert: {'pt': 'Sem dados suficientes; usar com precaução em insuficiência grave.', 'es': 'Sin datos suficientes; usar con precaución en falla grave.'},
-    elderlyAlert: {'pt': 'Monitorar função hepática e renal.', 'es': 'Monitorear función hepática y renal.'},
-    mechanism: {'pt': 'Interfere na transferência de elétrons essencial para o metabolismo anaeróbio do parasita.', 'es': 'Interfiere en la transferencia de electrones del metabolismo anaerobio.'},
-    warning: {'pt': 'Tomar com alimentos para melhorar a absorção.', 'es': 'Tomar con alimentos para mejorar la absorción.'},
-    adverse: {
-      'pt': ['Náuseas', 'Dor abdominal', 'Urina de cor amarela intensa/verde', 'Cefaleia', 'Anorexia'],
-      'es': ['Náuseas', 'Dolor abdominal', 'Orina de color amarillo intenso/verde', 'Cefalea', 'Anorexia'],
-    },
-  ),
-  // ─────────────────────────────────────────────────────────
-  // LOTE ADICIONAL: GUARDIA, EMERGÊNCIA E PEDIATRIA (50)
-  // ─────────────────────────────────────────────────────────
-
-  DrugModel(
     id: 'adenosina_f',
     group: 'Cardiovascular y HTA',
     name: 'Adenosina',
@@ -7925,28 +7635,6 @@ const List<DrugModel> drugsDatabase = [
   ),
 
   DrugModel(
-    id: 'furosemida_p',
-    group: 'Cardiovascular y HTA',
-    name: 'Furosemida (Lasix)',
-    className: {'pt': 'Diurético de alça', 'es': 'Diurético de asa'},
-    category: {'pt': 'Urgência / Diuréticos', 'es': 'Urgencia / Diuréticos'},
-    route: 'VO / IV / IM',
-    doseType: 'weight',
-    fixedDose: {
-      'pt': 'Adulto: 20-40 mg IV ou 40-80 mg VO. Pediátrico: 1-2 mg/kg/dose (máx 6 mg/kg).',
-      'es': 'Adulto: 20-40 mg IV o 40-80 mg VO. Pediátrico: 1-2 mg/kg/dosis (máx 6 mg/kg).',
-    },
-    renalAlert: {'pt': 'Doses maiores podem ser necessárias em insuficiência renal grave.', 'es': 'Dosis mayores pueden ser necesarias en insuficiencia renal grave.'},
-    elderlyAlert: {'pt': 'Risco de hipovolemia, hipotensão e distúrbios eletrolíticos.', 'es': 'Riesgo de hipovolemia, hipotensión y disturbios electrolíticos.'},
-    mechanism: {'pt': 'Inibe o cotransportador Na-K-2Cl no ramo ascendente da Alça de Henle.', 'es': 'Inhibe el cotransportador Na-K-2Cl en el asa de Henle.'},
-    warning: {'pt': 'Monitorar Potássio e Magnésio. Ototoxicidade em infusões rápidas.', 'es': 'Monitorear Potasio y Magnesio. Ototoxicidad en infusiones rápidas.'},
-    adverse: {
-      'pt': ['Hipocalemia', 'Hiponatremia', 'Hipotensão', 'Ototoxicidade', 'Hiperuricemia'],
-      'es': ['Hipopotasemia', 'Hiponatremia', 'Hipotensión', 'Ototoxicidad', 'Hiperuricemia'],
-    },
-  ),
-
-  DrugModel(
     id: 'salbutamol_gotas_f',
     group: 'Respiratorio',
     name: 'Salbutamol (Ventolin - Gotas)',
@@ -7965,28 +7653,6 @@ const List<DrugModel> drugsDatabase = [
     adverse: {
       'pt': ['Taquicardia', 'Tremores finos', 'Cefaleia', 'Palpitações', 'Hipocalemia'],
       'es': ['Taquicardia', 'Temblores finos', 'Cefalea', 'Palpitaciones', 'Hipopotasemia'],
-    },
-  ),
-
-  DrugModel(
-    id: 'ipratropio_p',
-    group: 'Respiratorio',
-    name: 'Ipratrópio (Atrovent)',
-    className: {'pt': 'Anticolinérgico broncodilatador', 'es': 'Anticolinérgico broncodilatador'},
-    category: {'pt': 'Respiratório', 'es': 'Respiratorio'},
-    route: 'Inalatório',
-    doseType: 'weight',
-    fixedDose: {
-      'pt': 'Adulto: 500 mcg (20-40 gotas). Pediátrico: <1 ano: 125 mcg (5 gotas); >1 ano: 250 mcg (10 gotas).',
-      'es': 'Adulto: 500 mcg (20-40 gotas). Pediátrico: <1 año: 125 mcg (5 gotas); >1 año: 250 mcg (10 gotas).',
-    },
-    renalAlert: {'pt': 'Sem ajuste necessário.', 'es': 'Sin ajuste necesario.'},
-    elderlyAlert: {'pt': 'Risco de retenção urinária e glaucoma.', 'es': 'Riesgo de retención urinaria y glaucoma.'},
-    mechanism: {'pt': 'Antagonista de receptores muscarínicos M3 no pulmão.', 'es': 'Antagonista de receptores muscarínicos M3 en el pulmón.'},
-    warning: {'pt': 'Uso em crises agudas associado ao Salbutamol.', 'es': 'Uso en crisis agudas asociado al Salbutamol.'},
-    adverse: {
-      'pt': ['Boca seca', 'Tosse', 'Visão turva', 'Constipação', 'Retenção urinária'],
-      'es': ['Boca seca', 'Tos', 'Visión borrosa', 'Estreñimiento', 'Retención urinaria'],
     },
   ),
 
@@ -8057,50 +7723,6 @@ const List<DrugModel> drugsDatabase = [
   ),
 
   DrugModel(
-    id: 'atenolol_p',
-    group: 'Cardiovascular y HTA',
-    name: 'Atenolol',
-    className: {'pt': 'Betabloqueador Beta-1 seletivo', 'es': 'Betabloqueante Beta-1 selectivo'},
-    category: {'pt': 'Anti-hipertensivo', 'es': 'Antihipertensivo'},
-    route: 'VO',
-    doseType: 'weight',
-    fixedDose: {
-      'pt': 'Adulto: 25-100 mg/dia. Pediátrico: 0.5-1 mg/kg/dia (máx 2 mg/kg).',
-      'es': 'Adulto: 25-100 mg/día. Pediátrico: 0.5-1 mg/kg/día (máx 2 mg/kg).',
-    },
-    renalAlert: {'pt': 'Reduzir dose conforme o ClCr.', 'es': 'Reducir dosis según el ClCr.'},
-    elderlyAlert: {'pt': 'Risco de bradicardia severa.', 'es': 'Riesgo de bradicardia severa.'},
-    mechanism: {'pt': 'Antagonista seletivo de receptores adrenérgicos Beta-1.', 'es': 'Antagonista selectivo de receptores adrenérgicos Beta-1.'},
-    warning: {'pt': 'Não suspender abruptamente.', 'es': 'No suspender abruptamente.'},
-    adverse: {
-      'pt': ['Bradicardia', 'Fadiga', 'Mãos e pés frios', 'Disfunção erétil', 'Depressão'],
-      'es': ['Bradicardia', 'Fatiga', 'Manos y pies fríos', 'Disfunción eréctil', 'Depresión'],
-    },
-  ),
-
-  DrugModel(
-    id: 'cefalexina_p',
-    group: 'Antibióticos',
-    name: 'Cefalexina (Keflex)',
-    className: {'pt': 'Cefalosporina 1ª Geração', 'es': 'Cefalosporina 1ª Generación'},
-    category: {'pt': 'Antibióticos', 'es': 'Antibióticos'},
-    route: 'VO',
-    doseType: 'weight',
-    fixedDose: {
-      'pt': 'Adulto: 500 mg cada 6-8h. Pediátrico: 25-50 mg/kg/dia ÷ 4 doses.',
-      'es': 'Adulto: 500 mg cada 6-8h. Pediátrico: 25-50 mg/kg/día ÷ 4 dosis.',
-    },
-    renalAlert: {'pt': 'Reduzir dose se ClCr < 10 mL/min.', 'es': 'Reducir dosis si ClCr < 10 mL/min.'},
-    elderlyAlert: {'pt': 'Monitorar função renal.', 'es': 'Monitorear función renal.'},
-    mechanism: {'pt': 'Bactericida; inibe a síntese da parede celular.', 'es': 'Bactericida; inhibe la síntesis de la pared celular.'},
-    warning: {'pt': 'Reação cruzada em alérgicos à penicilina.', 'es': 'Reacción cruzada en alérgicos a penicilina.'},
-    adverse: {
-      'pt': ['Diarreia', 'Náusea', 'Dispepsia', 'Vaginite', 'Rash'],
-      'es': ['Diarrea', 'Náusea', 'Dispepsia', 'Vaginitis', 'Rash'],
-    },
-  ),
-
-  DrugModel(
     id: 'metronidazol_p',
     group: 'Antibióticos',
     name: 'Metronidazol (Flagyl)',
@@ -8123,50 +7745,6 @@ const List<DrugModel> drugsDatabase = [
   ),
 
   DrugModel(
-    id: 'loratadina_p',
-    group: 'Varios / Antídotos / Otros',
-    name: 'Loratadina (Civera)',
-    className: {'pt': 'Anti-histamínico H1 2ª Geração', 'es': 'Antihistamínico H1 2ª Generación'},
-    category: {'pt': 'Antialérgicos', 'es': 'Antialérgicos'},
-    route: 'VO',
-    doseType: 'fixed',
-    fixedDose: {
-      'pt': 'Adulto: 10 mg/dia. Pediátrico (2-6 anos): 5 mg/dia; (>6 anos): 10 mg/dia.',
-      'es': 'Adulto: 10 mg/día. Pediátrico (2-6 años): 5 mg/día; (>6 años): 10 mg/día.',
-    },
-    renalAlert: {'pt': 'ClCr < 30 mL/min: dose em dias alternados.', 'es': 'ClCr < 30 mL/min: dosis en días alternos.'},
-    elderlyAlert: {'pt': 'Seguro, mínima sedação.', 'es': 'Seguro, mínima sedación.'},
-    mechanism: {'pt': 'Antagonista H1 periférico seletivo.', 'es': 'Antagonista H1 periférico selectivo.'},
-    warning: {'pt': 'Não sedativo em doses habituais.', 'es': 'No sedativo en dosis habituales.'},
-    adverse: {
-      'pt': ['Cefaleia', 'Boca seca', 'Fadiga', 'Náuseas', 'Sonolência (raro)'],
-      'es': ['Cefalea', 'Boca seca', 'Fatiga', 'Náuseas', 'Somnolencia (raro)'],
-    },
-  ),
-
-  DrugModel(
-    id: 'prometazina_f',
-    group: 'Varios / Antídotos / Otros',
-    name: 'Prometazina (Fenergan)',
-    className: {'pt': 'Anti-histamínico H1 1ª Geração', 'es': 'Antihistamínico H1 1ª Generación'},
-    category: {'pt': 'Alergia / Sedação', 'es': 'Alergia / Sedación'},
-    route: 'VO / IM / IV lento',
-    doseType: 'weight',
-    fixedDose: {
-      'pt': 'Adulto: 25-50 mg IM/VO. Pediátrico (>2 anos): 0.1 mg/kg/dose cada 6h.',
-      'es': 'Adulto: 25-50 mg IM/VO. Pediátrico (>2 años): 0.1 mg/kg/dosis cada 6h.',
-    },
-    renalAlert: {'pt': 'Sem ajuste necessário.', 'es': 'Sin ajuste necesario.'},
-    elderlyAlert: {'pt': 'Alto risco de confusão mental e quedas.', 'es': 'Alto riesgo de confusión mental y caídas.'},
-    mechanism: {'pt': 'Bloqueio de receptores H1, dopaminérgicos e muscarínicos.', 'es': 'Bloqueo de receptores H1, dopaminérgicos y muscarínicos.'},
-    warning: {'pt': 'Contraindicado em < 2 anos (risco de apneia fatal).', 'es': 'Contraindicado en < 2 años (riesgo de apnea fatal).'},
-    adverse: {
-      'pt': ['Sedação profunda', 'Boca seca', 'Visão turva', 'Hipotensão', 'Retenção urinária'],
-      'es': ['Sedación profunda', 'Boca seca', 'Visión borrosa', 'Hipotensión', 'Retención urinaria'],
-    },
-  ),
-
-  DrugModel(
     id: 'atropina_f',
     group: 'Cardiovascular y HTA',
     name: 'Atropina',
@@ -8185,116 +7763,6 @@ const List<DrugModel> drugsDatabase = [
     adverse: {
       'pt': ['Taquicardia', 'Midríase', 'Boca seca', 'Pele seca e quente', 'Confusão mental'],
       'es': ['Taquicardia', 'Midriasis', 'Boca seca', 'Piel seca y caliente', 'Confusión mental'],
-    },
-  ),
-
-  DrugModel(
-    id: 'adrenalina_f',
-    group: 'UCI – Críticos y Sedoanalgesia',
-    name: 'Adrenalina / Epinefrina',
-    className: {'pt': 'Catecolamina Agonista Alfa/Beta', 'es': 'Catecolamina Agonista Alfa/Beta'},
-    category: {'pt': 'Emergência', 'es': 'Emergencia'},
-    route: 'IM / IV / SC',
-    doseType: 'weight',
-    fixedDose: {
-      'pt': 'Anafilaxia: 0.01 mg/kg IM (máx 0.5 mg). PCR: 1 mg cada 3-5 min (Ped: 0.01 mg/kg).',
-      'es': 'Anafilaxia: 0.01 mg/kg IM (máx 0.5 mg). PCR: 1 mg cada 3-5 min (Ped: 0.01 mg/kg).',
-    },
-    renalAlert: {'pt': 'Sem ajuste necessário.', 'es': 'Sin ajuste necesario.'},
-    elderlyAlert: {'pt': 'Risco de isquemia miocárdica e arritmias ventriculares.', 'es': 'Riesgo de isquemia miocárdica y arritmias ventriculares.'},
-    mechanism: {'pt': 'Vasoconstrição (Alfa-1), inotropismo/cronotropismo (Beta-1) e broncodilatação (Beta-2).', 'es': 'Vasoconstricción (Alfa-1), inotropismo (Beta-1) y broncodilatación (Beta-2).'},
-    warning: {'pt': 'IM preferível na anafilaxia (vasto lateral da coxa).', 'es': 'IM preferible en anafilaxia (vasto lateral del muslo).'},
-    adverse: {
-      'pt': ['Taquicardia', 'Hipertensão severa', 'Ansiedade', 'Tremor', 'Palpitações'],
-      'es': ['Taquicardia', 'Hipertensión severa', 'Ansiedad', 'Tremor', 'Palpitaciones'],
-    },
-  ),
-
-  DrugModel(
-    id: 'dobutamina_f',
-    group: 'Cardiovascular y HTA',
-    name: 'Dobutamina',
-    className: {'pt': 'Agonista adrenérgico Beta-1', 'es': 'Agonista adrenérgico Beta-1'},
-    category: {'pt': 'Vasoativo / Choque', 'es': 'Vasoactivo / Shock'},
-    route: 'IV (Infusão)',
-    doseType: 'weight',
-    fixedDose: {
-      'pt': 'Adulto/Pediátrico: 2-20 mcg/kg/min conforme resposta hemodinâmica.',
-      'es': 'Adulto/Pediátrico: 2-20 mcg/kg/min según respuesta hemodinámica.',
-    },
-    renalAlert: {'pt': 'Sem ajuste necessário.', 'es': 'Sin ajuste necesario.'},
-    elderlyAlert: {'pt': 'Alto risco de arritmias ventriculares e supraventriculares.', 'es': 'Alto riesgo de arritmias ventriculares y supraventriculares.'},
-    mechanism: {'pt': 'Inotrópico positivo potente com efeito vasodilatador periférico leve.', 'es': 'Inotrópico positivo potente con leve efecto vasodilatador.'},
-    warning: {'pt': 'Monitorar PA, FC e ECG continuamente.', 'es': 'Monitorear PA, FC y ECG continuamente.'},
-    adverse: {
-      'pt': ['Taquicardia', 'Cefaleia', 'Dose-dependente de arritmias', 'Isquemia miocárdica', 'Náuseas'],
-      'es': ['Taquicardia', 'Cefalea', 'Arritmias dosis-dependiente', 'Isquemia miocárdica', 'Náuseas'],
-    },
-  ),
-
-  DrugModel(
-    id: 'nitroprussiato_f',
-    group: 'Cardiovascular y HTA',
-    name: 'Nitroprussiato de Sódio',
-    className: {'pt': 'Vasodilatador arterial e venoso potente', 'es': 'Vasodilatador arterial y venoso potente'},
-    category: {'pt': 'Emergência Hipertensiva', 'es': 'Emergencia Hipertensiva'},
-    route: 'IV (Infusão Contínua)',
-    doseType: 'weight',
-    fixedDose: {
-      'pt': 'Adulto/Pediátrico: 0.3-10 mcg/kg/min. Proteger da luz.',
-      'es': 'Adulto/Pediátrico: 0.3-10 mcg/kg/min. Proteger de la luz.',
-    },
-    renalAlert: {'pt': 'Risco de acúmulo de Tiocianato; evitar uso > 48h se TFG baixa.', 'es': 'Riesgo de acúmulo de Tiocianato; evitar uso > 48h si TFG es baja.'},
-    elderlyAlert: {'pt': 'Risco de hipotensão severa e roubo coronário.', 'es': 'Riesgo de hipotensión severa y robo coronario.'},
-    mechanism: {'pt': 'Doador de óxido nítrico direto na musculatura lisa vascular.', 'es': 'Donador de óxido nítrico directo en la musculatura lisa vascular.'},
-    warning: {'pt': 'Sinais de toxicidade por cianeto: acidose metabólica e confusão.', 'es': 'Signos de toxicidad por cianuro: acidosis metabólica y confusión.'},
-    adverse: {
-      'pt': ['Hipotensão profunda', 'Cefaleia', 'Náuseas', 'Toxicidade por cianeto', 'Diaforese'],
-      'es': ['Hipotensión profunda', 'Cefalea', 'Náuseas', 'Toxicidad por cianuro', 'Diaforesis'],
-    },
-  ),
-
-  DrugModel(
-    id: 'gluconato_calcio_f',
-    group: 'Endocrinología y Metabolismo',
-    name: 'Gluconato de Cálcio 10%',
-    className: {'pt': 'Eletrólito / Estabilizador de membrana', 'es': 'Electrolito / Estabilizador de membrana'},
-    category: {'pt': 'Emergência', 'es': 'Emergencia'},
-    route: 'IV Lento',
-    doseType: 'weight',
-    fixedDose: {
-      'pt': 'Hipercalemia Adulto: 1-2 g (10-20 ml). Ped: 60-100 mg/kg/dose (máx 3 g).',
-      'es': 'Hiperpotasemia Adulto: 1-2 g (10-20 ml). Ped: 60-100 mg/kg/dosis (máx 3 g).',
-    },
-    renalAlert: {'pt': 'Monitorar cálcio sérico frequentemente.', 'es': 'Monitorear calcio sérico frecuentemente.'},
-    elderlyAlert: {'pt': 'Cuidado especial se o paciente usa Digoxina (risco de arritmia fatal).', 'es': 'Cuidado si el paciente usa Digoxina (riesgo de arritmia fatal).'},
-    mechanism: {'pt': 'Aumenta o limiar de potencial de ação miocárdico estabilizando a excitabilidade.', 'es': 'Aumenta el umbral de potencial de acción miocárdico.'},
-    warning: {'pt': 'Administrar via veia calibrosa; extravasamento causa necrose.', 'es': 'Administrar por vena de gran calibre; extravasación causa necrosis.'},
-    adverse: {
-      'pt': ['Bradicardia', 'Gosto metálico', 'Calor corporal', 'Hipotensão', 'Necrose tecidual'],
-      'es': ['Bradicardia', 'Sabor metálico', 'Calor corporal', 'Hipotensión', 'Necrosis tisular'],
-    },
-  ),
-
-  DrugModel(
-    id: 'sulfato_magnesio_f',
-    group: 'UCI – Críticos y Sedoanalgesia',
-    name: 'Sulfato de Magnésio',
-    className: {'pt': 'Eletrólito / Anticonvulsivante', 'es': 'Electrolito / Anticonvulsivante'},
-    category: {'pt': 'Urgência / Obstetrícia', 'es': 'Urgencia / Obstetricia'},
-    route: 'IV / IM',
-    doseType: 'weight',
-    fixedDose: {
-      'pt': 'Eclâmpsia: 4-6 g ataque → 1-2 g/h. Asma grave Ped: 40 mg/kg (máx 2 g).',
-      'es': 'Eclampsia: 4-6 g carga → 1-2 g/h. Asma grave Ped: 40 mg/kg (máx 2 g).',
-    },
-    renalAlert: {'pt': 'Contraindicado em insuficiência renal grave (anúria).', 'es': 'Contraindicado en falla renal grave (anuria).'},
-    elderlyAlert: {'pt': 'Risco de depressão respiratória e hiporreflexia.', 'es': 'Riesgo de depresión respiratoria e hiporreflexia.'},
-    mechanism: {'pt': 'Bloqueio de canais de cálcio e NMDA; relaxante muscular.', 'es': 'Bloqueo de canales de calcio y NMDA; relajante muscular.'},
-    warning: {'pt': 'Monitorar reflexo patelar e FR. Antídoto: Gluconato de Cálcio.', 'es': 'Monitorear reflejo patelar y FR. Antídoto: Gluconato de Calcio.'},
-    adverse: {
-      'pt': ['Rubor facial', 'Hipotensão', 'Arritmias', 'Hiporreflexia', 'Depressão respiratória'],
-      'es': ['Rubor facial', 'Hipotensión', 'Arritmias', 'Hiporreflexia', 'Depresión respiratoria'],
     },
   ),
 
@@ -8409,94 +7877,6 @@ const List<DrugModel> drugsDatabase = [
   ),
 
   DrugModel(
-    id: 'lactulose_f',
-    group: 'Gastroenterología',
-    name: 'Lactulose (Lactulon)',
-    className: {'pt': 'Laxante osmótico / Redutor de amônia', 'es': 'Laxante osmótico / Reductor de amonio'},
-    category: {'pt': 'Gastroenterologia', 'es': 'Gastroenterología'},
-    route: 'VO / Retal',
-    doseType: 'weight',
-    fixedDose: {
-      'pt': 'Constipação: 15-30 ml/dia. Encefalopatia: 30-45 ml cada 8-12h até 2-3 evacuações pastosas/dia.',
-      'es': 'Constipación: 15-30 ml/día. Encefalopatía: 30-45 ml cada 8-12h hasta 2-3 evacuaciones/día.',
-    },
-    renalAlert: {'pt': 'Sem ajuste necessário.', 'es': 'Sin ajuste necesario.'},
-    elderlyAlert: {'pt': 'Risco de desidratação e hiponatremia se uso excessivo.', 'es': 'Riesgo de deshidratación y hiponatremia si el uso es excesivo.'},
-    mechanism: {'pt': 'Acidifica o lúmen intestinal, convertendo NH3 em NH4+ (não absorvível).', 'es': 'Acidifica el lumen intestinal, reduciendo absorción de amonio.'},
-    warning: {'pt': 'Monitorar eletrólitos em idosos.', 'es': 'Monitorear electrolitos en ancianos.'},
-    adverse: {
-      'pt': ['Flatulência', 'Cólica abdominal', 'Náuseas', 'Diarreia', 'Desequilíbrio eletrolítico'],
-      'es': ['Flatulencia', 'Cólico abdominal', 'Náuseas', 'Diarrea', 'Desequilibrio electrolítico'],
-    },
-  ),
-
-  DrugModel(
-    id: 'bisoprolol_f',
-    group: 'Cardiovascular y HTA',
-    name: 'Bisoprolol (Concor)',
-    className: {'pt': 'Betabloqueador Beta-1 altamente seletivo', 'es': 'Betabloqueante Beta-1 muy selectivo'},
-    category: {'pt': 'Anti-hipertensivo / IC', 'es': 'Antihipertensivo / IC'},
-    route: 'VO',
-    doseType: 'fixed',
-    fixedDose: {
-      'pt': 'Início: 1.25-2.5 mg/dia. Manutenção: até 10 mg/dia.',
-      'es': 'Inicio: 1.25-2.5 mg/día. Mantenimiento: hasta 10 mg/día.',
-    },
-    renalAlert: {'pt': 'Dose máxima 10 mg/dia se ClCr < 20 mL/min.', 'es': 'Dosis máxima 10 mg/día si ClCr < 20 mL/min.'},
-    elderlyAlert: {'pt': 'Seguro, mas monitorar bradicardia.', 'es': 'Seguro, pero monitorear bradicardia.'},
-    mechanism: {'pt': 'Reduz demanda de oxigênio miocárdico e frequência cardíaca.', 'es': 'Reduce demanda de oxígeno miocárdico y FC.'},
-    warning: {'pt': 'Preferido na Insuficiência Cardíaca estável.', 'es': 'Preferido en la Insuficiencia Cardíaca estable.'},
-    adverse: {
-      'pt': ['Bradicardia', 'Tontura', 'Fadiga', 'Hipotensão', 'Mãos frias'],
-      'es': ['Bradicardia', 'Mareo', 'Fatiga', 'Hipotensión', 'Manos frías'],
-    },
-  ),
-
-  DrugModel(
-    id: 'clonidina_f',
-    group: 'Cardiovascular y HTA',
-    name: 'Clonidina (Catapres)',
-    className: {'pt': 'Agonista alfa-2 central', 'es': 'Agonista alfa-2 central'},
-    category: {'pt': 'Anti-hipertensivo', 'es': 'Antihipertensivo'},
-    route: 'VO / IV / Transdérmico',
-    doseType: 'weight',
-    fixedDose: {
-      'pt': 'Adulto: 0.1-0.2 mg cada 8-12h. Crise aguda: 0.1 mg inicial. Ped: 5-10 mcg/kg/dia.',
-      'es': 'Adulto: 0.1-0.2 mg cada 8-12h. Crisis aguda: 0.1 mg inicial. Ped: 5-10 mcg/kg/día.',
-    },
-    renalAlert: {'pt': 'Sem ajuste necessário.', 'es': 'Sin ajuste necesario.'},
-    elderlyAlert: {'pt': 'Alto risco de sedação, boca seca e quedas (Beers).', 'es': 'Alto riesgo de sedación, boca seca y caídas (Beers).'},
-    mechanism: {'pt': 'Estimula receptores alfa-2 no tronco cerebral reduzindo tônus simpático.', 'es': 'Estimula receptores alfa-2 reduciendo tono simpático.'},
-    warning: {'pt': 'Retirada abrupta causa hipertensão de rebote severa.', 'es': 'Retiro abrupto causa hipertensión de rebote severa.'},
-    adverse: {
-      'pt': ['Sedação', 'Boca seca', 'Hipotensão ortostática', 'Constipação', 'Bradicardia'],
-      'es': ['Sedación', 'Boca seca', 'Hipotensión ortostática', 'Estreñimiento', 'Bradicardia'],
-    },
-  ),
-
-  DrugModel(
-    id: 'nitazoxanida_p',
-    group: 'Infectología (Antifúngicos / Antivirales / TBC)',
-    name: 'Nitazoxanida (Alinia)',
-    className: {'pt': 'Antiparasitário amplo espectro', 'es': 'Antiparasitario amplio espectro'},
-    category: {'pt': 'Antiparasitário', 'es': 'Antiparasitario'},
-    route: 'VO',
-    doseType: 'weight',
-    fixedDose: {
-      'pt': 'Adulto: 500 mg cada 12h por 3 dias. Pediátrico: 7.5 mg/kg cada 12h por 3 dias.',
-      'es': 'Adulto: 500 mg cada 12h por 3 días. Pediátrico: 7.5 mg/kg cada 12h por 3 días.',
-    },
-    renalAlert: {'pt': 'Sem dados suficientes.', 'es': 'Sin datos suficientes.'},
-    elderlyAlert: {'pt': 'Bem tolerado.', 'es': 'Bien tolerado.'},
-    mechanism: {'pt': 'Inibe a enzima piruvato-ferredoxina oxidorredutase (PFOR).', 'es': 'Inhibe la enzima PFOR del parásito.'},
-    warning: {'pt': 'Tomar com alimentos.', 'es': 'Tomar con alimentos.'},
-    adverse: {
-      'pt': ['Náuseas', 'Dor abdominal', 'Urina esverdeada', 'Cefaleia', 'Flatulência'],
-      'es': ['Náuseas', 'Dolor abdominal', 'Orina verdosa', 'Cefalea', 'Flatulencia'],
-    },
-  ),
-
-  DrugModel(
     id: 'sildenafil_p',
     group: 'Cardiovascular y HTA',
     name: 'Sildenafila (Viagra/Revatio)',
@@ -8515,182 +7895,6 @@ const List<DrugModel> drugsDatabase = [
     adverse: {
       'pt': ['Cefaleia', 'Rubor facial', 'Dispepsia', 'Distúrbios visuais', 'Congestão nasal'],
       'es': ['Cefalea', 'Rubor facial', 'Dispepsia', 'Disturbios visuales', 'Congestión nasal'],
-    },
-  ),
-
-  DrugModel(
-    id: 'ticagrelor_f',
-    group: 'Cardiovascular y HTA',
-    name: 'Ticagrelor (Brilinta)',
-    className: {'pt': 'Antiplaquetário P2Y12', 'es': 'Antiplaquetario P2Y12'},
-    category: {'pt': 'Hematologia / SCA', 'es': 'Hematología / SCA'},
-    route: 'VO',
-    doseType: 'fixed',
-    fixedDose: {
-      'pt': 'SCA Ataque: 180 mg dose única. Manutenção: 90 mg 2x/dia.',
-      'es': 'SCA Carga: 180 mg dosis única. Mantenimiento: 90 mg 2 veces/día.',
-    },
-    renalAlert: {'pt': 'Sem ajuste necessário.', 'es': 'Sin ajuste necesario.'},
-    elderlyAlert: {'pt': 'Risco aumentado de sangramento e dispneia.', 'es': 'Riesgo aumentado de sangrado y disnea.'},
-    mechanism: {'pt': 'Antagonista reversível do receptor P2Y12 de ADP nas plaquetas.', 'es': 'Antagonista reversible del receptor P2Y12.'},
-    warning: {'pt': 'Não usar se houver antecedente de AVC hemorrágico.', 'es': 'No usar si hay antecedente de ACV hemorrágico.'},
-    adverse: {
-      'pt': ['Dispneia', 'Sangramento', 'Bradiarritmias', 'Elevação de ácido úrico', 'Equimoses'],
-      'es': ['Disnea', 'Sangrado', 'Bradiarritmias', 'Elevación de ácido úrico', 'Equimosis'],
-    },
-  ),
-
-  DrugModel(
-    id: 'etomidato_f',
-    group: 'UCI – Críticos y Sedoanalgesia',
-    name: 'Etomidato',
-    className: {'pt': 'Hipnótico IV não barbitúrico', 'es': 'Hipnótico IV no barbitúrico'},
-    category: {'pt': 'Emergência / IOT', 'es': 'Emergencia / IOT'},
-    route: 'IV',
-    doseType: 'weight',
-    fixedDose: {
-      'pt': 'Indução IOT: 0.3 mg/kg IV (0.2-0.6 mg/kg).',
-      'es': 'Inducción IOT: 0.3 mg/kg IV (0.2-0.6 mg/kg).',
-    },
-    renalAlert: {'pt': 'Sem ajuste necessário.', 'es': 'Sin ajuste necesario.'},
-    elderlyAlert: {'pt': 'Ideal para idosos cardiopatas pela estabilidade hemodinâmica.', 'es': 'Ideal para ancianos cardiópatas por la estabilidad hemodinámica.'},
-    mechanism: {'pt': 'Potencializa o neurotransmissor inibitório GABA.', 'es': 'Potencia el neurotransmisor inhibitorio GABA.'},
-    warning: {'pt': 'Causa supressão adrenal transitória; evitar em choque séptico grave.', 'es': 'Causa supresión adrenal transitoria; evitar en shock séptico grave.'},
-    adverse: {
-      'pt': ['Mioclonias', 'Dor na injeção', 'Náuseas', 'Supressão adrenal', 'Apneia (se bólus rápido)'],
-      'es': ['Mioclonías', 'Dolor en la inyección', 'Náuseas', 'Supresión adrenal', 'Apnea (si bolo rápido)'],
-    },
-  ),
-
-  DrugModel(
-    id: 'succinilcolina_f',
-    group: 'UCI – Críticos y Sedoanalgesia',
-    name: 'Succinilcolina',
-    className: {'pt': 'Bloqueador neuromuscular despolarizante', 'es': 'Bloqueante neuromuscular despolarizante'},
-    category: {'pt': 'Emergência / IOT', 'es': 'Emergencia / IOT'},
-    route: 'IV / IM',
-    doseType: 'weight',
-    fixedDose: {
-      'pt': 'Adulto/Pediátrico: 1-1.5 mg/kg IV.',
-      'es': 'Adulto/Pediátrico: 1-1.5 mg/kg IV.',
-    },
-    renalAlert: {'pt': 'CONTRAINDICADO em insuficiência renal com hipercalemia.', 'es': 'CONTRAINDICADO en insuficiencia renal con hiperpotasemia.'},
-    elderlyAlert: {'pt': 'Risco de hipercalemia grave.', 'es': 'Riesgo de hiperpotasemia grave.'},
-    mechanism: {'pt': 'Mimetiza acetilcolina causando despolarização persistente na placa motora.', 'es': 'Mimetiza acetilcolina causando despolarización persistente.'},
-    warning: {'pt': 'Contraindicado em grandes queimados e lesões medulares.', 'es': 'Contraindicado en quemados y lesiones medulares.'},
-    adverse: {
-      'pt': ['Fasciculações', 'Mialgia', 'Hipercalemia', 'Hipertermia maligna', 'Bradicardia (em crianças)'],
-      'es': ['Fasciculaciones', 'Mialgia', 'Hiperpotasemia', 'Hipertermia maligna', 'Bradicardia (en niños)'],
-    },
-  ),
-
-  DrugModel(
-    id: 'propofol_f',
-    group: 'UCI – Críticos y Sedoanalgesia',
-    name: 'Propofol (Diprivan)',
-    className: {'pt': 'Agente anestésico / Sedativo', 'es': 'Agente anestésico / Sedante'},
-    category: {'pt': 'Emergência / Sedação', 'es': 'Emergencia / Sedación'},
-    route: 'IV',
-    doseType: 'weight',
-    fixedDose: {
-      'pt': 'Indução: 1.5-2.5 mg/kg. Manutenção: 50-200 mcg/kg/min.',
-      'es': 'Inducción: 1.5-2.5 mg/kg. Mantenimiento: 50-200 mcg/kg/min.',
-    },
-    renalAlert: {'pt': 'Sem ajuste necessário.', 'es': 'Sin ajuste necesario.'},
-    elderlyAlert: {'pt': 'Alto risco de hipotensão e apneia; reduzir dose.', 'es': 'Alto riesgo de hipotensión y apnea; reducir dosis.'},
-    mechanism: {'pt': 'Facilita a neurotransmissão inibitória mediada pelo GABA-A.', 'es': 'Facilita la neurotransmisión inhibitoria GABA-A.'},
-    warning: {'pt': 'Proteger de contaminação bacteriana (veículo lipídico).', 'es': 'Proteger de contaminación bacteriana.'},
-    adverse: {
-      'pt': ['Hipotensão', 'Apneia', 'Dor na injeção', 'Hipertrigliceridemia', 'Síndrome de Infusão de Propofol'],
-      'es': ['Hipotensión', 'Apnea', 'Dolor en la inyección', 'Hipertrigliceridemia', 'Síndrome de Infusión de Propofol'],
-    },
-  ),
-
-  DrugModel(
-    id: 'fentanila_f',
-    group: 'UCI – Críticos y Sedoanalgesia',
-    name: 'Fentanila (Fentanil)',
-    className: {'pt': 'Analgesico Opioide Forte', 'es': 'Analgésico Opioide Fuerte'},
-    category: {'pt': 'Emergência / UTI', 'es': 'Emergencia / UTI'},
-    route: 'IV / IM / Epidural',
-    doseType: 'weight',
-    fixedDose: {
-      'pt': 'IOT: 2-5 mcg/kg IV. Manutenção: 1-3 mcg/kg/h.',
-      'es': 'IOT: 2-5 mcg/kg IV. Mantenimiento: 1-3 mcg/kg/h.',
-    },
-    renalAlert: {'pt': 'Mais seguro que morfina em insuficiência renal.', 'es': 'Más seguro que morfina en insuficiencia renal.'},
-    elderlyAlert: {'pt': 'Risco elevado de depressão respiratória e rigidez torácica.', 'es': 'Riesgo elevado de depresión respiratoria.'},
-    mechanism: {'pt': 'Agonista potente de receptores mu-opioides (100x morfina).', 'es': 'Agonista potente de receptores mu-opioides.'},
-    warning: {'pt': 'Administração IV rápida pode causar Tórax Rígido.', 'es': 'Administración IV rápida puede causar Tórax Rígido.'},
-    adverse: {
-      'pt': ['Depressão respiratória', 'Rigidez torácica', 'Náuseas', 'Constipação', 'Bradicardia'],
-      'es': ['Depresión respiratoria', 'Rigidez torácica', 'Náuseas', 'Estreñimiento', 'Bradicardia'],
-    },
-  ),
-
-  DrugModel(
-    id: 'midazolam_f',
-    group: 'UCI – Críticos y Sedoanalgesia',
-    name: 'Midazolam (Dormicum)',
-    className: {'pt': 'Benzodiazepínico de ação curta', 'es': 'Benzodiazepina de acción corta'},
-    category: {'pt': 'Sedação / Urgência', 'es': 'Sedación / Urgencia'},
-    route: 'VO / IV / IM / Intranasal',
-    doseType: 'weight',
-    fixedDose: {
-      'pt': 'Sedação Adulto: 2-5 mg IV. Ped: 0.1 mg/kg IV ou 0.2 mg/kg IN.',
-      'es': 'Sedación Adulto: 2-5 mg IV. Ped: 0.1 mg/kg IV o 0.2 mg/kg IN.',
-    },
-    renalAlert: {'pt': 'Metabólitos ativos podem acumular; monitorar sedação.', 'es': 'Metabolitos activos pueden acumular; monitorear sedación.'},
-    elderlyAlert: {'pt': 'Risco alto de agitação paradoxal e delirium.', 'es': 'Riesgo alto de agitación paradojal y delirium.'},
-    mechanism: {'pt': 'Potencializa o receptor GABA-A causando amnésia, sedação e relaxamento.', 'es': 'Potencia el receptor GABA-A.'},
-    warning: {'pt': 'Antídoto: Flumazenil.', 'es': 'Antídoto: Flumazenil.'},
-    adverse: {
-      'pt': ['Depressão respiratória', 'Hipotensão', 'Amnésia', 'Soluços', 'Sedação prolongada'],
-      'es': ['Depresión respiratoria', 'Hipotensión', 'Amnesia', 'Hipo', 'Sedación prolongada'],
-    },
-  ),
-
-  DrugModel(
-    id: 'naloxona_f',
-    group: 'Varios / Antídotos / Otros',
-    name: 'Naloxona (Narcan)',
-    className: {'pt': 'Antagonista opioide', 'es': 'Antagonista opioide'},
-    category: {'pt': 'Antídoto', 'es': 'Antídoto'},
-    route: 'IV / IM / Intranasal',
-    doseType: 'weight',
-    fixedDose: {
-      'pt': 'Adulto: 0.4-2 mg IV cada 2-3 min. Pediátrico: 0.01-0.1 mg/kg IV.',
-      'es': 'Adulto: 0.4-2 mg IV cada 2-3 min. Pediátrico: 0.01-0.1 mg/kg IV.',
-    },
-    renalAlert: {'pt': 'Sem ajuste necessário.', 'es': 'Sin ajuste necesario.'},
-    elderlyAlert: {'pt': 'Risco de crise hipertensiva e arritmias se reversão abrupta.', 'es': 'Riesgo de crisis hipertensiva si el retiro es abrupto.'},
-    mechanism: {'pt': 'Antagonista competitivo de todos os receptores opioides.', 'es': 'Antagonista competitivo de receptores opioides.'},
-    warning: {'pt': 'Meia-vida curta; pode ser necessária nova dose ou infusão.', 'es': 'Vida media corta; puede ser necesaria nueva dosis.'},
-    adverse: {
-      'pt': ['Síndrome de abstinência aguda', 'Taquicardia', 'Náuseas', 'Hipertensão', 'Edema pulmonar (raro)'],
-      'es': ['Síndrome de abstinencia aguda', 'Taquicardia', 'Náuseas', 'Hipertensión', 'Edema pulmonar (raro)'],
-    },
-  ),
-
-  DrugModel(
-    id: 'flumazenil_f',
-    group: 'Varios / Antídotos / Otros',
-    name: 'Flumazenil',
-    className: {'pt': 'Antagonista benzodiazepínico', 'es': 'Antagonista benzodiazepínico'},
-    category: {'pt': 'Antídoto', 'es': 'Antídoto'},
-    route: 'IV',
-    doseType: 'fixed',
-    fixedDose: {
-      'pt': 'Adulto: 0.2 mg → 0.3 mg → 0.5 mg IV. Pediátrico: 0.01 mg/kg.',
-      'es': 'Adulto: 0.2 mg → 0.3 mg → 0.5 mg IV. Pediátrico: 0.01 mg/kg.',
-    },
-    renalAlert: {'pt': 'Sem ajuste necessário.', 'es': 'Sin ajuste necesario.'},
-    elderlyAlert: {'pt': 'Risco de ressedação por meia-vida curta.', 'es': 'Riesgo de resedación por vida media corta.'},
-    mechanism: {'pt': 'Antagonista competitivo do sítio benzodiazepínico no GABA.', 'es': 'Antagonista competitivo en el sitio BZD.'},
-    warning: {'pt': 'Contraindicado em usuários crônicos de BZD ou intoxicação por ADTs.', 'es': 'Contraindicado en usuarios crónicos de BZD.'},
-    adverse: {
-      'pt': ['Convulsões', 'Náuseas', 'Agitação', 'Tontura', 'Taquicardia'],
-      'es': ['Convulsiones', 'Náuseas', 'Agitación', 'Mareo', 'Taquicardia'],
     },
   ),
 
@@ -8717,72 +7921,6 @@ const List<DrugModel> drugsDatabase = [
   ),
 
   DrugModel(
-    id: 'paracetamol_gotas_f',
-    group: 'Analgésicos y Antipiréticos',
-    name: 'Paracetamol (Viclor - Gotas)',
-    className: {'pt': 'Analgésico e Antipirético', 'es': 'Analgésico y Antipirético'},
-    category: {'pt': 'Pediatria', 'es': 'Pediatría'},
-    route: 'VO',
-    doseType: 'weight',
-    fixedDose: {
-      'pt': 'Adulto: 500-1000 mg cada 6h. Pediátrico: 10-15 mg/kg por dose (2 gotas/kg).',
-      'es': 'Adulto: 500-1000 mg cada 6h. Pediátrico: 10-15 mg/kg por dosis (2 gotas/kg).',
-    },
-    renalAlert: {'pt': 'ClCr < 10: aumentar intervalo para cada 8h.', 'es': 'ClCr < 10: aumentar intervalo a cada 8h.'},
-    elderlyAlert: {'pt': 'Dose máxima 2-3 g/dia se desnutrição.', 'es': 'Dosis máxima 2-3 g/día si hay desnutrición.'},
-    mechanism: {'pt': 'Inibe a síntese de prostaglandinas predominantemente no SNC.', 'es': 'Inhibe la síntesis de prostaglandinas en el SNC.'},
-    warning: {'pt': 'Hepatotóxico em doses elevadas.', 'es': 'Hepatotóxico en dosis elevadas.'},
-    adverse: {
-      'pt': ['Náuseas', 'Dor abdominal', 'Prurido', 'Hepatotoxicidade', 'Rash'],
-      'es': ['Náuseas', 'Dolor abdominal', 'Prurito', 'Hepatotoxicidad', 'Rash'],
-    },
-  ),
-
-  DrugModel(
-    id: 'ceftriaxona_f',
-    group: 'Antibióticos',
-    name: 'Ceftriaxona (Acantex)',
-    className: {'pt': 'Cefalosporina 3ª Geração', 'es': 'Cefalosporina 3ª Generación'},
-    category: {'pt': 'Antibióticos', 'es': 'Antibióticos'},
-    route: 'IV / IM',
-    doseType: 'weight',
-    fixedDose: {
-      'pt': 'Adulto: 1-2 g cada 24h. Pediátrico: 50-100 mg/kg/dia (máx 2-4 g).',
-      'es': 'Adulto: 1-2 g cada 24h. Pediátrico: 50-100 mg/kg/día (máx 2-4 g).',
-    },
-    renalAlert: {'pt': 'Sem ajuste se função hepática preservada.', 'es': 'Sin ajuste si función hepática es normal.'},
-    elderlyAlert: {'pt': 'Monitorar superinfecções.', 'es': 'Monitorear superinfecciones.'},
-    mechanism: {'pt': 'Bactericida de amplo espectro; parede celular.', 'es': 'Bactericida de amplio espectro.'},
-    warning: {'pt': 'Não misturar com soluções que contenham Cálcio (Ringer Lactato).', 'es': 'No mezclar con soluciones con Calcio.'},
-    adverse: {
-      'pt': ['Diarreia', 'Leucopenia', 'Erupção cutânea', 'Elevação de transaminases', 'Barro biliar'],
-      'es': ['Diarrea', 'Leucopenia', 'Erupción cutánea', 'Elevación de transaminasas', 'Barro biliar'],
-    },
-  ),
-
-  DrugModel(
-    id: 'dexametasona_f',
-    group: 'Endocrinología y Metabolismo',
-    name: 'Dexametasona (Decadron)',
-    className: {'pt': 'Glicocorticoide sistêmico', 'es': 'Glucocorticoide sistémico'},
-    category: {'pt': 'Urgência', 'es': 'Urgencia'},
-    route: 'VO / IV / IM',
-    doseType: 'weight',
-    fixedDose: {
-      'pt': 'Adulto: 4-20 mg/dia. Pediátrico (Crupe): 0.6 mg/kg dose única.',
-      'es': 'Adulto: 4-20 mg/día. Pediátrico (Crup): 0.6 mg/kg dosis única.',
-    },
-    renalAlert: {'pt': 'Sem ajuste necessário.', 'es': 'Sin ajuste necesario.'},
-    elderlyAlert: {'pt': 'Monitorar glicemia e pressão arterial.', 'es': 'Monitorear glucemia y presión arterial.'},
-    mechanism: {'pt': 'Glicocorticoide de longa ação e baixa atividade mineralocorticoide.', 'es': 'Glucocorticoide de larga acción.'},
-    warning: {'pt': 'Ideal para edema cerebral e profilaxia de náuseas pós-op.', 'es': 'Ideal para edema cerebral.'},
-    adverse: {
-      'pt': ['Hiperglicemia', 'Insônia', 'Apetite aumentado', 'Euforia', 'Gastrite'],
-      'es': ['Hiperglucemia', 'Insomnio', 'Aumento de apetito', 'Euforia', 'Gastritis'],
-    },
-  ),
-
-  DrugModel(
     id: 'clorpromazina_f',
     group: 'Neurología y Psiquiatría',
     name: 'Clorpromazina (Amplictil)',
@@ -8801,94 +7939,6 @@ const List<DrugModel> drugsDatabase = [
     adverse: {
       'pt': ['Hipotensão ortostática', 'Sedação', 'Sintomas extrapiramidais', 'Boca seca', 'Galactorreia'],
       'es': ['Hipotensión ortostática', 'Sedación', 'Sintomas extrapiramidales', 'Boca seca', 'Galactorrea'],
-    },
-  ),
-
-  DrugModel(
-    id: 'haloperidol_f',
-    group: 'Neurología y Psiquiatría',
-    name: 'Haloperidol (Haldol)',
-    className: {'pt': 'Antipsicótico Típico (Butirofenona)', 'es': 'Antipsicótico Típico (Butirofenona)'},
-    category: {'pt': 'Psiquiatria / Emergência', 'es': 'Psiquiatría / Emergencia'},
-    route: 'VO / IM / IV',
-    doseType: 'fixed',
-    fixedDose: {
-      'pt': 'Adulto Agitação: 5 mg IM/IV cada 30-60 min. Pediátrico: 0.02-0.05 mg/kg/dia.',
-      'es': 'Adulto Agitación: 5 mg IM/IV cada 30-60 min. Pediátrico: 0.02-0.05 mg/kg/día.',
-    },
-    renalAlert: {'pt': 'Sem ajuste.', 'es': 'Sin ajuste.'},
-    elderlyAlert: {'pt': 'Beers: evitar (risco alto de EPS e arritmias).', 'es': 'Beers: evitar (riesgo alto de EPS).'},
-    mechanism: {'pt': 'Bloqueio potente de receptores dopaminérgicos D2 mesolímbicos.', 'es': 'Bloqueo potente de receptores D2.'},
-    warning: {'pt': 'Pode prolongar o intervalo QTc.', 'es': 'Puede prolongar el intervalo QTc.'},
-    adverse: {
-      'pt': ['Acinesia', 'Acatisia', 'Distonia aguda', 'Prolongamento de QT', 'Sedação'],
-      'es': ['Acinesia', 'Acatisia', 'Distonía aguda', 'Prolongamiento de QT', 'Sedación'],
-    },
-  ),
-
-  DrugModel(
-    id: 'metformina_f',
-    group: 'Endocrinología y Metabolismo',
-    name: 'Metformina (DBI)',
-    className: {'pt': 'Biguanida', 'es': 'Biguanida'},
-    category: {'pt': 'Diabetes', 'es': 'Diabetes'},
-    route: 'VO',
-    doseType: 'fixed',
-    fixedDose: {
-      'pt': 'Adulto: 500-2550 mg/dia. Pediátrico (>10 anos): 500 mg 1-2x/dia.',
-      'es': 'Adulto: 500-2550 mg/día. Pediátrico (>10 años): 500 mg 1-2 veces/día.',
-    },
-    renalAlert: {'pt': 'Contraindicado se TFG < 30 mL/min.', 'es': 'Contraindicado si TFG < 30 mL/min.'},
-    elderlyAlert: {'pt': 'Risco de acidose lática se insuficiência renal.', 'es': 'Riesgo de acidosis láctica si hay falla renal.'},
-    mechanism: {'pt': 'Reduz gliconeogênese hepática e aumenta sensibilidade à insulina.', 'es': 'Reduce gluconeogénesis hepática.'},
-    warning: {'pt': 'Suspender 48h antes de exames com contraste iodado.', 'es': 'Suspender 48h antes de contraste yodado.'},
-    adverse: {
-      'pt': ['Diarreia', 'Náuseas', 'Sabor metálico', 'Acidose lática (raro)', 'Deficiência de B12'],
-      'es': ['Diarrea', 'Náuseas', 'Sabor metálico', 'Acidosis láctica (raro)', 'Déficit de B12'],
-    },
-  ),
-
-  DrugModel(
-    id: 'levotiroxina_f',
-    group: 'Endocrinología y Metabolismo',
-    name: 'Levotiroxina (T4)',
-    className: {'pt': 'Hormônio tireoidiano', 'es': 'Hormona tiroidea'},
-    category: {'pt': 'Endocrinologia', 'es': 'Endocrinología'},
-    route: 'VO / IV',
-    doseType: 'weight',
-    fixedDose: {
-      'pt': 'Adulto: 1.6 mcg/kg/dia. Pediátrico: 2-5 mcg/kg/dia (conforme idade).',
-      'es': 'Adulto: 1.6 mcg/kg/día. Pediátrico: 2-5 mcg/kg/día (según edad).',
-    },
-    renalAlert: {'pt': 'Sem ajuste.', 'es': 'Sin ajuste.'},
-    elderlyAlert: {'pt': 'Iniciar com doses baixas (12.5-25 mcg) em cardiopatas.', 'es': 'Iniciar con dosis bajas (12.5-25 mcg) en cardiópatas.'},
-    mechanism: {'pt': 'Reposicão de hormônio T4 exógeno sintético.', 'es': 'Reposición de hormona T4 exógena.'},
-    warning: {'pt': 'Tomar em jejum (30-60 min antes do café).', 'es': 'Tomar en ayunas (30-60 min antes del desayuno).'},
-    adverse: {
-      'pt': ['Taquicardia', 'Insônia', 'Perda de peso', 'Tremor', 'Nervosismo'],
-      'es': ['Taquicardia', 'Insomnio', 'Pérdida de peso', 'Tremor', 'Nerviosismo'],
-    },
-  ),
-
-  DrugModel(
-    id: 'losartana_f',
-    group: 'Cardiovascular y HTA',
-    name: 'Losartana (Cozaar)',
-    className: {'pt': 'BRA II (Bloqueador de Angiotensina)', 'es': 'ARA II (Antagonista de Angiotensina)'},
-    category: {'pt': 'Anti-hipertensivo', 'es': 'Antihipertensivo'},
-    route: 'VO',
-    doseType: 'fixed',
-    fixedDose: {
-      'pt': 'Adulto: 50-100 mg/dia. Pediátrico: 0.7 mg/kg/dia (até 50 mg).',
-      'es': 'Adulto: 50-100 mg/día. Pediátrico: 0.7 mg/kg/día (hasta 50 mg).',
-    },
-    renalAlert: {'pt': 'Monitorar potássio e função renal.', 'es': 'Monitorear potasio y función renal.'},
-    elderlyAlert: {'pt': 'Risco de hipotensão e hipercalemia.', 'es': 'Riesgo de hipotensión e hiperpotasemia.'},
-    mechanism: {'pt': 'Antagonista seletivo do receptor AT1 da angiotensina II.', 'es': 'Antagonista selectivo del receptor AT1.'},
-    warning: {'pt': 'CONTRAINDICADO na gravidez.', 'es': 'CONTRAINDICADO en el embarazo.'},
-    adverse: {
-      'pt': ['Tontura', 'Hipercalemia', 'Disfunção renal', 'Hipotensão', 'Cefaleia'],
-      'es': ['Mareo', 'Hiperpotasemia', 'Disfunción renal', 'Hipotensión', 'Cefalea'],
     },
   ),
 
@@ -8981,28 +8031,6 @@ const List<DrugModel> drugsDatabase = [
   ),
 
   DrugModel(
-    id: 'ivermectina_f',
-    group: 'Infectología (Antifúngicos / Antivirales / TBC)',
-    name: 'Ivermectina',
-    className: {'pt': 'Antiparasitário', 'es': 'Antiparasitario'},
-    category: {'pt': 'Antiparasitário', 'es': 'Antiparasitario'},
-    route: 'VO',
-    doseType: 'weight',
-    fixedDose: {
-      'pt': 'Adulto/Pediátrico (>15 kg): 200 mcg/kg dose única. Repetir em 7-14 dias.',
-      'es': 'Adulto/Pediátrico (>15 kg): 200 mcg/kg dosis única. Repetir en 7-14 días.',
-    },
-    renalAlert: {'pt': 'Sem ajuste necessário.', 'es': 'Sin ajuste necesario.'},
-    elderlyAlert: {'pt': 'Geralmente seguro.', 'es': 'Generalmente seguro.'},
-    mechanism: {'pt': 'Paralisia tônica dos músculos do parasita por ativação de canais de cloro.', 'es': 'Parálisis tónica de los músculos del parásito.'},
-    warning: {'pt': 'Tomar com estômago vazio.', 'es': 'Tomar con estómago vacío.'},
-    adverse: {
-      'pt': ['Prurido', 'Tontura', 'Náuseas', 'Diarreia', 'Fadiga'],
-      'es': ['Prurito', 'Mareo', 'Náuseas', 'Diarrea', 'Fatiga'],
-    },
-  ),
-
-  DrugModel(
     id: 'mupirocina_f',
     group: 'Varios / Antídotos / Otros',
     name: 'Mupirocina (Bactroban - Pomada)',
@@ -9068,10 +8096,6 @@ const List<DrugModel> drugsDatabase = [
     },
   ),
 
-  // ─────────────────────────────────────────────────────────
-  // LOTE COMPLEMENTARIO: GUARDIA, PEDIATRÍA Y ARGENTINA (51)
-  // ─────────────────────────────────────────────────────────
-
   DrugModel(
     id: 'hioscina_dipirona',
     group: 'Gastroenterología',
@@ -9117,28 +8141,6 @@ const List<DrugModel> drugsDatabase = [
   ),
 
   DrugModel(
-    id: 'ketorolac_p',
-    group: 'Analgésicos y Antipiréticos',
-    name: 'Ketorolac (Sinalgic)',
-    className: {'pt': 'AINE Analgésico potente', 'es': 'AINE Analgésico potente'},
-    category: {'pt': 'Dor aguda', 'es': 'Dolor agudo'},
-    route: 'VO / SL / IV / IM',
-    doseType: 'weight',
-    fixedDose: {
-      'pt': 'Adulto: 10-20 mg SL cada 8h. Pediatria: 0.5 mg/kg (máx 30 mg) dose única.',
-      'es': 'Adulto: 10-20 mg SL cada 8h. Pediatría: 0.5 mg/kg (máx 30 mg) dosis única.',
-    },
-    renalAlert: {'pt': 'Altamente nefrotóxico; contraindicado se Cr elevada.', 'es': 'Altamente nefrotóxico; contraindicado si Cr elevada.'},
-    elderlyAlert: {'pt': 'Reduzir dose em 50%. Risco de hemorragia digestiva.', 'es': 'Reducir dosis al 50%. Riesgo de hemorragia digestiva.'},
-    mechanism: {'pt': 'Inibidor potente da síntese de prostaglandinas.', 'es': 'Inhibidor potente de síntesis de prostaglandinas.'},
-    warning: {'pt': 'Uso máximo por 5 dias.', 'es': 'Uso máximo por 5 días.'},
-    adverse: {
-      'pt': ['Dispepsia', 'Hemorragia GI', 'Insuficiência renal', 'Edema', 'Cefaleia'],
-      'es': ['Dispepsia', 'Hemorragia GI', 'Insuficiencia renal', 'Edema', 'Cefalea'],
-    },
-  ),
-
-  DrugModel(
     id: 'betametasona_mepred',
     group: 'Endocrinología y Metabolismo',
     name: 'Meprednisona (Deltisona)',
@@ -9157,28 +8159,6 @@ const List<DrugModel> drugsDatabase = [
     adverse: {
       'pt': ['Fácies de lua cheia', 'Hiperglicemia', 'Osteoporose', 'Estrias', 'Catarata'],
       'es': ['Fascie lunar', 'Hiperglucemia', 'Osteoporosis', 'Estrías', 'Catarata'],
-    },
-  ),
-
-  DrugModel(
-    id: 'amoxicilina_sulbactam_f',
-    group: 'Antibióticos',
-    name: 'Amoxicilina + Sulbactam (Trifamox IBL)',
-    className: {'pt': 'Penicilina + Inibidor de BL', 'es': 'Penicilina + Inhibidor de BL'},
-    category: {'pt': 'Antibióticos', 'es': 'Antibióticos'},
-    route: 'VO / IV / IM',
-    doseType: 'weight',
-    fixedDose: {
-      'pt': 'Adulto: 875/125 mg cada 12h. Pediatria: 40-90 mg/kg/dia.',
-      'es': 'Adulto: 875/125 mg cada 12h. Pediatría: 40-90 mg/kg/día.',
-    },
-    renalAlert: {'pt': 'Ajustar para cada 24h se ClCr < 10.', 'es': 'Ajustar cada 24h si ClCr < 10.'},
-    elderlyAlert: {'pt': 'Monitorar diarreia por C. difficile.', 'es': 'Monitorear diarrea por C. difficile.'},
-    mechanism: {'pt': 'Inibe parede bacteriana e betalactamases; ativo contra Acinetobacter.', 'es': 'Inhibe pared bacteriana y betalactamasas.'},
-    warning: {'pt': 'Associação muito comum na Argentina vs Clavulanato.', 'es': 'Asociación muy común en Argentina vs Clavulanato.'},
-    adverse: {
-      'pt': ['Diarreia', 'Náuseas', 'Rash', 'Elevação de transaminases', 'Candidíase'],
-      'es': ['Diarrea', 'Náuseas', 'Rash', 'Elevación de transaminasas', 'Candidiasis'],
     },
   ),
 
@@ -9205,28 +8185,6 @@ const List<DrugModel> drugsDatabase = [
   ),
 
   DrugModel(
-    id: 'cefepime_f',
-    group: 'Antibióticos',
-    name: 'Cefepime',
-    className: {'pt': 'Cefalosporina de 4ª Geração', 'es': 'Cefalosporina de 4ª Generación'},
-    category: {'pt': 'Antibióticos', 'es': 'Antibióticos'},
-    route: 'IV / IM',
-    doseType: 'weight',
-    fixedDose: {
-      'pt': 'Adulto: 2 g cada 8-12h. Pediátrico: 100-150 mg/kg/dia ÷ 2-3 doses.',
-      'es': 'Adulto: 2 g cada 8-12h. Pediatría: 100-150 mg/kg/día ÷ 2-3 dosis.',
-    },
-    renalAlert: {'pt': 'Risco de Encefalopatia por Cefepime em insuficiência renal.', 'es': 'Riesgo de Encefalopatía en falla renal.'},
-    elderlyAlert: {'pt': 'Monitorar estado de consciência.', 'es': 'Monitorear estado de conciencia.'},
-    mechanism: {'pt': 'Bactericida de amplo espectro, resistente a AmpC.', 'es': 'Bactericida de amplio espectro.'},
-    warning: {'pt': 'Monitorar função renal diariamente.', 'es': 'Monitorear función renal diariamente.'},
-    adverse: {
-      'pt': ['Encefalopatia', 'Mioclonias', 'Diarreia', 'Rash', 'Neutropenia'],
-      'es': ['Encefalopatía', 'Mioclonías', 'Diarrea', 'Rash', 'Neutropenia'],
-    },
-  ),
-
-  DrugModel(
     id: 'amikacina_f',
     group: 'Antibióticos',
     name: 'Amicacina',
@@ -9249,28 +8207,6 @@ const List<DrugModel> drugsDatabase = [
   ),
 
   DrugModel(
-    id: 'nitrofurantoina_p',
-    group: 'Antibióticos',
-    name: 'Nitrofurantoína (Uvamin)',
-    className: {'pt': 'Antisséptico Urinário', 'es': 'Antiséptico Urinario'},
-    category: {'pt': 'Antibióticos / ITU', 'es': 'Antibióticos / ITU'},
-    route: 'VO',
-    doseType: 'weight',
-    fixedDose: {
-      'pt': 'Adulto: 100 mg cada 6-12h. Pediátrico: 5-7 mg/kg/dia ÷ 4 doses.',
-      'es': 'Adulto: 100 mg cada 6-12h. Pediatría: 5-7 mg/kg/día ÷ 4 dosis.',
-    },
-    renalAlert: {'pt': 'Contraindicado se ClCr < 45 mL/min.', 'es': 'Contraindicado si ClCr < 45 mL/min.'},
-    elderlyAlert: {'pt': 'Risco de fibrose pulmonar e toxicidade hepática.', 'es': 'Riesgo de fibrosis pulmonar.'},
-    mechanism: {'pt': 'Inibe sistemas enzimáticos bacterianos (DNA/RNA).', 'es': 'Inhibe sistemas enzimáticos bacterianos.'},
-    warning: {'pt': 'Não usar em pielonefrite (baixa penetração renal).', 'es': 'No usar en pielonefritis.'},
-    adverse: {
-      'pt': ['Náuseas', 'Urina escura', 'Pneumonite', 'Anemia hemolítica', 'Neuropatia'],
-      'es': ['Náuseas', 'Orina oscura', 'Pneumonitis', 'Anemia hemolítica', 'Neuropatía'],
-    },
-  ),
-
-  DrugModel(
     id: 'metoclopramida_p',
     group: 'Gastroenterología',
     name: 'Metoclopramida (Reliveran)',
@@ -9289,94 +8225,6 @@ const List<DrugModel> drugsDatabase = [
     adverse: {
       'pt': ['Acatisia', 'Distonia aguda', 'Sonolência', 'Diarreia', 'Hiperprolactinemia'],
       'es': ['Acatisia', 'Distonía aguda', 'Somnolencia', 'Diarrea', 'Hiperprolactinemia'],
-    },
-  ),
-
-  DrugModel(
-    id: 'pantoprazol_p',
-    group: 'Gastroenterología',
-    name: 'Pantoprazol (Pantocas)',
-    className: {'pt': 'Inibidor da Bomba de Prótons', 'es': 'Inhibidor de Bomba de Protones'},
-    category: {'pt': 'Gastrointestinal', 'es': 'Gastrointestinal'},
-    route: 'VO / IV',
-    doseType: 'weight',
-    fixedDose: {
-      'pt': 'Adulto: 40 mg/dia. Pediátrico: 0.5-1 mg/kg/dia.',
-      'es': 'Adulto: 40 mg/día. Pediatría: 0.5-1 mg/kg/día.',
-    },
-    renalAlert: {'pt': 'Sem ajuste necessário.', 'es': 'Sin ajuste necesario.'},
-    elderlyAlert: {'pt': 'Uso prolongado aumenta risco de fraturas e pneumonia.', 'es': 'Uso crónico aumenta riesgo de fracturas.'},
-    mechanism: {'pt': 'Bloqueio irreversível da H+/K+ ATPase.', 'es': 'Bloqueo irreversible de la bomba H+/K+.'},
-    warning: {'pt': 'Monitorar magnésio em uso crônico.', 'es': 'Monitorear magnesio en uso crónico.'},
-    adverse: {
-      'pt': ['Cefaleia', 'Diarreia', 'Dor abdominal', 'Hipomagnesemia', 'Pólipos gástricos'],
-      'es': ['Cefalea', 'Diarrea', 'Dolor abdominal', 'Hipomagnesemia', 'Pólipos gástricos'],
-    },
-  ),
-
-  DrugModel(
-    id: 'tamsulosina_p',
-    group: 'Varios / Antídotos / Otros',
-    name: 'Tamsulosina',
-    className: {'pt': 'Alfa-1 bloqueador seletivo', 'es': 'Bloqueante Alfa-1 selectivo'},
-    category: {'pt': 'Urologia', 'es': 'Urología'},
-    route: 'VO',
-    doseType: 'fixed',
-    fixedDose: {
-      'pt': 'Adulto: 0.4 mg/dia (noite). Pediatria: 0.01 mg/kg (uso em cálculo ureteral).',
-      'es': 'Adulto: 0.4 mg/día (noche). Pediatría: 0.01 mg/kg (uso expulsivo).',
-    },
-    renalAlert: {'pt': 'Sem ajuste se ClCr > 10.', 'es': 'Sin ajuste si ClCr > 10.'},
-    elderlyAlert: {'pt': 'Risco de hipotensão ortostática e quedas.', 'es': 'Riesgo de hipotensión ortostática.'},
-    mechanism: {'pt': 'Relaxa músculo liso do colo vesical e próstata.', 'es': 'Relaja músculo liso de cuello vesical.'},
-    warning: {'pt': 'Cuidado em cirurgia de catarata (íris flácida).', 'es': 'Cuidado en cirugía de catarata.'},
-    adverse: {
-      'pt': ['Tontura', 'Ejaculação retrógrada', 'Cefaleia', 'Astenia', 'Rinite'],
-      'es': ['Mareo', 'Eyaculación retrógrada', 'Cefalea', 'Astenia', 'Rinitis'],
-    },
-  ),
-
-  DrugModel(
-    id: 'noradrenalina_f',
-    group: 'UCI – Críticos y Sedoanalgesia',
-    name: 'Noradrenalina / Norepinefrina',
-    className: {'pt': 'Catecolamina Vasopressora', 'es': 'Catecolamina Vasopresora'},
-    category: {'pt': 'Choque / Vasoativo', 'es': 'Shock / Vasoactivo'},
-    route: 'IV (Bomba)',
-    doseType: 'weight',
-    fixedDose: {
-      'pt': 'Adulto/Pediátrico: 0.05-1 mcg/kg/min conforme PAM alvo.',
-      'es': 'Adulto/Pediátrico: 0.05-1 mcg/kg/min según TAM objetivo.',
-    },
-    renalAlert: {'pt': 'Garantir volume antes de iniciar.', 'es': 'Garantizar volumen antes de iniciar.'},
-    elderlyAlert: {'pt': 'Risco de isquemia periférica severa.', 'es': 'Riesgo de isquemia periférica.'},
-    mechanism: {'pt': 'Agonista Alfa-1 potente e Beta-1 moderado.', 'es': 'Agonista Alfa-1 potente.'},
-    warning: {'pt': 'Administrar preferencialmente em via central.', 'es': 'Vía central preferente.'},
-    adverse: {
-      'pt': ['Hipertensão', 'Arritmias', 'Isquemia de extremidades', 'Bradicardia reflexa', 'Ansiedade'],
-      'es': ['Hipertensión', 'Arritmias', 'Isquemia distal', 'Bradicardia refleja', 'Ansiedad'],
-    },
-  ),
-
-  DrugModel(
-    id: 'vasopressina_f',
-    group: 'UCI – Críticos y Sedoanalgesia',
-    name: 'Vasopressina (Antidiurético)',
-    className: {'pt': 'Vasopressor Hormonal', 'es': 'Vasopresor Hormonal'},
-    category: {'pt': 'Choque / Emergência', 'es': 'Shock / Emergencia'},
-    route: 'IV (Bomba)',
-    doseType: 'fixed',
-    fixedDose: {
-      'pt': 'Choque: 0.01-0.04 UI/min. Parada cardíaca: 40 UI dose única.',
-      'es': 'Shock: 0.01-0.04 UI/min. PCR: 40 UI dosis única.',
-    },
-    renalAlert: {'pt': 'Pode causar retenção de água e hiponatremia.', 'es': 'Puede causar hiponatremia.'},
-    elderlyAlert: {'pt': 'Risco de isquemia mesentérica.', 'es': 'Riesgo de isquemia mesentérica.'},
-    mechanism: {'pt': 'Agonista do receptor V1 (vasoconstrição) e V2 (antidiurese).', 'es': 'Agonista del receptor V1.'},
-    warning: {'pt': 'Usar como adjunto à Noradrenalina.', 'es': 'Adjunto a Noradrenalina.'},
-    adverse: {
-      'pt': ['Isquemia miocárdica', 'Isquemia intestinal', 'Hiponatremia', 'Palidez', 'Cólica abdominal'],
-      'es': ['Isquemia miocárdica', 'Isquemia intestinal', 'Hiponatremia', 'Palidez', 'Cólico abdominal'],
     },
   ),
 
@@ -9443,28 +8291,6 @@ const List<DrugModel> drugsDatabase = [
     adverse: {
       'pt': ['Edema maleolar', 'Cefaleia', 'Rubor facial', 'Palpitações', 'Constipação'],
       'es': ['Edema maleolar', 'Cefalea', 'Rubor facial', 'Palpitaciones', 'Estreñimiento'],
-    },
-  ),
-
-  DrugModel(
-    id: 'atorvastatina_f',
-    group: 'Cardiovascular y HTA',
-    name: 'Atorvastatina (Lipitor)',
-    className: {'pt': 'Estatina', 'es': 'Estatina'},
-    category: {'pt': 'Dislipidemia', 'es': 'Dislipidemia'},
-    route: 'VO',
-    doseType: 'fixed',
-    fixedDose: {
-      'pt': 'Adulto: 10-80 mg/dia. Pediatria (>10 anos): 10-20 mg/dia.',
-      'es': 'Adulto: 10-80 mg/día. Pediatría (>10 años): 10-20 mg/día.',
-    },
-    renalAlert: {'pt': 'Sem ajuste necessário.', 'es': 'Sin ajuste necesario.'},
-    elderlyAlert: {'pt': 'Monitorar mialgias.', 'es': 'Monitorear mialgias.'},
-    mechanism: {'pt': 'Inibidor da HMG-CoA redutase.', 'es': 'Inhibidor de HMG-CoA reductasa.'},
-    warning: {'pt': 'Monitorar TGO/TGP no início.', 'es': 'Monitorear TGO/TGP.'},
-    adverse: {
-      'pt': ['Mialgia', 'Aumento de transaminases', 'Diarreia', 'Insônia', 'Diabetes (raro)'],
-      'es': ['Mialgia', 'Elevación transaminasas', 'Diarrea', 'Insomnio', 'Diabetes'],
     },
   ),
 
@@ -9711,28 +8537,6 @@ const List<DrugModel> drugsDatabase = [
   ),
 
   DrugModel(
-    id: 'domperidona_f',
-    group: 'Gastroenterología',
-    name: 'Domperidona (Motilium)',
-    className: {'pt': 'Procinético', 'es': 'Procinético'},
-    category: {'pt': 'Gastrointestinal', 'es': 'Gastrointestinal'},
-    route: 'VO',
-    doseType: 'weight',
-    fixedDose: {
-      'pt': 'Adulto: 10 mg cada 8h. Pediatria: 0.25 mg/kg cada 8h.',
-      'es': 'Adulto: 10 mg cada 8h. Pediatría: 0.25 mg/kg cada 8h.',
-    },
-    renalAlert: {'pt': 'Sem ajuste em dose única; monitorar se crônico.', 'es': 'Monitorear si es crónico.'},
-    elderlyAlert: {'pt': 'Monitorar QT.', 'es': 'Monitorear QT.'},
-    mechanism: {'pt': 'Antagonista D2 periférico (não cruza BHE).', 'es': 'Antagonista D2 periférico.'},
-    warning: {'pt': 'Uso muito comum em pediatria para refluxo.', 'es': 'Reflujo en pediatría.'},
-    adverse: {
-      'pt': ['Cefaleia', 'Boca seca', 'Galactorreia', 'Prolongamento de QT', 'Diarreia'],
-      'es': ['Cefalea', 'Boca seca', 'Galactorrea', 'Prolongamiento de QT', 'Diarrea'],
-    },
-  ),
-
-  DrugModel(
     id: 'rifaximina_f',
     group: 'Antibióticos',
     name: 'Rifaximina (Rifax)',
@@ -9821,50 +8625,6 @@ const List<DrugModel> drugsDatabase = [
   ),
 
   DrugModel(
-    id: 'amoxicilina_clav_p',
-    group: 'Antibióticos',
-    name: 'Amoxicilina + Clavulanato (Optamox)',
-    className: {'pt': 'Penicilina + Inibidor de BL', 'es': 'Penicilina + Inhibidor de BL'},
-    category: {'pt': 'Antibióticos', 'es': 'Antibióticos'},
-    route: 'VO',
-    doseType: 'weight',
-    fixedDose: {
-      'pt': 'Adulto: 875/125 cada 12h. Pediatria: 45-90 mg/kg/dia.',
-      'es': 'Adulto: 875/125 cada 12h. Pediatría: 45-90 mg/kg/día.',
-    },
-    renalAlert: {'pt': 'Ajustar se ClCr < 30.', 'es': 'Ajustar ClCr < 30.'},
-    elderlyAlert: {'pt': 'Maior risco de hepatotoxicidade.', 'es': 'Riesgo hepatotoxicidad.'},
-    mechanism: {'pt': 'Bloqueio de beta-lactamases.', 'es': 'Bloqueo beta-lactamasas.'},
-    warning: {'pt': 'Causa mais diarreia que amoxi pura.', 'es': 'Causa más diarrea.'},
-    adverse: {
-      'pt': ['Diarreia', 'Náusea', 'Vaginite', 'Hepatite colestática', 'Urticária'],
-      'es': ['Diarrea', 'Náusea', 'Vaginitis', 'Hepatitis colestásica', 'Urticaria'],
-    },
-  ),
-
-  DrugModel(
-    id: 'claritromicina_p',
-    group: 'Antibióticos',
-    name: 'Claritromicina (Klaricid)',
-    className: {'pt': 'Macrolídeo', 'es': 'Macrólido'},
-    category: {'pt': 'Antibióticos', 'es': 'Antibióticos'},
-    route: 'VO / IV',
-    doseType: 'weight',
-    fixedDose: {
-      'pt': 'Adulto: 500 mg cada 12h. Pediatria: 15 mg/kg/dia ÷ 2 doses.',
-      'es': 'Adulto: 500 mg cada 12h. Pediatría: 15 mg/kg/día ÷ 2 dosis.',
-    },
-    renalAlert: {'pt': 'Reduzir dose em 50% se ClCr < 30.', 'es': 'Reducir dosis al 50% si ClCr < 30.'},
-    elderlyAlert: {'pt': 'Muitas interações (CYP3A4). Monitorar QT.', 'es': 'Muchas interacciones.'},
-    mechanism: {'pt': 'Inibe subunidade 50S bacteriana.', 'es': 'Inhibe subunidad 50S.'},
-    warning: {'pt': 'Gosto metálico é comum.', 'es': 'Sabor metálico.'},
-    adverse: {
-      'pt': ['Gosto metálico', 'Dor abdominal', 'Diarreia', 'Prolongamento QT', 'Náuseas'],
-      'es': ['Sabor metálico', 'Dolor abdominal', 'Diarrea', 'Prolongamiento QT', 'Náuseas'],
-    },
-  ),
-
-  DrugModel(
     id: 'azitromicina_p',
     group: 'Antibióticos',
     name: 'Azitromicina (Cronopen)',
@@ -9883,50 +8643,6 @@ const List<DrugModel> drugsDatabase = [
     adverse: {
       'pt': ['Diarreia', 'Náuseas', 'Vômitos', 'Ototoxicidade (altas doses)', 'Prolongamento QT'],
       'es': ['Diarrea', 'Náuseas', 'Vómitos', 'Ototoxicidad', 'Prolongamiento QT'],
-    },
-  ),
-
-  DrugModel(
-    id: 'clindamicina_f',
-    group: 'Antibióticos',
-    name: 'Clindamicina (Dalacin)',
-    className: {'pt': 'Lincosamida', 'es': 'Lincosamida'},
-    category: {'pt': 'Antibióticos', 'es': 'Antibióticos'},
-    route: 'VO / IV / IM',
-    doseType: 'weight',
-    fixedDose: {
-      'pt': 'Adulto: 600-900 mg cada 8h. Pediatria: 20-40 mg/kg/dia ÷ 3 doses.',
-      'es': 'Adulto: 600-900 mg cada 8h. Pediatría: 20-40 mg/kg/día ÷ 3 dosis.',
-    },
-    renalAlert: {'pt': 'Sem ajuste necessário.', 'es': 'Sin ajuste necesario.'},
-    elderlyAlert: {'pt': 'Monitorar diarreia severa.', 'es': 'Monitorear diarrea.'},
-    mechanism: {'pt': 'Bloqueio da subunidade 50S; ativo contra MRSA e anaeróbios.', 'es': 'Activo contra MRSA.'},
-    warning: {'pt': 'Alto risco de Colite Pseudomembranosa.', 'es': 'Riesgo de C. difficile.'},
-    adverse: {
-      'pt': ['Diarreia por C. diff', 'Náuseas', 'Esofagite (VO)', 'Rash', 'Flebite'],
-      'es': ['Diarrea por C. diff', 'Náuseas', 'Esofagitis', 'Rash', 'Flebitis'],
-    },
-  ),
-
-  DrugModel(
-    id: 'gentamicina_f',
-    group: 'Antibióticos',
-    name: 'Gentamicina',
-    className: {'pt': 'Aminoglicosídeo', 'es': 'Aminoglucósido'},
-    category: {'pt': 'Antibióticos', 'es': 'Antibióticos'},
-    route: 'IV / IM',
-    doseType: 'weight',
-    fixedDose: {
-      'pt': 'Adulto: 5-7 mg/kg/dia. Ped: 5-7.5 mg/kg/dia dose única.',
-      'es': 'Adulto: 5-7 mg/kg/día. Ped: 5-7.5 mg/kg/día dosis única.',
-    },
-    renalAlert: {'pt': 'Nefrotoxicidade severa; ajuste obrigatório.', 'es': 'Ajuste obligatorio.'},
-    elderlyAlert: {'pt': 'Monitorar audição e função renal.', 'es': 'Monitorear audición.'},
-    mechanism: {'pt': 'Bactericida; inibe subunidade 30S.', 'es': 'Bactericida.'},
-    warning: {'pt': 'Evitar uso > 7 dias.', 'es': 'Evitar uso > 7 días.'},
-    adverse: {
-      'pt': ['IRA', 'Ototoxicidade irreversível', 'Vertigem', 'Rash', 'Paralisia muscular'],
-      'es': ['IRA', 'Ototoxicidad', 'Vértigo', 'Rash', 'Parálisis muscular'],
     },
   ),
 
@@ -9997,138 +8713,6 @@ const List<DrugModel> drugsDatabase = [
   ),
 
   DrugModel(
-    id: 'albendazol_p',
-    group: 'Antibióticos',
-    name: 'Albendazol (Macozol)',
-    className: {'pt': 'Antiparasitário', 'es': 'Antiparasitario'},
-    category: {'pt': 'Antibióticos', 'es': 'Antibióticos'},
-    route: 'VO',
-    doseType: 'weight',
-    fixedDose: {
-      'pt': 'Adulto/Pediátrico: 400 mg dose única ou cada 24h por 3 dias.',
-      'es': 'Adulto/Pediátrico: 400 mg dosis única o cada 24h por 3 días.',
-    },
-    renalAlert: {'pt': 'Sem ajuste necessário.', 'es': 'Sin ajuste necesario.'},
-    elderlyAlert: {'pt': 'Monitorar função hepática.', 'es': 'Monitorear función hepática.'},
-    mechanism: {'pt': 'Degeneração de microtúbulos do parasita.', 'es': 'Degeneración de microtúbulos.'},
-    warning: {'pt': 'Não usar em grávidas (Teratogênico).', 'es': 'Teratogénico.'},
-    adverse: {
-      'pt': ['Cefaleia', 'Náuseas', 'Elevação de transaminases', 'Dor abdominal', 'Tontura'],
-      'es': ['Cefalea', 'Náuseas', 'Elevación transaminasas', 'Dolor abdominal', 'Mareo'],
-    },
-  ),
-
-  DrugModel(
-    id: 'ivermectina_p',
-    group: 'Antibióticos',
-    name: 'Ivermectina (Ivercass)',
-    className: {'pt': 'Antiparasitário', 'es': 'Antiparasitario'},
-    category: {'pt': 'Antibióticos', 'es': 'Antibióticos'},
-    route: 'VO',
-    doseType: 'weight',
-    fixedDose: {
-      'pt': 'Adulto/Pediátrico (>15kg): 200 mcg/kg dose única.',
-      'es': 'Adulto/Pediátrico (>15kg): 200 mcg/kg dosis única.',
-    },
-    renalAlert: {'pt': 'Sem ajuste necessário.', 'es': 'Sin ajuste necesario.'},
-    elderlyAlert: {'pt': 'Monitorar sonolência.', 'es': 'Monitorear somnolencia.'},
-    mechanism: {'pt': 'Aumenta permeabilidade ao Cloro; paralisia do verme.', 'es': 'Parálisis del parásito.'},
-    warning: {'pt': 'Uso em Escabiose e Estrongiloidíase.', 'es': 'Escabiosis.'},
-    adverse: {
-      'pt': ['Prurido', 'Tontura', 'Náuseas', 'Diarreia', 'Sonolência'],
-      'es': ['Prurito', 'Mareo', 'Náuseas', 'Diarrea', 'Somnolencia'],
-    },
-  ),
-
-  DrugModel(
-    id: 'haloperidol_p',
-    group: 'Neurología y Psiquiatría',
-    name: 'Haloperidol (Haldol)',
-    className: {'pt': 'Antipsicótico Típico', 'es': 'Antipsicótico Típico'},
-    category: {'pt': 'Psiquiatria', 'es': 'Psiquiatría'},
-    route: 'VO / IV / IM',
-    doseType: 'weight',
-    fixedDose: {
-      'pt': 'Agitação: 2-5 mg IM. Pediatria: 0.05 mg/kg/dia.',
-      'es': 'Agitación: 2-5 mg IM. Pediatría: 0.05 mg/kg/día.',
-    },
-    renalAlert: {'pt': 'Sem ajuste necessário.', 'es': 'Sin ajuste necesario.'},
-    elderlyAlert: {'pt': 'Alto risco de EPS e quedas.', 'es': 'Riesgo alto de EPS.'},
-    mechanism: {'pt': 'Antagonista D2 potente.', 'es': 'Antagonista D2.'},
-    warning: {'pt': 'Risco de Síndrome Neuroléptica Maligna.', 'es': 'Riesgo de SNM.'},
-    adverse: {
-      'pt': ['Distonia aguda', 'Acatisia', 'Parkinsonismo', 'Prolongamento QT', 'Sedação'],
-      'es': ['Distonía aguda', 'Acatisia', 'Parkinsonismo', 'Prolongamiento QT', 'Sedación'],
-    },
-  ),
-
-  DrugModel(
-    id: 'risperidona_p',
-    group: 'Neurología y Psiquiatría',
-    name: 'Risperidona (Doctas)',
-    className: {'pt': 'Antipsicótico Atípico', 'es': 'Antipsicótico Atípico'},
-    category: {'pt': 'Psiquiatria', 'es': 'Psiquiatría'},
-    route: 'VO',
-    doseType: 'weight',
-    fixedDose: {
-      'pt': 'Adulto: 1-6 mg/dia. Ped: 0.25-1 mg/dia.',
-      'es': 'Adulto: 1-6 mg/día. Ped: 0.25-1 mg/día.',
-    },
-    renalAlert: {'pt': 'Reduzir dose inicial em 50% se ClCr < 30.', 'es': 'Reducir dosis inicial al 50% si ClCr < 30.'},
-    elderlyAlert: {'pt': 'Aumenta risco de AVC em idosos com demência.', 'es': 'Riesgo de ACV en demencia.'},
-    mechanism: {'pt': 'Antagonista D2 e 5HT2A.', 'es': 'Antagonista D2 y 5HT2A.'},
-    warning: {'pt': 'Monitorar prolactina.', 'es': 'Monitorear prolactina.'},
-    adverse: {
-      'pt': ['Ganho de peso', 'Hiperprolactinemia', 'Sedação', 'Acatisia', 'Tontura'],
-      'es': ['Aumento de peso', 'Hiperprolactinemia', 'Sedación', 'Acatisia', 'Mareo'],
-    },
-  ),
-
-  DrugModel(
-    id: 'sertralina_p',
-    group: 'Neurología y Psiquiatría',
-    name: 'Sertralina (Zoloft)',
-    className: {'pt': 'ISRS', 'es': 'ISRS'},
-    category: {'pt': 'Psiquiatria', 'es': 'Psiquiatría'},
-    route: 'VO',
-    doseType: 'weight',
-    fixedDose: {
-      'pt': 'Adulto: 50-200 mg/dia. Ped (>6 anos): 25-50 mg/dia.',
-      'es': 'Adulto: 50-200 mg/día. Ped: 25-50 mg/día.',
-    },
-    renalAlert: {'pt': 'Sem ajuste necessário.', 'es': 'Sin ajuste necesario.'},
-    elderlyAlert: {'pt': 'Risco de hiponatremia (SIADH).', 'es': 'Riesgo de hiponatremia.'},
-    mechanism: {'pt': 'Inibidor seletivo da recaptação de serotonina.', 'es': 'Inhibidor de recaptación de serotonina.'},
-    warning: {'pt': 'Não suspender abruptamente.', 'es': 'No suspender abruptamente.'},
-    adverse: {
-      'pt': ['Náuseas', 'Insônia', 'Diarreia', 'Disfunção sexual', 'Tremor'],
-      'es': ['Náuseas', 'Insomnio', 'Diarrea', 'Disfunción sexual', 'Temblor'],
-    },
-  ),
-
-  DrugModel(
-    id: 'fluoxetina_p',
-    group: 'Neurología y Psiquiatría',
-    name: 'Fluoxetina (Foxetin)',
-    className: {'pt': 'ISRS', 'es': 'ISRS'},
-    category: {'pt': 'Psiquiatria', 'es': 'Psiquiatría'},
-    route: 'VO',
-    doseType: 'weight',
-    fixedDose: {
-      'pt': 'Adulto: 20-60 mg/dia. Pediatria: 10-20 mg/dia.',
-      'es': 'Adulto: 20-60 mg/día. Pediatría: 10-20 mg/día.',
-    },
-    renalAlert: {'pt': 'Cuidado em insuficiência renal grave.', 'es': 'Precaución en falla renal grave.'},
-    elderlyAlert: {'pt': 'Monitorar hiponatremia e perda de peso.', 'es': 'Monitorizar peso.'},
-    mechanism: {'pt': 'ISRS; meia-vida muito longa (7 dias).', 'es': 'ISRS; vida media larga.'},
-    warning: {'pt': 'Único aprovado para depressão em < 12 anos.', 'es': 'Aprobado en pediatría.'},
-    adverse: {
-      'pt': ['Ansiedade', 'Perda de apetite', 'Insônia', 'Náuseas', 'Disfunção sexual'],
-      'es': ['Ansiedad', 'Anorexia', 'Insomnio', 'Náuseas', 'Disfunción sexual'],
-    },
-  ),
-
-  DrugModel(
     id: 'venlafaxina_p',
     group: 'Neurología y Psiquiatría',
     name: 'Venlafaxina (Efexor)',
@@ -10169,28 +8753,6 @@ const List<DrugModel> drugsDatabase = [
     adverse: {
       'pt': ['Sonolência', 'Ataxia', 'Hipersalivação', 'Fadiga', 'Depressão'],
       'es': ['Somnolencia', 'Ataxia', 'Sialorrea', 'Fatiga', 'Depresión'],
-    },
-  ),
-
-  DrugModel(
-    id: 'lorazepam_f',
-    group: 'Neurología y Psiquiatría',
-    name: 'Lorazepam (Trapax)',
-    className: {'pt': 'Benzodiazepínico', 'es': 'Benzodiazepina'},
-    category: {'pt': 'Ansiedade / Crise', 'es': 'Ansiedad / Crisis'},
-    route: 'VO / SL / IV / IM',
-    doseType: 'weight',
-    fixedDose: {
-      'pt': 'Status Adulto: 4 mg IV lento. Ped: 0.1 mg/kg IV.',
-      'es': 'Status Adulto: 4 mg IV lento. Ped: 0.1 mg/kg IV.',
-    },
-    renalAlert: {'pt': 'Metabolismo hepático (glucuronidação); seguro.', 'es': 'Metabolismo hepático; seguro.'},
-    elderlyAlert: {'pt': 'Preferido sobre diazepam por meia-vida curta.', 'es': 'Preferido por vida media corta.'},
-    mechanism: {'pt': 'Benzodiazepínico de ação intermediária.', 'es': 'BZD de acción intermedia.'},
-    warning: {'pt': 'Choice para agitação aguda na Argentina (Trapax).', 'es': 'Trapax es el estándar para crisis.'},
-    adverse: {
-      'pt': ['Sedação', 'Hipotensão', 'Amnésia', 'Ataxia', 'Confusão'],
-      'es': ['Sedación', 'Hipotensión', 'Amnesia', 'Ataxia', 'Confusión'],
     },
   ),
 
