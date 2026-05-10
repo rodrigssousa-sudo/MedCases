@@ -415,7 +415,7 @@ class _CollapsibleSection extends StatelessWidget {
 // ─────────────────────────────────────────────────────────────────────────────
 // BIOMETRIA BODY
 // ─────────────────────────────────────────────────────────────────────────────
-class _BiometricsBody extends StatelessWidget {
+class _BiometricsBody extends StatefulWidget {
   final AppProvider p;
   final TextEditingController drugQueryCtrl;
   final bool drugPickerOpen;
@@ -430,13 +430,82 @@ class _BiometricsBody extends StatelessWidget {
   });
 
   @override
+  State<_BiometricsBody> createState() => _BiometricsBodyState();
+}
+
+class _BiometricsBodyState extends State<_BiometricsBody> {
+  // Controllers próprios — únicas fontes de verdade para os TextFields.
+  // Necessário porque initialValue num TextField só é aplicado na primeira
+  // montagem; ao chamar resetPatient() + notifyListeners() o widget reconstrói
+  // mas o TextField já montado ignora o novo initialValue, mantendo o texto
+  // antigo na tela. Com controllers explícitos conseguimos fazer .clear()
+  // quando o provider zerar o PatientData.
+  late final TextEditingController _idCtrl;
+  late final TextEditingController _ageCtrl;
+  late final TextEditingController _weightCtrl;
+  late final TextEditingController _heightCtrl;
+  late final TextEditingController _creatCtrl;
+  late final TextEditingController _medsCtrl;
+
+  // Rastrea a "versão" do patient para detectar reset externo
+  String _lastPatientSnapshot = '';
+
+  @override
+  void initState() {
+    super.initState();
+    final pt = widget.p.patient;
+    _idCtrl     = TextEditingController(text: pt.patientId);
+    _ageCtrl    = TextEditingController(text: pt.age);
+    _weightCtrl = TextEditingController(text: pt.weight);
+    _heightCtrl = TextEditingController(text: pt.height);
+    _creatCtrl  = TextEditingController(text: pt.creatinine);
+    _medsCtrl   = TextEditingController(text: pt.medications);
+    _lastPatientSnapshot = _snapshot(pt);
+  }
+
+  @override
+  void dispose() {
+    _idCtrl.dispose();
+    _ageCtrl.dispose();
+    _weightCtrl.dispose();
+    _heightCtrl.dispose();
+    _creatCtrl.dispose();
+    _medsCtrl.dispose();
+    super.dispose();
+  }
+
+  // Snapshot simples para detectar reset: concatena todos os campos
+  String _snapshot(dynamic pt) =>
+      '${pt.patientId}|${pt.age}|${pt.weight}|${pt.height}|${pt.creatinine}|${pt.medications}';
+
+  // Chamado a cada rebuild (provider mudou). Se o snapshot virou tudo vazio
+  // (resetPatient()), limpa os controllers para refletir na tela.
+  void _syncControllersIfReset() {
+    final pt = widget.p.patient;
+    final snap = _snapshot(pt);
+    if (snap == _lastPatientSnapshot) return; // nada mudou
+    _lastPatientSnapshot = snap;
+
+    // Só aplica se o provider está vazio (reset) e o campo ainda tem texto
+    // para não sobrescrever edições normais do usuário.
+    if (pt.patientId.isEmpty   && _idCtrl.text.isNotEmpty)     _idCtrl.clear();
+    if (pt.age.isEmpty         && _ageCtrl.text.isNotEmpty)     _ageCtrl.clear();
+    if (pt.weight.isEmpty      && _weightCtrl.text.isNotEmpty)  _weightCtrl.clear();
+    if (pt.height.isEmpty      && _heightCtrl.text.isNotEmpty)  _heightCtrl.clear();
+    if (pt.creatinine.isEmpty  && _creatCtrl.text.isNotEmpty)   _creatCtrl.clear();
+    if (pt.medications.isEmpty && _medsCtrl.text.isNotEmpty)    _medsCtrl.clear();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    _syncControllersIfReset();
+    final p = widget.p;
     final isMale = p.patient.sex == 'M';
     return Column(children: [
       // Paciente + Limpar
       Row(children: [
         Expanded(child: _FieldRow(label: p.t('patient_bed'),
-          child: MedInput(hintText: p.t('hint_bed'), initialValue: p.patient.patientId,
+          child: MedInput(controller: _idCtrl, hintText: p.t('hint_bed'),
             onChanged: (v) => p.updatePatient('patientId', v)))),
         const SizedBox(width: 8),
         GestureDetector(
@@ -453,7 +522,7 @@ class _BiometricsBody extends StatelessWidget {
       // Idade + Sexo toggle
       Row(children: [
         Expanded(child: _FieldRow(label: p.t('age'),
-          child: MedInput(hintText: '68', initialValue: p.patient.age,
+          child: MedInput(controller: _ageCtrl, hintText: '68',
             keyboardType: TextInputType.number, onChanged: (v) => p.updatePatient('age', v)))),
         const SizedBox(width: 10),
         Expanded(child: _FieldRow(
@@ -500,17 +569,17 @@ class _BiometricsBody extends StatelessWidget {
       // Peso + Altura
       Row(children: [
         Expanded(child: _FieldRow(label: p.t('weight_kg'),
-          child: MedInput(hintText: '78', initialValue: p.patient.weight,
+          child: MedInput(controller: _weightCtrl, hintText: '78',
             keyboardType: TextInputType.number, onChanged: (v) => p.updatePatient('weight', v)))),
         const SizedBox(width: 10),
         Expanded(child: _FieldRow(label: p.t('height_cm'),
-          child: MedInput(hintText: '171', initialValue: p.patient.height,
+          child: MedInput(controller: _heightCtrl, hintText: '171',
             keyboardType: TextInputType.number, onChanged: (v) => p.updatePatient('height', v)))),
       ]),
       const SizedBox(height: 10),
       // Creatinina
       _FieldRow(label: p.t('creatinine'),
-        child: MedInput(hintText: '1.0 mg/dL', initialValue: p.patient.creatinine,
+        child: MedInput(controller: _creatCtrl, hintText: '1.0 mg/dL',
           keyboardType: const TextInputType.numberWithOptions(decimal: true),
           onChanged: (v) => p.updatePatient('creatinine', v))),
       const SizedBox(height: 10),
@@ -518,8 +587,8 @@ class _BiometricsBody extends StatelessWidget {
       _FieldRow(
         label: p.t('medications_optional'),
         child: MedInput(
+          controller: _medsCtrl,
           hintText: p.t('hint_meds'),
-          initialValue: p.patient.medications,
           maxLines: 3,
           onChanged: (v) => p.updatePatient('medications', v),
         ),
