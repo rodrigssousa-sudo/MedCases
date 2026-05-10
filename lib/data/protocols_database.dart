@@ -2283,6 +2283,842 @@ const List<ProtocolModel> protocolsDatabase = [
   ),
 
   // ─────────────────────────────────────────────
+  //  DOENÇAS INFECCIOSAS
+  // ─────────────────────────────────────────────
+  ProtocolModel(
+    id: 'dengue_manejo',
+    title: {'pt': 'Dengue — Manejo Clínico (Grupos A-D)', 'es': 'Dengue — Manejo Clínico (Grupos A-D)'},
+    severity: {'pt': 'Alto', 'es': 'Alto'},
+    recognize: {
+      'pt': 'Febre + mialgia + dor retro-orbitária + exantema. Sinais de Alarme: dor abdominal intensa, vômitos persistentes, sangramento de mucosas, hipotensão, queda abrupta de plaquetas (<100.000), hematócrito em ascensão.',
+      'es': 'Fiebre + mialgia + dolor retroorbitario + exantema. Signos de Alarma: dolor abdominal intenso, vómitos persistentes, sangrado de mucosas, hipotensión, plaquetas <100.000, hematocrito en ascenso.',
+    },
+    actions: {
+      'pt': [
+        '1. GRUPO A (sem sinais de alarme, sem comorbidades): Hidratação Oral 60 mL/kg/dia (1/3 SRO, 2/3 líquidos claros); analgesia com Paracetamol; acompanhamento ambulatorial',
+        '2. GRUPO B (comorbidades OU sinais de alarme leves): observação hospitalar; hidratação IV 10 mL/kg SF em 1h; repetir se necessário',
+        '3. GRUPO C (dengue grave — extravasamento grave, choque, sangramento intenso, disfunção orgânica):',
+        '   → Cristaloide 20 mL/kg IV em 15–20 min; repetir 1–2x se sem resposta',
+        '   → Se choque refratário: colóide 10–20 mL/kg IV',
+        '   → Monitorar hematócrito 2/2h',
+        '4. Analgesia: Paracetamol 500–1000 mg 6/6h OU Dipirona 500–1000 mg 6/6h',
+        '5. Monitorar: hematócrito, plaquetas, PA, diurese (alvo ≥1 mL/kg/h)',
+        '6. Transfusão de plaquetas: apenas se <20.000/mm³ sem sangramento, ou <50.000 com sangramento ativo',
+      ],
+      'es': [
+        '1. GRUPO A (sin signos de alarma): Hidratación Oral 60 mL/kg/día; Paracetamol; seguimiento ambulatorio',
+        '2. GRUPO B (comorbidades O signos leves): hidratación IV 10 mL/kg SF en 1 h',
+        '3. GRUPO C (dengue grave — choque, sangrado intenso, disfunción orgánica):',
+        '   → Cristaloide 20 mL/kg IV en 15–20 min; repetir si sin respuesta',
+        '   → Monitorizar hematocrito c/2 h',
+        '4. Analgesia: Paracetamol o Dipirona',
+        '5. Monitorizar: hematocrito, plaquetas, PA, diuresis (objetivo ≥1 mL/kg/h)',
+        '6. Transfusión plaquetas: solo si <20.000 sin sangrado, o <50.000 con sangrado activo',
+      ],
+    },
+    avoid: {
+      'pt': 'CONTRAINDICADO: AAS e AINEs (risco de sangramento por plaquetopenia e disfunção plaquetária). Evitar corticoides na fase febril (sem benefício, pode piorar). Não hiperhidratar (risco de derrame pleural e ascite iatrogênica). Evitar antibióticos de rotina (causa viral).',
+      'es': 'CONTRAINDICADO: AAS y AINEs (riesgo de sangrado). Evitar corticoides en fase febril. No hiperhidratar. Evitar antibióticos de rutina (causa viral).',
+    },
+    drugs: ['paracetamol', 'dipirona'],
+  ),
+
+  // ─────────────────────────────────────────────
+  //  TOXICOLOGIA ESPECÍFICA (continuação)
+  // ─────────────────────────────────────────────
+  ProtocolModel(
+    id: 'intox_benzodiazepinas',
+    title: {'pt': 'Intoxicação por Benzodiazepínicos', 'es': 'Intoxicación por Benzodiacepinas'},
+    severity: {'pt': 'Médio', 'es': 'Medio'},
+    recognize: {
+      'pt': 'Ataxia, disartria, nistagmo, sonolência profunda, amnésia. Depressão respiratória grave geralmente ocorre apenas quando associada a outros depressores (álcool, opioides, barbitúricos). Intoxicação isolada por BZD raramente é fatal.',
+      'es': 'Ataxia, disartria, nistagmo, somnolencia profunda, amnesia. Depresión respiratoria grave generalmente ocurre solo cuando asociada a otros depresores (alcohol, opioides). Intoxicación aislada raramente es fatal.',
+    },
+    actions: {
+      'pt': [
+        '1. ABCDE; garantir via aérea e oxigenação',
+        '2. Posição lateral de segurança se sonolência com reflexos preservados',
+        '3. Carvão ativado 1 g/kg VO (até 50 g) se <1–2h da ingestão e consciente',
+        '4. FLUMAZENIL (antídoto — usar com cautela):',
+        '   → 0,2 mg IV em 30 s; repetir 0,1 mg a cada 60 s até resposta (máx. 1 mg)',
+        '   → INDICAÇÕES RESTRITAS: depressão respiratória grave, sem contraindicações',
+        '5. Suporte hemodinâmico: cristaloide 250–500 mL IV se hipotensão',
+        '6. Monitorar: SpO2, FR, nível de consciência por mínimo 4–6h',
+        '7. Intoxicação mista (BZD + álcool/opioides): suporte ventilatório + considerar naloxona se componente opioide',
+      ],
+      'es': [
+        '1. ABCDE; asegurar vía aérea y oxigenación',
+        '2. Posición lateral de seguridad si somnolencia con reflejos preservados',
+        '3. Carbón activado 1 g/kg VO si <1–2 h y consciente',
+        '4. FLUMAZENIL (usar con cautela):',
+        '   → 0,2 mg IV en 30 s; repetir 0,1 mg c/60 s hasta respuesta (máx. 1 mg)',
+        '   → INDICACIONES RESTRINGIDAS: depresión respiratoria grave, sin contraindicaciones',
+        '5. Cristaloide 250–500 mL IV si hipotensión',
+        '6. Monitorizar: SpO2, FR, consciencia por mín. 4–6 h',
+      ],
+    },
+    avoid: {
+      'pt': 'FLUMAZENIL CONTRAINDICADO em: usuários crônicos de BZD (precipita síndrome de abstinência aguda grave — status epilepticus refratário), epilépticos em uso de BZD, intoxicação por antidepressivos tricíclicos concomitante (convulsões). Não induzir vômito. Evitar flumazenil como teste diagnóstico rotineiro.',
+      'es': 'FLUMAZENIL CONTRAINDICADO en: usuarios crónicos de BZD (precipita síndrome de abstinencia — status epiléptico refractario), epilépticos, intoxicación por tricíclicos (convulsiones). No inducir vómito.',
+    },
+    drugs: ['diazepam', 'midazolam'],
+  ),
+
+  // ─────────────────────────────────────────────
+  //  PEDIATRIA (continuação)
+  // ─────────────────────────────────────────────
+  ProtocolModel(
+    id: 'crise_asmatica_ped',
+    title: {'pt': 'Crise de Asma Pediátrica', 'es': 'Crisis de Asma Pediátrica'},
+    severity: {'pt': 'Médio', 'es': 'Medio'},
+    recognize: {
+      'pt': 'Sibilância, taquipneia, retração subcostal/intercostal, fala entrecortada ou choro fraco. SpO2 <92% indica gravidade. Escore PRAM ou Escore de Wood-Downes para estratificação. Grave: SpO2 <92%, FR >50, retração grave, incapacidade de falar/mamar, cianose.',
+      'es': 'Sibilancias, taquipnea, tiraje subcostal/intercostal, llanto débil. SpO2 <92% indica gravedad. Grave: SpO2 <92%, FR >50, tiraje grave, incapacidad de hablar/mamar, cianosis.',
+    },
+    actions: {
+      'pt': [
+        '1. LEVE a MODERADA: O2 para SpO2 ≥94%',
+        '2. Salbutamol MDI (com espaçador): 2–10 jatos a cada 20 min (1ª hora)',
+        '   → Alternativa: nebulização 2,5 mg (<20 kg) ou 5 mg (>20 kg) a cada 20 min',
+        '3. Ipratrópio brometo MDI 2–4 jatos (ou nebulização 0,25 mg) a cada 20 min × 3 — crises moderadas/graves',
+        '4. CORTICOIDE: Prednisolona 1–2 mg/kg VO (máx. 40 mg) OU Dexametasona 0,15–0,3 mg/kg VO (máx. 10 mg) × 2 dias (mais adesão)',
+        '5. GRAVE (SpO2 <92% após broncodilatadores iniciais):',
+        '   → Sulfato de Magnésio 50–75 mg/kg IV em 20 min (máx. 2,5 g) — broncodilatador adjuvante',
+        '   → Adrenalina SC 0,01 mg/kg (máx. 0,3 mg) se broncoespasmo grave refratário',
+        '6. Internação: SpO2 <94% após 1h, necessidade >6 jatos/hora, crise grave, <1 ano',
+        '7. Critérios de alta: SpO2 ≥94% em ar ambiente, FR normal, sem retração, boa tolerância',
+      ],
+      'es': [
+        '1. LEVE a MODERADA: O2 para SpO2 ≥94%',
+        '2. Salbutamol MDI (con espaciador): 2–10 disparos c/20 min',
+        '3. Ipratropio MDI 2–4 disparos c/20 min × 3 — crisis moderadas/graves',
+        '4. CORTICOIDE: Prednisolona 1–2 mg/kg VO (máx. 40 mg) O Dexametasona 0,15–0,3 mg/kg VO × 2 días',
+        '5. GRAVE (SpO2 <92%):',
+        '   → Sulfato de Magnesio 50–75 mg/kg IV en 20 min (máx. 2,5 g)',
+        '   → Adrenalina SC 0,01 mg/kg si broncoespasmo refractario',
+        '6. Internación: SpO2 <94% tras 1 h, >6 disparos/hora, crisis grave',
+      ],
+    },
+    avoid: {
+      'pt': 'EVITAR nebulização em detrimento do MDI com espaçador (MDI é igualmente eficaz, menor risco de infecção cruzada, menor tempo de administração). Não usar teofilina IV (maior toxicidade sem benefício adicional). Evitar sedação sem via aérea garantida. Não usar ketamina sem experiência em asma pediátrica.',
+      'es': 'EVITAR nebulización sobre MDI con espaciador (igualmente eficaz, menor riesgo infección cruzada). No usar teofilina IV (mayor toxicidad). Evitar sedación sin vía aérea garantizada.',
+    },
+    drugs: ['salbutamol', 'dexametasona', 'metilprednisolona', 'sulfato_magnesio'],
+  ),
+
+  // ─────────────────────────────────────────────
+  //  CARDIOVASCULAR (continuação)
+  // ─────────────────────────────────────────────
+  ProtocolModel(
+    id: 'insuficiencia_cardiaca_descomp',
+    title: {'pt': 'IC Descompensada — Perfil B (Quente e Úmido)', 'es': 'IC Descompensada — Perfil B (Caliente y Húmedo)'},
+    severity: {'pt': 'Alto', 'es': 'Alto'},
+    recognize: {
+      'pt': 'Dispneia em repouso, ortopneia, estertores crepitantes bilaterais, edema de MMII, turgência jugular, B3. Perfil B (mais comum): normoperfundido + congestão. Diferir de Perfil C (frio e úmido — baixo débito + congestão → choque cardiogênico). RX: cardiomegalia, redistribuição vascular, linhas B de Kerley.',
+      'es': 'Disnea de reposo, ortopnea, crepitantes bilaterales, edema MMII, ingurgitación yugular, B3. Perfil B (más común): normoperfundido + congestión. Diferir Perfil C (frío y húmedo → choque cardiogénico). RX: redistribución vascular, líneas B de Kerley.',
+    },
+    actions: {
+      'pt': [
+        '1. POSIÇÃO SENTADA; O2 se SpO2 <94%; VNI (CPAP/BiPAP) se SpO2 refratária ou FR >25',
+        '2. FUROSEMIDA IV: 40–80 mg IV (ou 2,5× dose oral crônica se já em uso)',
+        '   → Resposta: diurese ≥1 mL/kg/h; se insuficiente: dobrar dose em 2h',
+        '3. VASODILATADORES (se PAS >110 mmHg):',
+        '   → Nitroglicerina IV 5–200 µg/min OU Isossorbida SL 5 mg',
+        '4. Betabloqueador: NÃO iniciar na descompensação aguda; manter se já em uso e estável (reduzir dose se FC >100 ou hipotensão)',
+        '5. Restrição hídrica: 1–1,5 L/dia; dieta hipossódica',
+        '6. Monitorar: PA, FC, SpO2, diurese horária, eletrólitos (K+), função renal',
+        '7. Pesagem diária; controle de balanço hídrico rigoroso',
+        '8. Perfil C (frio + úmido): dobutamina 2,5–10 µg/kg/min IV + noradrenalina — ver protocolo choque cardiogênico',
+      ],
+      'es': [
+        '1. POSICIÓN SENTADA; O2 si SpO2 <94%; VNI si SpO2 refractaria o FR >25',
+        '2. FUROSEMIDA IV: 40–80 mg IV (o 2,5× dosis oral crónica)',
+        '   → Respuesta: diuresis ≥1 mL/kg/h; si insuficiente: doblar dosis en 2 h',
+        '3. VASODILATADORES (si PAS >110 mmHg): Nitroglicerina IV o Isosorbide SL',
+        '4. Betabloqueante: NO iniciar en descompensación aguda; mantener si estable',
+        '5. Restricción hídrica 1–1,5 L/día; dieta hipiosódica',
+        '6. Monitorizar: PA, FC, SpO2, diuresis horaria, K+, función renal',
+      ],
+    },
+    avoid: {
+      'pt': 'EVITAR iniciar betabloqueador na fase congestiva aguda (pode piorar o débito cardíaco). Nitroglicerina contraindicada se PAS <90 mmHg ou uso de PDE5i. Não usar furosemida IM (absorção imprevisível). Evitar diuréticos excessivos sem monitoração (hipovolemia, IRA, hipopotassemia).',
+      'es': 'EVITAR iniciar betabloqueante en fase congestiva aguda. Nitroglicerina contraindicada si PAS <90 mmHg o PDE5i. No usar furosemida IM. Evitar diuréticos excesivos sin monitorización.',
+    },
+    drugs: ['furosemida', 'nitroglicerina', 'dobutamina', 'noradrenalina'],
+  ),
+
+  // ─────────────────────────────────────────────
+  //  DISTÚRBIOS HIDROELETROLÍTICOS
+  // ─────────────────────────────────────────────
+  ProtocolModel(
+    id: 'hipernatremia_grave',
+    title: {'pt': 'Hipernatremia Grave (Na+ >155 mEq/L)', 'es': 'Hipernatremia Grave (Na+ >155 mEq/L)'},
+    severity: {'pt': 'Alto', 'es': 'Alto'},
+    recognize: {
+      'pt': 'Sede intensa, mucosas secas, letargia, irritabilidade, hiperreflexia, convulsões, coma. Na+ >145 mEq/L = hipernatremia; >155 = grave. Causas: perda de água livre (febre, taquipneia, sudorese, diabetes insipidus), ganho de sódio (NaHCO3 excessivo), restrição de água (idosos, lactentes, rebaixamento de consciência).',
+      'es': 'Sed intensa, mucosas secas, letargia, irritabilidad, hiperreflexia, convulsiones, coma. Causas: pérdida de agua libre (fiebre, taquipnea, diabetes insípidus), ganancia de sodio, restricción de agua.',
+    },
+    actions: {
+      'pt': [
+        '1. Calcular déficit de água livre: déficit = 0,6 × peso × [(Na+ atual / 140) − 1]',
+        '2. REPOSIÇÃO: Água livre VO/SNE (preferível se possível) OU SG5% IV OU SF 0,45% IV',
+        '3. VELOCIDADE: Reduzir Na+ máximo 10–12 mEq/L em 24h (risco de edema cerebral se correção rápida)',
+        '   → Taxa de infusão: ajustar conforme cálculo + perdas contínuas',
+        '4. Monitorar sódio a cada 4–6h até estabilização',
+        '5. Identificar e tratar causa: diabetes insipidus central (desmopressina), nefrogênico (retirar causa), perda extrarenal (reposição)',
+        '6. Se Na+ >170 mEq/L: hemodiálise pode ser necessária para controle mais preciso',
+      ],
+      'es': [
+        '1. Calcular déficit de agua libre: déficit = 0,6 × peso × [(Na+ actual / 140) − 1]',
+        '2. REPOSICIÓN: Agua libre VO/SNG O SG5% IV O SF 0,45% IV',
+        '3. VELOCIDAD: Reducir Na+ máx. 10–12 mEq/L en 24 h (riesgo edema cerebral si corrección rápida)',
+        '4. Monitorizar sodio c/4–6 h hasta estabilización',
+        '5. Identificar y tratar causa: DI central (desmopresina), nefrogénico, pérdida extrarrenal',
+        '6. Si Na+ >170 mEq/L: hemodiálisis puede ser necesaria',
+      ],
+    },
+    avoid: {
+      'pt': 'EVITAR correção rápida (queda >12 mEq/L/24h → edema cerebral → deterioração neurológica paradoxal). Não usar SF 0,9% para correção (aumenta sódio ainda mais — usar apenas se choque hipovolêmico associado). Evitar hipoglicemia ao usar SG5% (monitorar glicemia).',
+      'es': 'EVITAR corrección rápida (caída >12 mEq/L/24h → edema cerebral). No usar SF 0,9% para corrección. Evitar hipoglucemia al usar SG5%.',
+    },
+    drugs: ['insulina_regular'],
+  ),
+
+  ProtocolModel(
+    id: 'hiponatremia_grave',
+    title: {'pt': 'Hiponatremia Grave Sintomática (Na+ <125 mEq/L)', 'es': 'Hiponatremia Grave Sintomática (Na+ <125 mEq/L)'},
+    severity: {'pt': 'Crítico', 'es': 'Crítico'},
+    recognize: {
+      'pt': 'Confusão, desorientação, cefaleia intensa, náuseas, convulsões, coma. Na+ <125 mEq/L geralmente sintomático. Causas: SIADH, ICC, cirrose, hipotireoidismo, insuficiência adrenal, politraumatismo, pós-operatório. Diferenciar: hipovolêmica (hipovolemia) × euvolêmica (SIADH) × hipervolêmica (ICC, cirrose).',
+      'es': 'Confusión, desorientación, cefalea intensa, convulsiones, coma. Causas: SIADH, ICC, cirrosis, hipotiroidismo, insuficiencia adrenal. Diferenciar: hipovolémica × euvolémica (SIADH) × hipervolémica.',
+    },
+    actions: {
+      'pt': [
+        '1. SINTOMÁTICA GRAVE (convulsão, coma): NaCl 3% (soro hipertônico) 100–150 mL IV em 10–20 min',
+        '2. Repetir bolus de 100 mL até 3× se sintomas neurológicos persistem',
+        '3. Meta inicial: elevar Na+ 4–6 mEq/L nas primeiras 1–2h (suficiente para cessar convulsões)',
+        '4. LIMITE SEGURO: elevar no máximo 8–10 mEq/L em 24h (risco de Síndrome de Desmielinização Osmótica — SDO)',
+        '5. SINTOMÁTICA MODERADA (confusão, cefaleia): NaCl 3% 0,5–1 mL/kg/h IV — velocidade de elevação 0,5–1 mEq/L/h',
+        '6. Monitorar sódio a cada 2h nas primeiras 6h, depois a cada 4–6h',
+        '7. Tratar causa: SIADH (restrição hídrica 800 mL/dia + NaCl 3%; suspender medicação causadora), hipovolêmica (SF 0,9% IV), ICC/cirrose (diurético + restrição hídrica)',
+        '8. Tolvaptana (antagonista V2) em SIADH: 15 mg/dia VO — iniciar apenas em ambiente hospitalar',
+      ],
+      'es': [
+        '1. SINTOMÁTICA GRAVE (convulsión, coma): NaCl 3% 100–150 mL IV en 10–20 min',
+        '2. Repetir bolus de 100 mL hasta 3× si síntomas persisten',
+        '3. Meta inicial: elevar Na+ 4–6 mEq/L en primeras 1–2 h',
+        '4. LÍMITE SEGURO: elevar máx. 8–10 mEq/L en 24 h (riesgo de Síndrome de Desmielinización Osmótica)',
+        '5. SINTOMÁTICA MODERADA: NaCl 3% 0,5–1 mL/kg/h IV',
+        '6. Monitorizar sodio c/2 h en primeras 6 h, luego c/4–6 h',
+        '7. Tratar causa: SIADH (restricción hídrica + NaCl 3%), hipovolémica (SF 0,9% IV)',
+      ],
+    },
+    avoid: {
+      'pt': 'EVITAR correção total em 24h (SDO — síndrome de desmielinização osmótica: paraplegia, coma). Se Na+ subir >10 mEq/L em 24h sem sintomas graves: FREAR a correção (água livre 10 mL/kg VO ou desmopressina 2 µg IV). Não usar NaCl 3% em hiponatremia hipervolêmica sem diurético. Evitar SF 0,9% em SIADH (pode piorar hiponatremia paradoxalmente).',
+      'es': 'EVITAR corrección total en 24 h (SDO — desmielinización osmótica: paraplejía, coma). Si Na+ sube >10 mEq/L en 24 h: FRENAR corrección (agua libre VO o desmopresina). No usar NaCl 3% en hiponatremia hipervolémica sin diurético.',
+    },
+    drugs: ['furosemida'],
+  ),
+
+  // ─────────────────────────────────────────────
+  //  NEFROLOGIA / UROLOGIA
+  // ─────────────────────────────────────────────
+  ProtocolModel(
+    id: 'colica_nefretica',
+    title: {'pt': 'Cólica Nefrética (Urolitíase)', 'es': 'Cólico Renoureteral (Urolitiasis)'},
+    severity: {'pt': 'Médio', 'es': 'Medio'},
+    recognize: {
+      'pt': 'Dor lombar súbita, intensa, em cólica, irradiada para região inguinal/genitália, inquietude (não melhora com posição). Náuseas, vômitos, hematúria macro/microscópica. Pode haver febre (infecção associada = urológica urgência). USG ou TC sem contraste: cálculo, dilatação de via urinária.',
+      'es': 'Dolor lumbar súbito, intenso, en cólico, irradiado a ingle/genitales, inquietud (no mejora con posición). Náuseas, hematuria. Fiebre = infección asociada (urgencia urológica). USG o TC sin contraste: cálculo, dilatación.',
+    },
+    actions: {
+      'pt': [
+        '1. ANALGESIA (1ª linha — AINE é superior a opioides):',
+        '   → Cetorolaco 30 mg IV ou Diclofenaco 75 mg IM',
+        '   → Alternativa: Dipirona 1 g IV + Hioscina 20 mg IV (antiespasmódico)',
+        '2. RESGATE se dor refratária: Morfina 2–4 mg IV ou Tramadol 100 mg IV',
+        '3. Antiespasmódico: Hioscina 20 mg IV ou Propinoxato 20 mg IV',
+        '4. TERAPIA EXPULSIVA (cálculo ≤10 mm, sem complicação): Tamsulosina 0,4 mg/dia VO × 4 semanas (facilita passagem espontânea)',
+        '5. Hidratação moderada IV se desidratação (sem hiperidratação — não acelera passagem)',
+        '6. INDICAÇÕES CIRÚRGICAS URGENTES: febre (obstrução infectada — pielonefrite obstrutiva), anúria (cálculo bilateral ou rim único), cálculo >10 mm (improvável passagem espontânea), dor refratária',
+        '7. Orientar retorno se febre, calafrios ou anúria (urgência urológica)',
+      ],
+      'es': [
+        '1. ANALGESIA (1ª línea — AINE superior a opioides):',
+        '   → Ketorolaco 30 mg IV o Diclofenaco 75 mg IM',
+        '   → Alternativa: Dipirona 1 g IV + Hioscina 20 mg IV',
+        '2. RESCATE si dolor refractario: Morfina 2–4 mg IV o Tramadol 100 mg IV',
+        '3. TERAPIA EXPULSIVA (cálculo ≤10 mm): Tamsulosina 0,4 mg/día VO × 4 semanas',
+        '4. Hidratación moderada si deshidratación (sin hiperhidratación)',
+        '5. INDICACIONES QUIRÚRGICAS URGENTES: fiebre (obstrucción infectada), anuria, cálculo >10 mm, dolor refractario',
+      ],
+    },
+    avoid: {
+      'pt': 'EVITAR hiperidratação (não acelera passagem do cálculo e aumenta a dor por distensão do sistema coletor). AINEs: cautela em IRC (nefroproteção — preferir opioides). Não subestimar febre com cólica — pielonefrite obstrutiva exige desobstrução urgente (risco de sepse e perda renal).',
+      'es': 'EVITAR hiperhidratación (no acelera paso del cálculo). AINEs: precaución en IRC. No subestimar fiebre con cólico — pielonefritis obstructiva exige desobstrucción urgente (riesgo sepsis).',
+    },
+    drugs: ['morfina', 'omeprazol'],
+  ),
+
+  // ─────────────────────────────────────────────
+  //  GASTROENTEROLOGIA (continuação)
+  // ─────────────────────────────────────────────
+  ProtocolModel(
+    id: 'pancreatite_aguda',
+    title: {'pt': 'Pancreatite Aguda — Manejo Inicial (Leve a Moderada)', 'es': 'Pancreatitis Aguda — Manejo Inicial (Leve a Moderada)'},
+    severity: {'pt': 'Alto', 'es': 'Alto'},
+    recognize: {
+      'pt': 'Dor abdominal epigástrica intensa em barra irradiada para dorso, náuseas, vômitos. Lipase OU Amilase >3× LSN. Diferir de pancreatite aguda grave (ver protocolo `pancreatite_aguda_grave`): sem falência orgânica e sem necrose ≥30%. Causas: litíase biliar (40%), álcool (30%), hipertrigliceridemia, medicamentos, idiopática.',
+      'es': 'Dolor epigástrico intenso en cinturón irradiado al dorso, náuseas, vómitos. Lipasa O Amilasa >3× LSN. Sin falla orgánica ni necrosis (leve-moderada). Causas: litiasis biliar (40%), alcohol (30%), hipertrigliceridemia.',
+    },
+    actions: {
+      'pt': [
+        '1. REPOSIÇÃO VOLÊMICA: Ringer Lactato 250–500 mL/h nas primeiras 12–24h (preferir RL sobre SF — reduz acidose e SIRS)',
+        '2. Monitorar: débito urinário (alvo ≥0,5 mL/kg/h), PA, FC, hematócrito a cada 6h',
+        '3. ANALGESIA: Tramadol 100 mg IV ou Morfina 2–4 mg IV (mito de que opioides pioram — sem evidência)',
+        '4. DIETA: jejum apenas se vômitos incoercíveis ou íleo; reintroduzir dieta oral precoce (24–48h) se tolerância — reduz complicações',
+        '5. Exames: hemograma, PCR, cálcio, glicemia, triglicerídeos, função renal e hepática',
+        '6. AVALIAR GRAVIDADE (Revised Atlanta 2012):',
+        '   → Leve: sem falência orgânica, sem complicação local',
+        '   → Moderada: falência transitória (<48h) ou complicação local',
+        '   → Grave: falência persistente (>48h) → ver protocolo pancreatite grave',
+        '7. ETIOLOGIA BILIAR: CPRE se colangite ou icterícia obstrutiva persistente. Colecistectomia antes da alta (leve) ou eletiva (moderada/grave)',
+        '8. Antibiótico NÃO é rotina — apenas se necrose infectada confirmada',
+      ],
+      'es': [
+        '1. REPOSICIÓN VOLÉMICA: Ringer Lactato 250–500 mL/h en primeras 12–24 h',
+        '2. Monitorizar: diuresis (≥0,5 mL/kg/h), hematocrito c/6 h',
+        '3. ANALGESIA: Tramadol 100 mg IV o Morfina 2–4 mg IV',
+        '4. DIETA: ayuno solo si vómitos o íleo; dieta oral precoz (24–48 h) si tolerancia',
+        '5. EVALUAR GRAVEDAD (Revised Atlanta 2012):',
+        '   → Leve: sin falla orgánica, sin complicación local',
+        '   → Grave: falla persistente (>48 h) → ver protocolo pancreatitis grave',
+        '6. ETIOLOGÍA BILIAR: CPRE si colangitis. Colecistectomía antes del alta',
+        '7. Antibiótico NO es rutina',
+      ],
+    },
+    avoid: {
+      'pt': 'EVITAR SF 0,9% em grandes volumes (acidose hiperclorêmica — usar Ringer Lactato). Não usar antibiótico profilático de rotina. Não manter jejum prolongado sem motivo (piora íleo e aumenta permeabilidade intestinal). Evitar analgesia insuficiente (dor intensa aumenta SIRS). Não confundir com pancreatite grave (falência orgânica → UTI obrigatória).',
+      'es': 'EVITAR SF 0,9% en grandes volúmenes. No usar antibiótico profiláctico. No mantener ayuno prolongado sin motivo. No confundir con pancreatitis grave (falla orgánica → UCI obligatoria).',
+    },
+    drugs: ['morfina', 'omeprazol', 'meropenem'],
+  ),
+
+  ProtocolModel(
+    id: 'hemorragia_digestiva_baixa',
+    title: {'pt': 'Hemorragia Digestiva Baixa (HDB)', 'es': 'Hemorragia Digestiva Baja (HDB)'},
+    severity: {'pt': 'Alto', 'es': 'Alto'},
+    recognize: {
+      'pt': 'Hematoquezia (sangue vivo ou marrom nas fezes) ou enterorragia (sangue vivo em grande volume). Causas: diverticulose (principal, 40%), angiodisplasia, neoplasia, colite isquêmica, doença inflamatória intestinal, hemorroida. Diferenciar de HDA: aspirado nasogástrico pode ajudar (bílis = HDA improvável).',
+      'es': 'Hematoquecia (sangre viva en heces) o enterorragia. Causas: diverticulosis (principal, 40%), angiodisplasia, neoplasia, colitis isquémica, EII, hemorroides. Diferir de HDA: aspirado nasogástrico (bilis = HDA improbable).',
+    },
+    actions: {
+      'pt': [
+        '1. 2 acessos venosos calibrosos (14–16G); Cristaloide IV se instabilidade',
+        '2. Tipagem + crossmatch; hemograma, coagulação, função renal',
+        '3. Excluir HDA: se instabilidade grave ou aspirado NG com sangue → EDA primeiro',
+        '4. Ressuscitação: transfusão se Hb <7 g/dL (ou <9 g/dL em cardiopatas)',
+        '5. Colonoscopia: gold standard diagnóstico e terapêutico — em 24–48h após preparo adequado (colonoscopia precoce <24h em instabilidade hemodinâmica controlada pode ser preferível)',
+        '6. Se sangramento maciço persistente + colonoscopia inconclusa: Arteriografia com embolização ou TC-angiografia',
+        '7. Cirurgia (última opção): hemicolectomia se sangramento não localizado e intratável',
+        '8. Suspender AINE, AAS (reavaliação risco/benefício), anticoagulantes temporariamente',
+      ],
+      'es': [
+        '1. 2 accesos venosos gruesos; Cristaloide IV si inestabilidad',
+        '2. Tipificación, hemograma, coagulación, función renal',
+        '3. Excluir HDA: si inestabilidad → EDA primero',
+        '4. Transfusión si Hb <7 g/dL (o <9 en cardiopatas)',
+        '5. Colonoscopia: gold standard — en 24–48 h tras preparación adecuada',
+        '6. Sangrado masivo persistente: Arteriografía con embolización o TC-angiografía',
+        '7. Cirugía: hemicolectomía si sangrado no localizado',
+      ],
+    },
+    avoid: {
+      'pt': 'EVITAR colonoscopia sem preparo adequado de cólon (campo visual ruim, perfuração). Não usar colonoscopia de urgência sem estabilização mínima. Evitar hiperidratação (↑ pressão portal nas varizes — se causa varicosa suspeita: ver protocolo HDA varicosa). Não assumir que HDB para espontaneamente — 75–90% param, mas ressangramento precoce em 20–25%.',
+      'es': 'EVITAR colonoscopia sin preparación adecuada. No realizar colonoscopia de urgencia sin estabilización mínima. No asumir que HDB para espontáneamente (ressangrado precoz en 20–25%).',
+    },
+    drugs: ['omeprazol', 'noradrenalina', 'ceftriaxona'],
+  ),
+
+  // ─────────────────────────────────────────────
+  //  PSIQUIATRIA / NEUROLOGIA (continuação)
+  // ─────────────────────────────────────────────
+  ProtocolModel(
+    id: 'delirium_tremens',
+    title: {'pt': 'Síndrome de Abstinência Alcoólica / Delirium Tremens', 'es': 'Síndrome de Abstinencia Alcohólica / Delirium Tremens'},
+    severity: {'pt': 'Crítico', 'es': 'Crítico'},
+    recognize: {
+      'pt': 'Tremor, taquicardia, sudorese, hipertensão, alucinações visuais/táteis, agitação psicomotora intensa, convulsões. Cronologia: 6–24h após última dose (tremor, ansiedade), 24–48h (convulsões), 48–72h (Delirium Tremens — confusão, alucinações, disautonomia). Escala CIWA-Ar ≥10 = tratamento indicado.',
+      'es': 'Temblor, taquicardia, sudoración, hipertensión, alucinaciones visuales/táctiles, agitación, convulsiones. Cronología: 6–24 h (temblor), 24–48 h (convulsiones), 48–72 h (Delirium Tremens). CIWA-Ar ≥10 = tratamiento indicado.',
+    },
+    actions: {
+      'pt': [
+        '1. MONITORIZAÇÃO contínua (ECG, PA, SpO2); acesso venoso; ambiente calmo',
+        '2. TIAMINA: 200–300 mg IV/IM ANTES de qualquer glicose (prevenir encefalopatia de Wernicke)',
+        '3. BENZODIAZEPÍNICO (1ª linha — protocolo sintoma-guiado pelo CIWA-Ar):',
+        '   → Diazepam 10–20 mg IV a cada 15–30 min até sedação leve (CIWA <10)',
+        '   → Lorazepam 2–4 mg IV se hepatopatia grave (sem metabolismo hepático ativo)',
+        '4. CONVULSÃO por abstinência: Diazepam 10 mg IV + Tiamina IV (não usar fenitoína — sem eficácia em abstinência alcoólica)',
+        '5. Reposição de Magnésio: MgSO4 2 g IV se hipomagnesemia (frequente em alcoolistas)',
+        '6. Reposição de Potássio se hipopotassemia',
+        '7. Hidratação IV e glicose APÓS tiamina',
+        '8. Delirium Tremens refratário: Fenobarbital 65–130 mg IV ou Propofol em UTI',
+      ],
+      'es': [
+        '1. MONITORIZACIÓN continua; acceso venoso; ambiente tranquilo',
+        '2. TIAMINA: 200–300 mg IV/IM ANTES de cualquier glucosa (prevenir encefalopatía de Wernicke)',
+        '3. BENZODIACEPINA (1ª línea — protocolo guiado por CIWA-Ar):',
+        '   → Diazepam 10–20 mg IV c/15–30 min hasta sedación leve (CIWA <10)',
+        '   → Lorazepam 2–4 mg IV si hepatopatía grave',
+        '4. CONVULSIÓN por abstinencia: Diazepam 10 mg IV + Tiamina (no usar fenitoína)',
+        '5. Reposición de Magnesio: MgSO4 2 g IV si hipomagnesemia',
+        '6. Hidratación IV y glucosa DESPUÉS de tiamina',
+        '7. Delirium Tremens refractario: Fenobarbital o Propofol en UCI',
+      ],
+    },
+    avoid: {
+      'pt': 'EVITAR glicose IV antes da tiamina (precipita encefalopatia de Wernicke aguda). Haloperidol como monoterapia: reduz limiar convulsivo — usar apenas como adjuvante aos BZD se alucinações persistentes. Não usar fenitoína em convulsões por abstinência (sem eficácia demonstrada). Evitar alta precoce — Delirium Tremens pode aparecer até 72h após a última dose de álcool.',
+      'es': 'EVITAR glucosa IV antes de tiamina (precipita Wernicke). Haloperidol en monoterapia: reduce umbral convulsivo — usar solo como adyuvante. No usar fenitoína en convulsiones por abstinencia. No dar alta precoz — DT puede aparecer hasta 72 h después.',
+    },
+    drugs: ['diazepam', 'midazolam', 'sulfato_magnesio'],
+  ),
+
+  // ─────────────────────────────────────────────
+  //  PEDIATRIA (continuação)
+  // ─────────────────────────────────────────────
+  ProtocolModel(
+    id: 'meningite_pediatrica',
+    title: {'pt': 'Meningite Bacteriana Pediátrica', 'es': 'Meningitis Bacteriana Pediátrica'},
+    severity: {'pt': 'Crítico', 'es': 'Crítico'},
+    recognize: {
+      'pt': 'Lactente: febre, irritabilidade, recusa alimentar, abaulamento de fontanela, gemência, choro agudo. Criança >2 anos: tríade (febre + cefaleia + rigidez de nuca) + Kernig/Brudzinski. Petéquias/púrpura: meningococo. Agentes por faixa: <1 mês (Streptococcus agalactiae, E. coli, Listeria), 1 mês–5 anos (Neisseria, Pneumococo), >5 anos (Pneumococo, Meningococo).',
+      'es': 'Lactante: fiebre, irritabilidad, rechazo alimentario, fontanela abombada. Niño >2 años: tríada (fiebre + cefalea + rigidez de nuca) + Kernig/Brudzinski. Petequias/púrpura: meningococo. Agentes por edad: <1 mes (SGB, E. coli, Listeria), 1m–5a (Meningococo, Neumococo), >5a (Neumococo).',
+    },
+    actions: {
+      'pt': [
+        '1. ANTIBIÓTICO IMEDIATO (≤30 min após chegada — não aguardar TC, não aguardar PL se contraindicada)',
+        '2. Hemocultura × 2 ANTES do antibiótico (5 min no máximo)',
+        '3. DEXAMETASONA 0,15 mg/kg IV ANTES ou COM 1ª dose de ATB (máx. 6 mg; manter 4 dias):',
+        '   → Reduz sequelas neurológicas (surdez) em meningite por pneumococo e meningococo',
+        '4. ANTIBIÓTICO por faixa etária:',
+        '   → <1 mês: Ampicilina 200 mg/kg/dia IV 6/6h + Cefotaxima 200 mg/kg/dia IV 6/6h',
+        '   → 1 mês–5 anos: Ceftriaxona 100 mg/kg/dia IV 12/12h (máx. 4 g/dia)',
+        '   → >5 anos: Ceftriaxona 100 mg/kg/dia IV + Vancomicina 60 mg/kg/dia IV 6/6h (cobertura pneumococo resistente)',
+        '5. TC crânio ANTES da PL se: lactente <6 meses, Glasgow <13, papiledema, déficit focal, convulsão focal',
+        '6. Suporte: cabeceira 30°, controle glicêmico, correção de eletrólitos, monitoração de PIC',
+        '7. Quimioprofilaxia para contatos: Rifampicina 10 mg/kg 12/12h × 2 dias (meningococo)',
+      ],
+      'es': [
+        '1. ANTIBIÓTICO INMEDIATO (≤30 min — no esperar TC, no esperar PL si contraindicada)',
+        '2. Hemocultivo × 2 ANTES del antibiótico (máx. 5 min)',
+        '3. DEXAMETASONA 0,15 mg/kg IV ANTES o CON 1ª dosis ATB (máx. 6 mg; mantener 4 días)',
+        '4. ANTIBIÓTICO por edad:',
+        '   → <1 mes: Ampicilina 200 mg/kg/día c/6 h + Cefotaxima 200 mg/kg/día c/6 h',
+        '   → 1m–5a: Ceftriaxona 100 mg/kg/día c/12 h (máx. 4 g/día)',
+        '   → >5a: Ceftriaxona 100 mg/kg/día + Vancomicina 60 mg/kg/día c/6 h',
+        '5. TC cráneo antes de PL si: lactante <6m, Glasgow <13, papiledema, déficit focal',
+        '6. Quimioprofilaxis contactos: Rifampicina 10 mg/kg c/12 h × 2 días (meningococo)',
+      ],
+    },
+    avoid: {
+      'pt': 'NUNCA atrasar antibiótico por qualquer motivo (cada hora de atraso aumenta mortalidade e sequelas). Não realizar PL sem TC prévia se sinais de HIC. Dexametasona: sem eficácia se iniciada após o antibiótico — não usar tardiamente. Evitar Ceftriaxona em neonatos com hiperbilirrubinemia (desloca bilirrubina da albumina — usar Cefotaxima).',
+      'es': 'NUNCA retrasar antibiótico. No realizar PL sin TC previa si signos de HIC. Dexametasona sin eficacia si iniciada después del antibiótico. Evitar Ceftriaxona en neonatos con hiperbilirrubinemia (usar Cefotaxima).',
+    },
+    drugs: ['ceftriaxona', 'vancomicina', 'dexametasona', 'meropenem'],
+  ),
+
+  ProtocolModel(
+    id: 'crise_hipertensiva_ped',
+    title: {'pt': 'Crise Hipertensiva Pediátrica', 'es': 'Crisis Hipertensiva Pediátrica'},
+    severity: {'pt': 'Alto', 'es': 'Alto'},
+    recognize: {
+      'pt': 'PA >95° percentil para idade/sexo/altura em 3 ocasiões = HAS. URGÊNCIA: PA >95° + sintomas menores (cefaleia, epistaxe). EMERGÊNCIA: PA muito elevada + lesão de órgão-alvo: encefalopatia (cefaleia + convulsão + alteração visual), IRA, cardiomegalia/IC aguda. Causas pediátricas: glomerulonefrite, coarctação de aorta, hiperaldosteronismo, feocromocitoma.',
+      'es': 'PA >95° percentil para edad/sexo/talla. URGENCIA: PA >95° + síntomas menores. EMERGENCIA: PA muy elevada + lesión de órgano diana: encefalopatía, IRA, IC aguda. Causas: glomerulonefritis, coartación aórtica, feocromocitoma.',
+    },
+    actions: {
+      'pt': [
+        '1. URGÊNCIA HIPERTENSIVA (sem LOA): reduzir PA 25% em 24–48h com medicação VO',
+        '   → Amlodipina 0,05–0,3 mg/kg/dia (máx. 5 mg/dia) VO ou Captopril 0,1–0,5 mg/kg/dose VO',
+        '2. EMERGÊNCIA HIPERTENSIVA (com LOA): internação + monitoração contínua + IV',
+        '3. Meta de redução: 25% da PA nas primeiras 8h; não normalizar abruptamente',
+        '4. NITROPRUSSIATO DE SÓDIO: 0,3–0,5 µg/kg/min IV (encefalopatia, IC — 1ª linha emergência grave)',
+        '5. HIDRALAZINA: 0,1–0,2 mg/kg IV a cada 4–6h (glomerulonefrite, HAS aguda)',
+        '6. LABETALOL: 0,2–1 mg/kg IV (útil em feocromocitoma, coarctação)',
+        '7. Investigar causa subjacente: ureia, creatinina, eletrólitos, sumário de urina, USG renal, ecocardiograma',
+        '8. Encefalopatia hipertensiva: meta PA 25% de redução em 1h; depois gradual em 24–48h',
+      ],
+      'es': [
+        '1. URGENCIA (sin LOA): reducir PA 25% en 24–48 h con VO',
+        '   → Amlodipina 0,05–0,3 mg/kg/día VO o Captopril 0,1–0,5 mg/kg/dosis VO',
+        '2. EMERGENCIA (con LOA): internación + monitoreo + IV',
+        '3. Meta: reducir 25% en primeras 8 h; no normalizar abruptamente',
+        '4. NITROPRUSIATO: 0,3–0,5 µg/kg/min IV (encefalopatía, IC)',
+        '5. HIDRALAZINA: 0,1–0,2 mg/kg IV c/4–6 h',
+        '6. LABETALOL: 0,2–1 mg/kg IV (feocromocitoma, coartación)',
+        '7. Investigar causa: función renal, orina, USG renal, ecocardiograma',
+      ],
+    },
+    avoid: {
+      'pt': 'EVITAR queda súbita de PA (risco de isquemia cerebral, coronária e renal — especialmente em HAS crônica adaptada). Nifedipina sublingual: CONTRAINDICADA (queda abrupta e imprevisível). IECA/ARA2: contraindicados em estenose de artéria renal bilateral e gestação. Não usar nitroprussiato por >24–48h (toxicidade por tiocianato — especialmente em crianças).',
+      'es': 'EVITAR caída brusca de PA. Nifedipina sublingual: CONTRAINDICADA. IECA/ARA2: contraindicados en estenosis arterial renal bilateral. No usar nitroprusiato >24–48 h en niños (toxicidad por tiocianato).',
+    },
+    drugs: ['enalapril', 'metoprolol', 'furosemida'],
+  ),
+
+  // ─────────────────────────────────────────────
+  //  TOXICOLOGIA ESPECÍFICA (continuação)
+  // ─────────────────────────────────────────────
+  ProtocolModel(
+    id: 'intox_organofosforados',
+    title: {'pt': 'Intoxicação por Organofosforados e Carbamatos', 'es': 'Intoxicación por Organofosforados y Carbamatos'},
+    severity: {'pt': 'Crítico', 'es': 'Crítico'},
+    recognize: {
+      'pt': 'Síndrome colinérgica (inibição da acetilcolinesterase). Muscarínicos (SLUDGE/DUMBELS): Salivação, Lacrimejamento, Urina (incontinência), Defecação/Diarreia, GI (cólicas), Emese, Bradicardia, Broncospasmo/Broncorreia, Miose. Nicotínicos: fasciculações, fraqueza muscular, paralisia, taquicardia. SNC: convulsões, coma.',
+      'es': 'Síndrome colinérgica. Muscarínicos (SLUDGE): Salivación, Lagrimeo, Micción, Defecación, GI, Emesis, Bradicardia, Broncorrea, Miosis. Nicotínicos: fasciculaciones, debilidad, parálisis, taquicardia. SNC: convulsiones, coma.',
+    },
+    actions: {
+      'pt': [
+        '1. DESCONTAMINAÇÃO: retirar roupas e calçados (proteção dos socorristas — EPI), lavar pele/mucosas com água e sabão abundante',
+        '2. ATROPINA — titulada pelos sintomas muscarínicos (meta: secar secreções brônquicas):',
+        '   → Dose inicial: 2–5 mg IV bolus a cada 5–10 min',
+        '   → Doses repetidas até cessar broncorreia e broncoespasmo (pode necessitar centenas de mg)',
+        '   → Atropina NÃO reverte fraqueza muscular (ação nicotínica)',
+        '3. PRALIDOXIMA (reativa colinesterase — eficaz se <24–48h da exposição):',
+        '   → 1–2 g IV em 15–30 min; manutenção 200–500 mg/h IV por 24–48h',
+        '   → Carbamatos: pralidoxima controversa (pode agravar) — consultar toxicologia',
+        '4. SUPORTE VENTILATÓRIO: IOT se broncoespasmo grave, fraqueza muscular ou coma',
+        '   → ATENÇÃO: succinilcolina tem metabolismo prolongado (colinesterase inibida) → usar Rocurônio',
+        '5. CONVULSÕES: Diazepam 10 mg IV ou Midazolam 10 mg IM',
+        '6. Monitorar atividade de colinesterase sérica (orienta duração do tratamento)',
+      ],
+      'es': [
+        '1. DESCONTAMINACIÓN: retirar ropa y calzado (EPI para reanimadores), lavar piel/mucosas con agua y jabón',
+        '2. ATROPINA — titulada por síntomas muscarínicos (meta: secar secreciones bronquiales):',
+        '   → Dosis inicial: 2–5 mg IV bolo c/5–10 min hasta cesar broncorrea',
+        '   → Atropina NO revierte debilidad muscular (acción nicotínica)',
+        '3. PRALIDOXIMA (reactiva colinesterasa — eficaz si <24–48 h):',
+        '   → 1–2 g IV en 15–30 min; mantenimiento 200–500 mg/h × 24–48 h',
+        '4. SOPORTE VENTILATORIO: IOT si broncoespasmo grave o coma',
+        '   → Usar Rocuronio (succinilcolina metabolismo prolongado)',
+        '5. CONVULSIONES: Diazepam 10 mg IV o Midazolam 10 mg IM',
+      ],
+    },
+    avoid: {
+      'pt': 'EVITAR succinilcolina na IOT (inibição de colinesterase plasmática → bloqueio neuromuscular prolongado e imprevisível — usar Rocurônio). Não usar atropina sem antes garantir oxigenação adequada (pode precipitar FV em hipóxia). Não expor equipe sem EPI (contaminação secundária por via cutânea/inalatória é frequente).',
+      'es': 'EVITAR succinilcolina (colinesterasa inhibida → bloqueo prolongado — usar Rocuronio). No usar atropina sin oxigenación adecuada (puede precipitar FV en hipoxia). No exponer al equipo sin EPI (contaminación secundaria frecuente).',
+    },
+    drugs: ['atropina', 'diazepam', 'midazolam'],
+  ),
+
+  // ─────────────────────────────────────────────
+  //  NEFROLOGIA (continuação)
+  // ─────────────────────────────────────────────
+  ProtocolModel(
+    id: 'rabdomiolise_aguda',
+    title: {'pt': 'Rabdomiólise Aguda', 'es': 'Rabdomiólisis Aguda'},
+    severity: {'pt': 'Alto', 'es': 'Alto'},
+    recognize: {
+      'pt': 'Mialgia intensa, fraqueza muscular, urina escura ("cor de coca-cola" — mioglobinúria), CPK >5× o LSN (frequentemente >10.000 UI/L). Causas: trauma/síndrome de esmagamento, exercício extremo, hipertermia, hipopotassemia grave, estatinas, convulsões prolongadas, isquemia muscular, cocaína/drogas. Complicações: IRA (mioglobina nefrotóxica), hiperpotassemia, hipocalcemia, CIVD.',
+      'es': 'Mialgia intensa, debilidad muscular, orina oscura (mioglobinuria), CPK >5× LSN (frecuentemente >10.000). Causas: trauma/síndrome de aplastamiento, ejercicio extremo, hipertermia, estatinas, convulsiones prolongadas. Complicaciones: IRA, hiperpotasemia, hipocalcemia, CID.',
+    },
+    actions: {
+      'pt': [
+        '1. HIDRATAÇÃO IV AGRESSIVA: SF 0,9% 1–2 L/h (alvo: diurese 200–300 mL/h ou 3–5 mL/kg/h)',
+        '2. Manter hidratação até CPK em queda sustentada e urina clara',
+        '3. Monitorar: K+, Ca²⁺, creatinina, CPK a cada 6–12h; ECG se K+ elevado',
+        '4. HIPERCALEMIA: tratamento agressivo (ver protocolo hipercalemia) — risco de arritmia fatal',
+        '5. HIPOCALCEMIA sintomática: Gluconato de Cálcio 1 g IV (evitar repor cálcio assintomático — pode precipitar em músculo)',
+        '6. BICARBONATO DE SÓDIO (controverso): 50–100 mEq/L no SF para alcalinizar urina (pH urinário alvo >6,5 — reduz precipitação de mioglobina)',
+        '7. Furosemida: apenas após restauração adequada da volemia (não usar para forçar diurese em hipovolemia)',
+        '8. Hemodiálise: IRA oligúrica refratária, hiperpotassemia intratável, sobrecarga volêmica',
+        '9. Tratar causa subjacente: calor (resfriamento), convulsão (BZD), isquemia (reperfusão), medicamento (suspender)',
+      ],
+      'es': [
+        '1. HIDRATACIÓN IV AGRESIVA: SF 0,9% 1–2 L/h (objetivo: diuresis 200–300 mL/h)',
+        '2. Mantener hidratación hasta CPK en caída sostenida y orina clara',
+        '3. Monitorizar: K+, Ca²⁺, creatinina, CPK c/6–12 h; ECG si K+ elevado',
+        '4. HIPERPOTASEMIA: tratamiento agresivo (ver protocolo)',
+        '5. HIPOCALCEMIA sintomática: Gluconato de Calcio 1 g IV',
+        '6. BICARBONATO (controvertido): 50–100 mEq/L en SF (pH urinario objetivo >6,5)',
+        '7. Furosemida: solo tras restauración volémica adecuada',
+        '8. Hemodiálisis: IRA oligúrica refractaria, hiperpotasemia',
+        '9. Tratar causa: calor (enfriamiento), convulsión (BZD), estatina (suspender)',
+      ],
+    },
+    avoid: {
+      'pt': 'EVITAR diuréticos (furosemida, manitol) antes de restaurar volemia adequada (piora IRA pré-renal). Não repor cálcio assintomático (Ca²⁺ precipita no músculo isquêmico → piora lesão). Evitar AINEs e aminoglicosídeos (nefrotóxicos). Não subestimar CPK levemente elevado em contexto clínico sugestivo — iniciar hidratação precoce.',
+      'es': 'EVITAR diuréticos antes de restaurar volemia adecuada. No reponer calcio asintomático (precipita en músculo isquémico). Evitar AINEs y aminoglucósidos (nefrotóxicos). No subestimar CPK levemente elevada — iniciar hidratación precoz.',
+    },
+    drugs: ['furosemida', 'bicarbonato_sodio', 'insulina_regular'],
+  ),
+
+  // ─────────────────────────────────────────────
+  //  PNEUMOLOGIA (continuação)
+  // ─────────────────────────────────────────────
+  ProtocolModel(
+    id: 'hemoptise_macica',
+    title: {'pt': 'Hemoptise Maciça (>200 mL/24h ou ≥100 mL em episódio único)', 'es': 'Hemoptisis Masiva (>200 mL/24 h o ≥100 mL en episodio único)'},
+    severity: {'pt': 'Crítico', 'es': 'Crítico'},
+    recognize: {
+      'pt': 'Expectoração de sangue vivo em grande volume, desconforto respiratório, SpO2 em queda. Causas: tuberculose (principal no Brasil — 70%), bronquiectasias, neoplasia pulmonar, aspergilose, vasculite (síndrome de Goodpasture, GPA), malformação arteriovenosa, cateter de artéria pulmonar.',
+      'es': 'Expectoración de sangre viva en gran volumen, disnea, SpO2 en caída. Causas: tuberculosis (principal), bronquiectasias, neoplasia pulmonar, aspergilosis, vasculitis (Goodpasture, GPA), MAV.',
+    },
+    actions: {
+      'pt': [
+        '1. POSICIONAMENTO: decúbito lateral sobre o lado AFETADO (protege pulmão sadio de inundação)',
+        '2. O2 alto fluxo; acesso venoso calibroso; monitoração contínua',
+        '3. IOT se: SpO2 <90% refratária, FR >35 rpm, rebaixamento de consciência, volume >500 mL',
+        '   → Usar tubo de maior calibre (8–9 mm) para facilitar broncoscopia',
+        '4. ÁCIDO TRANEXÂMICO 1 g IV em 10 min (+ 1 g IV em 8h se persistir) — antifibrinolítico',
+        '5. Reverter anticoagulação se presente: vitamina K + CCP para varfarina; Andexanet/Idarucizumabe para NOAC',
+        '6. BRONCOSCOPIA DIAGNÓSTICA E TERAPÊUTICA: localiza foco + tamponamento brônquico + coagulação a laser',
+        '7. ARTERIOGRAFIA BRÔNQUICA COM EMBOLIZAÇÃO: tratamento definitivo em >90% dos casos (artérias brônquicas hipertrofiadas — TB, bronquiectasia)',
+        '8. Cirurgia (ressecção): se embolização falha, lesão localizada, tumor ressecável',
+        '9. Vasopressina/Terlipressina: vasoconstrição pulmonar (uso adjuvante — pouca evidência)',
+      ],
+      'es': [
+        '1. POSICIONAMIENTO: decúbito lateral sobre lado AFECTADO (protege pulmón sano)',
+        '2. O2 alto flujo; acceso venoso calibroso; monitoreo continuo',
+        '3. IOT si: SpO2 <90%, FR >35 rpm, rebajamiento de consciencia, volumen >500 mL',
+        '4. ÁCIDO TRANEXÁMICO 1 g IV en 10 min (+ 1 g en 8 h si persiste)',
+        '5. Revertir anticoagulación si presente',
+        '6. BRONCOSCOPIA diagnóstica y terapéutica',
+        '7. ARTERIOGRAFÍA BRONQUIAL CON EMBOLIZACIÓN: tratamiento definitivo en >90% (TB, bronquiectasia)',
+        '8. Cirugía: si embolización falla, lesión localizada, tumor resecable',
+      ],
+    },
+    avoid: {
+      'pt': 'EVITAR suprimir tosse excessivamente (risco de inundação alveolar por coágulos — manter reflexo de tosse preservado). Não posicionar no decúbito lateral do pulmão sadio (inundação). Evitar broncoscopia rígida sem equipe experiente e sala cirúrgica disponível. Não iniciar antibiótico sem diagnóstico de infecção ativo (TB: isolar e investigar antes de tratar).',
+      'es': 'EVITAR suprimir tos excesivamente (riesgo de inundación alveolar). No posicionar sobre el pulmón sano. Evitar broncoscopia rígida sin equipo experto. No iniciar antibiótico sin diagnóstico de infección activa.',
+    },
+    drugs: ['noradrenalina', 'adrenalina'],
+  ),
+
+  // ─────────────────────────────────────────────
+  //  CARDIOVASCULAR (continuação)
+  // ─────────────────────────────────────────────
+  ProtocolModel(
+    id: 'sindrome_coronariana_sem_st',
+    title: {'pt': 'SCA sem Supra de ST (Angina Instável / IAMSSST)', 'es': 'SCA sin Elevación de ST (AI / IAMSEST)'},
+    severity: {'pt': 'Alto', 'es': 'Alto'},
+    recognize: {
+      'pt': 'Dor torácica anginosa em repouso ou mínimo esforço (>20 min), nova angina grau III-IV, angina em crescendo. ECG: infra de ST ≥0,5 mm ou inversão de onda T. Troponina positiva = IAMSSST; troponina negativa com ECG alterado = Angina Instável. Estratificação de risco: escore GRACE, TIMI Risk Score.',
+      'es': 'Dolor torácico anginoso en reposo o mínimo esfuerzo (>20 min), nueva angina grado III-IV. ECG: infra ST ≥0,5 mm o inversión T. Troponina positiva = IAMSEST; negativa con ECG alterado = AI. Estratificación: score GRACE, TIMI.',
+    },
+    actions: {
+      'pt': [
+        '1. AAS 300 mg VO mastigar (ataque) + Inibidor P2Y12:',
+        '   → Ticagrelor 180 mg VO (preferência — maior eficácia) OU Clopidogrel 300–600 mg VO',
+        '2. ANTICOAGULAÇÃO: Enoxaparina 1 mg/kg SC 12/12h (ou HNF IV se cateterismo em <24h)',
+        '3. NITROGLICERINA se dor persistente: 0,4 mg SL; se refratária → 5–200 µg/min IV',
+        '4. BETA-BLOQUEADOR VO: Metoprolol 25–50 mg 12/12h (se sem contraindicação: FC >60, PA >100, sem BAV, sem IC aguda)',
+        '5. ESTATINA de alta intensidade: Atorvastatina 80 mg/dia VO (IMEDIATAMENTE)',
+        '6. ESTRATÉGIA INVASIVA (cateterismo):',
+        '   → URGENTE (<2h): instabilidade hemodinâmica, choque, arritmia grave, dor refratária',
+        '   → PRECOCE (<24h): GRACE >140, troponina elevada, alterações dinâmicas de ST',
+        '   → ELETIVA (<72h): risco intermediário, sem critérios acima',
+        '7. O2: apenas se SpO2 <90%',
+        '8. Morfina 2–4 mg IV se dor intensa refratária (cautela — pode mascarar sintomas)',
+      ],
+      'es': [
+        '1. AAS 300 mg VO masticar + Inhibidor P2Y12:',
+        '   → Ticagrelor 180 mg VO O Clopidogrel 300–600 mg VO',
+        '2. ANTICOAGULACIÓN: Enoxaparina 1 mg/kg SC c/12 h (o HNF IV si cateterismo <24 h)',
+        '3. NITROGLICERINA si dolor persistente: 0,4 mg SL; si refractario → IV',
+        '4. BETABLOQUEANTE VO: Metoprolol 25–50 mg c/12 h',
+        '5. ESTATINA: Atorvastatina 80 mg/día VO (INMEDIATAMENTE)',
+        '6. ESTRATEGIA INVASIVA:',
+        '   → URGENTE (<2 h): inestabilidad, choque, arritmia grave',
+        '   → PRECOZ (<24 h): GRACE >140, troponina elevada, cambios dinámicos ST',
+        '   → ELECTIVA (<72 h): riesgo intermedio',
+      ],
+    },
+    avoid: {
+      'pt': 'EVITAR fibrinolíticos (indicados APENAS em IAM com supra de ST — no IAMSSST aumentam sangramento sem benefício). Nitroglicerina contraindicada: PAS <90 mmHg, uso de PDE5i, IAM de VD. Clopidogrel em vez de Ticagrelor em: AVC hemorrágico prévio, sangramento ativo. Heparina de baixo peso molecular: ajustar em IRA (ClCr <30: enoxaparina 1 mg/kg/dia).',
+      'es': 'EVITAR fibrinolíticos (solo en IAM con supra ST). Nitroglicerina contraindicada: PAS <90 mmHg, PDE5i, IAM de VD. Clopidogrel sobre Ticagrelor en: ACV hemorrágico previo, sangrado activo. Enoxaparina: ajustar en IRA.',
+    },
+    drugs: ['aas', 'clopidogrel', 'enoxaparina', 'nitroglicerina', 'metoprolol'],
+  ),
+
+  ProtocolModel(
+    id: 'choque_hipovolemico',
+    title: {'pt': 'Choque Hipovolêmico / Hemorrágico', 'es': 'Choque Hipovolémico / Hemorrágico'},
+    severity: {'pt': 'Crítico', 'es': 'Crítico'},
+    recognize: {
+      'pt': 'Hipotensão (PAS <90 mmHg) + taquicardia + palidez + extremidades frias + enchimento capilar lento (>2 s) + oligúria. Classificação ATLS: I (<750 mL, FC <100), II (750–1500 mL, FC 100–120), III (1500–2000 mL, FC 120–140 + hipotensão), IV (>2000 mL, FC >140 + colapso). Causas: hemorragia (principal), vômito/diarreia, queimaduras, perdas para 3º espaço.',
+      'es': 'Hipotensión (PAS <90 mmHg) + taquicardia + palidez + frialdad distal + relleno capilar lento + oliguria. Clasificación ATLS: I (<750 mL), II (750–1500), III (1500–2000 + hipotensión), IV (>2000 + colapso). Causas: hemorragia (principal), vómitos/diarrea, quemaduras.',
+    },
+    actions: {
+      'pt': [
+        '1. 2 ACESSOS VENOSOS CALIBROSOS (14–16G); se impossível: IO (intraósseo)',
+        '2. RESSUSCITAÇÃO VOLÊMICA:',
+        '   → Cristaloide: Ringer Lactato 1–2 L (adulto) ou 20 mL/kg (ped) em 15–20 min',
+        '   → Hemorragia ativa: preferir SANGUE sobre cristaloide (ressuscitação hemostática)',
+        '3. CONTROLE DE HEMORRAGIA:',
+        '   → Pressão direta em sangramento externo acessível',
+        '   → Torniquete se membros (máx. 2h — anotar horário)',
+        '   → Cintas pélvicas se fratura de pelve instável',
+        '4. ÁCIDO TRANEXÂMICO 1 g IV em 10 min se trauma <3h (reduz mortalidade — CRASH-2)',
+        '5. TRANSFUSÃO MACIÇA (protocolo 1:1:1):',
+        '   → Hemácias : Plasma Fresco Congelado : Plaquetas = 1:1:1',
+        '   → Ativar protocolo de transfusão maciça do banco de sangue',
+        '6. HIPOTENSÃO PERMISSIVA (trauma hemorrágico sem TCE):',
+        '   → PAS alvo 80–90 mmHg até controle cirúrgico (reduz coagulopatia dilucional)',
+        '7. Vasopressor (noradrenalina 0,1–0,5 µg/kg/min) se choque refratário APÓS reposição adequada',
+        '8. Corrigir tríade letal: hipotermia (aquecimento), acidose (bicarbonato se pH <7,1), coagulopatia (PFC, crioprecipitado)',
+      ],
+      'es': [
+        '1. 2 ACCESOS VENOSOS GRUESOS (14–16G); si imposible: IO (intraóseo)',
+        '2. RESUCITACIÓN VOLÉMICA: Ringer Lactato 1–2 L (adulto) o 20 mL/kg (ped) en 15–20 min',
+        '   → Hemorragia activa: preferir SANGRE sobre cristaloide',
+        '3. CONTROL DE HEMORRAGIA: presión directa, torniquete si miembros, cinta pélvica si fractura pelvis',
+        '4. ÁCIDO TRANEXÁMICO 1 g IV en 10 min si trauma <3 h',
+        '5. TRANSFUSIÓN MASIVA (protocolo 1:1:1): GR : PFC : Plaquetas = 1:1:1',
+        '6. HIPOTENSIÓN PERMISIVA (trauma sin TCE): PAS objetivo 80–90 mmHg hasta control quirúrgico',
+        '7. Vasopresor (noradrenalina) si choque refractario TRAS reposición adecuada',
+        '8. Corregir tríada letal: hipotermia, acidosis, coagulopatía',
+      ],
+    },
+    avoid: {
+      'pt': 'EVITAR uso ISOLADO de vasopressores antes da reposição volêmica adequada (piora isquemia tissular). Não ressuscitar com SF 0,9% em grandes volumes (acidose hiperclorêmica + coagulopatia dilucional — usar RL e sangue). Hipotensão permissiva contraindicada em TCE (PAM alvo ≥80 mmHg para perfusão cerebral). Não atrasar cirurgia de controle de danos por ressuscitação interminável.',
+      'es': 'EVITAR vasopresores aislados antes de reposición adecuada. No resucitar con SF 0,9% en grandes volúmenes. Hipotensión permisiva contraindicada en TCE (PAM ≥80 mmHg). No retrasar cirugía de control de daños.',
+    },
+    drugs: ['noradrenalina', 'adrenalina', 'dobutamina'],
+  ),
+
+  ProtocolModel(
+    id: 'pericardite_aguda',
+    title: {'pt': 'Pericardite Aguda', 'es': 'Pericarditis Aguda'},
+    severity: {'pt': 'Médio', 'es': 'Medio'},
+    recognize: {
+      'pt': 'Dor torácica pleurítica (piora com inspiração e decúbito dorsal, melhora ao inclinar para frente), atrito pericárdico à ausculta. ECG: infra de PR difuso + supra de ST difuso côncavo (sem espelho). Derrame pericárdico: ecocardiograma (pode ser assintomático). Causas: viral (70% — coxsackie, echovírus), bacteriana, autoimune, pós-IAM (Dressler), urêmica, neoplásica.',
+      'es': 'Dolor torácico pleurítico (empeora inspiración y decúbito, mejora al inclinarse adelante), frote pericárdico. ECG: infra PR difuso + supra ST difuso cóncavo. Derrame pericárdico: ecocardiograma. Causas: viral (70%), bacteriana, autoinmune, post-IAM (Dressler), urémica.',
+    },
+    actions: {
+      'pt': [
+        '1. AAS 500–1000 mg VO 8/8h × 1–2 semanas OU Ibuprofeno 600 mg VO 8/8h × 1–2 semanas (+ omeprazol gastroproteção)',
+        '2. COLCHICINA 0,5 mg VO 12/12h × 3 meses (adjuvante — reduz recorrência em 50%)',
+        '3. REPOUSO: atividade física intensa contraindicada até resolução completa dos sintomas (4–6 semanas — atletas: até 3 meses)',
+        '4. Ecocardiograma para excluir/quantificar derrame pericárdico',
+        '5. TAMPONAMENTO CARDÍACO (hipotensão + turgência jugular + bulhas abafadas = tríade de Beck):',
+        '   → PERICARDIOCENTESE guiada por ecocardiografia imediata',
+        '6. PERICARDITE BACTERIANA: internação + antibiótico IV + pericardiocentese diagnóstica + drenagem cirúrgica',
+        '7. URÊMICA: hemodiálise + AINEs com cautela',
+        '8. Retorno em 1 semana: reavaliação clínica + ECG',
+      ],
+      'es': [
+        '1. AAS 500–1000 mg VO c/8 h × 1–2 semanas O Ibuprofeno 600 mg c/8 h (+ omeprazol)',
+        '2. COLCHICINA 0,5 mg VO c/12 h × 3 meses (reduce recurrencia en 50%)',
+        '3. REPOSO: actividad física intensa contraindicada hasta resolución completa (4–6 semanas)',
+        '4. Ecocardiograma para excluir/cuantificar derrame pericárdico',
+        '5. TAPONAMIENTO CARDÍACO (tríada de Beck: hipotensión + ingurgitación yugular + ruidos apagados):',
+        '   → PERICARDIOCENTESIS guiada por ecocardiografía inmediata',
+        '6. BACTERIANA: internación + antibiótico IV + drenaje quirúrgico',
+        '7. URÉMICA: hemodiálisis',
+      ],
+    },
+    avoid: {
+      'pt': 'EVITAR corticoides como 1ª linha (aumentam risco de recorrência crônica — reservar para pericardite autoimune/urêmica refratária ou contraindicação a AINE/colchicina). Não usar AINEs sem gastroproteção (omeprazol). Não liberar atividade física precocemente (risco de pericardite constritiva). Anticoagulação: usar com extrema cautela (risco de hemopericárdio).',
+      'es': 'EVITAR corticoides como 1ª línea (aumentan recurrencia — reservar para autoinmune/urémica). No usar AINEs sin gastroprotección. No liberar actividad física precozmente. Anticoagulación: con extrema cautela (riesgo de hemopericardio).',
+    },
+    drugs: ['aas', 'metilprednisolona', 'dexametasona'],
+  ),
+
+  // ─────────────────────────────────────────────
+  //  PEDIATRIA (continuação)
+  // ─────────────────────────────────────────────
+  ProtocolModel(
+    id: 'tromboembolismo_venoso_ped',
+    title: {'pt': 'Trombose Venosa Profunda Pediátrica (TVP)', 'es': 'Trombosis Venosa Profunda Pediátrica (TVP)'},
+    severity: {'pt': 'Alto', 'es': 'Alto'},
+    recognize: {
+      'pt': 'Edema assimétrico de membro, dor, calor, eritema, cordão venoso palpável. Fatores de risco: cateter venoso central (causa mais comum em pediatria!), imobilização, cardiopatia congênita, síndrome nefrótica, trombofilia, trauma, cirurgia. USG Doppler: exame de eleição. TEP associado em até 30%.',
+      'es': 'Edema asimétrico de miembro, dolor, calor, eritema, cordón venoso palpable. Factores de riesgo: catéter venoso central (causa más común en pediatría), inmovilización, cardiopatía congénita, síndrome nefrótico, trombofilia. USG Doppler: examen de elección. TEP asociado hasta 30%.',
+    },
+    actions: {
+      'pt': [
+        '1. USG DOPPLER do membro afetado para confirmação (não anticoagular sem diagnóstico)',
+        '2. ANTICOAGULAÇÃO (iniciar após confirmação diagnóstica):',
+        '   → ENOXAPARINA SC (1ª linha):',
+        '     • Recém-nascidos/lactentes (<2 meses): 1,5 mg/kg SC 12/12h',
+        '     • Crianças >2 meses: 1 mg/kg SC 12/12h',
+        '   → HNF IV (se alto risco hemorrágico, IRA grave, necessidade de reversão rápida):',
+        '     • Ataque: 50–75 UI/kg IV em 10 min',
+        '     • Manutenção: 20 UI/kg/h IV; titular pelo TTPA (60–85 s)',
+        '3. MONITORAR: Anti-Xa 4h após 2ª dose de enoxaparina (alvo: 0,5–1,0 UI/mL em TVP)',
+        '4. DURAÇÃO:',
+        '   → TVP provocada (cateter): 3–6 semanas após remoção do cateter',
+        '   → TVP não provocada: 3–6 meses',
+        '5. Elevação do membro afetado; compressa morna local',
+        '6. Remover cateter central se possível (causa mais comum)',
+        '7. Investigar trombofilia se TVP espontânea (<18 anos): fator V Leiden, protrombina G20210A, anticoagulante lúpico',
+      ],
+      'es': [
+        '1. USG DOPPLER del miembro afectado para confirmación',
+        '2. ANTICOAGULACIÓN tras confirmación diagnóstica:',
+        '   → ENOXAPARINA SC (1ª línea):',
+        '     • Neonatos/lactantes (<2 meses): 1,5 mg/kg SC c/12 h',
+        '     • Niños >2 meses: 1 mg/kg SC c/12 h',
+        '   → HNF IV si alto riesgo hemorrágico o IRA grave',
+        '3. MONITORIZAR: Anti-Xa 4 h tras 2ª dosis de enoxaparina (objetivo: 0,5–1,0 UI/mL)',
+        '4. DURACIÓN:',
+        '   → TVP provocada (catéter): 3–6 semanas tras retirada',
+        '   → TVP no provocada: 3–6 meses',
+        '5. Elevar miembro; retirar catéter central si posible',
+        '6. Investigar trombofilia si TVP espontánea (<18 años)',
+      ],
+    },
+    avoid: {
+      'pt': 'EVITAR imobilização prolongada (piora estase venosa e TVP). Não anticoagular sem diagnóstico confirmado por imagem. Warfarina: evitar em neonatos (monitoração difícil, maior variabilidade). Evitar aspirina como anticoagulante em TVP ativa (sem eficácia para tratamento). NOAC: dados limitados em pediatria <18 anos.',
+      'es': 'EVITAR inmovilización prolongada. No anticoagular sin confirmación por imagen. Warfarina: evitar en neonatos. No usar aspirina como anticoagulante en TVP activa. NOAC: datos limitados en <18 años.',
+    },
+    drugs: ['enoxaparina', 'heparina_nf'],
+  ),
+
+  ProtocolModel(
+    id: 'sinusite_bacteriana_ped',
+    title: {'pt': 'Sinusite Bacteriana Pediátrica', 'es': 'Sinusitis Bacteriana Pediátrica'},
+    severity: {'pt': 'Baixo', 'es': 'Bajo'},
+    recognize: {
+      'pt': 'Critérios clínicos (IDSA): (1) sintomas persistentes >10 dias sem melhora; (2) sintomas graves (febre ≥39°C + secreção purulenta ipsilateral ≥3 dias consecutivos); (3) piora bifásica ("double worsening" — melhora inicial seguida de piora após 5–7 dias). NÃO fazer TC de rotina para diagnóstico em crianças. Agentes: S. pneumoniae, H. influenzae não tipável, M. catarrhalis.',
+      'es': 'Criterios clínicos (IDSA): (1) síntomas persistentes >10 días sin mejoría; (2) síntomas graves (fiebre ≥39°C + secreción purulenta ipsilateral ≥3 días); (3) empeoramiento bifásico. NO hacer TC de rutina. Agentes: S. pneumoniae, H. influenzae no tipable, M. catarrhalis.',
+    },
+    actions: {
+      'pt': [
+        '1. ANTIBIÓTICO de 1ª linha (se critérios diagnósticos preenchidos):',
+        '   → Amoxicilina 45 mg/kg/dia VO (2× ao dia) × 10–14 dias (sem fatores de risco para resistência)',
+        '   → Amoxicilina-Clavulanato 90 mg/kg/dia VO (se: frequenta creche, uso de ATB nos últimos 3 meses, hospitalização recente, falha à amoxicilina em 72h)',
+        '2. LAVAGEM NASAL: SF 0,9% isotônico 2–3× ao dia (alivia obstrução, remove secreções)',
+        '3. Analgesia/antipirético: Dipirona 15 mg/kg 6/6h OU Ibuprofeno 10 mg/kg 8/8h',
+        '4. REAVALIAÇÃO em 72h: se sem melhora → amoxicilina-clavulanato ou ceftriaxona IM/IV',
+        '5. Descongestionantes tópicos: oxymetazolina 0,025% — máx. 3 dias (evitar em <2 anos)',
+        '6. COMPLICAÇÕES (indicação de TC + internação + ATB IV):',
+        '   → Celulite orbitária (edema periorbitário + limitação de movimentos oculares)',
+        '   → Abscesso subperiosteal ou orbitário (proptose, oftalmoplégia)',
+        '   → Complicações intracranianas (meningite, abscesso cerebral)',
+        '7. Ceftriaxona 50 mg/kg/dia IV se internação por complicação orbitária',
+      ],
+      'es': [
+        '1. ANTIBIÓTICO 1ª línea (si criterios diagnósticos cumplidos):',
+        '   → Amoxicilina 45 mg/kg/día VO (2× al día) × 10–14 días',
+        '   → Amoxicilina-Clavulanato 90 mg/kg/día si: guardería, ATB reciente, fallo a amoxicilina',
+        '2. LAVADO NASAL: SF 0,9% isotónico 2–3× al día',
+        '3. Analgesia: Dipirona 15 mg/kg c/6 h O Ibuprofeno 10 mg/kg c/8 h',
+        '4. REEVALUACIÓN en 72 h: sin mejoría → amoxicilina-clavulanato o ceftriaxona IM/IV',
+        '5. COMPLICACIONES (TC + internación + ATB IV):',
+        '   → Celulitis orbitaria (edema periorbitario + limitación movimientos oculares)',
+        '   → Absceso subperióstico u orbitario',
+        '   → Complicaciones intracraneales',
+      ],
+    },
+    avoid: {
+      'pt': 'EVITAR antibióticos sem critérios diagnósticos preenchidos (maioria das rinosinusites é viral e resolve espontaneamente em 10 dias). Descongestionantes orais e tópicos: CONTRAINDICADOS em <2 anos (efeitos adversos graves). Não usar TC de rotina para diagnóstico (exposição à radiação sem benefício adicional). Anti-histamínicos: sem benefício comprovado em sinusite bacteriana.',
+      'es': 'EVITAR antibióticos sin criterios diagnósticos (mayoría es viral). Descongestionantes: CONTRAINDICADOS en <2 años. No usar TC de rutina para diagnóstico. Antihistamínicos: sin beneficio probado en sinusitis bacteriana.',
+    },
+    drugs: ['azitromicina', 'ceftriaxona', 'dexametasona'],
+  ),
+
+  // ─────────────────────────────────────────────
   //  CARDIOLOGIA — BRADIARRITMIA
   // ─────────────────────────────────────────────
   ProtocolModel(
