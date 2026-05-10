@@ -1,8 +1,11 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart' show Timestamp;
+import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'firebase_options.dart';
 import 'providers/app_provider.dart';
@@ -325,9 +328,104 @@ class _SplashScreen extends StatelessWidget {
 }
 
 // ── Tela pendente ─────────────────────────────────────────────────────────────
-class _PendingScreen extends StatelessWidget {
+class _PendingScreen extends StatefulWidget {
   final UserModel user;
   const _PendingScreen({required this.user});
+
+  @override
+  State<_PendingScreen> createState() => _PendingScreenState();
+}
+
+class _PendingScreenState extends State<_PendingScreen> {
+  bool _checking = false;
+  String? _checkMsg;
+
+  /// Re-lê o documento users/{uid} via Firestore REST.
+  /// Se o admin já aprovou, atualiza webUser para que _AuthGate navegue.
+  Future<void> _checkApproval() async {
+    setState(() { _checking = true; _checkMsg = null; });
+    try {
+      final token = await AuthService.getAdminToken();
+      if (token.isEmpty) {
+        setState(() {
+          _checking = false;
+          _checkMsg = _isEs
+              ? 'Sesión expirada. Cierra sesión e inicia de nuevo.'
+              : 'Sessão expirada. Saia e faça login novamente.';
+        });
+        return;
+      }
+
+      const projectId = 'medcases-pro';
+      const fsBase    = 'https://firestore.googleapis.com/v1/projects/$projectId/databases/(default)/documents';
+      final uid       = widget.user.uid;
+
+      final resp = await http.get(
+        Uri.parse('$fsBase/users/$uid'),
+        headers: {'Authorization': 'Bearer $token'},
+      ).timeout(const Duration(seconds: 8));
+
+      if (resp.statusCode != 200) {
+        setState(() {
+          _checking = false;
+          _checkMsg = _isEs
+              ? 'No se pudo verificar. Intenta de nuevo.'
+              : 'Não foi possível verificar. Tente novamente.';
+        });
+        return;
+      }
+
+      final fsBody  = jsonDecode(resp.body) as Map<String, dynamic>;
+      final fields  = fsBody['fields'] as Map<String, dynamic>? ?? {};
+      final status  = (fields['status']?['stringValue'] as String?) ?? 'pending';
+
+      if (status == 'approved') {
+        // Reconstrói UserModel com status atualizado e atualiza o ValueNotifier.
+        // _AuthGate reage imediatamente via ValueListenableBuilder.
+        final updatedMap = <String, dynamic>{};
+        fields.forEach((k, v) {
+          final val = v as Map<String, dynamic>;
+          if (val.containsKey('stringValue'))        updatedMap[k] = val['stringValue'];
+          else if (val.containsKey('booleanValue'))  updatedMap[k] = val['booleanValue'];
+          else if (val.containsKey('integerValue'))  updatedMap[k] = int.tryParse(val['integerValue'].toString());
+          else if (val.containsKey('doubleValue'))   updatedMap[k] = val['doubleValue'];
+          else if (val.containsKey('timestampValue')) {
+            updatedMap[k] = Timestamp.fromDate(
+              DateTime.parse(val['timestampValue'] as String),
+            );
+          }
+        });
+        updatedMap['uid'] = uid;
+        final freshUser = UserModel.fromMap(updatedMap);
+
+        // Persiste o JSON atualizado na sessão salva
+        await AuthService.saveSession(freshUser);
+
+        // Actualiza o notifier — _AuthGate navega automaticamente
+        AuthService.webUser.value = freshUser;
+      } else {
+        setState(() {
+          _checking = false;
+          _checkMsg = _isEs
+              ? 'Tu cuenta aún está pendiente. El administrador recibirá una notificación.'
+              : 'Sua conta ainda está pendente. O administrador será notificado.';
+        });
+      }
+    } catch (e) {
+      setState(() {
+        _checking = false;
+        _checkMsg = _isEs
+            ? 'Error de conexión. Verifica tu internet.'
+            : 'Erro de conexão. Verifique sua internet.';
+      });
+    }
+  }
+
+  bool get _isEs {
+    // Lê idioma da sessão; não temos AppProvider aqui (pré-auth)
+    // Usa detecção simples baseada no locale do dispositivo como fallback
+    return false; // padrão pt-BR para este contexto
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -353,13 +451,13 @@ class _PendingScreen extends StatelessWidget {
                   const Icon(Icons.hourglass_top_rounded, color: Colors.orange, size: 48),
                   const SizedBox(height: 16),
                   const Text(
-                    'Registro en revisión',
+                    'Cadastro em análise',
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900, color: Colors.white),
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 12),
                   Text(
-                    '¡Hola, ${user.displayName.split(' ').first}!\n\nTu cuenta está pendiente de aprobación del administrador. Recibirás acceso en cuanto sea aprobada.',
+                    'Olá, ${widget.user.displayName.split(' ').first}!\n\nSua conta está aguardando aprovação do administrador. Você receberá acesso assim que for aprovada.',
                     style: TextStyle(fontSize: 13, color: Colors.white.withValues(alpha: 0.7), height: 1.6),
                     textAlign: TextAlign.center,
                   ),
@@ -373,16 +471,55 @@ class _PendingScreen extends StatelessWidget {
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  Text('Correo registrado:', style: TextStyle(fontSize: 11, color: Colors.white.withValues(alpha: 0.4), fontWeight: FontWeight.w600)),
+                  Text('E-mail cadastrado:', style: TextStyle(fontSize: 11, color: Colors.white.withValues(alpha: 0.4), fontWeight: FontWeight.w600)),
                   const SizedBox(height: 4),
-                  Text(user.email, style: const TextStyle(fontSize: 13, color: Colors.white, fontWeight: FontWeight.w700)),
+                  Text(widget.user.email, style: const TextStyle(fontSize: 13, color: Colors.white, fontWeight: FontWeight.w700)),
                 ]),
               ),
-              const SizedBox(height: 32),
+
+              // Feedback de verificação
+              if (_checkMsg != null) ...[
+                const SizedBox(height: 16),
+                Container(
+                  padding: const EdgeInsets.all(14),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withValues(alpha: 0.07),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: Colors.white.withValues(alpha: 0.15)),
+                  ),
+                  child: Text(
+                    _checkMsg!,
+                    style: TextStyle(fontSize: 12, color: Colors.white.withValues(alpha: 0.8), height: 1.5),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ],
+
+              const SizedBox(height: 24),
+
+              // Botão "Verificar aprovação"
+              ElevatedButton.icon(
+                onPressed: _checking ? null : _checkApproval,
+                icon: _checking
+                    ? const SizedBox(
+                        width: 16, height: 16,
+                        child: CircularProgressIndicator(strokeWidth: 2, color: Color(0xFF07110d)),
+                      )
+                    : const Icon(Icons.refresh_rounded, size: 16),
+                label: Text(_checking ? 'Verificando...' : 'Verificar aprovação'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFFC5A365),
+                  foregroundColor: const Color(0xFF07110d),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  textStyle: const TextStyle(fontSize: 13, fontWeight: FontWeight.w800),
+                ),
+              ),
+              const SizedBox(height: 12),
               OutlinedButton.icon(
                 onPressed: () async { await AuthService.logout(); },
                 icon: const Icon(Icons.logout_rounded, size: 16),
-                label: const Text('Salir e iniciar nueva sesión'),
+                label: const Text('Sair e entrar com outra conta'),
                 style: OutlinedButton.styleFrom(
                   foregroundColor: Colors.white60,
                   side: BorderSide(color: Colors.white.withValues(alpha: 0.2)),

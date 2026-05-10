@@ -107,6 +107,9 @@ class AuthService {
   /// Lê a sessão persistida e, se válida, renova o idToken silenciosamente.
   /// Retorna o [UserModel] restaurado, ou null se não há sessão salva.
   /// Deve ser chamado em main() antes de runApp(), no contexto de um Future.
+  ///
+  /// Após restaurar o cache local, re-lê o documento users/{uid} no Firestore
+  /// para obter o status atual (ex: aprovado pelo admin desde o último login).
   static Future<UserModel?> restoreSession() async {
     try {
       final p = await SharedPreferences.getInstance();
@@ -134,6 +137,7 @@ class AuthService {
       final newIdToken      = body['id_token']      as String? ?? '';
       final newRefreshToken = body['refresh_token'] as String? ?? refreshToken;
       final expiresIn       = int.tryParse(body['expires_in']?.toString() ?? '3600') ?? 3600;
+      final uid             = body['user_id']       as String? ?? '';
 
       // Atualiza cache em memória
       _cachedIdToken   = newIdToken;
@@ -143,9 +147,34 @@ class AuthService {
       // Persiste o novo refreshToken
       await p.setString(_kRefreshToken, newRefreshToken);
 
-      // Reconstrói o UserModel a partir do JSON salvo
-      final rawMap = jsonDecode(userJson) as Map<String, dynamic>;
-      final user   = UserModel.fromJson(rawMap);
+      // ── Re-lê o documento Firestore para obter o status ATUAL ──────────────
+      // O JSON em cache pode ter status:'pending' do momento do cadastro.
+      // Se o admin aprovou o usuário entre sessões, precisamos refletir isso.
+      UserModel? freshUser;
+      if (uid.isNotEmpty && newIdToken.isNotEmpty) {
+        try {
+          final fsResp = await http.get(
+            Uri.parse('$_fsBase/users/$uid'),
+            headers: {'Authorization': 'Bearer $newIdToken'},
+          ).timeout(const Duration(seconds: 6));
+
+          if (fsResp.statusCode == 200) {
+            final fsBody = jsonDecode(fsResp.body) as Map<String, dynamic>;
+            final data   = _firestoreDocToMap(fsBody);
+            data['uid']  = uid;
+            freshUser    = UserModel.fromMap(data);
+            // Atualiza o JSON em cache com os dados frescos
+            await p.setString(_kUserJson, jsonEncode(freshUser.toJson()));
+          }
+        } catch (_) {
+          // Falha de rede ao re-ler Firestore — usa JSON em cache como fallback
+        }
+      }
+
+      // Fallback: reconstrói a partir do JSON salvo se Firestore falhou
+      final user = freshUser ?? UserModel.fromJson(
+        jsonDecode(userJson) as Map<String, dynamic>,
+      );
 
       // Seta webUser para que _AuthGate roteie direto ao MainShell
       if (kIsWeb) webUser.value = user;
@@ -509,6 +538,7 @@ class AuthService {
   // Cada operação roteia para REST (web) ou SDK (nativo) automaticamente.
   // ═══════════════════════════════════════════════════════════════════════════
 
+  /// Aprova um usuário pendente. Lança [Exception] em caso de falha.
   static Future<void> approveUser(String uid, String adminUid) async {
     if (kIsWeb) {
       await _patchUserRest(uid, {
@@ -525,6 +555,7 @@ class AuthService {
     });
   }
 
+  /// Bloqueia um usuário. Lança [Exception] em caso de falha.
   static Future<void> blockUser(String uid) async {
     if (kIsWeb) {
       await _patchUserRest(uid, {'status': UserStatus.blocked.name});
@@ -533,6 +564,7 @@ class AuthService {
     await _db.collection('users').doc(uid).update({'status': UserStatus.blocked.name});
   }
 
+  /// Desbloqueia um usuário. Lança [Exception] em caso de falha.
   static Future<void> unblockUser(String uid, String adminUid) async {
     if (kIsWeb) {
       await _patchUserRest(uid, {
@@ -549,6 +581,7 @@ class AuthService {
     });
   }
 
+  /// Promove usuário a admin. Lança [Exception] em caso de falha.
   static Future<void> promoteToAdmin(String uid) async {
     if (kIsWeb) {
       await _patchUserRest(uid, {'role': UserRole.admin.name});
@@ -557,6 +590,7 @@ class AuthService {
     await _db.collection('users').doc(uid).update({'role': UserRole.admin.name});
   }
 
+  /// Promove usuário a supervisor. Lança [Exception] em caso de falha.
   static Future<void> promoteToSupervisor(String uid) async {
     if (kIsWeb) {
       await _patchUserRest(uid, {'role': UserRole.supervisor.name});
@@ -565,6 +599,7 @@ class AuthService {
     await _db.collection('users').doc(uid).update({'role': UserRole.supervisor.name});
   }
 
+  /// Rebaixa usuário para role comum. Lança [Exception] em caso de falha.
   static Future<void> demoteToUser(String uid) async {
     if (kIsWeb) {
       await _patchUserRest(uid, {'role': UserRole.user.name});
@@ -582,46 +617,58 @@ class AuthService {
   /// Suporta valores String, bool, int, double e null.
   /// Usa updateMask para atualizar apenas os campos informados (não sobrescreve
   /// o documento inteiro — equivalente ao SDK update()).
+  /// Lança [Exception] se o token estiver vazio ou se o servidor retornar erro.
   static Future<void> _patchUserRest(
     String uid,
     Map<String, dynamic> fields,
   ) async {
-    try {
-      final token = await _getAdminToken();
-      if (token.isEmpty) return;
+    final token = await _getAdminToken();
+    if (token.isEmpty) {
+      throw Exception('Token de autenticação não disponível. Faça login novamente.');
+    }
 
-      // Monta os campos no formato Firestore REST
-      final fsFields = <String, dynamic>{};
-      fields.forEach((k, v) {
-        if (v == null) {
-          fsFields[k] = {'nullValue': null};
-        } else if (v is bool) {
-          fsFields[k] = {'booleanValue': v};
-        } else if (v is int) {
-          fsFields[k] = {'integerValue': v.toString()};
-        } else if (v is double) {
-          fsFields[k] = {'doubleValue': v};
-        } else {
-          // String (inclui timestamps ISO8601, status, role, etc.)
-          fsFields[k] = {'stringValue': v.toString()};
-        }
-      });
+    // Monta os campos no formato Firestore REST
+    final fsFields = <String, dynamic>{};
+    fields.forEach((k, v) {
+      if (v == null) {
+        fsFields[k] = {'nullValue': null};
+      } else if (v is bool) {
+        fsFields[k] = {'booleanValue': v};
+      } else if (v is int) {
+        fsFields[k] = {'integerValue': v.toString()};
+      } else if (v is double) {
+        fsFields[k] = {'doubleValue': v};
+      } else {
+        // String (inclui timestamps ISO8601, status, role, etc.)
+        fsFields[k] = {'stringValue': v.toString()};
+      }
+    });
 
-      // updateMask: garante que apenas os campos informados são atualizados
-      final maskParams = fields.keys
-          .map((k) => 'updateMask.fieldPaths=${Uri.encodeComponent(k)}')
-          .join('&');
+    // updateMask: garante que apenas os campos informados são atualizados
+    final maskParams = fields.keys
+        .map((k) => 'updateMask.fieldPaths=${Uri.encodeComponent(k)}')
+        .join('&');
 
-      await http.patch(
-        Uri.parse('$_fsBase/users/$uid?$maskParams'),
-        headers: {
-          'Authorization': 'Bearer $token',
-          'Content-Type': 'application/json',
-        },
-        body: jsonEncode({'fields': fsFields}),
+    final resp = await http.patch(
+      Uri.parse('$_fsBase/users/$uid?$maskParams'),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode({'fields': fsFields}),
+    );
+
+    if (resp.statusCode < 200 || resp.statusCode >= 300) {
+      // Extrai mensagem de erro do Firestore se disponível
+      String detail = '';
+      try {
+        final body = jsonDecode(resp.body) as Map<String, dynamic>;
+        detail = (body['error']?['message'] as String?) ?? '';
+      } catch (_) {}
+      throw Exception(
+        'Erro ao atualizar usuário (HTTP ${resp.statusCode})'
+        '${detail.isNotEmpty ? ': $detail' : '.'}',
       );
-    } catch (_) {
-      // falha silenciosa — o stream de polling vai refletir o estado correto
     }
   }
 

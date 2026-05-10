@@ -240,13 +240,21 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
   }
 
   Future<void> _approve(UserModel u) async {
-    await AuthService.approveUser(u.uid, widget.currentAdmin.uid);
-    if (mounted) _snack('✅ ${u.displayName} $_approvedSnack', Colors.green);
+    try {
+      await AuthService.approveUser(u.uid, widget.currentAdmin.uid);
+      if (mounted) _snack('✅ ${u.displayName} $_approvedSnack', Colors.green);
+    } catch (e) {
+      if (mounted) _snack('❌ $_errorPrefix: $e', Colors.red);
+    }
   }
 
   Future<void> _unblock(UserModel u) async {
-    await AuthService.unblockUser(u.uid, widget.currentAdmin.uid);
-    if (mounted) _snack('✅ ${u.displayName} $_unblockedSnack', Colors.green);
+    try {
+      await AuthService.unblockUser(u.uid, widget.currentAdmin.uid);
+      if (mounted) _snack('✅ ${u.displayName} $_unblockedSnack', Colors.green);
+    } catch (e) {
+      if (mounted) _snack('❌ $_errorPrefix: $e', Colors.red);
+    }
   }
 
   Future<void> _block(UserModel u) async {
@@ -255,8 +263,12 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
       'O usuário perderá acesso imediatamente.',
     );
     if (!confirm) return;
-    await AuthService.blockUser(u.uid);
-    if (mounted) _snack('🚫 ${u.displayName} $_blockedSnack', Colors.orange);
+    try {
+      await AuthService.blockUser(u.uid);
+      if (mounted) _snack('🚫 ${u.displayName} $_blockedSnack', Colors.orange);
+    } catch (e) {
+      if (mounted) _snack('❌ $_errorPrefix: $e', Colors.red);
+    }
   }
 
   Future<void> _promote(UserModel u) async {
@@ -267,8 +279,12 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
         'Ele terá acesso ao painel de administração.',
       );
       if (!confirm) return;
-      await AuthService.promoteToAdmin(u.uid);
-      if (mounted) _snack('⭐ ${u.displayName} $_promotedAdminSnack', kGold);
+      try {
+        await AuthService.promoteToAdmin(u.uid);
+        if (mounted) _snack('⭐ ${u.displayName} $_promotedAdminSnack', kGold);
+      } catch (e) {
+        if (mounted) _snack('❌ $_errorPrefix: $e', Colors.red);
+      }
     } else {
       // Admin normal só pode promover a supervisor
       await _promoteSupervisor(u);
@@ -281,8 +297,12 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
       'Ele poderá ocultar e excluir histórias clínicas públicas.',
     );
     if (!confirm) return;
-    await AuthService.promoteToSupervisor(u.uid);
-    if (mounted) _snack('🔰 ${u.displayName} $_promotedSupervisorSnack', Colors.blue);
+    try {
+      await AuthService.promoteToSupervisor(u.uid);
+      if (mounted) _snack('🔰 ${u.displayName} $_promotedSupervisorSnack', Colors.blue);
+    } catch (e) {
+      if (mounted) _snack('❌ $_errorPrefix: $e', Colors.red);
+    }
   }
 
   Future<void> _demote(UserModel u) async {
@@ -291,8 +311,12 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
       'O usuário voltará a ser um usuário comum, sem poderes administrativos.',
     );
     if (!confirm) return;
-    await AuthService.demoteToUser(u.uid);
-    if (mounted) _snack('↘ ${u.displayName} $_demotedSnack', Colors.grey);
+    try {
+      await AuthService.demoteToUser(u.uid);
+      if (mounted) _snack('↘ ${u.displayName} $_demotedSnack', Colors.grey);
+    } catch (e) {
+      if (mounted) _snack('❌ $_errorPrefix: $e', Colors.red);
+    }
   }
 
   Future<bool> _confirmDialog(String title, String body) async {
@@ -360,6 +384,7 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
     }
   }
 
+  String get _errorPrefix            => _isEs ? 'Error al ejecutar acción'      : 'Erro ao executar ação';
   String get _masterPanelLabel       => _isEs ? 'Panel Master'                 : 'Painel Master';
   String get _adminPanelLabel        => _isEs ? 'Panel Admin'                  : 'Painel Admin';
   String get _pendingLabel           => _isEs ? 'Pendientes'                   : 'Pendentes';
