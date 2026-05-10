@@ -3119,6 +3119,643 @@ const List<ProtocolModel> protocolsDatabase = [
   ),
 
   // ─────────────────────────────────────────────
+  //  PNEUMOLOGIA AVANÇADA
+  // ─────────────────────────────────────────────
+  ProtocolModel(
+    id: 'crise_asmatica_quase_fatal',
+    title: {'pt': 'Asma Quase Fatal (Near-Fatal Asthma)', 'es': 'Asma Casi Fatal'},
+    severity: {'pt': 'Crítico', 'es': 'Crítico'},
+    recognize: {
+      'pt': 'Tórax silencioso, cianose, bradicardia, exaustão respiratória, Glasgow <15, PaCO2 normal ou elevada em paciente acidótico.',
+      'es': 'Tórax silente, cianosis, bradicardia, agotamiento, Glasgow <15, PaCO2 normal o elevada.',
+    },
+    actions: {
+      'pt': [
+        '1. IOT imediata (tubo calibroso ≥8.0 se possível) + Ventilação Protetora (baixa FR, tempo expiratório longo)',
+        '2. Salbutamol contínuo (nebulização) + Ipratrópio',
+        '3. Sulfato de Magnésio 2 g IV em 20 min',
+        '4. Hidrocortisona 200 mg IV ou Metilprednisolona 125 mg IV',
+        '5. Considerar Ketamina para sedação (efeito broncodilatador)',
+      ],
+      'es': [
+        '1. IOT inmediata + Ventilación Protectora (FR baja, TE largo)',
+        '2. Salbutamol continuo + Ipratropio',
+        '3. Sulfato de Magnesio 2 g IV',
+        '4. Hidrocortisona 200 mg IV',
+        '5. Considerar Ketamina para sedación',
+      ],
+    },
+    avoid: {
+      'pt': 'EVITAR PEEP alta (risco de auto-PEEP e pneumotórax). Não atrasar a intubação se houver rebaixamento de consciência.',
+      'es': 'EVITAR PEEP alta. No retrasar IOT si hay deterioro de conciencia.',
+    },
+    drugs: ['salbutamol', 'sulfato_magnesio', 'hidrocortisona', 'ketamina'],
+  ),
+
+  ProtocolModel(
+    id: 'mal_asmatico_ped',
+    title: {'pt': 'Estado de Mal Asmático Pediátrico', 'es': 'Estado de Mal Asmático Pediátrico'},
+    severity: {'pt': 'Crítico', 'es': 'Crítico'},
+    recognize: {
+      'pt': 'Insuficiência respiratória iminente, silêncio auscultatório, agitação ou letargia, SpO2 <90% com O2.',
+      'es': 'Fallo respiratorio, silencio auscultatorio, SpO2 <90% con O2.',
+    },
+    actions: {
+      'pt': [
+        '1. Salbutamol contínuo nebulizado + Ipratrópio cada 20 min',
+        '2. Hidrocortisona 5 mg/kg IV cada 6h',
+        '3. Sulfato de Magnésio 40-50 mg/kg IV (máx 2 g)',
+        '4. Considerar Aminofilina IV ou Terbutalina SC',
+        '5. VNI ou IOT conforme evolução',
+      ],
+      'es': [
+        '1. Salbutamol continuo + Ipratropio',
+        '2. Hidrocortisona 5 mg/kg IV',
+        '3. Sulfato de Magnesio 40-50 mg/kg IV',
+        '4. Aminofilina IV o Terbutalina SC si refractario',
+        '5. VNI o IOT según evolución',
+      ],
+    },
+    avoid: {
+      'pt': 'EVITAR intubação tardia, mas realizar com extrema cautela (risco de barotrauma).',
+      'es': 'EVITAR demorar IOT en agotamiento.',
+    },
+    drugs: ['salbutamol', 'hidrocortisona', 'sulfato_magnesio', 'aminofilina'],
+  ),
+
+  ProtocolModel(
+    id: 'pneumonia_aspirativa',
+    title: {'pt': 'Pneumonia Aspirativa', 'es': 'Neumonía Aspirativa'},
+    severity: {'pt': 'Médio', 'es': 'Medio'},
+    recognize: {
+      'pt': 'Histórico de vômito/engasgo + infiltrado em lobos dependentes (base D) + febre + escarro fétido.',
+      'es': 'Antecedente de aspiración + infiltrado en zonas dependientes + fiebre.',
+    },
+    actions: {
+      'pt': [
+        '1. Antibiótico com cobertura para anaeróbios: Amoxicilina-Sulbactam ou Clindamicina',
+        '2. Higiene oral e elevação da cabeceira',
+        '3. Suporte de Oxigênio',
+        '4. Avaliar deglutição (Fonoaudiologia) pós-crise',
+      ],
+      'es': [
+        '1. Antibiótico: Amox-Sulbactam o Clindamicina',
+        '2. Soporte ventilatorio',
+        '3. Cabecera elevada',
+        '4. Evaluar deglución post-crisis',
+      ],
+    },
+    avoid: {
+      'pt': 'EVITAR antibióticos profiláticos em pacientes que aspiraram mas não têm pneumonia clínica (apenas vigilância).',
+      'es': 'EVITAR antibióticos profilácticos tras aspiración simple.',
+    },
+    drugs: ['amoxicilina_sulbactam', 'clindamicina'],
+  ),
+
+  // ─────────────────────────────────────────────
+  //  OBSTETRÍCIA DE URGÊNCIA
+  // ─────────────────────────────────────────────
+  ProtocolModel(
+    id: 'descolamento_placenta',
+    title: {'pt': 'Descolamento Prematuro de Placenta (DPP)', 'es': 'Desprendimiento Prematuro de Placenta (DPP)'},
+    severity: {'pt': 'Crítico', 'es': 'Crítico'},
+    recognize: {
+      'pt': 'Dor abdominal súbita + hipertonia uterina (abdome em tábua) + sangramento vaginal escuro (80%) + sofrimento fetal.',
+      'es': 'Dolor abdominal súbito + hipertonía uterina + sangrado vaginal oscuro + sufrimiento fetal.',
+    },
+    actions: {
+      'pt': [
+        '1. Estabilização hemodinâmica (2 acessos calibrosos + Cristaloide)',
+        '2. O2 por máscara se instabilidade',
+        '3. Avaliação da vitalidade fetal (CTG/USG)',
+        '4. INTERRUPÇÃO IMEDIATA (geralmente Cesárea de emergência)',
+        '5. Laboratório: Coagulograma (risco alto de CIVD), Hb/Ht, Tipagem sanguínea',
+      ],
+      'es': [
+        '1. Estabilización hemodinámica (2 accesos calibrosos + cristaloide)',
+        '2. O2 si es necesario',
+        '3. Evaluación vitalidad fetal (CTG/Eco)',
+        '4. INTERRUPCIÓN INMEDIATA (Cesárea)',
+        '5. Laboratorio: Coagulación, Hb, Tipificación',
+      ],
+    },
+    avoid: {
+      'pt': 'EVITAR toque vaginal antes de excluir placenta prévia por USG. Não aguardar exames se houver choque ou sofrimento fetal.',
+      'es': 'EVITAR tacto vaginal sin ecografía previa. No demorar cirugía.',
+    },
+    drugs: ['oxitocina', 'acido_tranexamico'],
+  ),
+
+  // ─────────────────────────────────────────────
+  //  TOXICOLOGIA AVANÇADA
+  // ─────────────────────────────────────────────
+  ProtocolModel(
+    id: 'intox_triciclicos',
+    title: {'pt': 'Intoxicação por Antidepressivos Tricíclicos', 'es': 'Intoxicación por Tricíclicos'},
+    severity: {'pt': 'Crítico', 'es': 'Crítico'},
+    recognize: {
+      'pt': 'Anticolinérgico (midríase, taquicardia) + ECG com QRS largo (>100ms) e onda R em aVR. Risco de arritmia ventricular fatal.',
+      'es': 'Anticolinérgico + ECG con QRS ancho (>100ms) y onda R en aVR. Riesgo de arritmia fatal.',
+    },
+    actions: {
+      'pt': [
+        '1. Bicarbonato de Sódio 8.4% 1-2 mEq/kg IV se QRS >100ms ou arritmias',
+        '2. Manter pH sanguíneo entre 7.45-7.55',
+        '3. Diazepam IV se houver convulsões',
+        '4. Noradrenalina se hipotensão refratária',
+        '5. Monitorização cardíaca contínua por 24h',
+      ],
+      'es': [
+        '1. Bicarbonato de Sodio 1-2 mEq/kg si QRS >100ms',
+        '2. Mantener pH 7.45-7.55',
+        '3. Diazepam si hay convulsiones',
+        '4. Noradrenalina si hipotensión refractaria',
+        '5. Monitoreo cardíaco continuo 24h',
+      ],
+    },
+    avoid: {
+      'pt': 'EVITAR Fisostigmina (risco de assistolia). Não usar antiarrítmicos Classe IA ou IC.',
+      'es': 'EVITAR Fisostigmina. No usar antiarrítmicos Clase IA/IC.',
+    },
+    drugs: ['bicarbonato_sodio', 'diazepam', 'noradrenalina'],
+  ),
+
+  ProtocolModel(
+    id: 'intox_betabloqueadores',
+    title: {'pt': 'Intoxicação por Betabloqueadores', 'es': 'Intoxicación por Betabloqueantes'},
+    severity: {'pt': 'Crítico', 'es': 'Crítico'},
+    recognize: {
+      'pt': 'Bradicardia, hipotensão, bloqueios AV, hipoglicemia e convulsões (propranolol).',
+      'es': 'Bradicardia, hipotensión, bloqueos AV, hipoglucemia.',
+    },
+    actions: {
+      'pt': [
+        '1. Glucagon 5-10 mg IV bólus → infusão 2-5 mg/h (Antídoto de 1ª linha)',
+        '2. Terapia de Alta Dose de Insulina (HIET): 1 UI/kg + Glicose',
+        '3. Adrenalina ou Dopamina se choque',
+        '4. Atropina para bradicardia inicial',
+        '5. Marcapasso transcutâneo se refratário',
+      ],
+      'es': [
+        '1. Glucagón 5-10 mg IV → infusión 2-5 mg/h (Antídoto 1ª línea)',
+        '2. Insulina dosis alta (HIET): 1 UI/kg + Dextrosa',
+        '3. Adrenalina o Dopamina si shock',
+        '4. Atropina para bradicardia inicial',
+        '5. Marcapasos transcutáneo si refractario',
+      ],
+    },
+    avoid: {
+      'pt': 'EVITAR excesso de volume se houver sinais de falência de bomba.',
+      'es': 'EVITAR sobrecarga de volumen.',
+    },
+    drugs: ['glucagon', 'insulina_regular', 'adrenalina', 'atropina'],
+  ),
+
+  ProtocolModel(
+    id: 'intox_monoxido_carbono',
+    title: {'pt': 'Intoxicação por Monóxido de Carbono', 'es': 'Intoxicación por Monóxido de Carbono'},
+    severity: {'pt': 'Alto', 'es': 'Alto'},
+    recognize: {
+      'pt': 'Cefaleia, náuseas, síncope, "pele cereja", carboxihemoglobina (COHb) elevada.',
+      'es': 'Cefalea, náuseas, síncope, piel cereza, COHb elevada.',
+    },
+    actions: {
+      'pt': [
+        '1. Retirar da fonte de exposição',
+        '2. Oxigênio 100% em máscara com reservatório (reduz meia-vida da COHb)',
+        '3. Considerar Oxigenoterapia Hiperbárica se COHb >25% ou gestante ou alteração neurológica',
+        '4. Monitorar ECG (risco de isquemia miocárdica)',
+      ],
+      'es': [
+        '1. Retirar de la fuente de exposición',
+        '2. O2 al 100% con reservorio (reduce vida media COHb)',
+        '3. Oxigenoterapia hiperbárica si COHb >25%, gestante o clínica neurológica',
+        '4. Monitoreo ECG (riesgo isquemia miocárdica)',
+      ],
+    },
+    avoid: {
+      'pt': 'EVITAR confiar na Oximetria de Pulso (não distingue oxihemoglobina de carboxihemoglobina).',
+      'es': 'EVITAR confiar en la saturación de oxímetro común.',
+    },
+    drugs: [],
+  ),
+
+  ProtocolModel(
+    id: 'intox_metanol_etilenoglicol',
+    title: {'pt': 'Intoxicação por Álcoois Tóxicos', 'es': 'Intoxicación por Metanol/Etilenglicol'},
+    severity: {'pt': 'Crítico', 'es': 'Crítico'},
+    recognize: {
+      'pt': 'Acidose metabólica com Anion Gap e Gap Osmótico elevados + alteração visual (metanol) ou IRA (etilenoglicol).',
+      'es': 'Acidosis metabólica grave + Gap Osmótico elevado + alteración visual (metanol) o IRA (etilenglicol).',
+    },
+    actions: {
+      'pt': [
+        '1. Antídoto: Etanol (VO ou IV) ou Fomepizol (se disponível)',
+        '2. Bicarbonato de Sódio para corrigir acidose severa',
+        '3. Hemodiálise de urgência (tratamento de escolha se acidose grave)',
+        '4. Tiamina e Ácido Folínico como adjuvantes',
+      ],
+      'es': [
+        '1. Antídoto: Etanol o Fomepizol (si disponible)',
+        '2. Bicarbonato de Sodio para acidosis severa',
+        '3. Hemodiálisis urgente (elección si acidosis grave)',
+        '4. Tiamina y Ácido Folínico como adyuvantes',
+      ],
+    },
+    avoid: {
+      'pt': 'EVITAR atraso na diálise se houver gap osmótico elevado ou falência renal.',
+      'es': 'EVITAR demora en diálisis.',
+    },
+    drugs: ['bicarbonato_sodio', 'tiamina'],
+  ),
+
+  // ─────────────────────────────────────────────
+  //  PEDIATRIA AVANÇADA
+  // ─────────────────────────────────────────────
+  ProtocolModel(
+    id: 'convulsao_febril_ped',
+    title: {'pt': 'Convulsão Febril Pediátrica', 'es': 'Convulsión Febril Pediátrica'},
+    severity: {'pt': 'Médio', 'es': 'Medio'},
+    recognize: {
+      'pt': 'Crise tônico-clônica generalizada em criança de 6 meses a 5 anos, associada a febre, sem infecção do SNC.',
+      'es': 'Convulsión generalizada en niños (6m-5a) asociada a fiebre, sin infección del SNC.',
+    },
+    actions: {
+      'pt': [
+        '1. Manter via aérea pérvia e posição de segurança',
+        '2. Se crise >5 min: Diazepam 0.3 mg/kg IV ou Midazolam 0.5 mg/kg Intranasal',
+        '3. Tratar a febre: Dipirona ou Paracetamol (não evita nova crise, mas traz conforto)',
+        '4. Investigar foco febril (otite, IVAS, ITU)',
+      ],
+      'es': [
+        '1. Posición de seguridad + vía aérea permeable',
+        '2. Si dura >5 min: Diazepam 0.3 mg/kg IV o Midazolam 0.5 mg/kg IN',
+        '3. Tratar la fiebre: Dipirona o Paracetamol',
+        '4. Investigar foco febril',
+      ],
+    },
+    avoid: {
+      'pt': 'EVITAR punção lombar de rotina se a crise for simples e a criança estiver bem após o período pós-ictal.',
+      'es': 'EVITAR punción lumbar de rutina si la crisis es simple.',
+    },
+    drugs: ['diazepam', 'midazolam', 'dipirona'],
+  ),
+
+  ProtocolModel(
+    id: 'mastoidite_aguda',
+    title: {'pt': 'Mastoidite Aguda', 'es': 'Mastoiditis Aguda'},
+    severity: {'pt': 'Alto', 'es': 'Alto'},
+    recognize: {
+      'pt': 'Otalgia + febre + abaulamento retroauricular com apagamento do sulco + desvio do pavilhão auricular.',
+      'es': 'Otalgia + fiebre + inflamación retroauricular + desplazamiento de la oreja.',
+    },
+    actions: {
+      'pt': [
+        '1. Internação hospitalar obrigatória',
+        '2. Coleta de secreção (miringotomia) se possível',
+        '3. Antibiótico IV: Ceftriaxona 2 g/dia ou Amoxicilina-Sulbactam',
+        '4. Analgesia IV',
+        '5. Tomografia de mastoides se suspeita de complicações (abscesso)',
+      ],
+      'es': [
+        '1. Internación hospitalaria obligatoria',
+        '2. Cultivo de secreción (miringotomía) si es posible',
+        '3. Antibiótico IV: Ceftriaxona 2 g/día o Amox-Sulbactam',
+        '4. Analgesia IV',
+        '5. TC de mastoides si sospecha de complicaciones',
+      ],
+    },
+    avoid: {
+      'pt': 'EVITAR tratamento ambulatorial apenas com antibiótico oral.',
+      'es': 'EVITAR tratamiento ambulatorio.',
+    },
+    drugs: ['ceftriaxona', 'amoxicilina_sulbactam', 'dipirona'],
+  ),
+
+  // ─────────────────────────────────────────────
+  //  DISTÚRBIOS ELETROLÍTICOS AVANÇADOS
+  // ─────────────────────────────────────────────
+  ProtocolModel(
+    id: 'hipocalcemia_grave',
+    title: {'pt': 'Hipocalcemia Grave (Sintomática)', 'es': 'Hipocalcemia Grave'},
+    severity: {'pt': 'Alto', 'es': 'Alto'},
+    recognize: {
+      'pt': 'Sinais de Chvostek e Trousseau +, parestesias, laringoespasmo, prolongamento do intervalo QT.',
+      'es': 'Signos de Chvostek y Trousseau +, parestesias, laringoespasmo, QT largo.',
+    },
+    actions: {
+      'pt': [
+        '1. Gluconato de Cálcio 10% 1-2 g (10-20 mL) IV em 10-20 min',
+        '2. Manutenção: Infusão contínua 0.5-1.5 mg/kg/h de cálcio elementar',
+        '3. Monitorar Magnésio (hipocalemia refratária se houver hipomagnesemia)',
+        '4. ECG seriado',
+      ],
+      'es': [
+        '1. Gluconato de Calcio 10% 1-2 g IV en 10-20 min',
+        '2. Mantenimiento: Infusión continua de calcio',
+        '3. Corregir Magnesio si es necesario',
+        '4. ECG seriado',
+      ],
+    },
+    avoid: {
+      'pt': 'EVITAR bólus rápido de cálcio (risco de arritmias e parada cardíaca). Não misturar com Bicarbonato (precipita).',
+      'es': 'EVITAR bolo rápido. No mezclar con Bicarbonato.',
+    },
+    drugs: ['gluconato_calcio', 'sulfato_magnesio'],
+  ),
+
+  // ─────────────────────────────────────────────
+  //  HEMATOLOGIA / DOENÇAS DO SANGUE
+  // ─────────────────────────────────────────────
+  ProtocolModel(
+    id: 'crise_de_anemia_falciforme',
+    title: {'pt': 'Crise Vaso-Oclusiva (Anemia Falciforme)', 'es': 'Crisis Vaso-oclusiva (Falciforme)'},
+    severity: {'pt': 'Alto', 'es': 'Alto'},
+    recognize: {
+      'pt': 'Dor intensa em ossos e articulações, febre, histórico de Doença Falciforme.',
+      'es': 'Dolor óseo intenso, fiebre, antecedente de Drepanocitosis.',
+    },
+    actions: {
+      'pt': [
+        '1. Hidratação vigorosa (venosa ou oral)',
+        '2. Analgesia Escalonada: Dipirona → AINEs → Opioides (Morfina IV)',
+        '3. Oxigênio apenas se SpO2 <92%',
+        '4. Pesquisar infecção gatilho',
+        '5. Considerar Transfusão se queda de Hb >2 g/dL do basal',
+      ],
+      'es': [
+        '1. Hidratación vigorosa (IV u oral)',
+        '2. Analgesia escalonada: Dipirona → AINEs → Morfina IV',
+        '3. O2 solo si SpO2 <92%',
+        '4. Investigar infección desencadenante',
+        '5. Transfusión si caída de Hb >2 g/dL del basal',
+      ],
+    },
+    avoid: {
+      'pt': 'EVITAR hipovolemia e frio (pioram a foicização). Não subestimar a dor do paciente.',
+      'es': 'EVITAR deshidratación y frío.',
+    },
+    drugs: ['morfina', 'dipirona', 'diclofenaco'],
+  ),
+
+  // ─────────────────────────────────────────────
+  //  ALERGOLOGIA / IMUNOLOGIA AVANÇADA
+  // ─────────────────────────────────────────────
+  ProtocolModel(
+    id: 'anafilaxia_refrataria',
+    title: {'pt': 'Anafilaxia Refratária ao Tratamento Inicial', 'es': 'Anafilaxia Refractaria'},
+    severity: {'pt': 'Crítico', 'es': 'Crítico'},
+    recognize: {
+      'pt': 'Hipotensão persistente ou broncoespasmo grave após 2 doses de Adrenalina IM.',
+      'es': 'Hipotensión o broncoespasmo tras 2 dosis de Adrenalina IM.',
+    },
+    actions: {
+      'pt': [
+        '1. Infusão Contínua de Adrenalina: 0.1 mcg/kg/min (titular)',
+        '2. Glucagon 1-5 mg IV (se o paciente usa Beta-bloqueadores)',
+        '3. Salbutamol contínuo ou Aminofilina IV (broncoespasmo severo)',
+        '4. Expansão volêmica agressiva (4-6 Litros de cristaloide)',
+      ],
+      'es': [
+        '1. Infusión continua de Adrenalina: 0.1 mcg/kg/min (titular)',
+        '2. Glucagón 1-5 mg IV si toma Betabloqueantes',
+        '3. Salbutamol continuo o Aminofilina IV si broncoespasmo severo',
+        '4. Expansión volémica agresiva (4-6 L de cristaloide)',
+      ],
+    },
+    avoid: {
+      'pt': 'EVITAR suspender a vigilância por pelo menos 24h (risco de reação bifásica tardia).',
+      'es': 'EVITAR el alta precoz (riesgo de reacción bifásica).',
+    },
+    drugs: ['adrenalina', 'glucagon', 'aminofilina'],
+  ),
+
+  // ─────────────────────────────────────────────
+  //  GASTROENTEROLOGIA AVANÇADA
+  // ─────────────────────────────────────────────
+  ProtocolModel(
+    id: 'colangite_aguda',
+    title: {'pt': 'Colangite Aguda', 'es': 'Colangitis Aguda'},
+    severity: {'pt': 'Alto', 'es': 'Alto'},
+    recognize: {
+      'pt': 'Tríade de Charcot: Febre + Icterícia + Dor em Hipocôndrio D. Pentade de Reynolds: Charcot + Hipotensão + Confusão.',
+      'es': 'Tríada de Charcot: Fiebre + Ictericia + Dolor HD. Péntada de Reynolds: Charcot + Shock + Confusión.',
+    },
+    actions: {
+      'pt': [
+        '1. Hidratação IV vigorosa',
+        '2. Antibiótico amplo espectro: Piperacilina-Tazobactam ou Cipro + Metro',
+        '3. Descompressão biliar urgente (CPRE)',
+        '4. Suporte vasopressor se choque',
+      ],
+      'es': [
+        '1. Hidratación IV vigorosa',
+        '2. Antibiótico amplio espectro: Pip-Taz o Cipro + Metro',
+        '3. Descompresión biliar urgente (CPRE)',
+        '4. Vasopresores si shock',
+      ],
+    },
+    avoid: {
+      'pt': 'EVITAR atraso na descompressão biliar, especialmente na Pêntade de Reynolds.',
+      'es': 'EVITAR retraso en CPRE.',
+    },
+    drugs: ['piperacilina_tazobactam', 'ciprofloxacino', 'metronidazol', 'noradrenalina'],
+  ),
+
+  // ─────────────────────────────────────────────
+  //  UROLOGIA / ANDROLOGIA DE URGÊNCIA
+  // ─────────────────────────────────────────────
+  ProtocolModel(
+    id: 'priapismo_emergencia',
+    title: {'pt': 'Priapismo Isquêmico (Baixo Fluxo)', 'es': 'Priapismo Isquémico'},
+    severity: {'pt': 'Alto', 'es': 'Alto'},
+    recognize: {
+      'pt': 'Ereção dolorosa >4h, corpos cavernosos rígidos, glande flácida.',
+      'es': 'Erección dolorosa >4h, cuerpos cavernosos rígidos.',
+    },
+    actions: {
+      'pt': [
+        '1. Bloqueio anestésico do nervo dorsal do pênis',
+        '2. Aspiração de sangue cavernoso (sangue escuro/acidótico)',
+        '3. Injeção intracavernosa de Fenilefrina diluída cada 5 min',
+        '4. Se falha clínica: Shunt cirúrgico',
+      ],
+      'es': [
+        '1. Bloqueo anestésico del nervio dorsal del pene',
+        '2. Aspiración de sangre cavernosa (oscura/acidótica)',
+        '3. Inyección intracavernosa de Fenilefrina diluida c/5 min',
+        '4. Si falla clínica: Shunt quirúrgico',
+      ],
+    },
+    avoid: {
+      'pt': 'EVITAR o uso de gelo ou compressas quentes como tratamento único. Não usar adrenalina pura.',
+      'es': 'EVITAR retraso en tratamiento (>24h causa impotencia irreversible).',
+    },
+    drugs: ['fenilefrina', 'lidocaina'],
+  ),
+
+  // ─────────────────────────────────────────────
+  //  CIRURGIA DE URGÊNCIA AVANÇADA
+  // ─────────────────────────────────────────────
+  ProtocolModel(
+    id: 'hemorragia_intra_abdominal',
+    title: {'pt': 'Hemorragia Intra-abdominal (Não Traumática)', 'es': 'Hemorragia Intraabdominal'},
+    severity: {'pt': 'Crítico', 'es': 'Crítico'},
+    recognize: {
+      'pt': 'Dor abdominal súbita + sinais de choque (taquicardia, hipotensão) + abdome distendido e doloroso.',
+      'es': 'Dolor abdominal súbito + shock (taquicardia, hipotensión) + distensión.',
+    },
+    actions: {
+      'pt': [
+        '1. Protocolo de Transfusão Maciça (CH:PFC:Plaquetas 1:1:1)',
+        '2. Ácido Tranexâmico 1 g IV',
+        '3. Laparotomia exploradora de urgência ou Angioembolização',
+        '4. Aquecer o paciente (prevenir tríade da morte)',
+      ],
+      'es': [
+        '1. Protocolo Transfusión Masiva (GR:PFC:Plaquetas 1:1:1)',
+        '2. Ácido Tranexámico 1 g IV',
+        '3. Laparotomía exploradora de urgencia o Angioembolización',
+        '4. Calentar al paciente (prevenir tríada de la muerte)',
+      ],
+    },
+    avoid: {
+      'pt': 'EVITAR tomografia em pacientes instáveis que não respondem à reposição inicial.',
+      'es': 'EVITAR TC en pacientes inestables.',
+    },
+    drugs: ['acido_tranexamico', 'noradrenalina'],
+  ),
+
+  ProtocolModel(
+    id: 'sindrome_compartimental',
+    title: {'pt': 'Síndrome Compartimental de Membros', 'es': 'Síndrome Compartimental'},
+    severity: {'pt': 'Crítico', 'es': 'Crítico'},
+    recognize: {
+      'pt': 'Dor desproporcional à lesão, parestesia, palidez, ausência de pulso (tardio), pressão compartimental elevada.',
+      'es': 'Dolor desproporcionado, parestesias, palidez, pulso ausente (tardío).',
+    },
+    actions: {
+      'pt': [
+        '1. Retirar gesso ou curativos compressivos',
+        '2. Manter membro ao nível do coração (não elevar)',
+        '3. Analgesia potente (Opioides)',
+        '4. FASCIOTOMIA de urgência (tratamento definitivo)',
+      ],
+      'es': [
+        '1. Retirar yesos o vendajes compresivos',
+        '2. Mantener miembro al nivel del corazón (no elevar)',
+        '3. Analgesia potente (Opioides)',
+        '4. FASCIOTOMÍA de urgencia (tratamiento definitivo)',
+      ],
+    },
+    avoid: {
+      'pt': 'EVITAR a elevação do membro (reduz a pressão de perfusão capilar, piorando a isquemia).',
+      'es': 'EVITAR elevar el miembro.',
+    },
+    drugs: ['morfina'],
+  ),
+
+  // ─────────────────────────────────────────────
+  //  INFECTOLOGIA AVANÇADA
+  // ─────────────────────────────────────────────
+  ProtocolModel(
+    id: 'sepse_foco_urinario',
+    title: {'pt': 'Urossepse', 'es': 'Urosepsis'},
+    severity: {'pt': 'Alto', 'es': 'Alto'},
+    recognize: {
+      'pt': 'Sinais de sepse + dor lombar/disúria + urocultura positiva ou sedimento urinário alterado.',
+      'es': 'Sepsis + clínica urinaria + sedimento patológico.',
+    },
+    actions: {
+      'pt': [
+        '1. Coleta de culturas (Hemo + Uro)',
+        '2. Antibiótico IV: Ceftriaxona ou Ciprofloxacino ou Meropenem (se risco MDR)',
+        '3. Ressuscitação volêmica (30 mL/kg)',
+        '4. Desobstrução urinária se houver hidronefrose (Duplo J ou Nefrostomia)',
+      ],
+      'es': [
+        '1. Cultivos (hemocultivos + urocultivo)',
+        '2. Antibiótico IV precoz: Ceftriaxona, Ciprofloxacino o Meropenem (si riesgo MDR)',
+        '3. Resucitación volémica (30 mL/kg)',
+        '4. Desobstrucción urinaria si hidronefritis (doble J o Nefrostomía)',
+      ],
+    },
+    avoid: {
+      'pt': 'EVITAR tratar apenas com ATB se houver obstrução mecânica (o foco deve ser drenado).',
+      'es': 'EVITAR demora en drenaje si hay obstrucción.',
+    },
+    drugs: ['ceftriaxona', 'ciprofloxacino', 'meropenem', 'noradrenalina'],
+  ),
+
+  // ─────────────────────────────────────────────
+  //  PSIQUIATRIA / DEPENDÊNCIA QUÍMICA AVANÇADA
+  // ─────────────────────────────────────────────
+  ProtocolModel(
+    id: 'sindrome_abst_opioides',
+    title: {'pt': 'Síndrome de Abstinência de Opioides', 'es': 'Síndrome de Abstinencia de Opioides'},
+    severity: {'pt': 'Médio', 'es': 'Medio'},
+    recognize: {
+      'pt': 'Midríase, bocejos, rinorreia, piloereção, cólicas abdominais, diarreia e ansiedade extrema.',
+      'es': 'Midriasis, bostezos, rinorrea, piloerección, cólicos, diarrea y ansiedad extrema.',
+    },
+    actions: {
+      'pt': [
+        '1. Clonidina 0.1 mg cada 8h (controle simpático)',
+        '2. Metadona 10-20 mg VO (reposição escalonada)',
+        '3. Loperamida para diarreia',
+        '4. Antieméticos (Metoclopramida)',
+        '5. Suporte de hidratação',
+      ],
+      'es': [
+        '1. Clonidina 0.1 mg c/8h (control simpático)',
+        '2. Metadona 10-20 mg VO (reposición escalonada)',
+        '3. Loperamida para diarrea',
+        '4. Antieméticos (Metoclopramida)',
+        '5. Soporte de hidratación',
+      ],
+    },
+    avoid: {
+      'pt': 'EVITAR uso de Naloxona (irá precipitar ou piorar gravemente os sintomas).',
+      'es': 'EVITAR Naloxona.',
+    },
+    drugs: ['clonidina', 'metadona', 'loperamida', 'metoclopramida'],
+  ),
+
+  // ─────────────────────────────────────────────
+  //  CARDIOLOGIA AVANÇADA
+  // ─────────────────────────────────────────────
+  ProtocolModel(
+    id: 'miocardite_aguda',
+    title: {'pt': 'Miocardite Aguda', 'es': 'Miocarditis Aguda'},
+    severity: {'pt': 'Alto', 'es': 'Alto'},
+    recognize: {
+      'pt': 'Dor torácica ou IC após quadro viral + elevação de troponina + ECG alterado + disfunção ventricular ao Eco.',
+      'es': 'Dolor torácico o IC post-viral + troponina elevada + Eco patológico.',
+    },
+    actions: {
+      'pt': [
+        '1. Internação e monitoração de arritmias',
+        '2. Suporte hemodinâmico (Inotrópicos se necessário)',
+        '3. Tratamento de IC (IECA, Espironolactona) após estabilização',
+        '4. Repouso absoluto na fase aguda',
+        '5. Considerar RMN cardíaca ou Biópsia em casos graves',
+      ],
+      'es': [
+        '1. Internación y monitoreo de arritmias',
+        '2. Soporte hemodinámico (inotrópicos si es necesario)',
+        '3. Tratamiento de IC (IECA, Espironolactona) tras estabilización',
+        '4. Reposo absoluto en fase aguda',
+        '5. Considerar RMN cardíaca o Biopsia en casos graves',
+      ],
+    },
+    avoid: {
+      'pt': 'EVITAR AINEs na fase aguda (pode piorar a inflamação miocárdica em modelos animais).',
+      'es': 'EVITAR AINEs en fase aguda.',
+    },
+    drugs: ['dobutamina', 'enalapril', 'espironolactona', 'furosemida'],
+  ),
+
+  // ─────────────────────────────────────────────
   //  CARDIOLOGIA — BRADIARRITMIA
   // ─────────────────────────────────────────────
   ProtocolModel(
