@@ -38,7 +38,7 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
   @override
   void initState() {
     super.initState();
-    _tabs = TabController(length: 4, vsync: this);
+    _tabs = TabController(length: 5, vsync: this);
     _loadLang();
     _subscribeUsers();
   }
@@ -103,13 +103,14 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
             Tab(icon: const Icon(Icons.people_rounded, size: 16), text: _approvedLabel),
             Tab(icon: const Icon(Icons.block_rounded, size: 16), text: _blockedLabel),
             Tab(icon: const Icon(Icons.settings_rounded, size: 16), text: _systemLabel),
+            const Tab(icon: Icon(Icons.auto_awesome_rounded, size: 16), text: 'Novidades'),
           ],
         ),
       ),
       body: AnimatedBuilder(
         animation: _tabs,
         builder: (context, _) {
-          final isSystemTab = _tabs.index == 3;
+          final isSystemTab = _tabs.index == 3 || _tabs.index == 4;
           return Column(
             children: [
               // Barra de busca — só nas tabs de usuários (0, 1, 2)
@@ -188,6 +189,8 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
                       isEs: _isEs,
                       onToggle: _toggleMaintenance,
                     ),
+                    // ── Tab 4: Novidades ──────────────────────────────────
+                    _AppUpdatesTab(currentAdmin: widget.currentAdmin),
                   ],
                 ),
               ),
@@ -1068,6 +1071,316 @@ class _ActionBtn extends StatelessWidget {
           const SizedBox(width: 5),
           Text(label, style: TextStyle(fontSize: 11, fontWeight: FontWeight.w800, color: color)),
         ]),
+      ),
+    );
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// TAB NOVIDADES — publicar atualizações do app
+// ═══════════════════════════════════════════════════════════════════════════
+class _AppUpdatesTab extends StatefulWidget {
+  final UserModel currentAdmin;
+  const _AppUpdatesTab({required this.currentAdmin});
+  @override
+  State<_AppUpdatesTab> createState() => _AppUpdatesTabState();
+}
+
+class _AppUpdatesTabState extends State<_AppUpdatesTab> {
+  static const kDark  = Color(0xFF07110d);
+  static const kGreen = Color(0xFF075f45);
+  static const kGold  = Color(0xFFC5A365);
+  static const kGoldL = Color(0xFFFFE8A6);
+
+  final _versionCtrl = TextEditingController();
+  final _titleCtrl   = TextEditingController();
+  final _dateCtrl    = TextEditingController();
+  final List<TextEditingController> _itemCtrls = [TextEditingController()];
+
+  bool _active   = true;
+  bool _loading  = false;
+  bool _saving   = false;
+  String? _savedMsg;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadCurrent();
+  }
+
+  @override
+  void dispose() {
+    _versionCtrl.dispose();
+    _titleCtrl.dispose();
+    _dateCtrl.dispose();
+    for (final c in _itemCtrls) c.dispose();
+    super.dispose();
+  }
+
+  Future<void> _loadCurrent() async {
+    setState(() => _loading = true);
+    try {
+      final data = await FirestoreService.loadAppUpdate();
+      if (data.isNotEmpty) {
+        _versionCtrl.text = data['version'] as String? ?? '';
+        _titleCtrl.text   = data['title']   as String? ?? '';
+        _dateCtrl.text    = data['date']     as String? ?? '';
+        _active           = data['active']   as bool?   ?? true;
+        final items = (data['items'] as List<dynamic>? ?? []).cast<String>();
+        for (final c in _itemCtrls) c.dispose();
+        _itemCtrls.clear();
+        for (final item in items) {
+          _itemCtrls.add(TextEditingController(text: item));
+        }
+        if (_itemCtrls.isEmpty) _itemCtrls.add(TextEditingController());
+      }
+    } catch (_) {}
+    if (mounted) setState(() => _loading = false);
+  }
+
+  Future<void> _save() async {
+    final version = _versionCtrl.text.trim();
+    final title   = _titleCtrl.text.trim();
+    final date    = _dateCtrl.text.trim();
+    final items   = _itemCtrls
+        .map((c) => c.text.trim())
+        .where((s) => s.isNotEmpty)
+        .toList();
+
+    if (version.isEmpty || title.isEmpty || items.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Preencha versão, título e ao menos uma novidade.')),
+      );
+      return;
+    }
+
+    setState(() { _saving = true; _savedMsg = null; });
+    try {
+      await FirestoreService.saveAppUpdate(
+        version: version,
+        title: title,
+        date: date.isNotEmpty ? date : _today(),
+        items: items,
+        active: _active,
+      );
+      if (mounted) setState(() { _savedMsg = 'Publicado com sucesso!'; _saving = false; });
+    } catch (e) {
+      if (mounted) setState(() { _savedMsg = 'Erro ao salvar: $e'; _saving = false; });
+    }
+  }
+
+  String _today() {
+    final now = DateTime.now();
+    return '${now.day.toString().padLeft(2,'0')}/${now.month.toString().padLeft(2,'0')}/${now.year}';
+  }
+
+  void _addItem() => setState(() => _itemCtrls.add(TextEditingController()));
+
+  void _removeItem(int i) {
+    if (_itemCtrls.length <= 1) return;
+    setState(() {
+      _itemCtrls[i].dispose();
+      _itemCtrls.removeAt(i);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (_loading) {
+      return const Center(child: CircularProgressIndicator(color: kGreen));
+    }
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(16),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        // Header
+        Container(
+          width: double.infinity,
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(14),
+            gradient: const LinearGradient(
+              colors: [kDark, Color(0xFF123326)],
+              begin: Alignment.topLeft, end: Alignment.bottomRight,
+            ),
+          ),
+          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Row(children: [
+              const Icon(Icons.auto_awesome_rounded, color: kGoldL, size: 18),
+              const SizedBox(width: 8),
+              const Text('Publicar Novidades', style: TextStyle(
+                fontSize: 14, fontWeight: FontWeight.w900, color: Colors.white)),
+            ]),
+            const SizedBox(height: 4),
+            Text('Os usuários verão o modal ao abrir o app',
+              style: TextStyle(fontSize: 11, color: Colors.white.withValues(alpha: 0.55))),
+          ]),
+        ),
+        const SizedBox(height: 16),
+
+        // Ativo/inativo
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+            color: Colors.white,
+            border: Border.all(color: const Color(0xFFE2E6EA)),
+          ),
+          child: Row(children: [
+            const Icon(Icons.visibility_rounded, size: 16, color: kGreen),
+            const SizedBox(width: 8),
+            const Expanded(child: Text('Notificação ativa', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700))),
+            Switch.adaptive(
+              value: _active,
+              activeColor: kGreen,
+              onChanged: (v) => setState(() => _active = v),
+            ),
+          ]),
+        ),
+        const SizedBox(height: 12),
+
+        // Versão + Data
+        Row(children: [
+          Expanded(child: _field(_versionCtrl, 'Versão', '1.2.0', Icons.tag_rounded)),
+          const SizedBox(width: 10),
+          Expanded(child: _field(_dateCtrl, 'Data', _today(), Icons.calendar_today_rounded)),
+        ]),
+        const SizedBox(height: 10),
+
+        // Título
+        _field(_titleCtrl, 'Título do aviso', 'Novidades da versão 1.2.0', Icons.title_rounded),
+        const SizedBox(height: 16),
+
+        // Lista de novidades
+        Row(children: [
+          const Text('Novidades', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w900, color: kDark)),
+          const Spacer(),
+          GestureDetector(
+            onTap: _addItem,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(8),
+                color: kGreen.withValues(alpha: 0.08),
+                border: Border.all(color: kGreen.withValues(alpha: 0.25)),
+              ),
+              child: const Row(mainAxisSize: MainAxisSize.min, children: [
+                Icon(Icons.add_rounded, size: 14, color: kGreen),
+                SizedBox(width: 4),
+                Text('Adicionar', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w800, color: kGreen)),
+              ]),
+            ),
+          ),
+        ]),
+        const SizedBox(height: 8),
+
+        ...List.generate(_itemCtrls.length, (i) => Padding(
+          padding: const EdgeInsets.only(bottom: 8),
+          child: Row(children: [
+            Container(
+              margin: const EdgeInsets.only(right: 8, top: 14),
+              width: 6, height: 6,
+              decoration: const BoxDecoration(color: kGreen, shape: BoxShape.circle),
+            ),
+            Expanded(
+              child: TextField(
+                controller: _itemCtrls[i],
+                maxLines: 2, minLines: 1,
+                style: const TextStyle(fontSize: 13),
+                decoration: InputDecoration(
+                  hintText: 'Ex: 🔐 Login corrigido — maior estabilidade',
+                  hintStyle: const TextStyle(fontSize: 12, color: Color(0xFFBBBBBB)),
+                  filled: true, fillColor: Colors.white,
+                  isDense: true,
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(10),
+                    borderSide: const BorderSide(color: Color(0xFFE2E6EA))),
+                  enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10),
+                    borderSide: const BorderSide(color: Color(0xFFE2E6EA))),
+                  focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10),
+                    borderSide: const BorderSide(color: kGold, width: 1.5)),
+                ),
+              ),
+            ),
+            if (_itemCtrls.length > 1)
+              IconButton(
+                icon: const Icon(Icons.remove_circle_outline_rounded, color: Colors.red, size: 18),
+                onPressed: () => _removeItem(i),
+              ),
+          ]),
+        )),
+
+        const SizedBox(height: 16),
+
+        // Mensagem de feedback
+        if (_savedMsg != null)
+          Container(
+            width: double.infinity,
+            margin: const EdgeInsets.only(bottom: 12),
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              color: _savedMsg!.startsWith('Erro')
+                  ? const Color(0xFFFFEDED)
+                  : const Color(0xFFE8F5EE),
+              border: Border.all(color: _savedMsg!.startsWith('Erro')
+                  ? Colors.red.withValues(alpha: 0.3)
+                  : kGreen.withValues(alpha: 0.3)),
+            ),
+            child: Row(children: [
+              Icon(
+                _savedMsg!.startsWith('Erro') ? Icons.error_outline_rounded : Icons.check_circle_outline_rounded,
+                size: 16,
+                color: _savedMsg!.startsWith('Erro') ? Colors.red : kGreen,
+              ),
+              const SizedBox(width: 8),
+              Expanded(child: Text(_savedMsg!,
+                style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700,
+                  color: _savedMsg!.startsWith('Erro') ? Colors.red : kGreen))),
+            ]),
+          ),
+
+        // Botão publicar
+        SizedBox(
+          width: double.infinity,
+          child: ElevatedButton.icon(
+            onPressed: _saving ? null : _save,
+            icon: _saving
+                ? const SizedBox(width: 16, height: 16,
+                    child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
+                : const Icon(Icons.rocket_launch_rounded, size: 16),
+            label: Text(_saving ? 'Publicando...' : 'Publicar para todos os usuários',
+              style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w800)),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: kDark, foregroundColor: kGoldL,
+              padding: const EdgeInsets.symmetric(vertical: 14),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              elevation: 0,
+            ),
+          ),
+        ),
+        const SizedBox(height: 24),
+      ]),
+    );
+  }
+
+  Widget _field(TextEditingController ctrl, String label, String hint, IconData icon) {
+    return TextField(
+      controller: ctrl,
+      style: const TextStyle(fontSize: 13),
+      decoration: InputDecoration(
+        labelText: label,
+        hintText: hint,
+        hintStyle: const TextStyle(fontSize: 12, color: Color(0xFFBBBBBB)),
+        prefixIcon: Icon(icon, size: 16, color: kGold),
+        filled: true, fillColor: Colors.white,
+        isDense: true,
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(10),
+          borderSide: const BorderSide(color: Color(0xFFE2E6EA))),
+        enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10),
+          borderSide: const BorderSide(color: Color(0xFFE2E6EA))),
+        focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10),
+          borderSide: const BorderSide(color: kGold, width: 1.5)),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
       ),
     );
   }

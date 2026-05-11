@@ -1093,6 +1093,35 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    // Verifica novidades ao abrir o app (delay para não competir com splash)
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Future.delayed(const Duration(milliseconds: 800), () {
+        if (mounted) _checkAppUpdate();
+      });
+    });
+  }
+
+  Future<void> _checkAppUpdate() async {
+    try {
+      final data = await FirestoreService.loadAppUpdate();
+      if (data.isEmpty) return;
+      if (data['active'] != true) return;
+      final version = data['version'] as String? ?? '';
+      if (version.isEmpty) return;
+      // Verificar se o usuário já viu essa versão
+      final prefs = await SharedPreferences.getInstance();
+      final seen  = prefs.getString('last_seen_update') ?? '';
+      if (seen == version) return;
+      // Mostrar modal
+      if (mounted) {
+        await showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (_) => _AppUpdateDialog(data: data),
+        );
+        await prefs.setString('last_seen_update', version);
+      }
+    } catch (_) {}
   }
 
   @override
@@ -2195,6 +2224,127 @@ class _SheetField extends StatelessWidget {
         enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide(color: borderColor)),
         focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: Color(0xFFC5A365), width: 1.5)),
         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+      ),
+    );
+  }
+}
+
+// ── Modal "O que há de novo" ──────────────────────────────────────────────────
+class _AppUpdateDialog extends StatelessWidget {
+  final Map<String, dynamic> data;
+  const _AppUpdateDialog({required this.data});
+
+  static const _kDark  = Color(0xFF07110d);
+  static const _kGreen = Color(0xFF075f45);
+  static const _kGold  = Color(0xFFC5A365);
+  static const _kGoldL = Color(0xFFFFE8A6);
+
+  @override
+  Widget build(BuildContext context) {
+    final title   = data['title']   as String? ?? 'Novidades';
+    final version = data['version'] as String? ?? '';
+    final date    = data['date']    as String? ?? '';
+    final items   = (data['items']  as List<dynamic>? ?? []).cast<String>();
+
+    return Dialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      backgroundColor: Colors.white,
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 420),
+        child: Column(mainAxisSize: MainAxisSize.min, children: [
+          // Header
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.fromLTRB(20, 20, 20, 16),
+            decoration: const BoxDecoration(
+              borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+              gradient: LinearGradient(
+                colors: [_kDark, Color(0xFF123326)],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+            ),
+            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Row(children: [
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: _kGold.withValues(alpha: 0.15),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: const Icon(Icons.auto_awesome_rounded, color: _kGoldL, size: 20),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(title,
+                    style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w900, color: Colors.white),
+                  ),
+                ),
+              ]),
+              const SizedBox(height: 8),
+              Row(children: [
+                if (version.isNotEmpty) ...[
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                    decoration: BoxDecoration(
+                      color: _kGold.withValues(alpha: 0.2),
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(color: _kGold.withValues(alpha: 0.4)),
+                    ),
+                    child: Text('v$version',
+                      style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w800, color: _kGoldL)),
+                  ),
+                  const SizedBox(width: 8),
+                ],
+                if (date.isNotEmpty)
+                  Text(date, style: TextStyle(fontSize: 11, color: Colors.white.withValues(alpha: 0.5))),
+              ]),
+            ]),
+          ),
+          // Lista de novidades
+          Flexible(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.fromLTRB(20, 16, 20, 8),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: items.map((item) => Padding(
+                  padding: const EdgeInsets.only(bottom: 10),
+                  child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                    Container(
+                      margin: const EdgeInsets.only(top: 3),
+                      width: 6, height: 6,
+                      decoration: const BoxDecoration(color: _kGreen, shape: BoxShape.circle),
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Text(item,
+                        style: const TextStyle(fontSize: 13, color: Color(0xFF1A1A1A), height: 1.4)),
+                    ),
+                  ]),
+                )).toList(),
+              ),
+            ),
+          ),
+          // Botão
+          Padding(
+            padding: const EdgeInsets.fromLTRB(20, 4, 20, 20),
+            child: SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: () => Navigator.of(context).pop(),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: _kDark,
+                  foregroundColor: _kGoldL,
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  elevation: 0,
+                ),
+                child: const Text('Entendido!',
+                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w800)),
+              ),
+            ),
+          ),
+        ]),
       ),
     );
   }

@@ -542,6 +542,88 @@ class FirestoreService {
     });
   }
 
+  // ═══════════════════════════════════════════════════════════════════════════
+  // APP UPDATES — notificação de novidades
+  // ═══════════════════════════════════════════════════════════════════════════
+
+  /// Lê o documento app_updates/current via REST (web) ou SDK (nativo).
+  static Future<Map<String, dynamic>> loadAppUpdate() async {
+    if (kIsWeb) return _loadAppUpdateRest();
+    try {
+      final doc = await _db.collection('app_updates').doc('current').get();
+      if (!doc.exists) return {};
+      return doc.data() ?? {};
+    } catch (_) { return {}; }
+  }
+
+  static Future<Map<String, dynamic>> _loadAppUpdateRest() async {
+    try {
+      final resp = await http.get(
+        Uri.parse('$_fsBase/app_updates/current'),
+      );
+      if (resp.statusCode != 200) return {};
+      final body   = jsonDecode(resp.body) as Map<String, dynamic>;
+      final fields = body['fields'] as Map<String, dynamic>? ?? {};
+      final data   = <String, dynamic>{};
+      fields.forEach((k, v) {
+        final val = v as Map<String, dynamic>;
+        if (val.containsKey('stringValue'))  data[k] = val['stringValue'];
+        if (val.containsKey('booleanValue')) data[k] = val['booleanValue'];
+        if (val.containsKey('arrayValue')) {
+          final arr = (val['arrayValue']['values'] as List<dynamic>? ?? []);
+          data[k] = arr.map((e) => (e as Map)['stringValue'] as String? ?? '').toList();
+        }
+      });
+      return data;
+    } catch (_) { return {}; }
+  }
+
+  /// Salva nova atualização em app_updates/current (admin only).
+  static Future<void> saveAppUpdate({
+    required String version,
+    required String title,
+    required String date,
+    required List<String> items,
+    required bool active,
+  }) async {
+    if (kIsWeb) {
+      await _saveAppUpdateRest(
+        version: version, title: title,
+        date: date, items: items, active: active,
+      );
+      return;
+    }
+    await _db.collection('app_updates').doc('current').set({
+      'version': version, 'title': title,
+      'date': date, 'items': items, 'active': active,
+    });
+  }
+
+  static Future<void> _saveAppUpdateRest({
+    required String version, required String title,
+    required String date, required List<String> items, required bool active,
+  }) async {
+    final token = await AuthService.getAdminToken();
+    if (token.isEmpty) return;
+    final fields = {
+      'version': {'stringValue': version},
+      'title':   {'stringValue': title},
+      'date':    {'stringValue': date},
+      'active':  {'booleanValue': active},
+      'items':   {'arrayValue': {'values': items.map((e) => {'stringValue': e}).toList()}},
+    };
+    const mask = 'updateMask.fieldPaths=version'
+        '&updateMask.fieldPaths=title'
+        '&updateMask.fieldPaths=date'
+        '&updateMask.fieldPaths=active'
+        '&updateMask.fieldPaths=items';
+    await http.patch(
+      Uri.parse('$_fsBase/app_updates/current?$mask'),
+      headers: {'Authorization': 'Bearer $token', 'Content-Type': 'application/json'},
+      body: jsonEncode({'fields': fields}),
+    );
+  }
+
   /// Escreve/atualiza app_config/maintenance via REST PATCH.
   static Future<void> _setMaintenanceRest({
     required bool enabled,
