@@ -3682,4 +3682,552 @@ const List<ProtocolModel> protocolsDatabase = [
     drugs: ['adrenalina', 'atropina', 'dopamina', 'amiodarona'],
   ),
 
+  // ─────────────────────────────────────────────
+  //  CASOS CLÍNICOS — INFECTOLOGIA / UROLOGIA
+  // ─────────────────────────────────────────────
+  ProtocolModel(
+    id: 'caso_cistite_aguda',
+    title: {'pt': 'Caso Clínico: Cistite Aguda Não Complicada', 'es': 'Caso Clínico: Cistitis Aguda No Complicada'},
+    severity: {'pt': 'Baixo', 'es': 'Bajo'},
+    recognize: {
+      'pt': 'Mulher jovem (32a, 64 kg). Disúria + polaciúria há 48h. Ardência miccional intensa, tenesmo vesical, dor suprapúbica. Sem febre, náuseas ou dor lombar. Sedimento: leucocitúria >10/campo, nitritos (+), bacteriúria moderada. Giordano negativo bilateral.',
+      'es': 'Mujer joven (32a, 64 kg). Disuria + polaquiuria 48h. Ardor miccional intenso, tenesmo vesical, dolor suprapúbico. Sin fiebre, náuseas o dolor lumbar. Sedimento: leucocituria >10/campo, nitritos (+), bacteriuria moderada. Puñopercusión lumbar negativa bilateral.',
+    },
+    actions: {
+      'pt': [
+        'Diagnóstico: Cistite aguda não complicada em mulher jovem (sem fatores de risco de complicação)',
+        '1. Nitrofurantoína 100 mg VO 12/12h por 5 dias — 1ª escolha (boa penetração vesical, baixa resistência)',
+        '2. Fenazopiridina 200 mg VO 8/8h por 2 dias — analgésico urinário sintomático (urina fica laranja)',
+        '3. Aumentar ingesta hídrica >2 L/dia',
+        '4. Retorno imediato se: febre ≥38°C, dor lombar ou calafrios → suspeita de pielonefrite',
+        'Alternativas: Fosfomicina 3 g VO dose única; Trimetoprim-Sulfametoxazol 160/800 mg VO 12/12h × 3 dias (se sensibilidade local >80%)',
+        'Não requer urocultura de controle se sintomas resolverem completamente',
+      ],
+      'es': [
+        'Diagnóstico: Cistitis aguda no complicada en mujer joven',
+        '1. Nitrofurantoína 100 mg VO c/12h × 5 días — 1ª elección (buena penetración vesical)',
+        '2. Fenazopiridina 200 mg VO c/8h × 2 días — analgésico urinario sintomático (orina naranja)',
+        '3. Aumentar ingesta hídrica >2 L/día',
+        '4. Retorno si: fiebre ≥38°C, dolor lumbar o escalofríos → sospecha de pielonefritis',
+        'Alternativas: Fosfomicina 3 g VO dosis única; Trimetoprim-Sulfametoxazol 160/800 mg VO c/12h × 3 días',
+        'No requiere urocultivo de control si síntomas resuelven completamente',
+      ],
+    },
+    avoid: {
+      'pt': 'EVITAR Nitrofurantoína se suspeita de pielonefrite — não penetra no tecido renal. Não usar Fluoroquinolonas como 1ª linha em cistite simples (reservar para infecções graves). Evitar prolongar antibiótico sem indicação.',
+      'es': 'EVITAR Nitrofurantoína si sospecha de pielonefritis — no penetra en tejido renal. No usar Fluoroquinolonas como 1ª línea en cistitis simple. Evitar prolongar antibiótico sin indicación.',
+    },
+    drugs: ['nitrofurantoina', 'fenazopiridina', 'fosfomicina', 'trimetoprima_sulfametoxazol'],
+  ),
+
+  ProtocolModel(
+    id: 'caso_itu_recorrente',
+    title: {'pt': 'Caso Clínico: ITU Recorrente na Menopausa', 'es': 'Caso Clínico: ITU Recurrente en la Menopausia'},
+    severity: {'pt': 'Médio', 'es': 'Medio'},
+    recognize: {
+      'pt': 'Mulher de 58 anos. Menopausa há 6 anos sem TRH. 4 episódios de ITU documentados no último ano. Atualmente assintomática — solicita manejo preventivo. Ressecamento vaginal + dispareunia. Atrofia vulvovaginal severa ao exame (mucosa pálida, perda de pregueamento). Urocultura prévia: E. coli multissensível.',
+      'es': 'Mujer de 58 años. Menopausia hace 6 años sin TRH. 4 episodios de ITU documentados en el último año. Actualmente asintomática — solicita manejo preventivo. Sequedad vaginal + dispareunia. Atrofia vulvovaginal severa (mucosa pálida, pérdida de pliegues). Urocultivo previo: E. coli multisensible.',
+    },
+    actions: {
+      'pt': [
+        'Diagnóstico: ITU recorrente associada à síndrome geniturinária da menopausa (déficit estrogênico)',
+        '1. Medidas comportamentais: micção pós-coital, higiene da frente para trás, evitar espermicidas',
+        '2. Estrogênio tópico vaginal (creme de estradiol ou óvulo de estriol) 2×/semana — FUNDAMENTAL para restaurar flora de Döderlein e pH vaginal',
+        '3. Profilaxia não antibiótica: Cranberry concentrado (PACs ≥36 mg/dia) ou D-Manose 2 g/dia',
+        '4. Se falha das medidas anteriores: profilaxia antibiótica com Trimetoprima-Sulfametoxazol 40/200 mg VO noturno ou pós-coital',
+        '5. Monitorar com urocultura anual ou na recorrência',
+      ],
+      'es': [
+        'Diagnóstico: ITU recurrente asociada al síndrome genitourinario de la menopausia',
+        '1. Medidas conductuales: micción poscoital, higiene de adelante hacia atrás, evitar espermicidas',
+        '2. Estrógeno tópico vaginal (crema de estradiol u óvulo de estriol) 2×/semana — FUNDAMENTAL para restaurar flora de Döderlein y pH vaginal',
+        '3. Profilaxis no antibiótica: Cranberry concentrado (PACs ≥36 mg/día) o D-Manosa 2 g/día',
+        '4. Si falla de las medidas anteriores: profilaxis antibiótica con Trimetoprim-Sulfametoxazol 40/200 mg VO nocturno o poscoital',
+        '5. Controlar con urocultivo anual o en la recurrencia',
+      ],
+    },
+    avoid: {
+      'pt': 'Evitar antibioticoterapia empírica repetida sem investigar causa subjacente (déficit estrogênico). Não tratar bacteriúria assintomática em não gestante. Fluoroquinolonas: reservar para falha de 1ª linha.',
+      'es': 'Evitar antibioticoterapia empírica repetida sin investigar causa subyacente. No tratar bacteriuria asintomática en no gestante. Fluoroquinolonas: reservar para fallo de 1ª línea.',
+    },
+    drugs: ['estriol_topico', 'trimetoprima_sulfametoxazol'],
+  ),
+
+  // ─────────────────────────────────────────────
+  //  CASOS CLÍNICOS — NEUROLOGIA
+  // ─────────────────────────────────────────────
+  ProtocolModel(
+    id: 'caso_enxaqueca_aura',
+    title: {'pt': 'Caso Clínico: Crise de Enxaqueca com Aura', 'es': 'Caso Clínico: Crisis de Migraña con Aura'},
+    severity: {'pt': 'Médio', 'es': 'Medio'},
+    recognize: {
+      'pt': 'Mulher de 25 anos (58 kg). Cefaleia hemicraniana direita, pulsátil, 9/10 (EVA). Fotofobia + fonofobia + 2 vômitos. Escotomas cintilantes 20 min antes da dor (aura visual). Prefere escuridão. Sem sinais meníngeos, sem papiledema, força preservada. Histórico familiar de enxaqueca. Episódios mensais desde os 18 anos.',
+      'es': 'Mujer de 25 años (58 kg). Cefalea hemicraneal derecha, pulsátil, 9/10 (EVA). Fotofobia + fonofobia + 2 vómitos. Escotomas centelleantes 20 min antes del dolor (aura visual). Prefiere oscuridad. Sin signos meníngeos, sin papiledema, fuerza conservada. Historia familiar de migraña. Episodios mensuales desde los 18 años.',
+    },
+    actions: {
+      'pt': [
+        'Diagnóstico: Enxaqueca com Aura (ICHD-3). Afastar cefaleia secundária (red flags ausentes)',
+        '1. Ambiente silencioso e escuro (reduz estímulos sensitivos)',
+        '2. Triptano: Sumatriptano 50–100 mg VO ou 6 mg SC (mais rápido) — 1ª linha em crises moderadas-graves',
+        '3. AINE: Naproxeno 500–1000 mg VO ou Ibuprofeno 600–800 mg VO (sinergia com triptano)',
+        '4. Antiemético: Metoclopramida 10 mg EV ou VO (melhora absorção oral + trata náuseas)',
+        '5. Reavaliação em 2h: se sem resposta, considerar 2ª dose do triptano',
+        'Red flags → TC crânio urgente: "trovoada", início pós-esforço, progressão em horas, febre + rigidez, déficit focal novo, idade >50a com 1ª crise',
+        'Profilaxia (se >4 crises/mês): Propranolol, Topiramato, Amitriptilina ou Anticorpo anti-CGRP',
+      ],
+      'es': [
+        'Diagnóstico: Migraña con Aura (ICHD-3). Descartar cefalea secundaria (red flags ausentes)',
+        '1. Ambiente silencioso y oscuro',
+        '2. Triptán: Sumatriptán 50–100 mg VO o 6 mg SC (más rápido) — 1ª línea en crisis moderadas-graves',
+        '3. AINE: Naproxeno 500–1000 mg VO o Ibuprofeno 600–800 mg VO (sinergia con triptán)',
+        '4. Antiemético: Metoclopramida 10 mg IV o VO (mejora absorción oral + trata náuseas)',
+        '5. Reevaluación a las 2h: si sin respuesta, considerar 2ª dosis del triptán',
+        'Red flags → TC cráneo urgente: "trueno", inicio posesfuerzo, progresión en horas, fiebre + rigidez, déficit focal nuevo',
+        'Profilaxis (>4 crisis/mes): Propranolol, Topiramato, Amitriptilina o Anticuerpo anti-CGRP',
+      ],
+    },
+    avoid: {
+      'pt': 'EVITAR triptanos em cardiopatia isquêmica, AVC prévio, HAS grave, gravidez. Não usar opioides como 1ª linha (risco de cefaleia por uso excessivo de medicamentos). Evitar ergotamina + triptano.',
+      'es': 'EVITAR triptanos en cardiopatía isquémica, ACV previo, HTA grave, embarazo. No usar opioides como 1ª línea (riesgo de cefalea por uso excesivo de medicamentos). Evitar ergotamina + triptán.',
+    },
+    drugs: ['sumatriptano', 'metoclopramida', 'naproxeno'],
+  ),
+
+  ProtocolModel(
+    id: 'caso_avc_isquemico',
+    title: {'pt': 'Caso Clínico: AVC Isquêmico Agudo — Janela Trombolítica', 'es': 'Caso Clínico: ACV Isquémico Agudo — Ventana Trombolítica'},
+    severity: {'pt': 'Crítico', 'es': 'Crítico'},
+    recognize: {
+      'pt': 'Homem de 67 anos (78 kg). Início súbito há 1h20: hemiplegia direita + afasia global. Familiar presenciou início. NIHSS 14. Paresia facial central direita, plegia de MMSD, afasia global. Sem rebaixamento. HAS em uso de AAS + Losartana. Tabagista 20 maços-ano. TC crânio: sem hemorragia, hipodensidade incipiente em ACM esquerda.',
+      'es': 'Hombre de 67 años (78 kg). Inicio súbito hace 1h20: hemiplejía derecha + afasia global. Familiar presenció el inicio. NIHSS 14. Paresia facial central derecha, plejía MMSD, afasia global. Sin deterioro de conciencia. HTA con AAS + Losartán. Tabaquismo 20 paquetes-año. TC cráneo: sin hemorragia, hipodensidad incipiente en ACM izquierda.',
+    },
+    actions: {
+      'pt': [
+        'Diagnóstico: AVC Isquêmico Agudo em território de ACM esquerda. CANDIDATO À TROMBÓLISE (janela <4,5h, sem contraindicações)',
+        '1. ALTEPLASE 0,9 mg/kg EV (máx. 90 mg): 10% em bolo IV + 90% em infusão de 60 min — INICIAR IMEDIATAMENTE',
+        '2. Manter PA <185/110 mmHg antes e durante trombólise (Labetalol ou Nicardipina se necessário)',
+        '3. Monitorização contínua: PA a cada 15 min durante infusão, ECG, glicemia, temperatura, SatO2',
+        '4. Nada por via oral — avaliar deglutição com fonoaudiologia antes de qualquer medicação VO',
+        '5. Solicitar angioTC ou angioRM para avaliar trombectomia mecânica (se grande vaso ocluído)',
+        '6. Glicemia: manter 140–180 mg/dL (hipoglicemia e hiperglicemia pioram lesão)',
+        '7. Contraindicações à trombólise: hemorragia ativa, coagulopatia, PA irresponsiva, cirurgia recente <14 dias',
+        'Meta door-to-needle <60 min. Cada 1 min de atraso = 1,9 milhão de neurônios perdidos',
+      ],
+      'es': [
+        'Diagnóstico: ACV Isquémico Agudo en territorio de ACM izquierda. CANDIDATO A TROMBÓLISIS (ventana <4,5h, sin contraindicaciones)',
+        '1. ALTEPLASE 0,9 mg/kg IV (máx. 90 mg): 10% en bolo IV + 90% en infusión de 60 min — INICIAR INMEDIATAMENTE',
+        '2. Mantener PA <185/110 mmHg antes y durante trombólisis (Labetalol o Nicardipino si necesario)',
+        '3. Monitoreo continuo: PA cada 15 min durante infusión, ECG, glucemia, temperatura, SatO2',
+        '4. Nada por vía oral — evaluar deglución antes de cualquier medicación VO',
+        '5. Solicitar angioTC o angioRM para evaluar trombectomía mecánica (si gran vaso ocluido)',
+        '6. Glucemia: mantener 140–180 mg/dL',
+        '7. Contraindicaciones: hemorragia activa, coagulopatía, PA irresponsiva, cirugía reciente <14 días',
+        'Meta puerta-aguja <60 min. Cada 1 min de retraso = 1,9 millones de neuronas perdidas',
+      ],
+    },
+    avoid: {
+      'pt': 'NUNCA dar AAS ou anticoagulante nas primeiras 24h após trombólise. Evitar hipotensão (reduz perfusão na penumbra). Não baixar PA agressivamente antes da trombólise (exceto se >185/110). Evitar hipertermia (aumenta área de infarto).',
+      'es': 'NUNCA dar AAS ni anticoagulante en las primeras 24h tras trombólisis. Evitar hipotensión. No bajar PA agresivamente antes de trombólisis (excepto si >185/110). Evitar hipertermia.',
+    },
+    drugs: ['alteplase'],
+  ),
+
+  ProtocolModel(
+    id: 'caso_status_epilepticus',
+    title: {'pt': 'Caso Clínico: Estado de Mal Epiléptico Convulsivo', 'es': 'Caso Clínico: Estado Epiléptico Convulsivo'},
+    severity: {'pt': 'Crítico', 'es': 'Crítico'},
+    recognize: {
+      'pt': 'Homem de 34 anos (72 kg). Convulsão tônico-clônica generalizada há 12 min sem pausa (>5 min = estado de mal). Epilepsia focal desde infância, uso irregular de Carbamazepina. Glasgow 8, cianose peribucal, SatO2 84% em ar ambiente, glicemia capilar 92 mg/dL. Testemunhas negam trauma ou ingesta de substâncias.',
+      'es': 'Hombre de 34 años (72 kg). Convulsión tónico-clónica generalizada de 12 min sin pausa (>5 min = estado epiléptico). Epilepsia focal desde infancia, uso irregular de Carbamazepina. Glasgow 8, cianosis peribucal, SatO2 84% en aire ambiente, glucemia capilar 92 mg/dL.',
+    },
+    actions: {
+      'pt': [
+        'Diagnóstico: Estado de mal epiléptico convulsivo. Causa provável: não aderência ao tratamento',
+        'FASE 1 — 0–5 min: Estabilização',
+        '1. Via aérea + O2 alto fluxo (máscara com reservatório 15 L/min). Posição lateral de segurança',
+        '2. Acesso venoso + glicemia (excluir hipoglicemia). Se glicemia <60: Glicose 50% 50 mL IV',
+        '3. Monitorização: ECG, PA, SatO2, temperatura',
+        'FASE 2 — 5–20 min: Benzodiazepínico (1ª linha absoluta)',
+        '4a. COM acesso IV: Diazepam 10 mg IV em 2 min (ou Lorazepam 4 mg IV se disponível)',
+        '4b. SEM acesso IV: Midazolam 10 mg IM (coxa) — eficácia superior ao Diazepam IM',
+        'FASE 3 — 20–40 min: Antiepiléptico de 2ª linha (se persistir após BZD)',
+        '5. Fenitoína 20 mg/kg IV (50 mg/min) OU Levetiracetam 60 mg/kg IV (max 4500 mg) — preferir LEV em gestantes e cardiopatas',
+        'FASE 4 — >40 min: Estado refratário → UTI',
+        '6. Intubação orotraqueal + Propofol 1–2 mg/kg IV (bolo) + infusão, ou Midazolam 0,2 mg/kg IV + infusão',
+        '7. EEG contínuo na UTI. Investigação etiológica: eletrólitos, toxicológico, neuroimagem, líquor',
+      ],
+      'es': [
+        'Diagnóstico: Estado epiléptico convulsivo. Causa probable: falta de adherencia al tratamiento',
+        'FASE 1 — 0–5 min: Estabilización',
+        '1. Vía aérea + O2 alto flujo (mascarilla con reservorio 15 L/min). Posición lateral de seguridad',
+        '2. Acceso venoso + glucemia (excluir hipoglucemia). Si glucemia <60: Glucosa 50% 50 mL IV',
+        '3. Monitoreo: ECG, PA, SatO2, temperatura',
+        'FASE 2 — 5–20 min: Benzodiacepina (1ª línea absoluta)',
+        '4a. CON acceso IV: Diazepam 10 mg IV en 2 min (o Lorazepam 4 mg IV si disponible)',
+        '4b. SIN acceso IV: Midazolam 10 mg IM (muslo) — eficacia superior al Diazepam IM',
+        'FASE 3 — 20–40 min: Antiepiléptico de 2ª línea (si persiste tras BZD)',
+        '5. Fenitoína 20 mg/kg IV (50 mg/min) O Levetiracetam 60 mg/kg IV — preferir LEV en gestantes y cardiopatas',
+        'FASE 4 — >40 min: Estado refractario → UCI',
+        '6. Intubación orotraqueal + Propofol o Midazolam en infusión continua + EEG continuo',
+        '7. Investigación etiológica: electrolitos, toxicológico, neuroimagen, LCR',
+      ],
+    },
+    avoid: {
+      'pt': 'NUNCA atrasar benzodiazepínico — é a 1ª linha com maior impacto em mortalidade. Evitar Fenitoína em gestantes (teratogênica) e cardiopatas (arritmias). Não usar Fenitoína IM (absorção errática). Evitar hipertermia (aumenta dano neuronal).',
+      'es': 'NUNCA retrasar benzodiacepina — es la 1ª línea con mayor impacto en mortalidad. Evitar Fenitoína en gestantes (teratogénica) y cardiopatas. No usar Fenitoína IM (absorción errática). Evitar hipertermia.',
+    },
+    drugs: ['diazepam', 'midazolam', 'fenitoina', 'levetiracetam', 'propofol'],
+  ),
+
+  // ─────────────────────────────────────────────
+  //  CASOS CLÍNICOS — MEDICINA INTERNA / SEPSE
+  // ─────────────────────────────────────────────
+  ProtocolModel(
+    id: 'caso_sepse_idoso',
+    title: {'pt': 'Caso Clínico: Sepse no Idoso — Mau Estado Geral', 'es': 'Caso Clínico: Sepsis en el Anciano — Mal Estado General'},
+    severity: {'pt': 'Alto', 'es': 'Alto'},
+    recognize: {
+      'pt': 'Homem de 75 anos (82 kg). Astenia marcada, adinamia e desorientação flutuante nas últimas 12h (relatado por familiares). Sem febre referida inicialmente. Exame: desidratação mucocutânea, PA 90/60, FC 112, FR 24, Tax 38,5°C. qSOFA 2 pontos (taquipneia + alteração do sensório). Abdome flácido com desconforto difuso. Em idosos, confusão mental + mau estado geral pode ser a ÚNICA manifestação de sepse grave.',
+      'es': 'Hombre de 75 años (82 kg). Astenia marcada, adinamia y desorientación fluctuante en las últimas 12h. Sin fiebre referida inicialmente. Examen: deshidratación mucocutánea, PA 90/60, FC 112, FR 24, Tax 38,5°C. qSOFA 2 puntos (taquipnea + alteración del sensorio). En ancianos, confusión + mal estado general puede ser la ÚNICA manifestación de sepsis grave.',
+    },
+    actions: {
+      'pt': [
+        'Diagnóstico: Síndrome febril / Sepse provável (qSOFA ≥2). Foco a determinar',
+        'BUNDLE SEPSE — iniciar dentro da 1ª hora (Hour-1 Bundle):',
+        '1. Lactato sérico (se >2 mmol/L: sepse grave; se >4: choque séptico)',
+        '2. Hemoculturas 2 pares (periférica + central se cateter) ANTES do antibiótico',
+        '3. Urocultura + EAS (foco urinário é o mais comum em idosos)',
+        '4. Antibiótico empírico PRECOCE: Ceftriaxona 2 g IV — iniciar em até 1h do reconhecimento',
+        '5. Hidratação: Ringer Lactato 30 mL/kg em bolo (1ª hora) — reavaliação contínua',
+        '6. Reavaliação em 1h: se PA ainda <90 sistólica → Noradrenalina 0,1–0,5 µg/kg/min + UTI',
+        'Laboratório urgente: Lactato, Procalcitonina, Hemograma, Função renal, Coagulograma, Bilirrubinas',
+        'Foco suspeito: urinário (mais comum), pneumônico (2º), intra-abdominal',
+      ],
+      'es': [
+        'Diagnóstico: Síndrome febril / Sepsis probable (qSOFA ≥2). Foco a determinar',
+        'BUNDLE SEPSIS — iniciar dentro de la 1ª hora:',
+        '1. Lactato sérico (si >2 mmol/L: sepsis grave; si >4: choque séptico)',
+        '2. Hemocultivos 2 pares ANTES del antibiótico',
+        '3. Urocultivo + EGO (foco urinario es el más común en ancianos)',
+        '4. Antibiótico empírico PRECOZ: Ceftriaxona 2 g IV — iniciar en <1h del reconocimiento',
+        '5. Hidratación: Ringer Lactato 30 mL/kg en bolo (1ª hora) — reevaluación continua',
+        '6. Reevaluación a la 1h: si PA aún <90 sistólica → Noradrenalina 0,1–0,5 µg/kg/min + UCI',
+        'Laboratorio urgente: Lactato, Procalcitonina, Hemograma, Función renal, Coagulación, Bilirrubinas',
+        'Foco sospechoso: urinario (más común), neumónico (2º), intraabdominal',
+      ],
+    },
+    avoid: {
+      'pt': 'Não atrasar antibiótico aguardando resultado de culturas. Evitar hiperhidratação após estabilização hemodinâmica (edema pulmonar, dilução de eletrólitos). Não usar Gentamicina em idosos sem monitorar função renal. Evitar corticoide rotineiramente (só se choque refratário a vasopressor).',
+      'es': 'No retrasar antibiótico esperando resultado de cultivos. Evitar hiperhidratación tras estabilización hemodinámica. No usar Gentamicina en ancianos sin monitorear función renal. Evitar corticoide de rutina (solo si choque refractario a vasopresor).',
+    },
+    drugs: ['ceftriaxona', 'ringer_lactato', 'noradrenalina', 'piperacilina_tazobactam'],
+  ),
+
+  // ─────────────────────────────────────────────
+  //  CASOS CLÍNICOS — ENDOCRINOLOGIA
+  // ─────────────────────────────────────────────
+  ProtocolModel(
+    id: 'caso_cetoacidose_diabetica',
+    title: {'pt': 'Caso Clínico: Cetoacidose Diabética (CAD)', 'es': 'Caso Clínico: Cetoacidosis Diabética (CAD)'},
+    severity: {'pt': 'Alto', 'es': 'Alto'},
+    recognize: {
+      'pt': 'Homem de 22 anos (68 kg). DM1 desde os 15 anos. Interrompeu insulina há 3 dias por conta própria. Vômitos repetidos, dor abdominal difusa e hálito cetônico há 8h. Exame: desidratado +++, FC 118, FR 28 (respiração de Kussmaul), Glasgow 14. Laboratório: Glicemia 485 mg/dL, pH 7,18, HCO3 8 mEq/L, K⁺ 3,2 mEq/L, cetonúria +++. HIPOCALEMIA GRAVE — ATENÇÃO!',
+      'es': 'Hombre de 22 años (68 kg). DM1 desde los 15 años. Suspendió insulina hace 3 días. Vómitos repetidos, dolor abdominal difuso y aliento cetónico. Examen: deshidratado +++, FC 118, FR 28 (respiración de Kussmaul), Glasgow 14. Laboratorio: Glucemia 485 mg/dL, pH 7,18, HCO3 8 mEq/L, K⁺ 3,2 mEq/L, cetonuria +++. HIPOPOTASEMIA GRAVE — ¡ATENCIÓN!',
+    },
+    actions: {
+      'pt': [
+        'Diagnóstico: CAD grave (pH <7,2, HCO3 <10) + Hipocalemia grave (K⁺ 3,2)',
+        'ATENÇÃO: NUNCA iniciar insulina com K⁺ <3,5 — risco de parada cardíaca',
+        '1. REPOSIÇÃO DE K⁺ PRIMEIRO: KCl 20–40 mEq/h IV até K⁺ >3,5 mEq/L (ECG contínuo)',
+        '2. Hidratação: SF 0,9% 1 L na 1ª hora → ajustar conforme Na⁺ corrigido',
+        '   Se Na⁺ corrigido normal ou alto: mudar para NaCl 0,45% após 1ª hora',
+        '3. INSULINA REGULAR IV: iniciar SOMENTE após K⁺ >3,5 → 0,1 UI/kg/h em infusão contínua',
+        '4. Quando glicemia <250 mg/dL: associar SG 5% (evitar hipoglicemia, manter insulina)',
+        '5. Critérios de resolução da CAD: pH >7,3, HCO3 >18, ânion gap normalizado',
+        '6. Investigar fator precipitante: infecção (ITU, pneumonia), abandono de insulina, IAM',
+        'Monitorização horária: glicemia, K⁺, pH, diurese, nível de consciência',
+      ],
+      'es': [
+        'Diagnóstico: CAD grave (pH <7,2, HCO3 <10) + Hipopotasemia grave (K⁺ 3,2)',
+        'ATENCIÓN: NUNCA iniciar insulina con K⁺ <3,5 — riesgo de paro cardíaco',
+        '1. REPOSICIÓN DE K⁺ PRIMERO: ClK 20–40 mEq/h IV hasta K⁺ >3,5 mEq/L (ECG continuo)',
+        '2. Hidratación: SF 0,9% 1 L en la 1ª hora → ajustar según Na⁺ corregido',
+        '3. INSULINA REGULAR IV: iniciar SOLO tras K⁺ >3,5 → 0,1 UI/kg/h en infusión continua',
+        '4. Cuando glucemia <250 mg/dL: asociar SG 5% (evitar hipoglucemia, mantener insulina)',
+        '5. Criterios de resolución: pH >7,3, HCO3 >18, anión gap normalizado',
+        '6. Investigar factor precipitante: infección, abandono de insulina, IAM',
+        'Monitoreo horario: glucemia, K⁺, pH, diuresis, nivel de conciencia',
+      ],
+    },
+    avoid: {
+      'pt': 'NUNCA iniciar insulina sem corrigir K⁺ primeiro (a insulina desloca K⁺ para intracelular, piorando hipocalemia → arritmias fatais). Não repor bicarbonato de rotina (pH >6,9). Evitar hidratação excessiva rápida (edema cerebral em jovens). Não suspender insulina ao atingir glicemia normal — manter até resolução da acidose.',
+      'es': 'NUNCA iniciar insulina sin corregir K⁺ primero (la insulina desplaza K⁺ al intracelular → arritmias fatales). No reponer bicarbonato de rutina (pH >6,9). Evitar hidratación excesiva rápida (edema cerebral en jóvenes). No suspender insulina al normalizar glucemia — mantener hasta resolución de acidosis.',
+    },
+    drugs: ['insulina_regular', 'cloreto_potassio'],
+  ),
+
+  // ─────────────────────────────────────────────
+  //  CASOS CLÍNICOS — CARDIOLOGIA
+  // ─────────────────────────────────────────────
+  ProtocolModel(
+    id: 'caso_stemi',
+    title: {'pt': 'Caso Clínico: STEMI Anterior — Reperfusão de Emergência', 'es': 'Caso Clínico: IAMCEST Anterior — Reperfusión de Emergencia'},
+    severity: {'pt': 'Crítico', 'es': 'Crítico'},
+    recognize: {
+      'pt': 'Homem de 55 anos (88 kg). Dor torácica retroesternal em aperto, irradiação para MSE e mandíbula, início há 40 min. Diaforese profusa + náuseas. PA 145/90, FC 98, FR 18, sem sinais de IC. Bulhas rítmicas sem sopros. ECG: supradesnivelamento de ST ≥2 mm em V1–V4 (padrão de oclusão de DA proximal). Troponina: pendente (não aguardar para tratamento).',
+      'es': 'Hombre de 55 años (88 kg). Dolor torácico retroesternal opresivo, irradiación a MSI y mandíbula, inicio hace 40 min. Diaforesis profusa + náuseas. PA 145/90, FC 98, FR 18, sin signos de IC. ECG: supradesnivelamiento de ST ≥2 mm en V1–V4 (patrón de oclusión de DA proximal). Troponina: pendiente (no esperar para tratar).',
+    },
+    actions: {
+      'pt': [
+        'Diagnóstico: STEMI Anterior Extenso (oclusão de DA proximal). EMERGÊNCIA MÁXIMA',
+        '1. AAS 300 mg VO (mastigar imediatamente)',
+        '2. Inibidor P2Y12: Ticagrelor 180 mg VO (ou Clopidogrel 600 mg se contraindicação ao ticagrelor)',
+        '3. Anticoagulação: Heparina NF 60 UI/kg IV em bolo (máx. 4.000 UI)',
+        '4. O2 suplementar SE SpO2 <90% (não dar O2 de rotina — piora prognóstico por vasoconstrição)',
+        '5. Morfina 2–4 mg IV SE dor intensa refratária a AINE (usar com cautela: reduz absorção de P2Y12)',
+        '6. ANGIOPLASTIA PRIMÁRIA (ICP): ATIVAR A HEMODINÂMICA AGORA — meta door-to-balloon <90 min',
+        'Se ICP indisponível em <120 min: Tenecteplase IV (peso-ajustado) + transferência urgente',
+        'Monitorar: ECG seriado, PA, FC, arritmias de reperfusão pós-ICP',
+      ],
+      'es': [
+        'Diagnóstico: IAMCEST Anterior Extenso (oclusión de DA proximal). EMERGENCIA MÁXIMA',
+        '1. AAS 300 mg VO (masticar inmediatamente)',
+        '2. Inhibidor P2Y12: Ticagrelor 180 mg VO (o Clopidogrel 600 mg si contraindicación)',
+        '3. Anticoagulación: Heparina NF 60 UI/kg IV en bolo (máx. 4.000 UI)',
+        '4. O2 suplementario SOLO si SpO2 <90% (no dar O2 de rutina)',
+        '5. Morfina 2–4 mg IV si dolor intenso refractario (cautela: reduce absorción de P2Y12)',
+        '6. ANGIOPLASTIA PRIMARIA (ICP): ACTIVAR HEMODINÁMICA AHORA — meta puerta-balón <90 min',
+        'Si ICP no disponible en <120 min: Tenecteplase IV (ajustado por peso) + traslado urgente',
+        'Monitorar: ECG seriado, PA, FC, arritmias de reperfusión post-ICP',
+      ],
+    },
+    avoid: {
+      'pt': 'NUNCA atrasar reperfusão para aguardar troponina. Evitar O2 suplementar se SpO2 ≥90% (vasoconstrição coronariana). Não usar Clopidogrel + Ticagrelor juntos. Evitar anticoagulação após fibrinólise sem protocolos específicos. Não administrar Metoprolol IV na fase aguda com sinais de IC ou bradicardia.',
+      'es': 'NUNCA retrasar reperfusión esperando troponina. Evitar O2 suplementario si SpO2 ≥90%. No usar Clopidogrel + Ticagrelor juntos. Evitar anticoagulación post-fibrinólisis sin protocolos específicos. No administrar Metoprolol IV en fase aguda con IC o bradicardia.',
+    },
+    drugs: ['aas', 'ticagrelor', 'heparina_nf', 'morfina', 'tenecteplase'],
+  ),
+
+  ProtocolModel(
+    id: 'caso_icc_descompensada',
+    title: {'pt': 'Caso Clínico: IC Descompensada — Perfil Congesto Perfundido', 'es': 'Caso Clínico: IC Descompensada — Perfil Congesto Perfundido'},
+    severity: {'pt': 'Alto', 'es': 'Alto'},
+    recognize: {
+      'pt': 'Mulher de 72 anos (80 kg). IC com FE reduzida (FE 30%). 3ª internação por descompensação no último ano. Ganho ponderal de 4 kg em 1 semana. Ortopneia + DPN. Exame: PA 155/95, FC 95, FR 24, SatO2 91% em repouso. Estase jugular a 45°. Crepitações bibasais. Edema MMII +++. BNP 1.850 pg/mL. RX: congestão pulmonar bilateral. Perfil: Quente e Úmido (congesta + perfundida).',
+      'es': 'Mujer de 72 años (80 kg). IC con FE reducida (FE 30%). 3ª internación por descompensación en el último año. Ganancia de 4 kg en 1 semana. Ortopnea + DPN. Examen: PA 155/95, FC 95, FR 24, SatO2 91% en reposo. Ingurgitación yugular a 45°. Crepitantes bibasales. Edema MMII +++. BNP 1.850 pg/mL. Perfil: Caliente y Húmedo (congesto + perfundido).',
+    },
+    actions: {
+      'pt': [
+        'Diagnóstico: IC Descompensada — Perfil "Quente e Úmido" (congesta + adequadamente perfundida)',
+        '1. Posição: sentar o paciente a 45–90° (reduz pré-carga e melhora dispneia)',
+        '2. O2 suplementar: alvo SatO2 >94% (máscara ou cateter nasal)',
+        '3. VNI (CPAP/BiPAP) se SatO2 <90% após O2: reduz intubação e mortalidade',
+        '4. Furosemida IV: dobrar a dose oral habitual (mínimo 40 mg, máximo 200–400 mg/dia)',
+        '   Meta: débito urinário 100–200 mL/h nas primeiras 6h',
+        '5. Monitorização: diurese horária, eletrólitos 12/12h, balanço hídrico, peso diário',
+        '6. Manter IECA/BRA e betabloqueador SE PA >90 e FC >50 — redução gradual se necessário (nunca suspender abruptamente)',
+        '7. Investigar causa da descompensação: infecção, arritmia, não aderência, IAM silencioso',
+        'Reavaliação em 24h: se sem resposta ao diurético → Tolvaptana ou combinação Furosemida + Tiazídico',
+      ],
+      'es': [
+        'Diagnóstico: IC Descompensada — Perfil "Caliente y Húmedo" (congesto + adecuadamente perfundido)',
+        '1. Posición: sentar al paciente a 45–90° (reduce precarga y mejora disnea)',
+        '2. O2 suplementario: objetivo SatO2 >94%',
+        '3. VNI (CPAP/BiPAP) si SatO2 <90% tras O2: reduce intubación y mortalidad',
+        '4. Furosemida IV: doblar la dosis oral habitual (mínimo 40 mg)',
+        '   Meta: diuresis 100–200 mL/h en las primeras 6h',
+        '5. Monitoreo: diuresis horaria, electrolitos c/12h, balance hídrico, peso diario',
+        '6. Mantener IECA/ARA y betabloqueador si PA >90 y FC >50 — reducción gradual si necesario (nunca suspender abruptamente)',
+        '7. Investigar causa de la descompensación: infección, arritmia, falta de adherencia, IAM silencioso',
+        'Reevaluación a las 24h: si sin respuesta → Tolvaptán o combinación Furosemida + Tiazídico',
+      ],
+    },
+    avoid: {
+      'pt': 'EVITAR hiperhidratação (piora congestão). Não suspender betabloqueador abruptamente (risco de rebote e morte súbita). Evitar AINE (retêm sódio e água, antagonizam diuréticos, piora IC). Não dar nitroprussiato sem monitorização invasiva de PA. Evitar hipopotassemia com furosemida (arritmias — repor K⁺ se <3,5).',
+      'es': 'EVITAR hiperhidratación. No suspender betabloqueador abruptamente (riesgo de rebote). Evitar AINE (retienen sodio, antagonizan diuréticos). No dar nitroprusiato sin monitoreo invasivo. Evitar hipopotasemia con furosemida (reponer K⁺ si <3,5).',
+    },
+    drugs: ['furosemida', 'espironolactona', 'sacubitril_valsartana', 'dobutamina'],
+  ),
+
+  ProtocolModel(
+    id: 'caso_tep_alto_risco',
+    title: {'pt': 'Caso Clínico: TEP de Alto Risco — Instabilidade Hemodinâmica', 'es': 'Caso Clínico: TEP de Alto Riesgo — Inestabilidad Hemodinámica'},
+    severity: {'pt': 'Crítico', 'es': 'Crítico'},
+    recognize: {
+      'pt': 'Mulher de 48 anos (66 kg). Dispneia súbita intensa após voo de 11h (retornou de viagem internacional há 6h). Dor pleurítica direita. PA 88/55, FC 122, FR 26, SatO2 85%. Turgência jugular. MMID com edema e empastamento (TVP). ECG: S1Q3T3 + taquicardia sinusal. AngioTC: trombos em artéria pulmonar principal direita e lobar esquerda.',
+      'es': 'Mujer de 48 años (66 kg). Disnea súbita intensa tras vuelo de 11h. Dolor pleurítico derecho. PA 88/55, FC 122, FR 26, SatO2 85%. Ingurgitación yugular. MMID con edema y empastamiento (TVP). ECG: S1Q3T3 + taquicardia sinusal. AngioTC: trombos en arteria pulmonar principal derecha y lobar izquierda.',
+    },
+    actions: {
+      'pt': [
+        'Diagnóstico: TEP de Alto Risco (instabilidade hemodinâmica). Mortalidade 30–65% sem tratamento imediato',
+        '1. O2 alto fluxo: máscara com reservatório 15 L/min. Preparar UTI e suporte ventilatório',
+        '2. Acesso venoso calibroso × 2. Cristaloide 500 mL cauteloso (VD sobrecarregado — evitar hiperhidratação)',
+        '3. TROMBOLISE SISTÊMICA — IMEDIATA (TEP + choque = indicação absoluta sem contraindicações):',
+        '   Alteplase 100 mg IV em 2h (10 mg IV em bolo + 90 mg em 2h)',
+        '4. Heparina NF: suspender DURANTE trombólise, RETOMAR após (sem bolo inicial após fibrinólise)',
+        '5. Noradrenalina 0,1–0,5 µg/kg/min se PA não responde ao cristaloide',
+        '6. Se contraindicação à trombólise: embolectomia cirúrgica de emergência ou trombectomia por cateter',
+        '7. EVITAR intubação se possível (perda de tônus simpático → deterioração hemodinâmica abrupta)',
+        'Pós-estabilização: anticoagulação por ≥3 meses (DOAC preferível — Rivaroxabana ou Apixabana)',
+      ],
+      'es': [
+        'Diagnóstico: TEP de Alto Riesgo (inestabilidad hemodinámica). Mortalidad 30–65% sin tratamiento inmediato',
+        '1. O2 alto flujo: mascarilla con reservorio 15 L/min. Preparar UCI y soporte ventilatorio',
+        '2. Acceso venoso calibroso × 2. Cristaloide 500 mL cauteloso (VD sobrecargado)',
+        '3. TROMBÓLISIS SISTÉMICA — INMEDIATA (TEP + choque = indicación absoluta):',
+        '   Alteplase 100 mg IV en 2h (10 mg IV en bolo + 90 mg en 2h)',
+        '4. Heparina NF: suspender DURANTE trombólisis, REANUDAR tras la misma',
+        '5. Noradrenalina 0,1–0,5 µg/kg/min si PA no responde al cristaloide',
+        '6. Si contraindicación a trombólisis: embolectomía quirúrgica o trombectomía por catéter',
+        '7. EVITAR intubación si posible (pérdida de tono simpático → deterioro hemodinámico abrupto)',
+        'Post-estabilización: anticoagulación ≥3 meses (DOAC preferible — Rivaroxabán o Apixabán)',
+      ],
+    },
+    avoid: {
+      'pt': 'NUNCA atrasar trombólise em TEP com choque. Evitar hiperhidratação (piora sobrecarga do VD). Não usar trombolítico se risco de sangramento intracraniano. Evitar hipóxia prolongada (vasoconstrição pulmonar piora hipertensão do VD). Não anticoagular com dose terapêutica durante a infusão de alteplase.',
+      'es': 'NUNCA retrasar trombólisis en TEP con choque. Evitar hiperhidratación. No usar trombolítico si riesgo de sangrado intracraneal. Evitar hipoxia prolongada. No anticoagular con dosis terapéutica durante infusión de alteplase.',
+    },
+    drugs: ['alteplase', 'heparina_nf', 'noradrenalina', 'rivaroxabana'],
+  ),
+
+  // ─────────────────────────────────────────────
+  //  CASOS CLÍNICOS — EMERGÊNCIA / ALERGOLOGIA
+  // ─────────────────────────────────────────────
+  ProtocolModel(
+    id: 'caso_anafilaxia_grave',
+    title: {'pt': 'Caso Clínico: Anafilaxia Grave por Penicilina', 'es': 'Caso Clínico: Anafilaxia Grave por Penicilina'},
+    severity: {'pt': 'Crítico', 'es': 'Crítico'},
+    recognize: {
+      'pt': 'Mulher de 28 anos (60 kg). 15 min após 1ª dose de Amoxicilina: urticária generalizada, edema de lábios, rouquidão progressiva + estridor inspiratório. PA 75/40, FC 128, SatO2 91%. Angioedema de língua e úvula. Critérios de anafilaxia: 3/3 (pele + respiratório + cardiovascular). EMERGÊNCIA — risco de morte em minutos.',
+      'es': 'Mujer de 28 años (60 kg). 15 min tras 1ª dosis de Amoxicilina: urticaria generalizada, edema de labios, ronquera progresiva + estridor inspiratorio. PA 75/40, FC 128, SatO2 91%. Angioedema de lengua y úvula. Criterios de anafilaxia: 3/3 (piel + respiratorio + cardiovascular). EMERGENCIA — riesgo de muerte en minutos.',
+    },
+    actions: {
+      'pt': [
+        'Diagnóstico: Anafilaxia grave por hipersensibilidade à Penicilina. TRATAR AGORA',
+        '1. ADRENALINA 0,3–0,5 mg IM na lateral da coxa (IMEDIATO — 1ª linha absoluta, NADA adia isso)',
+        '2. Chamar ajuda. Decúbito dorsal + MMII elevados se hipotensão (Trendelenburg)',
+        '3. O2 alto fluxo: 15 L/min por máscara com reservatório',
+        '4. Acesso venoso + SF 0,9% 1–2 L em bolo rápido (hipotensão distribuitiva)',
+        '5. Preparar IOT ou cricotireoidotomia de emergência se estridor progredir',
+        '6. Se sem resposta após 2ª dose de adrenalina IM: Adrenalina IV 0,1 µg/kg/min em infusão',
+        '7. Adjuvantes (NÃO são 1ª linha — não substituem adrenalina):',
+        '   • Difenidramina 50 mg IV (anti-H1)',
+        '   • Metilprednisolona 125 mg IV (previne reação bifásica)',
+        '   • Ranitidina 50 mg IV (anti-H2, para urticária refratária)',
+        '8. Observação mínima 6–8h (reação bifásica em ~20% — pode ocorrer horas após)',
+      ],
+      'es': [
+        'Diagnóstico: Anafilaxia grave por hipersensibilidad a Penicilina. TRATAR AHORA',
+        '1. ADRENALINA 0,3–0,5 mg IM en lateral del muslo (INMEDIATO — 1ª línea absoluta)',
+        '2. Llamar ayuda. Decúbito dorsal + MMII elevados si hipotensión',
+        '3. O2 alto flujo: 15 L/min por mascarilla con reservorio',
+        '4. Acceso venoso + SF 0,9% 1–2 L en bolo rápido',
+        '5. Preparar IOT o cricotiroidotomía de emergencia si estridor progresa',
+        '6. Si sin respuesta tras 2ª dosis IM: Adrenalina IV 0,1 µg/kg/min en infusión',
+        '7. Adyuvantes (NO son 1ª línea — no sustituyen adrenalina):',
+        '   • Difenhidramina 50 mg IV (anti-H1)',
+        '   • Metilprednisolona 125 mg IV (previene reacción bifásica)',
+        '   • Ranitidina 50 mg IV (anti-H2)',
+        '8. Observación mínima 6–8h (reacción bifásica en ~20%)',
+      ],
+    },
+    avoid: {
+      'pt': 'NUNCA atrasar adrenalina IM. Anti-histamínico e corticoide SÃO ADJUVANTES — jamais substitutos da adrenalina. Não sentar o paciente se hipotensão. Não dar alta antes de 6h de observação. Evitar epinefrina SC (absorção errática na anafilaxia).',
+      'es': 'NUNCA retrasar adrenalina IM. Antihistamínico y corticoide SON ADYUVANTES — jamás sustitutos de la adrenalina. No sentar al paciente si hipotensión. No dar alta antes de 6h de observación. Evitar epinefrina SC (absorción errática en anafilaxia).',
+    },
+    drugs: ['adrenalina', 'difenidramina', 'metilprednisolona'],
+  ),
+
+  // ─────────────────────────────────────────────
+  //  CASOS CLÍNICOS — PNEUMOLOGIA / INFECTOLOGIA
+  // ─────────────────────────────────────────────
+  ProtocolModel(
+    id: 'caso_pac_grave',
+    title: {'pt': 'Caso Clínico: PAC Grave — CURB-65 ≥3', 'es': 'Caso Clínico: NAC Grave — CURB-65 ≥3'},
+    severity: {'pt': 'Alto', 'es': 'Alto'},
+    recognize: {
+      'pt': 'Homem de 70 anos (74 kg). Febre há 4 dias (Tax 39,2°C), tosse produtiva (escarro amarelado) + dispneia progressiva. Piora nas últimas 24h. PA 110/70, FC 105, FR 28, SatO2 88% em ar ambiente. MV diminuído em base direita + crepitações. PSI/PORT: Classe V. CURB-65: 3 pontos (confusão, ureia, FR ≥30). RX: condensação lobar em LID.',
+      'es': 'Hombre de 70 años (74 kg). Fiebre 4 días (Tax 39,2°C), tos productiva (esputo amarillo) + disnea progresiva. PA 110/70, FC 105, FR 28, SatO2 88% en aire ambiente. MV disminuido en base derecha + crepitantes. PSI/PORT: Clase V. CURB-65: 3 puntos. RX: condensación lobar en LID.',
+    },
+    actions: {
+      'pt': [
+        'Diagnóstico: PAC grave (CURB-65 ≥3, PSI V). Internação em UTI ou semi-intensiva',
+        '1. O2 suplementar: alvo SatO2 92–96% (máscara de Venturi ou cateter nasal de alto fluxo)',
+        '2. Preparar VNI se SatO2 <90% com O2 convencional (CPAP ou BiPAP)',
+        '3. Hemoculturas 2 pares + escarro para Gram/cultura ANTES do antibiótico',
+        '4. Antígenos urinários: Legionella + Pneumococo',
+        '5. Antibioticoterapia: Cobertura DUPLA (beta-lactâmico + atípico):',
+        '   • Ampicilina-Sulbactam 3 g IV 6/6h (ou Ceftriaxona 2 g IV/dia)',
+        '   • + Azitromicina 500 mg IV/VO 1×/dia (cobertura de Legionella, Mycoplasma)',
+        '6. Hidratação cautelosa (evitar sobrecarga em idoso)',
+        '7. Reavaliação clínica e laboratorial em 48–72h para ajuste de antibiótico conforme culturas',
+        'Mortalidade: CURB-65 ≥3 = 17–22%. Cobertura de atípicos é OBRIGATÓRIA nesta faixa de gravidade',
+      ],
+      'es': [
+        'Diagnóstico: NAC grave (CURB-65 ≥3, PSI V). Internación en UCI o semi-intensivo',
+        '1. O2 suplementario: objetivo SatO2 92–96%',
+        '2. Preparar VNI si SatO2 <90% con O2 convencional',
+        '3. Hemocultivos 2 pares + esputo para Gram/cultivo ANTES del antibiótico',
+        '4. Antígenos urinarios: Legionella + Neumococo',
+        '5. Antibioticoterapia: Cobertura DOBLE (beta-lactámico + atípico):',
+        '   • Ampicilina-Sulbactam 3 g IV c/6h (o Ceftriaxona 2 g IV/día)',
+        '   • + Azitromicina 500 mg IV/VO 1×/día (cobertura de Legionella, Mycoplasma)',
+        '6. Hidratación cautelosa',
+        '7. Reevaluación clínica y laboratorial a las 48–72h para ajuste según cultivos',
+        'Mortalidad: CURB-65 ≥3 = 17–22%. Cobertura de atípicos es OBLIGATORIA en esta gravedad',
+      ],
+    },
+    avoid: {
+      'pt': 'Não monoterapia com beta-lactâmico em PAC grave (sem cobertura de atípicos). Evitar Fluoroquinolona respiratória sem excluir TB ativa (mascaramento). Não hiperhidratar paciente idoso. Não atrasar antibiótico >4h do diagnóstico.',
+      'es': 'No monoterapia con beta-lactámico en NAC grave (sin cobertura de atípicos). Evitar Fluoroquinolona respiratoria sin excluir TB activa. No hiperhidratar al anciano. No retrasar antibiótico >4h del diagnóstico.',
+    },
+    drugs: ['ampicilina_sulbactam', 'ceftriaxona', 'azitromicina'],
+  ),
+
+  // ─────────────────────────────────────────────
+  //  CASOS CLÍNICOS — GASTROENTEROLOGIA
+  // ─────────────────────────────────────────────
+  ProtocolModel(
+    id: 'caso_hda_varicosa',
+    title: {'pt': 'Caso Clínico: HDA Varicosa em Cirrótico', 'es': 'Caso Clínico: HDA Varicosa en Cirrótico'},
+    severity: {'pt': 'Crítico', 'es': 'Crítico'},
+    recognize: {
+      'pt': 'Homem de 52 anos (71 kg). Cirrose hepática por álcool (Child-Pugh B). Hematêmese volumosa há 1h (>500 mL estimado) + lipotimia ao sentar. PA 85/50, FC 130, Hb 7,1 g/dL. Abdome com ascite moderada. Eritema palmar + aranhas vasculares (estigmas de hepatopatia). Endoscopia prévia (6 meses): varizes esofágicas grau III sem ligadura prévia. RISCO EXTREMAMENTE ALTO de ressangramento.',
+      'es': 'Hombre de 52 años (71 kg). Cirrosis hepática por alcohol (Child-Pugh B). Hematemesis volumosa hace 1h (>500 mL estimado) + lipotimia al sentarse. PA 85/50, FC 130, Hb 7,1 g/dL. Abdomen con ascitis moderada. Eritema palmar + arañas vasculares. Endoscopia previa (6 meses): várices esofágicas grado III. RIESGO EXTREMADAMENTE ALTO de resangrado.',
+    },
+    actions: {
+      'pt': [
+        'Diagnóstico: HDA varicosa em cirrótico Child B. Alto risco de ressangramento e mortalidade',
+        '1. Acesso venoso calibroso × 2 + expansão com cristaloide (CAUTELOSA — não exagerar)',
+        '   Transfusão se Hb <7 g/dL (alvo CONSERVADOR 7–8 g/dL em cirróticos — evitar hipervolemia)',
+        '2. TERLIPRESSINA 2 mg IV 4/4h — INICIAR IMEDIATAMENTE (vasoconstritor esplâncnico — ANTES da endoscopia)',
+        '   Alternativa: Octreotida 50 µg IV bolus + infusão 50 µg/h',
+        '3. CEFTRIAXONA 1 g IV/dia × 7 dias — profilaxia de PBE e infecção pós-sangramento (obrigatório em cirróticos)',
+        '4. Endoscopia de urgência em <12h (preferencialmente <6h): Ligadura elástica das varizes',
+        '5. Proteção de via aérea: avaliar IOT preventivo se encefalopatia hepática grau ≥2',
+        '6. Balão de Sengstaken-Blakemore: se sangramento incontrolável antes da endoscopia',
+        '7. TIPS (derivação portossistêmica transjugular): se ressangramento ou falha endoscópica',
+        'Pós-estabilização: introduzir Nadolol (betabloqueador não seletivo) para profilaxia secundária',
+      ],
+      'es': [
+        'Diagnóstico: HDA varicosa en cirrótico Child B. Alto riesgo de resangrado y mortalidad',
+        '1. Acceso venoso calibroso × 2 + expansión con cristaloide (CAUTELOSA)',
+        '   Transfusión si Hb <7 g/dL (objetivo CONSERVADOR 7–8 g/dL — evitar hipervolemia)',
+        '2. TERLIPRESINA 2 mg IV c/4h — INICIAR INMEDIATAMENTE (ANTES de endoscopia)',
+        '   Alternativa: Octreotida 50 µg IV bolo + infusión 50 µg/h',
+        '3. CEFTRIAXONA 1 g IV/día × 7 días — profilaxis de PBE e infección post-sangrado (obligatorio en cirróticos)',
+        '4. Endoscopia urgente en <12h (preferiblemente <6h): Ligadura elástica de várices',
+        '5. Protección de vía aérea: evaluar IOT preventivo si encefalopatía hepática ≥grado 2',
+        '6. Balón de Sengstaken-Blakemore: si sangrado incontrolable antes de endoscopia',
+        '7. TIPS (derivación portosistémica transhepática): si resangrado o fallo endoscópico',
+        'Post-estabilización: introducir Nadolol para profilaxis secundaria',
+      ],
+    },
+    avoid: {
+      'pt': 'EVITAR hiperexpansão volêmica (piora hipertensão portal e aumenta risco de ressangramento). Não usar AINE ou AAS em cirróticos. Não realizar paracentese na vigência do sangramento ativo. Evitar sedação excessiva sem via aérea protegida. Não atrasar antibiótico (infecção é causa de morte em 20% dos casos).',
+      'es': 'EVITAR hiperexpansión volémica. No usar AINE ni AAS en cirróticos. No realizar paracentesis durante sangrado activo. Evitar sedación excesiva sin vía aérea protegida. No retrasar antibiótico (infección causa muerte en 20% de los casos).',
+    },
+    drugs: ['terlipressina', 'ceftriaxona', 'nadolol', 'octreotida'],
+  ),
+
 ];

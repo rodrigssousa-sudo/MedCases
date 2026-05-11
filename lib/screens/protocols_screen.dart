@@ -411,6 +411,85 @@ class _ProtocolsScreenState extends State<ProtocolsScreen> {
             onSelect: (proto) => showProtocolDetail(context, proto),
           ),
           const SizedBox(height: 8),
+
+          // ── Casos Clínicos — Neurologia ──────────────────────────────────
+          _ProtocolGroupAccordion(
+            groupKey: 'casos_neuro',
+            icon: '🧠',
+            titlePt: 'Casos Clínicos — Neurologia',
+            titleEs: 'Casos Clínicos — Neurología',
+            color: const Color(0xFFF5F0FF),
+            borderColor: const Color(0xFFCCBBEE),
+            iconColor: const Color(0xFF5C2D91),
+            protocols: allDB.where((d) => {
+              'caso_enxaqueca_aura',
+              'caso_avc_isquemico',
+              'caso_status_epilepticus',
+            }.contains(d.id)).toList(),
+            isExpanded: _expanded.contains('casos_neuro'),
+            p: p, isEs: isEs,
+            onToggle: () => setState(() {
+              _expanded.contains('casos_neuro')
+                  ? _expanded.remove('casos_neuro')
+                  : _expanded.add('casos_neuro');
+            }),
+            onSelect: (proto) => showProtocolDetail(context, proto),
+          ),
+          const SizedBox(height: 8),
+
+          // ── Casos Clínicos — Cardiologia & Pneumologia ───────────────────
+          _ProtocolGroupAccordion(
+            groupKey: 'casos_cardio',
+            icon: '🫀',
+            titlePt: 'Casos Clínicos — Cardiologia & Pneumologia',
+            titleEs: 'Casos Clínicos — Cardiología & Neumología',
+            color: const Color(0xFFFFF0F5),
+            borderColor: const Color(0xFFFFCCDD),
+            iconColor: const Color(0xFFAA1144),
+            protocols: allDB.where((d) => {
+              'caso_stemi',
+              'caso_icc_descompensada',
+              'caso_tep_alto_risco',
+              'caso_pac_grave',
+            }.contains(d.id)).toList(),
+            isExpanded: _expanded.contains('casos_cardio'),
+            p: p, isEs: isEs,
+            onToggle: () => setState(() {
+              _expanded.contains('casos_cardio')
+                  ? _expanded.remove('casos_cardio')
+                  : _expanded.add('casos_cardio');
+            }),
+            onSelect: (proto) => showProtocolDetail(context, proto),
+          ),
+          const SizedBox(height: 8),
+
+          // ── Casos Clínicos — Infectologia, Emergência & Metabólico ───────
+          _ProtocolGroupAccordion(
+            groupKey: 'casos_infec',
+            icon: '🦠',
+            titlePt: 'Casos Clínicos — Infectologia, Emergência & Metabólico',
+            titleEs: 'Casos Clínicos — Infectología, Emergencia & Metabólico',
+            color: const Color(0xFFF0FFF4),
+            borderColor: const Color(0xFFBBE8CC),
+            iconColor: const Color(0xFF075F45),
+            protocols: allDB.where((d) => {
+              'caso_cistite_aguda',
+              'caso_itu_recorrente',
+              'caso_sepse_idoso',
+              'caso_cetoacidose_diabetica',
+              'caso_anafilaxia_grave',
+              'caso_hda_varicosa',
+            }.contains(d.id)).toList(),
+            isExpanded: _expanded.contains('casos_infec'),
+            p: p, isEs: isEs,
+            onToggle: () => setState(() {
+              _expanded.contains('casos_infec')
+                  ? _expanded.remove('casos_infec')
+                  : _expanded.add('casos_infec');
+            }),
+            onSelect: (proto) => showProtocolDetail(context, proto),
+          ),
+          const SizedBox(height: 8),
         ],
       ]),
     );
