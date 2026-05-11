@@ -4,12 +4,13 @@ import '../providers/app_provider.dart';
 import '../widgets/common_widgets.dart';
 
 // ──────────────────────────────────────────────────────────────────
-// COLOR CONSTANTS
+// COLOR CONSTANTS — alinhadas com common_widgets.dart
 // ──────────────────────────────────────────────────────────────────
-const kToolDark   = Color(0xFF0F1C14);
-const kToolGreen  = Color(0xFF16A34A);
-const kToolBorder = Color(0xFFE5E7EB);
-const kToolGold   = Color(0xFFFFE8A6);
+// kDark, kGold, kGoldLight, kGreen, kBorder importados de common_widgets
+const kToolGreen  = Color(0xFF075f45);   // verde padrão do app (mesmo kGreen)
+const kToolBorder = Color(0xFFE2E6EA);   // mesmo kBorder
+const kToolDark   = kDark;              // alias para kDark
+const kToolGold   = kGoldLight;         // alias para kGoldLight
 
 class ToolsScreen extends StatefulWidget {
   const ToolsScreen({super.key});

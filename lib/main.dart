@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart'
-    show Timestamp, FirebaseFirestore, GetOptions, Source;
+    show Timestamp;
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'firebase_options.dart';
@@ -1228,6 +1228,7 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
   // sub-tab dentro do combo Rx+Proto: 0=Rx, 1=Protocolos
   int _rxProtoSub = 0;
   // Header recolhível: visível apenas na tab 0 (Cockpit/Início)
+  // ignore: unused_element
   bool get _headerVisible => _tab == 0;
 
   @override
@@ -1689,6 +1690,7 @@ class _SubTabBtn extends StatelessWidget {
 }
 
 // ── Mini barra de contexto (header recolhido nas sub-telas) ─────────────────
+// ignore: unused_element
 class _MiniContextBar extends StatelessWidget {
   final int tab;
   final bool dark;
@@ -2433,11 +2435,6 @@ class _AppHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final p = context.watch<AppProvider>();
-    // Iniciais do nome para avatar
-    final initials = p.userName.isNotEmpty
-        ? p.userName.trim().split(' ').take(2).map((w) => w[0].toUpperCase()).join()
-        : 'M';
-
     return Container(
       decoration: BoxDecoration(
         gradient: const LinearGradient(

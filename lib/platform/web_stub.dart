@@ -12,6 +12,7 @@ Future<String> webPickImageAndOcr() async => '';
 bool webHasSpeechRecognition() => false;
 
 class WebSpeechRecognizer {
+  // ignore: unused_field
   String? _activeKey;
   bool get isListening => false;
   void start(String key, String lang, {
