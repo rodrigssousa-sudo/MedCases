@@ -23,6 +23,7 @@ import 'screens/history_screen.dart';
 import 'screens/maintenance_screen.dart';
 import 'screens/cases_screen.dart';
 import 'screens/prescripciones_screen.dart';
+import 'screens/legal_screen.dart';
 import 'services/firestore_service.dart';
 import 'widgets/brand_mark.dart';
 
@@ -264,9 +265,9 @@ class _AuthGate extends StatelessWidget {
               return _wrapAuth(const _SplashScreen());
             }
 
-            // Não autenticado → login direto, sem abrir stream de manutenção
+            // Não autenticado → consent gate → login
             if (authSnap.data == null) {
-              return _wrapAuth(const LoginScreen());
+              return _wrapAuth(const _ConsentGate());
             }
 
             // Etapa 3: autenticado → busca perfil Firestore
@@ -300,6 +301,68 @@ class _AuthGate extends StatelessWidget {
           },
         );
       },
+    );
+  }
+}
+
+// ── Consent Gate (Android) ────────────────────────────────────────────────────
+// Aparece UMA única vez antes do login. Após aceite grava consent_v1=true
+// via SharedPreferences e exibe LoginScreen normalmente.
+class _ConsentGate extends StatefulWidget {
+  const _ConsentGate();
+  @override
+  State<_ConsentGate> createState() => _ConsentGateState();
+}
+
+class _ConsentGateState extends State<_ConsentGate> {
+  bool? _hasConsented; // null = ainda carregando
+
+  @override
+  void initState() {
+    super.initState();
+    _check();
+  }
+
+  Future<void> _check() async {
+    final ok = await ConsentGate.hasConsented();
+    if (mounted) setState(() => _hasConsented = ok);
+  }
+
+  void _onAccepted() {
+    // ConsentGate.saveConsent() já foi chamado dentro do ConsentModal
+    setState(() => _hasConsented = true);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // Ainda carregando prefs → splash simples
+    if (_hasConsented == null) {
+      return const Scaffold(
+        backgroundColor: Color(0xFF07110d),
+        body: Center(child: CircularProgressIndicator(color: Color(0xFFD4A96A))),
+      );
+    }
+
+    // Já consentiu → vai direto para login
+    if (_hasConsented!) return const LoginScreen();
+
+    // Primeira vez → mostra LoginScreen com modal de consentimento por cima
+    return Stack(
+      children: [
+        const LoginScreen(),
+        // Barreira escura que bloqueia interação com o login até aceitar
+        Positioned.fill(
+          child: ColoredBox(color: Colors.black.withValues(alpha: 0.55)),
+        ),
+        // Modal de consentimento ancorado na base
+        Positioned(
+          left: 0, right: 0, bottom: 0,
+          child: ConsentModal(
+            lang: 'pt', // padrão inicial — usuário ainda não escolheu idioma
+            onAccepted: _onAccepted,
+          ),
+        ),
+      ],
     );
   }
 }
@@ -1647,6 +1710,115 @@ class _AppDrawer extends StatelessWidget {
 
   void _close(BuildContext context) => Navigator.of(context).pop();
 
+  // ── Dialog de eliminação de conta ────────────────────────────────────────
+  Future<void> _showDeleteAccountDialog(BuildContext context, AppProvider p) async {
+    final isEs   = p.lang == 'es';
+    final titleT = isEs ? 'Eliminar cuenta' : 'Eliminar conta';
+    final body1  = isEs
+        ? 'Esta acción es permanente e irreversible. Se eliminarán todos sus datos del sistema, incluido su historial de consultas y configuraciones.'
+        : 'Esta ação é permanente e irreversível. Todos os seus dados serão removidos do sistema, incluindo histórico de consultas e configurações.';
+    final body2  = isEs
+        ? 'Para confirmar, escriba ELIMINAR en el campo abajo.'
+        : 'Para confirmar, digite ELIMINAR no campo abaixo.';
+    final cancelT  = isEs ? 'Cancelar'  : 'Cancelar';
+    final confirmT = isEs ? 'Eliminar'  : 'Eliminar';
+    final errorT   = isEs
+        ? 'Escribe ELIMINAR para confirmar'
+        : 'Digite ELIMINAR para confirmar';
+
+    final ctrl = TextEditingController();
+    String? fieldError;
+
+    await showDialog<void>(
+      context: context,
+      builder: (ctx) => StatefulBuilder(
+        builder: (ctx, setS) => AlertDialog(
+          backgroundColor: p.darkMode ? const Color(0xFF1C1C1E) : Colors.white,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          title: Row(children: [
+            const Icon(Icons.warning_amber_rounded, color: Color(0xFFCC3333), size: 22),
+            const SizedBox(width: 8),
+            Text(titleT,
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w800, color: Color(0xFFCC3333)),
+            ),
+          ]),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(body1, style: TextStyle(
+                fontSize: 12.5, height: 1.5,
+                color: p.darkMode ? Colors.white70 : const Color(0xFF333344),
+              )),
+              const SizedBox(height: 14),
+              Text(body2, style: TextStyle(
+                fontSize: 12, fontWeight: FontWeight.w600,
+                color: p.darkMode ? Colors.white60 : const Color(0xFF555555),
+              )),
+              const SizedBox(height: 10),
+              TextField(
+                controller: ctrl,
+                autofocus: true,
+                style: const TextStyle(fontWeight: FontWeight.w700, letterSpacing: 1.5),
+                decoration: InputDecoration(
+                  hintText: 'ELIMINAR',
+                  errorText: fieldError,
+                  isDense: true,
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: const BorderSide(color: Color(0xFFCC3333), width: 1.5),
+                  ),
+                ),
+                onChanged: (_) {
+                  if (fieldError != null) setS(() => fieldError = null);
+                },
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx),
+              child: Text(cancelT, style: const TextStyle(color: Color(0xFF888888))),
+            ),
+            FilledButton(
+              style: FilledButton.styleFrom(
+                backgroundColor: const Color(0xFFCC3333),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+              ),
+              onPressed: () async {
+                if (ctrl.text.trim() != 'ELIMINAR') {
+                  setS(() => fieldError = errorT);
+                  return;
+                }
+                Navigator.pop(ctx);
+                try {
+                  final user = FirebaseAuth.instance.currentUser;
+                  if (user != null) {
+                    await user.delete();
+                  }
+                  await AuthService.logout();
+                  if (context.mounted) context.read<AppProvider>().clearUser();
+                } catch (e) {
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      content: Text(isEs
+                          ? 'Error al eliminar la cuenta. Vuelve a iniciar sesión e inténtalo de nuevo.'
+                          : 'Erro ao eliminar conta. Faça login novamente e tente outra vez.'),
+                      backgroundColor: const Color(0xFFCC3333),
+                    ));
+                  }
+                }
+              },
+              child: Text(confirmT),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final dark = p.darkMode;
@@ -1821,6 +1993,55 @@ class _AppDrawer extends StatelessWidget {
 
                   Divider(height: 1, color: divider, indent: 16, endIndent: 16),
 
+                  // ── Legal ───────────────────────────────────────────────
+                  _DrawerItem(
+                    icon: Icons.article_outlined,
+                    iconColor: const Color(0xFF546E7A),
+                    title: p.lang == 'es' ? 'Términos de Uso' : 'Termos de Uso',
+                    subtitle: p.lang == 'es' ? 'Condiciones del servicio' : 'Condições do serviço',
+                    dark: dark,
+                    textCol: textCol,
+                    subCol: subCol,
+                    onTap: () {
+                      _close(context);
+                      showLegalSheet(context, LegalType.terms, p.lang);
+                    },
+                  ),
+
+                  Divider(height: 1, color: divider, indent: 16, endIndent: 16),
+
+                  _DrawerItem(
+                    icon: Icons.shield_outlined,
+                    iconColor: const Color(0xFF546E7A),
+                    title: p.lang == 'es' ? 'Política de Privacidad' : 'Política de Privacidade',
+                    subtitle: p.lang == 'es' ? 'LGPD · Protección de datos' : 'LGPD · Proteção de dados',
+                    dark: dark,
+                    textCol: textCol,
+                    subCol: subCol,
+                    onTap: () {
+                      _close(context);
+                      showLegalSheet(context, LegalType.privacy, p.lang);
+                    },
+                  ),
+
+                  Divider(height: 1, color: divider, indent: 16, endIndent: 16),
+
+                  _DrawerItem(
+                    icon: Icons.delete_forever_rounded,
+                    iconColor: const Color(0xFFCC3333),
+                    title: p.lang == 'es' ? 'Eliminar Cuenta' : 'Eliminar Conta',
+                    subtitle: p.lang == 'es' ? 'Elimina tus datos permanentemente' : 'Remove seus dados permanentemente',
+                    dark: dark,
+                    textCol: textCol,
+                    subCol: subCol,
+                    onTap: () {
+                      _close(context);
+                      _showDeleteAccountDialog(context, p);
+                    },
+                  ),
+
+                  Divider(height: 1, color: divider, indent: 16, endIndent: 16),
+
                   // ── Admin (apenas para admins e master) ─────────────────
                   // Guarda null-safety: p.currentUser pode ser null no primeiro
                   // frame após login Web (setUser() é agendado via microtask).
@@ -1875,7 +2096,9 @@ class _AppDrawer extends StatelessWidget {
                 border: Border(top: BorderSide(color: divider, width: 0.5)),
               ),
               child: Text(
-                'MedCases Pro · Uso educacional',
+                p.lang == 'es'
+                    ? 'MedCases Pro · Solo uso educativo'
+                    : 'MedCases Pro · Uso educacional',
                 style: TextStyle(fontSize: 10, color: subCol, fontWeight: FontWeight.w500),
                 textAlign: TextAlign.center,
               ),
