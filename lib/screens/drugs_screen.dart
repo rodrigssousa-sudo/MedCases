@@ -673,7 +673,7 @@ class _DrugDetailViewState extends State<_DrugDetailView> {
                 _DerivedChip(label: 'IMC',  value: _bmiLocal,  unit: 'kg/m²',  dark: dark),
                 Container(width: 1, height: 28,
                   color: dark ? Colors.white12 : const Color(0xFFDDD8CC),
-                  margin: const EdgeInsets.symmetric(horizontal: 12)),
+                  margin: EdgeInsets.zero),
                 _DerivedChip(label: 'ClCr', value: _clcrLocal, unit: 'mL/min', dark: dark),
               ]),
             ),

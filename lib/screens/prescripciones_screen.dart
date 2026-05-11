@@ -129,7 +129,7 @@ class _PrescripcionesScreenState extends State<PrescripcionesScreen> {
         child: filtered.isEmpty
             ? _EmptyState(dark: dark, es: es)
             : ListView.builder(
-                padding: const EdgeInsets.fromLTRB(16, 8, 16, 80),
+                padding: const EdgeInsets.fromLTRB(0, 8, 0, 80),
                 itemCount: filtered.length,
                 itemBuilder: (ctx, i) {
                   // Inserir cabeçalhos de categoria

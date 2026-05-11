@@ -761,7 +761,7 @@ class _DrugDoseCard extends StatelessWidget {
         ),
         const SizedBox(height: 10),
         Container(
-          margin: const EdgeInsets.fromLTRB(12, 0, 12, 12),
+          margin: const EdgeInsets.only(bottom: 12),
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(14),

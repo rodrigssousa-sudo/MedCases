@@ -1350,7 +1350,7 @@ class _HistoryEditorState extends State<_HistoryEditor> {
       if (_sttListening)
         AnimatedContainer(
           duration: const Duration(milliseconds: 200),
-          margin: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+          margin: const EdgeInsets.only(top: 8),
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(14),

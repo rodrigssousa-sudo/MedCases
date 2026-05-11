@@ -75,7 +75,7 @@ class _CasesScreenState extends State<CasesScreen> with SingleTickerProviderStat
     return Column(children: [
       // Header
       PremiumCard(
-        margin: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+        margin: const EdgeInsets.only(top: 8),
         padding: const EdgeInsets.fromLTRB(16, 14, 16, 14),
           child: Row(children: [
             Expanded(child: SectionTitle(
@@ -194,7 +194,7 @@ class _CaseCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 0, 16, 10),
+      padding: const EdgeInsets.only(bottom: 10),
       child: GestureDetector(
         onTap: onTap,
         child: Container(
