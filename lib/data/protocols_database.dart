@@ -4230,4 +4230,544 @@ const List<ProtocolModel> protocolsDatabase = [
     drugs: ['terlipressina', 'ceftriaxona', 'nadolol', 'octreotida'],
   ),
 
+  // ── Pancreatitis Aguda Litiásica ─────────────────────────────────────────
+  ProtocolModel(
+    id: 'pancreatitis_aguda_005',
+    title: {
+      'pt': 'Caso Clínico: Pancreatite Aguda Biliar',
+      'es': 'Caso Clínico: Pancreatitis Aguda Litiásica',
+    },
+    severity: {'pt': 'Alto', 'es': 'Alto'},
+    recognize: {
+      'pt': 'Mulher 45 anos, 88 kg. Dor abdominal súbita em epigástrio irradiada em "faixa" para dorso, após ingestão de alimento colecistocinético. Náuseas e vômitos biliosos constantes. PA 110/70, FC 105. Abdome muito doloroso em hemiabdômen superior, ruídos hidroaéreos diminuídos. Amilase e Lipase >3× o valor normal. PCR elevada. Eco: colelitíase e edema pancreático (Balthazar B).',
+      'es': 'Mujer 45 años, 88 kg. Dolor abdominal súbito en epigastrio irradiado en "banda" hacia la espalda, tras ingesta de comida colecistoquinética. Náuseas y vómitos biliosos constantes. PA 110/70, FC 105. Abdomen muy doloroso en hemiabdomen superior, ruidos hidroaéreos disminuidos. Amilasa y Lipasa >3× el valor normal. PCR elevada. Eco: colelitiasis y edema pancreático (Balthazar B).',
+    },
+    actions: {
+      'pt': [
+        'Diagnóstico: Pancreatite aguda biliar (Critérios de Atlanta — leve)',
+        '1. Jejum absoluto',
+        '2. Hidratação enérgica com Ringer Lactato (250 mL/h inicial)',
+        '3. Analgesia: Meperidina ou Buprenorfina IV (evitar morfina — esfíncter de Oddi)',
+        '4. Controle de eletrólitos e glicemia a cada 6–8h',
+        '5. Vigilar critérios de Marshall para falência orgânica',
+        'Antibióticos NÃO indicados de forma profilática na pancreatite leve',
+      ],
+      'es': [
+        'Diagnóstico: Pancreatitis aguda de origen biliar (Criterios de Atlanta — leve)',
+        '1. Ayuno absoluto',
+        '2. Hidratación enérgica con Ringer Lactato (250 mL/h inicial)',
+        '3. Analgesia: Meperidina o Buprenorfina IV (evitar morfina — esfínter de Oddi)',
+        '4. Control de electrolitos y glucemia cada 6–8h',
+        '5. Vigilar criterios de Marshall para falla orgánica',
+        'Antibióticos NO indicados de forma profiláctica en pancreatitis leve',
+      ],
+    },
+    avoid: {
+      'pt': 'Evitar morfina (espasmo do esfíncter de Oddi). Não usar antibióticos profiláticos sem evidência de infecção. Evitar hiper-hidratação em pacientes com insuficiência cardíaca.',
+      'es': 'Evitar morfina (espasmo del esfínter de Oddi). No usar antibióticos profilácticos sin evidencia de infección. Evitar sobrehidratación en pacientes con insuficiencia cardíaca.',
+    },
+    drugs: ['meperidina', 'ringer_lactato', 'omeprazol'],
+  ),
+
+  // ── Rinosinusitis Bacteriana Aguda ───────────────────────────────────────
+  ProtocolModel(
+    id: 'rinosinusitis_aguda_007',
+    title: {
+      'pt': 'Caso Clínico: Rinossinusite Bacteriana Aguda',
+      'es': 'Caso Clínico: Rinosinusitis Bacteriana Aguda',
+    },
+    severity: {'pt': 'Baixo', 'es': 'Bajo'},
+    recognize: {
+      'pt': 'Mulher 35 anos, 62 kg. Antecedente de gripe há 10 dias que "piorou" em vez de melhorar. Rinorreia purulenta, obstrução nasal e dor opressiva facial que aumenta ao inclinar a cabeça para frente. Dor à palpação dos seios maxilares. Descarga posterior purulenta em orofaringe. Febre 38,2°C.',
+      'es': 'Mujer 35 años, 62 kg. Antecedente de gripe hace 10 días que "empeoró" en lugar de mejorar. Rinorrea purulenta, obstrucción nasal y dolor opresivo facial que aumenta al inclinarse hacia adelante. Dolor a la palpación de senos maxilares. Descarga posterior purulenta en orofaringe. Fiebre 38,2°C.',
+    },
+    actions: {
+      'pt': [
+        'Diagnóstico: Rinossinusite aguda bacteriana (sobreinfecção)',
+        '1. Amoxicilina-Clavulanato 875/125 mg a cada 12h por 7 dias (1ª escolha)',
+        '2. Lavagens nasais com solução salina hipertônica 3×/dia',
+        '3. Corticoide intranasal: Mometasona spray — reduz inflamação da mucosa',
+        '4. Analgesia: Ibuprofeno 600 mg a cada 8h VO',
+        'Diferenciar de rinite alérgica: ausência de prurido ocular e presença de pus são chave',
+      ],
+      'es': [
+        'Diagnóstico: Rinosinusitis aguda bacteriana (sobreinfección)',
+        '1. Amoxicilina-Ácido Clavulánico 875/125 mg cada 12h por 7 días (1ª elección)',
+        '2. Lavados nasales con solución salina hipertónica 3×/día',
+        '3. Corticoide intranasal: Mometasona spray — reduce inflamación de mucosa',
+        '4. Analgesia: Ibuprofeno 600 mg cada 8h VO',
+        'Diferenciar de rinitis alérgica: ausencia de prurito ocular y presencia de pus son clave',
+      ],
+    },
+    avoid: {
+      'pt': 'Evitar antibióticos em sinusite viral (primeiros 7–10 dias). Não usar descongestionantes nasais por mais de 3 dias (rinite medicamentosa). Evitar anti-histamínicos sedativos que ressecam a mucosa.',
+      'es': 'Evitar antibióticos en sinusitis viral (primeros 7–10 días). No usar descongestionantes nasales más de 3 días (rinitis medicamentosa). Evitar antihistamínicos sedantes que resecan la mucosa.',
+    },
+    drugs: ['amoxicilina_clavulanico', 'mometasona', 'ibuprofeno'],
+  ),
+
+  // ── Faringoamigdalite Estreptocócica ────────────────────────────────────
+  ProtocolModel(
+    id: 'faringitis_estreptococica_008',
+    title: {
+      'pt': 'Caso Clínico: Faringoamigdalite Bacteriana (Strep A)',
+      'es': 'Caso Clínico: Faringoamigdalitis Bacteriana (Strep A)',
+    },
+    severity: {'pt': 'Médio', 'es': 'Moderado'},
+    recognize: {
+      'pt': 'Homem 18 anos, 70 kg. Odinofagia súbita severa que impede a deglutição. Nega tosse ou rinite. Febre 39°C. Amígdalas hipertrofiadas com exsudato esbranquiçado (placas). Adenopatias cervicais anteriores dolorosas. Score de Centor: 4 pontos (probabilidade de Estreptococo >50%).',
+      'es': 'Hombre 18 años, 70 kg. Odinofagia súbita severa que impide la deglución. Niega tos o rinitis. Fiebre 39°C. Amígdalas hipertróficas con exudado blanquecino (placas). Adenopatías cervicales anteriores dolorosas. Score Centor: 4 puntos (probabilidad Estreptococo >50%).',
+    },
+    actions: {
+      'pt': [
+        'Diagnóstico: Faringoamigdalite por Streptococcus pyogenes (Centor 4/4)',
+        '1. Penicilina Benzatina 1.200.000 UI IM dose única (1ª escolha — previne febre reumática)',
+        '2. Alternativa VO: Amoxicilina 500 mg a cada 8h por 10 dias (completar ciclo)',
+        '3. Controle térmico: Dipirona 1 g a cada 6h se febre',
+        'O tratamento visa prevenir FEBRE REUMÁTICA, não apenas aliviar sintomas',
+      ],
+      'es': [
+        'Diagnóstico: Faringoamigdalitis por Streptococcus pyogenes (Centor 4/4)',
+        '1. Penicilina Benzatínica 1.200.000 UI IM dosis única (1ª elección — previene fiebre reumática)',
+        '2. Alternativa VO: Amoxicilina 500 mg cada 8h por 10 días (completar ciclo es vital)',
+        '3. Control térmico: Dipirona 1 g cada 6h si hay fiebre',
+        'El tratamiento busca prevenir FIEBRE REUMÁTICA, no solo aliviar síntomas',
+      ],
+    },
+    avoid: {
+      'pt': 'Evitar amoxicilina sem antes excluir Mononucleose Infecciosa (EBV) — causa exantema morbiliforme. Não interromper antibiótico antes de 10 dias (risco de recidiva e febre reumática).',
+      'es': 'Evitar amoxicilina sin antes descartar Mononucleosis Infecciosa (EBV) — causa exantema morbiliforme. No interrumpir el antibiótico antes de 10 días (riesgo de recidiva y fiebre reumática).',
+    },
+    drugs: ['penicilina_benzatinica', 'amoxicilina', 'dipirona'],
+  ),
+
+  // ── Gastroenterite Infecciosa Disentérica ───────────────────────────────
+  ProtocolModel(
+    id: 'diarrea_aguda_009',
+    title: {
+      'pt': 'Caso Clínico: Gastroenterite Infecciosa Disentérica',
+      'es': 'Caso Clínico: Gastroenteritis Infecciosa Disentérica',
+    },
+    severity: {'pt': 'Médio', 'es': 'Moderado'},
+    recognize: {
+      'pt': 'Mulher 28 anos, 55 kg. >8 evacuações/dia de pequeno volume com muco e estrias de sangue. Dor abdominal tipo cólica e tenesmo retal. Sinais de desidratação leve. Febre 38,5°C. Leucócitos em fezes positivos. Provável Shigella ou Campylobacter.',
+      'es': 'Mujer 28 años, 55 kg. >8 deposiciones/día de escaso volumen con moco y estrías de sangre. Dolor abdominal tipo cólico y tenesmo rectal. Signos de deshidratación leve. Fiebre 38,5°C. Leucocitos en materia fecal positivos. Probable Shigella o Campylobacter.',
+    },
+    actions: {
+      'pt': [
+        'Diagnóstico: Diarreia inflamatória (provável Shigella ou Campylobacter)',
+        '1. Reidratação oral com Sais de Reidratação Oral (SRO) — pilar do tratamento',
+        '2. Ciprofloxacino 500 mg a cada 12h por 3 dias (antibiótico de escolha)',
+        '3. Dieta adstringente (arroz, banana, maçã sem casca, torrada)',
+        'PROIBIDO loperamida em diarreia com sangue — risco de megacólon tóxico',
+      ],
+      'es': [
+        'Diagnóstico: Diarrea inflamatoria (probable Shigella o Campylobacter)',
+        '1. Rehidratación oral con Sales de Rehidratación Oral (SRO) — pilar del tratamiento',
+        '2. Ciprofloxacino 500 mg cada 12h por 3 días (antibiótico de elección)',
+        '3. Dieta astringente (arroz, plátano, manzana sin cáscara, tostadas)',
+        'PROHIBIDO loperamida en diarrea con sangre — riesgo de megacolon tóxico',
+      ],
+    },
+    avoid: {
+      'pt': 'CONTRAINDICADO loperamida em diarreia disentérica (com sangue) — risco de megacólon tóxico. Evitar antibióticos empíricos em diarreias aquosas virais (pilar é só reidratação + Zinco).',
+      'es': 'CONTRAINDICADO loperamida en diarrea disentérica (con sangre) — riesgo de megacolon tóxico. Evitar antibióticos empíricos en diarreas acuosas virales (pilar es solo rehidratación + Zinc).',
+    },
+    drugs: ['ciprofloxacino', 'sales_rehidratacion'],
+  ),
+
+  // ── Hepatite B Aguda ─────────────────────────────────────────────────────
+  ProtocolModel(
+    id: 'hepatitis_b_aguda_detallada_2026',
+    title: {
+      'pt': 'Caso Clínico: Hepatite B Aguda Sintomática',
+      'es': 'Caso Clínico: Hepatitis B Aguda Sintomática',
+    },
+    severity: {'pt': 'Alto', 'es': 'Alto'},
+    recognize: {
+      'pt': 'Homem 31 anos, 76 kg. Icterícia, colúria e dor em hipocôndrio direito. Pródromo de 2 semanas: mal-estar, mialgia e náuseas. Escleras ictéricas, urina cor "chá", fezes pálidas (acolia). Antecedente de exposição sexual de risco há 3 meses. HbsAg (+), Anti-HBc IgM (+), HBeAg (+). ALT 2450, AST 2100 U/L. Bilirrubina total 12,4 mg/dL. INR 1,2 (sem critérios de falência fulminante). Hepatomegalia dolorosa, esplenomegalia grau I.',
+      'es': 'Hombre 31 años, 76 kg. Ictericia, coluria y dolor en hipocondrio derecho. Pródromo de 2 semanas: malestar general, mialgias y náuseas. Escleróticas ictéricas, orina color "té", deposiciones pálidas (acolia). Antecedente de exposición sexual de riesgo hace 3 meses. HBsAg (+), Anti-HBc IgM (+), HBeAg (+). ALT 2450, AST 2100 U/L. Bilirrubina total 12,4 mg/dL. INR 1,2 (sin criterios de falla fulminante). Hepatomegalia dolorosa, esplenomegalia grado I.',
+    },
+    actions: {
+      'pt': [
+        'Diagnóstico: Hepatite B Aguda (fase ictérica) — Anti-HBc IgM é a chave diagnóstica',
+        '1. Medidas gerais: repouso relativo, dieta hipercalórica normoproteica, restrição de gorduras',
+        '2. Suspender IMEDIATAMENTE: álcool, paracetamol, AINEs e fitoterapia (hepatotóxicos)',
+        '3. Controle de náuseas: Ondansetron 4–8 mg VO/EV se necessário',
+        '4. Prurido intenso: Hidroxizina 25 mg VO',
+        '5. Monitorar semanalmente: TP/INR e glicemia (marcadores precoces de falência hepática)',
+        '6. Controle sorológico: repetir HBsAg em 6 meses — confirmar resolução ou cronificação',
+        'ALERTA: INR >1,5 ou sonolência (encefalopatia) → derivar a centro de transplante hepático',
+      ],
+      'es': [
+        'Diagnóstico: Hepatitis B Aguda (fase ictérica) — Anti-HBc IgM es la clave diagnóstica',
+        '1. Medidas generales: reposo relativo, dieta hipercalórica normoproteica, restricción de grasas',
+        '2. Suspender INMEDIATAMENTE: alcohol, paracetamol, AINEs y herbolaria (hepatotóxicos)',
+        '3. Control de náuseas: Ondansetrón 4–8 mg VO/EV si persisten',
+        '4. Prurito intenso: Hidroxicina 25 mg VO',
+        '5. Monitoreo semanal: TP/INR y glucemia (marcadores precoces de falla hepática)',
+        '6. Seguimiento serológico: repetir HBsAg a los 6 meses — confirmar resolución o cronicidad',
+        'ALERTA: INR >1,5 o somnolencia (encefalopatía) → derivar a centro de trasplante hepático',
+      ],
+    },
+    avoid: {
+      'pt': 'EVITAR todos os hepatotóxicos: álcool, paracetamol (mesmo em doses baixas), AINEs, estatinas e fitoterapia. Não iniciar antivirais na hepatite B aguda sem critérios de falência hepática. Não confundir com reagudização crônica (Anti-HBc IgG vs IgM).',
+      'es': 'EVITAR todos los hepatotóxicos: alcohol, paracetamol (incluso en dosis bajas), AINEs, estatinas y herbolaria. No iniciar antivirales en hepatitis B aguda sin criterios de falla hepática. No confundir con reagudización crónica (Anti-HBc IgG vs IgM).',
+    },
+    drugs: ['ondansetron', 'hidroxizina'],
+  ),
+
+  // ── Hepatite C Crônica ───────────────────────────────────────────────────
+  ProtocolModel(
+    id: 'hepatitis_c_cronica_detallada_2026',
+    title: {
+      'pt': 'Caso Clínico: Hepatite C Crônica (Genótipo 1) com Fibrose Avançada',
+      'es': 'Caso Clínico: Hepatitis C Crónica (Genotipo 1) con Fibrosis Avanzada',
+    },
+    severity: {'pt': 'Alto', 'es': 'Alto'},
+    recognize: {
+      'pt': 'Mulher 52 anos, 68 kg. Fadiga crônica de 6 meses e transaminases elevadas incidentais. Antecedente de transfusão em 1990. Nega álcool. Fígado de borda firme (1 cm). Aranhas vasculares e eritema palmar. Plaquetas 135.000 (trombocitopenia leve = hipertensão portal incipiente). ALT 120, AST 95 U/L. Anti-VHC (+). ARN-VHC 1.200.000 UI/mL — Genótipo 1a. Fibroscan: 10,5 kPa (Fibrose F3 — avançada).',
+      'es': 'Mujer 52 años, 68 kg. Fatiga crónica de 6 meses y transaminasas elevadas incidentales. Antecedente de transfusión en 1990. Niega alcohol. Hígado de borde firme (1 cm). Arañas vasculares y eritema palmar. Plaquetas 135.000 (trombocitopenia leve = hipertensión portal incipiente). ALT 120, AST 95 U/L. Anti-VHC (+). ARN-VHC 1.200.000 UI/mL — Genotipo 1a. Fibroscan: 10,5 kPa (Fibrosis F3 — avanzada).',
+    },
+    actions: {
+      'pt': [
+        'Diagnóstico: Hepatite C Crônica — Fibrose avançada F3 (Metavir). Genótipo 1a',
+        '1. Avaliação pré-tratamento: Eco abdominal Doppler (rastreio de hepatocarcinoma — obrigatório em F3/F4)',
+        '2. Terapia Antiviral de Ação Direta (AAD): Sofosbuvir/Velpatasvir 1 comp/dia × 12 semanas',
+        '   Alternativa: Glecaprevir/Pibrentasvir × 8–12 semanas (pangenotípico)',
+        '3. Taxa de cura (RVS) >95% com AAD — informar ao paciente',
+        '4. Vacinação: verificar imunidade para Hepatite A e B; vacinar se soronegativa',
+        '5. Controle de carga viral 12 semanas após término do tratamento (RVS12)',
+        'DADO-CHAVE: trombocitopenia em VHC = marcador indireto forte de fibrose avançada/cirrose',
+      ],
+      'es': [
+        'Diagnóstico: Hepatitis C Crónica — Fibrosis avanzada F3 (Metavir). Genotipo 1a',
+        '1. Evaluación pre-tratamiento: Eco abdominal Doppler (cribado de hepatocarcinoma — obligatorio en F3/F4)',
+        '2. Terapia Antiviral de Acción Directa (AAD): Sofosbuvir/Velpatasvir 1 comp/día × 12 semanas',
+        '   Alternativa: Glecaprevir/Pibrentasvir × 8–12 semanas (pangenotípico)',
+        '3. Tasa de curación (RVS) >95% con AAD — informar al paciente',
+        '4. Vacunación: verificar inmunidad para Hepatitis A y B; vacunar si es seronegativa',
+        '5. Control de carga viral 12 semanas tras finalizar tratamiento (RVS12)',
+        'DATO CLAVE: trombocitopenia en VHC = marcador indirecto fuerte de fibrosis avanzada/cirrosis',
+      ],
+    },
+    avoid: {
+      'pt': 'Evitar hepatotóxicos durante o tratamento. Não iniciar AAD sem verificar genotipo e carga viral. Não usar Ribavirina em monoterapia. Atenção às interações medicamentosas dos AADs (especialmente com estatinas e anticonvulsivantes).',
+      'es': 'Evitar hepatotóxicos durante el tratamiento. No iniciar AAD sin verificar genotipo y carga viral. No usar Ribavirina en monoterapia. Atención a interacciones medicamentosas de los AADs (especialmente con estatinas y anticonvulsivantes).',
+    },
+    drugs: ['sofosbuvir_velpatasvir', 'glecaprevir_pibrentasvir'],
+  ),
+
+  // ── Gripe / Influenza ────────────────────────────────────────────────────
+  ProtocolModel(
+    id: 'gripe_influenza_010',
+    title: {
+      'pt': 'Caso Clínico: Gripe (Influenza) — Quadro Agudo',
+      'es': 'Caso Clínico: Gripe (Influenza) — Cuadro Agudo',
+    },
+    severity: {'pt': 'Médio', 'es': 'Moderado'},
+    recognize: {
+      'pt': 'Homem 38 anos, 82 kg. Início súbito há 24h com calafrios, febre até 39,5°C e cefaleia frontal intensa. Mialgias generalizadas e artralgia. Tosse seca persistente e ardor retroesternal. FC 110, FR 20, SatO2 96% (ar ambiente). Olhos hiperemiados. Teste rápido de antígeno positivo para Influenza A.',
+      'es': 'Hombre 38 años, 82 kg. Inicio súbito hace 24h con escalofríos, fiebre hasta 39,5°C y cefalea frontal intensa. Mialgias generalizadas y artralgia. Tos seca persistente y ardor retroesternal. FC 110, FR 20, SatO2 96% (aire ambiente). Ojos inyectados. Test rápido de antígeno positivo para Influenza A.',
+    },
+    actions: {
+      'pt': [
+        'Diagnóstico: Gripe por Vírus Influenza A (Síndrome Gripal)',
+        '1. Medidas de suporte: hidratação abundante e repouso absoluto em leito',
+        '2. Sintomáticos: Paracetamol 1 g a cada 8h ou Ibuprofeno 600 mg a cada 8h (controle térmico e mialgias)',
+        '3. Antiviral específico: Oseltamivir 75 mg a cada 12h por 5 dias (iniciar idealmente nas primeiras 48h)',
+        '4. Isolamento: máscara e higiene das mãos para evitar contágio intradomiciliar',
+        'Vigilar complicações: febre persistente >5 dias ou aparecimento de dispneia → suspeitar pneumonia',
+      ],
+      'es': [
+        'Diagnóstico: Gripe por Virus Influenza A (Síndrome Gripal)',
+        '1. Medidas de soporte: hidratación abundante y reposo absoluto en cama',
+        '2. Sintomáticos: Paracetamol 1 g cada 8h o Ibuprofeno 600 mg cada 8h (control térmico y mialgias)',
+        '3. Antiviral específico: Oseltamivir 75 mg cada 12h por 5 días (iniciar idealmente en las primeras 48h)',
+        '4. Aislamiento: mascarilla e higiene de manos para evitar contagio intradomiciliario',
+        'Vigilar complicaciones: fiebre persistente >5 días o aparición de disnea → sospechar neumonía',
+      ],
+    },
+    avoid: {
+      'pt': 'Evitar aspirina em crianças e adolescentes (risco de Síndrome de Reye). Não usar antibióticos sem evidência de sobreinfecção bacteriana. Não subestimar a influenza em idosos, gestantes e imunossuprimidos.',
+      'es': 'Evitar aspirina en niños y adolescentes (riesgo de Síndrome de Reye). No usar antibióticos sin evidencia de sobreinfección bacteriana. No subestimar la influenza en ancianos, embarazadas e inmunodeprimidos.',
+    },
+    drugs: ['oseltamivir', 'paracetamol', 'ibuprofeno'],
+  ),
+
+  // ── Faringite Viral (Resfriado) ──────────────────────────────────────────
+  ProtocolModel(
+    id: 'faringitis_viral_011',
+    title: {
+      'pt': 'Caso Clínico: Faringite Aguda Viral (Resfriado Comum)',
+      'es': 'Caso Clínico: Faringitis Aguda Viral (Resfriado Común)',
+    },
+    severity: {'pt': 'Baixo', 'es': 'Bajo'},
+    recognize: {
+      'pt': 'Mulher 24 anos, 59 kg. Quadro de 3 dias com espirros e rinorreia hialina (transparente). Odinofagia leve a moderada e tosse produtiva leve. Mucosa orofaríngea congestiva com tecido linfoide granular. SEM exsudatos nem petéquias no palato. Sem adenopatias submandibulares dolorosas. Cornetos inflamados com secreção aquosa. Score de Centor: 0–1 (provável vírus).',
+      'es': 'Mujer 24 años, 59 kg. Cuadro de 3 días con estornudos y rinorrea hialina (transparente). Odinofagia leve-moderada y tos productiva leve. Mucosa orofaríngea congestiva con tejido linfoide granular. SIN exudados ni petequias en paladar. Sin adenopatías submandibulares dolorosas. Cornetes inflamados con secreción acuosa. Score Centor: 0–1 (probable viral).',
+    },
+    actions: {
+      'pt': [
+        'Diagnóstico: Faringite viral aguda — Rinovírus (Centor 0–1)',
+        '1. Hidratação: líquidos mornos para conforto da mucosa',
+        '2. Analgesia: Ibuprofeno 400 mg a cada 8h VO por 3 dias',
+        '3. Terapia adjuvante: lavagens nasais com SF e gargarejos com água morna e sal',
+        'NÃO requer antibióticos — Centor baixo, etiologia viral confirmada',
+        'Tosse + rinorreia = preditor clínico mais forte de origem VIRAL',
+      ],
+      'es': [
+        'Diagnóstico: Faringitis viral aguda — Rinovirus (Centor 0–1)',
+        '1. Hidratación: líquidos tibios para confort de la mucosa',
+        '2. Analgesia: Ibuprofeno 400 mg cada 8h VO por 3 días',
+        '3. Terapia coadyuvante: lavados nasales con SF y gargarismos con agua salada tibia',
+        'NO requiere antibióticos — Centor bajo, etiología viral confirmada',
+        'Tos + rinorrea = predictor clínico más fuerte de origen VIRAL',
+      ],
+    },
+    avoid: {
+      'pt': 'Não prescrever antibióticos (não reduzem duração do quadro viral e aumentam resistência). Evitar anti-histamínicos de 1ª geração em adultos (sonolência sem benefício claro). Não usar corticoides sistêmicos sem indicação específica.',
+      'es': 'No prescribir antibióticos (no reducen duración del cuadro viral y aumentan resistencia). Evitar antihistamínicos de 1ª generación en adultos (somnolencia sin beneficio claro). No usar corticoides sistémicos sin indicación específica.',
+    },
+    drugs: ['ibuprofeno', 'solucion_salina'],
+  ),
+
+  // ── Faringoamigdalite Bacteriana Supurativa ──────────────────────────────
+  ProtocolModel(
+    id: 'faringitis_bacteriana_012',
+    title: {
+      'pt': 'Caso Clínico: Faringoamigdalite Estreptocócica Supurativa',
+      'es': 'Caso Clínico: Faringoamigdalitis Estreptocócica (Supurativa)',
+    },
+    severity: {'pt': 'Médio', 'es': 'Moderado'},
+    recognize: {
+      'pt': 'Homem 19 anos, 72 kg. Febre 39°C de difícil controle há 48h. Odinofagia severa que dificulta ingestão de sólidos. NEGA tosse, rinorreia ou sintomas gripais. Amígdalas grau III/IV com exsudatos esbranquiçados extensos e confluentes. Úvula edemaciada e desviada. Adenopatias cervicais anteriores de 2 cm, muito dolorosas. Halitose característica. Score de Centor: 4/4.',
+      'es': 'Hombre 19 años, 72 kg. Fiebre 39°C de difícil control hace 48h. Odinofagia severa que dificulta ingesta de sólidos. NIEGA tos, rinorrea o síntomas gripales. Amígdalas grado III/IV con exudados blanquecinos extensos y confluentes. Úvula edematizada y desplazada. Adenopatías cervicales anteriores de 2 cm, muy dolorosas. Halitosis característica. Score Centor: 4/4.',
+    },
+    actions: {
+      'pt': [
+        'Diagnóstico: Faringoamigdalite bacteriana aguda por S. pyogenes (Centor 4/4)',
+        '1. Penicilina Benzatina 1,2M UI IM dose única (1ª escolha)',
+        '2. Alternativa VO: Amoxicilina 500 mg a cada 8h por 10 dias (COMPLETAR ciclo)',
+        '3. Anti-inflamatório: Dexametasona 4 mg IM dose única — reduz edema amigdalino e melhora deglutição rapidamente',
+        '4. Analgesia: Dipirona 1 g a cada 6h se febre',
+        'IMPORTANTE: Excluir Mononucleose Infecciosa antes de prescrever Amoxicilina',
+      ],
+      'es': [
+        'Diagnóstico: Faringoamigdalitis bacteriana aguda por S. pyogenes (Centor 4/4)',
+        '1. Penicilina Benzatínica 1,2M UI IM dosis única (1ª elección)',
+        '2. Alternativa VO: Amoxicilina 500 mg cada 8h por 10 días (COMPLETAR ciclo)',
+        '3. Antiinflamatorio: Dexametasona 4 mg IM dosis única — reduce edema amigdalino y mejora deglución rápidamente',
+        '4. Analgesia: Dipirona 1 g cada 6h si hay fiebre',
+        'IMPORTANTE: Descartar Mononucleosis Infecciosa antes de prescribir Amoxicilina',
+      ],
+    },
+    avoid: {
+      'pt': 'NUNCA usar Amoxicilina sem excluir EBV/Mononucleose — risco de exantema morbiliforme generalizado. Não interromper antibiótico antes de 10 dias.',
+      'es': 'NUNCA usar Amoxicilina sin descartar EBV/Mononucleosis — riesgo de exantema morbiliforme generalizado. No interrumpir antibiótico antes de 10 días.',
+    },
+    drugs: ['penicilina_benzatinica', 'amoxicilina', 'dexametasona', 'dipirona'],
+  ),
+
+  // ── HDA por Úlcera Péptica ───────────────────────────────────────────────
+  ProtocolModel(
+    id: 'hda_ulcera_peptica_013',
+    title: {
+      'pt': 'Caso Clínico: Hemorragia Digestiva Alta (HDA) Não Variceal',
+      'es': 'Caso Clínico: Hemorragia Digestiva Alta (HDA) no Variceal',
+    },
+    severity: {'pt': 'Crítico', 'es': 'Crítico'},
+    recognize: {
+      'pt': 'Homem 62 anos, 75 kg. Antecedente de uso crônico de AINEs por artrose. Hematêmese (vômito de sangue vermelho) há 6h seguida de melenas (fezes negras, pegajosas e fétidas). Tontura ortostática. PA 100/60 mmHg, FC 115 bpm (taquicardia compensatória). Dor leve em epigástrio. Toque retal: melena franca. Hb 8,5 g/dL (prévia 13). Ureia elevada desproporcional à creatinina.',
+      'es': 'Hombre 62 años, 75 kg. Antecedente de consumo crónico de AINEs por artrosis. Hematemesis (vómito de sangre roja) hace 6h seguida de melenas (heces negras, pegajosas y fétidas). Mareo al ponerse de pie (ortostatismo). PA 100/60 mmHg, FC 115 lpm (taquicardia compensatoria). Dolor leve en epigastrio. Tacto rectal: melena franca. Hb 8,5 g/dL (previa 13). Urea elevada desproporcionada a creatinina.',
+    },
+    actions: {
+      'pt': [
+        'Diagnóstico: HDA secundária a Úlcera Péptica (provável Forrest Ib)',
+        '1. Estabilização: 2 acessos periféricos calibrosos (14G ou 16G) — expansão com Ringer Lactato',
+        '2. Farmacológico: Omeprazol 80 mg EV em bolus → infusão contínua 8 mg/h',
+        '3. Endoscopia Digestiva Alta (EDA) dentro de 24h — diagnóstico e terapêutica (adrenalina/clipes)',
+        '4. Transfusão: concentrado de hemácias se Hb <7–8 g/dL ou instabilidade persistente',
+        '5. Após estabilização: pesquisar H. pylori e tratar se positivo',
+        'Escala Glasgow-Blatchford alta → necessidade de intervenção urgente',
+      ],
+      'es': [
+        'Diagnóstico: HDA secundaria a Úlcera Péptica (probable Forrest Ib)',
+        '1. Estabilización: 2 vías periféricas gruesas (14G o 16G) — expansión con Ringer Lactato',
+        '2. Farmacológico: Omeprazol 80 mg EV en bolus → infusión continua 8 mg/h',
+        '3. Endoscopia Digestiva Alta (EDA) dentro de 24h — diagnóstico y terapéutica (adrenalina/clips)',
+        '4. Transfusión: reservar GR si Hb <7–8 g/dL o inestabilidad persistente',
+        '5. Tras estabilización: investigar H. pylori y tratar si positivo',
+        'Escala Glasgow-Blatchford alta → necesidad de intervención urgente',
+      ],
+    },
+    avoid: {
+      'pt': 'Evitar AINEs após o episódio (causa da úlcera). Não atrasar a endoscopia além de 24h. Não transfundir de forma liberal (objetivo Hb 7–8 g/dL). Suspender anticoagulantes/antiagregantes após avaliação de risco-benefício.',
+      'es': 'Evitar AINEs tras el episodio (causa de la úlcera). No demorar endoscopia más de 24h. No transfundir de forma liberal (objetivo Hb 7–8 g/dL). Suspender anticoagulantes/antiagregantes tras evaluación de riesgo-beneficio.',
+    },
+    drugs: ['omeprazol', 'pantoprazol', 'ringer_lactato'],
+  ),
+
+  // ── HDB — Hematoquézia ──────────────────────────────────────────────────
+  ProtocolModel(
+    id: 'hdb_sangrado_rectal_014',
+    title: {
+      'pt': 'Caso Clínico: Hemorragia Digestiva Baixa (Hematoquézia)',
+      'es': 'Caso Clínico: Hemorragia Digestiva Baja (Hematochezia)',
+    },
+    severity: {'pt': 'Alto', 'es': 'Alto'},
+    recognize: {
+      'pt': 'Mulher 70 anos, 64 kg. Sem dor abdominal prévia. Início súbito com evacuação de sangue vermelho vivo e coágulos (hematoquézia). Nega sintomas dispépticos ou perda de peso recente. Palidez mucocutânea moderada. PA 110/70, FC 90. Abdome mole, sem massas. Toque retal: saída de sangue vermelho fresco. Diagnóstico diferencial: Doença Diverticular vs Angiodisplasia.',
+      'es': 'Mujer 70 años, 64 kg. Sin dolor abdominal previo. Inicio súbito con evacuación de abundante sangre roja brillante y coágulos (hematochezia). Niega síntomas dispépticos o pérdida de peso reciente. Palidez mucocutánea moderada. PA 110/70, FC 90. Abdomen blando, sin masas. Tacto rectal: salida de sangre roja fresca. Diagnóstico diferencial: Enfermedad diverticular vs Angiodisplasia.',
+    },
+    actions: {
+      'pt': [
+        'Diagnóstico: HDB aguda (DD: Doença Diverticular vs Angiodisplasia)',
+        '1. Monitorização: sinais vitais a cada 15 min',
+        '2. Laboratório: tipagem e prova cruzada, coagulação (TP/TTPa), hemograma',
+        '3. Colonoscopia precoce (prévia purga se o sangramento permitir) — Gold Standard',
+        '4. Suspender temporariamente: antiagregantes ou anticoagulantes se em uso',
+        '80% das HDB cessam espontaneamente — monitorar de perto',
+        'Se instabilidade extrema e colonoscopia impossível → Angio-TC de urgência',
+      ],
+      'es': [
+        'Diagnóstico: HDB aguda (DD: Enfermedad diverticular vs Angiodisplasia)',
+        '1. Monitoreo: signos vitales cada 15 min',
+        '2. Laboratorio: clasificación y prueba cruzada, coagulación (TP/TTPA), hemograma',
+        '3. Colonoscopia temprana (previa purga si el sangrado lo permite) — Gold Standard',
+        '4. Suspensión temporal: antiagregantes o anticoagulantes si los toma',
+        '80% de las HDB ceden espontáneamente — monitorar de cerca',
+        'Si hay inestabilidad extrema y colonoscopia no posible → Angio-TAC de urgencia',
+      ],
+    },
+    avoid: {
+      'pt': 'Não realizar colonoscopia sem purga prévia adequada (reduz qualidade diagnóstica). Não assumir que hemorragia anal é hemorróida sem investigação adequada em >50 anos. Não atrasar cirurgia se sangramento massivo refratário.',
+      'es': 'No realizar colonoscopia sin purga previa adecuada. No asumir que sangrado anal es hemorroidal sin investigación en >50 años. No demorar cirugía si sangrado masivo refractario.',
+    },
+    drugs: ['solucion_salina', 'acido_tranexamico'],
+  ),
+
+  // ── Diverticulite Aguda ──────────────────────────────────────────────────
+  ProtocolModel(
+    id: 'diverticulitis_aguda_015',
+    title: {
+      'pt': 'Caso Clínico: Diverticulite Aguda Não Complicada',
+      'es': 'Caso Clínico: Diverticulitis Aguda (Divertículos Inflamados)',
+    },
+    severity: {'pt': 'Médio', 'es': 'Moderado'},
+    recognize: {
+      'pt': 'Homem 55 anos, 90 kg. Com diagnóstico prévio de Diverticulose colônica. Dor em fossa ilíaca esquerda (FIE) há 48h, tipo cólica que se torna constante. Constipação associada. Temp 38,3°C, FC 98. Dor marcada à palpação em FIE com sinal de rebote localizado (Blumberg esquerdo +). Leucocitose (15.000) com desvio à esquerda. PCR elevada.',
+      'es': 'Hombre 55 años, 90 kg. Con diagnóstico previo de Diverticulosis colónica. Dolor en fosa ilíaca izquierda (FII) de 48h, tipo cólico que se vuelve constante. Estreñimiento asociado. Temp 38,3°C, FC 98. Dolor marcado en FII con signo de rebote localizado (Blumberg izquierdo +). Leucocitosis (15.000) con desviación a la izquierda. PCR elevada.',
+    },
+    actions: {
+      'pt': [
+        'Diagnóstico: Diverticulite Aguda não complicada (Estadio Hinchey Ia)',
+        '1. Dieta: líquidos claros ou jejum conforme intensidade da dor',
+        '2. Antibioticoterapia: Ciprofloxacino 500 mg + Metronidazol 500 mg a cada 8h VO/EV',
+        '3. Analgesia: Antiespasmódicos (Hioscina) + analgésicos não opioides',
+        '4. Imagem: TC de abdômen e pelve com contraste (Gold Standard para estadiamento)',
+        'IMPORTANTE: Colonoscopia CONTRAINDICADA na fase aguda — risco de perfuração',
+        'Aguardar 6–8 semanas após resolução para realizar colonoscopia de controle',
+      ],
+      'es': [
+        'Diagnóstico: Diverticulitis Aguda no complicada (Estadio Hinchey Ia)',
+        '1. Dieta: líquidos claros o ayuno según intensidad del dolor',
+        '2. Antibioticoterapia: Ciprofloxacino 500 mg + Metronidazol 500 mg cada 8h VO/EV',
+        '3. Analgesia: Antiespasmódicos (Buscapina) + analgésicos no opioides',
+        '4. Imagen: TC de abdomen y pelvis con contraste (Gold Standard)',
+        '¡IMPORTANTE!: Colonoscopia CONTRAINDICADA en fase aguda — riesgo de perforación',
+        'Esperar 6–8 semanas tras resolución para colonoscopia de control',
+      ],
+    },
+    avoid: {
+      'pt': 'CONTRAINDICADO colonoscopia na fase aguda. Evitar AINEs (agravam a inflamação e aumentam risco de perfuração). Não subestimar Hinchey ≥II — requer avaliação cirúrgica.',
+      'es': 'CONTRAINDICADA colonoscopia en fase aguda. Evitar AINEs (agravan inflamación y aumentan riesgo de perforación). No subestimar Hinchey ≥II — requiere evaluación quirúrgica.',
+    },
+    drugs: ['ciprofloxacino', 'metronidazol', 'hioscina'],
+  ),
+
+  // ── Síndrome Ascítico — Início ───────────────────────────────────────────
+  ProtocolModel(
+    id: 'sindrome_ascitico_debut_016',
+    title: {
+      'pt': 'Caso Clínico: Síndrome Ascítico de Início Recente',
+      'es': 'Caso Clínico: Síndrome Ascítico de Reciente Comienzo',
+    },
+    severity: {'pt': 'Alto', 'es': 'Alto'},
+    recognize: {
+      'pt': 'Homem 54 anos, 88 kg. Com etilismo crônico (80 g/dia × 15 anos). Aumento progressivo do perímetro abdominal há 2 meses, saciedade precoce e diminuição da diurese. Pele tensa com circulação colateral (cabeça de medusa). Macicez deslocável e sinal da onda positivo. Estigmas: telangiectasias e eritema palmar. PA 105/65, FC 88. Albumina sérica 2,8 g/dL. Plaquetas 110.000.',
+      'es': 'Hombre 54 años, 88 kg. Con alcoholismo crónico (80 g/día × 15 años). Aumento progresivo del perímetro abdominal hace 2 meses, saciedad precoz y disminución de la diuresis. Piel tensa con circulación colateral (cabeza de medusa). Matidez desplazable y signo de la oleada positivo. Estigmas: telangiectasias y eritema palmar. PA 105/65, FC 88. Albúmina sérica 2,8 g/dL. Plaquetas 110.000.',
+    },
+    actions: {
+      'pt': [
+        'Diagnóstico: Ascite Grau 2 (moderada). Etiologia provável: Cirrose Hepática (Child-Pugh B)',
+        '1. Paracentese diagnóstica: retirar 50 mL para estudo do líquido',
+        '2. Estudo do líquido: albumina, proteínas totais, contagem celular (PMN) e culturas',
+        '3. Calcular GASA: Albumina sérica − Albumina do líquido',
+        '   GASA >1,1 g/dL → confirma Hipertensão Portal',
+        '4. Dieta: restrição estrita de sódio (<2 g/dia)',
+        '5. Diuréticos: Espironolactona 100 mg/dia + Furosemida 40 mg/dia (relação 100:40)',
+        'GASA é mais confiável que a classificação antiga de transudato/exsudato',
+      ],
+      'es': [
+        'Diagnóstico: Ascitis Grado 2 (moderada). Etiología probable: Cirrosis Hepática (Child-Pugh B)',
+        '1. Paracentesis diagnóstica: extraer 50 mL para estudio del líquido',
+        '2. Estudio del líquido: albúmina, proteínas totales, recuento celular (PMN) y cultivos',
+        '3. Calcular GASA: Albúmina sérica − Albúmina del líquido ascítico',
+        '   GASA >1,1 g/dL → confirma Hipertensión Portal',
+        '4. Dieta: restricción estricta de sodio (<2 g/día)',
+        '5. Diuréticos: Espironolactona 100 mg/día + Furosemida 40 mg/día (relación 100:40)',
+        'GASA es más fiable que la clasificación antigua de trasudado/exudado',
+      ],
+    },
+    avoid: {
+      'pt': 'Evitar AINEs (reduzem a eficácia dos diuréticos e pioram função renal em cirróticos). Não restringir proteínas da dieta sem necessidade (piora encefalopatia e desnutrição). Não usar paracentese evacuadora sem reposição de albumina (>5 L → albumina 6–8 g/L retirado).',
+      'es': 'Evitar AINEs (reducen eficacia de diuréticos y empeoran función renal en cirróticos). No restringir proteínas de la dieta sin necesidad. No realizar paracentesis evacuadora sin reposición de albúmina (>5 L → albúmina 6–8 g/L extraído).',
+    },
+    drugs: ['espironolactona', 'furosemida'],
+  ),
+
+  // ── Síndrome Ascítico Edematoso Descompensado ────────────────────────────
+  ProtocolModel(
+    id: 'sindrome_ascitico_edematoso_017',
+    title: {
+      'pt': 'Caso Clínico: Síndrome Ascítico Edematoso Descompensado',
+      'es': 'Caso Clínico: Síndrome Ascítico Edematoso Descompensado',
+    },
+    severity: {'pt': 'Crítico', 'es': 'Crítico'},
+    recognize: {
+      'pt': 'Mulher 60 anos, 95 kg (com sobrecarga de volume). Cirrose + IC direita. Ascite a tensão + edema de MMII bilateral grau +++/++++ com fóvea até coxas + região sacra e parede abdominal. Dispneia de esforço moderada. Murmúrio vesicular diminuído nas bases (provável derrame pleural ou hidrotórax hepático). Umbigo evertido. Dor difusa à palpação profunda.',
+      'es': 'Mujer 60 años, 95 kg (con sobrecarga de volumen). Cirrosis + IC derecha. Ascitis a tensión + edema de MMII bilateral grado +++/++++ con fóvea hasta muslos + región sacra y pared abdominal. Disnea de esfuerzo moderada. Murmullo vesicular disminuido en bases (probable derrame pleural o hidrotórax hepático). Ombligo evertido. Dolor difuso a palpación profunda.',
+    },
+    actions: {
+      'pt': [
+        'Diagnóstico: Síndrome Ascítico Edematoso (Anasarca parcial). Hiponatremia dilucional',
+        '1. Restrição hídrica: limitar a 1–1,5 L/dia se Sódio sérico <125 mEq/L',
+        '2. Diuréticos combinados:',
+        '   — Espironolactona 100 mg/dia (antagonista de aldosterona)',
+        '   — Furosemida 40 mg/dia (diurético de alça)',
+        '   Relação 100:40 para manter o potássio',
+        '3. Controle de peso: objetivo 0,5 kg/dia (só ascite) ou 1 kg/dia (com edema periférico)',
+        '4. Laboratório: monitorar Creatinina, Potássio e Sódio diariamente',
+        'Paracentese evacuadora (LVP) indicada se ascite a tensão com comprometimento respiratório',
+      ],
+      'es': [
+        'Diagnóstico: Síndrome Ascítico Edematoso (Anasarca parcial). Hiponatremia dilucional',
+        '1. Restricción hídrica: limitar a 1–1,5 L/día si Sodio sérico <125 mEq/L',
+        '2. Terapia diurética combinada:',
+        '   — Espironolactona 100 mg/día (antagonista de aldosterona)',
+        '   — Furosemida 40 mg/día (diurético de asa)',
+        '   Relación 100:40 para mantener el potasio',
+        '3. Control de peso: objetivo 0,5 kg/día (solo ascitis) o 1 kg/día (con edema periférico)',
+        '4. Laboratorio: monitoreo estricto de Creatinina, Potasio y Sodio',
+        'Paracentesis evacuadora (LVP) indicada si ascitis a tensión con compromiso respiratorio',
+      ],
+    },
+    avoid: {
+      'pt': 'Evitar restrição hídrica excessiva (piora função renal). Não aumentar diuréticos abruptamente (risco de síndrome hepatorrenal). Evitar AINEs. Não realizar paracentese evacuadora sem albumina de reposição.',
+      'es': 'Evitar restricción hídrica excesiva (empeora función renal). No aumentar diuréticos abruptamente (riesgo de síndrome hepatorrenal). Evitar AINEs. No realizar paracentesis evacuadora sin albúmina de reposición.',
+    },
+    drugs: ['espironolactona', 'furosemida', 'albumina_humana'],
+  ),
+
 ];

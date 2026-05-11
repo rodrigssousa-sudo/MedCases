@@ -490,6 +490,86 @@ class _ProtocolsScreenState extends State<ProtocolsScreen> {
             onSelect: (proto) => showProtocolDetail(context, proto),
           ),
           const SizedBox(height: 8),
+
+          // ── Casos Clínicos — Gastroenterologia ──────────────────────────
+          _ProtocolGroupAccordion(
+            groupKey: 'casos_gastro',
+            icon: '🏥',
+            titlePt: 'Casos Clínicos — Gastroenterologia & Hepatologia',
+            titleEs: 'Casos Clínicos — Gastroenterología & Hepatología',
+            color: const Color(0xFFF5F5F0),
+            borderColor: const Color(0xFFD8D4C0),
+            iconColor: const Color(0xFF555544),
+            protocols: allDB.where((d) => {
+              'pancreatitis_aguda_005',
+              'diarrea_aguda_009',
+              'hda_ulcera_peptica_013',
+              'hdb_sangrado_rectal_014',
+              'diverticulitis_aguda_015',
+              'sindrome_ascitico_debut_016',
+              'sindrome_ascitico_edematoso_017',
+            }.contains(d.id)).toList(),
+            isExpanded: _expanded.contains('casos_gastro'),
+            p: p, isEs: isEs,
+            onToggle: () => setState(() {
+              _expanded.contains('casos_gastro')
+                  ? _expanded.remove('casos_gastro')
+                  : _expanded.add('casos_gastro');
+            }),
+            onSelect: (proto) => showProtocolDetail(context, proto),
+          ),
+          const SizedBox(height: 8),
+
+          // ── Casos Clínicos — Infectologia & Hepatologia Viral ────────────
+          _ProtocolGroupAccordion(
+            groupKey: 'casos_hepato_viral',
+            icon: '🦠',
+            titlePt: 'Casos Clínicos — Hepatites Virais & Gripe',
+            titleEs: 'Casos Clínicos — Hepatitis Virales & Gripe',
+            color: const Color(0xFFFFF8EC),
+            borderColor: const Color(0xFFEED8A0),
+            iconColor: const Color(0xFF8B6000),
+            protocols: allDB.where((d) => {
+              'hepatitis_b_aguda_detallada_2026',
+              'hepatitis_c_cronica_detallada_2026',
+              'gripe_influenza_010',
+            }.contains(d.id)).toList(),
+            isExpanded: _expanded.contains('casos_hepato_viral'),
+            p: p, isEs: isEs,
+            onToggle: () => setState(() {
+              _expanded.contains('casos_hepato_viral')
+                  ? _expanded.remove('casos_hepato_viral')
+                  : _expanded.add('casos_hepato_viral');
+            }),
+            onSelect: (proto) => showProtocolDetail(context, proto),
+          ),
+          const SizedBox(height: 8),
+
+          // ── Casos Clínicos — ORL & Medicina Geral ───────────────────────
+          _ProtocolGroupAccordion(
+            groupKey: 'casos_orl',
+            icon: '👂',
+            titlePt: 'Casos Clínicos — ORL & Medicina Geral',
+            titleEs: 'Casos Clínicos — ORL & Medicina General',
+            color: const Color(0xFFF0F8FF),
+            borderColor: const Color(0xFFBBD6F0),
+            iconColor: const Color(0xFF1A5E8A),
+            protocols: allDB.where((d) => {
+              'rinosinusitis_aguda_007',
+              'faringitis_estreptococica_008',
+              'faringitis_viral_011',
+              'faringitis_bacteriana_012',
+            }.contains(d.id)).toList(),
+            isExpanded: _expanded.contains('casos_orl'),
+            p: p, isEs: isEs,
+            onToggle: () => setState(() {
+              _expanded.contains('casos_orl')
+                  ? _expanded.remove('casos_orl')
+                  : _expanded.add('casos_orl');
+            }),
+            onSelect: (proto) => showProtocolDetail(context, proto),
+          ),
+          const SizedBox(height: 8),
         ],
       ]),
     );
