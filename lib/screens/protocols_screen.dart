@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '../providers/app_provider.dart';
 import '../models/protocol_model.dart';
@@ -737,102 +736,18 @@ class _ProtocolListTile extends StatelessWidget {
 // BOTTOM SHEET — detalhe completo do protocolo
 // Abre a partir de qualquer ponto do app via showProtocolDetail()
 // ─────────────────────────────────────────────────────────────────────────────
-class _ProtocolDetailSheet extends StatefulWidget {
+class _ProtocolDetailSheet extends StatelessWidget {
   final ProtocolModel protocol;
   const _ProtocolDetailSheet({required this.protocol});
 
   @override
-  State<_ProtocolDetailSheet> createState() => _ProtocolDetailSheetState();
-}
-
-class _ProtocolDetailSheetState extends State<_ProtocolDetailSheet> {
-  // ── Estado do formulário de paciente ──────────────────────────────────────
-  String _sex = '';                          // '' = não informado
-  final _ageCtrl    = TextEditingController();
-  final _weightCtrl = TextEditingController();
-
-  // ── Estado da IA ──────────────────────────────────────────────────────────
-  bool    _aiLoading  = false;
-  String? _aiAnswer;
-  String? _aiError;
-
-  @override
-  void dispose() {
-    _ageCtrl.dispose();
-    _weightCtrl.dispose();
-    super.dispose();
-  }
-
-  // ── Constrói o prompt rico com contexto do protocolo + dados do paciente ──
-  String _buildPrompt(AppProvider p) {
-    final lang     = p.lang;
-    final isEs     = lang == 'es';
-    final title    = p.tDB(widget.protocol.title);
-    final recognize = p.tDB(widget.protocol.recognize);
-    final actions  = widget.protocol.getActions(lang).join('\n');
-    final avoid    = p.tDB(widget.protocol.avoid);
-    final drugs    = widget.protocol.drugs.join(', ');
-
-    final age    = _ageCtrl.text.trim();
-    final weight = _weightCtrl.text.trim();
-    final sex    = _sex;
-
-    // Linha de paciente
-    String patientLine = '';
-    final parts = <String>[];
-    if (sex.isNotEmpty) parts.add(isEs ? 'Sexo: $sex' : 'Sexo: $sex');
-    if (age.isNotEmpty) parts.add(isEs ? 'Edad: $age años' : 'Idade: $age anos');
-    if (weight.isNotEmpty) parts.add(isEs ? 'Peso: $weight kg' : 'Peso: $weight kg');
-    if (parts.isNotEmpty) patientLine = parts.join(' | ');
-
-    if (isEs) {
-      return '''PROTOCOLO CLÍNICO: $title
-
-${patientLine.isNotEmpty ? 'DATOS DEL PACIENTE: $patientLine\n\n' : ''}RECONOCER / PRESENTACIÓN:
-$recognize
-
-CONDUCTA INMEDIATA:
-$actions
-
-${avoid.isNotEmpty ? 'EVITAR:\n$avoid\n\n' : ''}${drugs.isNotEmpty ? 'FÁRMACOS DEL PROTOCOLO: $drugs\n\n' : ''}Con base en este protocolo${patientLine.isNotEmpty ? ' y los datos específicos del paciente' : ''}, analiza el tratamiento recomendado, las dosis ajustadas${age.isNotEmpty || weight.isNotEmpty ? ' por edad y peso' : ''}, los fármacos más apropiados${age.isNotEmpty ? ' para esta franja etaria' : ''}, posibles interacciones y consideraciones clínicas especiales. Sé preciso y práctico.''';
-    } else {
-      return '''PROTOCOLO CLÍNICO: $title
-
-${patientLine.isNotEmpty ? 'DADOS DO PACIENTE: $patientLine\n\n' : ''}RECONHECER / APRESENTAÇÃO:
-$recognize
-
-CONDUTA IMEDIATA:
-$actions
-
-${avoid.isNotEmpty ? 'EVITAR:\n$avoid\n\n' : ''}${drugs.isNotEmpty ? 'FÁRMACOS DO PROTOCOLO: $drugs\n\n' : ''}Com base neste protocolo${patientLine.isNotEmpty ? ' e nos dados específicos do paciente' : ''}, analise o tratamento recomendado, as doses ajustadas${age.isNotEmpty || weight.isNotEmpty ? ' por idade e peso' : ''}, os fármacos mais apropriados${age.isNotEmpty ? ' para esta faixa etária' : ''}, possíveis interações e considerações clínicas especiais. Seja preciso e prático.''';
-    }
-  }
-
-  Future<void> _consultarIA(AppProvider p) async {
-    FocusScope.of(context).unfocus();
-    setState(() {
-      _aiLoading = true;
-      _aiAnswer  = null;
-      _aiError   = null;
-    });
-    try {
-      final prompt = _buildPrompt(p);
-      final answer = await p.buildAIAnswer(prompt);
-      if (mounted) setState(() { _aiAnswer = answer; _aiLoading = false; });
-    } catch (e) {
-      if (mounted) setState(() { _aiError = e.toString(); _aiLoading = false; });
-    }
-  }
-
-  @override
   Widget build(BuildContext context) {
-    final p        = context.watch<AppProvider>();
-    final isEs     = p.lang == 'es';
-    final actions  = widget.protocol.getActions(p.lang);
-    final isFav    = p.favProtocols.contains(widget.protocol.id);
-    final avoidTxt = p.tDB(widget.protocol.avoid);
-    final drugs    = widget.protocol.drugs;
-    final maxH     = MediaQuery.of(context).size.height * 0.92;
+    final p       = context.watch<AppProvider>();
+    final actions = protocol.getActions(p.lang);
+    final isFav   = p.favProtocols.contains(protocol.id);
+    final avoidTxt = p.tDB(protocol.avoid);
+    final drugs   = protocol.drugs;
+    final maxH = MediaQuery.of(context).size.height * 0.92;
 
     return Container(
       height: maxH,
@@ -864,17 +779,17 @@ ${avoid.isNotEmpty ? 'EVITAR:\n$avoid\n\n' : ''}${drugs.isNotEmpty ? 'FÁRMACOS 
               PremiumCard(
                 child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
                   Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                    Text(p.tDB(widget.protocol.severity),
+                    Text(p.tDB(protocol.severity),
                       style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w900,
                         color: Color(0xBFFFE8A6), letterSpacing: 1.4)),
                     const SizedBox(height: 4),
-                    Text(p.tDB(widget.protocol.title),
+                    Text(p.tDB(protocol.title),
                       style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w900,
                         color: Colors.white, letterSpacing: -0.5, height: 1.2)),
                   ])),
                   // Favorito
                   GestureDetector(
-                    onTap: () => p.toggleFavProtocol(widget.protocol.id),
+                    onTap: () => p.toggleFavProtocol(protocol.id),
                     child: Container(
                       padding: const EdgeInsets.all(10),
                       decoration: BoxDecoration(
@@ -894,7 +809,7 @@ ${avoid.isNotEmpty ? 'EVITAR:\n$avoid\n\n' : ''}${drugs.isNotEmpty ? 'FÁRMACOS 
               const SizedBox(height: 12),
 
               // ── Reconhecer ───────────────────────────────────────────────
-              _RecognizeCard(text: p.tDB(widget.protocol.recognize), p: p),
+              _RecognizeCard(text: p.tDB(protocol.recognize), p: p),
               const SizedBox(height: 10),
 
               // ── Conduta imediata ─────────────────────────────────────────
@@ -913,24 +828,6 @@ ${avoid.isNotEmpty ? 'EVITAR:\n$avoid\n\n' : ''}${drugs.isNotEmpty ? 'FÁRMACOS 
                 const SizedBox(height: 10),
               ],
 
-              // ── Card: Consultar IA ───────────────────────────────────────
-              _PatientAiCard(
-                isEs: isEs,
-                sex: _sex,
-                ageCtrl: _ageCtrl,
-                weightCtrl: _weightCtrl,
-                aiLoading: _aiLoading,
-                aiAnswer: _aiAnswer,
-                aiError: _aiError,
-                onSexChanged: (v) => setState(() => _sex = v ?? ''),
-                onConsultar: () => _consultarIA(p),
-                onClearAnswer: () => setState(() {
-                  _aiAnswer = null;
-                  _aiError  = null;
-                }),
-              ),
-              const SizedBox(height: 10),
-
               // ── Botão fechar ─────────────────────────────────────────────
               GestureDetector(
                 onTap: () => Navigator.of(context).pop(),
@@ -946,463 +843,13 @@ ${avoid.isNotEmpty ? 'EVITAR:\n$avoid\n\n' : ''}${drugs.isNotEmpty ? 'FÁRMACOS 
                     const Icon(Icons.keyboard_arrow_down_rounded, size: 18, color: kDark),
                     const SizedBox(width: 6),
                     Text(
-                      isEs ? 'Cerrar' : 'Fechar',
+                      p.lang == 'es' ? 'Cerrar' : 'Fechar',
                       style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w800, color: kDark),
                     ),
                   ]),
                 ),
               ),
             ]),
-          ),
-        ),
-      ]),
-    );
-  }
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// CARD: CONSULTAR IA — formulário de paciente + botão + painel de resposta
-// ─────────────────────────────────────────────────────────────────────────────
-class _PatientAiCard extends StatelessWidget {
-  final bool isEs;
-  final String sex;
-  final TextEditingController ageCtrl;
-  final TextEditingController weightCtrl;
-  final bool aiLoading;
-  final String? aiAnswer;
-  final String? aiError;
-  final ValueChanged<String?> onSexChanged;
-  final VoidCallback onConsultar;
-  final VoidCallback onClearAnswer;
-
-  const _PatientAiCard({
-    required this.isEs,
-    required this.sex,
-    required this.ageCtrl,
-    required this.weightCtrl,
-    required this.aiLoading,
-    required this.aiAnswer,
-    required this.aiError,
-    required this.onSexChanged,
-    required this.onConsultar,
-    required this.onClearAnswer,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final hasAnswer = aiAnswer != null || aiError != null;
-
-    return Container(
-      width: double.infinity,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(18),
-        gradient: const LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [Color(0xFF0A2118), Color(0xFF0D2E1E), Color(0xFF071A10)],
-        ),
-        border: Border.all(color: kGold.withValues(alpha: 0.30)),
-        boxShadow: [
-          BoxShadow(
-            color: kGreen.withValues(alpha: 0.18),
-            blurRadius: 16, offset: const Offset(0, 4)),
-        ],
-      ),
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-
-        // ── Header do card ───────────────────────────────────────────────
-        Padding(
-          padding: const EdgeInsets.fromLTRB(16, 14, 16, 0),
-          child: Row(children: [
-            Container(
-              width: 34, height: 34,
-              decoration: BoxDecoration(
-                color: kGold.withValues(alpha: 0.15),
-                borderRadius: BorderRadius.circular(10),
-                border: Border.all(color: kGold.withValues(alpha: 0.35)),
-              ),
-              child: const Center(
-                child: Text('🤖', style: TextStyle(fontSize: 17)),
-              ),
-            ),
-            const SizedBox(width: 10),
-            Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text(
-                isEs ? 'Consultar IA' : 'Consultar IA',
-                style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w900,
-                  color: kGoldLight, letterSpacing: -0.3),
-              ),
-              Text(
-                isEs
-                    ? 'Análisis personalizado por paciente'
-                    : 'Análise personalizada por paciente',
-                style: TextStyle(fontSize: 10.5, fontWeight: FontWeight.w600,
-                  color: Colors.white.withValues(alpha: 0.50)),
-              ),
-            ]),
-          ]),
-        ),
-
-        const SizedBox(height: 14),
-        Divider(color: Colors.white.withValues(alpha: 0.08), height: 1),
-        const SizedBox(height: 14),
-
-        // ── Formulário do paciente ───────────────────────────────────────
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 14),
-          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-
-            // Label
-            Text(
-              isEs ? 'DATOS DEL PACIENTE (OPCIONAL)' : 'DADOS DO PACIENTE (OPCIONAL)',
-              style: TextStyle(fontSize: 9, fontWeight: FontWeight.w900,
-                color: Colors.white.withValues(alpha: 0.45), letterSpacing: 1.5),
-            ),
-            const SizedBox(height: 10),
-
-            // Sexo + Idade + Peso em linha
-            Row(children: [
-
-              // Sexo — dropdown compacto
-              Expanded(
-                flex: 5,
-                child: _PatientDropdown(
-                  isEs: isEs,
-                  value: sex.isEmpty ? null : sex,
-                  hint: isEs ? 'Sexo' : 'Sexo',
-                  items: isEs
-                      ? const ['Masculino', 'Femenino', 'Otro']
-                      : const ['Masculino', 'Feminino', 'Outro'],
-                  onChanged: onSexChanged,
-                ),
-              ),
-              const SizedBox(width: 8),
-
-              // Idade
-              Expanded(
-                flex: 4,
-                child: _PatientNumberField(
-                  controller: ageCtrl,
-                  hint: isEs ? 'Edad' : 'Idade',
-                  suffix: isEs ? 'años' : 'anos',
-                  maxLength: 3,
-                ),
-              ),
-              const SizedBox(width: 8),
-
-              // Peso
-              Expanded(
-                flex: 4,
-                child: _PatientNumberField(
-                  controller: weightCtrl,
-                  hint: isEs ? 'Peso' : 'Peso',
-                  suffix: 'kg',
-                  maxLength: 3,
-                  decimal: true,
-                ),
-              ),
-            ]),
-          ]),
-        ),
-
-        const SizedBox(height: 14),
-
-        // ── Botão principal ──────────────────────────────────────────────
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 14),
-          child: GestureDetector(
-            onTap: aiLoading ? null : onConsultar,
-            child: AnimatedContainer(
-              duration: const Duration(milliseconds: 200),
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(vertical: 14),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(13),
-                gradient: aiLoading
-                    ? const LinearGradient(
-                        colors: [Color(0xFF2A4A3A), Color(0xFF1E3A2E)])
-                    : const LinearGradient(
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                        colors: [kGreen, Color(0xFF0A7A50), Color(0xFF075F40)]),
-                boxShadow: aiLoading ? [] : [
-                  BoxShadow(
-                    color: kGreen.withValues(alpha: 0.40),
-                    blurRadius: 12, offset: const Offset(0, 4)),
-                ],
-              ),
-              child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                if (aiLoading) ...[
-                  const SizedBox(
-                    width: 16, height: 16,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2,
-                      valueColor: AlwaysStoppedAnimation<Color>(kGoldLight),
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                  Text(
-                    isEs ? 'Analizando...' : 'Analisando...',
-                    style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w800,
-                      color: kGoldLight),
-                  ),
-                ] else ...[
-                  const Icon(Icons.psychology_rounded, size: 18, color: kGoldLight),
-                  const SizedBox(width: 8),
-                  Text(
-                    isEs ? 'Consultar IA sobre este Protocolo' : 'Consultar IA sobre este Protocolo',
-                    style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w800,
-                      color: kGoldLight),
-                  ),
-                ],
-              ]),
-            ),
-          ),
-        ),
-
-        const SizedBox(height: 14),
-
-        // ── Painel de resposta ───────────────────────────────────────────
-        if (hasAnswer) ...[
-          Divider(color: Colors.white.withValues(alpha: 0.08), height: 1),
-          _AiAnswerPanel(
-            isEs: isEs,
-            answer: aiAnswer,
-            error: aiError,
-            onClear: onClearAnswer,
-          ),
-        ],
-
-        if (!hasAnswer) const SizedBox(height: 2),
-      ]),
-    );
-  }
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// DROPDOWN COMPACTO — sexo do paciente
-// ─────────────────────────────────────────────────────────────────────────────
-class _PatientDropdown extends StatelessWidget {
-  final bool isEs;
-  final String? value;
-  final String hint;
-  final List<String> items;
-  final ValueChanged<String?> onChanged;
-
-  const _PatientDropdown({
-    required this.isEs,
-    required this.value,
-    required this.hint,
-    required this.items,
-    required this.onChanged,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 42,
-      padding: const EdgeInsets.symmetric(horizontal: 10),
-      decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.07),
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.18)),
-      ),
-      child: DropdownButtonHideUnderline(
-        child: DropdownButton<String>(
-          value: value,
-          hint: Text(hint,
-            style: TextStyle(fontSize: 12, color: Colors.white.withValues(alpha: 0.40),
-              fontWeight: FontWeight.w600)),
-          dropdownColor: const Color(0xFF0F2A1C),
-          style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w700,
-            color: Colors.white),
-          icon: Icon(Icons.arrow_drop_down_rounded,
-            size: 18, color: Colors.white.withValues(alpha: 0.50)),
-          isExpanded: true,
-          items: [
-            DropdownMenuItem<String>(
-              value: '',
-              child: Text(isEs ? 'Limpiar' : 'Limpar',
-                style: TextStyle(fontSize: 11,
-                  color: Colors.white.withValues(alpha: 0.45))),
-            ),
-            ...items.map((s) => DropdownMenuItem<String>(
-              value: s,
-              child: Text(s, style: const TextStyle(fontSize: 12,
-                fontWeight: FontWeight.w700, color: Colors.white)),
-            )),
-          ],
-          onChanged: (v) => onChanged(v == '' ? null : v),
-        ),
-      ),
-    );
-  }
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// CAMPO NUMÉRICO COMPACTO — idade / peso
-// ─────────────────────────────────────────────────────────────────────────────
-class _PatientNumberField extends StatelessWidget {
-  final TextEditingController controller;
-  final String hint;
-  final String suffix;
-  final int maxLength;
-  final bool decimal;
-
-  const _PatientNumberField({
-    required this.controller,
-    required this.hint,
-    required this.suffix,
-    required this.maxLength,
-    this.decimal = false,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 42,
-      decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.07),
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.18)),
-      ),
-      child: TextField(
-        controller: controller,
-        keyboardType: decimal
-            ? const TextInputType.numberWithOptions(decimal: true)
-            : TextInputType.number,
-        inputFormatters: [
-          LengthLimitingTextInputFormatter(maxLength),
-          if (decimal)
-            FilteringTextInputFormatter.allow(RegExp(r'[\d.]'))
-          else
-            FilteringTextInputFormatter.digitsOnly,
-        ],
-        style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w800,
-          color: Colors.white),
-        textAlign: TextAlign.center,
-        decoration: InputDecoration(
-          hintText: hint,
-          hintStyle: TextStyle(fontSize: 11, color: Colors.white.withValues(alpha: 0.40),
-            fontWeight: FontWeight.w600),
-          suffixText: suffix,
-          suffixStyle: TextStyle(fontSize: 10, color: Colors.white.withValues(alpha: 0.50),
-            fontWeight: FontWeight.w700),
-          border: InputBorder.none,
-          contentPadding: const EdgeInsets.symmetric(horizontal: 6, vertical: 12),
-          isDense: true,
-        ),
-      ),
-    );
-  }
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// PAINEL DE RESPOSTA DA IA
-// ─────────────────────────────────────────────────────────────────────────────
-class _AiAnswerPanel extends StatelessWidget {
-  final bool isEs;
-  final String? answer;
-  final String? error;
-  final VoidCallback onClear;
-
-  const _AiAnswerPanel({
-    required this.isEs,
-    required this.answer,
-    required this.error,
-    required this.onClear,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final isError = error != null;
-
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(14, 14, 14, 14),
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-
-        // ── Cabeçalho da resposta ────────────────────────────────────────
-        Row(children: [
-          Icon(
-            isError ? Icons.error_outline_rounded : Icons.auto_awesome_rounded,
-            size: 14,
-            color: isError ? const Color(0xFFFF8080) : kGold,
-          ),
-          const SizedBox(width: 6),
-          Expanded(
-            child: Text(
-              isError
-                  ? (isEs ? 'Error al consultar IA' : 'Erro ao consultar IA')
-                  : (isEs ? 'Análisis de la IA' : 'Análise da IA'),
-              style: TextStyle(
-                fontSize: 11, fontWeight: FontWeight.w900,
-                color: isError ? const Color(0xFFFF8080) : kGold,
-                letterSpacing: 0.5),
-            ),
-          ),
-          // Botão copiar (só quando há resposta)
-          if (!isError && answer != null)
-            GestureDetector(
-              onTap: () {
-                Clipboard.setData(ClipboardData(text: answer!));
-                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                  content: Text(isEs ? 'Copiado al portapapeles' : 'Copiado para área de transferência',
-                    style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w700)),
-                  backgroundColor: kGreen,
-                  behavior: SnackBarBehavior.floating,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                  duration: const Duration(seconds: 2),
-                ));
-              },
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                decoration: BoxDecoration(
-                  color: kGold.withValues(alpha: 0.12),
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: kGold.withValues(alpha: 0.30)),
-                ),
-                child: Row(mainAxisSize: MainAxisSize.min, children: [
-                  const Icon(Icons.copy_rounded, size: 12, color: kGold),
-                  const SizedBox(width: 4),
-                  Text(isEs ? 'Copiar' : 'Copiar',
-                    style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w800,
-                      color: kGold)),
-                ]),
-              ),
-            ),
-          const SizedBox(width: 8),
-          // Botão limpar
-          GestureDetector(
-            onTap: onClear,
-            child: Icon(Icons.close_rounded, size: 16,
-              color: Colors.white.withValues(alpha: 0.40)),
-          ),
-        ]),
-
-        const SizedBox(height: 10),
-
-        // ── Texto da resposta ────────────────────────────────────────────
-        Container(
-          width: double.infinity,
-          padding: const EdgeInsets.all(12),
-          decoration: BoxDecoration(
-            color: Colors.white.withValues(alpha: 0.05),
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(
-              color: isError
-                  ? const Color(0xFFFF8080).withValues(alpha: 0.25)
-                  : Colors.white.withValues(alpha: 0.10)),
-          ),
-          child: SelectableText(
-            isError ? error! : answer!,
-            style: TextStyle(
-              fontSize: 13,
-              fontWeight: FontWeight.w500,
-              color: isError
-                  ? const Color(0xFFFFAAAA)
-                  : Colors.white.withValues(alpha: 0.90),
-              height: 1.55,
-            ),
           ),
         ),
       ]),
