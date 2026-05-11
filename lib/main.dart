@@ -21,6 +21,8 @@ import 'screens/ai_screen.dart';
 import 'screens/admin_screen.dart';
 import 'screens/history_screen.dart';
 import 'screens/maintenance_screen.dart';
+import 'screens/cases_screen.dart';
+import 'screens/prescripciones_screen.dart';
 import 'services/firestore_service.dart';
 import 'widgets/brand_mark.dart';
 
@@ -1419,6 +1421,22 @@ class _RxProtoCombo extends StatelessWidget {
               dark: dark,
               onTap: () => onSubTabChange(1),
             ),
+            Container(width: 1, height: 24, color: borderCol),
+            _SubTabBtn(
+              icon: Icons.folder_open_rounded,
+              label: p.t('cases'),
+              active: subTab == 2,
+              dark: dark,
+              onTap: () => onSubTabChange(2),
+            ),
+            Container(width: 1, height: 24, color: borderCol),
+            _SubTabBtn(
+              icon: Icons.description_rounded,
+              label: p.t('prescriptions'),
+              active: subTab == 3,
+              dark: dark,
+              onTap: () => onSubTabChange(3),
+            ),
           ]),
         ),
       ),
@@ -1429,6 +1447,8 @@ class _RxProtoCombo extends StatelessWidget {
           children: [
             const DrugsScreen(),
             const ProtocolsScreen(),
+            const CasesScreen(),
+            const PrescripcionesScreen(),
           ],
         ),
       ),
