@@ -832,8 +832,18 @@ class _BgPainter extends CustomPainter {
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Helper — abre o paywall como bottom sheet passando o idioma atual
+//
+// 🔒 PAYWALL BLOQUEADO — desativar antes do lançamento oficial
+// Para reativar: remover o bloco "if (_kPaywallLocked)" abaixo.
 // ─────────────────────────────────────────────────────────────────────────────
+
+/// Mude para `false` para liberar o paywall no lançamento oficial.
+const bool _kPaywallLocked = true;
+
 void showUpgradeScreen(BuildContext context, {String lang = 'es'}) {
+  // Bloqueia completamente até liberação oficial
+  if (_kPaywallLocked) return;
+
   showModalBottomSheet(
     context: context,
     isScrollControlled: true,
