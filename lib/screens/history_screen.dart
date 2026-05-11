@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:provider/provider.dart';
 import 'dart:async';
 import 'dart:ui' as ui;
-// ignore: avoid_web_libraries_in_flutter
-import 'dart:html' as html;
-// ignore: avoid_web_libraries_in_flutter
-import 'dart:js' as js;
 import '../providers/app_provider.dart';
 import '../models/clinical_history_model.dart';
 import '../services/firestore_service.dart';
 import '../services/suggestion_service.dart';
 import '../widgets/common_widgets.dart';
+import '../platform/web_impl.dart'
+    if (dart.library.io) '../platform/web_stub.dart' as webPlatform;
 
 // Helper global — formata ISO para 'dd/mm/yyyy às hh:mm'
 String _formatUploadedAt(String iso) {
@@ -365,37 +364,7 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
                   ),
                 )
               : pub.isEmpty
-                ? p.publicLoadError.isNotEmpty
-                  ? Center(child: SingleChildScrollView(
-                      padding: const EdgeInsets.all(16),
-                      child: Column(mainAxisSize: MainAxisSize.min, children: [
-                        const Icon(Icons.bug_report_rounded, size: 32, color: Colors.red),
-                        const SizedBox(height: 8),
-                        const Text('ERRO AO CARREGAR (debug)',
-                          style: TextStyle(fontSize: 12, fontWeight: FontWeight.w900, color: Colors.red)),
-                        const SizedBox(height: 8),
-                        Container(
-                          padding: const EdgeInsets.all(12),
-                          decoration: BoxDecoration(
-                            color: const Color(0xFFFFF0F0),
-                            borderRadius: BorderRadius.circular(10),
-                            border: Border.all(color: Colors.red.withValues(alpha: 0.3)),
-                          ),
-                          child: SelectableText(p.publicLoadError,
-                            style: const TextStyle(fontSize: 10, color: Color(0xFF880000), fontFamily: 'monospace', height: 1.4)),
-                        ),
-                        const SizedBox(height: 12),
-                        GestureDetector(
-                          onTap: () => p.loadPublicHistories(),
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                            decoration: BoxDecoration(color: kDark, borderRadius: BorderRadius.circular(12)),
-                            child: const Text('Tentar novamente', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w900, color: kGoldLight)),
-                          ),
-                        ),
-                      ]),
-                    ))
-                  : _EmptyCommunityState(onRefresh: () => p.loadPublicHistories())
+                ? _EmptyCommunityState(onRefresh: () => p.loadPublicHistories())
                 : RefreshIndicator(
                     color: kGreen,
                     onRefresh: () => p.loadPublicHistories(),
@@ -952,13 +921,7 @@ class _HistoryDetailState extends State<_HistoryDetail> {
 </body></html>''');
 
     // Abre janela de impressão (PDF via browser)
-    final blob = html.Blob([buf.toString()], 'text/html');
-    final url = html.Url.createObjectUrlFromBlob(blob);
-    html.window.open(url, '_blank');
-    // O usuário usa Ctrl+P / Imprimir do browser para gerar o PDF
-    Future.delayed(const Duration(milliseconds: 1500), () {
-      html.Url.revokeObjectUrl(url);
-    });
+    webPlatform.webOpenHtmlPrint(buf.toString());
   }
 
   String _esc(String s) => s.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;');
@@ -966,12 +929,7 @@ class _HistoryDetailState extends State<_HistoryDetail> {
   String _safeFilename() => 'HC_${history.displayTitle.replaceAll(RegExp(r'[^a-zA-Z0-9\u00C0-\u024F ]'), '').trim().replaceAll(' ', '_').substring(0, history.displayTitle.length.clamp(0, 30))}_${history.formattedDate.replaceAll('/', '-')}';
 
   void _downloadBytes(Uint8List bytes, String filename, String mime) {
-    final blob = html.Blob([bytes], mime);
-    final url = html.Url.createObjectUrlFromBlob(blob);
-    html.AnchorElement(href: url)
-      ..setAttribute('download', filename)
-      ..click();
-    html.Url.revokeObjectUrl(url);
+    webPlatform.webDownloadBytes(bytes, filename, mime);
   }
 
   @override
@@ -1227,7 +1185,7 @@ class _HistoryEditorState extends State<_HistoryEditor> {
 
   @override
   void dispose() {
-    _sttRecog?.callMethod('stop', []);
+    _sttRecog?.stop();
     for (final c in _ctrls.values) c.dispose();
     super.dispose();
   }
@@ -1236,23 +1194,23 @@ class _HistoryEditorState extends State<_HistoryEditor> {
   String? _sttActiveKey;   // chave do campo atualmente ouvindo
   bool _sttListening = false;
   String _sttInterim = '';
-  js.JsObject? _sttRecog;
+  webPlatform.WebSpeechRecognizer? _sttRecog;
 
   void _startStt(String key) {
+    // STT só funciona na plataforma web
+    if (!kIsWeb) return;
+
     // Toggle: parar se já está ouvindo este campo
     if (_sttListening && _sttActiveKey == key) {
-      try { _sttRecog?.callMethod('stop', []); } catch (_) {}
+      _sttRecog?.stop();
       if (mounted) setState(() { _sttListening = false; _sttActiveKey = null; _sttInterim = ''; });
       return;
     }
     // Se estava ouvindo outro campo, parar antes
-    if (_sttListening) {
-      try { _sttRecog?.callMethod('stop', []); } catch (_) {}
-    }
-    // Verificar suporte do browser via dart:js
-    final jsWin = js.context;
-    final hasSR = jsWin.hasProperty('SpeechRecognition') || jsWin.hasProperty('webkitSpeechRecognition');
-    if (!hasSR) {
+    if (_sttListening) _sttRecog?.stop();
+
+    // Verificar suporte do browser
+    if (!webPlatform.webHasSpeechRecognition()) {
       if (!mounted) return;
       showDialog(
         context: context,
@@ -1264,98 +1222,39 @@ class _HistoryEditorState extends State<_HistoryEditor> {
       );
       return;
     }
-    // Registrar bridge JS antes de criar a instância
-    // Usa eval para injetar handler seguro que evita erros de cast no Dart
-    try {
-      js.context.callMethod('eval', ['''
-        window.__sttBridge = function(transcript, isFinal) {};
-      ''']);
-    } catch (_) {}
-
-    final ctorName = jsWin.hasProperty('SpeechRecognition') ? 'SpeechRecognition' : 'webkitSpeechRecognition';
-    js.JsObject recog;
-    try {
-      recog = js.JsObject(jsWin[ctorName] as js.JsFunction, []);
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Erro ao iniciar ditado: $e'), backgroundColor: Colors.red),
-        );
-      }
-      return;
-    }
 
     final appLang = widget.p.lang;
-    recog['lang'] = appLang == 'es' ? 'es-ES' : 'pt-BR';
-    recog['continuous'] = true;
-    recog['interimResults'] = true;
-    recog['maxAlternatives'] = 1;
+    final lang    = appLang == 'es' ? 'es-ES' : 'pt-BR';
+    final recog   = webPlatform.WebSpeechRecognizer();
 
-    // Usar callMethod para acessar resultados — mais seguro que cast direto
-    recog['onresult'] = js.allowInterop((dynamic event) {
-      try {
-        final jsEvent = event as js.JsObject;
-        final results = jsEvent['results'] as js.JsObject;
-        final length = (results['length'] as num).toInt();
-        String interim = '';
-        // Percorrer apenas os novos resultados (a partir do resultIndex)
-        final startIdx = jsEvent.hasProperty('resultIndex')
-            ? (jsEvent['resultIndex'] as num).toInt()
-            : 0;
-        for (int i = startIdx; i < length; i++) {
-          final result = js.JsObject.fromBrowserObject(results.callMethod('item', [i]) ?? results[i]);
-          final isFinal = result['isFinal'] as bool? ?? false;
-          final alt = js.JsObject.fromBrowserObject(result.callMethod('item', [0]) ?? result[0]);
-          final transcript = alt['transcript'] as String? ?? '';
-          if (isFinal) {
-            final ctrl = _ctrls[key];
-            if (ctrl != null && transcript.isNotEmpty) {
-              final current = ctrl.text;
-              final spacer = current.isNotEmpty && !current.endsWith(' ') && !current.endsWith('\n') ? ' ' : '';
-              ctrl.text = current + spacer + transcript;
-              ctrl.selection = TextSelection.fromPosition(TextPosition(offset: ctrl.text.length));
-            }
-          } else {
-            interim += transcript;
+    recog.start(
+      key,
+      lang,
+      onResult: (transcript, isFinal) {
+        if (isFinal) {
+          final ctrl = _ctrls[key];
+          if (ctrl != null && transcript.isNotEmpty) {
+            final current = ctrl.text;
+            final spacer  = current.isNotEmpty && !current.endsWith(' ') && !current.endsWith('\n') ? ' ' : '';
+            ctrl.text = current + spacer + transcript;
+            ctrl.selection = TextSelection.fromPosition(TextPosition(offset: ctrl.text.length));
           }
+          if (mounted) setState(() => _sttInterim = '');
+        } else {
+          if (mounted) setState(() => _sttInterim = transcript);
         }
-        if (mounted) setState(() => _sttInterim = interim);
-      } catch (e) {
-        // Ignorar erros de parsing de resultados intermediários
-      }
-    });
-
-    recog['onerror'] = js.allowInterop((dynamic event) {
-      // Ignorar erros de 'no-speech' (usuário não falou nada) — não encerrar
-      String? errorCode;
-      try { errorCode = (event as js.JsObject)['error'] as String?; } catch (_) {}
-      if (errorCode == 'no-speech') return; // continuar ouvindo
-      if (mounted) setState(() { _sttListening = false; _sttActiveKey = null; _sttInterim = ''; });
-    });
-
-    recog['onend'] = js.allowInterop((dynamic event) {
-      // Se ainda está em modo listening (não foi parado manualmente), reiniciar
-      // para simular modo contínuo (browsers param após silêncio)
-      if (mounted && _sttListening && _sttActiveKey == key) {
-        try { recog.callMethod('start', []); } catch (_) {
-          setState(() { _sttListening = false; _sttActiveKey = null; _sttInterim = ''; });
-        }
-      } else {
+      },
+      onEnd: () {
         if (mounted) setState(() { _sttListening = false; _sttActiveKey = null; _sttInterim = ''; });
-      }
-    });
+      },
+      onError: (code) {
+        if (mounted) setState(() { _sttListening = false; _sttActiveKey = null; _sttInterim = ''; });
+      },
+    );
 
-    try {
-      recog.callMethod('start', []);
-      _sttRecog = recog;
-      if (mounted) setState(() { _sttListening = true; _sttActiveKey = key; _sttInterim = ''; });
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Falha ao iniciar microfone. Verifique as permissões do navegador.'), backgroundColor: Colors.red),
-        );
-      }
-    }
+    _sttRecog  = recog;
+    _sttActiveKey = key;
+    if (mounted) setState(() { _sttListening = true; _sttInterim = ''; });
   }
 
   void _save() {
@@ -1470,7 +1369,7 @@ class _HistoryEditorState extends State<_HistoryEditor> {
             ])),
             const SizedBox(width: 8),
             GestureDetector(
-              onTap: () { _sttRecog?.callMethod('stop', []); setState(() { _sttListening = false; _sttActiveKey = null; _sttInterim = ''; }); },
+              onTap: () { _sttRecog?.stop(); setState(() { _sttListening = false; _sttActiveKey = null; _sttInterim = ''; }); },
               child: Container(
                 padding: const EdgeInsets.all(6),
                 decoration: BoxDecoration(borderRadius: BorderRadius.circular(8), color: const Color(0xFFDC2626).withValues(alpha: 0.12)),
@@ -2655,66 +2554,20 @@ class _LabStructuredWidgetState extends State<_LabStructuredWidget> {
   }
 
   // ── OCR via File Input (Web) ──────────────────────────────────────────────
-  void _openOcrPicker() {
+  Future<void> _openOcrPicker() async {
+    if (!kIsWeb) return; // OCR só disponível no web
+    setState(() { _ocrLoading = true; _ocrStatus = 'Lendo imagem...'; });
     try {
-      final input = html.FileUploadInputElement()
-        ..accept = 'image/*'
-        ..style.display = 'none';
-      html.document.body!.append(input);
-      input.onChange.listen((e) async {
-        final files = input.files;
-        if (files == null || files.isEmpty) { input.remove(); return; }
-        final file = files[0];
-        setState(() { _ocrLoading = true; _ocrStatus = 'Lendo imagem...'; });
-        // Ler como DataURL e usar API do browser
-        final reader = html.FileReader();
-        reader.readAsDataUrl(file);
-        reader.onLoadEnd.listen((_) async {
-          try {
-            final dataUrl = reader.result as String;
-            await _runOcr(dataUrl);
-          } catch (err) {
-            if (mounted) setState(() { _ocrLoading = false; _ocrStatus = 'Erro: $err'; });
-          }
-          input.remove();
-        });
-      });
-      input.click();
-    } catch (e) {
-      if (mounted) setState(() { _ocrStatus = 'OCR não disponível: $e'; });
-    }
-  }
-
-  // Simples OCR via heurística de texto da imagem usando tesseract.js via JS interop
-  // Fallback: copia imagem para campo de texto livre para edição manual
-  Future<void> _runOcr(String dataUrl) async {
-    try {
-      // Tenta usar tesseract.js se disponível no browser
-      final hasTess = js.context.hasProperty('Tesseract');
-      if (hasTess) {
-        if (mounted) setState(() { _ocrStatus = 'Extraindo texto (OCR)...'; });
-        final jsPromise = js.context.callMethod('eval', [
-          '''(function() { return Tesseract.recognize("$dataUrl", "por+spa").then(r => r.data.text); })()'''
-        ]);
-        final completer = Completer<String>();
-        final promiseObj = js.JsObject.fromBrowserObject(jsPromise);
-        promiseObj.callMethod('then', [
-          js.allowInterop((dynamic val) => completer.complete(val?.toString() ?? '')),
-        ]);
-        promiseObj.callMethod('catch', [
-          js.allowInterop((dynamic err) => completer.completeError(err?.toString() ?? 'OCR error')),
-        ]);
-        final text = await completer.future;
-        _applyOcrText(text);
-        if (mounted) setState(() { _ocrLoading = false; _ocrStatus = 'Texto extraído! Revise os campos.'; });
-      } else {
-        // Sem tesseract.js: copia texto de exemplo / abre para edição manual
+      final text = await webPlatform.webPickImageAndOcr();
+      if (text.isEmpty) {
         if (mounted) setState(() {
           _ocrLoading = false;
           _ocrStatus = 'Imagem carregada — preencha os campos manualmente ou instale Tesseract.js';
-          // Deixa o campo "outros" pronto para edição
           _outros.text = '(Laudo de imagem — edite os valores acima)';
         });
+      } else {
+        _applyOcrText(text);
+        if (mounted) setState(() { _ocrLoading = false; _ocrStatus = 'Texto extraído! Revise os campos.'; });
       }
     } catch (e) {
       if (mounted) setState(() { _ocrLoading = false; _ocrStatus = 'Falha OCR: $e'; });
