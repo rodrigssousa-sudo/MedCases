@@ -46,14 +46,16 @@ class _CasesScreenState extends State<CasesScreen> with SingleTickerProviderStat
     }
 
     if (_viewingCase != null) {
+      // Pode editar/deletar: Admin/Master sempre; usuário comum só nos seus próprios casos
+      final canEdit = (p.isAdmin || p.isMaster) || (!_viewingDb);
       return _CaseDetail(
         caseModel: _viewingCase!,
         onBack: () => setState(() { _viewingCase = null; _viewingDb = false; }),
-        onEdit: () { _editing = _viewingCase!.copyWith(); setState(() => _viewingCase = null); },
-        onDelete: _viewingDb ? null : () {
+        onEdit: canEdit ? () { _editing = _viewingCase!.copyWith(); setState(() => _viewingCase = null); } : null,
+        onDelete: canEdit && !_viewingDb ? () {
           p.deleteCase(_viewingCase!.id);
           setState(() => _viewingCase = null);
-        },
+        } : null,
         p: p,
       );
     }
@@ -150,8 +152,13 @@ class _CasesScreenState extends State<CasesScreen> with SingleTickerProviderStat
                   itemBuilder: (context, i) => _CaseCard(
                     c: customFiltered[i],
                     onTap: () => setState(() { _viewingCase = customFiltered[i]; _viewingDb = false; }),
-                    onEdit: () => setState(() => _editing = customFiltered[i].copyWith()),
-                    onDelete: () { p.deleteCase(customFiltered[i].id); },
+                    // Editar/deletar: Admin/Master sempre; usuário comum só nos seus próprios casos
+                    onEdit: (p.isAdmin || p.isMaster || customFiltered[i].isCustom)
+                        ? () => setState(() => _editing = customFiltered[i].copyWith())
+                        : null,
+                    onDelete: (p.isAdmin || p.isMaster || customFiltered[i].isCustom)
+                        ? () { p.deleteCase(customFiltered[i].id); }
+                        : null,
                     p: p,
                   ),
                 ),
