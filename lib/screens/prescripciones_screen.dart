@@ -49,11 +49,11 @@ class _PrescripcionesScreenState extends State<PrescripcionesScreen> {
 
       // ── Header premium ───────────────────────────────────────────────────
       PremiumCard(child: SectionTitle(
-        eyebrow: 'Clinical Templates',
-        title: es ? 'Prescripciones' : 'Prescrições',
+        eyebrow: es ? 'Uso exclusivamente educacional' : 'Uso exclusivamente educacional',
+        title: es ? 'Ejemplos de Prescripción' : 'Exemplos de Prescrição',
         subtitle: es
-            ? 'Modelos listos para copiar y adaptar'
-            : 'Modelos prontos para copiar e adaptar',
+            ? 'Modelos educativos de referencia — siempre adaptar al caso clínico'
+            : 'Modelos educacionais de referência — sempre adaptar ao caso clínico',
         light: true,
       )),
       const SizedBox(height: 12),
@@ -93,7 +93,7 @@ class _PrescripcionesScreenState extends State<PrescripcionesScreen> {
           ),
           const SizedBox(height: 6),
           Text(
-            '${filtered.length} ${es ? 'modelos' : 'modelos'}',
+            '${filtered.length} ${es ? 'ejemplos educativos' : 'exemplos educacionais'}',
             style: const TextStyle(
               fontSize: 12, fontWeight: FontWeight.w700,
               color: Color(0xFF888888),
@@ -170,10 +170,7 @@ List<_PrescriptionModel> _prescriptionModels(bool es) => [
     subtitle: 'Dolor de cabeza común',
     category: 'Analgesia',
     icon: Icons.psychology_rounded,
-    content: '''Paciente: _______________
-Fecha: ___/___/______
-
-1. Dipirona 500 mg
+    content: '''1. Dipirona 500 mg
    1 comprimido cada 6h si hay dolor, VO
    □ Qtd: 10 comprimidos
 
@@ -190,10 +187,7 @@ Fecha: ___/___/______
     subtitle: 'Contractura / Dolor de espalda',
     category: 'Analgesia',
     icon: Icons.accessibility_new_rounded,
-    content: '''Paciente: _______________
-Fecha: ___/___/______
-
-1. Dipirona 500 mg
+    content: '''1. Dipirona 500 mg
    1 comprimido cada 6h si hay dolor, VO
    □ Qtd: 10 comprimidos
 
@@ -217,10 +211,7 @@ En Guardia: Dipirona 1g IM + Diclofenac 75mg IM
     subtitle: 'Urgencia hipertensiva',
     category: 'Cardiovascular',
     icon: Icons.speed_rounded,
-    content: '''Paciente: _______________
-Fecha: ___/___/______
-
-1. Captopril 25 mg
+    content: '''1. Captopril 25 mg
    1 comprimido VO. Repetir en 1h si no baja
    □ Qtd: 2 comprimidos
 
@@ -238,10 +229,7 @@ En Guardia: Captopril 25 mg sublingual
     subtitle: 'Insuficiencia venosa crónica',
     category: 'Cardiovascular',
     icon: Icons.favorite_border_rounded,
-    content: '''Paciente: _______________
-Fecha: ___/___/______
-
-1. Diosmina / Hesperidina 500 mg
+    content: '''1. Diosmina / Hesperidina 500 mg
    1 comprimido cada 12h por 30 días, VO
    □ Qtd: 60 comprimidos
 
@@ -260,10 +248,7 @@ Fecha: ___/___/______
     subtitle: 'Raspaduras y cortes superficiales',
     category: 'Cirugía',
     icon: Icons.healing_rounded,
-    content: '''Paciente: _______________
-Fecha: ___/___/______
-
-1. Sulfadiazina de Plata (Crema)
+    content: '''1. Sulfadiazina de Plata (Crema)
    Aplicar 1 o 2 veces al día hasta cicatrización, Tópica
    □ Qtd: 1 pomo
 
@@ -281,10 +266,7 @@ En Guardia: Analgesia local (Dipirona IM) + Verificar vacunas antitetánicas
     subtitle: 'Crisis hemorroidal',
     category: 'Cirugía',
     icon: Icons.warning_amber_rounded,
-    content: '''Paciente: _______________
-Fecha: ___/___/______
-
-1. Daflon 500 mg (Diosmina/Hesperidina)
+    content: '''1. Daflon 500 mg (Diosmina/Hesperidina)
    1 comp c/4h por 4 días, luego c/6h por 3 días,
    luego c/12h por meses, VO
    □ Qtd: según etapa
@@ -308,10 +290,7 @@ Fecha: ___/___/______
     subtitle: 'Síndrome febril inespecífico',
     category: 'Clínica Médica',
     icon: Icons.thermostat_rounded,
-    content: '''Paciente: _______________
-Fecha: ___/___/______
-
-1. Dipirona 500 mg o Paracetamol 500 mg
+    content: '''1. Dipirona 500 mg o Paracetamol 500 mg
    1 comprimido cada 6h si hay fiebre, VO
    □ Qtd: 10 comprimidos
 
@@ -331,10 +310,7 @@ en piel, acudir a guardia.
     subtitle: 'Reacción alérgica leve',
     category: 'Dermatología',
     icon: Icons.coronavirus_rounded,
-    content: '''Paciente: _______________
-Fecha: ___/___/______
-
-1. Loratadina 10 mg
+    content: '''1. Loratadina 10 mg
    1 comprimido por noche por 7 días, VO
    □ Qtd: 7 comprimidos
 
@@ -351,10 +327,7 @@ Fecha: ___/___/______
     subtitle: 'Caspa / Eccema seborreico',
     category: 'Dermatología',
     icon: Icons.face_rounded,
-    content: '''Paciente: _______________
-Fecha: ___/___/______
-
-1. Ketoconazol Shampoo 2%
+    content: '''1. Ketoconazol Shampoo 2%
    Aplicar 3 veces por semana, dejar 5 min,
    enjuagar (4 semanas)
    □ Qtd: 1 frasco
@@ -372,10 +345,7 @@ Fecha: ___/___/______
     subtitle: 'Micosis interdigital',
     category: 'Dermatología',
     icon: Icons.do_not_step_rounded,
-    content: '''Paciente: _______________
-Fecha: ___/___/______
-
-1. Clotrimazol Crema 1%
+    content: '''1. Clotrimazol Crema 1%
    Aplicar fina capa 2 veces al día por 14 días, Tópica
    □ Qtd: 1 pomo
 
@@ -389,10 +359,7 @@ Orientación: Mantener pies secos y cambiar medias diario.
     subtitle: 'Acarosis cutánea',
     category: 'Dermatología',
     icon: Icons.texture_rounded,
-    content: '''Paciente: _______________
-Fecha: ___/___/______
-
-1. Permetrina 5% (Crema)
+    content: '''1. Permetrina 5% (Crema)
    Aplicar de cuello a pies por la noche (8-12h),
    lavar por la mañana. Repetir a los 7 días.
    □ Qtd: 1 pomo
@@ -412,10 +379,7 @@ Orientación: Tratar a toda la familia simultáneamente.
     subtitle: 'Infección cutánea bacteriana',
     category: 'Dermatología',
     icon: Icons.face_rounded,
-    content: '''Paciente: _______________
-Fecha: ___/___/______
-
-1. Cefalexina 500 mg
+    content: '''1. Cefalexina 500 mg
    1 comprimido cada 6h por 7 días, VO
    □ Qtd: 28 comprimidos
 
@@ -432,10 +396,7 @@ Fecha: ___/___/______
     subtitle: 'Lesiones cutáneas virales',
     category: 'Dermatología',
     icon: Icons.coronavirus_rounded,
-    content: '''Paciente: _______________
-Fecha: ___/___/______
-
-Conducta: Las lesiones suelen curar solas en 6-12 meses.
+    content: '''Conducta: Las lesiones suelen curar solas en 6-12 meses.
 
 Indicaciones:
 - NO compartir toallas ni manipular lesiones.
@@ -451,10 +412,7 @@ Indicaciones:
     subtitle: 'Placas cutáneas crónicas',
     category: 'Dermatología',
     icon: Icons.texture_rounded,
-    content: '''Paciente: _______________
-Fecha: ___/___/______
-
-1. Crema con Ácido Salicílico + Urea
+    content: '''1. Crema con Ácido Salicílico + Urea
    Aplicar 2 veces al día sobre placas
    □ Qtd: 1 pomo
 
@@ -471,10 +429,7 @@ Fecha: ___/___/______
     subtitle: 'Ronchas y picazón',
     category: 'Dermatología',
     icon: Icons.coronavirus_rounded,
-    content: '''Paciente: _______________
-Fecha: ___/___/______
-
-1. Loratadina 10 mg o Cetirizina 10 mg
+    content: '''1. Loratadina 10 mg o Cetirizina 10 mg
    1 comprimido por día por 7 días, VO
    □ Qtd: 7 comprimidos
 
@@ -494,10 +449,7 @@ En Guardia: Hidrocortisona EV/IM + Antihistamínico IM
     subtitle: 'Diabetes Descompensada (Leve)',
     category: 'Endocrinología',
     icon: Icons.monitor_heart_rounded,
-    content: '''Paciente: _______________
-Fecha: ___/___/______
-
-En Guardia:
+    content: '''En Guardia:
 1. Hidratación con Fisiológico 500 mL EV
    si hay deshidratación.
 
@@ -515,10 +467,7 @@ En Guardia:
     subtitle: 'Sustitución hormonal — Levotiroxina',
     category: 'Endocrinología',
     icon: Icons.water_drop_rounded,
-    content: '''Paciente: _______________
-Fecha: ___/___/______
-
-1. Levotiroxina
+    content: '''1. Levotiroxina
    Dosis: 1,6 mcg/kg/día, VO, en ayunas.
    (iniciar con 25-50 mcg/día si >65 años o cardiopatía)
    □ Qtd: según dosis
@@ -538,10 +487,7 @@ Meta: TSH 0,5–2,5 mUI/L (adultos jóvenes).
     subtitle: 'Litiasis o barro biliar/renal',
     category: 'Gastroenterología',
     icon: Icons.emergency_rounded,
-    content: '''Paciente: _______________
-Fecha: ___/___/______
-
-1. Hioscina + Dipirona (Buscapina Composite)
+    content: '''1. Hioscina + Dipirona (Buscapina Composite)
    1 comprimido cada 6h si hay dolor, VO
 
 2. Ibuprofeno 400 mg
@@ -563,10 +509,7 @@ En Guardia: Dipirona + Hioscina EV en 100ml Fisiológico
     subtitle: 'Estreñimiento',
     category: 'Gastroenterología',
     icon: Icons.water_drop_rounded,
-    content: '''Paciente: _______________
-Fecha: ___/___/______
-
-1. Lactulosa Jarabe
+    content: '''1. Lactulosa Jarabe
    15 a 30 mL por día, VO
    □ Qtd: 1 frasco
 
@@ -585,10 +528,7 @@ En Guardia: Enema evacuante si es necesario.
     subtitle: 'Dispepsia / Ardor estomacal',
     category: 'Gastroenterología',
     icon: Icons.medication_liquid_rounded,
-    content: '''Paciente: _______________
-Fecha: ___/___/______
-
-1. Omeprazol 20 mg
+    content: '''1. Omeprazol 20 mg
    1 cápsula en ayunas por 30 días, VO
    □ Qtd: 30 cápsulas
 
@@ -610,10 +550,7 @@ En Guardia: Dipirona IM + Antiemético IM
     subtitle: 'Diarrea y vómitos',
     category: 'Gastroenterología',
     icon: Icons.water_drop_rounded,
-    content: '''Paciente: _______________
-Fecha: ___/___/______
-
-1. Sales de Rehidratación Oral (SRO)
+    content: '''1. Sales de Rehidratación Oral (SRO)
    Beber después de cada deposición líquida
    □ Qtd: 1 caja
 
@@ -641,10 +578,7 @@ Si hay sangre en heces o fiebre alta:
     subtitle: 'Flujo y prurito vulvovaginal',
     category: 'Ginecología',
     icon: Icons.female_rounded,
-    content: '''Paciente: _______________
-Fecha: ___/___/______
-
-1. Fluconazol 150 mg
+    content: '''1. Fluconazol 150 mg
    1 comprimido, dosis única, VO
    □ Qtd: 1 comprimido
 
@@ -664,10 +598,7 @@ Orientación: Evitar relaciones sexuales durante el tratamiento.
     subtitle: 'Sintomática / Déficit de Hierro',
     category: 'Hematología',
     icon: Icons.bloodtype_rounded,
-    content: '''Paciente: _______________
-Fecha: ___/___/______
-
-1. Sulfato Ferroso 200 mg (u otro complejo de hierro)
+    content: '''1. Sulfato Ferroso 200 mg (u otro complejo de hierro)
    1 comprimido cada 12h por 3 meses (mínimo), VO
    □ Qtd: 3 cajas (dependiendo de presentación)
 
@@ -684,10 +615,7 @@ para mejorar absorción.
     subtitle: 'Infección de piel y partes blandas',
     category: 'Infectología',
     icon: Icons.healing_rounded,
-    content: '''Paciente: _______________
-Fecha: ___/___/______
-
-1. Cefalexina 500 mg
+    content: '''1. Cefalexina 500 mg
    1 comprimido cada 6h por 10 días, VO
    □ Qtd: 40 comprimidos
 
@@ -713,10 +641,7 @@ En Guardia: Drenaje si fluctúa + Dipirona 1 amp IM
     subtitle: 'Sospecha de Dengue (Sin signos de alarma)',
     category: 'Infectología',
     icon: Icons.bug_report_rounded,
-    content: '''Paciente: _______________
-Fecha: ___/___/______
-
-1. Paracetamol 500 mg o 1g
+    content: '''1. Paracetamol 500 mg o 1g
    1 comprimido cada 6h si hay fiebre o dolor, VO
    □ Qtd: 20 comprimidos
 
@@ -739,10 +664,7 @@ Hidratación: Mínimo 80 mL/kg/día
     subtitle: 'Parásitos intestinales',
     category: 'Infectología',
     icon: Icons.bug_report_rounded,
-    content: '''Paciente: _______________
-Fecha: ___/___/______
-
-1. Albendazol 400 mg
+    content: '''1. Albendazol 400 mg
    Dosis única VO. Repetir en 14 días.
    □ Qtd: 2 comprimidos
 
@@ -757,10 +679,7 @@ y lavar ropa de cama a 60°C.
     subtitle: 'Infección dermo-epidérmica',
     category: 'Infectología',
     icon: Icons.warning_amber_rounded,
-    content: '''Paciente: _______________
-Fecha: ___/___/______
-
-1. Cefalexina 500 mg
+    content: '''1. Cefalexina 500 mg
    1 comprimido cada 6h por 10 días, VO
    □ Qtd: 40 comprimidos
 
@@ -778,10 +697,7 @@ En Guardia: Ceftriaxona 1g IM + Dipirona IM
     subtitle: 'Herpes labial / genital',
     category: 'Infectología',
     icon: Icons.coronavirus_rounded,
-    content: '''Paciente: _______________
-Fecha: ___/___/______
-
-1. Aciclovir 400 mg
+    content: '''1. Aciclovir 400 mg
    1 comprimido cada 8h por 7 días, VO
    (En gestantes 5 días)
    □ Qtd: 21 comprimidos
@@ -795,10 +711,7 @@ Fecha: ___/___/______
     subtitle: 'Cistitis / Uretritis',
     category: 'Infectología',
     icon: Icons.water_drop_rounded,
-    content: '''Paciente: _______________
-Fecha: ___/___/______
-
-1. Nitrofurantoína 100 mg
+    content: '''1. Nitrofurantoína 100 mg
    1 comprimido cada 6h por 7 días, VO
    □ Qtd: 28 comprimidos
    (o Ciprofloxacina 500 mg cada 12h por 7 días)
@@ -818,10 +731,7 @@ Ceftriaxona 1g IM dosis única + Hospitalizar si es grave.
     subtitle: 'Profilaxis Post-Exposición VIH',
     category: 'Infectología',
     icon: Icons.security_rounded,
-    content: '''Paciente: _______________
-Fecha: ___/___/______
-
-1. Tenofovir + Lamivudina (300/300)
+    content: '''1. Tenofovir + Lamivudina (300/300)
    1 comprimido por día, VO
    □ Qtd: 28 comprimidos
 
@@ -840,10 +750,7 @@ Fecha: ___/___/______
     subtitle: 'Manejo antitetánico en heridas',
     category: 'Infectología',
     icon: Icons.healing_rounded,
-    content: '''Paciente: _______________
-Fecha: ___/___/______
-
-1. Limpieza profunda con Fisiológico + Antiséptico.
+    content: '''1. Limpieza profunda con Fisiológico + Antiséptico.
 
 2. Vacuna Doble Adultos (dT) IM según esquema.
 
@@ -861,10 +768,7 @@ Fecha: ___/___/______
     subtitle: 'Manejo agudo y post-crisis',
     category: 'Neurología',
     icon: Icons.bolt_rounded,
-    content: '''Paciente: _______________
-Fecha: ___/___/______
-
-En Guardia (Urgencia):
+    content: '''En Guardia (Urgencia):
 1. Diazepam 10 mg EV lento o rectal, dosis única.
 2. Oxígeno por máscara si Sat <94%.
 
@@ -881,10 +785,7 @@ Manejo Post-Crisis:
     subtitle: 'Dolor de cabeza severo',
     category: 'Neurología',
     icon: Icons.psychology_rounded,
-    content: '''Paciente: _______________
-Fecha: ___/___/______
-
-1. Dipirona 500 mg o Paracetamol 1g
+    content: '''1. Dipirona 500 mg o Paracetamol 1g
    1 comprimido cada 6h si hay dolor, VO
    □ Qtd: 10 comprimidos
 
@@ -907,10 +808,7 @@ En Guardia: Dipirona 1g IM + Dexametasona 4mg IM + Antiemético
     subtitle: 'Dificultad para dormir',
     category: 'Neurología',
     icon: Icons.bedtime_rounded,
-    content: '''Paciente: _______________
-Fecha: ___/___/______
-
-1. Passiflora / Valeriana (Fitoterápicos)
+    content: '''1. Passiflora / Valeriana (Fitoterápicos)
    1 comprimido antes de dormir
    □ Qtd: 30 comprimidos
 
@@ -927,10 +825,7 @@ Orientación: Higiene del sueño
     subtitle: 'Infección ocular aguda',
     category: 'Oftalmología',
     icon: Icons.visibility_rounded,
-    content: '''Paciente: _______________
-Fecha: ___/___/______
-
-1. Tobramicina 0.3% (Gotas)
+    content: '''1. Tobramicina 0.3% (Gotas)
    2 gotas cada 6h por 5 días, Vía Oftálmica
    □ Qtd: 1 frasco
 
@@ -947,10 +842,7 @@ No usar lentes de contacto.
     subtitle: 'Faringoamigdalitis purulenta',
     category: 'Otorrinolaringología',
     icon: Icons.record_voice_over_rounded,
-    content: '''Paciente: _______________
-Fecha: ___/___/______
-
-1. Amoxicilina + Ácido Clavulánico 875/125 mg
+    content: '''1. Amoxicilina + Ácido Clavulánico 875/125 mg
    1 comprimido cada 12h por 7 días, VO
    □ Qtd: 14 comprimidos
 
@@ -972,10 +864,7 @@ En Guardia: Penicilina G Benzatina 1.2M UI IM dosis única
     subtitle: 'Tapón de cera',
     category: 'Otorrinolaringología',
     icon: Icons.hearing_disabled_rounded,
-    content: '''Paciente: _______________
-Fecha: ___/___/______
-
-1. Gotas Otológicas (Glicerina / Carbonato de Sodio)
+    content: '''1. Gotas Otológicas (Glicerina / Carbonato de Sodio)
    5 gotas en oído afectado cada 8h por 5 días,
    Vía Otológica
    □ Qtd: 1 frasco
@@ -991,10 +880,7 @@ tras aplicación.
     subtitle: 'Angina viral común',
     category: 'Otorrinolaringología',
     icon: Icons.record_voice_over_rounded,
-    content: '''Paciente: _______________
-Fecha: ___/___/______
-
-1. Dipirona 500 mg o Paracetamol 500 mg
+    content: '''1. Dipirona 500 mg o Paracetamol 500 mg
    1 comprimido cada 6h si hay dolor, VO
    □ Qtd: 10 comprimidos
 
@@ -1012,10 +898,7 @@ Fecha: ___/___/______
     subtitle: 'Sangrado nasal',
     category: 'Otorrinolaringología',
     icon: Icons.bloodtype_rounded,
-    content: '''Paciente: _______________
-Fecha: ___/___/______
-
-1. Compresión Nasal
+    content: '''1. Compresión Nasal
    Presionar alas de la nariz 10 min
    con cabeza hacia adelante.
 
@@ -1033,10 +916,7 @@ En Guardia: Taponamiento anterior si no cede.
     subtitle: 'Mareos y desequilibrio',
     category: 'Otorrinolaringología',
     icon: Icons.cached_rounded,
-    content: '''Paciente: _______________
-Fecha: ___/___/______
-
-1. Meclizina 25 mg
+    content: '''1. Meclizina 25 mg
    1 comprimido cada 6h por 7 días, VO
    □ Qtd: 28 comprimidos
 
@@ -1053,10 +933,7 @@ Fecha: ___/___/______
     subtitle: 'Infección del conducto auditivo',
     category: 'Otorrinolaringología',
     icon: Icons.hearing_rounded,
-    content: '''Paciente: _______________
-Fecha: ___/___/______
-
-1. Gotas Otológicas (Ciprofloxacina + Hidrocortisona)
+    content: '''1. Gotas Otológicas (Ciprofloxacina + Hidrocortisona)
    3 gotas en oído afectado 3 veces al día por 7 días
    □ Qtd: 1 frasco
 
@@ -1073,10 +950,7 @@ Fecha: ___/___/______
     subtitle: 'Infección del oído medio',
     category: 'Otorrinolaringología',
     icon: Icons.hearing_rounded,
-    content: '''Paciente: _______________
-Fecha: ___/___/______
-
-1. Amoxicilina 500 mg o 1g
+    content: '''1. Amoxicilina 500 mg o 1g
    1 comprimido cada 8h por 10 días, VO
    □ Qtd: 30 comprimidos
 
@@ -1093,10 +967,7 @@ Fecha: ___/___/______
     subtitle: 'Alergia nasal',
     category: 'Otorrinolaringología',
     icon: Icons.air_rounded,
-    content: '''Paciente: _______________
-Fecha: ___/___/______
-
-1. Loratadina 10 mg
+    content: '''1. Loratadina 10 mg
    1 comprimido por día por 7 días, VO
    □ Qtd: 7 comprimidos
 
@@ -1113,10 +984,7 @@ Fecha: ___/___/______
     subtitle: 'Infección de senos paranasales',
     category: 'Otorrinolaringología',
     icon: Icons.air_rounded,
-    content: '''Paciente: _______________
-Fecha: ___/___/______
-
-1. Amoxicilina/Clavulánico 875/125 mg
+    content: '''1. Amoxicilina/Clavulánico 875/125 mg
    1 comprimido cada 12h por 10 días, VO
    □ Qtd: 20 comprimidos
 
@@ -1133,10 +1001,7 @@ Fecha: ___/___/______
     subtitle: 'Tos irritativa',
     category: 'Otorrinolaringología',
     icon: Icons.record_voice_over_rounded,
-    content: '''Paciente: _______________
-Fecha: ___/___/______
-
-1. Antitusivo (ej. Benzonatato o Butamirato)
+    content: '''1. Antitusivo (ej. Benzonatato o Butamirato)
    1 comprimido cada 8h por 5 días, VO
    □ Qtd: 15 comprimidos
 
@@ -1156,10 +1021,7 @@ Fecha: ___/___/______
     subtitle: 'Broncoespasmo agudo',
     category: 'Respiratorio',
     icon: Icons.air_rounded,
-    content: '''Paciente: _______________
-Fecha: ___/___/______
-
-1. Salbutamol aerosol 100 mcg
+    content: '''1. Salbutamol aerosol 100 mcg
    2 disparos (puffs) cada 6h por 5 días, Inhalatoria
    Usar siempre con aerocámara (espaciador).
 
@@ -1178,10 +1040,7 @@ acudir a guardia inmediatamente.
     subtitle: 'Enfermedad Pulmonar Obstructiva Crónica',
     category: 'Respiratorio',
     icon: Icons.smoking_rooms_rounded,
-    content: '''Paciente: _______________
-Fecha: ___/___/______
-
-1. Meprednisona 40 mg
+    content: '''1. Meprednisona 40 mg
    1 comprimido cada 12h por 5 días, VO
    □ Qtd: 10 comprimidos
 
@@ -1203,10 +1062,7 @@ En Guardia: Nebulización (Fenoterol + Ipratropio)
     subtitle: 'Neumonía Adquirida en Comunidad',
     category: 'Respiratorio',
     icon: Icons.air_rounded,
-    content: '''Paciente: _______________
-Fecha: ___/___/______
-
-1. Amoxicilina + Ácido Clavulánico 875/125 mg
+    content: '''1. Amoxicilina + Ácido Clavulánico 875/125 mg
    1 comprimido cada 12h por 7 días, VO
    □ Qtd: 14 comprimidos
 
@@ -1229,10 +1085,7 @@ Fecha: ___/___/______
     subtitle: 'Lesión musculoesquelética leve',
     category: 'Traumatología',
     icon: Icons.accessibility_new_rounded,
-    content: '''Paciente: _______________
-Fecha: ___/___/______
-
-1. Dipirona 500 mg
+    content: '''1. Dipirona 500 mg
    1 comprimido cada 6h si hay dolor, VO
    □ Qtd: 10 comprimidos
 
@@ -1253,10 +1106,7 @@ Reposo y elevación del miembro.
     subtitle: 'Baja de azúcar en sangre',
     category: 'Urgencias',
     icon: Icons.emergency_rounded,
-    content: '''Paciente: _______________
-Fecha: ___/___/______
-
-En Guardia:
+    content: '''En Guardia:
 1. Glucosa 50% (Ampolla 20ml) EV lento
    diluida en 100ml Fisiológico.
    (Si el paciente está consciente, dar azúcar VO).
@@ -1272,10 +1122,7 @@ En Guardia:
     subtitle: 'Infección urinaria en hombre',
     category: 'Urología',
     icon: Icons.male_rounded,
-    content: '''Paciente: _______________
-Fecha: ___/___/______
-
-1. Ciprofloxacina 500 mg
+    content: '''1. Ciprofloxacina 500 mg
    1 comprimido cada 12h por 7-14 días, VO
    □ Qtd: 14-28 comprimidos
 
@@ -1447,6 +1294,31 @@ class _PrescriptionCardState extends State<_PrescriptionCard> {
                 const SizedBox(height: 2),
                 Text(widget.model.subtitle,
                   style: TextStyle(fontSize: 11, color: subCol, fontWeight: FontWeight.w500)),
+                const SizedBox(height: 5),
+                // Badge educacional
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(6),
+                    color: dark
+                        ? const Color(0xFF1A3528)
+                        : const Color(0xFF075f45).withValues(alpha: 0.08),
+                    border: Border.all(
+                      color: dark
+                          ? const Color(0xFF2A4A38)
+                          : const Color(0xFF075f45).withValues(alpha: 0.2),
+                    ),
+                  ),
+                  child: Text(
+                    es ? 'Ejemplo educativo' : 'Exemplo educacional',
+                    style: TextStyle(
+                      fontSize: 9,
+                      fontWeight: FontWeight.w700,
+                      letterSpacing: 0.3,
+                      color: dark ? const Color(0xFF6EAF90) : const Color(0xFF075f45),
+                    ),
+                  ),
+                ),
               ])),
               const SizedBox(width: 8),
               // Botão copiar + chevron
@@ -1526,7 +1398,7 @@ class _PrescriptionCardState extends State<_PrescriptionCard> {
                       Text(
                         _copied
                             ? (es ? '¡Copiado!' : 'Copiado!')
-                            : (es ? 'Copiar prescripción' : 'Copiar prescrição'),
+                            : (es ? 'Copiar ejemplo' : 'Copiar exemplo'),
                         style: TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.w700,

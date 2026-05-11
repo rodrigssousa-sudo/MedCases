@@ -1328,7 +1328,7 @@ class AppProvider extends ChangeNotifier {
 
       // ── Navegação / Abas ─────────────────────────────────────────────────
       'cockpit': 'Início', 'protocols': 'Protocolos', 'drugs': 'Fármacos',
-      'cases': 'Casos', 'prescriptions': 'Prescrições', 'tools': 'Ferramentas', 'ai': 'IA Clínica',
+      'cases': 'Casos', 'prescriptions': 'Ex. Prescrição', 'tools': 'Ferramentas', 'ai': 'IA Clínica',
       'history': 'Histórias Clínicas',
 
       // ── Cockpit / Paciente ───────────────────────────────────────────────
@@ -1545,7 +1545,7 @@ class AppProvider extends ChangeNotifier {
 
       // ── Navegación / Pestañas ─────────────────────────────────────────────
       'cockpit': 'Inicio', 'protocols': 'Protocolos', 'drugs': 'Fármacos',
-      'cases': 'Casos', 'prescriptions': 'Prescripciones', 'tools': 'Herramientas', 'ai': 'IA Clínica',
+      'cases': 'Casos', 'prescriptions': 'Ej. Prescripción', 'tools': 'Herramientas', 'ai': 'IA Clínica',
       'history': 'Historias Clínicas',
 
       // ── Cockpit / Paciente ────────────────────────────────────────────────
