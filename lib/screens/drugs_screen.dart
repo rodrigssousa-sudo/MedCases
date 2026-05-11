@@ -196,8 +196,8 @@ class _GroupAccordion extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final headerBg = dark ? const Color(0xFF0E1A14) : const Color(0xFFF5F2EB);
-    final headerBorder = dark ? const Color(0xFF1A2E20) : const Color(0xFFDDD8CC);
+    final headerBg = dark ? const Color(0xFF121F17) : const Color(0xFFF5F2EB);
+    final headerBorder = dark ? const Color(0xFF1E3526) : const Color(0xFFDDD8CC);
     final titleColor = dark ? Colors.white : kDark;
     final countColor = dark ? Colors.white38 : const Color(0xFF999999);
 
@@ -286,7 +286,7 @@ class _GroupAccordion extends StatelessWidget {
                 : CrossFadeState.showSecond,
             firstChild: Container(
               decoration: BoxDecoration(
-                color: dark ? const Color(0xFF081510) : Colors.white,
+                color: dark ? const Color(0xFF0F1C14) : Colors.white,
                 border: Border(
                   left: BorderSide(color: headerBorder),
                   right: BorderSide(color: headerBorder),
@@ -340,7 +340,7 @@ class _DrugListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isFav = p.favDrugs.contains(drug.id);
-    final divColor = dark ? const Color(0xFF1A2E20) : const Color(0xFFEEEAE0);
+    final divColor = dark ? const Color(0xFF1E3526) : const Color(0xFFEEEAE0);
     final nameColor = dark ? Colors.white : kDark;
     final subColor = dark ? Colors.white38 : const Color(0xFF888888);
     final warnColor = dark ? Colors.white54 : const Color(0xFF777777);
@@ -546,8 +546,8 @@ class _DrugDetailViewState extends State<_DrugDetailView> {
     final adverse = drug.getAdverse(p.lang);
     final isFav   = p.favDrugs.contains(drug.id);
     final dark    = p.darkMode;
-    final cardBg  = dark ? const Color(0xFF0E1A14) : Colors.white;
-    final border  = dark ? const Color(0xFF1A2E20) : kBorder;
+    final cardBg  = dark ? const Color(0xFF121F17) : Colors.white;
+    final border  = dark ? const Color(0xFF1E3526) : kBorder;
 
     return SingleChildScrollView(
       padding: const EdgeInsets.fromLTRB(16, 8, 16, 100),
@@ -677,7 +677,7 @@ class _DrugDetailViewState extends State<_DrugDetailView> {
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
               decoration: BoxDecoration(
                 color: dark
-                    ? const Color(0xFF07110d).withValues(alpha: 0.6)
+                    ? const Color(0xFF0F1C14).withValues(alpha: 0.6)
                     : const Color(0xFFF5F2EC),
               ),
               child: Row(children: [
@@ -806,8 +806,8 @@ class _LocalField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bg     = dark ? const Color(0xFF07110d) : const Color(0xFFF8F5EF);
-    final border = dark ? const Color(0xFF1A2E20) : const Color(0xFFDDD8CC);
+    final bg     = dark ? const Color(0xFF0F1C14) : const Color(0xFFF8F5EF);
+    final border = dark ? const Color(0xFF1E3526) : const Color(0xFFDDD8CC);
     final text   = dark ? Colors.white : kDark;
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       Text(label,
@@ -862,9 +862,9 @@ class _SexToggleBtn extends StatelessWidget {
           height: 38,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
-            color: active ? kDark : (dark ? const Color(0xFF07110d) : const Color(0xFFF5F2EC)),
+            color: active ? kDark : (dark ? const Color(0xFF0F1C14) : const Color(0xFFF5F2EC)),
             border: Border.all(
-              color: active ? kDark : (dark ? const Color(0xFF1A2E20) : const Color(0xFFDDD8CC)),
+              color: active ? kDark : (dark ? const Color(0xFF1E3526) : const Color(0xFFDDD8CC)),
             ),
           ),
           child: Center(
@@ -1015,7 +1015,7 @@ class _DoseCard extends StatelessWidget {
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [kDark, Color(0xFF123326), kGreen],
+          colors: [kDark, Color(0xFF1B3D2A), kGreen],
         ),
       ),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [

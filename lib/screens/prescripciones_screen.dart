@@ -1156,12 +1156,12 @@ class _CategoryChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final activeColor = dark ? const Color(0xFFFFE8A6) : const Color(0xFF07110d);
+    final activeColor = dark ? const Color(0xFFFFE8A6) : const Color(0xFF0F1C14);
     final activeBg = dark
         ? const Color(0xFF1A3528)
-        : const Color(0xFF07110d).withValues(alpha: 0.09);
-    final inactiveBg = dark ? const Color(0xFF0E1A14) : Colors.white;
-    final inactiveBorder = dark ? const Color(0xFF1A2E20) : const Color(0xFFDDD8CC);
+        : const Color(0xFF0F1C14).withValues(alpha: 0.09);
+    final inactiveBg = dark ? const Color(0xFF121F17) : Colors.white;
+    final inactiveBorder = dark ? const Color(0xFF1E3526) : const Color(0xFFDDD8CC);
 
     return GestureDetector(
       onTap: onTap,
@@ -1173,7 +1173,7 @@ class _CategoryChip extends StatelessWidget {
           color: active ? activeBg : inactiveBg,
           border: Border.all(
             color: active
-                ? (dark ? const Color(0xFF2A4A38) : const Color(0xFF07110d).withValues(alpha: 0.25))
+                ? (dark ? const Color(0xFF2A4A38) : const Color(0xFF0F1C14).withValues(alpha: 0.25))
                 : inactiveBorder,
           ),
         ),
@@ -1205,13 +1205,13 @@ class _CategoryHeader extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
         decoration: BoxDecoration(
           color: dark
-              ? const Color(0xFF07110d)
-              : const Color(0xFF07110d).withValues(alpha: 0.06),
+              ? const Color(0xFF0F1C14)
+              : const Color(0xFF0F1C14).withValues(alpha: 0.06),
           borderRadius: BorderRadius.circular(10),
           border: Border.all(
             color: dark
                 ? Colors.white.withValues(alpha: 0.08)
-                : const Color(0xFF07110d).withValues(alpha: 0.12),
+                : const Color(0xFF0F1C14).withValues(alpha: 0.12),
           ),
         ),
         child: Row(children: [
@@ -1230,7 +1230,7 @@ class _CategoryHeader extends StatelessWidget {
               fontSize: 9.5,
               fontWeight: FontWeight.w900,
               letterSpacing: 1.8,
-              color: dark ? const Color(0xFFFFE8A6) : const Color(0xFF07110d),
+              color: dark ? const Color(0xFFFFE8A6) : const Color(0xFF0F1C14),
             ),
           ),
         ]),
@@ -1268,8 +1268,8 @@ class _PrescriptionCardState extends State<_PrescriptionCard> {
   Widget build(BuildContext context) {
     final dark = widget.dark;
     final es = widget.es;
-    final cardBg = dark ? const Color(0xFF0E1A14) : Colors.white;
-    final borderCol = dark ? const Color(0xFF1A2E20) : const Color(0xFFE8E1D2);
+    final cardBg = dark ? const Color(0xFF121F17) : Colors.white;
+    final borderCol = dark ? const Color(0xFF1E3526) : const Color(0xFFE8E1D2);
     final textCol = dark ? Colors.white : const Color(0xFF1A1A1A);
     final subCol = dark ? Colors.white54 : const Color(0xFF888888);
 
@@ -1301,10 +1301,10 @@ class _PrescriptionCardState extends State<_PrescriptionCard> {
                   borderRadius: BorderRadius.circular(10),
                   color: dark
                       ? const Color(0xFF1A3528)
-                      : const Color(0xFF07110d).withValues(alpha: 0.07),
+                      : const Color(0xFF0F1C14).withValues(alpha: 0.07),
                 ),
                 child: Icon(widget.model.icon, size: 18,
-                  color: dark ? const Color(0xFFFFE8A6) : const Color(0xFF075f45)),
+                  color: dark ? const Color(0xFFFFE8A6) : const Color(0xFF1F6B48)),
               ),
               const SizedBox(width: 12),
               // Título e subtítulo
@@ -1327,11 +1327,11 @@ class _PrescriptionCardState extends State<_PrescriptionCard> {
                     borderRadius: BorderRadius.circular(6),
                     color: dark
                         ? const Color(0xFF1A3528)
-                        : const Color(0xFF075f45).withValues(alpha: 0.08),
+                        : const Color(0xFF1F6B48).withValues(alpha: 0.08),
                     border: Border.all(
                       color: dark
                           ? const Color(0xFF2A4A38)
-                          : const Color(0xFF075f45).withValues(alpha: 0.2),
+                          : const Color(0xFF1F6B48).withValues(alpha: 0.2),
                     ),
                   ),
                   child: Text(
@@ -1340,7 +1340,7 @@ class _PrescriptionCardState extends State<_PrescriptionCard> {
                       fontSize: 9,
                       fontWeight: FontWeight.w700,
                       letterSpacing: 0.3,
-                      color: dark ? const Color(0xFF6EAF90) : const Color(0xFF075f45),
+                      color: dark ? const Color(0xFF6EAF90) : const Color(0xFF1F6B48),
                     ),
                   ),
                 ),
@@ -1404,11 +1404,11 @@ class _PrescriptionCardState extends State<_PrescriptionCard> {
                           ? const Color(0xFF065F46)
                           : (dark
                               ? const Color(0xFF1A3528)
-                              : const Color(0xFF07110d).withValues(alpha: 0.08)),
+                              : const Color(0xFF0F1C14).withValues(alpha: 0.08)),
                       border: Border.all(
                         color: _copied
                             ? const Color(0xFF065F46)
-                            : (dark ? const Color(0xFF2A4A38) : const Color(0xFF07110d).withValues(alpha: 0.2)),
+                            : (dark ? const Color(0xFF2A4A38) : const Color(0xFF0F1C14).withValues(alpha: 0.2)),
                       ),
                     ),
                     child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
@@ -1417,7 +1417,7 @@ class _PrescriptionCardState extends State<_PrescriptionCard> {
                         size: 15,
                         color: _copied
                             ? Colors.white
-                            : (dark ? const Color(0xFFFFE8A6) : const Color(0xFF07110d)),
+                            : (dark ? const Color(0xFFFFE8A6) : const Color(0xFF0F1C14)),
                       ),
                       const SizedBox(width: 7),
                       Text(
@@ -1429,7 +1429,7 @@ class _PrescriptionCardState extends State<_PrescriptionCard> {
                           fontWeight: FontWeight.w700,
                           color: _copied
                               ? Colors.white
-                              : (dark ? const Color(0xFFFFE8A6) : const Color(0xFF07110d)),
+                              : (dark ? const Color(0xFFFFE8A6) : const Color(0xFF0F1C14)),
                         ),
                       ),
                     ]),
@@ -1469,7 +1469,7 @@ class _CopyBtn extends StatelessWidget {
               ? const Color(0xFF065F46)
               : (dark
                   ? const Color(0xFF1A3528)
-                  : const Color(0xFF07110d).withValues(alpha: 0.07)),
+                  : const Color(0xFF0F1C14).withValues(alpha: 0.07)),
           border: Border.all(
             color: copied
                 ? const Color(0xFF065F46)
@@ -1482,7 +1482,7 @@ class _CopyBtn extends StatelessWidget {
             size: 13,
             color: copied
                 ? Colors.white
-                : (dark ? const Color(0xFFFFE8A6) : const Color(0xFF07110d)),
+                : (dark ? const Color(0xFFFFE8A6) : const Color(0xFF0F1C14)),
           ),
           const SizedBox(width: 5),
           Text(
@@ -1492,7 +1492,7 @@ class _CopyBtn extends StatelessWidget {
               fontWeight: FontWeight.w700,
               color: copied
                   ? Colors.white
-                  : (dark ? const Color(0xFFFFE8A6) : const Color(0xFF07110d)),
+                  : (dark ? const Color(0xFFFFE8A6) : const Color(0xFF0F1C14)),
             ),
           ),
         ]),

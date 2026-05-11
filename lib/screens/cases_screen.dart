@@ -569,7 +569,7 @@ class _CaseEditorState extends State<_CaseEditor> {
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
                 decoration: BoxDecoration(borderRadius: BorderRadius.circular(12), color: const Color(0xFFC5A365)),
-                child: Text(p.t('save'), style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w900, color: Color(0xFF07110d))),
+                child: Text(p.t('save'), style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w900, color: Color(0xFF0F1C14))),
               ),
             ),
           ]),

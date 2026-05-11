@@ -222,7 +222,7 @@ class _AiScreenState extends State<AiScreen> {
     final p    = context.watch<AppProvider>();
     final dark = p.darkMode;
     // Fundo estilo WhatsApp — levíssimo padrão
-    final chatBg = dark ? const Color(0xFF0B1410) : const Color(0xFFECE5DD);
+    final chatBg = dark ? const Color(0xFF101E16) : const Color(0xFFECE5DD);
 
     return Column(children: [
       // ── Header fino estilo WhatsApp ──────────────────────────────────────
@@ -322,12 +322,10 @@ class _WaHeader extends StatelessWidget {
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [Color(0xFF07110d), Color(0xFF123326), Color(0xFF075f45)],
+          colors: [Color(0xFF0F1C14), Color(0xFF1B3D2A), Color(0xFF1F6B48)],
         ),
       ),
-      child: SafeArea(
-        bottom: false,
-        child: Padding(
+      child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
           child: Row(children: [
             // Avatar
@@ -426,7 +424,6 @@ class _WaHeader extends StatelessWidget {
             ),
           ]),
         ),
-      ),
     );
   }
 }
@@ -749,7 +746,7 @@ class _ThinkingBubbleState extends State<_ThinkingBubble>
                       child: Container(
                         width: 7, height: 7,
                         decoration: BoxDecoration(
-                          color: const Color(0xFF075f45).withValues(alpha: 0.6),
+                          color: const Color(0xFF1F6B48).withValues(alpha: 0.6),
                           shape: BoxShape.circle,
                         ),
                       ),
@@ -789,7 +786,7 @@ class _InputBar extends StatelessWidget {
     final barBg   = dark ? const Color(0xFF0A150E) : const Color(0xFFF0EBE3);
     final fieldBg = dark ? const Color(0xFF1A2820) : Colors.white;
     final borderCol = hasFocus
-        ? const Color(0xFF075f45)
+        ? const Color(0xFF1F6B48)
         : (dark ? const Color(0xFF253020) : const Color(0xFFD8D3CA));
     final textCol = dark ? Colors.white : const Color(0xFF1A1A1A);
     final hintCol = dark ? Colors.white30 : Colors.black38;
@@ -839,7 +836,7 @@ class _InputBar extends StatelessWidget {
               width: 44, height: 44,
               decoration: const BoxDecoration(
                 shape: BoxShape.circle,
-                color: Color(0xFF075f45),
+                color: Color(0xFF1F6B48),
               ),
               child: const Center(
                 child: Icon(Icons.arrow_upward_rounded,
@@ -990,7 +987,7 @@ class _AiSettingsSheetState extends State<_AiSettingsSheet> {
     final divCol = dark ? Colors.white12 : Colors.black.withValues(alpha: 0.08);
     final text   = dark ? Colors.white : const Color(0xFF1A1A1A);
     final sub    = dark ? Colors.white54 : Colors.black54;
-    final green  = const Color(0xFF075f45);
+    final green  = const Color(0xFF1F6B48);
 
     return Container(
       decoration: BoxDecoration(
@@ -1020,7 +1017,7 @@ class _AiSettingsSheetState extends State<_AiSettingsSheet> {
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
                 colors: _hasKey
-                    ? [const Color(0xFF064E35), const Color(0xFF075f45)]
+                    ? [const Color(0xFF064E35), const Color(0xFF1F6B48)]
                     : [
                         dark ? const Color(0xFF1A2820) : const Color(0xFFF0F4F1),
                         dark ? const Color(0xFF1E2E22) : const Color(0xFFE8F0EA),
@@ -1196,13 +1193,13 @@ class _AiSettingsSheetState extends State<_AiSettingsSheet> {
                 border: Border.all(color: divCol)),
               child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                 Row(children: [
-                  const Icon(Icons.info_outline_rounded, size: 13, color: Color(0xFF075f45)),
+                  const Icon(Icons.info_outline_rounded, size: 13, color: Color(0xFF1F6B48)),
                   const SizedBox(width: 6),
                   Text(
                     _isEs ? 'Clave vinculada a tu cuenta' : 'Chave vinculada à sua conta',
                     style: const TextStyle(
                       fontSize: 12, fontWeight: FontWeight.w700,
-                      color: Color(0xFF075f45))),
+                      color: Color(0xFF1F6B48))),
                 ]),
                 const SizedBox(height: 5),
                 Text(

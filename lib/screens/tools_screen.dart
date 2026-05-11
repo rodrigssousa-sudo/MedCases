@@ -6,7 +6,7 @@ import '../widgets/common_widgets.dart';
 // ──────────────────────────────────────────────────────────────────
 // COLOR CONSTANTS
 // ──────────────────────────────────────────────────────────────────
-const kToolDark   = Color(0xFF07110d);
+const kToolDark   = Color(0xFF0F1C14);
 const kToolGreen  = Color(0xFF16A34A);
 const kToolBorder = Color(0xFFE5E7EB);
 const kToolGold   = Color(0xFFFFE8A6);
@@ -44,7 +44,7 @@ class _ToolsScreenState extends State<ToolsScreen> with SingleTickerProviderStat
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: [Color(0xFF07110d), Color(0xFF123326), Color(0xFF075f45)],
+            colors: [Color(0xFF0F1C14), Color(0xFF1B3D2A), Color(0xFF1F6B48)],
           ),
         ),
         child: Column(children: [
@@ -1397,7 +1397,7 @@ class _ElectrolytesTabState extends State<_ElectrolytesTab> {
               padding: const EdgeInsets.all(14),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(16),
-                color: const Color(0xFF07110d),
+                color: const Color(0xFF0F1C14),
               ),
               child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                 const Text('INTERPRETAÇÃO', style: TextStyle(fontSize: 9, fontWeight: FontWeight.w900, color: Color(0xBFFFE8A6), letterSpacing: 2)),
@@ -1519,7 +1519,7 @@ class _InfusionTabState extends State<_InfusionTab> {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(16),
                 gradient: const LinearGradient(begin: Alignment.topLeft, end: Alignment.bottomRight,
-                  colors: [kToolDark, Color(0xFF123326), kToolGreen]),
+                  colors: [kToolDark, Color(0xFF1B3D2A), kToolGreen]),
               ),
               child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                 const Text('RESULTADO', style: TextStyle(fontSize: 9, fontWeight: FontWeight.w900, color: Color(0xBFFFE8A6), letterSpacing: 2)),
@@ -1648,7 +1648,7 @@ class _ReferenceTabState extends State<_ReferenceTab> {
                   ),
                   child: Text(_sections[i],
                     style: TextStyle(fontSize: 11, fontWeight: FontWeight.w800,
-                      color: active ? const Color(0xFF07110d) : Colors.white60, letterSpacing: 0.5)),
+                      color: active ? const Color(0xFF0F1C14) : Colors.white60, letterSpacing: 0.5)),
                 ),
               );
             }),
@@ -2069,8 +2069,8 @@ class _AntidoteRow extends StatelessWidget {
             Expanded(child: Text(toxin, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w900, color: kToolDark))),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-              decoration: BoxDecoration(borderRadius: BorderRadius.circular(8), color: const Color(0xFF075f45).withValues(alpha: 0.12)),
-              child: Text(antidote, style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w800, color: Color(0xFF075f45))),
+              decoration: BoxDecoration(borderRadius: BorderRadius.circular(8), color: const Color(0xFF1F6B48).withValues(alpha: 0.12)),
+              child: Text(antidote, style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w800, color: Color(0xFF1F6B48))),
             ),
           ]),
           const SizedBox(height: 5),
@@ -2182,7 +2182,7 @@ class _PrescriptionsTabState extends State<_PrescriptionsTab> {
                   ),
                   child: Text(_categories[i],
                     style: TextStyle(fontSize: 10, fontWeight: FontWeight.w800,
-                      color: active ? const Color(0xFF07110d) : Colors.white60, letterSpacing: 0.5)),
+                      color: active ? const Color(0xFF0F1C14) : Colors.white60, letterSpacing: 0.5)),
                 ),
               );
             }),
@@ -2509,7 +2509,7 @@ class _PrescCard extends StatelessWidget {
             Container(
               constraints: const BoxConstraints(minWidth: 56),
               child: Text(item.step,
-                style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w900, color: Color(0xFF075f45))),
+                style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w900, color: Color(0xFF1F6B48))),
             ),
             Expanded(child: Text(item.desc,
               style: const TextStyle(fontSize: 12, color: Color(0xFF333333), height: 1.45))),

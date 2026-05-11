@@ -797,7 +797,7 @@ class _DrugDoseCard extends StatelessWidget {
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(14),
-            gradient: const LinearGradient(begin: Alignment.topLeft, end: Alignment.bottomRight, colors: [kDark, Color(0xFF123326), kGreen]),
+            gradient: const LinearGradient(begin: Alignment.topLeft, end: Alignment.bottomRight, colors: [kDark, Color(0xFF1B3D2A), kGreen]),
           ),
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Text(p.t('calculated_dose'), style: const TextStyle(fontSize: 9, fontWeight: FontWeight.w900, color: Color(0xBFFFE8A6), letterSpacing: 1.4)),
@@ -1436,7 +1436,7 @@ class _ReminderCardState extends State<_ReminderCard>
                 flashVal,
               )!
             : hasReminder
-                ? const Color(0xFF075f45)
+                ? const Color(0xFF1F6B48)
                 : Colors.transparent;
 
         return Container(

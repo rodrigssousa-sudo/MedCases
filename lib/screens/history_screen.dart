@@ -82,10 +82,10 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
         return Theme(
           data: Theme.of(context).copyWith(
             colorScheme: const ColorScheme.light(
-              primary: Color(0xFF07110d),
+              primary: Color(0xFF0F1C14),
               onPrimary: Color(0xFFFFE8A6),
               surface: Colors.white,
-              onSurface: Color(0xFF07110d),
+              onSurface: Color(0xFF0F1C14),
             ),
           ),
           child: child!,
@@ -181,12 +181,10 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: [Color(0xFF07110d), Color(0xFF123326), Color(0xFF075f45)],
+            colors: [Color(0xFF0F1C14), Color(0xFF1B3D2A), Color(0xFF1F6B48)],
           ),
         ),
-        child: SafeArea(
-          bottom: false,
-          child: Padding(
+        child: Padding(
             padding: const EdgeInsets.fromLTRB(16, 10, 16, 12),
             child: Row(children: [
               Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -235,7 +233,6 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
               ),
             ]),
           ),
-        ),
       ),
 
       // Tabs
@@ -282,11 +279,11 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(12),
                 color: _dateFilter != null
-                    ? const Color(0xFF07110d)
+                    ? const Color(0xFF0F1C14)
                     : Colors.white,
                 border: Border.all(
                   color: _dateFilter != null
-                      ? const Color(0xFF07110d)
+                      ? const Color(0xFF0F1C14)
                       : kBorder,
                 ),
               ),
@@ -310,14 +307,14 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(20),
-                color: const Color(0xFF07110d).withValues(alpha: 0.08),
-                border: Border.all(color: const Color(0xFF07110d).withValues(alpha: 0.2)),
+                color: const Color(0xFF0F1C14).withValues(alpha: 0.08),
+                border: Border.all(color: const Color(0xFF0F1C14).withValues(alpha: 0.2)),
               ),
               child: Row(mainAxisSize: MainAxisSize.min, children: [
-                const Icon(Icons.date_range_rounded, size: 12, color: Color(0xFF07110d)),
+                const Icon(Icons.date_range_rounded, size: 12, color: Color(0xFF0F1C14)),
                 const SizedBox(width: 6),
                 Text(_dateFilterLabel,
-                    style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: Color(0xFF07110d))),
+                    style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: Color(0xFF0F1C14))),
                 const SizedBox(width: 8),
                 GestureDetector(
                   onTap: _clearDateFilter,
@@ -437,7 +434,7 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
         backgroundColor: const Color(0xFFFFFDF8),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         title: const Text('Excluir HC da Comunidade?',
-          style: TextStyle(fontWeight: FontWeight.w900, fontSize: 16, color: Color(0xFF07110d))),
+          style: TextStyle(fontWeight: FontWeight.w900, fontSize: 16, color: Color(0xFF0F1C14))),
         content: const Text(
           'Esta ação é permanente e remove a história clínica de todos os usuários.\n\nProceder com a exclusão?',
           style: TextStyle(fontSize: 13, color: Color(0xFF444444))),
@@ -1314,7 +1311,7 @@ class _HistoryEditorState extends State<_HistoryEditor> {
               style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w900, color: Colors.white), overflow: TextOverflow.ellipsis)),
             GestureDetector(onTap: _save,
               child: Container(padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8), decoration: BoxDecoration(borderRadius: BorderRadius.circular(12), color: kGold),
-                child: Text(widget.p.lang == 'es' ? 'Guardar' : 'Salvar', style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w900, color: Color(0xFF07110d))))),
+                child: Text(widget.p.lang == 'es' ? 'Guardar' : 'Salvar', style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w900, color: Color(0xFF0F1C14))))),
           ]),
           const SizedBox(height: 10),
           // Barra de progresso
@@ -1344,7 +1341,7 @@ class _HistoryEditorState extends State<_HistoryEditor> {
                     ),
                     child: Text(_sections[i].$2,
                       style: TextStyle(fontSize: 11, fontWeight: FontWeight.w800,
-                        color: active ? const Color(0xFF07110d) : Colors.white.withValues(alpha: 0.85))),
+                        color: active ? const Color(0xFF0F1C14) : Colors.white.withValues(alpha: 0.85))),
                   ),
                 ),
               );

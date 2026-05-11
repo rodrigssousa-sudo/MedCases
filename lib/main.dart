@@ -121,13 +121,13 @@ class MedCasesApp extends StatelessWidget {
             onError: Colors.white,
           )
         : ColorScheme.light(
-            primary: const Color(0xFF07110d),
-            secondary: const Color(0xFF075f45),
+            primary: const Color(0xFF0F1C14),
+            secondary: const Color(0xFF1F6B48),
             surface: const Color(0xFFFFFDF8),
-            onSurface: const Color(0xFF07110d),
+            onSurface: const Color(0xFF0F1C14),
             surfaceContainerHighest: const Color(0xFFF0EDE6),
           ),
-    scaffoldBackgroundColor: dark ? const Color(0xFF0C1410) : const Color(0xFFF5F6F8),
+    scaffoldBackgroundColor: dark ? const Color(0xFF101E16) : const Color(0xFFF5F6F8),
     cardColor: dark ? const Color(0xFF141A17) : Colors.white,
     dividerColor: dark ? const Color(0xFF253020) : const Color(0xFFE2E6EA),
     // Transições de página suaves
@@ -146,11 +146,11 @@ class MedCasesApp extends StatelessWidget {
     useMaterial3: true,
     fontFamily: 'Roboto',
     brightness: Brightness.dark,
-    scaffoldBackgroundColor: const Color(0xFF07110d),
+    scaffoldBackgroundColor: const Color(0xFF0F1C14),
     colorScheme: const ColorScheme.dark(
       primary: Color(0xFFC5A365),
-      secondary: Color(0xFF075f45),
-      surface: Color(0xFF07110d),
+      secondary: Color(0xFF1F6B48),
+      surface: Color(0xFF0F1C14),
       onSurface: Colors.white,
     ),
     pageTransitionsTheme: const PageTransitionsTheme(
@@ -358,7 +358,7 @@ class _ConsentGateState extends State<_ConsentGate> {
     // Ainda carregando prefs → splash simples
     if (_hasConsented == null) {
       return const Scaffold(
-        backgroundColor: Color(0xFF07110d),
+        backgroundColor: Color(0xFF0F1C14),
         body: Center(child: CircularProgressIndicator(color: Color(0xFFD4A96A))),
       );
     }
@@ -408,8 +408,8 @@ class _PreLoginPreviewState extends State<_PreLoginPreview> {
   // Consent gate Web — null=carregando, false=precisa consentir, true=ok
   bool? _hasConsented;
 
-  static const _kDark    = Color(0xFF07110d);
-  static const _kGreen   = Color(0xFF075f45);
+  static const _kDark    = Color(0xFF0F1C14);
+  static const _kGreen   = Color(0xFF1F6B48);
   static const _kGold    = Color(0xFFC5A365);
   static const _kGoldL   = Color(0xFFFFE8A6);
 
@@ -451,7 +451,7 @@ class _PreLoginPreviewState extends State<_PreLoginPreview> {
         return Theme(
           data: MedCasesApp._authTheme,
           child: const Scaffold(
-            backgroundColor: Color(0xFF07110d),
+            backgroundColor: Color(0xFF0F1C14),
             body: Center(
               child: CircularProgressIndicator(color: Color(0xFFD4A96A)),
             ),
@@ -492,7 +492,7 @@ class _PreLoginPreviewState extends State<_PreLoginPreview> {
             gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
-              colors: [_kDark, Color(0xFF123326), _kGreen],
+              colors: [_kDark, Color(0xFF1B3D2A), _kGreen],
             ),
           ),
           child: SafeArea(
@@ -679,10 +679,10 @@ class _PreviewCard extends StatelessWidget {
   final VoidCallback onTap;
   const _PreviewCard({required this.data, required this.onTap});
 
-  static const _kDark   = Color(0xFF07110d);
+  static const _kDark   = Color(0xFF0F1C14);
   static const _kGold   = Color(0xFFC5A365);
   static const _kGoldL  = Color(0xFFFFE8A6);
-  static const _kCardBorder = Color(0xFF1A2E20);
+  static const _kCardBorder = Color(0xFF1E3526);
 
   String _str(String key) => (data[key] ?? '').toString();
 
@@ -729,7 +729,7 @@ class _PreviewCard extends StatelessWidget {
         margin: const EdgeInsets.fromLTRB(16, 0, 16, 10),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16),
-          color: const Color(0xFF0E1A14),
+          color: const Color(0xFF121F17),
           border: Border.all(color: _kCardBorder),
         ),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -737,7 +737,7 @@ class _PreviewCard extends StatelessWidget {
           Container(
             padding: const EdgeInsets.fromLTRB(14, 12, 14, 10),
             decoration: const BoxDecoration(
-              border: Border(bottom: BorderSide(color: Color(0xFF1A2E20))),
+              border: Border(bottom: BorderSide(color: Color(0xFF1E3526))),
             ),
             child: Row(children: [
               // Categoria
@@ -854,7 +854,7 @@ class _SplashScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF060F0A),
+      backgroundColor: const Color(0xFF0A1610),
       body: Center(
         child: Column(mainAxisSize: MainAxisSize.min, children: [
           // Logo com glow sutil
@@ -998,7 +998,7 @@ class _PendingScreenState extends State<_PendingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF07110d),
+      backgroundColor: const Color(0xFF0F1C14),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(32),
@@ -1071,13 +1071,13 @@ class _PendingScreenState extends State<_PendingScreen> {
                 icon: _checking
                     ? const SizedBox(
                         width: 16, height: 16,
-                        child: CircularProgressIndicator(strokeWidth: 2, color: Color(0xFF07110d)),
+                        child: CircularProgressIndicator(strokeWidth: 2, color: Color(0xFF0F1C14)),
                       )
                     : const Icon(Icons.refresh_rounded, size: 16),
                 label: Text(_checking ? 'Verificando...' : 'Verificar aprovação'),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFFC5A365),
-                  foregroundColor: const Color(0xFF07110d),
+                  foregroundColor: const Color(0xFF0F1C14),
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                   padding: const EdgeInsets.symmetric(vertical: 14),
                   textStyle: const TextStyle(fontSize: 13, fontWeight: FontWeight.w800),
@@ -1111,7 +1111,7 @@ class _BlockedScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF07110d),
+      backgroundColor: const Color(0xFF0F1C14),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(32),
@@ -1294,9 +1294,9 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     final p = context.watch<AppProvider>();
     final dark = p.darkMode;
-    final bg = dark ? const Color(0xFF0A1510) : const Color(0xFFF7F8FA);
-    final navBg = dark ? const Color(0xFF0E1A14) : Colors.white;
-    final navBorder = dark ? const Color(0xFF1A2E20) : const Color(0xFFE8E1D2);
+    final bg = dark ? const Color(0xFF101E16) : const Color(0xFFF7F8FA);
+    final navBg = dark ? const Color(0xFF121F17) : Colors.white;
+    final navBorder = dark ? const Color(0xFF1E3526) : const Color(0xFFE8E1D2);
 
     // Tela combo Rx + Protocolos com TabBar interna
     final rxProtoScreen = _RxProtoCombo(
@@ -1322,22 +1322,18 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
       backgroundColor: bg,
       endDrawer: _AppDrawer(p: p),
       body: Column(children: [
-        // Nas abas IA (2) e H. Clínica (3) esconde o header global — cada tela tem o seu
-        if (_tab != 2 && _tab != 3)
-          AnimatedSize(
-            duration: const Duration(milliseconds: 260),
-            curve: Curves.easeInOut,
-            child: _headerVisible
-                ? _AppHeader(
-                    onTabChange: (t) => setState(() => _tab = t),
-                    currentTab: _tab,
-                  )
-                : _MiniContextBar(
-                    tab: _tab,
-                    dark: dark,
-                    onHome: () => setState(() => _tab = 0),
-                  ),
-          ),
+        // Header global só na tab 0 (Início/Cockpit).
+        // Nas demais abas: oculto para liberar espaço — cada tela tem header próprio.
+        // O _AppHeader já tem SafeArea interno. Nas outras abas usamos SafeArea aqui
+        // para garantir que o status bar seja respeitado sem duplicar em cada tela.
+        if (_tab == 0)
+          _AppHeader(
+            onTabChange: (t) => setState(() => _tab = t),
+            currentTab: _tab,
+          )
+        else
+          SafeArea(bottom: false, child: const SizedBox.shrink()),
+
         Expanded(child: IndexedStack(index: stackIdx.clamp(0, mainScreens.length - 1), children: mainScreens)),
       ]),
       bottomNavigationBar: Column(
@@ -1355,7 +1351,7 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
                   offset: const Offset(0, -6),
                 ),
                 BoxShadow(
-                  color: (dark ? const Color(0xFF075f45) : const Color(0xFF07110d))
+                  color: (dark ? const Color(0xFF1F6B48) : const Color(0xFF0F1C14))
                       .withValues(alpha: 0.04),
                   blurRadius: 12,
                   offset: const Offset(0, -2),
@@ -1404,7 +1400,7 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
 
   Widget _buildNavBtn(int idx, IconData icon, String label, bool dark, dynamic p) {
     final active = _tab == idx;
-    final activeColor  = dark ? const Color(0xFFFFE8A6) : const Color(0xFF07110d);
+    final activeColor  = dark ? const Color(0xFFFFE8A6) : const Color(0xFF0F1C14);
     final inactiveColor = dark ? Colors.white.withValues(alpha: 0.32) : const Color(0xFFB0B8C0);
 
     return Expanded(
@@ -1421,7 +1417,7 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
               color: active
                   ? (dark
                       ? const Color(0xFFFFE8A6).withValues(alpha: 0.10)
-                      : const Color(0xFF07110d).withValues(alpha: 0.08))
+                      : const Color(0xFF0F1C14).withValues(alpha: 0.08))
                   : Colors.transparent,
             ),
             child: Icon(
@@ -1468,14 +1464,14 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
                   end: Alignment.bottomRight,
                   colors: active
                       ? [const Color(0xFFE8C070), const Color(0xFFC5A365), const Color(0xFF8B6914)]
-                      : [const Color(0xFF0D2018), const Color(0xFF081510), const Color(0xFF075f45)],
+                      : [const Color(0xFF162A1C), const Color(0xFF0F1C14), const Color(0xFF1F6B48)],
                   stops: const [0.0, 0.5, 1.0],
                 ),
                 boxShadow: [
                   BoxShadow(
                     color: active
                         ? const Color(0xFFC5A365).withValues(alpha: 0.70)
-                        : const Color(0xFF075f45).withValues(alpha: 0.45),
+                        : const Color(0xFF1F6B48).withValues(alpha: 0.45),
                     blurRadius: active ? 28 : 16,
                     spreadRadius: active ? 2 : 0,
                     offset: const Offset(0, 3),
@@ -1502,7 +1498,7 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
                     key: ValueKey(active),
                     size: active ? 30 : 26,
                     color: active
-                        ? const Color(0xFF07110d)
+                        ? const Color(0xFF0F1C14)
                         : const Color(0xFFFFE8A6).withValues(alpha: 0.9),
                   ),
                 ),
@@ -1544,7 +1540,7 @@ class _RxProtoCombo extends StatelessWidget {
   Widget build(BuildContext context) {
     final p = context.watch<AppProvider>();
     final dark = p.darkMode;
-    final bg = dark ? const Color(0xFF0A1510) : const Color(0xFFF5F6F8);
+    final bg = dark ? const Color(0xFF101E16) : const Color(0xFFF5F6F8);
     final borderCol = dark ? const Color(0xFF1E3028) : const Color(0xFFE0E4E8);
 
     return Column(children: [
@@ -1634,13 +1630,13 @@ class _SubTabBtn extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final activeColor   = dark ? const Color(0xFFFFE8A6) : const Color(0xFF07110d);
+    final activeColor   = dark ? const Color(0xFFFFE8A6) : const Color(0xFF0F1C14);
     final inactiveColor = dark
         ? Colors.white.withValues(alpha: 0.30)
         : const Color(0xFFB8BEC4);
     final activeBg = dark
         ? const Color(0xFF1A3528)
-        : const Color(0xFF07110d).withValues(alpha: 0.09);
+        : const Color(0xFF0F1C14).withValues(alpha: 0.09);
 
     return Expanded(
       child: GestureDetector(
@@ -1658,7 +1654,7 @@ class _SubTabBtn extends StatelessWidget {
                     BoxShadow(
                       color: (dark
                               ? const Color(0xFFFFE8A6)
-                              : const Color(0xFF07110d))
+                              : const Color(0xFF0F1C14))
                           .withValues(alpha: 0.08),
                       blurRadius: 6,
                       offset: const Offset(0, 1),
@@ -1715,7 +1711,7 @@ class _MiniContextBar extends StatelessWidget {
         gradient: const LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [Color(0xFF060F0A), Color(0xFF0D2418), Color(0xFF0A4A30)],
+          colors: [Color(0xFF0A1610), Color(0xFF162E1F), Color(0xFF1A5C3A)],
           stops: [0.0, 0.5, 1.0],
         ),
         boxShadow: [
@@ -1862,8 +1858,8 @@ class _AppDrawer extends StatelessWidget {
   final AppProvider p;
   const _AppDrawer({required this.p});
 
-  static const _kDark  = Color(0xFF07110d);
-  static const _kGreen = Color(0xFF075f45);
+  static const _kDark  = Color(0xFF0F1C14);
+  static const _kGreen = Color(0xFF1F6B48);
   static const _kGold  = Color(0xFFC5A365);
   static const _kGoldL = Color(0xFFFFE8A6);
 
@@ -1982,7 +1978,7 @@ class _AppDrawer extends StatelessWidget {
   Widget build(BuildContext context) {
     final dark = p.darkMode;
     final bg      = dark ? const Color(0xFF0B1510) : Colors.white;
-    final divider = dark ? const Color(0xFF1A2E20) : const Color(0xFFEEEBE4);
+    final divider = dark ? const Color(0xFF1E3526) : const Color(0xFFEEEBE4);
     final textCol = dark ? Colors.white : _kDark;
     final subCol  = dark ? Colors.white.withValues(alpha: 0.38) : const Color(0xFF888888);
 
@@ -2005,7 +2001,7 @@ class _AppDrawer extends StatelessWidget {
                 gradient: const LinearGradient(
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
-                  colors: [Color(0xFF060F0A), Color(0xFF0D2418), Color(0xFF0A4A30)],
+                  colors: [Color(0xFF0A1610), Color(0xFF162E1F), Color(0xFF1A5C3A)],
                   stops: [0.0, 0.5, 1.0],
                 ),
                 boxShadow: [
@@ -2050,7 +2046,7 @@ class _AppDrawer extends StatelessWidget {
                       gradient: const LinearGradient(
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
-                        colors: [Color(0xFF1F4030), Color(0xFF0D2018)],
+                        colors: [Color(0xFF1F4030), Color(0xFF162A1C)],
                       ),
                       border: Border.all(
                         color: _kGold.withValues(alpha: 0.45),
@@ -2447,7 +2443,7 @@ class _AppHeader extends StatelessWidget {
         gradient: const LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [Color(0xFF060F0A), Color(0xFF0D2418), Color(0xFF0A4A30)],
+          colors: [Color(0xFF0A1610), Color(0xFF162E1F), Color(0xFF1A5C3A)],
           stops: [0.0, 0.5, 1.0],
         ),
         boxShadow: [
@@ -2457,7 +2453,7 @@ class _AppHeader extends StatelessWidget {
             offset: const Offset(0, 5),
           ),
           BoxShadow(
-            color: const Color(0xFF075f45).withValues(alpha: 0.18),
+            color: const Color(0xFF1F6B48).withValues(alpha: 0.18),
             blurRadius: 32,
             offset: const Offset(0, 8),
           ),
@@ -2588,8 +2584,8 @@ class _ProfileEditSheetState extends State<_ProfileEditSheet> {
   @override
   Widget build(BuildContext context) {
     final dark = widget.p.darkMode;
-    final bg = dark ? const Color(0xFF0E1A14) : Colors.white;
-    final titleColor = dark ? Colors.white : const Color(0xFF07110d);
+    final bg = dark ? const Color(0xFF121F17) : Colors.white;
+    final titleColor = dark ? Colors.white : const Color(0xFF0F1C14);
     final subColor = dark ? Colors.white54 : const Color(0xFF888888);
     final borderColor = dark ? const Color(0xFF1A3528) : const Color(0xFFE8E1D2);
 
@@ -2707,8 +2703,8 @@ class _ProfileEditSheetState extends State<_ProfileEditSheet> {
                     height: 46,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(12),
-                      color: const Color(0xFF07110d),
-                      boxShadow: [BoxShadow(color: const Color(0xFF07110d).withValues(alpha: 0.35), blurRadius: 12, offset: const Offset(0, 4))],
+                      color: const Color(0xFF0F1C14),
+                      boxShadow: [BoxShadow(color: const Color(0xFF0F1C14).withValues(alpha: 0.35), blurRadius: 12, offset: const Offset(0, 4))],
                     ),
                     alignment: Alignment.center,
                     child: _saving
@@ -2745,7 +2741,7 @@ class _SheetField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final fillColor = dark ? const Color(0xFF162820) : const Color(0xFFF5F0E8);
-    final textColor = dark ? Colors.white : const Color(0xFF07110d);
+    final textColor = dark ? Colors.white : const Color(0xFF0F1C14);
     final hintColor = dark ? Colors.white38 : const Color(0xFFAAAAAA);
     final borderColor = dark ? const Color(0xFF1A3528) : const Color(0xFFE8E1D2);
 
@@ -2777,8 +2773,8 @@ class _AppUpdateDialog extends StatelessWidget {
   final Map<String, dynamic> data;
   const _AppUpdateDialog({required this.data});
 
-  static const _kDark  = Color(0xFF07110d);
-  static const _kGreen = Color(0xFF075f45);
+  static const _kDark  = Color(0xFF0F1C14);
+  static const _kGreen = Color(0xFF1F6B48);
   static const _kGold  = Color(0xFFC5A365);
   static const _kGoldL = Color(0xFFFFE8A6);
 
@@ -2802,7 +2798,7 @@ class _AppUpdateDialog extends StatelessWidget {
             decoration: const BoxDecoration(
               borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
               gradient: LinearGradient(
-                colors: [_kDark, Color(0xFF123326)],
+                colors: [_kDark, Color(0xFF1B3D2A)],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),

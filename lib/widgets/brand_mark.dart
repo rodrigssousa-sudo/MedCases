@@ -38,7 +38,7 @@ class _Fallback extends StatelessWidget {
         gradient: const LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [Color(0xFF07110d), Color(0xFF075f45)],
+          colors: [Color(0xFF0F1C14), Color(0xFF1F6B48)],
         ),
       ),
       child: Center(
@@ -49,7 +49,7 @@ class _Fallback extends StatelessWidget {
             gradient: const LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
-              colors: [Color(0xFF07110d), Color(0xFF075f45)],
+              colors: [Color(0xFF0F1C14), Color(0xFF1F6B48)],
             ),
           ),
           child: Center(

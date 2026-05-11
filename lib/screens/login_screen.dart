@@ -31,8 +31,8 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
   late AnimationController _anim;
   late Animation<double> _fade;
 
-  static const kDark   = Color(0xFF07110d);
-  static const kGreen  = Color(0xFF075f45);
+  static const kDark   = Color(0xFF0F1C14);
+  static const kGreen  = Color(0xFF1F6B48);
   static const kGoldL  = Color(0xFFFFE8A6);
   static const kCream  = Color(0xFFFFFDF8);
 
@@ -196,7 +196,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                         offset: const Offset(0, 12),
                       ),
                       BoxShadow(
-                        color: const Color(0xFF075f45).withValues(alpha: 0.12),
+                        color: const Color(0xFF1F6B48).withValues(alpha: 0.12),
                         blurRadius: 60,
                         offset: const Offset(0, 20),
                       ),
@@ -353,7 +353,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                 spreadRadius: 8,
               ),
               BoxShadow(
-                color: const Color(0xFF075f45).withValues(alpha: 0.20),
+                color: const Color(0xFF1F6B48).withValues(alpha: 0.20),
                 blurRadius: 60,
                 spreadRadius: 4,
               ),
@@ -488,13 +488,13 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
               : const LinearGradient(
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
-                  colors: [Color(0xFF0D2418), Color(0xFF07110d), Color(0xFF0A3022)],
+                  colors: [Color(0xFF162E1F), Color(0xFF0F1C14), Color(0xFF0A3022)],
                 ),
           boxShadow: _loading
               ? null
               : [
                   BoxShadow(
-                    color: const Color(0xFF07110d).withValues(alpha: 0.55),
+                    color: const Color(0xFF0F1C14).withValues(alpha: 0.55),
                     blurRadius: 16,
                     offset: const Offset(0, 6),
                   ),
