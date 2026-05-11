@@ -175,13 +175,13 @@ class _BiometricsTabState extends State<_BiometricsTab> {
 
   String _bmiLabel(double? v) {
     if (v == null) return '';
-    if (v < 16) return '⛔ Desnutrição grave (<16)';
+    if (v < 16) return 'ATENÇÃO: Desnutrição grave (<16)';
     if (v < 18.5) return '↓ Abaixo do peso';
     if (v < 25)   return '✓ Peso normal';
     if (v < 30)   return '↑ Sobrepeso';
     if (v < 35)   return '↑↑ Obesidade I';
     if (v < 40)   return '↑↑↑ Obesidade II';
-    return '⛔ Obesidade III (Mórbida)';
+    return 'Obesidade III (Mórbida)';
   }
 
   String _clcrLabel(String? v) {
@@ -190,8 +190,8 @@ class _BiometricsTabState extends State<_BiometricsTab> {
     if (d >= 90) return '✓ Normal (≥90)';
     if (d >= 60) return 'Leve (60–89)';
     if (d >= 30) return '⚠ Moderada (30–59)';
-    if (d >= 15) return '⛔ Grave (15–29)';
-    return '⛔ Falência (<15)';
+    if (d >= 15) return 'GRAVE (15–29)';
+    return 'FALÊNCIA (<15)';
   }
 
   @override
@@ -427,15 +427,15 @@ class _ScoresTabState extends State<_ScoresTab> {
   String _glasLabel(int g) {
     if (g >= 14) return '✓ Leve (14–15)';
     if (g >= 9)  return '⚠ Moderado (9–13)';
-    return '⛔ Grave (≤8) — considerar IOT';
+    return 'GRAVE (≤8) — considerar IOT';
   }
 
   String _sofaLabel(int s) {
     if (s == 0) return '✓ Mortalidade ~0%';
     if (s <= 6) return '⚠ Mortalidade ~2–4%';
     if (s <= 9) return '⚠ Mortalidade ~20%';
-    if (s <= 12) return '⛔ Mortalidade ~40%';
-    return '⛔ Mortalidade >80%';
+    if (s <= 12) return 'GRAVE — Mortalidade ~40%';
+    return 'CRÍTICO — Mortalidade >80%';
   }
 
   // ── CURB-65 getters ─────────────────────────────────
@@ -451,7 +451,7 @@ class _ScoresTabState extends State<_ScoresTab> {
   String _curbLabel(int s) {
     if (s <= 1) return '✓ Leve — tratamento ambulatorial';
     if (s == 2) return '⚠ Moderado — considerar internação curta';
-    return '⛔ Grave (≥3) — internação + avaliar UTI';
+    return 'GRAVE (≥3) — internação + avaliar UTI';
   }
   String _curbMort(int s) {
     const m = ['~0,6%', '~2,7%', '~6,8%', '~14%', '~27,8%', '≥27,8%'];
@@ -463,8 +463,8 @@ class _ScoresTabState extends State<_ScoresTab> {
   String _newsLabel(int s) {
     if (s == 0) return '✓ Risco mínimo — reavaliação de rotina';
     if (s <= 4) return '⚠ Risco baixo — reavaliar em 4–6h';
-    if (s <= 6) return '⛔ Risco médio — médico urgente + monitorização contínua';
-    return '⛔⛔ Risco alto (≥7) — UTI ou semi-intensivo imediato';
+    if (s <= 6) return 'RISCO MÉDIO — médico urgente + monitorização contínua';
+    return 'RISCO ALTO (≥7) — UTI ou semi-intensivo imediato';
   }
 
   // ── Child-Pugh getters ──────────────────────────────
@@ -510,7 +510,7 @@ class _ScoresTabState extends State<_ScoresTab> {
   String _chaRisk(int s) {
     if (s == 0) return '✓ Baixo risco — sem anticoagulação';
     if (s == 1) return '⚠ Risco intermediário — individualizar';
-    return '⛔ Alto risco — anticoagulação indicada';
+    return 'ALTO RISCO — anticoagulação indicada';
   }
 
   String _chaStroke(int s) {
@@ -523,13 +523,13 @@ class _ScoresTabState extends State<_ScoresTab> {
   String _wtLabel(double s) {
     if (s <= 0) return '✓ Baixa probabilidade';
     if (s <= 2) return '⚠ Probabilidade moderada';
-    return '⛔ Alta probabilidade de TVP';
+    return 'ALTA PROBABILIDADE de TVP';
   }
 
   String _wpLabel(double s) {
     if (s < 2)  return '✓ TEP improvável (<2)';
     if (s <= 6) return '⚠ TEP moderado (2–6)';
-    return '⛔ TEP provável (>6)';
+    return 'TEP PROVÁVEL (>6)';
   }
 
   Widget _scoreRow(String label, bool value, VoidCallback onTap, {double points = 1}) => GestureDetector(
@@ -1024,8 +1024,8 @@ class _CardioTabState extends State<_CardioTab> {
   String _mapLabel(String? v) {
     final d = double.tryParse((v ?? '').replaceAll(',', '.'));
     if (d == null) return '';
-    if (d < 60)  return '⛔ Crítico (<60) — risco de isquemia';
-    if (d < 65)  return '⛔ Hipoperfusão (<65)';
+    if (d < 60)  return 'CRÍTICO (<60) — risco de isquemia';
+    if (d < 65)  return 'HIPOPERFUSÃO (<65)';
     if (d <= 105) return '✓ Adequada (65–105)';
     return '↑ Elevada (>105)';
   }
@@ -1035,7 +1035,7 @@ class _CardioTabState extends State<_CardioTab> {
     if (d == null) return '';
     if (d < 440) return '✓ Normal (<440 ms)';
     if (d < 500) return '⚠ Limítrofe (440–499 ms) — monitorar';
-    return '⛔ Prolongado (≥500 ms) — risco torsades';
+    return 'PROLONGADO (≥500 ms) — risco torsades';
   }
 
   @override
@@ -1283,7 +1283,7 @@ class _ElectrolytesTabState extends State<_ElectrolytesTab> {
     }
 
     if (be != null) {
-      if (be < -3) comp += ' | BE: ⛔ déficit de base (${_fmt(be)})';
+      if (be < -3) comp += ' | BE: DÉFICIT de base (${_fmt(be)})';
       if (be > 3)  comp += ' | BE: ↑ excesso de base (${_fmt(be)})';
     }
 
@@ -1296,7 +1296,7 @@ class _ElectrolytesTabState extends State<_ElectrolytesTab> {
     if (d < 8)  return '↓ Baixo (<8)';
     if (d <= 12) return '✓ Normal (8–12)';
     if (d <= 20) return '⚠ Aumentado (12–20)';
-    return '⛔ Muito elevado (>20) — acidose de AG alto';
+    return 'MUITO ELEVADO (>20) — acidose de AG alto';
   }
 
   @override
@@ -1345,7 +1345,7 @@ class _ElectrolytesTabState extends State<_ElectrolytesTab> {
             Row(children: [
               Expanded(child: _ResultTile(label: isEs ? 'Ca²⁺ Corregido' : 'Ca²⁺ Corrigido', value: _corrCa, unit: 'mg/dL',
                 note: double.tryParse((_corrCa ?? '').replaceAll(',', '.')) != null
-                  ? (double.parse(_corrCa!.replaceAll(',', '.')) < 8.5 ? '⛔ Hipocalcemia' : double.parse(_corrCa!.replaceAll(',', '.')) > 10.5 ? '↑ Hipercalcemia' : '✓ Normal') : '')),
+                  ? (double.parse(_corrCa!.replaceAll(',', '.')) < 8.5 ? 'BAIXO: Hipocalcemia' : double.parse(_corrCa!.replaceAll(',', '.')) > 10.5 ? 'ALTO: Hipercalcemia' : 'Normal') : '')),
               const SizedBox(width: 8),
               Expanded(child: _ResultTile(label: isEs ? 'Osmolaridad calc.' : 'Osmolaridade calc.', value: _osmolarity, unit: 'mOsm/kg')),
             ]),
@@ -1825,24 +1825,24 @@ class _ReferenceTabState extends State<_ReferenceTab> {
   // ── ANTÍDOTOS ────────────────────────────────────────────────────
   Widget _buildAntidotes(bool isEs) {
     final antidotes = [
-      ['Paracetamol', 'N-Acetilcisteína', isEs ? '150 mg/kg IV em 60 min, depois 50 mg/kg em 4h, depois 100 mg/kg em 16h. Usar nomograma Rumack-Matthew.' : '150 mg/kg IV em 60 min, depois 50 mg/kg em 4h, depois 100 mg/kg em 16h. Nomograma Rumack-Matthew.', '🟡'],
-      ['Opioides', 'Naloxona', isEs ? '0,4–2 mg IV/IM/SC a cada 2–3 min. Duração 30–90 min (< que morfina) — repetir ou infusão.' : '0,4–2 mg IV/IM/SC a cada 2–3 min. Duração 30–90 min (< que morfina) — repetir ou infusão contínua.', '🔴'],
-      ['Benzodiazepínicos', 'Flumazenil', isEs ? '0,2 mg IV em 30s; repetir 0,1 mg/min; máx. 1 mg. CUIDADO: convulsões em dependentes crônicos.' : '0,2 mg IV em 30s; repetir 0,1 mg/min; máx. 1 mg. CUIDADO: convulsões em dependentes crônicos.', '🟡'],
-      ['Digoxina', 'Anticorpos anti-Digoxina (Digibind)', isEs ? '80 mg IV neutraliza 1 mg digoxina. Indicação: K+ >5, arritmias ameaçadoras.' : '80 mg IV neutraliza 1 mg digoxina. Indicação: K+ >5, arritmias ameaçadoras.', '🔴'],
-      ['Heparina NF', 'Sulfato de Protamina', isEs ? '1 mg neutraliza 100 UI HNF. IV lento em 10 min (hipotensão). Máx. 50 mg/dose.' : '1 mg neutraliza 100 UI HNF. IV lento em 10 min (hipotensão). Máx. 50 mg/dose.', '🟡'],
-      ['Warfarina', 'Vitamina K + PFC/CCP', isEs ? 'INR >10 sem sangrado: Vit K 2,5–5 mg VO. Com sangrado grave: CCP 25–50 UI/kg IV + Vit K 5–10 mg IV.' : 'INR >10 sem sangrado: Vit K 2,5–5 mg VO. Com sangrado grave: CCP 25–50 UI/kg IV + Vit K 5–10 mg IV.', '🔴'],
-      ['Rivaroxabana/Apixabana', 'Andexanet alfa', isEs ? '400–800 mg IV bolo + infusão. Alto custo. Alternativa: CCP 4 fatores 25–50 UI/kg.' : '400–800 mg IV bolo + infusão. Alto custo. Alternativa: CCP 4 fatores 25–50 UI/kg.', '🔴'],
-      ['Dabigatrana', 'Idarucizumabe', isEs ? '5 g IV (2 frascos de 2,5 g). Reversão completa e imediata.' : '5 g IV (2 frascos de 2,5 g). Reversão completa e imediata.', '🔴'],
-      ['Organofosforados', 'Atropina + Pralidoxima', isEs ? 'Atropina 2–4 mg IV (titular pelos secretos). Pralidoxima 1–2 g IV em 30 min. Repetir atropina até secar secreções.' : 'Atropina 2–4 mg IV (titular pelos secretos). Pralidoxima 1–2 g IV em 30 min. Titular atropina até secar secreções.', '🔴'],
-      ['Sulfato de Magnésio (tóxico)', 'Gluconato de Cálcio', isEs ? '1 g (10 mL de sol. 10%) IV lento em 3 min. Antagonismo fisiológico imediato.' : '1 g (10 mL sol. 10%) IV lento em 3 min. Antagonismo fisiológico imediato.', '🔴'],
-      ['Metanol/Etilenoglicol', 'Fomepizole + Hemodiálise', isEs ? 'Fomepizol 15 mg/kg IV + hemodiálise urgente. Etanol 10% IV como alternativa.' : 'Fomepizol 15 mg/kg IV + hemodiálise urgente. Etanol 10% IV como alternativa.', '🔴'],
-      ['Cianeto', 'Hidroxocobalamina', isEs ? '5 g IV em 15 min. Alternativa: Nitrito de amila (inalação) + Tiosulfato de sódio 12,5 g IV.' : '5 g IV em 15 min. Alternativa: Nitrito de amila (inalação) + Tiosulfato de sódio 12,5 g IV.', '🔴'],
-      ['Monóxido de Carbono', 'O2 100% / Câmara Hiperbárica', isEs ? 'O2 100% máscara NRB até COHb <5%. Hiperbárica se: COHb >25%, gestante, inconsciente, cardíaco.' : 'O2 100% máscara NRB até COHb <5%. Câmara hiperbárica se: COHb >25%, gestante, coma, cardiopata.', '🔴'],
-      ['Antidepressivos Tricíclicos', 'Bicarbonato de Sódio', isEs ? 'NaHCO3 1–2 mEq/kg IV se QRS >120ms. Meta: pH 7,45–7,55. Diazepam nas convulsões.' : 'NaHCO3 1–2 mEq/kg IV se QRS >120ms. Meta: pH 7,45–7,55. Diazepam nas convulsões.', '🔴'],
-      ['Hiperpotassemia', 'Gluconato de Cálcio', isEs ? '1 g IV em 2 min (estabiliza membrana). Insulina 10 UI + Glicose 50% para shift intracelular.' : '1 g IV em 2 min (estabiliza membrana). Insulina 10 UI + Glicose 50% para shift intracelular.', '🔴'],
-      ['Hipoglicemia', 'Glicose 50% IV / Glucagon', isEs ? 'Glicose 50%: 50 mL IV. Glucagon 1 mg IM/SC se sem acesso. SNG: suco de laranja.' : 'Glicose 50%: 50 mL IV. Glucagon 1 mg IM/SC se sem acesso. VO: suco de laranja/mel.', '🔴'],
-      ['β-Bloqueadores (tóxico)', 'Glucagon + Emulsão Lipídica', isEs ? 'Glucagon 3–10 mg IV bolo + 3–10 mg/h infusão. Emulsão lipídica 20%: 1,5 mL/kg IV bolo.' : 'Glucagon 3–10 mg IV bolo + 3–10 mg/h infusão. Emulsão lipídica 20%: 1,5 mL/kg IV bolo.', '🟠'],
-      ['Bloq. Canal de Cálcio (tóxico)', 'Cálcio IV + Insulina Alta Dose', isEs ? 'CaCl2 1–2 g IV. Insulina 1 UI/kg/h + Glicose. Emulsão lipídica 20% se refratário.' : 'CaCl2 1–2 g IV. Insulina 1 UI/kg/h + Glicose. Emulsão lipídica 20% se refratário.', '🟠'],
+      ['Paracetamol', 'N-Acetilcisteína', isEs ? '150 mg/kg IV em 60 min, depois 50 mg/kg em 4h, depois 100 mg/kg em 16h. Usar nomograma Rumack-Matthew.' : '150 mg/kg IV em 60 min, depois 50 mg/kg em 4h, depois 100 mg/kg em 16h. Nomograma Rumack-Matthew.',  'MOD'],
+      ['Opioides', 'Naloxona', isEs ? '0,4–2 mg IV/IM/SC a cada 2–3 min. Duração 30–90 min (< que morfina) — repetir ou infusão.' : '0,4–2 mg IV/IM/SC a cada 2–3 min. Duração 30–90 min (< que morfina) — repetir ou infusão contínua.',  'ALTO'],
+      ['Benzodiazepínicos', 'Flumazenil', isEs ? '0,2 mg IV em 30s; repetir 0,1 mg/min; máx. 1 mg. CUIDADO: convulsões em dependentes crônicos.' : '0,2 mg IV em 30s; repetir 0,1 mg/min; máx. 1 mg. CUIDADO: convulsões em dependentes crônicos.',  'MOD'],
+      ['Digoxina', 'Anticorpos anti-Digoxina (Digibind)', isEs ? '80 mg IV neutraliza 1 mg digoxina. Indicação: K+ >5, arritmias ameaçadoras.' : '80 mg IV neutraliza 1 mg digoxina. Indicação: K+ >5, arritmias ameaçadoras.',  'ALTO'],
+      ['Heparina NF', 'Sulfato de Protamina', isEs ? '1 mg neutraliza 100 UI HNF. IV lento em 10 min (hipotensão). Máx. 50 mg/dose.' : '1 mg neutraliza 100 UI HNF. IV lento em 10 min (hipotensão). Máx. 50 mg/dose.',  'MOD'],
+      ['Warfarina', 'Vitamina K + PFC/CCP', isEs ? 'INR >10 sem sangrado: Vit K 2,5–5 mg VO. Com sangrado grave: CCP 25–50 UI/kg IV + Vit K 5–10 mg IV.' : 'INR >10 sem sangrado: Vit K 2,5–5 mg VO. Com sangrado grave: CCP 25–50 UI/kg IV + Vit K 5–10 mg IV.',  'ALTO'],
+      ['Rivaroxabana/Apixabana', 'Andexanet alfa', isEs ? '400–800 mg IV bolo + infusão. Alto custo. Alternativa: CCP 4 fatores 25–50 UI/kg.' : '400–800 mg IV bolo + infusão. Alto custo. Alternativa: CCP 4 fatores 25–50 UI/kg.',  'ALTO'],
+      ['Dabigatrana', 'Idarucizumabe', isEs ? '5 g IV (2 frascos de 2,5 g). Reversão completa e imediata.' : '5 g IV (2 frascos de 2,5 g). Reversão completa e imediata.',  'ALTO'],
+      ['Organofosforados', 'Atropina + Pralidoxima', isEs ? 'Atropina 2–4 mg IV (titular pelos secretos). Pralidoxima 1–2 g IV em 30 min. Repetir atropina até secar secreções.' : 'Atropina 2–4 mg IV (titular pelos secretos). Pralidoxima 1–2 g IV em 30 min. Titular atropina até secar secreções.',  'ALTO'],
+      ['Sulfato de Magnésio (tóxico)', 'Gluconato de Cálcio', isEs ? '1 g (10 mL de sol. 10%) IV lento em 3 min. Antagonismo fisiológico imediato.' : '1 g (10 mL sol. 10%) IV lento em 3 min. Antagonismo fisiológico imediato.',  'ALTO'],
+      ['Metanol/Etilenoglicol', 'Fomepizole + Hemodiálise', isEs ? 'Fomepizol 15 mg/kg IV + hemodiálise urgente. Etanol 10% IV como alternativa.' : 'Fomepizol 15 mg/kg IV + hemodiálise urgente. Etanol 10% IV como alternativa.',  'ALTO'],
+      ['Cianeto', 'Hidroxocobalamina', isEs ? '5 g IV em 15 min. Alternativa: Nitrito de amila (inalação) + Tiosulfato de sódio 12,5 g IV.' : '5 g IV em 15 min. Alternativa: Nitrito de amila (inalação) + Tiosulfato de sódio 12,5 g IV.',  'ALTO'],
+      ['Monóxido de Carbono', 'O2 100% / Câmara Hiperbárica', isEs ? 'O2 100% máscara NRB até COHb <5%. Hiperbárica se: COHb >25%, gestante, inconsciente, cardíaco.' : 'O2 100% máscara NRB até COHb <5%. Câmara hiperbárica se: COHb >25%, gestante, coma, cardiopata.',  'ALTO'],
+      ['Antidepressivos Tricíclicos', 'Bicarbonato de Sódio', isEs ? 'NaHCO3 1–2 mEq/kg IV se QRS >120ms. Meta: pH 7,45–7,55. Diazepam nas convulsões.' : 'NaHCO3 1–2 mEq/kg IV se QRS >120ms. Meta: pH 7,45–7,55. Diazepam nas convulsões.',  'ALTO'],
+      ['Hiperpotassemia', 'Gluconato de Cálcio', isEs ? '1 g IV em 2 min (estabiliza membrana). Insulina 10 UI + Glicose 50% para shift intracelular.' : '1 g IV em 2 min (estabiliza membrana). Insulina 10 UI + Glicose 50% para shift intracelular.',  'ALTO'],
+      ['Hipoglicemia', 'Glicose 50% IV / Glucagon', isEs ? 'Glicose 50%: 50 mL IV. Glucagon 1 mg IM/SC se sem acesso. SNG: suco de laranja.' : 'Glicose 50%: 50 mL IV. Glucagon 1 mg IM/SC se sem acesso. VO: suco de laranja/mel.',  'ALTO'],
+      ['β-Bloqueadores (tóxico)', 'Glucagon + Emulsão Lipídica', isEs ? 'Glucagon 3–10 mg IV bolo + 3–10 mg/h infusão. Emulsão lipídica 20%: 1,5 mL/kg IV bolo.' : 'Glucagon 3–10 mg IV bolo + 3–10 mg/h infusão. Emulsão lipídica 20%: 1,5 mL/kg IV bolo.',  'MOD'],
+      ['Bloq. Canal de Cálcio (tóxico)', 'Cálcio IV + Insulina Alta Dose', isEs ? 'CaCl2 1–2 g IV. Insulina 1 UI/kg/h + Glicose. Emulsão lipídica 20% se refratário.' : 'CaCl2 1–2 g IV. Insulina 1 UI/kg/h + Glicose. Emulsão lipídica 20% se refratário.',  'MOD'],
     ];
 
     return _SectionCard(
@@ -1883,8 +1883,8 @@ class _ReferenceTabState extends State<_ReferenceTab> {
           ),
           const SizedBox(height: 8),
           _InfoNote(text: isEs
-            ? '📍 Confirmar posição com Rx tórax antes de usar. Ponta ideal: junção cava superior-átrio direito. Eco point-of-care facilita.'
-            : '📍 Confirmar posição com Rx tórax antes de usar. Ponta ideal: junção cava superior-átrio direito. Eco point-of-care facilita.'),
+            ? 'Confirmar posição com Rx tórax antes de usar. Ponta ideal: junção cava superior-átrio direito. Eco point-of-care facilita.'
+            : 'Confirmar posição com Rx tórax antes de usar. Ponta ideal: junção cava superior-átrio direito. Eco point-of-care facilita.'),
         ]),
       ),
       _SectionCard(
@@ -1955,8 +1955,8 @@ class _ReferenceTabState extends State<_ReferenceTab> {
           _LabRow(name: isEs ? 'Difusión' : 'Difusão', ref: 'A-a ↑, responde a O2', note: isEs ? 'Fibrose pulmonar' : 'Fibrose pulmonar'),
           const SizedBox(height: 4),
           _InfoNote(text: isEs
-            ? '⚗️ Gradiente A-a = PAO2 – PaO2. PAO2 = FiO2×(Patm–PH2O) – PaCO2/0,8. Normal: <10 jovem; <25 idoso.'
-            : '⚗️ Gradiente A-a = PAO2 – PaO2. PAO2 = FiO2×(Patm–PH2O) – PaCO2/0,8. Normal: <10 jovem; <25 idoso.'),
+            ? 'Gradiente A-a = PAO2 – PaO2. PAO2 = FiO2×(Patm–PH2O) – PaCO2/0,8. Normal: <10 jovem; <25 idoso.'
+            : 'Gradiente A-a = PAO2 – PaO2. PAO2 = FiO2×(Patm–PH2O) – PaCO2/0,8. Normal: <10 jovem; <25 idoso.'),
         ]),
       ),
     ]);
@@ -2029,8 +2029,25 @@ class _AntidoteRow extends StatelessWidget {
         ),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Row(children: [
-            Text(level, style: const TextStyle(fontSize: 14)),
-            const SizedBox(width: 6),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(6),
+                color: level == 'ALTO'
+                    ? const Color(0xFFCC2222).withValues(alpha: 0.10)
+                    : const Color(0xFFC5A365).withValues(alpha: 0.12),
+              ),
+              child: Text(
+                level,
+                style: TextStyle(
+                  fontSize: 8, fontWeight: FontWeight.w900, letterSpacing: 1.0,
+                  color: level == 'ALTO'
+                      ? const Color(0xFFCC2222)
+                      : const Color(0xFFC5A365),
+                ),
+              ),
+            ),
+            const SizedBox(width: 8),
             Expanded(child: Text(toxin, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w900, color: kToolDark))),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
@@ -2062,12 +2079,12 @@ class _AccessRow extends StatelessWidget {
           const SizedBox(height: 4),
           Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Expanded(child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              const Text('✅ ', style: TextStyle(fontSize: 11)),
+              Icon(Icons.check_circle_outline_rounded, size: 13, color: Color(0xFF065F46)),
               Expanded(child: Text(pros, style: const TextStyle(fontSize: 11, color: Color(0xFF065F46), height: 1.3))),
             ])),
             const SizedBox(width: 8),
             Expanded(child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              const Text('⚠️ ', style: TextStyle(fontSize: 11)),
+              Icon(Icons.info_outline_rounded, size: 13, color: Color(0xFFB45309)),
               Expanded(child: Text(cons, style: const TextStyle(fontSize: 11, color: Color(0xFFB45309), height: 1.3))),
             ])),
           ]),
@@ -2183,32 +2200,32 @@ class _PrescriptionsTabState extends State<_PrescriptionsTab> {
     return Column(children: [
       _PrescCard(
         title: isEs ? 'Dolor Leve–Moderado (Adulto)' : 'Dor Leve–Moderada (Adulto)',
-        level: '🟡',
+        level: 'MOD',
         items: [
           _PrescItem('1.', isEs ? 'Paracetamol 1 g VO/IV 6/6h (máx. 4 g/dia). Preferir para febre e dor leve.' : 'Paracetamol 1 g VO/IV 6/6h (máx. 4 g/dia). Preferir para febre e dor leve.'),
           _PrescItem('2.', isEs ? 'SE necessário: Ibuprofeno 400–600 mg 8/8h VO (com alimento). Evitar em IR, úlcera, ICC.' : 'SE necessário: Ibuprofeno 400–600 mg 8/8h VO (com alimento). Evitar IR, úlcera, ICC.'),
           _PrescItem('3.', isEs ? 'Dipirona 1 g VO/IV 6/6h (IV lento ≥15 min). Alternativa eficaz.' : 'Dipirona 1 g VO/IV 6/6h (IV lento ≥15 min). Alternativa eficaz.'),
-          _PrescItem('⚠️', isEs ? 'Não combinar dois AINEs. Evitar em gestante, IR grave, plaquetopenia.' : 'Não combinar dois AINEs. Evitar em gestante, IR grave, plaquetopenia.'),
+          _PrescItem('Aten.', isEs ? 'Não combinar dois AINEs. Evitar em gestante, IR grave, plaquetopenia.' : 'Não combinar dois AINEs. Evitar em gestante, IR grave, plaquetopenia.'),
         ],
       ),
       _PrescCard(
         title: isEs ? 'Dolor Moderado–Severo' : 'Dor Moderada–Grave',
-        level: '🔴',
+        level: 'ALTO',
         items: [
           _PrescItem('1.', isEs ? 'Tramadol 50–100 mg VO 8/8h (ou IV lento em 100 mL SF). Máx. 400 mg/dia.' : 'Tramadol 50–100 mg VO 8/8h (ou IV lento em 100 mL SF). Máx. 400 mg/dia.'),
           _PrescItem('2.', isEs ? 'Morfina 2–5 mg IV lento a cada 4h. Titular pela dor (EV ou PO). Cuidado: depressão respiratória.' : 'Morfina 2–5 mg IV lento a cada 4h. Titular pela dor (EV ou PO). Cuidado: depressão resp.'),
           _PrescItem('3.', isEs ? 'Cetorolaco 30 mg IV/IM 8/8h (máx. 5 dias). Excelente para cólica renal.' : 'Cetorolaco 30 mg IV/IM 8/8h (máx. 5 dias). Excelente para cólica renal.'),
-          _PrescItem('⚠️', isEs ? 'Naloxona 0,4 mg IV disponível. Monitorar SpO2 contínua com opioides IV.' : 'Naloxona 0,4 mg IV disponível. Monitorar SpO2 contínua com opioides IV.'),
+          _PrescItem('Aten.', isEs ? 'Naloxona 0,4 mg IV disponível. Monitorar SpO2 contínua com opioides IV.' : 'Naloxona 0,4 mg IV disponível. Monitorar SpO2 contínua com opioides IV.'),
         ],
       ),
       _PrescCard(
         title: isEs ? 'Fiebre (T >38,3°C)' : 'Febre (T >38,3°C)',
-        level: '🟡',
+        level: 'MOD',
         items: [
           _PrescItem('1.', isEs ? 'Paracetamol 750 mg–1 g VO/IV 6/6h. Primeira escolha — seguro e eficaz.' : 'Paracetamol 750 mg–1 g VO/IV 6/6h. Primeira escolha — seguro e eficaz.'),
           _PrescItem('2.', isEs ? 'Dipirona 1 g IV 6/6h (lento) se febre persistente ou mal-tolerada.' : 'Dipirona 1 g IV 6/6h (lento) se febre persistente ou mal-tolerada.'),
           _PrescItem('3.', isEs ? 'Compressa morna se T > 40°C e paciente confortável.' : 'Compressa morna se T >40°C e paciente confortável.'),
-          _PrescItem('⚠️', isEs ? 'Investigar CAUSA — não tratar febre isoladamente sem colher culturas.' : 'Investigar CAUSA — não tratar febre isoladamente sem colher culturas.'),
+          _PrescItem('Aten.', isEs ? 'Investigar CAUSA — não tratar febre isoladamente sem colher culturas.' : 'Investigar CAUSA — não tratar febre isoladamente sem colher culturas.'),
         ],
       ),
     ]);
@@ -2218,17 +2235,17 @@ class _PrescriptionsTabState extends State<_PrescriptionsTab> {
     return Column(children: [
       _PrescCard(
         title: isEs ? 'Náuseas y Vómitos — 1ª Línea' : 'Náuseas e Vômitos — 1ª Linha',
-        level: '🟡',
+        level: 'MOD',
         items: [
           _PrescItem('1.', isEs ? 'Ondansetrona 4–8 mg IV lento (2–5 min) 8/8h. Primeira escolha — menos sedação.' : 'Ondansetrona 4–8 mg IV lento (2–5 min) 8/8h. Primeira escolha — menos sedação.'),
           _PrescItem('2.', isEs ? 'Metoclopramida 10 mg IV 8/8h (lento em 50 mL SF, 15 min). Útil se dismotilidade gástrica.' : 'Metoclopramida 10 mg IV 8/8h (lento em 50 mL SF, 15 min). Útil se dismotilidade gástrica.'),
           _PrescItem('3.', isEs ? 'Dimenidrinato 50 mg IV/VO 8/8h se náusea vestibular.' : 'Dimenidrinato 50 mg IV/VO 8/8h se náusea vestibular.'),
-          _PrescItem('⚠️', isEs ? 'Metoclopramida: evitar em parkinsonismo. Ondansetrona: monitorar QT.' : 'Metoclopramida: evitar em parkinsonismo. Ondansetrona: monitorar QT.'),
+          _PrescItem('Aten.', isEs ? 'Metoclopramida: evitar em parkinsonismo. Ondansetrona: monitorar QT.' : 'Metoclopramida: evitar em parkinsonismo. Ondansetrona: monitorar QT.'),
         ],
       ),
       _PrescCard(
         title: isEs ? 'Vómitos Incoercibles / Quimioterapia' : 'Vômitos Incoercíveis / Quimioterapia',
-        level: '🔴',
+        level: 'ALTO',
         items: [
           _PrescItem('1.', isEs ? 'Ondansetrona 8 mg IV 8/8h + Dexametasona 8 mg IV 12/12h.' : 'Ondansetrona 8 mg IV 8/8h + Dexametasona 8 mg IV 12/12h.'),
           _PrescItem('2.', isEs ? 'Aprepitanto 125 mg D1 + 80 mg D2-D3 (se disponível — antagonista NK1).' : 'Aprepitanto 125 mg D1 + 80 mg D2-D3 (se disponível — antagonista NK1).'),
@@ -2242,17 +2259,17 @@ class _PrescriptionsTabState extends State<_PrescriptionsTab> {
     return Column(children: [
       _PrescCard(
         title: isEs ? 'ITU no Complicada (ambulatorio)' : 'ITU não Complicada (ambulatorial)',
-        level: '🟡',
+        level: 'MOD',
         items: [
           _PrescItem('1.ª opção', isEs ? 'Nitrofurantoína 100 mg VO 12/12h × 5 dias (não usar em IR: ClCr <45).' : 'Nitrofurantoína 100 mg VO 12/12h × 5 dias (não usar em IR: ClCr <45).'),
           _PrescItem('2.ª opção', isEs ? 'Fosfomicina 3 g VO dose única (cistite simples).' : 'Fosfomicina 3 g VO dose única (cistite simples).'),
           _PrescItem('3.ª opção', isEs ? 'Ciprofloxacino 500 mg VO 12/12h × 3 dias (reservar quinolonas).' : 'Ciprofloxacino 500 mg VO 12/12h × 3 dias (reservar quinolonas).'),
-          _PrescItem('⚠️', isEs ? 'Amoxicilina isolada: alta resistência (>30%). Evitar sem antibiograma.' : 'Amoxicilina isolada: alta resistência (>30%). Evitar sem antibiograma.'),
+          _PrescItem('Aten.', isEs ? 'Amoxicilina isolada: alta resistência (>30%). Evitar sem antibiograma.' : 'Amoxicilina isolada: alta resistência (>30%). Evitar sem antibiograma.'),
         ],
       ),
       _PrescCard(
         title: isEs ? 'ITU Complicada / Pielonefritis' : 'ITU Complicada / Pielonefrite',
-        level: '🔴',
+        level: 'ALTO',
         items: [
           _PrescItem('Internado IV', isEs ? 'Ceftriaxona 1–2 g IV/dia ou Ciprofloxacino 400 mg IV 12/12h.' : 'Ceftriaxona 1–2 g IV/dia ou Ciprofloxacino 400 mg IV 12/12h.'),
           _PrescItem('Ambulatorial', isEs ? 'Ciprofloxacino 500 mg VO 12/12h × 7 dias (pielonefrite leve).' : 'Ciprofloxacino 500 mg VO 12/12h × 7 dias (pielonefrite leve).'),
@@ -2261,17 +2278,17 @@ class _PrescriptionsTabState extends State<_PrescriptionsTab> {
       ),
       _PrescCard(
         title: isEs ? 'PAC Leve–Moderada (ambulatorio)' : 'PAC Leve–Moderada (ambulatorial)',
-        level: '🟡',
+        level: 'MOD',
         items: [
           _PrescItem('Sem comorbidade', isEs ? 'Amoxicilina 1 g VO 8/8h × 5 dias (pneumococo — 1ª opção).' : 'Amoxicilina 1 g VO 8/8h × 5 dias (pneumococo — 1ª opção).'),
           _PrescItem('Atípico suspeito', isEs ? 'Azitromicina 500 mg/dia × 5 dias OU Doxiciclina 100 mg 12/12h × 7 dias.' : 'Azitromicina 500 mg/dia × 5 dias OU Doxiciclina 100 mg 12/12h × 7 dias.'),
           _PrescItem('Com comorbidade', isEs ? 'Amox+Clav 875/125 mg 12/12h + Azitromicina × 7 dias.' : 'Amox+Clav 875/125 mg 12/12h + Azitromicina × 7 dias.'),
-          _PrescItem('⚠️', isEs ? 'CURB-65 ≥2 = considerar internação. ≥3 = UTI avaliação.' : 'CURB-65 ≥2 = considerar internação. ≥3 = avaliar UTI.'),
+          _PrescItem('Aten.', isEs ? 'CURB-65 ≥2 = considerar internação. ≥3 = UTI avaliação.' : 'CURB-65 ≥2 = considerar internação. ≥3 = avaliar UTI.'),
         ],
       ),
       _PrescCard(
         title: isEs ? 'Celulitis / Erisipela' : 'Celulite / Erisipela',
-        level: '🟡',
+        level: 'MOD',
         items: [
           _PrescItem('Leve VO', isEs ? 'Cefalexina 500 mg VO 6/6h × 5–7 dias (estafilococo/estreptococo).' : 'Cefalexina 500 mg VO 6/6h × 5–7 dias (estafilococo/estreptococo).'),
           _PrescItem('Moderada IV', isEs ? 'Oxacilina 2 g IV 4/4h ou Cefazolina 2 g IV 8/8h.' : 'Oxacilina 2 g IV 4/4h ou Cefazolina 2 g IV 8/8h.'),
@@ -2285,13 +2302,13 @@ class _PrescriptionsTabState extends State<_PrescriptionsTab> {
     return Column(children: [
       _PrescCard(
         title: isEs ? 'HAS Estágio 1–2 (ambulatorio)' : 'HAS Estágio 1–2 (ambulatorial)',
-        level: '🟡',
+        level: 'MOD',
         items: [
           _PrescItem('1.ª linha', isEs ? 'Anlodipino 5 mg VO 1×/dia (pode titular para 10 mg).' : 'Anlodipino 5 mg VO 1×/dia (pode titular para 10 mg).'),
           _PrescItem('Ou', isEs ? 'Losartana 50 mg VO 1×/dia (titular para 100 mg). Preferir em DM/proteinúria.' : 'Losartana 50 mg VO 1×/dia (titular para 100 mg). Preferir em DM/proteinúria.'),
           _PrescItem('Ou', isEs ? 'Enalapril 5–10 mg VO 12/12h. Monitorar K+ e creatinina.' : 'Enalapril 5–10 mg VO 12/12h. Monitorar K+ e creatinina.'),
           _PrescItem('Combinação', isEs ? 'Anlodipino + Losartana se PA não controlada com monoterapia em 4 semanas.' : 'Anlodipino + Losartana se PA não controlada com monoterapia em 4 semanas.'),
-          _PrescItem('⚠️', isEs ? 'IECA/ARA2: contraindicados na gravidez. Monitorar K+ com poupadores.' : 'IECA/ARA2: contraindicados na gravidez. Monitorar K+ com poupadores.'),
+          _PrescItem('Aten.', isEs ? 'IECA/ARA2: contraindicados na gravidez. Monitorar K+ com poupadores.' : 'IECA/ARA2: contraindicados na gravidez. Monitorar K+ com poupadores.'),
         ],
       ),
     ]);
@@ -2301,21 +2318,21 @@ class _PrescriptionsTabState extends State<_PrescriptionsTab> {
     return Column(children: [
       _PrescCard(
         title: isEs ? 'Hipopotasemia — Reposición' : 'Hipopotassemia — Reposição',
-        level: '🔴',
+        level: 'ALTO',
         items: [
           _PrescItem('K+ 3,0–3,5', isEs ? 'KCl 40 mEq VO (frutas, sal light) ou KCl oral 40 mEq fracionado.' : 'KCl 40 mEq VO (frutas, sal light) ou KCl oral 40 mEq fracionado.'),
           _PrescItem('K+ 2,5–3,0', isEs ? 'KCl 40–60 mEq em 500 mL SF IV em 4–6h (taxa máx. 10 mEq/h periférica).' : 'KCl 40–60 mEq em 500 mL SF IV em 4–6h (taxa máx. 10 mEq/h periférica).'),
           _PrescItem('K+ <2,5/ECG alt.', isEs ? 'KCl até 20–40 mEq/h em via central com monitorização ECG contínua.' : 'KCl até 20–40 mEq/h em via central com monitorização ECG contínua.'),
-          _PrescItem('⚠️', isEs ? 'NUNCA KCl IV direto (bolus). Sempre diluído. Verificar e repor Mg2+ junto (hipoMg perpetua hipoK).' : 'NUNCA KCl IV direto (bolus). Sempre diluído. Repor Mg2+ junto (hipoMg perpetua hipoK).'),
+          _PrescItem('Aten.', isEs ? 'NUNCA KCl IV direto (bolus). Sempre diluído. Verificar e repor Mg2+ junto (hipoMg perpetua hipoK).' : 'NUNCA KCl IV direto (bolus). Sempre diluído. Repor Mg2+ junto (hipoMg perpetua hipoK).'),
         ],
       ),
       _PrescCard(
         title: isEs ? 'Hipomagnesemia' : 'Hipomagnesemia',
-        level: '🟡',
+        level: 'MOD',
         items: [
           _PrescItem('Reposição IV', isEs ? 'MgSO4 2 g IV em 100 mL SF em 15–20 min. Repetir se Mg <1,5 mg/dL.' : 'MgSO4 2 g IV em 100 mL SF em 15–20 min. Repetir se Mg <1,5 mg/dL.'),
           _PrescItem('Manutenção VO', isEs ? 'Óxido de Magnésio 400 mg VO 1–2×/dia.' : 'Óxido de Magnésio 400 mg VO 1–2×/dia.'),
-          _PrescItem('⚠️', isEs ? 'Hipomagnesemia: causa comum de hipocalemia e hipocalcemia refratária.' : 'Hipomagnesemia: causa comum de hipocalemia e hipocalcemia refratária.'),
+          _PrescItem('Aten.', isEs ? 'Hipomagnesemia: causa comum de hipocalemia e hipocalcemia refratária.' : 'Hipomagnesemia: causa comum de hipocalemia e hipocalcemia refratária.'),
         ],
       ),
     ]);
@@ -2325,18 +2342,18 @@ class _PrescriptionsTabState extends State<_PrescriptionsTab> {
     return Column(children: [
       _PrescCard(
         title: isEs ? 'Sedación/Analgesia en UTI (PADIS 2018)' : 'Sedação/Analgesia em UTI (PADIS 2018)',
-        level: '🔴',
+        level: 'ALTO',
         items: [
           _PrescItem('1. Analgesia', isEs ? 'Analgesia-PRIMEIRO: Fentanil 25–50 mcg IV PRN ou Morfina 2–4 mg IV PRN.' : 'Analgesia-PRIMEIRO: Fentanil 25–50 mcg IV PRN ou Morfina 2–4 mg IV PRN.'),
           _PrescItem('2. Sedação leve', isEs ? 'Meta RASS -1 a 0. Propofol 0,5–3 mg/kg/h IV OU Dexmedetomidina 0,2–1,5 mcg/kg/h.' : 'Meta RASS -1 a 0. Propofol 0,5–3 mg/kg/h IV OU Dexmedetomidina 0,2–1,5 mcg/kg/h.'),
           _PrescItem('3. Delirium', isEs ? 'Haloperidol 0,25–0,5 mg IV 8/8h se agitação. Orientação + luz + mobilização precoce.' : 'Haloperidol 0,25–0,5 mg IV 8/8h se agitação. Orientação + luz + mobilização precoce.'),
           _PrescItem('Sedação profunda', isEs ? 'Midazolam 0,02–0,1 mg/kg/h + Fentanil 25–100 mcg/h (IOT/SARA/status).' : 'Midazolam 0,02–0,1 mg/kg/h + Fentanil 25–100 mcg/h (IOT/SARA/status).'),
-          _PrescItem('⚠️', isEs ? 'Interrupção diária da sedação ("sedation vacation"). Avaliar RASS 4×/dia.' : 'Interrupção diária da sedação ("sedation vacation"). Avaliar RASS 4×/dia.'),
+          _PrescItem('Aten.', isEs ? 'Interrupção diária da sedação ("sedation vacation"). Avaliar RASS 4×/dia.' : 'Interrupção diária da sedação ("sedation vacation"). Avaliar RASS 4×/dia.'),
         ],
       ),
       _PrescCard(
         title: isEs ? 'Escalas RASS / BPS (referencia)' : 'Escalas RASS / BPS (referência)',
-        level: '🟡',
+        level: 'MOD',
         items: [
           _PrescItem('RASS', isEs ? '+4=combativo; +1=agitado; 0=alerta; -1=sonolento; -3=moderado; -5=não responsivo.' : '+4=combativo; +1=agitado; 0=alerta; -1=sonolento; -3=moderado; -5=não responsivo.'),
           _PrescItem('BPS', isEs ? '3=sem dor; 12=dor máxima. Avaliação: expressão facial + membro + ventilação.' : '3=sem dor; 12=dor máxima. Avaliação: expressão facial + membro + ventilação.'),
@@ -2350,15 +2367,15 @@ class _PrescriptionsTabState extends State<_PrescriptionsTab> {
     return Column(children: [
       _PrescCard(
         title: isEs ? 'Bundle de Sepsis — HORA 1 (SSC 2021)' : 'Bundle de Sepse — HORA 1 (SSC 2021)',
-        level: '🔴',
+        level: 'ALTO',
         items: [
-          _PrescItem('✅ 1.', isEs ? 'Medir lactato (repetir se >2 mmol/L).' : 'Medir lactato (repetir se >2 mmol/L).'),
-          _PrescItem('✅ 2.', isEs ? 'Hemocultura 2× ANTES do antibiótico.' : 'Hemocultura 2× ANTES do antibiótico.'),
-          _PrescItem('✅ 3.', isEs ? 'Antibiótico de amplo espectro em <1h.' : 'Antibiótico de amplo espectro em <1h.'),
-          _PrescItem('✅ 4.', isEs ? 'SF/RL 30 mL/kg IV em ≤3h se hipoperfusão.' : 'SF/RL 30 mL/kg IV em ≤3h se hipoperfusão.'),
-          _PrescItem('✅ 5.', isEs ? 'Vasopressor se PAM <65 após volume: Noradrenalina 0,1–1 µg/kg/min.' : 'Vasopressor se PAM <65 após volume: Noradrenalina 0,1–1 µg/kg/min.'),
+          _PrescItem('1.', isEs ? 'Medir lactato (repetir se >2 mmol/L).' : 'Medir lactato (repetir se >2 mmol/L).'),
+          _PrescItem('2.', isEs ? 'Hemocultura 2× ANTES do antibiótico.' : 'Hemocultura 2× ANTES do antibiótico.'),
+          _PrescItem('3.', isEs ? 'Antibiótico de amplo espectro em <1h.' : 'Antibiótico de amplo espectro em <1h.'),
+          _PrescItem('4.', isEs ? 'SF/RL 30 mL/kg IV em ≤3h se hipoperfusão.' : 'SF/RL 30 mL/kg IV em ≤3h se hipoperfusão.'),
+          _PrescItem('5.', isEs ? 'Vasopressor se PAM <65 após volume: Noradrenalina 0,1–1 µg/kg/min.' : 'Vasopressor se PAM <65 após volume: Noradrenalina 0,1–1 µg/kg/min.'),
           _PrescItem('ATB empírico', isEs ? 'Pip-Tazo 4,5g IV 6/6h + Vancomicina 25 mg/kg IV (1ª dose, com infusão 1–2h).' : 'Pip-Tazo 4,5g IV 6/6h + Vancomicina 25 mg/kg IV (1ª dose, infusão 1–2h).'),
-          _PrescItem('⚠️', isEs ? 'Desescalar em 48–72h com cultura. Avaliar foco cirúrgico.' : 'Desescalar em 48–72h com cultura. Avaliar foco cirúrgico.'),
+          _PrescItem('Aten.', isEs ? 'Desescalar em 48–72h com cultura. Avaliar foco cirúrgico.' : 'Desescalar em 48–72h com cultura. Avaliar foco cirúrgico.'),
         ],
       ),
     ]);
@@ -2368,17 +2385,17 @@ class _PrescriptionsTabState extends State<_PrescriptionsTab> {
     return Column(children: [
       _PrescCard(
         title: isEs ? 'Profilaxis de TVP / TEP' : 'Profilaxia de TVP / TEP',
-        level: '🟡',
+        level: 'MOD',
         items: [
           _PrescItem('Internados ClCr>30', isEs ? 'Enoxaparina 40 mg SC 1×/dia.' : 'Enoxaparina 40 mg SC 1×/dia.'),
           _PrescItem('Obesos >100 kg', isEs ? 'Enoxaparina 40 mg SC 12/12h ou 0,5 mg/kg/dia.' : 'Enoxaparina 40 mg SC 12/12h ou 0,5 mg/kg/dia.'),
           _PrescItem('ClCr <30', isEs ? 'HNF 5000 UI SC 8/8h (preferir em IR grave).' : 'HNF 5000 UI SC 8/8h (preferir em IR grave).'),
-          _PrescItem('⚠️', isEs ? 'Contraindicada: sangramento ativo, plaquetas <50k, cirurgia SNC recente.' : 'Contraindicada: sangramento ativo, plaquetas <50k, cirurgia SNC recente.'),
+          _PrescItem('Aten.', isEs ? 'Contraindicada: sangramento ativo, plaquetas <50k, cirurgia SNC recente.' : 'Contraindicada: sangramento ativo, plaquetas <50k, cirurgia SNC recente.'),
         ],
       ),
       _PrescCard(
         title: isEs ? 'Anticoagulación FA (inicio)' : 'Anticoagulação FA (início)',
-        level: '🟡',
+        level: 'MOD',
         items: [
           _PrescItem('CHA2DS2 ≥2 (H) / ≥3 (M)', isEs ? 'Indicação formal de anticoagulação.' : 'Indicação formal de anticoagulação.'),
           _PrescItem('1.ª opção', isEs ? 'Rivaroxabana 20 mg 1×/dia (com jantar). ClCr 15–49: 15 mg/dia.' : 'Rivaroxabana 20 mg 1×/dia (com jantar). ClCr 15–49: 15 mg/dia.'),
@@ -2393,13 +2410,13 @@ class _PrescriptionsTabState extends State<_PrescriptionsTab> {
     return Column(children: [
       _PrescCard(
         title: isEs ? 'Emergencia Hipertensiva — UTI' : 'Emergência Hipertensiva — UTI',
-        level: '🔴',
+        level: 'ALTO',
         items: [
           _PrescItem('Meta geral', isEs ? 'Reduzir PAM 20–25% nas primeiras 1–2h. NÃO normalizar abruptamente.' : 'Reduzir PAM 20–25% nas primeiras 1–2h. NÃO normalizar abruptamente.'),
           _PrescItem('EAP/encef.', isEs ? 'Nitroprussiato 0,5–10 µg/kg/min IV (titular) OU Nicardipino 5–15 mg/h IV.' : 'Nitroprussiato 0,5–10 µg/kg/min IV (titular) OU Nicardipino 5–15 mg/h IV.'),
           _PrescItem('Disseção Ao.', isEs ? 'Esmolol 500 mcg/kg IV + 50–200 mcg/kg/min + Nitroprussiato. Meta PAS ≤120.' : 'Esmolol 500 mcg/kg IV + 50–200 mcg/kg/min + Nitroprussiato. Meta PAS ≤120.'),
           _PrescItem('Eclâmpsia', isEs ? 'Hidralazina 5–10 mg IV 20 min + MgSO4 4–6 g IV (ver protocolo pré-ecl.).' : 'Hidralazina 5–10 mg IV 20 min + MgSO4 4–6 g IV (ver protocolo pré-ecl.).'),
-          _PrescItem('⛔', isEs ? 'NUNCA nifedipino sublingual — queda abrupta e imprevisível → isquemia.' : 'NUNCA nifedipino sublingual — queda abrupta e imprevisível → isquemia.'),
+          _PrescItem('Contra.', isEs ? 'NUNCA nifedipino sublingual — queda abrupta e imprevisível → isquemia.' : 'NUNCA nifedipino sublingual — queda abrupta e imprevisível → isquemia.'),
         ],
       ),
     ]);
@@ -2409,24 +2426,24 @@ class _PrescriptionsTabState extends State<_PrescriptionsTab> {
     return Column(children: [
       _PrescCard(
         title: isEs ? 'Dispnea Aguda — Algoritmo Rápido' : 'Dispneia Aguda — Algoritmo Rápido',
-        level: '🔴',
+        level: 'ALTO',
         items: [
           _PrescItem('ABCDE', isEs ? 'Posição sentada, O2 por máscara (Venturi 35–50% se DPOC: máx. SpO2 88–92%).' : 'Posição sentada, O2 por máscara (Venturi 35–50% se DPOC: máx. SpO2 88–92%).'),
           _PrescItem('EAP', isEs ? 'Furosemida 40–80 mg IV + NTG 5–10 µg/min IV + VNI (CPAP ≥5 cmH2O).' : 'Furosemida 40–80 mg IV + NTG 5–10 µg/min IV + VNI (CPAP ≥5 cmH2O).'),
           _PrescItem('Broncoespasmo', isEs ? 'Salbutamol 2,5 mg NEB a cada 20 min × 3 + Ipratrópio 0,5 mg NEB + MgSO4 2g IV.' : 'Salbutamol 2,5 mg NEB a cada 20 min × 3 + Ipratrópio 0,5 mg NEB + MgSO4 2g IV.'),
           _PrescItem('DPOC exacerb.', isEs ? 'Broncodilatadores + Prednisona 40 mg/dia × 5d + ATB (azitro/amox-clav) se infecção.' : 'Broncodilatadores + Prednisona 40 mg/dia × 5d + ATB (azitro/amox-clav) se infecção.'),
           _PrescItem('TEP', isEs ? 'Anticoagulação imediata (enoxaparina ou rivaroxabana). Trombólise se instável.' : 'Anticoagulação imediata (enoxaparina ou rivaroxabana). Trombólise se instável.'),
-          _PrescItem('⚠️', isEs ? 'O2 alvo: SpO2 94–98% (geral) OU 88–92% (DPOC/hipoxemia crônica).' : 'O2 alvo: SpO2 94–98% (geral) OU 88–92% (DPOC/hipoxemia crônica).'),
+          _PrescItem('Aten.', isEs ? 'O2 alvo: SpO2 94–98% (geral) OU 88–92% (DPOC/hipoxemia crônica).' : 'O2 alvo: SpO2 94–98% (geral) OU 88–92% (DPOC/hipoxemia crônica).'),
         ],
       ),
       _PrescCard(
         title: isEs ? 'VNI — Indicaciones y Configuración' : 'VNI — Indicações e Configuração',
-        level: '🟡',
+        level: 'MOD',
         items: [
           _PrescItem('Indicações', isEs ? 'EAP cardiogênico, DPOC exacerbação, hipoxemia leve-mod (SpO2 <92% com O2 convencional).' : 'EAP cardiogênico, DPOC exacerbação, hipoxemia leve-mod (SpO2 <92% com O2 convencional).'),
           _PrescItem('Início CPAP', isEs ? 'CPAP 5–8 cmH2O + FiO2 40–60%. Reavaliação em 30–60 min.' : 'CPAP 5–8 cmH2O + FiO2 40–60%. Reavaliação em 30–60 min.'),
           _PrescItem('BiPAP', isEs ? 'IPAP 12–20 / EPAP 4–8 cmH2O. FR backup 12–16/min.' : 'IPAP 12–20 / EPAP 4–8 cmH2O. FR backup 12–16/min.'),
-          _PrescItem('⛔ Contra', isEs ? 'Parada respiratória, incapacidade de proteger VA, vômitos, agitação severa, politrauma facial.' : 'Parada respiratória, incapacidade de proteger VA, vômitos, agitação severa, politrauma facial.'),
+          _PrescItem('Contra.', isEs ? 'Parada respiratória, incapacidade de proteger VA, vômitos, agitação severa, politrauma facial.' : 'Parada respiratória, incapacidade de proteger VA, vômitos, agitação severa, politrauma facial.'),
         ],
       ),
     ]);
@@ -2443,8 +2460,25 @@ class _PrescCard extends StatelessWidget {
     return StandardCard(
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Row(children: [
-          Text(level, style: const TextStyle(fontSize: 18)),
-          const SizedBox(width: 8),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(6),
+              color: level == 'ALTO'
+                  ? const Color(0xFFCC2222).withValues(alpha: 0.10)
+                  : const Color(0xFFC5A365).withValues(alpha: 0.12),
+            ),
+            child: Text(
+              level,
+              style: TextStyle(
+                fontSize: 8, fontWeight: FontWeight.w900, letterSpacing: 1.2,
+                color: level == 'ALTO'
+                    ? const Color(0xFFCC2222)
+                    : const Color(0xFFC5A365),
+              ),
+            ),
+          ),
+          const SizedBox(width: 10),
           Expanded(child: Text(title,
             style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w900, color: kToolDark, letterSpacing: -0.3))),
         ]),
@@ -2539,9 +2573,10 @@ class _ResultTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final hasVal = value != null && value != '—';
-    final noteColor = (note ?? '').contains('⛔') ? const Color(0xFFCC2222)
-        : (note ?? '').contains('⚠') ? const Color(0xFFB45309)
-        : (note ?? '').contains('↑') ? const Color(0xFFB45309)
+    final noteColor = (note ?? '').startsWith('BAIXO') || (note ?? '').startsWith('ATENÇÃO') || (note ?? '').startsWith('GRAVE') || (note ?? '').startsWith('CRÍTICO') || (note ?? '').startsWith('FALÊNCIA') || (note ?? '').startsWith('ALTO') || (note ?? '').startsWith('DÉFICIT')
+        ? const Color(0xFFCC2222)
+        : (note ?? '').startsWith('RISCO') || (note ?? '').contains('↑') || (note ?? '').contains('Hipercalcemia')
+        ? const Color(0xFFB45309)
         : const Color(0xFF065F46);
     return Container(
       width: full ? double.infinity : null,

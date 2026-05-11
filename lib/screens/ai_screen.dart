@@ -156,7 +156,7 @@ class _AiScreenState extends State<AiScreen> {
 
     if (!mounted) return;
     // Detecta se foi erro de chave inválida para mostrar banner
-    final isKeyError = answer.startsWith('❌') && answer.contains('API');
+    final isKeyError = answer.startsWith('ERRO') && answer.contains('API');
     setState(() {
       _messages.add(_ChatMsg(role: 'ai', text: answer));
       _thinking = false;
@@ -656,7 +656,7 @@ class _AiBubble extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: text.split('\n').map((line) {
-        if (line.startsWith('🧠') || line.startsWith('##')) {
+        if (line.startsWith('##')) {
           return Padding(
             padding: const EdgeInsets.only(bottom: 6, top: 2),
             child: Text(line,

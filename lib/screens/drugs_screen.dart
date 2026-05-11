@@ -113,7 +113,9 @@ class _DrugsScreenState extends State<DrugsScreen> {
           if (p.favDrugs.isNotEmpty) ...[
             _GroupAccordion(
               groupName: p.lang == 'es' ? 'Favoritos' : 'Favoritos',
-              icon: '⭐',
+              icon: '',
+              iconData: Icons.star_rounded,
+              iconColor: kGold,
               drugs: unique.where((d) => p.favDrugs.contains(d.id)).toList(),
               isExpanded: _expanded.contains('__fav__'),
               dark: dark,
@@ -140,7 +142,8 @@ class _DrugsScreenState extends State<DrugsScreen> {
             return Column(children: [
               _GroupAccordion(
                 groupName: groupName,
-                icon: DrugGroup.icon(groupName),
+                icon: '',
+                iconData: DrugGroup.iconData(groupName),
                 drugs: drugsInGroup,
                 isExpanded: isExp,
                 dark: dark,
@@ -169,6 +172,8 @@ class _DrugsScreenState extends State<DrugsScreen> {
 class _GroupAccordion extends StatelessWidget {
   final String groupName;
   final String icon;
+  final IconData? iconData;
+  final Color? iconColor;
   final List<DrugModel> drugs;
   final bool isExpanded;
   final bool dark;
@@ -179,6 +184,8 @@ class _GroupAccordion extends StatelessWidget {
   const _GroupAccordion({
     required this.groupName,
     required this.icon,
+    this.iconData,
+    this.iconColor,
     required this.drugs,
     required this.isExpanded,
     required this.dark,
@@ -224,7 +231,10 @@ class _GroupAccordion extends StatelessWidget {
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: Center(
-                    child: Text(icon, style: const TextStyle(fontSize: 18)),
+                    child: iconData != null
+                        ? Icon(iconData, size: 17,
+                            color: iconColor ?? (dark ? const Color(0xFF9BE3BF) : kGreen))
+                        : Text(icon, style: const TextStyle(fontSize: 18)),
                   ),
                 ),
                 const SizedBox(width: 12),
@@ -350,7 +360,7 @@ class _DrugListTile extends StatelessWidget {
               if (isFav)
                 const Padding(
                   padding: EdgeInsets.only(right: 5),
-                  child: Text('⭐', style: TextStyle(fontSize: 11)),
+                  child: Icon(Icons.star_rounded, size: 12, color: kGold),
                 ),
               Flexible(
                 child: Text(
@@ -392,9 +402,10 @@ class _DrugListTile extends StatelessWidget {
               onTap: () => p.toggleFavDrug(drug.id),
               child: Padding(
                 padding: const EdgeInsets.all(4),
-                child: Text(
-                  isFav ? '⭐' : '☆',
-                  style: const TextStyle(fontSize: 18),
+                child: Icon(
+                  isFav ? Icons.star_rounded : Icons.star_border_rounded,
+                  size: 20,
+                  color: isFav ? kGold : const Color(0xFFCCCCCC),
                 ),
               ),
             ),

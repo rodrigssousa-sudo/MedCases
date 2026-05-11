@@ -117,7 +117,8 @@ class _ProtocolsScreenState extends State<ProtocolsScreen> {
           if (p.favProtocols.isNotEmpty) ...[
             _ProtocolGroupAccordion(
               groupKey: '__fav__',
-              icon: '⭐',
+              icon: '',
+              iconData: Icons.star_rounded,
               titlePt: 'Favoritos',
               titleEs: 'Favoritos',
               color: const Color(0xFFFFFBF0),
@@ -140,7 +141,8 @@ class _ProtocolsScreenState extends State<ProtocolsScreen> {
           // ── Reanimação & Choque ──────────────────────────────────────────
           _ProtocolGroupAccordion(
             groupKey: 'reanimacao',
-            icon: '🔴',
+            icon: '',
+            iconData: Icons.emergency_rounded,
             titlePt: 'Reanimação & Choque',
             titleEs: 'Reanimación & Shock',
             color: const Color(0xFFFFF5F5),
@@ -165,7 +167,8 @@ class _ProtocolsScreenState extends State<ProtocolsScreen> {
           // ── Cardiovascular ───────────────────────────────────────────────
           _ProtocolGroupAccordion(
             groupKey: 'cardio',
-            icon: '🫀',
+            icon: '',
+            iconData: Icons.favorite_outline_rounded,
             titlePt: 'Cardiovascular',
             titleEs: 'Cardiovascular',
             color: const Color(0xFFFFF0F5),
@@ -191,7 +194,8 @@ class _ProtocolsScreenState extends State<ProtocolsScreen> {
           // ── Respiratório ─────────────────────────────────────────────────
           _ProtocolGroupAccordion(
             groupKey: 'resp',
-            icon: '🫁',
+            icon: '',
+            iconData: Icons.air_rounded,
             titlePt: 'Respiratório',
             titleEs: 'Respiratorio',
             color: const Color(0xFFF0F8FF),
@@ -218,7 +222,8 @@ class _ProtocolsScreenState extends State<ProtocolsScreen> {
           // ── Neurológico & Psiquiátrico ───────────────────────────────────
           _ProtocolGroupAccordion(
             groupKey: 'neuro',
-            icon: '🧠',
+            icon: '',
+            iconData: Icons.psychology_outlined,
             titlePt: 'Neurológico & Psiquiátrico',
             titleEs: 'Neurológico & Psiquiátrico',
             color: const Color(0xFFF5F0FF),
@@ -245,7 +250,8 @@ class _ProtocolsScreenState extends State<ProtocolsScreen> {
           // ── Infeccioso & Sepse ───────────────────────────────────────────
           _ProtocolGroupAccordion(
             groupKey: 'infec',
-            icon: '🦠',
+            icon: '',
+            iconData: Icons.biotech_outlined,
             titlePt: 'Infeccioso & Sepse',
             titleEs: 'Infeccioso & Sepsis',
             color: const Color(0xFFF0FFF4),
@@ -272,7 +278,8 @@ class _ProtocolsScreenState extends State<ProtocolsScreen> {
           // ── Metabólico & Endócrino ───────────────────────────────────────
           _ProtocolGroupAccordion(
             groupKey: 'metab',
-            icon: '⚗️',
+            icon: '',
+            iconData: Icons.balance_outlined,
             titlePt: 'Metabólico & Endócrino',
             titleEs: 'Metabólico & Endócrino',
             color: const Color(0xFFFFF8EC),
@@ -299,7 +306,8 @@ class _ProtocolsScreenState extends State<ProtocolsScreen> {
           // ── Gastro, Trauma & Cirúrgico ───────────────────────────────────
           _ProtocolGroupAccordion(
             groupKey: 'gastro',
-            icon: '🏥',
+            icon: '',
+            iconData: Icons.local_hospital_outlined,
             titlePt: 'Gastro, Trauma & Cirúrgico',
             titleEs: 'Gastro, Trauma & Quirúrgico',
             color: const Color(0xFFF5F5F0),
@@ -327,7 +335,8 @@ class _ProtocolsScreenState extends State<ProtocolsScreen> {
           // ── Nefrologia, Hemato & Obstetrícia ─────────────────────────────
           _ProtocolGroupAccordion(
             groupKey: 'outros',
-            icon: '🧬',
+            icon: '',
+            iconData: Icons.science_outlined,
             titlePt: 'Nefrologia, Hemato & Obstetrícia',
             titleEs: 'Nefrología, Hemato & Obstetricia',
             color: const Color(0xFFF0F5FF),
@@ -355,7 +364,8 @@ class _ProtocolsScreenState extends State<ProtocolsScreen> {
           // ── Intoxicações ─────────────────────────────────────────────────
           _ProtocolGroupAccordion(
             groupKey: 'intox',
-            icon: '☠️',
+            icon: '',
+            iconData: Icons.warning_amber_rounded,
             titlePt: 'Intoxicações & Overdose',
             titleEs: 'Intoxicaciones & Sobredosis',
             color: const Color(0xFFF8F0FF),
@@ -383,7 +393,8 @@ class _ProtocolsScreenState extends State<ProtocolsScreen> {
           // ── Pediatria ────────────────────────────────────────────────────
           _ProtocolGroupAccordion(
             groupKey: 'ped',
-            icon: '👶',
+            icon: '',
+            iconData: Icons.child_care_rounded,
             titlePt: 'Pediatria',
             titleEs: 'Pediatría',
             color: const Color(0xFFF0FFFA),
@@ -415,7 +426,8 @@ class _ProtocolsScreenState extends State<ProtocolsScreen> {
           // ── Casos Clínicos — Neurologia ──────────────────────────────────
           _ProtocolGroupAccordion(
             groupKey: 'casos_neuro',
-            icon: '🧠',
+            icon: '',
+            iconData: Icons.psychology_outlined,
             titlePt: 'Casos Clínicos — Neurologia',
             titleEs: 'Casos Clínicos — Neurología',
             color: const Color(0xFFF5F0FF),
@@ -440,7 +452,8 @@ class _ProtocolsScreenState extends State<ProtocolsScreen> {
           // ── Casos Clínicos — Cardiologia & Pneumologia ───────────────────
           _ProtocolGroupAccordion(
             groupKey: 'casos_cardio',
-            icon: '🫀',
+            icon: '',
+            iconData: Icons.favorite_outline_rounded,
             titlePt: 'Casos Clínicos — Cardiologia & Pneumologia',
             titleEs: 'Casos Clínicos — Cardiología & Neumología',
             color: const Color(0xFFFFF0F5),
@@ -466,7 +479,8 @@ class _ProtocolsScreenState extends State<ProtocolsScreen> {
           // ── Casos Clínicos — Infectologia, Emergência & Metabólico ───────
           _ProtocolGroupAccordion(
             groupKey: 'casos_infec',
-            icon: '🦠',
+            icon: '',
+            iconData: Icons.biotech_outlined,
             titlePt: 'Casos Clínicos — Infectologia, Emergência & Metabólico',
             titleEs: 'Casos Clínicos — Infectología, Emergencia & Metabólico',
             color: const Color(0xFFF0FFF4),
@@ -494,7 +508,8 @@ class _ProtocolsScreenState extends State<ProtocolsScreen> {
           // ── Casos Clínicos — Gastroenterologia ──────────────────────────
           _ProtocolGroupAccordion(
             groupKey: 'casos_gastro',
-            icon: '🏥',
+            icon: '',
+            iconData: Icons.local_hospital_outlined,
             titlePt: 'Casos Clínicos — Gastroenterologia & Hepatologia',
             titleEs: 'Casos Clínicos — Gastroenterología & Hepatología',
             color: const Color(0xFFF5F5F0),
@@ -523,7 +538,8 @@ class _ProtocolsScreenState extends State<ProtocolsScreen> {
           // ── Casos Clínicos — Infectologia & Hepatologia Viral ────────────
           _ProtocolGroupAccordion(
             groupKey: 'casos_hepato_viral',
-            icon: '🦠',
+            icon: '',
+            iconData: Icons.science_outlined,
             titlePt: 'Casos Clínicos — Hepatites Virais & Gripe',
             titleEs: 'Casos Clínicos — Hepatitis Virales & Gripe',
             color: const Color(0xFFFFF8EC),
@@ -548,7 +564,8 @@ class _ProtocolsScreenState extends State<ProtocolsScreen> {
           // ── Casos Clínicos — ORL & Medicina Geral ───────────────────────
           _ProtocolGroupAccordion(
             groupKey: 'casos_orl',
-            icon: '👂',
+            icon: '',
+            iconData: Icons.hearing_outlined,
             titlePt: 'Casos Clínicos — ORL & Medicina Geral',
             titleEs: 'Casos Clínicos — ORL & Medicina General',
             color: const Color(0xFFF0F8FF),
@@ -582,6 +599,7 @@ class _ProtocolsScreenState extends State<ProtocolsScreen> {
 class _ProtocolGroupAccordion extends StatelessWidget {
   final String groupKey;
   final String icon;
+  final IconData? iconData;
   final String titlePt;
   final String titleEs;
   final Color color;
@@ -597,6 +615,7 @@ class _ProtocolGroupAccordion extends StatelessWidget {
   const _ProtocolGroupAccordion({
     required this.groupKey,
     required this.icon,
+    this.iconData,
     required this.titlePt,
     required this.titleEs,
     required this.color,
@@ -641,7 +660,11 @@ class _ProtocolGroupAccordion extends StatelessWidget {
                     color: borderColor.withValues(alpha: 0.5),
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  child: Center(child: Text(icon, style: const TextStyle(fontSize: 19))),
+                  child: Center(
+                    child: iconData != null
+                        ? Icon(iconData, size: 18, color: iconColor)
+                        : Text(icon, style: const TextStyle(fontSize: 19)),
+                  ),
                 ),
                 const SizedBox(width: 12),
                 // Título + contagem
@@ -751,9 +774,9 @@ class _ProtocolListTile extends StatelessWidget {
             // Severidade + favorito
             Row(children: [
               if (isFav)
-                const Padding(
-                  padding: EdgeInsets.only(right: 5),
-                  child: Text('⭐', style: TextStyle(fontSize: 10)),
+                Padding(
+                  padding: const EdgeInsets.only(right: 5),
+                  child: Icon(Icons.star_rounded, size: 12, color: kGold),
                 ),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
@@ -791,8 +814,11 @@ class _ProtocolListTile extends StatelessWidget {
               onTap: () => p.toggleFavProtocol(proto.id),
               child: Padding(
                 padding: const EdgeInsets.all(4),
-                child: Text(isFav ? '⭐' : '☆',
-                  style: const TextStyle(fontSize: 18)),
+                child: Icon(
+                  isFav ? Icons.star_rounded : Icons.star_border_rounded,
+                  size: 20,
+                  color: isFav ? kGold : const Color(0xFFCCCCCC),
+                ),
               ),
             ),
             const SizedBox(height: 6),

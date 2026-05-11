@@ -535,12 +535,12 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
       : 'Uso educacional e de apoio clínico. Não substitui avaliação médica individual nem diretrizes institucionais.';
 
   String _registerSuccessMsg() => _isEs
-      ? '✅ ¡Registro realizado!\n\nTu cuenta está pendiente de aprobación del administrador. Recibirás acceso en breve.'
-      : '✅ Cadastro realizado!\n\nSua conta está aguardando aprovação do administrador. Você receberá acesso em breve.';
+      ? 'Registro realizado. Tu cuenta está pendiente de aprobación del administrador. Recibirás acceso en breve.'
+      : 'Cadastro realizado. Sua conta está aguardando aprovação do administrador. Você receberá acesso em breve.';
 
   String _resetSuccessMsg(String email) => _isEs
-      ? '✅ Correo de restablecimiento enviado a $email.\n\nRevisa tu bandeja de entrada.'
-      : '✅ E-mail de redefinição enviado para $email.\n\nVerifique sua caixa de entrada.';
+      ? 'Enlace de restablecimiento enviado a $email. Revisa tu bandeja de entrada.'
+      : 'Link de redefinição enviado para $email. Verifique sua caixa de entrada.';
 }
 
 

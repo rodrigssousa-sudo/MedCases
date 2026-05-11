@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 class DrugModel {
   final String id;
   final String name;
@@ -80,21 +82,25 @@ class DrugGroup {
     varios,
   ];
 
-  static String icon(String group) {
+  // Retorna IconData para uso com Icon() widget — sem emoji
+  static IconData iconData(String group) {
     switch (group) {
-      case cardiovascular:  return '❤️';
-      case criticos:        return '🏥';
-      case analgesicos:     return '💊';
-      case antibioticos:    return '🦠';
-      case infecto:         return '🔬';
-      case anticoagulantes: return '🩸';
-      case respiratorio:    return '🫁';
-      case neurologia:      return '🧠';
-      case gastro:          return '🫀';
-      case endocrino:       return '⚗️';
-      case hemato:          return '💉';
-      case varios:          return '🧪';
-      default:              return '💊';
+      case cardiovascular:  return Icons.favorite_outline_rounded;
+      case criticos:        return Icons.monitor_heart_outlined;
+      case analgesicos:     return Icons.medical_services_outlined;
+      case antibioticos:    return Icons.biotech_outlined;
+      case infecto:         return Icons.science_outlined;
+      case anticoagulantes: return Icons.water_drop_outlined;
+      case respiratorio:    return Icons.air_rounded;
+      case neurologia:      return Icons.psychology_outlined;
+      case gastro:          return Icons.local_hospital_outlined;
+      case endocrino:       return Icons.balance_outlined;
+      case hemato:          return Icons.bloodtype_outlined;
+      case varios:          return Icons.category_outlined;
+      default:              return Icons.medication_outlined;
     }
   }
+
+  // Mantido para compatibilidade legada — retorna string vazia (sem emoji)
+  static String icon(String group) => '';
 }

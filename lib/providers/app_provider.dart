@@ -790,12 +790,12 @@ class AppProvider extends ChangeNotifier {
           return _buildLocalAnswer(input);
         case 'invalid_key':
           return _lang == 'es'
-              ? '❌ Clave API inválida. Verifica la configuración en el ícono 🔑 del chat.'
-              : '❌ Chave API inválida. Verifique a configuração no ícone 🔑 do chat.';
+              ? 'ERRO API: Clave inválida. Verifica la configuración de API Key en el chat.'
+              : 'ERRO API: Chave inválida. Verifique a configuração de API Key no chat.';
         case 'quota':
           return _lang == 'es'
-              ? '⚠️ Límite de uso de la API alcanzado. Revisa tu cuenta en platform.openai.com.'
-              : '⚠️ Limite de uso da API atingido. Verifique sua conta em platform.openai.com.';
+              ? 'Límite de uso de la API alcanzado. Revisa tu cuenta en platform.openai.com.'
+              : 'Limite de uso da API atingido. Verifique sua conta em platform.openai.com.';
         case 'network':
           // Sem rede → fallback local silencioso
           return _buildLocalAnswer(input);
@@ -1195,9 +1195,9 @@ class AppProvider extends ChangeNotifier {
 
     // Hipóteses — só as 3 mais relevantes
     if (suspected.length == 1) {
-      buf.writeln('🧠 ${suspected[0]}');
+      buf.writeln('## ${suspected[0]}');
     } else {
-      buf.writeln('📋 Hipóteses:');
+      buf.writeln('## Hipóteses:');
       for (int i = 0; i < suspected.length && i < 3; i++) {
         buf.writeln('  ${i + 1}. ${suspected[i]}');
       }
@@ -1206,9 +1206,9 @@ class AppProvider extends ChangeNotifier {
 
     // Red Flags — máx 3, apenas os mais críticos
     if (redFlags.isNotEmpty) {
-      buf.writeln('🚨 Alertas:');
+      buf.writeln('## Alertas:');
       for (final f in redFlags.take(3)) {
-        buf.writeln('  ⛔ $f');
+        buf.writeln('  • $f');
       }
       buf.writeln('');
     }
@@ -1223,7 +1223,7 @@ class AppProvider extends ChangeNotifier {
     }
 
     if (matchedProtocol != null) {
-      buf.writeln('🩺 ${tDB(matchedProtocol.title)}:');
+      buf.writeln('## ${tDB(matchedProtocol.title)}:');
       final actions = matchedProtocol.getActions(_lang);
       for (int i = 0; i < actions.length && i < 5; i++) {
         buf.writeln('  ${actions[i]}');
@@ -1244,7 +1244,7 @@ class AppProvider extends ChangeNotifier {
           .whereType<DrugModel>().toList();
 
       if (suggestedDrugs.isNotEmpty && _patient.weight.isNotEmpty) {
-        buf.writeln('💊 ${_lang == 'es' ? 'Dosis para este paciente:' : 'Dose para este paciente:'}');
+        buf.writeln('## ${_lang == 'es' ? 'Dosis para este paciente:' : 'Dose para este paciente:'}');
         for (final drug in suggestedDrugs) {
           final dose = calculateDose(drug);
           final alerts = dose.alerts.take(1).join(' | ');
@@ -1254,13 +1254,13 @@ class AppProvider extends ChangeNotifier {
       } else if (suggestedDrugs.isNotEmpty) {
         // Sem peso: lista fármacos sem calcular dose
         final names = suggestedDrugs.map((d) => d.name).join(', ');
-        buf.writeln('💊 ${_lang == 'es' ? 'Fármacos: ' : 'Fármacos: '}$names');
+        buf.writeln('Fármacos: $names');
         buf.writeln('');
       }
     } else if (examSuggestions.isNotEmpty) {
       // Sem protocolo direto: mostra só os exames mais relevantes (máx 4)
       final uniq = examSuggestions.toSet().take(4).toList();
-      buf.writeln('🔬 ${_lang == 'es' ? 'Exámenes clave:' : 'Exames-chave:'}');
+      buf.writeln('## ${_lang == 'es' ? 'Exámenes clave:' : 'Exames-chave:'}');
       for (final e in uniq) buf.writeln('  • $e');
       buf.writeln('');
     }
@@ -1268,19 +1268,19 @@ class AppProvider extends ChangeNotifier {
     // Alerta renal — só se ClCr relevantemente baixo
     final clcrVal = double.tryParse(clcrStr.replaceAll(',', '.'));
     if (clcrVal != null && clcrVal > 0 && clcrVal < 45) {
-      final level = clcrVal < 15 ? '⛔' : '⚠';
-      buf.writeln('🫘 $level ${_lang == 'es' ? 'ClCr $clcrStr — ajustar dosis renales' : 'ClCr $clcrStr — ajustar doses renais'}');
+      final level = clcrVal < 15 ? 'ALERTA' : 'Aten.';
+      buf.writeln('$level ${_lang == 'es' ? 'ClCr $clcrStr — ajustar dosis renales' : 'ClCr $clcrStr — ajustar doses renais'}');
       buf.writeln('');
     }
 
     // Alerta de idade — só uma linha compacta
     final ageVal = int.tryParse(_patient.age);
     if (ageVal != null && ageVal >= 75) {
-      buf.writeln('👴 ${_lang == 'es' ? 'Anciano: reducir dosis opioides/BZD, vigilar delirium.' : 'Idoso: reduzir dose opioides/BZD, vigilar delirium.'}');
+      buf.writeln(_lang == 'es' ? 'Idoso: reducir dosis opioides/BZD, vigilar delirium.' : 'Idoso: reduzir dose opioides/BZD, vigilar delirium.');
       buf.writeln('');
     }
 
-    buf.writeln('⚕ Apoio educacional.');
+    buf.writeln('Apoio educacional. Sempre confirme com fonte primária.');
     return buf.toString();
   }
 

@@ -225,18 +225,18 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
   Future<void> _approve(UserModel u) async {
     try {
       await AuthService.approveUser(u.uid, widget.currentAdmin.uid);
-      if (mounted) _snack('✅ ${u.displayName} $_approvedSnack', Colors.green);
+      if (mounted) _snack('${u.displayName} $_approvedSnack', Colors.green);
     } catch (e) {
-      if (mounted) _snack('❌ $_errorPrefix: $e', Colors.red);
+      if (mounted) _snack('$_errorPrefix: $e', Colors.red);
     }
   }
 
   Future<void> _unblock(UserModel u) async {
     try {
       await AuthService.unblockUser(u.uid, widget.currentAdmin.uid);
-      if (mounted) _snack('✅ ${u.displayName} $_unblockedSnack', Colors.green);
+      if (mounted) _snack('${u.displayName} $_unblockedSnack', Colors.green);
     } catch (e) {
-      if (mounted) _snack('❌ $_errorPrefix: $e', Colors.red);
+      if (mounted) _snack('$_errorPrefix: $e', Colors.red);
     }
   }
 
@@ -248,9 +248,9 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
     if (!confirm) return;
     try {
       await AuthService.blockUser(u.uid);
-      if (mounted) _snack('🚫 ${u.displayName} $_blockedSnack', Colors.orange);
+      if (mounted) _snack('${u.displayName} $_blockedSnack', Colors.orange);
     } catch (e) {
-      if (mounted) _snack('❌ $_errorPrefix: $e', Colors.red);
+      if (mounted) _snack('$_errorPrefix: $e', Colors.red);
     }
   }
 
@@ -264,9 +264,9 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
       if (!confirm) return;
       try {
         await AuthService.promoteToAdmin(u.uid);
-        if (mounted) _snack('⭐ ${u.displayName} $_promotedAdminSnack', kGold);
+        if (mounted) _snack('${u.displayName} $_promotedAdminSnack', kGold);
       } catch (e) {
-        if (mounted) _snack('❌ $_errorPrefix: $e', Colors.red);
+        if (mounted) _snack('$_errorPrefix: $e', Colors.red);
       }
     } else {
       // Admin normal só pode promover a supervisor
@@ -282,9 +282,9 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
     if (!confirm) return;
     try {
       await AuthService.promoteToSupervisor(u.uid);
-      if (mounted) _snack('🔰 ${u.displayName} $_promotedSupervisorSnack', Colors.blue);
+      if (mounted) _snack('${u.displayName} $_promotedSupervisorSnack', Colors.blue);
     } catch (e) {
-      if (mounted) _snack('❌ $_errorPrefix: $e', Colors.red);
+      if (mounted) _snack('$_errorPrefix: $e', Colors.red);
     }
   }
 
@@ -296,9 +296,9 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
     if (!confirm) return;
     try {
       await AuthService.demoteToUser(u.uid);
-      if (mounted) _snack('↘ ${u.displayName} $_demotedSnack', Colors.grey);
+      if (mounted) _snack('${u.displayName} $_demotedSnack', Colors.grey);
     } catch (e) {
-      if (mounted) _snack('❌ $_errorPrefix: $e', Colors.red);
+      if (mounted) _snack('$_errorPrefix: $e', Colors.red);
     }
   }
 
@@ -355,8 +355,8 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
       if (mounted) {
         _snack(
           value
-              ? (_isEs ? '🔴 Modo mantenimiento activado' : '🔴 Modo manutenção ativado')
-              : (_isEs ? '🟢 Sistema en línea nuevamente' : '🟢 Sistema online novamente'),
+              ? (_isEs ? 'Modo mantenimiento activado' : 'Modo manutenção ativado')
+              : (_isEs ? 'Sistema en línea nuevamente' : 'Sistema online novamente'),
           value ? Colors.orange : kGreen,
         );
       }
@@ -966,9 +966,9 @@ class _StatusBadge extends StatelessWidget {
       case UserStatus.approved:
         bg = Colors.green.withValues(alpha: 0.1); fg = Colors.green; label = 'Aprobado/Aprovado'; break;
       case UserStatus.pending:
-        bg = Colors.orange.withValues(alpha: 0.12); fg = Colors.orange; label = '⏳'; break;
+        bg = Colors.orange.withValues(alpha: 0.12); fg = Colors.orange; label = 'Pendente'; break;
       case UserStatus.blocked:
-        bg = Colors.red.withValues(alpha: 0.1); fg = Colors.red; label = '🚫'; break;
+        bg = Colors.red.withValues(alpha: 0.1); fg = Colors.red; label = 'Bloqueado'; break;
     }
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
@@ -1287,7 +1287,7 @@ class _AppUpdatesTabState extends State<_AppUpdatesTab> {
                 maxLines: 2, minLines: 1,
                 style: const TextStyle(fontSize: 13),
                 decoration: InputDecoration(
-                  hintText: 'Ex: 🔐 Login corrigido — maior estabilidade',
+                  hintText: 'Ex: Login corrigido — maior estabilidade',
                   hintStyle: const TextStyle(fontSize: 12, color: Color(0xFFBBBBBB)),
                   filled: true, fillColor: Colors.white,
                   isDense: true,
