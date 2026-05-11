@@ -393,7 +393,7 @@ class _WaHeader extends StatelessWidget {
               ),
             ),
             const SizedBox(width: 6),
-            // Limpar conversa
+            // Limpar conversa — só aparece quando há mensagens
             if (hasMessages)
               GestureDetector(
                 onTap: onClear,
@@ -410,21 +410,20 @@ class _WaHeader extends StatelessWidget {
                       color: Color(0xFFFFE8A6))),
                 ),
               ),
-            if (!hasMessages) ...[  
-              // Botão menu
-              GestureDetector(
-                onTap: () => Scaffold.of(context).openEndDrawer(),
-                child: Container(
-                  padding: const EdgeInsets.all(6),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8),
-                    color: Colors.white.withValues(alpha: 0.1),
-                  ),
-                  child: Icon(Icons.menu_rounded, size: 18,
-                    color: Colors.white.withValues(alpha: 0.8)),
+            const SizedBox(width: 4),
+            // Botão menu — sempre visível
+            GestureDetector(
+              onTap: () => Scaffold.of(context).openEndDrawer(),
+              child: Container(
+                padding: const EdgeInsets.all(6),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8),
+                  color: Colors.white.withValues(alpha: 0.1),
                 ),
+                child: Icon(Icons.menu_rounded, size: 18,
+                  color: Colors.white.withValues(alpha: 0.8)),
               ),
-            ],
+            ),
           ]),
         ),
       ),

@@ -190,14 +190,21 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
             padding: const EdgeInsets.fromLTRB(16, 10, 16, 12),
             child: Row(children: [
               Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                const Text('HISTÓRIA CLÍNICA', style: TextStyle(
-                  fontSize: 9, fontWeight: FontWeight.w900,
-                  color: Color(0xBFFFE8A6), letterSpacing: 2)),
+                Text(
+                  p.lang == 'es' ? 'HISTORIA CLÍNICA' : 'HISTÓRIA CLÍNICA',
+                  style: const TextStyle(
+                    fontSize: 9, fontWeight: FontWeight.w900,
+                    color: Color(0xBFFFE8A6), letterSpacing: 2)),
                 const SizedBox(height: 2),
-                const Text('Registro clínico completo', style: TextStyle(
-                  fontSize: 17, fontWeight: FontWeight.w900, color: Colors.white)),
+                Text(
+                  p.lang == 'es' ? 'Registro clínico completo' : 'Registro clínico completo',
+                  style: const TextStyle(
+                    fontSize: 17, fontWeight: FontWeight.w900, color: Colors.white)),
                 const SizedBox(height: 2),
-                Text('${mine.length} minhas • ${pub.length} públicas',
+                Text(
+                  p.lang == 'es'
+                    ? '${mine.length} mis HCs • ${pub.length} públicas'
+                    : '${mine.length} minhas • ${pub.length} públicas',
                   style: TextStyle(fontSize: 11,
                     color: Colors.white.withValues(alpha: 0.55),
                     fontWeight: FontWeight.w500)),

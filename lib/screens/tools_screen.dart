@@ -40,7 +40,13 @@ class _ToolsScreenState extends State<ToolsScreen> with SingleTickerProviderStat
     return Column(children: [
       // ── Header ──────────────────────────────────────────────────
       Container(
-        color: kToolDark,
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [Color(0xFF07110d), Color(0xFF123326), Color(0xFF075f45)],
+          ),
+        ),
         child: Column(children: [
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
@@ -220,11 +226,23 @@ class _BiometricsTabState extends State<_BiometricsTab> {
             const SizedBox(height: 10),
             GestureDetector(
               onTap: () => setState(() => _sexFem = !_sexFem),
-              child: Container(
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 200),
                 padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-                decoration: BoxDecoration(border: Border.all(color: kToolBorder)),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(
+                    color: _sexFem
+                        ? Colors.pink.withValues(alpha: 0.4)
+                        : const Color(0xFF1565C0).withValues(alpha: 0.3),
+                  ),
+                  color: _sexFem
+                      ? Colors.pink.withValues(alpha: 0.05)
+                      : const Color(0xFF1565C0).withValues(alpha: 0.04),
+                ),
                 child: Row(children: [
-                  Icon(_sexFem ? Icons.female : Icons.male, size: 18, color: _sexFem ? Colors.pink : const Color(0xFF1565C0)),
+                  Icon(_sexFem ? Icons.female : Icons.male, size: 18,
+                    color: _sexFem ? Colors.pink : const Color(0xFF1565C0)),
                   const SizedBox(width: 8),
                   Text(_sexFem ? (isEs ? 'Femenino' : 'Feminino') : (isEs ? 'Masculino' : 'Masculino'),
                     style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 14, color: kToolDark)),

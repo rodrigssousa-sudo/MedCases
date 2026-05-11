@@ -1200,15 +1200,40 @@ class _CategoryHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(left: 2, top: 4),
-      child: Text(
-        label.toUpperCase(),
-        style: TextStyle(
-          fontSize: 9.5,
-          fontWeight: FontWeight.w900,
-          letterSpacing: 1.6,
-          color: dark ? const Color(0xFFFFE8A6) : const Color(0xFF075f45),
+      padding: const EdgeInsets.fromLTRB(16, 4, 16, 0),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
+        decoration: BoxDecoration(
+          color: dark
+              ? const Color(0xFF07110d)
+              : const Color(0xFF07110d).withValues(alpha: 0.06),
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(
+            color: dark
+                ? Colors.white.withValues(alpha: 0.08)
+                : const Color(0xFF07110d).withValues(alpha: 0.12),
+          ),
         ),
+        child: Row(children: [
+          Container(
+            width: 3,
+            height: 12,
+            decoration: BoxDecoration(
+              color: const Color(0xFFFFE8A6),
+              borderRadius: BorderRadius.circular(2),
+            ),
+          ),
+          const SizedBox(width: 8),
+          Text(
+            label.toUpperCase(),
+            style: TextStyle(
+              fontSize: 9.5,
+              fontWeight: FontWeight.w900,
+              letterSpacing: 1.8,
+              color: dark ? const Color(0xFFFFE8A6) : const Color(0xFF07110d),
+            ),
+          ),
+        ]),
       ),
     );
   }
