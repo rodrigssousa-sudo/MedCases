@@ -3,7 +3,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../services/auth_service.dart';
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+  /// Callback opcional — quando fornecido, exibe botão voltar (usado no preview inline).
+  final VoidCallback? onBack;
+  const LoginScreen({super.key, this.onBack});
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -120,12 +122,8 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
       );
       // Se login OK e "Manter conectado" marcado → salva sessão completa
       if (result.success) await _saveSessionIfRequested(result);
-      // FIX: no Web, LoginScreen pode ser empilhada via Navigator.push
-      // pela _PreLoginPreview. Fazer pop ANTES de webUser.value mudar evita
-      // a race condition onde _PreLoginPreview é destruída antes do popUntil.
-      if (result.success && mounted && Navigator.of(context).canPop()) {
-        Navigator.of(context).pop();
-      }
+      // Web inline: onBack não é necessário — _AuthGate troca o widget raiz
+      // automaticamente quando webUser.value muda. Nada a fazer aqui.
     } else if (_mode == _Mode.register) {
       result = await AuthService.register(
         email: _emailCtrl.text,
@@ -163,6 +161,17 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: kDark,
+      // Botão voltar quando LoginScreen está inline (preview pré-login)
+      appBar: widget.onBack != null
+          ? AppBar(
+              backgroundColor: kDark,
+              elevation: 0,
+              leading: IconButton(
+                icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white70, size: 20),
+                onPressed: widget.onBack,
+              ),
+            )
+          : null,
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),

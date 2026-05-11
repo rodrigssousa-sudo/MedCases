@@ -311,6 +311,9 @@ class _PreLoginPreviewState extends State<_PreLoginPreview> {
   List<Map<String, dynamic>> _histories = [];
   bool _loading = true;
   String? _error;
+  // FIX DEFINITIVO: sem Navigator.push — LoginScreen é exibida inline.
+  // Quando webUser muda, _AuthGate troca o widget raiz sem conflito de Navigator.
+  bool _showLogin = false;
 
   static const _kDark    = Color(0xFF07110d);
   static const _kGreen   = Color(0xFF075f45);
@@ -321,15 +324,11 @@ class _PreLoginPreviewState extends State<_PreLoginPreview> {
   void initState() {
     super.initState();
     _loadPublic();
-    // Sem listener de webUser aqui — o pop() é feito na LoginScreen antes
-    // de webUser.value mudar, eliminando a race condition.
   }
 
   Future<void> _loadPublic() async {
     setState(() { _loading = true; _error = null; });
     try {
-      // FIX: usa FirestoreService REST em vez do SDK Firestore diretamente.
-      // SDK usa WebSocket que é bloqueado por CORS em domínios externos.
       final list = await FirestoreService.loadPublicHistories();
       final maps = list.map((h) => h.toJson()).toList();
       if (mounted) setState(() { _histories = maps; _loading = false; });
@@ -338,22 +337,19 @@ class _PreLoginPreviewState extends State<_PreLoginPreview> {
     }
   }
 
-  void _goLogin() {
-    Navigator.of(context).push(
-      PageRouteBuilder(
-        pageBuilder: (_, __, ___) => Theme(
-          data: MedCasesApp._authTheme,
-          child: const LoginScreen(),
-        ),
-        transitionsBuilder: (_, anim, __, child) =>
-            FadeTransition(opacity: anim, child: child),
-        transitionDuration: const Duration(milliseconds: 280),
-      ),
-    );
-  }
+  void _goLogin() => setState(() => _showLogin = true);
+  void _backToPreview() => setState(() => _showLogin = false);
 
   @override
   Widget build(BuildContext context) {
+    // FIX DEFINITIVO: sem Navigator.push — LoginScreen inline.
+    // _AuthGate troca o widget raiz quando webUser muda, sem conflito de stack.
+    if (_showLogin) {
+      return Theme(
+        data: MedCasesApp._authTheme,
+        child: LoginScreen(onBack: _backToPreview),
+      );
+    }
     return Scaffold(
       backgroundColor: _kDark,
       body: Column(children: [
