@@ -401,6 +401,9 @@ const _termMap = <String, String>{
 // ─────────────────────────────────────────────────────────────────────────────
 class DrugInteractionService {
 
+  /// Extrai termos reconhecidos de um texto livre — exposto para uso na UI.
+  static List<String> extractTerms(String text) => _extractTerms(text);
+
   /// Extrai termos de medicamentos a partir de um texto livre.
   /// Remove pontuação, divide por separadores comuns e normaliza.
   static List<String> _extractTerms(String text) {

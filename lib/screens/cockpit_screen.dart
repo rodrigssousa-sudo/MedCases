@@ -625,6 +625,12 @@ class _BiometricsBodyState extends State<_BiometricsBody> {
           onChanged: (v) => p.updatePatient('medications', v),
         ),
       ),
+      const SizedBox(height: 6),
+      _MedsChipsPanel(
+        medications: p.patient.medications,
+        selectedDrugs: p.selectedDrugs,
+        lang: p.lang,
+      ),
     ]);
   }
 }
@@ -1167,6 +1173,135 @@ class _InteractionPanelState extends State<_InteractionPanel> {
           ),
         );
       }),
+    ]);
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// PAINEL DE CHIPS — medicamentos reconhecidos em "Medicamentos em uso"
+// ─────────────────────────────────────────────────────────────────────────────
+class _MedsChipsPanel extends StatelessWidget {
+  final String medications;
+  final List selectedDrugs;
+  final String lang;
+  const _MedsChipsPanel({
+    required this.medications,
+    required this.selectedDrugs,
+    required this.lang,
+  });
+
+  bool get _isEs => lang == 'es';
+
+  @override
+  Widget build(BuildContext context) {
+    if (medications.trim().isEmpty) return const SizedBox.shrink();
+
+    // Termos reconhecidos pelo banco de interações
+    final recognized = DrugInteractionService.extractTerms(medications);
+
+    // Interações disponíveis (se há fármacos selecionados na calculadora)
+    final interactions = selectedDrugs.isNotEmpty
+        ? DrugInteractionService.checkInteractions(
+            selectedDrugNames:
+                selectedDrugs.map((d) => d.name as String).toList(),
+            patientMedicationsText: medications,
+          )
+        : <DrugInteraction>[];
+
+    if (recognized.isEmpty && interactions.isEmpty) return const SizedBox.shrink();
+
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      // ── Chips dos fármacos reconhecidos ──────────────────────────────────
+      if (recognized.isNotEmpty) ...[
+        Wrap(spacing: 6, runSpacing: 6, children: recognized.map((term) {
+          final hasIx = interactions.any(
+            (ix) =>
+                ix.drug1.toLowerCase().contains(term) ||
+                ix.drug2.toLowerCase().contains(term),
+          );
+          final chipColor  = hasIx ? const Color(0xFFCC2222) : const Color(0xFF065F46);
+          final chipBg     = hasIx ? const Color(0xFFFFF0F0) : const Color(0xFFECFDF5);
+          final chipBorder = hasIx ? const Color(0xFFFFCCCC) : const Color(0xFFBBF7D0);
+          return Container(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+              color: chipBg,
+              border: Border.all(color: chipBorder),
+            ),
+            child: Row(mainAxisSize: MainAxisSize.min, children: [
+              Icon(
+                hasIx ? Icons.warning_rounded : Icons.check_circle_rounded,
+                size: 11,
+                color: chipColor,
+              ),
+              const SizedBox(width: 4),
+              Text(
+                term,
+                style: TextStyle(
+                  fontSize: 11,
+                  fontWeight: FontWeight.w700,
+                  color: chipColor,
+                ),
+              ),
+            ]),
+          );
+        }).toList()),
+        const SizedBox(height: 8),
+      ],
+
+      // ── Banner de interações detectadas ──────────────────────────────────
+      if (interactions.isNotEmpty) ...[
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            color: const Color(0xFFFFF0F0),
+            border: Border.all(color: const Color(0xFFFFCCCC)),
+          ),
+          child: Row(children: [
+            const Icon(Icons.warning_rounded, size: 14, color: Color(0xFFCC2222)),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                _isEs
+                    ? '${interactions.length} interacción${interactions.length > 1 ? "es" : ""} con la medicación actual'
+                    : '${interactions.length} interaç${interactions.length > 1 ? "ões" : "ão"} com a medicação atual',
+                style: const TextStyle(
+                  fontSize: 11,
+                  fontWeight: FontWeight.w700,
+                  color: Color(0xFFCC2222),
+                ),
+              ),
+            ),
+          ]),
+        ),
+      ] else if (recognized.isNotEmpty && selectedDrugs.isNotEmpty) ...[
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            color: const Color(0xFFECFDF5),
+            border: Border.all(color: const Color(0xFFBBF7D0)),
+          ),
+          child: Row(children: [
+            const Icon(Icons.check_circle_rounded, size: 14, color: Color(0xFF065F46)),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                _isEs
+                    ? 'Sin interacciones detectadas con la medicación actual'
+                    : 'Sem interações com a medicação atual',
+                style: const TextStyle(
+                  fontSize: 11,
+                  fontWeight: FontWeight.w700,
+                  color: Color(0xFF065F46),
+                ),
+              ),
+            ),
+          ]),
+        ),
+      ],
     ]);
   }
 }
