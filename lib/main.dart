@@ -1729,7 +1729,7 @@ class _LegalBar extends StatelessWidget {
         const SizedBox(width: 4),
         Expanded(
           child: Text(
-            'Fins educacionais · Não substitui julgamento clínico · AHA 2020 · ESC 2023 · Harrison\'s 21ed · ANVISA · ACLS/ATLS',
+            'Fines educativos y soporte a la decisión clínica. No reemplaza el juicio médico profesional.',
             style: TextStyle(fontSize: 7.5, color: textColor, height: 1.2, letterSpacing: 0.1),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
