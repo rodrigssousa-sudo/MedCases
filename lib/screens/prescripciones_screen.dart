@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '../providers/app_provider.dart';
+import '../widgets/common_widgets.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // PRESCRIPCIONES SCREEN
@@ -31,8 +32,6 @@ class _PrescripcionesScreenState extends State<PrescripcionesScreen> {
     final p = context.watch<AppProvider>();
     final dark = p.darkMode;
     final es = p.lang == 'es';
-    final bg = dark ? const Color(0xFF0A1510) : const Color(0xFFF7F8FA);
-
     // ── Filtrar modelos ────────────────────────────────────────────────────
     final allModels = _prescriptionModels(es);
     final filtered = allModels.where((m) {
@@ -47,57 +46,28 @@ class _PrescripcionesScreenState extends State<PrescripcionesScreen> {
     final categories = allModels.map((m) => m.category).toSet().toList()..sort();
 
     return Column(children: [
-      // ── Barra de busca ───────────────────────────────────────────────────
-      Container(
-        color: bg,
-        padding: const EdgeInsets.fromLTRB(16, 8, 16, 6),
-        child: Column(children: [
-          // Campo de busca
-          Container(
-            height: 40,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(12),
-              color: dark ? const Color(0xFF0E1A14) : Colors.white,
-              border: Border.all(
-                color: dark ? const Color(0xFF1A2E20) : const Color(0xFFE2E6EA),
-              ),
-            ),
-            child: Row(children: [
-              const SizedBox(width: 12),
-              Icon(Icons.search_rounded, size: 18,
-                color: dark ? Colors.white38 : const Color(0xFFAAAAAA)),
-              const SizedBox(width: 8),
-              Expanded(
-                child: TextField(
-                  controller: _searchCtrl,
-                  onChanged: (v) => setState(() => _search = v),
-                  style: TextStyle(
-                    fontSize: 13,
-                    color: dark ? Colors.white : const Color(0xFF1A1A1A),
-                  ),
-                  decoration: InputDecoration(
-                    hintText: es ? 'Buscar prescripción...' : 'Buscar prescrição...',
-                    hintStyle: TextStyle(
-                      fontSize: 13,
-                      color: dark ? Colors.white30 : const Color(0xFFBBBBBB),
-                    ),
-                    border: InputBorder.none,
-                    isDense: true,
-                  ),
-                ),
-              ),
-              if (_search.isNotEmpty)
-                GestureDetector(
-                  onTap: () { _searchCtrl.clear(); setState(() => _search = ''); },
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
-                    child: Icon(Icons.close_rounded, size: 16,
-                      color: dark ? Colors.white38 : const Color(0xFFAAAAAA)),
-                  ),
-                ),
-            ]),
+
+      // ── Header premium ───────────────────────────────────────────────────
+      PremiumCard(child: SectionTitle(
+        eyebrow: 'Clinical Templates',
+        title: es ? 'Prescripciones' : 'Prescrições',
+        subtitle: es
+            ? 'Modelos listos para copiar y adaptar'
+            : 'Modelos prontos para copiar e adaptar',
+        light: true,
+      )),
+      const SizedBox(height: 12),
+
+      // ── Busca + filtros ──────────────────────────────────────────────────
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          MedInput(
+            controller: _searchCtrl,
+            hintText: es ? 'Buscar prescripción...' : 'Buscar prescrição...',
+            onChanged: (_) => setState(() => _search = _searchCtrl.text),
           ),
-          const SizedBox(height: 6),
+          const SizedBox(height: 8),
           // Chips de categoria
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
@@ -121,18 +91,26 @@ class _PrescripcionesScreenState extends State<PrescripcionesScreen> {
               )),
             ]),
           ),
+          const SizedBox(height: 6),
+          Text(
+            '${filtered.length} ${es ? 'modelos' : 'modelos'}',
+            style: const TextStyle(
+              fontSize: 12, fontWeight: FontWeight.w700,
+              color: Color(0xFF888888),
+            ),
+          ),
         ]),
       ),
+      const SizedBox(height: 12),
 
       // ── Lista de modelos ─────────────────────────────────────────────────
       Expanded(
         child: filtered.isEmpty
             ? _EmptyState(dark: dark, es: es)
             : ListView.builder(
-                padding: const EdgeInsets.fromLTRB(0, 8, 0, 80),
+                padding: const EdgeInsets.fromLTRB(0, 0, 0, 80),
                 itemCount: filtered.length,
                 itemBuilder: (ctx, i) {
-                  // Inserir cabeçalhos de categoria
                   final model = filtered[i];
                   final showHeader = i == 0 ||
                       filtered[i - 1].category != model.category;
