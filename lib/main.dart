@@ -112,11 +112,11 @@ class MedCasesApp extends StatelessWidget {
             onPrimary: const Color(0xFF1A1A1A),
             secondary: const Color(0xFF2E7D5E),
             onSecondary: Colors.white,
-            surface: const Color(0xFF1C1C1E),
-            onSurface: const Color(0xFFE8E8EA),
-            surfaceContainerHighest: const Color(0xFF2C2C2E),
-            outline: const Color(0xFF48484A),
-            outlineVariant: const Color(0xFF3A3A3C),
+            surface: const Color(0xFF141A17),
+            onSurface: const Color(0xFFEAEBEA),
+            surfaceContainerHighest: const Color(0xFF1E2922),
+            outline: const Color(0xFF2E3D34),
+            outlineVariant: const Color(0xFF253020),
             error: const Color(0xFFFF6B6B),
             onError: Colors.white,
           )
@@ -125,10 +125,21 @@ class MedCasesApp extends StatelessWidget {
             secondary: const Color(0xFF075f45),
             surface: const Color(0xFFFFFDF8),
             onSurface: const Color(0xFF07110d),
+            surfaceContainerHighest: const Color(0xFFF0EDE6),
           ),
-    scaffoldBackgroundColor: dark ? const Color(0xFF111113) : const Color(0xFFF7F8FA),
-    cardColor: dark ? const Color(0xFF1C1C1E) : Colors.white,
-    dividerColor: dark ? const Color(0xFF3A3A3C) : const Color(0xFFE2E6EA),
+    scaffoldBackgroundColor: dark ? const Color(0xFF0C1410) : const Color(0xFFF5F6F8),
+    cardColor: dark ? const Color(0xFF141A17) : Colors.white,
+    dividerColor: dark ? const Color(0xFF253020) : const Color(0xFFE2E6EA),
+    // Transições de página suaves
+    pageTransitionsTheme: const PageTransitionsTheme(
+      builders: {
+        TargetPlatform.android: FadeUpwardsPageTransitionsBuilder(),
+        TargetPlatform.iOS:     CupertinoPageTransitionsBuilder(),
+        TargetPlatform.linux:   FadeUpwardsPageTransitionsBuilder(),
+        TargetPlatform.macOS:   CupertinoPageTransitionsBuilder(),
+        TargetPlatform.windows: FadeUpwardsPageTransitionsBuilder(),
+      },
+    ),
   );
 
   static ThemeData get _authTheme => ThemeData(
@@ -141,6 +152,15 @@ class MedCasesApp extends StatelessWidget {
       secondary: Color(0xFF075f45),
       surface: Color(0xFF07110d),
       onSurface: Colors.white,
+    ),
+    pageTransitionsTheme: const PageTransitionsTheme(
+      builders: {
+        TargetPlatform.android: FadeUpwardsPageTransitionsBuilder(),
+        TargetPlatform.iOS:     CupertinoPageTransitionsBuilder(),
+        TargetPlatform.linux:   FadeUpwardsPageTransitionsBuilder(),
+        TargetPlatform.macOS:   CupertinoPageTransitionsBuilder(),
+        TargetPlatform.windows: FadeUpwardsPageTransitionsBuilder(),
+      },
     ),
   );
 }
@@ -834,25 +854,39 @@ class _SplashScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF07110d),
+      backgroundColor: const Color(0xFF060F0A),
       body: Center(
         child: Column(mainAxisSize: MainAxisSize.min, children: [
-          const BrandMark(small: false),
-          const SizedBox(height: 32),
+          // Logo com glow sutil
+          Container(
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              boxShadow: [
+                BoxShadow(
+                  color: const Color(0xFFC5A365).withValues(alpha: 0.20),
+                  blurRadius: 48,
+                  spreadRadius: 8,
+                ),
+              ],
+            ),
+            child: const BrandMark(small: false),
+          ),
+          const SizedBox(height: 36),
           SizedBox(
-            width: 28, height: 28,
+            width: 24, height: 24,
             child: CircularProgressIndicator(
-              strokeWidth: 2.5,
-              color: const Color(0xFFFFE8A6).withValues(alpha: 0.7),
+              strokeWidth: 2,
+              color: const Color(0xFFFFE8A6).withValues(alpha: 0.55),
             ),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 18),
           Text(
             'Cargando MedCases Pro...',
             style: TextStyle(
-              fontSize: 12,
-              color: Colors.white.withValues(alpha: 0.4),
-              fontWeight: FontWeight.w600,
+              fontSize: 11,
+              color: Colors.white.withValues(alpha: 0.30),
+              fontWeight: FontWeight.w500,
+              letterSpacing: 0.3,
             ),
           ),
         ]),
@@ -1313,20 +1347,26 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
           Container(
             decoration: BoxDecoration(
               color: navBg,
-              border: Border(top: BorderSide(color: navBorder, width: 1)),
+              border: Border(top: BorderSide(color: navBorder, width: 0.5)),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.12),
-                  blurRadius: 20,
-                  offset: const Offset(0, -4),
+                  color: Colors.black.withValues(alpha: dark ? 0.30 : 0.10),
+                  blurRadius: 24,
+                  offset: const Offset(0, -6),
+                ),
+                BoxShadow(
+                  color: (dark ? const Color(0xFF075f45) : const Color(0xFF07110d))
+                      .withValues(alpha: 0.04),
+                  blurRadius: 12,
+                  offset: const Offset(0, -2),
                 ),
               ],
             ),
             child: SafeArea(
               top: false,
-              bottom: false, // LegalBar cuida do padding inferior
+              bottom: false,
               child: SizedBox(
-                height: 48,
+                height: 52,
                 child: Stack(
                   clipBehavior: Clip.none,
                   alignment: Alignment.topCenter,
@@ -1364,37 +1404,40 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
 
   Widget _buildNavBtn(int idx, IconData icon, String label, bool dark, dynamic p) {
     final active = _tab == idx;
+    final activeColor  = dark ? const Color(0xFFFFE8A6) : const Color(0xFF07110d);
+    final inactiveColor = dark ? Colors.white.withValues(alpha: 0.32) : const Color(0xFFB0B8C0);
+
     return Expanded(
       child: GestureDetector(
         behavior: HitTestBehavior.opaque,
         onTap: () => setState(() => _tab = idx),
         child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
           AnimatedContainer(
-            duration: const Duration(milliseconds: 180),
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
+            duration: const Duration(milliseconds: 220),
+            curve: Curves.easeOutCubic,
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 3),
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(12),
               color: active
-                  ? const Color(0xFF07110d).withValues(alpha: 0.12)
+                  ? (dark
+                      ? const Color(0xFFFFE8A6).withValues(alpha: 0.10)
+                      : const Color(0xFF07110d).withValues(alpha: 0.08))
                   : Colors.transparent,
             ),
             child: Icon(
               icon,
               size: 20,
-              color: active
-                  ? (dark ? const Color(0xFFFFE8A6) : const Color(0xFF07110d))
-                  : (dark ? Colors.white38 : const Color(0xFFAAAAAA)),
+              color: active ? activeColor : inactiveColor,
             ),
           ),
-          const SizedBox(height: 1),
+          const SizedBox(height: 2),
           AnimatedDefaultTextStyle(
-            duration: const Duration(milliseconds: 180),
+            duration: const Duration(milliseconds: 200),
             style: TextStyle(
               fontSize: 8.5,
               fontWeight: active ? FontWeight.w800 : FontWeight.w500,
-              color: active
-                  ? (dark ? const Color(0xFFFFE8A6) : const Color(0xFF07110d))
-                  : (dark ? Colors.white38 : const Color(0xFFAAAAAA)),
+              color: active ? activeColor : inactiveColor,
+              letterSpacing: active ? 0.2 : 0,
             ),
             child: Text(label, overflow: TextOverflow.ellipsis),
           ),
@@ -1414,63 +1457,69 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
           mainAxisSize: MainAxisSize.min,
           children: [
             AnimatedContainer(
-              duration: const Duration(milliseconds: 220),
+              duration: const Duration(milliseconds: 260),
               curve: Curves.easeOutBack,
-              width: active ? 52 : 48,
-              height: active ? 52 : 48,
+              width: active ? 54 : 50,
+              height: active ? 54 : 50,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 gradient: LinearGradient(
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                   colors: active
-                      ? [const Color(0xFFD4AF5A), const Color(0xFFC5A365), const Color(0xFF8B6914)]
-                      : [const Color(0xFF0D2018), const Color(0xFF07110d), const Color(0xFF075f45)],
+                      ? [const Color(0xFFE8C070), const Color(0xFFC5A365), const Color(0xFF8B6914)]
+                      : [const Color(0xFF0D2018), const Color(0xFF081510), const Color(0xFF075f45)],
+                  stops: const [0.0, 0.5, 1.0],
                 ),
                 boxShadow: [
                   BoxShadow(
                     color: active
-                        ? const Color(0xFFC5A365).withValues(alpha: 0.65)
-                        : const Color(0xFF075f45).withValues(alpha: 0.5),
-                    blurRadius: active ? 22 : 14,
-                    spreadRadius: active ? 3 : 1,
-                    offset: const Offset(0, 2),
+                        ? const Color(0xFFC5A365).withValues(alpha: 0.70)
+                        : const Color(0xFF075f45).withValues(alpha: 0.45),
+                    blurRadius: active ? 28 : 16,
+                    spreadRadius: active ? 2 : 0,
+                    offset: const Offset(0, 3),
                   ),
                   BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.35),
-                    blurRadius: 8,
-                    offset: const Offset(0, 4),
+                    color: Colors.black.withValues(alpha: 0.40),
+                    blurRadius: 10,
+                    offset: const Offset(0, 5),
                   ),
                 ],
                 border: Border.all(
                   color: active
-                      ? const Color(0xFFFFE8A6).withValues(alpha: 0.6)
-                      : const Color(0xFF1A3528).withValues(alpha: 0.8),
-                  width: active ? 2.5 : 1.5,
+                      ? const Color(0xFFFFE8A6).withValues(alpha: 0.65)
+                      : const Color(0xFF1F3D28).withValues(alpha: 0.9),
+                  width: active ? 2 : 1.5,
                 ),
               ),
               child: Center(
                 child: AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 200),
+                  duration: const Duration(milliseconds: 220),
+                  transitionBuilder: (child, anim) => ScaleTransition(scale: anim, child: child),
                   child: Icon(
                     Icons.psychology_rounded,
                     key: ValueKey(active),
-                    size: active ? 30 : 27,
-                    color: active ? const Color(0xFF07110d) : const Color(0xFFFFE8A6),
+                    size: active ? 30 : 26,
+                    color: active
+                        ? const Color(0xFF07110d)
+                        : const Color(0xFFFFE8A6).withValues(alpha: 0.9),
                   ),
                 ),
               ),
             ),
-            const SizedBox(height: 2),
+            const SizedBox(height: 3),
             AnimatedDefaultTextStyle(
-              duration: const Duration(milliseconds: 180),
+              duration: const Duration(milliseconds: 200),
               style: TextStyle(
                 fontSize: 8.5,
                 fontWeight: FontWeight.w900,
                 letterSpacing: 0.3,
                 color: active
                     ? const Color(0xFFC5A365)
-                    : (dark ? Colors.white54 : const Color(0xFF777777)),
+                    : (dark
+                        ? Colors.white.withValues(alpha: 0.38)
+                        : const Color(0xFF909090)),
               ),
               child: Text(p.t('ai')),
             ),
@@ -1495,20 +1544,27 @@ class _RxProtoCombo extends StatelessWidget {
   Widget build(BuildContext context) {
     final p = context.watch<AppProvider>();
     final dark = p.darkMode;
-    final bg = dark ? const Color(0xFF0A1510) : const Color(0xFFF7F8FA);
-    final borderCol = dark ? const Color(0xFF1A2E20) : const Color(0xFFE2E6EA);
+    final bg = dark ? const Color(0xFF0A1510) : const Color(0xFFF5F6F8);
+    final borderCol = dark ? const Color(0xFF1E3028) : const Color(0xFFE0E4E8);
 
     return Column(children: [
       // ── Seletor de sub-tab ────────────────────────────────────────────────
       Container(
         color: bg,
-        padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
+        padding: const EdgeInsets.fromLTRB(14, 8, 14, 6),
         child: Container(
-          height: 38,
+          height: 40,
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12),
-            color: dark ? const Color(0xFF0E1A14) : Colors.white,
-            border: Border.all(color: borderCol),
+            borderRadius: BorderRadius.circular(14),
+            color: dark ? const Color(0xFF0C1812) : Colors.white,
+            border: Border.all(color: borderCol, width: 0.8),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: dark ? 0.18 : 0.04),
+                blurRadius: 8,
+                offset: const Offset(0, 2),
+              ),
+            ],
           ),
           child: Row(children: [
             _SubTabBtn(
@@ -1578,33 +1634,56 @@ class _SubTabBtn extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final activeColor = dark ? const Color(0xFFFFE8A6) : const Color(0xFF07110d);
-    final inactiveColor = dark ? Colors.white38 : const Color(0xFFAAAAAA);
+    final activeColor   = dark ? const Color(0xFFFFE8A6) : const Color(0xFF07110d);
+    final inactiveColor = dark
+        ? Colors.white.withValues(alpha: 0.30)
+        : const Color(0xFFB8BEC4);
     final activeBg = dark
         ? const Color(0xFF1A3528)
-        : const Color(0xFF07110d).withValues(alpha: 0.08);
+        : const Color(0xFF07110d).withValues(alpha: 0.09);
 
     return Expanded(
       child: GestureDetector(
         behavior: HitTestBehavior.opaque,
         onTap: onTap,
         child: AnimatedContainer(
-          duration: const Duration(milliseconds: 180),
+          duration: const Duration(milliseconds: 200),
+          curve: Curves.easeOutCubic,
           margin: const EdgeInsets.all(4),
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(11),
             color: active ? activeBg : Colors.transparent,
+            boxShadow: active
+                ? [
+                    BoxShadow(
+                      color: (dark
+                              ? const Color(0xFFFFE8A6)
+                              : const Color(0xFF07110d))
+                          .withValues(alpha: 0.08),
+                      blurRadius: 6,
+                      offset: const Offset(0, 1),
+                    ),
+                  ]
+                : null,
           ),
           child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-            Icon(icon, size: 16,
-              color: active ? activeColor : inactiveColor),
-            const SizedBox(width: 6),
+            AnimatedSwitcher(
+              duration: const Duration(milliseconds: 180),
+              child: Icon(
+                icon,
+                key: ValueKey(active),
+                size: active ? 15 : 14,
+                color: active ? activeColor : inactiveColor,
+              ),
+            ),
+            const SizedBox(width: 5),
             Text(
               label,
               style: TextStyle(
-                fontSize: 12,
+                fontSize: 11.5,
                 fontWeight: active ? FontWeight.w800 : FontWeight.w500,
                 color: active ? activeColor : inactiveColor,
+                letterSpacing: active ? 0.1 : 0,
               ),
             ),
           ]),
@@ -1635,28 +1714,45 @@ class _MiniContextBar extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         gradient: const LinearGradient(
-          begin: Alignment.topLeft, end: Alignment.bottomRight,
-          colors: [Color(0xFF07110d), Color(0xFF123326), Color(0xFF075f45)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [Color(0xFF060F0A), Color(0xFF0D2418), Color(0xFF0A4A30)],
+          stops: [0.0, 0.5, 1.0],
         ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.30),
+            blurRadius: 16,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: SafeArea(
         bottom: false,
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(12, 6, 8, 6),
+          padding: const EdgeInsets.fromLTRB(14, 7, 10, 7),
           child: Row(children: [
+            // Breadcrumb: logo → nome da aba
             GestureDetector(
               onTap: onHome,
               child: Row(mainAxisSize: MainAxisSize.min, children: [
                 const BrandMark(small: true),
-                const SizedBox(width: 8),
-                Icon(Icons.chevron_right_rounded, size: 14,
-                    color: Colors.white.withValues(alpha: 0.45)),
-                const SizedBox(width: 4),
-                Text(name,
+                const SizedBox(width: 6),
+                Icon(
+                  Icons.chevron_right_rounded,
+                  size: 13,
+                  color: Colors.white.withValues(alpha: 0.35),
+                ),
+                const SizedBox(width: 3),
+                Text(
+                  name,
                   style: const TextStyle(
-                    fontSize: 13, fontWeight: FontWeight.w800,
-                    color: Colors.white, letterSpacing: -0.2,
-                  )),
+                    fontSize: 13,
+                    fontWeight: FontWeight.w800,
+                    color: Colors.white,
+                    letterSpacing: -0.2,
+                  ),
+                ),
               ]),
             ),
             const Spacer(),
@@ -1666,35 +1762,50 @@ class _MiniContextBar extends StatelessWidget {
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8),
-                  color: Colors.white.withValues(alpha: 0.1),
-                  border: Border.all(color: Colors.white.withValues(alpha: 0.18)),
+                  borderRadius: BorderRadius.circular(9),
+                  color: Colors.white.withValues(alpha: 0.07),
+                  border: Border.all(
+                    color: Colors.white.withValues(alpha: 0.13),
+                    width: 0.8,
+                  ),
                 ),
                 child: Row(mainAxisSize: MainAxisSize.min, children: [
-                  Icon(Icons.home_rounded, size: 13,
-                      color: const Color(0xFFFFE8A6).withValues(alpha: 0.9)),
+                  Icon(
+                    Icons.home_rounded,
+                    size: 13,
+                    color: const Color(0xFFFFE8A6).withValues(alpha: 0.85),
+                  ),
                   const SizedBox(width: 4),
-                  const Text('Inicio',
+                  const Text(
+                    'Inicio',
                     style: TextStyle(
-                      fontSize: 10, fontWeight: FontWeight.w700,
+                      fontSize: 10,
+                      fontWeight: FontWeight.w700,
                       color: Color(0xFFFFE8A6),
-                    )),
+                    ),
+                  ),
                 ]),
               ),
             ),
-            const SizedBox(width: 8),
-            // Botão menu lateral
+            const SizedBox(width: 6),
+            // Botão menu
             GestureDetector(
               onTap: () => Scaffold.of(context).openEndDrawer(),
               child: Container(
-                padding: const EdgeInsets.all(7),
+                padding: const EdgeInsets.all(6),
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8),
-                  color: Colors.white.withValues(alpha: 0.1),
-                  border: Border.all(color: Colors.white.withValues(alpha: 0.18)),
+                  borderRadius: BorderRadius.circular(9),
+                  color: Colors.white.withValues(alpha: 0.07),
+                  border: Border.all(
+                    color: Colors.white.withValues(alpha: 0.13),
+                    width: 0.8,
+                  ),
                 ),
-                child: Icon(Icons.menu_rounded, size: 16,
-                    color: const Color(0xFFFFE8A6).withValues(alpha: 0.9)),
+                child: Icon(
+                  Icons.menu_rounded,
+                  size: 16,
+                  color: const Color(0xFFFFE8A6).withValues(alpha: 0.85),
+                ),
               ),
             ),
           ]),
@@ -1711,31 +1822,38 @@ class _LegalBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bg     = dark ? const Color(0xFF060E09) : const Color(0xFFEFF1F3);
-    final border = dark ? const Color(0xFF1A2E20) : const Color(0xFFDDE0E4);
+    final bg        = dark ? const Color(0xFF080F0B) : const Color(0xFFF0F2F4);
+    final border    = dark ? const Color(0xFF1A2820) : const Color(0xFFDDE1E6);
     final textColor = dark
-        ? Colors.white.withValues(alpha: 0.32)
-        : const Color(0xFF9098A0);
+        ? Colors.white.withValues(alpha: 0.28)
+        : const Color(0xFF98A0A8);
 
-    return Container(
-      width: double.infinity,
-      decoration: BoxDecoration(
-        color: bg,
-        border: Border(top: BorderSide(color: border, width: 0.5)),
-      ),
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 3),
-      child: Row(children: [
-        Icon(Icons.info_outline_rounded, size: 9, color: textColor),
-        const SizedBox(width: 4),
-        Expanded(
-          child: Text(
-            'Fines educativos y soporte a la decisión clínica. No reemplaza el juicio médico profesional.',
-            style: TextStyle(fontSize: 7.5, color: textColor, height: 1.2, letterSpacing: 0.1),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
+    return SafeArea(
+      top: false,
+      child: Container(
+        width: double.infinity,
+        decoration: BoxDecoration(
+          color: bg,
+          border: Border(top: BorderSide(color: border, width: 0.5)),
         ),
-      ]),
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
+        child: Row(children: [
+          Icon(Icons.info_outline_rounded, size: 8.5, color: textColor.withValues(alpha: 0.7)),
+          const SizedBox(width: 5),
+          Expanded(
+            child: Text(
+              'Fines educativos y soporte a la decisión clínica. No reemplaza el juicio médico profesional.',
+              style: TextStyle(
+                fontSize: 7.5, color: textColor,
+                height: 1.3, letterSpacing: 0.15,
+                fontWeight: FontWeight.w500,
+              ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        ]),
+      ),
     );
   }
 }
@@ -1864,13 +1982,18 @@ class _AppDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final dark = p.darkMode;
-    final bg      = dark ? const Color(0xFF0D1A12) : Colors.white;
+    final bg      = dark ? const Color(0xFF0B1510) : Colors.white;
     final divider = dark ? const Color(0xFF1A2E20) : const Color(0xFFEEEBE4);
     final textCol = dark ? Colors.white : _kDark;
-    final subCol  = dark ? Colors.white38 : const Color(0xFF888888);
+    final subCol  = dark ? Colors.white.withValues(alpha: 0.38) : const Color(0xFF888888);
+
+    // Iniciais para o avatar no drawer
+    final initials = p.userName.isNotEmpty
+        ? p.userName.trim().split(' ').take(2).map((w) => w[0].toUpperCase()).join()
+        : 'M';
 
     return Drawer(
-      width: 290,
+      width: 292,
       backgroundColor: bg,
       child: SafeArea(
         child: Column(
@@ -1878,64 +2001,134 @@ class _AppDrawer extends StatelessWidget {
           children: [
             // ── Cabeçalho do drawer ─────────────────────────────────────────
             Container(
-              padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
-              decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft, end: Alignment.bottomRight,
-                  colors: [_kDark, Color(0xFF123326), _kGreen],
+              padding: const EdgeInsets.fromLTRB(18, 18, 18, 20),
+              decoration: BoxDecoration(
+                gradient: const LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [Color(0xFF060F0A), Color(0xFF0D2418), Color(0xFF0A4A30)],
+                  stops: [0.0, 0.5, 1.0],
                 ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.25),
+                    blurRadius: 16,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
               ),
               child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                // Linha topo: logo + fechar
                 Row(children: [
                   const BrandMark(small: false),
                   const Spacer(),
                   GestureDetector(
                     onTap: () => _close(context),
                     child: Container(
-                      padding: const EdgeInsets.all(6),
+                      padding: const EdgeInsets.all(7),
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8),
-                        color: Colors.white.withValues(alpha: 0.1),
+                        borderRadius: BorderRadius.circular(10),
+                        color: Colors.white.withValues(alpha: 0.08),
+                        border: Border.all(
+                          color: Colors.white.withValues(alpha: 0.12),
+                          width: 0.8,
+                        ),
                       ),
-                      child: Icon(Icons.close_rounded, size: 16,
-                          color: Colors.white.withValues(alpha: 0.7)),
+                      child: Icon(Icons.close_rounded, size: 15,
+                          color: Colors.white.withValues(alpha: 0.65)),
                     ),
                   ),
                 ]),
-                const SizedBox(height: 14),
-                Text(
-                  p.userName.isNotEmpty ? p.userName : 'MedCases Pro',
-                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w900, color: Colors.white),
-                  overflow: TextOverflow.ellipsis,
-                ),
-                if (p.currentUser?.profession?.isNotEmpty ?? false) ...[
-                  const SizedBox(height: 2),
-                  Text(
-                    p.currentUser!.profession!,
-                    style: TextStyle(fontSize: 11, color: Colors.white.withValues(alpha: 0.55), fontWeight: FontWeight.w500),
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ],
-                if (p.currentUser?.institution?.isNotEmpty ?? false) ...[
-                  const SizedBox(height: 1),
-                  Text(
-                    p.currentUser!.institution!,
-                    style: TextStyle(fontSize: 10, color: Colors.white.withValues(alpha: 0.4), fontWeight: FontWeight.w500),
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ],
-                if (p.isAdmin || p.isMaster) ...[
-                  const SizedBox(height: 8),
+                const SizedBox(height: 16),
+                // Avatar + nome lado a lado
+                Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
+                  // Avatar circular
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                    width: 42,
+                    height: 42,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      gradient: const LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [Color(0xFF1F4030), Color(0xFF0D2018)],
+                      ),
+                      border: Border.all(
+                        color: _kGold.withValues(alpha: 0.45),
+                        width: 1.5,
+                      ),
+                    ),
+                    child: Center(
+                      child: Text(
+                        initials,
+                        style: const TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w900,
+                          color: Color(0xFFFFE8A6),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  // Nome + profissão
+                  Expanded(
+                    child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                      Text(
+                        p.userName.isNotEmpty ? p.userName : 'MedCases Pro',
+                        style: const TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w900,
+                          color: Colors.white,
+                          letterSpacing: -0.2,
+                          height: 1.1,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      if (p.currentUser?.profession?.isNotEmpty ?? false) ...[
+                        const SizedBox(height: 3),
+                        Text(
+                          p.currentUser!.profession!,
+                          style: TextStyle(
+                            fontSize: 11,
+                            color: Colors.white.withValues(alpha: 0.52),
+                            fontWeight: FontWeight.w500,
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ],
+                      if (p.currentUser?.institution?.isNotEmpty ?? false) ...[
+                        const SizedBox(height: 1),
+                        Text(
+                          p.currentUser!.institution!,
+                          style: TextStyle(
+                            fontSize: 10,
+                            color: Colors.white.withValues(alpha: 0.35),
+                            fontWeight: FontWeight.w500,
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ],
+                    ]),
+                  ),
+                ]),
+                // Badge admin
+                if (p.isAdmin || p.isMaster) ...[
+                  const SizedBox(height: 12),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 4),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(20),
-                      color: _kGold.withValues(alpha: 0.2),
-                      border: Border.all(color: _kGold.withValues(alpha: 0.5)),
+                      color: _kGold.withValues(alpha: 0.15),
+                      border: Border.all(color: _kGold.withValues(alpha: 0.45)),
                     ),
                     child: Text(
                       p.isMaster ? 'MASTER' : 'ADMIN',
-                      style: const TextStyle(fontSize: 9, fontWeight: FontWeight.w900, color: _kGoldL, letterSpacing: 0.5),
+                      style: const TextStyle(
+                        fontSize: 9,
+                        fontWeight: FontWeight.w900,
+                        color: _kGoldL,
+                        letterSpacing: 0.8,
+                      ),
                     ),
                   ),
                 ],
@@ -2180,26 +2373,55 @@ class _DrawerItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: onTap,
+      borderRadius: BorderRadius.circular(8),
+      splashColor: iconColor.withValues(alpha: 0.06),
+      highlightColor: iconColor.withValues(alpha: 0.04),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 13),
         child: Row(children: [
           Container(
-            padding: const EdgeInsets.all(8),
+            width: 36,
+            height: 36,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),
-              color: iconColor.withValues(alpha: 0.12),
-              border: Border.all(color: iconColor.withValues(alpha: 0.3)),
+              color: iconColor.withValues(alpha: 0.10),
+              border: Border.all(
+                color: iconColor.withValues(alpha: 0.22),
+                width: 0.8,
+              ),
             ),
-            child: Icon(icon, size: 18, color: iconColor),
+            child: Icon(icon, size: 17, color: iconColor),
           ),
           const SizedBox(width: 14),
           Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text(title, style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: textCol)),
-            Text(subtitle, style: TextStyle(fontSize: 11, color: subCol, fontWeight: FontWeight.w500)),
+            Text(
+              title,
+              style: TextStyle(
+                fontSize: 13.5,
+                fontWeight: FontWeight.w700,
+                color: textCol,
+                letterSpacing: -0.1,
+              ),
+            ),
+            const SizedBox(height: 1),
+            Text(
+              subtitle,
+              style: TextStyle(
+                fontSize: 11,
+                color: subCol,
+                fontWeight: FontWeight.w400,
+              ),
+            ),
           ])),
           if (trailing != null) ...[
             const SizedBox(width: 8),
             trailing!,
+          ] else ...[
+            Icon(
+              Icons.chevron_right_rounded,
+              size: 16,
+              color: subCol.withValues(alpha: 0.5),
+            ),
           ],
         ]),
       ),
@@ -2216,55 +2438,135 @@ class _AppHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final p = context.watch<AppProvider>();
+    // Iniciais do nome para avatar
+    final initials = p.userName.isNotEmpty
+        ? p.userName.trim().split(' ').take(2).map((w) => w[0].toUpperCase()).join()
+        : 'M';
+
     return Container(
       decoration: BoxDecoration(
         gradient: const LinearGradient(
-          begin: Alignment.topLeft, end: Alignment.bottomRight,
-          colors: [Color(0xFF07110d), Color(0xFF123326), Color(0xFF075f45)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [Color(0xFF060F0A), Color(0xFF0D2418), Color(0xFF0A4A30)],
+          stops: [0.0, 0.5, 1.0],
         ),
-        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.25), blurRadius: 16, offset: const Offset(0, 4))],
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.38),
+            blurRadius: 20,
+            offset: const Offset(0, 5),
+          ),
+          BoxShadow(
+            color: const Color(0xFF075f45).withValues(alpha: 0.18),
+            blurRadius: 32,
+            offset: const Offset(0, 8),
+          ),
+        ],
       ),
       child: SafeArea(
         bottom: false,
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(16, 10, 16, 12),
+          padding: const EdgeInsets.fromLTRB(16, 11, 14, 13),
           child: Row(children: [
+            // Logo clicável
             GestureDetector(
               onTap: () => onTabChange(0),
               child: const BrandMark(small: true),
             ),
             const SizedBox(width: 12),
-            Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Row(children: [
-                Expanded(
-                  child: Text(p.userName,
-                    style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w900, color: Colors.white),
-                    overflow: TextOverflow.ellipsis),
-                ),
-
-              ]),
-              Text(p.lang == 'es' ? 'Apoyo clínico educativo' : 'Apoio clínico educacional',
-                style: TextStyle(fontSize: 10, color: Colors.white.withValues(alpha: 0.55), fontWeight: FontWeight.w600)),
-            ])),
-
-            // Botão hamburguer → abre Drawer lateral direito
+            // Nome + subtítulo
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    p.userName.isNotEmpty ? p.userName : 'MedCases Pro',
+                    style: const TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w800,
+                      color: Colors.white,
+                      letterSpacing: -0.2,
+                      height: 1.1,
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    p.lang == 'es' ? 'Apoyo clínico educativo' : 'Apoio clínico educacional',
+                    style: TextStyle(
+                      fontSize: 10,
+                      color: Colors.white.withValues(alpha: 0.48),
+                      fontWeight: FontWeight.w500,
+                      letterSpacing: 0.1,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(width: 10),
+            // Badge de idioma + avatar + menu — bloco unificado
             GestureDetector(
               onTap: () => Scaffold.of(context).openEndDrawer(),
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+                padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: Colors.white.withValues(alpha: 0.1),
-                  border: Border.all(color: Colors.white.withValues(alpha: 0.2)),
+                  borderRadius: BorderRadius.circular(22),
+                  color: Colors.white.withValues(alpha: 0.06),
+                  border: Border.all(
+                    color: Colors.white.withValues(alpha: 0.13),
+                    width: 1,
+                  ),
                 ),
                 child: Row(mainAxisSize: MainAxisSize.min, children: [
-                  Text(
-                    p.lang.toUpperCase(),
-                    style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w900, color: Color(0xFFFFE8A6), letterSpacing: 0.8),
+                  // Badge idioma
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: const Color(0xFFC5A365).withValues(alpha: 0.15),
+                    ),
+                    child: Text(
+                      p.lang.toUpperCase(),
+                      style: const TextStyle(
+                        fontSize: 9,
+                        fontWeight: FontWeight.w900,
+                        color: Color(0xFFFFE8A6),
+                        letterSpacing: 1,
+                      ),
+                    ),
                   ),
                   const SizedBox(width: 6),
-                  Icon(Icons.menu_rounded, size: 15,
-                      color: const Color(0xFFFFE8A6).withValues(alpha: 0.85)),
+                  // Avatar com iniciais
+                  Container(
+                    width: 30,
+                    height: 30,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      gradient: const LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [Color(0xFF1A3528), Color(0xFF0D2018)],
+                      ),
+                      border: Border.all(
+                        color: const Color(0xFFC5A365).withValues(alpha: 0.4),
+                        width: 1.5,
+                      ),
+                    ),
+                    child: Center(
+                      child: Text(
+                        initials,
+                        style: const TextStyle(
+                          fontSize: 11,
+                          fontWeight: FontWeight.w900,
+                          color: Color(0xFFFFE8A6),
+                          letterSpacing: 0,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 4),
                 ]),
               ),
             ),

@@ -188,8 +188,19 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                 Container(
                   decoration: BoxDecoration(
                     color: kCream,
-                    borderRadius: BorderRadius.circular(20),
-                    boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.3), blurRadius: 32, offset: const Offset(0, 8))],
+                    borderRadius: BorderRadius.circular(24),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.38),
+                        blurRadius: 40,
+                        offset: const Offset(0, 12),
+                      ),
+                      BoxShadow(
+                        color: const Color(0xFF075f45).withValues(alpha: 0.12),
+                        blurRadius: 60,
+                        offset: const Offset(0, 20),
+                      ),
+                    ],
                   ),
                   padding: const EdgeInsets.all(24),
                   child: Form(
@@ -331,34 +342,70 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
   Widget _buildHeader() {
     return Column(
       children: [
-        // ── Ícone M+ grande ────────────────────────────────────────────────
-        Image.asset(
-          'assets/icon/app_icon.png',
-          width: 110,
-          height: 110,
-          fit: BoxFit.contain,
+        // ── Ícone com glow ─────────────────────────────────────────────────
+        Container(
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            boxShadow: [
+              BoxShadow(
+                color: const Color(0xFFC5A365).withValues(alpha: 0.25),
+                blurRadius: 40,
+                spreadRadius: 8,
+              ),
+              BoxShadow(
+                color: const Color(0xFF075f45).withValues(alpha: 0.20),
+                blurRadius: 60,
+                spreadRadius: 4,
+              ),
+            ],
+          ),
+          child: Image.asset(
+            'assets/icon/app_icon.png',
+            width: 100,
+            height: 100,
+            fit: BoxFit.contain,
+          ),
         ),
-        const SizedBox(height: 16),
+        const SizedBox(height: 18),
         const Text(
           'MedCases Pro',
-          style: TextStyle(fontSize: 28, fontWeight: FontWeight.w900, color: Colors.white, letterSpacing: -0.5),
+          style: TextStyle(
+            fontSize: 30,
+            fontWeight: FontWeight.w900,
+            color: Colors.white,
+            letterSpacing: -0.8,
+            height: 1.0,
+          ),
+        ),
+        const SizedBox(height: 6),
+        Text(
+          _isEs ? 'Apoyo clínico educativo' : 'Apoio clínico educacional',
+          style: TextStyle(
+            fontSize: 12,
+            color: Colors.white.withValues(alpha: 0.45),
+            fontWeight: FontWeight.w500,
+            letterSpacing: 0.2,
+          ),
         ),
         const SizedBox(height: 14),
         // ── Badge VERSÃO BETA ──────────────────────────────────────────────
         Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 5),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(20),
-            color: const Color(0xFFFFB800).withValues(alpha: 0.12),
-            border: Border.all(color: const Color(0xFFFFB800).withValues(alpha: 0.55), width: 1.5),
+            color: const Color(0xFFFFB800).withValues(alpha: 0.08),
+            border: Border.all(
+              color: const Color(0xFFFFB800).withValues(alpha: 0.40),
+              width: 1,
+            ),
           ),
-          child: Text(
+          child: const Text(
             'VERSÃO BETA — App em fase de testes',
-            style: const TextStyle(
-              fontSize: 11,
-              fontWeight: FontWeight.w800,
+            style: TextStyle(
+              fontSize: 10,
+              fontWeight: FontWeight.w700,
               color: Color(0xFFFFCC44),
-              letterSpacing: 0.4,
+              letterSpacing: 0.5,
             ),
           ),
         ),
@@ -432,18 +479,51 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
   // ── Botão principal ───────────────────────────────────────────────────────
   Widget _submitBtn() {
     return SizedBox(
-      height: 50,
-      child: ElevatedButton(
-        onPressed: _loading ? null : _submit,
-        style: ElevatedButton.styleFrom(
-          backgroundColor: kDark,
-          foregroundColor: kGoldL,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-          elevation: 0,
+      height: 52,
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(16),
+          gradient: _loading
+              ? null
+              : const LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [Color(0xFF0D2418), Color(0xFF07110d), Color(0xFF0A3022)],
+                ),
+          boxShadow: _loading
+              ? null
+              : [
+                  BoxShadow(
+                    color: const Color(0xFF07110d).withValues(alpha: 0.55),
+                    blurRadius: 16,
+                    offset: const Offset(0, 6),
+                  ),
+                ],
         ),
-        child: _loading
-            ? const SizedBox(width: 22, height: 22, child: CircularProgressIndicator(strokeWidth: 2.5, color: kGoldL))
-            : Text(_modeBtn, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w900, letterSpacing: 0.3)),
+        child: ElevatedButton(
+          onPressed: _loading ? null : _submit,
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.transparent,
+            foregroundColor: kGoldL,
+            shadowColor: Colors.transparent,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+            elevation: 0,
+          ),
+          child: _loading
+              ? const SizedBox(
+                  width: 22, height: 22,
+                  child: CircularProgressIndicator(strokeWidth: 2.5, color: kGoldL),
+                )
+              : Text(
+                  _modeBtn,
+                  style: const TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w900,
+                    letterSpacing: 0.4,
+                    color: kGoldL,
+                  ),
+                ),
+        ),
       ),
     );
   }
