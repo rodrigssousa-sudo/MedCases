@@ -558,8 +558,13 @@ class FirestoreService {
 
   static Future<Map<String, dynamic>> _loadAppUpdateRest() async {
     try {
+      final token = await AuthService.getAdminToken();
+      final headers = token.isNotEmpty
+          ? {'Authorization': 'Bearer $token'}
+          : <String, String>{};
       final resp = await http.get(
         Uri.parse('$_fsBase/app_updates/current'),
+        headers: headers,
       );
       if (resp.statusCode != 200) return {};
       final body   = jsonDecode(resp.body) as Map<String, dynamic>;
