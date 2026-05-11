@@ -16,6 +16,7 @@ import 'screens/login_screen.dart';
 import 'screens/cockpit_screen.dart';
 import 'screens/drugs_screen.dart';
 import 'screens/protocols_screen.dart';
+import 'screens/clinical_cases_screen.dart';
 import 'screens/tools_screen.dart';
 import 'screens/ai_screen.dart';
 import 'screens/admin_screen.dart';
@@ -1419,6 +1420,14 @@ class _RxProtoCombo extends StatelessWidget {
               dark: dark,
               onTap: () => onSubTabChange(1),
             ),
+            Container(width: 1, height: 24, color: borderCol),
+            _SubTabBtn(
+              icon: Icons.cases_rounded,
+              label: 'Casos',
+              active: subTab == 2,
+              dark: dark,
+              onTap: () => onSubTabChange(2),
+            ),
           ]),
         ),
       ),
@@ -1429,6 +1438,7 @@ class _RxProtoCombo extends StatelessWidget {
           children: [
             const DrugsScreen(),
             const ProtocolsScreen(),
+            const ClinicalCasesScreen(),
           ],
         ),
       ),
