@@ -1667,23 +1667,22 @@ class _SubTabBtn extends StatelessWidget {
                 : null,
           ),
           child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-            AnimatedSwitcher(
-              duration: const Duration(milliseconds: 180),
-              child: Icon(
-                icon,
-                key: ValueKey(active),
-                size: active ? 15 : 14,
-                color: active ? activeColor : inactiveColor,
-              ),
+            Icon(
+              icon,
+              size: 14,
+              color: active ? activeColor : inactiveColor,
             ),
-            const SizedBox(width: 5),
-            Text(
-              label,
-              style: TextStyle(
-                fontSize: 11.5,
-                fontWeight: active ? FontWeight.w800 : FontWeight.w500,
-                color: active ? activeColor : inactiveColor,
-                letterSpacing: active ? 0.1 : 0,
+            const SizedBox(width: 4),
+            Flexible(
+              child: Text(
+                label,
+                style: TextStyle(
+                  fontSize: 10.5,
+                  fontWeight: active ? FontWeight.w800 : FontWeight.w500,
+                  color: active ? activeColor : inactiveColor,
+                ),
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
               ),
             ),
           ]),
