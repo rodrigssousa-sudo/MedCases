@@ -2504,69 +2504,26 @@ class _AppHeader extends StatelessWidget {
                 ],
               ),
             ),
-            const SizedBox(width: 10),
-            // Badge de idioma + avatar + menu — bloco unificado
+            const SizedBox(width: 8),
+            // Botão hamburguer — limpo, sem badge de idioma
             GestureDetector(
               onTap: () => Scaffold.of(context).openEndDrawer(),
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+                width: 38,
+                height: 38,
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(22),
-                  color: Colors.white.withValues(alpha: 0.06),
+                  borderRadius: BorderRadius.circular(12),
+                  color: Colors.white.withValues(alpha: 0.07),
                   border: Border.all(
                     color: Colors.white.withValues(alpha: 0.13),
                     width: 1,
                   ),
                 ),
-                child: Row(mainAxisSize: MainAxisSize.min, children: [
-                  // Badge idioma
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      color: const Color(0xFFC5A365).withValues(alpha: 0.15),
-                    ),
-                    child: Text(
-                      p.lang.toUpperCase(),
-                      style: const TextStyle(
-                        fontSize: 9,
-                        fontWeight: FontWeight.w900,
-                        color: Color(0xFFFFE8A6),
-                        letterSpacing: 1,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 6),
-                  // Avatar com iniciais
-                  Container(
-                    width: 30,
-                    height: 30,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      gradient: const LinearGradient(
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                        colors: [Color(0xFF1A3528), Color(0xFF0D2018)],
-                      ),
-                      border: Border.all(
-                        color: const Color(0xFFC5A365).withValues(alpha: 0.4),
-                        width: 1.5,
-                      ),
-                    ),
-                    child: Center(
-                      child: Text(
-                        initials,
-                        style: const TextStyle(
-                          fontSize: 11,
-                          fontWeight: FontWeight.w900,
-                          color: Color(0xFFFFE8A6),
-                          letterSpacing: 0,
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 4),
-                ]),
+                child: const Icon(
+                  Icons.menu_rounded,
+                  size: 20,
+                  color: Color(0xFFFFE8A6),
+                ),
               ),
             ),
           ]),
