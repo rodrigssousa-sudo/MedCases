@@ -401,6 +401,13 @@ const _termMap = <String, String>{
 // ─────────────────────────────────────────────────────────────────────────────
 class DrugInteractionService {
 
+  /// Retorna todos os nomes de fármacos conhecidos (chaves do _termMap),
+  /// ordenados alfabeticamente — usado para autocomplete na UI.
+  static List<String> getAllDrugNames() {
+    final names = _termMap.keys.toList()..sort();
+    return names;
+  }
+
   /// Extrai termos reconhecidos de um texto livre — exposto para uso na UI.
   static List<String> extractTerms(String text) => _extractTerms(text);
 

@@ -618,10 +618,9 @@ class _BiometricsBodyState extends State<_BiometricsBody> {
       // Medicamentos em uso
       _FieldRow(
         label: p.t('medications_optional'),
-        child: MedInput(
+        child: _MedsAutocompleteField(
           controller: _medsCtrl,
           hintText: p.t('hint_meds'),
-          maxLines: 3,
           onChanged: (v) => p.updatePatient('medications', v),
         ),
       ),
@@ -1174,6 +1173,254 @@ class _InteractionPanelState extends State<_InteractionPanel> {
         );
       }),
     ]);
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// CAMPO DE MEDICAMENTOS COM AUTOCOMPLETE OVERLAY
+// Detecta a última palavra digitada e exibe sugestões do banco de fármacos.
+// Ao clicar numa sugestão, substitui a palavra parcial pelo nome completo
+// e adiciona vírgula+espaço para o próximo fármaco.
+// ─────────────────────────────────────────────────────────────────────────────
+class _MedsAutocompleteField extends StatefulWidget {
+  final TextEditingController controller;
+  final String hintText;
+  final ValueChanged<String> onChanged;
+  const _MedsAutocompleteField({
+    required this.controller,
+    required this.hintText,
+    required this.onChanged,
+  });
+
+  @override
+  State<_MedsAutocompleteField> createState() =>
+      _MedsAutocompleteFieldState();
+}
+
+class _MedsAutocompleteFieldState extends State<_MedsAutocompleteField> {
+  // Lista completa de nomes do banco (carregada uma vez)
+  static final List<String> _allNames =
+      DrugInteractionService.getAllDrugNames();
+
+  OverlayEntry? _overlay;
+  final LayerLink _layerLink = LayerLink();
+  List<String> _suggestions = [];
+
+  // ── Lifecycle ─────────────────────────────────────────────────────────────
+  @override
+  void initState() {
+    super.initState();
+    widget.controller.addListener(_onTextChanged);
+  }
+
+  @override
+  void dispose() {
+    widget.controller.removeListener(_onTextChanged);
+    _removeOverlay();
+    super.dispose();
+  }
+
+  // ── Lógica de sugestão ────────────────────────────────────────────────────
+
+  /// Extrai a "palavra em edição" — tudo após a última vírgula/nova linha.
+  String _currentToken() {
+    final text   = widget.controller.text;
+    final cursor = widget.controller.selection.baseOffset;
+    if (cursor < 0) return '';
+    final before = text.substring(0, cursor);
+    // Separadores: vírgula, ponto-e-vírgula, nova linha, '+'
+    final lastSep = before.lastIndexOf(RegExp(r'[,;\n+]'));
+    final token   = (lastSep >= 0 ? before.substring(lastSep + 1) : before)
+        .trimLeft()
+        .toLowerCase();
+    return token;
+  }
+
+  void _onTextChanged() {
+    final token = _currentToken();
+    if (token.length < 2) {
+      _removeOverlay();
+      return;
+    }
+    final matches = _allNames
+        .where((n) => n.contains(token))
+        .toList();
+    if (matches.isEmpty) {
+      _removeOverlay();
+      return;
+    }
+    _suggestions = matches;
+    if (_overlay == null) {
+      _showOverlay();
+    } else {
+      // Força rebuild do overlay
+      _overlay!.markNeedsBuild();
+    }
+  }
+
+  // ── Overlay ───────────────────────────────────────────────────────────────
+  void _showOverlay() {
+    final overlay = Overlay.of(context);
+    _overlay = OverlayEntry(builder: (_) => _buildOverlay());
+    overlay.insert(_overlay!);
+  }
+
+  void _removeOverlay() {
+    _overlay?.remove();
+    _overlay = null;
+  }
+
+  void _selectSuggestion(String name) {
+    final text   = widget.controller.text;
+    final cursor = widget.controller.selection.baseOffset
+        .clamp(0, text.length);
+    final before = text.substring(0, cursor);
+    final after  = text.substring(cursor);
+
+    // Encontra início do token atual
+    final lastSep = before.lastIndexOf(RegExp(r'[,;\n+]'));
+    final tokenStart = lastSep >= 0 ? lastSep + 1 : 0;
+
+    // Reconstrói: parte anterior ao token + nome selecionado + ", " + resto
+    final prefix  = before.substring(0, tokenStart);
+    final newText = '$prefix$name, $after';
+    final newPos  = (prefix + name + ', ').length;
+
+    widget.controller.value = TextEditingValue(
+      text: newText,
+      selection: TextSelection.collapsed(offset: newPos),
+    );
+    widget.onChanged(newText);
+    _removeOverlay();
+  }
+
+  Widget _buildOverlay() {
+    return Positioned(
+      width: 0,
+      child: CompositedTransformFollower(
+        link: _layerLink,
+        showWhenUnlinked: false,
+        offset: const Offset(0, 0),
+        child: Align(
+          alignment: Alignment.topLeft,
+          child: _SuggestionsDropdown(
+            suggestions: _suggestions,
+            onSelect: _selectSuggestion,
+          ),
+        ),
+      ),
+    );
+  }
+
+  // ── Build ──────────────────────────────────────────────────────────────────
+  @override
+  Widget build(BuildContext context) {
+    return CompositedTransformTarget(
+      link: _layerLink,
+      child: TextField(
+        controller: widget.controller,
+        maxLines: 3,
+        minLines: 2,
+        onChanged: (v) => widget.onChanged(v),
+        style: const TextStyle(
+          fontSize: 13,
+          fontWeight: FontWeight.w600,
+          color: Color(0xFF1A1A1A),
+        ),
+        decoration: InputDecoration(
+          hintText: widget.hintText,
+          hintStyle: const TextStyle(
+            fontSize: 13,
+            color: Color(0xFFAAAAAA),
+            fontWeight: FontWeight.w400,
+          ),
+          contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+          filled: true,
+          fillColor: Colors.white,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(14),
+            borderSide: const BorderSide(color: Color(0xFFE0E0E0)),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(14),
+            borderSide: const BorderSide(color: Color(0xFFE0E0E0)),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(14),
+            borderSide: const BorderSide(color: Color(0xFF065F46), width: 1.5),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// Dropdown de sugestões posicionado sob o campo
+class _SuggestionsDropdown extends StatelessWidget {
+  final List<String> suggestions;
+  final ValueChanged<String> onSelect;
+  const _SuggestionsDropdown({
+    required this.suggestions,
+    required this.onSelect,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    // Máximo 6 sugestões visíveis antes de rolar
+    const maxVisible = 6;
+    final itemH     = 38.0;
+    final count     = suggestions.length.clamp(1, maxVisible);
+    final boxHeight = count * itemH + 8;
+
+    return Material(
+      elevation: 6,
+      borderRadius: BorderRadius.circular(12),
+      color: Colors.white,
+      shadowColor: Colors.black26,
+      child: ConstrainedBox(
+        constraints: BoxConstraints(
+          maxWidth: 320,
+          maxHeight: boxHeight,
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(12),
+          child: ListView.builder(
+            padding: const EdgeInsets.symmetric(vertical: 4),
+            shrinkWrap: true,
+            itemCount: suggestions.length,
+            itemBuilder: (_, i) {
+              final name = suggestions[i];
+              return InkWell(
+                onTap: () => onSelect(name),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 14, vertical: 9),
+                  child: Row(children: [
+                    const Icon(
+                      Icons.medication_rounded,
+                      size: 13,
+                      color: Color(0xFF065F46),
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        name,
+                        style: const TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                          color: Color(0xFF1A1A1A),
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ]),
+                ),
+              );
+            },
+          ),
+        ),
+      ),
+    );
   }
 }
 
