@@ -940,7 +940,7 @@ class _UserCard extends StatelessWidget {
                 if (onPromoteSupervisor != null && onPromote == null)
                   _ActionBtn(label: 'Supervisor', icon: Icons.shield_outlined, color: Colors.blue, onTap: onPromoteSupervisor!),
                 if (onDemote != null)
-                  _ActionBtn(label: '↘', icon: Icons.arrow_downward_rounded, color: Colors.orange, onTap: onDemote!),
+                  _ActionBtn(label: 'Rebaixar', icon: Icons.arrow_downward_rounded, color: Colors.orange, onTap: onDemote!),
                 if (onBlock != null)
                   _ActionBtn(label: '✕', icon: Icons.block_rounded, color: Colors.red, onTap: onBlock!),
               ],
