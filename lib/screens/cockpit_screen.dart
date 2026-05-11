@@ -1178,9 +1178,9 @@ class _InteractionPanelState extends State<_InteractionPanel> {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// PAINEL DE CHIPS — medicamentos reconhecidos em "Medicamentos em uso"
+// PAINEL DE CHIPS — medicamentos reconhecidos + interações detalhadas par-a-par
 // ─────────────────────────────────────────────────────────────────────────────
-class _MedsChipsPanel extends StatelessWidget {
+class _MedsChipsPanel extends StatefulWidget {
   final String medications;
   final List selectedDrugs;
   final String lang;
@@ -1190,93 +1190,335 @@ class _MedsChipsPanel extends StatelessWidget {
     required this.lang,
   });
 
-  bool get _isEs => lang == 'es';
+  @override
+  State<_MedsChipsPanel> createState() => _MedsChinpsPanelState();
+}
+
+class _MedsChinpsPanelState extends State<_MedsChipsPanel> {
+  final _expanded = <int>{};
+
+  bool get _isEs => widget.lang == 'es';
+
+  // Cor por severidade
+  Color _sColor(InteractionSeverity s) {
+    switch (s) {
+      case InteractionSeverity.contraindicated: return const Color(0xFF7F1D1D);
+      case InteractionSeverity.major:           return const Color(0xFFCC2222);
+      case InteractionSeverity.moderate:        return const Color(0xFFD97706);
+      case InteractionSeverity.minor:           return const Color(0xFF065F46);
+    }
+  }
+
+  Color _sBg(InteractionSeverity s) {
+    switch (s) {
+      case InteractionSeverity.contraindicated: return const Color(0xFFFEF2F2);
+      case InteractionSeverity.major:           return const Color(0xFFFFF0F0);
+      case InteractionSeverity.moderate:        return const Color(0xFFFFFBEB);
+      case InteractionSeverity.minor:           return const Color(0xFFECFDF5);
+    }
+  }
+
+  Color _sBorder(InteractionSeverity s) {
+    switch (s) {
+      case InteractionSeverity.contraindicated: return const Color(0xFFFCA5A5);
+      case InteractionSeverity.major:           return const Color(0xFFFFCCCC);
+      case InteractionSeverity.moderate:        return const Color(0xFFFDE68A);
+      case InteractionSeverity.minor:           return const Color(0xFFBBF7D0);
+    }
+  }
+
+  String _sLabel(InteractionSeverity s) {
+    switch (s) {
+      case InteractionSeverity.contraindicated:
+        return _isEs ? 'CONTRAINDICADO' : 'CONTRAINDICADO';
+      case InteractionSeverity.major:
+        return _isEs ? 'MAYOR' : 'MAIOR';
+      case InteractionSeverity.moderate:
+        return _isEs ? 'MODERADA' : 'MODERADA';
+      case InteractionSeverity.minor:
+        return _isEs ? 'MENOR' : 'MENOR';
+    }
+  }
+
+  IconData _sIcon(InteractionSeverity s) {
+    switch (s) {
+      case InteractionSeverity.contraindicated: return Icons.block_rounded;
+      case InteractionSeverity.major:           return Icons.warning_rounded;
+      case InteractionSeverity.moderate:        return Icons.info_rounded;
+      case InteractionSeverity.minor:           return Icons.circle_outlined;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    if (medications.trim().isEmpty) return const SizedBox.shrink();
+    if (widget.medications.trim().isEmpty) return const SizedBox.shrink();
 
-    // Termos reconhecidos pelo banco de interações
-    final recognized = DrugInteractionService.extractTerms(medications);
+    // Fármacos reconhecidos (máx 6)
+    final recognized = DrugInteractionService.extractTerms(widget.medications);
+    final capped = recognized.take(6).toList();
 
-    // Interações disponíveis (se há fármacos selecionados na calculadora)
-    final interactions = selectedDrugs.isNotEmpty
+    // Interações (fármaco selecionado ↔ medicamentos do paciente)
+    final interactions = widget.selectedDrugs.isNotEmpty
         ? DrugInteractionService.checkInteractions(
             selectedDrugNames:
-                selectedDrugs.map((d) => d.name as String).toList(),
-            patientMedicationsText: medications,
+                widget.selectedDrugs.map((d) => d.name as String).toList(),
+            patientMedicationsText: widget.medications,
           )
         : <DrugInteraction>[];
 
-    if (recognized.isEmpty && interactions.isEmpty) return const SizedBox.shrink();
+    if (capped.isEmpty && interactions.isEmpty) return const SizedBox.shrink();
 
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      // ── Chips dos fármacos reconhecidos ──────────────────────────────────
-      if (recognized.isNotEmpty) ...[
-        Wrap(spacing: 6, runSpacing: 6, children: recognized.map((term) {
-          final hasIx = interactions.any(
-            (ix) =>
-                ix.drug1.toLowerCase().contains(term) ||
-                ix.drug2.toLowerCase().contains(term),
-          );
-          final chipColor  = hasIx ? const Color(0xFFCC2222) : const Color(0xFF065F46);
-          final chipBg     = hasIx ? const Color(0xFFFFF0F0) : const Color(0xFFECFDF5);
-          final chipBorder = hasIx ? const Color(0xFFFFCCCC) : const Color(0xFFBBF7D0);
-          return Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(20),
-              color: chipBg,
-              border: Border.all(color: chipBorder),
-            ),
-            child: Row(mainAxisSize: MainAxisSize.min, children: [
-              Icon(
-                hasIx ? Icons.warning_rounded : Icons.check_circle_rounded,
-                size: 11,
-                color: chipColor,
+
+      // ── Chips dos fármacos reconhecidos ─────────────────────────────────
+      if (capped.isNotEmpty) ...[
+        Wrap(spacing: 6, runSpacing: 6, children: [
+          ...capped.map((term) {
+            final hasIx = interactions.any(
+              (ix) =>
+                  ix.drug1.toLowerCase().contains(term) ||
+                  ix.drug2.toLowerCase().contains(term),
+            );
+            // Severidade mais grave para este termo
+            InteractionSeverity? worstSev;
+            for (final ix in interactions) {
+              if (ix.drug1.toLowerCase().contains(term) ||
+                  ix.drug2.toLowerCase().contains(term)) {
+                if (worstSev == null ||
+                    ix.severity.index < worstSev.index) {
+                  worstSev = ix.severity;
+                }
+              }
+            }
+            final chipColor  = hasIx ? _sColor(worstSev!) : const Color(0xFF065F46);
+            final chipBg     = hasIx ? _sBg(worstSev!)   : const Color(0xFFECFDF5);
+            final chipBorder = hasIx ? _sBorder(worstSev!) : const Color(0xFFBBF7D0);
+            return Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20),
+                color: chipBg,
+                border: Border.all(color: chipBorder),
               ),
-              const SizedBox(width: 4),
-              Text(
-                term,
-                style: TextStyle(
-                  fontSize: 11,
-                  fontWeight: FontWeight.w700,
+              child: Row(mainAxisSize: MainAxisSize.min, children: [
+                Icon(
+                  hasIx ? _sIcon(worstSev!) : Icons.check_circle_rounded,
+                  size: 11,
                   color: chipColor,
                 ),
+                const SizedBox(width: 4),
+                Text(
+                  term,
+                  style: TextStyle(
+                    fontSize: 11,
+                    fontWeight: FontWeight.w700,
+                    color: chipColor,
+                  ),
+                ),
+                if (hasIx) ...[
+                  const SizedBox(width: 4),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(6),
+                      color: chipColor.withValues(alpha: 0.15),
+                    ),
+                    child: Text(
+                      _sLabel(worstSev!),
+                      style: TextStyle(
+                        fontSize: 8,
+                        fontWeight: FontWeight.w900,
+                        color: chipColor,
+                        letterSpacing: 0.4,
+                      ),
+                    ),
+                  ),
+                ],
+              ]),
+            );
+          }),
+          // Indicador se havia mais de 6
+          if (recognized.length > 6)
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20),
+                color: const Color(0xFFF3F4F6),
+                border: Border.all(color: const Color(0xFFD1D5DB)),
               ),
-            ]),
-          );
-        }).toList()),
-        const SizedBox(height: 8),
+              child: Text(
+                '+${recognized.length - 6}',
+                style: const TextStyle(
+                  fontSize: 11,
+                  fontWeight: FontWeight.w700,
+                  color: Color(0xFF6B7280),
+                ),
+              ),
+            ),
+        ]),
+        const SizedBox(height: 10),
       ],
 
-      // ── Banner de interações detectadas ──────────────────────────────────
+      // ── Cards detalhados par-a-par ───────────────────────────────────────
       if (interactions.isNotEmpty) ...[
+        // Cabeçalho resumo
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
-            color: const Color(0xFFFFF0F0),
-            border: Border.all(color: const Color(0xFFFFCCCC)),
+            color: _sBg(interactions.first.severity),
+            border: Border.all(color: _sBorder(interactions.first.severity)),
           ),
           child: Row(children: [
-            const Icon(Icons.warning_rounded, size: 14, color: Color(0xFFCC2222)),
+            Icon(_sIcon(interactions.first.severity),
+                size: 14, color: _sColor(interactions.first.severity)),
             const SizedBox(width: 8),
             Expanded(
               child: Text(
                 _isEs
-                    ? '${interactions.length} interacción${interactions.length > 1 ? "es" : ""} con la medicación actual'
-                    : '${interactions.length} interaç${interactions.length > 1 ? "ões" : "ão"} com a medicação atual',
-                style: const TextStyle(
-                  fontSize: 11,
-                  fontWeight: FontWeight.w700,
-                  color: Color(0xFFCC2222),
+                    ? '${interactions.length} interacción${interactions.length > 1 ? "es" : ""} detectada${interactions.length > 1 ? "s" : ""}'
+                    : '${interactions.length} interaç${interactions.length > 1 ? "ões" : "ão"} detectada${interactions.length > 1 ? "s" : ""}',
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w800,
+                  color: _sColor(interactions.first.severity),
                 ),
               ),
             ),
           ]),
         ),
-      ] else if (recognized.isNotEmpty && selectedDrugs.isNotEmpty) ...[
+        const SizedBox(height: 6),
+
+        // Card por interação (expandível)
+        ...interactions.asMap().entries.map((entry) {
+          final i   = entry.key;
+          final ix  = entry.value;
+          final isOpen = _expanded.contains(i);
+          final c  = _sColor(ix.severity);
+          final bg = _sBg(ix.severity);
+          final bd = _sBorder(ix.severity);
+
+          return Padding(
+            padding: const EdgeInsets.only(bottom: 6),
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                color: bg,
+                border: Border.all(color: bd),
+              ),
+              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+
+                // ── Linha do par (sempre visível) ──
+                InkWell(
+                  borderRadius: BorderRadius.circular(10),
+                  onTap: () => setState(() {
+                    if (isOpen) _expanded.remove(i);
+                    else _expanded.add(i);
+                  }),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 9),
+                    child: Row(children: [
+                      // Badge severidade
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(6),
+                          color: c.withValues(alpha: 0.13),
+                        ),
+                        child: Text(
+                          _sLabel(ix.severity),
+                          style: TextStyle(
+                            fontSize: 8,
+                            fontWeight: FontWeight.w900,
+                            color: c,
+                            letterSpacing: 0.5,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      // Par de fármacos
+                      Expanded(
+                        child: RichText(
+                          text: TextSpan(
+                            style: const TextStyle(fontSize: 12),
+                            children: [
+                              TextSpan(
+                                text: ix.drug1,
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w800,
+                                  color: c,
+                                ),
+                              ),
+                              TextSpan(
+                                text: '  ↔  ',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w400,
+                                  color: c.withValues(alpha: 0.6),
+                                  fontSize: 10,
+                                ),
+                              ),
+                              TextSpan(
+                                text: ix.drug2,
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w800,
+                                  color: c,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 6),
+                      Icon(
+                        isOpen
+                            ? Icons.keyboard_arrow_up_rounded
+                            : Icons.keyboard_arrow_down_rounded,
+                        size: 16,
+                        color: c.withValues(alpha: 0.7),
+                      ),
+                    ]),
+                  ),
+                ),
+
+                // ── Detalhe expandível ──
+                if (isOpen) ...[
+                  Divider(height: 1, color: bd),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(12, 10, 12, 12),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _IxDetailRow(
+                          icon: Icons.bolt_rounded,
+                          label: _isEs ? 'MECANISMO' : 'MECANISMO',
+                          text: ix.mechanism,
+                          color: c,
+                        ),
+                        const SizedBox(height: 8),
+                        _IxDetailRow(
+                          icon: Icons.monitor_heart_rounded,
+                          label: _isEs ? 'EFECTO CLÍNICO' : 'EFEITO CLÍNICO',
+                          text: ix.effect,
+                          color: c,
+                        ),
+                        const SizedBox(height: 8),
+                        _IxDetailRow(
+                          icon: Icons.medical_services_rounded,
+                          label: _isEs ? 'CONDUCTA' : 'CONDUTA',
+                          text: ix.management,
+                          color: c,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ]),
+            ),
+          );
+        }),
+
+      ] else if (capped.isNotEmpty && widget.selectedDrugs.isNotEmpty) ...[
+        // Sem interações com o fármaco selecionado
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
           decoration: BoxDecoration(
@@ -1291,7 +1533,7 @@ class _MedsChipsPanel extends StatelessWidget {
               child: Text(
                 _isEs
                     ? 'Sin interacciones detectadas con la medicación actual'
-                    : 'Sem interações com a medicação atual',
+                    : 'Sem interações detectadas com a medicação atual',
                 style: const TextStyle(
                   fontSize: 11,
                   fontWeight: FontWeight.w700,
@@ -1302,6 +1544,51 @@ class _MedsChipsPanel extends StatelessWidget {
           ]),
         ),
       ],
+    ]);
+  }
+}
+
+// Row de detalhe dentro do card expandido
+class _IxDetailRow extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final String text;
+  final Color color;
+  const _IxDetailRow({
+    required this.icon,
+    required this.label,
+    required this.text,
+    required this.color,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      Icon(icon, size: 12, color: color.withValues(alpha: 0.7)),
+      const SizedBox(width: 6),
+      Expanded(
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 8,
+              fontWeight: FontWeight.w900,
+              color: color.withValues(alpha: 0.7),
+              letterSpacing: 0.8,
+            ),
+          ),
+          const SizedBox(height: 2),
+          Text(
+            text,
+            style: const TextStyle(
+              fontSize: 11,
+              fontWeight: FontWeight.w500,
+              color: Color(0xFF333333),
+              height: 1.4,
+            ),
+          ),
+        ]),
+      ),
     ]);
   }
 }
