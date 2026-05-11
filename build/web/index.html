@@ -26,15 +26,15 @@
   <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
   <link rel="dns-prefetch" href="https://www.gstatic.com">
 
-  <!-- Firebase JS SDK — OBRIGATÓRIO para flutter_web_plugin do firebase_core funcionar -->
-  <!-- Deve estar no <head> ANTES do flutter_bootstrap.js ser carregado              -->
-  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
-
   <!-- Pré-carregar os recursos críticos de boot -->
   <link rel="preload" href="flutter_bootstrap.js" as="script">
   <link rel="preload" href="main.dart.js" as="script">
+
+  <!-- Firebase JS SDK — carregados com defer para não bloquear o render inicial -->
+  <!-- O flutter_web_plugin do firebase_core detecta estes scripts quando disponíveis -->
+  <script defer src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+  <script defer src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+  <script defer src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
 
   <style>
     html, body {
@@ -86,10 +86,12 @@
   </div>
 
   <script>
-    // ── CRÍTICO: Limpar TODOS os SWs e caches ANTES de carregar o Flutter ────
-    // Resolve o problema de cache agressivo no Safari/iPhone onde o SW antigo
-    // intercepta requests e serve JS desatualizado (erro de login).
-    // O Flutter só é carregado APÓS a limpeza completa.
+    // ── SW cleanup CONDICIONAL — só limpa quando o app foi atualizado ────────
+    // Versão do build: incrementar aqui a cada deploy que precise forçar limpeza.
+    // Enquanto a versão no localStorage for igual a esta, o SW existente é mantido
+    // (cache válido) e o Flutter carrega imediatamente sem aguardar limpeza.
+    var APP_VERSION = '2.1.0';
+
     (function() {
       function loadFlutter() {
         var s = document.createElement('script');
@@ -97,12 +99,22 @@
         document.head.appendChild(s);
       }
 
+      // Sem suporte a SW → carrega Flutter direto
       if (!('serviceWorker' in navigator)) {
         loadFlutter();
         return;
       }
 
-      // Desregistrar TODOS os SWs e apagar TODOS os caches, depois carregar Flutter
+      var storedVersion = localStorage.getItem('medcases_app_version');
+      var needsClean = (storedVersion !== APP_VERSION);
+
+      if (!needsClean) {
+        // Mesma versão → SW e cache válidos → Flutter carrega imediatamente
+        loadFlutter();
+        return;
+      }
+
+      // Nova versão detectada → limpa SW/cache obsoletos e registra nova versão
       var swClean = navigator.serviceWorker.getRegistrations().then(function(regs) {
         return Promise.all(regs.map(function(reg) { return reg.unregister(); }));
       });
@@ -115,7 +127,11 @@
 
       Promise.all([swClean, cacheClean])
         .catch(function() {})
-        .then(function() { loadFlutter(); });
+        .then(function() {
+          // Salva a nova versão → próximos carregamentos não precisam limpar
+          try { localStorage.setItem('medcases_app_version', APP_VERSION); } catch(e) {}
+          loadFlutter();
+        });
     })();
 
     // ── Loading screen: remove quando Flutter renderizar ─────────────────────
@@ -156,8 +172,8 @@
     }, 20000);
   </script>
 
-  <!-- flutter_bootstrap.js carregado dinamicamente APÓS limpeza de SW/cache acima -->
-  <!-- NÃO usar async aqui — o script é injetado via JS após a limpeza completar -->
+  <!-- flutter_bootstrap.js carregado dinamicamente APÓS verificação de versão -->
+  <!-- NÃO usar async aqui — o script é injetado via JS após a lógica de SW -->
 
 </body>
 </html>

@@ -616,21 +616,25 @@ class _PreLoginPreviewState extends State<_PreLoginPreview> {
                             color: Colors.white.withValues(alpha: 0.85))),
                     ]),
                   ),
-                  GestureDetector(
-                    onTap: _goLogin,
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 9),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(12),
-                        gradient: const LinearGradient(
-                          colors: [Color(0xFFD4AF5A), _kGold],
+                  Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      onTap: _goLogin,
+                      borderRadius: BorderRadius.circular(12),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 9),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(12),
+                          gradient: const LinearGradient(
+                            colors: [Color(0xFFD4AF5A), _kGold],
+                          ),
+                          boxShadow: [
+                            BoxShadow(color: _kGold.withValues(alpha: 0.4), blurRadius: 10, offset: const Offset(0, 3)),
+                          ],
                         ),
-                        boxShadow: [
-                          BoxShadow(color: _kGold.withValues(alpha: 0.4), blurRadius: 10, offset: const Offset(0, 3)),
-                        ],
+                        child: const Text('Entrar', style: TextStyle(
+                          fontSize: 13, fontWeight: FontWeight.w900, color: _kDark)),
                       ),
-                      child: const Text('Entrar', style: TextStyle(
-                        fontSize: 13, fontWeight: FontWeight.w900, color: _kDark)),
                     ),
                   ),
                 ]),
@@ -703,28 +707,19 @@ class _PreLoginPreviewState extends State<_PreLoginPreview> {
         ),
       ]),
 
-      // ── FAB fixo "Criar conta / Entrar" ─────────────────────────────────────
-      floatingActionButton: GestureDetector(
-              onTap: _goLogin,
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(16),
-                  color: _kDark,
-                  border: Border.all(color: _kGold.withValues(alpha: 0.5), width: 1.5),
-                  boxShadow: [
-                    BoxShadow(color: Colors.black.withValues(alpha: 0.4), blurRadius: 20, offset: const Offset(0, 6)),
-                    BoxShadow(color: _kGold.withValues(alpha: 0.2), blurRadius: 12, offset: const Offset(0, 2)),
-                  ],
-                ),
-                child: Row(mainAxisSize: MainAxisSize.min, children: [
-                  const Icon(Icons.login_rounded, size: 18, color: _kGoldL),
-                  const SizedBox(width: 8),
-                  const Text('Entrar ou criar conta', style: TextStyle(
-                    fontSize: 14, fontWeight: FontWeight.w900, color: _kGoldL)),
-                ]),
-              ),
-            ),
+      // ── FAB fixo — FloatingActionButton nativo (funciona em PWA/atalho) ──────
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: _goLogin,
+        backgroundColor: _kDark,
+        elevation: 8,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+          side: BorderSide(color: _kGold.withValues(alpha: 0.55), width: 1.5),
+        ),
+        icon: const Icon(Icons.login_rounded, size: 18, color: _kGoldL),
+        label: const Text('Iniciar sesión / Crear cuenta',
+          style: TextStyle(fontSize: 13, fontWeight: FontWeight.w900, color: _kGoldL)),
+      ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
@@ -808,24 +803,28 @@ class _DemoTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      child: GestureDetector(
-        onTap: onTap,
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 200),
-          margin: const EdgeInsets.all(3),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(9),
-            color: active ? const Color(0xFF0F1C14) : Colors.transparent,
-            border: active ? Border.all(color: gold.withValues(alpha: 0.3)) : null,
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(9),
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 200),
+            margin: const EdgeInsets.all(3),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(9),
+              color: active ? const Color(0xFF0F1C14) : Colors.transparent,
+              border: active ? Border.all(color: gold.withValues(alpha: 0.3)) : null,
+            ),
+            child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+              Icon(icon, size: 13, color: active ? gold : Colors.white38),
+              const SizedBox(width: 5),
+              Text(label, style: TextStyle(
+                fontSize: 11, fontWeight: FontWeight.w800,
+                color: active ? gold : Colors.white38,
+              )),
+            ]),
           ),
-          child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-            Icon(icon, size: 13, color: active ? gold : Colors.white38),
-            const SizedBox(width: 5),
-            Text(label, style: TextStyle(
-              fontSize: 11, fontWeight: FontWeight.w800,
-              color: active ? gold : Colors.white38,
-            )),
-          ]),
         ),
       ),
     );
