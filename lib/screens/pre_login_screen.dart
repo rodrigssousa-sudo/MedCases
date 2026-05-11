@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../screens/login_screen.dart';
 import '../screens/legal_screen.dart';
+import '../screens/upgrade_screen.dart';
 import '../widgets/brand_mark.dart';
 
 // ── Paleta local (espelha common_widgets.dart) ────────────────────────────────
@@ -27,6 +28,23 @@ class _PreLoginPreviewState extends State<PreLoginPreview> {
   bool? _hasConsented;
   int _demoTab = 0;
   String _lang = 'es'; // padrão ES — sobrescrito pelo SharedPreferences no initState
+
+  // ── Strings bilíngues ────────────────────────────────────────────────────
+  bool get _isEs => _lang == 'es';
+  String get _previewBadge    => _isEs ? 'VISTA PREVIA'                        : 'PRÉ-VISUALIZAÇÃO';
+  String get _previewSubtitle => _isEs ? 'Casos y Prescripciones'              : 'Casos e Prescrições';
+  String get _enterBtn        => _isEs ? 'Entrar'                               : 'Entrar';
+  String get _tabCases        => _isEs ? 'Casos Clínicos'                      : 'Casos Clínicos';
+  String get _tabRx           => _isEs ? 'Prescripciones'                      : 'Prescrições';
+  String get _bannerBold      => _isEs ? 'Contenido de muestra — '             : 'Conteúdo de demonstração — ';
+  String get _bannerText      => _isEs
+      ? 'inicia sesión para crear, guardar y compartir tus propios casos.'
+      : 'entre para criar, salvar e compartilhar seus próprios casos.';
+  String get _fabLabel        => _isEs ? 'Iniciar sesión / Crear cuenta'       : 'Entrar / Criar conta';
+  String get _toggleLangLabel => _isEs ? 'PT'                                  : 'ES';
+  // _toggleLangFull reservado para uso futuro (tooltip, etc.)
+  // ignore: unused_element
+  String get _toggleLangFull  => _isEs ? 'Ver em Português'                   : 'Ver en Español';
 
   static const _demoCases = [
     _DemoCase(
@@ -147,6 +165,13 @@ class _PreLoginPreviewState extends State<PreLoginPreview> {
     if (mounted) setState(() { _lang = lang; _hasConsented = ok; });
   }
 
+  Future<void> _toggleLang() async {
+    final newLang = _isEs ? 'pt' : 'es';
+    final prefs   = await SharedPreferences.getInstance();
+    await prefs.setString('lang', newLang);
+    if (mounted) setState(() => _lang = newLang);
+  }
+
 
   void _onConsentAccepted() => setState(() => _hasConsented = true);
   void _goLogin() => setState(() => _showLogin = true);
@@ -171,6 +196,8 @@ class _PreLoginPreviewState extends State<PreLoginPreview> {
           ),
         ]);
       }
+      // Passa o idioma escolhido para a LoginScreen
+      // (LoginScreen lê do SharedPreferences internamente — garantia dupla)
       return LoginScreen(onBack: _backToPreview);
     }
 
@@ -195,15 +222,35 @@ class _PreLoginPreviewState extends State<PreLoginPreview> {
                   const SizedBox(width: 12),
                   Expanded(
                     child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                      const Text('VISTA PREVIA', style: TextStyle(
+                      Text(_previewBadge, style: const TextStyle(
                         fontSize: 9, fontWeight: FontWeight.w900,
                         color: Color(0xBFFFE8A6), letterSpacing: 2)),
                       const SizedBox(height: 1),
-                      Text('Casos y Prescripciones',
+                      Text(_previewSubtitle,
                         style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700,
                           color: Colors.white.withValues(alpha: 0.85))),
                     ]),
                   ),
+                  // ── Toggle idioma ────────────────────────────────────────
+                  GestureDetector(
+                    onTap: _toggleLang,
+                    child: Container(
+                      margin: const EdgeInsets.only(right: 8),
+                      padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 7),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: Colors.white.withValues(alpha: 0.07),
+                        border: Border.all(color: _kGold.withValues(alpha: 0.35)),
+                      ),
+                      child: Row(mainAxisSize: MainAxisSize.min, children: [
+                        const Icon(Icons.language_rounded, size: 11, color: _kGoldL),
+                        const SizedBox(width: 4),
+                        Text(_toggleLangLabel, style: const TextStyle(
+                          fontSize: 10, fontWeight: FontWeight.w900, color: _kGoldL)),
+                      ]),
+                    ),
+                  ),
+                  // ── Botão Entrar ─────────────────────────────────────────
                   Material(
                     color: Colors.transparent,
                     child: InkWell(
@@ -218,7 +265,7 @@ class _PreLoginPreviewState extends State<PreLoginPreview> {
                             BoxShadow(color: _kGold.withValues(alpha: 0.4), blurRadius: 10, offset: const Offset(0, 3)),
                           ],
                         ),
-                        child: const Text('Entrar', style: TextStyle(
+                        child: Text(_enterBtn, style: const TextStyle(
                           fontSize: 13, fontWeight: FontWeight.w900, color: _kDark)),
                       ),
                     ),
@@ -235,11 +282,11 @@ class _PreLoginPreviewState extends State<PreLoginPreview> {
                   ),
                   child: Row(children: [
                     _DemoTab(
-                      label: 'Casos Clínicos', icon: Icons.folder_special_rounded,
+                      label: _tabCases, icon: Icons.folder_special_rounded,
                       active: _demoTab == 0, onTap: () => setState(() => _demoTab = 0), gold: _kGoldL,
                     ),
                     _DemoTab(
-                      label: 'Prescripciones', icon: Icons.medication_rounded,
+                      label: _tabRx, icon: Icons.medication_rounded,
                       active: _demoTab == 1, onTap: () => setState(() => _demoTab = 1), gold: _kGoldL,
                     ),
                   ]),
@@ -249,10 +296,10 @@ class _PreLoginPreviewState extends State<PreLoginPreview> {
           ),
         ),
 
-        // ── Banner informativo ─────────────────────────────────────────────
+        // ── Banner informativo + botão Premium ───────────────────────────────
         Container(
           margin: const EdgeInsets.fromLTRB(16, 12, 16, 4),
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+          padding: const EdgeInsets.fromLTRB(14, 10, 10, 10),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(12),
             color: _kGold.withValues(alpha: 0.08),
@@ -266,12 +313,31 @@ class _PreLoginPreviewState extends State<PreLoginPreview> {
                 text: TextSpan(
                   style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, height: 1.4),
                   children: [
-                    TextSpan(text: 'Contenido de muestra — ',
+                    TextSpan(text: _bannerBold,
                       style: TextStyle(color: _kGoldL.withValues(alpha: 0.9), fontWeight: FontWeight.w800)),
-                    TextSpan(text: 'inicia sesión para crear, guardar y compartir tus propios casos.',
+                    TextSpan(text: _bannerText,
                       style: TextStyle(color: Colors.white.withValues(alpha: 0.65))),
                   ],
                 ),
+              ),
+            ),
+            const SizedBox(width: 8),
+            GestureDetector(
+              onTap: () => showUpgradeScreen(context, lang: _lang),
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8),
+                  gradient: const LinearGradient(
+                    colors: [Color(0xFF1A3020), Color(0xFF0F1C14)]),
+                  border: Border.all(color: _kGold.withValues(alpha: 0.5)),
+                ),
+                child: Row(mainAxisSize: MainAxisSize.min, children: [
+                  const Icon(Icons.workspace_premium_rounded, size: 12, color: _kGoldL),
+                  const SizedBox(width: 4),
+                  Text(_isEs ? 'Premium' : 'Premium',
+                    style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w900, color: _kGoldL)),
+                ]),
               ),
             ),
           ]),
@@ -282,8 +348,8 @@ class _PreLoginPreviewState extends State<PreLoginPreview> {
           child: ListView(
             padding: const EdgeInsets.fromLTRB(0, 10, 0, 100),
             children: _demoTab == 0
-                ? _demoCases.map((c) => _DemoCaseCard(data: c, onTap: _goLogin)).toList()
-                : _demoRx.map((r) => _DemoRxCard(data: r, onTap: _goLogin)).toList(),
+                ? _demoCases.map((c) => _DemoCaseCard(data: c, onTap: _goLogin, isEs: _isEs)).toList()
+                : _demoRx.map((r) => _DemoRxCard(data: r, onTap: _goLogin, isEs: _isEs)).toList(),
           ),
         ),
       ]),
@@ -297,8 +363,8 @@ class _PreLoginPreviewState extends State<PreLoginPreview> {
           side: BorderSide(color: _kGold.withValues(alpha: 0.55), width: 1.5),
         ),
         icon: const Icon(Icons.login_rounded, size: 18, color: _kGoldL),
-        label: const Text('Iniciar sesión / Crear cuenta',
-          style: TextStyle(fontSize: 13, fontWeight: FontWeight.w900, color: _kGoldL)),
+        label: Text(_fabLabel,
+          style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w900, color: _kGoldL)),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
@@ -376,7 +442,8 @@ class _DemoTab extends StatelessWidget {
 class _DemoCaseCard extends StatelessWidget {
   final _DemoCase data;
   final VoidCallback onTap;
-  const _DemoCaseCard({required this.data, required this.onTap});
+  final bool isEs;
+  const _DemoCaseCard({required this.data, required this.onTap, required this.isEs});
 
   static const _kCardBg     = Color(0xFF111D15);
   static const _kCardBorder = Color(0xFF1E3526);
@@ -478,7 +545,7 @@ class _DemoCaseCard extends StatelessWidget {
                 Expanded(child: Text(data.author, style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: Color(0xFF4A7A5A)), overflow: TextOverflow.ellipsis)),
                 const Icon(Icons.lock_rounded, size: 10, color: Color(0xFF3A5A46)),
                 const SizedBox(width: 4),
-                Text('Iniciar sesión para leer todo', style: TextStyle(fontSize: 9, fontWeight: FontWeight.w600, color: Colors.white.withValues(alpha: 0.22))),
+                Text(isEs ? 'Iniciar sesión para leer todo' : 'Entre para ler tudo', style: TextStyle(fontSize: 9, fontWeight: FontWeight.w600, color: Colors.white.withValues(alpha: 0.22))),
               ]),
             ]),
           ),
@@ -494,7 +561,8 @@ class _DemoCaseCard extends StatelessWidget {
 class _DemoRxCard extends StatelessWidget {
   final _DemoRx data;
   final VoidCallback onTap;
-  const _DemoRxCard({required this.data, required this.onTap});
+  final bool isEs;
+  const _DemoRxCard({required this.data, required this.onTap, required this.isEs});
 
   static const _kCardBg     = Color(0xFF111D15);
   static const _kCardBorder = Color(0xFF1E3526);
@@ -577,7 +645,7 @@ class _DemoRxCard extends StatelessWidget {
                     child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                       const Icon(Icons.lock_rounded, size: 12, color: _kGold),
                       const SizedBox(width: 6),
-                      Text('+$lockedCount ítems — Iniciar sesión para ver todo', style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: _kGold)),
+                      Text('+$lockedCount ${isEs ? "ítems — Iniciar sesión para ver todo" : "itens — Entre para ver tudo"}', style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: _kGold)),
                     ]),
                   ),
                 ),
@@ -603,10 +671,10 @@ class _DemoRxCard extends StatelessWidget {
                 width: double.infinity,
                 padding: const EdgeInsets.symmetric(vertical: 11),
                 decoration: BoxDecoration(borderRadius: BorderRadius.circular(12), color: _kDark, border: Border.all(color: _kGold.withValues(alpha: 0.4), width: 1.5)),
-                child: const Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                  Icon(Icons.login_rounded, size: 14, color: _kGoldL),
-                  SizedBox(width: 7),
-                  Text('Crear cuenta para guardar y usar', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w800, color: _kGoldL)),
+                child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                  const Icon(Icons.login_rounded, size: 14, color: _kGoldL),
+                  const SizedBox(width: 7),
+                  Text(isEs ? 'Crear cuenta para guardar y usar' : 'Criar conta para salvar e usar', style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w800, color: _kGoldL)),
                 ]),
               ),
             ),

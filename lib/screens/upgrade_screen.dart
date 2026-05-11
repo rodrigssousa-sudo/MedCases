@@ -10,141 +10,128 @@ const _kGold  = Color(0xFFC5A365);
 const _kGoldL = Color(0xFFFFE8A6);
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Strings bilíngues — tudo aqui, sem nenhum literal fora desta seção
+// Strings bilíngues — centralizado, sem literais fora desta classe
 // ─────────────────────────────────────────────────────────────────────────────
 class _S {
   final bool es;
   const _S(this.es);
 
-  // Badge topo
-  String get badge        => 'MEDCASES PRO PREMIUM';
-
-  // Hero
-  String get heroTitle    => es
+  String get badge           => 'MEDCASES PRO PREMIUM';
+  String get heroTitle       => es
       ? 'Acceso completo al\nconocimiento clínico'
       : 'Acesso completo ao\nconhecimento clínico';
-  String get heroSub      => es
+  String get heroSub         => es
       ? '500+ casos clínicos reales · Protocolos actualizados\nPrescripciones modelo · IA Clínica ilimitada'
       : '500+ casos clínicos reais · Protocolos atualizados\nPrescrições modelo · IA Clínica ilimitada';
 
-  // Seção planos
-  String get choosePlan   => es ? 'Elige tu plan'      : 'Escolha seu plano';
+  String get choosePlan      => es ? 'Elige tu plan'        : 'Escolha seu plano';
 
-  // Plano Mensal
-  String get planBasicLbl => es ? 'Mensual'            : 'Mensal';
-  String get planBasicPrice => es ? '\$9.900'          : 'R\$ 29,90';
-  String get planBasicPeriod => es ? '/mes'            : '/mês';
-  String get planBasicSub => es
+  // ── Plano Mensal / Mensual ─────────────────────────────────────────────────
+  String get planBasicLbl    => es ? 'Mensual'              : 'Mensal';
+  String get planBasicPrice  => es ? '\$9.900'              : 'R\$ 29,90';
+  String get planBasicPeriod => es ? '/mes'                 : '/mês';
+  String get planBasicSub    => es
       ? 'Cobrado mensualmente'
       : 'Cobrado mensalmente';
 
-  // Plano Anual
-  String get planProLbl   => es ? 'Anual'              : 'Anual';
-  String get planProPrice => es ? '\$5.900'            : 'R\$ 19,90';
-  String get planProPeriod => es ? '/mes'              : '/mês';
-  String get planProSaving => es ? 'Ahorra 40%'        : 'Economize 34%';
-  String get planProSub   => es
+  // ── Plano Anual ───────────────────────────────────────────────────────────
+  String get planProLbl      => es ? 'Anual'                : 'Anual';
+  String get planProPrice    => es ? '\$5.900'              : 'R\$ 19,90';
+  String get planProPeriod   => es ? '/mes'                 : '/mês';
+  String get planProSaving   => es ? 'Ahorra 40%'           : 'Economize 34%';
+  String get planProSub      => es
       ? 'Cobrado como \$70.800/año — equiv. \$5.900/mes'
       : 'Cobrado como R\$ 238,80/ano — equiv. R\$ 19,90/mês';
 
-  // CTA botão
-  String ctaLabel(int plan) => es
+  // ── CTA ───────────────────────────────────────────────────────────────────
+  String ctaLabel(int plan)  => es
       ? (plan == 0 ? 'Suscribir — \$9.900/mes'   : 'Suscribir — \$5.900/mes (anual)')
       : (plan == 0 ? 'Assinar — R\$ 29,90/mês'   : 'Assinar — R\$ 19,90/mês (anual)');
 
-  // Card: selecionado / selecionar
-  String get selected     => es ? 'Seleccionado'       : 'Selecionado';
-  String get select       => es ? 'Seleccionar'        : 'Selecionar';
+  // ── Card ──────────────────────────────────────────────────────────────────
+  String get selected        => es ? 'Seleccionado'         : 'Selecionado';
+  String get select          => es ? 'Seleccionar'          : 'Selecionar';
 
-  // Garantia
-  String get guaranteeTitle => es ? 'Garantía de 7 días'  : 'Garantia de 7 dias';
-  String get guaranteeSub   => es
+  // ── Garantia ──────────────────────────────────────────────────────────────
+  String get guaranteeTitle  => es ? 'Garantía de 7 días'  : 'Garantia de 7 dias';
+  String get guaranteeSub    => es
       ? 'Si no estás satisfecho, devolvemos el 100% del valor.'
       : 'Se não ficar satisfeito, devolvemos 100% do valor.';
 
-  // Social proof
-  String get spDoctors    => es ? 'médicos'            : 'médicos';
-  String get spRating     => es ? 'calificación'       : 'avaliação';
-  String get spCases      => es ? 'casos'              : 'casos';
+  // ── Social proof ──────────────────────────────────────────────────────────
+  String get spDoctors       => es ? 'médicos'              : 'médicos';
+  String get spRating        => es ? 'calificación'         : 'avaliação';
+  String get spCases         => es ? 'casos'                : 'casos';
 
-  // Disclaimer rodapé
-  String get disclaimer   => es
+  // ── Disclaimer ───────────────────────────────────────────────────────────
+  String get disclaimer      => es
       ? 'Cancela en cualquier momento. Sin compromisos. Facturación segura.'
       : 'Cancele a qualquer momento. Sem compromisso. Cobrança segura.';
 
-  // Toggle de idioma
-  String get toggleLang   => es ? 'Ver em Português'   : 'Ver en Español';
+  // ── Toggle de idioma ──────────────────────────────────────────────────────
+  String get toggleLang      => es ? 'Ver em Português'     : 'Ver en Español';
 
-  // Seção features
-  String get featuresTitle => es ? 'Qué incluye cada plan' : 'O que cada plano inclui';
+  // ── Features ──────────────────────────────────────────────────────────────
+  String get featuresTitle   => es
+      ? 'Qué incluye cada plan'
+      : 'O que cada plano inclui';
+  String get includedInBoth  => es ? 'Mensual y Anual'      : 'Mensal e Anual';
+  String get onlyPro         => es ? 'Solo Anual'           : 'Só Anual';
 
-  // ── Features por plano ──────────────────────────────────────────────────
-  // Retorna lista de (ícone, cor, título, subtítulo, incluidoNoBasico)
+  /// (ícone, cor, título, subtítulo, incluidoNoMensal)
   List<(IconData, Color, String, String, bool)> get features => [
     (
-      Icons.folder_special_rounded,
-      _kGoldL,
-      es ? 'Casos clínicos ilimitados'         : 'Casos clínicos ilimitados',
+      Icons.folder_special_rounded, _kGoldL,
+      es ? 'Casos clínicos ilimitados'             : 'Casos clínicos ilimitados',
       es ? 'UCI, Cardiología, Neurología, Emergencias y más'
          : 'UTI, Cardiologia, Neurologia, Emergências e mais',
-      true,   // incluso no básico (mensal)
+      true,
     ),
     (
-      Icons.medication_rounded,
-      const Color(0xFF6BCCA0),
-      es ? 'Prescripciones modelo completas'   : 'Prescrições modelo completas',
+      Icons.medication_rounded, const Color(0xFF6BCCA0),
+      es ? 'Prescripciones modelo completas'       : 'Prescrições modelo completas',
       es ? 'Protocolos actualizados por especialistas'
          : 'Protocolos atualizados por especialistas',
       true,
     ),
     (
-      Icons.psychology_rounded,
-      const Color(0xFF93C5FD),
-      es ? 'IA Clínica sin restricciones'      : 'IA Clínica sem restrições',
+      Icons.psychology_rounded, const Color(0xFF93C5FD),
+      es ? 'IA Clínica sin restricciones'          : 'IA Clínica sem restrições',
       es ? 'Análisis de casos y apoyo a la decisión 24/7'
          : 'Análise de casos e apoio à decisão 24/7',
       true,
     ),
     (
-      Icons.emergency_rounded,
-      const Color(0xFFFF9580),
-      es ? 'Protocolos de emergencia'          : 'Protocolos de emergência',
-      es ? 'STEMI, Sepsis, ACV, CAD y más'     : 'STEMI, Sepsis, AVC, CAD e muito mais',
+      Icons.emergency_rounded, const Color(0xFFFF9580),
+      es ? 'Protocolos de emergencia'              : 'Protocolos de emergência',
+      es ? 'STEMI, Sepsis, ACV, CAD y más'         : 'STEMI, Sepsis, AVC, CAD e muito mais',
       true,
     ),
     (
-      Icons.calculate_rounded,
-      const Color(0xFFD9B8FF),
-      es ? 'Calculadoras clínicas avanzadas'   : 'Calculadoras clínicas avançadas',
-      es ? 'Escore NEWS, SOFA, Wells, CURB-65…': 'Escore NEWS, SOFA, Wells, CURB-65…',
+      Icons.calculate_rounded, const Color(0xFFD9B8FF),
+      es ? 'Calculadoras clínicas avanzadas'       : 'Calculadoras clínicas avançadas',
+      es ? 'Escore NEWS, SOFA, Wells, CURB-65…'    : 'Escore NEWS, SOFA, Wells, CURB-65…',
       true,
     ),
     (
-      Icons.cloud_download_rounded,
-      _kGoldL,
-      es ? 'Acceso offline completo'           : 'Acesso offline completo',
-      es ? 'Funciona sin internet en guardias' : 'Funciona sem internet em plantões',
-      false,  // apenas no plano anual/pro
+      Icons.cloud_download_rounded, _kGoldL,
+      es ? 'Acceso offline completo'               : 'Acesso offline completo',
+      es ? 'Funciona sin internet en guardias'     : 'Funciona sem internet em plantões',
+      false, // apenas plano Anual
     ),
     (
-      Icons.history_edu_rounded,
-      const Color(0xFF86EFAC),
-      es ? 'Historial clínico ilimitado'       : 'Histórico clínico ilimitado',
-      es ? 'Guarda y revisa todos tus casos'   : 'Salva e revisa todos os seus casos',
-      false,  // apenas no plano anual/pro
+      Icons.history_edu_rounded, const Color(0xFF86EFAC),
+      es ? 'Historial clínico ilimitado'           : 'Histórico clínico ilimitado',
+      es ? 'Guarda y revisa todos tus casos'       : 'Salva e revisa todos os seus casos',
+      false, // apenas plano Anual
     ),
     (
-      Icons.support_agent_rounded,
-      const Color(0xFFFCA5A5),
-      es ? 'Soporte prioritario'               : 'Suporte prioritário',
-      es ? 'Respuesta en menos de 24h'         : 'Resposta em menos de 24h',
-      false,  // apenas no plano anual/pro
+      Icons.support_agent_rounded, const Color(0xFFFCA5A5),
+      es ? 'Soporte prioritario'                   : 'Suporte prioritário',
+      es ? 'Respuesta en menos de 24h'             : 'Resposta em menos de 24h',
+      false, // apenas plano Anual
     ),
   ];
-
-  // Label de "incluso" / "apenas no anual"
-  String get includedInBasic => es ? 'Mensual y Anual' : 'Mensal e Anual';
-  String get onlyPro         => es ? 'Solo Anual'       : 'Só Anual';
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -152,8 +139,7 @@ class _S {
 // ─────────────────────────────────────────────────────────────────────────────
 class UpgradeScreen extends StatefulWidget {
   final bool showClose;
-  /// Idioma de partida recebido do contexto chamador ('es' ou 'pt').
-  final String initialLang;
+  final String initialLang; // 'es' ou 'pt'
 
   const UpgradeScreen({
     super.key,
@@ -167,12 +153,12 @@ class UpgradeScreen extends StatefulWidget {
 
 class _UpgradeScreenState extends State<UpgradeScreen>
     with SingleTickerProviderStateMixin {
-  int _selectedPlan = 1; // 0 = mensal/mensual, 1 = anual (padrão)
+  int _selectedPlan = 1; // 0 = mensal, 1 = anual (padrão)
   late bool _isEs;
   late AnimationController _anim;
   late Animation<double> _fadeIn;
 
-  // Links de pagamento — substituir pelas URLs reais (Stripe / Hotmart)
+  // Links de pagamento — substituir pelas URLs reais
   static const _linkMensalPt = 'https://medcasespro.com/planos/mensal';
   static const _linkAnualPt  = 'https://medcasespro.com/planos/anual';
   static const _linkMensalEs = 'https://medcasespro.com/planes/mensual';
@@ -183,9 +169,7 @@ class _UpgradeScreenState extends State<UpgradeScreen>
     super.initState();
     _isEs = widget.initialLang == 'es';
     _anim = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 420),
-    );
+        vsync: this, duration: const Duration(milliseconds: 420));
     _fadeIn = CurvedAnimation(parent: _anim, curve: Curves.easeOut);
     _anim.forward();
   }
@@ -199,12 +183,9 @@ class _UpgradeScreenState extends State<UpgradeScreen>
   void _toggleLang() => setState(() => _isEs = !_isEs);
 
   Future<void> _subscribe() async {
-    String url;
-    if (_isEs) {
-      url = _selectedPlan == 0 ? _linkMensalEs : _linkAnualEs;
-    } else {
-      url = _selectedPlan == 0 ? _linkMensalPt : _linkAnualPt;
-    }
+    final url = _isEs
+        ? (_selectedPlan == 0 ? _linkMensalEs : _linkAnualEs)
+        : (_selectedPlan == 0 ? _linkMensalPt : _linkAnualPt);
     final uri = Uri.parse(url);
     if (await canLaunchUrl(uri)) {
       await launchUrl(uri, mode: LaunchMode.externalApplication);
@@ -219,19 +200,15 @@ class _UpgradeScreenState extends State<UpgradeScreen>
       body: FadeTransition(
         opacity: _fadeIn,
         child: Stack(children: [
-          // Fundo decorativo
           Positioned.fill(child: CustomPaint(painter: _BgPainter())),
-
           SafeArea(
             child: Column(children: [
-              // ── Barra topo: fechar + toggle idioma ─────────────────────────
+              // ── Barra topo: toggle idioma + fechar ────────────────────────
               Padding(
                 padding: const EdgeInsets.fromLTRB(16, 10, 16, 0),
                 child: Row(children: [
-                  // Toggle idioma — sempre visível
                   _LangToggle(label: s.toggleLang, onTap: _toggleLang),
                   const Spacer(),
-                  // Fechar (apenas quando modal)
                   if (widget.showClose)
                     GestureDetector(
                       onTap: () => Navigator.pop(context),
@@ -257,37 +234,24 @@ class _UpgradeScreenState extends State<UpgradeScreen>
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       _buildHero(s),
-                      const SizedBox(height: 26),
-
-                      // ── Seletor de planos ─────────────────────────────────
+                      const SizedBox(height: 24),
                       _buildPlanSelector(s),
                       const SizedBox(height: 20),
-
-                      // ── Features por plano ────────────────────────────────
                       _buildFeatures(s),
                       const SizedBox(height: 20),
-
-                      // ── CTA ───────────────────────────────────────────────
                       _buildCta(s),
                       const SizedBox(height: 14),
-
-                      // ── Garantia ──────────────────────────────────────────
                       _buildGuarantee(s),
                       const SizedBox(height: 18),
-
-                      // ── Social proof ──────────────────────────────────────
                       _buildSocialProof(s),
                       const SizedBox(height: 14),
-
-                      // ── Disclaimer ────────────────────────────────────────
                       Text(
                         s.disclaimer,
                         textAlign: TextAlign.center,
                         style: TextStyle(
-                          fontSize: 10,
-                          color: Colors.white.withValues(alpha: 0.3),
-                          height: 1.5,
-                        ),
+                            fontSize: 10,
+                            color: Colors.white.withValues(alpha: 0.3),
+                            height: 1.5),
                       ),
                     ],
                   ),
@@ -303,7 +267,6 @@ class _UpgradeScreenState extends State<UpgradeScreen>
   // ── Hero ────────────────────────────────────────────────────────────────────
   Widget _buildHero(_S s) {
     return Column(children: [
-      // Badge
       Container(
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
         decoration: BoxDecoration(
@@ -323,57 +286,44 @@ class _UpgradeScreenState extends State<UpgradeScreen>
         ]),
       ),
       const SizedBox(height: 16),
-
-      // Ícone central com glow
       Container(
-        width: 76,
-        height: 76,
+        width: 76, height: 76,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
           gradient: const LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
+            begin: Alignment.topLeft, end: Alignment.bottomRight,
             colors: [Color(0xFF1F4030), Color(0xFF0A1610)],
           ),
           border: Border.all(color: _kGold.withValues(alpha: 0.5), width: 1.5),
           boxShadow: [
             BoxShadow(
                 color: _kGold.withValues(alpha: 0.25),
-                blurRadius: 32,
-                spreadRadius: 4),
+                blurRadius: 32, spreadRadius: 4),
             BoxShadow(
                 color: _kGreen.withValues(alpha: 0.3),
-                blurRadius: 48,
-                spreadRadius: 2),
+                blurRadius: 48, spreadRadius: 2),
           ],
         ),
         child: const Icon(Icons.workspace_premium_rounded,
             size: 36, color: _kGoldL),
       ),
       const SizedBox(height: 16),
-
-      Text(
-        s.heroTitle,
-        textAlign: TextAlign.center,
-        style: const TextStyle(
-          fontSize: 25,
-          fontWeight: FontWeight.w900,
-          color: Colors.white,
-          height: 1.15,
-          letterSpacing: -0.5,
-        ),
-      ),
+      Text(s.heroTitle,
+          textAlign: TextAlign.center,
+          style: const TextStyle(
+              fontSize: 25,
+              fontWeight: FontWeight.w900,
+              color: Colors.white,
+              height: 1.15,
+              letterSpacing: -0.5)),
       const SizedBox(height: 8),
-      Text(
-        s.heroSub,
-        textAlign: TextAlign.center,
-        style: TextStyle(
-          fontSize: 12,
-          color: Colors.white.withValues(alpha: 0.5),
-          height: 1.6,
-          fontWeight: FontWeight.w500,
-        ),
-      ),
+      Text(s.heroSub,
+          textAlign: TextAlign.center,
+          style: TextStyle(
+              fontSize: 12,
+              color: Colors.white.withValues(alpha: 0.5),
+              height: 1.6,
+              fontWeight: FontWeight.w500)),
     ]);
   }
 
@@ -385,7 +335,6 @@ class _UpgradeScreenState extends State<UpgradeScreen>
               fontSize: 14, fontWeight: FontWeight.w800, color: Colors.white)),
       const SizedBox(height: 12),
       Row(children: [
-        // Plano Mensal
         Expanded(
           child: _PlanCard(
             label: s.planBasicLbl,
@@ -400,7 +349,6 @@ class _UpgradeScreenState extends State<UpgradeScreen>
           ),
         ),
         const SizedBox(width: 10),
-        // Plano Anual
         Expanded(
           child: _PlanCard(
             label: s.planProLbl,
@@ -427,70 +375,70 @@ class _UpgradeScreenState extends State<UpgradeScreen>
         color: Colors.white.withValues(alpha: 0.03),
         border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          // Cabeçalho
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 14, 16, 10),
-            child: Row(children: [
-              Text(s.featuresTitle,
+      child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+        // Cabeçalho com legenda de colunas
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 14, 16, 10),
+          child: Row(children: [
+            Expanded(
+              child: Text(s.featuresTitle,
                   style: const TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.w800,
                       color: Colors.white)),
-              const Spacer(),
-              // Legenda colunas
-              _FeaturePill(
-                  label: s.planBasicLbl,
-                  color: Colors.white.withValues(alpha: 0.25)),
-              const SizedBox(width: 4),
-              _FeaturePill(label: s.planProLbl, color: _kGold),
-            ]),
-          ),
+            ),
+            _FeaturePill(
+                label: s.planBasicLbl,
+                color: Colors.white.withValues(alpha: 0.3)),
+            const SizedBox(width: 6),
+            _FeaturePill(label: s.planProLbl, color: _kGold),
+          ]),
+        ),
+        const Divider(height: 1, color: Color(0x14FFFFFF)),
 
-          const Divider(height: 1, color: Color(0x14FFFFFF)),
+        // Linhas de features
+        ...features.asMap().entries.map((entry) {
+          final idx = entry.key;
+          final f   = entry.value;
+          final (icon, color, title, sub, inBasic) = f;
+          return _FeatureRow(
+            icon: icon,
+            color: color,
+            title: title,
+            subtitle: sub,
+            inBasic: inBasic,
+            isLast: idx == features.length - 1,
+            highlight: _selectedPlan == 1 && !inBasic,
+          );
+        }),
 
-          // Lista de features
-          ...features.asMap().entries.map((e) {
-            final idx = e.key;
-            final (icon, color, title, sub, inBasic) = e.value;
-            final isLast = idx == features.length - 1;
-            return _FeatureRow(
-              icon: icon,
-              color: color,
-              title: title,
-              subtitle: sub,
-              inBasic: inBasic,
-              isLast: isLast,
-              // Destaca se o plano anual estiver selecionado e o recurso for só anual
-              highlight: _selectedPlan == 1 && !inBasic,
-            );
-          }),
-
-          // Legenda de rodapé
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 10, 16, 14),
-            child: Row(children: [
-              _LegendDot(color: Colors.white.withValues(alpha: 0.25)),
-              const SizedBox(width: 6),
-              Text(s.includedInBasic,
-                  style: TextStyle(
-                      fontSize: 10,
-                      color: Colors.white.withValues(alpha: 0.4),
-                      fontWeight: FontWeight.w600)),
-              const SizedBox(width: 14),
-              _LegendDot(color: _kGold),
-              const SizedBox(width: 6),
-              Text(s.onlyPro,
-                  style: const TextStyle(
-                      fontSize: 10,
-                      color: _kGold,
-                      fontWeight: FontWeight.w600)),
-            ]),
-          ),
-        ],
-      ),
+        // Legenda de rodapé
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 10, 16, 14),
+          child: Row(children: [
+            _LegendDot(color: Colors.white.withValues(alpha: 0.3)),
+            const SizedBox(width: 6),
+            Text(s.includedInBoth,
+                style: TextStyle(
+                    fontSize: 10,
+                    color: Colors.white.withValues(alpha: 0.45),
+                    fontWeight: FontWeight.w600)),
+            const SizedBox(width: 14),
+            const _LegendDot(color: _kGold),
+            const SizedBox(width: 6),
+            const Text('+ ',
+                style: TextStyle(
+                    fontSize: 10,
+                    color: _kGold,
+                    fontWeight: FontWeight.w600)),
+            Text(s.onlyPro,
+                style: const TextStyle(
+                    fontSize: 10,
+                    color: _kGold,
+                    fontWeight: FontWeight.w600)),
+          ]),
+        ),
+      ]),
     );
   }
 
@@ -503,33 +451,27 @@ class _UpgradeScreenState extends State<UpgradeScreen>
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16),
           gradient: const LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
+            begin: Alignment.topLeft, end: Alignment.bottomRight,
             colors: [Color(0xFFD4AF5A), Color(0xFFC5A365), Color(0xFF8B6914)],
           ),
           boxShadow: [
             BoxShadow(
                 color: _kGold.withValues(alpha: 0.55),
-                blurRadius: 20,
-                offset: const Offset(0, 6)),
+                blurRadius: 20, offset: const Offset(0, 6)),
             BoxShadow(
                 color: Colors.black.withValues(alpha: 0.25),
-                blurRadius: 10,
-                offset: const Offset(0, 4)),
+                blurRadius: 10, offset: const Offset(0, 4)),
           ],
         ),
         child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-          const Icon(Icons.workspace_premium_rounded,
-              size: 20, color: _kDark),
+          const Icon(Icons.workspace_premium_rounded, size: 20, color: _kDark),
           const SizedBox(width: 10),
-          Text(
-            s.ctaLabel(_selectedPlan),
-            style: const TextStyle(
-                fontSize: 15,
-                fontWeight: FontWeight.w900,
-                color: _kDark,
-                letterSpacing: 0.2),
-          ),
+          Text(s.ctaLabel(_selectedPlan),
+              style: const TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w900,
+                  color: _kDark,
+                  letterSpacing: 0.2)),
         ]),
       ),
     );
@@ -542,27 +484,26 @@ class _UpgradeScreenState extends State<UpgradeScreen>
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
         color: const Color(0xFF065F46).withValues(alpha: 0.12),
-        border: Border.all(color: const Color(0xFF065F46).withValues(alpha: 0.35)),
+        border:
+            Border.all(color: const Color(0xFF065F46).withValues(alpha: 0.35)),
       ),
       child: Row(children: [
         const Icon(Icons.verified_user_rounded,
             size: 22, color: Color(0xFF4ADE80)),
         const SizedBox(width: 12),
         Expanded(
-          child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(s.guaranteeTitle,
-                    style: const TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w800,
-                        color: Colors.white)),
-                Text(s.guaranteeSub,
-                    style: TextStyle(
-                        fontSize: 11,
-                        color: Colors.white.withValues(alpha: 0.55),
-                        height: 1.4)),
-              ]),
+          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Text(s.guaranteeTitle,
+                style: const TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w800,
+                    color: Colors.white)),
+            Text(s.guaranteeSub,
+                style: TextStyle(
+                    fontSize: 11,
+                    color: Colors.white.withValues(alpha: 0.55),
+                    height: 1.4)),
+          ]),
         ),
       ]),
     );
@@ -571,13 +512,11 @@ class _UpgradeScreenState extends State<UpgradeScreen>
   // ── Social proof ────────────────────────────────────────────────────────────
   Widget _buildSocialProof(_S s) {
     return Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-      _StatChip(
-          icon: Icons.people_rounded, label: '+2.800', sub: s.spDoctors),
+      _StatChip(icon: Icons.people_rounded,        label: '+2.800', sub: s.spDoctors),
       const SizedBox(width: 8),
-      _StatChip(icon: Icons.star_rounded, label: '4.9★', sub: s.spRating),
+      _StatChip(icon: Icons.star_rounded,          label: '4.9★',   sub: s.spRating),
       const SizedBox(width: 8),
-      _StatChip(
-          icon: Icons.folder_special_rounded, label: '500+', sub: s.spCases),
+      _StatChip(icon: Icons.folder_special_rounded, label: '500+',  sub: s.spCases),
     ]);
   }
 }
@@ -586,7 +525,6 @@ class _UpgradeScreenState extends State<UpgradeScreen>
 // Widgets auxiliares
 // ─────────────────────────────────────────────────────────────────────────────
 
-/// Botão de toggle de idioma no topo
 class _LangToggle extends StatelessWidget {
   final String label;
   final VoidCallback onTap;
@@ -617,7 +555,6 @@ class _LangToggle extends StatelessWidget {
   }
 }
 
-/// Card de plano
 class _PlanCard extends StatelessWidget {
   final String label, price, period, sublabel;
   final String? saving;
@@ -654,21 +591,15 @@ class _PlanCard extends StatelessWidget {
             width: selected ? 1.5 : 1,
           ),
           boxShadow: selected
-              ? [
-                  BoxShadow(
-                      color: _kGold.withValues(alpha: 0.2),
-                      blurRadius: 16,
-                      offset: const Offset(0, 4))
-                ]
+              ? [BoxShadow(
+                  color: _kGold.withValues(alpha: 0.2),
+                  blurRadius: 16, offset: const Offset(0, 4))]
               : null,
         ),
-        child:
-            Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          // Badge desconto
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           if (saving != null) ...[
             Container(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
+              padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(8),
                 color: _kGold.withValues(alpha: 0.18),
@@ -682,8 +613,6 @@ class _PlanCard extends StatelessWidget {
             ),
             const SizedBox(height: 7),
           ],
-
-          // Label
           Text(label,
               style: TextStyle(
                   fontSize: 12,
@@ -692,8 +621,6 @@ class _PlanCard extends StatelessWidget {
                       ? _kGoldL
                       : Colors.white.withValues(alpha: 0.55))),
           const SizedBox(height: 3),
-
-          // Preço
           Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
             Flexible(
               child: Text(price,
@@ -713,8 +640,6 @@ class _PlanCard extends StatelessWidget {
                       color: Colors.white.withValues(alpha: 0.4))),
             ),
           ]),
-
-          // Sub
           const SizedBox(height: 4),
           Text(sublabel,
               style: TextStyle(
@@ -722,8 +647,6 @@ class _PlanCard extends StatelessWidget {
                   color: Colors.white.withValues(alpha: 0.35),
                   height: 1.3)),
           const SizedBox(height: 6),
-
-          // Radio indicator
           Row(children: [
             Icon(
               selected
@@ -749,14 +672,13 @@ class _PlanCard extends StatelessWidget {
   }
 }
 
-/// Linha de feature com check por plano
 class _FeatureRow extends StatelessWidget {
   final IconData icon;
   final Color color;
   final String title, subtitle;
   final bool inBasic;
   final bool isLast;
-  final bool highlight; // recurso exclusivo selecionado
+  final bool highlight;
 
   const _FeatureRow({
     required this.icon,
@@ -772,20 +694,15 @@ class _FeatureRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: highlight
-            ? _kGold.withValues(alpha: 0.04)
-            : Colors.transparent,
+        color: highlight ? _kGold.withValues(alpha: 0.04) : Colors.transparent,
         border: isLast
             ? null
-            : const Border(
-                bottom: BorderSide(color: Color(0x0AFFFFFF))),
+            : const Border(bottom: BorderSide(color: Color(0x0AFFFFFF))),
       ),
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 11),
       child: Row(children: [
-        // Ícone
         Container(
-          width: 36,
-          height: 36,
+          width: 36, height: 36,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
             color: color.withValues(alpha: 0.12),
@@ -794,35 +711,27 @@ class _FeatureRow extends StatelessWidget {
           child: Icon(icon, size: 17, color: color),
         ),
         const SizedBox(width: 11),
-
-        // Título + sub
         Expanded(
-          child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(title,
-                    style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w800,
-                        color: Colors.white,
-                        height: 1.2)),
-                Text(subtitle,
-                    style: TextStyle(
-                        fontSize: 10,
-                        color: Colors.white.withValues(alpha: 0.4),
-                        height: 1.3)),
-              ]),
+          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Text(title,
+                style: const TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w800,
+                    color: Colors.white,
+                    height: 1.2)),
+            Text(subtitle,
+                style: TextStyle(
+                    fontSize: 10,
+                    color: Colors.white.withValues(alpha: 0.4),
+                    height: 1.3)),
+          ]),
         ),
         const SizedBox(width: 8),
-
-        // Colunas de check: Mensal | Anual
-        Row(children: [
-          // Check Mensal
-          _CheckCell(checked: inBasic, gold: false),
-          const SizedBox(width: 8),
-          // Check Anual — sempre tem
-          _CheckCell(checked: true, gold: true),
-        ]),
+        // Check Mensal
+        _CheckCell(checked: inBasic, gold: false),
+        const SizedBox(width: 10),
+        // Check Anual — sempre incluso
+        const _CheckCell(checked: true, gold: true),
       ]),
     );
   }
@@ -836,21 +745,14 @@ class _CheckCell extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (checked) {
-      return Icon(
-        Icons.check_circle_rounded,
-        size: 18,
-        color: gold ? _kGold : const Color(0xFF4ADE80),
-      );
+      return Icon(Icons.check_circle_rounded,
+          size: 18, color: gold ? _kGold : const Color(0xFF4ADE80));
     }
-    return Icon(
-      Icons.remove_circle_outline_rounded,
-      size: 18,
-      color: Colors.white.withValues(alpha: 0.15),
-    );
+    return Icon(Icons.remove_circle_outline_rounded,
+        size: 18, color: Colors.white.withValues(alpha: 0.15));
   }
 }
 
-/// Pílula de legenda
 class _FeaturePill extends StatelessWidget {
   final String label;
   final Color color;
@@ -863,7 +765,7 @@ class _FeaturePill extends StatelessWidget {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(6),
         color: color.withValues(alpha: 0.12),
-        border: Border.all(color: color.withValues(alpha: 0.3)),
+        border: Border.all(color: color.withValues(alpha: 0.35)),
       ),
       child: Text(label,
           style: TextStyle(
@@ -879,19 +781,16 @@ class _LegendDot extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 10,
-      height: 10,
+      width: 10, height: 10,
       decoration: BoxDecoration(shape: BoxShape.circle, color: color),
     );
   }
 }
 
-/// Chip de social proof
 class _StatChip extends StatelessWidget {
   final IconData icon;
   final String label, sub;
-  const _StatChip(
-      {required this.icon, required this.label, required this.sub});
+  const _StatChip({required this.icon, required this.label, required this.sub});
 
   @override
   Widget build(BuildContext context) {
@@ -907,9 +806,7 @@ class _StatChip extends StatelessWidget {
         const SizedBox(height: 3),
         Text(label,
             style: const TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.w900,
-                color: Colors.white)),
+                fontSize: 12, fontWeight: FontWeight.w900, color: Colors.white)),
         Text(sub,
             style: TextStyle(
                 fontSize: 9, color: Colors.white.withValues(alpha: 0.38))),
@@ -918,14 +815,12 @@ class _StatChip extends StatelessWidget {
   }
 }
 
-/// Fundo decorativo
 class _BgPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()..style = PaintingStyle.fill;
     paint.color = const Color(0xFF075f45).withValues(alpha: 0.08);
-    canvas.drawCircle(
-        Offset(size.width * 0.8, 0), size.width * 0.6, paint);
+    canvas.drawCircle(Offset(size.width * 0.8, 0), size.width * 0.6, paint);
     paint.color = const Color(0xFFC5A365).withValues(alpha: 0.05);
     canvas.drawCircle(
         Offset(size.width * 0.1, size.height * 0.45), size.width * 0.5, paint);
@@ -936,7 +831,7 @@ class _BgPainter extends CustomPainter {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Helper — abre o paywall como bottom sheet, passando o idioma atual
+// Helper — abre o paywall como bottom sheet passando o idioma atual
 // ─────────────────────────────────────────────────────────────────────────────
 void showUpgradeScreen(BuildContext context, {String lang = 'es'}) {
   showModalBottomSheet(
