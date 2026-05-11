@@ -237,9 +237,15 @@ class _AuthGate extends StatelessWidget {
           return _wrapAuth(const _SplashScreen());
         }
 
-        // Firebase falhou (Safari/iOS: cookies, IndexedDB, CORS)
-        // → abre LoginScreen normalmente; Auth falhará graciosamente ao tentar logar
+        // Firebase falhou (Safari/iOS: cookies, IndexedDB, CORS, web preview)
+        // No Web: NÃO mostra LoginScreen — o auth REST não depende do Firebase SDK.
+        // Se mostrarmos LoginScreen aqui, o ValueListenableBuilder(webUser) nunca
+        // é construído, então webUser.value mudar após login não causa rebuild.
+        // Resultado: login funciona mas app fica preso na LoginScreen para sempre.
+        // Solução: no Web, mesmo com Firebase SDK falhando, usamos _buildWebAuthGate.
+        // No Android/iOS: Firebase SDK é obrigatório — LoginScreen é o fallback correto.
         if (firebaseSnap.hasError) {
+          if (kIsWeb) return _buildWebAuthGate(context);
           return _wrapAuth(const LoginScreen());
         }
 
