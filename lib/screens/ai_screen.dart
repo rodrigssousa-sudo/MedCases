@@ -1147,7 +1147,7 @@ class _AiSettingsSheetState extends State<_AiSettingsSheet> {
                       color: Colors.white.withValues(alpha: 0.6))),
                   const Spacer(),
                   Text(
-                    _isEs ? 'Sinc. con tu cuenta' : 'Sync com sua conta',
+                    _isEs ? 'Sincronizado con tu cuenta' : 'Sync com sua conta',
                     style: TextStyle(
                       fontSize: 10,
                       color: Colors.white.withValues(alpha: 0.5))),
@@ -1208,7 +1208,7 @@ class _AiSettingsSheetState extends State<_AiSettingsSheet> {
                 const SizedBox(height: 5),
                 Text(
                   _isEs
-                      ? 'A chave fica salva no teu perfil Firebase — disponível em todos os dispositivos automaticamente.'
+                      ? 'La clave se guarda en tu perfil de Firebase — disponible en todos tus dispositivos automáticamente.'
                       : 'A chave fica salva no seu perfil Firebase — disponível em todos os dispositivos automaticamente.',
                   style: TextStyle(fontSize: 11, color: sub, height: 1.55)),
               ]),

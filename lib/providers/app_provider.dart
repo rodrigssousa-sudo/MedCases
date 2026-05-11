@@ -824,13 +824,18 @@ class AppProvider extends ChangeNotifier {
     final protocolIds = <String>[];
     final examSuggestions = <String>[];
     final redFlags = <String>[];
+    final bool es = _lang == 'es';
 
     // ── Síndromes cardiovasculares ─────────────────────────────────────────
     if (_has(q, ['dor torac', 'peito', 'iam', 'infarto', 'angina', 'stemi', 'nstemi', 'sca'])) {
-      suspected.add('Síndrome Coronariana Aguda (IAM/Angina Instável)');
+      suspected.add(es ? 'Síndrome Coronario Agudo (IAM/Angina Inestable)' : 'Síndrome Coronariana Aguda (IAM/Angina Instável)');
       protocolIds.add('iam_congestao');
-      examSuggestions.addAll(['ECG seriado (0–6–12h)', 'Troponina (0–3h)', 'RX tórax', 'Glicemia']);
-      redFlags.addAll(['Supradesnivelamento ST → cateterismo urgente', 'Hipotensão → choque cardiogênico']);
+      examSuggestions.addAll(es
+        ? ['ECG seriado (0–6–12h)', 'Troponina (0–3h)', 'RX tórax', 'Glucemia']
+        : ['ECG seriado (0–6–12h)', 'Troponina (0–3h)', 'RX tórax', 'Glicemia']);
+      redFlags.addAll(es
+        ? ['Supradesnivel ST → cateterismo urgente', 'Hipotensión → choque cardiogénico']
+        : ['Supradesnivelamento ST → cateterismo urgente', 'Hipotensão → choque cardiogênico']);
     }
     if (_has(q, ['dispne', 'falta de ar', 'crepit', 'congest', 'edema pulm', 'ortopneia', 'ic ', 'insuf cardiac', 'b3', 'killip'])) {
       suspected.add('Insuficiência Cardíaca Descompensada / Edema Agudo de Pulmão');
@@ -949,17 +954,26 @@ class AppProvider extends ChangeNotifier {
       ]);
 
       if (!hasAbdominalEmergency && !hasNeuroGravity && !hasCardioGravity && !hasMetabolicGravity) {
-        // Sem red flags → causas comuns (síndrome viral, gastroenterite, enxaqueca)
-        suspected.add('Síndrome emética — causas comuns: gastroenterite viral, alimentar, enxaqueca, medicamentosa');
-        examSuggestions.addAll([
-          'Temperatura (febre sugere causa infecciosa)',
-          'PA e FC (desidratação / hipotensão ortostática)',
-          'Glicemia capilar',
-          'Avaliar sinais de desidratação (turgor, mucosas)',
-        ]);
-        redFlags.add('Se dor abdominal intensa, sangramento, rigidez ou rebaixamento → urgência');
+        suspected.add(es
+          ? 'Síndrome emética — causas comunes: gastroenteritis viral, alimentaria, migraña, medicamentosa'
+          : 'Síndrome emética — causas comuns: gastroenterite viral, alimentar, enxaqueca, medicamentosa');
+        examSuggestions.addAll(es
+          ? [
+              'Temperatura (fiebre sugiere causa infecciosa)',
+              'PA y FC (deshidratación / hipotensión ortostática)',
+              'Glucemia capilar',
+              'Evaluar signos de deshidratación (turgencia, mucosas)',
+            ]
+          : [
+              'Temperatura (febre sugere causa infecciosa)',
+              'PA e FC (desidratação / hipotensão ortostática)',
+              'Glicemia capilar',
+              'Avaliar sinais de desidratação (turgor, mucosas)',
+            ]);
+        redFlags.add(es
+          ? 'Si dolor abdominal intenso, sangrado, rigidez o alteración de conciencia → urgencia'
+          : 'Se dor abdominal intensa, sangramento, rigidez ou rebaixamento → urgência');
       }
-      // Se há red flags: os blocos cardiovascular, neurológico etc. já adicionam a hipótese correta
     }
 
     // ── Respiratórios ──────────────────────────────────────────────────────

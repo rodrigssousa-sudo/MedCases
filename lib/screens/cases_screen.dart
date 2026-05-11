@@ -480,8 +480,10 @@ class _CaseEditorState extends State<_CaseEditor> {
   String _category = 'Cardiology';
   late String _weight;
 
-  static const _categories = ['Cardiology', 'Emergência', 'Pneumologia', 'Neurologia', 'Gastro', 'Endocrinologia', 'Nefrologia', 'Infectologia', 'Outro'];
-  static const _sexes = ['Masculino', 'Feminino'];
+  static const _categoriesPt = ['Cardiology', 'Emergência', 'Pneumologia', 'Neurologia', 'Gastro', 'Endocrinologia', 'Nefrologia', 'Infectologia', 'Outro'];
+  static const _categoriesEs = ['Cardiología', 'Emergencia', 'Neumología', 'Neurología', 'Gastroenterología', 'Endocrinología', 'Nefrología', 'Infectología', 'Otro'];
+  static const _sexesPt = ['Masculino', 'Feminino'];
+  static const _sexesEs = ['Masculino', 'Femenino'];
 
   @override
   void initState() {
@@ -494,7 +496,7 @@ class _CaseEditorState extends State<_CaseEditor> {
     _planCtrl = TextEditingController(text: c.plan);
     _notesCtrl = TextEditingController(text: c.notes);
     _sex = c.patientSex.isNotEmpty ? c.patientSex : 'Masculino';
-    _category = c.category.isNotEmpty ? c.category : 'Emergência';
+    _category = c.category.isNotEmpty ? c.category : (widget.p.lang == 'es' ? 'Emergencia' : 'Emergência');
     _weight = c.patientWeight;
   }
 
@@ -563,7 +565,7 @@ class _CaseEditorState extends State<_CaseEditor> {
               Expanded(child: _EditorField(label: p.t('age'), ctrl: _ageCtrl, hint: '68', numeric: true)),
               const SizedBox(width: 10),
               Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                const Text('SEXO', style: TextStyle(fontSize: 9, fontWeight: FontWeight.w900, letterSpacing: 1.4, color: Color(0xFF888888))),
+                Text(p.lang == 'es' ? 'SEXO' : 'SEXO', style: const TextStyle(fontSize: 9, fontWeight: FontWeight.w900, letterSpacing: 1.4, color: Color(0xFF888888))),
                 const SizedBox(height: 5),
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -572,7 +574,7 @@ class _CaseEditorState extends State<_CaseEditor> {
                     child: DropdownButton<String>(
                       value: _sex,
                       isExpanded: true,
-                      items: _sexes.map((s) => DropdownMenuItem(value: s, child: Text(s, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w700)))).toList(),
+                      items: (p.lang == 'es' ? _sexesEs : _sexesPt).map((s) => DropdownMenuItem(value: s, child: Text(s, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w700)))).toList(),
                       onChanged: (v) => setState(() => _sex = v ?? 'Masculino'),
                     ),
                   ),
@@ -582,7 +584,7 @@ class _CaseEditorState extends State<_CaseEditor> {
             const SizedBox(height: 10),
             Row(children: [
               Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                const Text('CATEGORIA', style: TextStyle(fontSize: 9, fontWeight: FontWeight.w900, letterSpacing: 1.4, color: Color(0xFF888888))),
+                Text(p.lang == 'es' ? 'CATEGORÍA' : 'CATEGORIA', style: const TextStyle(fontSize: 9, fontWeight: FontWeight.w900, letterSpacing: 1.4, color: Color(0xFF888888))),
                 const SizedBox(height: 5),
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -591,8 +593,8 @@ class _CaseEditorState extends State<_CaseEditor> {
                     child: DropdownButton<String>(
                       value: _category,
                       isExpanded: true,
-                      items: _categories.map((c) => DropdownMenuItem(value: c, child: Text(c, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w700)))).toList(),
-                      onChanged: (v) => setState(() => _category = v ?? 'Emergência'),
+                      items: (p.lang == 'es' ? _categoriesEs : _categoriesPt).map((c) => DropdownMenuItem(value: c, child: Text(c, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w700)))).toList(),
+                      onChanged: (v) => setState(() => _category = v ?? (p.lang == 'es' ? 'Emergencia' : 'Emergência')),
                     ),
                   ),
                 ),

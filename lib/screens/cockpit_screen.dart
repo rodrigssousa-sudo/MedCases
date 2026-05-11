@@ -212,7 +212,7 @@ class _HeroHeader extends StatelessWidget {
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Row(children: [
           Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            const Text('RESUMO CLÍNICO', style: TextStyle(
+            Text(p.lang == 'es' ? 'RESUMEN CLÍNICO' : 'RESUMO CLÍNICO', style: const TextStyle(
               fontSize: 9, fontWeight: FontWeight.w900,
               color: Color(0xBFFFE8A6), letterSpacing: 2.5,
             )),
@@ -228,10 +228,10 @@ class _HeroHeader extends StatelessWidget {
         ]),
         const SizedBox(height: 14),
         // Safety status inline
-        _SafetyStatus(clcr: p.clcr, doseAlerts: p.activeDrug != null ? p.calculateDose(p.activeDrug!).alerts : []),
+        _SafetyStatus(clcr: p.clcr, doseAlerts: p.activeDrug != null ? p.calculateDose(p.activeDrug!).alerts : [], lang: p.lang),
         const SizedBox(height: 14),
         // Quick access chips
-        const Text('ACESSO IMEDIATO', style: TextStyle(
+        Text(p.lang == 'es' ? 'ACCESO INMEDIATO' : 'ACESSO IMEDIATO', style: const TextStyle(
           fontSize: 8, fontWeight: FontWeight.w900,
           color: Color(0x80FFFFFF), letterSpacing: 2,
         )),
@@ -244,8 +244,8 @@ class _HeroHeader extends StatelessWidget {
               ('Choque', 'choque_cardiogenico'),
               ('TPSV', 'tpsv'),
               ('K+ alto', 'hipercalemia'),
-              ('AVC', 'avc_isquemico'),
-              ('Sepse', 'sepse'),
+              (p.lang == 'es' ? 'ACV' : 'AVC', 'avc_isquemico'),
+              (p.lang == 'es' ? 'Sepsis' : 'Sepse', 'sepse'),
             ])
               Padding(
                 padding: const EdgeInsets.only(right: 8),
@@ -688,7 +688,7 @@ class _DoseBody extends StatelessWidget {
 
 
         // Interações
-        _InteractionPanel(interactions: p.drugInteractions, hasMedications: p.patient.medications.isNotEmpty),
+        _InteractionPanel(interactions: p.drugInteractions, hasMedications: p.patient.medications.isNotEmpty, lang: p.lang),
         const SizedBox(height: 10),
 
         // Info do fármaco ativo
@@ -844,7 +844,8 @@ class _ProtocolsBody extends StatelessWidget {
 class _SafetyStatus extends StatelessWidget {
   final String? clcr;
   final List<String> doseAlerts;
-  const _SafetyStatus({this.clcr, required this.doseAlerts});
+  final String lang;
+  const _SafetyStatus({this.clcr, required this.doseAlerts, required this.lang});
 
   @override
   Widget build(BuildContext context) {
@@ -866,8 +867,8 @@ class _SafetyStatus extends StatelessWidget {
         const SizedBox(width: 8),
         Expanded(child: Text(
           renalRisk
-            ? 'ClCr reduzido — revisar doses e nefrotóxicos'
-            : 'Parâmetros estáveis — sem alerta renal crítico',
+            ? (lang == 'es' ? 'ClCr reducido — revisar dosis y nefrotóxicos' : 'ClCr reduzido — revisar doses e nefrotóxicos')
+            : (lang == 'es' ? 'Parámetros estables — sin alerta renal crítica' : 'Parâmetros estáveis — sem alerta renal crítico'),
           style: TextStyle(fontSize: 11, color: Colors.white.withValues(alpha: 0.85), fontWeight: FontWeight.w700),
         )),
       ]),
@@ -897,7 +898,7 @@ class _DrugSafetyPanel extends StatelessWidget {
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(borderRadius: BorderRadius.circular(14), color: const Color(0xFFFFF5F5), border: Border.all(color: const Color(0xFFFFCCCC))),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          const Text('EVENTOS ADVERSOS', style: TextStyle(fontSize: 9, fontWeight: FontWeight.w900, letterSpacing: 1.4, color: Color(0xFFCC0000))),
+          Text(p.lang == 'es' ? 'EVENTOS ADVERSOS' : 'EVENTOS ADVERSOS', style: const TextStyle(fontSize: 9, fontWeight: FontWeight.w900, letterSpacing: 1.4, color: Color(0xFFCC0000))),
           const SizedBox(height: 8),
           Wrap(spacing: 6, runSpacing: 6, children: adverse.map((a) => Container(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
@@ -935,7 +936,8 @@ class _FieldRow extends StatelessWidget {
 class _InteractionPanel extends StatefulWidget {
   final List<DrugInteraction> interactions;
   final bool hasMedications;
-  const _InteractionPanel({required this.interactions, required this.hasMedications});
+  final String lang;
+  const _InteractionPanel({required this.interactions, required this.hasMedications, required this.lang});
 
   @override
   State<_InteractionPanel> createState() => _InteractionPanelState();
@@ -996,11 +998,19 @@ class _InteractionPanelState extends State<_InteractionPanel> {
           const Icon(Icons.check_circle_outline_rounded, size: 14, color: Color(0xFF065F46)),
           const SizedBox(width: 8),
           Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            const Text('Sem interações detectadas', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w900, color: Color(0xFF065F46))),
+            Text(
+              widget.lang == 'es' ? 'Sin interacciones detectadas' : 'Sem interações detectadas',
+              style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w900, color: Color(0xFF065F46))),
             if (widget.hasMedications)
-              const Text('Verificado contra medicamentos do paciente', style: TextStyle(fontSize: 10, color: Color(0xFF065F46), fontWeight: FontWeight.w500))
+              Text(
+                widget.lang == 'es' ? 'Verificado con los medicamentos del paciente' : 'Verificado contra medicamentos do paciente',
+                style: const TextStyle(fontSize: 10, color: Color(0xFF065F46), fontWeight: FontWeight.w500))
             else
-              const Text('Preencha "Medicamentos em uso" para verificar com a medicação atual do paciente', style: TextStyle(fontSize: 10, color: Color(0xFF065F46), fontWeight: FontWeight.w500)),
+              Text(
+                widget.lang == 'es'
+                  ? 'Complete "Medicamentos en uso" para verificar con la medicación actual del paciente'
+                  : 'Preencha "Medicamentos em uso" para verificar com a medicação atual do paciente',
+                style: const TextStyle(fontSize: 10, color: Color(0xFF065F46), fontWeight: FontWeight.w500)),
           ])),
         ]),
       );
@@ -1027,19 +1037,24 @@ class _InteractionPanelState extends State<_InteractionPanel> {
           const SizedBox(width: 8),
           Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Text(
-              '${interactions.length} interaç${interactions.length > 1 ? "ões" : "ão"} detectada${interactions.length > 1 ? "s" : ""}',
+              widget.lang == 'es'
+                ? '${interactions.length} interacci${interactions.length > 1 ? "ones" : "ón"} detectada${interactions.length > 1 ? "s" : ""}'
+                : '${interactions.length} interaç${interactions.length > 1 ? "ões" : "ão"} detectada${interactions.length > 1 ? "s" : ""}',
+              
               style: TextStyle(fontSize: 12, fontWeight: FontWeight.w900,
                 color: nContra > 0 ? const Color(0xFF7F1D1D) : nMajor > 0 ? const Color(0xFFCC2222) : const Color(0xFFD97706)),
             ),
             Row(children: [
-              if (nContra > 0) _SeverityBadge('$nContra contraindicada${nContra > 1 ? "s" : ""}', const Color(0xFF7F1D1D)),
+              if (nContra > 0) _SeverityBadge(widget.lang == 'es' ? '$nContra contraindicada${nContra > 1 ? "s" : ""}' : '$nContra contraindicada${nContra > 1 ? "s" : ""}', const Color(0xFF7F1D1D)),
               if (nContra > 0 && nMajor > 0) const SizedBox(width: 4),
-              if (nMajor > 0) _SeverityBadge('$nMajor maior${nMajor > 1 ? "es" : ""}', const Color(0xFFCC2222)),
+              if (nMajor > 0) _SeverityBadge(widget.lang == 'es' ? '$nMajor mayor${nMajor > 1 ? "es" : ""}' : '$nMajor maior${nMajor > 1 ? "es" : ""}', const Color(0xFFCC2222)),
               if ((nContra > 0 || nMajor > 0) && nModerate > 0) const SizedBox(width: 4),
-              if (nModerate > 0) _SeverityBadge('$nModerate moderada${nModerate > 1 ? "s" : ""}', const Color(0xFFD97706)),
+              if (nModerate > 0) _SeverityBadge(widget.lang == 'es' ? '$nModerate moderada${nModerate > 1 ? "s" : ""}' : '$nModerate moderada${nModerate > 1 ? "s" : ""}', const Color(0xFFD97706)),
             ]),
             if (widget.hasMedications)
-              const Text('Incluindo medicamentos do paciente', style: TextStyle(fontSize: 9, color: Color(0xFF888888), fontWeight: FontWeight.w500)),
+              Text(
+                widget.lang == 'es' ? 'Incluye medicamentos del paciente' : 'Incluindo medicamentos do paciente',
+                style: const TextStyle(fontSize: 9, color: Color(0xFF888888), fontWeight: FontWeight.w500)),
           ])),
         ]),
       ),
@@ -1088,7 +1103,7 @@ class _InteractionPanelState extends State<_InteractionPanel> {
                     padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
                     child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                       // Efeito clínico
-                      _IxRow(Icons.bolt_rounded, 'EFEITO CLÍNICO', ix.effect, col),
+                      _IxRow(Icons.bolt_rounded, widget.lang == 'es' ? 'EFECTO CLÍNICO' : 'EFEITO CLÍNICO', ix.effect, col),
                       const SizedBox(height: 8),
                       // Mecanismo
                       _IxRow(Icons.biotech_rounded, 'MECANISMO', ix.mechanism, col),
@@ -1106,7 +1121,7 @@ class _InteractionPanelState extends State<_InteractionPanel> {
                           Row(children: [
                             Icon(Icons.medical_services_rounded, size: 11, color: col),
                             const SizedBox(width: 5),
-                            Text('CONDUTA', style: TextStyle(fontSize: 9, fontWeight: FontWeight.w900, color: col, letterSpacing: 0.8)),
+                            Text(widget.lang == 'es' ? 'CONDUCTA' : 'CONDUTA', style: TextStyle(fontSize: 9, fontWeight: FontWeight.w900, color: col, letterSpacing: 0.8)),
                           ]),
                           const SizedBox(height: 4),
                           Text(ix.management, style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: col, height: 1.5)),

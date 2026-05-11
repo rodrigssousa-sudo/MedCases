@@ -243,7 +243,9 @@ class _GroupAccordion extends StatelessWidget {
                     ),
                     const SizedBox(height: 2),
                     Text(
-                      '${drugs.length} ${drugs.length == 1 ? 'fármaco' : 'fármacos'}',
+                      p.lang == 'es'
+                        ? '${drugs.length} ${drugs.length == 1 ? 'fármaco' : 'fármacos'}'
+                        : '${drugs.length} ${drugs.length == 1 ? 'fármaco' : 'fármacos'}',
                       style: TextStyle(
                         fontSize: 11,
                         fontWeight: FontWeight.w600,
@@ -646,14 +648,14 @@ class _DrugDetailViewState extends State<_DrugDetailView> {
             const SizedBox(height: 12),
 
             Row(children: [
-              Expanded(child: _LocalField(label: 'Peso (kg)',    ctrl: _weightCtrl, dark: dark, onChanged: (_) => setState(() {}))),
+              Expanded(child: _LocalField(label: widget.p.lang == 'es' ? 'Peso (kg)' : 'Peso (kg)',    ctrl: _weightCtrl, dark: dark, onChanged: (_) => setState(() {}))),
               const SizedBox(width: 8),
-              Expanded(child: _LocalField(label: 'Altura (cm)',  ctrl: _heightCtrl, dark: dark, onChanged: (_) => setState(() {}))),
+              Expanded(child: _LocalField(label: widget.p.lang == 'es' ? 'Talla (cm)' : 'Altura (cm)',  ctrl: _heightCtrl, dark: dark, onChanged: (_) => setState(() {}))),
             ]),
             const SizedBox(height: 8),
 
             Row(children: [
-              Expanded(child: _LocalField(label: 'Idade (anos)', ctrl: _ageCtrl,    dark: dark, onChanged: (_) => setState(() {}))),
+              Expanded(child: _LocalField(label: widget.p.lang == 'es' ? 'Edad (años)' : 'Idade (anos)', ctrl: _ageCtrl,    dark: dark, onChanged: (_) => setState(() {}))),
               const SizedBox(width: 8),
               Expanded(child: _LocalField(label: 'Creatinina (mg/dL)', ctrl: _creatCtrl, dark: dark, onChanged: (_) => setState(() {}))),
             ]),
@@ -677,7 +679,7 @@ class _DrugDetailViewState extends State<_DrugDetailView> {
             ),
             const SizedBox(height: 14),
 
-            _DoseCard(dose: dose),
+            _DoseCard(dose: dose, lang: p.lang),
 
             ClinicalAlertBox(messages: dose.alerts),
             const SizedBox(height: 14),
@@ -918,7 +920,8 @@ class _Divider extends StatelessWidget {
 // ─────────────────────────────────────────────────────────────────────────────
 class _DoseCard extends StatelessWidget {
   final DoseInfo dose;
-  const _DoseCard({required this.dose});
+  final String lang;
+  const _DoseCard({required this.dose, required this.lang});
 
   /// Quebra o texto da dose em segmentos lógicos.
   /// Suporta os 3 padrões do banco:
@@ -1048,6 +1051,7 @@ class _DoseCard extends StatelessWidget {
                   text: seg,
                   type: type,
                   isLast: i == segments.length - 1,
+                  lang: lang,
                 );
               }),
             ),
@@ -1086,18 +1090,20 @@ class _DoseSegmentRow extends StatelessWidget {
   final String text;
   final _SegmentType type;
   final bool isLast;
+  final String lang;
 
   const _DoseSegmentRow({
     required this.index,
     required this.text,
     required this.type,
     required this.isLast,
+    required this.lang,
   });
 
   @override
   Widget build(BuildContext context) {
     // Configurações visuais por tipo
-    final cfg = _segmentConfig(type);
+    final cfg = _segmentConfig(type, lang);
 
     return IntrinsicHeight(
       child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -1162,11 +1168,11 @@ class _DoseSegmentRow extends StatelessWidget {
     );
   }
 
-  _SegCfg _segmentConfig(_SegmentType t) {
+  _SegCfg _segmentConfig(_SegmentType t, String lang) {
     switch (t) {
       case _SegmentType.primary:
         return _SegCfg(
-          label: 'DOSE INICIAL',
+          label: lang == 'es' ? 'DOSIS INICIAL' : 'DOSE INICIAL',
           labelColor: const Color(0xFFFFE8A6),
           fontSize: 19,
           fontWeight: FontWeight.w900,
@@ -1177,7 +1183,7 @@ class _DoseSegmentRow extends StatelessWidget {
         );
       case _SegmentType.repeat:
         return _SegCfg(
-          label: 'SE SEM RESPOSTA',
+          label: lang == 'es' ? 'SIN RESPUESTA' : 'SE SEM RESPOSTA',
           labelColor: const Color(0xFF90CDD9),
           fontSize: 14.5,
           fontWeight: FontWeight.w700,
@@ -1188,7 +1194,7 @@ class _DoseSegmentRow extends StatelessWidget {
         );
       case _SegmentType.maintenance:
         return _SegCfg(
-          label: 'MANUTENÇÃO',
+          label: lang == 'es' ? 'MANTENIMIENTO' : 'MANUTENÇÃO',
           labelColor: const Color(0xFF90CDD9),
           fontSize: 14.5,
           fontWeight: FontWeight.w700,
@@ -1199,7 +1205,7 @@ class _DoseSegmentRow extends StatelessWidget {
         );
       case _SegmentType.max:
         return _SegCfg(
-          label: 'DOSE MÁXIMA',
+          label: lang == 'es' ? 'DOSIS MÁXIMA' : 'DOSE MÁXIMA',
           labelColor: const Color(0xFFFFB3B3),
           fontSize: 13,
           fontWeight: FontWeight.w700,
