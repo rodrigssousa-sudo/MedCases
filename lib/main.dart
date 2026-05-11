@@ -1667,7 +1667,7 @@ class _AppDrawer extends StatelessWidget {
                     dark: dark,
                     onTap: () {
                       _close(context);
-                      showUpgradeScreen(context);
+                      showUpgradeScreen(context, lang: p.lang);
                     },
                   ),
 

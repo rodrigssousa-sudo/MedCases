@@ -1,4 +1,6 @@
 // ── Tela de Upgrade / Paywall Premium ────────────────────────────────────────
+// Totalmente bilíngue ES/PT — idioma inicial via parâmetro `initialLang`.
+// Botão de toggle muda idioma localmente sem afetar o AppProvider.
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -7,10 +9,157 @@ const _kGreen = Color(0xFF075f45);
 const _kGold  = Color(0xFFC5A365);
 const _kGoldL = Color(0xFFFFE8A6);
 
+// ─────────────────────────────────────────────────────────────────────────────
+// Strings bilíngues — tudo aqui, sem nenhum literal fora desta seção
+// ─────────────────────────────────────────────────────────────────────────────
+class _S {
+  final bool es;
+  const _S(this.es);
+
+  // Badge topo
+  String get badge        => 'MEDCASES PRO PREMIUM';
+
+  // Hero
+  String get heroTitle    => es
+      ? 'Acceso completo al\nconocimiento clínico'
+      : 'Acesso completo ao\nconhecimento clínico';
+  String get heroSub      => es
+      ? '500+ casos clínicos reales · Protocolos actualizados\nPrescripciones modelo · IA Clínica ilimitada'
+      : '500+ casos clínicos reais · Protocolos atualizados\nPrescrições modelo · IA Clínica ilimitada';
+
+  // Seção planos
+  String get choosePlan   => es ? 'Elige tu plan'      : 'Escolha seu plano';
+
+  // Plano Mensal
+  String get planBasicLbl => es ? 'Mensual'            : 'Mensal';
+  String get planBasicPrice => es ? '\$9.900'          : 'R\$ 29,90';
+  String get planBasicPeriod => es ? '/mes'            : '/mês';
+  String get planBasicSub => es
+      ? 'Cobrado mensualmente'
+      : 'Cobrado mensalmente';
+
+  // Plano Anual
+  String get planProLbl   => es ? 'Anual'              : 'Anual';
+  String get planProPrice => es ? '\$5.900'            : 'R\$ 19,90';
+  String get planProPeriod => es ? '/mes'              : '/mês';
+  String get planProSaving => es ? 'Ahorra 40%'        : 'Economize 34%';
+  String get planProSub   => es
+      ? 'Cobrado como \$70.800/año — equiv. \$5.900/mes'
+      : 'Cobrado como R\$ 238,80/ano — equiv. R\$ 19,90/mês';
+
+  // CTA botão
+  String ctaLabel(int plan) => es
+      ? (plan == 0 ? 'Suscribir — \$9.900/mes'   : 'Suscribir — \$5.900/mes (anual)')
+      : (plan == 0 ? 'Assinar — R\$ 29,90/mês'   : 'Assinar — R\$ 19,90/mês (anual)');
+
+  // Card: selecionado / selecionar
+  String get selected     => es ? 'Seleccionado'       : 'Selecionado';
+  String get select       => es ? 'Seleccionar'        : 'Selecionar';
+
+  // Garantia
+  String get guaranteeTitle => es ? 'Garantía de 7 días'  : 'Garantia de 7 dias';
+  String get guaranteeSub   => es
+      ? 'Si no estás satisfecho, devolvemos el 100% del valor.'
+      : 'Se não ficar satisfeito, devolvemos 100% do valor.';
+
+  // Social proof
+  String get spDoctors    => es ? 'médicos'            : 'médicos';
+  String get spRating     => es ? 'calificación'       : 'avaliação';
+  String get spCases      => es ? 'casos'              : 'casos';
+
+  // Disclaimer rodapé
+  String get disclaimer   => es
+      ? 'Cancela en cualquier momento. Sin compromisos. Facturación segura.'
+      : 'Cancele a qualquer momento. Sem compromisso. Cobrança segura.';
+
+  // Toggle de idioma
+  String get toggleLang   => es ? 'Ver em Português'   : 'Ver en Español';
+
+  // Seção features
+  String get featuresTitle => es ? 'Qué incluye cada plan' : 'O que cada plano inclui';
+
+  // ── Features por plano ──────────────────────────────────────────────────
+  // Retorna lista de (ícone, cor, título, subtítulo, incluidoNoBasico)
+  List<(IconData, Color, String, String, bool)> get features => [
+    (
+      Icons.folder_special_rounded,
+      _kGoldL,
+      es ? 'Casos clínicos ilimitados'         : 'Casos clínicos ilimitados',
+      es ? 'UCI, Cardiología, Neurología, Emergencias y más'
+         : 'UTI, Cardiologia, Neurologia, Emergências e mais',
+      true,   // incluso no básico (mensal)
+    ),
+    (
+      Icons.medication_rounded,
+      const Color(0xFF6BCCA0),
+      es ? 'Prescripciones modelo completas'   : 'Prescrições modelo completas',
+      es ? 'Protocolos actualizados por especialistas'
+         : 'Protocolos atualizados por especialistas',
+      true,
+    ),
+    (
+      Icons.psychology_rounded,
+      const Color(0xFF93C5FD),
+      es ? 'IA Clínica sin restricciones'      : 'IA Clínica sem restrições',
+      es ? 'Análisis de casos y apoyo a la decisión 24/7'
+         : 'Análise de casos e apoio à decisão 24/7',
+      true,
+    ),
+    (
+      Icons.emergency_rounded,
+      const Color(0xFFFF9580),
+      es ? 'Protocolos de emergencia'          : 'Protocolos de emergência',
+      es ? 'STEMI, Sepsis, ACV, CAD y más'     : 'STEMI, Sepsis, AVC, CAD e muito mais',
+      true,
+    ),
+    (
+      Icons.calculate_rounded,
+      const Color(0xFFD9B8FF),
+      es ? 'Calculadoras clínicas avanzadas'   : 'Calculadoras clínicas avançadas',
+      es ? 'Escore NEWS, SOFA, Wells, CURB-65…': 'Escore NEWS, SOFA, Wells, CURB-65…',
+      true,
+    ),
+    (
+      Icons.cloud_download_rounded,
+      _kGoldL,
+      es ? 'Acceso offline completo'           : 'Acesso offline completo',
+      es ? 'Funciona sin internet en guardias' : 'Funciona sem internet em plantões',
+      false,  // apenas no plano anual/pro
+    ),
+    (
+      Icons.history_edu_rounded,
+      const Color(0xFF86EFAC),
+      es ? 'Historial clínico ilimitado'       : 'Histórico clínico ilimitado',
+      es ? 'Guarda y revisa todos tus casos'   : 'Salva e revisa todos os seus casos',
+      false,  // apenas no plano anual/pro
+    ),
+    (
+      Icons.support_agent_rounded,
+      const Color(0xFFFCA5A5),
+      es ? 'Soporte prioritario'               : 'Suporte prioritário',
+      es ? 'Respuesta en menos de 24h'         : 'Resposta em menos de 24h',
+      false,  // apenas no plano anual/pro
+    ),
+  ];
+
+  // Label de "incluso" / "apenas no anual"
+  String get includedInBasic => es ? 'Mensual y Anual' : 'Mensal e Anual';
+  String get onlyPro         => es ? 'Solo Anual'       : 'Só Anual';
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Widget principal
+// ─────────────────────────────────────────────────────────────────────────────
 class UpgradeScreen extends StatefulWidget {
-  /// Se true, exibe botão "Fechar" (usado como bottom sheet / modal).
   final bool showClose;
-  const UpgradeScreen({super.key, this.showClose = false});
+  /// Idioma de partida recebido do contexto chamador ('es' ou 'pt').
+  final String initialLang;
+
+  const UpgradeScreen({
+    super.key,
+    this.showClose = false,
+    this.initialLang = 'es',
+  });
 
   @override
   State<UpgradeScreen> createState() => _UpgradeScreenState();
@@ -18,18 +167,25 @@ class UpgradeScreen extends StatefulWidget {
 
 class _UpgradeScreenState extends State<UpgradeScreen>
     with SingleTickerProviderStateMixin {
-  int _selectedPlan = 1; // 0=mensal, 1=anual (padrão)
+  int _selectedPlan = 1; // 0 = mensal/mensual, 1 = anual (padrão)
+  late bool _isEs;
   late AnimationController _anim;
   late Animation<double> _fadeIn;
 
-  // ── Links de pagamento — trocar pela URL real (Stripe / Hotmart / etc.) ─────
-  static const _linkMensal = 'https://medcasespro.com/planos/mensal';
-  static const _linkAnual  = 'https://medcasespro.com/planos/anual';
+  // Links de pagamento — substituir pelas URLs reais (Stripe / Hotmart)
+  static const _linkMensalPt = 'https://medcasespro.com/planos/mensal';
+  static const _linkAnualPt  = 'https://medcasespro.com/planos/anual';
+  static const _linkMensalEs = 'https://medcasespro.com/planes/mensual';
+  static const _linkAnualEs  = 'https://medcasespro.com/planes/anual';
 
   @override
   void initState() {
     super.initState();
-    _anim = AnimationController(vsync: this, duration: const Duration(milliseconds: 450));
+    _isEs = widget.initialLang == 'es';
+    _anim = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 420),
+    );
     _fadeIn = CurvedAnimation(parent: _anim, curve: Curves.easeOut);
     _anim.forward();
   }
@@ -40,8 +196,15 @@ class _UpgradeScreenState extends State<UpgradeScreen>
     super.dispose();
   }
 
+  void _toggleLang() => setState(() => _isEs = !_isEs);
+
   Future<void> _subscribe() async {
-    final url = _selectedPlan == 0 ? _linkMensal : _linkAnual;
+    String url;
+    if (_isEs) {
+      url = _selectedPlan == 0 ? _linkMensalEs : _linkAnualEs;
+    } else {
+      url = _selectedPlan == 0 ? _linkMensalPt : _linkAnualPt;
+    }
     final uri = Uri.parse(url);
     if (await canLaunchUrl(uri)) {
       await launchUrl(uri, mode: LaunchMode.externalApplication);
@@ -50,75 +213,81 @@ class _UpgradeScreenState extends State<UpgradeScreen>
 
   @override
   Widget build(BuildContext context) {
+    final s = _S(_isEs);
     return Scaffold(
       backgroundColor: _kDark,
       body: FadeTransition(
         opacity: _fadeIn,
         child: Stack(children: [
-          // ── Fundo gradiente decorativo ──────────────────────────────────
-          Positioned.fill(
-            child: CustomPaint(painter: _BgPainter()),
-          ),
+          // Fundo decorativo
+          Positioned.fill(child: CustomPaint(painter: _BgPainter())),
 
-          // ── Conteúdo principal ─────────────────────────────────────────
           SafeArea(
             child: Column(children: [
-              // Botão fechar (modal)
-              if (widget.showClose)
-                Align(
-                  alignment: Alignment.topRight,
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(0, 10, 16, 0),
-                    child: GestureDetector(
+              // ── Barra topo: fechar + toggle idioma ─────────────────────────
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 10, 16, 0),
+                child: Row(children: [
+                  // Toggle idioma — sempre visível
+                  _LangToggle(label: s.toggleLang, onTap: _toggleLang),
+                  const Spacer(),
+                  // Fechar (apenas quando modal)
+                  if (widget.showClose)
+                    GestureDetector(
                       onTap: () => Navigator.pop(context),
                       child: Container(
                         padding: const EdgeInsets.all(8),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10),
                           color: Colors.white.withValues(alpha: 0.08),
-                          border: Border.all(color: Colors.white.withValues(alpha: 0.12)),
+                          border: Border.all(
+                              color: Colors.white.withValues(alpha: 0.12)),
                         ),
-                        child: const Icon(Icons.close_rounded, size: 18, color: Colors.white70),
+                        child: const Icon(Icons.close_rounded,
+                            size: 18, color: Colors.white70),
                       ),
                     ),
-                  ),
-                ),
+                ]),
+              ),
 
               Expanded(
                 child: SingleChildScrollView(
-                  padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
+                  padding: const EdgeInsets.fromLTRB(20, 14, 20, 24),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      // ── Hero ─────────────────────────────────────────────
-                      _buildHero(),
-                      const SizedBox(height: 28),
-
-                      // ── Benefícios ────────────────────────────────────────
-                      _buildBenefits(),
-                      const SizedBox(height: 24),
+                      _buildHero(s),
+                      const SizedBox(height: 26),
 
                       // ── Seletor de planos ─────────────────────────────────
-                      _buildPlanSelector(),
+                      _buildPlanSelector(s),
                       const SizedBox(height: 20),
 
-                      // ── CTA principal ────────────────────────────────────
-                      _buildCta(),
+                      // ── Features por plano ────────────────────────────────
+                      _buildFeatures(s),
+                      const SizedBox(height: 20),
+
+                      // ── CTA ───────────────────────────────────────────────
+                      _buildCta(s),
                       const SizedBox(height: 14),
 
                       // ── Garantia ──────────────────────────────────────────
-                      _buildGuarantee(),
-                      const SizedBox(height: 20),
+                      _buildGuarantee(s),
+                      const SizedBox(height: 18),
 
-                      // ── Social proof ─────────────────────────────────────
-                      _buildSocialProof(),
-                      const SizedBox(height: 16),
+                      // ── Social proof ──────────────────────────────────────
+                      _buildSocialProof(s),
+                      const SizedBox(height: 14),
 
                       // ── Disclaimer ────────────────────────────────────────
                       Text(
-                        'Cancela en cualquier momento. Sin compromisos. Facturación segura.',
+                        s.disclaimer,
                         textAlign: TextAlign.center,
-                        style: TextStyle(fontSize: 10, color: Colors.white.withValues(alpha: 0.3), height: 1.5),
+                        style: TextStyle(
+                          fontSize: 10,
+                          color: Colors.white.withValues(alpha: 0.3),
+                          height: 1.5,
+                        ),
                       ),
                     ],
                   ),
@@ -132,9 +301,9 @@ class _UpgradeScreenState extends State<UpgradeScreen>
   }
 
   // ── Hero ────────────────────────────────────────────────────────────────────
-  Widget _buildHero() {
+  Widget _buildHero(_S s) {
     return Column(children: [
-      // Badge topo
+      // Badge
       Container(
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
         decoration: BoxDecoration(
@@ -145,135 +314,188 @@ class _UpgradeScreenState extends State<UpgradeScreen>
         child: Row(mainAxisSize: MainAxisSize.min, children: [
           const Icon(Icons.auto_awesome_rounded, size: 13, color: _kGoldL),
           const SizedBox(width: 6),
-          const Text('MEDCASES PRO PREMIUM',
-            style: TextStyle(fontSize: 10, fontWeight: FontWeight.w900, color: _kGoldL, letterSpacing: 1.2)),
+          Text(s.badge,
+              style: const TextStyle(
+                  fontSize: 10,
+                  fontWeight: FontWeight.w900,
+                  color: _kGoldL,
+                  letterSpacing: 1.2)),
         ]),
       ),
-      const SizedBox(height: 18),
+      const SizedBox(height: 16),
 
       // Ícone central com glow
       Container(
-        width: 80, height: 80,
+        width: 76,
+        height: 76,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
           gradient: const LinearGradient(
-            begin: Alignment.topLeft, end: Alignment.bottomRight,
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
             colors: [Color(0xFF1F4030), Color(0xFF0A1610)],
           ),
           border: Border.all(color: _kGold.withValues(alpha: 0.5), width: 1.5),
           boxShadow: [
-            BoxShadow(color: _kGold.withValues(alpha: 0.25), blurRadius: 32, spreadRadius: 4),
-            BoxShadow(color: _kGreen.withValues(alpha: 0.3), blurRadius: 48, spreadRadius: 2),
+            BoxShadow(
+                color: _kGold.withValues(alpha: 0.25),
+                blurRadius: 32,
+                spreadRadius: 4),
+            BoxShadow(
+                color: _kGreen.withValues(alpha: 0.3),
+                blurRadius: 48,
+                spreadRadius: 2),
           ],
         ),
-        child: const Icon(Icons.workspace_premium_rounded, size: 38, color: _kGoldL),
+        child: const Icon(Icons.workspace_premium_rounded,
+            size: 36, color: _kGoldL),
       ),
-      const SizedBox(height: 18),
+      const SizedBox(height: 16),
 
-      const Text(
-        'Acesso completo ao\nconhecimento clínico',
+      Text(
+        s.heroTitle,
         textAlign: TextAlign.center,
-        style: TextStyle(
-          fontSize: 26, fontWeight: FontWeight.w900,
-          color: Colors.white, height: 1.15, letterSpacing: -0.5,
+        style: const TextStyle(
+          fontSize: 25,
+          fontWeight: FontWeight.w900,
+          color: Colors.white,
+          height: 1.15,
+          letterSpacing: -0.5,
         ),
       ),
-      const SizedBox(height: 10),
+      const SizedBox(height: 8),
       Text(
-        '500+ casos clínicos reales · Protocolos actualizados\nPrescrições modelo · IA Clínica ilimitada',
+        s.heroSub,
         textAlign: TextAlign.center,
         style: TextStyle(
-          fontSize: 13, color: Colors.white.withValues(alpha: 0.55),
-          height: 1.6, fontWeight: FontWeight.w500,
+          fontSize: 12,
+          color: Colors.white.withValues(alpha: 0.5),
+          height: 1.6,
+          fontWeight: FontWeight.w500,
         ),
       ),
     ]);
   }
 
-  // ── Benefícios ──────────────────────────────────────────────────────────────
-  Widget _buildBenefits() {
-    final items = [
-      (Icons.folder_special_rounded,    _kGoldL,              'Casos clínicos ilimitados',        'UCI, Cardiología, Neurología, Emergencias y más'),
-      (Icons.medication_rounded,         const Color(0xFF6BCCA0), 'Prescrições modelo completas',    'Protocolos atualizados por especialistas'),
-      (Icons.psychology_rounded,         const Color(0xFF93C5FD), 'IA Clínica sem restrições',       'Análise de casos e apoio à decisão 24/7'),
-      (Icons.emergency_rounded,          const Color(0xFFFF9580), 'Protocolos de emergência',        'STEMI, Sepsis, ACV, CAD e muito mais'),
-      (Icons.calculate_rounded,          const Color(0xFFD9B8FF), 'Calculadoras clínicas avançadas', 'Escore NEWS, SOFA, Wells, CURB-65…'),
-      (Icons.cloud_download_rounded,     _kGoldL,              'Acesso offline completo',          'Funciona sem internet em plantões'),
-    ];
+  // ── Seletor de planos ───────────────────────────────────────────────────────
+  Widget _buildPlanSelector(_S s) {
+    return Column(children: [
+      Text(s.choosePlan,
+          style: const TextStyle(
+              fontSize: 14, fontWeight: FontWeight.w800, color: Colors.white)),
+      const SizedBox(height: 12),
+      Row(children: [
+        // Plano Mensal
+        Expanded(
+          child: _PlanCard(
+            label: s.planBasicLbl,
+            price: s.planBasicPrice,
+            period: s.planBasicPeriod,
+            saving: null,
+            sublabel: s.planBasicSub,
+            selected: _selectedPlan == 0,
+            onTap: () => setState(() => _selectedPlan = 0),
+            selectedTxt: s.selected,
+            selectTxt: s.select,
+          ),
+        ),
+        const SizedBox(width: 10),
+        // Plano Anual
+        Expanded(
+          child: _PlanCard(
+            label: s.planProLbl,
+            price: s.planProPrice,
+            period: s.planProPeriod,
+            saving: s.planProSaving,
+            sublabel: s.planProSub,
+            selected: _selectedPlan == 1,
+            onTap: () => setState(() => _selectedPlan = 1),
+            selectedTxt: s.selected,
+            selectTxt: s.select,
+          ),
+        ),
+      ]),
+    ]);
+  }
 
+  // ── Features por plano ──────────────────────────────────────────────────────
+  Widget _buildFeatures(_S s) {
+    final features = s.features;
     return Container(
-      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(18),
-        color: Colors.white.withValues(alpha: 0.04),
+        color: Colors.white.withValues(alpha: 0.03),
         border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
       ),
       child: Column(
-        children: items.map((item) {
-          final (icon, color, title, sub) = item;
-          return Padding(
-            padding: const EdgeInsets.only(bottom: 14),
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          // Cabeçalho
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 14, 16, 10),
             child: Row(children: [
-              Container(
-                width: 38, height: 38,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: color.withValues(alpha: 0.12),
-                  border: Border.all(color: color.withValues(alpha: 0.25)),
-                ),
-                child: Icon(icon, size: 18, color: color),
-              ),
-              const SizedBox(width: 12),
-              Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Text(title, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w800, color: Colors.white, height: 1.2)),
-                Text(sub, style: TextStyle(fontSize: 11, color: Colors.white.withValues(alpha: 0.45), height: 1.3)),
-              ])),
-              const Icon(Icons.check_circle_rounded, size: 16, color: Color(0xFF4ADE80)),
+              Text(s.featuresTitle,
+                  style: const TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w800,
+                      color: Colors.white)),
+              const Spacer(),
+              // Legenda colunas
+              _FeaturePill(
+                  label: s.planBasicLbl,
+                  color: Colors.white.withValues(alpha: 0.25)),
+              const SizedBox(width: 4),
+              _FeaturePill(label: s.planProLbl, color: _kGold),
             ]),
-          );
-        }).toList()
-          ..removeLast(), // remove padding extra do último
+          ),
+
+          const Divider(height: 1, color: Color(0x14FFFFFF)),
+
+          // Lista de features
+          ...features.asMap().entries.map((e) {
+            final idx = e.key;
+            final (icon, color, title, sub, inBasic) = e.value;
+            final isLast = idx == features.length - 1;
+            return _FeatureRow(
+              icon: icon,
+              color: color,
+              title: title,
+              subtitle: sub,
+              inBasic: inBasic,
+              isLast: isLast,
+              // Destaca se o plano anual estiver selecionado e o recurso for só anual
+              highlight: _selectedPlan == 1 && !inBasic,
+            );
+          }),
+
+          // Legenda de rodapé
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 10, 16, 14),
+            child: Row(children: [
+              _LegendDot(color: Colors.white.withValues(alpha: 0.25)),
+              const SizedBox(width: 6),
+              Text(s.includedInBasic,
+                  style: TextStyle(
+                      fontSize: 10,
+                      color: Colors.white.withValues(alpha: 0.4),
+                      fontWeight: FontWeight.w600)),
+              const SizedBox(width: 14),
+              _LegendDot(color: _kGold),
+              const SizedBox(width: 6),
+              Text(s.onlyPro,
+                  style: const TextStyle(
+                      fontSize: 10,
+                      color: _kGold,
+                      fontWeight: FontWeight.w600)),
+            ]),
+          ),
+        ],
       ),
     );
   }
 
-  // ── Seletor de planos ───────────────────────────────────────────────────────
-  Widget _buildPlanSelector() {
-    return Column(children: [
-      const Text('Elija su plan', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w800, color: Colors.white)),
-      const SizedBox(height: 12),
-      Row(children: [
-        Expanded(child: _PlanCard(
-          label: 'Mensal',
-          price: 'R\$ 29',
-          period: '/mês',
-          saving: null,
-          selected: _selectedPlan == 0,
-          onTap: () => setState(() => _selectedPlan = 0),
-        )),
-        const SizedBox(width: 10),
-        Expanded(child: _PlanCard(
-          label: 'Anual',
-          price: 'R\$ 19',
-          period: '/mês',
-          saving: 'Economize 34%',
-          selected: _selectedPlan == 1,
-          onTap: () => setState(() => _selectedPlan = 1),
-        )),
-      ]),
-      if (_selectedPlan == 1) ...[
-        const SizedBox(height: 8),
-        Text(
-          'Cobrado como R\$ 228/ano — equivale a R\$ 19/mês',
-          textAlign: TextAlign.center,
-          style: TextStyle(fontSize: 11, color: Colors.white.withValues(alpha: 0.4), fontWeight: FontWeight.w500),
-        ),
-      ],
-    ]);
-  }
-
-  // ── CTA principal ───────────────────────────────────────────────────────────
-  Widget _buildCta() {
+  // ── CTA ─────────────────────────────────────────────────────────────────────
+  Widget _buildCta(_S s) {
     return GestureDetector(
       onTap: _subscribe,
       child: Container(
@@ -281,20 +503,32 @@ class _UpgradeScreenState extends State<UpgradeScreen>
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16),
           gradient: const LinearGradient(
-            begin: Alignment.topLeft, end: Alignment.bottomRight,
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
             colors: [Color(0xFFD4AF5A), Color(0xFFC5A365), Color(0xFF8B6914)],
           ),
           boxShadow: [
-            BoxShadow(color: _kGold.withValues(alpha: 0.55), blurRadius: 20, offset: const Offset(0, 6)),
-            BoxShadow(color: Colors.black.withValues(alpha: 0.25), blurRadius: 10, offset: const Offset(0, 4)),
+            BoxShadow(
+                color: _kGold.withValues(alpha: 0.55),
+                blurRadius: 20,
+                offset: const Offset(0, 6)),
+            BoxShadow(
+                color: Colors.black.withValues(alpha: 0.25),
+                blurRadius: 10,
+                offset: const Offset(0, 4)),
           ],
         ),
         child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-          const Icon(Icons.workspace_premium_rounded, size: 20, color: _kDark),
+          const Icon(Icons.workspace_premium_rounded,
+              size: 20, color: _kDark),
           const SizedBox(width: 10),
           Text(
-            _selectedPlan == 0 ? 'Assinar — R\$ 29/mês' : 'Assinar — R\$ 19/mês (anual)',
-            style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w900, color: _kDark, letterSpacing: 0.2),
+            s.ctaLabel(_selectedPlan),
+            style: const TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.w900,
+                color: _kDark,
+                letterSpacing: 0.2),
           ),
         ]),
       ),
@@ -302,7 +536,7 @@ class _UpgradeScreenState extends State<UpgradeScreen>
   }
 
   // ── Garantia ────────────────────────────────────────────────────────────────
-  Widget _buildGuarantee() {
+  Widget _buildGuarantee(_S s) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
@@ -311,38 +545,96 @@ class _UpgradeScreenState extends State<UpgradeScreen>
         border: Border.all(color: const Color(0xFF065F46).withValues(alpha: 0.35)),
       ),
       child: Row(children: [
-        const Icon(Icons.verified_user_rounded, size: 22, color: Color(0xFF4ADE80)),
+        const Icon(Icons.verified_user_rounded,
+            size: 22, color: Color(0xFF4ADE80)),
         const SizedBox(width: 12),
-        Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          const Text('Garantia de 7 dias', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w800, color: Colors.white)),
-          Text('Se não ficar satisfeito, devolvemos 100% do valor.',
-            style: TextStyle(fontSize: 11, color: Colors.white.withValues(alpha: 0.55), height: 1.4)),
-        ])),
+        Expanded(
+          child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(s.guaranteeTitle,
+                    style: const TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w800,
+                        color: Colors.white)),
+                Text(s.guaranteeSub,
+                    style: TextStyle(
+                        fontSize: 11,
+                        color: Colors.white.withValues(alpha: 0.55),
+                        height: 1.4)),
+              ]),
+        ),
       ]),
     );
   }
 
   // ── Social proof ────────────────────────────────────────────────────────────
-  Widget _buildSocialProof() {
+  Widget _buildSocialProof(_S s) {
     return Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-      _StatChip(icon: Icons.people_rounded,          label: '+2.800',  sub: 'médicos'),
+      _StatChip(
+          icon: Icons.people_rounded, label: '+2.800', sub: s.spDoctors),
       const SizedBox(width: 8),
-      _StatChip(icon: Icons.star_rounded,             label: '4.9★',   sub: 'avaliação'),
+      _StatChip(icon: Icons.star_rounded, label: '4.9★', sub: s.spRating),
       const SizedBox(width: 8),
-      _StatChip(icon: Icons.folder_special_rounded,   label: '500+',   sub: 'casos'),
+      _StatChip(
+          icon: Icons.folder_special_rounded, label: '500+', sub: s.spCases),
     ]);
   }
 }
 
-// ── Plan Card ────────────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────────────
+// Widgets auxiliares
+// ─────────────────────────────────────────────────────────────────────────────
+
+/// Botão de toggle de idioma no topo
+class _LangToggle extends StatelessWidget {
+  final String label;
+  final VoidCallback onTap;
+  const _LangToggle({required this.label, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20),
+          color: _kGold.withValues(alpha: 0.10),
+          border: Border.all(color: _kGold.withValues(alpha: 0.4)),
+        ),
+        child: Row(mainAxisSize: MainAxisSize.min, children: [
+          const Icon(Icons.language_rounded, size: 13, color: _kGoldL),
+          const SizedBox(width: 5),
+          Text(label,
+              style: const TextStyle(
+                  fontSize: 11,
+                  fontWeight: FontWeight.w800,
+                  color: _kGoldL)),
+        ]),
+      ),
+    );
+  }
+}
+
+/// Card de plano
 class _PlanCard extends StatelessWidget {
-  final String label, price, period;
+  final String label, price, period, sublabel;
   final String? saving;
   final bool selected;
   final VoidCallback onTap;
+  final String selectedTxt, selectTxt;
+
   const _PlanCard({
-    required this.label, required this.price, required this.period,
-    required this.saving, required this.selected, required this.onTap,
+    required this.label,
+    required this.price,
+    required this.period,
+    required this.saving,
+    required this.sublabel,
+    required this.selected,
+    required this.onTap,
+    required this.selectedTxt,
+    required this.selectTxt,
   });
 
   @override
@@ -351,52 +643,105 @@ class _PlanCard extends StatelessWidget {
       onTap: onTap,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
-        padding: const EdgeInsets.all(14),
+        padding: const EdgeInsets.all(13),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(14),
-          color: selected ? _kGold.withValues(alpha: 0.12) : Colors.white.withValues(alpha: 0.04),
+          color: selected
+              ? _kGold.withValues(alpha: 0.12)
+              : Colors.white.withValues(alpha: 0.04),
           border: Border.all(
             color: selected ? _kGold : Colors.white.withValues(alpha: 0.12),
             width: selected ? 1.5 : 1,
           ),
           boxShadow: selected
-              ? [BoxShadow(color: _kGold.withValues(alpha: 0.2), blurRadius: 16, offset: const Offset(0, 4))]
+              ? [
+                  BoxShadow(
+                      color: _kGold.withValues(alpha: 0.2),
+                      blurRadius: 16,
+                      offset: const Offset(0, 4))
+                ]
               : null,
         ),
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          // Badge "Mais popular"
+        child:
+            Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          // Badge desconto
           if (saving != null) ...[
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(8),
                 color: _kGold.withValues(alpha: 0.18),
                 border: Border.all(color: _kGold.withValues(alpha: 0.5)),
               ),
-              child: Text(saving!, style: const TextStyle(fontSize: 9, fontWeight: FontWeight.w900, color: _kGoldL)),
+              child: Text(saving!,
+                  style: const TextStyle(
+                      fontSize: 9,
+                      fontWeight: FontWeight.w900,
+                      color: _kGoldL)),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 7),
           ],
-          Text(label, style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700,
-            color: selected ? _kGoldL : Colors.white.withValues(alpha: 0.55))),
-          const SizedBox(height: 4),
+
+          // Label
+          Text(label,
+              style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w700,
+                  color: selected
+                      ? _kGoldL
+                      : Colors.white.withValues(alpha: 0.55))),
+          const SizedBox(height: 3),
+
+          // Preço
           Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
-            Text(price, style: TextStyle(fontSize: 22, fontWeight: FontWeight.w900,
-              color: selected ? Colors.white : Colors.white.withValues(alpha: 0.6))),
+            Flexible(
+              child: Text(price,
+                  style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w900,
+                      color: selected
+                          ? Colors.white
+                          : Colors.white.withValues(alpha: 0.6))),
+            ),
             Padding(
-              padding: const EdgeInsets.only(bottom: 3),
-              child: Text(period, style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600,
-                color: Colors.white.withValues(alpha: 0.4))),
+              padding: const EdgeInsets.only(bottom: 2),
+              child: Text(period,
+                  style: TextStyle(
+                      fontSize: 10,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white.withValues(alpha: 0.4))),
             ),
           ]),
+
+          // Sub
+          const SizedBox(height: 4),
+          Text(sublabel,
+              style: TextStyle(
+                  fontSize: 9,
+                  color: Colors.white.withValues(alpha: 0.35),
+                  height: 1.3)),
           const SizedBox(height: 6),
+
+          // Radio indicator
           Row(children: [
-            Icon(selected ? Icons.radio_button_checked_rounded : Icons.radio_button_off_rounded,
-              size: 14, color: selected ? _kGold : Colors.white.withValues(alpha: 0.25)),
-            const SizedBox(width: 5),
-            Text(selected ? 'Selecionado' : 'Selecionar',
-              style: TextStyle(fontSize: 10, fontWeight: FontWeight.w700,
-                color: selected ? _kGold : Colors.white.withValues(alpha: 0.3))),
+            Icon(
+              selected
+                  ? Icons.radio_button_checked_rounded
+                  : Icons.radio_button_off_rounded,
+              size: 13,
+              color: selected ? _kGold : Colors.white.withValues(alpha: 0.25),
+            ),
+            const SizedBox(width: 4),
+            Text(
+              selected ? selectedTxt : selectTxt,
+              style: TextStyle(
+                  fontSize: 9,
+                  fontWeight: FontWeight.w700,
+                  color: selected
+                      ? _kGold
+                      : Colors.white.withValues(alpha: 0.3)),
+            ),
           ]),
         ]),
       ),
@@ -404,11 +749,149 @@ class _PlanCard extends StatelessWidget {
   }
 }
 
-// ── Stat Chip ────────────────────────────────────────────────────────────────
+/// Linha de feature com check por plano
+class _FeatureRow extends StatelessWidget {
+  final IconData icon;
+  final Color color;
+  final String title, subtitle;
+  final bool inBasic;
+  final bool isLast;
+  final bool highlight; // recurso exclusivo selecionado
+
+  const _FeatureRow({
+    required this.icon,
+    required this.color,
+    required this.title,
+    required this.subtitle,
+    required this.inBasic,
+    required this.isLast,
+    required this.highlight,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: highlight
+            ? _kGold.withValues(alpha: 0.04)
+            : Colors.transparent,
+        border: isLast
+            ? null
+            : const Border(
+                bottom: BorderSide(color: Color(0x0AFFFFFF))),
+      ),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 11),
+      child: Row(children: [
+        // Ícone
+        Container(
+          width: 36,
+          height: 36,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            color: color.withValues(alpha: 0.12),
+            border: Border.all(color: color.withValues(alpha: 0.25)),
+          ),
+          child: Icon(icon, size: 17, color: color),
+        ),
+        const SizedBox(width: 11),
+
+        // Título + sub
+        Expanded(
+          child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(title,
+                    style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w800,
+                        color: Colors.white,
+                        height: 1.2)),
+                Text(subtitle,
+                    style: TextStyle(
+                        fontSize: 10,
+                        color: Colors.white.withValues(alpha: 0.4),
+                        height: 1.3)),
+              ]),
+        ),
+        const SizedBox(width: 8),
+
+        // Colunas de check: Mensal | Anual
+        Row(children: [
+          // Check Mensal
+          _CheckCell(checked: inBasic, gold: false),
+          const SizedBox(width: 8),
+          // Check Anual — sempre tem
+          _CheckCell(checked: true, gold: true),
+        ]),
+      ]),
+    );
+  }
+}
+
+class _CheckCell extends StatelessWidget {
+  final bool checked;
+  final bool gold;
+  const _CheckCell({required this.checked, required this.gold});
+
+  @override
+  Widget build(BuildContext context) {
+    if (checked) {
+      return Icon(
+        Icons.check_circle_rounded,
+        size: 18,
+        color: gold ? _kGold : const Color(0xFF4ADE80),
+      );
+    }
+    return Icon(
+      Icons.remove_circle_outline_rounded,
+      size: 18,
+      color: Colors.white.withValues(alpha: 0.15),
+    );
+  }
+}
+
+/// Pílula de legenda
+class _FeaturePill extends StatelessWidget {
+  final String label;
+  final Color color;
+  const _FeaturePill({required this.label, required this.color});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(6),
+        color: color.withValues(alpha: 0.12),
+        border: Border.all(color: color.withValues(alpha: 0.3)),
+      ),
+      child: Text(label,
+          style: TextStyle(
+              fontSize: 9, fontWeight: FontWeight.w800, color: color)),
+    );
+  }
+}
+
+class _LegendDot extends StatelessWidget {
+  final Color color;
+  const _LegendDot({required this.color});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 10,
+      height: 10,
+      decoration: BoxDecoration(shape: BoxShape.circle, color: color),
+    );
+  }
+}
+
+/// Chip de social proof
 class _StatChip extends StatelessWidget {
   final IconData icon;
   final String label, sub;
-  const _StatChip({required this.icon, required this.label, required this.sub});
+  const _StatChip(
+      {required this.icon, required this.label, required this.sub});
 
   @override
   Widget build(BuildContext context) {
@@ -422,34 +905,40 @@ class _StatChip extends StatelessWidget {
       child: Column(children: [
         Icon(icon, size: 14, color: _kGoldL),
         const SizedBox(height: 3),
-        Text(label, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w900, color: Colors.white)),
-        Text(sub, style: TextStyle(fontSize: 9, color: Colors.white.withValues(alpha: 0.38))),
+        Text(label,
+            style: const TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w900,
+                color: Colors.white)),
+        Text(sub,
+            style: TextStyle(
+                fontSize: 9, color: Colors.white.withValues(alpha: 0.38))),
       ]),
     );
   }
 }
 
-// ── Fundo decorativo ─────────────────────────────────────────────────────────
+/// Fundo decorativo
 class _BgPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()..style = PaintingStyle.fill;
-
-    // Glow verde no topo
     paint.color = const Color(0xFF075f45).withValues(alpha: 0.08);
-    canvas.drawCircle(Offset(size.width * 0.8, 0), size.width * 0.6, paint);
-
-    // Glow dourado no centro
+    canvas.drawCircle(
+        Offset(size.width * 0.8, 0), size.width * 0.6, paint);
     paint.color = const Color(0xFFC5A365).withValues(alpha: 0.05);
-    canvas.drawCircle(Offset(size.width * 0.1, size.height * 0.45), size.width * 0.5, paint);
+    canvas.drawCircle(
+        Offset(size.width * 0.1, size.height * 0.45), size.width * 0.5, paint);
   }
 
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
 
-// ── Helper para abrir a tela de upgrade ──────────────────────────────────────
-void showUpgradeScreen(BuildContext context) {
+// ─────────────────────────────────────────────────────────────────────────────
+// Helper — abre o paywall como bottom sheet, passando o idioma atual
+// ─────────────────────────────────────────────────────────────────────────────
+void showUpgradeScreen(BuildContext context, {String lang = 'es'}) {
   showModalBottomSheet(
     context: context,
     isScrollControlled: true,
@@ -457,8 +946,9 @@ void showUpgradeScreen(BuildContext context) {
     builder: (_) => SizedBox(
       height: MediaQuery.of(context).size.height * 0.92,
       child: ClipRRect(
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-        child: const UpgradeScreen(showClose: true),
+        borderRadius:
+            const BorderRadius.vertical(top: Radius.circular(24)),
+        child: UpgradeScreen(showClose: true, initialLang: lang),
       ),
     ),
   );

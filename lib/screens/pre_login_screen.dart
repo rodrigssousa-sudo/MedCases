@@ -26,6 +26,7 @@ class _PreLoginPreviewState extends State<PreLoginPreview> {
   bool _showLogin = false;
   bool? _hasConsented;
   int _demoTab = 0;
+  String _lang = 'es'; // padrão ES — sobrescrito pelo SharedPreferences no initState
 
   static const _demoCases = [
     _DemoCase(
@@ -136,13 +137,16 @@ class _PreLoginPreviewState extends State<PreLoginPreview> {
   @override
   void initState() {
     super.initState();
-    _checkConsent();
+    _loadLangAndConsent();
   }
 
-  Future<void> _checkConsent() async {
-    final ok = await ConsentGate.hasConsented();
-    if (mounted) setState(() => _hasConsented = ok);
+  Future<void> _loadLangAndConsent() async {
+    final prefs = await SharedPreferences.getInstance();
+    final lang  = prefs.getString('lang') ?? 'es';
+    final ok    = await ConsentGate.hasConsented();
+    if (mounted) setState(() { _lang = lang; _hasConsented = ok; });
   }
+
 
   void _onConsentAccepted() => setState(() => _hasConsented = true);
   void _goLogin() => setState(() => _showLogin = true);
@@ -163,7 +167,7 @@ class _PreLoginPreviewState extends State<PreLoginPreview> {
           Positioned.fill(child: ColoredBox(color: Colors.black.withValues(alpha: 0.55))),
           Positioned(
             left: 0, right: 0, bottom: 0,
-            child: ConsentModal(lang: 'pt', onAccepted: _onConsentAccepted),
+            child: ConsentModal(lang: _lang, onAccepted: _onConsentAccepted),
           ),
         ]);
       }
