@@ -385,6 +385,8 @@ class _PreLoginPreviewState extends State<_PreLoginPreview> {
   // FIX DEFINITIVO: sem Navigator.push — LoginScreen é exibida inline.
   // Quando webUser muda, _AuthGate troca o widget raiz sem conflito de Navigator.
   bool _showLogin = false;
+  // Consent gate Web — null=carregando, false=precisa consentir, true=ok
+  bool? _hasConsented;
 
   static const _kDark    = Color(0xFF07110d);
   static const _kGreen   = Color(0xFF075f45);
@@ -395,7 +397,15 @@ class _PreLoginPreviewState extends State<_PreLoginPreview> {
   void initState() {
     super.initState();
     _loadPublic();
+    _checkConsent();
   }
+
+  Future<void> _checkConsent() async {
+    final ok = await ConsentGate.hasConsented();
+    if (mounted) setState(() => _hasConsented = ok);
+  }
+
+  void _onConsentAccepted() => setState(() => _hasConsented = true);
 
   Future<void> _loadPublic() async {
     setState(() { _loading = true; _error = null; });
@@ -416,6 +426,38 @@ class _PreLoginPreviewState extends State<_PreLoginPreview> {
     // FIX DEFINITIVO: sem Navigator.push — LoginScreen inline.
     // _AuthGate troca o widget raiz quando webUser muda, sem conflito de stack.
     if (_showLogin) {
+      // Consent gate Web — aguarda leitura das prefs
+      if (_hasConsented == null) {
+        return Theme(
+          data: MedCasesApp._authTheme,
+          child: const Scaffold(
+            backgroundColor: Color(0xFF07110d),
+            body: Center(
+              child: CircularProgressIndicator(color: Color(0xFFD4A96A)),
+            ),
+          ),
+        );
+      }
+      // Precisa consentir — LoginScreen coberta pelo ConsentModal
+      if (!_hasConsented!) {
+        return Theme(
+          data: MedCasesApp._authTheme,
+          child: Stack(children: [
+            LoginScreen(onBack: _backToPreview),
+            Positioned.fill(
+              child: ColoredBox(color: Colors.black.withValues(alpha: 0.55)),
+            ),
+            Positioned(
+              left: 0, right: 0, bottom: 0,
+              child: ConsentModal(
+                lang: 'pt',
+                onAccepted: _onConsentAccepted,
+              ),
+            ),
+          ]),
+        );
+      }
+      // Já consentiu — LoginScreen direto
       return Theme(
         data: MedCasesApp._authTheme,
         child: LoginScreen(onBack: _backToPreview),
