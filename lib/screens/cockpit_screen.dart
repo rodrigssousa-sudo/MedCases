@@ -1181,6 +1181,7 @@ class _DrugDoseCard extends StatelessWidget {
       case InteractionSeverity.major:           return const Color(0xFFCC2222);
       case InteractionSeverity.moderate:        return const Color(0xFFD97706);
       case InteractionSeverity.minor:           return const Color(0xFF065F46);
+      case InteractionSeverity.monitorOnly:     return const Color(0xFF1D4ED8);
     }
   }
   Color _sevBg(InteractionSeverity s) {
@@ -1189,6 +1190,7 @@ class _DrugDoseCard extends StatelessWidget {
       case InteractionSeverity.major:           return const Color(0xFFFFF0F0);
       case InteractionSeverity.moderate:        return const Color(0xFFFFFBEB);
       case InteractionSeverity.minor:           return const Color(0xFFECFDF5);
+      case InteractionSeverity.monitorOnly:     return const Color(0xFFEFF6FF);
     }
   }
   Color _sevBorder(InteractionSeverity s) {
@@ -1197,6 +1199,7 @@ class _DrugDoseCard extends StatelessWidget {
       case InteractionSeverity.major:           return const Color(0xFFFFCCCC);
       case InteractionSeverity.moderate:        return const Color(0xFFFCD34D);
       case InteractionSeverity.minor:           return const Color(0xFFBBF7D0);
+      case InteractionSeverity.monitorOnly:     return const Color(0xFFBFDBFE);
     }
   }
   IconData _sevIcon(InteractionSeverity s) {
@@ -1205,6 +1208,7 @@ class _DrugDoseCard extends StatelessWidget {
       case InteractionSeverity.major:           return Icons.warning_rounded;
       case InteractionSeverity.moderate:        return Icons.info_rounded;
       case InteractionSeverity.minor:           return Icons.check_circle_outline_rounded;
+      case InteractionSeverity.monitorOnly:     return Icons.visibility_rounded;
     }
   }
   String _sevLabel(InteractionSeverity s, String lang) {
@@ -1213,6 +1217,7 @@ class _DrugDoseCard extends StatelessWidget {
       case InteractionSeverity.major:           return lang == 'es' ? 'MAYOR' : 'MAIOR';
       case InteractionSeverity.moderate:        return lang == 'es' ? 'MODERADA' : 'MODERADA';
       case InteractionSeverity.minor:           return lang == 'es' ? 'MENOR' : 'MENOR';
+      case InteractionSeverity.monitorOnly:     return lang == 'es' ? 'MONITORIZAR' : 'MONITORIZAR';
     }
   }
 
@@ -1493,6 +1498,7 @@ class _InteractionSheetContentState extends State<_InteractionSheetContent> {
       case InteractionSeverity.major:           return const Color(0xFFCC2222);
       case InteractionSeverity.moderate:        return const Color(0xFFD97706);
       case InteractionSeverity.minor:           return const Color(0xFF065F46);
+      case InteractionSeverity.monitorOnly:     return const Color(0xFF1D4ED8);
     }
   }
   Color _bg(InteractionSeverity s) {
@@ -1501,6 +1507,7 @@ class _InteractionSheetContentState extends State<_InteractionSheetContent> {
       case InteractionSeverity.major:           return const Color(0xFFFFF0F0);
       case InteractionSeverity.moderate:        return const Color(0xFFFFFBEB);
       case InteractionSeverity.minor:           return const Color(0xFFECFDF5);
+      case InteractionSeverity.monitorOnly:     return const Color(0xFFEFF6FF);
     }
   }
   Color _border(InteractionSeverity s) {
@@ -1509,6 +1516,7 @@ class _InteractionSheetContentState extends State<_InteractionSheetContent> {
       case InteractionSeverity.major:           return const Color(0xFFFFCCCC);
       case InteractionSeverity.moderate:        return const Color(0xFFFDE68A);
       case InteractionSeverity.minor:           return const Color(0xFFBBF7D0);
+      case InteractionSeverity.monitorOnly:     return const Color(0xFFBFDBFE);
     }
   }
   IconData _icon(InteractionSeverity s) {
@@ -1517,6 +1525,7 @@ class _InteractionSheetContentState extends State<_InteractionSheetContent> {
       case InteractionSeverity.major:           return Icons.warning_rounded;
       case InteractionSeverity.moderate:        return Icons.info_rounded;
       case InteractionSeverity.minor:           return Icons.check_circle_outline_rounded;
+      case InteractionSeverity.monitorOnly:     return Icons.visibility_rounded;
     }
   }
   String _sevLabel(InteractionSeverity s) {
@@ -1525,6 +1534,7 @@ class _InteractionSheetContentState extends State<_InteractionSheetContent> {
       case InteractionSeverity.major:           return _isEs ? 'MAYOR' : 'MAIOR';
       case InteractionSeverity.moderate:        return _isEs ? 'MODERADA' : 'MODERADA';
       case InteractionSeverity.minor:           return _isEs ? 'MENOR' : 'MENOR';
+      case InteractionSeverity.monitorOnly:     return _isEs ? 'MONITORIZAR' : 'MONITORIZAR';
     }
   }
 
@@ -1584,6 +1594,7 @@ class _InteractionSheetContentState extends State<_InteractionSheetContent> {
     final nMajor    = sorted.where((i) => i.severity == InteractionSeverity.major).length;
     final nModerate = sorted.where((i) => i.severity == InteractionSeverity.moderate).length;
     final nMinor    = sorted.where((i) => i.severity == InteractionSeverity.minor).length;
+    final nMonitor  = sorted.where((i) => i.severity == InteractionSeverity.monitorOnly).length;
 
     return DraggableScrollableSheet(
       initialChildSize: 0.75,
@@ -1620,6 +1631,7 @@ class _InteractionSheetContentState extends State<_InteractionSheetContent> {
                   if (nMajor > 0)    _SheetBadge('$nMajor ${_isEs ? "mayor${nMajor>1?"es":""}":"maior${nMajor>1?"es":""}"}', const Color(0xFFCC2222)),
                   if (nModerate > 0) _SheetBadge('$nModerate ${_isEs ? "moderada${nModerate>1?"s":""}":"moderada${nModerate>1?"s":""}"}', const Color(0xFFD97706)),
                   if (nMinor > 0)    _SheetBadge('$nMinor ${_isEs ? "menor${nMinor>1?"es":""}":"menor${nMinor>1?"es":""}"}', const Color(0xFF065F46)),
+                  if (nMonitor > 0)  _SheetBadge('$nMonitor ${_isEs ? "monitorizar":"monitorizar"}', const Color(0xFF1D4ED8)),
                 ]),
               ])),
               GestureDetector(
@@ -1680,17 +1692,50 @@ class _InteractionSheetContentState extends State<_InteractionSheetContent> {
                         Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                           Text('${ix.drug1}  +  ${ix.drug2}',
                             style: TextStyle(fontSize: 12, fontWeight: FontWeight.w900, color: col, height: 1.2)),
-                          const SizedBox(height: 2),
-                          Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(6),
-                              color: col.withValues(alpha: 0.13),
+                          const SizedBox(height: 4),
+                          Wrap(spacing: 5, runSpacing: 3, children: [
+                            // Badge de severidade
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(6),
+                                color: col.withValues(alpha: 0.13),
+                              ),
+                              child: Text(_sevLabel(ix.severity),
+                                style: TextStyle(fontSize: 8, fontWeight: FontWeight.w900, color: col, letterSpacing: 0.8)),
                             ),
-                            child: Text(_sevLabel(ix.severity),
-                              style: TextStyle(fontSize: 8, fontWeight: FontWeight.w900, color: col, letterSpacing: 0.8)),
-                          ),
+                            // Badge de nível de evidência
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(6),
+                                color: const Color(0xFF374151).withValues(alpha: 0.08),
+                                border: Border.all(color: const Color(0xFF374151).withValues(alpha: 0.2)),
+                              ),
+                              child: Row(mainAxisSize: MainAxisSize.min, children: [
+                                const Icon(Icons.science_rounded, size: 7, color: Color(0xFF374151)),
+                                const SizedBox(width: 3),
+                                Text(ix.evidenceLabel,
+                                  style: const TextStyle(fontSize: 7.5, fontWeight: FontWeight.w700, color: Color(0xFF374151), letterSpacing: 0.4)),
+                              ]),
+                            ),
+                          ]),
                         ])),
+                        // Tags de riskType (compactas, no canto direito)
+                        if (ix.riskTypes.isNotEmpty)
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: ix.riskTypes.take(2).map((r) => Container(
+                              margin: const EdgeInsets.only(bottom: 2),
+                              padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(5),
+                                color: col.withValues(alpha: 0.08),
+                              ),
+                              child: Text(DrugInteraction.riskTypeLabel(r),
+                                style: TextStyle(fontSize: 7, fontWeight: FontWeight.w700, color: col)),
+                            )).toList(),
+                          ),
                         Icon(isOpen ? Icons.expand_less_rounded : Icons.expand_more_rounded,
                           size: 18, color: col.withValues(alpha: 0.6)),
                       ]),
@@ -1708,6 +1753,49 @@ class _InteractionSheetContentState extends State<_InteractionSheetContent> {
                             _contraindicatedBanner(ix),
                           if (ix.severity == InteractionSeverity.major)
                             _majorBanner(ix),
+
+                          // ── CLINICAL ALERT em destaque ──────────────────────
+                          if (ix.clinicalAlert.isNotEmpty) ...[  
+                            Container(
+                              width: double.infinity,
+                              margin: const EdgeInsets.only(bottom: 10),
+                              padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 9),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                color: col.withValues(alpha: 0.07),
+                                border: Border(
+                                  left: BorderSide(color: col, width: 3),
+                                ),
+                              ),
+                              child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                                Icon(Icons.campaign_rounded, size: 13, color: col),
+                                const SizedBox(width: 7),
+                                Expanded(child: Text(
+                                  ix.clinicalAlert,
+                                  style: TextStyle(fontSize: 11, fontWeight: FontWeight.w800, color: col, height: 1.45),
+                                )),
+                              ]),
+                            ),
+                          ],
+
+                          // ── Tags de risco (todas, expandidas) ───────────────
+                          if (ix.riskTypes.isNotEmpty) ...[  
+                            Wrap(
+                              spacing: 5,
+                              runSpacing: 4,
+                              children: ix.riskTypes.map((r) => Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(6),
+                                  color: col.withValues(alpha: 0.10),
+                                  border: Border.all(color: col.withValues(alpha: 0.25)),
+                                ),
+                                child: Text(DrugInteraction.riskTypeLabel(r),
+                                  style: TextStyle(fontSize: 9, fontWeight: FontWeight.w700, color: col)),
+                              )).toList(),
+                            ),
+                            const SizedBox(height: 10),
+                          ],
 
                           // Efeito clínico
                           _SheetInfoRow(
@@ -1751,16 +1839,43 @@ class _InteractionSheetContentState extends State<_InteractionSheetContent> {
                             ]),
                           ),
 
-                          // Fonte bibliográfica
+                          // ── Nível de evidência + Referências ────────────────
                           const SizedBox(height: 10),
-                          Row(children: [
-                            Icon(Icons.menu_book_rounded, size: 10, color: col.withValues(alpha: 0.5)),
-                            const SizedBox(width: 5),
-                            Expanded(child: Text(
-                              'Goodman & Gilman 14ª ed. • Micromedex • UpToDate Lexidrug',
-                              style: TextStyle(fontSize: 9, color: col.withValues(alpha: 0.5), fontStyle: FontStyle.italic),
-                            )),
-                          ]),
+                          Container(
+                            width: double.infinity,
+                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(8),
+                              color: const Color(0xFF374151).withValues(alpha: 0.05),
+                            ),
+                            child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                              Icon(Icons.menu_book_rounded, size: 10, color: col.withValues(alpha: 0.55)),
+                              const SizedBox(width: 6),
+                              Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                                // Badge evidenceLevel
+                                Row(children: [
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(5),
+                                      color: const Color(0xFF374151).withValues(alpha: 0.10),
+                                    ),
+                                    child: Text(
+                                      '${_isEs ? "Evidencia" : "Evidência"}: ${ix.evidenceLabel}',
+                                      style: const TextStyle(fontSize: 8.5, fontWeight: FontWeight.w800, color: Color(0xFF374151)),
+                                    ),
+                                  ),
+                                ]),
+                                if (ix.references.isNotEmpty) ...[  
+                                  const SizedBox(height: 5),
+                                  Text(
+                                    ix.references.join(' • '),
+                                    style: TextStyle(fontSize: 9, color: col.withValues(alpha: 0.55), fontStyle: FontStyle.italic, height: 1.4),
+                                  ),
+                                ],
+                              ])),
+                            ]),
+                          ),
                         ]),
                       ),
                     ],
@@ -1963,6 +2078,7 @@ class _InteractionPanelState extends State<_InteractionPanel> {
       case InteractionSeverity.major:           return const Color(0xFFCC2222);
       case InteractionSeverity.moderate:        return const Color(0xFFD97706);
       case InteractionSeverity.minor:           return const Color(0xFF065F46);
+      case InteractionSeverity.monitorOnly:     return const Color(0xFF1D4ED8);
     }
   }
 
@@ -1972,6 +2088,7 @@ class _InteractionPanelState extends State<_InteractionPanel> {
       case InteractionSeverity.major:           return const Color(0xFFFFF0F0);
       case InteractionSeverity.moderate:        return const Color(0xFFFFFBEB);
       case InteractionSeverity.minor:           return const Color(0xFFECFDF5);
+      case InteractionSeverity.monitorOnly:     return const Color(0xFFEFF6FF);
     }
   }
 
@@ -1981,6 +2098,7 @@ class _InteractionPanelState extends State<_InteractionPanel> {
       case InteractionSeverity.major:           return const Color(0xFFFFCCCC);
       case InteractionSeverity.moderate:        return const Color(0xFFFCD34D);
       case InteractionSeverity.minor:           return const Color(0xFFBBF7D0);
+      case InteractionSeverity.monitorOnly:     return const Color(0xFFBFDBFE);
     }
   }
 
@@ -1990,6 +2108,7 @@ class _InteractionPanelState extends State<_InteractionPanel> {
       case InteractionSeverity.major:           return Icons.warning_rounded;
       case InteractionSeverity.moderate:        return Icons.info_rounded;
       case InteractionSeverity.minor:           return Icons.check_circle_outline_rounded;
+      case InteractionSeverity.monitorOnly:     return Icons.visibility_rounded;
     }
   }
 
@@ -2492,6 +2611,7 @@ class _MedsChinpsPanelState extends State<_MedsChipsPanel> {
       case InteractionSeverity.major:           return const Color(0xFFCC2222);
       case InteractionSeverity.moderate:        return const Color(0xFFD97706);
       case InteractionSeverity.minor:           return const Color(0xFF065F46);
+      case InteractionSeverity.monitorOnly:     return const Color(0xFF1D4ED8);
     }
   }
 
@@ -2501,6 +2621,7 @@ class _MedsChinpsPanelState extends State<_MedsChipsPanel> {
       case InteractionSeverity.major:           return const Color(0xFFFFF0F0);
       case InteractionSeverity.moderate:        return const Color(0xFFFFFBEB);
       case InteractionSeverity.minor:           return const Color(0xFFECFDF5);
+      case InteractionSeverity.monitorOnly:     return const Color(0xFFEFF6FF);
     }
   }
 
@@ -2510,6 +2631,7 @@ class _MedsChinpsPanelState extends State<_MedsChipsPanel> {
       case InteractionSeverity.major:           return const Color(0xFFFFCCCC);
       case InteractionSeverity.moderate:        return const Color(0xFFFDE68A);
       case InteractionSeverity.minor:           return const Color(0xFFBBF7D0);
+      case InteractionSeverity.monitorOnly:     return const Color(0xFFBFDBFE);
     }
   }
 
@@ -2523,6 +2645,8 @@ class _MedsChinpsPanelState extends State<_MedsChipsPanel> {
         return _isEs ? 'MODERADA' : 'MODERADA';
       case InteractionSeverity.minor:
         return _isEs ? 'MENOR' : 'MENOR';
+      case InteractionSeverity.monitorOnly:
+        return _isEs ? 'MONITORIZAR' : 'MONITORIZAR';
     }
   }
 
@@ -2532,6 +2656,7 @@ class _MedsChinpsPanelState extends State<_MedsChipsPanel> {
       case InteractionSeverity.major:           return Icons.warning_rounded;
       case InteractionSeverity.moderate:        return Icons.info_rounded;
       case InteractionSeverity.minor:           return Icons.circle_outlined;
+      case InteractionSeverity.monitorOnly:     return Icons.visibility_rounded;
     }
   }
 
