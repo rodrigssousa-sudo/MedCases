@@ -751,14 +751,26 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
   int _tab = 0;
   // sub-tab dentro do combo Rx+Proto: 0=Rx, 1=Protocolos
   int _rxProtoSub = 0;
-  // Header recolhível: visível apenas na tab 0 (Cockpit/Início)
-  // ignore: unused_element
-  bool get _headerVisible => _tab == 0;
+
+  // ── Performance: telas estáticas criadas uma única vez no initState ──────
+  // Evita recriar AiScreen/HistoryScreen/ToolsScreen a cada setState/_tab change.
+  // CockpitScreen recebe callback por referência — mantém identidade entre builds.
+  late final List<Widget> _staticScreens;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+
+    // Instancia telas estáticas UMA VEZ — IndexedStack não recria entre trocas de tab
+    _staticScreens = [
+      CockpitScreen(openProtocol: _openProtocol), // 0
+      const Placeholder(),                         // 1 — _RxProtoCombo (dinâmico, substituído no build)
+      const AiScreen(),                            // 2
+      const HistoryScreen(),                       // 3
+      const ToolsScreen(),                         // 4
+    ];
+
     // Verifica novidades ao abrir o app (delay para não competir com splash)
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Future.delayed(const Duration(milliseconds: 800), () {
@@ -823,21 +835,17 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
     final navBg = dark ? const Color(0xFF121F17) : Colors.white;
     final navBorder = dark ? const Color(0xFF1E3526) : const Color(0xFFE8E1D2);
 
-    // Tela combo Rx + Protocolos com TabBar interna
-    final rxProtoScreen = _RxProtoCombo(
-      subTab: _rxProtoSub,
-      onSubTabChange: (i) => setState(() => _rxProtoSub = i),
-    );
-
-    // Ordem das telas no IndexedStack
-    // tab: 0=Cockpit | 1=Rx+Proto | 2=IA(FAB) | 3=H.Clínica | 4=Calculadoras
-    // stack: 0=Cockpit | 1=Rx+Proto | 2=IA | 3=H.Clínica | 4=Calculadoras
+    // _RxProtoCombo precisa de _rxProtoSub que é estado local — mantido aqui.
+    // As demais telas são reutilizadas de _staticScreens (criadas no initState).
     final mainScreens = [
-      CockpitScreen(openProtocol: _openProtocol), // 0
-      rxProtoScreen,                               // 1
-      const AiScreen(),                            // 2 — FAB central
-      const HistoryScreen(),                       // 3 — H.Clínica integrada
-      const ToolsScreen(),                         // 4
+      _staticScreens[0], // CockpitScreen
+      _RxProtoCombo(     // dinâmico: reage a _rxProtoSub
+        subTab: _rxProtoSub,
+        onSubTabChange: (i) => setState(() => _rxProtoSub = i),
+      ),
+      _staticScreens[2], // AiScreen
+      _staticScreens[3], // HistoryScreen
+      _staticScreens[4], // ToolsScreen
     ];
 
     // stackIdx = _tab direto (todas as telas no stack agora)
@@ -1379,15 +1387,10 @@ class _LegalBar extends StatelessWidget {
   }
 }
 
-// ── Drawer lateral estilo banco (desliza da direita) ─────────────────────────
+// ── Drawer lateral — redesenhado (v2) ─────────────────────────────────────────
 class _AppDrawer extends StatelessWidget {
   final AppProvider p;
   const _AppDrawer({required this.p});
-
-  static const _kDark  = Color(0xFF0F1C14);
-  static const _kGreen = Color(0xFF1F6B48);
-  static const _kGold  = Color(0xFFC5A365);
-  static const _kGoldL = Color(0xFFFFE8A6);
 
   void _close(BuildContext context) => Navigator.of(context).pop();
 
@@ -1502,376 +1505,482 @@ class _AppDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final dark = p.darkMode;
-    final bg      = dark ? const Color(0xFF0B1510) : Colors.white;
-    final divider = dark ? const Color(0xFF1E3526) : const Color(0xFFEEEBE4);
-    final textCol = dark ? Colors.white : _kDark;
-    final subCol  = dark ? Colors.white.withValues(alpha: 0.38) : const Color(0xFF888888);
+    final dark    = p.darkMode;
+    final bg      = dark ? const Color(0xFF0B1510) : const Color(0xFFFAFBFC);
+    final divider = dark ? const Color(0xFF1A2E22) : const Color(0xFFF0EDE8);
+    final textCol = dark ? const Color(0xFFEEEEEE) : const Color(0xFF0F1C14);
+    final subCol  = dark ? Colors.white.withValues(alpha: 0.36) : const Color(0xFF9AA0A8);
 
-    // Iniciais para o avatar no drawer
     final initials = p.userName.isNotEmpty
         ? p.userName.trim().split(' ').take(2).map((w) => w[0].toUpperCase()).join()
-        : 'M';
+        : 'MC';
 
     return Drawer(
-      width: 292,
+      width: 288,
       backgroundColor: bg,
-      child: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            // ── Cabeçalho do drawer ─────────────────────────────────────────
-            Container(
-              padding: const EdgeInsets.fromLTRB(18, 18, 18, 20),
-              decoration: BoxDecoration(
-                gradient: const LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [Color(0xFF0A1610), Color(0xFF162E1F), Color(0xFF1A5C3A)],
-                  stops: [0.0, 0.5, 1.0],
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+
+          // ── CABEÇALHO — perfil do usuário ──────────────────────────────────
+          _DrawerHeader(
+            p: p,
+            initials: initials,
+            dark: dark,
+            onClose: () => _close(context),
+            onEditProfile: () {
+              _close(context);
+              showModalBottomSheet(
+                context: context,
+                isScrollControlled: true,
+                backgroundColor: Colors.transparent,
+                builder: (_) => _ProfileEditSheet(p: p),
+              );
+            },
+          ),
+
+          // ── MENU — lista rolável ────────────────────────────────────────────
+          Expanded(
+            child: ListView(
+              padding: EdgeInsets.zero,
+              physics: const ClampingScrollPhysics(),
+              children: [
+
+                // ─── Bloco: Premium ─────────────────────────────────────────
+                _DrawerBlock(
+                  children: [
+                    _DrawerItemPremium(
+                      dark: dark,
+                      onTap: () {
+                        _close(context);
+                        showUpgradeScreen(context, lang: p.lang);
+                      },
+                    ),
+                  ],
                 ),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.25),
-                    blurRadius: 16,
-                    offset: const Offset(0, 4),
-                  ),
-                ],
-              ),
-              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                // Linha topo: logo + fechar
-                Row(children: [
-                  const BrandMark(small: false),
-                  const Spacer(),
-                  GestureDetector(
-                    onTap: () => _close(context),
-                    child: Container(
-                      padding: const EdgeInsets.all(7),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        color: Colors.white.withValues(alpha: 0.08),
-                        border: Border.all(
-                          color: Colors.white.withValues(alpha: 0.12),
-                          width: 0.8,
-                        ),
-                      ),
-                      child: Icon(Icons.close_rounded, size: 15,
-                          color: Colors.white.withValues(alpha: 0.65)),
+
+                _DrawerSectionLabel(
+                  label: p.lang == 'es' ? 'PREFERENCIAS' : 'PREFERÊNCIAS',
+                  dark: dark,
+                ),
+
+                // ─── Bloco: Preferências ─────────────────────────────────────
+                _DrawerBlock(
+                  dividerColor: divider,
+                  children: [
+                    // Idioma
+                    _DrawerRow(
+                      icon: Icons.language_rounded,
+                      iconColor: const Color(0xFF1E88E5),
+                      title: p.lang == 'es' ? 'Idioma' : 'Idioma',
+                      dark: dark,
+                      textCol: textCol,
+                      subCol: subCol,
+                      trailing: _LangBadge(lang: p.lang),
+                      onTap: () {
+                        final newLang = p.lang == 'pt' ? 'es' : 'pt';
+                        p.setLang(newLang);
+                        SharedPreferences.getInstance()
+                            .then((prefs) => prefs.setString('lang', newLang));
+                      },
                     ),
-                  ),
-                ]),
-                const SizedBox(height: 16),
-                // Avatar + nome lado a lado
-                Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
-                  // Avatar circular
-                  Container(
-                    width: 42,
-                    height: 42,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      gradient: const LinearGradient(
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                        colors: [Color(0xFF1F4030), Color(0xFF162A1C)],
-                      ),
-                      border: Border.all(
-                        color: _kGold.withValues(alpha: 0.45),
-                        width: 1.5,
-                      ),
+                    // Tema
+                    _DrawerRow(
+                      icon: dark ? Icons.light_mode_rounded : Icons.dark_mode_rounded,
+                      iconColor: dark ? const Color(0xFFFFCC44) : const Color(0xFF6B6B8A),
+                      title: p.lang == 'es' ? 'Apariencia' : 'Aparência',
+                      dark: dark,
+                      textCol: textCol,
+                      subCol: subCol,
+                      trailing: _ThemeToggle(dark: dark),
+                      onTap: () => p.toggleDarkMode(),
                     ),
-                    child: Center(
-                      child: Text(
-                        initials,
-                        style: const TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w900,
-                          color: Color(0xFFFFE8A6),
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  // Nome + profissão
-                  Expanded(
-                    child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                      Text(
-                        p.userName.isNotEmpty ? p.userName : 'MedCases Pro',
-                        style: const TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w900,
-                          color: Colors.white,
-                          letterSpacing: -0.2,
-                          height: 1.1,
-                        ),
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      if (p.currentUser?.profession?.isNotEmpty ?? false) ...[
-                        const SizedBox(height: 3),
-                        Text(
-                          p.currentUser!.profession!,
-                          style: TextStyle(
-                            fontSize: 11,
-                            color: Colors.white.withValues(alpha: 0.52),
-                            fontWeight: FontWeight.w500,
-                          ),
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ],
-                      if (p.currentUser?.institution?.isNotEmpty ?? false) ...[
-                        const SizedBox(height: 1),
-                        Text(
-                          p.currentUser!.institution!,
-                          style: TextStyle(
-                            fontSize: 10,
-                            color: Colors.white.withValues(alpha: 0.35),
-                            fontWeight: FontWeight.w500,
-                          ),
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ],
-                    ]),
-                  ),
-                ]),
-                // Badge admin
-                if (p.isAdmin || p.isMaster) ...[
-                  const SizedBox(height: 12),
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 4),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      color: _kGold.withValues(alpha: 0.15),
-                      border: Border.all(color: _kGold.withValues(alpha: 0.45)),
-                    ),
-                    child: Text(
-                      p.isMaster ? 'MASTER' : 'ADMIN',
-                      style: const TextStyle(
-                        fontSize: 9,
-                        fontWeight: FontWeight.w900,
-                        color: _kGoldL,
-                        letterSpacing: 0.8,
-                      ),
-                    ),
-                  ),
-                ],
-              ]),
-            ),
+                  ],
+                ),
 
-            // ── Itens do menu ────────────────────────────────────────────────
-            Expanded(
-              child: ListView(
-                padding: const EdgeInsets.symmetric(vertical: 8),
-                children: [
+                _DrawerSectionLabel(
+                  label: p.lang == 'es' ? 'LEGAL' : 'LEGAL',
+                  dark: dark,
+                ),
 
-                  // ── Upgrade Premium ─────────────────────────────────────
-                  _DrawerItemPremium(
-                    dark: dark,
-                    onTap: () {
-                      _close(context);
-                      showUpgradeScreen(context, lang: p.lang);
-                    },
-                  ),
-
-                  Divider(height: 1, color: divider, indent: 16, endIndent: 16),
-
-                  // ── Editar perfil ───────────────────────────────────────
-                  _DrawerItem(
-                    icon: Icons.person_outline_rounded,
-                    iconColor: _kGold,
-                    title: 'Editar perfil',
-                    subtitle: p.lang == 'es' ? 'Nombre, profesión, institución' : 'Nome, profissão, instituição',
-                    dark: dark,
-                    textCol: textCol,
-                    subCol: subCol,
-                    onTap: () {
-                      _close(context);
-                      showModalBottomSheet(
-                        context: context,
-                        isScrollControlled: true,
-                        backgroundColor: Colors.transparent,
-                        builder: (_) => _ProfileEditSheet(p: p),
-                      );
-                    },
-                  ),
-
-                  Divider(height: 1, color: divider, indent: 16, endIndent: 16),
-
-                  // ── Idioma ──────────────────────────────────────────────
-                  _DrawerItem(
-                    icon: Icons.language_rounded,
-                    iconColor: const Color(0xFF1E88E5),
-                    title: 'Idioma',
-                    subtitle: p.lang == 'pt' ? 'Trocar para Español' : 'Cambiar a Português',
-                    dark: dark,
-                    textCol: textCol,
-                    subCol: subCol,
-                    trailing: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 4),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8),
-                        color: _kGold.withValues(alpha: 0.12),
-                        border: Border.all(color: _kGold.withValues(alpha: 0.4)),
-                      ),
-                      child: Text(
-                        p.lang.toUpperCase(),
-                        style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w900, color: _kGold, letterSpacing: 1),
-                      ),
-                    ),
-                    onTap: () {
-                      final newLang = p.lang == 'pt' ? 'es' : 'pt';
-                      p.setLang(newLang);
-                      // Salva permanentemente nas prefs
-                      SharedPreferences.getInstance().then((prefs) {
-                        prefs.setString('lang', newLang);
-                      });
-                    },
-                  ),
-
-                  Divider(height: 1, color: divider, indent: 16, endIndent: 16),
-
-                  // ── Modo escuro / claro ─────────────────────────────────
-                  _DrawerItem(
-                    icon: dark ? Icons.light_mode_rounded : Icons.dark_mode_rounded,
-                    iconColor: dark ? const Color(0xFFFFCC44) : const Color(0xFF555577),
-                    title: p.lang == 'es' ? 'Apariencia' : 'Aparência',
-                    subtitle: dark
-                        ? (p.lang == 'es' ? 'Cambiar a modo claro' : 'Mudar para modo claro')
-                        : (p.lang == 'es' ? 'Cambiar a modo oscuro' : 'Mudar para modo escuro'),
-                    dark: dark,
-                    textCol: textCol,
-                    subCol: subCol,
-                    trailing: Container(
-                      width: 42, height: 24,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(12),
-                        color: dark ? _kGreen : const Color(0xFFDDDDDD),
-                      ),
-                      child: AnimatedAlign(
-                        duration: const Duration(milliseconds: 200),
-                        alignment: dark ? Alignment.centerRight : Alignment.centerLeft,
-                        child: Container(
-                          width: 20, height: 20,
-                          margin: const EdgeInsets.symmetric(horizontal: 2),
-                          decoration: const BoxDecoration(shape: BoxShape.circle, color: Colors.white),
-                        ),
-                      ),
-                    ),
-                    onTap: () => p.toggleDarkMode(),
-                  ),
-
-                  Divider(height: 1, color: divider, indent: 16, endIndent: 16),
-
-                  // ── Legal ───────────────────────────────────────────────
-                  _DrawerItem(
-                    icon: Icons.article_outlined,
-                    iconColor: const Color(0xFF546E7A),
-                    title: p.lang == 'es' ? 'Términos de Uso' : 'Termos de Uso',
-                    subtitle: p.lang == 'es' ? 'Condiciones del servicio' : 'Condições do serviço',
-                    dark: dark,
-                    textCol: textCol,
-                    subCol: subCol,
-                    onTap: () {
-                      _close(context);
-                      showLegalSheet(context, LegalType.terms, p.lang);
-                    },
-                  ),
-
-                  Divider(height: 1, color: divider, indent: 16, endIndent: 16),
-
-                  _DrawerItem(
-                    icon: Icons.shield_outlined,
-                    iconColor: const Color(0xFF546E7A),
-                    title: p.lang == 'es' ? 'Política de Privacidad' : 'Política de Privacidade',
-                    subtitle: p.lang == 'es' ? 'LGPD · Protección de datos' : 'LGPD · Proteção de dados',
-                    dark: dark,
-                    textCol: textCol,
-                    subCol: subCol,
-                    onTap: () {
-                      _close(context);
-                      showLegalSheet(context, LegalType.privacy, p.lang);
-                    },
-                  ),
-
-                  Divider(height: 1, color: divider, indent: 16, endIndent: 16),
-
-                  _DrawerItem(
-                    icon: Icons.delete_forever_rounded,
-                    iconColor: const Color(0xFFCC3333),
-                    title: p.lang == 'es' ? 'Eliminar Cuenta' : 'Eliminar Conta',
-                    subtitle: p.lang == 'es' ? 'Elimina tus datos permanentemente' : 'Remove seus dados permanentemente',
-                    dark: dark,
-                    textCol: textCol,
-                    subCol: subCol,
-                    onTap: () {
-                      _close(context);
-                      _showDeleteAccountDialog(context, p);
-                    },
-                  ),
-
-                  Divider(height: 1, color: divider, indent: 16, endIndent: 16),
-
-                  // ── Admin (apenas para admins e master) ─────────────────
-                  // Guarda null-safety: p.currentUser pode ser null no primeiro
-                  // frame após login Web (setUser() é agendado via microtask).
-                  if ((p.isAdmin || p.isMaster) && p.currentUser != null) ...[
-                    _DrawerItem(
-                      icon: Icons.admin_panel_settings_rounded,
-                      iconColor: const Color(0xFFFF8C00),
-                      title: p.lang == 'es' ? 'Panel Admin' : 'Painel Admin',
-                      subtitle: p.lang == 'es' ? 'Gestión de usuarios' : 'Gestão de usuários',
+                // ─── Bloco: Legal ────────────────────────────────────────────
+                _DrawerBlock(
+                  dividerColor: divider,
+                  children: [
+                    _DrawerRow(
+                      icon: Icons.article_outlined,
+                      iconColor: const Color(0xFF546E7A),
+                      title: p.lang == 'es' ? 'Términos de Uso' : 'Termos de Uso',
                       dark: dark,
                       textCol: textCol,
                       subCol: subCol,
                       onTap: () {
                         _close(context);
-                        final admin = p.currentUser;
-                        if (admin == null) return; // guarda extra por race condition
-                        Navigator.push(context, MaterialPageRoute(
-                          builder: (_) => AdminScreen(currentAdmin: admin),
-                        ));
+                        showLegalSheet(context, LegalType.terms, p.lang);
                       },
                     ),
-                    Divider(height: 1, color: divider, indent: 16, endIndent: 16),
+                    _DrawerRow(
+                      icon: Icons.shield_outlined,
+                      iconColor: const Color(0xFF546E7A),
+                      title: p.lang == 'es' ? 'Política de Privacidad' : 'Política de Privacidade',
+                      dark: dark,
+                      textCol: textCol,
+                      subCol: subCol,
+                      onTap: () {
+                        _close(context);
+                        showLegalSheet(context, LegalType.privacy, p.lang);
+                      },
+                    ),
                   ],
+                ),
 
-                  const SizedBox(height: 8),
-
-                  // ── Sair ─────────────────────────────────────────────────
-                  _DrawerItem(
-                    icon: Icons.logout_rounded,
-                    iconColor: const Color(0xFFCC3333),
-                    title: p.lang == 'es' ? 'Cerrar sesión' : 'Sair',
-                    subtitle: p.userName.isNotEmpty
-                        ? p.userName.split(' ').first
-                        : (p.lang == 'es' ? 'Cerrar cuenta' : 'Encerrar sessão'),
+                // ─── Bloco: Admin (condicional) ──────────────────────────────
+                if ((p.isAdmin || p.isMaster) && p.currentUser != null) ...[
+                  _DrawerSectionLabel(
+                    label: p.isMaster ? 'MASTER' : 'ADMIN',
                     dark: dark,
-                    textCol: const Color(0xFFCC3333),
-                    subCol: subCol,
-                    onTap: () async {
-                      _close(context);
-                      await AuthService.logout();
-                      if (context.mounted) context.read<AppProvider>().clearUser();
-                    },
+                    color: const Color(0xFFFF8C00),
+                  ),
+                  _DrawerBlock(
+                    children: [
+                      _DrawerRow(
+                        icon: Icons.admin_panel_settings_rounded,
+                        iconColor: const Color(0xFFFF8C00),
+                        title: p.lang == 'es' ? 'Panel Admin' : 'Painel Admin',
+                        dark: dark,
+                        textCol: textCol,
+                        subCol: subCol,
+                        onTap: () {
+                          _close(context);
+                          final admin = p.currentUser;
+                          if (admin == null) return;
+                          Navigator.push(context, MaterialPageRoute(
+                            builder: (_) => AdminScreen(currentAdmin: admin),
+                          ));
+                        },
+                      ),
+                    ],
                   ),
                 ],
-              ),
-            ),
 
-            // ── Rodapé ───────────────────────────────────────────────────────
-            Container(
-              padding: const EdgeInsets.fromLTRB(16, 10, 16, 12),
-              decoration: BoxDecoration(
-                border: Border(top: BorderSide(color: divider, width: 0.5)),
-              ),
+                _DrawerSectionLabel(
+                  label: p.lang == 'es' ? 'CUENTA' : 'CONTA',
+                  dark: dark,
+                  color: const Color(0xFFCC3333),
+                ),
+
+                // ─── Bloco: Zona de perigo ───────────────────────────────────
+                _DrawerBlock(
+                  dividerColor: divider,
+                  children: [
+                    _DrawerRow(
+                      icon: Icons.delete_outline_rounded,
+                      iconColor: const Color(0xFFCC3333),
+                      title: p.lang == 'es' ? 'Eliminar Cuenta' : 'Eliminar Conta',
+                      dark: dark,
+                      textCol: const Color(0xFFCC3333),
+                      subCol: subCol,
+                      onTap: () {
+                        _close(context);
+                        _showDeleteAccountDialog(context, p);
+                      },
+                    ),
+                    _DrawerRow(
+                      icon: Icons.logout_rounded,
+                      iconColor: const Color(0xFFCC3333),
+                      title: p.lang == 'es' ? 'Cerrar sesión' : 'Sair da conta',
+                      dark: dark,
+                      textCol: const Color(0xFFCC3333),
+                      subCol: subCol,
+                      showDivider: false,
+                      onTap: () async {
+                        _close(context);
+                        await AuthService.logout();
+                        if (context.mounted) context.read<AppProvider>().clearUser();
+                      },
+                    ),
+                  ],
+                ),
+
+                const SizedBox(height: 16),
+              ],
+            ),
+          ),
+
+          // ── RODAPÉ ─────────────────────────────────────────────────────────
+          Container(
+            padding: const EdgeInsets.fromLTRB(16, 9, 16, 10),
+            decoration: BoxDecoration(
+              color: dark ? const Color(0xFF070E09) : const Color(0xFFF0EDE8),
+              border: Border(top: BorderSide(color: divider, width: 0.5)),
+            ),
+            child: SafeArea(
+              top: false,
               child: Text(
-                p.lang == 'es'
-                    ? 'MedCases Pro · Solo uso educativo'
-                    : 'MedCases Pro · Uso educacional',
-                style: TextStyle(fontSize: 10, color: subCol, fontWeight: FontWeight.w500),
+                'MedCases Pro · ${p.lang == 'es' ? 'Solo uso educativo' : 'Uso educacional'}',
+                style: TextStyle(fontSize: 9.5, color: subCol, fontWeight: FontWeight.w500, letterSpacing: 0.2),
                 textAlign: TextAlign.center,
               ),
             ),
-          ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ── Cabeçalho do Drawer (card de perfil) ──────────────────────────────────────
+class _DrawerHeader extends StatelessWidget {
+  final AppProvider p;
+  final String initials;
+  final bool dark;
+  final VoidCallback onClose;
+  final VoidCallback onEditProfile;
+
+  const _DrawerHeader({
+    required this.p,
+    required this.initials,
+    required this.dark,
+    required this.onClose,
+    required this.onEditProfile,
+  });
+
+  static const _kGold  = Color(0xFFC5A365);
+  static const _kGoldL = Color(0xFFFFE8A6);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [Color(0xFF091410), Color(0xFF142A1C), Color(0xFF1A5035)],
+          stops: [0.0, 0.45, 1.0],
         ),
+      ),
+      child: SafeArea(
+        bottom: false,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(16, 14, 14, 16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Linha 1: logo + botão fechar
+              Row(children: [
+                const BrandMark(small: true),
+                const Spacer(),
+                GestureDetector(
+                  onTap: onClose,
+                  child: Container(
+                    width: 32, height: 32,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: Colors.white.withValues(alpha: 0.07),
+                      border: Border.all(color: Colors.white.withValues(alpha: 0.10), width: 0.8),
+                    ),
+                    child: Icon(Icons.close_rounded, size: 15, color: Colors.white.withValues(alpha: 0.55)),
+                  ),
+                ),
+              ]),
+
+              const SizedBox(height: 14),
+
+              // Linha 2: Avatar + info + botão editar
+              Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
+                // Avatar
+                Container(
+                  width: 46, height: 46,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    gradient: const LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [Color(0xFF1F4030), Color(0xFF101E16)],
+                    ),
+                    border: Border.all(color: _kGold.withValues(alpha: 0.55), width: 1.8),
+                    boxShadow: [
+                      BoxShadow(
+                        color: _kGold.withValues(alpha: 0.20),
+                        blurRadius: 12,
+                        offset: const Offset(0, 3),
+                      ),
+                    ],
+                  ),
+                  child: Center(
+                    child: Text(
+                      initials,
+                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w900, color: _kGoldL),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 12),
+
+                // Nome + profissão
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        p.userName.isNotEmpty ? p.userName : 'MedCases Pro',
+                        style: const TextStyle(
+                          fontSize: 14.5, fontWeight: FontWeight.w900,
+                          color: Colors.white, letterSpacing: -0.3, height: 1.15,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                      ),
+                      if ((p.currentUser?.profession?.isNotEmpty ?? false) ||
+                          (p.currentUser?.institution?.isNotEmpty ?? false)) ...[
+                        const SizedBox(height: 3),
+                        Text(
+                          [
+                            if (p.currentUser?.profession?.isNotEmpty ?? false)
+                              p.currentUser!.profession!,
+                            if (p.currentUser?.institution?.isNotEmpty ?? false)
+                              p.currentUser!.institution!,
+                          ].join(' · '),
+                          style: TextStyle(
+                            fontSize: 10.5,
+                            color: Colors.white.withValues(alpha: 0.45),
+                            fontWeight: FontWeight.w500,
+                            height: 1.3,
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 2,
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
+
+                const SizedBox(width: 8),
+
+                // Botão editar perfil
+                GestureDetector(
+                  onTap: onEditProfile,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: _kGold.withValues(alpha: 0.14),
+                      border: Border.all(color: _kGold.withValues(alpha: 0.40), width: 0.9),
+                    ),
+                    child: Row(mainAxisSize: MainAxisSize.min, children: [
+                      const Icon(Icons.edit_rounded, size: 13, color: _kGoldL),
+                      const SizedBox(width: 5),
+                      Text(
+                        p.lang == 'es' ? 'Editar' : 'Editar',
+                        style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: _kGoldL),
+                      ),
+                    ]),
+                  ),
+                ),
+              ]),
+
+              // Badge admin/master (inline, compacto)
+              if (p.isAdmin || p.isMaster) ...[
+                const SizedBox(height: 10),
+                Row(children: [
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20),
+                      color: _kGold.withValues(alpha: 0.14),
+                      border: Border.all(color: _kGold.withValues(alpha: 0.40)),
+                    ),
+                    child: Row(mainAxisSize: MainAxisSize.min, children: [
+                      const Icon(Icons.verified_rounded, size: 10, color: _kGoldL),
+                      const SizedBox(width: 4),
+                      Text(
+                        p.isMaster ? 'MASTER' : 'ADMIN',
+                        style: const TextStyle(fontSize: 9, fontWeight: FontWeight.w900, color: _kGoldL, letterSpacing: 0.8),
+                      ),
+                    ]),
+                  ),
+                ]),
+              ],
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// ── Rótulo de seção do Drawer ─────────────────────────────────────────────────
+class _DrawerSectionLabel extends StatelessWidget {
+  final String label;
+  final bool dark;
+  final Color? color;
+
+  const _DrawerSectionLabel({
+    required this.label,
+    required this.dark,
+    this.color,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final col = color ??
+        (dark ? Colors.white.withValues(alpha: 0.28) : const Color(0xFFAAB0B8));
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(18, 16, 18, 5),
+      child: Text(
+        label,
+        style: TextStyle(
+          fontSize: 9.5,
+          fontWeight: FontWeight.w800,
+          color: col,
+          letterSpacing: 1.2,
+        ),
+      ),
+    );
+  }
+}
+
+// ── Bloco agrupado do Drawer (card com bordas arredondadas) ───────────────────
+class _DrawerBlock extends StatelessWidget {
+  final List<Widget> children;
+  final Color? dividerColor;
+
+  const _DrawerBlock({
+    required this.children,
+    this.dividerColor,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final dark = Theme.of(context).brightness == Brightness.dark;
+    final cardBg = dark ? const Color(0xFF0F1A14) : Colors.white;
+    final borderCol = dark ? const Color(0xFF1A2E22) : const Color(0xFFECE9E4);
+    final divCol = dividerColor ?? (dark ? const Color(0xFF1A2E22) : const Color(0xFFECE9E4));
+
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 2),
+      decoration: BoxDecoration(
+        color: cardBg,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: borderCol, width: 0.8),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: dark ? 0.18 : 0.04),
+            blurRadius: 6,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          for (int i = 0; i < children.length; i++) ...[
+            children[i],
+            if (i < children.length - 1)
+              Divider(height: 1, thickness: 0.5, color: divCol, indent: 50, endIndent: 0),
+          ],
+        ],
       ),
     );
   }
@@ -1888,43 +1997,38 @@ class _DrawerItemPremium extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        margin: const EdgeInsets.fromLTRB(12, 8, 12, 4),
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 13),
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(14),
           gradient: const LinearGradient(
             begin: Alignment.topLeft, end: Alignment.bottomRight,
             colors: [Color(0xFF1A3020), Color(0xFF0F1C14)],
           ),
-          border: Border.all(color: const Color(0xFFC5A365).withValues(alpha: 0.45), width: 1.2),
-          boxShadow: [
-            BoxShadow(color: const Color(0xFFC5A365).withValues(alpha: 0.12), blurRadius: 12, offset: const Offset(0, 3)),
-          ],
         ),
         child: Row(children: [
           Container(
-            width: 38, height: 38,
+            width: 36, height: 36,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),
-              color: const Color(0xFFC5A365).withValues(alpha: 0.15),
-              border: Border.all(color: const Color(0xFFC5A365).withValues(alpha: 0.4)),
+              color: const Color(0xFFC5A365).withValues(alpha: 0.18),
             ),
             child: const Icon(Icons.workspace_premium_rounded, size: 18, color: Color(0xFFFFE8A6)),
           ),
           const SizedBox(width: 12),
           Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             const Text('Upgrade Premium', style: TextStyle(
-              fontSize: 13.5, fontWeight: FontWeight.w800,
+              fontSize: 13, fontWeight: FontWeight.w800,
               color: Color(0xFFFFE8A6), letterSpacing: -0.1)),
+            const SizedBox(height: 1),
             Text('Acesso completo · 500+ casos clínicos',
-              style: TextStyle(fontSize: 10.5, color: Colors.white.withValues(alpha: 0.45))),
+              style: TextStyle(fontSize: 10, color: Colors.white.withValues(alpha: 0.40))),
           ])),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(8),
-              color: const Color(0xFFC5A365).withValues(alpha: 0.18),
-              border: Border.all(color: const Color(0xFFC5A365).withValues(alpha: 0.5)),
+              borderRadius: BorderRadius.circular(7),
+              color: const Color(0xFFC5A365).withValues(alpha: 0.22),
+              border: Border.all(color: const Color(0xFFC5A365).withValues(alpha: 0.50)),
             ),
             child: const Text('VER', style: TextStyle(
               fontSize: 9, fontWeight: FontWeight.w900,
@@ -1936,89 +2040,117 @@ class _DrawerItemPremium extends StatelessWidget {
   }
 }
 
-// ── Item de linha do Drawer ────────────────────────────────────────────────────
-class _DrawerItem extends StatelessWidget {
+// ── Linha de item padrão do Drawer ────────────────────────────────────────────
+class _DrawerRow extends StatelessWidget {
   final IconData icon;
   final Color iconColor;
   final String title;
-  final String subtitle;
   final bool dark;
   final Color textCol;
   final Color subCol;
   final Widget? trailing;
   final VoidCallback onTap;
+  final bool showDivider;
 
-  const _DrawerItem({
+  const _DrawerRow({
     required this.icon,
     required this.iconColor,
     required this.title,
-    required this.subtitle,
     required this.dark,
     required this.textCol,
     required this.subCol,
     required this.onTap,
     this.trailing,
+    this.showDivider = true,
   });
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(8),
-      splashColor: iconColor.withValues(alpha: 0.06),
+      borderRadius: BorderRadius.circular(14),
+      splashColor: iconColor.withValues(alpha: 0.07),
       highlightColor: iconColor.withValues(alpha: 0.04),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 13),
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 11),
         child: Row(children: [
-          Container(
+          // Ícone simples (sem container/borda ao redor)
+          SizedBox(
             width: 36,
-            height: 36,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-              color: iconColor.withValues(alpha: 0.10),
-              border: Border.all(
-                color: iconColor.withValues(alpha: 0.22),
-                width: 0.8,
-              ),
-            ),
-            child: Icon(icon, size: 17, color: iconColor),
+            child: Icon(icon, size: 20, color: iconColor),
           ),
-          const SizedBox(width: 14),
-          Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text(
+          const SizedBox(width: 4),
+          // Título
+          Expanded(
+            child: Text(
               title,
               style: TextStyle(
                 fontSize: 13.5,
-                fontWeight: FontWeight.w700,
+                fontWeight: FontWeight.w600,
                 color: textCol,
                 letterSpacing: -0.1,
               ),
             ),
-            const SizedBox(height: 1),
-            Text(
-              subtitle,
-              style: TextStyle(
-                fontSize: 11,
-                color: subCol,
-                fontWeight: FontWeight.w400,
-              ),
-            ),
-          ])),
-          if (trailing != null) ...[
-            const SizedBox(width: 8),
-            trailing!,
-          ] else ...[
-            Icon(
-              Icons.chevron_right_rounded,
-              size: 16,
-              color: subCol.withValues(alpha: 0.5),
-            ),
-          ],
+          ),
+          // Trailing ou chevron
+          if (trailing != null) trailing!
+          else Icon(Icons.chevron_right_rounded, size: 16, color: subCol.withValues(alpha: 0.45)),
         ]),
       ),
     );
   }
 }
+
+// ── Badge de idioma ───────────────────────────────────────────────────────────
+class _LangBadge extends StatelessWidget {
+  final String lang;
+  const _LangBadge({required this.lang});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 4),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(7),
+        color: const Color(0xFFC5A365).withValues(alpha: 0.12),
+        border: Border.all(color: const Color(0xFFC5A365).withValues(alpha: 0.38)),
+      ),
+      child: Text(
+        lang.toUpperCase(),
+        style: const TextStyle(fontSize: 10.5, fontWeight: FontWeight.w900, color: Color(0xFFC5A365), letterSpacing: 1),
+      ),
+    );
+  }
+}
+
+// ── Toggle de tema ────────────────────────────────────────────────────────────
+class _ThemeToggle extends StatelessWidget {
+  final bool dark;
+  const _ThemeToggle({required this.dark});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 40, height: 22,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(11),
+        color: dark ? const Color(0xFF1F6B48) : const Color(0xFFDDDDDD),
+      ),
+      child: AnimatedAlign(
+        duration: const Duration(milliseconds: 200),
+        curve: Curves.easeOutCubic,
+        alignment: dark ? Alignment.centerRight : Alignment.centerLeft,
+        child: Container(
+          width: 18, height: 18,
+          margin: const EdgeInsets.symmetric(horizontal: 2),
+          decoration: const BoxDecoration(shape: BoxShape.circle, color: Colors.white),
+        ),
+      ),
+    );
+  }
+}
+
+
 
 // ── Header do app ─────────────────────────────────────────────────────────────
 class _AppHeader extends StatelessWidget {
