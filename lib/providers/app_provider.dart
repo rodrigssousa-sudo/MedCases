@@ -149,20 +149,19 @@ class AppProvider extends ChangeNotifier {
     // 1️⃣ Carrega cache local IMEDIATAMENTE — app responde sem esperar rede
     await _loadFromLocal(uid: user.uid);
 
-    // 2️⃣ Sincroniza Firestore em background — não bloqueia a UI
+    // 2️⃣ Carrega chave OpenAI com AWAIT — garante hasAiKey=true antes da UI montar.
+    //    Timeout 5s para não travar login em redes lentas; falha silenciosa = modo local.
+    if (_openAiKey.isEmpty) {
+      await _loadAiKeyFromFirestore(user.uid).timeout(
+        const Duration(seconds: 5),
+        onTimeout: () { _aiKeyLoading = false; },
+      );
+    }
+
+    // 3️⃣ Sincroniza Firestore em background — não bloqueia a UI
     _syncFromFirestore(user.uid);
 
-    // 3️⃣ Carrega chave OpenAI do Firestore em background (per-user)
-    // Se não há chave em cache local, marca loading para o header mostrar indicador
-    if (_openAiKey.isEmpty) {
-      _aiKeyLoading = true;
-      notifyListeners();
-    }
-    _loadAiKeyFromFirestore(user.uid);
-
     // 4️⃣ Carrega histórias públicas AQUI — token já está cacheado neste ponto.
-    // No web, o initState da HistoryScreen rodava ANTES do token existir,
-    // causando retorno silencioso de [] sem nem chegar na chamada REST.
     loadPublicHistories();
   }
 
