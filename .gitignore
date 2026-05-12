@@ -80,3 +80,4 @@ android/release-key.jks
 # Firebase Admin SDK — NUNCA commitar
 firebase-adminsdk.json
 *adminsdk*.json
+lib/data/drugs_database.dart.bak2
