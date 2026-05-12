@@ -182,19 +182,35 @@ class AppProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  // ── Chave OpenAI — carregada do Firestore por UID ──────────────────────────
+  // ── Chave OpenAI — prioridade: app global → usuário individual → cache local
+  //
+  // Hierarquia:
+  //  1. config/app_settings.openAiKey  → chave do app (admin configura, todos usam)
+  //  2. users/{uid}/prefs/settings.openAiKey → chave individual (legado / admin)
+  //  3. SharedPreferences local → fallback offline
   Future<void> _loadAiKeyFromFirestore(String uid) async {
     try {
-      final key = await FirestoreService.loadAiKey(uid);
-      if (key.isNotEmpty) {
-        _openAiKey = key;
+      // 1️⃣ Tenta chave global do app primeiro
+      final appKey = await FirestoreService.loadAppAiKey();
+      if (appKey.isNotEmpty) {
+        _openAiKey = appKey;
         notifyListeners();
-        // Também persiste no cache local como fallback offline
+        // Cache local para funcionar offline
         final p = await SharedPreferences.getInstance();
-        await p.setString(_k('openAiKey', uid), key);
+        await p.setString(_k('openAiKey', uid), appKey);
+        return; // chave do app encontrada — não precisa verificar por usuário
+      }
+
+      // 2️⃣ Fallback: chave individual do usuário (legado)
+      final userKey = await FirestoreService.loadAiKey(uid);
+      if (userKey.isNotEmpty) {
+        _openAiKey = userKey;
+        notifyListeners();
+        final p = await SharedPreferences.getInstance();
+        await p.setString(_k('openAiKey', uid), userKey);
       }
     } catch (_) {
-      // Sem rede: tenta cache local com prefixo do usuário
+      // 3️⃣ Sem rede: tenta cache local
       try {
         final p = await SharedPreferences.getInstance();
         _openAiKey = p.getString(_k('openAiKey', uid)) ?? '';

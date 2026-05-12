@@ -65,8 +65,22 @@ class FirestoreService {
     } catch (_) {}
   }
 
+  // ── Chave OpenAI do APP (compartilhada) ──────────────────────────────────
+  /// Carrega a chave OpenAI global do app, salva pelo administrador.
+  /// Armazenada em config/app_settings campo 'openAiKey'.
+  /// Todos os usuários aprovados usam essa chave — nenhuma configuração manual.
+  static Future<String> loadAppAiKey() async {
+    try {
+      final doc = await _db.collection('config').doc('app_settings').get();
+      if (!doc.exists) return '';
+      return (doc.data()?['openAiKey'] as String?) ?? '';
+    } catch (_) {
+      return '';
+    }
+  }
+
   // ── Chave OpenAI — vinculada ao perfil do usuário no Firestore ────────────
-  /// Carrega a chave OpenAI do perfil do usuário.
+  /// Carrega a chave OpenAI do perfil do usuário (fallback individual).
   /// Armazenada em users/{uid}/prefs/settings campo 'openAiKey'.
   static Future<String> loadAiKey(String uid) async {
     try {
