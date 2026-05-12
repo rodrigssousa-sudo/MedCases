@@ -200,6 +200,7 @@ class _AiScreenState extends State<AiScreen> {
         lang:      p.lang,
         dark:      p.darkMode,
         hasAi:     p.hasAiKey,
+        keyLoading: p.aiKeyLoading,
       ),
     );
   }
@@ -229,6 +230,7 @@ class _AiScreenState extends State<AiScreen> {
         onSettings: _openAiSettings,
         lang: p.lang,
         hasRealAi: p.hasAiKey,
+        keyLoading: p.aiKeyLoading,
       ),
 
       // ── Banner de erro de chave ───────────────────────────────────────────
@@ -302,6 +304,7 @@ class _WaHeader extends StatelessWidget {
   final VoidCallback onSettings;
   final String lang;
   final bool hasRealAi;
+  final bool keyLoading;
   const _WaHeader({
     required this.dark,
     required this.hasMessages,
@@ -309,6 +312,7 @@ class _WaHeader extends StatelessWidget {
     required this.onSettings,
     required this.lang,
     required this.hasRealAi,
+    this.keyLoading = false,
   });
 
   @override
@@ -347,24 +351,40 @@ class _WaHeader extends StatelessWidget {
                     fontSize: 15, fontWeight: FontWeight.w800,
                     color: Colors.white, letterSpacing: -0.2)),
                 Row(mainAxisSize: MainAxisSize.min, children: [
-                  Container(
-                    width: 6, height: 6,
-                    margin: const EdgeInsets.only(right: 5),
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: hasRealAi
-                          ? const Color(0xFF4ADE80)   // verde = IA real ativa
-                          : Colors.white.withValues(alpha: 0.35), // cinza = modo local
+                  if (keyLoading)
+                    // Indicador pulsante enquanto chave carrega do Firestore
+                    SizedBox(
+                      width: 8, height: 8,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 1.2,
+                        color: Colors.white.withValues(alpha: 0.5),
+                      ),
+                    )
+                  else
+                    Container(
+                      width: 6, height: 6,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: hasRealAi
+                            ? const Color(0xFF4ADE80)   // verde = GPT ativo
+                            : Colors.white.withValues(alpha: 0.35), // cinza = local
+                      ),
                     ),
-                  ),
+                  const SizedBox(width: 5),
                   Text(
-                    hasRealAi
-                        ? (lang == 'es' ? 'Híbrido: base local + GPT-4o mini' : 'Híbrido: base local + GPT-4o mini')
-                        : (lang == 'es' ? 'Base clínica local • activo siempre' : 'Base clínica local • sempre ativa'),
+                    keyLoading
+                        ? (lang == 'es' ? 'Conectando...' : 'Conectando...')
+                        : (hasRealAi
+                            ? 'GPT-4o mini • online'
+                            : (lang == 'es' ? 'Base clínica local • activo siempre' : 'Base clínica local • sempre ativa')),
                     style: TextStyle(
                       fontSize: 10,
-                      color: Colors.white.withValues(alpha: 0.55),
-                      fontWeight: FontWeight.w500,
+                      color: keyLoading
+                          ? Colors.white.withValues(alpha: 0.40)
+                          : (hasRealAi
+                              ? const Color(0xFF4ADE80)
+                              : Colors.white.withValues(alpha: 0.55)),
+                      fontWeight: FontWeight.w600,
                     )),
                 ]),
               ],
@@ -893,6 +913,7 @@ class _AiStatusSheet extends StatelessWidget {
   final String lang;
   final bool dark;
   final bool hasAi;
+  final bool keyLoading;
 
   const _AiStatusSheet({
     required this.userEmail,
@@ -900,6 +921,7 @@ class _AiStatusSheet extends StatelessWidget {
     required this.lang,
     required this.dark,
     required this.hasAi,
+    this.keyLoading = false,
   });
 
   bool get _isEs => lang == 'es';
@@ -994,31 +1016,49 @@ class _AiStatusSheet extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20),
-                  color: hasAi
-                      ? Colors.white.withValues(alpha: 0.15)
-                      : green.withValues(alpha: 0.1),
+                  color: keyLoading
+                      ? Colors.white.withValues(alpha: 0.08)
+                      : (hasAi
+                          ? Colors.white.withValues(alpha: 0.15)
+                          : green.withValues(alpha: 0.1)),
                   border: Border.all(
-                    color: hasAi
-                        ? Colors.white.withValues(alpha: 0.3)
-                        : green.withValues(alpha: 0.25)),
+                    color: keyLoading
+                        ? Colors.white.withValues(alpha: 0.15)
+                        : (hasAi
+                            ? Colors.white.withValues(alpha: 0.3)
+                            : green.withValues(alpha: 0.25))),
                 ),
                 child: Row(mainAxisSize: MainAxisSize.min, children: [
-                  Container(
-                    width: 6, height: 6,
-                    margin: const EdgeInsets.only(right: 5),
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: hasAi
-                          ? const Color(0xFF4ADE80)
-                          : (dark ? Colors.white38 : Colors.black26)),
-                  ),
+                  if (keyLoading)
+                    SizedBox(
+                      width: 8, height: 8,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 1.2,
+                        color: Colors.white.withValues(alpha: 0.5),
+                      ),
+                    )
+                  else
+                    Container(
+                      width: 6, height: 6,
+                      margin: const EdgeInsets.only(right: 5),
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: hasAi
+                            ? const Color(0xFF4ADE80)
+                            : (dark ? Colors.white38 : Colors.black26)),
+                    ),
+                  const SizedBox(width: 5),
                   Text(
-                    hasAi
-                        ? (_isEs ? 'IA activa' : 'IA ativa')
-                        : (_isEs ? 'Base local' : 'Base local'),
+                    keyLoading
+                        ? (_isEs ? 'Conectando...' : 'Conectando...')
+                        : (hasAi
+                            ? (_isEs ? 'GPT online' : 'GPT online')
+                            : (_isEs ? 'Base local' : 'Base local')),
                     style: TextStyle(
                       fontSize: 10, fontWeight: FontWeight.w700,
-                      color: hasAi ? Colors.white : sub)),
+                      color: keyLoading
+                          ? Colors.white.withValues(alpha: 0.5)
+                          : (hasAi ? Colors.white : sub))),
                 ]),
               ),
             ]),

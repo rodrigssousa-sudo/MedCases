@@ -78,6 +78,7 @@ class AppProvider extends ChangeNotifier {
 
   // ── Estado — IA Clínica ──────────────────────────────────────────────────
   String _openAiKey = '';
+  bool _aiKeyLoading = false; // true enquanto busca chave no Firestore
   // Histórico de conversa para contexto multi-turn (máx 10 pares)
   final List<Map<String, String>> _aiHistory = [];
 
@@ -110,6 +111,7 @@ class AppProvider extends ChangeNotifier {
   // ── Getters — IA ─────────────────────────────────────────────────────────
   String get openAiKey => _openAiKey;
   bool get hasAiKey => _openAiKey.isNotEmpty;
+  bool get aiKeyLoading => _aiKeyLoading;
 
   List<DrugModel> get drugsDB => drugsDatabase;
   List<ProtocolModel> get protocolsDB => protocolsDatabase;
@@ -151,6 +153,11 @@ class AppProvider extends ChangeNotifier {
     _syncFromFirestore(user.uid);
 
     // 3️⃣ Carrega chave OpenAI do Firestore em background (per-user)
+    // Se não há chave em cache local, marca loading para o header mostrar indicador
+    if (_openAiKey.isEmpty) {
+      _aiKeyLoading = true;
+      notifyListeners();
+    }
     _loadAiKeyFromFirestore(user.uid);
 
     // 4️⃣ Carrega histórias públicas AQUI — token já está cacheado neste ponto.
@@ -194,28 +201,36 @@ class AppProvider extends ChangeNotifier {
       final appKey = await FirestoreService.loadAppAiKey();
       if (appKey.isNotEmpty) {
         _openAiKey = appKey;
+        _aiKeyLoading = false;
         notifyListeners();
         // Cache local para funcionar offline
         final p = await SharedPreferences.getInstance();
         await p.setString(_k('openAiKey', uid), appKey);
-        return; // chave do app encontrada — não precisa verificar por usuário
+        return;
       }
 
       // 2️⃣ Fallback: chave individual do usuário (legado)
       final userKey = await FirestoreService.loadAiKey(uid);
       if (userKey.isNotEmpty) {
         _openAiKey = userKey;
+        _aiKeyLoading = false;
         notifyListeners();
         final p = await SharedPreferences.getInstance();
         await p.setString(_k('openAiKey', uid), userKey);
+        return;
       }
+
+      // Sem chave em nenhuma fonte
+      _aiKeyLoading = false;
+      notifyListeners();
     } catch (_) {
       // 3️⃣ Sem rede: tenta cache local
       try {
         final p = await SharedPreferences.getInstance();
         _openAiKey = p.getString(_k('openAiKey', uid)) ?? '';
-        if (_openAiKey.isNotEmpty) notifyListeners();
       } catch (_) {}
+      _aiKeyLoading = false;
+      notifyListeners();
     }
   }
 
