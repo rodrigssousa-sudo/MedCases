@@ -315,6 +315,17 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.cardiovascular, RiskType.hyperkalemia, RiskType.nephrotoxicity},
     [_kRefGG, _kRefFDA]),
+
+  // ── IECA + ARA-II (bloqueio duplo do SRAA) ───────────────────────────────
+  ('enalapril', 'losartana', InteractionSeverity.contraindicated,
+    'Bloqueio duplo do SRAA: inibição simultânea da ECA e do receptor AT1 da angiotensina II — sem benefício adicional, com risco multiplicado',
+    'Hipotensão sintomática grave, hipercalemia potencialmente fatal, insuficiência renal aguda (estudo ONTARGET)',
+    'CONTRAINDICADO — Não combinar IECA + ARA-II. Escolher um dos dois. Exceção restrita: cardiologista experiente em IC refratária com monitorização intensiva',
+    'BLOQUEIO DUPLO DO SRAA — Contraindicado por ESC/AHA. Estudo ONTARGET demonstrou malefício sem benefício',
+    EvidenceLevel.established,
+    {RiskType.cardiovascular, RiskType.hyperkalemia, RiskType.nephrotoxicity},
+    [_kRefGG, _kRefUT, _kRefFDA]),
+
   ('enalapril', 'aine', InteractionSeverity.moderate,
     'AINEs reduzem síntese de prostaglandinas vasodilatadoras renais',
     'Redução do efeito anti-hipertensivo do IECA; risco de IRA',
@@ -1916,6 +1927,11 @@ const _termMap = <String, String>{
   'ieca': 'enalapril', 'perindopril': 'enalapril',
   'losartana': 'losartana', 'cozaar': 'losartana', 'valsartana': 'losartana',
   'olmesartana': 'losartana', 'ara-ii': 'losartana', 'irbesartana': 'losartana',
+  'telmisartana': 'losartana', 'micardis': 'losartana', 'candesartana': 'losartana',
+  'atacand': 'losartana', 'azilsartana': 'losartana', 'eprosartana': 'losartana',
+  'losartan': 'losartana', 'valsartan': 'losartana', 'olmesartan': 'losartana',
+  'irbesartan': 'losartana', 'telmisartan': 'losartana', 'candesartan': 'losartana',
+  'ara2': 'losartana', 'sartana': 'losartana', 'sartan': 'losartana',
   'espironolactona': 'espironolactona', 'aldactone': 'espironolactona',
   'furosemida': 'furosemida', 'lasix': 'furosemida',
   'clonidina': 'clonidina', 'atensina': 'clonidina',
@@ -2044,7 +2060,7 @@ const _termMap = <String, String>{
 
   // Anti-hipertensivos novos
   'eplerenona': 'eplerenona', 'inspra': 'eplerenona',
-  'candesartana': 'candesartana', 'atacand': 'candesartana', 'candesartán': 'candesartana',
+  'candesartán': 'losartana',
   'riociguate': 'riociguate', 'adempas': 'riociguate',
 
   // Anticoagulantes / antídotos
