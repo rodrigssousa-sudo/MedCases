@@ -148,8 +148,8 @@ class DrugInteraction {
 // Cada entrada: (id1, id2, severity, mechanism, effect, management,
 //                clinicalAlert, evidenceLevel, {riskTypes}, [references])
 // ─────────────────────────────────────────────────────────────────────────────
-const _kRefGG   = 'Goodman & Gilman 14ª ed.';
-const _kRefKatz = 'Katzung 15ª ed.';
+const _kRefGG   = 'Goodman & Gilman 13ª ed.';
+const _kRefKatz = 'Katzung 13ª ed.';
 const _kRefMdx  = 'Micromedex 2024';
 const _kRefUT   = 'UpToDate 2024';
 const _kRefLex  = 'Lexicomp 2024';
@@ -167,6 +167,7 @@ typedef _IxEntry = (
 const _interactionDB = <_IxEntry>[
 
   // ── AINES / Anticoagulantes ───────────────────────────────────────────────
+
   ('warfarina', 'aspirina', InteractionSeverity.major,
     'Inibição plaquetária aditiva + deslocamento proteico aumentando INR',
     'Risco aumentado de sangramento grave (GI, intracraniano)',
@@ -175,14 +176,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.hemorrhagic, RiskType.plasmaLevel},
     [_kRefGG, _kRefMdx, _kRefUT]),
-  ('warfarina', 'aas', InteractionSeverity.major,
-    'Inibição plaquetária aditiva + deslocamento proteico aumentando INR',
-    'Risco aumentado de sangramento grave (GI, intracraniano)',
-    'Evitar combinação. Se necessário, usar dose mínima de AAS (≤100 mg/dia) com INR ≤2,5 e monitoramento frequente',
-    'ALTO RISCO DE SANGRAMENTO — Evitar combinação',
-    EvidenceLevel.established,
-    {RiskType.hemorrhagic, RiskType.plasmaLevel},
-    [_kRefGG, _kRefMdx]),
+
   ('warfarina', 'ibuprofeno', InteractionSeverity.major,
     'Deslocamento da ligação proteica e inibição plaquetária',
     'Elevação do INR e risco de sangramento',
@@ -191,6 +185,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.hemorrhagic, RiskType.plasmaLevel},
     [_kRefGG, _kRefMdx, _kRefUT]),
+
   ('warfarina', 'naproxeno', InteractionSeverity.major,
     'Deslocamento da ligação proteica e inibição plaquetária',
     'Elevação do INR e risco de sangramento',
@@ -199,6 +194,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.hemorrhagic, RiskType.plasmaLevel},
     [_kRefGG, _kRefMdx]),
+
   ('warfarina', 'cetorolaco', InteractionSeverity.major,
     'AINE potente com efeito anticoagulante aditivo',
     'Risco hemorrágico grave — combinação perigosa',
@@ -207,6 +203,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.hemorrhagic},
     [_kRefMdx, _kRefFDA]),
+
   ('warfarina', 'metronidazol', InteractionSeverity.major,
     'Inibição do CYP2C9 reduz metabolismo da warfarina',
     'Aumento significativo do INR → risco de hemorragia',
@@ -215,6 +212,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.hemorrhagic, RiskType.plasmaLevel},
     [_kRefGG, _kRefMdx, _kRefUT]),
+
   ('warfarina', 'fluconazol', InteractionSeverity.major,
     'Inibição potente do CYP2C9 e CYP3A4',
     'Elevação marcada do INR com risco hemorrágico grave',
@@ -223,6 +221,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.hemorrhagic, RiskType.plasmaLevel},
     [_kRefGG, _kRefMdx, _kRefLex]),
+
   ('warfarina', 'amiodarona', InteractionSeverity.major,
     'Inibição do CYP2C9 (metabolizador da varfarina S) pela amiodarona e seus metabólitos',
     'Elevação progressiva do INR — efeito pode durar semanas após suspender amiodarona',
@@ -231,6 +230,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.hemorrhagic, RiskType.plasmaLevel},
     [_kRefGG, _kRefMdx, _kRefUT]),
+
   ('warfarina', 'ciprofloxacino', InteractionSeverity.moderate,
     'Inibição do CYP1A2 e possível redução da flora intestinal produtora de vitamina K',
     'Elevação do INR',
@@ -240,7 +240,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.hemorrhagic, RiskType.plasmaLevel},
     [_kRefMdx, _kRefUT]),
 
-  // ── Estatinas ─────────────────────────────────────────────────────────────
+    // ── Estatinas ─────────────────────────────────────────────────────────────
+
   ('sinvastatina', 'amiodarona', InteractionSeverity.major,
     'Inibição do CYP3A4 aumenta concentração de sinvastatina',
     'Risco de miopatia / rabdomiólise',
@@ -249,6 +250,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.myopathy, RiskType.plasmaLevel},
     [_kRefGG, _kRefMdx, _kRefFDA]),
+
   ('sinvastatina', 'claritromicina', InteractionSeverity.major,
     'Inibição potente do CYP3A4',
     'Risco de rabdomiólise',
@@ -257,6 +259,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.myopathy, RiskType.plasmaLevel},
     [_kRefGG, _kRefMdx, _kRefFDA]),
+
   ('sinvastatina', 'eritromicina', InteractionSeverity.major,
     'Inibição do CYP3A4',
     'Risco de miopatia/rabdomiólise',
@@ -265,7 +268,8 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.myopathy, RiskType.plasmaLevel},
     [_kRefMdx, _kRefFDA]),
-  // DUPLICATA REMOVIDA: sinvastatina+fluconazol — par detalhado mantido como fluconazol+sinvastatina (linha ~1654)
+    // DUPLICATA REMOVIDA: sinvastatina+fluconazol — par detalhado mantido como fluconazol+sinvastatina (linha ~1654)
+
   ('atorvastatina', 'claritromicina', InteractionSeverity.moderate,
     'Inibição do CYP3A4 aumenta nível de atorvastatina',
     'Risco aumentado de miopatia',
@@ -274,6 +278,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.myopathy, RiskType.plasmaLevel},
     [_kRefMdx, _kRefUT]),
+
   ('atorvastatina', 'amiodarona', InteractionSeverity.moderate,
     'Inibição do CYP3A4',
     'Risco de miopatia',
@@ -283,7 +288,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.myopathy, RiskType.plasmaLevel},
     [_kRefMdx, _kRefLex]),
 
-  // ── IECA / ARA-II / Diuréticos ────────────────────────────────────────────
+    // ── IECA / ARA-II / Diuréticos ────────────────────────────────────────────
+
   ('enalapril', 'espironolactona', InteractionSeverity.moderate,
     'Ambos elevam potássio sérico por mecanismos distintos',
     'Hipercalemia, especialmente em DRC ou insuficiência cardíaca',
@@ -292,6 +298,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.hyperkalemia},
     [_kRefGG, _kRefUT]),
+
   ('losartana', 'espironolactona', InteractionSeverity.moderate,
     'Ambos elevam potássio sérico',
     'Hipercalemia — mais frequente em IRC/ICF',
@@ -300,6 +307,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.hyperkalemia},
     [_kRefGG, _kRefUT]),
+
   ('enalapril', 'alisquireno', InteractionSeverity.contraindicated,
     'Bloqueio duplo do SRAA',
     'Hipotensão grave, hipercalemia e insuficiência renal aguda',
@@ -308,6 +316,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.cardiovascular, RiskType.hyperkalemia, RiskType.nephrotoxicity},
     [_kRefGG, _kRefFDA, _kRefUT]),
+
   ('losartana', 'alisquireno', InteractionSeverity.contraindicated,
     'Bloqueio duplo do SRAA',
     'Hipotensão grave, hipercalemia e insuficiência renal aguda',
@@ -317,7 +326,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.cardiovascular, RiskType.hyperkalemia, RiskType.nephrotoxicity},
     [_kRefGG, _kRefFDA]),
 
-  // ── IECA + ARA-II (bloqueio duplo do SRAA) ───────────────────────────────
+    // ── IECA + ARA-II (bloqueio duplo do SRAA) ───────────────────────────────
+
   ('enalapril', 'losartana', InteractionSeverity.contraindicated,
     'Bloqueio duplo do SRAA: inibição simultânea da ECA e do receptor AT1 da angiotensina II — sem benefício adicional, com risco multiplicado',
     'Hipotensão sintomática grave, hipercalemia potencialmente fatal, insuficiência renal aguda (estudo ONTARGET)',
@@ -326,6 +336,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.cardiovascular, RiskType.hyperkalemia, RiskType.nephrotoxicity},
     [_kRefGG, _kRefUT, _kRefFDA]),
+
 
   ('enalapril', 'aine', InteractionSeverity.moderate,
     'AINEs reduzem síntese de prostaglandinas vasodilatadoras renais',
@@ -336,7 +347,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.nephrotoxicity, RiskType.cardiovascular},
     [_kRefGG, _kRefUT]),
 
-  // ── Betabloqueadores ──────────────────────────────────────────────────────
+    // ── Betabloqueadores ──────────────────────────────────────────────────────
+
   ('metoprolol', 'verapamil', InteractionSeverity.major,
     'Efeito aditivo de ambos no nó AV (cronotropismo e dromotropismo negativos)',
     'Bradicardia grave, bloqueio AV completo, hipotensão, ICC',
@@ -345,6 +357,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.cardiovascular, RiskType.arrhythmia},
     [_kRefGG, _kRefMdx, _kRefUT]),
+
   ('metoprolol', 'diltiazem', InteractionSeverity.major,
     'Efeito aditivo no nó sinusal e AV',
     'Bradicardia, bloqueio AV, hipotensão',
@@ -353,6 +366,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.cardiovascular, RiskType.arrhythmia},
     [_kRefGG, _kRefMdx]),
+
   ('propranolol', 'verapamil', InteractionSeverity.major,
     'Efeito aditivo no nó AV',
     'Bradicardia grave, bloqueio AV, parada cardíaca (relatos)',
@@ -361,6 +375,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.cardiovascular, RiskType.arrhythmia},
     [_kRefGG, _kRefMdx, _kRefFDA]),
+
   ('metoprolol', 'clonidina', InteractionSeverity.moderate,
     'Retirada abrupta de clonidina com betabloqueador causa hipertensão rebote grave',
     'Crise hipertensiva rebote ao suspender clonidina',
@@ -370,7 +385,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.cardiovascular},
     [_kRefGG, _kRefUT]),
 
-  // ── Antiarrítmicos ────────────────────────────────────────────────────────
+    // ── Antiarrítmicos ────────────────────────────────────────────────────────
+
   ('amiodarona', 'sotalol', InteractionSeverity.contraindicated,
     'Prolongamento aditivo do intervalo QT',
     'Torsade de Pointes, fibrilação ventricular, morte súbita',
@@ -379,6 +395,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.qtProlongation, RiskType.arrhythmia},
     [_kRefGG, _kRefMdx, _kRefFDA]),
+
   ('amiodarona', 'haloperidol', InteractionSeverity.major,
     'Prolongamento aditivo do QT',
     'Torsade de Pointes',
@@ -387,6 +404,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.qtProlongation, RiskType.arrhythmia},
     [_kRefMdx, _kRefUT]),
+
   ('amiodarona', 'digoxina', InteractionSeverity.major,
     'Inibição da P-glicoproteína aumenta nível sérico de digoxina',
     'Toxicidade digitálica — náuseas, bradicardia, distúrbios visuais',
@@ -395,6 +413,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.plasmaLevel, RiskType.cardiovascular},
     [_kRefGG, _kRefMdx, _kRefUT]),
+
   ('digoxina', 'furosemida', InteractionSeverity.moderate,
     'Furosemida causa hipocalemia que potencializa toxicidade da digoxina',
     'Arritmias por toxicidade digitálica facilitadas pela hipocalemia',
@@ -403,6 +422,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.hypokalemia, RiskType.arrhythmia},
     [_kRefGG, _kRefMdx]),
+
   ('digoxina', 'espironolactona', InteractionSeverity.moderate,
     'Espironolactona pode elevar nível sérico de digoxina (inibição da secreção tubular)',
     'Toxicidade digitálica aumentada',
@@ -412,7 +432,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.plasmaLevel, RiskType.arrhythmia},
     [_kRefMdx, _kRefLex]),
 
-  // ── Antibióticos ──────────────────────────────────────────────────────────
+    // ── Antibióticos ──────────────────────────────────────────────────────────
+
   ('metronidazol', 'alcool', InteractionSeverity.contraindicated,
     'Inibição da aldeído desidrogenase — reação tipo dissulfiram',
     'Flushing, náuseas, vômitos, cefaleia, taquicardia, hipotensão',
@@ -421,6 +442,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.cardiovascular},
     [_kRefGG, _kRefFDA]),
+
   ('quinolona', 'antiácido', InteractionSeverity.moderate,
     'Cátions divalentes (Al, Mg, Ca) quelam quinolonas no TGI',
     'Redução de 50–90% na absorção oral da quinolona',
@@ -429,6 +451,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.reducedEfficacy},
     [_kRefGG, _kRefFDA]),
+
   ('ciprofloxacino', 'teofilina', InteractionSeverity.major,
     'Inibição do CYP1A2 reduz metabolismo da teofilina',
     'Toxicidade por teofilina — náuseas, convulsões, arritmias',
@@ -437,6 +460,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.plasmaLevel, RiskType.increasedToxicity},
     [_kRefGG, _kRefMdx, _kRefFDA]),
+
   ('claritromicina', 'estatina', InteractionSeverity.major,
     'Inibição do CYP3A4 eleva concentração plasmática de estatinas metabolizadas por esse CYP',
     'Risco de miopatia/rabdomiólise',
@@ -445,6 +469,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.myopathy, RiskType.plasmaLevel},
     [_kRefGG, _kRefMdx, _kRefFDA]),
+
   ('rifampicina', 'warfarina', InteractionSeverity.major,
     'Indução potente do CYP2C9 — aumenta metabolismo da warfarina',
     'Redução marcada do efeito anticoagulante (INR pode cair >50%)',
@@ -454,8 +479,9 @@ const _interactionDB = <_IxEntry>[
     {RiskType.reducedEfficacy, RiskType.plasmaLevel, RiskType.thrombosis},
     [_kRefGG, _kRefMdx, _kRefUT]),
 
-  // ── Psicotrópicos / SNC ───────────────────────────────────────────────────
-  ('tramadol', 'ssri', InteractionSeverity.major,
+    // ── Psicotrópicos / SNC ───────────────────────────────────────────────────
+
+  ('tramadol', 'isrs', InteractionSeverity.major,
     'Inibição da recaptação serotoninérgica somada',
     'Síndrome serotoninérgica — agitação, hipertermia, mioclonia, taquicardia',
     'Evitar combinação. Se indispensável, iniciar com dose baixa de tramadol e monitorar por 24–48h',
@@ -463,6 +489,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.serotonin},
     [_kRefGG, _kRefMdx, _kRefFDA]),
+
   ('tramadol', 'imao', InteractionSeverity.contraindicated,
     'Potenciação serotoninérgica extrema',
     'Síndrome serotoninérgica grave com risco de morte',
@@ -471,6 +498,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.serotonin},
     [_kRefGG, _kRefFDA, _kRefMdx]),
+
   ('tramadol', 'morfina', InteractionSeverity.moderate,
     'Efeitos aditivos no SNC e depressão respiratória',
     'Sedação excessiva, depressão respiratória',
@@ -479,7 +507,8 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.respiratoryDepression, RiskType.cns},
     [_kRefGG, _kRefMdx]),
-  ('benzodiazepínico', 'opioide', InteractionSeverity.major,
+
+  ('benzodiazepínico', 'opioide', InteractionSeverity.contraindicated,
     'Depressão aditiva do SNC — sinergia respiratória e sedativa',
     'Depressão respiratória grave, coma, morte (alerta FDA/ANVISA)',
     'Evitar combinação. Se essencial (ICU/paliativo), monitorar com oximetria contínua; ter naloxona disponível',
@@ -487,6 +516,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.respiratoryDepression, RiskType.cns},
     [_kRefFDA, _kRefGG, _kRefMdx]),
+
   ('haloperidol', 'carbonato de litio', InteractionSeverity.moderate,
     'Possível potenciação neurotóxica; lítio pode alterar farmacocinética do haloperidol',
     'Neurotoxicidade aumentada — confusão, tremor, extra-piramidal exacerbado',
@@ -495,7 +525,8 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.probable,
     {RiskType.cns, RiskType.qtProlongation},
     [_kRefMdx, _kRefUT]),
-  ('ssri', 'imao', InteractionSeverity.contraindicated,
+
+  ('isrs', 'imao', InteractionSeverity.contraindicated,
     'Hiperestimulação serotoninérgica extrema',
     'Síndrome serotoninérgica grave — hiperpirexia, convulsões, colapso cardiovascular, morte',
     'Contraindicado. Aguardar 14 dias após suspender IMAO (ou 5 semanas para fluoxetina) antes de iniciar SSRI',
@@ -504,7 +535,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.serotonin},
     [_kRefGG, _kRefFDA, _kRefMdx]),
 
-  // ── Hipoglicemiantes ──────────────────────────────────────────────────────
+    // ── Hipoglicemiantes ──────────────────────────────────────────────────────
+
   ('metformina', 'contraste iodado', InteractionSeverity.major,
     'Contraste iodado pode causar IRA transitória → acúmulo de metformina → acidose lática',
     'Acidose lática (rara mas grave)',
@@ -513,6 +545,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.nephrotoxicity, RiskType.increasedToxicity},
     [_kRefGG, _kRefMdx, _kRefFDA]),
+
   ('glibenclamida', 'fluconazol', InteractionSeverity.major,
     'Inibição do CYP2C9 aumenta nível sérico de glibenclamida',
     'Hipoglicemia grave e prolongada',
@@ -521,6 +554,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.hypoglycemia, RiskType.plasmaLevel},
     [_kRefGG, _kRefMdx]),
+
   ('insulina', 'betabloqueador', InteractionSeverity.moderate,
     'Betabloqueadores mascaram taquicardia e tremor (sintomas adrenérgicos de hipoglicemia)',
     'Hipoglicemia pode passar desapercebida — somente sudorese persiste como sinal',
@@ -530,7 +564,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.hypoglycemia},
     [_kRefGG, _kRefKatz]),
 
-  // ── Imunossupressores ─────────────────────────────────────────────────────
+    // ── Imunossupressores ─────────────────────────────────────────────────────
+
   ('ciclosporina', 'fluconazol', InteractionSeverity.major,
     'Inibição do CYP3A4 eleva nível sérico de ciclosporina',
     'Nefrotoxicidade e imunossupressão excessiva',
@@ -539,6 +574,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.nephrotoxicity, RiskType.plasmaLevel},
     [_kRefGG, _kRefMdx, _kRefLex]),
+
   ('ciclosporina', 'claritromicina', InteractionSeverity.major,
     'Inibição do CYP3A4 e P-gp',
     'Aumento do nível sérico de ciclosporina — nefrotoxicidade',
@@ -548,7 +584,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.nephrotoxicity, RiskType.plasmaLevel},
     [_kRefMdx, _kRefLex]),
 
-  // ── Cardiovascular / Miscellaneous ────────────────────────────────────────
+    // ── Cardiovascular / Miscellaneous ────────────────────────────────────────
+
   ('atorvastatina', 'gemfibrozil', InteractionSeverity.major,
     'Inibição da glucuronidação da atorvastatina pelo gemfibrozil',
     'Risco significativo de miopatia/rabdomiólise',
@@ -557,6 +594,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.myopathy},
     [_kRefGG, _kRefMdx, _kRefFDA]),
+
   ('sildenafila', 'nitrato', InteractionSeverity.contraindicated,
     'Ambos potencializam vasodilatação via GMPc',
     'Hipotensão grave, choque cardiovascular, colapso hemodinâmico, morte',
@@ -565,6 +603,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.cardiovascular},
     [_kRefGG, _kRefFDA, _kRefMdx]),
+
   ('sildenafila', 'alfa-bloqueador', InteractionSeverity.major,
     'Efeito hipotensor aditivo',
     'Hipotensão sintomática grave — tontura, síncope',
@@ -573,6 +612,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.cardiovascular},
     [_kRefGG, _kRefFDA]),
+
   ('furosemida', 'aminoglicosideo', InteractionSeverity.major,
     'Ototoxicidade aditiva sinérgica',
     'Surdez neurossensorial permanente — risco aumentado especialmente em DRC',
@@ -581,6 +621,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.nephrotoxicity, RiskType.increasedToxicity},
     [_kRefGG, _kRefMdx]),
+
   ('furosemida', 'aine', InteractionSeverity.moderate,
     'AINEs inibem síntese de prostaglandinas renais vasodilatadoras',
     'Redução do efeito diurético; risco de IRA',
@@ -590,7 +631,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.nephrotoxicity, RiskType.reducedEfficacy},
     [_kRefGG, _kRefUT]),
 
-  // DUPLICATA REMOVIDA: fluconazol+quetiapina — par detalhado mantido na seção de fluconazol (linha ~1670)
+    // DUPLICATA REMOVIDA: fluconazol+quetiapina — par detalhado mantido na seção de fluconazol (linha ~1670)
+
   ('haloperidol', 'ondansetrona', InteractionSeverity.major,
     'Prolongamento aditivo do QT por mecanismos distintos',
     'Torsade de Pointes',
@@ -600,7 +642,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.qtProlongation, RiskType.arrhythmia},
     [_kRefMdx, _kRefFDA]),
 
-  // ── Heparina / Anticoagulantes ─────────────────────────────────────────────
+    // ── Heparina / Anticoagulantes ─────────────────────────────────────────────
+
   ('heparina', 'aspirina', InteractionSeverity.moderate,
     'Efeito antitrombótico/hemostático aditivo',
     'Risco aumentado de sangramento (especialmente GI)',
@@ -609,6 +652,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.hemorrhagic},
     [_kRefGG, _kRefUT]),
+
   ('heparina', 'aine', InteractionSeverity.moderate,
     'AINEs inibem função plaquetária + risco de sangramento GI',
     'Risco aumentado de hemorragia',
@@ -618,7 +662,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.hemorrhagic},
     [_kRefGG, _kRefMdx]),
 
-  // ── Amiodarona — QT e interações adicionais ───────────────────────────────
+    // ── Amiodarona — QT e interações adicionais ───────────────────────────────
+
   ('amiodarona', 'azitromicina', InteractionSeverity.major,
     'Prolongamento aditivo do intervalo QT por mecanismos distintos',
     'Torsades de Pointes, fibrilação ventricular',
@@ -627,6 +672,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.qtProlongation, RiskType.arrhythmia},
     [_kRefMdx, _kRefUT]),
+
   ('amiodarona', 'metoprolol', InteractionSeverity.major,
     'Efeito cronotrópico e dromotrópico negativo aditivo sobre o nó sinusal e AV',
     'Bradicardia grave, bloqueio AV, colapso hemodinâmico',
@@ -636,7 +682,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.cardiovascular, RiskType.arrhythmia},
     [_kRefGG, _kRefMdx]),
 
-  // ── Warfarina — entradas complementares ───────────────────────────────────
+    // ── Warfarina — entradas complementares ───────────────────────────────────
+
   ('warfarina', 'aine', InteractionSeverity.major,
     'AINEs inibem função plaquetária e causam ulceração GI; deslocamento proteico eleva INR',
     'Risco muito alto de sangramento gastrointestinal e ulceração péptica',
@@ -646,7 +693,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.hemorrhagic, RiskType.plasmaLevel},
     [_kRefGG, _kRefMdx]),
 
-  // ── Clopidogrel ───────────────────────────────────────────────────────────
+    // ── Clopidogrel ───────────────────────────────────────────────────────────
+
   ('clopidogrel', 'omeprazol', InteractionSeverity.moderate,
     'Inibição do CYP2C19 pelo omeprazol reduz conversão do clopidogrel ao metabólito ativo',
     'Redução do efeito antiagregante — maior risco de eventos isquêmicos e trombose de stent',
@@ -655,6 +703,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.reducedEfficacy, RiskType.thrombosis},
     [_kRefGG, _kRefMdx, _kRefFDA]),
+
   ('clopidogrel', 'esomeprazol', InteractionSeverity.moderate,
     'Inibição do CYP2C19 pelo esomeprazol reduz ativação do clopidogrel',
     'Eficácia antiagregante reduzida — risco de trombose de stent',
@@ -664,7 +713,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.reducedEfficacy, RiskType.thrombosis},
     [_kRefMdx, _kRefFDA]),
 
-  // ── IECA — entradas complementares ────────────────────────────────────────
+    // ── IECA — entradas complementares ────────────────────────────────────────
+
   ('enalapril', 'sacubitrila', InteractionSeverity.contraindicated,
     'Inibição simultânea do sistema neprilisina-angiotensina causa acúmulo de bradicinina',
     'Angioedema grave e potencialmente fatal — risco 3× maior que IECA isolado',
@@ -674,7 +724,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.cardiovascular},
     [_kRefGG, _kRefFDA, _kRefUT]),
 
-  // ── Lítio ─────────────────────────────────────────────────────────────────
+    // ── Lítio ─────────────────────────────────────────────────────────────────
+
   ('carbonato de litio', 'ibuprofeno', InteractionSeverity.major,
     'AINEs reduzem excreção renal de lítio por inibição das prostaglandinas renais',
     'Toxicidade lítica rápida — tremor, confusão, convulsões, arritmias',
@@ -683,6 +734,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.increasedToxicity, RiskType.nephrotoxicity},
     [_kRefGG, _kRefMdx, _kRefUT]),
+
   ('carbonato de litio', 'hidroclorotiazida', InteractionSeverity.major,
     'Tiazídicos aumentam reabsorção proximal de sódio e lítio em compensação à perda distal',
     'Toxicidade por lítio — confusão, tremor, nefrotoxicidade',
@@ -691,6 +743,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.increasedToxicity, RiskType.plasmaLevel},
     [_kRefGG, _kRefMdx]),
+
   ('carbonato de litio', 'enalapril', InteractionSeverity.major,
     'IECAs reduzem clearance renal de lítio por inibição da angiotensina II',
     'Elevação dos níveis séricos de lítio — toxicidade',
@@ -700,8 +753,9 @@ const _interactionDB = <_IxEntry>[
     {RiskType.increasedToxicity, RiskType.plasmaLevel},
     [_kRefGG, _kRefMdx, _kRefUT]),
 
-  // ── Serotonina — entradas complementares ──────────────────────────────────
-  ('ssri', 'linezolida', InteractionSeverity.contraindicated,
+    // ── Serotonina — entradas complementares ──────────────────────────────────
+
+  ('isrs', 'linezolida', InteractionSeverity.contraindicated,
     'Linezolida inibe a MAO — hiperestimulação serotoninérgica com SSRI',
     'Síndrome serotoninérgica grave — hipertermia, rigidez, crise convulsiva, colapso',
     'Contraindicado. Aguardar washout adequado (≥5 semanas para fluoxetina, ≥2 semanas para outros SSRIs)',
@@ -709,6 +763,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.serotonin},
     [_kRefGG, _kRefFDA, _kRefMdx]),
+
   ('tramadol', 'amitriptilina', InteractionSeverity.major,
     'Redução do limiar convulsivo + inibição da recaptação de serotonina/noradrenalina aditiva',
     'Risco aumentado de convulsões e síndrome serotoninérgica',
@@ -718,7 +773,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.serotonin, RiskType.cns},
     [_kRefMdx, _kRefUT]),
 
-  // ── Aminoglicosídeos ───────────────────────────────────────────────────────
+    // ── Aminoglicosídeos ───────────────────────────────────────────────────────
+
   ('aminoglicosideo', 'vancomicina', InteractionSeverity.major,
     'Nefrotoxicidade e ototoxicidade sinérgica — ambos lesam túbulos renais proximais e células ciliadas',
     'Insuficiência renal aguda, surdez irreversível',
@@ -728,7 +784,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.nephrotoxicity, RiskType.increasedToxicity},
     [_kRefGG, _kRefMdx, _kRefUT]),
 
-  // ── Quinolonas — quelação por cátions ─────────────────────────────────────
+    // ── Quinolonas — quelação por cátions ─────────────────────────────────────
+
   ('ciprofloxacino', 'carbonato de calcio', InteractionSeverity.moderate,
     'Cálcio forma complexo insolúvel com ciprofloxacino no intestino (quelação)',
     'Redução de até 50% na absorção oral da quinolona',
@@ -737,6 +794,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.reducedEfficacy},
     [_kRefGG, _kRefFDA]),
+
   ('ciprofloxacino', 'sulfato ferroso', InteractionSeverity.moderate,
     'Ferro quelata ciprofloxacino no TGI reduzindo drasticamente sua biodisponibilidade',
     'Falha terapêutica do antibiótico',
@@ -746,7 +804,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.reducedEfficacy},
     [_kRefGG, _kRefFDA]),
 
-  // ── Levotiroxina ──────────────────────────────────────────────────────────
+    // ── Levotiroxina ──────────────────────────────────────────────────────────
+
   ('levotiroxina', 'carbonato de calcio', InteractionSeverity.moderate,
     'Cálcio liga-se à levotiroxina no intestino reduzindo sua absorção',
     'Hipotireoidismo por absorção inadequada — TSH elevado',
@@ -755,6 +814,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.reducedEfficacy},
     [_kRefGG, _kRefFDA]),
+
   ('levotiroxina', 'pantoprazol', InteractionSeverity.moderate,
     'Redução da acidez gástrica pelos IBPs prejudica dissolução e absorção da levotiroxina',
     'Absorção reduzida — hipotireoidismo subclínico',
@@ -763,6 +823,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.probable,
     {RiskType.reducedEfficacy},
     [_kRefMdx, _kRefUT]),
+
   ('levotiroxina', 'antiácido', InteractionSeverity.moderate,
     'Cátions (Al, Mg, Ca) dos antiácidos quelam levotiroxina no TGI',
     'Redução da absorção — hipotireoidismo',
@@ -772,7 +833,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.reducedEfficacy},
     [_kRefGG, _kRefFDA]),
 
-  // ── Benzodiazepínicos — complementar ──────────────────────────────────────
+    // ── Benzodiazepínicos — complementar ──────────────────────────────────────
+
   ('benzodiazepínico', 'alcool', InteractionSeverity.major,
     'Potenciação mútua da depressão do SNC por mecanismos GABA-A aditivos',
     'Sedação severa, depressão respiratória, coma, morte',
@@ -782,7 +844,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.respiratoryDepression, RiskType.cns},
     [_kRefGG, _kRefFDA]),
 
-  // ── Anticonvulsivantes ─────────────────────────────────────────────────────
+    // ── Anticonvulsivantes ─────────────────────────────────────────────────────
+
   ('carbamazepina', 'anticoncepcional', InteractionSeverity.major,
     'Indução enzimática do CYP3A4 acelera metabolismo de estrógenos e progestágenos',
     'Falha do anticoncepcional hormonal — gravidez não planejada',
@@ -791,7 +854,8 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.reducedEfficacy, RiskType.plasmaLevel},
     [_kRefGG, _kRefMdx, _kRefFDA]),
-  ('acido valproico', 'lamotrigina', InteractionSeverity.major,
+
+  ('valproato', 'lamotrigina', InteractionSeverity.major,
     'Ácido valproico inibe a glucuronidação da lamotrigina, dobrando sua meia-vida',
     'Toxicidade por lamotrigina — rash grave, Síndrome de Stevens-Johnson',
     'Reduzir dose de lamotrigina em 50% ao introduzir valproato. Monitorar rash cutâneo',
@@ -799,6 +863,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.plasmaLevel, RiskType.increasedToxicity},
     [_kRefGG, _kRefMdx, _kRefFDA]),
+
   ('midazolam', 'claritromicina', InteractionSeverity.major,
     'Inibição potente do CYP3A4 pela claritromicina prolonga meia-vida do midazolam',
     'Sedação prolongada e excessiva, depressão respiratória',
@@ -808,7 +873,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.respiratoryDepression, RiskType.cns, RiskType.plasmaLevel},
     [_kRefGG, _kRefMdx, _kRefFDA]),
 
-  // ── Claritromicina + Benzodiazepínicos (CYP3A4) ──────────────────────────
+    // ── Claritromicina + Benzodiazepínicos (CYP3A4) ──────────────────────────
+
   ('claritromicina', 'benzodiazepínico', InteractionSeverity.major,
     'Claritromicina inibe potentemente o CYP3A4 — principal via de metabolismo de alprazolam, diazepam, clonazepam e triazolam. Lorazepam é menos afetado (metabolismo por glucuronidação)',
     'Aumento de 2-5x nos níveis plasmáticos dos benzodiazepínicos → sedação excessiva e prolongada, comprometimento psicomotor, depressão respiratória, amnésia anterógrada',
@@ -818,7 +884,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.cns, RiskType.respiratoryDepression, RiskType.plasmaLevel},
     [_kRefGG, _kRefMdx, _kRefUT]),
 
-  // ── Corticosteroides ──────────────────────────────────────────────────────
+    // ── Corticosteroides ──────────────────────────────────────────────────────
+
   ('dexametasona', 'aine', InteractionSeverity.major,
     'Corticosteroide + AINE: inibição dupla das prostaglandinas protetoras da mucosa gástrica',
     'Risco muito elevado de úlcera péptica e hemorragia GI',
@@ -828,7 +895,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.hemorrhagic},
     [_kRefGG, _kRefMdx]),
 
-  // ── Hiperpotassemia ────────────────────────────────────────────────────────
+    // ── Hiperpotassemia ────────────────────────────────────────────────────────
+
   ('espironolactona', 'cloreto de potassio', InteractionSeverity.contraindicated,
     'Espironolactona retém potássio + suplementação adicional = hipercalemia aditiva extrema',
     'Hipercalemia fatal — parada cardíaca em assistolia',
@@ -838,7 +906,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.hyperkalemia, RiskType.arrhythmia},
     [_kRefGG, _kRefFDA]),
 
-  // ── Colchicina / Imunossupressores ────────────────────────────────────────
+    // ── Colchicina / Imunossupressores ────────────────────────────────────────
+
   ('colchicina', 'claritromicina', InteractionSeverity.contraindicated,
     'Inibição da P-gp e CYP3A4 eleva drasticamente os níveis de colchicina',
     'Toxicidade por colchicina — miopatia, neuropatia, pancitopenia, falência de múltiplos órgãos',
@@ -847,6 +916,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.myopathy, RiskType.myelosuppression, RiskType.plasmaLevel},
     [_kRefGG, _kRefMdx, _kRefFDA]),
+
   ('alopurinol', 'azatioprina', InteractionSeverity.contraindicated,
     'Alopurinol inibe xantina oxidase — enzima que metaboliza azatioprina — causando acúmulo tóxico',
     'Mielossupressão grave: leucopenia, trombocitopenia, anemia aplásica',
@@ -856,7 +926,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.myelosuppression, RiskType.increasedToxicity},
     [_kRefGG, _kRefFDA, _kRefMdx]),
 
-  // ── Interações farmacodinâmicas adicionais ────────────────────────────────
+    // ── Interações farmacodinâmicas adicionais ────────────────────────────────
+
   ('ondansetrona', 'tramadol', InteractionSeverity.moderate,
     'Ondansetrona bloqueia receptores 5-HT₃ utilizados pelo tramadol para analgesia',
     'Redução significativa do efeito analgésico do tramadol',
@@ -865,6 +936,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.probable,
     {RiskType.reducedEfficacy},
     [_kRefMdx, _kRefUT]),
+
   ('insulina', 'dapagliflozina', InteractionSeverity.moderate,
     'Efeito hipoglicemiante aditivo — iSGLT2 potencializa o efeito da insulina',
     'Hipoglicemia grave, especialmente com insulina basal ou bolus elevados',
@@ -873,6 +945,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.hypoglycemia},
     [_kRefGG, _kRefFDA, _kRefUT]),
+
   ('amitriptilina', 'atropina', InteractionSeverity.moderate,
     'Efeitos anticolinérgicos aditivos — bloqueio muscarínico somado',
     'Boca seca intensa, retenção urinária, visão turva, confusão, delírio (especialmente em idosos)',
@@ -882,11 +955,12 @@ const _interactionDB = <_IxEntry>[
     {RiskType.cns, RiskType.increasedToxicity},
     [_kRefGG, _kRefKatz]),
 
-  // ══════════════════════════════════════════════════════════════════════════
-  // INTERAÇÕES — MERGE v2 (modelo expandido)
-  // ══════════════════════════════════════════════════════════════════════════
+    // ══════════════════════════════════════════════════════════════════════════
+    // INTERAÇÕES — MERGE v2 (modelo expandido)
+    // ══════════════════════════════════════════════════════════════════════════
 
-  // ── Dronedarona ───────────────────────────────────────────────────────────
+    // ── Dronedarona ───────────────────────────────────────────────────────────
+
   ('dronedarona', 'dabigatrana', InteractionSeverity.major,
     'Dronedarona inibe P-glicoproteína → aumenta absorção e nível sérico de dabigatrana',
     'Risco hemorrágico elevado — aumento de até 100% na exposição à dabigatrana',
@@ -895,6 +969,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.hemorrhagic, RiskType.plasmaLevel},
     [_kRefGG, _kRefMdx, _kRefFDA]),
+
   ('dronedarona', 'sinvastatina', InteractionSeverity.major,
     'Inibição do CYP3A4 e P-gp pela dronedarona aumenta nível de sinvastatina',
     'Risco de miopatia/rabdomiólise',
@@ -903,6 +978,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.myopathy, RiskType.plasmaLevel},
     [_kRefMdx, _kRefFDA]),
+
   ('dronedarona', 'metoprolol', InteractionSeverity.major,
     'Inibição do CYP2D6 pela dronedarona aumenta nível de metoprolol + efeito cronotrópico negativo aditivo',
     'Bradicardia grave, bloqueio AV, hipotensão',
@@ -911,6 +987,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.cardiovascular, RiskType.plasmaLevel},
     [_kRefMdx, _kRefLex]),
+
   ('dronedarona', 'digoxina', InteractionSeverity.major,
     'Inibição da P-gp aumenta nível sérico de digoxina',
     'Toxicidade digitálica — náuseas, bradicardia, distúrbios de condução',
@@ -919,6 +996,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.plasmaLevel, RiskType.cardiovascular},
     [_kRefMdx, _kRefFDA]),
+
   ('dronedarona', 'warfarina', InteractionSeverity.moderate,
     'Inibição do CYP3A4 e possível efeito no CYP2C9 pela dronedarona',
     'Elevação moderada do INR',
@@ -927,6 +1005,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.probable,
     {RiskType.hemorrhagic, RiskType.plasmaLevel},
     [_kRefMdx, _kRefUT]),
+
   ('dronedarona', 'ciclosporina', InteractionSeverity.contraindicated,
     'Inibição mútua do CYP3A4 e P-gp — exposição de ambos aumenta drasticamente',
     'Toxicidade por ciclosporina (nefrotóxica) e toxicidade cardíaca por dronedarona',
@@ -936,7 +1015,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.nephrotoxicity, RiskType.cardiovascular, RiskType.plasmaLevel},
     [_kRefFDA, _kRefMdx]),
 
-  // ── Ivabradina ────────────────────────────────────────────────────────────
+    // ── Ivabradina ────────────────────────────────────────────────────────────
+
   ('ivabradina', 'diltiazem', InteractionSeverity.contraindicated,
     'Diltiazem inibe CYP3A4 (aumenta nível de ivabradina) + efeito cronotrópico negativo aditivo no nó sinusal',
     'Bradicardia grave, bloqueio sinusal, assistolia',
@@ -945,6 +1025,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.cardiovascular, RiskType.arrhythmia},
     [_kRefFDA, _kRefMdx]),
+
   ('ivabradina', 'verapamil', InteractionSeverity.contraindicated,
     'Verapamil inibe CYP3A4 + efeito bradicardizante sinérgico',
     'Bradicardia grave, síncope, parada sinusal',
@@ -953,6 +1034,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.cardiovascular, RiskType.arrhythmia},
     [_kRefFDA, _kRefMdx]),
+
   ('ivabradina', 'claritromicina', InteractionSeverity.major,
     'Inibição potente do CYP3A4 pela claritromicina aumenta exposição à ivabradina em ~7×',
     'Bradicardia grave, prolongamento QT, Torsade de Pointes',
@@ -961,6 +1043,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.qtProlongation, RiskType.cardiovascular, RiskType.plasmaLevel},
     [_kRefFDA, _kRefMdx]),
+
   ('ivabradina', 'fluconazol', InteractionSeverity.major,
     'Inibição do CYP3A4 pelo fluconazol aumenta significativamente o nível de ivabradina',
     'Bradicardia excessiva, tontura, fosfenos',
@@ -970,7 +1053,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.cardiovascular, RiskType.plasmaLevel},
     [_kRefMdx, _kRefLex]),
 
-  // ── Ranolazina ────────────────────────────────────────────────────────────
+    // ── Ranolazina ────────────────────────────────────────────────────────────
+
   ('ranolazina', 'claritromicina', InteractionSeverity.contraindicated,
     'Inibição potente do CYP3A4 aumenta ranolazina em >5× + ambos prolongam QTc',
     'Prolongamento QTc grave, Torsade de Pointes, arritmia ventricular fatal',
@@ -979,6 +1063,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.qtProlongation, RiskType.arrhythmia, RiskType.plasmaLevel},
     [_kRefFDA, _kRefMdx]),
+
   ('ranolazina', 'amiodarona', InteractionSeverity.major,
     'Amiodarona inibe CYP3A4 + ambos prolongam QTc por mecanismos distintos',
     'Prolongamento QTc excessivo, Torsade de Pointes',
@@ -987,6 +1072,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.qtProlongation, RiskType.arrhythmia},
     [_kRefMdx, _kRefUT]),
+
   ('ranolazina', 'digoxina', InteractionSeverity.moderate,
     'Ranolazina inibe P-gp → aumento do nível sérico de digoxina em ~50%',
     'Toxicidade digitálica — bradiarritmias, náuseas, distúrbios visuais',
@@ -995,6 +1081,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.plasmaLevel, RiskType.arrhythmia},
     [_kRefMdx, _kRefFDA]),
+
   ('ranolazina', 'sinvastatina', InteractionSeverity.moderate,
     'Inibição do CYP3A4 pela ranolazina aumenta exposição à sinvastatina',
     'Risco aumentado de miopatia',
@@ -1004,7 +1091,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.myopathy, RiskType.plasmaLevel},
     [_kRefMdx, _kRefFDA]),
 
-  // ── Eplerenona ────────────────────────────────────────────────────────────
+    // ── Eplerenona ────────────────────────────────────────────────────────────
+
   ('eplerenona', 'cloreto de potassio', InteractionSeverity.contraindicated,
     'Eplerenona retém K⁺ (poupador de potássio) + suplementação adicional',
     'Hipercalemia fatal — parada cardíaca',
@@ -1013,6 +1101,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.hyperkalemia, RiskType.arrhythmia},
     [_kRefFDA, _kRefGG]),
+
   ('eplerenona', 'enalapril', InteractionSeverity.moderate,
     'Ambos elevam K⁺ por mecanismos distintos — antagonismo aldosterona + inibição da angiotensina II',
     'Hipercalemia, especialmente em DRC ou diabetes',
@@ -1021,6 +1110,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.hyperkalemia},
     [_kRefGG, _kRefUT]),
+
   ('eplerenona', 'claritromicina', InteractionSeverity.contraindicated,
     'Inibição potente do CYP3A4 pela claritromicina aumenta exposição à eplerenona em >5×',
     'Hipercalemia grave e excessiva retenção de potássio',
@@ -1030,7 +1120,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.hyperkalemia, RiskType.plasmaLevel},
     [_kRefFDA, _kRefMdx]),
 
-  // ── Daptomicina ───────────────────────────────────────────────────────────
+    // ── Daptomicina ───────────────────────────────────────────────────────────
+
   ('daptomicina', 'estatina', InteractionSeverity.major,
     'Mecanismo sinérgico de miotoxicidade — ambos lesam membranas musculares por mecanismos complementares',
     'Miopatia grave e rabdomiólise',
@@ -1039,6 +1130,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.myopathy},
     [_kRefMdx, _kRefFDA]),
+
   ('daptomicina', 'aminoglicosideo', InteractionSeverity.moderate,
     'Possível nefrotoxicidade aditiva — ambos podem elevar creatinina em uso prolongado',
     'Insuficiência renal aguda, especialmente em pacientes vulneráveis',
@@ -1048,7 +1140,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.nephrotoxicity},
     [_kRefMdx, _kRefUT]),
 
-  // ── Nirmatrelvir/Ritonavir (Paxlovid) ────────────────────────────────────
+    // ── Nirmatrelvir/Ritonavir (Paxlovid) ────────────────────────────────────
+
   ('ritonavir', 'sinvastatina', InteractionSeverity.contraindicated,
     'Inibição potente do CYP3A4 pelo ritonavir aumenta sinvastatina >10× — rabdomiólise',
     'Rabdomiólise grave, insuficiência renal, coagulação intravascular disseminada',
@@ -1057,6 +1150,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.myopathy, RiskType.nephrotoxicity, RiskType.plasmaLevel},
     [_kRefFDA, _kRefMdx]),
+
   ('ritonavir', 'midazolam', InteractionSeverity.contraindicated,
     'Inibição potente do CYP3A4 pelo ritonavir → nível de midazolam aumenta dezenas de vezes',
     'Sedação prolongada e grave, depressão respiratória, coma',
@@ -1065,6 +1159,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.respiratoryDepression, RiskType.cns, RiskType.plasmaLevel},
     [_kRefFDA, _kRefMdx]),
+
   ('ritonavir', 'amiodarona', InteractionSeverity.contraindicated,
     'Inibição do CYP3A4 e CYP2C8 pelo ritonavir aumenta amiodarona dramaticamente + QT aditivo',
     'Toxicidade por amiodarona (pulmonar, hepática, tireoidiana) e Torsade de Pointes',
@@ -1073,6 +1168,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.qtProlongation, RiskType.hepatotoxicity, RiskType.plasmaLevel},
     [_kRefFDA, _kRefMdx]),
+
   ('ritonavir', 'warfarina', InteractionSeverity.major,
     'Ritonavir é indutor e inibidor do CYP2C9 (efeito bifásico) — INR pode aumentar ou diminuir',
     'Instabilidade do INR — risco de sangramento ou trombose dependendo da fase',
@@ -1081,6 +1177,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.hemorrhagic, RiskType.plasmaLevel},
     [_kRefFDA, _kRefMdx]),
+
   ('ritonavir', 'atorvastatina', InteractionSeverity.major,
     'Inibição do CYP3A4 pelo ritonavir aumenta atorvastatina em ~8×',
     'Risco significativo de miopatia/rabdomiólise',
@@ -1089,6 +1186,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.myopathy, RiskType.plasmaLevel},
     [_kRefFDA, _kRefMdx]),
+
   ('ritonavir', 'carbamazepina', InteractionSeverity.major,
     'Carbamazepina é indutor potente do CYP3A4 → reduz drasticamente níveis de nirmatrelvir/ritonavir',
     'Falha terapêutica do Paxlovid — concentrações subterapêuticas de nirmatrelvir',
@@ -1097,6 +1195,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.reducedEfficacy, RiskType.plasmaLevel},
     [_kRefFDA, _kRefUT]),
+
   ('ritonavir', 'ranolazina', InteractionSeverity.contraindicated,
     'Inibição do CYP3A4 pelo ritonavir eleva ranolazina drasticamente + prolongamento QTc aditivo',
     'Arritmia ventricular grave, Torsade de Pointes',
@@ -1106,7 +1205,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.qtProlongation, RiskType.arrhythmia},
     [_kRefFDA, _kRefMdx]),
 
-  // ── Semaglutida / Tirzepatida (arGLP-1) ──────────────────────────────────
+    // ── Semaglutida / Tirzepatida (arGLP-1) ──────────────────────────────────
+
   ('semaglutida', 'insulina', InteractionSeverity.moderate,
     'Efeito hipoglicemiante aditivo — arGLP-1 potencia ação da insulina',
     'Hipoglicemia grave, especialmente com insulina basal ou prandial em altas doses',
@@ -1115,6 +1215,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.hypoglycemia},
     [_kRefGG, _kRefFDA, _kRefUT]),
+
   ('semaglutida', 'sulfonilureia', InteractionSeverity.moderate,
     'Efeito insulinotrópico aditivo com risco aumentado de hipoglicemia',
     'Hipoglicemia grave, tontura, sudorese, convulsões',
@@ -1123,6 +1224,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.hypoglycemia},
     [_kRefFDA, _kRefUT]),
+
   ('semaglutida', 'levotiroxina', InteractionSeverity.monitorOnly,
     'Retardo do esvaziamento gástrico pela semaglutida pode reduzir absorção da levotiroxina',
     'Redução da absorção de levotiroxina → hipotireoidismo subclínico',
@@ -1132,7 +1234,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.reducedEfficacy},
     [_kRefMdx, _kRefUT]),
 
-  // ── Canagliflozina / iSGLT2 ──────────────────────────────────────────────
+    // ── Canagliflozina / iSGLT2 ──────────────────────────────────────────────
+
   ('canagliflozina', 'furosemida', InteractionSeverity.moderate,
     'Efeito natriurético e diurético aditivo — ambos causam depleção de volume',
     'Hipotensão grave, IRA pré-renal, desidratação, hipocalemia',
@@ -1141,6 +1244,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.cardiovascular, RiskType.nephrotoxicity, RiskType.hypokalemia},
     [_kRefGG, _kRefFDA]),
+
   ('canagliflozina', 'enalapril', InteractionSeverity.moderate,
     'Efeito natriurético dos iSGLT2 associado a vasodilatação dos IECAs — hipotensão e hipercalemia',
     'Hipotensão sintomática, IRA pré-renal, hipercalemia',
@@ -1149,6 +1253,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.cardiovascular, RiskType.hyperkalemia},
     [_kRefGG, _kRefUT]),
+
   ('canagliflozina', 'rifampicina', InteractionSeverity.moderate,
     'Rifampicina induz UGT e CYP → redução de 51% na exposição à canagliflozina',
     'Redução do efeito hipoglicemiante e nefroprotetor',
@@ -1158,7 +1263,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.reducedEfficacy, RiskType.plasmaLevel},
     [_kRefFDA, _kRefMdx]),
 
-  // ── Finerenona ────────────────────────────────────────────────────────────
+    // ── Finerenona ────────────────────────────────────────────────────────────
+
   ('finerenona', 'claritromicina', InteractionSeverity.contraindicated,
     'Inibição potente do CYP3A4 pela claritromicina aumenta finerenona em >5×',
     'Hipercalemia grave e potencialmente fatal',
@@ -1167,6 +1273,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.hyperkalemia, RiskType.plasmaLevel},
     [_kRefFDA, _kRefMdx]),
+
   ('finerenona', 'espironolactona', InteractionSeverity.contraindicated,
     'Antagonismo mineralocorticoide aditivo — duplo bloqueio do receptor de aldosterona',
     'Hipercalemia grave, parada cardíaca',
@@ -1175,6 +1282,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.hyperkalemia, RiskType.arrhythmia},
     [_kRefFDA, _kRefGG]),
+
   ('finerenona', 'enalapril', InteractionSeverity.moderate,
     'Efeito poupador de potássio da finerenona + redução da excreção de K⁺ pelo IECA',
     'Hipercalemia — risco aumentado, especialmente em DRC',
@@ -1184,7 +1292,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.hyperkalemia},
     [_kRefFDA, _kRefUT]),
 
-  // ── Tocilizumabe / Baricitinibe ───────────────────────────────────────────
+    // ── Tocilizumabe / Baricitinibe ───────────────────────────────────────────
+
   ('tocilizumabe', 'warfarina', InteractionSeverity.moderate,
     'IL-6 regula expressão de enzimas CYP; ao bloquear IL-6, tocilizumabe restaura metabolismo de varfarina (reduz INR)',
     'Redução inesperada do INR quando tocilizumabe é iniciado ou escalado',
@@ -1193,6 +1302,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.plasmaLevel, RiskType.thrombosis},
     [_kRefMdx, _kRefUT]),
+
   ('tocilizumabe', 'estatina', InteractionSeverity.moderate,
     'Bloqueio de IL-6 restaura CYP3A4 — estatinas metabolizadas por CYP3A4 têm metabolismo aumentado',
     'Redução dos níveis plasmáticos de estatinas — menor efeito hipolipemiante',
@@ -1201,7 +1311,8 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.probable,
     {RiskType.reducedEfficacy, RiskType.plasmaLevel},
     [_kRefMdx, _kRefUT]),
-  ('baricitinibe', 'ssri', InteractionSeverity.monitorOnly,
+
+  ('baricitinibe', 'isrs', InteractionSeverity.monitorOnly,
     'Inibição do transportador OAT3 pelo baricitinibe pode aumentar levemente concentração de alguns SSRIs',
     'Aumento marginal da exposição a SSRIs renalmente eliminados',
     'Monitorar efeitos adversos dos SSRIs. Interação geralmente não requer ajuste de dose',
@@ -1210,7 +1321,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.plasmaLevel},
     [_kRefMdx, _kRefLex]),
 
-  // ── Vedolizumabe ──────────────────────────────────────────────────────────
+    // ── Vedolizumabe ──────────────────────────────────────────────────────────
+
   ('vedolizumabe', 'natalizumabe', InteractionSeverity.contraindicated,
     'Ambos são antagonistas de integrinas — imunomodulação aditiva sistêmica e intestinal',
     'Risco muito aumentado de infecções oportunistas e leucoencefalopatia multifocal progressiva (LMP)',
@@ -1220,7 +1332,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.infection},
     [_kRefFDA, _kRefMdx]),
 
-  // ── Tofacitinibe ──────────────────────────────────────────────────────────
+    // ── Tofacitinibe ──────────────────────────────────────────────────────────
+
   ('tofacitinibe', 'ciclosporina', InteractionSeverity.contraindicated,
     'Inibição do CYP3A4 + imunossupressão aditiva potente',
     'Infecções oportunistas graves, nefrotoxicidade, linfoma',
@@ -1229,6 +1342,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.infection, RiskType.nephrotoxicity},
     [_kRefFDA, _kRefMdx]),
+
   ('tofacitinibe', 'fluconazol', InteractionSeverity.major,
     'Inibição do CYP3A4 e CYP2C19 pelo fluconazol aumenta exposição ao tofacitinibe em ~130%',
     'Toxicidade por tofacitinibe — infecções, trombose, elevação de enzimas hepáticas',
@@ -1237,6 +1351,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.infection, RiskType.hepatotoxicity, RiskType.plasmaLevel},
     [_kRefFDA, _kRefMdx]),
+
   ('tofacitinibe', 'rifampicina', InteractionSeverity.major,
     'Rifampicina induz CYP3A4 → redução de ~84% na exposição ao tofacitinibe',
     'Falha terapêutica — concentrações subterapêuticas',
@@ -1246,7 +1361,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.reducedEfficacy, RiskType.plasmaLevel},
     [_kRefFDA, _kRefMdx]),
 
-  // ── Ruxolitinibe ──────────────────────────────────────────────────────────
+    // ── Ruxolitinibe ──────────────────────────────────────────────────────────
+
   ('ruxolitinibe', 'claritromicina', InteractionSeverity.major,
     'Inibição potente do CYP3A4 → aumento de ~200% na exposição ao ruxolitinibe',
     'Citopenia grave (anemia, trombocitopenia), infecções oportunistas, toxicidade hepática',
@@ -1255,6 +1371,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.myelosuppression, RiskType.infection, RiskType.plasmaLevel},
     [_kRefFDA, _kRefMdx]),
+
   ('ruxolitinibe', 'fluconazol', InteractionSeverity.moderate,
     'Inibição do CYP3A4 aumenta exposição ao ruxolitinibe em ~100%',
     'Citopenia e risco de infecções oportunistas aumentado',
@@ -1264,7 +1381,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.myelosuppression, RiskType.plasmaLevel},
     [_kRefFDA, _kRefMdx]),
 
-  // ── Dupilumabe / Biológicos respiratórios ─────────────────────────────────
+    // ── Dupilumabe / Biológicos respiratórios ─────────────────────────────────
+
   ('dupilumabe', 'vacinas vivas', InteractionSeverity.major,
     'Imunossupressão relativa causada por dupilumabe pode reduzir resposta imunológica a vacinas vivas',
     'Risco de infecção pela cepa vacinal (vacina viva atenuada)',
@@ -1273,6 +1391,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.infection},
     [_kRefFDA, _kRefMdx]),
+
   ('mepolizumabe', 'corticosteroide sistemico', InteractionSeverity.moderate,
     'Redução dos eosinófilos pelo mepolizumabe permite desmame dos corticosteroides, mas retirada abrupta causa insuficiência adrenal',
     'Insuficiência adrenal aguda se corticosteroide retirado abruptamente',
@@ -1282,7 +1401,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.cardiovascular},
     [_kRefFDA, _kRefUT]),
 
-  // ── Isavuconazol ──────────────────────────────────────────────────────────
+    // ── Isavuconazol ──────────────────────────────────────────────────────────
+
   ('isavuconazol', 'rifampicina', InteractionSeverity.contraindicated,
     'Rifampicina induz CYP3A4 potentemente → redução drástica dos níveis de isavuconazol',
     'Falha terapêutica antifúngica — concentrações subterapêuticas',
@@ -1291,6 +1411,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.reducedEfficacy, RiskType.plasmaLevel},
     [_kRefFDA, _kRefMdx]),
+
   ('isavuconazol', 'ciclosporina', InteractionSeverity.moderate,
     'Inibição do CYP3A4 pelo isavuconazol aumenta exposição à ciclosporina',
     'Toxicidade por ciclosporina — nefrotoxicidade, neurotoxicidade',
@@ -1299,6 +1420,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.probable,
     {RiskType.nephrotoxicity, RiskType.plasmaLevel},
     [_kRefMdx, _kRefLex]),
+
   ('isavuconazol', 'warfarina', InteractionSeverity.moderate,
     'Inibição do CYP2C9 pelo isavuconazol pode aumentar nível de varfarina',
     'Elevação do INR e risco hemorrágico',
@@ -1308,7 +1430,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.hemorrhagic, RiskType.plasmaLevel},
     [_kRefMdx, _kRefLex]),
 
-  // ── Eltrombopague ─────────────────────────────────────────────────────────
+    // ── Eltrombopague ─────────────────────────────────────────────────────────
+
   ('eltrombopague', 'antiácido', InteractionSeverity.major,
     'Cátions polivalentes (Al, Mg, Ca) dos antiácidos formam quelatos com eltrombopague no TGI',
     'Redução de até 70% na absorção do eltrombopague → falha terapêutica',
@@ -1317,6 +1440,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.reducedEfficacy},
     [_kRefFDA, _kRefMdx]),
+
   ('eltrombopague', 'sulfato ferroso', InteractionSeverity.major,
     'Ferro quelata eltrombopague no intestino — redução drástica da absorção',
     'Falha terapêutica da trombocitopoiese',
@@ -1325,6 +1449,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.reducedEfficacy},
     [_kRefFDA, _kRefMdx]),
+
   ('eltrombopague', 'ciclosporina', InteractionSeverity.moderate,
     'Inibição do OATP1B1 e CYP1A2 pelo eltrombopague pode aumentar exposição à ciclosporina',
     'Nefrotoxicidade por aumento do nível de ciclosporina',
@@ -1334,7 +1459,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.nephrotoxicity, RiskType.plasmaLevel},
     [_kRefMdx, _kRefLex]),
 
-  // ── Denosumabe ────────────────────────────────────────────────────────────
+    // ── Denosumabe ────────────────────────────────────────────────────────────
+
   ('denosumabe', 'corticosteroide sistemico', InteractionSeverity.moderate,
     'Ambos aumentam risco de osteonecrose mandibular e fraturas atípicas; corticosteroides causam osteoporose adicional',
     'Risco de osteonecrose mandibular e fraturas ósseas graves',
@@ -1344,7 +1470,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.increasedToxicity},
     [_kRefFDA, _kRefUT]),
 
-  // ── Bupropiona ────────────────────────────────────────────────────────────
+    // ── Bupropiona ────────────────────────────────────────────────────────────
+
   ('bupropiona', 'imao', InteractionSeverity.contraindicated,
     'Bupropiona inibe recaptação de dopamina/noradrenalina + IMAOs inibem degradação — hiperestimulação adrenérgica e serotoninérgica',
     'Crise hipertensiva, síndrome serotoninérgica, convulsões — risco de morte',
@@ -1353,6 +1480,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.serotonin, RiskType.cardiovascular},
     [_kRefFDA, _kRefGG]),
+
   ('bupropiona', 'carbamazepina', InteractionSeverity.major,
     'Carbamazepina induz CYP3A4/2B6 → redução significativa dos níveis de bupropiona',
     'Falha antidepressiva e no programa de cessação tabágica',
@@ -1361,6 +1489,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.reducedEfficacy, RiskType.plasmaLevel},
     [_kRefMdx, _kRefFDA]),
+
   ('bupropiona', 'tramadol', InteractionSeverity.major,
     'Ambos reduzem o limiar convulsivo por mecanismos independentes — sinergia pró-convulsivante',
     'Risco muito aumentado de convulsões generalizadas',
@@ -1369,7 +1498,8 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.cns},
     [_kRefMdx, _kRefFDA]),
-  ('bupropiona', 'ssri', InteractionSeverity.moderate,
+
+  ('bupropiona', 'isrs', InteractionSeverity.moderate,
     'Bupropiona inibe CYP2D6 → aumenta exposição a fluoxetina, paroxetina e outros SSRIs metabolizados por esse CYP',
     'Síndrome serotoninérgica leve a moderada, elevação de efeitos adversos dos SSRIs',
     'Monitorar sinais de excesso serotoninérgico. Considerar redução da dose do SSRI se sintomas surgem',
@@ -1378,7 +1508,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.serotonin, RiskType.plasmaLevel},
     [_kRefMdx, _kRefUT]),
 
-  // ── Aripiprazol ───────────────────────────────────────────────────────────
+    // ── Aripiprazol ───────────────────────────────────────────────────────────
+
   ('aripiprazol', 'claritromicina', InteractionSeverity.major,
     'Inibição do CYP3A4 pela claritromicina aumenta exposição ao aripiprazol em ~90%',
     'Toxicidade por aripiprazol — acatisia intensa, hipotensão, sedação, convulsões (raro)',
@@ -1387,6 +1518,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.plasmaLevel, RiskType.increasedToxicity},
     [_kRefFDA, _kRefMdx]),
+
   ('aripiprazol', 'fluoxetina', InteractionSeverity.moderate,
     'Fluoxetina inibe CYP2D6 e CYP3A4 → aumento de 100% na exposição ao aripiprazol',
     'Acatisia, sedação excessiva, hipotensão ortostática',
@@ -1396,7 +1528,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.plasmaLevel, RiskType.cardiovascular},
     [_kRefFDA, _kRefMdx]),
 
-  // ── Perampanel ────────────────────────────────────────────────────────────
+    // ── Perampanel ────────────────────────────────────────────────────────────
+
   ('perampanel', 'carbamazepina', InteractionSeverity.major,
     'Carbamazepina induz potentemente CYP3A4 → redução de ~67% na exposição ao perampanel',
     'Falha antiepiléptica — concentrações subterapêuticas de perampanel',
@@ -1405,6 +1538,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.reducedEfficacy, RiskType.plasmaLevel},
     [_kRefFDA, _kRefMdx]),
+
   ('perampanel', 'alcool', InteractionSeverity.major,
     'Perampanel potencializa depressão do SNC pelo álcool; pode aumentar comportamentos agressivos/impulsivos',
     'Sedação grave, comportamento irracional, agressividade, maior risco de acidentes',
@@ -1414,7 +1548,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.cns},
     [_kRefFDA, _kRefMdx]),
 
-  // ── Rifaximina ────────────────────────────────────────────────────────────
+    // ── Rifaximina ────────────────────────────────────────────────────────────
+
   ('rifaximina', 'anticoncepcional', InteractionSeverity.monitorOnly,
     'Mesmo com absorção mínima, pode alterar flora intestinal que participa da circulação êntero-hepática dos anticoncepcionais',
     'Redução teórica (baixo risco clinicamente) da eficácia anticoncepcional hormonal',
@@ -1424,7 +1559,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.reducedEfficacy},
     [_kRefMdx, _kRefUT]),
 
-  // ── Nintedanibe ───────────────────────────────────────────────────────────
+    // ── Nintedanibe ───────────────────────────────────────────────────────────
+
   ('nintedanibe', 'warfarina', InteractionSeverity.moderate,
     'Nintedanibe inibe P-gp e CYP3A4; interação potencial aumentando nível de varfarina',
     'Elevação do INR e risco hemorrágico — intensificado pelo risco de sangramento GI do nintedanibe',
@@ -1433,6 +1569,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.probable,
     {RiskType.hemorrhagic, RiskType.plasmaLevel},
     [_kRefMdx, _kRefUT]),
+
   ('nintedanibe', 'rifampicina', InteractionSeverity.major,
     'Rifampicina induz P-gp e CYP3A4 → redução de ~60% nos níveis de nintedanibe',
     'Falha terapêutica na FPI — progressão da fibrose',
@@ -1442,8 +1579,9 @@ const _interactionDB = <_IxEntry>[
     {RiskType.reducedEfficacy, RiskType.plasmaLevel},
     [_kRefFDA, _kRefMdx]),
 
-  // ── Fondaparinux ──────────────────────────────────────────────────────────
-  ('fondaparinux', 'ssri', InteractionSeverity.moderate,
+    // ── Fondaparinux ──────────────────────────────────────────────────────────
+
+  ('fondaparinux', 'isrs', InteractionSeverity.moderate,
     'SSRIs inibem função plaquetária (redução de serotonina plaquetária) + anticoagulação do fondaparinux',
     'Risco aumentado de sangramento — especialmente GI',
     'Monitorar sinais de sangramento. Considerar IBP para proteção gástrica em uso combinado',
@@ -1451,6 +1589,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.probable,
     {RiskType.hemorrhagic},
     [_kRefMdx, _kRefUT]),
+
   ('fondaparinux', 'aine', InteractionSeverity.moderate,
     'AINEs inibem função plaquetária e protegem mucosa gástrica — risco hemorrágico aditivo',
     'Sangramento GI e em outros sítios',
@@ -1460,9 +1599,10 @@ const _interactionDB = <_IxEntry>[
     {RiskType.hemorrhagic},
     [_kRefGG, _kRefMdx]),
 
-  // ── Lote 3 — Novas interações ─────────────────────────────────────────────
+    // ── Lote 3 — Novas interações ─────────────────────────────────────────────
 
-  // Gabapentina
+    // Gabapentina
+
   ('gabapentina', 'morfina', InteractionSeverity.major,
     'Sinergismo farmacodinâmico na depressão do SNC e do centro respiratório',
     'Depressão respiratória potencialmente fatal, sedação profunda, apneia',
@@ -1471,6 +1611,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.respiratoryDepression, RiskType.cns},
     [_kRefFDA, _kRefMdx]),
+
   ('gabapentina', 'opioide', InteractionSeverity.major,
     'Sinergismo farmacodinâmico — ambos deprimem SNC e centro respiratório',
     'Depressão respiratória grave, sedação excessiva, risco de morte',
@@ -1479,6 +1620,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.respiratoryDepression, RiskType.cns},
     [_kRefFDA, _kRefMdx, _kRefGG]),
+
   ('gabapentina', 'benzodiazepínico', InteractionSeverity.major,
     'Depressão aditiva do SNC pela combinação de anticonvulsivante + benzodiazepínico',
     'Sedação excessiva, depressão respiratória, risco de queda',
@@ -1488,17 +1630,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.respiratoryDepression, RiskType.cns},
     [_kRefFDA, _kRefMdx]),
 
-  // Sertralina + Tramadol
-  ('ssri', 'tramadol', InteractionSeverity.major,
-    'Tramadol inibe recaptação de serotonina e noradrenalina; SSRIs aumentam serotonina sinapticamente — efeito serotoninérgico aditivo',
-    'Síndrome serotoninérgica: hipertermia, agitação, mioclonias, diarreia, taquicardia — risco de morte',
-    'Evitar combinação. Se dor intensa, preferir opioide puro (morfina, oxicodona). Monitorar triade serotoninérgica',
-    'ALTO RISCO DE SÍNDROME SEROTONINÉRGICA — Evitar; usar morfina',
-    EvidenceLevel.established,
-    {RiskType.serotonin},
-    [_kRefFDA, _kRefGG, _kRefMdx]),
+    // Sertralina + Tramadol
 
-  // Fenobarbital + DOACs/Anticoagulantes
   ('fenobarbital', 'warfarina', InteractionSeverity.major,
     'Fenobarbital induz potentemente CYP2C9 e CYP3A4, acelerando o metabolismo da warfarina',
     'Redução marcada do INR — falha anticoagulante e risco trombótico',
@@ -1507,6 +1640,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.reducedEfficacy, RiskType.plasmaLevel, RiskType.thrombosis},
     [_kRefGG, _kRefMdx]),
+
   ('fenobarbital', 'apixabana', InteractionSeverity.major,
     'Indução de CYP3A4 e P-gp pelo fenobarbital reduz níveis plasmáticos de apixabana em ~50%',
     'Anticoagulação subterapêutica — risco de tromboembolismo (AVC, TEP, TVP)',
@@ -1515,6 +1649,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.reducedEfficacy, RiskType.thrombosis},
     [_kRefFDA, _kRefMdx]),
+
   ('fenobarbital', 'rivaroxabana', InteractionSeverity.major,
     'Indução de CYP3A4 e P-gp reduz exposição à rivaroxabana significativamente',
     'Perda de efeito anticoagulante — risco tromboembólico grave',
@@ -1524,7 +1659,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.reducedEfficacy, RiskType.thrombosis},
     [_kRefFDA, _kRefMdx]),
 
-  // Metformina + Furosemida
+    // Metformina + Furosemida
+
   ('metformina', 'furosemida', InteractionSeverity.moderate,
     'Furosemida causa depleção de volume e reduz clearance renal de metformina; risco aumentado de acidose lática em contextos de hipovolemia',
     'Acúmulo de metformina por redução da excreção renal → acidose lática (rara mas grave)',
@@ -1534,35 +1670,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.nephrotoxicity, RiskType.increasedToxicity},
     [_kRefGG, _kRefMdx]),
 
-  // Espironolactona + IECAs
-  ('espironolactona', 'enalapril', InteractionSeverity.major,
-    'Ambos retêm potássio por mecanismos distintos (poupador de K+ + bloqueio SRAA)',
-    'Hipercalemia grave (K+ >6 mEq/L) — risco de arritmia ventricular fatal e parada cardíaca',
-    'Monitorar K+ e creatinina em 1–2 semanas ao iniciar. Dosar K+ mensalmente. Restringir K+ dietético. Suspender se K+ >5,5 mEq/L',
-    'ALTO RISCO DE HIPERCALEMIA — Monitorar K+ e creatinina semanalmente',
-    EvidenceLevel.established,
-    {RiskType.hyperkalemia, RiskType.arrhythmia},
-    [_kRefGG, _kRefMdx, _kRefUT]),
+    // Espironolactona + IECAs
 
-  // Verapamil / Diltiazem + Betabloqueadores
-  ('verapamil', 'metoprolol', InteractionSeverity.major,
-    'Ambos deprimem o nó SA e AV por mecanismos distintos — bloqueio aditivo da condução cardíaca',
-    'Bradicardia grave, bloqueio AV de alto grau, assistolia — especialmente em disfunção de VE',
-    'Evitar combinação IV. Uso oral requer ECG basal e monitoramento. Não administrar IV ambos simultaneamente',
-    'ALTO RISCO DE ASSISTOLIA — Nunca usar IV simultaneamente',
-    EvidenceLevel.established,
-    {RiskType.cardiovascular, RiskType.arrhythmia},
-    [_kRefGG, _kRefMdx]),
-  ('diltiazem', 'metoprolol', InteractionSeverity.major,
-    'Depressão aditiva do nó SA/AV por bloqueadores de cálcio não-diidropiridínicos + betabloqueadores',
-    'Bradicardia, bloqueio AV, hipotensão, insuficiência cardíaca descompensada',
-    'Monitorar ECG e FC. Evitar em FEVE reduzida. Não titular doses sem ECG de controle',
-    'ALTO RISCO CARDIOVASCULAR — Monitorar ECG e FC continuamente',
-    EvidenceLevel.established,
-    {RiskType.cardiovascular, RiskType.arrhythmia},
-    [_kRefGG, _kRefMdx]),
-
-  // Dexmedetomidina
   ('dexmedetomidina', 'metoprolol', InteractionSeverity.moderate,
     'Agonismo alfa-2 central da dexmedetomidina potencia bradicardia e hipotensão dos betabloqueadores',
     'Bradicardia sinusal, hipotensão refratária — especialmente em hipovolemia',
@@ -1571,6 +1680,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.cardiovascular},
     [_kRefMdx, _kRefUT]),
+
   ('dexmedetomidina', 'propofol', InteractionSeverity.moderate,
     'Sedação aditiva do SNC — ambos são agentes de sedação IV',
     'Sedação excessiva, apneia, hipotensão, bradicardia',
@@ -1580,7 +1690,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.respiratoryDepression, RiskType.cardiovascular, RiskType.cns},
     [_kRefMdx, _kRefUT]),
 
-  // Propofol
+    // Propofol
+
   ('propofol', 'opioide', InteractionSeverity.moderate,
     'Sinergismo sedativo e depressor respiratório — especialmente com fentanila e remifentanila',
     'Apneia, hipotensão, bradicardia — risco aumentado em bolus',
@@ -1590,7 +1701,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.respiratoryDepression, RiskType.cardiovascular},
     [_kRefGG, _kRefMdx]),
 
-  // Fentanila + Benzodiazepínico
+    // Fentanila + Benzodiazepínico
+
   ('fentanila', 'benzodiazepínico', InteractionSeverity.major,
     'Depressão aditiva do SNC — combinação clássica de indução anestésica com risco aumentado',
     'Depressão respiratória grave, apneia, hipotensão',
@@ -1600,7 +1712,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.respiratoryDepression, RiskType.cns},
     [_kRefFDA, _kRefGG]),
 
-  // Esmolol
+    // Esmolol
+
   ('esmolol', 'verapamil', InteractionSeverity.major,
     'Bloqueio aditivo do nó AV por betabloqueador IV + bloqueador de cálcio — risco máximo em via IV',
     'Assistolia, bloqueio AV completo, colapso hemodinâmico',
@@ -1610,7 +1723,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.cardiovascular, RiskType.arrhythmia},
     [_kRefGG, _kRefMdx]),
 
-  // Milrinona
+    // Milrinona
+
   ('milrinona', 'furosemida', InteractionSeverity.moderate,
     'Furosemida causa hipovolemia e hipocalemia, amplificando efeitos vasodilatadores da milrinona',
     'Hipotensão grave, arritmias por hipocalemia (potencializa milrinona)',
@@ -1620,7 +1734,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.cardiovascular, RiskType.hypokalemia},
     [_kRefMdx, _kRefUT]),
 
-  // Levosimendan
+    // Levosimendan
+
   ('levosimendan', 'nitrato', InteractionSeverity.moderate,
     'Ambos são vasodilatadores — levosimendan abre canais K-ATP vasculares; nitratos liberam NO',
     'Hipotensão grave, especialmente nas primeiras horas de infusão do levosimendan',
@@ -1630,7 +1745,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.cardiovascular},
     [_kRefMdx, _kRefUT]),
 
-  // Naloxona
+    // Naloxona
+
   ('naloxona', 'opioide', InteractionSeverity.major,
     'Antagonismo competitivo nos receptores mu-opioide — reverte analgesia e sedação',
     'Crise de abstinência aguda em dependentes, dor intensa, agitação, hipertensão, edema pulmonar (raro)',
@@ -1640,7 +1756,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.cardiovascular, RiskType.cns},
     [_kRefGG, _kRefFDA]),
 
-  // Labetalol
+    // Labetalol
+
   ('labetalol', 'verapamil', InteractionSeverity.major,
     'Bloqueio combinado alfa+beta (labetalol) + bloqueio de canal de cálcio — depressão cardíaca aditiva',
     'Bradicardia, hipotensão grave, insuficiência cardíaca aguda',
@@ -1650,10 +1767,11 @@ const _interactionDB = <_IxEntry>[
     {RiskType.cardiovascular, RiskType.arrhythmia},
     [_kRefGG, _kRefMdx]),
 
-  // Aminoglicosídeo + Vancomicina (Lote 3 duplicate — mantido por compatibilidade)
-  // (já existe entrada idêntica acima; esta é aceita por _seen deduplication)
+    // Aminoglicosídeo + Vancomicina (Lote 3 duplicate — mantido por compatibilidade)
+    // (já existe entrada idêntica acima; esta é aceita por _seen deduplication)
 
-  // Fluconazol — CYP2C9/3A4
+    // Fluconazol — CYP2C9/3A4
+
   ('fluconazol', 'sinvastatina', InteractionSeverity.major,
     'Inibição do CYP3A4 pelo fluconazol aumenta AUC da sinvastatina em até 14 vezes',
     'Miopatia grave, rabdomiólise com insuficiência renal aguda',
@@ -1662,6 +1780,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.myopathy, RiskType.nephrotoxicity, RiskType.plasmaLevel},
     [_kRefGG, _kRefMdx, _kRefFDA]),
+
   ('fluconazol', 'atorvastatina', InteractionSeverity.major,
     'Inibição do CYP3A4 eleva concentrações de atorvastatina significativamente',
     'Miopatia, rabdomiólise, lesão renal aguda',
@@ -1670,6 +1789,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.myopathy, RiskType.plasmaLevel},
     [_kRefMdx, _kRefFDA]),
+
   ('fluconazol', 'quetiapina', InteractionSeverity.major,
     'Inibição de CYP3A4 aumenta exposição à quetiapina com prolongamento do QTc',
     'Prolongamento do intervalo QT, torsades de pointes, fibrilação ventricular',
@@ -1678,6 +1798,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.qtProlongation, RiskType.plasmaLevel},
     [_kRefMdx, _kRefLex]),
+
   ('fluconazol', 'fenitoína', InteractionSeverity.major,
     'Fluconazol inibe CYP2C9 e CYP2C19 — principais metabolizadores da fenitoína',
     'Toxicidade por fenitoína: nistagmo, ataxia, diplopia, convulsões paradoxais',
@@ -1687,7 +1808,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.plasmaLevel, RiskType.increasedToxicity},
     [_kRefGG, _kRefMdx]),
 
-  // Fenitoína (indutora)
+    // Fenitoína (indutora)
+
   ('fenitoína', 'warfarina', InteractionSeverity.major,
     'Fenitoína induz CYP2C9 → maior metabolismo da warfarina; também pode deslocar warfarina de proteínas (efeito bifásico)',
     'Inicialmente: elevação do INR → risco hemorrágico. Cronicamente: redução do INR → risco tromboembólico',
@@ -1696,6 +1818,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.hemorrhagic, RiskType.thrombosis, RiskType.plasmaLevel},
     [_kRefGG, _kRefMdx, _kRefUT]),
+
   ('fenitoína', 'lamotrigina', InteractionSeverity.major,
     'Fenitoína induz UGT e CYP2C19, acelerando glucuronidação da lamotrigina',
     'Redução de 40–50% nos níveis de lamotrigina → falha antiepiléptica',
@@ -1705,8 +1828,9 @@ const _interactionDB = <_IxEntry>[
     {RiskType.reducedEfficacy, RiskType.plasmaLevel},
     [_kRefGG, _kRefMdx]),
 
-  // Topiramato
-  ('topiramato', 'acido valproico', InteractionSeverity.moderate,
+    // Topiramato
+
+  ('topiramato', 'valproato', InteractionSeverity.moderate,
     'Interação farmacodinâmica e metabólica: topiramato pode reduzir níveis de valproato e inibir beta-oxidação mitocondrial',
     'Encefalopatia hiperamonêmica (sem elevação de aminotransferases), hipotermia',
     'Monitorar amônia sérica em pacientes sintomáticos (confusão, letargia). Suspender topiramato se encefalopatia',
@@ -1714,6 +1838,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.probable,
     {RiskType.cns, RiskType.increasedToxicity},
     [_kRefGG, _kRefMdx]),
+
   ('topiramato', 'anticoncepcional', InteractionSeverity.moderate,
     'Topiramato induz CYP3A4 em doses ≥200 mg/dia, reduzindo etinilestradiol e progestagênio',
     'Falha contraceptiva — gravidez não planejada',
@@ -1723,7 +1848,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.reducedEfficacy, RiskType.plasmaLevel},
     [_kRefFDA, _kRefMdx]),
 
-  // Olanzapina
+    // Olanzapina
+
   ('olanzapina', 'benzodiazepínico', InteractionSeverity.major,
     'Depressão aditiva do SNC — risco especialmente elevado com formulação IM de olanzapina',
     'Sedação grave, depressão respiratória, hipotensão — casos de óbito descritos',
@@ -1732,6 +1858,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.respiratoryDepression, RiskType.cardiovascular, RiskType.cns},
     [_kRefFDA, _kRefMdx]),
+
   ('olanzapina', 'metoprolol', InteractionSeverity.moderate,
     'Olanzapina inibe CYP2D6, aumentando exposição ao metoprolol',
     'Bradicardia, hipotensão ortostática, broncoespasmo em asmáticos',
@@ -1741,7 +1868,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.cardiovascular, RiskType.plasmaLevel},
     [_kRefMdx, _kRefLex]),
 
-  // Mirtazapina
+    // Mirtazapina
+
   ('mirtazapina', 'tramadol', InteractionSeverity.major,
     'Mirtazapina tem ação serotoninérgica e noradrenérgica; tramadol inibe recaptação de serotonina',
     'Síndrome serotoninérgica — hipertermia, agitação, clonus, diarreia',
@@ -1750,6 +1878,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.probable,
     {RiskType.serotonin},
     [_kRefMdx, _kRefUT]),
+
   ('mirtazapina', 'imao', InteractionSeverity.contraindicated,
     'Mirtazapina potencializa transmissão serotoninérgica e noradrenérgica; IMAOs bloqueiam catabolismo de monoaminas',
     'Síndrome serotoninérgica grave potencialmente fatal',
@@ -1759,8 +1888,9 @@ const _interactionDB = <_IxEntry>[
     {RiskType.serotonin},
     [_kRefFDA, _kRefGG]),
 
-  // Clonazepam + Valproato
-  ('benzodiazepínico', 'acido valproico', InteractionSeverity.moderate,
+    // Clonazepam + Valproato
+
+  ('benzodiazepínico', 'valproato', InteractionSeverity.moderate,
     'Valproato pode aumentar concentrações de clonazepam por inibição metabólica; risco de ausência paradoxal',
     'Sedação excessiva, ou paradoxalmente: piora do estado de ausência epiléptica',
     'Monitorar resposta clínica. Avaliar padrão de ausências em eletroencefalograma se piora',
@@ -1769,7 +1899,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.cns, RiskType.plasmaLevel},
     [_kRefMdx, _kRefUT]),
 
-  // Acetazolamida
+    // Acetazolamida
+
   ('acetazolamida', 'topiramato', InteractionSeverity.moderate,
     'Ambos inibem anidrase carbônica — efeito aditivo na acidose metabólica e nefrolitíase',
     'Acidose metabólica hiperclorêmica grave, nefrolitíase, encefalopatia (raro)',
@@ -1778,6 +1909,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.nephrotoxicity, RiskType.increasedToxicity},
     [_kRefMdx, _kRefGG]),
+
   ('acetazolamida', 'aspirina', InteractionSeverity.major,
     'AAS em doses analgésicas compete com acetazolamida por secreção tubular renal, elevando nível da acetazolamida; também pode induzir acidose',
     'Toxicidade por acetazolamida: letargia, anorexia, parestesias, acidose grave',
@@ -1787,15 +1919,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.increasedToxicity, RiskType.nephrotoxicity},
     [_kRefMdx, _kRefGG]),
 
-  // Clortalidona / Hidroclorotiazida
-  ('hidroclorotiazida', 'carbonato de litio', InteractionSeverity.major,
-    'Tiazídicos causam depleção de sódio → aumento compensatório da reabsorção de lítio no túbulo proximal',
-    'Toxicidade por lítio: tremor grosseiro, náuseas, ataxia, confusão, convulsões, insuficiência renal',
-    'Monitorar lítio sérico semanalmente ao iniciar/ajustar diurético. Reduzir dose de lítio em ~25%. Manter ingesta hídrica e salina adequadas',
-    'ALTO RISCO DE TOXICIDADE POR LÍTIO — Monitorar litemia semanalmente',
-    EvidenceLevel.established,
-    {RiskType.increasedToxicity, RiskType.plasmaLevel},
-    [_kRefGG, _kRefMdx]),
+    // Clortalidona / Hidroclorotiazida
+
   ('hidroclorotiazida', 'digoxina', InteractionSeverity.major,
     'Hipocalemia induzida por tiazídico potencializa toxicidade da digoxina (competição por bomba Na/K-ATPase)',
     'Toxicidade digitálica: bradiarritmia, BAV, bigeminismo, náuseas, distúrbios visuais',
@@ -1805,7 +1930,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.hypokalemia, RiskType.arrhythmia},
     [_kRefGG, _kRefMdx]),
 
-  // Verapamil + Digoxina
+    // Verapamil + Digoxina
+
   ('verapamil', 'digoxina', InteractionSeverity.major,
     'Verapamil inibe P-gp e reduz clearance renal de digoxina, aumentando nível sérico em 50–75%',
     'Toxicidade digitálica: BAV, bradicardia grave, náuseas, visão turva',
@@ -1815,15 +1941,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.plasmaLevel, RiskType.cardiovascular},
     [_kRefGG, _kRefMdx]),
 
-  // Glibenclamida
-  ('glibenclamida', 'fluconazol', InteractionSeverity.major,
-    'Fluconazol inibe CYP2C9, principal enzima de metabolismo da glibenclamida',
-    'Hipoglicemia grave prolongada — risco em idosos e insuficiência renal',
-    'Monitorar glicemia capilar a cada 4h durante uso concomitante. Reduzir dose de glibenclamida. Considerar switch para insulina',
-    'ALTO RISCO DE HIPOGLICEMIA GRAVE — Monitorar glicemia a cada 4h',
-    EvidenceLevel.established,
-    {RiskType.hypoglycemia, RiskType.plasmaLevel},
-    [_kRefGG, _kRefMdx]),
+    // Glibenclamida
+
   ('glibenclamida', 'ciprofloxacino', InteractionSeverity.moderate,
     'Ciprofloxacino inibe CYP1A2 e pode aumentar secreção de insulina por bloqueio de canais de K-ATP pancreáticos',
     'Hipoglicemia — especialmente em idosos com insuficiência renal',
@@ -1833,17 +1952,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.hypoglycemia},
     [_kRefMdx, _kRefUT]),
 
-  // Isossorbida + Sildenafila
-  ('nitrato', 'sildenafila', InteractionSeverity.contraindicated,
-    'Sinergismo no aumento de GMPc (NO + PDE5i) → vasodilatação sistêmica potencializada e incontrolável',
-    'Hipotensão grave potencialmente fatal, síncope, isquemia miocárdica por "roubo"',
-    'ABSOLUTAMENTE CONTRAINDICADO. Informar explicitamente todos os pacientes com angina que usam nitratos sobre essa contraindicação',
-    'NÃO UTILIZAR — Hipotensão fatal absolutamente contraindicada',
-    EvidenceLevel.established,
-    {RiskType.cardiovascular},
-    [_kRefFDA, _kRefGG, _kRefMdx]),
+    // Isossorbida + Sildenafila
 
-  // Rocurônio
   ('rocurônio', 'aminoglicosideo', InteractionSeverity.moderate,
     'Aminoglicosídeos inibem a liberação de acetilcolina na junção neuromuscular — potencialização do bloqueio neuromuscular',
     'Prolongamento do bloqueio neuromuscular, dificuldade de reversão com neostigmina',
@@ -1853,7 +1963,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.increasedToxicity},
     [_kRefGG, _kRefMdx]),
 
-  // Tigeciclina
+    // Tigeciclina
+
   ('tigeciclina', 'warfarina', InteractionSeverity.moderate,
     'Tigeciclina pode aumentar INR por mecanismo não completamente elucidado (possivelmente inibição da flora intestinal produtora de vitamina K)',
     'Elevação do INR com risco hemorrágico',
@@ -1863,7 +1974,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.hemorrhagic},
     [_kRefMdx, _kRefFDA]),
 
-  // Ceftolozana + Furosemida
+    // Ceftolozana + Furosemida
+
   ('ceftolozana', 'furosemida', InteractionSeverity.monitorOnly,
     'Furosemida pode reduzir excreção renal de betalactâmicos por competição tubular',
     'Aumento leve dos níveis plasmáticos de ceftolozana — sem relevância clínica significativa na maioria dos casos',
@@ -1873,7 +1985,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.plasmaLevel},
     [_kRefMdx]),
 
-  // Clonixinato de Lisina
+    // Clonixinato de Lisina
+
   ('clonixinato', 'warfarina', InteractionSeverity.moderate,
     'AINE com inibição plaquetária e possível deslocamento proteico da warfarina',
     'Aumento do INR e risco de sangramento',
@@ -1882,6 +1995,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.probable,
     {RiskType.hemorrhagic, RiskType.plasmaLevel},
     [_kRefMdx]),
+
   ('clonixinato', 'aine', InteractionSeverity.moderate,
     'Risco aditivo de toxicidade GI e renal por uso de dois AINEs simultaneamente',
     'Úlcera gástrica, sangramento GI, lesão renal aguda',
@@ -1891,13 +2005,14 @@ const _interactionDB = <_IxEntry>[
     {RiskType.hemorrhagic, RiskType.nephrotoxicity},
     [_kRefGG, _kRefMdx]),
 
-  // ══════════════════════════════════════════════════════════════════════════
-  // AUDITORIA COMPLETA — LOTE 4 — pares clinicamente críticos faltantes
-  // Fonte: Goodman & Gilman 14ª ed., Micromedex 2024, UpToDate 2024,
-  //        Lexicomp 2024, FDA Drug Label, ESC/AHA/SBC Guidelines
-  // ══════════════════════════════════════════════════════════════════════════
+    // ══════════════════════════════════════════════════════════════════════════
+    // AUDITORIA COMPLETA — LOTE 4 — pares clinicamente críticos faltantes
+    // Fonte: Goodman & Gilman 14ª ed., Micromedex 2024, UpToDate 2024,
+    //        Lexicomp 2024, FDA Drug Label, ESC/AHA/SBC Guidelines
+    // ══════════════════════════════════════════════════════════════════════════
 
-  // ── 1. ANTICOAGULANTES ORAIS DIRETOS (AOD) ────────────────────────────────
+    // ── 1. ANTICOAGULANTES ORAIS DIRETOS (AOD) ────────────────────────────────
+
   ('apixabana', 'aspirina', InteractionSeverity.major,
     'Dupla inibição hemostática: apixabana bloqueia fator Xa; aspirina inibe COX-1 plaquetária',
     'Risco hemorrágico aumentado 2-3x — hemorragia GI, intracraniana, retroperitoneal',
@@ -1906,6 +2021,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.hemorrhagic},
     [_kRefGG, _kRefUT, _kRefFDA]),
+
 
   ('apixabana', 'aine', InteractionSeverity.major,
     'AINE inibe COX-1 plaquetária e prostaglandinas citoprotetoras gástricas; apixabana bloqueia fator Xa',
@@ -1916,6 +2032,7 @@ const _interactionDB = <_IxEntry>[
     {RiskType.hemorrhagic, RiskType.nephrotoxicity},
     [_kRefGG, _kRefMdx, _kRefUT]),
 
+
   ('rivaroxabana', 'aspirina', InteractionSeverity.major,
     'Dupla inibição hemostática: rivaroxabana bloqueia fator Xa; aspirina inibe COX-1 plaquetária',
     'Risco hemorrágico aumentado — hemorragia GI, intracraniana',
@@ -1924,6 +2041,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.hemorrhagic},
     [_kRefGG, _kRefUT, _kRefFDA]),
+
 
   ('rivaroxabana', 'aine', InteractionSeverity.major,
     'AINE inibe COX-1 plaquetária; rivaroxabana bloqueia fator Xa — efeito aditivo no sangramento GI',
@@ -1934,6 +2052,7 @@ const _interactionDB = <_IxEntry>[
     {RiskType.hemorrhagic, RiskType.nephrotoxicity},
     [_kRefGG, _kRefMdx, _kRefUT]),
 
+
   ('dabigatrana', 'aspirina', InteractionSeverity.major,
     'Dupla inibição hemostática: dabigatrana inibe trombina; aspirina inibe COX-1 plaquetária',
     'Risco hemorrágico aumentado — hemorragia GI, intracraniana',
@@ -1942,6 +2061,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.hemorrhagic},
     [_kRefGG, _kRefUT, _kRefFDA]),
+
 
   ('dabigatrana', 'aine', InteractionSeverity.major,
     'AINE inibe COX-1 plaquetária; dabigatrana inibe trombina — efeito aditivo no sangramento',
@@ -1952,6 +2072,7 @@ const _interactionDB = <_IxEntry>[
     {RiskType.hemorrhagic, RiskType.nephrotoxicity},
     [_kRefGG, _kRefMdx]),
 
+
   ('apixabana', 'clopidogrel', InteractionSeverity.major,
     'Dupla antitrombótica: apixabana anticoagulante + clopidogrel antiagregante — sem benefício aditivo na maioria das indicações',
     'Risco hemorrágico dobrado sem benefício adicional na maioria dos pacientes',
@@ -1960,6 +2081,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.hemorrhagic},
     [_kRefUT, _kRefFDA]),
+
 
   ('rivaroxabana', 'clopidogrel', InteractionSeverity.major,
     'Dupla antitrombótica: rivaroxabana anticoagulante + clopidogrel antiagregante',
@@ -1970,6 +2092,7 @@ const _interactionDB = <_IxEntry>[
     {RiskType.hemorrhagic},
     [_kRefUT, _kRefFDA]),
 
+
   ('apixabana', 'fluconazol', InteractionSeverity.major,
     'Fluconazol inibe CYP3A4 e P-gp, principais vias de metabolismo da apixabana',
     'Aumento significativo dos níveis plasmáticos de apixabana — risco hemorrágico grave',
@@ -1978,6 +2101,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.hemorrhagic, RiskType.plasmaLevel},
     [_kRefMdx, _kRefUT, _kRefLex]),
+
 
   ('rivaroxabana', 'fluconazol', InteractionSeverity.major,
     'Fluconazol inibe CYP3A4 e P-gp, principais vias de metabolismo da rivaroxabana',
@@ -1988,6 +2112,7 @@ const _interactionDB = <_IxEntry>[
     {RiskType.hemorrhagic, RiskType.plasmaLevel},
     [_kRefMdx, _kRefUT, _kRefLex]),
 
+
   ('apixabana', 'rifampicina', InteractionSeverity.major,
     'Rifampicina é potente indutor de CYP3A4 e P-gp — aumenta metabolismo e efluxo da apixabana',
     'Redução de 54% nos níveis plasmáticos de apixabana — risco de falha anticoagulante e trombose',
@@ -1996,6 +2121,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.thrombosis, RiskType.reducedEfficacy},
     [_kRefFDA, _kRefUT]),
+
 
   ('rivaroxabana', 'rifampicina', InteractionSeverity.major,
     'Rifampicina induz CYP3A4 e P-gp — aumenta metabolismo e efluxo da rivaroxabana',
@@ -2006,6 +2132,7 @@ const _interactionDB = <_IxEntry>[
     {RiskType.thrombosis, RiskType.reducedEfficacy},
     [_kRefFDA, _kRefUT]),
 
+
   ('dabigatrana', 'rifampicina', InteractionSeverity.major,
     'Rifampicina induz P-gp (principal transportador de efluxo da dabigatrana)',
     'Redução de ~66% nos níveis plasmáticos de dabigatrana — risco de trombose',
@@ -2015,7 +2142,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.thrombosis, RiskType.reducedEfficacy},
     [_kRefFDA, _kRefUT]),
 
-  // ── 2. WARFARINA — pares faltantes ────────────────────────────────────────
+    // ── 2. WARFARINA — pares faltantes ────────────────────────────────────────
+
   ('warfarina', 'clopidogrel', InteractionSeverity.major,
     'Mecanismos complementares: warfarina inibe coagulação; clopidogrel inibe agregação plaquetária via P2Y12',
     'Sangramento GI grave, hemorragia intracraniana — risco 3x maior que monoterapia',
@@ -2024,6 +2152,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.hemorrhagic},
     [_kRefGG, _kRefUT]),
+
 
   ('warfarina', 'carbamazepina', InteractionSeverity.major,
     'Carbamazepina é potente indutor do CYP2C9 e CYP3A4 — aumenta metabolismo da warfarina',
@@ -2034,6 +2163,7 @@ const _interactionDB = <_IxEntry>[
     {RiskType.thrombosis, RiskType.reducedEfficacy},
     [_kRefGG, _kRefMdx, _kRefUT]),
 
+
   ('warfarina', 'tramadol', InteractionSeverity.major,
     'Tramadol inibe CYP2C9 (metabolismo da warfarina S) e pode ter efeito anticoagulante aditivo',
     'Elevação do INR — risco de sangramento grave',
@@ -2042,6 +2172,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.probable,
     {RiskType.hemorrhagic, RiskType.plasmaLevel},
     [_kRefMdx, _kRefUT]),
+
 
   ('warfarina', 'omeprazol', InteractionSeverity.moderate,
     'Omeprazol inibe CYP2C19 — pode elevar discretamente os níveis de warfarina S',
@@ -2052,6 +2183,7 @@ const _interactionDB = <_IxEntry>[
     {RiskType.hemorrhagic, RiskType.plasmaLevel},
     [_kRefMdx, _kRefUT]),
 
+
   ('warfarina', 'sulfametoxazol', InteractionSeverity.major,
     'SMX-TMP inibe CYP2C9 (metabolizador da warfarina S) e desloca warfarina de proteínas plasmáticas',
     'Elevação abrupta do INR em 2-3x — risco de sangramento grave',
@@ -2061,7 +2193,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.hemorrhagic, RiskType.plasmaLevel},
     [_kRefGG, _kRefMdx, _kRefUT]),
 
-  // ── 3. CLOPIDOGREL — pares faltantes ──────────────────────────────────────
+    // ── 3. CLOPIDOGREL — pares faltantes ──────────────────────────────────────
+
   ('clopidogrel', 'aspirina', InteractionSeverity.moderate,
     'Dupla antiagregação plaquetária: clopidogrel via P2Y12; aspirina via COX-1 — complementares no contexto de síndrome coronária aguda e stent',
     'Risco hemorrágico aumentado vs. monoterapia (sangramento GI, equimoses); necessário em indicações específicas (SCA, stent coronário)',
@@ -2071,7 +2204,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.hemorrhagic},
     [_kRefGG, _kRefUT, _kRefFDA]),
 
-  // ── 4. IECA/ARA-II — pares faltantes ──────────────────────────────────────
+    // ── 4. IECA/ARA-II — pares faltantes ──────────────────────────────────────
+
   ('enalapril', 'cloreto de potassio', InteractionSeverity.major,
     'IECA reduz excreção renal de potássio por inibição da aldosterona; suplementação de KCl aditiva',
     'Hipercalemia grave — risco de arritmias ventriculares fatais, parada cardíaca',
@@ -2080,6 +2214,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.hyperkalemia, RiskType.arrhythmia},
     [_kRefGG, _kRefUT]),
+
 
   ('losartana', 'cloreto de potassio', InteractionSeverity.major,
     'ARA-II reduz excreção renal de potássio por bloqueio do receptor AT1; suplementação de KCl aditiva',
@@ -2090,6 +2225,7 @@ const _interactionDB = <_IxEntry>[
     {RiskType.hyperkalemia, RiskType.arrhythmia},
     [_kRefGG, _kRefUT]),
 
+
   ('enalapril', 'trimetoprima', InteractionSeverity.major,
     'Trimetoprima bloqueia secreção tubular de potássio de forma similar à amilorida; IECA já reduz excreção de K+',
     'Hipercalemia grave — especialmente em idosos, diabéticos e insuficiência renal',
@@ -2098,6 +2234,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.hyperkalemia},
     [_kRefUT, _kRefMdx]),
+
 
   ('losartana', 'aine', InteractionSeverity.moderate,
     'AINEs reduzem síntese de prostaglandinas vasodilatadoras renais e antagonizam efeito do ARA-II',
@@ -2108,16 +2245,18 @@ const _interactionDB = <_IxEntry>[
     {RiskType.nephrotoxicity, RiskType.cardiovascular},
     [_kRefGG, _kRefUT]),
 
-  ('enalapril', 'hidroclorotiazida', InteractionSeverity.monitorOnly,
-    'Combinação sinérgica anti-hipertensiva — IECA potencializa efeito diurético e vice-versa',
-    'Hipotensão de primeira dose, especialmente em pacientes com depleção volêmica; hiponatremia',
-    'Combinação frequentemente intencional e benéfica. Iniciar com doses baixas e titular. Monitorar PA na 1ª semana e eletrólitos',
-    'Combinação sinérgica — monitorar PA e eletrólitos especialmente no início',
-    EvidenceLevel.established,
-    {RiskType.cardiovascular, RiskType.hypokalemia},
-    [_kRefGG, _kRefUT]),
 
-  // ── 5. ESTATINAS — pares faltantes ────────────────────────────────────────
+  ('enalapril', 'hidroclorotiazida', InteractionSeverity.minor,
+    'Combinação sinérgica anti-hipertensiva — IECA potencializa efeito diurético e vice-versa',
+    'Hipotensão de primeira dose, especialmente em pacientes com depleção volêmica; hiponatremia e hipocalemia',
+    'Combinação frequentemente intencional e benéfica (formulações fixas disponíveis). Iniciar com doses baixas e titular. Monitorar PA na 1ª semana e eletrólitos a cada 3 meses',
+    'Combinação sinérgica — vigiar hipotensão de 1ª dose e eletrólitos',
+    EvidenceLevel.established,
+    {RiskType.cardiovascular, RiskType.hypokalemia, RiskType.electrolyte},
+    [_kRefGG, _kRefKatz, _kRefUT]),
+
+    // ── 5. ESTATINAS — pares faltantes ────────────────────────────────────────
+
   ('rosuvastatina', 'fenofibrato', InteractionSeverity.moderate,
     'Fenofibrato inibe CYP2C9 e pode elevar níveis de rosuvastatina; risco farmacodinâmico aditivo de miopatia',
     'Miopatia, mialgia, rabdomiólise — risco menor que com genfibrozil',
@@ -2126,6 +2265,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.probable,
     {RiskType.myopathy},
     [_kRefGG, _kRefMdx, _kRefFDA]),
+
 
   ('sinvastatina', 'fenofibrato', InteractionSeverity.moderate,
     'Fenofibrato inibe glucuronidação de sinvastatina e tem efeito farmacodinâmico aditivo de miopatia',
@@ -2136,6 +2276,7 @@ const _interactionDB = <_IxEntry>[
     {RiskType.myopathy},
     [_kRefGG, _kRefMdx, _kRefFDA]),
 
+
   ('rosuvastatina', 'claritromicina', InteractionSeverity.moderate,
     'Claritromicina inibe CYP3A4, mas rosuvastatina não é metabolizada pelo CYP3A4; inibe OATP1B1 — efeito moderado',
     'Aumento moderado dos níveis de rosuvastatina — risco de miopatia',
@@ -2144,6 +2285,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.probable,
     {RiskType.myopathy, RiskType.plasmaLevel},
     [_kRefMdx, _kRefUT]),
+
 
   ('atorvastatina', 'fenofibrato', InteractionSeverity.moderate,
     'Fenofibrato inibe CYP2C8 e tem efeito farmacodinâmico aditivo; menos interação que com gemfibrozil',
@@ -2154,7 +2296,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.myopathy},
     [_kRefMdx, _kRefFDA]),
 
-  // ── 6. DIGOXINA — pares faltantes ─────────────────────────────────────────
+    // ── 6. DIGOXINA — pares faltantes ─────────────────────────────────────────
+
   ('digoxina', 'claritromicina', InteractionSeverity.major,
     'Claritromicina inibe P-gp intestinal e renal, principal via de eliminação da digoxina',
     'Aumento de 70-100% nos níveis séricos de digoxina — toxicidade digitálica (náusea, bradiarritmias, BAV)',
@@ -2163,6 +2306,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.arrhythmia, RiskType.plasmaLevel},
     [_kRefGG, _kRefMdx, _kRefUT]),
+
 
   ('digoxina', 'azitromicina', InteractionSeverity.moderate,
     'Azitromicina inibe P-gp intestinal, aumentando absorção de digoxina; menor efeito que claritromicina',
@@ -2173,25 +2317,7 @@ const _interactionDB = <_IxEntry>[
     {RiskType.arrhythmia, RiskType.plasmaLevel},
     [_kRefMdx, _kRefUT]),
 
-  ('digoxina', 'hidroclorotiazida', InteractionSeverity.major,
-    'Tiazídicos causam hipocalemia e hipomagnesemia — desequilíbrios que aumentam toxicidade da digoxina mesmo com níveis séricos normais',
-    'Toxicidade digitálica com arritmias — bradiarritmias, taquicardia ventricular, fibrilação ventricular',
-    'Monitorar potássio e magnésio séricos regularmente. Repor potássio se K+ < 3,5 mEq/L. Monitorar nível sérico de digoxina',
-    'TOXICIDADE DIGITÁLICA — Hipocalemia por tiazídico aumenta toxicidade da digoxina mesmo com nível sérico normal',
-    EvidenceLevel.established,
-    {RiskType.arrhythmia, RiskType.hypokalemia},
-    [_kRefGG, _kRefMdx]),
 
-  ('digoxina', 'amiodarona', InteractionSeverity.major,
-    'Amiodarona inibe P-gp e reduz clearance renal da digoxina; efeito bradicardizante aditivo no nó sinusal e AV',
-    'Aumento de 50-100% nos níveis séricos de digoxina + bradicardia sinusal e BAV',
-    'Reduzir dose de digoxina em 50% ao iniciar amiodarona. Monitorar nível sérico de digoxina e ECG seriado',
-    'TOXICIDADE DIGITÁLICA — Amiodarona dobra níveis de digoxina; reduzir dose 50% obrigatoriamente',
-    EvidenceLevel.established,
-    {RiskType.arrhythmia, RiskType.plasmaLevel},
-    [_kRefGG, _kRefMdx, _kRefUT]),
-
-  // ── 7. PROLONGAMENTO DE QT — pares críticos faltantes ─────────────────────
   ('amiodarona', 'ciprofloxacino', InteractionSeverity.major,
     'Ambos prolongam o intervalo QT por bloqueio de canais de potássio (IKr) — efeito aditivo',
     'Torsades de Pointes, taquicardia ventricular polimórfica, fibrilação ventricular — risco de morte súbita',
@@ -2200,6 +2326,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.qtProlongation, RiskType.arrhythmia},
     [_kRefMdx, _kRefUT, _kRefFDA]),
+
 
   ('amiodarona', 'quetiapina', InteractionSeverity.major,
     'Ambos prolongam o intervalo QT — amiodarona por bloqueio de IKr; quetiapina por bloqueio de canais de Na+/K+',
@@ -2210,6 +2337,7 @@ const _interactionDB = <_IxEntry>[
     {RiskType.qtProlongation, RiskType.arrhythmia},
     [_kRefMdx, _kRefUT]),
 
+
   ('sotalol', 'ciprofloxacino', InteractionSeverity.contraindicated,
     'Ambos prolongam o intervalo QT por bloqueio de canais de potássio (IKr) — efeito aditivo sinérgico',
     'Torsades de Pointes, fibrilação ventricular, morte súbita — risco muito elevado',
@@ -2218,6 +2346,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.qtProlongation, RiskType.arrhythmia},
     [_kRefMdx, _kRefUT, _kRefFDA]),
+
 
   ('sotalol', 'azitromicina', InteractionSeverity.contraindicated,
     'Ambos prolongam o intervalo QT — sotalol por bloqueio de IKr; azitromicina por mecanismo similar',
@@ -2228,6 +2357,7 @@ const _interactionDB = <_IxEntry>[
     {RiskType.qtProlongation, RiskType.arrhythmia},
     [_kRefMdx, _kRefUT, _kRefFDA]),
 
+
   ('haloperidol', 'ciprofloxacino', InteractionSeverity.major,
     'Ambos prolongam o intervalo QT — haloperidol por bloqueio de IKr; ciprofloxacino por mecanismo similar',
     'Torsades de Pointes, taquicardia ventricular, morte súbita cardíaca',
@@ -2236,6 +2366,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.qtProlongation, RiskType.arrhythmia},
     [_kRefMdx, _kRefUT]),
+
 
   ('quetiapina', 'ciprofloxacino', InteractionSeverity.major,
     'Ambos prolongam o intervalo QT — efeito aditivo',
@@ -2246,6 +2377,7 @@ const _interactionDB = <_IxEntry>[
     {RiskType.qtProlongation, RiskType.arrhythmia},
     [_kRefMdx, _kRefUT]),
 
+
   ('quetiapina', 'azitromicina', InteractionSeverity.major,
     'Ambos prolongam o intervalo QT por bloqueio de IKr — efeito aditivo',
     'Torsades de Pointes, taquicardia ventricular',
@@ -2254,6 +2386,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.qtProlongation, RiskType.arrhythmia},
     [_kRefMdx, _kRefUT]),
+
 
   ('metadona', 'amiodarona', InteractionSeverity.contraindicated,
     'Ambos prolongam fortemente o intervalo QT — metadona por bloqueio de IKr; amiodarona por múltiplos mecanismos',
@@ -2264,6 +2397,7 @@ const _interactionDB = <_IxEntry>[
     {RiskType.qtProlongation, RiskType.arrhythmia},
     [_kRefMdx, _kRefUT, _kRefFDA]),
 
+
   ('metadona', 'ciprofloxacino', InteractionSeverity.major,
     'Ciprofloxacino inibe CYP1A2 (metabolismo da metadona) e prolonga QT — efeito duplo',
     'Elevação dos níveis de metadona + prolongamento de QT — Torsades de Pointes, depressão respiratória',
@@ -2273,7 +2407,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.qtProlongation, RiskType.arrhythmia, RiskType.plasmaLevel},
     [_kRefMdx, _kRefUT]),
 
-  // ── 8. ANTIBIÓTICOS — pares faltantes ─────────────────────────────────────
+    // ── 8. ANTIBIÓTICOS — pares faltantes ─────────────────────────────────────
+
   ('sulfametoxazol', 'metformina', InteractionSeverity.moderate,
     'Trimetoprima inibe secreção tubular da creatinina — eleva creatinina sérica sem lesão renal real; pode mascarar disfunção renal e levar à manutenção de metformina em dose excessiva',
     'Elevação falsa de creatinina pode induzir descontinuação inadequada de metformina ou, ao contrário, mascarar IRA real com acúmulo de metformina e acidose lática',
@@ -2282,6 +2417,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.nephrotoxicity},
     [_kRefUT, _kRefMdx]),
+
 
   ('ciprofloxacino', 'metformina', InteractionSeverity.moderate,
     'Ciprofloxacino inibe o transportador OCT2 renal — reduz secreção tubular da metformina',
@@ -2292,6 +2428,7 @@ const _interactionDB = <_IxEntry>[
     {RiskType.nephrotoxicity, RiskType.increasedToxicity},
     [_kRefMdx, _kRefUT]),
 
+
   ('vancomicina', 'furosemida', InteractionSeverity.major,
     'Furosemida é ototóxica e nefrotóxica; vancomicina também causa nefrotoxicidade — efeito sinérgico',
     'Nefrotoxicidade grave (IRA), ototoxicidade (perda auditiva irreversível)',
@@ -2301,7 +2438,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.nephrotoxicity},
     [_kRefGG, _kRefMdx, _kRefUT]),
 
-  ('vancomicina', 'piperacilina_tazobactam', InteractionSeverity.major,
+
+  ('vancomicina', 'piperacilina-tazobactam', InteractionSeverity.major,
     'Piperacilina-tazobactam aumenta exposição à vancomicina e potencializa nefrotoxicidade por mecanismo não completamente elucidado',
     'Nefrotoxicidade aguda aumentada em 2-3x vs. vancomicina isolada (meta-análises)',
     'Monitorar função renal diariamente. Considerar alternativas (ceftarolina, daptomicina) quando possível. Ajustar dose de vancomicina por AUC/MIC',
@@ -2309,6 +2447,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.nephrotoxicity},
     [_kRefMdx, _kRefUT]),
+
 
   ('aminoglicosideo', 'cisplatina', InteractionSeverity.major,
     'Ambos são nefrotóxicos e ototóxicos — cisplatina por lesão tubular direta; aminoglicosídeo por acúmulo na cóclea e túbulo proximal',
@@ -2319,7 +2458,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.nephrotoxicity},
     [_kRefGG, _kRefMdx]),
 
-  // ── 9. HIPOGLICEMIANTES — pares faltantes ─────────────────────────────────
+    // ── 9. HIPOGLICEMIANTES — pares faltantes ─────────────────────────────────
+
   ('insulina', 'alcool', InteractionSeverity.major,
     'Álcool inibe gliconeogênese hepática e potencializa o efeito hipoglicemiante da insulina',
     'Hipoglicemia grave prolongada — especialmente noturna; o álcool mascara os sintomas adrenérgicos de hipoglicemia',
@@ -2328,6 +2468,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.hypoglycemia},
     [_kRefGG, _kRefMdx]),
+
 
   ('metformina', 'alcool', InteractionSeverity.major,
     'Álcool inibe gliconeogênese hepática e aumenta produção de lactato — metformina também inibe gliconeogênese e reduz metabolismo de lactato',
@@ -2338,6 +2479,7 @@ const _interactionDB = <_IxEntry>[
     {RiskType.hepatotoxicity},
     [_kRefGG, _kRefMdx, _kRefFDA]),
 
+
   ('sulfonilureia', 'alcool', InteractionSeverity.major,
     'Álcool potencializa efeito hipoglicemiante e inibe gliconeogênese; com algumas sulfonilureias (clorpropamida) causa reação similar ao dissulfiram',
     'Hipoglicemia grave prolongada; rubor facial, náusea e palpitações (reação dissulfiram-like com clorpropamida)',
@@ -2346,6 +2488,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.hypoglycemia},
     [_kRefGG, _kRefMdx]),
+
 
   ('insulina', 'enalapril', InteractionSeverity.moderate,
     'IECAs aumentam sensibilidade à insulina e podem elevar captação periférica de glicose — mecanismo não completamente elucidado',
@@ -2356,6 +2499,7 @@ const _interactionDB = <_IxEntry>[
     {RiskType.hypoglycemia},
     [_kRefMdx, _kRefUT]),
 
+
   ('glibenclamida', 'alcool', InteractionSeverity.major,
     'Álcool potencializa efeito hipoglicemiante das sulfonilureias e inibe gliconeogênese hepática',
     'Hipoglicemia grave e prolongada; pode causar reação dissulfiram-like com rubor, náusea, cefaleia',
@@ -2365,7 +2509,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.hypoglycemia},
     [_kRefGG, _kRefMdx]),
 
-  // ── 10. IMUNOSSUPRESSORES — pares faltantes ───────────────────────────────
+    // ── 10. IMUNOSSUPRESSORES — pares faltantes ───────────────────────────────
+
   ('tacrolimo', 'claritromicina', InteractionSeverity.contraindicated,
     'Claritromicina é potente inibidora do CYP3A4 — principal enzima de metabolismo do tacrolimo',
     'Elevação de 5-20x nos níveis séricos de tacrolimo — nefrotoxicidade grave, neurotoxicidade, imunossupressão excessiva',
@@ -2375,7 +2520,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.nephrotoxicity, RiskType.plasmaLevel, RiskType.increasedToxicity},
     [_kRefGG, _kRefMdx, _kRefUT]),
 
-  // DUPLICATA REMOVIDA: tacrolimo+fluconazol — par detalhado mantido como fluconazol+tacrolimo (linha ~2541)
+    // DUPLICATA REMOVIDA: tacrolimo+fluconazol — par detalhado mantido como fluconazol+tacrolimo (linha ~2541)
+
 
   ('tacrolimo', 'rifampicina', InteractionSeverity.contraindicated,
     'Rifampicina induz fortemente CYP3A4 e P-gp — reduz drasticamente os níveis séricos de tacrolimo',
@@ -2386,6 +2532,7 @@ const _interactionDB = <_IxEntry>[
     {RiskType.reducedEfficacy, RiskType.plasmaLevel},
     [_kRefGG, _kRefMdx, _kRefUT]),
 
+
   ('tacrolimo', 'aine', InteractionSeverity.major,
     'AINEs são nefrotóxicos; tacrolimo já causa nefrotoxicidade — efeito sinérgico na lesão tubular renal',
     'Insuficiência renal aguda grave — especialmente em pacientes transplantados',
@@ -2394,6 +2541,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.nephrotoxicity},
     [_kRefGG, _kRefMdx, _kRefUT]),
+
 
   ('ciclosporina', 'aine', InteractionSeverity.major,
     'AINEs reduzem prostaglandinas vasodilatadoras renais; ciclosporina já causa vasoconstrição da arteríola aferente — efeito sinérgico',
@@ -2404,6 +2552,7 @@ const _interactionDB = <_IxEntry>[
     {RiskType.nephrotoxicity},
     [_kRefGG, _kRefMdx, _kRefUT]),
 
+
   ('ciclosporina', 'rifampicina', InteractionSeverity.contraindicated,
     'Rifampicina induz fortemente CYP3A4 e P-gp — metabolismo da ciclosporina drasticamente aumentado',
     'Redução de 80-90% nos níveis séricos de ciclosporina — rejeição aguda do enxerto',
@@ -2412,6 +2561,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.reducedEfficacy, RiskType.plasmaLevel},
     [_kRefGG, _kRefMdx, _kRefUT]),
+
 
   ('azatioprina', 'sulfametoxazol', InteractionSeverity.major,
     'SMX-TMP inibe enzimas de metabolismo da azatioprina e potencializa mielossupressão',
@@ -2422,7 +2572,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.myelosuppression, RiskType.infection},
     [_kRefGG, _kRefMdx, _kRefUT]),
 
-  // ── 11. ANALGÉSICOS — pares faltantes ────────────────────────────────────
+    // ── 11. ANALGÉSICOS — pares faltantes ────────────────────────────────────
+
   ('paracetamol', 'alcool', InteractionSeverity.major,
     'Álcool induz CYP2E1 — via de metabolismo que produz o metabólito hepatotóxico NAPQI; indução crônica aumenta formação de NAPQI',
     'Hepatotoxicidade grave — insuficiência hepática fulminante mesmo com doses terapêuticas de paracetamol em alcoólicos crônicos',
@@ -2431,6 +2582,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.hepatotoxicity},
     [_kRefGG, _kRefMdx, _kRefFDA]),
+
 
   ('tramadol', 'carbamazepina', InteractionSeverity.major,
     'Carbamazepina induz CYP3A4 e CYP2B6 — aumenta metabolismo do tramadol e reduz seus níveis plasmáticos',
@@ -2441,8 +2593,9 @@ const _interactionDB = <_IxEntry>[
     {RiskType.reducedEfficacy, RiskType.plasmaLevel},
     [_kRefMdx, _kRefUT]),
 
-  // ── 12. PSICOTRÓPICOS — pares faltantes ──────────────────────────────────
-  ('ssri', 'imao_reversivel', InteractionSeverity.contraindicated,
+    // ── 12. PSICOTRÓPICOS — pares faltantes ──────────────────────────────────
+
+  ('isrs', 'imao reversivel', InteractionSeverity.contraindicated,
     'Inibição dupla da recaptação e do metabolismo de serotonina — síndrome serotoninérgica',
     'Síndrome serotoninérgica grave: hipertermia, rigidez muscular, mioclonia, alteração do nível de consciência, instabilidade autonômica',
     'CONTRAINDICADO — Aguardar 14 dias após suspender IMAO antes de iniciar SSRI; aguardar 5 meias-vidas do SSRI (14 dias para a maioria, 5 semanas para fluoxetina) antes de iniciar IMAO',
@@ -2450,6 +2603,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.serotonin},
     [_kRefGG, _kRefFDA, _kRefUT]),
+
 
   ('carbonato de litio', 'aine', InteractionSeverity.major,
     'AINEs inibem síntese de prostaglandinas renais — reduzem excreção renal de lítio, elevando seus níveis séricos',
@@ -2460,6 +2614,7 @@ const _interactionDB = <_IxEntry>[
     {RiskType.plasmaLevel, RiskType.cns},
     [_kRefGG, _kRefMdx, _kRefUT]),
 
+
   ('carbonato de litio', 'furosemida', InteractionSeverity.major,
     'Furosemida causa depleção de sódio — induz reabsorção tubular compensatória de lítio no túbulo proximal',
     'Elevação dos níveis séricos de lítio — intoxicação: tremor, ataxia, confusão, insuficiência renal',
@@ -2468,6 +2623,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.plasmaLevel, RiskType.cns},
     [_kRefGG, _kRefMdx]),
+
 
   ('olanzapina', 'valproato', InteractionSeverity.moderate,
     'Sinergismo farmacológico: ambos têm efeito sedativo e podem alterar metabolismo hepático mutualmente',
@@ -2478,6 +2634,7 @@ const _interactionDB = <_IxEntry>[
     {RiskType.cns},
     [_kRefMdx, _kRefUT]),
 
+
   ('carbonato de litio', 'losartana', InteractionSeverity.major,
     'ARA-II reduzem perfusão renal glomerular e excreção de lítio — mecanismo similar ao IECA',
     'Elevação dos níveis séricos de lítio — risco de intoxicação: tremor, ataxia, confusão, insuficiência renal',
@@ -2487,7 +2644,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.plasmaLevel, RiskType.cns},
     [_kRefGG, _kRefMdx, _kRefUT]),
 
-  // ── 13. ANTIEPILÉPTICOS — pares faltantes ────────────────────────────────
+    // ── 13. ANTIEPILÉPTICOS — pares faltantes ────────────────────────────────
+
   ('carbamazepina', 'rifampicina', InteractionSeverity.major,
     'Rifampicina induz CYP3A4 — aumenta metabolismo da carbamazepina',
     'Redução dos níveis séricos de carbamazepina — perda do controle de crises epilépticas',
@@ -2496,6 +2654,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.reducedEfficacy, RiskType.plasmaLevel},
     [_kRefMdx, _kRefUT]),
+
 
   ('fenitoína', 'carbamazepina', InteractionSeverity.moderate,
     'Interação bidirecional: fenitoína induz CYP3A4 (metabolismo da carbamazepina); carbamazepina induz CYP2C9 (metabolismo da fenitoína)',
@@ -2506,7 +2665,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.plasmaLevel},
     [_kRefGG, _kRefMdx]),
 
-  ('acido valproico', 'carbamazepina', InteractionSeverity.moderate,
+
+  ('valproato', 'carbamazepina', InteractionSeverity.moderate,
     'Valproato inibe metabolismo do metabólito ativo da carbamazepina (carbamazepina-10,11-epóxido) — acúmulo do metabólito tóxico',
     'Toxicidade por carbamazepina-epóxido: diplopia, ataxia, náusea, tontura — mesmo com nível sérico de carbamazepina normal',
     'Monitorar sintomas de toxicidade por carbamazepina. Medir nível do epóxido se disponível. Considerar redução de carbamazepina',
@@ -2515,7 +2675,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.cns, RiskType.plasmaLevel},
     [_kRefGG, _kRefMdx]),
 
-  // ── 14. ANTIFÚNGICOS — pares faltantes ───────────────────────────────────
+    // ── 14. ANTIFÚNGICOS — pares faltantes ───────────────────────────────────
+
   ('fluconazol', 'midazolam', InteractionSeverity.contraindicated,
     'Fluconazol inibe fortemente CYP3A4 — principal enzima de metabolismo do midazolam',
     'Elevação de 3-5x nos níveis de midazolam — sedação excessiva e prolongada, depressão respiratória grave',
@@ -2524,6 +2685,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.respiratoryDepression, RiskType.cns, RiskType.plasmaLevel},
     [_kRefGG, _kRefMdx, _kRefFDA]),
+
 
   ('fluconazol', 'carbamazepina', InteractionSeverity.moderate,
     'Fluconazol inibe CYP3A4 — eleva níveis séricos de carbamazepina',
@@ -2534,6 +2696,7 @@ const _interactionDB = <_IxEntry>[
     {RiskType.cns, RiskType.plasmaLevel},
     [_kRefMdx, _kRefUT]),
 
+
   ('fluconazol', 'tacrolimo', InteractionSeverity.contraindicated,
     'Fluconazol inibe CYP3A4 e CYP2C19 — principais enzimas de metabolismo do tacrolimo',
     'Elevação de 3-5x nos níveis séricos de tacrolimo — nefrotoxicidade, neurotoxicidade',
@@ -2543,7 +2706,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.nephrotoxicity, RiskType.plasmaLevel},
     [_kRefGG, _kRefMdx, _kRefUT]),
 
-  // ── 15. CARDIOVASCULAR — pares faltantes ─────────────────────────────────
+    // ── 15. CARDIOVASCULAR — pares faltantes ─────────────────────────────────
+
   ('betabloqueador', 'verapamil', InteractionSeverity.contraindicated,
     'Efeito aditivo no nó sinusal e AV: betabloqueador reduz frequência e condução; verapamil também — dupla depressão',
     'Bradicardia grave, bloqueio AV completo, assistolia, hipotensão severa, ICC descompensada',
@@ -2552,6 +2716,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.arrhythmia, RiskType.cardiovascular},
     [_kRefGG, _kRefMdx, _kRefFDA]),
+
 
   ('hidroclorotiazida', 'aine', InteractionSeverity.moderate,
     'AINEs antagonizam efeito natriurético dos tiazídicos por inibição das prostaglandinas renais',
@@ -2562,7 +2727,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.cardiovascular, RiskType.nephrotoxicity},
     [_kRefGG, _kRefUT]),
 
-  // NOTA: par furosemida+litio consolidado em carbonato de litio+furosemida (acima, linha ~2467)
+    // NOTA: par furosemida+litio consolidado em carbonato de litio+furosemida (acima, linha ~2467)
+
 
   ('digoxina', 'quinolona', InteractionSeverity.moderate,
     'Quinolonas alteram flora intestinal que metaboliza digoxina — em 10% dos pacientes ("metabolizadores por Eggerthella lenta"), quinolonas aumentam absorção de digoxina significativamente',
@@ -2573,6 +2739,7 @@ const _interactionDB = <_IxEntry>[
     {RiskType.arrhythmia, RiskType.plasmaLevel},
     [_kRefMdx, _kRefUT]),
 
+
   ('clopidogrel', 'morfina', InteractionSeverity.major,
     'Morfina retarda esvaziamento gástrico e absorção de clopidogrel — reduz pico plasmático e concentração máxima',
     'Redução de 30-50% nos níveis plasmáticos de clopidogrel ativo — inibição plaquetária subótima durante fase crítica de SCA',
@@ -2582,7 +2749,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.reducedEfficacy, RiskType.thrombosis},
     [_kRefUT, _kRefFDA]),
 
-  // ── 16. RESPIRATÓRIO / BRONCODILATADORES ─────────────────────────────────
+    // ── 16. RESPIRATÓRIO / BRONCODILATADORES ─────────────────────────────────
+
   ('teofilina', 'eritromicina', InteractionSeverity.major,
     'Eritromicina inibe CYP1A2 e CYP3A4 — principais enzimas de metabolismo da teofilina',
     'Elevação dos níveis séricos de teofilina — toxicidade: náusea, vômito, taquicardia, convulsões, arritmias',
@@ -2592,16 +2760,7 @@ const _interactionDB = <_IxEntry>[
     {RiskType.arrhythmia, RiskType.plasmaLevel},
     [_kRefGG, _kRefMdx]),
 
-  ('teofilina', 'ciprofloxacino', InteractionSeverity.major,
-    'Ciprofloxacino inibe CYP1A2 — principal enzima de metabolismo da teofilina; efeito potente e rápido',
-    'Elevação de 30-90% nos níveis séricos de teofilina — toxicidade: náusea, vômito, taquicardia, convulsões',
-    'Reduzir dose de teofilina em 30-50% ao iniciar ciprofloxacino. Monitorar nível sérico. Preferir levofloxacino ou outro antibiótico com menor interação',
-    'TOXICIDADE POR TEOFILINA — Ciprofloxacino eleva teofilina 30-90%; ajustar dose obrigatoriamente',
-    EvidenceLevel.established,
-    {RiskType.arrhythmia, RiskType.plasmaLevel},
-    [_kRefGG, _kRefMdx, _kRefFDA]),
 
-  // ── 17. ANTIRETROVIRAIS — pares faltantes ────────────────────────────────
   ('ritonavir', 'sildenafila', InteractionSeverity.contraindicated,
     'Ritonavir inibe fortemente CYP3A4 — principal via de metabolismo da sildenafila',
     'Elevação de 11x nos níveis de sildenafila — hipotensão grave, priapismo, perda visual',
@@ -2610,6 +2769,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.cardiovascular, RiskType.plasmaLevel},
     [_kRefFDA, _kRefMdx]),
+
 
   ('ritonavir', 'metadona', InteractionSeverity.major,
     'Ritonavir induz CYP3A4 e CYP2B6 — aumenta metabolismo da metadona e também prolonga QT',
@@ -2620,7 +2780,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.qtProlongation, RiskType.plasmaLevel},
     [_kRefMdx, _kRefUT]),
 
-  // ── FLUCONAZOL + BENZODIAZEPÍNICOS (par ausente — bug crítico alprazolam+fluconazol) ──
+    // ── FLUCONAZOL + BENZODIAZEPÍNICOS (par ausente — bug crítico alprazolam+fluconazol) ──
+
   ('fluconazol', 'benzodiazepínico', InteractionSeverity.major,
     'Fluconazol inibe fortemente CYP3A4 — principal via de metabolismo de alprazolam, diazepam, clonazepam e lorazepam',
     'Aumento de 2-4x nos níveis plasmáticos de benzodiazepínicos (alprazolam, diazepam, clonazepam). Sedação excessiva, depressão do SNC e risco de depressão respiratória. Lorazepam é menos afetado (metabolismo por glucuronidação).',
@@ -2632,61 +2793,8 @@ const _interactionDB = <_IxEntry>[
 
 
 
-('aas', 'aspirina', InteractionSeverity.moderate,
-    'Ambos inibem COX-1 plaquetária — competição pelo sítio ativo; AAS regular bloqueia o sítio irreversivelmente antes da aspirina',
-    'Antagonismo do efeito cardioprotetor do AAS de baixa dose; aumento do risco hemorrágico GI',
-    'Evitar uso simultâneo. Se AINE necessário, tomar AAS 2h antes do ibuprofeno/naproxeno. Preferir paracetamol como analgésico',
-    'ANTAGONISMO antiagregante + sangramento GI aumentado',
-    EvidenceLevel.established,
-    {RiskType.hemorrhagic, RiskType.reducedEfficacy},
-    [_kRefGG, _kRefMdx]),
 
-('aas', 'clopidogrel', InteractionSeverity.moderate,
-    'Dupla antiagregação por mecanismos complementares (COX-1 + P2Y12) — sinergia hemorrágica',
-    'Aumento significativo do risco de sangramento maior, especialmente GI e intracraniano',
-    'Usar apenas quando indicação clínica clara (SCA, stent). Associar proteção gástrica com IBP. Monitorar sinais de sangramento',
-    'DUPLA ANTIAGREGAÇÃO — risco hemorrágico aumentado; proteger com IBP',
-    EvidenceLevel.established,
-    {RiskType.hemorrhagic},
-    [_kRefGG, _kRefMdx]),
-
-('aas', 'heparina', InteractionSeverity.major,
-    'Inibição plaquetária pelo AAS + anticoagulação pela heparina potencializa risco hemorrágico',
-    'Hemorragia grave, incluindo sangramento cirúrgico e retroperitoneal',
-    'Combinação usada em SCA sob monitoramento rigoroso. Minimizar doses e duração. Vigilância para sinais de sangramento',
-    'SANGRAMENTO AUMENTADO — AAS + heparina requerem monitoramento rigoroso',
-    EvidenceLevel.established,
-    {RiskType.hemorrhagic},
-    [_kRefGG, _kRefMdx]),
-
-('aas', 'apixabana', InteractionSeverity.major,
-    'Inibição plaquetária pelo AAS + inibição do fator Xa pela apixabana — sinergia hemorrágica',
-    'Aumento significativo do risco de sangramento maior',
-    'Evitar combinação rotineira. Se necessário (ex: SCA + FA), usar AAS ≤100 mg/dia e monitorar sangramento. Associar IBP',
-    'SANGRAMENTO AUMENTADO — evitar combinação ou usar AAS ≤100mg + IBP',
-    EvidenceLevel.established,
-    {RiskType.hemorrhagic},
-    [_kRefGG, _kRefMdx]),
-
-('aas', 'rivaroxabana', InteractionSeverity.major,
-    'Inibição plaquetária + inibição fator Xa — duplo risco hemorrágico',
-    'Aumento do risco de sangramento maior, especialmente GI',
-    'Evitar combinação desnecessária. Se necessário, usar dose mínima de AAS e associar IBP',
-    'SANGRAMENTO AUMENTADO — AAS + rivaroxabana: evitar ou usar IBP',
-    EvidenceLevel.established,
-    {RiskType.hemorrhagic},
-    [_kRefGG, _kRefMdx]),
-
-('aas', 'dabigatrana', InteractionSeverity.major,
-    'Inibição plaquetária pelo AAS + inibição direta da trombina pela dabigatrana',
-    'Aumento do risco de sangramento grave',
-    'Usar somente quando indicação clara. Manter AAS ≤100 mg/dia. Associar IBP. Monitorar função renal (dabigatrana é renal)',
-    'SANGRAMENTO AUMENTADO — AAS + dabigatrana: monitorar e usar IBP',
-    EvidenceLevel.established,
-    {RiskType.hemorrhagic},
-    [_kRefGG, _kRefMdx]),
-
-('aas', 'aine', InteractionSeverity.major,
+  ('aspirina', 'aine', InteractionSeverity.major,
     'Competição pelo sítio de ligação da COX-1 plaquetária + inibição dupla de prostaglandinas protetoras da mucosa gástrica',
     'Antagonismo do efeito cardioprotetor do AAS; risco elevado de hemorragia GI',
     'Evitar AINEs não seletivos com AAS. Se analgesia necessária, preferir paracetamol. Se AINE inevitável, tomar AAS 2h antes e usar IBP',
@@ -2695,7 +2803,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.hemorrhagic, RiskType.reducedEfficacy},
     [_kRefGG, _kRefFDA]),
 
-('aas', 'corticosteroide sistemico', InteractionSeverity.major,
+
+  ('aspirina', 'corticosteroide sistemico', InteractionSeverity.major,
     'Corticosteroide reduz proteção da mucosa gástrica (diminui prostaglandinas) + AAS inibe COX — efeito duplo lesivo',
     'Risco muito elevado de úlcera péptica e hemorragia GI',
     'Associar IBP obrigatoriamente. Minimizar dose e duração do corticosteroide. Monitorar sintomas GI',
@@ -2704,7 +2813,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.hemorrhagic},
     [_kRefGG, _kRefMdx]),
 
-('aas', 'metotrexato', InteractionSeverity.major,
+
+  ('aspirina', 'metotrexato', InteractionSeverity.major,
     'AAS reduz excreção renal e tubular do metotrexato por competição',
     'Elevação dos níveis de metotrexato — toxicidade hematológica, mucosites, nefrotoxicidade',
     'Evitar em doses altas de metotrexato. Em baixas doses (artrite), monitorar hemograma e função renal',
@@ -2713,7 +2823,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.increasedToxicity, RiskType.nephrotoxicity},
     [_kRefGG, _kRefMdx]),
 
-('aas', 'carbonato de litio', InteractionSeverity.moderate,
+
+  ('aspirina', 'carbonato de litio', InteractionSeverity.moderate,
     'AAS pode interferir levemente na excreção renal de lítio via prostaglandinas renais',
     'Elevação modesta dos níveis séricos de lítio',
     'Monitorar litemia ao iniciar ou aumentar dose de AAS em pacientes com lítio',
@@ -2722,7 +2833,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.plasmaLevel},
     [_kRefGG]),
 
-('aas', 'metformina', InteractionSeverity.minor,
+
+  ('aspirina', 'metformina', InteractionSeverity.minor,
     'AAS pode potencializar levemente o efeito hipoglicemiante da metformina',
     'Hipoglicemia leve em doses altas de AAS (>3 g/dia)',
     'Sem restrição em doses cardioprotetoras (≤100 mg/dia). Monitorar glicemia se doses analgésicas elevadas',
@@ -2731,25 +2843,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.hypoglycemia},
     [_kRefGG]),
 
-('aspirina', 'aine', InteractionSeverity.major,
-    'Antagonismo do efeito cardioprotetor + aumento do risco GI por inibição dupla de COX',
-    'Risco elevado de sangramento GI e perda do efeito antiagregante',
-    'Evitar AINEs não seletivos. Preferir paracetamol como analgésico',
-    'ANTAGONISMO + SANGRAMENTO GI — preferir paracetamol',
-    EvidenceLevel.established,
-    {RiskType.hemorrhagic, RiskType.reducedEfficacy},
-    [_kRefGG, _kRefFDA]),
 
-('aspirina', 'corticosteroide sistemico', InteractionSeverity.major,
-    'Dupla inibição da proteção gástrica — COX (aspirina) + redução de muco (corticosteroide)',
-    'Risco muito elevado de úlcera e sangramento GI',
-    'IBP obrigatório. Minimizar doses e duração de ambos',
-    'ALTO RISCO GI — IBP obrigatório com aspirina + corticosteroide',
-    EvidenceLevel.established,
-    {RiskType.hemorrhagic},
-    [_kRefGG, _kRefMdx]),
-
-('apixabana', 'heparina', InteractionSeverity.contraindicated,
+  ('apixabana', 'heparina', InteractionSeverity.contraindicated,
     'Dupla anticoagulação: inibição fator Xa (apixabana) + inibição múltipla da cascata (heparina)',
     'Risco extremo de hemorragia grave',
     'CONTRAINDICADO em uso concomitante. Usar apenas em transição monitorada (bridging). Nunca usar simultaneamente em dose plena',
@@ -2758,7 +2853,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.hemorrhagic},
     [_kRefGG, _kRefMdx]),
 
-('apixabana', 'warfarina', InteractionSeverity.contraindicated,
+
+  ('apixabana', 'warfarina', InteractionSeverity.contraindicated,
     'Dupla anticoagulação: inibição fator Xa + inibição vitamina K',
     'Risco extremo de hemorragia grave',
     'CONTRAINDICADO. Nunca usar juntos. Na transição warfarina → apixabana, suspender warfarina e iniciar apixabana quando INR <2,0',
@@ -2767,7 +2863,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.hemorrhagic},
     [_kRefGG, _kRefFDA]),
 
-('apixabana', 'dabigatrana', InteractionSeverity.contraindicated,
+
+  ('apixabana', 'dabigatrana', InteractionSeverity.contraindicated,
     'Dupla anticoagulação com dois mecanismos distintos — risco hemorrágico extremo',
     'Hemorragia fatal',
     'CONTRAINDICADO. Nunca usar dois anticoagulantes de ação direta simultaneamente',
@@ -2776,7 +2873,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.hemorrhagic},
     [_kRefGG]),
 
-('apixabana', 'rivaroxabana', InteractionSeverity.contraindicated,
+
+  ('apixabana', 'rivaroxabana', InteractionSeverity.contraindicated,
     'Dois inibidores do fator Xa — anticoagulação excessiva',
     'Hemorragia grave',
     'CONTRAINDICADO. Nunca combinar dois inibidores do fator Xa',
@@ -2785,7 +2883,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.hemorrhagic},
     [_kRefGG]),
 
-('apixabana', 'fondaparinux', InteractionSeverity.contraindicated,
+
+  ('apixabana', 'fondaparinux', InteractionSeverity.contraindicated,
     'Dois inibidores do fator Xa por mecanismos distintos — anticoagulação excessiva',
     'Risco muito elevado de hemorragia',
     'CONTRAINDICADO em uso concomitante pleno. Evitar sobreposição',
@@ -2794,7 +2893,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.hemorrhagic},
     [_kRefGG]),
 
-('dabigatrana', 'heparina', InteractionSeverity.contraindicated,
+
+  ('dabigatrana', 'heparina', InteractionSeverity.contraindicated,
     'Inibição direta da trombina (dabigatrana) + anticoagulação múltipla (heparina) — dupla anticoagulação',
     'Risco extremo de hemorragia grave',
     'CONTRAINDICADO em uso simultâneo pleno. Apenas em transições controladas (suspender heparina antes de iniciar dabigatrana)',
@@ -2803,7 +2903,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.hemorrhagic},
     [_kRefGG, _kRefMdx]),
 
-('dabigatrana', 'warfarina', InteractionSeverity.contraindicated,
+
+  ('dabigatrana', 'warfarina', InteractionSeverity.contraindicated,
     'Dupla anticoagulação por mecanismos distintos',
     'Risco extremo de hemorragia',
     'CONTRAINDICADO. Na transição, iniciar dabigatrana quando INR <2,0 após suspensão de warfarina',
@@ -2812,7 +2913,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.hemorrhagic},
     [_kRefGG, _kRefFDA]),
 
-('dabigatrana', 'rivaroxabana', InteractionSeverity.contraindicated,
+
+  ('dabigatrana', 'rivaroxabana', InteractionSeverity.contraindicated,
     'Dois anticoagulantes de ação direta com mecanismos distintos',
     'Hemorragia grave',
     'CONTRAINDICADO. Nunca combinar dois anticoagulantes diretos',
@@ -2821,7 +2923,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.hemorrhagic},
     [_kRefGG]),
 
-('dabigatrana', 'fondaparinux', InteractionSeverity.contraindicated,
+
+  ('dabigatrana', 'fondaparinux', InteractionSeverity.contraindicated,
     'Inibição trombina + inibição fator Xa — dupla anticoagulação',
     'Hemorragia grave',
     'CONTRAINDICADO em uso simultâneo pleno',
@@ -2830,7 +2933,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.hemorrhagic},
     [_kRefGG]),
 
-('dabigatrana', 'clopidogrel', InteractionSeverity.major,
+
+  ('dabigatrana', 'clopidogrel', InteractionSeverity.major,
     'Anticoagulação direta (trombina) + antiagregação P2Y12 — sinergia hemorrágica',
     'Aumento significativo do risco de sangramento maior',
     'Usar somente quando indicação estabelecida. Usar IBP. Período mínimo de terapia combinada',
@@ -2839,7 +2943,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.hemorrhagic},
     [_kRefGG, _kRefMdx]),
 
-('heparina', 'warfarina', InteractionSeverity.moderate,
+
+  ('heparina', 'warfarina', InteractionSeverity.moderate,
     'Dupla anticoagulação — usada intencionalmente em transição, mas com risco hemorrágico aditivo',
     'Hemorragia se sobreposição prolongada ou INR supraterapêutico',
     'Sobreposição de 5 dias com INR >2,0 por 2 dias consecutivos antes de suspender heparina. Monitorar TTPA e INR',
@@ -2848,7 +2953,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.hemorrhagic},
     [_kRefGG, _kRefMdx]),
 
-('heparina', 'clopidogrel', InteractionSeverity.major,
+
+  ('heparina', 'clopidogrel', InteractionSeverity.major,
     'Anticoagulação (heparina) + antiagregação P2Y12 (clopidogrel) — sinergia hemorrágica',
     'Aumento do risco de sangramento maior, especialmente em procedimentos invasivos',
     'Combinação usada em SCA — monitorar ativamente. Cessar heparina quando clinicamente possível',
@@ -2857,7 +2963,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.hemorrhagic},
     [_kRefGG, _kRefMdx]),
 
-('heparina', 'rivaroxabana', InteractionSeverity.contraindicated,
+
+  ('heparina', 'rivaroxabana', InteractionSeverity.contraindicated,
     'Dois anticoagulantes com mecanismos distintos — dupla anticoagulação',
     'Hemorragia grave',
     'CONTRAINDICADO em uso simultâneo pleno. Apenas em transição controlada',
@@ -2866,7 +2973,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.hemorrhagic},
     [_kRefGG]),
 
-('heparina', 'fondaparinux', InteractionSeverity.contraindicated,
+
+  ('heparina', 'fondaparinux', InteractionSeverity.contraindicated,
     'Dois anticoagulantes com ação anti-Xa — anticoagulação excessiva',
     'Hemorragia grave',
     'CONTRAINDICADO em uso simultâneo',
@@ -2875,7 +2983,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.hemorrhagic},
     [_kRefGG]),
 
-('rivaroxabana', 'warfarina', InteractionSeverity.contraindicated,
+
+  ('rivaroxabana', 'warfarina', InteractionSeverity.contraindicated,
     'Dois anticoagulantes por mecanismos distintos — dupla anticoagulação',
     'Hemorragia grave',
     'CONTRAINDICADO. Na transição rivaroxabana → warfarina, manter rivaroxabana até INR ≥2,0',
@@ -2884,7 +2993,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.hemorrhagic},
     [_kRefGG, _kRefFDA]),
 
-('rivaroxabana', 'fondaparinux', InteractionSeverity.contraindicated,
+
+  ('rivaroxabana', 'fondaparinux', InteractionSeverity.contraindicated,
     'Dois inibidores do fator Xa — anticoagulação excessiva',
     'Hemorragia grave',
     'CONTRAINDICADO em uso simultâneo',
@@ -2893,7 +3003,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.hemorrhagic},
     [_kRefGG]),
 
-('fondaparinux', 'warfarina', InteractionSeverity.major,
+
+  ('fondaparinux', 'warfarina', InteractionSeverity.major,
     'Inibição fator Xa (fondaparinux) + inibição vitamina K (warfarina) — anticoagulação aditiva',
     'Hemorragia grave se sobreposição prolongada',
     'Usar somente em transição controlada. Monitorar INR e ajustar fondaparinux conforme protocolo',
@@ -2902,7 +3013,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.hemorrhagic},
     [_kRefGG, _kRefMdx]),
 
-('fondaparinux', 'clopidogrel', InteractionSeverity.major,
+
+  ('fondaparinux', 'clopidogrel', InteractionSeverity.major,
     'Anticoagulação + antiagregação — sinergia hemorrágica',
     'Aumento do risco de sangramento maior',
     'Monitorar ativamente. Usar somente quando indicação estabelecida',
@@ -2911,7 +3023,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.hemorrhagic},
     [_kRefGG]),
 
-('clopidogrel', 'aine', InteractionSeverity.major,
+
+  ('clopidogrel', 'aine', InteractionSeverity.major,
     'Antiagregação + lesão mucosa e inibição plaquetária pelos AINEs',
     'Hemorragia GI aumentada',
     'Evitar AINEs. Usar paracetamol. Se AINE inevitável, associar IBP',
@@ -2920,7 +3033,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.hemorrhagic},
     [_kRefGG, _kRefMdx]),
 
-('clopidogrel', 'fluoxetina', InteractionSeverity.moderate,
+
+  ('clopidogrel', 'fluoxetina', InteractionSeverity.moderate,
     'Fluoxetina inibe CYP2C19 — reduz ativação do clopidogrel',
     'Possível redução do efeito antiagregante',
     'Preferir sertralina ou escitalopram (menor inibição de CYP2C19) em pacientes com clopidogrel',
@@ -2929,7 +3043,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.reducedEfficacy},
     [_kRefGG, _kRefMdx]),
 
-('amiodarona', 'betabloqueador', InteractionSeverity.major,
+
+  ('amiodarona', 'betabloqueador', InteractionSeverity.major,
     'Efeito aditivo no nó sinusal e AV — amiodarona já prolonga período refratário + betabloqueador reduz FC e condução',
     'Bradicardia grave, bloqueio AV de alto grau, assistolia',
     'Monitorar ECG continuamente. Evitar combinação IV simultânea. Se oral, titulação lenta com monitoramento cardíaco',
@@ -2938,7 +3053,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.arrhythmia, RiskType.other},
     [_kRefGG, _kRefMdx]),
 
-('amiodarona', 'diltiazem', InteractionSeverity.major,
+
+  ('amiodarona', 'diltiazem', InteractionSeverity.major,
     'Efeito aditivo no nó AV — amiodarona e diltiazem ambos deprimem condução AV',
     'Bloqueio AV completo, bradicardia grave, hipotensão',
     'Evitar combinação. Se necessário, monitorar ECG continuamente e ter marca-passo disponível',
@@ -2947,7 +3063,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.arrhythmia},
     [_kRefGG, _kRefMdx]),
 
-('amiodarona', 'propranolol', InteractionSeverity.major,
+
+  ('amiodarona', 'propranolol', InteractionSeverity.major,
     'Amiodarona inibe CYP2D6 → eleva nível de propranolol + efeito aditivo cronotrópico negativo',
     'Bradicardia grave, bloqueio AV, hipotensão',
     'Reduzir dose de propranolol. Monitorar FC e pressão arterial',
@@ -2956,7 +3073,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.arrhythmia, RiskType.plasmaLevel},
     [_kRefGG, _kRefMdx]),
 
-('amiodarona', 'ondansetrona', InteractionSeverity.major,
+
+  ('amiodarona', 'ondansetrona', InteractionSeverity.major,
     'Prolongamento aditivo do QT — amiodarona (classe III) + ondansetrona (bloqueio canal hERG)',
     'Torsade de Pointes',
     'Evitar combinação. Se uso necessário, monitorar QTc. Substituir por metoclopramida ou domperidona',
@@ -2965,7 +3083,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.qtProlongation, RiskType.arrhythmia},
     [_kRefGG, _kRefMdx]),
 
-('amiodarona', 'fenitoína', InteractionSeverity.major,
+
+  ('amiodarona', 'fenitoína', InteractionSeverity.major,
     'Amiodarona inibe CYP2C9 → eleva nível de fenitoína; fenitoína induz CYP3A4 → reduz nível de amiodarona',
     'Toxicidade por fenitoína (nistagmo, ataxia, confusão) e possível redução da eficácia da amiodarona',
     'Monitorar nível sérico de fenitoína. Reduzir dose de fenitoína em 30-50% ao iniciar amiodarona',
@@ -2974,7 +3093,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.plasmaLevel, RiskType.increasedToxicity},
     [_kRefGG, _kRefMdx]),
 
-('amiodarona', 'levotiroxina', InteractionSeverity.major,
+
+  ('amiodarona', 'levotiroxina', InteractionSeverity.major,
     'Amiodarona inibe conversão periférica de T4 em T3 e contém 37% de iodo — interfere profundamente na função tireoidiana',
     'Hipotireoidismo ou hipertireoidismo induzido pela amiodarona — ambos com risco cardíaco',
     'Monitorar TSH, T4 livre e T3 a cada 6 meses. Ajustar levotiroxina conforme função tireoidiana. Acompanhamento com endocrinologia',
@@ -2983,7 +3103,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.other},
     [_kRefGG, _kRefMdx]),
 
-('amiodarona', 'ciclosporina', InteractionSeverity.major,
+
+  ('amiodarona', 'ciclosporina', InteractionSeverity.major,
     'Amiodarona inibe CYP3A4 e P-gp — aumenta nível de ciclosporina',
     'Nefrotoxicidade, neurotoxicidade por elevação de ciclosporina',
     'Reduzir dose de ciclosporina. Monitorar nível sérico e função renal',
@@ -2992,7 +3113,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.nephrotoxicity, RiskType.plasmaLevel},
     [_kRefGG, _kRefMdx]),
 
-('amiodarona', 'metformina', InteractionSeverity.minor,
+
+  ('amiodarona', 'metformina', InteractionSeverity.minor,
     'Amiodarona pode alterar levemente a função renal — risco de acúmulo de metformina',
     'Risco teórico de acidose lática em disfunção renal',
     'Monitorar função renal periodicamente em pacientes com amiodarona e metformina',
@@ -3001,7 +3123,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.other},
     [_kRefGG]),
 
-('betabloqueador', 'diltiazem', InteractionSeverity.major,
+
+  ('betabloqueador', 'diltiazem', InteractionSeverity.major,
     'Efeito aditivo na depressão do nó sinusal e AV — betabloqueador + diltiazem (bloqueador canal Ca não-DHP)',
     'Bradicardia grave, bloqueio AV de 2º/3º grau, hipotensão, ICC descompensada',
     'Contraindicado por via IV simultânea. Oral com monitoramento cardíaco. ECG antes e após início',
@@ -3010,7 +3133,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.arrhythmia},
     [_kRefGG, _kRefMdx]),
 
-('betabloqueador', 'sotalol', InteractionSeverity.major,
+
+  ('betabloqueador', 'sotalol', InteractionSeverity.major,
     'Sotalol tem propriedades betabloqueadoras + prolongamento QT — efeito aditivo com betabloqueador',
     'Bradicardia, bloqueio AV, prolongamento QT, Torsade de Pointes',
     'Evitar combinação. Se necessário, monitorar ECG e FC continuamente',
@@ -3019,7 +3143,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.arrhythmia, RiskType.qtProlongation},
     [_kRefGG, _kRefMdx]),
 
-('betabloqueador', 'clonidina', InteractionSeverity.major,
+
+  ('betabloqueador', 'clonidina', InteractionSeverity.major,
     'Na retirada abrupta de clonidina com betabloqueador em uso, há hipertensão de rebote grave — betabloqueador bloqueia vasodilatação beta-mediada',
     'Crise hipertensiva grave na retirada de clonidina',
     'Retirar betabloqueador antes de descontinuar clonidina. Nunca suspender clonidina abruptamente',
@@ -3028,7 +3153,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.other},
     [_kRefGG, _kRefMdx]),
 
-('betabloqueador', 'alfa-bloqueador', InteractionSeverity.moderate,
+
+  ('betabloqueador', 'alfa-bloqueador', InteractionSeverity.moderate,
     'Bloqueio alfa (vasodilatação periférica) + bloqueio beta (impede taquicardia reflexa compensatória)',
     'Hipotensão ortostática grave, síncope — especialmente na primeira dose',
     'Iniciar alfa-bloqueador com dose baixa. Monitorar PA após primeira dose. Orientar paciente sobre risco de síncope',
@@ -3037,7 +3163,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.other},
     [_kRefGG, _kRefMdx]),
 
-('betabloqueador', 'nitrato', InteractionSeverity.moderate,
+
+  ('betabloqueador', 'nitrato', InteractionSeverity.moderate,
     'Vasodilatação pelo nitrato + redução da taquicardia reflexa pelo betabloqueador — efeito hemodinâmico aditivo',
     'Hipotensão sinérgica, tontura, síncope',
     'Combinação geralmente benéfica em angina. Titular doses com monitoramento de PA. Orientar mudança postural lenta',
@@ -3046,7 +3173,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.other},
     [_kRefGG]),
 
-('betabloqueador', 'sildenafila', InteractionSeverity.moderate,
+
+  ('betabloqueador', 'sildenafila', InteractionSeverity.moderate,
     'Sildenafila causa vasodilatação; betabloqueador bloqueia taquicardia reflexa compensatória',
     'Hipotensão sintomática, tontura, síncope',
     'Monitorar PA. Evitar uso próximo ao horário do betabloqueador. Cautela em pacientes com IC',
@@ -3055,7 +3183,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.other},
     [_kRefGG, _kRefMdx]),
 
-('digoxina', 'diltiazem', InteractionSeverity.moderate,
+
+  ('digoxina', 'diltiazem', InteractionSeverity.moderate,
     'Diltiazem inibe P-gp → aumenta nível de digoxina + efeito aditivo no nó AV',
     'Toxicidade por digoxina e bradicardia',
     'Monitorar nível sérico de digoxina ao iniciar diltiazem. Reduzir dose de digoxina se necessário',
@@ -3064,7 +3193,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.arrhythmia, RiskType.plasmaLevel},
     [_kRefGG, _kRefMdx]),
 
-('digoxina', 'betabloqueador', InteractionSeverity.major,
+
+  ('digoxina', 'betabloqueador', InteractionSeverity.major,
     'Efeito aditivo no nó AV — digoxina (vagotônico) + betabloqueador (cronotrópico negativo)',
     'Bradicardia grave, bloqueio AV de alto grau',
     'Monitorar FC e ECG. Titular doses. Evitar combinação em disfunção sinusal',
@@ -3073,7 +3203,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.arrhythmia},
     [_kRefGG, _kRefMdx]),
 
-('digoxina', 'metoprolol', InteractionSeverity.major,
+
+  ('digoxina', 'metoprolol', InteractionSeverity.major,
     'Efeito aditivo cronotrópico negativo no nó sinusal e AV',
     'Bradicardia grave, bloqueio AV',
     'Monitorar FC e ECG. Manter FC >50 bpm. Titular doses gradualmente',
@@ -3082,7 +3213,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.arrhythmia},
     [_kRefGG, _kRefMdx]),
 
-('digoxina', 'aine', InteractionSeverity.moderate,
+
+  ('digoxina', 'aine', InteractionSeverity.moderate,
     'AINEs reduzem filtração glomerular → diminuem clearance renal da digoxina',
     'Elevação do nível sérico de digoxina — toxicidade',
     'Evitar AINEs em pacientes com digoxina. Usar paracetamol. Se AINE necessário, monitorar nível de digoxina',
@@ -3091,7 +3223,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.plasmaLevel, RiskType.increasedToxicity},
     [_kRefGG, _kRefMdx]),
 
-('digoxina', 'carbonato de litio', InteractionSeverity.moderate,
+
+  ('digoxina', 'carbonato de litio', InteractionSeverity.moderate,
     'Depleção de sódio pelo lítio e alterações renais podem elevar nível de digoxina',
     'Toxicidade por digoxina',
     'Monitorar nível sérico de digoxina e ECG quando usar com lítio',
@@ -3100,7 +3233,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.plasmaLevel},
     [_kRefGG]),
 
-('diltiazem', 'sinvastatina', InteractionSeverity.major,
+
+  ('diltiazem', 'sinvastatina', InteractionSeverity.major,
     'Diltiazem inibe CYP3A4 — aumenta AUC da sinvastatina em 3-4x',
     'Risco elevado de miopatia e rabdomiólise',
     'Limitar sinvastatina a 10 mg/dia com diltiazem. Preferir pravastatina ou rosuvastatina',
@@ -3109,7 +3243,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.myopathy},
     [_kRefGG, _kRefMdx]),
 
-('diltiazem', 'ciclosporina', InteractionSeverity.major,
+
+  ('diltiazem', 'ciclosporina', InteractionSeverity.major,
     'Diltiazem inibe CYP3A4 → aumenta nível de ciclosporina em 30-50%',
     'Nefrotoxicidade, neurotoxicidade por hiperciclosporinemia',
     'Monitorar nível sérico de ciclosporina. Reduzir dose de ciclosporina',
@@ -3118,7 +3253,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.nephrotoxicity, RiskType.plasmaLevel},
     [_kRefGG, _kRefMdx]),
 
-('diltiazem', 'midazolam', InteractionSeverity.moderate,
+
+  ('diltiazem', 'midazolam', InteractionSeverity.moderate,
     'Diltiazem inibe CYP3A4 — aumenta nível de midazolam',
     'Sedação excessiva e prolongada',
     'Reduzir dose de midazolam. Monitorar nível de consciência',
@@ -3127,7 +3263,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.cns, RiskType.plasmaLevel},
     [_kRefGG, _kRefMdx]),
 
-('diltiazem', 'carbamazepina', InteractionSeverity.major,
+
+  ('diltiazem', 'carbamazepina', InteractionSeverity.major,
     'Diltiazem inibe CYP3A4 → eleva carbamazepina; carbamazepina induz CYP3A4 → reduz diltiazem',
     'Toxicidade por carbamazepina (diplopia, ataxia) + redução da eficácia do diltiazem',
     'Monitorar nível de carbamazepina. Considerar alternativa ao diltiazem',
@@ -3136,7 +3273,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.plasmaLevel, RiskType.increasedToxicity},
     [_kRefGG, _kRefMdx]),
 
-('dronedarona', 'betabloqueador', InteractionSeverity.major,
+
+  ('dronedarona', 'betabloqueador', InteractionSeverity.major,
     'Dronedarona tem leve ação betabloqueadora + efeito aditivo com betabloqueador na depressão do nó AV',
     'Bradicardia grave, bloqueio AV',
     'Monitorar ECG. Iniciar betabloqueador com dose baixa. Manter FC >50 bpm',
@@ -3145,7 +3283,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.arrhythmia},
     [_kRefGG, _kRefMdx]),
 
-('dronedarona', 'diltiazem', InteractionSeverity.major,
+
+  ('dronedarona', 'diltiazem', InteractionSeverity.major,
     'Dronedarona inibe CYP3A4 e também tem efeito no nó AV; diltiazem inibe CYP3A4 eleva dronedarona + efeito aditivo AV',
     'Bradicardia grave, bloqueio AV, prolongamento QT',
     'Evitar combinação. Se necessário, monitorar ECG continuamente',
@@ -3154,7 +3293,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.arrhythmia, RiskType.qtProlongation},
     [_kRefGG, _kRefMdx]),
 
-('nitrato', 'alfa-bloqueador', InteractionSeverity.major,
+
+  ('nitrato', 'alfa-bloqueador', InteractionSeverity.major,
     'Dupla vasodilatação — nitrato (venodilatação) + alfa-bloqueador (vasodilatação arterial)',
     'Hipotensão grave, síncope ortostática',
     'Iniciar alfa-bloqueador com dose mínima. Monitorar PA. Evitar combinação em hipotensão basal',
@@ -3163,7 +3303,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.other},
     [_kRefGG, _kRefMdx]),
 
-('nitrato', 'alcool', InteractionSeverity.major,
+
+  ('nitrato', 'alcool', InteractionSeverity.major,
     'Álcool causa vasodilatação + nitrato é vasodilatador — efeito hemodinâmico aditivo',
     'Hipotensão grave, síncope, taquicardia reflexa',
     'Evitar álcool durante uso de nitratos. Orientar paciente sobre risco de síncope',
@@ -3172,7 +3313,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.other},
     [_kRefGG]),
 
-('sotalol', 'haloperidol', InteractionSeverity.major,
+
+  ('sotalol', 'haloperidol', InteractionSeverity.major,
     'Dois prolongadores de QT por bloqueio de canais hERG — efeito aditivo',
     'Torsade de Pointes, fibrilação ventricular',
     'Evitar. Se necessário, monitorar QTc rigorosamente. Medir K+ e Mg2+',
@@ -3181,7 +3323,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.qtProlongation, RiskType.arrhythmia},
     [_kRefGG, _kRefMdx]),
 
-('sotalol', 'ondansetrona', InteractionSeverity.major,
+
+  ('sotalol', 'ondansetrona', InteractionSeverity.major,
     'Prolongamento aditivo do QT',
     'Torsade de Pointes',
     'Evitar. Preferir metoclopramida como antiemético alternativo',
@@ -3190,7 +3333,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.qtProlongation, RiskType.arrhythmia},
     [_kRefGG, _kRefMdx]),
 
-('sotalol', 'quetiapina', InteractionSeverity.major,
+
+  ('sotalol', 'quetiapina', InteractionSeverity.major,
     'Dois prolongadores de QT — efeito aditivo',
     'Torsade de Pointes, morte súbita',
     'Evitar. Monitorar QTc se combinação inevitável. Suspender se QTc >500ms',
@@ -3199,7 +3343,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.qtProlongation, RiskType.arrhythmia},
     [_kRefGG, _kRefMdx]),
 
-('sotalol', 'diurético', InteractionSeverity.major,
+
+  ('sotalol', 'diurético', InteractionSeverity.major,
     'Diuréticos causam hipocalemia e hipomagnesemia — potencializam o prolongamento de QT pelo sotalol',
     'Torsade de Pointes precipitada por distúrbio eletrolítico',
     'Monitorar K+ e Mg2+ séricos antes e durante uso de sotalol. Corrigir hipocalemia antes de iniciar',
@@ -3208,7 +3353,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.qtProlongation, RiskType.hypokalemia},
     [_kRefGG, _kRefMdx]),
 
-('verapamil', 'sinvastatina', InteractionSeverity.major,
+
+  ('verapamil', 'sinvastatina', InteractionSeverity.major,
     'Verapamil inibe CYP3A4 — aumenta AUC da sinvastatina em 4-5x',
     'Risco muito elevado de rabdomiólise',
     'Limitar sinvastatina a 10 mg/dia. Preferir pravastatina ou rosuvastatina',
@@ -3217,7 +3363,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.myopathy},
     [_kRefGG, _kRefMdx]),
 
-('verapamil', 'ciclosporina', InteractionSeverity.major,
+
+  ('verapamil', 'ciclosporina', InteractionSeverity.major,
     'Verapamil inibe CYP3A4 e P-gp → eleva nível de ciclosporina',
     'Nefrotoxicidade por hiperciclosporinemia',
     'Monitorar nível sérico de ciclosporina. Reduzir dose',
@@ -3226,7 +3373,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.nephrotoxicity, RiskType.plasmaLevel},
     [_kRefGG, _kRefMdx]),
 
-('verapamil', 'carbamazepina', InteractionSeverity.major,
+
+  ('verapamil', 'carbamazepina', InteractionSeverity.major,
     'Verapamil inibe CYP3A4 → eleva carbamazepina; carbamazepina induz CYP3A4 → reduz verapamil',
     'Toxicidade por carbamazepina + redução da eficácia do verapamil',
     'Monitorar nível de carbamazepina. Considerar alternativa',
@@ -3235,7 +3383,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.plasmaLevel, RiskType.increasedToxicity},
     [_kRefGG, _kRefMdx]),
 
-('verapamil', 'rifampicina', InteractionSeverity.major,
+
+  ('verapamil', 'rifampicina', InteractionSeverity.major,
     'Rifampicina induz fortemente CYP3A4 e P-gp → reduz biodisponibilidade oral do verapamil em >90%',
     'Perda completa do efeito do verapamil — angina descontrolada, arritmias',
     'Evitar combinação. Usar antiarrítmico alternativo durante rifampicina',
@@ -3244,7 +3393,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.reducedEfficacy},
     [_kRefGG, _kRefMdx]),
 
-('metoprolol', 'fluoxetina', InteractionSeverity.major,
+
+  ('metoprolol', 'fluoxetina', InteractionSeverity.major,
     'Fluoxetina inibe CYP2D6 — aumenta nível de metoprolol em 4-6x',
     'Bradicardia grave, bloqueio AV, hipotensão',
     'Reduzir dose de metoprolol. Monitorar FC e PA. Preferir sertralina (menor inibição CYP2D6)',
@@ -3253,7 +3403,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.arrhythmia, RiskType.plasmaLevel},
     [_kRefGG, _kRefMdx]),
 
-('ivabradina', 'betabloqueador', InteractionSeverity.major,
+
+  ('ivabradina', 'betabloqueador', InteractionSeverity.major,
     'Ivabradina inibe canal If do nó sinusal + betabloqueador também reduz FC — efeito aditivo cronotrópico negativo',
     'Bradicardia grave sintomática',
     'Monitorar FC. Manter FC >50 bpm. Titular doses. Combinação pode ser usada com cautela em angina refratária',
@@ -3262,7 +3413,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.arrhythmia},
     [_kRefGG, _kRefMdx]),
 
-('ivabradina', 'metoprolol', InteractionSeverity.major,
+
+  ('ivabradina', 'metoprolol', InteractionSeverity.major,
     'Dois agentes cronotrópicos negativos — efeito aditivo no nó sinusal',
     'Bradicardia grave',
     'Monitorar FC continuamente. Manter FC >50 bpm. Combinação pode ser útil em IC com FC elevada',
@@ -3271,7 +3423,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.arrhythmia},
     [_kRefGG, _kRefMdx]),
 
-('esmolol', 'digoxina', InteractionSeverity.major,
+
+  ('esmolol', 'digoxina', InteractionSeverity.major,
     'Efeito aditivo na depressão do nó AV — esmolol (betabloqueador IV) + digoxina',
     'Bradicardia grave, bloqueio AV',
     'Monitorar ECG continuamente. Usar com cautela em procedimentos. Ter atropina disponível',
@@ -3280,7 +3433,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.arrhythmia},
     [_kRefGG, _kRefMdx]),
 
-('esmolol', 'diltiazem', InteractionSeverity.major,
+
+  ('esmolol', 'diltiazem', InteractionSeverity.major,
     'Dupla depressão do nó AV — esmolol (betabloqueador IV) + diltiazem',
     'Bradicardia grave, bloqueio AV completo, hipotensão',
     'CONTRAINDICADO IV simultâneo. Monitorar ECG e PA rigorosamente',
@@ -3289,7 +3443,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.arrhythmia},
     [_kRefGG, _kRefMdx]),
 
-// ── FLUCONAZOL (inibidor CYP3A4/2C9/2C19) ──────────────────────────────
+    // ── FLUCONAZOL (inibidor CYP3A4/2C9/2C19) ──────────────────────────────
+
   ('fluconazol', 'rifampicina', InteractionSeverity.major,
     'Rifampicina é potente indutor de CYP3A4 e CYP2C9, as principais vias de metabolismo do fluconazol. Reduz significativamente os níveis plasmáticos do antifúngico',
     'Redução de 25-50% na AUC do fluconazol → falha terapêutica antifúngica, especialmente crítica em candidemia e meningite criptocócica',
@@ -3299,7 +3454,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.reducedEfficacy, RiskType.plasmaLevel},
     [_kRefGG, _kRefMdx]),
 
-('fluconazol', 'fenobarbital', InteractionSeverity.moderate,
+
+  ('fluconazol', 'fenobarbital', InteractionSeverity.moderate,
     'Fenobarbital induz CYP2C9 e CYP3A4, reduzindo os níveis de fluconazol. Efeito inverso também ocorre: fluconazol inibe CYP2C9, podendo aumentar níveis de fenobarbital',
     'Redução da eficácia antifúngica por indução enzimática. Risco de toxicidade por fenobarbital (sedação, ataxia) por inibição do seu metabolismo',
     'Monitorar resposta antifúngica e ajustar dose do fluconazol conforme necessário. Monitorar sinais de toxicidade por fenobarbital (sedação excessiva, ataxia)',
@@ -3308,7 +3464,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.reducedEfficacy, RiskType.plasmaLevel},
     [_kRefGG, _kRefMdx]),
 
-('fluconazol', 'eritromicina', InteractionSeverity.moderate,
+
+  ('fluconazol', 'eritromicina', InteractionSeverity.moderate,
     'Ambos prolongam o intervalo QT por mecanismos distintos. Eritromicina bloqueia canais IKr (hERG) e fluconazol prolonga o QT por inibição do CYP3A4 (podendo elevar níveis da própria eritromicina)',
     'Risco aditivo/sinérgico de prolongamento do QTc e torsades de pointes, especialmente em pacientes com hipocalemia, hipomagnesemia ou QT basal prolongado',
     'Monitorar ECG (QTc). Corrigir eletrólitos antes e durante uso. Evitar em pacientes com QT basal > 450ms. Considerar azitromicina (menor risco de QT) se possível',
@@ -3317,7 +3474,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.qtProlongation, RiskType.arrhythmia},
     [_kRefGG, _kRefMdx]),
 
-('fluconazol', 'claritromicina', InteractionSeverity.moderate,
+
+  ('fluconazol', 'claritromicina', InteractionSeverity.moderate,
     'Fluconazol inibe CYP3A4, reduzindo o metabolismo da claritromicina. Ambos prolongam o QTc por mecanismos complementares',
     'Aumento dos níveis de claritromicina → toxicidade gastrointestinal e risco aumentado de prolongamento QTc. Risco aditivo de torsades',
     'Monitorar ECG (QTc), especialmente em idosos e pacientes com cardiopatia. Corrigir hipocalemia e hipomagnesemia. Considerar alternativa (azitromicina) se QTc > 450ms',
@@ -3326,7 +3484,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.qtProlongation, RiskType.plasmaLevel},
     [_kRefGG, _kRefMdx]),
 
-('fluconazol', 'ritonavir', InteractionSeverity.moderate,
+
+  ('fluconazol', 'ritonavir', InteractionSeverity.moderate,
     'Interação bidirecional complexa: ritonavir inibe CYP3A4 (pode aumentar fluconazol); fluconazol inibe CYP3A4 (pode aumentar ritonavir). Ambos prolongam QTc',
     'Risco de toxicidade mútua por inibição enzimática bidirecional. Risco aumentado de prolongamento QTc',
     'Monitorar ECG e parâmetros hepáticos. Em TARV, preferir voriconazol ou anidulafungina quando disponível. Ajustar doses com base em monitoramento clínico',
@@ -3335,7 +3494,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.qtProlongation, RiskType.plasmaLevel},
     [_kRefGG, _kRefMdx, _kRefUT]),
 
-// ── RIFAMPICINA (indutor potente CYP1A2/2C9/2C19/3A4/P-gp) ──────────────
+    // ── RIFAMPICINA (indutor potente CYP1A2/2C9/2C19/3A4/P-gp) ──────────────
+
   ('rifampicina', 'estatina', InteractionSeverity.major,
     'Rifampicina induz fortemente CYP3A4 (sinvastatina, atorvastatina, lovastatina) e transportadores OATP1B1/1B3 (rosuvastatina, pravastatina). Reduz drasticamente os níveis plasmáticos de todas as estatinas',
     'Redução de 80-90% nas concentrações de sinvastatina e atorvastatina. Risco de falha no controle lipídico e cardiovascular durante tratamento com rifampicina',
@@ -3345,7 +3505,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.reducedEfficacy, RiskType.plasmaLevel},
     [_kRefGG, _kRefMdx, _kRefUT]),
 
-('rifampicina', 'ssri', InteractionSeverity.major,
+
+  ('rifampicina', 'isrs', InteractionSeverity.major,
     'Rifampicina induz CYP2C19 e CYP2D6, as principais vias de metabolismo de citalopram, escitalopram, sertralina, paroxetina e fluoxetina. Pode reduzir níveis em 50-70%',
     'Redução significativa dos níveis do ISRS → risco de falha terapêutica e recorrência de depressão ou transtorno de ansiedade durante tratamento antituberculoso',
     'Monitorar resposta clínica ao ISRS. Pode ser necessário aumentar dose do antidepressivo. Reavaliar dose ao suspender rifampicina (risco de toxicidade por acúmulo)',
@@ -3354,7 +3515,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.reducedEfficacy, RiskType.plasmaLevel},
     [_kRefGG, _kRefMdx]),
 
-('rifampicina', 'metadona', InteractionSeverity.major,
+
+  ('rifampicina', 'metadona', InteractionSeverity.major,
     'Rifampicina é indutor potente de CYP3A4 e CYP2B6, as principais vias de metabolismo da metadona. Reduz os níveis em 50-80%',
     'Redução grave dos níveis de metadona → síndrome de abstinência opiácea grave, risco de recaída em pacientes em programa de substituição opiácea. Início rápido (2-5 dias)',
     'Evitar combinação. Se inevitável: aumentar dose de metadona gradualmente (pode ser necessário dobrar), monitorar diariamente sinais de abstinência. Ao suspender rifampicina, reduzir metadona gradualmente para evitar superdose',
@@ -3363,7 +3525,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.reducedEfficacy, RiskType.plasmaLevel},
     [_kRefGG, _kRefMdx, _kRefUT]),
 
-('rifampicina', 'opioide', InteractionSeverity.major,
+
+  ('rifampicina', 'opioide', InteractionSeverity.major,
     'Rifampicina induz CYP3A4 e CYP2D6, reduzindo os níveis de morfina, codeína, oxicodona, fentanila e tramadol. A morfina (glucuronidação) é menos afetada que opioides com metabolismo hepático CYP',
     'Redução da analgesia → dor não controlada, risco de subdose em cuidados paliativos e pós-operatório. Ao cessar rifampicina, risco de superdose por acúmulo',
     'Monitorar controle da dor e aumentar dose do opioide conforme necessário. Preferir morfina (metabolismo por glucuronidação, menos afetada). Reduzir dose de opioides ao suspender rifampicina',
@@ -3372,7 +3535,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.reducedEfficacy, RiskType.plasmaLevel},
     [_kRefGG, _kRefMdx]),
 
-('rifampicina', 'anticoncepcional', InteractionSeverity.major,
+
+  ('rifampicina', 'anticoncepcional', InteractionSeverity.major,
     'Rifampicina induz potentemente CYP3A4 e UGT, acelerando o metabolismo de etinilestradiol e progestágenos. Efeito começa em 1-2 semanas e persiste até 4-8 semanas após a suspensão',
     'Redução de 50-80% nos níveis hormonais → falha contraceptiva (gravidez não planejada), especialmente com anticoncepcionais de baixa dose',
     'CONTRAINDICADO usar rifampicina com contracepção hormonal oral/patch/anel como único método. Usar método de barreira durante o tratamento e por 4-8 semanas após. Considerar DIU de cobre como alternativa confiável',
@@ -3381,7 +3545,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.reducedEfficacy},
     [_kRefGG, _kRefMdx, _kRefUT]),
 
-('rifampicina', 'benzodiazepínico', InteractionSeverity.major,
+
+  ('rifampicina', 'benzodiazepínico', InteractionSeverity.major,
     'Rifampicina induz CYP3A4 (principal via de metabolismo de alprazolam, diazepam, clonazepam, triazolam, midazolam). Reduz os níveis em 50-90%',
     'Redução grave da eficácia ansiolítica/sedativa → ansiedade não controlada, insônia, possível síndrome de abstinência em uso crônico',
     'Aumentar dose do benzodiazepínico conforme resposta clínica. Preferir lorazepam (glucuronidação, menos afetado). Monitorar sintomas de abstinência e ansiedade',
@@ -3390,7 +3555,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.reducedEfficacy, RiskType.plasmaLevel},
     [_kRefGG, _kRefMdx]),
 
-('rifampicina', 'quetiapina', InteractionSeverity.major,
+
+  ('rifampicina', 'quetiapina', InteractionSeverity.major,
     'Rifampicina induz CYP3A4, a principal via de metabolismo da quetiapina. Estudos mostram redução de até 80% na AUC da quetiapina',
     'Falha no controle psiquiátrico (psicose, mania, depressão bipolar) por níveis subterapêuticos de quetiapina',
     'Evitar combinação. Se necessário: aumentar dose de quetiapina substancialmente (guideline sugere 5-7x a dose usual). Monitorar resposta clínica e efeitos adversos',
@@ -3399,7 +3565,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.reducedEfficacy, RiskType.plasmaLevel},
     [_kRefGG, _kRefMdx]),
 
-('rifampicina', 'haloperidol', InteractionSeverity.moderate,
+
+  ('rifampicina', 'haloperidol', InteractionSeverity.moderate,
     'Rifampicina induz CYP3A4 e glicuronidação, reduzindo os níveis plasmáticos do haloperidol em 50-70%',
     'Possível falha no controle antipsicótico → recorrência de sintomas psicóticos durante tratamento antituberculoso',
     'Monitorar resposta clínica e aumentar dose do haloperidol se necessário. Avaliar níveis séricos se disponível',
@@ -3408,7 +3575,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.reducedEfficacy, RiskType.plasmaLevel},
     [_kRefGG, _kRefMdx]),
 
-('rifampicina', 'olanzapina', InteractionSeverity.moderate,
+
+  ('rifampicina', 'olanzapina', InteractionSeverity.moderate,
     'Rifampicina induz CYP1A2 e glicuronidação (principais vias da olanzapina), reduzindo os níveis plasmáticos em 50%',
     'Possível falha terapêutica no controle da psicose/mania durante tratamento antituberculoso',
     'Monitorar resposta clínica. Pode ser necessário aumentar dose de olanzapina. Reavaliar ao suspender rifampicina',
@@ -3417,7 +3585,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.reducedEfficacy, RiskType.plasmaLevel},
     [_kRefGG, _kRefMdx]),
 
-('rifampicina', 'digoxina', InteractionSeverity.moderate,
+
+  ('rifampicina', 'digoxina', InteractionSeverity.moderate,
     'Rifampicina induz P-gp intestinal e hepática, reduzindo a absorção e aumentando a eliminação de digoxina. Redução de 30-50% nos níveis',
     'Redução da eficácia da digoxina no controle da frequência ventricular (FA) e na insuficiência cardíaca',
     'Monitorar ECG e sinais de descompensação cardíaca. Ajustar dose de digoxina. Monitorar nível sérico de digoxina após início e suspensão da rifampicina',
@@ -3426,7 +3595,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.reducedEfficacy, RiskType.plasmaLevel},
     [_kRefGG, _kRefMdx]),
 
-('rifampicina', 'amiodarona', InteractionSeverity.major,
+
+  ('rifampicina', 'amiodarona', InteractionSeverity.major,
     'Rifampicina induz CYP3A4 e CYP2C8, as vias de metabolismo da amiodarona e seu metabólito ativo (desetilamiodarona). Reduz os níveis de ambos',
     'Perda do controle do ritmo cardíaco (fibrilação atrial, flutter, TV) por níveis subterapêuticos de amiodarona. Risco elevado dado o estreito índice terapêutico da amiodarona',
     'Evitar combinação. Se inevitável: monitorar ECG continuamente, ajustar dose de amiodarona e verificar níveis séricos. Considerar ablação ou cardioversão elétrica como alternativa',
@@ -3435,7 +3605,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.reducedEfficacy, RiskType.arrhythmia},
     [_kRefGG, _kRefMdx, _kRefUT]),
 
-('rifampicina', 'levotiroxina', InteractionSeverity.moderate,
+
+  ('rifampicina', 'levotiroxina', InteractionSeverity.moderate,
     'Rifampicina induz enzimas hepáticas que aumentam o metabolismo de T4 e T3 e pode reduzir a absorção intestinal de levotiroxina',
     'Risco de hipotireoidismo durante tratamento com rifampicina em pacientes com hipotireoidismo prévio ou pós-tireoidectomia',
     'Monitorar TSH e T4 livre 4-6 semanas após início da rifampicina. Pode ser necessário aumentar dose de levotiroxina em 25-50%. Reavaliar ao suspender rifampicina',
@@ -3444,7 +3615,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.reducedEfficacy},
     [_kRefGG, _kRefMdx]),
 
-('rifampicina', 'fenitoína', InteractionSeverity.moderate,
+
+  ('rifampicina', 'fenitoína', InteractionSeverity.moderate,
     'Interação bidirecional: rifampicina induz CYP2C9 (metabolismo da fenitoína) → reduz níveis. Concomitantemente, fenitoína também induz CYP, podendo reduzir rifampicina',
     'Risco de falha em ambos os fármacos (controle convulsivo e antituberculoso). Relação imprevisível: alguns pacientes têm aumento paradoxal de fenitoína por inibição de CYP2C9',
     'Monitorar nível sérico de fenitoína (alvo: 10-20 mcg/mL) e resposta clínica. Ajustar dose conforme necessário. Monitorar eficácia antituberculosa',
@@ -3453,7 +3625,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.reducedEfficacy, RiskType.plasmaLevel},
     [_kRefGG, _kRefMdx]),
 
-('rifampicina', 'fenobarbital', InteractionSeverity.moderate,
+
+  ('rifampicina', 'fenobarbital', InteractionSeverity.moderate,
     'Ambos são indutores enzimáticos potentes (CYP2B6, CYP3A4, CYP2C). Rifampicina pode reduzir os níveis de fenobarbital por indução de CYP2C9/glicuronidação',
     'Risco de ineficácia anticonvulsivante por redução dos níveis de fenobarbital, com possível recorrência de crises',
     'Monitorar nível sérico de fenobarbital e ajustar dose conforme necessário. Avaliar controle clínico das crises',
@@ -3462,7 +3635,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.reducedEfficacy, RiskType.plasmaLevel},
     [_kRefGG, _kRefMdx]),
 
-('rifampicina', 'claritromicina', InteractionSeverity.major,
+
+  ('rifampicina', 'claritromicina', InteractionSeverity.major,
     'Rifampicina induz CYP3A4, a principal via de metabolismo da claritromicina. Reduz os níveis de claritromicina em 75-80%',
     'Falha terapêutica da claritromicina (infecções por Mycobacterium avium complex, Helicobacter pylori, pneumonias). Especialmente crítico no contexto de MAC em imunodeprimidos',
     'Evitar a combinação no contexto de infecção por MAC. Para outras indicações, avaliar se azitromicina é uma alternativa (menos afetada). Monitorar resposta microbiológica e clínica',
@@ -3471,7 +3645,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.reducedEfficacy, RiskType.plasmaLevel},
     [_kRefGG, _kRefMdx, _kRefUT]),
 
-('rifampicina', 'eritromicina', InteractionSeverity.major,
+
+  ('rifampicina', 'eritromicina', InteractionSeverity.major,
     'Rifampicina induz CYP3A4, reduzindo significativamente os níveis de eritromicina. Pode reduzir a AUC em 50-70%',
     'Falha terapêutica por níveis subterapêuticos de eritromicina. Combinação clinicamente irracional na maioria dos cenários',
     'Evitar combinação. Usar azitromicina (menos afetada por indução de CYP) ou outro antibiótico adequado ao espectro necessário',
@@ -3480,7 +3655,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.reducedEfficacy, RiskType.plasmaLevel},
     [_kRefGG, _kRefMdx]),
 
-('rifampicina', 'ritonavir', InteractionSeverity.contraindicated,
+
+  ('rifampicina', 'ritonavir', InteractionSeverity.contraindicated,
     'Rifampicina é indutor potente de CYP3A4/P-gp; ritonavir é inibidor potente de CYP3A4. A indução pela rifampicina supera a inibição do ritonavir, podendo reduzir os níveis de ritonavir em 75% e aumentar paradoxalmente o risco de hepatotoxicidade grave',
     'Falha virológica (HIV/HCV) por níveis subterapêuticos de ritonavir. Risco elevado de hepatotoxicidade grave e síndrome de reconstituição imune. Documentados casos de hepatite fulminante',
     'CONTRAINDICADO. Para TARV durante tuberculose: substituir por regimes baseados em inibidores de integrase (dolutegravir 50mg 2x/dia + rifampicina) segundo diretrizes OMS. Nunca combinar rifampicina com IP boosted',
@@ -3489,8 +3665,9 @@ const _interactionDB = <_IxEntry>[
     {RiskType.reducedEfficacy, RiskType.hepatotoxicity},
     [_kRefGG, _kRefMdx, _kRefUT]),
 
-// ── CARBAMAZEPINA (indutor CYP3A4/1A2/2C9, indutor P-gp) ──────────────────
-  ('carbamazepina', 'ssri', InteractionSeverity.major,
+    // ── CARBAMAZEPINA (indutor CYP3A4/1A2/2C9, indutor P-gp) ──────────────────
+
+  ('carbamazepina', 'isrs', InteractionSeverity.major,
     'Carbamazepina induz CYP3A4 e CYP2C19, acelerando o metabolismo de citalopram, escitalopram, sertralina e outros ISRSs. Fluoxetina e fluvoxamina inibem CYP3A4/2C19, podendo aumentar carbamazepina e seu metabólito epóxido (tóxico)',
     'Redução dos níveis do ISRS → falha antidepressiva. Fluoxetina/fluvoxamina podem causar toxicidade de carbamazepina (diplopia, ataxia, tontura, náusea) por inibição do seu metabolismo',
     'Monitorar resposta ao ISRS e nível sérico de carbamazepina. Sertralina é a opção mais segura (menor interação). Evitar fluoxetina e fluvoxamina com carbamazepina',
@@ -3499,7 +3676,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.reducedEfficacy, RiskType.plasmaLevel},
     [_kRefGG, _kRefMdx]),
 
-('carbamazepina', 'opioide', InteractionSeverity.moderate,
+
+  ('carbamazepina', 'opioide', InteractionSeverity.moderate,
     'Carbamazepina induz CYP3A4 (fentanila, oxicodona, tramadol) e CYP2D6 (codeína, tramadol), reduzindo os níveis e a eficácia analgésica. Tramadol tem risco adicional de abaixamento do limiar convulsivo',
     'Redução da analgesia por níveis subterapêuticos de opioides. Tramadol especialmente problemático: além de analgesia reduzida, o abaixamento do limiar convulsivo pode precipitar crises em epiléticos',
     'Evitar tramadol em pacientes com epilepsia em uso de carbamazepina. Aumentar dose de opioides conforme necessário. Preferir morfina ou hidromorfona (metabolismo por glucuronidação)',
@@ -3508,7 +3686,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.reducedEfficacy, RiskType.seizure},
     [_kRefGG, _kRefMdx]),
 
-('carbamazepina', 'metadona', InteractionSeverity.major,
+
+  ('carbamazepina', 'metadona', InteractionSeverity.major,
     'Carbamazepina induz CYP3A4 e CYP2C8, as principais vias de metabolismo da metadona, reduzindo os níveis em 50-60%',
     'Síndrome de abstinência opiácea em pacientes em programa de substituição → risco de recaída. Dor não controlada em uso crônico',
     'Evitar combinação quando possível. Se necessária: aumentar dose de metadona gradualmente, monitorar sinais de abstinência. Ao suspender carbamazepina, reduzir metadona para prevenir superdosagem',
@@ -3517,7 +3696,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.reducedEfficacy, RiskType.plasmaLevel},
     [_kRefGG, _kRefMdx]),
 
-('carbamazepina', 'olanzapina', InteractionSeverity.moderate,
+
+  ('carbamazepina', 'olanzapina', InteractionSeverity.moderate,
     'Carbamazepina induz CYP1A2 (principal via da olanzapina) e glicuronidação, reduzindo os níveis de olanzapina em 50%',
     'Possível falha terapêutica no controle da psicose ou mania bipolar',
     'Monitorar resposta clínica. Aumentar dose de olanzapina se necessário (pode ser necessário dobrar). Reavaliar ao modificar dose de carbamazepina',
@@ -3526,7 +3706,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.reducedEfficacy, RiskType.plasmaLevel},
     [_kRefGG, _kRefMdx]),
 
-('carbamazepina', 'haloperidol', InteractionSeverity.moderate,
+
+  ('carbamazepina', 'haloperidol', InteractionSeverity.moderate,
     'Carbamazepina induz CYP3A4 e CYP2D6, as principais vias de metabolismo do haloperidol. Pode reduzir os níveis em 50-60%',
     'Redução da eficácia antipsicótica → recorrência de sintomas psicóticos ou maníacos',
     'Monitorar resposta clínica e aumentar dose de haloperidol se necessário. Monitorar nível sérico se disponível',
@@ -3535,7 +3716,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.reducedEfficacy, RiskType.plasmaLevel},
     [_kRefGG, _kRefMdx]),
 
-('carbamazepina', 'quetiapina', InteractionSeverity.major,
+
+  ('carbamazepina', 'quetiapina', InteractionSeverity.major,
     'Carbamazepina induz CYP3A4, reduzindo os níveis de quetiapina em 80%. É uma das interações mais documentadas em psiquiatria',
     'Falha grave no controle da psicose ou transtorno bipolar. Pacientes podem exigir doses muito elevadas de quetiapina, com risco de toxicidade ao suspender carbamazepina',
     'Evitar combinação quando possível. Se necessário: aumentar dose de quetiapina substancialmente (5-7x a dose usual). Monitorar resposta clínica. Alternativas: valproato + quetiapina, ou trocar carbamazepina por lamotrigina',
@@ -3544,7 +3726,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.reducedEfficacy, RiskType.plasmaLevel},
     [_kRefGG, _kRefMdx, _kRefUT]),
 
-('carbamazepina', 'digoxina', InteractionSeverity.moderate,
+
+  ('carbamazepina', 'digoxina', InteractionSeverity.moderate,
     'Carbamazepina pode induzir P-gp, reduzindo a absorção intestinal e aumentando a eliminação renal de digoxina',
     'Redução dos níveis de digoxina → perda do controle da frequência ventricular em FA ou insuficiência cardíaca',
     'Monitorar nível sérico de digoxina e ECG após início ou modificação de carbamazepina. Ajustar dose conforme necessário',
@@ -3553,7 +3736,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.reducedEfficacy, RiskType.plasmaLevel},
     [_kRefGG, _kRefMdx]),
 
-('carbamazepina', 'ciclosporina', InteractionSeverity.major,
+
+  ('carbamazepina', 'ciclosporina', InteractionSeverity.major,
     'Carbamazepina induz potentemente CYP3A4, a principal via de metabolismo da ciclosporina. Redução de 50-75% nos níveis do imunossupressor',
     'Rejeição aguda de transplante por níveis subterapêuticos de ciclosporina. Risco alto em transplantados de órgão sólido',
     'Evitar combinação em transplantados. Substituir carbamazepina por lamotrigina, levetiracetam ou gabapentina (não indutores). Se inevitável: aumentar dose de ciclosporina e monitorar nível sérico (alvo C0 por tipo de transplante)',
@@ -3562,7 +3746,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.reducedEfficacy, RiskType.plasmaLevel},
     [_kRefGG, _kRefMdx, _kRefUT]),
 
-('carbamazepina', 'tacrolimo', InteractionSeverity.major,
+
+  ('carbamazepina', 'tacrolimo', InteractionSeverity.major,
     'Carbamazepina induz CYP3A4 e P-gp, reduzindo drasticamente os níveis de tacrolimo (imunossupressor com índice terapêutico estreitíssimo)',
     'Rejeição aguda de transplante por níveis subterapêuticos de tacrolimo. Risco de perda do enxerto',
     'Evitar combinação em transplantados. Substituir carbamazepina por antiepilético não-indutor. Se impossível: monitorar C0 de tacrolimo diariamente até estabilização e ajustar dose agressivamente',
@@ -3571,7 +3756,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.reducedEfficacy, RiskType.plasmaLevel},
     [_kRefGG, _kRefMdx, _kRefUT]),
 
-('carbamazepina', 'amiodarona', InteractionSeverity.major,
+
+  ('carbamazepina', 'amiodarona', InteractionSeverity.major,
     'Amiodarona inibe CYP3A4 e CYP2C8, aumentando os níveis de carbamazepina e seu metabólito epóxido (tóxico). Carbamazepina induz CYP3A4, podendo reduzir amiodarona',
     'Toxicidade de carbamazepina (diplopia, ataxia, tontura, náusea, sedação) por inibição do seu metabolismo pela amiodarona. Risco de falha antiarrítmica por indução',
     'Evitar combinação. Monitorar nível sérico de carbamazepina e sinais de toxicidade. Se mantida, ajustar doses com base em níveis séricos e ECG',
@@ -3580,7 +3766,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.plasmaLevel, RiskType.cns},
     [_kRefGG, _kRefMdx]),
 
-('carbamazepina', 'dabigatrana', InteractionSeverity.major,
+
+  ('carbamazepina', 'dabigatrana', InteractionSeverity.major,
     'Carbamazepina induz P-gp, o principal transportador de efflux da dabigatrana, reduzindo a absorção e aumentando a eliminação. Pode reduzir os níveis em 50-70%',
     'Risco de trombose (AVC, TEP, TVP) por anticoagulação insuficiente',
     'Evitar combinação. Substituir dabigatrana por varfarina (monitorada por INR) ou substituir carbamazepina por antiepilético não-indutor. Não usar dabigatrana como anticoagulante durante uso de carbamazepina',
@@ -3589,7 +3776,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.reducedEfficacy, RiskType.hemorrhagic},
     [_kRefGG, _kRefMdx, _kRefUT]),
 
-('carbamazepina', 'apixabana', InteractionSeverity.major,
+
+  ('carbamazepina', 'apixabana', InteractionSeverity.major,
     'Carbamazepina induz CYP3A4 e P-gp, ambas as vias de eliminação da apixabana, reduzindo os níveis em 50-60%',
     'Anticoagulação insuficiente → trombose (AVC, TEP, TVP)',
     'Evitar combinação. Usar varfarina (monitorada por INR) ou substituir carbamazepina por antiepilético não-indutor (levetiracetam, lamotrigina). A bula da apixabana contraindica uso com indutores potentes de CYP3A4/P-gp',
@@ -3598,7 +3786,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.reducedEfficacy},
     [_kRefGG, _kRefMdx, _kRefUT]),
 
-('carbamazepina', 'rivaroxabana', InteractionSeverity.major,
+
+  ('carbamazepina', 'rivaroxabana', InteractionSeverity.major,
     'Carbamazepina induz CYP3A4 e P-gp, reduzindo os níveis de rivaroxabana em 50-60%',
     'Anticoagulação insuficiente → trombose. A bula da rivaroxabana contraindica uso combinado com indutores potentes de CYP3A4/P-gp',
     'CONTRAINDICADO pela bula da rivaroxabana. Usar varfarina (monitorada por INR) ou substituir carbamazepina por antiepilético não-indutor',
@@ -3607,7 +3796,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.reducedEfficacy},
     [_kRefGG, _kRefMdx, _kRefUT]),
 
-('carbamazepina', 'lamotrigina', InteractionSeverity.major,
+
+  ('carbamazepina', 'lamotrigina', InteractionSeverity.major,
     'Carbamazepina induz UGT1A4 e CYP3A4, reduzindo os níveis de lamotrigina em 40-50%. A lamotrigina não afeta os níveis de carbamazepina, mas pode potencializar o metabólito epóxido (tóxico)',
     'Níveis subterapêuticos de lamotrigina → falha no controle de crises. Risco de toxicidade de carbamazepina epóxido (diplopia, ataxia)',
     'Quando combinados (uso frequente em epilepsia refratária): doses de lamotrigina em uso concomitante com carbamazepina são 2x maiores do que em monoterapia. Monitorar sinais de toxicidade de carbamazepina epóxido',
@@ -3616,7 +3806,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.reducedEfficacy, RiskType.plasmaLevel},
     [_kRefGG, _kRefMdx, _kRefUT]),
 
-('carbamazepina', 'topiramato', InteractionSeverity.moderate,
+
+  ('carbamazepina', 'topiramato', InteractionSeverity.moderate,
     'Carbamazepina induz CYP3A4, reduzindo os níveis de topiramato em 40-50%. Topiramato pode levemente aumentar os níveis de carbamazepina',
     'Possível falha no controle convulsivo por níveis subterapêuticos de topiramato',
     'Monitorar resposta ao topiramato. Aumentar dose de topiramato conforme necessário. Usar a maior dose efetiva dentro das recomendações',
@@ -3625,7 +3816,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.reducedEfficacy, RiskType.plasmaLevel},
     [_kRefGG, _kRefMdx]),
 
-('carbamazepina', 'claritromicina', InteractionSeverity.major,
+
+  ('carbamazepina', 'claritromicina', InteractionSeverity.major,
     'Claritromicina inibe potentemente CYP3A4, a principal via de eliminação da carbamazepina. Pode aumentar os níveis de carbamazepina e seu metabólito epóxido em 50-100%',
     'Toxicidade grave de carbamazepina: diplopia, ataxia, tontura, vômitos, confusão mental, hiponatremia. O metabólito epóxido (também tóxico) também se acumula',
     'Evitar combinação. Substituir claritromicina por azitromicina (não inibe CYP3A4) quando possível. Se inevitável: reduzir dose de carbamazepina em 25-50% e monitorar nível sérico',
@@ -3634,7 +3826,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.plasmaLevel, RiskType.cns},
     [_kRefGG, _kRefMdx, _kRefUT]),
 
-('carbamazepina', 'eritromicina', InteractionSeverity.major,
+
+  ('carbamazepina', 'eritromicina', InteractionSeverity.major,
     'Eritromicina inibe CYP3A4, aumentando os níveis de carbamazepina e seu metabólito epóxido. Interação bem documentada em literatura',
     'Toxicidade de carbamazepina: diplopia, ataxia, vômitos, confusão, hiponatremia, arritmias',
     'Evitar combinação. Substituir eritromicina por azitromicina (segura com carbamazepina). Se mantida: monitorar nível sérico e reduzir dose de carbamazepina',
@@ -3643,8 +3836,9 @@ const _interactionDB = <_IxEntry>[
     {RiskType.plasmaLevel, RiskType.cns},
     [_kRefGG, _kRefMdx]),
 
-// ── FENITOÍNA (indutor CYP2C9/2C19/3A4, substrato CYP2C9/2C19) ──────────
-  ('fenitoína', 'ssri', InteractionSeverity.major,
+    // ── FENITOÍNA (indutor CYP2C9/2C19/3A4, substrato CYP2C9/2C19) ──────────
+
+  ('fenitoína', 'isrs', InteractionSeverity.major,
     'Fluoxetina e fluvoxamina inibem CYP2C9/2C19, aumentando os níveis de fenitoína. Fenitoína induz CYP3A4/2C19, podendo reduzir níveis de alguns ISRSs. Interação bidirecional e complexa',
     'Toxicidade de fenitoína (nistagmo, ataxia, diplopia, confusão) com fluoxetina/fluvoxamina. Falha antidepressiva com sertralina/escitalopram por indução',
     'Evitar fluoxetina e fluvoxamina com fenitoína. Sertralina é a opção mais segura. Monitorar nível sérico de fenitoína (alvo: 10-20 mcg/mL) ao iniciar/suspender ISRS',
@@ -3653,7 +3847,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.plasmaLevel, RiskType.cns},
     [_kRefGG, _kRefMdx]),
 
-('fenitoína', 'digoxina', InteractionSeverity.moderate,
+
+  ('fenitoína', 'digoxina', InteractionSeverity.moderate,
     'Fenitoína induz P-gp e CYP3A4, reduzindo os níveis de digoxina. A própria fenitoína IV pode causar arritmias (bradicardia, bloqueio AV) quando administrada rapidamente',
     'Redução dos níveis de digoxina → perda do controle da frequência ventricular em FA. Risco adicional de arritmias com fenitoína IV em bolus rápido',
     'Monitorar nível sérico de digoxina e ECG. Ajustar dose de digoxina conforme necessário. Administrar fenitoína IV lentamente (máximo 50mg/min)',
@@ -3662,7 +3857,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.reducedEfficacy, RiskType.arrhythmia},
     [_kRefGG, _kRefMdx]),
 
-('fenitoína', 'ciclosporina', InteractionSeverity.major,
+
+  ('fenitoína', 'ciclosporina', InteractionSeverity.major,
     'Fenitoína induz CYP3A4, reduzindo os níveis de ciclosporina em 50-75%. Ciclosporina pode ter efeito minor sobre fenitoína',
     'Rejeição aguda de transplante por níveis subterapêuticos de ciclosporina em pacientes transplantados que necessitam de anticonvulsivante',
     'Evitar combinação em transplantados. Substituir fenitoína por levetiracetam, gabapentina ou lamotrigina (não indutores de CYP3A4). Se impossível: monitorar C0 de ciclosporina diariamente e ajustar dose agressivamente',
@@ -3671,7 +3867,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.reducedEfficacy, RiskType.plasmaLevel},
     [_kRefGG, _kRefMdx, _kRefUT]),
 
-('fenitoína', 'tacrolimo', InteractionSeverity.major,
+
+  ('fenitoína', 'tacrolimo', InteractionSeverity.major,
     'Fenitoína induz CYP3A4 e P-gp, reduzindo drasticamente os níveis de tacrolimo (imunossupressor com janela terapêutica estreitíssima)',
     'Rejeição aguda de transplante por níveis subterapêuticos de tacrolimo. Risco de perda do enxerto',
     'Evitar combinação. Substituir fenitoína por antiepilético não-indutor em transplantados. Se impossível: monitorar C0 de tacrolimo diariamente e aumentar dose significativamente',
@@ -3680,7 +3877,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.reducedEfficacy, RiskType.plasmaLevel},
     [_kRefGG, _kRefMdx, _kRefUT]),
 
-('fenitoína', 'anticoncepcional', InteractionSeverity.major,
+
+  ('fenitoína', 'anticoncepcional', InteractionSeverity.major,
     'Fenitoína induz CYP3A4 e UGT, acelerando o metabolismo de etinilestradiol e progestágenos. Pode reduzir os níveis hormonais em 50%',
     'Falha contraceptiva com gravidez não planejada em mulheres em uso de anticoncepcional hormonal (oral, patch, anel vaginal)',
     'Usar método de barreira adicional. Preferir anticoncepcional com dose maior de estrogênio (≥50mcg etinilestradiol) ou DIU de cobre/levonorgestrel (SIU). Informar a paciente sobre o risco',
@@ -3689,7 +3887,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.reducedEfficacy},
     [_kRefGG, _kRefMdx]),
 
-('fenitoína', 'acido valproico', InteractionSeverity.major,
+
+  ('fenitoína', 'valproato', InteractionSeverity.major,
     'Interação bidirecional complexa: valproato desloca fenitoína da albumina (↑ fração livre, mais tóxica) e inibe CYP2C9 (↑ nível total). Fenitoína induz o metabolismo de valproato (↓ nível). Relação imprevisível',
     'Toxicidade de fenitoína (nível livre elevado mesmo com nível total normal/baixo) com ataxia, nistagmo, confusão. Falha do valproato por níveis subterapêuticos',
     'Monitorar nível livre de fenitoína (não apenas nível total). Monitorar nível de valproato e resposta clínica. Considerar alternativas (levetiracetam) para evitar interação complexa',
@@ -3698,7 +3897,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.plasmaLevel, RiskType.cns},
     [_kRefGG, _kRefMdx, _kRefUT]),
 
-('fenitoína', 'quetiapina', InteractionSeverity.major,
+
+  ('fenitoína', 'quetiapina', InteractionSeverity.major,
     'Fenitoína induz CYP3A4, a principal via de metabolismo da quetiapina. Pode reduzir os níveis em 80%',
     'Falha no controle da psicose ou transtorno bipolar por níveis subterapêuticos de quetiapina',
     'Evitar combinação quando possível. Se necessário: aumentar dose de quetiapina substancialmente. Monitorar resposta clínica',
@@ -3707,7 +3907,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.reducedEfficacy, RiskType.plasmaLevel},
     [_kRefGG, _kRefMdx]),
 
-('fenitoína', 'claritromicina', InteractionSeverity.major,
+
+  ('fenitoína', 'claritromicina', InteractionSeverity.major,
     'Claritromicina inibe CYP3A4 e pode inibir parcialmente CYP2C19, reduzindo o metabolismo da fenitoína. Risco de toxicidade por acúmulo',
     'Toxicidade de fenitoína: nistagmo, ataxia, diplopia, confusão, encefalopatia',
     'Evitar combinação. Substituir claritromicina por azitromicina quando possível. Monitorar nível sérico de fenitoína se mantida',
@@ -3716,7 +3917,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.plasmaLevel, RiskType.cns},
     [_kRefGG, _kRefMdx]),
 
-('fenitoína', 'eritromicina', InteractionSeverity.moderate,
+
+  ('fenitoína', 'eritromicina', InteractionSeverity.moderate,
     'Eritromicina inibe CYP3A4 e pode aumentar os níveis de fenitoína por inibição do seu metabolismo',
     'Toxicidade de fenitoína: nistagmo, ataxia, diplopia, náusea',
     'Monitorar nível sérico de fenitoína e sinais de toxicidade. Considerar azitromicina como alternativa',
@@ -3725,7 +3927,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.plasmaLevel, RiskType.cns},
     [_kRefGG, _kRefMdx]),
 
-('fenitoína', 'ritonavir', InteractionSeverity.major,
+
+  ('fenitoína', 'ritonavir', InteractionSeverity.major,
     'Interação bidirecional: ritonavir inibe CYP2C9 (pode aumentar fenitoína) mas também induz CYP2C9 cronicamente (pode reduzir fenitoína). Fenitoína induz CYP3A4, reduzindo ritonavir e ARVs boosted',
     'Falha virológica por redução do ritonavir/ARVs. Toxicidade ou falha da fenitoína por interação imprevisível e bidirecional',
     'Evitar combinação em TARV. Substituir fenitoína por levetiracetam. Se mantida: monitorar carga viral e nível sérico de fenitoína frequentemente',
@@ -3734,7 +3937,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.reducedEfficacy, RiskType.plasmaLevel},
     [_kRefGG, _kRefMdx, _kRefUT]),
 
-('fenitoína', 'fenobarbital', InteractionSeverity.moderate,
+
+  ('fenitoína', 'fenobarbital', InteractionSeverity.moderate,
     'Interação bidirecional: fenobarbital pode induzir CYP2C9 (reduz fenitoína) ou inibir competitivamente (aumenta fenitoína). Efeito final é imprevisível e varia entre pacientes',
     'Toxicidade ou falha de fenitoína por interação bidirecional e variável. Toxicidade de sedação aditiva por ambos os fármacos',
     'Monitorar nível sérico de fenitoína e resposta clínica. Esta combinação é usada em epilepsia refratária mas requer monitoramento cuidadoso',
@@ -3743,8 +3947,9 @@ const _interactionDB = <_IxEntry>[
     {RiskType.plasmaLevel, RiskType.cns},
     [_kRefGG, _kRefMdx]),
 
-// ── FENOBARBITAL (indutor CYP1A2/2C9/2C19/3A4/UGT) ───────────────────────
-  ('fenobarbital', 'ssri', InteractionSeverity.moderate,
+    // ── FENOBARBITAL (indutor CYP1A2/2C9/2C19/3A4/UGT) ───────────────────────
+
+  ('fenobarbital', 'isrs', InteractionSeverity.moderate,
     'Fenobarbital induz CYP2C19 e CYP3A4, acelerando o metabolismo de vários ISRSs. Risco adicional de sedação aditiva (fenobarbital é sedativo)',
     'Redução dos níveis do ISRS → falha antidepressiva. Sedação excessiva por efeito aditivo no SNC',
     'Monitorar resposta ao ISRS. Pode ser necessário aumentar dose. Evitar atividades de risco (dirigir, operar máquinas) pelo efeito sedativo combinado',
@@ -3753,7 +3958,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.reducedEfficacy, RiskType.cns},
     [_kRefGG, _kRefMdx]),
 
-('fenobarbital', 'ciclosporina', InteractionSeverity.major,
+
+  ('fenobarbital', 'ciclosporina', InteractionSeverity.major,
     'Fenobarbital induz CYP3A4, reduzindo os níveis de ciclosporina em 40-60%',
     'Rejeição aguda de transplante por anticoagulação insuficiente. Risco de perda do enxerto',
     'Evitar combinação em transplantados. Substituir fenobarbital por levetiracetam ou gabapentina. Se impossível: monitorar C0 de ciclosporina e ajustar dose agressivamente',
@@ -3762,7 +3968,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.reducedEfficacy, RiskType.plasmaLevel},
     [_kRefGG, _kRefMdx, _kRefUT]),
 
-('fenobarbital', 'tacrolimo', InteractionSeverity.major,
+
+  ('fenobarbital', 'tacrolimo', InteractionSeverity.major,
     'Fenobarbital induz CYP3A4 e P-gp, reduzindo os níveis de tacrolimo significativamente',
     'Rejeição aguda de transplante por níveis subterapêuticos de tacrolimo',
     'Evitar em transplantados. Substituir por antiepilético não-indutor. Monitorar C0 de tacrolimo diariamente se mantido',
@@ -3771,7 +3978,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.reducedEfficacy, RiskType.plasmaLevel},
     [_kRefGG, _kRefMdx, _kRefUT]),
 
-('fenobarbital', 'anticoncepcional', InteractionSeverity.major,
+
+  ('fenobarbital', 'anticoncepcional', InteractionSeverity.major,
     'Fenobarbital induz CYP3A4 e UGT, reduzindo os níveis de etinilestradiol e progestágenos. Mesma magnitude que fenitoína e carbamazepina',
     'Falha contraceptiva → gravidez não planejada. Risco especialmente crítico em mulheres em idade fértil com epilepsia',
     'Usar método de barreira adicional obrigatoriamente. Preferir DIU de cobre ou levonorgestrel (não afetados). Considerar substituição por antiepilético não-indutor (lamotrigina, levetiracetam)',
@@ -3780,7 +3988,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.reducedEfficacy},
     [_kRefGG, _kRefMdx]),
 
-('fenobarbital', 'acido valproico', InteractionSeverity.major,
+
+  ('fenobarbital', 'valproato', InteractionSeverity.major,
     'Valproato inibe o metabolismo de fenobarbital (CYP2C9 e β-oxidação mitocondrial), aumentando os níveis em 30-60%. Fenobarbital pode induzir o metabolismo do valproato',
     'Toxicidade de fenobarbital: sedação excessiva, ataxia, confusão mental, depressão respiratória. Falha do valproato por indução',
     'Monitorar nível sérico de fenobarbital e sinais de toxicidade ao iniciar valproato. Reduzir dose de fenobarbital preventivamente em 25%. Esta combinação é usada em epilepsia mas requer ajuste de doses',
@@ -3789,7 +3998,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.plasmaLevel, RiskType.cns},
     [_kRefGG, _kRefMdx, _kRefUT]),
 
-('fenobarbital', 'lamotrigina', InteractionSeverity.major,
+
+  ('fenobarbital', 'lamotrigina', InteractionSeverity.major,
     'Fenobarbital induz UGT1A4 (principal via de glucuronidação da lamotrigina), reduzindo os níveis em 40%',
     'Falha no controle de crises por níveis subterapêuticos de lamotrigina',
     'Doses de lamotrigina em uso com fenobarbital são aproximadamente 2x maiores que em monoterapia. Seguir protocolo de titulação específico para uso com indutores enzimáticos',
@@ -3798,7 +4008,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.reducedEfficacy, RiskType.plasmaLevel},
     [_kRefGG, _kRefMdx, _kRefUT]),
 
-('fenobarbital', 'quetiapina', InteractionSeverity.major,
+
+  ('fenobarbital', 'quetiapina', InteractionSeverity.major,
     'Fenobarbital induz CYP3A4, reduzindo os níveis de quetiapina em 70-80%',
     'Falha no controle da psicose ou transtorno bipolar por níveis subterapêuticos de quetiapina',
     'Evitar combinação quando possível. Se necessário: aumentar dose de quetiapina substancialmente (5-7x). Considerar trocar fenobarbital por valproato ou levetiracetam',
@@ -3807,7 +4018,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.reducedEfficacy, RiskType.plasmaLevel},
     [_kRefGG, _kRefMdx]),
 
-('fenobarbital', 'claritromicina', InteractionSeverity.moderate,
+
+  ('fenobarbital', 'claritromicina', InteractionSeverity.moderate,
     'Claritromicina inibe CYP3A4, podendo aumentar os níveis de fenobarbital. Fenobarbital induz CYP3A4, podendo reduzir claritromicina',
     'Sedação excessiva por acúmulo de fenobarbital. Possível falha antibiótica por redução de claritromicina',
     'Monitorar sedação e nível de fenobarbital. Considerar azitromicina como alternativa (sem interação CYP significativa com fenobarbital)',
@@ -3816,7 +4028,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.cns, RiskType.reducedEfficacy},
     [_kRefGG, _kRefMdx]),
 
-('fenobarbital', 'eritromicina', InteractionSeverity.moderate,
+
+  ('fenobarbital', 'eritromicina', InteractionSeverity.moderate,
     'Eritromicina inibe CYP3A4, podendo aumentar os níveis de fenobarbital. Fenobarbital induz CYP3A4, podendo reduzir eritromicina. Sedação aditiva por SNC',
     'Sedação excessiva por acúmulo de fenobarbital. Possível falha antibiótica',
     'Monitorar sedação. Preferir azitromicina. Se mantida: monitorar nível sérico de fenobarbital',
@@ -3825,7 +4038,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.cns, RiskType.reducedEfficacy},
     [_kRefGG, _kRefMdx]),
 
-('fenobarbital', 'ritonavir', InteractionSeverity.major,
+
+  ('fenobarbital', 'ritonavir', InteractionSeverity.major,
     'Fenobarbital induz CYP3A4, reduzindo os níveis de ritonavir e ARVs boosted. Risco de falha virológica em HIV',
     'Falha virológica (HIV) por redução dos níveis de ritonavir/ARVs. Risco de resistência viral',
     'Evitar em TARV. Substituir fenobarbital por levetiracetam ou lamotrigina. Monitorar carga viral e CD4 se mantida',
@@ -3834,7 +4048,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.reducedEfficacy, RiskType.plasmaLevel},
     [_kRefGG, _kRefMdx, _kRefUT]),
 
-// ── ERITROMICINA (inibidor moderado CYP3A4, prolonga QTc) ─────────────────
+    // ── ERITROMICINA (inibidor moderado CYP3A4, prolonga QTc) ─────────────────
+
   ('eritromicina', 'warfarina', InteractionSeverity.major,
     'Eritromicina inibe CYP3A4 e CYP2C9, reduzindo o metabolismo da varfarina (especialmente da S-varfarina, mais potente). Pode também reduzir a flora intestinal produtora de vitamina K',
     'Aumento do INR → risco de sangramento grave (intracraniano, gastrointestinal). Início rápido (2-5 dias após início da eritromicina)',
@@ -3844,7 +4059,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.hemorrhagic, RiskType.plasmaLevel},
     [_kRefGG, _kRefMdx, _kRefUT]),
 
-('eritromicina', 'estatina', InteractionSeverity.major,
+
+  ('eritromicina', 'estatina', InteractionSeverity.major,
     'Eritromicina inibe CYP3A4, aumentando os níveis de sinvastatina, atorvastatina e lovastatina. Rosuvastatina e pravastatina são menos afetadas',
     'Risco aumentado de miopatia e rabdomiólise por acúmulo de estatinas. Risco mais elevado com sinvastatina (maior dependência de CYP3A4)',
     'Evitar eritromicina com sinvastatina (suspender sinvastatina durante curso de eritromicina). Preferir azitromicina. Se eritromicina necessária: usar rosuvastatina ou pravastatina (menos afetadas por CYP3A4)',
@@ -3853,7 +4069,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.myopathy, RiskType.plasmaLevel},
     [_kRefGG, _kRefMdx]),
 
-('eritromicina', 'digoxina', InteractionSeverity.major,
+
+  ('eritromicina', 'digoxina', InteractionSeverity.major,
     'Eritromicina aumenta a biodisponibilidade da digoxina por dois mecanismos: inibição de P-gp intestinal e eliminação de bactérias intestinais que inativam digoxina (Eggerthella lenta). Afeta ~10% dos pacientes mas pode ser grave',
     'Intoxicação digitálica: náusea, vômitos, bradicardia, bloqueio AV, arritmias ventriculares potencialmente fatais',
     'Monitorar nível sérico de digoxina e ECG após início de eritromicina. Em pacientes com nível próximo ao terapêutico máximo, reduzir dose de digoxina preventivamente. Considerar azitromicina',
@@ -3862,7 +4079,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.arrhythmia, RiskType.plasmaLevel},
     [_kRefGG, _kRefMdx, _kRefUT]),
 
-('eritromicina', 'ciclosporina', InteractionSeverity.major,
+
+  ('eritromicina', 'ciclosporina', InteractionSeverity.major,
     'Eritromicina inibe CYP3A4 e P-gp, aumentando os níveis de ciclosporina em 50-100% em pacientes transplantados',
     'Nefrotoxicidade grave, hipertensão, hipercalemia por acúmulo de ciclosporina',
     'Monitorar C0 de ciclosporina a cada 2-3 dias durante uso de eritromicina. Reduzir dose preventivamente em 25-50%. Preferir azitromicina (menor interação) em transplantados',
@@ -3871,7 +4089,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.nephrotoxicity, RiskType.plasmaLevel},
     [_kRefGG, _kRefMdx, _kRefUT]),
 
-('eritromicina', 'tacrolimo', InteractionSeverity.major,
+
+  ('eritromicina', 'tacrolimo', InteractionSeverity.major,
     'Eritromicina inibe CYP3A4 e P-gp, aumentando os níveis de tacrolimo significativamente (pode duplicar ou triplicar)',
     'Nefrotoxicidade grave e neurotoxicidade por acúmulo de tacrolimo. Risco de rejeição paradoxal se os níveis forem mal manejados',
     'Monitorar C0 de tacrolimo diariamente ao iniciar eritromicina. Reduzir dose de tacrolimo em 30-50% preventivamente. Preferir azitromicina em transplantados',
@@ -3880,7 +4099,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.nephrotoxicity, RiskType.plasmaLevel},
     [_kRefGG, _kRefMdx, _kRefUT]),
 
-('eritromicina', 'ssri', InteractionSeverity.moderate,
+
+  ('eritromicina', 'isrs', InteractionSeverity.moderate,
     'Eritromicina inibe CYP3A4 e prolonga QTc. Citalopram e escitalopram também prolongam QTc. Fluoxetina inibe CYP2D6/3A4 (interação bidirecional)',
     'Prolongamento QTc aditivo, especialmente com citalopram e escitalopram. Risco de torsades de pointes',
     'Evitar eritromicina + citalopram/escitalopram. Monitorar ECG com outros ISRSs. Corrigir eletrólitos. Preferir azitromicina (menor risco de QT)',
@@ -3889,7 +4109,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.qtProlongation, RiskType.arrhythmia},
     [_kRefGG, _kRefMdx]),
 
-('eritromicina', 'benzodiazepínico', InteractionSeverity.moderate,
+
+  ('eritromicina', 'benzodiazepínico', InteractionSeverity.moderate,
     'Eritromicina inibe CYP3A4, aumentando os níveis de alprazolam, diazepam, triazolam e midazolam. Lorazepam não é afetado significativamente (glucuronidação)',
     'Sedação excessiva e prolongada, comprometimento psicomotor, depressão respiratória (especialmente com triazolam e midazolam)',
     'Evitar eritromicina com triazolam e midazolam oral (alto risco). Preferir lorazepam ou azitromicina. Reduzir dose do benzodiazepínico em 50% se necessário',
@@ -3898,7 +4119,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.cns, RiskType.respiratoryDepression, RiskType.plasmaLevel},
     [_kRefGG, _kRefMdx]),
 
-('eritromicina', 'quetiapina', InteractionSeverity.major,
+
+  ('eritromicina', 'quetiapina', InteractionSeverity.major,
     'Eritromicina inibe CYP3A4 (metabolismo de quetiapina) e prolonga QTc. Quetiapina também prolonga QTc',
     'Aumento dos níveis de quetiapina → toxicidade (sedação, hipotensão, prolongamento QTc). Risco aditivo de torsades de pointes',
     'Evitar combinação. Substituir eritromicina por azitromicina. Monitorar ECG e sinais de toxicidade de quetiapina se mantida',
@@ -3907,7 +4129,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.qtProlongation, RiskType.plasmaLevel},
     [_kRefGG, _kRefMdx]),
 
-('eritromicina', 'metadona', InteractionSeverity.major,
+
+  ('eritromicina', 'metadona', InteractionSeverity.major,
     'Eritromicina inibe CYP3A4 (metabolismo de metadona) e prolonga QTc. Metadona também prolonga QTc de forma dose-dependente',
     'Acúmulo de metadona → sedação, depressão respiratória, prolongamento QTc grave, torsades de pointes. Risco fatal em doses elevadas de metadona',
     'Evitar combinação. Substituir eritromicina por azitromicina. Monitorar ECG (QTc), SpO₂ e sinais de superdosagem de metadona se mantida',
@@ -3916,7 +4139,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.qtProlongation, RiskType.respiratoryDepression},
     [_kRefGG, _kRefMdx, _kRefUT]),
 
-// ── RITONAVIR (inibidor potentíssimo CYP3A4, 2D6, P-gp) ─────────────────
+    // ── RITONAVIR (inibidor potentíssimo CYP3A4, 2D6, P-gp) ─────────────────
+
   ('ritonavir', 'estatina', InteractionSeverity.contraindicated,
     'Ritonavir inibe potentemente CYP3A4, a principal via de metabolismo de sinvastatina, lovastatina e atorvastatina. Pode aumentar os níveis de sinvastatina em mais de 30x',
     'Rabdomiólise grave por acúmulo maciço de estatinas → insuficiência renal aguda, hipercalemia, morte. Um dos raros casos de interação com risco de vida imediato',
@@ -3926,7 +4150,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.myopathy, RiskType.nephrotoxicity},
     [_kRefGG, _kRefMdx, _kRefUT]),
 
-('ritonavir', 'quetiapina', InteractionSeverity.contraindicated,
+
+  ('ritonavir', 'quetiapina', InteractionSeverity.contraindicated,
     'Ritonavir inibe potentemente CYP3A4, a principal via de metabolismo da quetiapina. Pode aumentar os níveis de quetiapina em 10-20x. Ambos prolongam QTc',
     'Toxicidade grave de quetiapina: sedação profunda, hipotensão grave, prolongamento QTc com risco de torsades, depressão respiratória. Casos fatais reportados',
     'CONTRAINDICADO. Substituir quetiapina por antipsicótico com menor dependência de CYP3A4 (haloperidol, aripiprazol). Consultar infectologista antes de iniciar TARV com ritonavir em pacientes em uso de quetiapina',
@@ -3935,7 +4160,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.cns, RiskType.qtProlongation, RiskType.respiratoryDepression},
     [_kRefGG, _kRefMdx, _kRefUT]),
 
-('ritonavir', 'benzodiazepínico', InteractionSeverity.contraindicated,
+
+  ('ritonavir', 'benzodiazepínico', InteractionSeverity.contraindicated,
     'Ritonavir inibe potentemente CYP3A4, a principal via de metabolismo de alprazolam, diazepam, triazolam, midazolam e clonazepam. Pode aumentar os níveis em 10-30x. Lorazepam é menos afetado',
     'Sedação profunda e prolongada, depressão respiratória grave, coma e morte. Triazolam e midazolam oral são as combinações mais perigosas',
     'CONTRAINDICADO: ritonavir + triazolam/midazolam oral (bula). Alprazolam, diazepam, clonazepam: evitar ou usar doses muito reduzidas com monitoramento. Usar lorazepam (glucuronidação — menos afetado) quando sedação necessária',
@@ -3944,7 +4170,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.cns, RiskType.respiratoryDepression},
     [_kRefGG, _kRefMdx, _kRefUT]),
 
-('ritonavir', 'fentanila', InteractionSeverity.major,
+
+  ('ritonavir', 'fentanila', InteractionSeverity.major,
     'Ritonavir inibe CYP3A4, a principal via de metabolismo da fentanila. Pode aumentar significativamente os níveis de fentanila e prolonga sua meia-vida',
     'Sedação intensa, depressão respiratória e apneia por acúmulo de fentanila. Especialmente perigoso em uso crônico (adesivos transdérmicos)',
     'Reduzir dose de fentanila em 50% ao iniciar ritonavir. Monitorar frequência respiratória, SpO₂ e nível de sedação. Ter naloxona disponível. Titular dose lentamente',
@@ -3953,7 +4180,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.respiratoryDepression, RiskType.plasmaLevel},
     [_kRefGG, _kRefMdx, _kRefUT]),
 
-('ritonavir', 'opioide', InteractionSeverity.major,
+
+  ('ritonavir', 'opioide', InteractionSeverity.major,
     'Ritonavir inibe CYP3A4 e CYP2D6, as principais vias de metabolismo de oxicodona, codeína, tramadol e fentanila. Pode aumentar os níveis em 50-100%. Morfina (glucuronidação) é menos afetada',
     'Sedação excessiva, depressão respiratória, constipação intensa por acúmulo de opioides',
     'Preferir morfina (glucuronidação, menos afetada pelo CYP). Reduzir dose de opioides CYP3A4-dependentes em 30-50%. Monitorar SpO₂ e nível de sedação. Titular lentamente',
@@ -3962,7 +4190,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.respiratoryDepression, RiskType.plasmaLevel},
     [_kRefGG, _kRefMdx]),
 
-// ── ENTRE INIBIDORES/INDUTORES CYP ────────────────────────────────────────
+    // ── ENTRE INIBIDORES/INDUTORES CYP ────────────────────────────────────────
+
   ('claritromicina', 'eritromicina', InteractionSeverity.moderate,
     'Ambos inibem CYP3A4 e prolongam o intervalo QTc. A combinação não tem indicação terapêutica (espectro antibacteriano sobreposto) e potencializa os efeitos adversos de ambos',
     'Prolongamento QTc aditivo → risco aumentado de torsades de pointes. Toxicidade GI aumentada. Combinação sem benefício clínico justificável',
@@ -3972,7 +4201,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.qtProlongation},
     [_kRefGG, _kRefMdx]),
 
-('claritromicina', 'ritonavir', InteractionSeverity.major,
+
+  ('claritromicina', 'ritonavir', InteractionSeverity.major,
     'Ritonavir inibe CYP3A4, aumentando os níveis de claritromicina em 77%. Claritromicina inibe CYP3A4, podendo aumentar ritonavir. Ambos prolongam QTc',
     'Acúmulo de claritromicina → toxicidade (distúrbios auditivos, hepatotoxicidade, prolongamento QTc). Em insuficiência renal, risco ainda maior',
     'Reduzir dose de claritromicina em 50% se TFG < 60mL/min. Monitorar ECG e função hepática. Azitromicina é a alternativa preferida em pacientes com TARV baseada em ritonavir',
@@ -3981,7 +4211,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.qtProlongation, RiskType.plasmaLevel},
     [_kRefGG, _kRefMdx, _kRefUT]),
 
-('eritromicina', 'ritonavir', InteractionSeverity.major,
+
+  ('eritromicina', 'ritonavir', InteractionSeverity.major,
     'Ritonavir inibe CYP3A4, aumentando os níveis de eritromicina. Ambos prolongam QTc de forma dose-dependente',
     'Acúmulo de eritromicina → prolongamento QTc grave, torsades de pointes. Toxicidade GI aumentada',
     'Evitar combinação. Substituir eritromicina por azitromicina (menor interação e menor risco de QT). Se mantida: monitorar ECG rigorosamente',
@@ -3990,7 +4221,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.qtProlongation, RiskType.arrhythmia},
     [_kRefGG, _kRefMdx]),
 
-('ssri', 'amitriptilina', InteractionSeverity.major,
+
+  ('isrs', 'amitriptilina', InteractionSeverity.major,
     'ISRSs (especialmente fluoxetina e paroxetina) inibem CYP2D6, principal via de metabolismo da amitriptilina. Aumentam seus níveis em 2-4x. Ambos têm atividade serotoninérgica somada',
     'Toxicidade por amitriptilina: arritmias (QT prolongado, bloqueio AV), hipotensão ortostática, retenção urinária, confusão. Risco de síndrome serotoninérgica',
     'Evitar fluoxetina e paroxetina com amitriptilina. Se necessário: sertralina (menor inibição de CYP2D6) em dose baixa. Monitorar ECG (QTc) e sinais de toxicidade tricíclica',
@@ -3999,7 +4231,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.qtProlongation, RiskType.serotonin, RiskType.plasmaLevel},
     [_kRefGG, _kRefMdx]),
 
-('ssri', 'mirtazapina', InteractionSeverity.moderate,
+
+  ('isrs', 'mirtazapina', InteractionSeverity.moderate,
     'Mirtazapina tem mecanismo noradrenérgico/serotoninérgico (antagonismo α2 + 5-HT2/3). A combinação com ISRS é usada terapeuticamente em depressão refratária ("California Rocket"), mas aumenta o risco de síndrome serotoninérgica',
     'Risco moderado de síndrome serotoninérgica. Sedação aditiva por efeito anti-histamínico da mirtazapina + ISRS',
     'Combinação usada em depressão resistente sob supervisão especializada. Titular lentamente. Monitorar sinais de serotonina. Evitar em ambulatório sem suporte psiquiátrico',
@@ -4008,7 +4241,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.serotonin, RiskType.cns},
     [_kRefGG, _kRefMdx]),
 
-('ssri', 'quetiapina', InteractionSeverity.moderate,
+
+  ('isrs', 'quetiapina', InteractionSeverity.moderate,
     'Quetiapina tem atividade serotoninérgica (antagonismo 5-HT2A). Fluoxetina inibe CYP3A4/2D6, podendo aumentar os níveis de quetiapina. Prolongamento QTc aditivo com citalopram/escitalopram',
     'Risco de síndrome serotoninérgica leve-moderada. QTc prolongado com citalopram + quetiapina. Sedação aditiva',
     'Monitorar ECG com citalopram/escitalopram + quetiapina. Monitorar sinais serotoninérgicos. Reduzir dose de quetiapina se fluoxetina for usada',
@@ -4017,7 +4251,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.qtProlongation, RiskType.serotonin},
     [_kRefGG, _kRefMdx]),
 
-('ssri', 'haloperidol', InteractionSeverity.moderate,
+
+  ('isrs', 'haloperidol', InteractionSeverity.moderate,
     'Fluoxetina e paroxetina inibem CYP2D6, a principal via de metabolismo do haloperidol, aumentando os níveis em 50-100%. Ambos prolongam QTc',
     'Toxicidade de haloperidol: prolongamento QTc, sintomas extrapiramidais (acatisia, distonia aguda). Sedação aditiva',
     'Monitorar ECG e sinais extrapiramidais. Considerar reduzir dose de haloperidol em 30-50% com fluoxetina/paroxetina. Sertralina tem menor impacto em CYP2D6',
@@ -4026,7 +4261,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.qtProlongation, RiskType.plasmaLevel},
     [_kRefGG, _kRefMdx]),
 
-('ssri', 'olanzapina', InteractionSeverity.minor,
+
+  ('isrs', 'olanzapina', InteractionSeverity.minor,
     'Fluoxetina inibe CYP2D6/1A2, podendo aumentar modestamente os níveis de olanzapina. Risco serotoninérgico teórico',
     'Aumento modesto da sedação e dos efeitos metabólicos (ganho de peso). Síndrome serotoninérgica improvável mas possível',
     'Monitorar sedação e ganho de peso. Combinação usada em depressão bipolar (fluoxetina + olanzapina = "OFC"). Sem ajuste de dose rotineiro necessário',
@@ -4035,7 +4271,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.cns},
     [_kRefGG, _kRefMdx]),
 
-// ── IMAO × outros SNC ─────────────────────────────────────────────────────
+    // ── IMAO × outros SNC ─────────────────────────────────────────────────────
+
   ('imao', 'amitriptilina', InteractionSeverity.contraindicated,
     'IMAOs inibem a degradação de monoaminas; amitriptilina inibe recaptação de serotonina e noradrenalina. Combinação causa acúmulo maciço de monoaminas. Washout: 14 dias para IMAO irreversível',
     'Síndrome serotoninérgica grave (agitação, hipertermia, convulsões, rabdomiólise) e crise adrenérgica (hipertensão grave, arritmias). Potencialmente fatal',
@@ -4045,7 +4282,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.serotonin},
     [_kRefGG, _kRefMdx, _kRefUT]),
 
-('imao', 'opioide', InteractionSeverity.contraindicated,
+
+  ('imao', 'opioide', InteractionSeverity.contraindicated,
     'Meperidina e tramadol têm atividade serotoninérgica e são contraindicados. Morfina e fentanila têm menor risco serotoninérgico, mas todos os opioides podem causar síndrome excitadora ou depressora com IMAOs',
     'Síndrome excitadora (agitação, convulsões, hipertermia com meperidina/tramadol) ou síndrome depressora (coma, depressão respiratória com morfina/fentanila). Ambas potencialmente fatais',
     'CONTRAINDICADO: IMAOs + meperidina ou tramadol (absoluto). Morfina e fentanila: usar com cautela extrema e monitoramento rigoroso se inevitável. Washout de 14 dias do IMAO antes de opioides',
@@ -4054,7 +4292,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.serotonin, RiskType.respiratoryDepression},
     [_kRefGG, _kRefMdx, _kRefUT]),
 
-('imao', 'benzodiazepínico', InteractionSeverity.moderate,
+
+  ('imao', 'benzodiazepínico', InteractionSeverity.moderate,
     'IMAOs podem potencializar os efeitos sedativos do SNC dos benzodiazepínicos por mecanismos não totalmente elucidados. Interação de menor magnitude que outras combinações com IMAO',
     'Sedação excessiva, depressão respiratória aumentada, hipotensão',
     'Usar com cautela. Reduzir dose do benzodiazepínico. Monitorar nível de sedação e FR. Evitar durante washout do IMAO',
@@ -4063,7 +4302,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.cns, RiskType.respiratoryDepression},
     [_kRefGG, _kRefMdx]),
 
-('imao', 'quetiapina', InteractionSeverity.major,
+
+  ('imao', 'quetiapina', InteractionSeverity.major,
     'IMAOs podem potencializar os efeitos da quetiapina no SNC e cardiovasculares. Risco de síndrome serotoninérgica por atividade 5-HT2A da quetiapina',
     'Sedação excessiva, hipotensão grave, risco de síndrome serotoninérgica',
     'Evitar combinação. Washout de 14 dias do IMAO. Se necessário antipsicótico durante transição: usar haloperidol com cautela',
@@ -4072,7 +4312,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.cns, RiskType.serotonin},
     [_kRefGG, _kRefMdx]),
 
-('imao', 'haloperidol', InteractionSeverity.moderate,
+
+  ('imao', 'haloperidol', InteractionSeverity.moderate,
     'IMAOs podem potencializar os efeitos do haloperidol no SNC. Risco de hipotensão e sedação aditivos',
     'Hipotensão grave, sedação excessiva, risco aumentado de efeitos extrapiramidais',
     'Usar com extrema cautela e apenas quando antipsicótico for indispensável durante washout. Monitorar PA e sedação rigorosamente',
@@ -4081,7 +4322,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.cns},
     [_kRefGG, _kRefMdx]),
 
-('amitriptilina', 'mirtazapina', InteractionSeverity.major,
+
+  ('amitriptilina', 'mirtazapina', InteractionSeverity.major,
     'Amitriptilina + mirtazapina: efeitos anticolinérgicos, antihistamínicos e sedativos aditivos. Ambas têm atividade serotoninérgica. Risco de toxicidade por acúmulo',
     'Sedação profunda, confusão, retenção urinária, visão turva, constipação grave, delirium anticolinérgico em idosos. QTc prolongado',
     'Evitar em idosos (síndrome anticolinérgica grave). Em adultos jovens: monitorar cognição, função vesical e ECG. Considerar alternativas mais seguras',
@@ -4090,7 +4332,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.cns, RiskType.qtProlongation},
     [_kRefGG, _kRefMdx]),
 
-('amitriptilina', 'quetiapina', InteractionSeverity.major,
+
+  ('amitriptilina', 'quetiapina', InteractionSeverity.major,
     'Ambas prolongam o QTc e têm efeitos anticolinérgicos e sedativos significativos. Fluoxetina inibe CYP2D6/3A4, aumentando os níveis de ambas',
     'QTc prolongado com risco de torsades de pointes. Sedação excessiva e delirium anticolinérgico, especialmente em idosos',
     'Monitorar ECG (QTc) antes e durante o tratamento. Evitar em pacientes com QTc basal > 450ms. Evitar em idosos. Manter eletrólitos normais',
@@ -4099,7 +4342,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.qtProlongation, RiskType.cns},
     [_kRefGG, _kRefMdx]),
 
-('amitriptilina', 'benzodiazepínico', InteractionSeverity.moderate,
+
+  ('amitriptilina', 'benzodiazepínico', InteractionSeverity.moderate,
     'Efeitos depressores do SNC aditivos. Amitriptilina tem efeitos sedativos intrínsecas (anti-H1). Benzodiazepínicos potencializam a sedação',
     'Sedação excessiva, depressão respiratória (especialmente em idosos), comprometimento cognitivo, risco de quedas',
     'Evitar em idosos (critérios de Beers). Em adultos: usar doses mínimas efetivas de ambos. Advertir sobre dirigir e operar máquinas',
@@ -4108,7 +4352,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.cns, RiskType.respiratoryDepression},
     [_kRefGG, _kRefMdx]),
 
-('amitriptilina', 'haloperidol', InteractionSeverity.major,
+
+  ('amitriptilina', 'haloperidol', InteractionSeverity.major,
     'Ambos prolongam o QTc (haloperidol bloqueia IKr/hERG; amitriptilina prolonga QT por múltiplos mecanismos) e têm efeitos anticolinérgicos aditivos',
     'QTc prolongado com risco de torsades de pointes. Delirium anticolinérgico, especialmente em idosos',
     'Monitorar ECG (QTc). Evitar em pacientes com QTc > 450ms ou hipocalemia/hipomagnesemia. Considerar alternativas com menor impacto no QT',
@@ -4117,7 +4362,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.qtProlongation, RiskType.cns},
     [_kRefGG, _kRefMdx]),
 
-('amitriptilina', 'olanzapina', InteractionSeverity.moderate,
+
+  ('amitriptilina', 'olanzapina', InteractionSeverity.moderate,
     'Efeitos anticolinérgicos, sedativos e metabólicos aditivos (ganho de peso, hiperglicemia). Ambas prolongam modestamente o QTc',
     'Sedação excessiva, delirium anticolinérgico em idosos, ganho de peso, intolerância à glicose, QTc prolongado',
     'Evitar em idosos e pacientes com risco metabólico/DM2. Monitorar peso, glicemia e ECG. Preferir alternativas com menor perfil anticolinérgico',
@@ -4126,7 +4372,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.cns, RiskType.qtProlongation},
     [_kRefGG, _kRefMdx]),
 
-('amitriptilina', 'imao_reversivel', InteractionSeverity.contraindicated,
+
+  ('amitriptilina', 'imao reversivel', InteractionSeverity.contraindicated,
     'Mesmo que IMAO irreversível: amitriptilina + moclobemida pode causar síndrome serotoninérgica por atividade serotoninérgica somada',
     'Síndrome serotoninérgica: agitação, mioclonias, hipertermia, convulsões',
     'CONTRAINDICADO. Washout de 1 dia após moclobemida; washout de 7 dias após amitriptilina antes de moclobemida',
@@ -4135,7 +4382,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.serotonin},
     [_kRefGG, _kRefMdx]),
 
-('bupropiona', 'amitriptilina', InteractionSeverity.major,
+
+  ('bupropiona', 'amitriptilina', InteractionSeverity.major,
     'Bupropiona inibe CYP2D6, aumentando os níveis de amitriptilina em 2-4x. Ambos abaixam o limiar convulsivo',
     'Toxicidade por amitriptilina (QTc prolongado, efeitos anticolinérgicos, arritmias) + risco aumentado de convulsões',
     'Evitar combinação. Se antidepressivo dual necessário: preferir combinação de ISRS + mirtazapina. Monitorar ECG e nível de amitriptilina se mantida',
@@ -4144,7 +4392,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.plasmaLevel, RiskType.seizure, RiskType.qtProlongation},
     [_kRefGG, _kRefMdx]),
 
-('bupropiona', 'haloperidol', InteractionSeverity.moderate,
+
+  ('bupropiona', 'haloperidol', InteractionSeverity.moderate,
     'Bupropiona inibe CYP2D6, aumentando os níveis de haloperidol. Ambos abaixam o limiar convulsivo',
     'Toxicidade de haloperidol: prolongamento QTc, sintomas extrapiramidais. Risco aumentado de convulsões',
     'Monitorar ECG e sintomas extrapiramidais. Considerar reduzir dose de haloperidol. Monitorar sinais de toxicidade',
@@ -4153,7 +4402,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.plasmaLevel, RiskType.qtProlongation, RiskType.seizure},
     [_kRefGG, _kRefMdx]),
 
-('bupropiona', 'quetiapina', InteractionSeverity.moderate,
+
+  ('bupropiona', 'quetiapina', InteractionSeverity.moderate,
     'Bupropiona inibe CYP2D6, podendo aumentar os metabólitos ativos da quetiapina. Ambos abaixam o limiar convulsivo e alteram o limiar convulsivo',
     'Risco aumentado de convulsões. Sedação aditiva',
     'Usar com cautela em pacientes com histórico de convulsões. Monitorar sedação e limiar convulsivo',
@@ -4162,7 +4412,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.seizure, RiskType.cns},
     [_kRefGG, _kRefMdx]),
 
-('bupropiona', 'mirtazapina', InteractionSeverity.moderate,
+
+  ('bupropiona', 'mirtazapina', InteractionSeverity.moderate,
     'Bupropiona (noradrenérgica/dopaminérgica) + mirtazapina (noradrenérgica/serotoninérgica) é combinação usada em depressão refratária. Bupropiona inibe CYP2D6, podendo aumentar metabólitos da mirtazapina',
     'Risco moderado de convulsões (bupropiona abaixa limiar). Insônia paradoxal (bupropiona ativa; mirtazapina sedativa)',
     'Combinação usada em depressão resistente ("rocket fuel"). Titular lentamente. Monitorar limiar convulsivo e efeitos opostos na sedação/sono',
@@ -4171,7 +4422,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.seizure},
     [_kRefGG, _kRefMdx]),
 
-('bupropiona', 'imao_reversivel', InteractionSeverity.contraindicated,
+
+  ('bupropiona', 'imao reversivel', InteractionSeverity.contraindicated,
     'Bupropiona inibe recaptação de dopamina e noradrenalina; moclobemida inibe MAO-A. Combinação causa acúmulo de monoaminas',
     'Crise hipertensiva, convulsões, síndrome adrenérgica grave',
     'CONTRAINDICADO. Washout de 1 dia após moclobemida antes de iniciar bupropiona',
@@ -4180,7 +4432,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.serotonin},
     [_kRefGG, _kRefMdx]),
 
-('opioide', 'mirtazapina', InteractionSeverity.moderate,
+
+  ('opioide', 'mirtazapina', InteractionSeverity.moderate,
     'Mirtazapina tem efeitos sedativos potentes (anti-H1). A combinação com opioides potencializa a depressão do SNC. Risco serotoninérgico teórico (mirtazapina ativa 5-HT indireto)',
     'Sedação excessiva, depressão respiratória aumentada, especialmente em início de tratamento ou com doses elevadas',
     'Monitorar sedação e frequência respiratória. Usar doses mínimas de ambos. Advertir paciente sobre risco de quedas e comprometimento cognitivo',
@@ -4189,7 +4442,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.cns, RiskType.respiratoryDepression},
     [_kRefGG, _kRefMdx]),
 
-('opioide', 'quetiapina', InteractionSeverity.major,
+
+  ('opioide', 'quetiapina', InteractionSeverity.major,
     'Quetiapina tem potentes efeitos sedativos e depressores do SNC. A combinação com opioides potencializa a depressão respiratória. Quetiapina inibe CYP2D6/3A4 variadamente',
     'Sedação profunda, depressão respiratória grave, hipotensão, risco de aspiração e morte. Combinação frequentemente envolvida em óbitos por superdosagem acidental',
     'Evitar uso concomitante em altas doses. Se necessário: usar doses mínimas de ambos, monitorar SpO₂ e PA. Prescrever naloxona de resgate. Educar paciente e família',
@@ -4198,7 +4452,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.respiratoryDepression, RiskType.cns},
     [_kRefGG, _kRefMdx]),
 
-('opioide', 'haloperidol', InteractionSeverity.moderate,
+
+  ('opioide', 'haloperidol', InteractionSeverity.moderate,
     'Haloperidol potencializa os efeitos sedativos dos opioides. Usado terapeuticamente em cuidados paliativos (controle de náusea + dor), mas com risco de sedação excessiva',
     'Sedação excessiva, hipotensão ortostática, depressão respiratória em doses elevadas de ambos',
     'Em cuidados paliativos: titulação cuidadosa com doses mínimas. Monitorar nível de sedação (RASS), PA e FR. Ter naloxona disponível',
@@ -4207,7 +4462,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.cns, RiskType.respiratoryDepression},
     [_kRefGG, _kRefMdx]),
 
-('fentanila', 'midazolam', InteractionSeverity.major,
+
+  ('fentanila', 'midazolam', InteractionSeverity.major,
     'Fentanila (depressor respiratório μ-opioide) + midazolam (benzodiazepínico GABA-A) é combinação de alto risco para sedação procedural. O efeito sinérgico (não apenas aditivo) pode precipitar apneia mesmo com doses que seriam seguras individualmente',
     'Apneia, dessaturação grave (SpO₂ < 85%), bradicardia, parada respiratória. Combinação responsável por incidentes graves em sedação procedural e UTI',
     'Usar apenas em ambiente monitorizado com acesso imediato a bolsa-válvula-máscara, oxigênio e flumazenil + naloxona. Titular em doses fracionadas. Monitorar SpO₂ e ETCO₂ continuamente',
@@ -4216,7 +4472,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.respiratoryDepression},
     [_kRefGG, _kRefMdx, _kRefUT]),
 
-('tramadol', 'quetiapina', InteractionSeverity.moderate,
+
+  ('tramadol', 'quetiapina', InteractionSeverity.moderate,
     'Quetiapina inibe parcialmente CYP2D6, podendo aumentar os níveis de tramadol. Ambos abaixam o limiar convulsivo e têm efeitos sedativos',
     'Convulsões, sedação excessiva, síndrome serotoninérgica leve',
     'Usar com cautela. Evitar em pacientes com histórico de convulsões. Monitorar sedação e limiar convulsivo',
@@ -4225,7 +4482,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.seizure, RiskType.cns},
     [_kRefGG, _kRefMdx]),
 
-('tramadol', 'haloperidol', InteractionSeverity.moderate,
+
+  ('tramadol', 'haloperidol', InteractionSeverity.moderate,
     'Haloperidol inibe CYP2D6, podendo aumentar os níveis de tramadol e seu metabolito ativo. Ambos abaixam o limiar convulsivo',
     'Convulsões, sedação excessiva, síndrome serotoninérgica',
     'Usar com cautela. Evitar em pacientes com epilepsia. Para analgesia: preferir morfina com haloperidol',
@@ -4234,7 +4492,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.seizure, RiskType.cns},
     [_kRefGG, _kRefMdx]),
 
-// ── MIRTAZAPINA × outros ──────────────────────────────────────────────────
+    // ── MIRTAZAPINA × outros ──────────────────────────────────────────────────
+
   ('mirtazapina', 'quetiapina', InteractionSeverity.moderate,
     'Efeitos sedativos aditivos (ambas têm potente atividade anti-H1). Risco serotoninérgico teórico. Quetiapina prolonga QTc',
     'Sedação profunda e prolongada, especialmente ao início. Risco de quedas em idosos. QTc prolongado',
@@ -4244,7 +4503,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.cns, RiskType.qtProlongation},
     [_kRefGG, _kRefMdx]),
 
-('mirtazapina', 'haloperidol', InteractionSeverity.moderate,
+
+  ('mirtazapina', 'haloperidol', InteractionSeverity.moderate,
     'Efeitos sedativos aditivos. Haloperidol prolonga QTc; mirtazapina prolonga QTc modestamente. Combinação usada em alucinações + insônia em cuidados paliativos',
     'Sedação excessiva, prolongamento QTc, hipotensão ortostática, risco de quedas em idosos',
     'Monitorar ECG (QTc) e sedação. Usar doses mínimas. Em CP: titulação cuidadosa com monitoramento',
@@ -4253,7 +4513,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.qtProlongation, RiskType.cns},
     [_kRefGG, _kRefMdx]),
 
-('mirtazapina', 'olanzapina', InteractionSeverity.moderate,
+
+  ('mirtazapina', 'olanzapina', InteractionSeverity.moderate,
     'Efeitos sedativos, antihistamínicos e metabólicos aditivos. Ambas aumentam peso e risco de síndrome metabólica',
     'Sedação intensa, ganho de peso significativo, resistência à insulina, dislipidemia',
     'Monitorar peso, glicemia, perfil lipídico e pressão arterial. Usar doses mínimas. Evitar em pacientes com obesidade ou DM2',
@@ -4262,7 +4523,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.cns},
     [_kRefGG, _kRefMdx]),
 
-// ── QUETIAPINA / HALOPERIDOL / OLANZAPINA × entre si ─────────────────────
+    // ── QUETIAPINA / HALOPERIDOL / OLANZAPINA × entre si ─────────────────────
+
   ('quetiapina', 'haloperidol', InteractionSeverity.major,
     'Ambos prolongam o QTc (haloperidol é um dos mais potentes; quetiapina também). Efeitos sedativos e extrapiramidais aditivos',
     'QTc prolongado com alto risco de torsades de pointes. Sedação excessiva. Somatório de efeitos extrapiramidais. Raramente indicado combinar dois antipsicóticos',
@@ -4272,7 +4534,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.qtProlongation, RiskType.arrhythmia},
     [_kRefGG, _kRefMdx]),
 
-('quetiapina', 'olanzapina', InteractionSeverity.moderate,
+
+  ('quetiapina', 'olanzapina', InteractionSeverity.moderate,
     'Ambas têm efeitos sedativos, metabólicos e anticolinérgicos aditivos. Raramente indicada a combinação',
     'Sedação excessiva, síndrome metabólica, efeitos anticolinérgicos aditivos. Sem benefício clínico adicional sobre monoterapia em doses adequadas',
     'Evitar combinação. Otimizar dose do antipsicótico único antes de combinar. Se usada: monitorar peso, glicemia, sedação',
@@ -4281,7 +4544,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.cns},
     [_kRefGG, _kRefMdx]),
 
-('haloperidol', 'olanzapina', InteractionSeverity.moderate,
+
+  ('haloperidol', 'olanzapina', InteractionSeverity.moderate,
     'Efeitos extrapiramidais aditivos (haloperidol D2 típico; olanzapina atípico). Ambos prolongam QTc. Raramente indicada a combinação',
     'Sintomas extrapiramidais graves (acatisia, distonia), sedação excessiva, QTc prolongado',
     'Evitar combinação de antipsicóticos. Se usada em transição: monitorar sintomas extrapiramidais e ECG',
@@ -4290,8 +4554,9 @@ const _interactionDB = <_IxEntry>[
     {RiskType.qtProlongation},
     [_kRefGG, _kRefMdx]),
 
-// ── CARBONATO DE LÍTIO × SNC (pares ausentes relevantes) ─────────────────
-  ('carbonato de litio', 'ssri', InteractionSeverity.major,
+    // ── CARBONATO DE LÍTIO × SNC (pares ausentes relevantes) ─────────────────
+
+  ('carbonato de litio', 'isrs', InteractionSeverity.major,
     'Lítio tem propriedades serotoninérgicas (aumenta síntese e liberação de 5-HT). ISRSs inibem recaptação de serotonina. Combinação usada em depressão refratária, mas com risco serotoninérgico',
     'Síndrome serotoninérgica: tremor, mioclonias, diaforese, hipertermia, agitação, especialmente com fluoxetina (que também inibe CYP2D6 e pode alterar excreção renal de lítio)',
     'Combinação usada em psiquiatria com monitoramento. Titular lentamente. Monitorar nível sérico de lítio (alvo 0,6-1,0 mEq/L) e sinais serotoninérgicos',
@@ -4300,7 +4565,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.serotonin, RiskType.plasmaLevel},
     [_kRefGG, _kRefMdx]),
 
-('carbonato de litio', 'tramadol', InteractionSeverity.major,
+
+  ('carbonato de litio', 'tramadol', InteractionSeverity.major,
     'Lítio tem propriedades serotoninérgicas + tramadol inibe recaptação de serotonina. Ambos abaixam o limiar convulsivo',
     'Síndrome serotoninérgica e convulsões por mecanismos aditivos',
     'Evitar combinação. Para analgesia com lítio: preferir paracetamol (cuidado com AINEs — alteram excreção renal de lítio) ou morfina',
@@ -4309,7 +4575,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.serotonin, RiskType.seizure},
     [_kRefGG, _kRefMdx]),
 
-('carbonato de litio', 'imao', InteractionSeverity.major,
+
+  ('carbonato de litio', 'imao', InteractionSeverity.major,
     'Lítio aumenta síntese de serotonina; IMAOs inibem sua degradação. Interação com potencial serotoninérgico significativo',
     'Síndrome serotoninérgica, crise adrenérgica, toxicidade do lítio por interações hemodinâmicas',
     'Evitar combinação. Washout de 14 dias do IMAO antes de iniciar lítio. Monitorar nível sérico de lítio se mantidos',
@@ -4318,7 +4585,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.serotonin},
     [_kRefGG, _kRefMdx]),
 
-('carbonato de litio', 'quetiapina', InteractionSeverity.moderate,
+
+  ('carbonato de litio', 'quetiapina', InteractionSeverity.moderate,
     'Combinação amplamente usada em transtorno bipolar. Quetiapina prolonga QTc; lítio prolonga QTc em toxicidade. Em doses terapêuticas: risco moderado de sedação aditiva e QTc',
     'Sedação aditiva, prolongamento QTc, síndrome neuroléptica maligna raramente descrita com lítio + antipsicótico. Hiponatremia por lítio pode aumentar toxicidade',
     'Monitorar nível sérico de lítio (0,6-1,0 mEq/L) e ECG regularmente. Manter hidratação adequada. Monitorar eletrólitos e função renal',
@@ -4327,7 +4595,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.qtProlongation, RiskType.plasmaLevel},
     [_kRefGG, _kRefMdx]),
 
-('carbonato de litio', 'olanzapina', InteractionSeverity.moderate,
+
+  ('carbonato de litio', 'olanzapina', InteractionSeverity.moderate,
     'Combinação usada em transtorno bipolar. Efeitos metabólicos (ganho de peso, hiperglicemia) aditivos. Olanzapina pode mascarar sinais de toxicidade de lítio',
     'Síndrome metabólica, ganho de peso excessivo, hiperglicemia, SNM raramente descrito',
     'Monitorar peso, glicemia, perfil lipídico e nível sérico de lítio. Rastrear DM2. Combinação preferida ao haloperidol + lítio',
@@ -4336,7 +4605,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.plasmaLevel},
     [_kRefGG, _kRefMdx]),
 
-('aminoglicosideo', 'espironolactona', InteractionSeverity.minor,
+
+  ('aminoglicosideo', 'espironolactona', InteractionSeverity.minor,
     'Espironolactona pode reduzir a excreção renal de aminoglicosídeos ao competir por transportadores tubulares. Risco geralmente baixo',
     'Possível acúmulo discreto de aminoglicosídeo com maior risco de nefrotoxicidade',
     'Monitorar nível sérico do aminoglicosídeo e função renal regularmente',
@@ -4345,7 +4615,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.nephrotoxicity},
     [_kRefGG, _kRefMdx]),
 
-('aminoglicosideo', 'enalapril', InteractionSeverity.moderate,
+
+  ('aminoglicosideo', 'enalapril', InteractionSeverity.moderate,
     'IECAs reduzem a TFG ao bloquear a angiotensina II (vasoconstritora da arteríola eferente), diminuindo a pressão de filtração. Em situações de hipoperfusão renal, isso pode elevar o nível de aminoglicosídeos',
     'Risco aumentado de nefrotoxicidade e de acúmulo de aminoglicosídeos em pacientes com TFG reduzida ou hipovolemia',
     'Monitorar função renal e nível sérico do aminoglicosídeo. Garantir euvolemia antes e durante o tratamento. Ajustar dose do aminoglicosídeo conforme TFG',
@@ -4354,7 +4625,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.nephrotoxicity},
     [_kRefGG, _kRefMdx]),
 
-('aminoglicosideo', 'losartana', InteractionSeverity.moderate,
+
+  ('aminoglicosideo', 'losartana', InteractionSeverity.moderate,
     'BRAs reduzem a TFG de forma análoga aos IECAs, podendo aumentar o risco de acúmulo e nefrotoxicidade de aminoglicosídeos',
     'Nefrotoxicidade aumentada em pacientes com TFG reduzida ou uso concomitante com outros nefrotóxicos',
     'Monitorar função renal e nível sérico do aminoglicosídeo. Garantir euvolemia. Ajustar dose por TFG',
@@ -4363,7 +4635,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.nephrotoxicity},
     [_kRefGG, _kRefMdx]),
 
-// ── VANCOMICINA × nefrotóxicos ────────────────────────────────────────────
+    // ── VANCOMICINA × nefrotóxicos ────────────────────────────────────────────
+
   ('vancomicina', 'cisplatina', InteractionSeverity.major,
     'Ambas são nefrotóxicas: cisplatina causa dano tubular por adutos de DNA e estresse oxidativo; vancomicina acumula nos túbulos por endocitose mediada por megalina. Combinação com risco sinérgico',
     'IRA grave, especialmente em pacientes oncológicos que já têm comprometimento renal por outros quimioterápicos. Risco de toxicidade permanente',
@@ -4373,7 +4646,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.nephrotoxicity},
     [_kRefGG, _kRefMdx]),
 
-('vancomicina', 'espironolactona', InteractionSeverity.minor,
+
+  ('vancomicina', 'espironolactona', InteractionSeverity.minor,
     'Espironolactona compete por transportadores tubulares renais, podendo reduzir discretamente a excreção de vancomicina',
     'Possível acúmulo discreto de vancomicina com risco aumentado de nefrotoxicidade',
     'Monitorar AUC de vancomicina e função renal durante uso concomitante',
@@ -4382,7 +4656,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.nephrotoxicity},
     [_kRefGG, _kRefMdx]),
 
-('vancomicina', 'enalapril', InteractionSeverity.moderate,
+
+  ('vancomicina', 'enalapril', InteractionSeverity.moderate,
     'IECAs reduzem a TFG, diminuindo a eliminação de vancomicina e aumentando o risco de acúmulo e nefrotoxicidade',
     'Nefrotoxicidade por acúmulo de vancomicina, especialmente em pacientes com TFG de base reduzida',
     'Monitorar TFG e AUC de vancomicina. Ajustar dose/intervalo de vancomicina conforme TFG. Garantir euvolemia',
@@ -4391,7 +4666,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.nephrotoxicity},
     [_kRefGG, _kRefMdx]),
 
-// ── CISPLATINA × eletrólitos e diuréticos ────────────────────────────────
+    // ── CISPLATINA × eletrólitos e diuréticos ────────────────────────────────
+
   ('cisplatina', 'furosemida', InteractionSeverity.major,
     'Cisplatina causa depleção de magnésio, potássio e cálcio. Furosemida potencializa a perda renal de eletrólitos e pode exacerbar a nefrotoxicidade da cisplatina ao reduzir o volume intravascular',
     'Hipomagnesemia grave (pode causar arritmias, convulsões, tetania), hipocalemia, hipocalcemia. Nefrotoxicidade potencializada',
@@ -4401,7 +4677,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.nephrotoxicity, RiskType.electrolyte},
     [_kRefGG, _kRefMdx, _kRefUT]),
 
-('cisplatina', 'hidroclorotiazida', InteractionSeverity.major,
+
+  ('cisplatina', 'hidroclorotiazida', InteractionSeverity.major,
     'Hidroclorotiazida exacerba as perdas eletrolíticas causadas pela cisplatina (Mg, K, Na) e pode comprometer a hidratação necessária para proteger os rins durante a quimioterapia',
     'Hipomagnesemia, hipocalemia e hiponatremia graves. Aumento da nefrotoxicidade por depleção de volume',
     'Considerar suspender hidroclorotiazida durante ciclos de cisplatina. Monitorar eletrólitos antes, durante e após cada ciclo. Hidratação vigorosa obrigatória com cisplatina',
@@ -4410,7 +4687,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.nephrotoxicity, RiskType.electrolyte},
     [_kRefGG, _kRefMdx]),
 
-('cisplatina', 'enalapril', InteractionSeverity.moderate,
+
+  ('cisplatina', 'enalapril', InteractionSeverity.moderate,
     'IECAs reduzem a TFG e a pressão de filtração glomerular; cisplatina já compromete o rim. Combinação aumenta risco de IRA. IECAs também reduzem a pressão de filtração glomerular, podendo impedir a eliminação de cisplatina',
     'IRA aditiva. Acúmulo de cisplatina por redução da TFG → aumento da toxicidade sistêmica',
     'Considerar suspender IECA durante os ciclos de cisplatina. Monitorar creatinina e TFG rigorosamente. Manter hidratação',
@@ -4419,7 +4697,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.nephrotoxicity},
     [_kRefGG, _kRefMdx]),
 
-// ── FUROSEMIDA × eletrólitos e renina-angiotensina ───────────────────────
+    // ── FUROSEMIDA × eletrólitos e renina-angiotensina ───────────────────────
+
   ('furosemida', 'hidroclorotiazida', InteractionSeverity.major,
     'Combinação de diuréticos de alça + tiazídico (bloqueio sequencial nefron) tem efeito diurético sinérgico poderoso. Usada terapeuticamente em IC refratária, mas com alto risco de desequilíbrio',
     'Depleção grave de volume (hipotensão, pré-renal), hipocalemia grave (arritmias ventriculares), hiponatremia, hipomagnesemia, alcalose metabólica',
@@ -4429,7 +4708,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.electrolyte, RiskType.nephrotoxicity},
     [_kRefGG, _kRefMdx, _kRefUT]),
 
-('furosemida', 'espironolactona', InteractionSeverity.moderate,
+
+  ('furosemida', 'espironolactona', InteractionSeverity.moderate,
     'Combinação sinérgica e poupadora de potássio, amplamente usada em IC e cirrose. Furosemida causa hipocalemia; espironolactona causa hipercalemia. O balanço é geralmente favorável, mas pode pender para qualquer lado',
     'Hipocalemia (furosemida domina) ou hipercalemia (espironolactona domina, especialmente em IR). Depleção de volume se doses excessivas. Ginecomastia por espironolactona',
     'Monitorar K, Mg, Na, creatinina e PA regularmente. Ajustar doses pelo K sérico. Reduzir espironolactona se K > 5,5 mEq/L. Evitar em TFG < 30mL/min',
@@ -4438,7 +4718,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.electrolyte, RiskType.hyperkalemia},
     [_kRefGG, _kRefMdx]),
 
-('furosemida', 'enalapril', InteractionSeverity.major,
+
+  ('furosemida', 'enalapril', InteractionSeverity.major,
     'IECAs reduzem a angiotensina II (responsável por manter a TFG em estados de hipovolemia). Furosemida causa depleção de volume. A combinação pode precipitar IRA pré-renal, especialmente ao iniciar IECA em pacientes já diuretizados',
     'IRA pré-renal ("first-dose hypotension"), hipotensão grave na primeira dose do IECA, hipercalemia (IECA retém K), hiponatremia',
     'Reduzir ou suspender furosemida 24-48h antes da primeira dose do IECA. Iniciar IECA em dose baixa. Monitorar PA, creatinina e K nas primeiras 48h. Reintroduzir furosemida após estabilização',
@@ -4447,7 +4728,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.nephrotoxicity, RiskType.electrolyte},
     [_kRefGG, _kRefMdx, _kRefUT]),
 
-('furosemida', 'losartana', InteractionSeverity.major,
+
+  ('furosemida', 'losartana', InteractionSeverity.major,
     'Interação análoga à furosemida + enalapril. BRAs bloqueiam receptor AT1, reduzindo vasoconstrição eferente. Depleção de volume por furosemida precipita hipotensão e IRA',
     'IRA pré-renal, hipotensão grave na primeira dose do BRA, hipercalemia',
     'Reduzir furosemida 24-48h antes de iniciar losartana. Começar com dose baixa de losartana. Monitorar PA, creatinina e K nas primeiras 48h',
@@ -4456,7 +4738,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.nephrotoxicity, RiskType.electrolyte},
     [_kRefGG, _kRefMdx]),
 
-// ── HIDROCLOROTIAZIDA × renina-angiotensina e eletrólitos ─────────────────
+    // ── HIDROCLOROTIAZIDA × renina-angiotensina e eletrólitos ─────────────────
+
   ('hidroclorotiazida', 'espironolactona', InteractionSeverity.moderate,
     'Combinação poupadora de potássio usada em hipertensão e IC leve. HCTZ causa hipocalemia; espironolactona causa hipercalemia. O balanço pode ser favorável ou pender para hipercalemia em IR',
     'Hipercalemia se TFG reduzida, especialmente em idosos diabéticos com nefropatia. Depleção de volume se doses altas de ambas',
@@ -4466,7 +4749,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.hyperkalemia, RiskType.electrolyte},
     [_kRefGG, _kRefMdx]),
 
-('hidroclorotiazida', 'losartana', InteractionSeverity.moderate,
+
+  ('hidroclorotiazida', 'losartana', InteractionSeverity.moderate,
     'Análogo ao HCTZ + enalapril. BRA + tiazídico é combinação de primeira linha para hipertensão. Risco de hipotensão e hipercalemia',
     'Hipotensão de primeira dose, hipercalemia, IRA pré-renal em estados de hipovolemia',
     'Monitorar PA, K e creatinina após início. Reduzir HCTZ se PA muito reduzida',
@@ -4475,7 +4759,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.electrolyte},
     [_kRefGG, _kRefMdx]),
 
-('espironolactona', 'carbonato de litio', InteractionSeverity.moderate,
+
+  ('espironolactona', 'carbonato de litio', InteractionSeverity.moderate,
     'Espironolactona pode alterar os níveis de lítio de forma imprevisível. Alguns estudos mostram elevação (por retenção de Na com carga de Na baixa), outros redução',
     'Toxicidade de lítio ou falha terapêutica por alteração imprevisível dos níveis séricos',
     'Monitorar nível sérico de lítio ao iniciar ou modificar espironolactona. Manter ingestão de sódio estável',
@@ -4484,7 +4769,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.plasmaLevel},
     [_kRefGG, _kRefMdx]),
 
-// ── CISPLATINA × outros nefrotóxicos/eletrólitos ─────────────────────────
+    // ── CISPLATINA × outros nefrotóxicos/eletrólitos ─────────────────────────
+
   ('cisplatina', 'espironolactona', InteractionSeverity.minor,
     'Espironolactona pode repor potássio e magnésio perdidos pela cisplatina (efeito protetor parcial). Porém, em IRA induzida por cisplatina, a retenção de K pela espironolactona pode causar hipercalemia',
     'Hipercalemia em contexto de IRA por cisplatina. Proteção parcial contra hipocalemia/hipomagnesemia em função renal preservada',
@@ -4494,7 +4780,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.hyperkalemia, RiskType.nephrotoxicity},
     [_kRefGG, _kRefMdx]),
 
-('metformina', 'corticosteroide sistemico', InteractionSeverity.major,
+
+  ('metformina', 'corticosteroide sistemico', InteractionSeverity.major,
     'Corticosteroides sistêmicos causam hiperglicemia por múltiplos mecanismos (resistência à insulina, gliconeogênese hepática, lipólise). A metformina sozinha raramente controla a hiperglicemia induzida por corticoide',
     'Hiperglicemia grave e descontrolada durante corticoterapia, especialmente em diabéticos. Descompensação glicêmica que pode requerer insulina',
     'Aumentar monitorização da glicemia durante corticoterapia (glicemia capilar pré e pós-refeições). Metformina insuficiente em hiperglicemia grave por corticoide — adicionar sulfonilureia ou insulina. Reduzir ajustes ao suspender corticoide',
@@ -4503,7 +4790,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.hypoglycemia},
     [_kRefGG, _kRefMdx]),
 
-('metformina', 'enalapril', InteractionSeverity.minor,
+
+  ('metformina', 'enalapril', InteractionSeverity.minor,
     'IECAs podem melhorar a sensibilidade à insulina e reduzir levemente a glicemia. Em combinação com metformina, risco teórico de hipoglicemia leve',
     'Hipoglicemia leve, especialmente em pacientes idosos ou com dieta restrita',
     'Monitorar glicemia. Combinação usada com frequência em DM2 + HAS. Ajuste raramente necessário',
@@ -4512,7 +4800,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.hypoglycemia},
     [_kRefGG, _kRefMdx]),
 
-// ── INSULINA × corticosteroides e outros ─────────────────────────────────
+    // ── INSULINA × corticosteroides e outros ─────────────────────────────────
+
   ('insulina', 'corticosteroide sistemico', InteractionSeverity.major,
     'Corticosteroides causam hiperglicemia por resistência à insulina e gliconeogênese aumentada. A necessidade de insulina pode aumentar dramaticamente (2-4x) durante corticoterapia intensa, especialmente em altas doses (> 40mg prednisona/dia)',
     'Hiperglicemia grave e cetoácidose diabética em diabéticos tipo 1. Descompensação glicêmica intensa em tipo 2. Hipoglicemia de rebote ao suspender corticoide abruptamente',
@@ -4522,7 +4811,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.hypoglycemia},
     [_kRefGG, _kRefMdx, _kRefUT]),
 
-('insulina', 'ssri', InteractionSeverity.moderate,
+
+  ('insulina', 'isrs', InteractionSeverity.moderate,
     'ISRSs (especialmente fluoxetina) aumentam a sensibilidade à insulina e têm efeito hipoglicemiante modesto. Em diabéticos usando insulina, podem aumentar o risco de hipoglicemia',
     'Hipoglicemia, especialmente nas primeiras semanas de tratamento com ISRS',
     'Monitorar glicemia nas primeiras semanas ao iniciar ISRS em pacientes usando insulina. Pode ser necessário reduzir dose de insulina',
@@ -4531,7 +4821,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.hypoglycemia},
     [_kRefGG, _kRefMdx]),
 
-('insulina', 'sulfonilureia', InteractionSeverity.major,
+
+  ('insulina', 'sulfonilureia', InteractionSeverity.major,
     'Efeito hipoglicemiante aditivo e sinérgico: insulina reduz diretamente a glicemia; sulfonilureias estimulam a secreção pancreática de insulina. Combinação com risco elevado de hipoglicemia grave',
     'Hipoglicemia grave, prolongada e recorrente. Risco especialmente alto em idosos, IR, desnutrição e uso de sulfoniureias de longa ação (glibenclamida)',
     'Monitorar glicemia frequentemente. Preferir sulfonilureias de ação curta (gliclazida, glipizida). Evitar glibenclamida em idosos. Reduzir doses ao adicionar insulina. Ter glicose oral ou IV disponível',
@@ -4540,7 +4831,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.hypoglycemia},
     [_kRefGG, _kRefMdx, _kRefUT]),
 
-// ── SULFONILUREIA × outros ────────────────────────────────────────────────
+    // ── SULFONILUREIA × outros ────────────────────────────────────────────────
+
   ('sulfonilureia', 'corticosteroide sistemico', InteractionSeverity.major,
     'Corticosteroides antagonizam completamente o efeito das sulfonilureias ao causar resistência à insulina e aumentar a gliconeogênese. A sulfonilureia torna-se ineficaz durante corticoterapia de médio a alta dose',
     'Hiperglicemia grave e refratária durante corticoterapia em diabéticos tipo 2. Hipoglicemia grave ao suspender corticoide (efeito rebote da sulfonilureia)',
@@ -4550,7 +4842,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.hypoglycemia},
     [_kRefGG, _kRefMdx]),
 
-('sulfonilureia', 'fluconazol', InteractionSeverity.major,
+
+  ('sulfonilureia', 'fluconazol', InteractionSeverity.major,
     'Fluconazol inibe CYP2C9, a principal via de metabolismo de glibenclamida, glipizida e gliclazida. Pode aumentar os níveis em 2-3x',
     'Hipoglicemia grave e prolongada por acúmulo da sulfonilureia. Glibenclamida (meia-vida longa) tem risco especialmente elevado',
     'Evitar combinação com glibenclamida (alto risco). Se fluconazol necessário: reduzir dose da sulfonilureia em 50%, monitorar glicemia frequentemente, ter glicose disponível. Preferir fluconazol de curto curso',
@@ -4559,7 +4852,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.hypoglycemia, RiskType.plasmaLevel},
     [_kRefGG, _kRefMdx, _kRefUT]),
 
-('sulfonilureia', 'claritromicina', InteractionSeverity.major,
+
+  ('sulfonilureia', 'claritromicina', InteractionSeverity.major,
     'Claritromicina inibe CYP3A4 e pode inibir parcialmente CYP2C9, aumentando os níveis de glibenclamida e outras sulfonilureias',
     'Hipoglicemia grave por acúmulo da sulfonilureia durante o curso de antibioticoterapia',
     'Monitorar glicemia frequentemente durante curso de claritromicina. Reduzir dose da sulfonilureia se necessário. Preferir azitromicina quando possível',
@@ -4568,7 +4862,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.hypoglycemia, RiskType.plasmaLevel},
     [_kRefGG, _kRefMdx]),
 
-('sulfonilureia', 'ssri', InteractionSeverity.moderate,
+
+  ('sulfonilureia', 'isrs', InteractionSeverity.moderate,
     'ISRSs (fluoxetina especialmente) inibem CYP2C9, podendo aumentar os níveis de sulfonilureias CYP2C9-dependentes. Também têm efeito hipoglicemiante intrínseco',
     'Hipoglicemia por efeito aditivo e por inibição do metabolismo da sulfonilureia',
     'Monitorar glicemia nas primeiras semanas ao iniciar ISRS. Pode ser necessário reduzir dose da sulfonilureia',
@@ -4577,7 +4872,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.hypoglycemia},
     [_kRefGG, _kRefMdx]),
 
-// ── GLIBENCLAMIDA (sulfonilureia de longa ação) × outros ─────────────────
+    // ── GLIBENCLAMIDA (sulfonilureia de longa ação) × outros ─────────────────
+
   ('glibenclamida', 'betabloqueador', InteractionSeverity.major,
     'Betabloqueadores (especialmente não-seletivos) mascaram sintomas adrenérgicos de hipoglicemia induzida por glibenclamida. Glibenclamida tem meia-vida de 24h e maior potência hipoglicemiante entre as sulfonilureias',
     'Hipoglicemia silenciosa grave, especialmente em idosos, IR e jejum. Risco elevado de internação por coma hipoglicêmico',
@@ -4587,7 +4883,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.hypoglycemia},
     [_kRefGG, _kRefMdx, _kRefUT]),
 
-('glibenclamida', 'corticosteroide sistemico', InteractionSeverity.major,
+
+  ('glibenclamida', 'corticosteroide sistemico', InteractionSeverity.major,
     'Corticosteroides antagonizam o efeito de glibenclamida por resistência à insulina. Ao suspender o corticoide, o efeito da glibenclamida (já sem antagonismo) causa hipoglicemia grave de rebote',
     'Hiperglicemia grave durante corticoterapia. Hipoglicemia grave de rebote ao suspender corticoide, especialmente com glibenclamida de ação prolongada',
     'Evitar glibenclamida durante corticoterapia; preferir insulina para controle. Ao suspender corticoide: reduzir hipoglicemiantes gradualmente. Monitorar glicemia 4x/dia',
@@ -4596,7 +4893,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.hypoglycemia},
     [_kRefGG, _kRefMdx]),
 
-// ── CORTICOSTEROIDE SISTÊMICO × outros ────────────────────────────────────
+    // ── CORTICOSTEROIDE SISTÊMICO × outros ────────────────────────────────────
+
   ('corticosteroide sistemico', 'aine', InteractionSeverity.major,
     'Corticosteroides inibem síntese de prostaglandinas (via lipocortina/PLA2) e prejudicam a integridade da mucosa gástrica. AINEs inibem COX-1, reduzindo prostaglandinas citoprotetoras. Efeito sinérgico na lesão da mucosa GI',
     'Úlcera péptica, hemorragia digestiva alta (risco 4-15x maior que com cada fármaco isolado), perfuração. Risco especialmente alto em idosos, história de úlcera e uso de anticoagulantes',
@@ -4606,7 +4904,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.hemorrhagic},
     [_kRefGG, _kRefMdx, _kRefUT]),
 
-('corticosteroide sistemico', 'warfarina', InteractionSeverity.major,
+
+  ('corticosteroide sistemico', 'warfarina', InteractionSeverity.major,
     'Corticosteroides em altas doses têm efeito anticoagulante intrínseco e podem aumentar os efeitos da varfarina por múltiplos mecanismos (indução de CYP com doses altas paradoxalmente inibindo CYP2C9 em doses baixas). Relação imprevisível',
     'Variação imprevisível do INR (aumento ou redução) com risco de sangramento ou trombose. Em uso concomitante com AINEs: risco de sangramento gastrointestinal grave',
     'Monitorar INR frequentemente ao iniciar, mudar dose ou suspender corticoide. Evitar combinação tripla com AINE + varfarina + corticoide (risco extremamente alto de hemorragia GI)',
@@ -4615,7 +4914,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.hemorrhagic},
     [_kRefGG, _kRefMdx]),
 
-('corticosteroide sistemico', 'ssri', InteractionSeverity.moderate,
+
+  ('corticosteroide sistemico', 'isrs', InteractionSeverity.moderate,
     'Corticosteroides causam transtornos do humor (psicose, mania, depressão, ansiedade) que podem ser potencializados por ISRSs. Fluoxetina inibe CYP2C9 (metabolismo de alguns corticosteroides)',
     'Psicose por corticoide, mania, insônia grave. Possível elevação dos níveis de corticosteroides com fluoxetina',
     'Monitorar estado mental durante corticoterapia. Usar ISRSs se necessário para sintomas depressivos pós-corticoide (mas aguardar redução de dose do corticoide). Preferir sertralina ou escitalopram',
@@ -4624,7 +4924,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.cns},
     [_kRefGG, _kRefMdx]),
 
-('corticosteroide sistemico', 'ciclosporina', InteractionSeverity.major,
+
+  ('corticosteroide sistemico', 'ciclosporina', InteractionSeverity.major,
     'Corticosteroides inibem CYP3A4 em baixas doses e induzem em altas doses — efeito imprevisível sobre ciclosporina. Ciclosporina inibe o metabolismo de metilprednisolona, aumentando seus níveis',
     'Toxicidade de corticoide (Cushing iatrogênico, hiperglicemia, osteoporose) por aumento dos níveis. Possível falha imunossupressora se corticoide altera ciclosporina. Efeitos imunossupressores aditivos',
     'Monitorar níveis de ciclosporina e efeitos do corticoide. Combinação usada em transplante (padrão), mas com monitoramento rigoroso de função renal, glicemia, PA e peso',
@@ -4633,7 +4934,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.plasmaLevel},
     [_kRefGG, _kRefMdx]),
 
-('corticosteroide sistemico', 'tacrolimo', InteractionSeverity.major,
+
+  ('corticosteroide sistemico', 'tacrolimo', InteractionSeverity.major,
     'Corticosteroides podem induzir CYP3A4 em altas doses, reduzindo tacrolimo; em retirada de corticoide, os níveis de tacrolimo podem elevar-se dramaticamente. Tacrolimo é diabetogênico + corticoide é diabetogênico',
     'Flutuações dos níveis de tacrolimo (rejeição ou toxicidade) ao modificar doses de corticoide. Hiperglicemia grave (NODAT — Novo-Onset Diabetes After Transplant)',
     'Monitorar C0 de tacrolimo ao modificar doses de corticoide. Rastrear NODAT com glicemia em jejum e HbA1c. Combinação padrão em transplante com monitoramento rigoroso',
@@ -4642,7 +4944,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.plasmaLevel, RiskType.hypoglycemia},
     [_kRefGG, _kRefMdx]),
 
-('corticosteroide sistemico', 'vacinas vivas', InteractionSeverity.contraindicated,
+
+  ('corticosteroide sistemico', 'vacinas vivas', InteractionSeverity.contraindicated,
     'Corticosteroides sistêmicos em doses imunossupressoras (≥ 20mg/dia de prednisona ou equivalente por ≥ 2 semanas) causam imunossupressão que impede resposta adequada a vacinas vivas e pode levar à doença vacinal disseminada',
     'Doença vacinal disseminada (varicela, sarampo, febre amarela) com risco de morte. Falha de imunização por resposta imune inadequada',
     'CONTRAINDICADO vacinas vivas durante corticoterapia imunossupressora. Aguardar ≥ 4 semanas após suspensão do corticoide antes de vacinas vivas. Vacinas inativadas podem ser administradas (resposta pode ser subótima)',
@@ -4651,7 +4954,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.reducedEfficacy},
     [_kRefGG, _kRefMdx, _kRefUT]),
 
-('levotiroxina', 'omeprazol', InteractionSeverity.moderate,
+
+  ('levotiroxina', 'omeprazol', InteractionSeverity.moderate,
     'IBPs reduzem a acidez gástrica, alterando a dissolução e absorção de levotiroxina (que requer pH ácido para absorção ótima)',
     'Hipotireoidismo por absorção reduzida de levotiroxina, especialmente com uso prolongado de IBP',
     'Tomar levotiroxina em jejum, separada dos IBPs por pelo menos 30-60 minutos. Monitorar TSH periodicamente em pacientes em uso prolongado de IBP + levotiroxina',
@@ -4660,7 +4964,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.reducedEfficacy},
     [_kRefGG, _kRefMdx]),
 
-('levotiroxina', 'sulfato ferroso', InteractionSeverity.major,
+
+  ('levotiroxina', 'sulfato ferroso', InteractionSeverity.major,
     'Ferro forma complexos insolúveis com levotiroxina no intestino, reduzindo a absorção em 30-50%. Interação clinicamente relevante e frequentemente negligenciada',
     'Hipotireoidismo por absorção reduzida de levotiroxina, especialmente em gestantes com hipotireoidismo (que usam ferro + levotiroxina)',
     'Separar levotiroxina do sulfato ferroso por pelo menos 4 horas. Tomar levotiroxina em jejum; ferro com as refeições. Monitorar TSH após início de suplementação de ferro',
@@ -4669,7 +4974,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.reducedEfficacy},
     [_kRefGG, _kRefMdx, _kRefUT]),
 
-('levotiroxina', 'warfarina', InteractionSeverity.major,
+
+  ('levotiroxina', 'warfarina', InteractionSeverity.major,
     'Levotiroxina aumenta o catabolismo dos fatores de coagulação vitamina K-dependentes e potencializa o efeito anticoagulante da varfarina. O hipotireoidismo reduz o catabolismo, diminuindo o efeito da varfarina',
     'Aumento do INR (toxicidade) ao tratar hipotireoidismo com levotiroxina em pacientes já em uso de varfarina. Redução do INR (trombose) em hipotireoidismo não tratado',
     'Monitorar INR frequentemente (a cada 1-2 semanas) ao iniciar, ajustar dose ou suspender levotiroxina. Antecipar necessidade de redução de varfarina ao tratar hipotireoidismo',
@@ -4678,7 +4984,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.hemorrhagic},
     [_kRefGG, _kRefMdx]),
 
-('levotiroxina', 'corticosteroide sistemico', InteractionSeverity.moderate,
+
+  ('levotiroxina', 'corticosteroide sistemico', InteractionSeverity.moderate,
     'Corticosteroides em altas doses podem suprimir o TSH e aumentar o metabolismo de T4 → T3 reverso (forma inativa). Em hipotireoidismo com adrenal insuficiente simultânea: corticoide deve ser repostos antes da levotiroxina',
     'Crise tirotóxica se levotiroxina iniciada antes de reposição de cortisol em insuficiência adrenal concomitante. Em corticoterapia longa: hipotireoidismo subclínico por supressão de TSH',
     'Em suspeita de insuficiência adrenal + hipotireoidismo: iniciar corticoide antes da levotiroxina. Monitorar TSH e T4 livre periodicamente em corticoterapia prolongada',
@@ -4687,7 +4994,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.plasmaLevel},
     [_kRefGG, _kRefMdx]),
 
-('semaglutida', 'warfarina', InteractionSeverity.moderate,
+
+  ('semaglutida', 'warfarina', InteractionSeverity.moderate,
     'Semaglutida altera o esvaziamento gástrico, podendo alterar a absorção de varfarina. Melhora do controle glicêmico também pode alterar o metabolismo de varfarina indiretamente',
     'Alteração do INR (aumento ou redução) ao iniciar ou ajustar semaglutida',
     'Monitorar INR nas primeiras 4 semanas ao iniciar semaglutida. Ajustar dose de varfarina conforme necessário',
@@ -4696,7 +5004,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.hemorrhagic},
     [_kRefGG, _kRefMdx]),
 
-('semaglutida', 'metformina', InteractionSeverity.minor,
+
+  ('semaglutida', 'metformina', InteractionSeverity.minor,
     'Combinação de primeira linha em DM2. Semaglutida pode causar náusea/vômitos (especialmente nas primeiras 8 semanas), que podem ser exacerbados com metformina GI',
     'Náusea e intolerância GI aumentadas, podendo levar à descontinuação. Risco de hipoglicemia leve pela somatória do efeito hipoglicemiante de ambos',
     'Titular semaglutida lentamente (0,25mg/semana por 4 semanas, depois 0,5mg). Tomar metformina com refeições para minimizar GI. Monitorar tolerância GI',
@@ -4705,7 +5014,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.hypoglycemia},
     [_kRefGG, _kRefMdx]),
 
-('semaglutida', 'corticosteroide sistemico', InteractionSeverity.major,
+
+  ('semaglutida', 'corticosteroide sistemico', InteractionSeverity.major,
     'Corticosteroides antagonizam o efeito hipoglicemiante da semaglutida por resistência à insulina e gliconeogênese aumentada. O efeito de esvaziamento gástrico lento da semaglutida não protege contra a hiperglicemia induzida por corticoide',
     'Hiperglicemia grave e refratária durante corticoterapia em pacientes com DM2 em uso de semaglutida',
     'Aumentar monitorização da glicemia durante corticoterapia. Semaglutida insuficiente em hiperglicemia grave por corticoide → adicionar insulina. Reduzir ajustes ao suspender corticoide',
@@ -4714,7 +5024,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.hypoglycemia},
     [_kRefGG, _kRefMdx]),
 
-// ── CICLOSPORINA × outros imunossupressores ───────────────────────────────
+    // ── CICLOSPORINA × outros imunossupressores ───────────────────────────────
+
   ('ciclosporina', 'tacrolimo', InteractionSeverity.contraindicated,
     'Ambos são inibidores de calcineurina com mecanismos sobrepostos e nefrotoxicidade aditiva. A combinação não é clinicamente justificada e representa sobreposição de classe sem benefício adicional',
     'Nefrotoxicidade grave aditiva, hipertensão, hipercalemia, neurotoxicidade (tremor, cefaleia, convulsões). Ausência de benefício imunossupressor adicional sobre monoterapia',
@@ -4724,7 +5035,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.nephrotoxicity},
     [_kRefGG, _kRefMdx, _kRefUT]),
 
-('ciclosporina', 'azatioprina', InteractionSeverity.major,
+
+  ('ciclosporina', 'azatioprina', InteractionSeverity.major,
     'Ciclosporina inibe TPMT (tiopurina metiltransferase), enzima responsável pela inativação da azatioprina. Pode aumentar os níveis do metabólito ativo (6-TGN) em 3-5x. Combinação usada em transplante mas com risco de mielotoxicidade',
     'Mielossupressão grave (leucopenia, trombocitopenia, anemia) por acúmulo de metabólitos ativos da azatioprina. Maior risco em pacientes com atividade de TPMT reduzida',
     'Monitorar hemograma semanalmente nas primeiras 4-8 semanas e mensalmente depois. Reduzir dose de azatioprina em 50% quando combinada com ciclosporina. Genotipagem de TPMT recomendada antes de iniciar',
@@ -4733,7 +5045,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.reducedEfficacy},
     [_kRefGG, _kRefMdx, _kRefUT]),
 
-('ciclosporina', 'estatina', InteractionSeverity.major,
+
+  ('ciclosporina', 'estatina', InteractionSeverity.major,
     'Ciclosporina inibe OATP1B1/1B3 (transportadores de captação hepática) e CYP3A4, aumentando os níveis de todas as estatinas. Sinvastatina e lovastatina são mais afetadas. A bula da sinvastatina contraindica uso com ciclosporina',
     'Rabdomiólise grave por acúmulo de estatinas em pacientes transplantados. Incidência de miopatia 2-10x maior com ciclosporina',
     'CONTRAINDICADO: ciclosporina + sinvastatina ou lovastatina. Usar pravastatina (10-20mg max), fluvastatina ou rosuvastatina em dose reduzida. Monitorar CK e sintomas musculares regularmente',
@@ -4742,7 +5055,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.myopathy, RiskType.plasmaLevel},
     [_kRefGG, _kRefMdx, _kRefUT]),
 
-('ciclosporina', 'colchicina', InteractionSeverity.contraindicated,
+
+  ('ciclosporina', 'colchicina', InteractionSeverity.contraindicated,
     'Ciclosporina inibe P-gp e CYP3A4, as principais vias de eliminação da colchicina. Pode aumentar os níveis de colchicina em 2-4x. Colchicina já tem janela terapêutica estreita',
     'Toxicidade grave de colchicina: miopatia, neuropatia periférica, pancitopenia, disfunção hepática, IRA, colapso multissistêmico e morte. Casos fatais documentados em transplantados',
     'CONTRAINDICADO em IR (TFG < 60mL/min) + ciclosporina. Em IR normal: reduzir dose de colchicina em 50%, limitar a 1 curso curto (3-5 dias), monitorar CK, hemograma e função renal. Preferir corticoide ou AINE para crise de gota',
@@ -4751,7 +5065,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.myopathy, RiskType.nephrotoxicity},
     [_kRefGG, _kRefMdx, _kRefUT]),
 
-('ciclosporina', 'metformina', InteractionSeverity.moderate,
+
+  ('ciclosporina', 'metformina', InteractionSeverity.moderate,
     'Ciclosporina é diabetogênica (causa NODAT) e pode competir com metformina por transportadores OCT2 renais, reduzindo a excreção de metformina. Nefrotoxicidade de ciclosporina pode precipitar acúmulo de metformina',
     'Hiperglicemia (NODAT) e acúmulo de metformina em disfunção renal por ciclosporina → risco de acidose lática',
     'Monitorar TFG, glicemia e lactato. Suspender metformina se TFG < 45mL/min ou em deterioração renal. Rastrear NODAT com glicemia em jejum',
@@ -4760,7 +5075,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.nephrotoxicity},
     [_kRefGG, _kRefMdx]),
 
-('ciclosporina', 'vancomicina', InteractionSeverity.major,
+
+  ('ciclosporina', 'vancomicina', InteractionSeverity.major,
     'Ambas são nefrotóxicas: ciclosporina causa vasoconstricção da arteríola aferente; vancomicina acumula nos túbulos. Efeito aditivo/sinérgico em transplantados que já têm TFG reduzida',
     'IRA grave em transplantados, podendo simular ou precipitar rejeição aguda. Acúmulo de vancomicina por TFG reduzida cria ciclo de toxicidade crescente',
     'Monitorar AUC de vancomicina diariamente. Monitorar C0 de ciclosporina. Manter euvolemia. Considerar alternativas (linezolida, daptomicina) para reduzir exposição à vancomicina',
@@ -4769,7 +5085,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.nephrotoxicity},
     [_kRefGG, _kRefMdx]),
 
-// ── TACROLIMO × outros ────────────────────────────────────────────────────
+    // ── TACROLIMO × outros ────────────────────────────────────────────────────
+
   ('tacrolimo', 'azatioprina', InteractionSeverity.moderate,
     'Tacrolimo pode inibir parcialmente TPMT, aumentando metabólitos ativos de azatioprina (efeito menor que ciclosporina). Imunossupressão aditiva aumenta risco infeccioso',
     'Mielossupressão moderada, infecções oportunistas por imunossupressão excessiva',
@@ -4779,7 +5096,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.reducedEfficacy},
     [_kRefGG, _kRefMdx]),
 
-('tacrolimo', 'estatina', InteractionSeverity.moderate,
+
+  ('tacrolimo', 'estatina', InteractionSeverity.moderate,
     'Tacrolimo inibe modestamente OATP1B1 e CYP3A4, aumentando os níveis de estatinas (efeito menor que ciclosporina). Sinvastatina tem maior risco; pravastatina menor',
     'Risco aumentado de miopatia/rabdomiólise em transplantados. Menor que com ciclosporina, mas clinicamente relevante',
     'Monitorar CK e sintomas musculares. Usar estatinas em doses mais baixas. Evitar sinvastatina em altas doses. Pravastatina e fluvastatina são preferíveis',
@@ -4788,7 +5106,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.myopathy, RiskType.plasmaLevel},
     [_kRefGG, _kRefMdx]),
 
-('tacrolimo', 'vancomicina', InteractionSeverity.major,
+
+  ('tacrolimo', 'vancomicina', InteractionSeverity.major,
     'Análogo à interação ciclosporina + vancomicina. Ambas são nefrotóxicas com efeito aditivo em transplantados',
     'IRA grave em transplantados com tacrolimo + vancomicina, especialmente se TFG já comprometida',
     'AUC-guided vancomicina. Monitorar C0 de tacrolimo. Considerar alternativas antibióticas. Manter euvolemia',
@@ -4797,7 +5116,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.nephrotoxicity},
     [_kRefGG, _kRefMdx]),
 
-('tacrolimo', 'metformina', InteractionSeverity.moderate,
+
+  ('tacrolimo', 'metformina', InteractionSeverity.moderate,
     'Tacrolimo é diabetogênico (NODAT). Em disfunção renal por tacrolimo, metformina pode acumular com risco de acidose lática',
     'NODAT (diabetes pós-transplante) e acidose lática por acúmulo de metformina em TFG reduzida',
     'Rastrear NODAT com glicemia em jejum e HbA1c. Monitorar TFG. Suspender metformina se TFG < 45. Preferir insulina para NODAT em transplantados',
@@ -4806,7 +5126,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.nephrotoxicity},
     [_kRefGG, _kRefMdx]),
 
-('azatioprina', 'warfarina', InteractionSeverity.major,
+
+  ('azatioprina', 'warfarina', InteractionSeverity.major,
     'Azatioprina pode reduzir o efeito anticoagulante da varfarina por mecanismo não totalmente elucidado (possível indução de enzimas de metabolismo)',
     'Redução do INR → risco de tromboembolismo em pacientes que necessitam de anticoagulação (ex.: válvula cardíaca, FA)',
     'Monitorar INR frequentemente ao iniciar, ajustar ou suspender azatioprina. Aumentar dose de varfarina conforme necessário',
@@ -4815,7 +5136,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.hemorrhagic},
     [_kRefGG, _kRefMdx]),
 
-('azatioprina', 'ssri', InteractionSeverity.minor,
+
+  ('azatioprina', 'isrs', InteractionSeverity.minor,
     'Risco teórico de mielossupressão aditiva (efeitos hematológicos raros dos ISRSs + mielossupressão da azatioprina)',
     'Mielossupressão aumentada, trombocitopenia (ISRSs podem raramente causar trombocitopenia por mecanismo imunológico)',
     'Monitorar hemograma periodicamente. Combinação geralmente bem tolerada, mas monitorar se sinais de mielossupressão',
@@ -4824,7 +5146,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.reducedEfficacy},
     [_kRefGG, _kRefMdx]),
 
-('azatioprina', 'vacinas vivas', InteractionSeverity.contraindicated,
+
+  ('azatioprina', 'vacinas vivas', InteractionSeverity.contraindicated,
     'Azatioprina causa imunossupressão por redução de linfócitos T e B, impedindo resposta imune adequada a vacinas vivas e podendo causar doença vacinal disseminada',
     'Doença vacinal disseminada (varicela, sarampo, febre amarela) potencialmente fatal. Falha de imunização',
     'CONTRAINDICADO. Atualizar vacinação com vacinas vivas antes de iniciar azatioprina. Aguardar ≥ 3 meses após suspensão. Vacinas inativadas podem ser usadas (resposta subótima esperada)',
@@ -4833,7 +5156,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.reducedEfficacy},
     [_kRefGG, _kRefMdx, _kRefUT]),
 
-// ── BARICITINIBE / TOFACITINIBE (JAK inibidores) × outros ────────────────
+    // ── BARICITINIBE / TOFACITINIBE (JAK inibidores) × outros ────────────────
+
   ('baricitinibe', 'tofacitinibe', InteractionSeverity.contraindicated,
     'Ambos são inibidores de JAK com mecanismos de imunossupressão sobrepostos. Combinação sem benefício clínico e com risco aumentado de infecções oportunistas graves, tromboembolismo e malignidades',
     'Imunossupressão excessiva → infecções oportunistas graves (TB, herpes zóster disseminado, pneumocistose, citomegalovirose), tromboembolismo venoso, malignidades',
@@ -4843,7 +5167,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.reducedEfficacy},
     [_kRefGG, _kRefMdx, _kRefUT]),
 
-('baricitinibe', 'vacinas vivas', InteractionSeverity.contraindicated,
+
+  ('baricitinibe', 'vacinas vivas', InteractionSeverity.contraindicated,
     'Baricitinibe causa imunossupressão por inibição de JAK1/2, comprometendo a resposta imune a vacinas vivas e podendo causar doença vacinal disseminada',
     'Doença vacinal disseminada potencialmente fatal. Falha de imunização',
     'CONTRAINDICADO. Atualizar vacinação (incluindo herpes zóster) antes de iniciar baricitinibe. Vacinas inativadas preferidas',
@@ -4852,7 +5177,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.reducedEfficacy},
     [_kRefGG, _kRefMdx]),
 
-('tofacitinibe', 'vacinas vivas', InteractionSeverity.contraindicated,
+
+  ('tofacitinibe', 'vacinas vivas', InteractionSeverity.contraindicated,
     'Análogo ao baricitinibe + vacinas vivas. Tofacitinibe inibe JAK1/3, causando imunossupressão',
     'Doença vacinal disseminada potencialmente fatal',
     'CONTRAINDICADO. Atualizar vacinação antes de iniciar tofacitinibe. Herpes zóster (vacina inativada Shingrix) recomendada antes de iniciar',
@@ -4861,7 +5187,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.reducedEfficacy},
     [_kRefGG, _kRefMdx]),
 
-('tofacitinibe', 'ssri', InteractionSeverity.minor,
+
+  ('tofacitinibe', 'isrs', InteractionSeverity.minor,
     'Risco análogo ao baricitinibe + ISRS',
     'Neutropenia aumentada em pacientes susceptíveis',
     'Monitorar hemograma periodicamente',
@@ -4870,7 +5197,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.reducedEfficacy},
     [_kRefGG, _kRefMdx]),
 
-('baricitinibe', 'warfarina', InteractionSeverity.moderate,
+
+  ('baricitinibe', 'warfarina', InteractionSeverity.moderate,
     'Baricitinibe pode alterar o INR por efeito inflamatório sistêmico (inflamação eleva os fatores de coagulação; ao reduzir inflamação, o IECA pode aumentar o INR). Efeito indireto por controle da artrite',
     'Alteração do INR ao iniciar ou ajustar baricitinibe, especialmente em pacientes com AR+FA em uso de varfarina',
     'Monitorar INR nas primeiras 4-8 semanas ao iniciar baricitinibe. Ajustar varfarina conforme necessário',
@@ -4879,7 +5207,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.hemorrhagic},
     [_kRefGG, _kRefMdx]),
 
-// ── TOCILIZUMABE × outros ─────────────────────────────────────────────────
+    // ── TOCILIZUMABE × outros ─────────────────────────────────────────────────
+
   ('tocilizumabe', 'vacinas vivas', InteractionSeverity.contraindicated,
     'Tocilizumabe (anti-IL-6R) causa imunossupressão significativa, comprometendo a resposta a vacinas vivas e podendo causar doença vacinal disseminada',
     'Doença vacinal disseminada. Falha de imunização',
@@ -4889,7 +5218,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.reducedEfficacy},
     [_kRefGG, _kRefMdx]),
 
-// ── NATALIZUMABE × outros ─────────────────────────────────────────────────
+    // ── NATALIZUMABE × outros ─────────────────────────────────────────────────
+
   ('natalizumabe', 'tofacitinibe', InteractionSeverity.contraindicated,
     'Natalizumabe (anti-α4-integrina) causa imunossupressão por sequestro de linfócitos. Combinação com tofacitinibe (JAK inibidor) resulta em imunossupressão excessiva com alto risco de infecções oportunistas',
     'Leucoencefalopatia multifocal progressiva (LMP por vírus JC), pneumonia por pneumocystis, infecções oportunistas graves, reativação viral',
@@ -4899,7 +5229,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.reducedEfficacy},
     [_kRefGG, _kRefMdx, _kRefUT]),
 
-('natalizumabe', 'baricitinibe', InteractionSeverity.contraindicated,
+
+  ('natalizumabe', 'baricitinibe', InteractionSeverity.contraindicated,
     'Análogo ao natalizumabe + tofacitinibe. Imunossupressão excessiva com risco de LMP e infecções oportunistas graves',
     'LMP fatal, infecções oportunistas graves',
     'CONTRAINDICADO. Não combinar natalizumabe com inibidores de JAK',
@@ -4908,7 +5239,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.reducedEfficacy},
     [_kRefGG, _kRefMdx, _kRefUT]),
 
-('natalizumabe', 'vacinas vivas', InteractionSeverity.contraindicated,
+
+  ('natalizumabe', 'vacinas vivas', InteractionSeverity.contraindicated,
     'Natalizumabe causa imunossupressão profunda (sequestro de linfócitos no sangue, impedindo migração tecidual). Vacinas vivas são contraindicadas',
     'Doença vacinal disseminada. Risco de LMP aumentado por qualquer estímulo imune',
     'CONTRAINDICADO. Atualizar vacinação antes de iniciar natalizumabe. Após suspensão, aguardar ≥ 6 meses (restauração imune demora)',
@@ -4917,7 +5249,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.reducedEfficacy},
     [_kRefGG, _kRefMdx, _kRefUT]),
 
-// ── VEDOLIZUMABE × outros ─────────────────────────────────────────────────
+    // ── VEDOLIZUMABE × outros ─────────────────────────────────────────────────
+
   ('vedolizumabe', 'tofacitinibe', InteractionSeverity.major,
     'Vedolizumabe (anti-α4β7 gut-selective) + tofacitinibe (JAK inibidor sistêmico): imunossupressão aditiva, especialmente na mucosa intestinal. Risco de infecções oportunistas gastrointestinais e sistêmicas',
     'Infecções oportunistas gastrointestinais (CMV colitis, histoplasmose intestinal), infecções sistêmicas. Tromboembolismo venoso (tofacitinibe)',
@@ -4927,7 +5260,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.reducedEfficacy},
     [_kRefGG, _kRefMdx]),
 
-('vedolizumabe', 'baricitinibe', InteractionSeverity.major,
+
+  ('vedolizumabe', 'baricitinibe', InteractionSeverity.major,
     'Análogo ao vedolizumabe + tofacitinibe. Imunossupressão aditiva em mucosa intestinal e sistemicamente',
     'Infecções oportunistas intestinais e sistêmicas',
     'Evitar combinação. Se necessário: supervisão especializada, monitoramento de infecções',
@@ -4936,7 +5270,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.reducedEfficacy},
     [_kRefGG, _kRefMdx]),
 
-('vedolizumabe', 'vacinas vivas', InteractionSeverity.major,
+
+  ('vedolizumabe', 'vacinas vivas', InteractionSeverity.major,
     'Vedolizumabe causa imunossupressão seletiva da mucosa intestinal mas também sistêmica em grau menor. Vacinas vivas orais (poliomielite oral, febre tifóide oral) são especialmente problemáticas',
     'Vacinas vivas orais podem causar infecção disseminada por replicação aumentada do agente vacinal na mucosa intestinal desprotegida/imunocomprometida',
     'Evitar vacinas vivas, especialmente orais. Preferir vacinas inativadas. Consultar guia de vacinação em imunossuprimidos',
@@ -4945,7 +5280,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.reducedEfficacy},
     [_kRefGG, _kRefMdx]),
 
-('ruxolitinibe', 'rifampicina', InteractionSeverity.major,
+
+  ('ruxolitinibe', 'rifampicina', InteractionSeverity.major,
     'Rifampicina induz CYP3A4, reduzindo os níveis de ruxolitinibe em 70%',
     'Falha terapêutica (mielofibrose, policitemia vera) por níveis subterapêuticos',
     'Evitar combinação. Se necessário: aumentar dose de ruxolitinibe com monitoramento hematológico',
@@ -4954,7 +5290,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.reducedEfficacy, RiskType.plasmaLevel},
     [_kRefGG, _kRefMdx]),
 
-// ── MEPOLIZUMABE × outros ─────────────────────────────────────────────────
+    // ── MEPOLIZUMABE × outros ─────────────────────────────────────────────────
+
   ('mepolizumabe', 'vacinas vivas', InteractionSeverity.moderate,
     'Mepolizumabe (anti-IL-5) afeta eosinófilos mas tem menor impacto em linfócitos T e B do que outros biológicos. Vacinas vivas têm risco teórico por imunossupressão eosinofílica',
     'Falha de imunização (resposta reduzida), risco teórico de doença vacinal (menor que com biológicos anti-TNF ou anti-IL-6)',
@@ -4964,7 +5301,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.reducedEfficacy},
     [_kRefGG, _kRefMdx]),
 
-('ciprofloxacino', 'ciclosporina', InteractionSeverity.major,
+
+  ('ciprofloxacino', 'ciclosporina', InteractionSeverity.major,
     'Ciprofloxacino inibe CYP3A4, aumentando os níveis de ciclosporina. Ambos são nefrotóxicos. Risco de toxicidade cumulativa',
     'Nefrotoxicidade grave por acúmulo de ciclosporina + efeito nefrotóxico direto do ciprofloxacino (raro mas descrito)',
     'Monitorar C0 de ciclosporina a cada 2-3 dias durante ciprofloxacino. Reduzir dose de ciclosporina se C0 elevado. Considerar alternativa antibiótica',
@@ -4973,7 +5311,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.nephrotoxicity, RiskType.plasmaLevel},
     [_kRefGG, _kRefMdx]),
 
-('ciprofloxacino', 'ssri', InteractionSeverity.moderate,
+
+  ('ciprofloxacino', 'isrs', InteractionSeverity.moderate,
     'Ciprofloxacino inibe CYP1A2 (metabolismo de fluvoxamina) e prolonga QTc. Citalopram e escitalopram também prolongam QTc',
     'QTc prolongado aditivo com citalopram/escitalopram. Toxicidade de fluvoxamina por inibição de CYP1A2',
     'Evitar ciprofloxacino + citalopram/escitalopram. Monitorar ECG. Preferir outro antibiótico em pacientes com ISRS que prolongam QT',
@@ -4982,7 +5321,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.qtProlongation},
     [_kRefGG, _kRefMdx]),
 
-('ciprofloxacino', 'antacido', InteractionSeverity.major,
+
+  ('ciprofloxacino', 'antiácido', InteractionSeverity.major,
     'Cátions divalentes e trivalentes (Mg²⁺, Al³⁺, Ca²⁺, Fe²⁺/³⁺, Zn²⁺) formam complexos insolúveis de quelação com ciprofloxacino no TGI, reduzindo a absorção em 30-75%',
     'Falha terapêutica por níveis subterapêuticos de ciprofloxacino, especialmente em infecções graves',
     'Separar ciprofloxacino de antiácidos, suplementos de ferro, cálcio e zinco por pelo menos 2 horas (ciprofloxacino primeiro) ou 6 horas depois. Nunca coadministrar',
@@ -4991,7 +5331,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.reducedEfficacy},
     [_kRefGG, _kRefMdx, _kRefUT]),
 
-('ciprofloxacino', 'estatina', InteractionSeverity.moderate,
+
+  ('ciprofloxacino', 'estatina', InteractionSeverity.moderate,
     'Ciprofloxacino inibe CYP1A2, podendo aumentar os níveis de atorvastatina (metabolizada por CYP3A4/1A2) e rosuvastatina',
     'Risco discretamente aumentado de miopatia/rabdomiólise, especialmente com doses altas de estatina',
     'Monitorar sintomas musculares. Interação geralmente clinicamente modesta em cursos curtos de ciprofloxacino. Mais relevante em uso prolongado',
@@ -5000,7 +5341,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.myopathy},
     [_kRefGG, _kRefMdx]),
 
-('metronidazol', 'ssri', InteractionSeverity.moderate,
+
+  ('metronidazol', 'isrs', InteractionSeverity.moderate,
     'Metronidazol inibe CYP2C19 (metabolismo de citalopram, escitalopram, sertralina). Pode aumentar os níveis de ISRSs e potencializar atividade serotoninérgica',
     'Síndrome serotoninérgica leve-moderada, especialmente com citalopram/escitalopram. Prolongamento QTc com citalopram',
     'Monitorar sinais serotoninérgicos e ECG com citalopram/escitalopram. Preferir tinidazol em pacientes com ISRS quando possível',
@@ -5009,7 +5351,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.serotonin, RiskType.qtProlongation},
     [_kRefGG, _kRefMdx]),
 
-('metronidazol', 'ciclosporina', InteractionSeverity.moderate,
+
+  ('metronidazol', 'ciclosporina', InteractionSeverity.moderate,
     'Metronidazol inibe CYP3A4 e CYP2C9, podendo aumentar os níveis de ciclosporina',
     'Nefrotoxicidade e hepatotoxicidade por acúmulo de ciclosporina',
     'Monitorar C0 de ciclosporina e função renal durante curso de metronidazol. Reduzir dose de ciclosporina se C0 elevado',
@@ -5018,7 +5361,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.nephrotoxicity, RiskType.plasmaLevel},
     [_kRefGG, _kRefMdx]),
 
-('metronidazol', 'tacrolimo', InteractionSeverity.moderate,
+
+  ('metronidazol', 'tacrolimo', InteractionSeverity.moderate,
     'Metronidazol inibe CYP3A4, podendo aumentar os níveis de tacrolimo em pacientes transplantados',
     'Nefrotoxicidade e neurotoxicidade por acúmulo de tacrolimo',
     'Monitorar C0 de tacrolimo diariamente durante curso de metronidazol. Reduzir dose se C0 elevado',
@@ -5027,7 +5371,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.nephrotoxicity, RiskType.plasmaLevel},
     [_kRefGG, _kRefMdx]),
 
-('trimetoprima', 'losartana', InteractionSeverity.major,
+
+  ('trimetoprima', 'losartana', InteractionSeverity.major,
     'Análogo ao trimetoprima + enalapril. BRA retém K + trimetoprima retém K por bloqueio de ENaC → hipercalemia grave',
     'Hipercalemia grave com risco de arritmias fatais',
     'Monitorar K 3-5 dias após início de SMX-TMP em pacientes com BRA. Evitar em IR + BRA + diurético poupador de K',
@@ -5036,7 +5381,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.hyperkalemia, RiskType.arrhythmia},
     [_kRefGG, _kRefMdx]),
 
-('sulfametoxazol', 'fenitoína', InteractionSeverity.major,
+
+  ('sulfametoxazol', 'fenitoína', InteractionSeverity.major,
     'SMX inibe CYP2C9 (principal via da fenitoína). Trimetoprima pode também inibir CYP2C9 em menor grau',
     'Toxicidade de fenitoína: nistagmo, ataxia, diplopia, confusão por acúmulo',
     'Monitorar nível sérico de fenitoína ao iniciar SMX-TMP. Reduzir dose de fenitoína preventivamente. Preferir outro antibiótico quando possível',
@@ -5045,7 +5391,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.plasmaLevel, RiskType.cns},
     [_kRefGG, _kRefMdx]),
 
-('sulfametoxazol', 'ciclosporina', InteractionSeverity.major,
+
+  ('sulfametoxazol', 'ciclosporina', InteractionSeverity.major,
     'SMX-TMP inibe CYP3A4 e CYP2C9, aumentando os níveis de ciclosporina. Adicionalmente, ambos são nefrotóxicos',
     'Nefrotoxicidade grave por acúmulo de ciclosporina + efeito nefrotóxico do SMX-TMP (cristalúria, nefrite intersticial)',
     'Monitorar C0 de ciclosporina e creatinina diariamente durante SMX-TMP. Manter boa hidratação (previne cristalúria do SMX)',
@@ -5054,7 +5401,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.nephrotoxicity, RiskType.plasmaLevel},
     [_kRefGG, _kRefMdx]),
 
-('piperacilina_tazobactam', 'aminoglicosideo', InteractionSeverity.moderate,
+
+  ('piperacilina-tazobactam', 'aminoglicosideo', InteractionSeverity.moderate,
     'Piperacilinas em altas doses podem inativar aminoglicosídeos in vitro por inativação química. Interação depende de concentração e tempo de contato. Significado clínico variável',
     'Possível redução da eficácia do aminoglicosídeo por inativação. Risco aumentado de nefrotoxicidade por aminoglicosídeo',
     'Não misturar no mesmo frasco/linha. Administrar em horários separados. Dosar nível sérico do aminoglicosídeo. Monitorar função renal',
@@ -5063,7 +5411,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.nephrotoxicity, RiskType.reducedEfficacy},
     [_kRefGG, _kRefMdx]),
 
-('piperacilina_tazobactam', 'warfarina', InteractionSeverity.moderate,
+
+  ('piperacilina-tazobactam', 'warfarina', InteractionSeverity.moderate,
     'Piperacilina (como outras penicilinas em doses altas) tem efeito anticoagulante por inibição da agregação plaquetária (platelet-inhibiting effect). Pode aumentar modestamente o INR por supressão da flora intestinal',
     'Aumento modesto do INR + risco de sangramento por efeito antiplaquetário direto da piperacilina em doses altas',
     'Monitorar INR durante pip/tazo em pacientes com varfarina. Risco de sangramento maior em uremia (que também afeta plaquetas)',
@@ -5072,7 +5421,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.hemorrhagic},
     [_kRefGG, _kRefMdx]),
 
-('linezolida', 'tramadol', InteractionSeverity.contraindicated,
+
+  ('linezolida', 'tramadol', InteractionSeverity.contraindicated,
     'Linezolida inibe MAO; tramadol inibe recaptação de serotonina/noradrenalina. Combinação potencialmente fatal por síndrome serotoninérgica + efeito adrenérgico',
     'Síndrome serotoninérgica grave, crise adrenérgica, convulsões',
     'CONTRAINDICADO. Substituir tramadol por morfina ou fentanila (menor atividade serotoninérgica) durante linezolida',
@@ -5081,7 +5431,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.serotonin},
     [_kRefGG, _kRefMdx, _kRefUT]),
 
-('linezolida', 'imao', InteractionSeverity.contraindicated,
+
+  ('linezolida', 'imao', InteractionSeverity.contraindicated,
     'Dupla inibição de MAO: linezolida inibe MAO não seletivamente + IMAO irreversível ou reversível. Combinação sem indicação clínica e com risco de síndrome serotoninérgica/adrenérgica grave',
     'Crise adrenérgica, síndrome serotoninérgica, colapso cardiovascular',
     'CONTRAINDICADO absolutamente. Washout de 14 dias do IMAO antes de linezolida e vice-versa',
@@ -5090,7 +5441,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.serotonin},
     [_kRefGG, _kRefMdx, _kRefUT]),
 
-('linezolida', 'amitriptilina', InteractionSeverity.contraindicated,
+
+  ('linezolida', 'amitriptilina', InteractionSeverity.contraindicated,
     'Linezolida inibe MAO; amitriptilina inibe recaptação de serotonina e noradrenalina. Risco de síndrome serotoninérgica análoga ao IMAO + tricíclico',
     'Síndrome serotoninérgica, crise adrenérgica, arritmias graves',
     'CONTRAINDICADO. Suspender amitriptilina antes de linezolida. Considerar alternativa antibiótica (daptomicina)',
@@ -5099,7 +5451,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.serotonin},
     [_kRefGG, _kRefMdx]),
 
-('linezolida', 'mirtazapina', InteractionSeverity.contraindicated,
+
+  ('linezolida', 'mirtazapina', InteractionSeverity.contraindicated,
     'Linezolida inibe MAO; mirtazapina aumenta neurotransmissão serotoninérgica/noradrenérgica. Risco de síndrome serotoninérgica',
     'Síndrome serotoninérgica',
     'CONTRAINDICADO. Suspender mirtazapina antes de linezolida. Considerar alternativa antibiótica',
@@ -5108,7 +5461,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.serotonin},
     [_kRefGG, _kRefMdx]),
 
-('linezolida', 'bupropiona', InteractionSeverity.contraindicated,
+
+  ('linezolida', 'bupropiona', InteractionSeverity.contraindicated,
     'Linezolida inibe MAO; bupropiona inibe recaptação de dopamina e noradrenalina. Risco de crise adrenérgica e convulsões',
     'Crise hipertensiva, convulsões, síndrome adrenérgica',
     'CONTRAINDICADO. Suspender bupropiona antes de linezolida. Considerar alternativa antibiótica',
@@ -5117,7 +5471,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.serotonin},
     [_kRefGG, _kRefMdx]),
 
-('linezolida', 'warfarina', InteractionSeverity.moderate,
+
+  ('linezolida', 'warfarina', InteractionSeverity.moderate,
     'Linezolida pode ter leve efeito sobre a coagulação, especialmente em tratamentos prolongados. Inibição de MAO não diretamente relacionada, mas interação farmacológica com varfarina possível',
     'Leve aumento do INR em cursos prolongados de linezolida',
     'Monitorar INR em tratamentos prolongados de linezolida. Risco geralmente baixo em cursos curtos',
@@ -5126,7 +5481,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.hemorrhagic},
     [_kRefGG, _kRefMdx]),
 
-// ── AZITROMICINA × outros ─────────────────────────────────────────────────
+    // ── AZITROMICINA × outros ─────────────────────────────────────────────────
+
   ('azitromicina', 'warfarina', InteractionSeverity.moderate,
     'Azitromicina tem menor interação com CYP que eritromicina/claritromicina, mas pode aumentar modestamente o INR por supressão da flora intestinal produtora de vitamina K',
     'Aumento modesto do INR com risco de sangramento leve a moderado',
@@ -5136,7 +5492,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.hemorrhagic},
     [_kRefGG, _kRefMdx]),
 
-('azitromicina', 'haloperidol', InteractionSeverity.moderate,
+
+  ('azitromicina', 'haloperidol', InteractionSeverity.moderate,
     'Azitromicina prolonga QTc + haloperidol prolonga QTc por bloqueio de IKr. Risco aditivo',
     'QTc prolongado com risco de torsades de pointes',
     'Monitorar ECG. Evitar em pacientes com QTc basal > 450ms. Corrigir hipocalemia',
@@ -5145,7 +5502,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.qtProlongation},
     [_kRefGG, _kRefMdx]),
 
-('azitromicina', 'metadona', InteractionSeverity.major,
+
+  ('azitromicina', 'metadona', InteractionSeverity.major,
     'Azitromicina prolonga QTc + metadona prolonga QTc dose-dependentemente. Risco aditivo significativo em doses altas de metadona',
     'QTc prolongado com risco de torsades de pointes, especialmente em doses elevadas de metadona ou hipocalemia',
     'Monitorar ECG antes e durante azitromicina em pacientes com metadona em dose > 100mg/dia. Corrigir eletrólitos. Considerar alternativa antibiótica (betalactâmico)',
@@ -5154,7 +5512,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.qtProlongation},
     [_kRefGG, _kRefMdx]),
 
-// ── TIGECICLINA × outros ─────────────────────────────────────────────────
+    // ── TIGECICLINA × outros ─────────────────────────────────────────────────
+
   ('tigeciclina', 'anticoncepcional', InteractionSeverity.moderate,
     'Tigeciclina, como outras tetraciclinas, suprime a flora intestinal que hidrolisa conjugados de estrogênio, podendo reduzir a circulação êntero-hepática de etinilestradiol',
     'Possível redução da eficácia contraceptiva hormonal em uso curto',
@@ -5164,7 +5523,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.reducedEfficacy},
     [_kRefGG, _kRefMdx]),
 
-// ── ESTATINAS × outros ────────────────────────────────────────────────────
+    // ── ESTATINAS × outros ────────────────────────────────────────────────────
+
   ('estatina', 'amiodarona', InteractionSeverity.major,
     'Amiodarona inibe CYP3A4 e CYP2C8 — vias de metabolismo de sinvastatina, atorvastatina e lovastatina. Pode aumentar os níveis de estatinas em 2-3x. Risco mais elevado com sinvastatina em doses > 20mg',
     'Miopatia grave e rabdomiólise. FDA limitou sinvastatina a 20mg/dia com amiodarona',
@@ -5174,7 +5534,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.myopathy, RiskType.plasmaLevel},
     [_kRefGG, _kRefMdx, _kRefUT]),
 
-('estatina', 'verapamil', InteractionSeverity.major,
+
+  ('estatina', 'verapamil', InteractionSeverity.major,
     'Verapamil inibe CYP3A4 e P-gp, aumentando os níveis de sinvastatina, lovastatina e atorvastatina. FDA limita sinvastatina a 10mg/dia com verapamil',
     'Miopatia e rabdomiólise por acúmulo de estatinas',
     'Limitar sinvastatina a 10mg/dia com verapamil (FDA). Evitar lovastatina. Preferir pravastatina, rosuvastatina ou fluvastatina. Monitorar CK',
@@ -5183,7 +5544,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.myopathy, RiskType.plasmaLevel},
     [_kRefGG, _kRefMdx, _kRefUT]),
 
-('estatina', 'diltiazem', InteractionSeverity.moderate,
+
+  ('estatina', 'diltiazem', InteractionSeverity.moderate,
     'Diltiazem inibe moderadamente CYP3A4, aumentando os níveis de sinvastatina em 2-4x e atorvastatina em menor grau',
     'Miopatia/rabdomiólise por acúmulo de sinvastatina. FDA limita sinvastatina a 10mg/dia com diltiazem',
     'Limitar sinvastatina a 10mg/dia com diltiazem. Preferir pravastatina ou rosuvastatina. Monitorar CK',
@@ -5192,7 +5554,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.myopathy, RiskType.plasmaLevel},
     [_kRefGG, _kRefMdx]),
 
-('estatina', 'azitromicina', InteractionSeverity.minor,
+
+  ('estatina', 'azitromicina', InteractionSeverity.minor,
     'Azitromicina tem mínima inibição de CYP3A4. Risco de miopatia muito baixo em cursos curtos (5 dias). Relevante principalmente com sinvastatina em doses altas',
     'Risco muito baixo de miopatia em tratamentos curtos. Monitoramento geralmente desnecessário',
     'Geralmente seguro em cursos curtos. Monitorar sintomas musculares se sinvastatina em dose alta (> 40mg). Sem ajuste de dose necessário',
@@ -5201,7 +5564,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.myopathy},
     [_kRefGG, _kRefMdx]),
 
-('estatina', 'colchicina', InteractionSeverity.major,
+
+  ('estatina', 'colchicina', InteractionSeverity.major,
     'Colchicina causa miopatia por inibição de microtúbulos nas fibras musculares (efeito direto). Estatinas causam miopatia por depleção de ubiquinona. Efeito aditivo/sinérgico',
     'Miopatia grave e rabdomiólise, especialmente em IR (que também eleva os níveis de colchicina), idosos e em pacientes com doses altas de estatina',
     'Monitorar CK e sintomas musculares durante uso concomitante. Limitar dose de colchicina ao mínimo efetivo. Preferir estatinas com menor risco (pravastatina, rosuvastatina). Suspender se CK > 5x LSN',
@@ -5210,7 +5574,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.myopathy},
     [_kRefGG, _kRefMdx, _kRefUT]),
 
-('estatina', 'fenofibrato', InteractionSeverity.moderate,
+
+  ('estatina', 'fenofibrato', InteractionSeverity.moderate,
     'Fenofibrato inibe CYP2C8 e OATP1B1, podendo aumentar os níveis de estatinas (especialmente cerivastina — retirada do mercado por este motivo). Efeito miopático aditivo independente do mecanismo CYP',
     'Miopatia e rabdomiólise pelo efeito miopático aditivo de fibratos + estatinas. Menor risco que gemfibrozil',
     'Monitorar CK e sintomas musculares. Fenofibrato tem menor risco que gemfibrozil com estatinas. Prefira fenofibrato a gemfibrozil quando a combinação for necessária',
@@ -5219,7 +5584,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.myopathy},
     [_kRefGG, _kRefMdx]),
 
-('estatina', 'warfarina', InteractionSeverity.moderate,
+
+  ('estatina', 'warfarina', InteractionSeverity.moderate,
     'Estatinas inibem variadamente CYP2C9 (principal via da S-varfarina): fluvastatina e rosuvastatina têm maior inibição de CYP2C9; pravastatina e atorvastatina têm menor impacto',
     'Aumento modesto do INR ao iniciar ou aumentar dose de estatina, especialmente fluvastatina e rosuvastatina',
     'Monitorar INR ao iniciar ou mudar dose de estatina. Risco maior com fluvastatina e rosuvastatina. Ajustar varfarina conforme necessário',
@@ -5228,7 +5594,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.hemorrhagic},
     [_kRefGG, _kRefMdx]),
 
-('aine', 'ssri', InteractionSeverity.major,
+
+  ('aine', 'isrs', InteractionSeverity.major,
     'ISRSs inibem recaptação de serotonina nas plaquetas, reduzindo a agregação plaquetária. AINEs inibem COX-1 (antiagregação + lesão GI). Efeito antiagregante e lesivo GI aditivo/sinérgico',
     'Hemorragia GI significativa (risco 3-15x maior). Metanálises mostram que a combinação AINE + ISRS aumenta risco de HDA em 15x em relação a nenhum dos dois',
     'Evitar uso concomitante prolongado. Se necessário: adicionar IBP profilático (omeprazol 20mg ou pantoprazol 40mg). Monitorar sinais de sangramento (fezes escuras, anemia)',
@@ -5237,7 +5604,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.hemorrhagic},
     [_kRefGG, _kRefMdx, _kRefUT]),
 
-('omeprazol', 'metformina', InteractionSeverity.minor,
+
+  ('omeprazol', 'metformina', InteractionSeverity.minor,
     'Omeprazol inibe OCT1/OCT2 (transportadores de captação hepática e renal de metformina), podendo aumentar discretamente os níveis plasmáticos de metformina',
     'Aumento discreto dos níveis de metformina. Risco mínimo de acidose lática em doses usuais e função renal normal',
     'Sem ajuste de dose necessário em função renal normal. Monitorar se TFG reduzida. Combinação geralmente segura',
@@ -5246,7 +5614,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.plasmaLevel},
     [_kRefGG, _kRefMdx]),
 
-('pantoprazol', 'metformina', InteractionSeverity.minor,
+
+  ('pantoprazol', 'metformina', InteractionSeverity.minor,
     'Pantoprazol tem mínima inibição de OCT1/OCT2 comparado ao omeprazol. Risco de interação com metformina ainda menor',
     'Risco muito baixo de aumento dos níveis de metformina',
     'Sem ajuste necessário. Pantoprazol é o IBP preferido em pacientes com clopidogrel e/ou metformina',
@@ -5255,7 +5624,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.plasmaLevel},
     [_kRefGG, _kRefMdx]),
 
-('acido valproico', 'quetiapina', InteractionSeverity.moderate,
+
+  ('valproato', 'quetiapina', InteractionSeverity.moderate,
     'Combinação amplamente usada em transtorno bipolar. Valproato pode inibir CYP3A4 modestamente, aumentando os níveis de quetiapina. Sedação aditiva',
     'Sedação excessiva, especialmente ao início do tratamento. QTc prolongado com quetiapina',
     'Monitorar sedação e ECG. Combinação considerada segura em adultos com bipolaridade. Titular lentamente',
@@ -5264,7 +5634,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.cns, RiskType.qtProlongation},
     [_kRefGG, _kRefMdx]),
 
-('acido valproico', 'amitriptilina', InteractionSeverity.moderate,
+
+  ('valproato', 'amitriptilina', InteractionSeverity.moderate,
     'Valproato inibe CYP2C9 e CYP2C19, podendo aumentar os níveis de amitriptilina. Ambos têm efeitos sedativos e anticolinérgicos',
     'Toxicidade de amitriptilina: QTc prolongado, efeitos anticolinérgicos aditivos, sedação excessiva',
     'Monitorar ECG e nível sérico de amitriptilina. Evitar em idosos (critérios de Beers). Usar doses baixas de ambos',
@@ -5273,16 +5644,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.qtProlongation, RiskType.cns},
     [_kRefGG, _kRefMdx]),
 
-('valproato', 'carbamazepina', InteractionSeverity.major,
-    'Interação bidirecional: valproato inibe o metabolismo do metabólito epóxido de carbamazepina (CBZ-E, tóxico) por inibição de epóxido hidrolase; carbamazepina induz UGT/CYP, reduzindo valproato em 30-50%',
-    'Toxicidade de CBZ-E (diplopia, ataxia, tontura, confusão) com nível total de carbamazepina normal. Falha terapêutica do valproato por indução',
-    'Monitorar nível de CBZ-E se disponível. Monitorar clinicamente sinais de toxicidade de carbamazepina. Monitorar nível de valproato. Aumentar dose de valproato se necessário. Combinação usada em epilepsia refratária',
-    'TOXICIDADE DE CBZ-EPÓXIDO + FALHA DE VALPROATO — Monitorar CBZ-E e nível de valproato; combinação em epilepsia refratária',
-    EvidenceLevel.established,
-    {RiskType.plasmaLevel, RiskType.cns},
-    [_kRefGG, _kRefMdx, _kRefUT]),
 
-('gabapentina', 'tramadol', InteractionSeverity.major,
+  ('gabapentina', 'tramadol', InteractionSeverity.major,
     'Gabapentina potencializa a depressão do SNC do tramadol. Tramadol abaixa o limiar convulsivo; gabapentina não. Risco predominante: sedação e depressão respiratória',
     'Sedação excessiva, depressão respiratória. Síndrome serotoninérgica improvável mas risco de sedação é real',
     'Usar doses mínimas de ambos. Monitorar SpO₂. Prescrever naloxona para tramadol',
@@ -5291,7 +5654,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.respiratoryDepression, RiskType.cns},
     [_kRefGG, _kRefMdx]),
 
-('topiramato', 'carbonato de litio', InteractionSeverity.moderate,
+
+  ('topiramato', 'carbonato de litio', InteractionSeverity.moderate,
     'Topiramato inibe anidrase carbônica, podendo alterar o pH urinário e a excreção renal de lítio. Risco de acúmulo de lítio ou alteração de seus níveis',
     'Toxicidade de lítio por acúmulo ou alteração imprevisível dos níveis séricos',
     'Monitorar nível sérico de lítio ao iniciar ou ajustar topiramato. Manter hidratação e ingestão de sódio estáveis',
@@ -5300,7 +5664,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.plasmaLevel},
     [_kRefGG, _kRefMdx]),
 
-('lamotrigina', 'quetiapina', InteractionSeverity.moderate,
+
+  ('lamotrigina', 'quetiapina', InteractionSeverity.moderate,
     'Quetiapina pode reduzir os níveis de lamotrigina em 50% por mecanismo não completamente elucidado. Combinação usada em bipolaridade mas requer monitoramento',
     'Possível falha no controle de crises epilépticas ou humor por redução dos níveis de lamotrigina',
     'Monitorar nível sérico de lamotrigina e resposta clínica. Aumentar dose de lamotrigina se necessário. Combinação usada em TB tipo I',
@@ -5309,7 +5674,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.reducedEfficacy, RiskType.plasmaLevel},
     [_kRefGG, _kRefMdx]),
 
-// ── MISC — pares importantes ainda ausentes ───────────────────────────────
+    // ── MISC — pares importantes ainda ausentes ───────────────────────────────
+
   ('paracetamol', 'warfarina', InteractionSeverity.moderate,
     'Paracetamol em doses regulares (≥ 2g/dia por ≥ 3 dias) pode aumentar o INR em pacientes usando varfarina. Mecanismo discutido: possível inibição da vitamina K epóxido redutase por metabólitos do paracetamol',
     'Aumento modesto do INR (geralmente 1,5-2x) com doses habituais. Raramente sangramento grave. Ainda assim, clinicamente relevante em pacientes idosos ou com INR já elevado',
@@ -5319,7 +5685,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.hemorrhagic},
     [_kRefGG, _kRefMdx]),
 
-('teofilina', 'amiodarona', InteractionSeverity.major,
+
+  ('teofilina', 'amiodarona', InteractionSeverity.major,
     'Amiodarona e seu metabólito (desetilamiodarona) inibem CYP1A2, a principal via de metabolismo da teofilina. Pode aumentar os níveis em 40-100%',
     'Toxicidade de teofilina: taquicardia, arritmias, náusea, vômitos, convulsões. Especialmente perigoso dado o estreito índice terapêutico da teofilina',
     'Monitorar nível sérico de teofilina frequentemente ao iniciar amiodarona. Reduzir dose de teofilina em 30-50% preventivamente. Considerar substituir teofilina por outro broncodilatador',
@@ -5328,7 +5695,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.plasmaLevel, RiskType.arrhythmia},
     [_kRefGG, _kRefMdx]),
 
-('teofilina', 'ssri', InteractionSeverity.moderate,
+
+  ('teofilina', 'isrs', InteractionSeverity.moderate,
     'Fluvoxamina inibe potentemente CYP1A2 (principal via de metabolismo da teofilina). Pode aumentar os níveis em 3-10x',
     'Toxicidade grave de teofilina: taquicardia, arritmias ventriculares, convulsões, náusea',
     'CONTRAINDICADO: fluvoxamina + teofilina. Substituir fluvoxamina por sertralina ou escitalopram (menor inibição de CYP1A2). Se mantida: monitorar nível sérico e reduzir dose de teofilina em 50-80%',
@@ -5337,7 +5705,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.plasmaLevel, RiskType.arrhythmia},
     [_kRefGG, _kRefMdx]),
 
-('teofilina', 'benzodiazepínico', InteractionSeverity.moderate,
+
+  ('teofilina', 'benzodiazepínico', InteractionSeverity.moderate,
     'Teofilina antagoniza os efeitos sedativos e anticonvulsivantes dos benzodiazepínicos por antagonismo de adenosina. Reduz a eficácia dos benzodiazepínicos no controle da ansiedade e do status epilepticus',
     'Redução da eficácia sedativa e anticonvulsivante dos benzodiazepínicos. Status epilepticus resistente a benzodiazepínicos em pacientes com toxicidade de teofilina',
     'Em intoxicação por teofilina com convulsões: usar fenitoína ou fenobarbital (mais efetivos que benzodiazepínicos). Aumentar dose de benzodiazepínico se usado para sedação procedural',
@@ -5346,7 +5715,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.reducedEfficacy},
     [_kRefGG, _kRefMdx]),
 
-('ondansetrona', 'ssri', InteractionSeverity.major,
+
+  ('ondansetrona', 'isrs', InteractionSeverity.major,
     'Ondansetrona bloqueia receptores 5-HT3 (serotonina). Citalopram e escitalopram também prolongam QTc. Combinação aumenta o risco de QT. Paradoxalmente, ondansetrona pode reduzir a atividade de ISRSs ao bloquear 5-HT3, mas o risco de QT predomina',
     'QTc prolongado com risco de torsades de pointes, especialmente com citalopram/escitalopram (que mais prolongam QT entre ISRSs). FDA limitou ondansetrona a 16mg IV por dose em 2011',
     'Evitar ondansetrona + citalopram ou escitalopram (maior risco). Limitar ondansetrona IV a 8mg por dose. Monitorar ECG. Considerar metoclopramida como alternativa antiemética (mas não em idosos → extrapiramidal)',
@@ -5355,7 +5725,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.qtProlongation, RiskType.arrhythmia},
     [_kRefGG, _kRefMdx, _kRefUT]),
 
-('ondansetrona', 'quetiapina', InteractionSeverity.major,
+
+  ('ondansetrona', 'quetiapina', InteractionSeverity.major,
     'Ambos prolongam QTc: ondansetrona por IKr; quetiapina por múltiplos mecanismos. Risco aditivo de torsades',
     'QTc prolongado com risco de torsades de pointes',
     'Monitorar ECG. Corrigir eletrólitos. Evitar em pacientes com QTc > 450ms',
@@ -5364,7 +5735,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.qtProlongation},
     [_kRefGG, _kRefMdx]),
 
-('colchicina', 'eritromicina', InteractionSeverity.major,
+
+  ('colchicina', 'eritromicina', InteractionSeverity.major,
     'Eritromicina inibe CYP3A4 e P-gp, aumentando os níveis de colchicina. Menor magnitude que claritromicina, mas ainda clinicamente perigosa',
     'Toxicidade de colchicina: miopatia, pancitopenia, insuficiência renal, toxicidade multissistêmica',
     'Evitar combinação. Preferir azitromicina (não inibe CYP3A4 ou P-gp significativamente). Se eritromicina necessária: dose única e mínima de colchicina, monitorar CK e hemograma',
@@ -5373,7 +5745,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.myopathy, RiskType.nephrotoxicity},
     [_kRefGG, _kRefMdx]),
 
-('colchicina', 'verapamil', InteractionSeverity.major,
+
+  ('colchicina', 'verapamil', InteractionSeverity.major,
     'Verapamil inibe P-gp e CYP3A4, as principais vias de eliminação da colchicina. Risco de toxicidade análoga à claritromicina + colchicina',
     'Toxicidade grave de colchicina: miopatia, pancitopenia, insuficiência renal multissistêmica',
     'Evitar combinação. Se colchicina necessária em paciente com verapamil: dose única de 0,6mg (sem repetir), monitorar CK e hemograma. Considerar alternativa para gota (prednisona, AINE)',
@@ -5382,7 +5755,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.myopathy, RiskType.nephrotoxicity},
     [_kRefGG, _kRefMdx]),
 
-('ranolazina', 'verapamil', InteractionSeverity.major,
+
+  ('ranolazina', 'verapamil', InteractionSeverity.major,
     'Verapamil inibe CYP3A4 e P-gp, aumentando os níveis de ranolazina em 100%. Ambos têm efeitos cardiovasculares: bradicardia e prolongamento do PR. Ranolazina prolonga QTc',
     'Acúmulo de ranolazina → QTc prolongado, hipotensão. Bradicardia aditiva',
     'Limitar dose de ranolazina a 500mg 2x/dia com verapamil. Monitorar ECG e PA. Bula da ranolazina recomenda dose máxima reduzida com inibidores de CYP3A4 moderados',
@@ -5391,7 +5765,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.qtProlongation, RiskType.plasmaLevel},
     [_kRefGG, _kRefMdx]),
 
-('ranolazina', 'diltiazem', InteractionSeverity.major,
+
+  ('ranolazina', 'diltiazem', InteractionSeverity.major,
     'Diltiazem inibe CYP3A4 moderadamente, aumentando os níveis de ranolazina em 50-70%. Ambos prolongam o intervalo QT e reduzem PA',
     'Acúmulo de ranolazina → QTc prolongado, hipotensão',
     'Limitar dose de ranolazina a 500mg 2x/dia com diltiazem. Monitorar ECG e PA',
@@ -5400,7 +5775,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.qtProlongation, RiskType.plasmaLevel},
     [_kRefGG, _kRefMdx]),
 
-('sildenafila', 'amiodarona', InteractionSeverity.major,
+
+  ('sildenafila', 'amiodarona', InteractionSeverity.major,
     'Amiodarona inibe CYP3A4, podendo aumentar os níveis de sildenafila. Ambos causam vasodilatação e hipotensão. Em pacientes com HTP (hipertensão pulmonar) usando ambos: risco hemodinâmico',
     'Hipotensão grave por efeito vasodilatador aditivo (PDE5-i + amiodarona). Acúmulo de sildenafila por inibição de CYP3A4',
     'Monitorar PA rigorosamente. Iniciar sildenafila em dose baixa (25mg). Em HTP: supervisão cardiológica especializada',
@@ -5409,7 +5785,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.plasmaLevel},
     [_kRefGG, _kRefMdx]),
 
-('propofol', 'benzodiazepínico', InteractionSeverity.major,
+
+  ('propofol', 'benzodiazepínico', InteractionSeverity.major,
     'Propofol (potenciador de GABA-A) e benzodiazepínicos (também GABA-A) têm efeito sinérgico na sedação e depressão respiratória',
     'Apneia, depressão respiratória profunda, hipotensão grave. Risco especialmente alto em idosos, DPOC e em bolus rápidos',
     'Usar apenas em ambiente monitorado. Titular lentamente. Ter flumazenil disponível. Monitorar SpO₂ e ETCO₂',
@@ -5418,7 +5795,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.respiratoryDepression},
     [_kRefGG, _kRefMdx]),
 
-('levosimendan', 'betabloqueador', InteractionSeverity.moderate,
+
+  ('levosimendan', 'betabloqueador', InteractionSeverity.moderate,
     'Levosimendan (sensibilizador de cálcio + abre canais de KATP vasculares) causa vasodilatação e melhora contratilidade. Betabloqueadores reduzem a FC e contratilidade. Efeito hemodinâmico parcialmente oposto',
     'Hipotensão e bradicardia por efeito vasodilatador de levosimendan + cronotropismo negativo do betabloqueador',
     'Monitorar PA e FC rigorosamente durante infusão de levosimendan. Reduzir dose do betabloqueador se hipotensão ou bradicardia sintomáticas',
@@ -5427,7 +5805,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.arrhythmia},
     [_kRefGG, _kRefMdx]),
 
-('dexmedetomidina', 'betabloqueador', InteractionSeverity.major,
+
+  ('dexmedetomidina', 'betabloqueador', InteractionSeverity.major,
     'Dexmedetomidina (agonista α2 central) causa bradicardia e hipotensão. Betabloqueadores também causam bradicardia. Efeito aditivo na redução da FC e PA',
     'Bradicardia grave (FC < 40bpm), bloqueio AV, hipotensão grave, assistolia em bolus rápidos de dexmedetomidina',
     'Monitorar ECG e PA continuamente durante dexmedetomidina. Titular lentamente. Ter atropina disponível. Evitar bolus rápidos de carga',
@@ -5436,7 +5815,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.arrhythmia},
     [_kRefGG, _kRefMdx]),
 
-('dexmedetomidina', 'opioide', InteractionSeverity.major,
+
+  ('dexmedetomidina', 'opioide', InteractionSeverity.major,
     'Dexmedetomidina potencializa os efeitos analgésicos e sedativos dos opioides por mecanismo agonista α2. Permite redução de 30-50% na dose de opioide em UTI (efeito "opioide-sparing"). Risco de depressão respiratória aditiva',
     'Depressão respiratória aumentada, bradicardia, hipotensão grave em doses elevadas de ambos',
     'Usar combinação com redução da dose de opioide (efeito opioide-sparing reconhecido). Monitorar SpO₂, PA e FC continuamente. Ter naloxona disponível',
@@ -5446,12 +5826,13 @@ const _interactionDB = <_IxEntry>[
     [_kRefGG, _kRefMdx]),
 
 
-  // ═══════════════════════════════════════════════════════════════
-  // BLOCO 10 — pares clinicamente relevantes ausentes entre IDs existentes
-  // Categorias: QT, serotonina, imunossupressores, antiepilépticos,
-  //             hemostasia, hipercalemia, hipoglicemia, estatinas,
-  //             digoxina, IBPs, cardiovascular, lítio, antimicrobianos
-  // ═══════════════════════════════════════════════════════════════
+    // ═══════════════════════════════════════════════════════════════
+    // BLOCO 10 — pares clinicamente relevantes ausentes entre IDs existentes
+    // Categorias: QT, serotonina, imunossupressores, antiepilépticos,
+    //             hemostasia, hipercalemia, hipoglicemia, estatinas,
+    //             digoxina, IBPs, cardiovascular, lítio, antimicrobianos
+    // ═══════════════════════════════════════════════════════════════
+
   ('amiodarona', 'fluconazol', InteractionSeverity.major,
     'Ambos prolongam o intervalo QT: amiodarona bloqueia canais de potássio (IKr); fluconazol inibe CYP3A4/2C9 elevando níveis de amiodarona',
     'Prolongamento aditivo do QTc; risco elevado de torsades de pointes e morte súbita cardíaca',
@@ -5460,6 +5841,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.qtProlongation, RiskType.arrhythmia},
     [_kRefMdx, _kRefUT, _kRefLex]),
+
   ('amiodarona', 'claritromicina', InteractionSeverity.major,
     'Claritromicina prolonga QT e inibe CYP3A4, elevando concentrações de amiodarona; efeito aditivo sobre IKr',
     'Prolongamento marcado do QTc; torsades de pointes e fibrilação ventricular',
@@ -5468,6 +5850,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.qtProlongation, RiskType.arrhythmia},
     [_kRefMdx, _kRefUT]),
+
   ('amiodarona', 'olanzapina', InteractionSeverity.major,
     'Olanzapina bloqueia canais hERG (IKr); somado ao potente efeito de amiodarona, prolonga QTc aditivamente',
     'Prolongamento do QTc; risco de torsades de pointes e morte súbita',
@@ -5476,6 +5859,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.qtProlongation, RiskType.arrhythmia},
     [_kRefMdx, _kRefUT]),
+
   ('sotalol', 'fluconazol', InteractionSeverity.major,
     'Fluconazol inibe CYP3A4 elevando nível de sotalol; sotalol bloqueia IKr prolongando QT',
     'Prolongamento excessivo do QTc; torsades de pointes',
@@ -5484,6 +5868,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.qtProlongation, RiskType.arrhythmia},
     [_kRefMdx, _kRefUT]),
+
   ('sotalol', 'claritromicina', InteractionSeverity.major,
     'Claritromicina inibe CYP3A4 e prolonga QT por si mesma; efeito aditivo sobre IKr com sotalol',
     'Prolongamento crítico do QTc; torsades de pointes',
@@ -5492,6 +5877,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.qtProlongation, RiskType.arrhythmia},
     [_kRefMdx, _kRefUT]),
+
   ('sotalol', 'metadona', InteractionSeverity.major,
     'Metadona prolonga QT por bloqueio de IKr; somado ao sotalol, efeito aditivo significativo',
     'Prolongamento grave do QTc; risco de torsades de pointes e morte súbita',
@@ -5500,6 +5886,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.qtProlongation, RiskType.arrhythmia},
     [_kRefMdx, _kRefUT]),
+
   ('haloperidol', 'claritromicina', InteractionSeverity.major,
     'Claritromicina inibe CYP3A4 elevando nível de haloperidol e prolonga QT por si mesma; efeito aditivo',
     'Prolongamento do QTc; torsades de pointes; aumento de efeitos extrapiramidais',
@@ -5508,6 +5895,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.qtProlongation, RiskType.plasmaLevel},
     [_kRefMdx, _kRefUT]),
+
   ('haloperidol', 'metadona', InteractionSeverity.major,
     'Ambos prolongam QT por bloqueio de IKr; metadona inibe CYP2D6 podendo elevar haloperidol',
     'Prolongamento crítico do QTc; torsades de pointes',
@@ -5516,6 +5904,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.qtProlongation, RiskType.arrhythmia},
     [_kRefMdx, _kRefUT]),
+
   ('quetiapina', 'claritromicina', InteractionSeverity.major,
     'Claritromicina inibe CYP3A4 intensamente; quetiapina é metabolizada por CYP3A4 — nível plasmático aumenta 5-10x',
     'Sedação excessiva, hipotensão ortostática, prolongamento do QT',
@@ -5524,6 +5913,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.plasmaLevel, RiskType.qtProlongation, RiskType.cns},
     [_kRefMdx, _kRefUT]),
+
   ('metadona', 'fluconazol', InteractionSeverity.major,
     'Fluconazol inibe CYP3A4 e CYP2C19, reduzindo metabolismo da metadona; elevação do nível plasmático',
     'Sedação excessiva, depressão respiratória, prolongamento do QT',
@@ -5532,6 +5922,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.plasmaLevel, RiskType.qtProlongation, RiskType.respiratoryDepression},
     [_kRefMdx, _kRefUT]),
+
   ('sacubitrila', 'losartana', InteractionSeverity.moderate,
     'Sacubitrila já associada a valsartana (sacubitril/valsartan); adicionar outro ARA-II eleva risco de hipotensão e hipercalemia',
     'Hipotensão sintomática; hipercalemia; piora da função renal',
@@ -5540,6 +5931,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.probable,
     {RiskType.cardiovascular, RiskType.hyperkalemia},
     [_kRefUT, _kRefFDA]),
+
   ('rivaroxabana', 'claritromicina', InteractionSeverity.major,
     'Claritromicina inibe CYP3A4 e P-gp; rivaroxabana é substrato de ambos — nível plasmático aumenta significativamente',
     'Risco hemorrágico aumentado (sangramento GI, intracraniano)',
@@ -5548,6 +5940,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.hemorrhagic, RiskType.plasmaLevel},
     [_kRefMdx, _kRefUT]),
+
   ('apixabana', 'claritromicina', InteractionSeverity.major,
     'Claritromicina inibe CYP3A4 e P-gp; apixabana é substrato de ambos — exposição plasmática aumentada',
     'Risco hemorrágico aumentado',
@@ -5556,6 +5949,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.hemorrhagic, RiskType.plasmaLevel},
     [_kRefMdx, _kRefUT]),
+
   ('dabigatrana', 'claritromicina', InteractionSeverity.major,
     'Claritromicina inibe P-gp; dabigatrana é substrato de P-gp — biodisponibilidade e AUC aumentam ~15-20%',
     'Risco hemorrágico aumentado',
@@ -5564,6 +5958,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.hemorrhagic, RiskType.plasmaLevel},
     [_kRefMdx, _kRefUT]),
+
   ('dabigatrana', 'fluconazol', InteractionSeverity.moderate,
     'Fluconazol inibe P-gp moderadamente; dabigatrana é substrato de P-gp — leve aumento de exposição',
     'Risco de sangramento aumentado de forma moderada',
@@ -5572,6 +5967,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.probable,
     {RiskType.hemorrhagic, RiskType.plasmaLevel},
     [_kRefMdx, _kRefUT]),
+
   ('fondaparinux', 'aspirina', InteractionSeverity.moderate,
     'Efeito antitrombótico aditivo: inibição de fator Xa + inibição plaquetária por aspirina',
     'Risco hemorrágico moderadamente aumentado',
@@ -5580,6 +5976,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.hemorrhagic},
     [_kRefGG, _kRefUT]),
+
   ('fluoxetina', 'tramadol', InteractionSeverity.major,
     'Tramadol inibe recaptação de serotonina; fluoxetina é ISRS potente — síndrome serotoninérgica por efeito aditivo; fluoxetina inibe CYP2D6 reduzindo conversão de tramadol ao metabólito ativo',
     'Síndrome serotoninérgica (tremor, mioclonia, hipertermia, agitação, confusão)',
@@ -5588,6 +5985,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.serotonin, RiskType.plasmaLevel},
     [_kRefMdx, _kRefUT]),
+
   ('fluoxetina', 'metadona', InteractionSeverity.major,
     'Fluoxetina inibe CYP2D6 e CYP3A4 elevando nível de metadona; ambos prolongam QT; risco serotoninérgico aditivo',
     'Toxicidade de metadona: depressão respiratória, prolongamento do QTc, síndrome serotoninérgica',
@@ -5596,6 +5994,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.serotonin, RiskType.qtProlongation, RiskType.respiratoryDepression, RiskType.plasmaLevel},
     [_kRefMdx, _kRefUT]),
+
   ('amitriptilina', 'fluoxetina', InteractionSeverity.major,
     'Fluoxetina inibe CYP2D6 intensamente — metabolismo de amitriptilina reduzido, nível aumenta 2-4x; ambos prolongam QT; risco serotoninérgico',
     'Toxicidade de antidepressivo tricíclico: arritmias, hipotensão, sedação, convulsões',
@@ -5604,6 +6003,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.plasmaLevel, RiskType.qtProlongation, RiskType.serotonin},
     [_kRefMdx, _kRefUT]),
+
   ('fenobarbital', 'carbamazepina', InteractionSeverity.moderate,
     'Ambos são indutores de CYP3A4 e CYP2C — redução mútua dos níveis plasmáticos',
     'Nível de ambos reduzido; possível perda de eficácia antiepiléptica',
@@ -5612,6 +6012,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.plasmaLevel, RiskType.reducedEfficacy},
     [_kRefGG, _kRefMdx]),
+
   ('contraste iodado', 'aminoglicosideo', InteractionSeverity.major,
     'Aminoglicosídeos causam nefrotoxicidade; contraste iodado causa nefropatia por contraste — risco aditivo de lesão renal aguda',
     'Lesão renal aguda grave; possível necessidade de diálise',
@@ -5620,6 +6021,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.probable,
     {RiskType.nephrotoxicity},
     [_kRefMdx, _kRefUT]),
+
   ('metotrexato', 'trimetoprima', InteractionSeverity.major,
     'Trimetoprima inibe dihidrofolato redutase; somado a metotrexato (também inibe DHFR), causa depleção grave de folato',
     'Mielossupressão grave (pancitopenia); mucosite; toxicidade hematológica',
@@ -5628,6 +6030,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.myelosuppression},
     [_kRefGG, _kRefMdx, _kRefUT]),
+
   ('metotrexato', 'sulfametoxazol', InteractionSeverity.major,
     'Sulfametoxazol inibe DHFR e compete com metotrexato pela excreção tubular renal — nível de metotrexato aumenta',
     'Mielossupressão grave; mucosite; nefrotoxicidade',
@@ -5636,6 +6039,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.myelosuppression, RiskType.plasmaLevel},
     [_kRefGG, _kRefMdx]),
+
   ('eplerenona', 'losartana', InteractionSeverity.major,
     'Eplerenona retém potássio; ARA-II reduz excreção de potássio — hipercalemia aditiva',
     'Hipercalemia grave; arritmia ventricular',
@@ -5644,6 +6048,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.hyperkalemia},
     [_kRefFDA, _kRefUT]),
+
   ('finerenona', 'losartana', InteractionSeverity.major,
     'Finerenona retém potássio; ARA-II reduz excreção de K+ — hipercalemia aditiva',
     'Hipercalemia; piora da função renal',
@@ -5652,6 +6057,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.hyperkalemia},
     [_kRefFDA, _kRefUT]),
+
   ('rosuvastatina', 'ciclosporina', InteractionSeverity.major,
     'Ciclosporina inibe OATP1B1 e P-gp; rosuvastatina é substrato de ambos — AUC aumenta ~10x',
     'Miopatia grave; rabdomiólise',
@@ -5660,6 +6066,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.myopathy, RiskType.plasmaLevel},
     [_kRefFDA, _kRefMdx]),
+
   ('digoxina', 'fluconazol', InteractionSeverity.moderate,
     'Fluconazol pode inibir P-gp e reduzir clearance renal de digoxina — nível sérico aumenta moderadamente',
     'Toxicidade digitálica leve a moderada',
@@ -5668,14 +6075,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.probable,
     {RiskType.plasmaLevel, RiskType.arrhythmia},
     [_kRefMdx, _kRefUT]),
-  ('antacido', 'levotiroxina', InteractionSeverity.moderate,
-    'Antiácidos com cálcio, magnésio ou alumínio adsorvem levotiroxina no TGI — absorção reduzida',
-    'Absorção inadequada de levotiroxina; hipotireoidismo',
-    'Tomar levotiroxina em jejum, ≥4h antes de antiácido. Monitorar TSH',
-    'LEVOTIROXINA ↓ — Separar ≥4h',
-    EvidenceLevel.established,
-    {RiskType.reducedEfficacy},
-    [_kRefGG, _kRefMdx]),
+
   ('quinolona', 'teofilina', InteractionSeverity.major,
     'Quinolonas (principalmente ciprofloxacino, enoxacino) inibem CYP1A2; teofilina metabolizada por CYP1A2',
     'Toxicidade da teofilina: convulsões, arritmias',
@@ -5684,6 +6084,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.plasmaLevel, RiskType.seizure},
     [_kRefGG, _kRefMdx]),
+
   ('dexametasona', 'ciclosporina', InteractionSeverity.moderate,
     'Dexametasona induz CYP3A4; ciclosporina metabolizada por CYP3A4 — nível reduzido; ciclosporina inibe metabolismo de dexametasona',
     'Nível de ciclosporina reduzido (risco de rejeição); nível de dexametasona aumentado',
@@ -5692,6 +6093,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.probable,
     {RiskType.plasmaLevel, RiskType.reducedEfficacy},
     [_kRefMdx, _kRefUT]),
+
   ('dexametasona', 'warfarina', InteractionSeverity.moderate,
     'Corticosteroides podem inibir ou induzir CYP2C9 (variável); efeito líquido imprevisível sobre INR; também inibem trombose',
     'Variação do INR (aumento ou redução)',
@@ -5700,6 +6102,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.probable,
     {RiskType.plasmaLevel, RiskType.hemorrhagic},
     [_kRefMdx, _kRefUT]),
+
   ('dexametasona', 'fenitoína', InteractionSeverity.major,
     'Fenitoína induz CYP3A4 reduzindo nível de dexametasona; dexametasona induz CYP3A4 reduzindo fenitoína; interação bidirecional',
     'Eficácia de dexametasona reduzida; nível de fenitoína instável',
@@ -5708,6 +6111,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.plasmaLevel, RiskType.reducedEfficacy},
     [_kRefGG, _kRefMdx, _kRefUT]),
+
   ('rocurônio', 'dexmedetomidina', InteractionSeverity.minor,
     'Dexmedetomidina pode prolongar levemente o bloqueio neuromuscular por redução do tônus simpático',
     'Bloqueio neuromuscular levemente prolongado',
@@ -5716,6 +6120,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.possible,
     {RiskType.respiratoryDepression},
     [_kRefMdx]),
+
   ('teofilina', 'furosemida', InteractionSeverity.moderate,
     'Furosemida pode aumentar excreção de teofilina em altas doses; hipocalemia pode aumentar toxicidade cardíaca de teofilina',
     'Variação do nível de teofilina; toxicidade cardíaca facilitada por hipocalemia',
@@ -5724,6 +6129,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.probable,
     {RiskType.plasmaLevel, RiskType.hypokalemia},
     [_kRefMdx]),
+
   ('teofilina', 'rifampicina', InteractionSeverity.major,
     'Rifampicina induz CYP1A2; teofilina metabolizada por CYP1A2 — clearance aumenta e nível cai 50-75%',
     'Perda de eficácia da teofilina; piora do broncoespasmo',
@@ -5732,6 +6138,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.plasmaLevel, RiskType.reducedEfficacy},
     [_kRefGG, _kRefMdx]),
+
   ('metotrexato', 'aine', InteractionSeverity.major,
     'AINEs inibem secreção tubular renal de metotrexato e reduzem TFG — retenção de metotrexato',
     'Toxicidade de metotrexato: mielossupressão, mucosite, nefrotoxicidade, hepatotoxicidade',
@@ -5740,6 +6147,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.myelosuppression, RiskType.nephrotoxicity, RiskType.plasmaLevel},
     [_kRefGG, _kRefMdx, _kRefUT]),
+
   ('bupropiona', 'tamoxifeno', InteractionSeverity.major,
     'Bupropiona inibe CYP2D6; tamoxifeno convertido ao metabólito ativo endoxifeno por CYP2D6 — eficácia reduzida',
     'Redução do efeito antiestrogênico do tamoxifeno; possível falha no tratamento de câncer de mama',
@@ -5748,6 +6156,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.plasmaLevel, RiskType.reducedEfficacy},
     [_kRefMdx, _kRefUT]),
+
   ('fluoxetina', 'tamoxifeno', InteractionSeverity.major,
     'Fluoxetina é inibidor potente de CYP2D6; tamoxifeno requer CYP2D6 para conversão ao metabólito ativo (endoxifeno)',
     'Redução da eficácia do tamoxifeno; risco de recorrência do câncer de mama',
@@ -5756,6 +6165,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.plasmaLevel, RiskType.reducedEfficacy},
     [_kRefMdx, _kRefUT, _kRefLex]),
+
   ('ranolazina', 'fluconazol', InteractionSeverity.major,
     'Fluconazol inibe CYP3A4; ranolazina metabolizada por CYP3A4 — exposição aumenta significativamente',
     'Prolongamento do QT; toxicidade de ranolazina',
@@ -5764,6 +6174,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.probable,
     {RiskType.plasmaLevel, RiskType.qtProlongation},
     [_kRefMdx, _kRefUT]),
+
   ('propofol', 'midazolam', InteractionSeverity.major,
     'Ambos são depressores do SNC; efeito sedativo e respiratório aditivo',
     'Depressão respiratória grave; apneia; hipotensão',
@@ -5772,6 +6183,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.cns, RiskType.respiratoryDepression, RiskType.cardiovascular},
     [_kRefGG, _kRefMdx]),
+
   ('ritonavir', 'colchicina', InteractionSeverity.contraindicated,
     'Ritonavir inibe CYP3A4 e P-gp; colchicina substrato de ambos — nível aumenta 20-40x',
     'Toxicidade fatal de colchicina: mielossuupressão, miopatia, falência de múltiplos órgãos',
@@ -5780,6 +6192,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.plasmaLevel, RiskType.myelosuppression, RiskType.myopathy},
     [_kRefFDA, _kRefMdx]),
+
   ('isavuconazol', 'tacrolimo', InteractionSeverity.major,
     'Isavuconazol inibe CYP3A4 e P-gp; tacrolimo é substrato de ambos — nível aumenta ~100%',
     'Nefrotoxicidade; neurotoxicidade',
@@ -5788,6 +6201,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.plasmaLevel, RiskType.nephrotoxicity},
     [_kRefMdx, _kRefUT]),
+
   ('acetazolamida', 'carbonato de litio', InteractionSeverity.moderate,
     'Acetazolamida aumenta excreção renal de lítio (alcalinização da urina); nível de lítio pode reduzir',
     'Redução do nível de lítio; possível perda de eficácia terapêutica',
@@ -5796,7 +6210,8 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.probable,
     {RiskType.plasmaLevel, RiskType.reducedEfficacy},
     [_kRefMdx]),
-  ('perampanel', 'acido valproico', InteractionSeverity.moderate,
+
+  ('perampanel', 'valproato', InteractionSeverity.moderate,
     'Valproato pode aumentar nível de perampanel; perampanel pode reduzir levemente nível de valproato',
     'Toxicidade de perampanel: tontura, irritabilidade, agressividade',
     'Monitorar sinais de toxicidade de perampanel. Ajustar dose conforme tolerância',
@@ -5804,6 +6219,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.probable,
     {RiskType.plasmaLevel, RiskType.cns},
     [_kRefMdx, _kRefUT]),
+
   ('tocilizumabe', 'baricitinibe', InteractionSeverity.major,
     'Ambos são imunossupressores potentes (IL-6i + JAKi); risco de imunossupressão excessiva',
     'Infecções oportunistas graves; reativação de tuberculose/herpes; trombose',
@@ -5812,151 +6228,8 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.probable,
     {RiskType.infection, RiskType.myelosuppression},
     [_kRefFDA, _kRefUT]),
-  // ── BLOCO 10 — Pares intra-categoria ausentes ──────────────────────────────
+    // ── BLOCO 10 — Pares intra-categoria ausentes ──────────────────────────────
 
-  ('apixabana', 'warfarina', InteractionSeverity.major,
-    'Combinação de dois anticoagulantes com mecanismos distintos: efeito anticoagulante aditivo ou sinérgico sem benefício terapêutico adicional comprovado',
-    'Risco hemorrágico grave (intracraniano, GI, retroperitoneal). Sem benefício clínico comprovado da combinação de dois anticoagulantes plenos',
-    'CONTRAINDICADA a combinação de dois anticoagulantes plenos. Em transição terapêutica (ex: heparina → DOAC), seguir protocolo específico com janela segura de suspensão',
-    'CONTRAINDICADO — Dois anticoagulantes plenos: risco hemorrágico grave sem benefício adicional',
-    EvidenceLevel.established,
-    {RiskType.hemorrhagic},
-    ['Goodman & Gilman 14ª ed.', 'Micromedex 2024', 'UpToDate 2024']),
-
-  ('dabigatrana', 'warfarina', InteractionSeverity.major,
-    'Combinação de dois anticoagulantes com mecanismos distintos: efeito anticoagulante aditivo ou sinérgico sem benefício terapêutico adicional comprovado',
-    'Risco hemorrágico grave (intracraniano, GI, retroperitoneal). Sem benefício clínico comprovado da combinação de dois anticoagulantes plenos',
-    'CONTRAINDICADA a combinação de dois anticoagulantes plenos. Em transição terapêutica (ex: heparina → DOAC), seguir protocolo específico com janela segura de suspensão',
-    'CONTRAINDICADO — Dois anticoagulantes plenos: risco hemorrágico grave sem benefício adicional',
-    EvidenceLevel.established,
-    {RiskType.hemorrhagic},
-    ['Goodman & Gilman 14ª ed.', 'Micromedex 2024', 'UpToDate 2024']),
-
-  ('fondaparinux', 'heparina', InteractionSeverity.major,
-    'Combinação de dois anticoagulantes com mecanismos distintos: efeito anticoagulante aditivo ou sinérgico sem benefício terapêutico adicional comprovado',
-    'Risco hemorrágico grave (intracraniano, GI, retroperitoneal). Sem benefício clínico comprovado da combinação de dois anticoagulantes plenos',
-    'CONTRAINDICADA a combinação de dois anticoagulantes plenos. Em transição terapêutica (ex: heparina → DOAC), seguir protocolo específico com janela segura de suspensão',
-    'CONTRAINDICADO — Dois anticoagulantes plenos: risco hemorrágico grave sem benefício adicional',
-    EvidenceLevel.established,
-    {RiskType.hemorrhagic},
-    ['Goodman & Gilman 14ª ed.', 'Micromedex 2024', 'UpToDate 2024']),
-
-  ('fondaparinux', 'warfarina', InteractionSeverity.major,
-    'Combinação de dois anticoagulantes com mecanismos distintos: efeito anticoagulante aditivo ou sinérgico sem benefício terapêutico adicional comprovado',
-    'Risco hemorrágico grave (intracraniano, GI, retroperitoneal). Sem benefício clínico comprovado da combinação de dois anticoagulantes plenos',
-    'CONTRAINDICADA a combinação de dois anticoagulantes plenos. Em transição terapêutica (ex: heparina → DOAC), seguir protocolo específico com janela segura de suspensão',
-    'CONTRAINDICADO — Dois anticoagulantes plenos: risco hemorrágico grave sem benefício adicional',
-    EvidenceLevel.established,
-    {RiskType.hemorrhagic},
-    ['Goodman & Gilman 14ª ed.', 'Micromedex 2024', 'UpToDate 2024']),
-
-  ('apixabana', 'heparina', InteractionSeverity.major,
-    'Combinação de dois anticoagulantes com mecanismos distintos: efeito anticoagulante aditivo ou sinérgico sem benefício terapêutico adicional comprovado',
-    'Risco hemorrágico grave (intracraniano, GI, retroperitoneal). Sem benefício clínico comprovado da combinação de dois anticoagulantes plenos',
-    'CONTRAINDICADA a combinação de dois anticoagulantes plenos. Em transição terapêutica (ex: heparina → DOAC), seguir protocolo específico com janela segura de suspensão',
-    'CONTRAINDICADO — Dois anticoagulantes plenos: risco hemorrágico grave sem benefício adicional',
-    EvidenceLevel.established,
-    {RiskType.hemorrhagic},
-    ['Goodman & Gilman 14ª ed.', 'Micromedex 2024', 'UpToDate 2024']),
-
-  ('apixabana', 'fondaparinux', InteractionSeverity.major,
-    'Combinação de dois anticoagulantes com mecanismos distintos: efeito anticoagulante aditivo ou sinérgico sem benefício terapêutico adicional comprovado',
-    'Risco hemorrágico grave (intracraniano, GI, retroperitoneal). Sem benefício clínico comprovado da combinação de dois anticoagulantes plenos',
-    'CONTRAINDICADA a combinação de dois anticoagulantes plenos. Em transição terapêutica (ex: heparina → DOAC), seguir protocolo específico com janela segura de suspensão',
-    'CONTRAINDICADO — Dois anticoagulantes plenos: risco hemorrágico grave sem benefício adicional',
-    EvidenceLevel.established,
-    {RiskType.hemorrhagic},
-    ['Goodman & Gilman 14ª ed.', 'Micromedex 2024', 'UpToDate 2024']),
-
-  ('apixabana', 'rivaroxabana', InteractionSeverity.major,
-    'Combinação de dois anticoagulantes com mecanismos distintos: efeito anticoagulante aditivo ou sinérgico sem benefício terapêutico adicional comprovado',
-    'Risco hemorrágico grave (intracraniano, GI, retroperitoneal). Sem benefício clínico comprovado da combinação de dois anticoagulantes plenos',
-    'CONTRAINDICADA a combinação de dois anticoagulantes plenos. Em transição terapêutica (ex: heparina → DOAC), seguir protocolo específico com janela segura de suspensão',
-    'CONTRAINDICADO — Dois anticoagulantes plenos: risco hemorrágico grave sem benefício adicional',
-    EvidenceLevel.established,
-    {RiskType.hemorrhagic},
-    ['Goodman & Gilman 14ª ed.', 'Micromedex 2024', 'UpToDate 2024']),
-
-  ('apixabana', 'dabigatrana', InteractionSeverity.major,
-    'Combinação de dois anticoagulantes com mecanismos distintos: efeito anticoagulante aditivo ou sinérgico sem benefício terapêutico adicional comprovado',
-    'Risco hemorrágico grave (intracraniano, GI, retroperitoneal). Sem benefício clínico comprovado da combinação de dois anticoagulantes plenos',
-    'CONTRAINDICADA a combinação de dois anticoagulantes plenos. Em transição terapêutica (ex: heparina → DOAC), seguir protocolo específico com janela segura de suspensão',
-    'CONTRAINDICADO — Dois anticoagulantes plenos: risco hemorrágico grave sem benefício adicional',
-    EvidenceLevel.established,
-    {RiskType.hemorrhagic},
-    ['Goodman & Gilman 14ª ed.', 'Micromedex 2024', 'UpToDate 2024']),
-
-  ('dabigatrana', 'fondaparinux', InteractionSeverity.major,
-    'Combinação de dois anticoagulantes com mecanismos distintos: efeito anticoagulante aditivo ou sinérgico sem benefício terapêutico adicional comprovado',
-    'Risco hemorrágico grave (intracraniano, GI, retroperitoneal). Sem benefício clínico comprovado da combinação de dois anticoagulantes plenos',
-    'CONTRAINDICADA a combinação de dois anticoagulantes plenos. Em transição terapêutica (ex: heparina → DOAC), seguir protocolo específico com janela segura de suspensão',
-    'CONTRAINDICADO — Dois anticoagulantes plenos: risco hemorrágico grave sem benefício adicional',
-    EvidenceLevel.established,
-    {RiskType.hemorrhagic},
-    ['Goodman & Gilman 14ª ed.', 'Micromedex 2024', 'UpToDate 2024']),
-
-  ('dabigatrana', 'heparina', InteractionSeverity.major,
-    'Combinação de dois anticoagulantes com mecanismos distintos: efeito anticoagulante aditivo ou sinérgico sem benefício terapêutico adicional comprovado',
-    'Risco hemorrágico grave (intracraniano, GI, retroperitoneal). Sem benefício clínico comprovado da combinação de dois anticoagulantes plenos',
-    'CONTRAINDICADA a combinação de dois anticoagulantes plenos. Em transição terapêutica (ex: heparina → DOAC), seguir protocolo específico com janela segura de suspensão',
-    'CONTRAINDICADO — Dois anticoagulantes plenos: risco hemorrágico grave sem benefício adicional',
-    EvidenceLevel.established,
-    {RiskType.hemorrhagic},
-    ['Goodman & Gilman 14ª ed.', 'Micromedex 2024', 'UpToDate 2024']),
-
-  ('dabigatrana', 'rivaroxabana', InteractionSeverity.major,
-    'Combinação de dois anticoagulantes com mecanismos distintos: efeito anticoagulante aditivo ou sinérgico sem benefício terapêutico adicional comprovado',
-    'Risco hemorrágico grave (intracraniano, GI, retroperitoneal). Sem benefício clínico comprovado da combinação de dois anticoagulantes plenos',
-    'CONTRAINDICADA a combinação de dois anticoagulantes plenos. Em transição terapêutica (ex: heparina → DOAC), seguir protocolo específico com janela segura de suspensão',
-    'CONTRAINDICADO — Dois anticoagulantes plenos: risco hemorrágico grave sem benefício adicional',
-    EvidenceLevel.established,
-    {RiskType.hemorrhagic},
-    ['Goodman & Gilman 14ª ed.', 'Micromedex 2024', 'UpToDate 2024']),
-
-  ('heparina', 'rivaroxabana', InteractionSeverity.major,
-    'Combinação de dois anticoagulantes com mecanismos distintos: efeito anticoagulante aditivo ou sinérgico sem benefício terapêutico adicional comprovado',
-    'Risco hemorrágico grave (intracraniano, GI, retroperitoneal). Sem benefício clínico comprovado da combinação de dois anticoagulantes plenos',
-    'CONTRAINDICADA a combinação de dois anticoagulantes plenos. Em transição terapêutica (ex: heparina → DOAC), seguir protocolo específico com janela segura de suspensão',
-    'CONTRAINDICADO — Dois anticoagulantes plenos: risco hemorrágico grave sem benefício adicional',
-    EvidenceLevel.established,
-    {RiskType.hemorrhagic},
-    ['Goodman & Gilman 14ª ed.', 'Micromedex 2024', 'UpToDate 2024']),
-
-  ('heparina', 'warfarina', InteractionSeverity.major,
-    'Combinação de dois anticoagulantes com mecanismos distintos: efeito anticoagulante aditivo ou sinérgico sem benefício terapêutico adicional comprovado',
-    'Risco hemorrágico grave (intracraniano, GI, retroperitoneal). Sem benefício clínico comprovado da combinação de dois anticoagulantes plenos',
-    'CONTRAINDICADA a combinação de dois anticoagulantes plenos. Em transição terapêutica (ex: heparina → DOAC), seguir protocolo específico com janela segura de suspensão',
-    'CONTRAINDICADO — Dois anticoagulantes plenos: risco hemorrágico grave sem benefício adicional',
-    EvidenceLevel.established,
-    {RiskType.hemorrhagic},
-    ['Goodman & Gilman 14ª ed.', 'Micromedex 2024', 'UpToDate 2024']),
-
-  ('fondaparinux', 'rivaroxabana', InteractionSeverity.major,
-    'Combinação de dois anticoagulantes com mecanismos distintos: efeito anticoagulante aditivo ou sinérgico sem benefício terapêutico adicional comprovado',
-    'Risco hemorrágico grave (intracraniano, GI, retroperitoneal). Sem benefício clínico comprovado da combinação de dois anticoagulantes plenos',
-    'CONTRAINDICADA a combinação de dois anticoagulantes plenos. Em transição terapêutica (ex: heparina → DOAC), seguir protocolo específico com janela segura de suspensão',
-    'CONTRAINDICADO — Dois anticoagulantes plenos: risco hemorrágico grave sem benefício adicional',
-    EvidenceLevel.established,
-    {RiskType.hemorrhagic},
-    ['Goodman & Gilman 14ª ed.', 'Micromedex 2024', 'UpToDate 2024']),
-
-  ('rivaroxabana', 'warfarina', InteractionSeverity.major,
-    'Combinação de dois anticoagulantes com mecanismos distintos: efeito anticoagulante aditivo ou sinérgico sem benefício terapêutico adicional comprovado',
-    'Risco hemorrágico grave (intracraniano, GI, retroperitoneal). Sem benefício clínico comprovado da combinação de dois anticoagulantes plenos',
-    'CONTRAINDICADA a combinação de dois anticoagulantes plenos. Em transição terapêutica (ex: heparina → DOAC), seguir protocolo específico com janela segura de suspensão',
-    'CONTRAINDICADO — Dois anticoagulantes plenos: risco hemorrágico grave sem benefício adicional',
-    EvidenceLevel.established,
-    {RiskType.hemorrhagic},
-    ['Goodman & Gilman 14ª ed.', 'Micromedex 2024', 'UpToDate 2024']),
-
-  ('aine', 'aspirina', InteractionSeverity.moderate,
-    'Dois inibidores de COX: inibição aditiva de prostaglandinas protetoras da mucosa gástrica e vasodilatadoras renais. Sem benefício analgésico adicional comprovado',
-    'Risco aumentado de sangramento GI, úlcera péptica e lesão renal aguda por efeito aditivo na inibição de prostaglandinas',
-    'EVITAR combinação de dois AINEs. Usar dose mínima efetiva de um único AINE. Adicionar protetor gástrico (IBP) se uso inevitável. Monitorar função renal e sinais de sangramento GI',
-    'EVITAR DOIS AINEs — Risco hemorrágico e nefrotóxico aditivo; usar apenas um AINE',
-    EvidenceLevel.established,
-    {RiskType.hemorrhagic, RiskType.nephrotoxicity},
-    ['Goodman & Gilman 14ª ed.', 'Micromedex 2024']),
 
   ('aine', 'ibuprofeno', InteractionSeverity.moderate,
     'Dois inibidores de COX: inibição aditiva de prostaglandinas protetoras da mucosa gástrica e vasodilatadoras renais. Sem benefício analgésico adicional comprovado',
@@ -5967,6 +6240,7 @@ const _interactionDB = <_IxEntry>[
     {RiskType.hemorrhagic, RiskType.nephrotoxicity},
     ['Goodman & Gilman 14ª ed.', 'Micromedex 2024']),
 
+
   ('aine', 'naproxeno', InteractionSeverity.moderate,
     'Dois inibidores de COX: inibição aditiva de prostaglandinas protetoras da mucosa gástrica e vasodilatadoras renais. Sem benefício analgésico adicional comprovado',
     'Risco aumentado de sangramento GI, úlcera péptica e lesão renal aguda por efeito aditivo na inibição de prostaglandinas',
@@ -5975,6 +6249,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.hemorrhagic, RiskType.nephrotoxicity},
     ['Goodman & Gilman 14ª ed.', 'Micromedex 2024']),
+
 
   ('aine', 'cetorolaco', InteractionSeverity.moderate,
     'Dois inibidores de COX: inibição aditiva de prostaglandinas protetoras da mucosa gástrica e vasodilatadoras renais. Sem benefício analgésico adicional comprovado',
@@ -5985,6 +6260,7 @@ const _interactionDB = <_IxEntry>[
     {RiskType.hemorrhagic, RiskType.nephrotoxicity},
     ['Goodman & Gilman 14ª ed.', 'Micromedex 2024']),
 
+
   ('aspirina', 'ibuprofeno', InteractionSeverity.major,
     'Ibuprofeno compete com aspirina pelo sítio de ligação irreversível na COX-1 plaquetária, bloqueando o acesso da aspirina e anulando seu efeito antiagregante',
     'Perda do efeito cardioprotetor da aspirina. Risco hemorrágico GI aditivo por inibição de prostaglandinas protetoras da mucosa',
@@ -5993,6 +6269,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.hemorrhagic},
     ['Goodman & Gilman 14ª ed.', 'Micromedex 2024', 'UpToDate 2024']),
+
 
   ('aspirina', 'naproxeno', InteractionSeverity.moderate,
     'Dois inibidores de COX: inibição aditiva de prostaglandinas protetoras da mucosa gástrica e vasodilatadoras renais. Sem benefício analgésico adicional comprovado',
@@ -6003,6 +6280,7 @@ const _interactionDB = <_IxEntry>[
     {RiskType.hemorrhagic, RiskType.nephrotoxicity},
     ['Goodman & Gilman 14ª ed.', 'Micromedex 2024']),
 
+
   ('aspirina', 'cetorolaco', InteractionSeverity.moderate,
     'Dois inibidores de COX: inibição aditiva de prostaglandinas protetoras da mucosa gástrica e vasodilatadoras renais. Sem benefício analgésico adicional comprovado',
     'Risco aumentado de sangramento GI, úlcera péptica e lesão renal aguda por efeito aditivo na inibição de prostaglandinas',
@@ -6011,6 +6289,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.hemorrhagic, RiskType.nephrotoxicity},
     ['Goodman & Gilman 14ª ed.', 'Micromedex 2024']),
+
 
   ('aspirina', 'clonixinato', InteractionSeverity.moderate,
     'Dois inibidores de COX: inibição aditiva de prostaglandinas protetoras da mucosa gástrica e vasodilatadoras renais. Sem benefício analgésico adicional comprovado',
@@ -6021,6 +6300,7 @@ const _interactionDB = <_IxEntry>[
     {RiskType.hemorrhagic, RiskType.nephrotoxicity},
     ['Goodman & Gilman 14ª ed.', 'Micromedex 2024']),
 
+
   ('cetorolaco', 'ibuprofeno', InteractionSeverity.moderate,
     'Dois inibidores de COX: inibição aditiva de prostaglandinas protetoras da mucosa gástrica e vasodilatadoras renais. Sem benefício analgésico adicional comprovado',
     'Risco aumentado de sangramento GI, úlcera péptica e lesão renal aguda por efeito aditivo na inibição de prostaglandinas',
@@ -6029,6 +6309,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.hemorrhagic, RiskType.nephrotoxicity},
     ['Goodman & Gilman 14ª ed.', 'Micromedex 2024']),
+
 
   ('cetorolaco', 'naproxeno', InteractionSeverity.moderate,
     'Dois inibidores de COX: inibição aditiva de prostaglandinas protetoras da mucosa gástrica e vasodilatadoras renais. Sem benefício analgésico adicional comprovado',
@@ -6039,6 +6320,7 @@ const _interactionDB = <_IxEntry>[
     {RiskType.hemorrhagic, RiskType.nephrotoxicity},
     ['Goodman & Gilman 14ª ed.', 'Micromedex 2024']),
 
+
   ('cetorolaco', 'clonixinato', InteractionSeverity.moderate,
     'Dois inibidores de COX: inibição aditiva de prostaglandinas protetoras da mucosa gástrica e vasodilatadoras renais. Sem benefício analgésico adicional comprovado',
     'Risco aumentado de sangramento GI, úlcera péptica e lesão renal aguda por efeito aditivo na inibição de prostaglandinas',
@@ -6047,6 +6329,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.hemorrhagic, RiskType.nephrotoxicity},
     ['Goodman & Gilman 14ª ed.', 'Micromedex 2024']),
+
 
   ('ibuprofeno', 'naproxeno', InteractionSeverity.moderate,
     'Dois inibidores de COX: inibição aditiva de prostaglandinas protetoras da mucosa gástrica e vasodilatadoras renais. Sem benefício analgésico adicional comprovado',
@@ -6057,6 +6340,7 @@ const _interactionDB = <_IxEntry>[
     {RiskType.hemorrhagic, RiskType.nephrotoxicity},
     ['Goodman & Gilman 14ª ed.', 'Micromedex 2024']),
 
+
   ('clonixinato', 'naproxeno', InteractionSeverity.moderate,
     'Dois inibidores de COX: inibição aditiva de prostaglandinas protetoras da mucosa gástrica e vasodilatadoras renais. Sem benefício analgésico adicional comprovado',
     'Risco aumentado de sangramento GI, úlcera péptica e lesão renal aguda por efeito aditivo na inibição de prostaglandinas',
@@ -6065,6 +6349,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.hemorrhagic, RiskType.nephrotoxicity},
     ['Goodman & Gilman 14ª ed.', 'Micromedex 2024']),
+
 
   ('clonixinato', 'ibuprofeno', InteractionSeverity.moderate,
     'Dois inibidores de COX: inibição aditiva de prostaglandinas protetoras da mucosa gástrica e vasodilatadoras renais. Sem benefício analgésico adicional comprovado',
@@ -6075,6 +6360,7 @@ const _interactionDB = <_IxEntry>[
     {RiskType.hemorrhagic, RiskType.nephrotoxicity},
     ['Goodman & Gilman 14ª ed.', 'Micromedex 2024']),
 
+
   ('amiodarona', 'dronedarona', InteractionSeverity.contraindicated,
     'Dronedarona é contraindicada com amiodarona: ambas prolongam QTc por bloqueio de canais IKr. Risco de Torsade de Pointes e fibrilação ventricular',
     'Torsade de Pointes, fibrilação ventricular, morte súbita cardíaca',
@@ -6084,14 +6370,6 @@ const _interactionDB = <_IxEntry>[
     {RiskType.qtProlongation, RiskType.arrhythmia},
     ['Goodman & Gilman 14ª ed.', 'Micromedex 2024', 'UpToDate 2024']),
 
-  ('amiodarona', 'diltiazem', InteractionSeverity.major,
-    'Dois antiarrítmicos com mecanismos sobrepostos: prolongamento aditivo do QTc e/ou efeito dromotrópico negativo aditivo',
-    'Bradicardia, bloqueio AV, Torsade de Pointes, síncope, morte súbita',
-    'Evitar combinação. Se necessário, monitorar ECG continuamente e QTc. Suspender se QTc > 500ms ou FC < 50bpm',
-    'ARRITMIA GRAVE — QTc aditivo; monitorar ECG; suspender se QTc > 500ms ou FC < 50bpm',
-    EvidenceLevel.established,
-    {RiskType.qtProlongation, RiskType.arrhythmia},
-    ['Goodman & Gilman 14ª ed.', 'Micromedex 2024', 'UpToDate 2024']),
 
   ('amiodarona', 'verapamil', InteractionSeverity.major,
     'Dois antiarrítmicos com mecanismos sobrepostos: prolongamento aditivo do QTc e/ou efeito dromotrópico negativo aditivo',
@@ -6102,6 +6380,7 @@ const _interactionDB = <_IxEntry>[
     {RiskType.qtProlongation, RiskType.arrhythmia},
     ['Goodman & Gilman 14ª ed.', 'Micromedex 2024', 'UpToDate 2024']),
 
+
   ('amiodarona', 'ivabradina', InteractionSeverity.major,
     'Ivabradina reduz FC por bloqueio dos canais If no nó sinusal. Combinada com antiarrítmico bradicardizante: bradicardia grave aditiva',
     'Bradicardia sintomática grave, bloqueio AV, síncope',
@@ -6110,6 +6389,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.arrhythmia},
     ['Goodman & Gilman 14ª ed.', 'Micromedex 2024']),
+
 
   ('diltiazem', 'verapamil', InteractionSeverity.contraindicated,
     'Dois BCCs não-diidropiridínicos com efeito dromotrópico e cronotrópico negativo aditivo. Inibição aditiva do nó AV',
@@ -6120,14 +6400,6 @@ const _interactionDB = <_IxEntry>[
     {RiskType.arrhythmia},
     ['Goodman & Gilman 14ª ed.', 'Micromedex 2024', 'UpToDate 2024']),
 
-  ('diltiazem', 'dronedarona', InteractionSeverity.major,
-    'Dois antiarrítmicos com mecanismos sobrepostos: prolongamento aditivo do QTc e/ou efeito dromotrópico negativo aditivo',
-    'Bradicardia, bloqueio AV, Torsade de Pointes, síncope, morte súbita',
-    'Evitar combinação. Se necessário, monitorar ECG continuamente e QTc. Suspender se QTc > 500ms ou FC < 50bpm',
-    'ARRITMIA GRAVE — QTc aditivo; monitorar ECG; suspender se QTc > 500ms ou FC < 50bpm',
-    EvidenceLevel.established,
-    {RiskType.qtProlongation, RiskType.arrhythmia},
-    ['Goodman & Gilman 14ª ed.', 'Micromedex 2024', 'UpToDate 2024']),
 
   ('diltiazem', 'sotalol', InteractionSeverity.major,
     'Sotalol prolonga QTc por bloqueio IKr. Combinado com outro antiarrítmico com mesma ação: prolongamento QTc aditivo',
@@ -6138,6 +6410,7 @@ const _interactionDB = <_IxEntry>[
     {RiskType.qtProlongation, RiskType.arrhythmia},
     ['Goodman & Gilman 14ª ed.', 'Micromedex 2024', 'UpToDate 2024']),
 
+
   ('dronedarona', 'sotalol', InteractionSeverity.major,
     'Sotalol prolonga QTc por bloqueio IKr. Combinado com outro antiarrítmico com mesma ação: prolongamento QTc aditivo',
     'Torsade de Pointes, fibrilação ventricular, síncope cardíaca',
@@ -6146,6 +6419,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.qtProlongation, RiskType.arrhythmia},
     ['Goodman & Gilman 14ª ed.', 'Micromedex 2024', 'UpToDate 2024']),
+
 
   ('dronedarona', 'verapamil', InteractionSeverity.major,
     'Dois antiarrítmicos com mecanismos sobrepostos: prolongamento aditivo do QTc e/ou efeito dromotrópico negativo aditivo',
@@ -6156,6 +6430,7 @@ const _interactionDB = <_IxEntry>[
     {RiskType.qtProlongation, RiskType.arrhythmia},
     ['Goodman & Gilman 14ª ed.', 'Micromedex 2024', 'UpToDate 2024']),
 
+
   ('dronedarona', 'ivabradina', InteractionSeverity.major,
     'Ivabradina reduz FC por bloqueio dos canais If no nó sinusal. Combinada com antiarrítmico bradicardizante: bradicardia grave aditiva',
     'Bradicardia sintomática grave, bloqueio AV, síncope',
@@ -6164,6 +6439,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.arrhythmia},
     ['Goodman & Gilman 14ª ed.', 'Micromedex 2024']),
+
 
   ('ivabradina', 'sotalol', InteractionSeverity.major,
     'Sotalol prolonga QTc por bloqueio IKr. Combinado com outro antiarrítmico com mesma ação: prolongamento QTc aditivo',
@@ -6174,6 +6450,7 @@ const _interactionDB = <_IxEntry>[
     {RiskType.qtProlongation, RiskType.arrhythmia},
     ['Goodman & Gilman 14ª ed.', 'Micromedex 2024', 'UpToDate 2024']),
 
+
   ('sotalol', 'verapamil', InteractionSeverity.major,
     'Sotalol prolonga QTc por bloqueio IKr. Combinado com outro antiarrítmico com mesma ação: prolongamento QTc aditivo',
     'Torsade de Pointes, fibrilação ventricular, síncope cardíaca',
@@ -6182,6 +6459,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.qtProlongation, RiskType.arrhythmia},
     ['Goodman & Gilman 14ª ed.', 'Micromedex 2024', 'UpToDate 2024']),
+
 
   ('betabloqueador', 'metoprolol', InteractionSeverity.major,
     'Dois betabloqueadores: bloqueio aditivo de receptores β1 com efeito cronotrópico e inotrópico negativo aditivo',
@@ -6192,6 +6470,7 @@ const _interactionDB = <_IxEntry>[
     {RiskType.arrhythmia},
     ['Goodman & Gilman 14ª ed.', 'Micromedex 2024']),
 
+
   ('betabloqueador', 'propranolol', InteractionSeverity.major,
     'Dois betabloqueadores: bloqueio aditivo de receptores β1 com efeito cronotrópico e inotrópico negativo aditivo',
     'Bradicardia grave, bloqueio AV 2º/3º grau, broncoespasmo, hipotensão, choque cardiogênico',
@@ -6200,6 +6479,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.arrhythmia},
     ['Goodman & Gilman 14ª ed.', 'Micromedex 2024']),
+
 
   ('betabloqueador', 'esmolol', InteractionSeverity.major,
     'Dois betabloqueadores: bloqueio aditivo de receptores β1 com efeito cronotrópico e inotrópico negativo aditivo',
@@ -6210,6 +6490,7 @@ const _interactionDB = <_IxEntry>[
     {RiskType.arrhythmia},
     ['Goodman & Gilman 14ª ed.', 'Micromedex 2024']),
 
+
   ('betabloqueador', 'labetalol', InteractionSeverity.major,
     'Dois betabloqueadores: bloqueio aditivo de receptores β1 com efeito cronotrópico e inotrópico negativo aditivo',
     'Bradicardia grave, bloqueio AV 2º/3º grau, broncoespasmo, hipotensão, choque cardiogênico',
@@ -6218,6 +6499,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.arrhythmia},
     ['Goodman & Gilman 14ª ed.', 'Micromedex 2024']),
+
 
   ('esmolol', 'metoprolol', InteractionSeverity.major,
     'Dois betabloqueadores: bloqueio aditivo de receptores β1 com efeito cronotrópico e inotrópico negativo aditivo',
@@ -6228,6 +6510,7 @@ const _interactionDB = <_IxEntry>[
     {RiskType.arrhythmia},
     ['Goodman & Gilman 14ª ed.', 'Micromedex 2024']),
 
+
   ('esmolol', 'propranolol', InteractionSeverity.major,
     'Dois betabloqueadores: bloqueio aditivo de receptores β1 com efeito cronotrópico e inotrópico negativo aditivo',
     'Bradicardia grave, bloqueio AV 2º/3º grau, broncoespasmo, hipotensão, choque cardiogênico',
@@ -6236,6 +6519,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.arrhythmia},
     ['Goodman & Gilman 14ª ed.', 'Micromedex 2024']),
+
 
   ('esmolol', 'labetalol', InteractionSeverity.major,
     'Dois betabloqueadores: bloqueio aditivo de receptores β1 com efeito cronotrópico e inotrópico negativo aditivo',
@@ -6246,6 +6530,7 @@ const _interactionDB = <_IxEntry>[
     {RiskType.arrhythmia},
     ['Goodman & Gilman 14ª ed.', 'Micromedex 2024']),
 
+
   ('labetalol', 'metoprolol', InteractionSeverity.major,
     'Dois betabloqueadores: bloqueio aditivo de receptores β1 com efeito cronotrópico e inotrópico negativo aditivo',
     'Bradicardia grave, bloqueio AV 2º/3º grau, broncoespasmo, hipotensão, choque cardiogênico',
@@ -6254,6 +6539,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.arrhythmia},
     ['Goodman & Gilman 14ª ed.', 'Micromedex 2024']),
+
 
   ('labetalol', 'propranolol', InteractionSeverity.major,
     'Dois betabloqueadores: bloqueio aditivo de receptores β1 com efeito cronotrópico e inotrópico negativo aditivo',
@@ -6264,6 +6550,7 @@ const _interactionDB = <_IxEntry>[
     {RiskType.arrhythmia},
     ['Goodman & Gilman 14ª ed.', 'Micromedex 2024']),
 
+
   ('metoprolol', 'propranolol', InteractionSeverity.major,
     'Dois betabloqueadores: bloqueio aditivo de receptores β1 com efeito cronotrópico e inotrópico negativo aditivo',
     'Bradicardia grave, bloqueio AV 2º/3º grau, broncoespasmo, hipotensão, choque cardiogênico',
@@ -6273,32 +6560,6 @@ const _interactionDB = <_IxEntry>[
     {RiskType.arrhythmia},
     ['Goodman & Gilman 14ª ed.', 'Micromedex 2024']),
 
-  ('carbamazepina', 'lamotrigina', InteractionSeverity.major,
-    'Indutores de UGT1A4 (carbamazepina, fenitoína, fenobarbital) aumentam glucuronidação da lamotrigina, reduzindo meia-vida em 50%',
-    'Falha antiepiléptica por níveis insuficientes de lamotrigina',
-    'Aumentar dose de lamotrigina em 50-100% quando combinada com indutor. Monitorar nível sérico e eficácia clínica',
-    'LAMOTRIGINA REDUZIDA 50% — Indutores aceleram glucuronidação; aumentar dose de lamotrigina',
-    EvidenceLevel.established,
-    {RiskType.plasmaLevel},
-    ['Goodman & Gilman 14ª ed.', 'Micromedex 2024', 'UpToDate 2024']),
-
-  ('carbamazepina', 'topiramato', InteractionSeverity.moderate,
-    'Combinação de dois antiepiléticos com potencial interação farmacocinética (indução/inibição enzimática) ou farmacodinâmica (sedação aditiva)',
-    'Alteração nos níveis séricos de um ou ambos os fármacos, sedação excessiva, tontura, ataxia',
-    'Monitorar níveis séricos dos antiepiléticos envolvidos. Ajustar doses com base em resposta clínica e nível sérico. Considerar titulação mais lenta',
-    'MONITORAR NÍVEIS SÉRICOS — Antiepiléticos com interação farmacocinética; ajustar doses conforme nível',
-    EvidenceLevel.probable,
-    {RiskType.plasmaLevel},
-    ['Goodman & Gilman 14ª ed.', 'Micromedex 2024']),
-
-  ('carbamazepina', 'valproato', InteractionSeverity.major,
-    'Indutores de CYP2C9/UGT (carbamazepina, fenitoína, fenobarbital) aumentam metabolismo do valproato, reduzindo seus níveis séricos em 40-60%',
-    'Falha terapêutica do valproato (convulsões de escape), potencial toxicidade do antiepilético indutor por acumulação de metabólitos',
-    'Monitorar nível sérico de valproato. Aumentar dose de valproato em 30-50% ou trocar combinação. Reavaliar após 2 semanas',
-    'NÍVEL DE VALPROATO REDUZIDO — Indutor reduz valproato 40-60%; monitorar nível sérico; ajustar dose',
-    EvidenceLevel.established,
-    {RiskType.plasmaLevel},
-    ['Goodman & Gilman 14ª ed.', 'Micromedex 2024', 'UpToDate 2024']),
 
   ('carbamazepina', 'gabapentina', InteractionSeverity.moderate,
     'Combinação de dois antiepiléticos com potencial interação farmacocinética (indução/inibição enzimática) ou farmacodinâmica (sedação aditiva)',
@@ -6309,23 +6570,6 @@ const _interactionDB = <_IxEntry>[
     {RiskType.plasmaLevel},
     ['Goodman & Gilman 14ª ed.', 'Micromedex 2024']),
 
-  ('fenitoína', 'valproato', InteractionSeverity.major,
-    'Indutores de CYP2C9/UGT (carbamazepina, fenitoína, fenobarbital) aumentam metabolismo do valproato, reduzindo seus níveis séricos em 40-60%',
-    'Falha terapêutica do valproato (convulsões de escape), potencial toxicidade do antiepilético indutor por acumulação de metabólitos',
-    'Monitorar nível sérico de valproato. Aumentar dose de valproato em 30-50% ou trocar combinação. Reavaliar após 2 semanas',
-    'NÍVEL DE VALPROATO REDUZIDO — Indutor reduz valproato 40-60%; monitorar nível sérico; ajustar dose',
-    EvidenceLevel.established,
-    {RiskType.plasmaLevel},
-    ['Goodman & Gilman 14ª ed.', 'Micromedex 2024', 'UpToDate 2024']),
-
-  ('fenitoína', 'fenobarbital', InteractionSeverity.moderate,
-    'Combinação de dois antiepiléticos com potencial interação farmacocinética (indução/inibição enzimática) ou farmacodinâmica (sedação aditiva)',
-    'Alteração nos níveis séricos de um ou ambos os fármacos, sedação excessiva, tontura, ataxia',
-    'Monitorar níveis séricos dos antiepiléticos envolvidos. Ajustar doses com base em resposta clínica e nível sérico. Considerar titulação mais lenta',
-    'MONITORAR NÍVEIS SÉRICOS — Antiepiléticos com interação farmacocinética; ajustar doses conforme nível',
-    EvidenceLevel.probable,
-    {RiskType.plasmaLevel},
-    ['Goodman & Gilman 14ª ed.', 'Micromedex 2024']),
 
   ('fenitoína', 'gabapentina', InteractionSeverity.moderate,
     'Combinação de dois antiepiléticos com potencial interação farmacocinética (indução/inibição enzimática) ou farmacodinâmica (sedação aditiva)',
@@ -6336,6 +6580,7 @@ const _interactionDB = <_IxEntry>[
     {RiskType.plasmaLevel},
     ['Goodman & Gilman 14ª ed.', 'Micromedex 2024']),
 
+
   ('fenitoína', 'topiramato', InteractionSeverity.moderate,
     'Combinação de dois antiepiléticos com potencial interação farmacocinética (indução/inibição enzimática) ou farmacodinâmica (sedação aditiva)',
     'Alteração nos níveis séricos de um ou ambos os fármacos, sedação excessiva, tontura, ataxia',
@@ -6344,6 +6589,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.probable,
     {RiskType.plasmaLevel},
     ['Goodman & Gilman 14ª ed.', 'Micromedex 2024']),
+
 
   ('fenitoína', 'perampanel', InteractionSeverity.major,
     'Fortes indutores de CYP3A4 reduzem exposição ao perampanel em 50-67%, comprometendo eficácia antiepiléptica',
@@ -6354,23 +6600,6 @@ const _interactionDB = <_IxEntry>[
     {RiskType.plasmaLevel},
     ['Micromedex 2024', 'UpToDate 2024']),
 
-  ('fenobarbital', 'valproato', InteractionSeverity.major,
-    'Indutores de CYP2C9/UGT (carbamazepina, fenitoína, fenobarbital) aumentam metabolismo do valproato, reduzindo seus níveis séricos em 40-60%',
-    'Falha terapêutica do valproato (convulsões de escape), potencial toxicidade do antiepilético indutor por acumulação de metabólitos',
-    'Monitorar nível sérico de valproato. Aumentar dose de valproato em 30-50% ou trocar combinação. Reavaliar após 2 semanas',
-    'NÍVEL DE VALPROATO REDUZIDO — Indutor reduz valproato 40-60%; monitorar nível sérico; ajustar dose',
-    EvidenceLevel.established,
-    {RiskType.plasmaLevel},
-    ['Goodman & Gilman 14ª ed.', 'Micromedex 2024', 'UpToDate 2024']),
-
-  ('fenobarbital', 'lamotrigina', InteractionSeverity.major,
-    'Indutores de UGT1A4 (carbamazepina, fenitoína, fenobarbital) aumentam glucuronidação da lamotrigina, reduzindo meia-vida em 50%',
-    'Falha antiepiléptica por níveis insuficientes de lamotrigina',
-    'Aumentar dose de lamotrigina em 50-100% quando combinada com indutor. Monitorar nível sérico e eficácia clínica',
-    'LAMOTRIGINA REDUZIDA 50% — Indutores aceleram glucuronidação; aumentar dose de lamotrigina',
-    EvidenceLevel.established,
-    {RiskType.plasmaLevel},
-    ['Goodman & Gilman 14ª ed.', 'Micromedex 2024', 'UpToDate 2024']),
 
   ('fenobarbital', 'topiramato', InteractionSeverity.moderate,
     'Combinação de dois antiepiléticos com potencial interação farmacocinética (indução/inibição enzimática) ou farmacodinâmica (sedação aditiva)',
@@ -6381,6 +6610,7 @@ const _interactionDB = <_IxEntry>[
     {RiskType.plasmaLevel},
     ['Goodman & Gilman 14ª ed.', 'Micromedex 2024']),
 
+
   ('fenobarbital', 'perampanel', InteractionSeverity.major,
     'Fortes indutores de CYP3A4 reduzem exposição ao perampanel em 50-67%, comprometendo eficácia antiepiléptica',
     'Falha terapêutica do perampanel com escape de convulsões',
@@ -6389,6 +6619,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.plasmaLevel},
     ['Micromedex 2024', 'UpToDate 2024']),
+
 
   ('fenobarbital', 'gabapentina', InteractionSeverity.moderate,
     'Combinação de dois antiepiléticos com potencial interação farmacocinética (indução/inibição enzimática) ou farmacodinâmica (sedação aditiva)',
@@ -6399,14 +6630,6 @@ const _interactionDB = <_IxEntry>[
     {RiskType.plasmaLevel},
     ['Goodman & Gilman 14ª ed.', 'Micromedex 2024']),
 
-  ('lamotrigina', 'valproato', InteractionSeverity.major,
-    'Valproato inibe glucuronidação da lamotrigina (UGT1A4), aumentando meia-vida da lamotrigina de 25h para 59h (134% de aumento)',
-    'Toxicidade por lamotrigina: erupção cutânea grave (Síndrome de Stevens-Johnson), ataxia, diplopia, tontura em doses usuais',
-    'Reduzir dose de lamotrigina em 50% quando combinada com valproato. Titulação extremamente lenta (aumentos de 25mg a cada 2 semanas)',
-    'TOXICIDADE DE LAMOTRIGINA — Valproato dobra meia-vida da lamotrigina; reduzir dose em 50%',
-    EvidenceLevel.established,
-    {RiskType.plasmaLevel},
-    ['Goodman & Gilman 14ª ed.', 'Micromedex 2024', 'UpToDate 2024']),
 
   ('lamotrigina', 'topiramato', InteractionSeverity.moderate,
     'Combinação de dois antiepiléticos com potencial interação farmacocinética (indução/inibição enzimática) ou farmacodinâmica (sedação aditiva)',
@@ -6417,6 +6640,7 @@ const _interactionDB = <_IxEntry>[
     {RiskType.plasmaLevel},
     ['Goodman & Gilman 14ª ed.', 'Micromedex 2024']),
 
+
   ('lamotrigina', 'perampanel', InteractionSeverity.moderate,
     'Combinação de dois antiepiléticos com potencial interação farmacocinética (indução/inibição enzimática) ou farmacodinâmica (sedação aditiva)',
     'Alteração nos níveis séricos de um ou ambos os fármacos, sedação excessiva, tontura, ataxia',
@@ -6426,23 +6650,6 @@ const _interactionDB = <_IxEntry>[
     {RiskType.plasmaLevel},
     ['Goodman & Gilman 14ª ed.', 'Micromedex 2024']),
 
-  ('topiramato', 'valproato', InteractionSeverity.moderate,
-    'Combinação de dois antiepiléticos com potencial interação farmacocinética (indução/inibição enzimática) ou farmacodinâmica (sedação aditiva)',
-    'Alteração nos níveis séricos de um ou ambos os fármacos, sedação excessiva, tontura, ataxia',
-    'Monitorar níveis séricos dos antiepiléticos envolvidos. Ajustar doses com base em resposta clínica e nível sérico. Considerar titulação mais lenta',
-    'MONITORAR NÍVEIS SÉRICOS — Antiepiléticos com interação farmacocinética; ajustar doses conforme nível',
-    EvidenceLevel.probable,
-    {RiskType.plasmaLevel},
-    ['Goodman & Gilman 14ª ed.', 'Micromedex 2024']),
-
-  ('perampanel', 'valproato', InteractionSeverity.moderate,
-    'Combinação de dois antiepiléticos com potencial interação farmacocinética (indução/inibição enzimática) ou farmacodinâmica (sedação aditiva)',
-    'Alteração nos níveis séricos de um ou ambos os fármacos, sedação excessiva, tontura, ataxia',
-    'Monitorar níveis séricos dos antiepiléticos envolvidos. Ajustar doses com base em resposta clínica e nível sérico. Considerar titulação mais lenta',
-    'MONITORAR NÍVEIS SÉRICOS — Antiepiléticos com interação farmacocinética; ajustar doses conforme nível',
-    EvidenceLevel.probable,
-    {RiskType.plasmaLevel},
-    ['Goodman & Gilman 14ª ed.', 'Micromedex 2024']),
 
   ('perampanel', 'topiramato', InteractionSeverity.moderate,
     'Combinação de dois antiepiléticos com potencial interação farmacocinética (indução/inibição enzimática) ou farmacodinâmica (sedação aditiva)',
@@ -6453,6 +6660,7 @@ const _interactionDB = <_IxEntry>[
     {RiskType.plasmaLevel},
     ['Goodman & Gilman 14ª ed.', 'Micromedex 2024']),
 
+
   ('gabapentina', 'valproato', InteractionSeverity.moderate,
     'Combinação de dois antiepiléticos com potencial interação farmacocinética (indução/inibição enzimática) ou farmacodinâmica (sedação aditiva)',
     'Alteração nos níveis séricos de um ou ambos os fármacos, sedação excessiva, tontura, ataxia',
@@ -6461,6 +6669,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.probable,
     {RiskType.plasmaLevel},
     ['Goodman & Gilman 14ª ed.', 'Micromedex 2024']),
+
 
   ('gabapentina', 'lamotrigina', InteractionSeverity.moderate,
     'Combinação de dois antiepiléticos com potencial interação farmacocinética (indução/inibição enzimática) ou farmacodinâmica (sedação aditiva)',
@@ -6471,6 +6680,7 @@ const _interactionDB = <_IxEntry>[
     {RiskType.plasmaLevel},
     ['Goodman & Gilman 14ª ed.', 'Micromedex 2024']),
 
+
   ('gabapentina', 'perampanel', InteractionSeverity.moderate,
     'Combinação de dois antiepiléticos com potencial interação farmacocinética (indução/inibição enzimática) ou farmacodinâmica (sedação aditiva)',
     'Alteração nos níveis séricos de um ou ambos os fármacos, sedação excessiva, tontura, ataxia',
@@ -6480,43 +6690,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.plasmaLevel},
     ['Goodman & Gilman 14ª ed.', 'Micromedex 2024']),
 
-  ('amitriptilina', 'ssri', InteractionSeverity.major,
-    'Fluoxetina/SSRIs inibem CYP2D6 aumentando nível de amitriptilina em 2-4x. Efeitos serotoninérgicos aditivos. Amitriptilina prolonga QTc',
-    'Toxicidade tricíclica (arritmias, delirium anticolinérgico), síndrome serotoninérgica moderada, prolongamento QTc',
-    'Monitorar nível sérico de amitriptilina. Reduzir dose de amitriptilina em 50%. Monitorar ECG (QTc). Preferir ISRS com menor inibição de CYP2D6',
-    'TOXICIDADE TRICÍCLICA + QTc — SSRI inibe CYP2D6; reduzir amitriptilina 50%; monitorar ECG',
-    EvidenceLevel.established,
-    {RiskType.serotonin, RiskType.qtProlongation, RiskType.plasmaLevel},
-    ['Goodman & Gilman 14ª ed.', 'Micromedex 2024', 'UpToDate 2024']),
 
-  ('amitriptilina', 'mirtazapina', InteractionSeverity.moderate,
-    'Dois antidepressivos com mecanismos serotoninérgicos sobrepostos ou interações farmacocinéticas via CYP2D6',
-    'Síndrome serotoninérgica leve a moderada, sedação excessiva, alteração de níveis séricos',
-    'Monitorar sinais de síndrome serotoninérgica. Iniciar segundo antidepressivo em dose baixa. Preferir combinações com menor sobreposição serotoninérgica',
-    'SÍNDROME SEROTONINÉRGICA — Dois antidepressivos; iniciar em dose baixa; monitorar sintomas',
-    EvidenceLevel.probable,
-    {RiskType.serotonin},
-    ['Goodman & Gilman 14ª ed.', 'Micromedex 2024']),
-
-  ('amitriptilina', 'imao_reversivel', InteractionSeverity.contraindicated,
-    'IMAO inibe degradação de serotonina/noradrenalina. Antidepressivo adiciona liberação ou inibição de recaptação: acúmulo massivo de serotonina',
-    'Síndrome serotoninérgica: agitação, hipertermia, mioclonias, rigidez, convulsões, colapso cardiovascular, morte',
-    'CONTRAINDICAÇÃO ABSOLUTA. Respeitar washout de 14 dias entre IMAO e qualquer antidepressivo (21 dias para fluoxetina). Tratamento de emergência: ciproheptadina + suporte',
-    'CONTRAINDICADO — Síndrome serotoninérgica letal; washout 14 dias (21 dias para fluoxetina)',
-    EvidenceLevel.established,
-    {RiskType.serotonin},
-    ['Goodman & Gilman 14ª ed.', 'Micromedex 2024', 'UpToDate 2024']),
-
-  ('amitriptilina', 'bupropiona', InteractionSeverity.moderate,
-    'Dois antidepressivos com mecanismos serotoninérgicos sobrepostos ou interações farmacocinéticas via CYP2D6',
-    'Síndrome serotoninérgica leve a moderada, sedação excessiva, alteração de níveis séricos',
-    'Monitorar sinais de síndrome serotoninérgica. Iniciar segundo antidepressivo em dose baixa. Preferir combinações com menor sobreposição serotoninérgica',
-    'SÍNDROME SEROTONINÉRGICA — Dois antidepressivos; iniciar em dose baixa; monitorar sintomas',
-    EvidenceLevel.probable,
-    {RiskType.serotonin},
-    ['Goodman & Gilman 14ª ed.', 'Micromedex 2024']),
-
-  ('fluoxetina', 'ssri', InteractionSeverity.contraindicated,
+  ('fluoxetina', 'isrs', InteractionSeverity.contraindicated,
     'Dois SSRIs: inibição aditiva do transportador SERT com acúmulo excessivo de serotonina sináptica',
     'Síndrome serotoninérgica, hiperreflexia, mioclonias, agitação, hipertermia',
     'CONTRAINDICADO. Usar apenas um SSRI. Em troca de SSRI, respeitar washout adequado (5 meias-vidas)',
@@ -6524,6 +6699,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.serotonin},
     ['Goodman & Gilman 14ª ed.', 'Micromedex 2024']),
+
 
   ('fluoxetina', 'mirtazapina', InteractionSeverity.moderate,
     'Dois antidepressivos com mecanismos serotoninérgicos sobrepostos ou interações farmacocinéticas via CYP2D6',
@@ -6534,7 +6710,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.serotonin},
     ['Goodman & Gilman 14ª ed.', 'Micromedex 2024']),
 
-  ('fluoxetina', 'imao_reversivel', InteractionSeverity.contraindicated,
+
+  ('fluoxetina', 'imao reversivel', InteractionSeverity.contraindicated,
     'IMAO inibe degradação de serotonina/noradrenalina. Antidepressivo adiciona liberação ou inibição de recaptação: acúmulo massivo de serotonina',
     'Síndrome serotoninérgica: agitação, hipertermia, mioclonias, rigidez, convulsões, colapso cardiovascular, morte',
     'CONTRAINDICAÇÃO ABSOLUTA. Respeitar washout de 14 dias entre IMAO e qualquer antidepressivo (21 dias para fluoxetina). Tratamento de emergência: ciproheptadina + suporte',
@@ -6543,7 +6720,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.serotonin},
     ['Goodman & Gilman 14ª ed.', 'Micromedex 2024', 'UpToDate 2024']),
 
-  ('bupropiona', 'mirtazapina', InteractionSeverity.moderate,
+
+  ('imao', 'imao reversivel', InteractionSeverity.moderate,
     'Dois antidepressivos com mecanismos serotoninérgicos sobrepostos ou interações farmacocinéticas via CYP2D6',
     'Síndrome serotoninérgica leve a moderada, sedação excessiva, alteração de níveis séricos',
     'Monitorar sinais de síndrome serotoninérgica. Iniciar segundo antidepressivo em dose baixa. Preferir combinações com menor sobreposição serotoninérgica',
@@ -6552,7 +6730,8 @@ const _interactionDB = <_IxEntry>[
     {RiskType.serotonin},
     ['Goodman & Gilman 14ª ed.', 'Micromedex 2024']),
 
-  ('bupropiona', 'imao_reversivel', InteractionSeverity.contraindicated,
+
+  ('imao reversivel', 'mirtazapina', InteractionSeverity.contraindicated,
     'IMAO inibe degradação de serotonina/noradrenalina. Antidepressivo adiciona liberação ou inibição de recaptação: acúmulo massivo de serotonina',
     'Síndrome serotoninérgica: agitação, hipertermia, mioclonias, rigidez, convulsões, colapso cardiovascular, morte',
     'CONTRAINDICAÇÃO ABSOLUTA. Respeitar washout de 14 dias entre IMAO e qualquer antidepressivo (21 dias para fluoxetina). Tratamento de emergência: ciproheptadina + suporte',
@@ -6561,32 +6740,6 @@ const _interactionDB = <_IxEntry>[
     {RiskType.serotonin},
     ['Goodman & Gilman 14ª ed.', 'Micromedex 2024', 'UpToDate 2024']),
 
-  ('mirtazapina', 'ssri', InteractionSeverity.moderate,
-    'Dois antidepressivos com mecanismos serotoninérgicos sobrepostos ou interações farmacocinéticas via CYP2D6',
-    'Síndrome serotoninérgica leve a moderada, sedação excessiva, alteração de níveis séricos',
-    'Monitorar sinais de síndrome serotoninérgica. Iniciar segundo antidepressivo em dose baixa. Preferir combinações com menor sobreposição serotoninérgica',
-    'SÍNDROME SEROTONINÉRGICA — Dois antidepressivos; iniciar em dose baixa; monitorar sintomas',
-    EvidenceLevel.probable,
-    {RiskType.serotonin},
-    ['Goodman & Gilman 14ª ed.', 'Micromedex 2024']),
-
-  ('imao', 'imao_reversivel', InteractionSeverity.moderate,
-    'Dois antidepressivos com mecanismos serotoninérgicos sobrepostos ou interações farmacocinéticas via CYP2D6',
-    'Síndrome serotoninérgica leve a moderada, sedação excessiva, alteração de níveis séricos',
-    'Monitorar sinais de síndrome serotoninérgica. Iniciar segundo antidepressivo em dose baixa. Preferir combinações com menor sobreposição serotoninérgica',
-    'SÍNDROME SEROTONINÉRGICA — Dois antidepressivos; iniciar em dose baixa; monitorar sintomas',
-    EvidenceLevel.probable,
-    {RiskType.serotonin},
-    ['Goodman & Gilman 14ª ed.', 'Micromedex 2024']),
-
-  ('imao_reversivel', 'mirtazapina', InteractionSeverity.contraindicated,
-    'IMAO inibe degradação de serotonina/noradrenalina. Antidepressivo adiciona liberação ou inibição de recaptação: acúmulo massivo de serotonina',
-    'Síndrome serotoninérgica: agitação, hipertermia, mioclonias, rigidez, convulsões, colapso cardiovascular, morte',
-    'CONTRAINDICAÇÃO ABSOLUTA. Respeitar washout de 14 dias entre IMAO e qualquer antidepressivo (21 dias para fluoxetina). Tratamento de emergência: ciproheptadina + suporte',
-    'CONTRAINDICADO — Síndrome serotoninérgica letal; washout 14 dias (21 dias para fluoxetina)',
-    EvidenceLevel.established,
-    {RiskType.serotonin},
-    ['Goodman & Gilman 14ª ed.', 'Micromedex 2024', 'UpToDate 2024']),
 
   ('aripiprazol', 'haloperidol', InteractionSeverity.major,
     'Haloperidol prolonga QTc significativamente. Combinação com outro antipsicótico prolonga QTc de forma aditiva',
@@ -6597,6 +6750,7 @@ const _interactionDB = <_IxEntry>[
     {RiskType.qtProlongation},
     ['Goodman & Gilman 14ª ed.', 'Micromedex 2024', 'UpToDate 2024']),
 
+
   ('aripiprazol', 'olanzapina', InteractionSeverity.moderate,
     'Dois antipsicóticos: bloqueio aditivo de receptores D2, histaminérgicos (H1) e muscarínicos. Sedação e efeitos extrapiramidais aditivos',
     'Sedação excessiva, síndrome extrapiramidal, prolongamento QTc, síndrome neuroléptica maligna (raro)',
@@ -6605,6 +6759,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.probable,
     {RiskType.qtProlongation},
     ['Goodman & Gilman 14ª ed.', 'Micromedex 2024']),
+
 
   ('aripiprazol', 'quetiapina', InteractionSeverity.moderate,
     'Dois antipsicóticos: bloqueio aditivo de receptores D2, histaminérgicos (H1) e muscarínicos. Sedação e efeitos extrapiramidais aditivos',
@@ -6615,23 +6770,6 @@ const _interactionDB = <_IxEntry>[
     {RiskType.qtProlongation},
     ['Goodman & Gilman 14ª ed.', 'Micromedex 2024']),
 
-  ('haloperidol', 'olanzapina', InteractionSeverity.major,
-    'Haloperidol prolonga QTc significativamente. Combinação com outro antipsicótico prolonga QTc de forma aditiva',
-    'Torsade de Pointes, fibrilação ventricular, morte súbita. Sedação excessiva',
-    'Monitorar QTc antes e durante o tratamento. Evitar combinação se QTc > 450ms. Preferir monoterapia. Corrigir eletrólitos (K+, Mg2+)',
-    'TORSADE DE POINTES — Haloperidol prolonga QTc; monitorar ECG; evitar se QTc > 450ms',
-    EvidenceLevel.established,
-    {RiskType.qtProlongation},
-    ['Goodman & Gilman 14ª ed.', 'Micromedex 2024', 'UpToDate 2024']),
-
-  ('olanzapina', 'quetiapina', InteractionSeverity.moderate,
-    'Dois antipsicóticos: bloqueio aditivo de receptores D2, histaminérgicos (H1) e muscarínicos. Sedação e efeitos extrapiramidais aditivos',
-    'Sedação excessiva, síndrome extrapiramidal, prolongamento QTc, síndrome neuroléptica maligna (raro)',
-    'Preferir monoterapia antipsicótica. Se combinação necessária (p. ex., estabilização aguda), usar menor dose possível e monitorar ECG',
-    'SEDAÇÃO + QTc — Dois antipsicóticos; preferir monoterapia; monitorar ECG e sintomas extrapiramidais',
-    EvidenceLevel.probable,
-    {RiskType.qtProlongation},
-    ['Goodman & Gilman 14ª ed.', 'Micromedex 2024']),
 
   ('fentanila', 'morfina', InteractionSeverity.major,
     'Dois opioides agonistas de receptor μ: depressão do SNC e do centro respiratório bulbar de forma aditiva',
@@ -6642,6 +6780,7 @@ const _interactionDB = <_IxEntry>[
     {RiskType.respiratoryDepression},
     ['Goodman & Gilman 14ª ed.', 'Micromedex 2024', 'UpToDate 2024']),
 
+
   ('fentanila', 'opioide', InteractionSeverity.major,
     'Dois opioides agonistas de receptor μ: depressão do SNC e do centro respiratório bulbar de forma aditiva',
     'Depressão respiratória grave, apneia, sedação profunda, coma, óbito',
@@ -6650,6 +6789,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.respiratoryDepression},
     ['Goodman & Gilman 14ª ed.', 'Micromedex 2024', 'UpToDate 2024']),
+
 
   ('fentanila', 'tramadol', InteractionSeverity.major,
     'Dois opioides agonistas de receptor μ: depressão do SNC e do centro respiratório bulbar de forma aditiva',
@@ -6660,6 +6800,7 @@ const _interactionDB = <_IxEntry>[
     {RiskType.respiratoryDepression},
     ['Goodman & Gilman 14ª ed.', 'Micromedex 2024', 'UpToDate 2024']),
 
+
   ('fentanila', 'metadona', InteractionSeverity.major,
     'Metadona tem meia-vida prolongada (24-36h) e prolonga QTc por bloqueio IKr. Combinação com outro opioide: depressão respiratória e QTc aditivos',
     'Depressão respiratória grave/fatal, Torsade de Pointes, apneia',
@@ -6668,6 +6809,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.respiratoryDepression, RiskType.qtProlongation},
     ['Goodman & Gilman 14ª ed.', 'Micromedex 2024', 'UpToDate 2024']),
+
 
   ('metadona', 'morfina', InteractionSeverity.major,
     'Metadona tem meia-vida prolongada (24-36h) e prolonga QTc por bloqueio IKr. Combinação com outro opioide: depressão respiratória e QTc aditivos',
@@ -6678,6 +6820,7 @@ const _interactionDB = <_IxEntry>[
     {RiskType.respiratoryDepression, RiskType.qtProlongation},
     ['Goodman & Gilman 14ª ed.', 'Micromedex 2024', 'UpToDate 2024']),
 
+
   ('metadona', 'opioide', InteractionSeverity.major,
     'Metadona tem meia-vida prolongada (24-36h) e prolonga QTc por bloqueio IKr. Combinação com outro opioide: depressão respiratória e QTc aditivos',
     'Depressão respiratória grave/fatal, Torsade de Pointes, apneia',
@@ -6686,6 +6829,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.respiratoryDepression, RiskType.qtProlongation},
     ['Goodman & Gilman 14ª ed.', 'Micromedex 2024', 'UpToDate 2024']),
+
 
   ('metadona', 'tramadol', InteractionSeverity.major,
     'Metadona tem meia-vida prolongada (24-36h) e prolonga QTc por bloqueio IKr. Combinação com outro opioide: depressão respiratória e QTc aditivos',
@@ -6696,6 +6840,7 @@ const _interactionDB = <_IxEntry>[
     {RiskType.respiratoryDepression, RiskType.qtProlongation},
     ['Goodman & Gilman 14ª ed.', 'Micromedex 2024', 'UpToDate 2024']),
 
+
   ('morfina', 'opioide', InteractionSeverity.major,
     'Dois opioides agonistas de receptor μ: depressão do SNC e do centro respiratório bulbar de forma aditiva',
     'Depressão respiratória grave, apneia, sedação profunda, coma, óbito',
@@ -6704,6 +6849,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.respiratoryDepression},
     ['Goodman & Gilman 14ª ed.', 'Micromedex 2024', 'UpToDate 2024']),
+
 
   ('opioide', 'tramadol', InteractionSeverity.major,
     'Dois opioides agonistas de receptor μ: depressão do SNC e do centro respiratório bulbar de forma aditiva',
@@ -6714,6 +6860,7 @@ const _interactionDB = <_IxEntry>[
     {RiskType.respiratoryDepression},
     ['Goodman & Gilman 14ª ed.', 'Micromedex 2024', 'UpToDate 2024']),
 
+
   ('benzodiazepínico', 'midazolam', InteractionSeverity.major,
     'Midazolam é um benzodiazepínico: potenciação aditiva do receptor GABA-A com depressão do SNC e respiratório',
     'Sedação excessiva, depressão respiratória, amnésia prolongada, hipotensão',
@@ -6723,14 +6870,6 @@ const _interactionDB = <_IxEntry>[
     {RiskType.respiratoryDepression},
     ['Goodman & Gilman 14ª ed.', 'Micromedex 2024']),
 
-  ('insulina', 'sulfonilureia', InteractionSeverity.moderate,
-    'Insulina exógena e sulfonilureias/glibenclamida (estimulantes de secreção endógena de insulina) têm efeito hipoglicemiante aditivo',
-    'Hipoglicemia grave e prolongada, especialmente com glibenclamida (meia-vida longa)',
-    'Monitorar glicemia 4x/dia. Reduzir dose da sulfonilureia ao iniciar insulina. Considerar substituição por metformina ou iDPP4 para minimizar hipoglicemia',
-    'HIPOGLICEMIA GRAVE — Insulina + sulfonilureia; glibenclamida tem risco maior; monitorar glicemia',
-    EvidenceLevel.established,
-    {RiskType.other},
-    ['Goodman & Gilman 14ª ed.', 'Micromedex 2024']),
 
   ('glibenclamida', 'insulina', InteractionSeverity.moderate,
     'Insulina exógena e sulfonilureias/glibenclamida (estimulantes de secreção endógena de insulina) têm efeito hipoglicemiante aditivo',
@@ -6741,6 +6880,7 @@ const _interactionDB = <_IxEntry>[
     {RiskType.other},
     ['Goodman & Gilman 14ª ed.', 'Micromedex 2024']),
 
+
   ('glibenclamida', 'sulfonilureia', InteractionSeverity.minor,
     'Dois antidiabéticos com mecanismos diferentes: potencial efeito hipoglicemiante aditivo ou sinérgico',
     'Hipoglicemia leve a moderada. Desconforto GI aditivo (especialmente metformina + outros)',
@@ -6749,6 +6889,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.other},
     ['Micromedex 2024', 'UpToDate 2024']),
+
 
   ('insulina', 'metformina', InteractionSeverity.minor,
     'Dois antidiabéticos com mecanismos diferentes: potencial efeito hipoglicemiante aditivo ou sinérgico',
@@ -6759,6 +6900,7 @@ const _interactionDB = <_IxEntry>[
     {RiskType.other},
     ['Micromedex 2024', 'UpToDate 2024']),
 
+
   ('glibenclamida', 'metformina', InteractionSeverity.minor,
     'Dois antidiabéticos com mecanismos diferentes: potencial efeito hipoglicemiante aditivo ou sinérgico',
     'Hipoglicemia leve a moderada. Desconforto GI aditivo (especialmente metformina + outros)',
@@ -6767,6 +6909,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.other},
     ['Micromedex 2024', 'UpToDate 2024']),
+
 
   ('canagliflozina', 'insulina', InteractionSeverity.moderate,
     'iSGLT2 promovem glicosúria e reduzem glicemia independentemente. Insulina reduz glicemia por captação periférica. Efeito hipoglicemiante aditivo',
@@ -6777,6 +6920,7 @@ const _interactionDB = <_IxEntry>[
     {RiskType.other},
     ['Micromedex 2024', 'UpToDate 2024']),
 
+
   ('canagliflozina', 'sulfonilureia', InteractionSeverity.moderate,
     'Gliflozinas (iSGLT2) causam glicosúria independente de insulina. Sulfonilureias/glibenclamida aumentam secreção de insulina. Efeito hipoglicemiante aditivo',
     'Hipoglicemia moderada a grave. Cetoacidose diabética euglicêmica (rara com iSGLT2)',
@@ -6785,6 +6929,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.other},
     ['Micromedex 2024', 'UpToDate 2024']),
+
 
   ('canagliflozina', 'glibenclamida', InteractionSeverity.moderate,
     'Gliflozinas (iSGLT2) causam glicosúria independente de insulina. Sulfonilureias/glibenclamida aumentam secreção de insulina. Efeito hipoglicemiante aditivo',
@@ -6795,6 +6940,7 @@ const _interactionDB = <_IxEntry>[
     {RiskType.other},
     ['Micromedex 2024', 'UpToDate 2024']),
 
+
   ('canagliflozina', 'metformina', InteractionSeverity.minor,
     'Dois antidiabéticos com mecanismos diferentes: potencial efeito hipoglicemiante aditivo ou sinérgico',
     'Hipoglicemia leve a moderada. Desconforto GI aditivo (especialmente metformina + outros)',
@@ -6803,6 +6949,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.other},
     ['Micromedex 2024', 'UpToDate 2024']),
+
 
   ('dapagliflozina', 'sulfonilureia', InteractionSeverity.moderate,
     'Gliflozinas (iSGLT2) causam glicosúria independente de insulina. Sulfonilureias/glibenclamida aumentam secreção de insulina. Efeito hipoglicemiante aditivo',
@@ -6813,6 +6960,7 @@ const _interactionDB = <_IxEntry>[
     {RiskType.other},
     ['Micromedex 2024', 'UpToDate 2024']),
 
+
   ('dapagliflozina', 'glibenclamida', InteractionSeverity.moderate,
     'Gliflozinas (iSGLT2) causam glicosúria independente de insulina. Sulfonilureias/glibenclamida aumentam secreção de insulina. Efeito hipoglicemiante aditivo',
     'Hipoglicemia moderada a grave. Cetoacidose diabética euglicêmica (rara com iSGLT2)',
@@ -6821,6 +6969,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.other},
     ['Micromedex 2024', 'UpToDate 2024']),
+
 
   ('dapagliflozina', 'metformina', InteractionSeverity.minor,
     'Dois antidiabéticos com mecanismos diferentes: potencial efeito hipoglicemiante aditivo ou sinérgico',
@@ -6831,14 +6980,6 @@ const _interactionDB = <_IxEntry>[
     {RiskType.other},
     ['Micromedex 2024', 'UpToDate 2024']),
 
-  ('azatioprina', 'ciclosporina', InteractionSeverity.moderate,
-    'Dois imunossupressores: imunossupressão aditiva com risco aumentado de infecções oportunistas e malignidades linfoides',
-    'Infecções oportunistas graves (CMV, PCP, fungos), linfoma, hepatotoxicidade, nefrotoxicidade',
-    'Monitorar hemograma, função hepática e renal mensalmente. Profilaxia anti-infecciosa conforme protocolo (SMX-TMP para PCP). Vacinas inativadas atualizadas',
-    'IMUNOSSUPRESSÃO ADITIVA — Monitorar hemograma; profilaxia anti-infecciosa; evitar vacinas vivas',
-    EvidenceLevel.established,
-    {RiskType.other},
-    ['Goodman & Gilman 14ª ed.', 'Micromedex 2024', 'UpToDate 2024']),
 
   ('azatioprina', 'metotrexato', InteractionSeverity.major,
     'Metotrexato e azatioprina têm efeitos mielossupressores aditivos. Metotrexato inibe DHFR; azatioprina interfere na síntese de purinas',
@@ -6849,6 +6990,7 @@ const _interactionDB = <_IxEntry>[
     {RiskType.other},
     ['Goodman & Gilman 14ª ed.', 'Micromedex 2024', 'UpToDate 2024']),
 
+
   ('azatioprina', 'corticosteroide sistemico', InteractionSeverity.moderate,
     'Dois imunossupressores: imunossupressão aditiva com risco aumentado de infecções oportunistas e malignidades linfoides',
     'Infecções oportunistas graves (CMV, PCP, fungos), linfoma, hepatotoxicidade, nefrotoxicidade',
@@ -6857,6 +6999,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.other},
     ['Goodman & Gilman 14ª ed.', 'Micromedex 2024', 'UpToDate 2024']),
+
 
   ('ciclosporina', 'metotrexato', InteractionSeverity.moderate,
     'Dois imunossupressores: imunossupressão aditiva com risco aumentado de infecções oportunistas e malignidades linfoides',
@@ -6867,14 +7010,6 @@ const _interactionDB = <_IxEntry>[
     {RiskType.other},
     ['Goodman & Gilman 14ª ed.', 'Micromedex 2024', 'UpToDate 2024']),
 
-  ('ciclosporina', 'corticosteroide sistemico', InteractionSeverity.moderate,
-    'Dois imunossupressores: imunossupressão aditiva com risco aumentado de infecções oportunistas e malignidades linfoides',
-    'Infecções oportunistas graves (CMV, PCP, fungos), linfoma, hepatotoxicidade, nefrotoxicidade',
-    'Monitorar hemograma, função hepática e renal mensalmente. Profilaxia anti-infecciosa conforme protocolo (SMX-TMP para PCP). Vacinas inativadas atualizadas',
-    'IMUNOSSUPRESSÃO ADITIVA — Monitorar hemograma; profilaxia anti-infecciosa; evitar vacinas vivas',
-    EvidenceLevel.established,
-    {RiskType.other},
-    ['Goodman & Gilman 14ª ed.', 'Micromedex 2024', 'UpToDate 2024']),
 
   ('corticosteroide sistemico', 'metotrexato', InteractionSeverity.moderate,
     'Dois imunossupressores: imunossupressão aditiva com risco aumentado de infecções oportunistas e malignidades linfoides',
@@ -6885,14 +7020,6 @@ const _interactionDB = <_IxEntry>[
     {RiskType.other},
     ['Goodman & Gilman 14ª ed.', 'Micromedex 2024', 'UpToDate 2024']),
 
-  ('corticosteroide sistemico', 'tacrolimo', InteractionSeverity.moderate,
-    'Dois imunossupressores: imunossupressão aditiva com risco aumentado de infecções oportunistas e malignidades linfoides',
-    'Infecções oportunistas graves (CMV, PCP, fungos), linfoma, hepatotoxicidade, nefrotoxicidade',
-    'Monitorar hemograma, função hepática e renal mensalmente. Profilaxia anti-infecciosa conforme protocolo (SMX-TMP para PCP). Vacinas inativadas atualizadas',
-    'IMUNOSSUPRESSÃO ADITIVA — Monitorar hemograma; profilaxia anti-infecciosa; evitar vacinas vivas',
-    EvidenceLevel.established,
-    {RiskType.other},
-    ['Goodman & Gilman 14ª ed.', 'Micromedex 2024', 'UpToDate 2024']),
 
   ('metotrexato', 'tacrolimo', InteractionSeverity.moderate,
     'Dois imunossupressores: imunossupressão aditiva com risco aumentado de infecções oportunistas e malignidades linfoides',
@@ -6903,6 +7030,7 @@ const _interactionDB = <_IxEntry>[
     {RiskType.other},
     ['Goodman & Gilman 14ª ed.', 'Micromedex 2024', 'UpToDate 2024']),
 
+
   ('acetazolamida', 'furosemida', InteractionSeverity.moderate,
     'Dois diuréticos com mecanismos distintos: efeitos diuréticos e natriuréticos aditivos, depleção de volume aumentada',
     'Hipotensão ortostática, depleção de volume, IRA pré-renal, distúrbios eletrolíticos',
@@ -6911,6 +7039,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.probable,
     {RiskType.nephrotoxicity},
     ['Goodman & Gilman 14ª ed.', 'Micromedex 2024']),
+
 
   ('acetazolamida', 'hidroclorotiazida', InteractionSeverity.moderate,
     'Dois diuréticos com mecanismos distintos: efeitos diuréticos e natriuréticos aditivos, depleção de volume aumentada',
@@ -6921,6 +7050,7 @@ const _interactionDB = <_IxEntry>[
     {RiskType.nephrotoxicity},
     ['Goodman & Gilman 14ª ed.', 'Micromedex 2024']),
 
+
   ('acetazolamida', 'espironolactona', InteractionSeverity.moderate,
     'Diurético poupador de K+ combinado com diurético perdedor de K+: efeitos opostos no potássio, mas depleção de volume e hipotensão aditivos',
     'Hipotensão, depleção de volume, risco de IRA. Potassemia imprevisível (normo, hipo ou hipercalemia)',
@@ -6929,6 +7059,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.nephrotoxicity},
     ['Goodman & Gilman 14ª ed.', 'Micromedex 2024']),
+
 
   ('acetazolamida', 'eplerenona', InteractionSeverity.moderate,
     'Diurético poupador de K+ combinado com diurético perdedor de K+: efeitos opostos no potássio, mas depleção de volume e hipotensão aditivos',
@@ -6939,6 +7070,7 @@ const _interactionDB = <_IxEntry>[
     {RiskType.nephrotoxicity},
     ['Goodman & Gilman 14ª ed.', 'Micromedex 2024']),
 
+
   ('acetazolamida', 'finerenona', InteractionSeverity.moderate,
     'Diurético poupador de K+ combinado com diurético perdedor de K+: efeitos opostos no potássio, mas depleção de volume e hipotensão aditivos',
     'Hipotensão, depleção de volume, risco de IRA. Potassemia imprevisível (normo, hipo ou hipercalemia)',
@@ -6947,6 +7079,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.nephrotoxicity},
     ['Goodman & Gilman 14ª ed.', 'Micromedex 2024']),
+
 
   ('eplerenona', 'espironolactona', InteractionSeverity.major,
     'Dois diuréticos poupadores de potássio: retenção aditiva de K+ por bloqueio de aldosterona/receptores de mineralocorticóide',
@@ -6957,6 +7090,7 @@ const _interactionDB = <_IxEntry>[
     {RiskType.arrhythmia},
     ['Goodman & Gilman 14ª ed.', 'Micromedex 2024', 'UpToDate 2024']),
 
+
   ('eplerenona', 'finerenona', InteractionSeverity.major,
     'Dois diuréticos poupadores de potássio: retenção aditiva de K+ por bloqueio de aldosterona/receptores de mineralocorticóide',
     'Hipercalemia grave (K+ > 6 mEq/L), arritmias cardíacas, parada cardíaca em assistolia',
@@ -6965,6 +7099,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.arrhythmia},
     ['Goodman & Gilman 14ª ed.', 'Micromedex 2024', 'UpToDate 2024']),
+
 
   ('eplerenona', 'furosemida', InteractionSeverity.moderate,
     'Diurético poupador de K+ combinado com diurético perdedor de K+: efeitos opostos no potássio, mas depleção de volume e hipotensão aditivos',
@@ -6975,6 +7110,7 @@ const _interactionDB = <_IxEntry>[
     {RiskType.nephrotoxicity},
     ['Goodman & Gilman 14ª ed.', 'Micromedex 2024']),
 
+
   ('eplerenona', 'hidroclorotiazida', InteractionSeverity.moderate,
     'Diurético poupador de K+ combinado com diurético perdedor de K+: efeitos opostos no potássio, mas depleção de volume e hipotensão aditivos',
     'Hipotensão, depleção de volume, risco de IRA. Potassemia imprevisível (normo, hipo ou hipercalemia)',
@@ -6984,14 +7120,6 @@ const _interactionDB = <_IxEntry>[
     {RiskType.nephrotoxicity},
     ['Goodman & Gilman 14ª ed.', 'Micromedex 2024']),
 
-  ('espironolactona', 'furosemida', InteractionSeverity.moderate,
-    'Diurético poupador de K+ combinado com diurético perdedor de K+: efeitos opostos no potássio, mas depleção de volume e hipotensão aditivos',
-    'Hipotensão, depleção de volume, risco de IRA. Potassemia imprevisível (normo, hipo ou hipercalemia)',
-    'Monitorar K+ sérico, função renal e PA regularmente. Titular doses para manter K+ 3,5-5 mEq/L. Monitorar sinais de depleção de volume',
-    'POTASSEMIA IMPREVISÍVEL + HIPOTENSÃO — Monitorar K+, creatinina e PA; titular doses',
-    EvidenceLevel.established,
-    {RiskType.nephrotoxicity},
-    ['Goodman & Gilman 14ª ed.', 'Micromedex 2024']),
 
   ('finerenona', 'furosemida', InteractionSeverity.moderate,
     'Diurético poupador de K+ combinado com diurético perdedor de K+: efeitos opostos no potássio, mas depleção de volume e hipotensão aditivos',
@@ -7002,6 +7130,7 @@ const _interactionDB = <_IxEntry>[
     {RiskType.nephrotoxicity},
     ['Goodman & Gilman 14ª ed.', 'Micromedex 2024']),
 
+
   ('finerenona', 'hidroclorotiazida', InteractionSeverity.moderate,
     'Diurético poupador de K+ combinado com diurético perdedor de K+: efeitos opostos no potássio, mas depleção de volume e hipotensão aditivos',
     'Hipotensão, depleção de volume, risco de IRA. Potassemia imprevisível (normo, hipo ou hipercalemia)',
@@ -7010,6 +7139,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.nephrotoxicity},
     ['Goodman & Gilman 14ª ed.', 'Micromedex 2024']),
+
 
   ('atorvastatina', 'sinvastatina', InteractionSeverity.contraindicated,
     'Duas estatinas: miopatia por inibição aditiva de HMG-CoA redutase e depleção de coenzima Q10 muscular',
@@ -7020,6 +7150,7 @@ const _interactionDB = <_IxEntry>[
     {RiskType.other},
     ['Goodman & Gilman 14ª ed.', 'Micromedex 2024', 'UpToDate 2024']),
 
+
   ('atorvastatina', 'rosuvastatina', InteractionSeverity.contraindicated,
     'Duas estatinas: miopatia por inibição aditiva de HMG-CoA redutase e depleção de coenzima Q10 muscular',
     'Miopatia grave, rabdomiólise, IRA por mioglobinúria, morte',
@@ -7028,6 +7159,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.other},
     ['Goodman & Gilman 14ª ed.', 'Micromedex 2024', 'UpToDate 2024']),
+
 
   ('atorvastatina', 'estatina', InteractionSeverity.contraindicated,
     'Duas estatinas: miopatia por inibição aditiva de HMG-CoA redutase e depleção de coenzima Q10 muscular',
@@ -7038,6 +7170,7 @@ const _interactionDB = <_IxEntry>[
     {RiskType.other},
     ['Goodman & Gilman 14ª ed.', 'Micromedex 2024', 'UpToDate 2024']),
 
+
   ('estatina', 'sinvastatina', InteractionSeverity.contraindicated,
     'Duas estatinas: miopatia por inibição aditiva de HMG-CoA redutase e depleção de coenzima Q10 muscular',
     'Miopatia grave, rabdomiólise, IRA por mioglobinúria, morte',
@@ -7046,6 +7179,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.other},
     ['Goodman & Gilman 14ª ed.', 'Micromedex 2024', 'UpToDate 2024']),
+
 
   ('estatina', 'rosuvastatina', InteractionSeverity.contraindicated,
     'Duas estatinas: miopatia por inibição aditiva de HMG-CoA redutase e depleção de coenzima Q10 muscular',
@@ -7056,6 +7190,7 @@ const _interactionDB = <_IxEntry>[
     {RiskType.other},
     ['Goodman & Gilman 14ª ed.', 'Micromedex 2024', 'UpToDate 2024']),
 
+
   ('rosuvastatina', 'sinvastatina', InteractionSeverity.contraindicated,
     'Duas estatinas: miopatia por inibição aditiva de HMG-CoA redutase e depleção de coenzima Q10 muscular',
     'Miopatia grave, rabdomiólise, IRA por mioglobinúria, morte',
@@ -7064,6 +7199,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.other},
     ['Goodman & Gilman 14ª ed.', 'Micromedex 2024', 'UpToDate 2024']),
+
 
   ('fenofibrato', 'gemfibrozil', InteractionSeverity.major,
     'Dois fibratos: miopatia por depleção aditiva de coenzima Q10 e interferência na beta-oxidação muscular. Gemfibrozil inibe glicuronidação de outras estatinas e fibratos',
@@ -7074,6 +7210,7 @@ const _interactionDB = <_IxEntry>[
     {RiskType.other},
     ['Goodman & Gilman 14ª ed.', 'Micromedex 2024', 'UpToDate 2024']),
 
+
   ('esomeprazol', 'omeprazol', InteractionSeverity.moderate,
     'Dois IBPs com mecanismo idêntico (inibição de H+/K+-ATPase): supressão ácida excessiva sem benefício adicional. Omeprazol/esomeprazol inibem CYP2C19',
     'Supressão ácida excessiva: deficiência de B12, hipomagnesemia, colonização por Clostridium difficile, hipergastrinemia',
@@ -7082,6 +7219,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.other},
     ['Goodman & Gilman 14ª ed.', 'Micromedex 2024']),
+
 
   ('esomeprazol', 'pantoprazol', InteractionSeverity.moderate,
     'Dois IBPs com mecanismo idêntico (inibição de H+/K+-ATPase): supressão ácida excessiva sem benefício adicional. Omeprazol/esomeprazol inibem CYP2C19',
@@ -7092,6 +7230,7 @@ const _interactionDB = <_IxEntry>[
     {RiskType.other},
     ['Goodman & Gilman 14ª ed.', 'Micromedex 2024']),
 
+
   ('omeprazol', 'pantoprazol', InteractionSeverity.moderate,
     'Dois IBPs com mecanismo idêntico (inibição de H+/K+-ATPase): supressão ácida excessiva sem benefício adicional. Omeprazol/esomeprazol inibem CYP2C19',
     'Supressão ácida excessiva: deficiência de B12, hipomagnesemia, colonização por Clostridium difficile, hipergastrinemia',
@@ -7100,6 +7239,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.other},
     ['Goodman & Gilman 14ª ed.', 'Micromedex 2024']),
+
 
   ('omeprazol', 'sulfato ferroso', InteractionSeverity.minor,
     'IBPs elevam pH gástrico; antiácidos/sulfato ferroso/carbonato de cálcio dependem de ambiente ácido para absorção. IBP pode reduzir absorção de sulfato ferroso e Ca',
@@ -7110,6 +7250,7 @@ const _interactionDB = <_IxEntry>[
     {RiskType.other},
     ['Micromedex 2024', 'UpToDate 2024']),
 
+
   ('esomeprazol', 'sulfato ferroso', InteractionSeverity.minor,
     'IBPs elevam pH gástrico; antiácidos/sulfato ferroso/carbonato de cálcio dependem de ambiente ácido para absorção. IBP pode reduzir absorção de sulfato ferroso e Ca',
     'Redução de absorção de ferro, cálcio e antiácidos. Redução leve da eficácia do IBP se tomados junto',
@@ -7118,6 +7259,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.other},
     ['Micromedex 2024', 'UpToDate 2024']),
+
 
   ('pantoprazol', 'sulfato ferroso', InteractionSeverity.minor,
     'IBPs elevam pH gástrico; antiácidos/sulfato ferroso/carbonato de cálcio dependem de ambiente ácido para absorção. IBP pode reduzir absorção de sulfato ferroso e Ca',
@@ -7128,41 +7270,6 @@ const _interactionDB = <_IxEntry>[
     {RiskType.other},
     ['Micromedex 2024', 'UpToDate 2024']),
 
-  ('antacido', 'esomeprazol', InteractionSeverity.minor,
-    'IBPs elevam pH gástrico; antiácidos/sulfato ferroso/carbonato de cálcio dependem de ambiente ácido para absorção. IBP pode reduzir absorção de sulfato ferroso e Ca',
-    'Redução de absorção de ferro, cálcio e antiácidos. Redução leve da eficácia do IBP se tomados junto',
-    'Separar a administração por pelo menos 2h. Sulfato ferroso: administrar em jejum, 1h antes ou 2h após o IBP para maximizar absorção',
-    'ABSORÇÃO REDUZIDA — Separar por 2h; sulfato ferroso: 1h antes ou 2h após o IBP',
-    EvidenceLevel.established,
-    {RiskType.other},
-    ['Micromedex 2024', 'UpToDate 2024']),
-
-  ('antacido', 'omeprazol', InteractionSeverity.minor,
-    'IBPs elevam pH gástrico; antiácidos/sulfato ferroso/carbonato de cálcio dependem de ambiente ácido para absorção. IBP pode reduzir absorção de sulfato ferroso e Ca',
-    'Redução de absorção de ferro, cálcio e antiácidos. Redução leve da eficácia do IBP se tomados junto',
-    'Separar a administração por pelo menos 2h. Sulfato ferroso: administrar em jejum, 1h antes ou 2h após o IBP para maximizar absorção',
-    'ABSORÇÃO REDUZIDA — Separar por 2h; sulfato ferroso: 1h antes ou 2h após o IBP',
-    EvidenceLevel.established,
-    {RiskType.other},
-    ['Micromedex 2024', 'UpToDate 2024']),
-
-  ('antacido', 'pantoprazol', InteractionSeverity.minor,
-    'IBPs elevam pH gástrico; antiácidos/sulfato ferroso/carbonato de cálcio dependem de ambiente ácido para absorção. IBP pode reduzir absorção de sulfato ferroso e Ca',
-    'Redução de absorção de ferro, cálcio e antiácidos. Redução leve da eficácia do IBP se tomados junto',
-    'Separar a administração por pelo menos 2h. Sulfato ferroso: administrar em jejum, 1h antes ou 2h após o IBP para maximizar absorção',
-    'ABSORÇÃO REDUZIDA — Separar por 2h; sulfato ferroso: 1h antes ou 2h após o IBP',
-    EvidenceLevel.established,
-    {RiskType.other},
-    ['Micromedex 2024', 'UpToDate 2024']),
-
-  ('antacido', 'sulfato ferroso', InteractionSeverity.moderate,
-    'Antiácidos (cátions Al3+, Mg2+, Ca2+) quelam o ferro ferroso do sulfato ferroso, formando complexos insolúveis não absorvíveis',
-    'Absorção de ferro reduzida em até 70%, falha no tratamento de anemia ferropriva',
-    'Administrar sulfato ferroso 2h antes ou 4h após antiácidos. Carbonato de cálcio: separar por pelo menos 2h. Monitorar ferritina e Hb a cada 4-8 semanas',
-    'QUELAÇÃO DE FERRO — Antiácido reduz absorção do ferro em 70%; separar por 2-4h',
-    EvidenceLevel.established,
-    {RiskType.other},
-    ['Goodman & Gilman 14ª ed.', 'Micromedex 2024']),
 
   ('antiácido', 'esomeprazol', InteractionSeverity.minor,
     'IBPs elevam pH gástrico; antiácidos/sulfato ferroso/carbonato de cálcio dependem de ambiente ácido para absorção. IBP pode reduzir absorção de sulfato ferroso e Ca',
@@ -7173,6 +7280,7 @@ const _interactionDB = <_IxEntry>[
     {RiskType.other},
     ['Micromedex 2024', 'UpToDate 2024']),
 
+
   ('antiácido', 'omeprazol', InteractionSeverity.minor,
     'IBPs elevam pH gástrico; antiácidos/sulfato ferroso/carbonato de cálcio dependem de ambiente ácido para absorção. IBP pode reduzir absorção de sulfato ferroso e Ca',
     'Redução de absorção de ferro, cálcio e antiácidos. Redução leve da eficácia do IBP se tomados junto',
@@ -7181,6 +7289,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.other},
     ['Micromedex 2024', 'UpToDate 2024']),
+
 
   ('antiácido', 'pantoprazol', InteractionSeverity.minor,
     'IBPs elevam pH gástrico; antiácidos/sulfato ferroso/carbonato de cálcio dependem de ambiente ácido para absorção. IBP pode reduzir absorção de sulfato ferroso e Ca',
@@ -7191,6 +7300,7 @@ const _interactionDB = <_IxEntry>[
     {RiskType.other},
     ['Micromedex 2024', 'UpToDate 2024']),
 
+
   ('antiácido', 'sulfato ferroso', InteractionSeverity.moderate,
     'Antiácidos (cátions Al3+, Mg2+, Ca2+) quelam o ferro ferroso do sulfato ferroso, formando complexos insolúveis não absorvíveis',
     'Absorção de ferro reduzida em até 70%, falha no tratamento de anemia ferropriva',
@@ -7199,6 +7309,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.other},
     ['Goodman & Gilman 14ª ed.', 'Micromedex 2024']),
+
 
   ('carbonato de calcio', 'sulfato ferroso', InteractionSeverity.moderate,
     'Antiácidos (cátions Al3+, Mg2+, Ca2+) quelam o ferro ferroso do sulfato ferroso, formando complexos insolúveis não absorvíveis',
@@ -7209,6 +7320,7 @@ const _interactionDB = <_IxEntry>[
     {RiskType.other},
     ['Goodman & Gilman 14ª ed.', 'Micromedex 2024']),
 
+
   ('anticoncepcional', 'levotiroxina', InteractionSeverity.moderate,
     'Estrogênios (anticoncepcional oral) aumentam globulina ligadora de tiroxina (TBG), reduzindo T4 livre disponível. Maior necessidade de levotiroxina',
     'Hipotireoidismo por aumento da ligação proteica da T4: fadiga, ganho de peso, bradicardia',
@@ -7217,6 +7329,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.plasmaLevel},
     ['Goodman & Gilman 14ª ed.', 'Micromedex 2024', 'UpToDate 2024']),
+
 
   ('anticoncepcional', 'tamoxifeno', InteractionSeverity.major,
     'Tamoxifeno é um antagonista de receptor de estrogênio. Anticoncepcional com estrogênio pode antagonizar o efeito antiestrogênico do tamoxifeno',
@@ -7227,6 +7340,7 @@ const _interactionDB = <_IxEntry>[
     {RiskType.other},
     ['Goodman & Gilman 14ª ed.', 'Micromedex 2024', 'UpToDate 2024']),
 
+
   ('dexametasona', 'levotiroxina', InteractionSeverity.moderate,
     'Glicocorticóides em altas doses inibem conversão periférica de T4 em T3 (inibição de deiodinase tipo I) e reduzem liberação de TSH',
     'Hipotireoidismo relativo em uso prolongado, alteração nos valores de TSH dificultando ajuste de levotiroxina',
@@ -7235,6 +7349,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.plasmaLevel},
     ['Goodman & Gilman 14ª ed.', 'Micromedex 2024']),
+
 
   ('dexametasona', 'tamoxifeno', InteractionSeverity.moderate,
     'Dexametasona induz CYP3A4 e P-glicoproteína, podendo reduzir níveis plasmáticos de tamoxifeno e seu metabólito ativo endoxifeno',
@@ -7245,14 +7360,6 @@ const _interactionDB = <_IxEntry>[
     {RiskType.plasmaLevel},
     ['Micromedex 2024', 'UpToDate 2024']),
 
-  ('aminoglicosideo', 'piperacilina_tazobactam', InteractionSeverity.moderate,
-    'Piperacilina pode inativar aminoglicosídeos in vitro por quelação química (especialmente em amostras de laboratório). In vivo: potencial nefrotoxicidade aditiva',
-    'Falsa redução dos níveis de aminoglicosídeo nas dosagens séricas (artefato laboratorial). Nefrotoxicidade aditiva em uso prolongado',
-    'Não coletar amostras para nível de aminoglicosídeo em linha com piperacilina. Monitorar função renal diariamente. Dosar aminoglicosídeo em amostra separada, 1h após dose',
-    'ARTEFATO LABORATORIAL + NEFROTOXICIDADE — Coletar nível de aminoglicosídeo separadamente; monitorar creatinina',
-    EvidenceLevel.established,
-    {RiskType.nephrotoxicity},
-    ['Micromedex 2024', 'UpToDate 2024']),
 
   ('daptomicina', 'vancomicina', InteractionSeverity.moderate,
     'Dois agentes com atividade contra Gram-positivos: potencial nefrotoxicidade aditiva. Sem sinergismo estabelecido para a maioria das infecções',
@@ -7263,6 +7370,7 @@ const _interactionDB = <_IxEntry>[
     {RiskType.nephrotoxicity},
     ['Micromedex 2024', 'UpToDate 2024']),
 
+
   ('linezolida', 'vancomicina', InteractionSeverity.minor,
     'Linezolida e vancomicina têm cobertura sobreposta para Gram-positivos. Sem interação farmacocinética significativa, mas trombocitopenia e mielossupressão aditivas com linezolida',
     'Trombocitopenia, anemia, mielossupressão por linezolida. Nefrotoxicidade de vancomicina',
@@ -7271,6 +7379,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.probable,
     {RiskType.other},
     ['Micromedex 2024', 'UpToDate 2024']),
+
 
   ('sulfametoxazol', 'trimetoprima', InteractionSeverity.moderate,
     'Sulfametoxazol + trimetoprima (co-trimoxazol): sinergia intencional por bloqueio sequencial da síntese de folato bacteriano. Porém: hipercalemia, mielossupressão e nefrotoxicidade aditivas',
@@ -7281,6 +7390,7 @@ const _interactionDB = <_IxEntry>[
     {RiskType.other, RiskType.nephrotoxicity},
     ['Goodman & Gilman 14ª ed.', 'Micromedex 2024', 'UpToDate 2024']),
 
+
   ('fluconazol', 'isavuconazol', InteractionSeverity.major,
     'Fluconazol e isavuconazol são azólicos que prolongam QTc (isavuconazol: encurta levemente, mas a combinação tem efeito imprevisível). Ambos inibem CYP3A4 com potencial interação. Inibição aditiva de ergosterol fúngico',
     'Interação farmacocinética imprevisível (ambos inibem CYP3A4 mutuamente), prolongamento QTc incerto, toxicidade hepática aditiva',
@@ -7289,6 +7399,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.probable,
     {RiskType.qtProlongation, RiskType.other},
     ['Micromedex 2024', 'UpToDate 2024']),
+
 
   ('azitromicina', 'eritromicina', InteractionSeverity.major,
     'Dois macrolídeos: prolongamento aditivo do QTc por bloqueio de canais IKr. Inibição de CYP3A4 aditiva (exceto azitromicina)',
@@ -7299,6 +7410,7 @@ const _interactionDB = <_IxEntry>[
     {RiskType.qtProlongation},
     ['Goodman & Gilman 14ª ed.', 'Micromedex 2024', 'UpToDate 2024']),
 
+
   ('azitromicina', 'claritromicina', InteractionSeverity.major,
     'Dois macrolídeos: prolongamento aditivo do QTc por bloqueio de canais IKr. Inibição de CYP3A4 aditiva (exceto azitromicina)',
     'Torsade de Pointes, fibrilação ventricular, morte súbita. Interações medicamentosas aditivas por inibição de CYP3A4',
@@ -7307,6 +7419,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.qtProlongation},
     ['Goodman & Gilman 14ª ed.', 'Micromedex 2024', 'UpToDate 2024']),
+
 
   ('dexmedetomidina', 'levosimendan', InteractionSeverity.moderate,
     'Dexmedetomidina (α2-agonista central) causa bradicardia e hipotensão. Combinada com inodilatador (levosimendan/milrinona): hipotensão aditiva e hemodinâmica complexa',
@@ -7317,6 +7430,7 @@ const _interactionDB = <_IxEntry>[
     {RiskType.arrhythmia},
     ['Micromedex 2024', 'UpToDate 2024']),
 
+
   ('dexmedetomidina', 'milrinona', InteractionSeverity.moderate,
     'Dexmedetomidina (α2-agonista central) causa bradicardia e hipotensão. Combinada com inodilatador (levosimendan/milrinona): hipotensão aditiva e hemodinâmica complexa',
     'Hipotensão grave, bradicardia, necessidade de vasopressores',
@@ -7325,6 +7439,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.probable,
     {RiskType.arrhythmia},
     ['Micromedex 2024', 'UpToDate 2024']),
+
 
   ('levosimendan', 'milrinona', InteractionSeverity.moderate,
     'Levosimendan (sensibilizador de cálcio + abertura de KATP) e milrinona (inibidor de PDE3): ambos causam vasodilatação e aumento do débito cardíaco. Efeitos hemodinâmicos aditivos',
@@ -7335,6 +7450,7 @@ const _interactionDB = <_IxEntry>[
     {RiskType.arrhythmia},
     ['Micromedex 2024', 'UpToDate 2024']),
 
+
   ('levosimendan', 'propofol', InteractionSeverity.moderate,
     'Propofol causa vasodilatação e depressão miocárdica direta. Combinado com inodilatador: hipotensão aditiva por vasodilatação somada e depressão cardíaca',
     'Hipotensão grave, especialmente em bolus de propofol. Depressão cardíaca aditiva',
@@ -7343,6 +7459,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.probable,
     {RiskType.arrhythmia},
     ['Micromedex 2024', 'UpToDate 2024']),
+
 
   ('levosimendan', 'rocurônio', InteractionSeverity.minor,
     'Rocurônio (bloqueador neuromuscular adespolarizante) associado a outros agentes de UTI: sem interação farmacocinética direta, mas contexto de sedoanalgesia complexa',
@@ -7353,6 +7470,7 @@ const _interactionDB = <_IxEntry>[
     {RiskType.respiratoryDepression},
     ['Micromedex 2024', 'UpToDate 2024']),
 
+
   ('milrinona', 'propofol', InteractionSeverity.moderate,
     'Propofol causa vasodilatação e depressão miocárdica direta. Combinado com inodilatador: hipotensão aditiva por vasodilatação somada e depressão cardíaca',
     'Hipotensão grave, especialmente em bolus de propofol. Depressão cardíaca aditiva',
@@ -7361,6 +7479,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.probable,
     {RiskType.arrhythmia},
     ['Micromedex 2024', 'UpToDate 2024']),
+
 
   ('milrinona', 'rocurônio', InteractionSeverity.minor,
     'Rocurônio (bloqueador neuromuscular adespolarizante) associado a outros agentes de UTI: sem interação farmacocinética direta, mas contexto de sedoanalgesia complexa',
@@ -7371,6 +7490,7 @@ const _interactionDB = <_IxEntry>[
     {RiskType.respiratoryDepression},
     ['Micromedex 2024', 'UpToDate 2024']),
 
+
   ('propofol', 'rocurônio', InteractionSeverity.minor,
     'Rocurônio (bloqueador neuromuscular adespolarizante) associado a outros agentes de UTI: sem interação farmacocinética direta, mas contexto de sedoanalgesia complexa',
     'Paralisia muscular prolongada em contexto de sedação profunda. Dificulta avaliação neurológica',
@@ -7380,23 +7500,6 @@ const _interactionDB = <_IxEntry>[
     {RiskType.respiratoryDepression},
     ['Micromedex 2024', 'UpToDate 2024']),
 
-  ('aas', 'clopidogrel', InteractionSeverity.moderate,
-    'Dupla antiagregação: aspirina inibe COX-1 irreversivelmente; clopidogrel bloqueia receptor P2Y12. Efeito antiagregante aditivo sinérgico (dupla antiagregação - DAPT)',
-    'Risco hemorrágico aumentado (GI, intracraniano) vs benefício cardiovascular em síndrome coronariana aguda e pós-stent',
-    'Combinação terapêutica indicada em SCA e pós-stent (DAPT). Duração: 1-12 meses conforme risco. Adicionar IBP. Monitorar sinais de sangramento',
-    'DAPT — Sangramento GI aumentado; adicionar IBP; duração definida conforme risco hemorrágico vs isquêmico',
-    EvidenceLevel.established,
-    {RiskType.hemorrhagic},
-    ['Goodman & Gilman 14ª ed.', 'Micromedex 2024', 'UpToDate 2024']),
-
-  ('acido valproico', 'valproato', InteractionSeverity.contraindicated,
-    'Ácido valproico e valproato são o mesmo fármaco (valproato de sódio vs ácido valproico livre): duplicação de dose inadvertida',
-    'Toxicidade por valproato: tremor, encefalopatia hiperamonêmica, hepatotoxicidade, pancreatite, trombocitopenia',
-    'CONTRAINDICADO — Duplicação do mesmo fármaco. Usar apenas uma formulação. Monitorar nível sérico se exposição inadvertida',
-    'DUPLICAÇÃO — Ácido valproico = valproato; usar apenas uma formulação',
-    EvidenceLevel.established,
-    {RiskType.plasmaLevel},
-    ['Goodman & Gilman 14ª ed.', 'Micromedex 2024']),
 
   ('ciprofloxacino', 'quinolona', InteractionSeverity.contraindicated,
     'Ciprofloxacino é uma quinolona fluorada: uso concomitante representa duplicação do mesmo mecanismo de ação (inibição de DNA-girase/topoisomerase IV)',
@@ -7407,6 +7510,7 @@ const _interactionDB = <_IxEntry>[
     {RiskType.qtProlongation},
     ['Goodman & Gilman 14ª ed.', 'Micromedex 2024']),
 
+
   ('paracetamol', 'rifampicina', InteractionSeverity.major,
     'Rifampicina é potente indutor de CYP2E1 e CYP3A4, aumentando conversão de paracetamol em seu metabólito hepatotóxico NAPQI. Depleção de glutationa hepática',
     'Hepatotoxicidade grave por paracetamol em doses que seriam normalmente seguras. Risco especialmente alto em doses >2g/dia',
@@ -7416,6 +7520,7 @@ const _interactionDB = <_IxEntry>[
     {RiskType.other},
     ['Goodman & Gilman 14ª ed.', 'Micromedex 2024', 'UpToDate 2024']),
 
+
   ('colchicina', 'rifampicina', InteractionSeverity.major,
     'Rifampicina induz CYP3A4 e P-glicoproteína (P-gp), reduzindo absorção e aumentando eliminação de colchicina. Níveis de colchicina reduzidos em 50-70%',
     'Falha terapêutica da colchicina (crise de gota não controlada, falha na profilaxia de pericardite)',
@@ -7424,6 +7529,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.probable,
     {RiskType.plasmaLevel},
     ['Micromedex 2024', 'UpToDate 2024']),
+
 
 ];
 
@@ -7435,7 +7541,7 @@ const _termMap = <String, String>{
   'alisquireno': 'alisquireno', 'rasilez': 'alisquireno',
 
   // Antiagregantes
-  'aspirina': 'aspirina', 'aas': 'aas', 'ácido acetilsalicílico': 'aspirina',
+  'aspirina': 'aspirina', 'aas': 'aspirina', 'ácido acetilsalicílico': 'aspirina',
   'acido acetilsalicilico': 'aspirina', 'aspirin': 'aspirina',
 
   // AINEs
@@ -7498,14 +7604,16 @@ const _termMap = <String, String>{
   // Antiepilépticos
   'fenitoína': 'fenitoína', 'fenitoin': 'fenitoína',
   'carbamazepina': 'carbamazepina', 'tegretol': 'carbamazepina',
-  'acido valproico': 'acido valproico', 'ácido valpróico': 'acido valproico',
-  'valproato': 'acido valproico', 'depakote': 'acido valproico',
+  'acido valproico': 'valproato', 'ácido valpróico': 'valproato',
+  'ácido valproico': 'valproato', 'valproico': 'valproato',
+  'valproato': 'valproato', 'depakote': 'valproato', 'depakene': 'valproato',
+  'divalproex': 'valproato', 'epival': 'valproato', 'stavzor': 'valproato',
   'lamotrigina': 'lamotrigina', 'lamictal': 'lamotrigina',
 
   // Psicotrópicos
   'tramadol': 'tramadol', 'tramal': 'tramadol',
   'morfina': 'morfina', 'meperidina': 'opioide', 'codeína': 'opioide',
-  'fentanila': 'opioide', 'oxicodona': 'opioide', 'opioide': 'opioide',
+  'fentanila': 'fentanila', 'oxicodona': 'opioide', 'opioide': 'opioide',
   'benzodiazepínico': 'benzodiazepínico', 'diazepam': 'benzodiazepínico',
   'lorazepam': 'benzodiazepínico', 'alprazolam': 'benzodiazepínico',
   'clonazepam': 'benzodiazepínico', 'rivotril': 'benzodiazepínico',
@@ -7515,8 +7623,11 @@ const _termMap = <String, String>{
   'midazolam': 'midazolam', 'dormicum': 'midazolam', 'versed': 'midazolam',
   'haloperidol': 'haloperidol', 'haldol': 'haloperidol',
   'quetiapina': 'quetiapina', 'seroquel': 'quetiapina',
-  'ssri': 'ssri', 'fluoxetina': 'ssri', 'sertralina': 'ssri',
-  'escitalopram': 'ssri', 'paroxetina': 'ssri', 'citalopram': 'ssri',
+  'ssri': 'isrs', 'isrs': 'isrs',
+  'fluoxetina': 'fluoxetina', 'prozac': 'fluoxetina', 'sertralina': 'isrs', 'zoloft': 'isrs',
+  'escitalopram': 'isrs', 'lexapro': 'isrs', 'paroxetina': 'isrs', 'paxil': 'isrs',
+  'citalopram': 'isrs', 'celexa': 'isrs', 'fluvoxamina': 'isrs', 'luvox': 'isrs',
+  'venlafaxina': 'isrs', 'effexor': 'isrs',
   'imao': 'imao', 'fenelzina': 'imao', 'tranilcipromina': 'imao',
   'linezolida': 'linezolida', 'linezolid': 'linezolida', 'zyvox': 'linezolida',
   'amitriptilina': 'amitriptilina', 'laroxyl': 'amitriptilina', 'tryptanol': 'amitriptilina',
@@ -7714,7 +7825,8 @@ const _termMap = <String, String>{
   'acetazolamida': 'acetazolamida', 'diamox': 'acetazolamida', 'acetazolamide': 'acetazolamida',
 
   // Psiquiatria / Antidepressivos (sertralina já mapeada como ssri acima)
-  'zoloft': 'ssri', 'sertraline': 'ssri', 'serenata': 'ssri',
+  'sertraline': 'isrs', 'serenata': 'isrs', 'venlafaxine': 'isrs',
+  'paroxetine': 'isrs', 'fluvoxamine': 'isrs', 'citaloprame': 'isrs',
   'mirtazapina': 'mirtazapina', 'remeron': 'mirtazapina', 'mirtazapine': 'mirtazapina',
   'zolvera': 'mirtazapina',
 
@@ -7813,11 +7925,11 @@ const _termMap = <String, String>{
   'dipirona': 'paracetamol', 'novalgina': 'paracetamol', 'metamizol': 'paracetamol',
 
   // Antibióticos — piperacilina-tazobactam
-  'piperacilina_tazobactam': 'piperacilina_tazobactam',
-  'piperacilina tazobactam': 'piperacilina_tazobactam',
-  'piperacilina-tazobactam': 'piperacilina_tazobactam',
-  'pip-tazo': 'piperacilina_tazobactam', 'tazocin': 'piperacilina_tazobactam',
-  'zosyn': 'piperacilina_tazobactam',
+  'piperacilina_tazobactam': 'piperacilina-tazobactam',
+  'piperacilina-tazobactam': 'piperacilina-tazobactam',
+  'piperacilina tazobactam': 'piperacilina-tazobactam',
+  'pip-tazo': 'piperacilina-tazobactam', 'tazocin': 'piperacilina-tazobactam',
+  'zosyn': 'piperacilina-tazobactam', 'tazobac': 'piperacilina-tazobactam',
 
   // Quimioterapia — cisplatina
   'cisplatina': 'cisplatina', 'cisplatin': 'cisplatina', 'platinol': 'cisplatina',
@@ -7831,8 +7943,10 @@ const _termMap = <String, String>{
   'fenofibrate': 'fenofibrato', 'triglide': 'fenofibrato',
 
   // IMAO reversível (moclobemida)
-  'imao_reversivel': 'imao_reversivel', 'moclobemida': 'imao_reversivel',
-  'aurorix': 'imao_reversivel', 'moclobemide': 'imao_reversivel',
+  'imao_reversivel': 'imao reversivel', 'imao reversivel': 'imao reversivel',
+  'moclobemida': 'imao reversivel', 'aurorix': 'imao reversivel',
+  'moclobemide': 'imao reversivel', 'inibidor mao reversivel': 'imao reversivel',
+  'rima': 'imao reversivel',
 
   // Lítio — aliases adicionais (ID canônico: 'carbonato de litio')
   'li': 'carbonato de litio', 'lithium': 'carbonato de litio',
