@@ -284,6 +284,148 @@ const _interactionDB = <(String, String, InteractionSeverity, String, String, St
     'Risco aumentado de hemorragia',
     'Evitar AINEs durante anticoagulação. Preferir paracetamol para analgesia'),
 
+  // ── Amiodarona — QT e interações adicionais ───────────────────────────────
+  ('amiodarona', 'azitromicina',   InteractionSeverity.major,
+    'Prolongamento aditivo do intervalo QT por mecanismos distintos',
+    'Torsades de Pointes, fibrilação ventricular',
+    'Evitar combinação. Se antibiótico essencial, preferir amoxicilina ou doxiciclina. Monitorar QTc'),
+  ('amiodarona', 'metoprolol',     InteractionSeverity.major,
+    'Efeito cronotrópico e dromotrópico negativo aditivo sobre o nó sinusal e AV',
+    'Bradicardia grave, bloqueio AV, colapso hemodinâmico',
+    'Monitorar FC e ECG continuamente. Reduzir dose do betabloqueador. Ter atropina disponível'),
+
+  // ── Warfarina — entradas complementares ───────────────────────────────────
+  ('warfarina', 'aine',            InteractionSeverity.major,
+    'AINEs inibem função plaquetária e causam ulceração GI; deslocamento proteico eleva INR',
+    'Risco muito alto de sangramento gastrointestinal e ulceração péptica',
+    'Evitar combinação. Preferir paracetamol. Se inevitável, usar IBP e monitorar INR frequentemente'),
+
+  // ── Clopidogrel ───────────────────────────────────────────────────────────
+  ('clopidogrel', 'omeprazol',     InteractionSeverity.moderate,
+    'Inibição do CYP2C19 pelo omeprazol reduz conversão do clopidogrel ao metabólito ativo',
+    'Redução do efeito antiagregante — maior risco de eventos isquêmicos e trombose de stent',
+    'Preferir pantoprazol (menor inibição CYP2C19) se IBP necessário. Monitorar eventos cardiovasculares'),
+  ('clopidogrel', 'esomeprazol',   InteractionSeverity.moderate,
+    'Inibição do CYP2C19 pelo esomeprazol reduz ativação do clopidogrel',
+    'Eficácia antiagregante reduzida — risco de trombose de stent',
+    'Substituir por pantoprazol. Reavaliar necessidade do IBP após período de risco'),
+
+  // ── IECA — entradas complementares ────────────────────────────────────────
+  ('enalapril', 'sacubitrila',     InteractionSeverity.contraindicated,
+    'Inibição simultânea do sistema neprilisina-angiotensina causa acúmulo de bradicinina',
+    'Angioedema grave e potencialmente fatal — risco 3× maior que IECA isolado',
+    'Contraindicado. Respeitar janela de washout de 36 horas entre suspender IECA e iniciar sacubitrila'),
+
+  // ── Lítio ─────────────────────────────────────────────────────────────────
+  ('carbonato de litio', 'ibuprofeno',      InteractionSeverity.major,
+    'AINEs reduzem excreção renal de lítio por inibição das prostaglandinas renais',
+    'Toxicidade lítica rápida — tremor, confusão, convulsões, arritmias',
+    'Evitar AINEs em pacientes em uso de lítio. Usar paracetamol. Monitorar litemia se inevitável'),
+  ('carbonato de litio', 'hidroclorotiazida', InteractionSeverity.major,
+    'Tiazídicos aumentam reabsorção proximal de sódio e lítio em compensação à perda distal',
+    'Toxicidade por lítio — confusão, tremor, nefrotoxicidade',
+    'Monitorar litemia a cada 3–5 dias no início. Reduzir dose de lítio em 30–50%'),
+  ('carbonato de litio', 'enalapril',       InteractionSeverity.major,
+    'IECAs reduzem clearance renal de lítio por inibição da angiotensina II',
+    'Elevação dos níveis séricos de lítio — toxicidade',
+    'Monitorar litemia semanalmente nas primeiras 4 semanas. Reduzir dose de lítio conforme necessário'),
+
+  // ── Serotonina — entradas complementares ──────────────────────────────────
+  ('ssri', 'linezolida',           InteractionSeverity.contraindicated,
+    'Linezolida inibe a MAO — hiperestimulação serotoninérgica com SSRI',
+    'Síndrome serotoninérgica grave — hipertermia, rigidez, crise convulsiva, colapso',
+    'Contraindicado. Aguardar washout adequado (≥5 semanas para fluoxetina, ≥2 semanas para outros SSRIs)'),
+  ('tramadol', 'amitriptilina',    InteractionSeverity.major,
+    'Redução do limiar convulsivo + inibição da recaptação de serotonina/noradrenalina aditiva',
+    'Risco aumentado de convulsões e síndrome serotoninérgica',
+    'Evitar combinação. Se necessário, iniciar tramadol em dose mínima com monitoramento neurológico'),
+
+  // ── Aminoglicosídeos ───────────────────────────────────────────────────────
+  ('aminoglicosideo', 'vancomicina', InteractionSeverity.major,
+    'Nefrotoxicidade e ototoxicidade sinérgica — ambos lesam túbulos renais proximais e células ciliadas',
+    'Insuficiência renal aguda, surdez irreversível',
+    'Evitar combinação se possível. Se necessária, monitorar creatinina diariamente e função auditiva'),
+
+  // ── Quinolonas — quelação por cátions ─────────────────────────────────────
+  ('ciprofloxacino', 'carbonato de calcio', InteractionSeverity.moderate,
+    'Cálcio forma complexo insolúvel com ciprofloxacino no intestino (quelação)',
+    'Redução de até 50% na absorção oral da quinolona',
+    'Administrar ciprofloxacino 2h antes ou 6h após cálcio/antiácidos/ferro'),
+  ('ciprofloxacino', 'sulfato ferroso',     InteractionSeverity.moderate,
+    'Ferro quelata ciprofloxacino no TGI reduzindo drasticamente sua biodisponibilidade',
+    'Falha terapêutica do antibiótico',
+    'Administrar ciprofloxacino 2h antes ou 6h após suplemento de ferro'),
+
+  // ── Levotiroxina ──────────────────────────────────────────────────────────
+  ('levotiroxina', 'carbonato de calcio',   InteractionSeverity.moderate,
+    'Cálcio liga-se à levotiroxina no intestino reduzindo sua absorção',
+    'Hipotireoidismo por absorção inadequada — TSH elevado',
+    'Intervalo mínimo de 4 horas entre levotiroxina e cálcio. Tomar levotiroxina em jejum'),
+  ('levotiroxina', 'pantoprazol',           InteractionSeverity.moderate,
+    'Redução da acidez gástrica pelos IBPs prejudica dissolução e absorção da levotiroxina',
+    'Absorção reduzida — hipotireoidismo subclínico',
+    'Monitorar TSH a cada 6–8 semanas. Pode ser necessário aumentar dose de levotiroxina'),
+  ('levotiroxina', 'antiácido',             InteractionSeverity.moderate,
+    'Cátions (Al, Mg, Ca) dos antiácidos quelam levotiroxina no TGI',
+    'Redução da absorção — hipotireoidismo',
+    'Administrar levotiroxina 2h antes de antiácidos, IBPs, cálcio ou ferro'),
+
+  // ── Benzodiazepínicos — complementar ──────────────────────────────────────
+  ('benzodiazepínico', 'alcool',   InteractionSeverity.major,
+    'Potenciação mútua da depressão do SNC por mecanismos GABA-A aditivos',
+    'Sedação severa, depressão respiratória, coma, morte',
+    'Contraindicado. Orientar paciente explicitamente sobre proibição de álcool'),
+
+  // ── Anticonvulsivantes ─────────────────────────────────────────────────────
+  ('carbamazepina', 'anticoncepcional', InteractionSeverity.major,
+    'Indução enzimática do CYP3A4 acelera metabolismo de estrógenos e progestágenos',
+    'Falha do anticoncepcional hormonal — gravidez não planejada',
+    'Usar método contraceptivo não hormonal (DIU de cobre, preservativo). Orientar explicitamente a paciente'),
+  ('acido valproico', 'lamotrigina',    InteractionSeverity.major,
+    'Ácido valproico inibe a glucuronidação da lamotrigina, dobrando sua meia-vida',
+    'Toxicidade por lamotrigina — rash grave, Síndrome de Stevens-Johnson',
+    'Reduzir dose de lamotrigina em 50% ao introduzir valproato. Monitorar rash cutâneo'),
+  ('midazolam', 'claritromicina',       InteractionSeverity.major,
+    'Inibição potente do CYP3A4 pela claritromicina prolonga meia-vida do midazolam',
+    'Sedação prolongada e excessiva, depressão respiratória',
+    'Reduzir dose de midazolam em 50–75%. Monitorar nível de consciência e SpO₂'),
+
+  // ── Corticosteroides ──────────────────────────────────────────────────────
+  ('dexametasona', 'aine',         InteractionSeverity.major,
+    'Corticosteroide + AINE: inibição dupla das prostaglandinas protetoras da mucosa gástrica',
+    'Risco muito elevado de úlcera péptica e hemorragia GI',
+    'Contraindicado sem proteção gástrica. Prescrever IBP obrigatoriamente se combinação necessária'),
+
+  // ── Hiperpotassemia ────────────────────────────────────────────────────────
+  ('espironolactona', 'cloreto de potassio', InteractionSeverity.contraindicated,
+    'Espironolactona retém potássio + suplementação adicional = hipercalemia aditiva extrema',
+    'Hipercalemia fatal — parada cardíaca em assistolia',
+    'Contraindicado. Não suplementar potássio rotineiramente com espironolactona. Monitorar K+ sérico'),
+
+  // ── Colchicina / Imunossupressores ────────────────────────────────────────
+  ('colchicina', 'claritromicina', InteractionSeverity.contraindicated,
+    'Inibição da P-gp e CYP3A4 eleva drasticamente os níveis de colchicina',
+    'Toxicidade por colchicina — miopatia, neuropatia, pancitopenia, falência de múltiplos órgãos',
+    'Contraindicado em insuficiência renal ou hepática. Reduzir dose de colchicina e monitorar rigidamente'),
+  ('alopurinol', 'azatioprina',    InteractionSeverity.contraindicated,
+    'Alopurinol inibe xantina oxidase — enzima que metaboliza azatioprina — causando acúmulo tóxico',
+    'Mielossupressão grave: leucopenia, trombocitopenia, anemia aplásica',
+    'Contraindicado. Se combinação inevitável, reduzir azatioprina a 25% da dose e monitorar hemograma semanalmente'),
+
+  // ── Interações farmacodinâmicas adicionais ────────────────────────────────
+  ('ondansetrona', 'tramadol',     InteractionSeverity.moderate,
+    'Ondansetrona bloqueia receptores 5-HT₃ utilizados pelo tramadol para analgesia',
+    'Redução significativa do efeito analgésico do tramadol',
+    'Avaliar eficácia analgésica. Se necessário, substituir por outro antiemético ou usar analgésico alternativo'),
+  ('insulina', 'dapagliflozina',   InteractionSeverity.moderate,
+    'Efeito hipoglicemiante aditivo — iSGLT2 potencializa o efeito da insulina',
+    'Hipoglicemia grave, especialmente com insulina basal ou bolus elevados',
+    'Reduzir dose de insulina em 10–20% ao iniciar iSGLT2. Monitorar glicemia frequentemente'),
+  ('amitriptilina', 'atropina',    InteractionSeverity.moderate,
+    'Efeitos anticolinérgicos aditivos — bloqueio muscarínico somado',
+    'Boca seca intensa, retenção urinária, visão turva, confusão, delírio (especialmente em idosos)',
+    'Evitar em idosos. Se necessário, usar menor dose possível e monitorar sintomas anticolinérgicos'),
+
 ];
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -355,6 +497,10 @@ const _termMap = <String, String>{
 
   // Antiepilépticos
   'fenitoína': 'fenitoína', 'fenitoin': 'fenitoína',
+  'carbamazepina': 'carbamazepina', 'tegretol': 'carbamazepina',
+  'acido valproico': 'acido valproico', 'ácido valpróico': 'acido valproico',
+  'valproato': 'acido valproico', 'depakote': 'acido valproico',
+  'lamotrigina': 'lamotrigina', 'lamictal': 'lamotrigina',
 
   // Psicotrópicos
   'tramadol': 'tramadol', 'tramal': 'tramadol',
@@ -368,6 +514,9 @@ const _termMap = <String, String>{
   'ssri': 'ssri', 'fluoxetina': 'ssri', 'sertralina': 'ssri',
   'escitalopram': 'ssri', 'paroxetina': 'ssri', 'citalopram': 'ssri',
   'imao': 'imao', 'fenelzina': 'imao', 'tranilcipromina': 'imao',
+  'linezolida': 'linezolida', 'linezolid': 'linezolida', 'zyvox': 'linezolida',
+  'amitriptilina': 'amitriptilina', 'laroxyl': 'amitriptilina', 'tryptanol': 'amitriptilina',
+  'atropina': 'atropina',
   'litio': 'carbonato de litio', 'lítio': 'carbonato de litio',
   'carbonato de litio': 'carbonato de litio',
 
@@ -375,23 +524,61 @@ const _termMap = <String, String>{
   'metformina': 'metformina', 'glifage': 'metformina', 'glucoformin': 'metformina',
   'glibenclamida': 'glibenclamida', 'daonil': 'glibenclamida',
   'insulina': 'insulina',
+  'dapagliflozina': 'dapagliflozina', 'forxiga': 'dapagliflozina',
+  'empagliflozina': 'dapagliflozina', 'jardiance': 'dapagliflozina',
   'contraste': 'contraste iodado', 'contraste iodado': 'contraste iodado',
 
-  // Imunossupressores
+  // Imunossupressores / Gota
   'ciclosporina': 'ciclosporina', 'neoral': 'ciclosporina', 'sandimmun': 'ciclosporina',
+  'alopurinol': 'alopurinol', 'zyloric': 'alopurinol',
+  'azatioprina': 'azatioprina', 'imuran': 'azatioprina',
+  'colchicina': 'colchicina', 'colchis': 'colchicina',
 
   // Cardiovascular misc.
   'sildenafila': 'sildenafila', 'viagra': 'sildenafila', 'sildenafil': 'sildenafila',
   'tadalafila': 'sildenafila', 'cialis': 'sildenafila',
   'nitrato': 'nitrato', 'nitroglicerina': 'nitrato', 'isossorbida': 'nitrato',
   'mononitrato': 'nitrato', 'dinitrato': 'nitrato',
+  'sacubitrila': 'sacubitrila', 'sacubitril': 'sacubitrila', 'entresto': 'sacubitrila',
   'alfa-bloqueador': 'alfa-bloqueador', 'doxazosina': 'alfa-bloqueador',
   'tansulosina': 'alfa-bloqueador', 'prazosina': 'alfa-bloqueador',
   'teofilina': 'teofilina', 'aminofilina': 'teofilina',
   'ondansetrona': 'ondansetrona', 'zofran': 'ondansetrona',
+  'clopidogrel': 'clopidogrel', 'plavix': 'clopidogrel',
+
+  // Tireóide
+  'levotiroxina': 'levotiroxina', 'synthroid': 'levotiroxina', 'puran': 'levotiroxina',
+  'euthyrox': 'levotiroxina',
+
+  // Suplementos / Quelantes
+  'carbonato de calcio': 'carbonato de calcio', 'cálcio': 'carbonato de calcio',
+  'calcio': 'carbonato de calcio', 'calcium': 'carbonato de calcio',
+  'sulfato ferroso': 'sulfato ferroso', 'ferro': 'sulfato ferroso',
+  'cloreto de potassio': 'cloreto de potassio', 'kcl': 'cloreto de potassio',
+  'potassio': 'cloreto de potassio',
+
+  // Corticosteroides
+  'dexametasona': 'dexametasona', 'decadron': 'dexametasona',
+  'prednisona': 'dexametasona', 'prednisolona': 'dexametasona',
+  'hidrocortisona': 'dexametasona',
+
+  // Diuréticos
+  'hidroclorotiazida': 'hidroclorotiazida', 'hctz': 'hidroclorotiazida',
+  'clortalidona': 'hidroclorotiazida',
+
+  // Anticoncepcionais
+  'anticoncepcional': 'anticoncepcional', 'anticonceptivo': 'anticoncepcional',
+  'pilula': 'anticoncepcional', 'pílula': 'anticoncepcional',
+  'etinilestradiol': 'anticoncepcional', 'levonorgestrel': 'anticoncepcional',
+
+  // Vancomicina
+  'vancomicina': 'vancomicina', 'vancocin': 'vancomicina',
 
   // Outros
-  'antiácido': 'antiácido', 'omeprazol': 'antiácido', 'hidróxido': 'antiácido',
+  'antiácido': 'antiácido', 'hidróxido': 'antiácido',
+  'omeprazol': 'omeprazol', 'losec': 'omeprazol',
+  'pantoprazol': 'pantoprazol', 'pantozol': 'pantoprazol', 'tecta': 'pantoprazol',
+  'esomeprazol': 'esomeprazol', 'nexium': 'esomeprazol',
   'álcool': 'alcool', 'alcool': 'alcool', 'bebida': 'alcool',
   'gemfibrozila': 'gemfibrozil',
 };
