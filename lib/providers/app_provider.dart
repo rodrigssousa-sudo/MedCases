@@ -767,24 +767,38 @@ class AppProvider extends ChangeNotifier {
     return '${tail.join(' ')} $currentInput'.trim();
   }
 
-  /// Chamada principal — retorna resposta real da IA ou fallback local
+  /// Chamada principal — modo HÍBRIDO: base local sempre roda + OpenAI enriquece
+  ///
+  /// Fluxo:
+  ///  1. Matching local SEMPRE executado (protocolos + fármacos)
+  ///  2. Sem chave → retorna resposta local pura (rule-based)
+  ///  3. Com chave → injeta contexto local no system prompt do GPT
+  ///     O GPT usa a base como referência primária e complementa com
+  ///     conhecimento próprio o que a base não cobriu
+  ///  4. Erro de rede/quota → fallback silencioso para local
+  ///  5. Chave inválida → mensagem de erro clara (não faz fallback silencioso)
   Future<String> buildAIAnswer(String input) async {
-    // Se não tem chave → usa resposta local (rule-based) como fallback
+    // ── Passo 1: Matching local SEMPRE roda (independente de ter chave) ──────
+    final expandedInput = _expandedQuery(input);
+    final normalized    = _normalize(expandedInput);
+    final protocols     = _matchProtocols(normalized);
+    final drugs         = _matchDrugs(normalized);
+
+    // ── Passo 2: Sem chave → resposta local pura ──────────────────────────────
     if (_openAiKey.isEmpty) {
       return _buildLocalAnswer(input);
     }
 
-    // Expansão da query: usa histórico recente para melhorar o matching
-    // Ex: usuário disse "paciente com FA" antes → "tiene FA" agora → match correto
-    final expandedInput = _expandedQuery(input);
-    final normalized = _normalize(expandedInput);
-    final protocols  = _matchProtocols(normalized);
-    final drugs      = _matchDrugs(normalized);
-
+    // ── Passo 3: Com chave → GPT enriquece usando contexto local injetado ─────
+    // O system prompt instrui o GPT a:
+    //   a) Usar os protocolos/fármacos matchados como base primária
+    //   b) Complementar com conhecimento próprio o que a base não cobriu
+    //   c) Buscar em seu conhecimento geral quando a base está vazia
     final systemPrompt = AiService.buildClinicalSystemPrompt(
       lang: _lang,
       matchedProtocolSummaries: protocols,
       matchedDrugSummaries: drugs,
+      localAnswerContext: _buildLocalAnswer(input), // passa contexto local como referência
       patientAge: _patient.age.isNotEmpty ? _patient.age : null,
       patientSex: _patient.sex.isNotEmpty ? _patient.sex : null,
       patientWeight: _patient.weight.isNotEmpty ? _patient.weight : null,
@@ -799,28 +813,34 @@ class AppProvider extends ChangeNotifier {
       history: List.unmodifiable(_aiHistory),
     );
 
+    // ── Passo 4: Tratamento de erros ─────────────────────────────────────────
     if (result.isError) {
-      // Erros específicos com mensagem amigável
       switch (result.errorCode) {
-        case 'no_key':
-          return _buildLocalAnswer(input);
         case 'invalid_key':
+          // Chave inválida → erro claro (usuário precisa corrigir)
           return _lang == 'es'
-              ? 'ERRO API: Clave inválida. Verifica la configuración de API Key en el chat.'
-              : 'ERRO API: Chave inválida. Verifique a configuração de API Key no chat.';
+              ? '⚠️ Clave de API inválida. Verifica tu clave en la configuración del chat.\n\n'
+                'Mientras tanto, aquí está la respuesta de nuestra base local:\n\n'
+                '${_buildLocalAnswer(input)}'
+              : '⚠️ Chave de API inválida. Verifique sua chave na configuração do chat.\n\n'
+                'Enquanto isso, aqui está a resposta da nossa base local:\n\n'
+                '${_buildLocalAnswer(input)}';
         case 'quota':
+          // Quota esgotada → avisa + entrega resposta local
           return _lang == 'es'
-              ? 'Límite de uso de la API alcanzado. Revisa tu cuenta en platform.openai.com.'
-              : 'Limite de uso da API atingido. Verifique sua conta em platform.openai.com.';
-        case 'network':
-          // Sem rede → fallback local silencioso
-          return _buildLocalAnswer(input);
+              ? '⚠️ Límite de uso de la API alcanzado. Revisa tu cuenta en platform.openai.com.\n\n'
+                'Respuesta de nuestra base local:\n\n'
+                '${_buildLocalAnswer(input)}'
+              : '⚠️ Limite de uso da API atingido. Verifique sua conta em platform.openai.com.\n\n'
+                'Resposta da nossa base local:\n\n'
+                '${_buildLocalAnswer(input)}';
+        // Sem rede / erro desconhecido → fallback local silencioso (sem aviso)
         default:
           return _buildLocalAnswer(input);
       }
     }
 
-    // Adiciona ao histórico de conversa (contexto multi-turn)
+    // ── Passo 5: Sucesso → adiciona ao histórico multi-turn ──────────────────
     _aiHistory
       ..add({'role': 'user', 'content': input})
       ..add({'role': 'assistant', 'content': result.text});

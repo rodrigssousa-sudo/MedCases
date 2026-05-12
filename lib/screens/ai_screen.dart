@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../providers/app_provider.dart';
 import '../services/ai_service.dart';
 
@@ -363,8 +364,8 @@ class _WaHeader extends StatelessWidget {
                   ),
                   Text(
                     hasRealAi
-                        ? (lang == 'es' ? 'GPT-4o mini activo' : 'GPT-4o mini ativo')
-                        : (lang == 'es' ? 'Modo local • sin clave API' : 'Modo local • sem chave API'),
+                        ? (lang == 'es' ? 'Híbrido: base local + GPT-4o mini' : 'Híbrido: base local + GPT-4o mini')
+                        : (lang == 'es' ? 'Base clínica local • activo siempre' : 'Base clínica local • sempre ativa'),
                     style: TextStyle(
                       fontSize: 10,
                       color: Colors.white.withValues(alpha: 0.55),
@@ -967,16 +968,37 @@ class _AiSettingsSheetState extends State<_AiSettingsSheet> {
     if (mounted) Navigator.pop(context);
   }
 
-  void _showInstructions() {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Text(_isEs
-          ? 'Ve a platform.openai.com → API keys → Create new secret key'
-          : 'Acesse platform.openai.com → API keys → Create new secret key'),
-      behavior: SnackBarBehavior.floating,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      margin: const EdgeInsets.fromLTRB(16, 0, 16, 12),
-      duration: const Duration(seconds: 6),
-    ));
+  Future<void> _showInstructions() async {
+    final uri = Uri.parse('https://platform.openai.com/api-keys');
+    try {
+      if (await canLaunchUrl(uri)) {
+        await launchUrl(uri, mode: LaunchMode.externalApplication);
+      } else {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text(_isEs
+                ? 'Abre manualmente: platform.openai.com/api-keys'
+                : 'Abra manualmente: platform.openai.com/api-keys'),
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            margin: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+            duration: const Duration(seconds: 6),
+          ));
+        }
+      }
+    } catch (_) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(_isEs
+              ? 'Abre: platform.openai.com/api-keys'
+              : 'Acesse: platform.openai.com/api-keys'),
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          margin: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+          duration: const Duration(seconds: 6),
+        ));
+      }
+    }
   }
 
   @override
@@ -1184,34 +1206,79 @@ class _AiSettingsSheetState extends State<_AiSettingsSheet> {
 
           // ── Campo de chave (primeira vez ou ao trocar) ───────────────────
           if (_showField) ...[
-            // Info rápida
+
+            // ── Tutorial passo a passo (como obter a chave) ─────────────────
             Container(
-              padding: const EdgeInsets.all(12),
+              padding: const EdgeInsets.all(14),
               decoration: BoxDecoration(
                 color: cardBg,
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(14),
                 border: Border.all(color: divCol)),
               child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                 Row(children: [
-                  const Icon(Icons.info_outline_rounded, size: 13, color: Color(0xFF1F6B48)),
+                  const Icon(Icons.bolt_rounded, size: 14, color: Color(0xFF1F6B48)),
                   const SizedBox(width: 6),
                   Text(
-                    _isEs ? 'Clave vinculada a tu cuenta' : 'Chave vinculada à sua conta',
+                    _isEs ? 'Cómo activar el GPT en 3 pasos' : 'Como ativar o GPT em 3 passos',
                     style: const TextStyle(
-                      fontSize: 12, fontWeight: FontWeight.w700,
+                      fontSize: 12, fontWeight: FontWeight.w800,
                       color: Color(0xFF1F6B48))),
                 ]),
-                const SizedBox(height: 5),
-                Text(
-                  _isEs
-                      ? 'La clave se guarda en tu perfil de Firebase — disponible en todos tus dispositivos automáticamente.'
-                      : 'A chave fica salva no seu perfil Firebase — disponível em todos os dispositivos automaticamente.',
-                  style: TextStyle(fontSize: 11, color: sub, height: 1.55)),
+                const SizedBox(height: 12),
+                _StepItem(
+                  step: '1',
+                  dark: dark,
+                  label: _isEs
+                      ? 'Crea una cuenta gratuita en OpenAI'
+                      : 'Crie uma conta gratuita na OpenAI',
+                  sub: _isEs
+                      ? 'Usa tu e-mail o cuenta de Google — es rápido y gratis'
+                      : 'Use seu e-mail ou conta Google — é rápido e grátis',
+                ),
+                const SizedBox(height: 8),
+                _StepItem(
+                  step: '2',
+                  dark: dark,
+                  label: _isEs
+                      ? 'Ve a "API keys" y crea una nueva clave'
+                      : 'Acesse "API keys" e crie uma nova chave',
+                  sub: _isEs
+                      ? 'platform.openai.com → API keys → Create new secret key'
+                      : 'platform.openai.com → API keys → Create new secret key',
+                  hasLink: true,
+                  linkLabel: _isEs ? 'Abrir site da OpenAI' : 'Abrir site da OpenAI',
+                  onLinkTap: _showInstructions,
+                  green: green,
+                ),
+                const SizedBox(height: 8),
+                _StepItem(
+                  step: '3',
+                  dark: dark,
+                  label: _isEs
+                      ? 'Copia la clave y pégala aquí abajo'
+                      : 'Copie a chave e cole aqui embaixo',
+                  sub: _isEs
+                      ? 'Comienza con "sk-..." — guardamos en tu cuenta automáticamente'
+                      : 'Começa com "sk-..." — salvamos na sua conta automaticamente',
+                ),
+                const SizedBox(height: 10),
+                Divider(color: divCol, height: 1),
+                const SizedBox(height: 10),
+                Row(children: [
+                  Icon(Icons.lock_outline_rounded, size: 11,
+                    color: sub),
+                  const SizedBox(width: 5),
+                  Expanded(child: Text(
+                    _isEs
+                        ? 'Tu clave se cifra y se guarda en tu perfil — disponible en todos tus dispositivos.'
+                        : 'Sua chave é criptografada e salva no seu perfil — disponível em todos os dispositivos.',
+                    style: TextStyle(fontSize: 10, color: sub, height: 1.5))),
+                ]),
               ]),
             ),
             const SizedBox(height: 12),
 
-            // Campo
+            // Campo de texto da chave
             TextField(
               controller: _ctrl,
               obscureText: _obscure,
@@ -1223,8 +1290,8 @@ class _AiSettingsSheetState extends State<_AiSettingsSheet> {
                 hintStyle: TextStyle(
                   color: sub, fontFamily: 'monospace', fontSize: 13),
                 labelText: _isEs
-                    ? 'Clave OpenAI (sk-...)'
-                    : 'Chave OpenAI (sk-...)',
+                    ? 'Cole sua chave aqui (sk-...)'
+                    : 'Cole sua chave aqui (sk-...)',
                 labelStyle: TextStyle(color: sub, fontSize: 13),
                 filled: true, fillColor: cardBg,
                 border: OutlineInputBorder(
@@ -1243,23 +1310,6 @@ class _AiSettingsSheetState extends State<_AiSettingsSheet> {
                 errorText: _error,
                 errorMaxLines: 2,
               ),
-            ),
-            const SizedBox(height: 10),
-
-            // Link para obter chave
-            GestureDetector(
-              onTap: _showInstructions,
-              child: Row(mainAxisSize: MainAxisSize.min, children: [
-                Icon(Icons.open_in_new_rounded, size: 12, color: green),
-                const SizedBox(width: 4),
-                Text(
-                  _isEs
-                      ? 'Obtener clave en platform.openai.com'
-                      : 'Obter chave em platform.openai.com',
-                  style: TextStyle(
-                    fontSize: 11, color: green,
-                    fontWeight: FontWeight.w600)),
-              ]),
             ),
             const SizedBox(height: 16),
 
@@ -1318,6 +1368,87 @@ class _AiSettingsSheetState extends State<_AiSettingsSheet> {
         ]),
       ),
     );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Step item — tutorial passo a passo na tela de configuração da IA
+// ─────────────────────────────────────────────────────────────────────────────
+class _StepItem extends StatelessWidget {
+  final String step;
+  final bool dark;
+  final String label;
+  final String sub;
+  final bool hasLink;
+  final String? linkLabel;
+  final VoidCallback? onLinkTap;
+  final Color? green;
+
+  const _StepItem({
+    required this.step,
+    required this.dark,
+    required this.label,
+    required this.sub,
+    this.hasLink = false,
+    this.linkLabel,
+    this.onLinkTap,
+    this.green,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final subC = dark ? Colors.white54 : Colors.black54;
+    final textC = dark ? Colors.white : const Color(0xFF1A1A1A);
+    final stepColor = const Color(0xFF1F6B48);
+
+    return Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      // Número do passo
+      Container(
+        width: 22, height: 22,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: stepColor.withValues(alpha: 0.12),
+          border: Border.all(color: stepColor.withValues(alpha: 0.3)),
+        ),
+        child: Center(
+          child: Text(step,
+            style: TextStyle(
+              fontSize: 10, fontWeight: FontWeight.w900,
+              color: stepColor)),
+        ),
+      ),
+      const SizedBox(width: 10),
+      Expanded(child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(label,
+            style: TextStyle(
+              fontSize: 12, fontWeight: FontWeight.w700, color: textC)),
+          const SizedBox(height: 2),
+          Text(sub,
+            style: TextStyle(
+              fontSize: 11, color: subC, height: 1.4)),
+          if (hasLink && linkLabel != null && onLinkTap != null) ...[
+            const SizedBox(height: 5),
+            GestureDetector(
+              onTap: onLinkTap,
+              child: Row(mainAxisSize: MainAxisSize.min, children: [
+                Icon(Icons.open_in_new_rounded, size: 11,
+                  color: green ?? stepColor),
+                const SizedBox(width: 4),
+                Text(linkLabel!,
+                  style: TextStyle(
+                    fontSize: 11,
+                    color: green ?? stepColor,
+                    fontWeight: FontWeight.w700,
+                    decoration: TextDecoration.underline,
+                    decorationColor: green ?? stepColor)),
+              ]),
+            ),
+          ],
+        ],
+      )),
+    ]);
   }
 }
 
