@@ -754,6 +754,19 @@ class AppProvider extends ChangeNotifier {
     return results;
   }
 
+  /// Constrói query expandida com contexto do histórico (últimas N msgs do usuário)
+  String _expandedQuery(String currentInput, {int lastN = 5}) {
+    final recentUserMsgs = _aiHistory
+        .where((m) => m['role'] == 'user')
+        .map((m) => m['content'] ?? '')
+        .toList();
+    // Pega só as últimas N mensagens do usuário
+    final tail = recentUserMsgs.length > lastN
+        ? recentUserMsgs.sublist(recentUserMsgs.length - lastN)
+        : recentUserMsgs;
+    return '${tail.join(' ')} $currentInput'.trim();
+  }
+
   /// Chamada principal — retorna resposta real da IA ou fallback local
   Future<String> buildAIAnswer(String input) async {
     // Se não tem chave → usa resposta local (rule-based) como fallback
@@ -761,7 +774,10 @@ class AppProvider extends ChangeNotifier {
       return _buildLocalAnswer(input);
     }
 
-    final normalized = _normalize(input);
+    // Expansão da query: usa histórico recente para melhorar o matching
+    // Ex: usuário disse "paciente com FA" antes → "tiene FA" agora → match correto
+    final expandedInput = _expandedQuery(input);
+    final normalized = _normalize(expandedInput);
     final protocols  = _matchProtocols(normalized);
     final drugs      = _matchDrugs(normalized);
 
@@ -818,13 +834,29 @@ class AppProvider extends ChangeNotifier {
 
   /// Resposta local (rule-based) — fallback quando não há chave ou sem rede
   String _buildLocalAnswer(String input) {
+    final bool es = _lang == 'es';
+
+    // ── Contexto acumulado do histórico (últimas 6 msgs do usuário) ───────────
+    // Permite que perguntas de follow-up ("forma de administração", "tiene FA")
+    // sejam respondidas com base no contexto já estabelecido na conversa.
+    final recentUserMsgs = _aiHistory
+        .where((m) => m['role'] == 'user')
+        .map((m) => m['content'] ?? '')
+        .toList();
+    final historyTail = recentUserMsgs.length > 6
+        ? recentUserMsgs.sublist(recentUserMsgs.length - 6)
+        : recentUserMsgs;
+    final qHistory = _normalize(historyTail.join(' '));
+    // Query expandida = histórico recente + mensagem atual
+    final qExpanded = _normalize('$qHistory $input');
+    // Query da mensagem atual
     final q = _normalize(input);
+
     final buf = StringBuffer();
     final suspected = <String>[];
     final protocolIds = <String>[];
     final examSuggestions = <String>[];
     final redFlags = <String>[];
-    final bool es = _lang == 'es';
 
     // ── Síndromes cardiovasculares ─────────────────────────────────────────
     if (_has(q, ['dor torac', 'peito', 'iam', 'infarto', 'angina', 'stemi', 'nstemi', 'sca'])) {
@@ -1182,12 +1214,272 @@ class AppProvider extends ChangeNotifier {
       redFlags.addAll(['PA ≥ 160/110 em gestante → anti-hipertensivo imediato (hidralazina/nifedipina)', 'Convulsão → sulfato de magnésio 4–6 g EV (ataque) + 1–2 g/h manutenção', 'HELLP → parto imediato se ≥ 34 semanas']);
     }
 
-    // ── Input vago: pede contexto em vez de despejar tudo ──────────────────
+    // ════════════════════════════════════════════════════════════════════════
+    // ── INTELIGÊNCIA CONTEXTUAL (quando suspected ainda está vazio) ─────────
+    // Antes de pedir mais contexto, tenta extrair informação útil de:
+    //   1. Perguntas de farmacologia (via, dose, mecanismo, interação, adversos)
+    //   2. Re-tentativa com qExpanded (histórico + msg atual)
+    //   3. Follow-up clínico genérico quando há contexto no histórico
+    // ════════════════════════════════════════════════════════════════════════
     if (suspected.isEmpty) {
-      final ask = _lang == 'es'
-          ? 'Puedo ayudarte mejor si me cuentas más. ¿Cuáles son los síntomas principales? ¿Hay signos vitales, tiempo de evolución o antecedentes relevantes?'
-          : 'Posso ajudar melhor se você me contar mais. Quais são os sintomas principais? Há sinais vitais, tempo de evolução ou antecedentes relevantes?';
-      return '$ask\n\n⚕ Apoio educacional.';
+
+      // ── 1. PERGUNTAS DE FARMACOLOGIA DIRETA ────────────────────────────
+      // Detecta intenção: "via de administração", "dose", "mecanismo",
+      // "efeito adverso", "interação", "contraindicação", "como dar", etc.
+      final isPharmaQuestion = _has(qExpanded, [
+        'via de admin', 'forma de admin', 'via admin', 'como admin',
+        'como dar', 'como usar', 'modo de usar', 'modo de admin',
+        'rota de admin', 'via de uso',
+        'dose ', 'dosagem', 'posolog', 'dose maxima', 'dose minima',
+        'dose inicial', 'dose de ataque', 'dose de manutenc',
+        'mecanismo', 'mecanismo de acao', 'como funciona', 'por que usar',
+        'efeito adverso', 'efeito colateral', 'reacao adversa',
+        'evento adverso', 'efeitos', 'toxicidade',
+        'interacao', 'interacoes', 'interage', 'compativel',
+        'contraindicacao', 'contraindicado', 'nao usar', 'quando nao',
+        'indicacao', 'indicado para', 'para que serve', 'quando usar',
+        'alerta', 'cuidado', 'atencao renal', 'ajuste renal',
+        'idoso', 'gestante', 'grávida', 'pediatr',
+        // espanhol
+        'via de administracion', 'forma de administracion', 'como administrar',
+        'dosis', 'posologia', 'mecanismo de accion', 'efecto adverso',
+        'efectos secundarios', 'interaccion', 'contraindicacion',
+        'para que sirve', 'cuando usar', 'alerta renal',
+      ]);
+
+      if (isPharmaQuestion) {
+        // Busca fármacos mencionados na query expandida (histórico + atual)
+        final matchedDrugs = _matchDrugs(_normalize(qExpanded));
+        if (matchedDrugs.isNotEmpty) {
+          // Determina o tipo de pergunta para resposta focada
+          final askingVia   = _has(qExpanded, ['via ', 'via de', 'forma de admin', 'como admin', 'como dar', 'rota', 'modo de', 'administracion']);
+          final askingDose  = _has(qExpanded, ['dose', 'dosagem', 'posolog', 'dosis']);
+          final askingMech  = _has(qExpanded, ['mecanismo', 'como funciona', 'por que', 'mecanismo de acao', 'mecanismo de accion']);
+          final askingAdv   = _has(qExpanded, ['adverso', 'colateral', 'reacao', 'toxicidad', 'efectos sec', 'efeito']);
+          final askingInter = _has(qExpanded, ['interacao', 'interaccion', 'interage', 'compativel']);
+          final askingCI    = _has(qExpanded, ['contraindicacao', 'contraindicado', 'nao usar', 'contraindicacion']);
+          final askingInd   = _has(qExpanded, ['indicacao', 'indicado', 'para que', 'quando usar', 'sirve', 'indicacion']);
+
+          buf.writeln(es ? '## Información farmacológica:' : '## Informações farmacológicas:');
+          buf.writeln('');
+
+          for (final drug in drugsDatabase) {
+            final dName = _normalize(drug.name);
+            // Verifica se este fármaco foi mencionado na query expandida
+            final words = qExpanded.split(RegExp(r'\s+')).where((w) => w.length > 3);
+            final isMatch = words.any((w) => dName.contains(w));
+            if (!isMatch) continue;
+
+            buf.writeln('### ${drug.name}');
+
+            if (askingVia || (!askingDose && !askingMech && !askingAdv && !askingInter && !askingCI && !askingInd)) {
+              // drug.route é String direta (não Map)
+              if (drug.route.isNotEmpty) {
+                buf.writeln('  **${es ? "Vía" : "Via"}:** ${drug.route}');
+              }
+            }
+            if (askingDose || (!askingVia && !askingMech && !askingAdv && !askingInter && !askingCI && !askingInd)) {
+              final fd = drug.getField(drug.fixedDose, _lang);
+              if (fd.isNotEmpty) {
+                buf.writeln('  **${es ? "Dosis habitual" : "Dose habitual"}:** $fd');
+              }
+              if (_patient.weight.isNotEmpty) {
+                try {
+                  final calc = calculateDose(drug);
+                  buf.writeln('  **${es ? "Dosis calculada" : "Dose calculada"} (${_patient.weight} kg):** ${calc.main}');
+                  for (final a in calc.alerts.take(2)) buf.writeln('  ⚠ $a');
+                } catch (_) {}
+              }
+            }
+            if (askingMech) {
+              final mech = drug.getField(drug.mechanism, _lang);
+              if (mech.isNotEmpty) buf.writeln('  **${es ? "Mecanismo" : "Mecanismo"}:** $mech');
+            }
+            if (askingAdv) {
+              // adverse usa getAdverse() que retorna List<String>
+              final advList = drug.getAdverse(_lang);
+              if (advList.isNotEmpty) {
+                final advText = advList.take(5).join(', ');
+                buf.writeln('  **${es ? "Efectos adversos" : "Efeitos adversos"}:** $advText');
+              }
+            }
+            if (askingCI) {
+              final warn = drug.getField(drug.warning, _lang);
+              if (warn.isNotEmpty) buf.writeln('  **${es ? "Contraindicaciones / Alertas" : "Contraindicações / Alertas"}:** ${warn.length > 200 ? warn.substring(0, 200) + '...' : warn}');
+            }
+            if (askingInd) {
+              final cls = drug.getField(drug.className, _lang);
+              if (cls.isNotEmpty) buf.writeln('  **${es ? "Clase / Uso" : "Classe / Uso"}:** $cls');
+            }
+            if (askingInter) {
+              // Busca interações do fármaco no banco via checkInteractions
+              final interList = DrugInteractionService.checkInteractions(
+                selectedDrugNames: [drug.name],
+                patientMedicationsText: _patient.medications,
+              );
+              if (interList.isNotEmpty) {
+                buf.writeln('  **${es ? "Interacciones relevantes" : "Interações relevantes"}:**');
+                for (final inter in interList.take(4)) {
+                  final sev = inter.severity == InteractionSeverity.contraindicated
+                      ? '⛔ ${es ? "Contraindicado" : "Contraindicado"}'
+                      : inter.severity == InteractionSeverity.major
+                          ? '🔴 ${es ? "Mayor" : "Maior"}'
+                          : inter.severity == InteractionSeverity.moderate
+                              ? '🟠 ${es ? "Moderada" : "Moderada"}'
+                              : '🟡 ${es ? "Menor/Monitorar" : "Menor/Monitorar"}';
+                  final effectText = inter.effect;
+                  buf.writeln('    $sev — ${inter.drug1} + ${inter.drug2}: ${effectText.length > 100 ? effectText.substring(0, 100) + "..." : effectText}');
+                }
+              } else {
+                buf.writeln('  ${es ? "No se encontraron interacciones registradas con los medicamentos actuales." : "Nenhuma interação registrada com os medicamentos atuais."}');
+              }
+            }
+
+            // Alerta renal se ClCr baixo
+            final clcrVal = double.tryParse((clcr ?? '').replaceAll(',', '.'));
+            if (clcrVal != null && clcrVal > 0 && clcrVal < 45) {
+              final renalAlert = drug.getField(drug.renalAlert, _lang);
+              if (renalAlert.isNotEmpty) {
+                buf.writeln('  ⚠ **${es ? "Alerta renal (ClCr $clcr)" : "Alerta renal (ClCr $clcr)"}:** ${renalAlert.length > 150 ? renalAlert.substring(0, 150) + "..." : renalAlert}');
+              }
+            }
+            buf.writeln('');
+          }
+
+          if (buf.isNotEmpty) {
+            buf.writeln('---');
+            buf.writeln(es
+                ? '_Apoyo educacional. Confirme con fuente primaria._'
+                : '_Apoio educacional. Confirme com fonte primária._');
+            return buf.toString();
+          }
+        }
+      }
+
+      // ── 2. RE-TENTATIVA COM QUERY EXPANDIDA (histórico + atual) ────────
+      // Cobre casos como "tiene FA" onde FA já foi mencionada antes.
+      // Só re-tenta se há histórico real (≥1 msg anterior).
+      if (qHistory.isNotEmpty && qHistory.length > 5) {
+        // Re-executa o matching usando qExpanded
+        if (_has(qExpanded, ['fa ', 'fibrilac atrial', 'fibril atri', 'auricular', 'rr irregular'])) {
+          suspected.add('Fibrilação Atrial');
+          protocolIds.add('fa_aguda');
+        }
+        if (_has(qExpanded, ['dor torac', 'peito', 'iam', 'infarto', 'angina', 'stemi', 'nstemi', 'sca'])) {
+          suspected.add(es ? 'Síndrome Coronario Agudo' : 'Síndrome Coronariana Aguda (IAM/Angina Instável)');
+          protocolIds.add('iam_congestao');
+        }
+        if (_has(qExpanded, ['sepse', 'choque sept', 'foco infec', 'bacterem', 'sofa'])) {
+          suspected.add('Sepse / Choque Séptico');
+          protocolIds.add('sepse');
+        }
+        if (_has(qExpanded, ['hipertens', 'pressao alta', 'pa elev', 'hta', 'pa alta'])) {
+          suspected.add(es ? 'Crisis Hipertensiva' : 'Crise Hipertensiva');
+          protocolIds.add('crise_hipertensiva');
+        }
+        if (_has(qExpanded, ['avc', 'ave', 'acidente vascular', 'isquemia cerebr', 'avc isquem', 'trombose cerebr', 'tpa', 'nihss'])) {
+          suspected.add(es ? 'ACV Isquémico' : 'AVC Isquêmico');
+          protocolIds.add('avc_isquemico');
+        }
+        if (_has(qExpanded, ['insuf cardiac', 'ic ', 'dispne', 'edema pulm', 'crepit', 'congest'])) {
+          suspected.add(es ? 'Insuficiencia Cardíaca Descompensada' : 'Insuficiência Cardíaca Descompensada');
+          protocolIds.add('iam_congestao');
+        }
+        if (_has(qExpanded, ['hipotens', 'choque', 'pele fria', 'oliguria', 'lactato', 'hipoperfus'])) {
+          suspected.add(es ? 'Choque' : 'Choque (cardiogênico / séptico / hipovolêmico)');
+          protocolIds.add('choque_cardiogenico');
+        }
+        if (_has(qExpanded, ['tep', 'embolia pulm', 'tvp', 'trombose venos', 'tromboembol'])) {
+          suspected.add(es ? 'Tromboembolismo Pulmonar' : 'Tromboembolismo Pulmonar (TEP)');
+          protocolIds.add('tep');
+        }
+        if (_has(qExpanded, ['bradic', 'bloqueio av', 'bav', 'bav total', 'bav complet'])) {
+          suspected.add(es ? 'Bradiarritmia / Bloqueo AV' : 'Bradiarritmia / Bloqueio AV');
+          protocolIds.add('bradiarritmia');
+        }
+        if (_has(qExpanded, ['diabet', 'hiper glyc', 'dka', 'cetoacid', 'hipoglicemi', 'glicose'])) {
+          suspected.add(es ? 'Urgencia Diabética (DKA/Hipoglucemia)' : 'Urgência Diabética (DKA/Hipoglicemia)');
+          protocolIds.add('dka_hipoglicemia');
+        }
+        if (_has(qExpanded, ['taquic', 'tvs', 'tv sem pulso', 'fv ', 'fibrilac ventr', 'pcr ', 'reanimac'])) {
+          suspected.add(es ? 'Taquiarritmia Ventricular / PCR' : 'Taquiarritmia Ventricular / PCR');
+          protocolIds.add('pcr');
+        }
+      }
+
+      // ── 3. FOLLOW-UP CLÍNICO COM CONTEXTO DO HISTÓRICO ────────────────
+      // Quando o usuário faz pergunta curta de seguimento ("e a anticoagulação?",
+      // "qual o protocolo?", "quando cardiovertir?") e há histórico ativo.
+      if (suspected.isEmpty && _aiHistory.isNotEmpty) {
+        final isFollowUp = _has(q, [
+          'e a ', 'e o ', 'e os ', 'e as ', 'qual ', 'quando ',
+          'como ', 'por que', 'e para', 'e se ', 'pode ',
+          'deve ', 'precis', 'protocolo', 'conduta', 'anticoag',
+          'cardiovert', 'cardioversao', 'tratar', 'tratamento',
+          'manejo', 'fármaco', 'farmaco', 'medicament',
+          // espanhol
+          'y el ', 'y la ', 'cual ', 'cuando ', 'como ', 'para que',
+          'protocolo', 'conducta', 'anticoag', 'cardioversion',
+          'tratar', 'tratamiento', 'manejo', 'farmaco', 'medicamento',
+        ]);
+
+        if (isFollowUp) {
+          // Tenta encontrar o último diagnóstico/condição da conversa
+          final lastAssistantMsg = _aiHistory
+              .where((m) => m['role'] == 'assistant')
+              .map((m) => m['content'] ?? '')
+              .lastOrNull ?? '';
+          final lastQNorm = _normalize(lastAssistantMsg);
+
+          // Re-tenta extrair protocolo com base no último contexto
+          if (_has(lastQNorm, ['fibrilac', 'fa ', 'auricular'])) {
+            suspected.add('Fibrilação Atrial');
+            protocolIds.add('fa_aguda');
+          } else if (_has(lastQNorm, ['sepse', 'choque sept'])) {
+            suspected.add('Sepse');
+            protocolIds.add('sepse');
+          } else if (_has(lastQNorm, ['iam', 'infarto', 'coronar', 'angina'])) {
+            suspected.add(es ? 'Síndrome Coronario Agudo' : 'Síndrome Coronariana Aguda');
+            protocolIds.add('iam_congestao');
+          } else if (_has(lastQNorm, ['avc', 'ave', 'cerebr', 'isquem'])) {
+            suspected.add(es ? 'ACV' : 'AVC');
+            protocolIds.add('avc_isquemico');
+          } else if (_has(lastQNorm, ['hipertens', 'crise hiperten', 'pa elev'])) {
+            suspected.add(es ? 'Crisis Hipertensiva' : 'Crise Hipertensiva');
+            protocolIds.add('crise_hipertensiva');
+          } else if (_has(lastQNorm, ['tep', 'embolia pulm', 'tromboembol'])) {
+            suspected.add(es ? 'TEP' : 'TEP');
+            protocolIds.add('tep');
+          } else if (_has(lastQNorm, ['insuf cardiac', 'ic ', 'edema pulm', 'congest'])) {
+            suspected.add(es ? 'Insuficiencia Cardíaca' : 'Insuficiência Cardíaca');
+            protocolIds.add('iam_congestao');
+          }
+        }
+      }
+
+      // ── 4. FALLBACK FINAL — só chega aqui se realmente não há contexto ──
+      if (suspected.isEmpty) {
+        // Se há histórico, oferece opções relacionadas ao contexto anterior
+        if (_aiHistory.isNotEmpty) {
+          final lastUser = _aiHistory
+              .where((m) => m['role'] == 'user')
+              .map((m) => m['content'] ?? '')
+              .lastOrNull ?? '';
+          final contextHint = lastUser.isNotEmpty
+              ? (es
+                  ? '\n_Contexto anterior: "$lastUser"_\n\n'
+                  : '\n_Contexto anterior: "$lastUser"_\n\n')
+              : '';
+          return es
+              ? '${contextHint}Entiendo que tienes una pregunta de seguimiento. ¿Podrías especificar un poco más?\n\nPor ejemplo:\n• "¿Cuál es la dosis de [fármaco]?"\n• "¿Cuándo cardiovertir en FA?"\n• "¿Qué anticoagulante usar?"\n• "¿Cuál es el protocolo de manejo?"\n\n⚕ Apoyo educacional.'
+              : '${contextHint}Entendo que é uma pergunta de seguimento. Pode especificar um pouco mais?\n\nPor exemplo:\n• "Qual a dose de [fármaco]?"\n• "Quando cardioverter na FA?"\n• "Qual anticoagulante usar?"\n• "Qual o protocolo de manejo?"\n\n⚕ Apoio educacional.';
+        }
+        // Sem nenhum histórico: pede contexto clínico
+        final ask = es
+            ? 'Puedo ayudarte mejor si me cuentas más sobre el caso clínico.\n\n**Sugerencias:**\n• Síntomas principales y tiempo de evolución\n• Signos vitales (PA, FC, SpO₂, temperatura)\n• Datos del paciente (edad, peso, antecedentes)\n• Fármaco o condición específica que quieres consultar\n\nEjemplos:\n• "Paciente con FA + hipotensión, ¿cuál es la conducta?"\n• "¿Cuál es la dosis de amiodarona en FA?"\n• "Sepsis: protocolo de antibióticos"'
+            : 'Posso ajudar melhor com mais detalhes sobre o caso clínico.\n\n**Sugestões:**\n• Sintomas principais e tempo de evolução\n• Sinais vitais (PA, FC, SpO₂, temperatura)\n• Dados do paciente (idade, peso, antecedentes)\n• Fármaco ou condição específica que deseja consultar\n\nExemplos:\n• "Paciente com FA + hipotensão, qual a conduta?"\n• "Qual a dose de amiodarona na FA?"\n• "Sepse: protocolo de antibióticos"';
+        return '$ask\n\n⚕ Apoio educacional.';
+      }
     }
 
     // ── Montar resposta ──────────────────────────────────────────────────
