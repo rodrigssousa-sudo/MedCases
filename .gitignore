@@ -30,10 +30,31 @@ migrate_working_dir/
 .flutter-plugins-dependencies
 .pub-cache/
 .pub/
-# /build/ — ignorado exceto build/web (necessário para deploy no DigitalOcean)
-/build/
-!build/web
-!build/web/**
+# build/ — ignorar tudo EXCETO build/web (necessário para deploy no DigitalOcean)
+# Nota: /build/ + !build/web não funciona no git (pai ignorado bloqueia a exceção)
+# Solução: ignorar subdiretórios de build individualmente
+build/android/
+build/app/
+build/ios/
+build/linux/
+build/macos/
+build/windows/
+build/flutter_assets/
+build/unit_test_assets/
+# Artefatos de build Android/plugins (não commitar)
+build/.cxx/
+build/reports/
+build/*.dill
+build/*.dill.track.dill
+build/cloud_firestore/
+build/firebase_auth/
+build/firebase_core/
+build/flutter_local_notifications/
+build/path_provider_android/
+build/share_plus/
+build/shared_preferences_android/
+build/url_launcher_android/
+build/[0-9a-f]*/
 # CanvasKit — servido pelo CDN do Google (não commitar)
 build/web/canvaskit/
 build/web/*.symbols
