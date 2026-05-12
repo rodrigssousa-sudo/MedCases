@@ -257,14 +257,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.myopathy, RiskType.plasmaLevel},
     [_kRefMdx, _kRefFDA]),
-  ('sinvastatina', 'fluconazol', InteractionSeverity.major,
-    'Inibição do CYP3A4',
-    'Risco de rabdomiólise',
-    'Suspender sinvastatina durante uso de fluconazol',
-    'RISCO DE RABDOMIÓLISE — Suspender sinvastatina',
-    EvidenceLevel.established,
-    {RiskType.myopathy, RiskType.plasmaLevel},
-    [_kRefMdx, _kRefLex]),
+  // DUPLICATA REMOVIDA: sinvastatina+fluconazol — par detalhado mantido como fluconazol+sinvastatina (linha ~1654)
   ('atorvastatina', 'claritromicina', InteractionSeverity.moderate,
     'Inibição do CYP3A4 aumenta nível de atorvastatina',
     'Risco aumentado de miopatia',
@@ -589,15 +582,7 @@ const _interactionDB = <_IxEntry>[
     {RiskType.nephrotoxicity, RiskType.reducedEfficacy},
     [_kRefGG, _kRefUT]),
 
-  // ── Antifúngicos / QT ──────────────────────────────────────────────────────
-  ('fluconazol', 'quetiapina', InteractionSeverity.major,
-    'Inibição do CYP3A4 eleva nível de quetiapina + ambos prolongam QT',
-    'Prolongamento QT excessivo → Torsade de Pointes',
-    'Evitar. Monitorar ECG se inevitável; reduzir dose de quetiapina',
-    'ALTO RISCO DE TORSADE DE POINTES — Monitorar QTc',
-    EvidenceLevel.established,
-    {RiskType.qtProlongation, RiskType.plasmaLevel},
-    [_kRefMdx, _kRefLex]),
+  // DUPLICATA REMOVIDA: fluconazol+quetiapina — par detalhado mantido na seção de fluconazol (linha ~1670)
   ('haloperidol', 'ondansetrona', InteractionSeverity.major,
     'Prolongamento aditivo do QT por mecanismos distintos',
     'Torsade de Pointes',
@@ -616,7 +601,7 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.hemorrhagic},
     [_kRefGG, _kRefUT]),
-  ('heparina', 'nsaid', InteractionSeverity.moderate,
+  ('heparina', 'aine', InteractionSeverity.moderate,
     'AINEs inibem função plaquetária + risco de sangramento GI',
     'Risco aumentado de hemorragia',
     'Evitar AINEs durante anticoagulação. Preferir paracetamol para analgesia',
@@ -815,6 +800,16 @@ const _interactionDB = <_IxEntry>[
     {RiskType.respiratoryDepression, RiskType.cns, RiskType.plasmaLevel},
     [_kRefGG, _kRefMdx, _kRefFDA]),
 
+  // ── Claritromicina + Benzodiazepínicos (CYP3A4) ──────────────────────────
+  ('claritromicina', 'benzodiazepínico', InteractionSeverity.major,
+    'Claritromicina inibe potentemente o CYP3A4 — principal via de metabolismo de alprazolam, diazepam, clonazepam e triazolam. Lorazepam é menos afetado (metabolismo por glucuronidação)',
+    'Aumento de 2-5x nos níveis plasmáticos dos benzodiazepínicos → sedação excessiva e prolongada, comprometimento psicomotor, depressão respiratória, amnésia anterógrada',
+    'Preferir azitromicina quando possível (não inibe CYP3A4). Se claritromicina necessária: reduzir dose do benzodiazepínico em 50%, evitar alprazolam e triazolam, preferir lorazepam. Monitorar nível de consciência e SpO₂',
+    'SEDAÇÃO AUMENTADA — Claritromicina inibe CYP3A4; reduzir BZD em 50% ou preferir lorazepam',
+    EvidenceLevel.established,
+    {RiskType.cns, RiskType.respiratoryDepression, RiskType.plasmaLevel},
+    [_kRefGG, _kRefMdx, _kRefUT]),
+
   // ── Corticosteroides ──────────────────────────────────────────────────────
   ('dexametasona', 'aine', InteractionSeverity.major,
     'Corticosteroide + AINE: inibição dupla das prostaglandinas protetoras da mucosa gástrica',
@@ -916,10 +911,10 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.established,
     {RiskType.plasmaLevel, RiskType.cardiovascular},
     [_kRefMdx, _kRefFDA]),
-  ('dronedarona', 'varfarina', InteractionSeverity.moderate,
+  ('dronedarona', 'warfarina', InteractionSeverity.moderate,
     'Inibição do CYP3A4 e possível efeito no CYP2C9 pela dronedarona',
     'Elevação moderada do INR',
-    'Monitorar INR semanalmente nas primeiras 2–4 semanas após introdução. Ajustar dose de varfarina conforme necessário',
+    'Monitorar INR semanalmente nas primeiras 2–4 semanas após introdução. Ajustar dose de warfarina conforme necessário',
     'Necessita monitorização de INR nas primeiras 2–4 semanas',
     EvidenceLevel.probable,
     {RiskType.hemorrhagic, RiskType.plasmaLevel},
@@ -1785,7 +1780,7 @@ const _interactionDB = <_IxEntry>[
     [_kRefMdx, _kRefGG]),
 
   // Clortalidona / Hidroclorotiazida
-  ('hidroclorotiazida', 'lítio', InteractionSeverity.major,
+  ('hidroclorotiazida', 'carbonato de litio', InteractionSeverity.major,
     'Tiazídicos causam depleção de sódio → aumento compensatório da reabsorção de lítio no túbulo proximal',
     'Toxicidade por lítio: tremor grosseiro, náuseas, ataxia, confusão, convulsões, insuficiência renal',
     'Monitorar lítio sérico semanalmente ao iniciar/ajustar diurético. Reduzir dose de lítio em ~25%. Manter ingesta hídrica e salina adequadas',
@@ -2372,14 +2367,7 @@ const _interactionDB = <_IxEntry>[
     {RiskType.nephrotoxicity, RiskType.plasmaLevel, RiskType.increasedToxicity},
     [_kRefGG, _kRefMdx, _kRefUT]),
 
-  ('tacrolimo', 'fluconazol', InteractionSeverity.contraindicated,
-    'Fluconazol inibe fortemente CYP3A4 e CYP2C19 — principais vias de metabolismo do tacrolimo',
-    'Elevação de 3-5x nos níveis séricos de tacrolimo — nefrotoxicidade, neurotoxicidade, infecções oportunistas',
-    'CONTRAINDICADO em doses plenas — Reduzir dose de tacrolimo em 50-75% e monitorar nível sérico diariamente se uso inevitável. Preferir equinocandinaas ou anfotericina',
-    'CONTRAINDICADO — Fluconazol eleva tacrolimo 3-5x; risco de nefrotoxicidade e neurotoxicidade graves',
-    EvidenceLevel.established,
-    {RiskType.nephrotoxicity, RiskType.plasmaLevel, RiskType.increasedToxicity},
-    [_kRefGG, _kRefMdx, _kRefUT]),
+  // DUPLICATA REMOVIDA: tacrolimo+fluconazol — par detalhado mantido como fluconazol+tacrolimo (linha ~2541)
 
   ('tacrolimo', 'rifampicina', InteractionSeverity.contraindicated,
     'Rifampicina induz fortemente CYP3A4 e P-gp — reduz drasticamente os níveis séricos de tacrolimo',
@@ -2455,7 +2443,7 @@ const _interactionDB = <_IxEntry>[
     {RiskType.serotonin},
     [_kRefGG, _kRefFDA, _kRefUT]),
 
-  ('lítio', 'aine', InteractionSeverity.major,
+  ('carbonato de litio', 'aine', InteractionSeverity.major,
     'AINEs inibem síntese de prostaglandinas renais — reduzem excreção renal de lítio, elevando seus níveis séricos',
     'Intoxicação por lítio: tremor grosseiro, ataxia, confusão, convulsões, coma — efeito em 3-5 dias',
     'Evitar AINEs em pacientes com lítio. Usar paracetamol como alternativa analgésica. Se AINE necessário, monitorar lítio sérico em 3-5 dias',
@@ -2464,7 +2452,7 @@ const _interactionDB = <_IxEntry>[
     {RiskType.plasmaLevel, RiskType.cns},
     [_kRefGG, _kRefMdx, _kRefUT]),
 
-  ('lítio', 'furosemida', InteractionSeverity.major,
+  ('carbonato de litio', 'furosemida', InteractionSeverity.major,
     'Furosemida causa depleção de sódio — induz reabsorção tubular compensatória de lítio no túbulo proximal',
     'Elevação dos níveis séricos de lítio — intoxicação: tremor, ataxia, confusão, insuficiência renal',
     'Monitorar lítio sérico 5-7 dias após início ou aumento de dose da furosemida. Ajustar dose de lítio conforme necessário. Manter hidratação e ingestão de sódio',
@@ -2566,14 +2554,7 @@ const _interactionDB = <_IxEntry>[
     {RiskType.cardiovascular, RiskType.nephrotoxicity},
     [_kRefGG, _kRefUT]),
 
-  ('furosemida', 'litio', InteractionSeverity.major,
-    'Furosemida causa depleção de sódio — induz reabsorção tubular de lítio como compensação',
-    'Elevação dos níveis séricos de lítio — risco de intoxicação com tremor, ataxia, confusão',
-    'Monitorar nível sérico de lítio 5-7 dias após início ou ajuste de furosemida. Manter hidratação e aporte de sódio',
-    'INTOXICAÇÃO POR LÍTIO — Furosemida eleva lítio sérico; monitorar rigorosamente',
-    EvidenceLevel.established,
-    {RiskType.plasmaLevel, RiskType.cns},
-    [_kRefGG, _kRefMdx]),
+  // NOTA: par furosemida+litio consolidado em carbonato de litio+furosemida (acima, linha ~2467)
 
   ('digoxina', 'quinolona', InteractionSeverity.moderate,
     'Quinolonas alteram flora intestinal que metaboliza digoxina — em 10% dos pacientes ("metabolizadores por Eggerthella lenta"), quinolonas aumentam absorção de digoxina significativamente',
@@ -2631,6 +2612,16 @@ const _interactionDB = <_IxEntry>[
     {RiskType.qtProlongation, RiskType.plasmaLevel},
     [_kRefMdx, _kRefUT]),
 
+  // ── FLUCONAZOL + BENZODIAZEPÍNICOS (par ausente — bug crítico alprazolam+fluconazol) ──
+  ('fluconazol', 'benzodiazepínico', InteractionSeverity.major,
+    'Fluconazol inibe fortemente CYP3A4 — principal via de metabolismo de alprazolam, diazepam, clonazepam e lorazepam',
+    'Aumento de 2-4x nos níveis plasmáticos de benzodiazepínicos (alprazolam, diazepam, clonazepam). Sedação excessiva, depressão do SNC e risco de depressão respiratória. Lorazepam é menos afetado (metabolismo por glucuronidação).',
+    'Monitorar sedação e função respiratória. Reduzir dose do benzodiazepínico em 50% ao iniciar fluconazol. Preferir lorazepam quando possível (menos dependente de CYP3A4). Evitar alprazolam e diazepam prolongados com fluconazol sistêmico.',
+    'SEDAÇÃO AUMENTADA — Fluconazol inibe CYP3A4; reduzir dose do benzodiazepínico em 50%',
+    EvidenceLevel.established,
+    {RiskType.cns, RiskType.respiratoryDepression, RiskType.plasmaLevel},
+    [_kRefGG, _kRefUT]),
+
 ];
 
 
@@ -2655,7 +2646,7 @@ const _termMap = <String, String>{
   'ibuprofeno': 'ibuprofeno', 'advil': 'ibuprofeno', 'ibuprofen': 'ibuprofeno',
   'naproxeno': 'naproxeno', 'naprosyn': 'naproxeno', 'naproxen': 'naproxeno',
   'cetorolaco': 'cetorolaco', 'ketorolac': 'cetorolaco', 'toradol': 'cetorolaco',
-  'diclofenaco': 'aine', 'voltaren': 'aine', 'aine': 'aine', 'nsaid': 'nsaid',
+  'diclofenaco': 'aine', 'voltaren': 'aine', 'aine': 'aine', 'nsaid': 'aine',
   'nimesulida': 'aine', 'meloxicam': 'aine', 'piroxicam': 'aine',
   'indometacina': 'aine', 'celecoxib': 'aine', 'etoricoxib': 'aine',
 
@@ -2720,8 +2711,12 @@ const _termMap = <String, String>{
   'morfina': 'morfina', 'meperidina': 'opioide', 'codeína': 'opioide',
   'fentanila': 'opioide', 'oxicodona': 'opioide', 'opioide': 'opioide',
   'benzodiazepínico': 'benzodiazepínico', 'diazepam': 'benzodiazepínico',
-  'lorazepam': 'benzodiazepínico', 'midazolam': 'benzodiazepínico',
-  'alprazolam': 'benzodiazepínico', 'clonazepam': 'benzodiazepínico',
+  'lorazepam': 'benzodiazepínico', 'alprazolam': 'benzodiazepínico',
+  'clonazepam': 'benzodiazepínico', 'rivotril': 'benzodiazepínico',
+  'bromazepam': 'benzodiazepínico', 'lexotan': 'benzodiazepínico',
+  'nitrazepam': 'benzodiazepínico', 'triazolam': 'benzodiazepínico',
+  // midazolam tem IDs diretos no banco → ID canônico próprio (NÃO benzodiazepínico)
+  'midazolam': 'midazolam', 'dormicum': 'midazolam', 'versed': 'midazolam',
   'haloperidol': 'haloperidol', 'haldol': 'haloperidol',
   'quetiapina': 'quetiapina', 'seroquel': 'quetiapina',
   'ssri': 'ssri', 'fluoxetina': 'ssri', 'sertralina': 'ssri',
@@ -2931,8 +2926,7 @@ const _termMap = <String, String>{
   'olanzapina': 'olanzapina', 'zyprexa': 'olanzapina', 'olanzapine': 'olanzapina',
   'zydis': 'olanzapina',
 
-  // Psiquiatria / Ansiolíticos (clonazepam já mapeado acima)
-  'rivotril': 'benzodiazepínico',
+  // Psiquiatria / Ansiolíticos (clonazepam e rivotril já mapeados acima)
   'zolpidem': 'benzodiazepínico', 'stilnox': 'benzodiazepínico', 'zolpidem tartarato': 'benzodiazepínico',
 
   // Anestesia / UTI (fentanila já mapeada como opioide acima)

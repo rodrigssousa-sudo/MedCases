@@ -1355,6 +1355,7 @@ class _InteractionAlertBanner extends StatelessWidget {
     final nMajor    = interactions.where((i) => i.severity == InteractionSeverity.major).length;
     final nModerate = interactions.where((i) => i.severity == InteractionSeverity.moderate).length;
     final nMinor    = interactions.where((i) => i.severity == InteractionSeverity.minor).length;
+    final nMonitor  = interactions.where((i) => i.severity == InteractionSeverity.monitorOnly).length;
 
     // Determina cor/ícone pela pior severidade presente
     final Color col;
@@ -1387,14 +1388,23 @@ class _InteractionAlertBanner extends StatelessWidget {
       label  = _isEs
         ? '${interactions.length} INTERACCIÓN${interactions.length > 1 ? "ES" : ""} MODERADA${nModerate > 1 ? "S" : ""}'
         : '${interactions.length} INTERAÇÃO${interactions.length > 1 ? "ES" : ""} MODERADA${nModerate > 1 ? "S" : ""}';
-    } else {
+    } else if (nMinor > 0) {
       col    = const Color(0xFF065F46);
       bg     = const Color(0xFFECFDF5);
       border = const Color(0xFFBBF7D0);
-      icon   = Icons.info_outline_rounded;
+      icon   = Icons.check_circle_outline_rounded;
       label  = _isEs
-        ? '${nMinor} interacción${nMinor > 1 ? "es" : ""} menor${nMinor > 1 ? "es" : ""}'
-        : '${nMinor} interação${nMinor > 1 ? "ões" : ""} menor${nMinor > 1 ? "es" : ""}';
+        ? '$nMinor interacción${nMinor > 1 ? "es" : ""} menor${nMinor > 1 ? "es" : ""}'
+        : '$nMinor interação${nMinor > 1 ? "ões" : ""} menor${nMinor > 1 ? "es" : ""}';
+    } else {
+      // monitorOnly — apenas vigilância, sem risco imediato
+      col    = const Color(0xFF1D4ED8);
+      bg     = const Color(0xFFEFF6FF);
+      border = const Color(0xFFBFDBFE);
+      icon   = Icons.visibility_rounded;
+      label  = _isEs
+        ? '$nMonitor interacción${nMonitor > 1 ? "es" : ""} a monitorizar'
+        : '$nMonitor interação${nMonitor > 1 ? "ões" : ""} a monitorizar';
     }
 
     // Resumo dos pares por severidade
@@ -1442,7 +1452,7 @@ class _InteractionAlertBanner extends StatelessWidget {
               )
             else
               Text(
-                _isEs ? 'Toque para ver detalhes y conducta' : 'Toque para ver detalhes e conduta',
+                _isEs ? 'Toque para ver detalles y conducta' : 'Toque para ver detalhes e conduta',
                 style: TextStyle(fontSize: 9, color: col.withValues(alpha: 0.7), fontWeight: FontWeight.w500),
               ),
           ])),
@@ -2232,6 +2242,23 @@ class _InteractionPanelState extends State<_InteractionPanel> {
                   Padding(
                     padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
                     child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                      // Alerta clínico (banner lateral — campo novo)
+                      if (ix.clinicalAlert.isNotEmpty) ...[
+                        Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8),
+                            color: col.withValues(alpha: 0.08),
+                            border: Border(left: BorderSide(color: col, width: 3)),
+                          ),
+                          child: Text(
+                            ix.clinicalAlert,
+                            style: TextStyle(fontSize: 10, fontWeight: FontWeight.w800, color: col, height: 1.4),
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                      ],
                       // Efeito clínico
                       _IxRow(Icons.bolt_rounded, widget.lang == 'es' ? 'EFECTO CLÍNICO' : 'EFEITO CLÍNICO', ix.effect, col),
                       const SizedBox(height: 8),
@@ -2257,6 +2284,32 @@ class _InteractionPanelState extends State<_InteractionPanel> {
                           Text(ix.management, style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: col, height: 1.5)),
                         ]),
                       ),
+                      // Evidência + Referências (campos novos)
+                      const SizedBox(height: 8),
+                      Row(children: [
+                        Icon(Icons.science_outlined, size: 10, color: col.withValues(alpha: 0.7)),
+                        const SizedBox(width: 4),
+                        Text(
+                          widget.lang == 'es' ? 'EVIDENCIA: ' : 'EVIDÊNCIA: ',
+                          style: TextStyle(fontSize: 9, fontWeight: FontWeight.w900, color: col.withValues(alpha: 0.7), letterSpacing: 0.6),
+                        ),
+                        Text(
+                          ix.evidenceLabel,
+                          style: TextStyle(fontSize: 9, fontWeight: FontWeight.w600, color: col.withValues(alpha: 0.7)),
+                        ),
+                        if (ix.references.isNotEmpty) ...[
+                          const SizedBox(width: 8),
+                          Icon(Icons.menu_book_rounded, size: 10, color: col.withValues(alpha: 0.5)),
+                          const SizedBox(width: 3),
+                          Expanded(
+                            child: Text(
+                              ix.references.join(', '),
+                              style: TextStyle(fontSize: 9, color: col.withValues(alpha: 0.55), fontWeight: FontWeight.w500),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
+                      ]),
                     ]),
                   ),
                 ],
