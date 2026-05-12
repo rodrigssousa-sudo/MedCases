@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:url_launcher/url_launcher.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -1559,6 +1560,34 @@ class _AppDrawer extends StatelessWidget {
                   ],
                 ),
 
+                // ─── Bloco: Suporte ──────────────────────────────────────────
+                _DrawerSectionLabel(
+                  label: p.lang == 'es' ? 'SOPORTE' : 'SUPORTE',
+                  dark: dark,
+                ),
+                _DrawerBlock(
+                  children: [
+                    _DrawerRow(
+                      icon: Icons.rate_review_rounded,
+                      iconColor: const Color(0xFF7C3AED),
+                      title: 'Enviar Feedback',
+                      dark: dark,
+                      textCol: textCol,
+                      subCol: subCol,
+                      showDivider: false,
+                      onTap: () {
+                        _close(context);
+                        showModalBottomSheet(
+                          context: context,
+                          isScrollControlled: true,
+                          backgroundColor: Colors.transparent,
+                          builder: (_) => _FeedbackSheet(p: p, dark: dark),
+                        );
+                      },
+                    ),
+                  ],
+                ),
+
                 _DrawerSectionLabel(
                   label: p.lang == 'es' ? 'PREFERENCIAS' : 'PREFERÊNCIAS',
                   dark: dark,
@@ -2607,6 +2636,449 @@ class _AppUpdateDialog extends StatelessWidget {
             ),
           ),
         ]),
+      ),
+    );
+  }
+}
+
+// ── Bottom Sheet de Feedback ──────────────────────────────────────────────────
+class _FeedbackSheet extends StatefulWidget {
+  final AppProvider p;
+  final bool dark;
+  const _FeedbackSheet({required this.p, required this.dark});
+  @override
+  State<_FeedbackSheet> createState() => _FeedbackSheetState();
+}
+
+class _FeedbackSheetState extends State<_FeedbackSheet> {
+  final _msgCtrl = TextEditingController();
+  int _rating = 0;
+  String _category = '';
+  bool _sending = false;
+  bool _sent = false;
+  String? _error;
+
+  static const _destEmail = 'rodrigssousa777@gmail.com';
+  bool get _isEs => widget.p.lang == 'es';
+
+  final List<Map<String, String>> _categoriesPt = const [
+    {'icon': '🐛', 'label': 'Erro no app'},
+    {'icon': '💡', 'label': 'Sugestão'},
+    {'icon': '💊', 'label': 'Fármaco/Protocolo'},
+    {'icon': '⭐', 'label': 'Elogio'},
+    {'icon': '❓', 'label': 'Outro'},
+  ];
+  final List<Map<String, String>> _categoriesEs = const [
+    {'icon': '🐛', 'label': 'Error en la app'},
+    {'icon': '💡', 'label': 'Sugerencia'},
+    {'icon': '💊', 'label': 'Fármaco/Protocolo'},
+    {'icon': '⭐', 'label': 'Elogio'},
+    {'icon': '❓', 'label': 'Otro'},
+  ];
+
+  List<Map<String, String>> get _categories => _isEs ? _categoriesEs : _categoriesPt;
+
+  @override
+  void initState() {
+    super.initState();
+    _category = _isEs ? 'Sugerencia' : 'Sugestão';
+  }
+
+  @override
+  void dispose() {
+    _msgCtrl.dispose();
+    super.dispose();
+  }
+
+  Future<void> _send() async {
+    final msg = _msgCtrl.text.trim();
+    if (msg.isEmpty) {
+      setState(() => _error = _isEs
+          ? 'Escribe tu mensaje antes de enviar.'
+          : 'Escreva sua mensagem antes de enviar.');
+      return;
+    }
+    setState(() {
+      _sending = true;
+      _error = null;
+    });
+    try {
+      final userName  = widget.p.userName.isNotEmpty ? widget.p.userName : 'Usuário';
+      final userEmail = widget.p.userEmail.isNotEmpty ? widget.p.userEmail : 'sem-email';
+      final stars     = _rating > 0 ? '${'⭐' * _rating} ($_rating/5)' : 'Não avaliado';
+      final subject = Uri.encodeComponent('[MedCases Feedback] $_category — $userName');
+      final body = Uri.encodeComponent(
+        '━━━━━━━━━━━━━━━━━━━━━━━\n'
+        'FEEDBACK — MedCases Pro\n'
+        '━━━━━━━━━━━━━━━━━━━━━━━\n\n'
+        '👤 Usuário: $userName\n'
+        '📧 E-mail: $userEmail\n'
+        '🏷️ Categoria: $_category\n'
+        '⭐ Avaliação: $stars\n\n'
+        '💬 Mensagem:\n$msg\n\n'
+        '━━━━━━━━━━━━━━━━━━━━━━━\n'
+        'Enviado pelo app MedCases Pro',
+      );
+      final uri = Uri.parse('mailto:$_destEmail?subject=$subject&body=$body');
+      if (!await launchUrl(uri)) {
+        final fallback = Uri(
+          scheme: 'mailto',
+          path: _destEmail,
+          query: 'subject=[MedCases] $_category&body=$msg',
+        );
+        if (!await launchUrl(fallback)) {
+          throw Exception('Não foi possível abrir o app de e-mail.');
+        }
+      }
+      setState(() {
+        _sent = true;
+        _sending = false;
+      });
+    } catch (e) {
+      setState(() {
+        _sending = false;
+        _error = _isEs
+            ? 'No se pudo abrir el cliente de correo. Intente de nuevo.'
+            : 'Não foi possível abrir o app de e-mail. Tente novamente.';
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final dark = widget.dark;
+    final bg   = dark ? const Color(0xFF1C1C1E) : Colors.white;
+    final textCol = dark ? Colors.white : const Color(0xFF1A1A1A);
+    final subCol  = dark ? const Color(0xFF8E8E93) : const Color(0xFF6B7280);
+    final surfCol = dark ? const Color(0xFF2C2C2E) : const Color(0xFFF3F4F6);
+
+    if (_sent) {
+      return _SuccessView(
+        dark: dark,
+        isEs: _isEs,
+        onClose: () => Navigator.of(context).pop(),
+      );
+    }
+
+    return Container(
+      decoration: BoxDecoration(
+        color: bg,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      padding: EdgeInsets.only(
+        bottom: MediaQuery.of(context).viewInsets.bottom + 24,
+        left: 20,
+        right: 20,
+        top: 0,
+      ),
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Handle bar
+            Center(
+              child: Container(
+                margin: const EdgeInsets.only(top: 12, bottom: 20),
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: dark ? const Color(0xFF48484A) : const Color(0xFFD1D5DB),
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+            ),
+
+            // Título
+            Row(children: [
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF7C3AED).withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: const Icon(Icons.rate_review_rounded,
+                    color: Color(0xFF7C3AED), size: 20),
+              ),
+              const SizedBox(width: 12),
+              Text(
+                _isEs ? 'Enviar Feedback' : 'Enviar Feedback',
+                style: TextStyle(
+                    fontSize: 18, fontWeight: FontWeight.w800, color: textCol),
+              ),
+            ]),
+            const SizedBox(height: 4),
+            Text(
+              _isEs
+                  ? 'Tu opinión nos ayuda a mejorar el app.'
+                  : 'Sua opinião nos ajuda a melhorar o app.',
+              style: TextStyle(fontSize: 13, color: subCol),
+            ),
+            const SizedBox(height: 24),
+
+            // Avaliação por estrelas
+            Text(
+              _isEs ? 'Avaliação' : 'Avaliação',
+              style: TextStyle(
+                  fontSize: 13, fontWeight: FontWeight.w700, color: textCol),
+            ),
+            const SizedBox(height: 10),
+            Row(
+              children: List.generate(5, (i) {
+                final filled = i < _rating;
+                return GestureDetector(
+                  onTap: () => setState(() => _rating = i + 1),
+                  child: Padding(
+                    padding: const EdgeInsets.only(right: 6),
+                    child: Icon(
+                      filled ? Icons.star_rounded : Icons.star_outline_rounded,
+                      color: filled
+                          ? const Color(0xFFFBBF24)
+                          : (dark ? const Color(0xFF48484A) : const Color(0xFFD1D5DB)),
+                      size: 34,
+                    ),
+                  ),
+                );
+              }),
+            ),
+            const SizedBox(height: 20),
+
+            // Categoria
+            Text(
+              _isEs ? 'Categoría' : 'Categoria',
+              style: TextStyle(
+                  fontSize: 13, fontWeight: FontWeight.w700, color: textCol),
+            ),
+            const SizedBox(height: 10),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: _categories.map((cat) {
+                final selected = _category == cat['label'];
+                return GestureDetector(
+                  onTap: () => setState(() => _category = cat['label']!),
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 180),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 12, vertical: 7),
+                    decoration: BoxDecoration(
+                      color: selected
+                          ? const Color(0xFF7C3AED).withValues(alpha: 0.12)
+                          : surfCol,
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(
+                        color: selected
+                            ? const Color(0xFF7C3AED)
+                            : Colors.transparent,
+                        width: 1.5,
+                      ),
+                    ),
+                    child: Text(
+                      '${cat['icon']}  ${cat['label']}',
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: selected
+                            ? FontWeight.w700
+                            : FontWeight.w500,
+                        color: selected
+                            ? const Color(0xFF7C3AED)
+                            : textCol,
+                      ),
+                    ),
+                  ),
+                );
+              }).toList(),
+            ),
+            const SizedBox(height: 20),
+
+            // Mensagem
+            Text(
+              _isEs ? 'Mensaje' : 'Mensagem',
+              style: TextStyle(
+                  fontSize: 13, fontWeight: FontWeight.w700, color: textCol),
+            ),
+            const SizedBox(height: 10),
+            TextField(
+              controller: _msgCtrl,
+              maxLines: 4,
+              maxLength: 500,
+              style: TextStyle(fontSize: 14, color: textCol),
+              decoration: InputDecoration(
+                hintText: _isEs
+                    ? 'Cuéntanos tu experiencia o sugerencia...'
+                    : 'Conta sua experiência ou sugestão...',
+                hintStyle: TextStyle(color: subCol, fontSize: 13),
+                filled: true,
+                fillColor: surfCol,
+                counterStyle: TextStyle(color: subCol, fontSize: 11),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide.none,
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: const BorderSide(
+                      color: Color(0xFF7C3AED), width: 1.5),
+                ),
+                contentPadding: const EdgeInsets.all(14),
+              ),
+            ),
+
+            // Erro
+            if (_error != null) ...[
+              const SizedBox(height: 8),
+              Row(children: [
+                const Icon(Icons.error_outline_rounded,
+                    size: 14, color: Color(0xFFEF4444)),
+                const SizedBox(width: 6),
+                Expanded(
+                  child: Text(_error!,
+                      style: const TextStyle(
+                          fontSize: 12, color: Color(0xFFEF4444))),
+                ),
+              ]),
+            ],
+
+            const SizedBox(height: 20),
+
+            // Botão enviar
+            SizedBox(
+              width: double.infinity,
+              height: 50,
+              child: ElevatedButton(
+                onPressed: _sending ? null : _send,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF7C3AED),
+                  foregroundColor: Colors.white,
+                  disabledBackgroundColor:
+                      const Color(0xFF7C3AED).withValues(alpha: 0.5),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(14)),
+                  elevation: 0,
+                ),
+                child: _sending
+                    ? const SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(
+                            color: Colors.white, strokeWidth: 2),
+                      )
+                    : Text(
+                        _isEs ? 'Abrir e-mail para enviar' : 'Abrir e-mail para enviar',
+                        style: const TextStyle(
+                            fontSize: 15, fontWeight: FontWeight.w700),
+                      ),
+              ),
+            ),
+            const SizedBox(height: 8),
+            Center(
+              child: Text(
+                _isEs
+                    ? 'Se abrirá tu app de correo con el mensaje listo.'
+                    : 'Seu app de e-mail abrirá com a mensagem pronta.',
+                style: TextStyle(fontSize: 11, color: subCol),
+                textAlign: TextAlign.center,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ── Confirmação de envio ──────────────────────────────────────────────────────
+class _SuccessView extends StatelessWidget {
+  final bool dark;
+  final bool isEs;
+  final VoidCallback onClose;
+  const _SuccessView({
+    required this.dark,
+    required this.isEs,
+    required this.onClose,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final bg      = dark ? const Color(0xFF1C1C1E) : Colors.white;
+    final textCol = dark ? Colors.white : const Color(0xFF1A1A1A);
+    final subCol  = dark ? const Color(0xFF8E8E93) : const Color(0xFF6B7280);
+
+    return Container(
+      decoration: BoxDecoration(
+        color: bg,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      padding: const EdgeInsets.fromLTRB(20, 0, 20, 40),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // Handle bar
+          Center(
+            child: Container(
+              margin: const EdgeInsets.only(top: 12, bottom: 32),
+              width: 40,
+              height: 4,
+              decoration: BoxDecoration(
+                color: dark
+                    ? const Color(0xFF48484A)
+                    : const Color(0xFFD1D5DB),
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+          ),
+
+          // Ícone de sucesso
+          Container(
+            width: 72,
+            height: 72,
+            decoration: BoxDecoration(
+              color: const Color(0xFF7C3AED).withValues(alpha: 0.12),
+              shape: BoxShape.circle,
+            ),
+            child: const Icon(Icons.mark_email_read_rounded,
+                color: Color(0xFF7C3AED), size: 36),
+          ),
+          const SizedBox(height: 20),
+
+          Text(
+            isEs ? '¡Listo!' : 'Pronto!',
+            style: TextStyle(
+                fontSize: 22, fontWeight: FontWeight.w900, color: textCol),
+          ),
+          const SizedBox(height: 8),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Text(
+              isEs
+                  ? 'Tu app de correo se abrió con el mensaje. Solo envíalo y listo — ¡gracias por tu feedback!'
+                  : 'Seu app de e-mail abriu com a mensagem pronta. Só enviar — obrigado pelo feedback!',
+              style: TextStyle(fontSize: 14, color: subCol, height: 1.5),
+              textAlign: TextAlign.center,
+            ),
+          ),
+          const SizedBox(height: 32),
+
+          SizedBox(
+            width: double.infinity,
+            height: 50,
+            child: ElevatedButton(
+              onPressed: onClose,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF7C3AED),
+                foregroundColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(14)),
+                elevation: 0,
+              ),
+              child: Text(
+                isEs ? 'Fechar' : 'Fechar',
+                style: const TextStyle(
+                    fontSize: 15, fontWeight: FontWeight.w700),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
