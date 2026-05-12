@@ -643,6 +643,22 @@ class FirestoreService {
     );
   }
 
+  // ── Rastreamento de tempo de uso ──────────────────────────────────────────
+
+  /// Incrementa o tempo de uso do usuário e atualiza lastSeenAt.
+  /// Usa FieldValue.increment para evitar conflito de concorrência.
+  static Future<void> incrementUsage(String uid, int seconds) async {
+    if (uid.isEmpty || seconds <= 0) return;
+    try {
+      await _userDoc(uid).update({
+        'totalUsageSeconds': FieldValue.increment(seconds),
+        'lastSeenAt': FieldValue.serverTimestamp(),
+      });
+    } catch (_) {
+      // Silencioso — não interrompe o app se falhar
+    }
+  }
+
   /// Escreve/atualiza app_config/maintenance via REST PATCH.
   static Future<void> _setMaintenanceRest({
     required bool enabled,

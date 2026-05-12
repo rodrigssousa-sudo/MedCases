@@ -76,6 +76,10 @@ class AppProvider extends ChangeNotifier {
 
   String get publicLoadError => _publicLoadError;
 
+  // ── Rastreamento de uso ────────────────────────────────────────────────────
+  Timer? _usageTimer;
+  int _sessionSeconds = 0; // segundos acumulados nesta sessão (flush a cada 60s)
+
   // ── Estado — IA Clínica ──────────────────────────────────────────────────
   String _openAiKey = '';
   bool _aiKeyLoading = false; // true enquanto busca chave no Firestore
@@ -163,9 +167,38 @@ class AppProvider extends ChangeNotifier {
 
     // 4️⃣ Carrega histórias públicas AQUI — token já está cacheado neste ponto.
     loadPublicHistories();
+
+    // 5️⃣ Inicia contador de tempo de uso
+    _startUsageTimer(user.uid);
+  }
+
+  // ── Timer de uso — incrementa 1s/s, grava no Firestore a cada 60s ──────────
+  void _startUsageTimer(String uid) {
+    _usageTimer?.cancel();
+    _sessionSeconds = 0;
+    _usageTimer = Timer.periodic(const Duration(seconds: 1), (_) {
+      _sessionSeconds++;
+      // Flush a cada 60 segundos → 1 escrita no Firestore por minuto de uso
+      if (_sessionSeconds % 60 == 0) {
+        FirestoreService.incrementUsage(uid, 60);
+      }
+    });
+  }
+
+  void _stopUsageTimer() {
+    final uid = _currentUser?.uid;
+    if (uid != null && _sessionSeconds > 0) {
+      // Grava os segundos residuais que ainda não foram enviados
+      final residual = _sessionSeconds % 60;
+      if (residual > 0) FirestoreService.incrementUsage(uid, residual);
+    }
+    _usageTimer?.cancel();
+    _usageTimer = null;
+    _sessionSeconds = 0;
   }
 
   void clearUser() {
+    _stopUsageTimer();
     _currentUser = null;
     _firebaseReady = false;
     _favDrugs = {};

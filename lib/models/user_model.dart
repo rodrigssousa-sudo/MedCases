@@ -13,10 +13,12 @@ class UserModel {
   final DateTime createdAt;
   final DateTime? approvedAt;
   final String? approvedBy;
-  final String? profession;    // médico, residente, enfermeiro, etc.
-  final String? institution;   // hospital / clínica
+  final String? profession;
+  final String? institution;
   final String lang;
   final bool darkMode;
+  final int totalUsageSeconds;   // tempo total de uso acumulado (em segundos)
+  final DateTime? lastSeenAt;    // última vez ativo no app
 
   const UserModel({
     required this.uid,
@@ -31,21 +33,29 @@ class UserModel {
     this.institution,
     this.lang = 'pt',
     this.darkMode = false,
+    this.totalUsageSeconds = 0,
+    this.lastSeenAt,
   });
 
   bool get isAdmin => role == UserRole.admin;
   bool get isSupervisor => role == UserRole.supervisor;
-  // Master é baseado no e-mail fixo — sem campo extra no Firestore
   static const String _masterEmail = 'rodrigssousa@gmail.com';
   bool get isMaster => email.toLowerCase() == _masterEmail.toLowerCase();
   bool get isApproved => status == UserStatus.approved;
   bool get isPending => status == UserStatus.pending;
   bool get isBlocked => status == UserStatus.blocked;
 
-  // ── Serialização JSON pura (SharedPreferences / sem Firestore SDK) ─────────
-  // Usado por AuthService.saveSession() / restoreSession().
-  // Datas como ISO8601 String — jsonEncode/jsonDecode seguro.
+  // ── Tempo formatado para exibição ─────────────────────────────────────────
+  String get usageFormatted {
+    if (totalUsageSeconds <= 0) return '—';
+    final h = totalUsageSeconds ~/ 3600;
+    final m = (totalUsageSeconds % 3600) ~/ 60;
+    if (h > 0) return '${h}h ${m.toString().padLeft(2, '0')}min';
+    if (m > 0) return '${m}min';
+    return '<1min';
+  }
 
+  // ── Serialização JSON pura (SharedPreferences) ────────────────────────────
   Map<String, dynamic> toJson() => {
     'uid': uid,
     'email': email,
@@ -59,6 +69,8 @@ class UserModel {
     'institution': institution,
     'lang': lang,
     'darkMode': darkMode,
+    'totalUsageSeconds': totalUsageSeconds,
+    'lastSeenAt': lastSeenAt?.toUtc().toIso8601String(),
   };
 
   factory UserModel.fromJson(Map<String, dynamic> m) => UserModel(
@@ -78,10 +90,13 @@ class UserModel {
     institution: m['institution'] as String?,
     lang: m['lang'] as String? ?? 'pt',
     darkMode: m['darkMode'] as bool? ?? false,
+    totalUsageSeconds: (m['totalUsageSeconds'] as num?)?.toInt() ?? 0,
+    lastSeenAt: m['lastSeenAt'] != null
+        ? DateTime.tryParse(m['lastSeenAt'] as String)
+        : null,
   );
 
-  // ── Serialização Firestore SDK (Timestamp nativo) ─────────────────────────
-
+  // ── Serialização Firestore SDK ────────────────────────────────────────────
   Map<String, dynamic> toMap() => {
     'uid': uid,
     'email': email,
@@ -95,6 +110,8 @@ class UserModel {
     'institution': institution,
     'lang': lang,
     'darkMode': darkMode,
+    'totalUsageSeconds': totalUsageSeconds,
+    'lastSeenAt': lastSeenAt != null ? Timestamp.fromDate(lastSeenAt!) : null,
   };
 
   factory UserModel.fromMap(Map<String, dynamic> m) => UserModel(
@@ -110,6 +127,8 @@ class UserModel {
     institution: m['institution'] as String?,
     lang: m['lang'] as String? ?? 'pt',
     darkMode: m['darkMode'] as bool? ?? false,
+    totalUsageSeconds: (m['totalUsageSeconds'] as num?)?.toInt() ?? 0,
+    lastSeenAt: _parseDate(m['lastSeenAt']),
   );
 
   factory UserModel.fromDoc(DocumentSnapshot doc) =>
@@ -125,6 +144,8 @@ class UserModel {
     String? institution,
     String? lang,
     bool? darkMode,
+    int? totalUsageSeconds,
+    DateTime? lastSeenAt,
   }) =>
       UserModel(
         uid: uid,
@@ -139,12 +160,11 @@ class UserModel {
         institution: institution ?? this.institution,
         lang: lang ?? this.lang,
         darkMode: darkMode ?? this.darkMode,
+        totalUsageSeconds: totalUsageSeconds ?? this.totalUsageSeconds,
+        lastSeenAt: lastSeenAt ?? this.lastSeenAt,
       );
 
   // ── Helpers ───────────────────────────────────────────────────────────────
-
-  /// Aceita Timestamp (SDK), String ISO8601 (REST patch) ou null.
-  /// Retorna DateTime ou null — nunca lança exceção.
   static DateTime? _parseDate(dynamic v) {
     if (v == null) return null;
     if (v is Timestamp) return v.toDate();
@@ -165,8 +185,8 @@ class UserModel {
   static UserStatus _parseStatus(String? s) {
     switch (s) {
       case 'approved': return UserStatus.approved;
-      case 'blocked': return UserStatus.blocked;
-      default: return UserStatus.pending;
+      case 'blocked':  return UserStatus.blocked;
+      default:         return UserStatus.pending;
     }
   }
 
@@ -181,16 +201,16 @@ class UserModel {
   String get statusLabel {
     switch (status) {
       case UserStatus.approved: return 'Aprovado';
-      case UserStatus.pending: return 'Pendente';
-      case UserStatus.blocked: return 'Bloqueado';
+      case UserStatus.pending:  return 'Pendente';
+      case UserStatus.blocked:  return 'Bloqueado';
     }
   }
 
   String get statusLabelEs {
     switch (status) {
       case UserStatus.approved: return 'Aprobado';
-      case UserStatus.pending: return 'Pendiente';
-      case UserStatus.blocked: return 'Bloqueado';
+      case UserStatus.pending:  return 'Pendiente';
+      case UserStatus.blocked:  return 'Bloqueado';
     }
   }
 }

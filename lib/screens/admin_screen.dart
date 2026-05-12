@@ -38,7 +38,7 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
   @override
   void initState() {
     super.initState();
-    _tabs = TabController(length: 5, vsync: this);
+    _tabs = TabController(length: 6, vsync: this);
     _loadLang();
     _subscribeUsers();
   }
@@ -104,13 +104,14 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
             Tab(icon: const Icon(Icons.block_rounded, size: 16), text: _blockedLabel),
             Tab(icon: const Icon(Icons.settings_rounded, size: 16), text: _systemLabel),
             const Tab(icon: Icon(Icons.auto_awesome_rounded, size: 16), text: 'Novidades'),
+            const Tab(icon: Icon(Icons.bar_chart_rounded, size: 16), text: 'Stats'),
           ],
         ),
       ),
       body: AnimatedBuilder(
         animation: _tabs,
         builder: (context, _) {
-          final isSystemTab = _tabs.index == 3 || _tabs.index == 4;
+          final isSystemTab = _tabs.index == 3 || _tabs.index == 4 || _tabs.index == 5;
           return Column(
             children: [
               // Barra de busca — só nas tabs de usuários (0, 1, 2)
@@ -191,6 +192,8 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
                     ),
                     // ── Tab 4: Novidades ──────────────────────────────────
                     _AppUpdatesTab(currentAdmin: widget.currentAdmin),
+                    // ── Tab 5: Stats ──────────────────────────────────────
+                    _StatsTab(allUsers: _allUsers, loading: _usersLoading),
                   ],
                 ),
               ),
@@ -1382,6 +1385,351 @@ class _AppUpdatesTabState extends State<_AppUpdatesTab> {
           borderSide: const BorderSide(color: kGold, width: 1.5)),
         contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
       ),
+    );
+  }
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// TAB DE ESTATÍSTICAS
+// ══════════════════════════════════════════════════════════════════════════════
+class _StatsTab extends StatelessWidget {
+  final List<UserModel> allUsers;
+  final bool loading;
+
+  const _StatsTab({required this.allUsers, required this.loading});
+
+  static const kDark  = Color(0xFF07110d);
+  static const kGreen = Color(0xFF075f45);
+  static const kGold  = Color(0xFFC5A365);
+
+  // ── Helpers ────────────────────────────────────────────────────────────────
+  int get _totalUsers    => allUsers.length;
+  int get _approved      => allUsers.where((u) => u.isApproved).length;
+  int get _pending       => allUsers.where((u) => u.isPending).length;
+
+  int get _totalSeconds  =>
+      allUsers.fold(0, (sum, u) => sum + u.totalUsageSeconds);
+
+  String _fmt(int s) {
+    if (s <= 0) return '—';
+    final h = s ~/ 3600;
+    final m = (s % 3600) ~/ 60;
+    if (h > 0) return '${h}h ${m.toString().padLeft(2, '0')}min';
+    if (m > 0) return '${m}min';
+    return '<1min';
+  }
+
+  String _lastSeenLabel(DateTime? dt) {
+    if (dt == null) return '—';
+    final diff = DateTime.now().difference(dt);
+    if (diff.inMinutes < 2)  return 'Agora';
+    if (diff.inMinutes < 60) return 'Há ${diff.inMinutes}min';
+    if (diff.inHours   < 24) return 'Há ${diff.inHours}h';
+    if (diff.inDays    < 7)  return 'Há ${diff.inDays}d';
+    return '${dt.day.toString().padLeft(2,'0')}/${dt.month.toString().padLeft(2,'0')}/${dt.year}';
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // Ordena por tempo de uso desc
+    final sorted = [...allUsers]
+      ..sort((a, b) => b.totalUsageSeconds.compareTo(a.totalUsageSeconds));
+
+    return ListView(
+      padding: const EdgeInsets.fromLTRB(16, 20, 16, 40),
+      children: [
+
+        // ── Cards de resumo ─────────────────────────────────────────────────
+        Row(children: [
+          Expanded(child: _SummaryCard(
+            icon: Icons.people_rounded,
+            color: kGreen,
+            value: '$_totalUsers',
+            label: 'Total de usuários',
+          )),
+          const SizedBox(width: 10),
+          Expanded(child: _SummaryCard(
+            icon: Icons.check_circle_rounded,
+            color: Colors.green,
+            value: '$_approved',
+            label: 'Aprovados',
+          )),
+        ]),
+        const SizedBox(height: 10),
+        Row(children: [
+          Expanded(child: _SummaryCard(
+            icon: Icons.timer_rounded,
+            color: const Color(0xFF7C3AED),
+            value: _fmt(_totalSeconds),
+            label: 'Tempo total de uso',
+          )),
+          const SizedBox(width: 10),
+          Expanded(child: _SummaryCard(
+            icon: Icons.pending_actions_rounded,
+            color: Colors.orange,
+            value: '$_pending',
+            label: 'Pendentes',
+          )),
+        ]),
+
+        const SizedBox(height: 24),
+
+        // ── Cabeçalho da lista ───────────────────────────────────────────────
+        Row(children: [
+          Container(
+            padding: const EdgeInsets.all(7),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              color: kGold.withValues(alpha: 0.12),
+            ),
+            child: const Icon(Icons.bar_chart_rounded, size: 16, color: kGold),
+          ),
+          const SizedBox(width: 10),
+          const Text('Tempo por usuário',
+            style: TextStyle(
+              fontSize: 15, fontWeight: FontWeight.w900, color: kDark)),
+          const Spacer(),
+          Text('${allUsers.length} usuários',
+            style: TextStyle(
+              fontSize: 11, color: kDark.withValues(alpha: 0.4),
+              fontWeight: FontWeight.w600)),
+        ]),
+        const SizedBox(height: 12),
+
+        // ── Carregando ───────────────────────────────────────────────────────
+        if (loading && allUsers.isEmpty)
+          const Center(
+            child: Padding(
+              padding: EdgeInsets.all(40),
+              child: CircularProgressIndicator(color: kGreen),
+            ),
+          )
+        else if (allUsers.isEmpty)
+          Center(
+            child: Padding(
+              padding: const EdgeInsets.all(40),
+              child: Text('Nenhum usuário ainda.',
+                style: TextStyle(color: kDark.withValues(alpha: 0.4))),
+            ),
+          )
+        else
+          // ── Lista de usuários com tempo ─────────────────────────────────
+          ...sorted.map((u) => _UserUsageRow(
+            user: u,
+            maxSeconds: sorted.first.totalUsageSeconds,
+            lastSeenLabel: _lastSeenLabel(u.lastSeenAt),
+          )),
+      ],
+    );
+  }
+}
+
+// ── Card de resumo ────────────────────────────────────────────────────────────
+class _SummaryCard extends StatelessWidget {
+  final IconData icon;
+  final Color color;
+  final String value;
+  final String label;
+  const _SummaryCard({
+    required this.icon, required this.color,
+    required this.value, required this.label,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.fromLTRB(14, 14, 14, 14),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: color.withValues(alpha: 0.2)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.04),
+            blurRadius: 8, offset: const Offset(0, 2)),
+        ],
+      ),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Container(
+          padding: const EdgeInsets.all(7),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            color: color.withValues(alpha: 0.1),
+          ),
+          child: Icon(icon, size: 16, color: color),
+        ),
+        const SizedBox(height: 10),
+        Text(value,
+          style: TextStyle(
+            fontSize: 22, fontWeight: FontWeight.w900, color: color,
+            letterSpacing: -0.5)),
+        const SizedBox(height: 2),
+        Text(label,
+          style: const TextStyle(
+            fontSize: 11, fontWeight: FontWeight.w600,
+            color: Color(0xFF6B7280))),
+      ]),
+    );
+  }
+}
+
+// ── Linha de uso por usuário ──────────────────────────────────────────────────
+class _UserUsageRow extends StatelessWidget {
+  final UserModel user;
+  final int maxSeconds;
+  final String lastSeenLabel;
+  const _UserUsageRow({
+    required this.user,
+    required this.maxSeconds,
+    required this.lastSeenLabel,
+  });
+
+  static const kDark  = Color(0xFF07110d);
+  static const kGreen = Color(0xFF075f45);
+  static const kGold  = Color(0xFFC5A365);
+
+  Color get _barColor {
+    if (user.totalUsageSeconds == 0) return const Color(0xFFE5E7EB);
+    if (user.totalUsageSeconds >= 3600) return kGreen;
+    if (user.totalUsageSeconds >= 600)  return kGold;
+    return const Color(0xFF93C5FD);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final pct = maxSeconds > 0
+        ? (user.totalUsageSeconds / maxSeconds).clamp(0.0, 1.0)
+        : 0.0;
+
+    return Container(
+      margin: const EdgeInsets.only(bottom: 10),
+      padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: const Color(0xFFE5E7EB)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.03),
+            blurRadius: 6, offset: const Offset(0, 2)),
+        ],
+      ),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+
+        // ── Linha superior: nome + tempo ──────────────────────────────────
+        Row(children: [
+          // Avatar inicial
+          Container(
+            width: 34, height: 34,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: kGreen.withValues(alpha: 0.1),
+            ),
+            child: Center(
+              child: Text(
+                user.displayName.isNotEmpty
+                    ? user.displayName[0].toUpperCase() : '?',
+                style: const TextStyle(
+                  fontSize: 14, fontWeight: FontWeight.w900,
+                  color: kGreen),
+              ),
+            ),
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Text(user.displayName,
+                style: const TextStyle(
+                  fontSize: 13, fontWeight: FontWeight.w800,
+                  color: kDark),
+                overflow: TextOverflow.ellipsis),
+              Text(user.email,
+                style: const TextStyle(
+                  fontSize: 10, fontWeight: FontWeight.w500,
+                  color: Color(0xFF9CA3AF)),
+                overflow: TextOverflow.ellipsis),
+            ]),
+          ),
+          const SizedBox(width: 8),
+          // Tempo total
+          Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
+            Text(user.usageFormatted,
+              style: TextStyle(
+                fontSize: 13, fontWeight: FontWeight.w900,
+                color: user.totalUsageSeconds > 0 ? kGreen : const Color(0xFFD1D5DB))),
+            Text(lastSeenLabel,
+              style: const TextStyle(
+                fontSize: 10, color: Color(0xFF9CA3AF),
+                fontWeight: FontWeight.w500)),
+          ]),
+        ]),
+
+        const SizedBox(height: 10),
+
+        // ── Barra de progresso ────────────────────────────────────────────
+        ClipRRect(
+          borderRadius: BorderRadius.circular(4),
+          child: LinearProgressIndicator(
+            value: pct,
+            minHeight: 5,
+            backgroundColor: const Color(0xFFF3F4F6),
+            valueColor: AlwaysStoppedAnimation(_barColor),
+          ),
+        ),
+
+        const SizedBox(height: 8),
+
+        // ── Linha inferior: status + role ─────────────────────────────────
+        Row(children: [
+          _MiniChip(
+            label: user.statusLabel,
+            color: user.isApproved
+                ? Colors.green
+                : user.isPending
+                    ? Colors.orange
+                    : Colors.red,
+          ),
+          const SizedBox(width: 6),
+          _MiniChip(
+            label: user.roleLabel,
+            color: user.isMaster
+                ? Colors.amber
+                : user.isAdmin
+                    ? kGold
+                    : const Color(0xFF9CA3AF),
+          ),
+          const Spacer(),
+          Text(
+            'Entrou: ${user.createdAt.day.toString().padLeft(2,'0')}/'
+            '${user.createdAt.month.toString().padLeft(2,'0')}/'
+            '${user.createdAt.year}',
+            style: const TextStyle(
+              fontSize: 9, color: Color(0xFFD1D5DB),
+              fontWeight: FontWeight.w600)),
+        ]),
+      ]),
+    );
+  }
+}
+
+// ── Mini chip de status/role ──────────────────────────────────────────────────
+class _MiniChip extends StatelessWidget {
+  final String label;
+  final Color color;
+  const _MiniChip({required this.label, required this.color});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(6),
+        color: color.withValues(alpha: 0.1),
+        border: Border.all(color: color.withValues(alpha: 0.3)),
+      ),
+      child: Text(label,
+        style: TextStyle(
+          fontSize: 9, fontWeight: FontWeight.w800, color: color)),
     );
   }
 }
