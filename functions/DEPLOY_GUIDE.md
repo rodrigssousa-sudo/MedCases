@@ -54,13 +54,13 @@ cd ..
 
 ```bash
 firebase functions:config:set \
-  gmail.user="rodrigssousa@gmail.com" \
+  gmail.user="medcasespro@gmail.com" \
   gmail.pass="COLE_AQUI_A_SENHA_DE_16_CARACTERES_SEM_ESPAÇOS"
 ```
 
 Exemplo real:
 ```bash
-firebase functions:config:set gmail.user="rodrigssousa@gmail.com" gmail.pass="abcdefghijklmnop"
+firebase functions:config:set gmail.user="medcasespro@gmail.com" gmail.pass="abcdefghijklmnop"
 ```
 
 ---

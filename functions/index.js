@@ -12,8 +12,8 @@ admin.initializeApp();
 
 // ── Configuração do remetente Gmail ──────────────────────────────────────────
 // Preencha com suas credenciais no Firebase (via environment config)
-// firebase functions:config:set gmail.user="rodrigssousa@gmail.com" gmail.pass="SUA_APP_PASSWORD"
-const gmailUser = functions.config().gmail?.user || 'rodrigssousa@gmail.com';
+// firebase functions:config:set gmail.user="medcasespro@gmail.com" gmail.pass="SUA_APP_PASSWORD"
+const gmailUser = functions.config().gmail?.user || 'medcasespro@gmail.com';
 const gmailPass = functions.config().gmail?.pass || '';
 
 const transporter = nodemailer.createTransport({

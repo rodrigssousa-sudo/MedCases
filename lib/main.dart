@@ -2658,7 +2658,7 @@ class _FeedbackSheetState extends State<_FeedbackSheet> {
   bool _sent = false;
   String? _error;
 
-  static const _destEmail = 'rodrigssousa@gmail.com';
+  static const _destEmail = 'medcasespro@gmail.com';
   bool get _isEs => widget.p.lang == 'es';
 
   final List<Map<String, String>> _categoriesPt = const [
