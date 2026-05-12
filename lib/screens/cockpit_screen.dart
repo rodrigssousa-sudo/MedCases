@@ -713,7 +713,315 @@ class _DoseBody extends StatelessWidget {
                     return Column(
                       children: [
                         InkWell(
-                          onTap: () {
+                          onTap: () async {
+                            // ── Verificar interações ANTES de adicionar ──────
+                            // Simula adição temporária para checar interações
+                            final currentNames = p.selectedDrugs
+                                .map((s) => s.name)
+                                .toList();
+                            final pending = <String>[d.name, ...currentNames];
+                            final previewIx = DrugInteractionService
+                                .checkInteractions(
+                              selectedDrugNames: pending,
+                              patientMedicationsText:
+                                  p.patient.medications,
+                            );
+                            // Filtrar apenas interações que envolvem o
+                            // fármaco que está sendo adicionado
+                            final newIx = previewIx.where((ix) =>
+                              ix.drug1.toLowerCase()
+                                  .contains(d.name.toLowerCase()) ||
+                              ix.drug2.toLowerCase()
+                                  .contains(d.name.toLowerCase())
+                            ).toList();
+                            newIx.sort((a, b) =>
+                                a.severity.index.compareTo(b.severity.index));
+                            final worst = newIx.isNotEmpty
+                                ? newIx.first
+                                : null;
+
+                            // Dialog apenas para contraindicado ou major
+                            if (worst != null &&
+                                (worst.severity ==
+                                        InteractionSeverity.contraindicated ||
+                                    worst.severity ==
+                                        InteractionSeverity.major)) {
+                              final isContra = worst.severity ==
+                                  InteractionSeverity.contraindicated;
+                              final isEs = p.lang == 'es';
+                              final confirmed = await showDialog<bool>(
+                                context: context,
+                                barrierDismissible: false,
+                                builder: (ctx) => AlertDialog(
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius:
+                                          BorderRadius.circular(20)),
+                                  contentPadding: EdgeInsets.zero,
+                                  content: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      // Cabeçalho colorido
+                                      Container(
+                                        width: double.infinity,
+                                        padding: const EdgeInsets.all(18),
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              const BorderRadius.vertical(
+                                                  top: Radius.circular(20)),
+                                          color: isContra
+                                              ? const Color(0xFF7F1D1D)
+                                              : const Color(0xFFCC2222),
+                                        ),
+                                        child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Row(children: [
+                                                Icon(
+                                                  isContra
+                                                      ? Icons.block_rounded
+                                                      : Icons
+                                                          .warning_rounded,
+                                                  size: 18,
+                                                  color: Colors.white,
+                                                ),
+                                                const SizedBox(width: 8),
+                                                Expanded(
+                                                  child: Text(
+                                                    isContra
+                                                        ? (isEs
+                                                            ? 'ASOCIACIÓN CONTRAINDICADA'
+                                                            : 'ASSOCIAÇÃO CONTRAINDICADA')
+                                                        : (isEs
+                                                            ? 'INTERACCIÓN DE RIESGO MAYOR'
+                                                            : 'INTERAÇÃO DE RISCO MAIOR'),
+                                                    style: const TextStyle(
+                                                      fontSize: 12,
+                                                      fontWeight:
+                                                          FontWeight.w900,
+                                                      color: Colors.white,
+                                                      letterSpacing: 0.3,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ]),
+                                              const SizedBox(height: 6),
+                                              Text(
+                                                '${worst.drug1}  +  ${worst.drug2}',
+                                                style: TextStyle(
+                                                  fontSize: 13,
+                                                  fontWeight:
+                                                      FontWeight.w900,
+                                                  color: Colors.white
+                                                      .withValues(
+                                                          alpha: 0.9),
+                                                ),
+                                              ),
+                                            ]),
+                                      ),
+                                      // Corpo
+                                      Padding(
+                                        padding: const EdgeInsets.fromLTRB(
+                                            18, 14, 18, 8),
+                                        child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              // Efeito clínico
+                                              Text(
+                                                isEs
+                                                    ? 'Efecto clínico'
+                                                    : 'Efeito clínico',
+                                                style: const TextStyle(
+                                                    fontSize: 9,
+                                                    fontWeight:
+                                                        FontWeight.w900,
+                                                    color:
+                                                        Color(0xFF888888),
+                                                    letterSpacing: 0.5),
+                                              ),
+                                              const SizedBox(height: 3),
+                                              Text(
+                                                worst.effect,
+                                                style: TextStyle(
+                                                  fontSize: 12,
+                                                  fontWeight:
+                                                      FontWeight.w700,
+                                                  color: isContra
+                                                      ? const Color(
+                                                          0xFF7F1D1D)
+                                                      : const Color(
+                                                          0xFFCC2222),
+                                                  height: 1.4,
+                                                ),
+                                              ),
+                                              const SizedBox(height: 10),
+                                              // Conduta
+                                              Container(
+                                                width: double.infinity,
+                                                padding:
+                                                    const EdgeInsets.all(
+                                                        10),
+                                                decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          10),
+                                                  color: isContra
+                                                      ? const Color(
+                                                          0xFFFEF2F2)
+                                                      : const Color(
+                                                          0xFFFFF0F0),
+                                                  border: Border.all(
+                                                    color: isContra
+                                                        ? const Color(
+                                                            0xFFFCA5A5)
+                                                        : const Color(
+                                                            0xFFFFCCCC),
+                                                  ),
+                                                ),
+                                                child: Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      Row(children: [
+                                                        Icon(
+                                                          Icons
+                                                              .medical_services_rounded,
+                                                          size: 10,
+                                                          color: isContra
+                                                              ? const Color(
+                                                                  0xFF7F1D1D)
+                                                              : const Color(
+                                                                  0xFFCC2222),
+                                                        ),
+                                                        const SizedBox(
+                                                            width: 5),
+                                                        Text(
+                                                          isEs
+                                                              ? 'CONDUCTA'
+                                                              : 'CONDUTA',
+                                                          style: TextStyle(
+                                                            fontSize: 8,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .w900,
+                                                            color: isContra
+                                                                ? const Color(
+                                                                    0xFF7F1D1D)
+                                                                : const Color(
+                                                                    0xFFCC2222),
+                                                            letterSpacing:
+                                                                0.5,
+                                                          ),
+                                                        ),
+                                                      ]),
+                                                      const SizedBox(
+                                                          height: 4),
+                                                      Text(
+                                                        worst.management,
+                                                        style: TextStyle(
+                                                          fontSize: 11,
+                                                          fontWeight:
+                                                              FontWeight
+                                                                  .w600,
+                                                          color: isContra
+                                                              ? const Color(
+                                                                  0xFF7F1D1D)
+                                                              : const Color(
+                                                                  0xFFCC2222),
+                                                          height: 1.45,
+                                                        ),
+                                                      ),
+                                                    ]),
+                                              ),
+                                              const SizedBox(height: 4),
+                                            ]),
+                                      ),
+                                      // Botões
+                                      Padding(
+                                        padding: const EdgeInsets.fromLTRB(
+                                            14, 0, 14, 14),
+                                        child: Row(children: [
+                                          // Cancelar
+                                          Expanded(
+                                            child: GestureDetector(
+                                              onTap: () =>
+                                                  Navigator.pop(ctx, false),
+                                              child: Container(
+                                                height: 42,
+                                                decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          12),
+                                                  border: Border.all(
+                                                      color: const Color(
+                                                          0xFFD1D5DB)),
+                                                  color: Colors.white,
+                                                ),
+                                                child: Center(
+                                                  child: Text(
+                                                    isEs
+                                                        ? 'Cancelar'
+                                                        : 'Cancelar',
+                                                    style: const TextStyle(
+                                                      fontSize: 13,
+                                                      fontWeight:
+                                                          FontWeight.w700,
+                                                      color:
+                                                          Color(0xFF555555),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                          const SizedBox(width: 8),
+                                          // Confirmar (com ciência do risco)
+                                          Expanded(
+                                            child: GestureDetector(
+                                              onTap: () =>
+                                                  Navigator.pop(ctx, true),
+                                              child: Container(
+                                                height: 42,
+                                                decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          12),
+                                                  color: isContra
+                                                      ? const Color(
+                                                          0xFF7F1D1D)
+                                                      : const Color(
+                                                          0xFFCC2222),
+                                                ),
+                                                child: Center(
+                                                  child: Text(
+                                                    isEs
+                                                        ? 'Añadir de todas formas'
+                                                        : 'Adicionar mesmo assim',
+                                                    textAlign:
+                                                        TextAlign.center,
+                                                    style: const TextStyle(
+                                                      fontSize: 11,
+                                                      fontWeight:
+                                                          FontWeight.w900,
+                                                      color: Colors.white,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ]),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              );
+                              if (confirmed != true) return;
+                            }
+
+                            // Adiciona (com ou sem confirmação)
                             p.addDrug(d.id);
                             drugQueryCtrl.clear();
                             onDrugPickerChanged(false);
@@ -789,6 +1097,12 @@ class _DoseBody extends StatelessWidget {
         ]),
       ),
 
+      // ── Banner de alerta de interações (visível sem rolar) ────────────────
+      if (p.selectedDrugs.isNotEmpty) ...[
+        _InteractionAlertBanner(interactions: p.drugInteractions, lang: p.lang),
+        const SizedBox(height: 10),
+      ],
+
       if (p.selectedDrugs.isEmpty) ...[
         const SizedBox(height: 20),
         Center(child: Column(children: [
@@ -811,12 +1125,18 @@ class _DoseBody extends StatelessWidget {
         ]),
         const SizedBox(height: 14),
 
-        // Cards de fármaco
+        // Cards de fármaco (com badge de severidade por fármaco)
         ...p.selectedDrugs.map((drug) {
           final dose = p.calculateDose(drug);
-          return _DrugDoseCard(drug: drug, dose: dose, p: p);
+          // Pior interação envolvendo especificamente este fármaco
+          final drugInteractions = p.drugInteractions.where((ix) =>
+            ix.drug1.toLowerCase().contains(drug.name.toLowerCase()) ||
+            ix.drug2.toLowerCase().contains(drug.name.toLowerCase())
+          ).toList();
+          drugInteractions.sort((a, b) => a.severity.index.compareTo(b.severity.index));
+          final worstForDrug = drugInteractions.isNotEmpty ? drugInteractions.first : null;
+          return _DrugDoseCard(drug: drug, dose: dose, p: p, worstInteraction: worstForDrug);
         }),
-
 
         // Interações
         _InteractionPanel(interactions: p.drugInteractions, hasMedications: p.patient.medications.isNotEmpty, lang: p.lang),
@@ -852,42 +1172,119 @@ class _DrugDoseCard extends StatelessWidget {
   final drug;
   final dose;
   final AppProvider p;
-  const _DrugDoseCard({required this.drug, required this.dose, required this.p});
+  final DrugInteraction? worstInteraction;
+  const _DrugDoseCard({required this.drug, required this.dose, required this.p, this.worstInteraction});
+
+  Color _sevColor(InteractionSeverity s) {
+    switch (s) {
+      case InteractionSeverity.contraindicated: return const Color(0xFF7F1D1D);
+      case InteractionSeverity.major:           return const Color(0xFFCC2222);
+      case InteractionSeverity.moderate:        return const Color(0xFFD97706);
+      case InteractionSeverity.minor:           return const Color(0xFF065F46);
+    }
+  }
+  Color _sevBg(InteractionSeverity s) {
+    switch (s) {
+      case InteractionSeverity.contraindicated: return const Color(0xFFFEF2F2);
+      case InteractionSeverity.major:           return const Color(0xFFFFF0F0);
+      case InteractionSeverity.moderate:        return const Color(0xFFFFFBEB);
+      case InteractionSeverity.minor:           return const Color(0xFFECFDF5);
+    }
+  }
+  Color _sevBorder(InteractionSeverity s) {
+    switch (s) {
+      case InteractionSeverity.contraindicated: return const Color(0xFFFCA5A5);
+      case InteractionSeverity.major:           return const Color(0xFFFFCCCC);
+      case InteractionSeverity.moderate:        return const Color(0xFFFCD34D);
+      case InteractionSeverity.minor:           return const Color(0xFFBBF7D0);
+    }
+  }
+  IconData _sevIcon(InteractionSeverity s) {
+    switch (s) {
+      case InteractionSeverity.contraindicated: return Icons.block_rounded;
+      case InteractionSeverity.major:           return Icons.warning_rounded;
+      case InteractionSeverity.moderate:        return Icons.info_rounded;
+      case InteractionSeverity.minor:           return Icons.check_circle_outline_rounded;
+    }
+  }
+  String _sevLabel(InteractionSeverity s, String lang) {
+    switch (s) {
+      case InteractionSeverity.contraindicated: return lang == 'es' ? 'CONTRAINDICADO' : 'CONTRAINDICADO';
+      case InteractionSeverity.major:           return lang == 'es' ? 'MAYOR' : 'MAIOR';
+      case InteractionSeverity.moderate:        return lang == 'es' ? 'MODERADA' : 'MODERADA';
+      case InteractionSeverity.minor:           return lang == 'es' ? 'MENOR' : 'MENOR';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    final ix = worstInteraction;
+    // Borda lateral colorida quando há interação
+    final leftBorderColor = ix != null ? _sevColor(ix.severity) : Colors.transparent;
+
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
-      decoration: const BoxDecoration(
-        border: Border(bottom: BorderSide(color: kBorder)),
+      decoration: BoxDecoration(
+        border: Border(
+          bottom: const BorderSide(color: kBorder),
+          left: BorderSide(color: leftBorderColor, width: ix != null ? 3.5 : 0),
+        ),
       ),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Padding(
           padding: const EdgeInsets.fromLTRB(14, 12, 14, 0),
-          child: Row(children: [
-            Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text('${p.tDB(drug.category)} • ${drug.route}',
-                style: const TextStyle(fontSize: 9, fontWeight: FontWeight.w900, color: kGold, letterSpacing: 1.2)),
-              const SizedBox(height: 2),
-              Text(drug.name, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w900, letterSpacing: -0.3, color: kDark), overflow: TextOverflow.ellipsis),
-            ])),
-            GestureDetector(
-              onTap: () => p.setActiveDrug(drug.id),
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                decoration: BoxDecoration(color: kDark, borderRadius: BorderRadius.circular(20)),
-                child: Text(p.t('set_main'), style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w900, color: kGoldLight)),
+          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            // Badge de interação deste fármaco (linha acima do nome)
+            if (ix != null) ...[
+              GestureDetector(
+                onTap: () => _InteractionDetailSheet.show(context, [ix], p.lang),
+                child: Container(
+                  margin: const EdgeInsets.only(bottom: 6),
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                    color: _sevBg(ix.severity),
+                    border: Border.all(color: _sevBorder(ix.severity)),
+                  ),
+                  child: Row(mainAxisSize: MainAxisSize.min, children: [
+                    Icon(_sevIcon(ix.severity), size: 11, color: _sevColor(ix.severity)),
+                    const SizedBox(width: 5),
+                    Text(
+                      '${_sevLabel(ix.severity, p.lang)}  •  ${ix.drug1} + ${ix.drug2}',
+                      style: TextStyle(fontSize: 9, fontWeight: FontWeight.w900,
+                          color: _sevColor(ix.severity), letterSpacing: 0.4),
+                    ),
+                    const SizedBox(width: 5),
+                    Icon(Icons.open_in_new_rounded, size: 9, color: _sevColor(ix.severity).withValues(alpha: 0.7)),
+                  ]),
+                ),
               ),
-            ),
-            const SizedBox(width: 6),
-            GestureDetector(
-              onTap: () => p.removeDrug(drug.id),
-              child: Container(
-                padding: const EdgeInsets.all(6),
-                decoration: BoxDecoration(shape: BoxShape.circle, color: const Color(0xFFFFF0F0), border: Border.all(color: const Color(0xFFFFCCCC))),
-                child: const Icon(Icons.close_rounded, size: 12, color: Color(0xFFCC2222)),
+            ],
+            Row(children: [
+              Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Text('${p.tDB(drug.category)} • ${drug.route}',
+                  style: const TextStyle(fontSize: 9, fontWeight: FontWeight.w900, color: kGold, letterSpacing: 1.2)),
+                const SizedBox(height: 2),
+                Text(drug.name, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w900, letterSpacing: -0.3, color: kDark), overflow: TextOverflow.ellipsis),
+              ])),
+              GestureDetector(
+                onTap: () => p.setActiveDrug(drug.id),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                  decoration: BoxDecoration(color: kDark, borderRadius: BorderRadius.circular(20)),
+                  child: Text(p.t('set_main'), style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w900, color: kGoldLight)),
+                ),
               ),
-            ),
+              const SizedBox(width: 6),
+              GestureDetector(
+                onTap: () => p.removeDrug(drug.id),
+                child: Container(
+                  padding: const EdgeInsets.all(6),
+                  decoration: BoxDecoration(shape: BoxShape.circle, color: const Color(0xFFFFF0F0), border: Border.all(color: const Color(0xFFFFCCCC))),
+                  child: const Icon(Icons.close_rounded, size: 12, color: Color(0xFFCC2222)),
+                ),
+              ),
+            ]),
           ]),
         ),
         const SizedBox(height: 10),
@@ -931,6 +1328,489 @@ class _MiniStat extends StatelessWidget {
       ]),
     );
   }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// BANNER DE ALERTA DE INTERAÇÕES — topo da lista, tocável
+// Mostra resumo das interações graves/contraindicadas com acesso rápido ao
+// bottom sheet de detalhes. Sempre visível sem necessidade de rolar.
+// ─────────────────────────────────────────────────────────────────────────────
+class _InteractionAlertBanner extends StatelessWidget {
+  final List<DrugInteraction> interactions;
+  final String lang;
+  const _InteractionAlertBanner({required this.interactions, required this.lang});
+
+  bool get _isEs => lang == 'es';
+
+  @override
+  Widget build(BuildContext context) {
+    if (interactions.isEmpty) return const SizedBox.shrink();
+
+    final nContra   = interactions.where((i) => i.severity == InteractionSeverity.contraindicated).length;
+    final nMajor    = interactions.where((i) => i.severity == InteractionSeverity.major).length;
+    final nModerate = interactions.where((i) => i.severity == InteractionSeverity.moderate).length;
+    final nMinor    = interactions.where((i) => i.severity == InteractionSeverity.minor).length;
+
+    // Determina cor/ícone pela pior severidade presente
+    final Color col;
+    final Color bg;
+    final Color border;
+    final IconData icon;
+    final String label;
+
+    if (nContra > 0) {
+      col    = const Color(0xFF7F1D1D);
+      bg     = const Color(0xFFFEF2F2);
+      border = const Color(0xFFFCA5A5);
+      icon   = Icons.block_rounded;
+      label  = _isEs
+        ? '$nContra ASOCIACIÓN CONTRAINDICADA${nContra > 1 ? "S" : ""}'
+        : '$nContra ASSOCIAÇÃO CONTRAINDICADA${nContra > 1 ? "S" : ""}';
+    } else if (nMajor > 0) {
+      col    = const Color(0xFFCC2222);
+      bg     = const Color(0xFFFFF0F0);
+      border = const Color(0xFFFFCCCC);
+      icon   = Icons.warning_rounded;
+      label  = _isEs
+        ? '${interactions.length} INTERACCIÓN${interactions.length > 1 ? "ES" : ""} MAYOR${nMajor > 1 ? "ES" : ""}'
+        : '${interactions.length} INTERAÇÃO${interactions.length > 1 ? "ES" : ""} DE RISCO MAIOR';
+    } else if (nModerate > 0) {
+      col    = const Color(0xFFD97706);
+      bg     = const Color(0xFFFFFBEB);
+      border = const Color(0xFFFCD34D);
+      icon   = Icons.info_rounded;
+      label  = _isEs
+        ? '${interactions.length} INTERACCIÓN${interactions.length > 1 ? "ES" : ""} MODERADA${nModerate > 1 ? "S" : ""}'
+        : '${interactions.length} INTERAÇÃO${interactions.length > 1 ? "ES" : ""} MODERADA${nModerate > 1 ? "S" : ""}';
+    } else {
+      col    = const Color(0xFF065F46);
+      bg     = const Color(0xFFECFDF5);
+      border = const Color(0xFFBBF7D0);
+      icon   = Icons.info_outline_rounded;
+      label  = _isEs
+        ? '${nMinor} interacción${nMinor > 1 ? "es" : ""} menor${nMinor > 1 ? "es" : ""}'
+        : '${nMinor} interação${nMinor > 1 ? "ões" : ""} menor${nMinor > 1 ? "es" : ""}';
+    }
+
+    // Resumo dos pares por severidade
+    final contraList = interactions.where((i) => i.severity == InteractionSeverity.contraindicated).toList();
+    final majorList  = interactions.where((i) => i.severity == InteractionSeverity.major).toList();
+
+    return GestureDetector(
+      onTap: () => _InteractionDetailSheet.show(context, interactions, lang),
+      child: Container(
+        padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(14),
+          color: bg,
+          border: Border.all(color: border, width: 1.5),
+          boxShadow: (nContra > 0 || nMajor > 0) ? [
+            BoxShadow(color: col.withValues(alpha: 0.12), blurRadius: 8, offset: const Offset(0, 2)),
+          ] : null,
+        ),
+        child: Row(children: [
+          // Ícone com container colorido
+          Container(
+            width: 32, height: 32,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: col.withValues(alpha: 0.12),
+            ),
+            child: Center(child: Icon(icon, size: 16, color: col)),
+          ),
+          const SizedBox(width: 10),
+          Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Text(label, style: TextStyle(fontSize: 11, fontWeight: FontWeight.w900, color: col, letterSpacing: 0.3)),
+            const SizedBox(height: 3),
+            // Pares mais graves em destaque
+            if (contraList.isNotEmpty)
+              Text(
+                contraList.map((i) => '${i.drug1} + ${i.drug2}').join('  •  '),
+                style: TextStyle(fontSize: 9, fontWeight: FontWeight.w700, color: col.withValues(alpha: 0.8)),
+                maxLines: 2, overflow: TextOverflow.ellipsis,
+              )
+            else if (majorList.isNotEmpty)
+              Text(
+                majorList.map((i) => '${i.drug1} + ${i.drug2}').join('  •  '),
+                style: TextStyle(fontSize: 9, fontWeight: FontWeight.w700, color: col.withValues(alpha: 0.8)),
+                maxLines: 2, overflow: TextOverflow.ellipsis,
+              )
+            else
+              Text(
+                _isEs ? 'Toque para ver detalhes y conducta' : 'Toque para ver detalhes e conduta',
+                style: TextStyle(fontSize: 9, color: col.withValues(alpha: 0.7), fontWeight: FontWeight.w500),
+              ),
+          ])),
+          const SizedBox(width: 8),
+          // Seta — indica toque
+          Container(
+            padding: const EdgeInsets.all(5),
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: col.withValues(alpha: 0.10),
+            ),
+            child: Icon(Icons.chevron_right_rounded, size: 14, color: col),
+          ),
+        ]),
+      ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// BOTTOM SHEET COMPLETO DE INTERAÇÕES
+// Abre ao tocar no banner ou no badge de um fármaco.
+// Mostra todas as interações com severidade, mecanismo, efeito e conduta.
+// ─────────────────────────────────────────────────────────────────────────────
+class _InteractionDetailSheet {
+  static void show(BuildContext context, List<DrugInteraction> interactions, String lang) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => _InteractionSheetContent(interactions: interactions, lang: lang),
+    );
+  }
+}
+
+class _InteractionSheetContent extends StatefulWidget {
+  final List<DrugInteraction> interactions;
+  final String lang;
+  const _InteractionSheetContent({required this.interactions, required this.lang});
+
+  @override
+  State<_InteractionSheetContent> createState() => _InteractionSheetContentState();
+}
+
+class _InteractionSheetContentState extends State<_InteractionSheetContent> {
+  final _expanded = <int>{0}; // primeiro aberto por padrão
+
+  bool get _isEs => widget.lang == 'es';
+
+  Color _col(InteractionSeverity s) {
+    switch (s) {
+      case InteractionSeverity.contraindicated: return const Color(0xFF7F1D1D);
+      case InteractionSeverity.major:           return const Color(0xFFCC2222);
+      case InteractionSeverity.moderate:        return const Color(0xFFD97706);
+      case InteractionSeverity.minor:           return const Color(0xFF065F46);
+    }
+  }
+  Color _bg(InteractionSeverity s) {
+    switch (s) {
+      case InteractionSeverity.contraindicated: return const Color(0xFFFEF2F2);
+      case InteractionSeverity.major:           return const Color(0xFFFFF0F0);
+      case InteractionSeverity.moderate:        return const Color(0xFFFFFBEB);
+      case InteractionSeverity.minor:           return const Color(0xFFECFDF5);
+    }
+  }
+  Color _border(InteractionSeverity s) {
+    switch (s) {
+      case InteractionSeverity.contraindicated: return const Color(0xFFFCA5A5);
+      case InteractionSeverity.major:           return const Color(0xFFFFCCCC);
+      case InteractionSeverity.moderate:        return const Color(0xFFFDE68A);
+      case InteractionSeverity.minor:           return const Color(0xFFBBF7D0);
+    }
+  }
+  IconData _icon(InteractionSeverity s) {
+    switch (s) {
+      case InteractionSeverity.contraindicated: return Icons.block_rounded;
+      case InteractionSeverity.major:           return Icons.warning_rounded;
+      case InteractionSeverity.moderate:        return Icons.info_rounded;
+      case InteractionSeverity.minor:           return Icons.check_circle_outline_rounded;
+    }
+  }
+  String _sevLabel(InteractionSeverity s) {
+    switch (s) {
+      case InteractionSeverity.contraindicated: return _isEs ? 'CONTRAINDICADO' : 'CONTRAINDICADO';
+      case InteractionSeverity.major:           return _isEs ? 'MAYOR' : 'MAIOR';
+      case InteractionSeverity.moderate:        return _isEs ? 'MODERADA' : 'MODERADA';
+      case InteractionSeverity.minor:           return _isEs ? 'MENOR' : 'MENOR';
+    }
+  }
+
+  // Mensagem de conduta em destaque para contraindicados
+  Widget _contraindicatedBanner(DrugInteraction ix) {
+    return Container(
+      width: double.infinity,
+      margin: const EdgeInsets.only(bottom: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10),
+        color: const Color(0xFF7F1D1D),
+      ),
+      child: Row(children: [
+        const Icon(Icons.block_rounded, size: 14, color: Colors.white),
+        const SizedBox(width: 8),
+        Expanded(child: Text(
+          _isEs
+            ? 'ASOCIACIÓN CONTRAINDICADA — No administrar juntos'
+            : 'ASSOCIAÇÃO CONTRAINDICADA — Não administrar juntos',
+          style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w900, color: Colors.white, height: 1.3),
+        )),
+      ]),
+    );
+  }
+
+  // Banner de risco para interações major
+  Widget _majorBanner(DrugInteraction ix) {
+    return Container(
+      width: double.infinity,
+      margin: const EdgeInsets.only(bottom: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10),
+        color: const Color(0xFFCC2222),
+      ),
+      child: Row(children: [
+        const Icon(Icons.warning_rounded, size: 13, color: Colors.white),
+        const SizedBox(width: 7),
+        Expanded(child: Text(
+          _isEs
+            ? 'RIESGO MAYOR — Requiere evaluación médica y monitorización'
+            : 'RISCO MAIOR — Requer avaliação médica e monitorização',
+          style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w900, color: Colors.white, height: 1.3),
+        )),
+      ]),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // Ordenar por severidade mais grave primeiro
+    final sorted = [...widget.interactions]
+      ..sort((a, b) => a.severity.index.compareTo(b.severity.index));
+
+    final nContra   = sorted.where((i) => i.severity == InteractionSeverity.contraindicated).length;
+    final nMajor    = sorted.where((i) => i.severity == InteractionSeverity.major).length;
+    final nModerate = sorted.where((i) => i.severity == InteractionSeverity.moderate).length;
+    final nMinor    = sorted.where((i) => i.severity == InteractionSeverity.minor).length;
+
+    return DraggableScrollableSheet(
+      initialChildSize: 0.75,
+      minChildSize: 0.4,
+      maxChildSize: 0.95,
+      builder: (_, scrollCtrl) => Container(
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+        ),
+        child: Column(children: [
+          // Handle
+          Container(
+            margin: const EdgeInsets.only(top: 12, bottom: 6),
+            width: 36, height: 4,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(2),
+              color: const Color(0xFFD1D5DB),
+            ),
+          ),
+
+          // Cabeçalho do sheet
+          Padding(
+            padding: const EdgeInsets.fromLTRB(20, 8, 20, 12),
+            child: Row(children: [
+              Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Text(
+                  _isEs ? 'Interacciones Medicamentosas' : 'Interações Medicamentosas',
+                  style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w900, color: kDark, letterSpacing: -0.3),
+                ),
+                const SizedBox(height: 4),
+                Wrap(spacing: 6, children: [
+                  if (nContra > 0)   _SheetBadge('$nContra ${_isEs ? "contraindicada${nContra>1?"s":""}":"contraindicada${nContra>1?"s":""}"}', const Color(0xFF7F1D1D)),
+                  if (nMajor > 0)    _SheetBadge('$nMajor ${_isEs ? "mayor${nMajor>1?"es":""}":"maior${nMajor>1?"es":""}"}', const Color(0xFFCC2222)),
+                  if (nModerate > 0) _SheetBadge('$nModerate ${_isEs ? "moderada${nModerate>1?"s":""}":"moderada${nModerate>1?"s":""}"}', const Color(0xFFD97706)),
+                  if (nMinor > 0)    _SheetBadge('$nMinor ${_isEs ? "menor${nMinor>1?"es":""}":"menor${nMinor>1?"es":""}"}', const Color(0xFF065F46)),
+                ]),
+              ])),
+              GestureDetector(
+                onTap: () => Navigator.pop(context),
+                child: Container(
+                  padding: const EdgeInsets.all(7),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: const Color(0xFFF3F4F6),
+                  ),
+                  child: const Icon(Icons.close_rounded, size: 16, color: Color(0xFF555555)),
+                ),
+              ),
+            ]),
+          ),
+
+          const Divider(height: 1, color: kBorder),
+
+          // Lista de interações expansíveis
+          Expanded(child: ListView.separated(
+            controller: scrollCtrl,
+            padding: const EdgeInsets.fromLTRB(16, 14, 16, 32),
+            itemCount: sorted.length,
+            separatorBuilder: (_, __) => const SizedBox(height: 10),
+            itemBuilder: (_, i) {
+              final ix = sorted[i];
+              final isOpen = _expanded.contains(i);
+              final col = _col(ix.severity);
+              final bg  = _bg(ix.severity);
+              final bdr = _border(ix.severity);
+
+              return GestureDetector(
+                onTap: () => setState(() => isOpen ? _expanded.remove(i) : _expanded.add(i)),
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(14),
+                    color: bg,
+                    border: Border.all(color: bdr, width: 1.5),
+                    boxShadow: (ix.severity == InteractionSeverity.contraindicated ||
+                                ix.severity == InteractionSeverity.major) ? [
+                      BoxShadow(color: col.withValues(alpha: 0.10), blurRadius: 6, offset: const Offset(0, 2)),
+                    ] : null,
+                  ),
+                  child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                    // Header sempre visível
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(12, 11, 12, 11),
+                      child: Row(children: [
+                        Container(
+                          width: 28, height: 28,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: col.withValues(alpha: 0.13),
+                          ),
+                          child: Center(child: Icon(_icon(ix.severity), size: 14, color: col)),
+                        ),
+                        const SizedBox(width: 10),
+                        Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                          Text('${ix.drug1}  +  ${ix.drug2}',
+                            style: TextStyle(fontSize: 12, fontWeight: FontWeight.w900, color: col, height: 1.2)),
+                          const SizedBox(height: 2),
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(6),
+                              color: col.withValues(alpha: 0.13),
+                            ),
+                            child: Text(_sevLabel(ix.severity),
+                              style: TextStyle(fontSize: 8, fontWeight: FontWeight.w900, color: col, letterSpacing: 0.8)),
+                          ),
+                        ])),
+                        Icon(isOpen ? Icons.expand_less_rounded : Icons.expand_more_rounded,
+                          size: 18, color: col.withValues(alpha: 0.6)),
+                      ]),
+                    ),
+
+                    // Conteúdo expansível
+                    if (isOpen) ...[
+                      Divider(height: 1, color: bdr),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(12, 12, 12, 14),
+                        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+
+                          // Banner de contraindicação / risco maior
+                          if (ix.severity == InteractionSeverity.contraindicated)
+                            _contraindicatedBanner(ix),
+                          if (ix.severity == InteractionSeverity.major)
+                            _majorBanner(ix),
+
+                          // Efeito clínico
+                          _SheetInfoRow(
+                            icon: Icons.bolt_rounded,
+                            title: _isEs ? 'EFECTO CLÍNICO' : 'EFEITO CLÍNICO',
+                            text: ix.effect,
+                            color: col,
+                          ),
+                          const SizedBox(height: 10),
+
+                          // Mecanismo
+                          _SheetInfoRow(
+                            icon: Icons.biotech_rounded,
+                            title: _isEs ? 'MECANISMO' : 'MECANISMO',
+                            text: ix.mechanism,
+                            color: col,
+                          ),
+                          const SizedBox(height: 10),
+
+                          // Conduta
+                          Container(
+                            width: double.infinity,
+                            padding: const EdgeInsets.all(12),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              color: Colors.white.withValues(alpha: 0.8),
+                              border: Border.all(color: bdr),
+                            ),
+                            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                              Row(children: [
+                                Icon(Icons.medical_services_rounded, size: 12, color: col),
+                                const SizedBox(width: 6),
+                                Text(
+                                  _isEs ? 'CONDUCTA RECOMENDADA' : 'CONDUTA RECOMENDADA',
+                                  style: TextStyle(fontSize: 9, fontWeight: FontWeight.w900, color: col, letterSpacing: 0.8),
+                                ),
+                              ]),
+                              const SizedBox(height: 6),
+                              Text(ix.management,
+                                style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: col, height: 1.55)),
+                            ]),
+                          ),
+
+                          // Fonte bibliográfica
+                          const SizedBox(height: 10),
+                          Row(children: [
+                            Icon(Icons.menu_book_rounded, size: 10, color: col.withValues(alpha: 0.5)),
+                            const SizedBox(width: 5),
+                            Expanded(child: Text(
+                              'Goodman & Gilman 14ª ed. • Micromedex • UpToDate Lexidrug',
+                              style: TextStyle(fontSize: 9, color: col.withValues(alpha: 0.5), fontStyle: FontStyle.italic),
+                            )),
+                          ]),
+                        ]),
+                      ),
+                    ],
+                  ]),
+                ),
+              );
+            },
+          )),
+        ]),
+      ),
+    );
+  }
+}
+
+// Widget auxiliar — badge colorido no cabeçalho do sheet
+class _SheetBadge extends StatelessWidget {
+  final String text;
+  final Color color;
+  const _SheetBadge(this.text, this.color);
+
+  @override
+  Widget build(BuildContext context) => Container(
+    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+    decoration: BoxDecoration(
+      borderRadius: BorderRadius.circular(8),
+      color: color.withValues(alpha: 0.12),
+      border: Border.all(color: color.withValues(alpha: 0.3)),
+    ),
+    child: Text(text, style: TextStyle(fontSize: 9, fontWeight: FontWeight.w900, color: color)),
+  );
+}
+
+// Widget auxiliar — linha de informação (ícone + título + texto)
+class _SheetInfoRow extends StatelessWidget {
+  final IconData icon;
+  final String title;
+  final String text;
+  final Color color;
+  const _SheetInfoRow({required this.icon, required this.title, required this.text, required this.color});
+
+  @override
+  Widget build(BuildContext context) => Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+    Row(children: [
+      Icon(icon, size: 11, color: color),
+      const SizedBox(width: 5),
+      Text(title, style: TextStyle(fontSize: 9, fontWeight: FontWeight.w900, color: color, letterSpacing: 0.8)),
+    ]),
+    const SizedBox(height: 4),
+    Text(text, style: TextStyle(fontSize: 11, fontWeight: FontWeight.w500, color: color.withValues(alpha: 0.85), height: 1.5)),
+  ]);
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
