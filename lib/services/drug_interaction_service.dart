@@ -742,6 +742,262 @@ const _interactionDB = <(String, String, InteractionSeverity, String, String, St
     'Sangramento GI e em outros sítios',
     'Evitar AINEs com fondaparinux. Usar paracetamol para analgesia. Se AINE necessário, associar IBP'),
 
+  // ── Lote 3 — Novas interações ─────────────────────────────────────────────
+
+  // Gabapentina
+  ('gabapentina', 'morfina',        InteractionSeverity.major,
+    'Sinergismo farmacodinâmico na depressão do SNC e do centro respiratório',
+    'Depressão respiratória potencialmente fatal, sedação profunda, apneia',
+    'Evitar combinação ou reduzir doses. Monitorar FR e saturação. Ter naloxona disponível'),
+  ('gabapentina', 'opioide',        InteractionSeverity.major,
+    'Sinergismo farmacodinâmico — ambos deprimem SNC e centro respiratório',
+    'Depressão respiratória grave, sedação excessiva, risco de morte',
+    'FDA Black Box Warning. Usar menor dose eficaz de cada. Monitorar SpO2 continuamente'),
+  ('gabapentina', 'benzodiazepínico', InteractionSeverity.major,
+    'Depressão aditiva do SNC pela combinação de anticonvulsivante + benzodiazepínico',
+    'Sedação excessiva, depressão respiratória, risco de queda',
+    'Reduzir doses. Monitorar nível de consciência. Evitar em idosos sem suporte monitorizado'),
+
+  // Sertralina + Tramadol (síndrome serotoninérgica)
+  ('ssri', 'tramadol',              InteractionSeverity.major,
+    'Tramadol inibe recaptação de serotonina e noradrenalina; SSRIs aumentam serotonina sinapticamente — efeito serotoninérgico aditivo',
+    'Síndrome serotoninérgica: hipertermia, agitação, mioclonias, diarreia, taquicardia — risco de morte',
+    'Evitar combinação. Se dor intensa, preferir opioide puro (morfina, oxicodona). Monitorar triade serotoninérgica'),
+
+  // Sildenafila + Nitroprussiato
+  ('sildenafila', 'nitrato',        InteractionSeverity.contraindicated,
+    'Ambos aumentam GMPc via vias distintas (PDE5i + NO) → vasodilatação sistêmica sinérgica e incontrolável',
+    'Hipotensão grave potencialmente fatal, colapso cardiovascular',
+    'ABSOLUTAMENTE CONTRAINDICADO. Intervalo mínimo de 24h (sildenafila) ou 48h (tadalafila) após último uso do nitrato'),
+
+  // Fenobarbital + DOACs/Anticoagulantes
+  ('fenobarbital', 'warfarina',     InteractionSeverity.major,
+    'Fenobarbital induz potentemente CYP2C9 e CYP3A4, acelerando o metabolismo da warfarina',
+    'Redução marcada do INR — falha anticoagulante e risco trombótico',
+    'Monitorar INR semanalmente ao iniciar/suspender fenobarbital. Aumentar dose de warfarina conforme INR'),
+  ('fenobarbital', 'apixabana',     InteractionSeverity.major,
+    'Indução de CYP3A4 e P-gp pelo fenobarbital reduz níveis plasmáticos de apixabana em ~50%',
+    'Anticoagulação subterapêutica — risco de tromboembolismo (AVC, TEP, TVP)',
+    'Contraindicado pela bula da apixabana. Substituir anticonvulsivante ou trocar anticoagulante'),
+  ('fenobarbital', 'rivaroxabana',  InteractionSeverity.major,
+    'Indução de CYP3A4 e P-gp reduz exposição à rivaroxabana significativamente',
+    'Perda de efeito anticoagulante — risco tromboembólico grave',
+    'Contraindicado. Evitar combinação. Usar heparina ou warfarina com monitorização rigorosa do INR'),
+
+  // Metformina + Furosemida
+  ('metformina', 'furosemida',      InteractionSeverity.moderate,
+    'Furosemida causa depleção de volume e reduz clearance renal de metformina; risco aumentado de acidose lática em contextos de hipovolemia',
+    'Acúmulo de metformina por redução da excreção renal → acidose lática (rara mas grave)',
+    'Monitorar função renal (creatinina/TFG) ao iniciar ou titular furosemida. Suspender metformina se TFG <30 mL/min'),
+
+  // Espironolactona + IECAs/ARAs (hipercalemia)
+  ('espironolactona', 'enalapril',  InteractionSeverity.major,
+    'Ambos retêm potássio por mecanismos distintos (poupador de K+ + bloqueio SRAA)',
+    'Hipercalemia grave (K+ >6 mEq/L) — risco de arritmia ventricular fatal e parada cardíaca',
+    'Monitorar K+ e creatinina em 1–2 semanas ao iniciar. Dosar K+ mensalmente. Restringir K+ dietético. Suspender se K+ >5,5 mEq/L'),
+
+  // Verapamil / Diltiazem + Betabloqueadores
+  ('verapamil', 'metoprolol',       InteractionSeverity.major,
+    'Ambos deprimem o nó SA e AV por mecanismos distintos — bloqueio aditivo da condução cardíaca',
+    'Bradicardia grave, bloqueio AV de alto grau, assistolia — especialmente em disfunção de VE',
+    'Evitar combinação IV. Uso oral requer ECG basal e monitoramento. Não administrar IV ambos simultaneamente'),
+  ('diltiazem', 'metoprolol',       InteractionSeverity.major,
+    'Depressão aditiva do nó SA/AV por bloqueadores de cálcio não-diidropiridínicos + betabloqueadores',
+    'Bradicardia, bloqueio AV, hipotensão, insuficiência cardíaca descompensada',
+    'Monitorar ECG e FC. Evitar em FEVE reduzida. Não titular doses sem ECG de controle'),
+
+  // Dexmedetomidina
+  ('dexmedetomidina', 'metoprolol', InteractionSeverity.moderate,
+    'Agonismo alfa-2 central da dexmedetomidina potencia bradicardia e hipotensão dos betabloqueadores',
+    'Bradicardia sinusal, hipotensão refratária — especialmente em hipovolemia',
+    'Monitorar FC e PA continuamente em UTI. Reduzir dose de betabloqueador se FC <50 bpm ou PA sistólica <90 mmHg'),
+  ('dexmedetomidina', 'propofol',   InteractionSeverity.moderate,
+    'Sedação aditiva do SNC — ambos são agentes de sedação IV',
+    'Sedação excessiva, apneia, hipotensão, bradicardia',
+    'Reduzir dose de propofol ao combinar. Monitorar nível de sedação (escala RASS), FR e hemodinâmica'),
+
+  // Propofol
+  ('propofol', 'opioide',           InteractionSeverity.moderate,
+    'Sinergismo sedativo e depressor respiratório — especialmente com fentanila e remifentanila',
+    'Apneia, hipotensão, bradicardia — risco aumentado em bolus',
+    'Titular cuidadosamente. Ter suporte de via aérea disponível. Monitorar ETCO2 se possível'),
+
+  // Fentanila
+  ('fentanila', 'benzodiazepínico', InteractionSeverity.major,
+    'Depressão aditiva do SNC — combinação clássica de indução anestésica com risco aumentado',
+    'Depressão respiratória grave, apneia, hipotensão',
+    'FDA Black Box Warning para essa combinação em contexto ambulatorial. Em UTI: monitoramento contínuo de SpO2, FR e PA'),
+
+  // Esmolol
+  ('esmolol', 'verapamil',          InteractionSeverity.major,
+    'Bloqueio aditivo do nó AV por betabloqueador IV + bloqueador de cálcio — risco máximo em via IV',
+    'Assistolia, bloqueio AV completo, colapso hemodinâmico',
+    'Contraindicado usar IV simultaneamente. Se necessário, espaçar administrações com monitoramento rigoroso de ECG'),
+
+  // Milrinona
+  ('milrinona', 'furosemida',       InteractionSeverity.moderate,
+    'Furosemida causa hipovolemia e hipocalemia, amplificando efeitos vasodilatadores da milrinona',
+    'Hipotensão grave, arritmias por hipocalemia (potencializa milrinona)',
+    'Repor K+ antes de iniciar. Monitorar PA, débito urinário e eletrólitos a cada 4–6h'),
+
+  // Levosimendan
+  ('levosimendan', 'nitrato',       InteractionSeverity.moderate,
+    'Ambos são vasodilatadores — levosimendan abre canais K-ATP vasculares; nitratos liberam NO',
+    'Hipotensão grave, especialmente nas primeiras horas de infusão do levosimendan',
+    'Monitorar PA invasiva. Reduzir ou suspender nitrato durante infusão de levosimendan. Repor volume se necessário'),
+
+  // Naloxona
+  ('naloxona', 'opioide',           InteractionSeverity.major,
+    'Antagonismo competitivo nos receptores mu-opioide — reverte analgesia e sedação',
+    'Crise de abstinência aguda em dependentes, dor intensa, agitação, hipertensão, edema pulmonar (raro)',
+    'Titular em baixas doses IV (0,04–0,1 mg) para reverter depressão respiratória sem precipitar abstinência. Reavaliar a cada 2–3 min'),
+
+  // Labetalol
+  ('labetalol', 'verapamil',        InteractionSeverity.major,
+    'Bloqueio combinado alfa+beta (labetalol) + bloqueio de canal de cálcio — depressão cardíaca aditiva',
+    'Bradicardia, hipotensão grave, insuficiência cardíaca aguda',
+    'Evitar combinação. Monitorar ECG, FC e PA. Não usar em IC descompensada'),
+
+  // Amicacina (aminoglicosídeo)
+  ('aminoglicosideo', 'vancomicina', InteractionSeverity.major,
+    'Nefrotoxicidade e ototoxicidade sinérgicas — dupla inibição de transportadores renais e ciliares cocleares',
+    'Insuficiência renal aguda oligúrica, perda auditiva irreversível (coclear e vestibular)',
+    'Monitorar creatinina e ureia diariamente. Audiometria em uso prolongado. Dosar níveis séricos (vale e pico). Hidratação adequada'),
+
+  // Fluconazol (CYP2C9/3A4)
+  ('fluconazol', 'sinvastatina',    InteractionSeverity.major,
+    'Inibição do CYP3A4 pelo fluconazol aumenta AUC da sinvastatina em até 14 vezes',
+    'Miopatia grave, rabdomiólise com insuficiência renal aguda',
+    'Suspender sinvastatina durante o curso de fluconazol. Retomar após 48–72h. Se estatina necessária, usar pravastatina (não metabolizada pelo CYP3A4)'),
+  ('fluconazol', 'atorvastatina',   InteractionSeverity.major,
+    'Inibição do CYP3A4 eleva concentrações de atorvastatina significativamente',
+    'Miopatia, rabdomiólise, lesão renal aguda',
+    'Suspender atorvastatina durante fluconazol. Alternativa: pravastatina ou rosuvastatina em dose reduzida'),
+  ('fluconazol', 'quetiapina',      InteractionSeverity.major,
+    'Inibição de CYP3A4 aumenta exposição à quetiapina com prolongamento do QTc',
+    'Prolongamento do intervalo QT, torsades de pointes, fibrilação ventricular',
+    'Evitar. Se inevitável, reduzir dose de quetiapina em 50% e monitorar ECG seriado'),
+  ('fluconazol', 'fenitoína',       InteractionSeverity.major,
+    'Fluconazol inibe CYP2C9 e CYP2C19 — principais metabolizadores da fenitoína',
+    'Toxicidade por fenitoína: nistagmo, ataxia, diplopia, convulsões paradoxais',
+    'Monitorar nível sérico de fenitoína (nível-alvo: 10–20 mcg/mL). Reduzir dose de fenitoína antecipadamente'),
+
+  // Fenitoína (indutora)
+  ('fenitoína', 'warfarina',        InteractionSeverity.major,
+    'Fenitoína induz CYP2C9 → maior metabolismo da warfarina; também pode deslocar warfarina de proteínas (efeito bifásico)',
+    'Inicialmente: elevação do INR → risco hemorrágico. Cronicamente: redução do INR → risco tromboembólico',
+    'Monitorar INR intensivamente ao iniciar/ajustar/suspender fenitoína. Ajustar dose de warfarina conforme curva'),
+  ('fenitoína', 'lamotrigina',      InteractionSeverity.major,
+    'Fenitoína induz UGT e CYP2C19, acelerando glucuronidação da lamotrigina',
+    'Redução de 40–50% nos níveis de lamotrigina → falha antiepiléptica',
+    'Dobrar a dose-alvo de lamotrigina quando associada à fenitoína. Monitorar nível sérico se disponível'),
+
+  // Topiramato
+  ('topiramato', 'acido valproico', InteractionSeverity.moderate,
+    'Interação farmacodinâmica e metabólica: topiramato pode reduzir níveis de valproato e inibir beta-oxidação mitocondrial',
+    'Encefalopatia hiperamonêmica (sem elevação de aminotransferases), hipotermia',
+    'Monitorar amônia sérica em pacientes sintomáticos (confusão, letargia). Suspender topiramato se encefalopatia'),
+  ('topiramato', 'anticoncepcional', InteractionSeverity.moderate,
+    'Topiramato induz CYP3A4 em doses ≥200 mg/dia, reduzindo etinilestradiol e progestagênio',
+    'Falha contraceptiva — gravidez não planejada',
+    'Usar método contraceptivo não hormonal (DIU de cobre, preservativo). Orientar paciente explicitamente sobre o risco'),
+
+  // Olanzapina
+  ('olanzapina', 'benzodiazepínico', InteractionSeverity.major,
+    'Depressão aditiva do SNC — risco especialmente elevado com formulação IM de olanzapina',
+    'Sedação grave, depressão respiratória, hipotensão — casos de óbito descritos',
+    'Contraindicado usar olanzapina IM com benzodiazepínico parenteral (intervalo mínimo 1h). Monitorar SpO2 e PA'),
+  ('olanzapina', 'metoprolol',      InteractionSeverity.moderate,
+    'Olanzapina inibe CYP2D6, aumentando exposição ao metoprolol',
+    'Bradicardia, hipotensão ortostática, broncoespasmo em asmáticos',
+    'Monitorar FC e PA. Reduzir dose de metoprolol se FC <55 bpm ou sintomático'),
+
+  // Mirtazapina
+  ('mirtazapina', 'tramadol',       InteractionSeverity.major,
+    'Mirtazapina tem ação serotoninérgica e noradrenérgica; tramadol inibe recaptação de serotonina',
+    'Síndrome serotoninérgica — hipertermia, agitação, clonus, diarreia',
+    'Evitar combinação. Se analgesia opioide necessária, preferir morfina ou fentanila pura'),
+  ('mirtazapina', 'imao',           InteractionSeverity.contraindicated,
+    'Mirtazapina potencializa transmissão serotoninérgica e noradrenérgica; IMAOs bloqueiam catabolismo de monoaminas',
+    'Síndrome serotoninérgica grave potencialmente fatal',
+    'ABSOLUTAMENTE CONTRAINDICADO. Intervalo mínimo de 14 dias entre IMAO e mirtazapina'),
+
+  // Clonazepam
+  ('benzodiazepínico', 'acido valproico', InteractionSeverity.moderate,
+    'Valproato pode aumentar concentrações de clonazepam por inibição metabólica; risco de ausência paradoxal',
+    'Sedação excessiva, ou paradoxalmente: piora do estado de ausência epiléptica',
+    'Monitorar resposta clínica. Avaliar padrão de ausências em eletroencefalograma se piora'),
+
+  // Acetazolamida
+  ('acetazolamida', 'topiramato',   InteractionSeverity.moderate,
+    'Ambos inibem anidrase carbônica — efeito aditivo na acidose metabólica e nefrolitíase',
+    'Acidose metabólica hiperclorêmica grave, nefrolitíase, encefalopatia (raro)',
+    'Evitar combinação. Monitorar gasometria e pH urinário. Garantir hidratação >2L/dia'),
+  ('acetazolamida', 'aspirina',     InteractionSeverity.major,
+    'AAS em doses analgésicas compete com acetazolamida por secreção tubular renal, elevando nível da acetazolamida; também pode induzir acidose',
+    'Toxicidade por acetazolamida: letargia, anorexia, parestesias, acidose grave',
+    'Evitar AAS em doses altas com acetazolamida. Se analgesia necessária, usar paracetamol'),
+
+  // Clortalidona / Hidroclorotiazida
+  ('hidroclorotiazida', 'lítio',    InteractionSeverity.major,
+    'Tiazídicos causam depleção de sódio → aumento compensatório da reabsorção de lítio no túbulo proximal',
+    'Toxicidade por lítio: tremor grosseiro, náuseas, ataxia, confusão, convulsões, insuficiência renal',
+    'Monitorar lítio sérico semanalmente ao iniciar/ajustar diurético. Reduzir dose de lítio em ~25%. Manter ingesta hídrica e salina adequadas'),
+  ('hidroclorotiazida', 'digoxina', InteractionSeverity.major,
+    'Hipocalemia induzida por tiazídico potencializa toxicidade da digoxina (competição por bomba Na/K-ATPase)',
+    'Toxicidade digitálica: bradiarritmia, BAV, bigeminismo, náuseas, distúrbios visuais',
+    'Manter K+ sérico >4 mEq/L. Dosar K+ e digoxina regularmente. Suplementar KCl se necessário'),
+
+  // Verapamil + Digoxina
+  ('verapamil', 'digoxina',         InteractionSeverity.major,
+    'Verapamil inibe P-gp e reduz clearance renal de digoxina, aumentando nível sérico em 50–75%',
+    'Toxicidade digitálica: BAV, bradicardia grave, náuseas, visão turva',
+    'Reduzir dose de digoxina em 30–50% ao iniciar verapamil. Monitorar nível sérico de digoxina. ECG seriado'),
+
+  // Glibenclamida
+  ('glibenclamida', 'fluconazol',   InteractionSeverity.major,
+    'Fluconazol inibe CYP2C9, principal enzima de metabolismo da glibenclamida',
+    'Hipoglicemia grave prolongada — risco em idosos e insuficiência renal',
+    'Monitorar glicemia capilar a cada 4h durante uso concomitante. Reduzir dose de glibenclamida. Considerar switch para insulina'),
+  ('glibenclamida', 'ciprofloxacino', InteractionSeverity.moderate,
+    'Ciprofloxacino inibe CYP1A2 e pode aumentar secreção de insulina por bloqueio de canais de K-ATP pancreáticos',
+    'Hipoglicemia — especialmente em idosos com insuficiência renal',
+    'Monitorar glicemia. Orientar paciente sobre sintomas de hipoglicemia. Avaliar substituição do antibiótico'),
+
+  // Isossorbida
+  ('nitrato', 'sildenafila',        InteractionSeverity.contraindicated,
+    'Sinergismo no aumento de GMPc (NO + PDE5i) → vasodilatação sistêmica potencializada e incontrolável',
+    'Hipotensão grave potencialmente fatal, síncope, isquemia miocárdica por "roubo"',
+    'ABSOLUTAMENTE CONTRAINDICADO. Informar explicitamente todos os pacientes com angina que usam nitratos sobre essa contraindicação'),
+
+  // Rocurônio
+  ('rocurônio', 'aminoglicosideo',  InteractionSeverity.moderate,
+    'Aminoglicosídeos inibem a liberação de acetilcolina na junção neuromuscular — potencialização do bloqueio neuromuscular',
+    'Prolongamento do bloqueio neuromuscular, dificuldade de reversão com neostigmina',
+    'Monitorar bloqueio neuromuscular com TOF (train-of-four). Ter sugamadex disponível para reversão em casos de bloqueio prolongado'),
+
+  // Tigeciclina
+  ('tigeciclina', 'warfarina',      InteractionSeverity.moderate,
+    'Tigeciclina pode aumentar INR por mecanismo não completamente elucidado (possivelmente inibição da flora intestinal produtora de vitamina K)',
+    'Elevação do INR com risco hemorrágico',
+    'Monitorar INR a cada 2–3 dias durante uso de tigeciclina. Ajustar dose de warfarina conforme necessário'),
+
+  // Ceftolozana + Tazobactam
+  ('ceftolozana', 'furosemida',     InteractionSeverity.minor,
+    'Furosemida pode reduzir excreção renal de betalactâmicos por competição tubular',
+    'Aumento leve dos níveis plasmáticos de ceftolozana — sem relevância clínica significativa na maioria dos casos',
+    'Sem ajuste necessário em função renal normal. Monitorar TFG em pacientes com insuficiência renal prévia'),
+
+  // Clonixinato de Lisina
+  ('clonixinato', 'warfarina',      InteractionSeverity.moderate,
+    'AINE com inibição plaquetária e possível deslocamento proteico da warfarina',
+    'Aumento do INR e risco de sangramento',
+    'Evitar. Preferir paracetamol como analgésico alternativo. Monitorar INR se uso inevitável'),
+  ('clonixinato', 'aine',           InteractionSeverity.moderate,
+    'Risco aditivo de toxicidade GI e renal por uso de dois AINEs simultaneamente',
+    'Úlcera gástrica, sangramento GI, lesão renal aguda',
+    'Não associar dois AINEs. Escolher um único AINE na menor dose eficaz pelo menor tempo'),
+
 ];
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -993,6 +1249,110 @@ const _termMap = <String, String>{
   'vacinas vivas': 'vacinas vivas', 'vacina viva': 'vacinas vivas',
   'mmr': 'vacinas vivas', 'febre amarela': 'vacinas vivas',
   'varicela vacina': 'vacinas vivas', 'bcg': 'vacinas vivas',
+
+  // ── Lote 3 — novos fármacos ───────────────────────────────────────────────
+
+  // Cardiovascular — estatinas (novos aliases; atorvastatina/lipitor já existem acima)
+  'torvacard': 'atorvastatina',
+
+  // Cardiovascular — diuréticos (clortalidona/hidroclorotiazida/hctz já existem acima)
+  'clortalidone': 'hidroclorotiazida', 'hidrodiuril': 'hidroclorotiazida',
+
+  // Cardiovascular — anti-hipertensivos (clonidina/atensina/isossorbida/nitrato já existem)
+  'clonidine': 'clonidina',
+  'monoísordil': 'nitrato', 'isordil': 'nitrato',
+  'dinitrato de isossorbida': 'nitrato', 'mononitrato de isossorbida': 'nitrato',
+  'labetalol': 'labetalol', 'trandate': 'labetalol',
+
+  // Cardiovascular — bloqueadores de canal de cálcio (verapamil/isoptin/diltiazem/cardizem já existem)
+  'verapamilo': 'verapamil', 'balcor': 'diltiazem',
+
+  // Cardiovascular — inotrópicos/vasoativos
+  'levosimendan': 'levosimendan', 'simdax': 'levosimendan',
+  'milrinona': 'milrinona', 'primacor': 'milrinona',
+  'esmolol': 'esmolol', 'brevibloc': 'esmolol',
+  'nitroprussiato': 'nitroprussiato', 'nipride': 'nitroprussiato',
+  'nitroprussiato de sódio': 'nitroprussiato',
+
+  // Neurologia / Antiepilépticos (fenitoína/fenitoin/lamotrigina/lamictal já existem acima)
+  'gabapentina': 'gabapentina', 'neurontin': 'gabapentina', 'gabapentin': 'gabapentina',
+  'gabatina': 'gabapentina', 'gabaneurin': 'gabapentina',
+  'fenobarbital': 'fenobarbital', 'gardenal': 'fenobarbital', 'phenobarbital': 'fenobarbital',
+  'hidantal': 'fenitoína', 'phenytoin': 'fenitoína', 'dilantin': 'fenitoína',
+  'lamotrigine': 'lamotrigina',
+  'topiramato': 'topiramato', 'topamax': 'topiramato', 'topiramate': 'topiramato',
+  'acetazolamida': 'acetazolamida', 'diamox': 'acetazolamida', 'acetazolamide': 'acetazolamida',
+
+  // Psiquiatria / Antidepressivos (sertralina já mapeada como ssri acima)
+  'zoloft': 'ssri', 'sertraline': 'ssri', 'serenata': 'ssri',
+  'mirtazapina': 'mirtazapina', 'remeron': 'mirtazapina', 'mirtazapine': 'mirtazapina',
+  'zolvera': 'mirtazapina',
+
+  // Psiquiatria / Antipsicóticos
+  'olanzapina': 'olanzapina', 'zyprexa': 'olanzapina', 'olanzapine': 'olanzapina',
+  'zydis': 'olanzapina',
+
+  // Psiquiatria / Ansiolíticos (clonazepam já mapeado acima)
+  'rivotril': 'benzodiazepínico',
+  'zolpidem': 'benzodiazepínico', 'stilnox': 'benzodiazepínico', 'zolpidem tartarato': 'benzodiazepínico',
+
+  // Anestesia / UTI (fentanila já mapeada como opioide acima)
+  'propofol': 'propofol', 'diprivan': 'propofol',
+  'fentanil': 'opioide', 'duragesic': 'opioide',
+  'dexmedetomidina': 'dexmedetomidina', 'precedex': 'dexmedetomidina', 'dexmedetomidine': 'dexmedetomidina',
+  'rocurônio': 'rocurônio', 'esmeron': 'rocurônio', 'rocuronium': 'rocurônio',
+  'naloxona': 'naloxona', 'narcan': 'naloxona', 'naloxone': 'naloxona',
+  'lidocaína': 'lidocaína', 'xylocaine': 'lidocaína', 'xylestesin': 'lidocaína',
+  'lidocaine': 'lidocaína',
+
+  // Infectologia (amicacina já mapeada como aminoglicosideo acima)
+  'tigeciclina': 'tigeciclina', 'tygacil': 'tigeciclina', 'tigecycline': 'tigeciclina',
+  'fosfomicina': 'fosfomicina', 'monurol': 'fosfomicina', 'fosfocin': 'fosfomicina',
+  'fosfomycin': 'fosfomicina',
+  'valaciclovir': 'valaciclovir', 'valtrex': 'valaciclovir', 'valacyclovir': 'valaciclovir',
+  'amikin': 'aminoglicosideo', 'amikacin': 'aminoglicosideo',
+  'ceftolozana': 'ceftolozana', 'zerbaxa': 'ceftolozana',
+  'ceftolozana tazobactam': 'ceftolozana', 'ceftolozane': 'ceftolozana',
+
+  // Antifúngicos (fluconazol/diflucan já mapeados acima)
+  'fluconazole': 'fluconazol', 'zoltec': 'fluconazol',
+
+  // Endocrinologia / Hipoglicemiantes (glibenclamida/daonil já mapeados acima)
+  'glyburide': 'glibenclamida', 'diabeta': 'glibenclamida',
+
+  // Gastroenterologia
+  'racecadotril': 'racecadotril', 'tiorfan': 'racecadotril', 'hidrasec': 'racecadotril',
+  'levosulpirida': 'levosulpirida', 'levopraid': 'levosulpirida',
+  'simeticona': 'simeticona', 'luftal': 'simeticona', 'mylicon': 'simeticona',
+  'dimeticona': 'simeticona',
+
+  // Hematologia / Vitaminas
+  'etamsilato': 'etamsilato', 'dicynone': 'etamsilato', 'etamsylate': 'etamsilato',
+  'tiamina': 'tiamina', 'vitamina b1': 'tiamina', 'benerva': 'tiamina',
+  'thiamine': 'tiamina',
+  'piridoxina': 'piridoxina', 'vitamina b6': 'piridoxina', 'pyridoxine': 'piridoxina',
+
+  // Respiratório / Mucolíticos
+  'ambroxol': 'ambroxol', 'mucosolvan': 'ambroxol', 'ambroxol hcl': 'ambroxol',
+  'acebrofilina': 'acebrofilina', 'bronchoton': 'acebrofilina',
+  'salbutamol': 'salbutamol', 'ventolin': 'salbutamol', 'albuterol': 'salbutamol',
+  'aerolin': 'salbutamol', 'salbutamol gotas': 'salbutamol',
+
+  // Dermatologia / Tópicos
+  'sulfadiazina de prata': 'sulfadiazina de prata', 'silverex': 'sulfadiazina de prata',
+  'sulfadiazina': 'sulfadiazina de prata',
+  'mupirocina': 'mupirocina', 'bactroban': 'mupirocina', 'mupirocin': 'mupirocina',
+  'permetrina': 'permetrina', 'keltrina': 'permetrina', 'permethrin': 'permetrina',
+  'clobetasol': 'clobetasol', 'temovate': 'clobetasol', 'clobetasol propionato': 'clobetasol',
+  'fexofenadina': 'fexofenadina', 'allegra': 'fexofenadina', 'fexofenadine': 'fexofenadina',
+
+  // Analgesia
+  'clonixinato': 'clonixinato', 'dorilax': 'clonixinato', 'clonixin': 'clonixinato',
+  'clonixinato de lisina': 'clonixinato',
+
+  // Nefrologia
+  'kayexalate': 'kayexalate', 'poliestireno sulfonato': 'kayexalate',
+  'resina de troca iônica': 'kayexalate', 'sorcal': 'kayexalate',
 };
 
 // ─────────────────────────────────────────────────────────────────────────────

@@ -10014,4 +10014,1859 @@ const List<DrugModel> drugsDatabase = [
     },
   ),
 
+  // ── LOTE 3 — 50 fármacos adicionais ─────────────────────────────────────
+
+  DrugModel(
+    id: 'sinvastatina',
+    group: 'Cardiovascular y HTA',
+    name: 'Sinvastatina',
+    className: {'pt': 'Inibidor da HMG-CoA redutase (Estatina)', 'es': 'Inhibidor de la HMG-CoA reductasa (Estatina)'},
+    category: {'pt': 'Hipolipemiantes', 'es': 'Hipolipemiantes'},
+    route: 'VO',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': '10–40 mg VO à noite. Máx. 40 mg/dia (dose de 80 mg restrita pelo FDA devido a miopatia).',
+      'es': '10–40 mg VO por la noche. Máx. 40 mg/día.',
+    },
+    renalAlert: {
+      'pt': 'ClCr < 30 mL/min: iniciar com 5 mg/dia.',
+      'es': 'ClCr < 30: iniciar con 5 mg/día.',
+    },
+    elderlyAlert: {
+      'pt': 'Monitorar mialgia. Interação com múltiplos fármacos aumenta risco de rabdomiólise.',
+      'es': 'Monitorear mialgia. Riesgo de rabdomiólisis elevado.',
+    },
+    mechanism: {
+      'pt': 'Inibe a HMG-CoA redutase; reduz síntese de colesterol e aumenta receptores de LDL no fígado.',
+      'es': 'Inhibe la HMG-CoA reductasa; reduce el colesterol.',
+    },
+    warning: {
+      'pt': 'Contraindicado com inibidores potentes do CYP3A4 (Claritromicina, Itraconazol).',
+      'es': 'Contraindicado con inhibidores potentes de CYP3A4.',
+    },
+    adverse: {
+      'pt': ['Mialgia', 'Cefaleia', 'Aumento de transaminases', 'Rabdomiólise (raro)'],
+      'es': ['Mialgia', 'Cefalea', 'Aumento de transaminasas'],
+    },
+  ),
+
+  DrugModel(
+    id: 'gabapentina',
+    group: 'Neurología y Psiquiatría',
+    name: 'Gabapentina',
+    className: {'pt': 'Anticonvulsivante / Gabapentinoide', 'es': 'Anticonvulsivante / Gabapentinoide'},
+    category: {'pt': 'Analgésicos Adjuvantes', 'es': 'Analgésicos Adyuvantes'},
+    route: 'VO',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': 'Dor neuropática: Início 300 mg 1x/dia, titular até 900–3600 mg/dia (3x/dia).',
+      'es': 'Dolor neuropático: Inicio 300 mg/día, hasta 3600 mg/día.',
+    },
+    renalAlert: {
+      'pt': 'Ajuste obrigatório pelo ClCr. Excreção exclusivamente renal.',
+      'es': 'Ajuste obligatorio según función renal.',
+    },
+    elderlyAlert: {
+      'pt': 'Risco de sonolência, edema periférico e quedas. Iniciar com doses baixas.',
+      'es': 'Riesgo de caídas, sedación y edema.',
+    },
+    mechanism: {
+      'pt': 'Liga-se à subunidade alfa-2-delta de canais de Cálcio voltagem-dependentes, reduzindo neurotransmissores excitatórios.',
+      'es': 'Bloquea canales de calcio presinápticos.',
+    },
+    warning: {
+      'pt': 'Não interromper abruptamente. Risco de ideação suicida.',
+      'es': 'No suspender bruscamente.',
+    },
+    adverse: {
+      'pt': ['Tontura', 'Sonolência', 'Edema periférico', 'Fadiga', 'Ataxia'],
+      'es': ['Mareo', 'Somnolencia', 'Edema periférico'],
+    },
+  ),
+
+  DrugModel(
+    id: 'clortalidona',
+    group: 'Cardiovascular y HTA',
+    name: 'Clortalidona',
+    className: {'pt': 'Diurético Tiazídico-símile', 'es': 'Diurético Tiazida-like'},
+    category: {'pt': 'Anti-hipertensivos', 'es': 'Antihipertensivos'},
+    route: 'VO',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': '12.5–25 mg 1x/dia (máx 50 mg). Longa duração (>48h).',
+      'es': '12.5–25 mg 1x/día (máx 50 mg).',
+    },
+    renalAlert: {
+      'pt': 'Ineficaz se ClCr < 30 mL/min.',
+      'es': 'Ineficaz si ClCr < 30.',
+    },
+    elderlyAlert: {
+      'pt': 'Alto risco de hiponatremia, hipopotassemia e quedas.',
+      'es': 'Riesgo de hiponatremia y caídas.',
+    },
+    mechanism: {
+      'pt': 'Inibe o cotransporte de Na-Cl no túbulo contorcido distal.',
+      'es': 'Inhibe el cotransportador Na-Cl en el túbulo distal.',
+    },
+    warning: {
+      'pt': 'Pode causar hiperuricemia (precipitar gota) e intolerância à glicose.',
+      'es': 'Riesgo de gota y aumento de glucemia.',
+    },
+    adverse: {
+      'pt': ['Hipocalemia', 'Hiponatremia', 'Hiperuricemia', 'Câimbras'],
+      'es': ['Hipopotasemia', 'Hiponatremia', 'Hiperuricemia'],
+    },
+  ),
+
+  DrugModel(
+    id: 'clonidina',
+    group: 'Cardiovascular y HTA',
+    name: 'Clonidina',
+    className: {'pt': 'Agonista Alfa-2 adrenérgico central', 'es': 'Agonista Alfa-2 adrenérgico central'},
+    category: {'pt': 'Anti-hipertensivos / Emergência', 'es': 'Antihipertensivos / Emergencia'},
+    route: 'VO / IV / Transdérmico',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': '0.100–0.200 mg 2-3x/dia. Urgência hipertensiva: 0.1–0.2 mg VO.',
+      'es': '0.100–0.200 mg 2-3x/día.',
+    },
+    renalAlert: {
+      'pt': 'Reduzir dose em insuficiência renal grave.',
+      'es': 'Reducir dosis en falla renal.',
+    },
+    elderlyAlert: {
+      'pt': 'Evitar (Beers criteria): causa bradicardia, sedação intensa e hipotensão ortostática.',
+      'es': 'Evitar en ancianos por sedación y bradicardia.',
+    },
+    mechanism: {
+      'pt': 'Estimula receptores alfa-2 centrais, diminuindo o efluxo simpático do SNC.',
+      'es': 'Disminuye el flujo simpático central.',
+    },
+    warning: {
+      'pt': 'NUNCA suspender abruptamente (risco de hipertensão de rebote severa).',
+      'es': 'Riesgo de hipertensión de rebote al suspender.',
+    },
+    adverse: {
+      'pt': ['Boca seca', 'Sedação', 'Hipotensão postural', 'Constipação', 'Bradicardia'],
+      'es': ['Boca seca', 'Sedación', 'Hipotensión'],
+    },
+  ),
+
+  DrugModel(
+    id: 'fluconazol',
+    group: 'Infectología (Antifúngicos / Antivirales / TBC)',
+    name: 'Fluconazol',
+    className: {'pt': 'Antifúngico Triazólico', 'es': 'Antifúngico Triazol'},
+    category: {'pt': 'Antifúngicos', 'es': 'Antifúngicos'},
+    route: 'VO / IV',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': '150–400 mg/dia. Candidíase vaginal: 150 mg dose única.',
+      'es': '150–400 mg/día.',
+    },
+    renalAlert: {
+      'pt': 'ClCr < 50 mL/min: reduzir dose em 50%.',
+      'es': 'Reducir dosis 50% si ClCr < 50.',
+    },
+    elderlyAlert: {
+      'pt': 'Monitorar função renal e intervalo QT.',
+      'es': 'Monitorear función renal y QT.',
+    },
+    mechanism: {
+      'pt': 'Inibe a síntese de ergosterol na membrana fúngica via inibição do CYP450 fúngico.',
+      'es': 'Inhibe la síntesis de ergosterol.',
+    },
+    warning: {
+      'pt': 'Inibidor do CYP2C9 e CYP3A4. Interage com Varfarina e Fenitoína.',
+      'es': 'Múltiples interacciones citocromales.',
+    },
+    adverse: {
+      'pt': ['Náuseas', 'Elevação de transaminases', 'Cefaleia', 'Prolongamento QT'],
+      'es': ['Náuseas', 'Elevación de transaminasas'],
+    },
+  ),
+
+  DrugModel(
+    id: 'lidocaina',
+    group: 'UCI – Críticos y Sedoanalgesia',
+    name: 'Lidocaína',
+    className: {'pt': 'Anestésico Local / Antiarrítmico Classe IB', 'es': 'Anestésico Local / Antiarrítmico Clase IB'},
+    category: {'pt': 'Emergência / Anestesia', 'es': 'Emergencia / Anestesia'},
+    route: 'IV / Tópica / SC',
+    doseType: 'weight',
+    mgKg: 1.0,
+    fixedDose: {
+      'pt': 'Antiarrítmico: 1–1.5 mg/kg bolus IV. Manutenção: 1–4 mg/min.',
+      'es': 'Antiarrítmico: 1–1.5 mg/kg bolo IV.',
+    },
+    renalAlert: {
+      'pt': 'Acúmulo de metabólitos ativos em IRC prolongada.',
+      'es': 'Precaución en falla renal prolongada.',
+    },
+    elderlyAlert: {
+      'pt': 'Reduzir dose de manutenção em 50%. Risco de toxicidade no SNC (convulsões).',
+      'es': 'Reducir dosis; riesgo de toxicidad SNC.',
+    },
+    mechanism: {
+      'pt': 'Bloqueia canais de sódio rápidos, inibindo a despolarização.',
+      'es': 'Bloqueo de canales de sodio.',
+    },
+    warning: {
+      'pt': 'Toxicidade: tinido, gosto metálico, parestesia perioral e convulsões.',
+      'es': 'Signos de toxicidad sistémica.',
+    },
+    adverse: {
+      'pt': ['Hipotensão', 'Bradicardia', 'Convulsão', 'Gosto metálico', 'Confusão'],
+      'es': ['Hipotensión', 'Bradicardia', 'Convulsiones'],
+    },
+  ),
+
+  DrugModel(
+    id: 'nitroprussiato',
+    group: 'UCI – Críticos y Sedoanalgesia',
+    name: 'Nitroprussiato de Sódio',
+    className: {'pt': 'Vasodilatador potente (Doador de NO)', 'es': 'Vasodilatador potente (Donador de NO)'},
+    category: {'pt': 'Emergência / Cardiovascular', 'es': 'Emergencia / Cardiovascular'},
+    route: 'IV (Infusão)',
+    doseType: 'mcg_kg_min',
+    mcgKgMinStart: 0.3,
+    mcgKgMinMax: 10.0,
+    fixedDose: {
+      'pt': 'Iniciar 0.3 mcg/kg/min. Manter PAM alvo. Fotossensível.',
+      'es': 'Inicio 0.3 mcg/kg/min. Fotosensible.',
+    },
+    renalAlert: {
+      'pt': 'Risco de toxicidade por Tiocianato em IRC.',
+      'es': 'Riesgo de toxicidad por tiocianato.',
+    },
+    elderlyAlert: {
+      'pt': 'Monitorar queda brusca de pressão arterial e perfusão cerebral.',
+      'es': 'Monitorear presión arterial estrechamente.',
+    },
+    mechanism: {
+      'pt': 'Vasodilatação arterial e venosa direta via liberação de óxido nítrico.',
+      'es': 'Vasodilatador mixto (arterial y venoso).',
+    },
+    warning: {
+      'pt': 'Uso > 48h aumenta risco de intoxicação por cianeto. Proteger da luz.',
+      'es': 'Riesgo de intoxicación por cianuro.',
+    },
+    adverse: {
+      'pt': ['Hipotensão severa', 'Acidose metabólica (cianeto)', 'Cefaleia', 'Náuseas'],
+      'es': ['Hipotensión', 'Acidosis metabólica', 'Cefalea'],
+    },
+  ),
+
+  DrugModel(
+    id: 'levosulpirida',
+    group: 'Gastroenterología',
+    name: 'Levosulpirida',
+    className: {'pt': 'Procinético / Neuroléptico funcional', 'es': 'Procinético / Neuroléptico funcional'},
+    category: {'pt': 'Gastrointestinais', 'es': 'Gastrointestinales'},
+    route: 'VO',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': '25 mg 3x/dia, antes das refeições.',
+      'es': '25 mg 3x/día antes de comidas.',
+    },
+    renalAlert: {
+      'pt': 'Reduzir dose se ClCr < 30 mL/min.',
+      'es': 'Reducir dosis en falla renal.',
+    },
+    elderlyAlert: {
+      'pt': 'Risco de tremor e sintomas extrapiramidais. Monitorar mamas.',
+      'es': 'Riesgo de parkinsonismo y galactorrea.',
+    },
+    mechanism: {
+      'pt': 'Antagonista seletivo do receptor D2 central e periférico.',
+      'es': 'Antagonista D2 selectivo.',
+    },
+    warning: {
+      'pt': 'Pode causar hiperprolactinemia. Evitar em pacientes com histórico de convulsão.',
+      'es': 'Riesgo de hiperprolactinemia.',
+    },
+    adverse: {
+      'pt': ['Galactorreia', 'Amenorreia', 'Sonolência', 'Tensionamento mamário'],
+      'es': ['Galactorrea', 'Ginecomastia', 'Somnolencia'],
+    },
+  ),
+
+  DrugModel(
+    id: 'clonazepam',
+    group: 'Neurología y Psiquiatría',
+    name: 'Clonazepam',
+    className: {'pt': 'Benzodiazepínico de longa ação', 'es': 'Benzodiazepina de larga acción'},
+    category: {'pt': 'Ansiolíticos / Anticonvulsivantes', 'es': 'Ansiolíticos / Anticonvulsivantes'},
+    route: 'VO / SL',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': '0.5–6 mg/dia. Iniciar com 0.25–0.5 mg.',
+      'es': '0.5–6 mg/día.',
+    },
+    renalAlert: {
+      'pt': 'Sem ajuste necessário; metabólitos inativos.',
+      'es': 'Sin ajuste habitual.',
+    },
+    elderlyAlert: {
+      'pt': 'EVITAR (Beers). Meia-vida muito longa aumenta risco de quedas, fraturas e demência.',
+      'es': 'Riesgo extremo de caídas y confusión.',
+    },
+    mechanism: {
+      'pt': 'Potencializa a inibição GABAérgica mediada pelo receptor GABA-A.',
+      'es': 'Agonista alostérico GABA-A.',
+    },
+    warning: {
+      'pt': 'Pode causar depressão respiratória. Tolerância e dependência física.',
+      'es': 'Alto potencial de dependencia.',
+    },
+    adverse: {
+      'pt': ['Sedação', 'Ataxia', 'Amnésia anterógrada', 'Irritabilidade', 'Depressão'],
+      'es': ['Sedación', 'Ataxia', 'Amnesia'],
+    },
+  ),
+
+  DrugModel(
+    id: 'atorvastatina',
+    group: 'Cardiovascular y HTA',
+    name: 'Atorvastatina',
+    className: {'pt': 'Inibidor da HMG-CoA redutase', 'es': 'Inhibidor de la HMG-CoA reductasa'},
+    category: {'pt': 'Hipolipemiantes', 'es': 'Hipolipemiantes'},
+    route: 'VO',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': '10–80 mg/dia. Alta potência.',
+      'es': '10–80 mg/día.',
+    },
+    renalAlert: {
+      'pt': 'Sem ajuste necessário.',
+      'es': 'Sin ajuste.',
+    },
+    elderlyAlert: {
+      'pt': 'Monitorar mialgia. Interage com Claritromicina (↑ risco miopatia).',
+      'es': 'Monitorear mialgia.',
+    },
+    mechanism: {
+      'pt': 'Inibe a produção hepática de colesterol.',
+      'es': 'Inhibe la HMG-CoA reductasa.',
+    },
+    warning: {
+      'pt': 'Risco de hepatotoxicidade e miopatia dose-dependente.',
+      'es': 'Riesgo de hepatotoxicidad.',
+    },
+    adverse: {
+      'pt': ['Mialgia', 'Nasofaringite', 'Elevação de TGP/TGO', 'Artralgia'],
+      'es': ['Mialgia', 'Elevación de transaminasas'],
+    },
+  ),
+
+  DrugModel(
+    id: 'sertralina',
+    group: 'Neurología y Psiquiatría',
+    name: 'Sertralina',
+    className: {'pt': 'ISRS', 'es': 'ISRS'},
+    category: {'pt': 'Antidepressivos', 'es': 'Antidepresivos'},
+    route: 'VO',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': '50–200 mg/dia. Dose inicial habitual: 50 mg.',
+      'es': '50–200 mg/día.',
+    },
+    renalAlert: {
+      'pt': 'Sem ajuste necessário.',
+      'es': 'Sin ajuste.',
+    },
+    elderlyAlert: {
+      'pt': 'ISRS de escolha em idosos. Risco de SIADH/hiponatremia.',
+      'es': 'Seguro; riesgo de hiponatremia.',
+    },
+    mechanism: {
+      'pt': 'Inibição potente da recaptação de serotonina.',
+      'es': 'Inhibe recaptación de serotonina.',
+    },
+    warning: {
+      'pt': 'Monitorar sódio sérico. Risco de sangramento GI aumentado.',
+      'es': 'Riesgo de hiponatremia.',
+    },
+    adverse: {
+      'pt': ['Náuseas', 'Diarreia', 'Disfunção sexual', 'Insônia', 'Tremor'],
+      'es': ['Diarrea', 'Náuseas', 'Disfunción sexual'],
+    },
+  ),
+
+  DrugModel(
+    id: 'fenobarbital',
+    group: 'Neurología y Psiquiatría',
+    name: 'Fenobarbital',
+    className: {'pt': 'Barbitúrico', 'es': 'Barbitúrico'},
+    category: {'pt': 'Anticonvulsivantes / Sedativos', 'es': 'Anticonvulsivantes / Sedantes'},
+    route: 'VO / IV / IM',
+    doseType: 'weight',
+    mgKg: 15.0,
+    fixedDose: {
+      'pt': 'Adulto: 100–300 mg/dia. Status epilepticus: 15–20 mg/kg IV.',
+      'es': 'Adulto: 100–300 mg/día.',
+    },
+    renalAlert: {
+      'pt': 'TFG < 10 mL/min: dose a cada 12-16h.',
+      'es': 'Ajustar en falla renal severa.',
+    },
+    elderlyAlert: {
+      'pt': 'EVITAR (Beers). Causa depressão cognitiva, quedas e osteomalácia.',
+      'es': 'Riesgo de deterioro cognitivo y caídas.',
+    },
+    mechanism: {
+      'pt': 'Aumenta o tempo de abertura dos canais de Cloro mediado pelo GABA.',
+      'es': 'Modulador del receptor GABA-A.',
+    },
+    warning: {
+      'pt': 'Potente INDUTOR enzimático. Reduz efeito de Varfarina, DOACs e Contraceptivos.',
+      'es': 'Inductor enzimático potente.',
+    },
+    adverse: {
+      'pt': ['Sedação', 'Nistagmo', 'Ataxia', 'Rash cutâneo', 'Osteoporose'],
+      'es': ['Sedación', 'Ataxia', 'Rash'],
+    },
+  ),
+
+  DrugModel(
+    id: 'hidroclorotiazida',
+    group: 'Cardiovascular y HTA',
+    name: 'Hidroclorotiazida',
+    className: {'pt': 'Diurético Tiazídico', 'es': 'Diurético Tiazida'},
+    category: {'pt': 'Anti-hipertensivos', 'es': 'Antihipertensivos'},
+    route: 'VO',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': '12.5–50 mg 1x/dia.',
+      'es': '12.5–50 mg 1x/día.',
+    },
+    renalAlert: {
+      'pt': 'Ineficaz se ClCr < 30 mL/min.',
+      'es': 'Ineficaz si ClCr < 30.',
+    },
+    elderlyAlert: {
+      'pt': 'Risco de hiponatremia grave, tontura e fotossensibilidade.',
+      'es': 'Riesgo de hiponatremia.',
+    },
+    mechanism: {
+      'pt': 'Inibe reabsorção de Na+ no túbulo distal.',
+      'es': 'Inhibe el cotransportador Na-Cl.',
+    },
+    warning: {
+      'pt': 'Aumenta níveis de Lítio. Pode elevar o Ácido Úrico.',
+      'es': 'Interacción con Lítio.',
+    },
+    adverse: {
+      'pt': ['Hipocalemia', 'Hiponatremia', 'Hiperuricemia', 'Hiperglicemia'],
+      'es': ['Hipopotasemia', 'Hiponatremia'],
+    },
+  ),
+
+  DrugModel(
+    id: 'naloxona',
+    group: 'UCI – Críticos y Sedoanalgesia',
+    name: 'Naloxona',
+    className: {'pt': 'Antagonista Opioide', 'es': 'Antagonista Opioide'},
+    category: {'pt': 'Antídotos / Emergência', 'es': 'Antídotos / Emergencia'},
+    route: 'IV / IM / SC / Intranasal',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': '0.4–2 mg IV cada 2-3 min até resposta. Máx 10 mg.',
+      'es': '0.4–2 mg IV cada 2-3 min.',
+    },
+    renalAlert: {
+      'pt': 'Sem ajuste necessário.',
+      'es': 'Sin ajuste.',
+    },
+    elderlyAlert: {
+      'pt': 'Cuidado com abstinência aguda; pode causar edema agudo de pulmão.',
+      'es': 'Riesgo de síndrome de abstinencia súbito.',
+    },
+    mechanism: {
+      'pt': 'Antagonista competitivo puro dos receptores opioides mu, kappa e delta.',
+      'es': 'Antagonista competitivo de receptores opioides.',
+    },
+    warning: {
+      'pt': 'Duração curta (30-60 min). Risco de renarcotização se o opioide for de longa ação.',
+      'es': 'Vida media corta; vigilar renarcotización.',
+    },
+    adverse: {
+      'pt': ['Abstinência súbita', 'Taquicardia', 'Hipertensão', 'Edema pulmonar (raro)'],
+      'es': ['Síndrome de abstinencia', 'Taquicardia'],
+    },
+  ),
+
+  DrugModel(
+    id: 'glibenclamida',
+    group: 'Endocrinología y Metabolismo',
+    name: 'Glibenclamida',
+    className: {'pt': 'Sulfonilureia de 2ª geração', 'es': 'Sulfonilurea de 2ª generación'},
+    category: {'pt': 'Antidiabéticos Orais', 'es': 'Antidiabéticos Orales'},
+    route: 'VO',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': '2.5–20 mg/dia. Administrar 30 min antes da refeição.',
+      'es': '2.5–20 mg/día.',
+    },
+    renalAlert: {
+      'pt': 'Evitar se ClCr < 30 mL/min (acúmulo de metabólitos → hipoglicemia).',
+      'es': 'Evitar en insuficiencia renal severa.',
+    },
+    elderlyAlert: {
+      'pt': 'ALTO RISCO (Beers). Risco severo de hipoglicemia prolongada e quedas.',
+      'es': 'Evitar en ancianos por hipoglucemia prolongada.',
+    },
+    mechanism: {
+      'pt': 'Estimula a secreção de insulina pelas células beta (secretagogo).',
+      'es': 'Estimula la secreción de insulina.',
+    },
+    warning: {
+      'pt': 'Hipoglicemia pode durar dias devido à longa meia-vida dos metabólitos.',
+      'es': 'Riesgo de hipoglucemia severa.',
+    },
+    adverse: {
+      'pt': ['Hipoglicemia', 'Ganho de peso', 'Icterícia colestática', 'Náuseas'],
+      'es': ['Hipoglucemia', 'Aumento de peso'],
+    },
+  ),
+
+  DrugModel(
+    id: 'propofol',
+    group: 'UCI – Críticos y Sedoanalgesia',
+    name: 'Propofol',
+    className: {'pt': 'Anestésico Geral Intravenoso', 'es': 'Anestésico General Intravenoso'},
+    category: {'pt': 'Sedação / Anestesia', 'es': 'Sedación / Anestesia'},
+    route: 'IV',
+    doseType: 'mcg_kg_min',
+    mcgKgMinStart: 5.0,
+    mcgKgMinMax: 50.0,
+    fixedDose: {
+      'pt': 'Indução: 1.5–2.5 mg/kg. Manutenção Sedação: 5–50 mcg/kg/min.',
+      'es': 'Inducción: 1.5–2.5 mg/kg.',
+    },
+    renalAlert: {
+      'pt': 'Sem ajuste necessário.',
+      'es': 'Sin ajuste.',
+    },
+    elderlyAlert: {
+      'pt': 'Risco de hipotensão severa e apneia. Reduzir dose em idosos.',
+      'es': 'Reducir dosis; riesgo de hipotensión.',
+    },
+    mechanism: {
+      'pt': 'Agonista dos receptores GABA-A; hipnótico de início rápido e curta duração.',
+      'es': 'Modulador del receptor GABA-A.',
+    },
+    warning: {
+      'pt': 'Risco de PRIS (Síndrome da Infusão de Propofol) em altas doses por tempo prolongado.',
+      'es': 'Riesgo de síndrome de infusión de propofol.',
+    },
+    adverse: {
+      'pt': ['Hipotensão', 'Apneia', 'Bradicardia', 'Dor à injeção', 'Hipertrigliceridemia'],
+      'es': ['Hipotensión', 'Apnea', 'Hipertrigliceridemia'],
+    },
+  ),
+
+  DrugModel(
+    id: 'fentanil',
+    group: 'UCI – Críticos y Sedoanalgesia',
+    name: 'Fentanil',
+    className: {'pt': 'Analgésico Opioide Sintético', 'es': 'Analgésico Opioide Sintético'},
+    category: {'pt': 'Anestesiologia / Emergência', 'es': 'Anestesiología / Emergencia'},
+    route: 'IV / IM / Transdérmico',
+    doseType: 'mcg_kg',
+    fixedDose: {
+      'pt': 'Analgesia aguda: 1–2 mcg/kg IV. Infusão: 0.5–3 mcg/kg/h.',
+      'es': 'Analgesia aguda: 1–2 mcg/kg IV.',
+    },
+    renalAlert: {
+      'pt': 'Mais seguro que morfina em IRC; não possui metabólitos ativos.',
+      'es': 'Seguro en falla renal.',
+    },
+    elderlyAlert: {
+      'pt': 'Risco de rigidez torácica em bolus rápido e depressão respiratória.',
+      'es': 'Riesgo de depresión respiratoria.',
+    },
+    mechanism: {
+      'pt': 'Agonista seletivo de receptores opioides mu; 100x mais potente que morfina.',
+      'es': 'Agonista de receptores mu.',
+    },
+    warning: {
+      'pt': 'Antídoto: Naloxona. Monitorar SpO2 e capnografia.',
+      'es': 'Riesgo de tórax en tabla (rigidez).',
+    },
+    adverse: {
+      'pt': ['Depressão respiratória', 'Rigidez torácica', 'Náuseas', 'Bradicardia', 'Prurido'],
+      'es': ['Depresión respiratoria', 'Rigidez torácica'],
+    },
+  ),
+
+  DrugModel(
+    id: 'isossorbida',
+    group: 'Cardiovascular y HTA',
+    name: 'Isossorbida (Mononitrato)',
+    className: {'pt': 'Nitrato de ação prolongada', 'es': 'Nitrato de acción prolongada'},
+    category: {'pt': 'Cardiovascular / Antianginosos', 'es': 'Cardiovascular / Antianginosos'},
+    route: 'VO',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': '20–40 mg 2x/dia (dar com intervalo de 7-8h para evitar tolerância).',
+      'es': '20–40 mg 2x/día.',
+    },
+    renalAlert: {
+      'pt': 'Sem ajuste necessário.',
+      'es': 'Sin ajuste.',
+    },
+    elderlyAlert: {
+      'pt': 'Alto risco de síncope e hipotensão postural.',
+      'es': 'Riesgo de hipotensión postural.',
+    },
+    mechanism: {
+      'pt': 'Vasodilatador venoso e arterial via óxido nítrico; reduz pré-carga.',
+      'es': 'Vasodilatador por liberación de NO.',
+    },
+    warning: {
+      'pt': 'CONTRAINDICADO com Inibidores da PDE5 (Sildenafil). Requer período livre de nitrato.',
+      'es': '¡PROHIBIDO con Sildenafilo!',
+    },
+    adverse: {
+      'pt': ['Cefaleia (muito comum)', 'Tontura', 'Hipotensão', 'Rubor facial'],
+      'es': ['Cefalea intensa', 'Hipotensión'],
+    },
+  ),
+
+  DrugModel(
+    id: 'verapamil',
+    group: 'Cardiovascular y HTA',
+    name: 'Verapamil',
+    className: {'pt': 'Bloqueador de Canal de Cálcio Não-Di-hidropiridina', 'es': 'Bloqueador de Canal de Calcio No-Dihidropiridina'},
+    category: {'pt': 'Anti-hipertensivos / Antiarrítmicos', 'es': 'Antihipertensivos / Antiarrítmicos'},
+    route: 'VO / IV',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': '80–120 mg 3x/dia. Taquiarritmia aguda: 5–10 mg IV lento.',
+      'es': '80–120 mg 3x/día.',
+    },
+    renalAlert: {
+      'pt': 'Sem ajuste necessário.',
+      'es': 'Sin ajuste.',
+    },
+    elderlyAlert: {
+      'pt': 'Pode causar constipação severa e bradicardia em idosos.',
+      'es': 'Riesgo de estreñimiento y bradicardia.',
+    },
+    mechanism: {
+      'pt': 'Inibe canais de cálcio no coração; cronotrópico e inotrópico negativo.',
+      'es': 'Bloquea canales de calcio en corazón y vasos.',
+    },
+    warning: {
+      'pt': 'Não usar em Insuficiência Cardíaca com Fração de Ejeção Reduzida.',
+      'es': 'Contraindicado en IC con FE reducida.',
+    },
+    adverse: {
+      'pt': ['Constipação', 'Bradicardia', 'Bloqueio AV', 'Edema periférico'],
+      'es': ['Estreñimiento', 'Bradicardia'],
+    },
+  ),
+
+  DrugModel(
+    id: 'diltiazem',
+    group: 'Cardiovascular y HTA',
+    name: 'Diltiazem',
+    className: {'pt': 'Bloqueador de Canal de Cálcio Não-Di-hidropiridina', 'es': 'Bloqueador de Canal de Calcio No-Dihidropiridina'},
+    category: {'pt': 'Cardiovascular', 'es': 'Cardiovascular'},
+    route: 'VO / IV',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': '30–90 mg 3-4x/dia (ou retard 120–240 mg/dia).',
+      'es': '30–90 mg 3-4x/día.',
+    },
+    renalAlert: {
+      'pt': 'Sem ajuste necessário.',
+      'es': 'Sin ajuste.',
+    },
+    elderlyAlert: {
+      'pt': 'Monitorar FC. Risco de bradiarritmias aumentado.',
+      'es': 'Vigilar frecuencia cardíaca.',
+    },
+    mechanism: {
+      'pt': 'Bloqueia canais de cálcio cardíacos e vasculares; menos constipante que verapamil.',
+      'es': 'Bloqueo de canales de calcio.',
+    },
+    warning: {
+      'pt': 'Cuidado com associação com Betabloqueadores (risco de bloqueio cardíaco).',
+      'es': 'Cautela con betabloqueantes.',
+    },
+    adverse: {
+      'pt': ['Bradicardia', 'Edema maleolar', 'Cefaleia', 'Bloqueio AV'],
+      'es': ['Bradicardia', 'Edema'],
+    },
+  ),
+
+  DrugModel(
+    id: 'fenitoina',
+    group: 'Neurología y Psiquiatría',
+    name: 'Fenitoína',
+    className: {'pt': 'Anticonvulsivante / Hidantoína', 'es': 'Anticonvulsivante / Hidantoína'},
+    category: {'pt': 'Antiepilépticos', 'es': 'Antiepilépticos'},
+    route: 'VO / IV',
+    doseType: 'weight',
+    mgKg: 15.0,
+    fixedDose: {
+      'pt': 'Ataque: 15–20 mg/kg IV (máx 50 mg/min). Manutenção: 300 mg/dia.',
+      'es': 'Carga: 15–20 mg/kg IV.',
+    },
+    renalAlert: {
+      'pt': 'Monitorar fração livre de fenitoína em uremia.',
+      'es': 'Vigilar niveles en falla renal.',
+    },
+    elderlyAlert: {
+      'pt': 'Risco de ataxia, nistagmo e osteopenia. Muitas interações.',
+      'es': 'Riesgo de caídas y ataxia.',
+    },
+    mechanism: {
+      'pt': 'Bloqueia canais de sódio voltagem-dependentes, inibindo disparos de alta frequência.',
+      'es': 'Bloqueo de canales de sodio.',
+    },
+    warning: {
+      'pt': 'Cinética de eliminação não-linear (pequenos aumentos de dose podem causar toxicidade grave).',
+      'es': 'Cinética saturable; riesgo de toxicidad.',
+    },
+    adverse: {
+      'pt': ['Hiperplasia gengival', 'Hirsutismo', 'Nistagmo', 'Síndrome da Luva Roxa (IV)', 'Ataxia'],
+      'es': ['Hiperplasia gingival', 'Ataxia', 'Nistagmo'],
+    },
+  ),
+
+  DrugModel(
+    id: 'lamotrigina',
+    group: 'Neurología y Psiquiatría',
+    name: 'Lamotrigina',
+    className: {'pt': 'Anticonvulsivante / Estabilizador de Humor', 'es': 'Anticonvulsivante / Estabilizador del ánimo'},
+    category: {'pt': 'Antiepilépticos / Psiquiatria', 'es': 'Antiepilépticos / Psiquiatría'},
+    route: 'VO',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': '25–400 mg/dia. TITULAÇÃO LENTA obrigatória (iniciar com 25 mg/dia).',
+      'es': '25–400 mg/día. Escalar lentamente.',
+    },
+    renalAlert: {
+      'pt': 'Reduzir dose em insuficiência renal grave.',
+      'es': 'Reducir dosis en falla renal.',
+    },
+    elderlyAlert: {
+      'pt': 'Melhor tolerada que carbamazepina; monitorar rash cutâneo.',
+      'es': 'Vigilar aparición de rash.',
+    },
+    mechanism: {
+      'pt': 'Bloqueia canais de sódio e inibe a liberação de glutamato.',
+      'es': 'Bloqueo de canales de sodio y glutamato.',
+    },
+    warning: {
+      'pt': 'Risco severo de Síndrome de Stevens-Johnson se a titulação for rápida.',
+      'es': 'Riesgo de Stevens-Johnson.',
+    },
+    adverse: {
+      'pt': ['Rash cutâneo (alerta crítico)', 'Cefaleia', 'Tontura', 'Insônia', 'Diplopia'],
+      'es': ['Rash (riesgo de SJS)', 'Mareo', 'Diplopía'],
+    },
+  ),
+
+  DrugModel(
+    id: 'topiramato',
+    group: 'Neurología y Psiquiatría',
+    name: 'Topiramato',
+    className: {'pt': 'Anticonvulsivante Multimodal', 'es': 'Anticonvulsivante Multimodal'},
+    category: {'pt': 'Antiepilépticos / Profilaxia Enxaqueca', 'es': 'Antiepilépticos / Migraña'},
+    route: 'VO',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': 'Epilepsia: 200–400 mg/dia. Enxaqueca: 50–100 mg/dia.',
+      'es': '25–400 mg/día.',
+    },
+    renalAlert: {
+      'pt': 'Reduzir dose em 50% se ClCr < 70 mL/min.',
+      'es': 'Ajustar en insuficiencia renal.',
+    },
+    elderlyAlert: {
+      'pt': 'Risco de lentificação cognitiva, cálculos renais e perda de peso.',
+      'es': 'Deterioro cognitivo y riesgo de litiasis.',
+    },
+    mechanism: {
+      'pt': 'Bloqueia canais de Na+, potencializa GABA, antagoniza Glutamato e inibe anidrase carbônica.',
+      'es': 'Mecanismo de acción múltiple.',
+    },
+    warning: {
+      'pt': 'Pode causar Glaucoma Agudo de Ângulo Fechado e acidose metabólica.',
+      'es': 'Riesgo de glaucoma agudo.',
+    },
+    adverse: {
+      'pt': ['Parestesia', 'Perda de peso', 'Dificuldade de concentração', 'Nefrolitíase'],
+      'es': ['Parestesias', 'Pérdida de peso', 'Déficit cognitivo'],
+    },
+  ),
+
+  DrugModel(
+    id: 'olanzapina',
+    group: 'Neurología y Psiquiatría',
+    name: 'Olanzapina',
+    className: {'pt': 'Antipsicótico Atípico', 'es': 'Antipsicótico Atípico'},
+    category: {'pt': 'Antipsicóticos / Emergência', 'es': 'Antipsicóticos / Emergencia'},
+    route: 'VO / IM / SL',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': '5–20 mg/dia. IM aguda: 10 mg.',
+      'es': '5–20 mg/día.',
+    },
+    renalAlert: {
+      'pt': 'Sem ajuste necessário.',
+      'es': 'Sin ajuste.',
+    },
+    elderlyAlert: {
+      'pt': 'Black Box: mortalidade aumentada em demência. Alto risco de Síndrome Metabólica.',
+      'es': 'Riesgo metabólico y de caídas.',
+    },
+    mechanism: {
+      'pt': 'Antagonista 5-HT2A e D2 com alta afinidade por receptores H1 e muscarínicos.',
+      'es': 'Antagonista multicentrico (D2, 5HT2A, H1).',
+    },
+    warning: {
+      'pt': 'Monitorar peso, circunferência abdominal e glicemia mensalmente.',
+      'es': 'Monitorear aumento de peso y glucosa.',
+    },
+    adverse: {
+      'pt': ['Ganho de peso intenso', 'Sonolência', 'Hiperlipidemia', 'Boca seca'],
+      'es': ['Aumento de peso', 'Somnolencia', 'Dislipidemia'],
+    },
+  ),
+
+  DrugModel(
+    id: 'mirtazapina',
+    group: 'Neurología y Psiquiatría',
+    name: 'Mirtazapina',
+    className: {'pt': 'Antidepressivo NaSSA', 'es': 'Antidepresivo NaSSA'},
+    category: {'pt': 'Antidepressivos', 'es': 'Antidepresivos'},
+    route: 'VO',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': '15–45 mg/dia (noite). Paradoxalmente mais sedativa em 15 mg.',
+      'es': '15–45 mg/día (noche).',
+    },
+    renalAlert: {
+      'pt': 'Reduzir dose em insuficiência renal moderada/grave.',
+      'es': 'Ajustar en falla renal.',
+    },
+    elderlyAlert: {
+      'pt': 'Útil em idosos com insônia e perda de peso. Risco de edema.',
+      'es': 'Útil en ancianos con insomnio y bajo peso.',
+    },
+    mechanism: {
+      'pt': 'Antagonista alfa-2 pré-sináptico, aumentando noradrenalina e serotonina.',
+      'es': 'Aumenta noradrenalina y serotonina.',
+    },
+    warning: {
+      'pt': 'Aumenta significativamente o apetite e peso.',
+      'es': 'Aumento de peso y apetito.',
+    },
+    adverse: {
+      'pt': ['Ganho de peso', 'Sonolência', 'Aumento do colesterol', 'Xerostomia'],
+      'es': ['Somnolencia', 'Aumento de peso'],
+    },
+  ),
+
+  DrugModel(
+    id: 'zolpidem',
+    group: 'Neurología y Psiquiatría',
+    name: 'Zolpidem',
+    className: {'pt': 'Hipnótico Não-benzodiazepínico', 'es': 'Hipnótico No-benzodiazepina'},
+    category: {'pt': 'Indutores de Sono', 'es': 'Inductores de Sueño'},
+    route: 'VO / SL',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': '5–10 mg ao deitar. Mulheres/Idosos: 5 mg.',
+      'es': '5–10 mg al acostarse.',
+    },
+    renalAlert: {
+      'pt': 'Sem ajuste necessário.',
+      'es': 'Sin ajuste.',
+    },
+    elderlyAlert: {
+      'pt': 'EVITAR (Beers). Risco de sonambulismo, quedas e fraturas.',
+      'es': 'Riesgo de conductas complejas del sueño.',
+    },
+    mechanism: {
+      'pt': 'Agonista seletivo da subunidade alfa-1 do receptor GABA-A.',
+      'es': 'Agonista selectivo GABA-A.',
+    },
+    warning: {
+      'pt': 'Pode causar comportamentos complexos no sono (ex: dirigir dormindo).',
+      'es': 'Conductas peligrosas durante el sueño.',
+    },
+    adverse: {
+      'pt': ['Amnésia retrógrada', 'Alucinações', 'Tontura', 'Sonolência diurna'],
+      'es': ['Alucinaciones', 'Sonambulismo', 'Mareo'],
+    },
+  ),
+
+  DrugModel(
+    id: 'etamsilato',
+    group: 'Hematología y Vitaminas',
+    name: 'Etamsilato',
+    className: {'pt': 'Hemostático / Vasoprotetor', 'es': 'Hemostático / Vasoprotector'},
+    category: {'pt': 'Hematologia', 'es': 'Hematología'},
+    route: 'VO / IV / IM',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': '500 mg cada 6-8h.',
+      'es': '500 mg cada 6-8h.',
+    },
+    renalAlert: {
+      'pt': 'Usar com cautela em insuficiência renal grave.',
+      'es': 'Cautela en falla renal.',
+    },
+    elderlyAlert: {
+      'pt': 'Geralmente seguro.',
+      'es': 'Seguro.',
+    },
+    mechanism: {
+      'pt': 'Aumenta a adesividade plaquetária e a resistência capilar; não altera fatores de coagulação.',
+      'es': 'Mejora adhesividad plaquetaria.',
+    },
+    warning: {
+      'pt': 'Não substitui fatores de coagulação em deficiências genéticas.',
+      'es': 'No reemplaza factores de coagulación.',
+    },
+    adverse: {
+      'pt': ['Náuseas', 'Cefaleia', 'Hipotensão (se IV rápido)', 'Rash'],
+      'es': ['Cefalea', 'Náuseas'],
+    },
+  ),
+
+  DrugModel(
+    id: 'racecadotril',
+    group: 'Gastroenterología',
+    name: 'Racecadotril',
+    className: {'pt': 'Inibidor da Encefalinase (Antidiarreico)', 'es': 'Inhibidor de la Encefalidasa (Antidiarreico)'},
+    category: {'pt': 'Gastrointestinais', 'es': 'Gastrointestinales'},
+    route: 'VO',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': '100 mg 3x/dia. Máx 7 dias.',
+      'es': '100 mg 3x/día.',
+    },
+    renalAlert: {
+      'pt': 'Usar com cautela por falta de dados.',
+      'es': 'Usar con precaución.',
+    },
+    elderlyAlert: {
+      'pt': 'Antidiarreico seguro, não causa íleo paralítico como a loperamida.',
+      'es': 'Más seguro que loperamida en ancianos.',
+    },
+    mechanism: {
+      'pt': 'Reduz a hipersecreção de água e eletrólitos no lúmen intestinal.',
+      'es': 'Antisecretor intestinal puro.',
+    },
+    warning: {
+      'pt': 'Não deve ser usado em diarreias infecciosas graves com sangue (disenteria).',
+      'es': 'No usar en disentería.',
+    },
+    adverse: {
+      'pt': ['Cefaleia', 'Vômitos', 'Prurido'],
+      'es': ['Cefalea', 'Rash'],
+    },
+  ),
+
+  DrugModel(
+    id: 'fosfomicina',
+    group: 'Infectología (Antifúngicos / Antivirales / TBC)',
+    name: 'Fosfomicina Trometamol',
+    className: {'pt': 'Antibiótico derivado do ácido fosfônico', 'es': 'Antibiótico derivado del ácido fosfónico'},
+    category: {'pt': 'Antibióticos', 'es': 'Antibióticos'},
+    route: 'VO',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': '3 g dose única (dissolver em água).',
+      'es': '3 g dosis única.',
+    },
+    renalAlert: {
+      'pt': 'ClCr < 10 mL/min: evitar.',
+      'es': 'Evitar en falla renal severa.',
+    },
+    elderlyAlert: {
+      'pt': 'Excelente opção para cistite simples em idosas por ser dose única.',
+      'es': 'Útil por su dosificación única.',
+    },
+    mechanism: {
+      'pt': 'Inibe a síntese da parede celular bacteriana bloqueando a enolpiruvil transferase.',
+      'es': 'Inhibe la síntesis de pared bacteriana.',
+    },
+    warning: {
+      'pt': 'Não usar em pielonefrite ou infecções sistêmicas.',
+      'es': 'Solo para cistitis no complicada.',
+    },
+    adverse: {
+      'pt': ['Diarreia', 'Náuseas', 'Vaginite', 'Cefaleia'],
+      'es': ['Diarrea', 'Náuseas'],
+    },
+  ),
+
+  DrugModel(
+    id: 'acetazolamida',
+    group: 'UCI – Críticos y Sedoanalgesia',
+    name: 'Acetazolamida',
+    className: {'pt': 'Inibidor da Anidrase Carbônica', 'es': 'Inhibidor de la Anidrasa Carbónica'},
+    category: {'pt': 'Diuréticos / Neurológicos', 'es': 'Diuréticos / Neurológicos'},
+    route: 'VO / IV',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': '250 mg 2-4x/dia.',
+      'es': '250 mg 2-4x/día.',
+    },
+    renalAlert: {
+      'pt': 'ClCr < 10 mL/min: evitar.',
+      'es': 'Contraindicado en ClCr < 10.',
+    },
+    elderlyAlert: {
+      'pt': 'Pode causar fadiga, confusão e acidose metabólica.',
+      'es': 'Riesgo de acidosis y fatiga.',
+    },
+    mechanism: {
+      'pt': 'Inibe a enzima anidrase carbônica, bloqueando a reabsorção de Bicarbonato.',
+      'es': 'Inhibe la anhidrasa carbónica.',
+    },
+    warning: {
+      'pt': 'Risco de hipocalemia severa. Contraindicado em alergia a sulfas.',
+      'es': 'Alerta en alérgicos a sulfas.',
+    },
+    adverse: {
+      'pt': ['Parestesia', 'Acidose metabólica', 'Hipocalemia', 'Poliúria'],
+      'es': ['Parestesias', 'Acidosis'],
+    },
+  ),
+
+  DrugModel(
+    id: 'kayexalate',
+    group: 'Endocrinología y Metabolismo',
+    name: 'Poliestirenossulfonato de Cálcio / Sódio',
+    className: {'pt': 'Resina de Troca Catiônica', 'es': 'Resina de Intercambio Catiónico'},
+    category: {'pt': 'Eletrólitos / Emergência', 'es': 'Electrolitos / Emergencia'},
+    route: 'VO / Retal',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': '15–30 g cada 6-8h.',
+      'es': '15–30 g cada 6-8h.',
+    },
+    renalAlert: {
+      'pt': 'Fármaco chave no manejo da hipercalemia em IRC.',
+      'es': 'Uso clave en hiperpotasemia renal.',
+    },
+    elderlyAlert: {
+      'pt': 'Risco elevado de necrose intestinal e constipação grave. Monitorar ruídos hidroaéreos.',
+      'es': 'Riesgo de necrosis colónica.',
+    },
+    mechanism: {
+      'pt': 'Troca íons cálcio ou sódio por potássio no intestino grosso para excreção fecal.',
+      'es': 'Intercambia Ca/Na por K en el colon.',
+    },
+    warning: {
+      'pt': 'Ação lenta (2-12h). Não usar como única medida em hipercalemia grave.',
+      'es': 'Inicio de acción lento.',
+    },
+    adverse: {
+      'pt': ['Constipação', 'Náuseas', 'Hipocalemia excessiva', 'Necrose intestinal (raro)'],
+      'es': ['Estreñimiento', 'Náuseas', 'Hipopotasemia'],
+    },
+  ),
+
+  DrugModel(
+    id: 'rocuronio',
+    group: 'UCI – Críticos y Sedoanalgesia',
+    name: 'Rocurônio',
+    className: {'pt': 'Bloqueador Neuromuscular Não-despolarizante', 'es': 'Bloqueante Neuromuscular No-despolarizante'},
+    category: {'pt': 'Emergência / Anestesia', 'es': 'Emergencia / Anestesia'},
+    route: 'IV',
+    doseType: 'weight',
+    mgKg: 0.6,
+    fixedDose: {
+      'pt': 'Sequência Rápida: 0.6–1.2 mg/kg IV.',
+      'es': 'Inducción (SRI): 0.6–1.2 mg/kg IV.',
+    },
+    renalAlert: {
+      'pt': 'Duração do bloqueio pode ser prolongada em ClCr < 30 mL/min.',
+      'es': 'Duración prolongada en falla renal.',
+    },
+    elderlyAlert: {
+      'pt': 'Risco de bloqueio residual. Necessário monitoramento com TOF.',
+      'es': 'Riesgo de parálisis residual.',
+    },
+    mechanism: {
+      'pt': 'Antagonista competitivo da acetilcolina nos receptores nicotínicos da placa motora.',
+      'es': 'Antagonista nicotínico competitivo.',
+    },
+    warning: {
+      'pt': 'NÃO possui efeito sedativo ou analgésico. Antídoto: Sugamadex.',
+      'es': '¡Sin efecto sedante! Antídoto: Sugamadex.',
+    },
+    adverse: {
+      'pt': ['Hipotensão', 'Hipertensão transitória', 'Reação anafilática (raro)'],
+      'es': ['Hipotensión', 'Anafilaxia'],
+    },
+  ),
+
+  DrugModel(
+    id: 'dexmedetomidina',
+    group: 'UCI – Críticos y Sedoanalgesia',
+    name: 'Dexmedetomidina',
+    className: {'pt': 'Agonista Alfa-2 adrenérgico altamente seletivo', 'es': 'Agonista Alfa-2 adrenérgico selectivo'},
+    category: {'pt': 'Sedação / UTI', 'es': 'Sedación / UCI'},
+    route: 'IV (Infusão)',
+    doseType: 'mcg_kg_h',
+    mcgKgMinStart: 0.2,
+    mcgKgMinMax: 1.5,
+    fixedDose: {
+      'pt': 'Manutenção: 0.2–0.7 mcg/kg/h. Sedação consciente.',
+      'es': 'Mantenimiento: 0.2–0.7 mcg/kg/h.',
+    },
+    renalAlert: {
+      'pt': 'Metabólitos podem se acumular em IRC grave.',
+      'es': 'Sin ajuste habitual.',
+    },
+    elderlyAlert: {
+      'pt': 'Alto risco de bradicardia e hipotensão. Titular cautelosamente.',
+      'es': 'Riesgo elevado de bradicardia.',
+    },
+    mechanism: {
+      'pt': 'Agonista alfa-2 no locus coeruleus; produz sedação "fisiológica" (desperta fácil).',
+      'es': 'Sedación sin depresión respiratoria.',
+    },
+    warning: {
+      'pt': 'Não causa depressão respiratória significativa.',
+      'es': 'Seguro respiratoriamente.',
+    },
+    adverse: {
+      'pt': ['Bradicardia', 'Hipotensão', 'Boca seca', 'Hipertensão paradoxal (bolus)'],
+      'es': ['Bradicardia', 'Hipotensión'],
+    },
+  ),
+
+  DrugModel(
+    id: 'amikacina',
+    group: 'Infectología (Antifúngicos / Antivirales / TBC)',
+    name: 'Amicacina',
+    className: {'pt': 'Aminoglicosídeo', 'es': 'Aminoglucósido'},
+    category: {'pt': 'Antibióticos', 'es': 'Antibióticos'},
+    route: 'IV / IM',
+    doseType: 'weight',
+    mgKg: 15.0,
+    fixedDose: {
+      'pt': '15–20 mg/kg 1x/dia.',
+      'es': '15–20 mg/kg 1x/día.',
+    },
+    renalAlert: {
+      'pt': 'Altamente NEFROTÓXICO. Ajuste obrigatório conforme ClCr.',
+      'es': 'Ajuste obligatorio; nefrotóxico.',
+    },
+    elderlyAlert: {
+      'pt': 'Risco de surdez irreversível (ototoxicidade) e insuficiência renal.',
+      'es': 'Riesgo de ototoxicidad y falla renal.',
+    },
+    mechanism: {
+      'pt': 'Inibe a síntese proteica bacteriana ligando-se à subunidade 30S do ribossomo.',
+      'es': 'Inhibe síntesis proteica (30S).',
+    },
+    warning: {
+      'pt': 'Monitorar níveis séricos e creatinina diariamente.',
+      'es': 'Monitorear niveles séricos.',
+    },
+    adverse: {
+      'pt': ['Nefrotoxicidade', 'Ototoxicidade (surdez)', 'Vertigem', 'Bloqueio neuromuscular'],
+      'es': ['Nefrotoxicidad', 'Ototoxicidad'],
+    },
+  ),
+
+  DrugModel(
+    id: 'fexofenadina',
+    group: 'Varios / Antídotos / Otros',
+    name: 'Fexofenadina',
+    className: {'pt': 'Anti-histamínico H1 de 2ª geração', 'es': 'Antihistamínico H1 de 2ª generación'},
+    category: {'pt': 'Antialérgicos', 'es': 'Antialérgicos'},
+    route: 'VO',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': '60 mg 2x/dia ou 120–180 mg 1x/dia.',
+      'es': '120–180 mg 1x/día.',
+    },
+    renalAlert: {
+      'pt': 'Reduzir dose em insuficiência renal moderada/grave.',
+      'es': 'Ajustar en falla renal.',
+    },
+    elderlyAlert: {
+      'pt': 'Opção segura em idosos; não causa sedação nem efeitos anticolinérgicos.',
+      'es': 'Seguro en ancianos; no sedante.',
+    },
+    mechanism: {
+      'pt': 'Antagonista seletivo do receptor H1 periférico; não atravessa a BHE.',
+      'es': 'Antagonista H1 periférico.',
+    },
+    warning: {
+      'pt': 'Não ingerir com sucos de frutas (reduz absorção em 40%).',
+      'es': 'Evitar jugos de fruta.',
+    },
+    adverse: {
+      'pt': ['Cefaleia', 'Sonolência (raro)', 'Náuseas', 'Tontura'],
+      'es': ['Cefalea', 'Mareo'],
+    },
+  ),
+
+  DrugModel(
+    id: 'tigeciclina',
+    group: 'Infectología (Antifúngicos / Antivirales / TBC)',
+    name: 'Tigeciclina',
+    className: {'pt': 'Glicilciclina', 'es': 'Glicilciclina'},
+    category: {'pt': 'Antibióticos', 'es': 'Antibióticos'},
+    route: 'IV',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': 'Ataque: 100 mg. Manutenção: 50 mg cada 12h.',
+      'es': 'Carga 100 mg → 50 mg cada 12h.',
+    },
+    renalAlert: {
+      'pt': 'Sem ajuste necessário.',
+      'es': 'Sin ajuste.',
+    },
+    elderlyAlert: {
+      'pt': 'Geralmente bem tolerada.',
+      'es': 'Bien tolerado.',
+    },
+    mechanism: {
+      'pt': 'Inibe a síntese proteica (30S). Amplo espectro contra bactérias resistentes (KPC, MRSA, VRE).',
+      'es': 'Inhibe síntesis proteica.',
+    },
+    warning: {
+      'pt': 'Aumenta mortalidade por todas as causas. Não usar em ITU ou sepse primária.',
+      'es': 'Aumento de mortalidad; solo uso de reserva.',
+    },
+    adverse: {
+      'pt': ['Náusea intensa', 'Vômitos', 'Diarreia', 'Pancreatite'],
+      'es': ['Náuseas intensas', 'Vómitos'],
+    },
+  ),
+
+  DrugModel(
+    id: 'levosimendan',
+    group: 'Cardiovascular y HTA',
+    name: 'Levosimendan',
+    className: {'pt': 'Sensibilizador de Cálcio (Inodilatador)', 'es': 'Sensibilizador de calcio (Inodilatador)'},
+    category: {'pt': 'Vasoativos / IC', 'es': 'Vasoactivos / IC'},
+    route: 'IV (Infusão)',
+    doseType: 'mcg_kg_min',
+    mcgKgMinStart: 0.1,
+    mcgKgMinMax: 0.2,
+    fixedDose: {
+      'pt': '0.1–0.2 mcg/kg/min por 24h. Dose de ataque opcional.',
+      'es': '0.1–0.2 mcg/kg/min por 24h.',
+    },
+    renalAlert: {
+      'pt': 'Contraindicado em insuficiência renal grave (ClCr < 30).',
+      'es': 'Contraindicado en ClCr < 30.',
+    },
+    elderlyAlert: {
+      'pt': 'Risco de hipotensão severa e taquiarritmias. Monitorar eletrólitos.',
+      'es': 'Riesgo de arritmias y hipotensión.',
+    },
+    mechanism: {
+      'pt': 'Aumenta a força de contração sensibilizando a Troponina C ao cálcio; abre canais de K+ (vasodilatação).',
+      'es': 'Inotrópico y vasodilatador.',
+    },
+    warning: {
+      'pt': 'Efeito inotrópico dura até 7 dias após o término da infusão (metabólitos de meia-vida longa).',
+      'es': 'Efecto prolongado (7 días).',
+    },
+    adverse: {
+      'pt': ['Hipotensão', 'Cefaleia', 'Hipocalemia', 'Fibrilação atrial'],
+      'es': ['Hipotensión', 'Hipopotasemia', 'Arritmias'],
+    },
+  ),
+
+  DrugModel(
+    id: 'valaciclovir',
+    group: 'Infectología (Antifúngicos / Antivirales / TBC)',
+    name: 'Valaciclovir',
+    className: {'pt': 'Antiviral', 'es': 'Antiviral'},
+    category: {'pt': 'Antivirais / Herpes', 'es': 'Antivirales / Herpes'},
+    route: 'VO',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': 'Herpes Zoster: 1 g 3x/dia por 7 dias. Herpes simples: 500 mg 2x/dia.',
+      'es': '1 g 3x/día (Zóster).',
+    },
+    renalAlert: {
+      'pt': 'Ajuste obrigatório se ClCr < 50 mL/min.',
+      'es': 'Ajuste en falla renal.',
+    },
+    elderlyAlert: {
+      'pt': 'Risco de neurotoxicidade (confusão, agitação) se função renal reduzida.',
+      'es': 'Riesgo de neurotoxicidad.',
+    },
+    mechanism: {
+      'pt': 'Pró-fármaco do aciclovir; inibe a DNA polimerase viral.',
+      'es': 'Inhibidor de DNA polimerasa.',
+    },
+    warning: {
+      'pt': 'Manter hidratação vigorosa para evitar cristalúria.',
+      'es': 'Hidratación necesaria.',
+    },
+    adverse: {
+      'pt': ['Cefaleia', 'Náuseas', 'Dor abdominal', 'Confusão mental'],
+      'es': ['Cefalea', 'Náuseas'],
+    },
+  ),
+
+  DrugModel(
+    id: 'rifaximina',
+    group: 'Gastroenterología',
+    name: 'Rifaximina',
+    className: {'pt': 'Antibiótico não absorvível', 'es': 'Antibiótico no absorbible'},
+    category: {'pt': 'Gastrointestinais', 'es': 'Gastrointestinales'},
+    route: 'VO',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': 'Encefalopatia hepática: 550 mg 2x/dia. Diarreia do viajante: 200 mg 3x/dia.',
+      'es': '550 mg 2x/día.',
+    },
+    renalAlert: {
+      'pt': 'Sem ajuste necessário (ação local).',
+      'es': 'Sin ajuste.',
+    },
+    elderlyAlert: {
+      'pt': 'Geralmente seguro devido à baixa absorção sistêmica.',
+      'es': 'Bien tolerado.',
+    },
+    mechanism: {
+      'pt': 'Inibe a síntese de RNA bacteriano ligando-se à RNA polimerase no lúmen intestinal.',
+      'es': 'Acción local en el lúmen.',
+    },
+    warning: {
+      'pt': 'Reduz a recorrência de episódios de encefalopatia hepática.',
+      'es': 'Reduce riesgo de encefalopatía.',
+    },
+    adverse: {
+      'pt': ['Flatulência', 'Náuseas', 'Urgência fecal', 'Cefaleia'],
+      'es': ['Flatulencia', 'Náuseas'],
+    },
+  ),
+
+  DrugModel(
+    id: 'clonixinato_lisina',
+    group: 'Analgésicos y Antipiréticos',
+    name: 'Clonixinato de Lisina',
+    className: {'pt': 'AINE potente', 'es': 'AINE potente'},
+    category: {'pt': 'Analgésicos', 'es': 'Analgésicos'},
+    route: 'VO / IV / IM',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': '125–250 mg cada 6-8h.',
+      'es': '125–250 mg cada 6-8h.',
+    },
+    renalAlert: {
+      'pt': 'Contraindicado em insuficiência renal grave.',
+      'es': 'Contraindicado en falla renal grave.',
+    },
+    elderlyAlert: {
+      'pt': 'Risco elevado de sangramento gastrointestinal e nefrotoxicidade.',
+      'es': 'Riesgo de sangrado GI.',
+    },
+    mechanism: {
+      'pt': 'Inibe a síntese de prostaglandinas periféricas e centrais.',
+      'es': 'Inhibidor de ciclooxigenasa.',
+    },
+    warning: {
+      'pt': 'Fármaco extremamente comum em protocolos na Argentina (Dorixina).',
+      'es': 'Muy común en Argentina.',
+    },
+    adverse: {
+      'pt': ['Náuseas', 'Sonolência', 'Gastrite', 'Tontura'],
+      'es': ['Náuseas', 'Gastritis'],
+    },
+  ),
+
+  DrugModel(
+    id: 'simeticona',
+    group: 'Gastroenterología',
+    name: 'Simeticona',
+    className: {'pt': 'Antiflatulento', 'es': 'Antiflatulento'},
+    category: {'pt': 'Gastrointestinais', 'es': 'Gastrointestinales'},
+    route: 'VO',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': '40–125 mg cada 6h após as refeições.',
+      'es': '40–125 mg cada 6h.',
+    },
+    renalAlert: {
+      'pt': 'Sem ajuste necessário.',
+      'es': 'Sin ajuste.',
+    },
+    elderlyAlert: {
+      'pt': 'Seguro.',
+      'es': 'Seguro.',
+    },
+    mechanism: {
+      'pt': 'Altera a tensão superficial das bolhas de gás, facilitando a eructação ou flatulência.',
+      'es': 'Eliminación de gases.',
+    },
+    warning: {
+      'pt': 'Não absorvido sistemicamente.',
+      'es': 'No se absorbe.',
+    },
+    adverse: {
+      'pt': ['Fezes amolecidas', 'Náuseas'],
+      'es': ['Náuseas'],
+    },
+  ),
+
+  DrugModel(
+    id: 'tiamina',
+    group: 'Hematología y Vitaminas',
+    name: 'Tiamina (Vitamina B1)',
+    className: {'pt': 'Vitamina', 'es': 'Vitamina'},
+    category: {'pt': 'Vitaminas', 'es': 'Vitaminas'},
+    route: 'VO / IV / IM',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': 'Encefalopatia de Wernicke: 500 mg IV 3x/dia por 2-3 dias.',
+      'es': 'Wernicke: 500 mg IV 3x/día.',
+    },
+    renalAlert: {
+      'pt': 'Sem ajuste necessário.',
+      'es': 'Sin ajuste.',
+    },
+    elderlyAlert: {
+      'pt': 'Crucial na profilaxia em idosos desnutridos ou etilistas.',
+      'es': 'Vital en desnutrición.',
+    },
+    mechanism: {
+      'pt': 'Cofator essencial no metabolismo dos carboidratos.',
+      'es': 'Cofactor metabólico.',
+    },
+    warning: {
+      'pt': 'Deve ser administrada ANTES da glicose IV em pacientes etilistas.',
+      'es': 'Administrar ANTES que la glucosa.',
+    },
+    adverse: {
+      'pt': ['Hipersensibilidade', 'Calor', 'Prurido'],
+      'es': ['Rash'],
+    },
+  ),
+
+  DrugModel(
+    id: 'piridoxina',
+    group: 'Hematología y Vitaminas',
+    name: 'Piridoxina (Vitamina B6)',
+    className: {'pt': 'Vitamina', 'es': 'Vitamina'},
+    category: {'pt': 'Vitaminas', 'es': 'Vitaminas'},
+    route: 'VO / IV / IM',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': 'Suplementação: 25–50 mg/dia. Intoxicação INH: 1 g para cada g de isoniazida.',
+      'es': '25–50 mg/día.',
+    },
+    renalAlert: {
+      'pt': 'Sem ajuste necessário.',
+      'es': 'Sin ajuste.',
+    },
+    elderlyAlert: {
+      'pt': 'Monitorar neuropatia sensorial com doses altas prolongadas.',
+      'es': 'Vigilar neuropatía.',
+    },
+    mechanism: {
+      'pt': 'Cofator para enzimas de metabolismo de aminoácidos e neurotransmissores.',
+      'es': 'Cofactor enzimático.',
+    },
+    warning: {
+      'pt': 'Doses > 200 mg/dia por longo prazo causam neuropatia periférica.',
+      'es': 'Riesgo de neuropatía en altas dosis.',
+    },
+    adverse: {
+      'pt': ['Neuropatia (doses altas)', 'Náuseas', 'Dor abdominal'],
+      'es': ['Neuropatía'],
+    },
+  ),
+
+  DrugModel(
+    id: 'sulfadiazina_prata',
+    group: 'Varios / Antídotos / Otros',
+    name: 'Sulfadiazina de Prata',
+    className: {'pt': 'Antibacteriano Tópico', 'es': 'Antibacteriano Tópico'},
+    category: {'pt': 'Dermatologia', 'es': 'Dermatología'},
+    route: 'Tópica',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': 'Creme 1%. Aplicar 1-2x/dia na lesão limpa.',
+      'es': 'Crema 1%.',
+    },
+    renalAlert: {
+      'pt': 'Cautela em grandes queimaduras; absorção sistêmica da sulfa.',
+      'es': 'Vigilar en quemaduras extensas.',
+    },
+    elderlyAlert: {
+      'pt': 'Monitorar leucopenia em uso em áreas extensas.',
+      'es': 'Riesgo de leucopenia.',
+    },
+    mechanism: {
+      'pt': 'Liberação de íons prata e sulfa; danifica membrana e parede bacteriana.',
+      'es': 'Bactericida tópico.',
+    },
+    warning: {
+      'pt': 'Não usar em gestantes a termo ou neonatos.',
+      'es': 'Contraindicado en neonatos.',
+    },
+    adverse: {
+      'pt': ['Leucopenia transitória', 'Ardor local', 'Escurecimento da pele'],
+      'es': ['Leucopenia', 'Ardor'],
+    },
+  ),
+
+  DrugModel(
+    id: 'mupirocina',
+    group: 'Varios / Antídotos / Otros',
+    name: 'Mupirocina',
+    className: {'pt': 'Antibiótico Tópico', 'es': 'Antibiótico Tópico'},
+    category: {'pt': 'Dermatologia', 'es': 'Dermatología'},
+    route: 'Tópica',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': 'Pomada 2%. Aplicar 3x/dia por 5-10 dias.',
+      'es': 'Pomada 2%.',
+    },
+    renalAlert: {
+      'pt': 'Sem ajuste necessário.',
+      'es': 'Sin ajuste.',
+    },
+    elderlyAlert: {
+      'pt': 'Seguro.',
+      'es': 'Seguro.',
+    },
+    mechanism: {
+      'pt': 'Inibe a isoleucil-tRNA sintetase, bloqueando a síntese proteica.',
+      'es': 'Inhibe síntesis proteica tópica.',
+    },
+    warning: {
+      'pt': 'Excelente para erradicação nasal de S. aureus (MRSA).',
+      'es': 'Uso en impétigo y MRSA.',
+    },
+    adverse: {
+      'pt': ['Ardência local', 'Prurido', 'Eritema'],
+      'es': ['Irritación local'],
+    },
+  ),
+
+  DrugModel(
+    id: 'permetrina',
+    group: 'Varios / Antídotos / Otros',
+    name: 'Permetrina',
+    className: {'pt': 'Antiparasitário / Escabicida', 'es': 'Antiparasitario / Escabicida'},
+    category: {'pt': 'Dermatologia', 'es': 'Dermatología'},
+    route: 'Tópica',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': 'Creme 5%. Aplicar por 8-14h e lavar. Repetir em 1 semana.',
+      'es': 'Crema 5%.',
+    },
+    renalAlert: {
+      'pt': 'Sem ajuste.',
+      'es': 'Sin ajuste.',
+    },
+    elderlyAlert: {
+      'pt': 'Seguro.',
+      'es': 'Seguro.',
+    },
+    mechanism: {
+      'pt': 'Bloqueia os canais de sódio nos artrópodes, causando paralisia.',
+      'es': 'Parálisis del parásito.',
+    },
+    warning: {
+      'pt': 'Aplicar do pescoço para baixo na sarna.',
+      'es': 'Uso externo.',
+    },
+    adverse: {
+      'pt': ['Prurido', 'Eritema', 'Parestesia local'],
+      'es': ['Picazón', 'Ardor'],
+    },
+  ),
+
+  DrugModel(
+    id: 'clobetasol',
+    group: 'Varios / Antídotos / Otros',
+    name: 'Clobetasol',
+    className: {'pt': 'Corticosteroide Tópico de Alta Potência', 'es': 'Corticoide Tópico Potente'},
+    category: {'pt': 'Dermatologia', 'es': 'Dermatología'},
+    route: 'Tópica',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': 'Creme/Pomada 0.05%. Aplicar 1-2x/dia.',
+      'es': '0.05% 1-2x/día.',
+    },
+    renalAlert: {
+      'pt': 'Sem ajuste necessário.',
+      'es': 'Sin ajuste.',
+    },
+    elderlyAlert: {
+      'pt': 'Risco elevado de atrofia cutânea e púrpuras. Não usar por tempo longo.',
+      'es': 'Mayor riesgo de atrofia cutánea.',
+    },
+    mechanism: {
+      'pt': 'Modula a resposta inflamatória local e causa vasoconstrição.',
+      'es': 'Antiinflamatorio tópico.',
+    },
+    warning: {
+      'pt': 'Classe 1 (Mais potente). Máximo 2 semanas seguidas.',
+      'es': 'Uso limitado a 2 semanas.',
+    },
+    adverse: {
+      'pt': ['Atrofia cutânea', 'Estrias', 'Foliculite', 'Telangiectasias'],
+      'es': ['Atrofia', 'Estrías'],
+    },
+  ),
+
+  DrugModel(
+    id: 'ambroxol',
+    group: 'Respiratorio',
+    name: 'Ambroxol',
+    className: {'pt': 'Mucolítico', 'es': 'Mucolítico'},
+    category: {'pt': 'Expectorantes', 'es': 'Expectorantes'},
+    route: 'VO / Inalatório',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': '30–60 mg 2-3x/dia.',
+      'es': '30–60 mg 2-3x/día.',
+    },
+    renalAlert: {
+      'pt': 'Sem ajuste necessário.',
+      'es': 'Sin ajuste.',
+    },
+    elderlyAlert: {
+      'pt': 'Bem tolerado.',
+      'es': 'Seguro.',
+    },
+    mechanism: {
+      'pt': 'Estimula a síntese de surfactante e diminui a viscosidade do muco.',
+      'es': 'Disminuye viscosidad del moco.',
+    },
+    warning: {
+      'pt': 'Beber água ajuda na ação expectorante.',
+      'es': 'Hidratación necesaria.',
+    },
+    adverse: {
+      'pt': ['Náuseas', 'Pirose', 'Dispepsia'],
+      'es': ['Náuseas'],
+    },
+  ),
+
+  DrugModel(
+    id: 'acebrofilina',
+    group: 'Respiratorio',
+    name: 'Acebrofilina',
+    className: {'pt': 'Xantina / Mucolítico', 'es': 'Xantina / Mucolítico'},
+    category: {'pt': 'Expectorantes / Broncodilatadores', 'es': 'Expectorantes'},
+    route: 'VO',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': '100 mg 2x/dia.',
+      'es': '100 mg 2x/día.',
+    },
+    renalAlert: {
+      'pt': 'Usar com cautela em insuficiência renal.',
+      'es': 'Cautela en falla renal.',
+    },
+    elderlyAlert: {
+      'pt': 'Risco de taquicardia e insônia em idosos sensíveis.',
+      'es': 'Vigilar frecuencia cardíaca.',
+    },
+    mechanism: {
+      'pt': 'Combina efeito broncodilatador (xantina) com mucolítico.',
+      'es': 'Broncodilatador y mucolítico.',
+    },
+    warning: {
+      'pt': 'Monitorar pacientes com histórico de arritmias.',
+      'es': 'Precaución en arritmias.',
+    },
+    adverse: {
+      'pt': ['Taquicardia', 'Náuseas', 'Tremor', 'Insônia'],
+      'es': ['Taquicardia', 'Náuseas'],
+    },
+  ),
+
+  DrugModel(
+    id: 'salbutamol_gotas',
+    group: 'Respiratorio',
+    name: 'Salbutamol (Gotas para Nebulização)',
+    className: {'pt': 'SABA (Beta-2 agonista curta ação)', 'es': 'Beta-2 agonista acción corta'},
+    category: {'pt': 'Emergência / Respiratório', 'es': 'Emergencia / Respiratorio'},
+    route: 'Inalatório (Nebulização)',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': 'Adulto: 10–20 gotas (2.5–5 mg) cada 4-6h.',
+      'es': 'Adulto: 10–20 gotas cada 4-6h.',
+    },
+    renalAlert: {
+      'pt': 'Sem ajuste necessário.',
+      'es': 'Sin ajuste.',
+    },
+    elderlyAlert: {
+      'pt': 'Alto risco de taquicardia e tremor em cardiopatas idosos.',
+      'es': 'Riesgo de arritmias y temblor.',
+    },
+    mechanism: {
+      'pt': 'Estimula receptores Beta-2 pulmonares, causando broncodilatação rápida.',
+      'es': 'Broncodilatador rápido.',
+    },
+    warning: {
+      'pt': 'Monitorar Potássio (risco de hipocalemia em doses altas).',
+      'es': 'Monitorear K+.',
+    },
+    adverse: {
+      'pt': ['Taquicardia', 'Tremores finos', 'Cefaleia', 'Palpitações', 'Hipocalemia'],
+      'es': ['Taquicardia', 'Temblor', 'Hipopotasemia'],
+    },
+  ),
+
+  DrugModel(
+    id: 'ceftolozana_tazobactam',
+    group: 'Infectología (Antifúngicos / Antivirales / TBC)',
+    name: 'Ceftolozana + Tazobactam',
+    className: {'pt': 'Cefalosporina + Inibidor de Beta-lactamase', 'es': 'Cefalosporina + Inhibidor de Beta-lactamasa'},
+    category: {'pt': 'Antibióticos Hospitalares', 'es': 'Antibióticos Hospitalarios'},
+    route: 'IV',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': '1.5 g cada 8h. Reservado para Pseudomonas multirresistente.',
+      'es': '1.5 g cada 8h.',
+    },
+    renalAlert: {
+      'pt': 'Ajuste obrigatório conforme ClCr.',
+      'es': 'Ajuste obligatorio en falla renal.',
+    },
+    elderlyAlert: {
+      'pt': 'Monitorar função renal estreitamente.',
+      'es': 'Vigilar función renal.',
+    },
+    mechanism: {
+      'pt': 'Inibe síntese de parede bacteriana e inibe beta-lactamases.',
+      'es': 'Antibiótico de amplio espectro.',
+    },
+    warning: {
+      'pt': 'Uso restrito para evitar resistência.',
+      'es': 'Uso restringido.',
+    },
+    adverse: {
+      'pt': ['Diarreia', 'Cefaleia', 'Náuseas', 'Febre'],
+      'es': ['Diarrea', 'Cefalea'],
+    },
+  ),
+
+  DrugModel(
+    id: 'esmolol',
+    group: 'UCI – Críticos y Sedoanalgesia',
+    name: 'Esmolol',
+    className: {'pt': 'Betabloqueador de ação ultracurta', 'es': 'Beta-bloqueador acción ultracorta'},
+    category: {'pt': 'Cardiovascular / Emergência', 'es': 'Cardiovascular / Emergencia'},
+    route: 'IV (Bomba)',
+    doseType: 'mcg_kg_min',
+    mcgKgMinStart: 50.0,
+    mcgKgMinMax: 200.0,
+    fixedDose: {
+      'pt': 'Ataque: 500 mcg/kg em 1 min. Manutenção: 50–200 mcg/kg/min.',
+      'es': 'Dosis titulable según FC.',
+    },
+    renalAlert: {
+      'pt': 'Sem ajuste necessário.',
+      'es': 'Sin ajuste.',
+    },
+    elderlyAlert: {
+      'pt': 'Risco de hipotensão severa imediata.',
+      'es': 'Monitorear presión arterial.',
+    },
+    mechanism: {
+      'pt': 'Antagonista Beta-1 seletivo com meia-vida de 9 minutos.',
+      'es': 'Beta-bloqueador ultrarrápido.',
+    },
+    warning: {
+      'pt': 'Ideal para controle de FC em Dissecção Aórtica e Tempestade Tireoidiana.',
+      'es': 'Uso en disección aórtica.',
+    },
+    adverse: {
+      'pt': ['Hipotensão', 'Bradicardia', 'Sudorese', 'Inflamação no local da infusão'],
+      'es': ['Hipotensión', 'Bradicardia'],
+    },
+  ),
+
+  DrugModel(
+    id: 'milrinona',
+    group: 'UCI – Críticos y Sedoanalgesia',
+    name: 'Milrinona',
+    className: {'pt': 'Inodilatador (Inibidor da PDE-3)', 'es': 'Inodilatador (Inhibidor PDE-3)'},
+    category: {'pt': 'Vasoativos / IC', 'es': 'Vasoactivos / IC'},
+    route: 'IV (Bomba)',
+    doseType: 'mcg_kg_min',
+    mcgKgMinStart: 0.375,
+    mcgKgMinMax: 0.75,
+    fixedDose: {
+      'pt': 'Ataque: 50 mcg/kg em 10 min. Manutenção: 0.375–0.75 mcg/kg/min.',
+      'es': 'Inotrópico positivo.',
+    },
+    renalAlert: {
+      'pt': 'Ajuste obrigatório. Excreção renal predominante.',
+      'es': 'Ajuste obligatorio.',
+    },
+    elderlyAlert: {
+      'pt': 'Alto risco de hipotensão e arritmias ventriculares.',
+      'es': 'Riesgo de arritmias ventriculares.',
+    },
+    mechanism: {
+      'pt': 'Inibe a fosfodiesterase III, aumentando AMPc no coração e vasos (inotropismo + e vasodilatação).',
+      'es': 'Aumenta AMPc intracelular.',
+    },
+    warning: {
+      'pt': 'Pode causar hipotensão severa se houver hipovolemia.',
+      'es': 'Riesgo de hipotensión.',
+    },
+    adverse: {
+      'pt': ['Arritmias ventriculares', 'Hipotensão', 'Cefaleia', 'Trombocitopenia'],
+      'es': ['Arritmias', 'Hipotensión'],
+    },
+  ),
+
+  DrugModel(
+    id: 'labetalol',
+    group: 'UCI – Críticos y Sedoanalgesia',
+    name: 'Labetalol',
+    className: {'pt': 'Alfa e Betabloqueador', 'es': 'Alfa y Beta-bloqueador'},
+    category: {'pt': 'Emergência Hipertensiva', 'es': 'Emergencia Hipertensiva'},
+    route: 'IV / VO',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': 'IV: 20 mg bolus, seguido de 40-80 mg a cada 10 min (máx 300 mg) ou infusão 2 mg/min.',
+      'es': 'IV: 20 mg bolo inicial.',
+    },
+    renalAlert: {
+      'pt': 'Sem ajuste necessário.',
+      'es': 'Sin ajuste.',
+    },
+    elderlyAlert: {
+      'pt': 'Risco de hipotensão postural grave e bradicardia.',
+      'es': 'Vigilar hipotensión.',
+    },
+    mechanism: {
+      'pt': 'Bloqueio não seletivo Beta e seletivo Alfa-1. Proporção 7:1 (Beta:Alfa) no uso IV.',
+      'es': 'Bloqueo mixto Beta y Alfa-1.',
+    },
+    warning: {
+      'pt': 'Contraindicado em Asma, DPOC e Bloqueios cardíacos de 2º/3º grau.',
+      'es': 'Contraindicado en asma y bradicardia.',
+    },
+    adverse: {
+      'pt': ['Bradicardia', 'Hipotensão', 'Broncoespasmo', 'Congestão nasal'],
+      'es': ['Bradicardia', 'Broncoespasmo'],
+    },
+  ),
+
 ];
