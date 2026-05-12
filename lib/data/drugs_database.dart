@@ -8590,4 +8590,1428 @@ const List<DrugModel> drugsDatabase = [
     },
   ),
 
+  // ══════════════════════════════════════════════════════════════════════════
+  // NOVOS FÁRMACOS — MERGE v2
+  // Fontes: Harrison's 21ª ed., Goodman & Gilman 14ª ed., UpToDate 2024,
+  // Micromedex, SBC 2023, SBEM, SBGG, ESC/AHA guidelines.
+  // ══════════════════════════════════════════════════════════════════════════
+
+  // ── CARDIOVASCULAR ────────────────────────────────────────────────────────
+
+  DrugModel(
+    id: 'dronedarona',
+    group: 'Cardiovascular y HTA',
+    name: 'Dronedarona (Multaq)',
+    className: {'pt': 'Antiarrítmico classe III (análogo da amiodarona)', 'es': 'Antiarrítmico clase III (análogo amiodarona)'},
+    category: {'pt': 'Antiarrítmicos', 'es': 'Antiarrítmicos'},
+    route: 'VO',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': '400 mg 2x/dia com as refeições. Não usar em IC descompensada ou FA permanente.',
+      'es': '400 mg 2 veces/día con las comidas. No usar en IC descompensada o FA permanente.',
+    },
+    renalAlert: {
+      'pt': 'Sem ajuste de dose necessário. Cautela em IR grave.',
+      'es': 'Sin ajuste. Precaución en IRA grave.',
+    },
+    elderlyAlert: {
+      'pt': 'Monitorar função renal e hepática. Menor toxicidade tireoidiana que amiodarona.',
+      'es': 'Monitorizar función renal y hepática. Menos toxicidad tiroidea que amiodarona.',
+    },
+    mechanism: {
+      'pt': 'Bloqueia canais de sódio, potássio e cálcio; antagonismo adrenérgico não competitivo. Sem iodo na estrutura.',
+      'es': 'Bloquea canales Na, K, Ca; antagonismo adrenérgico no competitivo. Sin yodo en la molécula.',
+    },
+    warning: {
+      'pt': 'CONTRAINDICADA em IC com FE reduzida sintomática (NYHA III-IV), FA permanente, bloqueio AV avançado. Risco de hepatotoxicidade grave (monitorar TGO/TGP).',
+      'es': 'CONTRAINDICADA en IC sistólica sintomática, FA permanente, BAV avanzado. Riesgo de hepatotoxicidad grave.',
+    },
+    adverse: {
+      'pt': ['Bradicardia', 'Prolongamento QT', 'Insuficiência cardíaca', 'Hepatotoxicidade (raro)', 'Diarreia', 'Náuseas', 'Elevação de creatinina (sem lesão renal real)'],
+      'es': ['Bradicardia', 'Prolongación QT', 'Insuficiencia cardíaca', 'Hepatotoxicidad (raro)', 'Diarrea', 'Náuseas', 'Elevación creatinina (sin lesión renal real)'],
+    },
+  ),
+
+  DrugModel(
+    id: 'ivabradina',
+    group: 'Cardiovascular y HTA',
+    name: 'Ivabradina (Procoralan)',
+    className: {'pt': 'Inibidor da corrente If (marca-passo sinusal)', 'es': 'Inhibidor de la corriente If'},
+    category: {'pt': 'Antianginosos / Insuficiência Cardíaca', 'es': 'Antianginosos / IC'},
+    route: 'VO',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': 'IC: iniciar 5 mg 2x/dia; ajustar para 7,5 mg 2x/dia se FC >60 bpm. Angina: 5–7,5 mg 2x/dia. FC alvo: 55–60 bpm.',
+      'es': 'IC: iniciar 5 mg 2v/día; ajustar a 7,5 mg 2v/día si FC >60 lpm. Angina: 5–7,5 mg 2v/día.',
+    },
+    renalAlert: {
+      'pt': 'Sem ajuste em ClCr ≥15 mL/min. Dados insuficientes abaixo disso.',
+      'es': 'Sin ajuste con ClCr ≥15 mL/min.',
+    },
+    elderlyAlert: {
+      'pt': 'Iniciar com dose menor (2,5 mg 2x/dia). Monitorar FC e PA.',
+      'es': 'Iniciar con dosis menor. Monitorizar FC y PA.',
+    },
+    mechanism: {
+      'pt': 'Inibe seletivamente a corrente If (funny current) no nó sinoatrial → reduz FC sem efeito inotrópico negativo.',
+      'es': 'Inhibe selectivamente la corriente If en el nodo sinusal → reduce FC sin efecto inotrópico negativo.',
+    },
+    warning: {
+      'pt': 'Somente em ritmo sinusal. Contraindicada em bloqueio AV completo, FA, choque cardiogênico. Pode causar fosfenos (fenômeno visual transitório).',
+      'es': 'Solo en ritmo sinusal. Contraindicada en BAV completo, FA, shock cardiogénico. Puede causar fosfenos.',
+    },
+    adverse: {
+      'pt': ['Bradicardia', 'Fosfenos (distúrbio visual luminoso)', 'Cefaleia', 'Fibrilação atrial', 'Bloqueio AV de 1º grau'],
+      'es': ['Bradicardia', 'Fosfenos', 'Cefalea', 'Fibrilación auricular', 'BAV 1er grado'],
+    },
+  ),
+
+  DrugModel(
+    id: 'ranolazina',
+    group: 'Cardiovascular y HTA',
+    name: 'Ranolazina (Ranexa)',
+    className: {'pt': 'Antianginoso – inibidor da corrente tardia de sódio', 'es': 'Antianginoso – inhibidor de corriente tardía de Na'},
+    category: {'pt': 'Antianginosos', 'es': 'Antianginosos'},
+    route: 'VO',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': '500 mg 2x/dia; pode aumentar para 1000 mg 2x/dia. Comprimidos de liberação prolongada — não partir.',
+      'es': '500 mg 2v/día; aumentar a 1000 mg 2v/día. Comprimidos LP — no partir.',
+    },
+    renalAlert: {
+      'pt': 'Sem ajuste necessário. Cautela em DRC grave (dados limitados).',
+      'es': 'Sin ajuste. Precaución en ERC grave.',
+    },
+    elderlyAlert: {
+      'pt': 'Monitorar QTc. Interações com inibidores de CYP3A4 são relevantes.',
+      'es': 'Monitorizar QTc. Interacciones con inhibidores CYP3A4 relevantes.',
+    },
+    mechanism: {
+      'pt': 'Inibe a corrente tardia de Na⁺ (INa-late) → reduz sobrecarga de Ca²⁺ intracelular → melhora relaxamento diastólico e reduz isquemia.',
+      'es': 'Inhibe INa-tardía → reduce sobrecarga de Ca²⁺ intracelular → mejora relajación diastólica.',
+    },
+    warning: {
+      'pt': 'Prolonga QTc dose-dependente. Contraindicada com inibidores potentes de CYP3A4 (claritromicina, itraconazol). Não usar em cirrose hepática grave.',
+      'es': 'Prolonga QTc dosis-dependiente. Contraindicada con inhibidores potentes CYP3A4. No usar en cirrosis grave.',
+    },
+    adverse: {
+      'pt': ['Tontura', 'Náuseas', 'Constipação', 'Cefaleia', 'Prolongamento QTc', 'Síncope'],
+      'es': ['Mareo', 'Náuseas', 'Estreñimiento', 'Cefalea', 'Prolongación QTc', 'Síncope'],
+    },
+  ),
+
+  DrugModel(
+    id: 'eplerenona',
+    group: 'Cardiovascular y HTA',
+    name: 'Eplerenona (Inspra)',
+    className: {'pt': 'Antagonista seletivo da aldosterona (ARM)', 'es': 'Antagonista selectivo de aldosterona (ARM)'},
+    category: {'pt': 'Diuréticos poupadores de potássio / IC', 'es': 'Diuréticos ahorradores K / IC'},
+    route: 'VO',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': 'IC pós-IAM: 25 mg/dia; aumentar para 50 mg/dia após 4 semanas se K⁺ <5,0 mEq/L. HAS: 50 mg/dia.',
+      'es': 'IC post-IAM: 25 mg/día; aumentar a 50 mg/día tras 4 semanas si K⁺ <5,0 mEq/L. HTA: 50 mg/día.',
+    },
+    renalAlert: {
+      'pt': 'Contraindicada se ClCr <30 mL/min ou K⁺ >5,5 mEq/L. Monitorar K⁺ e creatinina semanalmente nas primeiras 4 semanas.',
+      'es': 'Contraindicada si ClCr <30 mL/min o K⁺ >5,5 mEq/L. Monitorizar K⁺ y creatinina.',
+    },
+    elderlyAlert: {
+      'pt': 'Maior risco de hipercalemia. Monitorar eletrólitos rigorosamente.',
+      'es': 'Mayor riesgo de hipercalemia. Monitorizar electrólitos.',
+    },
+    mechanism: {
+      'pt': 'Antagonismo seletivo dos receptores de mineralocorticoides → reduz retenção de Na⁺ e excreção de K⁺ sem efeitos androgênicos/progestagênicos (vantagem sobre espironolactona).',
+      'es': 'Antagonismo selectivo de receptores mineralocorticoides → sin efectos androgénicos/progestagénicos (ventaja vs espironolactona).',
+    },
+    warning: {
+      'pt': 'Hipercalemia potencialmente fatal. Não combinar com outros poupadores de K⁺ ou suplementos de potássio. Monitorar função renal regularmente.',
+      'es': 'Hipercalemia potencialmente fatal. No combinar con otros ahorradores de K⁺. Monitorizar función renal.',
+    },
+    adverse: {
+      'pt': ['Hipercalemia', 'Hipotensão', 'Tontura', 'Diarreia', 'Cefaleia', 'Ginecomastia (muito raro — vantagem vs espironolactona)'],
+      'es': ['Hipercalemia', 'Hipotensión', 'Mareo', 'Diarrea', 'Cefalea', 'Ginecomastia (muy raro)'],
+    },
+  ),
+
+  DrugModel(
+    id: 'riociguate',
+    group: 'Cardiovascular y HTA',
+    name: 'Riociguate (Adempas)',
+    className: {'pt': 'Estimulador solúvel da guanilato ciclase (sGC)', 'es': 'Estimulador soluble de guanilato ciclasa'},
+    category: {'pt': 'Hipertensão Pulmonar', 'es': 'Hipertensión Pulmonar'},
+    route: 'VO',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': 'Iniciar 1 mg 3x/dia; aumentar 0,5 mg a cada 2 semanas até máx. 2,5 mg 3x/dia, conforme tolerância de PA.',
+      'es': 'Iniciar 1 mg 3v/día; aumentar 0,5 mg cada 2 semanas hasta máx. 2,5 mg 3v/día.',
+    },
+    renalAlert: {
+      'pt': 'Dados limitados em ClCr <15 mL/min. Usar com cautela.',
+      'es': 'Datos limitados en ClCr <15 mL/min.',
+    },
+    elderlyAlert: {
+      'pt': 'Risco aumentado de hipotensão. Iniciar com dose mínima.',
+      'es': 'Mayor riesgo de hipotensión. Iniciar con dosis mínima.',
+    },
+    mechanism: {
+      'pt': 'Estimula diretamente a guanilato ciclase solúvel, aumentando GMPc → vasodilatação pulmonar e sistêmica. Sinergismo com NO endógeno.',
+      'es': 'Estimula directamente la guanilato ciclasa soluble → aumenta GMPc → vasodilatación pulmonar.',
+    },
+    warning: {
+      'pt': 'CONTRAINDICADO com inibidores da PDE5 (sildenafila, tadalafila) — hipotensão grave. Teratogênico (programa de prevenção de gravidez obrigatório).',
+      'es': 'CONTRAINDICADO con inhibidores PDE5 (sildenafilo, tadalafilo). Teratogénico — programa de prevención embarazo obligatorio.',
+    },
+    adverse: {
+      'pt': ['Hipotensão', 'Cefaleia', 'Tontura', 'Náuseas', 'Diarreia', 'Hemoptise (raro)'],
+      'es': ['Hipotensión', 'Cefalea', 'Mareo', 'Náuseas', 'Diarrea', 'Hemoptisis (raro)'],
+    },
+  ),
+
+  DrugModel(
+    id: 'candesartana',
+    group: 'Cardiovascular y HTA',
+    name: 'Candesartana (Atacand)',
+    className: {'pt': 'ARA-II (Bloqueador do receptor de angiotensina II)', 'es': 'ARA-II'},
+    category: {'pt': 'Anti-hipertensivos', 'es': 'Antihipertensivos'},
+    route: 'VO',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': 'HAS: 8–32 mg/dia em dose única. IC: iniciar 4–8 mg/dia; alvo 32 mg/dia.',
+      'es': 'HTA: 8–32 mg/día en dosis única. IC: iniciar 4–8 mg/día; objetivo 32 mg/día.',
+    },
+    renalAlert: {
+      'pt': 'Iniciar com 4 mg/dia em DRC grave. Monitorar K⁺ e creatinina.',
+      'es': 'Iniciar con 4 mg/día en ERC grave. Monitorizar K⁺ y creatinina.',
+    },
+    elderlyAlert: {
+      'pt': 'Iniciar com dose menor. Hipotensão postural mais frequente.',
+      'es': 'Iniciar con dosis menor. Hipotensión postural más frecuente.',
+    },
+    mechanism: {
+      'pt': 'Bloqueia seletivamente os receptores AT1 da angiotensina II → vasodilatação, redução de aldosterona. Sem acúmulo de bradicinina (sem tosse).',
+      'es': 'Bloquea selectivamente receptores AT1 → vasodilatación, reducción de aldosterona. Sin tos (no acumula bradicinina).',
+    },
+    warning: {
+      'pt': 'Contraindicado na gravidez (fetotóxico). Não combinar com IECA + ARA-II (bloqueio dual do SRAA).',
+      'es': 'Contraindicado en embarazo. No combinar IECA + ARA-II (doble bloqueo SRAA).',
+    },
+    adverse: {
+      'pt': ['Hipotensão', 'Hipercalemia', 'Tontura', 'Cefaleia', 'Elevação de creatinina'],
+      'es': ['Hipotensión', 'Hipercalemia', 'Mareo', 'Cefalea', 'Elevación creatinina'],
+    },
+  ),
+
+  DrugModel(
+    id: 'amlodipino_olmesartana',
+    group: 'Cardiovascular y HTA',
+    name: 'Anlodipino + Olmesartana (Azor)',
+    className: {'pt': 'BCC + ARA-II (associação fixa)', 'es': 'BCC + ARA-II (asociación fija)'},
+    category: {'pt': 'Anti-hipertensivos combinados', 'es': 'Antihipertensivos combinados'},
+    route: 'VO',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': '5/20 mg a 10/40 mg uma vez/dia. Ajuste individualizado conforme controle pressórico.',
+      'es': '5/20 mg a 10/40 mg una vez/día. Ajustar según control de PA.',
+    },
+    renalAlert: {
+      'pt': 'Monitorar função renal e K⁺. Cautela em DRC avançada.',
+      'es': 'Monitorizar función renal y K⁺. Precaución en ERC avanzada.',
+    },
+    elderlyAlert: {
+      'pt': 'Iniciar com menor dose combinada. Risco de hipotensão postural.',
+      'es': 'Iniciar con menor dosis. Riesgo hipotensión postural.',
+    },
+    mechanism: {
+      'pt': 'Anlodipino bloqueia canais de Ca²⁺ L → vasodilatação. Olmesartana bloqueia receptor AT1 → redução da angiotensina II.',
+      'es': 'Amlodipino bloquea canales Ca²⁺ L. Olmesartán bloquea AT1.',
+    },
+    warning: {
+      'pt': 'Contraindicado na gravidez. Edema de tornozelo pode surgir pelo componente anlodipino.',
+      'es': 'Contraindicado en embarazo. El componente amlodipino puede causar edema de tobillo.',
+    },
+    adverse: {
+      'pt': ['Edema periférico', 'Hipotensão', 'Tontura', 'Cefaleia', 'Hipercalemia'],
+      'es': ['Edema periférico', 'Hipotensión', 'Mareo', 'Cefalea', 'Hipercalemia'],
+    },
+  ),
+
+  // ── ANTICOAGULANTES / HEMOSTASIA ──────────────────────────────────────────
+
+  DrugModel(
+    id: 'fondaparinux',
+    group: 'Anticoagulantes y Hemostasia',
+    name: 'Fondaparinux (Arixtra)',
+    className: {'pt': 'Inibidor seletivo do fator Xa (pentassacarídeo sintético)', 'es': 'Inhibidor selectivo del factor Xa'},
+    category: {'pt': 'Anticoagulantes parenterais', 'es': 'Anticoagulantes parenterales'},
+    route: 'SC',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': 'TVP/TEP: 5 mg SC 1x/dia (<50 kg); 7,5 mg (<100 kg); 10 mg (>100 kg). SCA sem supra: 2,5 mg SC 1x/dia por até 8 dias.',
+      'es': 'TVP/TEP: 5 mg SC/día (<50 kg); 7,5 mg (<100 kg); 10 mg (>100 kg). SCASEST: 2,5 mg SC/día hasta 8 días.',
+    },
+    renalAlert: {
+      'pt': 'Contraindicado se ClCr <30 mL/min (acúmulo e risco hemorrágico). Monitorar função renal.',
+      'es': 'Contraindicado si ClCr <30 mL/min. Monitorizar función renal.',
+    },
+    elderlyAlert: {
+      'pt': 'Alta prevalência de DRC nos idosos — avaliar ClCr antes de prescrever. Sem antídoto específico disponível (protamina não reverte).',
+      'es': 'Alta prevalencia ERC en ancianos — evaluar ClCr antes de prescribir. Sin antídoto específico.',
+    },
+    mechanism: {
+      'pt': 'Liga-se seletivamente à antitrombina III → inibição do fator Xa → interrupção da cascata de coagulação. Não inibe trombina diretamente.',
+      'es': 'Se une selectivamente a antitrombina III → inhibición del factor Xa → interrupción de la cascada coagulación.',
+    },
+    warning: {
+      'pt': 'Sem antídoto específico (andexanet alfa não aprovado para fondaparinux). Não causa TIH (heparina-induced thrombocytopenia). Contraindicado em ClCr <30 mL/min.',
+      'es': 'Sin antídoto específico. No causa TIH. Contraindicado en ClCr <30 mL/min.',
+    },
+    adverse: {
+      'pt': ['Sangramento', 'Anemia', 'Trombocitopenia (rara)', 'Reação no local da injeção', 'Elevação de transaminases'],
+      'es': ['Sangrado', 'Anemia', 'Trombocitopenia (rara)', 'Reacción local', 'Elevación transaminasas'],
+    },
+  ),
+
+  DrugModel(
+    id: 'andexanet_alfa',
+    group: 'Anticoagulantes y Hemostasia',
+    name: 'Andexanet Alfa (Ondexxya)',
+    className: {'pt': 'Antídoto específico dos inibidores do fator Xa', 'es': 'Antídoto específico inhibidores factor Xa'},
+    category: {'pt': 'Antídotos / Hemostasia', 'es': 'Antídotos / Hemostasia'},
+    route: 'IV',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': 'Dose baixa (rivaroxabana ≤10 mg ou apixabana ≤5 mg há <8h): 400 mg IV bolus + 480 mg infusão em 2h. Dose alta: 800 mg bolus + 960 mg em 2h.',
+      'es': 'Dosis baja: 400 mg IV bolo + 480 mg infusión 2h. Dosis alta: 800 mg bolo + 960 mg 2h.',
+    },
+    renalAlert: {
+      'pt': 'Sem ajuste de dose. Monitorar atividade anti-Xa após administração.',
+      'es': 'Sin ajuste. Monitorizar actividad anti-Xa tras administración.',
+    },
+    elderlyAlert: {
+      'pt': 'Risco trombótico aumentado — monitorar eventos isquêmicos nas 72h pós-reversão.',
+      'es': 'Riesgo trombótico aumentado — monitorizar eventos isquémicos 72h post-reversión.',
+    },
+    mechanism: {
+      'pt': 'Proteína recombinante análoga ao fator Xa (modificada, sem atividade catalítica) → captura os inibidores de Xa (apixabana, rivaroxabana, edoxabana) impedindo seu efeito anticoagulante.',
+      'es': 'Proteína recombinante análoga al Xa (sin actividad catalítica) → captura inhibidores de Xa.',
+    },
+    warning: {
+      'pt': 'Risco trombótico nas 72h pós-administração — reiniciar anticoagulação assim que possível. Monitorar com ECG (risco de TV/FV relatado). Custo elevadíssimo.',
+      'es': 'Riesgo trombótico 72h post-administración — reiniciar anticoagulación lo antes posible. Monitorizar ECG.',
+    },
+    adverse: {
+      'pt': ['Trombose (TVP, TEP, AVC isquêmico nas 72h)', 'Fibrilação atrial', 'Infarto do miocárdio', 'Febre', 'Pneumonia aspirativa'],
+      'es': ['Trombosis', 'Fibrilación auricular', 'IAM', 'Fiebre', 'Neumonía aspirativa'],
+    },
+  ),
+
+  DrugModel(
+    id: 'idarucizumabe',
+    group: 'Anticoagulantes y Hemostasia',
+    name: 'Idarucizumabe (Praxbind)',
+    className: {'pt': 'Antídoto específico da dabigatrana', 'es': 'Antídoto específico de dabigatrán'},
+    category: {'pt': 'Antídotos / Hemostasia', 'es': 'Antídotos / Hemostasia'},
+    route: 'IV',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': '5 g IV em duas doses de 2,5 g consecutivas (intervaladas em até 15 min). Administrar em bolus ou infusão rápida.',
+      'es': '5 g IV en dos dosis de 2,5 g consecutivas (hasta 15 min de intervalo).',
+    },
+    renalAlert: {
+      'pt': 'Sem ajuste de dose. Monitorar tempo de trombina (TT) e tempo de ecarina como indicadores de reversão.',
+      'es': 'Sin ajuste. Monitorizar tiempo de trombina (TT) como indicador de reversión.',
+    },
+    elderlyAlert: {
+      'pt': 'Monitorar atividade residual de dabigatrana (TT, APTT) após administração.',
+      'es': 'Monitorizar actividad residual dabigatrán (TT, APTT) tras administración.',
+    },
+    mechanism: {
+      'pt': 'Fragmento Fab de anticorpo monoclonal humanizado que se liga à dabigatrana com afinidade 350× maior que a trombina → inibição específica e reversão imediata da anticoagulação.',
+      'es': 'Fragmento Fab de anticuerpo monoclonal humanizado → se une a dabigatrán con afinidad 350× mayor que trombina.',
+    },
+    warning: {
+      'pt': 'Indicado apenas para reversão urgente da dabigatrana (cirurgia de emergência, sangramento grave). Reiniciar dabigatrana 24h após se homeostase restabelecida.',
+      'es': 'Solo para reversión urgente de dabigatrán. Reiniciar dabigatrán 24h después si hemostasia restablecida.',
+    },
+    adverse: {
+      'pt': ['Trombose (risco ao reverter anticoagulação)', 'Reação de hipersensibilidade', 'Cefaleia', 'Hipoalbuminemia transitória', 'Febre'],
+      'es': ['Trombosis', 'Hipersensibilidad', 'Cefalea', 'Hipoalbuminemia transitoria', 'Fiebre'],
+    },
+  ),
+
+  // ── ANTIBIÓTICOS ──────────────────────────────────────────────────────────
+
+  DrugModel(
+    id: 'daptomicina',
+    group: 'Antibióticos',
+    name: 'Daptomicina (Cubicin)',
+    className: {'pt': 'Lipopeptídeo cíclico', 'es': 'Lipopéptido cíclico'},
+    category: {'pt': 'Antibióticos Gram-positivos', 'es': 'Antibióticos Gram-positivos'},
+    route: 'IV',
+    doseType: 'weight',
+    mgKg: 6.0,
+    fixedDose: {
+      'pt': 'Infecções de pele: 4 mg/kg IV 1x/dia. Bacteremia/endocardite por S. aureus: 6 mg/kg IV 1x/dia. Infusão em 30 min ou bolus em 2 min.',
+      'es': 'Infecciones piel: 4 mg/kg IV 1v/día. Bacteremia/endocarditis S. aureus: 6 mg/kg IV 1v/día.',
+    },
+    renalAlert: {
+      'pt': 'ClCr <30 mL/min: administrar a cada 48h. Diálise/CAPD: 4–6 mg/kg a cada 48h (após sessão de HD).',
+      'es': 'ClCr <30 mL/min: cada 48h. Diálisis: 4–6 mg/kg cada 48h (después de HD).',
+    },
+    elderlyAlert: {
+      'pt': 'Monitorar CPK semanalmente. Risco de miopatia aumentado com estatinas concomitantes.',
+      'es': 'Monitorizar CPK semanalmente. Risco de miopatía aumentado con estatinas.',
+    },
+    mechanism: {
+      'pt': 'Insere-se na membrana citoplasmática de bactérias Gram-positivas, causando despolarização e morte celular rápida. Bactericida concentração-dependente.',
+      'es': 'Se inserta en la membrana citoplasmática de Gram-positivos → despolarización y muerte celular rápida. Bactericida concentración-dependiente.',
+    },
+    warning: {
+      'pt': 'INATIVADA pelo surfactante pulmonar — NÃO usar em pneumonia. Suspender estatinas durante uso. Monitorar CPK (risco de rabdomiólise).',
+      'es': 'INACTIVADA por surfactante pulmonar — NO usar en neumonía. Suspender estatinas. Monitorizar CPK.',
+    },
+    adverse: {
+      'pt': ['Miopatia/rabdomiólise (monitorar CPK)', 'Neuropatia periférica', 'Eosinofilia', 'Diarreia', 'Elevação de transaminases'],
+      'es': ['Miopatía/rabdomiólisis', 'Neuropatía periférica', 'Eosinofilia', 'Diarrea', 'Elevación transaminasas'],
+    },
+  ),
+
+  DrugModel(
+    id: 'ceftarolina',
+    group: 'Antibióticos',
+    name: 'Ceftarolina (Zinforo)',
+    className: {'pt': 'Cefalosporina de 5ª geração (anti-MRSA)', 'es': 'Cefalosporina 5ª generación (anti-MRSA)'},
+    category: {'pt': 'Cefalosporinas', 'es': 'Cefalosporinas'},
+    route: 'IV',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': '600 mg IV a cada 12h (infusão em 60 min) por 5–14 dias. Pneumonia grave: 600 mg a cada 8h.',
+      'es': '600 mg IV cada 12h (infusión 60 min) por 5–14 días. Neumonía grave: 600 mg cada 8h.',
+    },
+    renalAlert: {
+      'pt': 'ClCr 30–50 mL/min: 400 mg a cada 12h. ClCr 15–30 mL/min: 300 mg a cada 12h. Hemodiálise: 200 mg a cada 12h (dose após HD nos dias de diálise).',
+      'es': 'ClCr 30–50: 400 mg/12h. ClCr 15–30: 300 mg/12h. HD: 200 mg/12h.',
+    },
+    elderlyAlert: {
+      'pt': 'Avaliar função renal; ajustar dose conforme ClCr. Seguro em idosos com ajuste adequado.',
+      'es': 'Evaluar función renal; ajustar dosis según ClCr.',
+    },
+    mechanism: {
+      'pt': 'Liga-se à proteína de ligação à penicilina PBP2a (presente no MRSA) → inibição da síntese da parede celular. Único β-lactâmico ativo contra MRSA sem resistência cruzada com oxacilina.',
+      'es': 'Se une a PBP2a (presente en MRSA) → inhibición de síntesis de pared celular. Único β-lactámico activo contra MRSA.',
+    },
+    warning: {
+      'pt': 'Reservar para infecções por MRSA ou Streptococcus pneumoniae resistente. Pode causar teste de Coombs direto positivo (anemia hemolítica rara).',
+      'es': 'Reservar para MRSA o S. pneumoniae resistente. Puede causar Coombs directo positivo.',
+    },
+    adverse: {
+      'pt': ['Diarreia', 'Náuseas', 'Rash', 'Teste de Coombs positivo (anemia hemolítica rara)', 'Flebite no local IV'],
+      'es': ['Diarrea', 'Náuseas', 'Rash', 'Coombs positivo (anemia hemolítica rara)', 'Flebitis local IV'],
+    },
+  ),
+
+  DrugModel(
+    id: 'tedizolida',
+    group: 'Antibióticos',
+    name: 'Tedizolida (Sivextro)',
+    className: {'pt': 'Oxazolidinona de 2ª geração', 'es': 'Oxazolidinona de 2ª generación'},
+    category: {'pt': 'Antibióticos Gram-positivos', 'es': 'Antibióticos Gram-positivos'},
+    route: 'VO / IV',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': '200 mg 1x/dia (VO ou IV) por 6 dias para SSSI. Bioequivalência VO/IV — mudança de via sem necessidade de ajuste.',
+      'es': '200 mg 1v/día (VO o IV) por 6 días para SSSI. Bioequivalencia VO/IV.',
+    },
+    renalAlert: {
+      'pt': 'Sem ajuste de dose em DRC ou diálise.',
+      'es': 'Sin ajuste en ERC o diálisis.',
+    },
+    elderlyAlert: {
+      'pt': 'Sem ajuste necessário. Perfil de interações mais favorável que linezolida.',
+      'es': 'Sin ajuste. Perfil de interacciones más favorable que linezolida.',
+    },
+    mechanism: {
+      'pt': 'Inibe síntese proteica bacteriana ligando-se à subunidade 23S do RNA ribossômico 50S → impede formação do complexo de iniciação 70S. Bacteriostático contra enterococos e estafilococos.',
+      'es': 'Inhibe síntesis proteica uniéndose a ARNr 23S subunidad 50S → impide formación del complejo 70S.',
+    },
+    warning: {
+      'pt': 'Menor inibição da MAO que linezolida → menos interações serotoninérgicas e com tiramina. Monitorar contagem sanguínea em uso prolongado (trombocitopenia possível).',
+      'es': 'Menor inhibición MAO que linezolida → menos interacciones serotoninérgicas. Monitorizar hemograma en uso prolongado.',
+    },
+    adverse: {
+      'pt': ['Náuseas', 'Cefaleia', 'Diarreia', 'Vômitos', 'Tontura', 'Trombocitopenia (rara)'],
+      'es': ['Náuseas', 'Cefalea', 'Diarrea', 'Vómitos', 'Mareo', 'Trombocitopenia (rara)'],
+    },
+  ),
+
+  DrugModel(
+    id: 'ceftolozano_taz',
+    group: 'Antibióticos',
+    name: 'Ceftolozano/Tazobactam (Zerbaxa)',
+    className: {'pt': 'Cefalosporina de 5ª geração + inibidor de β-lactamase', 'es': 'Cefalosporina 5ª gen + inhibidor β-lactamasa'},
+    category: {'pt': 'Antibióticos Gram-negativos MDR', 'es': 'Antibióticos Gram-negativos MDR'},
+    route: 'IV',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': 'Infecções intra-abdominais: 1,5 g IV a cada 8h por 4–14 dias. Pneumonia nosocomial/associada à VM: 3 g a cada 8h por 8–14 dias.',
+      'es': 'IIA: 1,5 g IV cada 8h por 4–14 días. NAV/NAH: 3 g cada 8h por 8–14 días.',
+    },
+    renalAlert: {
+      'pt': 'ClCr 30–50 mL/min: 750 mg a cada 8h. ClCr 15–29 mL/min: 375 mg a cada 8h. HDVVC: 1,5 g bolus + 900 mg a cada 8h.',
+      'es': 'ClCr 30–50: 750 mg/8h. ClCr 15–29: 375 mg/8h. HDVVC: 1,5 g bolus + 900 mg/8h.',
+    },
+    elderlyAlert: {
+      'pt': 'Ajuste baseado no ClCr. Monitorar função renal durante tratamento.',
+      'es': 'Ajustar según ClCr. Monitorizar función renal.',
+    },
+    mechanism: {
+      'pt': 'Ceftolozano liga-se a PBPs com alta afinidade em Pseudomonas aeruginosa MDR; tazobactam inibe β-lactamases de espectro estendido (ESBL), proteindo ceftolozano da degradação.',
+      'es': 'Ceftolozano se une a PBPs con alta afinidad en P. aeruginosa MDR; tazobactam inhibe ESBL.',
+    },
+    warning: {
+      'pt': 'Ativo contra P. aeruginosa MDR e produtor de ESBL. NÃO cobre carbapenemases (KPC, MBL). Reservar para patógenos confirmados resistentes.',
+      'es': 'Activo contra P. aeruginosa MDR y ESBL. NO cubre carbapenemasas. Reservar para patógenos resistentes confirmados.',
+    },
+    adverse: {
+      'pt': ['Náuseas', 'Diarreia', 'Cefaleia', 'Febre', 'Elevação de transaminases', 'Hipocalemia'],
+      'es': ['Náuseas', 'Diarrea', 'Cefalea', 'Fiebre', 'Elevación transaminasas', 'Hipopotasemia'],
+    },
+  ),
+
+  DrugModel(
+    id: 'cefiderocol',
+    group: 'Antibióticos',
+    name: 'Cefiderocol (Fetcroja)',
+    className: {'pt': 'Cefalosporina siderófora (siderophore cephalosporin)', 'es': 'Cefalosporina siderófora'},
+    category: {'pt': 'Antibióticos Gram-negativos XDR/PDR', 'es': 'Antibióticos Gram-negativos XDR/PDR'},
+    route: 'IV',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': '2 g IV a cada 8h em infusão de 3 horas (infusão prolongada). Ajustar conforme função renal.',
+      'es': '2 g IV cada 8h en infusión de 3 horas (infusión prolongada).',
+    },
+    renalAlert: {
+      'pt': 'ClCr 60–89: 2 g/6h. ClCr 30–59: 1,5 g/8h. ClCr 15–29: 1 g/8h. ClCr <15: 0,75 g/12h. HD: 0,75 g/12h + dose extra pós-HD.',
+      'es': 'ClCr 60–89: 2g/6h. ClCr 30–59: 1,5g/8h. ClCr 15–29: 1g/8h. ClCr <15: 0,75g/12h.',
+    },
+    elderlyAlert: {
+      'pt': 'Ajuste rigoroso conforme ClCr. Monitorar função renal a cada 48–72h em UCI.',
+      'es': 'Ajuste estricto por ClCr. Monitorizar función renal cada 48–72h en UCI.',
+    },
+    mechanism: {
+      'pt': 'Usa o sistema de transporte de sideróforos (captação de ferro) da bactéria para penetrar na célula, superando mecanismos de resistência clássicos. Liga-se a PBPs → lise bacteriana. Ativo contra carbapenemases (KPC, MBL, OXA).',
+      'es': 'Usa el sistema de sideróforos para penetrar la bacteria, superando resistencias clásicas. Activo contra carbapenemasas (KPC, MBL, OXA).',
+    },
+    warning: {
+      'pt': 'Reservar exclusivamente para infecções por organismos XDR/PDR (Acinetobacter baumannii, Pseudomonas aeruginosa, Enterobacteriaceae com carbapenemases). Uso sob supervisão de infectologista.',
+      'es': 'Reservar exclusivamente para XDR/PDR. Uso bajo supervisión de infectólogo.',
+    },
+    adverse: {
+      'pt': ['Diarreia', 'Constipação', 'Náuseas', 'Infecção por C. difficile', 'Elevação de transaminases', 'Hipocalemia'],
+      'es': ['Diarrea', 'Estreñimiento', 'Náuseas', 'Infección por C. difficile', 'Elevación transaminasas', 'Hipopotasemia'],
+    },
+  ),
+
+  DrugModel(
+    id: 'sulfametoxazol_tmp_iv',
+    group: 'Antibióticos',
+    name: 'Sulfametoxazol/Trimetoprima IV (Bactrim IV)',
+    className: {'pt': 'Sulfonamida + inibidor da dihidrofolato redutase', 'es': 'Sulfonamida + inhibidor dihidrofolato reductasa'},
+    category: {'pt': 'Antibióticos Gram-negativos / Pneumocystis', 'es': 'Antibióticos Gram-negativos / Pneumocystis'},
+    route: 'IV',
+    doseType: 'weight',
+    mgKg: 15.0,
+    fixedDose: {
+      'pt': 'Pneumocistose (PCP): 15–20 mg/kg/dia de TMP IV dividido a cada 6–8h por 21 dias. ITU complicada: 8–10 mg/kg/dia de TMP IV em 3–4 doses.',
+      'es': 'PCP: 15–20 mg/kg/día TMP IV dividido cada 6–8h por 21 días. ITU complicada: 8–10 mg/kg/día TMP IV.',
+    },
+    renalAlert: {
+      'pt': 'ClCr 15–30 mL/min: reduzir 50% da dose. ClCr <15 mL/min: contraindicado (exceto para PCP sem alternativa). Monitorar creatinina e K⁺.',
+      'es': 'ClCr 15–30: reducir 50%. ClCr <15: contraindicado (excepto PCP sin alternativa).',
+    },
+    elderlyAlert: {
+      'pt': 'Alto risco de hipercalemia e nefrotoxicidade. Monitorar eletrólitos e função renal a cada 48–72h.',
+      'es': 'Alto riesgo hipercalemia y nefrotoxicidad. Monitorizar electrólitos y función renal cada 48–72h.',
+    },
+    mechanism: {
+      'pt': 'Trimetoprima inibe a dihidrofolato redutase; sulfametoxazol inibe a dihidropteroato sintase → inibição sequencial e sinérgica da síntese de ácido fólico bacteriano.',
+      'es': 'Trimetoprima inhibe dihidrofolato reductasa; sulfametoxazol inhibe dihidropteroato sintasa → inhibición sinérgica síntesis folato bacteriano.',
+    },
+    warning: {
+      'pt': 'Hipercalemia (trimetoprima bloqueia canais de Na⁺ renais como amilorida). Nefrotoxicidade. Mielossupressão em uso prolongado. Monitorar K⁺ diariamente na dose PCP.',
+      'es': 'Hipercalemia (TMP bloquea canales Na⁺ renales). Nefrotoxicidad. Mielosupresión. Monitorizar K⁺ diariamente.',
+    },
+    adverse: {
+      'pt': ['Hipercalemia', 'Nefrotoxicidade', 'Náuseas/vômitos', 'Rash (incluindo Stevens-Johnson)', 'Mielossupressão', 'Fototoxicidade'],
+      'es': ['Hipercalemia', 'Nefrotoxicidad', 'Náuseas/vómitos', 'Rash (incluyendo Stevens-Johnson)', 'Mielosupresión', 'Fototoxicidad'],
+    },
+  ),
+
+  // ── NEUROLOGIA / PSIQUIATRIA ──────────────────────────────────────────────
+
+  DrugModel(
+    id: 'perampanel',
+    group: 'Neurología y Psiquiatría',
+    name: 'Perampanel (Fycompa)',
+    className: {'pt': 'Antagonista seletivo não competitivo do receptor AMPA', 'es': 'Antagonista selectivo no competitivo del receptor AMPA'},
+    category: {'pt': 'Antiepilépticos', 'es': 'Antiepilépticos'},
+    route: 'VO',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': 'Iniciar 2 mg/dia ao deitar; aumentar 2 mg/semana. Dose alvo: 4–12 mg/dia. Máximo 12 mg/dia.',
+      'es': 'Iniciar 2 mg/día al acostarse; aumentar 2 mg/semana. Dosis objetivo: 4–12 mg/día.',
+    },
+    renalAlert: {
+      'pt': 'Sem ajuste em DRC leve-moderada. Cautela em DRC grave (dados limitados).',
+      'es': 'Sin ajuste en ERC leve-moderada. Precaución en ERC grave.',
+    },
+    elderlyAlert: {
+      'pt': 'Iniciar com dose mínima. Alto risco de tontura, quedas e confusão mental.',
+      'es': 'Iniciar con dosis mínima. Alto riesgo de mareo, caídas y confusión.',
+    },
+    mechanism: {
+      'pt': 'Bloqueia seletivamente os receptores AMPA (ácido α-amino-3-hidroxi-5-metil-4-isoxazolpropiônico) de glutamato → redução da excitabilidade neuronal.',
+      'es': 'Bloquea selectivamente receptores AMPA de glutamato → reducción excitabilidad neuronal.',
+    },
+    warning: {
+      'pt': 'Distúrbios psiquiátricos dose-dependentes (agressividade, hostilidade, ideação suicida). Sonolência importante especialmente no início. Interações com indutores enzimáticos (carbamazepina, fenitoína).',
+      'es': 'Trastornos psiquiátricos dosis-dependientes (agresividad, ideación suicida). Somnolencia. Interacciones con inductores enzimáticos.',
+    },
+    adverse: {
+      'pt': ['Tontura', 'Sonolência', 'Ataxia', 'Irritabilidade/agressividade', 'Cefaleia', 'Náuseas', 'Ganho de peso'],
+      'es': ['Mareo', 'Somnolencia', 'Ataxia', 'Irritabilidad/agresividad', 'Cefalea', 'Náuseas', 'Aumento de peso'],
+    },
+  ),
+
+  DrugModel(
+    id: 'brivaracetam',
+    group: 'Neurología y Psiquiatría',
+    name: 'Brivaracetam (Briviact)',
+    className: {'pt': 'Antiepiléptico – ligante da SV2A (análogo do levetiracetam)', 'es': 'Antiepiléptico – ligante SV2A (análogo levetiracetam)'},
+    category: {'pt': 'Antiepilépticos', 'es': 'Antiepilépticos'},
+    route: 'VO / IV',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': 'Iniciar 50 mg 2x/dia; pode ajustar para 25–100 mg 2x/dia. IV: mesma dose, administrar em ≥15 min.',
+      'es': 'Iniciar 50 mg 2v/día; ajustar 25–100 mg 2v/día. IV: misma dosis en ≥15 min.',
+    },
+    renalAlert: {
+      'pt': 'Sem ajuste de dose em DRC (metabolismo hepático predominante).',
+      'es': 'Sin ajuste en ERC (metabolismo hepático predominante).',
+    },
+    elderlyAlert: {
+      'pt': 'Monitorar sintomas psiquiátricos. Iniciar com dose menor (25 mg 2x/dia).',
+      'es': 'Monitorizar síntomas psiquiátricos. Iniciar con dosis menor.',
+    },
+    mechanism: {
+      'pt': 'Liga-se à proteína de vesícula sináptica 2A (SV2A) com afinidade 15–30× maior que levetiracetam → maior eficácia anticonvulsivante com menor dose.',
+      'es': 'Se une a SV2A con afinidad 15–30× mayor que levetiracetam → mayor eficacia anticonvulsivante.',
+    },
+    warning: {
+      'pt': 'Menor incidência de distúrbios comportamentais que levetiracetam. Reduzir 50% da dose com rifampicina (indutor potente). Não requer titulação lenta — pode iniciar na dose terapêutica.',
+      'es': 'Menor incidencia trastornos conductuales que levetiracetam. Reducir 50% con rifampicina. No requiere titulación lenta.',
+    },
+    adverse: {
+      'pt': ['Sonolência', 'Tontura', 'Fadiga', 'Náuseas', 'Distúrbios comportamentais (menos que LEV)', 'Convulsões (raramente piora)'],
+      'es': ['Somnolencia', 'Mareo', 'Fatiga', 'Náuseas', 'Trastornos conductuales (menos que LEV)'],
+    },
+  ),
+
+  DrugModel(
+    id: 'aripiprazol',
+    group: 'Neurología y Psiquiatría',
+    name: 'Aripiprazol (Abilify)',
+    className: {'pt': 'Antipsicótico atípico – agonista parcial D2/D3 e 5-HT1A', 'es': 'Antipsicótico atípico – agonista parcial D2/D3 y 5-HT1A'},
+    category: {'pt': 'Antipsicóticos', 'es': 'Antipsicóticos'},
+    route: 'VO / IM',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': 'Esquizofrenia: 10–30 mg/dia VO (iniciar 10–15 mg/dia). Mania bipolar: 15–30 mg/dia. Agitação IM: 9,75 mg (máx. 29,25 mg/dia IM).',
+      'es': 'Esquizofrenia: 10–30 mg/día VO. Manía bipolar: 15–30 mg/día. Agitación IM: 9,75 mg.',
+    },
+    renalAlert: {
+      'pt': 'Sem ajuste de dose necessário.',
+      'es': 'Sin ajuste de dosis.',
+    },
+    elderlyAlert: {
+      'pt': 'Demência com psicose: risco aumentado de AVC e morte. Iniciar com doses mínimas. Monitorar PA ortostática.',
+      'es': 'Demencia con psicosis: riesgo aumentado ACV y muerte. Iniciar con dosis mínimas.',
+    },
+    mechanism: {
+      'pt': 'Agonismo parcial em receptores D2 e D3 (não bloqueia totalmente → menos efeitos extrapiramidais); agonismo parcial em 5-HT1A; antagonismo em 5-HT2A.',
+      'es': 'Agonismo parcial D2/D3 (menos EPS); agonismo parcial 5-HT1A; antagonismo 5-HT2A.',
+    },
+    warning: {
+      'pt': 'Menor risco de síndrome metabólica e ganho de peso que olanzapina/quetiapina. Menor risco de prolongamento QT. Síndrome de jogo compulsivo (rare mas descrito — alerta FDA).',
+      'es': 'Menor riesgo síndrome metabólico y ganancia de peso. Menor prolongación QT. Juego compulsivo (raro — alerta FDA).',
+    },
+    adverse: {
+      'pt': ['Acatisia (frequente)', 'Insônia', 'Cefaleia', 'Náuseas', 'Ganho de peso (menor que outros)', 'Agitação'],
+      'es': ['Acatisia (frecuente)', 'Insomnio', 'Cefalea', 'Náuseas', 'Aumento de peso (menor)', 'Agitación'],
+    },
+  ),
+
+  DrugModel(
+    id: 'bupropiona',
+    group: 'Neurología y Psiquiatría',
+    name: 'Bupropiona (Wellbutrin / Zyban)',
+    className: {'pt': 'Inibidor da recaptação de dopamina e noradrenalina (NDRI)', 'es': 'Inhibidor recaptación dopamina y noradrenalina (NDRI)'},
+    category: {'pt': 'Antidepressivos / Cessação tabágica', 'es': 'Antidepresivos / Cesación tabáquica'},
+    route: 'VO',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': 'Depressão: 150 mg/dia (liberação prolongada) por 3 dias; aumentar para 300 mg/dia (1 comprimido pela manhã). Tabagismo: 150 mg/dia por 3 dias; aumentar para 150 mg 2x/dia por 7–12 semanas.',
+      'es': 'Depresión: 150 mg/día LP por 3 días; aumentar 300 mg/día. Tabaquismo: 150 mg/día 3 días; 150 mg 2v/día por 7–12 semanas.',
+    },
+    renalAlert: {
+      'pt': 'DRC grave/DRET: reduzir frequência e/ou dose. Monitorar toxicidade do SNC.',
+      'es': 'ERC grave/DRET: reducir frecuencia/dosis. Monitorizar toxicidad SNC.',
+    },
+    elderlyAlert: {
+      'pt': 'Pode elevar PA levemente. Monitorar pressão arterial. Não provoca sedação — vantagem sobre TCAs.',
+      'es': 'Puede elevar PA levemente. Monitorizar PA. Sin sedación — ventaja sobre ADTs.',
+    },
+    mechanism: {
+      'pt': 'Inibe a recaptação de dopamina e noradrenalina nos terminais pré-sinápticos → aumento de DA e NE na fenda sináptica. Fraco bloqueio nicotínico (contribui para cessação tabágica).',
+      'es': 'Inhibe recaptación de DA y NE → aumento en sinapsis. Bloqueo nicotínico débil (contribuye a cesación tabáquica).',
+    },
+    warning: {
+      'pt': 'Reduz o limiar convulsivo — CONTRAINDICADO em epilepsia, bulimia, anorexia, uso de IMAOs. Risco de convulsão aumenta com doses >300 mg em dose única. Não provoca disfunção sexual (vantagem sobre SSRIs).',
+      'es': 'CONTRAINDICADO en epilepsia, bulimia, anorexia, IMAOs. Riesgo convulsión aumenta >300 mg en dosis única. Sin disfunción sexual.',
+    },
+    adverse: {
+      'pt': ['Convulsões (dose-dependente)', 'Insônia', 'Boca seca', 'Cefaleia', 'Agitação/ansiedade', 'Elevação de PA', 'Náuseas'],
+      'es': ['Convulsiones (dosis-dependiente)', 'Insomnio', 'Boca seca', 'Cefalea', 'Agitación/ansiedad', 'Elevación PA', 'Náuseas'],
+    },
+  ),
+
+  DrugModel(
+    id: 'lisdexanfetamina',
+    group: 'Neurología y Psiquiatría',
+    name: 'Lisdexanfetamina (Vyvanse)',
+    className: {'pt': 'Pró-fármaco da d-anfetamina – estimulante do SNC', 'es': 'Profármaco d-anfetamina – estimulante SNC'},
+    category: {'pt': 'Estimulantes / TDAH', 'es': 'Estimulantes / TDAH'},
+    route: 'VO',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': 'TDAH adultos: iniciar 30 mg/dia de manhã; aumentar 20 mg/semana. Dose alvo: 30–70 mg/dia. Máximo: 70 mg/dia.',
+      'es': 'TDAH adultos: iniciar 30 mg/día mañana; aumentar 20 mg/semana. Objetivo: 30–70 mg/día.',
+    },
+    renalAlert: {
+      'pt': 'ClCr 15–<30 mL/min: máximo 50 mg/dia. DRET: máximo 30 mg/dia.',
+      'es': 'ClCr 15–<30: máximo 50 mg/día. DRET: máximo 30 mg/día.',
+    },
+    elderlyAlert: {
+      'pt': 'Não indicado rotineiramente em idosos. Risco cardiovascular aumentado.',
+      'es': 'No indicado rutinariamente en ancianos. Riesgo cardiovascular aumentado.',
+    },
+    mechanism: {
+      'pt': 'Pró-fármaco: a lisina é clivada por aminopeptidases no intestino/sangue → libera d-anfetamina → inibe recaptação e promove liberação de DA e NE nos terminais pré-sinápticos.',
+      'es': 'Profármaco: la lisina es escindida → libera d-anfetamina → inhibe recaptación y promueve liberación DA/NE.',
+    },
+    warning: {
+      'pt': 'Substância controlada (psicotrópico lista A2). Risco de abuso/dependência (menor que anfetaminas de liberação imediata pelo perfil farmacocinético). Monitorar PA, FC e peso.',
+      'es': 'Sustancia controlada. Riesgo abuso/dependencia. Monitorizar PA, FC y peso.',
+    },
+    adverse: {
+      'pt': ['Insônia', 'Anorexia/perda de peso', 'Taquicardia', 'Hipertensão', 'Boca seca', 'Irritabilidade', 'Cefaleia'],
+      'es': ['Insomnio', 'Anorexia/pérdida de peso', 'Taquicardia', 'Hipertensión', 'Boca seca', 'Irritabilidad', 'Cefalea'],
+    },
+  ),
+
+  // ── ENDOCRINOLOGIA / METABOLISMO ──────────────────────────────────────────
+
+  DrugModel(
+    id: 'semaglutida',
+    group: 'Endocrinología y Metabolismo',
+    name: 'Semaglutida (Ozempic / Wegovy / Rybelsus)',
+    className: {'pt': 'Agonista do receptor GLP-1 (arGLP-1)', 'es': 'Agonista del receptor GLP-1 (arGLP-1)'},
+    category: {'pt': 'Hipoglicemiantes / Obesidade', 'es': 'Hipoglicemiantes / Obesidad'},
+    route: 'SC / VO',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': 'SC (Ozempic – DM2): 0,25 mg/semana por 4 semanas → 0,5 mg/semana → 1 mg/semana. SC (Wegovy – obesidade): 0,25→0,5→1→1,7→2,4 mg/semana (escalonamento mensal). VO (Rybelsus): 3→7→14 mg/dia.',
+      'es': 'SC (DM2): 0,25 mg/sem × 4 sem → 0,5 → 1 mg/sem. SC (obesidad): 0,25→0,5→1→1,7→2,4 mg/sem. VO: 3→7→14 mg/día.',
+    },
+    renalAlert: {
+      'pt': 'Sem ajuste de dose em DRC. Monitorar hidratação (náuseas/vômitos podem causar desidratação e IRA pré-renal).',
+      'es': 'Sin ajuste en ERC. Monitorizar hidratación (náuseas/vómitos pueden causar IRA prerrenal).',
+    },
+    elderlyAlert: {
+      'pt': 'Cuidado com desidratação pelo efeito gastrintestinal. Eficácia e segurança semelhantes a adultos mais jovens.',
+      'es': 'Cuidado con deshidratación. Eficacia y seguridad similares a adultos jóvenes.',
+    },
+    mechanism: {
+      'pt': 'Análogo do GLP-1 com meia-vida de ~1 semana → estimula insulinosecreção glicose-dependente, inibe glucagon, retarda esvaziamento gástrico, reduz apetite (efeito hipotalâmico). Efeito cardiovascular e renal diretos.',
+      'es': 'Análogo GLP-1 vida media ~1 semana → secreción insulina glucosa-dependiente, inhibe glucagón, retarda vaciamiento gástrico, reduce apetito. Efectos cardiovascular y renal directos.',
+    },
+    warning: {
+      'pt': 'Risco de pancreatite aguda (suspender se dor abdominal severa). Histórico pessoal/familiar de carcinoma medular de tireoide ou NEM2: CONTRAINDICADO. Pode agravar retinopatia diabética. Monitorar hipoglicemia se associado a insulina/sulfonilureia.',
+      'es': 'Riesgo de pancreatitis. Carcinoma medular tiroideo/NEM2: CONTRAINDICADO. Puede agravar retinopatía. Monitorizar hipoglucemia si asociado a insulina/sulfonilurea.',
+    },
+    adverse: {
+      'pt': ['Náuseas (muito frequente)', 'Vômitos', 'Diarreia', 'Constipação', 'Pancreatite (raro)', 'Agravamento de retinopatia', 'Neoplasia tireoidiana (raro em humanos)', 'Dor abdominal'],
+      'es': ['Náuseas (muy frecuente)', 'Vómitos', 'Diarrea', 'Estreñimiento', 'Pancreatitis (raro)', 'Agravamiento retinopatía', 'Dolor abdominal'],
+    },
+  ),
+
+  DrugModel(
+    id: 'tirzepatida',
+    group: 'Endocrinología y Metabolismo',
+    name: 'Tirzepatida (Mounjaro / Zepbound)',
+    className: {'pt': 'Agonista duplo GIP/GLP-1 (twincretin)', 'es': 'Agonista dual GIP/GLP-1 (twincretin)'},
+    category: {'pt': 'Hipoglicemiantes / Obesidade', 'es': 'Hipoglicemiantes / Obesidad'},
+    route: 'SC',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': 'DM2: iniciar 2,5 mg/semana × 4 semanas → 5 mg → (7,5 → 10 → 12,5 → 15 mg conforme tolerância, a cada 4 semanas). Obesidade: mesma escada, máximo 15 mg/semana.',
+      'es': 'DM2: iniciar 2,5 mg/sem × 4 sem → 5 mg → (7,5→10→12,5→15 mg cada 4 sem). Obesidad: misma escala, máx 15 mg/sem.',
+    },
+    renalAlert: {
+      'pt': 'Sem ajuste de dose em DRC. Monitorar hidratação (risco de IRA pré-renal por vômitos/diarreia).',
+      'es': 'Sin ajuste en ERC. Monitorizar hidratación.',
+    },
+    elderlyAlert: {
+      'pt': 'Menor velocidade de titulação em idosos. Hidratação oral adequada essencial.',
+      'es': 'Titulación más lenta en ancianos. Hidratación oral adecuada esencial.',
+    },
+    mechanism: {
+      'pt': 'Ativação simultânea de receptores GIP e GLP-1 → potenciação sinérgica da insulinosecreção, redução do glucagon, esvaziamento gástrico lento e saciedade. Redução de peso corporal superior ao GLP-1 isolado.',
+      'es': 'Activación simultánea receptores GIP y GLP-1 → potenciación sinérgica insulinosecreción, reducción glucagón, saciedad. Mayor pérdida de peso que GLP-1 solo.',
+    },
+    warning: {
+      'pt': 'Não usar em carcinoma medular de tireoide ou NEM2. Risco de pancreatite. Pode causar hipoglicemia quando associado a insulina ou sulfonilureia. Retardar titulação se intolerância GI.',
+      'es': 'No usar en carcinoma medular tiroideo/NEM2. Riesgo pancreatitis. Hipoglucemia con insulina/sulfonilurea.',
+    },
+    adverse: {
+      'pt': ['Náuseas (muito frequente)', 'Diarreia', 'Vômitos', 'Constipação', 'Dor abdominal', 'Pancreatite (raro)', 'Colecistite (raro)', 'Reação no local de injeção'],
+      'es': ['Náuseas', 'Diarrea', 'Vómitos', 'Estreñimiento', 'Dolor abdominal', 'Pancreatitis (raro)', 'Colecistitis (raro)'],
+    },
+  ),
+
+  DrugModel(
+    id: 'finerenona',
+    group: 'Endocrinología y Metabolismo',
+    name: 'Finerenona (Kerendia)',
+    className: {'pt': 'Antagonista não esteroidal dos receptores de mineralocorticoides (nsARM)', 'es': 'Antagonista no esteroidal mineralocorticoides (nsARM)'},
+    category: {'pt': 'Nefroproteção em DRC/DM2', 'es': 'Nefroprotección ERC/DM2'},
+    route: 'VO',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': 'K⁺ ≤4,8 mEq/L e TFG ≥60: iniciar 20 mg/dia. TFG 25–59: iniciar 10 mg/dia; aumentar para 20 mg/dia se K⁺ ≤4,8 mEq/L após 4 semanas.',
+      'es': 'K⁺ ≤4,8 y TFG ≥60: iniciar 20 mg/día. TFG 25–59: iniciar 10 mg/día; aumentar a 20 mg si K⁺ ≤4,8 tras 4 sem.',
+    },
+    renalAlert: {
+      'pt': 'Contraindicado em TFG <25 mL/min/1,73m². Monitorar K⁺ na semana 4 e a cada 3–4 meses após. Suspender se K⁺ >5,5 mEq/L.',
+      'es': 'Contraindicado TFG <25. Monitorizar K⁺ semana 4 y cada 3–4 meses. Suspender si K⁺ >5,5.',
+    },
+    elderlyAlert: {
+      'pt': 'Monitorar K⁺ e função renal com maior frequência. Risco aumentado de hipercalemia.',
+      'es': 'Monitorizar K⁺ y función renal con mayor frecuencia.',
+    },
+    mechanism: {
+      'pt': 'Bloqueia receptores de mineralocorticoides (aldosterona) de forma não esteroidal e seletiva → reduz fibrose renal e cardíaca mediada pela ativação excessiva de aldosterona na DRC diabética.',
+      'es': 'Bloquea receptores mineralocorticoides de forma no esteroidal → reduce fibrosis renal y cardíaca mediada por aldosterona en ERC diabética.',
+    },
+    warning: {
+      'pt': 'Hipercalemia é o principal risco. Contraindicado com inibidores potentes do CYP3A4 (claritromicina, cetoconazol) e com outros ARM (espironolactona, eplerenona). Verificar K⁺ antes de cada ajuste de dose.',
+      'es': 'Hipercalemia es el principal riesgo. Contraindicado con inhibidores CYP3A4 potentes y otros ARM. Verificar K⁺ antes de cada ajuste.',
+    },
+    adverse: {
+      'pt': ['Hipercalemia', 'Hipotensão', 'Tontura', 'Cefaleia', 'Diarreia'],
+      'es': ['Hipercalemia', 'Hipotensión', 'Mareo', 'Cefalea', 'Diarrea'],
+    },
+  ),
+
+  DrugModel(
+    id: 'canagliflozina',
+    group: 'Endocrinología y Metabolismo',
+    name: 'Canagliflozina (Invokana)',
+    className: {'pt': 'Inibidor do SGLT2 (iSGLT2)', 'es': 'Inhibidor SGLT2 (iSGLT2)'},
+    category: {'pt': 'Hipoglicemiantes', 'es': 'Hipoglicemiantes'},
+    route: 'VO',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': 'DM2: 100 mg/dia antes da primeira refeição; pode aumentar para 300 mg/dia. Nefroproteção em DRC: 100 mg/dia (TFG 45–<60) ou 300 mg/dia (TFG ≥60).',
+      'es': 'DM2: 100 mg/día antes primera comida; aumentar a 300 mg/día. Nefroprotección ERC: 100–300 mg/día.',
+    },
+    renalAlert: {
+      'pt': 'TFG <45 mL/min: NÃO iniciar para DM2 (benefício glicêmico mínimo). Para nefroproteção pode usar TFG ≥30. TFG <30: contraindicado. Monitorar TFG periodicamente.',
+      'es': 'TFG <45: NO iniciar para DM2. Para nefroprotección TFG ≥30. TFG <30: contraindicado.',
+    },
+    elderlyAlert: {
+      'pt': 'Maior risco de depleção de volume e IRA. Hidratação adequada. Monitorar PA e K⁺.',
+      'es': 'Mayor riesgo depleción de volumen e IRA. Hidratación adecuada.',
+    },
+    mechanism: {
+      'pt': 'Inibe o cotransportador SGLT2 no túbulo proximal renal → glicosúria, natriurese, redução da glicemia, pressão intraglomerular e peso corporal. Efeitos cardiorrenal e metabólico independentes do controle glicêmico.',
+      'es': 'Inhibe SGLT2 tubular → glucosuria, natriuresis, reducción glicemia, presión intraglomerular y peso. Efectos cardiorrenales independientes del control glucémico.',
+    },
+    warning: {
+      'pt': 'Cetoacidose diabética euglicêmica (rara mas grave — glicemia pode ser normal!). Infecções genitais fúngicas frequentes. Amputações de membros inferiores (risco aumentado vs outros iSGLT2 — alerta FDA). Fraturas ósseas (menor DMO).',
+      'es': 'Cetoacidosis euglucémica (glucemia puede ser normal). Infecciones genitales fúngicas. Amputaciones MMII (mayor riesgo vs otros iSGLT2 — alerta FDA). Fracturas óseas.',
+    },
+    adverse: {
+      'pt': ['Infecções genitais fúngicas', 'ITU', 'Poliúria', 'Hipotensão ortostática', 'Cetoacidose euglicêmica', 'Amputação (risco aumentado)', 'Fraturas', 'Hipercalemia (com IECA/ARA-II)'],
+      'es': ['Infecciones genitales fúngicas', 'ITU', 'Poliuria', 'Hipotensión ortostática', 'Cetoacidosis euglucémica', 'Amputación (riesgo aumentado)', 'Fracturas'],
+    },
+  ),
+
+  DrugModel(
+    id: 'dulaglutida',
+    group: 'Endocrinología y Metabolismo',
+    name: 'Dulaglutida (Trulicity)',
+    className: {'pt': 'Agonista do receptor GLP-1 (arGLP-1) semanal', 'es': 'Agonista receptor GLP-1 (arGLP-1) semanal'},
+    category: {'pt': 'Hipoglicemiantes', 'es': 'Hipoglicemiantes'},
+    route: 'SC',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': 'Iniciar 0,75 mg SC 1x/semana; pode aumentar para 1,5 mg → 3 mg → 4,5 mg 1x/semana (escalonamento a cada 4 semanas). Dose máxima: 4,5 mg/semana.',
+      'es': 'Iniciar 0,75 mg SC 1v/sem; aumentar 1,5→3→4,5 mg/sem (cada 4 sem). Máx: 4,5 mg/sem.',
+    },
+    renalAlert: {
+      'pt': 'Sem ajuste de dose em DRC. Monitorar hidratação.',
+      'es': 'Sin ajuste en ERC. Monitorizar hidratación.',
+    },
+    elderlyAlert: {
+      'pt': 'Eficácia e tolerabilidade similares a adultos mais jovens. Monitorar hidratação e peso.',
+      'es': 'Eficacia y tolerabilidad similares. Monitorizar hidratación y peso.',
+    },
+    mechanism: {
+      'pt': 'Análogo do GLP-1 de ação prolongada (fusão com IgG4-Fc) → estímulo glicose-dependente da secreção de insulina, inibição do glucagon, lentificação do esvaziamento gástrico e redução do apetite.',
+      'es': 'Análogo GLP-1 larga acción → secreción insulina glucosa-dependiente, inhibición glucagón, lentificación vaciamiento gástrico, reducción apetito.',
+    },
+    warning: {
+      'pt': 'Contraindicada em histórico pessoal/familiar de carcinoma medular de tireoide ou NEM tipo 2. Suspender se pancreatite. Pode causar hipoglicemia quando associado a insulina.',
+      'es': 'Contraindicada en carcinoma medular tiroideo/NEM2. Suspender en pancreatitis. Hipoglucemia con insulina.',
+    },
+    adverse: {
+      'pt': ['Náuseas', 'Diarreia', 'Vômitos', 'Constipação', 'Dor abdominal', 'Diminuição do apetite', 'Pancreatite (rara)', 'Bradicardia'],
+      'es': ['Náuseas', 'Diarrea', 'Vómitos', 'Estreñimiento', 'Dolor abdominal', 'Disminución apetito', 'Pancreatitis (rara)'],
+    },
+  ),
+
+  DrugModel(
+    id: 'denosumabe',
+    group: 'Endocrinología y Metabolismo',
+    name: 'Denosumabe (Prolia / Xgeva)',
+    className: {'pt': 'Anticorpo monoclonal anti-RANKL (inibidor da osteoclastogênese)', 'es': 'Anticuerpo monoclonal anti-RANKL'},
+    category: {'pt': 'Osteoporose / Oncologia óssea', 'es': 'Osteoporosis / Oncología ósea'},
+    route: 'SC',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': 'Osteoporose (Prolia): 60 mg SC a cada 6 meses. Metástases ósseas (Xgeva): 120 mg SC a cada 4 semanas (+ dose extra D1, D8 no início para tumores sólidos de alto risco).',
+      'es': 'Osteoporosis (Prolia): 60 mg SC cada 6 meses. Metástasis óseas (Xgeva): 120 mg SC cada 4 sem.',
+    },
+    renalAlert: {
+      'pt': 'Sem ajuste de dose (não é eliminado pelo rim). ATENÇÃO: hipocalcemia grave em DRC avançada — repor cálcio e vitamina D antes e durante o tratamento.',
+      'es': 'Sin ajuste (no eliminado por riñón). ATENCIÓN: hipocalcemia grave en ERC avanzada — reponer calcio y vitamina D.',
+    },
+    elderlyAlert: {
+      'pt': 'Monitorar cálcio sérico. Suprir vitamina D e cálcio adequadamente. Risco de osteonecrose mandibular (avaliar saúde dental antes de iniciar).',
+      'es': 'Monitorizar calcio sérico. Suplementar vitamina D y calcio. Riesgo osteonecrosis mandibular (evaluar salud dental antes de iniciar).',
+    },
+    mechanism: {
+      'pt': 'Anticorpo IgG2 que se liga ao RANKL (receptor activator of nuclear factor kappa-B ligand), impedindo a maturação e ativação dos osteoclastos → redução da reabsorção óssea.',
+      'es': 'Anticuerpo IgG2 que se une a RANKL → impide maduración y activación osteoclastos → reduce resorción ósea.',
+    },
+    warning: {
+      'pt': 'EFEITO REBOTE após suspensão: risco de múltiplas fraturas vertebrais nas semanas-meses seguintes. Fazer transição para bisfosfonato ao descontinuar. Hipocalcemia grave (monitorar Ca²⁺ antes de cada dose). Osteonecrose de mandíbula.',
+      'es': 'EFECTO REBOTE tras suspensión: riesgo múltiples fracturas vertebrales. Transicionar a bisfosfonato al discontinuar. Hipocalcemia grave. Osteonecrosis mandibular.',
+    },
+    adverse: {
+      'pt': ['Hipocalcemia', 'Osteonecrose de mandíbula', 'Infecções graves (celulite, erisipela)', 'Dor osteomuscular', 'Dermatite/eczema', 'Hipofosfatemia'],
+      'es': ['Hipocalcemia', 'Osteonecrosis mandibular', 'Infecciones graves (celulitis)', 'Dolor osteoarticular', 'Dermatitis/eccema', 'Hipofosfatemia'],
+    },
+  ),
+
+  // ── GASTROENTEROLOGIA ─────────────────────────────────────────────────────
+
+  DrugModel(
+    id: 'vedolizumabe',
+    group: 'Gastroenterología',
+    name: 'Vedolizumabe (Entyvio)',
+    className: {'pt': 'Anticorpo monoclonal anti-integrina α4β7 (seletividade intestinal)', 'es': 'Anticuerpo monoclonal anti-integrina α4β7'},
+    category: {'pt': 'Doença inflamatória intestinal', 'es': 'Enfermedad inflamatoria intestinal'},
+    route: 'IV',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': 'Indução: 300 mg IV em 30 min nas semanas 0, 2 e 6. Manutenção: 300 mg IV a cada 8 semanas. Forma SC disponível (108 mg/2 semanas) após indução IV.',
+      'es': 'Inducción: 300 mg IV 30 min semanas 0, 2 y 6. Mantenimiento: 300 mg IV cada 8 sem. SC: 108 mg/2 sem tras inducción IV.',
+    },
+    renalAlert: {
+      'pt': 'Sem ajuste de dose em DRC.',
+      'es': 'Sin ajuste en ERC.',
+    },
+    elderlyAlert: {
+      'pt': 'Sem ajuste necessário. Monitorar infecções.',
+      'es': 'Sin ajuste. Monitorizar infecciones.',
+    },
+    mechanism: {
+      'pt': 'Liga-se seletivamente à integrina α4β7 no intestino → impede a migração de linfócitos T para a mucosa intestinal → efeito anti-inflamatório local com mínimos efeitos sistêmicos (seletividade GI).',
+      'es': 'Se une selectivamente a integrina α4β7 → impide migración linfocitos T a mucosa intestinal → efecto antiinflamatorio local con mínimos efectos sistémicos.',
+    },
+    warning: {
+      'pt': 'Menor risco de infecções oportunistas sistêmicas que anti-TNF (ação intestino-seletiva). Raras reações de hipersensibilidade durante infusão. Excluir tuberculose ativa antes de iniciar.',
+      'es': 'Menor riesgo infecciones oportunistas sistémicas vs anti-TNF. Raras reacciones hipersensibilidad durante infusión. Excluir tuberculosis activa.',
+    },
+    adverse: {
+      'pt': ['Nasofaringite', 'Cefaleia', 'Artralgia', 'Náuseas', 'Febre', 'Infecção do trato respiratório superior', 'Reação de infusão'],
+      'es': ['Nasofaringitis', 'Cefalea', 'Artralgia', 'Náuseas', 'Fiebre', 'Infección respiratoria alta', 'Reacción infusión'],
+    },
+  ),
+
+  DrugModel(
+    id: 'tofacitinibe',
+    group: 'Gastroenterología',
+    name: 'Tofacitinibe (Xeljanz)',
+    className: {'pt': 'Inibidor de JAK1/JAK3 (JAKi)', 'es': 'Inhibidor JAK1/JAK3'},
+    category: {'pt': 'DII / Artrite Reumatoide', 'es': 'EII / Artritis Reumatoide'},
+    route: 'VO',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': 'Colite ulcerativa: indução 10 mg 2x/dia por 8 semanas; manutenção 5 mg 2x/dia (ou 10 mg 2x/dia se refratário). AR: 5 mg 2x/dia.',
+      'es': 'CU: inducción 10 mg 2v/día × 8 sem; mantenimiento 5 mg 2v/día. AR: 5 mg 2v/día.',
+    },
+    renalAlert: {
+      'pt': 'ClCr <50 mL/min: reduzir para 5 mg 1x/dia. Hemodiálise: 5 mg 1x/dia.',
+      'es': 'ClCr <50: reducir a 5 mg 1v/día. Hemodiálisis: 5 mg 1v/día.',
+    },
+    elderlyAlert: {
+      'pt': '>65 anos: usar apenas se não houver alternativa (risco aumentado de eventos cardiovasculares, neoplasias e infecções). Alerta FDA/EMA.',
+      'es': '>65 años: usar solo si no hay alternativa. Riesgo aumentado eventos cardiovasculares, neoplasias e infecciones — alerta FDA/EMA.',
+    },
+    mechanism: {
+      'pt': 'Inibe JAK1 e JAK3 → bloqueia a sinalização de citocinas pró-inflamatórias (IL-2, IL-4, IL-6, IL-7, IL-15, interferons) → imunomodulação.',
+      'es': 'Inhibe JAK1/JAK3 → bloquea señalización citocinas proinflamatorias → inmunomodulación.',
+    },
+    warning: {
+      'pt': 'Maior risco de eventos adversos graves em pacientes >65 anos, fumantes ou com fatores de risco cardiovascular (MACE, TEV, neoplasias). Rastreio de tuberculose e hepatite B antes de iniciar. Não combinar com imunossupressores biológicos.',
+      'es': 'Mayor riesgo MACE, TEV y neoplasias en >65 años, fumadores o con factores CV. Cribado TBC y hepatitis B. No combinar con biológicos.',
+    },
+    adverse: {
+      'pt': ['Infecções (zona zoster, pneumonia)', 'Herpes zoster (vacinar antes de iniciar)', 'Dislipidemia', 'Tromboembolismo venoso', 'Neoplasias', 'Anemia', 'Neutropenia'],
+      'es': ['Infecciones (herpes zoster, neumonía)', 'Herpes zoster (vacunar antes)', 'Dislipidemia', 'Tromboembolismo venoso', 'Neoplasias', 'Anemia', 'Neutropenia'],
+    },
+  ),
+
+  DrugModel(
+    id: 'rifaximina',
+    group: 'Gastroenterología',
+    name: 'Rifaximina (Xifaxan)',
+    className: {'pt': 'Rifamicina de uso enteral (não absorvível)', 'es': 'Rifamicina enteral no absorbible'},
+    category: {'pt': 'Antibióticos intestinais', 'es': 'Antibióticos intestinales'},
+    route: 'VO',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': 'Encefalopatia hepática: 550 mg 2x/dia (uso crônico). Diarreia do viajante: 200 mg 3x/dia por 3 dias. SII-D: 550 mg 3x/dia por 14 dias.',
+      'es': 'Encefalopatía hepática: 550 mg 2v/día (crónico). Diarrea viajero: 200 mg 3v/día × 3 días. SII-D: 550 mg 3v/día × 14 días.',
+    },
+    renalAlert: {
+      'pt': 'Sem ajuste (absorção sistêmica <1%).',
+      'es': 'Sin ajuste (absorción sistémica <1%).',
+    },
+    elderlyAlert: {
+      'pt': 'Sem ajuste necessário. Boa tolerabilidade.',
+      'es': 'Sin ajuste. Buena tolerabilidad.',
+    },
+    mechanism: {
+      'pt': 'Inibe a subunidade β da RNA polimerase bacteriana dependente de DNA → bactericida de amplo espectro. Ação local no TGI (absorção <1%) → sem efeitos sistêmicos e baixo potencial de interações.',
+      'es': 'Inhibe ARN polimerasa bacteriana → bactericida amplio espectro. Acción local TGI → sin efectos sistémicos.',
+    },
+    warning: {
+      'pt': 'NÃO usar para infecções com comprometimento sistêmico ou diarreia com sangue/febre (considerar bacteremia). Em SII, a recorrência após curso de 14 dias é comum (repetir ciclos conforme necessário).',
+      'es': 'NO usar para infecciones sistémicas o diarrea con sangre/fiebre. En SII, la recurrencia es común.',
+    },
+    adverse: {
+      'pt': ['Flatulência', 'Náuseas', 'Cefaleia', 'Dor abdominal', 'Infecção por C. difficile (rara)', 'Edema periférico (em hepatopatas)'],
+      'es': ['Flatulencia', 'Náuseas', 'Cefalea', 'Dolor abdominal', 'C. difficile (raro)', 'Edema periférico (en hepatópatas)'],
+    },
+  ),
+
+  // ── RESPIRATÓRIO ──────────────────────────────────────────────────────────
+
+  DrugModel(
+    id: 'dupilumabe',
+    group: 'Respiratorio',
+    name: 'Dupilumabe (Dupixent)',
+    className: {'pt': 'Anticorpo monoclonal anti-IL-4Rα (bloqueio IL-4 e IL-13)', 'es': 'Anticuerpo monoclonal anti-IL-4Rα'},
+    category: {'pt': 'Biológico – Asma / Dermatite atópica / Rinossinusite', 'es': 'Biológico – Asma / Dermatitis atópica / Rinosinusitis'},
+    route: 'SC',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': 'Asma grave eosinofílica: 200 ou 300 mg SC a cada 2 semanas. Dermatite atópica: 600 mg SC (dose de ataque) → 300 mg a cada 2 semanas. Rinossinusite com pólipo: 300 mg a cada 2 semanas.',
+      'es': 'Asma grave: 200–300 mg SC cada 2 sem. Dermatitis atópica: 600 mg SC (inicio) → 300 mg cada 2 sem. Rinosinusitis: 300 mg cada 2 sem.',
+    },
+    renalAlert: {
+      'pt': 'Sem ajuste em DRC.',
+      'es': 'Sin ajuste en ERC.',
+    },
+    elderlyAlert: {
+      'pt': 'Sem ajuste. Eficácia e segurança similares a adultos mais jovens.',
+      'es': 'Sin ajuste. Eficacia y seguridad similares.',
+    },
+    mechanism: {
+      'pt': 'Liga-se ao receptor compartilhado de IL-4 e IL-13 (IL-4Rα) → bloqueia simultaneamente a sinalização de IL-4 e IL-13, citocinas-chave do inflamação tipo 2 (Th2) → redução de eosinófilos, IgE e inflamação mucosa.',
+      'es': 'Se une a IL-4Rα → bloquea simultáneamente IL-4 e IL-13 → reducción eosinófilos, IgE e inflamación tipo 2.',
+    },
+    warning: {
+      'pt': 'Não é um broncodilatador de resgate — não usar em crise aguda. Conjuntivite eosinofílica frequente (efeito de classe). Herpes ocular: uso com cautela.',
+      'es': 'No es broncodilatador de rescate. Conjuntivitis eosinofílica frecuente (efecto de clase). Herpes ocular: precaución.',
+    },
+    adverse: {
+      'pt': ['Conjuntivite/blefarite', 'Reação no local de injeção', 'Herpes oral/ocular', 'Eosinofilia transitória', 'Artralgia', 'Nasofaringite'],
+      'es': ['Conjuntivitis/blefaritis', 'Reacción local inyección', 'Herpes oral/ocular', 'Eosinofilia transitoria', 'Artralgia', 'Nasofaringitis'],
+    },
+  ),
+
+  DrugModel(
+    id: 'mepolizumabe',
+    group: 'Respiratorio',
+    name: 'Mepolizumabe (Nucala)',
+    className: {'pt': 'Anticorpo monoclonal anti-IL-5', 'es': 'Anticuerpo monoclonal anti-IL-5'},
+    category: {'pt': 'Biológico – Asma eosinofílica grave', 'es': 'Biológico – Asma eosinofílica grave'},
+    route: 'SC / IV',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': 'Asma eosinofílica grave: 100 mg SC a cada 4 semanas. EGPA (síndrome de Churg-Strauss): 300 mg SC (3 injeções de 100 mg) a cada 4 semanas.',
+      'es': 'Asma eosinofílica grave: 100 mg SC cada 4 sem. EGPA: 300 mg SC (3 inyecciones) cada 4 sem.',
+    },
+    renalAlert: {
+      'pt': 'Sem ajuste em DRC.',
+      'es': 'Sin ajuste en ERC.',
+    },
+    elderlyAlert: {
+      'pt': 'Sem ajuste necessário. Eficácia demonstrada em idosos com asma eosinofílica.',
+      'es': 'Sin ajuste. Eficacia demostrada en ancianos.',
+    },
+    mechanism: {
+      'pt': 'Liga-se seletivamente à IL-5, citocina responsável pela maturação, ativação e sobrevivência dos eosinófilos → redução dramática de eosinófilos no sangue e tecidos.',
+      'es': 'Se une selectivamente a IL-5 → reducción drástica eosinófilos en sangre y tejidos.',
+    },
+    warning: {
+      'pt': 'Não é broncodilatador de resgate. Pode reduzir gradualmente corticosteroides sistêmicos (desmame lento para evitar insuficiência adrenal). Confirmar contagem de eosinófilos ≥150/µL antes de iniciar.',
+      'es': 'No es broncodilatador de rescate. Puede reducir corticosteroides sistémicos gradualmente. Confirmar eosinófilos ≥150/µL antes de iniciar.',
+    },
+    adverse: {
+      'pt': ['Cefaleia', 'Reação no local de injeção', 'Dor lombar', 'Fadiga', 'Infecção do trato respiratório inferior', 'Herpes zoster (raro)'],
+      'es': ['Cefalea', 'Reacción local inyección', 'Lumbalgia', 'Fatiga', 'Infección respiratoria baja', 'Herpes zoster (raro)'],
+    },
+  ),
+
+  DrugModel(
+    id: 'nintedanibe',
+    group: 'Respiratorio',
+    name: 'Nintedanibe (Ofev)',
+    className: {'pt': 'Inibidor de tirosina quinase (anti-fibrótico)', 'es': 'Inhibidor tirosina quinasa (antifibrótico)'},
+    category: {'pt': 'Fibrose Pulmonar Idiopática', 'es': 'Fibrosis Pulmonar Idiopática'},
+    route: 'VO',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': '150 mg 2x/dia com as refeições (para reduzir toxicidade GI). Reduzir para 100 mg 2x/dia em caso de toxicidade não tolerada.',
+      'es': '150 mg 2v/día con comidas. Reducir a 100 mg 2v/día en caso de toxicidad GI.',
+    },
+    renalAlert: {
+      'pt': 'Sem ajuste em DRC leve-moderada. Dados limitados em DRC grave.',
+      'es': 'Sin ajuste en ERC leve-moderada. Datos limitados en ERC grave.',
+    },
+    elderlyAlert: {
+      'pt': 'Monitorar função hepática e toxicidade GI. Frequência aumentada de diarreia em idosos.',
+      'es': 'Monitorizar función hepática y toxicidad GI. Mayor frecuencia diarrea en ancianos.',
+    },
+    mechanism: {
+      'pt': 'Inibe receptores de tirosina quinase (FGFR, VEGFR, PDGFR) → bloqueio de vias de sinalização pró-fibróticas e pró-angiogênicas envolvidas na FPI. Reduz a taxa de declínio da CVF.',
+      'es': 'Inhibe FGFR, VEGFR, PDGFR → bloquea vías profibróticas y proangiogénicas en FPI. Reduce tasa de declive CVF.',
+    },
+    warning: {
+      'pt': 'Teratogênico (contracepção obrigatória). Hepatotoxicidade (monitorar TGO/TGP mensalmente nos primeiros 3 meses). Diarreia em ~60% dos pacientes (antidiarreicos e hidratação precoces). Risco de perfuração GI.',
+      'es': 'Teratogénico (anticoncepción obligatoria). Hepatotoxicidad (TGO/TGP mensual primeros 3 meses). Diarrea en ~60%. Riesgo perforación GI.',
+    },
+    adverse: {
+      'pt': ['Diarreia (frequente)', 'Náuseas', 'Dor abdominal', 'Hepatotoxicidade', 'Vômitos', 'Perda de peso', 'Hipertensão', 'Sangramentos menores'],
+      'es': ['Diarrea (frecuente)', 'Náuseas', 'Dolor abdominal', 'Hepatotoxicidad', 'Vómitos', 'Pérdida de peso', 'Hipertensión', 'Sangrados menores'],
+    },
+  ),
+
+  // ── HEMATOLOGIA ───────────────────────────────────────────────────────────
+
+  DrugModel(
+    id: 'ruxolitinibe',
+    group: 'Hematología y Vitaminas',
+    name: 'Ruxolitinibe (Jakafi / Jakavi)',
+    className: {'pt': 'Inibidor de JAK1/JAK2', 'es': 'Inhibidor JAK1/JAK2'},
+    category: {'pt': 'Mielofibrose / Policitemia vera', 'es': 'Mielofibrosis / Policitemia vera'},
+    route: 'VO',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': 'Mielofibrose: 20 mg 2x/dia (plaquetas >200.000) ou 15 mg 2x/dia (plaquetas 100.000–200.000). Policitemia vera: 10 mg 2x/dia. DECH: 10 mg 2x/dia.',
+      'es': 'Mielofibrosis: 20 mg 2v/día (plaquetas >200.000) o 15 mg 2v/día (100.000–200.000). PV: 10 mg 2v/día. EICH: 10 mg 2v/día.',
+    },
+    renalAlert: {
+      'pt': 'ClCr <30 mL/min ou DRET: ajustar dose com base em plaquetometria. HD: dose pós-diálise, não adicional.',
+      'es': 'ClCr <30 o DRET: ajustar según plaquetometría. HD: dosis post-diálisis.',
+    },
+    elderlyAlert: {
+      'pt': 'Monitorar infecções oportunistas (herpes zoster frequente — considerar profilaxia). Anemia e trombocitopenia são frequentes.',
+      'es': 'Monitorizar infecciones oportunistas (herpes zoster frecuente — considerar profilaxis). Anemia y trombocitopenia frecuentes.',
+    },
+    mechanism: {
+      'pt': 'Inibe JAK1 e JAK2 → bloqueio da sinalização de citocinas pró-inflamatórias e da via JAK-STAT → redução de esplenomegalia, sintomas sistêmicos e progressão da fibrose na mielofibrose.',
+      'es': 'Inhibe JAK1/JAK2 → bloquea señalización citocinas y vía JAK-STAT → reducción esplenomegalia y síntomas sistémicos.',
+    },
+    warning: {
+      'pt': 'Imunossupressor potente — maior risco de infecções oportunistas (TB, fungos, herpes zoster, PCP). Reativar hepatite B. Não suspender abruptamente (crise citocínica de rebote). Monitorar hemograma com frequência.',
+      'es': 'Inmunosupresor potente. Riesgo infecciones oportunistas (TB, hongos, VZV, PCP). Reactivar hepatitis B. No suspender abruptamente. Monitorizar hemograma.',
+    },
+    adverse: {
+      'pt': ['Anemia', 'Trombocitopenia', 'Neutropenia', 'Infecções (herpes zoster, PCP, TB)', 'Dislipidemia', 'Elevação de transaminases', 'Cefaleia', 'Tontura'],
+      'es': ['Anemia', 'Trombocitopenia', 'Neutropenia', 'Infecciones (herpes, PCP, TB)', 'Dislipidemia', 'Elevación transaminasas', 'Cefalea', 'Mareo'],
+    },
+  ),
+
+  DrugModel(
+    id: 'eltrombopague',
+    group: 'Hematología y Vitaminas',
+    name: 'Eltrombopague (Revolade)',
+    className: {'pt': 'Agonista do receptor de trombopoietina (TPO-RA)', 'es': 'Agonista receptor trombopoyetina (TPO-RA)'},
+    category: {'pt': 'PTI / Aplasia / Hepatite C', 'es': 'PTI / Aplasia / Hepatitis C'},
+    route: 'VO',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': 'PTI: iniciar 50 mg/dia; ajustar 25 mg/semana até plaquetas 50.000–200.000/µL (máx. 75 mg/dia). Aplasia medular grave: 150 mg/dia.',
+      'es': 'PTI: iniciar 50 mg/día; ajustar 25 mg/sem hasta plaquetas 50.000–200.000/µL (máx. 75 mg/día). Aplasia: 150 mg/día.',
+    },
+    renalAlert: {
+      'pt': 'Sem ajuste necessário. Monitorar função hepática e eletrólitos.',
+      'es': 'Sin ajuste. Monitorizar función hepática y electrólitos.',
+    },
+    elderlyAlert: {
+      'pt': 'Maior risco de tromboembolismo. Monitorar contagem plaquetária rigorosamente para evitar superdosagem.',
+      'es': 'Mayor riesgo tromboembolismo. Monitorizar recuento plaquetario estrictamente.',
+    },
+    mechanism: {
+      'pt': 'Liga-se ao domínio transmembrana do receptor de trombopoietina (cMpl) → estimula a proliferação e diferenciação de megacariócitos → aumento da produção plaquetária.',
+      'es': 'Se une al dominio transmembrana del receptor TPO (cMpl) → estimula proliferación megacariocitos → aumento producción plaquetaria.',
+    },
+    warning: {
+      'pt': 'Administrar em jejum (refeições ricas em cálcio reduzem absorção em até 70%). Hepatotoxicidade (monitorar TGO/TGP a cada 2 semanas no início). Risco de TEV se plaquetas >400.000/µL. Cautela em populações de ascendência asiática (maior exposição plasmática).',
+      'es': 'Administrar en ayunas (calcio reduce absorción hasta 70%). Hepatotoxicidad (TGO/TGP cada 2 sem). Riesgo TEV si plaquetas >400.000. Precaución en asiáticos (mayor exposición).',
+    },
+    adverse: {
+      'pt': ['Cefaleia', 'Náuseas', 'Hepatotoxicidade', 'Tromboembolismo (se plaquetas elevadas)', 'Cataratas', 'Anemia por rebote (suspensão)', 'Fibrose medular (uso prolongado)'],
+      'es': ['Cefalea', 'Náuseas', 'Hepatotoxicidad', 'Tromboembolismo', 'Cataratas', 'Anemia por rebote', 'Fibrosis medular (uso prolongado)'],
+    },
+  ),
+
+  // ── INFECTOLOGIA ─────────────────────────────────────────────────────────
+
+  DrugModel(
+    id: 'nirmatrelvir_ritonavir',
+    group: 'Infectología (Antifúngicos / Antivirales / TBC)',
+    name: 'Nirmatrelvir/Ritonavir (Paxlovid)',
+    className: {'pt': 'Inibidor da protease do SARS-CoV-2 + booster farmacocinético', 'es': 'Inhibidor proteasa SARS-CoV-2 + potenciador farmacocinético'},
+    category: {'pt': 'Antivirais – COVID-19', 'es': 'Antivirales – COVID-19'},
+    route: 'VO',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': '300 mg nirmatrelvir + 100 mg ritonavir 2x/dia por 5 dias. Iniciar em até 5 dias do início dos sintomas.',
+      'es': '300 mg nirmatrelvir + 100 mg ritonavir 2v/día por 5 días. Iniciar en ≤5 días del inicio síntomas.',
+    },
+    renalAlert: {
+      'pt': 'ClCr 30–59 mL/min: 150 mg nirmatrelvir + 100 mg ritonavir 2x/dia. ClCr <30 mL/min: CONTRAINDICADO.',
+      'es': 'ClCr 30–59: 150 mg nirmatrelvir + 100 mg ritonavir 2v/día. ClCr <30: CONTRAINDICADO.',
+    },
+    elderlyAlert: {
+      'pt': 'Alta prevalência de DRC nos idosos — avaliar ClCr antes de prescrever. MUITAS interações medicamentosas pelo ritonavir (inibidor potente CYP3A4).',
+      'es': 'Alta prevalencia ERC en ancianos — evaluar ClCr. MUCHAS interacciones medicamentosas por ritonavir (inhibidor potente CYP3A4).',
+    },
+    mechanism: {
+      'pt': 'Nirmatrelvir inibe a protease principal (Mpro/3CL) do SARS-CoV-2, bloqueando a clivagem das poliproteínas virais → impede a replicação viral. Ritonavir inibe o CYP3A4 → aumenta a meia-vida plasmática do nirmatrelvir.',
+      'es': 'Nirmatrelvir inhibe la proteasa principal (Mpro) de SARS-CoV-2 → bloquea replicación viral. Ritonavir inhibe CYP3A4 → aumenta vida media del nirmatrelvir.',
+    },
+    warning: {
+      'pt': 'INTERAÇÕES MEDICAMENTOSAS CRÍTICAS por ritonavir: contraindicado com estatinas metabolizadas por CYP3A4 (sinvastatina, lovastatina), midazolam, triazolam, ergotamina, amiodarona, ranolazina, salmeterol. Verificar TODAS as medicações antes de prescrever (consultar ferramenta de interações). Síndrome de rebote COVID-19 relatada em 2–8% após o curso.',
+      'es': 'INTERACCIONES CRÍTICAS por ritonavir: contraindicado con estatinas CYP3A4 (simvastatina), midazolam, triazolam, amiodarona, ranolazina. Verificar TODOS los medicamentos antes de prescribir. Síndrome de rebote COVID-19 en 2–8%.',
+    },
+    adverse: {
+      'pt': ['Disgeusia (gosto metálico)', 'Diarreia', 'Hipertensão', 'Mialgia', 'Náuseas', 'Rebote viral pós-término (2–8%)', 'Interações medicamentosas graves (ritonavir)'],
+      'es': ['Disgeusia (sabor metálico)', 'Diarrea', 'Hipertensión', 'Mialgia', 'Náuseas', 'Rebote viral post-tratamiento (2–8%)', 'Interacciones medicamentosas graves'],
+    },
+  ),
+
+  DrugModel(
+    id: 'molnupiravir',
+    group: 'Infectología (Antifúngicos / Antivirales / TBC)',
+    name: 'Molnupiravir (Lagevrio)',
+    className: {'pt': 'Análogo de nucleosídeo – mutagênico viral', 'es': 'Análogo de nucleósido – mutagénico viral'},
+    category: {'pt': 'Antivirais – COVID-19', 'es': 'Antivirales – COVID-19'},
+    route: 'VO',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': '800 mg 2x/dia por 5 dias. Iniciar em até 5 dias do início dos sintomas em adultos com fatores de risco para COVID-19 grave.',
+      'es': '800 mg 2v/día por 5 días. Iniciar en ≤5 días del inicio síntomas en adultos con factores de riesgo.',
+    },
+    renalAlert: {
+      'pt': 'Sem ajuste de dose em DRC (incluindo DRET). Sem dados robustos em HD.',
+      'es': 'Sin ajuste en ERC (incluido DRET).',
+    },
+    elderlyAlert: {
+      'pt': 'Sem ajuste. Eficácia menor que Paxlovid (redução de ~30% hospitalizações vs ~90% de Paxlovid).',
+      'es': 'Sin ajuste. Eficacia menor que Paxlovid (~30% vs ~90% reducción hospitalización).',
+    },
+    mechanism: {
+      'pt': 'Pró-fármaco do nucleosídeo β-D-N4-hidroxicitidina (NHC/EIDD-1931) → incorporado ao RNA viral durante replicação → causa acúmulo de erros de cópia (mutagênese letal) → inibe replicação do SARS-CoV-2.',
+      'es': 'Profármaco de NHC → incorporado al ARN viral → acumula errores de copia (mutagénesis letal) → inhibe replicación SARS-CoV-2.',
+    },
+    warning: {
+      'pt': 'CONTRAINDICADO na gestação (potencial mutagênico/teratogênico). Contraindicado em <18 anos (risco teórico de alteração do crescimento ósseo). Menor eficácia que nirmatrelvir/ritonavir — usar Paxlovid preferencialmente se disponível.',
+      'es': 'CONTRAINDICADO en embarazo (mutagénico/teratogénico). Contraindicado <18 años. Menor eficacia que Paxlovid — preferir Paxlovid si disponible.',
+    },
+    adverse: {
+      'pt': ['Diarreia', 'Náuseas', 'Tontura', 'Cefaleia', 'Aumento de ALT (transitório)'],
+      'es': ['Diarrea', 'Náuseas', 'Mareo', 'Cefalea', 'Elevación ALT (transitoria)'],
+    },
+  ),
+
+  DrugModel(
+    id: 'isavuconazol',
+    group: 'Infectología (Antifúngicos / Antivirales / TBC)',
+    name: 'Isavuconazol (Cresemba)',
+    className: {'pt': 'Triazol de 2ª geração (anti-Aspergillus, anti-Mucor)', 'es': 'Triazol 2ª generación (anti-Aspergillus, anti-Mucor)'},
+    category: {'pt': 'Antifúngicos azólicos', 'es': 'Antifúngicos azólicos'},
+    route: 'VO / IV',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': 'Dose de ataque: 200 mg (372 mg de isavuconazonium sulfato) a cada 8h por 6 doses (48h). Manutenção: 200 mg 1x/dia. VO = IV (biodisponibilidade ~98%).',
+      'es': 'Carga: 200 mg cada 8h × 6 dosis (48h). Mantenimiento: 200 mg 1v/día. VO = IV (biodisponibilidad ~98%).',
+    },
+    renalAlert: {
+      'pt': 'Sem ajuste de dose em DRC ou diálise.',
+      'es': 'Sin ajuste en ERC o diálisis.',
+    },
+    elderlyAlert: {
+      'pt': 'Sem ajuste. Perfil de segurança favorável em relação ao voriconazol (menos fototoxicidade, alucinações e hepatotoxicidade).',
+      'es': 'Sin ajuste. Mejor perfil de seguridad vs voriconazol (menos fototoxicidad, alucinaciones y hepatotoxicidad).',
+    },
+    mechanism: {
+      'pt': 'Inibe a lanosterol 14α-desmetilase (CYP51) fúngica → bloqueio da síntese de ergosterol → disrupção da membrana fúngica. Amplo espectro: Aspergillus, Mucor/Rhizopus, Candida (exceto C. krusei).',
+      'es': 'Inhibe lanosterol 14α-desmetilasa fúngica → bloqueo síntesis ergosterol. Amplio espectro: Aspergillus, Mucor, Candida.',
+    },
+    warning: {
+      'pt': 'Encurta o intervalo QTc (ao contrário de outros azóis) — pode ser preferido em pacientes com QTc longo. Inibidor moderado de CYP3A4. Contraindicado com rifampicina (indução potente que reduz níveis de isavuconazol).',
+      'es': 'Acorta QTc (al contrario de otros azoles). Inhibidor moderado CYP3A4. Contraindicado con rifampicina.',
+    },
+    adverse: {
+      'pt': ['Náuseas', 'Vômitos', 'Cefaleia', 'Hipocalemia', 'Elevação de transaminases', 'Encurtamento QTc', 'Dispneia', 'Dor nas costas'],
+      'es': ['Náuseas', 'Vómitos', 'Cefalea', 'Hipopotasemia', 'Elevación transaminasas', 'Acortamiento QTc', 'Disnea', 'Dolor lumbar'],
+    },
+  ),
+
+  // ── VÁRIOS / ANTÍDOTOS / REUMATOLOGIA ─────────────────────────────────────
+
+  DrugModel(
+    id: 'tocilizumabe',
+    group: 'Varios / Antídotos / Otros',
+    name: 'Tocilizumabe (Actemra)',
+    className: {'pt': 'Anticorpo monoclonal anti-receptor de IL-6 (anti-IL-6R)', 'es': 'Anticuerpo monoclonal anti-receptor IL-6'},
+    category: {'pt': 'Biológico – AR / Síndrome de liberação de citocinas', 'es': 'Biológico – AR / Síndrome liberación citocinas'},
+    route: 'IV / SC',
+    doseType: 'weight',
+    mgKg: 8.0,
+    fixedDose: {
+      'pt': 'AR: 4–8 mg/kg IV a cada 4 semanas (máx. 800 mg/dose) ou 162 mg SC semanal/quinzenal. SLC/COVID-19 grave: 8 mg/kg IV (máx. 800 mg); pode repetir 1 dose após 8–24h. AOSD: 8 mg/kg IV a cada 2 semanas.',
+      'es': 'AR: 4–8 mg/kg IV cada 4 sem (máx. 800 mg) o 162 mg SC semanal/quincenal. SLC/COVID-19 grave: 8 mg/kg IV (máx. 800 mg); repetir 1 dosis 8–24h si necesario.',
+    },
+    renalAlert: {
+      'pt': 'Sem ajuste de dose em DRC leve-moderada. Monitorar infecções.',
+      'es': 'Sin ajuste en ERC leve-moderada. Monitorizar infecciones.',
+    },
+    elderlyAlert: {
+      'pt': '>75 anos: maior risco de infecções graves. Monitorar rigorosamente. Suspender se infecção ativa.',
+      'es': '>75 años: mayor riesgo infecciones graves. Monitorizar. Suspender si infección activa.',
+    },
+    mechanism: {
+      'pt': 'Liga-se ao receptor de IL-6 solúvel e de membrana (IL-6R) → bloqueia a sinalização da IL-6, citocina central na resposta inflamatória → redução de marcadores inflamatórios (PCR, ferritina, IL-6).',
+      'es': 'Se une al receptor de IL-6 (soluble y de membrana) → bloquea señalización IL-6 → reducción marcadores inflamatorios.',
+    },
+    warning: {
+      'pt': 'Risco de infecções graves (TB, fungos, bactérias). Rastreio de TB antes de iniciar. Pode mascarar febre e PCR (use outras ferramentas diagnósticas). Perfuração GI em pacientes com diverticulite. Monitorar neutrófilos, plaquetas e transaminases.',
+      'es': 'Riesgo infecciones graves. Cribado TB antes de iniciar. Puede enmascarar fiebre y PCR. Perforación GI. Monitorizar neutrófilos, plaquetas y transaminasas.',
+    },
+    adverse: {
+      'pt': ['Infecções respiratórias superiores', 'Elevação de transaminases', 'Neutropenia', 'Trombocitopenia', 'Hipertensão', 'Hiperlipidemia', 'Cefaleia', 'Reação de infusão'],
+      'es': ['Infecciones respiratorias altas', 'Elevación transaminasas', 'Neutropenia', 'Trombocitopenia', 'Hipertensión', 'Hiperlipidemia', 'Cefalea', 'Reacción infusión'],
+    },
+  ),
+
+  DrugModel(
+    id: 'baricitinibe',
+    group: 'Varios / Antídotos / Otros',
+    name: 'Baricitinibe (Olumiant)',
+    className: {'pt': 'Inibidor seletivo de JAK1/JAK2', 'es': 'Inhibidor selectivo JAK1/JAK2'},
+    category: {'pt': 'AR / COVID-19 grave / Alopecia areata', 'es': 'AR / COVID-19 grave / Alopecia areata'},
+    route: 'VO',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': 'AR: 2–4 mg/dia. COVID-19 grave (internado, O₂ suplementar): 4 mg/dia por até 14 dias. Alopecia areata: 2–4 mg/dia.',
+      'es': 'AR: 2–4 mg/día. COVID-19 grave: 4 mg/día hasta 14 días. Alopecia areata: 2–4 mg/día.',
+    },
+    renalAlert: {
+      'pt': 'ClCr 30–60 mL/min: 2 mg/dia. ClCr 15–30 mL/min: 1 mg/dia. ClCr <15: contraindicado.',
+      'es': 'ClCr 30–60: 2 mg/día. ClCr 15–30: 1 mg/día. ClCr <15: contraindicado.',
+    },
+    elderlyAlert: {
+      'pt': '>65 anos: maior risco de infecções, TEV e eventos cardiovasculares — usar apenas se não houver alternativa (alerta FDA/EMA).',
+      'es': '>65 años: mayor riesgo infecciones, TEV y eventos CV — solo si no hay alternativa (alerta FDA/EMA).',
+    },
+    mechanism: {
+      'pt': 'Inibe JAK1 e JAK2 → bloqueio de vias de sinalização de citocinas inflamatórias (IL-6, IL-12, IL-23, IFN-γ) via STAT → imunomodulação potente.',
+      'es': 'Inhibe JAK1/JAK2 → bloquea señalización citocinas inflamatorias → inmunomodulación potente.',
+    },
+    warning: {
+      'pt': 'Rastreio de TB, herpes zoster, hepatite B e C antes de iniciar. Não combinar com biológicos imunossupressores. Vacinação contra herpes zoster recomendada antes de iniciar. TEV documentado (monitorar D-dímero e sintomas).',
+      'es': 'Cribado TB, VZV, hepatitis B/C antes. No combinar con biológicos. Vacunación VZV antes de iniciar. TEV documentado.',
+    },
+    adverse: {
+      'pt': ['Infecções do trato respiratório superior', 'Herpes zoster', 'Tromboembolismo venoso', 'Elevação de CPK e transaminases', 'Dislipidemia', 'Neutropenia', 'Anemia'],
+      'es': ['Infecciones respiratorias altas', 'Herpes zoster', 'Tromboembolismo venoso', 'Elevación CPK y transaminasas', 'Dislipidemia', 'Neutropenia', 'Anemia'],
+    },
+  ),
+
+  DrugModel(
+    id: 'belimumabe',
+    group: 'Varios / Antídotos / Otros',
+    name: 'Belimumabe (Benlysta)',
+    className: {'pt': 'Anticorpo monoclonal anti-BLyS/BAFF (anti-linfócito B)', 'es': 'Anticuerpo monoclonal anti-BLyS/BAFF'},
+    category: {'pt': 'Lúpus eritematoso sistêmico', 'es': 'Lupus eritematoso sistémico'},
+    route: 'IV / SC',
+    doseType: 'weight',
+    mgKg: 10.0,
+    fixedDose: {
+      'pt': 'IV: 10 mg/kg nas semanas 0, 2 e 4; depois a cada 4 semanas. SC: 200 mg SC 1x/semana (autoadministração).',
+      'es': 'IV: 10 mg/kg semanas 0, 2 y 4; luego cada 4 sem. SC: 200 mg SC 1v/sem.',
+    },
+    renalAlert: {
+      'pt': 'Sem ajuste formal em DRC. Nefrite lúpica proliferativa grave ativa: eficácia limitada isolado — combinar com imunossupressor.',
+      'es': 'Sin ajuste formal en ERC. Nefritis lúpica grave activa: eficacia limitada solo — combinar con inmunosupresor.',
+    },
+    elderlyAlert: {
+      'pt': 'Dados limitados em >65 anos. Monitorar infecções.',
+      'es': 'Datos limitados >65 años. Monitorizar infecciones.',
+    },
+    mechanism: {
+      'pt': 'Liga-se ao BLyS (B-lymphocyte stimulator / BAFF) solúvel → bloqueia a sobrevivência e maturação de linfócitos B autorreativos → redução de autoanticorpos (anti-dsDNA, anti-Sm) e atividade do lúpus.',
+      'es': 'Se une a BLyS soluble → bloquea supervivencia y maduración linfocitos B autorreactivos → reducción autoanticuerpos y actividad lúpica.',
+    },
+    warning: {
+      'pt': 'Risco aumentado de depressão e ideação suicida (monitorar saúde mental). Infecções graves (pneumonia, celulite). Hipersensibilidade/reação de infusão. Não usar em infecção ativa grave ou HIV. Rastreio de TB antes de iniciar.',
+      'es': 'Riesgo aumentado depresión e ideación suicida. Infecciones graves. Hipersensibilidad/reacción infusión. No usar con infección activa grave. Cribado TB.',
+    },
+    adverse: {
+      'pt': ['Infecções do trato respiratório superior', 'Náuseas', 'Diarreia', 'Reação de infusão', 'Depressão/ansiedade', 'Insônia', 'Dor de membros', 'Leucopenia'],
+      'es': ['Infecciones respiratorias altas', 'Náuseas', 'Diarrea', 'Reacción infusión', 'Depresión/ansiedad', 'Insomnio', 'Dolor extremidades', 'Leucopenia'],
+    },
+  ),
+
 ];

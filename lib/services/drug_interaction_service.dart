@@ -426,7 +426,325 @@ const _interactionDB = <(String, String, InteractionSeverity, String, String, St
     'Boca seca intensa, retenção urinária, visão turva, confusão, delírio (especialmente em idosos)',
     'Evitar em idosos. Se necessário, usar menor dose possível e monitorar sintomas anticolinérgicos'),
 
+  // ══════════════════════════════════════════════════════════════════════════
+  // NOVAS INTERAÇÕES — MERGE v2
+  // Fontes: Micromedex, UpToDate 2024, Drugs.com, Liverpool Drug Interaction
+  // Checker, FDA Drug Interaction Labels, ESC/AHA/IDSA guidelines.
+  // ══════════════════════════════════════════════════════════════════════════
+
+  // ── Dronedarona ───────────────────────────────────────────────────────────
+  ('dronedarona', 'dabigatrana',   InteractionSeverity.major,
+    'Dronedarona inibe P-glicoproteína → aumenta absorção e nível sérico de dabigatrana',
+    'Risco hemorrágico elevado — aumento de até 100% na exposição à dabigatrana',
+    'Reduzir dose de dabigatrana para 75 mg 2x/dia com dronedarona. Monitorar sinais de sangramento'),
+  ('dronedarona', 'sinvastatina',  InteractionSeverity.major,
+    'Inibição do CYP3A4 e P-gp pela dronedarona aumenta nível de sinvastatina',
+    'Risco de miopatia/rabdomiólise',
+    'Dose máxima de sinvastatina: 20 mg/dia. Preferir rosuvastatina ou pravastatina'),
+  ('dronedarona', 'metoprolol',    InteractionSeverity.major,
+    'Inibição do CYP2D6 pela dronedarona aumenta nível de metoprolol + efeito cronotrópico negativo aditivo',
+    'Bradicardia grave, bloqueio AV, hipotensão',
+    'Monitorar FC e ECG. Reduzir dose de metoprolol. Alvo: FC ≥50 bpm em repouso'),
+  ('dronedarona', 'digoxina',      InteractionSeverity.major,
+    'Inibição da P-gp aumenta nível sérico de digoxina',
+    'Toxicidade digitálica — náuseas, bradicardia, distúrbios de condução',
+    'Reduzir dose de digoxina em 50%. Monitorar nível sérico e ECG regularmente'),
+  ('dronedarona', 'varfarina',     InteractionSeverity.moderate,
+    'Inibição do CYP3A4 e possível efeito no CYP2C9 pela dronedarona',
+    'Elevação moderada do INR',
+    'Monitorar INR semanalmente nas primeiras 2–4 semanas após introdução. Ajustar dose de varfarina conforme necessário'),
+  ('dronedarona', 'ciclosporina',  InteractionSeverity.contraindicated,
+    'Inibição mútua do CYP3A4 e P-gp — exposição de ambos aumenta drasticamente',
+    'Toxicidade por ciclosporina (nefrotóxica) e toxicidade cardíaca por dronedarona',
+    'Combinação contraindicada. Substituir por antiarrítmico alternativo'),
+
+  // ── Ivabradina ────────────────────────────────────────────────────────────
+  ('ivabradina', 'diltiazem',      InteractionSeverity.contraindicated,
+    'Diltiazem inibe CYP3A4 (aumenta nível de ivabradina) + efeito cronotrópico negativo aditivo no nó sinusal',
+    'Bradicardia grave, bloqueio sinusal, assistolia',
+    'Combinação contraindicada. Usar apenas um agente para controle de FC'),
+  ('ivabradina', 'verapamil',      InteractionSeverity.contraindicated,
+    'Verapamil inibe CYP3A4 + efeito bradicardizante sinérgico',
+    'Bradicardia grave, síncope, parada sinusal',
+    'Contraindicado — não combinar ivabradina com bloqueadores de cálcio não-diidropiridínicos'),
+  ('ivabradina', 'claritromicina', InteractionSeverity.major,
+    'Inibição potente do CYP3A4 pela claritromicina aumenta exposição à ivabradina em ~7×',
+    'Bradicardia grave, prolongamento QT, Torsade de Pointes',
+    'Contraindicado. Suspender ivabradina durante curso de claritromicina. Alternativa: azitromicina'),
+  ('ivabradina', 'fluconazol',     InteractionSeverity.major,
+    'Inibição do CYP3A4 pelo fluconazol aumenta significativamente o nível de ivabradina',
+    'Bradicardia excessiva, tontura, fosfenos',
+    'Monitorar FC. Reduzir dose de ivabradina se FC <50 bpm. Considerar antifúngico alternativo'),
+
+  // ── Ranolazina ────────────────────────────────────────────────────────────
+  ('ranolazina', 'claritromicina', InteractionSeverity.contraindicated,
+    'Inibição potente do CYP3A4 aumenta ranolazina em >5× + ambos prolongam QTc',
+    'Prolongamento QTc grave, Torsade de Pointes, arritmia ventricular fatal',
+    'Contraindicado. Substituir por azitromicina ou doxiciclina'),
+  ('ranolazina', 'amiodarona',     InteractionSeverity.major,
+    'Amiodarona inibe CYP3A4 + ambos prolongam QTc por mecanismos distintos',
+    'Prolongamento QTc excessivo, Torsade de Pointes',
+    'Evitar combinação. Se necessária, monitorar QTc (ECG seriado). Suspender se QTc >500 ms'),
+  ('ranolazina', 'digoxina',       InteractionSeverity.moderate,
+    'Ranolazina inibe P-gp → aumento do nível sérico de digoxina em ~50%',
+    'Toxicidade digitálica — bradiarritmias, náuseas, distúrbios visuais',
+    'Reduzir dose de digoxina em 50% ao iniciar ranolazina. Monitorar nível sérico'),
+  ('ranolazina', 'sinvastatina',   InteractionSeverity.moderate,
+    'Inibição do CYP3A4 pela ranolazina aumenta exposição à sinvastatina',
+    'Risco aumentado de miopatia',
+    'Limitar sinvastatina a 20 mg/dia com ranolazina. Monitorar CPK e sintomas musculares'),
+
+  // ── Eplerenona ────────────────────────────────────────────────────────────
+  ('eplerenona', 'cloreto de potassio', InteractionSeverity.contraindicated,
+    'Eplerenona retém K⁺ (poupador de potássio) + suplementação adicional',
+    'Hipercalemia fatal — parada cardíaca',
+    'Contraindicado. Não suplementar potássio rotineiramente com eplerenona. Monitorar K⁺ sérico rigorosamente'),
+  ('eplerenona', 'enalapril',      InteractionSeverity.moderate,
+    'Ambos elevam K⁺ por mecanismos distintos — antagonismo aldosterona + inibição da angiotensina II',
+    'Hipercalemia, especialmente em DRC ou diabetes',
+    'Monitorar K⁺ e creatinina semanalmente no início. Reduzir/suspender eplerenona se K⁺ >5,5 mEq/L'),
+  ('eplerenona', 'claritromicina', InteractionSeverity.contraindicated,
+    'Inibição potente do CYP3A4 pela claritromicina aumenta exposição à eplerenona em >5×',
+    'Hipercalemia grave e excessiva retenção de potássio',
+    'Contraindicado. Substituir por azitromicina. Aguardar 14 dias após claritromicina antes de reiniciar eplerenona'),
+
+  // ── Daptomicina ───────────────────────────────────────────────────────────
+  ('daptomicina', 'estatina',      InteractionSeverity.major,
+    'Mecanismo sinérgico de miotoxicidade — ambos lesam membranas musculares por mecanismos complementares',
+    'Miopatia grave e rabdomiólise',
+    'Suspender estatinas durante uso de daptomicina. Monitorar CPK semanalmente. Reiniciar estatina após término do antibiótico'),
+  ('daptomicina', 'aminoglicosideo', InteractionSeverity.moderate,
+    'Possível nefrotoxicidade aditiva — ambos podem elevar creatinina em uso prolongado',
+    'Insuficiência renal aguda, especialmente em pacientes vulneráveis',
+    'Monitorar creatinina e eletrólitos diariamente. Minimizar duração e dose de aminoglicosídeo'),
+
+  // ── Nirmatrelvir/Ritonavir (Paxlovid) ────────────────────────────────────
+  ('ritonavir', 'sinvastatina',    InteractionSeverity.contraindicated,
+    'Inibição potente do CYP3A4 pelo ritonavir aumenta sinvastatina >10× — rabdomiólise',
+    'Rabdomiólise grave, insuficiência renal, coagulação intravascular disseminada',
+    'Contraindicado absolutamente. Suspender sinvastatina durante uso de Paxlovid'),
+  ('ritonavir', 'midazolam',       InteractionSeverity.contraindicated,
+    'Inibição potente do CYP3A4 pelo ritonavir → nível de midazolam aumenta dezenas de vezes',
+    'Sedação prolongada e grave, depressão respiratória, coma',
+    'Contraindicado. Não usar midazolam oral/parenteral com ritonavir'),
+  ('ritonavir', 'amiodarona',      InteractionSeverity.contraindicated,
+    'Inibição do CYP3A4 e CYP2C8 pelo ritonavir aumenta amiodarona dramaticamente + QT aditivo',
+    'Toxicidade por amiodarona (pulmonar, hepática, tireoidiana) e Torsade de Pointes',
+    'Contraindicado. Substituir ritonavir se paciente em uso de amiodarona. Paxlovid contraindicado nestas situações'),
+  ('ritonavir', 'warfarina',       InteractionSeverity.major,
+    'Ritonavir é indutor e inibidor do CYP2C9 (efeito bifásico) — INR pode aumentar ou diminuir',
+    'Instabilidade do INR — risco de sangramento ou trombose dependendo da fase',
+    'Monitorar INR a cada 1–2 dias durante uso de Paxlovid e por 2 semanas após. Ajustar dose de varfarina'),
+  ('ritonavir', 'atorvastatina',   InteractionSeverity.major,
+    'Inibição do CYP3A4 pelo ritonavir aumenta atorvastatina em ~8×',
+    'Risco significativo de miopatia/rabdomiólise',
+    'Suspender atorvastatina durante uso de Paxlovid (5 dias). Reiniciar após término. Alternativa: pravastatina ou rosuvastatina em baixa dose'),
+  ('ritonavir', 'carbamazepina',   InteractionSeverity.major,
+    'Carbamazepina é indutor potente do CYP3A4 → reduz drasticamente níveis de nirmatrelvir/ritonavir',
+    'Falha terapêutica do Paxlovid — concentrações subterapêuticas de nirmatrelvir',
+    'Paxlovid contraindicado com carbamazepina. Considerar molnupiravir como alternativa'),
+  ('ritonavir', 'ranolazina',      InteractionSeverity.contraindicated,
+    'Inibição do CYP3A4 pelo ritonavir eleva ranolazina drasticamente + prolongamento QTc aditivo',
+    'Arritmia ventricular grave, Torsade de Pointes',
+    'Contraindicado. Suspender ranolazina durante uso de Paxlovid'),
+
+  // ── Semaglutida / Tirzepatida (arGLP-1) ──────────────────────────────────
+  ('semaglutida', 'insulina',      InteractionSeverity.moderate,
+    'Efeito hipoglicemiante aditivo — arGLP-1 potencia ação da insulina',
+    'Hipoglicemia grave, especialmente com insulina basal ou prandial em altas doses',
+    'Reduzir dose de insulina em 20–40% ao iniciar arGLP-1. Monitorar glicemia. Titular gradualmente'),
+  ('semaglutida', 'sulfonilureia', InteractionSeverity.moderate,
+    'Efeito insulinotrópico aditivo com risco aumentado de hipoglicemia',
+    'Hipoglicemia grave, tontura, sudorese, convulsões',
+    'Reduzir dose da sulfonilureia em 50% ao iniciar semaglutida. Monitorar glicemia capilar diariamente'),
+  ('semaglutida', 'levotiroxina',  InteractionSeverity.minor,
+    'Retardo do esvaziamento gástrico pela semaglutida pode reduzir absorção da levotiroxina',
+    'Redução da absorção de levotiroxina → hipotireoidismo subclínico',
+    'Tomar levotiroxina em jejum, ≥30 min antes da semaglutida se via oral (Rybelsus). Monitorar TSH a cada 6–8 semanas'),
+
+  // ── Canagliflozina / iSGLT2 ──────────────────────────────────────────────
+  ('canagliflozina', 'furosemida', InteractionSeverity.moderate,
+    'Efeito natriurético e diurético aditivo — ambos causam depleção de volume',
+    'Hipotensão grave, IRA pré-renal, desidratação, hipocalemia',
+    'Monitorar PA, função renal e eletrólitos. Reduzir dose de furosemida se necessário. Hidratação adequada'),
+  ('canagliflozina', 'enalapril',  InteractionSeverity.moderate,
+    'Efeito natriurético dos iSGLT2 associado a vasodilatação dos IECAs — hipotensão e hipercalemia',
+    'Hipotensão sintomática, IRA pré-renal, hipercalemia',
+    'Monitorar PA, K⁺ e função renal nas primeiras 2–4 semanas. Hidratação adequada'),
+  ('canagliflozina', 'rifampicina', InteractionSeverity.moderate,
+    'Rifampicina induz UGT e CYP → redução de 51% na exposição à canagliflozina',
+    'Redução do efeito hipoglicemiante e nefroprotetor',
+    'Monitorar controle glicêmico. Pode ser necessário aumentar dose de canagliflozina ou substituir por outra classe'),
+
+  // ── Finerenona ────────────────────────────────────────────────────────────
+  ('finerenona', 'claritromicina', InteractionSeverity.contraindicated,
+    'Inibição potente do CYP3A4 pela claritromicina aumenta finerenona em >5×',
+    'Hipercalemia grave e potencialmente fatal',
+    'Contraindicado. Suspender finerenona durante uso de claritromicina. Alternativa: azitromicina'),
+  ('finerenona', 'espironolactona', InteractionSeverity.contraindicated,
+    'Antagonismo mineralocorticoide aditivo — duplo bloqueio do receptor de aldosterona',
+    'Hipercalemia grave, parada cardíaca',
+    'Contraindicado — não combinar dois ARM. Escolher apenas um deles'),
+  ('finerenona', 'enalapril',      InteractionSeverity.moderate,
+    'Efeito poupador de potássio da finerenona + redução da excreção de K⁺ pelo IECA',
+    'Hipercalemia — risco aumentado, especialmente em DRC',
+    'Monitorar K⁺ semanalmente nas primeiras 4 semanas. Suspender se K⁺ >5,5 mEq/L'),
+
+  // ── Tocilizumabe / Baricitinibe ───────────────────────────────────────────
+  ('tocilizumabe', 'warfarina',    InteractionSeverity.moderate,
+    'IL-6 regula expressão de enzimas CYP; ao bloquear IL-6, tocilizumabe restaura metabolismo de varfarina (reduz INR)',
+    'Redução inesperada do INR quando tocilizumabe é iniciado ou escalado',
+    'Monitorar INR semanalmente por 4–6 semanas após início do tocilizumabe. Ajustar dose de varfarina'),
+  ('tocilizumabe', 'estatina',     InteractionSeverity.moderate,
+    'Bloqueio de IL-6 restaura CYP3A4 — estatinas metabolizadas por CYP3A4 têm metabolismo aumentado',
+    'Redução dos níveis plasmáticos de estatinas — menor efeito hipolipemiante',
+    'Monitorar perfil lipídico 4–8 semanas após início. Pode ser necessário aumentar dose da estatina'),
+  ('baricitinibe', 'ssri',         InteractionSeverity.minor,
+    'Inibição do transportador OAT3 pelo baricitinibe pode aumentar levemente concentração de alguns SSRIs',
+    'Aumento marginal da exposição a SSRIs renalmente eliminados',
+    'Monitorar efeitos adversos dos SSRIs. Interação geralmente não requer ajuste de dose'),
+
+  // ── Vedolizumabe ──────────────────────────────────────────────────────────
+  ('vedolizumabe', 'natalizumabe', InteractionSeverity.contraindicated,
+    'Ambos são antagonistas de integrinas — imunomodulação aditiva sistêmica e intestinal',
+    'Risco muito aumentado de infecções oportunistas e leucoencefalopatia multifocal progressiva (LMP)',
+    'Contraindicado — não combinar biológicos anti-integrinas. Washout adequado entre os agentes'),
+
+  // ── Tofacitinibe ──────────────────────────────────────────────────────────
+  ('tofacitinibe', 'ciclosporina', InteractionSeverity.contraindicated,
+    'Inibição do CYP3A4 + imunossupressão aditiva potente',
+    'Infecções oportunistas graves, nefrotoxicidade, linfoma',
+    'Contraindicado. Não combinar JAKi com imunossupressores biológicos potentes'),
+  ('tofacitinibe', 'fluconazol',   InteractionSeverity.major,
+    'Inibição do CYP3A4 e CYP2C19 pelo fluconazol aumenta exposição ao tofacitinibe em ~130%',
+    'Toxicidade por tofacitinibe — infecções, trombose, elevação de enzimas hepáticas',
+    'Reduzir dose de tofacitinibe para 5 mg 1x/dia durante uso de fluconazol. Monitorar hemograma e transaminases'),
+  ('tofacitinibe', 'rifampicina',  InteractionSeverity.major,
+    'Rifampicina induz CYP3A4 → redução de ~84% na exposição ao tofacitinibe',
+    'Falha terapêutica — concentrações subterapêuticas',
+    'Evitar combinação. Se necessário, monitorar atividade da doença de base. Considerar alternativa biológica'),
+
+  // ── Ruxolitinibe ──────────────────────────────────────────────────────────
+  ('ruxolitinibe', 'claritromicina', InteractionSeverity.major,
+    'Inibição potente do CYP3A4 → aumento de ~200% na exposição ao ruxolitinibe',
+    'Citopenia grave (anemia, trombocitopenia), infecções oportunistas, toxicidade hepática',
+    'Reduzir dose de ruxolitinibe em 50% durante uso de claritromicina. Monitorar hemograma. Alternativa: azitromicina'),
+  ('ruxolitinibe', 'fluconazol',   InteractionSeverity.moderate,
+    'Inibição do CYP3A4 aumenta exposição ao ruxolitinibe em ~100%',
+    'Citopenia e risco de infecções oportunistas aumentado',
+    'Reduzir dose de ruxolitinibe em 50%. Monitorar hemograma frequentemente'),
+
+  // ── Dupilumabe / Biológicos respiratórios ─────────────────────────────────
+  ('dupilumabe', 'vacinas vivas',  InteractionSeverity.major,
+    'Imunossupressão relativa causada por dupilumabe pode reduzir resposta imunológica a vacinas vivas',
+    'Risco de infecção pela cepa vacinal (vacina viva atenuada)',
+    'Não administrar vacinas vivas durante uso de dupilumabe. Completar vacinação antes de iniciar biológico'),
+  ('mepolizumabe', 'corticosteroide sistemico', InteractionSeverity.moderate,
+    'Redução dos eosinófilos pelo mepolizumabe permite desmame dos corticosteroides, mas retirada abrupta causa insuficiência adrenal',
+    'Insuficiência adrenal aguda se corticosteroide retirado abruptamente',
+    'Desmame LENTO e gradual de corticosteroides sistêmicos — nunca retirar abruptamente. Monitorar sintomas de insuficiência adrenal'),
+
+  // ── Isavuconazol ──────────────────────────────────────────────────────────
+  ('isavuconazol', 'rifampicina',  InteractionSeverity.contraindicated,
+    'Rifampicina induz CYP3A4 potentemente → redução drástica dos níveis de isavuconazol',
+    'Falha terapêutica antifúngica — concentrações subterapêuticas',
+    'Contraindicado — combinação invalida o tratamento antifúngico'),
+  ('isavuconazol', 'ciclosporina', InteractionSeverity.moderate,
+    'Inibição do CYP3A4 pelo isavuconazol aumenta exposição à ciclosporina',
+    'Toxicidade por ciclosporina — nefrotoxicidade, neurotoxicidade',
+    'Monitorar nível sérico de ciclosporina. Reduzir dose em 25–50% se necessário. Isavuconazol é inibidor CYP3A4 mais fraco que voriconazol'),
+  ('isavuconazol', 'warfarina',    InteractionSeverity.moderate,
+    'Inibição do CYP2C9 pelo isavuconazol pode aumentar nível de varfarina',
+    'Elevação do INR e risco hemorrágico',
+    'Monitorar INR a cada 2–3 dias após início e término do isavuconazol. Ajustar dose de varfarina conforme necessário'),
+
+  // ── Eltrombopague ─────────────────────────────────────────────────────────
+  ('eltrombopague', 'antiácido',   InteractionSeverity.major,
+    'Cátions polivalentes (Al, Mg, Ca) dos antiácidos formam quelatos com eltrombopague no TGI',
+    'Redução de até 70% na absorção do eltrombopague → falha terapêutica',
+    'Administrar eltrombopague ≥4 horas antes ou ≥2 horas após antiácidos, suplementos de cálcio ou ferro'),
+  ('eltrombopague', 'sulfato ferroso', InteractionSeverity.major,
+    'Ferro quelata eltrombopague no intestino — redução drástica da absorção',
+    'Falha terapêutica da trombocitopoiese',
+    'Separar eltrombopague do ferro por pelo menos 4 horas. Tomar eltrombopague em jejum'),
+  ('eltrombopague', 'ciclosporina', InteractionSeverity.moderate,
+    'Inibição do OATP1B1 e CYP1A2 pelo eltrombopague pode aumentar exposição à ciclosporina',
+    'Nefrotoxicidade por aumento do nível de ciclosporina',
+    'Monitorar nível sérico de ciclosporina. Ajustar dose conforme necessário'),
+
+  // ── Denosumabe ────────────────────────────────────────────────────────────
+  ('denosumabe', 'corticosteroide sistemico', InteractionSeverity.moderate,
+    'Ambos aumentam risco de osteonecrose mandibular e fraturas atípicas; corticosteroides causam osteoporose adicional',
+    'Risco de osteonecrose mandibular e fraturas ósseas graves',
+    'Avaliação odontológica obrigatória antes de iniciar. Garantir reposição adequada de Ca²⁺ e vitamina D. Monitorar DMO'),
+
+  // ── Bupropiona ────────────────────────────────────────────────────────────
+  ('bupropiona', 'imao',           InteractionSeverity.contraindicated,
+    'Bupropiona inibe recaptação de dopamina/noradrenalina + IMAOs inibem degradação — hiperestimulação adrenérgica e serotoninérgica',
+    'Crise hipertensiva, síndrome serotoninérgica, convulsões — risco de morte',
+    'Contraindicado. Aguardar ≥14 dias após suspender IMAO antes de iniciar bupropiona'),
+  ('bupropiona', 'carbamazepina',  InteractionSeverity.major,
+    'Carbamazepina induz CYP3A4/2B6 → redução significativa dos níveis de bupropiona',
+    'Falha antidepressiva e no programa de cessação tabágica',
+    'Aumentar dose de bupropiona (monitorar efeito). Avaliar alternativa antidepressiva sem interação com indutores CYP'),
+  ('bupropiona', 'tramadol',       InteractionSeverity.major,
+    'Ambos reduzem o limiar convulsivo por mecanismos independentes — sinergia pró-convulsivante',
+    'Risco muito aumentado de convulsões generalizadas',
+    'Evitar combinação. Se necessário, usar mínima dose de tramadol com monitoramento neurológico. Considerar analgésico alternativo'),
+  ('bupropiona', 'ssri',           InteractionSeverity.moderate,
+    'Bupropiona inibe CYP2D6 → aumenta exposição a fluoxetina, paroxetina e outros SSRIs metabolizados por esse CYP',
+    'Síndrome serotoninérgica leve a moderada, elevação de efeitos adversos dos SSRIs',
+    'Monitorar sinais de excesso serotoninérgico. Considerar redução da dose do SSRI se sintomas surgem'),
+
+  // ── Aripiprazol ───────────────────────────────────────────────────────────
+  ('aripiprazol', 'claritromicina', InteractionSeverity.major,
+    'Inibição do CYP3A4 pela claritromicina aumenta exposição ao aripiprazol em ~90%',
+    'Toxicidade por aripiprazol — acatisia intensa, hipotensão, sedação, convulsões (raro)',
+    'Reduzir dose de aripiprazol em 50% durante uso de claritromicina. Monitorar efeitos adversos'),
+  ('aripiprazol', 'fluoxetina',    InteractionSeverity.moderate,
+    'Fluoxetina inibe CYP2D6 e CYP3A4 → aumento de 100% na exposição ao aripiprazol',
+    'Acatisia, sedação excessiva, hipotensão ortostática',
+    'Reduzir dose de aripiprazol em 50% com fluoxetina. Monitorar efeitos extrapiramidais e PA'),
+
+  // ── Perampanel ────────────────────────────────────────────────────────────
+  ('perampanel', 'carbamazepina',  InteractionSeverity.major,
+    'Carbamazepina induz potentemente CYP3A4 → redução de ~67% na exposição ao perampanel',
+    'Falha antiepiléptica — concentrações subterapêuticas de perampanel',
+    'Triplicar a dose-alvo de perampanel quando em uso com carbamazepina. Titular cuidadosamente com monitoramento clínico'),
+  ('perampanel', 'alcool',         InteractionSeverity.major,
+    'Perampanel potencializa depressão do SNC pelo álcool; pode aumentar comportamentos agressivos/impulsivos',
+    'Sedação grave, comportamento irracional, agressividade, maior risco de acidentes',
+    'Contraindicado uso de álcool com perampanel. Orientar paciente explicitamente'),
+
+  // ── Rifaximina ────────────────────────────────────────────────────────────
+  ('rifaximina', 'anticoncepcional', InteractionSeverity.minor,
+    'Mesmo com absorção mínima, pode alterar flora intestinal que participa da circulação êntero-hepática dos anticoncepcionais',
+    'Redução teórica (baixo risco clinicamente) da eficácia anticoncepcional hormonal',
+    'Risco muito baixo (absorção <1%). Porém, orientar uso de método contraceptivo de barreira adicional por precaução durante e 7 dias após o curso'),
+
+  // ── Nintedanibe ───────────────────────────────────────────────────────────
+  ('nintedanibe', 'warfarina',     InteractionSeverity.moderate,
+    'Nintedanibe inibe P-gp e CYP3A4; interação potencial aumentando nível de varfarina',
+    'Elevação do INR e risco hemorrágico — intensificado pelo risco de sangramento GI do nintedanibe',
+    'Monitorar INR semanalmente. Vigilância redobrada para sinais de sangramento GI'),
+  ('nintedanibe', 'rifampicina',   InteractionSeverity.major,
+    'Rifampicina induz P-gp e CYP3A4 → redução de ~60% nos níveis de nintedanibe',
+    'Falha terapêutica na FPI — progressão da fibrose',
+    'Evitar combinação. Se tratamento de TB necessário, avaliar alternativa antifibrótica ou substituição do antimicrobiano'),
+
+  // ── Fondaparinux ──────────────────────────────────────────────────────────
+  ('fondaparinux', 'ssri',         InteractionSeverity.moderate,
+    'SSRIs inibem função plaquetária (redução de serotonina plaquetária) + anticoagulação do fondaparinux',
+    'Risco aumentado de sangramento — especialmente GI',
+    'Monitorar sinais de sangramento. Considerar IBP para proteção gástrica em uso combinado'),
+  ('fondaparinux', 'aine',         InteractionSeverity.moderate,
+    'AINEs inibem função plaquetária e protegem mucosa gástrica — risco hemorrágico aditivo',
+    'Sangramento GI e em outros sítios',
+    'Evitar AINEs com fondaparinux. Usar paracetamol para analgesia. Se AINE necessário, associar IBP'),
+
 ];
+
+// ─────────────────────────────────────────────────────────────────────────────
 
 // ─────────────────────────────────────────────────────────────────────────────
 // MAPA DE TERMOS PARA NORMALIZAÇÃO
@@ -581,6 +899,100 @@ const _termMap = <String, String>{
   'esomeprazol': 'esomeprazol', 'nexium': 'esomeprazol',
   'álcool': 'alcool', 'alcool': 'alcool', 'bebida': 'alcool',
   'gemfibrozila': 'gemfibrozil',
+
+  // ── NOVOS — Merge v2 ───────────────────────────────────────────────────────
+
+  // Antiarrítmicos novos
+  'dronedarona': 'dronedarona', 'multaq': 'dronedarona',
+  'ivabradina': 'ivabradina', 'procoralan': 'ivabradina', 'corlanor': 'ivabradina',
+  'ranolazina': 'ranolazina', 'ranexa': 'ranolazina',
+
+  // Anti-hipertensivos novos
+  'eplerenona': 'eplerenona', 'inspra': 'eplerenona',
+  'candesartana': 'candesartana', 'atacand': 'candesartana', 'candesartán': 'candesartana',
+  'riociguate': 'riociguate', 'adempas': 'riociguate',
+
+  // Anticoagulantes / antídotos
+  'fondaparinux': 'fondaparinux', 'arixtra': 'fondaparinux',
+  'andexanet': 'andexanet alfa', 'ondexxya': 'andexanet alfa', 'andexanet alfa': 'andexanet alfa',
+  'idarucizumabe': 'idarucizumabe', 'praxbind': 'idarucizumabe',
+
+  // Antibióticos novos
+  'daptomicina': 'daptomicina', 'cubicin': 'daptomicina',
+  'ceftarolina': 'ceftarolina', 'zinforo': 'ceftarolina', 'teflaro': 'ceftarolina',
+  'tedizolida': 'tedizolida', 'sivextro': 'tedizolida',
+  'cefiderocol': 'cefiderocol', 'fetcroja': 'cefiderocol',
+  'sulfametoxazol trimetoprima iv': 'sulfametoxazol_tmp_iv',
+  'smx-tmp iv': 'sulfametoxazol_tmp_iv', 'bactrim iv': 'sulfametoxazol_tmp_iv',
+
+  // Antivirais COVID-19
+  'nirmatrelvir': 'ritonavir', 'paxlovid': 'ritonavir',
+  'nirmatrelvir ritonavir': 'ritonavir',
+  'ritonavir': 'ritonavir', 'norvir': 'ritonavir',
+  'molnupiravir': 'molnupiravir', 'lagevrio': 'molnupiravir',
+
+  // Antifúngicos novos
+  'isavuconazol': 'isavuconazol', 'cresemba': 'isavuconazol',
+  'isavuconazonium': 'isavuconazol',
+
+  // Antiepiléticos novos
+  'perampanel': 'perampanel', 'fycompa': 'perampanel',
+  'brivaracetam': 'brivaracetam', 'briviact': 'brivaracetam',
+
+  // Antipsicóticos novos
+  'aripiprazol': 'aripiprazol', 'abilify': 'aripiprazol', 'aripiprazole': 'aripiprazol',
+
+  // Antidepressivos / TDAH
+  'bupropiona': 'bupropiona', 'wellbutrin': 'bupropiona', 'zyban': 'bupropiona',
+  'bupropion': 'bupropiona',
+  'lisdexanfetamina': 'lisdexanfetamina', 'vyvanse': 'lisdexanfetamina',
+
+  // Hipoglicemiantes / Obesidade novos
+  'semaglutida': 'semaglutida', 'ozempic': 'semaglutida', 'wegovy': 'semaglutida',
+  'rybelsus': 'semaglutida', 'semaglutide': 'semaglutida',
+  'tirzepatida': 'tirzepatida', 'mounjaro': 'tirzepatida', 'zepbound': 'tirzepatida',
+  'tirzepatide': 'tirzepatida',
+  'dulaglutida': 'semaglutida', 'trulicity': 'semaglutida', 'dulaglutide': 'semaglutida',
+  'canagliflozina': 'canagliflozina', 'invokana': 'canagliflozina',
+  'finerenona': 'finerenona', 'kerendia': 'finerenona',
+  'sulfonilureia': 'sulfonilureia', 'glipizida': 'sulfonilureia',
+  'glimepirida': 'sulfonilureia', 'gliclazida': 'sulfonilureia',
+
+  // Antiosteoporose
+  'denosumabe': 'denosumabe', 'prolia': 'denosumabe', 'xgeva': 'denosumabe',
+  'denosumab': 'denosumabe',
+
+  // DII / Reumatologia
+  'vedolizumabe': 'vedolizumabe', 'entyvio': 'vedolizumabe', 'vedolizumab': 'vedolizumabe',
+  'natalizumabe': 'natalizumabe', 'tysabri': 'natalizumabe',
+  'tofacitinibe': 'tofacitinibe', 'xeljanz': 'tofacitinibe', 'tofacitinib': 'tofacitinibe',
+
+  // Gastro
+  'rifaximina': 'rifaximina', 'xifaxan': 'rifaximina', 'rifaximin': 'rifaximina',
+
+  // Respiratório / Biológicos
+  'dupilumabe': 'dupilumabe', 'dupixent': 'dupilumabe', 'dupilumab': 'dupilumabe',
+  'mepolizumabe': 'mepolizumabe', 'nucala': 'mepolizumabe', 'mepolizumab': 'mepolizumabe',
+  'nintedanibe': 'nintedanibe', 'ofev': 'nintedanibe', 'nintedanib': 'nintedanibe',
+  'corticosteroide sistemico': 'corticosteroide sistemico',
+  'prednisona sistemica': 'corticosteroide sistemico',
+  'prednisolona sistemica': 'corticosteroide sistemico',
+
+  // Hematologia
+  'ruxolitinibe': 'ruxolitinibe', 'jakafi': 'ruxolitinibe', 'jakavi': 'ruxolitinibe',
+  'ruxolitinib': 'ruxolitinibe',
+  'eltrombopague': 'eltrombopague', 'revolade': 'eltrombopague', 'promacta': 'eltrombopague',
+  'eltrombopag': 'eltrombopague',
+
+  // Biológicos / Imunológicos
+  'tocilizumabe': 'tocilizumabe', 'actemra': 'tocilizumabe', 'tocilizumab': 'tocilizumabe',
+  'baricitinibe': 'baricitinibe', 'olumiant': 'baricitinibe', 'baricitinib': 'baricitinibe',
+  'belimumabe': 'belimumabe', 'benlysta': 'belimumabe', 'belimumab': 'belimumabe',
+
+  // Vacinas (genérico para interações com imunossupressores)
+  'vacinas vivas': 'vacinas vivas', 'vacina viva': 'vacinas vivas',
+  'mmr': 'vacinas vivas', 'febre amarela': 'vacinas vivas',
+  'varicela vacina': 'vacinas vivas', 'bcg': 'vacinas vivas',
 };
 
 // ─────────────────────────────────────────────────────────────────────────────

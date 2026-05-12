@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/app_provider.dart';
 import '../models/drug_model.dart';
+import '../services/drug_interaction_service.dart';
 import '../widgets/common_widgets.dart';
 
 class DrugsScreen extends StatefulWidget {
@@ -78,14 +79,16 @@ class _DrugsScreenState extends State<DrugsScreen> {
         ),
         const SizedBox(height: 12),
 
-        // ── Busca ─────────────────────────────────────────────────────────────
+        // ── Busca com autocomplete ─────────────────────────────────────────────
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            MedInput(
+            _DrugSearchAutocomplete(
               controller: _searchCtrl,
               hintText: p.t('drugs_search_hint'),
+              allDrugs: p.drugsDB,
               onChanged: (_) => setState(() {}),
+              onDrugSelected: (drug) => setState(() => _selected = drug),
             ),
             const SizedBox(height: 8),
             Text(
@@ -1261,4 +1264,389 @@ class _SegCfg {
     required this.badgeFg,
     this.badgeIcon,
   });
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// CAMPO DE BUSCA COM AUTOCOMPLETE — DrugsScreen
+// Após digitar a 3ª letra, exibe dropdown com fármacos correspondentes.
+// Clicar numa sugestão navega direto para o detalhe do fármaco.
+// Também aceita termos do _termMap (nomes comerciais, genéricos, inglês).
+// ─────────────────────────────────────────────────────────────────────────────
+class _DrugSearchAutocomplete extends StatefulWidget {
+  final TextEditingController controller;
+  final String hintText;
+  final List<DrugModel> allDrugs;
+  final ValueChanged<String> onChanged;
+  final ValueChanged<DrugModel> onDrugSelected;
+
+  const _DrugSearchAutocomplete({
+    required this.controller,
+    required this.hintText,
+    required this.allDrugs,
+    required this.onChanged,
+    required this.onDrugSelected,
+  });
+
+  @override
+  State<_DrugSearchAutocomplete> createState() =>
+      _DrugSearchAutocompleteState();
+}
+
+class _DrugSearchAutocompleteState extends State<_DrugSearchAutocomplete> {
+  // Nomes canônicos do banco de interações (para o overlay de sugestões)
+  static final List<String> _allTerms =
+      DrugInteractionService.getAllDrugNames();
+
+  OverlayEntry? _overlay;
+  final LayerLink _layerLink = LayerLink();
+
+  // Sugestões actuais: fármacos da DB cujo nome/classe bate com o token
+  List<DrugModel> _drugSuggestions = [];
+
+  // ── Lifecycle ─────────────────────────────────────────────────────────────
+  @override
+  void initState() {
+    super.initState();
+    widget.controller.addListener(_onTextChanged);
+  }
+
+  @override
+  void dispose() {
+    widget.controller.removeListener(_onTextChanged);
+    _removeOverlay();
+    super.dispose();
+  }
+
+  // ── Lógica ────────────────────────────────────────────────────────────────
+  void _onTextChanged() {
+    final q = widget.controller.text.toLowerCase().trim();
+
+    // Só ativa a partir do 3º caractere
+    if (q.length < 3) {
+      _removeOverlay();
+      return;
+    }
+
+    // 1. Busca fármacos na DB pelo nome, classe ou grupo
+    final byName = widget.allDrugs.where((d) {
+      return d.name.toLowerCase().contains(q);
+    }).toList();
+
+    // 2. Busca por termos do _termMap (nomes comerciais, siglas, inglês)
+    //    Encontra os canonical names e mapeia de volta para DrugModel
+    final termMatches = _allTerms
+        .where((t) => t.toLowerCase().contains(q))
+        .toList();
+
+    // Para cada termo, tenta encontrar um DrugModel com nome similar
+    final Set<String> seenIds = byName.map((d) => d.id).toSet();
+    for (final term in termMatches) {
+      final match = widget.allDrugs.where((d) {
+        return d.name.toLowerCase().contains(term.toLowerCase()) &&
+            !seenIds.contains(d.id);
+      });
+      for (final d in match) {
+        byName.add(d);
+        seenIds.add(d.id);
+      }
+    }
+
+    // Deduplica e limita
+    final seen2 = <String>{};
+    final unique = byName.where((d) => seen2.add(d.id)).take(8).toList();
+
+    if (unique.isEmpty) {
+      _removeOverlay();
+      return;
+    }
+
+    _drugSuggestions = unique;
+
+    if (_overlay == null) {
+      _showOverlay();
+    } else {
+      _overlay!.markNeedsBuild();
+    }
+  }
+
+  // ── Overlay ───────────────────────────────────────────────────────────────
+  void _showOverlay() {
+    final overlay = Overlay.of(context);
+    _overlay = OverlayEntry(builder: (_) => _buildOverlay());
+    overlay.insert(_overlay!);
+  }
+
+  void _removeOverlay() {
+    _overlay?.remove();
+    _overlay = null;
+    _drugSuggestions = [];
+  }
+
+  void _selectDrug(DrugModel drug) {
+    // Preenche o campo com o nome do fármaco selecionado
+    widget.controller.text = drug.name;
+    widget.controller.selection = TextSelection.collapsed(
+      offset: drug.name.length,
+    );
+    widget.onChanged(drug.name);
+    _removeOverlay();
+    // Navega para o detalhe
+    widget.onDrugSelected(drug);
+  }
+
+  Widget _buildOverlay() {
+    return Positioned(
+      width: 0,
+      child: CompositedTransformFollower(
+        link: _layerLink,
+        showWhenUnlinked: false,
+        offset: const Offset(0, 48), // altura do TextField
+        child: Align(
+          alignment: Alignment.topLeft,
+          child: _DrugSuggestionDropdown(
+            suggestions: _drugSuggestions,
+            query: widget.controller.text.toLowerCase().trim(),
+            onSelect: _selectDrug,
+          ),
+        ),
+      ),
+    );
+  }
+
+  // ── Build ─────────────────────────────────────────────────────────────────
+  @override
+  Widget build(BuildContext context) {
+    return CompositedTransformTarget(
+      link: _layerLink,
+      child: TextField(
+        controller: widget.controller,
+        onChanged: (v) {
+          widget.onChanged(v);
+          // Fecha overlay se o usuário apagou tudo
+          if (v.trim().length < 3) _removeOverlay();
+        },
+        style: const TextStyle(
+          fontWeight: FontWeight.w700,
+          fontSize: 15,
+          color: kDark,
+        ),
+        decoration: InputDecoration(
+          hintText: widget.hintText,
+          hintStyle:
+              TextStyle(color: Colors.grey[400], fontWeight: FontWeight.w500),
+          prefixIcon: const Padding(
+            padding: EdgeInsets.only(left: 12, right: 8),
+            child: Icon(Icons.search_rounded, size: 20, color: Color(0xFF888888)),
+          ),
+          prefixIconConstraints:
+              const BoxConstraints(minWidth: 40, minHeight: 40),
+          // Botão de limpar campo
+          suffixIcon: widget.controller.text.isNotEmpty
+              ? GestureDetector(
+                  onTap: () {
+                    widget.controller.clear();
+                    widget.onChanged('');
+                    _removeOverlay();
+                  },
+                  child: const Padding(
+                    padding: EdgeInsets.only(right: 10),
+                    child: Icon(Icons.close_rounded,
+                        size: 18, color: Color(0xFFAAAAAA)),
+                  ),
+                )
+              : null,
+          suffixIconConstraints:
+              const BoxConstraints(minWidth: 36, minHeight: 36),
+          filled: true,
+          fillColor: Colors.white,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(14),
+            borderSide: const BorderSide(color: kBorder),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(14),
+            borderSide: const BorderSide(color: kBorder),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(14),
+            borderSide: const BorderSide(color: kGold, width: 1.5),
+          ),
+          contentPadding:
+              const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+          isDense: true,
+        ),
+      ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// DROPDOWN DE SUGESTÕES — DrugsScreen
+// Lista clicável com nome + grupo + rota de cada fármaco sugerido.
+// ─────────────────────────────────────────────────────────────────────────────
+class _DrugSuggestionDropdown extends StatelessWidget {
+  final List<DrugModel> suggestions;
+  final String query;
+  final ValueChanged<DrugModel> onSelect;
+
+  const _DrugSuggestionDropdown({
+    required this.suggestions,
+    required this.query,
+    required this.onSelect,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    const maxVisible = 6;
+    const itemH = 52.0;
+    final count = suggestions.length.clamp(1, maxVisible);
+    final boxH = count * itemH + 8.0;
+
+    return Material(
+      elevation: 8,
+      borderRadius: BorderRadius.circular(14),
+      color: Colors.white,
+      shadowColor: Colors.black.withValues(alpha: 0.15),
+      child: ConstrainedBox(
+        constraints: BoxConstraints(
+          maxWidth: 360,
+          maxHeight: boxH,
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(14),
+          child: ListView.separated(
+            padding: const EdgeInsets.symmetric(vertical: 4),
+            shrinkWrap: true,
+            itemCount: suggestions.length,
+            separatorBuilder: (_, __) => const Divider(
+              height: 1,
+              indent: 14,
+              endIndent: 14,
+              color: Color(0xFFF0EEE8),
+            ),
+            itemBuilder: (_, i) {
+              final drug = suggestions[i];
+              // Realça parte que bate com o query no nome
+              return InkWell(
+                onTap: () => onSelect(drug),
+                splashColor: const Color(0xFFECFDF5),
+                highlightColor: const Color(0xFFF0FFF8),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 14, vertical: 10),
+                  child: Row(children: [
+                    // Ícone de grupo
+                    Container(
+                      width: 32,
+                      height: 32,
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFECFDF5),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Center(
+                        child: Icon(
+                          DrugGroup.iconData(drug.group),
+                          size: 15,
+                          color: kGreen,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          // Nome com realce do trecho buscado
+                          _HighlightText(
+                            text: drug.name,
+                            query: query,
+                            baseStyle: const TextStyle(
+                              fontSize: 13,
+                              fontWeight: FontWeight.w800,
+                              color: kDark,
+                            ),
+                            highlightStyle: const TextStyle(
+                              fontSize: 13,
+                              fontWeight: FontWeight.w900,
+                              color: kGreen,
+                              backgroundColor: Color(0xFFD1FAE5),
+                            ),
+                          ),
+                          const SizedBox(height: 2),
+                          Text(
+                            '${drug.group} · ${drug.route}',
+                            style: const TextStyle(
+                              fontSize: 10,
+                              fontWeight: FontWeight.w500,
+                              color: Color(0xFF888888),
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(width: 6),
+                    const Icon(
+                      Icons.arrow_forward_ios_rounded,
+                      size: 11,
+                      color: Color(0xFFCCCCCC),
+                    ),
+                  ]),
+                ),
+              );
+            },
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// HELPER — realça o trecho buscado dentro de um texto
+// ─────────────────────────────────────────────────────────────────────────────
+class _HighlightText extends StatelessWidget {
+  final String text;
+  final String query;
+  final TextStyle baseStyle;
+  final TextStyle highlightStyle;
+
+  const _HighlightText({
+    required this.text,
+    required this.query,
+    required this.baseStyle,
+    required this.highlightStyle,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    if (query.isEmpty) {
+      return Text(text, style: baseStyle, overflow: TextOverflow.ellipsis);
+    }
+
+    final lowerText = text.toLowerCase();
+    final lowerQuery = query.toLowerCase();
+    final idx = lowerText.indexOf(lowerQuery);
+
+    if (idx < 0) {
+      return Text(text, style: baseStyle, overflow: TextOverflow.ellipsis);
+    }
+
+    final before = text.substring(0, idx);
+    final match = text.substring(idx, idx + query.length);
+    final after = text.substring(idx + query.length);
+
+    return RichText(
+      overflow: TextOverflow.ellipsis,
+      text: TextSpan(
+        style: baseStyle,
+        children: [
+          if (before.isNotEmpty) TextSpan(text: before),
+          TextSpan(text: match, style: highlightStyle),
+          if (after.isNotEmpty) TextSpan(text: after),
+        ],
+      ),
+    );
+  }
 }

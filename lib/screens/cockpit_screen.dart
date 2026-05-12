@@ -15,8 +15,6 @@ class CockpitScreen extends StatefulWidget {
 
 class _CockpitScreenState extends State<CockpitScreen> {
   bool _copied = false;
-  final _drugQueryCtrl = TextEditingController();
-  bool _drugPickerOpen = false;
 
   // Seções colapsáveis — todas fechadas por padrão
   bool _bioOpen = false;
@@ -58,7 +56,6 @@ class _CockpitScreenState extends State<CockpitScreen> {
 
   @override
   void dispose() {
-    _drugQueryCtrl.dispose();
     _calcDrugQueryCtrl.dispose();
     super.dispose();
   }
@@ -90,16 +87,6 @@ class _CockpitScreenState extends State<CockpitScreen> {
   @override
   Widget build(BuildContext context) {
     final p = context.watch<AppProvider>();
-    final filteredDrugs = p.drugsDB.where((d) {
-      if (!p.selectedDrugIds.contains(d.id)) {
-        final q = _drugQueryCtrl.text.toLowerCase();
-        if (q.isEmpty) return true;
-        return d.name.toLowerCase().contains(q) ||
-            (d.className[p.lang] ?? '').toLowerCase().contains(q) ||
-            (d.category[p.lang] ?? '').toLowerCase().contains(q);
-      }
-      return false;
-    }).take(8).toList();
 
     // Drug picker filtrado para a calculadora
     final calcFilteredDrugs = p.drugsDB.where((d) {
@@ -139,13 +126,7 @@ class _CockpitScreenState extends State<CockpitScreen> {
           subtitle: bioSubtitle.isEmpty ? p.t('tap_to_fill') : bioSubtitle,
           isOpen: _bioOpen,
           onToggle: () => setState(() => _bioOpen = !_bioOpen),
-          child: _BiometricsBody(
-            p: p,
-            drugQueryCtrl: _drugQueryCtrl,
-            drugPickerOpen: _drugPickerOpen,
-            filteredDrugs: filteredDrugs,
-            onDrugPickerChanged: (v) => setState(() => _drugPickerOpen = v),
-          ),
+          child: _BiometricsBody(p: p),
         ),
         const SizedBox(height: 10),
 
@@ -449,17 +430,7 @@ class _CollapsibleSection extends StatelessWidget {
 // ─────────────────────────────────────────────────────────────────────────────
 class _BiometricsBody extends StatefulWidget {
   final AppProvider p;
-  final TextEditingController drugQueryCtrl;
-  final bool drugPickerOpen;
-  final List filteredDrugs;
-  final ValueChanged<bool> onDrugPickerChanged;
-  const _BiometricsBody({
-    required this.p,
-    required this.drugQueryCtrl,
-    required this.drugPickerOpen,
-    required this.filteredDrugs,
-    required this.onDrugPickerChanged,
-  });
+  const _BiometricsBody({required this.p});
 
   @override
   State<_BiometricsBody> createState() => _BiometricsBodyState();
@@ -658,14 +629,64 @@ class _DoseBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      // Drug picker sempre visível
+      // Drug picker sempre visível — com sugestões a partir do 3º caractere
       _FieldRow(
         label: p.t('select_drug'),
         child: Column(children: [
-          MedInput(
+          TextField(
             controller: drugQueryCtrl,
-            hintText: p.t('search_drug_hint'),
-            onChanged: (v) => onDrugPickerChanged(v.isNotEmpty),
+            onChanged: (v) => onDrugPickerChanged(v.trim().length >= 3),
+            style: const TextStyle(
+              fontWeight: FontWeight.w700,
+              fontSize: 15,
+              color: kDark,
+            ),
+            decoration: InputDecoration(
+              hintText: p.t('search_drug_hint'),
+              hintStyle: TextStyle(
+                color: Colors.grey[400],
+                fontWeight: FontWeight.w500,
+              ),
+              prefixIcon: const Padding(
+                padding: EdgeInsets.only(left: 12, right: 8),
+                child: Icon(Icons.search_rounded,
+                    size: 18, color: Color(0xFF888888)),
+              ),
+              prefixIconConstraints:
+                  const BoxConstraints(minWidth: 38, minHeight: 38),
+              suffixIcon: drugQueryCtrl.text.isNotEmpty
+                  ? GestureDetector(
+                      onTap: () {
+                        drugQueryCtrl.clear();
+                        onDrugPickerChanged(false);
+                      },
+                      child: const Padding(
+                        padding: EdgeInsets.only(right: 10),
+                        child: Icon(Icons.close_rounded,
+                            size: 16, color: Color(0xFFAAAAAA)),
+                      ),
+                    )
+                  : null,
+              suffixIconConstraints:
+                  const BoxConstraints(minWidth: 32, minHeight: 32),
+              filled: true,
+              fillColor: Colors.white,
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(14),
+                borderSide: const BorderSide(color: kBorder),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(14),
+                borderSide: const BorderSide(color: kBorder),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(14),
+                borderSide: const BorderSide(color: kGold, width: 1.5),
+              ),
+              contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 14, vertical: 11),
+              isDense: true,
+            ),
           ),
           if (drugPickerOpen && filteredDrugs.isNotEmpty)
             Container(
@@ -674,23 +695,96 @@ class _DoseBody extends StatelessWidget {
                 borderRadius: BorderRadius.circular(14),
                 border: Border.all(color: kBorder),
                 color: Colors.white,
-                boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.08), blurRadius: 12)],
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.08),
+                    blurRadius: 12,
+                  )
+                ],
               ),
-              child: Column(children: filteredDrugs.map((d) => ListTile(
-                dense: true,
-                title: Text(d.name, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w900)),
-                subtitle: Text('${p.tDB(d.className)} · ${d.route}', style: const TextStyle(fontSize: 11)),
-                trailing: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  decoration: BoxDecoration(color: kDark, borderRadius: BorderRadius.circular(8)),
-                  child: Text(p.t('use'), style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w900, color: kGoldLight)),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(14),
+                child: Column(
+                  children: filteredDrugs.asMap().entries.map((entry) {
+                    final i = entry.key;
+                    final d = entry.value;
+                    final q = drugQueryCtrl.text.toLowerCase().trim();
+                    final isLast = i == filteredDrugs.length - 1;
+                    return Column(
+                      children: [
+                        InkWell(
+                          onTap: () {
+                            p.addDrug(d.id);
+                            drugQueryCtrl.clear();
+                            onDrugPickerChanged(false);
+                          },
+                          splashColor: const Color(0xFFECFDF5),
+                          highlightColor: const Color(0xFFF0FFF8),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 14, vertical: 11),
+                            child: Row(children: [
+                              Container(
+                                width: 30,
+                                height: 30,
+                                decoration: BoxDecoration(
+                                  color: const Color(0xFFECFDF5),
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: const Center(
+                                  child: Icon(Icons.medication_rounded,
+                                      size: 14, color: kGreen),
+                                ),
+                              ),
+                              const SizedBox(width: 10),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.start,
+                                  children: [
+                                    _buildHighlightedText(
+                                      d.name,
+                                      q,
+                                      const TextStyle(
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.w900,
+                                        color: kDark,
+                                      ),
+                                    ),
+                                    Text(
+                                      '${p.tDB(d.className)} · ${d.route}',
+                                      style: const TextStyle(
+                                          fontSize: 10,
+                                          color: Color(0xFF888888)),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              const SizedBox(width: 8),
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 8, vertical: 4),
+                                decoration: BoxDecoration(
+                                  color: kDark,
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: Text(p.t('use'),
+                                    style: const TextStyle(
+                                        fontSize: 10,
+                                        fontWeight: FontWeight.w900,
+                                        color: kGoldLight)),
+                              ),
+                            ]),
+                          ),
+                        ),
+                        if (!isLast)
+                          const Divider(
+                              height: 1, indent: 54, color: kBorder),
+                      ],
+                    );
+                  }).toList(),
                 ),
-                onTap: () {
-                  p.addDrug(d.id);
-                  drugQueryCtrl.clear();
-                  onDrugPickerChanged(false);
-                },
-              )).toList()),
+              ),
             ),
         ]),
       ),
@@ -1237,13 +1331,15 @@ class _MedsAutocompleteFieldState extends State<_MedsAutocompleteField> {
   }
 
   void _onTextChanged() {
+    if (!mounted) return;
     final token = _currentToken();
-    if (token.length < 2) {
+    // Ativa somente a partir do 3º caractere
+    if (token.length < 3) {
       _removeOverlay();
       return;
     }
     final matches = _allNames
-        .where((n) => n.contains(token))
+        .where((n) => n.toLowerCase().contains(token))
         .toList();
     if (matches.isEmpty) {
       _removeOverlay();
@@ -1268,6 +1364,7 @@ class _MedsAutocompleteFieldState extends State<_MedsAutocompleteField> {
   void _removeOverlay() {
     _overlay?.remove();
     _overlay = null;
+    _suggestions = [];
   }
 
   void _selectSuggestion(String name) {
@@ -1300,11 +1397,13 @@ class _MedsAutocompleteFieldState extends State<_MedsAutocompleteField> {
       child: CompositedTransformFollower(
         link: _layerLink,
         showWhenUnlinked: false,
-        offset: const Offset(0, 0),
+        // offset para aparecer logo abaixo do campo multiline
+        offset: const Offset(0, 80),
         child: Align(
           alignment: Alignment.topLeft,
           child: _SuggestionsDropdown(
             suggestions: _suggestions,
+            token: _currentToken(),
             onSelect: _selectSuggestion,
           ),
         ),
@@ -1358,9 +1457,11 @@ class _MedsAutocompleteFieldState extends State<_MedsAutocompleteField> {
 // Dropdown de sugestões posicionado sob o campo
 class _SuggestionsDropdown extends StatelessWidget {
   final List<String> suggestions;
+  final String token;
   final ValueChanged<String> onSelect;
   const _SuggestionsDropdown({
     required this.suggestions,
+    required this.token,
     required this.onSelect,
   });
 
@@ -1368,9 +1469,9 @@ class _SuggestionsDropdown extends StatelessWidget {
   Widget build(BuildContext context) {
     // Máximo 6 sugestões visíveis antes de rolar
     const maxVisible = 6;
-    final itemH     = 38.0;
+    const itemH     = 40.0;
     final count     = suggestions.length.clamp(1, maxVisible);
-    final boxHeight = count * itemH + 8;
+    final boxHeight = count * itemH + 10.0;
 
     return Material(
       elevation: 6,
@@ -1384,34 +1485,92 @@ class _SuggestionsDropdown extends StatelessWidget {
         ),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(12),
-          child: ListView.builder(
+          child: ListView.separated(
             padding: const EdgeInsets.symmetric(vertical: 4),
             shrinkWrap: true,
             itemCount: suggestions.length,
+            separatorBuilder: (_, __) => const Divider(
+              height: 1,
+              indent: 40,
+              endIndent: 12,
+              color: Color(0xFFF3F3F3),
+            ),
             itemBuilder: (_, i) {
               final name = suggestions[i];
+              // Realça o trecho que bate com o token pesquisado
+              final lowerName  = name.toLowerCase();
+              final lowerToken = token.toLowerCase();
+              final idx = lowerName.indexOf(lowerToken);
+
+              Widget nameWidget;
+              if (idx >= 0 && token.isNotEmpty) {
+                nameWidget = RichText(
+                  overflow: TextOverflow.ellipsis,
+                  text: TextSpan(
+                    style: const TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600,
+                      color: Color(0xFF1A1A1A),
+                    ),
+                    children: [
+                      if (idx > 0)
+                        TextSpan(text: name.substring(0, idx)),
+                      TextSpan(
+                        text: name.substring(idx, idx + token.length),
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w900,
+                          color: Color(0xFF065F46),
+                          backgroundColor: Color(0xFFD1FAE5),
+                        ),
+                      ),
+                      if (idx + token.length < name.length)
+                        TextSpan(
+                          text: name.substring(idx + token.length)),
+                    ],
+                  ),
+                );
+              } else {
+                nameWidget = Text(
+                  name,
+                  style: const TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                    color: Color(0xFF1A1A1A),
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                );
+              }
+
               return InkWell(
                 onTap: () => onSelect(name),
+                splashColor: const Color(0xFFECFDF5),
+                highlightColor: const Color(0xFFF0FFF8),
                 child: Padding(
                   padding: const EdgeInsets.symmetric(
-                      horizontal: 14, vertical: 9),
+                      horizontal: 12, vertical: 9),
                   child: Row(children: [
-                    const Icon(
-                      Icons.medication_rounded,
-                      size: 13,
-                      color: Color(0xFF065F46),
-                    ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: Text(
-                        name,
-                        style: const TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.w600,
-                          color: Color(0xFF1A1A1A),
-                        ),
-                        overflow: TextOverflow.ellipsis,
+                    Container(
+                      width: 26,
+                      height: 26,
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFECFDF5),
+                        borderRadius: BorderRadius.circular(6),
                       ),
+                      child: const Center(
+                        child: Icon(
+                          Icons.medication_rounded,
+                          size: 14,
+                          color: Color(0xFF065F46),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(child: nameWidget),
+                    const SizedBox(width: 6),
+                    const Icon(
+                      Icons.add_circle_outline_rounded,
+                      size: 14,
+                      color: Color(0xFFCCCCCC),
                     ),
                   ]),
                 ),
@@ -2136,4 +2295,42 @@ class _ReminderCardState extends State<_ReminderCard>
       child: cardContent,
     );
   }
+}
+
+// ── Helper top-level ─────────────────────────────────────────────────────────
+
+/// Constrói um [RichText] com [query] destacado dentro de [text].
+/// Fallback para [Text] simples se não houver correspondência.
+Widget _buildHighlightedText(
+  String text,
+  String query,
+  TextStyle baseStyle,
+) {
+  if (query.isEmpty) {
+    return Text(text, style: baseStyle, overflow: TextOverflow.ellipsis);
+  }
+  final lower = text.toLowerCase();
+  final idx = lower.indexOf(query.toLowerCase());
+  if (idx < 0) {
+    return Text(text, style: baseStyle, overflow: TextOverflow.ellipsis);
+  }
+  return RichText(
+    overflow: TextOverflow.ellipsis,
+    text: TextSpan(
+      style: baseStyle,
+      children: [
+        if (idx > 0) TextSpan(text: text.substring(0, idx)),
+        TextSpan(
+          text: text.substring(idx, idx + query.length),
+          style: baseStyle.copyWith(
+            fontWeight: FontWeight.w900,
+            color: kGreen,
+            backgroundColor: const Color(0xFFD1FAE5),
+          ),
+        ),
+        if (idx + query.length < text.length)
+          TextSpan(text: text.substring(idx + query.length)),
+      ],
+    ),
+  );
 }
