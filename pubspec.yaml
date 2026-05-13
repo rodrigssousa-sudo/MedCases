@@ -31,6 +31,12 @@ dependencies:
   cloud_firestore: 5.4.3
   share_plus: ^12.0.2
 
+  # Google Sign-In OAuth (Gemini via conta Google)
+  google_sign_in: 6.2.1
+
+  # Armazenamento seguro de tokens (Keychain iOS / Keystore Android)
+  flutter_secure_storage: 9.2.2
+
   # Notificações locais (alertas de timer em segundo plano)
   flutter_local_notifications: 18.0.1
 

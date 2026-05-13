@@ -194,13 +194,19 @@ class _AiScreenState extends State<AiScreen> {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (_) => _AiStatusSheet(
-        userEmail: p.userEmail,
-        userName:  p.userName,
-        lang:      p.lang,
-        dark:      p.darkMode,
-        hasAi:     p.hasAiKey,
-        keyLoading: p.aiKeyLoading,
+      builder: (_) => ChangeNotifierProvider.value(
+        value: p,
+        child: _AiStatusSheet(
+          userEmail:        p.userEmail,
+          userName:         p.userName,
+          lang:             p.lang,
+          dark:             p.darkMode,
+          hasAi:            p.hasAnyAi,
+          geminiConnected:  p.geminiConnected,
+          geminiEmail:      p.geminiEmail,
+          geminiLoading:    p.geminiLoading,
+          keyLoading:       p.aiKeyLoading,
+        ),
       ),
     );
   }
@@ -229,8 +235,9 @@ class _AiScreenState extends State<AiScreen> {
         onClear: _clearChat,
         onSettings: _openAiSettings,
         lang: p.lang,
-        hasRealAi: p.hasAiKey,
-        keyLoading: p.aiKeyLoading,
+        hasRealAi:       p.hasAnyAi,
+        geminiConnected: p.geminiConnected,
+        keyLoading: p.aiKeyLoading || p.geminiLoading,
       ),
 
       // ── Banner de erro de chave ───────────────────────────────────────────
@@ -304,6 +311,7 @@ class _WaHeader extends StatelessWidget {
   final VoidCallback onSettings;
   final String lang;
   final bool hasRealAi;
+  final bool geminiConnected;
   final bool keyLoading;
   const _WaHeader({
     required this.dark,
@@ -312,6 +320,7 @@ class _WaHeader extends StatelessWidget {
     required this.onSettings,
     required this.lang,
     required this.hasRealAi,
+    this.geminiConnected = false,
     this.keyLoading = false,
   });
 
@@ -373,10 +382,14 @@ class _WaHeader extends StatelessWidget {
                   const SizedBox(width: 5),
                   Text(
                     keyLoading
-                        ? (lang == 'es' ? 'Conectando...' : 'Conectando...')
-                        : (hasRealAi
-                            ? 'GPT-4o mini • online'
-                            : (lang == 'es' ? 'Base clínica local • activo siempre' : 'Base clínica local • sempre ativa')),
+                        ? 'Conectando...'
+                        : (geminiConnected
+                            ? 'Gemini 1.5 Flash • online'
+                            : (hasRealAi
+                                ? 'GPT-4o mini • online'
+                                : (lang == 'es'
+                                    ? 'Base clínica local • activo siempre'
+                                    : 'Base clínica local • sempre ativa'))),
                     style: TextStyle(
                       fontSize: 10,
                       color: keyLoading
@@ -399,7 +412,9 @@ class _WaHeader extends StatelessWidget {
                   color: Colors.white.withValues(alpha: 0.1),
                 ),
                 child: Icon(
-                  hasRealAi ? Icons.key_rounded : Icons.key_off_rounded,
+                  geminiConnected
+                      ? Icons.account_circle_rounded
+                      : (hasRealAi ? Icons.key_rounded : Icons.key_off_rounded),
                   size: 18,
                   color: hasRealAi
                       ? const Color(0xFF4ADE80)
@@ -867,7 +882,8 @@ class _InputBar extends StatelessWidget {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Banner de erro de chave — aparece abaixo do header quando chave inválida
+// Banner de erro de IA — aparece abaixo do header quando IA retorna erro
+// Cobre tanto erros de chave OpenAI quanto token Gemini expirado
 // ─────────────────────────────────────────────────────────────────────────────
 class _AiErrorBanner extends StatelessWidget {
   final bool dark;
@@ -878,6 +894,21 @@ class _AiErrorBanner extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isEs = lang == 'es';
+    // Detecta se o erro foi de token Gemini expirado para mensagem específica
+    final p = context.read<AppProvider>();
+    final isGeminiError = p.geminiConnected;
+
+    final String msg;
+    if (isGeminiError) {
+      msg = isEs
+          ? 'Sesión Google expirada — toca para reconectar'
+          : 'Sessão Google expirada — toque para reconectar';
+    } else {
+      msg = isEs
+          ? 'Clave API inválida — toca para configurar'
+          : 'Chave API inválida — toque para configurar';
+    }
+
     return GestureDetector(
       onTap: onFix,
       child: Container(
@@ -885,13 +916,15 @@ class _AiErrorBanner extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         color: const Color(0xFFB91C1C).withValues(alpha: 0.12),
         child: Row(children: [
-          const Icon(Icons.error_outline_rounded, color: Color(0xFFEF4444), size: 16),
+          Icon(
+            isGeminiError
+                ? Icons.account_circle_outlined
+                : Icons.error_outline_rounded,
+            color: const Color(0xFFEF4444), size: 16),
           const SizedBox(width: 8),
           Expanded(
             child: Text(
-              isEs
-                  ? 'Clave API inválida — toca para configurar'
-                  : 'Chave API inválida — toque para configurar',
+              msg,
               style: const TextStyle(
                 fontSize: 12, fontWeight: FontWeight.w600,
                 color: Color(0xFFEF4444)),
@@ -905,14 +938,17 @@ class _AiErrorBanner extends StatelessWidget {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Sheet de status da IA — mostra estado atual sem exigir configuração do usuário
+// Sheet de status da IA — mostra estado atual + botão "Conectar com Google"
 // ─────────────────────────────────────────────────────────────────────────────
-class _AiStatusSheet extends StatelessWidget {
+class _AiStatusSheet extends StatefulWidget {
   final String userEmail;
   final String userName;
   final String lang;
   final bool dark;
   final bool hasAi;
+  final bool geminiConnected;
+  final String geminiEmail;
+  final bool geminiLoading;
   final bool keyLoading;
 
   const _AiStatusSheet({
@@ -921,281 +957,488 @@ class _AiStatusSheet extends StatelessWidget {
     required this.lang,
     required this.dark,
     required this.hasAi,
+    this.geminiConnected = false,
+    this.geminiEmail = '',
+    this.geminiLoading = false,
     this.keyLoading = false,
   });
 
-  bool get _isEs => lang == 'es';
+  @override
+  State<_AiStatusSheet> createState() => _AiStatusSheetState();
+}
+
+class _AiStatusSheetState extends State<_AiStatusSheet> {
+  bool get _isEs => widget.lang == 'es';
+
+  Future<void> _handleGoogleConnect() async {
+    final p = context.read<AppProvider>();
+    final ok = await p.connectGemini();
+    if (!mounted) return;
+    if (!ok) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(_isEs
+              ? 'No se pudo conectar con Google. Intente de nuevo.'
+              : 'Não foi possível conectar com o Google. Tente novamente.'),
+          backgroundColor: const Color(0xFFB91C1C),
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          margin: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+        ),
+      );
+    }
+  }
+
+  Future<void> _handleGoogleDisconnect() async {
+    final p = context.read<AppProvider>();
+    await p.disconnectGemini();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final bg    = dark ? const Color(0xFF0F1A14) : Colors.white;
-    final cardBg = dark ? const Color(0xFF1A2820) : const Color(0xFFF5F7F5);
-    final divCol = dark ? Colors.white12 : Colors.black.withValues(alpha: 0.08);
-    final sub   = dark ? Colors.white54 : Colors.black54;
-    final text  = dark ? Colors.white : const Color(0xFF1A1A1A);
-    const green = Color(0xFF1F6B48);
+    // Lê estado atualizado em tempo real via Consumer
+    return Consumer<AppProvider>(
+      builder: (context, p, _) {
+        final dark           = widget.dark;
+        final isEs           = _isEs;
+        final geminiConn     = p.geminiConnected;
+        final geminiEmail    = p.geminiEmail;
+        final geminiLoading  = p.geminiLoading;
+        final hasAnyAi       = p.hasAnyAi;
 
-    return Container(
-      decoration: BoxDecoration(
-        color: bg,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      padding: EdgeInsets.fromLTRB(
-          20, 12, 20, MediaQuery.of(context).viewInsets.bottom + 32),
-      child: Column(mainAxisSize: MainAxisSize.min, children: [
+        final bg     = dark ? const Color(0xFF0F1A14) : Colors.white;
+        final cardBg = dark ? const Color(0xFF1A2820) : const Color(0xFFF5F7F5);
+        final divCol = dark ? Colors.white12 : Colors.black.withValues(alpha: 0.08);
+        final sub    = dark ? Colors.white54 : Colors.black54;
+        final text   = dark ? Colors.white : const Color(0xFF1A1A1A);
+        const green  = Color(0xFF1F6B48);
+        const blue   = Color(0xFF1A73E8); // cor Google azul
 
-        // Drag handle
-        Container(
-          width: 36, height: 4,
-          margin: const EdgeInsets.only(bottom: 20),
+        // Determina qual label de status mostrar no badge
+        final String badgeLabel;
+        if (geminiLoading || widget.keyLoading) {
+          badgeLabel = 'Conectando...';
+        } else if (geminiConn) {
+          badgeLabel = 'Gemini online';
+        } else if (hasAnyAi) {
+          badgeLabel = 'GPT online';
+        } else {
+          badgeLabel = 'Base local';
+        }
+
+        final String modeLabel;
+        if (geminiConn) {
+          modeLabel = isEs
+              ? 'Modo híbrido — base clínica + Gemini 1.5 Flash'
+              : 'Modo híbrido — base clínica + Gemini 1.5 Flash';
+        } else if (hasAnyAi) {
+          modeLabel = isEs
+              ? 'Modo híbrido — base clínica + GPT-4o mini'
+              : 'Modo híbrido — base clínica + GPT-4o mini';
+        } else {
+          modeLabel = isEs
+              ? 'Modo local — base clínica integrada'
+              : 'Modo local — base clínica integrada';
+        }
+
+        return Container(
           decoration: BoxDecoration(
-            color: dark ? Colors.white24 : Colors.black12,
-            borderRadius: BorderRadius.circular(2)),
-        ),
-
-        // ── Card principal — conta + status da IA ──────────────────────────
-        Container(
-          width: double.infinity,
-          padding: const EdgeInsets.all(18),
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: hasAi
-                  ? [const Color(0xFF064E35), const Color(0xFF1B5E3B), const Color(0xFF1F6B48)]
-                  : [dark ? const Color(0xFF1A2820) : const Color(0xFFF0F4F1),
-                     dark ? const Color(0xFF1E2E22) : const Color(0xFFE8F0EA)],
-            ),
-            borderRadius: BorderRadius.circular(18),
+            color: bg,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
           ),
-          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            // Avatar + nome + badge
-            Row(children: [
-              Container(
-                width: 44, height: 44,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: hasAi
-                      ? Colors.white.withValues(alpha: 0.15)
-                      : green.withValues(alpha: 0.12),
-                ),
-                child: Center(
-                  child: Text(
-                    userName.isNotEmpty
-                        ? userName[0].toUpperCase()
-                        : (userEmail.isNotEmpty ? userEmail[0].toUpperCase() : '?'),
-                    style: TextStyle(
-                      fontSize: 19, fontWeight: FontWeight.w800,
-                      color: hasAi ? Colors.white : green),
-                  ),
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  if (userName.isNotEmpty)
-                    Text(userName,
-                      style: TextStyle(
-                        fontSize: 15, fontWeight: FontWeight.w700,
-                        color: hasAi ? Colors.white : text),
-                      maxLines: 1, overflow: TextOverflow.ellipsis),
-                  Text(
-                    userEmail.isNotEmpty ? userEmail
-                        : (_isEs ? 'Sin cuenta' : 'Sem conta'),
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: hasAi
-                          ? Colors.white.withValues(alpha: 0.65)
-                          : sub),
-                    maxLines: 1, overflow: TextOverflow.ellipsis),
-                ],
-              )),
-              // Badge status
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
-                  color: keyLoading
-                      ? Colors.white.withValues(alpha: 0.08)
-                      : (hasAi
-                          ? Colors.white.withValues(alpha: 0.15)
-                          : green.withValues(alpha: 0.1)),
-                  border: Border.all(
-                    color: keyLoading
-                        ? Colors.white.withValues(alpha: 0.15)
-                        : (hasAi
-                            ? Colors.white.withValues(alpha: 0.3)
-                            : green.withValues(alpha: 0.25))),
-                ),
-                child: Row(mainAxisSize: MainAxisSize.min, children: [
-                  if (keyLoading)
-                    SizedBox(
-                      width: 8, height: 8,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 1.2,
-                        color: Colors.white.withValues(alpha: 0.5),
-                      ),
-                    )
-                  else
-                    Container(
-                      width: 6, height: 6,
-                      margin: const EdgeInsets.only(right: 5),
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: hasAi
-                            ? const Color(0xFF4ADE80)
-                            : (dark ? Colors.white38 : Colors.black26)),
-                    ),
-                  const SizedBox(width: 5),
-                  Text(
-                    keyLoading
-                        ? (_isEs ? 'Conectando...' : 'Conectando...')
-                        : (hasAi
-                            ? (_isEs ? 'GPT online' : 'GPT online')
-                            : (_isEs ? 'Base local' : 'Base local')),
-                    style: TextStyle(
-                      fontSize: 10, fontWeight: FontWeight.w700,
-                      color: keyLoading
-                          ? Colors.white.withValues(alpha: 0.5)
-                          : (hasAi ? Colors.white : sub))),
-                ]),
-              ),
-            ]),
+          padding: EdgeInsets.fromLTRB(
+              20, 12, 20, MediaQuery.of(context).viewInsets.bottom + 32),
+          child: Column(mainAxisSize: MainAxisSize.min, children: [
 
-            const SizedBox(height: 16),
-            Divider(
-              color: hasAi
-                  ? Colors.white.withValues(alpha: 0.15)
-                  : divCol,
-              height: 1),
+            // Drag handle
+            Container(
+              width: 36, height: 4,
+              margin: const EdgeInsets.only(bottom: 20),
+              decoration: BoxDecoration(
+                color: dark ? Colors.white24 : Colors.black12,
+                borderRadius: BorderRadius.circular(2)),
+            ),
+
+            // ── Card principal — conta + status da IA ────────────────────
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(18),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: hasAnyAi
+                      ? [const Color(0xFF064E35), const Color(0xFF1B5E3B), const Color(0xFF1F6B48)]
+                      : [dark ? const Color(0xFF1A2820) : const Color(0xFFF0F4F1),
+                         dark ? const Color(0xFF1E2E22) : const Color(0xFFE8F0EA)],
+                ),
+                borderRadius: BorderRadius.circular(18),
+              ),
+              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                // Avatar + nome + badge
+                Row(children: [
+                  Container(
+                    width: 44, height: 44,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: hasAnyAi
+                          ? Colors.white.withValues(alpha: 0.15)
+                          : green.withValues(alpha: 0.12),
+                    ),
+                    child: Center(
+                      child: Text(
+                        widget.userName.isNotEmpty
+                            ? widget.userName[0].toUpperCase()
+                            : (widget.userEmail.isNotEmpty
+                                ? widget.userEmail[0].toUpperCase()
+                                : '?'),
+                        style: TextStyle(
+                          fontSize: 19, fontWeight: FontWeight.w800,
+                          color: hasAnyAi ? Colors.white : green),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      if (widget.userName.isNotEmpty)
+                        Text(widget.userName,
+                          style: TextStyle(
+                            fontSize: 15, fontWeight: FontWeight.w700,
+                            color: hasAnyAi ? Colors.white : text),
+                          maxLines: 1, overflow: TextOverflow.ellipsis),
+                      Text(
+                        widget.userEmail.isNotEmpty ? widget.userEmail
+                            : (isEs ? 'Sin cuenta' : 'Sem conta'),
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: hasAnyAi
+                              ? Colors.white.withValues(alpha: 0.65)
+                              : sub),
+                        maxLines: 1, overflow: TextOverflow.ellipsis),
+                    ],
+                  )),
+                  // Badge status
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20),
+                      color: (geminiLoading || widget.keyLoading)
+                          ? Colors.white.withValues(alpha: 0.08)
+                          : (hasAnyAi
+                              ? Colors.white.withValues(alpha: 0.15)
+                              : green.withValues(alpha: 0.1)),
+                      border: Border.all(
+                        color: (geminiLoading || widget.keyLoading)
+                            ? Colors.white.withValues(alpha: 0.15)
+                            : (hasAnyAi
+                                ? Colors.white.withValues(alpha: 0.3)
+                                : green.withValues(alpha: 0.25))),
+                    ),
+                    child: Row(mainAxisSize: MainAxisSize.min, children: [
+                      if (geminiLoading || widget.keyLoading)
+                        SizedBox(
+                          width: 8, height: 8,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 1.2,
+                            color: Colors.white.withValues(alpha: 0.5),
+                          ),
+                        )
+                      else
+                        Container(
+                          width: 6, height: 6,
+                          margin: const EdgeInsets.only(right: 5),
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: hasAnyAi
+                                ? const Color(0xFF4ADE80)
+                                : (dark ? Colors.white38 : Colors.black26)),
+                        ),
+                      const SizedBox(width: 5),
+                      Text(
+                        badgeLabel,
+                        style: TextStyle(
+                          fontSize: 10, fontWeight: FontWeight.w700,
+                          color: (geminiLoading || widget.keyLoading)
+                              ? Colors.white.withValues(alpha: 0.5)
+                              : (hasAnyAi ? Colors.white : sub))),
+                    ]),
+                  ),
+                ]),
+
+                const SizedBox(height: 16),
+                Divider(
+                  color: hasAnyAi
+                      ? Colors.white.withValues(alpha: 0.15)
+                      : divCol,
+                  height: 1),
+                const SizedBox(height: 14),
+
+                // Linha: modo de operação
+                Row(children: [
+                  Icon(Icons.psychology_rounded, size: 14,
+                    color: hasAnyAi
+                        ? Colors.white.withValues(alpha: 0.7)
+                        : sub),
+                  const SizedBox(width: 8),
+                  Expanded(child: Text(
+                    modeLabel,
+                    style: TextStyle(
+                      fontSize: 12, fontWeight: FontWeight.w600,
+                      color: hasAnyAi ? Colors.white : text))),
+                ]),
+                const SizedBox(height: 8),
+
+                // Linha: base local
+                Row(children: [
+                  Icon(Icons.local_hospital_rounded, size: 14,
+                    color: hasAnyAi
+                        ? Colors.white.withValues(alpha: 0.6)
+                        : sub),
+                  const SizedBox(width: 8),
+                  Expanded(child: Text(
+                    isEs
+                        ? '337 fármacos · protocolos de urgencias · siempre activo'
+                        : '337 fármacos · protocolos de urgência · sempre ativo',
+                    style: TextStyle(
+                      fontSize: 11,
+                      color: hasAnyAi
+                          ? Colors.white.withValues(alpha: 0.6)
+                          : sub))),
+                ]),
+
+                if (geminiConn) ...[
+                  const SizedBox(height: 8),
+                  Row(children: [
+                    Icon(Icons.account_circle_rounded, size: 14,
+                      color: const Color(0xFF4ADE80).withValues(alpha: 0.8)),
+                    const SizedBox(width: 8),
+                    Expanded(child: Text(
+                      geminiEmail.isNotEmpty
+                          ? geminiEmail
+                          : (isEs
+                              ? 'Google conectado — Gemini 1.5 Flash activo'
+                              : 'Google conectado — Gemini 1.5 Flash ativo'),
+                      style: TextStyle(
+                        fontSize: 11,
+                        color: Colors.white.withValues(alpha: 0.65)),
+                      maxLines: 1, overflow: TextOverflow.ellipsis)),
+                  ]),
+                ] else if (hasAnyAi) ...[
+                  const SizedBox(height: 8),
+                  Row(children: [
+                    Icon(Icons.cloud_done_rounded, size: 14,
+                      color: const Color(0xFF4ADE80).withValues(alpha: 0.8)),
+                    const SizedBox(width: 8),
+                    Expanded(child: Text(
+                      isEs
+                          ? 'GPT-4o mini conectado — enriquece con conocimiento global'
+                          : 'GPT-4o mini conectado — enriquece com conhecimento global',
+                      style: TextStyle(
+                        fontSize: 11,
+                        color: Colors.white.withValues(alpha: 0.6)))),
+                  ]),
+                ],
+              ]),
+            ),
+
             const SizedBox(height: 14),
 
-            // Linha: modo de operação
-            Row(children: [
-              Icon(Icons.psychology_rounded, size: 14,
-                color: hasAi
-                    ? Colors.white.withValues(alpha: 0.7)
-                    : sub),
-              const SizedBox(width: 8),
-              Expanded(child: Text(
-                hasAi
-                    ? (_isEs
-                        ? 'Modo híbrido — base clínica + GPT-4o mini'
-                        : 'Modo híbrido — base clínica + GPT-4o mini')
-                    : (_isEs
-                        ? 'Modo local — base clínica integrada'
-                        : 'Modo local — base clínica integrada'),
-                style: TextStyle(
-                  fontSize: 12, fontWeight: FontWeight.w600,
-                  color: hasAi ? Colors.white : text))),
-            ]),
-            const SizedBox(height: 8),
+            // ── Botão principal: Conectar com Google / Desconectar ────────
+            if (geminiConn)
+              // Conectado — mostra email + botão desconectar
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(14),
+                decoration: BoxDecoration(
+                  color: cardBg,
+                  borderRadius: BorderRadius.circular(14),
+                  border: Border.all(
+                    color: const Color(0xFF1A73E8).withValues(alpha: 0.25)),
+                ),
+                child: Row(children: [
+                  Container(
+                    width: 36, height: 36,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: blue.withValues(alpha: 0.12),
+                    ),
+                    child: const Center(
+                      child: Icon(Icons.account_circle_rounded,
+                        color: blue, size: 20),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        isEs ? 'Google conectado' : 'Google conectado',
+                        style: TextStyle(
+                          fontSize: 13, fontWeight: FontWeight.w700,
+                          color: text)),
+                      if (geminiEmail.isNotEmpty)
+                        Text(
+                          geminiEmail,
+                          style: TextStyle(fontSize: 11, color: sub),
+                          maxLines: 1, overflow: TextOverflow.ellipsis),
+                    ],
+                  )),
+                  GestureDetector(
+                    onTap: geminiLoading ? null : _handleGoogleDisconnect,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 7),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8),
+                        color: const Color(0xFFB91C1C).withValues(alpha: 0.1),
+                        border: Border.all(
+                          color: const Color(0xFFB91C1C).withValues(alpha: 0.25)),
+                      ),
+                      child: geminiLoading
+                          ? SizedBox(
+                              width: 12, height: 12,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 1.5,
+                                color: const Color(0xFFEF4444).withValues(alpha: 0.7),
+                              ),
+                            )
+                          : Text(
+                              isEs ? 'Desconectar' : 'Desconectar',
+                              style: const TextStyle(
+                                fontSize: 11, fontWeight: FontWeight.w700,
+                                color: Color(0xFFEF4444))),
+                    ),
+                  ),
+                ]),
+              )
+            else
+              // Não conectado — botão proeminente "Conectar com Google"
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: geminiLoading ? null : _handleGoogleConnect,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: blue,
+                    foregroundColor: Colors.white,
+                    disabledBackgroundColor: blue.withValues(alpha: 0.4),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(14)),
+                    padding: const EdgeInsets.symmetric(vertical: 15),
+                    elevation: 0),
+                  child: geminiLoading
+                      ? const SizedBox(
+                          width: 20, height: 20,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2, color: Colors.white))
+                      : Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Icon(Icons.account_circle_rounded, size: 20),
+                            const SizedBox(width: 8),
+                            Text(
+                              isEs
+                                  ? 'Conectar con Google  →  IA gratuita'
+                                  : 'Conectar com Google  →  IA gratuita',
+                              style: const TextStyle(
+                                fontSize: 14, fontWeight: FontWeight.w700)),
+                          ],
+                        ),
+                ),
+              ),
 
-            // Linha: base local
-            Row(children: [
-              Icon(Icons.local_hospital_rounded, size: 14,
-                color: hasAi
-                    ? Colors.white.withValues(alpha: 0.6)
-                    : sub),
-              const SizedBox(width: 8),
-              Expanded(child: Text(
-                _isEs
-                    ? '337 fármacos · protocolos de urgencias · siempre activo'
-                    : '337 fármacos · protocolos de urgência · sempre ativo',
-                style: TextStyle(
-                  fontSize: 11,
-                  color: hasAi
-                      ? Colors.white.withValues(alpha: 0.6)
-                      : sub))),
-            ]),
+            const SizedBox(height: 2),
 
-            if (hasAi) ...[
-              const SizedBox(height: 8),
-              Row(children: [
-                Icon(Icons.cloud_done_rounded, size: 14,
-                  color: const Color(0xFF4ADE80).withValues(alpha: 0.8)),
-                const SizedBox(width: 8),
-                Expanded(child: Text(
-                  _isEs
-                      ? 'GPT-4o mini conectado — enriquece con conocimiento global'
-                      : 'GPT-4o mini conectado — enriquece com conhecimento global',
+            // Subtexto explicativo abaixo do botão
+            if (!geminiConn)
+              Padding(
+                padding: const EdgeInsets.only(top: 6, bottom: 4),
+                child: Text(
+                  isEs
+                      ? '2 clics · usa tu propia cuenta Google · sin clave API'
+                      : '2 cliques · usa sua conta Google · sem chave API',
+                  textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 11,
-                    color: Colors.white.withValues(alpha: 0.6)))),
+                    color: sub,
+                    fontWeight: FontWeight.w500)),
+              ),
+
+            const SizedBox(height: 14),
+
+            // ── Explicação do modo híbrido ─────────────────────────────
+            Container(
+              padding: const EdgeInsets.all(14),
+              decoration: BoxDecoration(
+                color: cardBg,
+                borderRadius: BorderRadius.circular(14),
+                border: Border.all(color: divCol)),
+              child: Column(children: [
+                _InfoRow(
+                  icon: Icons.auto_awesome_rounded,
+                  iconColor: green,
+                  dark: dark,
+                  label: isEs
+                      ? 'Base clínica sempre ativa'
+                      : 'Base clínica sempre ativa',
+                  sub: isEs
+                      ? 'Protocolos e fármacos do app respondem instantaneamente, sem internet'
+                      : 'Protocolos e fármacos do app respondem instantaneamente, sem internet',
+                ),
+                const SizedBox(height: 10),
+                _InfoRow(
+                  icon: Icons.hub_rounded,
+                  iconColor: hasAnyAi ? green : sub,
+                  dark: dark,
+                  label: geminiConn
+                      ? (isEs
+                          ? 'Gemini enriquece o que a base não cobre'
+                          : 'Gemini enriquece o que a base não cobre')
+                      : (isEs
+                          ? 'IA enriquece o que a base não cobre'
+                          : 'IA enriquece o que a base não cobre'),
+                  sub: isEs
+                      ? 'Perguntas fora da base são respondidas com conhecimento médico global'
+                      : 'Perguntas fora da base são respondidas com conhecimento médico global',
+                  dimmed: !hasAnyAi,
+                ),
+                const SizedBox(height: 10),
+                _InfoRow(
+                  icon: Icons.wifi_off_rounded,
+                  iconColor: sub,
+                  dark: dark,
+                  label: isEs ? 'Funciona offline' : 'Funciona offline',
+                  sub: isEs
+                      ? 'Sem internet, a base local responde normalmente'
+                      : 'Sem internet, a base local responde normalmente',
+                ),
               ]),
-            ],
-          ]),
-        ),
-
-        const SizedBox(height: 16),
-
-        // ── Explicação do modo híbrido ─────────────────────────────────────
-        Container(
-          padding: const EdgeInsets.all(14),
-          decoration: BoxDecoration(
-            color: cardBg,
-            borderRadius: BorderRadius.circular(14),
-            border: Border.all(color: divCol)),
-          child: Column(children: [
-            _InfoRow(
-              icon: Icons.auto_awesome_rounded,
-              iconColor: const Color(0xFF1F6B48),
-              dark: dark,
-              label: _isEs
-                  ? 'Base clínica sempre ativa'
-                  : 'Base clínica sempre ativa',
-              sub: _isEs
-                  ? 'Protocolos e fármacos do app respondem instantaneamente, sem internet'
-                  : 'Protocolos e fármacos do app respondem instantaneamente, sem internet',
             ),
-            const SizedBox(height: 10),
-            _InfoRow(
-              icon: Icons.hub_rounded,
-              iconColor: hasAi ? const Color(0xFF1F6B48) : sub,
-              dark: dark,
-              label: _isEs
-                  ? 'GPT enriquece o que a base não cobre'
-                  : 'GPT enriquece o que a base não cobre',
-              sub: _isEs
-                  ? 'Perguntas fora da base são respondidas com conhecimento médico global'
-                  : 'Perguntas fora da base são respondidas com conhecimento médico global',
-              dimmed: !hasAi,
-            ),
-            const SizedBox(height: 10),
-            _InfoRow(
-              icon: Icons.wifi_off_rounded,
-              iconColor: sub,
-              dark: dark,
-              label: _isEs ? 'Funciona offline' : 'Funciona offline',
-              sub: _isEs
-                  ? 'Sem internet, a base local responde normalmente'
-                  : 'Sem internet, a base local responde normalmente',
+
+            const SizedBox(height: 16),
+
+            // ── Botão fechar ────────────────────────────────────────────
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: () => Navigator.pop(context),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: green,
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(14)),
+                  padding: const EdgeInsets.symmetric(vertical: 15),
+                  elevation: 0),
+                child: Text(
+                  isEs ? 'Entendido' : 'Entendido',
+                  style: const TextStyle(
+                    fontSize: 14, fontWeight: FontWeight.w700)),
+              ),
             ),
           ]),
-        ),
-
-        const SizedBox(height: 16),
-
-        // ── Botão fechar ───────────────────────────────────────────────────
-        SizedBox(
-          width: double.infinity,
-          child: ElevatedButton(
-            onPressed: () => Navigator.pop(context),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF1F6B48),
-              foregroundColor: Colors.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(14)),
-              padding: const EdgeInsets.symmetric(vertical: 15),
-              elevation: 0),
-            child: Text(
-              _isEs ? 'Entendido' : 'Entendido',
-              style: const TextStyle(
-                fontSize: 14, fontWeight: FontWeight.w700)),
-          ),
-        ),
-      ]),
+        );
+      },
     );
   }
 }

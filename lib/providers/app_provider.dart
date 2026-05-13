@@ -13,6 +13,7 @@ import '../data/cases_database.dart';
 import '../services/firestore_service.dart';
 import '../services/drug_interaction_service.dart';
 import '../services/ai_service.dart';
+import '../services/gemini_service.dart';
 
 class DoseInfo {
   final String main;
@@ -86,6 +87,11 @@ class AppProvider extends ChangeNotifier {
   // Histórico de conversa para contexto multi-turn (máx 10 pares)
   final List<Map<String, String>> _aiHistory = [];
 
+  // ── Estado — Gemini OAuth (paralelo ao OpenAI, nunca interfere) ───────────
+  bool _geminiConnected = false;   // true quando conta Google autorizada
+  bool _geminiLoading   = false;   // true durante signIn/signOut
+  String _geminiEmail   = '';      // e-mail exibido na UI
+
   // ── Getters públicos ──────────────────────────────────────────────────────
   UserModel? get currentUser => _currentUser;
   bool get firebaseReady => _firebaseReady;
@@ -116,6 +122,13 @@ class AppProvider extends ChangeNotifier {
   String get openAiKey => _openAiKey;
   bool get hasAiKey => _openAiKey.isNotEmpty;
   bool get aiKeyLoading => _aiKeyLoading;
+
+  // ── Getters — Gemini OAuth ────────────────────────────────────────────────
+  bool get geminiConnected => _geminiConnected;
+  bool get geminiLoading   => _geminiLoading;
+  String get geminiEmail   => _geminiEmail;
+  /// true quando qualquer IA real está disponível (OpenAI OU Gemini)
+  bool get hasAnyAi => _openAiKey.isNotEmpty || _geminiConnected;
 
   List<DrugModel> get drugsDB => drugsDatabase;
   List<ProtocolModel> get protocolsDB => protocolsDatabase;
@@ -168,7 +181,10 @@ class AppProvider extends ChangeNotifier {
     // 4️⃣ Carrega histórias públicas AQUI — token já está cacheado neste ponto.
     loadPublicHistories();
 
-    // 5️⃣ Inicia contador de tempo de uso
+    // 5️⃣ Restaura sessão Gemini em background — silencioso, não bloqueia UI
+    checkGeminiSession();
+
+    // 6️⃣ Inicia contador de tempo de uso
     _startUsageTimer(user.uid);
   }
 
@@ -210,9 +226,11 @@ class AppProvider extends ChangeNotifier {
     _activeDrugId = '';
     _patient = PatientData();
     _hemo = HemoData();
-    // Limpa chave e histórico de IA ao fazer logout
+    // Limpa chave, histórico de IA e estado Gemini ao fazer logout
     _openAiKey = '';
     _aiHistory.clear();
+    _geminiConnected = false;
+    _geminiEmail = '';
     notifyListeners();
   }
 
@@ -796,6 +814,52 @@ class AppProvider extends ChangeNotifier {
   /// Limpa o histórico de conversa da IA (nova conversa)
   void clearAiHistory() => _aiHistory.clear();
 
+  // ── Gemini OAuth — conectar / desconectar ─────────────────────────────────
+
+  /// Inicia fluxo OAuth Google → abre seletor de conta nativo.
+  /// Retorna true se conectou com sucesso.
+  Future<bool> connectGemini() async {
+    _geminiLoading = true;
+    notifyListeners();
+    try {
+      final ok = await GeminiService.signIn();
+      if (ok) {
+        _geminiConnected = true;
+        _geminiEmail = await GeminiService.connectedEmail() ?? '';
+      }
+      return ok;
+    } catch (_) {
+      return false;
+    } finally {
+      _geminiLoading = false;
+      notifyListeners();
+    }
+  }
+
+  /// Desconecta a conta Google do Gemini.
+  Future<void> disconnectGemini() async {
+    _geminiLoading = true;
+    notifyListeners();
+    try {
+      await GeminiService.signOut();
+      _geminiConnected = false;
+      _geminiEmail = '';
+    } finally {
+      _geminiLoading = false;
+      notifyListeners();
+    }
+  }
+
+  /// Verifica silenciosamente se há sessão Gemini ativa (chamado no login).
+  Future<void> checkGeminiSession() async {
+    final connected = await GeminiService.isConnected();
+    if (connected) {
+      _geminiConnected = true;
+      _geminiEmail = await GeminiService.connectedEmail() ?? '';
+      notifyListeners();
+    }
+  }
+
   /// Retorna sumários dos protocolos cujos títulos/reconhecer contenham keywords da query
   List<String> _matchProtocols(String normalizedQuery) {
     final results = <String>[];
@@ -846,44 +910,76 @@ class AppProvider extends ChangeNotifier {
     return '${tail.join(' ')} $currentInput'.trim();
   }
 
-  /// Chamada principal — modo HÍBRIDO: base local sempre roda + OpenAI enriquece
+  /// Chamada principal — modo HÍBRIDO: base local sempre roda + IA enriquece
   ///
-  /// Fluxo:
-  ///  1. Matching local SEMPRE executado (protocolos + fármacos)
-  ///  2. Sem chave → retorna resposta local pura (rule-based)
-  ///  3. Com chave → injeta contexto local no system prompt do GPT
-  ///     O GPT usa a base como referência primária e complementa com
-  ///     conhecimento próprio o que a base não cobriu
-  ///  4. Erro de rede/quota → fallback silencioso para local
-  ///  5. Chave inválida → mensagem de erro clara (não faz fallback silencioso)
+  /// Prioridade:
+  ///  1. Gemini OAuth (conta Google do usuário) — se conectado
+  ///  2. OpenAI GPT (chave no Firestore)        — se disponível
+  ///  3. Base local rule-based                  — sempre funciona
   Future<String> buildAIAnswer(String input) async {
-    // ── Passo 1: Matching local SEMPRE roda (independente de ter chave) ──────
+    // ── Passo 1: Matching local SEMPRE roda ──────────────────────────────────
     final expandedInput = _expandedQuery(input);
     final normalized    = _normalize(expandedInput);
     final protocols     = _matchProtocols(normalized);
     final drugs         = _matchDrugs(normalized);
 
-    // ── Passo 2: Sem chave → resposta local pura ──────────────────────────────
-    if (_openAiKey.isEmpty) {
-      return _buildLocalAnswer(input);
-    }
-
-    // ── Passo 3: Com chave → GPT enriquece usando contexto local injetado ─────
-    // O system prompt instrui o GPT a:
-    //   a) Usar os protocolos/fármacos matchados como base primária
-    //   b) Complementar com conhecimento próprio o que a base não cobriu
-    //   c) Buscar em seu conhecimento geral quando a base está vazia
+    // ── System prompt clínico (mesmo para Gemini e OpenAI) ───────────────────
     final systemPrompt = AiService.buildClinicalSystemPrompt(
       lang: _lang,
       matchedProtocolSummaries: protocols,
       matchedDrugSummaries: drugs,
-      localAnswerContext: _buildLocalAnswer(input), // passa contexto local como referência
+      localAnswerContext: _buildLocalAnswer(input),
       patientAge: _patient.age.isNotEmpty ? _patient.age : null,
       patientSex: _patient.sex.isNotEmpty ? _patient.sex : null,
       patientWeight: _patient.weight.isNotEmpty ? _patient.weight : null,
       patientClcr: clcr,
       patientMedications: _patient.medications.isNotEmpty ? _patient.medications : null,
     );
+
+    // ── Passo 2: Gemini OAuth tem prioridade (conta Google do usuário) ────────
+    if (_geminiConnected) {
+      final geminiResult = await GeminiService.chat(
+        userMessage: input,
+        systemPrompt: systemPrompt,
+        history: List.unmodifiable(_aiHistory),
+      );
+
+      if (!geminiResult.isError) {
+        _aiHistory
+          ..add({'role': 'user', 'content': input})
+          ..add({'role': 'assistant', 'content': geminiResult.text});
+        while (_aiHistory.length > 20) _aiHistory.removeAt(0);
+        return geminiResult.text;
+      }
+
+      // Gemini falhou — trata erro
+      switch (geminiResult.errorCode) {
+        case 'token_expired':
+          // Sessão expirou → marca desconectado, cai para local
+          _geminiConnected = false;
+          _geminiEmail = '';
+          notifyListeners();
+          return _lang == 'es'
+              ? '⚠️ Sesión de Google expirada. Reconecta tu cuenta en la configuración.\n\n'
+                '${_buildLocalAnswer(input)}'
+              : '⚠️ Sessão Google expirada. Reconecte sua conta nas configurações.\n\n'
+                '${_buildLocalAnswer(input)}';
+        case 'quota':
+          return _lang == 'es'
+              ? '⚠️ Límite de uso de Gemini alcanzado. Inténtalo más tarde.\n\n'
+                '${_buildLocalAnswer(input)}'
+              : '⚠️ Limite de uso do Gemini atingido. Tente novamente mais tarde.\n\n'
+                '${_buildLocalAnswer(input)}';
+        default:
+          // Erro de rede → fallback silencioso para local
+          return _buildLocalAnswer(input);
+      }
+    }
+
+    // ── Passo 3: Sem Gemini → tenta OpenAI (legado) ───────────────────────────
+    if (_openAiKey.isEmpty) {
+      return _buildLocalAnswer(input);
+    }
 
     final result = await AiService.chat(
       apiKey: _openAiKey,
@@ -892,11 +988,10 @@ class AppProvider extends ChangeNotifier {
       history: List.unmodifiable(_aiHistory),
     );
 
-    // ── Passo 4: Tratamento de erros ─────────────────────────────────────────
+    // ── Passo 4: Tratamento de erros OpenAI ──────────────────────────────────
     if (result.isError) {
       switch (result.errorCode) {
         case 'invalid_key':
-          // Chave inválida → erro claro (usuário precisa corrigir)
           return _lang == 'es'
               ? '⚠️ Clave de API inválida. Verifica tu clave en la configuración del chat.\n\n'
                 'Mientras tanto, aquí está la respuesta de nuestra base local:\n\n'
@@ -905,7 +1000,6 @@ class AppProvider extends ChangeNotifier {
                 'Enquanto isso, aqui está a resposta da nossa base local:\n\n'
                 '${_buildLocalAnswer(input)}';
         case 'quota':
-          // Quota esgotada → avisa + entrega resposta local
           return _lang == 'es'
               ? '⚠️ Límite de uso de la API alcanzado. Revisa tu cuenta en platform.openai.com.\n\n'
                 'Respuesta de nuestra base local:\n\n'
@@ -913,7 +1007,6 @@ class AppProvider extends ChangeNotifier {
               : '⚠️ Limite de uso da API atingido. Verifique sua conta em platform.openai.com.\n\n'
                 'Resposta da nossa base local:\n\n'
                 '${_buildLocalAnswer(input)}';
-        // Sem rede / erro desconhecido → fallback local silencioso (sem aviso)
         default:
           return _buildLocalAnswer(input);
       }
