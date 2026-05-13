@@ -249,7 +249,7 @@ class _BiometricsTabState extends State<_BiometricsTab> {
                     style: TextStyle(fontWeight: FontWeight.w900, fontSize: 14, color: AppColors.of(context).textPrimary)),
                   const Spacer(),
                   Text(isEs ? 'Toque para cambiar' : 'Toque para alternar',
-                    style: const TextStyle(fontSize: 10, color: Color(0xFF888888))),
+                    style: TextStyle(fontSize: 10, color: AppColors.of(context).textHint)),
                 ]),
               ),
             ),
@@ -570,14 +570,14 @@ class _ScoresTabState extends State<_ScoresTab> {
         ),
         const SizedBox(width: 10),
         Expanded(child: Text(label, style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600,
-          color: value ? AppColors.of(context).textPrimary : const Color(0xFF555555)))),
+          color: value ? AppColors.of(context).textPrimary : AppColors.of(context).textSecondary))),
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
           decoration: BoxDecoration(borderRadius: BorderRadius.circular(6),
-            color: value ? kToolGreen.withValues(alpha: 0.15) : const Color(0xFFEEEEEE)),
+            color: value ? kToolGreen.withValues(alpha: 0.15) : AppColors.of(context).surface),
           child: Text(points == points.roundToDouble() ? '+${points.toInt()}' : '${points > 0 ? "+" : ""}$points',
             style: TextStyle(fontSize: 10, fontWeight: FontWeight.w900,
-              color: value ? kToolGreen : const Color(0xFF888888))),
+              color: value ? kToolGreen : AppColors.of(context).textHint)),
         ),
       ]),
     ),
@@ -593,7 +593,7 @@ class _ScoresTabState extends State<_ScoresTab> {
         child: Text('$value', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900, color: AppColors.of(context).textPrimary)),
       ),
       IconButton(icon: const Icon(Icons.add_circle_outline), iconSize: 22, color: kToolGreen, onPressed: value < max ? onInc : null),
-      SizedBox(width: 30, child: Text('/$max', style: const TextStyle(fontSize: 11, color: Color(0xFF888888)))),
+      SizedBox(width: 30, child: Text('/$max', style: TextStyle(fontSize: 11, color: AppColors.of(context).textHint))),
     ]),
   );
 
@@ -945,7 +945,7 @@ class _ScoresTabState extends State<_ScoresTab> {
                 ),
               ]),
             ),
-            const Text('COMORBIDADES (+pts)', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w900, letterSpacing: 1.2, color: Color(0xFF888888))),
+            Text('COMORBIDADES (+pts)', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w900, letterSpacing: 1.2, color: AppColors.of(context).textHint)),
             const SizedBox(height: 6),
             _scoreRow(isEs ? 'Neoplasia activa (+30)' : 'Neoplasia ativa (+30)', _psi_neoplasm, () => setState(() => _psi_neoplasm = !_psi_neoplasm), points: 30),
             _scoreRow(isEs ? 'Hepatopatía crónica (+20)' : 'Hepatopatia crônica (+20)', _psi_liver, () => setState(() => _psi_liver = !_psi_liver), points: 20),
@@ -954,7 +954,7 @@ class _ScoresTabState extends State<_ScoresTab> {
             _scoreRow(isEs ? 'ERC (+10)' : 'DRC (+10)', _psi_renal, () => setState(() => _psi_renal = !_psi_renal), points: 10),
             _scoreRow(isEs ? 'Internado en residencia (+10)' : 'Institucionalizado (+10)', _psi_nursing, () => setState(() => _psi_nursing = !_psi_nursing), points: 10),
             const SizedBox(height: 8),
-            const Text('EXAME FÍSICO / CLÍNICA (+pts)', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w900, letterSpacing: 1.2, color: Color(0xFF888888))),
+            Text('EXAME FÍSICO / CLÍNICA (+pts)', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w900, letterSpacing: 1.2, color: AppColors.of(context).textHint)),
             const SizedBox(height: 6),
             _scoreRow(isEs ? 'Confusión/alteración mental (+20)' : 'Confusão / alt. mental (+20)', _psi_alt_ms, () => setState(() => _psi_alt_ms = !_psi_alt_ms), points: 20),
             _scoreRow(isEs ? 'FR ≥30/min (+20)' : 'FR ≥30 irpm (+20)', _psi_rr30, () => setState(() => _psi_rr30 = !_psi_rr30), points: 20),
@@ -962,7 +962,7 @@ class _ScoresTabState extends State<_ScoresTab> {
             _scoreRow(isEs ? 'Tª <35 o ≥40°C (+15)' : 'T° <35 ou ≥40°C (+15)', _psi_temp, () => setState(() => _psi_temp = !_psi_temp), points: 15),
             _scoreRow(isEs ? 'FC ≥125 bpm (+10)' : 'FC ≥125 bpm (+10)', _psi_hr125, () => setState(() => _psi_hr125 = !_psi_hr125), points: 10),
             const SizedBox(height: 8),
-            const Text('LABS / IMAGEM (+pts)', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w900, letterSpacing: 1.2, color: Color(0xFF888888))),
+            Text('LABS / IMAGEM (+pts)', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w900, letterSpacing: 1.2, color: AppColors.of(context).textHint)),
             const SizedBox(height: 6),
             _scoreRow(isEs ? 'pH arterial <7,35 (+30)' : 'pH arterial <7,35 (+30)', _psi_ph735, () => setState(() => _psi_ph735 = !_psi_ph735), points: 30),
             _scoreRow(isEs ? 'BUN >30 mg/dL (+20)' : 'Ureia >30 mg/dL (+20)', _psi_bun30, () => setState(() => _psi_bun30 = !_psi_bun30), points: 20),
@@ -1166,7 +1166,7 @@ class _PressureConvWidgetState extends State<_PressureConvWidget> {
         Expanded(child: _LabeledInput(label: 'Valor', ctrl: _ctrl, onChanged: (_) => setState(() {}), hint: '120')),
         const SizedBox(width: 10),
         Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          const Text('UNIDADE', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w900, letterSpacing: 1.2, color: Color(0xFF888888))),
+          Text('UNIDADE', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w900, letterSpacing: 1.2, color: AppColors.of(context).textHint)),
           const SizedBox(height: 5),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
@@ -1596,7 +1596,7 @@ class _VasoRefRow extends StatelessWidget {
       child: Row(children: [
         Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Text(drug, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w900, color: AppColors.of(context).textPrimary)),
-          Text(note, style: const TextStyle(fontSize: 11, color: Color(0xFF666666))),
+          Text(note, style: TextStyle(fontSize: 11, color: AppColors.of(context).textSecondary)),
         ])),
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
@@ -1998,7 +1998,7 @@ class _LabRow extends StatelessWidget {
         Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Text(ref, style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: Color(0xFF065F46))),
           if (note.isNotEmpty)
-            Text(note, style: TextStyle(fontSize: 10, color: isAlert ? const Color(0xFFB45309) : const Color(0xFF666666), height: 1.3)),
+            Text(note, style: TextStyle(fontSize: 10, color: isAlert ? const Color(0xFFB45309) : AppColors.of(context).textSecondary, height: 1.3)),
         ])),
       ]),
     );
@@ -2024,7 +2024,7 @@ class _EcgPattern extends StatelessWidget {
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Text(pattern, style: TextStyle(fontSize: 12, fontWeight: FontWeight.w900, color: color)),
           const SizedBox(height: 4),
-          Text(desc, style: const TextStyle(fontSize: 11, color: Color(0xFF444444), height: 1.4)),
+          Text(desc, style: TextStyle(fontSize: 11, color: AppColors.of(context).textSecondary, height: 1.4)),
         ]),
       ),
     );
@@ -2043,8 +2043,8 @@ class _AntidoteRow extends StatelessWidget {
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12),
-          color: const Color(0xFFF8F8F8),
-          border: Border.all(color: kToolBorder),
+          color: AppColors.of(context).cardBg,
+          border: Border.all(color: AppColors.of(context).border),
         ),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Row(children: [
@@ -2075,7 +2075,7 @@ class _AntidoteRow extends StatelessWidget {
             ),
           ]),
           const SizedBox(height: 5),
-          Text(dose, style: const TextStyle(fontSize: 11, color: Color(0xFF555555), height: 1.4)),
+          Text(dose, style: TextStyle(fontSize: 11, color: AppColors.of(context).textSecondary, height: 1.4)),
         ]),
       ),
     );
@@ -2133,7 +2133,7 @@ class _StepRow extends StatelessWidget {
           Text(title, style: TextStyle(fontSize: 12, fontWeight: FontWeight.w800, color: AppColors.of(context).textPrimary)),
           if (sub.isNotEmpty) ...[
             const SizedBox(height: 4),
-            Text(sub, style: const TextStyle(fontSize: 10.5, color: Color(0xFF555555), height: 1.5, fontFamily: 'monospace')),
+            Text(sub, style: TextStyle(fontSize: 10.5, color: AppColors.of(context).textSecondary, height: 1.5, fontFamily: 'monospace')),
           ],
         ])),
       ]),
@@ -2513,7 +2513,7 @@ class _PrescCard extends StatelessWidget {
                 style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w900, color: Color(0xFF1F6B48))),
             ),
             Expanded(child: Text(item.desc,
-              style: const TextStyle(fontSize: 12, color: Color(0xFF333333), height: 1.45))),
+              style: TextStyle(fontSize: 12, color: AppColors.of(context).textSecondary, height: 1.45))),
           ]),
         )),
       ]),
@@ -2574,7 +2574,7 @@ class _LabeledInput extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      Text(label, style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w900, letterSpacing: 1.2, color: Color(0xFF888888))),
+      Text(label, style: TextStyle(fontSize: 10, fontWeight: FontWeight.w900, letterSpacing: 1.2, color: AppColors.of(context).textHint)),
       const SizedBox(height: 5),
       MedInput(controller: ctrl, hintText: hint, keyboardType: const TextInputType.numberWithOptions(decimal: true), onChanged: onChanged),
     ]);
@@ -2602,11 +2602,11 @@ class _ResultTile extends StatelessWidget {
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(14),
-        color: hasVal ? const Color(0xFFECFDF5) : const Color(0xFFF8F8F8),
-        border: Border.all(color: hasVal ? const Color(0xFFBBF7D0) : kToolBorder),
+        color: hasVal ? const Color(0xFFECFDF5) : AppColors.of(context).surface,
+        border: Border.all(color: hasVal ? const Color(0xFFBBF7D0) : AppColors.of(context).border),
       ),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Text(label, style: const TextStyle(fontSize: 9, fontWeight: FontWeight.w900, letterSpacing: 1.2, color: Color(0xFF666666))),
+        Text(label, style: TextStyle(fontSize: 9, fontWeight: FontWeight.w900, letterSpacing: 1.2, color: AppColors.of(context).textHint)),
         const SizedBox(height: 4),
         Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
           Flexible(child: Text(value ?? '—',
@@ -2615,7 +2615,7 @@ class _ResultTile extends StatelessWidget {
           if (unit != null && unit!.isNotEmpty && hasVal) ...[
             const SizedBox(width: 3),
             Padding(padding: const EdgeInsets.only(bottom: 2),
-              child: Text(unit!, style: const TextStyle(fontSize: 10, color: Color(0xFF888888)))),
+              child: Text(unit!, style: TextStyle(fontSize: 10, color: AppColors.of(context).textHint))),
           ],
         ]),
         if (note != null && note!.isNotEmpty) ...[
