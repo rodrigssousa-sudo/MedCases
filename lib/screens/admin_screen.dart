@@ -466,6 +466,61 @@ class _SystemTabState extends State<_SystemTab> {
 
   AppColors get _c => AppColors.of(context);
 
+  // ── OpenAI key state ───────────────────────────────────────────────────────
+  final _aiKeyCtrl = TextEditingController();
+  bool _aiKeyLoading = false;
+  bool _aiKeySaved   = false;
+  bool _aiKeyHidden  = true;
+  String _aiKeyOriginal = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _loadCurrentAiKey();
+  }
+
+  @override
+  void dispose() {
+    _aiKeyCtrl.dispose();
+    super.dispose();
+  }
+
+  Future<void> _loadCurrentAiKey() async {
+    final key = await FirestoreService.loadAppAiKey();
+    if (!mounted) return;
+    setState(() {
+      _aiKeyOriginal = key;
+      if (key.isNotEmpty) _aiKeyCtrl.text = key;
+    });
+  }
+
+  Future<void> _saveAiKey() async {
+    final key = _aiKeyCtrl.text.trim();
+    if (key.isEmpty) return;
+    setState(() { _aiKeyLoading = true; _aiKeySaved = false; });
+    try {
+      await FirestoreService.saveAppAiKey(key);
+      _aiKeyOriginal = key;
+      if (mounted) setState(() { _aiKeyLoading = false; _aiKeySaved = true; });
+      await Future.delayed(const Duration(seconds: 2));
+      if (mounted) setState(() { _aiKeySaved = false; });
+    } catch (_) {
+      if (mounted) setState(() { _aiKeyLoading = false; });
+    }
+  }
+
+  Future<void> _removeAiKey() async {
+    setState(() { _aiKeyLoading = true; });
+    try {
+      await FirestoreService.saveAppAiKey('');
+      _aiKeyOriginal = '';
+      _aiKeyCtrl.clear();
+      if (mounted) setState(() { _aiKeyLoading = false; });
+    } catch (_) {
+      if (mounted) setState(() { _aiKeyLoading = false; });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     // Lê o estado de manutenção em tempo real direto do Firestore
@@ -735,6 +790,319 @@ class _SystemTabState extends State<_SystemTab> {
                       ),
                     ),
                   ],
+                ],
+              ),
+            ),
+
+            const SizedBox(height: 16),
+
+            // ── Card OpenAI — chave global do app ─────────────────────────
+            Container(
+              decoration: BoxDecoration(
+                color: _c.cardBg,
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(
+                  color: _aiKeyOriginal.isNotEmpty
+                      ? const Color(0xFF10A37F).withValues(alpha: 0.35)
+                      : _c.border,
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.05),
+                    blurRadius: 10,
+                    offset: const Offset(0, 3),
+                  ),
+                ],
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Header
+                  Container(
+                    padding: const EdgeInsets.fromLTRB(16, 14, 16, 14),
+                    decoration: BoxDecoration(
+                      borderRadius: const BorderRadius.vertical(
+                        top: Radius.circular(16),
+                      ),
+                      color: _aiKeyOriginal.isNotEmpty
+                          ? const Color(0xFF10A37F).withValues(alpha: 0.07)
+                          : _c.surface,
+                    ),
+                    child: Row(children: [
+                      Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: _aiKeyOriginal.isNotEmpty
+                              ? const Color(0xFF10A37F).withValues(alpha: 0.12)
+                              : _c.surface,
+                          border: Border.all(
+                            color: _aiKeyOriginal.isNotEmpty
+                                ? const Color(0xFF10A37F).withValues(alpha: 0.35)
+                                : _c.border,
+                          ),
+                        ),
+                        child: Icon(
+                          _aiKeyOriginal.isNotEmpty
+                              ? Icons.psychology_rounded
+                              : Icons.psychology_outlined,
+                          size: 18,
+                          color: _aiKeyOriginal.isNotEmpty
+                              ? const Color(0xFF10A37F)
+                              : _c.textHint,
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'ChatGPT / OpenAI',
+                              style: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w900,
+                                color: _c.textPrimary,
+                              ),
+                            ),
+                            const SizedBox(height: 2),
+                            Text(
+                              _aiKeyOriginal.isNotEmpty
+                                  ? 'GPT-4o mini • ativo para todos os usuários'
+                                  : 'Sem chave — IA desativada para usuários',
+                              style: TextStyle(
+                                fontSize: 11,
+                                fontWeight: FontWeight.w500,
+                                color: _aiKeyOriginal.isNotEmpty
+                                    ? const Color(0xFF10A37F)
+                                    : _c.textHint,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      // Badge de status
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 4,
+                        ),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          color: _aiKeyOriginal.isNotEmpty
+                              ? const Color(0xFF10A37F).withValues(alpha: 0.12)
+                              : Colors.red.withValues(alpha: 0.10),
+                        ),
+                        child: Text(
+                          _aiKeyOriginal.isNotEmpty ? 'Online' : 'Offline',
+                          style: TextStyle(
+                            fontSize: 10,
+                            fontWeight: FontWeight.w800,
+                            color: _aiKeyOriginal.isNotEmpty
+                                ? const Color(0xFF10A37F)
+                                : Colors.red.shade400,
+                          ),
+                        ),
+                      ),
+                    ]),
+                  ),
+
+                  // Campo de chave
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 14, 16, 0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Chave de API OpenAI (compartilhada com todos)',
+                          style: TextStyle(
+                            fontSize: 11,
+                            fontWeight: FontWeight.w700,
+                            color: _c.textSecondary,
+                            letterSpacing: 0.2,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        TextField(
+                          controller: _aiKeyCtrl,
+                          obscureText: _aiKeyHidden,
+                          autocorrect: false,
+                          spellCheckConfiguration:
+                              const SpellCheckConfiguration.disabled(),
+                          style: TextStyle(
+                            fontSize: 13,
+                            color: _c.textPrimary,
+                            fontWeight: FontWeight.w500,
+                            fontFamily: 'monospace',
+                          ),
+                          decoration: InputDecoration(
+                            hintText: 'sk-proj-...',
+                            hintStyle: TextStyle(
+                              fontSize: 13,
+                              color: _c.textHint,
+                            ),
+                            filled: true,
+                            fillColor: _c.inputBg,
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              borderSide: BorderSide.none,
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              borderSide: BorderSide(color: _c.border),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              borderSide: const BorderSide(
+                                color: Color(0xFF10A37F),
+                                width: 1.5,
+                              ),
+                            ),
+                            contentPadding: const EdgeInsets.fromLTRB(12, 12, 4, 12),
+                            suffixIcon: IconButton(
+                              icon: Icon(
+                                _aiKeyHidden
+                                    ? Icons.visibility_off_rounded
+                                    : Icons.visibility_rounded,
+                                size: 18,
+                                color: _c.textHint,
+                              ),
+                              onPressed: () =>
+                                  setState(() { _aiKeyHidden = !_aiKeyHidden; }),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        // Botões Salvar + Remover
+                        Row(children: [
+                          // Remover (só aparece quando há chave)
+                          if (_aiKeyOriginal.isNotEmpty) ...
+                            [
+                              GestureDetector(
+                                onTap: _aiKeyLoading ? null : _removeAiKey,
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 12, vertical: 9,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(9),
+                                    border: Border.all(
+                                      color: Colors.red.withValues(alpha: 0.35),
+                                    ),
+                                    color: Colors.red.withValues(alpha: 0.07),
+                                  ),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Icon(Icons.delete_outline_rounded,
+                                          size: 14,
+                                          color: Colors.red.shade400),
+                                      const SizedBox(width: 5),
+                                      Text(
+                                        'Remover',
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w700,
+                                          color: Colors.red.shade400,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 8),
+                            ],
+                          const Spacer(),
+                          // Salvar
+                          GestureDetector(
+                            onTap: _aiKeyLoading ? null : _saveAiKey,
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 16, vertical: 9,
+                              ),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(9),
+                                color: _aiKeySaved
+                                    ? const Color(0xFF10A37F)
+                                    : kDark,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: kDark.withValues(alpha: 0.3),
+                                    blurRadius: 8,
+                                    offset: const Offset(0, 3),
+                                  ),
+                                ],
+                              ),
+                              child: _aiKeyLoading
+                                  ? const SizedBox(
+                                      width: 14, height: 14,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                        color: Colors.white,
+                                      ),
+                                    )
+                                  : Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Icon(
+                                          _aiKeySaved
+                                              ? Icons.check_rounded
+                                              : Icons.save_rounded,
+                                          size: 14,
+                                          color: kGoldL,
+                                        ),
+                                        const SizedBox(width: 6),
+                                        Text(
+                                          _aiKeySaved
+                                              ? 'Salvo!'
+                                              : 'Salvar chave',
+                                          style: const TextStyle(
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.w800,
+                                            color: kGoldL,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                            ),
+                          ),
+                        ]),
+                        const SizedBox(height: 14),
+                      ],
+                    ),
+                  ),
+
+                  // Info sobre a chave
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 0, 16, 14),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10, vertical: 8,
+                      ),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8),
+                        color: _c.surface,
+                      ),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Icon(Icons.info_outline_rounded,
+                              size: 12, color: _c.textHint),
+                          const SizedBox(width: 6),
+                          Expanded(
+                            child: Text(
+                              'A chave fica em config/app_settings e é compartilhada com todos os usuários aprovados. Obtenha em platform.openai.com/api-keys.',
+                              style: TextStyle(
+                                fontSize: 10,
+                                fontWeight: FontWeight.w500,
+                                color: _c.textHint,
+                                height: 1.5,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),

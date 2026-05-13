@@ -92,6 +92,17 @@ class FirestoreService {
     }
   }
 
+  /// Salva a chave OpenAI global do app em config/app_settings.
+  /// Todos os usuários aprovados passam a usar essa chave automaticamente.
+  static Future<void> saveAppAiKey(String key) async {
+    try {
+      await _db.collection('config').doc('app_settings').set(
+        {'openAiKey': key.trim()},
+        SetOptions(merge: true),
+      );
+    } catch (_) {}
+  }
+
   /// Salva (ou remove) a chave OpenAI no perfil Firestore do usuário.
   /// Passa [key] vazio para remover a chave (modo local).
   static Future<void> saveAiKey(String uid, String key) async {

@@ -761,6 +761,22 @@ class AppProvider extends ChangeNotifier {
 
   // ── IA Clínica ────────────────────────────────────────────────────────────
 
+  /// Salva a chave OpenAI GLOBAL do app (admin → todos os usuários).
+  /// Persiste em config/app_settings.openAiKey + atualiza estado local.
+  Future<void> setAppAiKey(String key) async {
+    final trimmed = key.trim();
+    _openAiKey = trimmed;
+    notifyListeners();
+    await FirestoreService.saveAppAiKey(trimmed);
+    // Atualiza cache local do usuário atual também
+    if (_currentUser != null) {
+      try {
+        final p = await SharedPreferences.getInstance();
+        await p.setString(_k('openAiKey', _currentUser!.uid), trimmed);
+      } catch (_) {}
+    }
+  }
+
   /// Salva a chave OpenAI vinculada ao UID do usuário logado.
   /// Persiste no Firestore (sync entre dispositivos) + cache local (offline).
   Future<void> setAiKey(String key) async {
