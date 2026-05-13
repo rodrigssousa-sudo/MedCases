@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/app_provider.dart';
+import '../services/drug_interaction_service.dart';
 import '../widgets/common_widgets.dart';
 
 // ──────────────────────────────────────────────────────────────────
@@ -1452,19 +1453,102 @@ class _ElectrolytesTabState extends State<_ElectrolytesTab> {
 // ══════════════════════════════════════════════════════════════════
 //  TAB 5 — INFUSÃO
 // ══════════════════════════════════════════════════════════════════
+// ── Modelo de fármaco de resgate ────────────────────────────────────────────
+class _RescueDrug {
+  final String name, dose, concDefault, indication;
+  final List<String> risks, avoid;
+  const _RescueDrug({
+    required this.name, required this.dose,
+    required this.concDefault, required this.indication,
+    this.risks = const [], this.avoid = const [],
+  });
+}
+
 class _InfusionTab extends StatefulWidget {
   @override
   State<_InfusionTab> createState() => _InfusionTabState();
 }
 
 class _InfusionTabState extends State<_InfusionTab> {
-  final _infDrugCtrl  = TextEditingController(text: 'Noradrenalina');
-  final _infConcCtrl  = TextEditingController(text: '4');
-  final _infRateCtrl  = TextEditingController(text: '10');
-  final _infWeightCtrl= TextEditingController();
-  final _doseCtrl     = TextEditingController();
-  final _concCalcCtrl = TextEditingController();
+  final _infDrugCtrl    = TextEditingController(text: 'Noradrenalina');
+  final _infConcCtrl    = TextEditingController(text: '4');
+  final _infRateCtrl    = TextEditingController(text: '10');
+  final _infWeightCtrl  = TextEditingController();
+  final _doseCtrl       = TextEditingController();
+  final _concCalcCtrl   = TextEditingController();
   final _weightCalcCtrl = TextEditingController();
+  final _scrollCtrl     = ScrollController();
+
+  static const _rescue = [
+    _RescueDrug(name: 'Noradrenalina',   dose: '0,05–1 µg/kg/min',      concDefault: '4',    indication: '1ª linha vasopressor — sepse/choque',
+      risks: ['Vasoconstrição periférica intensa', 'Isquemia digital em doses altas', 'Taquicardia reflexa'],
+      avoid: ['Hipovolemia não corrigida', 'Evitar veia periférica — risco de necrose']),
+    _RescueDrug(name: 'Dobutamina',      dose: '2,5–20 µg/kg/min',      concDefault: '1',    indication: 'Inotrópico — IC baixo débito',
+      risks: ['Taquicardia e arritmias', 'Hipotensão por vasodilatação', 'Aumenta demanda O₂ miocárdico'],
+      avoid: ['Cardiomiopatia obstrutiva (MCPH)', 'IAM sem suporte hemodinâmico']),
+    _RescueDrug(name: 'Adrenalina',      dose: '0,01–0,5 µg/kg/min',    concDefault: '0.1',  indication: 'Choque refratário / anafilaxia / PCR',
+      risks: ['Taquicardia grave e arritmias ventriculares', 'Hiperglicemia e hipocalemia', 'Isquemia miocárdica'],
+      avoid: ['Anestesia halogenada (arritmias)', 'IMAO — crise hipertensiva grave']),
+    _RescueDrug(name: 'Vasopressina',    dose: '0,03–0,04 UI/min',       concDefault: '0.04', indication: 'Adjuvante vasopressor (dose fixa)',
+      risks: ['Isquemia coronária e mesentérica', 'Hiponatremia (uso prolongado)', 'Bradicardia reflexa'],
+      avoid: ['Doença arterial coronária severa', 'Não titular acima de 0,04 UI/min']),
+    _RescueDrug(name: 'Dopamina',        dose: '2–20 µg/kg/min',         concDefault: '1.6',  indication: 'Alternativa vasopressor (mais arritmias)',
+      risks: ['Taquicardia e fibrilação atrial', 'Náuseas e vômitos', 'Necrose se extravasamento'],
+      avoid: ['Fibrilação atrial prévia', 'Feocromocitoma', 'IMAO nas últimas 2–3 semanas']),
+    _RescueDrug(name: 'Fenilefrina',     dose: '0,5–5 µg/kg/min',        concDefault: '0.1',  indication: 'Vasopressor puro — anestesia/choque leve',
+      risks: ['Bradicardia reflexa', 'Redução do débito cardíaco', 'Vasoconstrição renal'],
+      avoid: ['IC com baixo débito (piora débito)', 'Bradicardia severa sem marca-passo']),
+    _RescueDrug(name: 'Milrinona',       dose: '0,375–0,75 µg/kg/min',   concDefault: '0.2',  indication: 'Inodilatador — IC refratária / pós-cirurgia cardíaca',
+      risks: ['Hipotensão arterial (frequente)', 'Arritmias ventriculares', 'Trombocitopenia'],
+      avoid: ['IAM agudo fase inicial', 'Estenose aórtica/pulmonar severa']),
+    _RescueDrug(name: 'Nitroglicerina',  dose: '5–200 µg/min',           concDefault: '0.1',  indication: 'Vasodilatador — angina / EPA / crise HAS',
+      risks: ['Hipotensão grave', 'Cefaleia intensa', 'Tolerância rápida (>24h)'],
+      avoid: ['Sildenafila/tadalafila (hipotensão fatal)', 'Hipovolemia não corrigida']),
+    _RescueDrug(name: 'Nitroprussiato',  dose: '0,3–10 µg/kg/min',       concDefault: '0.1',  indication: 'Crise hipertensiva severa / dissecção aórtica',
+      risks: ['Toxicidade por cianeto (>3 µg/kg/min >72h)', 'Hipotensão grave', 'Roubo coronário'],
+      avoid: ['Insuficiência renal/hepática grave', 'Proteger da luz (degradação rápida)']),
+    _RescueDrug(name: 'Amiodarona',      dose: '5–15 mg/kg/dia',         concDefault: '1.5',  indication: 'Antiarrítmico — FA/flutter/TV',
+      risks: ['Bradicardia e bloqueio AV', 'Hipotensão na infusão rápida', 'Flebite em veia periférica'],
+      avoid: ['Bloqueio AV 2º/3º grau sem marca-passo', 'QT longo + outros QT-prolongadores']),
+    _RescueDrug(name: 'Lidocaína',       dose: '1–4 mg/min',             concDefault: '4',    indication: 'Antiarrítmico ventricular / analgesia IV',
+      risks: ['Convulsões em doses altas', 'Bradicardia e assistolia', 'Neurotoxicidade (zumbido, confusão)'],
+      avoid: ['Bloqueio AV completo', 'Insuf. hepática grave (reduzir dose 50%)']),
+    _RescueDrug(name: 'Insulina Regular',dose: '0,05–0,1 UI/kg/h',       concDefault: '1',    indication: 'Infusão contínua — CAD / hiperglicemia grave',
+      risks: ['Hipoglicemia (monitorar a cada 1h)', 'Hipocalemia (repor K⁺ se <3,5)', 'Edema cerebral (CAD pediátrica)'],
+      avoid: ['Glicemia <150 mg/dL sem ajuste', 'Não usar sem acesso venoso confiável']),
+    _RescueDrug(name: 'Morfina',         dose: '1–5 mg/h',               concDefault: '1',    indication: 'Analgesia IV — EPA / dor oncológica',
+      risks: ['Depressão respiratória', 'Hipotensão e bradicardia', 'Náuseas e íleo paralítico'],
+      avoid: ['Asma brônquica ativa', 'TCE com hipertensão intracraniana']),
+    _RescueDrug(name: 'Propofol',        dose: '5–50 µg/kg/min',         concDefault: '10',   indication: 'Sedação em UTI / IOT',
+      risks: ['Síndrome infusão propofol (>4 mg/kg/h >48h)', 'Hipotensão', 'Hipertrigliceridemia'],
+      avoid: ['Alergia a ovo/soja', 'Crianças <3 anos para sedação prolongada']),
+    _RescueDrug(name: 'Midazolam',       dose: '0,02–0,1 mg/kg/h',       concDefault: '1',    indication: 'Sedação / anticonvulsivante IV',
+      risks: ['Depressão respiratória (especialmente com opioides)', 'Hipotensão', 'Agitação paradoxal em idosos'],
+      avoid: ['DPOC grave sem VM', 'Combinar com opioide sem monitorização rigorosa']),
+  ];
+
+  void _fillAndScroll(_RescueDrug d, BuildContext ctx) {
+    setState(() {
+      _infDrugCtrl.text  = d.name;
+      _infConcCtrl.text  = d.concDefault;
+      _infRateCtrl.text  = '10';
+      _concCalcCtrl.text = d.concDefault;
+    });
+    showModalBottomSheet(
+      context: ctx,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (_) => _RiskSheet(drug: d),
+    ).then((_) {
+      Future.delayed(const Duration(milliseconds: 250), () {
+        if (_scrollCtrl.hasClients) {
+          _scrollCtrl.animateTo(0,
+            duration: const Duration(milliseconds: 400),
+            curve: Curves.easeOutCubic);
+        }
+      });
+    });
+  }
 
   @override
   void dispose() {
@@ -1509,6 +1593,7 @@ class _InfusionTabState extends State<_InfusionTab> {
     final isEs = p.lang == 'es';
 
     return SingleChildScrollView(
+      controller: _scrollCtrl,
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 100),
       child: Column(children: [
 
@@ -1583,18 +1668,21 @@ class _InfusionTabState extends State<_InfusionTab> {
         const SizedBox(height: 12),
 
         _SectionCard(
-          title: isEs ? 'Referencia de Vasopresores' : 'Referência de Vasopressores',
-          icon: Icons.speed_rounded,
+          title: isEs ? 'Fármacos de Rescate (toque para calcular)' : 'Fármacos de Resgate (toque para calcular)',
+          icon: Icons.touch_app_rounded,
           child: Column(children: [
-            _VasoRefRow(drug: 'Noradrenalina', dose: '0,05–1 µg/kg/min', note: isEs ? '1ª línea sepsis (AHA/SCCM)' : '1ª linha sepse (AHA/SCCM)'),
-            _VasoRefRow(drug: 'Dobutamina', dose: '2,5–20 µg/kg/min', note: isEs ? 'Inotrópico IC bajo débito' : 'Inotrópico IC baixo débito'),
-            _VasoRefRow(drug: 'Adrenalina', dose: '0,01–0,5 µg/kg/min', note: isEs ? 'Choque refractario / anafilaxia / PCR' : 'Choque refratário / anafilaxia / PCR'),
-            _VasoRefRow(drug: 'Vasopressina', dose: '0,03–0,04 UI/min', note: isEs ? 'Adyuvante (dosis fija)' : 'Adjuvante (dose fixa)'),
-            _VasoRefRow(drug: 'Dopamina', dose: '2–20 µg/kg/min', note: isEs ? 'Alternativa (más arritmias)' : 'Alternativa (mais arritmias)'),
+            _InfoNote(text: isEs
+              ? 'Toque en un fármaco para autocompletar la calculadora. Solo informe peso y velocidad.'
+              : 'Toque em um fármaco para preencher a calculadora. Informe apenas peso e velocidade.'),
+            const SizedBox(height: 10),
+            ..._rescue.map((d) => _VasoRefRow(
+              drug: d.name, dose: d.dose, note: d.indication,
+              onTap: () => _fillAndScroll(d, context),
+            )),
             const SizedBox(height: 8),
             _InfoNote(text: isEs
-              ? 'Preferir acesso venoso central para vasopresores. Titular conforme PAM objetivo ≥65 mmHg.'
-              : 'Preferir acesso venoso central para vasopressores. Titular conforme PAM alvo ≥65 mmHg.'),
+              ? 'Preferir CVC para vasopresores. Titular conforme PAM objetivo ≥65 mmHg.'
+              : 'Preferir CVC para vasopressores. Titular conforme PAM alvo ≥65 mmHg.'),
           ]),
         ),
 
@@ -1605,27 +1693,238 @@ class _InfusionTabState extends State<_InfusionTab> {
 
 class _VasoRefRow extends StatelessWidget {
   final String drug, dose, note;
-  const _VasoRefRow({required this.drug, required this.dose, required this.note});
+  final VoidCallback? onTap;
+  const _VasoRefRow({required this.drug, required this.dose, required this.note, this.onTap});
 
   @override
-  Widget build(BuildContext context) => Padding(
-    padding: const EdgeInsets.only(bottom: 8),
-    child: Container(
-      padding: const EdgeInsets.all(12),
-      decoration: const BoxDecoration(border: Border(bottom: BorderSide(color: kToolBorder))),
-      child: Row(children: [
-        Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text(drug, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w900, color: AppColors.of(context).textPrimary)),
-          Text(note, style: TextStyle(fontSize: 11, color: AppColors.of(context).textSecondary)),
-        ])),
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-          decoration: BoxDecoration(borderRadius: BorderRadius.circular(8), color: kToolGreen.withValues(alpha: 0.12)),
-          child: Text(dose, style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w800, color: kToolGreen)),
+  Widget build(BuildContext context) {
+    final c    = AppColors.of(context);
+    final dark = context.watch<AppProvider>().darkMode;
+    final tappable = onTap != null;
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 6),
+        padding: const EdgeInsets.fromLTRB(12, 11, 12, 11),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+          color: tappable
+              ? (dark ? const Color(0xFF1C2A20) : const Color(0xFFF0FDF4))
+              : c.cardBg,
+          border: Border.all(
+            color: tappable
+                ? (dark ? const Color(0xFF22543D) : const Color(0xFFBBF7D0))
+                : c.border,
+          ),
+        ),
+        child: Row(children: [
+          Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Text(drug, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w800, color: c.textPrimary)),
+            const SizedBox(height: 2),
+            Text(note, style: TextStyle(fontSize: 11, color: c.textSecondary, height: 1.3)),
+          ])),
+          const SizedBox(width: 8),
+          Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(8),
+                color: kToolGreen.withValues(alpha: 0.12),
+              ),
+              child: Text(dose, style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w800, color: kToolGreen)),
+            ),
+            if (tappable) ...[
+              const SizedBox(height: 3),
+              Row(mainAxisSize: MainAxisSize.min, children: [
+                Icon(Icons.touch_app_rounded, size: 9,
+                  color: dark ? const Color(0xFF4ADE80) : const Color(0xFF16A34A)),
+                const SizedBox(width: 3),
+                Text('calcular',
+                  style: TextStyle(fontSize: 9, fontWeight: FontWeight.w600,
+                    color: dark ? const Color(0xFF4ADE80) : const Color(0xFF16A34A))),
+              ]),
+            ],
+          ]),
+        ]),
+      ),
+    );
+  }
+}
+
+// ── Bottom sheet: riscos e interações ──────────────────────────────────────
+class _RiskSheet extends StatelessWidget {
+  final _RescueDrug drug;
+  const _RiskSheet({required this.drug});
+
+  @override
+  Widget build(BuildContext context) {
+    final dark = context.watch<AppProvider>().darkMode;
+    final bg   = dark ? const Color(0xFF1C1C1E) : Colors.white;
+
+    return Container(
+      decoration: BoxDecoration(
+        color: bg,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      padding: EdgeInsets.fromLTRB(20, 12, 20,
+          20 + MediaQuery.of(context).viewInsets.bottom),
+      child: Column(mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start, children: [
+
+        // Handle
+        Center(child: Container(
+          width: 36, height: 4,
+          decoration: BoxDecoration(
+            color: dark ? const Color(0xFF3A3A3C) : const Color(0xFFD1D5DB),
+            borderRadius: BorderRadius.circular(2)),
+        )),
+        const SizedBox(height: 14),
+
+        // Cabeçalho
+        Row(children: [
+          Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              color: const Color(0xFFEF4444).withValues(alpha: 0.12)),
+            child: const Icon(Icons.medication_rounded, size: 18, color: Color(0xFFEF4444)),
+          ),
+          const SizedBox(width: 10),
+          Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Text(drug.name,
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w900,
+                color: dark ? Colors.white : const Color(0xFF0F172A))),
+            Text('Calculadora preenchida — informe peso e velocidade',
+              style: TextStyle(fontSize: 11,
+                color: dark ? const Color(0xFF9CA3AF) : const Color(0xFF6B7280))),
+          ])),
+          GestureDetector(
+            onTap: () => Navigator.of(context).pop(),
+            child: Icon(Icons.close_rounded, size: 20,
+              color: dark ? const Color(0xFF9CA3AF) : const Color(0xFF6B7280)),
+          ),
+        ]),
+
+        const SizedBox(height: 14),
+
+        // Riscos
+        if (drug.risks.isNotEmpty) ...[
+          _RiskBlock(
+            label: 'ATENÇÃO — EFEITOS E RISCOS',
+            labelColor: const Color(0xFFF59E0B),
+            icon: Icons.info_outline_rounded,
+            items: drug.risks,
+            bgDark: const Color(0xFF271C0A),
+            bgLight: const Color(0xFFFFFBEB),
+            borderDark: const Color(0xFF5C3D0A),
+            borderLight: const Color(0xFFFCD34D),
+            textDark: const Color(0xFFFDE68A),
+            textLight: const Color(0xFF78350F),
+            dark: dark,
+          ),
+          const SizedBox(height: 8),
+        ],
+
+        // Evitar / Contraindicações
+        if (drug.avoid.isNotEmpty) ...[
+          _RiskBlock(
+            label: 'EVITAR / CONTRAINDICADO',
+            labelColor: const Color(0xFFEF4444),
+            icon: Icons.block_rounded,
+            items: drug.avoid,
+            bgDark: const Color(0xFF2A1515),
+            bgLight: const Color(0xFFFFF0F0),
+            borderDark: const Color(0xFF6B2020),
+            borderLight: const Color(0xFFFCA5A5),
+            textDark: const Color(0xFFFFCCCC),
+            textLight: const Color(0xFF7F1D1D),
+            dark: dark,
+          ),
+          const SizedBox(height: 12),
+        ],
+
+        // Botão de ação
+        SizedBox(
+          width: double.infinity,
+          child: TextButton(
+            style: TextButton.styleFrom(
+              backgroundColor: kToolGreen.withValues(alpha: 0.12),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              padding: const EdgeInsets.symmetric(vertical: 14),
+            ),
+            onPressed: () => Navigator.of(context).pop(),
+            child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+              const Icon(Icons.calculate_rounded, size: 16, color: kToolGreen),
+              const SizedBox(width: 8),
+              const Text('Entendido — ir para a calculadora',
+                style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: kToolGreen)),
+            ]),
+          ),
         ),
       ]),
-    ),
-  );
+    );
+  }
+}
+
+class _RiskBlock extends StatelessWidget {
+  final String label;
+  final Color labelColor, iconColor;
+  final IconData icon;
+  final List<String> items;
+  final Color bgDark, bgLight, borderDark, borderLight, textDark, textLight;
+  final bool dark;
+
+  const _RiskBlock({
+    required this.label, required this.labelColor,
+    required this.icon, required this.items,
+    required this.bgDark, required this.bgLight,
+    required this.borderDark, required this.borderLight,
+    required this.textDark, required this.textLight,
+    required this.dark,
+  }) : iconColor = labelColor;
+
+  @override
+  Widget build(BuildContext context) {
+    final bg     = dark ? bgDark     : bgLight;
+    final border = dark ? borderDark : borderLight;
+    final text   = dark ? textDark   : textLight;
+
+    return Container(
+      padding: const EdgeInsets.fromLTRB(12, 10, 12, 12),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10),
+        color: bg,
+        border: Border.all(color: border),
+      ),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Row(children: [
+          Icon(icon, size: 11, color: labelColor),
+          const SizedBox(width: 5),
+          Text(label, style: TextStyle(
+            fontSize: 9, fontWeight: FontWeight.w900,
+            color: labelColor, letterSpacing: 1.5)),
+        ]),
+        const SizedBox(height: 8),
+        ...items.map((item) => Padding(
+          padding: const EdgeInsets.only(bottom: 5),
+          child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Padding(
+              padding: const EdgeInsets.only(top: 5),
+              child: Container(
+                width: 4, height: 4,
+                decoration: BoxDecoration(
+                  color: text.withValues(alpha: 0.6),
+                  shape: BoxShape.circle),
+              ),
+            ),
+            const SizedBox(width: 8),
+            Expanded(child: Text(item,
+              style: TextStyle(fontSize: 12, color: text, height: 1.4))),
+          ]),
+        )),
+      ]),
+    );
+  }
 }
 
 // ══════════════════════════════════════════════════════════════════
