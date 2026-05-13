@@ -1918,7 +1918,7 @@ class _InfusionTabState extends State<_InfusionTab> {
         const SizedBox(height: 12),
 
         // ── Card de Protocolos Clínicos ──────────────────────────────────────
-        _ProtocolsCard(isEs: isEs),
+        ProtocolsCard(isEs: isEs),
 
       ]),
     );
@@ -1928,14 +1928,14 @@ class _InfusionTabState extends State<_InfusionTab> {
 // ══════════════════════════════════════════════════════════════════
 //  Card de Protocolos Clínicos — exibido abaixo da calculadora
 // ══════════════════════════════════════════════════════════════════
-class _ProtocolsCard extends StatefulWidget {
+class ProtocolsCard extends StatefulWidget {
   final bool isEs;
-  const _ProtocolsCard({required this.isEs});
+  const ProtocolsCard({required this.isEs});
   @override
-  State<_ProtocolsCard> createState() => _ProtocolsCardState();
+  State<ProtocolsCard> createState() => _ProtocolsCardState();
 }
 
-class _ProtocolsCardState extends State<_ProtocolsCard> {
+class _ProtocolsCardState extends State<ProtocolsCard> {
   int _cat = 0; // categoria ativa
 
   // Cada categoria: (labelPt, labelEs, icon, [ids])
@@ -2817,7 +2817,7 @@ class _ReferenceTabState extends State<_ReferenceTab> {
 
   // ── PROTOCOLOS ────────────────────────────────────────────────────
   Widget _buildProtocols(bool isEs) {
-    return _ProtocolsCard(isEs: isEs);
+    return ProtocolsCard(isEs: isEs);
   }
 }
 

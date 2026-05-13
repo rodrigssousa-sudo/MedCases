@@ -4,7 +4,7 @@ import '../providers/app_provider.dart';
 import '../widgets/common_widgets.dart';
 import 'cockpit_screen.dart';
 import 'drugs_screen.dart';
-import 'tools_screen.dart';
+import 'tools_screen.dart' show ProtocolsCard, PediatricsTabContent, ToolsScreen;
 import 'protocols_screen.dart';
 import 'prescripciones_screen.dart';
 import 'cases_screen.dart';
@@ -94,6 +94,11 @@ class HomeScreen extends StatelessWidget {
             _slideRoute(const _CalculadorasShell()),
           ),
         ),
+
+        const SizedBox(height: 16),
+
+        // ── Protocolos Clínicos ───────────────────────────────────────────
+        ProtocolsCard(isEs: isEs),
 
         const SizedBox(height: 28),
 
