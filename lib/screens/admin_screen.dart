@@ -43,6 +43,12 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
     _subscribeUsers();
   }
 
+  Future<void> _refreshUsers() async {
+    setState(() => _usersLoading = true);
+    _usersSub?.cancel();
+    _subscribeUsers();
+  }
+
   void _subscribeUsers() {
     _usersSub = AuthService.allUsersStream().listen(
       (users) {
@@ -90,6 +96,15 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
             ),
           ],
         ]),
+        actions: [
+          IconButton(
+            icon: _usersLoading
+                ? const SizedBox(width: 18, height: 18, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
+                : const Icon(Icons.refresh_rounded, color: Colors.white),
+            tooltip: 'Atualizar lista',
+            onPressed: _usersLoading ? null : _refreshUsers,
+          ),
+        ],
         bottom: TabBar(
           controller: _tabs,
           indicatorColor: kGoldL,
@@ -151,9 +166,9 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
                       currentAdmin: widget.currentAdmin,
                       isMaster: _isMaster,
                       onApprove: _approve,
-                      onBlock: _block,
+                      onDelete: _delete,
                       showApprove: true,
-                      showBlock: true,
+                      isPendingTab: true,
                     ),
                     // ── Tab 1: Aprovados ──────────────────────────────────
                     _UserList(
@@ -166,6 +181,7 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
                       onPromote: _promote,
                       onPromoteSupervisor: _isMaster ? _promoteSupervisor : null,
                       onDemote: _isMaster ? _demote : null,
+                      onDelete: _delete,
                       showBlock: true,
                       showPromote: true,
                     ),
@@ -177,6 +193,7 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
                       currentAdmin: widget.currentAdmin,
                       isMaster: _isMaster,
                       onApprove: _unblock,
+                      onDelete: _delete,
                       showApprove: true,
                       approveBtnLabel: _unblockLabel,
                     ),
@@ -238,6 +255,20 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
     try {
       await AuthService.unblockUser(u.uid, widget.currentAdmin.uid);
       if (mounted) _snack('${u.displayName} $_unblockedSnack', Colors.green);
+    } catch (e) {
+      if (mounted) _snack('$_errorPrefix: $e', Colors.red);
+    }
+  }
+
+  Future<void> _delete(UserModel u) async {
+    final confirm = await _confirmDialog(
+      'Excluir ${u.displayName}?',
+      'O documento do usuário será removido do Firestore permanentemente. Esta ação não pode ser desfeita.',
+    );
+    if (!confirm) return;
+    try {
+      await FirestoreService.deleteUser(u.uid);
+      if (mounted) _snack('${u.displayName} excluído.', Colors.red);
     } catch (e) {
       if (mounted) _snack('$_errorPrefix: $e', Colors.red);
     }
@@ -755,9 +786,11 @@ class _UserList extends StatelessWidget {
   final void Function(UserModel)? onPromote;
   final void Function(UserModel)? onPromoteSupervisor;
   final void Function(UserModel)? onDemote;
+  final void Function(UserModel)? onDelete;
   final bool showApprove;
   final bool showBlock;
   final bool showPromote;
+  final bool isPendingTab;
   final String approveBtnLabel;
 
   static const kDark  = Color(0xFF07110d);
@@ -774,9 +807,11 @@ class _UserList extends StatelessWidget {
     this.onPromote,
     this.onPromoteSupervisor,
     this.onDemote,
+    this.onDelete,
     this.showApprove = false,
     this.showBlock = false,
     this.showPromote = false,
+    this.isPendingTab = false,
     this.approveBtnLabel = 'Aprovar',
   });
 
@@ -809,6 +844,9 @@ class _UserList extends StatelessWidget {
             && !isMe && !u.isMaster
             && (u.role == UserRole.admin || u.role == UserRole.supervisor);
 
+        // Botão excluir: disponível para todos exceto o próprio admin e master
+        final canDelete = onDelete != null && !isMe && !u.isMaster;
+
         return _UserCard(
           user: u,
           currentAdmin: currentAdmin,
@@ -818,6 +856,8 @@ class _UserList extends StatelessWidget {
           onPromote: canPromote ? () => onPromote!(u) : null,
           onPromoteSupervisor: canPromoteSupervisor ? () => onPromoteSupervisor!(u) : null,
           onDemote: canDemote ? () => onDemote!(u) : null,
+          onDelete: canDelete ? () => onDelete!(u) : null,
+          isPendingTab: isPendingTab,
           approveBtnLabel: approveBtnLabel,
         );
       },
@@ -834,6 +874,8 @@ class _UserCard extends StatelessWidget {
   final VoidCallback? onPromote;
   final VoidCallback? onPromoteSupervisor;
   final VoidCallback? onDemote;
+  final VoidCallback? onDelete;
+  final bool isPendingTab;
   final String approveBtnLabel;
 
   static const kDark  = Color(0xFF07110d);
@@ -850,6 +892,8 @@ class _UserCard extends StatelessWidget {
     this.onPromote,
     this.onPromoteSupervisor,
     this.onDemote,
+    this.onDelete,
+    this.isPendingTab = false,
     required this.approveBtnLabel,
   });
 
@@ -930,7 +974,7 @@ class _UserCard extends StatelessWidget {
           ),
 
           // Botões de ação
-          if (onApprove != null || onBlock != null || onPromote != null || onPromoteSupervisor != null || onDemote != null) ...[
+          if (onApprove != null || onBlock != null || onPromote != null || onPromoteSupervisor != null || onDemote != null || onDelete != null) ...[
             const SizedBox(height: 10),
             Wrap(
               spacing: 8,
@@ -944,8 +988,15 @@ class _UserCard extends StatelessWidget {
                   _ActionBtn(label: 'Supervisor', icon: Icons.shield_outlined, color: Colors.blue, onTap: onPromoteSupervisor!),
                 if (onDemote != null)
                   _ActionBtn(label: 'Rebaixar', icon: Icons.arrow_downward_rounded, color: Colors.orange, onTap: onDemote!),
-                if (onBlock != null)
-                  _ActionBtn(label: '✕', icon: Icons.block_rounded, color: Colors.red, onTap: onBlock!),
+                // Tab Pendentes: "Recusar" deleta o documento; demais tabs: "Bloquear"
+                if (isPendingTab && onDelete != null)
+                  _ActionBtn(label: 'Recusar', icon: Icons.person_remove_outlined, color: Colors.red, onTap: onDelete!)
+                else if (!isPendingTab && onBlock != null)
+                  _ActionBtn(label: '✕', icon: Icons.block_rounded, color: Colors.red.shade700, onTap: onBlock!),
+                // Botão Excluir (lixeira) — visível em todas as tabs exceto Pendentes
+                // (no Pendentes o "Recusar" já faz a deleção)
+                if (!isPendingTab && onDelete != null)
+                  _ActionBtn(label: 'Excluir', icon: Icons.delete_outline_rounded, color: Colors.red, onTap: onDelete!),
               ],
             ),
           ],

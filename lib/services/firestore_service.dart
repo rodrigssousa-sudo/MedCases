@@ -659,6 +659,14 @@ class FirestoreService {
     }
   }
 
+  /// Deleta o documento do usuário na coleção users.
+  /// Não remove a conta do Firebase Auth (requer Admin SDK server-side),
+  /// mas remove o perfil — o usuário ficará sem acesso ao app.
+  static Future<void> deleteUser(String uid) async {
+    if (uid.isEmpty) return;
+    await _userDoc(uid).delete();
+  }
+
   /// Escreve/atualiza app_config/maintenance via REST PATCH.
   static Future<void> _setMaintenanceRest({
     required bool enabled,
