@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/app_provider.dart';
-import '../services/drug_interaction_service.dart';
 import '../widgets/common_widgets.dart';
 import '../models/protocol_model.dart';
-import 'protocols_screen.dart' show openProtocolById, showProtocolDetail;
+import 'protocols_screen.dart' show showProtocolDetail;
 
 // ──────────────────────────────────────────────────────────────────
 // COLOR CONSTANTS — alinhadas com common_widgets.dart
@@ -2018,18 +2017,13 @@ class _ProtocolsCardState extends State<_ProtocolsCard> {
     const green   = kToolGreen;
 
     final cat    = _categories[_cat];
-    final catLabel = isEs ? cat.$2 : cat.$1;
-    final ids      = cat.$4;
+    final ids = cat.$4;
 
     // Filtra os protocolos da categoria ativa que existem na base
     final protos = ids
-        .map((id) {
-          try {
-            return p.protocolsDB.firstWhere((pr) => pr.id == id);
-          } catch (_) {
-            return null;
-          }
-        })
+        .map((id) => p.protocolsDB
+            .where((pr) => pr.id == id)
+            .firstOrNull)
         .whereType<ProtocolModel>()
         .toList();
 
@@ -2127,85 +2121,85 @@ class _ProtocolsCardState extends State<_ProtocolsCard> {
         ),
 
         // ── Lista de protocolos da categoria ───────────────────────────
-        Padding(
-          padding: const EdgeInsets.fromLTRB(12, 10, 12, 14),
-          child: protos.isEmpty
-              ? Center(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    child: Text(
-                      isEs ? 'Sin protocolos en esta categoría' : 'Sem protocolos nesta categoria',
-                      style: TextStyle(fontSize: 12, color: dark ? Colors.white38 : Colors.black38)),
-                  ),
-                )
-              : Column(
-                  children: protos.map((proto) {
-                    final title = proto.getField(proto.title, isEs ? 'es' : 'pt');
-                    final severity = proto.getField(proto.severity, isEs ? 'es' : 'pt');
+        if (protos.isEmpty)
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+            child: Text(
+              isEs ? 'Sin protocolos en esta categoría' : 'Sem protocolos nesta categoria',
+              style: TextStyle(fontSize: 12, color: dark ? Colors.white38 : Colors.black38)),
+          )
+        else
+          Padding(
+            padding: const EdgeInsets.fromLTRB(12, 10, 12, 14),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: protos.map((proto) {
+                final title    = proto.getField(proto.title,    isEs ? 'es' : 'pt');
+                final severity = proto.getField(proto.severity, isEs ? 'es' : 'pt');
 
-                    // Cor do badge de severidade
-                    final sevLow  = severity.toLowerCase();
-                    final Color sevColor;
-                    if (sevLow.contains('crítico') || sevLow.contains('crítica') ||
-                        sevLow.contains('grave') || sevLow.contains('alto')) {
-                      sevColor = const Color(0xFFDC2626);
-                    } else if (sevLow.contains('moderado') || sevLow.contains('médio') ||
-                               sevLow.contains('urgência') || sevLow.contains('urgencia')) {
-                      sevColor = const Color(0xFFD97706);
-                    } else {
-                      sevColor = const Color(0xFF16A34A);
-                    }
+                // Cor do badge de severidade
+                final sevLow  = severity.toLowerCase();
+                final Color sevColor;
+                if (sevLow.contains('crítico') || sevLow.contains('crítica') ||
+                    sevLow.contains('grave')    || sevLow.contains('alto')) {
+                  sevColor = const Color(0xFFDC2626);
+                } else if (sevLow.contains('moderado') || sevLow.contains('médio') ||
+                           sevLow.contains('urgência')  || sevLow.contains('urgencia')) {
+                  sevColor = const Color(0xFFD97706);
+                } else {
+                  sevColor = const Color(0xFF16A34A);
+                }
 
-                    return GestureDetector(
-                      onTap: () => showProtocolDetail(context, proto),
-                      child: Container(
-                        margin: const EdgeInsets.only(bottom: 6),
-                        padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(12),
-                          color: dark
-                              ? const Color(0xFF162218)
-                              : const Color(0xFFF6FBF6),
-                          border: Border.all(
-                            color: dark
-                                ? const Color(0xFF1F3328)
-                                : const Color(0xFFD1EAD1)),
-                        ),
-                        child: Row(children: [
-                          Expanded(child: Text(
-                            title,
+                return GestureDetector(
+                  onTap: () => showProtocolDetail(context, proto),
+                  child: Container(
+                    margin: const EdgeInsets.only(bottom: 6),
+                    padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12),
+                      color: dark
+                          ? const Color(0xFF162218)
+                          : const Color(0xFFF6FBF6),
+                      border: Border.all(
+                        color: dark
+                            ? const Color(0xFF1F3328)
+                            : const Color(0xFFD1EAD1)),
+                    ),
+                    child: Row(children: [
+                      Expanded(child: Text(
+                        title,
+                        style: TextStyle(
+                          fontSize: 12.5, fontWeight: FontWeight.w700,
+                          color: dark ? Colors.white : const Color(0xFF1A1A1A),
+                          height: 1.3),
+                      )),
+                      const SizedBox(width: 8),
+                      if (severity.isNotEmpty)
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 7, vertical: 3),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(6),
+                            color: sevColor.withValues(alpha: 0.12),
+                          ),
+                          child: Text(
+                            severity.length > 18
+                                ? '${severity.substring(0, 16)}…'
+                                : severity,
                             style: TextStyle(
-                              fontSize: 12.5, fontWeight: FontWeight.w700,
-                              color: dark ? Colors.white : const Color(0xFF1A1A1A),
-                              height: 1.3),
-                          )),
-                          const SizedBox(width: 8),
-                          if (severity.isNotEmpty)
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 7, vertical: 3),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(6),
-                                color: sevColor.withValues(alpha: 0.12),
-                              ),
-                              child: Text(
-                                severity.length > 18
-                                    ? '${severity.substring(0, 16)}…'
-                                    : severity,
-                                style: TextStyle(
-                                  fontSize: 9, fontWeight: FontWeight.w800,
-                                  color: sevColor)),
-                            ),
-                          const SizedBox(width: 6),
-                          Icon(Icons.chevron_right_rounded,
-                            size: 16,
-                            color: dark ? Colors.white30 : Colors.black26),
-                        ]),
-                      ),
-                    );
-                  }).toList(),
-                ),
-        ),
+                              fontSize: 9, fontWeight: FontWeight.w800,
+                              color: sevColor)),
+                        ),
+                      const SizedBox(width: 6),
+                      Icon(Icons.chevron_right_rounded,
+                        size: 16,
+                        color: dark ? Colors.white30 : Colors.black26),
+                    ]),
+                  ),
+                );
+              }).toList(),
+            ),
+          ),
       ]),
     );
   }
@@ -2823,7 +2817,6 @@ class _ReferenceTabState extends State<_ReferenceTab> {
 
   // ── PROTOCOLOS ────────────────────────────────────────────────────
   Widget _buildProtocols(bool isEs) {
-    final p = context.read<AppProvider>();
     return _ProtocolsCard(isEs: isEs);
   }
 }
