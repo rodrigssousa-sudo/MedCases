@@ -27,6 +27,7 @@ import 'screens/maintenance_screen.dart';
 import 'screens/cases_screen.dart';
 import 'screens/prescripciones_screen.dart';
 import 'screens/legal_screen.dart';
+import 'screens/home_screen.dart';
 import 'services/firestore_service.dart';
 import 'widgets/brand_mark.dart';
 
@@ -767,14 +768,13 @@ class MainShell extends StatefulWidget {
 }
 
 class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
-  // tabs: 0=Cockpit 1=Rx/Proto 2=IA(FAB) 3=H.Clínica 4=Calculadoras
+  // tabs: 0=Home 1=Rx/Proto 2=IA(FAB) 3=H.Clínica 4=Calculadoras
+  // (Adulto/Cockpit é acessado via card na HomeScreen)
   int _tab = 0;
   // sub-tab dentro do combo Rx+Proto: 0=Rx, 1=Protocolos
   int _rxProtoSub = 0;
 
   // ── Performance: telas estáticas criadas uma única vez no initState ──────
-  // Evita recriar AiScreen/HistoryScreen/ToolsScreen a cada setState/_tab change.
-  // CockpitScreen recebe callback por referência — mantém identidade entre builds.
   late final List<Widget> _staticScreens;
 
   @override
@@ -784,8 +784,10 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
 
     // Instancia telas estáticas UMA VEZ — IndexedStack não recria entre trocas de tab
     _staticScreens = [
-      CockpitScreen(openProtocol: _openProtocol), // 0
-      const Placeholder(),                         // 1 — _RxProtoCombo (dinâmico, substituído no build)
+      // 0 — HomeScreen (nova tela inicial com os 4 cards)
+      // Nota: construída no build() porque precisa de setState callback
+      const Placeholder(),
+      const Placeholder(),                         // 1 — _RxProtoCombo (dinâmico)
       const AiScreen(),                            // 2
       const HistoryScreen(),                       // 3
       const ToolsScreen(),                         // 4
@@ -855,11 +857,14 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
     final navBg = dark ? const Color(0xFF1E1E1E) : Colors.white;
     final navBorder = dark ? const Color(0xFF333333) : const Color(0xFFE8E1D2);
 
-    // _RxProtoCombo precisa de _rxProtoSub que é estado local — mantido aqui.
-    // As demais telas são reutilizadas de _staticScreens (criadas no initState).
+    // HomeScreen e _RxProtoCombo são dinâmicos (precisam de callbacks setState).
+    // As demais telas são reutilizadas de _staticScreens.
     final mainScreens = [
-      _staticScreens[0], // CockpitScreen
-      _RxProtoCombo(     // dinâmico: reage a _rxProtoSub
+      HomeScreen(                                  // 0 — nova tela inicial
+        onTabChange: (t) => setState(() => _tab = t),
+        openProtocol: _openProtocol,
+      ),
+      _RxProtoCombo(                               // 1 — Rx/Proto combo
         subTab: _rxProtoSub,
         onSubTabChange: (i) => setState(() => _rxProtoSub = i),
       ),
@@ -879,6 +884,7 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
         // Nas demais abas: oculto para liberar espaço — cada tela tem header próprio.
         // O _AppHeader já tem SafeArea interno. Nas outras abas usamos SafeArea aqui
         // para garantir que o status bar seja respeitado sem duplicar em cada tela.
+        // AppHeader só na tab 0 (Home) — as demais têm header próprio
         if (_tab == 0)
           _AppHeader(
             onTabChange: (t) => setState(() => _tab = t),

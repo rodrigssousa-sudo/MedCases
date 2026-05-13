@@ -103,7 +103,7 @@ class _ToolsScreenState extends State<ToolsScreen> with SingleTickerProviderStat
             _InfusionTab(),
             _ReferenceTab(),
             _PrescriptionsTab(),
-            _PediatricsTab(),
+            PediatricsTabContent(),
           ],
         ),
       ),
@@ -2597,12 +2597,13 @@ class _LabeledInput extends StatelessWidget {
 // ══════════════════════════════════════════════════════════════════
 //  TAB 8 — PEDIATRIA
 // ══════════════════════════════════════════════════════════════════
-class _PediatricsTab extends StatefulWidget {
+class PediatricsTabContent extends StatefulWidget {
+  const PediatricsTabContent({super.key});
   @override
-  State<_PediatricsTab> createState() => _PediatricsTabState();
+  State<PediatricsTabContent> createState() => _PediatricsTabContentState();
 }
 
-class _PediatricsTabState extends State<_PediatricsTab> {
+class _PediatricsTabContentState extends State<PediatricsTabContent> {
   int _section = 0;
   static const _sections = ['BIOMETRIA', 'SCHWARTZ', 'PEWS', 'DOSES', 'REFERÊNCIA'];
 
