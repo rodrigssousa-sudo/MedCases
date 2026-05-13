@@ -29,29 +29,29 @@ class AppColors {
 
   // ── Fundos ────────────────────────────────────────────────────────────────
   /// Fundo de cards e superfícies elevadas
-  Color get cardBg      => dark ? const Color(0xFF1C2820) : Colors.white;
+  Color get cardBg      => dark ? const Color(0xFF1E1E1E) : Colors.white;
   /// Fundo de cards com leve elevação extra
-  Color get cardBg2     => dark ? const Color(0xFF222E28) : const Color(0xFFF8F9FA);
+  Color get cardBg2     => dark ? const Color(0xFF252525) : const Color(0xFFF8F9FA);
   /// Fundo de inputs e campos de texto
-  Color get inputBg     => dark ? const Color(0xFF1A2520) : Colors.white;
+  Color get inputBg     => dark ? const Color(0xFF1C1C1C) : Colors.white;
   /// Surface geral (fundo de chips, pills)
-  Color get surface     => dark ? const Color(0xFF1F2B24) : const Color(0xFFF0F2F5);
+  Color get surface     => dark ? const Color(0xFF242424) : const Color(0xFFF0F2F5);
   /// Fundo do scaffold (backup — geralmente vem do theme)
-  Color get scaffoldBg  => dark ? const Color(0xFF121E18) : const Color(0xFFF5F6F8);
+  Color get scaffoldBg  => dark ? const Color(0xFF141414) : const Color(0xFFF5F6F8);
 
   // ── Textos ────────────────────────────────────────────────────────────────
   /// Texto principal — máximo contraste
-  Color get textPrimary   => dark ? const Color(0xFFEEF0EE) : const Color(0xFF07110d);
+  Color get textPrimary   => dark ? const Color(0xFFF7F7F7) : const Color(0xFF07110d);
   /// Texto secundário — subtítulos, labels
-  Color get textSecondary => dark ? const Color(0xFFADBAAF) : const Color(0xFF555F58);
+  Color get textSecondary => dark ? const Color(0xFFCCCCCC) : const Color(0xFF555F58);
   /// Texto terciário — hints, captions
-  Color get textHint      => dark ? const Color(0xFF6E7E72) : const Color(0xFF9CA3AF);
+  Color get textHint      => dark ? const Color(0xFF888888) : const Color(0xFF9CA3AF);
   /// Texto desabilitado
-  Color get textDisabled  => dark ? const Color(0xFF4A5A50) : const Color(0xFFBBBBBB);
+  Color get textDisabled  => dark ? const Color(0xFF555555) : const Color(0xFFBBBBBB);
 
   // ── Bordas ────────────────────────────────────────────────────────────────
-  Color get border        => dark ? const Color(0xFF2A3A30) : const Color(0xFFE2E6EA);
-  Color get borderStrong  => dark ? const Color(0xFF3A4E42) : const Color(0xFFCDD3D8);
+  Color get border        => dark ? const Color(0xFF333333) : const Color(0xFFE2E6EA);
+  Color get borderStrong  => dark ? const Color(0xFF444444) : const Color(0xFFCDD3D8);
 
   // ── Verde / brand ─────────────────────────────────────────────────────────
   /// Verde principal — suavizado no dark para menor saturação
@@ -69,12 +69,12 @@ class AppColors {
 
   // ── Dark base ─────────────────────────────────────────────────────────────
   /// Cor escura para botões primários — mais clara no dark
-  Color get darkBtn       => dark ? const Color(0xFF1E3528) : const Color(0xFF07110d);
+  Color get darkBtn       => dark ? const Color(0xFF2A2A2A) : const Color(0xFF07110d);
   /// Cor escura para text (alias contextual)
   Color get darkText      => textPrimary;
 
   // ── Divisores ────────────────────────────────────────────────────────────
-  Color get divider       => dark ? const Color(0xFF1E2E24) : const Color(0xFFE8E1D2);
+  Color get divider       => dark ? const Color(0xFF2A2A2A) : const Color(0xFFE8E1D2);
 
   // ── Interações / alertas (não mudam entre modos) ──────────────────────────
   static const Color alertRed       = Color(0xFFCC2222);
