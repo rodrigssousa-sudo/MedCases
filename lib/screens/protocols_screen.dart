@@ -594,7 +594,7 @@ class _ProtocolsScreenState extends State<ProtocolsScreen> {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// ACORDEÃO DE GRUPO DE PROTOCOLOS
+// CARD DE GRUPO — fechado, abre bottom sheet temático ao clicar
 // ─────────────────────────────────────────────────────────────────────────────
 class _ProtocolGroupAccordion extends StatelessWidget {
   final String groupKey;
@@ -606,10 +606,10 @@ class _ProtocolGroupAccordion extends StatelessWidget {
   final Color borderColor;
   final Color iconColor;
   final List<ProtocolModel> protocols;
-  final bool isExpanded;
+  final bool isExpanded;   // mantido por compatibilidade, não usado mais
   final bool isEs;
   final AppProvider p;
-  final VoidCallback onToggle;
+  final VoidCallback onToggle; // mantido por compatibilidade
   final ValueChanged<ProtocolModel> onSelect;
 
   const _ProtocolGroupAccordion({
@@ -629,6 +629,27 @@ class _ProtocolGroupAccordion extends StatelessWidget {
     required this.onSelect,
   });
 
+  void _openSheet(BuildContext context) {
+    final title = isEs ? titleEs : titlePt;
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => _GroupSheet(
+        title: title,
+        iconData: iconData,
+        icon: icon,
+        cardColor: color,
+        borderColor: borderColor,
+        iconColor: iconColor,
+        protocols: protocols,
+        p: p,
+        isEs: isEs,
+        onSelect: onSelect,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     if (protocols.isEmpty) return const SizedBox.shrink();
@@ -636,94 +657,307 @@ class _ProtocolGroupAccordion extends StatelessWidget {
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(14),
-        child: Column(children: [
-
-          // ── Cabeçalho do grupo ───────────────────────────────────────────
-          GestureDetector(
-            onTap: onToggle,
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+      child: GestureDetector(
+        onTap: () => _openSheet(context),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+          decoration: BoxDecoration(
+            color: color,
+            border: Border.all(color: borderColor),
+            borderRadius: BorderRadius.circular(14),
+          ),
+          child: Row(children: [
+            // Ícone
+            Container(
+              width: 42, height: 42,
               decoration: BoxDecoration(
-                color: color,
-                border: Border.all(color: borderColor),
-                borderRadius: isExpanded
-                    ? const BorderRadius.vertical(top: Radius.circular(14))
-                    : BorderRadius.circular(14),
+                color: borderColor.withValues(alpha: 0.55),
+                borderRadius: BorderRadius.circular(12),
               ),
-              child: Row(children: [
-                // Ícone
-                Container(
-                  width: 38, height: 38,
+              child: Center(
+                child: iconData != null
+                    ? Icon(iconData, size: 20, color: iconColor)
+                    : Text(icon, style: const TextStyle(fontSize: 20)),
+              ),
+            ),
+            const SizedBox(width: 14),
+            // Título + contagem
+            Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Text(title,
+                style: TextStyle(
+                  fontSize: 13.5, fontWeight: FontWeight.w900,
+                  color: iconColor, letterSpacing: -0.2)),
+              const SizedBox(height: 3),
+              Text(
+                '${protocols.length} ${protocols.length == 1
+                    ? (isEs ? 'protocolo' : 'protocolo')
+                    : (isEs ? 'protocolos' : 'protocolos')}',
+                style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600,
+                  color: iconColor.withValues(alpha: 0.55))),
+            ])),
+            // Seta de abertura
+            Container(
+              width: 32, height: 32,
+              decoration: BoxDecoration(
+                color: borderColor.withValues(alpha: 0.6),
+                borderRadius: BorderRadius.circular(9),
+              ),
+              child: Icon(Icons.chevron_right_rounded,
+                size: 20, color: iconColor.withValues(alpha: 0.8)),
+            ),
+          ]),
+        ),
+      ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// BOTTOM SHEET TEMÁTICO — lista de protocolos com cor do grupo
+// ─────────────────────────────────────────────────────────────────────────────
+class _GroupSheet extends StatelessWidget {
+  final String title;
+  final String icon;
+  final IconData? iconData;
+  final Color cardColor;
+  final Color borderColor;
+  final Color iconColor;
+  final List<ProtocolModel> protocols;
+  final AppProvider p;
+  final bool isEs;
+  final ValueChanged<ProtocolModel> onSelect;
+
+  const _GroupSheet({
+    required this.title,
+    required this.icon,
+    this.iconData,
+    required this.cardColor,
+    required this.borderColor,
+    required this.iconColor,
+    required this.protocols,
+    required this.p,
+    required this.isEs,
+    required this.onSelect,
+  });
+
+  // Gera versão levemente mais escura da cor do card para o fundo do sheet
+  Color get _sheetBg {
+    final r = (cardColor.red * 0.97).round().clamp(0, 255);
+    final g = (cardColor.green * 0.97).round().clamp(0, 255);
+    final b = (cardColor.blue * 0.97).round().clamp(0, 255);
+    return Color.fromARGB(255, r, g, b);
+  }
+
+  // Cor dos tiles — levemente mais clara que o fundo
+  Color get _tileBg {
+    final r = (cardColor.red + (255 - cardColor.red) * 0.55).round().clamp(0, 255);
+    final g = (cardColor.green + (255 - cardColor.green) * 0.55).round().clamp(0, 255);
+    final b = (cardColor.blue + (255 - cardColor.blue) * 0.55).round().clamp(0, 255);
+    return Color.fromARGB(255, r, g, b);
+  }
+
+  Color get _severityColor {
+    // Cor de severidade adaptada ao tema
+    return iconColor;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final maxH = MediaQuery.of(context).size.height * 0.88;
+
+    return Container(
+      height: maxH,
+      decoration: BoxDecoration(
+        color: _sheetBg,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      child: Column(children: [
+
+        // ── Alça de arraste ────────────────────────────────────────────────
+        Padding(
+          padding: const EdgeInsets.only(top: 10, bottom: 0),
+          child: Container(
+            width: 40, height: 4,
+            decoration: BoxDecoration(
+              color: iconColor.withValues(alpha: 0.25),
+              borderRadius: BorderRadius.circular(2),
+            ),
+          ),
+        ),
+
+        // ── Header do grupo (igual ao card) ───────────────────────────────
+        Container(
+          margin: const EdgeInsets.fromLTRB(16, 12, 16, 0),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+          decoration: BoxDecoration(
+            color: cardColor,
+            border: Border.all(color: borderColor),
+            borderRadius: BorderRadius.circular(14),
+          ),
+          child: Row(children: [
+            Container(
+              width: 42, height: 42,
+              decoration: BoxDecoration(
+                color: borderColor.withValues(alpha: 0.55),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Center(
+                child: iconData != null
+                    ? Icon(iconData, size: 20, color: iconColor)
+                    : Text(icon, style: const TextStyle(fontSize: 20)),
+              ),
+            ),
+            const SizedBox(width: 14),
+            Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Text(title,
+                style: TextStyle(
+                  fontSize: 14, fontWeight: FontWeight.w900,
+                  color: iconColor, letterSpacing: -0.2)),
+              const SizedBox(height: 3),
+              Text(
+                '${protocols.length} ${isEs ? 'protocolos disponibles' : 'protocolos disponíveis'}',
+                style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600,
+                  color: iconColor.withValues(alpha: 0.55))),
+            ])),
+          ]),
+        ),
+
+        const SizedBox(height: 12),
+
+        // ── Lista de protocolos ────────────────────────────────────────────
+        Expanded(
+          child: ListView.builder(
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 32),
+            itemCount: protocols.length,
+            itemBuilder: (context, index) {
+              final proto = protocols[index];
+              final isLast = index == protocols.length - 1;
+              final isFav = p.favProtocols.contains(proto.id);
+              final sevText = p.tDB(proto.severity);
+
+              // Cor do badge de severidade
+              Color sevColor;
+              final sevLower = sevText.toLowerCase();
+              if (sevLower.contains('crít') || sevLower.contains('crít')) {
+                sevColor = const Color(0xFFCC2222);
+              } else if (sevLower.contains('alto')) {
+                sevColor = const Color(0xFFE07000);
+              } else {
+                sevColor = iconColor;
+              }
+
+              return GestureDetector(
+                onTap: () {
+                  Navigator.of(context).pop();
+                  onSelect(proto);
+                },
+                child: Container(
+                  margin: EdgeInsets.only(bottom: isLast ? 0 : 8),
+                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 13),
                   decoration: BoxDecoration(
-                    color: borderColor.withValues(alpha: 0.5),
-                    borderRadius: BorderRadius.circular(10),
+                    color: _tileBg,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: borderColor.withValues(alpha: 0.7)),
                   ),
-                  child: Center(
-                    child: iconData != null
-                        ? Icon(iconData, size: 18, color: iconColor)
-                        : Text(icon, style: const TextStyle(fontSize: 19)),
-                  ),
+                  child: Row(children: [
+                    Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+
+                      // Severidade + favorito
+                      Row(children: [
+                        if (isFav)
+                          Padding(
+                            padding: const EdgeInsets.only(right: 5),
+                            child: Icon(Icons.star_rounded, size: 12, color: kGold),
+                          ),
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                          decoration: BoxDecoration(
+                            color: sevColor.withValues(alpha: 0.12),
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                          child: Text(sevText,
+                            style: TextStyle(fontSize: 8.5, fontWeight: FontWeight.w900,
+                              color: sevColor, letterSpacing: 1.2)),
+                        ),
+                      ]),
+                      const SizedBox(height: 5),
+
+                      // Título
+                      Text(p.tDB(proto.title),
+                        style: TextStyle(fontSize: 14, fontWeight: FontWeight.w900,
+                          color: iconColor),
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 2),
+                      const SizedBox(height: 4),
+
+                      // Preview
+                      Text(p.tDB(proto.recognize),
+                        style: TextStyle(fontSize: 11.5,
+                          color: iconColor.withValues(alpha: 0.65),
+                          fontWeight: FontWeight.w500, height: 1.4),
+                        maxLines: 2, overflow: TextOverflow.ellipsis),
+                    ])),
+
+                    const SizedBox(width: 10),
+
+                    // Ações: favorito + seta
+                    Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+                      GestureDetector(
+                        onTap: () => p.toggleFavProtocol(proto.id),
+                        child: Padding(
+                          padding: const EdgeInsets.all(4),
+                          child: Icon(
+                            isFav ? Icons.star_rounded : Icons.star_border_rounded,
+                            size: 20,
+                            color: isFav ? kGold : iconColor.withValues(alpha: 0.3),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 6),
+                      Container(
+                        width: 32, height: 32,
+                        decoration: BoxDecoration(
+                          color: borderColor.withValues(alpha: 0.6),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Icon(Icons.arrow_forward_ios_rounded,
+                          size: 13, color: iconColor.withValues(alpha: 0.8)),
+                      ),
+                    ]),
+                  ]),
                 ),
-                const SizedBox(width: 12),
-                // Título + contagem
-                Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  Text(title,
-                    style: TextStyle(
-                      fontSize: 13, fontWeight: FontWeight.w900,
-                      color: iconColor, letterSpacing: -0.2)),
-                  const SizedBox(height: 2),
-                  Text(
-                    '${protocols.length} ${protocols.length == 1
-                        ? (isEs ? 'protocolo' : 'protocolo')
-                        : (isEs ? 'protocolos' : 'protocolos')}',
-                    style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600,
-                      color: iconColor.withValues(alpha: 0.55))),
-                ])),
-                // Chevron animado
-                AnimatedRotation(
-                  turns: isExpanded ? 0.5 : 0.0,
-                  duration: const Duration(milliseconds: 200),
-                  child: Icon(Icons.keyboard_arrow_down_rounded,
-                    size: 22, color: iconColor.withValues(alpha: 0.55)),
+              );
+            },
+          ),
+        ),
+
+        // ── Botão fechar ───────────────────────────────────────────────────
+        Padding(
+          padding: EdgeInsets.fromLTRB(16, 0, 16,
+            MediaQuery.of(context).padding.bottom + 12),
+          child: GestureDetector(
+            onTap: () => Navigator.of(context).pop(),
+            child: Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(vertical: 14),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(14),
+                color: borderColor.withValues(alpha: 0.35),
+                border: Border.all(color: borderColor),
+              ),
+              child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                Icon(Icons.keyboard_arrow_down_rounded, size: 18, color: iconColor),
+                const SizedBox(width: 6),
+                Text(
+                  isEs ? 'Cerrar' : 'Fechar',
+                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w800,
+                    color: iconColor),
                 ),
               ]),
             ),
           ),
-
-          // ── Lista expandida ──────────────────────────────────────────────
-          AnimatedCrossFade(
-            duration: const Duration(milliseconds: 220),
-            crossFadeState: isExpanded
-                ? CrossFadeState.showFirst
-                : CrossFadeState.showSecond,
-            firstChild: Container(
-              decoration: BoxDecoration(
-                color: AppColors.of(context).cardBg,
-                border: Border(
-                  left: BorderSide(color: borderColor),
-                  right: BorderSide(color: borderColor),
-                  bottom: BorderSide(color: borderColor),
-                ),
-                borderRadius: const BorderRadius.vertical(bottom: Radius.circular(14)),
-              ),
-              child: Column(
-                children: protocols.asMap().entries.map((entry) {
-                  final isLast = entry.key == protocols.length - 1;
-                  return _ProtocolListTile(
-                    proto: entry.value,
-                    p: p,
-                    isLast: isLast,
-                    onTap: () => onSelect(entry.value),
-                  );
-                }).toList(),
-              ),
-            ),
-            secondChild: const SizedBox(width: double.infinity),
-          ),
-        ]),
-      ),
+        ),
+      ]),
     );
   }
 }
