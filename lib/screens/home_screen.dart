@@ -690,7 +690,7 @@ class _FarmacosShell extends StatelessWidget {
             ),
           ),
         ),
-        const Expanded(child: DrugsScreen()),
+        const Expanded(child: DrugsScreen(hideHeader: true)),
       ]),
     );
   }

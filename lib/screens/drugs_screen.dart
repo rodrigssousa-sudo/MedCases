@@ -6,7 +6,8 @@ import '../services/drug_interaction_service.dart';
 import '../widgets/common_widgets.dart';
 
 class DrugsScreen extends StatefulWidget {
-  const DrugsScreen({super.key});
+  final bool hideHeader;
+  const DrugsScreen({super.key, this.hideHeader = false});
   @override
   State<DrugsScreen> createState() => _DrugsScreenState();
 }
@@ -68,16 +69,18 @@ class _DrugsScreenState extends State<DrugsScreen> {
       padding: const EdgeInsets.fromLTRB(0, 8, 0, 100),
       child: Column(children: [
 
-        // ── Header premium ────────────────────────────────────────────────────
-        PremiumCard(
-          child: SectionTitle(
-            eyebrow: 'Knowledge Base',
-            title: p.t('drugs'),
-            subtitle: p.t('drugs_subtitle'),
-            light: true,
+        // ── Header premium (oculto quando embutido em shell) ─────────────────
+        if (!widget.hideHeader) ...[  
+          PremiumCard(
+            child: SectionTitle(
+              eyebrow: 'Knowledge Base',
+              title: p.t('drugs'),
+              subtitle: p.t('drugs_subtitle'),
+              light: true,
+            ),
           ),
-        ),
-        const SizedBox(height: 12),
+          const SizedBox(height: 12),
+        ],
 
         // ── Busca com autocomplete ─────────────────────────────────────────────
         Padding(
