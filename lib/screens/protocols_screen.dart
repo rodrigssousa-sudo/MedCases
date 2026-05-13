@@ -1013,53 +1013,41 @@ class _ActionsCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16),
-        gradient: const LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [kDark, Color(0xFF0D2218), Color(0xFF0A3020)],
-        ),
-      ),
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+    final dark = context.watch<AppProvider>().darkMode;
 
-        // Header
-        Padding(
-          padding: const EdgeInsets.fromLTRB(16, 14, 16, 0),
-          child: Row(children: [
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-              decoration: BoxDecoration(
-                color: const Color(0xFFFFE8A6).withValues(alpha: 0.18),
-                borderRadius: BorderRadius.circular(4),
-              ),
-              child: Text(p.t('actions').toUpperCase(),
-                style: const TextStyle(fontSize: 9, fontWeight: FontWeight.w900,
-                  color: Color(0xFFFFE8A6), letterSpacing: 2.0)),
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+
+      // ── Header da seção ─────────────────────────────────────────────────
+      Padding(
+        padding: const EdgeInsets.only(bottom: 12),
+        child: Row(children: [
+          Container(
+            width: 3, height: 16,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(2),
+              color: const Color(0xFF4ADE80),
             ),
-          ]),
-        ),
-        const SizedBox(height: 12),
-
-        // Passos com hierarquia visual
-        Padding(
-          padding: const EdgeInsets.fromLTRB(14, 0, 14, 4),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: List.generate(actions.length, (i) {
-              return _ActionStepRow(
-                index: i,
-                text: actions[i],
-                isLast: i == actions.length - 1,
-                p: p,
-              );
-            }),
           ),
-        ),
-      ]),
-    );
+          const SizedBox(width: 8),
+          Text(
+            p.t('actions').toUpperCase(),
+            style: TextStyle(
+              fontSize: 10, fontWeight: FontWeight.w900,
+              letterSpacing: 1.6,
+              color: dark ? const Color(0xFF9CA3AF) : const Color(0xFF6B7280),
+            ),
+          ),
+        ]),
+      ),
+
+      // ── Passos individuais ───────────────────────────────────────────────
+      ...List.generate(actions.length, (i) => _ActionStepRow(
+        index: i,
+        text: actions[i],
+        isLast: i == actions.length - 1,
+        p: p,
+      )),
+    ]);
   }
 }
 
@@ -1132,10 +1120,11 @@ class _ActionStepRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final dark = context.watch<AppProvider>().darkMode;
     final type = _classify(text);
     final cfg  = _config(type);
 
-    // Divide o texto em parte principal e sub-detalhe (entre parênteses)
+    // Divide texto em parte principal e sub-detalhe (entre parênteses)
     final parenMatch = RegExp(r'^(.*?)\s*\(([^)]+)\)\s*(.*)$').firstMatch(text);
     final hasParen   = parenMatch != null;
     final mainText   = hasParen
@@ -1143,15 +1132,24 @@ class _ActionStepRow extends StatelessWidget {
         : text;
     final subText    = hasParen ? parenMatch.group(2)! : null;
 
-    return IntrinsicHeight(
+    // Cores adaptativas dark/light
+    final cardBg     = dark ? cfg.cardBgDark     : cfg.cardBgLight;
+    final cardBorder = dark ? cfg.cardBorderDark : cfg.cardBorderLight;
+    final textMain   = dark ? cfg.textDark        : cfg.textLight;
+    final textSub    = dark
+        ? const Color(0xFF9CA3AF)
+        : const Color(0xFF6B7280);
+
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
       child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
 
-        // ── Coluna esquerda: badge + linha conectora ─────────────────────────
+        // ── Badge numérico + linha conectora ──────────────────────────────
         SizedBox(
-          width: 28,
+          width: 32,
           child: Column(children: [
             Container(
-              width: 24, height: 24,
+              width: 28, height: 28,
               decoration: BoxDecoration(
                 color: cfg.badgeBg,
                 shape: BoxShape.circle,
@@ -1159,39 +1157,46 @@ class _ActionStepRow extends StatelessWidget {
               ),
               child: Center(
                 child: cfg.badgeIcon != null
-                    ? Icon(cfg.badgeIcon, size: 12, color: cfg.badgeFg)
+                    ? Icon(cfg.badgeIcon, size: 13, color: cfg.badgeFg)
                     : Text('${index + 1}',
-                        style: TextStyle(fontSize: 10, fontWeight: FontWeight.w900,
+                        style: TextStyle(
+                          fontSize: 11, fontWeight: FontWeight.w900,
                           color: cfg.badgeFg)),
               ),
             ),
             if (!isLast)
-              Expanded(
-                child: Container(
-                  width: 1.5,
-                  margin: const EdgeInsets.symmetric(vertical: 3),
-                  color: Colors.white.withValues(alpha: 0.12),
-                ),
+              Container(
+                width: 1.5,
+                height: 8,
+                margin: const EdgeInsets.symmetric(vertical: 2),
+                color: dark
+                    ? Colors.white.withValues(alpha: 0.10)
+                    : Colors.black.withValues(alpha: 0.08),
               ),
-            if (isLast) const SizedBox(height: 14),
           ]),
         ),
 
         const SizedBox(width: 10),
 
-        // ── Coluna direita: label + texto + sub ──────────────────────────────
+        // ── Card do passo ─────────────────────────────────────────────────
         Expanded(
-          child: Padding(
-            padding: const EdgeInsets.only(top: 2, bottom: 4),
+          child: Container(
+            margin: const EdgeInsets.only(bottom: 0),
+            padding: const EdgeInsets.fromLTRB(12, 10, 12, 11),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              color: cardBg,
+              border: Border.all(color: cardBorder, width: 1),
+            ),
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
 
-              // Label semântico (ex: URGENTE, EVITAR, MONITORAR)
+              // Label semântico
               if (cfg.label != null) ...[
                 Text(cfg.label!,
                   style: TextStyle(
                     fontSize: 8, fontWeight: FontWeight.w900,
-                    color: cfg.labelColor, letterSpacing: 1.6)),
-                const SizedBox(height: 2),
+                    color: cfg.labelColor, letterSpacing: 1.8)),
+                const SizedBox(height: 4),
               ],
 
               // Texto principal
@@ -1199,23 +1204,21 @@ class _ActionStepRow extends StatelessWidget {
                 style: TextStyle(
                   fontSize: cfg.fontSize,
                   fontWeight: cfg.fontWeight,
-                  color: cfg.textColor,
-                  height: 1.4,
+                  color: textMain,
+                  height: 1.45,
                   letterSpacing: -0.1)),
 
-              // Sub-detalhe entre parênteses — menor, mais suave
+              // Sub-detalhe entre parênteses
               if (subText != null) ...[
-                const SizedBox(height: 3),
-                Text('($subText)',
+                const SizedBox(height: 5),
+                Text(subText,
                   style: TextStyle(
                     fontSize: 11,
                     fontWeight: FontWeight.w500,
-                    color: Colors.white.withValues(alpha: 0.5),
-                    height: 1.35,
+                    color: textSub,
+                    height: 1.4,
                     fontStyle: FontStyle.italic)),
               ],
-
-              const SizedBox(height: 10),
             ]),
           ),
         ),
@@ -1226,71 +1229,101 @@ class _ActionStepRow extends StatelessWidget {
   _StepCfg _config(_StepType t) {
     switch (t) {
       case _StepType.primary:
-        return _StepCfg(
+        return const _StepCfg(
           label: null,
           fontSize: 15,
           fontWeight: FontWeight.w800,
-          textColor: Colors.white,
-          badgeBg: const Color(0xFFFFE8A6).withValues(alpha: 0.25),
-          badgeBorder: const Color(0xFFFFE8A6).withValues(alpha: 0.7),
-          badgeFg: const Color(0xFFFFE8A6),
+          textDark: Colors.white,
+          textLight: Color(0xFF0F172A),
+          cardBgDark: Color(0xFF1A2E1F),
+          cardBgLight: Color(0xFFECFDF5),
+          cardBorderDark: Color(0xFF22543D),
+          cardBorderLight: Color(0xFF86EFAC),
+          badgeBg: Color(0x40FFE8A6),
+          badgeBorder: Color(0xB3FFE8A6),
+          badgeFg: Color(0xFFFFE8A6),
         );
       case _StepType.urgent:
         return _StepCfg(
           label: p.lang == 'es' ? 'URGENTE' : 'URGENTE',
-          labelColor: const Color(0xFFFF8080),
+          labelColor: const Color(0xFFEF4444),
           fontSize: 14,
           fontWeight: FontWeight.w800,
-          textColor: const Color(0xFFFFCCCC),
-          badgeBg: const Color(0xFFFF6B6B).withValues(alpha: 0.20),
-          badgeBorder: const Color(0xFFFF6B6B).withValues(alpha: 0.55),
+          textDark: const Color(0xFFFFCCCC),
+          textLight: const Color(0xFF7F1D1D),
+          cardBgDark: const Color(0xFF2A1515),
+          cardBgLight: const Color(0xFFFFF0F0),
+          cardBorderDark: const Color(0xFF6B2020),
+          cardBorderLight: const Color(0xFFFCA5A5),
+          badgeBg: const Color(0x33FF6B6B),
+          badgeBorder: const Color(0x8CFF6B6B),
           badgeFg: const Color(0xFFFF9090),
           badgeIcon: Icons.priority_high_rounded,
         );
       case _StepType.avoid:
         return _StepCfg(
           label: p.lang == 'es' ? 'PRECAUCIÓN' : 'ATENÇÃO',
-          labelColor: const Color(0xFFFFB347),
+          labelColor: const Color(0xFFF59E0B),
           fontSize: 13,
           fontWeight: FontWeight.w700,
-          textColor: const Color(0xFFFFD59A),
-          badgeBg: const Color(0xFFFFB347).withValues(alpha: 0.15),
-          badgeBorder: const Color(0xFFFFB347).withValues(alpha: 0.45),
+          textDark: const Color(0xFFFFD59A),
+          textLight: const Color(0xFF78350F),
+          cardBgDark: const Color(0xFF271C0A),
+          cardBgLight: const Color(0xFFFFFBEB),
+          cardBorderDark: const Color(0xFF5C3D0A),
+          cardBorderLight: const Color(0xFFFCD34D),
+          badgeBg: const Color(0x26FFB347),
+          badgeBorder: const Color(0x73FFB347),
           badgeFg: const Color(0xFFFFB347),
           badgeIcon: Icons.warning_amber_rounded,
         );
       case _StepType.monitor:
         return _StepCfg(
           label: p.lang == 'es' ? 'MONITORIZAR' : 'MONITORAR',
-          labelColor: const Color(0xFF90CDD9),
+          labelColor: const Color(0xFF0EA5E9),
           fontSize: 13,
           fontWeight: FontWeight.w700,
-          textColor: Colors.white.withValues(alpha: 0.88),
-          badgeBg: const Color(0xFF90CDD9).withValues(alpha: 0.15),
-          badgeBorder: const Color(0xFF90CDD9).withValues(alpha: 0.45),
+          textDark: const Color(0xFFBAE6FD),
+          textLight: const Color(0xFF0C4A6E),
+          cardBgDark: const Color(0xFF0C1E2A),
+          cardBgLight: const Color(0xFFF0F9FF),
+          cardBorderDark: const Color(0xFF0E3A52),
+          cardBorderLight: const Color(0xFF7DD3FC),
+          badgeBg: const Color(0x2690CDD9),
+          badgeBorder: const Color(0x7390CDD9),
           badgeFg: const Color(0xFF90CDD9),
           badgeIcon: Icons.monitor_heart_outlined,
         );
       case _StepType.prepare:
         return _StepCfg(
           label: p.lang == 'es' ? 'PREPARAR' : 'PREPARAR',
-          labelColor: const Color(0xFFB0C4FF),
+          labelColor: const Color(0xFF818CF8),
           fontSize: 13,
           fontWeight: FontWeight.w700,
-          textColor: Colors.white.withValues(alpha: 0.85),
-          badgeBg: const Color(0xFFB0C4FF).withValues(alpha: 0.12),
-          badgeBorder: const Color(0xFFB0C4FF).withValues(alpha: 0.35),
+          textDark: const Color(0xFFC7D2FE),
+          textLight: const Color(0xFF312E81),
+          cardBgDark: const Color(0xFF131628),
+          cardBgLight: const Color(0xFFF5F3FF),
+          cardBorderDark: const Color(0xFF1E2A5E),
+          cardBorderLight: const Color(0xFFA5B4FC),
+          badgeBg: const Color(0x1FB0C4FF),
+          badgeBorder: const Color(0x59B0C4FF),
           badgeFg: const Color(0xFFB0C4FF),
           badgeIcon: Icons.playlist_add_check_rounded,
         );
       case _StepType.secondary:
-        return _StepCfg(
+        return const _StepCfg(
           fontSize: 13.5,
-          fontWeight: FontWeight.w600,
-          textColor: Colors.white.withValues(alpha: 0.82),
-          badgeBg: Colors.white.withValues(alpha: 0.08),
-          badgeBorder: Colors.white.withValues(alpha: 0.20),
-          badgeFg: Colors.white.withValues(alpha: 0.55),
+          fontWeight: FontWeight.w500,
+          textDark: Color(0xFFE2E8F0),
+          textLight: Color(0xFF334155),
+          cardBgDark: Color(0xFF1C1C1C),
+          cardBgLight: Color(0xFFF8FAFC),
+          cardBorderDark: Color(0xFF2D2D2D),
+          cardBorderLight: Color(0xFFE2E8F0),
+          badgeBg: Color(0x14FFFFFF),
+          badgeBorder: Color(0x33FFFFFF),
+          badgeFg: Color(0x8CFFFFFF),
         );
     }
   }
@@ -1303,7 +1336,15 @@ class _StepCfg {
   final Color labelColor;
   final double fontSize;
   final FontWeight fontWeight;
-  final Color textColor;
+  // Texto adaptativo
+  final Color textDark;
+  final Color textLight;
+  // Card bg/border adaptativo
+  final Color cardBgDark;
+  final Color cardBgLight;
+  final Color cardBorderDark;
+  final Color cardBorderLight;
+  // Badge
   final Color badgeBg;
   final Color badgeBorder;
   final Color badgeFg;
@@ -1314,7 +1355,12 @@ class _StepCfg {
     this.labelColor = Colors.white,
     required this.fontSize,
     required this.fontWeight,
-    required this.textColor,
+    required this.textDark,
+    required this.textLight,
+    required this.cardBgDark,
+    required this.cardBgLight,
+    required this.cardBorderDark,
+    required this.cardBorderLight,
     required this.badgeBg,
     required this.badgeBorder,
     required this.badgeFg,

@@ -440,10 +440,14 @@ class _QuickEmergencies extends StatelessWidget {
         ]),
       ),
 
-      // Chips
-      Wrap(
-        spacing: 8,
-        runSpacing: 8,
+      // Grid 4 colunas — tamanho uniforme
+      GridView.count(
+        crossAxisCount: 4,
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        mainAxisSpacing: 8,
+        crossAxisSpacing: 8,
+        childAspectRatio: 1.0,
         children: _protocols.map((proto) {
           final id    = proto.$1;
           final label = proto.$2;
@@ -451,9 +455,8 @@ class _QuickEmergencies extends StatelessWidget {
           return GestureDetector(
             onTap: () => openProtocol(id),
             child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 9),
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20),
+                borderRadius: BorderRadius.circular(14),
                 color: dark
                     ? const Color(0xFF2A0A0A)
                     : const Color(0xFFFFF0F0),
@@ -463,18 +466,30 @@ class _QuickEmergencies extends StatelessWidget {
                       : const Color(0xFFFFCCCC),
                 ),
               ),
-              child: Row(mainAxisSize: MainAxisSize.min, children: [
-                Icon(icon, size: 12, color: const Color(0xFFCC2222)),
-                const SizedBox(width: 6),
-                Text(
-                  label,
-                  style: const TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w700,
-                    color: Color(0xFFCC2222),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(icon, size: 20, color: const Color(0xFFCC2222)),
+                  const SizedBox(height: 6),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 4),
+                    child: Text(
+                      label,
+                      textAlign: TextAlign.center,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontSize: 10,
+                        fontWeight: FontWeight.w700,
+                        color: dark
+                            ? const Color(0xFFFF8888)
+                            : const Color(0xFFCC2222),
+                        height: 1.25,
+                      ),
+                    ),
                   ),
-                ),
-              ]),
+                ],
+              ),
             ),
           );
         }).toList(),
