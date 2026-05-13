@@ -828,7 +828,9 @@ class AppProvider extends ChangeNotifier {
         _geminiEmail = await GeminiService.connectedEmail() ?? '';
       }
       return ok;
-    } catch (_) {
+    } catch (e, st) {
+      debugPrint('[connectGemini] ERRO: $e');
+      debugPrint('[connectGemini] STACK: $st');
       return false;
     } finally {
       _geminiLoading = false;
