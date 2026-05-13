@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import '../services/drug_interaction_service.dart';
+import '../models/drug_model.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // CONSTANTES ESTÁTICAS (light mode — valores históricos mantidos para
@@ -379,6 +381,431 @@ class ScoreToggle extends StatelessWidget {
             child: Text(points, style: TextStyle(fontSize: 10, fontWeight: FontWeight.w900, color: checked ? kGoldLight : c.gold)),
           ),
         ]),
+      ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// DRUG AUTOCOMPLETE FIELD — campo de fármaco com busca fuzzy reutilizável
+//
+// Funciona em qualquer tela. Busca a partir de 3 caracteres nos:
+//   1. Nomes do DrugModel (banco de 337 fármacos)
+//   2. _termMap do DrugInteractionService (aliases, nomes comerciais, inglês)
+// Com fuzzy fallback por trigramas quando não há match direto.
+//
+// Uso:
+//   DrugAutocompleteField(
+//     controller: _meuCtrl,
+//     drugs: context.read<AppProvider>().drugsDB,   // ou [] para só _termMap
+//     label: 'Fármaco',
+//     hint: 'Noradrenalina',
+//     onChanged: (v) => setState(() {}),
+//     onSelected: (name) { ... },   // opcional — callback ao clicar sugestão
+//   )
+// ─────────────────────────────────────────────────────────────────────────────
+
+class DrugAutocompleteField extends StatefulWidget {
+  final TextEditingController controller;
+  final List<DrugModel> drugs;
+  final String label;
+  final String hint;
+  final ValueChanged<String>? onChanged;
+  final ValueChanged<String>? onSelected; // callback com nome ao selecionar
+
+  const DrugAutocompleteField({
+    super.key,
+    required this.controller,
+    required this.drugs,
+    required this.label,
+    required this.hint,
+    this.onChanged,
+    this.onSelected,
+  });
+
+  @override
+  State<DrugAutocompleteField> createState() => _DrugAutocompleteFieldState();
+}
+
+class _DrugAutocompleteFieldState extends State<DrugAutocompleteField> {
+  // Carregado uma única vez (static = compartilhado entre todas as instâncias)
+  static final List<String> _termNames = DrugInteractionService.getAllDrugNames();
+
+  OverlayEntry? _overlay;
+  final LayerLink _layerLink = LayerLink();
+  List<String> _suggestions = [];
+
+  @override
+  void initState() {
+    super.initState();
+    widget.controller.addListener(_onTextChanged);
+  }
+
+  @override
+  void dispose() {
+    widget.controller.removeListener(_onTextChanged);
+    _removeOverlay();
+    super.dispose();
+  }
+
+  // ── Algoritmo de busca fuzzy ───────────────────────────────────────────────
+
+  /// Score de similaridade por trigramas (0.0–1.0).
+  /// Usado como fallback quando não há match direto por contains.
+  double _trigramScore(String a, String b) {
+    if (a.length < 3 || b.length < 3) {
+      return a.startsWith(b) || b.startsWith(a) ? 0.5 : 0.0;
+    }
+    Set<String> trigrams(String s) {
+      final set = <String>{};
+      for (int i = 0; i < s.length - 2; i++) {
+        set.add(s.substring(i, i + 3));
+      }
+      return set;
+    }
+    final ta = trigrams(a);
+    final tb = trigrams(b);
+    final intersection = ta.intersection(tb).length;
+    final union = ta.union(tb).length;
+    return union == 0 ? 0.0 : intersection / union;
+  }
+
+  void _onTextChanged() {
+    if (!mounted) return;
+    final q = widget.controller.text.toLowerCase().trim();
+
+    if (q.length < 3) {
+      _removeOverlay();
+      return;
+    }
+
+    final seen = <String>{};
+    final results = <_ScoredName>[];
+
+    // ── 1. Match direto por contains nos DrugModels ────────────────────────
+    for (final d in widget.drugs) {
+      final lower = d.name.toLowerCase();
+      if (lower.contains(q) && seen.add(d.name)) {
+        results.add(_ScoredName(d.name, lower.startsWith(q) ? 1.0 : 0.85));
+      }
+    }
+
+    // ── 2. Match direto por contains no _termMap ───────────────────────────
+    for (final t in _termNames) {
+      final lower = t.toLowerCase();
+      if (lower.contains(q) && seen.add(t)) {
+        results.add(_ScoredName(t, lower.startsWith(q) ? 0.95 : 0.80));
+      }
+    }
+
+    // ── 3. Fuzzy fallback por trigramas (quando results < 4) ──────────────
+    if (results.length < 4) {
+      for (final d in widget.drugs) {
+        if (seen.contains(d.name)) continue;
+        final score = _trigramScore(d.name.toLowerCase(), q);
+        if (score >= 0.30) {
+          results.add(_ScoredName(d.name, score * 0.70)); // peso menor
+          seen.add(d.name);
+        }
+      }
+      for (final t in _termNames) {
+        if (seen.contains(t)) continue;
+        final score = _trigramScore(t.toLowerCase(), q);
+        if (score >= 0.30) {
+          results.add(_ScoredName(t, score * 0.65));
+          seen.add(t);
+        }
+      }
+    }
+
+    if (results.isEmpty) {
+      _removeOverlay();
+      return;
+    }
+
+    // Ordena por score desc, limita a 8
+    results.sort((a, b) => b.score.compareTo(a.score));
+    _suggestions = results.take(8).map((s) => s.name).toList();
+
+    if (_overlay == null) {
+      _showOverlay();
+    } else {
+      _overlay!.markNeedsBuild();
+    }
+  }
+
+  // ── Overlay ───────────────────────────────────────────────────────────────
+
+  void _showOverlay() {
+    final overlay = Overlay.of(context);
+    _overlay = OverlayEntry(builder: (_) => _buildOverlay());
+    overlay.insert(_overlay!);
+  }
+
+  void _removeOverlay() {
+    _overlay?.remove();
+    _overlay = null;
+    _suggestions = [];
+  }
+
+  void _select(String name) {
+    widget.controller.text = name;
+    widget.controller.selection =
+        TextSelection.collapsed(offset: name.length);
+    widget.onChanged?.call(name);
+    widget.onSelected?.call(name);
+    _removeOverlay();
+  }
+
+  Widget _buildOverlay() {
+    final q = widget.controller.text.toLowerCase().trim();
+    return Positioned(
+      width: 0,
+      child: CompositedTransformFollower(
+        link: _layerLink,
+        showWhenUnlinked: false,
+        offset: const Offset(0, 52),
+        child: Align(
+          alignment: Alignment.topLeft,
+          child: _DrugSuggestionsDropdown(
+            suggestions: _suggestions,
+            query: q,
+            onSelect: _select,
+          ),
+        ),
+      ),
+    );
+  }
+
+  // ── Build ─────────────────────────────────────────────────────────────────
+
+  @override
+  Widget build(BuildContext context) {
+    final c = AppColors.of(context);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Label
+        Text(
+          widget.label,
+          style: TextStyle(
+            fontSize: 10,
+            fontWeight: FontWeight.w900,
+            letterSpacing: 1.2,
+            color: c.textHint,
+          ),
+        ),
+        const SizedBox(height: 5),
+        // Campo com overlay
+        CompositedTransformTarget(
+          link: _layerLink,
+          child: TextField(
+            controller: widget.controller,
+            keyboardType: TextInputType.text,
+            autocorrect: false,
+            spellCheckConfiguration: const SpellCheckConfiguration.disabled(),
+            textInputAction: TextInputAction.done,
+            style: TextStyle(
+              fontWeight: FontWeight.w700,
+              fontSize: 15,
+              color: c.textPrimary,
+            ),
+            onChanged: (v) {
+              widget.onChanged?.call(v);
+              if (v.trim().length < 3) _removeOverlay();
+            },
+            decoration: InputDecoration(
+              hintText: widget.hint,
+              hintStyle: TextStyle(color: c.textHint, fontWeight: FontWeight.w500),
+              prefixIcon: Padding(
+                padding: const EdgeInsets.only(left: 10, right: 6),
+                child: Icon(Icons.medication_rounded, size: 17, color: c.textHint),
+              ),
+              prefixIconConstraints: const BoxConstraints(minWidth: 36, minHeight: 36),
+              suffixIcon: widget.controller.text.isNotEmpty
+                  ? GestureDetector(
+                      onTap: () {
+                        widget.controller.clear();
+                        widget.onChanged?.call('');
+                        _removeOverlay();
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.only(right: 10),
+                        child: Icon(Icons.close_rounded, size: 16, color: c.textHint),
+                      ),
+                    )
+                  : null,
+              suffixIconConstraints: const BoxConstraints(minWidth: 32, minHeight: 32),
+              filled: true,
+              fillColor: c.inputBg,
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(14),
+                borderSide: BorderSide(color: c.border),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(14),
+                borderSide: BorderSide(color: c.border),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(14),
+                borderSide: BorderSide(color: c.gold, width: 1.5),
+              ),
+              contentPadding:
+                  const EdgeInsets.symmetric(horizontal: 14, vertical: 11),
+              isDense: true,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+// Score helper — interno
+class _ScoredName {
+  final String name;
+  final double score;
+  const _ScoredName(this.name, this.score);
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// DROPDOWN DE SUGESTÕES — usado pelo DrugAutocompleteField
+// Realça o trecho digitado em negrito. Adaptativo dark/light.
+// ─────────────────────────────────────────────────────────────────────────────
+
+class _DrugSuggestionsDropdown extends StatelessWidget {
+  final List<String> suggestions;
+  final String query;
+  final ValueChanged<String> onSelect;
+
+  const _DrugSuggestionsDropdown({
+    required this.suggestions,
+    required this.query,
+    required this.onSelect,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final dark = Theme.of(context).brightness == Brightness.dark;
+    const maxVisible = 6;
+    const itemH = 44.0;
+    final count = suggestions.length.clamp(1, maxVisible);
+    final boxH = count * itemH + 8.0;
+
+    return Material(
+      elevation: 10,
+      borderRadius: BorderRadius.circular(14),
+      color: dark ? const Color(0xFF242424) : Colors.white,
+      shadowColor: Colors.black.withValues(alpha: 0.20),
+      child: ConstrainedBox(
+        constraints: BoxConstraints(maxWidth: 340, maxHeight: boxH),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(14),
+          child: ListView.separated(
+            padding: const EdgeInsets.symmetric(vertical: 4),
+            shrinkWrap: true,
+            itemCount: suggestions.length,
+            separatorBuilder: (_, __) => Divider(
+              height: 1,
+              indent: 44,
+              endIndent: 12,
+              color: dark
+                  ? const Color(0xFF333333)
+                  : const Color(0xFFF0F0F0),
+            ),
+            itemBuilder: (_, i) {
+              final name = suggestions[i];
+              final lowerName = name.toLowerCase();
+              final idx = lowerName.indexOf(query);
+
+              // Realça o trecho encontrado em negrito+dourado
+              Widget nameWidget;
+              if (idx >= 0 && query.isNotEmpty) {
+                nameWidget = RichText(
+                  overflow: TextOverflow.ellipsis,
+                  text: TextSpan(
+                    style: TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600,
+                      color: dark
+                          ? const Color(0xFFCCCCCC)
+                          : const Color(0xFF1A1A1A),
+                    ),
+                    children: [
+                      if (idx > 0)
+                        TextSpan(text: name.substring(0, idx)),
+                      TextSpan(
+                        text: name.substring(idx, idx + query.length),
+                        style: TextStyle(
+                          fontWeight: FontWeight.w900,
+                          color: dark
+                              ? const Color(0xFFFFE8A6)
+                              : const Color(0xFFC5A365),
+                        ),
+                      ),
+                      TextSpan(text: name.substring(idx + query.length)),
+                    ],
+                  ),
+                );
+              } else {
+                // Fuzzy match — sem realce mas com ícone indicativo
+                nameWidget = Row(
+                  children: [
+                    Icon(
+                      Icons.auto_awesome_rounded,
+                      size: 11,
+                      color: dark
+                          ? const Color(0xFF888888)
+                          : const Color(0xFFAAAAAA),
+                    ),
+                    const SizedBox(width: 4),
+                    Expanded(
+                      child: Text(
+                        name,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                          color: dark
+                              ? const Color(0xFF999999)
+                              : const Color(0xFF555555),
+                        ),
+                      ),
+                    ),
+                  ],
+                );
+              }
+
+              return InkWell(
+                onTap: () => onSelect(name),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 14,
+                    vertical: 10,
+                  ),
+                  child: Row(children: [
+                    Icon(
+                      Icons.medication_rounded,
+                      size: 16,
+                      color: dark
+                          ? const Color(0xFF666666)
+                          : const Color(0xFFBBBBBB),
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(child: nameWidget),
+                    Icon(
+                      Icons.north_west_rounded,
+                      size: 12,
+                      color: dark
+                          ? const Color(0xFF555555)
+                          : const Color(0xFFCCCCCC),
+                    ),
+                  ]),
+                ),
+              );
+            },
+          ),
+        ),
       ),
     );
   }
