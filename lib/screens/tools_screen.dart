@@ -13,7 +13,8 @@ const kToolBorder = Color(0xFFE2E6EA);   // mesmo kBorder
 const kToolGold   = kGoldLight;         // alias para kGoldLight
 
 class ToolsScreen extends StatefulWidget {
-  const ToolsScreen({super.key});
+  final bool hideHeader;
+  const ToolsScreen({super.key, this.hideHeader = false});
   @override
   State<ToolsScreen> createState() => _ToolsScreenState();
 }
@@ -39,7 +40,38 @@ class _ToolsScreenState extends State<ToolsScreen> with SingleTickerProviderStat
     final isEs = p.lang == 'es';
 
     return Column(children: [
-      // ── Header ──────────────────────────────────────────────────
+      // ── Header (oculto quando embutido em shell) ─────────────────
+      if (!widget.hideHeader)
+        Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [Color(0xFF0F1C14), Color(0xFF1B3D2A), Color(0xFF1F6B48)],
+            ),
+          ),
+          child: Column(children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
+              child: Row(children: [
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: Colors.white.withValues(alpha: 0.1)),
+                  child: const Icon(Icons.calculate_rounded, color: kToolGold, size: 20),
+                ),
+                const SizedBox(width: 10),
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  Text(isEs ? 'Herramientas Clínicas' : 'Ferramentas Clínicas',
+                    style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w900, color: Colors.white, letterSpacing: -0.3)),
+                  Text(isEs ? 'Calculadoras con base científica' : 'Calculadoras com base científica',
+                    style: TextStyle(fontSize: 11, color: Colors.white.withValues(alpha: 0.6))),
+                ]),
+              ]),
+            ),
+            const SizedBox(height: 10),
+          ]),
+        ),
+      // ── TabBar (sempre visível) ──────────────────────────────────
       Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
@@ -48,47 +80,27 @@ class _ToolsScreenState extends State<ToolsScreen> with SingleTickerProviderStat
             colors: [Color(0xFF0F1C14), Color(0xFF1B3D2A), Color(0xFF1F6B48)],
           ),
         ),
-        child: Column(children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
-            child: Row(children: [
-              Container(
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: Colors.white.withValues(alpha: 0.1)),
-                child: const Icon(Icons.calculate_rounded, color: kToolGold, size: 20),
-              ),
-              const SizedBox(width: 10),
-              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Text(isEs ? 'Herramientas Clínicas' : 'Ferramentas Clínicas',
-                  style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w900, color: Colors.white, letterSpacing: -0.3)),
-                Text(isEs ? 'Calculadoras con base científica' : 'Calculadoras com base científica',
-                  style: TextStyle(fontSize: 11, color: Colors.white.withValues(alpha: 0.6))),
-              ]),
-            ]),
-          ),
-          const SizedBox(height: 10),
-          TabBar(
-            controller: _tabCtrl,
-            isScrollable: true,
-            tabAlignment: TabAlignment.start,
-            indicatorColor: kToolGold,
-            indicatorWeight: 3,
-            labelColor: kToolGold,
-            unselectedLabelColor: Colors.white60,
-            labelStyle: const TextStyle(fontSize: 11, fontWeight: FontWeight.w800),
-            unselectedLabelStyle: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600),
-            tabs: [
-              Tab(text: isEs ? 'BIOMETRÍA' : 'BIOMETRIA'),
-              Tab(text: isEs ? 'SCORES' : 'SCORES'),
-              Tab(text: isEs ? 'CARDIO' : 'CARDIO'),
-              Tab(text: isEs ? 'ELECTROLITOS' : 'ELETRÓLITOS'),
-              Tab(text: isEs ? 'INFUSIÓN' : 'INFUSÃO'),
-              Tab(text: isEs ? 'REFERENCIA' : 'REFERÊNCIA'),
-              Tab(text: isEs ? 'PRESCRIPCIONES' : 'PRESCRIÇÕES'),
-              Tab(text: isEs ? 'PEDIATRÍA' : 'PEDIATRIA'),
-            ],
-          ),
-        ]),
+        child: TabBar(
+          controller: _tabCtrl,
+          isScrollable: true,
+          tabAlignment: TabAlignment.start,
+          indicatorColor: kToolGold,
+          indicatorWeight: 3,
+          labelColor: kToolGold,
+          unselectedLabelColor: Colors.white60,
+          labelStyle: const TextStyle(fontSize: 11, fontWeight: FontWeight.w800),
+          unselectedLabelStyle: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600),
+          tabs: [
+            Tab(text: isEs ? 'BIOMETRÍA' : 'BIOMETRIA'),
+            Tab(text: isEs ? 'SCORES' : 'SCORES'),
+            Tab(text: isEs ? 'CARDIO' : 'CARDIO'),
+            Tab(text: isEs ? 'ELECTROLITOS' : 'ELETRÓLITOS'),
+            Tab(text: isEs ? 'INFUSIÓN' : 'INFUSÃO'),
+            Tab(text: isEs ? 'REFERENCIA' : 'REFERÊNCIA'),
+            Tab(text: isEs ? 'PRESCRIPCIONES' : 'PRESCRIÇÕES'),
+            Tab(text: isEs ? 'PEDIATRÍA' : 'PEDIATRIA'),
+          ],
+        ),
       ),
 
       // ── Content ─────────────────────────────────────────────────

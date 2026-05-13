@@ -753,7 +753,7 @@ class _CalculadorasShell extends StatelessWidget {
             ),
           ),
         ),
-        const Expanded(child: ToolsScreen()),
+        const Expanded(child: ToolsScreen(hideHeader: true)),
       ]),
     );
   }
