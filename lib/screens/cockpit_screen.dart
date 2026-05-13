@@ -2344,7 +2344,7 @@ class _MedsAutocompleteField extends StatefulWidget {
 }
 
 class _MedsAutocompleteFieldState extends State<_MedsAutocompleteField> {
-  // Lista completa de nomes do banco (carregada uma vez)
+  // Lista completa de nomes do _termMap (carregada uma vez — compartilhada)
   static final List<String> _allNames =
       DrugInteractionService.getAllDrugNames();
 
@@ -2366,6 +2366,22 @@ class _MedsAutocompleteFieldState extends State<_MedsAutocompleteField> {
     super.dispose();
   }
 
+  // ── Algoritmo fuzzy por trigramas ──────────────────────────────────────────
+  double _trigramScore(String a, String b) {
+    if (a.length < 3 || b.length < 3) {
+      return a.startsWith(b) || b.startsWith(a) ? 0.5 : 0.0;
+    }
+    Set<String> tg(String s) {
+      final set = <String>{};
+      for (int i = 0; i < s.length - 2; i++) set.add(s.substring(i, i + 3));
+      return set;
+    }
+    final ta = tg(a); final tb = tg(b);
+    final inter = ta.intersection(tb).length;
+    final uni   = ta.union(tb).length;
+    return uni == 0 ? 0.0 : inter / uni;
+  }
+
   // ── Lógica de sugestão ────────────────────────────────────────────────────
 
   /// Extrai a "palavra em edição" — tudo após a última vírgula/nova linha.
@@ -2376,10 +2392,9 @@ class _MedsAutocompleteFieldState extends State<_MedsAutocompleteField> {
     final before = text.substring(0, cursor);
     // Separadores: vírgula, ponto-e-vírgula, nova linha, '+'
     final lastSep = before.lastIndexOf(RegExp(r'[,;\n+]'));
-    final token   = (lastSep >= 0 ? before.substring(lastSep + 1) : before)
+    return (lastSep >= 0 ? before.substring(lastSep + 1) : before)
         .trimLeft()
         .toLowerCase();
-    return token;
   }
 
   void _onTextChanged() {
@@ -2390,18 +2405,41 @@ class _MedsAutocompleteFieldState extends State<_MedsAutocompleteField> {
       _removeOverlay();
       return;
     }
-    final matches = _allNames
-        .where((n) => n.toLowerCase().contains(token))
-        .toList();
-    if (matches.isEmpty) {
+
+    final seen    = <String>{};
+    final results = <_MedsScoredName>[];
+
+    // ── 1. Match direto por contains no _termMap ───────────────────────────
+    for (final n in _allNames) {
+      final lower = n.toLowerCase();
+      if (lower.contains(token) && seen.add(n)) {
+        results.add(_MedsScoredName(n, lower.startsWith(token) ? 0.95 : 0.80));
+      }
+    }
+
+    // ── 2. Fuzzy fallback por trigramas (quando results < 4) ──────────────
+    if (results.length < 4) {
+      for (final n in _allNames) {
+        if (seen.contains(n)) continue;
+        final score = _trigramScore(n.toLowerCase(), token);
+        if (score >= 0.30) {
+          results.add(_MedsScoredName(n, score * 0.65));
+          seen.add(n);
+        }
+      }
+    }
+
+    if (results.isEmpty) {
       _removeOverlay();
       return;
     }
-    _suggestions = matches;
+
+    results.sort((a, b) => b.score.compareTo(a.score));
+    _suggestions = results.take(8).map((s) => s.name).toList();
+
     if (_overlay == null) {
       _showOverlay();
     } else {
-      // Força rebuild do overlay
       _overlay!.markNeedsBuild();
     }
   }
@@ -2453,9 +2491,9 @@ class _MedsAutocompleteFieldState extends State<_MedsAutocompleteField> {
         offset: const Offset(0, 80),
         child: Align(
           alignment: Alignment.topLeft,
-          child: _SuggestionsDropdown(
+          child: _MedsSuggestionsDropdown(
             suggestions: _suggestions,
-            token: _currentToken(),
+            query: _currentToken(),
             onSelect: _selectSuggestion,
           ),
         ),
@@ -2473,32 +2511,32 @@ class _MedsAutocompleteFieldState extends State<_MedsAutocompleteField> {
         maxLines: 3,
         minLines: 2,
         onChanged: (v) => widget.onChanged(v),
-        style: const TextStyle(
+        style: TextStyle(
           fontSize: 13,
           fontWeight: FontWeight.w600,
-          color: Color(0xFF1A1A1A),
+          color: AppColors.of(context).textPrimary,
         ),
         decoration: InputDecoration(
           hintText: widget.hintText,
-          hintStyle: const TextStyle(
+          hintStyle: TextStyle(
             fontSize: 13,
-            color: Color(0xFFAAAAAA),
+            color: AppColors.of(context).textHint,
             fontWeight: FontWeight.w400,
           ),
           contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
           filled: true,
-          fillColor: Colors.white,
+          fillColor: AppColors.of(context).inputBg,
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(14),
-            borderSide: const BorderSide(color: Color(0xFFE0E0E0)),
+            borderSide: BorderSide(color: AppColors.of(context).border),
           ),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(14),
-            borderSide: const BorderSide(color: Color(0xFFE0E0E0)),
+            borderSide: BorderSide(color: AppColors.of(context).border),
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(14),
-            borderSide: const BorderSide(color: Color(0xFF065F46), width: 1.5),
+            borderSide: BorderSide(color: AppColors.of(context).gold, width: 1.5),
           ),
         ),
       ),
@@ -2506,88 +2544,94 @@ class _MedsAutocompleteFieldState extends State<_MedsAutocompleteField> {
   }
 }
 
-// Dropdown de sugestões posicionado sob o campo
-class _SuggestionsDropdown extends StatelessWidget {
+// ── Helper de score (interno a cockpit_screen) ───────────────────────────────
+class _MedsScoredName {
+  final String name;
+  final double score;
+  const _MedsScoredName(this.name, this.score);
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// DROPDOWN DE SUGESTÕES — adaptativo dark/light, gold highlight, ícone fuzzy
+// ─────────────────────────────────────────────────────────────────────────────
+class _MedsSuggestionsDropdown extends StatelessWidget {
   final List<String> suggestions;
-  final String token;
+  final String query;
   final ValueChanged<String> onSelect;
-  const _SuggestionsDropdown({
+  const _MedsSuggestionsDropdown({
     required this.suggestions,
-    required this.token,
+    required this.query,
     required this.onSelect,
   });
 
   @override
   Widget build(BuildContext context) {
-    // Máximo 6 sugestões visíveis antes de rolar
+    final dark  = Theme.of(context).brightness == Brightness.dark;
+    final c     = AppColors.of(context);
     const maxVisible = 6;
-    const itemH     = 40.0;
+    const itemH     = 44.0;
     final count     = suggestions.length.clamp(1, maxVisible);
-    final boxHeight = count * itemH + 10.0;
+    final boxHeight = count * itemH + 8.0;
 
     return Material(
-      elevation: 6,
-      borderRadius: BorderRadius.circular(12),
-      color: Colors.white,
-      shadowColor: Colors.black26,
+      elevation: 10,
+      borderRadius: BorderRadius.circular(14),
+      color: dark ? const Color(0xFF242424) : Colors.white,
+      shadowColor: Colors.black.withValues(alpha: 0.20),
       child: ConstrainedBox(
-        constraints: BoxConstraints(
-          maxWidth: 320,
-          maxHeight: boxHeight,
-        ),
+        constraints: BoxConstraints(maxWidth: 340, maxHeight: boxHeight),
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(14),
           child: ListView.separated(
             padding: const EdgeInsets.symmetric(vertical: 4),
             shrinkWrap: true,
             itemCount: suggestions.length,
-            separatorBuilder: (_, __) => const Divider(
+            separatorBuilder: (_, __) => Divider(
               height: 1,
-              indent: 40,
+              indent: 44,
               endIndent: 12,
-              color: Color(0xFFF3F3F3),
+              color: dark ? const Color(0xFF333333) : const Color(0xFFF0F0F0),
             ),
             itemBuilder: (_, i) {
-              final name = suggestions[i];
-              // Realça o trecho que bate com o token pesquisado
-              final lowerName  = name.toLowerCase();
-              final lowerToken = token.toLowerCase();
-              final idx = lowerName.indexOf(lowerToken);
+              final name      = suggestions[i];
+              final lowerName = name.toLowerCase();
+              final idx       = lowerName.indexOf(query);
+              final isFuzzy   = idx < 0 && query.isNotEmpty;
 
               Widget nameWidget;
-              if (idx >= 0 && token.isNotEmpty) {
+              if (idx >= 0 && query.isNotEmpty) {
                 nameWidget = RichText(
                   overflow: TextOverflow.ellipsis,
                   text: TextSpan(
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.w600,
-                      color: Color(0xFF1A1A1A),
+                      color: dark ? const Color(0xFFCCCCCC) : const Color(0xFF1A1A1A),
                     ),
                     children: [
-                      if (idx > 0)
-                        TextSpan(text: name.substring(0, idx)),
+                      if (idx > 0) TextSpan(text: name.substring(0, idx)),
                       TextSpan(
-                        text: name.substring(idx, idx + token.length),
-                        style: const TextStyle(
+                        text: name.substring(idx, idx + query.length),
+                        style: TextStyle(
                           fontWeight: FontWeight.w900,
-                          color: Color(0xFF065F46),
-                          backgroundColor: Color(0xFFD1FAE5),
+                          color: c.gold,
+                          backgroundColor: dark
+                              ? const Color(0xFF2A2000)
+                              : const Color(0xFFFFFBEB),
                         ),
                       ),
-                      if (idx + token.length < name.length)
-                        TextSpan(
-                          text: name.substring(idx + token.length)),
+                      if (idx + query.length < name.length)
+                        TextSpan(text: name.substring(idx + query.length)),
                     ],
                   ),
                 );
               } else {
                 nameWidget = Text(
                   name,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 13,
                     fontWeight: FontWeight.w600,
-                    color: Color(0xFF1A1A1A),
+                    color: dark ? const Color(0xFFCCCCCC) : const Color(0xFF1A1A1A),
                   ),
                   overflow: TextOverflow.ellipsis,
                 );
@@ -2595,34 +2639,45 @@ class _SuggestionsDropdown extends StatelessWidget {
 
               return InkWell(
                 onTap: () => onSelect(name),
-                splashColor: const Color(0xFFECFDF5),
-                highlightColor: const Color(0xFFF0FFF8),
+                splashColor: dark
+                    ? const Color(0xFF1A2A1A)
+                    : const Color(0xFFECFDF5),
+                highlightColor: dark
+                    ? const Color(0xFF1A2A1A)
+                    : const Color(0xFFF0FFF8),
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 12, vertical: 9),
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                   child: Row(children: [
                     Container(
                       width: 26,
                       height: 26,
                       decoration: BoxDecoration(
-                        color: const Color(0xFFECFDF5),
+                        color: dark
+                            ? const Color(0xFF1E2E1E)
+                            : const Color(0xFFECFDF5),
                         borderRadius: BorderRadius.circular(6),
                       ),
-                      child: const Center(
+                      child: Center(
                         child: Icon(
-                          Icons.medication_rounded,
-                          size: 14,
-                          color: Color(0xFF065F46),
+                          isFuzzy
+                              ? Icons.auto_awesome_rounded
+                              : Icons.medication_rounded,
+                          size: 13,
+                          color: dark
+                              ? const Color(0xFF6EE7B7)
+                              : const Color(0xFF065F46),
                         ),
                       ),
                     ),
                     const SizedBox(width: 10),
                     Expanded(child: nameWidget),
                     const SizedBox(width: 6),
-                    const Icon(
+                    Icon(
                       Icons.add_circle_outline_rounded,
                       size: 14,
-                      color: Color(0xFFCCCCCC),
+                      color: dark
+                          ? const Color(0xFF555555)
+                          : const Color(0xFFCCCCCC),
                     ),
                   ]),
                 ),
@@ -2721,7 +2776,7 @@ class _MedsChinpsPanelState extends State<_MedsChipsPanel> {
     final recognized = DrugInteractionService.extractTerms(widget.medications);
     final capped = recognized.take(6).toList();
 
-    // Interações (fármaco selecionado ↔ medicamentos do paciente)
+    // ── 1. Interações fármaco selecionado ↔ medicamentos do paciente ──────────
     final interactions = widget.selectedDrugs.isNotEmpty
         ? DrugInteractionService.checkInteractions(
             selectedDrugNames:
@@ -2730,7 +2785,25 @@ class _MedsChinpsPanelState extends State<_MedsChipsPanel> {
           )
         : <DrugInteraction>[];
 
-    if (capped.isEmpty && interactions.isEmpty) return const SizedBox.shrink();
+    // ── 2. Auto-interações entre os próprios medicamentos digitados ───────────
+    final selfInteractions = capped.length >= 2
+        ? DrugInteractionService.checkInteractions(
+            selectedDrugNames: capped,
+            patientMedicationsText: '',
+          )
+        : <DrugInteraction>[];
+
+    // ── 3. Merge deduplicado (por par de fármacos) ────────────────────────────
+    final allInteractions = [...interactions];
+    for (final ix in selfInteractions) {
+      final alreadyHas = allInteractions.any((e) =>
+          (e.drug1 == ix.drug1 && e.drug2 == ix.drug2) ||
+          (e.drug1 == ix.drug2 && e.drug2 == ix.drug1));
+      if (!alreadyHas) allInteractions.add(ix);
+    }
+    allInteractions.sort((a, b) => a.severity.index.compareTo(b.severity.index));
+
+    if (capped.isEmpty && allInteractions.isEmpty) return const SizedBox.shrink();
 
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
 
@@ -2824,28 +2897,28 @@ class _MedsChinpsPanelState extends State<_MedsChipsPanel> {
       ],
 
       // ── Cards detalhados par-a-par ───────────────────────────────────────
-      if (interactions.isNotEmpty) ...[
+      if (allInteractions.isNotEmpty) ...[
         // Cabeçalho resumo
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
-            color: _sBg(interactions.first.severity),
-            border: Border.all(color: _sBorder(interactions.first.severity)),
+            color: _sBg(allInteractions.first.severity),
+            border: Border.all(color: _sBorder(allInteractions.first.severity)),
           ),
           child: Row(children: [
-            Icon(_sIcon(interactions.first.severity),
-                size: 14, color: _sColor(interactions.first.severity)),
+            Icon(_sIcon(allInteractions.first.severity),
+                size: 14, color: _sColor(allInteractions.first.severity)),
             const SizedBox(width: 8),
             Expanded(
               child: Text(
                 _isEs
-                    ? '${interactions.length} interacción${interactions.length > 1 ? "es" : ""} detectada${interactions.length > 1 ? "s" : ""}'
-                    : '${interactions.length} interaç${interactions.length > 1 ? "ões" : "ão"} detectada${interactions.length > 1 ? "s" : ""}',
+                    ? '${allInteractions.length} interacción${allInteractions.length > 1 ? "es" : ""} detectada${allInteractions.length > 1 ? "s" : ""}'
+                    : '${allInteractions.length} interaç${allInteractions.length > 1 ? "ões" : "ão"} detectada${allInteractions.length > 1 ? "s" : ""}',
                 style: TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.w800,
-                  color: _sColor(interactions.first.severity),
+                  color: _sColor(allInteractions.first.severity),
                 ),
               ),
             ),
@@ -2854,7 +2927,7 @@ class _MedsChinpsPanelState extends State<_MedsChipsPanel> {
         const SizedBox(height: 6),
 
         // Card por interação (expandível)
-        ...interactions.asMap().entries.map((entry) {
+        ...allInteractions.asMap().entries.map((entry) {
           final i   = entry.key;
           final ix  = entry.value;
           final isOpen = _expanded.contains(i);
@@ -2981,7 +3054,7 @@ class _MedsChinpsPanelState extends State<_MedsChipsPanel> {
           );
         }),
 
-      ] else if (capped.isNotEmpty && widget.selectedDrugs.isNotEmpty) ...[
+      ] else if (capped.isNotEmpty && (widget.selectedDrugs.isNotEmpty || capped.length >= 2)) ...[
         // Sem interações com o fármaco selecionado
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
