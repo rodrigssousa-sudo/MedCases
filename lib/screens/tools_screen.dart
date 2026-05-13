@@ -1502,7 +1502,7 @@ class _InfusionTabState extends State<_InfusionTab> {
           title: isEs ? 'Velocidad → Dosis' : 'Velocidade → Dose',
           icon: Icons.water_drop_rounded,
           child: Column(children: [
-            _LabeledInput(label: isEs ? 'Fármaco' : 'Fármaco', ctrl: _infDrugCtrl, onChanged: (_) => setState(() {}), hint: 'Noradrenalina'),
+            _LabeledInput(label: isEs ? 'Fármaco' : 'Fármaco', ctrl: _infDrugCtrl, onChanged: (_) => setState(() {}), hint: 'Noradrenalina', isText: true),
             const SizedBox(height: 10),
             Row(children: [
               Expanded(child: _LabeledInput(label: isEs ? 'Concentración (mg/mL)' : 'Concentração (mg/mL)', ctrl: _infConcCtrl, onChanged: (_) => setState(() {}), hint: '4')),
@@ -2569,14 +2569,20 @@ class _LabeledInput extends StatelessWidget {
   final TextEditingController ctrl;
   final ValueChanged<String> onChanged;
   final String hint;
-  const _LabeledInput({required this.label, required this.ctrl, required this.onChanged, required this.hint});
+  final bool isText; // true → teclado alfabético (ex: nome do fármaco)
+  const _LabeledInput({required this.label, required this.ctrl, required this.onChanged, required this.hint, this.isText = false});
 
   @override
   Widget build(BuildContext context) {
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       Text(label, style: TextStyle(fontSize: 10, fontWeight: FontWeight.w900, letterSpacing: 1.2, color: AppColors.of(context).textHint)),
       const SizedBox(height: 5),
-      MedInput(controller: ctrl, hintText: hint, keyboardType: const TextInputType.numberWithOptions(decimal: true), onChanged: onChanged),
+      MedInput(
+        controller: ctrl,
+        hintText: hint,
+        keyboardType: isText ? TextInputType.text : const TextInputType.numberWithOptions(decimal: true),
+        onChanged: onChanged,
+      ),
     ]);
   }
 }
