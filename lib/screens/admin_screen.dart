@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../models/user_model.dart';
 import '../services/auth_service.dart';
 import '../services/firestore_service.dart';
+import '../widgets/common_widgets.dart';
 
 class AdminScreen extends StatefulWidget {
   final UserModel currentAdmin;
@@ -71,7 +72,7 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F0E8),
+      backgroundColor: AppColors.of(context).surface,
       appBar: AppBar(
         backgroundColor: kDark,
         foregroundColor: Colors.white,
@@ -109,7 +110,7 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
           controller: _tabs,
           indicatorColor: kGoldL,
           labelColor: kGoldL,
-          unselectedLabelColor: Colors.white54,
+          unselectedLabelColor: Colors.white,
           labelStyle: const TextStyle(fontSize: 10, fontWeight: FontWeight.w800),
           isScrollable: true,
           tabAlignment: TabAlignment.fill,
@@ -141,7 +142,7 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
                     style: const TextStyle(color: Colors.white, fontSize: 13),
                     decoration: InputDecoration(
                       hintText: _searchHint,
-                      hintStyle: TextStyle(color: Colors.white38, fontSize: 13),
+                      hintStyle: const TextStyle(color: Colors.white54, fontSize: 13),
                       prefixIcon: const Icon(Icons.search_rounded, color: Colors.white38, size: 18),
                       filled: true,
                       fillColor: Colors.white.withValues(alpha: 0.08),
@@ -463,6 +464,8 @@ class _SystemTabState extends State<_SystemTab> {
   static const kGold  = Color(0xFFC5A365);
   static const kGoldL = Color(0xFFFFE8A6);
 
+  AppColors get _c => AppColors.of(context);
+
   @override
   Widget build(BuildContext context) {
     // Lê o estado de manutenção em tempo real direto do Firestore
@@ -487,7 +490,7 @@ class _SystemTabState extends State<_SystemTab> {
             // ── Card de Manutenção ─────────────────────────────────────────
             Container(
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: _c.cardBg,
                 borderRadius: BorderRadius.circular(16),
                 border: Border.all(
                   color: isEnabled
@@ -547,10 +550,10 @@ class _SystemTabState extends State<_SystemTab> {
                               widget.isEs
                                   ? 'Modo de Mantenimiento'
                                   : 'Modo de Manutenção',
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontSize: 15,
                                 fontWeight: FontWeight.w900,
-                                color: kDark,
+                                color: _c.textPrimary,
                               ),
                             ),
                             const SizedBox(height: 2),
@@ -600,7 +603,7 @@ class _SystemTabState extends State<_SystemTab> {
                           style: TextStyle(
                             fontSize: 11,
                             fontWeight: FontWeight.w700,
-                            color: kDark.withValues(alpha: 0.55),
+                            color: _c.textSecondary,
                             letterSpacing: 0.2,
                           ),
                         ),
@@ -612,9 +615,9 @@ class _SystemTabState extends State<_SystemTab> {
                           autocorrect: false,
                           spellCheckConfiguration:
                               const SpellCheckConfiguration.disabled(),
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 13,
-                            color: kDark,
+                            color: _c.textPrimary,
                             fontWeight: FontWeight.w500,
                           ),
                           decoration: InputDecoration(
@@ -623,10 +626,10 @@ class _SystemTabState extends State<_SystemTab> {
                                 : 'Ex: Voltamos às 18h com melhorias...',
                             hintStyle: TextStyle(
                               fontSize: 12,
-                              color: kDark.withValues(alpha: 0.35),
+                              color: _c.textHint,
                             ),
                             filled: true,
-                            fillColor: const Color(0xFFF5F0E8),
+                            fillColor: _c.inputBg,
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10),
                               borderSide: BorderSide.none,
@@ -634,7 +637,7 @@ class _SystemTabState extends State<_SystemTab> {
                             enabledBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10),
                               borderSide: BorderSide(
-                                color: kDark.withValues(alpha: 0.1),
+                                color: _c.border,
                               ),
                             ),
                             focusedBorder: OutlineInputBorder(
@@ -647,7 +650,7 @@ class _SystemTabState extends State<_SystemTab> {
                             contentPadding: const EdgeInsets.all(12),
                             counterStyle: TextStyle(
                               fontSize: 10,
-                              color: kDark.withValues(alpha: 0.3),
+                              color: _c.textHint,
                             ),
                           ),
                         ),
@@ -708,13 +711,13 @@ class _SystemTabState extends State<_SystemTab> {
                         ),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(8),
-                          color: kDark.withValues(alpha: 0.04),
+                          color: _c.surface,
                         ),
                         child: Row(children: [
                           Icon(
                             Icons.history_rounded,
                             size: 12,
-                            color: kDark.withValues(alpha: 0.35),
+                            color: _c.textHint,
                           ),
                           const SizedBox(width: 6),
                           Expanded(
@@ -723,7 +726,7 @@ class _SystemTabState extends State<_SystemTab> {
                               style: TextStyle(
                                 fontSize: 10,
                                 fontWeight: FontWeight.w500,
-                                color: kDark.withValues(alpha: 0.40),
+                                color: _c.textHint,
                               ),
                               overflow: TextOverflow.ellipsis,
                             ),
@@ -759,7 +762,7 @@ class _SystemTabState extends State<_SystemTab> {
                       style: TextStyle(
                         fontSize: 11,
                         fontWeight: FontWeight.w500,
-                        color: kDark.withValues(alpha: 0.60),
+                        color: _c.textSecondary,
                         height: 1.5,
                       ),
                     ),
@@ -817,12 +820,13 @@ class _UserList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final c = AppColors.of(context);
     if (users.isEmpty) {
       return Center(
         child: Column(mainAxisSize: MainAxisSize.min, children: [
           Icon(emptyIcon, size: 48, color: kGreen.withValues(alpha: 0.3)),
           const SizedBox(height: 12),
-          Text(emptyMsg, style: TextStyle(color: kDark.withValues(alpha: 0.4), fontWeight: FontWeight.w600)),
+          Text(emptyMsg, style: TextStyle(color: c.textHint, fontWeight: FontWeight.w600)),
         ]),
       );
     }
@@ -901,12 +905,13 @@ class _UserCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final isMe = user.uid == currentAdmin.uid;
 
+    final c = AppColors.of(context);
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: c.cardBg,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: isMe ? kGold.withValues(alpha: 0.5) : kDark.withValues(alpha: 0.07)),
+        border: Border.all(color: isMe ? kGold.withValues(alpha: 0.5) : c.border),
         boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.04), blurRadius: 8, offset: const Offset(0, 2))],
       ),
       child: Padding(
@@ -936,7 +941,7 @@ class _UserCard extends StatelessWidget {
                 Row(children: [
                   Expanded(
                     child: Text(user.displayName,
-                      style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 14, color: kDark),
+                      style: TextStyle(fontWeight: FontWeight.w900, fontSize: 14, color: c.textPrimary),
                       overflow: TextOverflow.ellipsis),
                   ),
                   if (isMe)
@@ -950,7 +955,7 @@ class _UserCard extends StatelessWidget {
                   const SizedBox(width: 4),
                   _RoleBadge(user),
                 ]),
-                Text(user.email, style: TextStyle(fontSize: 11, color: kDark.withValues(alpha: 0.5), fontWeight: FontWeight.w500)),
+                Text(user.email, style: TextStyle(fontSize: 11, color: c.textSecondary, fontWeight: FontWeight.w500)),
               ]),
             ),
           ]),
@@ -970,7 +975,7 @@ class _UserCard extends StatelessWidget {
           const SizedBox(height: 6),
           Text(
             'Solicitado: ${_formatDateTime(user.createdAt)}${user.approvedAt != null ? '  •  Aprov: ${_formatDate(user.approvedAt!)}' : ''}',
-            style: TextStyle(fontSize: 10, color: kDark.withValues(alpha: 0.35), fontWeight: FontWeight.w500),
+            style: TextStyle(fontSize: 10, color: c.textHint, fontWeight: FontWeight.w500),
           ),
 
           // Botões de ação
@@ -1090,16 +1095,17 @@ class _InfoChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final c = AppColors.of(context);
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(8),
-        color: kDark.withValues(alpha: 0.05),
+        color: c.surface,
       ),
       child: Row(mainAxisSize: MainAxisSize.min, children: [
-        Icon(icon, size: 11, color: kDark.withValues(alpha: 0.4)),
+        Icon(icon, size: 11, color: c.textSecondary),
         const SizedBox(width: 4),
-        Text(label, style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: kDark.withValues(alpha: 0.55))),
+        Text(label, style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: c.textSecondary)),
       ]),
     );
   }
@@ -1148,6 +1154,8 @@ class _AppUpdatesTabState extends State<_AppUpdatesTab> {
   static const kGreen = Color(0xFF075f45);
   static const kGold  = Color(0xFFC5A365);
   static const kGoldL = Color(0xFFFFE8A6);
+
+  AppColors get _c => AppColors.of(context);
 
   final _versionCtrl = TextEditingController();
   final _titleCtrl   = TextEditingController();
@@ -1279,13 +1287,13 @@ class _AppUpdatesTabState extends State<_AppUpdatesTab> {
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(12),
-            color: Colors.white,
-            border: Border.all(color: const Color(0xFFE2E6EA)),
+            color: _c.cardBg,
+            border: Border.all(color: _c.border),
           ),
           child: Row(children: [
             const Icon(Icons.visibility_rounded, size: 16, color: kGreen),
             const SizedBox(width: 8),
-            const Expanded(child: Text('Notificação ativa', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700))),
+            Expanded(child: Text('Notificação ativa', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: _c.textPrimary))),
             Switch.adaptive(
               value: _active,
               activeColor: kGreen,
@@ -1309,7 +1317,7 @@ class _AppUpdatesTabState extends State<_AppUpdatesTab> {
 
         // Lista de novidades
         Row(children: [
-          const Text('Novidades', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w900, color: kDark)),
+          Text('Novidades', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w900, color: _c.textPrimary)),
           const Spacer(),
           GestureDetector(
             onTap: _addItem,
@@ -1342,17 +1350,17 @@ class _AppUpdatesTabState extends State<_AppUpdatesTab> {
               child: TextField(
                 controller: _itemCtrls[i],
                 maxLines: 2, minLines: 1,
-                style: const TextStyle(fontSize: 13),
+                style: TextStyle(fontSize: 13, color: _c.textPrimary),
                 decoration: InputDecoration(
                   hintText: 'Ex: Login corrigido — maior estabilidade',
-                  hintStyle: const TextStyle(fontSize: 12, color: Color(0xFFBBBBBB)),
-                  filled: true, fillColor: Colors.white,
+                  hintStyle: TextStyle(fontSize: 12, color: _c.textHint),
+                  filled: true, fillColor: _c.inputBg,
                   isDense: true,
                   contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                   border: OutlineInputBorder(borderRadius: BorderRadius.circular(10),
-                    borderSide: const BorderSide(color: Color(0xFFE2E6EA))),
+                    borderSide: BorderSide(color: _c.border)),
                   enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10),
-                    borderSide: const BorderSide(color: Color(0xFFE2E6EA))),
+                    borderSide: BorderSide(color: _c.border)),
                   focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10),
                     borderSide: const BorderSide(color: kGold, width: 1.5)),
                 ),
@@ -1421,20 +1429,22 @@ class _AppUpdatesTabState extends State<_AppUpdatesTab> {
   }
 
   Widget _field(TextEditingController ctrl, String label, String hint, IconData icon) {
+    final c = _c;
     return TextField(
       controller: ctrl,
-      style: const TextStyle(fontSize: 13),
+      style: TextStyle(fontSize: 13, color: c.textPrimary),
       decoration: InputDecoration(
         labelText: label,
+        labelStyle: TextStyle(color: c.textSecondary),
         hintText: hint,
-        hintStyle: const TextStyle(fontSize: 12, color: Color(0xFFBBBBBB)),
+        hintStyle: TextStyle(fontSize: 12, color: c.textHint),
         prefixIcon: Icon(icon, size: 16, color: kGold),
-        filled: true, fillColor: Colors.white,
+        filled: true, fillColor: c.inputBg,
         isDense: true,
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(10),
-          borderSide: const BorderSide(color: Color(0xFFE2E6EA))),
+          borderSide: BorderSide(color: c.border)),
         enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10),
-          borderSide: const BorderSide(color: Color(0xFFE2E6EA))),
+          borderSide: BorderSide(color: c.border)),
         focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10),
           borderSide: const BorderSide(color: kGold, width: 1.5)),
         contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
@@ -1524,25 +1534,28 @@ class _StatsTab extends StatelessWidget {
         const SizedBox(height: 24),
 
         // ── Cabeçalho da lista ───────────────────────────────────────────────
-        Row(children: [
-          Container(
-            padding: const EdgeInsets.all(7),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-              color: kGold.withValues(alpha: 0.12),
+        Builder(builder: (context) {
+          final c = AppColors.of(context);
+          return Row(children: [
+            Container(
+              padding: const EdgeInsets.all(7),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                color: kGold.withValues(alpha: 0.12),
+              ),
+              child: const Icon(Icons.bar_chart_rounded, size: 16, color: kGold),
             ),
-            child: const Icon(Icons.bar_chart_rounded, size: 16, color: kGold),
-          ),
-          const SizedBox(width: 10),
-          const Text('Tempo por usuário',
-            style: TextStyle(
-              fontSize: 15, fontWeight: FontWeight.w900, color: kDark)),
-          const Spacer(),
-          Text('${allUsers.length} usuários',
-            style: TextStyle(
-              fontSize: 11, color: kDark.withValues(alpha: 0.4),
-              fontWeight: FontWeight.w600)),
-        ]),
+            const SizedBox(width: 10),
+            Text('Tempo por usuário',
+              style: TextStyle(
+                fontSize: 15, fontWeight: FontWeight.w900, color: c.textPrimary)),
+            const Spacer(),
+            Text('${allUsers.length} usuários',
+              style: TextStyle(
+                fontSize: 11, color: c.textHint,
+                fontWeight: FontWeight.w600)),
+          ]);
+        }),
         const SizedBox(height: 12),
 
         // ── Carregando ───────────────────────────────────────────────────────
@@ -1554,13 +1567,13 @@ class _StatsTab extends StatelessWidget {
             ),
           )
         else if (allUsers.isEmpty)
-          Center(
+          Builder(builder: (context) => Center(
             child: Padding(
               padding: const EdgeInsets.all(40),
               child: Text('Nenhum usuário ainda.',
-                style: TextStyle(color: kDark.withValues(alpha: 0.4))),
+                style: TextStyle(color: AppColors.of(context).textHint)),
             ),
-          )
+          ))
         else
           // ── Lista de usuários com tempo ─────────────────────────────────
           ...sorted.map((u) => _UserUsageRow(
@@ -1646,6 +1659,7 @@ class _UserUsageRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final c = AppColors.of(context);
     final pct = maxSeconds > 0
         ? (user.totalUsageSeconds / maxSeconds).clamp(0.0, 1.0)
         : 0.0;
@@ -1654,9 +1668,9 @@ class _UserUsageRow extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 10),
       padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: c.cardBg,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: const Color(0xFFE5E7EB)),
+        border: Border.all(color: c.border),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.03),
@@ -1752,8 +1766,8 @@ class _UserUsageRow extends StatelessWidget {
             'Entrou: ${user.createdAt.day.toString().padLeft(2,'0')}/'
             '${user.createdAt.month.toString().padLeft(2,'0')}/'
             '${user.createdAt.year}',
-            style: const TextStyle(
-              fontSize: 9, color: Color(0xFFD1D5DB),
+            style: TextStyle(
+              fontSize: 9, color: c.textHint,
               fontWeight: FontWeight.w600)),
         ]),
       ]),
