@@ -620,6 +620,37 @@ class AuthService {
     await _db.collection('users').doc(uid).update({'role': UserRole.user.name});
   }
 
+  /// Deleta o documento do usuário na coleção users. Lança [Exception] em caso de falha.
+  /// Web: usa HTTP DELETE REST com token de admin (contorna permission-denied).
+  /// Nativo: SDK Firestore autenticado via Firebase Auth.
+  static Future<void> deleteUser(String uid) async {
+    if (uid.isEmpty) return;
+    if (kIsWeb) {
+      final token = await _getAdminToken();
+      if (token.isEmpty) {
+        throw Exception('Token de autenticação não disponível. Faça login novamente.');
+      }
+      final resp = await http.delete(
+        Uri.parse('$_fsBase/users/$uid'),
+        headers: {'Authorization': 'Bearer $token'},
+      );
+      if (resp.statusCode < 200 || resp.statusCode >= 300) {
+        String detail = '';
+        try {
+          final body = jsonDecode(resp.body) as Map<String, dynamic>;
+          detail = (body['error']?['message'] as String?) ?? '';
+        } catch (_) {}
+        throw Exception(
+          'Erro ao excluir usuário (HTTP ${resp.statusCode})'
+          '${detail.isNotEmpty ? ': $detail' : '.'}',
+        );
+      }
+      return;
+    }
+    // Nativo — SDK autenticado
+    await _db.collection('users').doc(uid).delete();
+  }
+
   // ═══════════════════════════════════════════════════════════════════════════
   // HELPERS REST INTERNOS
   // ═══════════════════════════════════════════════════════════════════════════

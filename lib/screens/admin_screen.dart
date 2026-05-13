@@ -267,7 +267,7 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
     );
     if (!confirm) return;
     try {
-      await FirestoreService.deleteUser(u.uid);
+      await AuthService.deleteUser(u.uid);
       if (mounted) _snack('${u.displayName} excluído.', Colors.red);
     } catch (e) {
       if (mounted) _snack('$_errorPrefix: $e', Colors.red);
