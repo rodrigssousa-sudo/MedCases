@@ -35,10 +35,10 @@ dependencies:
   google_sign_in: 6.2.1
 
   # Armazenamento seguro de tokens (Keychain iOS / Keystore Android)
-  flutter_secure_storage: 9.2.2
+  # flutter_secure_storage: 9.2.2  # mobile-only — não usar no Web
 
-  # Notificações locais (alertas de timer em segundo plano)
-  flutter_local_notifications: 18.0.1
+  # Notificações locais (mobile-only — não usar no Web)
+  # flutter_local_notifications: 18.0.1
 
 dev_dependencies:
   flutter_test:
