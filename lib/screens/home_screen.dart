@@ -403,11 +403,18 @@ class _QuickEmergencies extends StatelessWidget {
   });
 
   static const _protocols = [
-    ('anafilaxia',  'Anafilaxia',  Icons.warning_amber_rounded),
-    ('sepsis',      'Choque/Sepse',Icons.emergency_rounded),
-    ('tpsv',        'TPSV',        Icons.favorite_rounded),
-    ('hiperk',      'K⁺ alto',     Icons.science_rounded),
-    ('acv',         'AVC/ACV',     Icons.bolt_rounded),
+    ('anafilaxia',            'Anafilaxia',     Icons.warning_amber_rounded),
+    ('sepse',                 'Sepse/Choque',   Icons.emergency_rounded),
+    ('tpsv',                  'TPSV',           Icons.favorite_rounded),
+    ('hiperpotassemia_grave', 'K⁺ alto',        Icons.science_rounded),
+    ('avc_isquemico',         'AVC/ACV',        Icons.bolt_rounded),
+    ('pcr_adulto',            'PCR',            Icons.monitor_heart_rounded),
+    ('choque_cardiogenico',   'Choque Card.',   Icons.heart_broken_rounded),
+    ('fa_aguda',              'FA Aguda',       Icons.electric_bolt_rounded),
+    ('asma_grave',            'Asma Grave',     Icons.air_rounded),
+    ('crise_hipertensiva',    'Crise HAS',      Icons.speed_rounded),
+    ('tep_agudo',             'TEP',            Icons.bloodtype_rounded),
+    ('status_epilepticus',    'Status Epil.',   Icons.psychology_rounded),
   ];
 
   @override
