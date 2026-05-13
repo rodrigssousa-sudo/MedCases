@@ -9,7 +9,7 @@ import '../widgets/common_widgets.dart';
 // kDark, kGold, kGoldLight, kGreen, kBorder importados de common_widgets
 const kToolGreen  = Color(0xFF075f45);   // verde padrão do app (mesmo kGreen)
 const kToolBorder = Color(0xFFE2E6EA);   // mesmo kBorder
-const kToolDark   = kDark;              // alias para kDark
+// kToolDark removido — usar AppColors.of(context).textPrimary / .darkBtn
 const kToolGold   = kGoldLight;         // alias para kGoldLight
 
 class ToolsScreen extends StatefulWidget {
@@ -246,7 +246,7 @@ class _BiometricsTabState extends State<_BiometricsTab> {
                     color: _sexFem ? Colors.pink : const Color(0xFF1565C0)),
                   const SizedBox(width: 8),
                   Text(_sexFem ? (isEs ? 'Femenino' : 'Feminino') : (isEs ? 'Masculino' : 'Masculino'),
-                    style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 14, color: kToolDark)),
+                    style: TextStyle(fontWeight: FontWeight.w900, fontSize: 14, color: AppColors.of(context).textPrimary)),
                   const Spacer(),
                   Text(isEs ? 'Toque para cambiar' : 'Toque para alternar',
                     style: const TextStyle(fontSize: 10, color: Color(0xFF888888))),
@@ -570,7 +570,7 @@ class _ScoresTabState extends State<_ScoresTab> {
         ),
         const SizedBox(width: 10),
         Expanded(child: Text(label, style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600,
-          color: value ? kToolDark : const Color(0xFF555555)))),
+          color: value ? AppColors.of(context).textPrimary : const Color(0xFF555555)))),
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
           decoration: BoxDecoration(borderRadius: BorderRadius.circular(6),
@@ -586,11 +586,11 @@ class _ScoresTabState extends State<_ScoresTab> {
   Widget _glasRow(String label, int value, int max, VoidCallback onDec, VoidCallback onInc) => Padding(
     padding: const EdgeInsets.only(bottom: 8),
     child: Row(children: [
-      Expanded(child: Text(label, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: kToolDark))),
+      Expanded(child: Text(label, style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: AppColors.of(context).textPrimary))),
       IconButton(icon: const Icon(Icons.remove_circle_outline), iconSize: 22, color: kToolGreen, onPressed: value > 1 ? onDec : null),
       Container(
         width: 36, alignment: Alignment.center,
-        child: Text('$value', style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w900, color: kToolDark)),
+        child: Text('$value', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900, color: AppColors.of(context).textPrimary)),
       ),
       IconButton(icon: const Icon(Icons.add_circle_outline), iconSize: 22, color: kToolGreen, onPressed: value < max ? onInc : null),
       SizedBox(width: 30, child: Text('/$max', style: const TextStyle(fontSize: 11, color: Color(0xFF888888)))),
@@ -600,7 +600,7 @@ class _ScoresTabState extends State<_ScoresTab> {
   Widget _sofaDropRow(String label, int value, List<String> options, ValueChanged<int?> onChanged) => Padding(
     padding: const EdgeInsets.only(bottom: 8),
     child: Row(children: [
-      Expanded(child: Text(label, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: kToolDark))),
+      Expanded(child: Text(label, style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: AppColors.of(context).textPrimary))),
       Container(
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
         decoration: BoxDecoration(border: Border.all(color: kToolBorder)),
@@ -608,7 +608,7 @@ class _ScoresTabState extends State<_ScoresTab> {
           child: DropdownButton<int>(
             value: value,
             isDense: true,
-            style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: kToolDark),
+            style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: AppColors.of(context).textPrimary),
             onChanged: onChanged,
             items: List.generate(options.length, (i) => DropdownMenuItem(value: i, child: Text(options[i]))),
           ),
@@ -830,7 +830,7 @@ class _ScoresTabState extends State<_ScoresTab> {
               margin: const EdgeInsets.only(bottom: 6),
               child: Row(children: [
                 Expanded(child: Text(isEs ? 'O₂ suplementario (+2)' : 'O₂ suplementar (+2)',
-                  style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: kToolDark))),
+                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: AppColors.of(context).textPrimary))),
                 Switch(
                   value: _news_supo2,
                   activeThumbColor: kToolGreen,
@@ -924,7 +924,7 @@ class _ScoresTabState extends State<_ScoresTab> {
               padding: const EdgeInsets.only(bottom: 8),
               child: Row(children: [
                 Expanded(child: Text(isEs ? 'Edad (años) — pontuação direta' : 'Idade (anos) — pontuação direta',
-                  style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: kToolDark))),
+                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: AppColors.of(context).textPrimary))),
                 const SizedBox(width: 8),
                 SizedBox(
                   width: 72,
@@ -933,7 +933,7 @@ class _ScoresTabState extends State<_ScoresTab> {
                     keyboardType: TextInputType.number,
                     spellCheckConfiguration: const SpellCheckConfiguration.disabled(),
                     autocorrect: false,
-                    style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w900, color: kToolDark),
+                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w900, color: AppColors.of(context).textPrimary),
                     textAlign: TextAlign.center,
                     decoration: InputDecoration(
                       isDense: true, contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
@@ -1188,7 +1188,7 @@ class _PressureConvWidgetState extends State<_PressureConvWidget> {
           Padding(
             padding: const EdgeInsets.only(bottom: 6),
             child: Row(children: [
-              Container(width: 70, child: Text(e.key, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: kToolDark))),
+              Container(width: 70, child: Text(e.key, style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: AppColors.of(context).textPrimary))),
               const SizedBox(width: 8),
               Text(e.value, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w900, color: kToolGreen)),
             ]),
@@ -1520,7 +1520,7 @@ class _InfusionTabState extends State<_InfusionTab> {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(16),
                 gradient: const LinearGradient(begin: Alignment.topLeft, end: Alignment.bottomRight,
-                  colors: [kToolDark, Color(0xFF1B3D2A), kToolGreen]),
+                  colors: [Color(0xFF07110d), Color(0xFF1B3D2A), kToolGreen]),
               ),
               child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                 const Text('RESULTADO', style: TextStyle(fontSize: 9, fontWeight: FontWeight.w900, color: Color(0xBFFFE8A6), letterSpacing: 2)),
@@ -1595,7 +1595,7 @@ class _VasoRefRow extends StatelessWidget {
       decoration: const BoxDecoration(border: Border(bottom: BorderSide(color: kToolBorder))),
       child: Row(children: [
         Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text(drug, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w900, color: kToolDark)),
+          Text(drug, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w900, color: AppColors.of(context).textPrimary)),
           Text(note, style: const TextStyle(fontSize: 11, color: Color(0xFF666666))),
         ])),
         Container(
@@ -1994,7 +1994,7 @@ class _LabRow extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: 7),
       child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
         SizedBox(width: 110,
-          child: Text(name, style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w800, color: kToolDark))),
+          child: Text(name, style: TextStyle(fontSize: 11, fontWeight: FontWeight.w800, color: AppColors.of(context).textPrimary))),
         Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Text(ref, style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: Color(0xFF065F46))),
           if (note.isNotEmpty)
@@ -2067,7 +2067,7 @@ class _AntidoteRow extends StatelessWidget {
               ),
             ),
             const SizedBox(width: 8),
-            Expanded(child: Text(toxin, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w900, color: kToolDark))),
+            Expanded(child: Text(toxin, style: TextStyle(fontSize: 12, fontWeight: FontWeight.w900, color: AppColors.of(context).textPrimary))),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
               decoration: BoxDecoration(borderRadius: BorderRadius.circular(8), color: const Color(0xFF1F6B48).withValues(alpha: 0.12)),
@@ -2094,7 +2094,7 @@ class _AccessRow extends StatelessWidget {
         padding: const EdgeInsets.all(12),
         decoration: const BoxDecoration(border: Border(bottom: BorderSide(color: kToolBorder))),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text(site, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w900, color: kToolDark)),
+          Text(site, style: TextStyle(fontSize: 12, fontWeight: FontWeight.w900, color: AppColors.of(context).textPrimary)),
           const SizedBox(height: 4),
           Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Expanded(child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -2124,13 +2124,13 @@ class _StepRow extends StatelessWidget {
       child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Container(
           width: 26, height: 26,
-          decoration: const BoxDecoration(color: kToolDark, shape: BoxShape.circle),
+          decoration: BoxDecoration(color: AppColors.of(context).darkBtn, shape: BoxShape.circle),
           alignment: Alignment.center,
           child: Text(step, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w900, color: kToolGold)),
         ),
         const SizedBox(width: 10),
         Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text(title, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w800, color: kToolDark)),
+          Text(title, style: TextStyle(fontSize: 12, fontWeight: FontWeight.w800, color: AppColors.of(context).textPrimary)),
           if (sub.isNotEmpty) ...[
             const SizedBox(height: 4),
             Text(sub, style: const TextStyle(fontSize: 10.5, color: Color(0xFF555555), height: 1.5, fontFamily: 'monospace')),
@@ -2499,7 +2499,7 @@ class _PrescCard extends StatelessWidget {
           ),
           const SizedBox(width: 10),
           Expanded(child: Text(title,
-            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w900, color: kToolDark, letterSpacing: -0.3))),
+            style: TextStyle(fontSize: 14, fontWeight: FontWeight.w900, color: AppColors.of(context).textPrimary, letterSpacing: -0.3))),
         ]),
         const SizedBox(height: 10),
         Divider(color: kToolBorder, height: 1),
@@ -2545,11 +2545,11 @@ class _SectionCard extends StatelessWidget {
         Row(children: [
           Container(
             padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: kToolDark),
+            decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: AppColors.of(context).darkBtn),
             child: Icon(icon, size: 16, color: kToolGold),
           ),
           const SizedBox(width: 10),
-          Expanded(child: Text(title, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w900, color: kToolDark, letterSpacing: -0.3))),
+          Expanded(child: Text(title, style: TextStyle(fontSize: 15, fontWeight: FontWeight.w900, color: AppColors.of(context).textPrimary, letterSpacing: -0.3))),
           if (badge != null)
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
@@ -2611,7 +2611,7 @@ class _ResultTile extends StatelessWidget {
         Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
           Flexible(child: Text(value ?? '—',
             style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900,
-              color: hasVal ? kToolDark : const Color(0xFFCCCCCC), letterSpacing: -0.5))),
+              color: hasVal ? AppColors.of(context).textPrimary : const Color(0xFFCCCCCC), letterSpacing: -0.5))),
           if (unit != null && unit!.isNotEmpty && hasVal) ...[
             const SizedBox(width: 3),
             Padding(padding: const EdgeInsets.only(bottom: 2),
@@ -2651,7 +2651,7 @@ class _RenalGuideRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final bg      = danger ? const Color(0xFFFFF0F0) : warn ? const Color(0xFFFFF8E7) : ok ? const Color(0xFFECFDF5) : const Color(0xFFF8F8F8);
     final border  = danger ? const Color(0xFFFFCCCC) : warn ? const Color(0xFFFFE0A0) : ok ? const Color(0xFFBBF7D0) : kToolBorder;
-    final txtColor= danger ? const Color(0xFFCC2222) : warn ? const Color(0xFFB45309) : ok ? const Color(0xFF065F46) : kToolDark;
+    final txtColor= danger ? const Color(0xFFCC2222) : warn ? const Color(0xFFB45309) : ok ? const Color(0xFF065F46) : AppColors.of(context).textPrimary;
     return Padding(
       padding: const EdgeInsets.only(bottom: 6),
       child: Container(

@@ -678,8 +678,7 @@ class _DrugDetailViewState extends State<_DrugDetailView> {
               width: double.infinity,
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
               decoration: BoxDecoration(
-                color: dark
-                    : c.surface,
+                color: c.surface,
               ),
               child: Row(children: [
                 _DerivedChip(label: 'IMC',  value: _bmiLocal,  unit: 'kg/m²',  dark: dark),

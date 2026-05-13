@@ -1153,9 +1153,9 @@ class _DoseBody extends StatelessWidget {
             width: double.infinity, height: 50,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(16),
-              color: copied ? const Color(0xFFECFDF5) : kDark,
+              color: copied ? const Color(0xFFECFDF5) : AppColors.of(context).darkBtn,
               border: copied ? Border.all(color: const Color(0xFF86EFAC)) : null,
-              boxShadow: copied ? null : [BoxShadow(color: kDark.withValues(alpha: 0.25), blurRadius: 12, offset: const Offset(0, 4))],
+              boxShadow: copied ? null : [BoxShadow(color: AppColors.of(context).darkBtn.withValues(alpha: 0.25), blurRadius: 12, offset: const Offset(0, 4))],
             ),
             child: Center(child: Text(
               copied ? p.t('copied_record') : p.t('copy_record'),
