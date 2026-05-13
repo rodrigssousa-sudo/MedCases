@@ -931,14 +931,10 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
                       children: [
                         // 0 — Início
                         _buildNavBtn(0, Icons.home_rounded, p.t('cockpit'), dark, p),
-                        // 1 — Rx + Protocolos (combo)
-                        _buildNavBtn(1, Icons.layers_rounded, 'Fármaco', dark, p),
                         // espaço para o FAB central (IA)
                         const SizedBox(width: 68),
-                        // 3 — História Clínica (tab no stack)
+                        // 3 — História Clínica
                         _buildNavBtn(3, Icons.folder_shared_rounded, 'H. Clínica', dark, p),
-                        // 4 — Calculadoras
-                        _buildNavBtn(4, Icons.calculate_rounded, p.t('tools'), dark, p),
                       ],
                     ),
                     Positioned(
