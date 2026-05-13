@@ -12,7 +12,16 @@
           "package_name": "com.medcasespro.med"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "1076800980330-0dhh85qno3uelf1tq55oan6kcgpk319p.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.medcasespro.med",
+            "certificate_hash": "c653ef4212f8476db17520db75b1e2382c4008c8"
+          }
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyDPY3OH6KMoPdEp85i_y69_bKqc3wK2340"
@@ -20,7 +29,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1076800980330-0dhh85qno3uelf1tq55oan6kcgpk319p.apps.googleusercontent.com",
+              "client_type": 1
+            }
+          ]
         }
       }
     }
