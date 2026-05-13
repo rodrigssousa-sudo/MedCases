@@ -13,14 +13,14 @@ import 'cases_screen.dart';
 // HOME SCREEN — 4 cards de navegação principal
 // ─────────────────────────────────────────────────────────────────────────────
 class HomeScreen extends StatelessWidget {
-  /// Callback para trocar de tab na MainShell (usado pelo card Adulto,
-  /// Fármacos e Calculadora que apenas mudam a tab ativa do shell).
   final ValueChanged<int> onTabChange;
+  final ValueChanged<int> onSubTabChange;
   final Function(String) openProtocol;
 
   const HomeScreen({
     super.key,
     required this.onTabChange,
+    required this.onSubTabChange,
     required this.openProtocol,
   });
 
@@ -95,10 +95,23 @@ class HomeScreen extends StatelessWidget {
           ),
         ),
 
-        const SizedBox(height: 16),
+        const SizedBox(height: 14),
 
-        // ── Protocolos Clínicos ───────────────────────────────────────────
-        ProtocolsCard(isEs: isEs),
+        // ── Protocolos Clínicos — card fechado igual aos demais ───────────
+        _HomeCard(
+          icon: Icons.menu_book_rounded,
+          label: isEs ? 'PROTOCOLOS' : 'PROTOCOLOS',
+          subtitle: isEs
+              ? 'Emergencias · Cardio · Neuro · Pediátrico'
+              : 'Emergências · Cardio · Neuro · Pediátrico',
+          gradientColors: const [Color(0xFF07110D), Color(0xFF1B3D2A), Color(0xFF1F6B48)],
+          accentColor: const Color(0xFF4ADE80),
+          dark: dark,
+          onTap: () {
+            onTabChange(1);
+            onSubTabChange(1);
+          },
+        ),
 
         const SizedBox(height: 28),
 

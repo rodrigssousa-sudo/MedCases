@@ -862,6 +862,7 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
     final mainScreens = [
       HomeScreen(                                  // 0 — nova tela inicial
         onTabChange: (t) => setState(() => _tab = t),
+        onSubTabChange: (i) => setState(() => _rxProtoSub = i),
         openProtocol: _openProtocol,
       ),
       _RxProtoCombo(                               // 1 — Rx/Proto combo
