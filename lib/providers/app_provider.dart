@@ -899,8 +899,34 @@ class AppProvider extends ChangeNotifier {
     return results;
   }
 
+  /// Verifica se a pergunta é uma query direta/nova (não deve herdar histórico)
+  bool _isDirectQuery(String input) {
+    final q = input.toLowerCase().trim();
+    // Prefixos que indicam query direta ao Gemini/IA — não misturar histórico
+    final directPrefixes = [
+      'buscar em gemini:', 'buscar gemini:', 'buscar:', 'pesquisar:',
+      'gemini:', 'ia:', 'perguntar:', 'consultar:',
+      'search:', 'busca:', 'o que é ', 'o que e ',
+      'qual é ', 'qual e ', 'como ', 'quando ', 'por que ', 'porque ',
+      'explique ', 'explica ', 'defina ', 'define ',
+    ];
+    if (directPrefixes.any((p) => q.startsWith(p))) return true;
+    // Pergunta curta e conceitual (sem sintomas clínicos) — não herdar histórico
+    final hasClinicalKeywords = _has(_normalize(input), [
+      'paciente', 'dor', 'febre', 'dispne', 'tontura', 'choque',
+      'pa ', 'fc ', 'spo2', 'glasgow', 'ecg', 'tomograf',
+    ]);
+    final isShortConceptual = input.trim().split(' ').length <= 6 && !hasClinicalKeywords;
+    return isShortConceptual;
+  }
+
   /// Constrói query expandida com contexto do histórico (últimas N msgs do usuário)
-  String _expandedQuery(String currentInput, {int lastN = 5}) {
+  /// Só expande se a pergunta for um follow-up clínico — nunca contamina queries novas
+  String _expandedQuery(String currentInput, {int lastN = 3}) {
+    // Perguntas diretas/novas: NÃO misturar histórico (evita resposta aleatória)
+    if (_isDirectQuery(currentInput)) return currentInput.trim();
+
+    // Follow-up clínico: expande com contexto recente
     final recentUserMsgs = _aiHistory
         .where((m) => m['role'] == 'user')
         .map((m) => m['content'] ?? '')
@@ -909,6 +935,12 @@ class AppProvider extends ChangeNotifier {
     final tail = recentUserMsgs.length > lastN
         ? recentUserMsgs.sublist(recentUserMsgs.length - lastN)
         : recentUserMsgs;
+
+    // Só inclui histórico se a pergunta for realmente um follow-up
+    // (muito curta e sem contexto próprio — ex: "qual a dose?", "tem FA?")
+    final isFollowUp = currentInput.trim().split(' ').length <= 5;
+    if (!isFollowUp) return currentInput.trim();
+
     return '${tail.join(' ')} $currentInput'.trim();
   }
 

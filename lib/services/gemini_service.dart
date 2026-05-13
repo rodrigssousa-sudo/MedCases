@@ -70,11 +70,37 @@ class GeminiService {
   static Future<bool> signIn() async {
     try {
       debugPrint('[GeminiService] signIn() — web: $kIsWeb');
-      final account = await _googleSignIn.signIn();
+
+      // 1. Faz login básico primeiro
+      GoogleSignInAccount? account = await _googleSignIn.signIn();
       if (account == null) {
         debugPrint('[GeminiService] signIn cancelado pelo usuário');
         return false;
       }
+
+      // 2. No Web, solicitar escopos explicitamente após o login
+      //    O google_sign_in Web não concede escopos customizados automaticamente
+      final hasScopes = await _googleSignIn.requestScopes(_scopes);
+      if (!hasScopes) {
+        debugPrint('[GeminiService] escopos negados pelo usuário');
+        await _googleSignIn.signOut();
+        return false;
+      }
+
+      // 3. Recarrega a conta para garantir que o token tem os escopos
+      account = _googleSignIn.currentUser;
+      if (account == null) {
+        debugPrint('[GeminiService] conta perdida após requestScopes');
+        return false;
+      }
+
+      // 4. Verifica se consegue obter o accessToken com os escopos certos
+      final auth = await account.authentication;
+      if (auth.accessToken == null) {
+        debugPrint('[GeminiService] accessToken null após requestScopes');
+        return false;
+      }
+
       debugPrint('[GeminiService] signIn OK — ${account.email}');
       await _saveEmail(account.email);
       return true;
