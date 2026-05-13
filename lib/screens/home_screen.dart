@@ -5,6 +5,9 @@ import '../widgets/common_widgets.dart';
 import 'cockpit_screen.dart';
 import 'drugs_screen.dart';
 import 'tools_screen.dart';
+import 'protocols_screen.dart';
+import 'prescripciones_screen.dart';
+import 'cases_screen.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // HOME SCREEN — 4 cards de navegação principal
@@ -46,7 +49,9 @@ class HomeScreen extends StatelessWidget {
           gradientColors: const [Color(0xFF0F2318), Color(0xFF1B4A2E), Color(0xFF1F6B48)],
           accentColor: const Color(0xFF4ADE80),
           dark: dark,
-          onTap: () => onTabChange(0),
+          onTap: () => Navigator.of(context).push(
+            _slideRoute(_AdultoShell(openProtocol: openProtocol)),
+          ),
         ),
         const SizedBox(height: 14),
 
@@ -74,7 +79,9 @@ class HomeScreen extends StatelessWidget {
           gradientColors: const [Color(0xFF1E1000), Color(0xFF3D2000), Color(0xFF6B3A00)],
           accentColor: const Color(0xFFFBBF24),
           dark: dark,
-          onTap: () => onTabChange(1),
+          onTap: () => Navigator.of(context).push(
+            _slideRoute(const _FarmacosShell()),
+          ),
         ),
         const SizedBox(height: 14),
 
@@ -87,7 +94,9 @@ class HomeScreen extends StatelessWidget {
           gradientColors: const [Color(0xFF1A0F2E), Color(0xFF2D1B5A), Color(0xFF4A2D8A)],
           accentColor: const Color(0xFFA78BFA),
           dark: dark,
-          onTap: () => onTabChange(4),
+          onTap: () => Navigator.of(context).push(
+            _slideRoute(const _CalculadorasShell()),
+          ),
         ),
 
         const SizedBox(height: 28),
@@ -556,6 +565,195 @@ class _PediatricsShell extends StatelessWidget {
         ),
         // Conteúdo — reutiliza o PediatricsTabContent do ToolsScreen
         const Expanded(child: PediatricsTabContent()),
+      ]),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// ADULTO SHELL
+// ─────────────────────────────────────────────────────────────────────────────
+class _AdultoShell extends StatelessWidget {
+  final Function(String) openProtocol;
+  const _AdultoShell({required this.openProtocol});
+
+  @override
+  Widget build(BuildContext context) {
+    final p    = context.watch<AppProvider>();
+    final dark = p.darkMode;
+    final isEs = p.lang == 'es';
+
+    return Scaffold(
+      backgroundColor: dark ? const Color(0xFF141414) : const Color(0xFFF7F8FA),
+      body: Column(children: [
+        Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [Color(0xFF0F1C14), Color(0xFF1B3D2A), Color(0xFF1F6B48)],
+            ),
+          ),
+          child: SafeArea(
+            bottom: false,
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(6, 4, 16, 12),
+              child: Row(children: [
+                IconButton(
+                  icon: const Icon(Icons.arrow_back_ios_rounded, size: 18, color: Colors.white),
+                  onPressed: () => Navigator.of(context).pop(),
+                ),
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: Colors.white.withValues(alpha: 0.10),
+                  ),
+                  child: const Icon(Icons.person_rounded, size: 20, color: Color(0xFF4ADE80)),
+                ),
+                const SizedBox(width: 10),
+                Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  Text(
+                    isEs ? 'Paciente Adulto' : 'Paciente Adulto',
+                    style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w900,
+                        color: Colors.white, letterSpacing: -0.3),
+                  ),
+                  Text(
+                    isEs ? 'Dosis · Protocolos · Calculadora' : 'Doses · Protocolos · Calculadora',
+                    style: TextStyle(fontSize: 11, color: Colors.white.withValues(alpha: 0.6)),
+                  ),
+                ])),
+              ]),
+            ),
+          ),
+        ),
+        Expanded(child: CockpitScreen(openProtocol: openProtocol)),
+      ]),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// FÁRMACOS SHELL
+// ─────────────────────────────────────────────────────────────────────────────
+class _FarmacosShell extends StatelessWidget {
+  const _FarmacosShell();
+
+  @override
+  Widget build(BuildContext context) {
+    final p    = context.watch<AppProvider>();
+    final dark = p.darkMode;
+    final isEs = p.lang == 'es';
+
+    return Scaffold(
+      backgroundColor: dark ? const Color(0xFF141414) : const Color(0xFFF7F8FA),
+      body: Column(children: [
+        Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [Color(0xFF1E1000), Color(0xFF3D2000), Color(0xFF6B3A00)],
+            ),
+          ),
+          child: SafeArea(
+            bottom: false,
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(6, 4, 16, 12),
+              child: Row(children: [
+                IconButton(
+                  icon: const Icon(Icons.arrow_back_ios_rounded, size: 18, color: Colors.white),
+                  onPressed: () => Navigator.of(context).pop(),
+                ),
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: Colors.white.withValues(alpha: 0.10),
+                  ),
+                  child: const Icon(Icons.medication_rounded, size: 20, color: Color(0xFFFBBF24)),
+                ),
+                const SizedBox(width: 10),
+                Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  Text(
+                    isEs ? 'Fármacos' : 'Fármacos',
+                    style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w900,
+                        color: Colors.white, letterSpacing: -0.3),
+                  ),
+                  Text(
+                    isEs ? '337 fármacos · Interacciones · Protocolos'
+                         : '337 fármacos · Interações · Protocolos',
+                    style: TextStyle(fontSize: 11, color: Colors.white.withValues(alpha: 0.6)),
+                  ),
+                ])),
+              ]),
+            ),
+          ),
+        ),
+        const Expanded(child: DrugsScreen()),
+      ]),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// CALCULADORAS SHELL
+// ─────────────────────────────────────────────────────────────────────────────
+class _CalculadorasShell extends StatelessWidget {
+  const _CalculadorasShell();
+
+  @override
+  Widget build(BuildContext context) {
+    final p    = context.watch<AppProvider>();
+    final dark = p.darkMode;
+    final isEs = p.lang == 'es';
+
+    return Scaffold(
+      backgroundColor: dark ? const Color(0xFF141414) : const Color(0xFFF7F8FA),
+      body: Column(children: [
+        Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [Color(0xFF1A0F2E), Color(0xFF2D1B5A), Color(0xFF4A2D8A)],
+            ),
+          ),
+          child: SafeArea(
+            bottom: false,
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(6, 4, 16, 12),
+              child: Row(children: [
+                IconButton(
+                  icon: const Icon(Icons.arrow_back_ios_rounded, size: 18, color: Colors.white),
+                  onPressed: () => Navigator.of(context).pop(),
+                ),
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: Colors.white.withValues(alpha: 0.10),
+                  ),
+                  child: const Icon(Icons.calculate_rounded, size: 20, color: Color(0xFFA78BFA)),
+                ),
+                const SizedBox(width: 10),
+                Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  Text(
+                    isEs ? 'Calculadoras Clínicas' : 'Calculadoras Clínicas',
+                    style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w900,
+                        color: Colors.white, letterSpacing: -0.3),
+                  ),
+                  Text(
+                    isEs ? 'Scores · Cardio · Electrolitos · Infusión'
+                         : 'Scores · Cardio · Eletrólitos · Infusão',
+                    style: TextStyle(fontSize: 11, color: Colors.white.withValues(alpha: 0.6)),
+                  ),
+                ])),
+              ]),
+            ),
+          ),
+        ),
+        const Expanded(child: ToolsScreen()),
       ]),
     );
   }
