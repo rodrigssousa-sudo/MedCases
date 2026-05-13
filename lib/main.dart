@@ -111,17 +111,24 @@ class MedCasesApp extends StatelessWidget {
     brightness: dark ? Brightness.dark : Brightness.light,
     colorScheme: dark
         ? ColorScheme.dark(
-            primary: const Color(0xFFD4A96A),
-            onPrimary: const Color(0xFF1A1A1A),
-            secondary: const Color(0xFF2E7D5E),
-            onSecondary: Colors.white,
-            surface: const Color(0xFF141A17),
-            onSurface: const Color(0xFFEAEBEA),
-            surfaceContainerHighest: const Color(0xFF1E2922),
-            outline: const Color(0xFF2E3D34),
-            outlineVariant: const Color(0xFF253020),
-            error: const Color(0xFFFF6B6B),
-            onError: Colors.white,
+            // ── Dark mode: verde suavizado, fundo menos saturado ─────────
+            primary:                    const Color(0xFFD4A96A),   // ouro
+            onPrimary:                  const Color(0xFF1A2820),
+            secondary:                  const Color(0xFF2E8A62),   // verde médio
+            onSecondary:                const Color(0xFFEEF0EE),
+            surface:                    const Color(0xFF1C2820),   // cards
+            onSurface:                  const Color(0xFFEEF0EE),   // texto principal
+            surfaceContainerHighest:    const Color(0xFF222E28),
+            surfaceContainerHigh:       const Color(0xFF1F2B24),
+            surfaceContainer:           const Color(0xFF1A2620),
+            surfaceContainerLow:        const Color(0xFF172218),
+            surfaceDim:                 const Color(0xFF121E18),
+            outline:                    const Color(0xFF2A3A30),
+            outlineVariant:             const Color(0xFF1E2E24),
+            error:                      const Color(0xFFFF7070),
+            onError:                    Colors.white,
+            inverseSurface:             const Color(0xFFEEF0EE),
+            onInverseSurface:           const Color(0xFF121E18),
           )
         : ColorScheme.light(
             primary: const Color(0xFF0F1C14),
@@ -130,9 +137,21 @@ class MedCasesApp extends StatelessWidget {
             onSurface: const Color(0xFF0F1C14),
             surfaceContainerHighest: const Color(0xFFF0EDE6),
           ),
-    scaffoldBackgroundColor: dark ? const Color(0xFF101E16) : const Color(0xFFF5F6F8),
-    cardColor: dark ? const Color(0xFF141A17) : Colors.white,
-    dividerColor: dark ? const Color(0xFF253020) : const Color(0xFFE2E6EA),
+    scaffoldBackgroundColor: dark ? const Color(0xFF121E18) : const Color(0xFFF5F6F8),
+    cardColor:               dark ? const Color(0xFF1C2820) : Colors.white,
+    dividerColor:            dark ? const Color(0xFF1E2E24) : const Color(0xFFE2E6EA),
+    // Textos padrão do tema
+    textTheme: dark ? const TextTheme(
+      bodyLarge:   TextStyle(color: Color(0xFFEEF0EE)),
+      bodyMedium:  TextStyle(color: Color(0xFFEEF0EE)),
+      bodySmall:   TextStyle(color: Color(0xFFADBAAF)),
+      titleLarge:  TextStyle(color: Color(0xFFEEF0EE)),
+      titleMedium: TextStyle(color: Color(0xFFEEF0EE)),
+      titleSmall:  TextStyle(color: Color(0xFFCDD5CF)),
+      labelLarge:  TextStyle(color: Color(0xFFEEF0EE)),
+      labelMedium: TextStyle(color: Color(0xFFADBAAF)),
+      labelSmall:  TextStyle(color: Color(0xFF6E7E72)),
+    ) : null,
     // Transições de página suaves
     pageTransitionsTheme: const PageTransitionsTheme(
       builders: {
@@ -832,9 +851,9 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     final p = context.watch<AppProvider>();
     final dark = p.darkMode;
-    final bg = dark ? const Color(0xFF101E16) : const Color(0xFFF7F8FA);
-    final navBg = dark ? const Color(0xFF121F17) : Colors.white;
-    final navBorder = dark ? const Color(0xFF1E3526) : const Color(0xFFE8E1D2);
+    final bg = dark ? const Color(0xFF121E18) : const Color(0xFFF7F8FA);
+    final navBg = dark ? const Color(0xFF1A2620) : Colors.white;
+    final navBorder = dark ? const Color(0xFF2A3A30) : const Color(0xFFE8E1D2);
 
     // _RxProtoCombo precisa de _rxProtoSub que é estado local — mantido aqui.
     // As demais telas são reutilizadas de _staticScreens (criadas no initState).
@@ -1074,8 +1093,8 @@ class _RxProtoCombo extends StatelessWidget {
   Widget build(BuildContext context) {
     final p = context.watch<AppProvider>();
     final dark = p.darkMode;
-    final bg = dark ? const Color(0xFF101E16) : const Color(0xFFF5F6F8);
-    final borderCol = dark ? const Color(0xFF1E3028) : const Color(0xFFE0E4E8);
+    final bg = dark ? const Color(0xFF121E18) : const Color(0xFFF5F6F8);
+    final borderCol = dark ? const Color(0xFF2A3A30) : const Color(0xFFE0E4E8);
 
     return Column(children: [
       // ── Seletor de sub-tab ────────────────────────────────────────────────
@@ -1086,7 +1105,7 @@ class _RxProtoCombo extends StatelessWidget {
           height: 40,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(14),
-            color: dark ? const Color(0xFF0C1812) : Colors.white,
+            color: dark ? const Color(0xFF1A2620) : Colors.white,
             border: Border.all(color: borderCol, width: 0.8),
             boxShadow: [
               BoxShadow(

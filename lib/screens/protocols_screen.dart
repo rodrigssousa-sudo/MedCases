@@ -700,7 +700,7 @@ class _ProtocolGroupAccordion extends StatelessWidget {
                 : CrossFadeState.showSecond,
             firstChild: Container(
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: AppColors.of(context).cardBg,
                 border: Border(
                   left: BorderSide(color: borderColor),
                   right: BorderSide(color: borderColor),
@@ -766,7 +766,7 @@ class _ProtocolListTile extends StatelessWidget {
           color: Colors.transparent,
           border: isLast
               ? null
-              : const Border(bottom: BorderSide(color: Color(0xFFEEEAE0), width: 0.8)),
+              : Border(bottom: BorderSide(color: AppColors.of(context).border, width: 0.8)),
         ),
         child: Row(children: [
           Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -793,8 +793,8 @@ class _ProtocolListTile extends StatelessWidget {
 
             // Título
             Text(p.tDB(proto.title),
-              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w900,
-                color: kDark),
+              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w900,
+                color: AppColors.of(context).textPrimary),
               overflow: TextOverflow.ellipsis,
               maxLines: 2),
             const SizedBox(height: 4),
@@ -825,7 +825,7 @@ class _ProtocolListTile extends StatelessWidget {
             Container(
               width: 32, height: 32,
               decoration: BoxDecoration(
-                color: kDark,
+                color: AppColors.of(context).darkBtn,
                 borderRadius: BorderRadius.circular(10),
               ),
               child: const Icon(Icons.arrow_forward_ios_rounded,
@@ -943,14 +943,14 @@ class _ProtocolDetailSheet extends StatelessWidget {
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(14),
                     border: Border.all(color: const Color(0xFFDDD8CC)),
-                    color: Colors.white,
+                    color: AppColors.of(context).cardBg,
                   ),
                   child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                    const Icon(Icons.keyboard_arrow_down_rounded, size: 18, color: kDark),
+                    Icon(Icons.keyboard_arrow_down_rounded, size: 18, color: AppColors.of(context).textPrimary),
                     const SizedBox(width: 6),
                     Text(
                       p.lang == 'es' ? 'Cerrar' : 'Fechar',
-                      style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w800, color: kDark),
+                      style: TextStyle(fontSize: 14, fontWeight: FontWeight.w800, color: AppColors.of(context).textPrimary),
                     ),
                   ]),
                 ),

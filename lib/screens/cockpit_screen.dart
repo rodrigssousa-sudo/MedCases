@@ -636,21 +636,21 @@ class _DoseBody extends StatelessWidget {
           TextField(
             controller: drugQueryCtrl,
             onChanged: (v) => onDrugPickerChanged(v.trim().length >= 3),
-            style: const TextStyle(
+            style: TextStyle(
               fontWeight: FontWeight.w700,
               fontSize: 15,
-              color: kDark,
+              color: AppColors.of(context).textPrimary,
             ),
             decoration: InputDecoration(
               hintText: p.t('search_drug_hint'),
               hintStyle: TextStyle(
-                color: Colors.grey[400],
+                color: AppColors.of(context).textHint,
                 fontWeight: FontWeight.w500,
               ),
-              prefixIcon: const Padding(
-                padding: EdgeInsets.only(left: 12, right: 8),
+              prefixIcon: Padding(
+                padding: const EdgeInsets.only(left: 12, right: 8),
                 child: Icon(Icons.search_rounded,
-                    size: 18, color: Color(0xFF888888)),
+                    size: 18, color: AppColors.of(context).textHint),
               ),
               prefixIconConstraints:
                   const BoxConstraints(minWidth: 38, minHeight: 38),
@@ -660,24 +660,24 @@ class _DoseBody extends StatelessWidget {
                         drugQueryCtrl.clear();
                         onDrugPickerChanged(false);
                       },
-                      child: const Padding(
-                        padding: EdgeInsets.only(right: 10),
+                      child: Padding(
+                        padding: const EdgeInsets.only(right: 10),
                         child: Icon(Icons.close_rounded,
-                            size: 16, color: Color(0xFFAAAAAA)),
+                            size: 16, color: AppColors.of(context).textHint),
                       ),
                     )
                   : null,
               suffixIconConstraints:
                   const BoxConstraints(minWidth: 32, minHeight: 32),
               filled: true,
-              fillColor: Colors.white,
+              fillColor: AppColors.of(context).inputBg,
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(14),
-                borderSide: const BorderSide(color: kBorder),
+                borderSide: BorderSide(color: AppColors.of(context).border),
               ),
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(14),
-                borderSide: const BorderSide(color: kBorder),
+                borderSide: BorderSide(color: AppColors.of(context).border),
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(14),
@@ -693,8 +693,8 @@ class _DoseBody extends StatelessWidget {
               margin: const EdgeInsets.only(top: 4),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(14),
-                border: Border.all(color: kBorder),
-                color: Colors.white,
+                border: Border.all(color: AppColors.of(context).border),
+                color: AppColors.of(context).cardBg,
                 boxShadow: [
                   BoxShadow(
                     color: Colors.black.withValues(alpha: 0.08),
@@ -1650,9 +1650,9 @@ class _InteractionSheetContentState extends State<_InteractionSheetContent> {
                   padding: const EdgeInsets.all(7),
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: const Color(0xFFF3F4F6),
+                    color: AppColors.of(context).surface,
                   ),
-                  child: const Icon(Icons.close_rounded, size: 16, color: Color(0xFF555555)),
+                  child: Icon(Icons.close_rounded, size: 16, color: AppColors.of(context).textSecondary),
                 ),
               ),
             ]),
@@ -1831,7 +1831,7 @@ class _InteractionSheetContentState extends State<_InteractionSheetContent> {
                             padding: const EdgeInsets.all(12),
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(10),
-                              color: Colors.white.withValues(alpha: 0.8),
+                              color: AppColors.of(context).cardBg,
                               border: Border.all(color: bdr),
                             ),
                             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -1957,16 +1957,16 @@ class _ProtocolsBody extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 13),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: kBorder),
-            color: kSurface,
+            border: Border.all(color: AppColors.of(context).border),
+            color: AppColors.of(context).surface,
           ),
           child: Row(children: [
             Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text(p.tDB(proto.severity), style: const TextStyle(fontSize: 9, fontWeight: FontWeight.w900, color: kGold, letterSpacing: 1.4)),
+              Text(p.tDB(proto.severity), style: TextStyle(fontSize: 9, fontWeight: FontWeight.w900, color: AppColors.of(context).gold, letterSpacing: 1.4)),
               const SizedBox(height: 2),
-              Text(p.tDB(proto.title), style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w900, color: kDark), overflow: TextOverflow.ellipsis),
+              Text(p.tDB(proto.title), style: TextStyle(fontSize: 14, fontWeight: FontWeight.w900, color: AppColors.of(context).textPrimary), overflow: TextOverflow.ellipsis),
             ])),
-            const Icon(Icons.arrow_forward_ios_rounded, size: 13, color: Color(0xFF888888)),
+            Icon(Icons.arrow_forward_ios_rounded, size: 13, color: AppColors.of(context).textHint),
           ]),
         ),
       ),

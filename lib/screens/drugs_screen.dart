@@ -199,10 +199,11 @@ class _GroupAccordion extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final headerBg = dark ? const Color(0xFF121F17) : const Color(0xFFF5F2EB);
-    final headerBorder = dark ? const Color(0xFF1E3526) : const Color(0xFFDDD8CC);
-    final titleColor = dark ? Colors.white : kDark;
-    final countColor = dark ? Colors.white38 : const Color(0xFF999999);
+    final c = AppColors.of(context);
+    final headerBg = c.cardBg2;
+    final headerBorder = c.border;
+    final titleColor = c.textPrimary;
+    final countColor = c.textHint;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -228,15 +229,13 @@ class _GroupAccordion extends StatelessWidget {
                   width: 36,
                   height: 36,
                   decoration: BoxDecoration(
-                    color: dark
-                        ? const Color(0xFF162B1E)
-                        : const Color(0xFFECE9E0),
+                    color: c.surface,
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: Center(
                     child: iconData != null
                         ? Icon(iconData, size: 17,
-                            color: iconColor ?? (dark ? const Color(0xFF9BE3BF) : kGreen))
+                            color: iconColor ?? c.green)
                         : Text(icon, style: const TextStyle(fontSize: 18)),
                   ),
                 ),
@@ -289,7 +288,7 @@ class _GroupAccordion extends StatelessWidget {
                 : CrossFadeState.showSecond,
             firstChild: Container(
               decoration: BoxDecoration(
-                color: dark ? const Color(0xFF0F1C14) : Colors.white,
+                color: c.cardBg,
                 border: Border(
                   left: BorderSide(color: headerBorder),
                   right: BorderSide(color: headerBorder),
@@ -343,10 +342,11 @@ class _DrugListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isFav = p.favDrugs.contains(drug.id);
-    final divColor = dark ? const Color(0xFF1E3526) : const Color(0xFFEEEAE0);
-    final nameColor = dark ? Colors.white : kDark;
-    final subColor = dark ? Colors.white38 : const Color(0xFF888888);
-    final warnColor = dark ? Colors.white54 : const Color(0xFF777777);
+    final c = AppColors.of(context);
+    final divColor = c.border;
+    final nameColor = c.textPrimary;
+    final subColor = c.textSecondary;
+    final warnColor = c.textSecondary;
 
     return GestureDetector(
       onTap: onTap,
@@ -416,7 +416,7 @@ class _DrugListTile extends StatelessWidget {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
               decoration: BoxDecoration(
-                color: kDark,
+                color: c.darkBtn,
                 borderRadius: BorderRadius.circular(20),
               ),
               child: Text(
@@ -549,8 +549,9 @@ class _DrugDetailViewState extends State<_DrugDetailView> {
     final adverse = drug.getAdverse(p.lang);
     final isFav   = p.favDrugs.contains(drug.id);
     final dark    = p.darkMode;
-    final cardBg  = dark ? const Color(0xFF121F17) : Colors.white;
-    final border  = dark ? const Color(0xFF1E3526) : kBorder;
+    final c = AppColors.of(context);
+    final cardBg  = c.cardBg;
+    final border  = c.border;
 
     return SingleChildScrollView(
       padding: const EdgeInsets.fromLTRB(16, 8, 16, 100),
@@ -568,11 +569,11 @@ class _DrugDetailViewState extends State<_DrugDetailView> {
             ),
             child: Row(children: [
               Icon(Icons.arrow_back_ios, size: 14,
-                  color: dark ? Colors.white70 : kDark),
+                  color: c.textPrimary),
               const SizedBox(width: 4),
               Text(p.t('back_drugs'),
                 style: TextStyle(fontSize: 14, fontWeight: FontWeight.w900,
-                  color: dark ? Colors.white70 : kDark)),
+                  color: c.textPrimary)),
             ]),
           ),
         ),
@@ -583,16 +584,14 @@ class _DrugDetailViewState extends State<_DrugDetailView> {
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(20),
-            color: dark
-                ? const Color(0xFF162B1E)
-                : const Color(0xFFECE9E0),
+            color: c.surface,
           ),
           child: Text(
             '${DrugGroup.icon(drug.group)}  ${drug.group}',
             style: TextStyle(
               fontSize: 11,
               fontWeight: FontWeight.w800,
-              color: dark ? Colors.white54 : const Color(0xFF666666),
+              color: c.textSecondary,
               letterSpacing: 0.2,
             ),
           ),
@@ -644,11 +643,11 @@ class _DrugDetailViewState extends State<_DrugDetailView> {
             Text(p.t('calculated_dose'),
               style: TextStyle(fontSize: 9, fontWeight: FontWeight.w900,
                 letterSpacing: 1.8,
-                color: dark ? const Color(0xFFFFE8A6) : kDark)),
+                color: dark ? const Color(0xFFFFE8A6) : c.textPrimary)),
             const SizedBox(height: 2),
             Text(p.t('edit_to_recalc'),
               style: TextStyle(fontSize: 11,
-                color: dark ? Colors.white38 : const Color(0xFF999999),
+                color: c.textHint,
                 fontWeight: FontWeight.w600)),
             const SizedBox(height: 14),
 
@@ -680,13 +679,12 @@ class _DrugDetailViewState extends State<_DrugDetailView> {
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
               decoration: BoxDecoration(
                 color: dark
-                    ? const Color(0xFF0F1C14).withValues(alpha: 0.6)
-                    : const Color(0xFFF5F2EC),
+                    : c.surface,
               ),
               child: Row(children: [
                 _DerivedChip(label: 'IMC',  value: _bmiLocal,  unit: 'kg/m²',  dark: dark),
                 Container(width: 1, height: 28,
-                  color: dark ? Colors.white12 : const Color(0xFFDDD8CC),
+                  color: c.border,
                   margin: EdgeInsets.zero),
                 _DerivedChip(label: 'ClCr', value: _clcrLocal, unit: 'mL/min', dark: dark),
               ]),
@@ -705,9 +703,9 @@ class _DrugDetailViewState extends State<_DrugDetailView> {
                 height: 48,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(14),
-                  color: kDark,
+                  color: c.darkBtn,
                   boxShadow: [BoxShadow(
-                    color: kDark.withValues(alpha: 0.35),
+                    color: c.darkBtn.withValues(alpha: 0.35),
                     blurRadius: 12, offset: const Offset(0, 4))],
                 ),
                 child: Center(
@@ -728,7 +726,7 @@ class _DrugDetailViewState extends State<_DrugDetailView> {
             Text(p.t('drug_sheet'),
               style: TextStyle(fontSize: 9, fontWeight: FontWeight.w900,
                 letterSpacing: 1.8,
-                color: dark ? const Color(0xFFFFE8A6) : kDark)),
+                color: dark ? const Color(0xFFFFE8A6) : c.textPrimary)),
             const SizedBox(height: 14),
             InfoBlock(label: p.t('mechanism'),    text: p.tDB(drug.mechanism)),
             const SizedBox(height: 10),
@@ -809,9 +807,10 @@ class _LocalField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bg     = dark ? const Color(0xFF0F1C14) : const Color(0xFFF8F5EF);
-    final border = dark ? const Color(0xFF1E3526) : const Color(0xFFDDD8CC);
-    final text   = dark ? Colors.white : kDark;
+    final c = AppColors.of(context);
+    final bg     = c.inputBg;
+    final border = c.border;
+    final text   = c.textPrimary;
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       Text(label,
         style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w800,
@@ -865,9 +864,9 @@ class _SexToggleBtn extends StatelessWidget {
           height: 38,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
-            color: active ? kDark : (dark ? const Color(0xFF0F1C14) : const Color(0xFFF5F2EC)),
+            color: active ? AppColors.of(context).darkBtn : AppColors.of(context).inputBg,
             border: Border.all(
-              color: active ? kDark : (dark ? const Color(0xFF1E3526) : const Color(0xFFDDD8CC)),
+              color: active ? AppColors.of(context).darkBtn : AppColors.of(context).border,
             ),
           ),
           child: Center(
@@ -875,7 +874,7 @@ class _SexToggleBtn extends StatelessWidget {
               style: TextStyle(
                 fontSize: 13, fontWeight: FontWeight.w900,
                 color: active ? kGoldLight
-                    : (dark ? Colors.white38 : const Color(0xFF999999)),
+                    : AppColors.of(context).textHint,
               )),
           ),
         ),
@@ -896,8 +895,9 @@ class _DerivedChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textColor = dark ? Colors.white70 : kDark;
-    final subColor  = dark ? Colors.white38 : const Color(0xFF888888);
+    final c = AppColors.of(context);
+    final textColor = c.textPrimary;
+    final subColor  = c.textHint;
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       Text(label,
         style: TextStyle(fontSize: 9, fontWeight: FontWeight.w800,
@@ -925,7 +925,7 @@ class _Divider extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Container(
     height: 1,
-    color: dark ? Colors.white.withValues(alpha: 0.07) : const Color(0xFFEEEAE0),
+    color: AppColors.of(context).border,
   );
 }
 

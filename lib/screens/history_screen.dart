@@ -240,10 +240,10 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
         padding: const EdgeInsets.fromLTRB(16, 10, 16, 0),
         child: Container(
           height: 40,
-          decoration: BoxDecoration(borderRadius: BorderRadius.circular(14), color: Colors.white, border: Border.all(color: kBorder)),
+          decoration: BoxDecoration(borderRadius: BorderRadius.circular(14), color: AppColors.of(context).cardBg, border: Border.all(color: AppColors.of(context).border)),
           child: TabBar(
             controller: _tabCtrl,
-            indicator: BoxDecoration(borderRadius: BorderRadius.circular(12), color: kDark),
+            indicator: BoxDecoration(borderRadius: BorderRadius.circular(12), color: AppColors.of(context).darkBtn),
             indicatorSize: TabBarIndicatorSize.tab,
             labelStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.w900),
             unselectedLabelStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.w700),
@@ -279,12 +279,12 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(12),
                 color: _dateFilter != null
-                    ? const Color(0xFF0F1C14)
-                    : Colors.white,
+                    ? AppColors.of(context).darkBtn
+                    : AppColors.of(context).cardBg,
                 border: Border.all(
                   color: _dateFilter != null
-                      ? const Color(0xFF0F1C14)
-                      : kBorder,
+                      ? AppColors.of(context).darkBtn
+                      : AppColors.of(context).border,
                 ),
               ),
               child: Row(mainAxisSize: MainAxisSize.min, children: [
@@ -307,14 +307,14 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(20),
-                color: const Color(0xFF0F1C14).withValues(alpha: 0.08),
-                border: Border.all(color: const Color(0xFF0F1C14).withValues(alpha: 0.2)),
+                color: AppColors.of(context).surface,
+                border: Border.all(color: AppColors.of(context).border),
               ),
               child: Row(mainAxisSize: MainAxisSize.min, children: [
-                const Icon(Icons.date_range_rounded, size: 12, color: Color(0xFF0F1C14)),
+                Icon(Icons.date_range_rounded, size: 12, color: AppColors.of(context).textPrimary),
                 const SizedBox(width: 6),
                 Text(_dateFilterLabel,
-                    style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: Color(0xFF0F1C14))),
+                    style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: AppColors.of(context).textPrimary)),
                 const SizedBox(width: 8),
                 GestureDetector(
                   onTap: _clearDateFilter,
@@ -508,13 +508,13 @@ class _HistoryCard extends StatelessWidget {
         onTap: onTap,
         child: Container(
           padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
-          decoration: const BoxDecoration(border: Border(bottom: BorderSide(color: kBorder))),
+          decoration: BoxDecoration(border: Border(bottom: BorderSide(color: AppColors.of(context).border))),
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Row(children: [
               // Categoria badge
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                decoration: BoxDecoration(borderRadius: BorderRadius.circular(8), color: kDark),
+                decoration: BoxDecoration(borderRadius: BorderRadius.circular(8), color: AppColors.of(context).darkBtn),
                 child: Text(h.category, style: const TextStyle(fontSize: 9, fontWeight: FontWeight.w900, color: kGoldLight)),
               ),
               const SizedBox(width: 6),
@@ -536,7 +536,7 @@ class _HistoryCard extends StatelessWidget {
               Text(h.formattedDate, style: const TextStyle(fontSize: 10, color: Color(0xFF888888), fontWeight: FontWeight.w600)),
             ]),
             const SizedBox(height: 8),
-            Text(h.displayTitle, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w900, color: kDark), maxLines: 2, overflow: TextOverflow.ellipsis),
+            Text(h.displayTitle, style: TextStyle(fontSize: 15, fontWeight: FontWeight.w900, color: AppColors.of(context).textPrimary), maxLines: 2, overflow: TextOverflow.ellipsis),
             if (h.patientInitials.isNotEmpty || h.patientAge.isNotEmpty) ...[
               const SizedBox(height: 4),
               Text('${h.patientInitials.isNotEmpty ? h.patientInitials : ''}${h.patientAge.isNotEmpty ? " • ${h.patientAge} anos" : ""} • ${h.patientSex}',
@@ -567,7 +567,7 @@ class _HistoryCard extends StatelessWidget {
                 child: LinearProgressIndicator(
                   value: completion,
                   minHeight: 4,
-                  backgroundColor: const Color(0xFFE8E1D2),
+                  backgroundColor: AppColors.of(context).border,
                   valueColor: AlwaysStoppedAnimation(completion > 0.7 ? const Color(0xFF065F46) : completion > 0.4 ? kGold : const Color(0xFFCCCCCC)),
                 ),
               )),
@@ -584,8 +584,8 @@ class _HistoryCard extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10),
-                      color: h.isPublic ? const Color(0xFF1E40AF).withValues(alpha: 0.1) : const Color(0xFFF0F0F0),
-                      border: Border.all(color: h.isPublic ? const Color(0xFF1E40AF).withValues(alpha: 0.3) : kBorder),
+                      color: h.isPublic ? const Color(0xFF1E40AF).withValues(alpha: 0.1) : AppColors.of(context).surface,
+                      border: Border.all(color: h.isPublic ? const Color(0xFF1E40AF).withValues(alpha: 0.3) : AppColors.of(context).border),
                     ),
                     child: Row(children: [
                       Icon(h.isPublic ? Icons.public_rounded : Icons.lock_outline_rounded, size: 12,
@@ -602,7 +602,7 @@ class _HistoryCard extends StatelessWidget {
                 GestureDetector(onTap: onDelete, child: const Padding(padding: EdgeInsets.all(6), child: Icon(Icons.delete_outline_rounded, size: 16, color: Color(0xFFCC2222)))),
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                  decoration: BoxDecoration(color: kDark, borderRadius: BorderRadius.circular(10)),
+                  decoration: BoxDecoration(color: AppColors.of(context).darkBtn, borderRadius: BorderRadius.circular(10)),
                   child: const Text('Abrir', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w900, color: kGoldLight)),
                 ),
               ]),
@@ -641,7 +641,7 @@ class _HistoryCard extends StatelessWidget {
                 const SizedBox(width: 8),
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                  decoration: BoxDecoration(color: kDark, borderRadius: BorderRadius.circular(10)),
+                  decoration: BoxDecoration(color: AppColors.of(context).darkBtn, borderRadius: BorderRadius.circular(10)),
                   child: const Text('Ver', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w900, color: kGoldLight)),
                 ),
               ]),

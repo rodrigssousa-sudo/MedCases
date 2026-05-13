@@ -104,10 +104,10 @@ class _CasesScreenState extends State<CasesScreen> with SingleTickerProviderStat
         padding: const EdgeInsets.fromLTRB(16, 10, 16, 0),
         child: Container(
           height: 40,
-          decoration: BoxDecoration(borderRadius: BorderRadius.circular(14), color: Colors.white, border: Border.all(color: kBorder)),
+          decoration: BoxDecoration(borderRadius: BorderRadius.circular(14), color: AppColors.of(context).cardBg, border: Border.all(color: AppColors.of(context).border)),
           child: TabBar(
             controller: _tabCtrl,
-            indicator: BoxDecoration(borderRadius: BorderRadius.circular(12), color: kDark),
+            indicator: BoxDecoration(borderRadius: BorderRadius.circular(12), color: AppColors.of(context).darkBtn),
             indicatorSize: TabBarIndicatorSize.tab,
             labelStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.w900),
             unselectedLabelStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.w700),
@@ -200,9 +200,9 @@ class _CaseCard extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.all(14),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: AppColors.of(context).cardBg,
             borderRadius: BorderRadius.circular(14),
-            border: Border.all(color: kBorder),
+            border: Border.all(color: AppColors.of(context).border),
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withValues(alpha: 0.04),
@@ -217,7 +217,7 @@ class _CaseCard extends StatelessWidget {
                 Row(children: [
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                    decoration: BoxDecoration(borderRadius: BorderRadius.circular(8), color: kDark),
+                    decoration: BoxDecoration(borderRadius: BorderRadius.circular(8), color: AppColors.of(context).darkBtn),
                     child: Text(c.category.isNotEmpty ? c.category : p.t('case_label'),
                       style: const TextStyle(fontSize: 9, fontWeight: FontWeight.w900, color: kGoldLight)),
                   ),
@@ -228,7 +228,7 @@ class _CaseCard extends StatelessWidget {
                   ],
                 ]),
                 const SizedBox(height: 6),
-                Text(c.title, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w900, color: kDark), overflow: TextOverflow.ellipsis),
+                Text(c.title, style: TextStyle(fontSize: 15, fontWeight: FontWeight.w900, color: AppColors.of(context).textPrimary), overflow: TextOverflow.ellipsis),
               ])),
               if (!readOnly && onEdit != null) ...[
                 GestureDetector(onTap: onEdit, child: const Padding(padding: EdgeInsets.all(6), child: Icon(Icons.edit_rounded, size: 16, color: kGold))),
@@ -250,7 +250,7 @@ class _CaseCard extends StatelessWidget {
               ],
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                decoration: BoxDecoration(color: kDark, borderRadius: BorderRadius.circular(20)),
+                decoration: BoxDecoration(color: AppColors.of(context).darkBtn, borderRadius: BorderRadius.circular(20)),
                 child: Text(p.t('open'), style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w900, color: kGoldLight)),
               ),
             ]),
@@ -312,9 +312,9 @@ class _CaseDetail extends StatelessWidget {
         GestureDetector(
           onTap: onBack,
           child: Row(children: [
-            const Icon(Icons.arrow_back_ios, size: 14, color: kDark),
+            Icon(Icons.arrow_back_ios, size: 14, color: AppColors.of(context).textPrimary),
             const SizedBox(width: 4),
-            Text(p.t('back_cases'), style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w900, color: kDark)),
+            Text(p.t('back_cases'), style: TextStyle(fontSize: 14, fontWeight: FontWeight.w900, color: AppColors.of(context).textPrimary)),
           ]),
         ),
         const SizedBox(height: 12),
@@ -387,7 +387,7 @@ class _CaseDetail extends StatelessWidget {
                   final drug = p.drugsDB.where((d) => d.id == id).firstOrNull;
                   return Container(
                     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                    decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), color: kDark, border: Border.all(color: kDark)),
+                    decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), color: AppColors.of(context).darkBtn, border: Border.all(color: AppColors.of(context).darkBtn)),
                     child: Text(drug?.name ?? id, style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w900, color: kGoldLight)),
                   );
                 }).toList()),
@@ -401,7 +401,7 @@ class _CaseDetail extends StatelessWidget {
                   onTap: () => _copy(context),
                   child: Container(
                     height: 44,
-                    decoration: BoxDecoration(borderRadius: BorderRadius.circular(14), color: kDark),
+                    decoration: BoxDecoration(borderRadius: BorderRadius.circular(14), color: AppColors.of(context).darkBtn),
                     child: Center(child: Text(p.t('copy_case'), style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w900, color: kGoldLight))),
                   ),
                 ),
@@ -414,10 +414,10 @@ class _CaseDetail extends StatelessWidget {
                   height: 44, width: 44,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(14),
-                    border: Border.all(color: kBorder),
-                    color: Colors.white,
+                    border: Border.all(color: AppColors.of(context).border),
+                    color: AppColors.of(context).cardBg,
                   ),
-                  child: const Center(child: Icon(Icons.share_rounded, size: 18, color: kDark)),
+                  child: Center(child: Icon(Icons.share_rounded, size: 18, color: AppColors.of(context).textPrimary)),
                 ),
               ),
               if (onDelete != null) ...[
