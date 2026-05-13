@@ -38,8 +38,6 @@ class ProtocolsScreen extends StatefulWidget {
 
 class _ProtocolsScreenState extends State<ProtocolsScreen> {
   final _searchCtrl = TextEditingController();
-  // Grupos expandidos por padrão — todos fechados
-  final Set<String> _expanded = {};
 
   @override
   void dispose() {
@@ -125,14 +123,8 @@ class _ProtocolsScreenState extends State<ProtocolsScreen> {
               borderColor: const Color(0xFFE8D8A0),
               iconColor: const Color(0xFFC5A365),
               protocols: allDB.where((d) => p.favProtocols.contains(d.id)).toList(),
-              isExpanded: _expanded.contains('__fav__'),
-              p: p,
               isEs: isEs,
-              onToggle: () => setState(() {
-                _expanded.contains('__fav__')
-                    ? _expanded.remove('__fav__')
-                    : _expanded.add('__fav__');
-              }),
+              p: p,
               onSelect: (proto) => showProtocolDetail(context, proto),
             ),
             const SizedBox(height: 8),
@@ -153,13 +145,7 @@ class _ProtocolsScreenState extends State<ProtocolsScreen> {
               'anafilaxia', 'anafilaxia_refrataria',
               'choque_cardiogenico', 'choque_septico_avancado', 'choque_hipovolemico',
             }.contains(d.id)).toList(),
-            isExpanded: _expanded.contains('reanimacao'),
             p: p, isEs: isEs,
-            onToggle: () => setState(() {
-              _expanded.contains('reanimacao')
-                  ? _expanded.remove('reanimacao')
-                  : _expanded.add('reanimacao');
-            }),
             onSelect: (proto) => showProtocolDetail(context, proto),
           ),
           const SizedBox(height: 8),
@@ -180,13 +166,7 @@ class _ProtocolsScreenState extends State<ProtocolsScreen> {
               'tpsv', 'fa_aguda', 'bradiarritmia_grave',
               'crise_hipertensiva', 'miocardite_aguda', 'pericardite_aguda',
             }.contains(d.id)).toList(),
-            isExpanded: _expanded.contains('cardio'),
             p: p, isEs: isEs,
-            onToggle: () => setState(() {
-              _expanded.contains('cardio')
-                  ? _expanded.remove('cardio')
-                  : _expanded.add('cardio');
-            }),
             onSelect: (proto) => showProtocolDetail(context, proto),
           ),
           const SizedBox(height: 8),
@@ -208,13 +188,7 @@ class _ProtocolsScreenState extends State<ProtocolsScreen> {
               'pneumonia_grave', 'pneumonia_aspirativa',
               'hemoptise_macica',
             }.contains(d.id)).toList(),
-            isExpanded: _expanded.contains('resp'),
             p: p, isEs: isEs,
-            onToggle: () => setState(() {
-              _expanded.contains('resp')
-                  ? _expanded.remove('resp')
-                  : _expanded.add('resp');
-            }),
             onSelect: (proto) => showProtocolDetail(context, proto),
           ),
           const SizedBox(height: 8),
@@ -236,13 +210,7 @@ class _ProtocolsScreenState extends State<ProtocolsScreen> {
               'agitacao_psicomotora', 'delirium_tremens',
               'encefalopatia_hepatica',
             }.contains(d.id)).toList(),
-            isExpanded: _expanded.contains('neuro'),
             p: p, isEs: isEs,
-            onToggle: () => setState(() {
-              _expanded.contains('neuro')
-                  ? _expanded.remove('neuro')
-                  : _expanded.add('neuro');
-            }),
             onSelect: (proto) => showProtocolDetail(context, proto),
           ),
           const SizedBox(height: 8),
@@ -264,13 +232,7 @@ class _ProtocolsScreenState extends State<ProtocolsScreen> {
               'dengue_manejo', 'colangite_aguda',
               'pbe_cirrose',
             }.contains(d.id)).toList(),
-            isExpanded: _expanded.contains('infec'),
             p: p, isEs: isEs,
-            onToggle: () => setState(() {
-              _expanded.contains('infec')
-                  ? _expanded.remove('infec')
-                  : _expanded.add('infec');
-            }),
             onSelect: (proto) => showProtocolDetail(context, proto),
           ),
           const SizedBox(height: 8),
@@ -292,13 +254,7 @@ class _ProtocolsScreenState extends State<ProtocolsScreen> {
               'hipocalcemia_grave', 'hiponatremia_grave', 'hipernatremia_grave',
               'crise_adrenal', 'crise_tireotoxica',
             }.contains(d.id)).toList(),
-            isExpanded: _expanded.contains('metab'),
             p: p, isEs: isEs,
-            onToggle: () => setState(() {
-              _expanded.contains('metab')
-                  ? _expanded.remove('metab')
-                  : _expanded.add('metab');
-            }),
             onSelect: (proto) => showProtocolDetail(context, proto),
           ),
           const SizedBox(height: 8),
@@ -321,13 +277,7 @@ class _ProtocolsScreenState extends State<ProtocolsScreen> {
               'politrauma_atls', 'sindrome_compartimental',
               'colica_nefretica',
             }.contains(d.id)).toList(),
-            isExpanded: _expanded.contains('gastro'),
             p: p, isEs: isEs,
-            onToggle: () => setState(() {
-              _expanded.contains('gastro')
-                  ? _expanded.remove('gastro')
-                  : _expanded.add('gastro');
-            }),
             onSelect: (proto) => showProtocolDetail(context, proto),
           ),
           const SizedBox(height: 8),
@@ -350,13 +300,7 @@ class _ProtocolsScreenState extends State<ProtocolsScreen> {
               'tromboembolismo_venoso_ped',
               'crise_gota', 'priapismo_emergencia',
             }.contains(d.id)).toList(),
-            isExpanded: _expanded.contains('outros'),
             p: p, isEs: isEs,
-            onToggle: () => setState(() {
-              _expanded.contains('outros')
-                  ? _expanded.remove('outros')
-                  : _expanded.add('outros');
-            }),
             onSelect: (proto) => showProtocolDetail(context, proto),
           ),
           const SizedBox(height: 8),
@@ -379,13 +323,7 @@ class _ProtocolsScreenState extends State<ProtocolsScreen> {
               'intox_metanol_etilenoglicol', 'intox_monoxido_carbono',
               'sindrome_abst_opioides', 'delirium_tremens',
             }.contains(d.id)).toList(),
-            isExpanded: _expanded.contains('intox'),
             p: p, isEs: isEs,
-            onToggle: () => setState(() {
-              _expanded.contains('intox')
-                  ? _expanded.remove('intox')
-                  : _expanded.add('intox');
-            }),
             onSelect: (proto) => showProtocolDetail(context, proto),
           ),
           const SizedBox(height: 8),
@@ -412,13 +350,7 @@ class _ProtocolsScreenState extends State<ProtocolsScreen> {
               'mastoidite_aguda',
               'tromboembolismo_venoso_ped',
             }.contains(d.id)).toList(),
-            isExpanded: _expanded.contains('ped'),
             p: p, isEs: isEs,
-            onToggle: () => setState(() {
-              _expanded.contains('ped')
-                  ? _expanded.remove('ped')
-                  : _expanded.add('ped');
-            }),
             onSelect: (proto) => showProtocolDetail(context, proto),
           ),
           const SizedBox(height: 8),
@@ -438,13 +370,7 @@ class _ProtocolsScreenState extends State<ProtocolsScreen> {
               'caso_avc_isquemico',
               'caso_status_epilepticus',
             }.contains(d.id)).toList(),
-            isExpanded: _expanded.contains('casos_neuro'),
             p: p, isEs: isEs,
-            onToggle: () => setState(() {
-              _expanded.contains('casos_neuro')
-                  ? _expanded.remove('casos_neuro')
-                  : _expanded.add('casos_neuro');
-            }),
             onSelect: (proto) => showProtocolDetail(context, proto),
           ),
           const SizedBox(height: 8),
@@ -465,13 +391,7 @@ class _ProtocolsScreenState extends State<ProtocolsScreen> {
               'caso_tep_alto_risco',
               'caso_pac_grave',
             }.contains(d.id)).toList(),
-            isExpanded: _expanded.contains('casos_cardio'),
             p: p, isEs: isEs,
-            onToggle: () => setState(() {
-              _expanded.contains('casos_cardio')
-                  ? _expanded.remove('casos_cardio')
-                  : _expanded.add('casos_cardio');
-            }),
             onSelect: (proto) => showProtocolDetail(context, proto),
           ),
           const SizedBox(height: 8),
@@ -494,13 +414,7 @@ class _ProtocolsScreenState extends State<ProtocolsScreen> {
               'caso_anafilaxia_grave',
               'caso_hda_varicosa',
             }.contains(d.id)).toList(),
-            isExpanded: _expanded.contains('casos_infec'),
             p: p, isEs: isEs,
-            onToggle: () => setState(() {
-              _expanded.contains('casos_infec')
-                  ? _expanded.remove('casos_infec')
-                  : _expanded.add('casos_infec');
-            }),
             onSelect: (proto) => showProtocolDetail(context, proto),
           ),
           const SizedBox(height: 8),
@@ -524,13 +438,7 @@ class _ProtocolsScreenState extends State<ProtocolsScreen> {
               'sindrome_ascitico_debut_016',
               'sindrome_ascitico_edematoso_017',
             }.contains(d.id)).toList(),
-            isExpanded: _expanded.contains('casos_gastro'),
             p: p, isEs: isEs,
-            onToggle: () => setState(() {
-              _expanded.contains('casos_gastro')
-                  ? _expanded.remove('casos_gastro')
-                  : _expanded.add('casos_gastro');
-            }),
             onSelect: (proto) => showProtocolDetail(context, proto),
           ),
           const SizedBox(height: 8),
@@ -550,13 +458,7 @@ class _ProtocolsScreenState extends State<ProtocolsScreen> {
               'hepatitis_c_cronica_detallada_2026',
               'gripe_influenza_010',
             }.contains(d.id)).toList(),
-            isExpanded: _expanded.contains('casos_hepato_viral'),
             p: p, isEs: isEs,
-            onToggle: () => setState(() {
-              _expanded.contains('casos_hepato_viral')
-                  ? _expanded.remove('casos_hepato_viral')
-                  : _expanded.add('casos_hepato_viral');
-            }),
             onSelect: (proto) => showProtocolDetail(context, proto),
           ),
           const SizedBox(height: 8),
@@ -577,13 +479,7 @@ class _ProtocolsScreenState extends State<ProtocolsScreen> {
               'faringitis_viral_011',
               'faringitis_bacteriana_012',
             }.contains(d.id)).toList(),
-            isExpanded: _expanded.contains('casos_orl'),
             p: p, isEs: isEs,
-            onToggle: () => setState(() {
-              _expanded.contains('casos_orl')
-                  ? _expanded.remove('casos_orl')
-                  : _expanded.add('casos_orl');
-            }),
             onSelect: (proto) => showProtocolDetail(context, proto),
           ),
           const SizedBox(height: 8),
@@ -606,10 +502,8 @@ class _ProtocolGroupAccordion extends StatelessWidget {
   final Color borderColor;
   final Color iconColor;
   final List<ProtocolModel> protocols;
-  final bool isExpanded;   // mantido por compatibilidade, não usado mais
   final bool isEs;
   final AppProvider p;
-  final VoidCallback onToggle; // mantido por compatibilidade
   final ValueChanged<ProtocolModel> onSelect;
 
   const _ProtocolGroupAccordion({
@@ -622,10 +516,8 @@ class _ProtocolGroupAccordion extends StatelessWidget {
     required this.borderColor,
     required this.iconColor,
     required this.protocols,
-    required this.isExpanded,
     required this.isEs,
     required this.p,
-    required this.onToggle,
     required this.onSelect,
   });
 
