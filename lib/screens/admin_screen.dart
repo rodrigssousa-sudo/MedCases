@@ -922,10 +922,10 @@ class _UserCard extends StatelessWidget {
             ]),
           ],
 
-          // Data de cadastro
+          // Data de cadastro / horário da solicitação
           const SizedBox(height: 6),
           Text(
-            'Reg: ${_formatDate(user.createdAt)}${user.approvedAt != null ? '  •  Aprov: ${_formatDate(user.approvedAt!)}' : ''}',
+            'Solicitado: ${_formatDateTime(user.createdAt)}${user.approvedAt != null ? '  •  Aprov: ${_formatDate(user.approvedAt!)}' : ''}',
             style: TextStyle(fontSize: 10, color: kDark.withValues(alpha: 0.35), fontWeight: FontWeight.w500),
           ),
 
@@ -956,6 +956,9 @@ class _UserCard extends StatelessWidget {
 
   static String _formatDate(DateTime d) =>
       '${d.day.toString().padLeft(2,'0')}/${d.month.toString().padLeft(2,'0')}/${d.year}';
+
+  static String _formatDateTime(DateTime d) =>
+      '${d.day.toString().padLeft(2,'0')}/${d.month.toString().padLeft(2,'0')}/${d.year} ${d.hour.toString().padLeft(2,'0')}:${d.minute.toString().padLeft(2,'0')}';
 }
 
 class _StatusBadge extends StatelessWidget {
@@ -1420,13 +1423,8 @@ class _StatsTab extends StatelessWidget {
   }
 
   String _lastSeenLabel(DateTime? dt) {
-    if (dt == null) return '—';
-    final diff = DateTime.now().difference(dt);
-    if (diff.inMinutes < 2)  return 'Agora';
-    if (diff.inMinutes < 60) return 'Há ${diff.inMinutes}min';
-    if (diff.inHours   < 24) return 'Há ${diff.inHours}h';
-    if (diff.inDays    < 7)  return 'Há ${diff.inDays}d';
-    return '${dt.day.toString().padLeft(2,'0')}/${dt.month.toString().padLeft(2,'0')}/${dt.year}';
+    if (dt == null) return 'Nunca acessou';
+    return 'Último acesso: ${dt.day.toString().padLeft(2,'0')}/${dt.month.toString().padLeft(2,'0')}/${dt.year} ${dt.hour.toString().padLeft(2,'0')}:${dt.minute.toString().padLeft(2,'0')}';
   }
 
   @override
