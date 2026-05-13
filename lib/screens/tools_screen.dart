@@ -2038,7 +2038,7 @@ class _ProtocolsCardState extends State<_ProtocolsCard> {
             blurRadius: 8, offset: const Offset(0, 2)),
         ],
       ),
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisSize: MainAxisSize.min, children: [
 
         // ── Cabeçalho ──────────────────────────────────────────────────
         Container(
