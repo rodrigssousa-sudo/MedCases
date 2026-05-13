@@ -42,14 +42,17 @@ class GeminiService {
     iOptions: const IOSOptions(accessibility: KeychainAccessibility.first_unlock),
   );
 
-  // Client ID Android gerado no Google Cloud Console
+  // Client IDs gerados no Google Cloud Console
   static const _androidClientId =
       '1076800980330-0dhh85qno3uelf1tq55oan6kcgpk319p.apps.googleusercontent.com';
+  static const _webClientId =
+      '1076800980330-mpq75ceph6hipht135qt0g505pdu5u7d.apps.googleusercontent.com';
 
   static final _googleSignIn = GoogleSignIn(
     scopes: _scopes,
-    // serverClientId necessário para obter accessToken com escopos customizados
-    serverClientId: _androidClientId,
+    // Web usa clientId direto; Android usa serverClientId para obter accessToken
+    clientId: kIsWeb ? _webClientId : null,
+    serverClientId: kIsWeb ? null : _androidClientId,
   );
 
   // ── Conectar com Google (2 cliques) ──────────────────────────────────────
