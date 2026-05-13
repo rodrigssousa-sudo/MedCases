@@ -24,7 +24,7 @@ class _ToolsScreenState extends State<ToolsScreen> with SingleTickerProviderStat
   @override
   void initState() {
     super.initState();
-    _tabCtrl = TabController(length: 7, vsync: this);
+    _tabCtrl = TabController(length: 8, vsync: this);
   }
 
   @override
@@ -85,6 +85,7 @@ class _ToolsScreenState extends State<ToolsScreen> with SingleTickerProviderStat
               Tab(text: isEs ? 'INFUSIÓN' : 'INFUSÃO'),
               Tab(text: isEs ? 'REFERENCIA' : 'REFERÊNCIA'),
               Tab(text: isEs ? 'PRESCRIPCIONES' : 'PRESCRIÇÕES'),
+              Tab(text: isEs ? 'PEDIATRÍA' : 'PEDIATRIA'),
             ],
           ),
         ]),
@@ -102,6 +103,7 @@ class _ToolsScreenState extends State<ToolsScreen> with SingleTickerProviderStat
             _InfusionTab(),
             _ReferenceTab(),
             _PrescriptionsTab(),
+            _PediatricsTab(),
           ],
         ),
       ),
@@ -2589,6 +2591,891 @@ class _LabeledInput extends StatelessWidget {
         onChanged: onChanged,
       ),
     ]);
+  }
+}
+
+// ══════════════════════════════════════════════════════════════════
+//  TAB 8 — PEDIATRIA
+// ══════════════════════════════════════════════════════════════════
+class _PediatricsTab extends StatefulWidget {
+  @override
+  State<_PediatricsTab> createState() => _PediatricsTabState();
+}
+
+class _PediatricsTabState extends State<_PediatricsTab> {
+  int _section = 0;
+  static const _sections = ['BIOMETRIA', 'SCHWARTZ', 'PEWS', 'DOSES', 'REFERÊNCIA'];
+
+  // ── Controllers ────────────────────────────────────────────────
+  // Biometria
+  final _ageYCtrl  = TextEditingController(); // anos
+  final _ageMCtrl  = TextEditingController(); // meses
+  final _weightCtrl= TextEditingController(); // peso real
+  final _heightCtrl= TextEditingController(); // altura cm
+
+  // Schwartz
+  final _swCrCtrl  = TextEditingController();
+  final _swHCtrl   = TextEditingController();
+  final _swAgeCtrl = TextEditingController();
+
+  // PEWS
+  int _pewsBehavior  = 0;
+  int _pewsCardio    = 0;
+  int _pewsRespiratory = 0;
+
+  @override
+  void dispose() {
+    _ageYCtrl.dispose(); _ageMCtrl.dispose(); _weightCtrl.dispose(); _heightCtrl.dispose();
+    _swCrCtrl.dispose(); _swHCtrl.dispose(); _swAgeCtrl.dispose();
+    super.dispose();
+  }
+
+  double? _n(TextEditingController c) => double.tryParse(c.text.replaceAll(',', '.'));
+  String _fmt(double? v, {int dec = 1}) {
+    if (v == null || !v.isFinite) return '—';
+    if (v >= 100) return v.toStringAsFixed(0);
+    return v.toStringAsFixed(dec).replaceAll('.', ',');
+  }
+
+  // ── Estimativa de peso ──────────────────────────────────────────
+  // Broselow / APLS: 2–10 anos → (idade+4)×2; >10 → 3×idade+7
+  double? get _estWeight {
+    final y = _n(_ageYCtrl);
+    final m = _n(_ageMCtrl) ?? 0;
+    if (y == null) return null;
+    final totalMonths = y * 12 + m;
+    if (totalMonths < 1) return null;
+    if (totalMonths < 12) return (totalMonths / 2) + 4;          // < 1 ano
+    final years = totalMonths / 12;
+    if (years <= 10) return (years + 4) * 2;                    // APLS
+    return 3 * years + 7;                                        // > 10 anos
+  }
+
+  // Peso ideal pediátrico (50º percentil OMS simplificado)
+  double? get _idealWeight {
+    final y = _n(_ageYCtrl); final m = _n(_ageMCtrl) ?? 0;
+    if (y == null) return null;
+    final months = y * 12 + m;
+    if (months < 1)  return null;
+    if (months <= 6) return 3.5 + months * 0.6;
+    if (months <= 12) return 7.0 + (months - 6) * 0.35;
+    final yrs = months / 12;
+    if (yrs <= 10)  return (yrs + 4) * 2;
+    return 3 * yrs + 7;
+  }
+
+  // IMC pediátrico
+  double? get _bmi {
+    final w = _n(_weightCtrl), h = _n(_heightCtrl);
+    if (w == null || h == null || h <= 0) return null;
+    return w / ((h / 100) * (h / 100));
+  }
+
+  String _bmiLabel(double? v, double? ageY) {
+    if (v == null) return '';
+    final a = ageY ?? 0;
+    if (a < 2) return 'IMC não recomendado < 2 anos';
+    if (v < 14) return '⚠ Desnutrição grave';
+    if (v < 18) return '↓ Abaixo do peso';
+    if (v < 25) return '✓ Eutrófico';
+    if (v < 30) return '↑ Sobrepeso';
+    return '↑↑ Obesidade';
+  }
+
+  // Superfície corporal (Mosteller)
+  double? get _bsa {
+    final w = _n(_weightCtrl) ?? _estWeight;
+    final h = _n(_heightCtrl);
+    if (w == null || h == null || w <= 0 || h <= 0) return null;
+    return _sqrt((w * h) / 3600);
+  }
+
+  // Frequência cardíaca / respiratória normal por faixa
+  String _hrNormal(double? y, double? m) {
+    final months = (y ?? 0) * 12 + (m ?? 0);
+    if (months < 1)   return '120–160 bpm';
+    if (months < 12)  return '100–160 bpm';
+    if (months < 36)  return '90–150 bpm';
+    if (months < 72)  return '80–140 bpm';
+    if (months < 144) return '70–120 bpm';
+    return '60–100 bpm';
+  }
+
+  String _rrNormal(double? y, double? m) {
+    final months = (y ?? 0) * 12 + (m ?? 0);
+    if (months < 1)   return '30–60 irpm';
+    if (months < 12)  return '25–50 irpm';
+    if (months < 36)  return '20–40 irpm';
+    if (months < 72)  return '18–30 irpm';
+    if (months < 144) return '15–25 irpm';
+    return '12–20 irpm';
+  }
+
+  String _pasSystNormal(double? y) {
+    final yrs = y ?? 0;
+    if (yrs < 1)   return '60–90 mmHg';
+    if (yrs < 3)   return '75–100 mmHg';
+    if (yrs < 7)   return '80–110 mmHg';
+    if (yrs < 12)  return '85–120 mmHg';
+    return '90–130 mmHg';
+  }
+
+  // PAS mín aceitável: 70 + (2 × idade anos)
+  String _minPas(double? y) {
+    if (y == null) return '—';
+    return '${(70 + 2 * y).round()} mmHg';
+  }
+
+  // ── Schwartz (TFG pediátrica) ───────────────────────────────────
+  // TFG = k × altura(cm) / Cr(mg/dL)
+  // k: neonatos 0.45 / lactentes 0.45 / crianças 0.55 / meninas adol. 0.55 / meninos adol. 0.70
+  double? get _schwartz {
+    final cr = _n(_swCrCtrl), h = _n(_swHCtrl), age = _n(_swAgeCtrl);
+    if (cr == null || h == null || cr <= 0 || h <= 0) return null;
+    double k = 0.55;
+    if (age != null) {
+      if (age < 0.5) k = 0.45;
+      else if (age < 2) k = 0.45;
+      else if (age >= 13) k = 0.70; // meninos adolescentes (default)
+    }
+    return k * h / cr;
+  }
+
+  String _schwartzLabel(double? v) {
+    if (v == null) return '';
+    if (v >= 90) return '✓ Normal (≥90)';
+    if (v >= 60) return 'Leve (60–89)';
+    if (v >= 30) return '⚠ Moderada (30–59)';
+    if (v >= 15) return 'GRAVE (15–29)';
+    return 'FALÊNCIA (<15)';
+  }
+
+  // ── PEWS ────────────────────────────────────────────────────────
+  int get _pewsTotal => _pewsBehavior + _pewsCardio + _pewsRespiratory;
+
+  String _pewsRisk(int score) {
+    if (score <= 1) return '✓ Baixo risco';
+    if (score <= 3) return '⚠ Risco intermediário — Notificar equipe';
+    if (score <= 5) return 'ALTO RISCO — Avaliar urgente';
+    return 'CRÍTICO — Acionar UTI pediátrica';
+  }
+
+  Color _pewsColor(int score) {
+    if (score <= 1) return const Color(0xFF065F46);
+    if (score <= 3) return const Color(0xFFB45309);
+    if (score <= 5) return const Color(0xFFCC2222);
+    return const Color(0xFF7F1D1D);
+  }
+
+  Color _pewsBg(int score) {
+    if (score <= 1) return const Color(0xFFECFDF5);
+    if (score <= 3) return const Color(0xFFFFFBEB);
+    if (score <= 5) return const Color(0xFFFFF0F0);
+    return const Color(0xFFFEF2F2);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final p    = context.watch<AppProvider>();
+    final isEs = p.lang == 'es';
+    final c    = AppColors.of(context);
+
+    return Column(children: [
+      // ── Sub-menu ────────────────────────────────────────────────
+      Container(
+        color: const Color(0xFF0A1A10),
+        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+        child: SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            children: List.generate(_sections.length, (i) {
+              final active = _section == i;
+              return GestureDetector(
+                onTap: () => setState(() => _section = i),
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 160),
+                  margin: const EdgeInsets.only(right: 8),
+                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                    color: active ? kGoldLight.withValues(alpha: 0.15) : Colors.transparent,
+                    border: Border.all(
+                      color: active ? kGoldLight.withValues(alpha: 0.5) : Colors.white24,
+                    ),
+                  ),
+                  child: Text(
+                    _sections[i],
+                    style: TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w800,
+                      color: active ? kGoldLight : Colors.white60,
+                      letterSpacing: 0.5,
+                    ),
+                  ),
+                ),
+              );
+            }),
+          ),
+        ),
+      ),
+
+      // ── Content ─────────────────────────────────────────────────
+      Expanded(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.fromLTRB(16, 16, 16, 100),
+          child: _buildSection(isEs, c),
+        ),
+      ),
+    ]);
+  }
+
+  Widget _buildSection(bool isEs, AppColors c) {
+    switch (_section) {
+      case 0: return _buildBiometria(isEs, c);
+      case 1: return _buildSchwartz(isEs, c);
+      case 2: return _buildPews(isEs, c);
+      case 3: return _buildDoses(isEs, c);
+      case 4: return _buildReferencia(isEs, c);
+      default: return const SizedBox.shrink();
+    }
+  }
+
+  // ──────────────────────────────────────────────────────────────
+  // SEÇÃO 1 — BIOMETRIA PEDIÁTRICA
+  // ──────────────────────────────────────────────────────────────
+  Widget _buildBiometria(bool isEs, AppColors c) {
+    final ageY = _n(_ageYCtrl);
+    final ageM = _n(_ageMCtrl);
+
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      _SectionCard(
+        title: isEs ? 'Edad del Paciente' : 'Idade do Paciente',
+        icon: Icons.child_care_rounded,
+        child: Row(children: [
+          Expanded(child: _LabeledInput(
+            label: isEs ? 'Anos' : 'Anos',
+            ctrl: _ageYCtrl,
+            onChanged: (_) => setState(() {}),
+            hint: '5',
+          )),
+          const SizedBox(width: 10),
+          Expanded(child: _LabeledInput(
+            label: isEs ? 'Meses (adicional)' : 'Meses (adicional)',
+            ctrl: _ageMCtrl,
+            onChanged: (_) => setState(() {}),
+            hint: '0',
+          )),
+        ]),
+      ),
+      const SizedBox(height: 12),
+
+      _SectionCard(
+        title: isEs ? 'Antropometría' : 'Antropometria',
+        icon: Icons.straighten_rounded,
+        child: Column(children: [
+          Row(children: [
+            Expanded(child: _LabeledInput(
+              label: isEs ? 'Peso real (kg)' : 'Peso real (kg)',
+              ctrl: _weightCtrl,
+              onChanged: (_) => setState(() {}),
+              hint: '20',
+            )),
+            const SizedBox(width: 10),
+            Expanded(child: _LabeledInput(
+              label: isEs ? 'Altura (cm)' : 'Altura (cm)',
+              ctrl: _heightCtrl,
+              onChanged: (_) => setState(() {}),
+              hint: '110',
+            )),
+          ]),
+          const SizedBox(height: 14),
+          Row(children: [
+            Expanded(child: _ResultTile(
+              label: isEs ? 'Peso Estimado (APLS)' : 'Peso Estimado (APLS)',
+              value: _fmt(_estWeight),
+              unit: 'kg',
+              note: _estWeight != null ? 'Fórmula: (idade+4)×2 / 3×idade+7' : null,
+            )),
+            const SizedBox(width: 10),
+            Expanded(child: _ResultTile(
+              label: isEs ? 'Peso Ideal (P50 OMS)' : 'Peso Ideal (P50 OMS)',
+              value: _fmt(_idealWeight),
+              unit: 'kg',
+            )),
+          ]),
+          const SizedBox(height: 10),
+          Row(children: [
+            Expanded(child: _ResultTile(
+              label: 'IMC',
+              value: _fmt(_bmi),
+              unit: 'kg/m²',
+              note: _bmiLabel(_bmi, ageY),
+            )),
+            const SizedBox(width: 10),
+            Expanded(child: _ResultTile(
+              label: isEs ? 'Sup. Corporal (Mosteller)' : 'Sup. Corporal (Mosteller)',
+              value: _fmt(_bsa, dec: 2),
+              unit: 'm²',
+            )),
+          ]),
+        ]),
+      ),
+      const SizedBox(height: 12),
+
+      _SectionCard(
+        title: isEs ? 'Parámetros Vitales Normales' : 'Parâmetros Vitais Normais',
+        icon: Icons.monitor_heart_rounded,
+        child: Column(children: [
+          _PedVitalRow(
+            label: 'FC normal',
+            value: _hrNormal(ageY, ageM),
+            icon: Icons.favorite_rounded,
+            color: const Color(0xFFCC2222),
+          ),
+          const SizedBox(height: 8),
+          _PedVitalRow(
+            label: 'FR normal',
+            value: _rrNormal(ageY, ageM),
+            icon: Icons.air_rounded,
+            color: const Color(0xFF1D4ED8),
+          ),
+          const SizedBox(height: 8),
+          _PedVitalRow(
+            label: 'PAS normal',
+            value: _pasSystNormal(ageY),
+            icon: Icons.speed_rounded,
+            color: const Color(0xFF065F46),
+          ),
+          const SizedBox(height: 8),
+          _PedVitalRow(
+            label: isEs ? 'PAS mín aceptable' : 'PAS mín aceitável',
+            value: _minPas(ageY),
+            icon: Icons.warning_rounded,
+            color: const Color(0xFFD97706),
+            note: isEs ? '70 + (2 × edad años)' : '70 + (2 × idade anos)',
+          ),
+          const SizedBox(height: 10),
+          _InfoNote(text: isEs
+              ? 'Valores para faixa etária calculada. Informe a idade para resultados específicos.'
+              : 'Valores para a faixa etária calculada. Informe a idade para resultados específicos.'),
+        ]),
+      ),
+    ]);
+  }
+
+  // ──────────────────────────────────────────────────────────────
+  // SEÇÃO 2 — SCHWARTZ (TFG pediátrica)
+  // ──────────────────────────────────────────────────────────────
+  Widget _buildSchwartz(bool isEs, AppColors c) {
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      _SectionCard(
+        title: isEs ? 'Schwartz — TFG Pediátrica' : 'Schwartz — TFG Pediátrica',
+        icon: Icons.water_drop_rounded,
+        child: Column(children: [
+          Row(children: [
+            Expanded(child: _LabeledInput(
+              label: isEs ? 'Creatinina (mg/dL)' : 'Creatinina (mg/dL)',
+              ctrl: _swCrCtrl,
+              onChanged: (_) => setState(() {}),
+              hint: '0,6',
+            )),
+            const SizedBox(width: 10),
+            Expanded(child: _LabeledInput(
+              label: isEs ? 'Altura (cm)' : 'Altura (cm)',
+              ctrl: _swHCtrl,
+              onChanged: (_) => setState(() {}),
+              hint: '110',
+            )),
+          ]),
+          const SizedBox(height: 10),
+          _LabeledInput(
+            label: isEs ? 'Edad (años)' : 'Idade (anos)',
+            ctrl: _swAgeCtrl,
+            onChanged: (_) => setState(() {}),
+            hint: '8',
+          ),
+          const SizedBox(height: 14),
+          _ResultTile(
+            label: isEs ? 'TFG — Schwartz' : 'TFG — Schwartz',
+            value: _fmt(_schwartz),
+            unit: 'mL/min/1,73m²',
+            note: _schwartzLabel(_schwartz),
+            full: true,
+          ),
+          const SizedBox(height: 10),
+          _InfoNote(text: isEs
+              ? 'Fórmula: k × altura(cm) / Cr\nk = 0,45 (<2 anos) | 0,55 (2–12 anos / meninas adol.) | 0,70 (meninos >13 anos)'
+              : 'Fórmula: k × altura(cm) / Cr\nk = 0,45 (<2 anos) | 0,55 (2–12 anos / meninas adol.) | 0,70 (meninos >13 anos)'),
+        ]),
+      ),
+      const SizedBox(height: 12),
+      _SectionCard(
+        title: isEs ? 'Estadios ERC Pediátrica' : 'Estadios DRC Pediátrica',
+        icon: Icons.table_rows_rounded,
+        child: Column(children: [
+          _RenalGuideRow(label: '≥ 90',  status: 'G1 — Normal ou aumentada', ok: true),
+          _RenalGuideRow(label: '60–89', status: 'G2 — Leve. Monitorar'),
+          _RenalGuideRow(label: '30–59', status: 'G3 — Moderada. Ajuste frequente', warn: true),
+          _RenalGuideRow(label: '15–29', status: 'G4 — Grave. Ajuste obrigatório', warn: true),
+          _RenalGuideRow(label: '<15',   status: 'G5 — Falência renal', danger: true),
+        ]),
+      ),
+    ]);
+  }
+
+  // ──────────────────────────────────────────────────────────────
+  // SEÇÃO 3 — PEWS (Pediatric Early Warning Score)
+  // ──────────────────────────────────────────────────────────────
+  Widget _buildPews(bool isEs, AppColors c) {
+    final total = _pewsTotal;
+    final riskColor = _pewsColor(total);
+    final riskBg    = _pewsBg(total);
+
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      // Score total
+      Container(
+        margin: const EdgeInsets.only(bottom: 14),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(16),
+          color: riskBg,
+          border: Border.all(color: riskColor.withValues(alpha: 0.4)),
+        ),
+        child: Row(children: [
+          Container(
+            width: 52,
+            height: 52,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: riskColor.withValues(alpha: 0.15),
+              border: Border.all(color: riskColor.withValues(alpha: 0.4), width: 2),
+            ),
+            child: Center(child: Text('$total',
+              style: TextStyle(fontSize: 22, fontWeight: FontWeight.w900, color: riskColor))),
+          ),
+          const SizedBox(width: 14),
+          Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Text('PEWS', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w900,
+              letterSpacing: 1.4, color: riskColor.withValues(alpha: 0.7))),
+            const SizedBox(height: 3),
+            Text(_pewsRisk(total), style: TextStyle(
+              fontSize: 13, fontWeight: FontWeight.w800, color: riskColor)),
+          ])),
+        ]),
+      ),
+
+      _SectionCard(
+        title: isEs ? 'Comportamiento' : 'Comportamento',
+        icon: Icons.psychology_rounded,
+        child: _PewsSelector(
+          options: isEs
+              ? ['Jugando / Apropiado (0)', 'Dormido (1)', 'Irritable (2)', 'Confuso / Reducida resp. al dolor (3)']
+              : ['Brincando / Adequado (0)', 'Dormindo (1)', 'Irritável (2)', 'Confuso / Reduz. resp. a dor (3)'],
+          value: _pewsBehavior,
+          onChanged: (v) => setState(() => _pewsBehavior = v),
+        ),
+      ),
+      const SizedBox(height: 10),
+
+      _SectionCard(
+        title: isEs ? 'Cardiovascular' : 'Cardiovascular',
+        icon: Icons.favorite_rounded,
+        child: _PewsSelector(
+          options: isEs
+              ? ['Normal para la edad (0)', 'FC ±20 bpm / TLL 3s (1)', 'FC ±30 bpm / TLL 4s / hipotensión (2)', 'FC ±40 bpm / TLL ≥5s / bradicardia (3)']
+              : ['Normal para a idade (0)', 'FC ±20 bpm / TLL 3s (1)', 'FC ±30 bpm / TLL 4s / hipotensão (2)', 'FC ±40 bpm / TLL ≥5s / bradicardia (3)'],
+          value: _pewsCardio,
+          onChanged: (v) => setState(() => _pewsCardio = v),
+        ),
+      ),
+      const SizedBox(height: 10),
+
+      _SectionCard(
+        title: isEs ? 'Respiratorio' : 'Respiratório',
+        icon: Icons.air_rounded,
+        child: _PewsSelector(
+          options: isEs
+              ? ['Normal para la edad (0)', 'FR ±10 / FiO₂ ≥30% (1)', 'FR ±20 / retracción / FiO₂ ≥40% (2)', 'FR ±30 / tiraje grave / FiO₂ ≥50% (3)']
+              : ['Normal para a idade (0)', 'FR ±10 / FiO₂ ≥30% (1)', 'FR ±20 / retração / FiO₂ ≥40% (2)', 'FR ±30 / tiragem grave / FiO₂ ≥50% (3)'],
+          value: _pewsRespiratory,
+          onChanged: (v) => setState(() => _pewsRespiratory = v),
+        ),
+      ),
+      const SizedBox(height: 12),
+
+      _InfoNote(text: isEs
+          ? '≤1 → Baixo risco  |  2–3 → Notificar médico  |  4–5 → Avaliação urgente  |  ≥6 → Acionar UTI'
+          : '≤1 → Baixo risco  |  2–3 → Notificar médico  |  4–5 → Avaliação urgente  |  ≥6 → Acionar UTI'),
+    ]);
+  }
+
+  // ──────────────────────────────────────────────────────────────
+  // SEÇÃO 4 — DOSES PEDIÁTRICAS
+  // ──────────────────────────────────────────────────────────────
+  Widget _buildDoses(bool isEs, AppColors c) {
+    final w = _n(_weightCtrl) ?? _estWeight;
+    final wLabel = w != null ? ' (${_fmt(w)} kg)' : ' — informe o peso na aba Biometria';
+
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      Container(
+        padding: const EdgeInsets.all(12),
+        margin: const EdgeInsets.only(bottom: 14),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(14),
+          color: const Color(0xFF0F1C14).withValues(alpha: 0.06),
+          border: Border.all(color: const Color(0xFF065F46).withValues(alpha: 0.3)),
+        ),
+        child: Row(children: [
+          const Icon(Icons.scale_rounded, size: 16, color: Color(0xFF065F46)),
+          const SizedBox(width: 8),
+          Expanded(child: Text(
+            'Peso utilizado$wLabel',
+            style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: Color(0xFF065F46)),
+          )),
+        ]),
+      ),
+
+      _SectionCard(
+        title: isEs ? 'Reanimación — PCR Pediátrica' : 'Reanimação — PCR Pediátrica',
+        icon: Icons.emergency_rounded,
+        child: Column(children: [
+          _PedDoseRow(label: 'Adrenalina IV/IO',      dose: '0,01 mg/kg',  weight: w, mgPerKg: 0.01,   unit: 'mg',  maxDose: '1 mg',    color: const Color(0xFFCC2222)),
+          _PedDoseRow(label: 'Amiodarona IV/IO',      dose: '5 mg/kg',     weight: w, mgPerKg: 5.0,    unit: 'mg',  maxDose: '300 mg',  color: const Color(0xFFD97706)),
+          _PedDoseRow(label: 'Adenosina IV (TSV)',     dose: '0,1 mg/kg',   weight: w, mgPerKg: 0.1,    unit: 'mg',  maxDose: '6 mg',    color: const Color(0xFFD97706)),
+          _PedDoseRow(label: 'Atropina IV (bradicardia)', dose: '0,02 mg/kg', weight: w, mgPerKg: 0.02, unit: 'mg',  maxDose: '0,5 mg',  color: const Color(0xFF1D4ED8)),
+          _PedDoseRow(label: 'Glicose 10% IV (hipoglicemia)', dose: '2–5 mL/kg', weight: w, mgPerKg: 3.0, unit: 'mL', maxDose: '250 mL', color: const Color(0xFF065F46)),
+        ]),
+      ),
+      const SizedBox(height: 12),
+
+      _SectionCard(
+        title: isEs ? 'Sedación y Analgesia' : 'Sedação e Analgesia',
+        icon: Icons.medication_rounded,
+        child: Column(children: [
+          _PedDoseRow(label: 'Midazolam IV',      dose: '0,1 mg/kg',  weight: w, mgPerKg: 0.1,  unit: 'mg', maxDose: '5 mg',  color: const Color(0xFF7C3AED)),
+          _PedDoseRow(label: 'Cetamina IV',       dose: '1–2 mg/kg',  weight: w, mgPerKg: 1.5,  unit: 'mg', maxDose: '200 mg', color: const Color(0xFF7C3AED)),
+          _PedDoseRow(label: 'Morfina IV',        dose: '0,1 mg/kg',  weight: w, mgPerKg: 0.1,  unit: 'mg', maxDose: '5 mg',  color: const Color(0xFF7C3AED)),
+          _PedDoseRow(label: 'Fentanil IV',       dose: '1–2 mcg/kg', weight: w, mgPerKg: 0.0015, unit: 'mg', maxDose: '100 mcg', color: const Color(0xFF7C3AED)),
+          _PedDoseRow(label: 'Dipirona IV',       dose: '15 mg/kg',   weight: w, mgPerKg: 15.0, unit: 'mg', maxDose: '1000 mg', color: const Color(0xFF065F46)),
+          _PedDoseRow(label: 'Paracetamol VO',    dose: '10–15 mg/kg',weight: w, mgPerKg: 12.5, unit: 'mg', maxDose: '1000 mg', color: const Color(0xFF065F46)),
+        ]),
+      ),
+      const SizedBox(height: 12),
+
+      _SectionCard(
+        title: isEs ? 'Crisis Convulsiva' : 'Crise Convulsiva',
+        icon: Icons.bolt_rounded,
+        child: Column(children: [
+          _PedDoseRow(label: 'Diazepam IV (1ª linha)',       dose: '0,2–0,5 mg/kg', weight: w, mgPerKg: 0.3,  unit: 'mg', maxDose: '10 mg',  color: const Color(0xFF1D4ED8)),
+          _PedDoseRow(label: 'Midazolam IM/IO (1ª linha)',   dose: '0,2 mg/kg',     weight: w, mgPerKg: 0.2,  unit: 'mg', maxDose: '10 mg',  color: const Color(0xFF1D4ED8)),
+          _PedDoseRow(label: 'Fenitoína IV (2ª linha)',      dose: '20 mg/kg',      weight: w, mgPerKg: 20.0, unit: 'mg', maxDose: '1000 mg', color: const Color(0xFFD97706)),
+          _PedDoseRow(label: 'Fenobarbital IV (2ª linha)',   dose: '20 mg/kg',      weight: w, mgPerKg: 20.0, unit: 'mg', maxDose: '1000 mg', color: const Color(0xFFD97706)),
+          _PedDoseRow(label: 'Levetiracetam IV (2ª linha)',  dose: '60 mg/kg',      weight: w, mgPerKg: 60.0, unit: 'mg', maxDose: '3000 mg', color: const Color(0xFFD97706)),
+        ]),
+      ),
+      const SizedBox(height: 12),
+
+      _SectionCard(
+        title: isEs ? 'Vasopresores y Líquidos' : 'Vasopressores e Fluidos',
+        icon: Icons.water_rounded,
+        child: Column(children: [
+          _PedDoseRow(label: 'SF 0,9% bolus (choque)',     dose: '10–20 mL/kg', weight: w, mgPerKg: 15.0, unit: 'mL', maxDose: '500 mL', color: const Color(0xFF065F46)),
+          _PedDoseRow(label: 'Noradrenalina (dose início)', dose: '0,1 mcg/kg/min', weight: w, mgPerKg: null, unit: 'mcg/kg/min', maxDose: null, color: const Color(0xFFCC2222)),
+          _PedDoseRow(label: 'Dopamina (dose renal)',       dose: '2–5 mcg/kg/min', weight: w, mgPerKg: null, unit: 'mcg/kg/min', maxDose: null, color: const Color(0xFFD97706)),
+          _PedDoseRow(label: 'Dobutamina (inotrópico)',     dose: '5–20 mcg/kg/min',weight: w, mgPerKg: null, unit: 'mcg/kg/min', maxDose: null, color: const Color(0xFFD97706)),
+        ]),
+      ),
+      const SizedBox(height: 12),
+
+      _InfoNote(text: isEs
+          ? '⚠ Doses calculadas para referência. Confirmar com farmácia pediátrica. Limite pela dose máxima informada.'
+          : '⚠ Doses calculadas para referência. Confirmar com farmácia pediátrica. Limite pela dose máxima informada.'),
+    ]);
+  }
+
+  // ──────────────────────────────────────────────────────────────
+  // SEÇÃO 5 — VALORES DE REFERÊNCIA PEDIÁTRICOS
+  // ──────────────────────────────────────────────────────────────
+  Widget _buildReferencia(bool isEs, AppColors c) {
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      _SectionCard(
+        title: isEs ? 'Hemograma Pediátrico' : 'Hemograma Pediátrico',
+        icon: Icons.bloodtype_rounded,
+        child: Column(children: [
+          _PedRefHeader(),
+          _PedRefRow(param: 'Hb (g/dL)',    neo: '14–22', lac: '10–15', cri: '11–14', ado: '12–16'),
+          _PedRefRow(param: 'Ht (%)',        neo: '42–65', lac: '31–41', cri: '33–42', ado: '36–50'),
+          _PedRefRow(param: 'Leuc (×10³)',   neo: '9–30',  lac: '6–17',  cri: '5–14',  ado: '4–11'),
+          _PedRefRow(param: 'Neut (%)',      neo: '40–80', lac: '20–50', cri: '30–60', ado: '40–70'),
+          _PedRefRow(param: 'Linf (%)',      neo: '20–40', lac: '40–70', cri: '30–60', ado: '20–45'),
+          _PedRefRow(param: 'Plaq (×10³)',   neo: '150–400', lac: '150–400', cri: '150–400', ado: '150–400'),
+        ]),
+      ),
+      const SizedBox(height: 12),
+
+      _SectionCard(
+        title: isEs ? 'Bioquímica Pediátrica' : 'Bioquímica Pediátrica',
+        icon: Icons.science_rounded,
+        child: Column(children: [
+          _PedRefHeader(),
+          _PedRefRow(param: 'Glicose (mg/dL)', neo: '45–100', lac: '60–100', cri: '70–110', ado: '70–110'),
+          _PedRefRow(param: 'Na (mEq/L)',       neo: '133–146', lac: '133–146', cri: '135–145', ado: '135–145'),
+          _PedRefRow(param: 'K (mEq/L)',        neo: '3,5–5,5', lac: '3,5–5,0', cri: '3,5–5,0', ado: '3,5–5,0'),
+          _PedRefRow(param: 'Ca total (mg/dL)', neo: '7–11',  lac: '9–11',  cri: '9–11',  ado: '8,5–10,5'),
+          _PedRefRow(param: 'Creat (mg/dL)',    neo: '0,3–1,0', lac: '0,2–0,5', cri: '0,3–0,7', ado: '0,5–1,2'),
+          _PedRefRow(param: 'Ureia (mg/dL)',    neo: '5–25',  lac: '5–20',  cri: '8–25',  ado: '10–40'),
+          _PedRefRow(param: 'BT (mg/dL)',       neo: '1–12',  lac: '0–1,0', cri: '0–1,0', ado: '0–1,2'),
+          _PedRefRow(param: 'TGO (U/L)',        neo: '10–80', lac: '20–60', cri: '15–45', ado: '10–40'),
+          _PedRefRow(param: 'TGP (U/L)',        neo: '5–45',  lac: '10–50', cri: '10–45', ado: '7–56'),
+        ]),
+      ),
+      const SizedBox(height: 12),
+
+      _SectionCard(
+        title: isEs ? 'Gasometría Pediátrica' : 'Gasometria Pediátrica',
+        icon: Icons.air_rounded,
+        child: Column(children: [
+          _PedRefRow2(param: 'pH',           value: '7,35 – 7,45'),
+          _PedRefRow2(param: 'PaCO₂ (mmHg)', value: '35 – 45'),
+          _PedRefRow2(param: 'PaO₂ (mmHg)',  value: '80 – 100'),
+          _PedRefRow2(param: 'HCO₃ (mEq/L)', value: '22 – 26'),
+          _PedRefRow2(param: 'BE',            value: '−3 a +3'),
+          _PedRefRow2(param: 'SatO₂',        value: '≥ 95%'),
+          const SizedBox(height: 6),
+          _InfoNote(text: isEs
+              ? 'Valores gasométricos similares aos adultos. Neonatos: PaCO₂ pode ser 35–45, HCO₃ 20–26.'
+              : 'Valores gasométricos similares aos adultos. Neonatos: PaCO₂ pode ser 35–45, HCO₃ 20–26.'),
+        ]),
+      ),
+      const SizedBox(height: 12),
+
+      _SectionCard(
+        title: isEs ? 'Tubos y Accesos' : 'Tubos e Acessos',
+        icon: Icons.medical_services_rounded,
+        child: Column(children: [
+          _PedRefRow2(param: 'TOT (Cuffless < 8a)', value: '(idade/4) + 4'),
+          _PedRefRow2(param: 'TOT (Cuffed)',         value: '(idade/4) + 3,5'),
+          _PedRefRow2(param: 'Profundidade TOT',     value: 'N° tubo × 3 cm'),
+          _PedRefRow2(param: 'Sonda nasogástrica',   value: 'Peso (kg) + 12 cm'),
+          _PedRefRow2(param: 'Cateter IO',           value: 'Tíbia proximal / distal'),
+          _PedRefRow2(param: 'Desfibrilação',        value: '2 J/kg → 4 J/kg (máx 200 J)'),
+          _PedRefRow2(param: 'Cardioversão sinc.',   value: '0,5–1 J/kg → 2 J/kg'),
+        ]),
+      ),
+    ]);
+  }
+}
+
+// ── Widgets auxiliares de Pediatria ───────────────────────────────────────────
+
+class _PedVitalRow extends StatelessWidget {
+  final String label, value;
+  final IconData icon;
+  final Color color;
+  final String? note;
+  const _PedVitalRow({required this.label, required this.value, required this.icon, required this.color, this.note});
+
+  @override
+  Widget build(BuildContext context) {
+    final c = AppColors.of(context);
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12),
+        color: color.withValues(alpha: 0.07),
+        border: Border.all(color: color.withValues(alpha: 0.25)),
+      ),
+      child: Row(children: [
+        Icon(icon, size: 15, color: color),
+        const SizedBox(width: 10),
+        Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Text(label, style: TextStyle(fontSize: 10, fontWeight: FontWeight.w900, letterSpacing: 0.8, color: c.textHint)),
+          const SizedBox(height: 2),
+          Text(value, style: TextStyle(fontSize: 14, fontWeight: FontWeight.w800, color: color)),
+          if (note != null) ...[
+            const SizedBox(height: 2),
+            Text(note!, style: TextStyle(fontSize: 10, color: c.textHint)),
+          ],
+        ])),
+      ]),
+    );
+  }
+}
+
+class _PedDoseRow extends StatelessWidget {
+  final String label, dose;
+  final double? weight, mgPerKg;
+  final String unit;
+  final String? maxDose;
+  final Color color;
+  const _PedDoseRow({
+    required this.label, required this.dose, required this.weight,
+    required this.mgPerKg, required this.unit, required this.maxDose,
+    required this.color,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final c = AppColors.of(context);
+
+    // Calcula dose real se possível
+    String calcDose = '—';
+    if (weight != null && mgPerKg != null) {
+      double raw = weight! * mgPerKg!;
+      // Aplica dose máxima se especificada
+      if (maxDose != null) {
+        final maxNum = double.tryParse(
+          maxDose!.replaceAll(RegExp(r'[^\d,\.]'), '').replaceAll(',', '.'));
+        if (maxNum != null && raw > maxNum) raw = maxNum;
+      }
+      if (raw >= 100) {
+        calcDose = '${raw.toStringAsFixed(0)} $unit';
+      } else {
+        calcDose = '${raw.toStringAsFixed(1).replaceAll('.', ',')} $unit';
+      }
+    }
+
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12),
+          color: color.withValues(alpha: 0.06),
+          border: Border.all(color: color.withValues(alpha: 0.2)),
+        ),
+        child: Row(children: [
+          Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Text(label, style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: c.textPrimary)),
+            const SizedBox(height: 2),
+            Text(dose, style: TextStyle(fontSize: 10, color: c.textHint)),
+            if (maxDose != null)
+              Text('máx: $maxDose', style: TextStyle(fontSize: 9, color: c.textHint)),
+          ])),
+          if (weight != null && mgPerKg != null) ...[
+            const SizedBox(width: 10),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                color: color.withValues(alpha: 0.13),
+              ),
+              child: Text(calcDose, style: TextStyle(
+                fontSize: 13, fontWeight: FontWeight.w900, color: color)),
+            ),
+          ],
+        ]),
+      ),
+    );
+  }
+}
+
+class _PedRefHeader extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final c = AppColors.of(context);
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 6),
+      child: Row(children: [
+        const SizedBox(width: 90),
+        Expanded(child: Text('Neonato', style: TextStyle(fontSize: 9, fontWeight: FontWeight.w900, color: c.textHint, letterSpacing: 0.5), textAlign: TextAlign.center)),
+        Expanded(child: Text('Lactente', style: TextStyle(fontSize: 9, fontWeight: FontWeight.w900, color: c.textHint, letterSpacing: 0.5), textAlign: TextAlign.center)),
+        Expanded(child: Text('Criança', style: TextStyle(fontSize: 9, fontWeight: FontWeight.w900, color: c.textHint, letterSpacing: 0.5), textAlign: TextAlign.center)),
+        Expanded(child: Text('Adolesc.', style: TextStyle(fontSize: 9, fontWeight: FontWeight.w900, color: c.textHint, letterSpacing: 0.5), textAlign: TextAlign.center)),
+      ]),
+    );
+  }
+}
+
+class _PedRefRow extends StatelessWidget {
+  final String param, neo, lac, cri, ado;
+  const _PedRefRow({required this.param, required this.neo, required this.lac, required this.cri, required this.ado});
+
+  @override
+  Widget build(BuildContext context) {
+    final c = AppColors.of(context);
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 5),
+      child: Row(children: [
+        SizedBox(width: 90, child: Text(param, style: TextStyle(fontSize: 10, fontWeight: FontWeight.w800, color: c.textPrimary))),
+        Expanded(child: Text(neo, style: TextStyle(fontSize: 9, color: c.textSecondary), textAlign: TextAlign.center)),
+        Expanded(child: Text(lac, style: TextStyle(fontSize: 9, color: c.textSecondary), textAlign: TextAlign.center)),
+        Expanded(child: Text(cri, style: TextStyle(fontSize: 9, color: c.textSecondary), textAlign: TextAlign.center)),
+        Expanded(child: Text(ado, style: TextStyle(fontSize: 9, color: c.textSecondary), textAlign: TextAlign.center)),
+      ]),
+    );
+  }
+}
+
+class _PedRefRow2 extends StatelessWidget {
+  final String param, value;
+  const _PedRefRow2({required this.param, required this.value});
+
+  @override
+  Widget build(BuildContext context) {
+    final c = AppColors.of(context);
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 7),
+      child: Row(children: [
+        Expanded(child: Text(param, style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: c.textPrimary))),
+        Text(value, style: TextStyle(fontSize: 12, fontWeight: FontWeight.w800, color: const Color(0xFF065F46))),
+      ]),
+    );
+  }
+}
+
+class _PewsSelector extends StatelessWidget {
+  final List<String> options;
+  final int value;
+  final ValueChanged<int> onChanged;
+  const _PewsSelector({required this.options, required this.value, required this.onChanged});
+
+  @override
+  Widget build(BuildContext context) {
+    final c = AppColors.of(context);
+    return Column(children: List.generate(options.length, (i) {
+      final sel = value == i;
+      final dotColor = i == 0
+          ? const Color(0xFF065F46)
+          : i == 1
+              ? const Color(0xFFB45309)
+              : i == 2
+                  ? const Color(0xFFCC2222)
+                  : const Color(0xFF7F1D1D);
+      return GestureDetector(
+        onTap: () => onChanged(i),
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 150),
+          margin: const EdgeInsets.only(bottom: 6),
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+            color: sel ? dotColor.withValues(alpha: 0.1) : c.surface,
+            border: Border.all(
+              color: sel ? dotColor.withValues(alpha: 0.5) : c.border,
+              width: sel ? 1.5 : 1.0,
+            ),
+          ),
+          child: Row(children: [
+            Container(
+              width: 18, height: 18,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: sel ? dotColor : Colors.transparent,
+                border: Border.all(color: sel ? dotColor : c.border, width: 1.5),
+              ),
+              child: sel ? const Icon(Icons.check, size: 10, color: Colors.white) : null,
+            ),
+            const SizedBox(width: 10),
+            Expanded(child: Text(options[i], style: TextStyle(
+              fontSize: 12,
+              fontWeight: sel ? FontWeight.w800 : FontWeight.w500,
+              color: sel ? dotColor : c.textSecondary,
+            ))),
+          ]),
+        ),
+      );
+    }));
   }
 }
 
