@@ -35,10 +35,6 @@ class HomeScreen extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(18, 20, 18, 100),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
 
-        // ── Saudação ──────────────────────────────────────────────────────
-        _Greeting(p: p, dark: dark, isEs: isEs),
-        const SizedBox(height: 24),
-
         // ── Cards principais ──────────────────────────────────────────────
         _HomeCard(
           icon: Icons.person_rounded,
