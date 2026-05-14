@@ -5,7 +5,8 @@ import 'package:url_launcher/url_launcher.dart';
 import '../providers/app_provider.dart';
 import '../services/firestore_service.dart';
 import '../models/guide_model.dart';
-import '../widgets/common_widgets.dart';
+import '../models/protocol_model.dart';
+import 'protocols_screen.dart' show showProtocolDetail;
 
 const _kDark  = Color(0xFF07110d);
 const _kGreen = Color(0xFF075f45);
@@ -13,7 +14,7 @@ const _kGold  = Color(0xFFC5A365);
 const _kGoldL = Color(0xFFFFE8A6);
 
 // ─────────────────────────────────────────────────────────────────────────────
-// LIBRARY SCREEN — Biblioteca Clínica (PDFs / Guias)
+// LIBRARY SCREEN — Biblioteca Clínica (PDFs / Guias + Casos Clínicos)
 // ─────────────────────────────────────────────────────────────────────────────
 class LibraryScreen extends StatefulWidget {
   const LibraryScreen({super.key});
@@ -22,7 +23,9 @@ class LibraryScreen extends StatefulWidget {
   State<LibraryScreen> createState() => _LibraryScreenState();
 }
 
-class _LibraryScreenState extends State<LibraryScreen> {
+class _LibraryScreenState extends State<LibraryScreen>
+    with SingleTickerProviderStateMixin {
+  late TabController _tabCtrl;
   final _searchCtrl = TextEditingController();
   String _search    = '';
   String _category  = 'Todos';
@@ -34,6 +37,7 @@ class _LibraryScreenState extends State<LibraryScreen> {
   @override
   void initState() {
     super.initState();
+    _tabCtrl = TabController(length: 2, vsync: this);
     _sub = FirestoreService.guidesStream().listen((list) {
       if (mounted) setState(() { _guides = list; _loading = false; });
     }, onError: (_) {
@@ -46,6 +50,7 @@ class _LibraryScreenState extends State<LibraryScreen> {
 
   @override
   void dispose() {
+    _tabCtrl.dispose();
     _sub?.cancel();
     _searchCtrl.dispose();
     super.dispose();
@@ -89,52 +94,30 @@ class _LibraryScreenState extends State<LibraryScreen> {
       backgroundColor: bg,
       body: Column(children: [
         // ── Header ──────────────────────────────────────────────────────────
-        _LibraryHeader(dark: dark, isEs: isEs),
+        _LibraryHeader(dark: dark, isEs: isEs, tabCtrl: _tabCtrl),
 
-        // ── Filtro de categoria ──────────────────────────────────────────────
-        if (_categories.length > 1)
-          _CategoryFilter(
-            categories: _categories,
-            selected: _category,
-            dark: dark,
-            onSelect: (c) => setState(() => _category = c),
-          ),
-
-        // ── Busca ────────────────────────────────────────────────────────────
-        Padding(
-          padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
-          child: TextField(
-            controller: _searchCtrl,
-            style: const TextStyle(fontSize: 13),
-            decoration: InputDecoration(
-              hintText: isEs ? 'Buscar guías...' : 'Buscar guias...',
-              hintStyle: TextStyle(fontSize: 13, color: Colors.grey[400]),
-              prefixIcon: const Icon(Icons.search_rounded, size: 18),
-              contentPadding: const EdgeInsets.symmetric(
-                  horizontal: 12, vertical: 10),
-              isDense: true,
-              border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10)),
-            ),
-            onChanged: (_) => setState(() {}),
-          ),
-        ),
-
-        // ── Lista ────────────────────────────────────────────────────────────
+        // ── Body com abas ────────────────────────────────────────────────────
         Expanded(
-          child: _loading
-              ? const Center(child: CircularProgressIndicator(color: _kGreen, strokeWidth: 2))
-              : filtered.isEmpty
-                  ? _EmptyState(dark: dark, isEs: isEs, hasSearch: _search.isNotEmpty)
-                  : ListView.builder(
-                      padding: const EdgeInsets.fromLTRB(16, 8, 16, 100),
-                      itemCount: filtered.length,
-                      itemBuilder: (_, i) => _GuideCard(
-                        guide: filtered[i],
-                        dark: dark,
-                        onOpen: () => _openPdf(filtered[i]),
-                      ),
-                    ),
+          child: TabBarView(
+            controller: _tabCtrl,
+            children: [
+              // ── Aba 0: Guias / PDFs ────────────────────────────────────────
+              _GuidesTab(
+                dark: dark,
+                isEs: isEs,
+                loading: _loading,
+                filtered: filtered,
+                categories: _categories,
+                selectedCategory: _category,
+                searchCtrl: _searchCtrl,
+                onCategorySelect: (c) => setState(() => _category = c),
+                onOpen: _openPdf,
+              ),
+
+              // ── Aba 1: Casos Clínicos ─────────────────────────────────────
+              _CasosClinicosTab(dark: dark, isEs: isEs, p: p),
+            ],
+          ),
         ),
       ]),
     );
@@ -142,12 +125,13 @@ class _LibraryScreenState extends State<LibraryScreen> {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// HEADER
+// HEADER com TabBar embutida
 // ─────────────────────────────────────────────────────────────────────────────
 class _LibraryHeader extends StatelessWidget {
   final bool dark;
   final bool isEs;
-  const _LibraryHeader({required this.dark, required this.isEs});
+  final TabController tabCtrl;
+  const _LibraryHeader({required this.dark, required this.isEs, required this.tabCtrl});
 
   @override
   Widget build(BuildContext context) {
@@ -158,33 +142,469 @@ class _LibraryHeader extends StatelessWidget {
       ),
       child: SafeArea(
         bottom: false,
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(20, 14, 20, 14),
-          child: Row(children: [
-            Container(
-              width: 36, height: 36,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                color: _kGreen.withValues(alpha: 0.3),
-                border: Border.all(color: _kGreen.withValues(alpha: 0.5)),
+        child: Column(children: [
+          // Título
+          Padding(
+            padding: const EdgeInsets.fromLTRB(20, 14, 20, 10),
+            child: Row(children: [
+              Container(
+                width: 36, height: 36,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: _kGreen.withValues(alpha: 0.3),
+                  border: Border.all(color: _kGreen.withValues(alpha: 0.5)),
+                ),
+                child: const Icon(Icons.menu_book_rounded, color: _kGoldL, size: 20),
               ),
-              child: const Icon(Icons.menu_book_rounded, color: _kGoldL, size: 20),
-            ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  Text(
+                    isEs ? 'Biblioteca Clínica' : 'Biblioteca Clínica',
+                    style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w900, color: Colors.white),
+                  ),
+                  Text(
+                    isEs ? 'Guías • Casos • Artículos' : 'Guias • Casos • Artigos',
+                    style: TextStyle(fontSize: 11, color: Colors.white.withValues(alpha: 0.5)),
+                  ),
+                ]),
+              ),
+            ]),
+          ),
+          // TabBar
+          TabBar(
+            controller: tabCtrl,
+            indicatorColor: _kGold,
+            indicatorWeight: 2.5,
+            labelColor: _kGold,
+            unselectedLabelColor: Colors.white38,
+            labelStyle: const TextStyle(fontSize: 13, fontWeight: FontWeight.w800),
+            unselectedLabelStyle: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
+            tabs: [
+              Tab(text: isEs ? 'Guías PDF' : 'Guias PDF'),
+              Tab(text: isEs ? 'Casos Clínicos' : 'Casos Clínicos'),
+            ],
+          ),
+        ]),
+      ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// ABA 0 — Guias PDF
+// ─────────────────────────────────────────────────────────────────────────────
+class _GuidesTab extends StatelessWidget {
+  final bool dark;
+  final bool isEs;
+  final bool loading;
+  final List<GuideModel> filtered;
+  final List<String> categories;
+  final String selectedCategory;
+  final TextEditingController searchCtrl;
+  final ValueChanged<String> onCategorySelect;
+  final ValueChanged<GuideModel> onOpen;
+
+  const _GuidesTab({
+    required this.dark, required this.isEs, required this.loading,
+    required this.filtered, required this.categories,
+    required this.selectedCategory, required this.searchCtrl,
+    required this.onCategorySelect, required this.onOpen,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(children: [
+      // Filtro de categoria
+      if (categories.length > 1)
+        _CategoryFilter(
+          categories: categories,
+          selected: selectedCategory,
+          dark: dark,
+          onSelect: onCategorySelect,
+        ),
+
+      // Busca
+      Padding(
+        padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
+        child: TextField(
+          controller: searchCtrl,
+          style: const TextStyle(fontSize: 13),
+          decoration: InputDecoration(
+            hintText: isEs ? 'Buscar guías...' : 'Buscar guias...',
+            hintStyle: TextStyle(fontSize: 13, color: Colors.grey[400]),
+            prefixIcon: const Icon(Icons.search_rounded, size: 18),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+            isDense: true,
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+          ),
+        ),
+      ),
+
+      // Lista
+      Expanded(
+        child: loading
+            ? const Center(child: CircularProgressIndicator(color: _kGreen, strokeWidth: 2))
+            : filtered.isEmpty
+                ? _EmptyState(dark: dark, isEs: isEs, hasSearch: searchCtrl.text.isNotEmpty)
+                : ListView.builder(
+                    padding: const EdgeInsets.fromLTRB(16, 8, 16, 100),
+                    itemCount: filtered.length,
+                    itemBuilder: (_, i) => _GuideCard(
+                      guide: filtered[i],
+                      dark: dark,
+                      onOpen: () => onOpen(filtered[i]),
+                    ),
+                  ),
+      ),
+    ]);
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// ABA 1 — Casos Clínicos (migrados de protocols_screen)
+// ─────────────────────────────────────────────────────────────────────────────
+class _CasosClinicosTab extends StatelessWidget {
+  final bool dark;
+  final bool isEs;
+  final AppProvider p;
+  const _CasosClinicosTab({required this.dark, required this.isEs, required this.p});
+
+  @override
+  Widget build(BuildContext context) {
+    final seen  = <String>{};
+    final allDB = p.protocolsDB.where((x) => seen.add(x.id)).toList();
+
+    // IDs de todos os casos clínicos
+    const allCasoIds = {
+      'caso_enxaqueca_aura', 'caso_avc_isquemico', 'caso_status_epilepticus',
+      'caso_stemi', 'caso_icc_descompensada', 'caso_tep_alto_risco', 'caso_pac_grave',
+      'caso_cistite_aguda', 'caso_itu_recorrente', 'caso_sepse_idoso',
+      'caso_cetoacidose_diabetica', 'caso_anafilaxia_grave', 'caso_hda_varicosa',
+      'pancreatitis_aguda_005', 'diarrea_aguda_009', 'hda_ulcera_peptica_013',
+      'hdb_sangrado_rectal_014', 'diverticulitis_aguda_015',
+      'sindrome_ascitico_debut_016', 'sindrome_ascitico_edematoso_017',
+      'hepatitis_b_aguda_detallada_2026', 'hepatitis_c_cronica_detallada_2026',
+      'gripe_influenza_010',
+      'rinosinusitis_aguda_007', 'faringitis_estreptococica_008',
+      'faringitis_viral_011', 'faringitis_bacteriana_012',
+    };
+
+    final totalCasos = allDB.where((d) => allCasoIds.contains(d.id)).length;
+
+    return SingleChildScrollView(
+      padding: const EdgeInsets.fromLTRB(16, 16, 16, 100),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+
+        // ── Banner informativo ──────────────────────────────────────────────
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          decoration: BoxDecoration(
+            color: dark ? const Color(0xFF0D1F16) : const Color(0xFFEAF5EE),
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(color: _kGreen.withValues(alpha: 0.3)),
+          ),
+          child: Row(children: [
+            Icon(Icons.cases_rounded, color: _kGreen, size: 22),
             const SizedBox(width: 12),
-            Expanded(
-              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Text(
-                  isEs ? 'Biblioteca Clínica' : 'Biblioteca Clínica',
-                  style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w900, color: Colors.white),
+            Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Text(
+                isEs ? 'Casos Clínicos' : 'Casos Clínicos',
+                style: TextStyle(
+                  fontSize: 14, fontWeight: FontWeight.w900,
+                  color: dark ? Colors.white : const Color(0xFF0F1C14),
                 ),
-                Text(
-                  isEs ? 'Guías • Protocolos • Artículos' : 'Guias • Protocolos • Artigos',
-                  style: TextStyle(fontSize: 11, color: Colors.white.withValues(alpha: 0.5)),
-                ),
-              ]),
-            ),
+              ),
+              Text(
+                isEs
+                    ? '$totalCasos casos organizados por especialidad'
+                    : '$totalCasos casos organizados por especialidade',
+                style: TextStyle(fontSize: 12, color: dark ? Colors.white54 : Colors.black45),
+              ),
+            ])),
           ]),
         ),
+        const SizedBox(height: 16),
+
+        // ── Neurologia ───────────────────────────────────────────────────────
+        _CasoGroup(
+          icon: Icons.psychology_outlined,
+          titlePt: 'Neurologia', titleEs: 'Neurología',
+          color: const Color(0xFFF5F0FF), borderColor: const Color(0xFFCCBBEE),
+          iconColor: const Color(0xFF5C2D91),
+          ids: const {'caso_enxaqueca_aura','caso_avc_isquemico','caso_status_epilepticus'},
+          allDB: allDB, isEs: isEs, p: p,
+        ),
+        const SizedBox(height: 10),
+
+        // ── Cardiologia & Pneumologia ────────────────────────────────────────
+        _CasoGroup(
+          icon: Icons.favorite_outline_rounded,
+          titlePt: 'Cardiologia & Pneumologia', titleEs: 'Cardiología & Neumología',
+          color: const Color(0xFFFFF0F5), borderColor: const Color(0xFFFFCCDD),
+          iconColor: const Color(0xFFAA1144),
+          ids: const {'caso_stemi','caso_icc_descompensada','caso_tep_alto_risco','caso_pac_grave'},
+          allDB: allDB, isEs: isEs, p: p,
+        ),
+        const SizedBox(height: 10),
+
+        // ── Infectologia, Emergência & Metabólico ────────────────────────────
+        _CasoGroup(
+          icon: Icons.biotech_outlined,
+          titlePt: 'Infectologia, Emergência & Metabólico',
+          titleEs: 'Infectología, Emergencia & Metabólico',
+          color: const Color(0xFFF0FFF4), borderColor: const Color(0xFFBBE8CC),
+          iconColor: const Color(0xFF075F45),
+          ids: const {
+            'caso_cistite_aguda','caso_itu_recorrente','caso_sepse_idoso',
+            'caso_cetoacidose_diabetica','caso_anafilaxia_grave','caso_hda_varicosa',
+          },
+          allDB: allDB, isEs: isEs, p: p,
+        ),
+        const SizedBox(height: 10),
+
+        // ── Gastroenterologia & Hepatologia ─────────────────────────────────
+        _CasoGroup(
+          icon: Icons.local_hospital_outlined,
+          titlePt: 'Gastroenterologia & Hepatologia',
+          titleEs: 'Gastroenterología & Hepatología',
+          color: const Color(0xFFF5F5F0), borderColor: const Color(0xFFD8D4C0),
+          iconColor: const Color(0xFF555544),
+          ids: const {
+            'pancreatitis_aguda_005','diarrea_aguda_009','hda_ulcera_peptica_013',
+            'hdb_sangrado_rectal_014','diverticulitis_aguda_015',
+            'sindrome_ascitico_debut_016','sindrome_ascitico_edematoso_017',
+          },
+          allDB: allDB, isEs: isEs, p: p,
+        ),
+        const SizedBox(height: 10),
+
+        // ── Hepatites Virais & Gripe ─────────────────────────────────────────
+        _CasoGroup(
+          icon: Icons.science_outlined,
+          titlePt: 'Hepatites Virais & Gripe', titleEs: 'Hepatitis Virales & Gripe',
+          color: const Color(0xFFFFF8EC), borderColor: const Color(0xFFEED8A0),
+          iconColor: const Color(0xFF8B6000),
+          ids: const {
+            'hepatitis_b_aguda_detallada_2026','hepatitis_c_cronica_detallada_2026',
+            'gripe_influenza_010',
+          },
+          allDB: allDB, isEs: isEs, p: p,
+        ),
+        const SizedBox(height: 10),
+
+        // ── ORL & Medicina Geral ─────────────────────────────────────────────
+        _CasoGroup(
+          icon: Icons.hearing_outlined,
+          titlePt: 'ORL & Medicina Geral', titleEs: 'ORL & Medicina General',
+          color: const Color(0xFFF0F8FF), borderColor: const Color(0xFFBBD6F0),
+          iconColor: const Color(0xFF1A5E8A),
+          ids: const {
+            'rinosinusitis_aguda_007','faringitis_estreptococica_008',
+            'faringitis_viral_011','faringitis_bacteriana_012',
+          },
+          allDB: allDB, isEs: isEs, p: p,
+        ),
+        const SizedBox(height: 10),
+      ]),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// GRUPO DE CASO CLÍNICO — card que abre bottom sheet
+// ─────────────────────────────────────────────────────────────────────────────
+class _CasoGroup extends StatelessWidget {
+  final IconData icon;
+  final String titlePt;
+  final String titleEs;
+  final Color color;
+  final Color borderColor;
+  final Color iconColor;
+  final Set<String> ids;
+  final List<ProtocolModel> allDB;
+  final bool isEs;
+  final AppProvider p;
+
+  const _CasoGroup({
+    required this.icon, required this.titlePt, required this.titleEs,
+    required this.color, required this.borderColor, required this.iconColor,
+    required this.ids, required this.allDB, required this.isEs, required this.p,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final casos = allDB.where((d) => ids.contains(d.id)).toList();
+    if (casos.isEmpty) return const SizedBox.shrink();
+    final title = isEs ? titleEs : titlePt;
+
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: () => showModalBottomSheet(
+        context: context,
+        isScrollControlled: true,
+        backgroundColor: Colors.transparent,
+        builder: (_) => _CasosSheet(
+          title: title, icon: icon,
+          cardColor: color, borderColor: borderColor, iconColor: iconColor,
+          casos: casos, p: p, isEs: isEs,
+        ),
+      ),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        decoration: BoxDecoration(
+          color: color,
+          border: Border.all(color: borderColor),
+          borderRadius: BorderRadius.circular(14),
+        ),
+        child: Row(children: [
+          Container(
+            width: 42, height: 42,
+            decoration: BoxDecoration(
+              color: borderColor.withValues(alpha: 0.55),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Center(child: Icon(icon, size: 20, color: iconColor)),
+          ),
+          const SizedBox(width: 14),
+          Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Text(title, style: TextStyle(
+              fontSize: 13.5, fontWeight: FontWeight.w900,
+              color: iconColor, letterSpacing: -0.2,
+            )),
+            const SizedBox(height: 3),
+            Text(
+              '${casos.length} ${casos.length == 1 ? "caso clínico" : "casos clínicos"}',
+              style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600,
+                color: iconColor.withValues(alpha: 0.55)),
+            ),
+          ])),
+          Container(
+            width: 32, height: 32,
+            decoration: BoxDecoration(
+              color: borderColor.withValues(alpha: 0.6),
+              borderRadius: BorderRadius.circular(9),
+            ),
+            child: Icon(Icons.chevron_right_rounded, size: 20,
+              color: iconColor.withValues(alpha: 0.8)),
+          ),
+        ]),
+      ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// BOTTOM SHEET — lista de casos do grupo
+// ─────────────────────────────────────────────────────────────────────────────
+class _CasosSheet extends StatelessWidget {
+  final String title;
+  final IconData icon;
+  final Color cardColor;
+  final Color borderColor;
+  final Color iconColor;
+  final List<ProtocolModel> casos;
+  final AppProvider p;
+  final bool isEs;
+
+  const _CasosSheet({
+    required this.title, required this.icon,
+    required this.cardColor, required this.borderColor, required this.iconColor,
+    required this.casos, required this.p, required this.isEs,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return DraggableScrollableSheet(
+      initialChildSize: 0.6,
+      minChildSize: 0.4,
+      maxChildSize: 0.92,
+      builder: (_, ctrl) => Container(
+        decoration: BoxDecoration(
+          color: cardColor,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+        ),
+        child: Column(children: [
+          // Handle
+          const SizedBox(height: 10),
+          Container(width: 40, height: 4,
+            decoration: BoxDecoration(color: iconColor.withValues(alpha: 0.25),
+              borderRadius: BorderRadius.circular(2))),
+          const SizedBox(height: 14),
+          // Header
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Row(children: [
+              Icon(icon, color: iconColor, size: 22),
+              const SizedBox(width: 10),
+              Expanded(child: Text(title, style: TextStyle(
+                fontSize: 16, fontWeight: FontWeight.w900, color: iconColor,
+              ))),
+              Text('${casos.length}', style: TextStyle(
+                fontSize: 13, fontWeight: FontWeight.w700,
+                color: iconColor.withValues(alpha: 0.6),
+              )),
+            ]),
+          ),
+          const SizedBox(height: 12),
+          Divider(color: borderColor, height: 1),
+          // Lista de casos
+          Expanded(
+            child: ListView.builder(
+              controller: ctrl,
+              padding: const EdgeInsets.fromLTRB(16, 8, 16, 40),
+              itemCount: casos.length,
+              itemBuilder: (_, i) {
+                final caso = casos[i];
+                final label = p.tDB(caso.title);
+                final severity = p.tDB(caso.severity);
+                return InkWell(
+                  onTap: () {
+                    Navigator.pop(context);
+                    showProtocolDetail(context, caso);
+                  },
+                  borderRadius: BorderRadius.circular(12),
+                  child: Container(
+                    margin: const EdgeInsets.only(bottom: 10),
+                    padding: const EdgeInsets.all(14),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withValues(alpha: 0.7),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: borderColor),
+                    ),
+                    child: Row(children: [
+                      Container(
+                        width: 36, height: 36,
+                        decoration: BoxDecoration(
+                          color: iconColor.withValues(alpha: 0.12),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Icon(Icons.cases_outlined, size: 18, color: iconColor),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start, children: [
+                        Text(label, style: TextStyle(
+                          fontSize: 13.5, fontWeight: FontWeight.w800,
+                          color: const Color(0xFF0F1C14), height: 1.3,
+                        )),
+                        if (severity.isNotEmpty) ...[
+                          const SizedBox(height: 3),
+                          Text(severity, style: TextStyle(
+                            fontSize: 11, color: iconColor.withValues(alpha: 0.7),
+                            fontWeight: FontWeight.w600,
+                          ), maxLines: 1, overflow: TextOverflow.ellipsis),
+                        ],
+                      ])),
+                      Icon(Icons.arrow_forward_ios_rounded, size: 13,
+                        color: iconColor.withValues(alpha: 0.5)),
+                    ]),
+                  ),
+                );
+              },
+            ),
+          ),
+        ]),
       ),
     );
   }
@@ -229,14 +649,10 @@ class _CategoryFilter extends StatelessWidget {
                   color: active ? _kGreen : (dark ? Colors.white12 : Colors.black12),
                 ),
               ),
-              child: Text(
-                cat,
-                style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w700,
-                  color: active ? Colors.white : (dark ? Colors.white60 : Colors.black54),
-                ),
-              ),
+              child: Text(cat, style: TextStyle(
+                fontSize: 12, fontWeight: FontWeight.w700,
+                color: active ? Colors.white : (dark ? Colors.white60 : Colors.black54),
+              )),
             ),
           );
         },
@@ -246,7 +662,7 @@ class _CategoryFilter extends StatelessWidget {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// CARD DE GUIA
+// CARD DE GUIA PDF
 // ─────────────────────────────────────────────────────────────────────────────
 class _GuideCard extends StatelessWidget {
   final GuideModel guide;
@@ -256,36 +672,33 @@ class _GuideCard extends StatelessWidget {
 
   Color get _categoryColor {
     switch (guide.category) {
-      case 'Emergência':      return const Color(0xFFEF4444);
-      case 'Cardiologia':     return const Color(0xFFEC4899);
-      case 'Infectologia':    return const Color(0xFF10B981);
-      case 'Pediatria':       return const Color(0xFF3B82F6);
-      case 'Neurologia':      return const Color(0xFF8B5CF6);
-      case 'Pneumologia':     return const Color(0xFF06B6D4);
+      case 'Emergência':         return const Color(0xFFEF4444);
+      case 'Cardiologia':        return const Color(0xFFEC4899);
+      case 'Infectologia':       return const Color(0xFF10B981);
+      case 'Pediatria':          return const Color(0xFF3B82F6);
+      case 'Neurologia':         return const Color(0xFF8B5CF6);
+      case 'Pneumologia':        return const Color(0xFF06B6D4);
       case 'UTI / Intensivismo': return const Color(0xFFF97316);
-      case 'Farmacologia':    return const Color(0xFFA855F7);
-      default:                return _kGreen;
+      case 'Farmacologia':       return const Color(0xFFA855F7);
+      default:                   return _kGreen;
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final cardBg = dark ? const Color(0xFF111C15) : Colors.white;
-    final border = dark ? Colors.white.withValues(alpha: 0.07) : Colors.black.withValues(alpha: 0.06);
+    final cardBg   = dark ? const Color(0xFF111C15) : Colors.white;
+    final border   = dark ? Colors.white.withValues(alpha: 0.07) : Colors.black.withValues(alpha: 0.06);
     final catColor = _categoryColor;
 
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
-        color: cardBg,
-        borderRadius: BorderRadius.circular(16),
+        color: cardBg, borderRadius: BorderRadius.circular(16),
         border: Border.all(color: border),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: dark ? 0.25 : 0.06),
-            blurRadius: 8, offset: const Offset(0, 2),
-          ),
-        ],
+        boxShadow: [BoxShadow(
+          color: Colors.black.withValues(alpha: dark ? 0.25 : 0.06),
+          blurRadius: 8, offset: const Offset(0, 2),
+        )],
       ),
       child: Material(
         color: Colors.transparent,
@@ -296,7 +709,6 @@ class _GuideCard extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.all(16),
             child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              // ── Ícone PDF ──────────────────────────────────────────────────
               Container(
                 width: 48, height: 56,
                 decoration: BoxDecoration(
@@ -306,92 +718,66 @@ class _GuideCard extends StatelessWidget {
                 ),
                 child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
                   Icon(Icons.picture_as_pdf_rounded, color: catColor, size: 24),
-                  Text('PDF', style: TextStyle(fontSize: 8, fontWeight: FontWeight.w900, color: catColor)),
+                  Text('PDF', style: TextStyle(
+                    fontSize: 8, fontWeight: FontWeight.w900, color: catColor)),
                 ]),
               ),
               const SizedBox(width: 14),
-
-              // ── Conteúdo ───────────────────────────────────────────────────
-              Expanded(
-                child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  // Badge categoria
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      color: catColor.withValues(alpha: 0.12),
-                    ),
-                    child: Text(
-                      guide.category,
-                      style: TextStyle(fontSize: 10, fontWeight: FontWeight.w800, color: catColor),
-                    ),
+              Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                    color: catColor.withValues(alpha: 0.12),
                   ),
-                  const SizedBox(height: 6),
-
-                  // Título
+                  child: Text(guide.category, style: TextStyle(
+                    fontSize: 10, fontWeight: FontWeight.w800, color: catColor)),
+                ),
+                const SizedBox(height: 6),
+                Text(guide.title, style: TextStyle(
+                  fontSize: 14, fontWeight: FontWeight.w800,
+                  color: dark ? Colors.white : const Color(0xFF0F1C14), height: 1.3,
+                )),
+                if (guide.authors.isNotEmpty || guide.year.isNotEmpty) ...[
+                  const SizedBox(height: 4),
                   Text(
-                    guide.title,
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w800,
-                      color: dark ? Colors.white : const Color(0xFF0F1C14),
-                      height: 1.3,
-                    ),
+                    [if (guide.authors.isNotEmpty) guide.authors,
+                     if (guide.year.isNotEmpty) guide.year].join(' • '),
+                    style: TextStyle(fontSize: 11,
+                      color: dark ? Colors.white38 : Colors.black38),
+                    maxLines: 1, overflow: TextOverflow.ellipsis,
                   ),
-
-                  // Autores + Ano
-                  if (guide.authors.isNotEmpty || guide.year.isNotEmpty) ...[
-                    const SizedBox(height: 4),
-                    Text(
-                      [if (guide.authors.isNotEmpty) guide.authors, if (guide.year.isNotEmpty) guide.year].join(' • '),
-                      style: TextStyle(fontSize: 11, color: dark ? Colors.white38 : Colors.black38),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
+                ],
+                if (guide.description.isNotEmpty) ...[
+                  const SizedBox(height: 4),
+                  Text(guide.description, style: TextStyle(fontSize: 12,
+                    color: dark ? Colors.white54 : Colors.black54, height: 1.4),
+                    maxLines: 2, overflow: TextOverflow.ellipsis),
+                ],
+                const SizedBox(height: 10),
+                Row(children: [
+                  if (guide.fileSizeLabel.isNotEmpty)
+                    _Chip(label: guide.fileSizeLabel, icon: Icons.storage_rounded, dark: dark),
+                  if (guide.downloadCount > 0) ...[
+                    const SizedBox(width: 6),
+                    _Chip(label: '${guide.downloadCount}',
+                      icon: Icons.download_rounded, dark: dark),
                   ],
-
-                  // Descrição
-                  if (guide.description.isNotEmpty) ...[
-                    const SizedBox(height: 4),
-                    Text(
-                      guide.description,
-                      style: TextStyle(fontSize: 12, color: dark ? Colors.white54 : Colors.black54, height: 1.4),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
+                  const Spacer(),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20), color: _kGreen,
                     ),
-                  ],
-
-                  const SizedBox(height: 10),
-
-                  // Rodapé — tamanho + downloads + botão
-                  Row(children: [
-                    if (guide.fileSizeLabel.isNotEmpty)
-                      _Chip(label: guide.fileSizeLabel, icon: Icons.storage_rounded, dark: dark),
-                    if (guide.downloadCount > 0) ...[
-                      const SizedBox(width: 6),
-                      _Chip(
-                        label: '${guide.downloadCount}',
-                        icon: Icons.download_rounded,
-                        dark: dark,
-                      ),
-                    ],
-                    const Spacer(),
-                    // Botão Abrir / Baixar
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        color: _kGreen,
-                      ),
-                      child: Row(mainAxisSize: MainAxisSize.min, children: [
-                        const Icon(Icons.open_in_new_rounded, size: 13, color: Colors.white),
-                        const SizedBox(width: 5),
-                        const Text('Abrir', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w800, color: Colors.white)),
-                      ]),
-                    ),
-                  ]),
+                    child: const Row(mainAxisSize: MainAxisSize.min, children: [
+                      Icon(Icons.open_in_new_rounded, size: 13, color: Colors.white),
+                      SizedBox(width: 5),
+                      Text('Abrir', style: TextStyle(fontSize: 12,
+                        fontWeight: FontWeight.w800, color: Colors.white)),
+                    ]),
+                  ),
                 ]),
-              ),
+              ])),
             ]),
           ),
         ),
@@ -412,12 +798,14 @@ class _Chip extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20),
-        color: dark ? Colors.white.withValues(alpha: 0.06) : Colors.black.withValues(alpha: 0.05),
+        color: dark ? Colors.white.withValues(alpha: 0.06)
+                    : Colors.black.withValues(alpha: 0.05),
       ),
       child: Row(mainAxisSize: MainAxisSize.min, children: [
         Icon(icon, size: 11, color: dark ? Colors.white38 : Colors.black38),
         const SizedBox(width: 4),
-        Text(label, style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: dark ? Colors.white38 : Colors.black38)),
+        Text(label, style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600,
+          color: dark ? Colors.white38 : Colors.black38)),
       ]),
     );
   }
@@ -457,10 +845,10 @@ class _EmptyState extends StatelessWidget {
           if (!hasSearch) ...[
             const SizedBox(height: 8),
             Text(
-              isEs
-                  ? 'El administrador aún no subió guías'
-                  : 'O administrador ainda não enviou guias',
-              style: TextStyle(fontSize: 13, color: dark ? Colors.white24 : Colors.black12),
+              isEs ? 'El administrador aún no subió guías'
+                   : 'O administrador ainda não enviou guias',
+              style: TextStyle(fontSize: 13,
+                color: dark ? Colors.white24 : Colors.black12),
               textAlign: TextAlign.center,
             ),
           ],

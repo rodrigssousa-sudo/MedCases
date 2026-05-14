@@ -1400,31 +1400,35 @@ class _LegalBar extends StatelessWidget {
         ? Colors.white.withValues(alpha: 0.28)
         : const Color(0xFF98A0A8);
 
-    return SafeArea(
-      top: false,
-      child: Container(
-        width: double.infinity,
-        decoration: BoxDecoration(
-          color: bg,
-          border: Border(top: BorderSide(color: border, width: 0.5)),
-        ),
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
-        child: Row(children: [
-          Icon(Icons.info_outline_rounded, size: 8.5, color: textColor.withValues(alpha: 0.7)),
-          const SizedBox(width: 5),
-          Expanded(
-            child: Text(
-              'Fines educativos y soporte a la decisión clínica. No reemplaza el juicio médico profesional.',
-              style: TextStyle(
-                fontSize: 7.5, color: textColor,
-                height: 1.3, letterSpacing: 0.15,
-                fontWeight: FontWeight.w500,
+    // Container fora do SafeArea: a borda e o bg cobrem toda a largura,
+    // o SafeArea interno só aplica padding no conteúdo — sem sobrepor a nav bar.
+    return Container(
+      width: double.infinity,
+      decoration: BoxDecoration(
+        color: bg,
+        border: Border(top: BorderSide(color: border, width: 0.5)),
+      ),
+      child: SafeArea(
+        top: false,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
+          child: Row(children: [
+            Icon(Icons.info_outline_rounded, size: 8.5, color: textColor.withValues(alpha: 0.7)),
+            const SizedBox(width: 5),
+            Expanded(
+              child: Text(
+                'Fines educativos y soporte a la decisión clínica. No reemplaza el juicio médico profesional.',
+                style: TextStyle(
+                  fontSize: 7.5, color: textColor,
+                  height: 1.3, letterSpacing: 0.15,
+                  fontWeight: FontWeight.w500,
+                ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
               ),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
             ),
-          ),
-        ]),
+          ]),
+        ),
       ),
     );
   }
