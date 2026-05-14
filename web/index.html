@@ -339,96 +339,94 @@
       }, 15000);
     }
 
-    document.getElementById('pwa-update-btn').addEventListener('click', function() {
-      var toast = document.getElementById('pwa-update-toast');
-      if (toast) toast.classList.remove('show');
-      if (_waitingSW) {
-        // Manda o SW aplicar update imediatamente
-        _waitingSW.postMessage({ type: 'SKIP_WAITING' });
-        _waitingSW = null;
-      } else {
-        window.location.reload();
-      }
-    });
-
     // ── Registro e gestão do Service Worker ─────────────────────────
     (function() {
 
       if (!('serviceWorker' in navigator)) {
-        // Browser sem suporte a SW — boot direto
         bootFlutter();
         return;
       }
+
+      // Flag: indica que o reload foi iniciado pelo usuário (evita loop)
+      var _userTriggeredUpdate = false;
+
+      // controllerchange só recarrega se foi o USUÁRIO que pediu o update
+      navigator.serviceWorker.addEventListener('controllerchange', function() {
+        if (_userTriggeredUpdate) {
+          window.location.reload();
+        }
+        // Se não foi o usuário → ignora (primeiro registro, etc.)
+      });
+
+      // Substitui o handler do botão para setar a flag antes do postMessage
+      document.getElementById('pwa-update-btn').addEventListener('click', function() {
+        var toast = document.getElementById('pwa-update-toast');
+        if (toast) toast.classList.remove('show');
+        if (_waitingSW) {
+          _userTriggeredUpdate = true;        // marca que É o usuário pedindo
+          _waitingSW.postMessage({ type: 'SKIP_WAITING' });
+          _waitingSW = null;
+        } else {
+          window.location.reload();
+        }
+      });
 
       var storedVersion = null;
       try { storedVersion = localStorage.getItem('medcases_app_version'); } catch(e) {}
 
-      // ── Se mesma versão: registra SW novo e faz boot imediato ──────
-      if (storedVersion === APP_VERSION) {
+      // Limpa SW/cache antigos se versão mudou, depois registra e boota
+      if (storedVersion !== APP_VERSION) {
+        var swClean = navigator.serviceWorker.getRegistrations()
+          .then(function(regs) {
+            return Promise.all(regs.map(function(r) { return r.unregister(); }));
+          }).catch(function() {});
+
+        var cacheClean = ('caches' in window)
+          ? caches.keys().then(function(keys) {
+              return Promise.all(keys.map(function(k) { return caches.delete(k); }));
+            }).catch(function() {})
+          : Promise.resolve();
+
+        Promise.all([swClean, cacheClean])
+          .catch(function() {})
+          .then(function() {
+            try { localStorage.setItem('medcases_app_version', APP_VERSION); } catch(e) {}
+            registerSW();
+            bootFlutter();
+          });
+      } else {
+        // Mesma versão: registra e boota imediatamente
         registerSW();
         bootFlutter();
-        return;
       }
-
-      // ── Nova versão detectada: limpa caches/SW antigos primeiro ────
-      var swClean = navigator.serviceWorker.getRegistrations()
-        .then(function(regs) {
-          return Promise.all(regs.map(function(reg) { return reg.unregister(); }));
-        })
-        .catch(function() {});
-
-      var cacheClean = ('caches' in window)
-        ? caches.keys().then(function(keys) {
-            return Promise.all(keys.map(function(k) { return caches.delete(k); }));
-          }).catch(function() {})
-        : Promise.resolve();
-
-      Promise.all([swClean, cacheClean])
-        .catch(function() {})
-        .then(function() {
-          try { localStorage.setItem('medcases_app_version', APP_VERSION); } catch(e) {}
-          registerSW();
-          bootFlutter();
-        });
 
       function registerSW() {
         navigator.serviceWorker.register(SW_URL, {
           scope: '/',
-          updateViaCache: 'none'   // sempre busca novo SW no servidor
+          updateViaCache: 'none'
         })
         .then(function(reg) {
 
-          // SW já está instalado e esperando (update em background)
-          if (reg.waiting) {
+          // SW em waiting: só mostra toast se já há um controller ativo
+          // (ou seja, é um UPDATE real, não o primeiro registro)
+          if (reg.waiting && navigator.serviceWorker.controller) {
             showUpdateToast(reg.waiting);
           }
 
-          // SW novo encontrado enquanto app está aberto
+          // SW novo encontrado em background enquanto app está aberto
           reg.addEventListener('updatefound', function() {
             var newWorker = reg.installing;
             if (!newWorker) return;
-
             newWorker.addEventListener('statechange', function() {
+              // Só mostra toast se: SW instalado + já havia um controller ativo
               if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                // Há um SW novo pronto — mostra toast discreto
                 showUpdateToast(newWorker);
               }
             });
           });
 
-          // Quando SW assume controle (após SKIP_WAITING), recarrega a página
-          var refreshing = false;
-          navigator.serviceWorker.addEventListener('controllerchange', function() {
-            if (!refreshing) {
-              refreshing = true;
-              window.location.reload();
-            }
-          });
-
-          // Verificação periódica de update em background (a cada 30min)
-          setInterval(function() {
-            reg.update().catch(function() {});
-          }, 30 * 60 * 1000);
+          // Verificação periódica de update a cada 30min
+          setInterval(function() { reg.update().catch(function() {}); }, 30 * 60 * 1000);
         })
         .catch(function(err) {
           console.warn('[PWA] SW registration failed:', err);
