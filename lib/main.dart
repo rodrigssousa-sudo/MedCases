@@ -775,6 +775,9 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
   // sub-tab dentro do combo Rx+Proto: 0=Rx, 1=Protocolos
   int _rxProtoSub = 0;
 
+  // FAB arrastável — posição inicial canto inferior esquerdo
+  Offset _fabOffset = const Offset(20, -90);
+
   // ── Performance: telas estáticas criadas uma única vez no initState ──────
   late final List<Widget> _staticScreens;
 
@@ -881,21 +884,29 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
     return Scaffold(
       backgroundColor: bg,
       endDrawer: _AppDrawer(p: p),
-      body: Column(children: [
-        // Header global só na tab 0 (Início/Cockpit).
-        // Nas demais abas: oculto para liberar espaço — cada tela tem header próprio.
-        // O _AppHeader já tem SafeArea interno. Nas outras abas usamos SafeArea aqui
-        // para garantir que o status bar seja respeitado sem duplicar em cada tela.
-        // AppHeader só na tab 0 (Home) — as demais têm header próprio
-        if (_tab == 0)
-          _AppHeader(
-            onTabChange: (t) => setState(() => _tab = t),
-            currentTab: _tab,
-          )
-        else
-          SafeArea(bottom: false, child: const SizedBox.shrink()),
+      body: Stack(children: [
+        Column(children: [
+          // Header global só na tab 0 (Início/Cockpit).
+          // Nas demais abas: oculto para liberar espaço — cada tela tem header próprio.
+          // O _AppHeader já tem SafeArea interno. Nas outras abas usamos SafeArea aqui
+          // para garantir que o status bar seja respeitado sem duplicar em cada tela.
+          // AppHeader só na tab 0 (Home) — as demais têm header próprio
+          if (_tab == 0)
+            _AppHeader(
+              onTabChange: (t) => setState(() => _tab = t),
+              currentTab: _tab,
+            )
+          else
+            SafeArea(bottom: false, child: const SizedBox.shrink()),
 
-        Expanded(child: IndexedStack(index: stackIdx.clamp(0, mainScreens.length - 1), children: mainScreens)),
+          Expanded(child: IndexedStack(index: stackIdx.clamp(0, mainScreens.length - 1), children: mainScreens)),
+        ]),
+
+        // ── FAB flutuante e arrastável — Anotações ────────────────────────
+        _DraggableNotesFab(
+          offset: _fabOffset,
+          onOffsetChanged: (o) => setState(() => _fabOffset = o),
+        ),
       ]),
       bottomNavigationBar: Column(
         mainAxisSize: MainAxisSize.min,
@@ -2301,28 +2312,6 @@ class _AppHeader extends StatelessWidget {
               ),
             ),
             const SizedBox(width: 8),
-            // Botão Anotações — acesso rápido
-            GestureDetector(
-              onTap: () => openNotesScreen(context),
-              child: Container(
-                width: 38,
-                height: 38,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
-                  color: Colors.white.withValues(alpha: 0.07),
-                  border: Border.all(
-                    color: Colors.white.withValues(alpha: 0.13),
-                    width: 1,
-                  ),
-                ),
-                child: const Icon(
-                  Icons.edit_note_rounded,
-                  size: 20,
-                  color: Color(0xFFFFE8A6),
-                ),
-              ),
-            ),
-            const SizedBox(width: 6),
             // Botão hamburguer — limpo, sem badge de idioma
             GestureDetector(
               onTap: () => Scaffold.of(context).openEndDrawer(),
@@ -3154,3 +3143,178 @@ class _SuccessView extends StatelessWidget {
   }
 }
 
+// ─────────────────────────────────────────────────────────────────────────────
+// FAB FLUTUANTE E ARRASTÁVEL — ANOTAÇÕES
+// ─────────────────────────────────────────────────────────────────────────────
+class _DraggableNotesFab extends StatefulWidget {
+  final Offset offset;
+  final ValueChanged<Offset> onOffsetChanged;
+
+  const _DraggableNotesFab({
+    required this.offset,
+    required this.onOffsetChanged,
+  });
+
+  @override
+  State<_DraggableNotesFab> createState() => _DraggableNotesFabState();
+}
+
+class _DraggableNotesFabState extends State<_DraggableNotesFab>
+    with SingleTickerProviderStateMixin {
+  // Controla a animação de pulso suave
+  late final AnimationController _pulseCtrl;
+  late final Animation<double> _pulseAnim;
+
+  // Controla o scale no tap
+  bool _pressed = false;
+
+  // Rastreia se estava arrastando (para não abrir ao soltar após drag)
+  bool _wasDragging = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _pulseCtrl = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1800),
+    )..repeat(reverse: true);
+    _pulseAnim = Tween<double>(begin: 1.0, end: 1.06).animate(
+      CurvedAnimation(parent: _pulseCtrl, curve: Curves.easeInOut),
+    );
+  }
+
+  @override
+  void dispose() {
+    _pulseCtrl.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Positioned(
+      left: widget.offset.dx,
+      bottom: -widget.offset.dy,
+      child: GestureDetector(
+        onTapDown: (_) {
+          _wasDragging = false;
+          setState(() => _pressed = true);
+        },
+        onTapUp: (_) {
+          setState(() => _pressed = false);
+          if (!_wasDragging) {
+            openNotesScreen(context);
+          }
+        },
+        onTapCancel: () => setState(() => _pressed = false),
+        onPanStart: (_) {
+          _wasDragging = false;
+        },
+        onPanUpdate: (details) {
+          _wasDragging = true;
+          setState(() => _pressed = false);
+          final size   = MediaQuery.of(context).size;
+          const fabSz  = 56.0;
+          const margin = 10.0;
+          final safeB  = MediaQuery.of(context).padding.bottom;
+
+          // Calcula nova posição absoluta da tela
+          final newLeft   = widget.offset.dx + details.delta.dx;
+          final newBottom = -widget.offset.dy - details.delta.dy;
+
+          final clampedLeft   = newLeft.clamp(margin, size.width - fabSz - margin);
+          final clampedBottom = newBottom.clamp(
+            safeB + margin,
+            size.height - fabSz - 80 - margin,
+          );
+
+          widget.onOffsetChanged(Offset(clampedLeft, -clampedBottom));
+        },
+        onPanEnd: (_) {
+          // Snap para borda mais próxima (esquerda ou direita)
+          final size = MediaQuery.of(context).size;
+          const fabSz  = 56.0;
+          const margin = 10.0;
+          final midX   = size.width / 2;
+          final snapX  = widget.offset.dx < midX
+              ? margin
+              : size.width - fabSz - margin;
+          widget.onOffsetChanged(Offset(snapX, widget.offset.dy));
+        },
+        child: AnimatedScale(
+          scale: _pressed ? 0.88 : 1.0,
+          duration: const Duration(milliseconds: 100),
+          child: ScaleTransition(
+            scale: _pulseAnim,
+            child: _FabBody(),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _FabBody extends StatelessWidget {
+  const _FabBody();
+
+  @override
+  Widget build(BuildContext context) {
+    final dark = Theme.of(context).brightness == Brightness.dark;
+
+    return Container(
+      width: 56,
+      height: 56,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        gradient: LinearGradient(
+          colors: dark
+              ? [const Color(0xFF2A1A08), const Color(0xFF4A2E0A), const Color(0xFF6B4210)]
+              : [const Color(0xFF1F6B48), const Color(0xFF0F3D28), const Color(0xFF072818)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: (dark
+                ? const Color(0xFFD97706)
+                : const Color(0xFF1F6B48))
+                .withValues(alpha: 0.50),
+            blurRadius: 18,
+            spreadRadius: 0,
+            offset: const Offset(0, 4),
+          ),
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.25),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+        border: Border.all(
+          color: const Color(0xFFFFE8A6).withValues(alpha: 0.30),
+          width: 1.5,
+        ),
+      ),
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          // Brilho interno
+          Positioned(
+            top: 8,
+            child: Container(
+              width: 28,
+              height: 10,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20),
+                color: Colors.white.withValues(alpha: 0.08),
+              ),
+            ),
+          ),
+          const Icon(
+            Icons.edit_note_rounded,
+            color: Color(0xFFFFE8A6),
+            size: 26,
+          ),
+        ],
+      ),
+    );
+  }
+}
