@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/app_provider.dart';
 import '../widgets/common_widgets.dart';
+import '../data/drugs_database.dart';
 import 'cockpit_screen.dart';
 import 'drugs_screen.dart';
 import 'tools_screen.dart' show ProtocolsCard, PediatricsTabContent, ToolsScreen;
@@ -71,8 +72,8 @@ class HomeScreen extends StatelessWidget {
           icon: Icons.medication_rounded,
           label: isEs ? 'FÁRMACOS' : 'FÁRMACOS',
           subtitle: isEs
-              ? '337 fármacos · Interacciones · Protocolos'
-              : '337 fármacos · Interações · Protocolos',
+              ? '${drugsDatabase.length} fármacos · Interacciones · Protocolos'
+              : '${drugsDatabase.length} fármacos · Interações · Protocolos',
           gradientColors: const [Color(0xFF1E1000), Color(0xFF3D2000), Color(0xFF6B3A00)],
           accentColor: const Color(0xFFFBBF24),
           dark: dark,
@@ -103,8 +104,8 @@ class HomeScreen extends StatelessWidget {
           icon: Icons.compare_arrows_rounded,
           label: isEs ? 'INTERACCIONES' : 'INTERAÇÕES',
           subtitle: isEs
-              ? 'Verifica pares · Severidade · Manejo'
-              : 'Verifica pares · Severidade · Manejo',
+              ? '864 pares · Severidad · Manejo clínico'
+              : '864 pares · Severidade · Manejo clínico',
           gradientColors: const [Color(0xFF1A0A2E), Color(0xFF3D1F6B), Color(0xFF6B3FA8)],
           accentColor: const Color(0xFFA78BFA),
           dark: dark,
@@ -127,7 +128,7 @@ class HomeScreen extends StatelessWidget {
           dark: dark,
           onTap: () {
             onTabChange(1);
-            onSubTabChange(1);
+            onSubTabChange(2);
           },
         ),
 
@@ -735,8 +736,8 @@ class _FarmacosShell extends StatelessWidget {
                         color: Colors.white, letterSpacing: -0.3),
                   ),
                   Text(
-                    isEs ? '337 fármacos · Interacciones · Protocolos'
-                         : '337 fármacos · Interações · Protocolos',
+                    isEs ? '${drugsDatabase.length} fármacos · Interacciones · Protocolos'
+                         : '${drugsDatabase.length} fármacos · Interações · Protocolos',
                     style: TextStyle(fontSize: 11, color: Colors.white.withValues(alpha: 0.6)),
                   ),
                 ])),
