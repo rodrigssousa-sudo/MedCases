@@ -3,43 +3,102 @@
 <head>
   <base href="$FLUTTER_BASE_HREF">
 
+  <!-- ═══════════════════════════════════════════════════════════════════
+       CORE
+  ═══════════════════════════════════════════════════════════════════ -->
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <meta content="IE=Edge" http-equiv="X-UA-Compatible">
-  <meta name="description" content="MedCases Pro — Apoio clínico educacional para médicos e estudantes de medicina.">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 
-  <!-- iOS / Safari PWA -->
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="MedCases Pro">
-  <meta name="theme-color" content="#07110d">
-
-  <link rel="apple-touch-icon" sizes="192x192" href="icons/Icon-192.png">
-  <link rel="apple-touch-icon" sizes="512x512" href="icons/Icon-512.png">
-  <link rel="icon" type="image/png" href="favicon.png"/>
+  <!-- SEO / Social -->
   <title>MedCases Pro</title>
+  <meta name="description" content="Apoio clínico educacional para médicos e estudantes — casos, protocolos, calculadoras e IA médica.">
+  <meta name="keywords" content="medicina, casos clínicos, protocolos, calculadoras médicas, IA clínica, educação médica">
+  <meta name="author" content="MedCases Pro">
+  <meta name="robots" content="index, follow">
+
+  <!-- Open Graph -->
+  <meta property="og:type"        content="website">
+  <meta property="og:url"         content="https://medcasespro.com/">
+  <meta property="og:title"       content="MedCases Pro">
+  <meta property="og:description" content="Apoio clínico educacional para médicos e estudantes.">
+  <meta property="og:image"       content="icons/Icon-512.png">
+  <meta property="og:locale"      content="pt_BR">
+
+  <!-- ═══════════════════════════════════════════════════════════════════
+       PWA — MANIFEST
+  ═══════════════════════════════════════════════════════════════════ -->
   <link rel="manifest" href="manifest.json">
 
-  <!-- Google Sign-In -->
+  <!-- ═══════════════════════════════════════════════════════════════════
+       THEME COLOR (Chrome Android, Edge, Samsung)
+  ═══════════════════════════════════════════════════════════════════ -->
+  <meta name="theme-color" content="#07110d" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#0F3D2E" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#07110d">
+  <meta name="color-scheme" content="dark light">
+  <meta name="msapplication-TileColor" content="#07110d">
+  <meta name="msapplication-TileImage" content="icons/Icon-192.png">
+
+  <!-- ═══════════════════════════════════════════════════════════════════
+       iOS / SAFARI PWA
+  ═══════════════════════════════════════════════════════════════════ -->
+  <!-- Habilita modo standalone no iOS -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+
+  <!-- Título no iOS (aparece embaixo do ícone na home screen) -->
+  <meta name="apple-mobile-web-app-title" content="MedCases">
+
+  <!-- Status bar: black-translucent = app ocupa toda a tela incluindo safe-area -->
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+  <!-- ── Apple Touch Icons (iOS adiciona automaticamente) ───────────── -->
+  <!-- iPhone Retina (iOS ≥7 usa o maior disponível automaticamente) -->
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon-180.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon-180.png">
+  <link rel="apple-touch-icon" sizes="167x167" href="icons/apple-touch-icon-167.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="icons/apple-touch-icon-152.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="icons/apple-touch-icon-120.png">
+
+  <!-- ── Apple Splash Screens (evita tela branca no launch iOS) ───────
+       Geradas dinamicamente via JS abaixo para cobrir todos os devices  -->
+
+  <!-- ═══════════════════════════════════════════════════════════════════
+       FAVICONS
+  ═══════════════════════════════════════════════════════════════════ -->
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
+  <link rel="icon" type="image/png" href="favicon.png">
+  <link rel="shortcut icon" href="favicon.png">
+
+  <!-- ═══════════════════════════════════════════════════════════════════
+       GOOGLE SIGN-IN
+  ═══════════════════════════════════════════════════════════════════ -->
   <meta name="google-signin-client_id" content="1076800980330-mpq75ceph6hipht135qt0g505pdu5u7d.apps.googleusercontent.com">
 
-  <!-- Pré-conectar apenas ao essencial do boot -->
+  <!-- ═══════════════════════════════════════════════════════════════════
+       PRECONNECT / DNS-PREFETCH
+  ═══════════════════════════════════════════════════════════════════ -->
   <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
   <link rel="dns-prefetch" href="https://www.gstatic.com">
   <link rel="preconnect" href="https://accounts.google.com" crossorigin>
+  <link rel="preconnect" href="https://firestore.googleapis.com" crossorigin>
 
-  <!-- Preload dos recursos críticos de boot -->
+  <!-- ═══════════════════════════════════════════════════════════════════
+       PRELOAD — recursos críticos de boot
+  ═══════════════════════════════════════════════════════════════════ -->
   <link rel="preload" href="flutter_bootstrap.js" as="script">
   <link rel="preload" href="main.dart.js" as="script">
 
-  <!-- Google Sign-In SDK -->
+  <!-- ═══════════════════════════════════════════════════════════════════
+       GOOGLE SIGN-IN SDK
+  ═══════════════════════════════════════════════════════════════════ -->
   <script src="https://accounts.google.com/gsi/client" async defer></script>
 
-  <!--
-    Firebase carregado APÓS o primeiro frame do Flutter
-    Evita competição de banda com main.dart.js durante o boot
-  -->
+  <!-- ═══════════════════════════════════════════════════════════════════
+       FIREBASE — carregado APÓS o primeiro frame (não compete com boot)
+  ═══════════════════════════════════════════════════════════════════ -->
   <script>
     window._firebaseLoaded = false;
     function _loadFirebase() {
@@ -56,20 +115,33 @@
         document.head.appendChild(s);
       });
     }
-    window.addEventListener('flutter-first-frame', function() {
-      setTimeout(_loadFirebase, 200);
-    });
-    setTimeout(function() { _loadFirebase(); }, 6000);
+    window.addEventListener('flutter-first-frame', function() { setTimeout(_loadFirebase, 200); });
+    setTimeout(_loadFirebase, 6000); // fallback
   </script>
 
+  <!-- ═══════════════════════════════════════════════════════════════════
+       ESTILOS — Splash + safe-area
+  ═══════════════════════════════════════════════════════════════════ -->
   <style>
+    /* Reset e base */
+    *, *::before, *::after { box-sizing: border-box; }
     html, body {
       background-color: #07110d;
       margin: 0; padding: 0;
       height: 100%; width: 100%;
       overscroll-behavior: none;
       overflow: hidden;
+      /* Respeita safe-area do iPhone (notch / Dynamic Island / home indicator) */
+      padding-top:    env(safe-area-inset-top);
+      padding-bottom: env(safe-area-inset-bottom);
+      padding-left:   env(safe-area-inset-left);
+      padding-right:  env(safe-area-inset-right);
+      /* Evita zoom em inputs no iOS */
+      -webkit-text-size-adjust: 100%;
+      touch-action: pan-y;
     }
+
+    /* ── Splash screen de carregamento ─────────────────────────────── */
     #loading {
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
@@ -80,117 +152,289 @@
       background-color: #07110d;
       z-index: 9999;
       will-change: opacity;
-      transition: opacity 0.35s ease;
+      transition: opacity 0.4s ease;
     }
     #loading.fade-out { opacity: 0; pointer-events: none; }
+
     #loading-logo {
-      width: 72px; height: 72px;
-      border-radius: 18px;
-      background: linear-gradient(135deg, #075f45, #07110d);
+      width: 84px; height: 84px;
+      border-radius: 22px;
+      background: linear-gradient(135deg, #0d5c3a 0%, #07110d 100%);
       display: flex; align-items: center; justify-content: center;
-      margin-bottom: 24px;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+      margin-bottom: 28px;
+      box-shadow:
+        0 0 0 1px rgba(197,163,101,0.15),
+        0 12px 40px rgba(0,0,0,0.55),
+        0 2px 8px rgba(197,163,101,0.10);
+      animation: logoIn 0.5s cubic-bezier(0.34,1.56,0.64,1) both;
     }
-    #loading-logo span { color: #FFE8A6; font-size: 32px; font-weight: 900; font-family: serif; }
-    #loading-text { color: #C5A365; font-size: 18px; font-weight: 700; font-family: -apple-system, sans-serif; }
-    #loading-sub  { color: rgba(255,255,255,0.4); font-size: 12px; font-family: -apple-system, sans-serif; margin-top: 6px; }
+    #loading-logo img {
+      width: 56px; height: 56px;
+      border-radius: 12px;
+      object-fit: cover;
+    }
+    /* Fallback se a imagem não carregar */
+    #loading-logo-letter {
+      color: #FFE8A6;
+      font-size: 36px;
+      font-weight: 900;
+      font-family: -apple-system, 'Georgia', serif;
+      display: none;
+    }
+
+    #loading-title {
+      color: #C5A365;
+      font-size: 20px;
+      font-weight: 700;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      letter-spacing: 0.3px;
+    }
+    #loading-sub {
+      color: rgba(255,255,255,0.38);
+      font-size: 12px;
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      margin-top: 5px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
     #loading-spinner {
-      margin-top: 32px; width: 32px; height: 32px;
-      border: 3px solid rgba(197,163,101,0.2);
+      margin-top: 40px;
+      width: 28px; height: 28px;
+      border: 2.5px solid rgba(197,163,101,0.18);
       border-top-color: #C5A365;
       border-radius: 50%;
-      animation: spin 0.85s linear infinite;
+      animation: spin 0.9s linear infinite;
       will-change: transform;
     }
-    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── Toast de atualização disponível ───────────────────────────── */
+    #pwa-update-toast {
+      position: fixed;
+      bottom: calc(80px + env(safe-area-inset-bottom));
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: #1a2e24;
+      border: 1px solid rgba(197,163,101,0.30);
+      color: #fff;
+      padding: 12px 20px;
+      border-radius: 14px;
+      font-family: -apple-system, sans-serif;
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      white-space: nowrap;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.45);
+      z-index: 99999;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+    #pwa-update-toast.show {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateX(-50%) translateY(0);
+    }
+    #pwa-update-toast button {
+      background: #C5A365;
+      color: #07110d;
+      border: none;
+      border-radius: 8px;
+      padding: 6px 14px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    @keyframes spin    { to { transform: rotate(360deg); } }
+    @keyframes logoIn  { from { opacity: 0; transform: scale(0.7); } to { opacity: 1; transform: scale(1); } }
   </style>
 </head>
 <body>
 
+  <!-- ── Splash screen ─────────────────────────────────────────────── -->
   <div id="loading">
-    <div id="loading-logo"><span>M</span></div>
-    <div id="loading-text">MedCases Pro</div>
-    <div id="loading-sub">Apoio clínico educacional</div>
+    <div id="loading-logo">
+      <img src="icons/Icon-192.png" alt="MedCases Pro"
+           onerror="this.style.display='none'; document.getElementById('loading-logo-letter').style.display='block'">
+      <span id="loading-logo-letter">M</span>
+    </div>
+    <div id="loading-title">MedCases Pro</div>
+    <div id="loading-sub">Apoio Clínico · Educacional</div>
     <div id="loading-spinner"></div>
   </div>
 
+  <!-- ── Toast de atualização ──────────────────────────────────────── -->
+  <div id="pwa-update-toast">
+    <span>🔄 Nova versão disponível</span>
+    <button id="pwa-update-btn">Atualizar</button>
+  </div>
+
+  <!-- ═════════════════════════════════════════════════════════════════
+       SCRIPT PRINCIPAL — SW + Boot Flutter
+  ═════════════════════════════════════════════════════════════════ -->
   <script>
-    var APP_VERSION = '3.1.0';
+    'use strict';
 
-    (function () {
-      // --- Remoção do splash ---
-      var _removed = false;
-      function removeLoading() {
-        if (_removed) return;
-        _removed = true;
-        var el = document.getElementById('loading');
-        if (!el) return;
-        el.classList.add('fade-out');
-        setTimeout(function () {
-          if (el && el.parentNode) el.parentNode.removeChild(el);
-        }, 380);
-      }
+    // ── Versão do app (alterar a cada deploy significativo) ──────────
+    var APP_VERSION = '4.0.0';
+    var SW_URL      = 'pwa-sw.js';
 
-      window.addEventListener('flutter-first-frame', removeLoading);
+    // ── Remoção do splash ────────────────────────────────────────────
+    var _splashRemoved = false;
+    function removeSplash() {
+      if (_splashRemoved) return;
+      _splashRemoved = true;
+      var el = document.getElementById('loading');
+      if (!el) return;
+      el.classList.add('fade-out');
+      setTimeout(function() {
+        if (el && el.parentNode) el.parentNode.removeChild(el);
+      }, 420);
+    }
 
-      var _obs = new MutationObserver(function (mutations) {
-        for (var i = 0; i < mutations.length; i++) {
-          var nodes = mutations[i].addedNodes;
-          for (var j = 0; j < nodes.length; j++) {
-            var n = nodes[j];
-            if (n.tagName) {
-              var tag = n.tagName.toLowerCase();
-              if (tag === 'flt-glass-pane' || tag === 'flutter-view' || tag === 'flt-scene-host') {
-                setTimeout(removeLoading, 150);
-                _obs.disconnect();
-                return;
-              }
+    window.addEventListener('flutter-first-frame', removeSplash);
+
+    // Observer como fallback — detecta quando Flutter monta o DOM
+    var _obs = new MutationObserver(function(mutations) {
+      for (var i = 0; i < mutations.length; i++) {
+        var nodes = mutations[i].addedNodes;
+        for (var j = 0; j < nodes.length; j++) {
+          var n = nodes[j];
+          if (n.tagName) {
+            var tag = n.tagName.toLowerCase();
+            if (tag === 'flt-glass-pane' || tag === 'flutter-view' || tag === 'flt-scene-host') {
+              setTimeout(removeSplash, 150);
+              _obs.disconnect();
+              return;
             }
           }
         }
-      });
-      _obs.observe(document.body, { childList: true, subtree: true });
-      setTimeout(function () { if (!_removed) removeLoading(); }, 15000);
-
-      // --- Boot do Flutter ---
-      function bootFlutter() {
-        var s = document.createElement('script');
-        s.src = 'flutter_bootstrap.js';
-        s.async = true;
-        document.head.appendChild(s);
       }
+    });
+    _obs.observe(document.body, { childList: true, subtree: true });
+    // Timeout de segurança: remove splash após 15s em qualquer caso
+    setTimeout(function() { if (!_splashRemoved) removeSplash(); }, 15000);
+
+    // ── Boot do Flutter ──────────────────────────────────────────────
+    function bootFlutter() {
+      var s = document.createElement('script');
+      s.src = 'flutter_bootstrap.js';
+      s.async = true;
+      document.head.appendChild(s);
+    }
+
+    // ── Toast de atualização ─────────────────────────────────────────
+    var _waitingSW = null;
+
+    function showUpdateToast(sw) {
+      _waitingSW = sw;
+      var toast = document.getElementById('pwa-update-toast');
+      if (toast) toast.classList.add('show');
+      // Auto-dismiss em 15s se usuário não interagir
+      setTimeout(function() {
+        if (toast) toast.classList.remove('show');
+      }, 15000);
+    }
+
+    document.getElementById('pwa-update-btn').addEventListener('click', function() {
+      var toast = document.getElementById('pwa-update-toast');
+      if (toast) toast.classList.remove('show');
+      if (_waitingSW) {
+        // Manda o SW aplicar update imediatamente
+        _waitingSW.postMessage({ type: 'SKIP_WAITING' });
+        _waitingSW = null;
+      } else {
+        window.location.reload();
+      }
+    });
+
+    // ── Registro e gestão do Service Worker ─────────────────────────
+    (function() {
 
       if (!('serviceWorker' in navigator)) {
+        // Browser sem suporte a SW — boot direto
         bootFlutter();
         return;
       }
 
       var storedVersion = null;
-      try { storedVersion = localStorage.getItem('medcases_app_version'); } catch (e) {}
+      try { storedVersion = localStorage.getItem('medcases_app_version'); } catch(e) {}
 
+      // ── Se mesma versão: registra SW novo e faz boot imediato ──────
       if (storedVersion === APP_VERSION) {
-        // Cache válido -> boot imediato
+        registerSW();
         bootFlutter();
         return;
       }
 
-      // Nova versão -> limpa SW e cache antigos
-      var swClean = navigator.serviceWorker.getRegistrations().then(function (regs) {
-        return Promise.all(regs.map(function (reg) { return reg.unregister(); }));
-      }).catch(function () {});
+      // ── Nova versão detectada: limpa caches/SW antigos primeiro ────
+      var swClean = navigator.serviceWorker.getRegistrations()
+        .then(function(regs) {
+          return Promise.all(regs.map(function(reg) { return reg.unregister(); }));
+        })
+        .catch(function() {});
 
       var cacheClean = ('caches' in window)
-        ? caches.keys().then(function (keys) {
-            return Promise.all(keys.map(function (k) { return caches.delete(k); }));
-          }).catch(function () {})
+        ? caches.keys().then(function(keys) {
+            return Promise.all(keys.map(function(k) { return caches.delete(k); }));
+          }).catch(function() {})
         : Promise.resolve();
 
       Promise.all([swClean, cacheClean])
-        .catch(function () {})
-        .then(function () {
-          try { localStorage.setItem('medcases_app_version', APP_VERSION); } catch (e) {}
+        .catch(function() {})
+        .then(function() {
+          try { localStorage.setItem('medcases_app_version', APP_VERSION); } catch(e) {}
+          registerSW();
           bootFlutter();
         });
+
+      function registerSW() {
+        navigator.serviceWorker.register(SW_URL, {
+          scope: '/',
+          updateViaCache: 'none'   // sempre busca novo SW no servidor
+        })
+        .then(function(reg) {
+
+          // SW já está instalado e esperando (update em background)
+          if (reg.waiting) {
+            showUpdateToast(reg.waiting);
+          }
+
+          // SW novo encontrado enquanto app está aberto
+          reg.addEventListener('updatefound', function() {
+            var newWorker = reg.installing;
+            if (!newWorker) return;
+
+            newWorker.addEventListener('statechange', function() {
+              if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                // Há um SW novo pronto — mostra toast discreto
+                showUpdateToast(newWorker);
+              }
+            });
+          });
+
+          // Quando SW assume controle (após SKIP_WAITING), recarrega a página
+          var refreshing = false;
+          navigator.serviceWorker.addEventListener('controllerchange', function() {
+            if (!refreshing) {
+              refreshing = true;
+              window.location.reload();
+            }
+          });
+
+          // Verificação periódica de update em background (a cada 30min)
+          setInterval(function() {
+            reg.update().catch(function() {});
+          }, 30 * 60 * 1000);
+        })
+        .catch(function(err) {
+          console.warn('[PWA] SW registration failed:', err);
+        });
+      }
+
     }());
   </script>
 
