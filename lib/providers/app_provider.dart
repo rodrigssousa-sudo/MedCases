@@ -1072,13 +1072,16 @@ class AppProvider extends ChangeNotifier {
     return result.text;
   }
 
-  /// Resposta local (rule-based) — fallback quando não há chave ou sem rede
+  /// Resposta local (rule-based) — fallback quando não há chave ou sem rede.
+  ///
+  /// ARQUITETURA: sistema de pontuação por condição.
+  /// Cada condição clínica acumula score (+1 por keyword encontrada).
+  /// Apenas a condição com maior score é exibida — elimina o dump
+  /// incoerente de hipóteses desconexas (ex: cefaleia + fasciíte juntas).
   String _buildLocalAnswer(String input) {
     final bool es = _lang == 'es';
 
-    // ── Contexto acumulado do histórico (últimas 6 msgs do usuário) ───────────
-    // Permite que perguntas de follow-up ("forma de administração", "tiene FA")
-    // sejam respondidas com base no contexto já estabelecido na conversa.
+    // ── Contexto do histórico (follow-up) ────────────────────────────────────
     final recentUserMsgs = _aiHistory
         .where((m) => m['role'] == 'user')
         .map((m) => m['content'] ?? '')
@@ -1086,677 +1089,634 @@ class AppProvider extends ChangeNotifier {
     final historyTail = recentUserMsgs.length > 6
         ? recentUserMsgs.sublist(recentUserMsgs.length - 6)
         : recentUserMsgs;
-    final qHistory = _normalize(historyTail.join(' '));
-    // Query expandida = histórico recente + mensagem atual
+    final qHistory  = _normalize(historyTail.join(' '));
     final qExpanded = _normalize('$qHistory $input');
-    // Query da mensagem atual
-    final q = _normalize(input);
-
-    final buf = StringBuffer();
-    final suspected = <String>[];
-    final protocolIds = <String>[];
-    final examSuggestions = <String>[];
-    final redFlags = <String>[];
-
-    // ── Síndromes cardiovasculares ─────────────────────────────────────────
-    if (_has(q, ['dor torac', 'peito', 'iam', 'infarto', 'angina', 'stemi', 'nstemi', 'sca'])) {
-      suspected.add(es ? 'Síndrome Coronario Agudo (IAM/Angina Inestable)' : 'Síndrome Coronariana Aguda (IAM/Angina Instável)');
-      protocolIds.add('iam_congestao');
-      examSuggestions.addAll(es
-        ? ['ECG seriado (0–6–12h)', 'Troponina (0–3h)', 'RX tórax', 'Glucemia']
-        : ['ECG seriado (0–6–12h)', 'Troponina (0–3h)', 'RX tórax', 'Glicemia']);
-      redFlags.addAll(es
-        ? ['Supradesnivel ST → cateterismo urgente', 'Hipotensión → choque cardiogénico']
-        : ['Supradesnivelamento ST → cateterismo urgente', 'Hipotensão → choque cardiogênico']);
-    }
-    if (_has(q, ['dispne', 'falta de ar', 'crepit', 'congest', 'edema pulm', 'ortopneia', 'ic ', 'insuf cardiac', 'b3', 'killip'])) {
-      suspected.add('Insuficiência Cardíaca Descompensada / Edema Agudo de Pulmão');
-      protocolIds.add('iam_congestao');
-      examSuggestions.addAll(['BNP/NT-proBNP', 'RX tórax', 'Ecocardiograma', 'Eletrólitos']);
-      redFlags.add('SpO2 <90% + esforço respiratório → VNI imediata');
-    }
-    if (_has(q, ['hipotens', 'choque', 'pele fria', 'oliguria', 'lactato', 'hipoperfus', 'extremid frias'])) {
-      suspected.add('Choque (cardiogênico / séptico / hipovolêmico / obstrutivo)');
-      protocolIds.add('choque_cardiogenico');
-      examSuggestions.addAll(['Lactato arterial', 'Gasometria', 'ECG', 'Ecocardiograma beira-leito', 'Hemoculturas se febre']);
-      redFlags.addAll(['PAM <65 → vasopressor imediato', 'Lactato >4 → reanimação agressiva']);
-    }
-    if (_has(q, ['fa ', 'fibrilac atrial', 'fibril atri', 'auricular', 'rr irregular'])) {
-      suspected.add('Fibrilação Atrial');
-      protocolIds.add('fa_aguda');
-      examSuggestions.addAll(['ECG 12 derivações', 'TSH', 'Eletrólitos', 'Ecocardiograma', 'Coagulação']);
-      redFlags.add('FC >150 com instabilidade → cardioversão elétrica imediata');
-    }
-    if (_has(q, ['dissecc', 'disseçao aort', 'dor torn', 'assimetr', 'interescap'])) {
-      suspected.add('Dissecção Aórtica Aguda');
-      protocolIds.add('crise_hipertensiva');
-      examSuggestions.addAll(['AngioTC aorta urgente', 'RX tórax', 'ECG', 'PA nos 2 braços']);
-      redFlags.addAll(['NÃO anticoagular sem confirmar diagnóstico', 'Controle FC+PA imediato: meta PAS <120 + FC <60']);
-    }
-
-    // ── Arritmias ──────────────────────────────────────────────────────────
-    if (_has(q, ['taquic', 'palpit', 'qrs estrei', 'tpsv', 'arritm supravent'])) {
-      suspected.add('Taquiarritmia Supraventricular (TPSV / FA / Flutter)');
-      protocolIds.add('tpsv');
-      examSuggestions.addAll(['ECG 12 derivações', 'Eletrólitos (K+, Mg2+)', 'TSH']);
-    }
-    if (_has(q, ['fv ', 'fibrilac ventr', 'tv ', 'taquic ventr', 'pcr', 'parada cardiac', 'sem pulso'])) {
-      suspected.add('Parada Cardiorrespiratória / FV / TV sem pulso');
-      protocolIds.add('pcr_adulto');
-      examSuggestions.addAll(['Monitor/desfibrilador', 'Gasometria pós-ROSC', 'ECG pós-ROSC', 'Glicemia']);
-      redFlags.add('ACLS imediato: RCP de alta qualidade + desfibrilação');
-    }
-
-    // ── Neurológicos ──────────────────────────────────────────────────────
-    if (_has(q, ['avc', 'acidente vasc', 'hemiplegi', 'deficit focal', 'afasia', 'hemiparesia', 'desvio boca'])) {
-      suspected.add('AVC (Isquêmico ou Hemorrágico)');
-      protocolIds.add('avc_isquemico');
-      examSuggestions.addAll(['TC crânio URGENTE (sem contraste)', 'Glicemia capilar', 'Coagulação', 'ECG', 'PA']);
-      redFlags.addAll(['Janela trombolítica: <4,5h', 'Hipoglicemia mimetiza AVC — checar glicemia sempre', 'Hipertensão grave: tratar apenas se PAS >220 (sem trombolítico)']);
-    }
-    if (_has(q, ['hemorrag intracran', 'hemorrag cerebr', 'sangr cerebr', 'hematoma subdur', 'hematoma extradur'])) {
-      suspected.add('Hemorragia Intracraniana');
-      protocolIds.add('avc_hemorragico');
-      examSuggestions.addAll(['TC crânio urgente', 'Coagulação completa', 'Plaquetas']);
-      redFlags.addAll(['CONTRAINDICADO trombolítico e anticoagulantes', 'Reverter anticoagulação imediatamente']);
-    }
-    if (_has(q, ['convuls', 'epileps', 'status epilep', 'crise convuls', 'crise epilep'])) {
-      suspected.add('Status Epilepticus / Convulsão');
-      protocolIds.add('status_epilepticus');
-      examSuggestions.addAll(['Glicemia', 'Eletrólitos (Na+, Mg2+, Ca2+)', 'TC crânio', 'EEG se status refratário']);
-      redFlags.add('Crise >5 min → benzodiazepínico IMEDIATO');
-    }
-
-    // ── Cefaleia — raciocínio em 2 níveis ────────────────────────────────
-    // Nível 1: keyword genérico → hipótese comum (enxaqueca/tensional/viral)
-    // Nível 2: qualificador de gravidade → escala para HSA/meningite
-    if (_has(q, ['cefal', 'dor de cabeca', 'dor cabeca', 'dor de cabe'])) {
-      // Qualificadores que indicam alto risco neurológico
-      final hasHighRiskHeadache = _has(q, [
-        'trovoada', 'pior cefaleia', 'pior dor', 'inicio subito',
-        'rigidez', 'meningismo', 'petequi', 'nucal',
-        'inconsciente', 'perda de consciencia',
-      ]);
-      // Combinação febre + cefaleia (suspeita de meningite)
-      final hasFeverHeadache = _has(q, ['febre']) &&
-          _has(q, ['cefal', 'dor de cabeca', 'dor cabeca']);
-      // Sinal neurológico focal associado
-      final hasFocalSign = _has(q, [
-        'deficit focal', 'afasia', 'hemiplegi', 'hemiparesia',
-        'glasgow', 'confusao', 'alteracao de consciencia',
-      ]);
-
-      if (hasHighRiskHeadache || hasFocalSign) {
-        suspected.add('Cefaleia de alto risco — excluir HSA / Meningite');
-        protocolIds.add('avc_hemorragico');
-        examSuggestions.addAll(['TC crânio sem contraste (excluir HSA)', 'Punção lombar se TC negativa', 'Hemoculturas + PCR se febre', 'Hemograma']);
-        redFlags.addAll(['"Pior cefaleia da vida" ou início súbito → excluir HSA urgente', 'Déficit focal + cefaleia → descartar AVC/hemorragia']);
-      } else if (hasFeverHeadache) {
-        suspected.add('Cefaleia com febre — investigar: viral, bacteriana, meningite');
-        examSuggestions.addAll(['Temperatura', 'Hemograma', 'PCR', 'Avaliar rigidez nucal no exame físico']);
-        redFlags.add('Rigidez nucal + febre + cefaleia → suspeitar meningite e acionar avaliação urgente');
-      } else {
-        // Sem qualificadores → hipóteses comuns, sem protocolo de emergência
-        suspected.add('Cefaleia — causas comuns: enxaqueca, tensional, viral, hipertensão');
-        examSuggestions.addAll(['PA (descartar crise hipertensiva)', 'Temperatura', 'Intensidade (EVA 0–10) e padrão temporal']);
-        redFlags.add('Se início súbito "em trovoada" ou pior da vida → avaliar urgência');
-      }
-    }
-
-    // ── Náusea / Vômito — raciocínio em 2 níveis ─────────────────────────
-    // Nível 1: sintoma isolado ou com cefaleia simples → causas comuns
-    // Nível 2: combinação com red flags específicos → deixa bloco especializado agir
-    if (_has(q, ['nause', 'vomit', 'enjoo', 'emese'])) {
-      final hasAbdominalEmergency = _has(q, [
-        'dor abdom', 'rigidez abdom', 'defesa abdom', 'peritonite',
-        'melena', 'hematemes', 'sangue nas fezes', 'hemorrag digest',
-      ]);
-      final hasNeuroGravity = _has(q, [
-        'trovoada', 'pior cefaleia', 'rigidez nuca', 'meningismo',
-        'petequi', 'glasgow', 'perda de consciencia', 'deficit focal',
-        'afasia', 'hemiplegi', 'hemiparesia',
-      ]);
-      final hasCardioGravity = _has(q, [
-        'dor torac', 'dor no peito', 'infarto', 'sudorese fria',
-        'hipotens', 'choque', 'sem pulso',
-      ]);
-      final hasMetabolicGravity = _has(q, [
-        'cetoacid', 'hiperglicemi', 'hipoglicemi', 'insuf renal',
-        'anuria', 'uremia',
-      ]);
-
-      if (!hasAbdominalEmergency && !hasNeuroGravity && !hasCardioGravity && !hasMetabolicGravity) {
-        suspected.add(es
-          ? 'Síndrome emética — causas comunes: gastroenteritis viral, alimentaria, migraña, medicamentosa'
-          : 'Síndrome emética — causas comuns: gastroenterite viral, alimentar, enxaqueca, medicamentosa');
-        examSuggestions.addAll(es
-          ? [
-              'Temperatura (fiebre sugiere causa infecciosa)',
-              'PA y FC (deshidratación / hipotensión ortostática)',
-              'Glucemia capilar',
-              'Evaluar signos de deshidratación (turgencia, mucosas)',
-            ]
-          : [
-              'Temperatura (febre sugere causa infecciosa)',
-              'PA e FC (desidratação / hipotensão ortostática)',
-              'Glicemia capilar',
-              'Avaliar sinais de desidratação (turgor, mucosas)',
-            ]);
-        redFlags.add(es
-          ? 'Si dolor abdominal intenso, sangrado, rigidez o alteración de conciencia → urgencia'
-          : 'Se dor abdominal intensa, sangramento, rigidez ou rebaixamento → urgência');
-      }
-    }
-
-    // ── Respiratórios ──────────────────────────────────────────────────────
-    if (_has(q, ['asma', 'broncoespas', 'sibilo', 'wheezing'])) {
-      suspected.add('Asma em Crise / Broncoespasmo Agudo');
-      protocolIds.add('asma_grave');
-      examSuggestions.addAll(['SpO2', 'PFE (peak flow)', 'Gasometria se grave', 'RX tórax se dúvida']);
-      redFlags.add('Silêncio auscultório + SpO2 <90% → risco de PCR iminente');
-    }
-    if (_has(q, ['dpoc', 'doença pulm obstr', 'enfisema', 'bronquite cronica', 'exacerbac pulm'])) {
-      suspected.add('DPOC em Exacerbação Aguda');
-      protocolIds.add('dpoc_exacerbacao');
-      examSuggestions.addAll(['Gasometria arterial', 'RX tórax', 'SpO2', 'Hemograma', 'PCR']);
-      redFlags.addAll(['O2 CONTROLADO: SpO2 alvo 88–92%', 'pH <7,35 + PaCO2 elevado → VNI imediata']);
-    }
-    if (_has(q, ['tep', 'tromboembol pulm', 'embolia pulm', 'dispneia sub', 'taquic+dispneia', 'tvp'])) {
-      suspected.add('Tromboembolismo Pulmonar (TEP)');
-      protocolIds.add('tep_agudo');
-      examSuggestions.addAll(['D-dímero (se baixa probabilidade)', 'AngioTC tórax', 'ECG (S1Q3T3)', 'Troponina', 'BNP/Echo', 'Score de Wells']);
-      redFlags.add('Choque/hipotensão → trombolítico sistêmico urgente');
-    }
-    if (_has(q, ['pneumon', 'infeccao pulm', 'infiltrado', 'consolidac', 'tosse+febre+dispn'])) {
-      suspected.add('Pneumonia Adquirida na Comunidade (PAC) / Nosocomial');
-      protocolIds.add('sepse');
-      examSuggestions.addAll(['RX tórax', 'Hemoculturas (2 pares)', 'Hemograma', 'PCR', 'Ureia', 'Score PSI/PORT ou CURB-65']);
-      redFlags.add('PSI ≥V ou CURB-65 ≥3 → hospitalização / UTI');
-    }
-
-    // ── Sepse / Infecção ──────────────────────────────────────────────────
-    if (_has(q, ['sepse', 'seps', 'septic', 'bacterem', 'infec grave', 'choque septic'])) {
-      suspected.add('Sepse / Choque Séptico');
-      protocolIds.add('sepse');
-      examSuggestions.addAll(['Lactato', 'Hemoculturas (2 pares)', 'Uroculturas', 'PCR/Procalcitonina', 'Hemograma', 'Função renal', 'Gasometria']);
-      redFlags.addAll(['Antibiótico em <1 HORA', 'Lactato >4 → 30 mL/kg SF', 'Vasopressor se PAM <65 após volume']);
-    }
-    if (_has(q, ['meningite', 'encefalite', 'rigidez nuca', 'kernig', 'brudzinski', 'confusao+febre'])) {
-      suspected.add('Meningite / Encefalite Bacteriana');
-      protocolIds.add('sepse');
-      examSuggestions.addAll(['TC crânio (antes da PL se focal)', 'Punção lombar', 'Hemoculturas', 'Glicemia', 'PCR']);
-      redFlags.addAll(['ATB IMEDIATO — não atrasar por PL', 'Dexametasona 0,15 mg/kg IV antes ou junto ao ATB']);
-    }
-
-    // ── Endócrinos / Metabólicos ───────────────────────────────────────────
-    if (_has(q, ['cetoacid', 'cad', 'glicos alt', 'hiperglicemi', 'cetona', 'vomit+diabetes'])) {
-      suspected.add('Cetoacidose Diabética (CAD)');
-      protocolIds.add('cad_shh');
-      examSuggestions.addAll(['Glicemia', 'Cetonemia/cetonúria', 'Gasometria venosa', 'Eletrólitos (K+ urgente)', 'BUN/Cr']);
-      redFlags.add('K+ <3,3 → SUSPENDER insulina e repor K+ primeiro');
-    }
-    if (_has(q, ['hipoglicemi', 'glicemia bai', 'confusao+diabetes', 'sudorese fria', 'tremor+diabetes'])) {
-      suspected.add('Hipoglicemia Grave');
-      protocolIds.add('cad_shh');
-      examSuggestions.addAll(['Glicemia capilar URGENTE', 'Glicemia venosa']);
-      redFlags.addAll(['Glicemia <60 → 50 mL glicose 50% IV imediato', 'Sem acesso IV → glucagon 1 mg IM/SC']);
-    }
-    if (_has(q, ['hipocalemi', 'hipopotass', 'k bai', 'hipokalem', 'fraqueza muscul+eletroli'])) {
-      suspected.add('Hipopotassemia Grave');
-      protocolIds.add('cad_shh');
-      examSuggestions.addAll(['K+ sérico', 'ECG (ondas U, QT longo)', 'Mg2+', 'Gasometria']);
-      redFlags.add('K+ <2,5 ou alteração de ECG → reposição IV monitorada');
-    }
-    if (_has(q, ['hipercalemi', 'hiperpotass', 'k alt', 'hiperkalem', 'ecg+onda t apic'])) {
-      suspected.add('Hipercalemia Grave');
-      protocolIds.add('cad_shh');
-      examSuggestions.addAll(['K+ sérico urgente', 'ECG', 'Gasometria', 'Função renal']);
-      redFlags.addAll(['K+ >6,5 ou alteração ECG → Gluconato de Ca2+ IV imediato', 'Insulina + glicose + bicarbonato + diálise se refratário']);
-    }
-    if (_has(q, ['crise tireo', 'tempestade tireo', 'hipotireoidismo grave', 'mixedema', 'tirotoxicos'])) {
-      suspected.add('Crise Tireotóxica / Mixedema Grave');
-      protocolIds.add('sepse');
-      examSuggestions.addAll(['TSH', 'T4 livre', 'T3', 'Hemograma', 'Função hepática']);
-      redFlags.add('Crise tireotóxica → UTI imediata (mortalidade alta)');
-    }
-
-    // ── Renais ─────────────────────────────────────────────────────────────
-    if (_has(q, ['insuf renal aguda', 'ira', 'oliguria', 'anuria', 'creatinina elev', 'uremia'])) {
-      suspected.add('Insuficiência Renal Aguda (IRA)');
-      protocolIds.add('cad_shh');
-      examSuggestions.addAll(['Creatinina/Ureia seriadas', 'EAS/uroculturas', 'Eletrólitos', 'Eco renal', 'ANCA/anti-MBG se glomerulite']);
-      redFlags.addAll(['K+ >6 ou oligúria refratária → diálise de urgência', 'Excluir pré-renal (volume) e obstrutivo (eco) antes de tratar intrínseco']);
-    }
-
-    // ── Gastroenterológicos ────────────────────────────────────────────────
-    if (_has(q, ['hematemes', 'hemorrag digest', 'melena', 'hamatoquezia', 'sangr gi', 'ulcera sangr'])) {
-      suspected.add('Hemorragia Digestiva Alta / Varicosa');
-      protocolIds.add('hda_varizeal');
-      examSuggestions.addAll(['Hemograma', 'Coagulação', 'Grupo sanguíneo', 'Função renal', 'EDA urgente']);
-      redFlags.addAll(['Instabilidade → 2 acessos calibrosos + SF imediato', 'Hb alvo 7–8 g/dL (transfusão restritiva)']);
-    }
-    if (_has(q, ['dor abdom', 'abdome agudo', 'peritonite', 'rigidez abd', 'defesa abdom', 'board-like'])) {
-      suspected.add('Abdome Agudo / Peritonite');
-      protocolIds.add('sepse');
-      examSuggestions.addAll(['RX abdome', 'TC abdome+pelve c/contraste', 'Hemograma', 'Lipase/amilase', 'PCR', 'Urina I']);
-      redFlags.add('Sinais peritoneais + instabilidade → cirurgia de emergência');
-    }
-    if (_has(q, ['pancreatite', 'dor epigast irrad dorso', 'lipase elev', 'amilase elev'])) {
-      suspected.add('Pancreatite Aguda');
-      protocolIds.add('sepse');
-      examSuggestions.addAll(['Lipase/amilase', 'TC abdome (se grave/dúvida)', 'Eletrólitos', 'Cálcio', 'Glicemia', 'Score BISAP/APACHE']);
-      redFlags.add('Score BISAP ≥3 ou CTSI elevado → UTI (pancreatite grave)');
-    }
-
-    // ── Psiquiátrico / Outras ──────────────────────────────────────────────
-    if (_has(q, ['delirium', 'confusao aguda', 'agitac', 'rebaixamento conscien', 'glasgow baixo'])) {
-      suspected.add('Delirium / Rebaixamento do Nível de Consciência');
-      protocolIds.add('status_epilepticus');
-      examSuggestions.addAll(['Glicemia capilar', 'TC crânio', 'Eletrólitos', 'Função renal/hepática', 'Hemoculturas', 'Gasometria', 'Revisão de medicamentos']);
-      redFlags.addAll(['Excluir: hipoglicemia, AVC, meningite, IRA, intoxicação', 'Glasgow <8 → proteger via aérea']);
-    }
-    if (_has(q, ['intoxicac', 'overdose', 'envenenam', 'ingestao', 'organofosf', 'benzodiaz+depressao resp'])) {
-      suspected.add('Intoxicação / Overdose');
-      protocolIds.add('pcr_adulto');
-      examSuggestions.addAll(['Toxicológico urinário', 'Gasometria', 'Eletrólitos', 'ECG (QT longo, arritmia)', 'Paracetamol/salicilato', 'Glicemia']);
-      redFlags.addAll(['Contato imediato com Centro de Informação Toxicológica', 'Antídotos específicos conforme agente (naloxona, flumazenil, N-acetilcisteína, atropina)']);
-    }
-    if (_has(q, ['crise hipert', 'pa muito alta', 'pa >180', 'emergencia hiperten', 'encefalopatia hiperten'])) {
-      suspected.add('Crise Hipertensiva (Urgência / Emergência)');
-      protocolIds.add('crise_hipertensiva');
-      examSuggestions.addAll(['PA em ambos os braços', 'ECG', 'Fundo de olho', 'Creatinina/ureia', 'EAS', 'TC crânio se sintomas neurológicos']);
-      redFlags.addAll(['Encefalopatia + PA >180 → emergência (redução controlada IV)', 'NÃO reduzir PA >25% na 1ª hora']);
-    }
-
-    // ── Cardiologia adicional ──────────────────────────────────────────────
-    if (_has(q, ['fa ', 'fibrilac atrial', 'fibril atri', 'auricular', 'rr irregular', 'flutter', 'fibrilacao'])) {
-      suspected.add('Fibrilação Atrial / Flutter Atrial');
-      protocolIds.add('fa_aguda');
-      examSuggestions.addAll(['ECG 12 derivações', 'TSH', 'Eletrólitos (K+, Mg2+)', 'Ecocardiograma', 'Coagulação', 'Score CHA₂DS₂-VASc']);
-      redFlags.addAll(['FC > 150 + instabilidade hemodinâmica → cardioversão elétrica imediata', 'FA > 48h sem anticoagulação → risco de AVC por trombo']);
-    }
-    if (_has(q, ['ic ', 'insuf cardiac', 'ortopneia', 'edema pulmonar', 'crepitac', 'dispne', 'bnp', 'fej', 'frac ejec'])) {
-      suspected.add('Insuficiência Cardíaca Descompensada / Edema Agudo de Pulmão');
-      protocolIds.add('iam_congestao');
-      examSuggestions.addAll(['BNP/NT-proBNP', 'RX tórax', 'Ecocardiograma', 'Eletrólitos', 'Função renal', 'Hemograma']);
-      redFlags.addAll(['SpO2 < 90% + esforço respiratório → VNI (CPAP/BIPAP) imediata', 'Hipotensão + IC → choque cardiogênico: cuidado com diurético agressivo']);
-    }
-    if (_has(q, ['crise hipert', 'pa muito alta', 'pa > 180', 'emergencia hiperten', 'encefalopatia hiperten', 'urgencia hiperten', 'hipertensao grave'])) {
-      suspected.add('Crise Hipertensiva (Urgência / Emergência)');
-      protocolIds.add('crise_hipertensiva');
-      examSuggestions.addAll(['PA em ambos os braços', 'ECG', 'Fundo de olho', 'Creatinina/ureia', 'EAS', 'TC crânio se sintomas neurológicos']);
-      redFlags.addAll(['Encefalopatia/AVC/IAM/IRA + PA > 180 → emergência: redução IV controlada', 'NÃO reduzir PA > 25% na 1ª hora — risco de AVC isquêmico por hipoperfusão']);
-    }
-
-    // ── Hematologia / Coagulação ───────────────────────────────────────────
-    if (_has(q, ['hematemes', 'hemorrag digest', 'melena', 'hematoquezia', 'sangr gi', 'ulcera sangr', 'varizes esof'])) {
-      suspected.add('Hemorragia Digestiva Alta (HDA) — Ulcerosa / Varicosa');
-      protocolIds.add('hda_varizeal');
-      examSuggestions.addAll(['Hemograma (Hb, Ht)', 'Coagulação (TP, TTPA)', 'Tipagem sanguínea', 'Função renal', 'EDA urgente em < 24h', 'Score de Blatchford']);
-      redFlags.addAll(['PA sistólica < 100 + FC > 100 → 2 acessos calibrosos + SF imediato', 'Hb alvo pós-transfusão 7–8 g/dL (transfusão restritiva)', 'Cirrose + HDA → octreotida + ATB profilático + Terlipressina']);
-    }
-    if (_has(q, ['anticoagulac', 'sangramento ativo', 'heparina reverter', 'varfarina', 'warfarin', 'reverter anticoag'])) {
-      suspected.add('Sangramento em Uso de Anticoagulante / Reversão de Anticoagulação');
-      protocolIds.add('hda_varizeal');
-      examSuggestions.addAll(['INR/TP/TTPA', 'Hemograma', 'Tipagem', 'Função renal']);
-      redFlags.addAll(['Varfarina + sangramento grave → vitamina K 10 mg EV + CCP (4 fatores)', 'Heparina → protamina 1 mg / 100 UI heparina EV', 'DOAC → agentes específicos: idarucizumabe (dabigatrana), andexanete alfa (rivaroxabana/apixabana)']);
-    }
-
-    // ── Dor abdominal / Cirúrgico ──────────────────────────────────────────
-    if (_has(q, ['dor abdom', 'abdome agudo', 'peritonite', 'rigidez abd', 'defesa abdom', 'apendicite', 'colecistite', 'obstru intestinal'])) {
-      suspected.add('Abdome Agudo / Peritonite / Síndrome Abdominal Cirúrgica');
-      protocolIds.add('sepse');
-      examSuggestions.addAll(['RX abdome em pé', 'TC abdome+pelve com contraste', 'Hemograma', 'PCR', 'Lipase/amilase', 'Ureia/Cr', 'Urina I']);
-      redFlags.addAll(['Sinais peritoneais + instabilidade → cirurgia de emergência', 'Pneumoperitônio no RX → perfuração visceral: cirurgia imediata']);
-    }
-    if (_has(q, ['pancreatite', 'dor epigast irrad dorso', 'lipase elev', 'amilase elev', 'pancreat'])) {
-      suspected.add('Pancreatite Aguda');
-      protocolIds.add('sepse');
-      examSuggestions.addAll(['Lipase (> 3× LSN diagnóstico)', 'TC abdome (Balthazar/CTSI — se grave ou dúvida)', 'Eletrólitos', 'Cálcio', 'Glicemia', 'TGO/TGP/FA', 'Score BISAP']);
-      redFlags.addAll(['Score BISAP ≥ 3 ou APACHE II alto → UTI (pancreatite grave)', 'Necroinfeção: febre + piora clínica após 48–72h → TC + ATB (imipenem/meropeném)']);
-    }
-
-    // ── Delirium / Intoxicação / Psiquiátrico ──────────────────────────────
-    if (_has(q, ['delirium', 'confusao aguda', 'agitac', 'rebaixamento conscien', 'glasgow baixo', 'confusao mental'])) {
-      suspected.add('Delirium / Rebaixamento de Consciência (investigar causa base)');
-      protocolIds.add('status_epilepticus');
-      examSuggestions.addAll(['Glicemia capilar URGENTE', 'TC crânio', 'Eletrólitos (Na+, K+, Mg2+, Ca2+)', 'Função renal e hepática', 'Hemoculturas + Urina I', 'Gasometria', 'Revisão de medicamentos (polifarmácia)']);
-      redFlags.addAll(['Excluir SEMPRE: hipoglicemia, AVC, meningite, IRA, intoxicação', 'Glasgow ≤ 8 → proteger via aérea (IOT)', 'CAM positivo + idoso → delirium: tratar causa base, evitar haloperidol em QT longo']);
-    }
-    if (_has(q, ['intoxicac', 'overdose', 'envenenam', 'ingestao', 'organofosf', 'benzodiaz+depressao resp', 'intoxicacao'])) {
-      suspected.add('Intoxicação Exógena / Overdose');
-      protocolIds.add('pcr_adulto');
-      examSuggestions.addAll(['Toxicológico urinário', 'Gasometria', 'Eletrólitos', 'ECG (QT longo, arritmia)', 'Paracetamol e salicilato séricos', 'Glicemia', 'Função renal e hepática']);
-      redFlags.addAll(['Contato imediato: Centro de Informação Toxicológica (0800 722 6001)', 'Antídotos: naloxona (opioides), flumazenil (BZD), N-acetilcisteína (paracetamol), atropina (organofosforados)', 'Carvão ativado 1 g/kg VO se < 1h da ingestão e via aérea protegida']);
-    }
-
-    // ── Reumatologia / MSK ─────────────────────────────────────────────────
-    if (_has(q, ['artrite septic', 'articulacao quente', 'monoartrite', 'artrite infec', 'artralgia febre'])) {
-      suspected.add('Artrite Séptica / Artropatia Inflamatória Aguda');
-      protocolIds.add('sepse');
-      examSuggestions.addAll(['Artrocentese + análise do líquido sinovial', 'Hemoculturas', 'PCR/VHS', 'Hemograma', 'Ácido úrico', 'Rx articulação']);
-      redFlags.add('Artrite séptica → artrocentese + ATB em < 6h (S. aureus mais comum)');
-    }
-
-    // ── Dermatologia / Lesão de pele ───────────────────────────────────────
-    if (_has(q, ['eritroderm', 'fasciite necros', 'steven johnson', 'ten', 'necrolise epider', 'celulite extensa'])) {
-      suspected.add('Dermatose Grave / Fasciíte Necrosante / Síndrome de Stevens-Johnson');
-      protocolIds.add('sepse');
-      examSuggestions.addAll(['Hemograma', 'PCR', 'Creatinina', 'Coagulação', 'Hemocultura', 'Biopsia se necessário']);
-      redFlags.addAll(['Fasciíte necrosante → cirurgia de desbridamento URGENTE + ATB broad-spectrum', 'SJS/TEN → UTI, suspender medicamento causador, cuidados como queimado']);
-    }
-
-    // ── Obstétrica / Ginecológica ──────────────────────────────────────────
-    if (_has(q, ['eclamps', 'pre-eclamps', 'pressao gestac', 'gestante hiperten', 'convulsao gravida', 'hellp'])) {
-      suspected.add('Pré-eclâmpsia Grave / Eclâmpsia / Síndrome HELLP');
-      protocolIds.add('crise_hipertensiva');
-      examSuggestions.addAll(['PA seriada', 'Proteinúria 24h ou razão Pr/Cr', 'Hemograma + plaquetas', 'TGO/TGP', 'LDH', 'Creatinina', 'Ácido úrico']);
-      redFlags.addAll(['PA ≥ 160/110 em gestante → anti-hipertensivo imediato (hidralazina/nifedipina)', 'Convulsão → sulfato de magnésio 4–6 g EV (ataque) + 1–2 g/h manutenção', 'HELLP → parto imediato se ≥ 34 semanas']);
-    }
+    final q         = _normalize(input);
 
     // ════════════════════════════════════════════════════════════════════════
-    // ── INTELIGÊNCIA CONTEXTUAL (quando suspected ainda está vazio) ─────────
-    // Antes de pedir mais contexto, tenta extrair informação útil de:
-    //   1. Perguntas de farmacologia (via, dose, mecanismo, interação, adversos)
-    //   2. Re-tentativa com qExpanded (histórico + msg atual)
-    //   3. Follow-up clínico genérico quando há contexto no histórico
+    // FASE 0 — FARMACOLOGIA DIRETA (prioridade absoluta)
     // ════════════════════════════════════════════════════════════════════════
-    if (suspected.isEmpty) {
+    final isPharmaQuestion = _has(qExpanded, [
+      'via de admin', 'forma de admin', 'via admin', 'como admin',
+      'como dar', 'como usar', 'modo de usar', 'modo de admin', 'rota de admin',
+      'dose ', 'dosagem', 'posolog', 'dose maxima', 'dose minima',
+      'dose inicial', 'dose de ataque', 'dose de manutenc',
+      'mecanismo', 'mecanismo de acao', 'como funciona', 'por que usar',
+      'efeito adverso', 'efeito colateral', 'reacao adversa', 'toxicidade',
+      'interacao', 'interacoes', 'interage', 'compativel',
+      'contraindicacao', 'contraindicado', 'nao usar', 'quando nao',
+      'indicacao', 'indicado para', 'para que serve', 'quando usar',
+      'ajuste renal', 'atencao renal',
+      // espanhol
+      'via de administracion', 'como administrar', 'dosis', 'posologia',
+      'mecanismo de accion', 'efecto adverso', 'efectos secundarios',
+      'interaccion', 'contraindicacion', 'para que sirve', 'alerta renal',
+    ]);
 
-      // ── 1. PERGUNTAS DE FARMACOLOGIA DIRETA ────────────────────────────
-      // Detecta intenção: "via de administração", "dose", "mecanismo",
-      // "efeito adverso", "interação", "contraindicação", "como dar", etc.
-      final isPharmaQuestion = _has(qExpanded, [
-        'via de admin', 'forma de admin', 'via admin', 'como admin',
-        'como dar', 'como usar', 'modo de usar', 'modo de admin',
-        'rota de admin', 'via de uso',
-        'dose ', 'dosagem', 'posolog', 'dose maxima', 'dose minima',
-        'dose inicial', 'dose de ataque', 'dose de manutenc',
-        'mecanismo', 'mecanismo de acao', 'como funciona', 'por que usar',
-        'efeito adverso', 'efeito colateral', 'reacao adversa',
-        'evento adverso', 'efeitos', 'toxicidade',
-        'interacao', 'interacoes', 'interage', 'compativel',
-        'contraindicacao', 'contraindicado', 'nao usar', 'quando nao',
-        'indicacao', 'indicado para', 'para que serve', 'quando usar',
-        'alerta', 'cuidado', 'atencao renal', 'ajuste renal',
-        'idoso', 'gestante', 'grávida', 'pediatr',
-        // espanhol
-        'via de administracion', 'forma de administracion', 'como administrar',
-        'dosis', 'posologia', 'mecanismo de accion', 'efecto adverso',
-        'efectos secundarios', 'interaccion', 'contraindicacion',
-        'para que sirve', 'cuando usar', 'alerta renal',
-      ]);
+    if (isPharmaQuestion) {
+      final matchedDrugs = _matchDrugs(_normalize(qExpanded));
+      if (matchedDrugs.isNotEmpty) {
+        final askingVia   = _has(qExpanded, ['via ', 'via de', 'forma de admin', 'como admin', 'como dar', 'rota', 'modo de', 'administracion']);
+        final askingDose  = _has(qExpanded, ['dose', 'dosagem', 'posolog', 'dosis']);
+        final askingMech  = _has(qExpanded, ['mecanismo', 'como funciona', 'por que', 'mecanismo de acao', 'mecanismo de accion']);
+        final askingAdv   = _has(qExpanded, ['adverso', 'colateral', 'reacao', 'toxicidad', 'efectos sec', 'efeito']);
+        final askingInter = _has(qExpanded, ['interacao', 'interaccion', 'interage', 'compativel']);
+        final askingCI    = _has(qExpanded, ['contraindicacao', 'contraindicado', 'nao usar', 'contraindicacion']);
+        final askingInd   = _has(qExpanded, ['indicacao', 'indicado', 'para que', 'quando usar', 'sirve', 'indicacion']);
 
-      if (isPharmaQuestion) {
-        // Busca fármacos mencionados na query expandida (histórico + atual)
-        final matchedDrugs = _matchDrugs(_normalize(qExpanded));
-        if (matchedDrugs.isNotEmpty) {
-          // Determina o tipo de pergunta para resposta focada
-          final askingVia   = _has(qExpanded, ['via ', 'via de', 'forma de admin', 'como admin', 'como dar', 'rota', 'modo de', 'administracion']);
-          final askingDose  = _has(qExpanded, ['dose', 'dosagem', 'posolog', 'dosis']);
-          final askingMech  = _has(qExpanded, ['mecanismo', 'como funciona', 'por que', 'mecanismo de acao', 'mecanismo de accion']);
-          final askingAdv   = _has(qExpanded, ['adverso', 'colateral', 'reacao', 'toxicidad', 'efectos sec', 'efeito']);
-          final askingInter = _has(qExpanded, ['interacao', 'interaccion', 'interage', 'compativel']);
-          final askingCI    = _has(qExpanded, ['contraindicacao', 'contraindicado', 'nao usar', 'contraindicacion']);
-          final askingInd   = _has(qExpanded, ['indicacao', 'indicado', 'para que', 'quando usar', 'sirve', 'indicacion']);
+        final buf = StringBuffer();
+        buf.writeln(es ? '## Información farmacológica:' : '## Informações farmacológicas:');
+        buf.writeln('');
 
-          buf.writeln(es ? '## Información farmacológica:' : '## Informações farmacológicas:');
+        for (final drug in drugsDatabase) {
+          final dName = _normalize(drug.name);
+          final words = qExpanded.split(RegExp(r'\s+')).where((w) => w.length > 3);
+          if (!words.any((w) => dName.contains(w))) continue;
+
+          buf.writeln('### ${drug.name}');
+          if (askingVia || (!askingDose && !askingMech && !askingAdv && !askingInter && !askingCI && !askingInd)) {
+            if (drug.route.isNotEmpty) buf.writeln('  **${es ? "Vía" : "Via"}:** ${drug.route}');
+          }
+          if (askingDose || (!askingVia && !askingMech && !askingAdv && !askingInter && !askingCI && !askingInd)) {
+            final fd = drug.getField(drug.fixedDose, _lang);
+            if (fd.isNotEmpty) buf.writeln('  **${es ? "Dosis habitual" : "Dose habitual"}:** $fd');
+            if (_patient.weight.isNotEmpty) {
+              try {
+                final calc = calculateDose(drug);
+                buf.writeln('  **${es ? "Dosis calculada" : "Dose calculada"} (${_patient.weight} kg):** ${calc.main}');
+                for (final a in calc.alerts.take(2)) buf.writeln('  ⚠ $a');
+              } catch (_) {}
+            }
+          }
+          if (askingMech) {
+            final mech = drug.getField(drug.mechanism, _lang);
+            if (mech.isNotEmpty) buf.writeln('  **Mecanismo:** $mech');
+          }
+          if (askingAdv) {
+            final advList = drug.getAdverse(_lang);
+            if (advList.isNotEmpty) buf.writeln('  **${es ? "Efectos adversos" : "Efeitos adversos"}:** ${advList.take(5).join(', ')}');
+          }
+          if (askingCI) {
+            final warn = drug.getField(drug.warning, _lang);
+            if (warn.isNotEmpty) buf.writeln('  **${es ? "Contraindicaciones / Alertas" : "Contraindicações / Alertas"}:** ${warn.length > 200 ? "${warn.substring(0, 200)}..." : warn}');
+          }
+          if (askingInd) {
+            final cls = drug.getField(drug.className, _lang);
+            if (cls.isNotEmpty) buf.writeln('  **${es ? "Clase / Uso" : "Classe / Uso"}:** $cls');
+          }
+          if (askingInter) {
+            final interList = DrugInteractionService.checkInteractions(
+              selectedDrugNames: [drug.name],
+              patientMedicationsText: _patient.medications,
+            );
+            if (interList.isNotEmpty) {
+              buf.writeln('  **${es ? "Interacciones relevantes" : "Interações relevantes"}:**');
+              for (final inter in interList.take(4)) {
+                final sev = inter.severity == InteractionSeverity.contraindicated
+                    ? '⛔ Contraindicado'
+                    : inter.severity == InteractionSeverity.major
+                        ? '🔴 ${es ? "Mayor" : "Maior"}'
+                        : inter.severity == InteractionSeverity.moderate
+                            ? '🟠 ${es ? "Moderada" : "Moderada"}'
+                            : '🟡 ${es ? "Menor" : "Menor"}';
+                final eff = inter.effect;
+                buf.writeln('    $sev — ${inter.drug1} + ${inter.drug2}: ${eff.length > 100 ? "${eff.substring(0, 100)}..." : eff}');
+              }
+            } else {
+              buf.writeln('  ${es ? "No se encontraron interacciones registradas." : "Nenhuma interação registrada com os medicamentos atuais."}');
+            }
+          }
+          final clcrPharma = double.tryParse((clcr ?? '').replaceAll(',', '.'));
+          if (clcrPharma != null && clcrPharma > 0 && clcrPharma < 45) {
+            final ra = drug.getField(drug.renalAlert, _lang);
+            if (ra.isNotEmpty) buf.writeln('  ⚠ **${es ? "Alerta renal (ClCr $clcr)" : "Alerta renal (ClCr $clcr)"}:** ${ra.length > 150 ? "${ra.substring(0, 150)}..." : ra}');
+          }
           buf.writeln('');
+        }
 
-          for (final drug in drugsDatabase) {
-            final dName = _normalize(drug.name);
-            // Verifica se este fármaco foi mencionado na query expandida
-            final words = qExpanded.split(RegExp(r'\s+')).where((w) => w.length > 3);
-            final isMatch = words.any((w) => dName.contains(w));
-            if (!isMatch) continue;
-
-            buf.writeln('### ${drug.name}');
-
-            if (askingVia || (!askingDose && !askingMech && !askingAdv && !askingInter && !askingCI && !askingInd)) {
-              // drug.route é String direta (não Map)
-              if (drug.route.isNotEmpty) {
-                buf.writeln('  **${es ? "Vía" : "Via"}:** ${drug.route}');
-              }
-            }
-            if (askingDose || (!askingVia && !askingMech && !askingAdv && !askingInter && !askingCI && !askingInd)) {
-              final fd = drug.getField(drug.fixedDose, _lang);
-              if (fd.isNotEmpty) {
-                buf.writeln('  **${es ? "Dosis habitual" : "Dose habitual"}:** $fd');
-              }
-              if (_patient.weight.isNotEmpty) {
-                try {
-                  final calc = calculateDose(drug);
-                  buf.writeln('  **${es ? "Dosis calculada" : "Dose calculada"} (${_patient.weight} kg):** ${calc.main}');
-                  for (final a in calc.alerts.take(2)) buf.writeln('  ⚠ $a');
-                } catch (_) {}
-              }
-            }
-            if (askingMech) {
-              final mech = drug.getField(drug.mechanism, _lang);
-              if (mech.isNotEmpty) buf.writeln('  **${es ? "Mecanismo" : "Mecanismo"}:** $mech');
-            }
-            if (askingAdv) {
-              // adverse usa getAdverse() que retorna List<String>
-              final advList = drug.getAdverse(_lang);
-              if (advList.isNotEmpty) {
-                final advText = advList.take(5).join(', ');
-                buf.writeln('  **${es ? "Efectos adversos" : "Efeitos adversos"}:** $advText');
-              }
-            }
-            if (askingCI) {
-              final warn = drug.getField(drug.warning, _lang);
-              if (warn.isNotEmpty) buf.writeln('  **${es ? "Contraindicaciones / Alertas" : "Contraindicações / Alertas"}:** ${warn.length > 200 ? warn.substring(0, 200) + '...' : warn}');
-            }
-            if (askingInd) {
-              final cls = drug.getField(drug.className, _lang);
-              if (cls.isNotEmpty) buf.writeln('  **${es ? "Clase / Uso" : "Classe / Uso"}:** $cls');
-            }
-            if (askingInter) {
-              // Busca interações do fármaco no banco via checkInteractions
-              final interList = DrugInteractionService.checkInteractions(
-                selectedDrugNames: [drug.name],
-                patientMedicationsText: _patient.medications,
-              );
-              if (interList.isNotEmpty) {
-                buf.writeln('  **${es ? "Interacciones relevantes" : "Interações relevantes"}:**');
-                for (final inter in interList.take(4)) {
-                  final sev = inter.severity == InteractionSeverity.contraindicated
-                      ? '⛔ ${es ? "Contraindicado" : "Contraindicado"}'
-                      : inter.severity == InteractionSeverity.major
-                          ? '🔴 ${es ? "Mayor" : "Maior"}'
-                          : inter.severity == InteractionSeverity.moderate
-                              ? '🟠 ${es ? "Moderada" : "Moderada"}'
-                              : '🟡 ${es ? "Menor/Monitorar" : "Menor/Monitorar"}';
-                  final effectText = inter.effect;
-                  buf.writeln('    $sev — ${inter.drug1} + ${inter.drug2}: ${effectText.length > 100 ? effectText.substring(0, 100) + "..." : effectText}');
-                }
-              } else {
-                buf.writeln('  ${es ? "No se encontraron interacciones registradas con los medicamentos actuales." : "Nenhuma interação registrada com os medicamentos atuais."}');
-              }
-            }
-
-            // Alerta renal se ClCr baixo
-            final clcrVal = double.tryParse((clcr ?? '').replaceAll(',', '.'));
-            if (clcrVal != null && clcrVal > 0 && clcrVal < 45) {
-              final renalAlert = drug.getField(drug.renalAlert, _lang);
-              if (renalAlert.isNotEmpty) {
-                buf.writeln('  ⚠ **${es ? "Alerta renal (ClCr $clcr)" : "Alerta renal (ClCr $clcr)"}:** ${renalAlert.length > 150 ? renalAlert.substring(0, 150) + "..." : renalAlert}');
-              }
-            }
-            buf.writeln('');
-          }
-
-          if (buf.isNotEmpty) {
-            buf.writeln('---');
-            buf.writeln(es
-                ? '_Apoyo educacional. Confirme con fuente primaria._'
-                : '_Apoio educacional. Confirme com fonte primária._');
-            return buf.toString();
-          }
+        if (buf.length > 50) {
+          buf.writeln(es ? '⚕ Apoyo educacional.' : '⚕ Apoio educacional.');
+          return buf.toString();
         }
       }
+    }
 
-      // ── 2. RE-TENTATIVA COM QUERY EXPANDIDA (histórico + atual) ────────
-      // Cobre casos como "tiene FA" onde FA já foi mencionada antes.
-      // Só re-tenta se há histórico real (≥1 msg anterior).
-      if (qHistory.isNotEmpty && qHistory.length > 5) {
-        // Re-executa o matching usando qExpanded
-        if (_has(qExpanded, ['fa ', 'fibrilac atrial', 'fibril atri', 'auricular', 'rr irregular'])) {
-          suspected.add('Fibrilação Atrial');
-          protocolIds.add('fa_aguda');
+    // ════════════════════════════════════════════════════════════════════════
+    // FASE 1 — SISTEMA DE PONTUAÇÃO POR CONDIÇÃO
+    //
+    // Cada condição tem uma lista de keywords específicas.
+    // Score = nº de keywords encontradas em q (mensagem atual).
+    // Condições com score 0 são descartadas.
+    // Apenas a condição de maior score é renderizada.
+    // Em caso de empate, a primeira na lista de prioridade vence.
+    // ════════════════════════════════════════════════════════════════════════
+
+    // Estrutura: (id, label, protocolId, keywords, exams, redFlags)
+    final conditions = <_CliCondition>[
+
+      // ── PCR / Parada (prioridade máxima) ─────────────────────────────────
+      _CliCondition(
+        id: 'pcr',
+        label: es ? 'Parada Cardiorrespiratoria / PCR' : 'Parada Cardiorrespiratória / PCR',
+        protocolId: 'pcr_adulto',
+        keywords: ['pcr', 'parada cardiac', 'sem pulso', 'fv ', 'fibrilac ventr', 'tv sem pulso', 'reanimac', 'acls'],
+        exams: ['Monitor/desfibrilador', 'Glicemia pós-ROSC', 'Gasometria pós-ROSC', 'ECG pós-ROSC'],
+        flags: [es ? 'ACLS inmediato: RCP + desfibrilación' : 'ACLS imediato: RCP de alta qualidade + desfibrilação',
+                es ? 'Adrenalina 1 mg IV cada 3–5 min' : 'Adrenalina 1 mg IV cada 3–5 min'],
+      ),
+
+      // ── Choque ────────────────────────────────────────────────────────────
+      _CliCondition(
+        id: 'choque',
+        label: es ? 'Choque (cardiogénico / séptico / hipovolémico)' : 'Choque (cardiogênico / séptico / hipovolêmico)',
+        protocolId: 'choque_cardiogenico',
+        keywords: ['hipotens', 'choque', 'pele fria', 'oliguria', 'lactato', 'hipoperfus', 'extremid frias', 'pam ', 'vasopressor'],
+        exams: [es ? 'Lactato arterial' : 'Lactato arterial', 'Gasometria', 'ECG', es ? 'Ecocardiograma a pie de cama' : 'Ecocardiograma beira-leito'],
+        flags: [es ? 'PAM <65 → vasopresor inmediato' : 'PAM <65 → vasopressor imediato',
+                es ? 'Lactato >4 → reanimación 30 mL/kg' : 'Lactato >4 → reanimação agressiva 30 mL/kg'],
+      ),
+
+      // ── IAM / SCA ─────────────────────────────────────────────────────────
+      _CliCondition(
+        id: 'iam',
+        label: es ? 'Síndrome Coronario Agudo (IAM/Angina)' : 'Síndrome Coronariana Aguda (IAM/Angina)',
+        protocolId: 'iam_congestao',
+        keywords: ['dor torac', 'peito', 'iam', 'infarto', 'angina', 'stemi', 'nstemi', 'sca', 'troponina', 'supradesnivel'],
+        exams: [es ? 'ECG seriado (0–6–12h)' : 'ECG seriado (0–6–12h)', es ? 'Troponina (0–3h)' : 'Troponina (0–3h)', 'RX tórax', es ? 'Glucemia' : 'Glicemia'],
+        flags: [es ? 'Supradesnivel ST → cateterismo urgente' : 'Supradesnivelamento ST → cateterismo urgente',
+                es ? 'Hipotensión → choque cardiogénico' : 'Hipotensão → choque cardiogênico'],
+      ),
+
+      // ── TEP ───────────────────────────────────────────────────────────────
+      _CliCondition(
+        id: 'tep',
+        label: es ? 'Tromboembolismo Pulmonar (TEP)' : 'Tromboembolismo Pulmonar (TEP)',
+        protocolId: 'tep_agudo',
+        keywords: ['tep', 'tromboembol pulm', 'embolia pulm', 'tvp', 'wells', 'd-dimero', 'angiotc torac'],
+        exams: [es ? 'D-dímero (si baja probabilidad)' : 'D-dímero (se baixa probabilidade)', es ? 'AngioTC tórax' : 'AngioTC tórax', 'ECG (S1Q3T3)', 'Troponina', 'Score de Wells'],
+        flags: [es ? 'Choque/hipotensión → trombolítico sistémico urgente' : 'Choque/hipotensão → trombolítico sistêmico urgente'],
+      ),
+
+      // ── FA / Flutter ──────────────────────────────────────────────────────
+      _CliCondition(
+        id: 'fa',
+        label: es ? 'Fibrilación Auricular / Flutter' : 'Fibrilação Atrial / Flutter Atrial',
+        protocolId: 'fa_aguda',
+        keywords: ['fa ', 'fibrilac atrial', 'fibril atri', 'auricular', 'rr irregular', 'flutter', 'fibrilacao', 'cardioversao', 'anticoag'],
+        exams: [es ? 'ECG 12 derivaciones' : 'ECG 12 derivações', 'TSH', es ? 'Electrolitos (K+, Mg2+)' : 'Eletrólitos (K+, Mg2+)', 'Ecocardiograma', es ? 'Score CHA₂DS₂-VASc' : 'Score CHA₂DS₂-VASc'],
+        flags: [es ? 'FC >150 + inestabilidad → cardioversión eléctrica inmediata' : 'FC >150 + instabilidade → cardioversão elétrica imediata',
+                es ? 'FA >48h sin anticoagulación → riesgo de AVC' : 'FA >48h sem anticoagulação → risco de AVC por trombo'],
+      ),
+
+      // ── IC / EAP ──────────────────────────────────────────────────────────
+      _CliCondition(
+        id: 'ic',
+        label: es ? 'Insuficiencia Cardíaca Descompensada / EAP' : 'Insuficiência Cardíaca Descompensada / EAP',
+        protocolId: 'iam_congestao',
+        keywords: ['ic ', 'insuf cardiac', 'ortopneia', 'edema pulm', 'crepitac', 'bnp', 'fej', 'frac ejec', 'congest', 'crepit', 'b3 ', 'killip'],
+        exams: ['BNP/NT-proBNP', 'RX tórax', 'Ecocardiograma', es ? 'Electrolitos' : 'Eletrólitos', es ? 'Función renal' : 'Função renal'],
+        flags: [es ? 'SpO2 <90% → VNI (CPAP/BIPAP) inmediata' : 'SpO2 <90% + esforço respiratório → VNI (CPAP/BIPAP) imediata',
+                es ? 'Hipotensión + IC → choque cardiogénico' : 'Hipotensão + IC → choque cardiogênico: cuidado com diurético'],
+      ),
+
+      // ── Dissecção Aórtica ─────────────────────────────────────────────────
+      _CliCondition(
+        id: 'dissecc',
+        label: es ? 'Disección Aórtica Aguda' : 'Dissecção Aórtica Aguda',
+        protocolId: 'crise_hipertensiva',
+        keywords: ['dissecc', 'dissecao aort', 'dor torn', 'interescap', 'assimetr', 'diseccion aort'],
+        exams: [es ? 'AngioTC aorta urgente' : 'AngioTC aorta urgente', 'RX tórax', 'ECG', es ? 'PA en ambos brazos' : 'PA nos 2 braços'],
+        flags: [es ? 'NO anticoagular sin confirmar diagnóstico' : 'NÃO anticoagular sem confirmar diagnóstico',
+                es ? 'Control FC+PA: meta PAS <120 + FC <60' : 'Controle FC+PA imediato: meta PAS <120 + FC <60'],
+      ),
+
+      // ── TPSV / Taquiarritmia ──────────────────────────────────────────────
+      _CliCondition(
+        id: 'tpsv',
+        label: es ? 'Taquiarritmia Supraventricular (TPSV)' : 'Taquiarritmia Supraventricular (TPSV)',
+        protocolId: 'tpsv',
+        keywords: ['tpsv', 'qrs estrei', 'arritm supravent', 'palpit', 'taquic supravent'],
+        exams: [es ? 'ECG 12 derivaciones' : 'ECG 12 derivações', es ? 'Electrolitos (K+, Mg2+)' : 'Eletrólitos (K+, Mg2+)', 'TSH'],
+        flags: [es ? 'Inestabilidad hemodinámica → cardioversión eléctrica' : 'Instabilidade hemodinâmica → cardioversão elétrica',
+                es ? 'Estable con QRS estrecho → maniobras vagales → adenosina' : 'Estável QRS estreito → manobras vagais → adenosina'],
+      ),
+
+      // ── AVC ───────────────────────────────────────────────────────────────
+      _CliCondition(
+        id: 'avc',
+        label: es ? 'ACV (Isquémico / Hemorrágico)' : 'AVC (Isquêmico / Hemorrágico)',
+        protocolId: 'avc_isquemico',
+        keywords: ['avc', 'acidente vasc', 'hemiplegi', 'deficit focal', 'afasia', 'hemiparesia', 'desvio boca', 'nihss', 'tpa ', 'alteplase', 'acv ', 'ave '],
+        exams: [es ? 'TC cráneo URGENTE (sin contraste)' : 'TC crânio URGENTE (sem contraste)', es ? 'Glucemia capilar' : 'Glicemia capilar', es ? 'Coagulación' : 'Coagulação', 'ECG', 'PA'],
+        flags: [es ? 'Ventana trombolítica: <4,5h' : 'Janela trombolítica: <4,5h',
+                es ? 'Hipoglucemia mimetiza AVC — siempre checar glucemia' : 'Hipoglicemia mimetiza AVC — checar glicemia sempre',
+                es ? 'HTA grave: tratar solo si PAS >220 (sin trombolítico)' : 'HTA grave: tratar só se PAS >220 (sem trombolítico)'],
+      ),
+
+      // ── Hemorragia Intracraniana ───────────────────────────────────────────
+      _CliCondition(
+        id: 'hic',
+        label: es ? 'Hemorragia Intracraneal' : 'Hemorragia Intracraniana',
+        protocolId: 'avc_hemorragico',
+        keywords: ['hemorrag intracran', 'hemorrag cerebr', 'sangr cerebr', 'hematoma subdur', 'hematoma extradur', 'hsa', 'hic '],
+        exams: [es ? 'TC cráneo urgente' : 'TC crânio urgente', es ? 'Coagulación completa' : 'Coagulação completa', 'Plaquetas'],
+        flags: [es ? 'CONTRAINDICADO trombolítico y anticoagulantes' : 'CONTRAINDICADO trombolítico e anticoagulantes',
+                es ? 'Revertir anticoagulación inmediatamente' : 'Reverter anticoagulação imediatamente'],
+      ),
+
+      // ── Status Epilepticus ────────────────────────────────────────────────
+      _CliCondition(
+        id: 'epilepsia',
+        label: es ? 'Status Epiléptico / Convulsión' : 'Status Epilepticus / Convulsão',
+        protocolId: 'status_epilepticus',
+        keywords: ['convuls', 'epileps', 'status epilep', 'crise convuls', 'crise epilep', 'benzodiaz', 'diazepam', 'midazolam', 'lorazepam'],
+        exams: [es ? 'Glucemia' : 'Glicemia', es ? 'Electrolitos (Na+, Mg2+, Ca2+)' : 'Eletrólitos (Na+, Mg2+, Ca2+)', es ? 'TC cráneo' : 'TC crânio', 'EEG se status refratário'],
+        flags: [es ? 'Crisis >5 min → benzodiacepina INMEDIATA' : 'Crise >5 min → benzodiazepínico IMEDIATO',
+                es ? 'Status refractario → midazolam/propofol en UTI' : 'Status refratário → midazolam/propofol em UTI'],
+      ),
+
+      // ── Meningite / Encefalite ────────────────────────────────────────────
+      _CliCondition(
+        id: 'meningite',
+        label: es ? 'Meningitis / Encefalitis Bacteriana' : 'Meningite / Encefalite Bacteriana',
+        protocolId: 'sepse',
+        keywords: ['meningite', 'encefalite', 'rigidez nuca', 'kernig', 'brudzinski', 'petequi', 'nucal', 'rigidez de nuca'],
+        exams: [es ? 'TC cráneo (antes de la PL si focal)' : 'TC crânio (antes da PL se focal)', es ? 'Punción lumbar' : 'Punção lombar', es ? 'Hemocultivos' : 'Hemoculturas', es ? 'Glucemia' : 'Glicemia', 'PCR'],
+        flags: [es ? 'ATB INMEDIATO — no demorar por PL' : 'ATB IMEDIATO — não atrasar por PL',
+                es ? 'Dexametasona 0,15 mg/kg IV antes o junto al ATB' : 'Dexametasona 0,15 mg/kg IV antes ou junto ao ATB'],
+      ),
+
+      // ── Sepse ─────────────────────────────────────────────────────────────
+      _CliCondition(
+        id: 'sepse',
+        label: es ? 'Sepsis / Choque Séptico' : 'Sepse / Choque Séptico',
+        protocolId: 'sepse',
+        keywords: ['sepse', 'seps', 'septic', 'bacterem', 'infec grave', 'choque septic', 'sofa', 'qsofa', 'bundle'],
+        exams: ['Lactato', es ? 'Hemocultivos (2 pares)' : 'Hemoculturas (2 pares)', es ? 'Urocultivos' : 'Urocultura', 'PCR/Procalcitonina', es ? 'Función renal' : 'Função renal', 'Gasometria'],
+        flags: [es ? 'Antibiótico en <1 HORA' : 'Antibiótico em <1 HORA',
+                es ? 'Lactato >4 → 30 mL/kg SF' : 'Lactato >4 → 30 mL/kg SF',
+                es ? 'Vasopresor si PAM <65 tras volumen' : 'Vasopressor se PAM <65 após volume'],
+      ),
+
+      // ── DPOC ─────────────────────────────────────────────────────────────
+      _CliCondition(
+        id: 'dpoc',
+        label: es ? 'EPOC en Exacerbación Aguda' : 'DPOC em Exacerbação Aguda',
+        protocolId: 'dpoc_exacerbacao',
+        keywords: ['dpoc', 'doenca pulm obstr', 'enfisema', 'bronquite cronica', 'exacerbac pulm', 'epoc', 'paco2', 'hipercapn'],
+        exams: ['Gasometria arterial', 'RX tórax', 'SpO2', 'Hemograma', 'PCR'],
+        flags: [es ? 'O2 CONTROLADO: SpO2 objetivo 88–92%' : 'O2 CONTROLADO: SpO2 alvo 88–92%',
+                es ? 'pH <7,35 + PaCO2 elevado → VNI inmediata' : 'pH <7,35 + PaCO2 elevado → VNI imediata'],
+      ),
+
+      // ── Asma ─────────────────────────────────────────────────────────────
+      _CliCondition(
+        id: 'asma',
+        label: es ? 'Asma en Crisis / Broncoespasmo' : 'Asma em Crise / Broncoespasmo Agudo',
+        protocolId: 'asma_grave',
+        keywords: ['asma', 'broncoespas', 'sibilo', 'wheezing', 'peak flow', 'pfe ', 'broncodilatad'],
+        exams: ['SpO2', es ? 'PFE (peak flow)' : 'PFE (peak flow)', es ? 'Gasometría si grave' : 'Gasometria se grave', es ? 'RX tórax si duda' : 'RX tórax se dúvida'],
+        flags: [es ? 'Silencio auscultatorio + SpO2 <90% → riesgo de PCR inminente' : 'Silêncio auscultório + SpO2 <90% → risco de PCR iminente'],
+      ),
+
+      // ── CAD ───────────────────────────────────────────────────────────────
+      _CliCondition(
+        id: 'cad',
+        label: es ? 'Cetoacidosis Diabética (CAD)' : 'Cetoacidose Diabética (CAD)',
+        protocolId: 'cad_shh',
+        keywords: ['cetoacid', 'cad', 'hiperglicemi', 'cetona', 'acidose metabol', 'dka', 'ph baixo+diabet'],
+        exams: [es ? 'Glucemia' : 'Glicemia', es ? 'Cetonemia/cetonuria' : 'Cetonemia/cetonúria', es ? 'Gasometría venosa' : 'Gasometria venosa', es ? 'Electrolitos (K+ urgente)' : 'Eletrólitos (K+ urgente)', 'BUN/Cr'],
+        flags: [es ? 'K+ <3,3 → SUSPENDER insulina y reponer K+ primero' : 'K+ <3,3 → SUSPENDER insulina e repor K+ primeiro'],
+      ),
+
+      // ── Hipoglicemia ──────────────────────────────────────────────────────
+      _CliCondition(
+        id: 'hipoglicemia',
+        label: es ? 'Hipoglucemia Grave' : 'Hipoglicemia Grave',
+        protocolId: 'cad_shh',
+        keywords: ['hipoglicemi', 'glicemia bai', 'hipoglucemi', 'glicose baixa'],
+        exams: [es ? 'Glucemia capilar URGENTE' : 'Glicemia capilar URGENTE', es ? 'Glucemia venosa' : 'Glicemia venosa'],
+        flags: [es ? 'Glucemia <60 → 50 mL glucosa 50% IV inmediato' : 'Glicemia <60 → 50 mL glicose 50% IV imediato',
+                es ? 'Sin acceso IV → glucagón 1 mg IM/SC' : 'Sem acesso IV → glucagon 1 mg IM/SC'],
+      ),
+
+      // ── Hipercalemia ──────────────────────────────────────────────────────
+      _CliCondition(
+        id: 'hipercalemia',
+        label: es ? 'Hipercalemia Grave' : 'Hipercalemia Grave',
+        protocolId: 'cad_shh',
+        keywords: ['hipercalemi', 'hiperpotass', 'k alt', 'hiperkalem', 'onda t apic', 'k+ elev'],
+        exams: [es ? 'K+ sérico urgente' : 'K+ sérico urgente', 'ECG', 'Gasometria', es ? 'Función renal' : 'Função renal'],
+        flags: [es ? 'K+ >6,5 o cambios ECG → Gluconato Ca2+ IV inmediato' : 'K+ >6,5 ou alteração ECG → Gluconato Ca2+ IV imediato',
+                es ? 'Insulina + glucosa + bicarbonato + diálisis si refractario' : 'Insulina + glicose + bicarbonato + diálise se refratário'],
+      ),
+
+      // ── Hipopotassemia ────────────────────────────────────────────────────
+      _CliCondition(
+        id: 'hipocalemia',
+        label: es ? 'Hipopotasemia Grave' : 'Hipopotassemia Grave',
+        protocolId: 'cad_shh',
+        keywords: ['hipocalemi', 'hipopotass', 'k bai', 'hipokalem', 'k+ baixo'],
+        exams: [es ? 'K+ sérico' : 'K+ sérico', es ? 'ECG (ondas U, QT largo)' : 'ECG (ondas U, QT longo)', 'Mg2+', 'Gasometria'],
+        flags: [es ? 'K+ <2,5 o cambios ECG → reposición IV monitorizada' : 'K+ <2,5 ou alteração de ECG → reposição IV monitorada'],
+      ),
+
+      // ── IRA ───────────────────────────────────────────────────────────────
+      _CliCondition(
+        id: 'ira',
+        label: es ? 'Insuficiencia Renal Aguda (IRA)' : 'Insuficiência Renal Aguda (IRA)',
+        protocolId: 'cad_shh',
+        keywords: ['insuf renal aguda', 'ira ', 'oliguria', 'anuria', 'creatinina elev', 'uremia', 'aki'],
+        exams: [es ? 'Creatinina/Urea seriadas' : 'Creatinina/Ureia seriadas', es ? 'Electrolitos' : 'Eletrólitos', es ? 'Eco renal' : 'Eco renal', 'EAS/urocultura'],
+        flags: [es ? 'K+ >6 u oliguria refractaria → diálisis de urgencia' : 'K+ >6 ou oligúria refratária → diálise de urgência',
+                es ? 'Descartar prerrenal (volumen) y obstructivo (eco)' : 'Excluir pré-renal (volume) e obstrutivo (eco)'],
+      ),
+
+      // ── HDA ───────────────────────────────────────────────────────────────
+      _CliCondition(
+        id: 'hda',
+        label: es ? 'Hemorragia Digestiva Alta (HDA)' : 'Hemorragia Digestiva Alta (HDA)',
+        protocolId: 'hda_varizeal',
+        keywords: ['hematemes', 'hemorrag digest', 'melena', 'hamatoquezia', 'hematoquezia', 'sangr gi', 'ulcera sangr', 'varizes esof'],
+        exams: [es ? 'Hemograma (Hb, Ht)' : 'Hemograma (Hb, Ht)', es ? 'Coagulación' : 'Coagulação', es ? 'Tipaje sanguíneo' : 'Tipagem sanguínea', es ? 'Función renal' : 'Função renal', es ? 'EDA urgente' : 'EDA urgente'],
+        flags: [es ? 'PA <100 + FC >100 → 2 accesos calibrosos + SF inmediato' : 'PA <100 + FC >100 → 2 acessos calibrosos + SF imediato',
+                es ? 'Hb objetivo 7–8 g/dL (transfusión restrictiva)' : 'Hb alvo 7–8 g/dL (transfusão restritiva)',
+                es ? 'Cirrosis + HDA → octreótido + ATB + Terlipresina' : 'Cirrose + HDA → octreotida + ATB profilático + Terlipressina'],
+      ),
+
+      // ── Abdome Agudo ──────────────────────────────────────────────────────
+      _CliCondition(
+        id: 'abdome',
+        label: es ? 'Abdomen Agudo / Peritonitis' : 'Abdome Agudo / Peritonite',
+        protocolId: 'sepse',
+        keywords: ['dor abdom', 'abdome agudo', 'peritonite', 'rigidez abd', 'defesa abdom', 'apendicite', 'colecistite', 'obstru intestinal', 'peritonitis'],
+        exams: [es ? 'RX abdomen de pie' : 'RX abdome em pé', es ? 'TC abdomen+pelvis con contraste' : 'TC abdome+pelve com contraste', 'Hemograma', 'PCR', 'Lipase/amilase'],
+        flags: [es ? 'Signos peritoneales + inestabilidad → cirugía de emergencia' : 'Sinais peritoneais + instabilidade → cirurgia de emergência',
+                es ? 'Neumoperitoneo en RX → perforación visceral: cirugía inmediata' : 'Pneumoperitônio no RX → perfuração visceral: cirurgia imediata'],
+      ),
+
+      // ── Pancreatite ───────────────────────────────────────────────────────
+      _CliCondition(
+        id: 'pancreatite',
+        label: es ? 'Pancreatitis Aguda' : 'Pancreatite Aguda',
+        protocolId: 'sepse',
+        keywords: ['pancreatite', 'pancreat', 'dor epigast irrad dorso', 'lipase elev', 'amilase elev', 'bisap', 'balthazar'],
+        exams: [es ? 'Lipasa (>3× LSN)' : 'Lipase (>3× LSN diagnóstico)', es ? 'TC abdomen (Balthazar/CTSI)' : 'TC abdome (Balthazar/CTSI)', es ? 'Electrolitos' : 'Eletrólitos', 'Score BISAP'],
+        flags: [es ? 'Score BISAP ≥3 → UTI (pancreatitis grave)' : 'Score BISAP ≥3 ou APACHE II alto → UTI',
+                es ? 'Necroinfeción: fiebre + empeoramiento → TC + ATB' : 'Necroinfeção: febre + piora clínica → TC + ATB'],
+      ),
+
+      // ── Crise Hipertensiva ────────────────────────────────────────────────
+      _CliCondition(
+        id: 'crise_hipert',
+        label: es ? 'Crisis Hipertensiva (Urgencia / Emergencia)' : 'Crise Hipertensiva (Urgência / Emergência)',
+        protocolId: 'crise_hipertensiva',
+        keywords: ['crise hipert', 'pa muito alta', 'pa >180', 'emergencia hiperten', 'encefalopatia hiperten', 'urgencia hiperten', 'hipertensao grave', 'pa > 180', 'pa 220', 'pa 200'],
+        exams: [es ? 'PA en ambos brazos' : 'PA em ambos os braços', 'ECG', es ? 'Fondo de ojo' : 'Fundo de olho', es ? 'Creatinina/urea' : 'Creatinina/ureia', es ? 'TC cráneo si síntomas neurológicos' : 'TC crânio se sintomas neurológicos'],
+        flags: [es ? 'Encefalopatía + PA >180 → emergencia: reducción IV controlada' : 'Encefalopatia + PA >180 → emergência: redução IV controlada',
+                es ? 'NO reducir PA >25% en 1ª hora' : 'NÃO reduzir PA >25% na 1ª hora'],
+      ),
+
+      // ── Delirium ──────────────────────────────────────────────────────────
+      _CliCondition(
+        id: 'delirium',
+        label: es ? 'Delirium / Alteración de Consciencia' : 'Delirium / Rebaixamento de Consciência',
+        protocolId: 'status_epilepticus',
+        keywords: ['delirium', 'confusao aguda', 'agitac', 'rebaixamento conscien', 'glasgow baixo', 'confusao mental', 'cam ', 'alterac conscien'],
+        exams: [es ? 'Glucemia capilar URGENTE' : 'Glicemia capilar URGENTE', es ? 'TC cráneo' : 'TC crânio', es ? 'Electrolitos' : 'Eletrólitos', es ? 'Función renal y hepática' : 'Função renal e hepática', 'Gasometria'],
+        flags: [es ? 'Excluir SIEMPRE: hipoglucemia, AVC, meningitis, IRA, intoxicación' : 'Excluir SEMPRE: hipoglicemia, AVC, meningite, IRA, intoxicação',
+                es ? 'Glasgow ≤8 → proteger vía aérea (IOT)' : 'Glasgow ≤8 → proteger via aérea (IOT)'],
+      ),
+
+      // ── Intoxicação ───────────────────────────────────────────────────────
+      _CliCondition(
+        id: 'intoxicacao',
+        label: es ? 'Intoxicación Exógena / Sobredosis' : 'Intoxicação Exógena / Overdose',
+        protocolId: 'pcr_adulto',
+        keywords: ['intoxicac', 'overdose', 'envenenam', 'organofosf', 'naloxona', 'flumazenil', 'carvao ativ', 'toxicolog'],
+        exams: [es ? 'Toxicológico urinario' : 'Toxicológico urinário', 'Gasometria', es ? 'Electrolitos' : 'Eletrólitos', es ? 'ECG (QT largo)' : 'ECG (QT longo)', es ? 'Glucemia' : 'Glicemia'],
+        flags: [es ? 'Contactar Centro de Toxicología (0800 722 6001)' : 'Contato: Centro de Informação Toxicológica (0800 722 6001)',
+                es ? 'Antídotos: naloxona (opioides), flumazenil (BZD), N-acetilcisteína (paracetamol)' : 'Antídotos: naloxona (opioides), flumazenil (BZD), N-acetilcisteína (paracetamol)',
+                es ? 'Carbón activado 1 g/kg VO si <1h de ingesta' : 'Carvão ativado 1 g/kg VO se <1h da ingestão'],
+      ),
+
+      // ── Eclâmpsia / HELLP ─────────────────────────────────────────────────
+      _CliCondition(
+        id: 'eclampsia',
+        label: es ? 'Preeclampsia Grave / Eclampsia / HELLP' : 'Pré-eclâmpsia Grave / Eclâmpsia / Síndrome HELLP',
+        protocolId: 'crise_hipertensiva',
+        keywords: ['eclamps', 'pre-eclamps', 'pressao gestac', 'gestante hiperten', 'convulsao gravida', 'hellp', 'preeclamps', 'sulfato magn'],
+        exams: [es ? 'PA seriada' : 'PA seriada', es ? 'Proteinuria 24h' : 'Proteinúria 24h', es ? 'Plaquetas' : 'Plaquetas', 'TGO/TGP', 'LDH', es ? 'Creatinina' : 'Creatinina'],
+        flags: [es ? 'PA ≥160/110 → antihipertensivo inmediato (hidralazina/nifedipina)' : 'PA ≥160/110 em gestante → anti-hipertensivo imediato',
+                es ? 'Convulsión → sulfato de magnesio 4–6 g IV' : 'Convulsão → sulfato de magnésio 4–6 g EV (ataque) + 1–2 g/h manutenção',
+                es ? 'HELLP → parto inmediato si ≥34 semanas' : 'HELLP → parto imediato se ≥34 semanas'],
+      ),
+
+      // ── Cefaleia ──────────────────────────────────────────────────────────
+      // Keywords de alto risco têm peso maior (lista maior = mais score quando batem)
+      _CliCondition(
+        id: 'cefaleia_grave',
+        label: es ? 'Cefalea de alto riesgo — descartar HSA / Meningitis' : 'Cefaleia de alto risco — excluir HSA / Meningite',
+        protocolId: 'avc_hemorragico',
+        keywords: ['cefal', 'dor de cabeca', 'dor cabeca',
+                   'trovoada', 'pior cefaleia', 'pior dor', 'inicio subito',
+                   'rigidez nuca', 'meningismo', 'petequi', 'kernig', 'brudzinski'],
+        exams: [es ? 'TC cráneo sin contraste (descartar HSA)' : 'TC crânio sem contraste (excluir HSA)', es ? 'Punción lumbar si TC negativa' : 'Punção lombar se TC negativa', 'Hemoculturas + PCR se febre', 'Hemograma'],
+        flags: [es ? '"Peor cefalea de su vida" o inicio súbito → descartar HSA urgente' : '"Pior cefaleia da vida" ou início súbito → excluir HSA urgente',
+                es ? 'Déficit focal + cefalea → descartar AVC/hemorragia' : 'Déficit focal + cefaleia → descartar AVC/hemorragia'],
+      ),
+
+      // ── Artrite Séptica ───────────────────────────────────────────────────
+      _CliCondition(
+        id: 'artrite_septica',
+        label: es ? 'Artritis Séptica' : 'Artrite Séptica',
+        protocolId: 'sepse',
+        keywords: ['artrite septic', 'articulacao quente', 'monoartrite', 'artrite infec', 'artralgia febre', 'artritis septica'],
+        exams: [es ? 'Artrocentesis + análisis líquido sinovial' : 'Artrocentese + análise do líquido sinovial', es ? 'Hemocultivos' : 'Hemoculturas', 'PCR/VHS', es ? 'Ácido úrico' : 'Ácido úrico'],
+        flags: [es ? 'Artritis séptica → artrocentesis + ATB en <6h (S. aureus más común)' : 'Artrite séptica → artrocentese + ATB em <6h (S. aureus mais comum)'],
+      ),
+
+      // ── Anticoagulação / Sangramento ──────────────────────────────────────
+      _CliCondition(
+        id: 'anticoag_sangr',
+        label: es ? 'Sangrado en Anticoagulado / Reversión' : 'Sangramento em Anticoagulado / Reversão',
+        protocolId: 'hda_varizeal',
+        keywords: ['anticoagulac', 'sangramento ativo', 'heparina reverter', 'varfarina', 'warfarin', 'reverter anticoag', 'inr elev', 'doac'],
+        exams: ['INR/TP/TTPA', 'Hemograma', es ? 'Tipaje' : 'Tipagem', es ? 'Función renal' : 'Função renal'],
+        flags: [es ? 'Warfarina + sangrado grave → vitamina K 10 mg IV + CCP' : 'Varfarina + sangramento grave → vitamina K 10 mg EV + CCP (4 fatores)',
+                es ? 'Heparina → protamina 1 mg/100 UI heparina IV' : 'Heparina → protamina 1 mg/100 UI heparina EV',
+                es ? 'DOAC → idarucizumab (dabigatrán), andexanet (rivaroxabán/apixabán)' : 'DOAC → idarucizumabe (dabigatrana), andexanete alfa (rivaroxabana/apixabana)'],
+      ),
+    ];
+
+    // ── Calcular score de cada condição ──────────────────────────────────────
+    int bestScore  = 0;
+    _CliCondition? winner;
+
+    for (final cond in conditions) {
+      int score = 0;
+      for (final kw in cond.keywords) {
+        if (q.contains(kw)) score++;
+      }
+      if (score > bestScore) {
+        bestScore = score;
+        winner    = cond;
+      }
+    }
+
+    // ════════════════════════════════════════════════════════════════════════
+    // FASE 2 — LÓGICA CONTEXTUAL (quando score == 0 na msg atual)
+    // ════════════════════════════════════════════════════════════════════════
+    if (winner == null) {
+
+      // 2a. Cefaleia simples (sem qualificadores de risco) — score 0 porque
+      //     os keywords de risco não bateram, mas o sintoma está presente
+      if (_has(q, ['cefal', 'dor de cabeca', 'dor cabeca', 'dor de cabe',
+                   'cefalea', 'dolor de cabeza'])) {
+        final hasFever = _has(q, ['febre', 'fiebre', 'temperatura']);
+        final buf2 = StringBuffer();
+        if (hasFever) {
+          buf2.writeln(es
+              ? '## Cefalea con fiebre — investigar: viral, bacteriana, meningitis'
+              : '## Cefaleia com febre — investigar: viral, bacteriana, meningite');
+          buf2.writeln('');
+          buf2.writeln(es ? '## Evaluación clave:' : '## Avaliação-chave:');
+          buf2.writeln(es ? '  • Temperatura' : '  • Temperatura');
+          buf2.writeln(es ? '  • Hemograma, PCR' : '  • Hemograma, PCR');
+          buf2.writeln(es ? '  • Evaluar rigidez nucal en el examen físico' : '  • Avaliar rigidez nucal no exame físico');
+          buf2.writeln('');
+          buf2.writeln(es ? '## Alerta:' : '## Alerta:');
+          buf2.writeln(es
+              ? '  • Rigidez nucal + fiebre + cefalea → sospechar meningitis — evaluación urgente'
+              : '  • Rigidez nucal + febre + cefaleia → suspeitar meningite — avaliação urgente');
+        } else {
+          buf2.writeln(es
+              ? '## Cefalea — causas frecuentes: migraña, tensional, viral, hipertensión'
+              : '## Cefaleia — causas comuns: enxaqueca, tensional, viral, hipertensão');
+          buf2.writeln('');
+          buf2.writeln(es ? '## Avaliação inicial:' : '## Avaliação inicial:');
+          buf2.writeln(es ? '  • PA (descartar crisis hipertensiva)' : '  • PA (descartar crise hipertensiva)');
+          buf2.writeln(es ? '  • Temperatura' : '  • Temperatura');
+          buf2.writeln(es ? '  • Intensidad (EVA 0–10) y patrón temporal' : '  • Intensidade (EVA 0–10) e padrão temporal');
+          buf2.writeln('');
+          buf2.writeln(es ? '## Alerta:' : '## Alerta:');
+          buf2.writeln(es
+              ? '  • Inicio súbito "en trueno" o peor cefalea de su vida → descartar HSA urgente'
+              : '  • Início súbito "em trovoada" ou pior da vida → excluir HSA urgente');
         }
-        if (_has(qExpanded, ['dor torac', 'peito', 'iam', 'infarto', 'angina', 'stemi', 'nstemi', 'sca'])) {
-          suspected.add(es ? 'Síndrome Coronario Agudo' : 'Síndrome Coronariana Aguda (IAM/Angina Instável)');
-          protocolIds.add('iam_congestao');
-        }
-        if (_has(qExpanded, ['sepse', 'choque sept', 'foco infec', 'bacterem', 'sofa'])) {
-          suspected.add('Sepse / Choque Séptico');
-          protocolIds.add('sepse');
-        }
-        if (_has(qExpanded, ['hipertens', 'pressao alta', 'pa elev', 'hta', 'pa alta'])) {
-          suspected.add(es ? 'Crisis Hipertensiva' : 'Crise Hipertensiva');
-          protocolIds.add('crise_hipertensiva');
-        }
-        if (_has(qExpanded, ['avc', 'ave', 'acidente vascular', 'isquemia cerebr', 'avc isquem', 'trombose cerebr', 'tpa', 'nihss'])) {
-          suspected.add(es ? 'ACV Isquémico' : 'AVC Isquêmico');
-          protocolIds.add('avc_isquemico');
-        }
-        if (_has(qExpanded, ['insuf cardiac', 'ic ', 'dispne', 'edema pulm', 'crepit', 'congest'])) {
-          suspected.add(es ? 'Insuficiencia Cardíaca Descompensada' : 'Insuficiência Cardíaca Descompensada');
-          protocolIds.add('iam_congestao');
-        }
-        if (_has(qExpanded, ['hipotens', 'choque', 'pele fria', 'oliguria', 'lactato', 'hipoperfus'])) {
-          suspected.add(es ? 'Choque' : 'Choque (cardiogênico / séptico / hipovolêmico)');
-          protocolIds.add('choque_cardiogenico');
-        }
-        if (_has(qExpanded, ['tep', 'embolia pulm', 'tvp', 'trombose venos', 'tromboembol'])) {
-          suspected.add(es ? 'Tromboembolismo Pulmonar' : 'Tromboembolismo Pulmonar (TEP)');
-          protocolIds.add('tep');
-        }
-        if (_has(qExpanded, ['bradic', 'bloqueio av', 'bav', 'bav total', 'bav complet'])) {
-          suspected.add(es ? 'Bradiarritmia / Bloqueo AV' : 'Bradiarritmia / Bloqueio AV');
-          protocolIds.add('bradiarritmia');
-        }
-        if (_has(qExpanded, ['diabet', 'hiper glyc', 'dka', 'cetoacid', 'hipoglicemi', 'glicose'])) {
-          suspected.add(es ? 'Urgencia Diabética (DKA/Hipoglucemia)' : 'Urgência Diabética (DKA/Hipoglicemia)');
-          protocolIds.add('dka_hipoglicemia');
-        }
-        if (_has(qExpanded, ['taquic', 'tvs', 'tv sem pulso', 'fv ', 'fibrilac ventr', 'pcr ', 'reanimac'])) {
-          suspected.add(es ? 'Taquiarritmia Ventricular / PCR' : 'Taquiarritmia Ventricular / PCR');
-          protocolIds.add('pcr');
-        }
+        buf2.writeln('');
+        buf2.writeln(es ? '⚕ Apoyo educacional.' : '⚕ Apoio educacional.');
+        return buf2.toString();
       }
 
-      // ── 3. FOLLOW-UP CLÍNICO COM CONTEXTO DO HISTÓRICO ────────────────
-      // Quando o usuário faz pergunta curta de seguimento ("e a anticoagulação?",
-      // "qual o protocolo?", "quando cardiovertir?") e há histórico ativo.
-      if (suspected.isEmpty && _aiHistory.isNotEmpty) {
-        final isFollowUp = _has(q, [
-          'e a ', 'e o ', 'e os ', 'e as ', 'qual ', 'quando ',
-          'como ', 'por que', 'e para', 'e se ', 'pode ',
-          'deve ', 'precis', 'protocolo', 'conduta', 'anticoag',
-          'cardiovert', 'cardioversao', 'tratar', 'tratamento',
-          'manejo', 'fármaco', 'farmaco', 'medicament',
-          // espanhol
-          'y el ', 'y la ', 'cual ', 'cuando ', 'como ', 'para que',
-          'protocolo', 'conducta', 'anticoag', 'cardioversion',
-          'tratar', 'tratamiento', 'manejo', 'farmaco', 'medicamento',
+      // 2b. Náusea/vômito simples — sem red flags graves
+      if (_has(q, ['nause', 'vomit', 'enjoo', 'emese', 'nausea', 'vomito'])) {
+        final hasGravity = _has(q, [
+          'dor abdom', 'sangue', 'melena', 'hematemes', 'hipotens', 'choque',
+          'trovoada', 'petequi', 'deficit focal', 'glasgow', 'cetoacid',
         ]);
+        if (!hasGravity) {
+          final buf3 = StringBuffer();
+          buf3.writeln(es
+              ? '## Síndrome emética — causas frecuentes: gastroenteritis viral, alimentaria, migraña, medicamentosa'
+              : '## Síndrome emética — causas comuns: gastroenterite viral, alimentar, enxaqueca, medicamentosa');
+          buf3.writeln('');
+          buf3.writeln(es ? '## Avaliação inicial:' : '## Avaliação inicial:');
+          buf3.writeln(es ? '  • Temperatura (fiebre → causa infecciosa)' : '  • Temperatura (febre → causa infecciosa)');
+          buf3.writeln(es ? '  • PA e FC (deshidratación / hipotensión ortostática)' : '  • PA e FC (desidratação / hipotensão ortostática)');
+          buf3.writeln(es ? '  • Glucemia capilar' : '  • Glicemia capilar');
+          buf3.writeln(es ? '  • Signos de deshidratación (turgencia, mucosas)' : '  • Sinais de desidratação (turgor, mucosas)');
+          buf3.writeln('');
+          buf3.writeln(es ? '## Alerta:' : '## Alerta:');
+          buf3.writeln(es
+              ? '  • Dolor abdominal intenso, sangrado, rigidez o alteración de consciencia → urgencia'
+              : '  • Dor abdominal intensa, sangramento, rigidez ou rebaixamento → urgência');
+          buf3.writeln('');
+          buf3.writeln(es ? '⚕ Apoyo educacional.' : '⚕ Apoio educacional.');
+          return buf3.toString();
+        }
+      }
 
+      // 2c. Re-tentativa com qExpanded (histórico + msg atual)
+      if (qHistory.isNotEmpty && qHistory.length > 5) {
+        int bestExpScore = 0;
+        for (final cond in conditions) {
+          int sc = 0;
+          for (final kw in cond.keywords) {
+            if (qExpanded.contains(kw)) sc++;
+          }
+          if (sc > bestExpScore) { bestExpScore = sc; winner = cond; }
+        }
+        if (bestExpScore == 0) winner = null;
+      }
+
+      // 2d. Follow-up via última mensagem do assistente
+      if (winner == null && _aiHistory.isNotEmpty) {
+        final isFollowUp = _has(q, [
+          'e a ', 'e o ', 'qual ', 'quando ', 'como ', 'por que', 'pode ',
+          'deve ', 'precis', 'protocolo', 'conduta', 'anticoag',
+          'tratar', 'tratamento', 'manejo', 'farmaco', 'medicament',
+          'y el ', 'y la ', 'cual ', 'cuando ', 'para que',
+          'conducta', 'tratamiento',
+        ]);
         if (isFollowUp) {
-          // Tenta encontrar o último diagnóstico/condição da conversa
-          final lastAssistantMsg = _aiHistory
+          final lastAI = _normalize(_aiHistory
               .where((m) => m['role'] == 'assistant')
               .map((m) => m['content'] ?? '')
-              .lastOrNull ?? '';
-          final lastQNorm = _normalize(lastAssistantMsg);
-
-          // Re-tenta extrair protocolo com base no último contexto
-          if (_has(lastQNorm, ['fibrilac', 'fa ', 'auricular'])) {
-            suspected.add('Fibrilação Atrial');
-            protocolIds.add('fa_aguda');
-          } else if (_has(lastQNorm, ['sepse', 'choque sept'])) {
-            suspected.add('Sepse');
-            protocolIds.add('sepse');
-          } else if (_has(lastQNorm, ['iam', 'infarto', 'coronar', 'angina'])) {
-            suspected.add(es ? 'Síndrome Coronario Agudo' : 'Síndrome Coronariana Aguda');
-            protocolIds.add('iam_congestao');
-          } else if (_has(lastQNorm, ['avc', 'ave', 'cerebr', 'isquem'])) {
-            suspected.add(es ? 'ACV' : 'AVC');
-            protocolIds.add('avc_isquemico');
-          } else if (_has(lastQNorm, ['hipertens', 'crise hiperten', 'pa elev'])) {
-            suspected.add(es ? 'Crisis Hipertensiva' : 'Crise Hipertensiva');
-            protocolIds.add('crise_hipertensiva');
-          } else if (_has(lastQNorm, ['tep', 'embolia pulm', 'tromboembol'])) {
-            suspected.add(es ? 'TEP' : 'TEP');
-            protocolIds.add('tep');
-          } else if (_has(lastQNorm, ['insuf cardiac', 'ic ', 'edema pulm', 'congest'])) {
-            suspected.add(es ? 'Insuficiencia Cardíaca' : 'Insuficiência Cardíaca');
-            protocolIds.add('iam_congestao');
+              .lastOrNull ?? '');
+          if (lastAI.isNotEmpty) {
+            int bestCtx = 0;
+            for (final cond in conditions) {
+              int sc = 0;
+              for (final kw in cond.keywords) {
+                if (lastAI.contains(kw)) sc++;
+              }
+              if (sc > bestCtx) { bestCtx = sc; winner = cond; }
+            }
+            if (bestCtx == 0) winner = null;
           }
         }
       }
 
-      // ── 4. FALLBACK FINAL — só chega aqui se realmente não há contexto ──
-      if (suspected.isEmpty) {
-        // Se há histórico, oferece opções relacionadas ao contexto anterior
+      // 2e. Fallback final
+      if (winner == null) {
         if (_aiHistory.isNotEmpty) {
-          final lastUser = _aiHistory
-              .where((m) => m['role'] == 'user')
-              .map((m) => m['content'] ?? '')
-              .lastOrNull ?? '';
-          final contextHint = lastUser.isNotEmpty
-              ? (es
-                  ? '\n_Contexto anterior: "$lastUser"_\n\n'
-                  : '\n_Contexto anterior: "$lastUser"_\n\n')
-              : '';
           return es
-              ? '${contextHint}Entiendo que tienes una pregunta de seguimiento. ¿Podrías especificar un poco más?\n\nPor ejemplo:\n• "¿Cuál es la dosis de [fármaco]?"\n• "¿Cuándo cardiovertir en FA?"\n• "¿Qué anticoagulante usar?"\n• "¿Cuál es el protocolo de manejo?"\n\n⚕ Apoyo educacional.'
-              : '${contextHint}Entendo que é uma pergunta de seguimento. Pode especificar um pouco mais?\n\nPor exemplo:\n• "Qual a dose de [fármaco]?"\n• "Quando cardioverter na FA?"\n• "Qual anticoagulante usar?"\n• "Qual o protocolo de manejo?"\n\n⚕ Apoio educacional.';
+              ? 'Entiendo que es una pregunta de seguimiento. ¿Podrías especificar un poco más?\n\nEjemplos:\n• "¿Cuál es la dosis de [fármaco]?"\n• "¿Cuándo cardiovertir en FA?"\n• "¿Cuál es el protocolo de sepsis?"\n\n⚕ Apoyo educacional.'
+              : 'Entendo que é uma pergunta de seguimento. Pode especificar um pouco mais?\n\nExemplos:\n• "Qual a dose de [fármaco]?"\n• "Quando cardioverter na FA?"\n• "Qual o protocolo de sepse?"\n\n⚕ Apoio educacional.';
         }
-        // Sem nenhum histórico: pede contexto clínico
-        final ask = es
-            ? 'Puedo ayudarte mejor si me cuentas más sobre el caso clínico.\n\n**Sugerencias:**\n• Síntomas principales y tiempo de evolución\n• Signos vitales (PA, FC, SpO₂, temperatura)\n• Datos del paciente (edad, peso, antecedentes)\n• Fármaco o condición específica que quieres consultar\n\nEjemplos:\n• "Paciente con FA + hipotensión, ¿cuál es la conducta?"\n• "¿Cuál es la dosis de amiodarona en FA?"\n• "Sepsis: protocolo de antibióticos"'
-            : 'Posso ajudar melhor com mais detalhes sobre o caso clínico.\n\n**Sugestões:**\n• Sintomas principais e tempo de evolução\n• Sinais vitais (PA, FC, SpO₂, temperatura)\n• Dados do paciente (idade, peso, antecedentes)\n• Fármaco ou condição específica que deseja consultar\n\nExemplos:\n• "Paciente com FA + hipotensão, qual a conduta?"\n• "Qual a dose de amiodarona na FA?"\n• "Sepse: protocolo de antibióticos"';
-        return '$ask\n\n⚕ Apoio educacional.';
+        return es
+            ? 'Puedo ayudarte mejor con más detalles del caso clínico.\n\n**Sugerencias:**\n• Síntomas principales y tiempo de evolución\n• Signos vitales (PA, FC, SpO₂, temperatura)\n• Fármaco o condición específica\n\nEjemplos:\n• "FA con hipotensión — ¿cuál es la conducta?"\n• "¿Dosis de amiodarona en FA?"\n• "Sepsis — protocolo de antibióticos"\n\n⚕ Apoyo educacional.'
+            : 'Posso ajudar melhor com mais detalhes do caso clínico.\n\n**Sugestões:**\n• Sintomas principais e tempo de evolução\n• Sinais vitais (PA, FC, SpO₂, temperatura)\n• Fármaco ou condição específica\n\nExemplos:\n• "FA com hipotensão — qual a conduta?"\n• "Dose de amiodarona na FA?"\n• "Sepse — protocolo de antibióticos"\n\n⚕ Apoio educacional.';
       }
     }
 
-    // ── Montar resposta ──────────────────────────────────────────────────
-    final clcrStr = clcr ?? '—';
+    // ════════════════════════════════════════════════════════════════════════
+    // FASE 3 — RENDERIZAR RESPOSTA DA CONDIÇÃO VENCEDORA
+    // ════════════════════════════════════════════════════════════════════════
+    final buf = StringBuffer();
 
-    // Hipóteses — só as 3 mais relevantes
-    if (suspected.length == 1) {
-      buf.writeln('## ${suspected[0]}');
-    } else {
-      buf.writeln('## Hipóteses:');
-      for (int i = 0; i < suspected.length && i < 3; i++) {
-        buf.writeln('  ${i + 1}. ${suspected[i]}');
-      }
-    }
+    // Cabeçalho: nome da condição
+    buf.writeln('## ${winner!.label}');
     buf.writeln('');
 
-    // Red Flags — máx 3, apenas os mais críticos
-    if (redFlags.isNotEmpty) {
-      buf.writeln('## Alertas:');
-      for (final f in redFlags.take(3)) {
-        buf.writeln('  • $f');
-      }
+    // Red flags — máx 3
+    if (winner.flags.isNotEmpty) {
+      buf.writeln(es ? '## Alertas:' : '## Alertas:');
+      for (final f in winner.flags.take(3)) buf.writeln('  • $f');
       buf.writeln('');
     }
 
-    // Protocolo + conduta (o mais valioso)
-    ProtocolModel? matchedProtocol;
-    for (final pid in protocolIds) {
-      try {
-        matchedProtocol = protocolsDatabase.firstWhere((p) => p.id == pid);
-        break;
-      } catch (_) {}
+    // Protocolo clínico (conduta imediata) — se disponível
+    ProtocolModel? proto;
+    if (winner.protocolId != null) {
+      try { proto = protocolsDatabase.firstWhere((p) => p.id == winner!.protocolId); }
+      catch (_) {}
     }
 
-    if (matchedProtocol != null) {
-      buf.writeln('## ${tDB(matchedProtocol.title)}:');
-      final actions = matchedProtocol.getActions(_lang);
+    if (proto != null) {
+      buf.writeln('## ${tDB(proto.title)}:');
+      final actions = proto.getActions(_lang);
       for (int i = 0; i < actions.length && i < 5; i++) {
         buf.writeln('  ${actions[i]}');
       }
@@ -1767,52 +1727,43 @@ class AppProvider extends ChangeNotifier {
       }
       buf.writeln('');
 
-      // Fármacos — só se tem paciente com peso (dose personalizada tem valor real)
-      final suggestedDrugs = matchedProtocol.drugs.take(3)
-          .map((id) {
-            try { return drugsDatabase.firstWhere((d) => d.id == id); }
-            catch (_) { return null; }
-          })
+      // Fármacos do protocolo
+      final suggestedDrugs = proto.drugs.take(3)
+          .map((id) { try { return drugsDatabase.firstWhere((d) => d.id == id); } catch (_) { return null; } })
           .whereType<DrugModel>().toList();
 
       if (suggestedDrugs.isNotEmpty && _patient.weight.isNotEmpty) {
         buf.writeln('## ${_lang == 'es' ? 'Dosis para este paciente:' : 'Dose para este paciente:'}');
         for (final drug in suggestedDrugs) {
-          final dose = calculateDose(drug);
+          final dose   = calculateDose(drug);
           final alerts = dose.alerts.take(1).join(' | ');
           buf.writeln('  • ${drug.name}: ${dose.main}${alerts.isNotEmpty ? '  ⚠ $alerts' : ''}');
         }
         buf.writeln('');
       } else if (suggestedDrugs.isNotEmpty) {
-        // Sem peso: lista fármacos sem calcular dose
-        final names = suggestedDrugs.map((d) => d.name).join(', ');
-        buf.writeln('Fármacos: $names');
+        buf.writeln('${_lang == 'es' ? 'Fármacos' : 'Fármacos'}: ${suggestedDrugs.map((d) => d.name).join(', ')}');
         buf.writeln('');
       }
-    } else if (examSuggestions.isNotEmpty) {
-      // Sem protocolo direto: mostra só os exames mais relevantes (máx 4)
-      final uniq = examSuggestions.toSet().take(4).toList();
-      buf.writeln('## ${_lang == 'es' ? 'Exámenes clave:' : 'Exames-chave:'}');
-      for (final e in uniq) buf.writeln('  • $e');
+    } else if (winner.exams.isNotEmpty) {
+      // Sem protocolo → mostra exames da condição
+      buf.writeln(es ? '## Exámenes clave:' : '## Exames-chave:');
+      for (final e in winner.exams.take(4)) buf.writeln('  • $e');
       buf.writeln('');
     }
 
-    // Alerta renal — só se ClCr relevantemente baixo
-    final clcrVal = double.tryParse(clcrStr.replaceAll(',', '.'));
+    // Alertas contextuais de paciente
+    final clcrVal = double.tryParse((clcr ?? '').replaceAll(',', '.'));
     if (clcrVal != null && clcrVal > 0 && clcrVal < 45) {
-      final level = clcrVal < 15 ? 'ALERTA' : 'Aten.';
-      buf.writeln('$level ${_lang == 'es' ? 'ClCr $clcrStr — ajustar dosis renales' : 'ClCr $clcrStr — ajustar doses renais'}');
+      buf.writeln('${clcrVal < 15 ? 'ALERTA' : 'Aten.'} ${_lang == 'es' ? 'ClCr $clcr — ajustar dosis renales' : 'ClCr $clcr — ajustar doses renais'}');
       buf.writeln('');
     }
-
-    // Alerta de idade — só uma linha compacta
     final ageVal = int.tryParse(_patient.age);
     if (ageVal != null && ageVal >= 75) {
       buf.writeln(_lang == 'es' ? 'Idoso: reducir dosis opioides/BZD, vigilar delirium.' : 'Idoso: reduzir dose opioides/BZD, vigilar delirium.');
       buf.writeln('');
     }
 
-    buf.writeln('Apoio educacional. Sempre confirme com fonte primária.');
+    buf.writeln(es ? '⚕ Apoyo educacional.' : '⚕ Apoio educacional.');
     return buf.toString();
   }
 
@@ -2265,4 +2216,24 @@ class AppProvider extends ChangeNotifier {
       'role': 'Perfil',
     },
   };
+}
+
+// ---------------------------------------------------------------------------
+// Classe auxiliar para sistema de pontuação do _buildLocalAnswer
+// ---------------------------------------------------------------------------
+class _CliCondition {
+  final String id;
+  final String label;
+  final String? protocolId;
+  final List<String> keywords;
+  final List<String> exams;
+  final List<String> flags;
+  const _CliCondition({
+    required this.id,
+    required this.label,
+    this.protocolId,
+    required this.keywords,
+    required this.exams,
+    required this.flags,
+  });
 }
