@@ -104,66 +104,69 @@ class GeminiService {
   // WEB — OAuth via GSI (google.accounts.oauth2.initTokenClient)
   // ══════════════════════════════════════════════════════════════════════════
 
-  /// Inicia fluxo OAuth no web usando GSI nativo.
-  /// Retorna o accessToken ou null se o usuário cancelou/falhou.
+  /// Inicia fluxo OAuth no web usando GSI nativo via dart:js.
+  /// js.JsObject.jsify() não serializa funções Dart — callbacks são
+  /// atribuídos diretamente no JsObject após a criação do config.
   static Future<String?> _webSignIn() async {
     final completer = Completer<String?>();
 
     try {
-      final google = js.context['google'];
-      if (google == null) {
-        debugPrint('[GeminiService] GSI não carregado — google object null');
+      // Verifica se o GSI está carregado
+      final hasGoogle = js.context.hasProperty('google');
+      if (!hasGoogle) {
+        debugPrint('[GeminiService] GSI não carregado — window.google ausente');
         completer.complete(null);
         return completer.future;
       }
 
-      final accounts = google['accounts'];
-      if (accounts == null) {
-        debugPrint('[GeminiService] google.accounts null');
-        completer.complete(null);
-        return completer.future;
-      }
+      // Cria o objeto de configuração sem as funções (jsify só serializa dados)
+      final config = js.JsObject(js.context['Object'] as js.JsFunction);
+      config['client_id'] = _webClientId;
+      config['scope']     = _scope;
 
-      final oauth2 = accounts['oauth2'];
-      if (oauth2 == null) {
-        debugPrint('[GeminiService] google.accounts.oauth2 null');
-        completer.complete(null);
-        return completer.future;
-      }
-
-      // Cria token client com callback
-      final client = oauth2.callMethod('initTokenClient', [
-        js.JsObject.jsify({
-          'client_id': _webClientId,
-          'scope': _scope,
-          'callback': js.allowInterop((dynamic response) {
-            try {
-              final resp = js.JsObject.fromBrowserObject(response);
-              final token = resp['access_token'] as String?;
-              final error = resp['error'] as String?;
-              if (error != null && error.isNotEmpty) {
-                debugPrint('[GeminiService] GSI error: $error');
-                if (!completer.isCompleted) completer.complete(null);
-              } else if (token != null && token.isNotEmpty) {
-                debugPrint('[GeminiService] GSI token OK');
-                if (!completer.isCompleted) completer.complete(token);
-              } else {
-                if (!completer.isCompleted) completer.complete(null);
-              }
-            } catch (e) {
-              debugPrint('[GeminiService] GSI callback erro: $e');
-              if (!completer.isCompleted) completer.complete(null);
-            }
-          }),
-          'error_callback': js.allowInterop((dynamic error) {
-            debugPrint('[GeminiService] GSI error_callback: $error');
+      // Atribui callbacks como funções JS via allowInterop
+      config['callback'] = js.allowInterop((dynamic response) {
+        try {
+          String? token;
+          String? error;
+          if (response is js.JsObject) {
+            token = response['access_token'] as String?;
+            error = response['error'] as String?;
+          } else {
+            // Tenta acessar via fromBrowserObject
+            final r = js.JsObject.fromBrowserObject(response);
+            token = r['access_token'] as String?;
+            error = r['error'] as String?;
+          }
+          if (error != null && error.isNotEmpty) {
+            debugPrint('[GeminiService] GSI error: $error');
             if (!completer.isCompleted) completer.complete(null);
-          }),
-        })
-      ]);
+          } else if (token != null && token.isNotEmpty) {
+            debugPrint('[GeminiService] GSI token OK (${token.length} chars)');
+            if (!completer.isCompleted) completer.complete(token);
+          } else {
+            debugPrint('[GeminiService] GSI callback: token e error ambos vazios');
+            if (!completer.isCompleted) completer.complete(null);
+          }
+        } catch (e) {
+          debugPrint('[GeminiService] GSI callback erro: $e');
+          if (!completer.isCompleted) completer.complete(null);
+        }
+      });
 
-      // Abre popup OAuth
-      client.callMethod('requestToken', []);
+      config['error_callback'] = js.allowInterop((dynamic err) {
+        String? msg;
+        try { msg = (err is js.JsObject) ? err['type'] as String? : err?.toString(); } catch (_) {}
+        debugPrint('[GeminiService] GSI error_callback: $msg');
+        if (!completer.isCompleted) completer.complete(null);
+      });
+
+      // Cria o token client e solicita token
+      final oauth2 = (js.context['google'] as js.JsObject)['accounts']['oauth2'];
+      final client = (oauth2 as js.JsObject).callMethod('initTokenClient', [config]);
+      (client as js.JsObject).callMethod('requestToken', []);
+
+      debugPrint('[GeminiService] GSI requestToken chamado — aguardando popup...');
 
     } catch (e, st) {
       debugPrint('[GeminiService] _webSignIn ERRO: $e\n$st');
@@ -174,7 +177,7 @@ class GeminiService {
     return completer.future.timeout(
       const Duration(minutes: 5),
       onTimeout: () {
-        debugPrint('[GeminiService] GSI timeout');
+        debugPrint('[GeminiService] GSI timeout (5min)');
         return null;
       },
     );
