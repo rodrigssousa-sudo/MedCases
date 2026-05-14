@@ -180,6 +180,7 @@ class _DrugInteractionsScreenState extends State<DrugInteractionsScreen> {
                         _SelectedDrugsChips(
                           drugs: _selectedDrugs,
                           dark: dark,
+                          isEs: isEs,
                           c: c,
                           onRemove: _removeDrug,
                         ),
@@ -317,7 +318,7 @@ class _Header extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  isEs ? 'Verificação medicamentosa' : 'Verificação medicamentosa',
+                  isEs ? 'Verificación medicamentosa' : 'Verificação medicamentosa',
                   style: TextStyle(
                     fontSize: 11,
                     color: c.textHint,
@@ -339,7 +340,7 @@ class _Header extends StatelessWidget {
               ),
             ),
             child: Text(
-              '${drugsDatabase.length} fármacos',
+              isEs ? '${drugsDatabase.length} fármacos' : '${drugsDatabase.length} fármacos',
               style: const TextStyle(
                 fontSize: 10,
                 fontWeight: FontWeight.w700,
@@ -533,12 +534,14 @@ class _SuggestionsDropdown extends StatelessWidget {
 class _SelectedDrugsChips extends StatelessWidget {
   final List<String> drugs;
   final bool dark;
+  final bool isEs;
   final AppColors c;
   final ValueChanged<String> onRemove;
 
   const _SelectedDrugsChips({
     required this.drugs,
     required this.dark,
+    required this.isEs,
     required this.c,
     required this.onRemove,
   });
@@ -549,7 +552,7 @@ class _SelectedDrugsChips extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Selecionados (${drugs.length})',
+          isEs ? 'Seleccionados (${drugs.length})' : 'Selecionados (${drugs.length})',
           style: TextStyle(
             fontSize: 11,
             fontWeight: FontWeight.w600,
@@ -682,7 +685,7 @@ class _AvaliarButton extends StatelessWidget {
             ),
             const SizedBox(width: 10),
             Text(
-              isEs ? 'Evaluar Interacciones' : 'Avaliar Interações',
+              isEs ? 'Evaluar interacciones' : 'Avaliar Interações',
               style: const TextStyle(
                 fontSize: 15,
                 fontWeight: FontWeight.w700,
@@ -783,7 +786,7 @@ class _EmptyState extends StatelessWidget {
             _HintRow(
               icon: Icons.compare_arrows_rounded,
               text: isEs
-                  ? 'Toque "Evaluar" para verificar'
+                  ? 'Pulse "Evaluar" para verificar'
                   : 'Toque "Avaliar" para verificar',
               c: c,
             ),
@@ -941,7 +944,7 @@ class _ResultsHeader extends StatelessWidget {
                   Text(
                     hasInteractions
                         ? '$count ${isEs ? (count == 1 ? 'interacción' : 'interacciones') : (count == 1 ? 'interação' : 'interações')} ${isEs ? 'encontradas' : 'encontradas'}'
-                        : isEs ? 'Sem interacciones' : 'Sem interações',
+                        : isEs ? 'Sin interacciones' : 'Sem interações',
                     style: TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.w700,
@@ -960,7 +963,7 @@ class _ResultsHeader extends StatelessWidget {
         // Sub-texto
         Text(
           isEs
-              ? 'Analisados $drugsCount medicamentos'
+              ? 'Analizados $drugsCount medicamentos'
               : 'Analisados $drugsCount medicamentos',
           style: TextStyle(
             fontSize: 12,
@@ -993,6 +996,7 @@ class _SeverityLegend extends StatelessWidget {
       (Color(0xFF1A4731), Color(0xFF16A34A), 'LEVE'),
       (Color(0xFF1E3A5F), Color(0xFF2563EB), 'MONITORAR'),
     ];
+    final isEs = context.read<AppProvider>().lang == 'es';
     return Wrap(
       spacing: 8,
       runSpacing: 6,
@@ -1636,7 +1640,7 @@ class _NewAnalysisButton extends StatelessWidget {
             ),
             const SizedBox(width: 10),
             Text(
-              isEs ? 'Nueva análisis' : 'Nova análise',
+              isEs ? 'Nuevo análisis' : 'Nova análise',
               style: const TextStyle(
                 fontSize: 15,
                 fontWeight: FontWeight.w700,
