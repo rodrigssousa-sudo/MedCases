@@ -1014,12 +1014,16 @@ class _AiStatusSheet extends StatefulWidget {
 
 class _AiStatusSheetState extends State<_AiStatusSheet> {
   bool get _isEs => widget.lang == 'es';
+  bool _connectTriggeredByUser = false; // guard: só mostra erro se o usuário tocou
 
   Future<void> _handleGoogleConnect() async {
+    // Marca que esta conexão foi iniciada explicitamente pelo usuário.
+    // Isso impede que qualquer chamada interna/acidental mostre o banner.
+    _connectTriggeredByUser = true;
     final p = context.read<AppProvider>();
     final ok = await p.connectGemini();
     if (!mounted) return;
-    if (!ok) {
+    if (!ok && _connectTriggeredByUser) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(_isEs
@@ -1032,6 +1036,7 @@ class _AiStatusSheetState extends State<_AiStatusSheet> {
         ),
       );
     }
+    _connectTriggeredByUser = false;
   }
 
   Future<void> _handleGoogleDisconnect() async {

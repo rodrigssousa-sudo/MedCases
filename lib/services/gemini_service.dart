@@ -128,9 +128,18 @@ class GeminiService {
     final current = _googleSignIn.currentUser;
     if (current != null) return true;
     try {
-      final restored = await _googleSignIn.signInSilently();
+      final restored = await _googleSignIn
+          .signInSilently()
+          .timeout(const Duration(seconds: 8), onTimeout: () => null);
+      if (restored == null) {
+        // signInSilently falhou (origin_mismatch, token expirado, etc.)
+        // Limpa email salvo — próximo boot não tenta signInSilently em vão.
+        await _deleteEmail();
+      }
       return restored != null;
     } catch (_) {
+      // Qualquer exceção OAuth → limpa cache e retorna false silenciosamente
+      await _deleteEmail();
       return false;
     }
   }

@@ -855,12 +855,21 @@ class AppProvider extends ChangeNotifier {
   }
 
   /// Verifica silenciosamente se há sessão Gemini ativa (chamado no login).
+  /// Nunca propaga exceção nem modifica _geminiLoading — é 100% silencioso.
   Future<void> checkGeminiSession() async {
-    final connected = await GeminiService.isConnected();
-    if (connected) {
-      _geminiConnected = true;
-      _geminiEmail = await GeminiService.connectedEmail() ?? '';
-      notifyListeners();
+    try {
+      final connected = await GeminiService.isConnected()
+          .timeout(const Duration(seconds: 10), onTimeout: () => false);
+      if (connected) {
+        _geminiConnected = true;
+        _geminiEmail = await GeminiService.connectedEmail() ?? '';
+        notifyListeners();
+      }
+    } catch (_) {
+      // Sessão inválida ou OAuth bloqueado — silencia completamente.
+      // Nunca mostra banner aqui; o usuário conecta manualmente se quiser.
+      _geminiConnected = false;
+      _geminiEmail = '';
     }
   }
 
