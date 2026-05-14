@@ -105,8 +105,10 @@ class GeminiService {
   // ══════════════════════════════════════════════════════════════════════════
 
   /// Inicia fluxo OAuth no web usando GSI nativo via dart:js.
-  /// js.JsObject.jsify() não serializa funções Dart — callbacks são
-  /// atribuídos diretamente no JsObject após a criação do config.
+  ///
+  /// IMPORTANTE: Não usar JsObject(context['Object'] as JsFunction) —
+  /// o cast explode no build release minificado (tree-shaking remove a ref).
+  /// Solução: criar objeto vazio com js.eval('({})') e atribuir props/callbacks.
   static Future<String?> _webSignIn() async {
     final completer = Completer<String?>();
 
@@ -119,8 +121,11 @@ class GeminiService {
         return completer.future;
       }
 
-      // Cria o objeto de configuração sem as funções (jsify só serializa dados)
-      final config = js.JsObject(js.context['Object'] as js.JsFunction);
+      // Cria objeto JS vazio via eval — seguro no release build minificado
+      // (JsObject(context['Object'] as JsFunction) falha com tree-shaking)
+      final config = js.JsObject.fromBrowserObject(
+        js.context.callMethod('eval', ['({})'])
+      );
       config['client_id'] = _webClientId;
       config['scope']     = _scope;
 
@@ -129,15 +134,15 @@ class GeminiService {
         try {
           String? token;
           String? error;
+          js.JsObject r;
           if (response is js.JsObject) {
-            token = response['access_token'] as String?;
-            error = response['error'] as String?;
+            r = response;
           } else {
-            // Tenta acessar via fromBrowserObject
-            final r = js.JsObject.fromBrowserObject(response);
-            token = r['access_token'] as String?;
-            error = r['error'] as String?;
+            r = js.JsObject.fromBrowserObject(response);
           }
+          token = r['access_token'] as String?;
+          error = r['error'] as String?;
+
           if (error != null && error.isNotEmpty) {
             debugPrint('[GeminiService] GSI error: $error');
             if (!completer.isCompleted) completer.complete(null);
@@ -156,15 +161,22 @@ class GeminiService {
 
       config['error_callback'] = js.allowInterop((dynamic err) {
         String? msg;
-        try { msg = (err is js.JsObject) ? err['type'] as String? : err?.toString(); } catch (_) {}
+        try {
+          final e = (err is js.JsObject) ? err : js.JsObject.fromBrowserObject(err);
+          msg = e['type'] as String? ?? e['message'] as String?;
+        } catch (_) { msg = err?.toString(); }
         debugPrint('[GeminiService] GSI error_callback: $msg');
         if (!completer.isCompleted) completer.complete(null);
       });
 
-      // Cria o token client e solicita token
-      final oauth2 = (js.context['google'] as js.JsObject)['accounts']['oauth2'];
-      final client = (oauth2 as js.JsObject).callMethod('initTokenClient', [config]);
-      (client as js.JsObject).callMethod('requestToken', []);
+      // Acessa google.accounts.oauth2 — cada acesso retorna JsObject encadeado
+      final google  = js.JsObject.fromBrowserObject(js.context['google']);
+      final accounts = js.JsObject.fromBrowserObject(google['accounts']);
+      final oauth2  = js.JsObject.fromBrowserObject(accounts['oauth2']);
+      final client  = js.JsObject.fromBrowserObject(
+        oauth2.callMethod('initTokenClient', [config])
+      );
+      client.callMethod('requestToken', []);
 
       debugPrint('[GeminiService] GSI requestToken chamado — aguardando popup...');
 
