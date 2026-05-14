@@ -83,22 +83,6 @@ class HomeScreen extends StatelessWidget {
         ),
         const SizedBox(height: 14),
 
-        _HomeCard(
-          icon: Icons.calculate_rounded,
-          label: isEs ? 'CALCULADORAS' : 'CALCULADORAS',
-          subtitle: isEs
-              ? 'Scores · Cardio · Eletrólitos · Infusão'
-              : 'Scores · Cardio · Eletrólitos · Infusão',
-          gradientColors: const [Color(0xFF1A0F2E), Color(0xFF2D1B5A), Color(0xFF4A2D8A)],
-          accentColor: const Color(0xFFA78BFA),
-          dark: dark,
-          onTap: () => Navigator.of(context).push(
-            _slideRoute(const _CalculadorasShell()),
-          ),
-        ),
-
-        const SizedBox(height: 14),
-
         // ── Interações Medicamentosas ─────────────────────────────────────
         _HomeCard(
           icon: Icons.compare_arrows_rounded,

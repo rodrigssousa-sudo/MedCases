@@ -938,7 +938,7 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
               top: false,
               bottom: false,
               child: SizedBox(
-                height: 60,
+                height: 42,
                 child: Stack(
                   clipBehavior: Clip.none,
                   alignment: Alignment.topCenter,
@@ -951,15 +951,15 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
                         // 3 — História Clínica
                         _buildNavBtn(3, Icons.folder_shared_rounded, 'H. Clínica', dark, p),
                         // espaço central para o FAB (IA Clínica)
-                        const SizedBox(width: 76),
+                        const SizedBox(width: 72),
                         // 5 — Biblioteca
                         _buildNavBtn(5, Icons.menu_book_rounded, 'Biblioteca', dark, p),
-                        // 4 — Calculadoras
+                        // 4 — Ferramentas
                         _buildNavBtn(4, Icons.calculate_rounded, 'Ferramentas', dark, p),
                       ],
                     ),
                     Positioned(
-                      top: -22,
+                      top: -26,
                       child: _buildAiNavBtn(dark, p),
                     ),
                   ],
@@ -987,7 +987,7 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
           AnimatedContainer(
             duration: const Duration(milliseconds: 220),
             curve: Curves.easeOutCubic,
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 3),
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 1),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(12),
               color: active
@@ -998,15 +998,15 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
             ),
             child: Icon(
               icon,
-              size: 20,
+              size: 17,
               color: active ? activeColor : inactiveColor,
             ),
           ),
-          const SizedBox(height: 2),
+          const SizedBox(height: 1),
           AnimatedDefaultTextStyle(
             duration: const Duration(milliseconds: 200),
             style: TextStyle(
-              fontSize: 8.5,
+              fontSize: 7.5,
               fontWeight: active ? FontWeight.w800 : FontWeight.w500,
               color: active ? activeColor : inactiveColor,
               letterSpacing: active ? 0.2 : 0,
