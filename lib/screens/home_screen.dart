@@ -8,6 +8,7 @@ import 'tools_screen.dart' show ProtocolsCard, PediatricsTabContent, ToolsScreen
 import 'protocols_screen.dart';
 import 'prescripciones_screen.dart';
 import 'cases_screen.dart';
+import 'drug_interactions_screen.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // HOME SCREEN — 4 cards de navegação principal
@@ -92,6 +93,23 @@ class HomeScreen extends StatelessWidget {
           dark: dark,
           onTap: () => Navigator.of(context).push(
             _slideRoute(const _CalculadorasShell()),
+          ),
+        ),
+
+        const SizedBox(height: 14),
+
+        // ── Interações Medicamentosas ─────────────────────────────────────
+        _HomeCard(
+          icon: Icons.compare_arrows_rounded,
+          label: isEs ? 'INTERACCIONES' : 'INTERAÇÕES',
+          subtitle: isEs
+              ? 'Verifica pares · Severidade · Manejo'
+              : 'Verifica pares · Severidade · Manejo',
+          gradientColors: const [Color(0xFF1A0A2E), Color(0xFF3D1F6B), Color(0xFF6B3FA8)],
+          accentColor: const Color(0xFFA78BFA),
+          dark: dark,
+          onTap: () => Navigator.of(context).push(
+            _slideRoute(const DrugInteractionsScreen()),
           ),
         ),
 
