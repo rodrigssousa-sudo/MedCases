@@ -782,6 +782,54 @@ class FirestoreService {
     }
   }
 
+  // ── Anotações pessoais do usuário ────────────────────────────────────────
+
+  static CollectionReference<Map<String, dynamic>> _userNotes(String uid) =>
+      _db.collection('users').doc(uid).collection('notes');
+
+  /// Cria ou atualiza uma anotação.
+  static Future<String> saveNote({
+    required String uid,
+    String? noteId, // null = nova nota
+    required String title,
+    required String content,
+    required String color,  // hex string ex: '#1F6B48'
+    List<String> tags = const [],
+  }) async {
+    final data = {
+      'title':     title,
+      'content':   content,
+      'color':     color,
+      'tags':      tags,
+      'updatedAt': FieldValue.serverTimestamp(),
+    };
+    if (noteId == null) {
+      data['createdAt'] = FieldValue.serverTimestamp();
+      final ref = await _userNotes(uid).add(data);
+      return ref.id;
+    } else {
+      await _userNotes(uid).doc(noteId).set(data, SetOptions(merge: true));
+      return noteId;
+    }
+  }
+
+  /// Carrega todas as anotações do usuário, ordenadas por updatedAt desc.
+  static Stream<List<Map<String, dynamic>>> notesStream(String uid) {
+    return _userNotes(uid)
+        .orderBy('updatedAt', descending: true)
+        .snapshots()
+        .map((snap) => snap.docs.map((d) {
+              final data = Map<String, dynamic>.from(d.data());
+              data['id'] = d.id;
+              return data;
+            }).toList());
+  }
+
+  /// Deleta uma anotação.
+  static Future<void> deleteNote({required String uid, required String noteId}) async {
+    await _userNotes(uid).doc(noteId).delete();
+  }
+
   /// Escreve/atualiza app_config/maintenance via REST PATCH.
   static Future<void> _setMaintenanceRest({
     required bool enabled,

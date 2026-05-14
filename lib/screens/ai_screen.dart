@@ -97,12 +97,43 @@ class _AiScreenState extends State<AiScreen> {
   final _scrollCtrl = ScrollController();
   final _focusNode  = FocusNode();
   final List<_ChatMsg> _messages = [];
-  bool _thinking  = false;
-  bool _hasFocus  = false;
-  bool _aiError   = false; // true quando a última resposta foi um erro de chave
+  bool _thinking     = false;
+  bool _hasFocus     = false;
+  bool _aiError      = false;
+  bool _greetingDone = false; // garante saudação só uma vez por sessão
 
   // Sugestões ficam visíveis apenas no estado vazio + sem foco
   bool get _showSuggestions => _messages.isEmpty && !_hasFocus;
+
+  // ── Saudação contextual por hora e nome ─────────────────────────────────
+  String _buildGreeting(String userName, String lang) {
+    final hour = DateTime.now().hour;
+    final isEs = lang == 'es';
+    final String period = hour < 12
+        ? (isEs ? 'Buenos días' : 'Bom dia')
+        : hour < 18
+            ? (isEs ? 'Buenas tardes' : 'Boa tarde')
+            : (isEs ? 'Buenas noches' : 'Boa noite');
+    final firstName = userName.trim().split(' ').first;
+    final nameStr   = firstName.isNotEmpty ? ', $firstName' : '';
+    if (isEs) {
+      return '$period$nameStr! 👋\n\n'
+          'Soy tu asistente de IA clínica. Puedo ayudarte con:\n'
+          '• Protocolos y urgencias\n'
+          '• Fármacos y dosis\n'
+          '• Casos clínicos\n'
+          '• Cualquier pregunta de medicina\n\n'
+          '¿En qué puedo ayudarte hoy?';
+    } else {
+      return '$period$nameStr! 👋\n\n'
+          'Sou sua assistente de IA clínica. Posso te ajudar com:\n'
+          '• Protocolos e urgências\n'
+          '• Fármacos e doses\n'
+          '• Casos clínicos\n'
+          '• Qualquer dúvida de medicina\n\n'
+          'Como posso te ajudar hoje?';
+    }
+  }
 
   @override
   void initState() {
@@ -111,10 +142,20 @@ class _AiScreenState extends State<AiScreen> {
       if (mounted) setState(() => _hasFocus = _focusNode.hasFocus);
     });
     _queryCtrl.addListener(() {
-      // Esconde sugestões assim que o usuário começa a digitar
       if (mounted && _queryCtrl.text.isNotEmpty && _hasFocus) {
         setState(() {});
       }
+    });
+    // Injeta saudação após o primeiro frame (AppProvider já disponível)
+    WidgetsBinding.instance.addPostFrameCallback((_) => _injectGreeting());
+  }
+
+  void _injectGreeting() {
+    if (_greetingDone || !mounted) return;
+    _greetingDone = true;
+    final p = context.read<AppProvider>();
+    setState(() {
+      _messages.add(_ChatMsg(role: 'ai', text: _buildGreeting(p.userName, p.lang)));
     });
   }
 
@@ -178,13 +219,16 @@ class _AiScreenState extends State<AiScreen> {
   }
 
   void _clearChat() {
+    final p = context.read<AppProvider>();
     setState(() {
-      _messages.clear();
+      _messages
+        ..clear()
+        ..add(_ChatMsg(role: 'ai', text: _buildGreeting(p.userName, p.lang)));
       _aiError = false;
     });
     _queryCtrl.clear();
     _focusNode.unfocus();
-    context.read<AppProvider>().clearAiHistory();
+    p.clearAiHistory();
   }
 
   // ── Sheet de status da IA ────────────────────────────────────────────────

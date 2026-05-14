@@ -28,6 +28,7 @@ import 'screens/cases_screen.dart';
 import 'screens/prescripciones_screen.dart';
 import 'screens/legal_screen.dart';
 import 'screens/home_screen.dart';
+import 'screens/notes_screen.dart';
 import 'services/firestore_service.dart';
 import 'widgets/brand_mark.dart';
 
@@ -1582,6 +1583,29 @@ class _AppDrawer extends StatelessWidget {
                   ],
                 ),
 
+                // ─── Bloco: Ferramentas ──────────────────────────────────────
+                _DrawerSectionLabel(
+                  label: p.lang == 'es' ? 'HERRAMIENTAS' : 'FERRAMENTAS',
+                  dark: dark,
+                ),
+                _DrawerBlock(
+                  children: [
+                    _DrawerRow(
+                      icon: Icons.edit_note_rounded,
+                      iconColor: const Color(0xFF1F6B48),
+                      title: p.lang == 'es' ? 'Mis Anotaciones' : 'Minhas Anotações',
+                      dark: dark,
+                      textCol: textCol,
+                      subCol: subCol,
+                      showDivider: false,
+                      onTap: () {
+                        _close(context);
+                        openNotesScreen(context);
+                      },
+                    ),
+                  ],
+                ),
+
                 // ─── Bloco: Suporte ──────────────────────────────────────────
                 _DrawerSectionLabel(
                   label: p.lang == 'es' ? 'SOPORTE' : 'SUPORTE',
@@ -2277,6 +2301,28 @@ class _AppHeader extends StatelessWidget {
               ),
             ),
             const SizedBox(width: 8),
+            // Botão Anotações — acesso rápido
+            GestureDetector(
+              onTap: () => openNotesScreen(context),
+              child: Container(
+                width: 38,
+                height: 38,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12),
+                  color: Colors.white.withValues(alpha: 0.07),
+                  border: Border.all(
+                    color: Colors.white.withValues(alpha: 0.13),
+                    width: 1,
+                  ),
+                ),
+                child: const Icon(
+                  Icons.edit_note_rounded,
+                  size: 20,
+                  color: Color(0xFFFFE8A6),
+                ),
+              ),
+            ),
+            const SizedBox(width: 6),
             // Botão hamburguer — limpo, sem badge de idioma
             GestureDetector(
               onTap: () => Scaffold.of(context).openEndDrawer(),
