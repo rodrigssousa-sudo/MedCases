@@ -1,9 +1,14 @@
 import 'dart:async';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import '../models/user_model.dart';
+import '../models/guide_model.dart';
 import '../services/auth_service.dart';
 import '../services/firestore_service.dart';
+import '../services/storage_service.dart';
 import '../widgets/common_widgets.dart';
 
 class AdminScreen extends StatefulWidget {
@@ -39,7 +44,7 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
   @override
   void initState() {
     super.initState();
-    _tabs = TabController(length: 7, vsync: this);
+    _tabs = TabController(length: 8, vsync: this);
     _loadLang();
     _subscribeUsers();
   }
@@ -122,13 +127,14 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
             const Tab(icon: Icon(Icons.auto_awesome_rounded, size: 16), text: 'Novidades'),
             const Tab(icon: Icon(Icons.bar_chart_rounded, size: 16), text: 'Stats'),
             const Tab(icon: Icon(Icons.mark_email_unread_rounded, size: 16), text: 'E-mail'),
+            const Tab(icon: Icon(Icons.menu_book_rounded, size: 16), text: 'Biblioteca'),
           ],
         ),
       ),
       body: AnimatedBuilder(
         animation: _tabs,
         builder: (context, _) {
-          final isSystemTab = _tabs.index == 3 || _tabs.index == 4 || _tabs.index == 5 || _tabs.index == 6;
+          final isSystemTab = _tabs.index == 3 || _tabs.index == 4 || _tabs.index == 5 || _tabs.index == 6 || _tabs.index == 7;
           return Column(
             children: [
               // Barra de busca — só nas tabs de usuários (0, 1, 2)
@@ -215,6 +221,8 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
                     _StatsTab(allUsers: _allUsers, loading: _usersLoading),
                     // ── Tab 6: E-mail ─────────────────────────────────────
                     _EmailTab(allUsers: _allUsers, currentAdmin: widget.currentAdmin),
+                    // ── Tab 7: Biblioteca ─────────────────────────────────
+                    _BibliotecaAdminTab(currentAdmin: widget.currentAdmin),
                   ],
                 ),
               ),
@@ -3047,5 +3055,656 @@ class _HistoryCard extends StatelessWidget {
         ]),
       ]),
     );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// BIBLIOTECA CLÍNICA — Admin Tab
+// _BibliotecaAdminTab · _AdminGuideCard · _GuideUploadDialog · _Field
+// ─────────────────────────────────────────────────────────────────────────────
+
+class _BibliotecaAdminTab extends StatefulWidget {
+  final dynamic currentAdmin;
+  const _BibliotecaAdminTab({required this.currentAdmin});
+  @override
+  State<_BibliotecaAdminTab> createState() => _BibliotecaAdminTabState();
+}
+
+class _BibliotecaAdminTabState extends State<_BibliotecaAdminTab> {
+  static const _kGreen = Color(0xFF075f45);
+
+  @override
+  Widget build(BuildContext context) {
+    final c = AppColors.of(context);
+    return Column(children: [
+      // ── Header ──
+      Container(
+        width: double.infinity,
+        padding: const EdgeInsets.fromLTRB(20, 18, 20, 14),
+        decoration: BoxDecoration(
+          color: _kGreen,
+          borderRadius: const BorderRadius.vertical(bottom: Radius.circular(16)),
+        ),
+        child: Row(children: [
+          const Icon(Icons.menu_book_rounded, color: Colors.white, size: 22),
+          const SizedBox(width: 10),
+          const Expanded(
+            child: Text('Biblioteca Clínica',
+              style: TextStyle(color: Colors.white, fontSize: 16,
+                  fontWeight: FontWeight.w800)),
+          ),
+          FilledButton.icon(
+            onPressed: () => _openUploadDialog(context),
+            icon: const Icon(Icons.upload_file_rounded, size: 16),
+            label: const Text('Novo PDF', style: TextStyle(fontSize: 13)),
+            style: FilledButton.styleFrom(
+              backgroundColor: Colors.white.withValues(alpha: 0.18),
+              foregroundColor: Colors.white,
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            ),
+          ),
+        ]),
+      ),
+
+      // ── Lista de guias ──
+      Expanded(
+        child: StreamBuilder<List<GuideModel>>(
+          stream: FirestoreService.guidesAdminStream(),
+          builder: (context, snap) {
+            if (snap.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator(
+                  color: _kGreen, strokeWidth: 2));
+            }
+            final guides = snap.data ?? [];
+            if (guides.isEmpty) {
+              return Center(child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.library_books_rounded, size: 52,
+                      color: c.textHint.withValues(alpha: 0.4)),
+                  const SizedBox(height: 14),
+                  Text('Nenhum guia publicado ainda',
+                      style: TextStyle(color: c.textHint, fontSize: 14,
+                          fontWeight: FontWeight.w600)),
+                  const SizedBox(height: 6),
+                  Text('Toque em "Novo PDF" para adicionar',
+                      style: TextStyle(color: c.textHint, fontSize: 12)),
+                ],
+              ));
+            }
+            return ListView.separated(
+              padding: const EdgeInsets.fromLTRB(16, 14, 16, 24),
+              itemCount: guides.length,
+              separatorBuilder: (_, __) => const SizedBox(height: 8),
+              itemBuilder: (_, i) => _AdminGuideCard(
+                guide: guides[i],
+                onEdit: () => _openUploadDialog(context, guide: guides[i]),
+                onToggle: () => FirestoreService.toggleGuidePublished(
+                    guides[i].id, !guides[i].isPublished),
+                onDelete: () => _confirmDelete(context, guides[i]),
+              ),
+            );
+          },
+        ),
+      ),
+    ]);
+  }
+
+  void _openUploadDialog(BuildContext context, {GuideModel? guide}) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => _GuideUploadDialog(
+        guide: guide,
+        adminName: widget.currentAdmin?.name as String? ?? 'Admin',
+      ),
+    );
+  }
+
+  void _confirmDelete(BuildContext context, GuideModel guide) {
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: const Text('Excluir guia?'),
+        content: Text('Isso removerá "${guide.title}" permanentemente.'),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(context),
+              child: const Text('Cancelar')),
+          TextButton(
+            onPressed: () async {
+              Navigator.pop(context);
+              await FirestoreService.deleteGuide(guide.id);
+            },
+            child: const Text('Excluir',
+                style: TextStyle(color: Colors.red)),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+
+class _AdminGuideCard extends StatelessWidget {
+  final GuideModel guide;
+  final VoidCallback onEdit;
+  final VoidCallback onToggle;
+  final VoidCallback onDelete;
+  const _AdminGuideCard({
+    required this.guide,
+    required this.onEdit,
+    required this.onToggle,
+    required this.onDelete,
+  });
+
+  static const _kGreen = Color(0xFF075f45);
+
+  @override
+  Widget build(BuildContext context) {
+    final c = AppColors.of(context);
+    final published = guide.isPublished;
+    return Container(
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: c.cardBg,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: published
+              ? _kGreen.withValues(alpha: 0.25)
+              : c.textHint.withValues(alpha: 0.12),
+          width: 1,
+        ),
+      ),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Row(children: [
+          // ícone PDF
+          Container(
+            width: 38, height: 38,
+            decoration: BoxDecoration(
+              color: _kGreen.withValues(alpha: 0.10),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: const Icon(Icons.picture_as_pdf_rounded,
+                color: _kGreen, size: 20),
+          ),
+          const SizedBox(width: 10),
+          Expanded(child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(guide.title,
+                style: TextStyle(
+                  fontSize: 13, fontWeight: FontWeight.w700,
+                  color: c.textPrimary),
+                maxLines: 2, overflow: TextOverflow.ellipsis),
+              const SizedBox(height: 2),
+              Text(guide.category,
+                style: TextStyle(fontSize: 11, color: _kGreen,
+                    fontWeight: FontWeight.w600)),
+            ],
+          )),
+          // badge publicado
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+            decoration: BoxDecoration(
+              color: published
+                  ? _kGreen.withValues(alpha: 0.12)
+                  : c.textHint.withValues(alpha: 0.10),
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: Text(
+              published ? 'Publicado' : 'Rascunho',
+              style: TextStyle(
+                fontSize: 10, fontWeight: FontWeight.w700,
+                color: published ? _kGreen : c.textHint),
+            ),
+          ),
+        ]),
+        const SizedBox(height: 8),
+        if (guide.description.isNotEmpty) ...[
+          Text(guide.description,
+            style: TextStyle(fontSize: 12, color: c.textHint, height: 1.4),
+            maxLines: 2, overflow: TextOverflow.ellipsis),
+          const SizedBox(height: 8),
+        ],
+        // meta info
+        Row(children: [
+          if (guide.year.isNotEmpty) ...[
+            Icon(Icons.calendar_today_rounded, size: 11, color: c.textHint),
+            const SizedBox(width: 3),
+            Text(guide.year,
+              style: TextStyle(fontSize: 11, color: c.textHint)),
+            const SizedBox(width: 10),
+          ],
+          Icon(Icons.download_rounded, size: 11, color: c.textHint),
+          const SizedBox(width: 3),
+          Text('${guide.downloadCount} downloads',
+            style: TextStyle(fontSize: 11, color: c.textHint)),
+          const SizedBox(width: 10),
+          Icon(Icons.storage_rounded, size: 11, color: c.textHint),
+          const SizedBox(width: 3),
+          Text(guide.fileSizeLabel,
+            style: TextStyle(fontSize: 11, color: c.textHint)),
+        ]),
+        const SizedBox(height: 10),
+        // ações
+        Row(children: [
+          _ActionBtn(
+            icon: Icons.edit_rounded,
+            label: 'Editar',
+            color: const Color(0xFF1565C0),
+            onTap: onEdit,
+          ),
+          const SizedBox(width: 8),
+          _ActionBtn(
+            icon: published
+                ? Icons.visibility_off_rounded
+                : Icons.visibility_rounded,
+            label: published ? 'Despublicar' : 'Publicar',
+            color: published ? Colors.orange : _kGreen,
+            onTap: onToggle,
+          ),
+          const Spacer(),
+          _ActionBtn(
+            icon: Icons.delete_outline_rounded,
+            label: 'Excluir',
+            color: Colors.red,
+            onTap: onDelete,
+          ),
+        ]),
+      ]),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+
+class _GuideUploadDialog extends StatefulWidget {
+  final GuideModel? guide;
+  final String adminName;
+  const _GuideUploadDialog({this.guide, required this.adminName});
+  @override
+  State<_GuideUploadDialog> createState() => _GuideUploadDialogState();
+}
+
+class _GuideUploadDialogState extends State<_GuideUploadDialog> {
+  static const _kGreen = Color(0xFF075f45);
+
+  final _titleCtrl       = TextEditingController();
+  final _descCtrl        = TextEditingController();
+  final _authorsCtrl     = TextEditingController();
+  final _yearCtrl        = TextEditingController();
+
+  String _category       = GuideModel.categories.first;
+  Uint8List? _pdfBytes;
+  String?    _pdfFileName;
+  int?       _pdfFileSize;
+
+  bool   _uploading      = false;
+  double _uploadProgress = 0;
+  String? _error;
+
+  bool get _isEditing => widget.guide != null;
+
+  @override
+  void initState() {
+    super.initState();
+    final g = widget.guide;
+    if (g != null) {
+      _titleCtrl.text   = g.title;
+      _descCtrl.text    = g.description;
+      _authorsCtrl.text = g.authors;
+      _yearCtrl.text    = g.year;
+      _category         = g.category;
+    }
+  }
+
+  @override
+  void dispose() {
+    _titleCtrl.dispose();
+    _descCtrl.dispose();
+    _authorsCtrl.dispose();
+    _yearCtrl.dispose();
+    super.dispose();
+  }
+
+  Future<void> _pickPdf() async {
+    final result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['pdf'],
+      withData: true,
+    );
+    if (result == null || result.files.isEmpty) return;
+    final file = result.files.first;
+    if (file.bytes == null) return;
+    setState(() {
+      _pdfBytes    = file.bytes;
+      _pdfFileName = file.name;
+      _pdfFileSize = file.size;
+      _error       = null;
+    });
+  }
+
+  Future<void> _save() async {
+    final title = _titleCtrl.text.trim();
+    if (title.isEmpty) {
+      setState(() => _error = 'O título é obrigatório.');
+      return;
+    }
+    if (!_isEditing && _pdfBytes == null) {
+      setState(() => _error = 'Selecione um arquivo PDF.');
+      return;
+    }
+
+    setState(() { _uploading = true; _error = null; });
+
+    try {
+      String pdfUrl      = widget.guide?.pdfUrl ?? '';
+      String fileName    = widget.guide?.fileName ?? '';
+      int    fileSize    = widget.guide?.fileSize ?? 0;
+
+      // Upload novo PDF se selecionado
+      if (_pdfBytes != null && _pdfFileName != null) {
+        final result = await StorageService.uploadGuidePdf(
+          bytes: _pdfBytes!,
+          fileName: _pdfFileName!,
+          onProgress: (p) => setState(() => _uploadProgress = p),
+        );
+        pdfUrl   = result.url;
+        fileName = _pdfFileName!;
+        fileSize = _pdfFileSize ?? 0;
+      }
+
+      final guide = GuideModel(
+        id:          widget.guide?.id ?? '',
+        title:       title,
+        description: _descCtrl.text.trim(),
+        category:    _category,
+        authors:     _authorsCtrl.text.trim(),
+        year:        _yearCtrl.text.trim(),
+        pdfUrl:      pdfUrl,
+        fileName:    fileName,
+        fileSize:    fileSize,
+        uploadedAt:  widget.guide?.uploadedAt ?? '',
+        uploadedBy:  widget.guide?.uploadedBy ?? widget.adminName,
+        isPublished: widget.guide?.isPublished ?? false,
+        downloadCount: widget.guide?.downloadCount ?? 0,
+      );
+
+      await FirestoreService.saveGuide(guide);
+      if (mounted) Navigator.pop(context);
+    } catch (e) {
+      setState(() {
+        _uploading = false;
+        _error = 'Erro ao salvar: $e';
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      insetPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 32),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 520),
+        child: Column(mainAxisSize: MainAxisSize.min, children: [
+          // ── Header ──
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.fromLTRB(20, 16, 16, 14),
+            decoration: const BoxDecoration(
+              color: _kGreen,
+              borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+            ),
+            child: Row(children: [
+              Icon(_isEditing ? Icons.edit_rounded : Icons.upload_file_rounded,
+                  color: Colors.white, size: 20),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Text(
+                  _isEditing ? 'Editar Guia' : 'Novo Guia Clínico',
+                  style: const TextStyle(color: Colors.white, fontSize: 15,
+                      fontWeight: FontWeight.w800),
+                ),
+              ),
+              IconButton(
+                onPressed: _uploading ? null : () => Navigator.pop(context),
+                icon: const Icon(Icons.close_rounded, color: Colors.white70),
+                visualDensity: VisualDensity.compact,
+              ),
+            ]),
+          ),
+
+          // ── Corpo ──
+          Flexible(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _Field(label: 'Título *', controller: _titleCtrl,
+                      hint: 'ex: Protocolo Sepse 2024'),
+                  const SizedBox(height: 12),
+                  _Field(label: 'Descrição', controller: _descCtrl,
+                      hint: 'Breve resumo do conteúdo', maxLines: 3),
+                  const SizedBox(height: 12),
+
+                  // Categoria
+                  const Text('Categoria *',
+                      style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700)),
+                  const SizedBox(height: 6),
+                  DropdownButtonFormField<String>(
+                    value: _category,
+                    decoration: InputDecoration(
+                      contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 10),
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10)),
+                      isDense: true,
+                    ),
+                    items: GuideModel.categories
+                        .map((c) => DropdownMenuItem(value: c, child: Text(c,
+                            style: const TextStyle(fontSize: 13))))
+                        .toList(),
+                    onChanged: (v) { if (v != null) setState(() => _category = v); },
+                  ),
+                  const SizedBox(height: 12),
+
+                  Row(children: [
+                    Expanded(child: _Field(label: 'Autores', controller: _authorsCtrl,
+                        hint: 'ex: Silva JA, Santos MR')),
+                    const SizedBox(width: 12),
+                    SizedBox(width: 100, child: _Field(label: 'Ano',
+                        controller: _yearCtrl, hint: '2024',
+                        keyboardType: TextInputType.number)),
+                  ]),
+                  const SizedBox(height: 16),
+
+                  // Seleção de PDF
+                  const Text('Arquivo PDF',
+                      style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700)),
+                  const SizedBox(height: 6),
+                  GestureDetector(
+                    onTap: _uploading ? null : _pickPdf,
+                    child: Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 14),
+                      decoration: BoxDecoration(
+                        color: _pdfBytes != null
+                            ? _kGreen.withValues(alpha: 0.06)
+                            : Colors.grey.withValues(alpha: 0.06),
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(
+                          color: _pdfBytes != null
+                              ? _kGreen.withValues(alpha: 0.35)
+                              : Colors.grey.withValues(alpha: 0.25),
+                          width: 1.5,
+                        ),
+                      ),
+                      child: Row(children: [
+                        Icon(
+                          _pdfBytes != null
+                              ? Icons.picture_as_pdf_rounded
+                              : Icons.upload_file_rounded,
+                          color: _pdfBytes != null ? _kGreen : Colors.grey,
+                          size: 22,
+                        ),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: Text(
+                            _pdfFileName ??
+                                (_isEditing
+                                    ? 'Toque para substituir o PDF'
+                                    : 'Toque para selecionar um PDF'),
+                            style: TextStyle(
+                              fontSize: 13,
+                              color: _pdfBytes != null ? _kGreen : Colors.grey,
+                              fontWeight: _pdfBytes != null
+                                  ? FontWeight.w600 : FontWeight.w400,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        if (_pdfFileSize != null)
+                          Text(
+                            _formatSize(_pdfFileSize!),
+                            style: TextStyle(fontSize: 11, color: Colors.grey[600]),
+                          ),
+                      ]),
+                    ),
+                  ),
+
+                  // Barra de progresso
+                  if (_uploading) ...[
+                    const SizedBox(height: 14),
+                    LinearProgressIndicator(
+                      value: _uploadProgress > 0 ? _uploadProgress : null,
+                      color: _kGreen,
+                      backgroundColor: _kGreen.withValues(alpha: 0.12),
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                    const SizedBox(height: 6),
+                    Text(
+                      _uploadProgress > 0
+                          ? 'Enviando... ${(_uploadProgress * 100).toInt()}%'
+                          : 'Salvando...',
+                      style: const TextStyle(fontSize: 11, color: _kGreen),
+                    ),
+                  ],
+
+                  // Erro
+                  if (_error != null) ...[
+                    const SizedBox(height: 10),
+                    Container(
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        color: Colors.red.withValues(alpha: 0.08),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Row(children: [
+                        const Icon(Icons.error_outline_rounded,
+                            color: Colors.red, size: 16),
+                        const SizedBox(width: 8),
+                        Expanded(child: Text(_error!,
+                            style: const TextStyle(
+                                fontSize: 12, color: Colors.red))),
+                      ]),
+                    ),
+                  ],
+                ],
+              ),
+            ),
+          ),
+
+          // ── Footer ──
+          Container(
+            padding: const EdgeInsets.fromLTRB(20, 12, 20, 16),
+            decoration: BoxDecoration(
+              border: Border(
+                  top: BorderSide(color: Colors.grey.withValues(alpha: 0.15))),
+            ),
+            child: Row(children: [
+              Expanded(
+                child: OutlinedButton(
+                  onPressed: _uploading ? null : () => Navigator.pop(context),
+                  style: OutlinedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 11),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10)),
+                  ),
+                  child: const Text('Cancelar'),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: FilledButton(
+                  onPressed: _uploading ? null : _save,
+                  style: FilledButton.styleFrom(
+                    backgroundColor: _kGreen,
+                    padding: const EdgeInsets.symmetric(vertical: 11),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10)),
+                  ),
+                  child: Text(
+                    _isEditing ? 'Salvar alterações' : 'Publicar guia',
+                    style: const TextStyle(fontWeight: FontWeight.w700),
+                  ),
+                ),
+              ),
+            ]),
+          ),
+        ]),
+      ),
+    );
+  }
+
+  String _formatSize(int bytes) {
+    if (bytes < 1024) return '${bytes}B';
+    if (bytes < 1024 * 1024) return '${(bytes / 1024).toStringAsFixed(1)}KB';
+    return '${(bytes / (1024 * 1024)).toStringAsFixed(1)}MB';
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+
+class _Field extends StatelessWidget {
+  final String label;
+  final TextEditingController controller;
+  final String hint;
+  final int maxLines;
+  final TextInputType keyboardType;
+  const _Field({
+    required this.label,
+    required this.controller,
+    required this.hint,
+    this.maxLines = 1,
+    this.keyboardType = TextInputType.text,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      Text(label,
+          style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w700)),
+      const SizedBox(height: 6),
+      TextFormField(
+        controller: controller,
+        maxLines: maxLines,
+        keyboardType: keyboardType,
+        style: const TextStyle(fontSize: 13),
+        decoration: InputDecoration(
+          hintText: hint,
+          hintStyle: TextStyle(fontSize: 13, color: Colors.grey[400]),
+          contentPadding: const EdgeInsets.symmetric(
+              horizontal: 12, vertical: 10),
+          border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10)),
+          isDense: true,
+        ),
+      ),
+    ]);
   }
 }

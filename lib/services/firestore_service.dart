@@ -6,6 +6,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:http/http.dart' as http;
 import '../models/clinical_case_model.dart';
 import '../models/clinical_history_model.dart';
+import '../models/guide_model.dart';
 import 'auth_service.dart';
 
 class FirestoreService {
@@ -828,6 +829,62 @@ class FirestoreService {
   /// Deleta uma anotação.
   static Future<void> deleteNote({required String uid, required String noteId}) async {
     await _userNotes(uid).doc(noteId).delete();
+  }
+
+  // ── BIBLIOTECA CLÍNICA — Guias / PDFs ────────────────────────────────────
+
+  static CollectionReference<Map<String, dynamic>> get _guides =>
+      _db.collection('clinical_guides');
+
+  /// Stream de todas as guias publicadas (ordenadas por data).
+  static Stream<List<GuideModel>> guidesStream() {
+    return _guides
+        .where('isPublished', isEqualTo: true)
+        .orderBy('uploadedAt', descending: true)
+        .snapshots()
+        .map((snap) => snap.docs
+            .map((d) => GuideModel.fromJson({...d.data(), 'id': d.id}))
+            .toList());
+  }
+
+  /// Stream de TODAS as guias para o admin (incluindo não publicadas).
+  static Stream<List<GuideModel>> guidesAdminStream() {
+    return _guides
+        .orderBy('uploadedAt', descending: true)
+        .snapshots()
+        .map((snap) => snap.docs
+            .map((d) => GuideModel.fromJson({...d.data(), 'id': d.id}))
+            .toList());
+  }
+
+  /// Salva metadados de uma guia no Firestore.
+  static Future<String> saveGuide(GuideModel guide) async {
+    if (guide.id.isEmpty) {
+      final ref = await _guides.add(guide.toJson());
+      return ref.id;
+    } else {
+      await _guides.doc(guide.id).set(guide.toJson(), SetOptions(merge: true));
+      return guide.id;
+    }
+  }
+
+  /// Atualiza campo isPublished de uma guia.
+  static Future<void> toggleGuidePublished(String guideId, bool published) async {
+    await _guides.doc(guideId).update({'isPublished': published});
+  }
+
+  /// Deleta uma guia do Firestore.
+  static Future<void> deleteGuide(String guideId) async {
+    await _guides.doc(guideId).delete();
+  }
+
+  /// Incrementa contador de downloads.
+  static Future<void> incrementGuideDownload(String guideId) async {
+    try {
+      await _guides.doc(guideId).update({
+        'downloadCount': FieldValue.increment(1),
+      });
+    } catch (_) {}
   }
 
   /// Escreve/atualiza app_config/maintenance via REST PATCH.

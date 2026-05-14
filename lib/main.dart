@@ -30,6 +30,7 @@ import 'screens/prescripciones_screen.dart';
 import 'screens/legal_screen.dart';
 import 'screens/home_screen.dart';
 import 'screens/notes_screen.dart';
+import 'screens/library_screen.dart';
 import 'services/firestore_service.dart';
 import 'widgets/brand_mark.dart';
 
@@ -796,6 +797,7 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
       const AiScreen(),                            // 2
       const HistoryScreen(),                       // 3
       const ToolsScreen(),                         // 4
+      const LibraryScreen(),                       // 5
     ];
 
     // Verifica novidades ao abrir o app (delay para não competir com splash)
@@ -877,6 +879,7 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
       _staticScreens[2], // AiScreen
       _staticScreens[3], // HistoryScreen
       _staticScreens[4], // ToolsScreen
+      _staticScreens[5], // LibraryScreen
     ];
 
     // stackIdx = _tab direto (todas as telas no stack agora)
@@ -949,6 +952,8 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
                         const SizedBox(width: 68),
                         // 3 — História Clínica
                         _buildNavBtn(3, Icons.folder_shared_rounded, 'H. Clínica', dark, p),
+                        // 5 — Biblioteca
+                        _buildNavBtn(5, Icons.menu_book_rounded, 'Biblioteca', dark, p),
                       ],
                     ),
                     Positioned(

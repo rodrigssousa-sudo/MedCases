@@ -31,6 +31,12 @@ dependencies:
   cloud_firestore: 5.4.3
   share_plus: ^12.0.2
 
+  # Firebase Storage — upload de PDFs (Biblioteca Clínica)
+  firebase_storage: 12.3.2
+
+  # File picker — selecionar PDFs no web/mobile
+  file_picker: 8.1.7
+
   # Google Sign-In OAuth (Gemini via conta Google)
   google_sign_in: 6.2.1
 
