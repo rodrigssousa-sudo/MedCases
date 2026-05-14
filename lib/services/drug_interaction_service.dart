@@ -8811,6 +8811,39 @@ const _termMap = <String, String>{
 
   // (valproato e betabloqueador já mapeados acima — sem duplicatas)
 
+  // ── Lote 6 — Mucolíticos, Antitussivos e Gripe ────────────────────────────
+
+  // Mucolíticos
+  'bromhexina': 'bromhexina', 'bisolvon': 'bromhexina', 'bromhexine': 'bromhexina',
+  'carbocisteina': 'carbocisteina', 'carbocisteína': 'carbocisteina',
+  'mucosol': 'carbocisteina', 'rhinathiol': 'carbocisteina',
+  'guaifenesina': 'guaifenesina', 'guaifenesin': 'guaifenesina',
+  'robitussin': 'guaifenesina', 'guaiacolato': 'guaifenesina',
+
+  // Antitussivos
+  'dextrometorfano': 'dextrometorfano', 'dextromethorphan': 'dextrometorfano',
+  'dxm': 'dextrometorfano', 'robitussin dm': 'dextrometorfano',
+  'levodropropizina': 'levodropropizina', 'antuss': 'levodropropizina',
+  'cloperastina': 'cloperastina', 'seki': 'cloperastina', 'cloperastine': 'cloperastina',
+  'butamirato': 'butamirato', 'sinecod': 'butamirato', 'butamirate': 'butamirato',
+
+  // Descongestionantes
+  'pseudoefedrina': 'pseudoefedrina', 'sudafed': 'pseudoefedrina',
+  'pseudoephedrine': 'pseudoefedrina', 'afrinol': 'pseudoefedrina',
+  'fenilefrina': 'fenilefrina', 'sudafed pe': 'fenilefrina',
+  'phenylephrine': 'fenilefrina', 'neo-synephrine': 'fenilefrina',
+
+  // Anti-histamínicos
+  'cetirizina': 'cetirizina', 'zyrtec': 'cetirizina', 'cetirizine': 'cetirizina',
+  'reactine': 'cetirizina', 'cetizine': 'cetirizina',
+
+  // Antiviral gripe
+  'zanamivir': 'zanamivir', 'relenza': 'zanamivir', 'zanamivir inalado': 'zanamivir',
+
+  // Antagonista leucotrienos
+  'montelukast': 'montelukast', 'singulair': 'montelukast', 'montelukaste': 'montelukast',
+  'airon': 'montelukast',
+
   // ── Lote 5 — aliases para os 159 novos pares ──────────────────────────────
 
   // Antiagregantes — ticagrelor

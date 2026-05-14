@@ -10038,4 +10038,451 @@ DrugModel(
       'es': ['Diarrea', 'Cefalea'],
     },
   ),
+
+  // ── MUCOLÍTICOS, ANTITUSSIVOS E MEDICAMENTOS PARA GRIPE/TOS ──────────────
+
+  DrugModel(
+    id: 'bromhexina',
+    group: 'Respiratorio',
+    name: 'Bromhexina',
+    className: {
+      'pt': 'Mucolítico / Expectorante',
+      'es': 'Mucolítico / Expectorante',
+    },
+    category: {'pt': 'Respiratório', 'es': 'Respiratorio'},
+    route: 'VO',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': 'Adultos: 8–16 mg 3x/dia (comprimido ou xarope). Crianças >10 anos: 8 mg 3x/dia. Crianças 5–10 anos: 4 mg 3x/dia.',
+      'es': 'Adultos: 8–16 mg 3 veces/día (comprimido o jarabe). Niños >10 años: 8 mg 3 veces/día. Niños 5–10 años: 4 mg 3 veces/día.',
+    },
+    renalAlert: {
+      'pt': 'Não é necessário ajuste habitual. Usar com cautela em insuficiência renal grave.',
+      'es': 'No se requiere ajuste habitual. Precaución en insuficiencia renal grave.',
+    },
+    elderlyAlert: {
+      'pt': 'Geralmente bem tolerada em idosos. Verificar deglutição e hidratação adequada.',
+      'es': 'Generalmente bien tolerada en ancianos. Verificar deglución e hidratación adecuada.',
+    },
+    mechanism: {
+      'pt': 'Reduz a viscosidade do muco brônquico ao despolimerizar as fibras de mucopolissacarídeos e estimular a atividade ciliar. Precursor da ambroxol.',
+      'es': 'Reduce la viscosidad del moco bronquial al despolimerizar fibras de mucopolisacáridos y estimular la actividad ciliar. Precursor de ambroxol.',
+    },
+    warning: {
+      'pt': 'Risco raro de síndrome de Stevens-Johnson. Precaução em úlcera péptica ativa (pode irritar mucosa GI).',
+      'es': 'Riesgo raro de síndrome de Stevens-Johnson. Precaución en úlcera péptica activa.',
+    },
+    adverse: {
+      'pt': ['Náuseas', 'Dor abdominal', 'Diarreia', 'Rash cutâneo (raro)', 'Stevens-Johnson (muito raro)'],
+      'es': ['Náuseas', 'Dolor abdominal', 'Diarrea', 'Rash cutáneo (raro)', 'Stevens-Johnson (muy raro)'],
+    },
+  ),
+
+  DrugModel(
+    id: 'carbocisteina',
+    group: 'Respiratorio',
+    name: 'Carbocisteína',
+    className: {
+      'pt': 'Mucorregulador / Mucolítico',
+      'es': 'Mucorregulador / Mucolítico',
+    },
+    category: {'pt': 'Respiratório', 'es': 'Respiratorio'},
+    route: 'VO',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': 'Adultos: 750 mg 3x/dia (ou 1500 mg 2x/dia). Crianças 2–5 anos: 62,5–125 mg 4x/dia. Crianças 6–12 anos: 250 mg 3x/dia.',
+      'es': 'Adultos: 750 mg 3 veces/día (o 1500 mg 2 veces/día). Niños 2–5 años: 62,5–125 mg 4 veces/día. Niños 6–12 años: 250 mg 3 veces/día.',
+    },
+    renalAlert: {
+      'pt': 'Reduzir dose em insuficiência renal moderada-grave.',
+      'es': 'Reducir dosis en insuficiencia renal moderada-grave.',
+    },
+    elderlyAlert: {
+      'pt': 'Geralmente bem tolerada. Vigilância de irritação gástrica.',
+      'es': 'Generalmente bien tolerada. Vigilancia de irritación gástrica.',
+    },
+    mechanism: {
+      'pt': 'Modifica a composição bioquímica do muco (normaliza proporção de sialomucinas e fucomucinas) reduzindo viscosidade sem romper pontes dissulfeto. Ação mucorreguladora, não mucolítica pura.',
+      'es': 'Modifica la composición bioquímica del moco (normaliza proporción de sialomucinas y fucomucinas) reduciendo viscosidad sin romper puentes disulfuro.',
+    },
+    warning: {
+      'pt': 'Contraindicada em úlcera péptica ativa. Não confundir com acetilcisteína (mecanismo diferente).',
+      'es': 'Contraindicada en úlcera péptica activa. No confundir con acetilcisteína.',
+    },
+    adverse: {
+      'pt': ['Gastrite', 'Diarreia', 'Náuseas', 'Rash (raro)'],
+      'es': ['Gastritis', 'Diarrea', 'Náuseas', 'Rash (raro)'],
+    },
+  ),
+
+  DrugModel(
+    id: 'guaifenesina',
+    group: 'Respiratorio',
+    name: 'Guaifenesina',
+    className: {
+      'pt': 'Expectorante',
+      'es': 'Expectorante',
+    },
+    category: {'pt': 'Respiratório', 'es': 'Respiratorio'},
+    route: 'VO',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': 'Adultos: 200–400 mg a cada 4h (máx 2400 mg/dia). Fórmulas de liberação prolongada: 600–1200 mg a cada 12h. Ingerir com copo cheio de água.',
+      'es': 'Adultos: 200–400 mg cada 4 h (máx 2400 mg/día). Fórmulas de liberación prolongada: 600–1200 mg cada 12 h. Ingerir con vaso lleno de agua.',
+    },
+    renalAlert: {
+      'pt': 'Sem ajuste necessário.',
+      'es': 'Sin ajuste necesario.',
+    },
+    elderlyAlert: {
+      'pt': 'Hidratação adequada essencial para potencializar o efeito expectorante.',
+      'es': 'Hidratación adecuada esencial para potenciar el efecto expectorante.',
+    },
+    mechanism: {
+      'pt': 'Aumenta volume e reduz viscosidade das secreções respiratórias por hipersecreção glandular reflexa, facilitando a expectoração. Presente em muitos xaropes compostos.',
+      'es': 'Aumenta volumen y reduce viscosidad de las secreciones respiratorias por hipersecreción glandular refleja, facilitando la expectoración.',
+    },
+    warning: {
+      'pt': 'Evidência limitada de eficácia em adultos. Sem efeito em crianças <2 anos. Não usar em tosse produtiva grave sem avaliação.',
+      'es': 'Evidencia limitada de eficacia en adultos. Sin efecto en niños <2 años.',
+    },
+    adverse: {
+      'pt': ['Tontura', 'Sonolência', 'Náuseas', 'Desconforto GI', 'Cefaleia'],
+      'es': ['Mareos', 'Somnolencia', 'Náuseas', 'Molestias GI', 'Cefalea'],
+    },
+  ),
+
+  DrugModel(
+    id: 'dextrometorfano',
+    group: 'Respiratorio',
+    name: 'Dextrometorfano',
+    className: {
+      'pt': 'Antitussivo central (não opioide)',
+      'es': 'Antitusivo central (no opioide)',
+    },
+    category: {'pt': 'Respiratório', 'es': 'Respiratorio'},
+    route: 'VO',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': 'Adultos: 10–30 mg a cada 4–8h (máx 120 mg/dia). Crianças 6–12 anos: 5–10 mg a cada 4h (máx 60 mg/dia). Não usar em <4 anos.',
+      'es': 'Adultos: 10–30 mg cada 4–8 h (máx 120 mg/día). Niños 6–12 años: 5–10 mg cada 4 h (máx 60 mg/día). No usar en <4 años.',
+    },
+    renalAlert: {
+      'pt': 'Sem ajuste necessário em doses habituais.',
+      'es': 'Sin ajuste necesario en dosis habituales.',
+    },
+    elderlyAlert: {
+      'pt': 'Risco de tontura e confusão em idosos. Usar menor dose. Cautela em uso de múltiplos serotoninérgicos.',
+      'es': 'Riesgo de mareos y confusión en ancianos. Usar menor dosis. Precaución con serotoninérgicos.',
+    },
+    mechanism: {
+      'pt': 'Agonista de receptores sigma-1 e antagonista NMDA; inibe o centro da tosse no bulbo. Sem ação analgésica opioide em doses terapêuticas. Metabólito ativo: dextrorfano.',
+      'es': 'Agonista de receptores sigma-1 y antagonista NMDA; inhibe el centro de la tos en el bulbo. Sin acción analgésica opioide en dosis terapéuticas.',
+    },
+    warning: {
+      'pt': 'RISCO DE SÍNDROME SEROTONINÉRGICA com ISRS, IRSN, IMAO e tramadol. Não combinar com IMAO (contraindicado). Potencial de abuso em doses elevadas (dissociativo). Evitar em tosse produtiva.',
+      'es': 'RIESGO DE SÍNDROME SEROTONINÉRGICO con ISRS, IRSN, IMAO y tramadol. No combinar con IMAO (contraindicado). Potencial de abuso en dosis elevadas (disociativo).',
+    },
+    adverse: {
+      'pt': ['Sonolência', 'Tontura', 'Náuseas', 'Vômitos', 'Confusão (doses altas)', 'Síndrome serotoninérgica (com serotoninérgicos)'],
+      'es': ['Somnolencia', 'Mareos', 'Náuseas', 'Vómitos', 'Confusión (dosis altas)', 'Síndrome serotoninérgico (con serotoninérgicos)'],
+    },
+  ),
+
+  DrugModel(
+    id: 'levodropropizina',
+    group: 'Respiratorio',
+    name: 'Levodropropizina',
+    className: {
+      'pt': 'Antitussivo periférico',
+      'es': 'Antitusivo periférico',
+    },
+    category: {'pt': 'Respiratório', 'es': 'Respiratorio'},
+    route: 'VO',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': 'Adultos: 60 mg 3x/dia (a cada 8h). Crianças >2 anos: 1 mg/kg 3x/dia. Tomar antes das refeições.',
+      'es': 'Adultos: 60 mg 3 veces/día (cada 8 h). Niños >2 años: 1 mg/kg 3 veces/día. Tomar antes de las comidas.',
+    },
+    renalAlert: {
+      'pt': 'Reduzir dose ou aumentar intervalo em insuficiência renal moderada-grave.',
+      'es': 'Reducir dosis o aumentar intervalo en insuficiencia renal moderada-grave.',
+    },
+    elderlyAlert: {
+      'pt': 'Início com dose menor. Vigilância de sonolência.',
+      'es': 'Iniciar con dosis menor. Vigilancia de somnolencia.',
+    },
+    mechanism: {
+      'pt': 'Inibe perifericamente os receptores nos brônquios (não C), reduzindo a sensibilidade de terminações nervosas brônquicas sem ação central opioide. Menor risco de sedação comparado a antitussivos centrais.',
+      'es': 'Inhibe periféricamente los receptores en bronquios, reduciendo la sensibilidad de terminaciones nerviosas bronquiales sin acción central opioide.',
+    },
+    warning: {
+      'pt': 'Alternativa vantajosa em idosos e pacientes que não toleram sedação. Evitar em tosse produtiva com expectoração abundante.',
+      'es': 'Alternativa ventajosa en ancianos y pacientes que no toleran sedación. Evitar en tos productiva con expectoración abundante.',
+    },
+    adverse: {
+      'pt': ['Sonolência leve', 'Tontura', 'Náuseas', 'Astenia'],
+      'es': ['Somnolencia leve', 'Mareos', 'Náuseas', 'Astenia'],
+    },
+  ),
+
+  DrugModel(
+    id: 'cloperastina',
+    group: 'Respiratorio',
+    name: 'Cloperastina',
+    className: {
+      'pt': 'Antitussivo com ação anti-histamínica leve',
+      'es': 'Antitusivo con acción antihistamínica leve',
+    },
+    category: {'pt': 'Respiratório', 'es': 'Respiratorio'},
+    route: 'VO',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': 'Adultos: 10–20 mg 3–4x/dia. Crianças 6–12 anos: 5–10 mg 3x/dia. Crianças 2–6 anos: 2,5–5 mg 3x/dia.',
+      'es': 'Adultos: 10–20 mg 3–4 veces/día. Niños 6–12 años: 5–10 mg 3 veces/día. Niños 2–6 años: 2,5–5 mg 3 veces/día.',
+    },
+    renalAlert: {
+      'pt': 'Precaução em insuficiência renal. Sem dados específicos de ajuste.',
+      'es': 'Precaución en insuficiencia renal. Sin datos específicos de ajuste.',
+    },
+    elderlyAlert: {
+      'pt': 'Cautela pelo efeito anticolinérgico leve. Evitar em pacientes com glaucoma ou HPB.',
+      'es': 'Precaución por efecto anticolinérgico leve. Evitar en pacientes con glaucoma o HBP.',
+    },
+    mechanism: {
+      'pt': 'Ação antitussiva central combinada com leve bloqueio de receptores H1. Reduz a hipersensibilidade brônquica e o reflexo da tosse alérgica.',
+      'es': 'Acción antitusiva central combinada con leve bloqueo de receptores H1. Reduce la hipersensibilidad bronquial y el reflejo de tos alérgica.',
+    },
+    warning: {
+      'pt': 'Útil em tosse seca de origem alérgica. Efeito anticolinérgico leve pode causar boca seca e retenção urinária em predispostos.',
+      'es': 'Útil en tos seca de origen alérgico. Efecto anticolinérgico leve puede causar boca seca y retención urinaria en predispuestos.',
+    },
+    adverse: {
+      'pt': ['Sedação', 'Boca seca', 'Tontura', 'Constipação (raro)'],
+      'es': ['Sedación', 'Sequedad bucal', 'Mareos', 'Estreñimiento (raro)'],
+    },
+  ),
+
+  DrugModel(
+    id: 'butamirato',
+    group: 'Respiratorio',
+    name: 'Butamirato',
+    className: {
+      'pt': 'Antitussivo central não opioide',
+      'es': 'Antitusivo central no opioide',
+    },
+    category: {'pt': 'Respiratório', 'es': 'Respiratorio'},
+    route: 'VO',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': 'Adultos: 50 mg 2–3x/dia (liberação prolongada). Xarope: 15 mg 3–4x/dia. Crianças >3 anos: 7,5 mg 3x/dia.',
+      'es': 'Adultos: 50 mg 2–3 veces/día (liberación prolongada). Jarabe: 15 mg 3–4 veces/día. Niños >3 años: 7,5 mg 3 veces/día.',
+    },
+    renalAlert: {
+      'pt': 'Sem dados específicos. Precaução em insuficiência renal grave.',
+      'es': 'Sin datos específicos. Precaución en insuficiencia renal grave.',
+    },
+    elderlyAlert: {
+      'pt': 'Boa tolerabilidade geral. Vigilância de sonolência.',
+      'es': 'Buena tolerabilidad general. Vigilancia de somnolencia.',
+    },
+    mechanism: {
+      'pt': 'Suprime centralmente o reflexo da tosse sem efeitos opioides clinicamente relevantes. Não gera dependência nas doses terapêuticas. Também possui leve ação broncodilatadora.',
+      'es': 'Suprime centralmente el reflejo de tos sin efectos opioides clínicamente relevantes. No genera dependencia en dosis terapéuticas.',
+    },
+    warning: {
+      'pt': 'Reservado para tosse seca persistente sem causa tratável. Não usar em tosse produtiva. Alternativa segura à codeína.',
+      'es': 'Reservado para tos seca persistente sin causa tratable. No usar en tos productiva. Alternativa segura a la codeína.',
+    },
+    adverse: {
+      'pt': ['Náuseas', 'Sonolência', 'Tontura', 'Diarreia (raro)'],
+      'es': ['Náuseas', 'Somnolencia', 'Mareos', 'Diarrea (raro)'],
+    },
+  ),
+
+  DrugModel(
+    id: 'pseudoefedrina',
+    group: 'Respiratorio',
+    name: 'Pseudoefedrina',
+    className: {
+      'pt': 'Descongestionante sistêmico / Simpaticomimético',
+      'es': 'Descongestionante sistémico / Simpaticomimético',
+    },
+    category: {'pt': 'Respiratório', 'es': 'Respiratorio'},
+    route: 'VO',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': 'Adultos: 60 mg a cada 4–6h (máx 240 mg/dia). Liberação prolongada: 120 mg a cada 12h. Não usar >7 dias sem orientação médica.',
+      'es': 'Adultos: 60 mg cada 4–6 h (máx 240 mg/día). Liberación prolongada: 120 mg cada 12 h. No usar >7 días sin indicación médica.',
+    },
+    renalAlert: {
+      'pt': 'Reduzir dose em insuficiência renal moderada-grave (acúmulo).',
+      'es': 'Reducir dosis en insuficiencia renal moderada-grave (acumulación).',
+    },
+    elderlyAlert: {
+      'pt': 'EVITAR em idosos. Risco de HAS, taquicardia, retenção urinária e agitação. Preferir descongestionante tópico.',
+      'es': 'EVITAR en ancianos. Riesgo de HTA, taquicardia, retención urinaria y agitación. Preferir descongestionante tópico.',
+    },
+    mechanism: {
+      'pt': 'Agonista α e β-adrenérgico indireto → vasoconstricção da mucosa nasal → reduz edema e congestão. Atravessa BHE em menor grau que a efedrina.',
+      'es': 'Agonista α y β-adrenérgico indirecto → vasoconstricción de la mucosa nasal → reduce edema y congestión.',
+    },
+    warning: {
+      'pt': 'CONTRAINDICADA em HAS grave, arritmias, coronariopatia, hipertireoidismo e em uso de IMAO. Restrição regulatória (precursor de metanfetamina). Evitar em gestantes.',
+      'es': 'CONTRAINDICADA en HTA grave, arritmias, coronariopatía, hipertiroidismo y uso de IMAO. Restricción regulatoria (precursor de metanfetamina). Evitar en gestantes.',
+    },
+    adverse: {
+      'pt': ['Taquicardia', 'Hipertensão', 'Insônia', 'Nervosismo', 'Cefaleia', 'Retenção urinária'],
+      'es': ['Taquicardia', 'Hipertensión', 'Insomnio', 'Nerviosismo', 'Cefalea', 'Retención urinaria'],
+    },
+  ),
+
+  DrugModel(
+    id: 'fenilefrina',
+    group: 'Respiratorio',
+    name: 'Fenilefrina',
+    className: {
+      'pt': 'Descongestionante / Agonista α1-adrenérgico',
+      'es': 'Descongestionante / Agonista α1-adrenérgico',
+    },
+    category: {'pt': 'Respiratório', 'es': 'Respiratorio'},
+    route: 'VO / Nasal',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': 'Oral: 10 mg a cada 4h (máx 60 mg/dia) — eficácia VO questionada por FDA (2023). Nasal: 2–3 gotas/spray 0,25–0,5% em cada narina a cada 4h (máx 3 dias consecutivos).',
+      'es': 'Oral: 10 mg cada 4 h (máx 60 mg/día) — eficacia VO cuestionada por FDA (2023). Nasal: 2–3 gotas/spray 0,25–0,5% en cada fosa nasal cada 4 h (máx 3 días consecutivos).',
+    },
+    renalAlert: {
+      'pt': 'Precaução em insuficiência renal grave.',
+      'es': 'Precaución en insuficiencia renal grave.',
+    },
+    elderlyAlert: {
+      'pt': 'Cautela em hipertensos e coronariopatas. Uso nasal tópico preferível.',
+      'es': 'Precaución en hipertensos y coronarios. Uso nasal tópico preferible.',
+    },
+    mechanism: {
+      'pt': 'Agonista seletivo de receptores α1-adrenérgicos → vasoconstricção local da mucosa nasal → reduz congestão. Sem ação β significativa nas doses habituais.',
+      'es': 'Agonista selectivo de receptores α1-adrenérgicos → vasoconstricción local de la mucosa nasal → reduce congestión.',
+    },
+    warning: {
+      'pt': 'FDA (2023): revisão indica que fenilefrina oral NÃO é mais eficaz que placebo para congestão nasal. Uso nasal limitado a 3 dias (rinite medicamentosa por rebote). Contraindicada com IMAO.',
+      'es': 'FDA (2023): revisión indica que fenilefrina oral NO es más eficaz que placebo para congestión nasal. Uso nasal limitado a 3 días (rinitis medicamentosa por rebote).',
+    },
+    adverse: {
+      'pt': ['Hipertensão', 'Cefaleia', 'Nervosismo', 'Rinite medicamentosa (uso nasal prolongado)', 'Taquicardia'],
+      'es': ['Hipertensión', 'Cefalea', 'Nerviosismo', 'Rinitis medicamentosa (uso nasal prolongado)', 'Taquicardia'],
+    },
+  ),
+
+  DrugModel(
+    id: 'cetirizina',
+    group: 'Respiratorio',
+    name: 'Cetirizina',
+    className: {
+      'pt': 'Anti-histamínico H1 de segunda geração',
+      'es': 'Antihistamínico H1 de segunda generación',
+    },
+    category: {'pt': 'Respiratório', 'es': 'Respiratorio'},
+    route: 'VO',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': 'Adultos e crianças >12 anos: 10 mg 1x/dia (ou 5 mg 2x/dia). Crianças 6–12 anos: 5–10 mg/dia. Crianças 2–5 anos: 2,5 mg 2x/dia.',
+      'es': 'Adultos y niños >12 años: 10 mg 1 vez/día (o 5 mg 2 veces/día). Niños 6–12 años: 5–10 mg/día. Niños 2–5 años: 2,5 mg 2 veces/día.',
+    },
+    renalAlert: {
+      'pt': 'ClCr 11–31 mL/min: 5 mg/dia. Hemodiálise: 5 mg/dia. ClCr <11 mL/min: evitar.',
+      'es': 'ClCr 11–31 mL/min: 5 mg/día. Hemodiálisis: 5 mg/día. ClCr <11 mL/min: evitar.',
+    },
+    elderlyAlert: {
+      'pt': 'Preferir 5 mg/dia em idosos (menor sedação e efeitos anticolinérgicos). Alternativa preferencial à clorfeniramina (Beers).',
+      'es': 'Preferir 5 mg/día en ancianos (menor sedación y efectos anticolinérgicos). Alternativa preferencial a clorfeniramina (Beers).',
+    },
+    mechanism: {
+      'pt': 'Antagonista seletivo periférico dos receptores H1 com baixa penetração na BHE → menor sedação vs. 1ª geração. Metabólito ativo da hidroxizina. Inibe liberação de mediadores inflamatórios dos mastócitos.',
+      'es': 'Antagonista selectivo periférico de receptores H1 con baja penetración en BHE → menor sedación vs. 1ª generación. Metabolito activo de hidroxizina.',
+    },
+    warning: {
+      'pt': 'Pode causar sonolência leve em ~10–14% dos pacientes (menor que anti-H1 de 1ª geração). Cautela em operadores de máquinas. Efeito aditivo com álcool e depressores do SNC.',
+      'es': 'Puede causar somnolencia leve en ~10–14% de pacientes. Precaución en operadores de maquinaria. Efecto aditivo con alcohol y depresores del SNC.',
+    },
+    adverse: {
+      'pt': ['Sonolência leve', 'Boca seca', 'Cefaleia', 'Fadiga', 'Náuseas'],
+      'es': ['Somnolencia leve', 'Sequedad bucal', 'Cefalea', 'Fatiga', 'Náuseas'],
+    },
+  ),
+
+  DrugModel(
+    id: 'zanamivir',
+    group: 'Infectología (Antifúngicos / Antivirales / TBC)',
+    name: 'Zanamivir',
+    className: {
+      'pt': 'Antiviral — Inibidor de neuraminidase',
+      'es': 'Antiviral — Inhibidor de neuraminidasa',
+    },
+    category: {'pt': 'Infectologia', 'es': 'Infectología'},
+    route: 'Inalatório (pó seco)',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': 'Tratamento: 10 mg (2 inalações de 5 mg) 2x/dia por 5 dias. Profilaxia pós-exposição: 10 mg 1x/dia por 10 dias. Iniciar em ≤48h do início dos sintomas.',
+      'es': 'Tratamiento: 10 mg (2 inhalaciones de 5 mg) 2 veces/día por 5 días. Profilaxis posexposición: 10 mg 1 vez/día por 10 días. Iniciar en ≤48 h del inicio de síntomas.',
+    },
+    renalAlert: {
+      'pt': 'Absorção sistêmica mínima (<20%) por via inalatória. Sem ajuste necessário em insuficiência renal.',
+      'es': 'Absorción sistémica mínima (<20%) por vía inhalatoria. Sin ajuste necesario en insuficiencia renal.',
+    },
+    elderlyAlert: {
+      'pt': 'Pode ser difícil de usar o inalador em idosos com problemas motores. Avaliar capacidade de uso do dispositivo.',
+      'es': 'Puede ser difícil usar el inhalador en ancianos con problemas motores. Evaluar capacidad de uso del dispositivo.',
+    },
+    mechanism: {
+      'pt': 'Inibe a neuraminidase viral (NA) de influenza A e B → impede a liberação de novos vírions da superfície celular → limita a disseminação viral. Alternativa ao oseltamivir em cepas resistentes (H275Y H1N1).',
+      'es': 'Inhibe la neuraminidasa viral (NA) de influenza A y B → impide liberación de nuevos viriones de la superficie celular → limita diseminación viral.',
+    },
+    warning: {
+      'pt': 'CUIDADO: pode precipitar broncoespasmo grave em asmáticos e DPOC — ter broncodilatador disponível. Não usar na forma IV comercializada para inalação. Reservar para influenza confirmada ou suspeita.',
+      'es': 'CUIDADO: puede precipitar broncoespasmo grave en asmáticos y EPOC — tener broncodilatador disponible. No usar la forma IV comercializada para inhalación.',
+    },
+    adverse: {
+      'pt': ['Broncoespasmo (asmáticos)', 'Náuseas', 'Vômitos', 'Diarreia', 'Cefaleia', 'Tosse'],
+      'es': ['Broncoespasmo (asmáticos)', 'Náuseas', 'Vómitos', 'Diarrea', 'Cefalea', 'Tos'],
+    },
+  ),
+
+  DrugModel(
+    id: 'montelukast',
+    group: 'Respiratorio',
+    name: 'Montelukast',
+    className: {
+      'pt': 'Antagonista de leucotrienos (ARLT)',
+      'es': 'Antagonista de leucotrienos (ARLT)',
+    },
+    category: {'pt': 'Respiratório', 'es': 'Respiratorio'},
+    route: 'VO',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': 'Adultos e adolescentes >15 anos: 10 mg 1x/dia (noite). Crianças 6–14 anos: 5 mg 1x/dia. Crianças 2–5 anos: 4 mg 1x/dia (grânulos ou mastigável).',
+      'es': 'Adultos y adolescentes >15 años: 10 mg 1 vez/día (noche). Niños 6–14 años: 5 mg 1 vez/día. Niños 2–5 años: 4 mg 1 vez/día (gránulos o masticable).',
+    },
+    renalAlert: {
+      'pt': 'Sem ajuste necessário — eliminação predominantemente biliar/fecal.',
+      'es': 'Sin ajuste necesario — eliminación predominantemente biliar/fecal.',
+    },
+    elderlyAlert: {
+      'pt': 'Sem ajuste necessário. Vigilância de sintomas neuropsiquiátricos.',
+      'es': 'Sin ajuste necesario. Vigilancia de síntomas neuropsiquiátricos.',
+    },
+    mechanism: {
+      'pt': 'Bloqueia seletivamente receptores CysLT1 → inibe broncoconstrição, hiperssecreção e inflamação eosinofílica mediadas por leucotrienos (LTC4, LTD4, LTE4). Efeito anti-inflamatório e broncodilatador indireto.',
+      'es': 'Bloquea selectivamente receptores CysLT1 → inhibe broncoconstricción, hipersecreción e inflamación eosinofílica mediadas por leucotrienos (LTC4, LTD4, LTE4).',
+    },
+    warning: {
+      'pt': 'BLACK BOX WARNING (FDA 2020): risco de alterações neuropsiquiátricas graves — agitação, ansiedade, depressão, pensamentos suicidas, distúrbios do sono e do comportamento. Reservar apenas quando alternativas são inadequadas. Reavaliar benefício-risco individualmente.',
+      'es': 'BLACK BOX WARNING (FDA 2020): riesgo de alteraciones neuropsiquiátricas graves — agitación, ansiedad, depresión, pensamientos suicidas, trastornos del sueño y conducta. Reservar solo cuando alternativas son inadecuadas.',
+    },
+    adverse: {
+      'pt': ['Cefaleia', 'Distúrbios do sono', 'Agitação/ansiedade', 'Depressão (raro)', 'Pensamentos suicidas (raro)', 'Dor abdominal', 'Elevação de transaminases'],
+      'es': ['Cefalea', 'Trastornos del sueño', 'Agitación/ansiedad', 'Depresión (raro)', 'Pensamientos suicidas (raro)', 'Dolor abdominal', 'Elevación de transaminasas'],
+    },
+  ),
+
 ];
