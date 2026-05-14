@@ -208,6 +208,90 @@
       will-change: transform;
     }
 
+    /* ── Google Sign-In modal nativo (Safari-safe) ──────────────────── */
+    #gsi-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 999999;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+    #gsi-modal.open { display: flex; }
+    #gsi-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.72);
+    }
+    #gsi-card {
+      position: relative;
+      background: #1a2e24;
+      border-radius: 22px;
+      padding: 28px 24px 24px;
+      max-width: 320px;
+      width: calc(100% - 48px);
+      text-align: center;
+      border: 1px solid rgba(197,163,101,0.25);
+      box-shadow: 0 24px 64px rgba(0,0,0,0.6);
+    }
+    #gsi-card img {
+      width: 56px; height: 56px;
+      border-radius: 14px;
+      margin-bottom: 14px;
+    }
+    #gsi-card h3 {
+      color: #C5A365;
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      font-size: 17px; font-weight: 700;
+      margin: 0 0 6px;
+    }
+    #gsi-card p {
+      color: rgba(255,255,255,0.55);
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      font-size: 12.5px; line-height: 1.5;
+      margin: 0 0 20px;
+    }
+    #gsi-google-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      width: 100%;
+      background: #fff;
+      color: #3c4043;
+      border: none;
+      border-radius: 12px;
+      padding: 13px 0;
+      font-size: 14px;
+      font-weight: 600;
+      font-family: -apple-system, BlinkMacSystemFont, 'Roboto', sans-serif;
+      cursor: pointer;
+      margin-bottom: 10px;
+      letter-spacing: 0.1px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+      -webkit-tap-highlight-color: rgba(0,0,0,0.05);
+    }
+    #gsi-google-btn:active { background: #f0f0f0; }
+    #gsi-google-btn svg { width: 20px; height: 20px; flex-shrink: 0; }
+    #gsi-cancel-btn {
+      display: block;
+      width: 100%;
+      background: transparent;
+      color: rgba(255,255,255,0.38);
+      border: none;
+      padding: 10px 0;
+      font-size: 13px;
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      cursor: pointer;
+    }
+    #gsi-status {
+      color: rgba(255,255,255,0.45);
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      font-size: 11.5px;
+      margin-top: 10px;
+      min-height: 16px;
+    }
+
     /* ── A2HS — Botão instalar (overlay central) ────────────────────── */
     #a2hs-banner {
       position: fixed;
@@ -362,6 +446,22 @@
     <button id="pwa-update-btn">Atualizar</button>
   </div>
 
+  <!-- ── Google Sign-In modal nativo (Safari-safe) ──────────────── -->
+  <div id="gsi-modal">
+    <div id="gsi-overlay"></div>
+    <div id="gsi-card">
+      <img src="icons/Icon-192.png" alt="MedCases" onerror="this.style.display='none'">
+      <h3>Conectar com Google</h3>
+      <p>Acesso gratuito à IA clínica Gemini.<br>Nenhum dado clínico é enviado ao Google.</p>
+      <button id="gsi-google-btn" onclick="_gsiHandleClick()">
+        <svg viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9.1 3.2l6.8-6.8C35.6 2.2 30.1 0 24 0 14.6 0 6.6 5.4 2.7 13.3l7.9 6.1C12.5 13 17.8 9.5 24 9.5z"/><path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v8.5h12.7c-.6 3-2.3 5.5-4.8 7.2l7.5 5.8C43.7 37.3 46.5 31.3 46.5 24.5z"/><path fill="#FBBC05" d="M10.6 28.6A14.8 14.8 0 0 1 9.5 24c0-1.6.3-3.2.7-4.6l-7.9-6.1A23.9 23.9 0 0 0 0 24c0 3.9.9 7.5 2.7 10.7l7.9-6.1z"/><path fill="#34A853" d="M24 48c6.1 0 11.2-2 14.9-5.4l-7.5-5.8c-2 1.4-4.6 2.2-7.4 2.2-6.2 0-11.5-3.5-13.4-8.4l-7.9 6.1C6.6 42.6 14.6 48 24 48z"/><path fill="none" d="M0 0h48v48H0z"/></svg>
+        Entrar com Google
+      </button>
+      <button id="gsi-cancel-btn" onclick="_gsiClose()">Cancelar</button>
+      <div id="gsi-status"></div>
+    </div>
+  </div>
+
   <!-- ── A2HS — Adicionar à tela inicial ─────────────────────────── -->
   <div id="a2hs-banner">
     <div id="a2hs-overlay"></div>
@@ -512,85 +612,99 @@
       });
     }());
 
-    // ── Google OAuth — síncrono para Safari ─────────────────────────
-    // Safari bloqueia window.open/popups chamados DENTRO de async/await.
-    // Solução: expor função JS pura que chama requestToken() de forma
-    // síncrona, chamada diretamente pelo Flutter via js.callMethod —
-    // sem nenhum await antes. Assim o Safari rastreia o gesto do usuário.
+    // ── Google Sign-In — modal HTML nativo (Safari-safe) ───────────
+    // PROBLEMA: Safari bloqueia qualquer popup OAuth chamado via Flutter
+    // porque o Dart VM quebra a cadeia de gestos antes de chegar ao JS.
+    // SOLUÇÃO: modal HTML real com onclick nativo no botão → requestToken()
+    // chamado diretamente do event handler do browser → Safari permite.
     (function() {
-      var _gsiClient      = null;  // token client GSI inicializado
-      var _gsiCallback    = null;  // callback Dart registrado
-      var _gsiInitialized = false;
+      var _gsiClient   = null;
+      var _gsiReady    = false;
 
-      // Inicializa o token client GSI (feito 1x, sem abrir popup)
       function _initGSI() {
-        if (_gsiInitialized) return;
-        if (!window.google || !window.google.accounts) return;
+        if (_gsiReady || !window.google || !window.google.accounts) return;
         _gsiClient = window.google.accounts.oauth2.initTokenClient({
           client_id: '1076800980330-mpq75ceph6hipht135qt0g505pdu5u7d.apps.googleusercontent.com',
           scope: 'email https://www.googleapis.com/auth/generative-language.retriever',
           callback: function(response) {
-            // Chamado pelo Google após seleção de conta
             var token = response && response.access_token ? response.access_token : null;
             var error = response && response.error ? response.error : null;
-            if (_gsiCallback) {
-              try { _gsiCallback(token, error); } catch(e) {}
-              _gsiCallback = null;
-            }
+            _gsiOnResult(token, error);
           },
           error_callback: function(err) {
-            var msg = err && err.type ? err.type : String(err);
-            if (_gsiCallback) {
-              try { _gsiCallback(null, msg); } catch(e) {}
-              _gsiCallback = null;
-            }
+            var msg = err && err.type ? err.type : (err ? String(err) : 'cancelled');
+            _gsiOnResult(null, msg);
           }
         });
-        _gsiInitialized = true;
+        _gsiReady = true;
       }
 
-      // Tenta inicializar logo que o GSI carrega
-      // (o script é async, então pode ainda não estar pronto)
-      function _tryInit() {
-        if (!_gsiInitialized) _initGSI();
+      // Polling até GSI carregar (script é async defer)
+      var _t = setInterval(function() {
+        if (_gsiReady) { clearInterval(_t); return; }
+        _initGSI();
+      }, 150);
+      setTimeout(function() { clearInterval(_t); }, 12000);
+      _initGSI();
+
+      function _setStatus(msg) {
+        var el = document.getElementById('gsi-status');
+        if (el) el.textContent = msg;
       }
-      // Tenta imediatamente e também via polling curto
-      _tryInit();
-      var _initTimer = setInterval(function() {
-        if (_gsiInitialized) { clearInterval(_initTimer); return; }
-        _tryInit();
-      }, 200);
-      // Para o polling após 10s de qualquer forma
-      setTimeout(function() { clearInterval(_initTimer); }, 10000);
 
-      // ── API pública exposta para o Flutter ──────────────────────────
-      // Chamada DIRETAMENTE do handler do botão (sem await antes) →
-      // o Safari mantém o rastro do gesto e permite o popup.
-      window.medcasesGoogleSignIn = function(dartCallback) {
-        // Garante inicialização (caso GSI tenha carregado tarde)
-        if (!_gsiInitialized) _initGSI();
+      function _gsiOnResult(token, error) {
+        if (token) {
+          _setStatus('Conectado! Carregando...');
+          // Notifica o Flutter via CustomEvent
+          window.dispatchEvent(new CustomEvent('medcases-gsi-token', {
+            detail: { token: token, error: null }
+          }));
+          setTimeout(_gsiClose, 800);
+        } else {
+          _setStatus(error && error !== 'cancelled' ? 'Erro: ' + error : '');
+          if (!error || error === 'cancelled') _gsiClose();
+        }
+      }
 
+      // onclick do botão HTML — chamado DIRETAMENTE pelo browser
+      // sem nenhum await/Promise antes → Safari reconhece o gesto
+      window._gsiHandleClick = function() {
+        if (!_gsiReady) { _initGSI(); }
         if (!_gsiClient) {
-          // GSI ainda não disponível
-          try { dartCallback(null, 'gsi_not_ready'); } catch(e) {}
+          _setStatus('Google não carregou. Recarregue a página.');
           return;
         }
-
-        _gsiCallback = dartCallback;
-
-        // requestToken() chamado sincronamente aqui — Safari permite popup
-        try {
-          _gsiClient.requestToken();
-        } catch(e) {
-          _gsiCallback = null;
-          try { dartCallback(null, String(e)); } catch(_) {}
-        }
+        _setStatus('Abrindo seleção de conta...');
+        _gsiClient.requestToken();  // ← síncrono, no tick do onclick
       };
 
-      // Permite que o Flutter verifique se GSI está pronto
-      window.medcasesGSIReady = function() {
-        return _gsiInitialized && _gsiClient !== null;
+      // Abre o modal (chamado pelo Flutter via js.callMethod)
+      window.medcasesShowGSIModal = function() {
+        if (!_gsiReady) _initGSI();
+        _setStatus('');
+        var modal = document.getElementById('gsi-modal');
+        if (modal) modal.classList.add('open');
       };
+
+      // Fecha o modal
+      window._gsiClose = function() {
+        var modal = document.getElementById('gsi-modal');
+        if (modal) modal.classList.remove('open');
+        _setStatus('');
+        // Notifica Flutter que foi cancelado
+        window.dispatchEvent(new CustomEvent('medcases-gsi-token', {
+          detail: { token: null, error: 'cancelled' }
+        }));
+      };
+
+      // Overlay clicável fecha o modal
+      document.getElementById('gsi-overlay').addEventListener('click', window._gsiClose);
+
+      // Mantém retrocompatibilidade (caso gemini_service ainda use)
+      window.medcasesGoogleSignIn = function(dartCallback) {
+        window.medcasesShowGSIModal();
+      };
+
     }());
 
     // ── Toast de atualização ─────────────────────────────────────────
