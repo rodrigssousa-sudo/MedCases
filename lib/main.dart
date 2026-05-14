@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
@@ -775,8 +776,8 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
   // sub-tab dentro do combo Rx+Proto: 0=Rx, 1=Protocolos
   int _rxProtoSub = 0;
 
-  // FAB arrastável — posição inicial canto inferior esquerdo
-  Offset _fabOffset = const Offset(20, -90);
+  // Painel lateral de anotações
+  bool _notesOpen = false;
 
   // ── Performance: telas estáticas criadas uma única vez no initState ──────
   late final List<Widget> _staticScreens;
@@ -902,10 +903,10 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
           Expanded(child: IndexedStack(index: stackIdx.clamp(0, mainScreens.length - 1), children: mainScreens)),
         ]),
 
-        // ── FAB flutuante e arrastável — Anotações ────────────────────────
-        _DraggableNotesFab(
-          offset: _fabOffset,
-          onOffsetChanged: (o) => setState(() => _fabOffset = o),
+        // ── Painel lateral retrátil — Anotações ────────────────────────
+        _SideNotesPanel(
+          isOpen: _notesOpen,
+          onToggle: () => setState(() => _notesOpen = !_notesOpen),
         ),
       ]),
       bottomNavigationBar: Column(
@@ -3144,176 +3145,623 @@ class _SuccessView extends StatelessWidget {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// FAB FLUTUANTE E ARRASTÁVEL — ANOTAÇÕES
+// PAINEL LATERAL RETRÁTIL — ANOTAÇÕES
 // ─────────────────────────────────────────────────────────────────────────────
-class _DraggableNotesFab extends StatefulWidget {
-  final Offset offset;
-  final ValueChanged<Offset> onOffsetChanged;
+class _SideNotesPanel extends StatefulWidget {
+  final bool isOpen;
+  final VoidCallback onToggle;
 
-  const _DraggableNotesFab({
-    required this.offset,
-    required this.onOffsetChanged,
-  });
+  const _SideNotesPanel({required this.isOpen, required this.onToggle});
 
   @override
-  State<_DraggableNotesFab> createState() => _DraggableNotesFabState();
+  State<_SideNotesPanel> createState() => _SideNotesPanelState();
 }
 
-class _DraggableNotesFabState extends State<_DraggableNotesFab>
+class _SideNotesPanelState extends State<_SideNotesPanel>
     with SingleTickerProviderStateMixin {
-  // Controla a animação de pulso suave
-  late final AnimationController _pulseCtrl;
-  late final Animation<double> _pulseAnim;
-
-  // Controla o scale no tap
-  bool _pressed = false;
-
-  // Rastreia se estava arrastando (para não abrir ao soltar após drag)
-  bool _wasDragging = false;
+  late final AnimationController _ctrl;
+  late final Animation<double> _slideAnim;
+  late final Animation<double> _fadeAnim;
 
   @override
   void initState() {
     super.initState();
-    _pulseCtrl = AnimationController(
+    _ctrl = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 1800),
-    )..repeat(reverse: true);
-    _pulseAnim = Tween<double>(begin: 1.0, end: 1.06).animate(
-      CurvedAnimation(parent: _pulseCtrl, curve: Curves.easeInOut),
+      duration: const Duration(milliseconds: 320),
     );
+    _slideAnim = CurvedAnimation(parent: _ctrl, curve: Curves.easeOutCubic);
+    _fadeAnim  = CurvedAnimation(parent: _ctrl, curve: Curves.easeIn);
+  }
+
+  @override
+  void didUpdateWidget(_SideNotesPanel old) {
+    super.didUpdateWidget(old);
+    if (widget.isOpen != old.isOpen) {
+      widget.isOpen ? _ctrl.forward() : _ctrl.reverse();
+    }
   }
 
   @override
   void dispose() {
-    _pulseCtrl.dispose();
+    _ctrl.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Positioned(
-      left: widget.offset.dx,
-      bottom: -widget.offset.dy,
-      child: GestureDetector(
-        onTapDown: (_) {
-          _wasDragging = false;
-          setState(() => _pressed = true);
-        },
-        onTapUp: (_) {
-          setState(() => _pressed = false);
-          if (!_wasDragging) {
-            openNotesScreen(context);
-          }
-        },
-        onTapCancel: () => setState(() => _pressed = false),
-        onPanStart: (_) {
-          _wasDragging = false;
-        },
-        onPanUpdate: (details) {
-          _wasDragging = true;
-          setState(() => _pressed = false);
-          final size   = MediaQuery.of(context).size;
-          const fabSz  = 56.0;
-          const margin = 10.0;
-          final safeB  = MediaQuery.of(context).padding.bottom;
+    final dark  = Theme.of(context).brightness == Brightness.dark;
+    final size  = MediaQuery.of(context).size;
+    final safeB = MediaQuery.of(context).padding.bottom;
+    final safeT = MediaQuery.of(context).padding.top;
 
-          // Calcula nova posição absoluta da tela
-          final newLeft   = widget.offset.dx + details.delta.dx;
-          final newBottom = -widget.offset.dy - details.delta.dy;
+    // Largura do painel: 88% em mobile, máx 400px
+    final panelW = (size.width * 0.88).clamp(0.0, 400.0);
 
-          final clampedLeft   = newLeft.clamp(margin, size.width - fabSz - margin);
-          final clampedBottom = newBottom.clamp(
-            safeB + margin,
-            size.height - fabSz - 80 - margin,
-          );
+    // Cores do tab/botão
+    final tabBg  = dark ? const Color(0xFF1A2820) : const Color(0xFF0F1C14);
+    final tabShadow = dark
+        ? const Color(0xFF1F6B48).withValues(alpha: 0.55)
+        : const Color(0xFF1F6B48).withValues(alpha: 0.40);
 
-          widget.onOffsetChanged(Offset(clampedLeft, -clampedBottom));
-        },
-        onPanEnd: (_) {
-          // Snap para borda mais próxima (esquerda ou direita)
-          final size = MediaQuery.of(context).size;
-          const fabSz  = 56.0;
-          const margin = 10.0;
-          final midX   = size.width / 2;
-          final snapX  = widget.offset.dx < midX
-              ? margin
-              : size.width - fabSz - margin;
-          widget.onOffsetChanged(Offset(snapX, widget.offset.dy));
-        },
-        child: AnimatedScale(
-          scale: _pressed ? 0.88 : 1.0,
-          duration: const Duration(milliseconds: 100),
-          child: ScaleTransition(
-            scale: _pulseAnim,
-            child: _FabBody(),
+    return Stack(children: [
+      // ── Overlay escuro quando aberto ──────────────────────────────────────
+      if (widget.isOpen)
+        FadeTransition(
+          opacity: _fadeAnim,
+          child: GestureDetector(
+            onTap: widget.onToggle,
+            child: Container(
+              color: Colors.black.withValues(alpha: 0.45),
+            ),
           ),
         ),
+
+      // ── Painel deslizante (slide da esquerda) ─────────────────────────────
+      AnimatedBuilder(
+        animation: _slideAnim,
+        builder: (_, __) {
+          final offset = (1.0 - _slideAnim.value) * -(panelW + 8);
+          return Positioned(
+            left: offset,
+            top: 0,
+            bottom: 0,
+            width: panelW,
+            child: _NotesPanelContent(
+              onClose: widget.onToggle,
+            ),
+          );
+        },
+      ),
+
+      // ── Botão tab lateral (sempre visível, beira esquerda) ────────────────
+      AnimatedBuilder(
+        animation: _slideAnim,
+        builder: (_, __) {
+          // O tab se desloca junto com o painel
+          final panelOffset = (1.0 - _slideAnim.value) * -(panelW + 8);
+          final tabLeft = panelOffset + panelW; // fica colado na borda direita do painel
+
+          return Positioned(
+            left: tabLeft,
+            bottom: safeB + 100,
+            child: GestureDetector(
+              onTap: widget.onToggle,
+              child: Container(
+                width: 28,
+                height: 68,
+                decoration: BoxDecoration(
+                  color: tabBg,
+                  borderRadius: const BorderRadius.only(
+                    topRight: Radius.circular(12),
+                    bottomRight: Radius.circular(12),
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: tabShadow,
+                      blurRadius: 14,
+                      spreadRadius: 0,
+                      offset: const Offset(3, 0),
+                    ),
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.30),
+                      blurRadius: 6,
+                      offset: const Offset(2, 2),
+                    ),
+                  ],
+                  border: Border(
+                    top:    BorderSide(color: const Color(0xFF1F6B48).withValues(alpha: 0.60), width: 1),
+                    right:  BorderSide(color: const Color(0xFF1F6B48).withValues(alpha: 0.60), width: 1),
+                    bottom: BorderSide(color: const Color(0xFF1F6B48).withValues(alpha: 0.60), width: 1),
+                  ),
+                ),
+                child: Center(
+                  child: AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 220),
+                    transitionBuilder: (child, anim) => ScaleTransition(scale: anim, child: child),
+                    child: widget.isOpen
+                        ? const Icon(Icons.chevron_left_rounded,
+                            key: ValueKey('close'),
+                            color: Color(0xFF4ADE80),
+                            size: 20)
+                        : const Icon(Icons.edit_note_rounded,
+                            key: ValueKey('open'),
+                            color: Color(0xFF4ADE80),
+                            size: 20),
+                  ),
+                ),
+              ),
+            ),
+          );
+        },
+      ),
+    ]);
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// CONTEÚDO INTERNO DO PAINEL — lista de anotações reutilizando lógica existente
+// ─────────────────────────────────────────────────────────────────────────────
+class _NotesPanelContent extends StatefulWidget {
+  final VoidCallback onClose;
+  const _NotesPanelContent({required this.onClose});
+
+  @override
+  State<_NotesPanelContent> createState() => _NotesPanelContentState();
+}
+
+class _NotesPanelContentState extends State<_NotesPanelContent> {
+  final _searchCtrl = TextEditingController();
+  String _search = '';
+  StreamSubscription<List<Map<String, dynamic>>>? _sub;
+  List<Map<String, dynamic>> _allNotes = [];
+  bool _loading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _searchCtrl.addListener(() {
+      if (mounted) setState(() => _search = _searchCtrl.text.toLowerCase());
+    });
+    WidgetsBinding.instance.addPostFrameCallback((_) => _subscribe());
+  }
+
+  void _subscribe() {
+    final uid = context.read<AppProvider>().currentUser?.uid ?? '';
+    if (uid.isEmpty) { setState(() => _loading = false); return; }
+    _sub = FirestoreService.notesStream(uid).listen(
+      (notes) { if (mounted) setState(() { _allNotes = notes; _loading = false; }); },
+      onError: (_) { if (mounted) setState(() => _loading = false); },
+    );
+  }
+
+  @override
+  void dispose() {
+    _sub?.cancel();
+    _searchCtrl.dispose();
+    super.dispose();
+  }
+
+  List<Map<String, dynamic>> get _filtered {
+    if (_search.isEmpty) return _allNotes;
+    return _allNotes.where((n) {
+      final t = (n['title']   as String? ?? '').toLowerCase();
+      final c = (n['content'] as String? ?? '').toLowerCase();
+      return t.contains(_search) || c.contains(_search);
+    }).toList();
+  }
+
+  Future<void> _deleteNote(String noteId) async {
+    final uid = context.read<AppProvider>().currentUser?.uid ?? '';
+    if (uid.isEmpty) return;
+    await FirestoreService.deleteNote(uid: uid, noteId: noteId);
+  }
+
+  void _openEditor({Map<String, dynamic>? note}) {
+    final uid  = context.read<AppProvider>().currentUser?.uid ?? '';
+    if (uid.isEmpty) return;
+    final dark = context.read<AppProvider>().darkMode;
+    final lang = context.read<AppProvider>().lang;
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => NoteEditorSheet(uid: uid, note: note, dark: dark, lang: lang),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final p    = context.watch<AppProvider>();
+    final dark = p.darkMode;
+    final isEs = p.lang == 'es';
+
+    final panelBg    = dark ? const Color(0xFF161616) : const Color(0xFFF7F8FA);
+    final headerBg   = dark ? const Color(0xFF0F1C14) : const Color(0xFF0F1C14);
+    final searchBg   = dark ? const Color(0xFF222222) : Colors.white;
+    final borderCol  = dark ? const Color(0xFF2A2A2A) : const Color(0xFFE0E0E0);
+    final textCol    = dark ? Colors.white             : const Color(0xFF0F1C14);
+    final subCol     = dark ? Colors.white54           : Colors.black45;
+    final dividerCol = dark ? const Color(0xFF2A2A2A)  : const Color(0xFFEEEEEE);
+
+    return Material(
+      color: Colors.transparent,
+      child: Container(
+        decoration: BoxDecoration(
+          color: panelBg,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.35),
+              blurRadius: 24,
+              spreadRadius: 0,
+              offset: const Offset(4, 0),
+            ),
+          ],
+        ),
+        child: Column(children: [
+          // ── Header do painel ───────────────────────────────────────────────
+          Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: dark
+                    ? [const Color(0xFF0F1C14), const Color(0xFF1A2820), const Color(0xFF1F3A28)]
+                    : [const Color(0xFF0F1C14), const Color(0xFF1B3D2A), const Color(0xFF1F6B48)],
+              ),
+            ),
+            child: SafeArea(
+              bottom: false,
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(14, 12, 14, 14),
+                child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  Row(children: [
+                    // Botão fechar painel
+                    GestureDetector(
+                      onTap: widget.onClose,
+                      child: Container(
+                        width: 34, height: 34,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: Colors.white.withValues(alpha: 0.10),
+                        ),
+                        child: const Icon(Icons.chevron_left_rounded,
+                          color: Colors.white, size: 20),
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                        Text(
+                          isEs ? 'Mis Anotaciones' : 'Minhas Anotações',
+                          style: const TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.w900,
+                            color: Colors.white, letterSpacing: -0.3,
+                          ),
+                        ),
+                        Text(
+                          _allNotes.isEmpty
+                              ? (isEs ? 'Sin anotaciones' : 'Nenhuma anotação')
+                              : '${_allNotes.length} ${isEs
+                                  ? 'anotación${_allNotes.length != 1 ? "es" : ""}'
+                                  : 'anotaç${_allNotes.length != 1 ? "ões" : "ão"}'}',
+                          style: TextStyle(
+                            fontSize: 10,
+                            color: Colors.white.withValues(alpha: 0.55),
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ]),
+                    ),
+                    // Botão nova nota
+                    GestureDetector(
+                      onTap: () => _openEditor(),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(9),
+                          color: const Color(0xFF1F6B48),
+                          boxShadow: [
+                            BoxShadow(
+                              color: const Color(0xFF1F6B48).withValues(alpha: 0.45),
+                              blurRadius: 10, offset: const Offset(0, 3),
+                            ),
+                          ],
+                        ),
+                        child: Row(mainAxisSize: MainAxisSize.min, children: [
+                          const Icon(Icons.add_rounded, color: Colors.white, size: 15),
+                          const SizedBox(width: 4),
+                          Text(
+                            isEs ? 'Nueva' : 'Nova',
+                            style: const TextStyle(
+                              fontSize: 11, fontWeight: FontWeight.w700,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ]),
+                      ),
+                    ),
+                  ]),
+                  const SizedBox(height: 12),
+                  // Busca
+                  Container(
+                    height: 38,
+                    decoration: BoxDecoration(
+                      color: searchBg,
+                      borderRadius: BorderRadius.circular(11),
+                      border: Border.all(color: borderCol, width: 0.8),
+                    ),
+                    child: Row(children: [
+                      const SizedBox(width: 10),
+                      Icon(Icons.search_rounded, size: 15, color: subCol),
+                      const SizedBox(width: 7),
+                      Expanded(
+                        child: TextField(
+                          controller: _searchCtrl,
+                          style: TextStyle(fontSize: 12, color: textCol),
+                          decoration: InputDecoration(
+                            hintText: isEs ? 'Buscar...' : 'Buscar anotações...',
+                            hintStyle: TextStyle(fontSize: 12, color: subCol),
+                            border: InputBorder.none,
+                            isDense: true,
+                            contentPadding: EdgeInsets.zero,
+                          ),
+                        ),
+                      ),
+                      if (_search.isNotEmpty)
+                        GestureDetector(
+                          onTap: () => _searchCtrl.clear(),
+                          child: Padding(
+                            padding: const EdgeInsets.only(right: 8),
+                            child: Icon(Icons.close_rounded, size: 14, color: subCol),
+                          ),
+                        ),
+                    ]),
+                  ),
+                ]),
+              ),
+            ),
+          ),
+
+          // ── Lista de notas ─────────────────────────────────────────────────
+          Expanded(
+            child: _loading
+                ? const Center(child: CircularProgressIndicator(
+                    color: Color(0xFF1F6B48), strokeWidth: 2))
+                : _filtered.isEmpty
+                    ? _PanelEmptyState(isEs: isEs, dark: dark,
+                        onNew: () => _openEditor())
+                    : ListView.separated(
+                        padding: const EdgeInsets.fromLTRB(12, 12, 12, 24),
+                        itemCount: _filtered.length,
+                        separatorBuilder: (_, __) => const SizedBox(height: 8),
+                        itemBuilder: (ctx, i) {
+                          final note = _filtered[i];
+                          return _PanelNoteCard(
+                            note: note,
+                            dark: dark,
+                            isEs: isEs,
+                            onTap: () => _openEditor(note: note),
+                            onDelete: () => _deleteNote(note['id'] as String? ?? ''),
+                          );
+                        },
+                      ),
+          ),
+        ]),
       ),
     );
   }
 }
 
-class _FabBody extends StatelessWidget {
-  const _FabBody();
+// ─────────────────────────────────────────────────────────────────────────────
+// ESTADO VAZIO DO PAINEL
+// ─────────────────────────────────────────────────────────────────────────────
+class _PanelEmptyState extends StatelessWidget {
+  final bool isEs;
+  final bool dark;
+  final VoidCallback onNew;
+  const _PanelEmptyState({required this.isEs, required this.dark, required this.onNew});
 
   @override
   Widget build(BuildContext context) {
-    final dark = Theme.of(context).brightness == Brightness.dark;
-
-    return Container(
-      width: 56,
-      height: 56,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        gradient: LinearGradient(
-          colors: dark
-              ? [const Color(0xFF2A1A08), const Color(0xFF4A2E0A), const Color(0xFF6B4210)]
-              : [const Color(0xFF1F6B48), const Color(0xFF0F3D28), const Color(0xFF072818)],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: (dark
-                ? const Color(0xFFD97706)
-                : const Color(0xFF1F6B48))
-                .withValues(alpha: 0.50),
-            blurRadius: 18,
-            spreadRadius: 0,
-            offset: const Offset(0, 4),
+    final subCol = dark ? Colors.white30 : Colors.black26;
+    return Center(
+      child: Column(mainAxisSize: MainAxisSize.min, children: [
+        Icon(Icons.edit_note_rounded, size: 48,
+          color: dark ? const Color(0xFF1F6B48).withValues(alpha: 0.50) : const Color(0xFF1F6B48).withValues(alpha: 0.35)),
+        const SizedBox(height: 12),
+        Text(
+          isEs ? 'Sin anotaciones aún' : 'Nenhuma anotação ainda',
+          style: TextStyle(
+            fontSize: 14, fontWeight: FontWeight.w600,
+            color: dark ? Colors.white54 : Colors.black45,
           ),
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.25),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
-        border: Border.all(
-          color: const Color(0xFFFFE8A6).withValues(alpha: 0.30),
-          width: 1.5,
         ),
-      ),
-      child: Stack(
-        alignment: Alignment.center,
-        children: [
-          // Brilho interno
-          Positioned(
-            top: 8,
-            child: Container(
-              width: 28,
-              height: 10,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20),
-                color: Colors.white.withValues(alpha: 0.08),
+        const SizedBox(height: 6),
+        Text(
+          isEs ? 'Toca "Nueva" para comenzar' : 'Toque "Nova" para começar',
+          style: TextStyle(fontSize: 12, color: subCol),
+        ),
+        const SizedBox(height: 20),
+        GestureDetector(
+          onTap: onNew,
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              color: const Color(0xFF1F6B48),
+              boxShadow: [
+                BoxShadow(
+                  color: const Color(0xFF1F6B48).withValues(alpha: 0.40),
+                  blurRadius: 12, offset: const Offset(0, 4),
+                ),
+              ],
+            ),
+            child: Row(mainAxisSize: MainAxisSize.min, children: [
+              const Icon(Icons.add_rounded, color: Colors.white, size: 16),
+              const SizedBox(width: 6),
+              Text(
+                isEs ? 'Nueva anotación' : 'Nova anotação',
+                style: const TextStyle(
+                  fontSize: 13, fontWeight: FontWeight.w700, color: Colors.white,
+                ),
               ),
+            ]),
+          ),
+        ),
+      ]),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// CARD DE NOTA NO PAINEL
+// ─────────────────────────────────────────────────────────────────────────────
+class _NoteColor2 {
+  final String hex;
+  final Color light;
+  final Color dark;
+  final Color border;
+  const _NoteColor2({required this.hex, required this.light, required this.dark, required this.border});
+}
+
+const _panelNoteColors = [
+  _NoteColor2(hex:'#FFFEF0', light:Color(0xFFFFFEF0), dark:Color(0xFF2A2800), border:Color(0xFFE8E0A0)),
+  _NoteColor2(hex:'#F0FFF4', light:Color(0xFFF0FFF4), dark:Color(0xFF002A0F), border:Color(0xFFA0DEB8)),
+  _NoteColor2(hex:'#F0F4FF', light:Color(0xFFF0F4FF), dark:Color(0xFF00102A), border:Color(0xFFA0B8E8)),
+  _NoteColor2(hex:'#FFF0F4', light:Color(0xFFFFF0F4), dark:Color(0xFF2A0010), border:Color(0xFFE8A0B8)),
+  _NoteColor2(hex:'#FFF6F0', light:Color(0xFFFFF6F0), dark:Color(0xFF2A1200), border:Color(0xFFE8C0A0)),
+  _NoteColor2(hex:'#F6F0FF', light:Color(0xFFF6F0FF), dark:Color(0xFF1A0028), border:Color(0xFFC0A0E8)),
+];
+
+_NoteColor2 _panelColorFromHex(String hex) => _panelNoteColors.firstWhere(
+  (c) => c.hex == hex, orElse: () => _panelNoteColors[0]);
+
+class _PanelNoteCard extends StatelessWidget {
+  final Map<String, dynamic> note;
+  final bool dark;
+  final bool isEs;
+  final VoidCallback onTap;
+  final VoidCallback onDelete;
+  const _PanelNoteCard({
+    required this.note, required this.dark, required this.isEs,
+    required this.onTap, required this.onDelete,
+  });
+
+  String _formatDate(dynamic ts) {
+    if (ts == null) return '';
+    try {
+      DateTime dt;
+      if (ts is DateTime) {
+        dt = ts;
+      } else {
+        dt = (ts as dynamic).toDate() as DateTime;
+      }
+      return '${dt.day.toString().padLeft(2, '0')}/${dt.month.toString().padLeft(2, '0')}/${dt.year}';
+    } catch (_) { return ''; }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final hex     = note['color'] as String? ?? '#FFFEF0';
+    final nc      = _panelColorFromHex(hex);
+    final cardBg  = dark ? nc.dark : nc.light;
+    final textCol = dark ? Colors.white : const Color(0xFF1A1A1A);
+    final subCol  = dark ? Colors.white54 : Colors.black45;
+    final title   = note['title']   as String? ?? '';
+    final content = note['content'] as String? ?? '';
+    final dateStr = _formatDate(note['updatedAt'] ?? note['createdAt']);
+
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.fromLTRB(12, 10, 10, 10),
+        decoration: BoxDecoration(
+          color: cardBg,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: nc.border.withValues(alpha: 0.70), width: 1),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: dark ? 0.25 : 0.07),
+              blurRadius: 8, offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Expanded(
+            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              if (title.isNotEmpty) ...[
+                Text(title,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: 13, fontWeight: FontWeight.w700, color: textCol,
+                  ),
+                ),
+                const SizedBox(height: 3),
+              ],
+              if (content.isNotEmpty)
+                Text(content,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(fontSize: 11, color: subCol, height: 1.4),
+                ),
+              if (dateStr.isNotEmpty) ...[
+                const SizedBox(height: 5),
+                Text(dateStr,
+                  style: TextStyle(
+                    fontSize: 10,
+                    color: dark ? Colors.white30 : Colors.black26,
+                  ),
+                ),
+              ],
+            ]),
+          ),
+          // Botão deletar
+          GestureDetector(
+            onTap: () {
+              showDialog(
+                context: context,
+                builder: (_) => AlertDialog(
+                  backgroundColor: dark ? const Color(0xFF1E1E1E) : Colors.white,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                  title: Text(
+                    isEs ? 'Eliminar nota' : 'Excluir anotação',
+                    style: TextStyle(
+                      fontSize: 16, fontWeight: FontWeight.w700,
+                      color: dark ? Colors.white : const Color(0xFF1A1A1A),
+                    ),
+                  ),
+                  content: Text(
+                    isEs ? '¿Eliminar esta nota?' : 'Deseja excluir esta anotação?',
+                    style: TextStyle(
+                      fontSize: 13,
+                      color: dark ? Colors.white54 : Colors.black54,
+                    ),
+                  ),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: Text(isEs ? 'Cancelar' : 'Cancelar',
+                        style: const TextStyle(color: Colors.grey)),
+                    ),
+                    TextButton(
+                      onPressed: () { Navigator.pop(context); onDelete(); },
+                      child: const Text('Excluir',
+                        style: TextStyle(color: Color(0xFFE53935), fontWeight: FontWeight.w700)),
+                    ),
+                  ],
+                ),
+              );
+            },
+            child: Padding(
+              padding: const EdgeInsets.only(left: 6, top: 2),
+              child: Icon(Icons.delete_outline_rounded,
+                size: 17,
+                color: dark ? Colors.white24 : Colors.black26),
             ),
           ),
-          const Icon(
-            Icons.edit_note_rounded,
-            color: Color(0xFFFFE8A6),
-            size: 26,
-          ),
-        ],
+        ]),
       ),
     );
   }

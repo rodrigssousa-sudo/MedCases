@@ -149,7 +149,7 @@ class _NotesScreenState extends State<NotesScreen> {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (_) => _NoteEditorSheet(
+      builder: (_) => NoteEditorSheet(
         uid: uid,
         note: note,
         dark: dark,
@@ -684,13 +684,13 @@ class _EmptyState extends StatelessWidget {
 // ─────────────────────────────────────────────────────────────────────────────
 // Editor de nota (bottom sheet)
 // ─────────────────────────────────────────────────────────────────────────────
-class _NoteEditorSheet extends StatefulWidget {
+class NoteEditorSheet extends StatefulWidget {
   final String uid;
   final Map<String, dynamic>? note; // null = nova nota
   final bool dark;
   final String lang;
 
-  const _NoteEditorSheet({
+  const NoteEditorSheet({
     required this.uid,
     this.note,
     required this.dark,
@@ -698,10 +698,10 @@ class _NoteEditorSheet extends StatefulWidget {
   });
 
   @override
-  State<_NoteEditorSheet> createState() => _NoteEditorSheetState();
+  State<NoteEditorSheet> createState() => NoteEditorSheetState();
 }
 
-class _NoteEditorSheetState extends State<_NoteEditorSheet> {
+class NoteEditorSheetState extends State<NoteEditorSheet> {
   late TextEditingController _titleCtrl;
   late TextEditingController _contentCtrl;
   late TextEditingController _tagCtrl;
