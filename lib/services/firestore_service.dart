@@ -678,6 +678,110 @@ class FirestoreService {
     await _userDoc(uid).delete();
   }
 
+  // ── Campanhas de Email ────────────────────────────────────────────────────
+
+  /// Salva uma campanha enviada no histórico do Firestore.
+  static Future<void> saveEmailCampaign({
+    required String subject,
+    required String body,
+    required String sentBy,
+    required String recipients, // 'all' | 'approved'
+    required int recipientCount,
+    required String status,     // 'sent' | 'error'
+    String? errorMsg,
+  }) async {
+    await _db.collection('email_campaigns').add({
+      'subject':        subject,
+      'body':           body,
+      'sentBy':         sentBy,
+      'recipients':     recipients,
+      'recipientCount': recipientCount,
+      'status':         status,
+      'errorMsg':       errorMsg ?? '',
+      'sentAt':         FieldValue.serverTimestamp(),
+    });
+  }
+
+  /// Carrega as últimas 20 campanhas enviadas (ordem desc).
+  static Future<List<Map<String, dynamic>>> loadEmailCampaigns() async {
+    try {
+      final snap = await _db
+          .collection('email_campaigns')
+          .orderBy('sentAt', descending: true)
+          .limit(20)
+          .get();
+      return snap.docs.map((d) {
+        final data = Map<String, dynamic>.from(d.data());
+        data['id'] = d.id;
+        return data;
+      }).toList();
+    } catch (_) {
+      return [];
+    }
+  }
+
+  /// Salva/atualiza a configuração do EmailJS (serviceId, templateId, publicKey).
+  static Future<void> saveEmailJsConfig({
+    required String serviceId,
+    required String templateId,
+    required String publicKey,
+  }) async {
+    await _db.collection('config').doc('emailjs').set({
+      'serviceId':   serviceId,
+      'templateId':  templateId,
+      'publicKey':   publicKey,
+      'updatedAt':   FieldValue.serverTimestamp(),
+    }, SetOptions(merge: true));
+  }
+
+  /// Carrega a configuração do EmailJS.
+  static Future<Map<String, String>> loadEmailJsConfig() async {
+    try {
+      final doc = await _db.collection('config').doc('emailjs').get();
+      if (!doc.exists) return {};
+      final d = doc.data()!;
+      return {
+        'serviceId':  (d['serviceId']  as String?) ?? '',
+        'templateId': (d['templateId'] as String?) ?? '',
+        'publicKey':  (d['publicKey']  as String?) ?? '',
+      };
+    } catch (_) {
+      return {};
+    }
+  }
+
+  /// Envia e-mail via EmailJS REST API (sem servidor, funciona no Flutter Web).
+  static Future<void> sendEmailViaEmailJs({
+    required String serviceId,
+    required String templateId,
+    required String publicKey,
+    required String toEmail,
+    required String toName,
+    required String subject,
+    required String message,
+    required String fromName,
+  }) async {
+    final response = await http.post(
+      Uri.parse('https://api.emailjs.com/api/v1.0/email/send'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({
+        'service_id':  serviceId,
+        'template_id': templateId,
+        'user_id':     publicKey,
+        'template_params': {
+          'to_email':  toEmail,
+          'to_name':   toName,
+          'subject':   subject,
+          'message':   message,
+          'from_name': fromName,
+        },
+      }),
+    );
+    if (response.statusCode != 200) {
+      throw Exception('EmailJS error ${response.statusCode}: ${response.body}');
+    }
+  }
+
   /// Escreve/atualiza app_config/maintenance via REST PATCH.
   static Future<void> _setMaintenanceRest({
     required bool enabled,

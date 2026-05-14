@@ -39,7 +39,7 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
   @override
   void initState() {
     super.initState();
-    _tabs = TabController(length: 6, vsync: this);
+    _tabs = TabController(length: 7, vsync: this);
     _loadLang();
     _subscribeUsers();
   }
@@ -121,13 +121,14 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
             Tab(icon: const Icon(Icons.settings_rounded, size: 16), text: _systemLabel),
             const Tab(icon: Icon(Icons.auto_awesome_rounded, size: 16), text: 'Novidades'),
             const Tab(icon: Icon(Icons.bar_chart_rounded, size: 16), text: 'Stats'),
+            const Tab(icon: Icon(Icons.mark_email_unread_rounded, size: 16), text: 'E-mail'),
           ],
         ),
       ),
       body: AnimatedBuilder(
         animation: _tabs,
         builder: (context, _) {
-          final isSystemTab = _tabs.index == 3 || _tabs.index == 4 || _tabs.index == 5;
+          final isSystemTab = _tabs.index == 3 || _tabs.index == 4 || _tabs.index == 5 || _tabs.index == 6;
           return Column(
             children: [
               // Barra de busca — só nas tabs de usuários (0, 1, 2)
@@ -212,6 +213,8 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
                     _AppUpdatesTab(currentAdmin: widget.currentAdmin),
                     // ── Tab 5: Stats ──────────────────────────────────────
                     _StatsTab(allUsers: _allUsers, loading: _usersLoading),
+                    // ── Tab 6: E-mail ─────────────────────────────────────
+                    _EmailTab(allUsers: _allUsers, currentAdmin: widget.currentAdmin),
                   ],
                 ),
               ),
@@ -2161,6 +2164,888 @@ class _MiniChip extends StatelessWidget {
       child: Text(label,
         style: TextStyle(
           fontSize: 9, fontWeight: FontWeight.w800, color: color)),
+    );
+  }
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// TAB E-MAIL — enviar notificação por e-mail para todos os usuários registrados
+// ══════════════════════════════════════════════════════════════════════════════
+class _EmailTab extends StatefulWidget {
+  final List<UserModel> allUsers;
+  final UserModel currentAdmin;
+  const _EmailTab({required this.allUsers, required this.currentAdmin});
+
+  @override
+  State<_EmailTab> createState() => _EmailTabState();
+}
+
+class _EmailTabState extends State<_EmailTab> {
+  static const kDark  = Color(0xFF07110d);
+  static const kGreen = Color(0xFF075f45);
+  static const kGold  = Color(0xFFC5A365);
+  static const kGoldL = Color(0xFFFFE8A6);
+  static const kBlue  = Color(0xFF1A56DB);
+
+  AppColors get _c => AppColors.of(context);
+
+  // ── Campos do formulário ──────────────────────────────────────────────────
+  final _subjectCtrl = TextEditingController();
+  final _bodyCtrl    = TextEditingController();
+
+  // ── Config EmailJS ────────────────────────────────────────────────────────
+  final _serviceCtrl  = TextEditingController();
+  final _templateCtrl = TextEditingController();
+  final _pubKeyCtrl   = TextEditingController();
+  bool _configHidden  = true;
+  bool _configSaving  = false;
+  bool _configSaved   = false;
+  bool _configLoaded  = false;
+
+  // ── Estado de envio ───────────────────────────────────────────────────────
+  String _recipients    = 'approved'; // 'approved' | 'all'
+  bool   _sending       = false;
+  int    _sentCount     = 0;
+  int    _totalCount    = 0;
+  String?_sendResult;
+  bool   _sendSuccess   = false;
+
+  // ── Histórico ─────────────────────────────────────────────────────────────
+  List<Map<String, dynamic>> _history = [];
+  bool _historyLoading = false;
+  bool _showHistory    = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadConfig();
+    _loadHistory();
+  }
+
+  @override
+  void dispose() {
+    _subjectCtrl.dispose();
+    _bodyCtrl.dispose();
+    _serviceCtrl.dispose();
+    _templateCtrl.dispose();
+    _pubKeyCtrl.dispose();
+    super.dispose();
+  }
+
+  Future<void> _loadConfig() async {
+    final cfg = await FirestoreService.loadEmailJsConfig();
+    if (!mounted) return;
+    setState(() {
+      _serviceCtrl.text  = cfg['serviceId']  ?? '';
+      _templateCtrl.text = cfg['templateId'] ?? '';
+      _pubKeyCtrl.text   = cfg['publicKey']  ?? '';
+      _configLoaded      = true;
+    });
+  }
+
+  Future<void> _saveConfig() async {
+    final sid = _serviceCtrl.text.trim();
+    final tid = _templateCtrl.text.trim();
+    final pk  = _pubKeyCtrl.text.trim();
+    if (sid.isEmpty || tid.isEmpty || pk.isEmpty) {
+      _snack('Preencha todos os campos da configuração.', Colors.red);
+      return;
+    }
+    setState(() { _configSaving = true; _configSaved = false; });
+    try {
+      await FirestoreService.saveEmailJsConfig(
+        serviceId: sid, templateId: tid, publicKey: pk,
+      );
+      if (mounted) setState(() { _configSaving = false; _configSaved = true; });
+      await Future.delayed(const Duration(seconds: 3));
+      if (mounted) setState(() => _configSaved = false);
+    } catch (e) {
+      if (mounted) {
+        setState(() => _configSaving = false);
+        _snack('Erro ao salvar: $e', Colors.red);
+      }
+    }
+  }
+
+  Future<void> _loadHistory() async {
+    setState(() => _historyLoading = true);
+    _history = await FirestoreService.loadEmailCampaigns();
+    if (mounted) setState(() => _historyLoading = false);
+  }
+
+  List<UserModel> get _targetUsers {
+    if (_recipients == 'approved') {
+      return widget.allUsers.where((u) => u.isApproved).toList();
+    }
+    return widget.allUsers;
+  }
+
+  Future<void> _send() async {
+    final subject = _subjectCtrl.text.trim();
+    final body    = _bodyCtrl.text.trim();
+    final sid     = _serviceCtrl.text.trim();
+    final tid     = _templateCtrl.text.trim();
+    final pk      = _pubKeyCtrl.text.trim();
+
+    if (subject.isEmpty || body.isEmpty) {
+      _snack('Preencha o assunto e o corpo do e-mail.', Colors.orange);
+      return;
+    }
+    if (sid.isEmpty || tid.isEmpty || pk.isEmpty) {
+      _snack('Configure o EmailJS antes de enviar.', Colors.red);
+      setState(() => _configHidden = false);
+      return;
+    }
+
+    final targets = _targetUsers;
+    if (targets.isEmpty) {
+      _snack('Nenhum usuário encontrado para envio.', Colors.orange);
+      return;
+    }
+
+    // Confirmação
+    final confirm = await _confirmSend(targets.length);
+    if (!confirm) return;
+
+    setState(() {
+      _sending    = true;
+      _sentCount  = 0;
+      _totalCount = targets.length;
+      _sendResult = null;
+    });
+
+    int successCount = 0;
+    final List<String> errors = [];
+
+    for (final user in targets) {
+      try {
+        await FirestoreService.sendEmailViaEmailJs(
+          serviceId:   sid,
+          templateId:  tid,
+          publicKey:   pk,
+          toEmail:     user.email,
+          toName:      user.displayName.isNotEmpty ? user.displayName : user.email,
+          subject:     subject,
+          message:     body,
+          fromName:    'MedCases Pro',
+        );
+        successCount++;
+      } catch (e) {
+        errors.add('${user.email}: $e');
+      }
+      if (mounted) setState(() => _sentCount = successCount + errors.length);
+      // Pequeno delay para não sobrecarregar a API
+      await Future.delayed(const Duration(milliseconds: 300));
+    }
+
+    // Salva no histórico
+    final hasErrors = errors.isNotEmpty;
+    await FirestoreService.saveEmailCampaign(
+      subject:        subject,
+      body:           body,
+      sentBy:         widget.currentAdmin.email,
+      recipients:     _recipients,
+      recipientCount: successCount,
+      status:         hasErrors && successCount == 0 ? 'error' : 'sent',
+      errorMsg:       errors.take(3).join(' | '),
+    );
+
+    if (mounted) {
+      setState(() {
+        _sending     = false;
+        _sendSuccess = successCount > 0;
+        _sendResult  = successCount > 0
+            ? '✓ $successCount e-mail${successCount > 1 ? 's' : ''} enviado${successCount > 1 ? 's' : ''} com sucesso!'
+            : 'Falha ao enviar. Verifique a configuração do EmailJS.';
+        if (hasErrors && successCount > 0) {
+          _sendResult = '✓ $successCount enviados, ${errors.length} com erro.';
+        }
+      });
+      _loadHistory();
+    }
+  }
+
+  Future<bool> _confirmSend(int count) async {
+    return await showDialog<bool>(
+          context: context,
+          builder: (_) => AlertDialog(
+            backgroundColor: const Color(0xFFFFFDF8),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+            title: Row(children: [
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: kBlue.withValues(alpha: 0.1),
+                ),
+                child: const Icon(Icons.send_rounded, size: 18, color: kBlue),
+              ),
+              const SizedBox(width: 10),
+              const Text('Confirmar envio',
+                style: TextStyle(fontWeight: FontWeight.w900, fontSize: 16, color: kDark)),
+            ]),
+            content: Column(mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Text(
+                'Você está prestes a enviar um e-mail para',
+                style: TextStyle(fontSize: 13, color: kDark.withValues(alpha: 0.7)),
+              ),
+              const SizedBox(height: 8),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: kBlue.withValues(alpha: 0.06),
+                  border: Border.all(color: kBlue.withValues(alpha: 0.2)),
+                ),
+                child: Row(children: [
+                  const Icon(Icons.people_rounded, size: 18, color: kBlue),
+                  const SizedBox(width: 8),
+                  Text('$count destinatário${count > 1 ? 's' : ''}',
+                    style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w900, color: kBlue)),
+                ]),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'Assunto: "${_subjectCtrl.text.trim()}"',
+                style: TextStyle(fontSize: 12, color: kDark.withValues(alpha: 0.6)),
+                maxLines: 2, overflow: TextOverflow.ellipsis,
+              ),
+              const SizedBox(height: 4),
+              Text(
+                'Esta ação não pode ser desfeita.',
+                style: TextStyle(fontSize: 11, color: Colors.red.shade400),
+              ),
+            ]),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context, false),
+                child: const Text('Cancelar', style: TextStyle(color: Colors.grey)),
+              ),
+              ElevatedButton.icon(
+                onPressed: () => Navigator.pop(context, true),
+                icon: const Icon(Icons.send_rounded, size: 14),
+                label: const Text('Enviar agora'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: kBlue, foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                ),
+              ),
+            ],
+          ),
+        ) ??
+        false;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final targets = _targetUsers;
+
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(16),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+
+        // ── Header ────────────────────────────────────────────────────────
+        Container(
+          width: double.infinity,
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(14),
+            gradient: const LinearGradient(
+              colors: [Color(0xFF0F1E4A), Color(0xFF1A3A8F), kBlue],
+              begin: Alignment.topLeft, end: Alignment.bottomRight,
+            ),
+          ),
+          child: Row(children: [
+            Container(
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12),
+                color: Colors.white.withValues(alpha: 0.12),
+              ),
+              child: const Icon(Icons.mark_email_unread_rounded, color: Colors.white, size: 22),
+            ),
+            const SizedBox(width: 12),
+            Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              const Text('E-mail para Usuários',
+                style: TextStyle(fontSize: 15, fontWeight: FontWeight.w900, color: Colors.white)),
+              Text(
+                '${widget.allUsers.length} registrados  ·  ${widget.allUsers.where((u) => u.isApproved).length} aprovados',
+                style: TextStyle(fontSize: 11, color: Colors.white.withValues(alpha: 0.65)),
+              ),
+            ])),
+          ]),
+        ),
+        const SizedBox(height: 16),
+
+        // ── Seletor de destinatários ──────────────────────────────────────
+        _sectionLabel('DESTINATÁRIOS', Icons.people_rounded),
+        const SizedBox(height: 8),
+        Row(children: [
+          Expanded(child: _RecipientChip(
+            label: 'Aprovados',
+            subtitle: '${widget.allUsers.where((u) => u.isApproved).length} usuários',
+            icon: Icons.verified_user_rounded,
+            color: kGreen,
+            selected: _recipients == 'approved',
+            onTap: () => setState(() => _recipients = 'approved'),
+          )),
+          const SizedBox(width: 10),
+          Expanded(child: _RecipientChip(
+            label: 'Todos',
+            subtitle: '${widget.allUsers.length} usuários',
+            icon: Icons.group_rounded,
+            color: kBlue,
+            selected: _recipients == 'all',
+            onTap: () => setState(() => _recipients = 'all'),
+          )),
+        ]),
+        const SizedBox(height: 4),
+        Padding(
+          padding: const EdgeInsets.only(left: 2),
+          child: Text(
+            '${targets.length} e-mail${targets.length != 1 ? 's' : ''} serão enviados',
+            style: TextStyle(fontSize: 11, color: _c.textHint, fontWeight: FontWeight.w600),
+          ),
+        ),
+        const SizedBox(height: 16),
+
+        // ── Formulário ─────────────────────────────────────────────────────
+        _sectionLabel('MENSAGEM', Icons.edit_rounded),
+        const SizedBox(height: 8),
+        _buildField(
+          controller: _subjectCtrl,
+          label: 'Assunto',
+          hint: 'Ex: Novidades do MedCases Pro 🎉',
+          icon: Icons.subject_rounded,
+          maxLines: 1,
+        ),
+        const SizedBox(height: 10),
+        _buildField(
+          controller: _bodyCtrl,
+          label: 'Corpo do e-mail',
+          hint: 'Escreva a mensagem que os usuários receberão...\n\nEx: Olá {{to_name}},\nTemos novidades para você no MedCases Pro!\n\nAtenciosamente,\nEquipe MedCases',
+          icon: Icons.article_rounded,
+          maxLines: 8,
+        ),
+        const SizedBox(height: 4),
+        Padding(
+          padding: const EdgeInsets.only(left: 2),
+          child: Text(
+            'Use {{to_name}} para inserir o nome do usuário automaticamente.',
+            style: TextStyle(fontSize: 10, color: _c.textHint),
+          ),
+        ),
+        const SizedBox(height: 16),
+
+        // ── Barra de progresso durante envio ──────────────────────────────
+        if (_sending) ...[
+          Container(
+            padding: const EdgeInsets.all(14),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12),
+              color: kBlue.withValues(alpha: 0.06),
+              border: Border.all(color: kBlue.withValues(alpha: 0.2)),
+            ),
+            child: Column(children: [
+              Row(children: [
+                const SizedBox(
+                  width: 16, height: 16,
+                  child: CircularProgressIndicator(strokeWidth: 2, color: kBlue),
+                ),
+                const SizedBox(width: 10),
+                Text(
+                  'Enviando $_sentCount de $_totalCount...',
+                  style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: kBlue),
+                ),
+              ]),
+              const SizedBox(height: 8),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(4),
+                child: LinearProgressIndicator(
+                  value: _totalCount > 0 ? _sentCount / _totalCount : 0,
+                  minHeight: 6,
+                  backgroundColor: kBlue.withValues(alpha: 0.1),
+                  valueColor: const AlwaysStoppedAnimation(kBlue),
+                ),
+              ),
+            ]),
+          ),
+          const SizedBox(height: 12),
+        ],
+
+        // ── Resultado do envio ─────────────────────────────────────────────
+        if (_sendResult != null) ...[
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12),
+              color: _sendSuccess
+                  ? kGreen.withValues(alpha: 0.07)
+                  : Colors.red.withValues(alpha: 0.07),
+              border: Border.all(
+                color: _sendSuccess
+                    ? kGreen.withValues(alpha: 0.3)
+                    : Colors.red.withValues(alpha: 0.3),
+              ),
+            ),
+            child: Row(children: [
+              Icon(
+                _sendSuccess ? Icons.check_circle_rounded : Icons.error_rounded,
+                size: 18,
+                color: _sendSuccess ? kGreen : Colors.red,
+              ),
+              const SizedBox(width: 10),
+              Expanded(child: Text(_sendResult!,
+                style: TextStyle(
+                  fontSize: 13, fontWeight: FontWeight.w700,
+                  color: _sendSuccess ? kGreen : Colors.red,
+                ))),
+            ]),
+          ),
+          const SizedBox(height: 12),
+        ],
+
+        // ── Botão enviar ───────────────────────────────────────────────────
+        SizedBox(
+          width: double.infinity,
+          child: ElevatedButton.icon(
+            onPressed: _sending ? null : _send,
+            icon: _sending
+                ? const SizedBox(width: 16, height: 16,
+                    child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
+                : const Icon(Icons.send_rounded, size: 16),
+            label: Text(
+              _sending
+                  ? 'Enviando... $_sentCount/$_totalCount'
+                  : 'Enviar para ${targets.length} usuário${targets.length != 1 ? 's' : ''}',
+              style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w800),
+            ),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: kBlue, foregroundColor: Colors.white,
+              padding: const EdgeInsets.symmetric(vertical: 14),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              elevation: 0,
+            ),
+          ),
+        ),
+
+        const SizedBox(height: 24),
+
+        // ── Configuração EmailJS (colapsável) ─────────────────────────────
+        GestureDetector(
+          onTap: () => setState(() => _configHidden = !_configHidden),
+          child: Container(
+            padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12),
+              color: _c.cardBg,
+              border: Border.all(
+                color: (_serviceCtrl.text.isNotEmpty && _templateCtrl.text.isNotEmpty)
+                    ? kGreen.withValues(alpha: 0.3)
+                    : _c.border,
+              ),
+            ),
+            child: Row(children: [
+              Container(
+                padding: const EdgeInsets.all(7),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8),
+                  color: (_serviceCtrl.text.isNotEmpty)
+                      ? kGreen.withValues(alpha: 0.1)
+                      : Colors.orange.withValues(alpha: 0.1),
+                ),
+                child: Icon(
+                  Icons.settings_rounded, size: 16,
+                  color: (_serviceCtrl.text.isNotEmpty) ? kGreen : Colors.orange,
+                ),
+              ),
+              const SizedBox(width: 10),
+              Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Text('Configuração EmailJS',
+                  style: TextStyle(fontSize: 13, fontWeight: FontWeight.w800, color: _c.textPrimary)),
+                Text(
+                  (_serviceCtrl.text.isNotEmpty && _templateCtrl.text.isNotEmpty)
+                      ? '✓ Configurado — pronto para envio'
+                      : '⚠ Configure para enviar e-mails',
+                  style: TextStyle(
+                    fontSize: 10, fontWeight: FontWeight.w600,
+                    color: (_serviceCtrl.text.isNotEmpty) ? kGreen : Colors.orange,
+                  ),
+                ),
+              ])),
+              Icon(
+                _configHidden ? Icons.expand_more_rounded : Icons.expand_less_rounded,
+                size: 18, color: _c.textHint,
+              ),
+            ]),
+          ),
+        ),
+
+        if (!_configHidden) ...[
+          const SizedBox(height: 10),
+          Container(
+            padding: const EdgeInsets.all(14),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12),
+              color: _c.cardBg,
+              border: Border.all(color: _c.border),
+            ),
+            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              // Instruções
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: kBlue.withValues(alpha: 0.05),
+                  border: Border.all(color: kBlue.withValues(alpha: 0.15)),
+                ),
+                child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  const Row(children: [
+                    Icon(Icons.info_outline_rounded, size: 14, color: kBlue),
+                    SizedBox(width: 6),
+                    Text('Como configurar o EmailJS',
+                      style: TextStyle(fontSize: 12, fontWeight: FontWeight.w800, color: kBlue)),
+                  ]),
+                  const SizedBox(height: 6),
+                  _instrLine('1.', 'Crie conta gratuita em emailjs.com'),
+                  _instrLine('2.', 'Conecte seu Gmail/Outlook em "Email Services"'),
+                  _instrLine('3.', 'Crie um template com variáveis: {{to_name}}, {{subject}}, {{message}}, {{from_name}}'),
+                  _instrLine('4.', 'Copie Service ID, Template ID e Public Key abaixo'),
+                ]),
+              ),
+              const SizedBox(height: 12),
+              _buildField(controller: _serviceCtrl,  label: 'Service ID',  hint: 'service_xxxxxxx',  icon: Icons.dns_rounded,    maxLines: 1),
+              const SizedBox(height: 8),
+              _buildField(controller: _templateCtrl, label: 'Template ID', hint: 'template_xxxxxxx', icon: Icons.description_rounded, maxLines: 1),
+              const SizedBox(height: 8),
+              _buildField(controller: _pubKeyCtrl,   label: 'Public Key',  hint: 'xxxxxxxxxxxx',     icon: Icons.vpn_key_rounded,    maxLines: 1),
+              const SizedBox(height: 12),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton.icon(
+                  onPressed: _configSaving ? null : _saveConfig,
+                  icon: _configSaving
+                      ? const SizedBox(width: 14, height: 14,
+                          child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
+                      : Icon(_configSaved ? Icons.check_rounded : Icons.save_rounded, size: 14),
+                  label: Text(
+                    _configSaving ? 'Salvando...' : _configSaved ? 'Salvo!' : 'Salvar configuração',
+                    style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w800),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: _configSaved ? kGreen : kDark,
+                    foregroundColor: kGoldL,
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                    elevation: 0,
+                  ),
+                ),
+              ),
+            ]),
+          ),
+        ],
+
+        const SizedBox(height: 24),
+
+        // ── Histórico de campanhas ─────────────────────────────────────────
+        GestureDetector(
+          onTap: () {
+            setState(() => _showHistory = !_showHistory);
+            if (_showHistory) _loadHistory();
+          },
+          child: Container(
+            padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12),
+              color: _c.cardBg,
+              border: Border.all(color: _c.border),
+            ),
+            child: Row(children: [
+              Container(
+                padding: const EdgeInsets.all(7),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8),
+                  color: kGold.withValues(alpha: 0.1),
+                ),
+                child: const Icon(Icons.history_rounded, size: 16, color: kGold),
+              ),
+              const SizedBox(width: 10),
+              Expanded(child: Text('Histórico de envios',
+                style: TextStyle(fontSize: 13, fontWeight: FontWeight.w800, color: _c.textPrimary))),
+              if (_history.isNotEmpty)
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                    color: kGold.withValues(alpha: 0.12),
+                  ),
+                  child: Text('${_history.length}',
+                    style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w800, color: kGold)),
+                ),
+              const SizedBox(width: 6),
+              Icon(
+                _showHistory ? Icons.expand_less_rounded : Icons.expand_more_rounded,
+                size: 18, color: _c.textHint,
+              ),
+            ]),
+          ),
+        ),
+
+        if (_showHistory) ...[
+          const SizedBox(height: 10),
+          if (_historyLoading)
+            const Center(child: Padding(
+              padding: EdgeInsets.all(20),
+              child: CircularProgressIndicator(color: kGreen),
+            ))
+          else if (_history.isEmpty)
+            Container(
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12),
+                color: _c.cardBg,
+                border: Border.all(color: _c.border),
+              ),
+              child: Center(child: Text('Nenhum e-mail enviado ainda.',
+                style: TextStyle(color: _c.textHint, fontSize: 13))),
+            )
+          else
+            ...(_history.map((h) => _HistoryCard(data: h))),
+        ],
+
+        const SizedBox(height: 30),
+      ]),
+    );
+  }
+
+  Widget _sectionLabel(String text, IconData icon) {
+    return Row(children: [
+      Icon(icon, size: 13, color: _c.textHint),
+      const SizedBox(width: 6),
+      Text(text,
+        style: TextStyle(
+          fontSize: 10, fontWeight: FontWeight.w900,
+          letterSpacing: 1.2, color: _c.textHint,
+        )),
+    ]);
+  }
+
+  Widget _buildField({
+    required TextEditingController controller,
+    required String label,
+    required String hint,
+    required IconData icon,
+    required int maxLines,
+  }) {
+    return TextField(
+      controller: controller,
+      maxLines: maxLines,
+      minLines: 1,
+      autocorrect: false,
+      spellCheckConfiguration: const SpellCheckConfiguration.disabled(),
+      style: TextStyle(fontSize: 13, color: _c.textPrimary),
+      decoration: InputDecoration(
+        labelText: label,
+        labelStyle: TextStyle(color: _c.textSecondary, fontSize: 12),
+        hintText: hint,
+        hintStyle: TextStyle(fontSize: 12, color: _c.textHint),
+        prefixIcon: Icon(icon, size: 16, color: kGold),
+        prefixIconConstraints: const BoxConstraints(minWidth: 40),
+        filled: true, fillColor: _c.inputBg,
+        isDense: true,
+        alignLabelWithHint: maxLines > 1,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+          borderSide: BorderSide(color: _c.border),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+          borderSide: BorderSide(color: _c.border),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+          borderSide: const BorderSide(color: kBlue, width: 1.5),
+        ),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+      ),
+    );
+  }
+
+  Widget _instrLine(String num, String text) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 4),
+      child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Text(num, style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w800, color: kBlue)),
+        const SizedBox(width: 6),
+        Expanded(child: Text(text,
+          style: TextStyle(fontSize: 11, color: _c.textSecondary))),
+      ]),
+    );
+  }
+
+  void _snack(String msg, Color color) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text(msg, style: const TextStyle(fontWeight: FontWeight.w700)),
+      backgroundColor: color,
+      behavior: SnackBarBehavior.floating,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+    ));
+  }
+}
+
+// ── Card de recipiente (aprovados / todos) ────────────────────────────────────
+class _RecipientChip extends StatelessWidget {
+  final String label;
+  final String subtitle;
+  final IconData icon;
+  final Color color;
+  final bool selected;
+  final VoidCallback onTap;
+  const _RecipientChip({
+    required this.label, required this.subtitle, required this.icon,
+    required this.color, required this.selected, required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final c = AppColors.of(context);
+    return GestureDetector(
+      onTap: onTap,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 180),
+        padding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12),
+          color: selected ? color.withValues(alpha: 0.08) : c.cardBg,
+          border: Border.all(
+            color: selected ? color : c.border,
+            width: selected ? 1.5 : 1.0,
+          ),
+        ),
+        child: Row(children: [
+          Container(
+            padding: const EdgeInsets.all(6),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(8),
+              color: color.withValues(alpha: selected ? 0.15 : 0.08),
+            ),
+            child: Icon(icon, size: 16, color: color),
+          ),
+          const SizedBox(width: 10),
+          Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Text(label,
+              style: TextStyle(
+                fontSize: 13, fontWeight: FontWeight.w800,
+                color: selected ? color : c.textPrimary,
+              )),
+            Text(subtitle,
+              style: TextStyle(fontSize: 10, color: c.textHint)),
+          ])),
+          if (selected)
+            Icon(Icons.check_circle_rounded, size: 16, color: color),
+        ]),
+      ),
+    );
+  }
+}
+
+// ── Card de histórico de campanha ─────────────────────────────────────────────
+class _HistoryCard extends StatelessWidget {
+  final Map<String, dynamic> data;
+  static const kGreen = Color(0xFF075f45);
+  static const kGold  = Color(0xFFC5A365);
+
+  const _HistoryCard({required this.data});
+
+  String _formatTs(dynamic ts) {
+    if (ts == null) return '—';
+    if (ts is DateTime) {
+      final d = ts.toLocal();
+      return '${d.day.toString().padLeft(2,'0')}/${d.month.toString().padLeft(2,'0')}/${d.year} '
+             '${d.hour.toString().padLeft(2,'0')}:${d.minute.toString().padLeft(2,'0')}';
+    }
+    // Firestore Timestamp — converte via runtimeType para evitar import direto
+    try {
+      final d = (ts as dynamic).toDate() as DateTime;
+      return '${d.day.toString().padLeft(2,'0')}/${d.month.toString().padLeft(2,'0')}/${d.year} '
+             '${d.hour.toString().padLeft(2,'0')}:${d.minute.toString().padLeft(2,'0')}';
+    } catch (_) {}
+    if (false) {
+      return '';
+    }
+    return ts.toString();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final c       = AppColors.of(context);
+    final ok      = (data['status'] as String?) == 'sent';
+    final count   = (data['recipientCount'] as int?) ?? 0;
+    final subject = (data['subject'] as String?) ?? '';
+    final sentBy  = (data['sentBy'] as String?) ?? '';
+    final recip   = (data['recipients'] as String?) ?? '';
+    final ts      = data['sentAt'];
+
+    return Container(
+      margin: const EdgeInsets.only(bottom: 8),
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12),
+        color: c.cardBg,
+        border: Border.all(
+          color: ok
+              ? kGreen.withValues(alpha: 0.2)
+              : Colors.red.withValues(alpha: 0.2),
+        ),
+      ),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Row(children: [
+          Icon(
+            ok ? Icons.check_circle_rounded : Icons.error_rounded,
+            size: 14,
+            color: ok ? kGreen : Colors.red,
+          ),
+          const SizedBox(width: 6),
+          Expanded(child: Text(subject,
+            style: TextStyle(fontSize: 13, fontWeight: FontWeight.w800, color: c.textPrimary),
+            maxLines: 1, overflow: TextOverflow.ellipsis)),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+              color: ok
+                  ? kGreen.withValues(alpha: 0.1)
+                  : Colors.red.withValues(alpha: 0.1),
+            ),
+            child: Text(
+              ok ? '$count enviados' : 'Falha',
+              style: TextStyle(
+                fontSize: 10, fontWeight: FontWeight.w800,
+                color: ok ? kGreen : Colors.red,
+              ),
+            ),
+          ),
+        ]),
+        const SizedBox(height: 6),
+        Row(children: [
+          Icon(Icons.people_outline_rounded, size: 11, color: c.textHint),
+          const SizedBox(width: 4),
+          Text(
+            recip == 'approved' ? 'Aprovados' : 'Todos',
+            style: TextStyle(fontSize: 10, color: c.textHint),
+          ),
+          const SizedBox(width: 12),
+          Icon(Icons.person_outline_rounded, size: 11, color: c.textHint),
+          const SizedBox(width: 4),
+          Expanded(child: Text(sentBy,
+            style: TextStyle(fontSize: 10, color: c.textHint),
+            overflow: TextOverflow.ellipsis)),
+          Text(_formatTs(ts),
+            style: TextStyle(fontSize: 10, color: c.textHint, fontWeight: FontWeight.w600)),
+        ]),
+      ]),
     );
   }
 }
