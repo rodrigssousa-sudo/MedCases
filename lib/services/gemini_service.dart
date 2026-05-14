@@ -1,157 +1,323 @@
+import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
+// ignore: avoid_web_libraries_in_flutter
+import 'dart:js' as js;
+
+// Google Sign-In — usado APENAS no Android (não no web)
+import 'package:google_sign_in/google_sign_in.dart';
+
 // ─────────────────────────────────────────────────────────────────────────────
-// GEMINI SERVICE — OAuth Google (sem API key manual)
+// GEMINI SERVICE — OAuth Google
 //
-// Fluxo:
-//   1. Usuário toca "Conectar com Google"
-//   2. GoogleSignIn abre tela nativa de seleção de conta
-//   3. Recebemos accessToken OAuth com escopo Generative Language
-//   4. Email salvo em shared_preferences (Web-compatible)
-//   5. Chamadas ao Gemini usam token Bearer — sem chave nossa
-//   6. Token renova automaticamente via google_sign_in
+// Web:     usa GSI (window.google.accounts.oauth2) via dart:js
+//          O SDK GSI já está carregado no index.html via <script>
+//          Abre popup OAuth nativo do browser — sem MissingPluginException
+//
+// Android: usa google_sign_in (plugin Flutter nativo)
+//
+// Token armazenado: localStorage (web) / SharedPreferences (Android)
 // ─────────────────────────────────────────────────────────────────────────────
 
 class GeminiResult {
   final String text;
   final bool isError;
-  final String? errorCode; // 'not_connected' | 'token_expired' | 'quota' | 'network' | 'unknown'
+  final String? errorCode;
   const GeminiResult({required this.text, this.isError = false, this.errorCode});
   factory GeminiResult.error(String msg, String code) =>
       GeminiResult(text: msg, isError: true, errorCode: code);
 }
 
 class GeminiService {
-  // ── Escopos necessários para Gemini API via OAuth ─────────────────────────
-  static const _scopes = [
-    'email',
-    'https://www.googleapis.com/auth/generative-language.retriever',
-  ];
-
   static const _endpoint =
       'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent';
 
-  static const _storageKey = 'gemini_google_email';
-
-  // Client IDs gerados no Google Cloud Console
-  static const _androidClientId =
-      '1076800980330-0dhh85qno3uelf1tq55oan6kcgpk319p.apps.googleusercontent.com';
   static const _webClientId =
       '1076800980330-mpq75ceph6hipht135qt0g505pdu5u7d.apps.googleusercontent.com';
 
+  static const _androidClientId =
+      '1076800980330-0dhh85qno3uelf1tq55oan6kcgpk319p.apps.googleusercontent.com';
+
+  static const _scope =
+      'email https://www.googleapis.com/auth/generative-language.retriever';
+
+  // Chaves de storage
+  static const _keyEmail = 'gemini_google_email';
+  static const _keyToken = 'gemini_access_token';
+
+  // ── Android: google_sign_in ───────────────────────────────────────────────
   static final _googleSignIn = GoogleSignIn(
-    scopes: _scopes,
-    // Web usa clientId direto; Android usa serverClientId para obter accessToken
-    clientId: kIsWeb ? _webClientId : null,
-    serverClientId: kIsWeb ? null : _androidClientId,
+    scopes: ['email', 'https://www.googleapis.com/auth/generative-language.retriever'],
+    serverClientId: _androidClientId,
   );
 
-  // ── Helpers de storage (Web-compatible) ──────────────────────────────────
+  // ══════════════════════════════════════════════════════════════════════════
+  // STORAGE — localStorage (web) / SharedPreferences (Android)
+  // ══════════════════════════════════════════════════════════════════════════
+
+  static void _webSet(String key, String value) {
+    try { js.context['localStorage'].callMethod('setItem', [key, value]); } catch (_) {}
+  }
+
+  static String? _webGet(String key) {
+    try { return js.context['localStorage'].callMethod('getItem', [key]) as String?; } catch (_) { return null; }
+  }
+
+  static void _webRemove(String key) {
+    try { js.context['localStorage'].callMethod('removeItem', [key]); } catch (_) {}
+  }
+
   static Future<void> _saveEmail(String email) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(_storageKey, email);
+    if (kIsWeb) { _webSet(_keyEmail, email); return; }
+    final p = await SharedPreferences.getInstance();
+    await p.setString(_keyEmail, email);
   }
 
   static Future<String?> _readEmail() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getString(_storageKey);
+    if (kIsWeb) return _webGet(_keyEmail);
+    final p = await SharedPreferences.getInstance();
+    return p.getString(_keyEmail);
   }
 
   static Future<void> _deleteEmail() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.remove(_storageKey);
+    if (kIsWeb) { _webRemove(_keyEmail); _webRemove(_keyToken); return; }
+    final p = await SharedPreferences.getInstance();
+    await p.remove(_keyEmail);
   }
 
-  // ── Conectar com Google ───────────────────────────────────────────────────
-  // Fluxo único: escopos já incluídos no signIn() inicial.
-  // Não usamos requestScopes() separado — no web isso abre um segundo popup
-  // que o browser bloqueia por não ser iniciado por gesto direto do usuário.
+  static Future<void> _saveToken(String token) async {
+    if (kIsWeb) { _webSet(_keyToken, token); return; }
+    final p = await SharedPreferences.getInstance();
+    await p.setString(_keyToken, token);
+  }
+
+  static Future<String?> _readToken() async {
+    if (kIsWeb) return _webGet(_keyToken);
+    final p = await SharedPreferences.getInstance();
+    return p.getString(_keyToken);
+  }
+
+  // ══════════════════════════════════════════════════════════════════════════
+  // WEB — OAuth via GSI (google.accounts.oauth2.initTokenClient)
+  // ══════════════════════════════════════════════════════════════════════════
+
+  /// Inicia fluxo OAuth no web usando GSI nativo.
+  /// Retorna o accessToken ou null se o usuário cancelou/falhou.
+  static Future<String?> _webSignIn() async {
+    final completer = Completer<String?>();
+
+    try {
+      final google = js.context['google'];
+      if (google == null) {
+        debugPrint('[GeminiService] GSI não carregado — google object null');
+        completer.complete(null);
+        return completer.future;
+      }
+
+      final accounts = google['accounts'];
+      if (accounts == null) {
+        debugPrint('[GeminiService] google.accounts null');
+        completer.complete(null);
+        return completer.future;
+      }
+
+      final oauth2 = accounts['oauth2'];
+      if (oauth2 == null) {
+        debugPrint('[GeminiService] google.accounts.oauth2 null');
+        completer.complete(null);
+        return completer.future;
+      }
+
+      // Cria token client com callback
+      final client = oauth2.callMethod('initTokenClient', [
+        js.JsObject.jsify({
+          'client_id': _webClientId,
+          'scope': _scope,
+          'callback': js.allowInterop((dynamic response) {
+            try {
+              final resp = js.JsObject.fromBrowserObject(response);
+              final token = resp['access_token'] as String?;
+              final error = resp['error'] as String?;
+              if (error != null && error.isNotEmpty) {
+                debugPrint('[GeminiService] GSI error: $error');
+                if (!completer.isCompleted) completer.complete(null);
+              } else if (token != null && token.isNotEmpty) {
+                debugPrint('[GeminiService] GSI token OK');
+                if (!completer.isCompleted) completer.complete(token);
+              } else {
+                if (!completer.isCompleted) completer.complete(null);
+              }
+            } catch (e) {
+              debugPrint('[GeminiService] GSI callback erro: $e');
+              if (!completer.isCompleted) completer.complete(null);
+            }
+          }),
+          'error_callback': js.allowInterop((dynamic error) {
+            debugPrint('[GeminiService] GSI error_callback: $error');
+            if (!completer.isCompleted) completer.complete(null);
+          }),
+        })
+      ]);
+
+      // Abre popup OAuth
+      client.callMethod('requestToken', []);
+
+    } catch (e, st) {
+      debugPrint('[GeminiService] _webSignIn ERRO: $e\n$st');
+      if (!completer.isCompleted) completer.complete(null);
+    }
+
+    // Timeout de 5 minutos — usuário pode demorar para selecionar conta
+    return completer.future.timeout(
+      const Duration(minutes: 5),
+      onTimeout: () {
+        debugPrint('[GeminiService] GSI timeout');
+        return null;
+      },
+    );
+  }
+
+  // ══════════════════════════════════════════════════════════════════════════
+  // API PÚBLICA
+  // ══════════════════════════════════════════════════════════════════════════
+
+  /// Conecta com Google OAuth.
+  /// Web: GSI nativo. Android: google_sign_in plugin.
   static Future<bool> signIn() async {
     try {
       debugPrint('[GeminiService] signIn() — web: $kIsWeb');
 
-      // Garante estado limpo antes de iniciar novo fluxo OAuth
-      await _googleSignIn.signOut();
+      if (kIsWeb) {
+        // ── Web: GSI direto via dart:js ──────────────────────────────────
+        final token = await _webSignIn();
+        if (token == null) {
+          debugPrint('[GeminiService] web signIn: token null');
+          return false;
+        }
 
-      // Fluxo único: signIn() já carrega os escopos declarados no construtor
-      final account = await _googleSignIn.signIn();
-      if (account == null) {
-        debugPrint('[GeminiService] signIn cancelado pelo usuário');
-        return false;
-      }
+        // Obtém o email via tokeninfo do Google
+        final email = await _fetchEmailFromToken(token);
+        if (email == null) {
+          debugPrint('[GeminiService] web signIn: email null');
+          return false;
+        }
 
-      // Verifica se o accessToken foi obtido com os escopos corretos
-      final auth = await account.authentication;
-      if (auth.accessToken == null) {
-        debugPrint('[GeminiService] accessToken null — escopos não concedidos');
+        await _saveToken(token);
+        await _saveEmail(email);
+        debugPrint('[GeminiService] web signIn OK — $email');
+        return true;
+
+      } else {
+        // ── Android: google_sign_in ──────────────────────────────────────
         await _googleSignIn.signOut();
-        return false;
+        final account = await _googleSignIn.signIn();
+        if (account == null) {
+          debugPrint('[GeminiService] Android signIn cancelado');
+          return false;
+        }
+        final auth = await account.authentication;
+        if (auth.accessToken == null) {
+          debugPrint('[GeminiService] Android accessToken null');
+          await _googleSignIn.signOut();
+          return false;
+        }
+        await _saveToken(auth.accessToken!);
+        await _saveEmail(account.email);
+        debugPrint('[GeminiService] Android signIn OK — ${account.email}');
+        return true;
       }
-
-      debugPrint('[GeminiService] signIn OK — ${account.email}');
-      await _saveEmail(account.email);
-      return true;
     } catch (e, st) {
-      debugPrint('[GeminiService] signIn ERRO: $e');
-      debugPrint('[GeminiService] STACK: $st');
+      debugPrint('[GeminiService] signIn ERRO: $e\n$st');
       return false;
     }
   }
 
-  // ── Desconectar ───────────────────────────────────────────────────────────
+  /// Busca email do usuário via Google tokeninfo endpoint.
+  static Future<String?> _fetchEmailFromToken(String token) async {
+    try {
+      final resp = await http.get(
+        Uri.parse('https://www.googleapis.com/oauth2/v3/tokeninfo?access_token=$token'),
+      ).timeout(const Duration(seconds: 10));
+      if (resp.statusCode == 200) {
+        final data = jsonDecode(resp.body) as Map<String, dynamic>;
+        return data['email'] as String?;
+      }
+    } catch (e) {
+      debugPrint('[GeminiService] _fetchEmailFromToken erro: $e');
+    }
+    return null;
+  }
+
+  /// Desconecta a conta Google.
   static Future<void> signOut() async {
     try {
-      await _googleSignIn.signOut();
+      if (!kIsWeb) await _googleSignIn.signOut();
       await _deleteEmail();
     } catch (e) {
       debugPrint('[GeminiService] signOut error: $e');
     }
   }
 
-  // ── Estado atual ──────────────────────────────────────────────────────────
+  /// Verifica se há sessão ativa (silencioso — nunca lança exceção).
   static Future<bool> isConnected() async {
-    final stored = await _readEmail();
-    if (stored == null || stored.isEmpty) return false;
-    final current = _googleSignIn.currentUser;
-    if (current != null) return true;
     try {
-      final restored = await _googleSignIn
-          .signInSilently()
-          .timeout(const Duration(seconds: 8), onTimeout: () => null);
-      if (restored == null) {
-        // signInSilently falhou (origin_mismatch, token expirado, etc.)
-        // Limpa email salvo — próximo boot não tenta signInSilently em vão.
+      final email = await _readEmail();
+      if (email == null || email.isEmpty) return false;
+
+      // Verifica se o token ainda é válido
+      final token = await _readToken();
+      if (token == null || token.isEmpty) {
         await _deleteEmail();
+        return false;
       }
-      return restored != null;
+
+      // Valida o token com o Google (timeout 8s)
+      final resp = await http.get(
+        Uri.parse('https://www.googleapis.com/oauth2/v3/tokeninfo?access_token=$token'),
+      ).timeout(const Duration(seconds: 8), onTimeout: () => http.Response('timeout', 408));
+
+      if (resp.statusCode == 200) {
+        return true;
+      } else {
+        // Token expirado ou inválido — limpa
+        await _deleteEmail();
+        return false;
+      }
     } catch (_) {
-      // Qualquer exceção OAuth → limpa cache e retorna false silenciosamente
-      await _deleteEmail();
       return false;
     }
   }
 
   static Future<String?> connectedEmail() async => _readEmail();
 
-  // ── Obter token de acesso ─────────────────────────────────────────────────
+  /// Obtém token de acesso atual.
   static Future<String?> _getAccessToken() async {
-    try {
-      GoogleSignInAccount? account = _googleSignIn.currentUser;
-      account ??= await _googleSignIn.signInSilently();
-      if (account == null) return null;
-      final auth = await account.authentication;
-      return auth.accessToken;
-    } catch (e) {
-      debugPrint('[GeminiService] _getAccessToken error: $e');
-      return null;
+    if (kIsWeb) {
+      return _readToken();
+    } else {
+      try {
+        GoogleSignInAccount? account = _googleSignIn.currentUser;
+        account ??= await _googleSignIn.signInSilently();
+        if (account == null) return null;
+        final auth = await account.authentication;
+        if (auth.accessToken != null) {
+          await _saveToken(auth.accessToken!);
+        }
+        return auth.accessToken;
+      } catch (e) {
+        debugPrint('[GeminiService] _getAccessToken error: $e');
+        return null;
+      }
     }
   }
 
-  // ── Chamada principal ao Gemini ───────────────────────────────────────────
+  // ══════════════════════════════════════════════════════════════════════════
+  // CHAT — Gemini 1.5 Flash
+  // ══════════════════════════════════════════════════════════════════════════
+
   static Future<GeminiResult> chat({
     required String userMessage,
     required String systemPrompt,
@@ -175,11 +341,10 @@ class GeminiService {
       'contents': contents,
       'generationConfig': {
         'maxOutputTokens': maxTokens,
-        'temperature': 0.7,        // mais natural e menos protocolar
+        'temperature': 0.7,
         'topP': 0.9,
         'topK': 40,
       },
-      // Safety settings permissivos — necessário para conteúdo médico clínico
       'safetySettings': [
         {'category': 'HARM_CATEGORY_HARASSMENT',        'threshold': 'BLOCK_NONE'},
         {'category': 'HARM_CATEGORY_HATE_SPEECH',       'threshold': 'BLOCK_NONE'},
@@ -200,38 +365,28 @@ class GeminiService {
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
-
-        // Parsing defensivo — Gemini pode retornar candidates vazio se bloqueado
         final candidates = data['candidates'] as List?;
         if (candidates == null || candidates.isEmpty) {
-          // Tenta extrair motivo do bloqueio
           final blockReason = data['promptFeedback']?['blockReason'] as String?;
-          debugPrint('[GeminiService] candidates vazio. blockReason: $blockReason');
           return GeminiResult.error('BLOCKED: ${blockReason ?? "unknown"}', 'blocked');
         }
-
         final candidate = candidates[0] as Map<String, dynamic>;
-        // Verifica finishReason — SAFETY indica bloqueio parcial
         final finishReason = candidate['finishReason'] as String?;
         if (finishReason == 'SAFETY' || finishReason == 'RECITATION') {
-          debugPrint('[GeminiService] conteúdo bloqueado por safety ($finishReason)');
           return GeminiResult.error('BLOCKED: $finishReason', 'blocked');
         }
-
         final parts = candidate['content']?['parts'] as List?;
         if (parts == null || parts.isEmpty) {
           return GeminiResult.error('EMPTY_RESPONSE', 'unknown');
         }
-
         final text = parts[0]['text'] as String? ?? '';
         if (text.trim().isEmpty) {
           return GeminiResult.error('EMPTY_TEXT', 'unknown');
         }
-
         return GeminiResult(text: text.trim());
       }
+
       if (response.statusCode == 401 || response.statusCode == 403) {
-        await _googleSignIn.signOut();
         await _deleteEmail();
         return GeminiResult.error('TOKEN_EXPIRED', 'token_expired');
       }
