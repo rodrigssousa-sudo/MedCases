@@ -439,6 +439,7 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
       backgroundColor: color,
       behavior: SnackBarBehavior.floating,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      margin: const EdgeInsets.fromLTRB(16, 0, 16, 24),
     ));
   }
 }
@@ -2899,6 +2900,7 @@ class _EmailTabState extends State<_EmailTab> {
       backgroundColor: color,
       behavior: SnackBarBehavior.floating,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      margin: const EdgeInsets.fromLTRB(16, 0, 16, 24),
     ));
   }
 }

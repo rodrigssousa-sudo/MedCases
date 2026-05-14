@@ -214,7 +214,7 @@ class _AiScreenState extends State<AiScreen> {
         duration: const Duration(seconds: 1),
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-        margin: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+        margin: const EdgeInsets.fromLTRB(16, 0, 16, 80),
       ),
     );
   }
@@ -1027,12 +1027,13 @@ class _AiStatusSheetState extends State<_AiStatusSheet> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(_isEs
-              ? 'No se pudo conectar con Google. Intente de nuevo.'
-              : 'Não foi possível conectar com o Google. Tente novamente.'),
+              ? 'No se pudo conectar con Google. En Safari, use Chrome o habilite ventanas emergentes.'
+              : 'Não foi possível conectar com o Google. No Safari, use o Chrome ou habilite popups.'),
           backgroundColor: const Color(0xFFB91C1C),
           behavior: SnackBarBehavior.floating,
+          duration: const Duration(seconds: 6),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-          margin: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+          margin: const EdgeInsets.fromLTRB(16, 0, 16, 80),
         ),
       );
     }
