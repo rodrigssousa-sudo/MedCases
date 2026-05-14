@@ -822,7 +822,9 @@ class AppProvider extends ChangeNotifier {
     _geminiLoading = true;
     notifyListeners();
     try {
-      final ok = await GeminiService.signIn();
+      // Timeout de 30s — evita "Conectando..." travado se OAuth falhar/bloquear
+      final ok = await GeminiService.signIn()
+          .timeout(const Duration(seconds: 30), onTimeout: () => false);
       if (ok) {
         _geminiConnected = true;
         _geminiEmail = await GeminiService.connectedEmail() ?? '';

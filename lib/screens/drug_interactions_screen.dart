@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../providers/app_provider.dart';
 import '../widgets/common_widgets.dart';
 import '../services/drug_interaction_service.dart';
+import '../data/drugs_database.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // ENTRY POINT
@@ -338,7 +339,7 @@ class _Header extends StatelessWidget {
               ),
             ),
             child: Text(
-              isEs ? '337 fármacos' : '337 fármacos',
+              '${drugsDatabase.length} fármacos',
               style: const TextStyle(
                 fontSize: 10,
                 fontWeight: FontWeight.w700,

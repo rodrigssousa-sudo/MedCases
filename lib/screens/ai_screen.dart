@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '../providers/app_provider.dart';
+import '../data/drugs_database.dart';
 
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -1243,8 +1244,8 @@ class _AiStatusSheetState extends State<_AiStatusSheet> {
                   const SizedBox(width: 8),
                   Expanded(child: Text(
                     isEs
-                        ? '337 fármacos · protocolos de urgencias · siempre activo'
-                        : '337 fármacos · protocolos de urgência · sempre ativo',
+                        ? '${drugsDatabase.length} fármacos · protocolos de urgencias · siempre activo'
+                        : '${drugsDatabase.length} fármacos · protocolos de urgência · sempre ativo',
                     style: TextStyle(
                       fontSize: 11,
                       color: hasAnyAi
