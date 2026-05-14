@@ -1004,8 +1004,11 @@ class AppProvider extends ChangeNotifier {
                 '${_buildLocalAnswer(input)}'
               : '⚠️ Limite de uso do Gemini atingido. Tente novamente mais tarde.\n\n'
                 '${_buildLocalAnswer(input)}';
+        case 'blocked':
+          // Conteúdo bloqueado pelo safety filter → fallback silencioso
+          return _buildLocalAnswer(input);
         default:
-          // Erro de rede → fallback silencioso para local
+          // Erro de rede ou desconhecido → fallback silencioso para local
           return _buildLocalAnswer(input);
       }
     }

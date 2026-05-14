@@ -173,7 +173,19 @@ class GeminiService {
     final body = jsonEncode({
       'system_instruction': {'parts': [{'text': systemPrompt}]},
       'contents': contents,
-      'generationConfig': {'maxOutputTokens': maxTokens, 'temperature': 0.4},
+      'generationConfig': {
+        'maxOutputTokens': maxTokens,
+        'temperature': 0.7,        // mais natural e menos protocolar
+        'topP': 0.9,
+        'topK': 40,
+      },
+      // Safety settings permissivos — necessário para conteúdo médico clínico
+      'safetySettings': [
+        {'category': 'HARM_CATEGORY_HARASSMENT',        'threshold': 'BLOCK_NONE'},
+        {'category': 'HARM_CATEGORY_HATE_SPEECH',       'threshold': 'BLOCK_NONE'},
+        {'category': 'HARM_CATEGORY_SEXUALLY_EXPLICIT', 'threshold': 'BLOCK_NONE'},
+        {'category': 'HARM_CATEGORY_DANGEROUS_CONTENT', 'threshold': 'BLOCK_NONE'},
+      ],
     });
 
     try {
@@ -188,7 +200,34 @@ class GeminiService {
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
-        final text = data['candidates'][0]['content']['parts'][0]['text'] as String;
+
+        // Parsing defensivo — Gemini pode retornar candidates vazio se bloqueado
+        final candidates = data['candidates'] as List?;
+        if (candidates == null || candidates.isEmpty) {
+          // Tenta extrair motivo do bloqueio
+          final blockReason = data['promptFeedback']?['blockReason'] as String?;
+          debugPrint('[GeminiService] candidates vazio. blockReason: $blockReason');
+          return GeminiResult.error('BLOCKED: ${blockReason ?? "unknown"}', 'blocked');
+        }
+
+        final candidate = candidates[0] as Map<String, dynamic>;
+        // Verifica finishReason — SAFETY indica bloqueio parcial
+        final finishReason = candidate['finishReason'] as String?;
+        if (finishReason == 'SAFETY' || finishReason == 'RECITATION') {
+          debugPrint('[GeminiService] conteúdo bloqueado por safety ($finishReason)');
+          return GeminiResult.error('BLOCKED: $finishReason', 'blocked');
+        }
+
+        final parts = candidate['content']?['parts'] as List?;
+        if (parts == null || parts.isEmpty) {
+          return GeminiResult.error('EMPTY_RESPONSE', 'unknown');
+        }
+
+        final text = parts[0]['text'] as String? ?? '';
+        if (text.trim().isEmpty) {
+          return GeminiResult.error('EMPTY_TEXT', 'unknown');
+        }
+
         return GeminiResult(text: text.trim());
       }
       if (response.statusCode == 401 || response.statusCode == 403) {
