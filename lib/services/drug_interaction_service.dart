@@ -8386,6 +8386,262 @@ const _interactionDB = <_IxEntry>[
     {RiskType.qtProlongation, RiskType.arrhythmia},
     ['CredibleMeds 2024', 'Micromedex 2024']),
 
+  // ── LOTE 7 — Interações críticas: novos fármacos Lote 6 ──────────────────
+  // Dextrometorfano, Pseudoefedrina, Montelukast, Cetirizina
+
+  // ── 7.1 DEXTROMETORFANO ──────────────────────────────────────────────────
+
+  ('dextrometorfano', 'isrs', InteractionSeverity.contraindicated,
+    'Dextrometorfano é agonista fraco de receptores serotoninérgicos e inibe recaptação de serotonina; ISRSs potencializam massivamente a atividade serotoninérgica central — risco máximo de síndrome serotoninérgica',
+    'Síndrome serotoninérgica: agitação, hipertermia, tremores, mioclonias, diarreia, taquicardia, diaforese, rigidez muscular — pode evoluir para rabdomiólise, CID e óbito',
+    'CONTRAINDICADO. Evitar qualquer antitussivo com dextrometorfano em pacientes em uso de ISRSs (fluoxetina, sertralina, paroxetina, escitalopram, fluvoxamina). Substituir por antitussivo não serotoninérgico (ex: levodropropizina, butamirato)',
+    'CONTRAINDICADO — Síndrome serotoninérgica: dextrometorfano + ISRS',
+    EvidenceLevel.established,
+    {RiskType.serotonin},
+    ['FDA Drug Safety 2010', 'CredibleMeds 2024', 'Micromedex 2024', 'Serotonin Syndrome: Recognition and Treatment — AAFP 2017']),
+
+  ('dextrometorfano', 'imao', InteractionSeverity.contraindicated,
+    'IMAOs inibem degradação de serotonina e monoaminas; dextrometorfano inibe recaptação de serotonina e é agonista sigma-1 — combinação resulta em acúmulo massivo de serotonina no SNC',
+    'Síndrome serotoninérgica grave/fulminante: hipertermia >41°C, hipertensão, convulsões, coma — risco de morte',
+    'CONTRAINDICADO de forma absoluta. Aguardar washout completo do IMAO (≥14 dias para irreversíveis fenelzina/tranilcipromina; ≥24h para moclobemida) antes de qualquer antitussivo com dextrometorfano',
+    'CONTRAINDICADO ABSOLUTO — Síndrome serotoninérgica fatal: dextrometorfano + IMAO',
+    EvidenceLevel.established,
+    {RiskType.serotonin},
+    ['FDA Drug Safety 2010', 'CredibleMeds 2024', 'Sternbach 1991 — Serotonin Syndrome', 'Boyer & Shannon NEJM 2005']),
+
+  ('dextrometorfano', 'tramadol', InteractionSeverity.contraindicated,
+    'Tramadol inibe recaptação de serotonina e noradrenalina, é agonista µ fraco e metabolizado pelo CYP2D6 (mesmo que dextrometorfano) — duplo mecanismo serotoninérgico + competição CYP2D6 eleva níveis de ambos',
+    'Síndrome serotoninérgica; aumento de níveis plasmáticos de tramadol e dextrometorfano por inibição competitiva do CYP2D6',
+    'Contraindicado. Substituir antitussivo por levodropropizina ou butamirato em pacientes usando tramadol',
+    'CONTRAINDICADO — Síndrome serotoninérgica + competição CYP2D6: dextrometorfano + tramadol',
+    EvidenceLevel.probable,
+    {RiskType.serotonin, RiskType.plasmaLevel},
+    ['Micromedex 2024', 'CredibleMeds 2024']),
+
+  ('dextrometorfano', 'duloxetina', InteractionSeverity.contraindicated,
+    'Duloxetina é ISRN e inibidor potente do CYP2D6 — eleva marcadamente os níveis de dextrometorfano (substrato CYP2D6) e potencializa atividade serotoninérgica',
+    'Síndrome serotoninérgica; aumento de 3–8× nos níveis plasmáticos de dextrometorfano por inibição do CYP2D6',
+    'Contraindicado. Usar antitussivo não serotoninérgico e não metabolizado pelo CYP2D6 (levodropropizina, butamirato)',
+    'CONTRAINDICADO — Síndrome serotoninérgica + inibição CYP2D6: dextrometorfano + duloxetina',
+    EvidenceLevel.established,
+    {RiskType.serotonin, RiskType.plasmaLevel},
+    ['FDA Drug Safety 2010', 'Micromedex 2024', 'CredibleMeds 2024']),
+
+  ('dextrometorfano', 'amiodarona', InteractionSeverity.major,
+    'Amiodarona é inibidor potente do CYP2D6 — aumenta significativamente a biodisponibilidade oral do dextrometorfano (substrato CYP2D6); pode elevar concentrações 4–10×',
+    'Toxicidade pelo dextrometorfano: vertigem, sedação excessiva, ataxia, nistagmo, disforia, efeitos alucinatórios em doses terapêuticas',
+    'Evitar combinação. Se necessário, usar dose mínima de dextrometorfano e monitorar sinais de toxicidade. Preferir antitussivos não dependentes do CYP2D6',
+    'CUIDADO — Toxicidade por dextrometorfano: inibição CYP2D6 pela amiodarona',
+    EvidenceLevel.probable,
+    {RiskType.plasmaLevel},
+    ['Micromedex 2024', 'CYP2D6 Inhibitor Interactions — FDA']),
+
+  ('dextrometorfano', 'fluoxetina', InteractionSeverity.contraindicated,
+    'Fluoxetina é inibidor potente do CYP2D6 e ISRS — bloqueia o metabolismo do dextrometorfano (substrato CYP2D6) e soma atividade serotoninérgica — duplo mecanismo de toxicidade',
+    'Síndrome serotoninérgica; elevação drástica dos níveis de dextrometorfano (↑5–10×) com risco de toxicidade SNC',
+    'Contraindicado. Washout de fluoxetina exige ≥5 semanas (meia-vida longa). Substituir antitussivo por levodropropizina ou butamirato',
+    'CONTRAINDICADO — Síndrome serotoninérgica + inibição CYP2D6 severa: dextrometorfano + fluoxetina',
+    EvidenceLevel.established,
+    {RiskType.serotonin, RiskType.plasmaLevel},
+    ['FDA Drug Safety 2010', 'CredibleMeds 2024', 'Micromedex 2024']),
+
+  ('dextrometorfano', 'paroxetina', InteractionSeverity.contraindicated,
+    'Paroxetina é o inibidor mais potente do CYP2D6 entre os ISRSs — eleva os níveis de dextrometorfano em até 9× e soma atividade serotoninérgica',
+    'Síndrome serotoninérgica grave; toxicidade pelo dextrometorfano com efeitos dissociativos e alucinatórios',
+    'Contraindicado. Substituir antitussivo por levodropropizina ou butamirato',
+    'CONTRAINDICADO — CYP2D6 + serotonina: dextrometorfano + paroxetina',
+    EvidenceLevel.established,
+    {RiskType.serotonin, RiskType.plasmaLevel},
+    ['FDA Drug Safety 2010', 'CredibleMeds 2024']),
+
+  ('dextrometorfano', 'codeina', InteractionSeverity.moderate,
+    'Dextrometorfano e codeína competem pelo CYP2D6 para metabolização; em metabolizadores lentos pode haver acúmulo de ambos; risco adicional de depressão respiratória em combinações com opioides',
+    'Sedação excessiva, depressão respiratória em polimorfismos CYP2D6; efeito antitussivo duplicado sem benefício adicional',
+    'Evitar uso concomitante. Não há benefício clínico em combinar dois antitussivos. Escolher apenas um',
+    'EVITAR — Depressão respiratória aditiva + competição CYP2D6: dextrometorfano + codeína',
+    EvidenceLevel.probable,
+    {RiskType.respiratoryDepression, RiskType.plasmaLevel},
+    ['Micromedex 2024', 'CredibleMeds 2024']),
+
+  // ── 7.2 PSEUDOEFEDRINA ──────────────────────────────────────────────────
+
+  ('pseudoefedrina', 'imao', InteractionSeverity.contraindicated,
+    'IMAOs inibem a MAO-A e MAO-B responsáveis pela degradação de catecolaminas; pseudoefedrina libera noradrenalina e adrenalina nas terminações simpáticas — acúmulo massivo de catecolaminas causa crise adrenérgica',
+    'Crise hipertensiva grave (PA sistólica >220 mmHg), encefalopatia hipertensiva, AVC hemorrágico, infarto agudo do miocárdio, morte',
+    'CONTRAINDICADO de forma absoluta. Aguardar ≥14 dias após suspensão de IMAO irreversível (fenelzina, tranilcipromina) e ≥24h após moclobemida antes de usar pseudoefedrina ou qualquer descongestionante simpatomimético',
+    'CONTRAINDICADO ABSOLUTO — Crise hipertensiva fatal: pseudoefedrina + IMAO',
+    EvidenceLevel.established,
+    {RiskType.cardiovascular},
+    ['FDA Drug Safety', 'CredibleMeds 2024', 'Micromedex 2024', 'Gillman PK 2005 — MAOIs and sympathomimetics']),
+
+  ('pseudoefedrina', 'betabloqueador', InteractionSeverity.moderate,
+    'Pseudoefedrina ativa receptores α-adrenérgicos (vasoconstrição) e β-adrenérgicos (taquicardia, broncodilatação); betabloqueadores bloqueiam receptores β — efeito α fica desimpedido, resultando em vasoconstrição sem taquicardia reflexa (resposta β bloqueada) — pode elevar PA',
+    'Hipertensão paradoxal; bradicardia reflexa mediada por barorreceptores (sem compensação β); broncoespasmo em betabloqueadores não seletivos (propranolol, atenolol, carvedilol) — risco aumentado em asmáticos/DPOC',
+    'Evitar uso concomitante. Se necessário: preferir betabloqueadores β1-seletivos (metoprolol, bisoprolol), monitorar PA e FC. Evitar em pacientes com asma/DPOC se betabloqueador não for seletivo',
+    'CUIDADO — Hipertensão paradoxal + broncoespasmo potencial: pseudoefedrina + betabloqueador',
+    EvidenceLevel.established,
+    {RiskType.cardiovascular},
+    ['Micromedex 2024', 'CredibleMeds 2024', 'Drugs.com Interactions 2024']),
+
+  ('pseudoefedrina', 'metoprolol', InteractionSeverity.moderate,
+    'Metoprolol bloqueia seletivamente receptores β1-adrenérgicos cardíacos; pseudoefedrina ativa tanto β quanto α; a seletividade β1 do metoprolol reduz parcialmente o antagonismo — efeito vasoconstritor α permanece',
+    'Elevação da PA (efeito α desimpedido); redução da taquicardia reflexa esperada; menor risco de broncoespasmo que com betabloqueadores não seletivos',
+    'Monitorar PA e FC durante uso concomitante. Preferir descongestionante alternativo quando possível. Evitar em crises hipertensivas não controladas',
+    'ATENÇÃO — Elevação de PA: pseudoefedrina + metoprolol',
+    EvidenceLevel.probable,
+    {RiskType.cardiovascular},
+    ['Micromedex 2024', 'CredibleMeds 2024']),
+
+  ('pseudoefedrina', 'enalapril', InteractionSeverity.moderate,
+    'Pseudoefedrina eleva a PA por vasoconstrição α-adrenérgica; IECAs como enalapril são anti-hipertensivos — antagonismo farmacológico direto na regulação pressórica',
+    'Redução da eficácia anti-hipertensiva do enalapril; elevação transitória da PA; risco aumentado em hipertensos',
+    'Evitar uso prolongado de descongestionantes simpatomimíticos em hipertensos. Usar apenas por ≤3 dias, monitorar PA diariamente. Preferir lavagem nasal salina ou corticoide nasal tópico como alternativas',
+    'ATENÇÃO — Antagonismo anti-hipertensivo: pseudoefedrina + enalapril',
+    EvidenceLevel.established,
+    {RiskType.cardiovascular},
+    ['Micromedex 2024', 'CredibleMeds 2024', 'JNC 8 Guidelines']),
+
+  ('pseudoefedrina', 'losartana', InteractionSeverity.moderate,
+    'Pseudoefedrina eleva PA por ativação adrenérgica; losartana bloqueia receptor AT1 da angiotensina II — antagonismo no controle pressórico',
+    'Atenuação do efeito anti-hipertensivo da losartana; elevação da PA especialmente em picos de absorção da pseudoefedrina',
+    'Evitar uso em hipertensos não controlados. Limitar a ≤3 dias de uso e monitorar PA. Preferir alternativas não sistêmicas para congestão nasal',
+    'ATENÇÃO — Atenuação de anti-hipertensivo: pseudoefedrina + losartana',
+    EvidenceLevel.probable,
+    {RiskType.cardiovascular},
+    ['Micromedex 2024', 'Drugs.com 2024']),
+
+  ('pseudoefedrina', 'digoxina', InteractionSeverity.major,
+    'Pseudoefedrina aumenta a automaticidade do nó sinusal e sensibiliza o miocárdio à estimulação adrenérgica; digoxina inibe Na+/K+-ATPase e aumenta tônus vagal — combinação favorece arritmias',
+    'Arritmias cardíacas (taquicardia supraventricular, fibrilação atrial, extrassístoles ventriculares) em pacientes digitalizados',
+    'Evitar uso concomitante. Se necessário, monitorar ECG e níveis de digoxina. Usar descongestionante alternativo (spray nasal salino, corticoide intranasal)',
+    'CUIDADO — Arritmias cardíacas: pseudoefedrina + digoxina',
+    EvidenceLevel.probable,
+    {RiskType.arrhythmia, RiskType.cardiovascular},
+    ['Micromedex 2024', 'CredibleMeds 2024']),
+
+  ('pseudoefedrina', 'amitriptilina', InteractionSeverity.major,
+    'Antidepressivos tricíclicos bloqueiam o transportador de noradrenalina (NET) e bloqueiam receptores α1-adrenérgicos — inibem o mecanismo de ação da pseudoefedrina mas também aumentam a suscetibilidade cardiovascular a arritmias',
+    'Hipertensão paradoxal; taquicardia; arritmias; potencialização de efeitos adversos cardiovasculares de ambos os fármacos',
+    'Evitar combinação. Tricíclicos + simpaticomiméticos são combinação clássica de risco cardiovascular. Usar descongestionante tópico nasal como alternativa',
+    'CUIDADO — Arritmias e hipertensão: pseudoefedrina + amitriptilina',
+    EvidenceLevel.probable,
+    {RiskType.cardiovascular, RiskType.arrhythmia},
+    ['Micromedex 2024', 'CredibleMeds 2024']),
+
+  // ── 7.3 MONTELUKAST ─────────────────────────────────────────────────────
+
+  ('montelukast', 'rifampicina', InteractionSeverity.major,
+    'Rifampicina é indutor potente do CYP3A4 e CYP2C8/2C9 — acelera o metabolismo do montelukast (substrato CYP3A4/2C8), reduzindo sua biodisponibilidade oral',
+    'Redução de 40–60% nos níveis plasmáticos de montelukast; falha terapêutica no controle da asma ou rinite alérgica; risco de exacerbação broncospástica por perda de efeito antiinflamatório',
+    'Monitorar eficácia clínica do montelukast durante uso de rifampicina. Considerar aumento de dose ou substituição por corticoide inalatório como principal terapia anti-inflamatória enquanto rifampicina estiver em uso',
+    'ALTO RISCO DE FALHA TERAPÊUTICA — Indução CYP: montelukast + rifampicina',
+    EvidenceLevel.established,
+    {RiskType.reducedEfficacy, RiskType.plasmaLevel},
+    ['FDA Drug Label Montelukast 2024', 'Micromedex 2024', 'CredibleMeds 2024']),
+
+  ('montelukast', 'fenitoina', InteractionSeverity.moderate,
+    'Fenitoína é indutor moderado/forte do CYP3A4 e CYP2C8 — aumenta o clearance do montelukast e reduz seus níveis plasmáticos em 40–50%',
+    'Redução da eficácia do montelukast; possível piora do controle da asma ou rinite; perda de proteção contra broncospasmo induzido por exercício',
+    'Monitorar controle da asma clinicamente (frequência de broncodilatadores de resgate, sintomas noturnos). Considerar corticoide inalatório como terapia principal. Se montelukast for mantido, avaliar aumento de dose',
+    'ATENÇÃO — Redução de eficácia: montelukast + fenitoína',
+    EvidenceLevel.probable,
+    {RiskType.reducedEfficacy, RiskType.plasmaLevel},
+    ['Micromedex 2024', 'CredibleMeds 2024', 'Drug Interactions in Epilepsy — Lancet Neurology 2022']),
+
+  ('montelukast', 'carbamazepina', InteractionSeverity.moderate,
+    'Carbamazepina é indutor potente do CYP3A4 e moderado do CYP2C8 — reduz significativamente os níveis plasmáticos de montelukast por aumento do clearance hepático',
+    'Redução da eficácia antiinflamatória e broncodilatadora indireta do montelukast; possível falha no controle de asma alérgica e rinite',
+    'Monitorar controle da asma em pacientes epilépticos usando carbamazepina + montelukast. Considerar corticoide inalatório como alternativa mais robusta',
+    'ATENÇÃO — Indução CYP3A4: montelukast + carbamazepina',
+    EvidenceLevel.probable,
+    {RiskType.reducedEfficacy, RiskType.plasmaLevel},
+    ['Micromedex 2024', 'CredibleMeds 2024']),
+
+  ('montelukast', 'fluconazol', InteractionSeverity.moderate,
+    'Fluconazol inibe CYP2C9 e CYP3A4 — pode aumentar os níveis plasmáticos de montelukast por redução do clearance',
+    'Aumento dos níveis de montelukast com potencial aumento de reações adversas neuropsiquiátricas (ansiedade, distúrbios do sono, comportamento)',
+    'Monitorar sintomas neuropsiquiátricos durante uso concomitante. Suspender montelukast se surgirem alterações de comportamento ou humor',
+    'ATENÇÃO — Aumento de montelukast: montelukast + fluconazol',
+    EvidenceLevel.possible,
+    {RiskType.plasmaLevel},
+    ['Micromedex 2024']),
+
+  ('montelukast', 'gemfibrozila', InteractionSeverity.moderate,
+    'Gemfibrozila inibe potentemente o CYP2C8 — principal enzima responsável pelo metabolismo do montelukast; pode elevar seus níveis plasmáticos em 4–5×',
+    'Aumento significativo nos níveis de montelukast; risco amplificado de efeitos adversos neuropsiquiátricos (insônia, agitação, depressão, pensamentos suicidas)',
+    'Evitar combinação sempre que possível. Se necessária, monitorar de perto sintomas neuropsiquiátricos. Considerar alternativa a gemfibrozila (fenofibrato tem menor inibição do CYP2C8)',
+    'CUIDADO — Toxicidade neuropsiquiátrica: montelukast + gemfibrozila',
+    EvidenceLevel.established,
+    {RiskType.plasmaLevel},
+    ['FDA Drug Label Montelukast 2024', 'Micromedex 2024', 'CredibleMeds 2024']),
+
+  // ── 7.4 CETIRIZINA ──────────────────────────────────────────────────────
+
+  ('cetirizina', 'benzodiazepínico', InteractionSeverity.moderate,
+    'Cetirizina, apesar de ser anti-histamínico de 2ª geração com menor penetração no SNC que os de 1ª geração, pode causar sedação especialmente em doses altas ou em idosos; benzodiazepínicos são depressores do SNC — somação de efeitos sedativos',
+    'Sedação excessiva; comprometimento psicomotor; risco de quedas (especialmente em idosos); sonolência diurna; déficit cognitivo agudo',
+    'Usar com cautela. Preferir cetirizina à noite. Reduzir dose de benzodiazepínico se sedação for excessiva. Evitar em idosos (critérios de Beers). Alertar paciente sobre não dirigir ou operar máquinas',
+    'CUIDADO — Sedação aditiva: cetirizina + benzodiazepínico',
+    EvidenceLevel.established,
+    {RiskType.respiratoryDepression},
+    ['Beers Criteria AGS 2023', 'Micromedex 2024', 'CredibleMeds 2024']),
+
+  ('cetirizina', 'opioide', InteractionSeverity.moderate,
+    'Cetirizina tem propriedades anticolinérgicas leves e sedativas — some com efeitos sedativos e depressores respiratórios dos opioides',
+    'Sedação excessiva; depressão respiratória potencializada; constipação aumentada (efeitos anticolinérgicos aditivos); risco de retenção urinária',
+    'Monitorar estado de consciência e padrão respiratório. Preferir anti-histamínico com menor ação sedativa ou anticolinérgica. Atenção redobrada em idosos e pacientes com DPOC/apneia do sono',
+    'ATENÇÃO — Depressão do SNC aditiva: cetirizina + opioide',
+    EvidenceLevel.probable,
+    {RiskType.respiratoryDepression},
+    ['Micromedex 2024', 'CredibleMeds 2024']),
+
+  ('cetirizina', 'ritonavir', InteractionSeverity.moderate,
+    'Ritonavir é inibidor do CYP3A4 e inibidor da glicoproteína-P — pode elevar os níveis plasmáticos de cetirizina, que é parcialmente eliminada pelo rim mas também tem transporte dependente de P-gp',
+    'Elevação dos níveis de cetirizina com possível aumento de sedação e efeitos anticolinérgicos; prolongamento do efeito',
+    'Monitorar sedação excessiva. Reduzir dose de cetirizina se necessário (considerar 5 mg ao invés de 10 mg). Preferir fexofenadina como alternativa (menor interação com P-gp)',
+    'ATENÇÃO — Elevação de cetirizina: cetirizina + ritonavir',
+    EvidenceLevel.probable,
+    {RiskType.plasmaLevel},
+    ['Micromedex 2024', 'FDA Drug Interaction Studies']),
+
+  ('cetirizina', 'teofilina', InteractionSeverity.minor,
+    'Teofilina pode reduzir ligeiramente o clearance da cetirizina — mecanismo não completamente elucidado, possivelmente via inibição competitiva de transporte renal',
+    'Aumento leve de ~16% na AUC da cetirizina; risco clínico mínimo, mas pode ampliar sedação em doses altas',
+    'Monitorar sedação em pacientes com asma ou DPOC usando teofilina + cetirizina. Relevância clínica baixa em doses padrão',
+    'MONITORAR — Leve elevação de cetirizina: cetirizina + teofilina',
+    EvidenceLevel.established,
+    {RiskType.plasmaLevel},
+    ['FDA Drug Label Cetirizina', 'Micromedex 2024']),
+
+  ('cetirizina', 'alcool', InteractionSeverity.moderate,
+    'Álcool etílico é depressor do SNC; cetirizina tem efeito sedativo variável (maior em doses altas, idosos e metabolizadores lentos) — somação dos efeitos depressores centrais',
+    'Sedação acentuada; comprometimento da coordenação motora; lentificação dos reflexos; risco de acidentes de trânsito; tontura',
+    'Evitar consumo de álcool durante uso de cetirizina. Alertar especialmente pacientes que dirigem ou operam máquinas. Preferir cetirizina ao deitar para minimizar impacto diurno',
+    'CUIDADO — Sedação aditiva: cetirizina + álcool',
+    EvidenceLevel.established,
+    {RiskType.respiratoryDepression},
+    ['FDA Drug Label Cetirizina 2024', 'Micromedex 2024']),
+
+  // ── 7.5 FENILEFRINA ─────────────────────────────────────────────────────
+
+  ('fenilefrina', 'imao', InteractionSeverity.contraindicated,
+    'Fenilefrina é agonista α1-adrenérgico direto; IMAOs bloqueiam degradação de catecolaminas — potencialização extrema do efeito vasopressor da fenilefrina',
+    'Crise hipertensiva grave; encefalopatia hipertensiva; AVC; infarto agudo do miocárdio',
+    'CONTRAINDICADO. Aguardar washout completo de IMAO (≥14 dias para irreversíveis; ≥24h para moclobemida)',
+    'CONTRAINDICADO ABSOLUTO — Crise hipertensiva: fenilefrina + IMAO',
+    EvidenceLevel.established,
+    {RiskType.cardiovascular},
+    ['FDA Drug Safety', 'Micromedex 2024', 'CredibleMeds 2024']),
+
+  ('fenilefrina', 'betabloqueador', InteractionSeverity.moderate,
+    'Betabloqueadores bloqueiam a vasodilatação β2-mediada — efeito vasoconstritor α1 da fenilefrina fica desimpedido, podendo causar elevação pressórica e bradicardia reflexa',
+    'Hipertensão paradoxal; bradicardia reflexa; aumento da pós-carga cardíaca',
+    'Evitar combinação em hipertensos e cardiopatas. Se necessário, monitorar PA e FC durante uso',
+    'CUIDADO — Hipertensão paradoxal: fenilefrina + betabloqueador',
+    EvidenceLevel.probable,
+    {RiskType.cardiovascular},
+    ['Micromedex 2024', 'CredibleMeds 2024']),
+
 ];
 
 
@@ -8881,6 +9137,72 @@ const _termMap = <String, String>{
   // Imunossupressores / Oncológicos — metotrexato
   'metotrexato': 'metotrexato', 'methotrexate': 'metotrexato', 'mtx': 'metotrexato',
   'methofar': 'metotrexato', 'ledertrexate': 'metotrexato',
+
+  // ── Lotes 7–10 — aliases realmente novos (sem duplicatas com lotes anteriores) ──
+
+  // Dextrometorfano — aliases extras novos
+  'vick 44': 'dextrometorfano', 'vick44': 'dextrometorfano',
+  'neotoss': 'dextrometorfano', 'trimedal': 'dextrometorfano',
+
+  // Pseudoefedrina — aliases extras novos
+  'actifed': 'pseudoefedrina', 'resfenol': 'pseudoefedrina',
+  'rhinosoro': 'pseudoefedrina',
+
+  // Álcool — aliases extras novos
+  'bebida alcoolica': 'alcool',
+
+  // Gemfibrozila — aliases extras novos
+  'jezil': 'gemfibrozila',
+
+  // Amitriptilina — aliases extras novos
+  'amitriptyline': 'amitriptilina', 'amytril': 'amitriptilina',
+  'adepril': 'amitriptilina',
+
+  // Propafenona (novo — Lote 8)
+  'propafenona': 'propafenona', 'propafenone': 'propafenona',
+  'rytmonorm': 'propafenona', 'ritmonorm': 'propafenona',
+
+  // Flecainida (novo — Lote 8)
+  'flecainida': 'flecainida', 'flecainide': 'flecainida',
+  'tambocor': 'flecainida',
+
+  // Dobutamina (novo — Lote 8)
+  'dobutamina': 'dobutamina', 'dobutamine': 'dobutamina',
+  'dobutrex': 'dobutamina',
+
+  // Adenosina (novo — Lote 8)
+  'adenosina': 'adenosina', 'adenosine': 'adenosina',
+  'adenocor': 'adenosina', 'adenocard': 'adenosina',
+
+  // Ácido valproico — aliases extras novos
+  'valpakine': 'acido valproico', 'valproic acid': 'acido valproico',
+  'valproato de sodio': 'acido valproico', 'valproato de sódio': 'acido valproico',
+
+  // Levetiracetam (novo — Lote 9)
+  'levetiracetam': 'levetiracetam', 'levetiracetame': 'levetiracetam',
+  'keppra': 'levetiracetam', 'spritam': 'levetiracetam',
+
+  // Levodopa + Carbidopa (novo — Lote 9)
+  'levodopa': 'levodopa carbidopa', 'carbidopa': 'levodopa carbidopa',
+  'levodopa carbidopa': 'levodopa carbidopa', 'sinemet': 'levodopa carbidopa',
+  'prolopa': 'levodopa carbidopa', 'stalevo': 'levodopa carbidopa',
+
+  // Pramipexol (novo — Lote 9)
+  'pramipexol': 'pramipexol', 'pramipexole': 'pramipexol',
+  'mirapex': 'pramipexol', 'sifrol': 'pramipexol',
+
+  // Leflunomida (novo — Lote 10)
+  'leflunomida': 'leflunomida', 'leflunomide': 'leflunomida',
+  'arava': 'leflunomida', 'leflunomida sanofi': 'leflunomida',
+
+  // Adalimumabe (novo — Lote 10)
+  'adalimumabe': 'adalimumabe', 'adalimumab': 'adalimumabe',
+  'humira': 'adalimumabe', 'adalimumabe pfizer': 'adalimumabe',
+  'hyrimoz': 'adalimumabe', 'hadlima': 'adalimumabe',
+
+  // Etanercepte (novo — Lote 10)
+  'etanercepte': 'etanercepte', 'etanercept': 'etanercepte',
+  'enbrel': 'etanercepte', 'benepali': 'etanercepte',
 };
 
 // ─────────────────────────────────────────────────────────────────────────────

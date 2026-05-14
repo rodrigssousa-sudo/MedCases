@@ -10485,4 +10485,830 @@ DrugModel(
     },
   ),
 
+  // ══════════════════════════════════════════════════════════════════════════
+  // LOTE 8 — CARDIOLOGIA AVANÇADA: Antiarrítmicos e Inotrópicos
+  // ══════════════════════════════════════════════════════════════════════════
+
+  DrugModel(
+    id: 'amiodarona',
+    group: 'Cardiologia',
+    name: 'Amiodarona',
+    className: {
+      'pt': 'Antiarrítmico classe III (Vaughan Williams)',
+      'es': 'Antiarrítmico clase III (Vaughan Williams)',
+    },
+    category: {'pt': 'Antiarrítmico', 'es': 'Antiarrítmico'},
+    route: 'VO/IV',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': 'Ataque VO: 600–800 mg/dia por 1–3 semanas → manutenção 100–400 mg/dia. IV: 150 mg em 10 min → 1 mg/min por 6h → 0,5 mg/min. RCP/FV: 300 mg IV bolus.',
+      'es': 'Carga VO: 600–800 mg/día por 1–3 semanas → mantenimiento 100–400 mg/día. IV: 150 mg en 10 min → 1 mg/min por 6h → 0,5 mg/min. RCP/FV: 300 mg IV bolo.',
+    },
+    renalAlert: {
+      'pt': 'Sem ajuste necessário — metabolismo hepático exclusivo. Diálise não remove amiodarona.',
+      'es': 'Sin ajuste necesario — metabolismo hepático exclusivo. La diálisis no elimina amiodarona.',
+    },
+    elderlyAlert: {
+      'pt': 'ALTO RISCO EM IDOSOS: maior incidência de toxicidade tireoidiana, pulmonar e neurológica. Usar dose mínima eficaz. Monitorar TSH a cada 6 meses.',
+      'es': 'ALTO RIESGO EN ANCIANOS: mayor incidencia de toxicidad tiroidea, pulmonar y neurológica. Usar dosis mínima eficaz. Monitorear TSH cada 6 meses.',
+    },
+    mechanism: {
+      'pt': 'Bloqueia canais de K+ (prolonga período refratário — classe III), canais de Na+ (classe I), Ca²+ (classe IV) e receptores β-adrenérgicos (classe II) — antiarrítmico de espectro único. Também possui propriedades vasodilatadoras coronarianas.',
+      'es': 'Bloquea canales K+ (prolonga período refractario — clase III), Na+ (clase I), Ca²+ (clase IV) y receptores β-adrenérgicos (clase II) — antiarrítmico de espectro único.',
+    },
+    warning: {
+      'pt': 'TOXICIDADE MULTISSISTÊMICA: pulmonar (pneumonite/fibrose — 2–7%), tireoidiana (hipo/hipertireoidismo — 15–20%), hepática, ocular (microdepósitos corneanos — >90%), neurológica, cutânea (fotossensibilidade/pigmentação cinza). Meia-vida extremamente longa (40–55 dias). Inúmeras interações medicamentosas graves (CYP2D6, CYP3A4, P-gp). QT prolongador estabelecido (CredibleMeds).',
+      'es': 'TOXICIDAD MULTISISTÉMICA: pulmonar (neumonitis/fibrosis — 2–7%), tiroidea (hipo/hipertiroidismo — 15–20%), hepática, ocular (microdepósitos corneales — >90%), neurológica, cutánea (fotosensibilidad/pigmentación gris). Semivida extremadamente larga (40–55 días). Numerosas interacciones graves.',
+    },
+    adverse: {
+      'pt': ['Bradicardia', 'Hipotensão (IV)', 'Prolongamento QT/TdP', 'Pneumonite intersticial', 'Disfunção tireoidiana', 'Elevação de transaminases', 'Fotossensibilidade', 'Microdepósitos corneanos', 'Neuropatia periférica', 'Tremor/ataxia'],
+      'es': ['Bradicardia', 'Hipotensión (IV)', 'Prolongación QT/TdP', 'Neumonitis intersticial', 'Disfunción tiroidea', 'Elevación de transaminasas', 'Fotosensibilidad', 'Microdepósitos corneales', 'Neuropatía periférica', 'Temblor/ataxia'],
+    },
+  ),
+
+  DrugModel(
+    id: 'sotalol',
+    group: 'Cardiologia',
+    name: 'Sotalol',
+    className: {
+      'pt': 'Antiarrítmico classe II/III — betabloqueador não seletivo + bloqueio de K+',
+      'es': 'Antiarrítmico clase II/III — betabloqueante no selectivo + bloqueo K+',
+    },
+    category: {'pt': 'Antiarrítmico', 'es': 'Antiarrítmico'},
+    route: 'VO/IV',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': 'VO: iniciar 80 mg 2x/dia → titular até 160 mg 2x/dia (máx 320 mg 2x/dia). OBRIGATÓRIO: internação nas primeiras 72h para monitoramento do QTc. IV: 75 mg em 5h.',
+      'es': 'VO: iniciar 80 mg 2 veces/día → titular hasta 160 mg 2 veces/día (máx 320 mg 2 veces/día). OBLIGATORIO: hospitalización primeras 72h para monitoreo QTc. IV: 75 mg en 5h.',
+    },
+    renalAlert: {
+      'pt': 'AJUSTE OBRIGATÓRIO: ClCr 40–60 mL/min → intervalo 24h; ClCr 10–40 mL/min → intervalo 36–48h; ClCr <10 mL/min → contraindicado. Sotalol é eliminado quase exclusivamente por via renal.',
+      'es': 'AJUSTE OBLIGATORIO: ClCr 40–60 mL/min → intervalo 24h; ClCr 10–40 mL/min → intervalo 36–48h; ClCr <10 mL/min → contraindicado. Eliminación casi exclusivamente renal.',
+    },
+    elderlyAlert: {
+      'pt': 'ALTO RISCO: função renal reduzida eleva exposição ao sotalol → maior risco de QT longo e TdP. Iniciar sempre com dose baixa (80 mg/dia) e monitorar QTc rigorosamente.',
+      'es': 'ALTO RIESGO: función renal reducida eleva exposición al sotalol → mayor riesgo de QT largo y TdP. Iniciar siempre con dosis baja (80 mg/día) y monitorear QTc rigurosamente.',
+    },
+    mechanism: {
+      'pt': 'Bloqueia receptores β1 e β2-adrenérgicos (propriedade classe II — reduz FC e condução AV) e canais de K+ retificadores tardios IKr (propriedade classe III — prolonga repolarização ventricular e período refratário).',
+      'es': 'Bloquea receptores β1 y β2-adrenérgicos (clase II — reduce FC y conducción AV) y canales K+ rectificadores tardíos IKr (clase III — prolonga repolarización ventricular y período refractario).',
+    },
+    warning: {
+      'pt': 'QT PROLONGADOR DE ALTO RISCO (CredibleMeds — categoria de risco conhecido). Risco de Torsade de Pointes dose-dependente — maior com QTc basal >450ms, hipocalemia, hipomagnesemia, bradicardia, sexo feminino. Iniciar SEMPRE em ambiente hospitalar monitorado. Contraindicado em asma brônquica, DPOC grave, bradicardia sintomática, bloqueio AV 2°/3°, QTc >500ms.',
+      'es': 'QT PROLONGADOR DE ALTO RIESGO (CredibleMeds — categoría de riesgo conocido). Riesgo de TdP dosis-dependiente. Iniciar SIEMPRE en ambiente hospitalario monitorizado. Contraindicado en asma bronquial, EPOC grave, bradicardia sintomática, bloqueo AV 2°/3°, QTc >500ms.',
+    },
+    adverse: {
+      'pt': ['Prolongamento QT/TdP', 'Bradicardia', 'Fadiga', 'Dispneia', 'Broncoespasmo (não seletivo)', 'Hipotensão', 'Tontura', 'Disfunção erétil'],
+      'es': ['Prolongación QT/TdP', 'Bradicardia', 'Fatiga', 'Disnea', 'Broncoespasmo (no selectivo)', 'Hipotensión', 'Mareo', 'Disfunción eréctil'],
+    },
+  ),
+
+  DrugModel(
+    id: 'propafenona',
+    group: 'Cardiologia',
+    name: 'Propafenona',
+    className: {
+      'pt': 'Antiarrítmico classe IC — bloqueador de canais de Na+ (uso dependente)',
+      'es': 'Antiarrítmico clase IC — bloqueador de canales Na+ (uso dependiente)',
+    },
+    category: {'pt': 'Antiarrítmico', 'es': 'Antiarrítmico'},
+    route: 'VO/IV',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': 'VO: 150–300 mg 3x/dia (máx 900 mg/dia). Liberação prolongada: 225–425 mg 2x/dia. "Pill-in-pocket" para FA paroxística: 450–600 mg dose única supervisionada.',
+      'es': 'VO: 150–300 mg 3 veces/día (máx 900 mg/día). Liberación prolongada: 225–425 mg 2 veces/día. "Pill-in-pocket" para FA paroxística: 450–600 mg dosis única supervisada.',
+    },
+    renalAlert: {
+      'pt': 'Usar com cautela em insuficiência renal grave — metabólitos podem acumular. Monitorar ECG (alargamento QRS).',
+      'es': 'Usar con cautela en insuficiencia renal grave — metabolitos pueden acumularse. Monitorear ECG (ensanchamiento QRS).',
+    },
+    elderlyAlert: {
+      'pt': 'Reduzir dose em 30–50% em idosos — metabolismo hepático reduzido aumenta exposição. Monitorar QRS e PA.',
+      'es': 'Reducir dosis 30–50% en ancianos — metabolismo hepático reducido aumenta exposición. Monitorear QRS y PA.',
+    },
+    mechanism: {
+      'pt': 'Bloqueia canais de Na+ de forma uso-dependente (maior bloqueio em frequências rápidas) — retarda condução nos átrios, ventrículo e feixe de His-Purkinje. Também possui leve atividade β-bloqueadora e bloqueio de canais de Ca²+.',
+      'es': 'Bloquea canales Na+ de forma uso-dependiente — retarda conducción en aurículas, ventrículo y haz de His-Purkinje. También posee leve actividad β-bloqueante y bloqueo de canales Ca²+.',
+    },
+    warning: {
+      'pt': 'CONTRAINDICADO em disfunção ventricular esquerda grave (FE <35%), doença arterial coronariana estabelecida (pós-IAM), choque cardiogênico — efeito pró-arrítmico (CAST Trial). Pode converter FA em flutter com condução AV rápida 1:1 — pré-medicar com bloqueador AV (betabloqueador ou diltiazem). Substrato e inibidor do CYP2D6.',
+      'es': 'CONTRAINDICADO en disfunción ventricular izquierda grave (FE <35%), enfermedad coronaria establecida (post-IAM), shock cardiogénico — efecto proarrítmico (CAST Trial). Puede convertir FA en flutter con conducción AV rápida 1:1 — premedicar con bloqueador AV.',
+    },
+    adverse: {
+      'pt': ['Sabor metálico', 'Náuseas', 'Tontura', 'Visão turva', 'Alargamento QRS', 'Bradicardia', 'Flutter 1:1 (FA→flutter)', 'Broncoespasmo leve'],
+      'es': ['Sabor metálico', 'Náuseas', 'Mareo', 'Visión borrosa', 'Ensanchamiento QRS', 'Bradicardia', 'Flutter 1:1 (FA→flutter)', 'Broncoespasmo leve'],
+    },
+  ),
+
+  DrugModel(
+    id: 'flecainida',
+    group: 'Cardiologia',
+    name: 'Flecainida',
+    className: {
+      'pt': 'Antiarrítmico classe IC — bloqueador potente de canais de Na+',
+      'es': 'Antiarrítmico clase IC — bloqueador potente de canales Na+',
+    },
+    category: {'pt': 'Antiarrítmico', 'es': 'Antiarrítmico'},
+    route: 'VO/IV',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': 'VO: 50–150 mg 2x/dia (máx 300 mg/dia). "Pill-in-pocket" FA paroxística: 200–300 mg dose única. IV (restrito): 1–2 mg/kg em 10 min.',
+      'es': 'VO: 50–150 mg 2 veces/día (máx 300 mg/día). "Pill-in-pocket" FA paroxística: 200–300 mg dosis única. IV (restringido): 1–2 mg/kg en 10 min.',
+    },
+    renalAlert: {
+      'pt': 'AJUSTE NECESSÁRIO: ClCr <35 mL/min → reduzir dose em 50% e monitorar níveis plasmáticos. Eliminação renal de 27–40% da dose.',
+      'es': 'AJUSTE NECESARIO: ClCr <35 mL/min → reducir dosis 50% y monitorear niveles plasmáticos. Eliminación renal 27–40% de la dosis.',
+    },
+    elderlyAlert: {
+      'pt': 'Reduzir dose em idosos — clearance renal e hepático reduzidos. Monitorar alargamento do QRS (>25% do basal = risco de toxicidade).',
+      'es': 'Reducir dosis en ancianos — clearance renal y hepático reducidos. Monitorear ensanchamiento QRS (>25% del basal = riesgo de toxicidad).',
+    },
+    mechanism: {
+      'pt': 'Bloqueio potente e uso-dependente dos canais de Na+ rápidos — retarda acentuadamente a condução em todos os tecidos cardíacos. Prolonga ligeiramente o intervalo PR e alarga o QRS. Sem efeito significativo na repolarização (QT não prolonga).',
+      'es': 'Bloqueo potente uso-dependiente de canales Na+ rápidos — retarda marcadamente la conducción en todos los tejidos cardíacos. Prolonga levemente PR y ensancha QRS. Sin efecto significativo en repolarización.',
+    },
+    warning: {
+      'pt': 'CONTRAINDICADO em cardiopatia estrutural (IAM prévio, FE reduzida, HVE significativa) — risco pró-arrítmico fatal (CAST Trial). Usar APENAS em coração estruturalmente normal. Flutter 1:1 possível se FA não for pré-tratada com bloqueador AV. Monitorar alargamento do QRS durante dose de ataque.',
+      'es': 'CONTRAINDICADO en cardiopatía estructural (IAM previo, FE reducida, HVI significativa) — riesgo proarrítmico fatal (CAST Trial). Usar SOLO en corazón estructuralmente normal. Flutter 1:1 posible si FA no es pretratada con bloqueador AV.',
+    },
+    adverse: {
+      'pt': ['Visão turva/diplopia', 'Tontura', 'Cefaleia', 'Alargamento QRS', 'Pró-arritmia ventricular', 'Flutter 1:1', 'Náuseas', 'Tremor'],
+      'es': ['Visión borrosa/diplopía', 'Mareo', 'Cefalea', 'Ensanchamiento QRS', 'Proarritmia ventricular', 'Flutter 1:1', 'Náuseas', 'Temblor'],
+    },
+  ),
+
+  DrugModel(
+    id: 'digoxina',
+    group: 'Cardiologia',
+    name: 'Digoxina',
+    className: {
+      'pt': 'Glicosídeo cardíaco — inotrópico positivo + cronotrópico negativo',
+      'es': 'Glucósido cardíaco — inotrópico positivo + cronotrópico negativo',
+    },
+    category: {'pt': 'Inotrópico / Antiarrítmico', 'es': 'Inotrópico / Antiarrítmico'},
+    route: 'VO/IV',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': 'VO manutenção: 0,125–0,25 mg/dia (idosos: 0,0625–0,125 mg/dia). Digitalização rápida IV: 0,5–1 mg divididos em doses. Nível sérico alvo: 0,5–0,9 ng/mL (IC) ou 0,8–2 ng/mL (FA).',
+      'es': 'VO mantenimiento: 0,125–0,25 mg/día (ancianos: 0,0625–0,125 mg/día). Digitalización rápida IV: 0,5–1 mg en dosis divididas. Nivel sérico objetivo: 0,5–0,9 ng/mL (IC) o 0,8–2 ng/mL (FA).',
+    },
+    renalAlert: {
+      'pt': 'AJUSTE CRÍTICO: digoxina é 60–80% eliminada pelos rins. ClCr <50 mL/min → reduzir dose em 50%. ClCr <10 mL/min → usar 0,0625 mg/dia ou dias alternados. Monitorar nível sérico e sinais de toxicidade rigorosamente.',
+      'es': 'AJUSTE CRÍTICO: digoxina 60–80% eliminada por riñones. ClCr <50 mL/min → reducir dosis 50%. ClCr <10 mL/min → usar 0,0625 mg/día o días alternos. Monitorear nivel sérico y signos de toxicidad.',
+    },
+    elderlyAlert: {
+      'pt': 'ALTO RISCO (Beers Criteria): menor massa muscular reduz volume de distribuição → maiores níveis séricos. Hipocalemia e hipomagnesemia frequentes em idosos aumentam toxicidade digitálica. Dose máxima 0,125 mg/dia. Monitorar eletrólitos.',
+      'es': 'ALTO RIESGO (Beers Criteria): menor masa muscular reduce volumen de distribución → mayores niveles séricos. Hipocalemia e hipomagnesemia frecuentes en ancianos aumentan toxicidad digitálica. Dosis máxima 0,125 mg/día.',
+    },
+    mechanism: {
+      'pt': 'Inibe a Na+/K+-ATPase → ↑ Na+ intracelular → ↓ atividade do trocador Na+/Ca²+ → ↑ Ca²+ intracelular → ↑ contratilidade (efeito inotrópico +). Também aumenta tônus vagal → reduz automatismo e condução no nó AV (cronotrópico negativo, dromotrópico negativo).',
+      'es': 'Inhibe Na+/K+-ATPasa → ↑ Na+ intracelular → ↓ actividad intercambiador Na+/Ca²+ → ↑ Ca²+ intracelular → ↑ contractilidad. También aumenta tono vagal → reduce automatismo y conducción en nodo AV.',
+    },
+    warning: {
+      'pt': 'JANELA TERAPÊUTICA ESTREITA — toxicidade digitálica grave: náuseas, vômitos, visão amarelada/verde (xantopsia), arritmias complexas (BAV, bigeminismo, taquicardia ventricular). Hipocalemia, hipomagnesemia e hipercalcemia AUMENTAM toxicidade. Inúmeras interações: amiodarona (+↑50% níveis), verapamil, quinidina, espirolactona, claritromicina, eritromicina elevam digoxina. Antídoto: anticorpos antidigoxina (Digibind).',
+      'es': 'VENTANA TERAPÉUTICA ESTRECHA — toxicidad digitálica grave: náuseas, vómitos, visión amarilla/verde (xantopsia), arritmias complejas (BAV, bigeminismo, TV). Hipocalemia, hipomagnesemia e hipercalcemia AUMENTAN toxicidad. Múltiples interacciones. Antídoto: anticuerpos antidigoxina (Digibind).',
+    },
+    adverse: {
+      'pt': ['Náuseas/vômitos', 'Anorexia', 'Xantopsia (visão amarela/verde)', 'Bradicardia', 'BAV (1°, 2°, 3°)', 'Taquicardia ventricular', 'Bigeminismo', 'Fadiga', 'Confusão mental (idosos)'],
+      'es': ['Náuseas/vómitos', 'Anorexia', 'Xantopsia (visión amarilla/verde)', 'Bradicardia', 'BAV (1°, 2°, 3°)', 'Taquicardia ventricular', 'Bigeminismo', 'Fatiga', 'Confusión mental (ancianos)'],
+    },
+  ),
+
+  DrugModel(
+    id: 'dobutamina',
+    group: 'Cardiologia',
+    name: 'Dobutamina',
+    className: {
+      'pt': 'Inotrópico positivo — agonista β1-adrenérgico seletivo',
+      'es': 'Inotrópico positivo — agonista β1-adrenérgico selectivo',
+    },
+    category: {'pt': 'Inotrópico', 'es': 'Inotrópico'},
+    route: 'IV',
+    doseType: 'weight',
+    fixedDose: {
+      'pt': 'Infusão contínua IV: 2–20 mcg/kg/min. Titular conforme resposta hemodinâmica. Efeito inotrópico máximo: 10–15 mcg/kg/min. USO EXCLUSIVO EM UTI/UCO com monitoramento hemodinâmico contínuo.',
+      'es': 'Infusión continua IV: 2–20 mcg/kg/min. Titular según respuesta hemodinámica. Efecto inotrópico máximo: 10–15 mcg/kg/min. USO EXCLUSIVO EN UCI/UCO con monitoreo hemodinámico continuo.',
+    },
+    renalAlert: {
+      'pt': 'Sem ajuste de dose — metabolismo hepático rápido (meia-vida ~2 min). Monitorar débito urinário como indicador de perfusão renal.',
+      'es': 'Sin ajuste de dosis — metabolismo hepático rápido (semivida ~2 min). Monitorear diuresis como indicador de perfusión renal.',
+    },
+    elderlyAlert: {
+      'pt': 'Iniciar com dose baixa (2–5 mcg/kg/min). Maior sensibilidade a taquiarritmias. Monitorar ECG e PA continuamente.',
+      'es': 'Iniciar con dosis baja (2–5 mcg/kg/min). Mayor sensibilidad a taquiarritmias. Monitorear ECG y PA continuamente.',
+    },
+    mechanism: {
+      'pt': 'Agonista seletivo de receptores β1-adrenérgicos cardíacos → ↑ contratilidade (inotropismo +) e ↑ FC (cronotropismo +) com leve vasodilatação periférica (β2 leve). Aumenta débito cardíaco sem elevar significativamente a RVP. Não libera noradrenalina de forma indireta.',
+      'es': 'Agonista selectivo de receptores β1-adrenérgicos cardíacos → ↑ contractilidad (inotropismo +) y ↑ FC (cronotropismo +) con leve vasodilatación periférica. Aumenta gasto cardíaco sin elevar significativamente la RVP.',
+    },
+    warning: {
+      'pt': 'USO EXCLUSIVO EM UTI com monitoramento hemodinâmico contínuo (PA invasiva, débito cardíaco, SvO2). Pode precipitar ou agravar arritmias (FA, taquicardia ventricular) — ter desfibrilador disponível. CONTRAINDICADO em cardiomiopatia hipertrófica obstrutiva (CMHO). Risco de isquemia miocárdica em doses altas (↑ consumo de O2). Uso prolongado (>48–72h) associado a taquifilaxia e downregulation de receptores β.',
+      'es': 'USO EXCLUSIVO EN UCI con monitoreo hemodinámico continuo. Puede precipitar arritmias (FA, TV) — tener desfibrilador disponible. CONTRAINDICADO en miocardiopatía hipertrófica obstructiva. Riesgo de isquemia miocárdica en dosis altas. Uso prolongado (>48–72h) asociado a taquifilaxia.',
+    },
+    adverse: {
+      'pt': ['Taquicardia sinusal', 'Taquiarritmias (FA, EV)', 'Elevação da PA', 'Isquemia miocárdica', 'Cefaleia', 'Náuseas', 'Taquifilaxia (uso prolongado)'],
+      'es': ['Taquicardia sinusal', 'Taquiarritmias (FA, EV)', 'Elevación de PA', 'Isquemia miocárdica', 'Cefalea', 'Náuseas', 'Taquifilaxia (uso prolongado)'],
+    },
+  ),
+
+  DrugModel(
+    id: 'milrinona',
+    group: 'Cardiologia',
+    name: 'Milrinona',
+    className: {
+      'pt': 'Inotrópico/vasodilatador — inibidor de fosfodiesterase III (PDE3)',
+      'es': 'Inotrópico/vasodilatador — inhibidor de fosfodiesterasa III (PDE3)',
+    },
+    category: {'pt': 'Inotrópico', 'es': 'Inotrópico'},
+    route: 'IV',
+    doseType: 'weight',
+    fixedDose: {
+      'pt': 'Dose de ataque (opcional): 50 mcg/kg em 10 min. Manutenção: 0,375–0,75 mcg/kg/min. USO EXCLUSIVO EM UTI/UCO com monitoramento hemodinâmico. Ajustar conforme PA e débito cardíaco.',
+      'es': 'Dosis de carga (opcional): 50 mcg/kg en 10 min. Mantenimiento: 0,375–0,75 mcg/kg/min. USO EXCLUSIVO EN UCI/UCO con monitoreo hemodinámico.',
+    },
+    renalAlert: {
+      'pt': 'AJUSTE OBRIGATÓRIO: ClCr 50 mL/min → 0,43 mcg/kg/min; ClCr 30 mL/min → 0,33 mcg/kg/min; ClCr 10 mL/min → 0,23 mcg/kg/min. Eliminação renal predominante (85%).',
+      'es': 'AJUSTE OBLIGATORIO: ClCr 50 mL/min → 0,43 mcg/kg/min; ClCr 30 mL/min → 0,33 mcg/kg/min; ClCr 10 mL/min → 0,23 mcg/kg/min. Eliminación renal predominante (85%).',
+    },
+    elderlyAlert: {
+      'pt': 'Ajustar conforme função renal (frequentemente comprometida). Maior risco de hipotensão grave — iniciar sem dose de ataque. Monitorar continuamente.',
+      'es': 'Ajustar según función renal (frecuentemente comprometida). Mayor riesgo de hipotensión grave — iniciar sin dosis de carga. Monitorear continuamente.',
+    },
+    mechanism: {
+      'pt': 'Inibe a fosfodiesterase III (PDE3) → ↑ AMPc intracelular → ↑ contratilidade miocárdica (inotropismo +) E vasodilatação arterial e venosa (redução de pré e pós-carga) — mecanismo independente dos receptores β-adrenérgicos, mantendo eficácia mesmo com uso crônico de betabloqueadores.',
+      'es': 'Inhibe fosfodiesterasa III (PDE3) → ↑ AMPc intracelular → ↑ contractilidad miocárdica E vasodilatación arterial y venosa (reducción de pre y poscarga) — mecanismo independiente de receptores β-adrenérgicos.',
+    },
+    warning: {
+      'pt': 'HIPOTENSÃO GRAVE é o principal efeito adverso (vasodilatação intensa) — evitar dose de ataque em pacientes hipovolêmicos ou com PA baixa. Pró-arrítmico: risco elevado de arritmias ventriculares (TV, FV) — monitorar ECG continuamente. Não melhorou mortalidade em IC aguda em estudos randomizados (OPTIME-CHF) — usar como ponte para recuperação ou transplante.',
+      'es': 'HIPOTENSIÓN GRAVE es el principal efecto adverso — evitar dosis de carga en hipovolemia o PA baja. Proarrítmico: riesgo elevado de arritmias ventriculares — monitorear ECG continuamente. No mejoró mortalidad en IC aguda (OPTIME-CHF) — usar como puente para recuperación o trasplante.',
+    },
+    adverse: {
+      'pt': ['Hipotensão grave', 'Taquicardia ventricular', 'Fibrilação ventricular', 'Taquicardia supraventricular', 'Cefaleia', 'Tremor', 'Hipocalemia', 'Trombocitopenia (raro)'],
+      'es': ['Hipotensión grave', 'Taquicardia ventricular', 'Fibrilación ventricular', 'Taquicardia supraventricular', 'Cefalea', 'Temblor', 'Hipocalemia', 'Trombocitopenia (raro)'],
+    },
+  ),
+
+  DrugModel(
+    id: 'adenosina',
+    group: 'Cardiologia',
+    name: 'Adenosina',
+    className: {
+      'pt': 'Antiarrítmico — nucleosídeo endógeno / bloqueador AV ultrarrápido',
+      'es': 'Antiarrítmico — nucleósido endógeno / bloqueador AV ultrarápido',
+    },
+    category: {'pt': 'Antiarrítmico / Diagnóstico', 'es': 'Antiarrítmico / Diagnóstico'},
+    route: 'IV',
+    doseType: 'weight',
+    fixedDose: {
+      'pt': 'TSV: 6 mg IV rápido (bolus em veia central ou antecubital) → flush imediato 20 mL SF. Se sem resposta em 1–2 min: 12 mg. Pode repetir 12 mg. Meia-vida: 10–30 SEGUNDOS. Diagnóstico de taquicardia: 6–18 mg.',
+      'es': 'TSV: 6 mg IV rápido (bolo en vena central o antecubital) → flush inmediato 20 mL SF. Si sin respuesta en 1–2 min: 12 mg. Puede repetir 12 mg. Semivida: 10–30 SEGUNDOS. Diagnóstico de taquicardia: 6–18 mg.',
+    },
+    renalAlert: {
+      'pt': 'Sem ajuste necessário — metabolismo plasmático (eritrócitos e endotélio), independente de função renal ou hepática.',
+      'es': 'Sin ajuste necesario — metabolismo plasmático (eritrocitos y endotelio), independiente de función renal o hepática.',
+    },
+    elderlyAlert: {
+      'pt': 'Usar dose padrão — meia-vida de segundos limita acúmulo. Monitorar pausas sinusais e broncoespasmo (mais prevalente em idosos com DPOC).',
+      'es': 'Usar dosis estándar — semivida de segundos limita acumulación. Monitorear pausas sinusales y broncoespasmo (más prevalente en ancianos con EPOC).',
+    },
+    mechanism: {
+      'pt': 'Ativa receptores A1 de adenosina no nó AV e nó sinusal → hiperpolarização celular (abre canais K+) → bloqueio transitório da condução AV → interrompe circuitos de reentrada que dependem do nó AV. Meia-vida de 10–30 segundos — efeito totalmente reversível em <1 minuto.',
+      'es': 'Activa receptores A1 de adenosina en nodo AV y sinusal → hiperpolarización celular (abre canales K+) → bloqueo transitorio de conducción AV → interrumpe circuitos de reentrada dependientes del nodo AV. Semivida 10–30 segundos — efecto totalmente reversible en <1 minuto.',
+    },
+    warning: {
+      'pt': 'CONTRAINDICADO em: bloqueio AV 2° ou 3° (sem MP), síndrome do nó sinusal doente, asma brônquica ativa (broncoespasmo grave), hipersensibilidade conhecida. ATENÇÃO: pode desmascarar FA/flutter pré-existente. Metilxantinas (cafeína, teofilina) ANTAGONIZAM o efeito — dobrar a dose em pacientes que ingeriram cafeína. Dipiridamol POTENCIALIZA — reduzir dose para 3 mg. Administrar EXCLUSIVAMENTE com monitoramento ECG contínuo e desfibrilador disponível.',
+      'es': 'CONTRAINDICADO en: bloqueo AV 2° o 3° (sin MP), síndrome del nodo sinusal enfermo, asma bronquial activa, hipersensibilidad. Metilxantinas (cafeína, teofilina) ANTAGONIZAN el efecto — doblar dosis. Dipiridamol POTENCIA — reducir dosis a 3 mg. Administrar con monitoreo ECG continuo y desfibrilador disponible.',
+    },
+    adverse: {
+      'pt': ['Rubor facial', 'Dispneia/broncoespasmo', 'Dor torácica', 'Pausa sinusal transitória', 'Bloqueio AV transitório', 'Náuseas', 'Cefaleia', 'Sensação de morte iminente'],
+      'es': ['Rubor facial', 'Disnea/broncoespasmo', 'Dolor torácico', 'Pausa sinusal transitoria', 'Bloqueo AV transitorio', 'Náuseas', 'Cefalea', 'Sensación de muerte inminente'],
+    },
+  ),
+
+  // ══════════════════════════════════════════════════════════════════════════
+  // LOTE 9 — NEUROLOGIA: Antiepilépticos e Antiparkinsonianos
+  // ══════════════════════════════════════════════════════════════════════════
+
+  DrugModel(
+    id: 'fenitoina',
+    group: 'Neurologia',
+    name: 'Fenitoína',
+    className: {
+      'pt': 'Antiepiléptico — hidantoína / bloqueador de canais de Na+',
+      'es': 'Antiepiléptico — hidantoína / bloqueador de canales Na+',
+    },
+    category: {'pt': 'Antiepiléptico', 'es': 'Antiepiléptico'},
+    route: 'VO/IV',
+    doseType: 'weight',
+    fixedDose: {
+      'pt': 'Manutenção VO: 4–7 mg/kg/dia em 1–3 doses (adulto típico: 300–400 mg/dia). Ataque IV (status epilepticus): 15–20 mg/kg IV a máx 50 mg/min com monitoramento ECG contínuo. Nível sérico alvo: 10–20 mcg/mL (total) ou 1–2 mcg/mL (livre).',
+      'es': 'Mantenimiento VO: 4–7 mg/kg/día en 1–3 dosis (adulto típico: 300–400 mg/día). Carga IV (status epilepticus): 15–20 mg/kg IV a máx 50 mg/min con monitoreo ECG continuo. Nivel sérico objetivo: 10–20 mcg/mL (total).',
+    },
+    renalAlert: {
+      'pt': 'ATENÇÃO: insuficiência renal altera a fração livre de fenitoína — níveis totais podem subestimar a exposição. Monitorar fenitoína LIVRE (unbound) em IRC. Sem ajuste de dose habitual, mas interpretação do nível sérico requer correção pela albumina.',
+      'es': 'ATENCIÓN: insuficiencia renal altera fracción libre de fenitoína — niveles totales pueden subestimar exposición. Monitorear fenitoína LIBRE en IRC. Interpretación del nivel sérico requiere corrección por albúmina.',
+    },
+    elderlyAlert: {
+      'pt': 'Hipoalbuminemia frequente em idosos → maior fração livre de fenitoína com níveis totais aparentemente normais → toxicidade em doses habituais. Reduzir dose. Monitorar nível livre. Risco elevado de ataxia e quedas.',
+      'es': 'Hipoalbuminemia frecuente en ancianos → mayor fracción libre con niveles totales aparentemente normales → toxicidad en dosis habituales. Reducir dosis. Monitorear nivel libre. Riesgo elevado de ataxia y caídas.',
+    },
+    mechanism: {
+      'pt': 'Bloqueia canais de Na+ voltagem-dependentes no estado inativado (uso-dependente) → estabiliza membranas neuronais → suprime propagação de descargas epilépticas de forma seletiva sem deprimir o SNC globalmente. Não aumenta o tônus GABAérgico.',
+      'es': 'Bloquea canales Na+ voltaje-dependientes en estado inactivado (uso-dependiente) → estabiliza membranas neuronales → suprime propagación de descargas epilépticas sin deprimir SNC globalmente.',
+    },
+    warning: {
+      'pt': 'JANELA TERAPÊUTICA ESTREITA — cinética de saturação (zero-order em doses terapêuticas): pequenos aumentos de dose podem causar grandes aumentos de nível sérico. Toxicidade: nistagmo (>20 mcg/mL), ataxia (>30 mcg/mL), confusão/coma (>40 mcg/mL). IV rápido → hipotensão grave, arritmias cardíacas, parada cardíaca (propileno glicol do veículo). INDUTOR potente do CYP1A2, 2C9, 2C19, 3A4 — inúmeras interações. Teratogênica (Categoria D). Síndrome de hipersensibilidade a hidantoína.',
+      'es': 'VENTANA TERAPÉUTICA ESTRECHA — cinética de saturación (zero-order en dosis terapéuticas). Toxicidad: nistagmo (>20 mcg/mL), ataxia (>30 mcg/mL), confusión/coma (>40 mcg/mL). IV rápido → hipotensión grave, arritmias. INDUCTOR potente CYP1A2, 2C9, 2C19, 3A4. Teratogénica.',
+    },
+    adverse: {
+      'pt': ['Nistagmo', 'Ataxia/disartria', 'Sonolência/confusão', 'Hiperplasia gengival', 'Hirsutismo', 'Rash cutâneo (Stevens-Johnson raro)', 'Síndrome de hipersensibilidade', 'Osteoporose (uso crônico)', 'Hipotensão IV', 'Arritmias IV'],
+      'es': ['Nistagmo', 'Ataxia/disartria', 'Somnolencia/confusión', 'Hiperplasia gingival', 'Hirsutismo', 'Rash cutáneo (Stevens-Johnson raro)', 'Síndrome de hipersensibilidad', 'Osteoporosis (uso crónico)', 'Hipotensión IV', 'Arritmias IV'],
+    },
+  ),
+
+  DrugModel(
+    id: 'carbamazepina',
+    group: 'Neurologia',
+    name: 'Carbamazepina',
+    className: {
+      'pt': 'Antiepiléptico — iminoestilbeno / bloqueador de canais de Na+',
+      'es': 'Antiepiléptico — iminoestilbeno / bloqueador de canales Na+',
+    },
+    category: {'pt': 'Antiepiléptico / Estabilizador de humor', 'es': 'Antiepiléptico / Estabilizador del humor'},
+    route: 'VO',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': 'Adultos: iniciar 100–200 mg 2x/dia → titular 200 mg/semana até 800–1200 mg/dia em 2–4 doses. Liberação controlada: 2x/dia. Nível sérico alvo: 4–12 mcg/mL. Neuralgia do trigêmeo: 200–1200 mg/dia.',
+      'es': 'Adultos: iniciar 100–200 mg 2 veces/día → titular 200 mg/semana hasta 800–1200 mg/día en 2–4 dosis. Nivel sérico objetivo: 4–12 mcg/mL. Neuralgia del trigémino: 200–1200 mg/día.',
+    },
+    renalAlert: {
+      'pt': 'Usar com cautela em insuficiência renal — metabólito ativo (CBZ-10,11-epóxido) pode acumular. Monitorar nível sérico e toxicidade.',
+      'es': 'Usar con cautela en insuficiencia renal — metabolito activo (CBZ-10,11-epóxido) puede acumularse. Monitorear nivel sérico y toxicidad.',
+    },
+    elderlyAlert: {
+      'pt': 'Iniciar com dose baixa (100 mg/dia) — maior sensibilidade a efeitos anticolinérgicos e ao SIADH. Risco de hiponatremia grave. Monitorar sódio sérico mensalmente.',
+      'es': 'Iniciar con dosis baja (100 mg/día) — mayor sensibilidad a efectos anticolinérgicos y al SIADH. Riesgo de hiponatremia grave. Monitorear sodio sérico mensualmente.',
+    },
+    mechanism: {
+      'pt': 'Bloqueia canais de Na+ voltagem-dependentes no estado inativado (similar à fenitoína) → reduz disparos repetitivos de neurônios epilépticos. Também modula receptores NMDA e reduz turnover de dopamina e noradrenalina (efeito estabilizador do humor no transtorno bipolar).',
+      'es': 'Bloquea canales Na+ voltaje-dependientes en estado inactivado → reduce disparos repetitivos de neuronas epilépticas. También modula receptores NMDA y reduce turnover de dopamina y noradrenalina (efecto estabilizador del humor en trastorno bipolar).',
+    },
+    warning: {
+      'pt': 'AUTOINDUTOR: carbamazepina induz seu próprio metabolismo (CYP3A4) — níveis caem após 2–4 semanas de uso (necessidade de retitulação). INDUTOR potente do CYP3A4, CYP1A2, CYP2C9 — reduz eficácia de anticoncepcionais orais, anticoagulantes, antirretrovirais, corticoides e dezenas de outros fármacos. RISCO GRAVE: síndrome de Stevens-Johnson e necrólise epidérmica tóxica — associados ao alelo HLA-B*1502 (prevalente em asiáticos — testar antes). SIADH com hiponatremia grave (monitorar Na+). Aplasia medular e agranulocitose (raros — hemograma basal e periódico). Teratogênico (espinha bífida — 1%).',
+      'es': 'AUTOINDUCTOR: carbamazepina induce su propio metabolismo (CYP3A4) — niveles bajan tras 2–4 semanas. INDUCTOR potente CYP3A4, 1A2, 2C9 — reduce eficacia de anticonceptivos, anticoagulantes, antirretrovirales. RIESGO GRAVE: Stevens-Johnson — asociado a HLA-B*1502 (asiáticos — testar antes). SIADH con hiponatremia grave. Aplasia medular (raro). Teratogénica.',
+    },
+    adverse: {
+      'pt': ['Diplopia/visão turva', 'Ataxia', 'Tontura', 'Sonolência', 'Hiponatremia (SIADH)', 'Leucopenia', 'Rash (Stevens-Johnson raro)', 'Elevação de transaminases', 'Náuseas'],
+      'es': ['Diplopía/visión borrosa', 'Ataxia', 'Mareo', 'Somnolencia', 'Hiponatremia (SIADH)', 'Leucopenia', 'Rash (Stevens-Johnson raro)', 'Elevación de transaminasas', 'Náuseas'],
+    },
+  ),
+
+  DrugModel(
+    id: 'acido valproico',
+    group: 'Neurologia',
+    name: 'Ácido Valproico / Valproato',
+    className: {
+      'pt': 'Antiepiléptico de amplo espectro — ácido graxo ramificado / estabilizador de humor',
+      'es': 'Antiepiléptico de amplio espectro — ácido graso ramificado / estabilizador del humor',
+    },
+    category: {'pt': 'Antiepiléptico / Estabilizador de humor', 'es': 'Antiepiléptico / Estabilizador del humor'},
+    route: 'VO/IV',
+    doseType: 'weight',
+    fixedDose: {
+      'pt': 'Epilepsia VO: 10–15 mg/kg/dia → titular 5–10 mg/kg/semana → 20–60 mg/kg/dia em 2–3 doses. Nível sérico alvo: 50–100 mcg/mL (até 150 para refratários). Status epilepticus IV: 20–40 mg/kg a 6 mg/kg/min.',
+      'es': 'Epilepsia VO: 10–15 mg/kg/día → titular 5–10 mg/kg/semana → 20–60 mg/kg/día en 2–3 dosis. Nivel sérico objetivo: 50–100 mcg/mL. Status epilepticus IV: 20–40 mg/kg a 6 mg/kg/min.',
+    },
+    renalAlert: {
+      'pt': 'Monitorar: insuficiência renal aumenta fração livre do valproato (hipoalbuminemia associada) — interpretar níveis totais com cautela. Sem ajuste de dose rotineiro, mas monitorar toxicidade.',
+      'es': 'Insuficiencia renal aumenta fracción libre del valproato — interpretar niveles totales con cautela. Sin ajuste de dosis rutinario, pero monitorear toxicidad.',
+    },
+    elderlyAlert: {
+      'pt': 'Maior risco de sedação, tremor, trombocitopenia e hiperamonemia. Reduzir dose em 25–50%. Monitorar amônia sérica se confusão mental. Risco de encefalopatia hiperamonêmica — não confundir com toxicidade por valproato.',
+      'es': 'Mayor riesgo de sedación, temblor, trombocitopenia e hiperamonemia. Reducir dosis 25–50%. Monitorear amonio sérico si confusión mental. Riesgo de encefalopatía hiperamonémica.',
+    },
+    mechanism: {
+      'pt': 'Mecanismo múltiplo: (1) Potencializa transmissão GABAérgica (inibe GABA-transaminase e GAD); (2) Bloqueia canais de Na+ voltagem-dependentes; (3) Inibe canais de Ca²+ tipo T (eficaz em ausências); (4) Inibe canais de K+ em alguns neurônios. Efeito estabilizador do humor provavelmente via inibição de GSK-3β e modulação de vias de sinalização intracelular.',
+      'es': 'Mecanismo múltiple: (1) Potencia transmisión GABAérgica; (2) Bloquea canales Na+ voltaje-dependientes; (3) Inhibe canales Ca²+ tipo T (eficaz en ausencias); (4) Efecto estabilizador del humor vía inhibición GSK-3β.',
+    },
+    warning: {
+      'pt': 'TERATOGÊNICO GRAVE (Categoria X para transtorno bipolar): síndrome fetal do valproato — defeitos do tubo neural (1–2%), malformações cardíacas, fissura palatina, comprometimento cognitivo (QI reduzido, autismo). EVITAR em mulheres em idade fértil sem contracepção extremamente eficaz. HEPATOTOXICIDADE FATAL (raro mas grave) — risco máximo em <2 anos com politerapia e doenças metabólicas; monitorar enzimas hepáticas. PANCREATITE hemorrágica (raro). Trombocitopenia dose-dependente. Inibidor do CYP2C9 e glucuronidação — eleva níveis de lamotrigina, fenitoína (livre), fenobarbital.',
+      'es': 'TERATOGÉNICO GRAVE (Categoría X para trastorno bipolar): síndrome fetal del valproato — defectos del tubo neural (1–2%), malformaciones cardíacas. EVITAR en mujeres en edad fértil sin anticoncepción muy eficaz. HEPATOTOXICIDAD FATAL (raro) — monitorear enzimas hepáticas. PANCREATITIS hemorrágica (raro). Trombocitopenia dosis-dependiente.',
+    },
+    adverse: {
+      'pt': ['Tremor postural (dose-dependente)', 'Ganho de peso', 'Alopecia (reversível)', 'Náuseas/vômitos', 'Sonolência', 'Trombocitopenia', 'Hiperamonemia', 'Elevação de transaminases', 'Pancreatite (raro)', 'Hepatotoxicidade fatal (raro)'],
+      'es': ['Temblor postural (dosis-dependiente)', 'Aumento de peso', 'Alopecia (reversible)', 'Náuseas/vómitos', 'Somnolencia', 'Trombocitopenia', 'Hiperamonemia', 'Elevación de transaminasas', 'Pancreatitis (raro)', 'Hepatotoxicidad fatal (raro)'],
+    },
+  ),
+
+  DrugModel(
+    id: 'levetiracetam',
+    group: 'Neurologia',
+    name: 'Levetiracetam',
+    className: {
+      'pt': 'Antiepiléptico de 2ª geração — ligante da proteína SV2A da vesícula sináptica',
+      'es': 'Antiepiléptico de 2ª generación — ligando de la proteína SV2A de la vesícula sináptica',
+    },
+    category: {'pt': 'Antiepiléptico', 'es': 'Antiepiléptico'},
+    route: 'VO/IV',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': 'VO/IV: iniciar 500 mg 2x/dia → aumentar 500 mg a cada 2 semanas → máx 3000 mg/dia (1500 mg 2x/dia). IV equivalente ao VO (mesma dose e intervalo). Crianças: 10–30 mg/kg/dia.',
+      'es': 'VO/IV: iniciar 500 mg 2 veces/día → aumentar 500 mg cada 2 semanas → máx 3000 mg/día. IV equivalente a VO (misma dosis e intervalo). Niños: 10–30 mg/kg/día.',
+    },
+    renalAlert: {
+      'pt': 'AJUSTE OBRIGATÓRIO: ClCr 50–80 mL/min → máx 1500 mg 2x/dia; ClCr 30–50 mL/min → máx 750 mg 2x/dia; ClCr <30 mL/min → máx 500 mg 2x/dia. Diálise remove levetiracetam — dose suplementar após sessão.',
+      'es': 'AJUSTE OBLIGATORIO: ClCr 50–80 mL/min → máx 1500 mg 2 veces/día; ClCr 30–50 mL/min → máx 750 mg 2 veces/día; ClCr <30 mL/min → máx 500 mg 2 veces/día. Diálisis requiere dosis suplementaria.',
+    },
+    elderlyAlert: {
+      'pt': 'Reduzir dose conforme ClCr. Monitorar efeitos neuropsiquiátricos — agitação, irritabilidade e psicose são mais comuns em idosos. Considerar suplementação com vitamina B6 (piridoxina 100 mg/dia) para reduzir irritabilidade.',
+      'es': 'Reducir dosis según ClCr. Monitorear efectos neuropsiquiátricos — agitación, irritabilidad y psicosis más comunes en ancianos. Considerar suplemento de vitamina B6 (piridoxina 100 mg/día) para reducir irritabilidad.',
+    },
+    mechanism: {
+      'pt': 'Liga-se seletivamente à proteína SV2A (synaptic vesicle glycoprotein 2A) das vesículas pré-sinápticas → modula liberação de neurotransmissores (glutamato, GABA) sem afetar condução neuronal em repouso — mecanismo único entre antiepilépticos. Também inibe correntes de Ca²+ de alta voltagem e modula a hipersincronização neuronal.',
+      'es': 'Se une selectivamente a proteína SV2A (synaptic vesicle glycoprotein 2A) de vesículas presinápticas → modula liberación de neurotransmisores sin afectar conducción neuronal en reposo — mecanismo único entre antiepilépticos.',
+    },
+    warning: {
+      'pt': 'EFEITOS NEUROPSIQUIÁTRICOS (5–15%): irritabilidade, agitação, hostilidade, depressão, psicose — monitorar humor e comportamento, especialmente nas primeiras semanas. Sem interações medicamentosas clinicamente significativas (não é substrato ou indutor/inibidor de CYPs) — vantagem sobre antiepilépticos clássicos. Não teratogênico nos dados atuais, mas monitorar (dados limitados). Não requer monitoramento de nível sérico rotineiro.',
+      'es': 'EFECTOS NEUROPSIQUIÁTRICOS (5–15%): irritabilidad, agitación, hostilidad, depresión, psicosis — monitorear humor y conducta, especialmente primeras semanas. Sin interacciones medicamentosas clínicamente significativas (no es sustrato ni inductor/inhibidor de CYPs) — ventaja sobre antiepilépticos clásicos.',
+    },
+    adverse: {
+      'pt': ['Sonolência', 'Astenia', 'Tontura', 'Cefaleia', 'Irritabilidade/agitação', 'Depressão', 'Psicose (raro)', 'Infecção de VAS', 'Anorexia', 'Diplopia'],
+      'es': ['Somnolencia', 'Astenia', 'Mareo', 'Cefalea', 'Irritabilidad/agitación', 'Depresión', 'Psicosis (raro)', 'Infección VAS', 'Anorexia', 'Diplopía'],
+    },
+  ),
+
+  DrugModel(
+    id: 'lamotrigina',
+    group: 'Neurologia',
+    name: 'Lamotrigina',
+    className: {
+      'pt': 'Antiepiléptico de 2ª geração / Estabilizador de humor — feniletriazina',
+      'es': 'Antiepiléptico de 2ª generación / Estabilizador del humor — feniletriazina',
+    },
+    category: {'pt': 'Antiepiléptico / Estabilizador de humor', 'es': 'Antiepiléptico / Estabilizador del humor'},
+    route: 'VO',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': 'MONOTERAPIA: iniciar 25 mg/dia × 2 sem → 50 mg/dia × 2 sem → 100–500 mg/dia. COM VALPROATO (inibidor): iniciar 25 mg em dias alternados × 2 sem → titular MUITO lentamente (↑ risco de rash). COM INDUTORES (CBZ, fenitoína): doses mais altas e titulação mais rápida.',
+      'es': 'MONOTERAPIA: iniciar 25 mg/día × 2 sem → 50 mg/día × 2 sem → 100–500 mg/día. CON VALPROATO (inhibidor): iniciar 25 mg en días alternos × 2 sem → titular MUY lentamente (↑ riesgo de rash). CON INDUCTORES (CBZ, fenitoína): dosis más altas.',
+    },
+    renalAlert: {
+      'pt': 'Reduzir dose em IRC grave (ClCr <30 mL/min). Metabolismo hepático (glucuronidação), mas metabólito excretado pelo rim. Hemodiálise remove ~20%.',
+      'es': 'Reducir dosis en IRC grave (ClCr <30 mL/min). Metabolismo hepático (glucuronidación), pero metabolito excretado por riñón.',
+    },
+    elderlyAlert: {
+      'pt': 'Iniciar com dose menor — menor clearance hepático. Monitorar rash e sinais de Stevens-Johnson. Geralmente bem tolerada em idosos quando titulada lentamente.',
+      'es': 'Iniciar con dosis menor — menor clearance hepático. Monitorear rash y signos de Stevens-Johnson. Generalmente bien tolerada en ancianos si se titula lentamente.',
+    },
+    mechanism: {
+      'pt': 'Bloqueia canais de Na+ voltagem-dependentes no estado inativado (uso-dependente) → estabiliza membranas neuronais. Também inibe liberação pré-sináptica de glutamato e aspartato (aminoácidos excitatórios). Efeito nos canais de Ca²+ tipo N e P/Q contribui para a estabilização do humor no transtorno bipolar.',
+      'es': 'Bloquea canales Na+ voltaje-dependientes en estado inactivado → estabiliza membranas neuronales. También inhibe liberación presináptica de glutamato y aspartato. Efecto en canales Ca²+ tipo N y P/Q contribuye a estabilización del humor.',
+    },
+    warning: {
+      'pt': 'RISCO GRAVE DE RASH (Stevens-Johnson / NET — 0,3–0,8% em crianças, 0,08–0,3% em adultos) — DIRETAMENTE RELACIONADO À TITULAÇÃO RÁPIDA e ao uso com valproato. NUNCA acelerar a titulação. Suspender imediatamente ao primeiro sinal de rash (mesmo leve). INTERAÇÃO CRÍTICA com valproato: valproato inibe glucuronidação da lamotrigina → duplica ou triplica seus níveis — reduzir dose da lamotrigina pela metade. Contraceptivos orais REDUZEM níveis de lamotrigina em ~50% (indução de glucuronidação) — ajustar dose.',
+      'es': 'RIESGO GRAVE DE RASH (Stevens-Johnson / NET) — DIRECTAMENTE RELACIONADO A TITULACIÓN RÁPIDA y uso con valproato. NUNCA acelerar la titulación. Suspender inmediatamente al primer signo de rash. INTERACCIÓN CRÍTICA con valproato: duplica o triplica niveles de lamotrigina — reducir dosis a la mitad. Anticonceptivos orales REDUCEN niveles ~50%.',
+    },
+    adverse: {
+      'pt': ['Rash (Stevens-Johnson/NET)', 'Tontura', 'Ataxia', 'Diplopia', 'Cefaleia', 'Sonolência', 'Náuseas', 'Insônia', 'Tremor', 'Rash benigno (5–10%)'],
+      'es': ['Rash (Stevens-Johnson/NET)', 'Mareo', 'Ataxia', 'Diplopía', 'Cefalea', 'Somnolencia', 'Náuseas', 'Insomnio', 'Temblor', 'Rash benigno (5–10%)'],
+    },
+  ),
+
+  DrugModel(
+    id: 'levodopa carbidopa',
+    group: 'Neurologia',
+    name: 'Levodopa + Carbidopa',
+    className: {
+      'pt': 'Antiparkinsoniano — precursor da dopamina + inibidor periférico da DOPA descarboxilase',
+      'es': 'Antiparkinsoniano — precursor de dopamina + inhibidor periférico de DOPA descarboxilasa',
+    },
+    category: {'pt': 'Antiparkinsoniano', 'es': 'Antiparkinsoniano'},
+    route: 'VO',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': 'Iniciar: 1 cp levodopa/carbidopa 100/25 mg 3x/dia → titular lentamente. Formulações disponíveis: 100/25, 250/25, 250/25 mg. Liberação controlada: 200/50 mg 2–3x/dia. Dose máxima: individualizada (1000–1500 mg/dia de levodopa). Jejum melhora absorção — separar de refeições proteicas.',
+      'es': 'Iniciar: 1 cp levodopa/carbidopa 100/25 mg 3 veces/día → titular lentamente. Formulaciones: 100/25, 250/25 mg. Liberación controlada: 200/50 mg 2–3 veces/día. Dosis máxima: individualizada (1000–1500 mg/día de levodopa).',
+    },
+    renalAlert: {
+      'pt': 'Sem ajuste necessário em IRC leve/moderada. Em IRC grave: monitorar efeitos adversos (hipotensão ortostática mais pronunciada). Ajuste não estabelecido formalmente.',
+      'es': 'Sin ajuste necesario en IRC leve/moderada. En IRC grave: monitorear efectos adversos (hipotensión ortostática más pronunciada).',
+    },
+    elderlyAlert: {
+      'pt': 'Hipotensão ortostática grave é frequente — iniciar com dose baixa e titular lentamente. Psicose/alucinações mais comuns em idosos (especialmente >70 anos). Constipação significativa (adicionar laxativo). Quedas frequentes pela combinação de hipotensão + discinesias.',
+      'es': 'Hipotensión ortostática grave es frecuente — iniciar con dosis baja y titular lentamente. Psicosis/alucinaciones más comunes en ancianos. Estreñimiento significativo. Caídas frecuentes por combinación hipotensión + discinesias.',
+    },
+    mechanism: {
+      'pt': 'Levodopa atravessa a barreira hematoencefálica e é convertida em dopamina nos neurônios dopaminérgicos nigroestriatais → repõe dopamina endógena deficiente no Parkinson. Carbidopa inibe a DOPA descarboxilase periférica → impede conversão de levodopa em dopamina fora do SNC → aumenta biodisponibilidade central e reduz efeitos adversos periféricos.',
+      'es': 'Levodopa atraviesa la barrera hematoencefálica y es convertida en dopamina en neuronas dopaminérgicas nigroestriatales → repone dopamina endógena deficiente. Carbidopa inhibe DOPA descarboxilasa periférica → aumenta biodisponibilidad central y reduce efectos adversos periféricos.',
+    },
+    warning: {
+      'pt': 'COMPLICAÇÕES DO USO CRÔNICO (>5 anos): flutuações motoras (fenômeno wearing-off, on-off) e discinesias dose-dependentes — altamente impactantes na qualidade de vida. PSICOSE/ALUCINAÇÕES (10–40%) — tratar com quetiapina ou clozapina (nunca haloperidol/metoclopramida — bloqueiam dopamina). CONTRAINDICADO com IMAOs não seletivos (intervalo de 14 dias). Proteína dietética compete com absorção de levodopa (restrição proteica diurna pode ajudar). Síndrome de disregulação dopaminérgica (adição a levodopa — raro). Não interromper abruptamente → síndrome maligna do neuroléptico (hipertermia, rigidez).',
+      'es': 'COMPLICACIONES DEL USO CRÓNICO (>5 años): fluctuaciones motoras (wearing-off, on-off) y discinesias. PSICOSIS/ALUCINACIONES (10–40%) — tratar con quetiapina o clozapina (nunca haloperidol/metoclopramida). CONTRAINDICADO con IMAOs no selectivos. Proteína dietética compite con absorción. No suspender abruptamente → síndrome maligna del neuroléptico.',
+    },
+    adverse: {
+      'pt': ['Náuseas/vômitos (início do tratamento)', 'Hipotensão ortostática', 'Discinesias (uso crônico)', 'Alucinações/psicose', 'Sonolência diurna/sono súbito', 'Constipação', 'Confusão mental', 'Impulso compulsivo (jogo, hipersexualidade — raro)'],
+      'es': ['Náuseas/vómitos (inicio)', 'Hipotensión ortostática', 'Discinesias (uso crónico)', 'Alucinaciones/psicosis', 'Somnolencia diurna/sueño súbito', 'Estreñimiento', 'Confusión mental', 'Control de impulsos (juego, hipersexualidad — raro)'],
+    },
+  ),
+
+  DrugModel(
+    id: 'pramipexol',
+    group: 'Neurologia',
+    name: 'Pramipexol',
+    className: {
+      'pt': 'Antiparkinsoniano — agonista dopaminérgico não ergotamínico (D2/D3)',
+      'es': 'Antiparkinsoniano — agonista dopaminérgico no ergotamínico (D2/D3)',
+    },
+    category: {'pt': 'Antiparkinsoniano / Síndrome das pernas inquietas', 'es': 'Antiparkinsoniano / Síndrome de piernas inquietas'},
+    route: 'VO',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': 'Parkinson: iniciar 0,125 mg 3x/dia → dobrar a cada 5–7 dias → alvo 0,5–1,5 mg 3x/dia (máx 4,5 mg/dia). Liberação prolongada: 0,375 mg/dia → máx 4,5 mg/dia. SPI: 0,125–0,5 mg à noite 2–3h antes de dormir.',
+      'es': 'Parkinson: iniciar 0,125 mg 3 veces/día → duplicar cada 5–7 días → objetivo 0,5–1,5 mg 3 veces/día (máx 4,5 mg/día). Liberación prolongada: 0,375 mg/día → máx 4,5 mg/día. SPI: 0,125–0,5 mg por la noche 2–3h antes de dormir.',
+    },
+    renalAlert: {
+      'pt': 'AJUSTE CRÍTICO: pramipexol é 90% eliminado por via renal. ClCr 30–50 mL/min → máx 1,5 mg 3x/dia; ClCr 15–30 mL/min → máx 1,5 mg 2x/dia; ClCr <15 mL/min — não recomendado.',
+      'es': 'AJUSTE CRÍTICO: pramipexol 90% eliminado por vía renal. ClCr 30–50 mL/min → máx 1,5 mg 3 veces/día; ClCr 15–30 mL/min → máx 1,5 mg 2 veces/día; ClCr <15 mL/min — no recomendado.',
+    },
+    elderlyAlert: {
+      'pt': 'ALTO RISCO DE TRANSTORNOS DO CONTROLE DE IMPULSOS (jogo patológico, hipersexualidade, compras compulsivas, binge eating) — alertar paciente e família. Sonolência diurna excessiva e ataques de sono (não dirigir). Hipotensão ortostática frequente.',
+      'es': 'ALTO RIESGO DE TRASTORNOS DEL CONTROL DE IMPULSOS (juego patológico, hipersexualidad, compras compulsivas, binge eating) — alertar paciente y familia. Somnolencia diurna excesiva y ataques de sueño (no conducir). Hipotensión ortostática frecuente.',
+    },
+    mechanism: {
+      'pt': 'Agonista seletivo de receptores dopaminérgicos D2 e D3 (preferência por D3) no estriado e núcleo accumbens → simula ação da dopamina endógena deficiente no Parkinson. Não requer conversão pré-sináptica (ao contrário da levodopa) — ação direta nos receptores pós-sinápticos.',
+      'es': 'Agonista selectivo de receptores dopaminérgicos D2 y D3 (preferencia por D3) en el estriado y núcleo accumbens → simula acción de la dopamina endógena deficiente en el Parkinson. No requiere conversión presináptica.',
+    },
+    warning: {
+      'pt': 'TRANSTORNOS DO CONTROLE DE IMPULSOS (ICDs) são frequentes e subestimados (15–25% dos pacientes) — jogo patológico, hipersexualidade, compras compulsivas, punding (movimentos repetitivos sem objetivo). Discutir ANTES de iniciar com paciente e familiares. Reduzir ou suspender se ICDs surgirem. ATAQUES DE SONO SÚBITO — contraindicar direção. SÍNDROME DE AUGMENTAÇÃO na SPI (piora paradoxal com dose crescente). Não suspender abruptamente (retirada lenta ao longo de semanas).',
+      'es': 'TRASTORNOS DEL CONTROL DE IMPULSOS (ICDs) frecuentes y subestimados (15–25% de pacientes) — discutir ANTES de iniciar. ATAQUES DE SUEÑO SÚBITO — contraindicar conducción. SÍNDROME DE AUGMENTACIÓN en SPI. No suspender abruptamente.',
+    },
+    adverse: {
+      'pt': ['Náuseas', 'Sonolência/ataques de sono', 'Alucinações', 'Hipotensão ortostática', 'Edema periférico', 'Transtorno do controle de impulsos', 'Insônia', 'Constipação', 'Discinesias'],
+      'es': ['Náuseas', 'Somnolencia/ataques de sueño', 'Alucinaciones', 'Hipotensión ortostática', 'Edema periférico', 'Trastorno control de impulsos', 'Insomnio', 'Estreñimiento', 'Discinesias'],
+    },
+  ),
+
+  // ══════════════════════════════════════════════════════════════════════════
+  // LOTE 10 — REUMATOLOGIA: DMARDs e Biológicos
+  // ══════════════════════════════════════════════════════════════════════════
+
+  DrugModel(
+    id: 'metotrexato',
+    group: 'Reumatologia',
+    name: 'Metotrexato',
+    className: {
+      'pt': 'DMARD convencional — antimetabólito / antagonista do folato',
+      'es': 'DMARD convencional — antimetabolito / antagonista del folato',
+    },
+    category: {'pt': 'DMARD / Antirreumático / Imunossupressor', 'es': 'DMARD / Antirreumático / Inmunosupresor'},
+    route: 'VO/SC/IM',
+    doseType: 'weight',
+    fixedDose: {
+      'pt': 'AR/Psoríase: 7,5–25 mg SEMANAL (dose única/semana). Iniciar 7,5 mg/semana → aumentar 2,5–5 mg a cada 4–6 semanas. VIA SC preferida em doses >15 mg (maior biodisponibilidade). SUPLEMENTAR com ácido fólico 5 mg/semana (no dia seguinte) — reduz toxicidade sem reduzir eficácia.',
+      'es': 'AR/Psoriasis: 7,5–25 mg SEMANAL (dosis única/semana). Iniciar 7,5 mg/semana → aumentar 2,5–5 mg cada 4–6 semanas. VÍA SC preferida en dosis >15 mg. SUPLEMENTAR con ácido fólico 5 mg/semana (día siguiente).',
+    },
+    renalAlert: {
+      'pt': 'CONTRAINDICADO em ClCr <30 mL/min — risco de toxicidade grave (mielossupressão, mucosites, nefrotoxicidade). ClCr 30–60 mL/min → reduzir dose em 50% e monitorar. Metotrexato é parcialmente nefrotóxico — monitorar função renal antes e durante tratamento.',
+      'es': 'CONTRAINDICADO en ClCr <30 mL/min — riesgo de toxicidad grave. ClCr 30–60 mL/min → reducir dosis 50% y monitorear. Metotrexato es parcialmente nefrotóxico — monitorear función renal.',
+    },
+    elderlyAlert: {
+      'pt': 'ALTO RISCO: função renal reduzida → acúmulo e toxicidade aumentada. Iniciar com dose baixa (7,5 mg/semana), titular lentamente. Suplementação obrigatória com ácido fólico. Monitorar hemograma e transaminases mensalmente.',
+      'es': 'ALTO RIESGO: función renal reducida → acumulación y toxicidad aumentada. Iniciar con dosis baja (7,5 mg/semana), titular lentamente. Suplementación obligatoria con ácido fólico. Monitorear hemograma y transaminasas mensualmente.',
+    },
+    mechanism: {
+      'pt': 'Em doses imunossupressoras baixas (reumatológicas): inibe a DHFR (dihidrofolato redutase) de forma sub-citotóxica → ↓ disponibilidade de tetrahidrofolato → efeito anti-inflamatório via ↑ adenosina extracelular (que inibe linfócitos e macrófagos). Em doses oncológicas: inibição completa da síntese de purinas e timidilato → citotoxicidade direta.',
+      'es': 'En dosis inmunosupresoras bajas (reumatológicas): inhibe DHFR → ↓ tetrahidrofolato → efecto antiinflamatorio vía ↑ adenosina extracelular. En dosis oncológicas: inhibición completa de síntesis de purinas y timidilato.',
+    },
+    warning: {
+      'pt': 'DOSE SEMANAL — erros de dosagem (uso diário acidental) causam morte por toxicidade hematológica aguda. Prescrever CLARAMENTE: "uma vez por semana, no mesmo dia". CONTRAINDICADO em gravidez (abortivo/teratogênico) e lactação — contracepção por ≥3 meses após suspensão. MONITORAMENTO OBRIGATÓRIO: hemograma + TGO/TGP/FA + creatinina a cada 4–8 semanas. Hepatotoxicidade cumulativa (fibrose/cirrose em uso prolongado — biópsia se dose cumulativa >1–1,5g). Pneumonite por hipersensibilidade (≈3–5%). Mielossupressão aguda (leucopenia, trombocitopenia). INTERAÇÃO GRAVE com AINEs (reduz clearance renal) e sulfametoxazol-trimetoprim (dupla inibição do folato — pancitopenia).',
+      'es': 'DOSIS SEMANAL — errores de dosificación (uso diario accidental) causan muerte por toxicidad hematológica aguda. Prescribir CLARAMENTE: "una vez por semana". CONTRAINDICADO en embarazo y lactancia. MONITOREO OBLIGATORIO: hemograma + TGO/TGP/FA + creatinina cada 4–8 semanas. Hepatotoxicidad cumulativa. Neumonitis por hipersensibilidad. INTERACCIÓN GRAVE con AINEs y SMX-TMP.',
+    },
+    adverse: {
+      'pt': ['Náuseas/vômitos (dose)', 'Mucosites', 'Alopecia', 'Mielossupressão', 'Hepatotoxicidade/fibrose', 'Pneumonite', 'Nefrotoxicidade', 'Fotossensibilidade', 'Fadiga', 'Elevação de transaminases'],
+      'es': ['Náuseas/vómitos (dosis)', 'Mucositis', 'Alopecia', 'Mielossupresión', 'Hepatotoxicidad/fibrosis', 'Neumonitis', 'Nefrotoxicidad', 'Fotosensibilidad', 'Fatiga', 'Elevación de transaminasas'],
+    },
+  ),
+
+  DrugModel(
+    id: 'hidroxicloroquina',
+    group: 'Reumatologia',
+    name: 'Hidroxicloroquina',
+    className: {
+      'pt': 'DMARD convencional — antimalárico / imunossupressor leve',
+      'es': 'DMARD convencional — antipalúdico / inmunosupresor leve',
+    },
+    category: {'pt': 'DMARD / Antimalárico / Lúpus / AR', 'es': 'DMARD / Antipalúdico / Lupus / AR'},
+    route: 'VO',
+    doseType: 'weight',
+    fixedDose: {
+      'pt': 'AR/LES: 5 mg/kg/dia (peso real) em dose única diária (máx 400 mg/dia). DOSE MÁXIMA SEGURA PARA RETINA: ≤5 mg/kg/dia (peso real) — NÃO ultrapassar. Profilaxia antimalárica: 400 mg 1x/semana.',
+      'es': 'AR/LES: 5 mg/kg/día (peso real) en dosis única diaria (máx 400 mg/día). DOSIS MÁXIMA SEGURA PARA RETINA: ≤5 mg/kg/día (peso real) — NO superar. Profilaxis antipalúdica: 400 mg 1 vez/semana.',
+    },
+    renalAlert: {
+      'pt': 'Usar com cautela em IRC grave — acumulação possível. Reduzir dose em 50% se ClCr <10 mL/min. Monitorar toxicidade retiniana mais frequentemente.',
+      'es': 'Usar con cautela en IRC grave — acumulación posible. Reducir dosis 50% si ClCr <10 mL/min. Monitorear toxicidad retiniana con mayor frecuencia.',
+    },
+    elderlyAlert: {
+      'pt': 'Monitorar exame oftalmológico anual a partir do 5° ano de uso. Risco de toxicidade retiniana aumenta com dose acumulada >1000g. Macular degeneration coexistente pode aumentar o risco.',
+      'es': 'Monitorear examen oftalmológico anual a partir del 5° año de uso. Riesgo de toxicidad retiniana aumenta con dosis acumulada >1000g.',
+    },
+    mechanism: {
+      'pt': 'Acumula-se em lisossomos e vacúolos → eleva pH intracelular → inibe processamento e apresentação de antígenos pelas células dendríticas → reduz ativação de linfócitos T autorreativos. Também interfere na sinalização de receptores Toll-like (TLR7, TLR9) → reduz produção de citocinas inflamatórias (IFN-α, TNF-α, IL-6).',
+      'es': 'Se acumula en lisosomas → eleva pH intracelular → inhibe procesamiento y presentación de antígenos → reduce activación de linfocitos T autorreactivos. También interfiere en señalización TLR7, TLR9 → reduce producción de citocinas inflamatorias.',
+    },
+    warning: {
+      'pt': 'TOXICIDADE RETINIANA IRREVERSÍVEL — principal risco em uso prolongado (dose acumulada >1000g ou >5 anos): maculopatia em "olho de boi" com perda visual central permanente. Rastreamento oftalmológico: ANTES do início e anualmente a partir do 5° ano (ou mais cedo em fatores de risco). Dose máxima segura: ≤5 mg/kg/dia (peso real). QT PROLONGADOR moderado (CredibleMeds) — evitar com outros QT prolongadores. Miocardiopatia (raro — uso muito prolongado). Contraindicado em retinopatia pré-existente.',
+      'es': 'TOXICIDAD RETINIANA IRREVERSIBLE — principal riesgo en uso prolongado: maculopatía en "ojo de buey" con pérdida visual central permanente. Seguimiento oftalmológico: ANTES del inicio y anualmente a partir del 5° año. Dosis máxima segura: ≤5 mg/kg/día. QT PROLONGADOR moderado — evitar con otros QT prolongadores.',
+    },
+    adverse: {
+      'pt': ['Retinopatia/maculopatia (uso prolongado)', 'Náuseas/dor abdominal', 'Cefaleia', 'Tontura', 'Rash cutâneo', 'Hipoglicemia (raro)', 'Miopatia (raro)', 'Miocardiopatia (raro)', 'Prolongamento QT'],
+      'es': ['Retinopatía/maculopatía (uso prolongado)', 'Náuseas/dolor abdominal', 'Cefalea', 'Mareo', 'Rash cutáneo', 'Hipoglucemia (raro)', 'Miopatía (raro)', 'Miocardiopatía (raro)', 'Prolongación QT'],
+    },
+  ),
+
+  DrugModel(
+    id: 'leflunomida',
+    group: 'Reumatologia',
+    name: 'Leflunomida',
+    className: {
+      'pt': 'DMARD convencional — inibidor da síntese de pirimidinas (DHODH)',
+      'es': 'DMARD convencional — inhibidor de síntesis de pirimidinas (DHODH)',
+    },
+    category: {'pt': 'DMARD / Antirreumático', 'es': 'DMARD / Antirreumático'},
+    route: 'VO',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': 'Dose de ataque: 100 mg/dia × 3 dias (opcional — aumenta efeitos adversos). Manutenção: 20 mg/dia (pode reduzir para 10 mg se intolerância). Metabólito ativo (A77 1726) tem meia-vida de 1–4 semanas.',
+      'es': 'Dosis de carga: 100 mg/día × 3 días (opcional). Mantenimiento: 20 mg/día (puede reducir a 10 mg si intolerancia). Metabolito activo (A77 1726) tiene semivida de 1–4 semanas.',
+    },
+    renalAlert: {
+      'pt': 'Usar com cautela em IRC moderada/grave — dados limitados sobre segurança. Monitorar PA (hipertensão é efeito adverso frequente). Procedimento de washout obrigatório em toxicidade grave.',
+      'es': 'Usar con cautela en IRC moderada/grave — datos limitados. Monitorear PA. Procedimiento de lavado obligatorio en toxicidad grave.',
+    },
+    elderlyAlert: {
+      'pt': 'Monitorar PA (hipertensão é frequente). Hemograma e TGO/TGP mensais no primeiro ano. Risco aumentado de infecções oportunistas.',
+      'es': 'Monitorear PA (hipertensión es frecuente). Hemograma y TGO/TGP mensuales el primer año. Riesgo aumentado de infecciones oportunistas.',
+    },
+    mechanism: {
+      'pt': 'O metabólito ativo A77 1726 inibe a dihidroorotato desidrogenase (DHODH) — enzima mitocondrial essencial para a síntese de novo de pirimidinas. Linfócitos T e B ativados dependem da síntese de novo de pirimidinas para proliferação → leflunomida bloqueia seletivamente sua proliferação sem afetar células em repouso.',
+      'es': 'El metabolito activo A77 1726 inhibe DHODH — enzima mitocondrial esencial para síntesis de novo de pirimidinas. Linfocitos T y B activados dependen de esta vía para proliferación → leflunomida bloquea selectivamente su proliferación.',
+    },
+    warning: {
+      'pt': 'HEPATOTOXICIDADE (raro mas grave — casos de necrose hepática fatal): monitorar TGO/TGP mensalmente no primeiro ano, depois a cada 6–8 semanas. Suspender se TGO/TGP >3× LSN. TERATOGÊNICO — contraindicado na gravidez. Meia-vida muito longa do metabólito (1–4 semanas) → WASHOUT OBRIGATÓRIO antes de engravidar: colestiramina 8g 3x/dia × 11 dias → verificar níveis <0,02 mg/L em 2 amostras. HIPERTENSÃO (em 10–15% dos pacientes). Neuropatia periférica (raro). Interação com metotrexato: hepatotoxicidade aditiva (monitorar de perto na combinação — aprovada pelas diretrizes mas requer vigilância).',
+      'es': 'HEPATOTOXICIDAD (raro pero grave): monitorear TGO/TGP mensualmente el primer año. TERATOGÉNICO — contraindicado en embarazo. Semivida muy larga → LAVADO OBLIGATORIO antes de embarazo: colestiramina 8g 3 veces/día × 11 días. HIPERTENSIÓN (10–15%). Neuropatía periférica (raro).',
+    },
+    adverse: {
+      'pt': ['Diarreia', 'Náuseas', 'Elevação de transaminases', 'Alopecia reversível', 'Hipertensão', 'Rash cutâneo', 'Leucopenia', 'Neuropatia periférica', 'Infecções respiratórias'],
+      'es': ['Diarrea', 'Náuseas', 'Elevación de transaminasas', 'Alopecia reversible', 'Hipertensión', 'Rash cutáneo', 'Leucopenia', 'Neuropatía periférica', 'Infecciones respiratorias'],
+    },
+  ),
+
+  DrugModel(
+    id: 'adalimumabe',
+    group: 'Reumatologia',
+    name: 'Adalimumabe',
+    className: {
+      'pt': 'Biológico — anticorpo monoclonal anti-TNF-α (IgG1 totalmente humano)',
+      'es': 'Biológico — anticuerpo monoclonal anti-TNF-α (IgG1 totalmente humano)',
+    },
+    category: {'pt': 'DMARD Biológico / Anti-TNF', 'es': 'DMARD Biológico / Anti-TNF'},
+    route: 'SC',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': 'AR: 40 mg SC a cada 2 semanas (pode aumentar para semanal se resposta insuficiente em monoterapia). Doença de Crohn/RCU: 160 mg → 80 mg (2 sem depois) → 40 mg a cada 2 semanas. Psoríase em placa: 80 mg → 40 mg a cada 2 semanas.',
+      'es': 'AR: 40 mg SC cada 2 semanas (puede aumentar a semanal si respuesta insuficiente en monoterapia). Enfermedad de Crohn/RCU: 160 mg → 80 mg (2 semanas después) → 40 mg cada 2 semanas. Psoriasis: 80 mg → 40 mg cada 2 semanas.',
+    },
+    renalAlert: {
+      'pt': 'Sem ajuste necessário em IRC — eliminação não renal (catabolismo proteico). Monitorar infecções oportunistas (maior susceptibilidade em IRC avançada).',
+      'es': 'Sin ajuste necesario en IRC — eliminación no renal (catabolismo proteico). Monitorear infecciones oportunistas.',
+    },
+    elderlyAlert: {
+      'pt': 'ALTO RISCO DE INFECÇÕES GRAVES (pneumonias, sepse, tuberculose reativada). Rastreio de TB ativo antes do início. Vacinas atenuadas contraindicadas durante o tratamento.',
+      'es': 'ALTO RIESGO DE INFECCIONES GRAVES (neumonías, sepsis, tuberculosis reactivada). Cribado de TB activo antes del inicio. Vacunas atenuadas contraindicadas durante el tratamiento.',
+    },
+    mechanism: {
+      'pt': 'Anticorpo IgG1 totalmente humano que se liga com alta afinidade ao TNF-α (fator de necrose tumoral alfa) solúvel e transmembranar → neutraliza sua ligação aos receptores TNFR1 e TNFR2 → bloqueia cascata inflamatória mediada por TNF (NF-κB, citocinas pró-inflamatórias, metaloproteases articulares). Também causa lise de células que expressam TNF transmembranar via CDC e ADCC.',
+      'es': 'Anticuerpo IgG1 totalmente humano que se une con alta afinidad al TNF-α soluble y transmembranar → neutraliza su unión a receptores TNFR1 y TNFR2 → bloquea cascada inflamatoria mediada por TNF.',
+    },
+    warning: {
+      'pt': 'RISCO DE INFECÇÕES GRAVES E OPORTUNISTAS — tuberculose (reativação de TB latente), infecções fúngicas invasivas (histoplasmose, coccidioidomicose), bacterianas e virais graves. RASTREIO OBRIGATÓRIO ANTES DO INÍCIO: IGRA ou PPD (TB), sorologias (HBV, HCV, HIV), RX de tórax. Suspender imediatamente em infecções graves. CONTRAINDICADO em TB ativa, ICC grave (NYHA III-IV), sepse. Risco aumentado de linfoma e neoplasias de pele (não-melanoma). Reações no local de injeção. Síndrome lúpus-like (raro). Desmielinização (raro — evitar em EM).',
+      'es': 'RIESGO DE INFECCIONES GRAVES Y OPORTUNISTAS — tuberculosis (reactivación de TB latente), infecciones fúngicas invasoras, bacterianas y virales graves. CRIBADO OBLIGATORIO ANTES DEL INICIO: IGRA o PPD (TB), serologías (VHB, VHC, VIH), RX tórax. Suspender inmediatamente en infecciones graves. CONTRAINDICADO en TB activa, ICC grave (NYHA III-IV), sepsis.',
+    },
+    adverse: {
+      'pt': ['Reações no local de injeção', 'Infecções respiratórias superiores', 'Reativação de TB', 'Infecções fúngicas invasivas', 'Linfoma (risco aumentado)', 'Síndrome lúpus-like', 'Neutropenia', 'Anticorpos anti-adalimumabe (perda de eficácia)', 'Cefaleia'],
+      'es': ['Reacciones en sitio de inyección', 'Infecciones respiratorias superiores', 'Reactivación TB', 'Infecciones fúngicas invasoras', 'Linfoma (riesgo aumentado)', 'Síndrome lúpus-like', 'Neutropenia', 'Anticuerpos anti-adalimumab (pérdida de eficacia)', 'Cefalea'],
+    },
+  ),
+
+  DrugModel(
+    id: 'etanercepte',
+    group: 'Reumatologia',
+    name: 'Etanercepte',
+    className: {
+      'pt': 'Biológico — proteína de fusão receptor solúvel de TNF (TNFR2:Fc)',
+      'es': 'Biológico — proteína de fusión receptor soluble de TNF (TNFR2:Fc)',
+    },
+    category: {'pt': 'DMARD Biológico / Anti-TNF', 'es': 'DMARD Biológico / Anti-TNF'},
+    route: 'SC',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': 'AR: 50 mg SC 1x/semana (ou 25 mg 2x/semana). Psoríase: 50 mg SC 2x/semana × 3 meses → 50 mg 1x/semana. Artrite psoriásica/espondiloartrite: 50 mg SC 1x/semana.',
+      'es': 'AR: 50 mg SC 1 vez/semana (o 25 mg 2 veces/semana). Psoriasis: 50 mg SC 2 veces/semana × 3 meses → 50 mg 1 vez/semana. Artritis psoriásica/espondilitis: 50 mg SC 1 vez/semana.',
+    },
+    renalAlert: {
+      'pt': 'Sem ajuste necessário — eliminação por catabolismo proteico. Monitorar infecções oportunistas em pacientes com IRC avançada (imunossupressão aumentada).',
+      'es': 'Sin ajuste necesario. Monitorear infecciones oportunistas en IRC avanzada.',
+    },
+    elderlyAlert: {
+      'pt': 'Rastrear TB antes do início. Vacinar contra influenza e pneumococo (vacinas inativadas). Monitorar sinais de infecção — febre pode estar ausente por anti-inflamatório. Não usar vacinas vivas.',
+      'es': 'Cribar TB antes del inicio. Vacunar contra influenza y neumococo (vacunas inactivadas). No usar vacunas vivas.',
+    },
+    mechanism: {
+      'pt': 'Proteína de fusão dimérica composta pelo domínio extracelular do receptor de TNF tipo 2 (TNFR2/p75) ligado à região Fc da IgG1 humana → age como receptor solúvel de TNF-α e TNF-β (linfotoxina α), competindo pelos receptores celulares de TNF → bloqueia atividade biológica do TNF sem causar lise de células que expressam TNF transmembranar (diferente dos anticorpos anti-TNF).',
+      'es': 'Proteína de fusión dimérica (TNFR2:Fc) → actúa como receptor soluble de TNF-α y TNF-β, compitiendo por receptores celulares de TNF → bloquea actividad biológica del TNF sin causar lisis de células que expresan TNF transmembranar.',
+    },
+    warning: {
+      'pt': 'RISCO DE INFECÇÕES GRAVES: TB (menor risco de reativação que anticorpos anti-TNF, mas rastreio obrigatório), infecções bacterianas, virais e fúngicas. Rastreio obrigatório pré-início: IGRA/PPD, HBV, HCV, HIV. CONTRAINDICADO em ICC grave (NYHA III-IV), infecções ativas graves, sepse. Diferentemente dos anticorpos anti-TNF, MENOS EFICAZ na doença de Crohn e RCU. Risco de linfoma. Reações no local de injeção (mais frequentes que com anticorpos monoclonais). Não usar com anakinra ou abatacepte (risco de infecções graves).',
+      'es': 'RIESGO DE INFECCIONES GRAVES: TB (menor riesgo de reactivación que anticuerpos anti-TNF, pero cribado obligatorio). CONTRAINDICADO en ICC grave (NYHA III-IV), infecciones activas graves. Diferente de los anticuerpos anti-TNF, MENOS EFICAZ en Crohn y RCU. Riesgo de linfoma.',
+    },
+    adverse: {
+      'pt': ['Reações no local de injeção (20–37%)', 'Infecções respiratórias', 'Reativação de TB (menor que outros anti-TNF)', 'Neutropenia', 'Linfoma (risco aumentado)', 'Cefaleia', 'Anticorpos antinucleares (raro)', 'Desmielinização (raro)'],
+      'es': ['Reacciones en sitio de inyección (20–37%)', 'Infecciones respiratorias', 'Reactivación TB (menor que otros anti-TNF)', 'Neutropenia', 'Linfoma (riesgo aumentado)', 'Cefalea', 'ANA positivos (raro)', 'Desmielinización (raro)'],
+    },
+  ),
+
+  DrugModel(
+    id: 'tocilizumabe',
+    group: 'Reumatologia',
+    name: 'Tocilizumabe',
+    className: {
+      'pt': 'Biológico — anticorpo monoclonal anti-receptor de IL-6 (anti-IL-6R)',
+      'es': 'Biológico — anticuerpo monoclonal anti-receptor de IL-6 (anti-IL-6R)',
+    },
+    category: {'pt': 'DMARD Biológico / Anti-IL-6', 'es': 'DMARD Biológico / Anti-IL-6'},
+    route: 'IV/SC',
+    doseType: 'weight',
+    fixedDose: {
+      'pt': 'AR IV: 4–8 mg/kg a cada 4 semanas (máx 800 mg). AR SC: 162 mg a cada semana ou a cada 2 semanas. Síndrome de liberação de citocinas (CAR-T/biológicos): 8 mg/kg IV (máx 800 mg), pode repetir a cada 8h (máx 4 doses). COVID-19 grave: 8 mg/kg IV dose única.',
+      'es': 'AR IV: 4–8 mg/kg cada 4 semanas (máx 800 mg). AR SC: 162 mg cada semana o cada 2 semanas. Síndrome de liberación de citocinas: 8 mg/kg IV (máx 800 mg). COVID-19 grave: 8 mg/kg IV dosis única.',
+    },
+    renalAlert: {
+      'pt': 'Sem ajuste necessário em IRC leve/moderada. Em IRC grave: monitorar infecções com maior rigor. Dados limitados em diálise.',
+      'es': 'Sin ajuste necesario en IRC leve/moderada. En IRC grave: monitorear infecciones con mayor rigor.',
+    },
+    elderlyAlert: {
+      'pt': 'ATENÇÃO: tocilizumabe inibe IL-6 que é mediador da resposta de fase aguda (PCR, febre) — infecções graves podem se apresentar SEM febre nem elevação de PCR, dificultando o diagnóstico. Monitorar sinais sutis de infecção. Vacinar antes do início.',
+      'es': 'ATENCIÓN: tocilizumab inhibe IL-6 mediador de respuesta de fase aguda (PCR, fiebre) — infecciones graves pueden presentarse SIN fiebre ni elevación de PCR. Monitorear signos sutiles de infección. Vacunar antes del inicio.',
+    },
+    mechanism: {
+      'pt': 'Anticorpo monoclonal humanizado IgG1 que bloqueia o receptor de IL-6 (IL-6R) solúvel e transmembranar → impede sinalização da IL-6 via JAK1/STAT3 → reduz cascata inflamatória mediada por IL-6 (proteínas de fase aguda, diferenciação de Th17, osteoclastogênese, anemia de doença crônica). IL-6 é citocina central em AR, artrite idiopática juvenil, síndromes de liberação de citocinas e tempestade de citocinas.',
+      'es': 'Anticuerpo monoclonal humanizado IgG1 que bloquea el receptor de IL-6 (IL-6R) soluble y transmembranar → impide señalización IL-6 vía JAK1/STAT3 → reduce cascada inflamatoria mediada por IL-6.',
+    },
+    warning: {
+      'pt': 'MASCARAMENTO DE INFECÇÕES: tocilizumabe suprime a resposta inflamatória mediada por IL-6 → PCR, VSG e febre podem estar NORMAIS mesmo em infecções graves (TB, sepse fúngica) — diagnóstico de infecção é mais difícil. Rastreio pré-início: TB (IGRA/PPD), HBV, HCV, HIV. PERFURAÇÃO GASTROINTESTINAL — risco aumentado em pacientes com doença diverticular (monitorar dor abdominal). DISLIPIDEMIA: eleva LDL, colesterol total e triglicérides (mecanismo: IL-6 regula o metabolismo lipídico). Monitorar lipidograma a cada 4–8 semanas no início. Neutropenia e trombocitopenia. CONTRAINDICADO em infecções ativas graves.',
+      'es': 'ENMASCARAMIENTO DE INFECCIONES: tocilizumab suprime respuesta inflamatoria → PCR, VSG y fiebre pueden estar NORMALES incluso en infecciones graves — diagnóstico es más difícil. Cribado pré-inicio: TB, VHB, VHC, VIH. PERFORACIÓN GASTROINTESTINAL — riesgo aumentado en diverticulosis. DISLIPIDEMIA: eleva LDL, colesterol total y triglicéridos. CONTRAINDICADO en infecciones activas graves.',
+    },
+    adverse: {
+      'pt': ['Infecções do trato respiratório superior', 'Nasofaringite', 'Neutropenia', 'Trombocitopenia', 'Elevação de transaminases', 'Dislipidemia', 'Perfuração GI (raro)', 'Reações infusionais (IV)', 'Reações no local de injeção (SC)'],
+      'es': ['Infecciones tracto respiratorio superior', 'Nasofaringitis', 'Neutropenia', 'Trombocitopenia', 'Elevación de transaminasas', 'Dislipidemia', 'Perforación GI (raro)', 'Reacciones infusionales (IV)', 'Reacciones sitio inyección (SC)'],
+    },
+  ),
+
+  DrugModel(
+    id: 'baricitinibe',
+    group: 'Reumatologia',
+    name: 'Baricitinibe',
+    className: {
+      'pt': 'DMARD alvo-específico — inibidor de JAK1/JAK2 (jakinibs)',
+      'es': 'DMARD diana-específico — inhibidor de JAK1/JAK2 (jakinibs)',
+    },
+    category: {'pt': 'DMARD alvo-específico / JAKi', 'es': 'DMARD diana-específico / JAKi'},
+    route: 'VO',
+    doseType: 'fixed',
+    fixedDose: {
+      'pt': 'AR: 2 mg/dia (dose padrão); 4 mg/dia (doença ativa, uso temporário, revisar em 6 meses). COVID-19 grave: 4 mg/dia × 14 dias ou até alta. Dermatite atópica moderada/grave: 2–4 mg/dia.',
+      'es': 'AR: 2 mg/día (dosis estándar); 4 mg/día (enfermedad activa, uso temporal). COVID-19 grave: 4 mg/día × 14 días o hasta el alta. Dermatitis atópica moderada/grave: 2–4 mg/día.',
+    },
+    renalAlert: {
+      'pt': 'AJUSTE OBRIGATÓRIO: ClCr 30–60 mL/min → máx 2 mg/dia; ClCr <30 mL/min → contraindicado em AR (2 mg/dia considerado para COVID-19). Eliminação renal predominante.',
+      'es': 'AJUSTE OBLIGATORIO: ClCr 30–60 mL/min → máx 2 mg/día; ClCr <30 mL/min → contraindicado en AR. Eliminación renal predominante.',
+    },
+    elderlyAlert: {
+      'pt': 'RISCO CARDIOVASCULAR AUMENTADO (≥65 anos, fumantes, DCV prévia): FDA emitiu Black Box Warning — maior risco de MACE (infarto, AVC, morte cardiovascular), tromboembolismo venoso, infecções graves e malignidades. Usar com extrema cautela. Preferir alternativas biológicas em >65 anos com fatores de risco.',
+      'es': 'RIESGO CARDIOVASCULAR AUMENTADO (≥65 años, fumadores, ECV previa): FDA emitió Black Box Warning — mayor riesgo de MACE, tromboembolismo venoso, infecciones graves y malignidades. Preferir alternativas biológicas en >65 años con factores de riesgo.',
+    },
+    mechanism: {
+      'pt': 'Inibe seletivamente JAK1 e JAK2 (janusquinases) — enzimas intracelulares que transduzem sinais de citocinas pró-inflamatórias (IL-6, IL-12, IL-23, IFN-γ, GM-CSF) via via JAK-STAT → bloqueia ativação e proliferação de linfócitos T e B, diferenciação de células Th17 e Th1, e produção de citocinas inflamatórias. Mecanismo oral, de ação rápida (efeito em 1–4 semanas).',
+      'es': 'Inhibe selectivamente JAK1 y JAK2 → bloquea transducción de señales de citocinas proinflamatorias (IL-6, IL-12, IL-23, IFN-γ) vía JAK-STAT → bloquea activación y proliferación de linfocitos, diferenciación Th17/Th1 y producción de citocinas inflamatorias.',
+    },
+    warning: {
+      'pt': 'BLACK BOX WARNING (FDA): (1) INFECÇÕES GRAVES — TB, infecções bacterianas, fúngicas invasivas, infecções virais (Herpes Zoster — 2–4× maior que biológicos); (2) MALIGNIDADES — linfoma, outros cânceres; (3) TROMBOEMBOLISMO VENOSO — TVP e TEP (especialmente com dose 4 mg e fatores de risco); (4) MACE — infarto e AVC (≥50 anos com DCV ou fatores de risco); (5) MORTE. Rastreio pré-início obrigatório: TB, HBV, HCV, HIV, hemograma. Vacinar contra Herpes Zoster (preferencialmente antes do início). NÃO usar com outros imunossupressores biológicos.',
+      'es': 'BLACK BOX WARNING (FDA): (1) INFECCIONES GRAVES — TB, infecciones bacterianas, fúngicas, virales (Herpes Zóster — 2–4× mayor que biológicos); (2) MALIGNIDADES; (3) TROMBOEMBOLISMO VENOSO (especialmente 4 mg); (4) MACE (≥50 años con ECV); (5) MUERTE. Cribado obligatorio. Vacunar contra Herpes Zóster.',
+    },
+    adverse: {
+      'pt': ['Infecções respiratórias superiores', 'Herpes Zoster', 'Infecções urinárias', 'Náuseas', 'Trombocitose', 'Elevação de CPK', 'Dislipidemia', 'Elevação de transaminases', 'Anemia', 'TVP/TEP'],
+      'es': ['Infecciones respiratorias superiores', 'Herpes Zóster', 'Infecciones urinarias', 'Náuseas', 'Trombocitosis', 'Elevación de CPK', 'Dislipidemia', 'Elevación de transaminasas', 'Anemia', 'TVP/TEP'],
+    },
+  ),
+
 ];
