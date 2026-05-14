@@ -67,37 +67,28 @@ class GeminiService {
   }
 
   // ── Conectar com Google ───────────────────────────────────────────────────
+  // Fluxo único: escopos já incluídos no signIn() inicial.
+  // Não usamos requestScopes() separado — no web isso abre um segundo popup
+  // que o browser bloqueia por não ser iniciado por gesto direto do usuário.
   static Future<bool> signIn() async {
     try {
       debugPrint('[GeminiService] signIn() — web: $kIsWeb');
 
-      // 1. Faz login básico primeiro
-      GoogleSignInAccount? account = await _googleSignIn.signIn();
+      // Garante estado limpo antes de iniciar novo fluxo OAuth
+      await _googleSignIn.signOut();
+
+      // Fluxo único: signIn() já carrega os escopos declarados no construtor
+      final account = await _googleSignIn.signIn();
       if (account == null) {
         debugPrint('[GeminiService] signIn cancelado pelo usuário');
         return false;
       }
 
-      // 2. No Web, solicitar escopos explicitamente após o login
-      //    O google_sign_in Web não concede escopos customizados automaticamente
-      final hasScopes = await _googleSignIn.requestScopes(_scopes);
-      if (!hasScopes) {
-        debugPrint('[GeminiService] escopos negados pelo usuário');
-        await _googleSignIn.signOut();
-        return false;
-      }
-
-      // 3. Recarrega a conta para garantir que o token tem os escopos
-      account = _googleSignIn.currentUser;
-      if (account == null) {
-        debugPrint('[GeminiService] conta perdida após requestScopes');
-        return false;
-      }
-
-      // 4. Verifica se consegue obter o accessToken com os escopos certos
+      // Verifica se o accessToken foi obtido com os escopos corretos
       final auth = await account.authentication;
       if (auth.accessToken == null) {
-        debugPrint('[GeminiService] accessToken null após requestScopes');
+        debugPrint('[GeminiService] accessToken null — escopos não concedidos');
+        await _googleSignIn.signOut();
         return false;
       }
 
