@@ -1,9 +1,9 @@
 import 'dart:async';
 import 'dart:typed_data';
+import 'dart:html' as html;
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:file_picker/file_picker.dart';
-import 'package:firebase_storage/firebase_storage.dart';
+// file_picker e firebase_storage usados via StorageService — sem import direto aqui
 import '../models/user_model.dart';
 import '../models/guide_model.dart';
 import '../services/auth_service.dart';
@@ -3369,20 +3369,31 @@ class _GuideUploadDialogState extends State<_GuideUploadDialog> {
     super.dispose();
   }
 
-  Future<void> _pickPdf() async {
-    final result = await FilePicker.platform.pickFiles(
-      type: FileType.custom,
-      allowedExtensions: ['pdf'],
-      withData: true,
-    );
-    if (result == null || result.files.isEmpty) return;
-    final file = result.files.first;
-    if (file.bytes == null) return;
-    setState(() {
-      _pdfBytes    = file.bytes;
-      _pdfFileName = file.name;
-      _pdfFileSize = file.size;
-      _error       = null;
+  void _pickPdf() {
+    // Input nativo — único método confiável para abrir seletor no web/Dialog
+    final input = html.FileUploadInputElement()
+      ..accept = 'application/pdf'
+      ..style.display = 'none';
+    html.document.body!.append(input);
+    input.click();
+    input.onChange.first.then((_) {
+      final file = input.files?.first;
+      if (file == null) {
+        input.remove();
+        return;
+      }
+      final reader = html.FileReader();
+      reader.readAsArrayBuffer(file);
+      reader.onLoad.first.then((_) {
+        final bytes = reader.result as List<int>;
+        setState(() {
+          _pdfBytes    = Uint8List.fromList(bytes);
+          _pdfFileName = file.name;
+          _pdfFileSize = file.size;
+          _error       = null;
+        });
+        input.remove();
+      });
     });
   }
 
@@ -3526,56 +3537,56 @@ class _GuideUploadDialogState extends State<_GuideUploadDialog> {
                   const Text('Arquivo PDF',
                       style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700)),
                   const SizedBox(height: 6),
-                  GestureDetector(
-                    onTap: _uploading ? null : _pickPdf,
-                    child: Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 14),
-                      decoration: BoxDecoration(
-                        color: _pdfBytes != null
+                  // Botão explícito — GestureDetector não dispara FilePicker no web/Dialog
+                  SizedBox(
+                    width: double.infinity,
+                    child: OutlinedButton.icon(
+                      onPressed: _uploading ? null : _pickPdf,
+                      icon: Icon(
+                        _pdfBytes != null
+                            ? Icons.picture_as_pdf_rounded
+                            : Icons.upload_file_rounded,
+                        size: 20,
+                        color: _pdfBytes != null ? _kGreen : Colors.grey[600],
+                      ),
+                      label: Text(
+                        _pdfFileName ??
+                            (_isEditing
+                                ? 'Substituir PDF'
+                                : 'Selecionar PDF'),
+                        style: TextStyle(
+                          fontSize: 13,
+                          color: _pdfBytes != null ? _kGreen : Colors.grey[700],
+                          fontWeight: _pdfBytes != null
+                              ? FontWeight.w600 : FontWeight.w500,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      style: OutlinedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 14),
+                        alignment: Alignment.centerLeft,
+                        backgroundColor: _pdfBytes != null
                             ? _kGreen.withValues(alpha: 0.06)
-                            : Colors.grey.withValues(alpha: 0.06),
-                        borderRadius: BorderRadius.circular(10),
-                        border: Border.all(
+                            : Colors.grey.withValues(alpha: 0.04),
+                        side: BorderSide(
                           color: _pdfBytes != null
-                              ? _kGreen.withValues(alpha: 0.35)
-                              : Colors.grey.withValues(alpha: 0.25),
+                              ? _kGreen.withValues(alpha: 0.40)
+                              : Colors.grey.withValues(alpha: 0.35),
                           width: 1.5,
                         ),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10)),
                       ),
-                      child: Row(children: [
-                        Icon(
-                          _pdfBytes != null
-                              ? Icons.picture_as_pdf_rounded
-                              : Icons.upload_file_rounded,
-                          color: _pdfBytes != null ? _kGreen : Colors.grey,
-                          size: 22,
-                        ),
-                        const SizedBox(width: 10),
-                        Expanded(
-                          child: Text(
-                            _pdfFileName ??
-                                (_isEditing
-                                    ? 'Toque para substituir o PDF'
-                                    : 'Toque para selecionar um PDF'),
-                            style: TextStyle(
-                              fontSize: 13,
-                              color: _pdfBytes != null ? _kGreen : Colors.grey,
-                              fontWeight: _pdfBytes != null
-                                  ? FontWeight.w600 : FontWeight.w400,
-                            ),
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                        if (_pdfFileSize != null)
-                          Text(
-                            _formatSize(_pdfFileSize!),
-                            style: TextStyle(fontSize: 11, color: Colors.grey[600]),
-                          ),
-                      ]),
                     ),
                   ),
+                  if (_pdfFileSize != null) ...[
+                    const SizedBox(height: 4),
+                    Text(
+                      _formatSize(_pdfFileSize!),
+                      style: TextStyle(fontSize: 11, color: Colors.grey[600]),
+                    ),
+                  ],
 
                   // Barra de progresso
                   if (_uploading) ...[
