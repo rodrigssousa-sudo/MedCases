@@ -104,81 +104,45 @@ class GeminiService {
   // WEB — OAuth via GSI (google.accounts.oauth2.initTokenClient)
   // ══════════════════════════════════════════════════════════════════════════
 
-  /// Inicia fluxo OAuth no web usando GSI nativo via dart:js.
+  /// Inicia fluxo OAuth no web chamando window.medcasesGoogleSignIn()
+  /// exposta no index.html — função JS SÍNCRONA que chama requestToken()
+  /// sem nenhum await antes, permitindo que Safari rastreie o gesto do usuário.
   ///
-  /// IMPORTANTE: Não usar JsObject(context['Object'] as JsFunction) —
-  /// o cast explode no build release minificado (tree-shaking remove a ref).
-  /// Solução: criar objeto vazio com js.eval('({})') e atribuir props/callbacks.
+  /// Fluxo:
+  ///   botão tocado → _webSignIn() → callMethod('medcasesGoogleSignIn') [síncrono]
+  ///                                → requestToken() aberto pelo GSI
+  ///                                → callback Dart chamado com token/erro
   static Future<String?> _webSignIn() async {
     final completer = Completer<String?>();
 
     try {
-      // Verifica se o GSI está carregado
-      final hasGoogle = js.context.hasProperty('google');
-      if (!hasGoogle) {
-        debugPrint('[GeminiService] GSI não carregado — window.google ausente');
+      // Verifica se a função JS foi exposta pelo index.html
+      final hasFn = js.context.hasProperty('medcasesGoogleSignIn');
+      if (!hasFn) {
+        debugPrint('[GeminiService] medcasesGoogleSignIn não encontrada — GSI não carregou?');
         completer.complete(null);
         return completer.future;
       }
 
-      // Cria objeto JS vazio via eval — seguro no release build minificado
-      // (JsObject(context['Object'] as JsFunction) falha com tree-shaking)
-      final config = js.JsObject.fromBrowserObject(
-        js.context.callMethod('eval', ['({})'])
-      );
-      config['client_id'] = _webClientId;
-      config['scope']     = _scope;
-
-      // Atribui callbacks como funções JS via allowInterop
-      config['callback'] = js.allowInterop((dynamic response) {
-        try {
-          String? token;
-          String? error;
-          js.JsObject r;
-          if (response is js.JsObject) {
-            r = response;
-          } else {
-            r = js.JsObject.fromBrowserObject(response);
-          }
-          token = r['access_token'] as String?;
-          error = r['error'] as String?;
-
-          if (error != null && error.isNotEmpty) {
-            debugPrint('[GeminiService] GSI error: $error');
-            if (!completer.isCompleted) completer.complete(null);
-          } else if (token != null && token.isNotEmpty) {
-            debugPrint('[GeminiService] GSI token OK (${token.length} chars)');
-            if (!completer.isCompleted) completer.complete(token);
-          } else {
-            debugPrint('[GeminiService] GSI callback: token e error ambos vazios');
-            if (!completer.isCompleted) completer.complete(null);
-          }
-        } catch (e) {
-          debugPrint('[GeminiService] GSI callback erro: $e');
-          if (!completer.isCompleted) completer.complete(null);
+      // Callback Dart que receberá o token (ou erro) do popup OAuth
+      final dartCallback = js.allowInterop((dynamic token, dynamic error) {
+        final t = (token is String && token.isNotEmpty) ? token : null;
+        final e = (error is String && error.isNotEmpty) ? error : null;
+        if (e != null) {
+          debugPrint('[GeminiService] GSI erro: $e');
+        } else if (t != null) {
+          debugPrint('[GeminiService] GSI token OK (${t.length} chars)');
+        } else {
+          debugPrint('[GeminiService] GSI: token e erro ambos vazios (cancelado?)');
         }
+        if (!completer.isCompleted) completer.complete(t);
       });
 
-      config['error_callback'] = js.allowInterop((dynamic err) {
-        String? msg;
-        try {
-          final e = (err is js.JsObject) ? err : js.JsObject.fromBrowserObject(err);
-          msg = e['type'] as String? ?? e['message'] as String?;
-        } catch (_) { msg = err?.toString(); }
-        debugPrint('[GeminiService] GSI error_callback: $msg');
-        if (!completer.isCompleted) completer.complete(null);
-      });
+      // Chama a função JS síncrona — requestToken() ocorre aqui dentro,
+      // no mesmo "tick" do gesto → Safari permite o popup OAuth
+      js.context.callMethod('medcasesGoogleSignIn', [dartCallback]);
 
-      // Acessa google.accounts.oauth2 — cada acesso retorna JsObject encadeado
-      final google  = js.JsObject.fromBrowserObject(js.context['google']);
-      final accounts = js.JsObject.fromBrowserObject(google['accounts']);
-      final oauth2  = js.JsObject.fromBrowserObject(accounts['oauth2']);
-      final client  = js.JsObject.fromBrowserObject(
-        oauth2.callMethod('initTokenClient', [config])
-      );
-      client.callMethod('requestToken', []);
-
-      debugPrint('[GeminiService] GSI requestToken chamado — aguardando popup...');
+      debugPrint('[GeminiService] medcasesGoogleSignIn chamada — aguardando popup...');
 
     } catch (e, st) {
       debugPrint('[GeminiService] _webSignIn ERRO: $e\n$st');

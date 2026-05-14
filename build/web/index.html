@@ -512,6 +512,87 @@
       });
     }());
 
+    // ── Google OAuth — síncrono para Safari ─────────────────────────
+    // Safari bloqueia window.open/popups chamados DENTRO de async/await.
+    // Solução: expor função JS pura que chama requestToken() de forma
+    // síncrona, chamada diretamente pelo Flutter via js.callMethod —
+    // sem nenhum await antes. Assim o Safari rastreia o gesto do usuário.
+    (function() {
+      var _gsiClient      = null;  // token client GSI inicializado
+      var _gsiCallback    = null;  // callback Dart registrado
+      var _gsiInitialized = false;
+
+      // Inicializa o token client GSI (feito 1x, sem abrir popup)
+      function _initGSI() {
+        if (_gsiInitialized) return;
+        if (!window.google || !window.google.accounts) return;
+        _gsiClient = window.google.accounts.oauth2.initTokenClient({
+          client_id: '1076800980330-mpq75ceph6hipht135qt0g505pdu5u7d.apps.googleusercontent.com',
+          scope: 'email https://www.googleapis.com/auth/generative-language.retriever',
+          callback: function(response) {
+            // Chamado pelo Google após seleção de conta
+            var token = response && response.access_token ? response.access_token : null;
+            var error = response && response.error ? response.error : null;
+            if (_gsiCallback) {
+              try { _gsiCallback(token, error); } catch(e) {}
+              _gsiCallback = null;
+            }
+          },
+          error_callback: function(err) {
+            var msg = err && err.type ? err.type : String(err);
+            if (_gsiCallback) {
+              try { _gsiCallback(null, msg); } catch(e) {}
+              _gsiCallback = null;
+            }
+          }
+        });
+        _gsiInitialized = true;
+      }
+
+      // Tenta inicializar logo que o GSI carrega
+      // (o script é async, então pode ainda não estar pronto)
+      function _tryInit() {
+        if (!_gsiInitialized) _initGSI();
+      }
+      // Tenta imediatamente e também via polling curto
+      _tryInit();
+      var _initTimer = setInterval(function() {
+        if (_gsiInitialized) { clearInterval(_initTimer); return; }
+        _tryInit();
+      }, 200);
+      // Para o polling após 10s de qualquer forma
+      setTimeout(function() { clearInterval(_initTimer); }, 10000);
+
+      // ── API pública exposta para o Flutter ──────────────────────────
+      // Chamada DIRETAMENTE do handler do botão (sem await antes) →
+      // o Safari mantém o rastro do gesto e permite o popup.
+      window.medcasesGoogleSignIn = function(dartCallback) {
+        // Garante inicialização (caso GSI tenha carregado tarde)
+        if (!_gsiInitialized) _initGSI();
+
+        if (!_gsiClient) {
+          // GSI ainda não disponível
+          try { dartCallback(null, 'gsi_not_ready'); } catch(e) {}
+          return;
+        }
+
+        _gsiCallback = dartCallback;
+
+        // requestToken() chamado sincronamente aqui — Safari permite popup
+        try {
+          _gsiClient.requestToken();
+        } catch(e) {
+          _gsiCallback = null;
+          try { dartCallback(null, String(e)); } catch(_) {}
+        }
+      };
+
+      // Permite que o Flutter verifique se GSI está pronto
+      window.medcasesGSIReady = function() {
+        return _gsiInitialized && _gsiClient !== null;
+      };
+    }());
+
     // ── Toast de atualização ─────────────────────────────────────────
     var _waitingSW = null;
 
