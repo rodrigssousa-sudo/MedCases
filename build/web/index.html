@@ -24,60 +24,42 @@
   <!-- Google Sign-In -->
   <meta name="google-signin-client_id" content="1076800980330-mpq75ceph6hipht135qt0g505pdu5u7d.apps.googleusercontent.com">
 
-  <!--
-    OTIMIZAÇÃO 1 — Pré-conectar apenas ao que é usado no boot
-    gstatic.com = Google Sign-In SDK + Firebase JS
-    Sem preconnect para CanvasKit CDN (não usamos mais CanvasKit)
-  -->
+  <!-- Pré-conectar apenas ao essencial do boot -->
   <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
   <link rel="dns-prefetch" href="https://www.gstatic.com">
   <link rel="preconnect" href="https://accounts.google.com" crossorigin>
 
-  <!--
-    OTIMIZAÇÃO 2 — Preload apenas dos recursos críticos do boot
-    flutter_bootstrap.js é o único bloqueante real
-    main.dart.js é carregado pelo bootstrap — preload paralelo ajuda
-  -->
+  <!-- Preload dos recursos críticos de boot -->
   <link rel="preload" href="flutter_bootstrap.js" as="script">
   <link rel="preload" href="main.dart.js" as="script">
 
-  <!--
-    OTIMIZAÇÃO 3 — Google Sign-In com modulepreload + async
-    Firebase JS SDK carregado DEPOIS do Flutter (não bloqueia boot)
-  -->
+  <!-- Google Sign-In SDK -->
   <script src="https://accounts.google.com/gsi/client" async defer></script>
 
   <!--
-    OTIMIZAÇÃO 4 — Firebase via modulepreload condicional
-    Carregado apenas depois que o Flutter já renderizou o primeiro frame
-    Evita competição de banda com main.dart.js no boot
+    Firebase carregado APÓS o primeiro frame do Flutter
+    Evita competição de banda com main.dart.js durante o boot
   -->
   <script>
-    // Injeta Firebase SOMENTE após o primeiro frame do Flutter
+    window._firebaseLoaded = false;
     function _loadFirebase() {
-      var scripts = [
+      if (window._firebaseLoaded) return;
+      window._firebaseLoaded = true;
+      var urls = [
         'https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js',
         'https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js',
-        'https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js',
+        'https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js'
       ];
-      scripts.forEach(function(src) {
+      urls.forEach(function(src) {
         var s = document.createElement('script');
-        s.src = src;
-        s.async = true;
+        s.src = src; s.async = true;
         document.head.appendChild(s);
       });
     }
-    // Registra para disparar após flutter-first-frame
-    window._firebaseScheduled = false;
-    function _scheduleFirebase() {
-      if (window._firebaseScheduled) return;
-      window._firebaseScheduled = true;
-      // Pequeno delay para não competir com o paint inicial
+    window.addEventListener('flutter-first-frame', function() {
       setTimeout(_loadFirebase, 200);
-    }
-    window.addEventListener('flutter-first-frame', _scheduleFirebase);
-    // Fallback: carrega Firebase após 5s mesmo sem evento
-    setTimeout(function() { if (!window._firebaseScheduled) _scheduleFirebase(); }, 5000);
+    });
+    setTimeout(function() { _loadFirebase(); }, 6000);
   </script>
 
   <style>
@@ -86,7 +68,6 @@
       margin: 0; padding: 0;
       height: 100%; width: 100%;
       overscroll-behavior: none;
-      /* OTIMIZAÇÃO 5 — Evita FOUC e reflow durante o boot */
       overflow: hidden;
     }
     #loading {
@@ -98,7 +79,6 @@
       justify-content: center;
       background-color: #07110d;
       z-index: 9999;
-      /* OTIMIZAÇÃO 6 — will-change avisa o browser para criar camada GPU */
       will-change: opacity;
       transition: opacity 0.35s ease;
     }
@@ -119,7 +99,6 @@
       border: 3px solid rgba(197,163,101,0.2);
       border-top-color: #C5A365;
       border-radius: 50%;
-      /* OTIMIZAÇÃO 7 — transform em vez de rotation, GPU-accelerated */
       animation: spin 0.85s linear infinite;
       will-change: transform;
     }
@@ -136,21 +115,10 @@
   </div>
 
   <script>
-    /*
-     * OTIMIZAÇÃO 8 — Estratégia de boot inteligente
-     *
-     * Fluxo:
-     *   a) Se versão == localStorage → SW válido → boot instantâneo do cache
-     *   b) Se versão diferente → limpa SW/cache obsoleto → salva nova versão → boot
-     *   c) Sem SW → boot direto (não bloqueia em nada)
-     *
-     * Versão: incrementar a cada deploy para forçar limpeza de cache antigo.
-     */
-    var APP_VERSION = '3.0.0';
+    var APP_VERSION = '3.1.0';
 
     (function () {
-
-      // ── Remoção do splash ───────────────────────────────────────────────
+      // --- Remoção do splash ---
       var _removed = false;
       function removeLoading() {
         if (_removed) return;
@@ -165,7 +133,6 @@
 
       window.addEventListener('flutter-first-frame', removeLoading);
 
-      // MutationObserver como fallback para navegadores que não disparam o evento
       var _obs = new MutationObserver(function (mutations) {
         for (var i = 0; i < mutations.length; i++) {
           var nodes = mutations[i].addedNodes;
@@ -183,21 +150,16 @@
         }
       });
       _obs.observe(document.body, { childList: true, subtree: true });
-
-      // Failsafe: remove loading após 15s no pior caso
       setTimeout(function () { if (!_removed) removeLoading(); }, 15000);
 
-      // ── Boot do Flutter ─────────────────────────────────────────────────
+      // --- Boot do Flutter ---
       function bootFlutter() {
         var s = document.createElement('script');
         s.src = 'flutter_bootstrap.js';
-        // OTIMIZAÇÃO 9 — async no bootstrap: browser pode continuar
-        // parseando o DOM enquanto baixa (não bloqueia o main thread)
         s.async = true;
         document.head.appendChild(s);
       }
 
-      // Sem suporte a SW → boot direto
       if (!('serviceWorker' in navigator)) {
         bootFlutter();
         return;
@@ -207,12 +169,12 @@
       try { storedVersion = localStorage.getItem('medcases_app_version'); } catch (e) {}
 
       if (storedVersion === APP_VERSION) {
-        // Cache válido → boot imediato (caminho mais rápido)
+        // Cache válido -> boot imediato
         bootFlutter();
         return;
       }
 
-      // Nova versão → limpeza assíncrona não-bloqueante
+      // Nova versão -> limpa SW e cache antigos
       var swClean = navigator.serviceWorker.getRegistrations().then(function (regs) {
         return Promise.all(regs.map(function (reg) { return reg.unregister(); }));
       }).catch(function () {});
@@ -229,7 +191,6 @@
           try { localStorage.setItem('medcases_app_version', APP_VERSION); } catch (e) {}
           bootFlutter();
         });
-
     }());
   </script>
 
