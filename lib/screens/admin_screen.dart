@@ -3157,7 +3157,7 @@ class _BibliotecaAdminTabState extends State<_BibliotecaAdminTab> {
       barrierDismissible: false,
       builder: (_) => _GuideUploadDialog(
         guide: guide,
-        adminName: widget.currentAdmin?.name as String? ?? 'Admin',
+        adminName: widget.currentAdmin?.displayName as String? ?? 'Admin',
       ),
     );
   }
