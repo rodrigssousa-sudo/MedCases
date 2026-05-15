@@ -189,16 +189,6 @@ class AppProvider extends ChangeNotifier {
       final pendingNow = _webGetLS('medcases_gsi_pending');
       final tokenNow   = _webGetLS('gemini_access_token');
       final emailNow   = _webGetLS('gemini_google_email');
-      _jsLog('[setUser] step5 pending=${pendingNow ?? "null"} token=${tokenNow != null ? tokenNow.substring(0,15) + "..." : "NAO"} email=${emailNow ?? "null"}');
-      // Lista TODAS as chaves do localStorage para ver o que existe
-      try {
-        js_interop.context.callMethod('eval', [r'''
-(function(){
-  var keys=Object.keys(localStorage).filter(function(k){return k.indexOf("gemini")>-1||k.indexOf("medcases_gsi")>-1;});
-  console.log("[LS-DUMP] chaves gemini/gsi:", JSON.stringify(keys.reduce(function(o,k){o[k]=localStorage.getItem(k)?localStorage.getItem(k).substring(0,30):"null";return o;},{})));
-})()
-''']);
-      } catch (_) {}
     }
     Future.delayed(
       _webGetLS('medcases_gsi_pending') == 'true'
@@ -910,16 +900,7 @@ class AppProvider extends ChangeNotifier {
   ///      e valida via tokeninfo — sem depender do fetch assíncrono do JS.
   ///   3. Se o email ainda não chegou (fetch do JS ainda em andamento),
   ///      buscamos via tokeninfo direto aqui no Dart.
-  void _jsLog(String msg) {
-    if (!kIsWeb) return;
-    try {
-      final safe = msg.replaceAll("'", "\\'").replaceAll('\n', ' ');
-      js_interop.context.callMethod('eval', ["console.log('$safe')"]);
-    } catch (_) {}
-  }
-
   Future<void> checkGeminiSession() async {
-    _jsLog('[CGS] checkGeminiSession chamado');
     try {
       if (kIsWeb) {
         // Limpa flag de modal órfã (pode sobrar de tentativas anteriores)
@@ -927,30 +908,23 @@ class AppProvider extends ChangeNotifier {
 
         // ── Detecta retorno do redirect OAuth ───────────────────────────────
         final pending = _webGetLS('medcases_gsi_pending');
-        _jsLog('[CGS] pending=${pending ?? "null"} token=${_webGetLS("gemini_access_token") != null ? "SIM" : "NAO"}');
         if (pending == 'true') {
           _webRemoveLS('medcases_gsi_pending');
 
           final token = _webGetLS('gemini_access_token');
-          _jsLog('[CGS] token lido: ${token != null && token.isNotEmpty ? token.substring(0, 20) + "..." : "VAZIO"}');
           if (token != null && token.isNotEmpty) {
             _geminiConnected = true;
             _geminiEmail = _webGetLS('gemini_google_email') ?? '';
-            _jsLog('[CGS] email imediato: ${_geminiEmail.isEmpty ? "vazio" : _geminiEmail}');
             if (_geminiEmail.isEmpty) {
               await Future.delayed(const Duration(milliseconds: 600));
               _geminiEmail = _webGetLS('gemini_google_email') ?? '';
-              _jsLog('[CGS] email apos delay: ${_geminiEmail.isEmpty ? "ainda vazio" : _geminiEmail}');
             }
             if (_geminiEmail.isEmpty) {
               _geminiEmail = await GeminiService.connectedEmail() ?? '';
-              _jsLog('[CGS] email via connectedEmail: ${_geminiEmail.isEmpty ? "vazio" : _geminiEmail}');
             }
-            _jsLog('[CGS] CONECTADO! email=$_geminiEmail geminiConnected=$_geminiConnected');
             notifyListeners();
             return;
           } else {
-            _jsLog('[CGS] token vazio — nao conectou');
           }
         }
       }
@@ -972,27 +946,6 @@ class AppProvider extends ChangeNotifier {
     }
   }
 
-  /// Valida um token OAuth do Google diretamente via HTTP, SEM depender do email.
-  ///
-  /// Diferença crítica de GeminiService.isConnected():
-  ///   isConnected() checa _readEmail() PRIMEIRO — mas o email chega via fetch
-  ///   ASSÍNCRONO do JS (tokeninfo endpoint) após o redirect, podendo demorar
-  ///   200-500ms. Se checkGeminiSession() chamar isConnected() antes do email
-  ///   chegar, recebe false e a IA fica desconectada mesmo com token válido.
-  ///
-  ///   Este método ignora o email e valida o token diretamente via tokeninfo.
-  Future<bool> _validateGeminiTokenDirect(String token) async {
-    try {
-      final resp = await http.get(
-        Uri.parse(
-          'https://www.googleapis.com/oauth2/v3/tokeninfo?access_token=$token',
-        ),
-      ).timeout(const Duration(seconds: 10), onTimeout: () => http.Response('', 408));
-      return resp.statusCode == 200;
-    } catch (_) {
-      return false;
-    }
-  }
 
   /// Lê um valor do localStorage via eval — resistente ao SES lockdown do Firebase.
   /// O Firebase Auth injeta lockdown-install.js que congela proxies do dart:js,

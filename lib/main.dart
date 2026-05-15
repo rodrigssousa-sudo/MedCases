@@ -2,8 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
-// ignore: avoid_web_libraries_in_flutter
-import 'dart:js' as _js;
+
 import 'package:url_launcher/url_launcher.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -40,22 +39,12 @@ import 'widgets/brand_mark.dart';
 // Mantido para compatibilidade com _AuthGate FutureBuilder
 late final Future<void> _firebaseInit;
 
-/// Log para console do browser via JS eval — funciona em release
-void _jsLog(String msg) {
-  if (!kIsWeb) return;
-  try {
-    final safe = msg.replaceAll("'", "\\'").replaceAll('\n', ' ');
-    _js.context.callMethod('eval', ["console.log('$safe')"]);
-  } catch (_) {}
-}
-
 void main() async {
   FlutterError.onError = (FlutterErrorDetails details) {
     FlutterError.dumpErrorToConsole(details);
   };
 
   WidgetsFlutterBinding.ensureInitialized();
-  _jsLog('[DART-DIAG] 0-main-iniciou');
 
   // Firebase DEVE ser inicializado com await ANTES do runApp()
   // Sem isso, qualquer uso de Auth/Firestore explode com [core/no-app]
@@ -78,7 +67,6 @@ void main() async {
       ..catchError((_) {/* erro capturado — FutureBuilder lida via hasError */});
   }
 
-  _jsLog('[DART-DIAG] 1-firebase-ok');
   final provider = AppProvider();
 
   // SharedPreferences falha em abas anônimas (localStorage bloqueado)
@@ -87,25 +75,15 @@ void main() async {
   } catch (e) {
     debugPrint('[MedCases] SharedPreferences indisponível: $e');
   }
-  _jsLog('[DART-DIAG] 2-loadPrefs-ok');
 
   // ── Restauração silenciosa de sessão ("Manter conectado") ──────────────────
   // Tenta renovar o refreshToken antes do runApp — se bem-sucedido, webUser.value
   // já estará preenchido quando _AuthGate construir, saltando direto ao MainShell.
   // Timeout de 8 s está dentro de restoreSession(); rede falha → LoginScreen normal.
   if (kIsWeb) {
-    _jsLog('[DART-DIAG] A-antes-restoreSession');
     try {
-      final restoredUser = await AuthService.restoreSession()
-          .timeout(const Duration(seconds: 10), onTimeout: () {
-        _jsLog('[DART-DIAG] restoreSession TIMEOUT 10s');
-        return null;
-      });
-      _jsLog('[DART-DIAG] B-apos-restoreSession uid=${restoredUser?.uid ?? "null"}');
-    } catch (e) {
-      _jsLog('[DART-DIAG] restoreSession-ERRO: $e');
-    }
-    _jsLog('[DART-DIAG] C-antes-runApp webUser=${AuthService.webUser.value?.uid ?? "null"}');
+      await AuthService.restoreSession();
+    } catch (_) {}
   }
 
   runApp(
@@ -235,10 +213,8 @@ class _AuthGate extends StatelessWidget {
       builder: (context, user, _) {
         // Sem usuário → preview pré-login com histórias públicas
         if (user == null) {
-          _jsLog('[DART-DIAG] _buildWebAuthGate: user=null → PreLoginPreview (sem sess\u00e3o)');
           return _wrapAuth(const PreLoginPreview());
         }
-        _jsLog('[DART-DIAG] _buildWebAuthGate: user=${user.uid} status=${user.status}');
 
         // Usuário bloqueado
         if (user.isBlocked) {
@@ -768,17 +744,12 @@ class _WebMainShellGateState extends State<_WebMainShellGate> {
 
   Future<void> _initUser() async {
     final p = context.read<AppProvider>();
-    _jsLog('[DART-DIAG] _WebMainShellGate._initUser: currentUid=${p.currentUser?.uid} widgetUid=${widget.user.uid}');
     // Só chama setUser se o provider ainda não tem este usuário — evita
     // chamar duas vezes durante rebuilds do ValueListenableBuilder.
     if (p.currentUser?.uid != widget.user.uid) {
-      _jsLog('[DART-DIAG] chamando setUser()...');
       await p.setUser(widget.user);
-      _jsLog('[DART-DIAG] setUser() conclu\u00eddo. geminiConnected=${p.geminiConnected}');
     } else {
-      _jsLog('[DART-DIAG] setUser() PULADO (uid j\u00e1 igual). chamando checkGeminiSession()...');
       await p.checkGeminiSession();
-      _jsLog('[DART-DIAG] checkGeminiSession() conclu\u00eddo. geminiConnected=${p.geminiConnected}');
     }
     if (mounted) setState(() => _ready = true);
   }
