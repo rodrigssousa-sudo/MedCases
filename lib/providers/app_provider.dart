@@ -1051,11 +1051,22 @@ class AppProvider extends ChangeNotifier {
     // ── Fármacos para condição clínica: "farmacos para cefaleia", "medicamentos para sepse"
     // DEVE vir antes de qualquer outra detecção para capturar corretamente
     if (_has(q, ['farma', 'medicament', 'remedio', 'droga', 'drug',
-                  'farmaco', 'medicamento', 'remedios', 'farmacos']) &&
-        _has(q, ['para ', 'para a ', 'para o ', 'para tratar', 'para cefalei', 'para dor',
-                  'para febre', 'para infec', 'para hiperten', 'para diabet',
-                  'para arritmia', 'para ic ', 'para sepse', 'para asma',
-                  'para dpoc', 'para epoc', 'para convuls', 'para choque'])) {
+                  'farmaco', 'medicamento', 'remedios', 'farmacos', 'antibiot',
+                  'antibio', 'antiviral', 'antifungic', 'quimio', 'imunossupr']) &&
+        _has(q, ['para ', 'para a ', 'para o ', 'para tratar', 'tratar ', 'usar em',
+                  'indicado em', 'no tratamento', 'en el tratamiento',
+                  'para cefalei', 'para dor', 'para febre', 'para infec',
+                  'para hiperten', 'para diabet', 'para arritmia', 'para ic ',
+                  'para sepse', 'para asma', 'para dpoc', 'para epoc',
+                  'para convuls', 'para choque', 'para pneumon', 'para tep',
+                  'para avc', 'para fa ', 'para cirros', 'para lupus',
+                  'para parkinson', 'para alzheimer', 'para fibromialg',
+                  'para osteoporose', 'para gota', 'para dengue', 'para tb ',
+                  'para malaria', 'para hiv', 'para aids', 'para cancer',
+                  'para leucemia', 'para linfoma', 'para depressao',
+                  'para ansiedade', 'para esquizofrenia', 'para bipolar',
+                  'para pancreatite', 'para colecistite', 'para pielonefrit',
+                  'para endocardite', 'para meningite', 'para encefalite'])) {
       return es
           ? 'FÁRMACOS POR INDICACIÓN CLÍNICA (listar opciones terapéuticas, dosis, mecanismo)'
           : 'FÁRMACOS POR INDICAÇÃO CLÍNICA (listar opções terapêuticas, dose, mecanismo)';
@@ -1365,26 +1376,202 @@ class AppProvider extends ChangeNotifier {
     ]);
 
     if (isIndicationQuery) {
-      // Extrair a condição alvo da query (palavras-chave de doenças)
+      // ── Mapa de condição → keywords para detecção na query (~150 condições) ──
+      // Ordem importa: condições mais específicas primeiro para evitar falso match
       final conditionKeywords = <String, List<String>>{
-        'cefaleia':       ['cefal', 'cabeca', 'enxaqueca', 'migran', 'migren', 'dolor de cabeza'],
-        'dor':            ['analges', 'dor ', 'dolor '],
-        'hipertensao':    ['hiperten', 'pa alta', 'pressao alta'],
-        'arritmia_fa':    ['arritm', 'fibrilac', 'flutter', 'taquicardia', 'fa '],
-        'infeccao':       ['infec', 'antibio', 'bacteriana', 'sepse', 'pneumonia'],
-        'diabetes':       ['diabet', 'glicemia', 'insulina', 'hipoglicemi'],
-        'anticoagulacao': ['anticoag', 'trombose', 'tvp', 'tep', 'embolia'],
-        'ic':             ['insuf cardiac', 'ic ', 'edema pulm', 'killip'],
-        'asma_dpoc':      ['asma', 'dpoc', 'bronco', 'broncoespas', 'sibilo'],
-        'convulsao':      ['convuls', 'epileps', 'crise epil'],
-        'choque':         ['choque', 'vasopressor', 'pam ', 'hipotens'],
-        'ansiedade':      ['ansied', 'ansie', 'panico', 'ansiet'],
-        'nausea':         ['nause', 'vomit', 'antiemetic', 'antiemetico'],
-        'febre':          ['febre', 'fiebre', 'antipiret', 'antipiretico'],
-        'anticoag_reverter': ['reverter anticoag', 'revertir anticoag', 'antidoto'],
+        // ── EMERGÊNCIAS / CHOQUE ─────────────────────────────────────────────
+        'anafilaxia':         ['anafilax', 'anafilact', 'choque anafilat', 'reacao alerg', 'reaccion alerg', 'adrenalina alerg', 'epinefrina alerg'],
+        'choque_septico':     ['choque septic', 'choque septico', 'septic shock', 'vasopressor sepse', 'noradrenalina sepse'],
+        'choque_cardiogenico':['choque cardiogen', 'cardiogenic shock', 'dobutamina choque', 'balao intra-aortic'],
+        'choque_hipovolemico':['choque hipovol', 'hipovolem', 'hemorrag choque', 'reposicao volum'],
+        'choque':             ['choque ', 'vasopressor', 'pam ', 'hipotens grave', 'noradrenalina '],
+        'pcr':                ['pcr ', 'parada cardiac', 'reanimac', 'acls ', 'ressuscitac', 'fv ', 'tvsp'],
+        // ── CARDIOVASCULAR ───────────────────────────────────────────────────
+        'iam':                ['iam ', 'infarto agudo', 'sindrome coron', 'stemi', 'nstemi', 'sca ', 'angina instav', 'angina inestav'],
+        'angina':             ['angina estav', 'angina cronic', 'angina pector', 'angina estable'],
+        'ic':                 ['insuf cardiac', 'ic descomp', 'ic cronic', 'edema pulm', 'eap ', 'killip', 'fej ', 'frac ejec'],
+        'fa':                 ['fibrilac atrial', 'fibrilacao atrial', 'flutter atrial', 'fa ', 'fibrila auricular', 'fibrilacion auricular'],
+        'tpsv':               ['taquicardia supravent', 'tpsv ', 'tsv ', 'qrs estreit', 'reentrada nodal'],
+        'tv':                 ['taquicardia ventricular', 'tv ', 'tvsp', 'tv polim', 'torsades', 'torsada pontas'],
+        'bradicardia':        ['bradicard', 'bloqueio av', 'bav ', 'marcapasso', 'atropina bradicard'],
+        'hipertensao':        ['hiperten', 'has ', 'pressao alta', 'pa alta', 'antihiperten', 'anti-hiperten'],
+        'crise_hipertensiva': ['crise hiperten', 'emergencia hiperten', 'urgencia hiperten', 'encefalopatia hiperten', 'nitroprussi'],
+        'dissecc_aorta':      ['dissecao aort', 'disseccao aort', 'diseccion aort', 'aneurisma aort'],
+        'tep':                ['tromboembol pulm', 'embolia pulm', 'tep ', 'trombose pulm'],
+        'tvp':                ['trombose venosa prof', 'tvp ', 'trombose venosa'],
+        'endocardite':        ['endocardite', 'endocarditis', 'infeccao valv', 'bacteremia valv'],
+        'miocardite':         ['miocardite', 'miocarditis', 'inflamacao miocardio'],
+        'pericardite':        ['pericardite', 'pericarditis', 'derrame pericard', 'tamponament'],
+        'cardiopatia_dilat':  ['cardiomiopatia dilat', 'cardiopatia dilat', 'miocardiopatia dilat'],
+        'cardiopatia_hipert': ['cardiomiopatia hipert', 'miocardiopatia hipert'],
+        // ── NEUROLÓGICO ─────────────────────────────────────────────────────
+        'avc_isquemico':      ['avc isquem', 'acidente vasc isquem', 'ave isquem', 'acv isquem', 'trombolise avc', 'alteplase avc', 'trombectom'],
+        'avc_hemorragico':    ['avc hemorr', 'hemorrag cerebr', 'hemorrag intracran', 'hic '],
+        'hsa':                ['hemorrag subaracn', 'hsa ', 'cefaleia trovoada', 'cefaleia fulmin', 'aneurism roto'],
+        'ait':                ['ait ', 'ataque isquem transit', 'acidente isquem transit', 'tia '],
+        'epilepsia':          ['epileps', 'convuls', 'status epilep', 'crise epilep', 'crise convuls'],
+        'meningite':          ['meningite', 'meningitis', 'encefalite', 'encephalitis', 'rigidez nuca', 'kernig', 'brudzinski'],
+        'parkinson':          ['parkinson', 'dopamina defic', 'rigidez extrapiram', 'levodopa', 'carbidopa'],
+        'alzheimer':          ['alzheimer', 'demencia alzhei', 'demencia progres', 'colinesterase'],
+        'demencia':           ['demencia vasc', 'demencia ', 'comprometiment cognit', 'deterioro cognit'],
+        'esclerose_mult':     ['esclerose mult', 'esclerosis mult', 'em ', 'desmielini', 'interferon beta'],
+        'miastenia':          ['miastenia', 'myasthenia', 'fraqueza muscul progres', 'anticolin esterol'],
+        'guillain_barre':     ['guillain', 'barre', 'polirradiculoneuri', 'paralisia ascend'],
+        'enxaqueca':          ['enxaqueca', 'migranea', 'migraine', 'migrena', 'aura visual', 'triptano'],
+        'cefaleia_tensional': ['cefaleia tensional', 'cefalea tensional', 'cefaleia tension', 'dor cabeca tensao'],
+        'cefaleia':           ['cefal', 'cabeca', 'dor de cabeca', 'dolor de cabeza'],
+        // ── RESPIRATÓRIO ────────────────────────────────────────────────────
+        'pneumonia_com':      ['pneumonia comunid', 'pac ', 'pneumonia adquir', 'pneumonia tipic', 'pneumonia atipic', 'pneumonia viral'],
+        'pneumonia_hosp':     ['pneumonia hospit', 'pah ', 'pneumonia associad ventil', 'pavm'],
+        'tuberculose':        ['tuberculose', 'tuberculosis', 'tb ', 'mycobacterium tuberc', 'rifampicin', 'isoniaz'],
+        'asma':               ['asma ', 'broncoespas', 'sibilo', 'wheezing', 'exacerbac asma', 'crise asma'],
+        'dpoc':               ['dpoc', 'epoc', 'doenca pulm obstr', 'enfisema', 'bronquite cronic', 'exacerbac dpoc'],
+        'insuf_resp':         ['insuf respirat', 'insuficiencia respirat', 'ira ', 'sdra', 'ards', 'ventilac mecan', 'intubac orotrac'],
+        'pneumotorax':        ['pneumotorax', 'pneumotorox', 'neumotorax', 'pneumo torax'],
+        'derrame_pleural':    ['derrame pleural', 'derrame pleural', 'pleurite', 'toracocentese'],
+        'apneia_sono':        ['apneia sono', 'apnea sono', 'osas ', 'cpap apneia', 'ronco grave'],
+        'covid':              ['covid', 'sars-cov', 'coronavirus', 'covid-19'],
+        // ── INFECCIOSO ──────────────────────────────────────────────────────
+        'sepse':              ['sepse', 'seps', 'septic', 'choque infeccioso', 'bacteremia', 'infec grave'],
+        'itu':                ['infec urin', 'itu ', 'cistite', 'uretrite', 'bacteriuria'],
+        'pielonefrite':       ['pielonefrit', 'pyelonefrit', 'infec renal', 'infec trato urin alto'],
+        'celulite':           ['celulite infec', 'erisipela', 'celulitis infec', 'infec pele', 'infec tecid', 'ceftriaxona pele'],
+        'fasceite':           ['fasceite necros', 'fascite necros', 'fasciitis necros', 'infec necros'],
+        'osteomielite':       ['osteomielit', 'osteomyelit', 'infec ossea', 'infec osso'],
+        'hiv_aids':           ['hiv', 'aids', 'antirretrovir', 'arvt', 'coquetel hiv'],
+        'candidose':          ['candidiase sist', 'candidemia', 'candidiasis sistem', 'fungemias', 'antifungic sistemico'],
+        'dengue':             ['dengue', 'arbovirose', 'aedes', 'dengue hemorrag'],
+        'malaria':            ['malaria', 'malaria', 'plasmodium', 'cloroquina malaria', 'artemeter'],
+        'leptospirose':       ['leptospirose', 'leptospirosis', 'ictericia febre'],
+        'sifilis':            ['sifilis', 'syphilis', 'treponema', 'penicilina sifil'],
+        'dst':                ['dst ', 'gonorreia', 'clamid', 'dst sexualment transmis'],
+        'herpes_zoster':      ['herpes zoster', 'varicela zoster', 'nevralgia poster', 'aciclovir zoster'],
+        'varicela':           ['varicela', 'chickenpox', 'varicela infec'],
+        // ── GASTROINTESTINAL ────────────────────────────────────────────────
+        'hda':                ['hemorrag digest alta', 'hda ', 'hematemese', 'melena', 'varizes esof', 'sangram digest alto'],
+        'hdb':                ['hemorrag digest baix', 'hdb ', 'hematoquez', 'sangram digest baix', 'rectorragia'],
+        'pancreatite':        ['pancreatite', 'pancreatitis', 'lipase elevad', 'amilase elevad', 'necros pancrea'],
+        'colecistite':        ['colecistite', 'colecistitis', 'calculo biliar', 'colelitias', 'colelitiasis'],
+        'colangite':          ['colangite', 'colangitis', 'cole angite', 'infec biliar'],
+        'apendicite':         ['apendicite', 'appendicitis', 'appendicite', 'mcburney'],
+        'diverticulite':      ['diverticulit', 'diverticulosis complic'],
+        'drge':               ['drge', 'reflux gastroesof', 'gerd', 'esofagite reflu', 'heartburn'],
+        'ulcera_peptica':     ['ulcera peptic', 'ulcera gastric', 'ulcera duoden', 'h pylori', 'helicobacter'],
+        'dii':                ['doenca inflamat intest', 'dii ', 'crohn', 'retocolite', 'colite ulcerosa'],
+        'sii':                ['sindrome intest irritav', 'sii ', 'colon irritav', 'ibs '],
+        'cirrose':            ['cirrose', 'cirrosis', 'hipertensao portal', 'ascite', 'encefalopatia hepat', 'hepatopatia cronic'],
+        'hepatite':           ['hepatite viral', 'hepatite b', 'hepatite c', 'hepatitis viral', 'antiviral hepat'],
+        'insuf_hepatica':     ['insuf hepatic', 'insuficiencia hepatic', 'falencia hepatic', 'necrose hepat massiv'],
+        // ── RENAL ───────────────────────────────────────────────────────────
+        'ira':                ['insuf renal agud', 'ira ', 'lesao renal agud', 'lra ', 'acute kidney', 'oliguria renal'],
+        'drc':                ['doenca renal cronic', 'drc ', 'insuf renal cronic', 'nefropat cronic', 'dialise cronic'],
+        'glomerulonefrite':   ['glomerulonefrit', 'glomerulonephrit', 'sindrome nefrit', 'hematuria glomeru'],
+        'sindrome_nefrotica': ['sindrome nefrot', 'nefrose', 'proteinuria nefrot', 'hipoalbuminem'],
+        'litíase_renal':      ['litias renal', 'calculo renal', 'nefrolitias', 'colica renal', 'colica nefret'],
+        // ── ENDÓCRINO / METABÓLICO ──────────────────────────────────────────
+        'dm1':                ['diabetes mellitus tipo 1', 'dm1', 'diabetes tipo 1', 'insulinodepend'],
+        'dm2':                ['diabetes mellitus tipo 2', 'dm2', 'diabetes tipo 2', 'diabetes nao insulinodep'],
+        'diabetes':           ['diabet', 'glicemia elevad', 'hiperglicemia', 'hipoglicemia'],
+        'cad':                ['cetoacidos', 'cad ', 'dka ', 'acidose diabetic', 'cetose diabetic'],
+        'ehnc':               ['estado hiperosmolar', 'ehnc ', 'ehh ', 'coma hiperosmolar', 'hiperglicemia grave'],
+        'hipoglicemia':       ['hipoglicem', 'glicemia baix', 'coma hipoglicem', 'glucagom emerg'],
+        'hipotireoidismo':    ['hipotireoid', 'hypothyroid', 'levotiroxin', 'tsh elevad'],
+        'hipertireoidismo':   ['hipertireoid', 'hyperthyroid', 'tireotoxicos', 'tsh baixo', 'graves ', 'propiltiouracil'],
+        'crise_tirotoxica':   ['crise tireotoxi', 'tempestade tireoid', 'thyroid storm'],
+        'insuf_adrenal':      ['insuf adren', 'crisis adren', 'addison', 'cortisol baix', 'hidrocortisona crise'],
+        'cushing':            ['cushing', 'hipercortisolism', 'cortisol exces'],
+        'feocromocitoma':     ['feocromocitom', 'pheochromocytom', 'hipertensao parox', 'catecolamina exces'],
+        'obesidade':          ['obesidade', 'sobrepeso', 'imc elevad', 'orlistat', 'liraglutida obesid'],
+        // ── DISTÚRBIOS HIDROELETROLÍTICOS ────────────────────────────────────
+        'hipercalemia':       ['hipercalemia', 'hiperpotassemia', 'k+ elevad', 'potassio elevad', 'kayexalat'],
+        'hipocalemia':        ['hipocalemia', 'hipopotassemia', 'k+ baix', 'potassio baix', 'reposicao potassio'],
+        'hiponatremia':       ['hiponatremia', 'sodio baix', 'na+ baix', 'hipoosm', 'siadh'],
+        'hipernatremia':      ['hipernatremia', 'sodio elevad', 'na+ elevad', 'hiperosmolar sodio'],
+        'hipocalcemia':       ['hipocalcemia', 'calcio baix', 'ca2+ baix', 'tetania', 'gluconato calcio'],
+        'hipercalcemia':      ['hipercalcemia', 'calcio elevad', 'ca2+ elevad', 'hipercalc'],
+        'acidose_met':        ['acidose metabol', 'acidose metabolica', 'bicarbonato baix', 'bicarbonato reposi'],
+        'alcalose_met':       ['alcalose metabol', 'bicarbonato elevad'],
+        'acidose_resp':       ['acidose respirat', 'hipercapnia', 'co2 elevad'],
+        'alcalose_resp':      ['alcalose respirat', 'hipocapnia', 'co2 baix'],
+        // ── HEMATOLOGIA / ONCOLOGIA ──────────────────────────────────────────
+        'anemia_ferropriva':  ['anemia ferropriva', 'anemia ferropenic', 'deficiencia ferro', 'sulfato ferros', 'ferro defic'],
+        'anemia_megalob':     ['anemia megaloblast', 'deficiencia b12', 'deficiencia folat', 'anemia perniciosa'],
+        'anemia_hemol':       ['anemia hemolitic', 'hemolise', 'crise falciform', 'drepanocitos', 'esferocit'],
+        'leucemia':           ['leucemia', 'leukemia', 'leucemia agud', 'blast leucem'],
+        'linfoma':            ['linfoma', 'lymphoma', 'hodgkin', 'nao hodgkin'],
+        'civd':               ['civd', 'coagulacao intravas dissemin', 'coagulopatia consumo'],
+        'trombocitopenia':    ['trombocitopenia', 'plaqueta baix', 'pti ', 'purpura trombocitopen'],
+        'neutropenia_febril': ['neutropenia febril', 'neutropenia ', 'febre neutropenia', 'mucosit febril'],
+        // ── PSIQUIÁTRICO ─────────────────────────────────────────────────────
+        'depressao':          ['depressao maior', 'depressao unipolar', 'tdm ', 'antidepressiv', 'isrs depressao'],
+        'bipolar':            ['bipolar', 'mania ', 'episodio mania', 'lition', 'estabilizador humor'],
+        'esquizofrenia':      ['esquizofrenia', 'schizophrenia', 'antipsicotic', 'alucinac', 'delirio psicot'],
+        'ansiedade':          ['ansied', 'ansiet', 'tag ', 'transtorno ansied', 'generalizad'],
+        'panico':             ['panico', 'panic', 'crise panico', 'ataque panico'],
+        'tept':               ['tept', 'ptsd', 'trauma psiquiat', 'estresse pos-traum'],
+        'toc':                ['toc ', 'transtorno obsessivo', 'ocd '],
+        'intox_opioide':      ['intox opioide', 'intoxicacao opioide', 'overdose opioide', 'naloxona', 'naltrexona'],
+        'intox_benzo':        ['intox benzodiazep', 'intoxicacao benzo', 'overdose benzo', 'flumazenil'],
+        'intox_alcoolica':    ['intox alcoolic', 'embriaguez', 'alcoolismo agud'],
+        'abstinencia_alcool': ['abstinencia alcool', 'withdrawal alcool', 'delirium tremens', 'tiamina alcool'],
+        'sind_serotonin':     ['sindrome serotonin', 'serotonin syndrome', 'toxicidade serotonin'],
+        'sind_neuroleptica':  ['sindrome neuroleptica', 'hipertermia neuroleptic', 'rigidez extrapiram febre'],
+        'intoxicacao':        ['intox ', 'envenenamento', 'toxicolog', 'overdose', 'carvao ativad'],
+        'delirium':           ['delirium', 'confusao agud', 'sindrome confusional', 'agitac psicomotor'],
+        // ── REUMATOLÓGICO / MUSCULOESQUELÉTICO ───────────────────────────────
+        'artrite_reuma':      ['artrite reumat', 'arthritis reumat', 'artrite reumatoide', 'ar ', 'metotrexato artrit'],
+        'lupus':              ['lupus', 'les ', 'lupus eritematoso', 'hydroxicloroquina lupus'],
+        'esclerodermia':      ['esclerodermia', 'scleroderma', 'esclerose sistem'],
+        'vasculite':          ['vasculite', 'vasculitis', 'poliarterit', 'granulomatose wegener'],
+        'gota':               ['gota ', 'artrite gotosa', 'hiperuricemia', 'colchicina', 'alopurinol'],
+        'osteoartrite':       ['osteoartrit', 'osteoartrose', 'artrose', 'artrit degener'],
+        'osteoporose':        ['osteoporose', 'osteoporosis', 'osteopenia', 'bifosfonato', 'alendronato'],
+        'fibromialgia':       ['fibromialgia', 'fibromyalgia', 'dor cronico muscul', 'sensibilizacao central'],
+        // ── GINECOLÓGICO / OBSTETRICO ────────────────────────────────────────
+        'preeclampsia':       ['preeclampsia', 'pre-eclampsia', 'hellp', 'hipertensao gravidez'],
+        'eclampsia':          ['eclampsia', 'convuls gravidez', 'gestante convuls'],
+        'hemorragia_pp':      ['hemorragia pos-parto', 'hemorragia parto', 'atonia uterina', 'ocitocina hemorr'],
+        'placenta_previa':    ['placenta previa', 'placenta baixa', 'sangramento placent'],
+        'dpp':                ['descolamento placent', 'dpp ', 'abruptio placent'],
+        'aborto_septico':     ['aborto septic', 'aborto infec', 'endometrit pos-aborto'],
+        'sop':                ['sop ', 'sindrome ovar poliquistico', 'policistico ovar', 'metformina sop'],
+        'endometriose':       ['endometriose', 'endometriosis'],
+        // ── UROLÓGICO ───────────────────────────────────────────────────────
+        'prostatite':         ['prostatite', 'prostatitis', 'infec prostat'],
+        'hpb':                ['hiperplasia prostat', 'hpb ', 'bph ', 'obstruc urinaria'],
+        // ── ONCOLÓGICO ──────────────────────────────────────────────────────
+        'cancer_mama':        ['cancer mama', 'ca mama', 'carcinoma mama', 'quimio mama', 'hormoniot mama'],
+        'cancer_pulmao':      ['cancer pulmao', 'carcinoma pulmao', 'nsclc', 'sclc', 'neoplasia pulm'],
+        'cancer_gastrico':    ['cancer gastric', 'cancer estomago', 'adenocarcinoma gastric'],
+        'cancer_colorret':    ['cancer colorret', 'cancer colon', 'cancer reto', 'neoplasia colorret'],
+        'cancer_prostata':    ['cancer prostat', 'ca prostat', 'adenocarcinoma prostat'],
+        'cancer_pancreas':    ['cancer pancreas', 'adenocarcinoma pancre', 'neoplasia pancreat'],
+        'melanoma':           ['melanoma', 'neoplasia pele melanoc', 'ipilimumab melanom'],
+        // ── PEDIÁTRICO ──────────────────────────────────────────────────────
+        'bronquiolite':       ['bronquiolite', 'bronchiolitis', 'vsr ', 'sincicial respirat', 'bebes sibilos'],
+        'crupe':              ['crupe', 'laringotraqueit', 'croup', 'dexametasona crupe'],
+        // ── DERMATOLÓGICO ────────────────────────────────────────────────────
+        'psoriase':           ['psoriase', 'psoriasis', 'placa eritematosa escam'],
+        'dermatite_atopica':  ['dermatite atopic', 'eczema atopic', 'dermatitis atopic'],
+        'urticaria':          ['urticaria', 'urticaria alerg', 'anti-histamin urtic'],
+        // ── TRAUMA / CIRÚRGICO ───────────────────────────────────────────────
+        'tce':                ['trauma cranioencefalic', 'tce ', 'traumatismo craniano', 'lesao cerebral traum'],
+        'politrauma':         ['politrauma', 'trauma grave multipl', 'atls'],
+        'queimaduras':        ['queimadura', 'queimadura ', 'burns ', 'escald'],
+        'rabdomiolise':       ['rabdomiolise', 'rabdomyolysis', 'cpk elevad', 'mioglobin renal'],
+        // ── MISCELÂNEA / GERAL ───────────────────────────────────────────────
+        'sind_metabolica':    ['sindrome metabolic', 'resistencia insulin', 'dislipidemia obesi'],
+        'sind_hepatorrenal':  ['sindrome hepatorrenal', 'shr ', 'hepatorenal'],
+        'sind_cardiorrenal':  ['sindrome cardiorrenal', 'cardio renal'],
+        'anticoag_reverter':  ['reverter anticoag', 'revertir anticoag', 'antidoto anticoag', 'sangramento anticoag'],
+        'anticoagulacao':     ['anticoag', 'trombose', 'tvp ', 'tep ', 'embolia'],
+        'nausea':             ['nause', 'vomit', 'antiemetic', 'enjoo grave'],
+        'febre':              ['febre', 'fiebre', 'antipiret', 'hiperpirex'],
+        'dor':                ['dor intens', 'dor cronic', 'analgesia', 'dor refrat', 'dor agud'],
+        'infeccao':           ['infec ', 'antibiot', 'antibio', 'antimicrobiano', 'bacteriana'],
       };
 
-      // Descobrir qual condição está sendo perguntada
+      // ── Detectar qual condição está sendo perguntada ──────────────────────
       String? detectedCondition;
       for (final entry in conditionKeywords.entries) {
         if (entry.value.any((kw) => qExpanded.contains(kw))) {
@@ -1393,23 +1580,198 @@ class AppProvider extends ChangeNotifier {
         }
       }
 
-      // Mapear condição → grupos/classes farmacológicas relevantes
+      // ── Mapa condição → grupos/classes farmacológicas para busca na drugsDatabase ──
       final conditionToGroups = <String, List<String>>{
-        'cefaleia':       ['analgesic', 'antimigraneous', 'antimigranes', 'antiinflamatorio', 'triptano', 'ergot', 'ibuprofeno', 'paracetamol', 'dipirona', 'sumatriptano', 'propranolol', 'topiramato', 'amitriptilina', 'metoclopramida', 'antiemeti'],
-        'dor':            ['analgesic', 'opioid', 'antiinflamatorio', 'aine', 'ibuprofeno', 'dipirona', 'paracetamol', 'tramadol', 'morfina'],
-        'hipertensao':    ['anti-hipertensivo', 'antihipertensivo', 'cardiovascular', 'ieca', 'bra', 'calcio', 'diuretico', 'betabloqueant', 'amlodipino', 'captopril', 'losartana'],
-        'arritmia_fa':    ['antiarritmico', 'cardiovascular', 'antiarritm', 'betabloqueant', 'amiodarona', 'digoxina', 'diltiazem', 'adenosina', 'anticoagul'],
-        'infeccao':       ['antibiotico', 'antibiot', 'antimicrobiano', 'antifungico', 'antiviral', 'antiinfeccioso'],
-        'diabetes':       ['antidiabetic', 'hipoglicemiant', 'insulina', 'metformina', 'glifozina', 'glp'],
-        'anticoagulacao': ['anticoagul', 'trombolitic', 'fibrinolitic', 'hemostasia', 'heparina', 'enoxaparina', 'warfarina', 'rivaroxabana', 'apixabana'],
-        'ic':             ['insuficiencia card', 'cardiaco', 'diuretico', 'ieca', 'betabloqueant', 'furosemida', 'espironolactona', 'digoxina', 'dobutamina'],
-        'asma_dpoc':      ['broncodilatad', 'beta2', 'anticolinergico', 'corticoid', 'salbutamol', 'budesonida', 'formoterol', 'teofilina', 'metilprednisolona'],
-        'convulsao':      ['anticonvuls', 'antiepilep', 'benzodiazep', 'diazepam', 'fenito', 'valproat', 'levetiracetam', 'midazolam', 'carbamazepina'],
-        'choque':         ['vasopressor', 'vasopres', 'inotrop', 'noradrenalina', 'adrenalina', 'dopamina', 'dobutamina', 'vasopressin'],
-        'ansiedade':      ['ansiolitic', 'benzodiazep', 'ssri', 'isrs', 'buspirona'],
-        'nausea':         ['antiemetic', 'antinauseant', 'ondansetrona', 'metoclopramida', 'droperidol'],
-        'febre':          ['antipiret', 'analgesic', 'paracetamol', 'ibuprofeno', 'dipirona', 'acido acetilsali'],
-        'anticoag_reverter': ['antidoto', 'reversor', 'vitamina k', 'protamina', 'idarucizumabe', 'andexanet'],
+        // ── EMERGÊNCIAS / CHOQUE ────────────────────────────────────────────
+        'anafilaxia':          ['adrenalina', 'epinefrina', 'adrenergic', 'anti-histamin', 'corticosteroid', 'difenidramina', 'broncodilatad', 'salbutamol'],
+        'choque_septico':      ['vasopressor', 'noradrenalina', 'adrenalina', 'vasopressin', 'hidrocortisona', 'antibiotico', 'antibiot', 'antimicrobiano'],
+        'choque_cardiogenico': ['inotrop', 'dobutamina', 'noradrenalina', 'milrinona', 'levosimendana', 'diuretico', 'furosemida', 'nitrato'],
+        'choque_hipovolemico': ['cristaloide', 'coloide', 'albumina', 'acido tranexam', 'vasopressor'],
+        'choque':              ['vasopressor', 'noradrenalina', 'adrenalina', 'dopamina', 'dobutamina', 'vasopressin', 'inotrop'],
+        'pcr':                 ['adrenalina', 'epinefrina', 'amiodarona', 'atropina', 'bicarbonato', 'calcio cloreto', 'lidocaina'],
+        // ── CARDIOVASCULAR ──────────────────────────────────────────────────
+        'iam':                 ['antiagregant', 'antiplaquetario', 'aas', 'clopidogrel', 'ticagrelor', 'heparina', 'enoxaparina', 'nitrato', 'betabloqueant', 'ieca', 'estatina'],
+        'angina':              ['nitrato', 'betabloqueant', 'bloqueador calcio', 'ranolazin', 'ivabradina', 'antiagregant', 'aas', 'estatina'],
+        'ic':                  ['diuretico', 'furosemida', 'espironolactona', 'ieca', 'betabloqueant', 'sacubitril', 'digoxina', 'dobutamina', 'sglt2', 'nitroglicerin'],
+        'fa':                  ['antiarritmico', 'amiodarona', 'betabloqueant', 'diltiazem', 'digoxina', 'anticoagul', 'rivaroxabana', 'apixabana', 'dabigatrana', 'warfarina'],
+        'tpsv':                ['adenosina', 'betabloqueant', 'diltiazem', 'verapamil', 'antiarritmico', 'propafenona', 'flecainida'],
+        'tv':                  ['amiodarona', 'lidocaina', 'procainamida', 'betabloqueant', 'sotalol', 'antiarritmico'],
+        'bradicardia':         ['atropina', 'adrenalina', 'dopamina', 'isoproterenol', 'aminofilina'],
+        'hipertensao':         ['anti-hipertensivo', 'ieca', 'bra', 'bloqueador calcio', 'diuretico', 'betabloqueant', 'amlodipino', 'captopril', 'losartana', 'enalapril', 'hidroclorotiazid'],
+        'crise_hipertensiva':  ['nitroprussiato', 'nitroglicerin', 'labetalol', 'esmolol', 'hidralazina', 'nicardipino', 'furosemida'],
+        'dissecc_aorta':       ['betabloqueant', 'esmolol', 'labetalol', 'nitroprussiato', 'nicardipino', 'morfina'],
+        'tep':                 ['anticoagul', 'heparina', 'enoxaparina', 'rivaroxabana', 'apixabana', 'alteplase', 'trombolitic', 'fondaparinux'],
+        'tvp':                 ['anticoagul', 'heparina', 'enoxaparina', 'rivaroxabana', 'apixabana', 'dabigatrana', 'warfarina'],
+        'endocardite':         ['antibiotico', 'penicilina', 'ampicilina', 'oxacilina', 'gentamicina', 'vancomicina', 'rifampicina', 'antimicrobiano'],
+        'miocardite':          ['betabloqueant', 'ieca', 'diuretico', 'corticosteroid', 'imunossupressor'],
+        'pericardite':         ['antiinflamatorio', 'ibuprofeno', 'aine', 'colchicina', 'corticosteroid', 'aspirin'],
+        'cardiopatia_dilat':   ['ieca', 'betabloqueant', 'diuretico', 'espironolactona', 'digoxina', 'sacubitril', 'anticoagul'],
+        'cardiopatia_hipert':  ['betabloqueant', 'bloqueador calcio', 'disopiramida', 'amiodarona', 'anticoagul'],
+        // ── NEUROLÓGICO ─────────────────────────────────────────────────────
+        'avc_isquemico':       ['trombolitic', 'alteplase', 'antiagregant', 'clopidogrel', 'aas', 'anticoagul', 'estatina', 'anti-hipertensivo'],
+        'avc_hemorragico':     ['anti-hipertensivo', 'labetalol', 'nicardipino', 'vitamina k', 'idarucizumabe', 'nimodipino'],
+        'hsa':                 ['nimodipino', 'nicardipino', 'anti-hipertensivo', 'analgesic', 'antiemetic', 'corticoid'],
+        'ait':                 ['antiagregant', 'clopidogrel', 'aas', 'anticoagul', 'estatina', 'anti-hipertensivo'],
+        'epilepsia':           ['anticonvuls', 'antiepilep', 'benzodiazep', 'diazepam', 'midazolam', 'lorazepam', 'fenitoina', 'levetiracetam', 'valproato', 'carbamazepina', 'lamotrigina'],
+        'meningite':           ['antibiotico', 'ceftriaxona', 'ampicilina', 'vancomicina', 'aciclovir', 'dexametasona', 'antimicrobiano'],
+        'parkinson':           ['dopaminergic', 'levodopa', 'carbidopa', 'benserazida', 'pramipexol', 'rasagilina', 'entacapona'],
+        'alzheimer':           ['inibidor colinesterase', 'donepezila', 'rivastigmina', 'galantamina', 'memantina'],
+        'demencia':            ['donepezila', 'memantina', 'antipsicotic', 'inibidor colinesterase'],
+        'esclerose_mult':      ['corticosteroid', 'metilprednisolona', 'interferon beta', 'acetato glatiramer', 'nataliz', 'fingolimod', 'imunossupressor'],
+        'miastenia':           ['piridostigmina', 'neostigmina', 'corticosteroid', 'imunossupressor', 'azatioprina', 'micofenolato'],
+        'guillain_barre':      ['imunoglobulina iv', 'ivig', 'anticoagul profilat', 'heparina'],
+        'enxaqueca':           ['triptano', 'sumatriptano', 'rizatriptano', 'zolmitriptano', 'ergot', 'aine', 'paracetamol', 'dipirona', 'metoclopramida', 'propranolol', 'topiramato', 'amitriptilina', 'valproato'],
+        'cefaleia_tensional':  ['aine', 'paracetamol', 'ibuprofeno', 'dipirona', 'amitriptilina', 'analgesic', 'relaxante muscul'],
+        'cefaleia':            ['analgesic', 'aine', 'paracetamol', 'dipirona', 'ibuprofeno', 'triptano', 'antiemetic', 'metoclopramida'],
+        // ── RESPIRATÓRIO ────────────────────────────────────────────────────
+        'pneumonia_com':       ['antibiotico', 'amoxicilina', 'azitromicina', 'ceftriaxona', 'levofloxacino', 'ampicilina', 'amoxicilina-clavulanato'],
+        'pneumonia_hosp':      ['antibiotico', 'piperacilin-tazobactam', 'meropenem', 'imipenem', 'vancomicina', 'amikacina'],
+        'tuberculose':         ['rifampicina', 'isoniazida', 'pirazinamida', 'etambutol', 'antimicobacterian', 'antituberculoso'],
+        'asma':                ['broncodilatad', 'beta2 agonist', 'salbutamol', 'formoterol', 'corticosteroid inalat', 'budesonida', 'fluticasona', 'ipratropio', 'teofilina', 'montelucaste'],
+        'dpoc':                ['broncodilatad', 'salbutamol', 'ipratropio', 'tiotropio', 'formoterol', 'budesonida', 'roflumilaste', 'teofilina', 'corticosteroid sistem'],
+        'insuf_resp':          ['broncodilatad', 'salbutamol', 'corticosteroid', 'antibiotico', 'diuretico', 'morfina'],
+        'pneumotorax':         ['analgesic', 'morfina', 'aine'],
+        'derrame_pleural':     ['diuretico', 'antibiotico', 'antiinflamatorio', 'aine'],
+        'apneia_sono':         ['modafinil', 'teofilina', 'acetazolamida'],
+        'covid':               ['corticosteroid', 'dexametasona', 'anticoagul', 'heparina', 'enoxaparina', 'remdesivir', 'nirmatrelvir', 'baricitinib', 'tocilizumab'],
+        // ── INFECCIOSO ──────────────────────────────────────────────────────
+        'sepse':               ['antibiotico', 'piperacilin-tazobactam', 'meropenem', 'imipenem', 'vancomicina', 'amikacina', 'noradrenalina', 'hidrocortisona'],
+        'itu':                 ['antibiotico', 'nitrofurantoina', 'fosfomicina', 'ciprofloxacino', 'trimetoprim', 'cefalexina'],
+        'pielonefrite':        ['antibiotico', 'ciprofloxacino', 'ceftriaxona', 'ampicilina', 'levofloxacino', 'gentamicina'],
+        'celulite':            ['antibiotico', 'cefalexina', 'clindamicina', 'ceftriaxona', 'oxacilina', 'amoxicilina-clavulanato', 'vancomicina'],
+        'fasceite':            ['antibiotico', 'piperacilin-tazobactam', 'meropenem', 'clindamicina', 'vancomicina'],
+        'osteomielite':        ['antibiotico', 'ceftriaxona', 'oxacilina', 'vancomicina', 'ciprofloxacino', 'rifampicina'],
+        'hiv_aids':            ['antirretrovir', 'tenofovir', 'emtricitabina', 'efavirenz', 'dolutegravir', 'atazanavir'],
+        'candidose':           ['antifungico', 'fluconazol', 'anfotericin b', 'caspofungina', 'voriconazol', 'micafungina'],
+        'dengue':              ['paracetamol', 'antipiret', 'analgesic', 'reposicao volum'],
+        'malaria':             ['cloroquina', 'hidroxicloroquina', 'artemeter', 'lumefantrina', 'quinina', 'primaquina', 'doxiciclina'],
+        'leptospirose':        ['penicilina g', 'doxiciclina', 'ampicilina', 'ceftriaxona'],
+        'sifilis':             ['penicilina g benzatin', 'doxiciclina', 'azitromicina'],
+        'dst':                 ['azitromicina', 'doxiciclina', 'ceftriaxona', 'penicilina', 'metronidazol'],
+        'herpes_zoster':       ['aciclovir', 'valaciclovir', 'fanciclovir', 'antiviral', 'analgesic', 'gabapentina'],
+        'varicela':            ['aciclovir', 'valaciclovir', 'anti-histamin', 'paracetamol'],
+        // ── GASTROINTESTINAL ────────────────────────────────────────────────
+        'hda':                 ['inibidor bomba proton', 'omeprazol', 'pantoprazol', 'octreotida', 'terlipressina', 'propranolol', 'antibiotico'],
+        'hdb':                 ['mesalazina', 'infliximab', 'hemostasia endoscop'],
+        'pancreatite':         ['analgesic', 'morfina', 'aine', 'reposicao volum', 'antibiotico', 'insulina'],
+        'colecistite':         ['antibiotico', 'ceftriaxona', 'ampicilina', 'metronidazol', 'analgesic', 'escopolamina'],
+        'colangite':           ['antibiotico', 'piperacilin-tazobactam', 'ampicilina', 'ciprofloxacino', 'metronidazol'],
+        'apendicite':          ['antibiotico', 'ceftriaxona', 'metronidazol', 'piperacilin-tazobactam', 'analgesic'],
+        'diverticulite':       ['antibiotico', 'ciprofloxacino', 'metronidazol', 'amoxicilina-clavulanato', 'analgesic'],
+        'drge':                ['inibidor bomba proton', 'omeprazol', 'esomeprazol', 'pantoprazol', 'antiácido', 'metoclopramida', 'domperidona'],
+        'ulcera_peptica':      ['inibidor bomba proton', 'omeprazol', 'pantoprazol', 'amoxicilina', 'claritromicina', 'metronidazol', 'bismuto'],
+        'dii':                 ['mesalazina', 'sulfassalazina', 'corticosteroid', 'azatioprina', 'infliximab', 'adalimumab', 'metronidazol'],
+        'sii':                 ['antiespasmódico', 'escopolamina', 'mebeverina', 'ssri', 'loperamida', 'lactulose'],
+        'cirrose':             ['diuretico', 'furosemida', 'espironolactona', 'propranolol', 'lactulose', 'rifaximina', 'albumina', 'terlipressina'],
+        'hepatite':            ['antiviral', 'interferon', 'ribavirina', 'sofosbuvir', 'daclatasvir', 'entecavir', 'tenofovir'],
+        'insuf_hepatica':      ['lactulose', 'rifaximina', 'vitamina k', 'albumina', 'diuretico', 'n-acetilcisteina'],
+        // ── RENAL ───────────────────────────────────────────────────────────
+        'ira':                 ['diuretico', 'furosemida', 'bicarbonato', 'gluconato calcio', 'kayexalat', 'reposicao volum'],
+        'drc':                 ['anti-hipertensivo', 'ieca', 'bra', 'diuretico', 'bicarbonato', 'eritropoetina', 'calcio carbonato', 'sevelamer'],
+        'glomerulonefrite':    ['corticosteroid', 'imunossupressor', 'ciclofosfamida', 'micofenolato', 'anti-hipertensivo', 'diuretico'],
+        'sindrome_nefrotica':  ['corticosteroid', 'prednisona', 'ciclofosfamida', 'diuretico', 'albumina', 'ieca'],
+        'litíase_renal':       ['analgesic', 'aine', 'morfina', 'dipirona', 'tamsulosina', 'diclofenaco', 'escopolamina'],
+        // ── ENDÓCRINO / METABÓLICO ──────────────────────────────────────────
+        'dm1':                 ['insulina', 'insulina rapida', 'insulina nph', 'insulina glargin', 'insulina lispro'],
+        'dm2':                 ['antidiabetic', 'metformina', 'glifozina', 'empagliflozin', 'liraglutida', 'sitagliptin', 'glibenclamida', 'insulina'],
+        'diabetes':            ['insulina', 'metformina', 'antidiabetic', 'hipoglicemiant', 'glifozina'],
+        'cad':                 ['insulina regular', 'solucao salina', 'potassio reposicao', 'bicarbonato'],
+        'ehnc':                ['insulina regular', 'potassio reposicao', 'reposicao volum'],
+        'hipoglicemia':        ['glicose hipertonic', 'glicose iv', 'glucagon', 'dextrose'],
+        'hipotireoidismo':     ['levotiroxina', 'l-tiroxina', 'hormonio tiroid'],
+        'hipertireoidismo':    ['propiltiouracil', 'metimazol', 'tiamazol', 'betabloqueant', 'propranolol', 'iodeto potassio'],
+        'crise_tirotoxica':    ['propiltiouracil', 'propranolol', 'hidrocortisona', 'iodeto'],
+        'insuf_adrenal':       ['hidrocortisona', 'fludrocortisona', 'dexametasona', 'corticosteroid'],
+        'cushing':             ['ketoconazol', 'metirapona', 'mifepristona', 'pasireotida'],
+        'feocromocitoma':      ['fenoxibenzamina', 'doxazosina', 'betabloqueant', 'bloqueador alfa'],
+        'obesidade':           ['orlistat', 'liraglutida', 'semaglutida', 'bupropiona', 'topiramato'],
+        // ── DISTÚRBIOS HIDROELETROLÍTICOS ────────────────────────────────────
+        'hipercalemia':        ['gluconato calcio', 'bicarbonato sodio', 'insulina dextrose', 'salbutamol', 'kayexalat', 'patiromer', 'furosemida'],
+        'hipocalemia':         ['cloreto potassio', 'potassio oral', 'potassio iv', 'reposicao potassio'],
+        'hiponatremia':        ['solucao salina hiperton', 'nacl 3%', 'reposicao sodio', 'tolvaptan'],
+        'hipernatremia':       ['solucao salina hipotonic', 'agua livre', 'dextrose 5%'],
+        'hipocalcemia':        ['gluconato calcio', 'cloreto calcio', 'calcio iv', 'vitamina d'],
+        'hipercalcemia':       ['solucao salina', 'furosemida', 'bisfosfonato', 'calcitonina', 'denosumab'],
+        'acidose_met':         ['bicarbonato sodio', 'bicarbonato iv'],
+        'alcalose_met':        ['cloreto potassio', 'acetazolamida'],
+        'acidose_resp':        ['broncodilatad', 'corticosteroid'],
+        'alcalose_resp':       ['analgesic', 'sedacao'],
+        // ── HEMATOLOGIA / ONCOLOGIA ──────────────────────────────────────────
+        'anemia_ferropriva':   ['sulfato ferroso', 'ferro polimaltosado', 'ferro iv', 'sacarato ferro', 'acido ascorbico'],
+        'anemia_megalob':      ['cianocobalamina', 'vitamina b12', 'acido folico', 'hidroxicobalamina'],
+        'anemia_hemol':        ['corticosteroid', 'prednisona', 'imunossupressor', 'acido folico', 'hidroxiureia'],
+        'leucemia':            ['quimioterapia', 'imatinibe', 'dasatinibe', 'daunorubicina', 'citarabina'],
+        'linfoma':             ['quimioterapia', 'rituximab', 'ciclofosfamida', 'doxorubicina', 'vincristina', 'prednisona'],
+        'civd':                ['heparina', 'plasma fresco', 'crioprecipitado', 'acido tranexam'],
+        'trombocitopenia':     ['imunoglobulina iv', 'corticosteroid', 'prednisona', 'rituximab', 'eltrombopag'],
+        'neutropenia_febril':  ['antibiotico', 'ceftriaxona', 'piperacilin-tazobactam', 'meropenem', 'vancomicina', 'filgrastim'],
+        // ── PSIQUIÁTRICO ─────────────────────────────────────────────────────
+        'depressao':           ['antidepressiv', 'isrs', 'ssri', 'fluoxetina', 'sertralina', 'escitalopram', 'venlafaxina', 'bupropiona', 'amitriptilina'],
+        'bipolar':             ['estabilizador humor', 'lition', 'valproato', 'lamotrigina', 'quetiapina', 'olanzapina', 'carbamazepina'],
+        'esquizofrenia':       ['antipsicotic', 'haloperidol', 'risperidona', 'olanzapina', 'clozapina', 'quetiapina', 'aripiprazol'],
+        'ansiedade':           ['ansiolitic', 'benzodiazep', 'diazepam', 'clonazepam', 'ssri', 'isrs', 'buspirona', 'venlafaxina', 'pregabalina'],
+        'panico':              ['ssri', 'isrs', 'sertralina', 'fluoxetina', 'clonazepam', 'alprazolam'],
+        'tept':                ['ssri', 'sertralina', 'paroxetina', 'prazosin'],
+        'toc':                 ['ssri', 'fluoxetina', 'fluvoxamina', 'sertralina', 'clomipramina'],
+        'intox_opioide':       ['naloxona', 'naltrexona'],
+        'intox_benzo':         ['flumazenil'],
+        'intox_alcoolica':     ['tiamina', 'vitamina b1', 'glicose', 'benzodiazep'],
+        'abstinencia_alcool':  ['benzodiazep', 'diazepam', 'lorazepam', 'tiamina', 'haloperidol'],
+        'sind_serotonin':      ['benzodiazep', 'ciproheptadina'],
+        'sind_neuroleptica':   ['benzodiazep', 'bromocriptina', 'dantrolene'],
+        'intoxicacao':         ['carvao ativad', 'naloxona', 'flumazenil', 'vitamina k', 'n-acetilcisteina', 'atropina'],
+        'delirium':            ['haloperidol', 'quetiapina', 'rivastigmina', 'melatonin'],
+        // ── REUMATOLÓGICO ───────────────────────────────────────────────────
+        'artrite_reuma':       ['metotrexato', 'leflunomida', 'hidroxicloroquina', 'sulfassalazina', 'biologico', 'corticosteroid'],
+        'lupus':               ['hidroxicloroquina', 'corticosteroid', 'azatioprina', 'micofenolato', 'ciclofosfamida', 'belimumab'],
+        'esclerodermia':       ['sildenafil', 'bosentana', 'iloprost', 'ieca', 'omeprazol'],
+        'vasculite':           ['corticosteroid', 'ciclofosfamida', 'rituximab', 'azatioprina'],
+        'gota':                ['colchicina', 'aine', 'ibuprofeno', 'indometacina', 'prednisona', 'alopurinol', 'febuxostate'],
+        'osteoartrite':        ['analgesic', 'aine', 'ibuprofeno', 'paracetamol', 'diclofenaco', 'condroitin', 'glucosamina'],
+        'osteoporose':         ['bisfosfonato', 'alendronato', 'zoledronato', 'denosumab', 'teriparatida', 'calcio', 'vitamina d'],
+        'fibromialgia':        ['amitriptilina', 'duloxetina', 'pregabalina', 'tramadol', 'ciclobenzaprina', 'gabapentina'],
+        // ── GINECOLÓGICO / OBSTÉTRICO ────────────────────────────────────────
+        'preeclampsia':        ['sulfato magnesio', 'hidralazina', 'labetalol', 'nifedipino', 'metildopa', 'betametasona'],
+        'eclampsia':           ['sulfato magnesio', 'benzodiazep', 'diazepam', 'labetalol', 'nifedipino'],
+        'hemorragia_pp':       ['ocitocina', 'ergometrina', 'misoprostol', 'acido tranexam'],
+        'placenta_previa':     ['betametasona', 'tocolitic', 'nifedipino'],
+        'dpp':                 ['betametasona', 'ocitocina', 'analgesic'],
+        'aborto_septico':      ['antibiotico', 'ampicilina', 'gentamicina', 'metronidazol', 'ceftriaxona'],
+        'sop':                 ['metformina', 'anticoncept', 'espironolactona', 'citrato clomifeno', 'letrozol'],
+        'endometriose':        ['progestagen', 'dienogest', 'leuprorelin', 'danazol', 'aine'],
+        // ── UROLÓGICO ───────────────────────────────────────────────────────
+        'prostatite':          ['antibiotico', 'ciprofloxacino', 'levofloxacino', 'doxiciclina', 'alfabloquead'],
+        'hpb':                 ['alfabloquead', 'tamsulosina', 'doxazosina', 'dutasterida', 'finasterida'],
+        // ── ONCOLÓGICO ──────────────────────────────────────────────────────
+        'cancer_mama':         ['tamoxifeno', 'letrozol', 'anastrozol', 'trastuzumab', 'ciclofosfamida', 'doxorubicina', 'paclitaxel'],
+        'cancer_pulmao':       ['erlotinib', 'gefitinib', 'osimertinib', 'pembrolizumab', 'cisplatina', 'carboplatina'],
+        'cancer_gastrico':     ['5-fluorouracil', 'cisplatina', 'oxaliplatina', 'trastuzumab', 'ramucirumab'],
+        'cancer_colorret':     ['5-fluorouracil', 'oxaliplatina', 'irinotecan', 'bevacizumab', 'cetuximab'],
+        'cancer_prostata':     ['leuprorelin', 'bicalutamida', 'enzalutamida', 'abiraterona', 'docetaxel'],
+        'cancer_pancreas':     ['gemcitabina', 'nab-paclitaxel', 'erlotinib'],
+        'melanoma':            ['ipilimumab', 'pembrolizumab', 'nivolumab', 'vemurafenib', 'dabrafenib'],
+        // ── PEDIÁTRICO ──────────────────────────────────────────────────────
+        'bronquiolite':        ['salbutamol', 'broncodilatad', 'adrenalina'],
+        'crupe':               ['dexametasona', 'budesonida', 'adrenalina', 'corticosteroid'],
+        // ── DERMATOLÓGICO ───────────────────────────────────────────────────
+        'psoriase':            ['metotrexato', 'corticosteroid', 'adalimumab', 'secuquinumab', 'apremilast', 'ciclosporina'],
+        'dermatite_atopica':   ['corticosteroid topic', 'tacrolimus', 'dupilumab', 'anti-histamin', 'emoliente'],
+        'urticaria':           ['anti-histamin', 'cetirizina', 'loratadina', 'fexofenadina', 'corticosteroid', 'adrenalina'],
+        // ── TRAUMA / CIRÚRGICO ───────────────────────────────────────────────
+        'tce':                 ['manitol', 'solucao salina hiperton', 'dexametasona', 'anti-hipertensivo', 'fenitoina'],
+        'politrauma':          ['analgesic', 'morfina', 'fentanila', 'acido tranexam', 'antibiotico'],
+        'queimaduras':         ['analgesic', 'morfina', 'fentanila', 'antibiotico', 'sulfadiazina'],
+        'rabdomiolise':        ['reposicao volum', 'bicarbonato', 'manitol', 'furosemida'],
+        // ── MISCELÂNEA ──────────────────────────────────────────────────────
+        'sind_metabolica':     ['metformina', 'anti-hipertensivo', 'estatina', 'fibratos'],
+        'sind_hepatorrenal':   ['terlipressina', 'albumina', 'noradrenalina', 'antibiotico'],
+        'sind_cardiorrenal':   ['diuretico', 'furosemida', 'dobutamina'],
+        'anticoag_reverter':   ['vitamina k', 'protamina', 'idarucizumabe', 'andexanete', 'plasma fresco'],
+        'anticoagulacao':      ['anticoagul', 'heparina', 'enoxaparina', 'warfarina', 'rivaroxabana', 'apixabana', 'dabigatrana'],
+        'nausea':              ['antiemetic', 'ondansetrona', 'metoclopramida', 'droperidol', 'prometazina', 'domperidona'],
+        'febre':               ['antipiret', 'paracetamol', 'dipirona', 'ibuprofeno', 'acido acetilsalicil'],
+        'dor':                 ['analgesic', 'opioid', 'morfina', 'tramadol', 'paracetamol', 'dipirona', 'ibuprofeno', 'aine', 'fentanila'],
+        'infeccao':            ['antibiotico', 'antimicrobiano', 'antifungico', 'antiviral'],
       };
 
       final relevantGroups = detectedCondition != null
@@ -2336,8 +2698,73 @@ class AppProvider extends ChangeNotifier {
         }
       }
 
-      // 2e. Fallback final
+      // ════════════════════════════════════════════════════════════════════
+      // FASE 2f — CONTEXTO GENÉRICO ESTRUTURADO para doenças não mapeadas
+      // Quando nenhuma condição local casa (winner == null), esta fase
+      // extrai o termo clínico da query e monta um contexto estruturado
+      // que o Gemini usa para buscar na web e responder corretamente.
+      // Evita o fallback "preciso de mais detalhes" para queries válidas.
+      // ════════════════════════════════════════════════════════════════════
       if (winner == null) {
+        // Detectar se a query contém um termo médico/clínico reconhecível
+        // (mais de 4 chars, sem ser uma palavra genérica)
+        final stopWords = {'para', 'como', 'qual', 'quando', 'sobre', 'tratamento',
+                           'medicamento', 'farmaco', 'remedio', 'conduta', 'protocolo',
+                           'dose', 'usar', 'deve', 'pode', 'devo', 'fazer', 'tenho',
+                           'esta', 'esse', 'essa', 'isso', 'uma', 'tipo', 'caso'};
+        final queryTerms = q.split(RegExp(r'\s+'))
+            .where((w) => w.length > 4 && !stopWords.contains(w))
+            .toList();
+
+        // Verificar se parece uma pergunta clínica legítima (tem termo médico)
+        final looksLikeClinical = queryTerms.isNotEmpty && (
+          _has(q, ['sindrome', 'doenca', 'infec', 'lesao', 'tumor', 'cancer', 'carcinoma',
+                   'insuf', 'crise', 'agud', 'cronic', 'grave', 'leve', 'moderado',
+                   'tratament', 'diagnos', 'clinico', 'pacient', 'sintom',
+                   'complicac', 'manejo', 'conduta', 'terapia', 'cirurgi',
+                   // español
+                   'sindrome', 'enfermedad', 'infeccion', 'lesion', 'tumor', 'cancer',
+                   'insuficiencia', 'crisis', 'agudo', 'cronico', 'grave',
+                   'tratamiento', 'diagnostico', 'clinico', 'paciente', 'sintoma']) ||
+          queryTerms.length >= 2
+        );
+
+        if (looksLikeClinical && queryTerms.isNotEmpty) {
+          // Montar contexto genérico estruturado — Gemini usará para buscar na web
+          final termLabel = queryTerms.take(3).join(' ');
+          final buf2f = StringBuffer();
+          buf2f.writeln(es
+              ? '## Consulta clínica: $termLabel'
+              : '## Consulta clínica: $termLabel');
+          buf2f.writeln('');
+          buf2f.writeln(es
+              ? '**Tópico identificado:** $termLabel'
+              : '**Tópico identificado:** $termLabel');
+          buf2f.writeln('');
+          buf2f.writeln(es
+              ? '**Búsqueda requerida:** Esta condición/tema no está en la base local. Buscar en literatura médica actualizada (UpToDate, PubMed, guías internacionales ESC/AHA/IDSA).'
+              : '**Busca necessária:** Esta condição/tema não está na base local. Buscar na literatura médica atualizada (UpToDate, PubMed, diretrizes internacionais ESC/AHA/IDSA).');
+          buf2f.writeln('');
+
+          // Dados do paciente se disponíveis
+          if (_patient.age.isNotEmpty || _patient.weight.isNotEmpty) {
+            buf2f.writeln(es ? '**Datos del paciente:**' : '**Dados do paciente:**');
+            if (_patient.age.isNotEmpty) buf2f.writeln('  • ${es ? "Edad" : "Idade"}: ${_patient.age} ${es ? "años" : "anos"}, ${_patient.sex}');
+            if (_patient.weight.isNotEmpty) buf2f.writeln('  • ${es ? "Peso" : "Peso"}: ${_patient.weight} kg');
+            if ((clcr ?? '').isNotEmpty) buf2f.writeln('  • ClCr: $clcr mL/min');
+            if (_patient.medications.isNotEmpty) buf2f.writeln('  • ${es ? "Medicamentos" : "Medicamentos"}: ${_patient.medications}');
+            buf2f.writeln('');
+          }
+
+          buf2f.writeln(es
+              ? '**Instrucciones para la IA:**\n  1. Clasificar: ¿enfermedad, fármaco, procedimiento, caso clínico?\n  2. Buscar guías internacionales actualizadas\n  3. Responder con estructura apropiada al tipo de consulta\n  4. Si hay datos del paciente, adaptar dosis/conduta ao perfil'
+              : '**Instruções para a IA:**\n  1. Classificar: doença, fármaco, procedimento, caso clínico?\n  2. Buscar diretrizes internacionais atualizadas\n  3. Responder com estrutura apropriada ao tipo de consulta\n  4. Se há dados do paciente, adaptar doses/conduta ao perfil');
+          buf2f.writeln('');
+          buf2f.writeln(es ? '⚕ Apoyo educacional.' : '⚕ Apoio educacional.');
+          return buf2f.toString();
+        }
+
+        // 2e. Fallback final — query muito ambígua, sem termos clínicos
         if (_aiHistory.isNotEmpty) {
           return es
               ? 'Entiendo que es una pregunta de seguimiento. ¿Podrías especificar un poco más?\n\nEjemplos:\n• "¿Cuál es la dosis de [fármaco]?"\n• "¿Cuándo cardiovertir en FA?"\n• "¿Cuál es el protocolo de sepsis?"\n\n⚕ Apoyo educacional.'
