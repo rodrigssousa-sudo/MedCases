@@ -185,8 +185,11 @@ class AppProvider extends ChangeNotifier {
     loadPublicHistories();
 
     // 5️⃣ Restaura sessão Gemini em background — silencioso, não bloqueia UI
-    // Delay de 1s quando há redirect OAuth pendente para garantir que o JS
-    // terminou de salvar o token no localStorage antes do Dart ler.
+    if (kIsWeb) {
+      final pendingNow = _webGetLS('medcases_gsi_pending');
+      final tokenNow   = _webGetLS('gemini_access_token');
+      _jsLog('[setUser] step5 pending=${pendingNow ?? "null"} token=${tokenNow != null ? "SIM" : "NAO"}');
+    }
     Future.delayed(
       _webGetLS('medcases_gsi_pending') == 'true'
           ? const Duration(seconds: 1)
