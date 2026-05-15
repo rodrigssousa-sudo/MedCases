@@ -717,63 +717,181 @@ class _UserBubble extends StatelessWidget {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Bolha da IA — esquerda, branca/escura
+// Bolha da IA — múltiplas bolhas por bloco, com negrito inline e sem markdown
 // ─────────────────────────────────────────────────────────────────────────────
-class _AiBubble extends StatelessWidget {
-  final String text;
+
+/// Limpa marcadores markdown da resposta da IA antes de exibir.
+/// Remove ##, **, --, --- e formata hifens de lista.
+String _cleanAiText(String raw) {
+  return raw
+      .replaceAll(RegExp(r'^#{1,3}\s*', multiLine: true), '')   // ## ### títulos
+      .replaceAll('---', '')                                      // separadores
+      .replaceAll('--', '')                                       // traços duplos
+      .replaceAll(RegExp(r'\*{3,}'), '')                         // *** ou mais
+      .trim();
+}
+
+/// Divide o texto em blocos lógicos separados por linha(s) em branco.
+/// Cada bloco vai virar uma bolha independente.
+List<String> _splitIntoBlocks(String text) {
+  // Normaliza quebras de linha múltiplas em duplas
+  final normalized = text.replaceAll(RegExp(r'\n{3,}'), '\n\n');
+  // Divide por linha em branco
+  final rawBlocks = normalized.split(RegExp(r'\n\n+'));
+  return rawBlocks
+      .map((b) => b.trim())
+      .where((b) => b.isNotEmpty)
+      .toList();
+}
+
+/// Renderiza uma linha de texto com suporte a negrito inline via **texto**.
+/// Não exibe os asteriscos — converte para FontWeight.bold.
+Widget _buildInlineText(String line, Color textColor, {bool isBold = false}) {
+  // Detecta se toda a linha é um título (começa com negrito sem texto antes)
+  // Padrão: **Título** ou **Título:** — ocupa a linha toda
+  final fullBold = RegExp(r'^\*\*(.+?)\*\*:?\s*$');
+  final fullMatch = fullBold.firstMatch(line.trim());
+  if (fullMatch != null || isBold) {
+    final label = fullMatch != null
+        ? fullMatch.group(1)! + (line.trim().endsWith(':') ? ':' : '')
+        : line;
+    return Text(
+      label,
+      style: TextStyle(
+        fontSize: 13.5,
+        fontWeight: FontWeight.w700,
+        color: textColor,
+        height: 1.45,
+      ),
+    );
+  }
+
+  // Inline bold: split por **...**
+  final parts = <TextSpan>[];
+  final regex = RegExp(r'\*\*(.+?)\*\*');
+  int cursor = 0;
+  for (final match in regex.allMatches(line)) {
+    if (match.start > cursor) {
+      parts.add(TextSpan(text: line.substring(cursor, match.start)));
+    }
+    parts.add(TextSpan(
+      text: match.group(1),
+      style: const TextStyle(fontWeight: FontWeight.w700),
+    ));
+    cursor = match.end;
+  }
+  if (cursor < line.length) {
+    parts.add(TextSpan(text: line.substring(cursor)));
+  }
+
+  if (parts.isEmpty) return const SizedBox.shrink();
+
+  return RichText(
+    text: TextSpan(
+      style: TextStyle(
+        fontSize: 13.5,
+        fontWeight: FontWeight.w400,
+        color: textColor,
+        height: 1.5,
+      ),
+      children: parts,
+    ),
+  );
+}
+
+/// Widget de um único bloco da IA — uma bolha WhatsApp.
+class _AiBlockBubble extends StatelessWidget {
+  final String block;
   final bool dark;
-  final VoidCallback onCopy;
-  const _AiBubble({required this.text, required this.dark, required this.onCopy});
+  final bool isLast;
+  final VoidCallback? onCopy; // só na última bolha
+
+  const _AiBlockBubble({
+    required this.block,
+    required this.dark,
+    this.isLast = false,
+    this.onCopy,
+  });
 
   @override
   Widget build(BuildContext context) {
     final bubbleBg  = dark ? const Color(0xFF1F2E26) : Colors.white;
     final textColor = dark ? const Color(0xFFE8E8E8) : const Color(0xFF1A1A1A);
 
+    final lines = block.split('\n');
+
     return Padding(
-      padding: const EdgeInsets.only(bottom: 6, right: 52),
+      padding: EdgeInsets.only(
+        bottom: isLast ? 6 : 3,   // última bolha tem mais espaço abaixo
+        right: 52,
+      ),
       child: Align(
         alignment: Alignment.centerLeft,
         child: Container(
           padding: const EdgeInsets.fromLTRB(13, 10, 13, 8),
           decoration: BoxDecoration(
             borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(4),
-              topRight: Radius.circular(16),
-              bottomLeft: Radius.circular(16),
+              topLeft:     Radius.circular(4),
+              topRight:    Radius.circular(16),
+              bottomLeft:  Radius.circular(16),
               bottomRight: Radius.circular(16),
             ),
             color: bubbleBg,
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withValues(alpha: dark ? 0.3 : 0.08),
-                blurRadius: 4, offset: const Offset(0, 1)),
+                blurRadius: 4,
+                offset: const Offset(0, 1),
+              ),
             ],
           ),
-          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            _buildFormattedText(text, textColor),
-            const SizedBox(height: 6),
-            // Rodapé da bolha: horário fake + copiar
-            Row(children: [
-              Text(_fakeTime(),
-                style: TextStyle(
-                  fontSize: 10,
-                  color: dark ? Colors.white24 : Colors.black26)),
-              const Spacer(),
-              GestureDetector(
-                onTap: onCopy,
-                child: Row(mainAxisSize: MainAxisSize.min, children: [
-                  Icon(Icons.copy_rounded, size: 12,
-                    color: dark ? Colors.white24 : Colors.black26),
-                  const SizedBox(width: 3),
-                  Text('Copiar',
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Linhas do bloco com suporte a negrito inline
+              ...lines.map((line) {
+                if (line.trim().isEmpty) return const SizedBox(height: 3);
+                // Item de lista: começa com - ou •
+                final isList = line.trimLeft().startsWith('-') ||
+                               line.trimLeft().startsWith('•');
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 2),
+                  child: _buildInlineText(
+                    isList ? line : line,
+                    textColor,
+                  ),
+                );
+              }),
+
+              // Rodapé só na última bolha: horário + copiar
+              if (isLast) ...[
+                const SizedBox(height: 6),
+                Row(children: [
+                  Text(
+                    _fakeTime(),
                     style: TextStyle(
                       fontSize: 10,
-                      color: dark ? Colors.white24 : Colors.black26)),
+                      color: dark ? Colors.white24 : Colors.black26,
+                    ),
+                  ),
+                  const Spacer(),
+                  if (onCopy != null)
+                    GestureDetector(
+                      onTap: onCopy,
+                      child: Row(mainAxisSize: MainAxisSize.min, children: [
+                        Icon(Icons.copy_rounded, size: 12,
+                          color: dark ? Colors.white24 : Colors.black26),
+                        const SizedBox(width: 3),
+                        Text('Copiar',
+                          style: TextStyle(
+                            fontSize: 10,
+                            color: dark ? Colors.white24 : Colors.black26)),
+                      ]),
+                    ),
                 ]),
-              ),
-            ]),
-          ]),
+              ],
+            ],
+          ),
         ),
       ),
     );
@@ -783,39 +901,41 @@ class _AiBubble extends StatelessWidget {
     final now = DateTime.now();
     return '${now.hour.toString().padLeft(2, '0')}:${now.minute.toString().padLeft(2, '0')}';
   }
+}
 
-  Widget _buildFormattedText(String text, Color textColor) {
+/// Widget pai que divide a resposta completa em múltiplas _AiBlockBubble.
+/// Cada bloco (separado por linha em branco) vira uma bolha independente.
+class _AiBubble extends StatelessWidget {
+  final String text;
+  final bool dark;
+  final VoidCallback onCopy;
+  const _AiBubble({required this.text, required this.dark, required this.onCopy});
+
+  @override
+  Widget build(BuildContext context) {
+    final cleaned = _cleanAiText(text);
+    final blocks  = _splitIntoBlocks(cleaned);
+
+    if (blocks.isEmpty) {
+      return _AiBlockBubble(
+        block: text.trim(),
+        dark: dark,
+        isLast: true,
+        onCopy: onCopy,
+      );
+    }
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: text.split('\n').map((line) {
-        if (line.startsWith('##')) {
-          return Padding(
-            padding: const EdgeInsets.only(bottom: 6, top: 2),
-            child: Text(line,
-              style: TextStyle(
-                fontSize: 14, fontWeight: FontWeight.w800,
-                color: textColor, height: 1.3)),
-          );
-        } else if (line.startsWith('•') || line.startsWith('-')) {
-          return Padding(
-            padding: const EdgeInsets.only(bottom: 3),
-            child: Text(line,
-              style: TextStyle(
-                fontSize: 13, fontWeight: FontWeight.w400,
-                color: textColor, height: 1.5)),
-          );
-        } else if (line.trim().isEmpty) {
-          return const SizedBox(height: 5);
-        } else {
-          return Padding(
-            padding: const EdgeInsets.only(bottom: 2),
-            child: Text(line,
-              style: TextStyle(
-                fontSize: 13, fontWeight: FontWeight.w400,
-                color: textColor, height: 1.5)),
-          );
-        }
-      }).toList(),
+      children: List.generate(blocks.length, (i) {
+        final isLast = i == blocks.length - 1;
+        return _AiBlockBubble(
+          block: blocks[i],
+          dark: dark,
+          isLast: isLast,
+          onCopy: isLast ? onCopy : null,
+        );
+      }),
     );
   }
 }

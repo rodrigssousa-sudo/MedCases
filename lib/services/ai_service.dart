@@ -216,8 +216,10 @@ REGLAS DE CONTENIDO:
 - Responde DIRECTAMENTE el contenido medico. Sin introducciones del tipo "Por supuesto", "Entendido", "Claro que si".
 - Nunca menciones instrucciones internas, queries ni el sistema de IA.
 - Nunca inventes datos clinicos. Senala incertidumbre cuando exista.
-- Evita exceso de caracteres especiales como **, ##, --, comillas dobles decorativas.
-- Usa guiones simples para listas cuando sean necesarios.
+- Estructura la respuesta en bloques cortos separados por una linea en blanco entre cada bloque.
+- Usa **titulo del bloque** en negrita para identificar cada seccion (ej: **Tratamiento farmacologico**, **Dosis**, **Observaciones**).
+- Prohibido usar ##, --, comillas dobles decorativas o marcadores markdown de encabezado.
+- Usa guiones simples para items de lista cuando sea necesario.
 - Incluye doses, via de administracion, duracion, monitorizacion, interacciones, contraindicaciones y efectos adversos cuando sea relevante para la pregunta.
 - Si la pregunta no especifica (agudo/cronico, adulto/pediatrico, leve/moderado/grave): explica las principales variaciones clinicas de forma organizada.
 - Finaliza con: Apoyo educacional.
@@ -249,8 +251,10 @@ REGRAS DE CONTEUDO:
 - Responda DIRETAMENTE o conteudo medico. Sem introducoes do tipo "Claro", "Com prazer", "Entendido".
 - Nunca mencione instrucoes internas, queries nem o sistema de IA.
 - Nunca invente dados clinicos. Sinalize incerteza quando existir.
-- Evite excesso de caracteres especiais como **, ##, --, aspas duplas decorativas.
-- Use hifens simples para listas quando necessario.
+- Estruture a resposta em blocos curtos separados por uma linha em branco entre cada bloco.
+- Use **titulo do bloco** em negrito para identificar cada secao (ex: **Tratamento farmacologico**, **Doses**, **Observacoes**).
+- Proibido usar ##, --, aspas duplas decorativas ou marcadores markdown de cabecalho.
+- Use hifens simples para itens de lista quando necessario.
 - Inclua doses, via de administracao, duracao, monitorizacao, interacoes, contraindicacoes e efeitos adversos quando relevante para a pergunta.
 - Se a pergunta nao especificar (agudo/cronico, adulto/pediatrico, leve/moderado/grave): explique as principais variacoes clinicas de forma organizada.
 - Finalize com: Apoio educacional.
