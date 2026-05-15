@@ -279,23 +279,39 @@ class AppProvider extends ChangeNotifier {
         }
       }
 
-      // ── Gemini API Key — injeta no GeminiService ────────────────────────────
-      // CRÍTICO: sem cache local. checkGeminiSession() depende de hasApiKey==true.
+      // ── Gemini API Key — injeta no GeminiService + cacheia localmente ──────
       if (geminiKey.isNotEmpty) {
         GeminiService.setGeminiApiKey(geminiKey);
-        debugPrint('[AppProvider] Gemini API Key carregada ✓');
+        // Cache no localStorage (web) para sobreviver reloads do service worker
+        if (kIsWeb) _webSetLS('medcases_gak', geminiKey);
+        debugPrint('[AppProvider] Gemini API Key carregada e cacheada ✓');
       } else {
-        debugPrint('[AppProvider] Gemini API Key não encontrada no Firestore');
+        // Firestore retornou vazio — tenta cache local (service worker pode estar falhando)
+        final cached = kIsWeb ? _webGetLS('medcases_gak') : null;
+        if (cached != null && cached.isNotEmpty) {
+          GeminiService.setGeminiApiKey(cached);
+          debugPrint('[AppProvider] Gemini API Key restaurada do cache ✓');
+        } else {
+          debugPrint('[AppProvider] Gemini API Key não encontrada em nenhuma fonte');
+        }
       }
 
       _aiKeyLoading = false;
       notifyListeners();
     } catch (_) {
-      // Sem rede: tenta cache local para OpenAI (Gemini Key não tem cache)
+      // Sem rede: tenta cache local para OpenAI
       try {
         final p = await SharedPreferences.getInstance();
         _openAiKey = p.getString(_k('openAiKey', uid)) ?? '';
       } catch (_) {}
+      // Restaura Gemini Key do localStorage se Firestore falhou (ex: service worker quebrado)
+      if (kIsWeb && !GeminiService.hasApiKey) {
+        final cached = _webGetLS('medcases_gak');
+        if (cached != null && cached.isNotEmpty) {
+          GeminiService.setGeminiApiKey(cached);
+          debugPrint('[AppProvider] Gemini Key restaurada do localStorage (rede falhou) ✓');
+        }
+      }
       _aiKeyLoading = false;
       notifyListeners();
     }
@@ -951,16 +967,31 @@ class AppProvider extends ChangeNotifier {
       // ── Verificação normal de sessão existente (não-redirect) ──────────
       // Garante API Key carregada antes de verificar isConnected()
       if (!GeminiService.hasApiKey) {
-        debugPrint('[checkGeminiSession] API Key ausente — recarregando do Firestore antes de isConnected()');
+        debugPrint('[checkGeminiSession] API Key ausente — tentando Firestore...');
         try {
           final geminiKey = await FirestoreService.loadGeminiApiKey()
               .timeout(const Duration(seconds: 5));
           if (geminiKey.isNotEmpty) {
             GeminiService.setGeminiApiKey(geminiKey);
-            debugPrint('[checkGeminiSession] API Key recarregada ✓');
+            if (kIsWeb) _webSetLS('medcases_gak', geminiKey);
+            debugPrint('[checkGeminiSession] API Key recarregada do Firestore ✓');
+          } else if (kIsWeb) {
+            // Firestore retornou vazio (service worker interceptou) — usa cache local
+            final cached = _webGetLS('medcases_gak');
+            if (cached != null && cached.isNotEmpty) {
+              GeminiService.setGeminiApiKey(cached);
+              debugPrint('[checkGeminiSession] API Key restaurada do localStorage ✓');
+            }
           }
         } catch (e) {
-          debugPrint('[checkGeminiSession] erro ao recarregar API Key: $e');
+          debugPrint('[checkGeminiSession] Firestore falhou: $e — tentando localStorage...');
+          if (kIsWeb) {
+            final cached = _webGetLS('medcases_gak');
+            if (cached != null && cached.isNotEmpty) {
+              GeminiService.setGeminiApiKey(cached);
+              debugPrint('[checkGeminiSession] API Key restaurada do localStorage (fallback) ✓');
+            }
+          }
         }
       }
       final connected = await GeminiService.isConnected()
@@ -994,6 +1025,16 @@ class AppProvider extends ChangeNotifier {
     } catch (_) {
       return null;
     }
+  }
+
+  /// Grava um valor no localStorage via eval — resistente ao SES lockdown do Firebase Auth.
+  void _webSetLS(String key, String value) {
+    if (!kIsWeb) return;
+    try {
+      final safeKey   = key.replaceAll("'", "\\'");
+      final safeValue = value.replaceAll('\\', '\\\\').replaceAll("'", "\\'");
+      js_interop.context.callMethod('eval', ["localStorage.setItem('$safeKey','$safeValue')"]);
+    } catch (_) {}
   }
 
   /// Remove uma chave do localStorage via eval — resistente ao SES lockdown.
@@ -1238,16 +1279,31 @@ class AppProvider extends ChangeNotifier {
     if (_geminiConnected) {
       // Garante API Key presente antes de chamar — pode ter sido perdida por reload
       if (!GeminiService.hasApiKey) {
-        debugPrint('[buildAIAnswer] API Key ausente antes do chat — recarregando...');
+        debugPrint('[buildAIAnswer] API Key ausente — tentando Firestore...');
         try {
           final geminiKey = await FirestoreService.loadGeminiApiKey()
               .timeout(const Duration(seconds: 5));
           if (geminiKey.isNotEmpty) {
             GeminiService.setGeminiApiKey(geminiKey);
-            debugPrint('[buildAIAnswer] API Key recarregada para chat ✓');
+            if (kIsWeb) _webSetLS('medcases_gak', geminiKey);
+            debugPrint('[buildAIAnswer] API Key recarregada do Firestore ✓');
+          } else if (kIsWeb) {
+            // Firestore retornou vazio — usa cache localStorage
+            final cached = _webGetLS('medcases_gak');
+            if (cached != null && cached.isNotEmpty) {
+              GeminiService.setGeminiApiKey(cached);
+              debugPrint('[buildAIAnswer] API Key restaurada do localStorage ✓');
+            }
           }
         } catch (e) {
-          debugPrint('[buildAIAnswer] falha ao recarregar API Key: $e');
+          debugPrint('[buildAIAnswer] Firestore falhou: $e — tentando localStorage...');
+          if (kIsWeb) {
+            final cached = _webGetLS('medcases_gak');
+            if (cached != null && cached.isNotEmpty) {
+              GeminiService.setGeminiApiKey(cached);
+              debugPrint('[buildAIAnswer] API Key restaurada do localStorage (fallback) ✓');
+            }
+          }
         }
       }
 
