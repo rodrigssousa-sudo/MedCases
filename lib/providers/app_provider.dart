@@ -1592,6 +1592,91 @@ class AppProvider extends ChangeNotifier {
         'herpes_zoster':      ['herpes zoster', 'varicela zoster', 'nevralgia poster', 'aciclovir zoster'],
         'varicela':           ['varicela', 'chickenpox', 'varicela infec'],
         // ── GASTROINTESTINAL ────────────────────────────────────────────────
+        // ── DIARREIA — índice completo ───────────────────────────────────────
+        'diarreia':           [
+          'diarr', 'diarrh',
+          // tipos gerais
+          'diarrea aguda', 'diarrea cronica', 'diarrea persist', 'diarrea refract',
+          'diarrea osmotica', 'diarrea secretora', 'diarrea inflamat',
+          'diarrea funcional', 'diarrea nocturna', 'diarrea posprandial',
+          'diarrea acuosa', 'diarrea mucosa', 'diarrea sanguinolenta',
+          'diarrea hemorrágica', 'diarrea hemorrhag', 'diarrea fulminant',
+          'diarrea disenteric', 'diarrea febril', 'diarrea nosocomial',
+          'diarrea esteatorreica', 'diarrea psicogena', 'diarrea autoimun',
+          'diarrea endocrin', 'diarrea metabol',
+          // infecciosa — bacteriana
+          'diarrea infeccio', 'diarrea bacteriana', 'diarrea viral', 'diarrea parasitar',
+          'diarrea viajero', 'traveler diarr', 'gastroenterite infec',
+          'diarrea salmonela', 'salmonela diarr', 'salmonella diarr',
+          'diarrea shigela', 'shigella diarr', 'shigela diarr', 'disenteria bacteriana',
+          'diarrea campylobac', 'campylobacter diarr',
+          'diarrea coli', 'escherichia coli diarr', 'e.coli enterot', 'etec ',
+          'e.coli enterohemorrágica', 'ehec ', 'stec ', 'sindrome uremic hemolitic',
+          'diarrea colera', 'vibrio cholerae', 'colera ', 'cholera ',
+          'diarrea yersinia', 'yersinia enterocol',
+          'diarrea clostridi', 'clostridioides difficile', 'clostridium difficile',
+          'c. diff', 'cdiff ', 'colite por antibiot', 'colite pseudomembran',
+          'diarrea antibiot', 'diarrea associada antibiot',
+          // infecciosa — viral
+          'rotavirus diarr', 'diarrea rotavirus',
+          'norovirus diarr', 'diarrea norovirus', 'gastroenterite viral',
+          'diarrea citomegalovirus', 'cmv intestinal',
+          // infecciosa — parasitária
+          'giardiase', 'giardiasis', 'giardia diarr',
+          'amebiase', 'amebiasis', 'ameba diarr', 'entamoeba histol',
+          'cryptosporidium diarr', 'diarrea cryptospor',
+          'cyclospora diarr', 'isospora belli',
+          // imunossuprimido / HIV
+          'diarrea hiv', 'diarrea imunossuprim', 'diarrea paciente imuno',
+          // pediátrica / neonatal
+          'diarrea pediatric', 'diarrea neonatal', 'diarrea infant',
+          // má absorção / maldigestão
+          'diarrea malabsorcao', 'diarrea malabsorc', 'sindrome malabsorcao',
+          'diarrea esteatorr', 'diarrea celiaca', 'doenca celiaca diarr',
+          'diarrea intoler lactose', 'intolerancia lactose diarr',
+          'insuf pancreatica exocrina', 'insuficiencia pancreatica diarr',
+          'diarrea sobrecrescimento bact', 'sibo diarr', 'sobrecrescimento bacteriano',
+          'sindrome intestino curto', 'diarrea intestino curto',
+          'enteropatia perd proteina', 'diarrea proteina',
+          'diarrea maldigest',
+          // doenças inflamatórias intestinais
+          'diarrea crohn', 'diarrea colite ulcerosa', 'diarrea dii',
+          'colite microscopica', 'colite colagenos', 'colite linfocitica',
+          'colite isquemica diarr',
+          // induzida por medicamentos / procedimentos
+          'diarrea metformina', 'diarrea medicamento',
+          'diarrea ibp', 'diarrea inibidor bomba proton',
+          'diarrea quimioterapia', 'diarrea oncologica',
+          'diarrea imunoterapia', 'diarrea checkpoint',
+          'diarrea radioterapia', 'diarrea radiacao',
+          'diarrea sorbitol', 'diarrea magnesio', 'diarrea laxante',
+          'diarrea nutricao enteral', 'diarrea enteral',
+          'diarrea postoperat', 'diarrea posvagotomia', 'dumping syndrome diarr',
+          'diarrea mucosit',
+          // endócrina / tumoral
+          'diarrea carcinoide', 'sindrome carcinoide diarr',
+          'diarrea hipertireoid', 'hipertireoidismo diarr',
+          'diarrea gastrinoma', 'zollinger ellison diarr',
+          'diarrea feocromocitom', 'diarrea mastocitose',
+          'diarrea insuf suprarenal', 'diarrea addison',
+          'diarrea doenca whipple', 'whipple diarr',
+          // alergia / eosinofílica
+          'diarrea alergia aliment', 'diarrea eosinofil',
+          // intoxicação alimentar
+          'intoxicacao alimentar diarr', 'diarrea toxica',
+          'intoxicacao mariscos', 'diarrea estafilococ',
+          'bacillus cereus diarr', 'diarrea bacillus',
+          'enterocolite neutropenic diarr',
+          // tuberculose intestinal
+          'tuberculose intestinal diarr', 'tb intestinal',
+        ],
+        // subtipos com manejo farmacológico distinto
+        'diarreia_cdiff':     ['clostridioides difficile', 'clostridium difficile', 'c. diff', 'cdiff ', 'colite pseudomembran', 'colite por antibiot'],
+        'diarreia_infecciosa':['diarrea viajero', 'traveler diarr', 'diarrea bacteriana aguda', 'gastroenterite bacteriana', 'salmonella diarr', 'shigella diarr', 'campylobacter diarr'],
+        'diarreia_parasitaria':['giardiase', 'giardiasis', 'amebiase', 'amebiasis', 'cryptosporidium', 'cyclospora', 'isospora belli'],
+        'diarreia_dii':       ['colite ulcerosa diarr', 'crohn diarr', 'diarrea dii', 'diarrea inflamat intest'],
+        'diarreia_malabsorcao':['sindrome malabsorcao', 'celiac diarr', 'doenca celiaca', 'insuf pancreatica exocrina', 'sibo diarr', 'diarrea esteatorr'],
+        'diarreia_funcional': ['diarrea funcional', 'diarrea sii', 'ibs diarr', 'sindrome intestino irritav diarr'],
         'hda':                ['hemorrag digest alta', 'hda ', 'hematemese', 'melena', 'varizes esof', 'sangram digest alto'],
         'hdb':                ['hemorrag digest baix', 'hdb ', 'hematoquez', 'sangram digest baix', 'rectorragia'],
         'pancreatite':        ['pancreatite', 'pancreatitis', 'lipase elevad', 'amilase elevad', 'necros pancrea'],
@@ -1795,6 +1880,70 @@ class AppProvider extends ChangeNotifier {
         'herpes_zoster':       ['aciclovir', 'valaciclovir', 'fanciclovir', 'antiviral', 'analgesic', 'gabapentina'],
         'varicela':            ['aciclovir', 'valaciclovir', 'anti-histamin', 'paracetamol'],
         // ── GASTROINTESTINAL ────────────────────────────────────────────────
+        // ── DIARREIA — grupos farmacológicos por subtipo ─────────────────────
+        'diarreia': [
+          // reidratação e suporte
+          'soro de reidratacao oral', 'sro', 'ringer lactato', 'solucao salina', 'reposicao voluminosa', 'zinc suplemento',
+          // antidiarreicos / motilidade
+          'loperamida', 'racecadotrila', 'bismuto subsalicilato',
+          // antiespasmódicos
+          'escopolamina', 'hioscina', 'mebeverina',
+          // antibioticos gerais diarreia infecciosa
+          'ciprofloxacino', 'azitromicina', 'cotrimoxazol', 'metronidazol',
+          // probióticos
+          'probiotico', 'lactobacillus', 'saccharomyces boulardii',
+          // antieméticos
+          'ondansetrona', 'metoclopramida', 'domperidona',
+          // IBP se DRGE associado
+          'omeprazol', 'pantoprazol',
+          // anti-inflamatórios EII
+          'mesalazina', 'sulfassalazina', 'corticosteroide',
+          // antifúngicos/antiparasitários
+          'metronidazol', 'tinidazol', 'albendazol', 'nitazoxanida',
+          // enzimas pancreáticas
+          'pancreatina', 'lipase pancreatica', 'creon',
+          // colestiramina (diarreia por sais biliares)
+          'colestiramina',
+        ],
+        'diarreia_cdiff': [
+          'metronidazol oral', 'vancomicina oral', 'fidaxomicina',
+          'bezlotoxumab', 'rifaximina', 'transplante microbiota fecal',
+          'probiotico profilaxia', 'saccharomyces boulardii',
+          'suspender antibiotico causador', 'loperamida contraindicada cdiff',
+        ],
+        'diarreia_infecciosa': [
+          'ciprofloxacino', 'azitromicina', 'levofloxacino',
+          'cotrimoxazol', 'ceftriaxona', 'ampicilina',
+          'soro reidratacao oral', 'sro', 'ringer lactato',
+          'loperamida', 'racecadotrila', 'bismuto subsalicilato',
+          'ondansetrona',
+        ],
+        'diarreia_parasitaria': [
+          'metronidazol', 'tinidazol', 'secnidazol',
+          'nitazoxanida', 'albendazol', 'mebendazol',
+          'paromomicina', 'iodoquinol',
+          'cotrimoxazol', 'sulfadiazina',
+        ],
+        'diarreia_dii': [
+          'mesalazina', 'sulfassalazina', 'corticosteroide',
+          'budesonida', 'azatioprina', 'mercaptopurina',
+          'infliximab', 'adalimumab', 'vedolizumab', 'ustekinumab',
+          'metronidazol', 'ciprofloxacino',
+          'anti-integrina', 'anti-tnf', 'anti-il12/23',
+        ],
+        'diarreia_malabsorcao': [
+          'dieta sem gluten', 'pancreatina', 'creon', 'lipase pancreatica',
+          'rifaximina sibo', 'antibiotico sibo', 'metronidazol sibo',
+          'colestiramina', 'suplementacao vitaminas liposoluveis',
+          'vitamina b12', 'acido folico', 'ferro reposicao',
+          'enzima lactase', 'dieta sem lactose',
+        ],
+        'diarreia_funcional': [
+          'loperamida', 'rifaximina', 'eluxadolina',
+          'antidepressivo triciclico', 'ssri', 'mebeverina',
+          'psyllium', 'colestiramina', 'ondansetrona',
+          'dieta low fodmap',
+        ],
         'hda':                 ['inibidor bomba proton', 'omeprazol', 'pantoprazol', 'octreotida', 'terlipressina', 'propranolol', 'antibiotico'],
         'hdb':                 ['mesalazina', 'infliximab', 'hemostasia endoscop'],
         'pancreatite':         ['analgesic', 'morfina', 'aine', 'reposicao volum', 'antibiotico', 'insulina'],
