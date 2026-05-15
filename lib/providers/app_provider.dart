@@ -2742,8 +2742,8 @@ class AppProvider extends ChangeNotifier {
               : '**Tópico identificado:** $termLabel');
           buf2f.writeln('');
           buf2f.writeln(es
-              ? '**Búsqueda requerida:** Esta condición/tema no está en la base local. Buscar en literatura médica actualizada (UpToDate, PubMed, guías internacionales ESC/AHA/IDSA).'
-              : '**Busca necessária:** Esta condição/tema não está na base local. Buscar na literatura médica atualizada (UpToDate, PubMed, diretrizes internacionais ESC/AHA/IDSA).');
+              ? '**Búsqueda requerida:** Esta condición/tema no está en la base local. Consultar literatura médica de referencia: Goodman & Gilman, Harrison, DiPiro, Braunwald, Mandell, Cecil; complementar con UpToDate, PubMed, guías ESC/AHA/IDSA.'
+              : '**Busca necessária:** Esta condição/tema não está na base local. Consultar literatura médica de referência: Goodman & Gilman, Harrison, DiPiro, Braunwald, Mandell, Cecil; complementar com UpToDate, PubMed, diretrizes ESC/AHA/IDSA/SBC.');
           buf2f.writeln('');
 
           // Dados do paciente se disponíveis
@@ -2757,22 +2757,73 @@ class AppProvider extends ChangeNotifier {
           }
 
           buf2f.writeln(es
-              ? '**Instrucciones para la IA:**\n  1. Clasificar: ¿enfermedad, fármaco, procedimiento, caso clínico?\n  2. Buscar guías internacionales actualizadas\n  3. Responder con estructura apropiada al tipo de consulta\n  4. Si hay datos del paciente, adaptar dosis/conduta ao perfil'
-              : '**Instruções para a IA:**\n  1. Classificar: doença, fármaco, procedimento, caso clínico?\n  2. Buscar diretrizes internacionais atualizadas\n  3. Responder com estrutura apropriada ao tipo de consulta\n  4. Se há dados do paciente, adaptar doses/conduta ao perfil');
+              ? '**Instrucciones para la IA:**\n  1. Clasificar: ¿enfermedad, fármaco, procedimiento, caso clínico?\n  2. Usar como fuentes primarias: Goodman & Gilman, Harrison, DiPiro, Braunwald, Mandell, Cecil\n  3. Complementar con búsqueda web: UpToDate, PubMed, NEJM, guías ESC/AHA/IDSA\n  4. Responder con estructura apropiada al tipo de consulta\n  5. Si hay datos del paciente, adaptar dosis/conducta al perfil'
+              : '**Instruções para a IA:**\n  1. Classificar: doença, fármaco, procedimento, caso clínico?\n  2. Usar como fontes primárias: Goodman & Gilman, Harrison, DiPiro, Braunwald, Mandell, Cecil\n  3. Complementar com busca web: UpToDate, PubMed, NEJM, diretrizes ESC/AHA/IDSA/SBC\n  4. Responder com estrutura apropriada ao tipo de consulta\n  5. Se há dados do paciente, adaptar doses/conduta ao perfil');
           buf2f.writeln('');
           buf2f.writeln(es ? '⚕ Apoyo educacional.' : '⚕ Apoio educacional.');
           return buf2f.toString();
         }
 
-        // 2e. Fallback final — query muito ambígua, sem termos clínicos
-        if (_aiHistory.isNotEmpty) {
-          return es
-              ? 'Entiendo que es una pregunta de seguimiento. ¿Podrías especificar un poco más?\n\nEjemplos:\n• "¿Cuál es la dosis de [fármaco]?"\n• "¿Cuándo cardiovertir en FA?"\n• "¿Cuál es el protocolo de sepsis?"\n\n⚕ Apoyo educacional.'
-              : 'Entendo que é uma pergunta de seguimento. Pode especificar um pouco mais?\n\nExemplos:\n• "Qual a dose de [fármaco]?"\n• "Quando cardioverter na FA?"\n• "Qual o protocolo de sepse?"\n\n⚕ Apoio educacional.';
+        // 2e. Fallback final — query ambígua ou muito curta (ex: "tratamento" sozinho)
+        // → Mesmo assim envia para Gemini com contexto mínimo + Google Search Grounding
+        // O Gemini interpretará a intenção e responderá com fontes de referência
+        final rawInput = input.trim();
+        final histCtx = _aiHistory.isNotEmpty
+            ? (es
+                ? '**Contexto da conversa anterior:** ${_aiHistory.last['user'] ?? ''}'
+                : '**Contexto da conversa anterior:** ${_aiHistory.last['user'] ?? ''}')
+            : '';
+        if (es) {
+          final buf2e = StringBuffer();
+          buf2e.writeln('## Consulta médica — intención a identificar');
+          buf2e.writeln('');
+          buf2e.writeln('**Query del usuario:** $rawInput');
+          if (histCtx.isNotEmpty) buf2e.writeln(histCtx);
+          buf2e.writeln('');
+          buf2e.writeln('**Instrucción para la IA:**');
+          buf2e.writeln('  1. Interpretar la intención clínica de la query (puede ser una pregunta corta, un término, una condición)');
+          buf2e.writeln('  2. Si es un fármaco → ficha completa (mecanismo, dosis, indicaciones, RAM, interacciones)');
+          buf2e.writeln('  3. Si es una enfermedad → diagnóstico, tratamiento, guías actualizadas');
+          buf2e.writeln('  4. Si es ambiguo → dar la interpretación más probable clínicamente y responder');
+          buf2e.writeln('  5. Usar Goodman & Gilman, Harrison, DiPiro, Braunwald, Mandell, Cecil como fuentes primarias');
+          buf2e.writeln('  6. Complementar con búsqueda web: UpToDate, PubMed, NEJM, guías ESC/AHA/IDSA');
+          if (_patient.age.isNotEmpty || _patient.weight.isNotEmpty) {
+            buf2e.writeln('');
+            buf2e.writeln('**Datos del paciente:**');
+            if (_patient.age.isNotEmpty) buf2e.writeln('  • Edad: ${_patient.age} años, ${_patient.sex}');
+            if (_patient.weight.isNotEmpty) buf2e.writeln('  • Peso: ${_patient.weight} kg');
+            if ((clcr ?? '').isNotEmpty) buf2e.writeln('  • ClCr: $clcr mL/min');
+            if (_patient.medications.isNotEmpty) buf2e.writeln('  • Medicamentos: ${_patient.medications}');
+          }
+          buf2e.writeln('');
+          buf2e.writeln('⚕ Apoyo educacional.');
+          return buf2e.toString();
+        } else {
+          final buf2e = StringBuffer();
+          buf2e.writeln('## Consulta médica — intenção a identificar');
+          buf2e.writeln('');
+          buf2e.writeln('**Query do usuário:** $rawInput');
+          if (histCtx.isNotEmpty) buf2e.writeln(histCtx);
+          buf2e.writeln('');
+          buf2e.writeln('**Instrução para a IA:**');
+          buf2e.writeln('  1. Interpretar a intenção clínica da query (pode ser uma pergunta curta, um termo, uma condição)');
+          buf2e.writeln('  2. Se for um fármaco → ficha completa (mecanismo, dose, indicações, RAM, interações)');
+          buf2e.writeln('  3. Se for uma doença → diagnóstico, tratamento, diretrizes atualizadas');
+          buf2e.writeln('  4. Se for ambíguo → dar a interpretação mais provável clinicamente e responder');
+          buf2e.writeln('  5. Usar Goodman & Gilman, Harrison, DiPiro, Braunwald, Mandell, Cecil como fontes primárias');
+          buf2e.writeln('  6. Complementar com busca web: UpToDate, PubMed, NEJM, diretrizes ESC/AHA/IDSA/SBC');
+          if (_patient.age.isNotEmpty || _patient.weight.isNotEmpty) {
+            buf2e.writeln('');
+            buf2e.writeln('**Dados do paciente:**');
+            if (_patient.age.isNotEmpty) buf2e.writeln('  • Idade: ${_patient.age} anos, ${_patient.sex}');
+            if (_patient.weight.isNotEmpty) buf2e.writeln('  • Peso: ${_patient.weight} kg');
+            if ((clcr ?? '').isNotEmpty) buf2e.writeln('  • ClCr: $clcr mL/min');
+            if (_patient.medications.isNotEmpty) buf2e.writeln('  • Medicamentos: ${_patient.medications}');
+          }
+          buf2e.writeln('');
+          buf2e.writeln('⚕ Apoio educacional.');
+          return buf2e.toString();
         }
-        return es
-            ? 'Puedo ayudarte mejor con más detalles del caso clínico.\n\n**Sugerencias:**\n• Síntomas principales y tiempo de evolución\n• Signos vitales (PA, FC, SpO₂, temperatura)\n• Fármaco o condición específica\n\nEjemplos:\n• "FA con hipotensión — ¿cuál es la conducta?"\n• "¿Dosis de amiodarona en FA?"\n• "Sepsis — protocolo de antibióticos"\n\n⚕ Apoyo educacional.'
-            : 'Posso ajudar melhor com mais detalhes do caso clínico.\n\n**Sugestões:**\n• Sintomas principais e tempo de evolução\n• Sinais vitais (PA, FC, SpO₂, temperatura)\n• Fármaco ou condição específica\n\nExemplos:\n• "FA com hipotensão — qual a conduta?"\n• "Dose de amiodarona na FA?"\n• "Sepse — protocolo de antibióticos"\n\n⚕ Apoio educacional.';
       }
     }
 
