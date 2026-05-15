@@ -620,7 +620,10 @@
     (function() {
       var CLIENT_ID = '1076800980330-mpq75ceph6hipht135qt0g505pdu5u7d.apps.googleusercontent.com';
       var SCOPE     = 'email https://www.googleapis.com/auth/generative-language.retriever';
-      var REDIRECT  = window.location.origin + window.location.pathname;
+      // URI fixa — deve coincidir EXATAMENTE com o que está no Google Cloud Console
+      // Authorized redirect URIs. Não usar window.location para evitar variações
+      // de pathname (trailing slash, sub-rotas, etc.) que causam redirect_uri_mismatch.
+      var REDIRECT  = 'https://medcasespro.com/';
 
       // ── 1. Verifica se voltou do redirect OAuth ──────────────────────
       // Google retorna o token no hash: #access_token=...&token_type=Bearer&...
