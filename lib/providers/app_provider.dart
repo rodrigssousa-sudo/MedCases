@@ -1030,6 +1030,7 @@ class AppProvider extends ChangeNotifier {
 
   /// Grava um valor no localStorage via função global window.mcLsSet.
   /// Sem eval — compatível com CSP strict e SES lockdown do Firebase Auth.
+  // ignore: unused_element
   void _webSetLS(String key, String value) {
     if (!kIsWeb) return;
     try {
@@ -1376,7 +1377,7 @@ class AppProvider extends ChangeNotifier {
       userMessage: input,
       systemPrompt: systemPrompt,
       history: List.unmodifiable(_aiHistory),
-      maxTokens: 1800,
+      maxTokens: 900,  // Passo 6 OpenAI legado — mesmo limite do Gemini
     );
 
     if (result.isError) {
@@ -3907,7 +3908,7 @@ class AppProvider extends ChangeNotifier {
     final buf = StringBuffer();
 
     // ── Cabeçalho ──────────────────────────────────────────────────────────
-    buf.writeln('## ${winner!.label}');
+    buf.writeln('## ${winner?.label ?? ''}');
     buf.writeln('');
 
     // ── Red flags / Alertas críticos (máx 3) ─────────────────────────────
