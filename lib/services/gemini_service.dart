@@ -11,15 +11,19 @@ import 'dart:js' as js;
 import 'package:google_sign_in/google_sign_in.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
-// GEMINI SERVICE — OAuth Google
+// GEMINI SERVICE — Autenticação por API Key
 //
-// Web:     usa GSI (window.google.accounts.oauth2) via dart:js
-//          O SDK GSI já está carregado no index.html via <script>
-//          Abre popup OAuth nativo do browser — sem MissingPluginException
+// Arquitetura (Session 4 — 2025):
+//   Google Login = identidade apenas (scope 'email') — sem verificação restrita
+//   Gemini API calls = API Key do projeto (salva no Firestore config/app_settings)
 //
-// Android: usa google_sign_in (plugin Flutter nativo)
+// O scope 'generative-language.retriever' era RESTRITO — exigia verificação
+// formal do Google e bloqueava todos os usuários não-Test com 403 access_denied.
+// Solução: remover o scope restrito. O Gemini é chamado via API Key, não OAuth.
 //
-// Token armazenado: localStorage (web) / SharedPreferences (Android)
+// Web:     GSI redirect flow (Safari-safe) salva apenas email
+// Android: google_sign_in salva apenas email
+// API Key: estática — carregada do Firestore via AppProvider.setGeminiApiKey()
 // ─────────────────────────────────────────────────────────────────────────────
 
 class GeminiResult {
@@ -35,22 +39,30 @@ class GeminiService {
   static const _endpoint =
       'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent';
 
-  static const _webClientId =
-      '1076800980330-mpq75ceph6hipht135qt0g505pdu5u7d.apps.googleusercontent.com';
-
+  // Client IDs do Google OAuth (usados pelo google_sign_in no Android e pelo
+  // redirect flow no index.html — o _webClientId é usado no HTML, não aqui)
   static const _androidClientId =
       '1076800980330-0dhh85qno3uelf1tq55oan6kcgpk319p.apps.googleusercontent.com';
 
-  static const _scope =
-      'email https://www.googleapis.com/auth/generative-language.retriever';
+  // ── API Key estática (carregada do Firestore pelo AppProvider) ────────────
+  static String _geminiApiKey = '';
+
+  /// Setter chamado pelo AppProvider após carregar a chave do Firestore.
+  static void setGeminiApiKey(String key) {
+    _geminiApiKey = key.trim();
+  }
+
+  /// Verifica se a API Key foi carregada (sem expor a chave em si).
+  static bool get hasApiKey => _geminiApiKey.isNotEmpty;
 
   // Chaves de storage
   static const _keyEmail = 'gemini_google_email';
+  // _keyToken mantido para limpeza de localStorage legado (não mais usado para auth)
   static const _keyToken = 'gemini_access_token';
 
   // ── Android: google_sign_in ───────────────────────────────────────────────
   static final _googleSignIn = GoogleSignIn(
-    scopes: ['email', 'https://www.googleapis.com/auth/generative-language.retriever'],
+    scopes: ['email'],  // Apenas email — sem scope restrito
     serverClientId: _androidClientId,
   );
 
@@ -100,22 +112,17 @@ class GeminiService {
   }
 
   static Future<void> _deleteEmail() async {
-    if (kIsWeb) { _webRemove(_keyEmail); _webRemove(_keyToken); return; }
+    if (kIsWeb) {
+      _webRemove(_keyEmail);
+      _webRemove(_keyToken);  // Limpa token legado do localStorage
+      return;
+    }
     final p = await SharedPreferences.getInstance();
     await p.remove(_keyEmail);
   }
 
-  static Future<void> _saveToken(String token) async {
-    if (kIsWeb) { _webSet(_keyToken, token); return; }
-    final p = await SharedPreferences.getInstance();
-    await p.setString(_keyToken, token);
-  }
-
-  static Future<String?> _readToken() async {
-    if (kIsWeb) return _webGet(_keyToken);
-    final p = await SharedPreferences.getInstance();
-    return p.getString(_keyToken);
-  }
+  // _saveToken / _readToken: mantidos apenas para limpar dados legados do localStorage.
+  // A API Key não é armazenada no storage do cliente — vem do Firestore via AppProvider.
 
   // ══════════════════════════════════════════════════════════════════════════
   // WEB — OAuth via Redirect Flow (Safari-safe)
@@ -166,47 +173,32 @@ class GeminiService {
   // API PÚBLICA
   // ══════════════════════════════════════════════════════════════════════════
 
-  /// Conecta com Google OAuth.
-  /// Web: GSI nativo. Android: google_sign_in plugin.
+  /// Conecta com Google (identidade apenas — scope email).
+  /// Web: abre modal GSI → redirect flow → index.html salva email no localStorage.
+  /// Android: google_sign_in → salva email no SharedPreferences.
+  ///
+  /// IMPORTANTE: signIn() só salva o EMAIL. A API Key vem do Firestore via
+  /// AppProvider._loadAiKeyFromFirestore() — não depende do OAuth token.
   static Future<bool> signIn() async {
     try {
       debugPrint('[GeminiService] signIn() — web: $kIsWeb');
 
       if (kIsWeb) {
-        // ── Web: GSI direto via dart:js ──────────────────────────────────
-        final token = await _webSignIn();
-        if (token == null) {
-          debugPrint('[GeminiService] web signIn: token null');
-          return false;
-        }
-
-        // Obtém o email via tokeninfo do Google
-        final email = await _fetchEmailFromToken(token);
-        if (email == null) {
-          debugPrint('[GeminiService] web signIn: email null');
-          return false;
-        }
-
-        await _saveToken(token);
-        await _saveEmail(email);
-        debugPrint('[GeminiService] web signIn OK — $email');
-        return true;
+        // ── Web: abre modal GSI → redirect flow (Safari-safe) ────────────
+        // _webSignIn() retorna null imediatamente (redirect — página vai recarregar).
+        // O email chegará via checkGeminiSession() no próximo boot.
+        await _webSignIn();
+        return false;  // false = redirect iniciado (não é erro)
 
       } else {
-        // ── Android: google_sign_in ──────────────────────────────────────
+        // ── Android: google_sign_in — salva apenas email ─────────────────
         await _googleSignIn.signOut();
         final account = await _googleSignIn.signIn();
         if (account == null) {
           debugPrint('[GeminiService] Android signIn cancelado');
           return false;
         }
-        final auth = await account.authentication;
-        if (auth.accessToken == null) {
-          debugPrint('[GeminiService] Android accessToken null');
-          await _googleSignIn.signOut();
-          return false;
-        }
-        await _saveToken(auth.accessToken!);
+        // Salva apenas o email — a API Key não depende do accessToken
         await _saveEmail(account.email);
         debugPrint('[GeminiService] Android signIn OK — ${account.email}');
         return true;
@@ -215,22 +207,6 @@ class GeminiService {
       debugPrint('[GeminiService] signIn ERRO: $e\n$st');
       return false;
     }
-  }
-
-  /// Busca email do usuário via Google tokeninfo endpoint.
-  static Future<String?> _fetchEmailFromToken(String token) async {
-    try {
-      final resp = await http.get(
-        Uri.parse('https://www.googleapis.com/oauth2/v3/tokeninfo?access_token=$token'),
-      ).timeout(const Duration(seconds: 10));
-      if (resp.statusCode == 200) {
-        final data = jsonDecode(resp.body) as Map<String, dynamic>;
-        return data['email'] as String?;
-      }
-    } catch (e) {
-      debugPrint('[GeminiService] _fetchEmailFromToken erro: $e');
-    }
-    return null;
   }
 
   /// Desconecta a conta Google.
@@ -244,30 +220,17 @@ class GeminiService {
   }
 
   /// Verifica se há sessão ativa (silencioso — nunca lança exceção).
+  ///
+  /// Nova lógica (Session 4):
+  ///   Conectado = email salvo E _geminiApiKey carregada pelo AppProvider.
+  ///   Não valida mais token OAuth via tokeninfo (token não é mais usado).
   static Future<bool> isConnected() async {
     try {
       final email = await _readEmail();
       if (email == null || email.isEmpty) return false;
-
-      // Verifica se o token ainda é válido
-      final token = await _readToken();
-      if (token == null || token.isEmpty) {
-        await _deleteEmail();
-        return false;
-      }
-
-      // Valida o token com o Google (timeout 8s)
-      final resp = await http.get(
-        Uri.parse('https://www.googleapis.com/oauth2/v3/tokeninfo?access_token=$token'),
-      ).timeout(const Duration(seconds: 8), onTimeout: () => http.Response('timeout', 408));
-
-      if (resp.statusCode == 200) {
-        return true;
-      } else {
-        // Token expirado ou inválido — limpa
-        await _deleteEmail();
-        return false;
-      }
+      // API Key deve ter sido carregada pelo AppProvider antes desta chamada.
+      // Se não foi carregada ainda, retorna false silenciosamente.
+      return _geminiApiKey.isNotEmpty;
     } catch (_) {
       return false;
     }
@@ -275,26 +238,8 @@ class GeminiService {
 
   static Future<String?> connectedEmail() async => _readEmail();
 
-  /// Obtém token de acesso atual.
-  static Future<String?> _getAccessToken() async {
-    if (kIsWeb) {
-      return _readToken();
-    } else {
-      try {
-        GoogleSignInAccount? account = _googleSignIn.currentUser;
-        account ??= await _googleSignIn.signInSilently();
-        if (account == null) return null;
-        final auth = await account.authentication;
-        if (auth.accessToken != null) {
-          await _saveToken(auth.accessToken!);
-        }
-        return auth.accessToken;
-      } catch (e) {
-        debugPrint('[GeminiService] _getAccessToken error: $e');
-        return null;
-      }
-    }
-  }
+  // _getAccessToken() REMOVIDO — Gemini agora usa API Key, não OAuth token.
+  // A chave é acessada via _geminiApiKey (campo estático setado pelo AppProvider).
 
   // ══════════════════════════════════════════════════════════════════════════
   // CHAT — Gemini 1.5 Flash
@@ -306,8 +251,7 @@ class GeminiService {
     List<Map<String, String>> history = const [],
     int maxTokens = 900,
   }) async {
-    final token = await _getAccessToken();
-    if (token == null) {
+    if (_geminiApiKey.isEmpty) {
       return GeminiResult.error('NOT_CONNECTED', 'not_connected');
     }
 
@@ -336,12 +280,10 @@ class GeminiService {
     });
 
     try {
+      // API Key via query param — sem Authorization header (não usa OAuth token)
       final response = await http.post(
-        Uri.parse(_endpoint),
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer $token',
-        },
+        Uri.parse('$_endpoint?key=$_geminiApiKey'),
+        headers: {'Content-Type': 'application/json'},
         body: body,
       ).timeout(const Duration(seconds: 30));
 
@@ -369,8 +311,8 @@ class GeminiService {
       }
 
       if (response.statusCode == 401 || response.statusCode == 403) {
-        await _deleteEmail();
-        return GeminiResult.error('TOKEN_EXPIRED', 'token_expired');
+        // 403 com API Key = chave inválida/revogada (não é token expirado)
+        return GeminiResult.error('API_KEY_INVALID', 'api_key_invalid');
       }
       if (response.statusCode == 429) {
         return GeminiResult.error('QUOTA_EXCEEDED', 'quota');

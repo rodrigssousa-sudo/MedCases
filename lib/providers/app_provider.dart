@@ -887,13 +887,11 @@ class AppProvider extends ChangeNotifier {
   /// Verifica silenciosamente se há sessão Gemini ativa (chamado no login).
   /// Nunca propaga exceção nem modifica _geminiLoading — é 100% silencioso.
   ///
-  /// Fluxo redirect OAuth (Safari/web):
-  ///   1. JS em index.html salva token + seta 'medcases_gsi_pending' SINCRONAMENTE
-  ///      antes do Flutter carregar (no mesmo script, antes do bootFlutter).
-  ///   2. Este método detecta a flag, lê o token diretamente do localStorage
-  ///      e valida via tokeninfo — sem depender do fetch assíncrono do JS.
-  ///   3. Se o email ainda não chegou (fetch do JS ainda em andamento),
-  ///      buscamos via tokeninfo direto aqui no Dart.
+  /// Nova lógica (Session 4 — API Key auth):
+  ///   Fluxo redirect OAuth (Safari/web):
+  ///   1. JS em index.html salva email (via tokeninfo) + seta 'medcases_gsi_pending'
+  ///   2. Este método detecta a flag, lê o email do localStorage
+  ///   3. _geminiConnected = true se email salvo E Gemini API Key carregada
   Future<void> checkGeminiSession() async {
     try {
       if (kIsWeb) {
@@ -905,27 +903,30 @@ class AppProvider extends ChangeNotifier {
         if (pending == 'true') {
           _webRemoveLS('medcases_gsi_pending');
 
-          final token = _webGetLS('gemini_access_token');
-          if (token != null && token.isNotEmpty) {
-            _geminiConnected = true;
-            _geminiEmail = _webGetLS('gemini_google_email') ?? '';
-            if (_geminiEmail.isEmpty) {
-              await Future.delayed(const Duration(milliseconds: 600));
-              _geminiEmail = _webGetLS('gemini_google_email') ?? '';
-            }
-            if (_geminiEmail.isEmpty) {
-              _geminiEmail = await GeminiService.connectedEmail() ?? '';
-            }
+          // Com API Key arch: apenas o email é necessário (token não é usado)
+          var email = _webGetLS('gemini_google_email') ?? '';
+          if (email.isEmpty) {
+            // Email ainda não chegou (fetch async do JS) — aguarda até 1s
+            await Future.delayed(const Duration(milliseconds: 600));
+            email = _webGetLS('gemini_google_email') ?? '';
+          }
+          if (email.isEmpty) {
+            email = await GeminiService.connectedEmail() ?? '';
+          }
+          if (email.isNotEmpty) {
+            // Conectado = email salvo + API Key já carregada pelo _loadAiKeyFromFirestore
+            _geminiConnected = GeminiService.hasApiKey;
+            _geminiEmail = email;
+            debugPrint('[checkGeminiSession] redirect OAuth OK — $email, apiKey: ${GeminiService.hasApiKey}');
             notifyListeners();
             return;
-          } else {
           }
         }
       }
 
-      // ── Verificação normal de sessão existente ───────────────────────────
+      // ── Verificação normal de sessão existente (não-redirect) ──────────
       final connected = await GeminiService.isConnected()
-          .timeout(const Duration(seconds: 10), onTimeout: () => false);
+          .timeout(const Duration(seconds: 5), onTimeout: () => false);
       if (connected) {
         _geminiConnected = true;
         _geminiEmail = await GeminiService.connectedEmail() ?? '';
@@ -934,7 +935,6 @@ class AppProvider extends ChangeNotifier {
       }
     } catch (e) {
       debugPrint('[checkGeminiSession] erro: $e');
-      // Silencia — nunca mostra banner aqui
       _geminiConnected = false;
       _geminiEmail = '';
     }
@@ -1110,15 +1110,12 @@ class AppProvider extends ChangeNotifier {
 
       // Gemini falhou — trata erro
       switch (geminiResult.errorCode) {
-        case 'token_expired':
-          // Sessão expirou → marca desconectado, cai para local
-          _geminiConnected = false;
-          _geminiEmail = '';
-          notifyListeners();
+        case 'api_key_invalid':
+          // API Key inválida/revogada — a conexão fica ativa (email ainda válido)
           return _lang == 'es'
-              ? '⚠️ Sesión de Google expirada. Reconecta tu cuenta en la configuración.\n\n'
+              ? '⚠️ Error de API Gemini. Contacta al administrador del app.\n\n'
                 '${_buildLocalAnswer(input)}'
-              : '⚠️ Sessão Google expirada. Reconecte sua conta nas configurações.\n\n'
+              : '⚠️ Erro na API Gemini. Entre em contato com o administrador do app.\n\n'
                 '${_buildLocalAnswer(input)}';
         case 'quota':
           return _lang == 'es'

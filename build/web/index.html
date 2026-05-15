@@ -619,7 +619,10 @@
     // Funciona em 100% dos browsers sem popup.
     (function() {
       var CLIENT_ID = '1076800980330-mpq75ceph6hipht135qt0g505pdu5u7d.apps.googleusercontent.com';
-      var SCOPE     = 'email https://www.googleapis.com/auth/generative-language.retriever';
+      // Scope apenas email — sem scope restrito generative-language.retriever.
+      // O Gemini é chamado via API Key (campo 'key' na URL), não OAuth token.
+      // Isso elimina o erro 403 access_denied para usuários não-Test.
+      var SCOPE     = 'email';
       // URI fixa — deve coincidir EXATAMENTE com o que está no Google Cloud Console
       // Authorized redirect URIs. Não usar window.location para evitar variações
       // de pathname (trailing slash, sub-rotas, etc.) que causam redirect_uri_mismatch.
@@ -629,13 +632,11 @@
       // Google retorna o token no hash: #access_token=...&token_type=Bearer&...
       (function _checkRedirectReturn() {
         var hash = window.location.hash;
-        console.log('[GSI-DIAG] hash ao carregar:', hash ? hash.substring(0, 60) + '...' : '(vazio)');
 
         if (!hash || hash.indexOf('access_token') === -1) {
           // Sem token no hash — verifica se há flag pendente de boot anterior
           var prevToken   = localStorage.getItem('gemini_access_token');
           var prevPending = localStorage.getItem('medcases_gsi_pending');
-          console.log('[GSI-DIAG] sem hash. localStorage → token:', prevToken ? 'SIM (' + prevToken.substring(0,20) + '...)' : 'NÃO', '| pending:', prevPending);
           return;
         }
 
@@ -648,35 +649,26 @@
         var token = params['access_token'];
         var error = params['error'];
 
-        console.log('[GSI-DIAG] token no hash:', token ? 'SIM (' + token.substring(0,20) + '...)' : 'NÃO', '| error:', error || 'nenhum');
 
         // Limpa o hash da URL sem recarregar
         history.replaceState(null, '', window.location.pathname + window.location.search);
 
         if (token) {
           // CRÍTICO: salva token E flag SINCRONAMENTE antes de qualquer fetch.
-          var savedToken = false, savedFlag = false;
-          try { localStorage.setItem('gemini_access_token', token); savedToken = true; } catch(e) { console.error('[GSI-DIAG] ERRO ao salvar token:', e); }
-          try { localStorage.setItem('medcases_gsi_pending', 'true'); savedFlag = true; } catch(e) { console.error('[GSI-DIAG] ERRO ao salvar flag:', e); }
-
-          // Verifica imediatamente se foi salvo de fato (Safari privado pode silenciar)
-          var verifyToken   = localStorage.getItem('gemini_access_token');
-          var verifyPending = localStorage.getItem('medcases_gsi_pending');
-          console.log('[GSI-DIAG] após setItem → token salvo:', savedToken, '| token lido de volta:', verifyToken ? 'SIM' : 'NÃO (PROBLEMA!)', '| flag salva:', savedFlag, '| flag lida de volta:', verifyPending);
+          try { localStorage.setItem('gemini_access_token', token); } catch(e) {}
+          try { localStorage.setItem('medcases_gsi_pending', 'true'); } catch(e) {}
 
           // Busca email via tokeninfo em background
           fetch('https://www.googleapis.com/oauth2/v3/tokeninfo?access_token=' + token)
             .then(function(r) { return r.json(); })
             .then(function(d) {
-              console.log('[GSI-DIAG] tokeninfo resposta:', JSON.stringify(d).substring(0, 120));
               if (d.email) {
                 try { localStorage.setItem('gemini_google_email', d.email); } catch(e) {}
-                console.log('[GSI-DIAG] email salvo:', d.email);
               }
             })
-            .catch(function(e) { console.error('[GSI-DIAG] tokeninfo ERRO:', e); });
+            .catch(function() {});
         } else if (error) {
-          console.error('[GSI-DIAG] Google retornou erro:', error);
+          // Redirect OAuth retornou erro — ignora silenciosamente
         }
       }());
 

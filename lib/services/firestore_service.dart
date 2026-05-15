@@ -80,6 +80,30 @@ class FirestoreService {
     }
   }
 
+  // ── Chave Gemini API do APP (compartilhada) ───────────────────────────────
+  /// Carrega a Gemini API Key global do app, salva pelo administrador.
+  /// Armazenada em config/app_settings campo 'geminiApiKey'.
+  /// Usada diretamente nas chamadas à API do Gemini (sem OAuth token).
+  static Future<String> loadGeminiApiKey() async {
+    try {
+      final doc = await _db.collection('config').doc('app_settings').get();
+      if (!doc.exists) return '';
+      return (doc.data()?['geminiApiKey'] as String?) ?? '';
+    } catch (_) {
+      return '';
+    }
+  }
+
+  /// Salva a Gemini API Key global do app em config/app_settings.
+  static Future<void> saveGeminiApiKey(String key) async {
+    try {
+      await _db.collection('config').doc('app_settings').set(
+        {'geminiApiKey': key.trim()},
+        SetOptions(merge: true),
+      );
+    } catch (_) {}
+  }
+
   // ── Chave OpenAI — vinculada ao perfil do usuário no Firestore ────────────
   /// Carrega a chave OpenAI do perfil do usuário (fallback individual).
   /// Armazenada em users/{uid}/prefs/settings campo 'openAiKey'.

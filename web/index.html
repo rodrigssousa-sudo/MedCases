@@ -619,7 +619,10 @@
     // Funciona em 100% dos browsers sem popup.
     (function() {
       var CLIENT_ID = '1076800980330-mpq75ceph6hipht135qt0g505pdu5u7d.apps.googleusercontent.com';
-      var SCOPE     = 'email https://www.googleapis.com/auth/generative-language.retriever';
+      // Scope apenas email — sem scope restrito generative-language.retriever.
+      // O Gemini é chamado via API Key (campo 'key' na URL), não OAuth token.
+      // Isso elimina o erro 403 access_denied para usuários não-Test.
+      var SCOPE     = 'email';
       // URI fixa — deve coincidir EXATAMENTE com o que está no Google Cloud Console
       // Authorized redirect URIs. Não usar window.location para evitar variações
       // de pathname (trailing slash, sub-rotas, etc.) que causam redirect_uri_mismatch.
