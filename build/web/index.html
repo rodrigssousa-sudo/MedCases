@@ -629,7 +629,15 @@
       // Google retorna o token no hash: #access_token=...&token_type=Bearer&...
       (function _checkRedirectReturn() {
         var hash = window.location.hash;
-        if (!hash || hash.indexOf('access_token') === -1) return;
+        console.log('[GSI-DIAG] hash ao carregar:', hash ? hash.substring(0, 60) + '...' : '(vazio)');
+
+        if (!hash || hash.indexOf('access_token') === -1) {
+          // Sem token no hash — verifica se há flag pendente de boot anterior
+          var prevToken   = localStorage.getItem('gemini_access_token');
+          var prevPending = localStorage.getItem('medcases_gsi_pending');
+          console.log('[GSI-DIAG] sem hash. localStorage → token:', prevToken ? 'SIM (' + prevToken.substring(0,20) + '...)' : 'NÃO', '| pending:', prevPending);
+          return;
+        }
 
         var params = {};
         hash.replace(/^#/, '').split('&').forEach(function(p) {
@@ -640,27 +648,36 @@
         var token = params['access_token'];
         var error = params['error'];
 
+        console.log('[GSI-DIAG] token no hash:', token ? 'SIM (' + token.substring(0,20) + '...)' : 'NÃO', '| error:', error || 'nenhum');
+
         // Limpa o hash da URL sem recarregar
         history.replaceState(null, '', window.location.pathname + window.location.search);
 
         if (token) {
           // CRÍTICO: salva token E flag SINCRONAMENTE antes de qualquer fetch.
-          // O Flutter começa a carregar imediatamente após o reload — se a flag
-          // chegar depois (via .then() assíncrono), checkGeminiSession() não a vê.
-          try { localStorage.setItem('gemini_access_token', token); } catch(e) {}
-          try { localStorage.setItem('medcases_gsi_pending', 'true'); } catch(e) {}
+          var savedToken = false, savedFlag = false;
+          try { localStorage.setItem('gemini_access_token', token); savedToken = true; } catch(e) { console.error('[GSI-DIAG] ERRO ao salvar token:', e); }
+          try { localStorage.setItem('medcases_gsi_pending', 'true'); savedFlag = true; } catch(e) { console.error('[GSI-DIAG] ERRO ao salvar flag:', e); }
 
-          // Busca email via tokeninfo em background (não bloqueia o boot do Flutter)
+          // Verifica imediatamente se foi salvo de fato (Safari privado pode silenciar)
+          var verifyToken   = localStorage.getItem('gemini_access_token');
+          var verifyPending = localStorage.getItem('medcases_gsi_pending');
+          console.log('[GSI-DIAG] após setItem → token salvo:', savedToken, '| token lido de volta:', verifyToken ? 'SIM' : 'NÃO (PROBLEMA!)', '| flag salva:', savedFlag, '| flag lida de volta:', verifyPending);
+
+          // Busca email via tokeninfo em background
           fetch('https://www.googleapis.com/oauth2/v3/tokeninfo?access_token=' + token)
             .then(function(r) { return r.json(); })
             .then(function(d) {
+              console.log('[GSI-DIAG] tokeninfo resposta:', JSON.stringify(d).substring(0, 120));
               if (d.email) {
                 try { localStorage.setItem('gemini_google_email', d.email); } catch(e) {}
+                console.log('[GSI-DIAG] email salvo:', d.email);
               }
             })
-            .catch(function() { /* token já salvo — email fica vazio por ora */ });
+            .catch(function(e) { console.error('[GSI-DIAG] tokeninfo ERRO:', e); });
+        } else if (error) {
+          console.error('[GSI-DIAG] Google retornou erro:', error);
         }
-        // Se error: ignora, Flutter detecta ausência de token
       }());
 
       // ── 2. Botão HTML onclick — redirect direto (Safari-safe) ────────

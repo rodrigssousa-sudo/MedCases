@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '../providers/app_provider.dart';
@@ -149,6 +150,19 @@ class _AiScreenState extends State<AiScreen> {
     });
     // Injeta saudação após o primeiro frame (AppProvider já disponível)
     WidgetsBinding.instance.addPostFrameCallback((_) => _injectGreeting());
+
+    // Verifica sessão Gemini ao montar — captura token de redirect OAuth
+    // que pode ter chegado enquanto o app já estava aberto (flag pendente).
+    // Cobre o caso em que setUser() foi pulado no _WebMainShellGate.
+    if (kIsWeb) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        final p = context.read<AppProvider>();
+        if (!p.geminiConnected) {
+          p.checkGeminiSession();
+        }
+      });
+    }
   }
 
   void _injectGreeting() {
