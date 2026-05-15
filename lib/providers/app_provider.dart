@@ -987,6 +987,10 @@ class AppProvider extends ChangeNotifier {
     const _highRiskIds = {
       'avc_hemorragico', 'avc_isquemico', 'pcr_adulto', 'choque_cardiogenico',
       'hsa', 'meningite', 'sepse', 'iam_congestao', 'tep', 'status_epilepticus',
+      // Protocolos com sintomas genéricos (cefaleia, náusea) no recognize:
+      // exigem ≥2 palavras para evitar falso positivo em queries simples.
+      'eclampsia_hellp', 'hiponatremia_grave', 'intox_monoxido_carbono',
+      'caso_enxaqueca_aura', 'gripe_influenza_010',
     };
 
     final results = <String>[];
@@ -1362,7 +1366,8 @@ class AppProvider extends ChangeNotifier {
         id: 'iam',
         label: es ? 'Síndrome Coronario Agudo (IAM/Angina)' : 'Síndrome Coronariana Aguda (IAM/Angina)',
         protocolId: 'iam_congestao',
-        keywords: ['dor torac', 'peito', 'iam', 'infarto', 'angina', 'stemi', 'nstemi', 'sca', 'troponina', 'supradesnivel'],
+        keywords: ['dor torac', 'peito', 'iam', 'infarto', 'angina', 'stemi', 'nstemi', ' sca ', 'troponina', 'supradesnivel', 'sindrome coron'],
+        // NOTA: ' sca ' com espaços evita falso positivo em "brusca" (bru|sca)
         exams: [es ? 'ECG seriado (0–6–12h)' : 'ECG seriado (0–6–12h)', es ? 'Troponina (0–3h)' : 'Troponina (0–3h)', 'RX tórax', es ? 'Glucemia' : 'Glicemia'],
         flags: [es ? 'Supradesnivel ST → cateterismo urgente' : 'Supradesnivelamento ST → cateterismo urgente',
                 es ? 'Hipotensión → choque cardiogénico' : 'Hipotensão → choque cardiogênico'],
@@ -1675,13 +1680,16 @@ class AppProvider extends ChangeNotifier {
     ];
 
     // ── Calcular score de cada condição ──────────────────────────────────────
+    // Padded query: espaços nas bordas permitem match de palavras inteiras
+    // Ex: ' sca ' NÃO bate em ' cefalea brusca ' mas bate em ' sca ' e ' paciente com sca '
+    final qPadded = ' $q ';
     int bestScore  = 0;
     _CliCondition? winner;
 
     for (final cond in conditions) {
       int score = 0;
       for (final kw in cond.keywords) {
-        if (q.contains(kw)) score++;
+        if (qPadded.contains(kw)) score++;
       }
       if (score > bestScore) {
         bestScore = score;
@@ -1762,13 +1770,14 @@ class AppProvider extends ChangeNotifier {
         }
       }
 
-      // 2c. Re-tentativa com qExpanded (histórico + msg atual)
+      // 2c. Re-tentativa com qExpanded (histórico + msg atual) — também padded
       if (qHistory.isNotEmpty && qHistory.length > 5) {
+        final qExpPadded = ' $qExpanded ';
         int bestExpScore = 0;
         for (final cond in conditions) {
           int sc = 0;
           for (final kw in cond.keywords) {
-            if (qExpanded.contains(kw)) sc++;
+            if (qExpPadded.contains(kw)) sc++;
           }
           if (sc > bestExpScore) { bestExpScore = sc; winner = cond; }
         }
@@ -1790,11 +1799,12 @@ class AppProvider extends ChangeNotifier {
               .map((m) => m['content'] ?? '')
               .lastOrNull ?? '');
           if (lastAI.isNotEmpty) {
+            final lastAIPadded = ' $lastAI ';
             int bestCtx = 0;
             for (final cond in conditions) {
               int sc = 0;
               for (final kw in cond.keywords) {
-                if (lastAI.contains(kw)) sc++;
+                if (lastAIPadded.contains(kw)) sc++;
               }
               if (sc > bestCtx) { bestCtx = sc; winner = cond; }
             }
