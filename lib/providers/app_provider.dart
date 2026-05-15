@@ -2730,98 +2730,64 @@ class AppProvider extends ChangeNotifier {
         );
 
         if (looksLikeClinical && queryTerms.isNotEmpty) {
-          // Montar contexto genérico estruturado — Gemini usará para buscar na web
+          // FASE 2f — contexto factual limpo para o Gemini (NÃO exibido ao usuário)
+          // Sem markdown, sem títulos, sem instruções visíveis — apenas dados factuais
+          // O system prompt já instrui o Gemini a responder naturalmente
           final termLabel = queryTerms.take(3).join(' ');
           final buf2f = StringBuffer();
-          buf2f.writeln(es
-              ? '## Consulta clínica: $termLabel'
-              : '## Consulta clínica: $termLabel');
-          buf2f.writeln('');
-          buf2f.writeln(es
-              ? '**Tópico identificado:** $termLabel'
-              : '**Tópico identificado:** $termLabel');
-          buf2f.writeln('');
-          buf2f.writeln(es
-              ? '**Búsqueda requerida:** Esta condición/tema no está en la base local. Consultar literatura médica de referencia: Goodman & Gilman, Harrison, DiPiro, Braunwald, Mandell, Cecil; complementar con UpToDate, PubMed, guías ESC/AHA/IDSA.'
-              : '**Busca necessária:** Esta condição/tema não está na base local. Consultar literatura médica de referência: Goodman & Gilman, Harrison, DiPiro, Braunwald, Mandell, Cecil; complementar com UpToDate, PubMed, diretrizes ESC/AHA/IDSA/SBC.');
-          buf2f.writeln('');
-
+          buf2f.writeln('CONTEXTO_INTERNO [nao exibir ao usuario]:');
+          buf2f.writeln('tema_clinico="$termLabel"');
+          buf2f.writeln('query_original="${input.trim()}"');
+          buf2f.writeln('base_local="nao mapeado"');
+          buf2f.writeln('fontes="Goodman&Gilman,Harrison,DiPiro,Braunwald,Mandell,Cecil,UpToDate,PubMed"');
           // Dados do paciente se disponíveis
-          if (_patient.age.isNotEmpty || _patient.weight.isNotEmpty) {
-            buf2f.writeln(es ? '**Datos del paciente:**' : '**Dados do paciente:**');
-            if (_patient.age.isNotEmpty) buf2f.writeln('  • ${es ? "Edad" : "Idade"}: ${_patient.age} ${es ? "años" : "anos"}, ${_patient.sex}');
-            if (_patient.weight.isNotEmpty) buf2f.writeln('  • ${es ? "Peso" : "Peso"}: ${_patient.weight} kg');
-            if ((clcr ?? '').isNotEmpty) buf2f.writeln('  • ClCr: $clcr mL/min');
-            if (_patient.medications.isNotEmpty) buf2f.writeln('  • ${es ? "Medicamentos" : "Medicamentos"}: ${_patient.medications}');
-            buf2f.writeln('');
+          if (_patient.age.isNotEmpty) {
+            buf2f.writeln('paciente="${_patient.age} anos, ${_patient.sex}'
+                '${_patient.weight.isNotEmpty ? ", ${_patient.weight}kg" : ""}'
+                '${(clcr ?? '').isNotEmpty ? ", ClCr=${clcr}mL/min" : ""}"');
           }
-
-          buf2f.writeln(es
-              ? '**Instrucciones para la IA:**\n  1. Clasificar: ¿enfermedad, fármaco, procedimiento, caso clínico?\n  2. Usar como fuentes primarias: Goodman & Gilman, Harrison, DiPiro, Braunwald, Mandell, Cecil\n  3. Complementar con búsqueda web: UpToDate, PubMed, NEJM, guías ESC/AHA/IDSA\n  4. Responder con estructura apropiada al tipo de consulta\n  5. Si hay datos del paciente, adaptar dosis/conducta al perfil'
-              : '**Instruções para a IA:**\n  1. Classificar: doença, fármaco, procedimento, caso clínico?\n  2. Usar como fontes primárias: Goodman & Gilman, Harrison, DiPiro, Braunwald, Mandell, Cecil\n  3. Complementar com busca web: UpToDate, PubMed, NEJM, diretrizes ESC/AHA/IDSA/SBC\n  4. Responder com estrutura apropriada ao tipo de consulta\n  5. Se há dados do paciente, adaptar doses/conduta ao perfil');
-          buf2f.writeln('');
-          buf2f.writeln(es ? '⚕ Apoyo educacional.' : '⚕ Apoio educacional.');
+          if (_patient.medications.isNotEmpty) {
+            buf2f.writeln('medicamentos="${_patient.medications}"');
+          }
           return buf2f.toString();
         }
 
         // 2e. Fallback final — query ambígua ou muito curta (ex: "tratamento" sozinho)
-        // → Mesmo assim envia para Gemini com contexto mínimo + Google Search Grounding
-        // O Gemini interpretará a intenção e responderá com fontes de referência
+        // → Envia contexto factual mínimo para o Gemini. O system prompt já instrui
+        //    o comportamento correto — NÃO repetimos instruções aqui para evitar eco.
         final rawInput = input.trim();
-        final histCtx = _aiHistory.isNotEmpty
-            ? (es
-                ? '**Contexto da conversa anterior:** ${_aiHistory.last['user'] ?? ''}'
-                : '**Contexto da conversa anterior:** ${_aiHistory.last['user'] ?? ''}')
-            : '';
+        final prevUserMsg = _aiHistory.isNotEmpty ? (_aiHistory.last['user'] ?? '') : '';
         if (es) {
           final buf2e = StringBuffer();
-          buf2e.writeln('## Consulta médica — intención a identificar');
-          buf2e.writeln('');
-          buf2e.writeln('**Query del usuario:** $rawInput');
-          if (histCtx.isNotEmpty) buf2e.writeln(histCtx);
-          buf2e.writeln('');
-          buf2e.writeln('**Instrucción para la IA:**');
-          buf2e.writeln('  1. Interpretar la intención clínica de la query (puede ser una pregunta corta, un término, una condición)');
-          buf2e.writeln('  2. Si es un fármaco → ficha completa (mecanismo, dosis, indicaciones, RAM, interacciones)');
-          buf2e.writeln('  3. Si es una enfermedad → diagnóstico, tratamiento, guías actualizadas');
-          buf2e.writeln('  4. Si es ambiguo → dar la interpretación más probable clínicamente y responder');
-          buf2e.writeln('  5. Usar Goodman & Gilman, Harrison, DiPiro, Braunwald, Mandell, Cecil como fuentes primarias');
-          buf2e.writeln('  6. Complementar con búsqueda web: UpToDate, PubMed, NEJM, guías ESC/AHA/IDSA');
-          if (_patient.age.isNotEmpty || _patient.weight.isNotEmpty) {
-            buf2e.writeln('');
-            buf2e.writeln('**Datos del paciente:**');
-            if (_patient.age.isNotEmpty) buf2e.writeln('  • Edad: ${_patient.age} años, ${_patient.sex}');
-            if (_patient.weight.isNotEmpty) buf2e.writeln('  • Peso: ${_patient.weight} kg');
-            if ((clcr ?? '').isNotEmpty) buf2e.writeln('  • ClCr: $clcr mL/min');
-            if (_patient.medications.isNotEmpty) buf2e.writeln('  • Medicamentos: ${_patient.medications}');
+          buf2e.writeln('CONTEXTO_INTERNO [nao exibir]: query="$rawInput"');
+          if (prevUserMsg.isNotEmpty && prevUserMsg != rawInput) {
+            buf2e.writeln('mensagem_anterior="$prevUserMsg"');
           }
-          buf2e.writeln('');
-          buf2e.writeln('⚕ Apoyo educacional.');
+          if (_patient.age.isNotEmpty) {
+            buf2e.writeln('paciente: ${_patient.age} anos, ${_patient.sex}'
+                '${_patient.weight.isNotEmpty ? ", ${_patient.weight}kg" : ""}'
+                '${(clcr ?? '').isNotEmpty ? ", ClCr=${clcr}mL/min" : ""}'  );
+          }
+          if (_patient.medications.isNotEmpty) {
+            buf2e.writeln('medicamentos: ${_patient.medications}');
+          }
+          buf2e.writeln('fontes: Goodman&Gilman, Harrison, DiPiro, Braunwald, Mandell, Cecil, UpToDate, PubMed');
           return buf2e.toString();
         } else {
           final buf2e = StringBuffer();
-          buf2e.writeln('## Consulta médica — intenção a identificar');
-          buf2e.writeln('');
-          buf2e.writeln('**Query do usuário:** $rawInput');
-          if (histCtx.isNotEmpty) buf2e.writeln(histCtx);
-          buf2e.writeln('');
-          buf2e.writeln('**Instrução para a IA:**');
-          buf2e.writeln('  1. Interpretar a intenção clínica da query (pode ser uma pergunta curta, um termo, uma condição)');
-          buf2e.writeln('  2. Se for um fármaco → ficha completa (mecanismo, dose, indicações, RAM, interações)');
-          buf2e.writeln('  3. Se for uma doença → diagnóstico, tratamento, diretrizes atualizadas');
-          buf2e.writeln('  4. Se for ambíguo → dar a interpretação mais provável clinicamente e responder');
-          buf2e.writeln('  5. Usar Goodman & Gilman, Harrison, DiPiro, Braunwald, Mandell, Cecil como fontes primárias');
-          buf2e.writeln('  6. Complementar com busca web: UpToDate, PubMed, NEJM, diretrizes ESC/AHA/IDSA/SBC');
-          if (_patient.age.isNotEmpty || _patient.weight.isNotEmpty) {
-            buf2e.writeln('');
-            buf2e.writeln('**Dados do paciente:**');
-            if (_patient.age.isNotEmpty) buf2e.writeln('  • Idade: ${_patient.age} anos, ${_patient.sex}');
-            if (_patient.weight.isNotEmpty) buf2e.writeln('  • Peso: ${_patient.weight} kg');
-            if ((clcr ?? '').isNotEmpty) buf2e.writeln('  • ClCr: $clcr mL/min');
-            if (_patient.medications.isNotEmpty) buf2e.writeln('  • Medicamentos: ${_patient.medications}');
+          buf2e.writeln('CONTEXTO_INTERNO [nao exibir]: query="$rawInput"');
+          if (prevUserMsg.isNotEmpty && prevUserMsg != rawInput) {
+            buf2e.writeln('mensagem_anterior="$prevUserMsg"');
           }
-          buf2e.writeln('');
-          buf2e.writeln('⚕ Apoio educacional.');
+          if (_patient.age.isNotEmpty) {
+            buf2e.writeln('paciente: ${_patient.age} anos, ${_patient.sex}'
+                '${_patient.weight.isNotEmpty ? ", ${_patient.weight}kg" : ""}'
+                '${(clcr ?? '').isNotEmpty ? ", ClCr=${clcr}mL/min" : ""}'  );
+          }
+          if (_patient.medications.isNotEmpty) {
+            buf2e.writeln('medicamentos: ${_patient.medications}');
+          }
+          buf2e.writeln('fontes: Goodman&Gilman, Harrison, DiPiro, Braunwald, Mandell, Cecil, UpToDate, PubMed');
           return buf2e.toString();
         }
       }
