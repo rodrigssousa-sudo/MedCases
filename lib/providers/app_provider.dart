@@ -1227,25 +1227,49 @@ class AppProvider extends ChangeNotifier {
         return geminiResult.text;
       }
 
+      // Gemini falhou — tentar novamente com contexto local como resposta direta
+      final localFallback = _buildLocalAnswer(input);
+      // Se o contexto local tem conteúdo médico real (FASE 0/1/2a/2b/3) → exibir
+      // Se é contexto interno técnico (FASE 2e/2f) → mostrar mensagem amigável
+      final isInternalContext = localFallback.startsWith('CONTEXTO_INTERNO') ||
+          localFallback.startsWith('INSTRUCAO_INTERNA') ||
+          localFallback.startsWith('INSTRUCCION_INTERNA');
+
       switch (geminiResult.errorCode) {
         case 'api_key_invalid':
           return _lang == 'es'
-              ? '⚠️ Error de API Gemini. Contacta al administrador del app.\n\n${_buildLocalAnswer(input)}'
-              : '⚠️ Erro na API Gemini. Entre em contato com o administrador do app.\n\n${_buildLocalAnswer(input)}';
+              ? 'No se pudo conectar al asistente clínico. Verifica la configuración de la API. ⚕ Apoyo educacional.'
+              : 'Não foi possível conectar ao assistente clínico. Verifique a configuração da API. ⚕ Apoio educacional.';
         case 'quota':
           return _lang == 'es'
-              ? '⚠️ Límite de uso de Gemini alcanzado. Inténtalo más tarde.\n\n${_buildLocalAnswer(input)}'
-              : '⚠️ Limite de uso do Gemini atingido. Tente novamente mais tarde.\n\n${_buildLocalAnswer(input)}';
+              ? 'Límite de consultas alcanzado. Intenta nuevamente en unos minutos. ⚕ Apoyo educacional.'
+              : 'Limite de consultas atingido. Tente novamente em alguns minutos. ⚕ Apoio educacional.';
         case 'blocked':
-          return _buildLocalAnswer(input);
+          return isInternalContext
+              ? (_lang == 'es'
+                  ? 'No pude procesar esa consulta. ¿Puedes reformularla con más contexto clínico? ⚕ Apoyo educacional.'
+                  : 'Não consegui processar essa consulta. Pode reformulá-la com mais contexto clínico? ⚕ Apoio educacional.')
+              : localFallback;
         default:
-          return _buildLocalAnswer(input);
+          return isInternalContext
+              ? (_lang == 'es'
+                  ? 'No pude procesar esa consulta. ¿Puedes reformularla con más contexto clínico? ⚕ Apoyo educacional.'
+                  : 'Não consegui processar essa consulta. Pode reformulá-la com mais contexto clínico? ⚕ Apoio educacional.')
+              : localFallback;
       }
     }
 
     // ── Passo 6: OpenAI (legado) ───────────────────────────────────────────
     if (_openAiKey.isEmpty) {
-      return _buildLocalAnswer(input);
+      final localFallback = _buildLocalAnswer(input);
+      final isInternalContext = localFallback.startsWith('CONTEXTO_INTERNO') ||
+          localFallback.startsWith('INSTRUCAO_INTERNA') ||
+          localFallback.startsWith('INSTRUCCION_INTERNA');
+      return isInternalContext
+          ? (_lang == 'es'
+              ? 'Hola. Para consultas clínicas, asegúrate de tener la API configurada. Puedo ayudarte con protocolos, fármacos y casos clínicos. ⚕ Apoyo educacional.'
+              : 'Olá. Para consultas clínicas, certifique-se de ter a API configurada. Posso ajudar com protocolos, fármacos e casos clínicos. ⚕ Apoio educacional.')
+          : localFallback;
     }
 
     final result = await AiService.chat(
@@ -1260,14 +1284,23 @@ class AppProvider extends ChangeNotifier {
       switch (result.errorCode) {
         case 'invalid_key':
           return _lang == 'es'
-              ? '⚠️ Clave de API inválida.\n\n${_buildLocalAnswer(input)}'
-              : '⚠️ Chave de API inválida.\n\n${_buildLocalAnswer(input)}';
+              ? 'Clave de API inválida. Verifica la configuración en el menú. ⚕ Apoyo educacional.'
+              : 'Chave de API inválida. Verifique a configuração no menu. ⚕ Apoio educacional.';
         case 'quota':
           return _lang == 'es'
-              ? '⚠️ Límite de API alcanzado.\n\n${_buildLocalAnswer(input)}'
-              : '⚠️ Limite de API atingido.\n\n${_buildLocalAnswer(input)}';
-        default:
-          return _buildLocalAnswer(input);
+              ? 'Límite de API alcanzado. Intenta nuevamente más tarde. ⚕ Apoyo educacional.'
+              : 'Limite de API atingido. Tente novamente mais tarde. ⚕ Apoio educacional.';
+        default: {
+          final localFallback = _buildLocalAnswer(input);
+          final isInternalContext = localFallback.startsWith('CONTEXTO_INTERNO') ||
+              localFallback.startsWith('INSTRUCAO_INTERNA') ||
+              localFallback.startsWith('INSTRUCCION_INTERNA');
+          return isInternalContext
+              ? (_lang == 'es'
+                  ? 'No pude procesar esa consulta. ¿Puedes reformularla con más contexto clínico? ⚕ Apoyo educacional.'
+                  : 'Não consegui processar essa consulta. Pode reformulá-la com mais contexto clínico? ⚕ Apoio educacional.')
+              : localFallback;
+        }
       }
     }
 
