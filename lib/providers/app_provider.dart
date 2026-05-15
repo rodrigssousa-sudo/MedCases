@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
+// ignore: avoid_web_libraries_in_flutter
+import 'dart:js' as js_interop;
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/drug_model.dart';
 import '../models/protocol_model.dart';
@@ -856,13 +858,32 @@ class AppProvider extends ChangeNotifier {
 
   /// Verifica silenciosamente se há sessão Gemini ativa (chamado no login).
   /// Nunca propaga exceção nem modifica _geminiLoading — é 100% silencioso.
+  ///
+  /// Também verifica a flag 'medcases_gsi_pending' no localStorage — setada
+  /// pelo redirect flow OAuth quando o usuário volta do accounts.google.com.
+  /// Se a flag existir, lê o token recém-salvo e atualiza o estado.
   Future<void> checkGeminiSession() async {
     try {
+      // ── Detecta retorno do redirect OAuth (Safari/web) ───────────────────
+      // O JS em index.html seta esta flag após processar o #access_token do hash.
+      // Limpa a flag imediatamente para não processar duas vezes.
+      if (kIsWeb) {
+        try {
+          final pending = _webGetLS('medcases_gsi_pending');
+          if (pending == 'true') {
+            _webRemoveLS('medcases_gsi_pending');
+            debugPrint('[checkGeminiSession] flag medcases_gsi_pending detectada — token novo no localStorage');
+          }
+        } catch (_) {}
+      }
+
+      // ── Verifica token (localStorage no web, SharedPrefs no Android) ─────
       final connected = await GeminiService.isConnected()
           .timeout(const Duration(seconds: 10), onTimeout: () => false);
       if (connected) {
         _geminiConnected = true;
         _geminiEmail = await GeminiService.connectedEmail() ?? '';
+        debugPrint('[checkGeminiSession] Gemini conectado — $_geminiEmail');
         notifyListeners();
       }
     } catch (_) {
@@ -871,6 +892,24 @@ class AppProvider extends ChangeNotifier {
       _geminiConnected = false;
       _geminiEmail = '';
     }
+  }
+
+  /// Lê um valor do localStorage (web only). Retorna null se não web ou erro.
+  String? _webGetLS(String key) {
+    if (!kIsWeb) return null;
+    try {
+      return js_interop.context['localStorage'].callMethod('getItem', [key]) as String?;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  /// Remove uma chave do localStorage (web only).
+  void _webRemoveLS(String key) {
+    if (!kIsWeb) return;
+    try {
+      js_interop.context['localStorage'].callMethod('removeItem', [key]);
+    } catch (_) {}
   }
 
   /// Retorna sumários dos protocolos cujos títulos/reconhecer contenham keywords da query

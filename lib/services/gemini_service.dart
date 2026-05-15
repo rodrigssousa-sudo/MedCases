@@ -101,85 +101,48 @@ class GeminiService {
   }
 
   // ══════════════════════════════════════════════════════════════════════════
-  // WEB — OAuth via GSI (google.accounts.oauth2.initTokenClient)
+  // WEB — OAuth via Redirect Flow (Safari-safe)
   // ══════════════════════════════════════════════════════════════════════════
 
-  /// Inicia fluxo OAuth no web via modal HTML nativo (Safari-safe).
+  /// Inicia fluxo OAuth no web via redirect (mesma aba).
   ///
   /// PROBLEMA: Safari bloqueia popups OAuth chamados via Flutter porque
-  /// o Dart VM quebra a cadeia de gestos. Nenhum js.callMethod resolve isso.
+  /// o Dart VM quebra a cadeia de gestos. window.open() é sempre bloqueado,
+  /// mesmo com onclick nativo em botões HTML reais.
   ///
-  /// SOLUÇÃO: modal HTML real com <button onclick="_gsiHandleClick()">
-  /// O onclick é chamado diretamente pelo browser → Safari reconhece o
-  /// gesto → requestToken() abre o popup normalmente.
+  /// SOLUÇÃO: Redirect flow — window.location.href para accounts.google.com.
+  /// Google redireciona de volta para https://medcasespro.com/#access_token=...
+  /// O JS em index.html (_checkRedirectReturn) processa o hash ANTES do Flutter
+  /// carregar e salva o token no localStorage + seta flag 'medcases_gsi_pending'.
+  /// checkGeminiSession() no AppProvider detecta a flag no próximo boot.
   ///
   /// Fluxo:
   ///   Flutter chama medcasesShowGSIModal() → modal HTML aparece
-  ///   Usuário toca botão HTML → onclick → requestToken() [gesto direto]
-  ///   GSI callback → dispatchEvent('medcases-gsi-token')
-  ///   Dart ouve o evento via addEventListener JS → completer.complete(token)
+  ///   Usuário toca botão HTML → _gsiHandleClick() → window.location.href [redirect]
+  ///   Google autentica → redireciona com #access_token no hash
+  ///   _checkRedirectReturn() salva token + seta medcases_gsi_pending
+  ///   App reinicia → checkGeminiSession() detecta token → _geminiConnected = true
+  ///
+  /// IMPORTANTE: este método retorna null imediatamente após abrir o modal.
+  /// signIn() vai retornar false, mas isso é esperado — o token chegará
+  /// via checkGeminiSession() no próximo boot do app após o redirect.
   static Future<String?> _webSignIn() async {
-    final completer = Completer<String?>();
-
     try {
-      // Verifica se o modal HTML foi inicializado
       final hasFn = js.context.hasProperty('medcasesShowGSIModal');
       if (!hasFn) {
         debugPrint('[GeminiService] medcasesShowGSIModal não encontrada');
-        completer.complete(null);
-        return completer.future;
-      }
-
-      // Listener para o CustomEvent disparado pelo modal HTML após OAuth
-      js.JsObject? listenerRef;
-      final handler = js.allowInterop((dynamic event) {
-        try {
-          final e = js.JsObject.fromBrowserObject(event);
-          final detail = js.JsObject.fromBrowserObject(e['detail']);
-          final token = detail['token'];
-          final error = detail['error'];
-          final t = (token is String && token.isNotEmpty) ? token : null;
-          final cancelled = (error is String && error == 'cancelled');
-          if (t != null) {
-            debugPrint('[GeminiService] GSI token OK (${t.length} chars)');
-          } else if (cancelled) {
-            debugPrint('[GeminiService] GSI: cancelado pelo usuário');
-          } else {
-            debugPrint('[GeminiService] GSI erro: $error');
-          }
-          if (!completer.isCompleted) completer.complete(t);
-        } catch (ex) {
-          debugPrint('[GeminiService] GSI event parse erro: $ex');
-          if (!completer.isCompleted) completer.complete(null);
-        }
-        // Remove o listener após receber o resultado
-        try {
-          js.context.callMethod('removeEventListener', ['medcases-gsi-token', listenerRef]);
-        } catch (_) {}
-      });
-      listenerRef = js.JsObject.fromBrowserObject(handler);
-
-      // Registra o listener ANTES de abrir o modal
-      js.context.callMethod('addEventListener', ['medcases-gsi-token', handler]);
-
-      // Abre o modal HTML — o requestToken() será chamado pelo onclick nativo
-      js.context.callMethod('medcasesShowGSIModal', []);
-
-      debugPrint('[GeminiService] modal GSI aberto — aguardando seleção...');
-
-    } catch (e, st) {
-      debugPrint('[GeminiService] _webSignIn ERRO: $e\n$st');
-      if (!completer.isCompleted) completer.complete(null);
-    }
-
-    // Timeout de 5 minutos — usuário pode demorar para selecionar conta
-    return completer.future.timeout(
-      const Duration(minutes: 5),
-      onTimeout: () {
-        debugPrint('[GeminiService] GSI timeout (5min)');
         return null;
-      },
-    );
+      }
+      // Abre o modal HTML. O onclick do botão chama _gsiHandleClick()
+      // que faz window.location.href → redirect. A página vai recarregar,
+      // então não há como aguardar um token aqui — retornamos null.
+      js.context.callMethod('medcasesShowGSIModal', []);
+      debugPrint('[GeminiService] modal GSI aberto — redirect flow iniciado');
+    } catch (e) {
+      debugPrint('[GeminiService] _webSignIn ERRO: $e');
+    }
+    // Retorna null — o token virá via checkGeminiSession() após reload
+    return null;
   }
 
   // ══════════════════════════════════════════════════════════════════════════
