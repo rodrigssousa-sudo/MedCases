@@ -644,22 +644,21 @@
         history.replaceState(null, '', window.location.pathname + window.location.search);
 
         if (token) {
-          // Salva token e email no localStorage para o Flutter ler
+          // CRÍTICO: salva token E flag SINCRONAMENTE antes de qualquer fetch.
+          // O Flutter começa a carregar imediatamente após o reload — se a flag
+          // chegar depois (via .then() assíncrono), checkGeminiSession() não a vê.
           try { localStorage.setItem('gemini_access_token', token); } catch(e) {}
+          try { localStorage.setItem('medcases_gsi_pending', 'true'); } catch(e) {}
 
-          // Busca email via tokeninfo e salva
+          // Busca email via tokeninfo em background (não bloqueia o boot do Flutter)
           fetch('https://www.googleapis.com/oauth2/v3/tokeninfo?access_token=' + token)
             .then(function(r) { return r.json(); })
             .then(function(d) {
               if (d.email) {
                 try { localStorage.setItem('gemini_google_email', d.email); } catch(e) {}
               }
-              // Sinaliza para o Flutter que há token novo
-              try { localStorage.setItem('medcases_gsi_pending', 'true'); } catch(e) {}
             })
-            .catch(function() {
-              try { localStorage.setItem('medcases_gsi_pending', 'true'); } catch(e) {}
-            });
+            .catch(function() { /* token já salvo — email fica vazio por ora */ });
         }
         // Se error: ignora, Flutter detecta ausência de token
       }());

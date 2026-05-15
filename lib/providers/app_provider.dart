@@ -184,7 +184,14 @@ class AppProvider extends ChangeNotifier {
     loadPublicHistories();
 
     // 5️⃣ Restaura sessão Gemini em background — silencioso, não bloqueia UI
-    checkGeminiSession();
+    // Delay de 1s quando há redirect OAuth pendente para garantir que o JS
+    // terminou de salvar o token no localStorage antes do Dart ler.
+    Future.delayed(
+      _webGetLS('medcases_gsi_pending') == 'true'
+          ? const Duration(seconds: 1)
+          : Duration.zero,
+      checkGeminiSession,
+    );
 
     // 6️⃣ Inicia contador de tempo de uso
     _startUsageTimer(user.uid);
@@ -882,36 +889,60 @@ class AppProvider extends ChangeNotifier {
   /// Verifica silenciosamente se há sessão Gemini ativa (chamado no login).
   /// Nunca propaga exceção nem modifica _geminiLoading — é 100% silencioso.
   ///
-  /// Também verifica a flag 'medcases_gsi_pending' no localStorage — setada
-  /// pelo redirect flow OAuth quando o usuário volta do accounts.google.com.
-  /// Se a flag existir, lê o token recém-salvo e atualiza o estado.
+  /// Fluxo redirect OAuth (Safari/web):
+  ///   1. JS em index.html salva token + seta 'medcases_gsi_pending' SINCRONAMENTE
+  ///      antes do Flutter carregar (no mesmo script, antes do bootFlutter).
+  ///   2. Este método detecta a flag, lê o token diretamente do localStorage
+  ///      e valida via tokeninfo — sem depender do fetch assíncrono do JS.
+  ///   3. Se o email ainda não chegou (fetch do JS ainda em andamento),
+  ///      buscamos via tokeninfo direto aqui no Dart.
   Future<void> checkGeminiSession() async {
     try {
-      // ── Detecta retorno do redirect OAuth (Safari/web) ───────────────────
-      // O JS em index.html seta esta flag após processar o #access_token do hash.
-      // Limpa a flag imediatamente para não processar duas vezes.
       if (kIsWeb) {
-        try {
-          final pending = _webGetLS('medcases_gsi_pending');
-          if (pending == 'true') {
-            _webRemoveLS('medcases_gsi_pending');
-            debugPrint('[checkGeminiSession] flag medcases_gsi_pending detectada — token novo no localStorage');
+        // ── Detecta retorno do redirect OAuth ───────────────────────────────
+        final pending = _webGetLS('medcases_gsi_pending');
+        if (pending == 'true') {
+          debugPrint('[checkGeminiSession] flag medcases_gsi_pending detectada');
+          _webRemoveLS('medcases_gsi_pending');
+
+          // Lê o token salvo pelo JS sincronamente
+          final token = _webGetLS('gemini_access_token');
+          if (token != null && token.isNotEmpty) {
+            // Valida token com o Google
+            final connected = await GeminiService.isConnected()
+                .timeout(const Duration(seconds: 10), onTimeout: () => false);
+            if (connected) {
+              _geminiConnected = true;
+              // Tenta ler email do localStorage (pode já ter chegado via fetch do JS)
+              _geminiEmail = _webGetLS('gemini_google_email') ?? '';
+              // Se email ainda vazio, busca via tokeninfo (fetch JS pode não ter terminado)
+              if (_geminiEmail.isEmpty) {
+                _geminiEmail = await GeminiService.connectedEmail() ?? '';
+              }
+              debugPrint('[checkGeminiSession] redirect OAuth — conectado: $_geminiEmail');
+              notifyListeners();
+              return;
+            } else {
+              debugPrint('[checkGeminiSession] token inválido após redirect');
+            }
+          } else {
+            debugPrint('[checkGeminiSession] flag presente mas token vazio no localStorage');
           }
-        } catch (_) {}
+        }
       }
 
-      // ── Verifica token (localStorage no web, SharedPrefs no Android) ─────
+      // ── Verificação normal de sessão existente ───────────────────────────
       final connected = await GeminiService.isConnected()
           .timeout(const Duration(seconds: 10), onTimeout: () => false);
       if (connected) {
         _geminiConnected = true;
         _geminiEmail = await GeminiService.connectedEmail() ?? '';
-        debugPrint('[checkGeminiSession] Gemini conectado — $_geminiEmail');
+        debugPrint('[checkGeminiSession] sessão existente — $_geminiEmail');
         notifyListeners();
       }
-    } catch (_) {
-      // Sessão inválida ou OAuth bloqueado — silencia completamente.
-      // Nunca mostra banner aqui; o usuário conecta manualmente se quiser.
+    } catch (e) {
+      debugPrint('[checkGeminiSession] erro: $e');
+      // Silencia — nunca mostra banner aqui
       _geminiConnected = false;
       _geminiEmail = '';
     }
