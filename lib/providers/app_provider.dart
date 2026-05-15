@@ -188,7 +188,17 @@ class AppProvider extends ChangeNotifier {
     if (kIsWeb) {
       final pendingNow = _webGetLS('medcases_gsi_pending');
       final tokenNow   = _webGetLS('gemini_access_token');
-      _jsLog('[setUser] step5 pending=${pendingNow ?? "null"} token=${tokenNow != null ? "SIM" : "NAO"}');
+      final emailNow   = _webGetLS('gemini_google_email');
+      _jsLog('[setUser] step5 pending=${pendingNow ?? "null"} token=${tokenNow != null ? tokenNow.substring(0,15) + "..." : "NAO"} email=${emailNow ?? "null"}');
+      // Lista TODAS as chaves do localStorage para ver o que existe
+      try {
+        js_interop.context.callMethod('eval', [r'''
+(function(){
+  var keys=Object.keys(localStorage).filter(function(k){return k.indexOf("gemini")>-1||k.indexOf("medcases_gsi")>-1;});
+  console.log("[LS-DUMP] chaves gemini/gsi:", JSON.stringify(keys.reduce(function(o,k){o[k]=localStorage.getItem(k)?localStorage.getItem(k).substring(0,30):"null";return o;},{})));
+})()
+''']);
+      } catch (_) {}
     }
     Future.delayed(
       _webGetLS('medcases_gsi_pending') == 'true'
