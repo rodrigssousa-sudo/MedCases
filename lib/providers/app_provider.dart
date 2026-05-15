@@ -168,14 +168,14 @@ class AppProvider extends ChangeNotifier {
     // 1️⃣ Carrega cache local IMEDIATAMENTE — app responde sem esperar rede
     await _loadFromLocal(uid: user.uid);
 
-    // 2️⃣ Carrega chave OpenAI com AWAIT — garante hasAiKey=true antes da UI montar.
+    // 2️⃣ Carrega chaves do Firestore com AWAIT — SEMPRE executa (nunca condicional).
+    //    openAiKey: garante hasAiKey=true antes da UI montar.
+    //    geminiApiKey: CRÍTICO — não tem cache local, deve ser sempre buscada.
     //    Timeout 5s para não travar login em redes lentas; falha silenciosa = modo local.
-    if (_openAiKey.isEmpty) {
-      await _loadAiKeyFromFirestore(user.uid).timeout(
-        const Duration(seconds: 5),
-        onTimeout: () { _aiKeyLoading = false; },
-      );
-    }
+    await _loadAiKeyFromFirestore(user.uid).timeout(
+      const Duration(seconds: 5),
+      onTimeout: () { _aiKeyLoading = false; },
+    );
 
     // 3️⃣ Sincroniza Firestore em background — não bloqueia a UI
     _syncFromFirestore(user.uid);
@@ -254,34 +254,44 @@ class AppProvider extends ChangeNotifier {
   //  3. SharedPreferences local → fallback offline
   Future<void> _loadAiKeyFromFirestore(String uid) async {
     try {
-      // 1️⃣ Tenta chave global do app primeiro
-      final appKey = await FirestoreService.loadAppAiKey();
+      // Carrega OpenAI Key e Gemini API Key em paralelo — mais rápido
+      // CRÍTICO: geminiApiKey NUNCA tem return prematuro — deve sempre ser carregada
+      final results = await Future.wait([
+        FirestoreService.loadAppAiKey(),
+        FirestoreService.loadGeminiApiKey(),
+      ]);
+
+      final appKey    = results[0];
+      final geminiKey = results[1];
+
+      // ── OpenAI Key ──────────────────────────────────────────────────────────
       if (appKey.isNotEmpty) {
         _openAiKey = appKey;
-        _aiKeyLoading = false;
-        notifyListeners();
-        // Cache local para funcionar offline
         final p = await SharedPreferences.getInstance();
         await p.setString(_k('openAiKey', uid), appKey);
-        return;
+      } else {
+        // Fallback: chave individual do usuário (legado)
+        final userKey = await FirestoreService.loadAiKey(uid);
+        if (userKey.isNotEmpty) {
+          _openAiKey = userKey;
+          final p = await SharedPreferences.getInstance();
+          await p.setString(_k('openAiKey', uid), userKey);
+        }
       }
 
-      // 2️⃣ Fallback: chave individual do usuário (legado)
-      final userKey = await FirestoreService.loadAiKey(uid);
-      if (userKey.isNotEmpty) {
-        _openAiKey = userKey;
-        _aiKeyLoading = false;
-        notifyListeners();
-        final p = await SharedPreferences.getInstance();
-        await p.setString(_k('openAiKey', uid), userKey);
-        return;
+      // ── Gemini API Key — injeta no GeminiService ────────────────────────────
+      // CRÍTICO: sem cache local. checkGeminiSession() depende de hasApiKey==true.
+      if (geminiKey.isNotEmpty) {
+        GeminiService.setGeminiApiKey(geminiKey);
+        debugPrint('[AppProvider] Gemini API Key carregada ✓');
+      } else {
+        debugPrint('[AppProvider] Gemini API Key não encontrada no Firestore');
       }
 
-      // Sem chave em nenhuma fonte
       _aiKeyLoading = false;
       notifyListeners();
     } catch (_) {
-      // 3️⃣ Sem rede: tenta cache local
+      // Sem rede: tenta cache local para OpenAI (Gemini Key não tem cache)
       try {
         final p = await SharedPreferences.getInstance();
         _openAiKey = p.getString(_k('openAiKey', uid)) ?? '';
@@ -914,8 +924,11 @@ class AppProvider extends ChangeNotifier {
             email = await GeminiService.connectedEmail() ?? '';
           }
           if (email.isNotEmpty) {
-            // Conectado = email salvo + API Key já carregada pelo _loadAiKeyFromFirestore
-            _geminiConnected = GeminiService.hasApiKey;
+            // Email presente = usuário autenticou com sucesso.
+            // _geminiConnected = true SEMPRE aqui — a API Key já foi carregada
+            // pelo _loadAiKeyFromFirestore() no passo 2️⃣ de setUser() antes deste método.
+            // Se hasApiKey ainda for false, é problema de config do Firestore, não de sessão.
+            _geminiConnected = true;
             _geminiEmail = email;
             debugPrint('[checkGeminiSession] redirect OAuth OK — $email, apiKey: ${GeminiService.hasApiKey}');
             notifyListeners();
