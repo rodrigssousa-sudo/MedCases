@@ -925,9 +925,20 @@ class AppProvider extends ChangeNotifier {
           }
           if (email.isNotEmpty) {
             // Email presente = usuário autenticou com sucesso.
-            // _geminiConnected = true SEMPRE aqui — a API Key já foi carregada
-            // pelo _loadAiKeyFromFirestore() no passo 2️⃣ de setUser() antes deste método.
-            // Se hasApiKey ainda for false, é problema de config do Firestore, não de sessão.
+            // Garante que a API Key está carregada (pode ter sido perdida por reload)
+            if (!GeminiService.hasApiKey) {
+              debugPrint('[checkGeminiSession] API Key ausente após redirect — recarregando do Firestore');
+              try {
+                final geminiKey = await FirestoreService.loadGeminiApiKey()
+                    .timeout(const Duration(seconds: 5));
+                if (geminiKey.isNotEmpty) {
+                  GeminiService.setGeminiApiKey(geminiKey);
+                  debugPrint('[checkGeminiSession] API Key recarregada ✓');
+                }
+              } catch (e) {
+                debugPrint('[checkGeminiSession] erro ao recarregar API Key: $e');
+              }
+            }
             _geminiConnected = true;
             _geminiEmail = email;
             debugPrint('[checkGeminiSession] redirect OAuth OK — $email, apiKey: ${GeminiService.hasApiKey}');
@@ -938,12 +949,26 @@ class AppProvider extends ChangeNotifier {
       }
 
       // ── Verificação normal de sessão existente (não-redirect) ──────────
+      // Garante API Key carregada antes de verificar isConnected()
+      if (!GeminiService.hasApiKey) {
+        debugPrint('[checkGeminiSession] API Key ausente — recarregando do Firestore antes de isConnected()');
+        try {
+          final geminiKey = await FirestoreService.loadGeminiApiKey()
+              .timeout(const Duration(seconds: 5));
+          if (geminiKey.isNotEmpty) {
+            GeminiService.setGeminiApiKey(geminiKey);
+            debugPrint('[checkGeminiSession] API Key recarregada ✓');
+          }
+        } catch (e) {
+          debugPrint('[checkGeminiSession] erro ao recarregar API Key: $e');
+        }
+      }
       final connected = await GeminiService.isConnected()
           .timeout(const Duration(seconds: 5), onTimeout: () => false);
       if (connected) {
         _geminiConnected = true;
         _geminiEmail = await GeminiService.connectedEmail() ?? '';
-        debugPrint('[checkGeminiSession] sessão existente — $_geminiEmail');
+        debugPrint('[checkGeminiSession] sessão existente — $_geminiEmail, apiKey: ${GeminiService.hasApiKey}');
         notifyListeners();
       }
     } catch (e) {
@@ -1211,6 +1236,21 @@ class AppProvider extends ChangeNotifier {
 
     // ── Passo 5: Gemini (prioridade) com Google Search Grounding ──────────
     if (_geminiConnected) {
+      // Garante API Key presente antes de chamar — pode ter sido perdida por reload
+      if (!GeminiService.hasApiKey) {
+        debugPrint('[buildAIAnswer] API Key ausente antes do chat — recarregando...');
+        try {
+          final geminiKey = await FirestoreService.loadGeminiApiKey()
+              .timeout(const Duration(seconds: 5));
+          if (geminiKey.isNotEmpty) {
+            GeminiService.setGeminiApiKey(geminiKey);
+            debugPrint('[buildAIAnswer] API Key recarregada para chat ✓');
+          }
+        } catch (e) {
+          debugPrint('[buildAIAnswer] falha ao recarregar API Key: $e');
+        }
+      }
+
       final geminiResult = await GeminiService.chat(
         userMessage: input,
         systemPrompt: systemPrompt,
@@ -1252,8 +1292,11 @@ class AppProvider extends ChangeNotifier {
                   : 'Não consegui processar essa consulta. Pode reformulá-la com mais contexto clínico? ⚕ Apoio educacional.')
               : localFallback;
         default:
-          // DEBUG TEMPORÁRIO — expor errorCode para diagnóstico
-          return '[DEBUG] errorCode=${geminiResult.errorCode} | isInternal=$isInternalContext | text=${geminiResult.text.substring(0, geminiResult.text.length.clamp(0, 120))}';
+          return isInternalContext
+              ? (_lang == 'es'
+                  ? 'No pude procesar esa consulta. ¿Puedes reformularla con más contexto clínico? ⚕ Apoyo educacional.'
+                  : 'Não consegui processar essa consulta. Pode reformulá-la com mais contexto clínico? ⚕ Apoio educacional.')
+              : localFallback;
       }
     }
 
