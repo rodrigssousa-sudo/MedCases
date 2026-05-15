@@ -90,23 +90,20 @@ class GeminiService {
   // STORAGE — localStorage (web) / SharedPreferences (Android)
   // ══════════════════════════════════════════════════════════════════════════
 
-  // localStorage via eval() — resistente ao SES lockdown do Firebase Auth.
-  // O lockdown-install.js do Firebase congela proxies do dart:js, fazendo
-  // context['localStorage'].callMethod() retornar null silenciosamente.
-  // eval() acessa o localStorage nativo do browser sem passar pelo proxy.
+  // localStorage via funções globais window.mcLsGet / mcLsSet / mcLsRemove.
+  // Definidas no index.html ANTES do Firebase/SES lockdown ser aplicado —
+  // capturam a referência nativa ao localStorage enquanto ainda acessível.
+  // Sem eval, sem proxies congelados: funciona com qualquer CSP em produção.
 
   static void _webSet(String key, String value) {
     try {
-      final k = key.replaceAll("'", "\\'");
-      final v = value.replaceAll("'", "\\'").replaceAll('\n', '\\n');
-      js.context.callMethod('eval', ["localStorage.setItem('$k','$v')"]);
+      js.context.callMethod('mcLsSet', [key, value]);
     } catch (_) {}
   }
 
   static String? _webGet(String key) {
     try {
-      final k = key.replaceAll("'", "\\'");
-      final result = js.context.callMethod('eval', ["localStorage.getItem('$k')"]);
+      final result = js.context.callMethod('mcLsGet', [key]);
       if (result == null || result.toString() == 'null') return null;
       return result.toString();
     } catch (_) { return null; }
@@ -114,8 +111,7 @@ class GeminiService {
 
   static void _webRemove(String key) {
     try {
-      final k = key.replaceAll("'", "\\'");
-      js.context.callMethod('eval', ["localStorage.removeItem('$k')"]);
+      js.context.callMethod('mcLsRemove', [key]);
     } catch (_) {}
   }
 

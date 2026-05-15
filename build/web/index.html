@@ -92,6 +92,23 @@
   <link rel="preload" href="main.dart.js" as="script">
 
   <!-- ═══════════════════════════════════════════════════════════════════
+       LOCALSTORAGE HELPERS — criados ANTES do Firebase/SES lockdown.
+       O Firebase Auth injeta lockdown-install.js que congela proxies do
+       dart:js, tornando context['localStorage'].callMethod() inoperante.
+       eval() era a workaround anterior, mas CSP em produção bloqueia eval.
+       Solução: expor funções nativas no window ANTES do lockdown ser aplicado.
+       Dart chama window.mcLsGet / mcLsSet / mcLsRemove via callMethod normal.
+  ═══════════════════════════════════════════════════════════════════ -->
+  <script>
+    (function() {
+      var _ls = window.localStorage;
+      window.mcLsGet    = function(k)    { try { return _ls.getItem(k);    } catch(e) { return null; } };
+      window.mcLsSet    = function(k, v) { try { _ls.setItem(k, v);        } catch(e) {} };
+      window.mcLsRemove = function(k)    { try { _ls.removeItem(k);        } catch(e) {} };
+    })();
+  </script>
+
+  <!-- ═══════════════════════════════════════════════════════════════════
        GOOGLE SIGN-IN SDK
   ═══════════════════════════════════════════════════════════════════ -->
   <script src="https://accounts.google.com/gsi/client" async defer></script>

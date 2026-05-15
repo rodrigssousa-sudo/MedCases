@@ -1024,16 +1024,14 @@ class AppProvider extends ChangeNotifier {
   }
 
 
-  /// Lê um valor do localStorage via eval — resistente ao SES lockdown do Firebase.
-  /// O Firebase Auth injeta lockdown-install.js que congela proxies do dart:js,
-  /// fazendo context['localStorage'].callMethod('getItem') retornar null.
-  /// eval() acessa o localStorage nativo do browser, sem passar pelo proxy.
+  /// Lê um valor do localStorage via função global window.mcLsGet.
+  /// A função é registrada no index.html ANTES do Firebase/SES lockdown ser
+  /// aplicado — captura a referência nativa ao localStorage enquanto ainda
+  /// é acessível. Sem eval, sem proxies congelados: compatível com qualquer CSP.
   String? _webGetLS(String key) {
     if (!kIsWeb) return null;
     try {
-      final safeKey = key.replaceAll("'", "\\'");
-      final result = js_interop.context
-          .callMethod('eval', ["localStorage.getItem('$safeKey')"]);
+      final result = js_interop.context.callMethod('mcLsGet', [key]);
       if (result == null || result.toString() == 'null') return null;
       return result.toString();
     } catch (_) {
@@ -1041,22 +1039,21 @@ class AppProvider extends ChangeNotifier {
     }
   }
 
-  /// Grava um valor no localStorage via eval — resistente ao SES lockdown do Firebase Auth.
+  /// Grava um valor no localStorage via função global window.mcLsSet.
+  /// Sem eval — compatível com CSP strict e SES lockdown do Firebase Auth.
   void _webSetLS(String key, String value) {
     if (!kIsWeb) return;
     try {
-      final safeKey   = key.replaceAll("'", "\\'");
-      final safeValue = value.replaceAll('\\', '\\\\').replaceAll("'", "\\'");
-      js_interop.context.callMethod('eval', ["localStorage.setItem('$safeKey','$safeValue')"]);
+      js_interop.context.callMethod('mcLsSet', [key, value]);
     } catch (_) {}
   }
 
-  /// Remove uma chave do localStorage via eval — resistente ao SES lockdown.
+  /// Remove uma chave do localStorage via função global window.mcLsRemove.
+  /// Sem eval — compatível com CSP strict e SES lockdown do Firebase Auth.
   void _webRemoveLS(String key) {
     if (!kIsWeb) return;
     try {
-      final safeKey = key.replaceAll("'", "\\'");
-      js_interop.context.callMethod('eval', ["localStorage.removeItem('$safeKey')"]);
+      js_interop.context.callMethod('mcLsRemove', [key]);
     } catch (_) {}
   }
 
