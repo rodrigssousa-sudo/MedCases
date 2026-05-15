@@ -747,6 +747,12 @@ class _WebMainShellGateState extends State<_WebMainShellGate> {
     // chamar duas vezes durante rebuilds do ValueListenableBuilder.
     if (p.currentUser?.uid != widget.user.uid) {
       await p.setUser(widget.user);
+    } else {
+      // Usuário já carregado (rebuild do ValueListenableBuilder com mesmo uid).
+      // setUser() foi pulado — mas ainda precisamos checar se há redirect OAuth
+      // pendente (medcases_gsi_pending) que chegou DEPOIS do primeiro setUser().
+      // Sem isso, o token do redirect fica órfão no localStorage para sempre.
+      await p.checkGeminiSession();
     }
     if (mounted) setState(() => _ready = true);
   }

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 // ignore: avoid_web_libraries_in_flutter
 import 'dart:js' as js_interop;
+import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/drug_model.dart';
 import '../models/protocol_model.dart';
@@ -905,17 +906,29 @@ class AppProvider extends ChangeNotifier {
           debugPrint('[checkGeminiSession] flag medcases_gsi_pending detectada');
           _webRemoveLS('medcases_gsi_pending');
 
-          // Lê o token salvo pelo JS sincronamente
+          // Lê o token salvo SINCRONAMENTE pelo JS antes do boot do Flutter.
           final token = _webGetLS('gemini_access_token');
           if (token != null && token.isNotEmpty) {
-            // Valida token com o Google
-            final connected = await GeminiService.isConnected()
-                .timeout(const Duration(seconds: 10), onTimeout: () => false);
-            if (connected) {
+            // ── CRÍTICO: NÃO usar GeminiService.isConnected() aqui ───────
+            // isConnected() checa _readEmail() PRIMEIRO e retorna false se o
+            // email ainda não chegou — e ele chega via fetch ASSÍNCRONO do JS
+            // (tokeninfo endpoint), que pode demorar 200-500ms após o redirect.
+            // Resultado: isConnected() → false → IA não conecta mesmo com token válido.
+            //
+            // SOLUÇÃO: valida o token diretamente via HTTP, sem depender do email.
+            // Depois buscamos o email separadamente.
+            final tokenValid = await _validateGeminiTokenDirect(token);
+            if (tokenValid) {
               _geminiConnected = true;
               // Tenta ler email do localStorage (pode já ter chegado via fetch do JS)
               _geminiEmail = _webGetLS('gemini_google_email') ?? '';
-              // Se email ainda vazio, busca via tokeninfo (fetch JS pode não ter terminado)
+              // Se email ainda vazio, aguarda mais 800ms e tenta de novo
+              // (fetch JS do tokeninfo tipicamente leva 200-500ms)
+              if (_geminiEmail.isEmpty) {
+                await Future.delayed(const Duration(milliseconds: 800));
+                _geminiEmail = _webGetLS('gemini_google_email') ?? '';
+              }
+              // Último recurso: busca via GeminiService.connectedEmail()
               if (_geminiEmail.isEmpty) {
                 _geminiEmail = await GeminiService.connectedEmail() ?? '';
               }
@@ -945,6 +958,28 @@ class AppProvider extends ChangeNotifier {
       // Silencia — nunca mostra banner aqui
       _geminiConnected = false;
       _geminiEmail = '';
+    }
+  }
+
+  /// Valida um token OAuth do Google diretamente via HTTP, SEM depender do email.
+  ///
+  /// Diferença crítica de GeminiService.isConnected():
+  ///   isConnected() checa _readEmail() PRIMEIRO — mas o email chega via fetch
+  ///   ASSÍNCRONO do JS (tokeninfo endpoint) após o redirect, podendo demorar
+  ///   200-500ms. Se checkGeminiSession() chamar isConnected() antes do email
+  ///   chegar, recebe false e a IA fica desconectada mesmo com token válido.
+  ///
+  ///   Este método ignora o email e valida o token diretamente via tokeninfo.
+  Future<bool> _validateGeminiTokenDirect(String token) async {
+    try {
+      final resp = await http.get(
+        Uri.parse(
+          'https://www.googleapis.com/oauth2/v3/tokeninfo?access_token=$token',
+        ),
+      ).timeout(const Duration(seconds: 10), onTimeout: () => http.Response('', 408));
+      return resp.statusCode == 200;
+    } catch (_) {
+      return false;
     }
   }
 
