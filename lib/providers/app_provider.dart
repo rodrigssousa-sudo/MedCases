@@ -1252,11 +1252,8 @@ class AppProvider extends ChangeNotifier {
                   : 'Não consegui processar essa consulta. Pode reformulá-la com mais contexto clínico? ⚕ Apoio educacional.')
               : localFallback;
         default:
-          return isInternalContext
-              ? (_lang == 'es'
-                  ? 'No pude procesar esa consulta. ¿Puedes reformularla con más contexto clínico? ⚕ Apoyo educacional.'
-                  : 'Não consegui processar essa consulta. Pode reformulá-la com mais contexto clínico? ⚕ Apoio educacional.')
-              : localFallback;
+          // DEBUG TEMPORÁRIO — expor errorCode para diagnóstico
+          return '[DEBUG] errorCode=${geminiResult.errorCode} | isInternal=$isInternalContext | text=${geminiResult.text.substring(0, geminiResult.text.length.clamp(0, 120))}';
       }
     }
 
