@@ -612,98 +612,90 @@
       });
     }());
 
-    // ── Google Sign-In — modal HTML nativo (Safari-safe) ───────────
-    // PROBLEMA: Safari bloqueia qualquer popup OAuth chamado via Flutter
-    // porque o Dart VM quebra a cadeia de gestos antes de chegar ao JS.
-    // SOLUÇÃO: modal HTML real com onclick nativo no botão → requestToken()
-    // chamado diretamente do event handler do browser → Safari permite.
+    // ── Google OAuth — Redirect Flow (funciona em Safari iOS) ────────
+    // requestToken() e popups cross-origin são bloqueados pelo Safari iOS.
+    // SOLUÇÃO DEFINITIVA: redirect flow — redireciona para accounts.google.com
+    // na MESMA aba. Google redireciona de volta com #access_token na URL.
+    // Funciona em 100% dos browsers sem popup.
     (function() {
-      var _gsiClient   = null;
-      var _gsiReady    = false;
+      var CLIENT_ID = '1076800980330-mpq75ceph6hipht135qt0g505pdu5u7d.apps.googleusercontent.com';
+      var SCOPE     = 'email https://www.googleapis.com/auth/generative-language.retriever';
+      var REDIRECT  = window.location.origin + window.location.pathname;
 
-      function _initGSI() {
-        if (_gsiReady || !window.google || !window.google.accounts) return;
-        _gsiClient = window.google.accounts.oauth2.initTokenClient({
-          client_id: '1076800980330-mpq75ceph6hipht135qt0g505pdu5u7d.apps.googleusercontent.com',
-          scope: 'email https://www.googleapis.com/auth/generative-language.retriever',
-          callback: function(response) {
-            var token = response && response.access_token ? response.access_token : null;
-            var error = response && response.error ? response.error : null;
-            _gsiOnResult(token, error);
-          },
-          error_callback: function(err) {
-            var msg = err && err.type ? err.type : (err ? String(err) : 'cancelled');
-            _gsiOnResult(null, msg);
-          }
+      // ── 1. Verifica se voltou do redirect OAuth ──────────────────────
+      // Google retorna o token no hash: #access_token=...&token_type=Bearer&...
+      (function _checkRedirectReturn() {
+        var hash = window.location.hash;
+        if (!hash || hash.indexOf('access_token') === -1) return;
+
+        var params = {};
+        hash.replace(/^#/, '').split('&').forEach(function(p) {
+          var kv = p.split('=');
+          if (kv.length === 2) params[decodeURIComponent(kv[0])] = decodeURIComponent(kv[1]);
         });
-        _gsiReady = true;
-      }
 
-      // Polling até GSI carregar (script é async defer)
-      var _t = setInterval(function() {
-        if (_gsiReady) { clearInterval(_t); return; }
-        _initGSI();
-      }, 150);
-      setTimeout(function() { clearInterval(_t); }, 12000);
-      _initGSI();
+        var token = params['access_token'];
+        var error = params['error'];
 
-      function _setStatus(msg) {
-        var el = document.getElementById('gsi-status');
-        if (el) el.textContent = msg;
-      }
+        // Limpa o hash da URL sem recarregar
+        history.replaceState(null, '', window.location.pathname + window.location.search);
 
-      function _gsiOnResult(token, error) {
         if (token) {
-          _setStatus('Conectado! Carregando...');
-          // Notifica o Flutter via CustomEvent
-          window.dispatchEvent(new CustomEvent('medcases-gsi-token', {
-            detail: { token: token, error: null }
-          }));
-          setTimeout(_gsiClose, 800);
-        } else {
-          _setStatus(error && error !== 'cancelled' ? 'Erro: ' + error : '');
-          if (!error || error === 'cancelled') _gsiClose();
-        }
-      }
+          // Salva token e email no localStorage para o Flutter ler
+          try { localStorage.setItem('gemini_access_token', token); } catch(e) {}
 
-      // onclick do botão HTML — chamado DIRETAMENTE pelo browser
-      // sem nenhum await/Promise antes → Safari reconhece o gesto
-      window._gsiHandleClick = function() {
-        if (!_gsiReady) { _initGSI(); }
-        if (!_gsiClient) {
-          _setStatus('Google não carregou. Recarregue a página.');
-          return;
+          // Busca email via tokeninfo e salva
+          fetch('https://www.googleapis.com/oauth2/v3/tokeninfo?access_token=' + token)
+            .then(function(r) { return r.json(); })
+            .then(function(d) {
+              if (d.email) {
+                try { localStorage.setItem('gemini_google_email', d.email); } catch(e) {}
+              }
+              // Sinaliza para o Flutter que há token novo
+              try { localStorage.setItem('medcases_gsi_pending', 'true'); } catch(e) {}
+            })
+            .catch(function() {
+              try { localStorage.setItem('medcases_gsi_pending', 'true'); } catch(e) {}
+            });
         }
-        _setStatus('Abrindo seleção de conta...');
-        _gsiClient.requestToken();  // ← síncrono, no tick do onclick
+        // Se error: ignora, Flutter detecta ausência de token
+      }());
+
+      // ── 2. Botão HTML onclick — redirect direto (Safari-safe) ────────
+      window._gsiHandleClick = function() {
+        var url = 'https://accounts.google.com/o/oauth2/v2/auth'
+          + '?client_id='     + encodeURIComponent(CLIENT_ID)
+          + '&redirect_uri='  + encodeURIComponent(REDIRECT)
+          + '&response_type=token'
+          + '&scope='         + encodeURIComponent(SCOPE)
+          + '&prompt=select_account';
+        // Redirect na mesma aba — Safari nunca bloqueia window.location
+        window.location.href = url;
       };
 
-      // Abre o modal (chamado pelo Flutter via js.callMethod)
+      // ── 3. API para o Flutter abrir o modal ──────────────────────────
       window.medcasesShowGSIModal = function() {
-        if (!_gsiReady) _initGSI();
-        _setStatus('');
         var modal = document.getElementById('gsi-modal');
         if (modal) modal.classList.add('open');
+        document.getElementById('gsi-status').textContent = '';
+        // Sinaliza para o Flutter que o modal foi aberto (redirect em andamento).
+        // connectGemini() lê esta flag para distinguir "redirect iniciado"
+        // de "falha real" e retorna null em vez de false.
+        try { localStorage.setItem('medcases_gsi_modal_opened', 'true'); } catch(e) {}
       };
 
-      // Fecha o modal
       window._gsiClose = function() {
         var modal = document.getElementById('gsi-modal');
         if (modal) modal.classList.remove('open');
-        _setStatus('');
-        // Notifica Flutter que foi cancelado
         window.dispatchEvent(new CustomEvent('medcases-gsi-token', {
           detail: { token: null, error: 'cancelled' }
         }));
       };
 
-      // Overlay clicável fecha o modal
       document.getElementById('gsi-overlay').addEventListener('click', window._gsiClose);
 
-      // Mantém retrocompatibilidade (caso gemini_service ainda use)
-      window.medcasesGoogleSignIn = function(dartCallback) {
-        window.medcasesShowGSIModal();
-      };
+      // Retrocompatibilidade
+      window.medcasesGoogleSignIn = function() { window.medcasesShowGSIModal(); };
 
     }());
 

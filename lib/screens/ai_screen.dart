@@ -1021,17 +1021,29 @@ class _AiStatusSheetState extends State<_AiStatusSheet> {
     // Isso impede que qualquer chamada interna/acidental mostre o banner.
     _connectTriggeredByUser = true;
     final p = context.read<AppProvider>();
-    final ok = await p.connectGemini();
+
+    // connectGemini() retorna:
+    //   true  → conectou com sucesso
+    //   false → falha real (cancelou, erro de rede)
+    //   null  → redirect OAuth iniciado (Safari/web) — página vai recarregar
+    final result = await p.connectGemini();
     if (!mounted) return;
-    if (!ok && _connectTriggeredByUser) {
+
+    if (result == null) {
+      // Redirect iniciado — mostra feedback e aguarda o reload
+      // O modal HTML já está visível; o usuário está vendo "Entrar com Google"
+      // Não mostramos SnackBar de erro aqui — a página vai recarregar em breve
+      debugPrint('[_handleGoogleConnect] redirect OAuth iniciado — aguardando reload');
+    } else if (result == false && _connectTriggeredByUser) {
+      // Falha real — mostra erro
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(_isEs
-              ? 'No se pudo conectar con Google. En Safari, use Chrome o habilite ventanas emergentes.'
-              : 'Não foi possível conectar com o Google. No Safari, use o Chrome ou habilite popups.'),
+              ? 'No se pudo conectar con Google. Intente de nuevo.'
+              : 'Não foi possível conectar com o Google. Tente novamente.'),
           backgroundColor: const Color(0xFFB91C1C),
           behavior: SnackBarBehavior.floating,
-          duration: const Duration(seconds: 6),
+          duration: const Duration(seconds: 5),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
           margin: const EdgeInsets.fromLTRB(16, 0, 16, 80),
         ),

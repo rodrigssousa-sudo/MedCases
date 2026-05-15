@@ -819,19 +819,42 @@ class AppProvider extends ChangeNotifier {
   // ── Gemini OAuth — conectar / desconectar ─────────────────────────────────
 
   /// Inicia fluxo OAuth Google → abre seletor de conta nativo.
-  /// Retorna true se conectou com sucesso.
-  Future<bool> connectGemini() async {
+  ///
+  /// Retorna:
+  ///   true  → conectou com sucesso (Android ou web sem redirect)
+  ///   false → falha real (cancelou, erro de rede, etc.)
+  ///   null  → redirect OAuth iniciado no Safari/web (página vai recarregar;
+  ///            o token chegará via checkGeminiSession() no próximo boot)
+  Future<bool?> connectGemini() async {
     _geminiLoading = true;
     notifyListeners();
     try {
-      // Timeout de 30s — evita "Conectando..." travado se OAuth falhar/bloquear
+      // No web com redirect flow, signIn() retorna false imediatamente após
+      // abrir o modal — a página vai recarregar. Precisamos distinguir isso
+      // de uma falha real. A flag 'medcases_gsi_modal_opened' no JS sinaliza
+      // que o modal foi aberto (redirect em andamento).
       final ok = await GeminiService.signIn()
           .timeout(const Duration(seconds: 30), onTimeout: () => false);
+
       if (ok) {
         _geminiConnected = true;
         _geminiEmail = await GeminiService.connectedEmail() ?? '';
+        return true;
       }
-      return ok;
+
+      // Verifica se o modal foi aberto (redirect flow no web)
+      if (kIsWeb) {
+        try {
+          final modalOpened = _webGetLS('medcases_gsi_modal_opened');
+          if (modalOpened == 'true') {
+            _webRemoveLS('medcases_gsi_modal_opened');
+            debugPrint('[connectGemini] redirect OAuth iniciado — aguardando reload');
+            return null; // null = redirect em andamento, não é falha
+          }
+        } catch (_) {}
+      }
+
+      return false;
     } catch (e, st) {
       debugPrint('[connectGemini] ERRO: $e');
       debugPrint('[connectGemini] STACK: $st');
