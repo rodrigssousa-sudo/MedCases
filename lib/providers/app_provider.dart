@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 // ignore: avoid_web_libraries_in_flutter
 import 'dart:js' as js_interop;
-import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/drug_model.dart';
 import '../models/protocol_model.dart';
@@ -185,11 +184,6 @@ class AppProvider extends ChangeNotifier {
     loadPublicHistories();
 
     // 5️⃣ Restaura sessão Gemini em background — silencioso, não bloqueia UI
-    if (kIsWeb) {
-      final pendingNow = _webGetLS('medcases_gsi_pending');
-      final tokenNow   = _webGetLS('gemini_access_token');
-      final emailNow   = _webGetLS('gemini_google_email');
-    }
     Future.delayed(
       _webGetLS('medcases_gsi_pending') == 'true'
           ? const Duration(seconds: 1)
@@ -975,14 +969,31 @@ class AppProvider extends ChangeNotifier {
 
   /// Retorna sumários dos protocolos cujos títulos/reconhecer contenham keywords da query
   List<String> _matchProtocols(String normalizedQuery) {
+    // Protocolos de alta emergência exigem ≥2 palavras da query para match,
+    // evitando falsos positivos (ex: "cefaleia" na gripe injeta AVC/HSA).
+    const _highRiskIds = {
+      'avc_hemorragico', 'avc_isquemico', 'pcr_adulto', 'choque_cardiogenico',
+      'hsa', 'meningite', 'sepse', 'iam_congestao', 'tep', 'status_epilepticus',
+    };
+
     final results = <String>[];
+    final words = normalizedQuery
+        .split(RegExp(r'\s+'))
+        .where((w) => w.length > 3)
+        .toList();
+
     for (final p in protocolsDatabase) {
       final title    = _normalize(tDB(p.title));
       final recognize = _normalize(tDB(p.recognize));
-      // Verifica se alguma palavra significativa (>3 chars) da query aparece no protocolo
-      final words = normalizedQuery.split(RegExp(r'\s+'))
-          .where((w) => w.length > 3).toList();
-      if (words.any((w) => title.contains(w) || recognize.contains(w))) {
+
+      // Conta quantas palavras da query aparecem no título ou recognize
+      final matchCount = words.where((w) => title.contains(w) || recognize.contains(w)).length;
+
+      // Protocolo de alta emergência: exige ≥2 palavras para evitar falso positivo
+      final isHighRisk = _highRiskIds.any((id) => p.id.contains(id));
+      final minScore   = isHighRisk ? 2 : 1;
+
+      if (matchCount >= minScore) {
         final actions = p.getActions(_lang).take(3).join(' | ');
         results.add('• [${tDB(p.title)}] Reconhecer: ${tDB(p.recognize).substring(0, tDB(p.recognize).length.clamp(0, 120))}... Conduta: $actions');
         if (results.length >= 4) break; // máx 4 protocolos para não exceder tokens
@@ -1612,15 +1623,19 @@ class AppProvider extends ChangeNotifier {
                 es ? 'HELLP → parto inmediato si ≥34 semanas' : 'HELLP → parto imediato se ≥34 semanas'],
       ),
 
-      // ── Cefaleia ──────────────────────────────────────────────────────────
-      // Keywords de alto risco têm peso maior (lista maior = mais score quando batem)
+      // ── Cefaleia de alto risco ────────────────────────────────────────────
+      // IMPORTANTE: keywords exigem qualificadores de risco reais para ativar.
+      // "cefal" sozinho NÃO ativa — precisa de pelo menos 1 red flag associada.
       _CliCondition(
         id: 'cefaleia_grave',
         label: es ? 'Cefalea de alto riesgo — descartar HSA / Meningitis' : 'Cefaleia de alto risco — excluir HSA / Meningite',
         protocolId: 'avc_hemorragico',
-        keywords: ['cefal', 'dor de cabeca', 'dor cabeca',
-                   'trovoada', 'pior cefaleia', 'pior dor', 'inicio subito',
-                   'rigidez nuca', 'meningismo', 'petequi', 'kernig', 'brudzinski'],
+        // Apenas red flags reais: início em trovoada, pior da vida, sinais meníngeos,
+        // déficit focal, alteração consciência, petéquias — não "cefal" isolado.
+        keywords: ['trovoada', 'pior cefaleia', 'pior dor de cabeca', 'inicio subito intenso',
+                   'rigidez nuca', 'rigidez de nuca', 'meningismo', 'petequi',
+                   'kernig', 'brudzinski', 'deficit focal', 'paralisia facial',
+                   'pior cefal', 'thunderclap', 'hsa ', 'hemorragia subarac'],
         exams: [es ? 'TC cráneo sin contraste (descartar HSA)' : 'TC crânio sem contraste (excluir HSA)', es ? 'Punción lumbar si TC negativa' : 'Punção lombar se TC negativa', 'Hemoculturas + PCR se febre', 'Hemograma'],
         flags: [es ? '"Peor cefalea de su vida" o inicio súbito → descartar HSA urgente' : '"Pior cefaleia da vida" ou início súbito → excluir HSA urgente',
                 es ? 'Déficit focal + cefalea → descartar AVC/hemorragia' : 'Déficit focal + cefaleia → descartar AVC/hemorragia'],
