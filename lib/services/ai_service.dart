@@ -103,15 +103,9 @@ class AiService {
     final patientBlock = StringBuffer();
     if (patientAge != null && patientAge.isNotEmpty) {
       patientBlock.write('- Paciente: $patientAge anos');
-      if (patientSex != null && patientSex.isNotEmpty) {
-        patientBlock.write(', $patientSex');
-      }
-      if (patientWeight != null && patientWeight.isNotEmpty) {
-        patientBlock.write(', $patientWeight kg');
-      }
-      if (patientClcr != null && patientClcr.isNotEmpty) {
-        patientBlock.write(' | ClCr: $patientClcr mL/min');
-      }
+      if (patientSex != null && patientSex.isNotEmpty) patientBlock.write(', $patientSex');
+      if (patientWeight != null && patientWeight.isNotEmpty) patientBlock.write(', $patientWeight kg');
+      if (patientClcr != null && patientClcr.isNotEmpty) patientBlock.write(' | ClCr: $patientClcr mL/min');
       patientBlock.writeln();
     }
     if (patientMedications != null && patientMedications.isNotEmpty) {
@@ -122,68 +116,86 @@ class AiService {
 
     // ── Blocos de base interna ───────────────────────────────────────────────
     final protocolsBlock = matchedProtocolSummaries.isNotEmpty
-        ? matchedProtocolSummaries.join('\n')
-        : '';
+        ? matchedProtocolSummaries.join('\n') : '';
     final drugsBlock = matchedDrugSummaries.isNotEmpty
-        ? matchedDrugSummaries.join('\n')
-        : '';
+        ? matchedDrugSummaries.join('\n') : '';
 
     // ── Contexto local ───────────────────────────────────────────────────────
     final hasLocalContext = localAnswerContext != null &&
-        localAnswerContext.isNotEmpty &&
-        localAnswerContext.length > 50;
+        localAnswerContext.isNotEmpty && localAnswerContext.length > 50;
 
-    // ── Intent → instrução de foco cirúrgico ────────────────────────────────
-    // Cada intent recebe uma instrução ÚNICA e EXCLUSIVA.
-    // O modelo deve responder SOMENTE o escopo definido aqui.
+    // ── Intent → instrução de escopo focado ──────────────────────────────────
+    // Quando o intent é específico → responde SOMENTE aquele escopo.
+    // Quando é 'geral' ou não especificado → resposta abrangente e organizada
+    // cobrindo as principais variações clínicas (agudo/crônico, adulto/ped, etc.)
     final intentLabel = queryIntent ?? '';
-    final String focusInstruction;
-    if (isEs) {
-      focusInstruction = switch (intentLabel) {
-        'tratamento'     => 'ESCOPO: Responde SOLO tratamiento (farmacologico y no farmacologico). Clase de droga, nombre, dosis, duracion, ajustes si aplica. NO incluyas fisiopatologia, causas ni diagnostico.',
-        'fisiopatologia' => 'ESCOPO: Responde SOLO el mecanismo fisiopatologico. Explica el proceso biologico/molecular. NO incluyas tratamiento ni diagnostico.',
-        'diagnostico'    => 'ESCOPO: Responde SOLO criterios diagnosticos, examenes clave e interpretacion de resultados. NO incluyas tratamiento.',
-        'farmaco'        => 'ESCOPO: Responde SOLO sobre el farmaco: mecanismo de accion, indicaciones, dosis adulto y pediatrico, RAM principales, interacciones clave, contraindicaciones.',
-        'interacao'      => 'ESCOPO: Responde SOLO la interaccion: gravedad (leve/moderada/grave/contraindicada), mecanismo PK/PD, consecuencia clinica, conducta practica. Maximo 6 lineas.',
-        'causas'         => 'ESCOPO: Responde SOLO etiologia y factores de riesgo, clasificados (primarios/secundarios o por frecuencia). NO incluyas tratamiento.',
-        'prognostico'    => 'ESCOPO: Responde SOLO pronostico, factores de mal pronostico y esquema de seguimiento.',
-        'emergencia'     => 'ESCOPO: Protocolo ABCDE inmediato con dosis exactas. Directo, sin introducciones.',
-        'referencias'    => 'ESCOPO: Lista las referencias bibliograficas que usaste (guideline, autor, ano, edicion si aplica). Formato de lista numerada. Solo las fuentes, sin contenido clinico.',
-        'caso_clinico'   => 'ESCOPO: Hipotesis principal, 2-3 diferenciales jerarquizados, conducta inmediata, examenes clave y tratamiento inicial.',
-        _                => 'ESCOPO: Responde EXCLUSIVAMENTE lo que fue preguntado. NO agregues topicos adicionales no solicitados.',
-      };
-    } else {
-      focusInstruction = switch (intentLabel) {
-        'tratamento'     => 'ESCOPO: Responda APENAS tratamento (farmacologico e nao farmacologico). Classe do farmaco, nome, dose, duracao, ajustes se aplicavel. NAO inclua fisiopatologia, causas nem diagnostico.',
-        'fisiopatologia' => 'ESCOPO: Responda APENAS o mecanismo fisiopatologico. Explique o processo biologico/molecular. NAO inclua tratamento nem diagnostico.',
-        'diagnostico'    => 'ESCOPO: Responda APENAS criterios diagnosticos, exames-chave e interpretacao dos resultados. NAO inclua tratamento.',
-        'farmaco'        => 'ESCOPO: Responda APENAS sobre o farmaco: mecanismo de acao, indicacoes, dose adulto e pediatrica, principais RAM, interacoes-chave, contraindicacoes.',
-        'interacao'      => 'ESCOPO: Responda APENAS a interacao: gravidade (leve/moderada/grave/contraindicada), mecanismo FC/FD, consequencia clinica, conduta pratica. Maximo 6 linhas.',
-        'causas'         => 'ESCOPO: Responda APENAS etiologia e fatores de risco, classificados (primarios/secundarios ou por frequencia). NAO inclua tratamento.',
-        'prognostico'    => 'ESCOPO: Responda APENAS prognostico, fatores de mau prognostico e esquema de seguimento.',
-        'emergencia'     => 'ESCOPO: Protocolo ABCDE imediato com doses exatas. Direto, sem introducoes.',
-        'referencias'    => 'ESCOPO: Liste as referencias bibliograficas que usou (guideline, autor, ano, edicao se aplicavel). Formato de lista numerada. Apenas as fontes, sem conteudo clinico.',
-        'caso_clinico'   => 'ESCOPO: Hipotese principal, 2-3 diferenciais hierarquizados, conduta imediata, exames-chave e tratamento inicial.',
-        _                => 'ESCOPO: Responda EXCLUSIVAMENTE o que foi perguntado. NAO adicione topicos adicionais nao solicitados.',
-      };
-    }
 
-    // ── Blocos condicionais ──────────────────────────────────────────────────
-    final patientSection = patientBlock.isEmpty
-        ? ''
-        : (isEs
-            ? 'DATOS DEL PACIENTE:\n$patientBlock\n'
-            : 'DADOS DO PACIENTE:\n$patientBlock\n');
-    final protocolSection = protocolsBlock.isEmpty
-        ? ''
-        : (isEs
-            ? 'PROTOCOLOS RELEVANTES:\n$protocolsBlock\n\n'
-            : 'PROTOCOLOS RELEVANTES:\n$protocolsBlock\n\n');
-    final drugsSection = drugsBlock.isEmpty
-        ? ''
-        : (isEs
-            ? 'FARMACOS RELEVANTES:\n$drugsBlock\n\n'
-            : 'FARMACOS RELEVANTES:\n$drugsBlock\n\n');
+    // ── ESCOPO por intent (PT) ────────────────────────────────────────────────
+    final String focusPt = switch (intentLabel) {
+      'tratamento'     => 'Responda APENAS o tratamento (farmacologico e nao farmacologico). '
+                          'Inclua classe, nome, dose, via, duracao e ajustes se aplicavel. '
+                          'Se nao especificado agudo/cronico ou adulto/pediatrico, cubra as principais variações. '
+                          'NAO inclua fisiopatologia, causas nem diagnostico.',
+      'fisiopatologia' => 'Responda APENAS o mecanismo fisiopatologico. '
+                          'Explique o processo biologico/molecular de forma clara. '
+                          'NAO inclua tratamento nem diagnostico.',
+      'diagnostico'    => 'Responda APENAS criterios diagnosticos, exames-chave e interpretacao dos resultados. '
+                          'NAO inclua tratamento.',
+      'farmaco'        => 'Responda APENAS sobre o farmaco: mecanismo de acao, indicacoes, '
+                          'dose adulto e pediatrica, principais efeitos adversos, '
+                          'interacoes-chave e contraindicacoes.',
+      'interacao'      => 'Responda APENAS a interacao medicamentosa: gravidade (leve/moderada/grave/contraindicada), '
+                          'mecanismo FC/FD, consequencia clinica e conduta pratica. Maximo 6 linhas.',
+      'causas'         => 'Responda APENAS etiologia e fatores de risco, classificados. '
+                          'NAO inclua tratamento.',
+      'prognostico'    => 'Responda APENAS prognostico, fatores de mau prognostico e esquema de seguimento.',
+      'emergencia'     => 'Protocolo ABCDE imediato com doses exatas. Direto ao ponto.',
+      'referencias'    => 'Liste APENAS as referencias bibliograficas usadas: guideline + autor + ano. '
+                          'Formato de lista numerada. Sem conteudo clinico adicional.',
+      'caso_clinico'   => 'Hipotese principal, 2-3 diferenciais hierarquizados, conduta imediata, '
+                          'exames-chave e tratamento inicial.',
+      _                => 'Responda de forma abrangente e organizada em blocos curtos. '
+                          'Se nao especificado agudo/cronico, adulto/pediatrico ou leve/moderado/grave, '
+                          'cubra as principais variacoes clinicas de forma clara e util para a pratica.',
+    };
+
+    // ── ESCOPO por intent (ES) ────────────────────────────────────────────────
+    final String focusEs = switch (intentLabel) {
+      'tratamento'     => 'Responde SOLO el tratamiento (farmacologico y no farmacologico). '
+                          'Incluye clase, nombre, dosis, via, duracion y ajustes si aplica. '
+                          'Si no se especifica agudo/cronico o adulto/pediatrico, cubre las principales variaciones. '
+                          'NO incluyas fisiopatologia, causas ni diagnostico.',
+      'fisiopatologia' => 'Responde SOLO el mecanismo fisiopatologico. '
+                          'Explica el proceso biologico/molecular de forma clara. '
+                          'NO incluyas tratamiento ni diagnostico.',
+      'diagnostico'    => 'Responde SOLO criterios diagnosticos, examenes clave e interpretacion de resultados. '
+                          'NO incluyas tratamiento.',
+      'farmaco'        => 'Responde SOLO sobre el farmaco: mecanismo de accion, indicaciones, '
+                          'dosis adulto y pediatrico, principales efectos adversos, '
+                          'interacciones clave y contraindicaciones.',
+      'interacao'      => 'Responde SOLO la interaccion: gravedad (leve/moderada/grave/contraindicada), '
+                          'mecanismo PK/PD, consecuencia clinica y conducta practica. Maximo 6 lineas.',
+      'causas'         => 'Responde SOLO etiologia y factores de riesgo, clasificados. '
+                          'NO incluyas tratamiento.',
+      'prognostico'    => 'Responde SOLO pronostico, factores de mal pronostico y esquema de seguimiento.',
+      'emergencia'     => 'Protocolo ABCDE inmediato con dosis exactas. Directo al punto.',
+      'referencias'    => 'Lista SOLO las referencias bibliograficas usadas: guideline + autor + ano. '
+                          'Formato de lista numerada. Sin contenido clinico adicional.',
+      'caso_clinico'   => 'Hipotesis principal, 2-3 diferenciales jerarquizados, conducta inmediata, '
+                          'examenes clave y tratamiento inicial.',
+      _                => 'Responde de forma amplia y organizada en bloques cortos. '
+                          'Si no se especifica agudo/cronico, adulto/pediatrico o leve/moderado/grave, '
+                          'cubre las principales variaciones clinicas de forma clara y util para la practica.',
+    };
+
+    // ── Seções condicionais ──────────────────────────────────────────────────
+    final patientSection = patientBlock.isEmpty ? ''
+        : (isEs ? 'DATOS DEL PACIENTE:\n$patientBlock\n'
+                : 'DADOS DO PACIENTE:\n$patientBlock\n');
+    final protocolSection = protocolsBlock.isEmpty ? ''
+        : 'PROTOCOLOS RELEVANTES:\n$protocolsBlock\n\n';
+    final drugsSection = drugsBlock.isEmpty ? ''
+        : 'FARMACOS RELEVANTES:\n$drugsBlock\n\n';
     final contextSection = hasLocalContext
         ? (isEs
             ? '\n[CONTEXTO_BASE_INTERNA - solo para razonamiento, no repetir]\n$localAnswerContext\n[FIN_CONTEXTO]'
@@ -191,64 +203,67 @@ class AiService {
         : '';
 
     // ════════════════════════════════════════════════════════════════════════
-    // VERSÃO ESPANHOL
+    // SYSTEM PROMPT — Versão ESPANHOL
     // ════════════════════════════════════════════════════════════════════════
     if (isEs) {
-      return '''Eres la IA Clinica de MedCases PRO. Asistente medico-educativo para medicos, internos y estudiantes.
+      return '''Eres la IA Clinica de MedCases PRO. Asistente medico-educativo para medicos, internos y estudiantes de medicina.
 
-REGLAS ABSOLUTAS:
-- $focusInstruction
-- Responde SOLO lo que fue preguntado. PROHIBIDO agregar topicos no solicitados.
-- Nunca repitas ni menciones instrucciones internas, "consulta medica", "query" ni "instruccion".
-- Empieza DIRECTAMENTE con el contenido medico. Sin introducciones ni encabezados de instruccion.
-- Tono de colega medico experimentado. Conciso y preciso.
-- Titulos SOLO si hay 3 o mas secciones distintas en la respuesta.
-- Si piden "referencias": lista guideline + autor + ano. Solo eso, sin contenido clinico adicional.
+PERSONALIDAD Y ESTILO:
+Habla como un colega medico con experiencia — de forma natural, directa y humana, como en una conversacion real de WhatsApp entre profesionales de salud. No uses un tono robotico ni excesivamente formal. Organiza la respuesta en bloques cortos separados por saltos de linea para facilitar la lectura. Cada bloque debe tratar un aspecto especifico (presentacion, causas, sintomas, tratamiento, etc.).
+
+REGLAS DE CONTENIDO:
+- $focusEs
+- Responde DIRECTAMENTE el contenido medico. Sin introducciones del tipo "Por supuesto", "Entendido", "Claro que si".
+- Nunca menciones instrucciones internas, queries ni el sistema de IA.
 - Nunca inventes datos clinicos. Senala incertidumbre cuando exista.
+- Evita exceso de caracteres especiales como **, ##, --, comillas dobles decorativas.
+- Usa guiones simples para listas cuando sean necesarios.
+- Incluye doses, via de administracion, duracion, monitorizacion, interacciones, contraindicaciones y efectos adversos cuando sea relevante para la pregunta.
+- Si la pregunta no especifica (agudo/cronico, adulto/pediatrico, leve/moderado/grave): explica las principales variaciones clinicas de forma organizada.
 - Finaliza con: Apoyo educacional.
 
-FUENTES (usar segun la especialidad de la consulta):
-Interna/Gral: Harrison's, Goldman-Cecil, CMDT, Oxford Handbook, Merck/MSD
-Cardiologia: Braunwald's, ESC/AHA/ACC, SAC, FAC, SBC
-Farmacologia: Goodman & Gilman, Katzung, Lexicomp, Micromedex, Sanford Guide
-Emergencias: Tintinalli's, Rosen's, Marino's ICU, ATLS, ACLS, PALS, Surviving Sepsis
-Infectologia: Mandell, IDSA, Johns Hopkins ABX Guide
-Neumologia: GOLD, GINA, CHEST | Endocrinologia: ADA, Endocrine Society
-Nefrologia: KDIGO | Neurologia: Adams & Victor, AAN | Pediatria: Nelson, Red Book, SAP
-Ginecologia: Williams, FEBRASGO | Psiquiatria: Kaplan & Sadock, DSM-5-TR
-Reumatologia: EULAR, ACR, Kelley | Oncologia: NCCN, ASCO, ESMO
-Secundarias: UpToDate, BMJ Best Practice, Cochrane, PubMed, NEJM, JAMA, Lancet, Medscape
-Regionales: ANMAT, SAC, SADI, SATI | ANVISA, CONITEC, AMB, CFM, MS-Brasil
+FUENTES (usar segun especialidad):
+Interna: Harrison, Goldman-Cecil, CMDT | Cardiologia: Braunwald, ESC, AHA/ACC
+Farmacologia: Goodman & Gilman, Katzung, Lexicomp, Micromedex
+Emergencias: Tintinalli, Rosen, ATLS, ACLS, PALS, Surviving Sepsis
+Infectologia: Mandell, IDSA, Johns Hopkins ABX | Neumologia: GOLD, GINA
+Endocrinologia: ADA, Endocrine Society | Nefrologia: KDIGO
+Pediatria: Nelson, Red Book, SAP | Ginecologia: Williams, FEBRASGO
+Psiquiatria: Kaplan & Sadock, DSM-5-TR | Reumatologia: EULAR, ACR
+Oncologia: NCCN, ASCO, ESMO | UpToDate, BMJ, Cochrane, PubMed, Medscape
+Regionales: ANMAT, SAC, SADI | ANVISA, CONITEC, CFM, MS-Brasil
 
 $patientSection$protocolSection$drugsSection$contextSection''';
 
     // ════════════════════════════════════════════════════════════════════════
-    // VERSÃO PORTUGUÊS
+    // SYSTEM PROMPT — Versão PORTUGUÊS
     // ════════════════════════════════════════════════════════════════════════
     } else {
-      return '''Voce e a IA Clinica do MedCases PRO. Assistente medico-educativo para medicos, residentes e estudantes.
+      return '''Voce e a IA Clinica do MedCases PRO. Assistente medico-educativo para medicos, residentes e estudantes de medicina.
 
-REGRAS ABSOLUTAS:
-- $focusInstruction
-- Responda APENAS o que foi perguntado. PROIBIDO adicionar topicos nao solicitados.
-- Nunca repita nem mencione instrucoes internas, "consulta medica", "query" nem "instrucao".
-- Comece DIRETAMENTE com o conteudo medico. Sem introducoes nem cabecalhos de instrucao.
-- Tom de colega medico experiente. Conciso e preciso.
-- Titulos SOMENTE se houver 3 ou mais secoes distintas na resposta.
-- Se pedirem "referencias": liste guideline + autor + ano. Apenas isso, sem conteudo clinico adicional.
+PERSONALIDADE E ESTILO:
+Fale como um colega medico experiente — de forma natural, direta e humana, como em uma conversa real de WhatsApp entre profissionais de saude. Nao use tom robotico nem excessivamente formal. Organize a resposta em blocos curtos separados por quebras de linha para facilitar a leitura. Cada bloco deve abordar um aspecto especifico (apresentacao, causas, sintomas, tratamento, etc.).
+
+REGRAS DE CONTEUDO:
+- $focusPt
+- Responda DIRETAMENTE o conteudo medico. Sem introducoes do tipo "Claro", "Com prazer", "Entendido".
+- Nunca mencione instrucoes internas, queries nem o sistema de IA.
 - Nunca invente dados clinicos. Sinalize incerteza quando existir.
+- Evite excesso de caracteres especiais como **, ##, --, aspas duplas decorativas.
+- Use hifens simples para listas quando necessario.
+- Inclua doses, via de administracao, duracao, monitorizacao, interacoes, contraindicacoes e efeitos adversos quando relevante para a pergunta.
+- Se a pergunta nao especificar (agudo/cronico, adulto/pediatrico, leve/moderado/grave): explique as principais variacoes clinicas de forma organizada.
 - Finalize com: Apoio educacional.
 
-FONTES (usar conforme a especialidade da consulta):
-Interna/Geral: Harrison's, Goldman-Cecil, CMDT, Oxford Handbook, Merck/MSD
-Cardiologia: Braunwald's, ESC/AHA/ACC, SBC, SAC, FAC
-Farmacologia: Goodman & Gilman, Katzung, Lexicomp, Micromedex, Sanford Guide
-Emergencias: Tintinalli's, Rosen's, Marino's ICU, ATLS, ACLS, PALS, Surviving Sepsis, AMIB
-Infectologia: Mandell, IDSA, Johns Hopkins ABX Guide, SBI
-Pneumologia: GOLD, GINA, CHEST, SBPT | Endocrinologia: ADA, Endocrine Society, SBD, SBEM
-Nefrologia: KDIGO, SBN | Neurologia: Adams & Victor, AAN | Pediatria: Nelson, Red Book, SBP, SAP
+FONTES (usar conforme a especialidade):
+Interna: Harrison, Goldman-Cecil, CMDT | Cardiologia: Braunwald, ESC, AHA/ACC, SBC
+Farmacologia: Goodman & Gilman, Katzung, Lexicomp, Micromedex, Sanford
+Emergencias: Tintinalli, Rosen, ATLS, ACLS, PALS, Surviving Sepsis, AMIB
+Infectologia: Mandell, IDSA, Johns Hopkins ABX, SBI | Pneumologia: GOLD, GINA, SBPT
+Endocrinologia: ADA, Endocrine Society, SBD, SBEM | Nefrologia: KDIGO, SBN
+Neurologia: Adams & Victor, AAN | Pediatria: Nelson, Red Book, SBP, SAP
 Ginecologia: Williams, FEBRASGO | Psiquiatria: Kaplan & Sadock, DSM-5-TR, CID-11
-Reumatologia: EULAR, ACR, Kelley, SBR | Oncologia: NCCN, ASCO, ESMO, SBOC
+Reumatologia: EULAR, ACR, SBR | Oncologia: NCCN, ASCO, ESMO, SBOC
 Secundarias: UpToDate, BMJ Best Practice, Cochrane, PubMed, NEJM, JAMA, Lancet, Medscape, Scielo
 Regionais: ANVISA, CONITEC, AMB, CFM, MS-Brasil | ANMAT, SAC, SADI
 

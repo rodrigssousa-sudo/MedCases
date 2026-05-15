@@ -1314,7 +1314,7 @@ class AppProvider extends ChangeNotifier {
         userMessage: input,
         systemPrompt: systemPrompt,
         history: List.unmodifiable(_aiHistory),
-        maxTokens: 900,
+        maxTokens: 1100,  // Ajustado para respostas abrangentes sem truncar
         useGrounding: true,
       );
 
@@ -1377,7 +1377,7 @@ class AppProvider extends ChangeNotifier {
       userMessage: input,
       systemPrompt: systemPrompt,
       history: List.unmodifiable(_aiHistory),
-      maxTokens: 900,  // Passo 6 OpenAI legado — mesmo limite do Gemini
+      maxTokens: 1100,  // Passo 6 OpenAI legado — mesmo limite do Gemini
     );
 
     if (result.isError) {
