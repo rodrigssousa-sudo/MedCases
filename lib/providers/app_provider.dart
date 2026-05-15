@@ -1048,7 +1048,20 @@ class AppProvider extends ChangeNotifier {
     final q = _normalize(input);
     final es = _lang == 'es';
 
-    // Farmacológica — fármaco + pergunta sobre ele
+    // ── Fármacos para condição clínica: "farmacos para cefaleia", "medicamentos para sepse"
+    // DEVE vir antes de qualquer outra detecção para capturar corretamente
+    if (_has(q, ['farma', 'medicament', 'remedio', 'droga', 'drug',
+                  'farmaco', 'medicamento', 'remedios', 'farmacos']) &&
+        _has(q, ['para ', 'para a ', 'para o ', 'para tratar', 'para cefalei', 'para dor',
+                  'para febre', 'para infec', 'para hiperten', 'para diabet',
+                  'para arritmia', 'para ic ', 'para sepse', 'para asma',
+                  'para dpoc', 'para epoc', 'para convuls', 'para choque'])) {
+      return es
+          ? 'FÁRMACOS POR INDICACIÓN CLÍNICA (listar opciones terapéuticas, dosis, mecanismo)'
+          : 'FÁRMACOS POR INDICAÇÃO CLÍNICA (listar opções terapêuticas, dose, mecanismo)';
+    }
+
+    // ── Farmacológica direta — pergunta sobre fármaco específico
     if (_has(q, [
       'dose', 'dosagem', 'dosis', 'posolog', 'mecanismo', 'mecanismo de acao', 'mecanismo de accion',
       'indicac', 'contraindicac', 'efeito adverso', 'efecto adverso', 'interac',
@@ -1058,13 +1071,13 @@ class AppProvider extends ChangeNotifier {
       return es ? 'FARMACOLÓGICA (dosis, mecanismo, alertas)' : 'FARMACOLÓGICA (dose, mecanismo, alertas)';
     }
 
-    // Interação medicamentosa
+    // ── Interação medicamentosa
     if (_has(q, ['interac', 'interage', 'combinar', 'junto com', 'associar', 'compativel',
                   'combinacion', 'junto a', 'asociar'])) {
       return es ? 'INTERACCIÓN FARMACOLÓGICA' : 'INTERAÇÃO FARMACOLÓGICA';
     }
 
-    // Caso clínico — tem dados clínicos (sinais vitais, sintomas múltiplos)
+    // ── Caso clínico — tem dados clínicos (sinais vitais, sintomas múltiplos)
     if (_has(q, ['paciente', 'pa ', 'fc ', 'spo2', 'glasgow', 'anos ', 'años ',
                   'apresenta', 'presenta', 'admitido', 'ingresado', 'internado',
                   'temperatura', 'febre ', 'fiebre ']) &&
@@ -1072,22 +1085,23 @@ class AppProvider extends ChangeNotifier {
       return es ? 'CASO CLÍNICO (análisis, diferenciales, conducta)' : 'CASO CLÍNICO (análise, diferenciais, conduta)';
     }
 
-    // Emergência / protocolo
-    if (_has(q, ['protocolo', 'conduta', 'conducta', 'manejo', 'tratamento', 'tratamiento',
-                  'emergencia', 'urgencia', 'como tratar', 'como manejar'])) {
+    // ── Tratamento/conduta de condição — "tratamento de X", "conduta na FA"
+    if (_has(q, ['tratamento', 'tratamiento', 'tratar ', 'tratar a', 'tratar o',
+                  'protocolo', 'conduta', 'conducta', 'manejo de', 'manejo da',
+                  'como tratar', 'como manejar', 'emergencia', 'urgencia'])) {
       return es ? 'PROTOCOLO/CONDUCTA CLÍNICA' : 'PROTOCOLO/CONDUTA CLÍNICA';
     }
 
-    // Doença / síndrome conceitual
+    // ── Doença / síndrome conceitual
     if (_has(q, ['o que e ', 'que es ', 'o que eh ', 'definic', 'definicion',
                   'fisiopatolog', 'patogenese', 'patogenia', 'classificac', 'clasificacion',
                   'criterio', 'criterios', 'diagnostico diferencial', 'diagnostico difer'])) {
       return es ? 'ENFERMEDAD/SÍNDROME (definición, diagnóstico, tratamiento)' : 'DOENÇA/SÍNDROME (definição, diagnóstico, tratamento)';
     }
 
-    // Exame / procedimento
+    // ── Exame / procedimento
     if (_has(q, ['exame', 'examen', 'laborator', 'bioquim', 'hematolog',
-                  'procedimento', 'procedimiento', 'tecnica', 'técnica',
+                  'procedimento', 'procedimiento', 'tecnica',
                   'quando pedir', 'cuanto pedir', 'interpretar', 'resultado'])) {
       return es ? 'EXAMEN/PROCEDIMIENTO' : 'EXAME/PROCEDIMENTO';
     }
@@ -1336,6 +1350,132 @@ class AppProvider extends ChangeNotifier {
     final qHistory  = _normalize(historyTail.join(' '));
     final qExpanded = _normalize('$qHistory $input');
     final q         = _normalize(input);
+
+    // ════════════════════════════════════════════════════════════════════════
+    // FASE 0b — FÁRMACOS POR INDICAÇÃO TERAPÊUTICA
+    // Detecta queries do tipo "fármacos para cefaleia", "medicamentos para sepse"
+    // Busca na drugsDatabase por group/className/categoria que corresponda à condição.
+    // ════════════════════════════════════════════════════════════════════════
+    final isIndicationQuery = _has(qExpanded, [
+      'farma', 'medicament', 'remedio', 'drug ', 'farmaco',
+      'medicamentos para', 'farmacos para', 'remedios para', 'drugs for',
+    ]) && _has(qExpanded, [
+      'para ', 'para a ', 'para o ', 'tratar ', 'tratamento de', 'tratamiento de',
+      'indicado para', 'usar em', 'usar no', 'usar na',
+    ]);
+
+    if (isIndicationQuery) {
+      // Extrair a condição alvo da query (palavras-chave de doenças)
+      final conditionKeywords = <String, List<String>>{
+        'cefaleia':       ['cefal', 'cabeca', 'enxaqueca', 'migran', 'migren', 'dolor de cabeza'],
+        'dor':            ['analges', 'dor ', 'dolor '],
+        'hipertensao':    ['hiperten', 'pa alta', 'pressao alta'],
+        'arritmia_fa':    ['arritm', 'fibrilac', 'flutter', 'taquicardia', 'fa '],
+        'infeccao':       ['infec', 'antibio', 'bacteriana', 'sepse', 'pneumonia'],
+        'diabetes':       ['diabet', 'glicemia', 'insulina', 'hipoglicemi'],
+        'anticoagulacao': ['anticoag', 'trombose', 'tvp', 'tep', 'embolia'],
+        'ic':             ['insuf cardiac', 'ic ', 'edema pulm', 'killip'],
+        'asma_dpoc':      ['asma', 'dpoc', 'bronco', 'broncoespas', 'sibilo'],
+        'convulsao':      ['convuls', 'epileps', 'crise epil'],
+        'choque':         ['choque', 'vasopressor', 'pam ', 'hipotens'],
+        'ansiedade':      ['ansied', 'ansie', 'panico', 'ansiet'],
+        'nausea':         ['nause', 'vomit', 'antiemetic', 'antiemetico'],
+        'febre':          ['febre', 'fiebre', 'antipiret', 'antipiretico'],
+        'anticoag_reverter': ['reverter anticoag', 'revertir anticoag', 'antidoto'],
+      };
+
+      // Descobrir qual condição está sendo perguntada
+      String? detectedCondition;
+      for (final entry in conditionKeywords.entries) {
+        if (entry.value.any((kw) => qExpanded.contains(kw))) {
+          detectedCondition = entry.key;
+          break;
+        }
+      }
+
+      // Mapear condição → grupos/classes farmacológicas relevantes
+      final conditionToGroups = <String, List<String>>{
+        'cefaleia':       ['analgesic', 'antimigraneous', 'antimigranes', 'antiinflamatorio', 'triptano', 'ergot', 'ibuprofeno', 'paracetamol', 'dipirona', 'sumatriptano', 'propranolol', 'topiramato', 'amitriptilina', 'metoclopramida', 'antiemeti'],
+        'dor':            ['analgesic', 'opioid', 'antiinflamatorio', 'aine', 'ibuprofeno', 'dipirona', 'paracetamol', 'tramadol', 'morfina'],
+        'hipertensao':    ['anti-hipertensivo', 'antihipertensivo', 'cardiovascular', 'ieca', 'bra', 'calcio', 'diuretico', 'betabloqueant', 'amlodipino', 'captopril', 'losartana'],
+        'arritmia_fa':    ['antiarritmico', 'cardiovascular', 'antiarritm', 'betabloqueant', 'amiodarona', 'digoxina', 'diltiazem', 'adenosina', 'anticoagul'],
+        'infeccao':       ['antibiotico', 'antibiot', 'antimicrobiano', 'antifungico', 'antiviral', 'antiinfeccioso'],
+        'diabetes':       ['antidiabetic', 'hipoglicemiant', 'insulina', 'metformina', 'glifozina', 'glp'],
+        'anticoagulacao': ['anticoagul', 'trombolitic', 'fibrinolitic', 'hemostasia', 'heparina', 'enoxaparina', 'warfarina', 'rivaroxabana', 'apixabana'],
+        'ic':             ['insuficiencia card', 'cardiaco', 'diuretico', 'ieca', 'betabloqueant', 'furosemida', 'espironolactona', 'digoxina', 'dobutamina'],
+        'asma_dpoc':      ['broncodilatad', 'beta2', 'anticolinergico', 'corticoid', 'salbutamol', 'budesonida', 'formoterol', 'teofilina', 'metilprednisolona'],
+        'convulsao':      ['anticonvuls', 'antiepilep', 'benzodiazep', 'diazepam', 'fenito', 'valproat', 'levetiracetam', 'midazolam', 'carbamazepina'],
+        'choque':         ['vasopressor', 'vasopres', 'inotrop', 'noradrenalina', 'adrenalina', 'dopamina', 'dobutamina', 'vasopressin'],
+        'ansiedade':      ['ansiolitic', 'benzodiazep', 'ssri', 'isrs', 'buspirona'],
+        'nausea':         ['antiemetic', 'antinauseant', 'ondansetrona', 'metoclopramida', 'droperidol'],
+        'febre':          ['antipiret', 'analgesic', 'paracetamol', 'ibuprofeno', 'dipirona', 'acido acetilsali'],
+        'anticoag_reverter': ['antidoto', 'reversor', 'vitamina k', 'protamina', 'idarucizumabe', 'andexanet'],
+      };
+
+      final relevantGroups = detectedCondition != null
+          ? (conditionToGroups[detectedCondition] ?? <String>[])
+          : <String>[];
+
+      // Buscar fármacos que correspondam à condição
+      final indicationDrugs = <DrugModel>[];
+      for (final drug in drugsDatabase) {
+        final dNorm  = _normalize(drug.name + ' ' + drug.group + ' ' + drug.getField(drug.className, _lang) + ' ' + (drug.getField(drug.mechanism, _lang)));
+        // Match por grupo/classe da condição
+        if (relevantGroups.any((g) => dNorm.contains(g))) {
+          indicationDrugs.add(drug);
+          if (indicationDrugs.length >= 8) break;
+        }
+        // Match direto por palavras da query nos metadados do fármaco
+        if (indicationDrugs.length < 8) {
+          final queryWords = qExpanded.split(RegExp(r'\s+')).where((w) => w.length > 4);
+          if (queryWords.any((w) => dNorm.contains(w))) {
+            if (!indicationDrugs.contains(drug)) indicationDrugs.add(drug);
+          }
+        }
+      }
+
+      if (indicationDrugs.isNotEmpty) {
+        final buf0b = StringBuffer();
+        final condLabel = detectedCondition ?? (es ? 'esta condición' : 'esta condição');
+        buf0b.writeln(es
+            ? '## Fármacos utilizados en $condLabel — Base interna:'
+            : '## Fármacos utilizados em $condLabel — Base interna:');
+        buf0b.writeln('');
+
+        for (final drug in indicationDrugs) {
+          buf0b.writeln('### ${drug.name}');
+          final cls = drug.getField(drug.className, _lang);
+          if (cls.isNotEmpty) buf0b.writeln('  **${es ? "Clase" : "Classe"}:** $cls');
+          final fd = drug.getField(drug.fixedDose, _lang);
+          if (fd.isNotEmpty) buf0b.writeln('  **${es ? "Dosis" : "Dose"}:** $fd');
+          if (_patient.weight.isNotEmpty) {
+            try {
+              final calc = calculateDose(drug);
+              buf0b.writeln('  **${es ? "Dosis calculada" : "Dose calculada"} (${_patient.weight} kg):** ${calc.main}');
+            } catch (_) {}
+          }
+          final mech = drug.getField(drug.mechanism, _lang);
+          if (mech.isNotEmpty) {
+            final mechShort = mech.length > 150 ? '${mech.substring(0, 150)}...' : mech;
+            buf0b.writeln('  **${es ? "Mecanismo" : "Mecanismo"}:** $mechShort');
+          }
+          final warn = drug.getField(drug.warning, _lang);
+          if (warn.isNotEmpty) {
+            final warnShort = warn.length > 120 ? '${warn.substring(0, 120)}...' : warn;
+            buf0b.writeln('  **${es ? "Alerta" : "Alerta"}:** $warnShort');
+          }
+          final clcrVal0b = double.tryParse((clcr ?? '').replaceAll(',', '.'));
+          if (clcrVal0b != null && clcrVal0b > 0 && clcrVal0b < 60) {
+            final ra = drug.getField(drug.renalAlert, _lang);
+            if (ra.isNotEmpty) buf0b.writeln('  ⚠ ClCr $clcr: ${ra.length > 100 ? "${ra.substring(0, 100)}..." : ra}');
+          }
+          buf0b.writeln('');
+        }
+
+        buf0b.writeln(es ? '⚕ Apoyo educacional.' : '⚕ Apoio educacional.');
+        return buf0b.toString();
+      }
+    }
 
     // ════════════════════════════════════════════════════════════════════════
     // FASE 0 — FARMACOLOGIA DIRETA (prioridade absoluta)
