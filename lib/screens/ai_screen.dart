@@ -414,7 +414,7 @@ class _WaHeader extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Text('IA Clínica',
+                const Text('MedCases IA',
                   style: TextStyle(
                     fontSize: 15, fontWeight: FontWeight.w800,
                     color: Colors.white, letterSpacing: -0.2)),
@@ -461,23 +461,69 @@ class _WaHeader extends StatelessWidget {
                 ]),
               ],
             )),
-            // Botão configurações da IA
+            // Botão Conectar IA / Conectado
             GestureDetector(
               onTap: onSettings,
-              child: Container(
-                padding: const EdgeInsets.all(6),
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 300),
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8),
-                  color: Colors.white.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(20),
+                  color: geminiConnected
+                      ? const Color(0xFF4ADE80).withValues(alpha: 0.18)
+                      : hasRealAi
+                          ? const Color(0xFF4ADE80).withValues(alpha: 0.12)
+                          : Colors.white.withValues(alpha: 0.10),
+                  border: Border.all(
+                    color: geminiConnected
+                        ? const Color(0xFF4ADE80).withValues(alpha: 0.55)
+                        : hasRealAi
+                            ? const Color(0xFF4ADE80).withValues(alpha: 0.35)
+                            : Colors.white.withValues(alpha: 0.20),
+                    width: 1,
+                  ),
                 ),
-                child: Icon(
-                  geminiConnected
-                      ? Icons.account_circle_rounded
-                      : (hasRealAi ? Icons.key_rounded : Icons.key_off_rounded),
-                  size: 18,
-                  color: hasRealAi
-                      ? const Color(0xFF4ADE80)
-                      : Colors.white.withValues(alpha: 0.6)),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    if (keyLoading)
+                      SizedBox(
+                        width: 9, height: 9,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 1.4,
+                          color: Colors.white.withValues(alpha: 0.6),
+                        ),
+                      )
+                    else
+                      Icon(
+                        geminiConnected
+                            ? Icons.check_circle_rounded
+                            : hasRealAi
+                                ? Icons.check_circle_outline_rounded
+                                : Icons.link_rounded,
+                        size: 13,
+                        color: (geminiConnected || hasRealAi)
+                            ? const Color(0xFF4ADE80)
+                            : Colors.white.withValues(alpha: 0.55),
+                      ),
+                    const SizedBox(width: 5),
+                    Text(
+                      keyLoading
+                          ? 'Conectando...'
+                          : (geminiConnected || hasRealAi)
+                              ? (lang == 'es' ? 'Conectado' : 'Conectado')
+                              : (lang == 'es' ? 'Conectar IA' : 'Conectar IA'),
+                      style: TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w700,
+                        color: (geminiConnected || hasRealAi)
+                            ? const Color(0xFF4ADE80)
+                            : Colors.white.withValues(alpha: 0.75),
+                        letterSpacing: 0.1,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
             const SizedBox(width: 6),
