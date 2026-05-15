@@ -847,16 +847,46 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
     super.dispose();
   }
 
-  // Força logout quando o app é fechado/encerrado pelo SO —
-  // MAS só se o usuário NÃO marcou "Manter conectado".
-  // iOS: paused → background definitivo (detached raramente dispara no iOS)
-  // Android: detached → processo encerrado
+  // Lifecycle do app — controla timer de uso e logout automático.
+  //
+  // Estados relevantes:
+  //   resumed   → app visível e em foreground (conta tempo de tela)
+  //   inactive  → transição (ex: chamada entrando) — pausa o timer
+  //   paused    → app em background (Android/iOS) — pausa o timer
+  //   hidden    → app oculto sem ser destruído (Flutter 3.13+) — pausa
+  //   detached  → processo sendo encerrado — para o timer e desconecta
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.detached || state == AppLifecycleState.paused) {
-      AuthService.isKeepLoggedInEnabled().then((keep) {
-        if (!keep) AuthService.logout();
-      });
+    if (!mounted) return;
+    final provider = context.read<AppProvider>();
+
+    switch (state) {
+      case AppLifecycleState.resumed:
+        // App voltou ao foreground — retoma contagem de tempo de tela
+        provider.resumeUsageTimer();
+        break;
+
+      case AppLifecycleState.inactive:
+      case AppLifecycleState.paused:
+      case AppLifecycleState.hidden:
+        // App foi para background ou ficou inativo — pausa o timer
+        // (não cancela — mantém estado para retomar ao voltar)
+        provider.pauseUsageTimer();
+        // Logout automático apenas se usuário não marcou "Manter conectado"
+        if (state == AppLifecycleState.paused) {
+          AuthService.isKeepLoggedInEnabled().then((keep) {
+            if (!keep) AuthService.logout();
+          });
+        }
+        break;
+
+      case AppLifecycleState.detached:
+        // Processo sendo encerrado — para e grava tudo antes de morrer
+        provider.pauseUsageTimer();
+        AuthService.isKeepLoggedInEnabled().then((keep) {
+          if (!keep) AuthService.logout();
+        });
+        break;
     }
   }
 

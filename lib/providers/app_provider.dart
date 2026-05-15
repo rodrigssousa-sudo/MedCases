@@ -81,7 +81,8 @@ class AppProvider extends ChangeNotifier {
 
   // ── Rastreamento de uso ────────────────────────────────────────────────────
   Timer? _usageTimer;
-  int _sessionSeconds = 0; // segundos acumulados nesta sessão (flush a cada 60s)
+  int _sessionSeconds = 0;    // segundos acumulados nesta sessão (flush a cada 60s)
+  bool _usagePaused = false;  // true quando app está em background
 
   // ── Estado — IA Clínica ──────────────────────────────────────────────────
   String _openAiKey = '';
@@ -195,17 +196,51 @@ class AppProvider extends ChangeNotifier {
     _startUsageTimer(user.uid);
   }
 
-  // ── Timer de uso — incrementa 1s/s, grava no Firestore a cada 60s ──────────
+  // ── Timer de uso ──────────────────────────────────────────────────────────
+  // Conta tempo de tela REAL: inicia ao abrir o app, pausa no background,
+  // retoma ao trazer o app de volta. Grava no Firestore a cada 60s.
+  // Não depende de cliques, pesquisas ou digitação — mede presença na tela.
   void _startUsageTimer(String uid) {
     _usageTimer?.cancel();
     _sessionSeconds = 0;
+    _usagePaused = false;
     _usageTimer = Timer.periodic(const Duration(seconds: 1), (_) {
+      if (_usagePaused) return; // app em background — não conta
       _sessionSeconds++;
       // Flush a cada 60 segundos → 1 escrita no Firestore por minuto de uso
       if (_sessionSeconds % 60 == 0) {
         FirestoreService.incrementUsage(uid, 60);
       }
     });
+  }
+
+  /// Pausa o timer quando o app vai para background (não cancela — mantém estado).
+  /// Chamado pelo MainShell via didChangeAppLifecycleState(paused/hidden/inactive).
+  void pauseUsageTimer() {
+    if (_usageTimer == null || _usagePaused) return;
+    _usagePaused = true;
+    // Flush imediato dos segundos acumulados antes de pausar
+    final uid = _currentUser?.uid;
+    if (uid != null) {
+      final residual = _sessionSeconds % 60;
+      if (residual > 0) FirestoreService.incrementUsage(uid, residual);
+      _sessionSeconds = (_sessionSeconds ~/ 60) * 60; // zera o residual
+    }
+    debugPrint('[UsageTimer] pausado — app em background');
+  }
+
+  /// Retoma o timer quando o app volta ao foreground.
+  /// Chamado pelo MainShell via didChangeAppLifecycleState(resumed).
+  void resumeUsageTimer() {
+    if (_usageTimer == null) {
+      // Timer não existe ainda — pode ter sido cancelado; reinicia
+      final uid = _currentUser?.uid;
+      if (uid != null) _startUsageTimer(uid);
+      return;
+    }
+    if (!_usagePaused) return;
+    _usagePaused = false;
+    debugPrint('[UsageTimer] retomado — app em foreground');
   }
 
   void _stopUsageTimer() {
@@ -218,6 +253,7 @@ class AppProvider extends ChangeNotifier {
     _usageTimer?.cancel();
     _usageTimer = null;
     _sessionSeconds = 0;
+    _usagePaused = false;
   }
 
   void clearUser() {
@@ -3908,7 +3944,7 @@ class AppProvider extends ChangeNotifier {
     final buf = StringBuffer();
 
     // ── Cabeçalho ──────────────────────────────────────────────────────────
-    buf.writeln('## ${winner?.label ?? ''}');
+    buf.writeln('## ${winner.label}');
     buf.writeln('');
 
     // ── Red flags / Alertas críticos (máx 3) ─────────────────────────────
