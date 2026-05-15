@@ -2,6 +2,8 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
+// ignore: avoid_web_libraries_in_flutter
+import 'dart:js' as _js;
 import 'package:url_launcher/url_launcher.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -37,6 +39,14 @@ import 'widgets/brand_mark.dart';
 // Future global — já resolvido quando runApp() é chamado
 // Mantido para compatibilidade com _AuthGate FutureBuilder
 late final Future<void> _firebaseInit;
+
+/// Log para console do browser (visível no Safari DevTools)
+void _jsLog(String msg) {
+  if (kIsWeb) {
+    try { _js.context.callMethod('console', []); } catch (_) {}
+    try { _js.context['console'].callMethod('log', [msg]); } catch (_) {}
+  }
+}
 
 void main() async {
   FlutterError.onError = (FlutterErrorDetails details) {
@@ -81,8 +91,13 @@ void main() async {
   // Timeout de 8 s está dentro de restoreSession(); rede falha → LoginScreen normal.
   if (kIsWeb) {
     try {
-      await AuthService.restoreSession();
-    } catch (_) {}
+      _jsLog('[DART-DIAG] restoreSession iniciando...');
+      final restoredUser = await AuthService.restoreSession();
+      _jsLog('[DART-DIAG] restoreSession resultado: ${restoredUser != null ? "usuário OK: ${restoredUser.uid}" : "null (sem sessão ou falhou)"}');
+      _jsLog('[DART-DIAG] webUser.value após restore: ${AuthService.webUser.value != null ? "OK" : "null"}');
+    } catch (e) {
+      _jsLog('[DART-DIAG] restoreSession EXCEÇÃO: $e');
+    }
   }
 
   runApp(
@@ -212,8 +227,10 @@ class _AuthGate extends StatelessWidget {
       builder: (context, user, _) {
         // Sem usuário → preview pré-login com histórias públicas
         if (user == null) {
+          _jsLog('[DART-DIAG] _buildWebAuthGate: user=null → PreLoginPreview (sem sess\u00e3o)');
           return _wrapAuth(const PreLoginPreview());
         }
+        _jsLog('[DART-DIAG] _buildWebAuthGate: user=${user.uid} status=${user.status}');
 
         // Usuário bloqueado
         if (user.isBlocked) {
@@ -743,16 +760,17 @@ class _WebMainShellGateState extends State<_WebMainShellGate> {
 
   Future<void> _initUser() async {
     final p = context.read<AppProvider>();
+    _jsLog('[DART-DIAG] _WebMainShellGate._initUser: currentUid=${p.currentUser?.uid} widgetUid=${widget.user.uid}');
     // Só chama setUser se o provider ainda não tem este usuário — evita
     // chamar duas vezes durante rebuilds do ValueListenableBuilder.
     if (p.currentUser?.uid != widget.user.uid) {
+      _jsLog('[DART-DIAG] chamando setUser()...');
       await p.setUser(widget.user);
+      _jsLog('[DART-DIAG] setUser() conclu\u00eddo. geminiConnected=${p.geminiConnected}');
     } else {
-      // Usuário já carregado (rebuild do ValueListenableBuilder com mesmo uid).
-      // setUser() foi pulado — mas ainda precisamos checar se há redirect OAuth
-      // pendente (medcases_gsi_pending) que chegou DEPOIS do primeiro setUser().
-      // Sem isso, o token do redirect fica órfão no localStorage para sempre.
+      _jsLog('[DART-DIAG] setUser() PULADO (uid j\u00e1 igual). chamando checkGeminiSession()...');
       await p.checkGeminiSession();
+      _jsLog('[DART-DIAG] checkGeminiSession() conclu\u00eddo. geminiConnected=${p.geminiConnected}');
     }
     if (mounted) setState(() => _ready = true);
   }
