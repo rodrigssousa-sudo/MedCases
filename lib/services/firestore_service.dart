@@ -84,11 +84,43 @@ class FirestoreService {
   /// Carrega a Gemini API Key global do app, salva pelo administrador.
   /// Armazenada em config/app_settings campo 'geminiApiKey'.
   /// Usada diretamente nas chamadas à API do Gemini (sem OAuth token).
+  ///
+  /// Web: usa REST HTTP puro (firestore.googleapis.com) para bypassar o
+  /// flutter_service_worker.js que intercepta e rejeita fetch do SDK Firestore.
+  /// Nativo: SDK Firestore direto (sem restrições).
   static Future<String> loadGeminiApiKey() async {
+    if (kIsWeb) return _loadGeminiApiKeyRest();
     try {
       final doc = await _db.collection('config').doc('app_settings').get();
       if (!doc.exists) return '';
       return (doc.data()?['geminiApiKey'] as String?) ?? '';
+    } catch (_) {
+      return '';
+    }
+  }
+
+  /// Lê config/app_settings.geminiApiKey via Firestore REST API.
+  /// Usa idToken do usuário autenticado para authorização (regras de segurança).
+  /// O token é obtido via securetoken.googleapis.com — domínio externo,
+  /// não interceptado pelo service worker de medcasespro.com.
+  static Future<String> _loadGeminiApiKeyRest() async {
+    try {
+      final token = await AuthService.getAdminToken();
+      final headers = token.isNotEmpty
+          ? {'Authorization': 'Bearer $token'}
+          : <String, String>{};
+
+      final resp = await http.get(
+        Uri.parse('$_fsBase/config/app_settings'),
+        headers: headers,
+      ).timeout(const Duration(seconds: 8));
+
+      if (resp.statusCode != 200) return '';
+
+      final body   = jsonDecode(resp.body) as Map<String, dynamic>;
+      final fields = body['fields'] as Map<String, dynamic>? ?? {};
+      final keyField = fields['geminiApiKey'] as Map<String, dynamic>?;
+      return (keyField?['stringValue'] as String?) ?? '';
     } catch (_) {
       return '';
     }

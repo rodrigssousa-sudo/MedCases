@@ -943,16 +943,30 @@ class AppProvider extends ChangeNotifier {
             // Email presente = usuário autenticou com sucesso.
             // Garante que a API Key está carregada (pode ter sido perdida por reload)
             if (!GeminiService.hasApiKey) {
-              debugPrint('[checkGeminiSession] API Key ausente após redirect — recarregando do Firestore');
+              debugPrint('[checkGeminiSession] API Key ausente após redirect — tentando Firestore REST...');
               try {
                 final geminiKey = await FirestoreService.loadGeminiApiKey()
-                    .timeout(const Duration(seconds: 5));
+                    .timeout(const Duration(seconds: 8));
                 if (geminiKey.isNotEmpty) {
                   GeminiService.setGeminiApiKey(geminiKey);
-                  debugPrint('[checkGeminiSession] API Key recarregada ✓');
+                  if (kIsWeb) _webSetLS('medcases_gak', geminiKey);
+                  debugPrint('[checkGeminiSession] API Key recarregada do Firestore REST ✓');
+                } else if (kIsWeb) {
+                  final cached = _webGetLS('medcases_gak');
+                  if (cached != null && cached.isNotEmpty) {
+                    GeminiService.setGeminiApiKey(cached);
+                    debugPrint('[checkGeminiSession] API Key restaurada do localStorage (pós-redirect) ✓');
+                  }
                 }
               } catch (e) {
-                debugPrint('[checkGeminiSession] erro ao recarregar API Key: $e');
+                debugPrint('[checkGeminiSession] Firestore REST falhou: $e — tentando localStorage...');
+                if (kIsWeb) {
+                  final cached = _webGetLS('medcases_gak');
+                  if (cached != null && cached.isNotEmpty) {
+                    GeminiService.setGeminiApiKey(cached);
+                    debugPrint('[checkGeminiSession] API Key restaurada do localStorage (pós-redirect fallback) ✓');
+                  }
+                }
               }
             }
             _geminiConnected = true;
