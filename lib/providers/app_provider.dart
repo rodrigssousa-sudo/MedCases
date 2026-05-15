@@ -897,7 +897,16 @@ class AppProvider extends ChangeNotifier {
   ///      e valida via tokeninfo — sem depender do fetch assíncrono do JS.
   ///   3. Se o email ainda não chegou (fetch do JS ainda em andamento),
   ///      buscamos via tokeninfo direto aqui no Dart.
+  void _jsLog(String msg) {
+    if (!kIsWeb) return;
+    try {
+      final safe = msg.replaceAll("'", "\\'").replaceAll('\n', ' ');
+      js_interop.context.callMethod('eval', ["console.log('$safe')"]);
+    } catch (_) {}
+  }
+
   Future<void> checkGeminiSession() async {
+    _jsLog('[CGS] checkGeminiSession chamado');
     try {
       if (kIsWeb) {
         // Limpa flag de modal órfã (pode sobrar de tentativas anteriores)
@@ -905,38 +914,30 @@ class AppProvider extends ChangeNotifier {
 
         // ── Detecta retorno do redirect OAuth ───────────────────────────────
         final pending = _webGetLS('medcases_gsi_pending');
+        _jsLog('[CGS] pending=${pending ?? "null"} token=${_webGetLS("gemini_access_token") != null ? "SIM" : "NAO"}');
         if (pending == 'true') {
-          debugPrint('[checkGeminiSession] flag medcases_gsi_pending detectada');
           _webRemoveLS('medcases_gsi_pending');
 
-          // Lê o token salvo SINCRONAMENTE pelo JS antes do boot do Flutter.
           final token = _webGetLS('gemini_access_token');
+          _jsLog('[CGS] token lido: ${token != null && token.isNotEmpty ? token.substring(0, 20) + "..." : "VAZIO"}');
           if (token != null && token.isNotEmpty) {
-            // ── NÃO revalidamos o token via HTTP aqui ────────────────────
-            // O token acabou de chegar diretamente do Google OAuth redirect —
-            // ele é garantidamente válido. Qualquer HTTP do Dart (XHR) para
-            // googleapis.com pode falhar com CORS no contexto web release,
-            // retornando false mesmo com token válido (o catch silencia o erro).
-            //
-            // O email já está no localStorage salvo pelo fetch JS (que usa o
-            // fetch nativo do browser, sem restrições de CORS).
-            // Se ainda não chegou, pegamos via GeminiService.connectedEmail().
             _geminiConnected = true;
             _geminiEmail = _webGetLS('gemini_google_email') ?? '';
+            _jsLog('[CGS] email imediato: ${_geminiEmail.isEmpty ? "vazio" : _geminiEmail}');
             if (_geminiEmail.isEmpty) {
-              // Aguarda o fetch JS do tokeninfo terminar (tipicamente <500ms)
               await Future.delayed(const Duration(milliseconds: 600));
               _geminiEmail = _webGetLS('gemini_google_email') ?? '';
+              _jsLog('[CGS] email apos delay: ${_geminiEmail.isEmpty ? "ainda vazio" : _geminiEmail}');
             }
             if (_geminiEmail.isEmpty) {
-              // Último recurso: usa GeminiService que faz fetch via JS interop
               _geminiEmail = await GeminiService.connectedEmail() ?? '';
+              _jsLog('[CGS] email via connectedEmail: ${_geminiEmail.isEmpty ? "vazio" : _geminiEmail}');
             }
-            debugPrint('[checkGeminiSession] redirect OAuth — conectado: $_geminiEmail');
+            _jsLog('[CGS] CONECTADO! email=$_geminiEmail geminiConnected=$_geminiConnected');
             notifyListeners();
             return;
           } else {
-            debugPrint('[checkGeminiSession] flag presente mas token vazio no localStorage');
+            _jsLog('[CGS] token vazio — nao conectou');
           }
         }
       }
