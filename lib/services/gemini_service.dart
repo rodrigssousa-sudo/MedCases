@@ -36,8 +36,9 @@ class GeminiResult {
 }
 
 class GeminiService {
+  // gemini-1.5-flash foi descontinuado em Mai/2025 → atualizado para gemini-2.5-flash
   static const _endpoint =
-      'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent';
+      'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent';
 
   // Client IDs do Google OAuth (usados pelo google_sign_in no Android e pelo
   // redirect flow no index.html — o _webClientId é usado no HTML, não aqui)
@@ -287,12 +288,9 @@ class GeminiService {
   // A chave é acessada via _geminiApiKey (campo estático setado pelo AppProvider).
 
   // ══════════════════════════════════════════════════════════════════════════
-  // CHAT — Gemini 1.5 Flash
-  // ══════════════════════════════════════════════════════════════════════════
-
-  // ══════════════════════════════════════════════════════════════════════════
-  // CHAT — Gemini 1.5 Flash com Google Search Grounding
+  // CHAT — Gemini 2.5 Flash com Google Search Grounding
   //
+  // Modelo atualizado: gemini-1.5-flash descontinuado em Mai/2025
   // useGrounding=true ativa a ferramenta nativa de busca web do Gemini.
   // O modelo decide autonomamente quando buscar — ideal para perguntas
   // clínicas que podem precisar de dados atualizados (doses, guias, etc.)

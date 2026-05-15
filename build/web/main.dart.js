@@ -35131,7 +35131,7 @@ if(a5!=null)a6.p(0,"tools",a5)
 n=B.aK.hi(a6,null)
 p=4
 s=7
-return A.t(A.xi(A.d2("https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key="+$.fl,0,null),n,A.a6(["Content-Type","application/json"],b,b)).iz(0,B.zj),$async$G0)
+return A.t(A.xi(A.d2("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key="+$.fl,0,null),n,A.a6(["Content-Type","application/json"],b,b)).iz(0,B.zj),$async$G0)
 case 7:m=b5
 if(m.b===200){c=m
 l=B.aK.fc(0,A.ey(A.ex(c.e)).c9(0,c.w),null)
