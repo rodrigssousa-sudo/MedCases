@@ -1110,80 +1110,87 @@ class AppProvider extends ChangeNotifier {
 
   /// Classifica o tipo de consulta para direcionar o pipeline RAG.
   /// Retorna string descritiva usada no system prompt como contexto para o Gemini.
+  /// Classifica o intent em chave canônica curta usada pelo switch no system prompt.
+  /// Ordem importa: mais específico antes de mais genérico.
   String _classifyIntent(String input) {
     final q = _normalize(input);
-    final es = _lang == 'es';
 
-    // ── Fármacos para condição clínica: "farmacos para cefaleia", "medicamentos para sepse"
-    // DEVE vir antes de qualquer outra detecção para capturar corretamente
-    if (_has(q, ['farma', 'medicament', 'remedio', 'droga', 'drug',
-                  'farmaco', 'medicamento', 'remedios', 'farmacos', 'antibiot',
-                  'antibio', 'antiviral', 'antifungic', 'quimio', 'imunossupr']) &&
-        _has(q, ['para ', 'para a ', 'para o ', 'para tratar', 'tratar ', 'usar em',
-                  'indicado em', 'no tratamento', 'en el tratamiento',
-                  'para cefalei', 'para dor', 'para febre', 'para infec',
-                  'para hiperten', 'para diabet', 'para arritmia', 'para ic ',
-                  'para sepse', 'para asma', 'para dpoc', 'para epoc',
-                  'para convuls', 'para choque', 'para pneumon', 'para tep',
-                  'para avc', 'para fa ', 'para cirros', 'para lupus',
-                  'para parkinson', 'para alzheimer', 'para fibromialg',
-                  'para osteoporose', 'para gota', 'para dengue', 'para tb ',
-                  'para malaria', 'para hiv', 'para aids', 'para cancer',
-                  'para leucemia', 'para linfoma', 'para depressao',
-                  'para ansiedade', 'para esquizofrenia', 'para bipolar',
-                  'para pancreatite', 'para colecistite', 'para pielonefrit',
-                  'para endocardite', 'para meningite', 'para encefalite'])) {
-      return es
-          ? 'FÁRMACOS POR INDICACIÓN CLÍNICA (listar opciones terapéuticas, dosis, mecanismo)'
-          : 'FÁRMACOS POR INDICAÇÃO CLÍNICA (listar opções terapêuticas, dose, mecanismo)';
+    // ── Referências bibliográficas ──────────────────────────────────────────
+    if (_has(q, ['referencia', 'referencias', 'fonte ', 'fontes', 'bibliografia',
+                  'bibliograf', 'citation', 'citar', 'quais fontes', 'qual fonte',
+                  'baseado em que', 'evidencia usada', 'guideline usado'])) {
+      return 'referencias';
     }
 
-    // ── Farmacológica direta — pergunta sobre fármaco específico
-    if (_has(q, [
-      'dose', 'dosagem', 'dosis', 'posolog', 'mecanismo', 'mecanismo de acao', 'mecanismo de accion',
-      'indicac', 'contraindicac', 'efeito adverso', 'efecto adverso', 'interac',
-      'via de admin', 'como usar', 'como admin', 'ajuste renal', 'alerta renal',
-      'gravidez', 'embarazo', 'idoso', 'anciano', 'crianca', 'nino',
-    ])) {
-      return es ? 'FARMACOLÓGICA (dosis, mecanismo, alertas)' : 'FARMACOLÓGICA (dose, mecanismo, alertas)';
+    // ── Fisiopatologia / mecanismo da doença ────────────────────────────────
+    if (_has(q, ['fisiopatolog', 'patogenese', 'patogenia', 'mecanismo da doenca',
+                  'mecanismo de doenca', 'mecanismo patolog', 'como ocorre a doenca',
+                  'como se desenvolve', 'mecanismo fisio', 'fisiopatologia de',
+                  'patofisiolog', 'por que ocorre a', 'porque ocorre a'])) {
+      return 'fisiopatologia';
     }
 
-    // ── Interação medicamentosa
-    if (_has(q, ['interac', 'interage', 'combinar', 'junto com', 'associar', 'compativel',
-                  'combinacion', 'junto a', 'asociar'])) {
-      return es ? 'INTERACCIÓN FARMACOLÓGICA' : 'INTERAÇÃO FARMACOLÓGICA';
+    // ── Causas / etiologia ──────────────────────────────────────────────────
+    if (_has(q, ['causa ', 'causas ', 'etiolog', 'fator de risco', 'fatores de risco',
+                  'factor de riesgo', 'factores de riesgo', 'por que da ', 'porque da ',
+                  'o que causa', 'que causa', 'origem de', 'precipita '])) {
+      return 'causas';
     }
 
-    // ── Caso clínico — tem dados clínicos (sinais vitais, sintomas múltiplos)
-    if (_has(q, ['paciente', 'pa ', 'fc ', 'spo2', 'glasgow', 'anos ', 'años ',
+    // ── Prognóstico / seguimento ────────────────────────────────────────────
+    if (_has(q, ['prognostico', 'prognosis', 'pronostico', 'sobrevida', 'mortalidade',
+                  'mortalidad', 'seguimento', 'seguimiento', 'acompanhamento',
+                  'fator de mau prognostico', 'factor de mal pronostico', 'sobrevivencia'])) {
+      return 'prognostico';
+    }
+
+    // ── Interação medicamentosa ─────────────────────────────────────────────
+    if (_has(q, ['interac', 'interage', 'junto com', 'junto a',
+                  'associar com', 'associar a', 'compativel', 'combinacion', 'asociar'])) {
+      return 'interacao';
+    }
+
+    // ── Emergência / urgência ───────────────────────────────────────────────
+    if (_has(q, ['emergencia', 'urgencia', 'pcr ', 'parada cardiac',
+                  'choque ', 'shock ', 'anafilax', 'status epilep', 'estado epilep',
+                  'protocolo de emergencia', 'iam agudo', 'avc agudo', 'sepse grave'])) {
+      return 'emergencia';
+    }
+
+    // ── Caso clínico — dados clínicos estruturados ──────────────────────────
+    if (_has(q, ['paciente', 'pa ', 'fc ', 'spo2', 'glasgow', 'anos ', 'anos,',
                   'apresenta', 'presenta', 'admitido', 'ingresado', 'internado',
                   'temperatura', 'febre ', 'fiebre ']) &&
         input.trim().split(' ').length >= 6) {
-      return es ? 'CASO CLÍNICO (análisis, diferenciales, conducta)' : 'CASO CLÍNICO (análise, diferenciais, conduta)';
+      return 'caso_clinico';
     }
 
-    // ── Tratamento/conduta de condição — "tratamento de X", "conduta na FA"
+    // ── Tratamento / conduta ────────────────────────────────────────────────
     if (_has(q, ['tratamento', 'tratamiento', 'tratar ', 'tratar a', 'tratar o',
-                  'protocolo', 'conduta', 'conducta', 'manejo de', 'manejo da',
-                  'como tratar', 'como manejar', 'emergencia', 'urgencia'])) {
-      return es ? 'PROTOCOLO/CONDUCTA CLÍNICA' : 'PROTOCOLO/CONDUTA CLÍNICA';
+                  'conduta', 'conducta', 'manejo de', 'manejo da', 'manejo do',
+                  'como tratar', 'como manejar', 'terapia para', 'terapia de',
+                  'protocolo de tratamento', 'primeira linha', 'primera linea'])) {
+      return 'tratamento';
     }
 
-    // ── Doença / síndrome conceitual
-    if (_has(q, ['o que e ', 'que es ', 'o que eh ', 'definic', 'definicion',
-                  'fisiopatolog', 'patogenese', 'patogenia', 'classificac', 'clasificacion',
-                  'criterio', 'criterios', 'diagnostico diferencial', 'diagnostico difer'])) {
-      return es ? 'ENFERMEDAD/SÍNDROME (definición, diagnóstico, tratamiento)' : 'DOENÇA/SÍNDROME (definição, diagnóstico, tratamento)';
+    // ── Farmacológica — sobre fármaco específico ou lista por indicação ─────
+    if (_has(q, ['farmaco', 'farmacos', 'medicament', 'remedio ', 'remedios',
+                  'droga ', 'antibiot', 'antibio', 'antiviral', 'antifungic',
+                  'dose', 'dosagem', 'dosis', 'posolog', 'mecanismo de acao',
+                  'mecanismo de accion', 'indicac', 'contraindicac',
+                  'efeito adverso', 'efecto adverso', 'ajuste renal', 'gravidez'])) {
+      return 'farmaco';
     }
 
-    // ── Exame / procedimento
-    if (_has(q, ['exame', 'examen', 'laborator', 'bioquim', 'hematolog',
-                  'procedimento', 'procedimiento', 'tecnica',
-                  'quando pedir', 'cuanto pedir', 'interpretar', 'resultado'])) {
-      return es ? 'EXAMEN/PROCEDIMIENTO' : 'EXAME/PROCEDIMENTO';
+    // ── Diagnóstico / critérios / definição ────────────────────────────────
+    if (_has(q, ['diagnostico', 'diagnosticar', 'criterio', 'criterios',
+                  'como diagnosticar', 'diagnostico diferencial', 'classificac',
+                  'clasificacion', 'o que e ', 'que es ', 'definic', 'definicion',
+                  'exame para diagnosticar', 'exame', 'laborator', 'interpretar'])) {
+      return 'diagnostico';
     }
 
-    return es ? 'CONSULTA CLÍNICA GENERAL' : 'CONSULTA CLÍNICA GERAL';
+    return 'geral';
   }
 
   /// Verifica se a pergunta é uma query direta/nova (não deve herdar histórico)
@@ -1306,7 +1313,7 @@ class AppProvider extends ChangeNotifier {
         userMessage: input,
         systemPrompt: systemPrompt,
         history: List.unmodifiable(_aiHistory),
-        maxTokens: 1800,
+        maxTokens: 900,
         useGrounding: true,
       );
 
