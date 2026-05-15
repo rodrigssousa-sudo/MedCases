@@ -809,21 +809,86 @@ class FirestoreService {
   }
 
   /// Salva/atualiza a configuração do EmailJS (serviceId, templateId, publicKey).
+  /// Web  → REST PATCH com token (evita permission-denied do SDK no web)
+  /// Nativo → SDK Firestore direto
+  /// Destino: app_config/emailjs
   static Future<void> saveEmailJsConfig({
     required String serviceId,
     required String templateId,
     required String publicKey,
   }) async {
-    await _db.collection('config').doc('emailjs').set({
+    if (kIsWeb) {
+      await _saveEmailJsConfigRest(
+        serviceId: serviceId,
+        templateId: templateId,
+        publicKey: publicKey,
+      );
+      return;
+    }
+    // Nativo — SDK funciona normalmente
+    await _db.collection('app_config').doc('emailjs').set({
       'serviceId':   serviceId,
       'templateId':  templateId,
       'publicKey':   publicKey,
       'updatedAt':   FieldValue.serverTimestamp(),
     }, SetOptions(merge: true));
+    debugPrint('[FirestoreService] saveEmailJsConfig OK → app_config/emailjs (SDK)');
+  }
+
+  /// Salva EmailJS config via REST PATCH (web — evita SDK permission-denied).
+  static Future<void> _saveEmailJsConfigRest({
+    required String serviceId,
+    required String templateId,
+    required String publicKey,
+  }) async {
+    final token = await AuthService.getAdminToken();
+    if (token.isEmpty) {
+      debugPrint('[FirestoreService] _saveEmailJsConfigRest: token vazio — abortando');
+      throw Exception('Não autenticado — token de admin ausente');
+    }
+    final fields = {
+      'serviceId':  {'stringValue': serviceId},
+      'templateId': {'stringValue': templateId},
+      'publicKey':  {'stringValue': publicKey},
+      'updatedAt':  {'stringValue': DateTime.now().toUtc().toIso8601String()},
+    };
+    const mask = 'updateMask.fieldPaths=serviceId'
+        '&updateMask.fieldPaths=templateId'
+        '&updateMask.fieldPaths=publicKey'
+        '&updateMask.fieldPaths=updatedAt';
+    final resp = await http.patch(
+      Uri.parse('$_fsBase/app_config/emailjs?$mask'),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode({'fields': fields}),
+    );
+    debugPrint('[FirestoreService] _saveEmailJsConfigRest status=${resp.statusCode}');
+    if (resp.statusCode != 200) {
+      throw Exception('REST EmailJS save: HTTP ${resp.statusCode} — ${resp.body}');
+    }
+    debugPrint('[FirestoreService] saveEmailJsConfig OK → app_config/emailjs (REST)');
   }
 
   /// Carrega a configuração do EmailJS.
+  /// Web: REST GET → app_config/emailjs (sem SDK, evita CORS/permission)
+  /// Nativo: SDK → app_config/emailjs, fallback para config/emailjs (legado)
   static Future<Map<String, String>> loadEmailJsConfig() async {
+    if (kIsWeb) return _loadEmailJsConfigRest();
+    // Nativo: tenta novo caminho
+    try {
+      final doc = await _db.collection('app_config').doc('emailjs').get();
+      if (doc.exists) {
+        final d = doc.data()!;
+        return {
+          'serviceId':  (d['serviceId']  as String?) ?? '',
+          'templateId': (d['templateId'] as String?) ?? '',
+          'publicKey':  (d['publicKey']  as String?) ?? '',
+        };
+      }
+    } catch (_) {}
+    // Fallback para caminho legado config/emailjs (dados antigos já salvos)
     try {
       final doc = await _db.collection('config').doc('emailjs').get();
       if (!doc.exists) return {};
@@ -832,6 +897,31 @@ class FirestoreService {
         'serviceId':  (d['serviceId']  as String?) ?? '',
         'templateId': (d['templateId'] as String?) ?? '',
         'publicKey':  (d['publicKey']  as String?) ?? '',
+      };
+    } catch (_) {
+      return {};
+    }
+  }
+
+  /// Lê EmailJS config via REST (web).
+  static Future<Map<String, String>> _loadEmailJsConfigRest() async {
+    try {
+      final token = await AuthService.getAdminToken();
+      final headers = token.isNotEmpty
+          ? {'Authorization': 'Bearer $token'}
+          : <String, String>{};
+      final resp = await http.get(
+        Uri.parse('$_fsBase/app_config/emailjs'),
+        headers: headers,
+      ).timeout(const Duration(seconds: 8));
+      if (resp.statusCode == 404) return {};
+      if (resp.statusCode != 200) return {};
+      final body   = jsonDecode(resp.body) as Map<String, dynamic>;
+      final fields = body['fields'] as Map<String, dynamic>? ?? {};
+      return {
+        'serviceId':  (fields['serviceId']?['stringValue']  as String?) ?? '',
+        'templateId': (fields['templateId']?['stringValue'] as String?) ?? '',
+        'publicKey':  (fields['publicKey']?['stringValue']  as String?) ?? '',
       };
     } catch (_) {
       return {};
