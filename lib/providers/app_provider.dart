@@ -281,16 +281,15 @@ class AppProvider extends ChangeNotifier {
 
       // ── Gemini API Key — injeta no GeminiService + cacheia localmente ──────
       if (geminiKey.isNotEmpty) {
-        GeminiService.setGeminiApiKey(geminiKey);
-        // Cache no localStorage (web) para sobreviver reloads do service worker
-        if (kIsWeb) _webSetLS('medcases_gak', geminiKey);
+        GeminiService.setGeminiApiKey(geminiKey); // persiste em SharedPrefs + mcLsSet
         debugPrint('[AppProvider] Gemini API Key carregada e cacheada ✓');
       } else {
-        // Firestore retornou vazio — tenta cache local (service worker pode estar falhando)
-        final cached = kIsWeb ? _webGetLS('medcases_gak') : null;
-        if (cached != null && cached.isNotEmpty) {
-          GeminiService.setGeminiApiKey(cached);
-          debugPrint('[AppProvider] Gemini API Key restaurada do cache ✓');
+        // Firestore retornou vazio — tenta SharedPreferences (primário, sem dart:js)
+        if (!GeminiService.hasApiKey) {
+          await GeminiService.initFromStorage();
+        }
+        if (GeminiService.hasApiKey) {
+          debugPrint('[AppProvider] Gemini API Key restaurada do SharedPrefs/cache ✓');
         } else {
           debugPrint('[AppProvider] Gemini API Key não encontrada em nenhuma fonte');
         }
@@ -304,12 +303,11 @@ class AppProvider extends ChangeNotifier {
         final p = await SharedPreferences.getInstance();
         _openAiKey = p.getString(_k('openAiKey', uid)) ?? '';
       } catch (_) {}
-      // Restaura Gemini Key do localStorage se Firestore falhou (ex: service worker quebrado)
-      if (kIsWeb && !GeminiService.hasApiKey) {
-        final cached = _webGetLS('medcases_gak');
-        if (cached != null && cached.isNotEmpty) {
-          GeminiService.setGeminiApiKey(cached);
-          debugPrint('[AppProvider] Gemini Key restaurada do localStorage (rede falhou) ✓');
+      // Restaura Gemini Key do SharedPrefs/localStorage se Firestore falhou
+      if (!GeminiService.hasApiKey) {
+        await GeminiService.initFromStorage();
+        if (GeminiService.hasApiKey) {
+          debugPrint('[AppProvider] Gemini Key restaurada do SharedPrefs (rede falhou) ✓');
         }
       }
       _aiKeyLoading = false;
@@ -948,24 +946,20 @@ class AppProvider extends ChangeNotifier {
                 final geminiKey = await FirestoreService.loadGeminiApiKey()
                     .timeout(const Duration(seconds: 8));
                 if (geminiKey.isNotEmpty) {
-                  GeminiService.setGeminiApiKey(geminiKey);
-                  if (kIsWeb) _webSetLS('medcases_gak', geminiKey);
+                  GeminiService.setGeminiApiKey(geminiKey); // persiste em SharedPrefs + mcLsSet
                   debugPrint('[checkGeminiSession] API Key recarregada do Firestore REST ✓');
-                } else if (kIsWeb) {
-                  final cached = _webGetLS('medcases_gak');
-                  if (cached != null && cached.isNotEmpty) {
-                    GeminiService.setGeminiApiKey(cached);
-                    debugPrint('[checkGeminiSession] API Key restaurada do localStorage (pós-redirect) ✓');
+                } else {
+                  // Firestore vazio — SharedPreferences é o fallback primário (sem dart:js)
+                  await GeminiService.initFromStorage();
+                  if (GeminiService.hasApiKey) {
+                    debugPrint('[checkGeminiSession] API Key restaurada do SharedPrefs (pós-redirect) ✓');
                   }
                 }
               } catch (e) {
-                debugPrint('[checkGeminiSession] Firestore REST falhou: $e — tentando localStorage...');
-                if (kIsWeb) {
-                  final cached = _webGetLS('medcases_gak');
-                  if (cached != null && cached.isNotEmpty) {
-                    GeminiService.setGeminiApiKey(cached);
-                    debugPrint('[checkGeminiSession] API Key restaurada do localStorage (pós-redirect fallback) ✓');
-                  }
+                debugPrint('[checkGeminiSession] Firestore REST falhou: $e — tentando SharedPrefs...');
+                await GeminiService.initFromStorage();
+                if (GeminiService.hasApiKey) {
+                  debugPrint('[checkGeminiSession] API Key restaurada do SharedPrefs (pós-redirect fallback) ✓');
                 }
               }
             }
@@ -986,25 +980,20 @@ class AppProvider extends ChangeNotifier {
           final geminiKey = await FirestoreService.loadGeminiApiKey()
               .timeout(const Duration(seconds: 5));
           if (geminiKey.isNotEmpty) {
-            GeminiService.setGeminiApiKey(geminiKey);
-            if (kIsWeb) _webSetLS('medcases_gak', geminiKey);
+            GeminiService.setGeminiApiKey(geminiKey); // persiste em SharedPrefs + mcLsSet
             debugPrint('[checkGeminiSession] API Key recarregada do Firestore ✓');
-          } else if (kIsWeb) {
-            // Firestore retornou vazio (service worker interceptou) — usa cache local
-            final cached = _webGetLS('medcases_gak');
-            if (cached != null && cached.isNotEmpty) {
-              GeminiService.setGeminiApiKey(cached);
-              debugPrint('[checkGeminiSession] API Key restaurada do localStorage ✓');
+          } else {
+            // Firestore vazio — SharedPreferences é o fallback primário (sem dart:js/eval)
+            await GeminiService.initFromStorage();
+            if (GeminiService.hasApiKey) {
+              debugPrint('[checkGeminiSession] API Key restaurada do SharedPrefs ✓');
             }
           }
         } catch (e) {
-          debugPrint('[checkGeminiSession] Firestore falhou: $e — tentando localStorage...');
-          if (kIsWeb) {
-            final cached = _webGetLS('medcases_gak');
-            if (cached != null && cached.isNotEmpty) {
-              GeminiService.setGeminiApiKey(cached);
-              debugPrint('[checkGeminiSession] API Key restaurada do localStorage (fallback) ✓');
-            }
+          debugPrint('[checkGeminiSession] Firestore falhou: $e — tentando SharedPrefs...');
+          await GeminiService.initFromStorage();
+          if (GeminiService.hasApiKey) {
+            debugPrint('[checkGeminiSession] API Key restaurada do SharedPrefs (fallback) ✓');
           }
         }
       }
@@ -1295,25 +1284,20 @@ class AppProvider extends ChangeNotifier {
           final geminiKey = await FirestoreService.loadGeminiApiKey()
               .timeout(const Duration(seconds: 5));
           if (geminiKey.isNotEmpty) {
-            GeminiService.setGeminiApiKey(geminiKey);
-            if (kIsWeb) _webSetLS('medcases_gak', geminiKey);
+            GeminiService.setGeminiApiKey(geminiKey); // persiste em SharedPrefs + mcLsSet
             debugPrint('[buildAIAnswer] API Key recarregada do Firestore ✓');
-          } else if (kIsWeb) {
-            // Firestore retornou vazio — usa cache localStorage
-            final cached = _webGetLS('medcases_gak');
-            if (cached != null && cached.isNotEmpty) {
-              GeminiService.setGeminiApiKey(cached);
-              debugPrint('[buildAIAnswer] API Key restaurada do localStorage ✓');
+          } else {
+            // Firestore vazio — SharedPreferences é o fallback primário (sem dart:js/eval)
+            await GeminiService.initFromStorage();
+            if (GeminiService.hasApiKey) {
+              debugPrint('[buildAIAnswer] API Key restaurada do SharedPrefs ✓');
             }
           }
         } catch (e) {
-          debugPrint('[buildAIAnswer] Firestore falhou: $e — tentando localStorage...');
-          if (kIsWeb) {
-            final cached = _webGetLS('medcases_gak');
-            if (cached != null && cached.isNotEmpty) {
-              GeminiService.setGeminiApiKey(cached);
-              debugPrint('[buildAIAnswer] API Key restaurada do localStorage (fallback) ✓');
-            }
+          debugPrint('[buildAIAnswer] Firestore falhou: $e — tentando SharedPrefs...');
+          await GeminiService.initFromStorage();
+          if (GeminiService.hasApiKey) {
+            debugPrint('[buildAIAnswer] API Key restaurada do SharedPrefs (fallback) ✓');
           }
         }
       }

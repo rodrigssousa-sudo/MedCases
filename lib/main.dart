@@ -77,12 +77,11 @@ void main() async {
     debugPrint('[MedCases] SharedPreferences indisponível: $e');
   }
 
-  // ── Boot: restaura Gemini API Key do localStorage IMEDIATAMENTE ────────────
-  // Deve ser ANTES de restoreSession() e runApp() para que qualquer código que
-  // chame GeminiService.hasApiKey já encontre a key — independente do Firestore.
-  // Resistente ao service worker quebrado: localStorage é lido via eval() JS,
-  // sem passar pelo SW ou pelo Firestore SDK.
-  GeminiService.initFromLocalStorage();
+  // ── Boot: restaura Gemini API Key do SharedPreferences/localStorage ─────────
+  // Passo 1 — async (SharedPreferences, imune ao SES/CSP): sem dart:js, sem eval.
+  // Passo 2 — sync fallback (mcLsGet via dart:js) se SharedPreferences vazio.
+  // Deve ser ANTES de restoreSession() e runApp().
+  await GeminiService.initFromStorage();
 
   // ── Restauração silenciosa de sessão ("Manter conectado") ──────────────────
   // Tenta renovar o refreshToken antes do runApp — se bem-sucedido, webUser.value

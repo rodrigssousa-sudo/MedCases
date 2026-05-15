@@ -54,21 +54,50 @@ class GeminiService {
     final trimmed = key.trim();
     if (trimmed.isEmpty) return;
     _geminiApiKey = trimmed;
-    // Persiste no localStorage (web) — resistente ao SES lockdown do Firebase Auth
+    // Persiste via dart:js (mcLsSet) E via SharedPreferences (dupla garantia)
     if (kIsWeb) _webSet(_keyGak, trimmed);
-    debugPrint('[GeminiService] API Key definida e cacheada no localStorage ✓');
+    // SharedPreferences em background — não bloqueia, garante persistência
+    SharedPreferences.getInstance().then((p) {
+      p.setString(_keyGak, trimmed);
+    }).catchError((_) {});
+    debugPrint('[GeminiService] API Key definida e cacheada (localStorage + SharedPrefs) ✓');
   }
 
-  /// Restaura a API Key do localStorage sem precisar do Firestore.
+  /// Restaura a API Key do SharedPreferences/localStorage sem precisar do Firestore.
   /// Chamar em main() antes do runApp — garante que a key está disponível
   /// imediatamente, mesmo quando o Firestore falha por reload do service worker.
+  /// Usa SharedPreferences como primário (Flutter Web usa localStorage nativamente,
+  /// sem dart:js — imune ao SES lockdown e CSP). dart:js como fallback secundário.
+  static Future<void> initFromStorage() async {
+    if (_geminiApiKey.isNotEmpty) return; // já carregada
+    try {
+      // Primário: SharedPreferences (Flutter Web → localStorage via dart:html interno)
+      final prefs = await SharedPreferences.getInstance();
+      final fromPrefs = prefs.getString(_keyGak) ?? '';
+      if (fromPrefs.isNotEmpty) {
+        _geminiApiKey = fromPrefs;
+        debugPrint('[GeminiService] API Key restaurada do SharedPreferences no boot ✓');
+        return;
+      }
+    } catch (_) {}
+    // Secundário: dart:js → mcLsGet (se disponível no window)
+    if (kIsWeb) {
+      final cached = _webGet(_keyGak);
+      if (cached != null && cached.isNotEmpty) {
+        _geminiApiKey = cached;
+        debugPrint('[GeminiService] API Key restaurada via mcLsGet no boot ✓');
+      }
+    }
+  }
+
+  /// Versão síncrona legada — mantida para compatibilidade, usa apenas dart:js.
   static void initFromLocalStorage() {
     if (!kIsWeb) return;
-    if (_geminiApiKey.isNotEmpty) return; // já carregada
+    if (_geminiApiKey.isNotEmpty) return;
     final cached = _webGet(_keyGak);
     if (cached != null && cached.isNotEmpty) {
       _geminiApiKey = cached;
-      debugPrint('[GeminiService] API Key restaurada do localStorage no boot ✓');
+      debugPrint('[GeminiService] API Key restaurada do localStorage (sync) ✓');
     }
   }
 
