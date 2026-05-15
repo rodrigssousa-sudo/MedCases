@@ -245,11 +245,20 @@ class GeminiService {
   // CHAT — Gemini 1.5 Flash
   // ══════════════════════════════════════════════════════════════════════════
 
+  // ══════════════════════════════════════════════════════════════════════════
+  // CHAT — Gemini 1.5 Flash com Google Search Grounding
+  //
+  // useGrounding=true ativa a ferramenta nativa de busca web do Gemini.
+  // O modelo decide autonomamente quando buscar — ideal para perguntas
+  // clínicas que podem precisar de dados atualizados (doses, guias, etc.)
+  // ══════════════════════════════════════════════════════════════════════════
+
   static Future<GeminiResult> chat({
     required String userMessage,
     required String systemPrompt,
     List<Map<String, String>> history = const [],
-    int maxTokens = 900,
+    int maxTokens = 1800,
+    bool useGrounding = true, // Google Search Grounding ativado por padrão
   }) async {
     if (_geminiApiKey.isEmpty) {
       return GeminiResult.error('NOT_CONNECTED', 'not_connected');
@@ -262,13 +271,20 @@ class GeminiService {
     }
     contents.add({'role': 'user', 'parts': [{'text': userMessage}]});
 
-    final body = jsonEncode({
+    // Google Search Grounding — permite ao Gemini buscar na web em tempo real.
+    // Isso transforma o modelo em um RAG real: consulta base interna (system prompt)
+    // + busca web quando necessário (guias atualizadas, doses, artigos).
+    final tools = useGrounding
+        ? [{'google_search': {}}]
+        : null;
+
+    final bodyMap = <String, dynamic>{
       'system_instruction': {'parts': [{'text': systemPrompt}]},
       'contents': contents,
       'generationConfig': {
         'maxOutputTokens': maxTokens,
-        'temperature': 0.7,
-        'topP': 0.9,
+        'temperature': 0.4,  // Respostas clínicas exigem maior determinismo
+        'topP': 0.95,
         'topK': 40,
       },
       'safetySettings': [
@@ -277,41 +293,65 @@ class GeminiService {
         {'category': 'HARM_CATEGORY_SEXUALLY_EXPLICIT', 'threshold': 'BLOCK_NONE'},
         {'category': 'HARM_CATEGORY_DANGEROUS_CONTENT', 'threshold': 'BLOCK_NONE'},
       ],
-    });
+    };
+    if (tools != null) bodyMap['tools'] = tools;
+
+    final body = jsonEncode(bodyMap);
 
     try {
-      // API Key via query param — sem Authorization header (não usa OAuth token)
       final response = await http.post(
         Uri.parse('$_endpoint?key=$_geminiApiKey'),
         headers: {'Content-Type': 'application/json'},
         body: body,
-      ).timeout(const Duration(seconds: 30));
+      ).timeout(const Duration(seconds: 45));
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         final candidates = data['candidates'] as List?;
         if (candidates == null || candidates.isEmpty) {
           final blockReason = data['promptFeedback']?['blockReason'] as String?;
+          // Se grounding falhou, tenta sem ele
+          if (useGrounding) {
+            return chat(
+              userMessage: userMessage,
+              systemPrompt: systemPrompt,
+              history: history,
+              maxTokens: maxTokens,
+              useGrounding: false,
+            );
+          }
           return GeminiResult.error('BLOCKED: ${blockReason ?? "unknown"}', 'blocked');
         }
         final candidate = candidates[0] as Map<String, dynamic>;
         final finishReason = candidate['finishReason'] as String?;
         if (finishReason == 'SAFETY' || finishReason == 'RECITATION') {
+          if (useGrounding) {
+            return chat(
+              userMessage: userMessage,
+              systemPrompt: systemPrompt,
+              history: history,
+              maxTokens: maxTokens,
+              useGrounding: false,
+            );
+          }
           return GeminiResult.error('BLOCKED: $finishReason', 'blocked');
         }
         final parts = candidate['content']?['parts'] as List?;
         if (parts == null || parts.isEmpty) {
           return GeminiResult.error('EMPTY_RESPONSE', 'unknown');
         }
-        final text = parts[0]['text'] as String? ?? '';
-        if (text.trim().isEmpty) {
+        // Concatena todas as parts de texto (Grounding pode gerar múltiplas parts)
+        final text = parts
+            .map((p) => (p as Map<String, dynamic>)['text'] as String? ?? '')
+            .join('')
+            .trim();
+        if (text.isEmpty) {
           return GeminiResult.error('EMPTY_TEXT', 'unknown');
         }
-        return GeminiResult(text: text.trim());
+        return GeminiResult(text: text);
       }
 
       if (response.statusCode == 401 || response.statusCode == 403) {
-        // 403 com API Key = chave inválida/revogada (não é token expirado)
         return GeminiResult.error('API_KEY_INVALID', 'api_key_invalid');
       }
       if (response.statusCode == 429) {

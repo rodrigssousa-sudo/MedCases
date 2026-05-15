@@ -1038,10 +1038,66 @@ class AppProvider extends ChangeNotifier {
     return results;
   }
 
+  // ══════════════════════════════════════════════════════════════════════════
+  // CLASSIFICADOR DE INTENT — detecta o tipo de consulta para RAG direcionado
+  // ══════════════════════════════════════════════════════════════════════════
+
+  /// Classifica o tipo de consulta para direcionar o pipeline RAG.
+  /// Retorna string descritiva usada no system prompt como contexto para o Gemini.
+  String _classifyIntent(String input) {
+    final q = _normalize(input);
+    final es = _lang == 'es';
+
+    // Farmacológica — fármaco + pergunta sobre ele
+    if (_has(q, [
+      'dose', 'dosagem', 'dosis', 'posolog', 'mecanismo', 'mecanismo de acao', 'mecanismo de accion',
+      'indicac', 'contraindicac', 'efeito adverso', 'efecto adverso', 'interac',
+      'via de admin', 'como usar', 'como admin', 'ajuste renal', 'alerta renal',
+      'gravidez', 'embarazo', 'idoso', 'anciano', 'crianca', 'nino',
+    ])) {
+      return es ? 'FARMACOLÓGICA (dosis, mecanismo, alertas)' : 'FARMACOLÓGICA (dose, mecanismo, alertas)';
+    }
+
+    // Interação medicamentosa
+    if (_has(q, ['interac', 'interage', 'combinar', 'junto com', 'associar', 'compativel',
+                  'combinacion', 'junto a', 'asociar'])) {
+      return es ? 'INTERACCIÓN FARMACOLÓGICA' : 'INTERAÇÃO FARMACOLÓGICA';
+    }
+
+    // Caso clínico — tem dados clínicos (sinais vitais, sintomas múltiplos)
+    if (_has(q, ['paciente', 'pa ', 'fc ', 'spo2', 'glasgow', 'anos ', 'años ',
+                  'apresenta', 'presenta', 'admitido', 'ingresado', 'internado',
+                  'temperatura', 'febre ', 'fiebre ']) &&
+        input.trim().split(' ').length >= 6) {
+      return es ? 'CASO CLÍNICO (análisis, diferenciales, conducta)' : 'CASO CLÍNICO (análise, diferenciais, conduta)';
+    }
+
+    // Emergência / protocolo
+    if (_has(q, ['protocolo', 'conduta', 'conducta', 'manejo', 'tratamento', 'tratamiento',
+                  'emergencia', 'urgencia', 'como tratar', 'como manejar'])) {
+      return es ? 'PROTOCOLO/CONDUCTA CLÍNICA' : 'PROTOCOLO/CONDUTA CLÍNICA';
+    }
+
+    // Doença / síndrome conceitual
+    if (_has(q, ['o que e ', 'que es ', 'o que eh ', 'definic', 'definicion',
+                  'fisiopatolog', 'patogenese', 'patogenia', 'classificac', 'clasificacion',
+                  'criterio', 'criterios', 'diagnostico diferencial', 'diagnostico difer'])) {
+      return es ? 'ENFERMEDAD/SÍNDROME (definición, diagnóstico, tratamiento)' : 'DOENÇA/SÍNDROME (definição, diagnóstico, tratamento)';
+    }
+
+    // Exame / procedimento
+    if (_has(q, ['exame', 'examen', 'laborator', 'bioquim', 'hematolog',
+                  'procedimento', 'procedimiento', 'tecnica', 'técnica',
+                  'quando pedir', 'cuanto pedir', 'interpretar', 'resultado'])) {
+      return es ? 'EXAMEN/PROCEDIMIENTO' : 'EXAME/PROCEDIMENTO';
+    }
+
+    return es ? 'CONSULTA CLÍNICA GENERAL' : 'CONSULTA CLÍNICA GERAL';
+  }
+
   /// Verifica se a pergunta é uma query direta/nova (não deve herdar histórico)
   bool _isDirectQuery(String input) {
     final q = input.toLowerCase().trim();
-    // Prefixos que indicam query direta ao Gemini/IA — não misturar histórico
     final directPrefixes = [
       'buscar em gemini:', 'buscar gemini:', 'buscar:', 'pesquisar:',
       'gemini:', 'ia:', 'perguntar:', 'consultar:',
@@ -1050,7 +1106,6 @@ class AppProvider extends ChangeNotifier {
       'explique ', 'explica ', 'defina ', 'define ',
     ];
     if (directPrefixes.any((p) => q.startsWith(p))) return true;
-    // Pergunta curta e conceitual (sem sintomas clínicos) — não herdar histórico
     final hasClinicalKeywords = _has(_normalize(input), [
       'paciente', 'dor', 'febre', 'dispne', 'tontura', 'choque',
       'pa ', 'fc ', 'spo2', 'glasgow', 'ecg', 'tomograf',
@@ -1083,25 +1138,45 @@ class AppProvider extends ChangeNotifier {
     return '${tail.join(' ')} $currentInput'.trim();
   }
 
-  /// Chamada principal — modo HÍBRIDO: base local sempre roda + IA enriquece
-  ///
-  /// Prioridade:
-  ///  1. Gemini OAuth (conta Google do usuário) — se conectado
-  ///  2. OpenAI GPT (chave no Firestore)        — se disponível
-  ///  3. Base local rule-based                  — sempre funciona
+  // ══════════════════════════════════════════════════════════════════════════
+  // BUILD AI ANSWER — Pipeline RAG Clínico
+  //
+  // Pipeline:
+  //   1. Classificar intent (tipo de consulta)
+  //   2. Expandir query com histórico relevante
+  //   3. Retrieval local: matchProtocols + matchDrugs
+  //   4. Análise local (fallback e contexto estruturado)
+  //   5. Montar system prompt RAG com todos os contextos
+  //   6. Chamar Gemini (com Google Search Grounding) ou OpenAI
+  //   7. Salvar no histórico e retornar
+  // ══════════════════════════════════════════════════════════════════════════
   Future<String> buildAIAnswer(String input) async {
-    // ── Passo 1: Matching local SEMPRE roda ──────────────────────────────────
+    // ── Passo 1: Classificar intent ────────────────────────────────────────
+    final intent        = _classifyIntent(input);
     final expandedInput = _expandedQuery(input);
     final normalized    = _normalize(expandedInput);
-    final protocols     = _matchProtocols(normalized);
-    final drugs         = _matchDrugs(normalized);
 
-    // ── System prompt clínico (mesmo para Gemini e OpenAI) ───────────────────
+    // ── Passo 2: Retrieval local (protocolos + fármacos) ───────────────────
+    final protocols = _matchProtocols(normalized);
+    final drugs     = _matchDrugs(normalized);
+
+    // Retrieval expandido: até 6 protocolos e 6 fármacos para casos complexos
+    final protocolsExtended = _matchProtocolsExtended(normalized);
+    final drugsExtended     = _matchDrugsExtended(normalized);
+
+    final finalProtocols = protocolsExtended.isNotEmpty ? protocolsExtended : protocols;
+    final finalDrugs     = drugsExtended.isNotEmpty ? drugsExtended : drugs;
+
+    // ── Passo 3: Análise local estruturada (contexto para o Gemini) ────────
+    final localContext = _buildLocalAnswer(input);
+
+    // ── Passo 4: System prompt RAG completo ───────────────────────────────
     final systemPrompt = AiService.buildClinicalSystemPrompt(
       lang: _lang,
-      matchedProtocolSummaries: protocols,
-      matchedDrugSummaries: drugs,
-      localAnswerContext: _buildLocalAnswer(input),
+      matchedProtocolSummaries: finalProtocols,
+      matchedDrugSummaries: finalDrugs,
+      localAnswerContext: localContext,
+      queryIntent: intent,
       patientAge: _patient.age.isNotEmpty ? _patient.age : null,
       patientSex: _patient.sex.isNotEmpty ? _patient.sex : null,
       patientWeight: _patient.weight.isNotEmpty ? _patient.weight : null,
@@ -1109,12 +1184,14 @@ class AppProvider extends ChangeNotifier {
       patientMedications: _patient.medications.isNotEmpty ? _patient.medications : null,
     );
 
-    // ── Passo 2: Gemini OAuth tem prioridade (conta Google do usuário) ────────
+    // ── Passo 5: Gemini (prioridade) com Google Search Grounding ──────────
     if (_geminiConnected) {
       final geminiResult = await GeminiService.chat(
         userMessage: input,
         systemPrompt: systemPrompt,
         history: List.unmodifiable(_aiHistory),
+        maxTokens: 1800,
+        useGrounding: true,
       );
 
       if (!geminiResult.isError) {
@@ -1125,31 +1202,23 @@ class AppProvider extends ChangeNotifier {
         return geminiResult.text;
       }
 
-      // Gemini falhou — trata erro
       switch (geminiResult.errorCode) {
         case 'api_key_invalid':
-          // API Key inválida/revogada — a conexão fica ativa (email ainda válido)
           return _lang == 'es'
-              ? '⚠️ Error de API Gemini. Contacta al administrador del app.\n\n'
-                '${_buildLocalAnswer(input)}'
-              : '⚠️ Erro na API Gemini. Entre em contato com o administrador do app.\n\n'
-                '${_buildLocalAnswer(input)}';
+              ? '⚠️ Error de API Gemini. Contacta al administrador del app.\n\n${_buildLocalAnswer(input)}'
+              : '⚠️ Erro na API Gemini. Entre em contato com o administrador do app.\n\n${_buildLocalAnswer(input)}';
         case 'quota':
           return _lang == 'es'
-              ? '⚠️ Límite de uso de Gemini alcanzado. Inténtalo más tarde.\n\n'
-                '${_buildLocalAnswer(input)}'
-              : '⚠️ Limite de uso do Gemini atingido. Tente novamente mais tarde.\n\n'
-                '${_buildLocalAnswer(input)}';
+              ? '⚠️ Límite de uso de Gemini alcanzado. Inténtalo más tarde.\n\n${_buildLocalAnswer(input)}'
+              : '⚠️ Limite de uso do Gemini atingido. Tente novamente mais tarde.\n\n${_buildLocalAnswer(input)}';
         case 'blocked':
-          // Conteúdo bloqueado pelo safety filter → fallback silencioso
           return _buildLocalAnswer(input);
         default:
-          // Erro de rede ou desconhecido → fallback silencioso para local
           return _buildLocalAnswer(input);
       }
     }
 
-    // ── Passo 3: Sem Gemini → tenta OpenAI (legado) ───────────────────────────
+    // ── Passo 6: OpenAI (legado) ───────────────────────────────────────────
     if (_openAiKey.isEmpty) {
       return _buildLocalAnswer(input);
     }
@@ -1159,50 +1228,100 @@ class AppProvider extends ChangeNotifier {
       userMessage: input,
       systemPrompt: systemPrompt,
       history: List.unmodifiable(_aiHistory),
+      maxTokens: 1800,
     );
 
-    // ── Passo 4: Tratamento de erros OpenAI ──────────────────────────────────
     if (result.isError) {
       switch (result.errorCode) {
         case 'invalid_key':
           return _lang == 'es'
-              ? '⚠️ Clave de API inválida. Verifica tu clave en la configuración del chat.\n\n'
-                'Mientras tanto, aquí está la respuesta de nuestra base local:\n\n'
-                '${_buildLocalAnswer(input)}'
-              : '⚠️ Chave de API inválida. Verifique sua chave na configuração do chat.\n\n'
-                'Enquanto isso, aqui está a resposta da nossa base local:\n\n'
-                '${_buildLocalAnswer(input)}';
+              ? '⚠️ Clave de API inválida.\n\n${_buildLocalAnswer(input)}'
+              : '⚠️ Chave de API inválida.\n\n${_buildLocalAnswer(input)}';
         case 'quota':
           return _lang == 'es'
-              ? '⚠️ Límite de uso de la API alcanzado. Revisa tu cuenta en platform.openai.com.\n\n'
-                'Respuesta de nuestra base local:\n\n'
-                '${_buildLocalAnswer(input)}'
-              : '⚠️ Limite de uso da API atingido. Verifique sua conta em platform.openai.com.\n\n'
-                'Resposta da nossa base local:\n\n'
-                '${_buildLocalAnswer(input)}';
+              ? '⚠️ Límite de API alcanzado.\n\n${_buildLocalAnswer(input)}'
+              : '⚠️ Limite de API atingido.\n\n${_buildLocalAnswer(input)}';
         default:
           return _buildLocalAnswer(input);
       }
     }
 
-    // ── Passo 5: Sucesso → adiciona ao histórico multi-turn ──────────────────
     _aiHistory
       ..add({'role': 'user', 'content': input})
       ..add({'role': 'assistant', 'content': result.text});
-    // Limita a 10 pares (20 mensagens) para não explodir tokens
-    while (_aiHistory.length > 20) {
-      _aiHistory.removeAt(0);
-    }
-
+    while (_aiHistory.length > 20) _aiHistory.removeAt(0);
     return result.text;
   }
 
-  /// Resposta local (rule-based) — fallback quando não há chave ou sem rede.
+  // ── Retrieval estendido: retorna até 6 protocolos (para casos complexos) ──
+  List<String> _matchProtocolsExtended(String normalizedQuery) {
+    const _highRiskIds = {
+      'avc_hemorragico', 'avc_isquemico', 'pcr_adulto', 'choque_cardiogenico',
+      'hsa', 'meningite', 'sepse', 'iam_congestao', 'tep', 'status_epilepticus',
+      'eclampsia_hellp', 'hiponatremia_grave', 'intox_monoxido_carbono',
+      'caso_enxaqueca_aura', 'gripe_influenza_010',
+    };
+    final results = <String>[];
+    final words = normalizedQuery
+        .split(RegExp(r'\s+'))
+        .where((w) => w.length > 3)
+        .toList();
+
+    for (final p in protocolsDatabase) {
+      final title    = _normalize(tDB(p.title));
+      final recognize = _normalize(tDB(p.recognize));
+      final matchCount = words.where((w) => title.contains(w) || recognize.contains(w)).length;
+      final isHighRisk = _highRiskIds.any((id) => p.id.contains(id));
+      final minScore   = isHighRisk ? 2 : 1;
+      if (matchCount >= minScore) {
+        final actions = p.getActions(_lang).take(4).join(' | ');
+        results.add(
+          '• [${tDB(p.title)}]\n'
+          '  Reconhecer: ${tDB(p.recognize).substring(0, tDB(p.recognize).length.clamp(0, 180))}...\n'
+          '  Conduta: $actions'
+        );
+        if (results.length >= 6) break;
+      }
+    }
+    return results;
+  }
+
+  // ── Retrieval estendido de fármacos: retorna até 6 ─────────────────────
+  List<String> _matchDrugsExtended(String normalizedQuery) {
+    final results = <String>[];
+    for (final d in drugsDatabase) {
+      final name  = _normalize(d.name);
+      final cls   = _normalize(d.getField(d.className, _lang));
+      final mech  = _normalize(d.getField(d.mechanism, _lang));
+      final words = normalizedQuery.split(RegExp(r'\s+'))
+          .where((w) => w.length > 3).toList();
+      if (words.any((w) => name.contains(w) || cls.contains(w) || mech.contains(w))) {
+        final dose    = d.getField(d.fixedDose, _lang);
+        final warn    = d.getField(d.warning, _lang);
+        final mechStr = d.getField(d.mechanism, _lang);
+        final route   = d.route;
+        results.add(
+          '• [${d.name}] ${d.getField(d.className, _lang)}\n'
+          '  Mecanismo: ${mechStr.isNotEmpty ? mechStr.substring(0, mechStr.length.clamp(0, 120)) : "—"}\n'
+          '  Dose: ${dose.isNotEmpty ? dose : "ver ficha"} | Via: ${route.isNotEmpty ? route : "—"}\n'
+          '  Alerta: ${warn.isNotEmpty ? warn.substring(0, warn.length.clamp(0, 120)) : "—"}'
+        );
+        if (results.length >= 6) break;
+      }
+    }
+    return results;
+  }
+
+  /// Resposta local (rule-based) enriquecida — serve como contexto RAG para o Gemini
+  /// e como fallback autônomo quando não há IA disponível.
   ///
-  /// ARQUITETURA: sistema de pontuação por condição.
-  /// Cada condição clínica acumula score (+1 por keyword encontrada).
-  /// Apenas a condição com maior score é exibida — elimina o dump
-  /// incoerente de hipóteses desconexas (ex: cefaleia + fasciíte juntas).
+  /// ARQUITETURA:
+  ///   FASE 0 — Farmacologia direta: resposta completa com mecanismo, dose, interações, alertas
+  ///   FASE 1 — Sistema de pontuação por condição clínica (29 condições)
+  ///   FASE 2 — Lógica contextual para queries sem match direto
+  ///   FASE 3 — Render enriquecido: diferenciais, tratamento estruturado, doses, diretrizes
+  ///
+  /// OUTPUT: contexto estruturado markdown que o Gemini usa para gerar resposta final.
   String _buildLocalAnswer(String input) {
     final bool es = _lang == 'es';
 
@@ -1220,6 +1339,9 @@ class AppProvider extends ChangeNotifier {
 
     // ════════════════════════════════════════════════════════════════════════
     // FASE 0 — FARMACOLOGIA DIRETA (prioridade absoluta)
+    // Resposta completa sempre: classe, mecanismo, dose, via, efeitos adversos,
+    // contraindicações, interações com medicamentos do paciente, ajuste renal.
+    // Serve como contexto RAG estruturado para o Gemini.
     // ════════════════════════════════════════════════════════════════════════
     final isPharmaQuestion = _has(qExpanded, [
       'via de admin', 'forma de admin', 'via admin', 'como admin',
@@ -1241,16 +1363,20 @@ class AppProvider extends ChangeNotifier {
     if (isPharmaQuestion) {
       final matchedDrugs = _matchDrugs(_normalize(qExpanded));
       if (matchedDrugs.isNotEmpty) {
+        // Detectar foco da pergunta para priorizar seções no output
         final askingVia   = _has(qExpanded, ['via ', 'via de', 'forma de admin', 'como admin', 'como dar', 'rota', 'modo de', 'administracion']);
         final askingDose  = _has(qExpanded, ['dose', 'dosagem', 'posolog', 'dosis']);
         final askingMech  = _has(qExpanded, ['mecanismo', 'como funciona', 'por que', 'mecanismo de acao', 'mecanismo de accion']);
         final askingAdv   = _has(qExpanded, ['adverso', 'colateral', 'reacao', 'toxicidad', 'efectos sec', 'efeito']);
-        final askingInter = _has(qExpanded, ['interacao', 'interaccion', 'interage', 'compativel']);
-        final askingCI    = _has(qExpanded, ['contraindicacao', 'contraindicado', 'nao usar', 'contraindicacion']);
-        final askingInd   = _has(qExpanded, ['indicacao', 'indicado', 'para que', 'quando usar', 'sirve', 'indicacion']);
+        final askingInter = _has(qExpanded, ['interacao', 'interaccion', 'interage', 'compativel', 'junto com', 'combinar']);
+        final askingCI    = _has(qExpanded, ['contraindicacao', 'contraindicado', 'nao usar', 'contraindicacion', 'nao pode', 'proibido']);
+        final askingInd   = _has(qExpanded, ['indicacao', 'indicado', 'para que', 'quando usar', 'sirve', 'indicacion', 'uso']);
+        // Se nenhum foco específico → mostrar tudo (ficha completa)
+        final showAll = !askingVia && !askingDose && !askingMech && !askingAdv
+                     && !askingInter && !askingCI && !askingInd;
 
         final buf = StringBuffer();
-        buf.writeln(es ? '## Información farmacológica:' : '## Informações farmacológicas:');
+        buf.writeln(es ? '## Información farmacológica — Base interna:' : '## Informações farmacológicas — Base interna:');
         buf.writeln('');
 
         for (final drug in drugsDatabase) {
@@ -1258,11 +1384,18 @@ class AppProvider extends ChangeNotifier {
           final words = qExpanded.split(RegExp(r'\s+')).where((w) => w.length > 3);
           if (!words.any((w) => dName.contains(w))) continue;
 
+          // ── Cabeçalho do fármaco ──────────────────────────────────────────
           buf.writeln('### ${drug.name}');
-          if (askingVia || (!askingDose && !askingMech && !askingAdv && !askingInter && !askingCI && !askingInd)) {
+          final cls = drug.getField(drug.className, _lang);
+          if (cls.isNotEmpty) buf.writeln('  **${es ? "Clase" : "Classe"}:** $cls');
+
+          // ── Via de administração (sempre mostrada ou quando perguntada) ────
+          if (askingVia || showAll) {
             if (drug.route.isNotEmpty) buf.writeln('  **${es ? "Vía" : "Via"}:** ${drug.route}');
           }
-          if (askingDose || (!askingVia && !askingMech && !askingAdv && !askingInter && !askingCI && !askingInd)) {
+
+          // ── Dose (sempre mostrada ou quando perguntada) ────────────────────
+          if (askingDose || showAll) {
             final fd = drug.getField(drug.fixedDose, _lang);
             if (fd.isNotEmpty) buf.writeln('  **${es ? "Dosis habitual" : "Dose habitual"}:** $fd');
             if (_patient.weight.isNotEmpty) {
@@ -1273,53 +1406,93 @@ class AppProvider extends ChangeNotifier {
               } catch (_) {}
             }
           }
-          if (askingMech) {
+
+          // ── Mecanismo de ação (sempre mostrado ou quando perguntado) ───────
+          if (askingMech || showAll) {
             final mech = drug.getField(drug.mechanism, _lang);
-            if (mech.isNotEmpty) buf.writeln('  **Mecanismo:** $mech');
+            if (mech.isNotEmpty) {
+              final mechTrunc = mech.length > 300 ? '${mech.substring(0, 300)}...' : mech;
+              buf.writeln('  **${es ? "Mecanismo de acción" : "Mecanismo de ação"}:** $mechTrunc');
+            }
           }
-          if (askingAdv) {
+
+          // ── Indicações (quando perguntado ou ficha completa) ───────────────
+          if (askingInd || showAll) {
+            final cls2 = drug.getField(drug.className, _lang);
+            if (cls2.isNotEmpty && cls2 != cls) buf.writeln('  **${es ? "Indicaciones principales" : "Indicações principais"}:** $cls2');
+          }
+
+          // ── Efeitos adversos (sempre na ficha completa) ────────────────────
+          if (askingAdv || showAll) {
             final advList = drug.getAdverse(_lang);
-            if (advList.isNotEmpty) buf.writeln('  **${es ? "Efectos adversos" : "Efeitos adversos"}:** ${advList.take(5).join(', ')}');
+            if (advList.isNotEmpty) {
+              buf.writeln('  **${es ? "Efectos adversos" : "Efeitos adversos"}:** ${advList.take(6).join(', ')}');
+            }
           }
-          if (askingCI) {
+
+          // ── Contraindicações / Alertas (sempre na ficha completa) ──────────
+          if (askingCI || showAll) {
             final warn = drug.getField(drug.warning, _lang);
-            if (warn.isNotEmpty) buf.writeln('  **${es ? "Contraindicaciones / Alertas" : "Contraindicações / Alertas"}:** ${warn.length > 200 ? "${warn.substring(0, 200)}..." : warn}');
+            if (warn.isNotEmpty) {
+              final warnTrunc = warn.length > 250 ? '${warn.substring(0, 250)}...' : warn;
+              buf.writeln('  **${es ? "Contraindicaciones / Alertas" : "Contraindicações / Alertas"}:** $warnTrunc');
+            }
           }
-          if (askingInd) {
-            final cls = drug.getField(drug.className, _lang);
-            if (cls.isNotEmpty) buf.writeln('  **${es ? "Clase / Uso" : "Classe / Uso"}:** $cls');
-          }
-          if (askingInter) {
+
+          // ── Interações com medicamentos do paciente ────────────────────────
+          if (askingInter || showAll) {
             final interList = DrugInteractionService.checkInteractions(
               selectedDrugNames: [drug.name],
               patientMedicationsText: _patient.medications,
             );
             if (interList.isNotEmpty) {
-              buf.writeln('  **${es ? "Interacciones relevantes" : "Interações relevantes"}:**');
-              for (final inter in interList.take(4)) {
-                final sev = inter.severity == InteractionSeverity.contraindicated
-                    ? '⛔ Contraindicado'
+              buf.writeln('  **${es ? "Interacciones detectadas" : "Interações detectadas (medicamentos do paciente)"}:**');
+              for (final inter in interList.take(5)) {
+                final sevIcon = inter.severity == InteractionSeverity.contraindicated
+                    ? '⛔'
                     : inter.severity == InteractionSeverity.major
-                        ? '🔴 ${es ? "Mayor" : "Maior"}'
+                        ? '🔴'
                         : inter.severity == InteractionSeverity.moderate
-                            ? '🟠 ${es ? "Moderada" : "Moderada"}'
-                            : '🟡 ${es ? "Menor" : "Menor"}';
+                            ? '🟠'
+                            : '🟡';
+                final sevLabel = inter.severity == InteractionSeverity.contraindicated
+                    ? (es ? 'CONTRAINDICADO' : 'CONTRAINDICADO')
+                    : inter.severity == InteractionSeverity.major
+                        ? (es ? 'Mayor' : 'Maior')
+                        : inter.severity == InteractionSeverity.moderate
+                            ? (es ? 'Moderada' : 'Moderada')
+                            : (es ? 'Menor' : 'Menor');
                 final eff = inter.effect;
-                buf.writeln('    $sev — ${inter.drug1} + ${inter.drug2}: ${eff.length > 100 ? "${eff.substring(0, 100)}..." : eff}');
+                final effTrunc = eff.length > 120 ? '${eff.substring(0, 120)}...' : eff;
+                buf.writeln('    $sevIcon $sevLabel — ${inter.drug1} + ${inter.drug2}: $effTrunc');
               }
-            } else {
-              buf.writeln('  ${es ? "No se encontraron interacciones registradas." : "Nenhuma interação registrada com os medicamentos atuais."}');
+            } else if (askingInter) {
+              buf.writeln('  ${es ? "Sin interacciones registradas con los medicamentos actuales del paciente." : "Nenhuma interação registrada com os medicamentos atuais do paciente."}');
             }
           }
+
+          // ── Ajuste renal (sempre quando ClCr reduzido) ────────────────────
           final clcrPharma = double.tryParse((clcr ?? '').replaceAll(',', '.'));
-          if (clcrPharma != null && clcrPharma > 0 && clcrPharma < 45) {
+          if (clcrPharma != null && clcrPharma > 0 && clcrPharma < 60) {
             final ra = drug.getField(drug.renalAlert, _lang);
-            if (ra.isNotEmpty) buf.writeln('  ⚠ **${es ? "Alerta renal (ClCr $clcr)" : "Alerta renal (ClCr $clcr)"}:** ${ra.length > 150 ? "${ra.substring(0, 150)}..." : ra}');
+            if (ra.isNotEmpty) {
+              final raLevel = clcrPharma < 15 ? '🔴 ALERTA RENAL GRAVE' : clcrPharma < 30 ? '🟠 Alerta renal' : '🟡 Atenção renal';
+              final raTrunc = ra.length > 200 ? '${ra.substring(0, 200)}...' : ra;
+              buf.writeln('  **$raLevel (ClCr $clcr mL/min):** $raTrunc');
+            }
           }
+
+          // ── Alerta em idosos (se ≥75 anos) ────────────────────────────────
+          final ageVal0 = int.tryParse(_patient.age);
+          if (ageVal0 != null && ageVal0 >= 75) {
+            final ea = drug.getField(drug.elderlyAlert, _lang);
+            if (ea.isNotEmpty) buf.writeln('  **${es ? "Alerta en adulto mayor" : "Alerta em idoso"}:** $ea');
+          }
+
           buf.writeln('');
         }
 
-        if (buf.length > 50) {
+        if (buf.length > 80) {
           buf.writeln(es ? '⚕ Apoyo educacional.' : '⚕ Apoio educacional.');
           return buf.toString();
         }
@@ -1348,6 +1521,13 @@ class AppProvider extends ChangeNotifier {
         exams: ['Monitor/desfibrilador', 'Glicemia pós-ROSC', 'Gasometria pós-ROSC', 'ECG pós-ROSC'],
         flags: [es ? 'ACLS inmediato: RCP + desfibrilación' : 'ACLS imediato: RCP de alta qualidade + desfibrilação',
                 es ? 'Adrenalina 1 mg IV cada 3–5 min' : 'Adrenalina 1 mg IV cada 3–5 min'],
+        differentials: es
+            ? ['FV/TVSP (desfibrilable)', 'AESP (no desfibrilable)', 'Asistolia', 'Causas 5H5T (hipoxia, hipovolemia, hipotermia, hipo/hiperpotasemia, hidrogenión, tensión neumotórax, taponamiento, trombosis, tóxicos)']
+            : ['FV/TVSP (desfibrilável)', 'AESP (não desfibrilável)', 'Assistolia', 'Causas 5H5T (hipóxia, hipovolemia, hipotermia, hipo/hipercalemia, íon H+, tensão pneumotórax, tamponamento, trombose, tóxicos)'],
+        treatment: es
+            ? ['1. RCP de alta calidad: 30:2, profundidad 5-6 cm, frecuencia 100-120/min', '2. Desfibrilar FV/TVSP: 200J bifásico inmediatamente', '3. Adrenalina 1 mg IV cada 3-5 min (desde el 2º ciclo en no desfibrilables)', '4. Amiodarona 300 mg IV en FV/TVSP refractaria (2ª dosis: 150 mg)', '5. Identificar y corregir causas reversibles (5H5T)', '6. Cuidados post-ROSC: normoxia, normocapnia, hipotermia terapéutica']
+            : ['1. RCP de alta qualidade: 30:2, profundidade 5-6 cm, frequência 100-120/min', '2. Desfibrilar FV/TVSP: 200J bifásico imediatamente', '3. Adrenalina 1 mg IV a cada 3-5 min (a partir do 2º ciclo em não desfibriláveis)', '4. Amiodarona 300 mg IV em FV/TVSP refratária (2ª dose: 150 mg)', '5. Identificar e corrigir causas reversíveis (5H5T)', '6. Cuidados pós-ROSC: normóxia, normocapnia, hipotermia terapêutica'],
+        guidelines: ['AHA ACLS 2020', 'ILCOR 2020', 'ERC 2021'],
       ),
 
       // ── Choque ────────────────────────────────────────────────────────────
@@ -1359,6 +1539,13 @@ class AppProvider extends ChangeNotifier {
         exams: [es ? 'Lactato arterial' : 'Lactato arterial', 'Gasometria', 'ECG', es ? 'Ecocardiograma a pie de cama' : 'Ecocardiograma beira-leito'],
         flags: [es ? 'PAM <65 → vasopresor inmediato' : 'PAM <65 → vasopressor imediato',
                 es ? 'Lactato >4 → reanimación 30 mL/kg' : 'Lactato >4 → reanimação agressiva 30 mL/kg'],
+        differentials: es
+            ? ['Choque séptico (fiebre, foco infeccioso)', 'Choque cardiogénico (IC, IAM)', 'Choque hipovolémico (hemorragia, deshidratación)', 'Choque distributivo (anafilaxia, neurológico)', 'Choque obstructivo (TEP masivo, taponamiento)']
+            : ['Choque séptico (febre, foco infeccioso)', 'Choque cardiogênico (IC, IAM)', 'Choque hipovolêmico (hemorragia, desidratação)', 'Choque distributivo (anafilaxia, neurogênico)', 'Choque obstrutivo (TEP maciço, tamponamento)'],
+        treatment: es
+            ? ['1. Establecer acceso IV/IO y monitor contínuo', '2. Lactato >4: reanimación con SF 30 mL/kg en 3h', '3. PAM <65 refractaria a volumen: noradrenalina 0,1-3 mcg/kg/min', '4. Choque cardiogénico: dobutamina 5-20 mcg/kg/min + furosemida si congestión', '5. Choque séptico: antibiótico en <1h + hemocultivos', '6. Meta: PAM ≥65, diuresis >0,5 mL/kg/h, lactato decrescente']
+            : ['1. Acesso IV/IO + monitor contínuo', '2. Lactato >4: SF 30 mL/kg em 3h', '3. PAM <65 refratária a volume: noradrenalina 0,1-3 mcg/kg/min', '4. Choque cardiogênico: dobutamina 5-20 mcg/kg/min + furosemida se congestão', '5. Choque séptico: antibiótico em <1h + hemoculturas', '6. Meta: PAM ≥65, diurese >0,5 mL/kg/h, lactato decrescente'],
+        guidelines: ['Surviving Sepsis Campaign 2021', 'AHA Cardiogenic Shock 2022', 'ESICM 2023'],
       ),
 
       // ── IAM / SCA ─────────────────────────────────────────────────────────
@@ -1371,6 +1558,13 @@ class AppProvider extends ChangeNotifier {
         exams: [es ? 'ECG seriado (0–6–12h)' : 'ECG seriado (0–6–12h)', es ? 'Troponina (0–3h)' : 'Troponina (0–3h)', 'RX tórax', es ? 'Glucemia' : 'Glicemia'],
         flags: [es ? 'Supradesnivel ST → cateterismo urgente' : 'Supradesnivelamento ST → cateterismo urgente',
                 es ? 'Hipotensión → choque cardiogénico' : 'Hipotensão → choque cardiogênico'],
+        differentials: es
+            ? ['IAMCSST (supradesnivel ST, reperfusión urgente)', 'IAMSEST/AI (troponina + sin supra)', 'Disección aórtica (dolor desgarrador, asimetría PA)', 'Pericarditis (mejora sentado, roce)', 'TEP (disnea, hipoxia, S1Q3T3)', 'Espasmo esofágico (alivia con nitrato)']
+            : ['IAMCSST (supradesnivelamento ST, reperfusão urgente)', 'IAMSEST/AI (troponina + sem supra)', 'Dissecção aórtica (dor dilacerante, assimetria PA)', 'Pericardite (melhora sentado, atrito)', 'TEP (dispneia, hipóxia, S1Q3T3)', 'Espasmo esofágico (alivia com nitrato)'],
+        treatment: es
+            ? ['1. IAMCSST: AAS 300 mg + clopidogrel/ticagrelor + heparina → cateterismo en <90 min', '2. IAMSEST alto riesgo: AAS 300 mg + ticagrelor 180 mg + bivalirudina → cath en <24h', '3. Morfina 2-4 mg IV si dolor intenso (con precaución — puede reducir absorción antiagregantes)', '4. Nitratos: isosorbida SL o IV si PA >100 (contraindicado en IAM de VD e hipotensión)', '5. Betabloqueantes VO en ausencia de IC aguda/bradicardia', '6. Killip II-IV: furosemida 40 mg IV + VNI si EAP']
+            : ['1. IAMCSST: AAS 300 mg + clopidogrel/ticagrelor + heparina → cateterismo em <90 min', '2. IAMSEST alto risco: AAS 300 mg + ticagrelor 180 mg + bivalirudina → cath em <24h', '3. Morfina 2-4 mg IV se dor intensa (cautela — pode reduzir absorção dos antiplaquetários)', '4. Nitratos: isossorbida SL ou IV se PA >100 (contraindicado em IAM de VD e hipotensão)', '5. Betabloqueadores VO na ausência de IC aguda/bradicardia', '6. Killip II-IV: furosemida 40 mg IV + VNI se EAP'],
+        guidelines: ['ESC NSTEMI 2023', 'ESC STEMI 2023', 'AHA/ACC NSTE-ACS 2021'],
       ),
 
       // ── TEP ───────────────────────────────────────────────────────────────
@@ -1381,6 +1575,13 @@ class AppProvider extends ChangeNotifier {
         keywords: ['tep', 'tromboembol pulm', 'embolia pulm', 'tvp', 'wells', 'd-dimero', 'angiotc torac'],
         exams: [es ? 'D-dímero (si baja probabilidad)' : 'D-dímero (se baixa probabilidade)', es ? 'AngioTC tórax' : 'AngioTC tórax', 'ECG (S1Q3T3)', 'Troponina', 'Score de Wells'],
         flags: [es ? 'Choque/hipotensión → trombolítico sistémico urgente' : 'Choque/hipotensão → trombolítico sistêmico urgente'],
+        differentials: es
+            ? ['Neumonía/pleuritis (fiebre, crepitantes)', 'IAM/Angina (ECG, troponina)', 'Neumotórax (timpanismo, ausencia de MV)', 'Pericarditis aguda', 'EPOC exacerbado', 'Ansiedad/hiperventilación']
+            : ['Pneumonia/pleurite (febre, crepitações)', 'IAM/Angina (ECG, troponina)', 'Pneumotórax (timpanismo, ausência MV)', 'Pericardite aguda', 'DPOC exacerbado', 'Ansiedade/hiperventilação'],
+        treatment: es
+            ? ['1. TEP masivo (choque): trombólisis alteplase 100 mg IV en 2h (o 0,6 mg/kg em 15 min en PCR)', '2. TEP submasivo (disfunción VD): anticoagulación enoxaparina 1 mg/kg SC c/12h o rivaroxabán 15 mg 2×/día ×21 días', '3. TEP leve: rivaroxabán 15 mg 2×/día ×21 días → 20 mg/día, o apixabán 10 mg 2×/día ×7 días → 5 mg 2×/día', '4. Contraindicación DOAC: heparina + warfarina (INR 2-3)', '5. O2 si SpO2 <94%, vasopresores si hipotensión', '6. Filtro VCI solo si anticoagulación contraindicada']
+            : ['1. TEP maciço (choque): trombolítico alteplase 100 mg IV em 2h (ou 0,6 mg/kg em 15 min em PCR)', '2. TEP submaciço (disfunção VD): anticoagulação enoxaparina 1 mg/kg SC 12/12h ou rivaroxabana 15 mg 2×/dia ×21 dias', '3. TEP leve: rivaroxabana 15 mg 2×/dia ×21 dias → 20 mg/dia, ou apixabana 10 mg 2×/dia ×7 dias → 5 mg 2×/dia', '4. Contraindicação DOAC: heparina + warfarina (INR 2-3)', '5. O2 se SpO2 <94%, vasopressores se hipotensão', '6. Filtro de VCI só se anticoagulação contraindicada'],
+        guidelines: ['ESC TEP 2019', 'ACCP VTE 2021', 'AHA PE 2023'],
       ),
 
       // ── FA / Flutter ──────────────────────────────────────────────────────
@@ -1392,6 +1593,13 @@ class AppProvider extends ChangeNotifier {
         exams: [es ? 'ECG 12 derivaciones' : 'ECG 12 derivações', 'TSH', es ? 'Electrolitos (K+, Mg2+)' : 'Eletrólitos (K+, Mg2+)', 'Ecocardiograma', es ? 'Score CHA₂DS₂-VASc' : 'Score CHA₂DS₂-VASc'],
         flags: [es ? 'FC >150 + inestabilidad → cardioversión eléctrica inmediata' : 'FC >150 + instabilidade → cardioversão elétrica imediata',
                 es ? 'FA >48h sin anticoagulación → riesgo de AVC' : 'FA >48h sem anticoagulação → risco de AVC por trombo'],
+        differentials: es
+            ? ['Flutter auricular (ondas F en dientes de sierra, conducción 2:1/3:1)', 'TSV (QRS estrecho regular)', 'TV (QRS ancho, no responde a maniobras vagales)', 'WPW (FA preexcitada: PELIGRO con digoxina/verapamilo)']
+            : ['Flutter atrial (ondas F em dentes de serra, condução 2:1/3:1)', 'TSV (QRS estreito regular)', 'TV (QRS largo, não responde a manobras vagais)', 'WPW (FA pré-excitada: PERIGO com digoxina/verapamil)'],
+        treatment: es
+            ? ['1. Inestable (hipotensión/síncope/EAP): cardioversión eléctrica sincronizada 120-200J', '2. Estable con FC >110: control de FC — metoprolol 2,5-5 mg IV o diltiazem 0,25 mg/kg IV', '3. FA <48h: cardioversión farmacológica — amiodarona 150 mg IV en 10 min → 1 mg/min 6h', '4. FA >48h o desconocida: anticoagular 3 semanas ANTES de cardiovertir (o ETE para descartar trombo)', '5. Anticoagulación crónica: CHA₂DS₂-VASc ≥2 (♂) o ≥3 (♀) → DOAC (rivaroxabán/apixabán/dabigatrán)', '6. Control de FC crónica: betabloqueante (metoprolol/carvedilol) o diltiazem']
+            : ['1. Instável (hipotensão/síncope/EAP): cardioversão elétrica sincronizada 120-200J', '2. Estável com FC >110: controle da FC — metoprolol 2,5-5 mg IV ou diltiazem 0,25 mg/kg IV', '3. FA <48h: cardioversão farmacológica — amiodarona 150 mg IV em 10 min → 1 mg/min 6h', '4. FA >48h ou desconhecida: anticoagular 3 semanas ANTES de cardioverter (ou ETE para excluir trombo)', '5. Anticoagulação crônica: CHA₂DS₂-VASc ≥2 (♂) ou ≥3 (♀) → DOAC (rivaroxabana/apixabana/dabigatrana)', '6. Controle da FC crônica: betabloqueador (metoprolol/carvedilol) ou diltiazem'],
+        guidelines: ['ESC FA 2020', 'AHA/ACC/HRS Afib 2023', 'SBC FA 2022'],
       ),
 
       // ── IC / EAP ──────────────────────────────────────────────────────────
@@ -1403,6 +1611,13 @@ class AppProvider extends ChangeNotifier {
         exams: ['BNP/NT-proBNP', 'RX tórax', 'Ecocardiograma', es ? 'Electrolitos' : 'Eletrólitos', es ? 'Función renal' : 'Função renal'],
         flags: [es ? 'SpO2 <90% → VNI (CPAP/BIPAP) inmediata' : 'SpO2 <90% + esforço respiratório → VNI (CPAP/BIPAP) imediata',
                 es ? 'Hipotensión + IC → choque cardiogénico' : 'Hipotensão + IC → choque cardiogênico: cuidado com diurético'],
+        differentials: es
+            ? ['EPOC exacerbado (historia de tabaquismo, sibilancias)', 'TEP (D-dímero, angioTC)', 'Neumonía (fiebre, infiltrado asimétrico)', 'Crisis hipertensiva (PA muy elevada sin congestión previa)', 'Taponamiento cardíaco (JVD, ruidos apagados, hipotensión)']
+            : ['DPOC exacerbado (tabagismo, sibilos)', 'TEP (D-dímero, angioTC)', 'Pneumonia (febre, infiltrado assimétrico)', 'Crise hipertensiva (PA muito elevada sem congestão prévia)', 'Tamponamento cardíaco (TJV, bulhas abafadas, hipotensão)'],
+        treatment: es
+            ? ['1. Posición sentada + O2 para SpO2 ≥94%', '2. SpO2 <90%: VNI (CPAP 5-10 cmH2O) inmediata — reduz intubación 50%', '3. Furosemida 40-80 mg IV (doble dosis si usuario crónico)', '4. Nitratos IV si PAS >110 (isosorbida 1-10 mg/h) — contraindicados si PAS <100', '5. IC con FEr baja: IECA/ARA II + betabloqueante + espironolactona + SGLT2i (mantenimiento)', '6. Hipotensión + IC: dobutamina 5-20 mcg/kg/min, evitar diuréticos agresivos']
+            : ['1. Posição sentada + O2 para SpO2 ≥94%', '2. SpO2 <90%: VNI (CPAP 5-10 cmH2O) imediata — reduz intubação 50%', '3. Furosemida 40-80 mg IV (dose dupla se usuário crônico)', '4. Nitratos IV se PAS >110 (isossorbida 1-10 mg/h) — contraindicados se PAS <100', '5. ICFEr: IECA/BRA + betabloqueador + espironolactona + SGLT2i (manutenção)', '6. Hipotensão + IC: dobutamina 5-20 mcg/kg/min, evitar diurético agressivo'],
+        guidelines: ['ESC IC 2021', 'AHA/ACC HF 2022', 'SBC IC 2023'],
       ),
 
       // ── Dissecção Aórtica ─────────────────────────────────────────────────
@@ -1414,6 +1629,13 @@ class AppProvider extends ChangeNotifier {
         exams: [es ? 'AngioTC aorta urgente' : 'AngioTC aorta urgente', 'RX tórax', 'ECG', es ? 'PA en ambos brazos' : 'PA nos 2 braços'],
         flags: [es ? 'NO anticoagular sin confirmar diagnóstico' : 'NÃO anticoagular sem confirmar diagnóstico',
                 es ? 'Control FC+PA: meta PAS <120 + FC <60' : 'Controle FC+PA imediato: meta PAS <120 + FC <60'],
+        differentials: es
+            ? ['IAM (ECG + troponina, pero disección puede cursarlo como IAM)', 'TEP masivo', 'Pericarditis/derrame pericárdico', 'Estenosis aórtica grave', 'Dolor músculo-esquelético intercostal']
+            : ['IAM (ECG + troponina, mas dissecção pode mimetizar IAM)', 'TEP maciço', 'Pericardite/derrame pericárdico', 'Estenose aórtica grave', 'Dor musculoesquelética intercostal'],
+        treatment: es
+            ? ['1. AngioTC aorta URGENTE — confirmar diagnóstico antes de cualquier intervención', '2. Tipo A (aorta ascendente): cirugía de emergencia inmediata', '3. Tipo B (aorta descendente sin complicaciones): tratamiento médico — labetalol 20 mg IV + nitroprusiato', '4. Meta FC <60 lpm + PAS <120 mmHg: esmolol 0,5 mg/kg IV → infusión 50-200 mcg/kg/min', '5. CONTRAINDICADO: anticoagulación sin confirmación de diagnóstico', '6. CUIDADO: en IAM con supra + disección → NO fibrinolítico']
+            : ['1. AngioTC aorta URGENTE — confirmar diagnóstico antes de qualquer intervenção', '2. Tipo A (aorta ascendente): cirurgia de emergência imediata', '3. Tipo B (aorta descendente sem complicações): tratamento médico — labetalol 20 mg IV + nitroprussiato', '4. Meta FC <60 bpm + PAS <120 mmHg: esmolol 0,5 mg/kg IV → infusão 50-200 mcg/kg/min', '5. CONTRAINDICADO: anticoagulação sem confirmação diagnóstica', '6. CUIDADO: em IAM com supra + dissecção → NÃO fibrinolítico'],
+        guidelines: ['ESC Aorta 2014', 'AHA/ACC Aorta 2022', 'SBH Aorta 2023'],
       ),
 
       // ── TPSV / Taquiarritmia ──────────────────────────────────────────────
@@ -1425,6 +1647,13 @@ class AppProvider extends ChangeNotifier {
         exams: [es ? 'ECG 12 derivaciones' : 'ECG 12 derivações', es ? 'Electrolitos (K+, Mg2+)' : 'Eletrólitos (K+, Mg2+)', 'TSH'],
         flags: [es ? 'Inestabilidad hemodinámica → cardioversión eléctrica' : 'Instabilidade hemodinâmica → cardioversão elétrica',
                 es ? 'Estable con QRS estrecho → maniobras vagales → adenosina' : 'Estável QRS estreito → manobras vagais → adenosina'],
+        differentials: es
+            ? ['FA/Flutter (RR irregular)', 'Taquicardia sinusal (causa secundaria: deshidratación, anemia, infección)', 'TV (QRS ancho ≥0,12s — más peligrosa)', 'WPW (δ wave en ritmo sinusal)', 'Taquicardia por reentrada nodal (TRNAV): pausa post-adenosina diagnóstica']
+            : ['FA/Flutter (RR irregular)', 'Taquicardia sinusal (causa secundária: desidratação, anemia, infecção)', 'TV (QRS largo ≥0,12s — mais perigosa)', 'WPW (δ wave no ritmo sinusal)', 'Taquicardia por reentrada nodal (TRNAV): pausa pós-adenosina diagnóstica'],
+        treatment: es
+            ? ['1. Inestable (síncope/hipotensión/EAP): cardioversión eléctrica sincronizada 50-100J', '2. Estable QRS estrecho: maniobra de Valsalva modificada (más efectiva: 40 mmHg 15s + decúbito)', '3. Sin respuesta a vagal: adenosina 6 mg IV rápido (+ flush 20 mL SF) → si no: 12 mg → 12 mg', '4. FA preexcitada (WPW): CONTRAINDICADO adenosina/verapamilo/diltiazem/digoxina → procainamida', '5. Metoprolol 2,5-5 mg IV lento si no responde a adenosina y QRS estrecho', '6. Para prevención: ablación por catéter (curación >95% en TRNAV)']
+            : ['1. Instável (síncope/hipotensão/EAP): cardioversão elétrica sincronizada 50-100J', '2. Estável QRS estreito: manobra de Valsalva modificada (mais eficaz: 40 mmHg 15s + decúbito)', '3. Sem resposta à vagal: adenosina 6 mg IV rápido (+ flush 20 mL SF) → se não: 12 mg → 12 mg', '4. FA pré-excitada (WPW): CONTRAINDICADO adenosina/verapamil/diltiazem/digoxina → procainamida', '5. Metoprolol 2,5-5 mg IV lento se sem resposta à adenosina e QRS estreito', '6. Para prevenção: ablação por cateter (cura >95% em TRNAV)'],
+        guidelines: ['ESC SVT 2019', 'AHA/ACC SVT 2015', 'ACC SVT 2016'],
       ),
 
       // ── AVC ───────────────────────────────────────────────────────────────
@@ -1437,6 +1666,13 @@ class AppProvider extends ChangeNotifier {
         flags: [es ? 'Ventana trombolítica: <4,5h' : 'Janela trombolítica: <4,5h',
                 es ? 'Hipoglucemia mimetiza AVC — siempre checar glucemia' : 'Hipoglicemia mimetiza AVC — checar glicemia sempre',
                 es ? 'HTA grave: tratar solo si PAS >220 (sin trombolítico)' : 'HTA grave: tratar só se PAS >220 (sem trombolítico)'],
+        differentials: es
+            ? ['ACV hemorrágico (TC sin contraste urgente antes de trombolítico)', 'Hipoglucemia (SIEMPRE descartar — mimetiza AVC)', 'Parálisis de Todd (postictal)', 'Encefalopatía hipertensiva', 'Tumor cerebral con déficit agudo', 'Crisis focal epiléptica']
+            : ['AVC hemorrágico (TC sem contraste urgente antes do trombolítico)', 'Hipoglicemia (SEMPRE excluir — mimetiza AVC)', 'Paralisia de Todd (pós-ictal)', 'Encefalopatia hipertensiva', 'Tumor cerebral com déficit agudo', 'Crise focal epiléptica'],
+        treatment: es
+            ? ['1. TC cráneo URGENTE sin contraste (descartar hemorragia)', '2. Glicemia capilar IMEDIATA — corregir si <60 o >180 mg/dL', '3. ACV isquémico + <4,5h + sin CI: alteplase 0,9 mg/kg IV (máx 90 mg, 10% en bolo + 90% en 60 min)', '4. Contraindicaciones tPA: hemorragia en TC, cirugía reciente, INR >1,7, plaquetas <100k', '5. NIHSS ≥6 + oclusión proximal: trombectomía mecánica hasta 24h (seleccionar por imagen)', '6. PA: no tratar si <220/120 (sin trombolítico) — si tPA: meta PA <180/105 durante 24h']
+            : ['1. TC crânio URGENTE sem contraste (excluir hemorragia)', '2. Glicemia capilar IMEDIATA — corrigir se <60 ou >180 mg/dL', '3. AVC isquêmico + <4,5h + sem CI: alteplase 0,9 mg/kg IV (máx 90 mg, 10% em bolo + 90% em 60 min)', '4. Contraindicações tPA: hemorragia no TC, cirurgia recente, INR >1,7, plaquetas <100k', '5. NIHSS ≥6 + oclusão proximal: trombectomia mecânica até 24h (selecionar por imagem)', '6. PA: não tratar se <220/120 (sem trombolítico) — se tPA: meta PA <180/105 por 24h'],
+        guidelines: ['AHA/ASA Stroke 2019', 'ESC Stroke 2021', 'SBC/SBN AVC 2022'],
       ),
 
       // ── Hemorragia Intracraniana ───────────────────────────────────────────
@@ -1448,6 +1684,13 @@ class AppProvider extends ChangeNotifier {
         exams: [es ? 'TC cráneo urgente' : 'TC crânio urgente', es ? 'Coagulación completa' : 'Coagulação completa', 'Plaquetas'],
         flags: [es ? 'CONTRAINDICADO trombolítico y anticoagulantes' : 'CONTRAINDICADO trombolítico e anticoagulantes',
                 es ? 'Revertir anticoagulación inmediatamente' : 'Reverter anticoagulação imediatamente'],
+        differentials: es
+            ? ['HSA (punción lumbar si TC negativa — xantocromía)', 'Hematoma epidural (intervalo lúcido + trauma)', 'Hematoma subdural agudo/crónico', 'HIC espontánea (HTA, angiopatía amiloide, malformación vascular)', 'Transformación hemorrágica de ACV isquémico']
+            : ['HSA (punção lombar se TC negativa — xantocromia)', 'Hematoma epidural (intervalo lúcido + trauma)', 'Hematoma subdural agudo/crônico', 'HIC espontânea (HAS, angiopatia amiloide, malformação vascular)', 'Transformação hemorrágica de AVC isquêmico'],
+        treatment: es
+            ? ['1. CONTRAINDICADOS: tPA, anticoagulantes, AAS', '2. Revertir anticoagulación INMEDIATA: Warfarina → Vit K 10 mg IV + CCP 4F; DOAC → idarucizumab/andexanet', '3. PA: meta PAS 130-150 mmHg (labetalol o nicardipino IV)', '4. Manejo PIC: cabecera 30°, evitar hipotónicas, considerar manitol 0,5-1 g/kg', '5. Convulsiones: LEV 1 g IV (no profilaxis rutinaria)', '6. HSA: nimodipino 60 mg VO c/4h por 21 días (vasoespasmo), clipaje/espiral urgente']
+            : ['1. CONTRAINDICADOS: tPA, anticoagulantes, AAS', '2. Reverter anticoagulação IMEDIATA: Varfarina → Vit K 10 mg IV + CCP 4F; DOAC → idarucizumabe/andexanete', '3. PA: meta PAS 130-150 mmHg (labetalol ou nicardipino IV)', '4. Manejo PIC: cabeceira 30°, evitar hipotônicas, considerar manitol 0,5-1 g/kg', '5. Convulsões: LEV 1 g IV (sem profilaxia rotineira)', '6. HSA: nimodipino 60 mg VO 4/4h por 21 dias (vasoespasmo), clipagem/espiral urgente'],
+        guidelines: ['AHA/ASA ICH 2022', 'ESC Stroke 2021', 'Neurocrit Care Society 2022'],
       ),
 
       // ── Status Epilepticus ────────────────────────────────────────────────
@@ -1459,6 +1702,13 @@ class AppProvider extends ChangeNotifier {
         exams: [es ? 'Glucemia' : 'Glicemia', es ? 'Electrolitos (Na+, Mg2+, Ca2+)' : 'Eletrólitos (Na+, Mg2+, Ca2+)', es ? 'TC cráneo' : 'TC crânio', 'EEG se status refratário'],
         flags: [es ? 'Crisis >5 min → benzodiacepina INMEDIATA' : 'Crise >5 min → benzodiazepínico IMEDIATO',
                 es ? 'Status refractario → midazolam/propofol en UTI' : 'Status refratário → midazolam/propofol em UTI'],
+        differentials: es
+            ? ['Hipoglucemia (tratar antes de BZD)', 'AVC/hemorragia (TC urgente)', 'Meningitis/encefalitis (fiebre + rigidez)', 'Intoxicación/abstinencia (opioides, BZD, alcohol)', 'Trastorno metabólico (Na+, Ca2+, uremia)', 'Crisis psicógena no epiléptica (PNES — movimientos asincrónicos)']
+            : ['Hipoglicemia (tratar antes do BZD)', 'AVC/hemorragia (TC urgente)', 'Meningite/encefalite (febre + rigidez)', 'Intoxicação/abstinência (opioides, BZD, álcool)', 'Distúrbio metabólico (Na+, Ca2+, uremia)', 'Crise psicogênica não epiléptica (PNES — movimentos assíncronos)'],
+        treatment: es
+            ? ['1. 0-5 min: posición lateral, O2, glucemia capilar, acceso IV', '2. 5-20 min: lorazepam 0,1 mg/kg IV (máx 4 mg) o diazepam 10 mg IV o midazolam 10 mg IM', '3. 20-40 min (status establecido): fenitoína 20 mg/kg IV a 50 mg/min o LEV 60 mg/kg IV (máx 4,5 g) o valproato 40 mg/kg IV', '4. 40-60 min (status refractario): intubación + midazolam infusión 0,1-2 mg/kg/h o propofol 2-12 mg/kg/h', '5. >60 min (status superrefractario): ketamina, fenobarbital, anestesia general', '6. Investigar y corregir causa subyacente (glucemia, electrolitos, infección)']
+            : ['1. 0-5 min: decúbito lateral, O2, glicemia capilar, acesso IV', '2. 5-20 min: lorazepam 0,1 mg/kg IV (máx 4 mg) ou diazepam 10 mg IV ou midazolam 10 mg IM', '3. 20-40 min (status estabelecido): fenitoína 20 mg/kg IV a 50 mg/min ou LEV 60 mg/kg IV (máx 4,5 g) ou valproato 40 mg/kg IV', '4. 40-60 min (status refratário): intubação + midazolam infusão 0,1-2 mg/kg/h ou propofol 2-12 mg/kg/h', '5. >60 min (status super-refratário): cetamina, fenobarbital, anestesia geral', '6. Investigar e corrigir causa subjacente (glicemia, eletrólitos, infecção)'],
+        guidelines: ['Neurocrit Care 2023', 'EAN Status 2022', 'SBN Status 2021'],
       ),
 
       // ── Meningite / Encefalite ────────────────────────────────────────────
@@ -1470,6 +1720,13 @@ class AppProvider extends ChangeNotifier {
         exams: [es ? 'TC cráneo (antes de la PL si focal)' : 'TC crânio (antes da PL se focal)', es ? 'Punción lumbar' : 'Punção lombar', es ? 'Hemocultivos' : 'Hemoculturas', es ? 'Glucemia' : 'Glicemia', 'PCR'],
         flags: [es ? 'ATB INMEDIATO — no demorar por PL' : 'ATB IMEDIATO — não atrasar por PL',
                 es ? 'Dexametasona 0,15 mg/kg IV antes o junto al ATB' : 'Dexametasona 0,15 mg/kg IV antes ou junto ao ATB'],
+        differentials: es
+            ? ['Encefalitis viral herpética (HSV — aciclovir empírico)', 'HSA (TC + PL: xantocromía)', 'Absceso cerebral (fiebre + déficit focal + efecto de masa)', 'Meningitis criptocócica (inmunodeprimido)', 'Meningitis tuberculosa (curso subagudo, LCR con linfocitos)']
+            : ['Encefalite viral herpética (HSV — aciclovir empírico)', 'HSA (TC + PL: xantocromia)', 'Abscesso cerebral (febre + déficit focal + efeito de massa)', 'Meningite criptocócica (imunodeprimido)', 'Meningite tuberculosa (curso subagudo, LCR com linfócitos)'],
+        treatment: es
+            ? ['1. ATB EMPÍRICO INMEDIATO (no demorar por punción): ceftriaxona 2 g IV c/12h', '2. Dexametasona 0,15 mg/kg IV c/6h ×4 días — iniciar ANTES o junto al ATB (reduce mortalidad en bacteriana)', '3. <50 años inmunocompetente: ceftriaxona + vancomicina 15-20 mg/kg IV c/8h', '4. >50 años o inmunosuprimido: + ampicilina 2 g IV c/4h (cobertura Listeria)', '5. HSV sospechado (encefalitis): aciclovir 10 mg/kg IV c/8h', '6. PL solo después de TC negativo para efecto de masa (si hay signos focales)']
+            : ['1. ATB EMPÍRICO IMEDIATO (não atrasar por punção): ceftriaxona 2 g IV 12/12h', '2. Dexametasona 0,15 mg/kg IV 6/6h ×4 dias — iniciar ANTES ou junto ao ATB (reduz mortalidade na bacteriana)', '3. <50 anos imunocompetente: ceftriaxona + vancomicina 15-20 mg/kg IV 8/8h', '4. >50 anos ou imunossuprimido: + ampicilina 2 g IV 4/4h (cobertura Listeria)', '5. HSV suspeito (encefalite): aciclovir 10 mg/kg IV 8/8h', '6. PL apenas após TC negativo para efeito de massa (se sinais focais)'],
+        guidelines: ['IDSA Meningitis 2017', 'ESC Neuroinfection 2016', 'SBI Meningite 2021'],
       ),
 
       // ── Sepse ─────────────────────────────────────────────────────────────
@@ -1482,6 +1739,13 @@ class AppProvider extends ChangeNotifier {
         flags: [es ? 'Antibiótico en <1 HORA' : 'Antibiótico em <1 HORA',
                 es ? 'Lactato >4 → 30 mL/kg SF' : 'Lactato >4 → 30 mL/kg SF',
                 es ? 'Vasopresor si PAM <65 tras volumen' : 'Vasopressor se PAM <65 após volume'],
+        differentials: es
+            ? ['Choque cardiogénico (BNP, ecocardiograma)', 'Anafilaxia (exposición alergénica, urticaria)', 'Choque hemorrágico (buscar foco de sangrado)', 'Insuficiencia suprarrenal aguda (hipotensión refractaria)', 'Intoxicación grave (toxicológico)']
+            : ['Choque cardiogênico (BNP, ecocardiograma)', 'Anafilaxia (exposição alergênica, urticária)', 'Choque hemorrágico (buscar foco de sangramento)', 'Insuficiência suprarrenal aguda (hipotensão refratária)', 'Intoxicação grave (toxicológico)'],
+        treatment: es
+            ? ['1. Hemocultivos (2 pares) + urocultivo ANTES del ATB (sin demorar)', '2. ATB en <1h: foco desconocido → piperacilina-tazobactam 4,5 g IV c/6h o meropenem 1 g c/8h', '3. Lactato >2: reanimación SF 30 mL/kg en 3h; lactato >4: UCI urgente', '4. PAM <65 refractaria: noradrenalina 0,1-3 mcg/kg/min (primera línea)', '5. Corticoides solo en choque séptico refractario: hidrocortisona 200 mg/día IV', '6. Controlar foco: drenaje quirúrgico/IR si absceso/empiema/peritonitis; retirar catéter infectado']
+            : ['1. Hemoculturas (2 pares) + urocultura ANTES do ATB (sem atrasar)', '2. ATB em <1h: foco desconhecido → piperacilina-tazobactam 4,5 g IV 6/6h ou meropeném 1 g 8/8h', '3. Lactato >2: reanimação SF 30 mL/kg em 3h; lactato >4: UTI urgente', '4. PAM <65 refratária: noradrenalina 0,1-3 mcg/kg/min (primeira linha)', '5. Corticoides apenas em choque séptico refratário: hidrocortisona 200 mg/dia IV', '6. Controlar foco: drenagem cirúrgica/IR se abscesso/empiema/peritonite; retirar cateter infectado'],
+        guidelines: ['Surviving Sepsis Campaign 2021', 'ESICM 2023', 'SBI Sepse 2020'],
       ),
 
       // ── DPOC ─────────────────────────────────────────────────────────────
@@ -1493,6 +1757,13 @@ class AppProvider extends ChangeNotifier {
         exams: ['Gasometria arterial', 'RX tórax', 'SpO2', 'Hemograma', 'PCR'],
         flags: [es ? 'O2 CONTROLADO: SpO2 objetivo 88–92%' : 'O2 CONTROLADO: SpO2 alvo 88–92%',
                 es ? 'pH <7,35 + PaCO2 elevado → VNI inmediata' : 'pH <7,35 + PaCO2 elevado → VNI imediata'],
+        differentials: es
+            ? ['Neumonía (fiebre, infiltrado RX, esputo purulento)', 'Neumotórax (timpanismo, ausencia MV, RX)', 'IC descompensada (ortopnea, edemas, BNP)', 'TEP (hipoxia + disnea aguda + D-dímero)', 'Broncoespasmo por AINE/betabloqueante']
+            : ['Pneumonia (febre, infiltrado RX, escarro purulento)', 'Pneumotórax (timpanismo, ausência MV, RX)', 'IC descompensada (ortopneia, edemas, BNP)', 'TEP (hipóxia + dispneia aguda + D-dímero)', 'Broncoespasmo por AINE/betabloqueador'],
+        treatment: es
+            ? ['1. O2 CONTROLADO: Venturi 24-28% → meta SpO2 88-92% (riesgo de retención CO2 con O2 alto)', '2. Broncodilatadores nebulizados: salbutamol 2,5 mg + ipratropio 0,5 mg cada 20 min × 3, luego c/4h', '3. Corticoides sistémicos: prednisona 40 mg VO 5 días (o prednisolona 0,5 mg/kg/día)', '4. ATB si: esputo purulento + aumento disnea: amoxicilina-clavulanato 875/125 mg c/12h ×5-7d o azitromicina', '5. pH <7,35 + PaCO2 >45 + FR >25: VNI (BIPAP): IPAP 10-20, EPAP 4-8 cmH2O', '6. Falla VNI/apneas/Glasgow ≤8: intubación orotraqueal']
+            : ['1. O2 CONTROLADO: Venturi 24-28% → meta SpO2 88-92% (risco de retenção CO2 com O2 alto)', '2. Broncodilatadores nebulizados: salbutamol 2,5 mg + ipratrópio 0,5 mg a cada 20 min × 3, depois 4/4h', '3. Corticoides sistêmicos: prednisona 40 mg VO 5 dias (ou prednisolona 0,5 mg/kg/dia)', '4. ATB se: escarro purulento + aumento dispneia: amoxicilina-clavulanato 875/125 mg 12/12h ×5-7d ou azitromicina', '5. pH <7,35 + PaCO2 >45 + FR >25: VNI (BIPAP): IPAP 10-20, EPAP 4-8 cmH2O', '6. Falha VNI/apneias/Glasgow ≤8: intubação orotraqueal'],
+        guidelines: ['GOLD 2024', 'NICE COPD 2023', 'SBPT DPOC 2022'],
       ),
 
       // ── Asma ─────────────────────────────────────────────────────────────
@@ -1503,6 +1774,13 @@ class AppProvider extends ChangeNotifier {
         keywords: ['asma', 'broncoespas', 'sibilo', 'wheezing', 'peak flow', 'pfe ', 'broncodilatad'],
         exams: ['SpO2', es ? 'PFE (peak flow)' : 'PFE (peak flow)', es ? 'Gasometría si grave' : 'Gasometria se grave', es ? 'RX tórax si duda' : 'RX tórax se dúvida'],
         flags: [es ? 'Silencio auscultatorio + SpO2 <90% → riesgo de PCR inminente' : 'Silêncio auscultório + SpO2 <90% → risco de PCR iminente'],
+        differentials: es
+            ? ['EPOC exacerbado (fumador, hipercapnia)', 'Neumotórax (dolor pleurítico, asimetría MV)', 'Cuerpo extraño en vía aérea (inicio súbito, sin historia de asma)', 'Anafilaxia (urticaria, angioedema, hipotensión)', 'Insuficiencia cardíaca (ortopnea, BNP)']
+            : ['DPOC exacerbado (tabagismo, hipercapnia)', 'Pneumotórax (dor pleurítica, assimetria MV)', 'Corpo estranho nas vias aéreas (início súbito, sem história de asma)', 'Anafilaxia (urticária, angioedema, hipotensão)', 'Insuficiência cardíaca (ortopneia, BNP)'],
+        treatment: es
+            ? ['1. O2 para SpO2 ≥92% (≥95% en embarazo)', '2. SABA nebulizado: salbutamol 2,5-5 mg c/20 min × 3 (o MDI 4-8 puffs c/20 min)', '3. Ipratropio 0,5 mg nebulizado junto con salbutamol en moderada/grave (primeras 3h)', '4. Corticoides IV: hidrocortisona 100-200 mg c/6h o metilprednisolona 1 mg/kg/día', '5. MgSO4 2 g IV en 20 min: en crisis grave con SpO2 <92% sin respuesta a SABA', '6. Silencio auscultatorio + hipercapnia + fatiga: intubación (Ket 1-2 mg/kg para inducción)']
+            : ['1. O2 para SpO2 ≥92% (≥95% na gestação)', '2. SABA nebulizado: salbutamol 2,5-5 mg a cada 20 min × 3 (ou MDI 4-8 puffs a cada 20 min)', '3. Ipratrópio 0,5 mg nebulizado junto ao salbutamol em moderada/grave (primeiras 3h)', '4. Corticoides IV: hidrocortisona 100-200 mg 6/6h ou metilprednisolona 1 mg/kg/dia', '5. MgSO4 2 g IV em 20 min: em crise grave com SpO2 <92% sem resposta ao SABA', '6. Silêncio auscultório + hipercapnia + fadiga: intubação (Ket 1-2 mg/kg para indução)'],
+        guidelines: ['GINA 2024', 'BTS/SIGN 2023', 'SBPT Asma 2020'],
       ),
 
       // ── CAD ───────────────────────────────────────────────────────────────
@@ -1513,6 +1791,13 @@ class AppProvider extends ChangeNotifier {
         keywords: ['cetoacid', 'cad', 'hiperglicemi', 'cetona', 'acidose metabol', 'dka', 'ph baixo+diabet'],
         exams: [es ? 'Glucemia' : 'Glicemia', es ? 'Cetonemia/cetonuria' : 'Cetonemia/cetonúria', es ? 'Gasometría venosa' : 'Gasometria venosa', es ? 'Electrolitos (K+ urgente)' : 'Eletrólitos (K+ urgente)', 'BUN/Cr'],
         flags: [es ? 'K+ <3,3 → SUSPENDER insulina y reponer K+ primero' : 'K+ <3,3 → SUSPENDER insulina e repor K+ primeiro'],
+        differentials: es
+            ? ['Estado Hiperosmolar Hiperglucémico (EHH): glucemia >600, osmolaridad >320, sin cetonuria', 'Acidosis láctica (lactato, no cetonuria)', 'Cetosis alcohólica (glucemia normal/baja, alcohol)', 'Acidosis metabólica por intoxicación (salicilatos, metanol)', 'Pancreatitis aguda (lipasa, imagen)']
+            : ['Estado Hiperosmolar Hiperglicêmico (EHH): glicemia >600, osmolaridade >320, sem cetonúria', 'Acidose lática (lactato, sem cetonúria)', 'Cetose alcoólica (glicemia normal/baixa, álcool)', 'Acidose metabólica por intoxicação (salicilatos, metanol)', 'Pancreatite aguda (lipase, imagem)'],
+        treatment: es
+            ? ['1. Hidratación: SF 0,9% 1 L/h × 2h → 0,5 L/h según PVC/diuresis', '2. K+ >3,3 y <5,5: insulina regular 0,1 U/kg bolus → 0,1 U/kg/h; K+ <3,3: SUSPENDER insulina, reponer KCl 40 mEq/h primero', '3. Meta: reducir glucemia 50-70 mg/dL/h; cuando <200 → añadir SG5%', '4. K+ cada 2h: meta 4-5 mEq/L (la insulina baja K+ — riesgo fatal)', '5. Bicarbonato solo si pH <6,9 (100 mEq en 2h)', '6. Buscar causa: infección, abandono insulina, IAM, pancreatitis — tratar causa']
+            : ['1. Hidratação: SF 0,9% 1 L/h × 2h → 0,5 L/h conforme PVC/diurese', '2. K+ >3,3 e <5,5: insulina regular 0,1 U/kg bolus → 0,1 U/kg/h; K+ <3,3: SUSPENDER insulina, repor KCl 40 mEq/h primeiro', '3. Meta: reduzir glicemia 50-70 mg/dL/h; quando <200 → adicionar SG5%', '4. K+ a cada 2h: meta 4-5 mEq/L (insulina baixa K+ — risco fatal)', '5. Bicarbonato apenas se pH <6,9 (100 mEq em 2h)', '6. Buscar causa: infecção, abandono insulina, IAM, pancreatite — tratar causa'],
+        guidelines: ['ADA DKA 2023', 'ISPAD DKA 2022', 'SBD 2023'],
       ),
 
       // ── Hipoglicemia ──────────────────────────────────────────────────────
@@ -1524,6 +1809,13 @@ class AppProvider extends ChangeNotifier {
         exams: [es ? 'Glucemia capilar URGENTE' : 'Glicemia capilar URGENTE', es ? 'Glucemia venosa' : 'Glicemia venosa'],
         flags: [es ? 'Glucemia <60 → 50 mL glucosa 50% IV inmediato' : 'Glicemia <60 → 50 mL glicose 50% IV imediato',
                 es ? 'Sin acceso IV → glucagón 1 mg IM/SC' : 'Sem acesso IV → glucagon 1 mg IM/SC'],
+        differentials: es
+            ? ['Hipoglucemia por insulina/sulfonilureas (más frecuente)', 'Insulinoma (hipoglucemia de ayuno, péptido C elevado)', 'Insuficiencia suprarrenal (hipotensión, hiponatremia)', 'Hipoglucemia alcohólica (gluconeogénesis inhibida)', 'Causa iatrogénica (error de dosis, ayuno inadecuado)']
+            : ['Hipoglicemia por insulina/sulfonilureias (mais frequente)', 'Insulinoma (hipoglicemia de jejum, peptídeo C elevado)', 'Insuficiência suprarrenal (hipotensão, hiponatremia)', 'Hipoglicemia alcoólica (gliconeogênese inibida)', 'Causa iatrogênica (erro de dose, jejum inadequado)'],
+        treatment: es
+            ? ['1. Glucemia <70 consciente: 15-20 g carbohidrato VO (sucrose, jugo); repetir si <70 en 15 min', '2. Glucemia <50 o inconsciente: glucosa 50% 50 mL IV rápido (SOS: glucagón 1 mg IM/SC)', '3. Glicemia post-tratamiento ≥100: alimentación con carbohidrato complejo + proteína', '4. Sulfonilurea/insulina de acción larga: observación mínima 12-24h (riesgo de recurrencia)', '5. Buscar causa: dosis excesiva, aumento ejercicio, disminución ingesta, IRC (ajuste dosis)', '6. Educación: hipoglucemia asintomática → riesgo de no reconocimiento → ajustar umbral terapéutico']
+            : ['1. Glicemia <70 consciente: 15-20 g carboidrato VO (sacarose, suco); repetir se <70 em 15 min', '2. Glicemia <50 ou inconsciente: glicose 50% 50 mL IV rápido (SOS: glucagon 1 mg IM/SC)', '3. Glicemia pós-tratamento ≥100: alimentação com carboidrato complexo + proteína', '4. Sulfonilureia/insulina de ação longa: observação mínima 12-24h (risco de recorrência)', '5. Buscar causa: dose excessiva, aumento exercício, diminuição ingestão, IRC (ajuste dose)', '6. Educação: hipoglicemia assintomática → risco de não reconhecimento → ajustar limiar terapêutico'],
+        guidelines: ['ADA Hypoglycemia 2023', 'Endocrine Society 2019', 'SBD 2023'],
       ),
 
       // ── Hipercalemia ──────────────────────────────────────────────────────
@@ -1534,7 +1826,14 @@ class AppProvider extends ChangeNotifier {
         keywords: ['hipercalemi', 'hiperpotass', 'k alt', 'hiperkalem', 'onda t apic', 'k+ elev'],
         exams: [es ? 'K+ sérico urgente' : 'K+ sérico urgente', 'ECG', 'Gasometria', es ? 'Función renal' : 'Função renal'],
         flags: [es ? 'K+ >6,5 o cambios ECG → Gluconato Ca2+ IV inmediato' : 'K+ >6,5 ou alteração ECG → Gluconato Ca2+ IV imediato',
-                es ? 'Insulina + glucosa + bicarbonato + diálisis si refractario' : 'Insulina + glicose + bicarbonato + diálise se refratário'],
+                es ? 'Insulina + glucosa + bicarbonato + diálisis si refractario' : 'Insulina + glicose + bicarbonato + diálise se refratório'],
+        differentials: es
+            ? ['Pseudohiperpotasemia (hemólisis en muestra)', 'IRA/IRC descompensada', 'Hipoaldosteronismo (Addison)', 'Rabdomiólisis', 'Acidosis metabólica severa (redistribución)']
+            : ['Pseudo-hipercalemia (hemólise da amostra)', 'IRA/IRC descompensada', 'Hipoaldosteronismo (Addison)', 'Rabdomiólise', 'Acidose metabólica grave (redistribuição)'],
+        treatment: es
+            ? ['1. ECG alterado (onda T apiculada, ensanchamiento QRS, onda sinusoidal): gluconato Ca2+ 10% 10 mL IV en 2-3 min (estabiliza membrana)', '2. Redistribución intacelular: insulina regular 10 U IV + glucosa 50% 50 mL IV (baja K+ 0,5-1 mEq/L en 30 min)', '3. Bicarbonato: NaHCO3 50 mEq IV si pH <7,2 (distribución intracelular)', '4. Eliminación: furosemida 40-80 mg IV si función renal conservada; kayexalato 15-30 g VO si IRC', '5. K+ >7 refractario o cambios ECG graves → diálisis de emergencia', '6. Suspender fármacos que elevan K+: IECA/ARA II, espirolactona, AINEs, heparina']
+            : ['1. ECG alterado (onda T apiculada, alargamento QRS, onda sinusoidal): gluconato de Ca2+ 10% 10 mL IV em 2-3 min (estabiliza membrana)', '2. Redistribuição intracelular: insulina regular 10 U IV + glicose 50% 50 mL IV (baixa K+ 0,5-1 mEq/L em 30 min)', '3. Bicarbonato: NaHCO3 50 mEq IV se pH <7,2 (distribuição intracelular)', '4. Eliminação: furosemida 40-80 mg IV se função renal conservada; kayexalato 15-30 g VO se IRC', '5. K+ >7 refratário ou alterações ECG graves → diálise de emergência', '6. Suspender fármacos que elevam K+: IECA/BRA, espironolactona, AINEs, heparina'],
+        guidelines: ['KDIGO AKI 2022', 'ESC Electrolytes 2019', 'ASN 2021'],
       ),
 
       // ── Hipopotassemia ────────────────────────────────────────────────────
@@ -1545,6 +1844,13 @@ class AppProvider extends ChangeNotifier {
         keywords: ['hipocalemi', 'hipopotass', 'k bai', 'hipokalem', 'k+ baixo'],
         exams: [es ? 'K+ sérico' : 'K+ sérico', es ? 'ECG (ondas U, QT largo)' : 'ECG (ondas U, QT longo)', 'Mg2+', 'Gasometria'],
         flags: [es ? 'K+ <2,5 o cambios ECG → reposición IV monitorizada' : 'K+ <2,5 ou alteração de ECG → reposição IV monitorada'],
+        differentials: es
+            ? ['Pérdidas gastrointestinales (vómitos, diarrea, fístulas)', 'Pérdidas renales (diuréticos, hiperaldosteronismo)', 'Redistribución (insulina, alcalosis, beta-agonistas)', 'Hipomagnesemia (siempre corregir Mg2+ en hipopotasemia refractaria)', 'CAD en tratamiento (insulina baja K+)']
+            : ['Perdas gastrointestinais (vômitos, diarreia, fístulas)', 'Perdas renais (diuréticos, hiperaldosteronismo)', 'Redistribuição (insulina, alcalose, beta-agonistas)', 'Hipomagnesemia (sempre corrigir Mg2+ em hipopotassemia refratária)', 'CAD em tratamento (insulina baixa K+)'],
+        treatment: es
+            ? ['1. K+ 3,0-3,5: potasio VO 40-60 mEq/día (cloruro de potasio)', '2. K+ 2,5-3,0: KCl oral 80-120 mEq/día o IV 10-20 mEq/h (max 40 mEq/h en vía central con monitoreo)', '3. K+ <2,5 o síntomas (debilidad, ECG alterado): KCl IV 20-40 mEq/h en vía central + monitoreo contínuo', '4. SIEMPRE verificar y corregir Mg2+ (hipomagnesemia impide la corrección del K+)', '5. Identificar causa: alcalosis → tratar; diuréticos → reducir dosis; diarrea → tratar', '6. K+ no sube con reposición: pensar en síndrome de Bartter/Gitelman']
+            : ['1. K+ 3,0-3,5: potássio VO 40-60 mEq/dia (cloreto de potássio)', '2. K+ 2,5-3,0: KCl oral 80-120 mEq/dia ou IV 10-20 mEq/h (máx 40 mEq/h em via central com monitoração)', '3. K+ <2,5 ou sintomas (fraqueza, ECG alterado): KCl IV 20-40 mEq/h em via central + monitoração contínua', '4. SEMPRE verificar e corrigir Mg2+ (hipomagnesemia impede a correção do K+)', '5. Identificar causa: alcalose → tratar; diuréticos → reduzir dose; diarreia → tratar', '6. K+ não sobe com reposição: pensar em síndrome de Bartter/Gitelman'],
+        guidelines: ['ASN Electrolytes 2021', 'AHA 2019', 'SBN 2022'],
       ),
 
       // ── IRA ───────────────────────────────────────────────────────────────
@@ -1556,6 +1862,13 @@ class AppProvider extends ChangeNotifier {
         exams: [es ? 'Creatinina/Urea seriadas' : 'Creatinina/Ureia seriadas', es ? 'Electrolitos' : 'Eletrólitos', es ? 'Eco renal' : 'Eco renal', 'EAS/urocultura'],
         flags: [es ? 'K+ >6 u oliguria refractaria → diálisis de urgencia' : 'K+ >6 ou oligúria refratária → diálise de urgência',
                 es ? 'Descartar prerrenal (volumen) y obstructivo (eco)' : 'Excluir pré-renal (volume) e obstrutivo (eco)'],
+        differentials: es
+            ? ['Prerrenal (deshidratación, hipotensión, IC): fracción de Na excreción <1%', 'Intrínseca: NTA isquémica/tóxica (AINE, aminoglucósidos, contraste), glomerulonefritis, vasculitis', 'Postrenal: obstrucción (próstata, tumor, litiasis) — eco urgente']
+            : ['Pré-renal (desidratação, hipotensão, IC): fração de excreção de Na <1%', 'Intrínseca: NTA isquêmica/tóxica (AINE, aminoglicosídeos, contraste), glomerulonefrite, vasculite', 'Pós-renal: obstrução (próstata, tumor, litíase) — eco urgente'],
+        treatment: es
+            ? ['1. Prerrenal: hidratación SF 500 mL en 30 min, evaluar respuesta (diuresis >0,5 mL/kg/h)', '2. Suspender nefrotóxicos: AINE, aminoglucósidos, contraste, IECA/ARA II, metformina', '3. Postrenal: sondaje vesical urgente o nefrostomía percutánea', '4. Monitorizar K+, pH: hipercalemia >6 → gluconato Ca2+, insulina/glucosa, diálisis', '5. Diálisis urgente: K+ >6,5 refractario, acidosis pH <7,1, uremia sintomática, sobrecarga hídrica', '6. Ajustar TODAS las dosis de fármacos según ClCr (ver sección farmacológica)']
+            : ['1. Pré-renal: hidratação SF 500 mL em 30 min, avaliar resposta (diurese >0,5 mL/kg/h)', '2. Suspender nefrotóxicos: AINE, aminoglicosídeos, contraste, IECA/BRA, metformina', '3. Pós-renal: sondagem vesical urgente ou nefrostomia percutânea', '4. Monitorar K+, pH: hipercalemia >6 → gluconato Ca2+, insulina/glicose, diálise', '5. Diálise urgente: K+ >6,5 refratário, acidose pH <7,1, uremia sintomática, sobrecarga hídrica', '6. Ajustar TODAS as doses de fármacos conforme ClCr (ver seção farmacológica)'],
+        guidelines: ['KDIGO AKI 2012 (updated 2023)', 'ERA-EDTA 2023', 'SBN 2022'],
       ),
 
       // ── HDA ───────────────────────────────────────────────────────────────
@@ -1568,6 +1881,13 @@ class AppProvider extends ChangeNotifier {
         flags: [es ? 'PA <100 + FC >100 → 2 accesos calibrosos + SF inmediato' : 'PA <100 + FC >100 → 2 acessos calibrosos + SF imediato',
                 es ? 'Hb objetivo 7–8 g/dL (transfusión restrictiva)' : 'Hb alvo 7–8 g/dL (transfusão restritiva)',
                 es ? 'Cirrosis + HDA → octreótido + ATB + Terlipresina' : 'Cirrose + HDA → octreotida + ATB profilático + Terlipressina'],
+        differentials: es
+            ? ['Úlcera péptica (H. pylori, AINE — más frecuente)', 'Varices esofágicas (cirrosis, hepatopatía)', 'Síndrome de Mallory-Weiss (vómitos repetidos)', 'Lesión de Dieulafoy (sangrado arterial puntual)', 'Cáncer gástrico/esofágico (hemorragia crónica)', 'Hemobilia o fístula aorto-entérica (raro, grave)']
+            : ['Úlcera péptica (H. pylori, AINE — mais frequente)', 'Varizes esofágicas (cirrose, hepatopatia)', 'Síndrome de Mallory-Weiss (vômitos repetidos)', 'Lesão de Dieulafoy (sangramento arterial pontual)', 'Câncer gástrico/esofágico (hemorragia crônica)', 'Hemobilia ou fístula aorto-entérica (raro, grave)'],
+        treatment: es
+            ? ['1. Acceso IV ×2 calibrosos + SF 1 L si PA <100/FC >100 + transfundir si Hb <7 (meta 7-9 g/dL)', '2. IBP IV: omeprazol 80 mg bolus → 8 mg/h infusión (antes de EDA)', '3. No cirrosis: EDA urgente en <12h (alta urgencia) o <24h (sin inestabilidad)', '4. Cirrosis/varices: terlipresina 2 mg IV c/4-6h + ceftriaxona 1 g/día (ATB profiláctico 5-7d)', '5. Score Glasgow-Blatchford ≥12 → EDA en <6h; Rockford C/D → ligadura variceal + octreótido', '6. Refractario: TIPS (shunt intrahepático) o cirugía de urgencia']
+            : ['1. Acesso IV ×2 calibrosos + SF 1 L se PA <100/FC >100 + transfundir se Hb <7 (meta 7-9 g/dL)', '2. IBP IV: omeprazol 80 mg bolus → 8 mg/h infusão (antes da EDA)', '3. Sem cirrose: EDA urgente em <12h (alta urgência) ou <24h (sem instabilidade)', '4. Cirrose/varizes: terlipressina 2 mg IV 4/4h-6/6h + ceftriaxona 1 g/dia (ATB profilático 5-7d)', '5. Score Glasgow-Blatchford ≥12 → EDA em <6h; Rockford C/D → ligadura varicosa + octreotida', '6. Refratário: TIPS (shunt intra-hepático) ou cirurgia de urgência'],
+        guidelines: ['BSG HDA 2021', 'ESGE 2021', 'SBH HDA 2022'],
       ),
 
       // ── Abdome Agudo ──────────────────────────────────────────────────────
@@ -1579,6 +1899,13 @@ class AppProvider extends ChangeNotifier {
         exams: [es ? 'RX abdomen de pie' : 'RX abdome em pé', es ? 'TC abdomen+pelvis con contraste' : 'TC abdome+pelve com contraste', 'Hemograma', 'PCR', 'Lipase/amilase'],
         flags: [es ? 'Signos peritoneales + inestabilidad → cirugía de emergencia' : 'Sinais peritoneais + instabilidade → cirurgia de emergência',
                 es ? 'Neumoperitoneo en RX → perforación visceral: cirugía inmediata' : 'Pneumoperitônio no RX → perfuração visceral: cirurgia imediata'],
+        differentials: es
+            ? ['Apendicitis aguda (fosa ilíaca derecha, Murphy de McBurney)', 'Colecistitis aguda (hipocondrio derecho, Murphy positivo, fiebre)', 'Pancreatitis aguda (epigastrio irradiado a dorso, lipasa >3×)', 'Perforación de víscera hueca (neumoperitoneo, defensa total)', 'Obstrucción intestinal (distensión, ausencia de gases distales)', 'Isquemia mesentérica (dolor intenso, leucocitosis, acidosis, lactato)']
+            : ['Apendicite aguda (fossa ilíaca direita, sinal de McBurney)', 'Colecistite aguda (hipocôndrio direito, Murphy positivo, febre)', 'Pancreatite aguda (epigástrio irradiado ao dorso, lipase >3×)', 'Perfuração de víscera oca (pneumoperitônio, defesa total)', 'Obstrução intestinal (distensão, ausência de gases distais)', 'Isquemia mesentérica (dor intensa, leucocitose, acidose, lactato)'],
+        treatment: es
+            ? ['1. Estabilización: 2 accesos IV, SF 1-2 L, analgesia IV (ketorolac 30 mg o tramadol 100 mg)', '2. Ayuno + SNG si vómitos o distensión importante', '3. ATB empírico si sospecha infección: piperacilina-tazobactam 4,5 g IV c/6h o ampicilina + metronidazol', '4. TC abdomen+pelvis con contraste IV (estudio diagnóstico principal)', '5. Peritonitis/perforación/isquemia: cirugía de emergencia inmediata', '6. Apendicitis confirmada: apendicectomía laparoscópica; colecistitis: colecistectomía en 24-72h']
+            : ['1. Estabilização: 2 acessos IV, SF 1-2 L, analgesia IV (cetorrolaco 30 mg ou tramadol 100 mg)', '2. Jejum + SNG se vômitos ou distensão importante', '3. ATB empírico se suspeita infecção: piperacilina-tazobactam 4,5 g IV 6/6h ou ampicilina + metronidazol', '4. TC abdome+pelve com contraste IV (principal exame diagnóstico)', '5. Peritonite/perfuração/isquemia: cirurgia de emergência imediata', '6. Apendicite confirmada: apendicectomia laparoscópica; colecistite: colecistectomia em 24-72h'],
+        guidelines: ['WSES Peritonitis 2020', 'SAGES 2023', 'SBC Abdome 2021'],
       ),
 
       // ── Pancreatite ───────────────────────────────────────────────────────
@@ -1590,6 +1917,13 @@ class AppProvider extends ChangeNotifier {
         exams: [es ? 'Lipasa (>3× LSN)' : 'Lipase (>3× LSN diagnóstico)', es ? 'TC abdomen (Balthazar/CTSI)' : 'TC abdome (Balthazar/CTSI)', es ? 'Electrolitos' : 'Eletrólitos', 'Score BISAP'],
         flags: [es ? 'Score BISAP ≥3 → UTI (pancreatitis grave)' : 'Score BISAP ≥3 ou APACHE II alto → UTI',
                 es ? 'Necroinfeción: fiebre + empeoramiento → TC + ATB' : 'Necroinfeção: febre + piora clínica → TC + ATB'],
+        differentials: es
+            ? ['Úlcera péptica perforada (neumoperitoneo, RX)', 'IAM inferior (ECG)', 'Colecistitis aguda (Murphy, eco)', 'Isquemia mesentérica (lactato, dolor + leucocitosis)', 'Obstrucción intestinal alta']
+            : ['Úlcera péptica perfurada (pneumoperitônio, RX)', 'IAM inferior (ECG)', 'Colecistite aguda (Murphy, eco)', 'Isquemia mesentérica (lactato, dor + leucocitose)', 'Obstrução intestinal alta'],
+        treatment: es
+            ? ['1. Hidratación agresiva: Ringer lactato 250-500 mL/h (preferido sobre SF) primeras 24h (BISAP <3)', '2. Analgesia: ketorolac 30 mg IV o morfina 2-4 mg IV (sin evidencia de empeorar pancreatitis)', '3. Nutrición: enteral precoz en <24-48h si tolera; parenteral solo si enteral imposible', '4. BISAP ≥3/necrosante: UTI, monitoreo contínuo, anticipar complicaciones', '5. ATB solo si necroinfeción confirmada (guiada por aspiración con aguja fina TC-guiada): meropenem o imipenem', '6. Colangiopancreatografía (CPRE) urgente en <24h si: cálculo biliar + ictericia + colangitis']
+            : ['1. Hidratação agressiva: Ringer lactato 250-500 mL/h (preferido ao SF) primeiras 24h (BISAP <3)', '2. Analgesia: cetorrolaco 30 mg IV ou morfina 2-4 mg IV (sem evidência de piorar pancreatite)', '3. Nutrição: enteral precoce em <24-48h se tolera; parenteral apenas se enteral impossível', '4. BISAP ≥3/necrosante: UTI, monitoramento contínuo, antecipar complicações', '5. ATB apenas em necroinfeção confirmada (guiada por aspiração com agulha fina TC-guiada): meropeném ou imipeném', '6. CPRE urgente em <24h se: cálculo biliar + icterícia + colangite'],
+        guidelines: ['AGA Pancreatitis 2018', 'IAP/APA 2015', 'SBH Pancreatite 2021'],
       ),
 
       // ── Crise Hipertensiva ────────────────────────────────────────────────
@@ -1601,6 +1935,13 @@ class AppProvider extends ChangeNotifier {
         exams: [es ? 'PA en ambos brazos' : 'PA em ambos os braços', 'ECG', es ? 'Fondo de ojo' : 'Fundo de olho', es ? 'Creatinina/urea' : 'Creatinina/ureia', es ? 'TC cráneo si síntomas neurológicos' : 'TC crânio se sintomas neurológicos'],
         flags: [es ? 'Encefalopatía + PA >180 → emergencia: reducción IV controlada' : 'Encefalopatia + PA >180 → emergência: redução IV controlada',
                 es ? 'NO reducir PA >25% en 1ª hora' : 'NÃO reduzir PA >25% na 1ª hora'],
+        differentials: es
+            ? ['Emergencia hipertensiva (lesión órgano diana: encefalopatía, IC aguda, disección, eclampsia)', 'Urgencia hipertensiva (PA muy elevada SIN lesión aguda de órgano)', 'HTA por dolor/ansiedad (tratar la causa)', 'Hipertensión de bata blanca (monitorización ambulatoria)', 'Crisis adrenérgica (feocromocitoma, cocaína — PA muy lábil)']
+            : ['Emergência hipertensiva (lesão órgão-alvo: encefalopatia, IC aguda, dissecção, eclâmpsia)', 'Urgência hipertensiva (PA muito elevada SEM lesão aguda de órgão)', 'HAS por dor/ansiedade (tratar a causa)', 'HAS do avental branco (monitorização ambulatorial)', 'Crise adrenérgica (feocromocitoma, cocaína — PA muito lábil)'],
+        treatment: es
+            ? ['1. Emergencia (lesión diana): reducción PA controlada IV — meta: bajar 20-25% en 1ª hora, NO normalizar', '2. ACV isquémico: solo tratar si PAS >220/120 (sin trombolítico) o >180/105 (con trombolítico)', '3. Encefalopatía/IC aguda/disección: labetalol 20 mg IV → 40-80 mg c/10 min o nitroprusiato 0,25-10 mcg/kg/min', '4. Urgencia (sin lesión diana): antihipertensivo VO — captopril 25-50 mg o amlodipino 5-10 mg', '5. PA >220/120 asintomática: captopril SL + observación 30-60 min → alta si responde', '6. Ajustar medicación habitual + seguimiento en 24-72h']
+            : ['1. Emergência (lesão de órgão-alvo): redução PA controlada IV — meta: baixar 20-25% em 1ª hora, NÃO normalizar', '2. AVC isquêmico: apenas tratar se PAS >220/120 (sem trombolítico) ou >180/105 (com trombolítico)', '3. Encefalopatia/IC aguda/dissecção: labetalol 20 mg IV → 40-80 mg a cada 10 min ou nitroprussiato 0,25-10 mcg/kg/min', '4. Urgência (sem lesão de órgão): anti-hipertensivo VO — captopril 25-50 mg ou anlodipino 5-10 mg', '5. PA >220/120 assintomática: captopril SL + observação 30-60 min → alta se responde', '6. Ajustar medicação habitual + seguimento em 24-72h'],
+        guidelines: ['ESC/ESH Hipertensão 2023', 'AHA/ACC HTN 2022', 'SBC HAS 2020'],
       ),
 
       // ── Delirium ──────────────────────────────────────────────────────────
@@ -1612,6 +1953,13 @@ class AppProvider extends ChangeNotifier {
         exams: [es ? 'Glucemia capilar URGENTE' : 'Glicemia capilar URGENTE', es ? 'TC cráneo' : 'TC crânio', es ? 'Electrolitos' : 'Eletrólitos', es ? 'Función renal y hepática' : 'Função renal e hepática', 'Gasometria'],
         flags: [es ? 'Excluir SIEMPRE: hipoglucemia, AVC, meningitis, IRA, intoxicación' : 'Excluir SEMPRE: hipoglicemia, AVC, meningite, IRA, intoxicação',
                 es ? 'Glasgow ≤8 → proteger vía aérea (IOT)' : 'Glasgow ≤8 → proteger via aérea (IOT)'],
+        differentials: es
+            ? ['Hipoglucemia (SIEMPRE primera en excluir)', 'AVC agudo (TC urgente)', 'Meningitis/encefalitis (rigidez, fiebre, LCR)', 'Encefalopatía urémica/hepática (creatinina, amoniaco)', 'Intoxicación/síndrome serotoninérgico/anticolinérgico', 'Delirium hipoactivo (agitación mínima — frecuentemente subdiagnosticado en UTI)']
+            : ['Hipoglicemia (SEMPRE primeira a excluir)', 'AVC agudo (TC urgente)', 'Meningite/encefalite (rigidez, febre, LCR)', 'Encefalopatia urêmica/hepática (creatinina, amoniaco)', 'Intoxicação/síndrome serotoninérgico/anticolinérgico', 'Delirium hipoativo (agitação mínima — frequentemente subdiagnosticado em UTI)'],
+        treatment: es
+            ? ['1. Glucemia capilar INMEDIATA (corregir si <60 o >400)', '2. Oxigenación: SpO2 ≥94%; si Glasgow ≤8 → IOT', '3. Búsqueda sistemática de causa: TC, PL, electrolitos, función renal/hepática, toxicológico', '4. Medidas no farmacológicas: reorientación, iluminación diurna, movilización, familia, ciclo sueño-vigilia', '5. Agitación que pone en riesgo: haloperidol 2-5 mg IV (preferir IM en agitación grave) — en QT prolongado: quetiapina', '6. Evitar BZD en delirium no alcohólico (empeoran delirium en ancianos)']
+            : ['1. Glicemia capilar IMEDIATA (corrigir se <60 ou >400)', '2. Oxigenação: SpO2 ≥94%; se Glasgow ≤8 → IOT', '3. Busca sistemática de causa: TC, PL, eletrólitos, função renal/hepática, toxicológico', '4. Medidas não farmacológicas: reorientação, iluminação diurna, mobilização, família, ciclo sono-vigília', '5. Agitação que coloca em risco: haloperidol 2-5 mg IV (preferir IM em agitação grave) — em QT longo: quetiapina', '6. Evitar BZD em delirium não alcoólico (pioram delirium em idosos)'],
+        guidelines: ['SCCM PADIS 2018', 'APA Delirium 2023', 'ESICM Delirium 2022'],
       ),
 
       // ── Intoxicação ───────────────────────────────────────────────────────
@@ -1624,6 +1972,13 @@ class AppProvider extends ChangeNotifier {
         flags: [es ? 'Contactar Centro de Toxicología (0800 722 6001)' : 'Contato: Centro de Informação Toxicológica (0800 722 6001)',
                 es ? 'Antídotos: naloxona (opioides), flumazenil (BZD), N-acetilcisteína (paracetamol)' : 'Antídotos: naloxona (opioides), flumazenil (BZD), N-acetilcisteína (paracetamol)',
                 es ? 'Carbón activado 1 g/kg VO si <1h de ingesta' : 'Carvão ativado 1 g/kg VO se <1h da ingestão'],
+        differentials: es
+            ? ['Identificar toxidrome: anticolinérgico (midriasis, taquicardia, retención urinaria), colinérgico/organofosf (miosis, broncosecreción, bradicardia), opioide (miosis, bradipnea, depresión SNC), simpaticomimético (midriasis, taquicardia, HTA), serotoninérgico (agitación, hiperreflexia, clonus)']
+            : ['Identificar toxidrome: anticolinérgico (midríase, taquicardia, retenção urinária), colinérgico/organofosf (miose, broncossecreção, bradicardia), opioide (miose, bradipneia, depressão SNC), simpatomimérico (midríase, taquicardia, HAS), serotoninérgico (agitação, hiperreflexia, clonus)'],
+        treatment: es
+            ? ['1. ABCDE → vía aérea si Glasgow ≤8 o bradipnea', '2. Carbón activado 1 g/kg VO (max 50 g) si <1h de ingesta y vía aérea protegida (CI: ácidos, bases, hidrocarbonos)', '3. Antídotos específicos: naloxona 0,4-2 mg IV/IM (opioides); flumazenil 0,2 mg IV (BZD — con cuidado en epilépticos); N-acetilcisteína 150 mg/kg IV/VO (paracetamol)', '4. Organofosf/pesticidas: atropina 2-4 mg IV hasta secar secreciones + pralidoxima 1-2 g IV', '5. ECG: QT largo → suspender causal + magnesio 2 g IV; QRS ancho (ADT) → bicarbonato 1-2 mEq/kg', '6. Centro de Toxicología (Brasil): 0800 722 6001 — consultar caso complejo']
+            : ['1. ABCDE → via aérea se Glasgow ≤8 ou bradipneia', '2. Carvão ativado 1 g/kg VO (máx 50 g) se <1h da ingestão e via aérea protegida (CI: ácidos, bases, hidrocarbonetos)', '3. Antídotos específicos: naloxona 0,4-2 mg IV/IM (opioides); flumazenil 0,2 mg IV (BZD — cuidado em epilépticos); N-acetilcisteína 150 mg/kg IV/VO (paracetamol)', '4. Organofosf/pesticidas: atropina 2-4 mg IV até secar secreções + pralidoxima 1-2 g IV', '5. ECG: QT longo → suspender causal + magnésio 2 g IV; QRS largo (ADT) → bicarbonato 1-2 mEq/kg', '6. Centro de Informação Toxicológica (Brasil): 0800 722 6001 — consultar caso complexo'],
+        guidelines: ['AAPCC 2023', 'ESICM Toxicology 2022', 'SBT 2021'],
       ),
 
       // ── Eclâmpsia / HELLP ─────────────────────────────────────────────────
@@ -1636,6 +1991,13 @@ class AppProvider extends ChangeNotifier {
         flags: [es ? 'PA ≥160/110 → antihipertensivo inmediato (hidralazina/nifedipina)' : 'PA ≥160/110 em gestante → anti-hipertensivo imediato',
                 es ? 'Convulsión → sulfato de magnesio 4–6 g IV' : 'Convulsão → sulfato de magnésio 4–6 g EV (ataque) + 1–2 g/h manutenção',
                 es ? 'HELLP → parto inmediato si ≥34 semanas' : 'HELLP → parto imediato se ≥34 semanas'],
+        differentials: es
+            ? ['Eclampsia vs status epiléptico en embarazo (siempre MgSO4 primero)', 'HELLP vs hígado graso agudo del embarazo (HGAE): transaminasas muy elevadas + hipoglucemia', 'Síndrome hemolítico urémico atípico (SHUa)', 'Púrpura trombocitopénica trombótica (PTT)']
+            : ['Eclâmpsia vs status epiléptico na gestação (sempre MgSO4 primeiro)', 'HELLP vs fígado gorduroso agudo da gestação (FGAG): transaminases muito elevadas + hipoglicemia', 'Síndrome hemolítico urêmico atípico (SHUa)', 'Púrpura trombocitopênica trombótica (PTT)'],
+        treatment: es
+            ? ['1. PA ≥160/110: antihipertensivo IV INMEDIATO — hidralazina 5-10 mg IV c/20 min o labetalol 20 mg IV o nifedipino 10-20 mg VO', '2. Eclampsia/convulsión: MgSO4 4-6 g IV en 20 min → mantenimiento 1-2 g/h (monitorizar reflejo patelar y diuresis)', '3. MgSO4 toxicidad (reflejo abolido, FR <12): gluconato Ca2+ 1 g IV', '4. HELLP: parto si ≥34 sem o inestabilidad; corticoides (dexametasona 12 mg c/12h) si <34 sem', '5. Meta PA: 140-155/90-105 (evitar caídas bruscas — riesgo fetal)', '6. Corticoides fetales si <34 semanas: betametasona 12 mg IM c/24h ×2 dosis']
+            : ['1. PA ≥160/110: anti-hipertensivo IV IMEDIATO — hidralazina 5-10 mg IV a cada 20 min ou labetalol 20 mg IV ou nifedipino 10-20 mg VO', '2. Eclâmpsia/convulsão: MgSO4 4-6 g IV em 20 min → manutenção 1-2 g/h (monitorar reflexo patelar e diurese)', '3. Toxicidade MgSO4 (reflexo abolido, FR <12): gluconato de Ca2+ 1 g IV', '4. HELLP: parto se ≥34 sem ou instabilidade; corticoides (dexametasona 12 mg 12/12h) se <34 sem', '5. Meta PA: 140-155/90-105 (evitar quedas bruscas — risco fetal)', '6. Corticoides fetais se <34 semanas: betametasona 12 mg IM 24/24h ×2 doses'],
+        guidelines: ['ACOG Preeclampsia 2020', 'FIGO 2022', 'FEBRASGO 2022'],
       ),
 
       // ── Cefaleia de alto risco ────────────────────────────────────────────
@@ -1654,6 +2016,13 @@ class AppProvider extends ChangeNotifier {
         exams: [es ? 'TC cráneo sin contraste (descartar HSA)' : 'TC crânio sem contraste (excluir HSA)', es ? 'Punción lumbar si TC negativa' : 'Punção lombar se TC negativa', 'Hemoculturas + PCR se febre', 'Hemograma'],
         flags: [es ? '"Peor cefalea de su vida" o inicio súbito → descartar HSA urgente' : '"Pior cefaleia da vida" ou início súbito → excluir HSA urgente',
                 es ? 'Déficit focal + cefalea → descartar AVC/hemorragia' : 'Déficit focal + cefaleia → descartar AVC/hemorragia'],
+        differentials: es
+            ? ['HSA (TC + PL — xantocromía en LCR)', 'Meningitis bacteriana (fiebre + rigidez nucal)', 'ACV hemorrágico intraparenquimatoso', 'Trombosis de seno venoso cerebral (embarazo, ACO, hipercoagulabilidad)', 'Hipertensión intracraneal idiopática (papilededema bilateral)', 'Crisis hipertensiva con encefalopatía']
+            : ['HSA (TC + PL — xantocromia no LCR)', 'Meningite bacteriana (febre + rigidez nucal)', 'AVC hemorrágico intraparenquimatoso', 'Trombose de seio venoso cerebral (gestação, ACO, hipercoagulabilidade)', 'Hipertensão intracraniana idiopática (papiledema bilateral)', 'Crise hipertensiva com encefalopatia'],
+        treatment: es
+            ? ['1. TC cráneo sin contraste URGENTE: diagnóstico en >98% de HSA en primeras 6h', '2. TC negativa + alta sospecha: punción lumbar — xantocromía o >2000 eritrocitos uniformes (no traumática)', '3. HSA confirmada: nimodipino 60 mg VO c/4h por 21 días + neurocirugía urgente (clipaje/coil)', '4. Meningitis: ATB empírico + dexametasona ANTES de TC si no hay signos focales', '5. Analgesia: ketorolac 30 mg IV o metoclopramida 10 mg IV (evitar opioides para no enmascarar síntomas)', '6. NUNCA dar alta sin TC en "peor cefalea de su vida" — mortalidad no tratada HSA: >40%']
+            : ['1. TC crânio sem contraste URGENTE: diagnóstico em >98% das HSA nas primeiras 6h', '2. TC negativa + alta suspeita: punção lombar — xantocromia ou >2000 eritrócitos uniformes (não traumática)', '3. HSA confirmada: nimodipino 60 mg VO 4/4h por 21 dias + neurocirurgia urgente (clipagem/coil)', '4. Meningite: ATB empírico + dexametasona ANTES do TC se sem sinais focais', '5. Analgesia: cetorrolaco 30 mg IV ou metoclopramida 10 mg IV (evitar opioides para não mascarar sintomas)', '6. NUNCA dar alta sem TC em "pior cefaleia da vida" — mortalidade HSA não tratada: >40%'],
+        guidelines: ['AHA/ASA SAH 2023', 'ESO Headache 2022', 'SBN Cefaleia 2022'],
       ),
 
       // ── Artrite Séptica ───────────────────────────────────────────────────
@@ -1664,6 +2033,13 @@ class AppProvider extends ChangeNotifier {
         keywords: ['artrite septic', 'articulacao quente', 'monoartrite', 'artrite infec', 'artralgia febre', 'artritis septica'],
         exams: [es ? 'Artrocentesis + análisis líquido sinovial' : 'Artrocentese + análise do líquido sinovial', es ? 'Hemocultivos' : 'Hemoculturas', 'PCR/VHS', es ? 'Ácido úrico' : 'Ácido úrico'],
         flags: [es ? 'Artritis séptica → artrocentesis + ATB en <6h (S. aureus más común)' : 'Artrite séptica → artrocentese + ATB em <6h (S. aureus mais comum)'],
+        differentials: es
+            ? ['Gota aguda (cristales uratos, ácido úrico — puede coexistir con séptica)', 'Artritis reactiva (Reiter: conjuntivitis, uretritis, artritis)', 'Artritis reumatoide (poliarticular, FR, anti-CCP)', 'Artritis pseudogotosa (cristales Ca-pirofosfato, ancianos)', 'Hemartros (anticoagulado o hemofílico)', 'Bursitis infecciosa (limitada a bolsa — no articular)']
+            : ['Gota aguda (cristais de uratos, ácido úrico — pode coexistir com séptica)', 'Artrite reativa (Reiter: conjuntivite, uretrite, artrite)', 'Artrite reumatoide (poliarticular, FR, anti-CCP)', 'Artrite pseudogotosa (cristais de Ca-pirofosfato, idosos)', 'Hemartrose (anticoagulado ou hemofílico)', 'Bursite infecciosa (limitada à bolsa — não articular)'],
+        treatment: es
+            ? ['1. Artrocentesis diagnóstica URGENTE: >50.000 leucocitos/mm³ + >90% PMN = séptica hasta demostrar lo contrario', '2. ATB empírico IV INMEDIATO en <6h (no esperar cultivo): oxacilina 2 g IV c/4h (o ceftriaxona si gram-neg sospechado)', '3. Cultivo del líquido sinovial + hemocultivos (ANTES del ATB si posible, sin demorar)', '4. Drenaje: artrocentesia diaria de evacuación o artroscopía (cadera: drenaje siempre quirúrgico)', '5. ATB 3-4 semanas en total (2-4 semanas adicionales VO tras mejoría IV)', '6. Inmovilización inicial → movilización precoz en 24-48h (previene rigidez)']
+            : ['1. Artrocentese diagnóstica URGENTE: >50.000 leucócitos/mm³ + >90% PMN = séptica até provar o contrário', '2. ATB empírico IV IMEDIATO em <6h (não esperar cultura): oxacilina 2 g IV 4/4h (ou ceftriaxona se gram-neg suspeito)', '3. Cultura do líquido sinovial + hemoculturas (ANTES do ATB se possível, sem atrasar)', '4. Drenagem: artrocentese diária de evacuação ou artroscopia (quadril: drenagem sempre cirúrgica)', '5. ATB 3-4 semanas no total (2-4 semanas adicionais VO após melhora IV)', '6. Imobilização inicial → mobilização precoce em 24-48h (previne rigidez)'],
+        guidelines: ['IDSA Septic Arthritis 2021', 'BSR 2020', 'SBR 2022'],
       ),
 
       // ── Anticoagulação / Sangramento ──────────────────────────────────────
@@ -1676,6 +2052,13 @@ class AppProvider extends ChangeNotifier {
         flags: [es ? 'Warfarina + sangrado grave → vitamina K 10 mg IV + CCP' : 'Varfarina + sangramento grave → vitamina K 10 mg EV + CCP (4 fatores)',
                 es ? 'Heparina → protamina 1 mg/100 UI heparina IV' : 'Heparina → protamina 1 mg/100 UI heparina EV',
                 es ? 'DOAC → idarucizumab (dabigatrán), andexanet (rivaroxabán/apixabán)' : 'DOAC → idarucizumabe (dabigatrana), andexanete alfa (rivaroxabana/apixabana)'],
+        differentials: es
+            ? ['Sobrecoagulación por warfarina (INR >4)', 'DOAC con función renal deteriorada (acumulación)', 'Hemorragia espontánea por trombocitopenia', 'Hemofilia A/B (TTPA largo aislado)', 'Coagulación intravascular diseminada (CID)']
+            : ['Supercoagulação por varfarina (INR >4)', 'DOAC com função renal deteriorada (acumulação)', 'Hemorragia espontânea por trombocitopenia', 'Hemofilia A/B (TTPA longo isolado)', 'Coagulação intravascular disseminada (CIVD)'],
+        treatment: es
+            ? ['1. Warfarina + sangrado leve (INR 4-9, sin sangrado): suspender + vitamina K1 1-2,5 mg VO', '2. Warfarina + sangrado grave: vitamina K 10 mg IV + CCP 4F (25-50 U/kg) INMEDIATO', '3. Heparina IV no fraccionada: protamina 1 mg por cada 100 UI de heparina en las últimas 2-3h (máx 50 mg IV lento)', '4. LMWH (HBPM): protamina 1 mg/1 mg HBPM (efectividad parcial ~60%)', '5. Dabigatrán: idarucizumab 5 g IV (2 viales); Rivaroxabán/Apixabán: andexanet alfa IV (dosis según fármaco/momento)', '6. DOAC sin antídoto disponible: CCP 4F 50 U/kg como alternativa']
+            : ['1. Varfarina + sangramento leve (INR 4-9, sem sangramento): suspender + vitamina K1 1-2,5 mg VO', '2. Varfarina + sangramento grave: vitamina K 10 mg IV + CCP 4F (25-50 U/kg) IMEDIATO', '3. Heparina IV não fracionada: protamina 1 mg por cada 100 UI de heparina nas últimas 2-3h (máx 50 mg IV lento)', '4. HBPM: protamina 1 mg/1 mg HBPM (efetividade parcial ~60%)', '5. Dabigatrana: idarucizumabe 5 g IV (2 frascos); Rivaroxabana/Apixabana: andexanete alfa IV (dose conforme fármaco/momento)', '6. DOAC sem antídoto disponível: CCP 4F 50 U/kg como alternativa'],
+        guidelines: ['ESC Anticoagulation Reversal 2021', 'ACCP 2022', 'SBC Anticoagulação 2023'],
       ),
     ];
 
@@ -1827,22 +2210,39 @@ class AppProvider extends ChangeNotifier {
     }
 
     // ════════════════════════════════════════════════════════════════════════
-    // FASE 3 — RENDERIZAR RESPOSTA DA CONDIÇÃO VENCEDORA
+    // FASE 3 — RENDERIZAR RESPOSTA ENRIQUECIDA DA CONDIÇÃO VENCEDORA
+    // Inclui: red flags → diferenciais → conduta estruturada → doses →
+    //         exames → alertas do paciente → referências de diretrizes
+    // Este output serve como contexto RAG estruturado para o Gemini.
     // ════════════════════════════════════════════════════════════════════════
     final buf = StringBuffer();
 
-    // Cabeçalho: nome da condição
+    // ── Cabeçalho ──────────────────────────────────────────────────────────
     buf.writeln('## ${winner!.label}');
     buf.writeln('');
 
-    // Red flags — máx 3
+    // ── Red flags / Alertas críticos (máx 3) ─────────────────────────────
     if (winner.flags.isNotEmpty) {
-      buf.writeln(es ? '## Alertas:' : '## Alertas:');
+      buf.writeln(es ? '### ⚠ Alertas críticos:' : '### ⚠ Alertas críticos:');
       for (final f in winner.flags.take(3)) buf.writeln('  • $f');
       buf.writeln('');
     }
 
-    // Protocolo clínico (conduta imediata) — se disponível
+    // ── Diagnósticos diferenciais ─────────────────────────────────────────
+    if (winner.differentials.isNotEmpty) {
+      buf.writeln(es ? '### Diagnósticos diferenciales a considerar:' : '### Diagnósticos diferenciais a considerar:');
+      for (final d in winner.differentials.take(5)) buf.writeln('  • $d');
+      buf.writeln('');
+    }
+
+    // ── Conduta estruturada / Tratamento por etapas ───────────────────────
+    if (winner.treatment.isNotEmpty) {
+      buf.writeln(es ? '### Conducta estructurada:' : '### Conduta estruturada:');
+      for (final step in winner.treatment) buf.writeln('  $step');
+      buf.writeln('');
+    }
+
+    // ── Protocolo clínico (conduta imediata do DB interno) ─────────────────
     ProtocolModel? proto;
     if (winner.protocolId != null) {
       try { proto = protocolsDatabase.firstWhere((p) => p.id == winner!.protocolId); }
@@ -1850,51 +2250,89 @@ class AppProvider extends ChangeNotifier {
     }
 
     if (proto != null) {
-      buf.writeln('## ${tDB(proto.title)}:');
+      buf.writeln('### ${es ? "Protocolo interno" : "Protocolo interno"} — ${tDB(proto.title)}:');
       final actions = proto.getActions(_lang);
-      for (int i = 0; i < actions.length && i < 5; i++) {
+      for (int i = 0; i < actions.length && i < 6; i++) {
         buf.writeln('  ${actions[i]}');
       }
-      if (actions.length > 5) {
+      if (actions.length > 6) {
         buf.writeln(_lang == 'es'
             ? '  → Ver protocolo completo en la pestaña Protocolos'
             : '  → Ver protocolo completo na aba Protocolos');
       }
       buf.writeln('');
 
-      // Fármacos do protocolo
-      final suggestedDrugs = proto.drugs.take(3)
+      // ── Fármacos do protocolo com doses calculadas ──────────────────────
+      final suggestedDrugs = proto.drugs.take(4)
           .map((id) { try { return drugsDatabase.firstWhere((d) => d.id == id); } catch (_) { return null; } })
           .whereType<DrugModel>().toList();
 
-      if (suggestedDrugs.isNotEmpty && _patient.weight.isNotEmpty) {
-        buf.writeln('## ${_lang == 'es' ? 'Dosis para este paciente:' : 'Dose para este paciente:'}');
-        for (final drug in suggestedDrugs) {
-          final dose   = calculateDose(drug);
-          final alerts = dose.alerts.take(1).join(' | ');
-          buf.writeln('  • ${drug.name}: ${dose.main}${alerts.isNotEmpty ? '  ⚠ $alerts' : ''}');
+      if (suggestedDrugs.isNotEmpty) {
+        if (_patient.weight.isNotEmpty) {
+          buf.writeln('### ${_lang == 'es' ? 'Dosis calculadas para este paciente (${_patient.weight} kg):' : 'Doses calculadas para este paciente (${_patient.weight} kg):'}');
+          for (final drug in suggestedDrugs) {
+            try {
+              final dose   = calculateDose(drug);
+              final alerts = dose.alerts.take(1).join(' | ');
+              buf.writeln('  • ${drug.name}: ${dose.main}${alerts.isNotEmpty ? '  ⚠ $alerts' : ''}');
+            } catch (_) {
+              final fd = drug.getField(drug.fixedDose, _lang);
+              if (fd.isNotEmpty) buf.writeln('  • ${drug.name}: $fd');
+            }
+          }
+        } else {
+          buf.writeln('${_lang == 'es' ? 'Fármacos protocolares' : 'Fármacos protocolares'}: ${suggestedDrugs.map((d) => d.name).join(', ')}');
         }
         buf.writeln('');
-      } else if (suggestedDrugs.isNotEmpty) {
-        buf.writeln('${_lang == 'es' ? 'Fármacos' : 'Fármacos'}: ${suggestedDrugs.map((d) => d.name).join(', ')}');
-        buf.writeln('');
       }
-    } else if (winner.exams.isNotEmpty) {
-      // Sem protocolo → mostra exames da condição
-      buf.writeln(es ? '## Exámenes clave:' : '## Exames-chave:');
-      for (final e in winner.exams.take(4)) buf.writeln('  • $e');
+    }
+
+    // ── Exames-chave (sempre mostrar) ────────────────────────────────────
+    if (winner.exams.isNotEmpty) {
+      buf.writeln(es ? '### Exámenes clave:' : '### Exames-chave:');
+      for (final e in winner.exams.take(6)) buf.writeln('  • $e');
       buf.writeln('');
     }
 
-    // Alertas contextuais de paciente
+    // ── Alertas contextuais do paciente ───────────────────────────────────
     final clcrVal = double.tryParse((clcr ?? '').replaceAll(',', '.'));
-    if (clcrVal != null && clcrVal > 0 && clcrVal < 45) {
-      buf.writeln('${clcrVal < 15 ? 'ALERTA' : 'Aten.'} ${_lang == 'es' ? 'ClCr $clcr — ajustar dosis renales' : 'ClCr $clcr — ajustar doses renais'}');
+    if (clcrVal != null && clcrVal > 0 && clcrVal < 60) {
+      final lvl = clcrVal < 15 ? '🔴 ALERTA RENAL GRAVE' : clcrVal < 30 ? '🟠 Alerta renal' : '🟡 Atenção renal';
+      buf.writeln('$lvl — ${_lang == 'es' ? 'ClCr $clcr mL/min: ajustar todas las dosis renales' : 'ClCr $clcr mL/min: ajustar TODAS as doses renais'}');
       buf.writeln('');
     }
     final ageVal = int.tryParse(_patient.age);
     if (ageVal != null && ageVal >= 75) {
-      buf.writeln(_lang == 'es' ? 'Idoso: reducir dosis opioides/BZD, vigilar delirium.' : 'Idoso: reduzir dose opioides/BZD, vigilar delirium.');
+      buf.writeln(_lang == 'es'
+          ? '👴 Adulto mayor ≥75 años: reducir dosis opioides/BZD, vigilar delirium, ajustar AINE/IECA.'
+          : '👴 Idoso ≥75 anos: reduzir dose opioides/BZD, vigiar delirium, ajustar AINE/IECA.');
+      buf.writeln('');
+    }
+    // Interações com medicamentos do paciente
+    if (_patient.medications.trim().isNotEmpty && winner.protocolId != null) {
+      final protoProtocol = proto;
+      if (protoProtocol != null && protoProtocol.drugs.isNotEmpty) {
+        final interList = DrugInteractionService.checkInteractions(
+          selectedDrugNames: protoProtocol.drugs.take(3).toList(),
+          patientMedicationsText: _patient.medications,
+        );
+        if (interList.isNotEmpty) {
+          buf.writeln(es ? '### ⚠ Interacciones con medicamentos actuales del paciente:' : '### ⚠ Interações com medicamentos atuais do paciente:');
+          for (final inter in interList.take(3)) {
+            final sevIcon = inter.severity == InteractionSeverity.contraindicated ? '⛔' :
+                            inter.severity == InteractionSeverity.major ? '🔴' :
+                            inter.severity == InteractionSeverity.moderate ? '🟠' : '🟡';
+            buf.writeln('  $sevIcon ${inter.drug1} + ${inter.drug2}: ${inter.effect.length > 120 ? "${inter.effect.substring(0, 120)}..." : inter.effect}');
+          }
+          buf.writeln('');
+        }
+      }
+    }
+
+    // ── Referências / Diretrizes ──────────────────────────────────────────
+    if (winner.guidelines.isNotEmpty) {
+      buf.writeln(es ? '### Referencias:' : '### Referências:');
+      buf.writeln('  ${winner.guidelines.join(' | ')}');
       buf.writeln('');
     }
 
@@ -2363,6 +2801,12 @@ class _CliCondition {
   final List<String> keywords;
   final List<String> exams;
   final List<String> flags;
+  /// Diagnósticos diferenciais a considerar
+  final List<String> differentials;
+  /// Etapas de tratamento estruturado (contexto RAG para Gemini)
+  final List<String> treatment;
+  /// Diretrizes/guidelines de referência
+  final List<String> guidelines;
   const _CliCondition({
     required this.id,
     required this.label,
@@ -2370,5 +2814,8 @@ class _CliCondition {
     required this.keywords,
     required this.exams,
     required this.flags,
+    this.differentials = const [],
+    this.treatment = const [],
+    this.guidelines = const [],
   });
 }
