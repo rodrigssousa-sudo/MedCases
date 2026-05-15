@@ -58,16 +58,33 @@ class GeminiService {
   // STORAGE — localStorage (web) / SharedPreferences (Android)
   // ══════════════════════════════════════════════════════════════════════════
 
+  // localStorage via eval() — resistente ao SES lockdown do Firebase Auth.
+  // O lockdown-install.js do Firebase congela proxies do dart:js, fazendo
+  // context['localStorage'].callMethod() retornar null silenciosamente.
+  // eval() acessa o localStorage nativo do browser sem passar pelo proxy.
+
   static void _webSet(String key, String value) {
-    try { js.context['localStorage'].callMethod('setItem', [key, value]); } catch (_) {}
+    try {
+      final k = key.replaceAll("'", "\\'");
+      final v = value.replaceAll("'", "\\'").replaceAll('\n', '\\n');
+      js.context.callMethod('eval', ["localStorage.setItem('$k','$v')"]);
+    } catch (_) {}
   }
 
   static String? _webGet(String key) {
-    try { return js.context['localStorage'].callMethod('getItem', [key]) as String?; } catch (_) { return null; }
+    try {
+      final k = key.replaceAll("'", "\\'");
+      final result = js.context.callMethod('eval', ["localStorage.getItem('$k')"]);
+      if (result == null || result.toString() == 'null') return null;
+      return result.toString();
+    } catch (_) { return null; }
   }
 
   static void _webRemove(String key) {
-    try { js.context['localStorage'].callMethod('removeItem', [key]); } catch (_) {}
+    try {
+      final k = key.replaceAll("'", "\\'");
+      js.context.callMethod('eval', ["localStorage.removeItem('$k')"]);
+    } catch (_) {}
   }
 
   static Future<void> _saveEmail(String email) async {

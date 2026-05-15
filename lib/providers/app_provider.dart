@@ -994,21 +994,29 @@ class AppProvider extends ChangeNotifier {
     }
   }
 
-  /// Lê um valor do localStorage (web only). Retorna null se não web ou erro.
+  /// Lê um valor do localStorage via eval — resistente ao SES lockdown do Firebase.
+  /// O Firebase Auth injeta lockdown-install.js que congela proxies do dart:js,
+  /// fazendo context['localStorage'].callMethod('getItem') retornar null.
+  /// eval() acessa o localStorage nativo do browser, sem passar pelo proxy.
   String? _webGetLS(String key) {
     if (!kIsWeb) return null;
     try {
-      return js_interop.context['localStorage'].callMethod('getItem', [key]) as String?;
+      final safeKey = key.replaceAll("'", "\\'");
+      final result = js_interop.context
+          .callMethod('eval', ["localStorage.getItem('$safeKey')"]);
+      if (result == null || result.toString() == 'null') return null;
+      return result.toString();
     } catch (_) {
       return null;
     }
   }
 
-  /// Remove uma chave do localStorage (web only).
+  /// Remove uma chave do localStorage via eval — resistente ao SES lockdown.
   void _webRemoveLS(String key) {
     if (!kIsWeb) return;
     try {
-      js_interop.context['localStorage'].callMethod('removeItem', [key]);
+      final safeKey = key.replaceAll("'", "\\'");
+      js_interop.context.callMethod('eval', ["localStorage.removeItem('$safeKey')"]);
     } catch (_) {}
   }
 
