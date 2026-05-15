@@ -310,6 +310,7 @@ class GeminiService {
         final candidates = data['candidates'] as List?;
         if (candidates == null || candidates.isEmpty) {
           final blockReason = data['promptFeedback']?['blockReason'] as String?;
+          debugPrint('[GeminiService] sem candidates. blockReason=$blockReason useGrounding=$useGrounding');
           // Se grounding falhou, tenta sem ele
           if (useGrounding) {
             return chat(
@@ -324,6 +325,7 @@ class GeminiService {
         }
         final candidate = candidates[0] as Map<String, dynamic>;
         final finishReason = candidate['finishReason'] as String?;
+        debugPrint('[GeminiService] finishReason=$finishReason useGrounding=$useGrounding');
         if (finishReason == 'SAFETY' || finishReason == 'RECITATION') {
           if (useGrounding) {
             return chat(
@@ -336,8 +338,13 @@ class GeminiService {
           }
           return GeminiResult.error('BLOCKED: $finishReason', 'blocked');
         }
+        // MAX_TOKENS — resposta cortada mas usável
+        if (finishReason == 'MAX_TOKENS') {
+          debugPrint('[GeminiService] MAX_TOKENS atingido — usando resposta parcial');
+        }
         final parts = candidate['content']?['parts'] as List?;
         if (parts == null || parts.isEmpty) {
+          debugPrint('[GeminiService] parts vazio. candidate=$candidate');
           return GeminiResult.error('EMPTY_RESPONSE', 'unknown');
         }
         // Concatena todas as parts de texto (Grounding pode gerar múltiplas parts)
@@ -346,18 +353,21 @@ class GeminiService {
             .join('')
             .trim();
         if (text.isEmpty) {
+          debugPrint('[GeminiService] texto vazio após join. parts=$parts');
           return GeminiResult.error('EMPTY_TEXT', 'unknown');
         }
         return GeminiResult(text: text);
       }
 
       if (response.statusCode == 401 || response.statusCode == 403) {
+        debugPrint('[GeminiService] 401/403: ${response.body.substring(0, response.body.length.clamp(0, 300))}');
         return GeminiResult.error('API_KEY_INVALID', 'api_key_invalid');
       }
       if (response.statusCode == 429) {
+        debugPrint('[GeminiService] 429 quota: ${response.body.substring(0, response.body.length.clamp(0, 200))}');
         return GeminiResult.error('QUOTA_EXCEEDED', 'quota');
       }
-      debugPrint('[GeminiService] HTTP ${response.statusCode}: ${response.body}');
+      debugPrint('[GeminiService] HTTP ${response.statusCode}: ${response.body.substring(0, response.body.length.clamp(0, 400))}');
       return GeminiResult.error('HTTP_${response.statusCode}', 'unknown');
 
     } on http.ClientException {

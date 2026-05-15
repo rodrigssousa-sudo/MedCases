@@ -1227,7 +1227,8 @@ class AppProvider extends ChangeNotifier {
         return geminiResult.text;
       }
 
-      // Gemini falhou — tentar novamente com contexto local como resposta direta
+      // Gemini falhou — logar o erro para diagnóstico
+      debugPrint('[buildAIAnswer] Gemini ERRO: code=${geminiResult.errorCode} text=${geminiResult.text.substring(0, geminiResult.text.length.clamp(0, 100))}');
       final localFallback = _buildLocalAnswer(input);
       // Se o contexto local tem conteúdo médico real (FASE 0/1/2a/2b/3) → exibir
       // Se é contexto interno técnico (FASE 2e/2f) → mostrar mensagem amigável
