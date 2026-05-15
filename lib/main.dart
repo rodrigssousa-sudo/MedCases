@@ -33,6 +33,7 @@ import 'screens/home_screen.dart';
 import 'screens/notes_screen.dart';
 import 'screens/library_screen.dart';
 import 'services/firestore_service.dart';
+import 'services/gemini_service.dart';
 import 'widgets/brand_mark.dart';
 
 // Future global — já resolvido quando runApp() é chamado
@@ -75,6 +76,13 @@ void main() async {
   } catch (e) {
     debugPrint('[MedCases] SharedPreferences indisponível: $e');
   }
+
+  // ── Boot: restaura Gemini API Key do localStorage IMEDIATAMENTE ────────────
+  // Deve ser ANTES de restoreSession() e runApp() para que qualquer código que
+  // chame GeminiService.hasApiKey já encontre a key — independente do Firestore.
+  // Resistente ao service worker quebrado: localStorage é lido via eval() JS,
+  // sem passar pelo SW ou pelo Firestore SDK.
+  GeminiService.initFromLocalStorage();
 
   // ── Restauração silenciosa de sessão ("Manter conectado") ──────────────────
   // Tenta renovar o refreshToken antes do runApp — se bem-sucedido, webUser.value

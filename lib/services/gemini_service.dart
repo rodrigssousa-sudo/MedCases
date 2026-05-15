@@ -46,10 +46,30 @@ class GeminiService {
 
   // ── API Key estática (carregada do Firestore pelo AppProvider) ────────────
   static String _geminiApiKey = '';
+  static const _keyGak = 'medcases_gak'; // localStorage key para persistência entre reloads
 
   /// Setter chamado pelo AppProvider após carregar a chave do Firestore.
+  /// Automaticamente persiste no localStorage para sobreviver reloads do service worker.
   static void setGeminiApiKey(String key) {
-    _geminiApiKey = key.trim();
+    final trimmed = key.trim();
+    if (trimmed.isEmpty) return;
+    _geminiApiKey = trimmed;
+    // Persiste no localStorage (web) — resistente ao SES lockdown do Firebase Auth
+    if (kIsWeb) _webSet(_keyGak, trimmed);
+    debugPrint('[GeminiService] API Key definida e cacheada no localStorage ✓');
+  }
+
+  /// Restaura a API Key do localStorage sem precisar do Firestore.
+  /// Chamar em main() antes do runApp — garante que a key está disponível
+  /// imediatamente, mesmo quando o Firestore falha por reload do service worker.
+  static void initFromLocalStorage() {
+    if (!kIsWeb) return;
+    if (_geminiApiKey.isNotEmpty) return; // já carregada
+    final cached = _webGet(_keyGak);
+    if (cached != null && cached.isNotEmpty) {
+      _geminiApiKey = cached;
+      debugPrint('[GeminiService] API Key restaurada do localStorage no boot ✓');
+    }
   }
 
   /// Verifica se a API Key foi carregada (sem expor a chave em si).
