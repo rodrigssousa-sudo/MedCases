@@ -249,7 +249,7 @@ class AppProvider extends ChangeNotifier {
   // ── Chave OpenAI — prioridade: app global → usuário individual → cache local
   //
   // Hierarquia:
-  //  1. config/app_settings.openAiKey  → chave do app (admin configura, todos usam)
+  //  1. app_config/global.openAiKey  → chave do app (admin configura, todos usam)
   //  2. users/{uid}/prefs/settings.openAiKey → chave individual (legado / admin)
   //  3. SharedPreferences local → fallback offline
   Future<void> _loadAiKeyFromFirestore(String uid) async {
@@ -811,7 +811,7 @@ class AppProvider extends ChangeNotifier {
   // ── IA Clínica ────────────────────────────────────────────────────────────
 
   /// Salva a chave OpenAI GLOBAL do app (admin → todos os usuários).
-  /// Persiste em config/app_settings.openAiKey + atualiza estado local.
+  /// Persiste em app_config/global.openAiKey + atualiza estado local.
   Future<void> setAppAiKey(String key) async {
     final trimmed = key.trim();
     _openAiKey = trimmed;

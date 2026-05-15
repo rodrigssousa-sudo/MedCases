@@ -1,7 +1,7 @@
 // firestore_service.dart — dados por usuário no Firestore
 import 'dart:async';
 import 'dart:convert';
-import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter/foundation.dart' show kIsWeb, debugPrint;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:http/http.dart' as http;
 import '../models/clinical_case_model.dart';
@@ -68,21 +68,23 @@ class FirestoreService {
 
   // ── Chave OpenAI do APP (compartilhada) ──────────────────────────────────
   /// Carrega a chave OpenAI global do app, salva pelo administrador.
-  /// Armazenada em config/app_settings campo 'openAiKey'.
+  /// Armazenada em app_config/global campo 'openAiKey'.
   /// Todos os usuários aprovados usam essa chave — nenhuma configuração manual.
   static Future<String> loadAppAiKey() async {
     try {
-      final doc = await _db.collection('config').doc('app_settings').get();
+      final doc = await _db.collection('app_config').doc('global').get();
+      debugPrint('[FirestoreService] loadAppAiKey doc.exists=${doc.exists} fields=${doc.data()?.keys.toList()}');
       if (!doc.exists) return '';
       return (doc.data()?['openAiKey'] as String?) ?? '';
-    } catch (_) {
+    } catch (e) {
+      debugPrint('[FirestoreService] loadAppAiKey ERRO: $e');
       return '';
     }
   }
 
   // ── Chave Gemini API do APP (compartilhada) ───────────────────────────────
   /// Carrega a Gemini API Key global do app, salva pelo administrador.
-  /// Armazenada em config/app_settings campo 'geminiApiKey'.
+  /// Armazenada em app_config/global campo 'apiKey'.
   /// Usada diretamente nas chamadas à API do Gemini (sem OAuth token).
   ///
   /// Web: usa REST HTTP puro (firestore.googleapis.com) para bypassar o
@@ -91,49 +93,75 @@ class FirestoreService {
   static Future<String> loadGeminiApiKey() async {
     if (kIsWeb) return _loadGeminiApiKeyRest();
     try {
-      final doc = await _db.collection('config').doc('app_settings').get();
+      final doc = await _db.collection('app_config').doc('global').get();
+      debugPrint('[FirestoreService] loadGeminiApiKey (SDK) doc.exists=${doc.exists} fields=${doc.data()?.keys.toList()}');
       if (!doc.exists) return '';
-      return (doc.data()?['geminiApiKey'] as String?) ?? '';
-    } catch (_) {
+      final data = doc.data()!;
+      // 'apiKey' é o nome real no banco; 'geminiApiKey' mantido como fallback legado
+      final key = (data['apiKey'] as String?)?.trim() ??
+                  (data['geminiApiKey'] as String?)?.trim() ?? '';
+      debugPrint('[FirestoreService] loadGeminiApiKey (SDK) key.isNotEmpty=${key.isNotEmpty}');
+      return key;
+    } catch (e) {
+      debugPrint('[FirestoreService] loadGeminiApiKey (SDK) ERRO: $e');
       return '';
     }
   }
 
-  /// Lê config/app_settings.geminiApiKey via Firestore REST API.
+  /// Lê app_config/global.apiKey via Firestore REST API.
   /// Usa idToken do usuário autenticado para authorização (regras de segurança).
   /// O token é obtido via securetoken.googleapis.com — domínio externo,
   /// não interceptado pelo service worker de medcasespro.com.
   static Future<String> _loadGeminiApiKeyRest() async {
     try {
       final token = await AuthService.getAdminToken();
+      debugPrint('[FirestoreService] REST token.isNotEmpty=${token.isNotEmpty}');
       final headers = token.isNotEmpty
           ? {'Authorization': 'Bearer $token'}
           : <String, String>{};
 
+      final url = '$_fsBase/app_config/global';
+      debugPrint('[FirestoreService] REST GET $url');
       final resp = await http.get(
-        Uri.parse('$_fsBase/config/app_settings'),
+        Uri.parse(url),
         headers: headers,
       ).timeout(const Duration(seconds: 8));
 
-      if (resp.statusCode != 200) return '';
+      debugPrint('[FirestoreService] REST status=${resp.statusCode} body=${resp.body.substring(0, resp.body.length.clamp(0, 400))}');
+
+      if (resp.statusCode != 200) {
+        debugPrint('[FirestoreService] REST ERRO ${resp.statusCode}: ${resp.body}');
+        return '';
+      }
 
       final body   = jsonDecode(resp.body) as Map<String, dynamic>;
       final fields = body['fields'] as Map<String, dynamic>? ?? {};
-      final keyField = fields['geminiApiKey'] as Map<String, dynamic>?;
-      return (keyField?['stringValue'] as String?) ?? '';
-    } catch (_) {
+      debugPrint('[FirestoreService] REST campos disponíveis: ${fields.keys.toList()}');
+
+      // Tenta 'apiKey' (nome real), depois 'geminiApiKey' (legado)
+      final apiKeyField    = fields['apiKey']      as Map<String, dynamic>?;
+      final geminiKeyField = fields['geminiApiKey'] as Map<String, dynamic>?;
+      final key = (apiKeyField?['stringValue'] as String?)?.trim() ??
+                  (geminiKeyField?['stringValue'] as String?)?.trim() ?? '';
+      debugPrint('[FirestoreService] REST key.isNotEmpty=${key.isNotEmpty}');
+      return key;
+    } catch (e) {
+      debugPrint('[FirestoreService] _loadGeminiApiKeyRest ERRO: $e');
       return '';
     }
   }
 
-  /// Salva a Gemini API Key global do app em config/app_settings.
+  /// Salva a Gemini API Key global do app em app_config/global.
   static Future<void> saveGeminiApiKey(String key) async {
     try {
-      await _db.collection('config').doc('app_settings').set(
-        {'geminiApiKey': key.trim()},
+      await _db.collection('app_config').doc('global').set(
+        {'apiKey': key.trim()},
         SetOptions(merge: true),
       );
-    } catch (_) {}
+      debugPrint('[FirestoreService] saveGeminiApiKey OK');
+    } catch (e) {
+      debugPrint('[FirestoreService] saveGeminiApiKey ERRO: $e');
+    }
   }
 
   // ── Chave OpenAI — vinculada ao perfil do usuário no Firestore ────────────
@@ -149,15 +177,18 @@ class FirestoreService {
     }
   }
 
-  /// Salva a chave OpenAI global do app em config/app_settings.
+  /// Salva a chave OpenAI global do app em app_config/global.
   /// Todos os usuários aprovados passam a usar essa chave automaticamente.
   static Future<void> saveAppAiKey(String key) async {
     try {
-      await _db.collection('config').doc('app_settings').set(
+      await _db.collection('app_config').doc('global').set(
         {'openAiKey': key.trim()},
         SetOptions(merge: true),
       );
-    } catch (_) {}
+      debugPrint('[FirestoreService] saveAppAiKey OK → app_config/global');
+    } catch (e) {
+      debugPrint('[FirestoreService] saveAppAiKey ERRO: $e');
+    }
   }
 
   /// Salva (ou remove) a chave OpenAI no perfil Firestore do usuário.
