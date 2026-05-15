@@ -40,12 +40,13 @@ import 'widgets/brand_mark.dart';
 // Mantido para compatibilidade com _AuthGate FutureBuilder
 late final Future<void> _firebaseInit;
 
-/// Log para console do browser (visível no Safari DevTools)
+/// Log para console do browser via JS eval — funciona em release
 void _jsLog(String msg) {
-  if (kIsWeb) {
-    try { _js.context.callMethod('console', []); } catch (_) {}
-    try { _js.context['console'].callMethod('log', [msg]); } catch (_) {}
-  }
+  if (!kIsWeb) return;
+  try {
+    final safe = msg.replaceAll("'", "\\'").replaceAll('\n', ' ');
+    _js.context.callMethod('eval', ["console.log('$safe')"]);
+  } catch (_) {}
 }
 
 void main() async {
@@ -54,6 +55,7 @@ void main() async {
   };
 
   WidgetsFlutterBinding.ensureInitialized();
+  _jsLog('[DART-DIAG] 0-main-iniciou');
 
   // Firebase DEVE ser inicializado com await ANTES do runApp()
   // Sem isso, qualquer uso de Auth/Firestore explode com [core/no-app]
@@ -76,6 +78,7 @@ void main() async {
       ..catchError((_) {/* erro capturado — FutureBuilder lida via hasError */});
   }
 
+  _jsLog('[DART-DIAG] 1-firebase-ok');
   final provider = AppProvider();
 
   // SharedPreferences falha em abas anônimas (localStorage bloqueado)
@@ -84,20 +87,25 @@ void main() async {
   } catch (e) {
     debugPrint('[MedCases] SharedPreferences indisponível: $e');
   }
+  _jsLog('[DART-DIAG] 2-loadPrefs-ok');
 
   // ── Restauração silenciosa de sessão ("Manter conectado") ──────────────────
   // Tenta renovar o refreshToken antes do runApp — se bem-sucedido, webUser.value
   // já estará preenchido quando _AuthGate construir, saltando direto ao MainShell.
   // Timeout de 8 s está dentro de restoreSession(); rede falha → LoginScreen normal.
   if (kIsWeb) {
+    _jsLog('[DART-DIAG] A-antes-restoreSession');
     try {
-      _jsLog('[DART-DIAG] restoreSession iniciando...');
-      final restoredUser = await AuthService.restoreSession();
-      _jsLog('[DART-DIAG] restoreSession resultado: ${restoredUser != null ? "usuário OK: ${restoredUser.uid}" : "null (sem sessão ou falhou)"}');
-      _jsLog('[DART-DIAG] webUser.value após restore: ${AuthService.webUser.value != null ? "OK" : "null"}');
+      final restoredUser = await AuthService.restoreSession()
+          .timeout(const Duration(seconds: 10), onTimeout: () {
+        _jsLog('[DART-DIAG] restoreSession TIMEOUT 10s');
+        return null;
+      });
+      _jsLog('[DART-DIAG] B-apos-restoreSession uid=${restoredUser?.uid ?? "null"}');
     } catch (e) {
-      _jsLog('[DART-DIAG] restoreSession EXCEÇÃO: $e');
+      _jsLog('[DART-DIAG] restoreSession-ERRO: $e');
     }
+    _jsLog('[DART-DIAG] C-antes-runApp webUser=${AuthService.webUser.value?.uid ?? "null"}');
   }
 
   runApp(
