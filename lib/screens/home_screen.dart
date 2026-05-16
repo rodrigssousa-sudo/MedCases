@@ -101,7 +101,7 @@ class HomeScreen extends StatelessWidget {
 
         const SizedBox(height: 14),
 
-        // ── Protocolos Clínicos — card fechado igual aos demais ───────────
+        // ── Protocolos Clínicos ───────────────────────────────────────────
         _HomeCard(
           icon: Icons.menu_book_rounded,
           label: isEs ? 'PROTOCOLOS' : 'PROTOCOLOS',
@@ -115,6 +115,23 @@ class HomeScreen extends StatelessWidget {
             onTabChange(1);
             onSubTabChange(2);
           },
+        ),
+
+        const SizedBox(height: 14),
+
+        // ── Prescripciones ────────────────────────────────────────────────
+        _HomeCard(
+          icon: Icons.description_rounded,
+          label: isEs ? 'PRESCRIPCIONES' : 'PRESCRIÇÕES',
+          subtitle: isEs
+              ? 'Modelos · Emergencias · Guardia · Clínica'
+              : 'Modelos · Emergências · Plantão · Clínica',
+          gradientColors: const [Color(0xFF120A1E), Color(0xFF2A1245), Color(0xFF4A2080)],
+          accentColor: const Color(0xFFD8B4FE),
+          dark: dark,
+          onTap: () => Navigator.of(context).push(
+            _slideRoute(const _PrescripcionesShell()),
+          ),
         ),
 
         const SizedBox(height: 28),
@@ -794,6 +811,70 @@ class _CalculadorasShell extends StatelessWidget {
           ),
         ),
         const Expanded(child: ToolsScreen(hideHeader: true)),
+      ]),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// PRESCRIPCIONES SHELL
+// ─────────────────────────────────────────────────────────────────────────────
+class _PrescripcionesShell extends StatelessWidget {
+  const _PrescripcionesShell();
+
+  @override
+  Widget build(BuildContext context) {
+    final p    = context.watch<AppProvider>();
+    final dark = p.darkMode;
+    final isEs = p.lang == 'es';
+
+    return Scaffold(
+      backgroundColor: dark ? const Color(0xFF141414) : const Color(0xFFF7F8FA),
+      body: Column(children: [
+        Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [Color(0xFF120A1E), Color(0xFF2A1245), Color(0xFF4A2080)],
+            ),
+          ),
+          child: SafeArea(
+            bottom: false,
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(6, 4, 16, 12),
+              child: Row(children: [
+                IconButton(
+                  icon: const Icon(Icons.arrow_back_ios_rounded, size: 18, color: Colors.white),
+                  onPressed: () => Navigator.of(context).pop(),
+                ),
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: Colors.white.withValues(alpha: 0.10),
+                  ),
+                  child: const Icon(Icons.description_rounded, size: 20, color: Color(0xFFD8B4FE)),
+                ),
+                const SizedBox(width: 10),
+                Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  Text(
+                    isEs ? 'Ejemplos de Prescripción' : 'Exemplos de Prescrição',
+                    style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w900,
+                        color: Colors.white, letterSpacing: -0.3),
+                  ),
+                  Text(
+                    isEs
+                        ? 'Modelos educativos · Emergencias · Guardia'
+                        : 'Modelos educacionais · Emergências · Plantão',
+                    style: TextStyle(fontSize: 11, color: Colors.white.withValues(alpha: 0.6)),
+                  ),
+                ])),
+              ]),
+            ),
+          ),
+        ),
+        const Expanded(child: PrescripcionesScreen()),
       ]),
     );
   }

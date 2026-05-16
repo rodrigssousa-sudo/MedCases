@@ -309,95 +309,7 @@
       min-height: 16px;
     }
 
-    /* ── A2HS — Botão instalar (overlay central) ────────────────────── */
-    #a2hs-banner {
-      position: fixed;
-      inset: 0;
-      z-index: 99998;
-      display: none;
-      align-items: center;
-      justify-content: center;
-    }
-    #a2hs-overlay {
-      position: absolute;
-      inset: 0;
-      background: rgba(0,0,0,0.65);
-    }
-    #a2hs-card {
-      position: relative;
-      background: #1a2e24;
-      border-radius: 22px;
-      padding: 32px 24px 24px;
-      max-width: 320px;
-      width: calc(100% - 48px);
-      text-align: center;
-      border: 1px solid rgba(197,163,101,0.30);
-      box-shadow: 0 24px 64px rgba(0,0,0,0.55);
-    }
-    #a2hs-card img {
-      width: 72px;
-      height: 72px;
-      border-radius: 18px;
-      margin-bottom: 16px;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.35);
-    }
-    #a2hs-card h3 {
-      color: #C5A365;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      font-size: 18px;
-      font-weight: 700;
-      margin: 0 0 8px;
-      letter-spacing: 0.2px;
-    }
-    #a2hs-card p {
-      color: rgba(255,255,255,0.65);
-      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-      font-size: 13.5px;
-      line-height: 1.5;
-      margin: 0 0 22px;
-    }
-    #a2hs-install-btn {
-      display: block;
-      width: 100%;
-      background: linear-gradient(135deg, #C5A365 0%, #a8854a 100%);
-      color: #07110d;
-      border: none;
-      border-radius: 12px;
-      padding: 14px 0;
-      font-size: 15px;
-      font-weight: 700;
-      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-      cursor: pointer;
-      margin-bottom: 10px;
-      letter-spacing: 0.2px;
-      transition: opacity 0.15s ease;
-    }
-    #a2hs-install-btn:active { opacity: 0.8; }
-    #a2hs-dismiss-btn {
-      display: block;
-      width: 100%;
-      background: transparent;
-      color: rgba(255,255,255,0.40);
-      border: none;
-      border-radius: 12px;
-      padding: 10px 0;
-      font-size: 13px;
-      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-      cursor: pointer;
-      letter-spacing: 0.1px;
-    }
-    #a2hs-ios-tip {
-      display: none;
-      margin-top: 14px;
-      padding: 10px 14px;
-      background: rgba(197,163,101,0.10);
-      border: 1px solid rgba(197,163,101,0.20);
-      border-radius: 10px;
-      color: rgba(255,255,255,0.55);
-      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-      font-size: 12px;
-      line-height: 1.5;
-    }
+    /* A2HS removido — banner de instalação desativado */
 
     /* ── Toast de atualização disponível ───────────────────────────── */
     #pwa-update-toast {
@@ -479,19 +391,7 @@
     </div>
   </div>
 
-  <!-- ── A2HS — Adicionar à tela inicial ─────────────────────────── -->
-  <div id="a2hs-banner">
-    <div id="a2hs-overlay"></div>
-    <div id="a2hs-card">
-      <img src="icons/Icon-192.png" alt="MedCases Pro"
-           onerror="this.style.display='none'">
-      <h3>Instalar MedCases Pro</h3>
-      <p>Adicione à tela inicial para acesso rápido, offline e sem barra do navegador.</p>
-      <button id="a2hs-install-btn">⬇ Instalar agora</button>
-      <button id="a2hs-dismiss-btn">Agora não</button>
-      <div id="a2hs-ios-tip">No Safari: toque em <strong>⎋ Compartilhar</strong> → &ldquo;Adicionar à Tela de Início&rdquo;</div>
-    </div>
-  </div>
+  <!-- A2HS removido -->
 
   <!-- ═════════════════════════════════════════════════════════════════
        SCRIPT PRINCIPAL — SW + Boot Flutter
@@ -500,7 +400,7 @@
     'use strict';
 
     // ── Versão do app (alterar a cada deploy significativo) ──────────
-    var APP_VERSION = '4.0.0';
+    var APP_VERSION = '4.1.0';
     var SW_URL      = 'pwa-sw.js';
 
     // ── Remoção do splash ────────────────────────────────────────────
@@ -547,87 +447,9 @@
       document.head.appendChild(s);
     }
 
-    // ── A2HS — Adicionar à tela inicial ────────────────────────────
-    (function() {
-      var _deferredPrompt = null;
-      var _isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent) && !window.MSStream;
-      var _isStandalone = window.matchMedia('(display-mode: standalone)').matches
-                       || window.navigator.standalone === true;
-
-      // Não mostra se já está instalado
-      if (_isStandalone) return;
-
-      function showA2HSBanner() {
-        var banner = document.getElementById('a2hs-banner');
-        if (banner) banner.style.display = 'flex';
-      }
-      function hideA2HSBanner() {
-        var banner = document.getElementById('a2hs-banner');
-        if (banner) banner.style.display = 'none';
-        // Salva dismissal por 7 dias
-        try { localStorage.setItem('a2hs_dismissed_at', Date.now()); } catch(e) {}
-      }
-
-      // Verifica se usuário já dispensou recentemente (7 dias)
-      function wasDismissedRecently() {
-        try {
-          var t = parseInt(localStorage.getItem('a2hs_dismissed_at') || '0', 10);
-          return t > 0 && (Date.now() - t) < 7 * 24 * 60 * 60 * 1000;
-        } catch(e) { return false; }
-      }
-
-      // Android / Chrome: captura o evento antes que o browser mostre o mini-banner
-      window.addEventListener('beforeinstallprompt', function(e) {
-        e.preventDefault();
-        _deferredPrompt = e;
-        if (!wasDismissedRecently()) {
-          // Aguarda 3s após o primeiro frame Flutter para não disputar atenção com splash
-          window.addEventListener('flutter-first-frame', function() {
-            setTimeout(showA2HSBanner, 3000);
-          }, { once: true });
-          // Fallback: se flutter-first-frame não disparou ainda
-          setTimeout(function() {
-            var banner = document.getElementById('a2hs-banner');
-            if (banner && banner.style.display === 'none') showA2HSBanner();
-          }, 8000);
-        }
-      });
-
-      // iOS Safari: não tem beforeinstallprompt — mostra tip manual
-      if (_isIOS && !wasDismissedRecently()) {
-        window.addEventListener('flutter-first-frame', function() {
-          setTimeout(function() {
-            var tip = document.getElementById('a2hs-ios-tip');
-            if (tip) tip.style.display = 'block';
-            var installBtn = document.getElementById('a2hs-install-btn');
-            if (installBtn) installBtn.style.display = 'none';
-            showA2HSBanner();
-          }, 3000);
-        }, { once: true });
-      }
-
-      // Botão instalar — dispara o prompt nativo do Chrome
-      document.getElementById('a2hs-install-btn').addEventListener('click', function() {
-        if (!_deferredPrompt) return;
-        _deferredPrompt.prompt();
-        _deferredPrompt.userChoice.then(function(result) {
-          _deferredPrompt = null;
-          hideA2HSBanner();
-        }).catch(function() { hideA2HSBanner(); });
-      });
-
-      // Botão dispensar
-      document.getElementById('a2hs-dismiss-btn').addEventListener('click', hideA2HSBanner);
-
-      // Clique no overlay também fecha
-      document.getElementById('a2hs-overlay').addEventListener('click', hideA2HSBanner);
-
-      // Se o app foi instalado com sucesso, esconde o banner
-      window.addEventListener('appinstalled', function() {
-        hideA2HSBanner();
-        _deferredPrompt = null;
-      });
-    }());
+    // A2HS removido — banner de instalação desativado
+    // Suprime o mini-banner nativo do Chrome sem exibir nada
+    window.addEventListener('beforeinstallprompt', function(e) { e.preventDefault(); });
 
     // ── Google OAuth — Redirect Flow (funciona em Safari iOS) ────────
     // requestToken() e popups cross-origin são bloqueados pelo Safari iOS.
