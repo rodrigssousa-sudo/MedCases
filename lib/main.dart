@@ -911,6 +911,7 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
         onTabChange: (t) => setState(() => _tab = t),
         onSubTabChange: (i) => setState(() => _rxProtoSub = i),
         openProtocol: _openProtocol,
+        onOpenNotes: () => setState(() => _notesOpen = true),
       ),
       _RxProtoCombo(                               // 1 — Rx/Proto combo
         subTab: _rxProtoSub,
@@ -1641,29 +1642,6 @@ class _AppDrawer extends StatelessWidget {
                       onTap: () {
                         _close(context);
                         showUpgradeScreen(context, lang: p.lang);
-                      },
-                    ),
-                  ],
-                ),
-
-                // ─── Bloco: Ferramentas ──────────────────────────────────────
-                _DrawerSectionLabel(
-                  label: p.lang == 'es' ? 'HERRAMIENTAS' : 'FERRAMENTAS',
-                  dark: dark,
-                ),
-                _DrawerBlock(
-                  children: [
-                    _DrawerRow(
-                      icon: Icons.edit_note_rounded,
-                      iconColor: const Color(0xFF1F6B48),
-                      title: p.lang == 'es' ? 'Mis Anotaciones' : 'Minhas Anotações',
-                      dark: dark,
-                      textCol: textCol,
-                      subCol: subCol,
-                      showDivider: false,
-                      onTap: () {
-                        _close(context);
-                        openNotesScreen(context);
                       },
                     ),
                   ],

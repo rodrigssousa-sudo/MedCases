@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../providers/app_provider.dart';
 import '../widgets/common_widgets.dart';
 import '../data/drugs_database.dart';
+import '../models/drug_model.dart';
 import '../services/drug_interaction_service.dart';
 import 'cockpit_screen.dart';
 import 'drugs_screen.dart';
 import 'tools_screen.dart' show PediatricsTabContent, ToolsScreen;
 import 'prescripciones_screen.dart';
 import 'drug_interactions_screen.dart';
+import 'protocols_screen.dart' show openProtocolById;
 
 // ─────────────────────────────────────────────────────────────────────────────
 // HOME SCREEN — 4 cards de navegação principal
@@ -17,12 +20,14 @@ class HomeScreen extends StatelessWidget {
   final ValueChanged<int> onTabChange;
   final ValueChanged<int> onSubTabChange;
   final Function(String) openProtocol;
+  final VoidCallback onOpenNotes;
 
   const HomeScreen({
     super.key,
     required this.onTabChange,
     required this.onSubTabChange,
     required this.openProtocol,
+    required this.onOpenNotes,
   });
 
   @override
@@ -128,7 +133,12 @@ class HomeScreen extends StatelessWidget {
         const SizedBox(height: 16),
 
         // ── Notas · Recentes · Favoritos ──────────────────────────────────
-        _QuickShortcuts(dark: dark, isEs: isEs, openProtocol: openProtocol),
+        _QuickShortcuts(
+          dark: dark,
+          isEs: isEs,
+          openProtocol: openProtocol,
+          onOpenNotes: onOpenNotes,
+        ),
 
         const SizedBox(height: 16),
 
@@ -142,7 +152,9 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  static Route _slideRoute(Widget page) {
+  static Route _slideRoute(Widget page) => _slide(page);
+
+  static Route _slide(Widget page) {
     return PageRouteBuilder(
       pageBuilder: (_, __, ___) => page,
       transitionsBuilder: (_, anim, __, child) => SlideTransition(
@@ -234,61 +246,393 @@ class _Greeting extends StatelessWidget {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// SEARCH BAR — barra de pesquisa pill
+// SEARCH BAR — abre bottom sheet de busca unificada
 // ─────────────────────────────────────────────────────────────────────────────
 class _HomeSearchBar extends StatelessWidget {
   final bool dark;
   final bool isEs;
   const _HomeSearchBar({required this.dark, required this.isEs});
 
+  void _openSearch(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => _SearchSheet(dark: dark, isEs: isEs),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 46,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(23),
-        color: dark ? const Color(0xFF252525) : const Color(0xFFEFF1F7),
-        border: Border.all(
-          color: dark
-              ? Colors.white.withValues(alpha: 0.08)
-              : const Color(0xFFDDE1EC),
-        ),
-      ),
-      child: Row(children: [
-        const SizedBox(width: 14),
-        Icon(
-          Icons.search_rounded,
-          size: 19,
-          color: dark ? Colors.white38 : const Color(0xFF9AA3B4),
-        ),
-        const SizedBox(width: 9),
-        Expanded(
-          child: Text(
-            isEs ? 'Buscar fármaco, protocolo…' : 'Buscar fármaco, protocolo…',
-            style: TextStyle(
-              fontSize: 13.5,
-              color: dark ? Colors.white24 : const Color(0xFFAAB2C4),
-              fontWeight: FontWeight.w400,
-            ),
-          ),
-        ),
-        Container(
-          width: 30,
-          height: 30,
-          margin: const EdgeInsets.only(right: 8),
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
+    return GestureDetector(
+      onTap: () => _openSearch(context),
+      child: Container(
+        height: 46,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(23),
+          color: dark ? const Color(0xFF252525) : const Color(0xFFEFF1F7),
+          border: Border.all(
             color: dark
                 ? Colors.white.withValues(alpha: 0.08)
-                : const Color(0xFFD8DDEF),
-          ),
-          child: Icon(
-            Icons.mic_none_rounded,
-            size: 15,
-            color: dark ? Colors.white38 : const Color(0xFF7B85A0),
+                : const Color(0xFFDDE1EC),
           ),
         ),
-      ]),
+        child: Row(children: [
+          const SizedBox(width: 14),
+          Icon(
+            Icons.search_rounded,
+            size: 19,
+            color: dark ? Colors.white38 : const Color(0xFF9AA3B4),
+          ),
+          const SizedBox(width: 9),
+          Expanded(
+            child: Text(
+              isEs ? 'Buscar fármaco, protocolo…' : 'Buscar fármaco, protocolo…',
+              style: TextStyle(
+                fontSize: 13.5,
+                color: dark ? Colors.white24 : const Color(0xFFAAB2C4),
+                fontWeight: FontWeight.w400,
+              ),
+            ),
+          ),
+          Container(
+            width: 30,
+            height: 30,
+            margin: const EdgeInsets.only(right: 8),
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: dark
+                  ? Colors.white.withValues(alpha: 0.08)
+                  : const Color(0xFFD8DDEF),
+            ),
+            child: Icon(
+              Icons.search_rounded,
+              size: 15,
+              color: dark ? Colors.white38 : const Color(0xFF7B85A0),
+            ),
+          ),
+        ]),
+      ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// BOTTOM SHEET DE BUSCA UNIFICADA
+// ─────────────────────────────────────────────────────────────────────────────
+class _SearchSheet extends StatefulWidget {
+  final bool dark;
+  final bool isEs;
+  const _SearchSheet({required this.dark, required this.isEs});
+
+  @override
+  State<_SearchSheet> createState() => _SearchSheetState();
+}
+
+class _SearchSheetState extends State<_SearchSheet> {
+  final _ctrl = TextEditingController();
+  String _q = '';
+
+  @override
+  void dispose() {
+    _ctrl.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final dark = widget.dark;
+    final isEs = widget.isEs;
+    final p    = context.watch<AppProvider>();
+
+    final sheetBg  = dark ? const Color(0xFF1A1A1A) : Colors.white;
+    final inputBg  = dark ? const Color(0xFF252525) : const Color(0xFFF2F4F8);
+    final textMain = dark ? Colors.white : const Color(0xFF1A202C);
+    final textSub  = dark ? Colors.white54 : const Color(0xFF718096);
+    final divColor = dark ? Colors.white.withValues(alpha: 0.07) : const Color(0xFFEDF0F7);
+
+    // ── Resultados ────────────────────────────────────────────────────────
+    final q = _q.toLowerCase().trim();
+
+    // Fármacos
+    final drugs = q.isEmpty
+        ? <DrugModel>[]
+        : drugsDatabase
+            .where((d) =>
+                d.name.toLowerCase().contains(q) ||
+                (d.className[isEs ? 'es' : 'pt'] ?? '').toLowerCase().contains(q))
+            .take(6)
+            .toList();
+
+    // Protocolos
+    final protocols = q.isEmpty
+        ? <dynamic>[]
+        : p.protocolsDB
+            .where((pr) {
+              final t = pr.title[isEs ? 'es' : 'pt'] ?? pr.title['pt'] ?? '';
+              return t.toLowerCase().contains(q);
+            })
+            .take(6)
+            .toList();
+
+    final hasResults = drugs.isNotEmpty || protocols.isNotEmpty;
+
+    return DraggableScrollableSheet(
+      initialChildSize: 0.88,
+      minChildSize: 0.5,
+      maxChildSize: 0.95,
+      expand: false,
+      builder: (_, scrollCtrl) => Container(
+        decoration: BoxDecoration(
+          color: sheetBg,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+        ),
+        child: Column(children: [
+          // Handle
+          Container(
+            margin: const EdgeInsets.only(top: 10, bottom: 6),
+            width: 36,
+            height: 4,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(2),
+              color: dark ? Colors.white24 : const Color(0xFFCBD5E0),
+            ),
+          ),
+
+          // Campo de busca
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
+            child: Row(children: [
+              Expanded(
+                child: Container(
+                  height: 46,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(23),
+                    color: inputBg,
+                  ),
+                  child: Row(children: [
+                    const SizedBox(width: 14),
+                    Icon(Icons.search_rounded, size: 19,
+                        color: dark ? Colors.white38 : const Color(0xFF9AA3B4)),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: TextField(
+                        controller: _ctrl,
+                        autofocus: true,
+                        style: TextStyle(
+                          fontSize: 15,
+                          color: textMain,
+                          fontWeight: FontWeight.w500,
+                        ),
+                        decoration: InputDecoration(
+                          border: InputBorder.none,
+                          hintText: isEs
+                              ? 'Fármaco, protocolo, prescrição…'
+                              : 'Fármaco, protocolo, prescrição…',
+                          hintStyle: TextStyle(
+                            color: dark ? Colors.white30 : const Color(0xFFADB5C7),
+                            fontSize: 14,
+                          ),
+                          isDense: true,
+                          contentPadding: EdgeInsets.zero,
+                        ),
+                        onChanged: (v) => setState(() => _q = v),
+                      ),
+                    ),
+                    if (_q.isNotEmpty)
+                      GestureDetector(
+                        onTap: () {
+                          _ctrl.clear();
+                          setState(() => _q = '');
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.only(right: 12),
+                          child: Icon(Icons.close_rounded, size: 18,
+                              color: dark ? Colors.white38 : const Color(0xFF9AA3B4)),
+                        ),
+                      ),
+                  ]),
+                ),
+              ),
+              const SizedBox(width: 10),
+              GestureDetector(
+                onTap: () => Navigator.pop(context),
+                child: Text(
+                  isEs ? 'Cerrar' : 'Fechar',
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                    color: const Color(0xFF6C2BD9),
+                  ),
+                ),
+              ),
+            ]),
+          ),
+
+          // Resultados
+          Expanded(
+            child: q.isEmpty
+                ? Center(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.search_rounded, size: 48,
+                            color: dark ? Colors.white12 : const Color(0xFFCBD5E0)),
+                        const SizedBox(height: 12),
+                        Text(
+                          isEs
+                              ? 'Busca fármacos, protocolos\ny prescrições'
+                              : 'Busque fármacos, protocolos\ne prescrições',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(fontSize: 14, color: textSub),
+                        ),
+                      ],
+                    ),
+                  )
+                : !hasResults
+                    ? Center(
+                        child: Text(
+                          isEs ? 'Sin resultados' : 'Sem resultados',
+                          style: TextStyle(fontSize: 14, color: textSub),
+                        ),
+                      )
+                    : ListView(
+                        controller: scrollCtrl,
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        children: [
+                          // ── Fármacos ─────────────────────────────────
+                          if (drugs.isNotEmpty) ...[
+                            _SearchSectionLabel(
+                                label: isEs ? 'FÁRMACOS' : 'FÁRMACOS', dark: dark),
+                            ...drugs.map((d) => _SearchResultTile(
+                              leading: Icons.medication_rounded,
+                              leadingColor: const Color(0xFFFF8A00),
+                              title: d.name,
+                              subtitle: (d.className[isEs ? 'es' : 'pt'] ?? ''),
+                              dark: dark,
+                              divColor: divColor,
+                              onTap: () {
+                                Navigator.pop(context);
+                                Navigator.of(context).push(
+                                  HomeScreen._slide(const _FarmacosShell()),
+                                );
+                              },
+                            )),
+                            const SizedBox(height: 8),
+                          ],
+
+                          // ── Protocolos ───────────────────────────────
+                          if (protocols.isNotEmpty) ...[
+                            _SearchSectionLabel(
+                                label: isEs ? 'PROTOCOLOS' : 'PROTOCOLOS', dark: dark),
+                            ...protocols.map((pr) {
+                              final title = pr.title[isEs ? 'es' : 'pt'] ?? pr.title['pt'] ?? '';
+                              return _SearchResultTile(
+                                leading: Icons.emergency_rounded,
+                                leadingColor: const Color(0xFFCC2222),
+                                title: title,
+                                subtitle: isEs ? 'Protocolo clínico' : 'Protocolo clínico',
+                                dark: dark,
+                                divColor: divColor,
+                                onTap: () {
+                                  Navigator.pop(context);
+                                  openProtocolById(context, pr.id);
+                                },
+                              );
+                            }),
+                          ],
+                        ],
+                      ),
+          ),
+        ]),
+      ),
+    );
+  }
+}
+
+class _SearchSectionLabel extends StatelessWidget {
+  final String label;
+  final bool dark;
+  const _SearchSectionLabel({required this.label, required this.dark});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 4, bottom: 8),
+      child: Text(
+        label,
+        style: TextStyle(
+          fontSize: 10,
+          fontWeight: FontWeight.w800,
+          letterSpacing: 1.3,
+          color: dark ? Colors.white38 : const Color(0xFF8A94A6),
+        ),
+      ),
+    );
+  }
+}
+
+class _SearchResultTile extends StatelessWidget {
+  final IconData leading;
+  final Color leadingColor;
+  final String title;
+  final String subtitle;
+  final bool dark;
+  final Color divColor;
+  final VoidCallback onTap;
+  const _SearchResultTile({
+    required this.leading,
+    required this.leadingColor,
+    required this.title,
+    required this.subtitle,
+    required this.dark,
+    required this.divColor,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(10),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 10),
+            child: Row(children: [
+              Container(
+                width: 36,
+                height: 36,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: leadingColor.withValues(alpha: 0.12),
+                ),
+                child: Icon(leading, size: 18, color: leadingColor),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  Text(title,
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                        color: dark ? Colors.white : const Color(0xFF1A202C),
+                      )),
+                  if (subtitle.isNotEmpty)
+                    Text(subtitle,
+                        style: TextStyle(
+                          fontSize: 11.5,
+                          color: dark ? Colors.white38 : const Color(0xFF8A94A6),
+                        )),
+                ]),
+              ),
+              Icon(Icons.chevron_right_rounded, size: 18,
+                  color: dark ? Colors.white24 : const Color(0xFFCBD5E0)),
+            ]),
+          ),
+        ),
+        Container(height: 1, color: divColor),
+      ],
     );
   }
 }
@@ -476,16 +820,18 @@ class _QuickShortcuts extends StatelessWidget {
   final bool dark;
   final bool isEs;
   final Function(String) openProtocol;
+  final VoidCallback onOpenNotes;
   const _QuickShortcuts({
     required this.dark,
     required this.isEs,
     required this.openProtocol,
+    required this.onOpenNotes,
   });
 
   @override
   Widget build(BuildContext context) {
-    final cardBg   = dark ? const Color(0xFF1E1E1E) : Colors.white;
-    final shadow   = dark
+    final cardBg = dark ? const Color(0xFF1E1E1E) : Colors.white;
+    final shadow = dark
         ? <BoxShadow>[]
         : <BoxShadow>[
             BoxShadow(
@@ -500,19 +846,19 @@ class _QuickShortcuts extends StatelessWidget {
         icon: Icons.sticky_note_2_rounded,
         color: const Color(0xFFFF8A00),
         label: isEs ? 'Notas' : 'Notas',
-        onTap: () {}, // painel lateral de notas (gerenciado pelo parent)
+        onTap: onOpenNotes,
       ),
       _ShortcutItem(
         icon: Icons.history_rounded,
         color: const Color(0xFF1F78FF),
         label: isEs ? 'Recientes' : 'Recentes',
-        onTap: () {},
+        onTap: () => _openRecentes(context),
       ),
       _ShortcutItem(
         icon: Icons.bookmark_rounded,
         color: const Color(0xFF6C2BD9),
         label: isEs ? 'Favoritos' : 'Favoritos',
-        onTap: () {},
+        onTap: () => _openFavoritos(context),
       ),
     ];
 
@@ -530,7 +876,6 @@ class _QuickShortcuts extends StatelessWidget {
       child: Row(
         children: List.generate(items.length * 2 - 1, (i) {
           if (i.isOdd) {
-            // Divisor vertical
             return Container(
               width: 1,
               height: 56,
@@ -578,6 +923,30 @@ class _QuickShortcuts extends StatelessWidget {
       ),
     );
   }
+
+  void _openRecentes(BuildContext context) {
+    final p    = context.read<AppProvider>();
+    final dark = this.dark;
+    final isEs = this.isEs;
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => _RecentesSheet(dark: dark, isEs: isEs, p: p),
+    );
+  }
+
+  void _openFavoritos(BuildContext context) {
+    final p    = context.read<AppProvider>();
+    final dark = this.dark;
+    final isEs = this.isEs;
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => _FavoritosSheet(dark: dark, isEs: isEs, p: p),
+    );
+  }
 }
 
 class _ShortcutItem {
@@ -591,6 +960,391 @@ class _ShortcutItem {
     required this.label,
     required this.onTap,
   });
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// RECENTES — itens abertos recentemente (SharedPreferences)
+// ─────────────────────────────────────────────────────────────────────────────
+
+/// Chave SharedPreferences para recentes
+const _kRecentKey = 'home_recents_v1';
+
+/// Registra um item como recente (tipo:id:título)
+Future<void> homeRegisterRecent(String type, String id, String title) async {
+  try {
+    final prefs = await SharedPreferences.getInstance();
+    final raw   = prefs.getStringList(_kRecentKey) ?? [];
+    final entry = '$type|$id|$title';
+    raw.removeWhere((e) => e.startsWith('$type|$id|'));
+    raw.insert(0, entry);
+    await prefs.setStringList(_kRecentKey, raw.take(20).toList());
+  } catch (_) {}
+}
+
+class _RecentesSheet extends StatefulWidget {
+  final bool dark;
+  final bool isEs;
+  final AppProvider p;
+  const _RecentesSheet({required this.dark, required this.isEs, required this.p});
+
+  @override
+  State<_RecentesSheet> createState() => _RecentesSheetState();
+}
+
+class _RecentesSheetState extends State<_RecentesSheet> {
+  List<Map<String, String>> _items = [];
+  bool _loading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _load();
+  }
+
+  Future<void> _load() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final raw   = prefs.getStringList(_kRecentKey) ?? [];
+      final parsed = raw.map((e) {
+        final parts = e.split('|');
+        if (parts.length < 3) return null;
+        return {'type': parts[0], 'id': parts[1], 'title': parts.sublist(2).join('|')};
+      }).whereType<Map<String, String>>().toList();
+      if (mounted) setState(() { _items = parsed; _loading = false; });
+    } catch (_) {
+      if (mounted) setState(() => _loading = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final dark = widget.dark;
+    final isEs = widget.isEs;
+    final sheetBg = dark ? const Color(0xFF1A1A1A) : Colors.white;
+    final textMain = dark ? Colors.white : const Color(0xFF1A202C);
+    final textSub  = dark ? Colors.white54 : const Color(0xFF718096);
+    final divColor = dark ? Colors.white.withValues(alpha: 0.07) : const Color(0xFFEDF0F7);
+
+    return DraggableScrollableSheet(
+      initialChildSize: 0.55,
+      minChildSize: 0.35,
+      maxChildSize: 0.88,
+      expand: false,
+      builder: (_, sc) => Container(
+        decoration: BoxDecoration(
+          color: sheetBg,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+        ),
+        child: Column(children: [
+          Container(
+            margin: const EdgeInsets.only(top: 10, bottom: 4),
+            width: 36, height: 4,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(2),
+              color: dark ? Colors.white24 : const Color(0xFFCBD5E0),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(18, 10, 18, 14),
+            child: Row(children: [
+              Icon(Icons.history_rounded, size: 20, color: const Color(0xFF1F78FF)),
+              const SizedBox(width: 8),
+              Text(
+                isEs ? 'Recientes' : 'Recentes',
+                style: TextStyle(
+                  fontSize: 17,
+                  fontWeight: FontWeight.w800,
+                  color: textMain,
+                ),
+              ),
+            ]),
+          ),
+          Container(height: 1, color: divColor),
+          Expanded(
+            child: _loading
+                ? const Center(child: CircularProgressIndicator())
+                : _items.isEmpty
+                    ? Center(
+                        child: Column(mainAxisSize: MainAxisSize.min, children: [
+                          Icon(Icons.history_rounded, size: 48,
+                              color: dark ? Colors.white12 : const Color(0xFFCBD5E0)),
+                          const SizedBox(height: 12),
+                          Text(
+                            isEs ? 'Sin elementos recientes' : 'Nenhum item recente',
+                            style: TextStyle(fontSize: 14, color: textSub),
+                          ),
+                        ]),
+                      )
+                    : ListView.separated(
+                        controller: sc,
+                        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                        itemCount: _items.length,
+                        separatorBuilder: (_, __) =>
+                            Container(height: 1, color: divColor),
+                        itemBuilder: (ctx, i) {
+                          final item = _items[i];
+                          final type = item['type'] ?? '';
+                          final id   = item['id'] ?? '';
+                          final title = item['title'] ?? '';
+                          final isProtocol = type == 'protocol';
+                          return ListTile(
+                            contentPadding: const EdgeInsets.symmetric(
+                                vertical: 4, horizontal: 4),
+                            leading: Container(
+                              width: 38, height: 38,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                color: (isProtocol
+                                    ? const Color(0xFFCC2222)
+                                    : const Color(0xFFFF8A00))
+                                    .withValues(alpha: 0.12),
+                              ),
+                              child: Icon(
+                                isProtocol
+                                    ? Icons.emergency_rounded
+                                    : Icons.medication_rounded,
+                                size: 18,
+                                color: isProtocol
+                                    ? const Color(0xFFCC2222)
+                                    : const Color(0xFFFF8A00),
+                              ),
+                            ),
+                            title: Text(title,
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600,
+                                  color: textMain,
+                                )),
+                            subtitle: Text(
+                              isProtocol
+                                  ? (isEs ? 'Protocolo' : 'Protocolo')
+                                  : (isEs ? 'Fármaco' : 'Fármaco'),
+                              style: TextStyle(fontSize: 11, color: textSub),
+                            ),
+                            trailing: Icon(Icons.chevron_right_rounded,
+                                size: 18,
+                                color: dark ? Colors.white24 : const Color(0xFFCBD5E0)),
+                            onTap: () {
+                              Navigator.pop(context);
+                              if (isProtocol) {
+                                openProtocolById(ctx, id);
+                              } else {
+                                Navigator.of(ctx).push(
+                                  HomeScreen._slide(const _FarmacosShell()),
+                                );
+                              }
+                            },
+                          );
+                        },
+                      ),
+          ),
+        ]),
+      ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// FAVORITOS — fármacos e protocolos favoritados
+// ─────────────────────────────────────────────────────────────────────────────
+class _FavoritosSheet extends StatelessWidget {
+  final bool dark;
+  final bool isEs;
+  final AppProvider p;
+  const _FavoritosSheet({required this.dark, required this.isEs, required this.p});
+
+  @override
+  Widget build(BuildContext context) {
+    final sheetBg = dark ? const Color(0xFF1A1A1A) : Colors.white;
+    final textMain = dark ? Colors.white : const Color(0xFF1A202C);
+    final textSub  = dark ? Colors.white54 : const Color(0xFF718096);
+    final divColor = dark ? Colors.white.withValues(alpha: 0.07) : const Color(0xFFEDF0F7);
+
+    // Fármacos favoritos
+    final favDrugIds = p.favDrugs;
+    final favDrugs = drugsDatabase
+        .where((d) => favDrugIds.contains(d.id))
+        .toList();
+
+    // Protocolos favoritos
+    final favProtoIds = p.favProtocols;
+    final favProtos = p.protocolsDB
+        .where((pr) => favProtoIds.contains(pr.id))
+        .toList();
+
+    final hasAny = favDrugs.isNotEmpty || favProtos.isNotEmpty;
+
+    return DraggableScrollableSheet(
+      initialChildSize: 0.55,
+      minChildSize: 0.35,
+      maxChildSize: 0.88,
+      expand: false,
+      builder: (_, sc) => Container(
+        decoration: BoxDecoration(
+          color: sheetBg,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+        ),
+        child: Column(children: [
+          Container(
+            margin: const EdgeInsets.only(top: 10, bottom: 4),
+            width: 36, height: 4,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(2),
+              color: dark ? Colors.white24 : const Color(0xFFCBD5E0),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(18, 10, 18, 14),
+            child: Row(children: [
+              Icon(Icons.bookmark_rounded, size: 20, color: const Color(0xFF6C2BD9)),
+              const SizedBox(width: 8),
+              Text(
+                isEs ? 'Favoritos' : 'Favoritos',
+                style: TextStyle(
+                  fontSize: 17,
+                  fontWeight: FontWeight.w800,
+                  color: textMain,
+                ),
+              ),
+            ]),
+          ),
+          Container(height: 1, color: divColor),
+          Expanded(
+            child: !hasAny
+                ? Center(
+                    child: Column(mainAxisSize: MainAxisSize.min, children: [
+                      Icon(Icons.bookmark_border_rounded, size: 48,
+                          color: dark ? Colors.white12 : const Color(0xFFCBD5E0)),
+                      const SizedBox(height: 12),
+                      Text(
+                        isEs ? 'Sin favoritos aún' : 'Nenhum favorito ainda',
+                        style: TextStyle(fontSize: 14, color: textSub),
+                      ),
+                      const SizedBox(height: 6),
+                      Text(
+                        isEs
+                            ? 'Guarda fármacos y protocolos\ndesde sus pantallas'
+                            : 'Salve fármacos e protocolos\nnascidas suas telas',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontSize: 12, color: textSub),
+                      ),
+                    ]),
+                  )
+                : ListView(
+                    controller: sc,
+                    padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                    children: [
+                      // Fármacos favoritos
+                      if (favDrugs.isNotEmpty) ...[
+                        Padding(
+                          padding: const EdgeInsets.only(top: 4, bottom: 8),
+                          child: Text(
+                            isEs ? 'FÁRMACOS' : 'FÁRMACOS',
+                            style: TextStyle(
+                              fontSize: 10,
+                              fontWeight: FontWeight.w800,
+                              letterSpacing: 1.3,
+                              color: dark ? Colors.white38 : const Color(0xFF8A94A6),
+                            ),
+                          ),
+                        ),
+                        ...favDrugs.map((d) => Column(
+                          children: [
+                            ListTile(
+                              contentPadding: const EdgeInsets.symmetric(
+                                  vertical: 2, horizontal: 4),
+                              leading: Container(
+                                width: 38, height: 38,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                  color: const Color(0xFFFF8A00).withValues(alpha: 0.12),
+                                ),
+                                child: const Icon(Icons.medication_rounded,
+                                    size: 18, color: Color(0xFFFF8A00)),
+                              ),
+                              title: Text(d.name,
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w600,
+                                    color: textMain,
+                                  )),
+                              subtitle: Text(
+                                d.className[isEs ? 'es' : 'pt'] ?? '',
+                                style: TextStyle(fontSize: 11, color: textSub),
+                              ),
+                              trailing: Icon(Icons.chevron_right_rounded, size: 18,
+                                  color: dark ? Colors.white24 : const Color(0xFFCBD5E0)),
+                              onTap: () {
+                                Navigator.pop(context);
+                                Navigator.of(context).push(
+                                  HomeScreen._slide(const _FarmacosShell()),
+                                );
+                              },
+                            ),
+                            Container(height: 1, color: divColor),
+                          ],
+                        )),
+                      ],
+
+                      // Protocolos favoritos
+                      if (favProtos.isNotEmpty) ...[
+                        Padding(
+                          padding: const EdgeInsets.only(top: 12, bottom: 8),
+                          child: Text(
+                            isEs ? 'PROTOCOLOS' : 'PROTOCOLOS',
+                            style: TextStyle(
+                              fontSize: 10,
+                              fontWeight: FontWeight.w800,
+                              letterSpacing: 1.3,
+                              color: dark ? Colors.white38 : const Color(0xFF8A94A6),
+                            ),
+                          ),
+                        ),
+                        ...favProtos.map((pr) {
+                          final title = pr.title[isEs ? 'es' : 'pt'] ?? pr.title['pt'] ?? '';
+                          return Column(
+                            children: [
+                              ListTile(
+                                contentPadding: const EdgeInsets.symmetric(
+                                    vertical: 2, horizontal: 4),
+                                leading: Container(
+                                  width: 38, height: 38,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                    color: const Color(0xFFCC2222).withValues(alpha: 0.12),
+                                  ),
+                                  child: const Icon(Icons.emergency_rounded,
+                                      size: 18, color: Color(0xFFCC2222)),
+                                ),
+                                title: Text(title,
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w600,
+                                      color: textMain,
+                                    )),
+                                subtitle: Text(
+                                  isEs ? 'Protocolo clínico' : 'Protocolo clínico',
+                                  style: TextStyle(fontSize: 11, color: textSub),
+                                ),
+                                trailing: Icon(Icons.chevron_right_rounded, size: 18,
+                                    color: dark ? Colors.white24 : const Color(0xFFCBD5E0)),
+                                onTap: () {
+                                  Navigator.pop(context);
+                                  openProtocolById(context, pr.id);
+                                },
+                              ),
+                              Container(height: 1, color: divColor),
+                            ],
+                          );
+                        }),
+                      ],
+                    ],
+                  ),
+          ),
+        ]),
+      ),
+    );
+  }
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
