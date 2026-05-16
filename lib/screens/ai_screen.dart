@@ -103,6 +103,7 @@ class _AiScreenState extends State<AiScreen> {
   bool _hasFocus     = false;
   bool _aiError      = false;
   bool _greetingDone = false; // garante saudação só uma vez por sessão
+  int  _lastAiIndex  = -1;   // índice da última resposta da IA (para animar só ela)
 
   // Sugestões ficam visíveis apenas no estado vazio + sem foco
   bool get _showSuggestions => _messages.isEmpty && !_hasFocus;
@@ -213,6 +214,7 @@ class _AiScreenState extends State<AiScreen> {
     // Detecta se foi erro de chave inválida para mostrar banner
     final isKeyError = answer.startsWith('ERRO') && answer.contains('API');
     setState(() {
+      _lastAiIndex = _messages.length; // índice que será inserido
       _messages.add(_ChatMsg(role: 'ai', text: answer));
       _thinking = false;
       _aiError  = isKeyError;
@@ -327,6 +329,7 @@ class _AiScreenState extends State<AiScreen> {
                         : _AiBubble(
                             text: msg.text,
                             dark: dark,
+                            animate: i == _lastAiIndex,
                             onCopy: () => _copyMsg(msg.text),
                           );
                   },
@@ -904,41 +907,100 @@ class _AiBlockBubble extends StatelessWidget {
 }
 
 /// Widget pai que divide a resposta completa em múltiplas _AiBlockBubble.
-/// Cada bloco (separado por linha em branco) vira uma bolha independente.
-class _AiBubble extends StatelessWidget {
+/// Cada bloco aparece com delay progressivo de 8s entre bolhas, simulando
+/// digitação/streaming real — evita que tudo apareça de uma vez.
+class _AiBubble extends StatefulWidget {
   final String text;
   final bool dark;
   final VoidCallback onCopy;
-  const _AiBubble({required this.text, required this.dark, required this.onCopy});
+  /// Se true, é a última mensagem da conversa → aplica delay de entrada.
+  /// Mensagens antigas (históricas) aparecem instantaneamente.
+  final bool animate;
+  const _AiBubble({
+    required this.text,
+    required this.dark,
+    required this.onCopy,
+    this.animate = false,
+  });
+
+  @override
+  State<_AiBubble> createState() => _AiBubbleState();
+}
+
+class _AiBubbleState extends State<_AiBubble> {
+  // Quantos blocos já estão visíveis
+  int _visibleCount = 0;
+  bool _started = false;
+  // ignore: unused_field
+
+  @override
+  void initState() {
+    super.initState();
+    // Inicia a sequência de exibição após o primeiro frame
+    WidgetsBinding.instance.addPostFrameCallback((_) => _startSequence());
+  }
+
+  void _startSequence() {
+    if (_started || !mounted) return;
+    _started = true;
+
+    final cleaned = _cleanAiText(widget.text);
+    final blocks  = _splitIntoBlocks(cleaned.isEmpty ? widget.text.trim() : cleaned);
+    final total   = blocks.isEmpty ? 1 : blocks.length;
+
+    if (!widget.animate || total <= 1) {
+      // Sem animação (histórico) ou bloco único → mostra tudo imediatamente
+      if (mounted) setState(() => _visibleCount = total);
+      return;
+    }
+
+    // Delay entre blocos: 800ms (0.8s) para o primeiro, +800ms por bloco
+    // Cap: máximo 3s de espera total por bloco (evita timeout em respostas longas)
+    for (int i = 0; i < total; i++) {
+      final delayMs = i == 0 ? 120 : (i * 800).clamp(0, 3000);
+      Future.delayed(Duration(milliseconds: delayMs), () {
+        if (mounted) setState(() => _visibleCount = i + 1);
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    final cleaned = _cleanAiText(text);
-    final blocks  = _splitIntoBlocks(cleaned);
+    final cleaned = _cleanAiText(widget.text);
+    final blocks  = _splitIntoBlocks(cleaned.isEmpty ? widget.text.trim() : cleaned);
 
     if (blocks.isEmpty) {
-      return _AiBlockBubble(
-        block: text.trim(),
-        dark: dark,
-        isLast: true,
-        onCopy: onCopy,
-      );
+      return _visibleCount > 0
+          ? _AiBlockBubble(
+              block: widget.text.trim(),
+              dark: widget.dark,
+              isLast: true,
+              onCopy: widget.onCopy,
+            )
+          : const SizedBox.shrink();
     }
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: List.generate(blocks.length, (i) {
+        if (i >= _visibleCount) return const SizedBox.shrink();
         final isLast = i == blocks.length - 1;
-        return _AiBlockBubble(
-          block: blocks[i],
-          dark: dark,
-          isLast: isLast,
-          onCopy: isLast ? onCopy : null,
+        return AnimatedOpacity(
+          opacity: 1.0,
+          duration: const Duration(milliseconds: 280),
+          child: _AiBlockBubble(
+            block: blocks[i],
+            dark: widget.dark,
+            isLast: isLast,
+            onCopy: isLast ? widget.onCopy : null,
+          ),
         );
       }),
     );
   }
 }
+
+
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Typing indicator

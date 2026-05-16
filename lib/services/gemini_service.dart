@@ -35,6 +35,94 @@ class GeminiResult {
       GeminiResult(text: msg, isError: true, errorCode: code);
 }
 
+// ─────────────────────────────────────────────────────────────────────────────
+// Filtra blocos internos que o Gemini 2.5 Flash pode vazar na resposta:
+//   • Blocos ```tool_code ... ``` (chamadas de ferramentas internas)
+//   • Blocos ```thinking ... ``` ou <thinking>...</thinking>
+//   • Blocos de raciocínio sem marcador — linhas em inglês inseridas antes
+//     da resposta real (padrão: "I will...", "Let's...", "The user...",
+//     "Given the prompt...", "I need to...", "I should...", "thought:", etc.)
+// ─────────────────────────────────────────────────────────────────────────────
+String _cleanInternalBlocks(String raw) {
+  var text = raw;
+
+  // 1. Remove blocos de código interno com marcadores (tool_code, thinking, thought)
+  text = text.replaceAll(
+    RegExp(r'```(?:tool_code|thinking|thought|python|json)[\s\S]*?```',
+        multiLine: true),
+    '',
+  );
+
+  // 2. Remove blocos <thinking>...</thinking> do Gemini
+  text = text.replaceAll(
+    RegExp(r'<thinking>[\s\S]*?</thinking>', multiLine: true),
+    '',
+  );
+
+  // 3. Detecta e remove parágrafos de raciocínio em inglês que precedem a resposta.
+  //    Estratégia: divide em parágrafos e descarta os que são reconhecidamente
+  //    texto interno (em inglês, iniciando com padrões de "cadeia de pensamento").
+  final paragraphs = text.split(RegExp(r'\n\n+'));
+  final cleanParagraphs = paragraphs.where((para) {
+    final trimmed = para.trim();
+    if (trimmed.isEmpty) return false;
+
+    // Padrões de raciocínio interno em inglês — descarta o parágrafo inteiro
+    const internalPrefixes = [
+      'I will ', 'I\'ll ', 'I need to ', 'I should ', 'I have ',
+      'I am going', 'I must ', 'I want to ',
+      'Let me ', 'Let\'s ', "Let's ",
+      'The user ', 'The prompt ', 'The question ',
+      'Given the ', 'Given that ', 'Given this ',
+      'Based on ', 'Since the ',
+      'First, I ', 'Now, I ', 'Next, I ', 'Then, I ',
+      'For each ', 'For the ',
+      'My goal ', 'My approach ', 'My plan ',
+      'This is a ', 'This requires ',
+      'It seems ', 'It looks ',
+      'thought:', 'Thought:', 'THOUGHT:',
+      'Note:', 'NOTE:',
+    ];
+
+    for (final prefix in internalPrefixes) {
+      if (trimmed.startsWith(prefix) || trimmed.startsWith(prefix.toLowerCase())) {
+        return false;
+      }
+    }
+
+    // Descarta parágrafo que é quase só inglês e não contém termos médicos
+    // Heurística: >70% de palavras "comuns em inglês" sem palavras em pt/es
+    final englishOnlyWords = RegExp(
+      r'\b(the|and|or|but|with|from|that|this|will|have|been|they|their|there|when|where|what|which|would|could|should|about|after|before|also|some|each|into|than|then|more|over|only|both|other|these|those|through|during|including|without|however|therefore|furthermore|additionally|specifically|importantly|regarding|concerning|considering|following|based|approach|provide|ensure|include|address|mention|structure|discuss|explain|describe|break|detail|start|begin|continue|finish|complete|conclude|summarize|note|remember|understand|know|think|feel|believe|assume|suppose|consider|determine|decide|choose|select|use|make|take|give|get|go|come|see|look|try|need|want|ask|tell|say|speak|write|read|find|show|help|work|create|build|develop|implement|design|plan|organize|arrange|prepare|manage|handle|process|analyze|evaluate|assess|review|check|test|verify|confirm|ensure|guarantee|promise|achieve|accomplish|complete|finish|succeed|fail|error|issue|problem|solution|answer|response|reply|result|output|input|data|information|content|text|message|question|request|prompt)\b',
+      caseSensitive: false,
+    );
+    final wordCount = trimmed.split(RegExp(r'\s+')).length;
+    if (wordCount > 4) {
+      final englishMatches = englishOnlyWords.allMatches(trimmed).length;
+      final ratio = englishMatches / wordCount;
+      // Se >55% das palavras são "inglês genérico" e parágrafo não tem números/doses
+      final hasMedicalNumbers = RegExp(r'\d+\s*(?:mg|mcg|µg|mL|g|UI|h|min|kg|%)')
+          .hasMatch(trimmed);
+      final hasMedicalTerms = RegExp(
+        r'\b(?:dosis|dosis|dose|mg|mcg|EV|VO|SC|IM|paciente|patient|tratamiento|tratamento|'
+        r'fármaco|medicamento|droga|protocolo|urgencia|urgência|clínico|clínica|'
+        r'diagnóstico|diagnose|síntoma|sintoma|signo|señal)\b',
+        caseSensitive: false,
+      ).hasMatch(trimmed);
+      if (ratio > 0.55 && !hasMedicalNumbers && !hasMedicalTerms) {
+        return false;
+      }
+    }
+
+    return true;
+  }).toList();
+
+  // Se o filtro removeu tudo, retorna o texto original (melhor ter conteúdo que nada)
+  if (cleanParagraphs.isEmpty) return raw.trim();
+
+  return cleanParagraphs.join('\n\n').trim();
+}
+
 class GeminiService {
   // gemini-1.5-flash foi descontinuado em Mai/2025 → atualizado para gemini-2.5-flash
   static const _endpoint =
@@ -390,16 +478,24 @@ class GeminiService {
           debugPrint('[GeminiService] parts vazio. candidate=$candidate');
           return GeminiResult.error('EMPTY_RESPONSE', 'unknown');
         }
-        // Concatena todas as parts de texto (Grounding pode gerar múltiplas parts)
+        // Concatena apenas parts de texto final (Grounding pode gerar múltiplas parts)
+        // Ignora parts do tipo 'thought' (raciocínio interno do Gemini 2.5 Flash)
         final text = parts
+            .where((p) {
+              final part = p as Map<String, dynamic>;
+              // Gemini 2.5 Flash: parts de raciocínio têm {"thought": true} ou role != text
+              final isThought = part['thought'] == true;
+              return !isThought;
+            })
             .map((p) => (p as Map<String, dynamic>)['text'] as String? ?? '')
             .join('')
             .trim();
-        if (text.isEmpty) {
-          debugPrint('[GeminiService] texto vazio após join. parts=$parts');
+        final cleanedText = _cleanInternalBlocks(text);
+        if (cleanedText.isEmpty) {
+          debugPrint('[GeminiService] texto vazio após join/clean. parts=$parts');
           return GeminiResult.error('EMPTY_TEXT', 'unknown');
         }
-        return GeminiResult(text: text);
+        return GeminiResult(text: cleanedText);
       }
 
       if (response.statusCode == 401 || response.statusCode == 403) {
