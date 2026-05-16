@@ -187,8 +187,38 @@ class _UpgradeScreenState extends State<UpgradeScreen>
         ? (_selectedPlan == 0 ? _linkMensalEs : _linkAnualEs)
         : (_selectedPlan == 0 ? _linkMensalPt : _linkAnualPt);
     final uri = Uri.parse(url);
-    if (await canLaunchUrl(uri)) {
-      await launchUrl(uri, mode: LaunchMode.externalApplication);
+    try {
+      final ok = await canLaunchUrl(uri);
+      if (ok) {
+        await launchUrl(uri, mode: LaunchMode.externalApplication);
+      } else {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                _isEs
+                    ? 'No se pudo abrir el link de pago. Intenta de nuevo.'
+                    : 'Não foi possível abrir o link de pagamento. Tente novamente.',
+              ),
+              backgroundColor: const Color(0xFF1a2e24),
+              behavior: SnackBarBehavior.floating,
+              duration: const Duration(seconds: 4),
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              _isEs ? 'Error al abrir el pago.' : 'Erro ao abrir o pagamento.',
+            ),
+            backgroundColor: Colors.red.shade800,
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      }
     }
   }
 
@@ -837,11 +867,10 @@ class _BgPainter extends CustomPainter {
 // Para reativar: remover o bloco "if (_kPaywallLocked)" abaixo.
 // ─────────────────────────────────────────────────────────────────────────────
 
-/// Mude para `false` para liberar o paywall no lançamento oficial.
-const bool _kPaywallLocked = true;
+/// Paywall liberado — false = aberto ao público.
+const bool _kPaywallLocked = false;
 
 void showUpgradeScreen(BuildContext context, {String lang = 'es'}) {
-  // Bloqueia completamente até liberação oficial
   if (_kPaywallLocked) return;
 
   showModalBottomSheet(
