@@ -317,18 +317,6 @@
       bottom: calc(80px + env(safe-area-inset-bottom));
       left: 50%;
       transform: translateX(-50%) translateY(20px);
-      background: #1a2e24;
-      border: 1px solid rgba(197,163,101,0.30);
-      color: #fff;
-      padding: 12px 20px;
-      border-radius: 14px;
-      font-family: -apple-system, sans-serif;
-      font-size: 13px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      white-space: nowrap;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.45);
       z-index: 99999;
       opacity: 0;
       pointer-events: none;
@@ -344,11 +332,13 @@
       color: #07110d;
       border: none;
       border-radius: 8px;
-      padding: 6px 14px;
-      font-size: 12px;
-      font-weight: 700;
+      padding: 8px 22px;
+      font-size: 13px;
+      font-weight: 900;
+      letter-spacing: 1px;
       cursor: pointer;
-      font-family: inherit;
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.35);
     }
 
     @keyframes spin    { to { transform: rotate(360deg); } }
@@ -371,8 +361,7 @@
 
   <!-- ── Toast de atualização ──────────────────────────────────────── -->
   <div id="pwa-update-toast">
-    <span>🔄 Nova versão disponível</span>
-    <button id="pwa-update-btn">Atualizar</button>
+    <button id="pwa-update-btn">ATUALIZAR</button>
   </div>
 
   <!-- ── Google Sign-In modal nativo (Safari-safe) ──────────────── -->
@@ -585,13 +574,25 @@
       document.getElementById('pwa-update-btn').addEventListener('click', function() {
         var toast = document.getElementById('pwa-update-toast');
         if (toast) toast.classList.remove('show');
-        if (_waitingSW) {
-          _userTriggeredUpdate = true;        // marca que É o usuário pedindo
-          _waitingSW.postMessage({ type: 'SKIP_WAITING' });
-          _waitingSW = null;
-        } else {
-          window.location.reload();
-        }
+        _userTriggeredUpdate = true;
+        // Limpa todos os caches antes de recarregar
+        var swClean = navigator.serviceWorker.getRegistrations()
+          .then(function(regs) {
+            return Promise.all(regs.map(function(r) { return r.unregister(); }));
+          }).catch(function() {});
+        var cacheClean = ('caches' in window)
+          ? caches.keys().then(function(keys) {
+              return Promise.all(keys.map(function(k) { return caches.delete(k); }));
+            }).catch(function() {})
+          : Promise.resolve();
+        Promise.all([swClean, cacheClean]).then(function() {
+          if (_waitingSW) {
+            _waitingSW.postMessage({ type: 'SKIP_WAITING' });
+            _waitingSW = null;
+          } else {
+            window.location.reload(true);
+          }
+        });
       });
 
       var storedVersion = null;

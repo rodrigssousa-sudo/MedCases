@@ -3295,7 +3295,7 @@ class _SideNotesPanelState extends State<_SideNotesPanel>
 
           return Positioned(
             left: tabLeft,
-            bottom: safeB + 100,
+            bottom: safeB + 62,
             child: GestureDetector(
               onTap: widget.onToggle,
               child: Container(
