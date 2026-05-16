@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/app_provider.dart';
+import '../widgets/common_widgets.dart';
 import '../data/drugs_database.dart';
 import '../services/drug_interaction_service.dart';
 import 'cockpit_screen.dart';
 import 'drugs_screen.dart';
 import 'tools_screen.dart' show PediatricsTabContent, ToolsScreen;
 import 'prescripciones_screen.dart';
+import 'cases_screen.dart';
 import 'drug_interactions_screen.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
-// HOME SCREEN — layout moderno light theme
+// HOME SCREEN — 4 cards de navegação principal
 // ─────────────────────────────────────────────────────────────────────────────
 class HomeScreen extends StatelessWidget {
   final ValueChanged<int> onTabChange;
@@ -30,144 +32,97 @@ class HomeScreen extends StatelessWidget {
     final dark = p.darkMode;
     final isEs = p.lang == 'es';
 
-    final bgColor = dark ? const Color(0xFF0F0F0F) : const Color(0xFFF5F6FA);
+    return SingleChildScrollView(
+      physics: const BouncingScrollPhysics(),
+      padding: const EdgeInsets.fromLTRB(18, 20, 18, 100),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
 
-    return Container(
-      color: bgColor,
-      child: SingleChildScrollView(
-        physics: const BouncingScrollPhysics(),
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        // ── Cards principais ──────────────────────────────────────────────
 
-          // ── Header ───────────────────────────────────────────────────────
-          _HomeHeader(dark: dark, isEs: isEs),
-
-          // ── Search bar ───────────────────────────────────────────────────
-          Padding(
-            padding: const EdgeInsets.fromLTRB(18, 0, 18, 20),
-            child: _SearchBar(dark: dark, isEs: isEs),
+        // 1 — Prescripciones
+        _HomeCard(
+          icon: Icons.description_rounded,
+          label: isEs ? 'PRESCRIPCIONES' : 'PRESCRIÇÕES',
+          subtitle: isEs
+              ? 'Modelos · Emergencias · Guardia · Clínica'
+              : 'Modelos · Emergências · Plantão · Clínica',
+          gradientColors: const [Color(0xFF120A1E), Color(0xFF2A1245), Color(0xFF4A2080)],
+          accentColor: const Color(0xFFD8B4FE),
+          dark: dark,
+          onTap: () => Navigator.of(context).push(
+            _slideRoute(const _PrescripcionesShell()),
           ),
+        ),
+        const SizedBox(height: 14),
 
-          // ── Seção MÓDULOS ─────────────────────────────────────────────────
-          Padding(
-            padding: const EdgeInsets.fromLTRB(18, 0, 18, 10),
-            child: _SectionLabel(
-              label: isEs ? 'MÓDULOS' : 'MÓDULOS',
-              dark: dark,
-            ),
+        // 2 — Fármacos
+        _HomeCard(
+          icon: Icons.medication_rounded,
+          label: isEs ? 'FÁRMACOS' : 'FÁRMACOS',
+          subtitle: isEs
+              ? '${drugsDatabase.length} fármacos · Interacciones · Protocolos'
+              : '${drugsDatabase.length} fármacos · Interações · Protocolos',
+          gradientColors: const [Color(0xFF1E1000), Color(0xFF3D2000), Color(0xFF6B3A00)],
+          accentColor: const Color(0xFFFBBF24),
+          dark: dark,
+          onTap: () => Navigator.of(context).push(
+            _slideRoute(const _FarmacosShell()),
           ),
+        ),
+        const SizedBox(height: 14),
 
-          // Cards de módulos
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 14),
-            child: Column(children: [
-              _ModuleCard(
-                icon: Icons.description_rounded,
-                iconBgColor: const Color(0xFF6C2BD9),
-                label: isEs ? 'PRESCRIPCIONES' : 'PRESCRIÇÕES',
-                subtitle: isEs
-                    ? 'Modelos · Emergencias · Guardia'
-                    : 'Modelos · Emergências · Plantão',
-                dark: dark,
-                onTap: () => Navigator.of(context).push(
-                  _slideRoute(const _PrescripcionesShell()),
-                ),
-              ),
-              _ModuleCard(
-                icon: Icons.medication_rounded,
-                iconBgColor: const Color(0xFFFF8A00),
-                label: 'FÁRMACOS',
-                subtitle: isEs
-                    ? '${drugsDatabase.length} fármacos · Interacciones'
-                    : '${drugsDatabase.length} fármacos · Interações',
-                dark: dark,
-                onTap: () => Navigator.of(context).push(
-                  _slideRoute(const _FarmacosShell()),
-                ),
-              ),
-              _ModuleCard(
-                icon: Icons.compare_arrows_rounded,
-                iconBgColor: const Color(0xFF1F78FF),
-                label: isEs ? 'INTERACCIONES' : 'INTERAÇÕES',
-                subtitle: isEs
-                    ? '${DrugInteractionService.totalInteractions} pares · Severidad'
-                    : '${DrugInteractionService.totalInteractions} pares · Severidade',
-                dark: dark,
-                onTap: () => Navigator.of(context).push(
-                  _slideRoute(const DrugInteractionsScreen()),
-                ),
-              ),
-              _ModuleCard(
-                icon: Icons.child_care_rounded,
-                iconBgColor: const Color(0xFF16B8C8),
-                label: isEs ? 'PEDIATRÍA' : 'PEDIATRIA',
-                subtitle: isEs
-                    ? 'Biometría · PEWS · Dosis · Schwartz'
-                    : 'Biometria · PEWS · Doses · Schwartz',
-                dark: dark,
-                onTap: () => Navigator.of(context).push(
-                  _slideRoute(const _PediatricsShell()),
-                ),
-              ),
-              _ModuleCard(
-                icon: Icons.person_rounded,
-                iconBgColor: const Color(0xFF2FA84F),
-                label: 'ADULTO',
-                subtitle: isEs
-                    ? 'Paciente · Dosis · Protocolos'
-                    : 'Paciente · Doses · Protocolos',
-                dark: dark,
-                isLast: true,
-                onTap: () => Navigator.of(context).push(
-                  _slideRoute(_AdultoShell(openProtocol: openProtocol)),
-                ),
-              ),
-            ]),
+        // 3 — Interacciones
+        _HomeCard(
+          icon: Icons.compare_arrows_rounded,
+          label: isEs ? 'INTERACCIONES' : 'INTERAÇÕES',
+          subtitle: isEs
+              ? '${DrugInteractionService.totalInteractions} pares · Severidad · Manejo clínico'
+              : '${DrugInteractionService.totalInteractions} pares · Severidade · Manejo clínico',
+          gradientColors: const [Color(0xFF1A0A2E), Color(0xFF3D1F6B), Color(0xFF6B3FA8)],
+          accentColor: const Color(0xFFA78BFA),
+          dark: dark,
+          onTap: () => Navigator.of(context).push(
+            _slideRoute(const DrugInteractionsScreen()),
           ),
+        ),
+        const SizedBox(height: 14),
 
-          const SizedBox(height: 24),
-
-          // ── Seção ACCESOS RÁPIDOS ─────────────────────────────────────────
-          Padding(
-            padding: const EdgeInsets.fromLTRB(18, 0, 18, 10),
-            child: _SectionLabel(
-              label: isEs ? 'ACCESOS RÁPIDOS' : 'ACESSOS RÁPIDOS',
-              dark: dark,
-            ),
+        // 4 — Pediatría
+        _HomeCard(
+          icon: Icons.child_care_rounded,
+          label: isEs ? 'PEDIATRÍA' : 'PEDIATRIA',
+          subtitle: isEs
+              ? 'Biometría · PEWS · Dosis · Schwartz'
+              : 'Biometria · PEWS · Doses · Schwartz',
+          gradientColors: const [Color(0xFF0F1E30), Color(0xFF1A3A58), Color(0xFF1D5F8A)],
+          accentColor: const Color(0xFF60A5FA),
+          dark: dark,
+          onTap: () => Navigator.of(context).push(
+            _slideRoute(const _PediatricsShell()),
           ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 14),
-            child: _QuickAccess(
-              dark: dark,
-              isEs: isEs,
-              openProtocol: openProtocol,
-              onTabChange: onTabChange,
-            ),
-          ),
+        ),
+        const SizedBox(height: 14),
 
-          const SizedBox(height: 24),
-
-          // ── Seção EMERGENCIAS RÁPIDAS ─────────────────────────────────────
-          Padding(
-            padding: const EdgeInsets.fromLTRB(18, 0, 18, 10),
-            child: _SectionLabel(
-              label: isEs ? 'EMERGENCIAS RÁPIDAS' : 'EMERGÊNCIAS RÁPIDAS',
-              dark: dark,
-              accentColor: const Color(0xFFCC2222),
-            ),
+        // 5 — Adulto
+        _HomeCard(
+          icon: Icons.person_rounded,
+          label: isEs ? 'ADULTO' : 'ADULTO',
+          subtitle: isEs
+              ? 'Paciente · Dosis · Protocolos'
+              : 'Paciente · Doses · Protocolos',
+          gradientColors: const [Color(0xFF0F2318), Color(0xFF1B4A2E), Color(0xFF1F6B48)],
+          accentColor: const Color(0xFF4ADE80),
+          dark: dark,
+          onTap: () => Navigator.of(context).push(
+            _slideRoute(_AdultoShell(openProtocol: openProtocol)),
           ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(14, 0, 14, 0),
-            child: _QuickEmergencies(
-              p: p,
-              dark: dark,
-              isEs: isEs,
-              openProtocol: openProtocol,
-            ),
-          ),
+        ),
 
-          const SizedBox(height: 100),
-        ]),
-      ),
+        const SizedBox(height: 28),
+
+        // ── Acesso rápido — Emergências ───────────────────────────────────
+        _QuickEmergencies(p: p, dark: dark, isEs: isEs, openProtocol: openProtocol),
+      ]),
     );
   }
 
@@ -185,296 +140,110 @@ class HomeScreen extends StatelessWidget {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// HEADER — logo, título, sino de notificação, menu
+// GREETING — boas-vindas com nome do usuário
 // ─────────────────────────────────────────────────────────────────────────────
-class _HomeHeader extends StatelessWidget {
+class _Greeting extends StatelessWidget {
+  final AppProvider p;
   final bool dark;
   final bool isEs;
-  const _HomeHeader({required this.dark, required this.isEs});
+  const _Greeting({required this.p, required this.dark, required this.isEs});
 
   @override
   Widget build(BuildContext context) {
-    final bgTop = dark ? const Color(0xFF1A1A2E) : Colors.white;
-    final shadow = dark
-        ? Colors.transparent
-        : Colors.black.withValues(alpha: 0.06);
+    final c    = AppColors.of(context);
+    final name = p.currentUser?.displayName ?? '';
+    final first = name.isNotEmpty ? name.split(' ').first : '';
 
-    return Container(
-      decoration: BoxDecoration(
-        color: bgTop,
-        boxShadow: [
-          BoxShadow(color: shadow, blurRadius: 12, offset: const Offset(0, 3)),
-        ],
-      ),
-      child: SafeArea(
-        bottom: false,
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(18, 12, 16, 16),
-          child: Row(children: [
-            // Logo — quadrado arredondado com cruz
-            Container(
-              width: 44,
-              height: 44,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(12),
-                gradient: const LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [Color(0xFF4A2BD9), Color(0xFF1F78FF)],
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: const Color(0xFF4A2BD9).withValues(alpha: 0.35),
-                    blurRadius: 10,
-                    offset: const Offset(0, 4),
-                  ),
-                ],
-              ),
-              child: const Icon(
-                Icons.local_hospital_rounded,
-                size: 22,
-                color: Colors.white,
-              ),
-            ),
-            const SizedBox(width: 12),
-
-            // Título + subtítulo
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  ShaderMask(
-                    shaderCallback: (bounds) => const LinearGradient(
-                      colors: [Color(0xFF4A2BD9), Color(0xFF1F78FF)],
-                    ).createShader(bounds),
-                    child: const Text(
-                      'MedCases Pro',
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w900,
-                        color: Colors.white,
-                        letterSpacing: -0.5,
-                        height: 1.1,
-                      ),
-                    ),
-                  ),
-                  Text(
-                    isEs
-                        ? 'Decisiones clínicas seguras'
-                        : 'Decisões clínicas seguras',
-                    style: TextStyle(
-                      fontSize: 11,
-                      fontWeight: FontWeight.w500,
-                      color: dark
-                          ? Colors.white.withValues(alpha: 0.45)
-                          : const Color(0xFF8A94A6),
-                      letterSpacing: 0.1,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-
-            // Sino de notificação
-            Stack(
-              clipBehavior: Clip.none,
-              children: [
-                Container(
-                  width: 40,
-                  height: 40,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12),
-                    color: dark
-                        ? Colors.white.withValues(alpha: 0.07)
-                        : const Color(0xFFF0F2F8),
-                  ),
-                  child: Icon(
-                    Icons.notifications_outlined,
-                    size: 20,
-                    color: dark ? Colors.white70 : const Color(0xFF4A5568),
-                  ),
-                ),
-                // Badge vermelho
-                Positioned(
-                  top: -2,
-                  right: -2,
-                  child: Container(
-                    width: 10,
-                    height: 10,
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFE53E3E),
-                      shape: BoxShape.circle,
-                      border: Border.all(
-                        color: dark ? const Color(0xFF1A1A2E) : Colors.white,
-                        width: 1.5,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(width: 8),
-
-            // Menu hamburger
-            Container(
-              width: 40,
-              height: 40,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(12),
-                color: dark
-                    ? Colors.white.withValues(alpha: 0.07)
-                    : const Color(0xFFF0F2F8),
-              ),
-              child: Icon(
-                Icons.menu_rounded,
-                size: 20,
-                color: dark ? Colors.white70 : const Color(0xFF4A5568),
-              ),
-            ),
-          ]),
-        ),
-      ),
-    );
-  }
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// SEARCH BAR — barra de pesquisa pill shape
-// ─────────────────────────────────────────────────────────────────────────────
-class _SearchBar extends StatelessWidget {
-  final bool dark;
-  final bool isEs;
-  const _SearchBar({required this.dark, required this.isEs});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 48,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(24),
-        color: dark ? const Color(0xFF252535) : Colors.white,
-        border: Border.all(
-          color: dark
-              ? Colors.white.withValues(alpha: 0.08)
-              : const Color(0xFFE2E8F0),
-        ),
-        boxShadow: [
-          if (!dark)
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.05),
-              blurRadius: 8,
-              offset: const Offset(0, 2),
-            ),
-        ],
-      ),
-      child: Row(children: [
-        const SizedBox(width: 16),
-        Icon(
-          Icons.search_rounded,
-          size: 20,
-          color: dark ? Colors.white38 : const Color(0xFFA0AEC0),
-        ),
-        const SizedBox(width: 10),
-        Expanded(
-          child: Text(
-            isEs
-                ? 'Buscar fármaco, protocolo…'
-                : 'Buscar fármaco, protocolo…',
-            style: TextStyle(
-              fontSize: 14,
-              color: dark ? Colors.white30 : const Color(0xFFB0BAC9),
-              fontWeight: FontWeight.w400,
-            ),
-          ),
-        ),
-        Container(
-          width: 34,
-          height: 34,
-          margin: const EdgeInsets.only(right: 7),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(17),
-            gradient: const LinearGradient(
-              colors: [Color(0xFF4A2BD9), Color(0xFF1F78FF)],
-            ),
-          ),
-          child: const Icon(
-            Icons.document_scanner_outlined,
-            size: 16,
-            color: Colors.white,
-          ),
-        ),
-      ]),
-    );
-  }
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// SECTION LABEL — rótulo de seção uppercase
-// ─────────────────────────────────────────────────────────────────────────────
-class _SectionLabel extends StatelessWidget {
-  final String label;
-  final bool dark;
-  final Color? accentColor;
-  const _SectionLabel({
-    required this.label,
-    required this.dark,
-    this.accentColor,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final color = accentColor ??
-        (dark ? Colors.white.withValues(alpha: 0.35) : const Color(0xFF8A94A6));
     return Row(children: [
+      // Avatar
       Container(
-        width: 3,
-        height: 13,
+        width: 44,
+        height: 44,
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(2),
-          color: accentColor ?? const Color(0xFF4A2BD9),
+          shape: BoxShape.circle,
+          gradient: const LinearGradient(
+            colors: [Color(0xFF1F6B48), Color(0xFF0F1C14)],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          border: Border.all(
+            color: const Color(0xFF4ADE80).withValues(alpha: 0.3),
+            width: 1.5,
+          ),
+        ),
+        child: Center(
+          child: Text(
+            first.isNotEmpty ? first[0].toUpperCase() : 'M',
+            style: const TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.w900,
+              color: Color(0xFFFFE8A6),
+            ),
+          ),
         ),
       ),
-      const SizedBox(width: 8),
-      Text(
-        label,
-        style: TextStyle(
-          fontSize: 11,
-          fontWeight: FontWeight.w800,
-          letterSpacing: 1.3,
-          color: color,
-        ),
+      const SizedBox(width: 12),
+      Expanded(
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Text(
+            isEs ? 'Bienvenido' : 'Bem-vindo',
+            style: TextStyle(
+              fontSize: 11,
+              fontWeight: FontWeight.w600,
+              color: c.textHint,
+              letterSpacing: 0.3,
+            ),
+          ),
+          if (first.isNotEmpty)
+            Text(
+              first,
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.w900,
+                color: c.textPrimary,
+                letterSpacing: -0.5,
+              ),
+            ),
+          Text(
+            isEs ? 'Apoyo clínico educativo' : 'Apoio clínico educativo',
+            style: TextStyle(
+              fontSize: 11,
+              color: c.textHint,
+            ),
+          ),
+        ]),
       ),
     ]);
   }
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// MODULE CARD — card de módulo light bg com caixa de ícone colorida
+// CARD PRINCIPAL DE NAVEGAÇÃO
 // ─────────────────────────────────────────────────────────────────────────────
-class _ModuleCard extends StatefulWidget {
+class _HomeCard extends StatefulWidget {
   final IconData icon;
-  final Color iconBgColor;
   final String label;
   final String subtitle;
+  final List<Color> gradientColors;
+  final Color accentColor;
   final bool dark;
-  final bool isLast;
   final VoidCallback onTap;
 
-  const _ModuleCard({
+  const _HomeCard({
     required this.icon,
-    required this.iconBgColor,
     required this.label,
     required this.subtitle,
+    required this.gradientColors,
+    required this.accentColor,
     required this.dark,
     required this.onTap,
-    this.isLast = false,
   });
 
   @override
-  State<_ModuleCard> createState() => _ModuleCardState();
+  State<_HomeCard> createState() => _HomeCardState();
 }
 
-class _ModuleCardState extends State<_ModuleCard>
+class _HomeCardState extends State<_HomeCard>
     with SingleTickerProviderStateMixin {
   late final AnimationController _ctrl;
   late final Animation<double> _scale;
@@ -484,7 +253,7 @@ class _ModuleCardState extends State<_ModuleCard>
     super.initState();
     _ctrl = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 100),
+      duration: const Duration(milliseconds: 120),
       lowerBound: 0.0,
       upperBound: 1.0,
     );
@@ -501,92 +270,122 @@ class _ModuleCardState extends State<_ModuleCard>
 
   @override
   Widget build(BuildContext context) {
-    final cardBg = widget.dark ? const Color(0xFF1E1E2E) : Colors.white;
-    final divColor = widget.dark
-        ? Colors.white.withValues(alpha: 0.06)
-        : const Color(0xFFEDF0F7);
-
     return GestureDetector(
-      onTapDown: (_) => _ctrl.forward(),
-      onTapUp: (_) {
-        _ctrl.reverse();
-        widget.onTap();
-      },
-      onTapCancel: () => _ctrl.reverse(),
+      onTapDown:    (_) => _ctrl.forward(),
+      onTapUp:      (_) { _ctrl.reverse(); widget.onTap(); },
+      onTapCancel:  ()  => _ctrl.reverse(),
       child: ScaleTransition(
         scale: _scale,
         child: Container(
+          width: double.infinity,
+          height: 88,
           decoration: BoxDecoration(
-            color: cardBg,
-            borderRadius: BorderRadius.only(
-              topLeft: const Radius.circular(16),
-              topRight: const Radius.circular(16),
-              bottomLeft: Radius.circular(widget.isLast ? 16 : 4),
-              bottomRight: Radius.circular(widget.isLast ? 16 : 4),
+            borderRadius: BorderRadius.circular(22),
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: widget.dark
+                  ? [
+                      widget.gradientColors[0].withValues(alpha: 0.85),
+                      widget.gradientColors[1].withValues(alpha: 0.90),
+                      widget.gradientColors[2].withValues(alpha: 0.95),
+                    ]
+                  : widget.gradientColors,
             ),
-            boxShadow: widget.dark
-                ? []
-                : [
-                    BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.05),
-                      blurRadius: 6,
-                      offset: const Offset(0, 2),
-                    ),
-                  ],
+            boxShadow: [
+              BoxShadow(
+                color: widget.gradientColors[2].withValues(alpha: 0.40),
+                blurRadius: 20,
+                offset: const Offset(0, 8),
+                spreadRadius: -2,
+              ),
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.15),
+                blurRadius: 8,
+                offset: const Offset(0, 2),
+              ),
+            ],
+            border: Border.all(
+              color: widget.accentColor.withValues(alpha: 0.18),
+              width: 1.0,
+            ),
           ),
-          child: Column(
+          child: Stack(
             children: [
+              // Fundo decorativo — círculo de luz
+              Positioned(
+                right: -20,
+                top: -20,
+                child: Container(
+                  width: 110,
+                  height: 110,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: widget.accentColor.withValues(alpha: 0.07),
+                  ),
+                ),
+              ),
+              Positioned(
+                right: 10,
+                bottom: -30,
+                child: Container(
+                  width: 80,
+                  height: 80,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: widget.accentColor.withValues(alpha: 0.04),
+                  ),
+                ),
+              ),
+
+              // Conteúdo
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
                 child: Row(children: [
-                  // Caixa de ícone colorida
+                  // Ícone
                   Container(
-                    width: 46,
-                    height: 46,
+                    width: 48,
+                    height: 48,
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(13),
-                      color: widget.iconBgColor,
-                      boxShadow: [
-                        BoxShadow(
-                          color: widget.iconBgColor.withValues(alpha: 0.35),
-                          blurRadius: 8,
-                          offset: const Offset(0, 3),
-                        ),
-                      ],
+                      borderRadius: BorderRadius.circular(14),
+                      color: widget.accentColor.withValues(alpha: 0.14),
+                      border: Border.all(
+                        color: widget.accentColor.withValues(alpha: 0.25),
+                        width: 1.0,
+                      ),
                     ),
                     child: Icon(
                       widget.icon,
-                      size: 22,
-                      color: Colors.white,
+                      size: 24,
+                      color: widget.accentColor,
                     ),
                   ),
-                  const SizedBox(width: 14),
+                  const SizedBox(width: 16),
 
                   // Textos
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
                           widget.label,
                           style: TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.w800,
-                            color: widget.iconBgColor,
-                            letterSpacing: -0.2,
-                            height: 1.2,
+                            fontSize: 19,
+                            fontWeight: FontWeight.w900,
+                            color: Colors.white.withValues(alpha: 0.97),
+                            letterSpacing: -0.3,
+                            height: 1.1,
                           ),
                         ),
-                        const SizedBox(height: 2),
+                        const SizedBox(height: 4),
                         Text(
                           widget.subtitle,
                           style: TextStyle(
-                            fontSize: 11.5,
-                            fontWeight: FontWeight.w400,
-                            color: widget.dark
-                                ? Colors.white38
-                                : const Color(0xFF8A94A6),
-                            letterSpacing: 0.0,
+                            fontSize: 11,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.white.withValues(alpha: 0.55),
+                            letterSpacing: 0.1,
                           ),
                           overflow: TextOverflow.ellipsis,
                         ),
@@ -594,23 +393,14 @@ class _ModuleCardState extends State<_ModuleCard>
                     ),
                   ),
 
-                  // Chevron
+                  // Seta
                   Icon(
-                    Icons.chevron_right_rounded,
-                    size: 22,
-                    color: widget.dark
-                        ? Colors.white24
-                        : const Color(0xFFCBD5E0),
+                    Icons.arrow_forward_ios_rounded,
+                    size: 14,
+                    color: Colors.white.withValues(alpha: 0.30),
                   ),
                 ]),
               ),
-              // Divisor (exceto no último)
-              if (!widget.isLast)
-                Container(
-                  height: 1,
-                  margin: const EdgeInsets.only(left: 76),
-                  color: divColor,
-                ),
             ],
           ),
         ),
@@ -620,141 +410,7 @@ class _ModuleCardState extends State<_ModuleCard>
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// ACCESOS RÁPIDOS — 4 mini-cards horizontais
-// ─────────────────────────────────────────────────────────────────────────────
-class _QuickAccess extends StatelessWidget {
-  final bool dark;
-  final bool isEs;
-  final Function(String) openProtocol;
-  final ValueChanged<int> onTabChange;
-
-  const _QuickAccess({
-    required this.dark,
-    required this.isEs,
-    required this.openProtocol,
-    required this.onTabChange,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final items = [
-      _QAItem(
-        icon: Icons.warning_amber_rounded,
-        iconColor: const Color(0xFFE53E3E),
-        bgColor: dark ? const Color(0xFF2D1515) : const Color(0xFFFFF5F5),
-        borderColor: dark
-            ? const Color(0xFF6B1A1A).withValues(alpha: 0.5)
-            : const Color(0xFFFED7D7),
-        label: isEs ? 'Emergencias\nRápidas' : 'Emergências\nRápidas',
-        onTap: () => openProtocol('anafilaxia'),
-      ),
-      _QAItem(
-        icon: Icons.favorite_rounded,
-        iconColor: const Color(0xFFE53E3E),
-        bgColor: dark ? const Color(0xFF2D1515) : const Color(0xFFFFF5F5),
-        borderColor: dark
-            ? const Color(0xFF6B1A1A).withValues(alpha: 0.5)
-            : const Color(0xFFFED7D7),
-        label: isEs ? 'Protocolos\nCríticos' : 'Protocolos\nCríticos',
-        onTap: () => openProtocol('pcr_adulto'),
-      ),
-      _QAItem(
-        icon: Icons.bookmark_rounded,
-        iconColor: const Color(0xFF6C2BD9),
-        bgColor: dark ? const Color(0xFF1E1530) : const Color(0xFFF5F0FF),
-        borderColor: dark
-            ? const Color(0xFF4A2BD9).withValues(alpha: 0.4)
-            : const Color(0xFFE9D8FD),
-        label: isEs ? 'Favoritos' : 'Favoritos',
-        onTap: () {},
-      ),
-      _QAItem(
-        icon: Icons.sticky_note_2_rounded,
-        iconColor: const Color(0xFFFF8A00),
-        bgColor: dark ? const Color(0xFF2D1E00) : const Color(0xFFFFFAF0),
-        borderColor: dark
-            ? const Color(0xFF8A4A00).withValues(alpha: 0.5)
-            : const Color(0xFFFEEBC8),
-        label: isEs ? 'Mis Notas' : 'Minhas Notas',
-        onTap: () {},
-      ),
-    ];
-
-    return Row(
-      children: items
-          .map(
-            (item) => Expanded(
-              child: Padding(
-                padding: EdgeInsets.only(
-                  right: item == items.last ? 0 : 8,
-                ),
-                child: GestureDetector(
-                  onTap: item.onTap,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 14, horizontal: 8),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(14),
-                      color: item.bgColor,
-                      border: Border.all(color: item.borderColor, width: 1),
-                      boxShadow: dark
-                          ? []
-                          : [
-                              BoxShadow(
-                                color: Colors.black.withValues(alpha: 0.04),
-                                blurRadius: 6,
-                                offset: const Offset(0, 2),
-                              ),
-                            ],
-                    ),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(item.icon, size: 24, color: item.iconColor),
-                        const SizedBox(height: 7),
-                        Text(
-                          item.label,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 10,
-                            fontWeight: FontWeight.w700,
-                            color: dark
-                                ? Colors.white.withValues(alpha: 0.75)
-                                : const Color(0xFF4A5568),
-                            height: 1.3,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          )
-          .toList(),
-    );
-  }
-}
-
-class _QAItem {
-  final IconData icon;
-  final Color iconColor;
-  final Color bgColor;
-  final Color borderColor;
-  final String label;
-  final VoidCallback onTap;
-  const _QAItem({
-    required this.icon,
-    required this.iconColor,
-    required this.bgColor,
-    required this.borderColor,
-    required this.label,
-    required this.onTap,
-  });
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// EMERGÊNCIAS RÁPIDAS — grid 4 colunas
+// ACESSO RÁPIDO — EMERGÊNCIAS
 // ─────────────────────────────────────────────────────────────────────────────
 class _QuickEmergencies extends StatelessWidget {
   final AppProvider p;
@@ -786,68 +442,89 @@ class _QuickEmergencies extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GridView.count(
-      crossAxisCount: 4,
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      mainAxisSpacing: 8,
-      crossAxisSpacing: 8,
-      childAspectRatio: 1.0,
-      children: _protocols.map((proto) {
-        final id    = proto.$1;
-        final label = proto.$2;
-        final icon  = proto.$3;
-        return GestureDetector(
-          onTap: () => openProtocol(id),
-          child: Container(
+    final c = AppColors.of(context);
+
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      // Título da seção
+      Padding(
+        padding: const EdgeInsets.only(left: 2, bottom: 10),
+        child: Row(children: [
+          Container(
+            width: 3,
+            height: 14,
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(14),
-              color: dark
-                  ? const Color(0xFF2A0A0A)
-                  : const Color(0xFFFFF5F5),
-              border: Border.all(
-                color: dark
-                    ? const Color(0xFF6B1A1A).withValues(alpha: 0.6)
-                    : const Color(0xFFFED7D7),
-              ),
-              boxShadow: dark
-                  ? []
-                  : [
-                      BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.04),
-                        blurRadius: 4,
-                        offset: const Offset(0, 1),
-                      ),
-                    ],
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(icon, size: 20, color: const Color(0xFFE53E3E)),
-                const SizedBox(height: 6),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 4),
-                  child: Text(
-                    label,
-                    textAlign: TextAlign.center,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      fontSize: 10,
-                      fontWeight: FontWeight.w700,
-                      color: dark
-                          ? const Color(0xFFFF8888)
-                          : const Color(0xFFCC2222),
-                      height: 1.25,
-                    ),
-                  ),
-                ),
-              ],
+              borderRadius: BorderRadius.circular(2),
+              color: const Color(0xFFCC2222),
             ),
           ),
-        );
-      }).toList(),
-    );
+          const SizedBox(width: 8),
+          Text(
+            isEs ? 'EMERGENCIAS RÁPIDAS' : 'EMERGÊNCIAS RÁPIDAS',
+            style: TextStyle(
+              fontSize: 10,
+              fontWeight: FontWeight.w900,
+              letterSpacing: 1.4,
+              color: c.textHint,
+            ),
+          ),
+        ]),
+      ),
+
+      // Grid 4 colunas — tamanho uniforme
+      GridView.count(
+        crossAxisCount: 4,
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        mainAxisSpacing: 8,
+        crossAxisSpacing: 8,
+        childAspectRatio: 1.0,
+        children: _protocols.map((proto) {
+          final id    = proto.$1;
+          final label = proto.$2;
+          final icon  = proto.$3;
+          return GestureDetector(
+            onTap: () => openProtocol(id),
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(14),
+                color: dark
+                    ? const Color(0xFF2A0A0A)
+                    : const Color(0xFFFFF0F0),
+                border: Border.all(
+                  color: dark
+                      ? const Color(0xFF6B1A1A).withValues(alpha: 0.6)
+                      : const Color(0xFFFFCCCC),
+                ),
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(icon, size: 20, color: const Color(0xFFCC2222)),
+                  const SizedBox(height: 6),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 4),
+                    child: Text(
+                      label,
+                      textAlign: TextAlign.center,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontSize: 10,
+                        fontWeight: FontWeight.w700,
+                        color: dark
+                            ? const Color(0xFFFF8888)
+                            : const Color(0xFFCC2222),
+                        height: 1.25,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        }).toList(),
+      ),
+    ]);
   }
 }
 
