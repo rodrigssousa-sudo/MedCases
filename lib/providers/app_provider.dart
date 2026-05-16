@@ -2510,7 +2510,7 @@ class AppProvider extends ChangeNotifier {
         'crise_tirotoxica':    ['propiltiouracil', 'propranolol', 'hidrocortisona', 'iodeto'],
         'insuf_adrenal':       ['hidrocortisona', 'fludrocortisona', 'dexametasona', 'corticosteroid'],
         'cushing':             ['ketoconazol', 'metirapona', 'mifepristona', 'pasireotida'],
-        'feocromocitoma':      ['fenoxibenzamina', 'doxazosina', 'betabloqueant', 'bloqueador alfa'],
+        'feocromocitoma':          ['fenoxibenzamina', 'doxazosina', 'betabloqueant', 'bloqueador alfa', 'betabloqueant apos alfa', 'bloqueio alfa', 'metirosina'],
         'obesidade':           ['orlistat', 'liraglutida', 'semaglutida', 'bupropiona', 'topiramato'],
         // ── DISTÚRBIOS HIDROELETROLÍTICOS ────────────────────────────────────
         'hipercalemia':        ['gluconato calcio', 'bicarbonato sodio', 'insulina dextrose', 'salbutamol', 'kayexalat', 'patiromer', 'furosemida'],
@@ -2564,7 +2564,7 @@ class AppProvider extends ChangeNotifier {
         'placenta_previa':     ['betametasona', 'tocolitic', 'nifedipino'],
         'dpp':                 ['betametasona', 'ocitocina', 'analgesic'],
         'aborto_septico':      ['antibiotico', 'ampicilina', 'gentamicina', 'metronidazol', 'ceftriaxona'],
-        'sop':                 ['metformina', 'anticoncept', 'espironolactona', 'citrato clomifeno', 'letrozol'],
+        'sop':          ['metformina', 'anticoncept', 'espironolactona', 'citrato clomifeno', 'letrozol', 'anticoncept oral', 'semaglutida'],
         'endometriose':        ['progestagen', 'dienogest', 'leuprorelin', 'danazol', 'aine'],
         // ── UROLÓGICO ───────────────────────────────────────────────────────
         'prostatite':          ['antibiotico', 'ciprofloxacino', 'levofloxacino', 'doxiciclina', 'alfabloquead'],
@@ -2581,7 +2581,7 @@ class AppProvider extends ChangeNotifier {
         'bronquiolite':        ['salbutamol', 'broncodilatad', 'adrenalina'],
         'crupe':               ['dexametasona', 'budesonida', 'adrenalina', 'corticosteroid'],
         // ── DERMATOLÓGICO ───────────────────────────────────────────────────
-        'psoriase':            ['metotrexato', 'corticosteroid', 'adalimumab', 'secuquinumab', 'apremilast', 'ciclosporina'],
+        'psoriase':          ['metotrexato', 'corticosteroid', 'adalimumab', 'secuquinumab', 'apremilast', 'ciclosporina', 'corticosteroid topico', 'vitamina d topica', 'acitretina', 'biologico', 'secuquinumabe', 'guselkumabe', 'risankizumabe', 'tofacitinibe'],
         'dermatite_atopica':   ['corticosteroid topic', 'tacrolimus', 'dupilumab', 'anti-histamin', 'emoliente'],
         'urticaria':           ['anti-histamin', 'cetirizina', 'loratadina', 'fexofenadina', 'corticosteroid', 'adrenalina'],
         // ── TRAUMA / CIRÚRGICO ───────────────────────────────────────────────
@@ -2590,7 +2590,7 @@ class AppProvider extends ChangeNotifier {
         'queimaduras':         ['analgesic', 'morfina', 'fentanila', 'antibiotico', 'sulfadiazina'],
         'rabdomiolise':        ['reposicao volum', 'bicarbonato', 'manitol', 'furosemida'],
         // ── MISCELÂNEA ──────────────────────────────────────────────────────
-        'sind_metabolica':     ['metformina', 'anti-hipertensivo', 'estatina', 'fibratos'],
+        'sind_metabolica':          ['metformina', 'anti-hipertensivo', 'estatina', 'fibratos', 'exercicio', 'dieta'],
         'sind_hepatorrenal':   ['terlipressina', 'albumina', 'noradrenalina', 'antibiotico'],
         'sind_cardiorrenal':   ['diuretico', 'furosemida', 'dobutamina'],
         'anticoag_reverter':   ['vitamina k', 'protamina', 'idarucizumabe', 'andexanete', 'plasma fresco'],
@@ -2615,7 +2615,6 @@ class AppProvider extends ChangeNotifier {
         'glucagonoma':         ['octreotida', 'zinco suplemento', 'quimioterapia', 'dieta baixo glucagon'],
         'vipoma':              ['octreotida', 'reposicao hidrica', 'corticosteroid', 'quimioterapia'],
         'neoplasia_endocr':    ['cirurgia', 'octreotida', 'corticosteroid', 'quimioterapia alvo especif', 'sunitinibe'],
-        'feocromocitoma':      ['fenoxibenzamina', 'doxazosina', 'betabloqueant apos alfa', 'bloqueio alfa', 'metirosina'],
         // ── DOENÇAS RARAS / GENÉTICAS ────────────────────────────────────────
         'amiloidose':          ['tafamidis', 'patisiran', 'inotersen', 'diflunisal', 'transplante orgao', 'melfalano', 'dexametasona amiloid'],
         'sarcoidose':          ['corticosteroid', 'metotreximo', 'azatioprina', 'hidroxicloroquina', 'infliximab', 'pentoxifilina'],
@@ -2682,13 +2681,13 @@ class AppProvider extends ChangeNotifier {
         'trombocitemia':       ['hidroxiureia', 'anagrelida', 'aspirina', 'interferon alfa', 'ruxolitinibe'],
         'leucemia_linfoc':     ['ibrutinibe', 'venetoclax', 'obinutuzumabe', 'rituximab', 'bendamustina', 'clorambucil'],
         'leucemia_mieloide':   ['imatinibe', 'dasatinibe', 'nilotinibe', 'bosutinibe', 'ponatinibe', 'asciminibe'],
-        'leucemia_aguda':      ['daunorubicina', 'citarabina', 'idarubicina', 'midostaurina', 'gemtuzumab', 'blinatumomabe', 'venetoclax'],
+        'leucemia_aguda':          ['daunorubicina', 'citarabina', 'idarubicina', 'midostaurina', 'gemtuzumab', 'blinatumomabe', 'venetoclax', 'midostaurina flt3', 'gilteritinibe', 'azacitidina'],
         'hemofilia':           ['emicizumabe', 'fator viii recombinante', 'fator ix recombinante', 'fitusiran', 'concizumab', 'desmopressina hemofilia a leve'],
         'von_willebrand':      ['desmopressina', 'acido tranexam', 'fator von willebrand', 'caplacizumabe'],
         'purpura_tromb':       ['plasmaferese', 'caplacizumabe', 'rituximab', 'corticosteroid'],
         'mastocitose':         ['anti-histamin', 'cromoglicato sodio', 'ibrutinibe avancado', 'midostaurina', 'adrenalina emergencia'],
         'mastocitose_sistem':  ['midostaurina', 'avapritinibe', 'ibrutinibe', 'anti-histamin', 'cromoglicato'],
-        'linfoma_hodgkin':     ['doxorubicina', 'bleomicina', 'vinblastina', 'dacarbazina', 'brentuximab vedotin', 'nivolumab', 'pembrolizumab'],
+        'linfoma_hodgkin':          ['doxorubicina', 'bleomicina', 'vinblastina', 'dacarbazina', 'brentuximab vedotin', 'nivolumab', 'pembrolizumab', 'abvd', 'brentuximab'],
         'linfoma_nhodgkin':    ['rituximab', 'ciclofosfamida', 'doxorubicina', 'vincristina', 'prednisona', 'polatuzumab vedotin', 'axicabtagene'],
         'linfoma_burkitt':     ['quimioterapia intensiva', 'rituximab', 'metotrexato', 'citarabina'],
         'linfoma_manto':       ['ibrutinibe', 'acalabrutinibe', 'venetoclax', 'bortezomibe', 'rituximab', 'bendamustina'],
@@ -2766,7 +2765,6 @@ class AppProvider extends ChangeNotifier {
         'tinea':               ['terbinafina topica', 'clotrimazol', 'fluconazol oral', 'cetoconazol'],
         'escabiose':           ['permetrina topica', 'ivermectina oral', 'benzil benzoato'],
         'herpes_simples':      ['aciclovir', 'valaciclovir', 'fanciclovir', 'docosanol topico'],
-        'psoriase':            ['corticosteroid topico', 'vitamina d topica', 'metotrexato', 'acitretina', 'ciclosporina', 'biologico', 'adalimumab', 'secuquinumabe', 'guselkumabe', 'risankizumabe', 'apremilast', 'tofacitinibe'],
         'dermatite_contact':   ['corticosteroid topico', 'tacrolimus', 'anti-histamin', 'afastar alergeno'],
         'dermatite_sebor':     ['cetoconazol topico', 'ciclopirox', 'corticosteroid leve', 'zinco piritiona'],
         'liquen_plan':         ['corticosteroid topico', 'tacrolimus', 'corticosteroid sistemico', 'hidroxicloroquina'],
@@ -2809,7 +2807,6 @@ class AppProvider extends ChangeNotifier {
         'colestase_gestac':    ['acido ursodesoxicolico', 'antipruritic', 'colestiramina'],
         'diabetes_gestac':     ['insulina', 'metformina gestac', 'controle glicemico'],
         'mastite':             ['antibiotico', 'dicloxacilina', 'cefalexina', 'clindamicina', 'ordenha continua'],
-        'sop':                 ['metformina', 'anticoncept oral', 'espironolactona', 'citrato clomifeno', 'letrozol', 'semaglutida'],
         // ── PEDIATRIA AVANÇADA ────────────────────────────────────────────────
         'sepse_neonatal':      ['ampicilina', 'gentamicina', 'cefotaxima', 'vancomicina', 'suporte intensivo'],
         'sindrome_resp_neo':   ['surfactante exogeno', 'cpap neonatal', 'corticosteroid pre natal', 'oxigenio'],
@@ -2826,8 +2823,8 @@ class AppProvider extends ChangeNotifier {
         'bexiga_hiperativa':   ['oxibutinina', 'solifenacina', 'tolterodina', 'mirabegrona', 'betmiga', 'vibegron', 'toxina botulinica'],
         'cistite_intersticial':['pentosan polissulfat', 'heparina intravesic', 'alcalinizante urin', 'amitriptilina'],
         'cancer_rim':          ['sunitinibe', 'pazopanibe', 'axitinibe', 'pembrolizumab', 'nivolumab', 'cabozantinibe', 'lenvatinibe', 'bevacizumab'],
-        'cancer_bexiga':       ['gem-cis', 'gemcitabina cisplatina', 'pembrolizumab', 'atezolizumab', 'erdafitinibe'],
-        'cancer_testicular':   ['bleomicina', 'etoposida', 'cisplatina', 'bep ', 'radioterapia'],
+        'cancer_bexiga':          ['gem-cis', 'gemcitabina cisplatina', 'pembrolizumab', 'atezolizumab', 'erdafitinibe', 'gemcitabina', 'cisplatina'],
+        'cancer_testicular':          ['bleomicina', 'etoposida', 'cisplatina', 'bep ', 'radioterapia', 'bep'],
         'orquite':             ['antibiotico', 'aine', 'suporte'],
         'epididimite':         ['ciprofloxacino', 'doxiciclina', 'ceftriaxona'],
         'incontinencia_urin':  ['kegel', 'duloxetina', 'oxibutinina', 'mirabegrona', 'pessario', 'cirurgia sling'],
@@ -2870,12 +2867,8 @@ class AppProvider extends ChangeNotifier {
         'glioblastoma':        ['temozolomida', 'bevacizumab', 'radioterapia', 'ttfields'],
         'meduloblastoma':      ['quimioterapia', 'cisplatina', 'vincristina', 'ciclofosfamida', 'radioterapia'],
         'sarcoma':             ['doxorubicina', 'ifosfamida', 'gencitabina', 'docetaxel', 'trabectedina', 'larotrectinibe'],
-        'leucemia_aguda':      ['citarabina', 'daunorubicina', 'idarubicina', 'midostaurina flt3', 'gilteritinibe', 'blinatumomabe', 'venetoclax', 'azacitidina'],
         'carcinoma_espinocel_cabeca_pescoco':['cetuximab', 'pembrolizumab', 'nivolumab', 'cisplatina', 'docetaxel', 'radioterapia'],
         'cistite_hemorragica': ['mesna', 'hiperhidratacao', 'acido tranexam', 'prostaglandina intravesic'],
-        'cancer_bexiga':       ['gemcitabina', 'cisplatina', 'pembrolizumab', 'atezolizumab', 'erdafitinibe'],
-        'cancer_testicular':   ['bleomicina', 'etoposida', 'cisplatina', 'bep', 'radioterapia'],
-        'linfoma_hodgkin':     ['doxorubicina', 'bleomicina', 'vinblastina', 'dacarbazina', 'abvd', 'brentuximab', 'nivolumab', 'pembrolizumab'],
         // ── TRANSPLANTE ──────────────────────────────────────────────────────
         'rejeicao_transplante':['tacrolimus', 'ciclosporina', 'micofenolato', 'corticosteroid', 'basiliximab', 'metilprednisolona pulsoterapia'],
         'transplante_medula':  ['ciclofosfamida', 'bussulfano', 'fludarabina', 'melfalano', 'ciclosporina', 'tacrolimus', 'metotreximo profilax gvhd'],
@@ -2913,7 +2906,6 @@ class AppProvider extends ChangeNotifier {
         'hiperbarica':         ['oxigenio hiperbar 100%', 'sessoes oht', 'camara pressurizada'],
         // ── CARDIOMETABÓLICO ──────────────────────────────────────────────────
         'hipertriglicerid':    ['fibratos', 'fenofibrato', 'gemfibrozila', 'acido eicosapentaenoico', 'icosapent etil', 'niacina', 'omega 3'],
-        'sind_metabolica':     ['metformina', 'anti-hipertensivo', 'estatina', 'exercicio', 'dieta'],
       };
 
       final relevantGroups = detectedCondition != null
