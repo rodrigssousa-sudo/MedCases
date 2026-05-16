@@ -10094,6 +10094,9 @@ const _termMap = <String, String>{
 // ─────────────────────────────────────────────────────────────────────────────
 class DrugInteractionService {
 
+  /// Total de pares de interações na base de dados embutida.
+  static int get totalInteractions => _interactionDB.length;
+
   /// Retorna todos os nomes de fármacos conhecidos (chaves do _termMap),
   /// ordenados alfabeticamente — usado para autocomplete na UI.
   static List<String> getAllDrugNames() {

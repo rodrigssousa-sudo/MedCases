@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../providers/app_provider.dart';
 import '../widgets/common_widgets.dart';
 import '../data/drugs_database.dart';
+import '../services/drug_interaction_service.dart';
 import 'cockpit_screen.dart';
 import 'drugs_screen.dart';
 import 'tools_screen.dart' show ProtocolsCard, PediatricsTabContent, ToolsScreen;
@@ -88,8 +89,8 @@ class HomeScreen extends StatelessWidget {
           icon: Icons.compare_arrows_rounded,
           label: isEs ? 'INTERACCIONES' : 'INTERAÇÕES',
           subtitle: isEs
-              ? '864 pares · Severidad · Manejo clínico'
-              : '864 pares · Severidade · Manejo clínico',
+              ? '${DrugInteractionService.totalInteractions} pares · Severidad · Manejo clínico'
+              : '${DrugInteractionService.totalInteractions} pares · Severidade · Manejo clínico',
           gradientColors: const [Color(0xFF1A0A2E), Color(0xFF3D1F6B), Color(0xFF6B3FA8)],
           accentColor: const Color(0xFFA78BFA),
           dark: dark,
