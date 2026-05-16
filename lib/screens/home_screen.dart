@@ -8,7 +8,6 @@ import 'cockpit_screen.dart';
 import 'drugs_screen.dart';
 import 'tools_screen.dart' show PediatricsTabContent, ToolsScreen;
 import 'prescripciones_screen.dart';
-import 'cases_screen.dart';
 import 'drug_interactions_screen.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -34,12 +33,18 @@ class HomeScreen extends StatelessWidget {
 
     return SingleChildScrollView(
       physics: const BouncingScrollPhysics(),
-      padding: const EdgeInsets.fromLTRB(18, 20, 18, 100),
+      padding: const EdgeInsets.fromLTRB(18, 14, 18, 100),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
 
-        // ── Cards principais ──────────────────────────────────────────────
+        // ── Barra de pesquisa ─────────────────────────────────────────────
+        _HomeSearchBar(dark: dark, isEs: isEs),
+        const SizedBox(height: 18),
 
-        // 1 — Prescripciones
+        // ── Divisor ───────────────────────────────────────────────────────
+        _HomeDivider(dark: dark),
+        const SizedBox(height: 16),
+
+        // 1 — Prescripciones (card largo)
         _HomeCard(
           icon: Icons.description_rounded,
           label: isEs ? 'PRESCRIPCIONES' : 'PRESCRIÇÕES',
@@ -53,12 +58,12 @@ class HomeScreen extends StatelessWidget {
             _slideRoute(const _PrescripcionesShell()),
           ),
         ),
-        const SizedBox(height: 14),
+        const SizedBox(height: 12),
 
-        // 2 — Fármacos
+        // 2 — Fármacos (card largo)
         _HomeCard(
           icon: Icons.medication_rounded,
-          label: isEs ? 'FÁRMACOS' : 'FÁRMACOS',
+          label: 'FÁRMACOS',
           subtitle: isEs
               ? '${drugsDatabase.length} fármacos · Interacciones · Protocolos'
               : '${drugsDatabase.length} fármacos · Interações · Protocolos',
@@ -69,9 +74,9 @@ class HomeScreen extends StatelessWidget {
             _slideRoute(const _FarmacosShell()),
           ),
         ),
-        const SizedBox(height: 14),
+        const SizedBox(height: 12),
 
-        // 3 — Interacciones
+        // 3 — Interacciones (card largo)
         _HomeCard(
           icon: Icons.compare_arrows_rounded,
           label: isEs ? 'INTERACCIONES' : 'INTERAÇÕES',
@@ -85,42 +90,53 @@ class HomeScreen extends StatelessWidget {
             _slideRoute(const DrugInteractionsScreen()),
           ),
         ),
-        const SizedBox(height: 14),
+        const SizedBox(height: 12),
 
-        // 4 — Pediatría
-        _HomeCard(
-          icon: Icons.child_care_rounded,
-          label: isEs ? 'PEDIATRÍA' : 'PEDIATRIA',
-          subtitle: isEs
-              ? 'Biometría · PEWS · Dosis · Schwartz'
-              : 'Biometria · PEWS · Doses · Schwartz',
-          gradientColors: const [Color(0xFF0F1E30), Color(0xFF1A3A58), Color(0xFF1D5F8A)],
-          accentColor: const Color(0xFF60A5FA),
-          dark: dark,
-          onTap: () => Navigator.of(context).push(
-            _slideRoute(const _PediatricsShell()),
+        // 4 — Adulto + Pediatría (lado a lado, metade da largura)
+        Row(children: [
+          Expanded(
+            child: _HomeCardHalf(
+              icon: Icons.person_rounded,
+              label: 'ADULTO',
+              gradientColors: const [Color(0xFF0F2318), Color(0xFF1B4A2E), Color(0xFF1F6B48)],
+              accentColor: const Color(0xFF4ADE80),
+              dark: dark,
+              onTap: () => Navigator.of(context).push(
+                _slideRoute(_AdultoShell(openProtocol: openProtocol)),
+              ),
+            ),
           ),
-        ),
-        const SizedBox(height: 14),
-
-        // 5 — Adulto
-        _HomeCard(
-          icon: Icons.person_rounded,
-          label: isEs ? 'ADULTO' : 'ADULTO',
-          subtitle: isEs
-              ? 'Paciente · Dosis · Protocolos'
-              : 'Paciente · Doses · Protocolos',
-          gradientColors: const [Color(0xFF0F2318), Color(0xFF1B4A2E), Color(0xFF1F6B48)],
-          accentColor: const Color(0xFF4ADE80),
-          dark: dark,
-          onTap: () => Navigator.of(context).push(
-            _slideRoute(_AdultoShell(openProtocol: openProtocol)),
+          const SizedBox(width: 12),
+          Expanded(
+            child: _HomeCardHalf(
+              icon: Icons.child_care_rounded,
+              label: isEs ? 'PEDIATRÍA' : 'PEDIATRIA',
+              gradientColors: const [Color(0xFF0F1E30), Color(0xFF1A3A58), Color(0xFF1D5F8A)],
+              accentColor: const Color(0xFF60A5FA),
+              dark: dark,
+              onTap: () => Navigator.of(context).push(
+                _slideRoute(const _PediatricsShell()),
+              ),
+            ),
           ),
-        ),
+        ]),
 
-        const SizedBox(height: 28),
+        const SizedBox(height: 16),
 
-        // ── Acesso rápido — Emergências ───────────────────────────────────
+        // ── Divisor ───────────────────────────────────────────────────────
+        _HomeDivider(dark: dark),
+        const SizedBox(height: 16),
+
+        // ── Notas · Recentes · Favoritos ──────────────────────────────────
+        _QuickShortcuts(dark: dark, isEs: isEs, openProtocol: openProtocol),
+
+        const SizedBox(height: 16),
+
+        // ── Divisor ───────────────────────────────────────────────────────
+        _HomeDivider(dark: dark),
+        const SizedBox(height: 16),
+
+        // ── Emergências (4 cards + ver mais) ──────────────────────────────
         _QuickEmergencies(p: p, dark: dark, isEs: isEs, openProtocol: openProtocol),
       ]),
     );
@@ -215,6 +231,366 @@ class _Greeting extends StatelessWidget {
       ),
     ]);
   }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// SEARCH BAR — barra de pesquisa pill
+// ─────────────────────────────────────────────────────────────────────────────
+class _HomeSearchBar extends StatelessWidget {
+  final bool dark;
+  final bool isEs;
+  const _HomeSearchBar({required this.dark, required this.isEs});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 46,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(23),
+        color: dark ? const Color(0xFF252525) : const Color(0xFFEFF1F7),
+        border: Border.all(
+          color: dark
+              ? Colors.white.withValues(alpha: 0.08)
+              : const Color(0xFFDDE1EC),
+        ),
+      ),
+      child: Row(children: [
+        const SizedBox(width: 14),
+        Icon(
+          Icons.search_rounded,
+          size: 19,
+          color: dark ? Colors.white38 : const Color(0xFF9AA3B4),
+        ),
+        const SizedBox(width: 9),
+        Expanded(
+          child: Text(
+            isEs ? 'Buscar fármaco, protocolo…' : 'Buscar fármaco, protocolo…',
+            style: TextStyle(
+              fontSize: 13.5,
+              color: dark ? Colors.white24 : const Color(0xFFAAB2C4),
+              fontWeight: FontWeight.w400,
+            ),
+          ),
+        ),
+        Container(
+          width: 30,
+          height: 30,
+          margin: const EdgeInsets.only(right: 8),
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: dark
+                ? Colors.white.withValues(alpha: 0.08)
+                : const Color(0xFFD8DDEF),
+          ),
+          child: Icon(
+            Icons.mic_none_rounded,
+            size: 15,
+            color: dark ? Colors.white38 : const Color(0xFF7B85A0),
+          ),
+        ),
+      ]),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// DIVISOR DECORATIVO
+// ─────────────────────────────────────────────────────────────────────────────
+class _HomeDivider extends StatelessWidget {
+  final bool dark;
+  const _HomeDivider({required this.dark});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(children: [
+      Expanded(
+        child: Container(
+          height: 1,
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                Colors.transparent,
+                dark
+                    ? Colors.white.withValues(alpha: 0.10)
+                    : const Color(0xFFCDD1DC),
+                Colors.transparent,
+              ],
+            ),
+          ),
+        ),
+      ),
+    ]);
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// CARD METADE — Adulto / Pediatría (lado a lado)
+// ─────────────────────────────────────────────────────────────────────────────
+class _HomeCardHalf extends StatefulWidget {
+  final IconData icon;
+  final String label;
+  final List<Color> gradientColors;
+  final Color accentColor;
+  final bool dark;
+  final VoidCallback onTap;
+
+  const _HomeCardHalf({
+    required this.icon,
+    required this.label,
+    required this.gradientColors,
+    required this.accentColor,
+    required this.dark,
+    required this.onTap,
+  });
+
+  @override
+  State<_HomeCardHalf> createState() => _HomeCardHalfState();
+}
+
+class _HomeCardHalfState extends State<_HomeCardHalf>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _ctrl;
+  late final Animation<double> _scale;
+
+  @override
+  void initState() {
+    super.initState();
+    _ctrl = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 120),
+      lowerBound: 0.0,
+      upperBound: 1.0,
+    );
+    _scale = Tween<double>(begin: 1.0, end: 0.96).animate(
+      CurvedAnimation(parent: _ctrl, curve: Curves.easeOut),
+    );
+  }
+
+  @override
+  void dispose() {
+    _ctrl.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTapDown:   (_) => _ctrl.forward(),
+      onTapUp:     (_) { _ctrl.reverse(); widget.onTap(); },
+      onTapCancel: ()  => _ctrl.reverse(),
+      child: ScaleTransition(
+        scale: _scale,
+        child: Container(
+          height: 96,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20),
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: widget.dark
+                  ? [
+                      widget.gradientColors[0].withValues(alpha: 0.85),
+                      widget.gradientColors[1].withValues(alpha: 0.90),
+                      widget.gradientColors[2].withValues(alpha: 0.95),
+                    ]
+                  : widget.gradientColors,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: widget.gradientColors[2].withValues(alpha: 0.38),
+                blurRadius: 16,
+                offset: const Offset(0, 7),
+                spreadRadius: -2,
+              ),
+            ],
+            border: Border.all(
+              color: widget.accentColor.withValues(alpha: 0.18),
+              width: 1.0,
+            ),
+          ),
+          child: Stack(children: [
+            // Círculo decorativo
+            Positioned(
+              right: -16,
+              top: -16,
+              child: Container(
+                width: 80,
+                height: 80,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: widget.accentColor.withValues(alpha: 0.08),
+                ),
+              ),
+            ),
+            // Conteúdo centrado
+            Center(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 12),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(
+                      width: 40,
+                      height: 40,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(12),
+                        color: widget.accentColor.withValues(alpha: 0.14),
+                        border: Border.all(
+                          color: widget.accentColor.withValues(alpha: 0.22),
+                          width: 1.0,
+                        ),
+                      ),
+                      child: Icon(
+                        widget.icon,
+                        size: 20,
+                        color: widget.accentColor,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      widget.label,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w800,
+                        color: Colors.white.withValues(alpha: 0.95),
+                        letterSpacing: -0.2,
+                        height: 1.1,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ]),
+        ),
+      ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// QUICK SHORTCUTS — Notas · Recentes · Favoritos
+// ─────────────────────────────────────────────────────────────────────────────
+class _QuickShortcuts extends StatelessWidget {
+  final bool dark;
+  final bool isEs;
+  final Function(String) openProtocol;
+  const _QuickShortcuts({
+    required this.dark,
+    required this.isEs,
+    required this.openProtocol,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final cardBg   = dark ? const Color(0xFF1E1E1E) : Colors.white;
+    final shadow   = dark
+        ? <BoxShadow>[]
+        : <BoxShadow>[
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.06),
+              blurRadius: 8,
+              offset: const Offset(0, 3),
+            ),
+          ];
+
+    final items = [
+      _ShortcutItem(
+        icon: Icons.sticky_note_2_rounded,
+        color: const Color(0xFFFF8A00),
+        label: isEs ? 'Notas' : 'Notas',
+        onTap: () {}, // painel lateral de notas (gerenciado pelo parent)
+      ),
+      _ShortcutItem(
+        icon: Icons.history_rounded,
+        color: const Color(0xFF1F78FF),
+        label: isEs ? 'Recientes' : 'Recentes',
+        onTap: () {},
+      ),
+      _ShortcutItem(
+        icon: Icons.bookmark_rounded,
+        color: const Color(0xFF6C2BD9),
+        label: isEs ? 'Favoritos' : 'Favoritos',
+        onTap: () {},
+      ),
+    ];
+
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(18),
+        color: cardBg,
+        boxShadow: shadow,
+        border: Border.all(
+          color: dark
+              ? Colors.white.withValues(alpha: 0.06)
+              : const Color(0xFFE8ECF5),
+        ),
+      ),
+      child: Row(
+        children: List.generate(items.length * 2 - 1, (i) {
+          if (i.isOdd) {
+            // Divisor vertical
+            return Container(
+              width: 1,
+              height: 56,
+              color: dark
+                  ? Colors.white.withValues(alpha: 0.07)
+                  : const Color(0xFFECEFF7),
+            );
+          }
+          final item = items[i ~/ 2];
+          return Expanded(
+            child: GestureDetector(
+              onTap: item.onTap,
+              behavior: HitTestBehavior.opaque,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 14),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(
+                      width: 36,
+                      height: 36,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: item.color.withValues(alpha: 0.12),
+                      ),
+                      child: Icon(item.icon, size: 18, color: item.color),
+                    ),
+                    const SizedBox(height: 6),
+                    Text(
+                      item.label,
+                      style: TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w700,
+                        color: dark
+                            ? Colors.white.withValues(alpha: 0.70)
+                            : const Color(0xFF4A5568),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        }),
+      ),
+    );
+  }
+}
+
+class _ShortcutItem {
+  final IconData icon;
+  final Color color;
+  final String label;
+  final VoidCallback onTap;
+  const _ShortcutItem({
+    required this.icon,
+    required this.color,
+    required this.label,
+    required this.onTap,
+  });
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -412,7 +788,7 @@ class _HomeCardState extends State<_HomeCard>
 // ─────────────────────────────────────────────────────────────────────────────
 // ACESSO RÁPIDO — EMERGÊNCIAS
 // ─────────────────────────────────────────────────────────────────────────────
-class _QuickEmergencies extends StatelessWidget {
+class _QuickEmergencies extends StatefulWidget {
   final AppProvider p;
   final bool dark;
   final bool isEs;
@@ -425,13 +801,21 @@ class _QuickEmergencies extends StatelessWidget {
     required this.openProtocol,
   });
 
+  @override
+  State<_QuickEmergencies> createState() => _QuickEmergenciesState();
+}
+
+class _QuickEmergenciesState extends State<_QuickEmergencies> {
+  bool _expanded = false;
+
   static const _protocols = [
     ('anafilaxia',            'Anafilaxia',     Icons.warning_amber_rounded),
     ('sepse',                 'Sepse/Choque',   Icons.emergency_rounded),
     ('tpsv',                  'TPSV',           Icons.favorite_rounded),
+    ('pcr_adulto',            'PCR',            Icons.monitor_heart_rounded),
+    // extras (visíveis ao expandir)
     ('hiperpotassemia_grave', 'K⁺ alto',        Icons.science_rounded),
     ('avc_isquemico',         'AVC/ACV',        Icons.bolt_rounded),
-    ('pcr_adulto',            'PCR',            Icons.monitor_heart_rounded),
     ('choque_cardiogenico',   'Choque Card.',   Icons.heart_broken_rounded),
     ('fa_aguda',              'FA Aguda',       Icons.electric_bolt_rounded),
     ('asma_grave',            'Asma Grave',     Icons.air_rounded),
@@ -440,18 +824,68 @@ class _QuickEmergencies extends StatelessWidget {
     ('status_epilepticus',    'Status Epil.',   Icons.psychology_rounded),
   ];
 
+  Widget _buildCard(String id, String label, IconData icon) {
+    final dark = widget.dark;
+    return GestureDetector(
+      onTap: () => widget.openProtocol(id),
+      child: Container(
+        // Cards mais baixos — altura ~68 via aspectRatio 1.55 na grid
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12),
+          color: dark
+              ? const Color(0xFF2A0A0A)
+              : const Color(0xFFFFF0F0),
+          border: Border.all(
+            color: dark
+                ? const Color(0xFF6B1A1A).withValues(alpha: 0.6)
+                : const Color(0xFFFFCCCC),
+          ),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(icon, size: 18, color: const Color(0xFFCC2222)),
+            const SizedBox(height: 5),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 3),
+              child: Text(
+                label,
+                textAlign: TextAlign.center,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontSize: 9.5,
+                  fontWeight: FontWeight.w700,
+                  color: dark
+                      ? const Color(0xFFFF8888)
+                      : const Color(0xFFCC2222),
+                  height: 1.2,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    final c = AppColors.of(context);
+    final c    = AppColors.of(context);
+    final dark = widget.dark;
+    final isEs = widget.isEs;
+
+    // visíveis: sempre 4 primeiros; expandido = todos 12
+    final visible = _expanded ? _protocols : _protocols.sublist(0, 4);
 
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      // Título da seção
+      // Cabeçalho da seção + botão ver mais/menos
       Padding(
         padding: const EdgeInsets.only(left: 2, bottom: 10),
         child: Row(children: [
           Container(
             width: 3,
-            height: 14,
+            height: 13,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(2),
               color: const Color(0xFFCC2222),
@@ -467,62 +901,62 @@ class _QuickEmergencies extends StatelessWidget {
               color: c.textHint,
             ),
           ),
+          const Spacer(),
+          // Botão "ver +" / "ver menos"
+          GestureDetector(
+            onTap: () => setState(() => _expanded = !_expanded),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20),
+                color: dark
+                    ? const Color(0xFF2A0A0A)
+                    : const Color(0xFFFFF0F0),
+                border: Border.all(
+                  color: dark
+                      ? const Color(0xFF6B1A1A).withValues(alpha: 0.5)
+                      : const Color(0xFFFFCCCC),
+                ),
+              ),
+              child: Row(mainAxisSize: MainAxisSize.min, children: [
+                Text(
+                  _expanded
+                      ? (isEs ? 'ver menos' : 'ver menos')
+                      : (isEs ? 'ver +' : 'ver +'),
+                  style: TextStyle(
+                    fontSize: 10,
+                    fontWeight: FontWeight.w700,
+                    color: dark
+                        ? const Color(0xFFFF8888)
+                        : const Color(0xFFCC2222),
+                  ),
+                ),
+                const SizedBox(width: 3),
+                Icon(
+                  _expanded
+                      ? Icons.keyboard_arrow_up_rounded
+                      : Icons.keyboard_arrow_down_rounded,
+                  size: 13,
+                  color: dark
+                      ? const Color(0xFFFF8888)
+                      : const Color(0xFFCC2222),
+                ),
+              ]),
+            ),
+          ),
         ]),
       ),
 
-      // Grid 4 colunas — tamanho uniforme
+      // Grid 4 colunas — cards mais baixos (aspect ratio 1.6)
       GridView.count(
         crossAxisCount: 4,
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
         mainAxisSpacing: 8,
         crossAxisSpacing: 8,
-        childAspectRatio: 1.0,
-        children: _protocols.map((proto) {
-          final id    = proto.$1;
-          final label = proto.$2;
-          final icon  = proto.$3;
-          return GestureDetector(
-            onTap: () => openProtocol(id),
-            child: Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(14),
-                color: dark
-                    ? const Color(0xFF2A0A0A)
-                    : const Color(0xFFFFF0F0),
-                border: Border.all(
-                  color: dark
-                      ? const Color(0xFF6B1A1A).withValues(alpha: 0.6)
-                      : const Color(0xFFFFCCCC),
-                ),
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(icon, size: 20, color: const Color(0xFFCC2222)),
-                  const SizedBox(height: 6),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 4),
-                    child: Text(
-                      label,
-                      textAlign: TextAlign.center,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        fontSize: 10,
-                        fontWeight: FontWeight.w700,
-                        color: dark
-                            ? const Color(0xFFFF8888)
-                            : const Color(0xFFCC2222),
-                        height: 1.25,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          );
-        }).toList(),
+        childAspectRatio: 1.55,
+        children: visible.map((proto) =>
+            _buildCard(proto.$1, proto.$2, proto.$3)).toList(),
       ),
     ]);
   }
