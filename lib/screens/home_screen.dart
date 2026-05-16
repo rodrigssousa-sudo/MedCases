@@ -6,8 +6,7 @@ import '../data/drugs_database.dart';
 import '../services/drug_interaction_service.dart';
 import 'cockpit_screen.dart';
 import 'drugs_screen.dart';
-import 'tools_screen.dart' show ProtocolsCard, PediatricsTabContent, ToolsScreen;
-import 'protocols_screen.dart';
+import 'tools_screen.dart' show PediatricsTabContent, ToolsScreen;
 import 'prescripciones_screen.dart';
 import 'cases_screen.dart';
 import 'drug_interactions_screen.dart';
@@ -39,36 +38,24 @@ class HomeScreen extends StatelessWidget {
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
 
         // ── Cards principais ──────────────────────────────────────────────
+
+        // 1 — Prescripciones
         _HomeCard(
-          icon: Icons.person_rounded,
-          label: isEs ? 'ADULTO' : 'ADULTO',
+          icon: Icons.description_rounded,
+          label: isEs ? 'PRESCRIPCIONES' : 'PRESCRIÇÕES',
           subtitle: isEs
-              ? 'Paciente · Doses · Protocolos'
-              : 'Paciente · Doses · Protocolos',
-          gradientColors: const [Color(0xFF0F2318), Color(0xFF1B4A2E), Color(0xFF1F6B48)],
-          accentColor: const Color(0xFF4ADE80),
+              ? 'Modelos · Emergencias · Guardia · Clínica'
+              : 'Modelos · Emergências · Plantão · Clínica',
+          gradientColors: const [Color(0xFF120A1E), Color(0xFF2A1245), Color(0xFF4A2080)],
+          accentColor: const Color(0xFFD8B4FE),
           dark: dark,
           onTap: () => Navigator.of(context).push(
-            _slideRoute(_AdultoShell(openProtocol: openProtocol)),
+            _slideRoute(const _PrescripcionesShell()),
           ),
         ),
         const SizedBox(height: 14),
 
-        _HomeCard(
-          icon: Icons.child_care_rounded,
-          label: isEs ? 'PEDIATRÍA' : 'PEDIATRIA',
-          subtitle: isEs
-              ? 'Biometria · PEWS · Doses · Schwartz'
-              : 'Biometria · PEWS · Doses · Schwartz',
-          gradientColors: const [Color(0xFF0F1E30), Color(0xFF1A3A58), Color(0xFF1D5F8A)],
-          accentColor: const Color(0xFF60A5FA),
-          dark: dark,
-          onTap: () => Navigator.of(context).push(
-            _slideRoute(const _PediatricsShell()),
-          ),
-        ),
-        const SizedBox(height: 14),
-
+        // 2 — Fármacos
         _HomeCard(
           icon: Icons.medication_rounded,
           label: isEs ? 'FÁRMACOS' : 'FÁRMACOS',
@@ -84,7 +71,7 @@ class HomeScreen extends StatelessWidget {
         ),
         const SizedBox(height: 14),
 
-        // ── Interações Medicamentosas ─────────────────────────────────────
+        // 3 — Interacciones
         _HomeCard(
           icon: Icons.compare_arrows_rounded,
           label: isEs ? 'INTERACCIONES' : 'INTERAÇÕES',
@@ -98,39 +85,36 @@ class HomeScreen extends StatelessWidget {
             _slideRoute(const DrugInteractionsScreen()),
           ),
         ),
-
         const SizedBox(height: 14),
 
-        // ── Protocolos Clínicos ───────────────────────────────────────────
+        // 4 — Pediatría
         _HomeCard(
-          icon: Icons.menu_book_rounded,
-          label: isEs ? 'PROTOCOLOS' : 'PROTOCOLOS',
+          icon: Icons.child_care_rounded,
+          label: isEs ? 'PEDIATRÍA' : 'PEDIATRIA',
           subtitle: isEs
-              ? 'Emergencias · Cardio · Neuro · Pediátrico'
-              : 'Emergências · Cardio · Neuro · Pediátrico',
-          gradientColors: const [Color(0xFF07110D), Color(0xFF1B3D2A), Color(0xFF1F6B48)],
-          accentColor: const Color(0xFF4ADE80),
-          dark: dark,
-          onTap: () {
-            onTabChange(1);
-            onSubTabChange(2);
-          },
-        ),
-
-        const SizedBox(height: 14),
-
-        // ── Prescripciones ────────────────────────────────────────────────
-        _HomeCard(
-          icon: Icons.description_rounded,
-          label: isEs ? 'PRESCRIPCIONES' : 'PRESCRIÇÕES',
-          subtitle: isEs
-              ? 'Modelos · Emergencias · Guardia · Clínica'
-              : 'Modelos · Emergências · Plantão · Clínica',
-          gradientColors: const [Color(0xFF120A1E), Color(0xFF2A1245), Color(0xFF4A2080)],
-          accentColor: const Color(0xFFD8B4FE),
+              ? 'Biometría · PEWS · Dosis · Schwartz'
+              : 'Biometria · PEWS · Doses · Schwartz',
+          gradientColors: const [Color(0xFF0F1E30), Color(0xFF1A3A58), Color(0xFF1D5F8A)],
+          accentColor: const Color(0xFF60A5FA),
           dark: dark,
           onTap: () => Navigator.of(context).push(
-            _slideRoute(const _PrescripcionesShell()),
+            _slideRoute(const _PediatricsShell()),
+          ),
+        ),
+        const SizedBox(height: 14),
+
+        // 5 — Adulto
+        _HomeCard(
+          icon: Icons.person_rounded,
+          label: isEs ? 'ADULTO' : 'ADULTO',
+          subtitle: isEs
+              ? 'Paciente · Dosis · Protocolos'
+              : 'Paciente · Doses · Protocolos',
+          gradientColors: const [Color(0xFF0F2318), Color(0xFF1B4A2E), Color(0xFF1F6B48)],
+          accentColor: const Color(0xFF4ADE80),
+          dark: dark,
+          onTap: () => Navigator.of(context).push(
+            _slideRoute(_AdultoShell(openProtocol: openProtocol)),
           ),
         ),
 
