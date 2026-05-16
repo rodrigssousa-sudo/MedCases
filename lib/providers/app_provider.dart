@@ -133,7 +133,11 @@ class AppProvider extends ChangeNotifier {
   /// true quando qualquer IA real está disponível (OpenAI OU Gemini)
   bool get hasAnyAi => _openAiKey.isNotEmpty || _geminiConnected;
 
-  List<DrugModel> get drugsDB => drugsDatabase;
+  // Deduplica por ID (garante que entradas duplicadas na database não apareçam duas vezes)
+  List<DrugModel> get drugsDB {
+    final seen = <String>{};
+    return drugsDatabase.where((d) => seen.add(d.id)).toList();
+  }
   List<ProtocolModel> get protocolsDB => protocolsDatabase;
   List<ClinicalCaseModel> get casesDB => casesDatabase;
 

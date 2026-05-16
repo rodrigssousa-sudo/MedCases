@@ -7,11 +7,11 @@ import '../data/drugs_database.dart';
 import '../models/drug_model.dart';
 import '../services/drug_interaction_service.dart';
 import 'cockpit_screen.dart';
-import 'drugs_screen.dart';
+import 'drugs_screen.dart' show DrugsScreen, showDrugDetailSheet;
 import 'tools_screen.dart' show PediatricsTabContent, ToolsScreen;
 import 'prescripciones_screen.dart';
 import 'drug_interactions_screen.dart';
-import 'protocols_screen.dart' show openProtocolById;
+import 'protocols_screen.dart' show openProtocolById, showProtocolDetail;
 
 // ─────────────────────────────────────────────────────────────────────────────
 // HOME SCREEN — 4 cards de navegação principal
@@ -354,14 +354,15 @@ class _SearchSheetState extends State<_SearchSheet> {
     // ── Resultados ────────────────────────────────────────────────────────
     final q = _q.toLowerCase().trim();
 
-    // Fármacos
+    // Fármacos — usa p.drugsDB (deduplicado)
     final drugs = q.isEmpty
         ? <DrugModel>[]
-        : drugsDatabase
+        : p.drugsDB
             .where((d) =>
                 d.name.toLowerCase().contains(q) ||
-                (d.className[isEs ? 'es' : 'pt'] ?? '').toLowerCase().contains(q))
-            .take(6)
+                (d.className[isEs ? 'es' : 'pt'] ?? '').toLowerCase().contains(q) ||
+                (d.category[isEs ? 'es' : 'pt'] ?? '').toLowerCase().contains(q))
+            .take(8)
             .toList();
 
     // Protocolos
@@ -372,7 +373,7 @@ class _SearchSheetState extends State<_SearchSheet> {
               final t = pr.title[isEs ? 'es' : 'pt'] ?? pr.title['pt'] ?? '';
               return t.toLowerCase().contains(q);
             })
-            .take(6)
+            .take(8)
             .toList();
 
     final hasResults = drugs.isNotEmpty || protocols.isNotEmpty;
@@ -511,11 +512,13 @@ class _SearchSheetState extends State<_SearchSheet> {
                               subtitle: (d.className[isEs ? 'es' : 'pt'] ?? ''),
                               dark: dark,
                               divColor: divColor,
-                              onTap: () {
+                              onTap: () async {
                                 Navigator.pop(context);
-                                Navigator.of(context).push(
-                                  HomeScreen._slide(const _FarmacosShell()),
-                                );
+                                // Registra como recente imediatamente
+                                await homeRegisterRecent('drug', d.id, d.name);
+                                if (context.mounted) {
+                                  showDrugDetailSheet(context, d);
+                                }
                               },
                             )),
                             const SizedBox(height: 8),
@@ -526,7 +529,8 @@ class _SearchSheetState extends State<_SearchSheet> {
                             _SearchSectionLabel(
                                 label: isEs ? 'PROTOCOLOS' : 'PROTOCOLOS', dark: dark),
                             ...protocols.map((pr) {
-                              final title = pr.title[isEs ? 'es' : 'pt'] ?? pr.title['pt'] ?? '';
+                              final lang  = isEs ? 'es' : 'pt';
+                              final title = pr.title[lang] ?? pr.title['pt'] ?? '';
                               return _SearchResultTile(
                                 leading: Icons.emergency_rounded,
                                 leadingColor: const Color(0xFFCC2222),
@@ -534,9 +538,13 @@ class _SearchSheetState extends State<_SearchSheet> {
                                 subtitle: isEs ? 'Protocolo clínico' : 'Protocolo clínico',
                                 dark: dark,
                                 divColor: divColor,
-                                onTap: () {
+                                onTap: () async {
                                   Navigator.pop(context);
-                                  openProtocolById(context, pr.id);
+                                  // Registra como recente imediatamente
+                                  await homeRegisterRecent('protocol', pr.id, title);
+                                  if (context.mounted) {
+                                    showProtocolDetail(context, pr);
+                                  }
                                 },
                               );
                             }),
@@ -1129,9 +1137,16 @@ class _RecentesSheetState extends State<_RecentesSheet> {
                               if (isProtocol) {
                                 openProtocolById(ctx, id);
                               } else {
-                                Navigator.of(ctx).push(
-                                  HomeScreen._slide(const _FarmacosShell()),
-                                );
+                                // Abre direto o fármaco pelo ID
+                                final p = ctx.read<AppProvider>();
+                                try {
+                                  final drug = p.drugsDB.firstWhere((d) => d.id == id);
+                                  showDrugDetailSheet(ctx, drug);
+                                } catch (_) {
+                                  Navigator.of(ctx).push(
+                                    HomeScreen._slide(const _FarmacosShell()),
+                                  );
+                                }
                               }
                             },
                           );
@@ -1276,9 +1291,7 @@ class _FavoritosSheet extends StatelessWidget {
                                   color: dark ? Colors.white24 : const Color(0xFFCBD5E0)),
                               onTap: () {
                                 Navigator.pop(context);
-                                Navigator.of(context).push(
-                                  HomeScreen._slide(const _FarmacosShell()),
-                                );
+                                showDrugDetailSheet(context, d);
                               },
                             ),
                             Container(height: 1, color: divColor),

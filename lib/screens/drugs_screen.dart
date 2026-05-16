@@ -1,9 +1,66 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../providers/app_provider.dart';
 import '../models/drug_model.dart';
 import '../services/drug_interaction_service.dart';
 import '../widgets/common_widgets.dart';
+
+Future<void> _registerDrugRecent(String id, String name, DateTime openedAt) async {
+  final elapsed = DateTime.now().difference(openedAt);
+  if (elapsed.inSeconds < 5) return;
+  try {
+    final prefs = await SharedPreferences.getInstance();
+    final raw   = prefs.getStringList('home_recents_v1') ?? [];
+    final entry = 'drug|$id|$name';
+    raw.removeWhere((e) => e.startsWith('drug|$id|'));
+    raw.insert(0, entry);
+    await prefs.setStringList('home_recents_v1', raw.take(15).toList());
+  } catch (_) {}
+}
+
+/// Abre o detalhe de um fármaco como bottom sheet standalone.
+void showDrugDetailSheet(BuildContext context, DrugModel drug) {
+  final p = context.read<AppProvider>();
+  final openedAt = DateTime.now();
+  showModalBottomSheet(
+    context: context,
+    isScrollControlled: true,
+    backgroundColor: Colors.transparent,
+    builder: (_) => _DrugDetailSheetWrapper(drug: drug, p: p),
+  ).then((_) => _registerDrugRecent(drug.id, drug.name, openedAt));
+}
+
+class _DrugDetailSheetWrapper extends StatelessWidget {
+  final DrugModel drug;
+  final AppProvider p;
+  const _DrugDetailSheetWrapper({required this.drug, required this.p});
+
+  @override
+  Widget build(BuildContext context) {
+    final dark = p.darkMode;
+    final sheetBg = dark ? const Color(0xFF1A1A1A) : Colors.white;
+    return DraggableScrollableSheet(
+      initialChildSize: 0.92,
+      minChildSize: 0.5,
+      maxChildSize: 0.97,
+      expand: false,
+      builder: (_, sc) => Container(
+        decoration: BoxDecoration(
+          color: sheetBg,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+        ),
+        child: _DrugDetailView(
+          drug: drug,
+          onBack: () => Navigator.of(context).pop(),
+          p: p,
+          scrollController: sc,
+        ),
+      ),
+    );
+  }
+}
 
 class DrugsScreen extends StatefulWidget {
   final bool hideHeader;
@@ -445,7 +502,13 @@ class _DrugDetailView extends StatefulWidget {
   final DrugModel drug;
   final VoidCallback onBack;
   final AppProvider p;
-  const _DrugDetailView({required this.drug, required this.onBack, required this.p});
+  final ScrollController? scrollController;
+  const _DrugDetailView({
+    required this.drug,
+    required this.onBack,
+    required this.p,
+    this.scrollController,
+  });
 
   @override
   State<_DrugDetailView> createState() => _DrugDetailViewState();

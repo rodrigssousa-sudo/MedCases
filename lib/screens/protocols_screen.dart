@@ -1,20 +1,46 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../providers/app_provider.dart';
 import '../models/protocol_model.dart';
 import '../widgets/common_widgets.dart';
+
+// ─────────────────────────────────────────────────────────────────────────────
+// RECENTES — regista item se o usuário ficou 5s+ vendo
+// ─────────────────────────────────────────────────────────────────────────────
+const _kRecentKeyProto = 'home_recents_v1';
+
+Future<void> _registerRecentIfStayed(
+    String type, String id, String title, DateTime openedAt) async {
+  final elapsed = DateTime.now().difference(openedAt);
+  if (elapsed.inSeconds < 5) return;
+  try {
+    final prefs = await SharedPreferences.getInstance();
+    final raw   = prefs.getStringList(_kRecentKeyProto) ?? [];
+    final entry = '$type|$id|$title';
+    raw.removeWhere((e) => e.startsWith('$type|$id|'));
+    raw.insert(0, entry);
+    await prefs.setStringList(_kRecentKeyProto, raw.take(15).toList());
+  } catch (_) {}
+}
 
 // ─────────────────────────────────────────────────────────────────────────────
 // FUNÇÃO GLOBAL — abre detalhe de protocolo como bottom sheet
 // Pode ser chamada de qualquer tela do app (cockpit, chips, lista)
 // ─────────────────────────────────────────────────────────────────────────────
 void showProtocolDetail(BuildContext context, ProtocolModel protocol) {
+  final p    = context.read<AppProvider>();
+  final isEs = p.lang == 'es';
+  final title = protocol.title[isEs ? 'es' : 'pt'] ?? protocol.title['pt'] ?? '';
+  final openedAt = DateTime.now();
+
   showModalBottomSheet(
     context: context,
     isScrollControlled: true,
     backgroundColor: Colors.transparent,
     builder: (_) => _ProtocolDetailSheet(protocol: protocol),
-  );
+  ).then((_) => _registerRecentIfStayed('protocol', protocol.id, title, openedAt));
 }
 
 // Busca protocolo por ID no provider e abre o detalhe direto
