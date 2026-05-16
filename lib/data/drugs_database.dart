@@ -13075,5 +13075,909 @@ DrugModel(
     },
   ),
 
+  // ══════════════════════════════════════════════════════════════════════════
+  // FÁRMACOS NUEVOS — 30 entradas
+  // ══════════════════════════════════════════════════════════════════════════
+
+  // 1. Idarucizumab
+  DrugModel(
+    id: 'idarucizumab',
+    group: 'Antídotos / Reversion ACOD',
+    name: 'Idarucizumab (Praxbind)',
+    className: {'pt': 'Anticorpo monoclonal — antídoto do dabigatrana', 'es': 'Anticuerpo monoclonal — antídoto del dabigatrán'},
+    category: {'pt': 'Hemostasia / Emergência', 'es': 'Hemostasia / Emergencia'},
+    route: 'EV',
+    doseType: 'fixed',
+    mgKg: 0.0,
+    fixedDose: {
+      'pt': '5 g EV (2 frascos de 2,5 g cada) em 2 infusões consecutivas de 5–10 min ou bolus. Dose única; repetir apenas se necessário clinicamente.',
+      'es': '5 g EV (2 viales de 2,5 g c/u) en 2 infusiones consecutivas de 5–10 min o bolo. Dosis única; repetir solo si necesario clínicamente.',
+    },
+    renalAlert: {'pt': 'Não requer ajuste renal; monitorar TGA e TT pós-dose.', 'es': 'No requiere ajuste renal; monitorear TGA y TT post-dosis.'},
+    elderlyAlert: {'pt': 'Sem ajuste de dose. Eficácia preservada em idosos.', 'es': 'Sin ajuste de dosis. Eficacia preservada en ancianos.'},
+    mechanism: {
+      'pt': 'Liga-se ao dabigatrana com afinidade 350× maior que a trombina, neutralizando imediatamente o efeito anticoagulante. Não atua em outros anticoagulantes.',
+      'es': 'Se une al dabigatrán con afinidad 350× mayor que la trombina, neutralizando inmediatamente el efecto anticoagulante. No actúa sobre otros anticoagulantes.',
+    },
+    warning: {
+      'pt': 'Usar apenas para reversion de dabigatrana em sangramentos com risco de vida ou cirurgia de emergência. Não reverter ACOD desnecessariamente — risco trombótico de rebote.',
+      'es': 'Usar solo para reversión de dabigatrán en hemorragias con riesgo vital o cirugía de emergencia. No revertir ACOD innecesariamente — riesgo trombótico de rebote.',
+    },
+    adverse: {
+      'pt': ['Tromboembolismo de rebote', 'Cefaleia', 'Hipopotasemia', 'Delirium (raro)'],
+      'es': ['Tromboembolismo de rebote', 'Cefalea', 'Hipopotasemia', 'Delirium (raro)'],
+    },
+  ),
+
+  // 2. Andexanet alfa
+  DrugModel(
+    id: 'andexanet_alfa',
+    group: 'Antídotos / Reversion ACOD',
+    name: 'Andexanet Alfa (Ondexxya)',
+    className: {'pt': 'Proteína recombinante — antídoto anti-Xa', 'es': 'Proteína recombinante — antídoto anti-Xa'},
+    category: {'pt': 'Hemostasia / Emergência', 'es': 'Hemostasia / Emergencia'},
+    route: 'EV',
+    doseType: 'fixed',
+    mgKg: 0.0,
+    fixedDose: {
+      'pt': 'Dose baixa (rivaroxabana ≤10 mg ou apixabana ≤5 mg, ≥8 h): 400 mg bolus + 480 mg infusão. Dose alta: 800 mg bolus + 960 mg infusão. Diferenciar dose conforme ACOD e tempo de última dose.',
+      'es': 'Dosis baja (rivaroxabán ≤10 mg o apixabán ≤5 mg, ≥8 h): 400 mg bolo + 480 mg infusión. Dosis alta: 800 mg bolo + 960 mg infusión.',
+    },
+    renalAlert: {'pt': 'Não requer ajuste renal.', 'es': 'No requiere ajuste renal.'},
+    elderlyAlert: {'pt': 'Sem ajuste de dose.', 'es': 'Sin ajuste de dosis.'},
+    mechanism: {
+      'pt': 'Análogo do fator Xa sem atividade catalítica; sequestra fator Xa livre e fator Xa ligado ao ACOD, revertendo a inibição anticoagulante.',
+      'es': 'Análogo del factor Xa sin actividad catalítica; secuestra factor Xa libre y unido al ACOD, revirtiendo la inhibición anticoagulante.',
+    },
+    warning: {
+      'pt': 'Alto custo; disponibilidade limitada. Risco trombótico pós-reversão; reintroduzir anticoagulação precocemente se possível.',
+      'es': 'Alto costo; disponibilidad limitada. Riesgo trombótico post-reversión; reintroducir anticoagulación precozmente si posible.',
+    },
+    adverse: {
+      'pt': ['Tromboembolismo (TEP, TVP, AVC)', 'Infarto do miocárdio', 'Fibrilação atrial', 'Reações de infusão'],
+      'es': ['Tromboembolismo (TEP, TVP, ACV)', 'Infarto de miocardio', 'Fibrilación auricular', 'Reacciones de infusión'],
+    },
+  ),
+
+  // 3. Terlipressina
+  DrugModel(
+    id: 'terlipressina',
+    group: 'Vasoconstritores / Hepatologia',
+    name: 'Terlipressina (Glypressin)',
+    className: {'pt': 'Análogo sintético da vasopressina', 'es': 'Análogo sintético de vasopresina'},
+    category: {'pt': 'Hepatologia / UTI', 'es': 'Hepatología / UCI'},
+    route: 'EV',
+    doseType: 'fixed',
+    mgKg: 0.0,
+    fixedDose: {
+      'pt': 'Síndrome hepatorrenal tipo 1: 1 mg EV em bolus a cada 6 h; titular até 2 mg/6h se sem resposta. Hemorragia varicosa: 2 mg EV inicial, depois 1–2 mg/4–6h por 2–5 dias.',
+      'es': 'Síndrome hepatorrenal tipo 1: 1 mg EV en bolo cada 6 h; titular hasta 2 mg/6h si sin respuesta. Hemorragia varicosa: 2 mg EV inicial, luego 1–2 mg/4–6h por 2–5 días.',
+    },
+    renalAlert: {'pt': 'Paradoxalmente usada para reverter SHR; monitorar Na⁺ (risco de hiponatremia dilucional).', 'es': 'Paradójicamente usada para revertir SHR; monitorear Na⁺ (riesgo de hiponatremia dilucional).'},
+    elderlyAlert: {'pt': 'Usar com cautela: risco cardiovascular isquêmico aumentado.', 'es': 'Usar con precaución: riesgo cardiovascular isquémico aumentado.'},
+    mechanism: {
+      'pt': 'Agonista dos receptores V1 vasculares → vasoconstrição esplâncnica → ↓ pressão portal → ↓ fluxo ao circulo esplâncnico → ↑ perfusão renal no SHR.',
+      'es': 'Agonista de receptores V1 vasculares → vasoconstricción esplácnica → ↓ presión portal → ↓ flujo al círculo esplácnico → ↑ perfusión renal en SHR.',
+    },
+    warning: {
+      'pt': 'Risco de isquemia periférica, isquemia miocárdica, HipoNa⁺, broncoespasmo. Contraindicada em cardiopatia isquêmica grave, arritmias severas e gestação.',
+      'es': 'Riesgo de isquemia periférica, isquemia miocárdica, HipoNa⁺, broncoespasmo. Contraindicada en cardiopatía isquémica grave, arritmias severas y gestación.',
+    },
+    adverse: {
+      'pt': ['Isquemia periférica', 'Dor abdominal', 'Hiponatremia', 'Bradicardia', 'Isquemia miocárdica', 'Broncoespasmo'],
+      'es': ['Isquemia periférica', 'Dolor abdominal', 'Hiponatremia', 'Bradicardia', 'Isquemia miocárdica', 'Broncoespasmo'],
+    },
+  ),
+
+  // 4. Atosiban
+  DrugModel(
+    id: 'atosiban',
+    group: 'Tocolíticos / Obstetrícia',
+    name: 'Atosibán (Tractocile)',
+    className: {'pt': 'Antagonista da ocitocina/vasopressina', 'es': 'Antagonista de oxitocina/vasopresina'},
+    category: {'pt': 'Obstetrícia — Trabalho de parto prematuro', 'es': 'Obstetricia — Amenaza de parto prematuro'},
+    route: 'EV',
+    doseType: 'fixed',
+    mgKg: 0.0,
+    fixedDose: {
+      'pt': 'Bolus inicial: 6,75 mg em 1 min; infusão de ataque: 18 mg/h por 3h; infusão de manutenção: 6 mg/h até 45 h. Máximo total: 330 mg.',
+      'es': 'Bolo inicial: 6,75 mg en 1 min; infusión de ataque: 18 mg/h por 3h; infusión de mantenimiento: 6 mg/h hasta 45 h. Máximo total: 330 mg.',
+    },
+    renalAlert: {'pt': 'Não há dados suficientes — usar com cautela em insuficiência renal grave.', 'es': 'Datos insuficientes — usar con precaución en insuficiencia renal grave.'},
+    elderlyAlert: {'pt': 'Não aplicável (uso exclusivo em gestantes).', 'es': 'No aplica (uso exclusivo en gestantes).'},
+    mechanism: {
+      'pt': 'Antagonista competitivo dos receptores de ocitocina e vasopressina V1a no miométrio → inibe contrações uterinas e reduz liberação de prostaglandinas.',
+      'es': 'Antagonista competitivo de receptores de oxitocina y vasopresina V1a en miometrio → inhibe contracciones uterinas y reduce liberación de prostaglandinas.',
+    },
+    warning: {
+      'pt': 'Usar somente entre 24–33+6 semanas. Contraindicado em: âmnio rompido, corioamnionite, sofrimento fetal, placenta prévia, pré-eclâmpsia grave.',
+      'es': 'Usar solo entre 24–33+6 semanas. Contraindicado en: bolsa rota, corioamnionitis, sufrimiento fetal, placenta previa, preeclampsia grave.',
+    },
+    adverse: {
+      'pt': ['Náuseas', 'Vômitos', 'Cefaleia', 'Tonturas', 'Taquicardia fetal transitória', 'Hipoglicemia neonatal'],
+      'es': ['Náuseas', 'Vómitos', 'Cefalea', 'Mareos', 'Taquicardia fetal transitoria', 'Hipoglucemia neonatal'],
+    },
+  ),
+
+  // 5. Icatibant
+  DrugModel(
+    id: 'icatibant',
+    group: 'Antialérgicos / Angioedema',
+    name: 'Icatibant (Firazyr)',
+    className: {'pt': 'Antagonista do receptor B2 da bradicinina', 'es': 'Antagonista del receptor B2 de bradicinina'},
+    category: {'pt': 'Angioedema hereditário / Emergência', 'es': 'Angioedema hereditario / Emergencia'},
+    route: 'SC',
+    doseType: 'fixed',
+    mgKg: 0.0,
+    fixedDose: {
+      'pt': '30 mg SC (abdome) em dose única. Se sintomas persistirem ou recurrerem após 6h, repetir (máximo 3 doses/24h).',
+      'es': '30 mg SC (abdomen) en dosis única. Si síntomas persisten o recurren a las 6h, repetir (máximo 3 dosis/24h).',
+    },
+    renalAlert: {'pt': 'Sem ajuste necessário.', 'es': 'Sin ajuste necesario.'},
+    elderlyAlert: {'pt': 'Sem ajuste de dose. Eficácia similar.', 'es': 'Sin ajuste de dosis. Eficacia similar.'},
+    mechanism: {
+      'pt': 'Antagonismo seletivo do receptor B2 da bradicinina → bloqueia o efeito vasodilatador e de aumento de permeabilidade vascular da bradicinina → reduz edema no AEH.',
+      'es': 'Antagonismo selectivo del receptor B2 de bradicinina → bloquea el efecto vasodilatador y de aumento de permeabilidad vascular de la bradicinina → reduce edema en AEH.',
+    },
+    warning: {
+      'pt': 'Específico para angioedema hereditário mediado por bradicinina. NÃO eficaz em angioedema alérgico (histaminérgico). Em edema de laringe, ter adrenalina disponível como resgate.',
+      'es': 'Específico para angioedema hereditario mediado por bradicinina. NO eficaz en angioedema alérgico (histaminérgico). En edema de laringe, tener adrenalina disponible como rescate.',
+    },
+    adverse: {
+      'pt': ['Reação no sítio de injeção (eritema, hematoma, queimação)', 'Febre', 'Náuseas', 'Tonturas'],
+      'es': ['Reacción en sitio de inyección (eritema, hematoma, ardor)', 'Fiebre', 'Náuseas', 'Mareos'],
+    },
+  ),
+
+  // 6. Pirimetamina
+  DrugModel(
+    id: 'pirimetamina',
+    group: 'Antiparasitários',
+    name: 'Pirimetamina (Daraprim)',
+    className: {'pt': 'Inibidor da diidrofolato redutase antiparasitário', 'es': 'Inhibidor de dihidrofolato reductasa antiparasitario'},
+    category: {'pt': 'Toxoplasmose / Malária', 'es': 'Toxoplasmosis / Malaria'},
+    route: 'VO',
+    doseType: 'fixed',
+    mgKg: 0.0,
+    fixedDose: {
+      'pt': 'Toxoplasmose em imunodeprimidos: 200 mg ataque, depois 50–75 mg/dia + sulfadiazina 4–6 g/dia + leucovorina 10–25 mg/dia. Manter 6 semanas.',
+      'es': 'Toxoplasmosis en inmunocomprometidos: 200 mg carga, luego 50–75 mg/día + sulfadiazina 4–6 g/día + leucovorina 10–25 mg/día. Mantener 6 semanas.',
+    },
+    renalAlert: {'pt': 'Usar com cautela; ajuste empírico em DRC grave.', 'es': 'Usar con precaución; ajuste empírico en ERC grave.'},
+    elderlyAlert: {'pt': 'Monitorar hemograma: risco de supressão medular aumentado.', 'es': 'Monitorear hemograma: riesgo de supresión medular aumentado.'},
+    mechanism: {
+      'pt': 'Inibe seletivamente a diidrofolato redutase do parasita → bloqueia síntese de ácido fólico → inibe proliferação. Associada a sulfas para sinergismo.',
+      'es': 'Inhibe selectivamente la dihidrofolato reductasa del parásito → bloquea síntesis de ácido fólico → inhibe proliferación. Asociada a sulfas para sinergismo.',
+    },
+    warning: {
+      'pt': 'SEMPRE associar leucovorina para prevenir mielotoxicidade humana. Monitorar hemograma semanalmente. Risco de teratogenicidade — evitar no 1.° trimestre.',
+      'es': 'SIEMPRE asociar leucovorina para prevenir mielotoxicidad humana. Monitorear hemograma semanalmente. Riesgo de teratogenicidad — evitar en 1.er trimestre.',
+    },
+    adverse: {
+      'pt': ['Mielossupressão (leucopenia, trombocitopenia, anemia megaloblástica)', 'Náuseas', 'Vômitos', 'Glossite', 'Rash cutâneo'],
+      'es': ['Mielosupresión (leucopenia, trombocitopenia, anemia megaloblástica)', 'Náuseas', 'Vómitos', 'Glositis', 'Rash cutáneo'],
+    },
+  ),
+
+  // 7. Flucitosina
+  DrugModel(
+    id: 'flucitosina',
+    group: 'Antifúngicos',
+    name: 'Flucitosina / 5-Fluorocitosina (Ancotil)',
+    className: {'pt': 'Antifúngico pirimidínico', 'es': 'Antifúngico pirimidínico'},
+    category: {'pt': 'Criptococose / Candidemia grave', 'es': 'Criptococosis / Candidemia grave'},
+    route: 'EV / VO',
+    doseType: 'weightBased',
+    mgKg: 25.0,
+    fixedDose: {
+      'pt': '25 mg/kg/dose EV/VO a cada 6h (100 mg/kg/dia). Monitorar nível sérico: meta pico 40–60 µg/mL, vale <100 µg/mL.',
+      'es': '25 mg/kg/dosis EV/VO cada 6h (100 mg/kg/día). Monitorear nivel sérico: meta pico 40–60 µg/mL, valle <100 µg/mL.',
+    },
+    renalAlert: {'pt': 'AJUSTE OBRIGATÓRIO: TFG 25–50: a cada 12h; TFG 10–25: a cada 24h; TFG <10: a cada 48h. Monitorar níveis séricos.', 'es': 'AJUSTE OBLIGATORIO: TFG 25–50: cada 12h; TFG 10–25: cada 24h; TFG <10: cada 48h. Monitorear niveles séricos.'},
+    elderlyAlert: {'pt': 'Ajuste estrito conforme TFG; monitorar hepatotoxicidade e mielotoxicidade.', 'es': 'Ajuste estricto según TFG; monitorear hepatotoxicidad y mielotoxicidad.'},
+    mechanism: {
+      'pt': 'Convertida em 5-fluorouracil dentro do fungo → inibe síntese de RNA e DNA fúngico. Uso exclusivo em associação (anfotericina B) para prevenir resistência.',
+      'es': 'Convertida en 5-fluorouracilo dentro del hongo → inhibe síntesis de RNA y DNA fúngico. Uso exclusivo en asociación (anfotericina B) para prevenir resistencia.',
+    },
+    warning: {
+      'pt': 'NUNCA usar em monoterapia — resistência rápida. Mielotoxicidade e hepatotoxicidade dependentes de nível sérico; monitorar hemograma e enzimas hepáticas 2×/semana.',
+      'es': 'NUNCA usar en monoterapia — resistencia rápida. Mielotoxicidad y hepatotoxicidad dependientes de nivel sérico; monitorear hemograma y enzimas hepáticas 2×/semana.',
+    },
+    adverse: {
+      'pt': ['Mielossupressão', 'Hepatotoxicidade', 'Diarreia', 'Náuseas', 'Colite (raro)', 'Rash'],
+      'es': ['Mielosupresión', 'Hepatotoxicidad', 'Diarrea', 'Náuseas', 'Colitis (raro)', 'Rash'],
+    },
+  ),
+
+  // 8. Dantroleno
+  DrugModel(
+    id: 'dantroleno',
+    group: 'Antídotos / Miorrelaxantes',
+    name: 'Dantroleno (Dantrium)',
+    className: {'pt': 'Bloqueador do canal de rianodina — miorrelaxante de ação direta', 'es': 'Bloqueador del canal de rianodina — miorelajante de acción directa'},
+    category: {'pt': 'Hipertermia Maligna / Síndrome Neuroléptica Maligna', 'es': 'Hipertermia Maligna / Síndrome Neuroléptico Maligno'},
+    route: 'EV',
+    doseType: 'weightBased',
+    mgKg: 2.5,
+    fixedDose: {
+      'pt': 'HM: 2,5 mg/kg EV bolus rápido; repetir a cada 5–10 min até controle (máximo 10 mg/kg/episódio). SNM: 1–2 mg/kg EV/VO a cada 6h. Formular em água estéril aquecida.',
+      'es': 'HM: 2,5 mg/kg EV bolo rápido; repetir cada 5–10 min hasta control (máximo 10 mg/kg/episodio). SNM: 1–2 mg/kg EV/VO cada 6h.',
+    },
+    renalAlert: {'pt': 'Sem ajuste definido; monitorar função hepática.', 'es': 'Sin ajuste definido; monitorear función hepática.'},
+    elderlyAlert: {'pt': 'Maior risco de hepatotoxicidade; monitorar enzimas hepáticas.', 'es': 'Mayor riesgo de hepatotoxicidad; monitorear enzimas hepáticas.'},
+    mechanism: {
+      'pt': 'Liga-se ao receptor de rianodina (RyR1) do retículo sarcoplasmático → bloqueia a liberação de Ca²⁺ → reduz contração muscular descacoplada → reverte rigidez e hipertermia.',
+      'es': 'Se une al receptor de rianodina (RyR1) del retículo sarcoplásmico → bloquea la liberación de Ca²⁺ → reduce contracción muscular desacoplada → revierte rigidez e hipertermia.',
+    },
+    warning: {
+      'pt': 'URGÊNCIA: ter dantroleno pré-misturado (1 mg/mL) disponível em salas de cirurgia. Hepatotoxicidade grave com uso crônico VO. Frasco EV difícil de dissolver — usar água quente e agitação vigorosa.',
+      'es': 'URGENCIA: tener dantroleno pre-mezclado disponible en quirófanos. Hepatotoxicidad grave con uso crónico VO. Vial EV difícil de disolver — usar agua caliente y agitación vigorosa.',
+    },
+    adverse: {
+      'pt': ['Fraqueza muscular', 'Flebite no sítio de infusão', 'Hepatotoxicidade (uso crônico)', 'Sonolência', 'Diarreia'],
+      'es': ['Debilidad muscular', 'Flebitis en sitio de infusión', 'Hepatotoxicidad (uso crónico)', 'Somnolencia', 'Diarrea'],
+    },
+  ),
+
+  // 9. Naloxegol
+  DrugModel(
+    id: 'naloxegol',
+    group: 'Gastroprocinéticos / Opioides',
+    name: 'Naloxegol (Moventig)',
+    className: {'pt': 'Antagonista opioide periférico (PAMORA)', 'es': 'Antagonista opioide periférico (PAMORA)'},
+    category: {'pt': 'Constipação induzida por opioides', 'es': 'Estreñimiento inducido por opioides'},
+    route: 'VO',
+    doseType: 'fixed',
+    mgKg: 0.0,
+    fixedDose: {
+      'pt': '25 mg VO 1×/dia em jejum. Se não tolerado, reduzir para 12,5 mg/dia. Suspender laxativos osmóticos ao iniciar.',
+      'es': '25 mg VO 1×/día en ayunas. Si no tolerado, reducir a 12,5 mg/día. Suspender laxantes osmóticos al iniciar.',
+    },
+    renalAlert: {'pt': 'TFG <60: iniciar com 12,5 mg/dia. TFG <30: uso não recomendado.', 'es': 'TFG <60: iniciar con 12,5 mg/día. TFG <30: uso no recomendado.'},
+    elderlyAlert: {'pt': 'Sem ajuste; cautela por maior prevalência de disfunção renal.', 'es': 'Sin ajuste; precaución por mayor prevalencia de disfunción renal.'},
+    mechanism: {
+      'pt': 'Derivado PEGilado da naloxona; antagoniza receptores µ-opioides no TGI periférico sem cruzar a barreira hematoencefálica → reverte constipação sem antagonizar analgesia central.',
+      'es': 'Derivado PEGilado de naloxona; antagoniza receptores µ-opioides en TGI periférico sin cruzar la barrera hematoencefálica → revierte estreñimiento sin antagonizar analgesia central.',
+    },
+    warning: {
+      'pt': 'Contraindicado em oclusão intestinal conhecida ou suspeita. Risco de síndrome de abstinência se opioides de alta dose → síntomas de privação. Não usar com inibidores potentes de CYP3A4 (cetoconazol, claritromicina).',
+      'es': 'Contraindicado en obstrucción intestinal conocida o sospechada. Riesgo de síndrome de abstinencia con opioides de alta dosis → síntomas de privación. No usar con inhibidores potentes de CYP3A4 (ketoconazol, claritromicina).',
+    },
+    adverse: {
+      'pt': ['Dor abdominal', 'Diarreia', 'Náuseas', 'Flatulência', 'Síndrome de abstinência (raro)'],
+      'es': ['Dolor abdominal', 'Diarrea', 'Náuseas', 'Flatulencia', 'Síndrome de abstinencia (raro)'],
+    },
+  ),
+
+  // 10. Metilprednisolona (pulso)
+  DrugModel(
+    id: 'metilprednisolona_pulso',
+    group: 'Corticosteroides',
+    name: 'Metilprednisolona — Pulsoterapia (Solu-Medrol)',
+    className: {'pt': 'Corticosteroide sintético — pulsoterapia', 'es': 'Corticosteroide sintético — pulsoterapia'},
+    category: {'pt': 'Autoimune / Inflamatório grave', 'es': 'Autoinmune / Inflamatorio grave'},
+    route: 'EV',
+    doseType: 'weightBased',
+    mgKg: 15.0,
+    fixedDose: {
+      'pt': 'Pulsoterapia: 1 g/dia EV por 3–5 dias (ou 10–15 mg/kg/dia, máx 1 g). Infundir em 30–60 min. Indicações: crise miastênica, esclerose múltipla (recidiva), GEFS, vasculite, Guillain-Barré. Dose convencional alta: 1–2 mg/kg/dia EV.',
+      'es': 'Pulsoterapia: 1 g/día EV por 3–5 días (o 10–15 mg/kg/día, máx 1 g). Infundir en 30–60 min. Indicaciones: crisis miasténica, esclerosis múltiple (recidiva), vasculitis, Guillain-Barré. Dosis convencional alta: 1–2 mg/kg/día EV.',
+    },
+    renalAlert: {'pt': 'Sem ajuste; monitorar glicemia e PA rigorosamente.', 'es': 'Sin ajuste; monitorear glucemia y PA rigurosamente.'},
+    elderlyAlert: {'pt': 'Maior risco de infecção oportunista, osteoporose e hiperglicemia. Proteção gástrica obrigatória.', 'es': 'Mayor riesgo de infección oportunista, osteoporosis e hiperglucemia. Protección gástrica obligatoria.'},
+    mechanism: {
+      'pt': 'Liga-se ao receptor intracelular de glicocorticoide → suprime NF-κB e AP-1 → ↓ síntese de citocinas proinflamatórias, ↓ ativação linfocitária, ↓ permeabilidade vascular.',
+      'es': 'Se une al receptor intracelular de glucocorticoide → suprime NF-κB y AP-1 → ↓ síntesis de citocinas proinflamatorias, ↓ activación linfocitaria, ↓ permeabilidad vascular.',
+    },
+    warning: {
+      'pt': 'Infusão rápida (<15 min) causa colapso cardiovascular — mínimo 30 min. Risco de hiperglicemia, infecção, psicose. Cobrir com proteção gástrica (omeprazol). Não suspender abruptamente se uso prolongado.',
+      'es': 'Infusión rápida (<15 min) causa colapso cardiovascular — mínimo 30 min. Riesgo de hiperglucemia, infección, psicosis. Cubrir con protección gástrica (omeprazol). No suspender abruptamente si uso prolongado.',
+    },
+    adverse: {
+      'pt': ['Hiperglicemia', 'Hipertensão', 'Infecção oportunista', 'Osteoporose', 'Psicose esteroide', 'Úlcera péptica', 'Hiponatremia', 'Miopatia'],
+      'es': ['Hiperglucemia', 'Hipertensión', 'Infección oportunista', 'Osteoporosis', 'Psicosis esteroide', 'Úlcera péptica', 'Hiponatremia', 'Miopatía'],
+    },
+  ),
+
+  // 11. Imunoglobulina endovenosa (IGIV)
+  DrugModel(
+    id: 'imunoglobulina_igiv',
+    group: 'Imunológicos',
+    name: 'Imunoglobulina EV (IGIV)',
+    className: {'pt': 'Imunoglobulina policlonal humana', 'es': 'Inmunoglobulina policlonal humana'},
+    category: {'pt': 'Neurológico / Autoimune', 'es': 'Neurológico / Autoinmune'},
+    route: 'EV',
+    doseType: 'weightBased',
+    mgKg: 0.4,
+    fixedDose: {
+      'pt': 'Guillain-Barré / Crise miastênica: 0,4 g/kg/dia EV por 5 dias (total 2 g/kg). PDIC: 2 g/kg em dose de ataque, depois 1 g/kg a cada 3 semanas. PTI aguda: 1 g/kg/dia EV por 1–2 dias.',
+      'es': 'Guillain-Barré / Crisis miasténica: 0,4 g/kg/día EV por 5 días (total 2 g/kg). PDIC: 2 g/kg como dosis de ataque, luego 1 g/kg cada 3 semanas. PTI aguda: 1 g/kg/día EV por 1–2 días.',
+    },
+    renalAlert: {'pt': 'Usar fórmula com baixa osmolalidade em DRC; risco de IRA por nefropatia osmótica (soluções com sacarose).', 'es': 'Usar fórmula con baja osmolalidad en ERC; riesgo de IRA por nefropatía osmótica (soluciones con sacarosa).'},
+    elderlyAlert: {'pt': 'Risco aumentado de trombose e IRA; infundir lentamente.', 'es': 'Riesgo aumentado de trombosis e IRA; infundir lentamente.'},
+    mechanism: {
+      'pt': 'Satura receptores Fc nos macrófagos → ↓ destruição de células opsonizadas. Modula linfócitos T e B. Neutraliza autoanticorpos e citocinas. Bloqueia ativação do complemento.',
+      'es': 'Satura receptores Fc en macrófagos → ↓ destrucción de células opsonizadas. Modula linfocitos T y B. Neutraliza autoanticuerpos y citocinas. Bloquea activación del complemento.',
+    },
+    warning: {
+      'pt': 'Pré-medicar com anti-histamínico e paracetamol. Início lento de infusão (0,5–1 mL/kg/h, aumentar gradualmente). Risco de trombose, hemólise, meningite asséptica. Verificar IgA antes (anafilaxia em deficiência de IgA).',
+      'es': 'Pre-medicar con antihistamínico y paracetamol. Inicio lento de infusión (0,5–1 mL/kg/h, aumentar gradualmente). Riesgo de trombosis, hemólisis, meningitis aséptica. Verificar IgA antes (anafilaxia en deficiencia de IgA).',
+    },
+    adverse: {
+      'pt': ['Cefaleia', 'Meningite asséptica', 'Anafilaxia (déficit IgA)', 'Hemólise', 'Trombose', 'IRA (sacarose)', 'Febre/calafrios durante infusão'],
+      'es': ['Cefalea', 'Meningitis aséptica', 'Anafilaxia (déficit IgA)', 'Hemólisis', 'Trombosis', 'IRA (sacarosa)', 'Fiebre/escalofríos durante infusión'],
+    },
+  ),
+
+  // 12. Plasmaférese (princípio farmacológico / uso clínico)
+  DrugModel(
+    id: 'plasma_fresco_congelado_pfc',
+    group: 'Hemoderivados',
+    name: 'Plasma Fresco Congelado (PFC)',
+    className: {'pt': 'Hemoderivado — repõe fatores de coagulação', 'es': 'Hemoderivado — repone factores de coagulación'},
+    category: {'pt': 'Coagulopatia / Sangramento grave', 'es': 'Coagulopatía / Hemorragia grave'},
+    route: 'EV',
+    doseType: 'weightBased',
+    mgKg: 0.0,
+    fixedDose: {
+      'pt': '10–15 mL/kg EV (cada unidade ≈200 mL); avaliar resposta por TP/INR e TTPA. Urgência hemorrágica: 20–30 mL/kg. Infundir após ABO-compatibilidade.',
+      'es': '10–15 mL/kg EV (cada unidad ≈200 mL); evaluar respuesta por TP/INR y TTPA. Urgencia hemorrágica: 20–30 mL/kg. Infundir tras compatibilidad ABO.',
+    },
+    renalAlert: {'pt': 'Sem ajuste; atenção ao volume infundido em oligúria.', 'es': 'Sin ajuste; atención al volumen infundido en oliguria.'},
+    elderlyAlert: {'pt': 'Risco de TRALI e sobrecarga volêmica; infundir devagar.', 'es': 'Riesgo de TRALI y sobrecarga volémica; infundir despacio.'},
+    mechanism: {
+      'pt': 'Contém todos os fatores de coagulação (incluindo V e VIII) + fibrinogênio + anticoagulantes naturais (proteínas C, S, AT-III) → repõe fatores consumidos ou deficientes.',
+      'es': 'Contiene todos los factores de coagulación (incluidos V y VIII) + fibrinógeno + anticoagulantes naturales (proteínas C, S, AT-III) → repone factores consumidos o deficientes.',
+    },
+    warning: {
+      'pt': 'NÃO usar para expansão volêmica. Indicações: sangramento ativo com TP/INR >1,5, coagulopatia dilucional, déficit específico de fatores, TTP/PTT (troca plasmática). Verificar ABO — não requer tipagem Rh.',
+      'es': 'NO usar para expansión volémica. Indicaciones: hemorragia activa con TP/INR >1,5, coagulopatía dilucional, déficit específico de factores, PTT (intercambio plasmático). Verificar ABO — no requiere tipificación Rh.',
+    },
+    adverse: {
+      'pt': ['TRALI (lesão pulmonar aguda)', 'TACO (sobrecarga circulatória)', 'Reações alérgicas/anafilaxia', 'Hipocalcemia (por citrato)', 'Transmissão viral (rara)'],
+      'es': ['TRALI (lesión pulmonar aguda)', 'TACO (sobrecarga circulatoria)', 'Reacciones alérgicas/anafilaxia', 'Hipocalcemia (por citrato)', 'Transmisión viral (rara)'],
+    },
+  ),
+
+  // 13. Concentrado de complexo protrombínico (CCP/Kcentra)
+  DrugModel(
+    id: 'complexo_protrombínico_ccp',
+    group: 'Hemoderivados',
+    name: 'Complexo Protrombínico (CCP / Kcentra)',
+    className: {'pt': 'Concentrado de fatores de coagulação II, VII, IX, X + proteínas C e S', 'es': 'Concentrado de factores de coagulación II, VII, IX, X + proteínas C y S'},
+    category: {'pt': 'Reversão urgente de anticoagulação / Sangramento grave', 'es': 'Reversión urgente de anticoagulación / Hemorragia grave'},
+    route: 'EV',
+    doseType: 'fixed',
+    mgKg: 0.0,
+    fixedDose: {
+      'pt': 'INR 2–4: 25 UI/kg (máx 2500 UI). INR 4–6: 35 UI/kg (máx 3500 UI). INR >6: 50 UI/kg (máx 5000 UI). Velocidade máxima 8 mL/min. Calcular dose por INR e peso.',
+      'es': 'INR 2–4: 25 UI/kg (máx 2500 UI). INR 4–6: 35 UI/kg (máx 3500 UI). INR >6: 50 UI/kg (máx 5000 UI). Velocidad máxima 8 mL/min.',
+    },
+    renalAlert: {'pt': 'Sem ajuste; monitorar INR pós-dose.', 'es': 'Sin ajuste; monitorear INR post-dosis.'},
+    elderlyAlert: {'pt': 'Risco trombótico elevado — dose mínima eficaz.', 'es': 'Riesgo trombótico elevado — dosis mínima eficaz.'},
+    mechanism: {
+      'pt': 'Repõe rapidamente os fatores dependentes de vitamina K → restaura cascata de coagulação → reversão de INR em minutos (versus horas com Vitamina K EV).',
+      'es': 'Repone rápidamente los factores dependientes de vitamina K → restaura cascada de coagulación → reversión de INR en minutos (versus horas con Vitamina K EV).',
+    },
+    warning: {
+      'pt': 'Primeira escolha para reversão urgente de varfarina com sangramento com risco de vida. Associar Vitamina K 10 mg EV concomitante para efeito sustentado. Risco trombótico (especialmente em pacientes com síndrome coronariana aguda recente).',
+      'es': 'Primera elección para reversión urgente de warfarina con hemorragia con riesgo vital. Asociar Vitamina K 10 mg EV concomitante para efecto sostenido. Riesgo trombótico (especialmente en SCA reciente).',
+    },
+    adverse: {
+      'pt': ['Trombose (TEP, TVP, IAM)', 'Reações alérgicas', 'Coagulação intravascular disseminada (CID)'],
+      'es': ['Trombosis (TEP, TVP, IAM)', 'Reacciones alérgicas', 'Coagulación intravascular diseminada (CID)'],
+    },
+  ),
+
+  // 14. Tranexâmico (ácido tranexâmico)
+  DrugModel(
+    id: 'acido_tranexamico',
+    group: 'Antifibrinolíticos',
+    name: 'Ácido Tranexâmico (Transamin)',
+    className: {'pt': 'Antifibrinolítico — inibidor da plasmina', 'es': 'Antifibrinolítico — inhibidor de plasmina'},
+    category: {'pt': 'Hemostasia / Trauma / Sangramento cirúrgico', 'es': 'Hemostasia / Trauma / Hemorragia quirúrgica'},
+    route: 'EV / VO',
+    doseType: 'fixed',
+    mgKg: 0.0,
+    fixedDose: {
+      'pt': 'Trauma (protocolo CRASH-2): 1 g EV em 10 min dentro de 3h do trauma, depois 1 g em 8h. Cirurgia: 10–15 mg/kg EV pré-operatório. Hemorragia pós-parto: 1 g EV, repetir em 30 min se necessário.',
+      'es': 'Trauma (protocolo CRASH-2): 1 g EV en 10 min dentro de 3h del trauma, luego 1 g en 8h. Cirugía: 10–15 mg/kg EV preoperatorio. Hemorragia posparto: 1 g EV, repetir en 30 min si necesario.',
+    },
+    renalAlert: {'pt': 'TFG <50: reduzir dose à metade. TFG <10: usar com muito cautela — risco de convulsões.', 'es': 'TFG <50: reducir dosis a la mitad. TFG <10: usar con mucha precaución — riesgo de convulsiones.'},
+    elderlyAlert: {'pt': 'Maior risco tromboembólico; avaliar risco-benefício.', 'es': 'Mayor riesgo tromboembólico; evaluar riesgo-beneficio.'},
+    mechanism: {
+      'pt': 'Liga-se competitivamente aos sítios de ligação de lisina do plasminogênio → impede conversão em plasmina → bloqueia fibrinólise → estabiliza o coágulo formado.',
+      'es': 'Se une competitivamente a los sitios de unión de lisina del plasminógeno → impide conversión en plasmina → bloquea fibrinólisis → estabiliza el coágulo formado.',
+    },
+    warning: {
+      'pt': 'Eficaz apenas se administrado precocemente (≤3h do evento). NÃO administrar em infusão rápida (risco de hipotensão e convulsões). Contraindicado em CID ativa e hematúria macroscópica (risco de obstrução por coágulos).',
+      'es': 'Eficaz solo si administrado precozmente (≤3h del evento). NO administrar en infusión rápida (riesgo de hipotensión y convulsiones). Contraindicado en CID activa y hematuria macroscópica.',
+    },
+    adverse: {
+      'pt': ['Náuseas e vômitos', 'Hipotensão (infusão rápida)', 'Convulsões (altas doses/DRC)', 'Trombose (raro)', 'Distúrbios visuais (uso prolongado)'],
+      'es': ['Náuseas y vómitos', 'Hipotensión (infusión rápida)', 'Convulsiones (dosis altas/ERC)', 'Trombosis (raro)', 'Trastornos visuales (uso prolongado)'],
+    },
+  ),
+
+  // 15. Filgrastim (G-CSF)
+  DrugModel(
+    id: 'filgrastim_gcsf',
+    group: 'Hematológicos',
+    name: 'Filgrastim / G-CSF (Neupogen)',
+    className: {'pt': 'Fator estimulante de colônias de granulócitos recombinante', 'es': 'Factor estimulante de colonias de granulocitos recombinante'},
+    category: {'pt': 'Neutropenia febril / Quimioterapia', 'es': 'Neutropenia febril / Quimioterapia'},
+    route: 'SC / EV',
+    doseType: 'weightBased',
+    mgKg: 5.0,
+    fixedDose: {
+      'pt': '5 µg/kg/dia SC (ou EV em 30 min). Iniciar 24–72h após quimioterapia; manter até recuperação de neutrófilos (PMN >1.000/mm³). Neutropenia febril grave: 5–10 µg/kg/dia.',
+      'es': '5 µg/kg/día SC (o EV en 30 min). Iniciar 24–72h tras quimioterapia; mantener hasta recuperación de neutrófilos (PMN >1.000/mm³). Neutropenia febril grave: 5–10 µg/kg/día.',
+    },
+    renalAlert: {'pt': 'Sem ajuste estabelecido.', 'es': 'Sin ajuste establecido.'},
+    elderlyAlert: {'pt': 'Sem ajuste de dose; monitorar leucometria.', 'es': 'Sin ajuste de dosis; monitorear leucometría.'},
+    mechanism: {
+      'pt': 'Liga-se ao receptor G-CSF nos precursores mieloides → ativa JAK/STAT → ↑ proliferação, diferenciação e liberação de neutrófilos da medula → ↑ sobrevida e função neutrofílica.',
+      'es': 'Se une al receptor G-CSF en precursores mieloides → activa JAK/STAT → ↑ proliferación, diferenciación y liberación de neutrófilos de la médula → ↑ supervivencia y función neutrofílica.',
+    },
+    warning: {
+      'pt': 'Monitorar hemograma 2×/semana. Risco de síndrome de extravasamento capilar (ECS) e esplenomegalia/ruptura esplênica. Dor óssea (responder a AINE). Contraindicado em leucemia mieloide aguda sem critérios específicos.',
+      'es': 'Monitorear hemograma 2×/semana. Riesgo de síndrome de extravasación capilar (ECS) y esplenomegalia/ruptura esplénica. Dolor óseo (responder a AINE). Contraindicado en LMA sin criterios específicos.',
+    },
+    adverse: {
+      'pt': ['Dor óssea/mialgia', 'Esplenomegalia (rara ruptura)', 'Síndrome de extravasamento capilar', 'Leucocitose excessiva', 'Transaminases ↑'],
+      'es': ['Dolor óseo/mialgia', 'Esplenomegalia (rara ruptura)', 'Síndrome de extravasación capilar', 'Leucocitosis excesiva', 'Transaminasas ↑'],
+    },
+  ),
+
+  // 16. Eritropoetina (EPO)
+  DrugModel(
+    id: 'eritropoetina_epo',
+    group: 'Hematológicos',
+    name: 'Eritropoetina / Epoetina Alfa (Eprex)',
+    className: {'pt': 'Fator de crescimento eritroide recombinante', 'es': 'Factor de crecimiento eritroide recombinante'},
+    category: {'pt': 'Anemia de DRC / Anemia de doenças crônicas', 'es': 'Anemia de ERC / Anemia de enfermedades crónicas'},
+    route: 'SC / EV',
+    doseType: 'weightBased',
+    mgKg: 50.0,
+    fixedDose: {
+      'pt': 'Anemia DRC: 50–100 UI/kg SC/EV 3×/semana. Ajustar para Hb alvo 10–12 g/dL. NÃO ultrapassar Hb 13 g/dL. Associar ferro se ferritina <100 µg/L ou saturação transferrina <20%.',
+      'es': 'Anemia ERC: 50–100 UI/kg SC/EV 3×/semana. Ajustar para Hb objetivo 10–12 g/dL. NO superar Hb 13 g/dL. Asociar hierro si ferritina <100 µg/L o saturación transferrina <20%.',
+    },
+    renalAlert: {'pt': 'Principal indicação é anemia por DRC. Ajustar dose conforme Hb, não conforme TFG.', 'es': 'Principal indicación es anemia por ERC. Ajustar dosis según Hb, no según TFG.'},
+    elderlyAlert: {'pt': 'Maior risco cardiovascular se Hb alvo >13 g/dL; manter Hb entre 10–12 g/dL.', 'es': 'Mayor riesgo cardiovascular si Hb objetivo >13 g/dL; mantener Hb entre 10–12 g/dL.'},
+    mechanism: {
+      'pt': 'Liga-se ao receptor EPO nos eritroblastos → ativa JAK2/STAT5 → ↑ proliferação e diferenciação eritroide → ↑ reticulócitos e hemoglobina em 2–6 semanas.',
+      'es': 'Se une al receptor EPO en eritroblastos → activa JAK2/STAT5 → ↑ proliferación y diferenciación eritroide → ↑ reticulocitos y hemoglobina en 2–6 semanas.',
+    },
+    warning: {
+      'pt': 'ALVO Hb 10–12 g/dL — acima de 13 g/dL aumenta risco de AVC, IAM e morte. Refratariedade sugere deficiência de ferro, infecção ou aplasia eritroide pura. Hipertensão arterial frequente — monitorar PA.',
+      'es': 'OBJETIVO Hb 10–12 g/dL — por encima de 13 g/dL aumenta riesgo de ACV, IAM y muerte. Refractariedad sugiere deficiencia de hierro, infección o aplasia eritroide pura. Hipertensión arterial frecuente — monitorear PA.',
+    },
+    adverse: {
+      'pt': ['Hipertensão arterial', 'Trombose (acesso vascular, TVP)', 'Aplasia eritroide pura (anticorpos anti-EPO)', 'Cefaleia', 'Síndrome pseudogripal'],
+      'es': ['Hipertensión arterial', 'Trombosis (acceso vascular, TVP)', 'Aplasia eritroide pura (anticuerpos anti-EPO)', 'Cefalea', 'Síndrome pseudogripal'],
+    },
+  ),
+
+  // 17. Infliximab
+  DrugModel(
+    id: 'infliximab',
+    group: 'Imunobiológicos / Anti-TNF',
+    name: 'Infliximab (Remicade)',
+    className: {'pt': 'Anticorpo monoclonal anti-TNF-α quimérico', 'es': 'Anticuerpo monoclonal anti-TNF-α quimérico'},
+    category: {'pt': 'Doenças inflamatórias imunomediadas / DII grave', 'es': 'Enfermedades inflamatorias inmunomediadas / EII grave'},
+    route: 'EV',
+    doseType: 'weightBased',
+    mgKg: 5.0,
+    fixedDose: {
+      'pt': 'DII (Crohn/RCU): 5 mg/kg EV nas semanas 0, 2 e 6 (indução); depois 5 mg/kg a cada 8 semanas (manutenção). Escalar para 10 mg/kg se perda de resposta. AR/Espondilite: 3–5 mg/kg.',
+      'es': 'EII (Crohn/CU): 5 mg/kg EV en semanas 0, 2 y 6 (inducción); luego 5 mg/kg cada 8 semanas (mantenimiento). Escalar a 10 mg/kg si pérdida de respuesta. AR/Espondilitis: 3–5 mg/kg.',
+    },
+    renalAlert: {'pt': 'Sem ajuste necessário.', 'es': 'Sin ajuste necesario.'},
+    elderlyAlert: {'pt': 'Maior risco infeccioso; PPD e rastreio de TB obrigatórios; atualizar vacinas antes do início.', 'es': 'Mayor riesgo infeccioso; PPD y rastreo de TB obligatorios; actualizar vacunas antes del inicio.'},
+    mechanism: {
+      'pt': 'Liga-se ao TNF-α solúvel e transmembranar → neutraliza efeito pró-inflamatório → reduz citocinas inflamatórias (IL-1, IL-6, IL-8) → induz apoptose de linfócitos ativados.',
+      'es': 'Se une al TNF-α soluble y transmembranar → neutraliza efecto proinflamatorio → reduce citocinas inflamatorias (IL-1, IL-6, IL-8) → induce apoptosis de linfocitos activados.',
+    },
+    warning: {
+      'pt': 'RASTREAR TB latente (PPD/IGRA) antes do início — risco de reativação. Contraindicado em infecções ativas graves, IC grau III–IV, desmielinização. Monitorar reações infusionais (pré-medicar com anti-histamínico/paracetamol).',
+      'es': 'RASTREAR TB latente (PPD/IGRA) antes del inicio — riesgo de reactivación. Contraindicado en infecciones activas graves, IC grado III–IV, desmielinización. Monitorear reacciones de infusión (pre-medicar con antihistamínico/paracetamol).',
+    },
+    adverse: {
+      'pt': ['Infecção grave (TB, oportunistas)', 'Reação infusional aguda', 'Reação infusional tardia', 'Linfoma', 'Hepatotoxicidade', 'Desmielinização', 'Anticorpos anti-infliximab (perda de resposta)'],
+      'es': ['Infección grave (TB, oportunistas)', 'Reacción de infusión aguda', 'Reacción de infusión tardía', 'Linfoma', 'Hepatotoxicidad', 'Desmielinización', 'Anticuerpos anti-infliximab (pérdida de respuesta)'],
+    },
+  ),
+
+  // 18. Micofenolato de mofetila
+  DrugModel(
+    id: 'micofenolato_mofetila',
+    group: 'Imunossupressores',
+    name: 'Micofenolato de Mofetila (CellCept)',
+    className: {'pt': 'Inibidor seletivo da inosina monofosfato desidrogenase (IMPDH)', 'es': 'Inhibidor selectivo de inosina monofosfato deshidrogenasa (IMPDH)'},
+    category: {'pt': 'Transplante / Autoimune', 'es': 'Trasplante / Autoinmune'},
+    route: 'VO / EV',
+    doseType: 'fixed',
+    mgKg: 0.0,
+    fixedDose: {
+      'pt': 'Transplante renal: 1.000–1.500 mg VO 2×/dia. Transplante cardíaco/hepático: 1.000–1.500 mg 2×/dia. Lúpus nefrítico: 2–3 g/dia em 2 doses. Tomar em jejum para ↑ absorção.',
+      'es': 'Trasplante renal: 1.000–1.500 mg VO 2×/día. Trasplante cardíaco/hepático: 1.000–1.500 mg 2×/día. Nefritis lúpica: 2–3 g/día en 2 dosis. Tomar en ayunas para ↑ absorción.',
+    },
+    renalAlert: {'pt': 'TFG <25: não ultrapassar 1 g/12h. Monitorar leucócitos (neutropenia é dose-limitante).', 'es': 'TFG <25: no superar 1 g/12h. Monitorear leucocitos (neutropenia es dosis-limitante).'},
+    elderlyAlert: {'pt': 'Risco infeccioso aumentado; monitorar CMV e BK vírus em transplantados.', 'es': 'Riesgo infeccioso aumentado; monitorear CMV y virus BK en trasplantados.'},
+    mechanism: {
+      'pt': 'Inibe a IMPDH → bloqueia síntese de guanosina → inibe seletivamente proliferação de linfócitos T e B (células altamente dependentes da via de novo de purinas).',
+      'es': 'Inhibe la IMPDH → bloquea síntesis de guanosina → inhibe selectivamente proliferación de linfocitos T y B (células altamente dependientes de la vía de novo de purinas).',
+    },
+    warning: {
+      'pt': 'Mielotoxicidade: monitorar hemograma quinzenalmente no 1.° ano. Teratogênico — contracepção obrigatória. Risco aumentado de infecções oportunistas (CMV, BK, PCP). Evitar com azatioprina (sobreposição de toxicidade).',
+      'es': 'Mielotoxicidad: monitorear hemograma quincenal el 1.er año. Teratogénico — anticoncepción obligatoria. Riesgo aumentado de infecciones oportunistas (CMV, BK, PCP). Evitar con azatioprina (solapamiento de toxicidad).',
+    },
+    adverse: {
+      'pt': ['Leucopenia/Neutropenia', 'Anemia', 'Diarreia', 'Náuseas/Vômitos', 'Infecções oportunistas (CMV, BK)', 'Linfoma (longo prazo)'],
+      'es': ['Leucopenia/Neutropenia', 'Anemia', 'Diarrea', 'Náuseas/Vómitos', 'Infecciones oportunistas (CMV, BK)', 'Linfoma (largo plazo)'],
+    },
+  ),
+
+  // 19. Ciclosporina
+  DrugModel(
+    id: 'ciclosporina',
+    group: 'Imunossupressores',
+    name: 'Ciclosporina (Sandimmun Neoral)',
+    className: {'pt': 'Inibidor da calcineurina', 'es': 'Inhibidor de calcineurina'},
+    category: {'pt': 'Transplante / Autoimune grave', 'es': 'Trasplante / Autoinmune grave'},
+    route: 'VO / EV',
+    doseType: 'weightBased',
+    mgKg: 3.0,
+    fixedDose: {
+      'pt': 'Transplante: 3–5 mg/kg/dia VO em 2 doses (Neoral — melhor absorção). EV: 1/3 da dose VO. Monitorar nível sérico (C0 alvo varia por órgão e fase pós-Tx). Psoríase/AR: 2,5–5 mg/kg/dia.',
+      'es': 'Trasplante: 3–5 mg/kg/día VO en 2 dosis (Neoral — mejor absorción). EV: 1/3 de la dosis VO. Monitorear nivel sérico (C0 objetivo varía por órgano y fase pos-Tx). Psoriasis/AR: 2,5–5 mg/kg/día.',
+    },
+    renalAlert: {'pt': 'NEFROTÓXICO — principal limitação. Monitorar creatinina e nível sérico; reduzir dose se Cr ↑ >25% do basal. TFG <25: usar com extrema cautela.', 'es': 'NEFROTÓXICO — principal limitación. Monitorear creatinina y nivel sérico; reducir dosis si Cr ↑ >25% del basal. TFG <25: usar con extrema precaución.'},
+    elderlyAlert: {'pt': 'Risco renal e hipertensivo aumentados; iniciar com dose baixa.', 'es': 'Riesgo renal e hipertensivo aumentados; iniciar con dosis baja.'},
+    mechanism: {
+      'pt': 'Liga-se à ciclofilina → complexo inibe a calcineurina → bloqueia desfosforilação do NFAT → ↓ transcrição de IL-2 → ↓ ativação e proliferação de linfócitos T.',
+      'es': 'Se une a ciclofilina → complejo inhibe la calcineurina → bloquea desfosforilación de NFAT → ↓ transcripción de IL-2 → ↓ activación y proliferación de linfocitos T.',
+    },
+    warning: {
+      'pt': 'Janela terapêutica estreita — monitorar nível sérico regularmente. Nefrotoxicidade cumulativa e dose-dependente. Múltiplas interações via CYP3A4 (cetoconazol ↑, rifampicina ↓ drasticamente). HAS, hiperplasia gengival, hipertricose.',
+      'es': 'Ventana terapéutica estrecha — monitorear nivel sérico regularmente. Nefrotoxicidad cumulativa y dosis-dependiente. Múltiples interacciones vía CYP3A4 (ketoconazol ↑, rifampicina ↓ drásticamente). HTA, hiperplasia gingival, hipertricosis.',
+    },
+    adverse: {
+      'pt': ['Nefrotoxicidade', 'Hipertensão', 'Hiperplasia gengival', 'Hipertricose', 'Tremor', 'Hepatotoxicidade', 'Hiperpotassemia', 'Hiperglicemia'],
+      'es': ['Nefrotoxicidad', 'Hipertensión', 'Hiperplasia gingival', 'Hipertricosis', 'Temblor', 'Hepatotoxicidad', 'Hiperpotasemia', 'Hiperglucemia'],
+    },
+  ),
+
+  // 20. Tacrolimus
+  DrugModel(
+    id: 'tacrolimus',
+    group: 'Imunossupressores',
+    name: 'Tacrolimus / FK506 (Prograf)',
+    className: {'pt': 'Inibidor da calcineurina macrólido', 'es': 'Inhibidor de calcineurina macrólido'},
+    category: {'pt': 'Transplante de órgãos sólidos', 'es': 'Trasplante de órganos sólidos'},
+    route: 'VO / EV',
+    doseType: 'weightBased',
+    mgKg: 0.1,
+    fixedDose: {
+      'pt': 'Transplante renal: 0,1–0,2 mg/kg/dia VO em 2 doses. Monitorar nível sérico (C0 alvo: primeiras semanas 10–20 ng/mL; manutenção 5–10 ng/mL). Ajustar conforme nível e tolerabilidade.',
+      'es': 'Trasplante renal: 0,1–0,2 mg/kg/día VO en 2 dosis. Monitorear nivel sérico (C0 objetivo: primeras semanas 10–20 ng/mL; mantenimiento 5–10 ng/mL). Ajustar según nivel y tolerabilidad.',
+    },
+    renalAlert: {'pt': 'NEFROTÓXICO — monitorar creatinina e nível sérico. Reduzir dose se sinais de toxicidade renal. Polimorfismo CYP3A5 afeta metabolismo (genótipo *1/*1 = metabolizador rápido → dose maior).', 'es': 'NEFROTÓXICO — monitorear creatinina y nivel sérico. Reducir dosis si signos de toxicidad renal. Polimorfismo CYP3A5 afecta metabolismo.'},
+    elderlyAlert: {'pt': 'Risco elevado de neurotoxicidade e nefrotoxicidade; dose inicial conservadora.', 'es': 'Riesgo elevado de neurotoxicidad y nefrotoxicidad; dosis inicial conservadora.'},
+    mechanism: {
+      'pt': 'Liga-se à FKBP12 → complexo inibe a calcineurina → ↓ NFAT → ↓ IL-2 → supressão linfocitária T (10–100× mais potente que ciclosporina in vitro).',
+      'es': 'Se une a FKBP12 → complejo inhibe la calcineurina → ↓ NFAT → ↓ IL-2 → supresión linfocitaria T (10–100× más potente que ciclosporina in vitro).',
+    },
+    warning: {
+      'pt': 'Neurotoxicidade (tremor, cefaleia, encefalopatia — avaliar nível sérico). Diabetogênico — monitorar glicemia. Múltiplas interações CYP3A4/P-gp. Não interromper abruptamente.',
+      'es': 'Neurotoxicidad (temblor, cefalea, encefalopatía — evaluar nivel sérico). Diabetogénico — monitorear glucemia. Múltiples interacciones CYP3A4/P-gp. No interrumpir abruptamente.',
+    },
+    adverse: {
+      'pt': ['Nefrotoxicidade', 'Neurotoxicidade (tremor, cefaleia)', 'Diabetes mellitus de novo', 'Hipertensão', 'Hiperpotassemia', 'Diarreia', 'Infecção oportunista'],
+      'es': ['Nefrotoxicidad', 'Neurotoxicidad (temblor, cefalea)', 'Diabetes mellitus de novo', 'Hipertensión', 'Hiperpotasemia', 'Diarrea', 'Infección oportunista'],
+    },
+  ),
+
+  // 21. Sirolimus (rapamicina)
+  DrugModel(
+    id: 'sirolimus',
+    group: 'Imunossupressores',
+    name: 'Sirolimus / Rapamicina (Rapamune)',
+    className: {'pt': 'Inibidor de mTOR', 'es': 'Inhibidor de mTOR'},
+    category: {'pt': 'Transplante renal (manutenção) / Linfangioleiomiomatose', 'es': 'Trasplante renal (mantenimiento) / Linfangioleiomiomatosis'},
+    route: 'VO',
+    doseType: 'fixed',
+    mgKg: 0.0,
+    fixedDose: {
+      'pt': 'Transplante renal: dose de ataque 6 mg no D1, depois 2 mg/dia. Monitorar nível sérico (C0 alvo: 4–12 ng/mL em manutenção). LAM: 2 mg/dia com ajuste por nível.',
+      'es': 'Trasplante renal: dosis de ataque 6 mg el D1, luego 2 mg/día. Monitorear nivel sérico (C0 objetivo: 4–12 ng/mL en mantenimiento). LAM: 2 mg/día con ajuste por nivel.',
+    },
+    renalAlert: {'pt': 'Sem nefrotoxicidade direta (vantagem sobre ICN). Porém pode potencializar toxicidade renal da ciclosporina — reduzir dose da ciclosporina ao associar.', 'es': 'Sin nefrotoxicidad directa (ventaja sobre ICN). Sin embargo puede potenciar toxicidad renal de ciclosporina — reducir dosis de ciclosporina al asociar.'},
+    elderlyAlert: {'pt': 'Maior risco de dislipidemia e cicatrização prejudicada.', 'es': 'Mayor riesgo de dislipidemia y cicatrización deteriorada.'},
+    mechanism: {
+      'pt': 'Liga-se à FKBP12 → inibe mTOR (mammalian target of rapamycin) → bloqueia progressão do ciclo celular G1→S → ↓ proliferação linfocitária e de células musculares lisas.',
+      'es': 'Se une a FKBP12 → inhibe mTOR → bloquea progresión del ciclo celular G1→S → ↓ proliferación linfocitaria y de células musculares lisas.',
+    },
+    warning: {
+      'pt': 'Hiperlipidemia marcada (triglicerídeos ↑↑, colesterol ↑). Cicatrização prejudicada — suspender perioperatoriamente. Pneumonite intersticial (monitorar TC tórax). Aftas orais. Não associar com inibidores de calcineurina de longa data sem monitoramento de nível.',
+      'es': 'Hiperlipidemia marcada (triglicéridos ↑↑, colesterol ↑). Cicatrización deteriorada — suspender perioperatoriamente. Neumonitis intersticial (monitorear TC tórax). Aftas orales.',
+    },
+    adverse: {
+      'pt': ['Hiperlipidemia', 'Pneumonite intersticial', 'Aftas orais', 'Cicatrização prejudicada', 'Trombocitopenia', 'Anemia', 'Edema periférico'],
+      'es': ['Hiperlipidemia', 'Neumonitis intersticial', 'Aftas orales', 'Cicatrización deteriorada', 'Trombocitopenia', 'Anemia', 'Edema periférico'],
+    },
+  ),
+
+  // 22. Nitroprussiato de sódio
+  DrugModel(
+    id: 'nitroprussiato_sodio',
+    group: 'Anti-hipertensivos EV / Vasodilatadores',
+    name: 'Nitroprussiato de Sódio (Nipride)',
+    className: {'pt': 'Vasodilatador misto arteriolar e venoso — doador de NO', 'es': 'Vasodilatador mixto arteriolar y venoso — donador de NO'},
+    category: {'pt': 'Emergência Hipertensiva / Insuficiência Cardíaca grave', 'es': 'Emergencia Hipertensiva / Insuficiencia Cardíaca grave'},
+    route: 'EV',
+    doseType: 'weightBased',
+    mgKg: 0.3,
+    fixedDose: {
+      'pt': 'Início: 0,3–0,5 µg/kg/min EV; titular a cada 5 min; máximo 10 µg/kg/min. Proteger solução da luz (papel alumínio). Duração limitada a 24–72h (toxicidade por cianeto/tiocianato).',
+      'es': 'Inicio: 0,3–0,5 µg/kg/min EV; titular cada 5 min; máximo 10 µg/kg/min. Proteger solución de la luz (papel aluminio). Duración limitada a 24–72h (toxicidad por cianuro/tiocianato).',
+    },
+    renalAlert: {'pt': 'DRC: RISCO AUMENTADO de toxicidade por tiocianato — reduzir dose e monitorar níveis de tiocianato (alvo <10 mg/dL). Alternativa: hidralazina EV ou nicardipino.', 'es': 'ERC: RIESGO AUMENTADO de toxicidad por tiocianato — reducir dosis y monitorear niveles de tiocianato (objetivo <10 mg/dL).'},
+    elderlyAlert: {'pt': 'Maior sensibilidade hipotensora; iniciar com 0,1–0,2 µg/kg/min.', 'es': 'Mayor sensibilidad hipotensora; iniciar con 0,1–0,2 µg/kg/min.'},
+    mechanism: {
+      'pt': 'Libera óxido nítrico (NO) → ativa guanilato ciclase → ↑ GMPc → relaxamento do músculo liso vascular → vasodilatação arteriolar (↓ pós-carga) e venosa (↓ pré-carga).',
+      'es': 'Libera óxido nítrico (NO) → activa guanilato ciclasa → ↑ GMPc → relajación del músculo liso vascular → vasodilatación arteriolar (↓ postcarga) y venosa (↓ precarga).',
+    },
+    warning: {
+      'pt': 'PROTEGER DA LUZ obrigatoriamente. Risco de toxicidade por cianeto (dose >10 µg/kg/min ou infusão >3 dias): cefaleia, confusão, acidose metabólica, coma. Antídoto: hidroxocobalamina + tiossulfato de sódio. Monitorar PA contínua com cateter arterial.',
+      'es': 'PROTEGER DE LUZ obligatoriamente. Riesgo de toxicidad por cianuro (dosis >10 µg/kg/min o infusión >3 días): cefalea, confusión, acidosis metabólica, coma. Antídoto: hidroxocobalamina + tiosulfato de sodio. Monitorear PA continua con catéter arterial.',
+    },
+    adverse: {
+      'pt': ['Hipotensão grave', 'Toxicidade por cianeto', 'Toxicidade por tiocianato (DRC)', 'Cefaleia', 'Taquicardia reflexa', 'Náuseas'],
+      'es': ['Hipotensión grave', 'Toxicidad por cianuro', 'Toxicidad por tiocianato (ERC)', 'Cefalea', 'Taquicardia refleja', 'Náuseas'],
+    },
+  ),
+
+  // 23. Esmolol
+  DrugModel(
+    id: 'esmolol',
+    group: 'Betabloqueadores EV',
+    name: 'Esmolol (Brevibloc)',
+    className: {'pt': 'Betabloqueador β1-seletivo de ação ultrarrápida EV', 'es': 'Betabloqueador β1-selectivo de acción ultracorta EV'},
+    category: {'pt': 'Taquiarritmia / Emergência Hipertensiva / Dissecção Aórtica', 'es': 'Taquiarritmia / Emergencia Hipertensiva / Disección Aórtica'},
+    route: 'EV',
+    doseType: 'weightBased',
+    mgKg: 0.5,
+    fixedDose: {
+      'pt': 'Bolus: 500 µg/kg EV em 1 min; infusão: 50–200 µg/kg/min. Reavaliar a cada 4 min. Meia-vida ~9 min — efeito reversível em minutos após suspensão. Ideal para situações de titulação rápida.',
+      'es': 'Bolo: 500 µg/kg EV en 1 min; infusión: 50–200 µg/kg/min. Reevaluar cada 4 min. Vida media ~9 min — efecto reversible en minutos tras suspensión. Ideal para situaciones de titulación rápida.',
+    },
+    renalAlert: {'pt': 'Sem ajuste necessário; metabólitos eliminados por via renal — sem relevância clínica.', 'es': 'Sin ajuste necesario; metabolitos eliminados por vía renal — sin relevancia clínica.'},
+    elderlyAlert: {'pt': 'Maior sensibilidade à bradicardia e hipotensão; monitorar contínuo.', 'es': 'Mayor sensibilidad a bradicardia e hipotensión; monitoreo continuo.'},
+    mechanism: {
+      'pt': 'Bloqueia seletivamente receptores β1 adrenérgicos → ↓ FC e contratilidade → ↓ consumo de O₂ miocárdico → controle rápido de taquiarritmias e resposta hipertensiva. Hidrolisado pelas esterases eritrocitárias — meia-vida ultracurta (~9 min).',
+      'es': 'Bloquea selectivamente receptores β1 adrenérgicos → ↓ FC y contractilidad → ↓ consumo de O₂ miocárdico → control rápido de taquiarritmias y respuesta hipertensiva. Hidrolizado por esterasas eritrocitarias — vida media ultracorta (~9 min).',
+    },
+    warning: {
+      'pt': 'Contraindicado em BAV grau II–III, bradicardia sinusal, choque cardiogênico e broncoespasmo grave. Vesicante — preferir acesso central em infusões prolongadas (>200 µg/kg/min). Não suspender abruptamente se uso prolongado.',
+      'es': 'Contraindicado en BAV grado II–III, bradicardia sinusal, shock cardiogénico y broncoespasmo grave. Vesicante — preferir acceso central en infusiones prolongadas (>200 µg/kg/min).',
+    },
+    adverse: {
+      'pt': ['Hipotensão', 'Bradicardia', 'Broncoespasmo (doses altas)', 'Flebite/esclerose venosa', 'Náuseas', 'Diaforese'],
+      'es': ['Hipotensión', 'Bradicardia', 'Broncoespasmo (dosis altas)', 'Flebitis/esclerosis venosa', 'Náuseas', 'Diaforesis'],
+    },
+  ),
+
+  // 24. Nicardipino
+  DrugModel(
+    id: 'nicardipino_ev',
+    group: 'Anti-hipertensivos EV / Bloqueadores de canal de Ca',
+    name: 'Nicardipino EV (Cardene IV)',
+    className: {'pt': 'Bloqueador de canal de cálcio dihidropiridínico EV', 'es': 'Bloqueador de canal de calcio dihidropiridínico EV'},
+    category: {'pt': 'Emergência Hipertensiva / AVC Hemorrágico', 'es': 'Emergencia Hipertensiva / ACV Hemorrágico'},
+    route: 'EV',
+    doseType: 'fixed',
+    mgKg: 0.0,
+    fixedDose: {
+      'pt': 'Início: 5 mg/h EV; aumentar 2,5 mg/h a cada 5–15 min até PA alvo; máximo 15 mg/h. AVC hemorrágico: alvo PAS 140–160 mmHg. Alternativa para nitroprussiato sem risco de cianeto.',
+      'es': 'Inicio: 5 mg/h EV; aumentar 2,5 mg/h cada 5–15 min hasta PA objetivo; máximo 15 mg/h. ACV hemorrágico: objetivo PAS 140–160 mmHg. Alternativa para nitroprusiato sin riesgo de cianuro.',
+    },
+    renalAlert: {'pt': 'Sem ajuste; preferível ao nitroprussiato em DRC grave (sem toxicidade por tiocianato).', 'es': 'Sin ajuste; preferible al nitroprusiato en ERC grave (sin toxicidad por tiocianato).'},
+    elderlyAlert: {'pt': 'Maior sensibilidade hipotensora; titular lentamente.', 'es': 'Mayor sensibilidad hipotensora; titular lentamente.'},
+    mechanism: {
+      'pt': 'Bloqueia canais de Ca²⁺ tipo L nas células musculares lisas vasculares → vasodilatação arteriolar seletiva → ↓ resistência vascular periférica → ↓ PA com mínimo efeito cronotrópico.',
+      'es': 'Bloquea canales de Ca²⁺ tipo L en células musculares lisas vasculares → vasodilatación arteriolar selectiva → ↓ resistencia vascular periférica → ↓ PA con mínimo efecto cronótropo.',
+    },
+    warning: {
+      'pt': 'Preferível ao nitroprussiato em DRC (sem toxicidade por cianeto/tiocianato). Taquicardia reflexa possível em doses altas. Flebite venosa — preferir acesso central.',
+      'es': 'Preferible al nitroprusiato en ERC (sin toxicidad por cianuro/tiocianato). Taquicardia refleja posible en dosis altas. Flebitis venosa — preferir acceso central.',
+    },
+    adverse: {
+      'pt': ['Cefaleia', 'Rubor', 'Taquicardia reflexa', 'Flebite', 'Hipotensão', 'Náuseas'],
+      'es': ['Cefalea', 'Rubor', 'Taquicardia refleja', 'Flebitis', 'Hipotensión', 'Náuseas'],
+    },
+  ),
+
+  // 25. Clevidipino
+  DrugModel(
+    id: 'clevidipino',
+    group: 'Anti-hipertensivos EV / Bloqueadores de canal de Ca',
+    name: 'Clevidipino (Cleviprex)',
+    className: {'pt': 'Bloqueador de canal de cálcio dihidropiridínico de ação ultracurta', 'es': 'Bloqueador de canal de calcio dihidropiridínico de acción ultracorta'},
+    category: {'pt': 'Emergência Hipertensiva Perioperatória / UTI', 'es': 'Emergencia Hipertensiva Perioperatoria / UCI'},
+    route: 'EV',
+    doseType: 'fixed',
+    mgKg: 0.0,
+    fixedDose: {
+      'pt': 'Início: 1–2 mg/h EV; dobrar a dose a cada 90s até PA alvo; dose usual de manutenção 4–6 mg/h; máximo 32 mg/h (máximo 1.000 mL/24h pela formulação lipídica). Meia-vida ~1 min.',
+      'es': 'Inicio: 1–2 mg/h EV; duplicar dosis cada 90s hasta PA objetivo; dosis usual de mantenimiento 4–6 mg/h; máximo 32 mg/h. Vida media ~1 min.',
+    },
+    renalAlert: {'pt': 'Sem ajuste renal necessário.', 'es': 'Sin ajuste renal necesario.'},
+    elderlyAlert: {'pt': 'Mesma titulação; monitorar por hipotensão mais intensa.', 'es': 'Misma titulación; monitorear por hipotensión más intensa.'},
+    mechanism: {
+      'pt': 'Idêntico ao nicardipino: bloqueia canais L de Ca²⁺ vascular. Meia-vida ultracurta (~1 min) por hidrólise de esterases plasmáticas → controle preciso e reversível da PA.',
+      'es': 'Idéntico al nicardipino: bloquea canales L de Ca²⁺ vascular. Vida media ultracorta (~1 min) por hidrólisis de esterasas plasmáticas → control preciso y reversible de la PA.',
+    },
+    warning: {
+      'pt': 'Formulação lipídica (lipossoma 20%) — contraindicado em alergia a soja/ovo e distúrbios do metabolismo lipídico. Não usar por >72h sem monitoramento de triglicerídeos.',
+      'es': 'Formulación lipídica (liposoma 20%) — contraindicado en alergia a soja/huevo y trastornos del metabolismo lipídico. No usar >72h sin monitoreo de triglicéridos.',
+    },
+    adverse: {
+      'pt': ['Cefaleia', 'Rubor', 'Náuseas', 'Hipotensão reflexa', 'Hipertrigliceridemia (uso prolongado)'],
+      'es': ['Cefalea', 'Rubor', 'Náuseas', 'Hipotensión refleja', 'Hipertrigliceridemia (uso prolongado)'],
+    },
+  ),
+
+  // 26. Fenoldopam
+  DrugModel(
+    id: 'fenoldopam',
+    group: 'Anti-hipertensivos EV / Dopaminérgicos',
+    name: 'Fenoldopam (Corlopam)',
+    className: {'pt': 'Agonista dopaminérgico D1 periférico — vasodilatador renal seletivo', 'es': 'Agonista dopaminérgico D1 periférico — vasodilatador renal selectivo'},
+    category: {'pt': 'Emergência Hipertensiva com comprometimento renal', 'es': 'Emergencia Hipertensiva con compromiso renal'},
+    route: 'EV',
+    doseType: 'weightBased',
+    mgKg: 0.1,
+    fixedDose: {
+      'pt': 'Início: 0,1 µg/kg/min EV; titular a cada 15 min (máximo 1,6 µg/kg/min). Vantagem: aumenta fluxo renal e diurese — especialmente útil em emergência hipertensiva com DRA.',
+      'es': 'Inicio: 0,1 µg/kg/min EV; titular cada 15 min (máximo 1,6 µg/kg/min). Ventaja: aumenta flujo renal y diuresis — especialmente útil en emergencia hipertensiva con IRA.',
+    },
+    renalAlert: {'pt': 'VANTAGEM EM DRC: ↑ diurese e fluxo renal — opção preferencial em crise hipertensiva com lesão renal aguda.', 'es': 'VENTAJA EN ERC: ↑ diuresis y flujo renal — opción preferencial en crisis hipertensiva con lesión renal aguda.'},
+    elderlyAlert: {'pt': 'Sem ajuste; monitorar hipocalemia (aumenta excreção de K⁺).', 'es': 'Sin ajuste; monitorear hipopotasemia (aumenta excreción de K⁺).'},
+    mechanism: {
+      'pt': 'Agonista seletivo dos receptores D1 renais → vasodilatação das artérias renais → ↑ fluxo plasmático renal e diurese natriurética → efeito anti-hipertensivo + proteção renal.',
+      'es': 'Agonista selectivo de receptores D1 renales → vasodilatación de arterias renales → ↑ flujo plasmático renal y diuresis natriurética → efecto antihipertensivo + protección renal.',
+    },
+    warning: {
+      'pt': 'Causa hipocalemia (perda urinária de K⁺) — monitorar e repor K⁺. Taquicardia reflexa. Não usar em glaucoma (↑ pressão intraocular). Disponibilidade limitada em alguns países.',
+      'es': 'Causa hipopotasemia (pérdida urinaria de K⁺) — monitorear y reponer K⁺. Taquicardia refleja. No usar en glaucoma (↑ presión intraocular). Disponibilidad limitada en algunos países.',
+    },
+    adverse: {
+      'pt': ['Hipocalemia', 'Taquicardia reflexa', 'Cefaleia', 'Rubor', 'Hipotensão', 'Náuseas'],
+      'es': ['Hipopotasemia', 'Taquicardia refleja', 'Cefalea', 'Rubor', 'Hipotensión', 'Náuseas'],
+    },
+  ),
+
+  // 27. Labetalol EV
+  DrugModel(
+    id: 'labetalol_ev',
+    group: 'Betabloqueadores EV / Anti-hipertensivos',
+    name: 'Labetalol EV (Trandate)',
+    className: {'pt': 'Bloqueador α1 e β não-seletivo combinado EV', 'es': 'Bloqueador α1 y β no selectivo combinado EV'},
+    category: {'pt': 'Emergência Hipertensiva / Dissecção Aórtica / Gestação', 'es': 'Emergencia Hipertensiva / Disección Aórtica / Gestación'},
+    route: 'EV',
+    doseType: 'fixed',
+    mgKg: 0.0,
+    fixedDose: {
+      'pt': 'Bolus: 20 mg EV em 2 min; repetir 40–80 mg a cada 10 min (máximo 300 mg). Infusão contínua: 0,5–2 mg/min. Dissecção aórtica: associar a nitroprussiato para controle adicional de PA.',
+      'es': 'Bolo: 20 mg EV en 2 min; repetir 40–80 mg cada 10 min (máximo 300 mg). Infusión continua: 0,5–2 mg/min. Disección aórtica: asociar a nitroprusiato para control adicional de PA.',
+    },
+    renalAlert: {'pt': 'Sem ajuste necessário.', 'es': 'Sin ajuste necesario.'},
+    elderlyAlert: {'pt': 'Maior risco de bradicardia e broncoespasmo; monitorar contínuo.', 'es': 'Mayor riesgo de bradicardia y broncoespasmo; monitoreo continuo.'},
+    mechanism: {
+      'pt': 'Bloqueia receptores α1 (vasodilatação periférica) e β1/β2 (↓ FC, contratilidade) → redução da PA com menor taquicardia reflexa que os vasodilatadores puros. Relação α:β bloqueio ≈ 1:7 EV.',
+      'es': 'Bloquea receptores α1 (vasodilatación periférica) y β1/β2 (↓ FC, contractilidad) → reducción de PA con menor taquicardia refleja que vasodilatadores puros. Relación α:β bloqueo ≈ 1:7 EV.',
+    },
+    warning: {
+      'pt': 'SEGURO NA GESTAÇÃO (emergência hipertensiva da gravidez — alternativa à hidralazina). Contraindicado em broncoespasmo, BAV grau II–III e IC descompensada grave. Posição deitada após bolus (hipotensão postural).',
+      'es': 'SEGURO EN GESTACIÓN (emergencia hipertensiva del embarazo — alternativa a hidralazina). Contraindicado en broncoespasmo, BAV grado II–III e IC descompensada grave. Posición acostada tras bolo (hipotensión postural).',
+    },
+    adverse: {
+      'pt': ['Hipotensão postural', 'Bradicardia', 'Broncoespasmo', 'Náuseas', 'Bloqueio AV', 'Hepatotoxicidade (uso VO crônico)'],
+      'es': ['Hipotensión postural', 'Bradicardia', 'Broncoespasmo', 'Náuseas', 'Bloqueo AV', 'Hepatotoxicidad (uso VO crónico)'],
+    },
+  ),
+
+  // 28. Levetiracetam EV
+  DrugModel(
+    id: 'levetiracetam_ev',
+    group: 'Antiepilépticos EV',
+    name: 'Levetiracetam EV (Keppra)',
+    className: {'pt': 'Antiepiléptico de nova geração — modulador de SV2A', 'es': 'Antiepiléptico de nueva generación — modulador de SV2A'},
+    category: {'pt': 'Status Epilepticus / Epilepsia / Neurológico', 'es': 'Status Epilepticus / Epilepsia / Neurológico'},
+    route: 'EV / VO',
+    doseType: 'weightBased',
+    mgKg: 30.0,
+    fixedDose: {
+      'pt': 'Status epiléptico (2.ª linha): 20–60 mg/kg EV (típico: 1.000–3.000 mg) em 15 min. Profilaxia/epilepsia: 500–1.000 mg EV/VO 2×/dia. Aumentar gradualmente conforme resposta.',
+      'es': 'Status epiléptico (2.ª línea): 20–60 mg/kg EV (típico: 1.000–3.000 mg) en 15 min. Profilaxis/epilepsia: 500–1.000 mg EV/VO 2×/día. Aumentar gradualmente según respuesta.',
+    },
+    renalAlert: {'pt': 'AJUSTE NECESSÁRIO: TFG 50–80: 500–1.000 mg/12h; TFG 30–50: 250–750 mg/12h; TFG <30: 250–500 mg/12h. Dose-dependente da filtração glomerular.', 'es': 'AJUSTE NECESARIO: TFG 50–80: 500–1.000 mg/12h; TFG 30–50: 250–750 mg/12h; TFG <30: 250–500 mg/12h.'},
+    elderlyAlert: {'pt': 'Maior risco de efeitos neuropsiquiátricos (agitação, psicose); iniciar com doses baixas.', 'es': 'Mayor riesgo de efectos neuropsiquiátricos (agitación, psicosis); iniciar con dosis bajas.'},
+    mechanism: {
+      'pt': 'Liga-se à proteína vesicular sináptica SV2A → modula liberação de neurotransmissores nas vesículas sinápticas → reduz hiperexcitabilidade neuronal sem afetar correntes iônicas normais.',
+      'es': 'Se une a la proteína vesicular sináptica SV2A → modula liberación de neurotransmisores en vesículas sinápticas → reduce hiperexcitabilidad neuronal sin afectar corrientes iónicas normales.',
+    },
+    warning: {
+      'pt': 'Perfil de interações medicamentosas muito favorável (não induz/inibe CYP). Efeitos neuropsiquiátricos em ~10–15% (irritabilidade, agitação, depressão, psicose — "Keppra rage"). Reduzir dose gradualmente ao descontinuar.',
+      'es': 'Perfil de interacciones medicamentosas muy favorable (no induce/inhibe CYP). Efectos neuropsiquiátricos en ~10–15% (irritabilidad, agitación, depresión, psicosis — "Keppra rage"). Reducir dosis gradualmente al discontinuar.',
+    },
+    adverse: {
+      'pt': ['Irritabilidade/agitação', 'Sonolência', 'Cefaleia', 'Vertigem', 'Infecção de vias aéreas', 'Neutropenia (raro)'],
+      'es': ['Irritabilidad/agitación', 'Somnolencia', 'Cefalea', 'Vértigo', 'Infección de vías aéreas', 'Neutropenia (raro)'],
+    },
+  ),
+
+  // 29. Ácido valproico EV
+  DrugModel(
+    id: 'acido_valproico_ev',
+    group: 'Antiepilépticos EV',
+    name: 'Ácido Valproico / Valproato EV (Depakene)',
+    className: {'pt': 'Antiepiléptico — estabilizador de canal de Na⁺ e potenciador de GABA', 'es': 'Antiepiléptico — estabilizador de canal de Na⁺ y potenciador de GABA'},
+    category: {'pt': 'Status Epilepticus / Epilepsia Generalizada / Transtorno Bipolar', 'es': 'Status Epilepticus / Epilepsia Generalizada / Trastorno Bipolar'},
+    route: 'EV / VO',
+    doseType: 'weightBased',
+    mgKg: 20.0,
+    fixedDose: {
+      'pt': 'Status epiléptico: 20–40 mg/kg EV em 10 min (máximo 3.000 mg), infusão em 5 mg/kg/min. Epilepsia: 10–15 mg/kg/dia VO em 2–3 doses. Monitorar nível sérico (alvo 50–100 µg/mL).',
+      'es': 'Status epiléptico: 20–40 mg/kg EV en 10 min (máximo 3.000 mg), infusión en 5 mg/kg/min. Epilepsia: 10–15 mg/kg/día VO en 2–3 dosis. Monitorear nivel sérico (objetivo 50–100 µg/mL).',
+    },
+    renalAlert: {'pt': 'Proteína-ligado extensamente; monitorar nível livre em hipoalbuminemia e DRC.', 'es': 'Extensamente ligado a proteínas; monitorear nivel libre en hipoalbuminemia y ERC.'},
+    elderlyAlert: {'pt': 'Maior risco de sedação, tremor e encefalopatia hiperamonêmica; monitorar amônia.', 'es': 'Mayor riesgo de sedación, temblor y encefalopatía hiperamonémica; monitorear amonio.'},
+    mechanism: {
+      'pt': 'Múltiplos mecanismos: bloqueia canais de Na⁺ voltagem-dependentes, ↑ GABA (inibe GABA-transaminase), bloqueia correntes de Ca²⁺ tipo T → amplo espectro antiepiléptico.',
+      'es': 'Múltiples mecanismos: bloquea canales de Na⁺ voltaje-dependientes, ↑ GABA (inhibe GABA-transaminasa), bloquea corrientes de Ca²⁺ tipo T → amplio espectro antiepiléptico.',
+    },
+    warning: {
+      'pt': 'TERATOGÊNICO — contraindicado na gravidez (espinha bífida, malformações). Encefalopatia hiperamonêmica (amônia ↑ sem hepatotoxicidade). Hepatotoxicidade fatal em crianças <2 anos. Monitorar hemograma (trombocitopenia) e função hepática. Interações múltiplas.',
+      'es': 'TERATOGÉNICO — contraindicado en embarazo (espina bífida, malformaciones). Encefalopatía hiperamonémica (amonio ↑ sin hepatotoxicidad). Hepatotoxicidad fatal en niños <2 años. Monitorear hemograma (trombocitopenia) y función hepática.',
+    },
+    adverse: {
+      'pt': ['Trombocitopenia', 'Tremor', 'Aumento de peso', 'Alopecia', 'Hepatotoxicidade', 'Encefalopatia hiperamonêmica', 'Pancreatite', 'Teratogenicidade'],
+      'es': ['Trombocitopenia', 'Temblor', 'Aumento de peso', 'Alopecia', 'Hepatotoxicidad', 'Encefalopatía hiperamonémica', 'Pancreatitis', 'Teratogenicidad'],
+    },
+  ),
+
+  // 30. Fenitoína / Fosfenitoína EV
+  DrugModel(
+    id: 'fenitoina_fosfenitoina_ev',
+    group: 'Antiepilépticos EV',
+    name: 'Fenitoína / Fosfenitoína EV (Dilantin / Cerebyx)',
+    className: {'pt': 'Antiepiléptico hidantoínico — bloqueador de canal de Na⁺', 'es': 'Antiepiléptico hidantoínico — bloqueador de canal de Na⁺'},
+    category: {'pt': 'Status Epilepticus / Epilepsia / Profilaxia convulsiva pós-TCE', 'es': 'Status Epilepticus / Epilepsia / Profilaxis convulsiva pos-TCE'},
+    route: 'EV',
+    doseType: 'weightBased',
+    mgKg: 20.0,
+    fixedDose: {
+      'pt': 'Fenitoína: 15–20 mg/kg EV (máx 50 mg/min — risco de arritmia!). Fosfenitoína: 15–20 mg EFT/kg EV (até 150 mg EFT/min — mais segura). Monitorar ECG durante infusão. Nível alvo: 10–20 µg/mL.',
+      'es': 'Fenitoína: 15–20 mg/kg EV (máx 50 mg/min — riesgo de arritmia!). Fosfenitoína: 15–20 mg EFT/kg EV (hasta 150 mg EFT/min — más segura). Monitorear ECG durante infusión. Nivel objetivo: 10–20 µg/mL.',
+    },
+    renalAlert: {'pt': 'Monitorar nível livre em hipoalbuminemia e DRC (nível total subestimado). Usar fórmula de correção por albumina.', 'es': 'Monitorear nivel libre en hipoalbuminemia y ERC (nivel total subestimado). Usar fórmula de corrección por albúmina.'},
+    elderlyAlert: {'pt': 'Maior sensibilidade à toxicidade neurológica (nistagmo, ataxia); monitorar nível sérico.', 'es': 'Mayor sensibilidad a toxicidad neurológica (nistagmo, ataxia); monitorear nivel sérico.'},
+    mechanism: {
+      'pt': 'Bloqueia canais de Na⁺ voltagem-dependentes em estado inativo → ↓ frequência de disparos neuronais repetitivos de alta frequência → estabilização da membrana sem afetar atividade normal.',
+      'es': 'Bloquea canales de Na⁺ voltaje-dependientes en estado inactivo → ↓ frecuencia de disparos neuronales repetitivos de alta frecuencia → estabilización de membrana sin afectar actividad normal.',
+    },
+    warning: {
+      'pt': 'INFUSÃO LENTA OBRIGATÓRIA (máximo 50 mg/min) — infusão rápida causa hipotensão grave e arritmias (incluindo FV). Síndrome "Purple Glove" com extravasamento EV. Induzidor potente de CYP2C9/CYP3A4 — múltiplas interações. Janela terapêutica estreita.',
+      'es': 'INFUSIÓN LENTA OBLIGATORIA (máximo 50 mg/min) — infusión rápida causa hipotensión grave y arritmias (incluyendo FV). Síndrome "Purple Glove" con extravasación EV. Inductor potente de CYP2C9/CYP3A4 — múltiples interacciones. Ventana terapéutica estrecha.',
+    },
+    adverse: {
+      'pt': ['Hipotensão e arritmia (infusão rápida)', 'Nistagmo/Ataxia/Diplopia (toxicidade)', 'Síndrome Purple Glove', 'Hiperplasia gengival', 'Hirsutismo', 'Indução enzimática (interações)', 'Síndrome de Stevens-Johnson'],
+      'es': ['Hipotensión y arritmia (infusión rápida)', 'Nistagmo/Ataxia/Diplopía (toxicidad)', 'Síndrome Purple Glove', 'Hiperplasia gingival', 'Hirsutismo', 'Inducción enzimática (interacciones)', 'Síndrome de Stevens-Johnson'],
+    },
+  ),
+
 ];
 

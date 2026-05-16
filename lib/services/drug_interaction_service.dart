@@ -9525,6 +9525,40 @@ const _interactionDB = <_IxEntry>[
     {RiskType.other},
     [_kRefGG, _kRefMdx]),
 
+  // ── INTERACCIONES NUEVAS ─────────────────────────────────────────────────
+
+  // 1. Metformina + Contraste Iodado → Acidosis Láctica
+  ('metformina', 'contraste iodado',
+    InteractionSeverity.major,
+    'El contraste iodado puede causar insuficiencia renal aguda transitoria; la metformina se acumula cuando el clearance renal cae, con riesgo de acidosis láctica por bloqueo de la cadena respiratoria mitocondrial',
+    'Acidosis láctica potencialmente fatal (mortalidad ~50%): náuseas, vómitos, dolor abdominal, hiperventilación, confusión, colapso hemodinámico',
+    'Suspender metformina 48 h antes del procedimiento con contraste IV; reiniciar solo tras confirmar función renal normal (creatinina ≤ basal). En urgencias: hidratación vigorosa y monitoreo de lactato',
+    'ACIDOSIS LÁCTICA — Suspender metformina 48 h antes del contraste IV',
+    EvidenceLevel.established,
+    {RiskType.nephrotoxicity},
+    [_kRefGG, _kRefMdx, _kRefFDA]),
+
+  // 2. Sertralina + Tramadol → Síndrome Serotoninérgico
+  ('sertralina', 'tramadol',
+    InteractionSeverity.major,
+    'La sertralina inhibe la recaptación de serotonina (ISRS) y el tramadol actúa como inhibidor de la recaptación de serotonina/noradrenalina además de agonista opioide débil; la combinación produce hiperserotonemia por acumulación sinérgica de 5-HT sináptica',
+    'Síndrome serotoninérgico: agitación, mioclonus, hiperreflexia, hipertermia, taquicardia, diaforesis, rigidez muscular; en casos graves: rabdomiólisis, CID, insuficiencia renal y muerte',
+    'Evitar la combinación siempre que sea posible; si es imprescindible, usar la dosis mínima de tramadol con vigilancia estrecha. En síndrome serotoninérgico: suspender ambos fármacos, ciproheptadina 4–8 mg VO/SNG, soporte hemodinámico, benzodiacepinas para agitación y mioclonus',
+    'SÍNDROME SEROTONINÉRGICO — Combinación de alto riesgo con tramadol',
+    EvidenceLevel.established,
+    {RiskType.serotonin},
+    [_kRefGG, _kRefMdx, _kRefUT, _kRefLex]),
+
+  // 3. Digoxina + Amiodarona → Toxicidad Digitálica
+  ('digoxina', 'amiodarona',
+    InteractionSeverity.major,
+    'La amiodarona inhibe la glucoproteína-P y la CYP3A4, reduciendo la eliminación renal y hepática de digoxina; el nivel plasmático de digoxina aumenta 70–100% en los primeros 7–14 días',
+    'Toxicidad digitálica: náuseas, vómitos, visión con halos amarillo-verdosos, bradicardia, bloqueos AV de alto grado, arritmias ventriculares (TV bidireccional), trastornos del potasio',
+    'Reducir la dosis de digoxina a la mitad al iniciar amiodarona; monitorear niveles de digoxina (objetivo 0,5–0,9 ng/mL) al 3.°, 7.° y 14.° día; ajustar según niveles y función renal; vigilar potasio sérico (hipopotasemia potencia toxicidad)',
+    'TOXICIDAD DIGITÁLICA — Reducir dosis de digoxina 50% al agregar amiodarona',
+    EvidenceLevel.established,
+    {RiskType.plasmaLevel},
+    [_kRefGG, _kRefKatz, _kRefMdx, _kRefUT]),
 
 ];
 
