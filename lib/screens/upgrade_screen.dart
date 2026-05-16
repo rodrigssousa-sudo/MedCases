@@ -867,8 +867,8 @@ class _BgPainter extends CustomPainter {
 // Para reativar: remover o bloco "if (_kPaywallLocked)" abaixo.
 // ─────────────────────────────────────────────────────────────────────────────
 
-/// Paywall liberado — false = aberto ao público.
-const bool _kPaywallLocked = false;
+/// Mude para `false` para liberar o paywall no lançamento oficial.
+const bool _kPaywallLocked = true;
 
 void showUpgradeScreen(BuildContext context, {String lang = 'es'}) {
   if (_kPaywallLocked) return;
