@@ -787,8 +787,6 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
   // sub-tab dentro do combo Rx+Proto: 0=Rx, 1=Protocolos
   int _rxProtoSub = 0;
 
-  // Painel lateral de anotações
-  bool _notesOpen = false;
 
   // ── Performance: telas estáticas criadas uma única vez no initState ──────
   late final List<Widget> _staticScreens;
@@ -911,7 +909,7 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
         onTabChange: (t) => setState(() => _tab = t),
         onSubTabChange: (i) => setState(() => _rxProtoSub = i),
         openProtocol: _openProtocol,
-        onOpenNotes: () => setState(() => _notesOpen = true),
+        onOpenNotes: () => showNotesSheet(context),
       ),
       _RxProtoCombo(                               // 1 — Rx/Proto combo
         subTab: _rxProtoSub,
@@ -947,11 +945,7 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
           Expanded(child: IndexedStack(index: stackIdx.clamp(0, mainScreens.length - 1), children: mainScreens)),
         ]),
 
-        // ── Painel lateral retrátil — Anotações ────────────────────────
-        _SideNotesPanel(
-          isOpen: _notesOpen,
-          onToggle: () => setState(() => _notesOpen = !_notesOpen),
-        ),
+
       ]),
       bottomNavigationBar: Column(
         mainAxisSize: MainAxisSize.min,
@@ -3176,6 +3170,51 @@ class _SuccessView extends StatelessWidget {
 // ─────────────────────────────────────────────────────────────────────────────
 // PAINEL LATERAL RETRÁTIL — ANOTAÇÕES
 // ─────────────────────────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────────────
+// ABRE O PAINEL DE NOTAS COMO BOTTOM SHEET (igual a Recentes / Favoritos)
+// ─────────────────────────────────────────────────────────────────────────────
+void showNotesSheet(BuildContext context) {
+  showModalBottomSheet(
+    context: context,
+    isScrollControlled: true,
+    backgroundColor: Colors.transparent,
+    builder: (_) => DraggableScrollableSheet(
+      initialChildSize: 0.82,
+      minChildSize: 0.50,
+      maxChildSize: 0.92,
+      expand: false,
+      builder: (ctx, scrollController) {
+        final dark = Theme.of(ctx).brightness == Brightness.dark;
+        return Container(
+          decoration: BoxDecoration(
+            color: dark ? const Color(0xFF161616) : const Color(0xFFF7F8FA),
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+          ),
+          child: Column(children: [
+            // Pill handle
+            Container(
+              margin: const EdgeInsets.symmetric(vertical: 10),
+              width: 38, height: 4,
+              decoration: BoxDecoration(
+                color: dark ? Colors.white24 : Colors.black26,
+                borderRadius: BorderRadius.circular(4),
+              ),
+            ),
+            Expanded(child: _NotesPanelContent(
+              onClose: () => Navigator.pop(ctx),
+              scrollController: scrollController,
+            )),
+          ]),
+        );
+      },
+    ),
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// PAINEL LATERAL LEGADO — mantido apenas para compatibilidade interna
+// (o botão tab verde foi removido; acesso via botão Notas na home)
+// ─────────────────────────────────────────────────────────────────────────────
 class _SideNotesPanel extends StatefulWidget {
   final bool isOpen;
   final VoidCallback onToggle;
@@ -3219,19 +3258,9 @@ class _SideNotesPanelState extends State<_SideNotesPanel>
 
   @override
   Widget build(BuildContext context) {
-    final dark  = Theme.of(context).brightness == Brightness.dark;
     final size  = MediaQuery.of(context).size;
-    final safeB = MediaQuery.of(context).padding.bottom;
-    final safeT = MediaQuery.of(context).padding.top;
-
     // Largura do painel: 88% em mobile, máx 400px
     final panelW = (size.width * 0.88).clamp(0.0, 400.0);
-
-    // Cores do tab/botão
-    final tabBg  = dark ? const Color(0xFF1A2820) : const Color(0xFF0F1C14);
-    final tabShadow = dark
-        ? const Color(0xFF1F6B48).withValues(alpha: 0.55)
-        : const Color(0xFF1F6B48).withValues(alpha: 0.40);
 
     return Stack(children: [
       // ── Overlay escuro quando aberto ──────────────────────────────────────
@@ -3263,67 +3292,7 @@ class _SideNotesPanelState extends State<_SideNotesPanel>
         },
       ),
 
-      // ── Botão tab lateral (sempre visível, beira esquerda) ────────────────
-      AnimatedBuilder(
-        animation: _slideAnim,
-        builder: (_, __) {
-          // O tab se desloca junto com o painel
-          final panelOffset = (1.0 - _slideAnim.value) * -(panelW + 8);
-          final tabLeft = panelOffset + panelW; // fica colado na borda direita do painel
-
-          return Positioned(
-            left: tabLeft,
-            bottom: safeB + 62,
-            child: GestureDetector(
-              onTap: widget.onToggle,
-              child: Container(
-                width: 28,
-                height: 68,
-                decoration: BoxDecoration(
-                  color: tabBg,
-                  borderRadius: const BorderRadius.only(
-                    topRight: Radius.circular(12),
-                    bottomRight: Radius.circular(12),
-                  ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: tabShadow,
-                      blurRadius: 14,
-                      spreadRadius: 0,
-                      offset: const Offset(3, 0),
-                    ),
-                    BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.30),
-                      blurRadius: 6,
-                      offset: const Offset(2, 2),
-                    ),
-                  ],
-                  border: Border(
-                    top:    BorderSide(color: const Color(0xFF1F6B48).withValues(alpha: 0.60), width: 1),
-                    right:  BorderSide(color: const Color(0xFF1F6B48).withValues(alpha: 0.60), width: 1),
-                    bottom: BorderSide(color: const Color(0xFF1F6B48).withValues(alpha: 0.60), width: 1),
-                  ),
-                ),
-                child: Center(
-                  child: AnimatedSwitcher(
-                    duration: const Duration(milliseconds: 220),
-                    transitionBuilder: (child, anim) => ScaleTransition(scale: anim, child: child),
-                    child: widget.isOpen
-                        ? const Icon(Icons.chevron_left_rounded,
-                            key: ValueKey('close'),
-                            color: Color(0xFF4ADE80),
-                            size: 20)
-                        : const Icon(Icons.edit_note_rounded,
-                            key: ValueKey('open'),
-                            color: Color(0xFF4ADE80),
-                            size: 20),
-                  ),
-                ),
-              ),
-            ),
-          );
-        },
-      ),
+      // Botão tab lateral removido — acesso via botão Notas na HomeScreen
     ]);
   }
 }
@@ -3333,7 +3302,8 @@ class _SideNotesPanelState extends State<_SideNotesPanel>
 // ─────────────────────────────────────────────────────────────────────────────
 class _NotesPanelContent extends StatefulWidget {
   final VoidCallback onClose;
-  const _NotesPanelContent({required this.onClose});
+  final ScrollController? scrollController;
+  const _NotesPanelContent({required this.onClose, this.scrollController});
 
   @override
   State<_NotesPanelContent> createState() => _NotesPanelContentState();
@@ -3405,27 +3375,17 @@ class _NotesPanelContentState extends State<_NotesPanelContent> {
     final dark = p.darkMode;
     final isEs = p.lang == 'es';
 
-    final panelBg    = dark ? const Color(0xFF161616) : const Color(0xFFF7F8FA);
-    final headerBg   = dark ? const Color(0xFF0F1C14) : const Color(0xFF0F1C14);
-    final searchBg   = dark ? const Color(0xFF222222) : Colors.white;
-    final borderCol  = dark ? const Color(0xFF2A2A2A) : const Color(0xFFE0E0E0);
-    final textCol    = dark ? Colors.white             : const Color(0xFF0F1C14);
-    final subCol     = dark ? Colors.white54           : Colors.black45;
-    final dividerCol = dark ? const Color(0xFF2A2A2A)  : const Color(0xFFEEEEEE);
+    final panelBg   = dark ? const Color(0xFF161616) : const Color(0xFFF7F8FA);
+    final searchBg  = dark ? const Color(0xFF222222) : Colors.white;
+    final borderCol = dark ? const Color(0xFF2A2A2A) : const Color(0xFFE0E0E0);
+    final textCol   = dark ? Colors.white             : const Color(0xFF0F1C14);
+    final subCol    = dark ? Colors.white54           : Colors.black45;
 
     return Material(
       color: Colors.transparent,
       child: Container(
         decoration: BoxDecoration(
           color: panelBg,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.35),
-              blurRadius: 24,
-              spreadRadius: 0,
-              offset: const Offset(4, 0),
-            ),
-          ],
         ),
         child: Column(children: [
           // ── Header do painel ───────────────────────────────────────────────
@@ -3561,6 +3521,7 @@ class _NotesPanelContentState extends State<_NotesPanelContent> {
                     ? _PanelEmptyState(isEs: isEs, dark: dark,
                         onNew: () => _openEditor())
                     : ListView.separated(
+                        controller: widget.scrollController,
                         padding: const EdgeInsets.fromLTRB(12, 12, 12, 24),
                         itemCount: _filtered.length,
                         separatorBuilder: (_, __) => const SizedBox(height: 8),
