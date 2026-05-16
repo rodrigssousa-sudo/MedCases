@@ -989,14 +989,14 @@ class _SeverityLegend extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const items = [
-      (Color(0xFF7C2D12), Color(0xFFDC2626), 'CONTRAINDICADA'),
-      (Color(0xFF7C3003), Color(0xFFEA580C), 'GRAVE'),
-      (Color(0xFF713F12), Color(0xFFD97706), 'MODERADA'),
-      (Color(0xFF1A4731), Color(0xFF16A34A), 'LEVE'),
-      (Color(0xFF1E3A5F), Color(0xFF2563EB), 'MONITORAR'),
-    ];
     final isEs = context.read<AppProvider>().lang == 'es';
+    final items = [
+      (const Color(0xFF7C2D12), const Color(0xFFDC2626), 'CONTRAINDICADA'),
+      (const Color(0xFF7C3003), const Color(0xFFEA580C), 'GRAVE'),
+      (const Color(0xFF713F12), const Color(0xFFD97706), 'MODERADA'),
+      (const Color(0xFF1A4731), const Color(0xFF16A34A), 'LEVE'),
+      (const Color(0xFF1E3A5F), const Color(0xFF2563EB), isEs ? 'MONITOREAR' : 'MONITORAR'),
+    ];
     return Wrap(
       spacing: 8,
       runSpacing: 6,
@@ -1241,7 +1241,7 @@ class _InteractionCardState extends State<_InteractionCard> {
                             borderRadius: BorderRadius.circular(6),
                           ),
                           child: Text(
-                            ix.severityLabel,
+                            ix.severityLabelL10n(isEs: widget.isEs),
                             style: TextStyle(
                               fontSize: 10,
                               fontWeight: FontWeight.w800,
@@ -1316,6 +1316,7 @@ class _InteractionCardState extends State<_InteractionCard> {
               dark: dark,
               c: c,
               severityColor: _severityColor,
+              isEs: widget.isEs,
             ),
           ],
         ],
@@ -1332,12 +1333,14 @@ class _ExpandedContent extends StatelessWidget {
   final bool dark;
   final AppColors c;
   final Color severityColor;
+  final bool isEs;
 
   const _ExpandedContent({
     required this.ix,
     required this.dark,
     required this.c,
     required this.severityColor,
+    required this.isEs,
   });
 
   @override
@@ -1383,7 +1386,7 @@ class _ExpandedContent extends StatelessWidget {
 
           // ── Efeito clínico ───────────────────────────────────────────────
           _InfoSection(
-            title: 'EFEITO CLÍNICO',
+            title: isEs ? 'EFECTO CLÍNICO' : 'EFEITO CLÍNICO',
             icon: Icons.monitor_heart_rounded,
             iconColor: const Color(0xFFF87171),
             content: ix.effect,
@@ -1395,7 +1398,7 @@ class _ExpandedContent extends StatelessWidget {
 
           // ── Fisiopatologia / Mecanismo ───────────────────────────────────
           _InfoSection(
-            title: 'FISIOPATOLOGIA DA INTERAÇÃO',
+            title: isEs ? 'FISIOPATOLOGÍA DE LA INTERACCIÓN' : 'FISIOPATOLOGIA DA INTERAÇÃO',
             icon: Icons.biotech_rounded,
             iconColor: const Color(0xFF60A5FA),
             content: ix.mechanism,
@@ -1407,7 +1410,7 @@ class _ExpandedContent extends StatelessWidget {
 
           // ── Manejo Clínico ───────────────────────────────────────────────
           _InfoSection(
-            title: 'MANEJO CLÍNICO',
+            title: isEs ? 'MANEJO CLÍNICO' : 'MANEJO CLÍNICO',
             icon: Icons.medical_services_rounded,
             iconColor: const Color(0xFF34D399),
             content: ix.management,
@@ -1426,7 +1429,7 @@ class _ExpandedContent extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'RISCOS',
+                      isEs ? 'RIESGOS' : 'RISCOS',
                       style: TextStyle(
                         fontSize: 10,
                         fontWeight: FontWeight.w700,
@@ -1448,7 +1451,7 @@ class _ExpandedContent extends StatelessWidget {
                             borderRadius: BorderRadius.circular(6),
                           ),
                           child: Text(
-                            DrugInteraction.riskTypeLabel(rt),
+                            DrugInteraction.riskTypeLabel(rt, isEs: isEs),
                             style: const TextStyle(
                               fontSize: 10,
                               fontWeight: FontWeight.w600,
@@ -1469,7 +1472,7 @@ class _ExpandedContent extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Text(
-                    'EVIDÊNCIA',
+                    isEs ? 'EVIDENCIA' : 'EVIDÊNCIA',
                     style: TextStyle(
                       fontSize: 10,
                       fontWeight: FontWeight.w700,
@@ -1491,7 +1494,7 @@ class _ExpandedContent extends StatelessWidget {
                       ),
                     ),
                     child: Text(
-                      ix.evidenceLabel,
+                      ix.evidenceLabel(isEs: isEs),
                       style: const TextStyle(
                         fontSize: 10,
                         fontWeight: FontWeight.w700,

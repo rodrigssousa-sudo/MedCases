@@ -82,6 +82,7 @@ class DrugInteraction {
   });
 
   /// Rótulo curto da severidade
+  /// Badge de severidade — bilíngue (padrão: es quando isEs=true)
   String get severityLabel {
     switch (severity) {
       case InteractionSeverity.contraindicated: return 'CONTRAINDICADA';
@@ -92,53 +93,68 @@ class DrugInteraction {
     }
   }
 
-  /// Rótulo longo da severidade (para bottom sheets)
-  String get severityLongLabel {
+  String severityLabelL10n({bool isEs = true}) {
     switch (severity) {
-      case InteractionSeverity.contraindicated: return 'CONTRAINDICADA — NÃO UTILIZAR JUNTOS';
-      case InteractionSeverity.major:           return 'GRAVE — ALTO RISCO';
-      case InteractionSeverity.moderate:        return 'MODERADA — MONITORAR';
-      case InteractionSeverity.minor:           return 'LEVE — VIGILÂNCIA';
-      case InteractionSeverity.monitorOnly:     return 'SÓ MONITORIZAR';
+      case InteractionSeverity.contraindicated: return 'CONTRAINDICADA';
+      case InteractionSeverity.major:           return isEs ? 'GRAVE'      : 'GRAVE';
+      case InteractionSeverity.moderate:        return isEs ? 'MODERADA'   : 'MODERADA';
+      case InteractionSeverity.minor:           return isEs ? 'LEVE'       : 'LEVE';
+      case InteractionSeverity.monitorOnly:     return isEs ? 'MONITOREAR' : 'MONITORAR';
     }
   }
 
-  /// Rótulo do nível de evidência
-  String get evidenceLabel {
+  /// Rótulo longo da severidade — bilíngue
+  String severityLongLabel({bool isEs = true}) {
+    switch (severity) {
+      case InteractionSeverity.contraindicated:
+        return isEs ? 'CONTRAINDICADA — NO UTILIZAR JUNTOS' : 'CONTRAINDICADA — NÃO UTILIZAR JUNTOS';
+      case InteractionSeverity.major:
+        return isEs ? 'GRAVE — ALTO RIESGO'                : 'GRAVE — ALTO RISCO';
+      case InteractionSeverity.moderate:
+        return isEs ? 'MODERADA — MONITOREAR'              : 'MODERADA — MONITORAR';
+      case InteractionSeverity.minor:
+        return isEs ? 'LEVE — VIGILANCIA'                  : 'LEVE — VIGILÂNCIA';
+      case InteractionSeverity.monitorOnly:
+        return isEs ? 'SOLO MONITORIZAR'                   : 'SÓ MONITORIZAR';
+    }
+  }
+
+  /// Rótulo do nível de evidência — bilíngue
+  String evidenceLabel({bool isEs = true}) {
     switch (evidenceLevel) {
-      case EvidenceLevel.established:  return 'ESTABELECIDA';
-      case EvidenceLevel.probable:     return 'PROVÁVEL';
-      case EvidenceLevel.possible:     return 'POSSÍVEL';
-      case EvidenceLevel.theoretical:  return 'TEÓRICA';
+      case EvidenceLevel.established:  return isEs ? 'ESTABLECIDA'  : 'ESTABELECIDA';
+      case EvidenceLevel.probable:     return isEs ? 'PROBABLE'     : 'PROVÁVEL';
+      case EvidenceLevel.possible:     return isEs ? 'POSIBLE'      : 'POSSÍVEL';
+      case EvidenceLevel.theoretical:  return isEs ? 'TEÓRICA'      : 'TEÓRICA';
     }
   }
 
-  /// Rótulo legível de cada tipo de risco
-  static String riskTypeLabel(RiskType r) {
+  /// Rótulo legível de cada tipo de risco — bilíngue
+  static String riskTypeLabel(RiskType r, {bool isEs = true}) {
     switch (r) {
       case RiskType.qtProlongation:        return '↑QT';
-      case RiskType.hemorrhagic:           return 'Hemorrágico';
-      case RiskType.arrhythmia:            return 'Arritmia';
-      case RiskType.respiratoryDepression: return 'Dep. Resp.';
-      case RiskType.serotonin:             return 'Serotonina';
-      case RiskType.nephrotoxicity:        return 'Nefrotóxico';
-      case RiskType.hepatotoxicity:        return 'Hepatotóxico';
-      case RiskType.plasmaLevel:           return 'Nível Plasmático';
+      case RiskType.hemorrhagic:           return isEs ? 'Hemorrágico'      : 'Hemorrágico';
+      case RiskType.arrhythmia:            return isEs ? 'Arritmia'         : 'Arritmia';
+      case RiskType.respiratoryDepression: return isEs ? 'Dep. Resp.'       : 'Dep. Resp.';
+      case RiskType.serotonin:             return isEs ? 'Serotonina'       : 'Serotonina';
+      case RiskType.nephrotoxicity:        return isEs ? 'Nefrotóxico'      : 'Nefrotóxico';
+      case RiskType.hepatotoxicity:        return isEs ? 'Hepatotóxico'     : 'Hepatotóxico';
+      case RiskType.plasmaLevel:           return isEs ? 'Nivel Plasmático' : 'Nível Plasmático';
       case RiskType.cardiovascular:        return 'Cardiovascular';
-      case RiskType.reducedEfficacy:       return 'Eficácia ↓';
-      case RiskType.increasedToxicity:     return 'Toxicidade ↑';
-      case RiskType.hypoglycemia:          return 'Hipoglicemia';
-      case RiskType.hyperkalemia:          return 'Hipercalemia';
-      case RiskType.hypokalemia:           return 'Hipocalemia';
-      case RiskType.cns:                   return 'Depressão SNC';
-      case RiskType.myopathy:              return 'Miopatia';
-      case RiskType.myelosuppression:      return 'Mielossupressão';
-      case RiskType.infection:             return 'Infecção';
-      case RiskType.thrombosis:            return 'Trombose';
-      case RiskType.electrolyte:           return 'Eletrólitos';
-      case RiskType.seizure:               return 'Convulsão';
-      case RiskType.ototoxicity:           return 'Ototóxico';
-      case RiskType.other:                 return 'Outro';
+      case RiskType.reducedEfficacy:       return isEs ? 'Eficacia ↓'       : 'Eficácia ↓';
+      case RiskType.increasedToxicity:     return isEs ? 'Toxicidad ↑'      : 'Toxicidade ↑';
+      case RiskType.hypoglycemia:          return isEs ? 'Hipoglucemia'     : 'Hipoglicemia';
+      case RiskType.hyperkalemia:          return isEs ? 'Hiperpotasemia'   : 'Hipercalemia';
+      case RiskType.hypokalemia:           return isEs ? 'Hipopotasemia'    : 'Hipocalemia';
+      case RiskType.cns:                   return isEs ? 'Depresión SNC'    : 'Depressão SNC';
+      case RiskType.myopathy:              return isEs ? 'Miopatía'         : 'Miopatia';
+      case RiskType.myelosuppression:      return isEs ? 'Mielosupresión'   : 'Mielossupressão';
+      case RiskType.infection:             return isEs ? 'Infección'        : 'Infecção';
+      case RiskType.thrombosis:            return isEs ? 'Trombosis'        : 'Trombose';
+      case RiskType.electrolyte:           return isEs ? 'Electrolitos'     : 'Eletrólitos';
+      case RiskType.seizure:               return isEs ? 'Convulsión'       : 'Convulsão';
+      case RiskType.ototoxicity:           return isEs ? 'Ototóxico'        : 'Ototóxico';
+      case RiskType.other:                 return isEs ? 'Otro'             : 'Outro';
     }
   }
 }
@@ -8641,6 +8657,874 @@ const _interactionDB = <_IxEntry>[
     EvidenceLevel.probable,
     {RiskType.cardiovascular},
     ['Micromedex 2024', 'CredibleMeds 2024']),
+
+
+  // ── Dislipidemia: Fibratos e Resinas ─────────────────────────────────────────
+
+  ('gemfibrozil', 'pravastatina', InteractionSeverity.major,
+    'Inibição da glicuronidação da estatina pelo gemfibrozil, aumentando drasticamente os níveis plasmáticos',
+    'Risco altíssimo de miopatia grave e rabdomiólise fatal',
+    'Evitar a combinação. Se fibrato for essencial, o fenofibrato é preferível e mais seguro com estatinas',
+    'ALTO RISCO DE RABDOMIÓLISE — Contraindicado',
+    EvidenceLevel.established,
+    {RiskType.myopathy, RiskType.plasmaLevel},
+    [_kRefGG, _kRefMdx, _kRefUT]),
+
+  ('gemfibrozil', 'repaglinida', InteractionSeverity.contraindicated,
+    'Inibição potente do CYP2C8 e OATP1B1 pelo gemfibrozil',
+    'Aumento de até 8 vezes na concentração de repaglinida, causando hipoglicemia severa e prolongada',
+    'Combinação contraindicada.',
+    'HIPOGLICEMIA GRAVE — Contraindicado',
+    EvidenceLevel.established,
+    {RiskType.plasmaLevel, RiskType.hypoglycemia},
+    [_kRefMdx, _kRefFDA]),
+
+  ('colestiramina', 'warfarina', InteractionSeverity.moderate,
+    'Ligação da resina à varfarina no lúmen intestinal',
+    'Redução da absorção da varfarina, diminuindo o INR e elevando o risco trombótico',
+    'Administrar varfarina pelo menos 1 hora antes ou 4 a 6 horas após a colestiramina',
+    'MONITORAR INR — Risco de falha terapêutica',
+    EvidenceLevel.established,
+    {RiskType.reducedEfficacy, RiskType.hemorrhagic},
+    [_kRefGG, _kRefMdx]),
+
+  ('colestiramina', 'levotiroxina', InteractionSeverity.major,
+    'Sequestro da levotiroxina no trato gastrointestinal formando complexo insolúvel',
+    'Falha no tratamento do hipotireoidismo (elevação do TSH)',
+    'Separar a administração por pelo menos 4 a 6 horas',
+    'FALHA DE ABSORÇÃO — Espaçar doses rigorosamente',
+    EvidenceLevel.established,
+    {RiskType.reducedEfficacy},
+    [_kRefMdx, _kRefUT]),
+
+  // ── Hepatite C: Antivirais de Ação Direta ─────────────────────────────────────
+
+  ('sofosbuvir', 'amiodarona', InteractionSeverity.contraindicated,
+    'Mecanismo desconhecido, possivelmente disfunção acentuada do nó sinusal miocárdico',
+    'Bradicardia sintomática grave, bloqueio cardíaco fatal ou necessidade de marcapasso',
+    'Combinação totalmente contraindicada. Se inevitável, monitoramento cardíaco contínuo hospitalar por 48h',
+    'BRADICARDIA FATAL — Contraindicado',
+    EvidenceLevel.established,
+    {RiskType.arrhythmia, RiskType.cardiovascular},
+    [_kRefFDA, _kRefMdx, _kRefUT]),
+
+  ('ledipasvir', 'omeprazol', InteractionSeverity.major,
+    'O ledipasvir necessita de ambiente ácido no estômago para ser absorvido. Os IBP anulam essa acidez',
+    'Falha virológica no tratamento da Hepatite C por subdosagem de ledipasvir',
+    'Evitar IBP. Se necessário, administrar simultaneamente com estômago vazio usando dose máx de omeprazol 20mg',
+    'FALHA TERAPÊUTICA — Absorção comprometida',
+    EvidenceLevel.established,
+    {RiskType.reducedEfficacy, RiskType.plasmaLevel},
+    [_kRefFDA, _kRefUT]),
+
+  ('velpatasvir', 'carbamazepina', InteractionSeverity.major,
+    'Indução potente da P-glicoproteína (P-gp) e CYP450 pela carbamazepina',
+    'Redução drástica nos níveis de velpatasvir, levando à perda de eficácia antiviral',
+    'Evitar o uso concomitante de indutores fortes durante o tratamento da Hepatite C',
+    'PERDA DE EFICÁCIA ANTIVIRAL — Evitar combinação',
+    EvidenceLevel.established,
+    {RiskType.plasmaLevel, RiskType.reducedEfficacy},
+    [_kRefMdx]),
+
+  // ── Psiquiatria: Antipsicóticos Atípicos ──────────────────────────────────────
+
+  ('clozapina', 'carbamazepina', InteractionSeverity.contraindicated,
+    'Efeito aditivo/sinérgico na toxicidade da medula óssea',
+    'Aumento dramático no risco de agranulocitose e aplasia medular fatal',
+    'Combinação absolutamente contraindicada. Escolher outro estabilizador do humor (ex: Valproato)',
+    'AGRANULOCITOSE FATAL — Contraindicado',
+    EvidenceLevel.established,
+    {RiskType.myelosuppression},
+    [_kRefGG, _kRefMdx, _kRefUT]),
+
+  ('ziprasidona', 'amiodarona', InteractionSeverity.contraindicated,
+    'Sinergismo na inibição dos canais de potássio retificadores miocárdicos (hERG)',
+    'Prolongação extrema do intervalo QT e risco de Torsades de Pointes',
+    'Contraindicado o uso conjunto com outros fármacos que prolongam o QT de forma conhecida',
+    'RISCO DE TORSADES DE POINTES — Contraindicado',
+    EvidenceLevel.established,
+    {RiskType.qtProlongation, RiskType.arrhythmia},
+    [_kRefMdx, _kRefUT]),
+
+  ('cariprazina', 'cetoconazol', InteractionSeverity.moderate,
+    'Inibição potente do CYP3A4 pelo cetoconazol',
+    'Aumento significativo das concentrações de cariprazina e seus metabólitos ativos (DDCAR)',
+    'Reduzir a dose de cariprazina à metade e monitorar acatisia e parkinsonismo',
+    'RISCO EXTRAPIRAMIDAL — Reduzir dose',
+    EvidenceLevel.probable,
+    {RiskType.plasmaLevel, RiskType.increasedToxicity},
+    [_kRefMdx, _kRefFDA]),
+
+  ('lurasidona', 'diltiazem', InteractionSeverity.major,
+    'Inibição moderada a forte do CYP3A4 pelo diltiazem',
+    'Elevação aguda da lurasidona, aumentando sedação, acatisia e hipotensão',
+    'A dose de lurasidona não deve exceder 40 mg/dia quando coadministrada com diltiazem',
+    'AJUSTE DE DOSE NECESSÁRIO — Risco de toxicidade',
+    EvidenceLevel.established,
+    {RiskType.plasmaLevel, RiskType.increasedToxicity},
+    [_kRefMdx, _kRefUT]),
+
+  // ── Demência / Alzheimer ──────────────────────────────────────────────────────
+
+  ('donepezila', 'butilescopolamina', InteractionSeverity.major,
+    'Antagonismo farmacodinâmico direto (Colinérgico vs Anticolinérgico)',
+    'Anulação da eficácia do tratamento para Alzheimer (piora cognitiva) e exacerbação anticolinérgica periférica',
+    'Evitar o uso de anticolinérgicos sistêmicos em pacientes com demência tratada farmacologicamente',
+    'ANTAGONISMO TERAPÊUTICO — Piora do Alzheimer',
+    EvidenceLevel.established,
+    {RiskType.reducedEfficacy, RiskType.cns},
+    [_kRefGG, _kRefMdx]),
+
+  ('donepezila', 'difenidramina', InteractionSeverity.major,
+    'A difenidramina possui altíssima carga anticolinérgica (anti-M1 central)',
+    'Anulação completa do efeito do inibidor da acetilcolinesterase e indução de delirium agudo no idoso',
+    'Contraindicado. Usar anti-histamínicos de 2ª geração (ex: Bilastina, Fexofenadina)',
+    'DELIRIUM E CONFUSÃO — Evitar anti-H1 de 1ª geração',
+    EvidenceLevel.established,
+    {RiskType.reducedEfficacy, RiskType.cns},
+    [_kRefMdx, _kRefUT]),
+
+  ('memantina', 'acetazolamida', InteractionSeverity.moderate,
+    'A alcalinização urinária induzida pela acetazolamida diminui o clearance renal da memantina',
+    'Acúmulo de memantina sérica, levando a confusão mental, tontura e psicose paradoxal',
+    'Monitorar função cognitiva de perto ou evitar a combinação',
+    'TOXICIDADE NEUROLÓGICA — Risco de acúmulo sistêmico',
+    EvidenceLevel.probable,
+    {RiskType.plasmaLevel, RiskType.increasedToxicity},
+    [_kRefMdx, _kRefFDA]),
+
+  ('donepezila', 'timolol', InteractionSeverity.major,
+    'Sinergia cronotrópica negativa: aumento do tônus colinérgico central/periférico + bloqueio beta-adrenérgico sistémico',
+    'Bradicardia sinusal sintomática grave, bloqueios auriculoventriculares e síncope recorrente no idoso',
+    'Monitorar o pulso regularmente. Ensinar o paciente a ocluir o ponto lacrimal ao instilar o colírio para evitar absorção',
+    'BRADICARDIA E SÍNCOPE — Sinergia Cardiodepressora',
+    EvidenceLevel.established,
+    {RiskType.arrhythmia, RiskType.cardiovascular},
+    [_kRefMdx, _kRefUT]),
+
+  // ── Hemostáticos ──────────────────────────────────────────────────────────────
+
+  ('desmopressina', 'furosemida', InteractionSeverity.major,
+    'Efeitos aditivos sobre a alteração do volume e concentração do sódio plasmático (retenção de água livre + depleção de sódio)',
+    'Hiponatremia dilucional aguda e grave, provocando edema cerebral, obnubilação e convulsões',
+    'Evitar o uso de diuréticos potentes em pacientes que recebem desmopressina. Controlar o sódio sérico a cada 24h',
+    'HIPONATREMIA DILUCIONAL GRAVE — Risco de Convulsões',
+    EvidenceLevel.established,
+    {RiskType.electrolyte, RiskType.seizure},
+    [_kRefMdx, _kRefGG]),
+
+  ('acido tranexamico', 'anticoncepcional', InteractionSeverity.moderate,
+    'Sinergia pró-trombótica: inibição da fibrinólise pelo ácido tranexâmico somada ao estado pró-coagulante dos estrogênios',
+    'Risco aumentado de tromboembolismo venoso (TVP, TEP) e arterial',
+    'Usar com cautela. Evitar combinação em pacientes com histórico ou fatores de risco para trombose',
+    'RISCO TROMBÓTICO ADITIVO — Precaução em pacientes de risco',
+    EvidenceLevel.probable,
+    {RiskType.thrombosis},
+    [_kRefMdx, _kRefUT]),
+
+  ('vitamina k1', 'varfarina', InteractionSeverity.major,
+    'Antagonismo farmacodinâmico direto: a vitamina K1 é o substrato que a varfarina bloqueia na síntese de fatores de coagulação',
+    'Reversão do efeito anticoagulante e queda do INR, aumentando risco trombótico',
+    'Monitorar INR rigorosamente. Uso terapêutico intencional para reverter superdosagem de varfarina',
+    'REVERSÃO DO ANTICOAGULANTE — Monitorizar INR',
+    EvidenceLevel.established,
+    {RiskType.reducedEfficacy, RiskType.thrombosis},
+    [_kRefGG, _kRefFDA]),
+
+  // ── Psoríase / Dermatologia ───────────────────────────────────────────────────
+
+  ('acitretina', 'metotrexato', InteractionSeverity.major,
+    'Ambos fármacos são intensamente hepatotóxicos; competência na excreção e metabolismo',
+    'Hepatite tóxica aguda, elevação fulminante de transaminases e risco de cirrose a longo prazo',
+    'Associação frequentemente evitada. Se usada, exige hepatograma a cada 2-4 semanas',
+    'HEPATOTOXICIDADE GRAVE ADITIVA — Evitar se possível',
+    EvidenceLevel.established,
+    {RiskType.hepatotoxicity},
+    [_kRefGG, _kRefUT]),
+
+  ('acitretina', 'doxiciclina', InteractionSeverity.contraindicated,
+    'Sinergia neurotóxica idiopática entre retinoides sistémicos (vitamina A) e tetraciclinas',
+    'Risco crítico de Hipertensão Intracraniana Benigna (Pseudotumor Cerebri), causando cefaleia severa, edema de papila e cegueira permanente',
+    'Contraindicado. Nunca associar retinoides orais com antibióticos da classe das tetraciclinas',
+    'CEGUEIRA POR HIC — Contraindicado com Tetraciclinas',
+    EvidenceLevel.established,
+    {RiskType.increasedToxicity},
+    [_kRefFDA, _kRefMdx]),
+
+  ('acitretina', 'alcool', InteractionSeverity.contraindicated,
+    'O álcool converte a acitretina de volta a etretinato, metabólito com meia-vida extremamente longa (120 dias) e altamente teratogênico',
+    'Risco de teratogenicidade prolongada por até 2 anos após a suspensão do medicamento',
+    'Consumo de álcool absolutamente contraindicado durante e por 2 meses após o tratamento',
+    'TERATOGENICIDADE PROLONGADA — Álcool absolutamente proibido',
+    EvidenceLevel.established,
+    {RiskType.increasedToxicity},
+    [_kRefFDA, _kRefGG]),
+
+  ('finasterida', 'inibidores cyp3a4', InteractionSeverity.minor,
+    'A finasterida é metabolizada principalmente pelo CYP3A4',
+    'Possível aumento modesto dos níveis de finasterida com inibidores potentes (cetoconazol, itraconazol)',
+    'Sem ajuste de dose necessário para a maioria dos pacientes; monitorar efeitos adversos',
+    'INTERAÇÃO LEVE — Monitorar efeitos adversos',
+    EvidenceLevel.theoretical,
+    {RiskType.plasmaLevel},
+    [_kRefMdx]),
+
+  // ── Vitaminas e Suplementos ───────────────────────────────────────────────────
+
+  ('vitamina d', 'tiazidico', InteractionSeverity.moderate,
+    'Os tiazídicos reduzem a excreção renal de cálcio e a vitamina D aumenta a absorção intestinal de cálcio',
+    'Hipercalcemia, especialmente em pacientes com hiperparatireoidismo ou sarcoidose',
+    'Monitorar calcemia periodicamente em pacientes usando vitamina D e tiazídicos cronicamente',
+    'HIPERCALCEMIA — Monitorar cálcio sérico',
+    EvidenceLevel.established,
+    {RiskType.electrolyte, RiskType.increasedToxicity},
+    [_kRefGG, _kRefMdx]),
+
+  ('vitamina d', 'orlistate', InteractionSeverity.moderate,
+    'O orlistate inibe a absorção de gordura e vitaminas lipossolúveis no intestino',
+    'Redução da absorção de vitamina D, agravando deficiências em pacientes obesos',
+    'Suplementar vitamina D em doses adequadas e separar a administração do orlistate',
+    'ABSORÇÃO REDUZIDA — Suplementação ajustada',
+    EvidenceLevel.established,
+    {RiskType.reducedEfficacy},
+    [_kRefFDA, _kRefMdx]),
+
+  ('vitamina c', 'varfarina', InteractionSeverity.minor,
+    'Altas doses de vitamina C (>1g/dia) podem interferir com o metabolismo da varfarina',
+    'Possível alteração do INR (redução ou aumento dependendo da dose)',
+    'Monitorar INR se paciente usar suplementação de vitamina C em doses altas',
+    'MONITORAR INR — Altas doses de vitamina C',
+    EvidenceLevel.possible,
+    {RiskType.hemorrhagic},
+    [_kRefMdx]),
+
+  ('vitamina c', 'deferasirox', InteractionSeverity.moderate,
+    'A vitamina C aumenta a biodisponibilidade do ferro e pode alterar a farmacocinética do quelante',
+    'Potencial excesso de quelação e toxicidade por deferasirox se iron stores forem baixos',
+    'Evitar suplementação simultânea de vitamina C em altas doses com quelantes de ferro',
+    'INTERAÇÃO COM QUELANTE DE FERRO — Evitar altas doses',
+    EvidenceLevel.probable,
+    {RiskType.increasedToxicity},
+    [_kRefMdx]),
+
+  ('acido folico', 'metotrexato', InteractionSeverity.moderate,
+    'O ácido fólico é o substrato que o metotrexato antagoniza ao inibir a diidrofolato redutase',
+    'Suplementação com ácido fólico pode atenuar a toxicidade do metotrexato porém pode reduzir ligeiramente sua eficácia',
+    'Uso intencional e supervisionado: suplementar com 1-5 mg/dia de ácido fólico para reduzir efeitos adversos do MTX em doses baixas reumatológicas',
+    'ANTAGONISMO FOLATO — Uso supervisionado para reduzir toxicidade',
+    EvidenceLevel.established,
+    {RiskType.reducedEfficacy},
+    [_kRefGG, _kRefUT]),
+
+  ('acido folico', 'sulfassalazina', InteractionSeverity.moderate,
+    'A sulfassalazina inibe a absorção intestinal do ácido fólico e compete pelas enzimas do metabolismo do folato',
+    'Deficiência de folato e aumento do risco de anemia megaloblástica ou macrocitose',
+    'Aumentar a dose de suplementação de ácido fólico (ex. 1 a 5 mg/dia) e espaçar as tomadas da sulfassalazina',
+    'DÉFICIT DE ÁCIDO FÓLICO — Requer suplementação maior',
+    EvidenceLevel.established,
+    {RiskType.reducedEfficacy, RiskType.increasedToxicity},
+    [_kRefMdx]),
+
+  ('magnesio', 'antibiotico tetraciclinico', InteractionSeverity.major,
+    'Formação de quelatos insolúveis entre o magnésio e as tetraciclinas no trato gastrointestinal',
+    'Redução drástica na absorção das tetraciclinas (doxiciclina, tetraciclina), levando a falha antibiótica',
+    'Espaçar a administração em pelo menos 2 horas. Preferir administrar o antibiótico 1h antes do suplemento',
+    'FALHA ANTIBIÓTICA POR QUELAÇÃO — Espaçar doses',
+    EvidenceLevel.established,
+    {RiskType.reducedEfficacy},
+    [_kRefGG, _kRefMdx]),
+
+  ('magnesio', 'fluoroquinolona', InteractionSeverity.major,
+    'Formação de quelatos entre cátions divalentes (Mg2+) e fluoroquinolonas no lúmen intestinal',
+    'Redução de até 50% na biodisponibilidade da fluoroquinolona, causando falha antibiótica',
+    'Administrar a fluoroquinolona pelo menos 2 horas antes ou 6 horas após o suplemento de magnésio',
+    'FALHA ANTIBIÓTICA (QUELAÇÃO) — Espaçar doses obrigatoriamente',
+    EvidenceLevel.established,
+    {RiskType.reducedEfficacy},
+    [_kRefGG, _kRefMdx]),
+
+  ('zinco', 'antibiotico tetraciclinico', InteractionSeverity.major,
+    'Quelação do zinco com tetraciclinas no trato gastrointestinal',
+    'Redução significativa na absorção de ambos: do antibiótico e do zinco',
+    'Espaçar em pelo menos 2 horas. Tomar o antibiótico antes do suplemento',
+    'QUELAÇÃO MÚTUA — Espaçar doses 2h',
+    EvidenceLevel.established,
+    {RiskType.reducedEfficacy},
+    [_kRefMdx]),
+
+  ('zinco', 'fluoroquinolona', InteractionSeverity.moderate,
+    'Formação de quelatos insolúveis entre zinco e fluoroquinolonas',
+    'Redução da biodisponibilidade da fluoroquinolona e do zinco simultaneamente',
+    'Administrar a fluoroquinolona pelo menos 2 horas antes do suplemento de zinco',
+    'ABSORÇÃO REDUZIDA — Espaçar doses',
+    EvidenceLevel.established,
+    {RiskType.reducedEfficacy},
+    [_kRefMdx]),
+
+  ('cianocobalamina', 'metformina', InteractionSeverity.moderate,
+    'A metformina reduz a absorção de vitamina B12 ao interferir no receptor cálcio-dependente ileal',
+    'Deficiência subclínica ou clínica de vitamina B12 a longo prazo, risco de neuropatia megaloblástica',
+    'Monitorar os níveis séricos de B12 anualmente em pacientes sob terapia crônica com metformina',
+    'DÉFICIT CRÓNICO DE B12 — Monitoramento anual',
+    EvidenceLevel.established,
+    {RiskType.reducedEfficacy},
+    [_kRefUT, _kRefMdx]),
+
+  ('cianocobalamina', 'omeprazol', InteractionSeverity.moderate,
+    'A supressão profunda e prolongada do ácido gástrico impede a dissociação da vitamina B12 de suas proteínas dietéticas',
+    'Deficiência subclínica ou clínica de vitamina B12 a longo prazo, risco de neuropatia megaloblástica',
+    'Monitorar os níveis séricos de B12 anualmente em pacientes sob terapia crônica com IBP',
+    'DÉFICIT CRÓNICO DE B12 — Monitoramento anual com IBP',
+    EvidenceLevel.established,
+    {RiskType.reducedEfficacy},
+    [_kRefUT, _kRefMdx]),
+
+  ('tiamina', 'alcool', InteractionSeverity.major,
+    'O álcool crônico inibe a absorção intestinal, diminui o estoque hepático e aumenta a excreção urinária de tiamina',
+    'Deficiência grave de tiamina com risco de Encefalopatia de Wernicke e Síndrome de Korsakoff',
+    'Reposição intravenosa urgente de tiamina (300 mg IV/IM) antes de qualquer infusão de glicose em alcoolistas',
+    'ENCEFALOPATIA DE WERNICKE — Reposição IV urgente',
+    EvidenceLevel.established,
+    {RiskType.cns, RiskType.reducedEfficacy},
+    [_kRefGG, _kRefUT]),
+
+  ('piridoxina', 'levodopa', InteractionSeverity.major,
+    'A piridoxina aumenta o metabolismo periférico da levodopa pela DOPA descarboxilase antes de atingir o SNC',
+    'Redução significativa da eficácia terapêutica da levodopa para o Parkinson',
+    'Evitar suplementação de piridoxina em pacientes usando levodopa sem inibidor de descarboxilase (benserazida ou carbidopa)',
+    'PERDA DE EFICÁCIA DO ANTIPARKINSONIANO — Usar com carbidopa',
+    EvidenceLevel.established,
+    {RiskType.reducedEfficacy},
+    [_kRefGG, _kRefMdx]),
+
+  ('piridoxina', 'isoniazida', InteractionSeverity.major,
+    'A isoniazida inibe o metabolismo da piridoxina e sua conversão à forma ativa (piridoxal-5-fosfato)',
+    'Neuropatia periférica por deficiência funcional de piridoxina, especialmente em desnutridos e diabéticos',
+    'Suplementar piridoxina 25-50 mg/dia em todos os pacientes em uso de isoniazida',
+    'NEUROPATIA PERIFÉRICA — Suplementar piridoxina obrigatoriamente',
+    EvidenceLevel.established,
+    {RiskType.increasedToxicity},
+    [_kRefGG, _kRefMdx]),
+
+  // ── Anemias ───────────────────────────────────────────────────────────────────
+
+  ('sulfato ferroso', 'omeprazol', InteractionSeverity.moderate,
+    'Os IBP elevam o pH gástrico, reduzindo a solubilização do ferro ferroso',
+    'Redução na absorção do sulfato ferroso, dificultando a correção da anemia ferropriva',
+    'Administrar o ferro em jejum se possível, ou separar do IBP. Monitorar hemograma e ferritina',
+    'ABSORÇÃO REDUZIDA — Monitorar resposta hematológica',
+    EvidenceLevel.established,
+    {RiskType.reducedEfficacy},
+    [_kRefGG, _kRefMdx]),
+
+  ('sulfato ferroso', 'ciprofloxacino', InteractionSeverity.major,
+    'Formação de quelatos insolúveis entre o ferro e as fluoroquinolonas no lúmen intestinal',
+    'Falha do antibiótico fluoroquinolona por absorção insuficiente',
+    'Administrar a fluoroquinolona pelo menos 2 horas antes ou 6 horas após o sulfato ferroso',
+    'FALHA ANTIBIÓTICA — Espaçar doses obrigatoriamente',
+    EvidenceLevel.established,
+    {RiskType.reducedEfficacy},
+    [_kRefGG, _kRefMdx]),
+
+  ('sulfato ferroso', 'levotiroxina', InteractionSeverity.major,
+    'O ferro forma complexo insolúvel com a levotiroxina no trato gastrointestinal',
+    'Redução da absorção da levotiroxina e elevação do TSH, levando ao hipotireoidismo descontrolado',
+    'Separar as administrações em pelo menos 4 horas',
+    'HIPOTIREOIDISMO DESCOMPENSADO — Espaçar 4 horas',
+    EvidenceLevel.established,
+    {RiskType.reducedEfficacy},
+    [_kRefMdx, _kRefUT]),
+
+  ('ferro iv', 'epoetina', InteractionSeverity.moderate,
+    'A eritropoetina estimula a eritropoese, aumentando a demanda por ferro. A oferta de ferro IV potencializa a resposta',
+    'Quando o ferro IV é administrado sem eritropoetina adequada, pode haver acúmulo de ferro livre (toxicidade oxidativa)',
+    'Monitorar ferritina e saturação de transferrina. Titular a dose de ferro IV conforme resposta hematológica',
+    'MONITORAR ESTOQUE DE FERRO — Evitar sobrecarga',
+    EvidenceLevel.established,
+    {RiskType.increasedToxicity},
+    [_kRefUT, _kRefMdx]),
+
+  ('epoetina', 'varfarina', InteractionSeverity.moderate,
+    'O aumento do hematócrito e da viscosidade sanguínea induzido pela eritropoetina pode alterar o estado tromboembólico',
+    'Aumento do risco trombótico e possível necessidade de ajuste da dose de varfarina',
+    'Monitorar INR e sinais de tromboembolismo em pacientes anticoagulados iniciando eritropoetina',
+    'RISCO TROMBÓTICO E ALTERAÇÃO DO INR — Monitorar',
+    EvidenceLevel.probable,
+    {RiskType.thrombosis, RiskType.hemorrhagic},
+    [_kRefMdx]),
+
+  ('epoetina', 'ciclosporina', InteractionSeverity.moderate,
+    'A eritropoetina eleva o hematócrito e pode aumentar a viscosidade, alterando a farmacocinética da ciclosporina',
+    'Alteração dos níveis de ciclosporina e aumento da pressão arterial, podendo comprometer o enxerto renal',
+    'Monitorar pressão arterial e níveis de ciclosporina ao iniciar ou ajustar a dose de eritropoetina',
+    'HIPERTENSÃO E ALTERAÇÃO DE CICLOSPORINA — Monitorar',
+    EvidenceLevel.probable,
+    {RiskType.cardiovascular, RiskType.plasmaLevel},
+    [_kRefMdx, _kRefUT]),
+
+  // ── Fígado e Pâncreas ─────────────────────────────────────────────────────────
+
+  ('acido ursodesoxicolico', 'ciclosporina', InteractionSeverity.moderate,
+    'O ácido ursodesoxicólico pode aumentar a absorção da ciclosporina ao alterar a composição da bile intestinal',
+    'Elevação dos níveis de ciclosporina, com potencial nefrotoxicidade e imunossupressão excessiva',
+    'Monitorar os níveis séricos de ciclosporina ao iniciar o ácido ursodesoxicólico',
+    'NÍVEL DE CICLOSPORINA AUMENTADO — Monitorar concentrações',
+    EvidenceLevel.probable,
+    {RiskType.plasmaLevel, RiskType.nephrotoxicity},
+    [_kRefMdx]),
+
+  ('acido ursodesoxicolico', 'colestiramina', InteractionSeverity.major,
+    'A colestiramina sequestra o ácido ursodesoxicólico no intestino, impedindo sua absorção',
+    'Falha terapêutica no tratamento da colangite biliar primária ou litíase biliar',
+    'Administrar o ácido ursodesoxicólico pelo menos 2 horas antes ou 4 horas após a colestiramina',
+    'ABSORÇÃO ANULADA — Espaçar doses obrigatoriamente',
+    EvidenceLevel.established,
+    {RiskType.reducedEfficacy},
+    [_kRefMdx, _kRefUT]),
+
+  ('lactulose', 'antibiotico', InteractionSeverity.moderate,
+    'Antibióticos sistêmicos alteram a flora intestinal necessária para a fermentação da lactulose',
+    'Redução da eficácia da lactulose no controle da encefalopatia hepática ao eliminar as bactérias que a metabolizam',
+    'Monitorar o grau de encefalopatia e considerar ajuste da dose de lactulose durante cursos de antibióticos',
+    'EFICÁCIA REDUZIDA — Monitorar encefalopatia',
+    EvidenceLevel.probable,
+    {RiskType.reducedEfficacy},
+    [_kRefGG, _kRefMdx]),
+
+  ('pancrelipase', 'acarbosa', InteractionSeverity.major,
+    'A acarbosa é um inibidor direto das enzimas alfa-glicosidases e da amilase pancreática',
+    'Anulação total do efeito terapêutico da pancrelipase (especificamente a fração amilase), piorando a esteatorrea e desnutrição',
+    'Evitar a combinação. Pacientes com insuficiência pancreática exócrina não devem ser tratados com acarbosa',
+    'ANULAÇÃO ENZIMÁTICA TOTAL — Evitar uso concomitante',
+    EvidenceLevel.established,
+    {RiskType.reducedEfficacy},
+    [_kRefGG, _kRefMdx]),
+
+  ('pancrelipase', 'bicarbonato', InteractionSeverity.moderate,
+    'A alcalinização do ambiente gástrico-duodenal pode inativar as enzimas pancreáticas antes de atingirem o intestino delgado',
+    'Redução da eficácia da reposição enzimática, com persistência de má absorção e esteatorrea',
+    'Usar formulações entéricas de enzimas pancreáticas (revestimento gastrorresistente) e evitar antiácidos potentes próximos às refeições',
+    'INATIVAÇÃO ENZIMÁTICA — Preferir cápsulas gastrorresistentes',
+    EvidenceLevel.probable,
+    {RiskType.reducedEfficacy},
+    [_kRefMdx]),
+
+  // ── Respiratório Avançado ─────────────────────────────────────────────────────
+
+  ('omalizumabe', 'vacinas vivas', InteractionSeverity.major,
+    'O omalizumabe suprime a resposta imune mediada por IgE e pode atenuar a resposta a vacinas vivas',
+    'Risco de infecção ativa pela cepa vacinal e resposta imune atenuada',
+    'Evitar vacinas vivas atenuadas durante o tratamento com omalizumabe. Preferir vacinas inativadas',
+    'RISCO DE INFECÇÃO VACINAL — Evitar vacinas vivas',
+    EvidenceLevel.probable,
+    {RiskType.infection},
+    [_kRefFDA, _kRefUT]),
+
+  ('omalizumabe', 'dupilumabe', InteractionSeverity.major,
+    'Combinação de dois biológicos com supressão imune em vias diferentes (anti-IgE + anti-IL-4/IL-13)',
+    'Imunossupressão excessiva com risco de infecções oportunistas sem benefício adicional comprovado',
+    'Combinação de dois biológicos sistêmicos absolutamente contraindicada',
+    'IMUNOSSUPRESSÃO EXCESSIVA — Contraindicado',
+    EvidenceLevel.established,
+    {RiskType.infection, RiskType.increasedToxicity},
+    [_kRefFDA, _kRefUT]),
+
+  // ── Alergias ──────────────────────────────────────────────────────────────────
+
+  ('cetirizina', 'alcool', InteractionSeverity.moderate,
+    'Potenciação da sedação central pelo álcool em combinação com anti-histamínicos de 2ª geração',
+    'Sedação aumentada, comprometimento da atenção e habilidades psicomotoras',
+    'Evitar o consumo de álcool durante o uso de cetirizina, especialmente se for dirigir ou operar máquinas',
+    'SEDAÇÃO AUMENTADA — Evitar álcool',
+    EvidenceLevel.established,
+    {RiskType.cns},
+    [_kRefMdx]),
+
+  ('difenidramina', 'benzodiazepínico', InteractionSeverity.major,
+    'Sinergia na depressão do Sistema Nervioso Central e sedação excessiva',
+    'Sedação profunda, comprometimento cognitivo grave, depressão respiratória e risco de queda em idosos',
+    'Evitar a combinação. A difenidramina está na lista de medicamentos de alto risco para idosos (Critérios de Beers)',
+    'DEPRESSÃO SNC SEVERA — Evitar em idosos (Critérios de Beers)',
+    EvidenceLevel.established,
+    {RiskType.cns, RiskType.respiratoryDepression},
+    [_kRefGG, _kRefMdx]),
+
+  ('difenidramina', 'opioide', InteractionSeverity.major,
+    'Depressão farmacodinâmica aditiva do SNC e do centro respiratório bulbar',
+    'Sedação profunda, letargia prolongada e risco iminente de parada respiratória',
+    'Evitar a associação. Usar anti-histamínicos de 2ª geração (fexofenadina, loratadina) como alternativas seguras',
+    'DEPRESSÃO RESPIRATÓRIA SEVERA — Evitar combinação',
+    EvidenceLevel.established,
+    {RiskType.respiratoryDepression, RiskType.cns},
+    [_kRefMdx, _kRefGG]),
+
+  ('difenidramina', 'imao', InteractionSeverity.contraindicated,
+    'Os IMAOs inibem o metabolismo hepático da difenidramina, potencializando seus efeitos anticolinérgicos e sedativos',
+    'Toxicidade anticolinérgica grave: taquicardia, delirium, hipertermia, retenção urinária e possível psicose',
+    'Contraindicado. Aguardar washout completo do IMAO antes de usar difenidramina',
+    'TOXICIDADE ANTICOLINÉRGICA GRAVE — Contraindicado com IMAO',
+    EvidenceLevel.established,
+    {RiskType.cns, RiskType.increasedToxicity},
+    [_kRefMdx, _kRefFDA]),
+
+  ('fexofenadina', 'cetoconazol', InteractionSeverity.moderate,
+    'O cetoconazol inibe o transportador P-glicoproteína e aumenta a biodisponibilidade da fexofenadina',
+    'Aumento dos níveis plasmáticos de fexofenadina, com potencial prolongamento do intervalo QT',
+    'Monitorar ECG em pacientes com fatores de risco cardíaco. Geralmente bem tolerado na prática',
+    'AUMENTO DE NÍVEIS — Monitorar QT em pacientes de risco',
+    EvidenceLevel.probable,
+    {RiskType.plasmaLevel, RiskType.qtProlongation},
+    [_kRefMdx, _kRefFDA]),
+
+  ('fexofenadina', 'eritromicina', InteractionSeverity.moderate,
+    'A eritromicina inibe a P-glicoproteína e o transportador OATP, aumentando a biodisponibilidade da fexofenadina',
+    'Aumento de até 2 vezes nos níveis plasmáticos de fexofenadina',
+    'Geralmente bem tolerado, mas monitorar em pacientes com fatores de risco para prolongamento do QT',
+    'AUMENTO DE BIODISPONIBILIDADE — Monitorar em pacientes de risco cardíaco',
+    EvidenceLevel.established,
+    {RiskType.plasmaLevel},
+    [_kRefFDA, _kRefMdx]),
+
+  // ── Alzheimer ─────────────────────────────────────────────────────────────────
+
+  ('donepezila', 'amiodarona', InteractionSeverity.major,
+    'Sinergia bradicardizante: inibidor da colinesterase aumenta o tônus vagal somado ao efeito cronotrópico negativo da amiodarona',
+    'Bradicardia sinusal severa, bloqueio AV de 2º/3º grau e síncope recorrente',
+    'Monitorar ECG e frequência cardíaca. Considerar alternativas terapêuticas',
+    'BRADICARDIA SEVERA — Monitorar ECG',
+    EvidenceLevel.established,
+    {RiskType.arrhythmia, RiskType.cardiovascular},
+    [_kRefMdx, _kRefUT]),
+
+  ('donepezila', 'succinilcolina', InteractionSeverity.major,
+    'Os inibidores da colinesterase reduzem a hidrólise da succinilcolina, prolongando seu efeito neuromuscular',
+    'Bloqueio neuromuscular prolongado e apneia pós-operatória inesperada',
+    'Alertar o anestesiologista sobre o uso de inibidores de colinesterase antes de procedimentos cirúrgicos',
+    'APNEIA PÓS-OPERATÓRIA — Alertar equipe de anestesia',
+    EvidenceLevel.established,
+    {RiskType.respiratoryDepression, RiskType.increasedToxicity},
+    [_kRefGG, _kRefMdx]),
+
+  ('memantina', 'amantadina', InteractionSeverity.major,
+    'Ambos são antagonistas dos receptores NMDA de glutamato; efeito aditivo/sinérgico',
+    'Toxicidade por excesso de bloqueio NMDA: alucinações, agitação, mioclonias e psicose aguda',
+    'Evitar a combinação. Se necessário para Parkinson + demência, usar doses mínimas com monitoramento rigoroso',
+    'PSICOSE E ALUCINAÇÕES — Evitar bloqueio NMDA duplo',
+    EvidenceLevel.established,
+    {RiskType.cns, RiskType.increasedToxicity},
+    [_kRefGG, _kRefMdx]),
+
+  ('memantina', 'ketamina', InteractionSeverity.major,
+    'Antagonismo NMDA duplo: a cetamina e a memantina bloqueiam o mesmo receptor',
+    'Potenciação dos efeitos dissociativos e psicodislépticos, risco de psicose e excitação paradoxal',
+    'Usar a cetamina com extrema cautela em pacientes usando memantina. Reduzir a dose de cetamina e monitorar o estado mental',
+    'POTENCIAÇÃO DISSOCIATIVA — Risco de psicose aguda',
+    EvidenceLevel.established,
+    {RiskType.cns, RiskType.increasedToxicity},
+    [_kRefGG, _kRefMdx]),
+
+  // ── Psicose e Mania ───────────────────────────────────────────────────────────
+
+  ('carbonato de litio', 'aine', InteractionSeverity.major,
+    'Os AINEs inibem as prostaglandinas renais, reduzindo a filtração glomerular e clearance renal do lítio',
+    'Acúmulo de lítio com toxicidade aguda (tremor grosseiro, ataxia, confusão, convulsões)',
+    'Monitorar níveis séricos de lítio ao iniciar ou suspender AINEs. Preferir paracetamol como analgésico',
+    'TOXICIDADE POR LÍTIO — Monitorar nível sérico rigorosamente',
+    EvidenceLevel.established,
+    {RiskType.plasmaLevel, RiskType.seizure},
+    [_kRefGG, _kRefMdx]),
+
+  ('quetiapina', 'carbamazepina', InteractionSeverity.major,
+    'A carbamazepina é indutor potente do CYP3A4, principal via metabólica da quetiapina',
+    'Redução de até 87% nos níveis plasmáticos de quetiapina, causando falha terapêutica psiquiátrica',
+    'Evitar a combinação ou aumentar significativamente a dose de quetiapina sob monitoramento clínico rigoroso',
+    'FALHA ANTIPSICÓTICA — Indução CYP3A4 pela carbamazepina',
+    EvidenceLevel.established,
+    {RiskType.plasmaLevel, RiskType.reducedEfficacy},
+    [_kRefMdx, _kRefUT]),
+
+  ('haloperidol', 'carbamazepina', InteractionSeverity.moderate,
+    'A carbamazepina induz o metabolismo hepático do haloperidol pelo CYP3A4',
+    'Redução significativa dos níveis plasmáticos de haloperidol, com risco de recaída psicótica',
+    'Monitorar resposta clínica e considerar aumento da dose de haloperidol durante o uso concomitante',
+    'REDUÇÃO DOS NÍVEIS — Monitorar resposta psiquiátrica',
+    EvidenceLevel.established,
+    {RiskType.plasmaLevel, RiskType.reducedEfficacy},
+    [_kRefGG, _kRefMdx]),
+
+  ('haloperidol', 'rifampicina', InteractionSeverity.major,
+    'A rifampicina é um indutor enzimático potente do CYP3A4 e CYP2D6, vias de metabolismo do haloperidol',
+    'Queda drástica nos níveis de haloperidol, com perda do controle dos sintomas psicóticos',
+    'Evitar a associação ou aumentar a dose de haloperidol com monitoramento clínico intensivo',
+    'PERDA DE CONTROLE PSICÓTICO — Indução enzimática grave',
+    EvidenceLevel.established,
+    {RiskType.plasmaLevel, RiskType.reducedEfficacy},
+    [_kRefMdx]),
+
+  ('haloperidol', 'mefloquina', InteractionSeverity.major,
+    'Ambos prolongam o intervalo QT de forma independente e aditiva',
+    'Risco aumentado de Torsades de Pointes e morte súbita cardíaca',
+    'Contraindicado. Escolher outro antipsicótico com menor risco de prolongamento do QT',
+    'TORSADES DE POINTES — Contraindicado',
+    EvidenceLevel.established,
+    {RiskType.qtProlongation, RiskType.arrhythmia},
+    [_kRefMdx, _kRefUT]),
+
+  // ── Anestesia ─────────────────────────────────────────────────────────────────
+
+  ('cetamina', 'benzodiazepínico', InteractionSeverity.moderate,
+    'Os benzodiazepínicos potencializam a sedação e podem prolongar a recuperação anestésica da cetamina',
+    'Sedação prolongada e risco de depressão respiratória no período pós-operatório imediato',
+    'Reduzir a dose de cetamina quando usada em combinação com benzodiazepínicos. Monitorar recuperação',
+    'SEDAÇÃO PROLONGADA — Reduzir dose de cetamina',
+    EvidenceLevel.established,
+    {RiskType.cns, RiskType.respiratoryDepression},
+    [_kRefGG, _kRefMdx]),
+
+  ('cetamina', 'teofilina', InteractionSeverity.major,
+    'Interação farmacodinâmica: ambos podem reduzir o limiar convulsivo por mecanismos diferentes',
+    'Risco aumentado de convulsões intraoperatórias ou no período de recuperação anestésica',
+    'Evitar a combinação em pacientes asmáticos usando teofilina que necessitem de cetamina como anestésico',
+    'RISCO DE CONVULSÕES — Evitar combinação',
+    EvidenceLevel.probable,
+    {RiskType.seizure, RiskType.increasedToxicity},
+    [_kRefGG, _kRefMdx]),
+
+  ('cetamina', 'lítio', InteractionSeverity.moderate,
+    'O lítio pode prolongar a duração do bloqueio neuromuscular e potenciar os efeitos anestésicos da cetamina',
+    'Recuperação anestésica prolongada e possível potenciação dos efeitos dissociativos',
+    'Monitorar cuidadosamente a recuperação em pacientes com lítio submetidos à anestesia com cetamina',
+    'RECUPERAÇÃO ANESTÉSICA PROLONGADA — Monitorar',
+    EvidenceLevel.probable,
+    {RiskType.cns},
+    [_kRefMdx, _kRefUT]),
+
+  // ── Tireoide ──────────────────────────────────────────────────────────────────
+
+  ('propiltiouracil', 'varfarina', InteractionSeverity.major,
+    'O hipotireoidismo induzido pelo propiltiouracil altera o metabolismo dos fatores de coagulação e pode potencializar o efeito da varfarina',
+    'Risco aumentado de sangramento com elevação do INR conforme o paciente torna-se eutireóideo',
+    'Monitorar INR frequentemente durante o início e ajuste da dose de propiltiouracil',
+    'ELEVAÇÃO DO INR — Monitorar rigorosamente',
+    EvidenceLevel.established,
+    {RiskType.hemorrhagic, RiskType.plasmaLevel},
+    [_kRefGG, _kRefMdx]),
+
+  ('propiltiouracil', 'metformina', InteractionSeverity.minor,
+    'O hipotireoidismo pode reduzir o clearance renal da metformina e alterar o metabolismo da glicose',
+    'Possível alteração no controle glicêmico e risco leve de acúmulo de metformina',
+    'Monitorar a glicemia e função renal durante o ajuste da dose de propiltiouracil',
+    'MONITORAR GLICEMIA — Interação indireta via função tireoidiana',
+    EvidenceLevel.possible,
+    {RiskType.other},
+    [_kRefMdx]),
+
+  ('propiltiouracil', 'digoxina', InteractionSeverity.moderate,
+    'O hipotireoidismo altera o volume de distribuição e o clearance da digoxina',
+    'Aumento dos níveis séricos de digoxina com risco de toxicidade digitálica (bradiarritmias, náuseas)',
+    'Monitorar níveis de digoxina ao ajustar a dose de propiltiouracil durante o tratamento do hipertireoidismo',
+    'TOXICIDADE DIGITÁLICA — Monitorar digoxinemia',
+    EvidenceLevel.established,
+    {RiskType.plasmaLevel, RiskType.arrhythmia},
+    [_kRefGG, _kRefMdx]),
+
+  // ── Diuréticos ────────────────────────────────────────────────────────────────
+
+  ('espironolactona', 'acido acetilsalicilico', InteractionSeverity.moderate,
+    'O ácido acetilsalicílico em altas doses pode antagonizar o efeito natriurético da espironolactona por inibição das prostaglandinas renais',
+    'Redução da eficácia diurética da espironolactona, podendo agravar edema e insuficiência cardíaca',
+    'Evitar aspirina em doses altas em pacientes com insuficiência cardíaca usando espironolactona. Doses baixas (100mg) são geralmente seguras',
+    'EFICÁCIA DIURÉTICA REDUZIDA — Evitar AAS em altas doses',
+    EvidenceLevel.established,
+    {RiskType.reducedEfficacy},
+    [_kRefGG, _kRefMdx]),
+
+  ('espironolactona', 'trimetoprima', InteractionSeverity.major,
+    'A trimetoprima bloqueia os canais epiteliais de sódio no néfron distal, semelhante à amilorida, causando retenção de potássio',
+    'Hipercalemia grave, especialmente em idosos, pacientes com IRC ou em uso de outros poupadores de potássio',
+    'Monitorar potássio sérico ao iniciar a trimetoprima em pacientes usando espironolactona',
+    'HIPERCALEMIA GRAVE — Monitorar potássio sérico',
+    EvidenceLevel.established,
+    {RiskType.hyperkalemia, RiskType.electrolyte},
+    [_kRefGG, _kRefMdx, _kRefUT]),
+
+  ('espironolactona', 'heparina', InteractionSeverity.moderate,
+    'A heparina inibe a síntese de aldosterona nas adrenais, potencializando o efeito antialdosterônico da espironolactona',
+    'Hipercalemia significativa, especialmente em pacientes com insuficiência renal',
+    'Monitorar potássio sérico frequentemente em pacientes anticoagulados com heparina usando espironolactona',
+    'HIPERCALEMIA ADITIVA — Monitorar eletrólitos',
+    EvidenceLevel.established,
+    {RiskType.hyperkalemia, RiskType.electrolyte},
+    [_kRefGG, _kRefMdx]),
+
+  // ── EII: Doença Inflamatória Intestinal ──────────────────────────────────────
+
+  ('mesalazina', 'varfarina', InteractionSeverity.moderate,
+    'A mesalazina pode potenciar o efeito anticoagulante da varfarina por mecanismo não completamente elucidado',
+    'Elevação do INR e risco de sangramento, incluindo hemorragia gastrointestinal',
+    'Monitorar INR regularmente ao iniciar ou alterar a dose de mesalazina em pacientes anticoagulados',
+    'MONITORAR INR — Risco de sangramento GI',
+    EvidenceLevel.probable,
+    {RiskType.hemorrhagic, RiskType.plasmaLevel},
+    [_kRefMdx, _kRefUT]),
+
+  ('mesalazina', 'mercaptopurina', InteractionSeverity.major,
+    'A mesalazina inibe a tiopurina metiltransferase (TPMT), enzima responsável pela inativação da mercaptopurina',
+    'Acúmulo de metabólitos tóxicos da mercaptopurina, causando mielossupressão grave',
+    'Monitorar hemograma completo com atenção. Reduzir a dose de mercaptopurina se necessário',
+    'MIELOSSUPRESSÃO GRAVE — Monitorar hemograma',
+    EvidenceLevel.established,
+    {RiskType.myelosuppression, RiskType.plasmaLevel},
+    [_kRefGG, _kRefMdx]),
+
+  ('sulfassalazina', 'digoxina', InteractionSeverity.moderate,
+    'A sulfassalazina pode reduzir a absorção da digoxina por mecanismos gastrointestinais',
+    'Redução dos níveis séricos de digoxina, com possível perda do efeito terapêutico',
+    'Monitorar níveis de digoxina ao iniciar ou suspender sulfassalazina',
+    'NÍVEL DE DIGOXINA REDUZIDO — Monitorar',
+    EvidenceLevel.probable,
+    {RiskType.reducedEfficacy, RiskType.plasmaLevel},
+    [_kRefMdx]),
+
+  ('sulfassalazina', 'metotrexato', InteractionSeverity.moderate,
+    'Ambos podem causar supressão da medula óssea e hepatotoxicidade, além de competição pela excreção renal',
+    'Risco aumentado de leucopenia, trombocitopenia e hepatotoxicidade aditiva',
+    'Monitorar hemograma e enzimas hepáticas regularmente. A combinação é usada em reumatologia sob supervisão',
+    'TOXICIDADE HEMATOLÓGICA E HEPÁTICA ADITIVA — Monitorar',
+    EvidenceLevel.established,
+    {RiskType.myelosuppression, RiskType.hepatotoxicity},
+    [_kRefGG, _kRefMdx]),
+
+  ('budesonida', 'cetoconazol', InteractionSeverity.major,
+    'O cetoconazol inibe o CYP3A4, a principal via de metabolismo da budesonida',
+    'Aumento significativo dos níveis sistêmicos de budesonida, com risco de supressão do eixo hipotálamo-hipófise-adrenal',
+    'Evitar a combinação. Se necessário, reduzir a dose de budesonida e monitorar sinais de hipercortisolismo',
+    'EFEITO SISTÊMICO DO CORTICOIDE — Evitar inibidores potentes de CYP3A4',
+    EvidenceLevel.established,
+    {RiskType.plasmaLevel, RiskType.increasedToxicity},
+    [_kRefMdx, _kRefFDA]),
+
+  ('budesonida', 'ritonavir', InteractionSeverity.major,
+    'O ritonavir é inibidor extremamente potente do CYP3A4, bloqueando quase completamente o metabolismo de primeira passagem da budesonida',
+    'Síndrome de Cushing iatrogênica com supressão adrenal grave e insuficiência adrenal ao suspender',
+    'Combinação contraindicada. Usar alternativas que não dependam do CYP3A4 ou ajustar para doses mínimas com monitoramento',
+    'CUSHING IATROGÊNICO — Contraindicado com ritonavir',
+    EvidenceLevel.established,
+    {RiskType.plasmaLevel, RiskType.increasedToxicity},
+    [_kRefFDA, _kRefMdx]),
+
+  // ── Biológicos: Imunobiológicos ───────────────────────────────────────────────
+
+  ('ustekinumabe', 'vacinas vivas', InteractionSeverity.major,
+    'O ustekinumabe suprime a resposta imune via bloqueio de IL-12/23, podendo impedir resposta protetora à vacina',
+    'Risco de infecção ativa pela cepa vacinal e resposta imune inadequada',
+    'Evitar vacinas vivas durante o tratamento. Completar vacinação antes de iniciar o ustekinumabe',
+    'RISCO DE INFECÇÃO VACINAL — Evitar vacinas vivas',
+    EvidenceLevel.established,
+    {RiskType.infection},
+    [_kRefFDA, _kRefUT]),
+
+  ('ustekinumabe', 'tofacitinibe', InteractionSeverity.contraindicated,
+    'Imunossupressão sinérgica por bloqueio de IL-12/23 e inibição de JAK',
+    'Risco inaceitável de infecções oportunistas letais sem benefício clínico adicional comprovado',
+    'Nunca combinar dois imunobiológicos ou biológico + inibidor de JAK',
+    'IMUNOSSUPRESSÃO LETAL — Absolutamente contraindicado',
+    EvidenceLevel.established,
+    {RiskType.infection, RiskType.increasedToxicity},
+    [_kRefFDA, _kRefUT]),
+
+  ('secuquinumabe', 'vacinas vivas', InteractionSeverity.major,
+    'Bloqueio de IL-17A pelo secuquinumabe compromete a imunidade inata antifúngica e antiviral',
+    'Risco de doença ativa por cepa vacinal e candidose mucocutânea recorrente',
+    'Evitar vacinas vivas. Rastrear candidose oral durante o tratamento',
+    'RISCO INFECCIOSO — Evitar vacinas vivas e monitorar candidose',
+    EvidenceLevel.established,
+    {RiskType.infection},
+    [_kRefFDA, _kRefMdx]),
+
+  ('secuquinumabe', 'infliximabe', InteractionSeverity.contraindicated,
+    'Dupla imunossupressão biológica sistêmica: bloqueio de IL-17 + bloqueio de TNF-alfa',
+    'Risco extremo de infecções oportunistas, sepse, tuberculose ativa e vasculite',
+    'Absolutamente contraindicado combinar dois biológicos sistêmicos',
+    'IMUNOSSUPRESSÃO FATAL — Contraindicado',
+    EvidenceLevel.established,
+    {RiskType.infection},
+    [_kRefFDA, _kRefGG]),
+
+  ('ixequizumabe', 'vacinas vivas', InteractionSeverity.major,
+    'O bloqueio de IL-17A pelo ixequizumabe compromete a resposta imune adaptativa contra patógenos atenuados',
+    'Risco de infecção ativa pela cepa vacinal e resposta vacinal inadequada',
+    'Evitar vacinas vivas durante o tratamento com ixequizumabe',
+    'RISCO DE INFECÇÃO VACINAL — Evitar vacinas vivas',
+    EvidenceLevel.established,
+    {RiskType.infection},
+    [_kRefFDA]),
+
+  ('risanquizumabe', 'vacinas vivas', InteractionSeverity.major,
+    'O risanquizumabe bloqueia a subunidade p19 da IL-23, afetando a imunidade celular adaptativa',
+    'Risco de infecção ativa por cepas vacinais vivas',
+    'Evitar vacinas vivas atenuadas durante todo o período de tratamento',
+    'RISCO INFECCIOSO VACINAL — Contraindicado com vacinas vivas',
+    EvidenceLevel.established,
+    {RiskType.infection},
+    [_kRefFDA]),
+
+  // ── Deslipidemias: Inibidores de PCSK9 e Ezetimiba ───────────────────────────
+
+  ('evolocumabe', 'estatina', InteractionSeverity.minor,
+    'Os inibidores de PCSK9 são usados como adjuvantes às estatinas para redução do LDL',
+    'Quando combinados, podem ocorrer miopatias em casos raros, embora o risco seja menor que com fibratos',
+    'Monitorar CK e sintomas musculares. A combinação é a base do tratamento de hipercolesterolemia grave',
+    'MONITORAR MIALGIAS — Combinação geralmente segura e intencional',
+    EvidenceLevel.established,
+    {RiskType.myopathy},
+    [_kRefGG, _kRefUT]),
+
+  ('alirocumabe', 'estatina', InteractionSeverity.minor,
+    'Os inibidores de PCSK9 potencializam a redução de LDL das estatinas de forma aditiva',
+    'A combinação é geralmente segura, porém pode ocorrer miopatia em casos raros',
+    'Monitorar sintomas musculares e CK. A combinação é padrão de tratamento para dislipidemia refratária',
+    'MONITORAR MIALGIAS — Combinação usualmente segura',
+    EvidenceLevel.established,
+    {RiskType.myopathy},
+    [_kRefGG, _kRefUT]),
+
+  ('ezetimiba', 'ciclosporina', InteractionSeverity.major,
+    'A ciclosporina inibe o transportador OATP1B1, aumentando drasticamente os níveis plasmáticos de ezetimiba e seu metabólito ativo',
+    'Aumento de até 3 a 4 vezes na exposição à ezetimiba, com risco de efeitos adversos aumentados',
+    'Monitorar lipídios e enzimas hepáticas. Evitar doses altas de ezetimiba em pacientes transplantados',
+    'AUMENTO DE EXPOSIÇÃO À EZETIMIBA — Monitorar',
+    EvidenceLevel.established,
+    {RiskType.plasmaLevel, RiskType.increasedToxicity},
+    [_kRefMdx, _kRefFDA]),
+
+  ('ezetimiba', 'colestiramina', InteractionSeverity.moderate,
+    'A colestiramina pode reduzir a absorção da ezetimiba ao sequestrar o fármaco no intestino',
+    'Redução da eficácia hipolipemiante da ezetimiba',
+    'Administrar a ezetimiba pelo menos 2 horas antes ou 4 horas após a colestiramina',
+    'ABSORÇÃO REDUZIDA — Espaçar doses',
+    EvidenceLevel.established,
+    {RiskType.reducedEfficacy},
+    [_kRefMdx]),
+
+  ('acido nicotinico', 'estatina', InteractionSeverity.moderate,
+    'A combinação de ácido nicotínico com estatinas aumenta o risco de miopatia',
+    'Risco de miopatia e rabdomiólise, especialmente com sinvastatina em doses altas',
+    'Monitorar CK e sintomas musculares. Evitar niacina em doses altas com estatinas em doses máximas',
+    'RISCO DE MIOPATIA — Monitorar CK',
+    EvidenceLevel.established,
+    {RiskType.myopathy},
+    [_kRefGG, _kRefMdx]),
+
+  ('acido nicotinico', 'antidiabetico', InteractionSeverity.moderate,
+    'A niacina em altas doses causa resistência insulínica e hiperglicemia',
+    'Perda do controle glicêmico em pacientes diabéticos, podendo requerer ajuste da medicação',
+    'Monitorar glicemia ao iniciar niacina em doses altas em pacientes diabéticos',
+    'HIPERGLICEMIA — Monitorar controle glicêmico',
+    EvidenceLevel.established,
+    {RiskType.other},
+    [_kRefGG, _kRefMdx]),
+
 
 ];
 

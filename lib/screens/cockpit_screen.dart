@@ -1725,7 +1725,7 @@ class _InteractionSheetContentState extends State<_InteractionSheetContent> {
                               child: Row(mainAxisSize: MainAxisSize.min, children: [
                                 const Icon(Icons.science_rounded, size: 7, color: Color(0xFF374151)),
                                 const SizedBox(width: 3),
-                                Text(ix.evidenceLabel,
+                                Text(ix.evidenceLabel(isEs: _isEs),
                                   style: const TextStyle(fontSize: 7.5, fontWeight: FontWeight.w700, color: Color(0xFF374151), letterSpacing: 0.4)),
                               ]),
                             ),
@@ -1742,7 +1742,7 @@ class _InteractionSheetContentState extends State<_InteractionSheetContent> {
                                 borderRadius: BorderRadius.circular(5),
                                 color: col.withValues(alpha: 0.08),
                               ),
-                              child: Text(DrugInteraction.riskTypeLabel(r),
+                              child: Text(DrugInteraction.riskTypeLabel(r, isEs: _isEs),
                                 style: TextStyle(fontSize: 7, fontWeight: FontWeight.w700, color: col)),
                             )).toList(),
                           ),
@@ -1800,7 +1800,7 @@ class _InteractionSheetContentState extends State<_InteractionSheetContent> {
                                   color: col.withValues(alpha: 0.10),
                                   border: Border.all(color: col.withValues(alpha: 0.25)),
                                 ),
-                                child: Text(DrugInteraction.riskTypeLabel(r),
+                                child: Text(DrugInteraction.riskTypeLabel(r, isEs: _isEs),
                                   style: TextStyle(fontSize: 9, fontWeight: FontWeight.w700, color: col)),
                               )).toList(),
                             ),
@@ -1871,7 +1871,7 @@ class _InteractionSheetContentState extends State<_InteractionSheetContent> {
                                       color: const Color(0xFF374151).withValues(alpha: 0.10),
                                     ),
                                     child: Text(
-                                      '${_isEs ? "Evidencia" : "Evidência"}: ${ix.evidenceLabel}',
+                                      '${_isEs ? "Evidencia" : "Evidência"}: ${ix.evidenceLabel(isEs: _isEs)}',
                                       style: const TextStyle(fontSize: 8.5, fontWeight: FontWeight.w800, color: Color(0xFF374151)),
                                     ),
                                   ),
@@ -2229,7 +2229,7 @@ class _InteractionPanelState extends State<_InteractionPanel> {
                     Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                       Text('${ix.drug1}  +  ${ix.drug2}',
                         style: TextStyle(fontSize: 11, fontWeight: FontWeight.w900, color: col, height: 1.3)),
-                      Text(ix.severityLabel,
+                      Text(ix.severityLabelL10n(isEs: widget.lang == 'es'),
                         style: TextStyle(fontSize: 9, fontWeight: FontWeight.w900, color: col.withValues(alpha: 0.75), letterSpacing: 0.8)),
                     ])),
                     Icon(isOpen ? Icons.expand_less_rounded : Icons.expand_more_rounded, size: 16, color: col.withValues(alpha: 0.6)),
@@ -2294,7 +2294,7 @@ class _InteractionPanelState extends State<_InteractionPanel> {
                           style: TextStyle(fontSize: 9, fontWeight: FontWeight.w900, color: col.withValues(alpha: 0.7), letterSpacing: 0.6),
                         ),
                         Text(
-                          ix.evidenceLabel,
+                          ix.evidenceLabel(isEs: widget.lang == 'es'),
                           style: TextStyle(fontSize: 9, fontWeight: FontWeight.w600, color: col.withValues(alpha: 0.7)),
                         ),
                         if (ix.references.isNotEmpty) ...[
