@@ -2652,6 +2652,1478 @@ Candidiasis vaginal (B):
 ⚕ Modelo educativo — adaptar al paciente.''',
   ),
 
+  // ══════════════════════════════════════════════════════════════════════════
+  // URGENCIAS — NUEVAS
+  // ══════════════════════════════════════════════════════════════════════════
+  _PrescriptionModel(
+    id: 'pcr_paro_cardiorrespiratorio',
+    title: 'PCR — Paro Cardiorrespiratorio',
+    subtitle: 'ACLS — adrenalina · amiodarona · RCP',
+    category: 'Urgencias',
+    icon: Icons.monitor_heart_rounded,
+    content: '''CONFIRMAR PCR → LLAMAR AYUDA → INICIAR RCP
+
+RCP DE ALTA CALIDAD:
+• Compresiones 100–120/min · profundidad 5–6 cm.
+• Relación 30:2 (sin vía aérea avanzada).
+• Minimizar pausas — máx 10 seg para desfibrilar.
+• Rotar compresores cada 2 minutos.
+
+RITMOS DESFIBRILABLES (FV / TV sin pulso):
+1. Desfibrilar inmediatamente: 200 J bifásico (360 J monofásico).
+2. RCP 2 min → re-evaluar ritmo.
+3. Adrenalina (Epinefrina) 1 mg EV/IO cada 3–5 min.
+4. 3° choque → Amiodarona 300 mg EV bolus.
+   Dosis adicional: 150 mg si persiste FV/TV.
+5. Lidocaína (alternativa): 1–1,5 mg/kg EV.
+
+RITMOS NO DESFIBRILABLES (AESP / Asistolia):
+1. RCP 2 min → Adrenalina 1 mg EV/IO cada 3–5 min.
+2. Tratar causas reversibles — 6H / 5T:
+   6H: Hipoxia · Hipovolemia · H⁺ (acidosis) ·
+       Hipo/hipercalemia · Hipoglucemia · Hipotermia.
+   5T: Neumotórax a tensión · Taponamiento · Tóxicos ·
+       TEP · Trombosis coronaria (IAM).
+
+VÍA AÉREA AVANZADA:
+• IOT o dispositivo supraglótico.
+• Ventilación: 10 resp/min (1 cada 6 seg) — NO hiperventila.
+• EtCO₂: objetivo >10 mmHg (buen pronóstico si >20).
+
+BICARBONATO (NaHCO₃):
+• Solo si pH <7,1 · hipercalemia severa · intox. ATC.
+• 1 mEq/kg EV → no usar de rutina.
+
+POST-RCE (retorno de circulación espontánea):
+• O₂: SpO₂ 94–98% (evitar hiperoxia).
+• PA objetivo: PAS >90 mmHg.
+• Glucemia: 140–180 mg/dL.
+• Temperatura objetivo: 32–36°C × 24h (si coma post-PCR).
+• ECG 12D inmediato → coronariografía si STEMI.
+
+---
+⚕ Modelo educativo — adaptar al paciente.''',
+  ),
+
+  _PrescriptionModel(
+    id: 'fv_tv_sin_pulso',
+    title: 'FV / TV sin Pulso — Desfibrilación',
+    subtitle: 'Choque eléctrico + adrenalina + amiodarona',
+    category: 'Urgencias',
+    icon: Icons.electric_bolt_rounded,
+    content: '''FIBRILACIÓN VENTRICULAR / TV SIN PULSO
+→ RITMO SIEMPRE DESFIBRILABLE
+
+ALGORITMO (repetir ciclos de 2 min RCP):
+Ciclo 1: Choque 200 J → RCP 2 min
+Ciclo 2: Choque 200–360 J → RCP 2 min
+         + Adrenalina 1 mg EV (cada 3–5 min todos los ciclos)
+Ciclo 3: Choque → RCP 2 min
+         + Amiodarona 300 mg EV bolus rápido
+Ciclo 4: Choque → RCP 2 min
+         + Amiodarona 150 mg EV (2° dosis si persiste)
+Ciclo 5+: Choque → RCP → Adrenalina alternando
+
+DESFIBRILADOR:
+• Bifásico: 200 J (o energía recomendada del equipo).
+• Monofásico: 360 J en todos los choques.
+• Paletas: gel conductor obligatorio.
+• Posición: ápex-esternón o antero-posterior.
+
+AMIODARONA — preparación:
+• 300 mg amp = 6 mL → diluir en 20 mL de SF o DW5%.
+• Infusión mantenimiento post-RCE: 150 mg en 10 min,
+  luego 1 mg/min × 6h, luego 0,5 mg/min × 18h.
+
+LIDOCAÍNA (alternativa a amiodarona):
+• 1–1,5 mg/kg EV bolus → 0,5–0,75 mg/kg a los 5–10 min.
+• Máximo: 3 mg/kg en 1 hora.
+
+MAGNESIO (Torsades de Pointes):
+• Sulfato de Mg 2 g (4 mL al 50%) diluido en 100 mL SF.
+• Infundir EV en 1–2 min.
+
+CAUSAS TRATABLES EN FV REFRACTARIA:
+• Hipotermia → recalentar activamente.
+• Intox. digitálica → anticuerpos antidigitálicos.
+• Hipomagnesemia → Mg 2 g EV.
+• Cocaína/simpaticomiméticos → benzodiacepinas.
+
+---
+⚕ Modelo educativo — adaptar al paciente.''',
+  ),
+
+  _PrescriptionModel(
+    id: 'choque_cardiogenico',
+    title: 'Choque Cardiogénico',
+    subtitle: 'Dobutamina · Noradrenalina · Soporte hemodinámico',
+    category: 'Cardiovascular',
+    icon: Icons.heart_broken_rounded,
+    content: '''CRITERIOS DIAGNÓSTICOS:
+• PAS <90 mmHg × ≥30 min (o necesidad de vasopresores).
+• Índice cardíaco <2,2 L/min/m².
+• PCP >15 mmHg (congestión pulmonar).
+• Signos de hipoperfusión: oliguria, lactato >2, alteración mental.
+
+CAUSA MÁS FRECUENTE: IAM extenso (VI o VD).
+
+MEDIDAS INICIALES:
+1. O₂: SpO₂ >94% — IOT si Glasgow <8 o FR >30.
+2. Acceso EV × 2 + monitoreo continuo (ECG, SpO₂, PA invasiva).
+3. ECG 12D inmediato → cinecoronariografía de urgencia si STEMI.
+4. Sonda vesical → diuresis horaria objetivo >0,5 mL/kg/h.
+
+SOPORTE VASOPRESOR / INOTRÓPICO:
+Noradrenalina (vasopresora — 1° línea si PAM <65):
+• BIC: 0,05–0,5 mcg/kg/min → titular hasta PAM 65–70 mmHg.
+
+Dobutamina (inotrópica — añadir si débito cardíaco bajo):
+• BIC: 2–20 mcg/kg/min → iniciar 2–5 mcg/kg/min.
+• Cuidado: puede agravar hipotensión y arritmias.
+
+Dopamina (alternativa si bradicardia asociada):
+• BIC: 5–15 mcg/kg/min.
+• Evitar en FA y taquicardia.
+
+DIURÉTICOS (solo si congestión sin hipoperfusión severa):
+• Furosemida 40–80 mg EV en bolo.
+
+PREPARACIÓN BIC (para 70 kg):
+Noradrenalina: 4 mg en 250 mL SF → 0,05 mcg/kg/min = 13 mL/h.
+Dobutamina: 250 mg en 250 mL SF → 5 mcg/kg/min = 21 mL/h.
+
+ANTICOAGULACIÓN:
+• Heparina no fraccionada 60 UI/kg EV bolus → BIC 12 UI/kg/h.
+• Objetivo TTPA: 50–70 seg.
+
+EVITAR:
+• Betabloqueantes y calcioantagonistas (empeoran contractilidad).
+• Vasodilatadores (nitroprusiato, nitratos) si PAM <70.
+• Sobrecarga hídrica excesiva.
+
+---
+⚕ Modelo educativo — adaptar al paciente.''',
+  ),
+
+  _PrescriptionModel(
+    id: 'torsades_de_pointes',
+    title: 'Torsades de Pointes',
+    subtitle: 'TV polimórfica — QT largo — Sulfato de Mg',
+    category: 'Cardiovascular',
+    icon: Icons.monitor_heart_rounded,
+    content: '''TORSADES DE POINTES (TdP)
+→ TV polimórfica asociada a QT largo
+
+RECONOCIMIENTO:
+• Morfología "en torsión" del eje QRS alrededor de la isolínea.
+• QTc >500 ms (hombres) / >520 ms (mujeres) en ritmo basal.
+• Frecuencia 200–300 lpm — puede autolimitarse o degenerar en FV.
+
+TRATAMIENTO DE URGENCIA:
+1. Si inestable (colapso) → desfibrilar 200 J (no cardiovertir).
+2. SUSPENDER todos los fármacos que prolongan QT:
+   (antipsicóticos, antiarrítmicos clase IA/III, macrólidos,
+    fluoroquinolonas, antifúngicos azólicos, metadona).
+
+SULFATO DE MAGNESIO — tratamiento de elección:
+• 2 g (4 mL al 50%) diluidos en 100 mL SF 0,9%.
+• Infundir EV en 1–2 minutos.
+• Repetir a los 10–15 min si persiste arritmia.
+• Mantenimiento: 3–20 mg/min BIC × 24h.
+
+ESTRATEGIA PARA ACORTAR QT (si recurre):
+Isoproterenol BIC: 1–4 mcg/min → FC objetivo 90–110 lpm.
+(Aumenta FC → acorta QTc → suprime TdP)
+
+MARCAPASOS TRANSVENOSO TEMPORAL:
+• Si TdP recurrente refractaria.
+• Frecuencia: 90–110 lpm → acorta QT mecánicamente.
+
+CAUSAS FRECUENTES:
+• Hipocalemia → reponer K⁺ a 4–4,5 mEq/L.
+• Hipomagnesemia → reponer Mg2+.
+• Fármacos (ver arriba) → suspender.
+• Bradicardia severa → marcapasos.
+• Síndrome QT largo congénito → betabloqueante.
+
+EVITAR: amiodarona, sotalol, procainamida (prolongan QT).
+
+---
+⚕ Modelo educativo — adaptar al paciente.''',
+  ),
+
+  _PrescriptionModel(
+    id: 'sincope_abordaje',
+    title: 'Síncope — Abordaje en Guardia',
+    subtitle: 'Clasificación · Riesgo · Criterios de internación',
+    category: 'Urgencias',
+    icon: Icons.psychology_rounded,
+    content: '''SÍNCOPE: pérdida transitoria de consciencia por hipoperfusión cerebral global.
+
+CLASIFICACIÓN Y CAUSAS:
+1. Reflejo (vasovagal): desencadenante claro, pródromos, jóvenes.
+2. Ortostático: al pararse, medicamentos (antihipertensivos, diuréticos).
+3. Cardíaco: sin pródromos, durante esfuerzo, cardiopatía previa — ALTO RIESGO.
+
+ECG INMEDIATO — buscar:
+• QTc largo, Brugada, BCRI nuevo, bloqueo AV, delta wave.
+• Infra/supradesnivel ST.
+
+SCORE DE RIESGO — San Francisco Syncope Rule (SFSR):
+(cualquier ítem = ALTO RIESGO → internar)
+☐ Cardiopatía estructural conocida o ICC.
+☐ Hematocrito <30%.
+☐ Disnea al momento del evento.
+☐ PA sistólica <90 mmHg en guardia.
+☐ ECG anormal (nuevo, no sinusal o cambios agudos).
+
+MANEJO SEGÚN RIESGO:
+Bajo riesgo (vasovagal típico sin cardiopatía):
+• Hidratación oral · evitar desencadenantes.
+• Aumentar ingesta de sal si recurrente.
+• Alta con derivación a clínica.
+
+Alto riesgo / causa cardíaca sospechada:
+• Internación + monitoreo continuo.
+• Ecocardiograma · holter · electrofisiología según clínica.
+• Corrección de causa de base.
+
+Síncope ortostático:
+• Suspender/reducir hipotensores, diuréticos, alfa-bloqueantes.
+• Hidratación EV: SF 0,9% 500 mL en 30 min si deshidratado.
+• Medias de compresión + elevar cabecera de la cama.
+
+---
+⚕ Modelo educativo — adaptar al paciente.''',
+  ),
+
+  _PrescriptionModel(
+    id: 'edema_angioneurotico',
+    title: 'Edema Angioneurótico',
+    subtitle: 'Icatibant · C1-INH · Distinción de anafilaxia',
+    category: 'Urgencias',
+    icon: Icons.warning_amber_rounded,
+    content: '''EDEMA ANGIONEURÓTICO (EAE)
+→ Edema subcutáneo/submucoso SIN urticaria ni hipotensión.
+
+TIPOS Y TRATAMIENTO:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+1. ALERGICO (mediado por IgE — igual a anafilaxia):
+• Adrenalina 0,5 mg IM (vasto lateral) si compromiso respiratorio.
+• Difenhidramina 50 mg EV + Dexametasona 8 mg EV.
+• Responde a antihistamínicos y corticoides.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+2. INDUCIDO POR IECA (bradiquinina — NO responde a adrenalina):
+• SUSPENDER IECA inmediatamente.
+• Icatibant 30 mg SC (antagonista bradicinina B2):
+  → Inyectar en abdomen. Puede repetirse a 6h (máx 3 dosis/día).
+• C1-Inhibidor humano 20 UI/kg EV (si disponible).
+• Ácido tranexámico 1 g EV c/8h (alternativa).
+• NO dar antihistamínicos ni corticoides (no son eficaces).
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+3. HEREDITARIO (déficit C1-INH congénito):
+• C1-INH concentrado: 20 UI/kg EV lento (1° línea).
+• Icatibant 30 mg SC (alternativa).
+• Plasma fresco congelado 2 UI si no hay C1-INH disponible.
+• EVITAR: estrógenos, IECA, estrés.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+MANEJO DE VÍA AÉREA (prioridad si afecta laringe):
+• Laringoscopía directa lista + equipo de cricotiroidotomía.
+• Oxígeno humidificado · posición sentada.
+• IOT temprana si estridor o saturación <94%.
+• Traqueotomía de urgencia si IOT fallida.
+
+CRITERIOS DE INTERNACIÓN:
+• Edema laríngeo, lingual o faríngeo.
+• SpO₂ <94% o estridor.
+• Edema abdominal severo (dolor intenso, vómitos).
+
+---
+⚕ Modelo educativo — adaptar al paciente.''',
+  ),
+
+  // ══════════════════════════════════════════════════════════════════════════
+  // CARDIOVASCULAR — NUEVAS
+  // ══════════════════════════════════════════════════════════════════════════
+  _PrescriptionModel(
+    id: 'dolor_toracico_protocolo',
+    title: 'Dolor Torácico — Protocolo Inicial',
+    subtitle: 'Diagnóstico diferencial · Triaje · Manejo',
+    category: 'Cardiovascular',
+    icon: Icons.favorite_rounded,
+    content: '''DOLOR TORÁCICO EN GUARDIA — ABORDAJE INICIAL
+
+PRIMER PASO — DESCARTAR CAUSAS LIFE-THREATENING:
+1. SCA (IAM/AI)  2. TEP  3. Disección aórtica
+4. Neumotórax a tensión  5. Taponamiento  6. Esofágo (ruptura)
+
+EVALUACIÓN INMEDIATA (primeros 10 min):
+• ECG 12D → buscar: STEMI, BCRI nuevo, Wellens, de Winter, Brugada.
+• PA en ambos brazos (diferencia >20 mmHg → disección).
+• SpO₂ · FR · FC · Temperatura.
+• Acceso EV · monitoreo continuo.
+• Troponina I/T ultrasensible: 0h y 1–2h.
+
+CARACTERÍSTICAS DE ALTO RIESGO:
+• Irradiación a brazo/mandíbula + diaforesis + náuseas → SCA.
+• Inicio brusco desgarrante, migra hacia dorso → Disección Ao.
+• Pleurítico + disnea + DVT → TEP.
+• Hipersonoridad unilateral + MV abolido → Neumotórax.
+• Yugulares ingurgitadas + ruidos cardíacos apagados → Taponamiento.
+
+MANEJO SEGÚN SOSPECHA:
+SCA → ver prescripción específica.
+TEP → anticoagulación inmediata + imágenes.
+Disección → control PA con betabloqueante EV + cirugía.
+Neumotórax → toracocentesis de urgencia.
+
+ANALGESIA INICIAL (mientras espera diagnóstico):
+• Morfina 2–4 mg EV lento (titular c/5 min) si dolor intenso.
+  Alternativa: Ketorolac 30 mg EV (si causa musculoesquelética).
+
+DIAGNÓSTICOS DE MENOR RIESGO (diagnóstico de exclusión):
+• Musculoesquelético: dolor reproducible a la palpación.
+• Costocondritis: Tietze → AINEs + calor local.
+• ERGE/esofágeico: IBP + antiácido + derivación ambulatoria.
+• Ansiedad/pánico: ansiolítico + reevaluación.
+
+---
+⚕ Modelo educativo — adaptar al paciente.''',
+  ),
+
+  // ══════════════════════════════════════════════════════════════════════════
+  // NEUROLOGÍA — NUEVAS
+  // ══════════════════════════════════════════════════════════════════════════
+  _PrescriptionModel(
+    id: 'avc_hemorragico',
+    title: 'ACV Hemorrágico — Hemorragia Intracerebral',
+    subtitle: 'Control PA · Reversión anticoagulación · Neuroprotección',
+    category: 'Neurología',
+    icon: Icons.bolt_rounded,
+    content: '''ACV HEMORRÁGICO — HEMORRAGIA INTRACEREBRAL (HIC)
+
+DIAGNÓSTICO: TC de cráneo sin contraste (de elección en urgencias).
+
+OBJETIVOS INICIALES (primeras 4h):
+• PA sistólica → bajar a 130–140 mmHg si PAS 150–220 mmHg.
+  (INTERACT-2: objetivo 130 mmHg si tolera)
+• Glucemia: 140–180 mg/dL.
+• Temperatura <37,5°C.
+• O₂: SpO₂ >94%.
+• Cabecera elevada 30°.
+
+CONTROL DE PRESIÓN ARTERIAL EV:
+Labetalol: 10–20 mg EV en 2 min → repetir c/10 min (máx 300 mg).
+Nicardipina: BIC 5 mg/h → titular 2,5 mg/h c/15 min (máx 15 mg/h).
+Nitroprusiato: 0,3 mcg/kg/min BIC → usar solo si refractario.
+Hidralazina: 10–20 mg EV c/4–6h.
+
+REVERSIÓN DE ANTICOAGULACIÓN (urgente):
+• Warfarina + HIC: Vitamina K 10 mg EV lento (30 min) +
+  CCP (complejo protrombínico) 25–50 UI/kg EV.
+  Meta: INR <1,5 en <60 min.
+• Dabigatrán + HIC: Idarucizumab 5 g EV (2 × 2,5 g).
+• Apixabán/Rivaroxabán + HIC: Andexanet alfa (si disponible)
+  o CCP 4 factores 50 UI/kg EV.
+
+ANTICONVULSIVANTES:
+• No profilácticos de rutina.
+• Si convulsión: Levetiracetam 1000 mg EV en 15 min.
+  Alternativa: Valproato 15 mg/kg EV.
+
+MANEJO DE PIC ELEVADA:
+• Cabecera 30° · evitar hiponatremia · normocapnia (PaCO₂ 35–40).
+• Manitol 20%: 1–1,5 g/kg EV en 20 min.
+• Suero salino hipertónico 3%: 150–250 mL EV en 30 min.
+
+CIRUGÍA: considerar si:
+• Hematoma cerebeloso >3 cm + deterioro.
+• HIC lobar >30 mL + deterioro neurológico.
+• Hidrocefalia → DVE.
+
+CONTRAINDICACIONES ABSOLUTAS:
+• Alteplase (tPA) → CONTRAINDICADO en HIC.
+• Heparina → contraindicada en fase aguda.
+
+---
+⚕ Modelo educativo — adaptar al paciente.''',
+  ),
+
+  _PrescriptionModel(
+    id: 'meningitis_viral',
+    title: 'Meningitis Viral',
+    subtitle: 'Aciclovir EV · soporte · diagnóstico diferencial',
+    category: 'Neurología',
+    icon: Icons.coronavirus_rounded,
+    content: '''MENINGITIS VIRAL (aséptica)
+→ Más frecuente que bacteriana; generalmente autolimitada.
+
+CAUSAS FRECUENTES:
+• Enterovirus (70%) · VHS-2 (meningitis recurrente de Mollaret).
+• VHS-1 (encefalitis — forma grave).
+• CMV · VEB · VVZ · Parotiditis · VIH (primoinfección).
+
+DIAGNÓSTICO — LCR:
+• Leucocitos: 10–1000 (predominio linfocitos).
+• Glucosa: normal (>60% glucemia simultánea).
+• Proteínas: leve aumento (<150 mg/dL).
+• ADA: normal (diferencia de TBC).
+• PCR virus en LCR (enterovirus, VHS).
+
+TRATAMIENTO DE SOPORTE:
+• Reposo · analgesia (paracetamol/ibuprofeno).
+• Hidratación oral o EV según tolerancia.
+• Antieméticos: Ondansetrón 8 mg EV c/12h.
+• Analgesia: Dipirona 1 g EV c/8h.
+
+ACICLOVIR (si sospecha VHS — SIEMPRE INICIAR EMPÍRICO):
+• 10 mg/kg EV c/8h × 14–21 días (encefalitis herpética).
+• 10 mg/kg EV c/8h × 10–14 días (meningitis VHS).
+• Ajustar en insuficiencia renal (ClCr).
+• Diluir en SF 0,9% — infundir en 1 hora.
+
+DEXAMETASONA: NO indicada en viral (sí en bacteriana).
+
+CRITERIOS DE ALTA PRECOZ (viral leve):
+• Afebril · LCR viral claro · PCR enterovirus positivo.
+• Tolerancia oral · sin signos meníngeos severos.
+
+DERIVAR A UCI si:
+• Alteración de consciencia · convulsiones · foco neurológico.
+• Sospecha de encefalitis (VHS → tratar empíricamente).
+
+---
+⚕ Modelo educativo — adaptar al paciente.''',
+  ),
+
+  // ══════════════════════════════════════════════════════════════════════════
+  // CLÍNICA MÉDICA — NUEVAS
+  // ══════════════════════════════════════════════════════════════════════════
+  _PrescriptionModel(
+    id: 'insuficiencia_renal_aguda',
+    title: 'Insuficiencia Renal Aguda',
+    subtitle: 'Prerrenal · Renal · Postrenal — manejo inicial',
+    category: 'Clínica Médica',
+    icon: Icons.water_drop_rounded,
+    content: '''INSUFICIENCIA RENAL AGUDA (IRA)
+Criterios KDIGO: ↑ creat. ≥0,3 mg/dL en 48h · ↑ ≥1,5× basal en 7d · diuresis <0,5 mL/kg/h × 6h.
+
+CLASIFICACIÓN Y MANEJO:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+1. PRERRENAL (60–70% — hipoperfusión):
+• Causa: deshidratación, ICC, sepsis, hepatorrenal.
+• Reposición de volumen:
+  SF 0,9% 500 mL EV en 30 min → reevaluar diuresis y PA.
+  Repetir hasta normovolemia (PVC 8–12, diuresis >0,5 mL/kg/h).
+• Suspender: AINEs, IECA/ARA-II, diuréticos.
+• Furosemida 40–80 mg EV solo si sobrecarga confirmada.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+2. INTRÍNSECA (NTA más frecuente):
+• Causa: isquemia, nefrotóxicos (contraste, aminoglucósidos,
+  AINEs, mieloma, rabdomiólisis).
+• Hidratar · suspender nefrotóxicos.
+• Rabdomiólisis: SF 0,9% 1–1,5 L/h → diuresis >200 mL/h.
+  Bicarbonato NaHCO₃ si CPK >5000 o mioglobinuria.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+3. POSTRENAL (obstrucción — sonda vesical urgente):
+• Sondaje vesical → si obstrucción baja.
+• Nefrostomía percutánea → si alta.
+
+MANEJO GENERAL:
+• Monitoreo: diuresis horaria · creatinina diaria · electrolitos.
+• Hipercalemia: ver prescripción específica.
+• Acidosis metabólica: bicarbonato si pH <7,2.
+• Restricción proteica: 0,8–1 g/kg/día.
+• Ajuste de dosis de todos los fármacos según ClCr.
+
+INDICACIONES DE DIÁLISIS DE URGENCIA (AKI-D):
+• Hipercalemia refractaria (K⁺ >6,5 mEq/L).
+• Acidosis pH <7,1 refractaria.
+• Edema agudo de pulmón refractario.
+• Uremia sintomática (encefalopatía, pericarditis).
+• Intoxicación diálizable (salicilatos, litio, metanol).
+
+---
+⚕ Modelo educativo — adaptar al paciente.''',
+  ),
+
+  // ══════════════════════════════════════════════════════════════════════════
+  // HIDROELECTROLÍTICO — NUEVAS
+  // ══════════════════════════════════════════════════════════════════════════
+  _PrescriptionModel(
+    id: 'hipernatremia',
+    title: 'Hipernatremia',
+    subtitle: 'Na⁺ >145 mEq/L — reposición hídrica controlada',
+    category: 'Hidroelectrolítico',
+    icon: Icons.science_rounded,
+    content: '''HIPERNATREMIA: Na⁺ sérico >145 mEq/L
+→ Siempre indica déficit de agua libre.
+
+CAUSAS FRECUENTES:
+• Pérdida de agua libre: diarrea, vómitos, sudoración, quemados.
+• Diabetes insípida (central o nefrogénica).
+• Ingesta inadecuada (ancianos, pacientes con disnea).
+• Yatrogénica: suero fisiológico o bicarbonato en exceso.
+
+CÁLCULO DE DÉFICIT DE AGUA LIBRE:
+Déficit (L) = ACT × [(Na actual / 140) − 1]
+ACT = 0,6 × peso (hombres) · 0,5 × peso (mujeres)
+Ej.: Varón 70 kg, Na 158 mEq/L:
+ACT = 42 L → Déficit = 42 × [(158/140) − 1] = 5,4 L
+
+REPOSICIÓN:
+Regla: NO bajar más de 10–12 mEq/L en 24h
+(riesgo de edema cerebral si corrección rápida).
+
+Velocidad máxima: 0,5 mEq/L/hora.
+
+Líquidos de elección:
+• Agua libre vía oral/SNG (preferida si tolera).
+• Dextrose 5% (agua libre pura EV).
+• SF 0,45% (solución hipotónica) si Na >160 mEq/L.
+
+Fórmula de velocidad de infusión:
+Volumen en 24h (mL) = Déficit calculado × 1000 / 24h → mL/h.
+Agregar pérdidas insensibles + diuresis del día.
+
+DIABETES INSÍPIDA CENTRAL:
+• Desmopresina (DDAVP) intranasal 10–40 mcg/día
+  o EV 1–4 mcg/día en 2 dosis.
+
+MONITOREO:
+• Na⁺ cada 4–6h al inicio → cada 12h cuando estable.
+• Peso diario · balance hídrico estricto.
+
+---
+⚕ Modelo educativo — adaptar al paciente.''',
+  ),
+
+  _PrescriptionModel(
+    id: 'hipercalcemia',
+    title: 'Hipercalcemia',
+    subtitle: 'Ca²⁺ >10,5 mg/dL — hidratación · bifosfonatos · calcitonina',
+    category: 'Hidroelectrolítico',
+    icon: Icons.science_rounded,
+    content: '''HIPERCALCEMIA: Ca total >10,5 mg/dL (o Ca iónico >1,3 mmol/L).
+GRAVE si Ca >14 mg/dL o síntomas severos.
+
+CAUSAS FRECUENTES:
+• Hiperparatiroidismo primario (ambulatoria, crónica, leve).
+• Neoplasias (mieloma, metástasis óseas, PTHrP) — hipercalcemia grave.
+• Sarcoidosis, TBC, granulomatosis.
+• Intoxicación vitamina D · tiazidas · litio.
+• Inmovilización prolongada.
+
+SÍNTOMAS (regla "huesos, piedras, quejidos, gemidos"):
+• Huesos: dolores óseos, fracturas.
+• Piedras: nefrolitiasis, poliuria.
+• Quejidos: náuseas, vómitos, estreñimiento.
+• Gemidos (neurológicos): confusión, letargia, coma.
+• Cardíaco: QT corto, arritmias.
+
+TRATAMIENTO ESCALONADO:
+1° HIDRATACIÓN EV VIGOROSA (urgente si Ca >12 mg/dL):
+• SF 0,9%: 200–500 mL/h → reponer 2–4 L en las primeras 4–6h.
+• Objetivo: diuresis 100–150 mL/h.
+
+2° DIURÉTICO DE ASA (solo tras hidratación adecuada):
+• Furosemida 20–40 mg EV c/6–12h.
+• NUNCA sin hidratación previa (agrava hipercalcemia).
+
+3° INHIBICIÓN DE RESORCIÓN ÓSEA (neoplasia, hiperPTH):
+• Ácido Zoledrónico 4 mg EV en 15 min (efecto 24–48h).
+• Pamidronato 60–90 mg EV en 2–4h (alternativa).
+• Denosumab 120 mg SC (si falla renal o bifosfonatos contraindicados).
+
+4° CALCITONINA (efecto rápido — primeras 12–24h):
+• Calcitonina de salmón 4–8 UI/kg SC/IM c/6–12h.
+• Taquifilaxia en 48–72h → usar solo puente con bifosfonatos.
+
+5° CORTICOIDES (hipercalcemia por vitamina D/granuloma):
+• Prednisona 40–60 mg/día VO o Hidrocortisona 200 mg/día EV.
+
+DIÁLISIS: si refractaria + IRA + Ca >18 mg/dL.
+
+MONITOREO: Ca²⁺ y electrolitos c/6–12h al inicio.
+
+---
+⚕ Modelo educativo — adaptar al paciente.''',
+  ),
+
+  _PrescriptionModel(
+    id: 'hipocalcemia_aguda',
+    title: 'Hipocalcemia Aguda',
+    subtitle: 'Ca²⁺ <8,5 mg/dL — gluconato de calcio EV',
+    category: 'Hidroelectrolítico',
+    icon: Icons.science_rounded,
+    content: '''HIPOCALCEMIA: Ca total <8,5 mg/dL (o Ca iónico <1,12 mmol/L).
+GRAVE y SINTOMÁTICA si Ca <7,5 mg/dL o síntomas neuromusculares.
+
+CAUSAS FRECUENTES:
+• Hipoparatiroidismo (post-tiroidectomía o paratiroidectomía).
+• Déficit de vitamina D · malabsorción.
+• Hipomagnesemia (refractaria al tratamiento sin corregir Mg).
+• Pancreatitis aguda severa · sepsis.
+• Síndrome del hueso hambriento (post-cirugía paratiroides).
+• Rabdomiólisis · transfusión masiva (citrato).
+
+SIGNOS CLÍNICOS:
+• Signo de Chvostek: espasmo al percutir nervio facial.
+• Signo de Trousseau: espasmo carpal al insuflar manguito 3 min.
+• Tetania, parestesias peribucales y en extremidades.
+• Convulsiones, laringoespasmo, broncoespasmo.
+• ECG: QT prolongado.
+
+TRATAMIENTO EV (sintomática o Ca <7,5):
+Gluconato de Calcio 10% — ampola de 10 mL (93 mg Ca elemental):
+• Dosis de ataque: 1–2 ampollas (10–20 mL) + 100 mL SF 0,9%.
+  Infundir EV en 10–20 minutos.
+  (Puede repetirse c/60 min si síntomas persisten)
+• Mantenimiento BIC: 4–6 ampollas en 500 mL SF → 50–100 mL/h.
+
+NUNCA administrar Gluconato de Ca en bolo rápido → riesgo de paro.
+NUNCA mezclar con bicarbonato → precipita.
+
+TRATAMIENTO ORAL (asintomática, Ca 7,5–8,5):
+• Carbonato de calcio 1–3 g/día VO (en 2–3 tomas, con comidas).
+• Calcitriol 0,25–0,5 mcg/día (si hipoparatiroidismo).
+• Vitamina D₃ 1000–2000 UI/día.
+
+CORREGIR HIPOMAGNESEMIA ASOCIADA:
+• Si Mg <1,5 mg/dL → hipocalcemia refractaria.
+• Sulfato Mg 2 g EV en 30 min antes de reponer calcio.
+
+MONITOREO: Ca iónico c/4–6h · ECG continuo durante infusión.
+
+---
+⚕ Modelo educativo — adaptar al paciente.''',
+  ),
+
+  // ══════════════════════════════════════════════════════════════════════════
+  // ENDOCRINOLOGÍA — NUEVAS
+  // ══════════════════════════════════════════════════════════════════════════
+  _PrescriptionModel(
+    id: 'crise_adrenal',
+    title: 'Crisis Adrenal / Insuficiencia Suprarrenal Aguda',
+    subtitle: 'Hidrocortisona EV de urgencia · reposición salina',
+    category: 'Endocrinología',
+    icon: Icons.medical_services_rounded,
+    content: '''CRISIS ADRENAL: emergencia endocrinológica.
+→ Hipotensión refractaria + antecedente de insuficiencia suprarrenal o corticoterapia crónica.
+
+CUADRO CLÍNICO:
+• Hipotensión severa, shock (PAM <65 mmHg).
+• Náuseas, vómitos, dolor abdominal.
+• Astenia extrema, confusión, coma.
+• Fiebre, hipoglucemia, hiponatremia, hipercalemia.
+• Factor precipitante: infección, cirugía, trauma, suspensión brusca de corticoides.
+
+TRATAMIENTO INMEDIATO:
+1. Acceso EV + extracción de cortisol basal (NO esperar resultado).
+2. Hidrocortisona (1° elección):
+   → 100 mg EV en bolo inmediato.
+   → Luego 50–100 mg EV c/6–8h o BIC 200 mg/día.
+   → Dexametasona 4 mg EV puede usarse si no hay hidrocortisona
+      (no interfiere con test cortisol, pero sin efecto mineralocorticoide).
+
+3. Reposición hídrica:
+   SF 0,9% 1 L EV en 30–60 min → repetir según respuesta.
+   Objetivo PAM >65 mmHg.
+
+4. Glucosa:
+   Dextrose 50%: 40–80 mL EV si hipoglucemia sintomática.
+   Mantenimiento: SG 5% o 10% según glucemia.
+
+5. Tratar causa precipitante (ATB si infección, etc.).
+
+REDUCCIÓN PROGRESIVA DE DOSIS:
+• Cuando estable: reducir hidrocortisona 50% c/24–48h.
+• Volver a dosis fisiológica (15–25 mg/día VO) cuando tolere oral.
+• Agregar fludrocortisona 0,1 mg/día VO (mineralocorticoide)
+  cuando dosis de hidrocortisona <50 mg/día.
+
+EVITAR: hipoglucemia, hiponatremia, drogas que aumentan catabolismo.
+
+---
+⚕ Modelo educativo — adaptar al paciente.''',
+  ),
+
+  _PrescriptionModel(
+    id: 'tormenta_tiroidea',
+    title: 'Tormenta Tiroidea / Tirotoxicosis Grave',
+    subtitle: 'PTU · propranolol · yodo · dexametasona',
+    category: 'Endocrinología',
+    icon: Icons.local_fire_department_rounded,
+    content: '''TORMENTA TIROIDEA — Score de Burch-Wartofsky ≥45 puntos.
+→ Emergencia endocrinológica con mortalidad del 10–30%.
+
+DESENCADENANTES: cirugía, infección, trauma, parto, amiodarona, contraste yodado.
+
+CUADRO CLÍNICO:
+• Fiebre >38,5°C · taquicardia >140 lpm.
+• Agitación, confusión, psicosis, coma.
+• FA, ICC, hipertensión.
+• Vómitos, diarrea, ictericia.
+
+TRATAMIENTO INMEDIATO:
+1. BLOQUEO DE SÍNTESIS (1° paso — iniciar primero):
+   Propiltiouracilo (PTU): 600 mg VO/SNG dosis de carga
+   → luego 200–300 mg VO c/6h.
+   Metimazol (alternativa): 20–25 mg VO c/6h
+   (EVITAR metimazol en 1° trimestre embarazo).
+
+2. BLOQUEO DE LIBERACIÓN DE YODO (esperar 1h después del PTU):
+   Solución de Lugol (yodo-yoduro): 5–10 gotas VO c/8h.
+   o Yoduro de potasio (SSKI): 5 gotas VO c/6h.
+
+3. BLOQUEO DE CONVERSIÓN T4→T3:
+   Dexametasona 2 mg EV c/6h (también cubre insuf. adrenal relativa).
+   Hidrocortisona 300 mg/día EV (alternativa).
+
+4. BETABLOQUEANTE (control de síntomas simpáticos):
+   Propranolol: 60–80 mg VO c/4–6h.
+   o EV: 0,5–1 mg en 5 min (con monitoreo ECG) → luego 1–2 mg c/15 min.
+   Atenolol 25–50 mg VO (alternativa si broncoespasmo leve).
+   EVITAR betabloqueante si ICC descompensada → usar diltiazem.
+
+5. ANTIPIRÉTICO:
+   Paracetamol 1 g EV c/6h.
+   EVITAR AAS (libera T4 de proteínas transportadoras).
+
+6. SOPORTE:
+   SF 0,9% + glucosa · monitoreo continuo · UTI.
+   Tratamiento de causa desencadenante.
+
+---
+⚕ Modelo educativo — adaptar al paciente.''',
+  ),
+
+  _PrescriptionModel(
+    id: 'hipotiroidismo_mixedema',
+    title: 'Hipotiroidismo Grave / Coma Mixedematoso',
+    subtitle: 'Levotiroxina EV · hidrocortisona · soporte',
+    category: 'Endocrinología',
+    icon: Icons.thermostat_rounded,
+    content: '''COMA MIXEDEMATOSO: hipotiroidismo severo descompensado.
+→ Mortalidad 30–60% sin tratamiento. Urgencia endocrinológica.
+
+DESENCADENANTES: frío, infecciones, fármacos (sedantes, amiodarona), cirugía.
+
+CUADRO CLÍNICO:
+• Alteración de consciencia (desde somnolencia hasta coma).
+• Hipotermia severa (<35°C) — característica.
+• Bradicardia, hipotensión, hipoventilación.
+• Mixedema facial (edema periorbital, lengua grande, voz ronca).
+• Hiponatremia, hipoglucemia, hipercapnia.
+
+TRATAMIENTO:
+1. TIROXINA EV (Levotiroxina):
+   Dosis de carga: T4 200–400 mcg EV en bolus único lento.
+   Luego: 50–100 mcg EV c/24h.
+   Si disponible: T3 (liotironina) 10 mcg EV c/4–6h
+   (inicio de acción más rápido que T4).
+
+2. HIDROCORTISONA (insuf. adrenal asociada frecuente):
+   100 mg EV bolo → 50 mg EV c/6h.
+   INICIAR antes o junto con tiroxina (riesgo de crisis adrenal).
+
+3. SOPORTE RESPIRATORIO:
+   O₂ humidificado · IOT si pCO₂ >60 mmHg o GCS <8.
+
+4. RECALENTAMIENTO ACTIVO PASIVO:
+   Mantas térmicas · temperatura ambiental caliente.
+   EVITAR recalentamiento externo agresivo (vasodilatación periférica).
+
+5. CORRECCIÓN DE COMPLICACIONES:
+   Hiponatremia: SF 0,9% (restricción hídrica si SIADH asociado).
+   Hipoglucemia: Dextrose 50% 40 mL EV.
+   Bradicardia severa: marcapasos temporal si FC <40 lpm.
+
+MONITOREO: TSH + T4 libre · temperatura · ECG continuo.
+
+---
+⚕ Modelo educativo — adaptar al paciente.''',
+  ),
+
+  _PrescriptionModel(
+    id: 'cetoacidosis_alcoholica',
+    title: 'Cetoacidosis Alcohólica',
+    subtitle: 'Tiamina · glucosa · hidratación — distinto de CAD',
+    category: 'Endocrinología',
+    icon: Icons.local_bar_rounded,
+    content: '''CETOACIDOSIS ALCOHÓLICA (CAA)
+→ Acidosis metabólica con anión gap alto por cetonas.
+Glucemia NORMAL o BAJA (diferencia clave vs CAD).
+
+CUADRO CLÍNICO:
+• Náuseas, vómitos, dolor abdominal (típicamente 24–72h tras ingesta).
+• Glucemia normal o baja (<200 mg/dL).
+• Acidosis metabólica con AG alto (>12 mEq/L).
+• Cetonemia/cetonuria positiva.
+• Sin o con leve hiperglucemia.
+
+DIFERENCIAS CON CAD DIABÉTICA:
+• Glucemia: normal/baja (CAA) vs alta >250 mg/dL (CAD).
+• Insulina: no se usa en CAA.
+• Respuesta al tratamiento: rápida en CAA (horas).
+
+TRATAMIENTO:
+1. TIAMINA (PRIMERO — antes de glucosa):
+   100 mg EV lento (evitar síndrome de Wernicke-Korsakoff).
+   Luego 100 mg/día EV/IM × 3–5 días.
+
+2. GLUCOSA (simultánea con tiamina si hipoglucemia):
+   Dextrose 5% 1 L → luego según glucemia.
+   Objetivo: glucemia 80–180 mg/dL.
+
+3. HIDRATACIÓN:
+   SF 0,9% 1 L en 1h → SF 0,9% + K⁺ según ionograma.
+   (Reponer electrolitos: K⁺, Mg²⁺, fosfato frecuentemente bajos).
+
+4. NO USAR INSULINA (agrava hipoglucemia).
+5. NO BICARBONATO (pH se corrige con glucosa/tiamina).
+
+COMPLICACIONES A BUSCAR:
+• Pancreatitis aguda (lipasa/amilasa).
+• Sangrado digestivo (hematemesis).
+• Convulsiones por abstinencia.
+• Wernicke: ataxia + oftalmoplegia + confusión.
+
+ALTA: cuando tolerancia oral, cetonuria negativa, pH >7,35.
+
+---
+⚕ Modelo educativo — adaptar al paciente.''',
+  ),
+
+  // ══════════════════════════════════════════════════════════════════════════
+  // INFECTOLOGÍA — NUEVAS
+  // ══════════════════════════════════════════════════════════════════════════
+  _PrescriptionModel(
+    id: 'endocarditis_bacteriana',
+    title: 'Endocarditis Bacteriana',
+    subtitle: 'Cobertura SAMR/SAOS · hemocultivos · duración',
+    category: 'Infectología',
+    icon: Icons.favorite_border_rounded,
+    content: '''ENDOCARDITIS INFECCIOSA (EI)
+→ Diagnóstico: Criterios de Duke modificados.
+Hemocultivos × 3 (de 3 sitios distintos, aerobio/anaerobio) ANTES de ATB.
+
+GÉRMENES FRECUENTES:
+• Streptococcus viridans (válvula nativa, boca).
+• Staphylococcus aureus (SARM y SASM — más virulento).
+• Enterococcus faecalis (ancianos, manipulaciones GU).
+• Estafilococo coagulasa negativo (válvula protésica).
+
+TRATAMIENTO EMPÍRICO INICIAL:
+Válvula NATIVA — comunidad:
+• Ampicilina-Sulbactam 3 g EV c/6h
+  + Gentamicina 1 mg/kg EV c/8h.
+
+Si sospecha SARM o UCI:
+• Vancomicina 15–20 mg/kg EV c/12h (ajustar según nivel valle).
+  + Gentamicina 1 mg/kg EV c/8h (primeros 5 días).
+
+Válvula PROTÉSICA (<12 meses post-cirugía):
+• Vancomicina 15–20 mg/kg EV c/12h
+  + Rifampicina 300 mg VO c/8h
+  + Gentamicina 1 mg/kg EV c/8h.
+
+DURACIÓN (mínima):
+• Streptococcus sensible: 4 semanas EV.
+• Staphylococcus válvula nativa: 6 semanas EV.
+• Válvula protésica: 6 semanas EV (mínimo).
+
+INDICACIONES QUIRÚRGICAS DE URGENCIA:
+• ICC refractaria por disfunción valvular.
+• Infección no controlada (fiebre persistente, absceso).
+• Embolia mayor recurrente con vegetación >10 mm.
+• Hongo o SARM con vegetación grande.
+
+---
+⚕ Modelo educativo — adaptar al paciente.''',
+  ),
+
+  _PrescriptionModel(
+    id: 'fasciitis_necrotizante',
+    title: 'Fasciitis Necrotizante / Celulitis Necrotizante',
+    subtitle: 'Cirugía urgente + meropenem + vancomicina',
+    category: 'Infectología',
+    icon: Icons.emergency_rounded,
+    content: '''FASCIITIS NECROTIZANTE — EMERGENCIA QUIRÚRGICA
+→ Infección de tejidos blandos profundos con necrosis fascial.
+Mortalidad 25–35% sin desbridamiento temprano.
+
+SIGNOS DE ALARMA (distingue de celulitis simple):
+• Dolor DESPROPORCIONADO al examen externo.
+• Crepitación a la palpación (gas en tejidos).
+• Bula hemorrágica o necrosis cutánea.
+• Progresión rápida de eritema/edema.
+• Shock séptico asociado.
+• TC: gas en tejidos planos (diagnóstico confirmatorio).
+
+SCORE LRINEC ≥6: alta probabilidad de fasciitis.
+(PCR, leucocitos, Na, glucemia, creatinina, hemoglobina)
+
+TRATAMIENTO:
+1. CIRUGÍA URGENTE (prioridad absoluta):
+   Desbridamiento quirúrgico amplio + fasciotomía.
+   Reexploración en 24h. Amputación si necesario.
+
+2. ANTIBIOTICOTERAPIA EMPÍRICA EV INMEDIATA:
+   Meropenem 1 g EV c/8h (cobertura gram-negativos y anaerobios)
+   + Vancomicina 15–20 mg/kg EV c/12h (SAMR)
+   + Clindamicina 600–900 mg EV c/8h (antitoxínico para estreptococo).
+
+Alternativa:
+   Pip/Tazo 4,5 g EV c/6h + Vancomicina + Clindamicina.
+
+3. SOPORTE INTENSIVO:
+   Reposición hídrica agresiva + vasopresores según necesidad.
+   Transfusión si Hb <7 g/dL.
+
+4. GAMMAGLOBULINA EV (Estreptococo grupo A):
+   IVIG 1–2 g/kg en 24h (considerar si toxicidad estreptocócica).
+
+5. OXÍGENO HIPERBÁRICO (adjunto — si disponible):
+   2,5 atm × 90 min c/12h × 5–10 sesiones.
+
+---
+⚕ Modelo educativo — adaptar al paciente.''',
+  ),
+
+  _PrescriptionModel(
+    id: 'gonorrea_chlamydia_its',
+    title: 'Gonorrea / Clamidia — ITS',
+    subtitle: 'Ceftriaxona + azitromicina · uretritis · cervicitis',
+    category: 'Infectología',
+    icon: Icons.medical_information_rounded,
+    content: '''INFECCIONES DE TRANSMISIÓN SEXUAL (ITS)
+Neisseria gonorrhoeae / Chlamydia trachomatis
+
+TRATAMIENTO SIMULTÁNEO (coinfección frecuente ~40%):
+
+GONORREA UROGENITAL NO COMPLICADA:
+• Ceftriaxona 500 mg IM dosis única (1° elección).
+  Si peso >150 kg: 1 g IM dosis única.
+• Alternativa (si alergia a cefalosporinas):
+  Gentamicina 240 mg IM + Azitromicina 2 g VO — dosis única.
+
+CLAMIDIA:
+• Doxiciclina 100 mg VO c/12h × 7 días (1° elección).
+• Azitromicina 1 g VO dosis única (alternativa — menos eficaz).
+• Embarazadas: Azitromicina 1 g VO dosis única.
+
+GONORREA DISEMINADA (artritis, bacteriemia):
+• Ceftriaxona 1 g EV/IM c/24h × 7 días.
+
+URETRITIS / CERVICITIS (sin microbiología disponible):
+• Ceftriaxona 500 mg IM + Doxiciclina 100 mg VO c/12h × 7 días.
+
+ENFERMEDAD INFLAMATORIA PÉLVICA (EIP) AMBULATORIA:
+• Ceftriaxona 500 mg IM dosis única
+  + Doxiciclina 100 mg VO c/12h × 14 días
+  + Metronidazol 500 mg VO c/12h × 14 días.
+
+EIP INTERNADA:
+• Cefoxitina 2 g EV c/6h + Doxiciclina 100 mg EV/VO c/12h × 14 días.
+• O: Clindamicina 900 mg EV c/8h + Gentamicina 1,5 mg/kg EV c/8h.
+
+NOTIFICACIÓN OBLIGATORIA + tratamiento de contactos.
+Abstinencia sexual hasta 7 días post-tratamiento de ambos.
+
+---
+⚕ Modelo educativo — adaptar al paciente.''',
+  ),
+
+  _PrescriptionModel(
+    id: 'covid19_grave',
+    title: 'COVID-19 Grave / Crítico',
+    subtitle: 'Dexametasona · anticoagulación · O₂ · antiviral',
+    category: 'Infectología',
+    icon: Icons.coronavirus_rounded,
+    content: '''COVID-19 GRAVE (SpO₂ <94% o FR >30 o PaO₂/FiO₂ <300).
+
+ESTRATIFICACIÓN:
+• Moderado: SpO₂ 90–94% — hospitalización.
+• Grave: SpO₂ <90% — UCI.
+• Crítico: IOT / VM.
+
+OXIGENOTERAPIA:
+• Objetivo SpO₂ 92–96% (92–95% en EPOC).
+• Cánula nasal de alto flujo (CNAF): flujo 40–60 L/min, FiO₂ 60–100%.
+• VNI (si CNAF falla): CPAP 5–10 cmH₂O.
+• IOT + VM protectora: Vt 4–6 mL/kg peso ideal, PEEP 8–14.
+• Decúbito prono 16h/día si PaO₂/FiO₂ <150 (UCI).
+
+DEXAMETASONA (RECOVERY trial — evidencia A):
+• Indicada si requerimiento de O₂ suplementario o VM.
+• 6 mg VO/EV c/24h × 10 días.
+• NO usar sin requerimiento de O₂ (empeora en leves).
+
+ANTICOAGULACIÓN:
+• Profiláctica (todos los internados sin contraindicación):
+  Enoxaparina 40 mg SC c/24h (o 60 mg si IMC >30).
+• Terapéutica (si TVP/TEP confirmado):
+  Enoxaparina 1 mg/kg SC c/12h.
+
+ANTIVIRALES (primeras 5 días de síntomas):
+• Nirmatrelvir/ritonavir (Paxlovid) — si disponible:
+  300/100 mg VO c/12h × 5 días (ajustar en IRA).
+• Remdesivir 200 mg EV día 1 → 100 mg/día × 4 días.
+  (si síntomas <7 días + O₂ suplementario).
+
+TOCILIZUMAB (anti-IL6 — si CRP >75 mg/L + VM o CNAF):
+• 8 mg/kg EV dosis única (máx 800 mg).
+
+BARICITINIB (alternativa a tocilizumab):
+• 4 mg VO/día × 14 días.
+
+EVITAR: corticoides sin indicación (primeros días) · antibióticos sin superinfección.
+
+---
+⚕ Modelo educativo — adaptar al paciente.''',
+  ),
+
+  // ══════════════════════════════════════════════════════════════════════════
+  // HEMATOLOGÍA — NUEVAS
+  // ══════════════════════════════════════════════════════════════════════════
+  _PrescriptionModel(
+    id: 'reversion_anticoagulacion',
+    title: 'Reversión de Anticoagulación',
+    subtitle: 'Vitamina K · CCP · Idarucizumab · Andexanet',
+    category: 'Hematología',
+    icon: Icons.bloodtype_rounded,
+    content: '''REVERSIÓN DE ANTICOAGULACIÓN DE URGENCIA
+→ Hemorragia mayor o procedimiento de emergencia.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+WARFARINA (antagonista vitamina K):
+Urgente (INR muy elevado + sangrado mayor):
+• Vitamina K₁: 10 mg EV lento (30 min) — efecto en 4–6h.
+• CCP 4 factores (Octaplex/Beriplex): 25–50 UI/kg EV.
+  (Efecto inmediato — 1° elección en emergencia).
+• Plasma Fresco Congelado: 15–20 mL/kg (si no hay CCP).
+Objetivo: INR <1,5 en <1h.
+
+Urgente (INR 4,5–10 sin sangrado activo):
+• Vitamina K₁ 2–4 mg VO. Repetir c/24h según INR.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+DABIGATRÁN (inhibidor directo trombina):
+• Idarucizumab (Praxbind) 5 g EV (2 × 2,5 g en 15 min).
+  → Antídoto específico — recomendado siempre que disponible.
+• Si no hay antídoto: CCP 4F 50 UI/kg o diálisis.
+  (Dabigatrán es dializable — único ACOD dializable).
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+APIXABÁN / RIVAROXABÁN (anti-Xa):
+• Andexanet alfa: dosis según fármaco y última dosis
+  (dosis baja: 400 mg bolo + 480 mg BIC × 2h;
+   dosis alta: 800 mg bolo + 960 mg BIC × 2h).
+• Si no disponible: CCP 4 factores 50 UI/kg EV.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+HEPARINA NO FRACCIONADA:
+• Protamina: 1 mg por cada 100 UI de HNF administrada.
+  (máx 50 mg EV en 10 min — cuidado: hipotensión).
+
+HEPARINA DE BAJO PESO MOLECULAR (HBPM):
+• Protamina: 1 mg por cada 100 UI anti-Xa de HBPM (últimas 8h).
+  (Neutralización parcial ~60%).
+
+FONDAPARINUX: sin antídoto específico.
+CCP 4F 50 UI/kg (eficacia parcial).
+
+---
+⚕ Modelo educativo — adaptar al paciente.''',
+  ),
+
+  _PrescriptionModel(
+    id: 'trombocitopenia_purpura',
+    title: 'Trombocitopenia — PTI / Manejo',
+    subtitle: 'Corticoides · IVIG · transfusión plaquetas',
+    category: 'Hematología',
+    icon: Icons.water_drop_rounded,
+    content: '''TROMBOCITOPENIA EN GUARDIA
+→ Plaquetas <100.000/mm³ (sangrado significativo si <20.000).
+
+CAUSAS FRECUENTES (diagnóstico diferencial urgente):
+• PTI (Púrpura Trombocitopénica Inmune): diagnóstico de exclusión.
+• PTT (Púrpura Trombótica Trombocitopénica): emergencia.
+• SHU (Síndrome Hemolítico Urémico).
+• Trombocitopenia inducida por heparina (TIH — días 5–10).
+• Sepsis · CID · hiperesplenismo · medicamentosa.
+
+ALARMA: PTT = plaquetas bajas + anemia hemolítica microangiopática
+→ PLASMAFÉRESIS URGENTE (no transfundir plaquetas en PTT).
+
+PTI (PÚRPURA TROMBOCITOPÉNICA INMUNE):
+Primera línea:
+• Prednisona 1 mg/kg/día VO × 2–4 semanas → reducción gradual.
+  O Dexametasona 40 mg VO c/24h × 4 días (ciclos).
+• IVIG (Ig EV) si sangrado grave o necesidad de respuesta rápida:
+  1 g/kg/día EV × 1–2 días.
+
+TRANSFUSIÓN DE PLAQUETAS (indicaciones):
+• Plaquetas <10.000 sin sangrado (profilaxis).
+• Plaquetas <20.000 + petequias/púrpura activa.
+• Plaquetas <50.000 + sangrado activo o procedimiento invasivo.
+• Plaquetas <100.000 + neurocirugía o cirugía ocular.
+Dosis: 1 pool (5–6 unidades) → eleva ~30.000–50.000/mm³.
+
+TIH (TROMBOCITOPENIA INDUCIDA POR HEPARINA):
+• SUSPENDER TODA HEPARINA INMEDIATAMENTE.
+• Argatrobán BIC 2 mcg/kg/min (ajustar por TTPA 1,5–3× basal).
+  O Fondaparinux 7,5 mg SC c/24h.
+• NO usar warfarina hasta plaquetas >150.000.
+
+---
+⚕ Modelo educativo — adaptar al paciente.''',
+  ),
+
+  // ══════════════════════════════════════════════════════════════════════════
+  // RESPIRATORIO — NUEVAS
+  // ══════════════════════════════════════════════════════════════════════════
+  _PrescriptionModel(
+    id: 'absceso_pulmonar',
+    title: 'Absceso Pulmonar',
+    subtitle: 'Clindamicina · amoxicilina-clavulánico · drenaje',
+    category: 'Respiratorio',
+    icon: Icons.air_rounded,
+    content: '''ABSCESO PULMONAR
+→ Necrosis focal del parénquima pulmonar con formación de cavidad.
+Imagen: cavidad con nivel hidroaéreo en Rx/TC tórax.
+
+CAUSAS:
+• Bacterias anaerobias (60–80%): Peptostreptococcus, Fusobacterium,
+  Prevotella — asociadas a aspiración.
+• Klebsiella pneumoniae (absceso primario — alcoholismo).
+• S. aureus (SARM — neumonía aspirativa grave).
+• Streptococcus milleri.
+
+TRATAMIENTO ANTIBIÓTICO:
+
+AMBULATORIO (leve, sin comorbilidades):
+• Amoxicilina-clavulánico 875/125 mg VO c/12h × 4–6 semanas.
+  O Clindamicina 300 mg VO c/8h × 4–6 semanas.
+
+INTERNADO:
+• Ampicilina-sulbactam 3 g EV c/6h × 4–6 semanas.
+  Alternativa: Clindamicina 600 mg EV c/8h + Ceftriaxona 2 g EV c/24h.
+
+Si sospecha SARM:
+  Vancomicina 15–20 mg/kg EV c/12h o Linezolid 600 mg EV c/12h.
+
+Si Klebsiella (alcoholismo, imuno comprometido):
+  Ceftriaxona 2 g EV c/24h o Meropenem 1 g EV c/8h.
+
+DURACIÓN: mínimo 4–6 semanas (hasta resolución radiológica).
+
+DRENAJE PERCUTÁNEO:
+• Si >6 cm, no responde a ATB en 72h, o inmunocomprometido.
+• Toracoscopía/cirugía: si complicación (empiema, fístula).
+
+FISIOTERAPIA RESPIRATORIA:
+• Drenaje postural · percusión torácica diaria.
+
+---
+⚕ Modelo educativo — adaptar al paciente.''',
+  ),
+
+  // ══════════════════════════════════════════════════════════════════════════
+  // DERMATOLOGÍA — NUEVAS
+  // ══════════════════════════════════════════════════════════════════════════
+  _PrescriptionModel(
+    id: 'quemaduras_manejo',
+    title: 'Quemaduras — Manejo Inicial',
+    subtitle: 'Reposición Parkland · clasificación · analgesia',
+    category: 'Urgencias',
+    icon: Icons.local_fire_department_rounded,
+    content: '''QUEMADURAS — CLASIFICACIÓN Y MANEJO INICIAL
+
+CLASIFICACIÓN POR PROFUNDIDAD:
+• 1° grado: solo epidermis — eritema, sin ampolla.
+• 2° grado superficial: dermis superficial — ampollas, dolorosa.
+• 2° grado profunda: dermis profunda — pálida, menos dolorosa.
+• 3° grado: espesor total — indolora, coriácea, requiere injerto.
+
+SUPERFICIE CORPORAL QUEMADA (SCQ):
+Regla de los 9: cabeza 9%, brazo 9%, pierna 18%,
+tronco ant. 18%, tronco post. 18%, periné 1%.
+Palma del paciente = 1% SCQ.
+
+REPOSICIÓN HÍDRICA — FÓRMULA DE PARKLAND:
+Volumen 24h = 4 mL × kg × % SCQ (2° y 3° grado).
+• 50% en primeras 8h desde el momento de la quemadura.
+• 50% restante en las próximas 16h.
+• Líquido de elección: Ringer Lactato.
+Ej.: 70 kg, SCQ 30% → 8.400 mL en 24h → 525 mL/h en 8h.
+
+ANALGESIA:
+• Dipirona 1 g EV c/6–8h + Ketorolac 30 mg EV c/8h.
+• Morfina 2–4 mg EV c/4–6h (quemaduras moderadas/graves).
+• Ketamina 0,5–1 mg/kg EV (procedimientos de curaciones).
+
+CUIDADOS LOCALES:
+• 1° grado: humectar, antiinflamatorio tópico.
+• 2° grado: limpieza + sulfadiazina de plata 1% (cubrir ampollas intactas).
+• 3° grado: curaciones oclusivas + derivación a centro especializado.
+
+DERIVACIÓN A CENTRO DE QUEMADOS:
+• SCQ >20% adultos (>10% niños/ancianos).
+• Quemaduras de cara, manos, pies, genitales, articulaciones.
+• Quemaduras eléctricas o químicas.
+• Lesión de vía aérea (estridor, esputo carbonáceo).
+
+---
+⚕ Modelo educativo — adaptar al paciente.''',
+  ),
+
+  // ══════════════════════════════════════════════════════════════════════════
+  // PEDIATRÍA — NUEVAS
+  // ══════════════════════════════════════════════════════════════════════════
+  _PrescriptionModel(
+    id: 'fiebre_sin_foco_pediatria',
+    title: 'Fiebre sin Foco — Pediátrico',
+    subtitle: 'Protocolo por franja etaria · ATB empírico',
+    category: 'Pediatría',
+    icon: Icons.child_care_rounded,
+    content: '''FIEBRE SIN FOCO EN PEDIATRÍA
+→ T° >38°C (rectal) sin causa evidente tras examen completo.
+
+ESTRATIFICACIÓN POR EDAD:
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+< 28 DÍAS (neonato — ALTO RIESGO siempre):
+• Hemocultivo + punción lumbar + urocultivo.
+• Internar + ATB empírico inmediato:
+  Ampicilina 50 mg/kg EV c/8h
+  + Gentamicina 5 mg/kg EV c/24h
+  + Aciclovir 20 mg/kg EV c/8h si sospecha VHS neonatal.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+29–90 DÍAS:
+• Score PECARN / Rochester para estratificar riesgo.
+• Bajo riesgo (bien hidratado, sin foco, vacunas completas):
+  Observación ambulatoria + antitérmico + control en 24h.
+• Alto riesgo (mal aspecto, PCR >20, leucocitos <5.000 o >15.000):
+  Internar + Ceftriaxona 50 mg/kg EV c/24h.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+3–36 MESES:
+• Vacunas completas + buen estado general → manejo ambulatorio.
+• Antitérmico + control en 48h.
+• Si PCR >80 o PCT >2 → buscar foco oculto (Rx tórax, orina).
+• Ceftriaxona 50 mg/kg IM (si mal estado general o sin vacunas).
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ANTITÉRMICOS:
+• Paracetamol 10–15 mg/kg/dosis c/6h VO (máx 4 dosis/día).
+• Ibuprofeno 5–10 mg/kg/dosis c/8h VO (>3 meses).
+• Dipirona 10–15 mg/kg/dosis c/6h VO/EV.
+No alternar sistemáticamente — solo si T° no cede en 1h.
+
+---
+⚕ Modelo educativo — adaptar al paciente.''',
+  ),
+
+  _PrescriptionModel(
+    id: 'crisis_convulsiva_pediatrica',
+    title: 'Crisis Convulsiva — Pediátrico',
+    subtitle: 'Diazepam · midazolam · fenobarbital — dosis pediátricas',
+    category: 'Pediatría',
+    icon: Icons.child_care_rounded,
+    content: '''CRISIS CONVULSIVA PEDIÁTRICA
+→ Crisis >5 min o 2 crisis sin recuperación completa = Status Epiléptico.
+
+PROTOCOLO POR TIEMPO:
+
+0–5 MIN — Estabilización:
+• ABC · O₂ facial · posición lateral de seguridad.
+• Glucemia capilar (excluir hipoglucemia).
+• Acceso EV/IO.
+
+5–20 MIN — 1° Línea (benzodiacepinas):
+Con acceso EV:
+• Diazepam 0,2 mg/kg EV lento (máx 10 mg). Repetir 1 vez a 5 min.
+• Midazolam 0,1–0,2 mg/kg EV (máx 10 mg).
+
+Sin acceso EV:
+• Midazolam intranasal 0,2–0,3 mg/kg (máx 10 mg) — 0,1 mL/kg IN.
+• Midazolam bucal 0,3 mg/kg.
+• Diazepam rectal 0,5 mg/kg (máx 20 mg).
+• Lorazepam IM 0,1 mg/kg (máx 4 mg).
+
+20–40 MIN — 2° Línea (sin respuesta a benzodiacepinas):
+• Fenobarbital 20 mg/kg EV en 20 min (1° elección en neonatos).
+• Ácido valproico 20–40 mg/kg EV en 5–10 min.
+• Levetiracetam 20–60 mg/kg EV en 15 min (máx 4500 mg).
+• Fenitoína 15–20 mg/kg EV en 20 min (máx 1 g).
+
+>40 MIN — 3° Línea (Status Refractario → UCI):
+• Midazolam BIC: 0,1–0,4 mg/kg/h → titular.
+• Propofol (>3 años): 1–2 mg/kg EV → BIC 2–5 mg/kg/h.
+• Tiopental 3–5 mg/kg EV → BIC 3–5 mg/kg/h.
+
+CAUSAS TRATABLES A BUSCAR:
+• Hipoglucemia: Dextrose 25% 1 mL/kg EV.
+• Hiponatremia: salino hipertónico 3% 3–5 mL/kg EV.
+• Fiebre alta: antitérmico + buscar foco infeccioso.
+
+---
+⚕ Modelo educativo — adaptar al paciente.''',
+  ),
+
+  _PrescriptionModel(
+    id: 'deshidratacion_pediatrica',
+    title: 'Deshidratación — Pediátrico',
+    subtitle: 'SRO · hidratación EV por peso · clasificación',
+    category: 'Pediatría',
+    icon: Icons.child_care_rounded,
+    content: '''DESHIDRATACIÓN PEDIÁTRICA
+
+CLASIFICACIÓN Y SIGNOS:
+Leve (<5%): sed aumentada, mucosas levemente secas.
+Moderada (5–10%): ojos hundidos, llanto sin lágrimas,
+  turgencia disminuida, taquicardia leve.
+Grave (>10%): fontanela deprimida, oliguria <1 mL/kg/h,
+  letargia, relleno capilar >3 seg, shock inminente.
+
+PLAN A — LEVE (ambulatorio):
+• SRO (suero de rehidratación oral): 50–100 mL/kg en 4h.
+• Dar en pequeños sorbos/cucharaditas c/5 min.
+• Continuar alimentación habitual.
+
+PLAN B — MODERADA:
+• SRO 100 mL/kg en 3–4h (en guardia, supervisado).
+• Si vomita: continuar en pequeñas dosis c/2–3 min.
+• Ondansetrón 0,15 mg/kg VO (máx 4 mg) si vómitos incoercibles.
+• Si no tolera oral → Plan C.
+
+PLAN C — GRAVE / SHOCK:
+Fase de reanimación (primeros 30–60 min):
+• SF 0,9%: 20 mL/kg EV en 20 min → evaluar respuesta.
+  Repetir hasta 3 bolos (60 mL/kg total) si no mejora.
+  Si shock persiste → vasopresores.
+
+Fase de reposición (primeras 24h):
+• Déficit estimado (mL) = % deshidratación × peso (kg) × 10.
+• Reposición: 50% en primeras 8h + 50% en siguientes 16h.
+• Líquido: SF 0,9% o RL + K⁺ 20 mEq/L (si diuresis presente).
+• Agregar mantenimiento (fórmula de Holliday-Segar):
+  4 mL/kg/h (primeros 10 kg) + 2 mL/kg/h (10–20 kg) + 1 mL/kg/h (>20 kg).
+
+ELECTROLITOS:
+• K⁺ solo si diuresis presente (riesgo de hipercalemia en oliguria).
+• Glucosa: SG 5% en mantenimiento (evitar hipoglucemia).
+• Sodio: vigilar hipo/hipernatremia — ajustar solución.
+
+---
+⚕ Modelo educativo — adaptar al paciente.''',
+  ),
+
+  _PrescriptionModel(
+    id: 'bronquiolitis_pediatrica',
+    title: 'Bronquiolitis — Pediátrico',
+    subtitle: 'Salbutamol nebulizado · criterios de internación',
+    category: 'Pediatría',
+    icon: Icons.child_care_rounded,
+    content: '''BRONQUIOLITIS AGUDA
+→ Infección viral vías aéreas inferiores en <2 años.
+Principal causa: VSR (virus sincitial respiratorio).
+Pico: otoño-invierno. Primer episodio de sibilancias.
+
+DIAGNÓSTICO CLÍNICO:
+• Pródromo viral (3–5 días): rinorrea, tos, fiebre leve.
+• Sibilancias espiratorias + crepitantes finos.
+• Aumento trabajo respiratorio: tiraje, aleteo nasal, taquipnea.
+
+SCORE DE WOOD-DOWNES (severidad):
+Leve (1–3): FR normal, SatO₂ >95%, tiro subcostal leve.
+Moderado (4–7): FR >50, SatO₂ 90–95%, tiraje marcado.
+Grave (8–14): FR >70, SatO₂ <90%, exhausto, apnea.
+
+TRATAMIENTO:
+Medidas de soporte (evidencia A — única tratamiento probado):
+• O₂ si SatO₂ <92% → cánula nasal o mascarilla.
+• Aspiración de secreciones nasales (fundamental).
+• Hidratación: SRO oral o SNG si FR >60.
+  EV si grave: SF 0,9% a necesidades basales.
+• Posición semisentado 30°.
+
+Broncodilatadores (prueba terapéutica, suspender si no hay respuesta):
+• Salbutamol nebulizado: 0,15 mg/kg/dosis (mín 2,5 mg)
+  en 3 mL SF 0,9% × 20 min. Repetir c/4–6h si mejora objetiva.
+• Adrenalina nebulizada 1:1000: 0,1 mL/kg (máx 5 mL) + SF 3 mL.
+
+No recomendados rutinariamente (evidencia en contra):
+Antibióticos · corticoides sistémicos · mucolíticos · fisioterapia.
+
+CRITERIOS DE INTERNACIÓN:
+• SatO₂ <94% · FR >60 · apneas · <3 meses · prematuro · cardiopatía.
+• Incapacidad de alimentación oral.
+
+ALTA con retorno a guardia si empeora.
+
+---
+⚕ Modelo educativo — adaptar al paciente.''',
+  ),
+
+  _PrescriptionModel(
+    id: 'sepsis_neonatal',
+    title: 'Sepsis Neonatal',
+    subtitle: 'Ampicilina + gentamicina · hemocultivo · PL',
+    category: 'Pediatría',
+    icon: Icons.child_care_rounded,
+    content: '''SEPSIS NEONATAL
+→ Infección bacteriana sistémica en <28 días de vida.
+EMERGENCIA — iniciar ATB dentro de 1h del diagnóstico.
+
+CLASIFICACIÓN:
+• Temprana (<72h): gérmenes maternos — SGB, E. coli, Listeria.
+• Tardía (>72h): nosocomiales — Estafilococo, Klebsiella, Pseudomonas.
+
+SIGNOS DE ALARMA (inespecíficos):
+• Inestabilidad térmica (fiebre >38°C o hipotermia <36°C).
+• Taquicardia, bradipnea o apnea.
+• Letargia, hipotonía, convulsiones.
+• Mala coloración: cianosis, palidez, ictericia precoz.
+• Dificultad para alimentarse.
+• Distensión abdominal, vómitos biliosos.
+
+EVALUACIÓN DIAGNÓSTICA COMPLETA:
+• Hemocultivo × 2 (ANTES de ATB).
+• Punción lumbar (LCR): citoquímico + cultivo + ADA.
+• Urocultivo por punción suprapúbica.
+• Hemograma, PCR, PCT, lactato, función renal.
+
+TRATAMIENTO EMPÍRICO — SEPSIS TEMPRANA:
+• Ampicilina 50 mg/kg EV c/8h (c/12h si <7 días).
+• Gentamicina 5 mg/kg EV c/24h (monitoreo de niveles).
+
+SEPSIS TARDÍA (nosocomial o sospecha SARM):
+• Vancomicina 15 mg/kg EV c/8–12h (según edad gestacional).
+  + Cefotaxima 50 mg/kg EV c/6–8h.
+
+Si sospecha VHS neonatal:
+• Aciclovir 20 mg/kg EV c/8h (hasta descartar).
+
+SOPORTE:
+• Glucosa: SG 10% para mantener glucemia 50–120 mg/dL.
+• Acceso EV central si vasopresores.
+• Vitamina K si no recibió profilaxis.
+
+DURACIÓN: según cultivos y foco (mín 7–14 días meningitis).
+
+---
+⚕ Modelo educativo — adaptar al paciente.''',
+  ),
+
 ];
 
 // ─────────────────────────────────────────────────────────────────────────────
