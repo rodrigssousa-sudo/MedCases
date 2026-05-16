@@ -70,6 +70,8 @@ class AppProvider extends ChangeNotifier {
   List<ClinicalCaseModel> _customCases = [];
   Set<String> _favDrugs = {};
   Set<String> _favProtocols = {};
+  Set<String> _favPrescriptions = {};
+  Set<String> _favCases = {};
 
   // ── Estado — Histórias Clínicas ───────────────────────────────────────────
   List<ClinicalHistoryModel> _myHistories = [];
@@ -114,6 +116,8 @@ class AppProvider extends ChangeNotifier {
   List<String> get selectedDrugIds => _selectedDrugIds;
   Set<String> get favDrugs => _favDrugs;
   Set<String> get favProtocols => _favProtocols;
+  Set<String> get favPrescriptions => _favPrescriptions;
+  Set<String> get favCases => _favCases;
   List<ClinicalCaseModel> get customCases => _customCases;
 
   // ── Getters — Histórias Clínicas ─────────────────────────────────────────
@@ -266,6 +270,8 @@ class AppProvider extends ChangeNotifier {
     _firebaseReady = false;
     _favDrugs = {};
     _favProtocols = {};
+    _favPrescriptions = {};
+    _favCases = {};
     _customCases = [];
     _myHistories = [];
     _publicHistories = [];
@@ -406,13 +412,17 @@ class AppProvider extends ChangeNotifier {
       }
 
       // Dados por usuário (se uid disponível usa cache dedicado)
-      final favKey   = _k('favDrugs',      uid);
-      final protKey  = _k('favProtocols',  uid);
-      final caseKey  = _k('customCases',   uid);
-      final histKey  = _k('myHistories',   uid);
+      final favKey   = _k('favDrugs',         uid);
+      final protKey  = _k('favProtocols',     uid);
+      final prescKey = _k('favPrescriptions', uid);
+      final caseKey  = _k('customCases',      uid);
+      final favCaseKey = _k('favCases',       uid);
+      final histKey  = _k('myHistories',      uid);
 
-      _favDrugs     = (p.getStringList(favKey)  ?? p.getStringList('favDrugs')  ?? []).toSet();
-      _favProtocols = (p.getStringList(protKey) ?? p.getStringList('favProtocols') ?? []).toSet();
+      _favDrugs         = (p.getStringList(favKey)   ?? p.getStringList('favDrugs')         ?? []).toSet();
+      _favProtocols     = (p.getStringList(protKey)  ?? p.getStringList('favProtocols')     ?? []).toSet();
+      _favPrescriptions = (p.getStringList(prescKey) ?? p.getStringList('favPrescriptions') ?? []).toSet();
+      _favCases         = (p.getStringList(favCaseKey) ?? p.getStringList('favCases')       ?? []).toSet();
 
       final casesJson = p.getString(caseKey) ?? p.getString('customCases');
       if (casesJson != null) {
@@ -448,8 +458,10 @@ class AppProvider extends ChangeNotifier {
       if (u != null && _openAiKey.isNotEmpty) {
         await p.setString(_k('openAiKey', u), _openAiKey);
       }
-      await p.setStringList(_k('favDrugs',     u), _favDrugs.toList());
-      await p.setStringList(_k('favProtocols', u), _favProtocols.toList());
+      await p.setStringList(_k('favDrugs',         u), _favDrugs.toList());
+      await p.setStringList(_k('favProtocols',     u), _favProtocols.toList());
+      await p.setStringList(_k('favPrescriptions', u), _favPrescriptions.toList());
+      await p.setStringList(_k('favCases',         u), _favCases.toList());
       await p.setString(_k('customCases', u),
           jsonEncode(_customCases.map((c) => c.toJson()).toList()));
     } catch (_) {}
@@ -693,6 +705,18 @@ class AppProvider extends ChangeNotifier {
     if (_favProtocols.contains(id)) _favProtocols.remove(id); else _favProtocols.add(id);
     _saveLocal();
     if (_currentUser != null) FirestoreService.saveFavProtocols(_currentUser!.uid, _favProtocols);
+    notifyListeners();
+  }
+
+  void toggleFavPrescription(String id) {
+    if (_favPrescriptions.contains(id)) _favPrescriptions.remove(id); else _favPrescriptions.add(id);
+    _saveLocal();
+    notifyListeners();
+  }
+
+  void toggleFavCase(String id) {
+    if (_favCases.contains(id)) _favCases.remove(id); else _favCases.add(id);
+    _saveLocal();
     notifyListeners();
   }
 

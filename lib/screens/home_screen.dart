@@ -8,6 +8,7 @@ import '../models/drug_model.dart';
 import '../services/drug_interaction_service.dart';
 import 'cockpit_screen.dart';
 import 'drugs_screen.dart' show DrugsScreen, showDrugDetailSheet;
+import 'prescripciones_screen.dart' show PrescripcionesScreen, prescriptionModels;
 import 'tools_screen.dart' show PediatricsTabContent, ToolsScreen;
 import 'prescripciones_screen.dart';
 import 'drug_interactions_screen.dart';
@@ -56,8 +57,8 @@ class HomeScreen extends StatelessWidget {
           subtitle: isEs
               ? 'Modelos · Emergencias · Guardia · Clínica'
               : 'Modelos · Emergências · Plantão · Clínica',
-          gradientColors: const [Color(0xFF120A1E), Color(0xFF2A1245), Color(0xFF4A2080)],
-          accentColor: const Color(0xFFD8B4FE),
+          gradientColors: const [Color(0xFF0E0818), Color(0xFF1E0A38), Color(0xFF3B1578)],
+          accentColor: const Color(0xFFD4A017),
           dark: dark,
           onTap: () => Navigator.of(context).push(
             _slideRoute(const _PrescripcionesShell()),
@@ -1176,18 +1177,28 @@ class _FavoritosSheet extends StatelessWidget {
     final divColor = dark ? Colors.white.withValues(alpha: 0.07) : const Color(0xFFEDF0F7);
 
     // Fármacos favoritos
-    final favDrugIds = p.favDrugs;
-    final favDrugs = drugsDatabase
-        .where((d) => favDrugIds.contains(d.id))
+    final favDrugs = p.drugsDB
+        .where((d) => p.favDrugs.contains(d.id))
         .toList();
 
     // Protocolos favoritos
-    final favProtoIds = p.favProtocols;
     final favProtos = p.protocolsDB
-        .where((pr) => favProtoIds.contains(pr.id))
+        .where((pr) => p.favProtocols.contains(pr.id))
         .toList();
 
-    final hasAny = favDrugs.isNotEmpty || favProtos.isNotEmpty;
+    // Prescrições favoritas
+    final allPrescriptions = prescriptionModels(isEs);
+    final favPrescs = allPrescriptions
+        .where((m) => p.favPrescriptions.contains(m.id))
+        .toList();
+
+    // Casos clínicos favoritos
+    final favClinical = p.casesDB
+        .where((c) => p.favCases.contains(c.id))
+        .toList();
+
+    final hasAny = favDrugs.isNotEmpty || favProtos.isNotEmpty ||
+                   favPrescs.isNotEmpty || favClinical.isNotEmpty;
 
     return DraggableScrollableSheet(
       initialChildSize: 0.55,
@@ -1299,6 +1310,43 @@ class _FavoritosSheet extends StatelessWidget {
                         )),
                       ],
 
+                      // Prescrições favoritas
+                      if (favPrescs.isNotEmpty) ...[               
+                        Padding(
+                          padding: const EdgeInsets.only(top: 12, bottom: 8),
+                          child: Text(
+                            isEs ? 'PRESCRIPCIONES' : 'PRESCRIÇÕES',
+                            style: TextStyle(
+                              fontSize: 10, fontWeight: FontWeight.w800,
+                              letterSpacing: 1.3,
+                              color: dark ? Colors.white38 : const Color(0xFF8A94A6),
+                            ),
+                          ),
+                        ),
+                        ...favPrescs.map((m) => Column(children: [
+                          ListTile(
+                            contentPadding: const EdgeInsets.symmetric(vertical: 2, horizontal: 4),
+                            leading: Container(
+                              width: 38, height: 38,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                color: const Color(0xFFD8B4FE).withValues(alpha: 0.15),
+                              ),
+                              child: Icon(m.icon, size: 18, color: const Color(0xFFD8B4FE)),
+                            ),
+                            title: Text(m.title, style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: textMain)),
+                            subtitle: Text(m.category, style: TextStyle(fontSize: 11, color: textSub)),
+                            trailing: Icon(Icons.chevron_right_rounded, size: 18, color: dark ? Colors.white24 : const Color(0xFFCBD5E0)),
+                            onTap: () {
+                              Navigator.pop(context);
+                              Navigator.of(context).push(MaterialPageRoute(
+                                builder: (_) => const _PrescripcionesShell()));
+                            },
+                          ),
+                          Container(height: 1, color: divColor),
+                        ])),
+                      ],
+
                       // Protocolos favoritos
                       if (favProtos.isNotEmpty) ...[
                         Padding(
@@ -1350,6 +1398,42 @@ class _FavoritosSheet extends StatelessWidget {
                             ],
                           );
                         }),
+                      ],
+
+                      // Casos clínicos favoritos
+                      if (favClinical.isNotEmpty) ...[
+                        Padding(
+                          padding: const EdgeInsets.only(top: 12, bottom: 8),
+                          child: Text(
+                            isEs ? 'CASOS CLÍNICOS' : 'CASOS CLÍNICOS',
+                            style: TextStyle(
+                              fontSize: 10, fontWeight: FontWeight.w800,
+                              letterSpacing: 1.3,
+                              color: dark ? Colors.white38 : const Color(0xFF8A94A6),
+                            ),
+                          ),
+                        ),
+                        ...favClinical.map((c) => Column(children: [
+                          ListTile(
+                            contentPadding: const EdgeInsets.symmetric(vertical: 2, horizontal: 4),
+                            leading: Container(
+                              width: 38, height: 38,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                color: const Color(0xFFFBBF24).withValues(alpha: 0.15),
+                              ),
+                              child: const Icon(Icons.cases_rounded, size: 18, color: Color(0xFFFBBF24)),
+                            ),
+                            title: Text(c.title, style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: textMain)),
+                            subtitle: Text(c.category.isNotEmpty ? c.category : (isEs ? 'Caso clínico' : 'Caso clínico'),
+                                style: TextStyle(fontSize: 11, color: textSub)),
+                            trailing: Icon(Icons.chevron_right_rounded, size: 18, color: dark ? Colors.white24 : const Color(0xFFCBD5E0)),
+                            onTap: () {
+                              Navigator.pop(context);
+                            },
+                          ),
+                          Container(height: 1, color: divColor),
+                        ])),
                       ],
                     ],
                   ),
@@ -2021,7 +2105,7 @@ class _PrescripcionesShell extends StatelessWidget {
             gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
-              colors: [Color(0xFF120A1E), Color(0xFF2A1245), Color(0xFF4A2080)],
+              colors: [Color(0xFF0E0818), Color(0xFF1E0A38), Color(0xFF3B1578)],
             ),
           ),
           child: SafeArea(
@@ -2039,7 +2123,7 @@ class _PrescripcionesShell extends StatelessWidget {
                     borderRadius: BorderRadius.circular(10),
                     color: Colors.white.withValues(alpha: 0.10),
                   ),
-                  child: const Icon(Icons.description_rounded, size: 20, color: Color(0xFFD8B4FE)),
+                  child: const Icon(Icons.description_rounded, size: 20, color: Color(0xFFD4A017)),
                 ),
                 const SizedBox(width: 10),
                 Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [

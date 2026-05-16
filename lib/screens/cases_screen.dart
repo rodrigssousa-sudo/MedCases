@@ -230,6 +230,18 @@ class _CaseCard extends StatelessWidget {
                 const SizedBox(height: 6),
                 Text(c.title, style: TextStyle(fontSize: 15, fontWeight: FontWeight.w900, color: AppColors.of(context).textPrimary), overflow: TextOverflow.ellipsis),
               ])),
+              // Botão favorito (sempre visível)
+              GestureDetector(
+                onTap: () => p.toggleFavCase(c.id),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 6),
+                  child: Icon(
+                    p.favCases.contains(c.id) ? Icons.bookmark_rounded : Icons.bookmark_border_rounded,
+                    size: 18,
+                    color: p.favCases.contains(c.id) ? const Color(0xFFFBBF24) : const Color(0xFF888888),
+                  ),
+                ),
+              ),
               if (!readOnly && onEdit != null) ...[
                 GestureDetector(onTap: onEdit, child: const Padding(padding: EdgeInsets.all(6), child: Icon(Icons.edit_rounded, size: 16, color: kGold))),
                 GestureDetector(

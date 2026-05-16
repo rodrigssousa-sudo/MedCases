@@ -33,7 +33,7 @@ class _PrescripcionesScreenState extends State<PrescripcionesScreen> {
     final dark = p.darkMode;
     final es = p.lang == 'es';
     // ── Filtrar modelos ────────────────────────────────────────────────────
-    final allModels = _prescriptionModels(es);
+    final allModels = prescriptionModels(es);
     final filtered = allModels.where((m) {
       final matchSearch = _search.isEmpty ||
           m.title.toLowerCase().contains(_search.toLowerCase()) ||
@@ -46,17 +46,6 @@ class _PrescripcionesScreenState extends State<PrescripcionesScreen> {
     final categories = allModels.map((m) => m.category).toSet().toList()..sort();
 
     return Column(children: [
-
-      // ── Header premium ───────────────────────────────────────────────────
-      PremiumCard(child: SectionTitle(
-        eyebrow: es ? 'Uso exclusivamente educacional' : 'Uso exclusivamente educacional',
-        title: es ? 'Ejemplos de Prescripción' : 'Exemplos de Prescrição',
-        subtitle: es
-            ? 'Modelos educativos de referencia — siempre adaptar al caso clínico'
-            : 'Modelos educacionais de referência — sempre adaptar ao caso clínico',
-        light: true,
-      )),
-      const SizedBox(height: 12),
 
       // ── Busca + filtros ──────────────────────────────────────────────────
       Padding(
@@ -143,7 +132,7 @@ class _PrescripcionesScreenState extends State<PrescripcionesScreen> {
 // Cada PrescriptionModel representa um modelo completo de prescrição.
 // ─────────────────────────────────────────────────────────────────────────────
 
-class _PrescriptionModel {
+class PrescriptionModel {
   final String id;
   final String title;
   final String subtitle;
@@ -151,7 +140,7 @@ class _PrescriptionModel {
   final String content; // Texto completo da prescrição (para copiar)
   final IconData icon;
 
-  const _PrescriptionModel({
+  const PrescriptionModel({
     required this.id,
     required this.title,
     required this.subtitle,
@@ -161,7 +150,10 @@ class _PrescriptionModel {
   });
 }
 
-List<_PrescriptionModel> _prescriptionModels(bool es) => [
+// ignore: library_private_types_in_public_api
+typedef _PrescriptionModel = PrescriptionModel;
+
+List<PrescriptionModel> prescriptionModels(bool es) => [
 
   // ══════════════════════════════════════════════════════════════════════════
   // ANALGESIA
@@ -5804,7 +5796,7 @@ class _CategoryHeader extends StatelessWidget {
             width: 3,
             height: 12,
             decoration: BoxDecoration(
-              color: const Color(0xFFFFE8A6),
+              color: const Color(0xFFD4A017),
               borderRadius: BorderRadius.circular(2),
             ),
           ),
@@ -5815,7 +5807,7 @@ class _CategoryHeader extends StatelessWidget {
               fontSize: 9.5,
               fontWeight: FontWeight.w900,
               letterSpacing: 1.8,
-              color: dark ? const Color(0xFFFFE8A6) : const Color(0xFF0F1C14),
+              color: dark ? const Color(0xFFD4A017) : const Color(0xFF0F1C14),
             ),
           ),
         ]),
@@ -5853,6 +5845,8 @@ class _PrescriptionCardState extends State<_PrescriptionCard> {
   Widget build(BuildContext context) {
     final dark = widget.dark;
     final es = widget.es;
+    final p = context.watch<AppProvider>();
+    final isFav = p.favPrescriptions.contains(widget.model.id);
     final cardBg = dark ? const Color(0xFF121F17) : Colors.white;
     final borderCol = dark ? const Color(0xFF1E3526) : const Color(0xFFE8E1D2);
     final textCol = dark ? Colors.white : const Color(0xFF1A1A1A);
@@ -5931,8 +5925,18 @@ class _PrescriptionCardState extends State<_PrescriptionCard> {
                 ),
               ])),
               const SizedBox(width: 8),
-              // Botão copiar + chevron
+              // Favorito + Copiar + chevron
               Row(mainAxisSize: MainAxisSize.min, children: [
+                GestureDetector(
+                  onTap: () => context.read<AppProvider>().toggleFavPrescription(widget.model.id),
+                  child: Padding(padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 6),
+                    child: Icon(
+                      isFav ? Icons.bookmark_rounded : Icons.bookmark_border_rounded,
+                      size: 20,
+                      color: isFav ? const Color(0xFFD8B4FE) : (dark ? Colors.white30 : const Color(0xFFBBBBBB)),
+                    ),
+                  ),
+                ),
                 _CopyBtn(copied: _copied, dark: dark, es: es, onTap: _copy),
                 const SizedBox(width: 6),
                 AnimatedRotation(
