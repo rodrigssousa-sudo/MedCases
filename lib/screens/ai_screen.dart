@@ -3,9 +3,11 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_tts/flutter_tts.dart';
 import 'dart:convert';
 import '../providers/app_provider.dart';
 import '../data/drugs_database.dart';
+import '../services/stt_helper.dart';
 
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -145,37 +147,36 @@ class _AiScreenState extends State<AiScreen> {
   final List<_ChatSession> _chatHistory = [];
   static const _kHistKey = 'medcases_ia_chat_history_v1';
 
+  // ── TTS (Text-to-Speech) ─────────────────────────────────────────────────
+  late final FlutterTts _tts;
+  bool _ttsReady        = false;
+  int  _ttsPlayingIndex = -1; // índice da mensagem sendo reproduzida (-1 = nenhuma)
+
+  // ── STT (Speech-to-Text via Web Speech API) ──────────────────────────────
+  bool _sttListening    = false; // microfone ativo
+
   // Sugestões ficam visíveis apenas no estado vazio + sem foco
   bool get _showSuggestions => _messages.isEmpty && !_hasFocus;
 
-  // ── Saudação contextual por hora e nome ─────────────────────────────────
+  // ── Saudação padronizada por horário — SEMPRE em espanhol conforme spec ──
+  // 00–06: "Buena madrugada"  |  06–12: "Buenos días"
+  // 12–18: "Buenas tardes"    |  18–24: "Buenas noches"
   String _buildGreeting(String userName, String lang) {
     final hour = DateTime.now().hour;
-    final isEs = lang == 'es';
-    final String period = hour < 12
-        ? (isEs ? 'Buenos días' : 'Bom dia')
-        : hour < 18
-            ? (isEs ? 'Buenas tardes' : 'Boa tarde')
-            : (isEs ? 'Buenas noches' : 'Boa noite');
+    final String period;
+    if (hour < 6) {
+      period = 'Buena madrugada';
+    } else if (hour < 12) {
+      period = 'Buenos días';
+    } else if (hour < 18) {
+      period = 'Buenas tardes';
+    } else {
+      period = 'Buenas noches';
+    }
     final firstName = userName.trim().split(' ').first;
     final nameStr   = firstName.isNotEmpty ? ', $firstName' : '';
-    if (isEs) {
-      return '$period$nameStr! 👋\n\n'
-          'Soy tu asistente de IA clínica. Puedo ayudarte con:\n'
-          '• Protocolos y urgencias\n'
-          '• Fármacos y dosis\n'
-          '• Casos clínicos\n'
-          '• Cualquier pregunta de medicina\n\n'
-          '¿En qué puedo ayudarte hoy?';
-    } else {
-      return '$period$nameStr! 👋\n\n'
-          'Sou sua assistente de IA clínica. Posso te ajudar com:\n'
-          '• Protocolos e urgências\n'
-          '• Fármacos e doses\n'
-          '• Casos clínicos\n'
-          '• Qualquer dúvida de medicina\n\n'
-          'Como posso te ajudar hoje?';
-    }
+    // Saudação estrita: só as duas frases definidas, sem listas nem extras
+    return '$period$nameStr.\n\nSoy tu IA MedCases. ¿Cómo te puedo ayudar hoy?';
   }
 
   @override
@@ -195,10 +196,10 @@ class _AiScreenState extends State<AiScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) => _injectGreeting());
     // Carrega histórico de chats do SharedPrefs
     _loadChatHistory();
+    // Inicializa TTS
+    _initTts();
 
     // Verifica sessão Gemini ao montar — captura token de redirect OAuth
-    // que pode ter chegado enquanto o app já estava aberto (flag pendente).
-    // Cobre o caso em que setUser() foi pulado no _WebMainShellGate.
     if (kIsWeb) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (!mounted) return;
@@ -208,6 +209,116 @@ class _AiScreenState extends State<AiScreen> {
         }
       });
     }
+  }
+
+  // ── Inicialização TTS ───────────────────────────────────────────────────
+  Future<void> _initTts() async {
+    _tts = FlutterTts();
+    try {
+      await _tts.setVolume(1.0);
+      await _tts.setSpeechRate(0.95);
+      await _tts.setPitch(1.0);
+      _tts.setCompletionHandler(() {
+        if (mounted) setState(() => _ttsPlayingIndex = -1);
+      });
+      _tts.setCancelHandler(() {
+        if (mounted) setState(() => _ttsPlayingIndex = -1);
+      });
+      _tts.setErrorHandler((_) {
+        if (mounted) setState(() => _ttsPlayingIndex = -1);
+      });
+      if (mounted) setState(() => _ttsReady = true);
+    } catch (_) {}
+  }
+
+  /// Reproduz ou para o áudio de uma mensagem da IA.
+  Future<void> _toggleTts(int msgIndex, String text, String lang) async {
+    if (!_ttsReady) return;
+    if (_ttsPlayingIndex == msgIndex) {
+      // Já tocando esta mensagem → para
+      await _tts.stop();
+      setState(() => _ttsPlayingIndex = -1);
+      return;
+    }
+    // Para qualquer reprodução anterior
+    await _tts.stop();
+    setState(() => _ttsPlayingIndex = msgIndex);
+    // Configura idioma
+    final locale = lang == 'es' ? 'es-ES' : 'pt-BR';
+    await _tts.setLanguage(locale);
+    // Remove caracteres especiais de markdown antes de falar
+    final cleaned = _cleanForSpeech(text);
+    await _tts.speak(cleaned);
+  }
+
+  /// Limpa texto para reprodução de voz (remove asteriscos, hifens de lista, etc.)
+  String _cleanForSpeech(String text) {
+    return text
+        .replaceAll(RegExp(r'\*+'), '')
+        .replaceAll(RegExp(r'^-\s+', multiLine: true), '')
+        .replaceAll(RegExp(r'^#{1,3}\s*', multiLine: true), '')
+        .replaceAll('---', '. ')
+        .replaceAll('--', '. ')
+        .trim();
+  }
+
+  // ── Voice-to-Text (Web Speech API via dart:html) ────────────────────────
+  /// Inicia/para o reconhecimento de voz.
+  /// No web: usa Web Speech API via SttHelper (dart:html condicionado).
+  /// No mobile: exibe snack informativo.
+  void _toggleStt() {
+    if (!kIsWeb) {
+      _showSttUnavailableSnack();
+      return;
+    }
+    if (_sttListening) {
+      _sttStop();
+    } else {
+      _sttStart();
+    }
+  }
+
+  void _showSttUnavailableSnack() {
+    final lang = context.read<AppProvider>().lang;
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text(lang == 'es'
+          ? 'Dictado por voz disponible en la versión web'
+          : 'Ditado por voz disponível na versão web'),
+      duration: const Duration(seconds: 2),
+      behavior: SnackBarBehavior.floating,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      margin: const EdgeInsets.fromLTRB(16, 0, 16, 80),
+    ));
+  }
+
+  void _sttStart() {
+    setState(() => _sttListening = true);
+    final lang = context.read<AppProvider>().lang;
+    SttHelper.start(
+      locale: lang == 'es' ? 'es-ES' : 'pt-BR',
+      onResult: (text) {
+        if (!mounted) return;
+        setState(() {
+          _sttListening = false;
+          final current = _queryCtrl.text.trim();
+          _queryCtrl.text = current.isEmpty ? text : '$current $text';
+          _queryCtrl.selection = TextSelection.fromPosition(
+            TextPosition(offset: _queryCtrl.text.length));
+        });
+        _focusNode.requestFocus();
+      },
+      onError: (_) {
+        if (mounted) setState(() => _sttListening = false);
+      },
+      onEnd: () {
+        if (mounted) setState(() => _sttListening = false);
+      },
+    );
+  }
+
+  void _sttStop() {
+    SttHelper.stop();
+    setState(() => _sttListening = false);
   }
 
   void _injectGreeting() {
@@ -237,6 +348,7 @@ class _AiScreenState extends State<AiScreen> {
     _queryCtrl.dispose();
     _scrollCtrl.dispose();
     _focusNode.dispose();
+    _tts.stop();
     super.dispose();
   }
 
@@ -345,13 +457,20 @@ class _AiScreenState extends State<AiScreen> {
     _scrollDown(force: true);
   }
 
+  /// Desce para o fundo do chat.
+  /// [force] = true: ignora a flag _userScrolledUp (usado apenas ao ENVIAR mensagem própria).
+  /// Durante a resposta da IA (_thinking) nunca interrompe leitura do usuário.
   void _scrollDown({bool force = false}) {
-    if (_userScrolledUp && !force) return; // usuário está lendo — não interrompe
+    // Regra: se o usuário scrollou para cima E não é um envio forçado → não interrompe
+    if (_userScrolledUp && !force) return;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted || !_scrollCtrl.hasClients) return;
+      // Verificação extra: se o usuário voltou a scrollar para cima enquanto
+      // aguardávamos o frame, ainda assim não interrompemos
+      if (_userScrolledUp && !force) return;
       _scrollCtrl.animateTo(
         _scrollCtrl.position.maxScrollExtent,
-        duration: const Duration(milliseconds: 300),
+        duration: const Duration(milliseconds: 280),
         curve: Curves.easeOut,
       );
     });
@@ -499,6 +618,11 @@ class _AiScreenState extends State<AiScreen> {
                             dark: dark,
                             animate: i == _lastAiIndex,
                             onCopy: () => _copyMsg(msg.text),
+                            ttsPlaying: _ttsPlayingIndex == i,
+                            ttsReady: _ttsReady,
+                            onTts: _ttsReady
+                                ? () => _toggleTts(i, msg.text, p.lang)
+                                : null,
                           );
                   },
                 ),
@@ -524,8 +648,12 @@ class _AiScreenState extends State<AiScreen> {
         focusNode: _focusNode,
         dark: dark,
         hasFocus: _hasFocus,
+        thinking: _thinking,
         onSend: () => _send(_queryCtrl.text, context.read<AppProvider>()),
         hint: p.t('ai_placeholder'),
+        onVoice: _toggleStt,
+        sttListening: _sttListening,
+        lang: p.lang,
       ),
     ]);
   }
@@ -1017,13 +1145,19 @@ class _AiBlockBubble extends StatelessWidget {
   final String block;
   final bool dark;
   final bool isLast;
-  final VoidCallback? onCopy; // só na última bolha
+  final VoidCallback? onCopy;
+  final VoidCallback? onTts;
+  final bool ttsPlaying;
+  final bool ttsReady;
 
   const _AiBlockBubble({
     required this.block,
     required this.dark,
     this.isLast = false,
     this.onCopy,
+    this.onTts,
+    this.ttsPlaying = false,
+    this.ttsReady = false,
   });
 
   @override
@@ -1076,7 +1210,7 @@ class _AiBlockBubble extends StatelessWidget {
                 );
               }),
 
-              // Rodapé só na última bolha: horário + copiar
+              // Rodapé só na última bolha: horário + áudio + copiar
               if (isLast) ...[
                 const SizedBox(height: 6),
                 Row(children: [
@@ -1088,6 +1222,45 @@ class _AiBlockBubble extends StatelessWidget {
                     ),
                   ),
                   const Spacer(),
+                  // Botão TTS — ouvir resposta em áudio
+                  if (onTts != null && ttsReady) ...[
+                    GestureDetector(
+                      onTap: onTts,
+                      child: AnimatedContainer(
+                        duration: const Duration(milliseconds: 200),
+                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(8),
+                          color: ttsPlaying
+                              ? const Color(0xFF1F6B48).withValues(alpha: 0.15)
+                              : Colors.transparent,
+                        ),
+                        child: Row(mainAxisSize: MainAxisSize.min, children: [
+                          Icon(
+                            ttsPlaying
+                                ? Icons.stop_circle_rounded
+                                : Icons.volume_up_rounded,
+                            size: 13,
+                            color: ttsPlaying
+                                ? const Color(0xFF1F6B48)
+                                : (dark ? Colors.white38 : Colors.black38),
+                          ),
+                          const SizedBox(width: 3),
+                          Text(
+                            ttsPlaying ? 'Parar' : 'Ouvir',
+                            style: TextStyle(
+                              fontSize: 10,
+                              fontWeight: FontWeight.w600,
+                              color: ttsPlaying
+                                  ? const Color(0xFF1F6B48)
+                                  : (dark ? Colors.white38 : Colors.black38),
+                            ),
+                          ),
+                        ]),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                  ],
                   if (onCopy != null)
                     GestureDetector(
                       onTap: onCopy,
@@ -1117,20 +1290,23 @@ class _AiBlockBubble extends StatelessWidget {
 }
 
 /// Widget pai que divide a resposta completa em múltiplas _AiBlockBubble.
-/// Cada bloco aparece com delay progressivo de 8s entre bolhas, simulando
-/// digitação/streaming real — evita que tudo apareça de uma vez.
 class _AiBubble extends StatefulWidget {
   final String text;
   final bool dark;
   final VoidCallback onCopy;
-  /// Se true, é a última mensagem da conversa → aplica delay de entrada.
-  /// Mensagens antigas (históricas) aparecem instantaneamente.
   final bool animate;
+  // TTS
+  final bool ttsPlaying;
+  final bool ttsReady;
+  final VoidCallback? onTts;
   const _AiBubble({
     required this.text,
     required this.dark,
     required this.onCopy,
     this.animate = false,
+    this.ttsPlaying = false,
+    this.ttsReady = false,
+    this.onTts,
   });
 
   @override
@@ -1186,6 +1362,9 @@ class _AiBubbleState extends State<_AiBubble> {
               dark: widget.dark,
               isLast: true,
               onCopy: widget.onCopy,
+              onTts: widget.onTts,
+              ttsPlaying: widget.ttsPlaying,
+              ttsReady: widget.ttsReady,
             )
           : const SizedBox.shrink();
     }
@@ -1203,6 +1382,10 @@ class _AiBubbleState extends State<_AiBubble> {
             dark: widget.dark,
             isLast: isLast,
             onCopy: isLast ? widget.onCopy : null,
+            // TTS apenas na última bolha
+            onTts:       isLast ? widget.onTts   : null,
+            ttsPlaying:  isLast && widget.ttsPlaying,
+            ttsReady:    widget.ttsReady,
           ),
         );
       }),
@@ -1291,22 +1474,30 @@ class _ThinkingBubbleState extends State<_ThinkingBubble>
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Input bar — idêntico ao WhatsApp
+// Input bar — ENTER envia (web/desktop), botão microfone STT, botão enviar
 // ─────────────────────────────────────────────────────────────────────────────
 class _InputBar extends StatelessWidget {
   final TextEditingController ctrl;
   final FocusNode focusNode;
   final bool dark;
   final bool hasFocus;
+  final bool thinking;
   final VoidCallback onSend;
+  final VoidCallback onVoice;
+  final bool sttListening;
   final String hint;
+  final String lang;
   const _InputBar({
     required this.ctrl,
     required this.focusNode,
     required this.dark,
     required this.hasFocus,
+    required this.thinking,
     required this.onSend,
+    required this.onVoice,
+    required this.sttListening,
     required this.hint,
+    required this.lang,
   });
 
   @override
@@ -1318,6 +1509,12 @@ class _InputBar extends StatelessWidget {
         : (dark ? const Color(0xFF253020) : const Color(0xFFD8D3CA));
     final textCol = dark ? Colors.white : const Color(0xFF1A1A1A);
     final hintCol = dark ? Colors.white30 : Colors.black38;
+    final micCol  = sttListening ? const Color(0xFFEF4444) : (dark ? Colors.white54 : Colors.black45);
+
+    // Tooltip do microfone
+    final micTip = sttListening
+        ? (lang == 'es' ? 'Detener dictado' : 'Parar ditado')
+        : (lang == 'es' ? 'Dictar mensaje' : 'Ditar mensagem');
 
     return Container(
       color: barBg,
@@ -1325,7 +1522,42 @@ class _InputBar extends StatelessWidget {
       child: SafeArea(
         top: false,
         child: Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
-          // Campo de texto
+
+          // ── Botão microfone ─────────────────────────────────────────────
+          Tooltip(
+            message: micTip,
+            child: GestureDetector(
+              onTap: onVoice,
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 200),
+                width: 40, height: 40,
+                margin: const EdgeInsets.only(right: 6),
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: sttListening
+                      ? const Color(0xFFEF4444).withValues(alpha: 0.15)
+                      : (dark
+                          ? Colors.white.withValues(alpha: 0.07)
+                          : Colors.black.withValues(alpha: 0.05)),
+                  border: Border.all(
+                    color: sttListening
+                        ? const Color(0xFFEF4444).withValues(alpha: 0.6)
+                        : Colors.transparent,
+                    width: 1.5,
+                  ),
+                ),
+                child: Center(
+                  child: Icon(
+                    sttListening ? Icons.mic_rounded : Icons.mic_none_rounded,
+                    size: 19,
+                    color: micCol,
+                  ),
+                ),
+              ),
+            ),
+          ),
+
+          // ── Campo de texto com ENTER para enviar ────────────────────────
           Expanded(
             child: Container(
               decoration: BoxDecoration(
@@ -1333,42 +1565,68 @@ class _InputBar extends StatelessWidget {
                 borderRadius: BorderRadius.circular(24),
                 border: Border.all(color: borderCol, width: hasFocus ? 1.5 : 1.0),
               ),
-              child: TextField(
-                controller: ctrl,
-                focusNode: focusNode,
-                maxLines: 5,
-                minLines: 1,
-                textInputAction: TextInputAction.newline,
-                spellCheckConfiguration: const SpellCheckConfiguration.disabled(),
-                autocorrect: false,
-                style: TextStyle(
-                  fontSize: 14, fontWeight: FontWeight.w400,
-                  color: textCol, height: 1.5),
-                decoration: InputDecoration(
-                  hintText: hint,
-                  hintStyle: TextStyle(
-                    fontSize: 14, color: hintCol, fontWeight: FontWeight.w400),
-                  border: InputBorder.none,
-                  contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 16, vertical: 10),
+              child: KeyboardListener(
+                focusNode: FocusNode(), // FocusNode separado para capturar teclas
+                onKeyEvent: (event) {
+                  // ENTER (sem Shift) em web/desktop → envia
+                  if (kIsWeb &&
+                      event is KeyDownEvent &&
+                      event.logicalKey == LogicalKeyboardKey.enter &&
+                      !HardwareKeyboard.instance.isShiftPressed &&
+                      !HardwareKeyboard.instance.isControlPressed &&
+                      !thinking) {
+                    onSend();
+                  }
+                },
+                child: TextField(
+                  controller: ctrl,
+                  focusNode: focusNode,
+                  maxLines: 5,
+                  minLines: 1,
+                  // Mantém newline em mobile; no web ENTER envia via KeyboardListener
+                  textInputAction: TextInputAction.newline,
+                  spellCheckConfiguration: const SpellCheckConfiguration.disabled(),
+                  autocorrect: false,
+                  style: TextStyle(
+                    fontSize: 14, fontWeight: FontWeight.w400,
+                    color: textCol, height: 1.5),
+                  decoration: InputDecoration(
+                    hintText: hint,
+                    hintStyle: TextStyle(
+                      fontSize: 14, color: hintCol, fontWeight: FontWeight.w400),
+                    border: InputBorder.none,
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 16, vertical: 10),
+                  ),
                 ),
               ),
             ),
           ),
           const SizedBox(width: 8),
 
-          // Botão enviar — círculo verde, seta para cima
+          // ── Botão enviar — círculo verde ────────────────────────────────
           GestureDetector(
-            onTap: onSend,
-            child: Container(
+            onTap: thinking ? null : onSend,
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 150),
               width: 44, height: 44,
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: Color(0xFF1F6B48),
+                color: thinking
+                    ? const Color(0xFF1F6B48).withValues(alpha: 0.45)
+                    : const Color(0xFF1F6B48),
               ),
-              child: const Center(
-                child: Icon(Icons.arrow_upward_rounded,
-                  color: Colors.white, size: 20),
+              child: Center(
+                child: thinking
+                    ? const SizedBox(
+                        width: 18, height: 18,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: Colors.white,
+                        ),
+                      )
+                    : const Icon(Icons.arrow_upward_rounded,
+                        color: Colors.white, size: 20),
               ),
             ),
           ),

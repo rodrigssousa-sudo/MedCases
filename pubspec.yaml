@@ -40,6 +40,9 @@ dependencies:
   # Google Sign-In OAuth (Gemini via conta Google)
   google_sign_in: 6.2.1
 
+  # Text-to-Speech (respostas da IA em áudio — web + mobile)
+  flutter_tts: 4.2.0
+
   # Armazenamento seguro de tokens (Keychain iOS / Keystore Android)
   # flutter_secure_storage: 9.2.2  # mobile-only — não usar no Web
 
