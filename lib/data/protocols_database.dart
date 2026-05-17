@@ -6551,7 +6551,7 @@ const List<ProtocolModel> protocolsDatabase = [
       'pt': [
         'Tenner S et al. American College of Gastroenterology Guideline: Management of Acute Pancreatitis. Am J Gastroenterol. 2013;108(9):1400–1415.',
         'Working Group IAP/APA. IAP/APA evidence-based guidelines for the management of acute pancreatitis. Pancreatology. 2013.',
-        'Wu BU et al. Lactated Ringer's solution reduces systemic inflammation compared with saline in patients with acute pancreatitis. Clin Gastroenterol Hepatol. 2011.',
+        'Wu BU et al. Lactated Ringer\'s solution reduces systemic inflammation compared with saline in patients with acute pancreatitis. Clin Gastroenterol Hepatol. 2011.',
         'Van Santvoort HC et al. A step-up approach or open necrosectomy for necrotizing pancreatitis (PANTER trial). NEJM. 2010;362(16):1491–1502.',
         'UpToDate: Management of acute pancreatitis. 2024.',
       ],

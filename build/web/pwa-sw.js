@@ -1,16 +1,15 @@
 /**
- * MedCases Pro — PWA Service Worker v4.1.0
+ * MedCases Pro — PWA Service Worker v4.2.0
  *
- * CORREÇÃO v4.1.0:
- * - REMOVIDO skipWaiting() do install — era a causa do loop de reload
- * - skipWaiting() só ocorre via postMessage({ type: 'SKIP_WAITING' })
- * - Primeiro registro nunca dispara controllerchange desnecessário
+ * v4.2.0: 29 protocolos migrados para estrutura v2.0 (18 seções clínicas)
+ * - Lotes 1-3 completos: cardiologia, pneumo, neuro, sepse, trauma, hematologia
+ * - Cache bust forçado para atualização automática nos usuários
  */
 
 'use strict';
 
-const SW_VERSION   = '4.1.0';
-const CACHE_STATIC = 'medcases-static-v4.1.0';
+const SW_VERSION   = '4.2.0';
+const CACHE_STATIC = 'medcases-static-v4.2.0';
 const CACHE_FONTS  = 'medcases-fonts-v1'; // fontes mudam raramente, versão fixa
 
 // Assets essenciais pré-cacheados no install

@@ -6,7 +6,7 @@ class ProtocolModel {
   final String id;
   final Map<String, String> title;
   final Map<String, String> severity;      // nível geral: Crítico / Alto / Moderado
-  final Map<String, String> recognize;     // apresentação clínica + critérios diagnósticos
+  final Map<String, String> recognize;     // apresentação clínica (legado v1.0; default vazio em v2.0)
   final Map<String, dynamic> actions;      // lista de ações imediatas
   final Map<String, String> avoid;         // o que evitar (texto livre)
   final List<String> drugs;               // IDs de fármacos relacionados (legado)
@@ -70,7 +70,7 @@ class ProtocolModel {
     required this.id,
     required this.title,
     required this.severity,
-    required this.recognize,
+    this.recognize = const {},   // legado v1.0 — v2.0 usa definition
     required this.actions,
     required this.avoid,
     required this.drugs,
