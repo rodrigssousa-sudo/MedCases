@@ -3322,41 +3322,52 @@ class _PediatricsTabContentState extends State<PediatricsTabContent> {
     final c    = AppColors.of(context);
 
     return Column(children: [
-      // ── Sub-menu ────────────────────────────────────────────────
+      // ── Sub-menu azul (igual ao header) — botões individuais full-width ──
       Container(
-        color: const Color(0xFF0A1A10),
-        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-        child: SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Row(
-            children: List.generate(_sections.length, (i) {
-              final active = _section == i;
-              return GestureDetector(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [Color(0xFF0A2540), Color(0xFF103D70), Color(0xFF2563EB)],
+          ),
+        ),
+        padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
+        child: Row(
+          children: List.generate(_sections.length, (i) {
+            final active = _section == i;
+            return Expanded(
+              child: GestureDetector(
                 onTap: () => setState(() => _section = i),
                 child: AnimatedContainer(
                   duration: const Duration(milliseconds: 160),
-                  margin: const EdgeInsets.only(right: 8),
-                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
+                  margin: const EdgeInsets.symmetric(horizontal: 4),
+                  padding: const EdgeInsets.symmetric(vertical: 8),
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20),
-                    color: active ? kGoldLight.withValues(alpha: 0.15) : Colors.transparent,
+                    borderRadius: BorderRadius.circular(8),
+                    color: active
+                        ? Colors.white.withValues(alpha: 0.18)
+                        : Colors.transparent,
                     border: Border.all(
-                      color: active ? kGoldLight.withValues(alpha: 0.5) : Colors.white24,
+                      color: active
+                          ? Colors.white.withValues(alpha: 0.55)
+                          : Colors.white.withValues(alpha: 0.18),
+                      width: active ? 1.5 : 1,
                     ),
                   ),
                   child: Text(
                     _sections[i],
+                    textAlign: TextAlign.center,
                     style: TextStyle(
-                      fontSize: 11,
+                      fontSize: 10,
                       fontWeight: FontWeight.w800,
-                      color: active ? kGoldLight : Colors.white60,
-                      letterSpacing: 0.5,
+                      color: active ? Colors.white : Colors.white.withValues(alpha: 0.55),
+                      letterSpacing: 0.4,
                     ),
                   ),
                 ),
-              );
-            }),
-          ),
+              ),
+            );
+          }),
         ),
       ),
 
