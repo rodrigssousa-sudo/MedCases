@@ -931,24 +931,206 @@ class _ProtocolDetailSheet extends StatelessWidget {
               ),
               const SizedBox(height: 12),
 
-              // ── Reconhecer ───────────────────────────────────────────────
-              _RecognizeCard(text: p.tDB(protocol.recognize), p: p),
-              const SizedBox(height: 10),
+              // ════════════════════════════════════════════════════════════
+              // MODO V2.0 — Estrutura clínica completa (hasRichContent)
+              // ════════════════════════════════════════════════════════════
+              if (protocol.hasRichContent) ...[
 
-              // ── Conduta imediata ─────────────────────────────────────────
-              _ActionsCard(actions: actions, p: p),
-              const SizedBox(height: 10),
+                // ── 1. Definição ───────────────────────────────────────────
+                if (protocol.definition != null &&
+                    protocol.getString(protocol.definition, p.lang).isNotEmpty) ...[
+                  _DefinitionCard(text: protocol.getString(protocol.definition, p.lang), p: p),
+                  const SizedBox(height: 10),
+                ],
 
-              // ── Evitar ───────────────────────────────────────────────────
-              if (avoidTxt.isNotEmpty) ...[
-                _AvoidCard(text: avoidTxt, p: p),
+                // ── 2. Classificação por gravidade ─────────────────────────
+                if (protocol.classification != null) ...[
+                  _ClassificationCard(data: protocol.getDynamic(protocol.classification, p.lang), p: p),
+                  const SizedBox(height: 10),
+                ],
+
+                // ── 3. Critérios de gravidade ──────────────────────────────
+                if (protocol.severityCriteria != null) ...[
+                  _SeverityCriteriaCard(data: protocol.getDynamic(protocol.severityCriteria, p.lang), p: p),
+                  const SizedBox(height: 10),
+                ],
+
+                // ── 5. Red Flags ───────────────────────────────────────────
+                if (protocol.getList(protocol.redFlags, p.lang).isNotEmpty) ...[
+                  _RedFlagsCard(items: protocol.getList(protocol.redFlags, p.lang), p: p),
+                  const SizedBox(height: 10),
+                ],
+
+                // ── Reconhecer (mantido no v2.0 como apresentação clínica) ─
+                _RecognizeCard(text: p.tDB(protocol.recognize), p: p),
                 const SizedBox(height: 10),
-              ],
 
-              // ── Fármacos relacionados ────────────────────────────────────
-              if (drugs.isNotEmpty) ...[
-                _DrugsChipsCard(drugs: drugs, p: p),
+                // ── 6. Diagnóstico diferencial ─────────────────────────────
+                if (protocol.getList(protocol.differentialDiagnosis, p.lang).isNotEmpty) ...[
+                  _SectionListCard(
+                    icon: Icons.compare_arrows_rounded,
+                    labelKey: 'diff_diagnosis',
+                    labelEs: 'DIAGNÓSTICO DIFERENCIAL',
+                    labelPt: 'DIAGNÓSTICO DIFERENCIAL',
+                    iconColor: const Color(0xFF6366F1),
+                    bgColor: const Color(0xFFF5F3FF),
+                    borderColor: const Color(0xFFA5B4FC),
+                    textColor: const Color(0xFF312E81),
+                    items: protocol.getList(protocol.differentialDiagnosis, p.lang),
+                    p: p,
+                    bulletColor: const Color(0xFF818CF8),
+                  ),
+                  const SizedBox(height: 10),
+                ],
+
+                // ── 7. Exames ──────────────────────────────────────────────
+                if (protocol.getList(protocol.exams, p.lang).isNotEmpty) ...[
+                  _SectionListCard(
+                    icon: Icons.biotech_rounded,
+                    labelKey: 'exams',
+                    labelEs: 'EXAMES ESSENCIAIS',
+                    labelPt: 'EXAMES ESSENCIAIS',
+                    iconColor: const Color(0xFF0EA5E9),
+                    bgColor: const Color(0xFFF0F9FF),
+                    borderColor: const Color(0xFF7DD3FC),
+                    textColor: const Color(0xFF0C4A6E),
+                    items: protocol.getList(protocol.exams, p.lang),
+                    p: p,
+                    bulletColor: const Color(0xFF38BDF8),
+                  ),
+                  const SizedBox(height: 10),
+                ],
+
+                // ── 8. Objetivos terapêuticos ──────────────────────────────
+                if (protocol.getList(protocol.objectives, p.lang).isNotEmpty) ...[
+                  _ObjectivesCard(items: protocol.getList(protocol.objectives, p.lang), p: p),
+                  const SizedBox(height: 10),
+                ],
+
+                // ── Conduta imediata (actions legado — mantido em v2.0) ────
+                _ActionsCard(actions: actions, p: p),
                 const SizedBox(height: 10),
+
+                // ── 9/10/11/12. Fármacos por linhas ───────────────────────
+                if (protocol.drugsFirstLine != null ||
+                    protocol.drugsSecondLine != null ||
+                    protocol.drugsConditional != null ||
+                    protocol.drugsContraindicated != null) ...[
+                  _DrugsLinesCard(protocol: protocol, p: p),
+                  const SizedBox(height: 10),
+                ],
+
+                // ── Fármacos relacionados (chips legado) ───────────────────
+                if (drugs.isNotEmpty) ...[
+                  _DrugsChipsCard(drugs: drugs, p: p),
+                  const SizedBox(height: 10),
+                ],
+
+                // ── 13. Cenários especiais ─────────────────────────────────
+                if (protocol.getList(protocol.scenarios, p.lang).isNotEmpty) ...[
+                  _SectionListCard(
+                    icon: Icons.people_alt_rounded,
+                    labelKey: 'scenarios',
+                    labelEs: 'ESCENARIOS ESPECIALES',
+                    labelPt: 'CENÁRIOS ESPECIAIS',
+                    iconColor: const Color(0xFF8B5CF6),
+                    bgColor: const Color(0xFFF5F3FF),
+                    borderColor: const Color(0xFFC4B5FD),
+                    textColor: const Color(0xFF4C1D95),
+                    items: protocol.getList(protocol.scenarios, p.lang),
+                    p: p,
+                    bulletColor: const Color(0xFFA78BFA),
+                  ),
+                  const SizedBox(height: 10),
+                ],
+
+                // ── 14. Monitorização ──────────────────────────────────────
+                if (protocol.getList(protocol.monitoring, p.lang).isNotEmpty) ...[
+                  _MonitoringCard(items: protocol.getList(protocol.monitoring, p.lang), p: p),
+                  const SizedBox(height: 10),
+                ],
+
+                // ── 15. Complicações ───────────────────────────────────────
+                if (protocol.getList(protocol.complications, p.lang).isNotEmpty) ...[
+                  _SectionListCard(
+                    icon: Icons.report_problem_rounded,
+                    labelKey: 'complications',
+                    labelEs: 'COMPLICACIONES',
+                    labelPt: 'COMPLICAÇÕES',
+                    iconColor: const Color(0xFFF97316),
+                    bgColor: const Color(0xFFFFF7ED),
+                    borderColor: const Color(0xFFFDBA74),
+                    textColor: const Color(0xFF7C2D12),
+                    items: protocol.getList(protocol.complications, p.lang),
+                    p: p,
+                    bulletColor: const Color(0xFFFB923C),
+                  ),
+                  const SizedBox(height: 10),
+                ],
+
+                // ── Evitar (legado — mantido em v2.0) ─────────────────────
+                if (avoidTxt.isNotEmpty) ...[
+                  _AvoidCard(text: avoidTxt, p: p),
+                  const SizedBox(height: 10),
+                ],
+
+                // ── 16. Não Fazer ──────────────────────────────────────────
+                if (protocol.getList(protocol.doNotDo, p.lang).isNotEmpty) ...[
+                  _DoNotDoCard(items: protocol.getList(protocol.doNotDo, p.lang), p: p),
+                  const SizedBox(height: 10),
+                ],
+
+                // ── 17. Pérolas clínicas ───────────────────────────────────
+                if (protocol.getList(protocol.pearls, p.lang).isNotEmpty) ...[
+                  _PearlsCard(items: protocol.getList(protocol.pearls, p.lang), p: p),
+                  const SizedBox(height: 10),
+                ],
+
+                // ── 4. Fisiopatologia ──────────────────────────────────────
+                if (protocol.physiopathology != null &&
+                    protocol.getString(protocol.physiopathology, p.lang).isNotEmpty) ...[
+                  _SectionTextCard(
+                    icon: Icons.science_rounded,
+                    label: p.lang == 'es' ? 'FISIOPATOLOGÍA' : 'FISIOPATOLOGIA',
+                    iconColor: const Color(0xFF6366F1),
+                    bgColor: const Color(0xFFF5F3FF),
+                    borderColor: const Color(0xFFA5B4FC),
+                    textColor: const Color(0xFF312E81),
+                    text: protocol.getString(protocol.physiopathology, p.lang),
+                  ),
+                  const SizedBox(height: 10),
+                ],
+
+                // ── 18. Referências ────────────────────────────────────────
+                if (protocol.getList(protocol.references, p.lang).isNotEmpty) ...[
+                  _ReferencesCard(items: protocol.getList(protocol.references, p.lang), p: p),
+                  const SizedBox(height: 10),
+                ],
+
+              ] else ...[
+                // ════════════════════════════════════════════════════════════
+                // MODO LEGADO (v1.0) — renderiza campos originais
+                // ════════════════════════════════════════════════════════════
+
+                // ── Reconhecer ─────────────────────────────────────────────
+                _RecognizeCard(text: p.tDB(protocol.recognize), p: p),
+                const SizedBox(height: 10),
+
+                // ── Conduta imediata ───────────────────────────────────────
+                _ActionsCard(actions: actions, p: p),
+                const SizedBox(height: 10),
+
+                // ── Evitar ─────────────────────────────────────────────────
+                if (avoidTxt.isNotEmpty) ...[
+                  _AvoidCard(text: avoidTxt, p: p),
+                  const SizedBox(height: 10),
+                ],
+
+                // ── Fármacos relacionados ──────────────────────────────────
+                if (drugs.isNotEmpty) ...[
+                  _DrugsChipsCard(drugs: drugs, p: p),
+                  const SizedBox(height: 10),
+                ],
               ],
 
               // ── Botão fechar ─────────────────────────────────────────────
@@ -1421,7 +1603,7 @@ class _AvoidCard extends StatelessWidget {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// CARD: FÁRMACOS RELACIONADOS
+// CARD: FÁRMACOS RELACIONADOS (chips legado)
 // ─────────────────────────────────────────────────────────────────────────────
 class _DrugsChipsCard extends StatelessWidget {
   final List<String> drugs;
@@ -1465,6 +1647,885 @@ class _DrugsChipsCard extends StatelessWidget {
                 color: kDark)),
           )).toList(),
         ),
+      ]),
+    );
+  }
+}
+
+// ═════════════════════════════════════════════════════════════════════════════
+// NOVOS WIDGETS CLÍNICOS V2.0
+// ═════════════════════════════════════════════════════════════════════════════
+
+// ─────────────────────────────────────────────────────────────────────────────
+// HELPER: cabeçalho de seção padrão
+// ─────────────────────────────────────────────────────────────────────────────
+Widget _sectionHeader({
+  required IconData icon,
+  required String label,
+  required Color iconColor,
+}) {
+  return Row(children: [
+    Icon(icon, size: 13, color: iconColor),
+    const SizedBox(width: 6),
+    Text(label,
+      style: TextStyle(
+        fontSize: 9, fontWeight: FontWeight.w900,
+        letterSpacing: 1.8, color: iconColor)),
+  ]);
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// CARD: DEFINIÇÃO (seção 1)
+// ─────────────────────────────────────────────────────────────────────────────
+class _DefinitionCard extends StatelessWidget {
+  final String text;
+  final AppProvider p;
+  const _DefinitionCard({required this.text, required this.p});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(16),
+        color: const Color(0xFFF0F9FF),
+        border: Border.all(color: const Color(0xFF7DD3FC)),
+      ),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        _sectionHeader(
+          icon: Icons.info_outline_rounded,
+          label: p.lang == 'es' ? 'DEFINICIÓN' : 'DEFINIÇÃO',
+          iconColor: const Color(0xFF0284C7),
+        ),
+        const SizedBox(height: 10),
+        Text(text,
+          style: const TextStyle(
+            fontSize: 13.5, fontWeight: FontWeight.w600,
+            color: Color(0xFF0C4A6E), height: 1.55)),
+      ]),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// CARD: CLASSIFICAÇÃO POR GRAVIDADE 🔴→🟢 (seção 2)
+// ─────────────────────────────────────────────────────────────────────────────
+class _ClassificationCard extends StatelessWidget {
+  final dynamic data;
+  final AppProvider p;
+  const _ClassificationCard({required this.data, required this.p});
+
+  @override
+  Widget build(BuildContext context) {
+    if (data == null) return const SizedBox.shrink();
+
+    // Detecta formato: lista de strings ou mapa {grau: descrição}
+    List<_GradeItem> grades = [];
+
+    if (data is List) {
+      final items = (data as List).cast<String>();
+      for (int i = 0; i < items.length; i++) {
+        final text = items[i];
+        // Detecta prefixo de gravidade no texto
+        final cfg = _gradeConfig(text, i, items.length);
+        grades.add(_GradeItem(text: text, cfg: cfg));
+      }
+    } else if (data is Map) {
+      final map = data as Map;
+      int idx = 0;
+      map.forEach((k, v) {
+        final combined = '$k: $v';
+        final cfg = _gradeConfig(combined, idx, map.length);
+        grades.add(_GradeItem(text: combined, cfg: cfg));
+        idx++;
+      });
+    } else if (data is String) {
+      grades.add(_GradeItem(
+        text: data as String,
+        cfg: const _GradeCfg(
+          emoji: '🔵', bg: Color(0xFFF0F9FF),
+          border: Color(0xFF7DD3FC), text: Color(0xFF0C4A6E),
+          badge: Color(0xFF0EA5E9),
+        ),
+      ));
+    }
+
+    if (grades.isEmpty) return const SizedBox.shrink();
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(16),
+        color: const Color(0xFFFAFAFA),
+        border: Border.all(color: const Color(0xFFE5E7EB)),
+      ),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        _sectionHeader(
+          icon: Icons.bar_chart_rounded,
+          label: p.lang == 'es' ? 'CLASIFICACIÓN POR GRAVEDAD' : 'CLASSIFICAÇÃO POR GRAVIDADE',
+          iconColor: const Color(0xFF374151),
+        ),
+        const SizedBox(height: 12),
+        ...grades.map((g) => Padding(
+          padding: const EdgeInsets.only(bottom: 8),
+          child: Container(
+            padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              color: g.cfg.bg,
+              border: Border.all(color: g.cfg.border),
+            ),
+            child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Text(g.cfg.emoji, style: const TextStyle(fontSize: 15)),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Text(g.text,
+                  style: TextStyle(
+                    fontSize: 13, fontWeight: FontWeight.w700,
+                    color: g.cfg.text, height: 1.45)),
+              ),
+            ]),
+          ),
+        )),
+      ]),
+    );
+  }
+
+  _GradeCfg _gradeConfig(String text, int index, int total) {
+    final lower = text.toLowerCase();
+    if (lower.contains('crítico') || lower.contains('crítica') ||
+        lower.contains('emergência') || lower.contains('emergencia') ||
+        lower.contains('grau iv') || lower.contains('clase iv') ||
+        lower.contains('severo') || lower.contains('grave') ||
+        lower.contains('killip iv') || lower.contains('nyha iv') ||
+        lower.contains('stage d') || lower.contains('alto risco')) {
+      return const _GradeCfg(
+        emoji: '🔴', bg: Color(0xFFFFF0F0),
+        border: Color(0xFFFCA5A5), text: Color(0xFF7F1D1D),
+        badge: Color(0xFFEF4444),
+      );
+    }
+    if (lower.contains('moderado') || lower.contains('moderada') ||
+        lower.contains('grau iii') || lower.contains('clase iii') ||
+        lower.contains('killip iii') || lower.contains('nyha iii') ||
+        lower.contains('intermedi') || lower.contains('urgência') ||
+        lower.contains('urgencia') || lower.contains('médio')) {
+      return const _GradeCfg(
+        emoji: '🟠', bg: Color(0xFFFFF7ED),
+        border: Color(0xFFFDBA74), text: Color(0xFF7C2D12),
+        badge: Color(0xFFF97316),
+      );
+    }
+    if (lower.contains('leve') || lower.contains('baixo risco') ||
+        lower.contains('riesgo bajo') || lower.contains('grau i') ||
+        lower.contains('clase i') || lower.contains('classe i') ||
+        lower.contains('killip i') || lower.contains('nyha i') ||
+        lower.contains('estável') || lower.contains('estable')) {
+      return const _GradeCfg(
+        emoji: '🟢', bg: Color(0xFFECFDF5),
+        border: Color(0xFF86EFAC), text: Color(0xFF14532D),
+        badge: Color(0xFF22C55E),
+      );
+    }
+    if (lower.contains('grau ii') || lower.contains('clase ii') ||
+        lower.contains('killip ii') || lower.contains('nyha ii') ||
+        lower.contains('subagudo') || lower.contains('atenção')) {
+      return const _GradeCfg(
+        emoji: '🟡', bg: Color(0xFFFFFBEB),
+        border: Color(0xFFFDE68A), text: Color(0xFF78350F),
+        badge: Color(0xFFF59E0B),
+      );
+    }
+    // Gradiente por posição (primeiro = mais grave)
+    if (index == 0) {
+      return const _GradeCfg(
+        emoji: '🔴', bg: Color(0xFFFFF0F0),
+        border: Color(0xFFFCA5A5), text: Color(0xFF7F1D1D),
+        badge: Color(0xFFEF4444),
+      );
+    }
+    if (index == total - 1) {
+      return const _GradeCfg(
+        emoji: '🟢', bg: Color(0xFFECFDF5),
+        border: Color(0xFF86EFAC), text: Color(0xFF14532D),
+        badge: Color(0xFF22C55E),
+      );
+    }
+    return const _GradeCfg(
+      emoji: '🟡', bg: Color(0xFFFFFBEB),
+      border: Color(0xFFFDE68A), text: Color(0xFF78350F),
+      badge: Color(0xFFF59E0B),
+    );
+  }
+}
+
+class _GradeItem {
+  final String text;
+  final _GradeCfg cfg;
+  const _GradeItem({required this.text, required this.cfg});
+}
+
+class _GradeCfg {
+  final String emoji;
+  final Color bg, border, text, badge;
+  const _GradeCfg({
+    required this.emoji, required this.bg,
+    required this.border, required this.text, required this.badge,
+  });
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// CARD: CRITÉRIOS DE GRAVIDADE (seção 3)
+// ─────────────────────────────────────────────────────────────────────────────
+class _SeverityCriteriaCard extends StatelessWidget {
+  final dynamic data;
+  final AppProvider p;
+  const _SeverityCriteriaCard({required this.data, required this.p});
+
+  @override
+  Widget build(BuildContext context) {
+    if (data == null) return const SizedBox.shrink();
+
+    List<String> items = [];
+    if (data is List) {
+      items = (data as List).cast<String>();
+    } else if (data is String) {
+      items = [data as String];
+    } else if (data is Map) {
+      (data as Map).forEach((k, v) => items.add('$k: $v'));
+    }
+
+    if (items.isEmpty) return const SizedBox.shrink();
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(16),
+        color: const Color(0xFFFFF7ED),
+        border: Border.all(color: const Color(0xFFFDBA74)),
+      ),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        _sectionHeader(
+          icon: Icons.speed_rounded,
+          label: p.lang == 'es' ? 'CRITERIOS DE GRAVEDAD' : 'CRITÉRIOS DE GRAVIDADE',
+          iconColor: const Color(0xFFD97706),
+        ),
+        const SizedBox(height: 10),
+        ...items.map((item) => Padding(
+          padding: const EdgeInsets.only(bottom: 6),
+          child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Container(
+              margin: const EdgeInsets.only(top: 5),
+              width: 6, height: 6,
+              decoration: const BoxDecoration(
+                color: Color(0xFFD97706),
+                shape: BoxShape.circle,
+              ),
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Text(item,
+                style: const TextStyle(
+                  fontSize: 13, fontWeight: FontWeight.w600,
+                  color: Color(0xFF7C2D12), height: 1.45)),
+            ),
+          ]),
+        )),
+      ]),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// CARD: RED FLAGS — sinais de alarme crítico (seção 5)
+// ─────────────────────────────────────────────────────────────────────────────
+class _RedFlagsCard extends StatelessWidget {
+  final List<String> items;
+  final AppProvider p;
+  const _RedFlagsCard({required this.items, required this.p});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(16),
+        gradient: const LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [Color(0xFF3B0A0A), Color(0xFF5C1A1A)],
+        ),
+        border: Border.all(color: const Color(0xFF9B1C1C).withValues(alpha: 0.6)),
+      ),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Row(children: [
+          const Icon(Icons.local_fire_department_rounded, size: 14, color: Color(0xFFFF9090)),
+          const SizedBox(width: 6),
+          Text(p.lang == 'es' ? '🚨 RED FLAGS — ALARMAS CRÍTICAS' : '🚨 RED FLAGS — SINAIS DE ALARME',
+            style: const TextStyle(
+              fontSize: 9, fontWeight: FontWeight.w900,
+              letterSpacing: 1.8, color: Color(0xFFFF9090))),
+        ]),
+        const SizedBox(height: 10),
+        ...items.map((item) => Padding(
+          padding: const EdgeInsets.only(bottom: 7),
+          child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            const Padding(
+              padding: EdgeInsets.only(top: 1),
+              child: Icon(Icons.warning_amber_rounded,
+                size: 14, color: Color(0xFFFF9090)),
+            ),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(item,
+                style: const TextStyle(
+                  fontSize: 13, fontWeight: FontWeight.w700,
+                  color: Color(0xFFFFCCCC), height: 1.45)),
+            ),
+          ]),
+        )),
+      ]),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// CARD: OBJETIVOS TERAPÊUTICOS mensuráveis (seção 8)
+// ─────────────────────────────────────────────────────────────────────────────
+class _ObjectivesCard extends StatelessWidget {
+  final List<String> items;
+  final AppProvider p;
+  const _ObjectivesCard({required this.items, required this.p});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(16),
+        color: const Color(0xFFECFDF5),
+        border: Border.all(color: const Color(0xFF86EFAC)),
+      ),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        _sectionHeader(
+          icon: Icons.track_changes_rounded,
+          label: p.lang == 'es' ? 'OBJETIVOS TERAPÉUTICOS' : 'OBJETIVOS TERAPÊUTICOS',
+          iconColor: const Color(0xFF15803D),
+        ),
+        const SizedBox(height: 10),
+        ...items.asMap().entries.map((e) => Padding(
+          padding: const EdgeInsets.only(bottom: 7),
+          child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Container(
+              width: 20, height: 20,
+              decoration: BoxDecoration(
+                color: const Color(0xFF15803D).withValues(alpha: 0.15),
+                shape: BoxShape.circle,
+                border: Border.all(color: const Color(0xFF4ADE80).withValues(alpha: 0.4)),
+              ),
+              child: Center(
+                child: Text('${e.key + 1}',
+                  style: const TextStyle(
+                    fontSize: 9, fontWeight: FontWeight.w900,
+                    color: Color(0xFF15803D))),
+              ),
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Text(e.value,
+                style: const TextStyle(
+                  fontSize: 13, fontWeight: FontWeight.w600,
+                  color: Color(0xFF14532D), height: 1.45)),
+            ),
+          ]),
+        )),
+      ]),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// CARD: FÁRMACOS POR LINHAS TERAPÊUTICAS (seções 9-12)
+// ─────────────────────────────────────────────────────────────────────────────
+class _DrugsLinesCard extends StatelessWidget {
+  final ProtocolModel protocol;
+  final AppProvider p;
+  const _DrugsLinesCard({required this.protocol, required this.p});
+
+  @override
+  Widget build(BuildContext context) {
+    final firstLine     = protocol.getList(protocol.drugsFirstLine,     p.lang);
+    final secondLine    = protocol.getList(protocol.drugsSecondLine,    p.lang);
+    final conditional   = protocol.getList(protocol.drugsConditional,   p.lang);
+    final contraindicated = protocol.getList(protocol.drugsContraindicated, p.lang);
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(16),
+        color: const Color(0xFFFAF5FF),
+        border: Border.all(color: const Color(0xFFD8B4FE)),
+      ),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        _sectionHeader(
+          icon: Icons.medication_liquid_rounded,
+          label: p.lang == 'es' ? 'FARMACOTERAPIA POR LÍNEAS' : 'FARMACOTERAPIA POR LINHAS',
+          iconColor: const Color(0xFF7C3AED),
+        ),
+        const SizedBox(height: 12),
+
+        // 1ª linha
+        if (firstLine.isNotEmpty)
+          _DrugLineBlock(
+            emoji: '🥇',
+            label: p.lang == 'es' ? '1ª LÍNEA — INDICADO' : '1ª LINHA — INDICADO',
+            labelColor: const Color(0xFF15803D),
+            bgColor: const Color(0xFFECFDF5),
+            borderColor: const Color(0xFF86EFAC),
+            textColor: const Color(0xFF14532D),
+            items: firstLine,
+            bulletColor: const Color(0xFF4ADE80),
+          ),
+
+        if (firstLine.isNotEmpty && secondLine.isNotEmpty)
+          const SizedBox(height: 8),
+
+        // 2ª linha
+        if (secondLine.isNotEmpty)
+          _DrugLineBlock(
+            emoji: '🥈',
+            label: p.lang == 'es' ? '2ª LÍNEA — ALTERNATIVO' : '2ª LINHA — ALTERNATIVO',
+            labelColor: const Color(0xFF0284C7),
+            bgColor: const Color(0xFFF0F9FF),
+            borderColor: const Color(0xFF7DD3FC),
+            textColor: const Color(0xFF0C4A6E),
+            items: secondLine,
+            bulletColor: const Color(0xFF38BDF8),
+          ),
+
+        if (secondLine.isNotEmpty && conditional.isNotEmpty)
+          const SizedBox(height: 8),
+
+        // Condicional
+        if (conditional.isNotEmpty)
+          _DrugLineBlock(
+            emoji: '⚡',
+            label: p.lang == 'es' ? 'CONDICIONAL — ESCENARIOS ESPECÍFICOS' : 'CONDICIONAL — CENÁRIOS ESPECÍFICOS',
+            labelColor: const Color(0xFFD97706),
+            bgColor: const Color(0xFFFFFBEB),
+            borderColor: const Color(0xFFFDE68A),
+            textColor: const Color(0xFF78350F),
+            items: conditional,
+            bulletColor: const Color(0xFFF59E0B),
+          ),
+
+        if (conditional.isNotEmpty && contraindicated.isNotEmpty)
+          const SizedBox(height: 8),
+
+        // Contraindicado
+        if (contraindicated.isNotEmpty)
+          _DrugLineBlock(
+            emoji: '🚫',
+            label: p.lang == 'es' ? 'CONTRAINDICADO — NO USAR' : 'CONTRAINDICADO — NÃO USAR',
+            labelColor: const Color(0xFFDC2626),
+            bgColor: const Color(0xFFFFF0F0),
+            borderColor: const Color(0xFFFCA5A5),
+            textColor: const Color(0xFF7F1D1D),
+            items: contraindicated,
+            bulletColor: const Color(0xFFEF4444),
+            isBanned: true,
+          ),
+      ]),
+    );
+  }
+}
+
+class _DrugLineBlock extends StatelessWidget {
+  final String emoji, label;
+  final Color labelColor, bgColor, borderColor, textColor, bulletColor;
+  final List<String> items;
+  final bool isBanned;
+
+  const _DrugLineBlock({
+    required this.emoji,
+    required this.label,
+    required this.labelColor,
+    required this.bgColor,
+    required this.borderColor,
+    required this.textColor,
+    required this.items,
+    required this.bulletColor,
+    this.isBanned = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10),
+        color: bgColor,
+        border: Border.all(color: borderColor),
+      ),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Row(children: [
+          Text(emoji, style: const TextStyle(fontSize: 11)),
+          const SizedBox(width: 5),
+          Text(label,
+            style: TextStyle(
+              fontSize: 8, fontWeight: FontWeight.w900,
+              letterSpacing: 1.5, color: labelColor)),
+        ]),
+        const SizedBox(height: 8),
+        ...items.map((item) {
+          // Divide em nome do fármaco e detalhe (após " — " ou " - " ou ":")
+          final parts = item.split(RegExp(r' — | – | - (?=[A-Z0-9])'));
+          final drugName = parts[0].trim();
+          final detail   = parts.length > 1 ? parts.sublist(1).join(' — ').trim() : null;
+
+          return Padding(
+            padding: const EdgeInsets.only(bottom: 6),
+            child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Padding(
+                padding: const EdgeInsets.only(top: 5),
+                child: Icon(
+                  isBanned ? Icons.block_rounded : Icons.fiber_manual_record_rounded,
+                  size: isBanned ? 10 : 7,
+                  color: bulletColor,
+                ),
+              ),
+              const SizedBox(width: 8),
+              Expanded(child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(drugName,
+                    style: TextStyle(
+                      fontSize: 13, fontWeight: FontWeight.w800,
+                      color: textColor, height: 1.35,
+                      decoration: isBanned ? TextDecoration.lineThrough : null,
+                      decorationColor: bulletColor,
+                    )),
+                  if (detail != null) ...[
+                    const SizedBox(height: 2),
+                    Text(detail,
+                      style: TextStyle(
+                        fontSize: 11.5, fontWeight: FontWeight.w500,
+                        color: textColor.withValues(alpha: 0.75),
+                        height: 1.4, fontStyle: FontStyle.italic)),
+                  ],
+                ],
+              )),
+            ]),
+          );
+        }),
+      ]),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// CARD: MONITORIZAÇÃO (seção 14)
+// ─────────────────────────────────────────────────────────────────────────────
+class _MonitoringCard extends StatelessWidget {
+  final List<String> items;
+  final AppProvider p;
+  const _MonitoringCard({required this.items, required this.p});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(16),
+        color: const Color(0xFFF0F9FF),
+        border: Border.all(color: const Color(0xFF7DD3FC)),
+      ),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        _sectionHeader(
+          icon: Icons.monitor_heart_rounded,
+          label: p.lang == 'es' ? 'MONITORIZACIÓN' : 'MONITORIZAÇÃO',
+          iconColor: const Color(0xFF0284C7),
+        ),
+        const SizedBox(height: 10),
+        ...items.map((item) => Padding(
+          padding: const EdgeInsets.only(bottom: 6),
+          child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            const Padding(
+              padding: EdgeInsets.only(top: 3),
+              child: Icon(Icons.radio_button_checked_rounded,
+                size: 9, color: Color(0xFF38BDF8)),
+            ),
+            const SizedBox(width: 9),
+            Expanded(
+              child: Text(item,
+                style: const TextStyle(
+                  fontSize: 13, fontWeight: FontWeight.w600,
+                  color: Color(0xFF0C4A6E), height: 1.45)),
+            ),
+          ]),
+        )),
+      ]),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// CARD: NÃO FAZER — erros a evitar (seção 16)
+// ─────────────────────────────────────────────────────────────────────────────
+class _DoNotDoCard extends StatelessWidget {
+  final List<String> items;
+  final AppProvider p;
+  const _DoNotDoCard({required this.items, required this.p});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(16),
+        color: const Color(0xFFFFFBEB),
+        border: Border.all(color: const Color(0xFFFDE047)),
+      ),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Row(children: [
+          const Icon(Icons.do_not_disturb_on_rounded, size: 13, color: Color(0xFFB45309)),
+          const SizedBox(width: 6),
+          Text(p.lang == 'es' ? '⛔ NO HACER — ERRORES CRÍTICOS' : '⛔ NÃO FAZER — ERROS CRÍTICOS',
+            style: const TextStyle(
+              fontSize: 9, fontWeight: FontWeight.w900,
+              letterSpacing: 1.6, color: Color(0xFFB45309))),
+        ]),
+        const SizedBox(height: 10),
+        ...items.map((item) => Padding(
+          padding: const EdgeInsets.only(bottom: 7),
+          child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            const Padding(
+              padding: EdgeInsets.only(top: 1),
+              child: Icon(Icons.close_rounded, size: 14, color: Color(0xFFDC2626)),
+            ),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(item,
+                style: const TextStyle(
+                  fontSize: 13, fontWeight: FontWeight.w700,
+                  color: Color(0xFF78350F), height: 1.45)),
+            ),
+          ]),
+        )),
+      ]),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// CARD: PÉROLAS CLÍNICAS (seção 17)
+// ─────────────────────────────────────────────────────────────────────────────
+class _PearlsCard extends StatelessWidget {
+  final List<String> items;
+  final AppProvider p;
+  const _PearlsCard({required this.items, required this.p});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(16),
+        gradient: const LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [Color(0xFF1A2E1F), Color(0xFF0A1A0F)],
+        ),
+        border: Border.all(color: const Color(0xFF22543D).withValues(alpha: 0.6)),
+      ),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Row(children: [
+          const Icon(Icons.lightbulb_rounded, size: 13, color: Color(0xFF4ADE80)),
+          const SizedBox(width: 6),
+          Text(p.lang == 'es' ? '💎 PERLAS CLÍNICAS' : '💎 PÉROLAS CLÍNICAS',
+            style: const TextStyle(
+              fontSize: 9, fontWeight: FontWeight.w900,
+              letterSpacing: 1.8, color: Color(0xFF4ADE80))),
+        ]),
+        const SizedBox(height: 10),
+        ...items.map((item) => Padding(
+          padding: const EdgeInsets.only(bottom: 7),
+          child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            const Padding(
+              padding: EdgeInsets.only(top: 2),
+              child: Icon(Icons.star_rounded, size: 11, color: Color(0xFF4ADE80)),
+            ),
+            const SizedBox(width: 9),
+            Expanded(
+              child: Text(item,
+                style: const TextStyle(
+                  fontSize: 13, fontWeight: FontWeight.w600,
+                  color: Color(0xFFD1FAE5), height: 1.5)),
+            ),
+          ]),
+        )),
+      ]),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// CARD: REFERÊNCIAS / DIRETRIZES (seção 18)
+// ─────────────────────────────────────────────────────────────────────────────
+class _ReferencesCard extends StatelessWidget {
+  final List<String> items;
+  final AppProvider p;
+  const _ReferencesCard({required this.items, required this.p});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(16),
+        color: const Color(0xFFF8FAFC),
+        border: Border.all(color: const Color(0xFFCBD5E1)),
+      ),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        _sectionHeader(
+          icon: Icons.menu_book_rounded,
+          label: p.lang == 'es' ? 'REFERENCIAS / GUÍAS' : 'REFERÊNCIAS / DIRETRIZES',
+          iconColor: const Color(0xFF475569),
+        ),
+        const SizedBox(height: 10),
+        ...items.map((item) => Padding(
+          padding: const EdgeInsets.only(bottom: 6),
+          child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            const Padding(
+              padding: EdgeInsets.only(top: 4),
+              child: Icon(Icons.circle, size: 5, color: Color(0xFF94A3B8)),
+            ),
+            const SizedBox(width: 9),
+            Expanded(
+              child: Text(item,
+                style: const TextStyle(
+                  fontSize: 12, fontWeight: FontWeight.w500,
+                  color: Color(0xFF475569), height: 1.45,
+                  fontStyle: FontStyle.italic)),
+            ),
+          ]),
+        )),
+      ]),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// CARD GENÉRICO: lista com ícone/cor customizável
+// ─────────────────────────────────────────────────────────────────────────────
+class _SectionListCard extends StatelessWidget {
+  final IconData icon;
+  final String labelKey, labelEs, labelPt;
+  final Color iconColor, bgColor, borderColor, textColor, bulletColor;
+  final List<String> items;
+  final AppProvider p;
+
+  const _SectionListCard({
+    required this.icon,
+    required this.labelKey,
+    required this.labelEs,
+    required this.labelPt,
+    required this.iconColor,
+    required this.bgColor,
+    required this.borderColor,
+    required this.textColor,
+    required this.items,
+    required this.p,
+    required this.bulletColor,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final label = p.lang == 'es' ? labelEs : labelPt;
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(16),
+        color: bgColor,
+        border: Border.all(color: borderColor),
+      ),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        _sectionHeader(icon: icon, label: label, iconColor: iconColor),
+        const SizedBox(height: 10),
+        ...items.map((item) => Padding(
+          padding: const EdgeInsets.only(bottom: 6),
+          child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Padding(
+              padding: const EdgeInsets.only(top: 5),
+              child: Container(
+                width: 6, height: 6,
+                decoration: BoxDecoration(
+                  color: bulletColor,
+                  shape: BoxShape.circle,
+                ),
+              ),
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Text(item,
+                style: TextStyle(
+                  fontSize: 13, fontWeight: FontWeight.w600,
+                  color: textColor, height: 1.45)),
+            ),
+          ]),
+        )),
+      ]),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// CARD GENÉRICO: texto livre com ícone/cor customizável
+// ─────────────────────────────────────────────────────────────────────────────
+class _SectionTextCard extends StatelessWidget {
+  final IconData icon;
+  final String label, text;
+  final Color iconColor, bgColor, borderColor, textColor;
+
+  const _SectionTextCard({
+    required this.icon,
+    required this.label,
+    required this.text,
+    required this.iconColor,
+    required this.bgColor,
+    required this.borderColor,
+    required this.textColor,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(16),
+        color: bgColor,
+        border: Border.all(color: borderColor),
+      ),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        _sectionHeader(icon: icon, label: label, iconColor: iconColor),
+        const SizedBox(height: 10),
+        Text(text,
+          style: TextStyle(
+            fontSize: 13, fontWeight: FontWeight.w600,
+            color: textColor, height: 1.55)),
       ]),
     );
   }
