@@ -1,15 +1,16 @@
 /**
- * MedCases Pro — PWA Service Worker v4.2.0
+ * MedCases Pro — PWA Service Worker v5.0.0
  *
- * v4.2.0: 29 protocolos migrados para estrutura v2.0 (18 seções clínicas)
- * - Lotes 1-3 completos: cardiologia, pneumo, neuro, sepse, trauma, hematologia
- * - Cache bust forçado para atualização automática nos usuários
+ * v5.0.0: Chatbot IA — ENTER envia, scroll controlado, saudação por horário,
+ * - Ditado por voz (Web Speech API), respostas em áudio (TTS)
+ * - Botão Ocultar/Mostrar HC com UI otimista (sem reload)
+ * - Cache bust forçado — todos os usuários recebem versão nova automaticamente
  */
 
 'use strict';
 
-const SW_VERSION   = '4.2.0';
-const CACHE_STATIC = 'medcases-static-v4.2.0';
+const SW_VERSION   = '5.0.0';
+const CACHE_STATIC = 'medcases-static-v5.0.0';
 const CACHE_FONTS  = 'medcases-fonts-v1'; // fontes mudam raramente, versão fixa
 
 // Assets essenciais pré-cacheados no install
