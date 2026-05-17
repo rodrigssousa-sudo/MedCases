@@ -82,6 +82,11 @@ String _cleanInternalBlocks(String raw) {
       'It seems ', 'It looks ',
       'thought:', 'Thought:', 'THOUGHT:',
       'Note:', 'NOTE:',
+      // Padrões de chamadas de ferramentas vazadas sem backticks
+      'tool_code', 'Tool_code', 'TOOL_CODE',
+      'perplexity_search', 'google_search(',
+      'search_query', 'queries=[',
+      'print(perplexity', 'print(google',
     ];
 
     for (final prefix in internalPrefixes) {
@@ -478,14 +483,23 @@ class GeminiService {
           debugPrint('[GeminiService] parts vazio. candidate=$candidate');
           return GeminiResult.error('EMPTY_RESPONSE', 'unknown');
         }
-        // Concatena apenas parts de texto final (Grounding pode gerar múltiplas parts)
-        // Ignora parts do tipo 'thought' (raciocínio interno do Gemini 2.5 Flash)
+        // Concatena apenas parts de texto final visível ao usuário.
+        // Filtra: thought (raciocínio interno), functionCall (chamada de ferramenta),
+        // executableCode (código Python do grounding) e codeExecutionResult (resultado).
         final text = parts
             .where((p) {
               final part = p as Map<String, dynamic>;
-              // Gemini 2.5 Flash: parts de raciocínio têm {"thought": true} ou role != text
-              final isThought = part['thought'] == true;
-              return !isThought;
+              // Parts com {"thought": true} = raciocínio interno — nunca exibir
+              if (part['thought'] == true) return false;
+              // Parts com "functionCall" = chamada de busca/ferramenta — nunca exibir
+              if (part.containsKey('functionCall')) return false;
+              // Parts com "executableCode" = código Python interno — nunca exibir
+              if (part.containsKey('executableCode')) return false;
+              // Parts com "codeExecutionResult" = resultado de execução — nunca exibir
+              if (part.containsKey('codeExecutionResult')) return false;
+              // Parts sem campo "text" = tipo não reconhecido — ignorar com segurança
+              if (!part.containsKey('text')) return false;
+              return true;
             })
             .map((p) => (p as Map<String, dynamic>)['text'] as String? ?? '')
             .join('')
