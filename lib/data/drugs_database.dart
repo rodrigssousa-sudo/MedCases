@@ -52,6 +52,11 @@ const List<DrugModel> drugsDatabase = [
       'pt': ['Hepatotoxicidade (dose-dependente)', 'Náuseas', 'Rash (raro)', 'Anafilaxia (muito raro)'],
       'es': ['Hepatotoxicidad (dosis-dependiente)', 'Náuseas', 'Rash (raro)', 'Anafilaxia (muy raro)'],
     },
+    interactions: {
+      'graves': ['álcool_etílico'],
+      'moderadas': ['varfarina', 'isoniazida', 'rifampicina', 'carbamazepina', 'fenitoina', 'fenobarbital'],
+      'leves': ['metoclopramida', 'colestiramina', 'omeprazol'],
+    },
   ),
 DrugModel(
     id: 'dipirona',
@@ -85,6 +90,11 @@ DrugModel(
     adverse: {
       'pt': ['Hipotensão (IV rápido)', 'Anafilaxia', 'Agranulocitose (raro)', 'Náuseas'],
       'es': ['Hipotensión (IV rápido)', 'Anafilaxia', 'Agranulocitosis (raro)', 'Náuseas'],
+    },
+    interactions: {
+      'graves': ['clorpromazina'],
+      'moderadas': ['varfarina', 'ciclosporina', 'lítio', 'metotrexato', 'ibuprofeno', 'naproxeno'],
+      'leves': ['omeprazol', 'ranitidina', 'antiácidos'],
     },
   ),
 DrugModel(
@@ -152,6 +162,11 @@ DrugModel(
     adverse: {
       'pt': ['Depressão respiratória', 'Sedação', 'Náusea/vômito', 'Constipação', 'Hipotensão', 'Prurido', 'Retenção urinária'],
       'es': ['Depresión respiratoria', 'Sedación', 'Náusea/vómito', 'Constipación', 'Hipotensión', 'Prurito', 'Retención urinaria'],
+    },
+    interactions: {
+      'graves': ['inibidores_MAO', 'álcool_etílico'],
+      'moderadas': ['midazolam', 'diazepam', 'lorazepam', 'clonazepam', 'fenobarbital', 'haloperidol', 'tramadol', 'fentanil', 'metadona', 'ranitidina', 'cimetidina', 'rifampicina', 'carbamazepina'],
+      'leves': ['omeprazol', 'ondansetrona', 'metoclopramida', 'domperidona'],
     },
   ),
 DrugModel(
@@ -221,6 +236,11 @@ DrugModel(
       'pt': ['Náuseas/vômitos', 'Tontura', 'Constipação', 'Sudorese', 'Convulsões', 'Síndrome serotoninérgica'],
       'es': ['Náuseas/vómitos', 'Mareo', 'Constipación', 'Sudoración', 'Convulsiones', 'Síndrome serotoninérgico'],
     },
+    interactions: {
+      'graves': ['linezolida', 'inibidores_MAO', 'fluoxetina', 'sertralina', 'venlafaxina', 'duloxetina', 'amitriptilina', 'bupropiona', 'metilfenidato_ir', 'metilfenidato_xr', 'anfetamina_sulfato', 'dextroanfetamina', 'lisdexanfetamina', 'centanafadina'],
+      'moderadas': ['carbamazepina', 'fenitoina', 'rifampicina', 'midazolam', 'diazepam', 'haloperidol', 'ondansetrona', 'metoclopramida', 'varfarina'],
+      'leves': ['omeprazol', 'ranitidina', 'metformina'],
+    },
   ),
 DrugModel(
     id: 'pregabalina',
@@ -288,6 +308,11 @@ DrugModel(
       'pt': ['Diarreia', 'Rash', 'Anafilaxia', 'Colite por C. difficile', 'Barro biliar/colelitíase'],
       'es': ['Diarrea', 'Rash', 'Anafilaxia', 'Colitis por C. difficile', 'Barro biliar/colelitiasis'],
     },
+    interactions: {
+      'graves': ['cálcio_IV'],
+      'moderadas': ['varfarina', 'aminoglicosídeos'],
+      'leves': ['probenecide', 'omeprazol'],
+    },
   ),
 DrugModel(
     id: 'vancomicina',
@@ -321,6 +346,11 @@ DrugModel(
     adverse: {
       'pt': ['Nefrotoxicidade', 'Síndrome do Homem Vermelho', 'Ototoxicidade', 'Neutropenia', 'Flebite'],
       'es': ['Nefrotoxicidad', 'Síndrome del Hombre Rojo', 'Ototoxicidad', 'Neutropenia', 'Flebitis'],
+    },
+    interactions: {
+      'graves': ['aminoglicosídeos', 'anfotericina_b', 'furosemida', 'cisplatina', 'piperacilina_tazobactam'],
+      'moderadas': ['ciclosporina', 'tacrolimus', 'metotrexato', 'linezolida'],
+      'leves': ['omeprazol', 'ibuprofeno', 'heparina_nf'],
     },
   ),
 DrugModel(
@@ -424,6 +454,11 @@ DrugModel(
       'pt': ['Prolongamento QT', 'Náuseas/vômitos', 'Diarreia', 'Dor abdominal', 'Hepatotoxicidade (raro)'],
       'es': ['Prolongación QT', 'Náuseas/vómitos', 'Diarrea', 'Dolor abdominal', 'Hepatotoxicidad (raro)'],
     },
+    interactions: {
+      'graves': ['amiodarona', 'haloperidol', 'sotalol', 'ciprofloxacino', 'digoxina', 'varfarina', 'ondansetrona'],
+      'moderadas': ['ciclosporina', 'tacrolimus', 'fenitoina', 'carbamazepina', 'rifampicina', 'ergotamina', 'colchicina'],
+      'leves': ['omeprazol', 'antiácidos', 'ranitidina'],
+    },
   ),
 DrugModel(
     id: 'ciprofloxacino',
@@ -458,6 +493,11 @@ DrugModel(
       'pt': ['Tendinite/ruptura de tendão', 'Prolongamento QT', 'Náuseas/diarreia', 'Fotossensibilidade', 'Confusão/alucinações'],
       'es': ['Tendinitis/rotura de tendón', 'Prolongación QT', 'Náuseas/diarrea', 'Fotosensibilidad', 'Confusión/alucinaciones'],
     },
+    interactions: {
+      'graves': ['amiodarona', 'haloperidol', 'ondansetrona', 'varfarina', 'tizanidina', 'sotalol', 'flecainida', 'azitromicina', 'fluconazol'],
+      'moderadas': ['metformina', 'glibenclamida', 'insulina_regular', 'teofilina', 'aminofilina', 'fenitoina', 'carbamazepina', 'ciclosporina', 'tacrolimus', 'omeprazol', 'antiácidos', 'sucralfato'],
+      'leves': ['cafeína', 'cálcio', 'magnésio', 'ferro', 'zinco'],
+    },
   ),
 DrugModel(
     id: 'metronidazol',
@@ -491,6 +531,11 @@ DrugModel(
     adverse: {
       'pt': ['Náuseas', 'Sabor metálico', 'Neuropatia periférica', 'Encefalopatia (uso prolongado)', 'Reação ao álcool'],
       'es': ['Náuseas', 'Sabor metálico', 'Neuropatía periférica', 'Encefalopatía (uso prolongado)', 'Reacción al alcohol'],
+    },
+    interactions: {
+      'graves': ['varfarina', 'álcool_etílico', 'dissulfiram', 'lítio', 'bussulfano'],
+      'moderadas': ['fenitoina', 'carbamazepina', 'cimetidina', 'fluconazol', 'ciclosporina', 'tacrolimus', 'fluorouracil'],
+      'leves': ['omeprazol', 'colestiramina', 'morfina'],
     },
   ),
 DrugModel(
@@ -596,6 +641,11 @@ DrugModel(
       'pt': ['Taquicardia/arritmias', 'Hipertensão', 'Ansiedade/tremor', 'Isquemia miocárdica', 'Hipopotassemia'],
       'es': ['Taquicardia/arritmias', 'Hipertensión', 'Ansiedad/tremor', 'Isquemia miocárdica', 'Hipopotasemia'],
     },
+    interactions: {
+      'graves': ['inibidores_MAO', 'cocaína', 'betabloqueadores_não_seletivos'],
+      'moderadas': ['haloperidol', 'amitriptilina', 'metoprolol', 'atenolol', 'propranolol', 'digoxina', 'amiodarona', 'levotiroxina'],
+      'leves': ['insulina_regular', 'glucagon'],
+    },
   ),
 DrugModel(
     id: 'vasopressina',
@@ -663,6 +713,11 @@ DrugModel(
       'pt': ['Hipopotassemia', 'Hiponatremia', 'Hipovolemia', 'Hipotensão', 'Ototoxicidade', 'Hiperuricemia'],
       'es': ['Hipopotasemia', 'Hiponatremia', 'Hipovolemia', 'Hipotensión', 'Ototoxicidad', 'Hiperuricemia'],
     },
+    interactions: {
+      'graves': ['aminoglicosídeos', 'vancomicina', 'cisplatina', 'gentamicina'],
+      'moderadas': ['digoxina', 'lítio', 'ibuprofeno', 'naproxeno', 'diclofenaco', 'cetorolaco', 'insulina_regular', 'metformina', 'glibenclamida', 'enalapril', 'losartana', 'aminofilina'],
+      'leves': ['colestipol', 'colestiramina', 'fenitoina', 'carbamazepina'],
+    },
   ),
 DrugModel(
     id: 'metoprolol',
@@ -695,6 +750,11 @@ DrugModel(
     adverse: {
       'pt': ['Bradicardia', 'Hipotensão', 'Fadiga', 'Broncoespasmo', 'Mascaramento de hipoglicemia', 'Disfunção erétil'],
       'es': ['Bradicardia', 'Hipotensión', 'Fatiga', 'Broncoespasmo', 'Enmascaramiento de hipoglucemia', 'Disfunción eréctil'],
+    },
+    interactions: {
+      'graves': ['verapamil', 'diltiazem', 'amiodarona', 'clonidina_tdah'],
+      'moderadas': ['insulina_regular', 'metformina', 'glibenclamida', 'fluoxetina', 'sertralina', 'bupropiona', 'rifampicina', 'fenitoina', 'carbamazepina'],
+      'leves': ['ibuprofeno', 'naproxeno', 'diclofenaco', 'cetorolaco', 'omeprazol'],
     },
   ),
 DrugModel(
@@ -730,6 +790,11 @@ DrugModel(
       'pt': ['Pneumonite/fibrose pulmonar', 'Hipotireoidismo', 'Hipertireoidismo', 'Hepatotoxicidade', 'Fotossensibilidade', 'Bradiarritmias', 'Neuropatia periférica'],
       'es': ['Neumonitis/fibrosis pulmonar', 'Hipotiroidismo', 'Hipertiroidismo', 'Hepatotoxicidad', 'Fotosensibilidad', 'Bradiarritmias'],
     },
+    interactions: {
+      'graves': ['varfarina', 'digoxina', 'sotalol', 'haloperidol', 'ciprofloxacino', 'azitromicina', 'fluconazol', 'fenitoina', 'lorazepam', 'midazolam', 'flecainida', 'propafenona', 'metilfenidato_ir', 'metilfenidato_xr', 'anfetamina_sulfato', 'dextroanfetamina', 'lisdexanfetamina', 'centanafadina'],
+      'moderadas': ['metoprolol', 'atenolol', 'esmolol', 'diltiazem', 'verapamil', 'quinidina', 'amiodarona', 'fluoxetina', 'sertralina', 'venlafaxina', 'bupropiona', 'rivaroxabana', 'dabigatrana', 'apixabana'],
+      'leves': ['omeprazol', 'pantoprazol', 'estatinas', 'colchicina'],
+    },
   ),
 DrugModel(
     id: 'heparina_nf',
@@ -764,6 +829,11 @@ DrugModel(
       'pt': ['Sangramento', 'TIH (trombocitopenia)', 'Osteoporose (uso prolongado)', 'Hiperpotassemia', 'Reação no local de injeção'],
       'es': ['Sangrado', 'TIH (trombocitopenia)', 'Osteoporosis (uso prolongado)', 'Hiperpotasemia'],
     },
+    interactions: {
+      'graves': ['alteplase', 'estreptoquinase', 'tenecteplase'],
+      'moderadas': ['varfarina', 'rivaroxabana', 'dabigatrana', 'apixabana', 'enoxaparina', 'aspirina', 'clopidogrel', 'ibuprofeno', 'naproxeno', 'cetorolaco', 'ticagrelor', 'abciximab'],
+      'leves': ['nitroglicerina', 'digoxina', 'tetraciclin'],
+    },
   ),
 DrugModel(
     id: 'enoxaparina',
@@ -797,6 +867,11 @@ DrugModel(
     adverse: {
       'pt': ['Sangramento', 'TIH (menos frequente)', 'Hematoma no local', 'Osteoporose (uso prolongado)', 'Hiperpotassemia'],
       'es': ['Sangrado', 'TIH (menos frecuente)', 'Hematoma local', 'Osteoporosis (uso prolongado)', 'Hiperpotasemia'],
+    },
+    interactions: {
+      'graves': ['alteplase', 'estreptoquinase'],
+      'moderadas': ['varfarina', 'rivaroxabana', 'dabigatrana', 'apixabana', 'aspirina', 'clopidogrel', 'ibuprofeno', 'naproxeno', 'cetorolaco', 'ticagrelor', 'heparina_nf'],
+      'leves': ['omeprazol', 'pantoprazol'],
     },
   ),
 DrugModel(
@@ -931,6 +1006,11 @@ DrugModel(
       'pt': ['Hiperglicemia', 'Imunossupressão', 'Osteoporose', 'Hipertensão', 'Miopatia', 'Insuficiência adrenal (retirada)'],
       'es': ['Hiperglucemia', 'Inmunosupresión', 'Osteoporosis', 'Hipertensión', 'Miopatía', 'Insuficiencia adrenal (retirada)'],
     },
+    interactions: {
+      'graves': ['varfarina', 'vacinas_vivas'],
+      'moderadas': ['insulina_regular', 'metformina', 'glibenclamida', 'ibuprofeno', 'naproxeno', 'cetorolaco', 'ciclosporina', 'tacrolimus', 'carbamazepina', 'fenitoina', 'rifampicina', 'eritromicina', 'claritromicina', 'fluconazol', 'cetoconazol', 'atenolol', 'metoprolol', 'furosemida'],
+      'leves': ['omeprazol', 'pantoprazol', 'cálcio', 'vitamina_d'],
+    },
   ),
 DrugModel(
     id: 'metilprednisolona',
@@ -998,6 +1078,11 @@ DrugModel(
       'pt': ['Depressão respiratória', 'Hipotensão', 'Amnésia anterógrada', 'Sedação excessiva', 'Delirium (idoso)'],
       'es': ['Depresión respiratoria', 'Hipotensión', 'Amnesia anterógrada', 'Sedación excesiva', 'Delirium (anciano)'],
     },
+    interactions: {
+      'graves': ['ritonavir', 'cetoconazol', 'itraconazol', 'claritromicina', 'fluconazol', 'nelfinavir'],
+      'moderadas': ['amiodarona', 'haloperidol', 'metoprolol', 'atenolol', 'morfina', 'tramadol', 'fentanil', 'propofol', 'dexametasona', 'rifampicina', 'carbamazepina', 'fenitoina', 'omeprazol'],
+      'leves': ['eritromicina', 'diltiazem', 'verapamil', 'ranitidina'],
+    },
   ),
 DrugModel(
     id: 'diazepam',
@@ -1032,6 +1117,11 @@ DrugModel(
       'pt': ['Sedação prolongada', 'Dependência', 'Depressão respiratória', 'Amnésia', 'Ataxia', 'Delirium (idoso)'],
       'es': ['Sedación prolongada', 'Dependencia', 'Depresión respiratoria', 'Amnesia', 'Ataxia', 'Delirium (anciano)'],
     },
+    interactions: {
+      'graves': ['álcool_etílico', 'clozapina', 'ritonavir', 'cetoconazol', 'itraconazol'],
+      'moderadas': ['omeprazol', 'esomeprazol', 'cimetidina', 'fluoxetina', 'sertralina', 'valproato', 'carbamazepina', 'fenitoina', 'morfina', 'tramadol', 'metadona', 'rifampicina'],
+      'leves': ['antiácidos', 'metotrexato', 'cafeína'],
+    },
   ),
 DrugModel(
     id: 'fenitoina',
@@ -1065,6 +1155,11 @@ DrugModel(
     adverse: {
       'pt': ['Nistagmo/ataxia (toxicidade)', 'Hipotensão (IV rápido)', 'Bradiarritmias', 'Purple Glove Syndrome', 'Hiperplasia gengival', 'Hepatotoxicidade'],
       'es': ['Nistagmo/ataxia (toxicidad)', 'Hipotensión (IV rápido)', 'Bradiarritmias', 'Hiperplasia gingival', 'Hepatotoxicidad'],
+    },
+    interactions: {
+      'graves': ['amiodarona', 'fluconazol', 'fluoxetina', 'varfarina', 'metronidazol'],
+      'moderadas': ['carbamazepina', 'valproato', 'fenobarbital', 'omeprazol', 'esomeprazol', 'cimetidina', 'azitromicina', 'claritromicina', 'rifampicina', 'isoniazida', 'ciclosporina', 'tacrolimus', 'metadona', 'tramadol', 'dexametasona', 'metilprednisolona', 'metformina', 'insulina_regular'],
+      'leves': ['ácido_fólico', 'vitamina_d', 'antiácidos', 'sucralfato'],
     },
   ),
 DrugModel(
@@ -1133,6 +1228,11 @@ DrugModel(
       'pt': ['Hipomagnesemia', 'Déficit de B12/Ca2+', 'Nefrite intersticial', 'C. difficile', 'Cefaleia', 'Diarreia'],
       'es': ['Hipomagnesemia', 'Déficit de B12/Ca2+', 'Nefritis intersticial', 'C. difficile', 'Cefalea', 'Diarrea'],
     },
+    interactions: {
+      'graves': ['metotrexato'],
+      'moderadas': ['clopidogrel', 'varfarina', 'metformina', 'fenitoina', 'carbamazepina', 'diazepam', 'triazolam', 'ciclosporina', 'tacrolimus', 'atazanavir', 'erlotinibe', 'levotiroxina'],
+      'leves': ['ferro', 'vitamina_b12', 'cálcio', 'magnésio'],
+    },
   ),
 DrugModel(
     id: 'insulina_regular',
@@ -1166,6 +1266,11 @@ DrugModel(
     adverse: {
       'pt': ['Hipoglicemia', 'Hipopotassemia', 'Ganho de peso', 'Lipodistrofia no local', 'Edema'],
       'es': ['Hipoglucemia', 'Hipopotasemia', 'Ganancia de peso', 'Lipodistrofia local', 'Edema'],
+    },
+    interactions: {
+      'graves': ['álcool_etílico'],
+      'moderadas': ['metoprolol', 'atenolol', 'propranolol', 'furosemida', 'ciprofloxacino', 'varfarina', 'dexametasona', 'metilprednisolona', 'prednisolona', 'levotiroxina', 'metformina', 'glibenclamida'],
+      'leves': ['omeprazol', 'ranitidina', 'vitamina_e'],
     },
   ),
 DrugModel(
@@ -1299,6 +1404,11 @@ DrugModel(
       'pt': ['Hipercalemia', 'Tontura', 'Cefaleia', 'Insuficiência renal (estenose bilateral)', 'Angioedema (muito raro, <0,1%)', 'Hipotensão'],
       'es': ['Hiperpotasemia', 'Mareo', 'Cefalea', 'Insuficiencia renal', 'Angioedema (muy raro)', 'Hipotensión'],
     },
+    interactions: {
+      'graves': ['aliskiren', 'enalapril', 'lisinopril'],
+      'moderadas': ['amilorida', 'triantereno', 'espironolactona_diuretico', 'heparina_nf', 'enoxaparina', 'ibuprofeno', 'naproxeno', 'diclofenaco', 'cetorolaco', 'rifampicina', 'fluconazol'],
+      'leves': ['lítio', 'omeprazol', 'furosemida'],
+    },
   ),
 DrugModel(
     id: 'espironolactona',
@@ -1397,6 +1507,11 @@ DrugModel(
     adverse: {
       'pt': ['Intoxicação digitálica (náuseas, visão amarelada, arritmias ventriculares)', 'Bradicardia', 'BAV', 'Ginecomastia', 'Confusão mental (idosos)'],
       'es': ['Intoxicación digitálica (náuseas, visión amarillenta, arritmias)', 'Bradicardia', 'BAV', 'Ginecomastia', 'Confusión'],
+    },
+    interactions: {
+      'graves': ['amiodarona', 'verapamil', 'diltiazem', 'quinidina', 'claritromicina', 'azitromicina', 'ciclosporina', 'tacrolimus', 'fluconazol', 'itraconazol'],
+      'moderadas': ['furosemida', 'espironolactona_diuretico', 'atenolol', 'metoprolol', 'carbamazepina', 'fenitoina', 'rifampicina', 'colestiramina'],
+      'leves': ['omeprazol', 'pantoprazol', 'metoclopramida'],
     },
   ),
 DrugModel(
@@ -1565,6 +1680,11 @@ DrugModel(
       'pt': ['Náuseas/dor abdominal', 'Elevação transaminases', 'Prolongamento QT', 'Rash (raro)', 'Hepatotoxicidade (raro)', 'Alopecia (uso prolongado)'],
       'es': ['Náuseas/dolor abdominal', 'Elevación transaminasas', 'Prolongación QT', 'Rash (raro)', 'Hepatotoxicidad (raro)'],
     },
+    interactions: {
+      'graves': ['varfarina', 'cisaprida', 'amiodarona', 'haloperidol', 'sotalol', 'fenitoina', 'carbamazepina'],
+      'moderadas': ['ciclosporina', 'tacrolimus', 'sirolimus', 'midazolam', 'diazepam', 'triazolam', 'alprazolam', 'metformina', 'glibenclamida', 'rifabutina', 'omeprazol', 'esomeprazol', 'atorvastatina', 'sinvastatina'],
+      'leves': ['ranitidina', 'antiácidos', 'cafeína'],
+    },
   ),
 DrugModel(
     id: 'amlodipino',
@@ -1630,6 +1750,11 @@ DrugModel(
     adverse: {
       'pt': ['Distonia aguda', 'Acatisia', 'Parkinsonismo', 'Sedação', 'Hipotensão ortostática', 'Prolongamento QT', 'Discinesia tardia (crônico)', 'Hiperprolactinemia'],
       'es': ['Distonía aguda', 'Acatisia', 'Parkinsonismo', 'Sedación', 'Hipotensión ortostática', 'QT prolongado', 'Discinesia tardía'],
+    },
+    interactions: {
+      'graves': ['amiodarona', 'sotalol', 'ciprofloxacino', 'azitromicina', 'fluconazol', 'ondansetrona', 'lítio', 'carbamazepina', 'fenitoina', 'metilfenidato_ir', 'metilfenidato_xr', 'anfetamina_sulfato', 'dextroanfetamina', 'lisdexanfetamina', 'centanafadina', 'atomoxetina', 'bupropiona'],
+      'moderadas': ['metoprolol', 'atenolol', 'fluoxetina', 'sertralina', 'venlafaxina', 'midazolam', 'diazepam', 'lorazepam', 'clonazepam', 'tramadol', 'morfina'],
+      'leves': ['omeprazol', 'antiácidos', 'cafeína'],
     },
   ),
 DrugModel(
@@ -1773,6 +1898,11 @@ DrugModel(
       'pt': ['Taquicardia/palpitações (supradose)', 'Fibrilação atrial', 'Angina (cardiopatas)', 'Insônia', 'Tremor', 'Perda de peso', 'Sudorese', 'Osteoporose (TSH suprimido)'],
       'es': ['Taquicardia/palpitaciones (sobredosis)', 'Fibrilación auricular', 'Angina (cardíacos)', 'Insomnio', 'Temblor', 'Pérdida de peso'],
     },
+    interactions: {
+      'graves': ['varfarina', 'insulina_regular'],
+      'moderadas': ['omeprazol', 'pantoprazol', 'sulfato_ferroso', 'carbonato_cálcio', 'colestiramina', 'colestipol', 'sucralfato', 'antiácidos_Al_Mg', 'metformina', 'insulina_regular', 'carbamazepina', 'fenitoina', 'rifampicina', 'amiodarona', 'sertralina'],
+      'leves': ['vitamina_c', 'soja', 'fibras'],
+    },
   ),
 DrugModel(
     id: 'metformina',
@@ -1805,6 +1935,11 @@ DrugModel(
     adverse: {
       'pt': ['Náuseas/diarreia (início — reduzir com alimento)', 'Sabor metálico', 'Déficit B12 (uso prolongado)', 'Acidose lática (raro)', 'Anorexia'],
       'es': ['Náuseas/diarrea (inicio)', 'Sabor metálico', 'Déficit B12 (uso prolongado)', 'Acidosis láctica (raro)'],
+    },
+    interactions: {
+      'graves': ['contraste_iodado', 'álcool_etílico'],
+      'moderadas': ['ciprofloxacino', 'vancomicina', 'cimetidina', 'ranitidina', 'furosemida', 'amilorida', 'triantereno', 'dexametasona', 'metilprednisolona', 'prednisolona', 'insulina_regular', 'glibenclamida'],
+      'leves': ['vitamina_b12', 'omeprazol', 'antiácidos'],
     },
   ),
 DrugModel(
@@ -1906,6 +2041,11 @@ DrugModel(
       'pt': ['Cefaleia (9%)', 'Constipação', 'Prolongamento QT', 'Rubor', 'Elevação transaminases (raro)', 'Reações extrapiramidais (raro)'],
       'es': ['Cefalea (9%)', 'Constipación', 'Prolongación QT', 'Rubor', 'Elevación transaminasas (raro)'],
     },
+    interactions: {
+      'graves': ['amiodarona', 'haloperidol', 'ciprofloxacino', 'azitromicina', 'sotalol', 'tramadol'],
+      'moderadas': ['apomorfina', 'tramadol', 'fentanil', 'metadona', 'carbamazepina', 'fenitoina', 'rifampicina', 'sertralina', 'fluoxetina'],
+      'leves': ['dexametasona', 'ranitidina', 'omeprazol'],
+    },
   ),
 DrugModel(
     id: 'lactulose',
@@ -1971,6 +2111,11 @@ DrugModel(
     adverse: {
       'pt': ['Sangramento (GI, intracraniano, outros)', 'Anemia', 'Elevação transaminases', 'Náuseas', 'Prurido', 'Hematomas'],
       'es': ['Sangrado (GI, intracraneal, otros)', 'Anemia', 'Elevación transaminasas', 'Náuseas'],
+    },
+    interactions: {
+      'graves': ['cetoconazol', 'itraconazol', 'ritonavir', 'nelfinavir'],
+      'moderadas': ['amiodarona', 'varfarina', 'heparina_nf', 'enoxaparina', 'aspirina', 'clopidogrel', 'ibuprofeno', 'naproxeno', 'diclofenaco', 'cetorolaco', 'fluconazol', 'claritromicina', 'azitromicina', 'carbamazepina', 'fenitoina', 'rifampicina'],
+      'leves': ['omeprazol', 'pantoprazol', 'ranitidina'],
     },
   ),
 DrugModel(
@@ -2405,6 +2550,11 @@ DrugModel(
     adverse: {
       'pt': ['Síndrome de abstinência (dependentes)', 'Agitação/agressividade', 'Náuseas/vômitos', 'Hipertensão', 'Taquicardia', 'Edema pulmonar (raro)', 'Renarcotização'],
       'es': ['Síndrome de abstinencia (dependientes)', 'Agitación/agresividad', 'Náuseas/vómitos', 'Hipertensión', 'Taquicardia', 'Edema pulmonar (raro)'],
+    },
+    interactions: {
+      'graves': [],
+      'moderadas': ['morfina', 'fentanil', 'tramadol', 'metadona', 'oxicodona', 'codeina', 'buprenorfina'],
+      'leves': ['clonidina_tdah', 'guanfacina_xr'],
     },
   ),
 DrugModel(
@@ -4873,6 +5023,11 @@ DrugModel(
       'pt': ['Sangramento (principal — desde epistaxe até AVC hemorrágico)', 'Necrose cutânea (início tto — deficit proteína C)', 'Síndrome do dedo roxo', 'Osteoporose (uso prolongado)', 'Hepatotoxicidade (raro)'],
       'es': ['Sangrado (principal — desde epistaxis hasta ACV hemorrágico)', 'Necrosis cutánea (inicio tto — déficit proteína C)', 'Síndrome del dedo morado', 'Osteoporosis (uso prolongado)', 'Hepatotoxicidad (raro)'],
     },
+    interactions: {
+      'graves': ['amiodarona', 'fluconazol', 'metronidazol', 'ciprofloxacino', 'sulfametoxazol', 'linezolida', 'rifampicina', 'fenitoina', 'carbamazepina', 'fluoxetina', 'sertralina', 'venlafaxina', 'aspirina', 'cetorolaco', 'ibuprofeno'],
+      'moderadas': ['azitromicina', 'claritromicina', 'omeprazol', 'esomeprazol', 'tramadol', 'paracetamol', 'levotiroxina', 'metronidazol', 'cimetidina', 'ranitidina', 'dexametasona', 'metilprednisolona'],
+      'leves': ['vitamina_c', 'vitamina_e', 'alho', 'gengibre'],
+    },
   ),
 DrugModel(
     id: 'clopidogrel',
@@ -5732,6 +5887,11 @@ DrugModel(
     adverse: {
       'pt': ['Diplopia e visão turva', 'Ataxia', 'Tontura', 'Sonolência', 'Hiponatremia (SIADH)', 'Leucopenia', 'Aplasia (raro)', 'Rash/Stevens-Johnson', 'Hepatotoxicidade'],
       'es': ['Diplopía y visión borrosa', 'Ataxia', 'Mareo', 'Somnolencia', 'Hiponatremia (SIADH)', 'Leucopenia', 'Aplasia (raro)', 'Rash/Stevens-Johnson', 'Hepatotoxicidad'],
+    },
+    interactions: {
+      'graves': ['inibidores_MAO', 'varfarina', 'haloperidol', 'clozapina', 'lítio', 'linezolida'],
+      'moderadas': ['fenitoina', 'valproato', 'lamotrigina', 'topiramato', 'fluoxetina', 'sertralina', 'amitriptilina', 'tramadol', 'bupropiona', 'ciclosporina', 'tacrolimus', 'metadona', 'atorvastatina', 'sinvastatina', 'levotiroxina', 'anticoncepcional_oral', 'dexametasona', 'metilprednisolona'],
+      'leves': ['omeprazol', 'sucralfato', 'paracetamol', 'ácido_fólico'],
     },
   ),
 DrugModel(
