@@ -781,10 +781,11 @@ class _WaHeader extends StatelessWidget {
                   ),
                   const SizedBox(width: 10),
 
-                  // Título + badge conexão numa linha só
+                  // Título + badge conexão como subtítulo (Column)
                   Expanded(
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
                       children: [
                         const Text(
                           'MedCases IA',
@@ -795,14 +796,14 @@ class _WaHeader extends StatelessWidget {
                             letterSpacing: -0.3,
                           ),
                         ),
-                        const SizedBox(width: 8),
-                        // Badge Conectado / Conectar IA
+                        const SizedBox(height: 4),
+                        // Badge Conectado / Conectar IA — subtítulo clicável
                         GestureDetector(
                           onTap: onSettings,
                           child: AnimatedContainer(
                             duration: const Duration(milliseconds: 300),
                             padding: const EdgeInsets.symmetric(
-                                horizontal: 9, vertical: 4),
+                                horizontal: 8, vertical: 3),
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(20),
                               color: isConnected
@@ -819,7 +820,7 @@ class _WaHeader extends StatelessWidget {
                               children: [
                                 if (keyLoading)
                                   SizedBox(
-                                    width: 9, height: 9,
+                                    width: 8, height: 8,
                                     child: CircularProgressIndicator(
                                       strokeWidth: 1.2,
                                       color: Colors.white.withValues(alpha: 0.5),
@@ -830,7 +831,7 @@ class _WaHeader extends StatelessWidget {
                                     isConnected
                                         ? Icons.check_circle_rounded
                                         : Icons.link_rounded,
-                                    size: 11,
+                                    size: 10,
                                     color: isConnected
                                         ? _kGreen
                                         : Colors.white.withValues(alpha: 0.5),
@@ -843,7 +844,7 @@ class _WaHeader extends StatelessWidget {
                                           ? (lang == 'es' ? 'Conectado' : 'Conectado')
                                           : (lang == 'es' ? 'Conectar IA' : 'Conectar IA'),
                                   style: TextStyle(
-                                    fontSize: 11,
+                                    fontSize: 10,
                                     fontWeight: FontWeight.w700,
                                     color: isConnected
                                         ? _kGreen
