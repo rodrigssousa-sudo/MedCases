@@ -1799,8 +1799,129 @@ class _QuickEmergenciesState extends State<_QuickEmergencies> {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// PEDIATRICS SHELL — wrapper com AppBar para o tab Pediatria
-// Apresenta o _PediatricsTab como tela standalone com back button
+// SHELL HEADER — cabeçalho idêntico ao _HomeCard (mesmo padrão visual)
+// ─────────────────────────────────────────────────────────────────────────────
+class _ShellHeader extends StatelessWidget {
+  final List<Color> gradientColors;
+  final Color accentColor;
+  final IconData icon;
+  final String label;
+  final String subtitle;
+
+  const _ShellHeader({
+    required this.gradientColors,
+    required this.accentColor,
+    required this.icon,
+    required this.label,
+    required this.subtitle,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: gradientColors,
+        ),
+      ),
+      child: SafeArea(
+        bottom: false,
+        child: Stack(
+          children: [
+            // Círculo decorativo grande (canto direito superior)
+            Positioned(
+              right: -24,
+              top: -24,
+              child: Container(
+                width: 130,
+                height: 130,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: accentColor.withValues(alpha: 0.07),
+                ),
+              ),
+            ),
+            // Círculo decorativo pequeno (canto direito inferior)
+            Positioned(
+              right: 16,
+              bottom: -28,
+              child: Container(
+                width: 80,
+                height: 80,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: accentColor.withValues(alpha: 0.04),
+                ),
+              ),
+            ),
+            // Conteúdo
+            Padding(
+              padding: const EdgeInsets.fromLTRB(4, 6, 20, 14),
+              child: Row(children: [
+                // Botão voltar — mesmo estilo dos cards
+                IconButton(
+                  icon: const Icon(Icons.arrow_back_ios_rounded,
+                      size: 18, color: Colors.white),
+                  onPressed: () => Navigator.of(context).pop(),
+                ),
+                // Ícone container — idêntico ao _HomeCard
+                Container(
+                  width: 48,
+                  height: 48,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(14),
+                    color: accentColor.withValues(alpha: 0.14),
+                    border: Border.all(
+                      color: accentColor.withValues(alpha: 0.25),
+                      width: 1.0,
+                    ),
+                  ),
+                  child: Icon(icon, size: 24, color: accentColor),
+                ),
+                const SizedBox(width: 14),
+                // Textos — mesmas fontes do _HomeCard
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        label,
+                        style: TextStyle(
+                          fontSize: 19,
+                          fontWeight: FontWeight.w900,
+                          color: Colors.white.withValues(alpha: 0.97),
+                          letterSpacing: -0.3,
+                          height: 1.1,
+                        ),
+                      ),
+                      const SizedBox(height: 3),
+                      Text(
+                        subtitle,
+                        style: TextStyle(
+                          fontSize: 11,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.white.withValues(alpha: 0.55),
+                          letterSpacing: 0.1,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  ),
+                ),
+              ]),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// PEDIATRICS SHELL
 // ─────────────────────────────────────────────────────────────────────────────
 class _PediatricsShell extends StatelessWidget {
   const _PediatricsShell();
@@ -1814,67 +1935,15 @@ class _PediatricsShell extends StatelessWidget {
     return Scaffold(
       backgroundColor: dark ? const Color(0xFF141414) : const Color(0xFFF7F8FA),
       body: Column(children: [
-        // Header com gradiente igual ao ToolsScreen
-        Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [Color(0xFF0A2540), Color(0xFF103D70), Color(0xFF2563EB)],
-            ),
-          ),
-          child: SafeArea(
-            bottom: false,
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(6, 4, 16, 0),
-              child: Row(children: [
-                // Botão voltar
-                IconButton(
-                  icon: const Icon(Icons.arrow_back_ios_rounded,
-                      size: 18, color: Colors.white),
-                  onPressed: () => Navigator.of(context).pop(),
-                ),
-                // Ícone
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    color: Colors.white.withValues(alpha: 0.10),
-                  ),
-                  child: const Icon(Icons.child_care_rounded,
-                      size: 20, color: Color(0xFF93C5FD)),
-                ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        isEs ? 'Herramientas Pediátricas' : 'Ferramentas Pediátricas',
-                        style: const TextStyle(
-                          fontSize: 17,
-                          fontWeight: FontWeight.w900,
-                          color: Colors.white,
-                          letterSpacing: -0.3,
-                        ),
-                      ),
-                      Text(
-                        isEs
-                            ? 'Biometría · PEWS · Schwartz · Dosis'
-                            : 'Biometria · PEWS · Schwartz · Doses',
-                        style: TextStyle(
-                          fontSize: 11,
-                          color: Colors.white.withValues(alpha: 0.6),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ]),
-            ),
-          ),
+        _ShellHeader(
+          gradientColors: const [Color(0xFF0A2540), Color(0xFF103D70), Color(0xFF2563EB)],
+          accentColor:    const Color(0xFF93C5FD),
+          icon:    Icons.child_care_rounded,
+          label:   isEs ? 'PEDIATRÍA' : 'PEDIATRIA',
+          subtitle: isEs
+              ? 'Biometría · PEWS · Schwartz · Dosis'
+              : 'Biometria · PEWS · Schwartz · Doses',
         ),
-        // Conteúdo — reutiliza o PediatricsTabContent do ToolsScreen
         const Expanded(child: PediatricsTabContent()),
       ]),
     );
@@ -1897,46 +1966,14 @@ class _AdultoShell extends StatelessWidget {
     return Scaffold(
       backgroundColor: dark ? const Color(0xFF141414) : const Color(0xFFF7F8FA),
       body: Column(children: [
-        Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [Color(0xFF052E1A), Color(0xFF0A5C2E), Color(0xFF15803D)],
-            ),
-          ),
-          child: SafeArea(
-            bottom: false,
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(6, 4, 16, 12),
-              child: Row(children: [
-                IconButton(
-                  icon: const Icon(Icons.arrow_back_ios_rounded, size: 18, color: Colors.white),
-                  onPressed: () => Navigator.of(context).pop(),
-                ),
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    color: Colors.white.withValues(alpha: 0.10),
-                  ),
-                  child: const Icon(Icons.person_rounded, size: 20, color: Color(0xFF4ADE80)),
-                ),
-                const SizedBox(width: 10),
-                Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  Text(
-                    isEs ? 'Paciente Adulto' : 'Paciente Adulto',
-                    style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w900,
-                        color: Colors.white, letterSpacing: -0.3),
-                  ),
-                  Text(
-                    isEs ? 'Dosis · Protocolos · Calculadora' : 'Doses · Protocolos · Calculadora',
-                    style: TextStyle(fontSize: 11, color: Colors.white.withValues(alpha: 0.6)),
-                  ),
-                ])),
-              ]),
-            ),
-          ),
+        _ShellHeader(
+          gradientColors: const [Color(0xFF052E1A), Color(0xFF0A5C2E), Color(0xFF15803D)],
+          accentColor:    const Color(0xFF4ADE80),
+          icon:    Icons.person_rounded,
+          label:   'ADULTO',
+          subtitle: isEs
+              ? 'Dosis · Protocolos · Calculadora'
+              : 'Doses · Protocolos · Calculadora',
         ),
         Expanded(child: CockpitScreen(openProtocol: openProtocol)),
       ]),
@@ -1959,47 +1996,14 @@ class _FarmacosShell extends StatelessWidget {
     return Scaffold(
       backgroundColor: dark ? const Color(0xFF141414) : const Color(0xFFF7F8FA),
       body: Column(children: [
-        Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [Color(0xFF3B2200), Color(0xFF6B3A00), Color(0xFF9A5B00)],
-            ),
-          ),
-          child: SafeArea(
-            bottom: false,
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(6, 4, 16, 12),
-              child: Row(children: [
-                IconButton(
-                  icon: const Icon(Icons.arrow_back_ios_rounded, size: 18, color: Colors.white),
-                  onPressed: () => Navigator.of(context).pop(),
-                ),
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    color: Colors.white.withValues(alpha: 0.10),
-                  ),
-                  child: const Icon(Icons.medication_rounded, size: 20, color: Color(0xFFFBBF24)),
-                ),
-                const SizedBox(width: 10),
-                Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  Text(
-                    isEs ? 'Fármacos' : 'Fármacos',
-                    style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w900,
-                        color: Colors.white, letterSpacing: -0.3),
-                  ),
-                  Text(
-                    isEs ? '${drugsDatabase.length} fármacos · Interacciones · Protocolos'
-                         : '${drugsDatabase.length} fármacos · Interações · Protocolos',
-                    style: TextStyle(fontSize: 11, color: Colors.white.withValues(alpha: 0.6)),
-                  ),
-                ])),
-              ]),
-            ),
-          ),
+        _ShellHeader(
+          gradientColors: const [Color(0xFF3B2200), Color(0xFF6B3A00), Color(0xFF9A5B00)],
+          accentColor:    const Color(0xFFFBBF24),
+          icon:    Icons.medication_rounded,
+          label:   'FÁRMACOS',
+          subtitle: isEs
+              ? '${drugsDatabase.length} fármacos · Interacciones · Protocolos'
+              : '${drugsDatabase.length} fármacos · Interações · Protocolos',
         ),
         const Expanded(child: DrugsScreen(hideHeader: true)),
       ]),
@@ -2022,47 +2026,14 @@ class _CalculadorasShell extends StatelessWidget {
     return Scaffold(
       backgroundColor: dark ? const Color(0xFF141414) : const Color(0xFFF7F8FA),
       body: Column(children: [
-        Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [Color(0xFF1A0F2E), Color(0xFF2D1B5A), Color(0xFF4A2D8A)],
-            ),
-          ),
-          child: SafeArea(
-            bottom: false,
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(6, 4, 16, 12),
-              child: Row(children: [
-                IconButton(
-                  icon: const Icon(Icons.arrow_back_ios_rounded, size: 18, color: Colors.white),
-                  onPressed: () => Navigator.of(context).pop(),
-                ),
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    color: Colors.white.withValues(alpha: 0.10),
-                  ),
-                  child: const Icon(Icons.calculate_rounded, size: 20, color: Color(0xFFA78BFA)),
-                ),
-                const SizedBox(width: 10),
-                Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  Text(
-                    isEs ? 'Calculadoras Clínicas' : 'Calculadoras Clínicas',
-                    style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w900,
-                        color: Colors.white, letterSpacing: -0.3),
-                  ),
-                  Text(
-                    isEs ? 'Scores · Cardio · Electrolitos · Infusión'
-                         : 'Scores · Cardio · Eletrólitos · Infusão',
-                    style: TextStyle(fontSize: 11, color: Colors.white.withValues(alpha: 0.6)),
-                  ),
-                ])),
-              ]),
-            ),
-          ),
+        _ShellHeader(
+          gradientColors: const [Color(0xFF1A0F2E), Color(0xFF2D1B5A), Color(0xFF4A2D8A)],
+          accentColor:    const Color(0xFFA78BFA),
+          icon:    Icons.calculate_rounded,
+          label:   isEs ? 'CALCULADORAS' : 'CALCULADORAS',
+          subtitle: isEs
+              ? 'Scores · Cardio · Electrolitos · Infusión'
+              : 'Scores · Cardio · Eletrólitos · Infusão',
         ),
         const Expanded(child: ToolsScreen(hideHeader: true)),
       ]),
@@ -2085,48 +2056,14 @@ class _PrescripcionesShell extends StatelessWidget {
     return Scaffold(
       backgroundColor: dark ? const Color(0xFF141414) : const Color(0xFFF7F8FA),
       body: Column(children: [
-        Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [Color(0xFF2A0B52), Color(0xFF3D1280), Color(0xFF5B21B6)],
-            ),
-          ),
-          child: SafeArea(
-            bottom: false,
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(6, 4, 16, 12),
-              child: Row(children: [
-                IconButton(
-                  icon: const Icon(Icons.arrow_back_ios_rounded, size: 18, color: Colors.white),
-                  onPressed: () => Navigator.of(context).pop(),
-                ),
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    color: Colors.white.withValues(alpha: 0.10),
-                  ),
-                  child: const Icon(Icons.description_rounded, size: 20, color: Color(0xFFA78BFA)),
-                ),
-                const SizedBox(width: 10),
-                Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  Text(
-                    isEs ? 'Ejemplos de Prescripción' : 'Exemplos de Prescrição',
-                    style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w900,
-                        color: Colors.white, letterSpacing: -0.3),
-                  ),
-                  Text(
-                    isEs
-                        ? 'Modelos educativos · Emergencias · Guardia'
-                        : 'Modelos educacionais · Emergências · Plantão',
-                    style: TextStyle(fontSize: 11, color: Colors.white.withValues(alpha: 0.6)),
-                  ),
-                ])),
-              ]),
-            ),
-          ),
+        _ShellHeader(
+          gradientColors: const [Color(0xFF2A0B52), Color(0xFF3D1280), Color(0xFF5B21B6)],
+          accentColor:    const Color(0xFFA78BFA),
+          icon:    Icons.description_rounded,
+          label:   isEs ? 'PRESCRIPCIONES' : 'PRESCRIÇÕES',
+          subtitle: isEs
+              ? 'Modelos · Emergencias · Guardia · Clínica'
+              : 'Modelos · Emergências · Plantão · Clínica',
         ),
         const Expanded(child: PrescripcionesScreen()),
       ]),
