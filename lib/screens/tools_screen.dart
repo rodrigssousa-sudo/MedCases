@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
 import '../providers/app_provider.dart';
 import '../widgets/common_widgets.dart';
@@ -3160,14 +3161,18 @@ class _PediatricsTabContentState extends State<PediatricsTabContent> {
   final _swAgeCtrl = TextEditingController();
 
   // PEWS
-  int _pewsBehavior  = 0;
-  int _pewsCardio    = 0;
+  int _pewsBehavior    = 0;
+  int _pewsCardio      = 0;
   int _pewsRespiratory = 0;
+
+  // Doses — peso local (editável direto na aba, sincronizado com _weightCtrl)
+  final _dosesWeightCtrl = TextEditingController();
 
   @override
   void dispose() {
     _ageYCtrl.dispose(); _ageMCtrl.dispose(); _weightCtrl.dispose(); _heightCtrl.dispose();
     _swCrCtrl.dispose(); _swHCtrl.dispose(); _swAgeCtrl.dispose();
+    _dosesWeightCtrl.dispose();
     super.dispose();
   }
 
@@ -3674,25 +3679,92 @@ class _PediatricsTabContentState extends State<PediatricsTabContent> {
   // SEÇÃO 4 — DOSES PEDIÁTRICAS
   // ──────────────────────────────────────────────────────────────
   Widget _buildDoses(bool isEs, AppColors c) {
-    final w = _n(_weightCtrl) ?? _estWeight;
-    final wLabel = w != null ? ' (${_fmt(w)} kg)' : ' — informe o peso na aba Biometria';
+    // Peso: prioridade → campo local da aba Doses → Biometria → estimado
+    final wLocal = _n(_dosesWeightCtrl);
+    final w = wLocal ?? _n(_weightCtrl) ?? _estWeight;
+    // Sincroniza campo Doses com Biometria se o local estiver vazio
+    if (wLocal == null && _dosesWeightCtrl.text.isEmpty) {
+      final bio = _n(_weightCtrl) ?? _estWeight;
+      if (bio != null) {
+        SchedulerBinding.instance.addPostFrameCallback((_) {
+          if (mounted && _dosesWeightCtrl.text.isEmpty) {
+            _dosesWeightCtrl.text = _fmt(bio, dec: 1);
+          }
+        });
+      }
+    }
 
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      // ── Campo de peso editável ───────────────────────────────────
       Container(
-        padding: const EdgeInsets.all(12),
+        padding: const EdgeInsets.fromLTRB(14, 10, 14, 10),
         margin: const EdgeInsets.only(bottom: 14),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(14),
-          color: const Color(0xFF0F1C14).withValues(alpha: 0.06),
-          border: Border.all(color: const Color(0xFF065F46).withValues(alpha: 0.3)),
+          color: const Color(0xFF065F46).withValues(alpha: 0.08),
+          border: Border.all(color: const Color(0xFF065F46).withValues(alpha: 0.35)),
         ),
         child: Row(children: [
-          const Icon(Icons.scale_rounded, size: 16, color: Color(0xFF065F46)),
-          const SizedBox(width: 8),
-          Expanded(child: Text(
-            'Peso utilizado$wLabel',
-            style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: Color(0xFF065F46)),
-          )),
+          const Icon(Icons.scale_rounded, size: 18, color: Color(0xFF065F46)),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Text(
+                isEs ? 'Peso del paciente' : 'Peso do paciente',
+                style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w700,
+                    color: Color(0xFF065F46), letterSpacing: 0.3),
+              ),
+              const SizedBox(height: 4),
+              SizedBox(
+                height: 32,
+                child: TextField(
+                  controller: _dosesWeightCtrl,
+                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w900,
+                      color: Color(0xFF065F46)),
+                  decoration: InputDecoration(
+                    isDense: true,
+                    contentPadding: EdgeInsets.zero,
+                    hintText: isEs ? 'Ej: 25,0' : 'Ex: 25,0',
+                    hintStyle: TextStyle(fontSize: 14, color:
+                        const Color(0xFF065F46).withValues(alpha: 0.4)),
+                    border: InputBorder.none,
+                    suffix: const Text('kg', style: TextStyle(
+                        fontSize: 13, fontWeight: FontWeight.w700,
+                        color: Color(0xFF065F46))),
+                  ),
+                  onChanged: (_) => setState(() {}),
+                ),
+              ),
+            ]),
+          ),
+          if (w != null) ...[const SizedBox(width: 8),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                color: const Color(0xFF065F46).withValues(alpha: 0.12),
+              ),
+              child: Text('${_fmt(w)} kg',
+                style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w900,
+                    color: Color(0xFF065F46))),
+            )],
+        ]),
+      ),
+
+      // ── Toque no fármaco para ver contraindicações ──────────────
+      Padding(
+        padding: const EdgeInsets.only(bottom: 10),
+        child: Row(children: [
+          Icon(Icons.touch_app_rounded, size: 13,
+              color: const Color(0xFF065F46).withValues(alpha: 0.7)),
+          const SizedBox(width: 5),
+          Text(
+            isEs ? 'Toca un fármaco para ver contraindicaciones'
+                 : 'Toque um fármaco para ver contraindicações',
+            style: TextStyle(fontSize: 10.5, fontWeight: FontWeight.w600,
+                color: const Color(0xFF065F46).withValues(alpha: 0.8)),
+          ),
         ]),
       ),
 
@@ -3700,50 +3772,369 @@ class _PediatricsTabContentState extends State<PediatricsTabContent> {
         title: isEs ? 'Reanimación — PCR Pediátrica' : 'Reanimação — PCR Pediátrica',
         icon: Icons.emergency_rounded,
         child: Column(children: [
-          _PedDoseRow(label: 'Adrenalina IV/IO',      dose: '0,01 mg/kg',  weight: w, mgPerKg: 0.01,   unit: 'mg',  maxDose: '1 mg',    color: const Color(0xFFCC2222)),
-          _PedDoseRow(label: 'Amiodarona IV/IO',      dose: '5 mg/kg',     weight: w, mgPerKg: 5.0,    unit: 'mg',  maxDose: '300 mg',  color: const Color(0xFFD97706)),
-          _PedDoseRow(label: 'Adenosina IV (TSV)',     dose: '0,1 mg/kg',   weight: w, mgPerKg: 0.1,    unit: 'mg',  maxDose: '6 mg',    color: const Color(0xFFD97706)),
-          _PedDoseRow(label: 'Atropina IV (bradicardia)', dose: '0,02 mg/kg', weight: w, mgPerKg: 0.02, unit: 'mg',  maxDose: '0,5 mg',  color: const Color(0xFF1D4ED8)),
-          _PedDoseRow(label: 'Glicose 10% IV (hipoglicemia)', dose: '2–5 mL/kg', weight: w, mgPerKg: 3.0, unit: 'mL', maxDose: '250 mL', color: const Color(0xFF065F46)),
+          _PedDoseRow(label: 'Adrenalina IV/IO', dose: '0,01 mg/kg', weight: w,
+            mgPerKg: 0.01, unit: 'mg', maxDose: '1 mg', color: const Color(0xFFCC2222),
+            contraindications: isEs
+              ? ['Taquicardia ventricular sin FV', 'Hipertensión severa no controlada',
+                 'Feocromocitoma (relativa)', 'Monitorización ECG continua obligatoria']
+              : ['Taquicardia ventricular sem FV', 'Hipertensão severa não controlada',
+                 'Feocromocitoma (relativa)', 'Monitorização ECG contínua obrigatória']),
+          _PedDoseRow(label: 'Amiodarona IV/IO', dose: '5 mg/kg', weight: w,
+            mgPerKg: 5.0, unit: 'mg', maxDose: '300 mg', color: const Color(0xFFD97706),
+            contraindications: isEs
+              ? ['Bradicardia sinusal grave', 'Bloqueo AV de 2º y 3º grado sin marcapaso',
+                 'Hipersensibilidad al yodo', 'Hipotensión severa', 'QT largo congénito']
+              : ['Bradicardia sinusal grave', 'Bloqueio AV 2º e 3º grau sem marca-passo',
+                 'Hipersensibilidade ao iodo', 'Hipotensão severa', 'QT longo congênito']),
+          _PedDoseRow(label: 'Adenosina IV (TSV)', dose: '0,1 mg/kg', weight: w,
+            mgPerKg: 0.1, unit: 'mg', maxDose: '6 mg', color: const Color(0xFFD97706),
+            contraindications: isEs
+              ? ['Bloqueo AV 2º y 3º grado', 'Síndrome del seno enfermo',
+                 'Asma bronquial (broncoespasmo)', 'Flutter/fibrilación auricular',
+                 'Administrar en bolo IV rápido (bolus 1-2 s)']
+              : ['Bloqueio AV 2º e 3º grau', 'Doença do nó sinusal',
+                 'Asma brônquica (broncoespasmo)', 'Flutter/fibrilação atrial',
+                 'Administrar em bolus IV rápido (1-2 s)']),
+          _PedDoseRow(label: 'Atropina IV (bradicardia)', dose: '0,02 mg/kg', weight: w,
+            mgPerKg: 0.02, unit: 'mg', maxDose: '0,5 mg', color: const Color(0xFF1D4ED8),
+            contraindications: isEs
+              ? ['Glaucoma de ángulo cerrado', 'Taquicardia sinusal', 'Miastenia gravis',
+                 'Dosis mínima 0,1 mg (dosis menores → bradicardia paradójica)',
+                 'Íleo paralítico / obstrucción intestinal']
+              : ['Glaucoma de ângulo fechado', 'Taquicardia sinusal', 'Miastenia gravis',
+                 'Dose mínima 0,1 mg (doses menores → bradicardia paradoxal)',
+                 'Íleo paralítico / obstrução intestinal']),
+          _PedDoseRow(label: 'Glicose 10% IV (hipoglicemia)', dose: '2–5 mL/kg', weight: w,
+            mgPerKg: 3.0, unit: 'mL', maxDose: '250 mL', color: const Color(0xFF065F46),
+            contraindications: isEs
+              ? ['Hiperglucemia (BGL > 180 mg/dL)', 'Confirmar hipoglucemia antes de administrar',
+                 'Acceso venoso periférico preferible (osmolaridade 556 mOsm/L)']
+              : ['Hiperglicemia (BGL > 180 mg/dL)', 'Confirmar hipoglicemia antes de administrar',
+                 'Acesso venoso periférico preferível (osmolaridade 556 mOsm/L)']),
         ]),
       ),
       const SizedBox(height: 12),
 
+      // ── Dor ────────────────────────────────────────────────────────
+      _SectionCard(
+        title: isEs ? 'Analgesia — Dolor' : 'Analgesia — Dor',
+        icon: Icons.healing_rounded,
+        child: Column(children: [
+          _PedDoseRow(label: 'Paracetamol VO/VR', dose: '10–15 mg/kg q4–6h', weight: w,
+            mgPerKg: 12.5, unit: 'mg', maxDose: '1000 mg', color: const Color(0xFF065F46),
+            contraindications: isEs
+              ? ['Insuficiencia hepática grave', 'Hipersensibilidad al paracetamol',
+                 'No superar 4 dosis/día', 'Evitar en neonatos < 32 semanas (ajustar dosis)']
+              : ['Insuficiência hepática grave', 'Hipersensibilidade ao paracetamol',
+                 'Não ultrapassar 4 doses/dia', 'Evitar em neonatos < 32 semanas (ajustar dose)']),
+          _PedDoseRow(label: 'Ibuprofeno VO', dose: '5–10 mg/kg q6–8h', weight: w,
+            mgPerKg: 7.5, unit: 'mg', maxDose: '400 mg', color: const Color(0xFF065F46),
+            contraindications: isEs
+              ? ['< 6 meses de edad (contraindicado)', 'Insuficiencia renal / deshidratación',
+                 'Úlcera péptica activa', 'Dengue (riesgo de sangrado)',
+                 'Asma inducida por AINEs', 'Insuficiencia hepática']
+              : ['< 6 meses de idade (contraindicado)', 'Insuficiência renal / desidratação',
+                 'Úlcera péptica ativa', 'Dengue (risco de sangramento)',
+                 'Asma induzida por AINEs', 'Insuficiência hepática']),
+          _PedDoseRow(label: 'Dipirona/Metamizol VO/IV', dose: '15 mg/kg q6h', weight: w,
+            mgPerKg: 15.0, unit: 'mg', maxDose: '1000 mg', color: const Color(0xFF065F46),
+            contraindications: isEs
+              ? ['< 3 meses / < 5 kg (contraindicado IV)', 'Hipersensibilidad a pirazolonas',
+                 'Porfiria hepática aguda', 'Riesgo de agranulocitosis (monitorizar CBC)',
+                 'Hipotensión en administración IV rápida']
+              : ['< 3 meses / < 5 kg (contraindicado IV)', 'Hipersensibilidade a pirazolonas',
+                 'Porfiria hepática aguda', 'Risco de agranulocitose (monitorar hemograma)',
+                 'Hipotensão em administração IV rápida']),
+          _PedDoseRow(label: 'Morfina IV/SC', dose: '0,05–0,1 mg/kg q2–4h', weight: w,
+            mgPerKg: 0.1, unit: 'mg', maxDose: '5 mg', color: const Color(0xFF7C3AED),
+            contraindications: isEs
+              ? ['< 6 meses (ajuste de dosis — alta sensibilidad)', 'Depresión respiratoria',
+                 'Íleo paralítico', 'Hipertensión intracraneal aguda',
+                 'Hipotensión severa', 'Antídoto: Naloxona 0,01 mg/kg IV']
+              : ['< 6 meses (ajuste de dose — alta sensibilidade)', 'Depressão respiratória',
+                 'Íleo paralítico', 'Hipertensão intracraniana aguda',
+                 'Hipotensão severa', 'Antídoto: Naloxona 0,01 mg/kg IV']),
+          _PedDoseRow(label: 'Tramadol VO/IV', dose: '1–2 mg/kg q4–6h', weight: w,
+            mgPerKg: 1.5, unit: 'mg', maxDose: '100 mg', color: const Color(0xFF7C3AED),
+            contraindications: isEs
+              ? ['< 12 años VO (metabolizadores ultrarrápidos CYP2D6 — riesgo mortal)',
+                 'Post-amigdalectomía / adenoidectomía (< 18 años)',
+                 'Epilepsia no controlada', 'Depresión respiratoria', 'IMAO concomitante']
+              : ['< 12 anos VO (metabolizadores ultrarrápidos CYP2D6 — risco fatal)',
+                 'Pós-amigdalectomia / adenoidectomia (< 18 anos)',
+                 'Epilepsia não controlada', 'Depressão respiratória', 'IMAO concomitante']),
+          _PedDoseRow(label: 'Cetorolaco IV/IM', dose: '0,5 mg/kg q6h', weight: w,
+            mgPerKg: 0.5, unit: 'mg', maxDose: '30 mg', color: const Color(0xFFD97706),
+            contraindications: isEs
+              ? ['< 2 años (contraindicado)', 'Insuficiencia renal', 'Úlcera péptica activa',
+                 'Sangrado gastrointestinal activo', 'Máximo 5 días de uso']
+              : ['< 2 anos (contraindicado)', 'Insuficiência renal', 'Úlcera péptica ativa',
+                 'Sangramento gastrointestinal ativo', 'Máximo 5 dias de uso']),
+        ]),
+      ),
+      const SizedBox(height: 12),
+
+      // ── Febre ──────────────────────────────────────────────────────
+      _SectionCard(
+        title: isEs ? 'Antitérmicos — Fiebre' : 'Antipiréticos — Febre',
+        icon: Icons.thermostat_rounded,
+        child: Column(children: [
+          _PedDoseRow(label: 'Paracetamol VO/VR', dose: '10–15 mg/kg q4–6h', weight: w,
+            mgPerKg: 12.5, unit: 'mg', maxDose: '1000 mg', color: const Color(0xFF065F46),
+            contraindications: isEs
+              ? ['Insuficiencia hepática grave', 'No superar 5 dosis/día',
+                 'Intervalo mínimo de 4h entre dosis']
+              : ['Insuficiência hepática grave', 'Não ultrapassar 5 doses/dia',
+                 'Intervalo mínimo de 4h entre doses']),
+          _PedDoseRow(label: 'Ibuprofeno VO', dose: '5–10 mg/kg q6–8h', weight: w,
+            mgPerKg: 7.5, unit: 'mg', maxDose: '400 mg', color: const Color(0xFF065F46),
+            contraindications: isEs
+              ? ['< 6 meses (contraindicado)', 'Dengue — evitar AINEs',
+                 'Deshidratación / hipovolemia', 'No combinar con otros AINEs']
+              : ['< 6 meses (contraindicado)', 'Dengue — evitar AINEs',
+                 'Desidratação / hipovolemia', 'Não combinar com outros AINEs']),
+          _PedDoseRow(label: 'Dipirona VO/IV', dose: '15 mg/kg q6h', weight: w,
+            mgPerKg: 15.0, unit: 'mg', maxDose: '500 mg', color: const Color(0xFF065F46),
+            contraindications: isEs
+              ? ['< 3 meses / < 5 kg', 'Hipersensibilidad a pirazolonas',
+                 'IV lenta (riesgo hipotensión)']
+              : ['< 3 meses / < 5 kg', 'Hipersensibilidade a pirazolonas',
+                 'IV lenta (risco hipotensão)']),
+        ]),
+      ),
+      const SizedBox(height: 12),
+
+      // ── Descongestionantes / Respiratório ──────────────────────────
+      _SectionCard(
+        title: isEs ? 'Descongestionantes y Vía Aérea' : 'Descongestionantes e Via Aérea',
+        icon: Icons.air_rounded,
+        child: Column(children: [
+          _PedDoseRow(label: 'Salbutamol inalatório (crise)', dose: '2,5–5 mg (nebulização)', weight: w,
+            mgPerKg: null, unit: 'mg', maxDose: null, color: const Color(0xFF1D4ED8),
+            contraindications: isEs
+              ? ['Hipersensibilidad a salbutamol', 'Taquicardia no controlada',
+                 'Monitorizar FC y SpO₂ durante nebulización',
+                 'Preferir MDI + espaciador en < 5 años']
+              : ['Hipersensibilidade ao salbutamol', 'Taquicardia não controlada',
+                 'Monitorar FC e SpO₂ durante nebulização',
+                 'Preferir MDI + espaçador em < 5 anos']),
+          _PedDoseRow(label: 'Ipratrópio inalatório', dose: '250–500 mcg nebulização', weight: w,
+            mgPerKg: null, unit: 'mcg', maxDose: null, color: const Color(0xFF1D4ED8),
+            contraindications: isEs
+              ? ['Hipersensibilidad a atropina / brometo', 'Glaucoma de ángulo cerrado',
+                 'Retención urinaria / hipertrofia prostática']
+              : ['Hipersensibilidade à atropina / brometo', 'Glaucoma de ângulo fechado',
+                 'Retenção urinária / hipertrofia prostática']),
+          _PedDoseRow(label: 'Adrenalina nebulizada (crupe)', dose: '0,5 mL/kg de 1:1000', weight: w,
+            mgPerKg: null, unit: 'mL', maxDose: '5 mL', color: const Color(0xFFD97706),
+            contraindications: isEs
+              ? ['Taquicardia > 200 bpm', 'Cardiopatía congénita cianótica',
+                 'Observar 2–4h post-nebulización (efecto rebote)',
+                 'No usar sin supervisión médica continua']
+              : ['Taquicardia > 200 bpm', 'Cardiopatia congênita cianótica',
+                 'Observar 2–4h pós-nebulização (efeito rebote)',
+                 'Não usar sem supervisão médica contínua']),
+          _PedDoseRow(label: 'Dexametasona VO/IM (crupe)', dose: '0,15–0,6 mg/kg dose única', weight: w,
+            mgPerKg: 0.3, unit: 'mg', maxDose: '10 mg', color: const Color(0xFFD97706),
+            contraindications: isEs
+              ? ['Infección viral sin indicación clínica', 'Infección bacteriana activa no tratada',
+                 'Inmunosupresión severa (relativa)', 'Varicela activa']
+              : ['Infecção viral sem indicação clínica', 'Infecção bacteriana ativa não tratada',
+                 'Imunossupressão grave (relativa)', 'Varicela ativa']),
+          _PedDoseRow(label: 'Prednisolona VO', dose: '1–2 mg/kg/dia ÷ 1–2x', weight: w,
+            mgPerKg: 1.0, unit: 'mg', maxDose: '40 mg', color: const Color(0xFFD97706),
+            contraindications: isEs
+              ? ['Infección fúngica sistémica', 'Varicela / Herpes activo',
+                 'Vacunas vivas (evitar durante tratamiento)',
+                 'Tuberculosis activa no tratada']
+              : ['Infecção fúngica sistêmica', 'Varicela / Herpes ativo',
+                 'Vacinas vivas (evitar durante o tratamento)',
+                 'Tuberculose ativa não tratada']),
+          _PedDoseRow(label: 'Solução Fisiológica nasal', dose: '2–3 gotas/narina q4–6h', weight: w,
+            mgPerKg: null, unit: '', maxDose: null, color: const Color(0xFF065F46),
+            contraindications: isEs
+              ? ['Sin contraindicaciones absolutas', 'Evitar en neonatos sin orientación',
+                 'Primera línea en congestión nasal pediátrica']
+              : ['Sem contraindicações absolutas', 'Evitar em neonatos sem orientação',
+                 'Primeira linha na congestão nasal pediátrica']),
+        ]),
+      ),
+      const SizedBox(height: 12),
+
+      // ── Sedação e Analgesia Procedural ────────────────────────────
       _SectionCard(
         title: isEs ? 'Sedación y Analgesia' : 'Sedação e Analgesia',
         icon: Icons.medication_rounded,
         child: Column(children: [
-          _PedDoseRow(label: 'Midazolam IV',      dose: '0,1 mg/kg',  weight: w, mgPerKg: 0.1,  unit: 'mg', maxDose: '5 mg',  color: const Color(0xFF7C3AED)),
-          _PedDoseRow(label: 'Cetamina IV',       dose: '1–2 mg/kg',  weight: w, mgPerKg: 1.5,  unit: 'mg', maxDose: '200 mg', color: const Color(0xFF7C3AED)),
-          _PedDoseRow(label: 'Morfina IV',        dose: '0,1 mg/kg',  weight: w, mgPerKg: 0.1,  unit: 'mg', maxDose: '5 mg',  color: const Color(0xFF7C3AED)),
-          _PedDoseRow(label: 'Fentanil IV',       dose: '1–2 mcg/kg', weight: w, mgPerKg: 0.0015, unit: 'mg', maxDose: '100 mcg', color: const Color(0xFF7C3AED)),
-          _PedDoseRow(label: 'Dipirona IV',       dose: '15 mg/kg',   weight: w, mgPerKg: 15.0, unit: 'mg', maxDose: '1000 mg', color: const Color(0xFF065F46)),
-          _PedDoseRow(label: 'Paracetamol VO',    dose: '10–15 mg/kg',weight: w, mgPerKg: 12.5, unit: 'mg', maxDose: '1000 mg', color: const Color(0xFF065F46)),
+          _PedDoseRow(label: 'Midazolam IV/IM', dose: '0,05–0,1 mg/kg', weight: w,
+            mgPerKg: 0.1, unit: 'mg', maxDose: '5 mg', color: const Color(0xFF7C3AED),
+            contraindications: isEs
+              ? ['Hipersensibilidad a benzodiacepinas', 'Glaucoma de ángulo cerrado',
+                 'Depresión respiratoria severa', 'Antídoto: Flumazenil 0,01 mg/kg IV',
+                 'Monitorizar SpO₂ continuamente']
+              : ['Hipersensibilidade a benzodiazepinas', 'Glaucoma de ângulo fechado',
+                 'Depressão respiratória grave', 'Antídoto: Flumazenil 0,01 mg/kg IV',
+                 'Monitorar SpO₂ continuamente']),
+          _PedDoseRow(label: 'Cetamina IV', dose: '1–2 mg/kg (procedimentos)', weight: w,
+            mgPerKg: 1.5, unit: 'mg', maxDose: '200 mg', color: const Color(0xFF7C3AED),
+            contraindications: isEs
+              ? ['Hipertensión intracraneal (TEC grave)', 'Psicosis activa',
+                 'Eclampsia / preeclampsia', 'Cirugía de laringe/tráquea (laringoespasmo)',
+                 'Asociar con midazolam para prevenir alucinaciones']
+              : ['Hipertensão intracraniana (TCE grave)', 'Psicose ativa',
+                 'Eclâmpsia / pré-eclâmpsia', 'Cirurgia de laringe/traqueia (laringoespasmo)',
+                 'Associar com midazolam para prevenir alucinações']),
+          _PedDoseRow(label: 'Fentanil IV', dose: '1–2 mcg/kg', weight: w,
+            mgPerKg: 0.0015, unit: 'mg', maxDose: '100 mcg', color: const Color(0xFF7C3AED),
+            contraindications: isEs
+              ? ['Depresión respiratoria', 'Hipotensión severa',
+                 'Rigidez torácica ("tórax leñoso") con dosis altas — usar lentamente',
+                 'Antídoto: Naloxona 0,01 mg/kg IV']
+              : ['Depressão respiratória', 'Hipotensão severa',
+                 'Rigidez torácica ("tórax lenhoso") com doses altas — administrar lentamente',
+                 'Antídoto: Naloxona 0,01 mg/kg IV']),
         ]),
       ),
       const SizedBox(height: 12),
 
+      // ── Antibióticos ───────────────────────────────────────────────
+      _SectionCard(
+        title: isEs ? 'Antibióticos Pediátricos' : 'Antibióticos Pediátricos',
+        icon: Icons.science_rounded,
+        child: Column(children: [
+          _PedDoseRow(label: 'Amoxicilina VO', dose: '40–90 mg/kg/dia ÷ 3x', weight: w,
+            mgPerKg: 50.0, unit: 'mg', maxDose: '3000 mg', color: const Color(0xFF065F46),
+            contraindications: isEs
+              ? ['Alergia a penicilinas', 'Mononucleosis (rash generalizado)',
+                 'Insuficiencia renal grave (ajustar dosis)']
+              : ['Alergia a penicilinas', 'Mononucleose (rash generalizado)',
+                 'Insuficiência renal grave (ajustar dose)']),
+          _PedDoseRow(label: 'Amox-Clavulanato VO', dose: '40–90 mg/kg/dia ÷ 2–3x', weight: w,
+            mgPerKg: 45.0, unit: 'mg', maxDose: '1500 mg', color: const Color(0xFF065F46),
+            contraindications: isEs
+              ? ['Alergia a penicilinas / clavulanato', 'Hepatitis colestásica previa por amox-clav',
+                 'Mononucleosis infecciosa', 'Ajustar en insuficiencia renal']
+              : ['Alergia a penicilinas / clavulanato', 'Hepatite colestática prévia por amox-clav',
+                 'Mononucleose infecciosa', 'Ajustar em insuficiência renal']),
+          _PedDoseRow(label: 'Azitromicina VO', dose: '10 mg/kg/dia 1x (3–5d)', weight: w,
+            mgPerKg: 10.0, unit: 'mg', maxDose: '500 mg', color: const Color(0xFF1D4ED8),
+            contraindications: isEs
+              ? ['Hipersensibilidad a macrólidos', 'QT largo / uso de otros fármacos QT',
+                 'Insuficiencia hepática grave', 'Arritmia cardíaca preexistente']
+              : ['Hipersensibilidade a macrolídeos', 'QT longo / uso de outros fármacos QT',
+                 'Insuficiência hepática grave', 'Arritmia cardíaca preexistente']),
+          _PedDoseRow(label: 'Ceftriaxona IV/IM', dose: '50–100 mg/kg/dia ÷ 1–2x', weight: w,
+            mgPerKg: 50.0, unit: 'mg', maxDose: '4000 mg', color: const Color(0xFFD97706),
+            contraindications: isEs
+              ? ['Alergia a cefalosporinas (precaución cruzada con penicilinas)',
+                 'Neonatos ictéricos o prematuros (desplaza bilirrubina)',
+                 'No mezclar con calcio IV (precipita en neonatos — riesgo de muerte)',
+                 'Insuficiencia renal grave + hepática simultánea']
+              : ['Alergia a cefalosporinas (precaução cruzada com penicilinas)',
+                 'Neonatos ictéricos ou prematuros (desloca bilirrubina)',
+                 'Não misturar com cálcio IV (precipita em neonatos — risco de morte)',
+                 'Insuficiência renal grave + hepática simultânea']),
+          _PedDoseRow(label: 'Cefalexina VO', dose: '25–50 mg/kg/dia ÷ 4x', weight: w,
+            mgPerKg: 25.0, unit: 'mg', maxDose: '2000 mg', color: const Color(0xFF065F46),
+            contraindications: isEs
+              ? ['Alergia a cefalosporinas', 'Insuficiencia renal (ajustar dosis)',
+                 'Precaución en alérgicos a penicilinas (5–10% reacción cruzada)']
+              : ['Alergia a cefalosporinas', 'Insuficiência renal (ajustar dose)',
+                 'Precaução em alérgicos a penicilinas (5–10% reação cruzada)']),
+          _PedDoseRow(label: 'Sulfametoxazol-Trimetoprim VO', dose: '8 mg/kg/dia (TMP) ÷ 2x', weight: w,
+            mgPerKg: 8.0, unit: 'mg', maxDose: '320 mg', color: const Color(0xFF065F46),
+            contraindications: isEs
+              ? ['< 2 meses (kernicterus neonatal)', 'Insuficiencia renal grave',
+                 'Deficiencia de G6PD', 'Hipersensibilidad a sulfonamidas',
+                 'Embarazo (1º y 3º trimestre)', 'Monitorizar CBC en uso prolongado']
+              : ['< 2 meses (kernicterus neonatal)', 'Insuficiência renal grave',
+                 'Deficiência de G6PD', 'Hipersensibilidade a sulfonamidas',
+                 'Monitorar hemograma em uso prolongado']),
+        ]),
+      ),
+      const SizedBox(height: 12),
+
+      // ── Crise Convulsiva ───────────────────────────────────────────
       _SectionCard(
         title: isEs ? 'Crisis Convulsiva' : 'Crise Convulsiva',
         icon: Icons.bolt_rounded,
         child: Column(children: [
-          _PedDoseRow(label: 'Diazepam IV (1ª linha)',       dose: '0,2–0,5 mg/kg', weight: w, mgPerKg: 0.3,  unit: 'mg', maxDose: '10 mg',  color: const Color(0xFF1D4ED8)),
-          _PedDoseRow(label: 'Midazolam IM/IO (1ª linha)',   dose: '0,2 mg/kg',     weight: w, mgPerKg: 0.2,  unit: 'mg', maxDose: '10 mg',  color: const Color(0xFF1D4ED8)),
-          _PedDoseRow(label: 'Fenitoína IV (2ª linha)',      dose: '20 mg/kg',      weight: w, mgPerKg: 20.0, unit: 'mg', maxDose: '1000 mg', color: const Color(0xFFD97706)),
-          _PedDoseRow(label: 'Fenobarbital IV (2ª linha)',   dose: '20 mg/kg',      weight: w, mgPerKg: 20.0, unit: 'mg', maxDose: '1000 mg', color: const Color(0xFFD97706)),
-          _PedDoseRow(label: 'Levetiracetam IV (2ª linha)',  dose: '60 mg/kg',      weight: w, mgPerKg: 60.0, unit: 'mg', maxDose: '3000 mg', color: const Color(0xFFD97706)),
+          _PedDoseRow(label: 'Diazepam IV (1ª linha)', dose: '0,2–0,5 mg/kg', weight: w,
+            mgPerKg: 0.3, unit: 'mg', maxDose: '10 mg', color: const Color(0xFF1D4ED8),
+            contraindications: isEs
+              ? ['Depresión respiratoria severa', 'Glaucoma de ángulo cerrado',
+                 'Antídoto: Flumazenil 0,01 mg/kg IV', 'IV lento: riesgo de apnea']
+              : ['Depressão respiratória grave', 'Glaucoma de ângulo fechado',
+                 'Antídoto: Flumazenil 0,01 mg/kg IV', 'IV lento: risco de apneia']),
+          _PedDoseRow(label: 'Midazolam IM/IO (1ª linha)', dose: '0,2 mg/kg', weight: w,
+            mgPerKg: 0.2, unit: 'mg', maxDose: '10 mg', color: const Color(0xFF1D4ED8),
+            contraindications: isEs
+              ? ['Depresión respiratoria', 'Hipotensión severa',
+                 'Antídoto: Flumazenil 0,01 mg/kg', 'Monitorizar SpO₂']
+              : ['Depressão respiratória', 'Hipotensão severa',
+                 'Antídoto: Flumazenil 0,01 mg/kg', 'Monitorar SpO₂']),
+          _PedDoseRow(label: 'Fenitoína IV (2ª linha)', dose: '20 mg/kg', weight: w,
+            mgPerKg: 20.0, unit: 'mg', maxDose: '1000 mg', color: const Color(0xFFD97706),
+            contraindications: isEs
+              ? ['Bradicardia sinusal / bloqueo AV', 'Síndrome de Adams-Stokes',
+                 'Infusión lenta < 1 mg/kg/min (arritmia y hipotensión)',
+                 'No mezclar con glucosa (precipita)', 'Extravasación → necrosis tisular']
+              : ['Bradicardia sinusal / bloqueio AV', 'Síndrome de Adams-Stokes',
+                 'Infusão lenta < 1 mg/kg/min (arritmia e hipotensão)',
+                 'Não misturar com glicose (precipita)', 'Extravasamento → necrose tissular']),
+          _PedDoseRow(label: 'Fenobarbital IV (2ª linha)', dose: '20 mg/kg', weight: w,
+            mgPerKg: 20.0, unit: 'mg', maxDose: '1000 mg', color: const Color(0xFFD97706),
+            contraindications: isEs
+              ? ['Depresión respiratoria grave (riesgo de apnea)', 'Porfiria aguda',
+                 'Insuficiencia hepática grave', 'Hipotensión — infusión lenta']
+              : ['Depressão respiratória grave (risco de apneia)', 'Porfiria aguda',
+                 'Insuficiência hepática grave', 'Hipotensão — infusão lenta']),
+          _PedDoseRow(label: 'Levetiracetam IV (2ª linha)', dose: '60 mg/kg', weight: w,
+            mgPerKg: 60.0, unit: 'mg', maxDose: '3000 mg', color: const Color(0xFFD97706),
+            contraindications: isEs
+              ? ['Hipersensibilidad al levetiracetam', 'Insuficiencia renal grave (ajustar)',
+                 'Monitorizar comportamiento: agitación, psicosis en niños']
+              : ['Hipersensibilidade ao levetiracetam', 'Insuficiência renal grave (ajustar)',
+                 'Monitorar comportamento: agitação, psicose em crianças']),
         ]),
       ),
       const SizedBox(height: 12),
 
+      // ── Vasopressores ──────────────────────────────────────────────
       _SectionCard(
         title: isEs ? 'Vasopresores y Líquidos' : 'Vasopressores e Fluidos',
         icon: Icons.water_rounded,
         child: Column(children: [
-          _PedDoseRow(label: 'SF 0,9% bolus (choque)',     dose: '10–20 mL/kg', weight: w, mgPerKg: 15.0, unit: 'mL', maxDose: '500 mL', color: const Color(0xFF065F46)),
-          _PedDoseRow(label: 'Noradrenalina (dose início)', dose: '0,1 mcg/kg/min', weight: w, mgPerKg: null, unit: 'mcg/kg/min', maxDose: null, color: const Color(0xFFCC2222)),
-          _PedDoseRow(label: 'Dopamina (dose renal)',       dose: '2–5 mcg/kg/min', weight: w, mgPerKg: null, unit: 'mcg/kg/min', maxDose: null, color: const Color(0xFFD97706)),
-          _PedDoseRow(label: 'Dobutamina (inotrópico)',     dose: '5–20 mcg/kg/min',weight: w, mgPerKg: null, unit: 'mcg/kg/min', maxDose: null, color: const Color(0xFFD97706)),
+          _PedDoseRow(label: 'SF 0,9% bolus (choque)', dose: '10–20 mL/kg', weight: w,
+            mgPerKg: 15.0, unit: 'mL', maxDose: '500 mL', color: const Color(0xFF065F46),
+            contraindications: isEs
+              ? ['Insuficiencia cardíaca congestiva descompensada', 'Edema pulmonar',
+                 'Monitorizar auscultación y SpO₂ durante expansión']
+              : ['Insuficiência cardíaca congestiva descompensada', 'Edema pulmonar',
+                 'Monitorar ausculta e SpO₂ durante expansão']),
+          _PedDoseRow(label: 'Noradrenalina (dose início)', dose: '0,1 mcg/kg/min', weight: w,
+            mgPerKg: null, unit: 'mcg/kg/min', maxDose: null, color: const Color(0xFFCC2222),
+            contraindications: isEs
+              ? ['Hipovolemia no corregida', 'Trombosis vascular mesentérica / periférica',
+                 'Acceso venoso central preferido (extravasación → necrosis)',
+                 'Antídoto extravasación: fentolamina local']
+              : ['Hipovolemia não corrigida', 'Trombose vascular mesentérica / periférica',
+                 'Acesso venoso central preferido (extravasamento → necrose)',
+                 'Antídoto extravasamento: fentolamina local']),
+          _PedDoseRow(label: 'Dopamina (dose renal)', dose: '2–5 mcg/kg/min', weight: w,
+            mgPerKg: null, unit: 'mcg/kg/min', maxDose: null, color: const Color(0xFFD97706),
+            contraindications: isEs
+              ? ['Feocromocitoma', 'Fibrilación ventricular', 'Taquiarritmias no tratadas',
+                 'Monitorización ECG continua', 'Acceso venoso central preferido']
+              : ['Feocromocitoma', 'Fibrilação ventricular', 'Taquiarritmias não tratadas',
+                 'Monitorização ECG contínua', 'Acesso venoso central preferido']),
+          _PedDoseRow(label: 'Dobutamina (inotrópico)', dose: '5–20 mcg/kg/min', weight: w,
+            mgPerKg: null, unit: 'mcg/kg/min', maxDose: null, color: const Color(0xFFD97706),
+            contraindications: isEs
+              ? ['Obstrucción subaórtica hipertrófica', 'Fibrilación auricular (aumenta FC)',
+                 'Hipovolemia no corregida', 'Monitorización ECG y PA invasiva']
+              : ['Obstrução subaórtica hipertrófica', 'Fibrilação atrial (aumenta FC)',
+                 'Hipovolemia não corrigida', 'Monitorização ECG e PA invasiva']),
         ]),
       ),
       const SizedBox(height: 12),
@@ -3863,69 +4254,149 @@ class _PedVitalRow extends StatelessWidget {
   }
 }
 
-class _PedDoseRow extends StatelessWidget {
+class _PedDoseRow extends StatefulWidget {
   final String label, dose;
   final double? weight, mgPerKg;
   final String unit;
   final String? maxDose;
   final Color color;
+  final List<String> contraindications; // contraindicações expansíveis
+
   const _PedDoseRow({
     required this.label, required this.dose, required this.weight,
     required this.mgPerKg, required this.unit, required this.maxDose,
     required this.color,
+    this.contraindications = const [],
   });
+
+  @override
+  State<_PedDoseRow> createState() => _PedDoseRowState();
+}
+
+class _PedDoseRowState extends State<_PedDoseRow> {
+  bool _expanded = false;
+
+  String _calcDose() {
+    if (widget.weight == null || widget.mgPerKg == null) return '—';
+    double raw = widget.weight! * widget.mgPerKg!;
+    if (widget.maxDose != null) {
+      final maxNum = double.tryParse(
+          widget.maxDose!.replaceAll(RegExp(r'[^\d,\.]'), '').replaceAll(',', '.'));
+      if (maxNum != null && raw > maxNum) raw = maxNum;
+    }
+    final result = raw >= 100
+        ? '${raw.toStringAsFixed(0)} ${widget.unit}'
+        : '${raw.toStringAsFixed(1).replaceAll('.', ',')} ${widget.unit}';
+    return result;
+  }
 
   @override
   Widget build(BuildContext context) {
     final c = AppColors.of(context);
-
-    // Calcula dose real se possível
-    String calcDose = '—';
-    if (weight != null && mgPerKg != null) {
-      double raw = weight! * mgPerKg!;
-      // Aplica dose máxima se especificada
-      if (maxDose != null) {
-        final maxNum = double.tryParse(
-          maxDose!.replaceAll(RegExp(r'[^\d,\.]'), '').replaceAll(',', '.'));
-        if (maxNum != null && raw > maxNum) raw = maxNum;
-      }
-      if (raw >= 100) {
-        calcDose = '${raw.toStringAsFixed(0)} $unit';
-      } else {
-        calcDose = '${raw.toStringAsFixed(1).replaceAll('.', ',')} $unit';
-      }
-    }
+    final calcDose = _calcDose();
+    final hasContra = widget.contraindications.isNotEmpty;
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12),
-          color: color.withValues(alpha: 0.06),
-          border: Border.all(color: color.withValues(alpha: 0.2)),
-        ),
-        child: Row(children: [
-          Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text(label, style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: c.textPrimary)),
-            const SizedBox(height: 2),
-            Text(dose, style: TextStyle(fontSize: 10, color: c.textHint)),
-            if (maxDose != null)
-              Text('máx: $maxDose', style: TextStyle(fontSize: 9, color: c.textHint)),
-          ])),
-          if (weight != null && mgPerKg != null) ...[
-            const SizedBox(width: 10),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                color: color.withValues(alpha: 0.13),
-              ),
-              child: Text(calcDose, style: TextStyle(
-                fontSize: 13, fontWeight: FontWeight.w900, color: color)),
+      child: GestureDetector(
+        onTap: hasContra ? () => setState(() => _expanded = !_expanded) : null,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+            color: _expanded
+                ? widget.color.withValues(alpha: 0.11)
+                : widget.color.withValues(alpha: 0.06),
+            border: Border.all(
+              color: _expanded
+                  ? widget.color.withValues(alpha: 0.45)
+                  : widget.color.withValues(alpha: 0.2),
+              width: _expanded ? 1.5 : 1.0,
             ),
-          ],
-        ]),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(children: [
+                Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  Row(children: [
+                    Expanded(child: Text(widget.label,
+                        style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700,
+                            color: c.textPrimary))),
+                    if (hasContra) ...[
+                      const SizedBox(width: 6),
+                      Icon(
+                        _expanded ? Icons.expand_less_rounded : Icons.info_outline_rounded,
+                        size: 14, color: widget.color.withValues(alpha: 0.7)),
+                    ],
+                  ]),
+                  const SizedBox(height: 2),
+                  Text(widget.dose, style: TextStyle(fontSize: 10, color: c.textHint)),
+                  if (widget.maxDose != null)
+                    Text('máx: ${widget.maxDose}',
+                        style: TextStyle(fontSize: 9, color: c.textHint)),
+                ])),
+                if (widget.weight != null && widget.mgPerKg != null) ...[
+                  const SizedBox(width: 10),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: widget.color.withValues(alpha: 0.13),
+                    ),
+                    child: Text(calcDose, style: TextStyle(
+                        fontSize: 13, fontWeight: FontWeight.w900, color: widget.color)),
+                  ),
+                ],
+              ]),
+
+              // Painel de contraindicações expansível
+              if (_expanded && hasContra) ...[
+                const SizedBox(height: 8),
+                Container(
+                  padding: const EdgeInsets.fromLTRB(10, 8, 10, 8),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                    color: const Color(0xFFCC2222).withValues(alpha: 0.07),
+                    border: Border.all(
+                        color: const Color(0xFFCC2222).withValues(alpha: 0.25)),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(children: [
+                        const Icon(Icons.block_rounded, size: 12,
+                            color: Color(0xFFCC2222)),
+                        const SizedBox(width: 5),
+                        Text('Contraindicações / Precauções',
+                            style: TextStyle(
+                              fontSize: 10, fontWeight: FontWeight.w800,
+                              color: const Color(0xFFCC2222).withValues(alpha: 0.9),
+                              letterSpacing: 0.2,
+                            )),
+                      ]),
+                      const SizedBox(height: 6),
+                      ...widget.contraindications.map((ci) => Padding(
+                        padding: const EdgeInsets.only(bottom: 3),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text('• ', style: TextStyle(
+                                fontSize: 10, color: Color(0xFFCC2222))),
+                            Expanded(child: Text(ci, style: const TextStyle(
+                                fontSize: 10.5, fontWeight: FontWeight.w500,
+                                color: Color(0xFFCC2222), height: 1.4))),
+                          ],
+                        ),
+                      )),
+                    ],
+                  ),
+                ),
+              ],
+            ],
+          ),
+        ),
       ),
     );
   }
