@@ -8,6 +8,7 @@ import 'dart:convert';
 import '../providers/app_provider.dart';
 import '../data/drugs_database.dart';
 import '../services/stt_helper.dart';
+import '../services/firestore_service.dart';
 
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -372,6 +373,26 @@ class _AiScreenState extends State<AiScreen> {
   Future<void> _loadChatHistory() async {
     try {
       final p = context.read<AppProvider>();
+      final uid = p.currentUser?.uid;
+
+      // 1º tenta Firestore (cross-device)
+      if (uid != null && uid.isNotEmpty) {
+        final remote = await FirestoreService.loadAiSessions(uid);
+        if (remote.isNotEmpty) {
+          final sessions = remote
+              .map((e) => _ChatSession.fromJson(e))
+              .toList();
+          if (mounted) setState(() {
+            _chatHistory.clear();
+            _chatHistory.addAll(sessions);
+          });
+          // Atualiza cache local
+          _persistHistoryLocal(p);
+          return;
+        }
+      }
+
+      // Fallback: SharedPreferences (offline)
       final prefs = await SharedPreferences.getInstance();
       final json = prefs.getString(_histKey(p));
       if (json == null || json.isEmpty) return;
@@ -383,6 +404,22 @@ class _AiScreenState extends State<AiScreen> {
         _chatHistory.clear();
         _chatHistory.addAll(sessions);
       });
+
+      // Migra para Firestore se ainda não sincronizou
+      if (uid != null && uid.isNotEmpty) {
+        for (final s in _chatHistory) {
+          FirestoreService.saveAiSession(uid, s.toJson()).catchError((_) {});
+        }
+      }
+    } catch (_) {}
+  }
+
+  /// Cache local auxiliar (SharedPreferences) — fallback offline.
+  Future<void> _persistHistoryLocal(AppProvider p) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final json = jsonEncode(_chatHistory.map((s) => s.toJson()).toList());
+      await prefs.setString(_histKey(p), json);
     } catch (_) {}
   }
 
@@ -431,12 +468,16 @@ class _AiScreenState extends State<AiScreen> {
       }
     });
 
-    // Persiste no SharedPreferences
-    try {
-      final prefs = await SharedPreferences.getInstance();
-      final json = jsonEncode(_chatHistory.map((s) => s.toJson()).toList());
-      await prefs.setString(_histKey(p), json);
-    } catch (_) {}
+    // Persiste em dual-write: Firestore (primário) + SharedPreferences (offline)
+    final uid = p.currentUser?.uid;
+    if (uid != null && uid.isNotEmpty) {
+      FirestoreService.saveAiSession(uid, session.toJson()).catchError((_) {});
+      // Remove sessões que saíram do limite (>10) do Firestore
+      if (_chatHistory.length == 10) {
+        // Não precisamos deletar — loadAiSessions usa limit(20)
+      }
+    }
+    _persistHistoryLocal(p);
   }
 
   /// Abre o bottom sheet de histórico de chats.
@@ -455,11 +496,13 @@ class _AiScreenState extends State<AiScreen> {
         },
         onDelete: (sessionId) async {
           setState(() => _chatHistory.removeWhere((s) => s.id == sessionId));
-          try {
-            final prefs = await SharedPreferences.getInstance();
-            final json = jsonEncode(_chatHistory.map((s) => s.toJson()).toList());
-            await prefs.setString(_histKey(p), json);
-          } catch (_) {}
+          // Remove do Firestore
+          final uid = p.currentUser?.uid;
+          if (uid != null && uid.isNotEmpty) {
+            FirestoreService.deleteAiSession(uid, sessionId).catchError((_) {});
+          }
+          // Atualiza cache local
+          _persistHistoryLocal(p);
         },
       ),
     );
@@ -765,18 +808,34 @@ class _WaHeader extends StatelessWidget {
               Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  // Avatar dourado
-                  Container(
+                  // Avatar — só texto 'M+' dourado, sem fundo nem borda
+                  SizedBox(
                     width: 38, height: 38,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: _kGold.withValues(alpha: 0.15),
-                      border: Border.all(
-                        color: _kGold.withValues(alpha: 0.45), width: 1.5),
-                    ),
-                    child: const Center(
-                      child: Icon(Icons.psychology_rounded,
-                        color: _kGoldL, size: 20),
+                    child: Center(
+                      child: RichText(
+                        text: TextSpan(
+                          children: [
+                            TextSpan(
+                              text: 'M',
+                              style: TextStyle(
+                                fontSize: 22,
+                                fontWeight: FontWeight.w900,
+                                color: _kGold,
+                                letterSpacing: -1,
+                              ),
+                            ),
+                            TextSpan(
+                              text: '+',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w900,
+                                color: _kGoldL,
+                                letterSpacing: 0,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
                   ),
                   const SizedBox(width: 10),
@@ -912,17 +971,17 @@ class _WaHeader extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(horizontal: 12),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10),
-                          color: _kGold.withValues(alpha: 0.12),
+                          color: _kGold,
                           border: Border.all(
-                            color: _kGold.withValues(alpha: 0.35), width: 1),
+                            color: _kGoldL.withValues(alpha: 0.4), width: 1),
                         ),
                         child: Center(
                           child: Text(
                             lang == 'es' ? 'Limpiar' : 'Limpar',
                             style: const TextStyle(
                               fontSize: 12,
-                              fontWeight: FontWeight.w700,
-                              color: _kGoldL,
+                              fontWeight: FontWeight.w800,
+                              color: Color(0xFF1A1100),
                             ),
                           ),
                         ),

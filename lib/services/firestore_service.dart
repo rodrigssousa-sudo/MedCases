@@ -262,6 +262,62 @@ class FirestoreService {
     } catch (_) {}
   }
 
+  // ── Histórico de sessões IA ───────────────────────────────────────────────
+  static CollectionReference<Map<String, dynamic>> _userAiHistory(String uid) =>
+      _db.collection('users').doc(uid).collection('ai_chat_history');
+
+  /// Salva UMA sessão de chat no Firestore (upsert por session.id).
+  static Future<void> saveAiSession(String uid, Map<String, dynamic> session) async {
+    try {
+      final id = session['id'] as String?;
+      if (id == null || id.isEmpty) return;
+      await _userAiHistory(uid).doc(id).set(session);
+    } catch (_) {}
+  }
+
+  /// Deleta uma sessão de chat pelo id.
+  static Future<void> deleteAiSession(String uid, String sessionId) async {
+    try {
+      await _userAiHistory(uid).doc(sessionId).delete();
+    } catch (_) {}
+  }
+
+  /// Carrega as últimas 20 sessões, ordenadas por updatedAt desc.
+  static Future<List<Map<String, dynamic>>> loadAiSessions(String uid) async {
+    try {
+      final snap = await _userAiHistory(uid)
+          .orderBy('updatedAt', descending: true)
+          .limit(20)
+          .get();
+      return snap.docs.map((d) => d.data()).toList();
+    } catch (_) {
+      return [];
+    }
+  }
+
+  // ── Recentes cross-device ─────────────────────────────────────────────────
+  static DocumentReference<Map<String, dynamic>> _userRecents(String uid) =>
+      _db.collection('users').doc(uid).collection('prefs').doc('recents');
+
+  /// Salva a lista de recentes no Firestore (lista de strings "type|id|title").
+  static Future<void> saveRecents(String uid, List<String> recents) async {
+    try {
+      await _userRecents(uid).set({'items': recents, 'updatedAt': FieldValue.serverTimestamp()});
+    } catch (_) {}
+  }
+
+  /// Carrega a lista de recentes do Firestore.
+  static Future<List<String>> loadRecents(String uid) async {
+    try {
+      final doc = await _userRecents(uid).get();
+      if (!doc.exists) return [];
+      final list = doc.data()?['items'] as List<dynamic>?;
+      return list?.map((e) => e.toString()).toList() ?? [];
+    } catch (_) {
+      return [];
+    }
+  }
+
   // ── Favoritos de casos clínicos ───────────────────────────────────────────
   static Future<Set<String>> loadFavCases(String uid) async {
     try {

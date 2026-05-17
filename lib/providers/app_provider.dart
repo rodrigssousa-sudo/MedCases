@@ -400,9 +400,33 @@ class AppProvider extends ChangeNotifier {
         FirestoreService.saveFavCases(uid, _favCases).catchError((_) {});
       // Histórias clínicas em paralelo (não bloqueia)
       _syncHistoriesFromFirestore(uid);
+      // Recentes: sincroniza do Firestore → cache local em background
+      _syncRecentsFromFirestore(uid);
     } catch (_) {
       // Sem rede: mantém dados do cache — nenhuma ação necessária
     }
+  }
+
+  Future<void> _syncRecentsFromFirestore(String uid) async {
+    try {
+      final remote = await FirestoreService.loadRecents(uid);
+      if (remote.isEmpty) return;
+      // Mescla: une remote + local (sem duplicatas)
+      final prefs = await SharedPreferences.getInstance();
+      final local = prefs.getStringList(_recentKey(uid)) ?? [];
+      final merged = <String>[];
+      final seen = <String>{};
+      for (final item in [...remote, ...local]) {
+        final key = item.split('|').take(2).join('|');
+        if (seen.add(key)) merged.add(item);
+      }
+      final final20 = merged.take(20).toList();
+      await prefs.setStringList(_recentKey(uid), final20);
+      // Se local tinha itens que o remote não tinha, re-salva no Firestore
+      if (final20.length > remote.length) {
+        FirestoreService.saveRecents(uid, final20).catchError((_) {});
+      }
+    } catch (_) {}
   }
 
   Future<void> _syncHistoriesFromFirestore(String uid) async {
@@ -753,6 +777,7 @@ class AppProvider extends ChangeNotifier {
       uid != null ? '${uid}_$_kRecentBase' : _kRecentBase;
 
   /// Registra um item como recente (type|id|title), com chave por uid.
+  /// Dual-write: SharedPreferences (offline) + Firestore (cross-device).
   Future<void> registerRecent(String type, String id, String title) async {
     try {
       final prefs = await SharedPreferences.getInstance();
@@ -761,16 +786,47 @@ class AppProvider extends ChangeNotifier {
       final entry = '$type|$id|$title';
       raw.removeWhere((e) => e.startsWith('$type|$id|'));
       raw.insert(0, entry);
-      await prefs.setStringList(key, raw.take(20).toList());
+      final updated = raw.take(20).toList();
+      await prefs.setStringList(key, updated);
+      // Sincroniza com Firestore em background
+      final uid = _currentUser?.uid;
+      if (uid != null && uid.isNotEmpty) {
+        FirestoreService.saveRecents(uid, updated).catchError((_) {});
+      }
     } catch (_) {}
   }
 
   /// Lê a lista de recentes do usuário atual.
+  /// Prioridade: Firestore (cross-device) → SharedPreferences (offline).
   Future<List<Map<String, String>>> loadRecents() async {
     try {
+      final uid = _currentUser?.uid;
+
+      // 1º tenta Firestore
+      if (uid != null && uid.isNotEmpty) {
+        final remote = await FirestoreService.loadRecents(uid);
+        if (remote.isNotEmpty) {
+          // Atualiza cache local com dados do servidor
+          final prefs = await SharedPreferences.getInstance();
+          await prefs.setStringList(_recentKey(uid), remote);
+          return remote.map((e) {
+            final parts = e.split('|');
+            if (parts.length < 3) return null;
+            return {'type': parts[0], 'id': parts[1], 'title': parts.sublist(2).join('|')};
+          }).whereType<Map<String, String>>().toList();
+        }
+      }
+
+      // Fallback: SharedPreferences
       final prefs = await SharedPreferences.getInstance();
       final key   = _recentKey(_currentUser?.uid);
       final raw   = prefs.getStringList(key) ?? [];
+
+      // Migra dados locais para Firestore se não havia nada remoto
+      if (uid != null && uid.isNotEmpty && raw.isNotEmpty) {
+        FirestoreService.saveRecents(uid, raw).catchError((_) {});
+      }
+
       return raw.map((e) {
         final parts = e.split('|');
         if (parts.length < 3) return null;
