@@ -938,180 +938,345 @@ class _HistoryDetailState extends State<_HistoryDetail> {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.fromLTRB(16, 8, 16, 100),
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        // Botão voltar
-        GestureDetector(
-          onTap: widget.onBack,
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 11),
-            decoration: BoxDecoration(borderRadius: BorderRadius.circular(14), border: Border.all(color: kBorder), color: Colors.white),
-            child: const Row(children: [
-              Icon(Icons.arrow_back_ios_rounded, size: 14, color: kDark),
-              SizedBox(width: 4),
-              Text('Voltar', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w900, color: kDark)),
-            ]),
+    return Stack(children: [
+      // ── Conteúdo principal scrollável ──────────────────────────────────────
+      SingleChildScrollView(
+        padding: const EdgeInsets.fromLTRB(0, 0, 0, 120),
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+
+          // ══ HEADER CARD VERDE ESCURO COM GRADIENTE ══════════════════════════
+          _HistoryHeroHeader(
+            history: history,
+            readOnly: readOnly,
+            onBack: widget.onBack,
+            onEdit: widget.onEdit,
           ),
-        ),
-        const SizedBox(height: 12),
+          const SizedBox(height: 14),
 
-        // Tudo que será capturado como PNG
-        RepaintBoundary(
-          key: _printKey,
-          child: Container(
-            color: const Color(0xFFF8F5EF),
-            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Padding(padding: const EdgeInsets.symmetric(horizontal: 16), child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
 
-              // Header hero
-              PremiumCard(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Row(children: [
-                  Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                    Text(history.category.toUpperCase(), style: const TextStyle(fontSize: 8, fontWeight: FontWeight.w900, color: Color(0xBFFFE8A6), letterSpacing: 2)),
-                    const SizedBox(height: 4),
-                    Text(history.displayTitle, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w900, color: Colors.white, height: 1.2)),
-                  ])),
-                  if (!readOnly && widget.onEdit != null)
-                    GestureDetector(
-                      onTap: widget.onEdit,
-                      child: Container(padding: const EdgeInsets.all(8), decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: Colors.white.withValues(alpha: 0.1)), child: const Icon(Icons.edit_rounded, size: 18, color: Color(0xFFFFE8A6))),
-                    ),
-                ]),
-                // Linha do autor
-                if (history.authorName.isNotEmpty) ...[
-                  const SizedBox(height: 8),
-                  Row(children: [
-                    Icon(Icons.person_outline_rounded, size: 11, color: Colors.white.withValues(alpha: 0.55)),
-                    const SizedBox(width: 5),
-                    Expanded(child: Text(
-                      '${history.authorName}${history.authorEmail.isNotEmpty ? " • ${history.authorEmail}" : ""}${history.uploadedAt.isNotEmpty ? " • ${_formatUploadedAt(history.uploadedAt)}" : ""}',
-                      style: TextStyle(fontSize: 10, color: Colors.white.withValues(alpha: 0.65), fontWeight: FontWeight.w600),
-                      overflow: TextOverflow.ellipsis,
-                    )),
+              // ══ CARD DIAGNÓSTICO FINAL (verde menta com check) ═══════════════
+              // Tudo que será capturado como PNG
+              RepaintBoundary(
+                key: _printKey,
+                child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  if (history.finalDiagnosis.isNotEmpty || history.workingDiagnosis.isNotEmpty)
+                    _DxBanner(final_: history.finalDiagnosis, working: history.workingDiagnosis, cid: history.cid, differential: history.differentialDx),
+                  if (history.finalDiagnosis.isNotEmpty || history.workingDiagnosis.isNotEmpty) const SizedBox(height: 14),
+
+                  // ══ SEÇÃO ANAMNESE com ícones circulares verdes ══════════════
+                  _DetailCard(icon: Icons.record_voice_over_rounded, title: 'ANAMNESE', children: [
+                    if (history.chiefComplaint.isNotEmpty) _SectionBlock('Queixa principal', history.chiefComplaint, icon: Icons.announcement_rounded),
+                    if (history.hpi.isNotEmpty) _SectionBlock('História da doença atual', history.hpi, icon: Icons.history_edu_rounded),
+                    if (history.pastHistory.isNotEmpty) _SectionBlock('Antecedentes pessoais', history.pastHistory, icon: Icons.person_rounded),
+                    if (history.familyHistory.isNotEmpty) _SectionBlock('Antecedentes familiares', history.familyHistory, icon: Icons.family_restroom_rounded),
+                    if (history.socialHistory.isNotEmpty) _SectionBlock('História social', history.socialHistory, icon: Icons.groups_rounded),
+                    if (history.medications.isNotEmpty) _SectionBlock('Medicamentos em uso', history.medications, icon: Icons.medication_rounded),
+                    if (history.reviewOfSystems.isNotEmpty) _SectionBlock('Revisão de sistemas', history.reviewOfSystems, icon: Icons.checklist_rounded),
+                    // ── Bloco ALERGIAS em destaque vermelho ──────────────────
+                    if (history.allergies.isNotEmpty) _AllergyBanner(history.allergies),
                   ]),
-                ],
-                if (history.patientInitials.isNotEmpty || history.patientAge.isNotEmpty) ...[
-                  const SizedBox(height: 10),
-                  Wrap(spacing: 8, runSpacing: 6, children: [
-                    if (history.patientInitials.isNotEmpty) _MetaChip(history.patientInitials),
-                    if (history.patientAge.isNotEmpty) _MetaChip('${history.patientAge} anos'),
-                    _MetaChip(history.patientSex),
-                    if (history.patientWeight.isNotEmpty) _MetaChip('${history.patientWeight} kg'),
-                    if (history.patientRecord.isNotEmpty) _MetaChip('Pront. ${history.patientRecord}'),
+                  const SizedBox(height: 12),
+
+                  _DetailCard(icon: Icons.monitor_heart_rounded, title: 'EXAME FÍSICO', children: [
+                    if (history.vitalSigns.isNotEmpty) _SectionBlock('Sinais vitais', history.vitalSigns, icon: Icons.favorite_rounded),
+                    if (history.physicalExam.isNotEmpty) _SectionBlock('Exame físico', history.physicalExam, icon: Icons.accessibility_new_rounded),
                   ]),
-                ],
-                if (history.tags.isNotEmpty) ...[
-                  const SizedBox(height: 8),
-                  Text(history.tags, style: TextStyle(fontSize: 10, color: Colors.white.withValues(alpha: 0.55), fontWeight: FontWeight.w600)),
-                ],
-              ])),
-              const SizedBox(height: 12),
+                  const SizedBox(height: 12),
 
-              // Diagnóstico em destaque
-              if (history.finalDiagnosis.isNotEmpty || history.workingDiagnosis.isNotEmpty)
-                _DxBanner(final_: history.finalDiagnosis, working: history.workingDiagnosis, cid: history.cid, differential: history.differentialDx),
-              if (history.finalDiagnosis.isNotEmpty || history.workingDiagnosis.isNotEmpty) const SizedBox(height: 12),
+                  _DetailCard(icon: Icons.science_rounded, title: 'EXAMES COMPLEMENTARES', children: [
+                    if (history.labResults.isNotEmpty) _SectionBlock('Laboratório', history.labResults, icon: Icons.biotech_rounded),
+                    if (history.imagingResults.isNotEmpty) _SectionBlock('Imagem', history.imagingResults, icon: Icons.image_search_rounded),
+                    if (history.otherResults.isNotEmpty) _SectionBlock('Outros (ECG, biópsia...)', history.otherResults, icon: Icons.analytics_rounded),
+                  ]),
+                  const SizedBox(height: 12),
 
-              // Seções em cards
-              _DetailCard(icon: Icons.record_voice_over_rounded, title: 'ANAMNESE', children: [
-                if (history.chiefComplaint.isNotEmpty) _SectionBlock('Queixa principal', history.chiefComplaint),
-                if (history.hpi.isNotEmpty) _SectionBlock('História da doença atual', history.hpi),
-                if (history.pastHistory.isNotEmpty) _SectionBlock('Antecedentes pessoais', history.pastHistory),
-                if (history.familyHistory.isNotEmpty) _SectionBlock('Antecedentes familiares', history.familyHistory),
-                if (history.socialHistory.isNotEmpty) _SectionBlock('História social', history.socialHistory),
-                if (history.medications.isNotEmpty) _SectionBlock('Medicamentos em uso', history.medications),
-                if (history.allergies.isNotEmpty) _AllergyBanner(history.allergies),
-                if (history.reviewOfSystems.isNotEmpty) _SectionBlock('Revisão de sistemas', history.reviewOfSystems),
-              ]),
-              const SizedBox(height: 10),
+                  _DetailCard(icon: Icons.medical_services_rounded, title: 'CONDUTA E TRATAMENTO', children: [
+                    if (history.treatmentPlan.isNotEmpty) _SectionBlock('Plano terapêutico', history.treatmentPlan, icon: Icons.assignment_turned_in_rounded),
+                    if (history.procedures.isNotEmpty) _SectionBlock('Procedimentos', history.procedures, icon: Icons.build_circle_rounded),
+                    if (history.drugIds.isNotEmpty) _DrugChips(history.drugIds, p),
+                  ]),
+                  const SizedBox(height: 12),
 
-              _DetailCard(icon: Icons.monitor_heart_rounded, title: 'EXAME FÍSICO', children: [
-                if (history.vitalSigns.isNotEmpty) _SectionBlock('Sinais vitais', history.vitalSigns),
-                if (history.physicalExam.isNotEmpty) _SectionBlock('Exame físico', history.physicalExam),
-              ]),
-              const SizedBox(height: 10),
+                  // Evoluções
+                  if (history.evolutions.isNotEmpty) ...[
+                    _EvolutionSection(evolutions: history.evolutions),
+                    const SizedBox(height: 12),
+                  ],
 
-              _DetailCard(icon: Icons.science_rounded, title: 'EXAMES', children: [
-                if (history.labResults.isNotEmpty) _SectionBlock('Laboratório', history.labResults),
-                if (history.imagingResults.isNotEmpty) _SectionBlock('Imagem', history.imagingResults),
-                if (history.otherResults.isNotEmpty) _SectionBlock('Outros (ECG, biopsia...)', history.otherResults),
-              ]),
-              const SizedBox(height: 10),
-
-              _DetailCard(icon: Icons.medical_services_rounded, title: 'CONDUTA E TRATAMENTO', children: [
-                if (history.treatmentPlan.isNotEmpty) _SectionBlock('Plano terapêutico', history.treatmentPlan),
-                if (history.procedures.isNotEmpty) _SectionBlock('Procedimentos', history.procedures),
-                if (history.drugIds.isNotEmpty) _DrugChips(history.drugIds, p),
-              ]),
-              const SizedBox(height: 10),
-
-              // Evoluções
-              if (history.evolutions.isNotEmpty) ...[
-                _EvolutionSection(evolutions: history.evolutions),
-                const SizedBox(height: 10),
-              ],
-
-              // Desfecho
-              if (history.outcome != 'internado' || history.dischargeCondition.isNotEmpty || history.followUp.isNotEmpty)
-                _DetailCard(icon: Icons.flag_rounded, title: 'DESFECHO E ALTA', children: [
-                  _OutcomeBadge(history.outcome),
-                  if (history.dischargeCondition.isNotEmpty) _SectionBlock('Condições de alta', history.dischargeCondition),
-                  if (history.followUp.isNotEmpty) _SectionBlock('Seguimento', history.followUp),
+                  // Desfecho
+                  if (history.outcome != 'internado' || history.dischargeCondition.isNotEmpty || history.followUp.isNotEmpty)
+                    _DetailCard(icon: Icons.flag_rounded, title: 'DESFECHO E ALTA', children: [
+                      _OutcomeBadge(history.outcome),
+                      if (history.dischargeCondition.isNotEmpty) _SectionBlock('Condições de alta', history.dischargeCondition, icon: Icons.door_front_door_rounded),
+                      if (history.followUp.isNotEmpty) _SectionBlock('Seguimento', history.followUp, icon: Icons.event_note_rounded),
+                    ]),
                 ]),
-              const SizedBox(height: 10),
-            ]),
-          ),
-        ),
+              ),
 
-        const SizedBox(height: 12),
+              const SizedBox(height: 16),
 
-        // ── Ações ────────────────────────────────────────────────────────────
-        Row(children: [
-          // Copiar HC
-          Expanded(child: GestureDetector(
-            onTap: _copy,
-            child: Container(height: 48, decoration: BoxDecoration(borderRadius: BorderRadius.circular(14), color: kDark, boxShadow: [BoxShadow(color: kDark.withValues(alpha: 0.25), blurRadius: 10, offset: const Offset(0,4))]),
-              child: const Center(child: Text('Copiar HC', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w900, color: kGoldLight)))),
+              // ── Ações ──────────────────────────────────────────────────────
+              Row(children: [
+                Expanded(child: GestureDetector(
+                  onTap: _copy,
+                  child: Container(height: 48, decoration: BoxDecoration(borderRadius: BorderRadius.circular(14), color: kDark, boxShadow: [BoxShadow(color: kDark.withValues(alpha: 0.25), blurRadius: 10, offset: const Offset(0,4))]),
+                    child: const Center(child: Row(mainAxisSize: MainAxisSize.min, children: [
+                      Icon(Icons.copy_rounded, size: 14, color: kGoldLight),
+                      SizedBox(width: 6),
+                      Text('Copiar HC', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w900, color: kGoldLight)),
+                    ]))),
+                )),
+                const SizedBox(width: 8),
+                GestureDetector(
+                  onTap: _exportPdf,
+                  child: Container(
+                    height: 48, width: 48,
+                    decoration: BoxDecoration(borderRadius: BorderRadius.circular(14), color: const Color(0xFF1E40AF), boxShadow: [BoxShadow(color: const Color(0xFF1E40AF).withValues(alpha: 0.3), blurRadius: 8, offset: const Offset(0,3))]),
+                    child: const Center(child: Icon(Icons.picture_as_pdf_rounded, size: 20, color: Colors.white)),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                GestureDetector(
+                  onTap: _exporting ? null : _exportPng,
+                  child: Container(
+                    height: 48, width: 48,
+                    decoration: BoxDecoration(borderRadius: BorderRadius.circular(14), color: const Color(0xFF065F46), boxShadow: [BoxShadow(color: const Color(0xFF065F46).withValues(alpha: 0.3), blurRadius: 8, offset: const Offset(0,3))]),
+                    child: Center(child: _exporting
+                      ? const SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
+                      : const Icon(Icons.image_rounded, size: 20, color: Colors.white)),
+                  ),
+                ),
+                if (!readOnly && widget.onDelete != null) ...[
+                  const SizedBox(width: 8),
+                  GestureDetector(
+                    onTap: widget.onDelete,
+                    child: Container(height: 48, width: 48, decoration: BoxDecoration(borderRadius: BorderRadius.circular(14), border: Border.all(color: const Color(0xFFFFCCCC)), color: const Color(0xFFFFF0F0)),
+                      child: const Center(child: Icon(Icons.delete_rounded, size: 18, color: Color(0xFFCC2222)))),
+                  ),
+                ],
+              ]),
+
+              const SizedBox(height: 8),
+              Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                Icon(Icons.info_outline_rounded, size: 11, color: Colors.grey[400]),
+                const SizedBox(width: 4),
+                Text('PDF abre janela de impressão  •  PNG salva imagem da HC', style: TextStyle(fontSize: 10, color: Colors.grey[400], fontWeight: FontWeight.w500)),
+              ]),
+            ],
           )),
-          const SizedBox(width: 8),
-          // PDF
-          GestureDetector(
-            onTap: _exportPdf,
-            child: Container(
-              height: 48, width: 48,
-              decoration: BoxDecoration(borderRadius: BorderRadius.circular(14), color: const Color(0xFF1E40AF), boxShadow: [BoxShadow(color: const Color(0xFF1E40AF).withValues(alpha: 0.3), blurRadius: 8, offset: const Offset(0,3))]),
-              child: const Center(child: Icon(Icons.picture_as_pdf_rounded, size: 20, color: Colors.white)),
-            ),
-          ),
-          const SizedBox(width: 8),
-          // PNG
-          GestureDetector(
-            onTap: _exporting ? null : _exportPng,
-            child: Container(
-              height: 48, width: 48,
-              decoration: BoxDecoration(borderRadius: BorderRadius.circular(14), color: const Color(0xFF065F46), boxShadow: [BoxShadow(color: const Color(0xFF065F46).withValues(alpha: 0.3), blurRadius: 8, offset: const Offset(0,3))]),
-              child: Center(child: _exporting
-                ? const SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
-                : const Icon(Icons.image_rounded, size: 20, color: Colors.white)),
-            ),
-          ),
-          if (!readOnly && widget.onDelete != null) ...[
-            const SizedBox(width: 8),
-            GestureDetector(
-              onTap: widget.onDelete,
-              child: Container(height: 48, width: 48, decoration: BoxDecoration(borderRadius: BorderRadius.circular(14), border: Border.all(color: const Color(0xFFFFCCCC)), color: const Color(0xFFFFF0F0)),
-                child: const Center(child: Icon(Icons.delete_rounded, size: 18, color: Color(0xFFCC2222)))),
-            ),
-          ],
         ]),
+      ),
 
-        // Legenda dos botões de exportação
-        const SizedBox(height: 8),
-        Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-          Icon(Icons.info_outline_rounded, size: 11, color: Colors.grey[400]),
-          const SizedBox(width: 4),
-          Text('PDF abre janela de impressão  •  PNG salva imagem da HC', style: TextStyle(fontSize: 10, color: Colors.grey[400], fontWeight: FontWeight.w500)),
-        ]),
+      // ══ FAB INFERIOR — Editar / Nova Evolução ═══════════════════════════════
+      if (!readOnly && widget.onEdit != null)
+        Positioned(
+          bottom: 20,
+          right: 20,
+          child: Column(mainAxisSize: MainAxisSize.min, children: [
+            // FAB principal — editar
+            GestureDetector(
+              onTap: widget.onEdit,
+              child: Container(
+                width: 52, height: 52,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  gradient: const LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [Color(0xFF1F6B48), Color(0xFF0A3D2A)],
+                  ),
+                  boxShadow: [BoxShadow(color: const Color(0xFF1F6B48).withValues(alpha: 0.45), blurRadius: 14, offset: const Offset(0, 5))],
+                ),
+                child: const Center(child: Icon(Icons.edit_rounded, size: 22, color: Color(0xFFFFE8A6))),
+              ),
+            ),
+          ]),
+        ),
+    ]);
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// HEADER HERO — card verde escuro com gradiente
+// ─────────────────────────────────────────────────────────────────────────────
+class _HistoryHeroHeader extends StatelessWidget {
+  final ClinicalHistoryModel history;
+  final bool readOnly;
+  final VoidCallback onBack;
+  final VoidCallback? onEdit;
+
+  const _HistoryHeroHeader({
+    required this.history,
+    required this.readOnly,
+    required this.onBack,
+    this.onEdit,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [Color(0xFF071A10), Color(0xFF0F2D1C), Color(0xFF155131), Color(0xFF1F6B48)],
+          stops: [0.0, 0.3, 0.7, 1.0],
+        ),
+        borderRadius: BorderRadius.only(
+          bottomLeft: Radius.circular(28),
+          bottomRight: Radius.circular(28),
+        ),
+        boxShadow: [BoxShadow(color: Color(0x551F6B48), blurRadius: 20, offset: Offset(0, 8))],
+      ),
+      child: Stack(children: [
+        // Ícone decorativo de fundo
+        Positioned(
+          right: -18, top: -18,
+          child: Icon(Icons.medical_information_rounded, size: 140,
+            color: Colors.white.withValues(alpha: 0.04)),
+        ),
+        Positioned(
+          right: 60, bottom: -10,
+          child: Icon(Icons.local_hospital_rounded, size: 80,
+            color: Colors.white.withValues(alpha: 0.04)),
+        ),
+
+        // Conteúdo
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 12, 16, 20),
+          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            // Botão voltar
+            GestureDetector(
+              onTap: onBack,
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12),
+                  color: Colors.white.withValues(alpha: 0.12),
+                  border: Border.all(color: Colors.white.withValues(alpha: 0.18)),
+                ),
+                child: Row(mainAxisSize: MainAxisSize.min, children: [
+                  const Icon(Icons.arrow_back_ios_rounded, size: 13, color: Colors.white),
+                  const SizedBox(width: 4),
+                  Text('Voltar', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: Colors.white.withValues(alpha: 0.9))),
+                ]),
+              ),
+            ),
+            const SizedBox(height: 16),
+
+            // Categoria badge
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20),
+                color: Colors.white.withValues(alpha: 0.12),
+                border: Border.all(color: const Color(0xFFFFE8A6).withValues(alpha: 0.35)),
+              ),
+              child: Text(
+                history.category.toUpperCase(),
+                style: const TextStyle(fontSize: 9, fontWeight: FontWeight.w900,
+                  color: Color(0xFFFFE8A6), letterSpacing: 1.8),
+              ),
+            ),
+            const SizedBox(height: 10),
+
+            // Título principal
+            Row(children: [
+              Expanded(child: Text(
+                history.displayTitle,
+                style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w900,
+                  color: Colors.white, height: 1.2, letterSpacing: -0.3),
+              )),
+            ]),
+            const SizedBox(height: 10),
+
+            // Autor + data
+            if (history.authorName.isNotEmpty)
+              Row(children: [
+                Container(
+                  width: 22, height: 22,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: const Color(0xFF4ADE80).withValues(alpha: 0.2),
+                    border: Border.all(color: const Color(0xFF4ADE80).withValues(alpha: 0.4)),
+                  ),
+                  child: const Center(child: Icon(Icons.person_rounded, size: 12, color: Color(0xFF4ADE80))),
+                ),
+                const SizedBox(width: 8),
+                Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  Text(
+                    history.authorName,
+                    style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: Colors.white),
+                  ),
+                  if (history.authorEmail.isNotEmpty)
+                    Text(history.authorEmail,
+                      style: TextStyle(fontSize: 10, color: Colors.white.withValues(alpha: 0.55), fontWeight: FontWeight.w500)),
+                ])),
+                if (history.uploadedAt.isNotEmpty)
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                      color: Colors.white.withValues(alpha: 0.1),
+                    ),
+                    child: Text(
+                      _formatUploadedAt(history.uploadedAt),
+                      style: TextStyle(fontSize: 9, color: Colors.white.withValues(alpha: 0.65), fontWeight: FontWeight.w600),
+                    ),
+                  ),
+              ]),
+
+            // Badges do paciente
+            if (history.patientInitials.isNotEmpty || history.patientAge.isNotEmpty) ...[
+              const SizedBox(height: 12),
+              Wrap(spacing: 6, runSpacing: 6, children: [
+                if (history.patientInitials.isNotEmpty) _PatientBadge(
+                  icon: Icons.badge_rounded, text: history.patientInitials, accent: const Color(0xFF4ADE80)),
+                if (history.patientAge.isNotEmpty) _PatientBadge(
+                  icon: Icons.cake_rounded, text: '${history.patientAge} anos', accent: const Color(0xFF93C5FD)),
+                if (history.patientSex.isNotEmpty) _PatientBadge(
+                  icon: Icons.wc_rounded, text: history.patientSex, accent: const Color(0xFFF9A8D4)),
+                if (history.patientWeight.isNotEmpty) _PatientBadge(
+                  icon: Icons.monitor_weight_rounded, text: '${history.patientWeight} kg', accent: const Color(0xFFFBD38D)),
+                if (history.patientRecord.isNotEmpty) _PatientBadge(
+                  icon: Icons.folder_shared_rounded, text: 'Pront. ${history.patientRecord}', accent: const Color(0xFFFFE8A6)),
+              ]),
+            ],
+
+            if (history.tags.isNotEmpty) ...[
+              const SizedBox(height: 8),
+              Text(history.tags, style: TextStyle(fontSize: 10, color: Colors.white.withValues(alpha: 0.5), fontWeight: FontWeight.w500, letterSpacing: 0.3)),
+            ],
+          ]),
+        ),
+      ]),
+    );
+  }
+}
+
+// Badge colorido de dados do paciente
+class _PatientBadge extends StatelessWidget {
+  final IconData icon;
+  final String text;
+  final Color accent;
+  const _PatientBadge({required this.icon, required this.text, required this.accent});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(20),
+        color: accent.withValues(alpha: 0.15),
+        border: Border.all(color: accent.withValues(alpha: 0.35)),
+      ),
+      child: Row(mainAxisSize: MainAxisSize.min, children: [
+        Icon(icon, size: 10, color: accent),
+        const SizedBox(width: 4),
+        Text(text, style: TextStyle(fontSize: 10, fontWeight: FontWeight.w700, color: accent)),
       ]),
     );
   }
@@ -1861,17 +2026,36 @@ class _DetailCard extends StatelessWidget {
     final filled = children.where((c) => c is! SizedBox).isNotEmpty;
     if (!filled) return const SizedBox();
     return Container(
-      padding: const EdgeInsets.all(14),
-      decoration: const BoxDecoration(border: Border(bottom: BorderSide(color: kBorder))),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: kBorder),
+        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.04), blurRadius: 8, offset: const Offset(0, 2))],
+      ),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Row(children: [
-          Container(padding: const EdgeInsets.all(7), decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: kDark),
-            child: Icon(icon, size: 14, color: kGoldLight)),
-          const SizedBox(width: 10),
-          Text(title, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w900, letterSpacing: 1.2, color: kDark)),
-        ]),
-        const SizedBox(height: 12),
-        ...children,
+        // Header da seção
+        Container(
+          padding: const EdgeInsets.fromLTRB(14, 12, 14, 10),
+          decoration: BoxDecoration(
+            color: kDark.withValues(alpha: 0.04),
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+            border: const Border(bottom: BorderSide(color: kBorder)),
+          ),
+          child: Row(children: [
+            Container(
+              width: 30, height: 30,
+              decoration: BoxDecoration(borderRadius: BorderRadius.circular(8), color: kDark),
+              child: Center(child: Icon(icon, size: 15, color: kGoldLight)),
+            ),
+            const SizedBox(width: 10),
+            Text(title, style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w900, letterSpacing: 1.3, color: kDark)),
+          ]),
+        ),
+        // Conteúdo com padding
+        Padding(
+          padding: const EdgeInsets.fromLTRB(14, 12, 14, 8),
+          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: children),
+        ),
       ]),
     );
   }
@@ -1879,15 +2063,31 @@ class _DetailCard extends StatelessWidget {
 
 class _SectionBlock extends StatelessWidget {
   final String label, text;
-  const _SectionBlock(this.label, this.text);
+  final IconData? icon;
+  const _SectionBlock(this.label, this.text, {this.icon});
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 10),
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Text(label, style: const TextStyle(fontSize: 9, fontWeight: FontWeight.w900, letterSpacing: 1.2, color: Color(0xFF888888))),
-        const SizedBox(height: 4),
-        Text(text, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: Color(0xFF333333), height: 1.55)),
+      padding: const EdgeInsets.only(bottom: 12),
+      child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        // Ícone circular verde
+        if (icon != null) ...[  
+          Container(
+            width: 28, height: 28,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: const Color(0xFF1F6B48).withValues(alpha: 0.1),
+              border: Border.all(color: const Color(0xFF1F6B48).withValues(alpha: 0.2)),
+            ),
+            child: Center(child: Icon(icon, size: 13, color: const Color(0xFF1F6B48))),
+          ),
+          const SizedBox(width: 10),
+        ],
+        Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Text(label, style: const TextStyle(fontSize: 9, fontWeight: FontWeight.w900, letterSpacing: 1.2, color: Color(0xFF888888))),
+          const SizedBox(height: 3),
+          Text(text, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: Color(0xFF222222), height: 1.55)),
+        ])),
       ]),
     );
   }
@@ -1899,17 +2099,30 @@ class _AllergyBanner extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 10),
+      padding: const EdgeInsets.only(bottom: 4, top: 2),
       child: Container(
-        padding: const EdgeInsets.all(10),
-        decoration: BoxDecoration(borderRadius: BorderRadius.circular(12), color: const Color(0xFFFFF0F0), border: Border.all(color: const Color(0xFFFFCCCC))),
-        child: Row(children: [
-          const Icon(Icons.warning_rounded, size: 16, color: Color(0xFFCC2222)),
-          const SizedBox(width: 8),
+        padding: const EdgeInsets.all(14),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(14),
+          color: const Color(0xFFFFF1F1),
+          border: Border.all(color: const Color(0xFFFF8080), width: 1.5),
+          boxShadow: [BoxShadow(color: const Color(0xFFCC2222).withValues(alpha: 0.08), blurRadius: 10, offset: const Offset(0, 3))],
+        ),
+        child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Container(
+            width: 32, height: 32,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: const Color(0xFFCC2222).withValues(alpha: 0.12),
+              border: Border.all(color: const Color(0xFFCC2222).withValues(alpha: 0.3)),
+            ),
+            child: const Center(child: Icon(Icons.warning_amber_rounded, size: 18, color: Color(0xFFCC2222))),
+          ),
+          const SizedBox(width: 12),
           Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            const Text('ALERGIAS', style: TextStyle(fontSize: 9, fontWeight: FontWeight.w900, color: Color(0xFFCC2222), letterSpacing: 1.2)),
-            const SizedBox(height: 2),
-            Text(text, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: Color(0xFFCC2222))),
+            const Text('⚠ ALERGIAS', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w900, color: Color(0xFFCC2222), letterSpacing: 1.2)),
+            const SizedBox(height: 4),
+            Text(text, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: Color(0xFFB91C1C), height: 1.4)),
           ])),
         ]),
       ),
@@ -1923,21 +2136,67 @@ class _DxBanner extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final hasFinal = final_.isNotEmpty;
+    final primaryColor = hasFinal ? const Color(0xFF065F46) : const Color(0xFF92400E);
+    final bgColor = hasFinal ? const Color(0xFFECFDF5) : const Color(0xFFFFF8E6);
+    final borderColor = hasFinal ? const Color(0xFF6EE7B7) : const Color(0xFFFFD580);
+    final textColor = hasFinal ? const Color(0xFF064E3B) : const Color(0xFF78350F);
     return Container(
-      padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(18),
-        color: hasFinal ? const Color(0xFFECFDF5) : const Color(0xFFFFF8E6),
-        border: Border.all(color: hasFinal ? const Color(0xFFBBF7D0) : const Color(0xFFFFE0A0)),
+        color: bgColor,
+        border: Border.all(color: borderColor, width: 1.5),
+        boxShadow: [BoxShadow(color: primaryColor.withValues(alpha: 0.1), blurRadius: 12, offset: const Offset(0, 4))],
       ),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Text(hasFinal ? 'DIAGNÓSTICO FINAL' : 'HIPÓTESE DIAGNÓSTICA',
-          style: TextStyle(fontSize: 9, fontWeight: FontWeight.w900, letterSpacing: 1.4, color: hasFinal ? const Color(0xFF065F46) : const Color(0xFF92400E))),
-        const SizedBox(height: 4),
-        Text(hasFinal ? final_ : working,
-          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w900, color: hasFinal ? const Color(0xFF064E3B) : const Color(0xFF78350F))),
-        if (cid.isNotEmpty) ...[const SizedBox(height: 4), Text('CID: $cid', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: hasFinal ? const Color(0xFF065F46) : const Color(0xFF92400E)))],
-        if (differential.isNotEmpty) ...[const SizedBox(height: 6), Text('DD: $differential', style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: Color(0xFF555555), height: 1.4))],
+        // Header da caixa de diagnóstico
+        Container(
+          padding: const EdgeInsets.fromLTRB(14, 10, 14, 10),
+          decoration: BoxDecoration(
+            color: primaryColor.withValues(alpha: 0.08),
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(17)),
+            border: Border(bottom: BorderSide(color: borderColor)),
+          ),
+          child: Row(children: [
+            Container(
+              width: 28, height: 28,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: primaryColor,
+              ),
+              child: Center(child: Icon(
+                hasFinal ? Icons.check_rounded : Icons.lightbulb_outline_rounded,
+                size: 14, color: Colors.white,
+              )),
+            ),
+            const SizedBox(width: 10),
+            Text(
+              hasFinal ? 'DIAGNÓSTICO FINAL' : 'HIPÓTESE DIAGNÓSTICA',
+              style: TextStyle(fontSize: 10, fontWeight: FontWeight.w900,
+                letterSpacing: 1.3, color: primaryColor),
+            ),
+          ]),
+        ),
+        // Conteúdo
+        Padding(padding: const EdgeInsets.all(14), child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(hasFinal ? final_ : working,
+              style: TextStyle(fontSize: 17, fontWeight: FontWeight.w900, color: textColor, height: 1.25)),
+            if (cid.isNotEmpty) ...[const SizedBox(height: 6),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8),
+                  color: primaryColor.withValues(alpha: 0.1),
+                ),
+                child: Text('CID-10: $cid', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: primaryColor)),
+              )],
+            if (differential.isNotEmpty) ...[const SizedBox(height: 8),
+              Text('DIAGNÓSTICO DIFERENCIAL', style: TextStyle(fontSize: 9, fontWeight: FontWeight.w900, color: primaryColor.withValues(alpha: 0.6), letterSpacing: 1.1)),
+              const SizedBox(height: 3),
+              Text(differential, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Color(0xFF555555), height: 1.4))],
+          ],
+        )),
       ]),
     );
   }

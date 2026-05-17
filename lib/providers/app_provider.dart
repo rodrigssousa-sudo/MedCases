@@ -362,23 +362,42 @@ class AppProvider extends ChangeNotifier {
   }
 
   // ── Sincronização background com Firestore ────────────────────────────────
-  // Chamado APÓS _loadFromLocal — atualiza silenciosamente quando há rede
+  // Chamado APÓS _loadFromLocal — atualiza silenciosamente quando há rede.
+  // MERGE STRATEGY: une Firestore + local para nunca perder favoritos.
+  // Se Firestore retorna vazio mas local tem dados, o resultado final = local.
   Future<void> _syncFromFirestore(String uid) async {
     try {
+      // Snapshot dos favoritos locais ANTES do fetch (para merge correto)
+      final localDrugs    = Set<String>.from(_favDrugs);
+      final localProtos   = Set<String>.from(_favProtocols);
+      final localPrescs   = Set<String>.from(_favPrescriptions);
+      final localCases    = Set<String>.from(_favCases);
+
       final results = await Future.wait([
         FirestoreService.loadFavDrugs(uid),
         FirestoreService.loadFavProtocols(uid),
         FirestoreService.loadFavPrescriptions(uid),
         FirestoreService.loadFavCases(uid),
       ]);
-      _favDrugs         = results[0];
-      _favProtocols     = results[1];
-      _favPrescriptions = results[2];
-      _favCases         = results[3];
+
+      // Merge: une Firestore + local — nunca descarta favoritos locais
+      _favDrugs         = results[0]..addAll(localDrugs);
+      _favProtocols     = results[1]..addAll(localProtos);
+      _favPrescriptions = results[2]..addAll(localPrescs);
+      _favCases         = results[3]..addAll(localCases);
       _customCases      = await FirestoreService.loadCases(uid);
       notifyListeners();
-      // Persiste no cache local para próxima abertura offline
+      // Persiste o conjunto merged no cache local E no Firestore
       await _saveLocal();
+      // Re-salva no Firestore se o merge adicionou itens que estavam só no local
+      if (_favDrugs.length > results[0].length)
+        FirestoreService.saveFavDrugs(uid, _favDrugs).catchError((_) {});
+      if (_favProtocols.length > results[1].length)
+        FirestoreService.saveFavProtocols(uid, _favProtocols).catchError((_) {});
+      if (_favPrescriptions.length > results[2].length)
+        FirestoreService.saveFavPrescriptions(uid, _favPrescriptions).catchError((_) {});
+      if (_favCases.length > results[3].length)
+        FirestoreService.saveFavCases(uid, _favCases).catchError((_) {});
       // Histórias clínicas em paralelo (não bloqueia)
       _syncHistoriesFromFirestore(uid);
     } catch (_) {

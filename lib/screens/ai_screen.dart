@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:convert';
 import '../providers/app_provider.dart';
 import '../data/drugs_database.dart';
 
@@ -88,6 +90,39 @@ class _ChatMsg {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
+// Modelo de sessão de chat salva no histórico
+// ─────────────────────────────────────────────────────────────────────────────
+class _ChatSession {
+  final String id;           // timestamp ISO como ID único
+  final DateTime savedAt;    // quando foi salva
+  final String summary;      // primeira mensagem do usuário (resumo)
+  final List<_ChatMsg> messages; // até 20 mensagens da sessão
+
+  const _ChatSession({
+    required this.id,
+    required this.savedAt,
+    required this.summary,
+    required this.messages,
+  });
+
+  Map<String, dynamic> toJson() => {
+    'id': id,
+    'savedAt': savedAt.toIso8601String(),
+    'summary': summary,
+    'messages': messages.map((m) => {'role': m.role, 'text': m.text}).toList(),
+  };
+
+  factory _ChatSession.fromJson(Map<String, dynamic> j) => _ChatSession(
+    id: j['id'] as String,
+    savedAt: DateTime.parse(j['savedAt'] as String),
+    summary: j['summary'] as String? ?? '',
+    messages: (j['messages'] as List? ?? []).map((m) =>
+      _ChatMsg(role: m['role'] as String, text: m['text'] as String)
+    ).toList(),
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 class AiScreen extends StatefulWidget {
   const AiScreen({super.key});
   @override
@@ -104,6 +139,11 @@ class _AiScreenState extends State<AiScreen> {
   bool _aiError      = false;
   bool _greetingDone = false; // garante saudação só uma vez por sessão
   int  _lastAiIndex  = -1;   // índice da última resposta da IA (para animar só ela)
+  // Auto-scroll: só desce automaticamente se usuário estiver perto do fundo
+  bool _userScrolledUp = false; // true quando usuário scrollou para cima
+  // Histórico de sessões de chat (até 10)
+  final List<_ChatSession> _chatHistory = [];
+  static const _kHistKey = 'medcases_ia_chat_history_v1';
 
   // Sugestões ficam visíveis apenas no estado vazio + sem foco
   bool get _showSuggestions => _messages.isEmpty && !_hasFocus;
@@ -149,8 +189,12 @@ class _AiScreenState extends State<AiScreen> {
         setState(() {});
       }
     });
+    // Listener de scroll: detecta se usuário scrollou para cima
+    _scrollCtrl.addListener(_onScroll);
     // Injeta saudação após o primeiro frame (AppProvider já disponível)
     WidgetsBinding.instance.addPostFrameCallback((_) => _injectGreeting());
+    // Carrega histórico de chats do SharedPrefs
+    _loadChatHistory();
 
     // Verifica sessão Gemini ao montar — captura token de redirect OAuth
     // que pode ter chegado enquanto o app já estava aberto (flag pendente).
@@ -175,23 +219,141 @@ class _AiScreenState extends State<AiScreen> {
     });
   }
 
+  void _onScroll() {
+    if (!_scrollCtrl.hasClients) return;
+    final pos = _scrollCtrl.position;
+    // Considera "perto do fundo" se estiver a menos de 80px do máximo
+    final nearBottom = pos.pixels >= pos.maxScrollExtent - 80;
+    if (nearBottom && _userScrolledUp) {
+      setState(() => _userScrolledUp = false);
+    } else if (!nearBottom && !_userScrolledUp) {
+      setState(() => _userScrolledUp = true);
+    }
+  }
+
   @override
   void dispose() {
+    _scrollCtrl.removeListener(_onScroll);
     _queryCtrl.dispose();
     _scrollCtrl.dispose();
     _focusNode.dispose();
     super.dispose();
   }
 
-  void _scrollDown() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (_scrollCtrl.hasClients) {
-        _scrollCtrl.animateTo(
-          _scrollCtrl.position.maxScrollExtent,
-          duration: const Duration(milliseconds: 300),
-          curve: Curves.easeOut,
-        );
+  /// Desce apenas se usuário não scrollou para cima intencionalmente.
+  /// [force] = true força scroll independente (usado ao enviar mensagem do usuário).
+  // ── Histórico de chats ───────────────────────────────────────────────────────────────────────
+  String _histKey(AppProvider p) {
+    final uid = p.currentUser?.uid ?? 'anon';
+    return '${uid}_$_kHistKey';
+  }
+
+  Future<void> _loadChatHistory() async {
+    try {
+      final p = context.read<AppProvider>();
+      final prefs = await SharedPreferences.getInstance();
+      final json = prefs.getString(_histKey(p));
+      if (json == null || json.isEmpty) return;
+      final list = jsonDecode(json) as List;
+      final sessions = list
+          .map((e) => _ChatSession.fromJson(e as Map<String, dynamic>))
+          .toList();
+      if (mounted) setState(() {
+        _chatHistory.clear();
+        _chatHistory.addAll(sessions);
+      });
+    } catch (_) {}
+  }
+
+  /// Salva a sessão atual no histórico antes de limpar.
+  /// Só salva se houver ao menos 1 mensagem do usuário.
+  Future<void> _saveCurrentSessionToHistory(AppProvider p) async {
+    // Filtra só mensagens reais (exclui saudação inicial)
+    final userMsgs = _messages.where((m) => m.role == 'user').toList();
+    if (userMsgs.isEmpty) return;
+
+    final now = DateTime.now();
+    final summary = userMsgs.first.text;
+    // Salva até 20 mensagens na sessão
+    final msgsToSave = _messages.length > 20
+        ? _messages.sublist(_messages.length - 20)
+        : List<_ChatMsg>.from(_messages);
+
+    final session = _ChatSession(
+      id: now.toIso8601String(),
+      savedAt: now,
+      summary: summary.length > 100 ? summary.substring(0, 100) : summary,
+      messages: msgsToSave,
+    );
+
+    setState(() {
+      _chatHistory.insert(0, session);
+      // Mantém apenas as 10 sessões mais recentes
+      if (_chatHistory.length > 10) {
+        _chatHistory.removeRange(10, _chatHistory.length);
       }
+    });
+
+    // Persiste no SharedPreferences
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final json = jsonEncode(_chatHistory.map((s) => s.toJson()).toList());
+      await prefs.setString(_histKey(p), json);
+    } catch (_) {}
+  }
+
+  /// Abre o bottom sheet de histórico de chats.
+  void _openHistory(AppProvider p) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => _ChatHistorySheet(
+        sessions: _chatHistory,
+        dark: p.darkMode,
+        lang: p.lang,
+        onRestore: (session) {
+          Navigator.pop(context);
+          _restoreSession(session, p);
+        },
+        onDelete: (sessionId) async {
+          setState(() => _chatHistory.removeWhere((s) => s.id == sessionId));
+          try {
+            final prefs = await SharedPreferences.getInstance();
+            final json = jsonEncode(_chatHistory.map((s) => s.toJson()).toList());
+            await prefs.setString(_histKey(p), json);
+          } catch (_) {}
+        },
+      ),
+    );
+  }
+
+  /// Restaura uma sessão do histórico para o chat atual.
+  void _restoreSession(_ChatSession session, AppProvider p) {
+    setState(() {
+      _messages.clear();
+      _messages.addAll(session.messages);
+      _lastAiIndex = -1;
+      _greetingDone = true;
+      _userScrolledUp = false;
+    });
+    p.clearAiHistory();
+    // Recria o contexto de IA a partir das mensagens restauradas
+    for (final msg in session.messages) {
+      if (msg.role != 'ai') continue; // contexto é construído internamente no provider
+    }
+    _scrollDown(force: true);
+  }
+
+  void _scrollDown({bool force = false}) {
+    if (_userScrolledUp && !force) return; // usuário está lendo — não interrompe
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted || !_scrollCtrl.hasClients) return;
+      _scrollCtrl.animateTo(
+        _scrollCtrl.position.maxScrollExtent,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeOut,
+      );
     });
   }
 
@@ -203,9 +365,10 @@ class _AiScreenState extends State<AiScreen> {
       _messages.add(_ChatMsg(role: 'user', text: trimmed));
       _thinking = true;
       _aiError  = false;
+      _userScrolledUp = false; // reset ao enviar — desce para mostrar "pensando"
     });
     _queryCtrl.clear();
-    _scrollDown();
+    _scrollDown(force: true); // força scroll ao enviar mensagem do usuário
 
     // Chamada real (ou fallback local se sem chave)
     final answer = await p.buildAIAnswer(trimmed);
@@ -219,7 +382,7 @@ class _AiScreenState extends State<AiScreen> {
       _thinking = false;
       _aiError  = isKeyError;
     });
-    _scrollDown();
+    _scrollDown(); // scroll suave ao receber resposta (respeita _userScrolledUp)
   }
 
   void _copyMsg(String text) {
@@ -237,11 +400,14 @@ class _AiScreenState extends State<AiScreen> {
 
   void _clearChat() {
     final p = context.read<AppProvider>();
+    // Salva sessão atual no histórico antes de limpar
+    _saveCurrentSessionToHistory(p);
     setState(() {
       _messages
         ..clear()
         ..add(_ChatMsg(role: 'ai', text: _buildGreeting(p.userName, p.lang)));
       _aiError = false;
+      _userScrolledUp = false;
     });
     _queryCtrl.clear();
     _focusNode.unfocus();
@@ -295,6 +461,8 @@ class _AiScreenState extends State<AiScreen> {
         hasMessages: _messages.isNotEmpty,
         onClear: _clearChat,
         onSettings: _openAiSettings,
+        onHistory: () => _openHistory(p),
+        historyCount: _chatHistory.length,
         lang: p.lang,
         hasRealAi:       p.hasAnyAi,
         geminiConnected: p.geminiConnected,
@@ -371,6 +539,8 @@ class _WaHeader extends StatelessWidget {
   final bool hasMessages;
   final VoidCallback onClear;
   final VoidCallback onSettings;
+  final VoidCallback onHistory;
+  final int historyCount;
   final String lang;
   final bool hasRealAi;
   final bool geminiConnected;
@@ -380,6 +550,8 @@ class _WaHeader extends StatelessWidget {
     required this.hasMessages,
     required this.onClear,
     required this.onSettings,
+    required this.onHistory,
+    required this.historyCount,
     required this.lang,
     required this.hasRealAi,
     this.geminiConnected = false,
@@ -527,6 +699,44 @@ class _WaHeader extends StatelessWidget {
                     ),
                   ],
                 ),
+              ),
+            ),
+            const SizedBox(width: 6),
+            // Botão histórico — sempre visível, badge com número de sessões
+            GestureDetector(
+              onTap: onHistory,
+              child: Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(6),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                      color: Colors.white.withValues(alpha: 0.1),
+                    ),
+                    child: Icon(Icons.history_rounded, size: 18,
+                      color: Colors.white.withValues(alpha: 0.8)),
+                  ),
+                  if (historyCount > 0)
+                    Positioned(
+                      top: -4, right: -4,
+                      child: Container(
+                        width: 14, height: 14,
+                        decoration: const BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Color(0xFFFFE8A6),
+                        ),
+                        child: Center(
+                          child: Text(
+                            '$historyCount',
+                            style: const TextStyle(
+                              fontSize: 8, fontWeight: FontWeight.w900,
+                              color: Color(0xFF0F1C14)),
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
               ),
             ),
             const SizedBox(width: 6),
@@ -1795,4 +2005,211 @@ class _InfoRow extends StatelessWidget {
   }
 }
 
+// ─────────────────────────────────────────────────────────────────────────────
+// HISTÓRICO DE CHATS — bottom sheet com até 10 sessões salvas
+// ─────────────────────────────────────────────────────────────────────────────
+class _ChatHistorySheet extends StatelessWidget {
+  final List<_ChatSession> sessions;
+  final bool dark;
+  final String lang;
+  final void Function(_ChatSession) onRestore;
+  final void Function(String) onDelete;
 
+  const _ChatHistorySheet({
+    required this.sessions,
+    required this.dark,
+    required this.lang,
+    required this.onRestore,
+    required this.onDelete,
+  });
+
+  String _formatDate(DateTime dt) {
+    final now = DateTime.now();
+    final diff = now.difference(dt);
+    if (diff.inDays == 0) {
+      final h = dt.hour.toString().padLeft(2, '0');
+      final m = dt.minute.toString().padLeft(2, '0');
+      return 'Hoje às $h:$m';
+    } else if (diff.inDays == 1) {
+      return 'Ontem';
+    } else if (diff.inDays < 7) {
+      const days = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+      return days[dt.weekday % 7];
+    } else {
+      final d = dt.day.toString().padLeft(2, '0');
+      final mo = dt.month.toString().padLeft(2, '0');
+      return '$d/$mo/${dt.year}';
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final bg    = dark ? const Color(0xFF1A1A1A) : Colors.white;
+    final textP = dark ? Colors.white : const Color(0xFF1A1A1A);
+    final textS = dark ? Colors.white54 : Colors.black45;
+    final divC  = dark ? Colors.white10 : const Color(0xFFEEEEEE);
+
+    return Container(
+      decoration: BoxDecoration(
+        color: bg,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      constraints: BoxConstraints(
+        maxHeight: MediaQuery.of(context).size.height * 0.75,
+      ),
+      child: Column(mainAxisSize: MainAxisSize.min, children: [
+        // Handle
+        Container(
+          margin: const EdgeInsets.only(top: 10, bottom: 4),
+          width: 36, height: 4,
+          decoration: BoxDecoration(
+            color: dark ? Colors.white24 : Colors.black12,
+            borderRadius: BorderRadius.circular(2),
+          ),
+        ),
+
+        // Header
+        Padding(
+          padding: const EdgeInsets.fromLTRB(18, 8, 18, 12),
+          child: Row(children: [
+            Container(
+              padding: const EdgeInsets.all(7),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                color: const Color(0xFF1F6B48).withValues(alpha: 0.15),
+              ),
+              child: const Icon(Icons.history_rounded,
+                size: 16, color: Color(0xFF1F6B48)),
+            ),
+            const SizedBox(width: 10),
+            Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Text(
+                lang == 'es' ? 'Historial de consultas' : 'Histórico de consultas',
+                style: TextStyle(
+                  fontSize: 15, fontWeight: FontWeight.w800, color: textP),
+              ),
+              Text(
+                '${sessions.length} ${lang == 'es' ? 'sesiones guardadas' : 'sessões salvas'} (máx. 10)',
+                style: TextStyle(fontSize: 11, color: textS),
+              ),
+            ])),
+            GestureDetector(
+              onTap: () => Navigator.pop(context),
+              child: Container(
+                padding: const EdgeInsets.all(6),
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: dark ? Colors.white10 : Colors.black.withValues(alpha: 0.06),
+                ),
+                child: Icon(Icons.close_rounded, size: 16, color: textS),
+              ),
+            ),
+          ]),
+        ),
+
+        // Divisor
+        Container(height: 1, color: divC, margin: const EdgeInsets.only(bottom: 4)),
+
+        // Lista de sessões
+        sessions.isEmpty
+            ? Padding(
+                padding: const EdgeInsets.all(40),
+                child: Column(mainAxisSize: MainAxisSize.min, children: [
+                  Icon(Icons.chat_bubble_outline_rounded,
+                    size: 40, color: dark ? Colors.white24 : Colors.black26),
+                  const SizedBox(height: 12),
+                  Text(
+                    lang == 'es'
+                        ? 'Aún no hay consultas guardadas.\nUsa "Limpiar" para guardar una sesión.'
+                        : 'Nenhuma consulta salva ainda.\nUse "Limpar" para salvar uma sessão.',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 13, color: textS, height: 1.5),
+                  ),
+                ]),
+              )
+            : Flexible(
+                child: ListView.separated(
+                  padding: const EdgeInsets.fromLTRB(0, 4, 0, 20),
+                  itemCount: sessions.length,
+                  separatorBuilder: (_, __) =>
+                    Container(height: 1, color: divC, margin: const EdgeInsets.symmetric(horizontal: 18)),
+                  itemBuilder: (context, i) {
+                    final s = sessions[i];
+                    final userCount = s.messages.where((m) => m.role == 'user').length;
+                    return Dismissible(
+                      key: ValueKey(s.id),
+                      direction: DismissDirection.endToStart,
+                      background: Container(
+                        alignment: Alignment.centerRight,
+                        padding: const EdgeInsets.only(right: 20),
+                        color: const Color(0xFFCC2222).withValues(alpha: 0.1),
+                        child: const Icon(Icons.delete_outline_rounded,
+                          color: Color(0xFFCC2222), size: 22),
+                      ),
+                      onDismissed: (_) => onDelete(s.id),
+                      child: InkWell(
+                        onTap: () => onRestore(s),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
+                          child: Row(children: [
+                            // Ícone de sessão
+                            Container(
+                              width: 38, height: 38,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                color: const Color(0xFF1F6B48).withValues(alpha: 0.1),
+                              ),
+                              child: Center(
+                                child: Text(
+                                  '${i + 1}',
+                                  style: const TextStyle(
+                                    fontSize: 14, fontWeight: FontWeight.w800,
+                                    color: Color(0xFF1F6B48)),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  s.summary.isNotEmpty ? s.summary : '(sem resumo)',
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                    fontSize: 13, fontWeight: FontWeight.w600,
+                                    color: textP, height: 1.3),
+                                ),
+                                const SizedBox(height: 3),
+                                Row(children: [
+                                  Icon(Icons.chat_bubble_outline_rounded,
+                                    size: 10, color: textS),
+                                  const SizedBox(width: 4),
+                                  Text(
+                                    '$userCount ${lang == 'es' ? 'preguntas' : 'perguntas'}',
+                                    style: TextStyle(fontSize: 10, color: textS)),
+                                  const SizedBox(width: 10),
+                                  Icon(Icons.access_time_rounded,
+                                    size: 10, color: textS),
+                                  const SizedBox(width: 4),
+                                  Text(
+                                    _formatDate(s.savedAt),
+                                    style: TextStyle(fontSize: 10, color: textS)),
+                                ]),
+                              ],
+                            )),
+                            const SizedBox(width: 8),
+                            Icon(Icons.chevron_right_rounded,
+                              size: 18, color: textS),
+                          ]),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+      ]),
+    );
+  }
+}
