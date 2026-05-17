@@ -3625,6 +3625,9 @@ class _PediatricsTabContentState extends State<PediatricsTabContent> {
               : ['Brincando / Adequado (0)', 'Dormindo (1)', 'Irritável (2)', 'Confuso / Reduz. resp. a dor (3)'],
           value: _pewsBehavior,
           onChanged: (v) => setState(() => _pewsBehavior = v),
+          referenceLines: isEs
+              ? ['Alerta, interactivo, juega espontáneamente', 'Apropiado para la edad', 'Sin cambios en nivel de conciencia']
+              : ['Alerta, interativo, brinca espontaneamente', 'Adequado para a idade', 'Sem alteração do nível de consciência'],
         ),
       ),
       const SizedBox(height: 10),
@@ -3638,6 +3641,9 @@ class _PediatricsTabContentState extends State<PediatricsTabContent> {
               : ['Normal para a idade (0)', 'FC ±20 bpm / TLL 3s (1)', 'FC ±30 bpm / TLL 4s / hipotensão (2)', 'FC ±40 bpm / TLL ≥5s / bradicardia (3)'],
           value: _pewsCardio,
           onChanged: (v) => setState(() => _pewsCardio = v),
+          referenceLines: isEs
+              ? ['RN: FC 120–160 | Lactante: 110–160 | 2–5a: 90–140', 'Preescolar: 80–120 | Escolar: 70–110 | Adolescente: 60–100', 'TLL ≤2s · PA normal para la edad · Pulso fuerte']
+              : ['RN: FC 120–160 | Lactente: 110–160 | 2–5a: 90–140', 'Pré-escolar: 80–120 | Escolar: 70–110 | Adolescente: 60–100', 'TEC ≤2s · PA normal para a idade · Pulso forte'],
         ),
       ),
       const SizedBox(height: 10),
@@ -3651,6 +3657,9 @@ class _PediatricsTabContentState extends State<PediatricsTabContent> {
               : ['Normal para a idade (0)', 'FR ±10 / FiO₂ ≥30% (1)', 'FR ±20 / retração / FiO₂ ≥40% (2)', 'FR ±30 / tiragem grave / FiO₂ ≥50% (3)'],
           value: _pewsRespiratory,
           onChanged: (v) => setState(() => _pewsRespiratory = v),
+          referenceLines: isEs
+              ? ['RN: FR 40–60 | Lactante: 30–50 | 2–5a: 25–40', 'Preescolar: 20–30 | Escolar: 18–25 | Adolescente: 12–20', 'SpO₂ ≥95% en AA · Sin tiraje · Sin quejido']
+              : ['RN: FR 40–60 | Lactente: 30–50 | 2–5a: 25–40', 'Pré-escolar: 20–30 | Escolar: 18–25 | Adolescente: 12–20', 'SpO₂ ≥95% em AR · Sem tiragem · Sem gemido'],
         ),
       ),
       const SizedBox(height: 12),
@@ -3980,51 +3989,147 @@ class _PewsSelector extends StatelessWidget {
   final List<String> options;
   final int value;
   final ValueChanged<int> onChanged;
-  const _PewsSelector({required this.options, required this.value, required this.onChanged});
+  final List<String> referenceLines; // linhas de referência clínica normal
+
+  const _PewsSelector({
+    required this.options,
+    required this.value,
+    required this.onChanged,
+    this.referenceLines = const [],
+  });
+
+  // Paleta por índice: 0=azul (normal), 1=amarelo, 2=laranja-vermelho, 3=vermelho escuro
+  static const _kColors = [
+    Color(0xFF1D4ED8), // azul — normal / pontuação 0
+    Color(0xFFB45309), // âmbar — leve
+    Color(0xFFCC2222), // vermelho — moderado
+    Color(0xFF7F1D1D), // vinho — grave
+  ];
+
+  // Fundo azul claro para o card selecionado score=0
+  static const _kBlueBg   = Color(0xFF1D4ED8);
+  static const _kBlueBgLt = Color(0xFFEFF6FF); // tema claro
 
   @override
   Widget build(BuildContext context) {
     final c = AppColors.of(context);
     return Column(children: List.generate(options.length, (i) {
-      final sel = value == i;
-      final dotColor = i == 0
-          ? const Color(0xFF065F46)
-          : i == 1
-              ? const Color(0xFFB45309)
-              : i == 2
-                  ? const Color(0xFFCC2222)
-                  : const Color(0xFF7F1D1D);
+      final sel      = value == i;
+      final dotColor = _kColors[i.clamp(0, 3)];
+      final isNormal = i == 0;
+
       return GestureDetector(
         onTap: () => onChanged(i),
         child: AnimatedContainer(
-          duration: const Duration(milliseconds: 150),
+          duration: const Duration(milliseconds: 180),
           margin: const EdgeInsets.only(bottom: 6),
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+          padding: EdgeInsets.fromLTRB(14, sel && isNormal ? 12 : 10, 14, sel && isNormal ? 12 : 10),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(12),
-            color: sel ? dotColor.withValues(alpha: 0.1) : c.surface,
+            // Selecionado normal → azul sólido; outros → cor da severidade
+            color: sel
+                ? (isNormal
+                    ? _kBlueBg.withValues(alpha: 0.12)
+                    : dotColor.withValues(alpha: 0.10))
+                : c.surface,
             border: Border.all(
-              color: sel ? dotColor.withValues(alpha: 0.5) : c.border,
+              color: sel
+                  ? dotColor.withValues(alpha: isNormal ? 0.70 : 0.50)
+                  : c.border,
               width: sel ? 1.5 : 1.0,
             ),
           ),
-          child: Row(children: [
-            Container(
-              width: 18, height: 18,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: sel ? dotColor : Colors.transparent,
-                border: Border.all(color: sel ? dotColor : c.border, width: 1.5),
-              ),
-              child: sel ? const Icon(Icons.check, size: 10, color: Colors.white) : null,
-            ),
-            const SizedBox(width: 10),
-            Expanded(child: Text(options[i], style: TextStyle(
-              fontSize: 12,
-              fontWeight: sel ? FontWeight.w800 : FontWeight.w500,
-              color: sel ? dotColor : c.textSecondary,
-            ))),
-          ]),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(children: [
+                // Ícone check / círculo
+                Container(
+                  width: 18, height: 18,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: sel ? dotColor : Colors.transparent,
+                    border: Border.all(
+                      color: sel ? dotColor : c.border, width: 1.5),
+                  ),
+                  child: sel
+                      ? const Icon(Icons.check, size: 10, color: Colors.white)
+                      : null,
+                ),
+                const SizedBox(width: 10),
+                Expanded(child: Text(options[i], style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: sel ? FontWeight.w800 : FontWeight.w500,
+                  color: sel ? dotColor : c.textSecondary,
+                ))),
+                // Badge de pontuação
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                    color: sel
+                        ? dotColor.withValues(alpha: 0.15)
+                        : c.border.withValues(alpha: 0.4),
+                  ),
+                  child: Text(
+                    '+$i pt',
+                    style: TextStyle(
+                      fontSize: 10,
+                      fontWeight: FontWeight.w700,
+                      color: sel ? dotColor : c.textSecondary,
+                    ),
+                  ),
+                ),
+              ]),
+
+              // Referências clínicas — só aparecem quando este card está selecionado e é o normal (i==0)
+              if (sel && isNormal && referenceLines.isNotEmpty) ...
+                [const SizedBox(height: 8),
+                Container(
+                  padding: const EdgeInsets.fromLTRB(10, 8, 10, 8),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                    color: _kBlueBg.withValues(alpha: 0.08),
+                    border: Border.all(
+                      color: _kBlueBg.withValues(alpha: 0.20)),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(children: [
+                        Icon(Icons.info_outline_rounded,
+                            size: 11, color: _kBlueBg.withValues(alpha: 0.7)),
+                        const SizedBox(width: 4),
+                        Text('Valores de referência normais',
+                            style: TextStyle(
+                              fontSize: 9.5,
+                              fontWeight: FontWeight.w700,
+                              letterSpacing: 0.3,
+                              color: _kBlueBg.withValues(alpha: 0.8),
+                            )),
+                      ]),
+                      const SizedBox(height: 5),
+                      ...referenceLines.map((line) => Padding(
+                        padding: const EdgeInsets.only(bottom: 3),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text('• ', style: TextStyle(
+                              fontSize: 10, color: _kBlueBg.withValues(alpha: 0.6))),
+                            Expanded(child: Text(line, style: TextStyle(
+                              fontSize: 10,
+                              fontWeight: FontWeight.w500,
+                              color: _kBlueBg.withValues(alpha: 0.85),
+                              height: 1.4,
+                            ))),
+                          ],
+                        ),
+                      )),
+                    ],
+                  ),
+                )],
+            ],
+          ),
         ),
       );
     }));
