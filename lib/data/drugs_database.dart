@@ -1697,6 +1697,11 @@ DrugModel(
       'pt': ['Sedação/sonolência', 'Boca seca', 'Constipação', 'Retenção urinária', 'Visão turva', 'Hipotensão ortostática', 'Taquicardia', 'Ganho de peso', 'QT prolongado'],
       'es': ['Sedación/somnolencia', 'Boca seca', 'Constipación', 'Retención urinaria', 'Hipotensión ortostática', 'Taquicardia', 'QT prolongado'],
     },
+    interactions: {
+      'graves': ['linezolida', 'tramadol', 'metilfenidato_ir', 'metilfenidato_xr', 'anfetamina_sulfato', 'dextroanfetamina', 'lisdexanfetamina', 'centanafadina', 'fluoxetina', 'sertralina', 'venlafaxina', 'haloperidol', 'amiodarona', 'metadona'],
+      'moderadas': ['alprazolam', 'diazepam', 'midazolam', 'carbamazepina', 'fenitoína', 'varfarina'],
+      'leves': ['omeprazol', 'pantoprazol'],
+    },
   ),
 DrugModel(
     id: 'sertralina',
@@ -1729,6 +1734,11 @@ DrugModel(
     adverse: {
       'pt': ['Náuseas (início)', 'Insônia ou hipersonia', 'Disfunção sexual', 'Cefaleia', 'Diarreia', 'Inquietação (início)', 'Hiponatremia', 'Síndrome de descontinuação'],
       'es': ['Náuseas (inicio)', 'Insomnio', 'Disfunción sexual', 'Cefalea', 'Diarrea', 'Hiponatremia', 'Síndrome de discontinuación'],
+    },
+    interactions: {
+      'graves': ['linezolida', 'tramadol', 'metilfenidato_ir', 'metilfenidato_xr', 'dexmetilfenidato', 'atomoxetina', 'anfetamina_sulfato', 'dextroanfetamina', 'lisdexanfetamina', 'centanafadina', 'amitriptilina'],
+      'moderadas': ['varfarina', 'carbamazepina', 'alprazolam', 'diazepam', 'metoprolol', 'bupropiona'],
+      'leves': ['omeprazol', 'pantoprazol'],
     },
   ),
 DrugModel(
@@ -3860,6 +3870,11 @@ DrugModel(
       'pt': ['Náusea (início)', 'Insônia/agitação', 'Disfunção sexual', 'Cefaleia', 'Diarreia', 'Hiponatremia (SIADH)', 'Sangramento aumentado', 'Síndrome de descontinuação (rara — meia-vida longa)'],
       'es': ['Náusea (inicio)', 'Insomnio/agitación', 'Disfunción sexual', 'Cefalea', 'Diarrea', 'Hiponatremia (SIADH)', 'Sangrado aumentado', 'Síndrome de discontinuación (raro — vida media larga)'],
     },
+    interactions: {
+      'graves': ['linezolida', 'tramadol', 'metilfenidato_ir', 'metilfenidato_xr', 'dexmetilfenidato', 'atomoxetina', 'anfetamina_sulfato', 'dextroanfetamina', 'lisdexanfetamina', 'viloxazina_xr', 'centanafadina', 'amitriptilina', 'metadona'],
+      'moderadas': ['alprazolam', 'diazepam', 'carbamazepina', 'fenitoína', 'varfarina', 'metoprolol', 'propranolol', 'haloperidol'],
+      'leves': ['omeprazol', 'pantoprazol', 'esomeprazol'],
+    },
   ),
 DrugModel(
     id: 'etomidato',
@@ -4337,6 +4352,11 @@ DrugModel(
     adverse: {
       'pt': ['Mielossupressão (trombocitopenia, anemia)', 'Náusea/vômito', 'Diarreia', 'Cefaleia', 'Síndrome serotoninérgica (com serotonérgicos)', 'Neuropatia periférica (uso prolongado)', 'Neuropatia óptica (raro)', 'Acidose lática'],
       'es': ['Mielosupresión (trombocitopenia, anemia)', 'Náusea/vómito', 'Diarrea', 'Cefalea', 'Síndrome serotoninérgico (con serotonérgicos)', 'Neuropatía periférica (uso prolongado)', 'Neuropatía óptica (raro)', 'Acidosis láctica'],
+    },
+    interactions: {
+      'graves': ['metilfenidato_ir', 'metilfenidato_xr', 'dexmetilfenidato', 'anfetamina_sulfato', 'dextroanfetamina', 'lisdexanfetamina', 'serdexmetil_dexmetilfenidato', 'atomoxetina', 'viloxazina_xr', 'centanafadina', 'tramadol', 'sertralina', 'fluoxetina', 'venlafaxina', 'duloxetina', 'amitriptilina', 'petidina'],
+      'moderadas': ['bupropiona', 'mirtazapina', 'escitalopram'],
+      'leves': [],
     },
   ),
 DrugModel(
@@ -5827,6 +5847,11 @@ DrugModel(
       'pt': ['Náusea (frequente — melhor com alimentação)', 'Cefaleia', 'Insônia/ansiedade inicial', 'Hipertensão', 'Sudorese', 'Disfunção sexual', 'Síndrome de descontinuação'],
       'es': ['Náusea (frecuente — mejor con alimentos)', 'Cefalea', 'Insomnio/ansiedad inicial', 'Hipertensión', 'Sudoración', 'Disfunción sexual', 'Síndrome de discontinuación'],
     },
+    interactions: {
+      'graves': ['linezolida', 'tramadol', 'metilfenidato_ir', 'metilfenidato_xr', 'dexmetilfenidato', 'lisdexanfetamina', 'anfetamina_sulfato', 'dextroanfetamina', 'centanafadina', 'amitriptilina'],
+      'moderadas': ['carbamazepina', 'fenitoína', 'alprazolam', 'varfarina', 'metoprolol', 'bupropiona'],
+      'leves': ['omeprazol', 'pantoprazol'],
+    },
   ),
 DrugModel(
     id: 'duloxetina',
@@ -5864,6 +5889,11 @@ DrugModel(
     adverse: {
       'pt': ['Náusea', 'Insônia/sonolência', 'Cefaleia', 'Boca seca', 'Sudorese', 'Disfunção sexual', 'QT prolongado (altas doses)'],
       'es': ['Náusea', 'Insomnio/somnolencia', 'Cefalea', 'Boca seca', 'Sudoración', 'Disfunción sexual', 'QT prolongado (dosis altas)'],
+    },
+    interactions: {
+      'graves': ['linezolida', 'tramadol', 'viloxazina_xr', 'centanafadina', 'amitriptilina', 'metilfenidato_ir', 'metilfenidato_xr'],
+      'moderadas': ['atomoxetina', 'bupropiona', 'carbamazepina', 'fenitoína', 'varfarina', 'alprazolam'],
+      'leves': ['omeprazol', 'pantoprazol'],
     },
   ),
 DrugModel(
@@ -9008,6 +9038,11 @@ DrugModel(
       'pt': ['Convulsões (dose-dependente)', 'Insônia', 'Boca seca', 'Cefaleia', 'Agitação/ansiedade', 'Elevação de PA', 'Náuseas'],
       'es': ['Convulsiones (dosis-dependiente)', 'Insomnio', 'Boca seca', 'Cefalea', 'Agitación/ansiedad', 'Elevación PA', 'Náuseas'],
     },
+    interactions: {
+      'graves': ['linezolida', 'tramadol', 'anfetamina_sulfato', 'dextroanfetamina', 'lisdexanfetamina', 'metilfenidato_xr', 'centanafadina', 'amitriptilina'],
+      'moderadas': ['sertralina', 'fluoxetina', 'venlafaxina', 'duloxetina', 'atomoxetina', 'carbamazepina', 'fenitoína', 'haloperidol', 'clorpromazina'],
+      'leves': ['omeprazol', 'pantoprazol', 'metoprolol'],
+    },
   ),
 DrugModel(
     id: 'lisdexanfetamina',
@@ -9040,6 +9075,11 @@ DrugModel(
     adverse: {
       'pt': ['Insônia', 'Anorexia/perda de peso', 'Taquicardia', 'Hipertensão', 'Boca seca', 'Irritabilidade', 'Cefaleia'],
       'es': ['Insomnio', 'Anorexia/pérdida de peso', 'Taquicardia', 'Hipertensión', 'Boca seca', 'Irritabilidad', 'Cefalea'],
+    },
+    interactions: {
+      'graves': ['linezolida', 'haloperidol', 'clorpromazina', 'amitriptilina'],
+      'moderadas': ['sertralina', 'fluoxetina', 'venlafaxina', 'duloxetina', 'bupropiona', 'tramadol'],
+      'leves': ['omeprazol', 'pantoprazol', 'furosemida'],
     },
   ),
 
@@ -15091,6 +15131,408 @@ DrugModel(
     mechanism: {'pt': 'Enzima similar à trombina (batroxobina) que cinde o fibrinogênio → forma fibrina sem ativar plaquetas → coágulo friável local. NÃO ativa via plasmática clássica. Efeito hemostático local e sistêmico (baixa dose).', 'es': 'Enzima similar a trombina (batroxobina) que escinde el fibrinógeno → forma fibrina sin activar plaquetas → coágulo friable local. NO activa vía plasmática clásica. Efecto hemostático local y sistémico (dosis baja).'},
     warning: {'pt': 'Uso excessivo pode causar hipofibrinogenemia (consumo de fibrinogênio). Trombose local se mal posicionado. Anticorpos (uso repetido). Derivado animal — risco teórico de reação alérgica.', 'es': 'Uso excesivo puede causar hipofibrinogenemia (consumo de fibrinógeno). Trombosis local si mal posicionado. Anticuerpos (uso repetido). Derivado animal — riesgo teórico de reacción alérgica.'},
     adverse: {'pt': ['Trombose local/sistêmica (uso excessivo)', 'Reação alérgica', 'Febre', 'Hipofibrinogenemia (uso prolongado)'], 'es': ['Trombosis local/sistémica (uso excesivo)', 'Reacción alérgica', 'Fiebre', 'Hipofibrinogenemia (uso prolongado)']},
+  ),
+
+  // ─── TDAH / Estimulantes e Não-estimulantes ─────────────────────────────
+
+  DrugModel(
+    id: 'metilfenidato_ir',
+    group: 'Neurología y Psiquiatría',
+    name: 'Metilfenidato IR (Ritalina / Rubifén)',
+    className: {'pt': 'Estimulante do SNC – Inibidor da recaptação de dopamina e noradrenalina', 'es': 'Estimulante del SNC – Inhibidor de la recaptación de dopamina y noradrenalina'},
+    category: {'pt': 'Estimulantes / TDAH', 'es': 'Estimulantes / TDAH'},
+    route: 'VO',
+    doseType: 'fixed',
+    mgKg: null,
+    fixedDose: {
+      'pt': 'Início: 5 mg 1–2x/dia (café da manhã e almoço). Titular 5–10 mg/semana. Dose usual: 20–30 mg/dia em 2–3 tomadas. Máx: 60 mg/dia. Evitar após 16h (insônia).',
+      'es': 'Inicio: 5 mg 1–2 veces/día (desayuno y almuerzo). Titular 5–10 mg/semana. Dosis usual: 20–30 mg/día en 2–3 tomas. Máx: 60 mg/día. Evitar después de las 16 h.',
+    },
+    renalAlert: {
+      'pt': 'Sem ajuste necessário; eliminação hepática com excreção renal de metabólitos inativos.',
+      'es': 'Sin ajuste necesario; metabolismo hepático con excreción renal de metabolitos inactivos.',
+    },
+    elderlyAlert: {
+      'pt': 'Não indicado habitualmente. Alto risco de crises hipertensivas, taquiarritmias e agitação psicomotora.',
+      'es': 'No indicado habitualmente. Riesgo elevado de crisis hipertensivas, taquiarritmias y agitación psicomotora.',
+    },
+    mechanism: {
+      'pt': 'Bloqueia os transportadores de dopamina (DAT) e noradrenalina (NET) pré-sinápticos, elevando a concentração dessas monoaminas na fenda sináptica, principalmente no córtex pré-frontal e estriado.',
+      'es': 'Bloquea los transportadores presinápticos de dopamina (DAT) y noradrenalina (NET), elevando su concentración en la sinapsis, principalmente en la corteza prefrontal y el estriado.',
+    },
+    warning: {
+      'pt': 'Risco de abuso e dependência (Tarja Preta / Controlado). Monitorar PA, FC e peso em pediatria. Contraindicado em glaucoma de ângulo fechado, ansiedade grave, tiques motores ou síndrome de Tourette.',
+      'es': 'Riesgo de abuso y dependencia (Medicamento Controlado). Monitorear tensión arterial, FC y peso en pediatría. Contraindicado en glaucoma de ángulo estrecho, ansiedad grave, tics motores o antecedentes de Síndrome de Tourette.',
+    },
+    adverse: {
+      'pt': ['Insônia', 'Anorexia e perda de peso', 'Taquicardia e palpitações', 'Cefaleia', 'Ansiedade/irritabilidade', 'Boca seca', 'Náuseas'],
+      'es': ['Insomnio', 'Anorexia y pérdida de peso', 'Taquicardia y palpitaciones', 'Cefalea', 'Ansiedad o irritabilidad', 'Boca seca', 'Náuseas'],
+    },
+    interactions: {
+      'graves': ['linezolida', 'clorpromazina', 'haloperidol', 'amitriptilina'],
+      'moderadas': ['venlafaxina', 'duloxetina', 'fluoxetina', 'sertralina', 'pseudoefedrina'],
+      'leves': ['omeprazol', 'pantoprazol', 'esomeprazol'],
+    },
+  ),
+
+  DrugModel(
+    id: 'metilfenidato_xr',
+    group: 'Neurología y Psiquiatría',
+    name: 'Metilfenidato XR (Concerta / Ritalina LA / Metadate)',
+    className: {'pt': 'Estimulante do SNC – Inibidor da recaptação de dopamina e noradrenalina (liberação prolongada)', 'es': 'Estimulante del SNC – Inhibidor de la recaptación de dopamina y noradrenalina (liberación prolongada)'},
+    category: {'pt': 'Estimulantes / TDAH', 'es': 'Estimulantes / TDAH'},
+    route: 'VO',
+    doseType: 'fixed',
+    mgKg: null,
+    fixedDose: {
+      'pt': 'Concerta: Início 18 mg 1x/dia pela manhã. Titular 18 mg/semana. Usual: 18–54 mg/dia. Máx: 72 mg/dia (adultos). Ritalina LA: Início 20 mg/manhã. Não mastigar/triturar.',
+      'es': 'Concerta: Inicio 18 mg 1 vez/día por la mañana. Titular 18 mg/semana. Usual: 18–54 mg/día. Máx: 72 mg/día en adultos. Ritalina LA: Inicio 20 mg/mañana. No masticar ni triturar.',
+    },
+    renalAlert: {
+      'pt': 'Sem ajuste necessário. Não usar sistema OROS (Concerta) em estenose GI mecânica grave.',
+      'es': 'Sin ajuste necesario. No usar el sistema OROS (Concerta) en estenosis gastrointestinal mecánica grave.',
+    },
+    elderlyAlert: {
+      'pt': 'Não recomendado. Monitoramento estrito cardiovascular se o uso for inevitável.',
+      'es': 'No recomendado. Monitoreo cardiovascular estricto si su uso resulta inevitable.',
+    },
+    mechanism: {
+      'pt': 'Mesmo mecanismo do metilfenidato IR, porém com tecnologia OROS (liberação osmótica) ou microesferas para manter níveis estáveis por 8–12 horas com perfil bifásico.',
+      'es': 'Mismo mecanismo que el metilfenidato IR, con tecnología OROS o microesferas para mantener niveles estables durante 8–12 horas con perfil bifásico.',
+    },
+    warning: {
+      'pt': 'Menor potencial de "crash" e abuso recreativo que a forma IR. Monitorar ideação suicida e sintomas psicóticos/maníacos.',
+      'es': 'Menor riesgo de efecto "crash" y abuso recreativo que la formulación IR. Monitorear ideación suicida y síntomas psicóticos o maníacos.',
+    },
+    adverse: {
+      'pt': ['Insônia de início', 'Diminuição do apetite', 'Hipertensão arterial', 'Taquicardia', 'Tontura', 'Ansiedade', 'Piora de tiques'],
+      'es': ['Insomnio de conciliación', 'Disminución del apetito', 'Hipertensión arterial', 'Taquicardia', 'Mareos', 'Ansiedad', 'Exacerbación de tics'],
+    },
+    interactions: {
+      'graves': ['linezolida', 'amiodarona', 'propafenona', 'flecainida'],
+      'moderadas': ['bupropiona', 'sertralina', 'fluoxetina', 'escitalopram'],
+      'leves': ['heparina_nf', 'enoxaparina'],
+    },
+  ),
+
+  DrugModel(
+    id: 'atomoxetina',
+    group: 'Neurología y Psiquiatría',
+    name: 'Atomoxetina (Strattera / Prebital)',
+    className: {'pt': 'Inibidor seletivo da recaptação de noradrenalina – Não-estimulante', 'es': 'Inhibidor selectivo de la recaptación de noradrenalina – No estimulante'},
+    category: {'pt': 'Não-estimulantes / TDAH', 'es': 'No estimulantes / TDAH'},
+    route: 'VO',
+    doseType: 'weight',
+    mgKg: 0.5,
+    fixedDose: {
+      'pt': 'Ped (<70 kg): Início 0,5 mg/kg/dia → alvo 1,2 mg/kg/dia (1x/manhã ou 2x/dia). Máx: 1,4 mg/kg/dia. Adultos (≥70 kg): Início 40 mg/dia → alvo 80 mg/dia. Máx: 100 mg/dia.',
+      'es': 'Ped (<70 kg): Inicio 0,5 mg/kg/día → objetivo 1,2 mg/kg/día (1 vez/mañana o 2 veces/día). Máx: 1,4 mg/kg/día. Adultos (≥70 kg): Inicio 40 mg/día → objetivo 80 mg/día. Máx: 100 mg/día.',
+    },
+    renalAlert: {
+      'pt': 'Sem ajuste necessário; pode aumentar retenção urinária em predispostos.',
+      'es': 'Sin ajuste necesario; puede exacerbar retención urinaria en predispuestos.',
+    },
+    elderlyAlert: {
+      'pt': 'Risco aumentado de retenção urinária aguda (HPB) e hipotensão ortostática.',
+      'es': 'Riesgo elevado de retención urinaria aguda (HBP) e hipotensión ortostática.',
+    },
+    mechanism: {
+      'pt': 'Inibe seletivamente o transportador de noradrenalina (NET) no córtex pré-frontal, aumentando indiretamente a dopamina nessa região.',
+      'es': 'Inhibe selectivamente el transportador de noradrenalina (NET) en la corteza prefrontal, aumentando indirectamente la dopamina en esta región.',
+    },
+    warning: {
+      'pt': 'BLACK BOX FDA: risco de ideação suicida em crianças/adolescentes. Risco de hepatotoxicidade grave (monitorar transaminases; suspender se icterícia). Não causa dependência.',
+      'es': 'BLACK BOX FDA: riesgo de ideación suicida en niños y adolescentes. Riesgo de hepatotoxicidad grave (monitorear enzimas hepáticas; suspender ante ictericia). No genera dependencia.',
+    },
+    adverse: {
+      'pt': ['Dispepsia e dor abdominal', 'Náuseas/vômitos', 'Diminuição do apetite', 'Fadiga/sonolência', 'Aumento de PA e FC', 'Disfunção erétil/retenção urinária', 'Insônia'],
+      'es': ['Dispepsia y dolor abdominal', 'Náuseas o vómitos', 'Disminución del apetito', 'Fatiga o somnolencia', 'Aumento leve de tensión arterial y FC', 'Disfunción eréctil o retención urinaria', 'Insomnio'],
+    },
+    interactions: {
+      'graves': ['linezolida', 'salbutamol', 'fenoterol'],
+      'moderadas': ['fluoxetina', 'paroxetina', 'bupropiona'],
+      'leves': ['omeprazol', 'ranitidina'],
+    },
+  ),
+
+  DrugModel(
+    id: 'guanfacina_xr',
+    group: 'Neurología y Psiquiatría',
+    name: 'Guanfacina XR (Intuniv)',
+    className: {'pt': 'Agonista alfa-2A adrenérgico seletivo – Não-estimulante / Anti-hipertensivo', 'es': 'Agonista alfa-2A adrenérgico selectivo – No estimulante / Antihipertensivo'},
+    category: {'pt': 'Não-estimulantes / TDAH', 'es': 'No estimulantes / TDAH'},
+    route: 'VO',
+    doseType: 'fixed',
+    mgKg: null,
+    fixedDose: {
+      'pt': 'Início: 1 mg 1x/dia (manhã ou noite). Titular 1 mg/semana. Usual: 1–4 mg/dia. Máx: 4 mg/dia (crianças), 7 mg/dia (adolescentes). Não administrar com refeições ricas em gordura.',
+      'es': 'Inicio: 1 mg 1 vez/día (mañana o noche). Titular 1 mg/semana. Usual: 1–4 mg/día. Máx: 4 mg/día (niños), 7 mg/día (adolescentes). No administrar con comidas altas en grasa.',
+    },
+    renalAlert: {
+      'pt': 'Usar com cautela em insuficiência renal grave ou DRET; titular mais lentamente.',
+      'es': 'Usar con precaución en insuficiencia renal grave; titular más lentamente.',
+    },
+    elderlyAlert: {
+      'pt': 'Alto risco de bradicardia severa, hipotensão ortostática, síncope e sedação pronunciada. Geralmente contraindicada.',
+      'es': 'Riesgo muy elevado de bradicardia grave, hipotensión ortostática profunda, síncope y sedación marcada. Generalmente desaconsejada.',
+    },
+    mechanism: {
+      'pt': 'Estimula receptores alfa-2A adrenérgicos pós-sinápticos no córtex pré-frontal, fortalecendo conexões sinápticas envolvidas na atenção, memória de trabalho e controle de impulsos.',
+      'es': 'Estimula receptores alfa-2A adrenérgicos postsinápticos en la corteza prefrontal, modulando positivamente los circuitos de atención, memoria de trabajo y control de impulsos.',
+    },
+    warning: {
+      'pt': 'SÍNDROME DE RETIRADA: hipertensão rebote severa e taquicardia se interrompida abruptamente — desmame gradual obrigatório. Causa sedação importante no início.',
+      'es': 'SÍNDROME DE ABSTINENCIA: hipertensión de rebote severa y taquicardia al interrumpir abruptamente — retirada gradual obligatoria. Genera sedación clínicamente significativa al inicio.',
+    },
+    adverse: {
+      'pt': ['Sedação e sonolência (muito comum)', 'Cefaleia', 'Fadiga', 'Hipotensão e bradicardia', 'Dor abdominal', 'Boca seca', 'Tontura'],
+      'es': ['Sedación y somnolencia (muy frecuente)', 'Cefalea', 'Fatiga', 'Hipotensión y bradicardia', 'Dolor abdominal', 'Boca seca', 'Mareos'],
+    },
+    interactions: {
+      'graves': ['clonidina', 'metoprolol', 'carvedilol', 'bisoprolol'],
+      'moderadas': ['midazolam', 'alprazolam', 'diazepam', 'propofol', 'cetamina'],
+      'leves': ['losartana', 'enalapril'],
+    },
+  ),
+
+  DrugModel(
+    id: 'dexmetilfenidato',
+    group: 'Neurología y Psiquiatría',
+    name: 'Dexmetilfenidato (Focalin / Focalin XR)',
+    className: {'pt': 'Estimulante do SNC – Enantiômero ativo (d-treo) do metilfenidato', 'es': 'Estimulante del SNC – Enantiómero activo (d-treo) del metilfenidato'},
+    category: {'pt': 'Estimulantes / TDAH', 'es': 'Estimulantes / TDAH'},
+    route: 'VO',
+    doseType: 'fixed',
+    mgKg: null,
+    fixedDose: {
+      'pt': 'IR: Início 2,5 mg 2x/dia. Máx: 20 mg/dia. XR: Início 5 mg/manhã (pediátrico) ou 10 mg (adultos). Titular semanalmente. Máx: 40 mg/dia (adultos). Equivale à metade da dose do metilfenidato racêmico.',
+      'es': 'IR: Inicio 2,5 mg 2 veces/día. Máx: 20 mg/día. XR: Inicio 5 mg/mañana (pediátrico) o 10 mg (adultos). Titular semanalmente. Máx: 40 mg/día en adultos. Equivale a la mitad de la dosis de metilfenidato racémico.',
+    },
+    renalAlert: {
+      'pt': 'Sem ajuste necessário; excreção renal de metabólitos inativos.',
+      'es': 'Sin ajuste necesario; excreción renal como compuestos inactivos.',
+    },
+    elderlyAlert: {
+      'pt': 'Contraindicado pelo alto risco cardiovascular e de estimulação simpática central exacerbada.',
+      'es': 'Contraindicado por riesgo elevado de eventos cardiovasculares y sobreestimulación simpática.',
+    },
+    mechanism: {
+      'pt': 'D-treo-metilfenidato, enantiômero farmacologicamente ativo. Bloqueia recaptação de dopamina (DAT) e noradrenalina (NET) com maior afinidade que o racemato.',
+      'es': 'D-treo-metilfenidato, enantiómero farmacológicamente activo. Bloquea la recaptación de dopamina (DAT) y noradrenalina (NET) con mayor afinidad que el racemato.',
+    },
+    warning: {
+      'pt': 'Mesmo perfil de advertências do metilfenidato. Alto risco de dependência (Controlado). Monitorar priapismo.',
+      'es': 'Mismo perfil de advertencias que el metilfenidato. Riesgo de abuso y dependencia (Controlado). Monitorear priapismo.',
+    },
+    adverse: {
+      'pt': ['Insônia', 'Perda de apetite/anorexia', 'Boca seca', 'Taquicardia', 'Ansiedade e nervosismo', 'Dispepsia', 'Febre isolada'],
+      'es': ['Insomnio', 'Anorexia y pérdida de peso', 'Boca seca', 'Taquicardia', 'Ansiedad y nerviosismo', 'Dispepsia', 'Fiebre aislada'],
+    },
+    interactions: {
+      'graves': ['linezolida', 'amiodarona', 'nitroprussiato'],
+      'moderadas': ['sertralina', 'fluoxetina', 'venlafaxina', 'bupropiona'],
+      'leves': ['omeprazol', 'pantoprazol'],
+    },
+  ),
+
+  DrugModel(
+    id: 'serdexmetil_dexmetilfenidato',
+    group: 'Neurología y Psiquiatría',
+    name: 'Serdexmetilfenidato + Dexmetilfenidato (Azstarys)',
+    className: {'pt': 'Estimulante do SNC – Combinação pró-fármaco + fármaco ativo', 'es': 'Estimulante del SNC – Combinación profármaco + fármaco activo'},
+    category: {'pt': 'Estimulantes / TDAH', 'es': 'Estimulantes / TDAH'},
+    route: 'VO',
+    doseType: 'fixed',
+    mgKg: null,
+    fixedDose: {
+      'pt': 'Crianças 6–12 anos: Início 26,1/5,2 mg 1x/manhã. Ajustar após 7 dias (39,2/7,8 mg ou 52,3/10,4 mg). Adultos: Usual 52,3/10,4 mg/dia. Doses em mg serdexmetil/dexmetil.',
+      'es': 'Niños 6–12 años: Inicio 26,1/5,2 mg 1 vez/mañana. Ajustar tras 7 días (39,2/7,8 mg o 52,3/10,4 mg). Adultos: Usual 52,3/10,4 mg/día. Dosis en mg serdexmetil/dexmetil.',
+    },
+    renalAlert: {
+      'pt': 'Sem ajuste em insuficiência renal leve a moderada. Dados limitados em IRC grave.',
+      'es': 'Sin ajuste en insuficiencia renal leve a moderada. Datos limitados en IRC avanzada.',
+    },
+    elderlyAlert: {
+      'pt': 'Não indicado. Monitorar PA, FC e ECG se uso de exceção.',
+      'es': 'No indicado en adultos mayores. Monitorear tensión arterial, FC y ECG ante uso excepcional.',
+    },
+    mechanism: {
+      'pt': 'Dexmetilfenidato fornece liberação imediata inicial; serdexmetilfenidato é pró-fármaco que se cliva progressivamente no TGI inferior liberando dexmetilfenidato de forma estendida por ~13 horas.',
+      'es': 'El dexmetilfenidato aporta liberación inmediata inicial; el serdexmetilfenidato es un profármaco que se escinde gradualmente en el tracto GI inferior liberando dexmetilfenidato de forma sostenida por ~13 horas.',
+    },
+    warning: {
+      'pt': 'Menor potencial de abuso (trituração/injeção do pró-fármaco não acelera efeito). Cobertura estável todo o dia. Monitorar cardiomiopatia.',
+      'es': 'Menor potencial de abuso (triturar/inyectar el profármaco no acelera su activación). Cobertura estable todo el día. Monitorear cardiomiopatía.',
+    },
+    adverse: {
+      'pt': ['Diminuição do apetite', 'Insônia de término', 'Náuseas e dor abdominal', 'Irritabilidade/labilidade emocional', 'Taquicardia', 'Cefaleia'],
+      'es': ['Disminución del apetito', 'Insomnio de terminación', 'Náuseas y dolor abdominal', 'Irritabilidad/labilidad emocional', 'Taquicardia', 'Cefalea'],
+    },
+    interactions: {
+      'graves': ['linezolida', 'noradrenalina', 'dobutamina'],
+      'moderadas': ['sertralina', 'fluoxetina', 'venlafaxina', 'duloxetina'],
+      'leves': ['omeprazol', 'pantoprazol', 'esomeprazol'],
+    },
+  ),
+
+  DrugModel(
+    id: 'anfetamina_sulfato',
+    group: 'Neurología y Psiquiatría',
+    name: 'Anfetamina Sulfato (Evekeo)',
+    className: {'pt': 'Estimulante do SNC – Mistura racêmica de anfetamina', 'es': 'Estimulante del SNC – Mezcla racémica de anfetamina'},
+    category: {'pt': 'Estimulantes / TDAH', 'es': 'Estimulantes / TDAH'},
+    route: 'VO',
+    doseType: 'fixed',
+    mgKg: null,
+    fixedDose: {
+      'pt': 'TDAH (3–5 anos): Início 2,5 mg/dia, aumentar semanalmente. ≥6 anos e adultos: Início 5 mg 1–2x/dia. Titular 5 mg/semana. Usual: 5–40 mg/dia dividido.',
+      'es': 'TDAH (3–5 años): Inicio 2,5 mg/día, incrementar semanalmente. ≥6 años y adultos: Inicio 5 mg 1–2 veces/día. Titular 5 mg/semana. Usual: 5–40 mg/día fraccionado.',
+    },
+    renalAlert: {
+      'pt': 'TFG 15–30: reduzir dose máxima. Contraindicado em anúria.',
+      'es': 'TFG 15–30: reducir dosis máxima. Contraindicado en anuria.',
+    },
+    elderlyAlert: {
+      'pt': 'Contraindicado: risco de isquemia miocárdica, AVC, mania e delirium.',
+      'es': 'Contraindicado absolutamente: riesgo de eventos coronarios, ACV, manía y delirium.',
+    },
+    mechanism: {
+      'pt': 'Promove liberação massiva de dopamina e noradrenalina dos estoques vesiculares (inversão de VMAT2/DAT/NET), inibe recaptação e MAO. Efeito mais potente e prolongado que metilfenidato.',
+      'es': 'Promueve liberación masiva de dopamina y noradrenalina desde depósitos vesiculares (inversión de VMAT2/DAT/NET), inhibe recaptación y MAO. Efecto más potente y prolongado que el metilfenidato.',
+    },
+    warning: {
+      'pt': '⚠ ALTO POTENCIAL DE ABUSO E DEPENDÊNCIA (Controlado Estrito). Risco de morte súbita em cardiopatia estrutural pré-existente. Monitorar surtos psicóticos.',
+      'es': '⚠ ALTO POTENCIAL DE ABUSO Y DEPENDENCIA (Estupefaciente). Riesgo de muerte súbita en cardiopatía estructural preexistente. Monitorear brotes psicóticos.',
+    },
+    adverse: {
+      'pt': ['Palpitações/taquicardia', 'Hipertensão grave', 'Insônia persistente', 'Anorexia e perda de peso', 'Tremor', 'Euforia/disforia', 'Boca seca'],
+      'es': ['Palpitaciones/taquicardia', 'Hipertensión grave', 'Insomnio persistente', 'Anorexia marcada', 'Temblor', 'Euforia/disforia', 'Boca seca'],
+    },
+    interactions: {
+      'graves': ['linezolida', 'nitroglicerina', 'nitroprussiato'],
+      'moderadas': ['sertralina', 'fluoxetina', 'tramadol', 'amitriptilina'],
+      'leves': ['bicarbonato de sódio', 'acetazolamida'],
+    },
+  ),
+
+  DrugModel(
+    id: 'dextroanfetamina',
+    group: 'Neurología y Psiquiatría',
+    name: 'Dextroanfetamina (Dexedrine / Zenzedi)',
+    className: {'pt': 'Estimulante do SNC – Isômero dextrógiro purificado de anfetamina', 'es': 'Estimulante del SNC – Isómero dextrógiro purificado de anfetamina'},
+    category: {'pt': 'Estimulantes / TDAH', 'es': 'Estimulantes / TDAH'},
+    route: 'VO',
+    doseType: 'fixed',
+    mgKg: null,
+    fixedDose: {
+      'pt': 'TDAH (≥6 anos): Início 5 mg 1–2x/dia pela manhã. Aumentar 5 mg/semana. Spansule (LP): 5–15 mg 1x/manhã. Usual máx: 40 mg/dia.',
+      'es': 'TDAH (≥6 años): Inicio 5 mg 1–2 veces/día por la mañana. Aumentar 5 mg/semana. Spansule (LP): 5–15 mg 1 vez/mañana. Dosis máx usual: 40 mg/día.',
+    },
+    renalAlert: {
+      'pt': 'Excreção pH-dependente (urina ácida acelera eliminação). Reduzir em insuficiência renal grave.',
+      'es': 'Excreción pH-dependiente (orina ácida acelera eliminación). Reducir en insuficiencia renal grave.',
+    },
+    elderlyAlert: {
+      'pt': 'Contraindicado: risco extremo de IAM, cardiomiopatia e AVC hemorrágico.',
+      'es': 'Contraindicado absolutamente: riesgo crítico de IAM, miocardiopatía y ACV hemorrágico.',
+    },
+    mechanism: {
+      'pt': 'D-enantiômero da anfetamina com maior seletividade dopaminérgica central (DAT) e menor afinidade noradrenérgica periférica que o l-isômero. Maior potência central com menos efeitos simpáticos.',
+      'es': 'D-enantiómero de la anfetamina con mayor selectividad dopaminérgica central (DAT) y menor afinidad noradrenérgica periférica que el l-isómero. Mayor potencia central con menos efectos simpáticos.',
+    },
+    warning: {
+      'pt': '⚠ Potencial de abuso extremamente alto (Controlado). Monitorar peso e crescimento em crianças. Risco de exacerbação de tiques severos e comportamento agressivo.',
+      'es': '⚠ Potencial de abuso sumamente elevado (Estupefaciente). Monitorear peso y talla en pediatría. Riesgo de exacerbación de tics graves y conductas agresivas.',
+    },
+    adverse: {
+      'pt': ['Insônia grave', 'Supressão acentuada do apetite', 'Taquicardia sinusal', 'Hipertensão', 'Nervosismo/agitação', 'Tensão muscular', 'Boca seca'],
+      'es': ['Insomnio grave', 'Supresión marcada del apetito', 'Taquicardia sinusal', 'Hipertensión', 'Nerviosismo/agitación', 'Tensión muscular', 'Boca seca'],
+    },
+    interactions: {
+      'graves': ['linezolida', 'haloperidol', 'clorpromazina'],
+      'moderadas': ['sertralina', 'fluoxetina', 'venlafaxina', 'duloxetina'],
+      'leves': ['furosemida', 'hidroclorotiazida'],
+    },
+  ),
+
+  DrugModel(
+    id: 'viloxazina_xr',
+    group: 'Neurología y Psiquiatría',
+    name: 'Viloxazina XR (Qelbree)',
+    className: {'pt': 'Inibidor seletivo da recaptação de noradrenalina com ação serotoninérgica – Não-estimulante', 'es': 'Inhibidor selectivo de la recaptación de noradrenalina con acción serotoninérgica – No estimulante'},
+    category: {'pt': 'Não-estimulantes / TDAH', 'es': 'No estimulantes / TDAH'},
+    route: 'VO',
+    doseType: 'fixed',
+    mgKg: null,
+    fixedDose: {
+      'pt': 'Ped 6–11 anos: Início 100 mg/dia → alvo 100–300 mg/dia. Adolescentes: Início 200 mg/dia → máx 400 mg/dia. Adultos: Início 200 mg/dia → máx 600 mg/dia. Titular 100 mg/semana.',
+      'es': 'Ped 6–11 años: Inicio 100 mg/día → objetivo 100–300 mg/día. Adolescentes: Inicio 200 mg/día → máx 400 mg/día. Adultos: Inicio 200 mg/día → máx 600 mg/día. Titular 100 mg/semana.',
+    },
+    renalAlert: {
+      'pt': 'ClCr <30 mL/min: Início reduzido (50 mg/dia ped, 100 mg/dia adultos); máx pela metade.',
+      'es': 'ClCr <30 mL/min: Inicio reducido (50 mg/día ped, 100 mg/día adultos); máx reducido a la mitad.',
+    },
+    elderlyAlert: {
+      'pt': 'Ajustar por ClCr. Monitorar sedação, interações via CYP1A2 e risco de quedas.',
+      'es': 'Ajustar según ClCr. Monitorear sedación, interacciones vía CYP1A2 y riesgo de caídas.',
+    },
+    mechanism: {
+      'pt': 'Inibe seletivamente o NET no córtex pré-frontal; agonista parcial 5-HT1A e antagonista 5-HT2B/2C — perfil duplo NRI + serotoninérgico.',
+      'es': 'Inhibe selectivamente el NET en la corteza prefrontal; agonista parcial 5-HT1A y antagonista 5-HT2B/2C — perfil dual NRI + serotoninérgico.',
+    },
+    warning: {
+      'pt': 'BLACK BOX WARNING: ideação suicida em crianças e adolescentes. INIBIDOR POTENTE CYP1A2 — eleva criticamente teofilina, clozapina e duloxetina. Não causa dependência.',
+      'es': 'BLACK BOX WARNING: ideación suicida en niños y adolescentes. INHIBIDOR POTENTE CYP1A2 — eleva críticamente teofilina, clozapina y duloxetina. No induce dependencia.',
+    },
+    adverse: {
+      'pt': ['Sonolência e fadiga (muito comuns)', 'Diminuição do apetite', 'Náuseas/vômitos', 'Insônia de término', 'Irritabilidade', 'Aumento leve de PA e FC'],
+      'es': ['Somnolencia y fatiga (muy frecuentes)', 'Disminución del apetito', 'Náuseas/vómitos', 'Insomnio de terminación', 'Irritabilidad', 'Aumento leve de tensión arterial y FC'],
+    },
+    interactions: {
+      'graves': ['teofilina', 'linezolida', 'duloxetina'],
+      'moderadas': ['fluoxetina', 'sertralina', 'venlafaxina'],
+      'leves': ['omeprazol', 'pantoprazol'],
+    },
+  ),
+
+  DrugModel(
+    id: 'centanafadina',
+    group: 'Neurología y Psiquiatría',
+    name: 'Centanafadina (EB-1020 / CTN)',
+    className: {'pt': 'Inibidor triplo da recaptação de monoaminas – SNDRI – Não-estimulante', 'es': 'Inhibidor triple de la recaptación de monoaminas – SNDRI – No estimulante'},
+    category: {'pt': 'Não-estimulantes / TDAH', 'es': 'No estimulantes / TDAH'},
+    route: 'VO',
+    doseType: 'fixed',
+    mgKg: null,
+    fixedDose: {
+      'pt': 'Adultos: Início 100 mg 2x/dia (200 mg/dia). Pode titular para 200 mg 2x/dia após 7 dias. Máx: 400 mg/dia.',
+      'es': 'Adultos: Inicio 100 mg 2 veces/día (200 mg/día). Se puede titular a 200 mg 2 veces/día tras 7 días. Máx: 400 mg/día.',
+    },
+    renalAlert: {
+      'pt': 'Usar com cautela em insuficiência renal moderada a grave; clearance reduzido.',
+      'es': 'Usar con precaución en insuficiencia renal moderada a grave; aclaramiento reducido.',
+    },
+    elderlyAlert: {
+      'pt': 'Monitorar rigorosamente PA e FC pelo sinergismo monoaminérgico triplo.',
+      'es': 'Monitorear estrictamente tensión arterial y FC por el sinergismo monoaminérgico triple.',
+    },
+    mechanism: {
+      'pt': 'SNDRI — bloqueia simultaneamente NET, DAT e SERT, restaurando equilíbrio sináptico cortical sem os picos de liberação das anfetaminas. Baixo potencial de abuso.',
+      'es': 'SNDRI — bloquea simultáneamente NET, DAT y SERT, restaurando el equilibrio sináptico cortical sin los picos de las anfetaminas. Bajo potencial de abuso.',
+    },
+    warning: {
+      'pt': 'Fármaco não-estimulante avançado com baixo potencial de abuso. Evitar uso concomitante com moduladores serotoninérgicos ou noradrenérgicos de alta potência (risco de síndrome serotoninérgica).',
+      'es': 'Fármaco no estimulante avanzado con bajo potencial de abuso. Evitar uso concomitante con moduladores serotoninérgicos o noradrenérgicos de alta potencia (riesgo de síndrome serotoninérgico).',
+    },
+    adverse: {
+      'pt': ['Náuseas', 'Cefaleia de início', 'Diminuição leve do apetite', 'Boca seca', 'Insônia inicial', 'Elevação sutil da PA', 'Tontura'],
+      'es': ['Náuseas', 'Cefalea al inicio', 'Disminución leve del apetito', 'Boca seca', 'Insomnio de conciliación', 'Elevación sutil de tensión arterial', 'Mareos'],
+    },
+    interactions: {
+      'graves': ['linezolida', 'tramadol', 'metadona', 'amitriptilina'],
+      'moderadas': ['fluoxetina', 'sertralina', 'venlafaxina', 'duloxetina', 'bupropiona'],
+      'leves': ['omeprazol', 'pantoprazol'],
+    },
   ),
 
 ];

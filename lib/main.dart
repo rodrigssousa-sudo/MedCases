@@ -839,6 +839,50 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
     } catch (_) {}
   }
 
+  /// Força exibição do modal de novidades — ignora cache (last_seen_update).
+  /// Chamado quando o usuário toca em "Novidades" na HomeScreen.
+  Future<void> _forceShowUpdate() async {
+    try {
+      final data = await FirestoreService.loadAppUpdate();
+      if (data.isEmpty) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Nenhuma novidade publicada no momento.'),
+              duration: Duration(seconds: 2),
+            ),
+          );
+        }
+        return;
+      }
+      if (data['active'] != true) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Nenhuma novidade ativa no momento.'),
+              duration: Duration(seconds: 2),
+            ),
+          );
+        }
+        return;
+      }
+      // Exibe o modal sempre — independente do last_seen_update
+      if (mounted) {
+        final version = data['version'] as String? ?? '';
+        await showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (_) => _AppUpdateDialog(data: data),
+        );
+        // Atualiza o cache para que não apareça automaticamente na próxima abertura
+        if (version.isNotEmpty) {
+          final prefs = await SharedPreferences.getInstance();
+          await prefs.setString('last_seen_update', version);
+        }
+      }
+    } catch (_) {}
+  }
+
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
@@ -910,6 +954,7 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
         onSubTabChange: (i) => setState(() => _rxProtoSub = i),
         openProtocol: _openProtocol,
         onOpenNotes: () => showNotesSheet(context),
+        onCheckUpdate: _forceShowUpdate,
       ),
       _RxProtoCombo(                               // 1 — Rx/Proto combo
         subTab: _rxProtoSub,

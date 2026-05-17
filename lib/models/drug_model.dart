@@ -18,6 +18,10 @@ class DrugModel {
   final Map<String, String>? mechanism;
   final Map<String, String>? warning;
   final Map<String, dynamic>? adverse;
+  /// Interações medicamentosas agrupadas por severidade.
+  /// Chaves esperadas: 'graves', 'moderadas', 'leves'.
+  /// Valores: lista de IDs de fármacos (String).
+  final Map<String, List<String>>? interactions;
 
   const DrugModel({
     required this.id,
@@ -37,6 +41,7 @@ class DrugModel {
     this.mechanism,
     this.warning,
     this.adverse,
+    this.interactions,
   });
 
   String getField(Map<String, String>? field, String lang) {

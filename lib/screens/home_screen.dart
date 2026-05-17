@@ -22,6 +22,7 @@ class HomeScreen extends StatelessWidget {
   final ValueChanged<int> onSubTabChange;
   final Function(String) openProtocol;
   final VoidCallback onOpenNotes;
+  final VoidCallback? onCheckUpdate;
 
   const HomeScreen({
     super.key,
@@ -29,6 +30,7 @@ class HomeScreen extends StatelessWidget {
     required this.onSubTabChange,
     required this.openProtocol,
     required this.onOpenNotes,
+    this.onCheckUpdate,
   });
 
   @override
@@ -133,12 +135,13 @@ class HomeScreen extends StatelessWidget {
         _HomeDivider(dark: dark),
         const SizedBox(height: 16),
 
-        // ── Notas · Recentes · Favoritos ──────────────────────────────────
+        // ── Notas · Recentes · Favoritos · Novidades ──────────────────────
         _QuickShortcuts(
           dark: dark,
           isEs: isEs,
           openProtocol: openProtocol,
           onOpenNotes: onOpenNotes,
+          onCheckUpdate: onCheckUpdate,
         ),
 
         const SizedBox(height: 16),
@@ -830,11 +833,13 @@ class _QuickShortcuts extends StatelessWidget {
   final bool isEs;
   final Function(String) openProtocol;
   final VoidCallback onOpenNotes;
+  final VoidCallback? onCheckUpdate;
   const _QuickShortcuts({
     required this.dark,
     required this.isEs,
     required this.openProtocol,
     required this.onOpenNotes,
+    this.onCheckUpdate,
   });
 
   @override
@@ -868,6 +873,12 @@ class _QuickShortcuts extends StatelessWidget {
         color: const Color(0xFF6C2BD9),
         label: isEs ? 'Favoritos' : 'Favoritos',
         onTap: () => _openFavoritos(context),
+      ),
+      _ShortcutItem(
+        icon: Icons.auto_awesome_rounded,
+        color: const Color(0xFF1F6B48),
+        label: isEs ? 'Novedades' : 'Novidades',
+        onTap: onCheckUpdate ?? () {},
       ),
     ];
 
