@@ -730,221 +730,285 @@ class _WaHeader extends StatelessWidget {
     this.keyLoading = false,
   });
 
+  // ── Paleta chumbo ──────────────────────────────────────────────
+  static const _kBg1   = Color(0xFF1A1A1A); // chumbo escuro
+  static const _kBg2   = Color(0xFF252525); // chumbo médio
+  static const _kBg3   = Color(0xFF2E2E2E); // chumbo claro
+  static const _kGold  = Color(0xFFC5A365); // dourado
+  static const _kGoldL = Color(0xFFFFE8A6); // dourado claro
+  static const _kGreen = Color(0xFF4ADE80); // verde status
+
   @override
   Widget build(BuildContext context) {
+    final isConnected = geminiConnected || hasRealAi;
+
+    final String modelLabel = keyLoading
+        ? 'Conectando...'
+        : geminiConnected
+            ? 'Gemini 1.5 Flash'
+            : hasRealAi
+                ? 'GPT-4o mini'
+                : (lang == 'es' ? 'Base clínica local' : 'Base clínica local');
+
     return Container(
       decoration: const BoxDecoration(
         gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [Color(0xFF0F1C14), Color(0xFF1B3D2A), Color(0xFF1F6B48)],
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [_kBg1, _kBg2, _kBg3],
+        ),
+        // Linha dourada sutil na base do header
+        border: Border(
+          bottom: BorderSide(color: Color(0xFF3A3A3A), width: 1),
         ),
       ),
-      child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-          child: Row(children: [
-            // Avatar
-            Container(
-              width: 36, height: 36,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: Colors.white.withValues(alpha: 0.12),
-              ),
-              child: const Center(
-                child: Icon(Icons.psychology_rounded,
-                  color: Color(0xFFFFE8A6), size: 20),
-              ),
-            ),
-            const SizedBox(width: 10),
-            // Nome + status
-            Expanded(child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Text('MedCases IA',
-                  style: TextStyle(
-                    fontSize: 15, fontWeight: FontWeight.w800,
-                    color: Colors.white, letterSpacing: -0.2)),
-                Row(mainAxisSize: MainAxisSize.min, children: [
-                  if (keyLoading)
-                    // Indicador pulsante enquanto chave carrega do Firestore
-                    SizedBox(
-                      width: 8, height: 8,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 1.2,
-                        color: Colors.white.withValues(alpha: 0.5),
-                      ),
-                    )
-                  else
-                    Container(
-                      width: 6, height: 6,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: hasRealAi
-                            ? const Color(0xFF4ADE80)   // verde = GPT ativo
-                            : Colors.white.withValues(alpha: 0.35), // cinza = local
-                      ),
-                    ),
-                  const SizedBox(width: 5),
-                  Text(
-                    keyLoading
-                        ? 'Conectando...'
-                        : (geminiConnected
-                            ? 'Gemini 1.5 Flash • online'
-                            : (hasRealAi
-                                ? 'GPT-4o mini • online'
-                                : (lang == 'es'
-                                    ? 'Base clínica local • activo siempre'
-                                    : 'Base clínica local • sempre ativa'))),
-                    style: TextStyle(
-                      fontSize: 10,
-                      color: keyLoading
-                          ? Colors.white.withValues(alpha: 0.40)
-                          : (hasRealAi
-                              ? const Color(0xFF4ADE80)
-                              : Colors.white.withValues(alpha: 0.55)),
-                      fontWeight: FontWeight.w600,
-                    )),
-                ]),
-              ],
-            )),
-            // Botão Conectar IA / Conectado
-            GestureDetector(
-              onTap: onSettings,
-              child: AnimatedContainer(
-                duration: const Duration(milliseconds: 300),
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
-                  color: geminiConnected
-                      ? const Color(0xFF4ADE80).withValues(alpha: 0.18)
-                      : hasRealAi
-                          ? const Color(0xFF4ADE80).withValues(alpha: 0.12)
-                          : Colors.white.withValues(alpha: 0.10),
-                  border: Border.all(
-                    color: geminiConnected
-                        ? const Color(0xFF4ADE80).withValues(alpha: 0.55)
-                        : hasRealAi
-                            ? const Color(0xFF4ADE80).withValues(alpha: 0.35)
-                            : Colors.white.withValues(alpha: 0.20),
-                    width: 1,
-                  ),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    if (keyLoading)
-                      SizedBox(
-                        width: 9, height: 9,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 1.4,
-                          color: Colors.white.withValues(alpha: 0.6),
-                        ),
-                      )
-                    else
-                      Icon(
-                        geminiConnected
-                            ? Icons.check_circle_rounded
-                            : hasRealAi
-                                ? Icons.check_circle_outline_rounded
-                                : Icons.link_rounded,
-                        size: 13,
-                        color: (geminiConnected || hasRealAi)
-                            ? const Color(0xFF4ADE80)
-                            : Colors.white.withValues(alpha: 0.55),
-                      ),
-                    const SizedBox(width: 5),
-                    Text(
-                      keyLoading
-                          ? 'Conectando...'
-                          : (geminiConnected || hasRealAi)
-                              ? (lang == 'es' ? 'Conectado' : 'Conectado')
-                              : (lang == 'es' ? 'Conectar IA' : 'Conectar IA'),
-                      style: TextStyle(
-                        fontSize: 11,
-                        fontWeight: FontWeight.w700,
-                        color: (geminiConnected || hasRealAi)
-                            ? const Color(0xFF4ADE80)
-                            : Colors.white.withValues(alpha: 0.75),
-                        letterSpacing: 0.1,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            const SizedBox(width: 6),
-            // Botão histórico — sempre visível, badge com número de sessões
-            GestureDetector(
-              onTap: onHistory,
-              child: Stack(
-                clipBehavior: Clip.none,
+      child: SafeArea(
+        bottom: false,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(14, 10, 10, 10),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // ── Linha 1: avatar + título + ações principais ──────────
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
+                  // Avatar dourado
                   Container(
-                    padding: const EdgeInsets.all(6),
+                    width: 38, height: 38,
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8),
-                      color: Colors.white.withValues(alpha: 0.1),
+                      shape: BoxShape.circle,
+                      color: _kGold.withValues(alpha: 0.15),
+                      border: Border.all(
+                        color: _kGold.withValues(alpha: 0.45), width: 1.5),
                     ),
-                    child: Icon(Icons.history_rounded, size: 18,
-                      color: Colors.white.withValues(alpha: 0.8)),
+                    child: const Center(
+                      child: Icon(Icons.psychology_rounded,
+                        color: _kGoldL, size: 20),
+                    ),
                   ),
-                  if (historyCount > 0)
-                    Positioned(
-                      top: -4, right: -4,
+                  const SizedBox(width: 10),
+
+                  // Título + modelo
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Text(
+                          'MedCases IA',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w900,
+                            color: Colors.white,
+                            letterSpacing: -0.3,
+                          ),
+                        ),
+                        const SizedBox(height: 2),
+                        Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            // Dot de status
+                            if (keyLoading)
+                              SizedBox(
+                                width: 7, height: 7,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 1.2,
+                                  color: Colors.white.withValues(alpha: 0.45),
+                                ),
+                              )
+                            else
+                              Container(
+                                width: 7, height: 7,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: isConnected
+                                      ? _kGreen
+                                      : Colors.white.withValues(alpha: 0.3),
+                                ),
+                              ),
+                            const SizedBox(width: 5),
+                            Text(
+                              modelLabel,
+                              style: TextStyle(
+                                fontSize: 11,
+                                fontWeight: FontWeight.w600,
+                                color: isConnected
+                                    ? _kGreen
+                                    : Colors.white.withValues(alpha: 0.45),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  // ── Ações direita ────────────────────────────────────
+                  // Botão histórico
+                  GestureDetector(
+                    onTap: onHistory,
+                    child: Stack(
+                      clipBehavior: Clip.none,
+                      children: [
+                        Container(
+                          width: 36, height: 36,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            color: Colors.white.withValues(alpha: 0.07),
+                            border: Border.all(
+                              color: Colors.white.withValues(alpha: 0.10)),
+                          ),
+                          child: Icon(Icons.history_rounded, size: 18,
+                            color: Colors.white.withValues(alpha: 0.75)),
+                        ),
+                        if (historyCount > 0)
+                          Positioned(
+                            top: -4, right: -4,
+                            child: Container(
+                              width: 15, height: 15,
+                              decoration: const BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: _kGold,
+                              ),
+                              child: Center(
+                                child: Text(
+                                  '$historyCount',
+                                  style: const TextStyle(
+                                    fontSize: 8,
+                                    fontWeight: FontWeight.w900,
+                                    color: Color(0xFF1A1A1A),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: 6),
+
+                  // Botão Limpar — só com mensagens
+                  if (hasMessages) ...[
+                    GestureDetector(
+                      onTap: onClear,
                       child: Container(
-                        width: 14, height: 14,
-                        decoration: const BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Color(0xFFFFE8A6),
+                        height: 36,
+                        padding: const EdgeInsets.symmetric(horizontal: 12),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: _kGold.withValues(alpha: 0.12),
+                          border: Border.all(
+                            color: _kGold.withValues(alpha: 0.35), width: 1),
                         ),
                         child: Center(
                           child: Text(
-                            '$historyCount',
+                            lang == 'es' ? 'Limpiar' : 'Limpar',
                             style: const TextStyle(
-                              fontSize: 8, fontWeight: FontWeight.w900,
-                              color: Color(0xFF0F1C14)),
+                              fontSize: 12,
+                              fontWeight: FontWeight.w700,
+                              color: _kGoldL,
+                            ),
                           ),
                         ),
                       ),
                     ),
+                    const SizedBox(width: 6),
+                  ],
+
+                  // Botão menu
+                  GestureDetector(
+                    onTap: () => Scaffold.of(context).openEndDrawer(),
+                    child: Container(
+                      width: 36, height: 36,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: Colors.white.withValues(alpha: 0.07),
+                        border: Border.all(
+                          color: Colors.white.withValues(alpha: 0.10)),
+                      ),
+                      child: Icon(Icons.menu_rounded, size: 18,
+                        color: Colors.white.withValues(alpha: 0.75)),
+                    ),
+                  ),
                 ],
               ),
-            ),
-            const SizedBox(width: 6),
-            // Limpar conversa — só aparece quando há mensagens
-            if (hasMessages)
-              GestureDetector(
-                onTap: onClear,
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8),
-                    color: Colors.white.withValues(alpha: 0.1),
-                  ),
-                  child: Text(
-                    lang == 'es' ? 'Limpiar' : 'Limpar',
-                    style: const TextStyle(
-                      fontSize: 11, fontWeight: FontWeight.w700,
-                      color: Color(0xFFFFE8A6))),
+
+              // ── Linha 2: badge status conexão (só quando conectado) ──
+              if (!keyLoading) ...[
+                const SizedBox(height: 8),
+                Row(
+                  children: [
+                    // Badge conexão — abre settings
+                    GestureDetector(
+                      onTap: onSettings,
+                      child: AnimatedContainer(
+                        duration: const Duration(milliseconds: 300),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10, vertical: 5),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          color: isConnected
+                              ? _kGreen.withValues(alpha: 0.10)
+                              : Colors.white.withValues(alpha: 0.06),
+                          border: Border.all(
+                            color: isConnected
+                                ? _kGreen.withValues(alpha: 0.40)
+                                : Colors.white.withValues(alpha: 0.15),
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              isConnected
+                                  ? Icons.check_circle_rounded
+                                  : Icons.link_rounded,
+                              size: 12,
+                              color: isConnected
+                                  ? _kGreen
+                                  : Colors.white.withValues(alpha: 0.45),
+                            ),
+                            const SizedBox(width: 4),
+                            Text(
+                              isConnected
+                                  ? (lang == 'es' ? 'Conectado' : 'Conectado')
+                                  : (lang == 'es' ? 'Conectar IA' : 'Conectar IA'),
+                              style: TextStyle(
+                                fontSize: 11,
+                                fontWeight: FontWeight.w700,
+                                color: isConnected
+                                    ? _kGreen
+                                    : Colors.white.withValues(alpha: 0.55),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 6),
+                    // Modo de operação (texto pequeno)
+                    Text(
+                      isConnected
+                          ? (lang == 'es'
+                              ? 'online · siempre activo'
+                              : 'online · sempre ativo')
+                          : (lang == 'es'
+                              ? 'base clínica · siempre activo'
+                              : 'base clínica · sempre ativo'),
+                      style: TextStyle(
+                        fontSize: 10,
+                        color: Colors.white.withValues(alpha: 0.35),
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
                 ),
-              ),
-            const SizedBox(width: 4),
-            // Botão menu — sempre visível
-            GestureDetector(
-              onTap: () => Scaffold.of(context).openEndDrawer(),
-              child: Container(
-                padding: const EdgeInsets.all(6),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8),
-                  color: Colors.white.withValues(alpha: 0.1),
-                ),
-                child: Icon(Icons.menu_rounded, size: 18,
-                  color: Colors.white.withValues(alpha: 0.8)),
-              ),
-            ),
-          ]),
+              ],
+            ],
+          ),
         ),
+      ),
     );
   }
 }
