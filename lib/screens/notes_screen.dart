@@ -789,6 +789,9 @@ class NoteEditorSheetState extends State<NoteEditorSheet> {
         ? nc.border.withValues(alpha: 0.20)
         : nc.border.withValues(alpha: 0.60);
 
+    final keyboardH = MediaQuery.viewInsetsOf(context).bottom;
+    final screenH   = MediaQuery.sizeOf(context).height;
+
     return GestureDetector(
       // Fecha ao tocar fora dos campos
       onTap: () => FocusScope.of(context).unfocus(),
@@ -797,24 +800,34 @@ class NoteEditorSheetState extends State<NoteEditorSheet> {
           color: sheetBg,
           borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
         ),
-        padding: EdgeInsets.fromLTRB(
-          20, 12, 20, MediaQuery.of(context).viewInsets.bottom + 24),
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-
-              // Drag handle
-              Center(
+        // Altura máxima = 92% da tela, para que o sheet não ultrapasse
+        // e o scroll interno funcione quando o teclado estiver aberto
+        constraints: BoxConstraints(maxHeight: screenH * 0.92),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // ── Drag handle sempre visível no topo ─────────────────────────
+            Padding(
+              padding: const EdgeInsets.only(top: 12, bottom: 4),
+              child: Center(
                 child: Container(
                   width: 36, height: 4,
-                  margin: const EdgeInsets.only(bottom: 18),
                   decoration: BoxDecoration(
                     color: dark ? Colors.white24 : Colors.black12,
                     borderRadius: BorderRadius.circular(2)),
                 ),
               ),
+            ),
+            // ── Conteúdo rolável ───────────────────────────────────────────
+            Flexible(
+              child: SingleChildScrollView(
+                keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+                physics: const ClampingScrollPhysics(),
+                padding: EdgeInsets.fromLTRB(20, 8, 20, keyboardH + 28),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
 
               // Título da sheet
               Row(children: [
@@ -1062,8 +1075,11 @@ class NoteEditorSheetState extends State<NoteEditorSheet> {
                             fontSize: 14, fontWeight: FontWeight.w700)),
                 ),
               ),
-            ],
-          ),
+                  ],
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
