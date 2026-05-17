@@ -147,6 +147,13 @@ class _AiScreenState extends State<AiScreen> {
   final List<_ChatSession> _chatHistory = [];
   static const _kHistKey = 'medcases_ia_chat_history_v1';
 
+  /// ID da sessão restaurada do histórico (se a sessão atual veio do histórico
+  /// sem nenhuma mensagem nova do usuário, não deve ser re-salva ao limpar).
+  String? _restoredSessionId;
+
+  /// Indica se o usuário enviou ao menos 1 mensagem nova após restaurar uma sessão.
+  bool _hasNewMessageAfterRestore = false;
+
   // ── TTS (Text-to-Speech) ─────────────────────────────────────────────────
   late final FlutterTts _tts;
   bool _ttsReady        = false;
@@ -379,10 +386,15 @@ class _AiScreenState extends State<AiScreen> {
 
   /// Salva a sessão atual no histórico antes de limpar.
   /// Só salva se houver ao menos 1 mensagem do usuário.
+  /// Se a sessão foi restaurada do histórico e o usuário não enviou nenhuma
+  /// mensagem nova, ela NÃO é re-salva (já estava salva, nada mudou).
   Future<void> _saveCurrentSessionToHistory(AppProvider p) async {
     // Filtra só mensagens reais (exclui saudação inicial)
     final userMsgs = _messages.where((m) => m.role == 'user').toList();
     if (userMsgs.isEmpty) return;
+
+    // Sessão restaurada sem novas mensagens → não re-salva
+    if (_restoredSessionId != null && !_hasNewMessageAfterRestore) return;
 
     final now = DateTime.now();
     final summary = userMsgs.first.text;
@@ -391,14 +403,25 @@ class _AiScreenState extends State<AiScreen> {
         ? _messages.sublist(_messages.length - 20)
         : List<_ChatMsg>.from(_messages);
 
+    // Se é uma sessão restaurada com novas mensagens, atualiza a entrada
+    // existente em vez de criar uma duplicata
+    final existingIdx = _restoredSessionId != null
+        ? _chatHistory.indexWhere((s) => s.id == _restoredSessionId)
+        : -1;
+
     final session = _ChatSession(
-      id: now.toIso8601String(),
+      // Mantém o ID original se for atualização, senso gera novo
+      id: existingIdx >= 0 ? _restoredSessionId! : now.toIso8601String(),
       savedAt: now,
       summary: summary.length > 100 ? summary.substring(0, 100) : summary,
       messages: msgsToSave,
     );
 
     setState(() {
+      // Remove entrada antiga (se existia) antes de reinserir no topo
+      if (existingIdx >= 0) {
+        _chatHistory.removeAt(existingIdx);
+      }
       _chatHistory.insert(0, session);
       // Mantém apenas as 10 sessões mais recentes
       if (_chatHistory.length > 10) {
@@ -448,6 +471,9 @@ class _AiScreenState extends State<AiScreen> {
       _lastAiIndex = -1;
       _greetingDone = true;
       _userScrolledUp = false;
+      // Marca a sessão como restaurada para não re-salvar sem alteração
+      _restoredSessionId = session.id;
+      _hasNewMessageAfterRestore = false;
     });
     p.clearAiHistory();
     // Recria o contexto de IA a partir das mensagens restauradas
@@ -485,6 +511,8 @@ class _AiScreenState extends State<AiScreen> {
       _thinking = true;
       _aiError  = false;
       _userScrolledUp = false; // reset ao enviar — desce para mostrar "pensando"
+      // Marca que o usuário enviou nova mensagem (relevante ao restaurar sessão)
+      _hasNewMessageAfterRestore = true;
     });
     _queryCtrl.clear();
     _scrollDown(force: true); // força scroll ao enviar mensagem do usuário
@@ -520,6 +548,7 @@ class _AiScreenState extends State<AiScreen> {
   void _clearChat() {
     final p = context.read<AppProvider>();
     // Salva sessão atual no histórico antes de limpar
+    // (não-op se foi sessão restaurada sem novas mensagens)
     _saveCurrentSessionToHistory(p);
     setState(() {
       _messages
@@ -527,6 +556,9 @@ class _AiScreenState extends State<AiScreen> {
         ..add(_ChatMsg(role: 'ai', text: _buildGreeting(p.userName, p.lang)));
       _aiError = false;
       _userScrolledUp = false;
+      // Reseta flags de sessão restaurada para o novo chat em branco
+      _restoredSessionId = null;
+      _hasNewMessageAfterRestore = false;
     });
     _queryCtrl.clear();
     _focusNode.unfocus();
@@ -1972,8 +2004,8 @@ class _AiStatusSheetState extends State<_AiStatusSheet> {
                   const SizedBox(width: 8),
                   Expanded(child: Text(
                     isEs
-                        ? '${drugsDatabase.length} fármacos · protocolos de urgencias · siempre activo'
-                        : '${drugsDatabase.length} fármacos · protocolos de urgência · sempre ativo',
+                        ? '${uniqueDrugsCount} fármacos · protocolos de urgencias · siempre activo'
+                        : '${uniqueDrugsCount} fármacos · protocolos de urgência · sempre ativo',
                     style: TextStyle(
                       fontSize: 11,
                       color: hasAnyAi

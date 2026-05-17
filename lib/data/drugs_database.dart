@@ -4,6 +4,19 @@ import '../models/drug_model.dart';
 /// Fontes: Harrison's Principles of Internal Medicine (21ª ed.),
 /// Goodman & Gilman's Pharmacological Basis of Therapeutics (14ª ed.),
 /// Micromedex, UpToDate, SBC, SBD, AHA/ACC, IDSA, SCCM guidelines.
+
+/// Retorna o número de fármacos únicos (por ID) no banco.
+/// Usa-se esta função nos headers em vez de drugsDatabase.length,
+/// pois o banco pode conter entradas duplicadas (mesmo fármaco em
+/// múltiplos grupos) para facilitar a busca por especialidade.
+int get uniqueDrugsCount {
+  final ids = <String>{};
+  for (final d in drugsDatabase) {
+    ids.add(d.id);
+  }
+  return ids.length;
+}
+
 const List<DrugModel> drugsDatabase = [
 
   DrugModel(

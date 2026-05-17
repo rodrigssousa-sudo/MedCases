@@ -71,8 +71,8 @@ class HomeScreen extends StatelessWidget {
           icon: Icons.medication_rounded,
           label: 'FÁRMACOS',
           subtitle: isEs
-              ? '${drugsDatabase.length} fármacos · Interacciones · Protocolos'
-              : '${drugsDatabase.length} fármacos · Interações · Protocolos',
+              ? '${uniqueDrugsCount} fármacos · Interacciones · Protocolos'
+              : '${uniqueDrugsCount} fármacos · Interações · Protocolos',
           gradientColors: const [Color(0xFF3B2200), Color(0xFF6B3A00), Color(0xFF9A5B00)],
           accentColor: const Color(0xFFFBBF24),
           dark: dark,
@@ -2002,8 +2002,8 @@ class _FarmacosShell extends StatelessWidget {
           icon:    Icons.medication_rounded,
           label:   'FÁRMACOS',
           subtitle: isEs
-              ? '${drugsDatabase.length} fármacos · Interacciones · Protocolos'
-              : '${drugsDatabase.length} fármacos · Interações · Protocolos',
+              ? '${uniqueDrugsCount} fármacos · Interacciones · Protocolos'
+              : '${uniqueDrugsCount} fármacos · Interações · Protocolos',
         ),
         const Expanded(child: DrugsScreen(hideHeader: true)),
       ]),

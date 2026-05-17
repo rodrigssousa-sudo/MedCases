@@ -340,7 +340,7 @@ class _Header extends StatelessWidget {
               ),
             ),
             child: Text(
-              isEs ? '${drugsDatabase.length} fármacos' : '${drugsDatabase.length} fármacos',
+              isEs ? '${uniqueDrugsCount} fármacos' : '${uniqueDrugsCount} fármacos',
               style: const TextStyle(
                 fontSize: 10,
                 fontWeight: FontWeight.w700,
