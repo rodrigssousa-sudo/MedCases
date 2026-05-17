@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/app_provider.dart';
 import '../widgets/common_widgets.dart';
-import '../models/protocol_model.dart';
-import 'protocols_screen.dart' show showProtocolDetail;
 
 // ──────────────────────────────────────────────────────────────────
 // COLOR CONSTANTS — alinhadas com common_widgets.dart
@@ -1915,295 +1913,11 @@ class _InfusionTabState extends State<_InfusionTab> {
           ]),
         ),
 
-        const SizedBox(height: 12),
-
-        // ── Card de Protocolos Clínicos ──────────────────────────────────────
-        ProtocolsCard(isEs: isEs),
-
       ]),
     );
   }
 }
 
-// ══════════════════════════════════════════════════════════════════
-//  Card de Protocolos Clínicos — exibido abaixo da calculadora
-// ══════════════════════════════════════════════════════════════════
-class ProtocolsCard extends StatefulWidget {
-  final bool isEs;
-  const ProtocolsCard({required this.isEs});
-  @override
-  State<ProtocolsCard> createState() => _ProtocolsCardState();
-}
-
-class _ProtocolsCardState extends State<ProtocolsCard> {
-  int _cat = 0; // categoria ativa
-
-  // Cada categoria: (labelPt, labelEs, icon, [ids])
-  static const _categories = [
-    (
-      'Emergências', 'Emergencias', Icons.emergency_rounded,
-      [
-        'pcr_adulto', 'anafilaxia', 'sepse', 'choque_cardiogenico',
-        'choque_septico_avancado', 'choque_hipovolemico', 'tep_agudo',
-        'tromboembolismo_pulmonar', 'parada_respiratoria', 'politrauma_atls',
-        'anafilaxia_refrataria', 'hemorragia_intra_abdominal',
-      ]
-    ),
-    (
-      'Cardio / Neuro', 'Cardio / Neuro', Icons.favorite_rounded,
-      [
-        'iam_congestao', 'sindrome_coronariana_sem_st', 'fa_aguda',
-        'tpsv', 'bradiarritmia_grave', 'crise_hipertensiva',
-        'avc_isquemico', 'avc_hemorragico', 'status_epilepticus',
-        'insuficiencia_cardiaca_descomp', 'edema_agudo_pulmao',
-        'pericardite_aguda', 'miocardite_aguda',
-      ]
-    ),
-    (
-      'Respiratório', 'Respiratorio', Icons.air_rounded,
-      [
-        'asma_grave', 'dpoc_exacerbacao', 'crise_asmatica_quase_fatal',
-        'pneumonia_grave', 'pneumonia_aspirativa',
-        'hemoptise_macica', 'sindrome_compartimental',
-      ]
-    ),
-    (
-      'Metabólico', 'Metabólico', Icons.science_rounded,
-      [
-        'cad_shh', 'cetoacidose_diabetica', 'hipoglicemia_grave',
-        'hiperpotassemia_grave', 'hipercalemia_grave',
-        'hipernatremia_grave', 'hiponatremia_grave',
-        'hipocalcemia_grave', 'lesao_renal_aguda',
-        'encefalopatia_hepatica', 'crise_adrenal',
-        'crise_tireotoxica', 'rabdomiolise_aguda',
-      ]
-    ),
-    (
-      'Digestivo / Outros', 'Digestivo / Otros', Icons.local_hospital_rounded,
-      [
-        'hda_varizeal', 'hda_nao_varicosa', 'hemorragia_digestiva_baixa',
-        'pancreatite_aguda_grave', 'pancreatite_aguda',
-        'coagulacao_intravascular', 'pbe_cirrose',
-        'obstrucao_intestinal', 'apendicite_aguda',
-        'colica_nefretica', 'colangite_aguda',
-        'neutropenia_febril', 'meningite_bacteriana',
-        'intoxicacao_exogena', 'intox_paracetamol', 'intox_opioides',
-        'intox_organofosforados', 'intox_triciclicos',
-        'intox_monoxido_carbono', 'delirium_tremens',
-        'eclampsia_hellp', 'hemorragia_pos_parto',
-        'agitacao_psicomotora', 'dengue_manejo',
-      ]
-    ),
-    (
-      'Pediátrico', 'Pediátrico', Icons.child_care_rounded,
-      [
-        'pcr_pediatrica', 'anafilaxia_ped', 'crise_asmatica_ped',
-        'mal_asmatico_ped', 'bronquiolite_aguda', 'laringite_estridulosa',
-        'meningite_pediatrica', 'crise_hipertensiva_ped',
-        'tromboembolismo_venoso_ped', 'sinusite_bacteriana_ped',
-        'convulsao_febril_ped', 'crise_de_anemia_falciforme',
-      ]
-    ),
-  ];
-
-  @override
-  Widget build(BuildContext context) {
-    final p    = context.watch<AppProvider>();
-    final dark = p.darkMode;
-    final isEs = widget.isEs;
-
-    final cardBg  = dark ? const Color(0xFF111C17) : Colors.white;
-    final borderC = dark ? const Color(0xFF1F3328) : const Color(0xFFDCEDDC);
-    const green   = kToolGreen;
-
-    final cat    = _categories[_cat];
-    final ids = cat.$4;
-
-    // Filtra os protocolos da categoria ativa que existem na base
-    final protos = ids
-        .map((id) => p.protocolsDB
-            .where((pr) => pr.id == id)
-            .firstOrNull)
-        .whereType<ProtocolModel>()
-        .toList();
-
-    return Container(
-      decoration: BoxDecoration(
-        color: cardBg,
-        borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: borderC),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: dark ? 0.25 : 0.06),
-            blurRadius: 8, offset: const Offset(0, 2)),
-        ],
-      ),
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisSize: MainAxisSize.min, children: [
-
-        // ── Cabeçalho ──────────────────────────────────────────────────
-        Container(
-          padding: const EdgeInsets.fromLTRB(16, 14, 16, 12),
-          decoration: BoxDecoration(
-            gradient: const LinearGradient(
-              begin: Alignment.topLeft, end: Alignment.bottomRight,
-              colors: [Color(0xFF07110d), Color(0xFF1B3D2A), kToolGreen],
-            ),
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(18)),
-          ),
-          child: Row(children: [
-            const Icon(Icons.menu_book_rounded, color: Color(0xFFFFE8A6), size: 18),
-            const SizedBox(width: 10),
-            Expanded(child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  isEs ? 'Protocolos Clínicos' : 'Protocolos Clínicos',
-                  style: const TextStyle(
-                    fontSize: 14, fontWeight: FontWeight.w900,
-                    color: Colors.white, letterSpacing: -0.2)),
-                Text(
-                  isEs
-                      ? '${p.protocolsDB.length} protocolos en la base'
-                      : '${p.protocolsDB.length} protocolos na base',
-                  style: TextStyle(
-                    fontSize: 10,
-                    color: Colors.white.withValues(alpha: 0.6),
-                    fontWeight: FontWeight.w500)),
-              ],
-            )),
-          ]),
-        ),
-
-        // ── Sub-categorias (chips horizontais) ─────────────────────────
-        Container(
-          color: dark ? const Color(0xFF0D1A12) : const Color(0xFFF2F8F2),
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-          child: SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Row(
-              children: List.generate(_categories.length, (i) {
-                final active = _cat == i;
-                final ci  = _categories[i];
-                final lbl = isEs ? ci.$2 : ci.$1;
-                final ico = ci.$3;
-                return GestureDetector(
-                  onTap: () => setState(() => _cat = i),
-                  child: AnimatedContainer(
-                    duration: const Duration(milliseconds: 160),
-                    margin: const EdgeInsets.only(right: 8),
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      color: active ? green : Colors.transparent,
-                      border: Border.all(
-                        color: active
-                            ? green
-                            : (dark ? Colors.white24 : Colors.black12)),
-                    ),
-                    child: Row(mainAxisSize: MainAxisSize.min, children: [
-                      Icon(ico, size: 12,
-                        color: active
-                            ? Colors.white
-                            : (dark ? Colors.white54 : Colors.black45)),
-                      const SizedBox(width: 5),
-                      Text(lbl,
-                        style: TextStyle(
-                          fontSize: 11, fontWeight: FontWeight.w700,
-                          color: active
-                              ? Colors.white
-                              : (dark ? Colors.white54 : Colors.black54))),
-                    ]),
-                  ),
-                );
-              }),
-            ),
-          ),
-        ),
-
-        // ── Lista de protocolos da categoria ───────────────────────────
-        if (protos.isEmpty)
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
-            child: Text(
-              isEs ? 'Sin protocolos en esta categoría' : 'Sem protocolos nesta categoria',
-              style: TextStyle(fontSize: 12, color: dark ? Colors.white38 : Colors.black38)),
-          )
-        else
-          Padding(
-            padding: const EdgeInsets.fromLTRB(12, 10, 12, 14),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: protos.map((proto) {
-                final title    = proto.getField(proto.title,    isEs ? 'es' : 'pt');
-                final severity = proto.getField(proto.severity, isEs ? 'es' : 'pt');
-
-                // Cor do badge de severidade
-                final sevLow  = severity.toLowerCase();
-                final Color sevColor;
-                if (sevLow.contains('crítico') || sevLow.contains('crítica') ||
-                    sevLow.contains('grave')    || sevLow.contains('alto')) {
-                  sevColor = const Color(0xFFDC2626);
-                } else if (sevLow.contains('moderado') || sevLow.contains('médio') ||
-                           sevLow.contains('urgência')  || sevLow.contains('urgencia')) {
-                  sevColor = const Color(0xFFD97706);
-                } else {
-                  sevColor = const Color(0xFF16A34A);
-                }
-
-                return GestureDetector(
-                  onTap: () => showProtocolDetail(context, proto),
-                  child: Container(
-                    margin: const EdgeInsets.only(bottom: 6),
-                    padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(12),
-                      color: dark
-                          ? const Color(0xFF162218)
-                          : const Color(0xFFF6FBF6),
-                      border: Border.all(
-                        color: dark
-                            ? const Color(0xFF1F3328)
-                            : const Color(0xFFD1EAD1)),
-                    ),
-                    child: Row(children: [
-                      Expanded(child: Text(
-                        title,
-                        style: TextStyle(
-                          fontSize: 12.5, fontWeight: FontWeight.w700,
-                          color: dark ? Colors.white : const Color(0xFF1A1A1A),
-                          height: 1.3),
-                      )),
-                      const SizedBox(width: 8),
-                      if (severity.isNotEmpty)
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 7, vertical: 3),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(6),
-                            color: sevColor.withValues(alpha: 0.12),
-                          ),
-                          child: Text(
-                            severity.length > 18
-                                ? '${severity.substring(0, 16)}…'
-                                : severity,
-                            style: TextStyle(
-                              fontSize: 9, fontWeight: FontWeight.w800,
-                              color: sevColor)),
-                        ),
-                      const SizedBox(width: 6),
-                      Icon(Icons.chevron_right_rounded,
-                        size: 16,
-                        color: dark ? Colors.white30 : Colors.black26),
-                    ]),
-                  ),
-                );
-              }).toList(),
-            ),
-          ),
-      ]),
-    );
-  }
-}
 
 class _VasoRefRow extends StatelessWidget {
   final String drug, dose, note;
@@ -2452,7 +2166,7 @@ class _ReferenceTab extends StatefulWidget {
 class _ReferenceTabState extends State<_ReferenceTab> {
   int _section = 0;
 
-  static const _sections = ['LABS', 'ECG', 'ANTÍDOTOS', 'ACESSO', 'GASOMETRIA', 'PROTOCOLOS'];
+  static const _sections = ['LABS', 'ECG', 'ANTÍDOTOS', 'ACESSO', 'GASOMETRIA'];
 
   @override
   Widget build(BuildContext context) {
@@ -2506,7 +2220,6 @@ class _ReferenceTabState extends State<_ReferenceTab> {
       case 2: return _buildAntidotes(isEs);
       case 3: return _buildAccess(isEs);
       case 4: return _buildGasometry(isEs);
-      case 5: return _buildProtocols(isEs);
       default: return const SizedBox();
     }
   }
@@ -2815,10 +2528,6 @@ class _ReferenceTabState extends State<_ReferenceTab> {
     ]);
   }
 
-  // ── PROTOCOLOS ────────────────────────────────────────────────────
-  Widget _buildProtocols(bool isEs) {
-    return ProtocolsCard(isEs: isEs);
-  }
 }
 
 // ── Widgets auxiliares da aba Referência ─────────────────────────
