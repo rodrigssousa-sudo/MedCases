@@ -57,8 +57,8 @@ class HomeScreen extends StatelessWidget {
           subtitle: isEs
               ? 'Modelos · Emergencias · Guardia · Clínica'
               : 'Modelos · Emergências · Plantão · Clínica',
-          gradientColors: const [Color(0xFF0E0818), Color(0xFF1E0A38), Color(0xFF3B1578)],
-          accentColor: const Color(0xFFD4A017),
+          gradientColors: const [Color(0xFF2A0B52), Color(0xFF3D1280), Color(0xFF5B21B6)],
+          accentColor: const Color(0xFFA78BFA),
           dark: dark,
           onTap: () => Navigator.of(context).push(
             _slideRoute(const _PrescripcionesShell()),
@@ -73,7 +73,7 @@ class HomeScreen extends StatelessWidget {
           subtitle: isEs
               ? '${drugsDatabase.length} fármacos · Interacciones · Protocolos'
               : '${drugsDatabase.length} fármacos · Interações · Protocolos',
-          gradientColors: const [Color(0xFF1E1000), Color(0xFF3D2000), Color(0xFF6B3A00)],
+          gradientColors: const [Color(0xFF3B2200), Color(0xFF6B3A00), Color(0xFF9A5B00)],
           accentColor: const Color(0xFFFBBF24),
           dark: dark,
           onTap: () => Navigator.of(context).push(
@@ -89,8 +89,8 @@ class HomeScreen extends StatelessWidget {
           subtitle: isEs
               ? '${DrugInteractionService.totalInteractions} pares · Severidad · Manejo clínico'
               : '${DrugInteractionService.totalInteractions} pares · Severidade · Manejo clínico',
-          gradientColors: const [Color(0xFF1A0A2E), Color(0xFF3D1F6B), Color(0xFF6B3FA8)],
-          accentColor: const Color(0xFFA78BFA),
+          gradientColors: const [Color(0xFF3B0A1E), Color(0xFF5E1234), Color(0xFF8B1E4F)],
+          accentColor: const Color(0xFFFF6BA0),
           dark: dark,
           onTap: () => Navigator.of(context).push(
             _slideRoute(const DrugInteractionsScreen()),
@@ -104,7 +104,7 @@ class HomeScreen extends StatelessWidget {
             child: _HomeCardHalf(
               icon: Icons.person_rounded,
               label: 'ADULTO',
-              gradientColors: const [Color(0xFF0F2318), Color(0xFF1B4A2E), Color(0xFF1F6B48)],
+              gradientColors: const [Color(0xFF052E1A), Color(0xFF0A5C2E), Color(0xFF15803D)],
               accentColor: const Color(0xFF4ADE80),
               dark: dark,
               onTap: () => Navigator.of(context).push(
@@ -117,8 +117,8 @@ class HomeScreen extends StatelessWidget {
             child: _HomeCardHalf(
               icon: Icons.child_care_rounded,
               label: isEs ? 'PEDIATRÍA' : 'PEDIATRIA',
-              gradientColors: const [Color(0xFF0F1E30), Color(0xFF1A3A58), Color(0xFF1D5F8A)],
-              accentColor: const Color(0xFF60A5FA),
+              gradientColors: const [Color(0xFF0A2540), Color(0xFF103D70), Color(0xFF2563EB)],
+              accentColor: const Color(0xFF93C5FD),
               dark: dark,
               onTap: () => Navigator.of(context).push(
                 _slideRoute(const _PediatricsShell()),
@@ -1820,7 +1820,7 @@ class _PediatricsShell extends StatelessWidget {
             gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
-              colors: [Color(0xFF0A1830), Color(0xFF0F2648), Color(0xFF1D5F8A)],
+              colors: [Color(0xFF0A2540), Color(0xFF103D70), Color(0xFF2563EB)],
             ),
           ),
           child: SafeArea(
@@ -1842,7 +1842,7 @@ class _PediatricsShell extends StatelessWidget {
                     color: Colors.white.withValues(alpha: 0.10),
                   ),
                   child: const Icon(Icons.child_care_rounded,
-                      size: 20, color: Color(0xFF60A5FA)),
+                      size: 20, color: Color(0xFF93C5FD)),
                 ),
                 const SizedBox(width: 10),
                 Expanded(
@@ -1902,7 +1902,7 @@ class _AdultoShell extends StatelessWidget {
             gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
-              colors: [Color(0xFF0F1C14), Color(0xFF1B3D2A), Color(0xFF1F6B48)],
+              colors: [Color(0xFF052E1A), Color(0xFF0A5C2E), Color(0xFF15803D)],
             ),
           ),
           child: SafeArea(
@@ -1964,7 +1964,7 @@ class _FarmacosShell extends StatelessWidget {
             gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
-              colors: [Color(0xFF1E1000), Color(0xFF3D2000), Color(0xFF6B3A00)],
+              colors: [Color(0xFF3B2200), Color(0xFF6B3A00), Color(0xFF9A5B00)],
             ),
           ),
           child: SafeArea(
@@ -2090,7 +2090,7 @@ class _PrescripcionesShell extends StatelessWidget {
             gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
-              colors: [Color(0xFF0E0818), Color(0xFF1E0A38), Color(0xFF3B1578)],
+              colors: [Color(0xFF2A0B52), Color(0xFF3D1280), Color(0xFF5B21B6)],
             ),
           ),
           child: SafeArea(
@@ -2108,7 +2108,7 @@ class _PrescripcionesShell extends StatelessWidget {
                     borderRadius: BorderRadius.circular(10),
                     color: Colors.white.withValues(alpha: 0.10),
                   ),
-                  child: const Icon(Icons.description_rounded, size: 20, color: Color(0xFFD4A017)),
+                  child: const Icon(Icons.description_rounded, size: 20, color: Color(0xFFA78BFA)),
                 ),
                 const SizedBox(width: 10),
                 Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
