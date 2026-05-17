@@ -340,12 +340,14 @@ class _AiScreenState extends State<AiScreen> {
   void _onScroll() {
     if (!_scrollCtrl.hasClients) return;
     final pos = _scrollCtrl.position;
-    // Considera "perto do fundo" se estiver a menos de 80px do máximo
-    final nearBottom = pos.pixels >= pos.maxScrollExtent - 80;
-    if (nearBottom && _userScrolledUp) {
-      setState(() => _userScrolledUp = false);
-    } else if (!nearBottom && !_userScrolledUp) {
-      setState(() => _userScrolledUp = true);
+    // Considera "perto do fundo" se estiver a menos de 120px do máximo
+    final nearBottom = pos.pixels >= pos.maxScrollExtent - 120;
+    // ⚡ Sem setState aqui — usa variável simples para evitar rebuild no scroll
+    final wasUp = _userScrolledUp;
+    _userScrolledUp = !nearBottom;
+    // Só reconstrói se o estado mudou (botão scroll-to-bottom aparece/desaparece)
+    if (wasUp != _userScrolledUp && mounted) {
+      setState(() {});
     }
   }
 
@@ -637,25 +639,35 @@ class _AiScreenState extends State<AiScreen> {
               : ListView.builder(
                   controller: _scrollCtrl,
                   padding: const EdgeInsets.fromLTRB(12, 12, 12, 8),
+                  // ⚡ cacheExtent alto: mantém bubbles renderizados fora da viewport
+                  // evita reconstituição ao scrollar — elimina o "salto" entre mensagens
+                  cacheExtent: 2000,
+                  physics: const ClampingScrollPhysics(),
                   itemCount: _messages.length + (_thinking ? 1 : 0),
                   itemBuilder: (context, i) {
                     if (_thinking && i == _messages.length) {
                       return _ThinkingBubble(dark: dark);
                     }
                     final msg = _messages[i];
-                    return msg.role == 'user'
-                        ? _UserBubble(text: msg.text, dark: dark)
-                        : _AiBubble(
-                            text: msg.text,
-                            dark: dark,
-                            animate: i == _lastAiIndex,
-                            onCopy: () => _copyMsg(msg.text),
-                            ttsPlaying: _ttsPlayingIndex == i,
-                            ttsReady: _ttsReady,
-                            onTts: _ttsReady
-                                ? () => _toggleTts(i, msg.text, p.lang)
-                                : null,
-                          );
+                    // ⚡ key por índice garante que Flutter reutilize o widget
+                    // ao invés de destruir e recriar ao sair/entrar da viewport
+                    return KeyedSubtree(
+                      key: ValueKey('msg_$i'),
+                      child: msg.role == 'user'
+                          ? _UserBubble(text: msg.text, dark: dark)
+                          : _AiBubble(
+                              key: ValueKey('ai_$i'),
+                              text: msg.text,
+                              dark: dark,
+                              animate: i == _lastAiIndex,
+                              onCopy: () => _copyMsg(msg.text),
+                              ttsPlaying: _ttsPlayingIndex == i,
+                              ttsReady: _ttsReady,
+                              onTts: _ttsReady
+                                  ? () => _toggleTts(i, msg.text, p.lang)
+                                  : null,
+                            ),
+                    );
                   },
                 ),
         ),
@@ -1059,7 +1071,7 @@ class _SuggestionCarousel extends StatelessWidget {
 class _UserBubble extends StatelessWidget {
   final String text;
   final bool dark;
-  const _UserBubble({required this.text, required this.dark});
+  const _UserBubble({super.key, required this.text, required this.dark});
 
   @override
   Widget build(BuildContext context) {
@@ -1332,6 +1344,7 @@ class _AiBubble extends StatefulWidget {
   final bool ttsReady;
   final VoidCallback? onTts;
   const _AiBubble({
+    super.key,
     required this.text,
     required this.dark,
     required this.onCopy,
@@ -1349,22 +1362,38 @@ class _AiBubbleState extends State<_AiBubble> {
   // Quantos blocos já estão visíveis
   int _visibleCount = 0;
   bool _started = false;
-  // ignore: unused_field
+
+  // ⚡ Cache dos blocos — computado UMA vez no initState/didUpdateWidget
+  // Evita reprocessar _cleanAiText + _splitIntoBlocks em cada rebuild do scroll
+  late List<String> _cachedBlocks;
 
   @override
   void initState() {
     super.initState();
+    _cachedBlocks = _computeBlocks(widget.text);
     // Inicia a sequência de exibição após o primeiro frame
     WidgetsBinding.instance.addPostFrameCallback((_) => _startSequence());
+  }
+
+  @override
+  void didUpdateWidget(_AiBubble old) {
+    super.didUpdateWidget(old);
+    // Atualiza cache apenas se o texto mudou
+    if (old.text != widget.text) {
+      _cachedBlocks = _computeBlocks(widget.text);
+    }
+  }
+
+  List<String> _computeBlocks(String text) {
+    final cleaned = _cleanAiText(text);
+    return _splitIntoBlocks(cleaned.isEmpty ? text.trim() : cleaned);
   }
 
   void _startSequence() {
     if (_started || !mounted) return;
     _started = true;
 
-    final cleaned = _cleanAiText(widget.text);
-    final blocks  = _splitIntoBlocks(cleaned.isEmpty ? widget.text.trim() : cleaned);
-    final total   = blocks.isEmpty ? 1 : blocks.length;
+    final total = _cachedBlocks.isEmpty ? 1 : _cachedBlocks.length;
 
     if (!widget.animate || total <= 1) {
       // Sem animação (histórico) ou bloco único → mostra tudo imediatamente
@@ -1372,10 +1401,10 @@ class _AiBubbleState extends State<_AiBubble> {
       return;
     }
 
-    // Delay entre blocos: 800ms (0.8s) para o primeiro, +800ms por bloco
-    // Cap: máximo 3s de espera total por bloco (evita timeout em respostas longas)
+    // Delay entre blocos: 120ms para o primeiro, depois 600ms por bloco
+    // Cap: 2s máximo por bloco (mais rápido — melhora UX e scroll)
     for (int i = 0; i < total; i++) {
-      final delayMs = i == 0 ? 120 : (i * 800).clamp(0, 3000);
+      final delayMs = i == 0 ? 120 : (i * 600).clamp(0, 2000);
       Future.delayed(Duration(milliseconds: delayMs), () {
         if (mounted) setState(() => _visibleCount = i + 1);
       });
@@ -1384,8 +1413,7 @@ class _AiBubbleState extends State<_AiBubble> {
 
   @override
   Widget build(BuildContext context) {
-    final cleaned = _cleanAiText(widget.text);
-    final blocks  = _splitIntoBlocks(cleaned.isEmpty ? widget.text.trim() : cleaned);
+    final blocks = _cachedBlocks;
 
     if (blocks.isEmpty) {
       return _visibleCount > 0
@@ -1406,18 +1434,17 @@ class _AiBubbleState extends State<_AiBubble> {
       children: List.generate(blocks.length, (i) {
         if (i >= _visibleCount) return const SizedBox.shrink();
         final isLast = i == blocks.length - 1;
-        return AnimatedOpacity(
-          opacity: 1.0,
-          duration: const Duration(milliseconds: 280),
+        // ⚡ RepaintBoundary isola cada bolha em sua própria camada de renderização
+        // O scroll não força repaint das bolhas que não mudaram
+        return RepaintBoundary(
           child: _AiBlockBubble(
             block: blocks[i],
             dark: widget.dark,
             isLast: isLast,
             onCopy: isLast ? widget.onCopy : null,
-            // TTS apenas na última bolha
-            onTts:       isLast ? widget.onTts   : null,
-            ttsPlaying:  isLast && widget.ttsPlaying,
-            ttsReady:    widget.ttsReady,
+            onTts:      isLast ? widget.onTts  : null,
+            ttsPlaying: isLast && widget.ttsPlaying,
+            ttsReady:   widget.ttsReady,
           ),
         );
       }),
