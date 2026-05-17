@@ -1,142 +1,84 @@
-// ── Tela de preview pré-login ─────────────────────────────────────────────────
+// ── Tela de preview pré-login — layout v3 (Casos y Prescripciones) ────────────
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../screens/login_screen.dart';
 import '../screens/legal_screen.dart';
 // ignore: unused_import
 import '../screens/upgrade_screen.dart';
-import '../widgets/brand_mark.dart';
 
-// ── Paleta local ──────────────────────────────────────────────────────────────
-const _kDark  = Color(0xFF0F1C14);
-const _kGreen = Color(0xFF1F6B48);
-const _kGold  = Color(0xFFC5A365);
-const _kGoldL = Color(0xFFFFE8A6);
+// ── Paleta ────────────────────────────────────────────────────────────────────
+const _kBg         = Color(0xFFF5F6F8);
+const _kCard       = Colors.white;
+const _kDark       = Color(0xFF0F1C14);
+const _kText       = Color(0xFF111111);
+const _kTextMid    = Color(0xFF6B7280);
+const _kTextLight  = Color(0xFF9CA3AF);
+const _kGreenDark  = Color(0xFF0B4F2B);
+const _kGreen      = Color(0xFF136A39);
+const _kGreenMid   = Color(0xFF1D7A43);
+const _kRed        = Color(0xFFC81E1E);
+const _kRedDark    = Color(0xFFA50F0F);
+const _kRedLight   = Color(0xFFFEE2E2);
+const _kPurple     = Color(0xFF7B59FF);
+const _kPurpleLight= Color(0xFFF4F0FF);
+const _kGold       = Color(0xFFF2C86B);
+const _kBorder     = Color(0xFFE7E9EE);
+const _kShadow     = Color(0x14000000);
 
-// ══════════════════════════════════════════════════════════════════════════════
-// TELA DE PREVIEW PRÉ-LOGIN
 // ══════════════════════════════════════════════════════════════════════════════
 class PreLoginPreview extends StatefulWidget {
   const PreLoginPreview({super.key});
-
   @override
   State<PreLoginPreview> createState() => _PreLoginPreviewState();
 }
 
 class _PreLoginPreviewState extends State<PreLoginPreview> {
-  bool _showLogin = false;
+  bool _showLogin  = false;
   bool? _hasConsented;
-  int _demoTab = 0;
-  String _lang = 'es';
+  String _lang     = 'es';
 
-  bool get _isEs => _lang == 'es';
-  String get _tabCases => _isEs ? 'Casos Clínicos' : 'Casos Clínicos';
-  String get _tabRx    => _isEs ? 'Prescripciones' : 'Prescrições';
+  bool   get _isEs     => _lang == 'es';
   String get _fabLabel => _isEs ? 'Crear cuenta gratis' : 'Criar conta grátis';
 
-  static const _demoCases = [
-    _DemoCase(
-      category: 'Urgencias', badge: 'Alta', badgeColor: Color(0xFF065F46),
-      title: 'Dolor torácico con elevación del ST',
-      age: '58 años • Masculino',
-      dx: 'IAM con elevación del ST (STEMI) — TpI 4.2 ng/mL',
-      hipotese: '',
-      excerpt: 'Paciente con dolor retroesternal irradiado al brazo izquierdo, diaforesis y disnea de 40 min de evolución. ECG: elevación del ST en V1–V4. Activación del código infarto, angioplastia primaria exitosa.',
-      author: 'Dr. Alejandro Ramírez',
-      tags: ['Cardiología', 'STEMI', 'Código Infarto'],
+  // ── Dados "Más Visto" ─────────────────────────────────────────────────────
+  static const _masVisto = [
+    _RxItem(
+      icon: Icons.medication_rounded,
+      iconBg: _kGreenDark,
+      specialty: 'Infectología • UCI',
+      badge: 'NUEVO',
+      badgeColor: _kGreen,
+      title: 'Sepsis — Protocolo Antibiótico Empírico',
+      subtitle: 'Sepsis de foco pulmonar adquirida en la comunidad',
+      itemCount: 5,
     ),
-    _DemoCase(
-      category: 'UCI', badge: 'Internado', badgeColor: Color(0xFFC5A365),
-      title: 'Sepsis de foco pulmonar con shock',
-      age: '72 años • Femenino',
-      dx: 'Sepsis grave — SOFA 9 — Klebsiella pneumoniae',
-      hipotese: '',
-      excerpt: 'Fiebre 39.8°C, PA 80/50, FC 128, FR 32, SatO₂ 86%. Inicio de antibioticoterapia empírica (Piperacilina-Tazobactam), soporte vasopresor con Noradrenalina 0.18 mcg/kg/min. VM protectora.',
-      author: 'Dra. Carmen Villanueva',
-      tags: ['Infectología', 'UCI', 'Sepsis'],
-    ),
-    _DemoCase(
-      category: 'Neurología', badge: 'Alta', badgeColor: Color(0xFF065F46),
-      title: 'ACV isquémico agudo — ventana trombolítica',
-      age: '64 años • Masculino',
-      dx: 'Accidente cerebrovascular isquémico — NIHSS 12',
-      hipotese: '',
-      excerpt: 'Hemiparesia derecha de inicio brusco, afasia motora. TC sin hemorragia. Dentro de ventana de 3h. tPA iv 0.9 mg/kg administrado. NIHSS post-trombólisis: 4. Alta con antiagregación dual.',
-      author: 'Dr. Miguel Ángel Torres',
-      tags: ['Neurología', 'ACV', 'Trombólisis'],
-    ),
-    _DemoCase(
-      category: 'Clínica Médica', badge: 'Internado', badgeColor: Color(0xFFC5A365),
-      title: 'Cetoacidosis diabética grave',
-      age: '27 años • Femenino',
-      dx: 'CAD grave — pH 7.14 — Glucosa 520 mg/dL',
-      hipotese: '',
-      excerpt: 'Debut diabético con náuseas, vómitos y dolor abdominal. K⁺ 2.9 mEq/L. Protocolo CAD: hidratación agresiva, reposición de potasio, insulina regular en infusión continua. Cierre de brecha aniónica a 18h.',
-      author: 'Dra. Sofía Mendoza',
-      tags: ['Endocrinología', 'CAD', 'Diabetes'],
+    _RxItem(
+      icon: Icons.monitor_heart_rounded,
+      iconBg: _kGreenMid,
+      specialty: 'Cardiología • Urgencias',
+      badge: 'TOP',
+      badgeColor: _kGreenDark,
+      title: 'STEMI — Protocolo Post-Angioplastia',
+      subtitle: 'IAM con elevación del ST — post ACTP primaria',
+      itemCount: 5,
     ),
   ];
 
-  static const _demoRx = [
-    _DemoRx(
-      title: 'Sepsis — Protocolo Antibiótico Empírico',
-      specialty: 'Infectología · UCI',
-      indication: 'Sepsis de foco pulmonar adquirida en la comunidad',
-      items: [
-        'Piperacilina-Tazobactam 4.5 g IV c/6h (infusión extendida 4h)',
-        'Noradrenalina 0.05–0.3 mcg/kg/min IV (titular PAM ≥65 mmHg)',
-        'SF 0.9% 30 mL/kg en 3h (reanimación inicial)',
-        'Hidrocortisona 200 mg/día IV (shock refractario)',
-        'Enoxaparina 40 mg SC/día (profilaxis TVP)',
-        'Omeprazol 40 mg IV/día (gastroprotección)',
-        'Control glucémico: glicemia 140–180 mg/dL',
-      ],
-      warning: 'Ajustar antibiótico según cultivo y antibiograma a las 48–72h.',
+  // ── Dados "Más Grave" ─────────────────────────────────────────────────────
+  static const _masGrave = [
+    _GraveItem(
+      icon: Icons.local_fire_department_rounded,
+      specialty: 'Emergencias',
+      title: 'Choque Séptico',
+      subtitle: 'Falla circulatoria aguda por sepsis',
+      severity: 'Alta',
     ),
-    _DemoRx(
-      title: 'STEMI — Protocolo Post-Angioplastia',
-      specialty: 'Cardiología · Urgencias',
-      indication: 'IAM con elevación del ST — post ACTP primaria',
-      items: [
-        'AAS 100 mg VO/día (indefinido)',
-        'Ticagrelor 90 mg VO c/12h por 12 meses',
-        'Atorvastatina 80 mg VO/noche',
-        'Metoprolol succinato 25–100 mg VO/día',
-        'Ramipril 2.5 mg VO/día (titular hasta 10 mg)',
-        'Heparina no fraccionada IV 24h post-ACTP',
-        'Pantoprazol 40 mg VO/día (con doble antiagregación)',
-      ],
-      warning: 'Evitar AINEs. Contraindicado fibrinolítico post-ACTP. Ecocardiograma a los 30 días.',
-    ),
-    _DemoRx(
-      title: 'Cetoacidosis Diabética (CAD)',
-      specialty: 'Endocrinología · Emergencias',
-      indication: 'CAD grave pH <7.2 con brecha aniónica >20',
-      items: [
-        'SF 0.9% 1000 mL IV en 1h → 500 mL/h × 2h → 250 mL/h',
-        'KCl: si K⁺ <3.5 → 40 mEq/h antes de insulina',
-        'Insulina regular 0.1 U/kg/h IV (iniciar con K⁺ >3.5)',
-        'Dextrosa 5% al alcanzar glucosa <250 mg/dL',
-        'Bicarbonato: solo si pH <6.9 (50 mEq en 1h)',
-        'Control: glucosa/hora, electrolitos c/2h, GSA c/4h',
-        'Transición a insulina SC cuando: pH >7.3, BI <18, V.O. tolerado',
-      ],
-      warning: 'Riesgo de edema cerebral con corrección rápida. No suspender insulina IV hasta 2h post-SC.',
-    ),
-    _DemoRx(
-      title: 'Crisis Hipertensiva con Daño de Órgano',
-      specialty: 'Cardiología · Medicina Interna',
-      indication: 'PA >180/120 mmHg con encefalopatía o EAP',
-      items: [
-        'Nitroprusiato 0.3–10 mcg/kg/min IV (titular cada 5 min)',
-        'Furosemida 40–80 mg IV (si EAP / sobrecarga)',
-        'Labetalol 20 mg IV en 2 min (alternativa en disección)',
-        'Meta inicial: reducir PAM 25% en 1h',
-        'Monitoreo invasivo de PA (arteria radial)',
-        'Amlodipino 5–10 mg VO (mantenimiento oral posterior)',
-        'Enalaprilato 1.25 mg IV c/6h (alternativa oral no posible)',
-      ],
-      warning: 'Reducción brusca de PA aumenta riesgo de ACV isquémico. Meta: 160/100 en 6h, no normalizar en urgencia.',
+    _GraveItem(
+      icon: Icons.psychology_rounded,
+      specialty: 'Neurología • UCI',
+      title: 'ACV Isquémico Agudo',
+      subtitle: 'Ventana terapéutica crítica',
+      severity: 'Alta',
     ),
   ];
 
@@ -161,16 +103,16 @@ class _PreLoginPreviewState extends State<PreLoginPreview> {
   }
 
   void _onConsentAccepted() => setState(() => _hasConsented = true);
-  void _goLogin() => setState(() => _showLogin = true);
-  void _backToPreview() => setState(() => _showLogin = false);
+  void _goLogin()           => setState(() => _showLogin = true);
+  void _backToPreview()     => setState(() => _showLogin = false);
 
   @override
   Widget build(BuildContext context) {
     if (_showLogin) {
       if (_hasConsented == null) {
         return const Scaffold(
-          backgroundColor: Color(0xFF0F1C14),
-          body: Center(child: CircularProgressIndicator(color: Color(0xFFD4A96A))),
+          backgroundColor: _kDark,
+          body: Center(child: CircularProgressIndicator(color: _kGold)),
         );
       }
       if (!_hasConsented!) {
@@ -187,123 +129,176 @@ class _PreLoginPreviewState extends State<PreLoginPreview> {
     }
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: _kBg,
       body: Column(children: [
-        // ── Header limpo ─────────────────────────────────────────────────────
-        _PreviewHeader(
-          isEs: _isEs,
-          onToggleLang: _toggleLang,
-          onLogin: _goLogin,
-        ),
-
-        // ── Lista de prescrições (sem abas) ───────────────────────────────
+        _Header(isEs: _isEs, onToggleLang: _toggleLang, onLogin: _goLogin),
         Expanded(
           child: ListView(
-            padding: const EdgeInsets.fromLTRB(16, 16, 16, 100),
-            children: _demoRx.map((r) => _DemoRxCard(
-                data: r, onTap: _goLogin, isEs: _isEs)).toList(),
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 120),
+            children: [
+              // ── Más Visto ─────────────────────────────────────────────────
+              _SectionHeader(
+                icon: Icons.remove_red_eye_rounded,
+                iconColor: Colors.white,
+                iconBg: _kGreen,
+                title: _isEs ? 'MÁS VISTO' : 'MAIS VISTO',
+                titleColor: _kText,
+                subtitle: _isEs
+                    ? 'Los protocolos más consultados'
+                    : 'Os protocolos mais consultados',
+                onVerTodos: _goLogin,
+                isEs: _isEs,
+              ),
+              const SizedBox(height: 10),
+              ..._masVisto.map((item) => _RxCard(
+                    data: item, onTap: _goLogin, isEs: _isEs)),
+
+              const SizedBox(height: 20),
+
+              // ── Más Grave ─────────────────────────────────────────────────
+              _SectionHeader(
+                icon: Icons.shield_rounded,
+                iconColor: Colors.white,
+                iconBg: _kRed,
+                title: _isEs ? 'MÁS GRAVE' : 'MAIS GRAVE',
+                titleColor: _kRed,
+                subtitle: _isEs
+                    ? 'Casos de mayor riesgo y gravedad'
+                    : 'Casos de maior risco e gravidade',
+                onVerTodos: _goLogin,
+                isEs: _isEs,
+                accentColor: _kRed,
+              ),
+              const SizedBox(height: 10),
+              Row(children: _masGrave
+                  .map((g) => Expanded(
+                        child: _GraveCard(
+                            data: g, onTap: _goLogin, isEs: _isEs),
+                      ))
+                  .toList()),
+
+              const SizedBox(height: 20),
+
+              // ── IA MedCases ───────────────────────────────────────────────
+              _IaBlock(onTap: _goLogin, isEs: _isEs),
+            ],
           ),
         ),
       ]),
 
-      // ── CTA único na base ─────────────────────────────────────────────────
-      floatingActionButton: _PrimaryFab(label: _fabLabel, onTap: _goLogin),
+      // ── CTA fixo na base ──────────────────────────────────────────────────
+      floatingActionButton: _CtaButton(label: _fabLabel, onTap: _goLogin, isEs: _isEs),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
 }
 
 // ══════════════════════════════════════════════════════════════════════════════
-// HEADER
+// HEADER — fundo branco, logo verde, botão dourado
 // ══════════════════════════════════════════════════════════════════════════════
-class _PreviewHeader extends StatelessWidget {
+class _Header extends StatelessWidget {
   final bool isEs;
-  final VoidCallback onToggleLang;
-  final VoidCallback onLogin;
-  const _PreviewHeader({
-    required this.isEs,
-    required this.onToggleLang,
-    required this.onLogin,
-  });
+  final VoidCallback onToggleLang, onLogin;
+  const _Header({required this.isEs, required this.onToggleLang, required this.onLogin});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft, end: Alignment.bottomRight,
-          colors: [_kDark, Color(0xFF1B3D2A), _kGreen],
-        ),
-      ),
+      color: _kCard,
       child: SafeArea(
         bottom: false,
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(16, 12, 16, 14),
+        child: Container(
+          decoration: const BoxDecoration(
+            border: Border(bottom: BorderSide(color: _kBorder, width: 0.8)),
+          ),
+          padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
           child: Row(children: [
-            const BrandMark(small: true),
-            const SizedBox(width: 12),
-            // Título
+            // Logo M+
+            Container(
+              width: 42, height: 42,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12),
+                gradient: const LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [_kGreenDark, _kGreen],
+                ),
+                boxShadow: [BoxShadow(
+                  color: _kGreen.withValues(alpha: 0.35),
+                  blurRadius: 8, offset: const Offset(0, 3))],
+              ),
+              child: const Center(
+                child: Text('M+',
+                  style: TextStyle(
+                    fontSize: 16, fontWeight: FontWeight.w900,
+                    color: _kGold, letterSpacing: -0.5)),
+              ),
+            ),
+            const SizedBox(width: 10),
             Expanded(
               child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                 Text(
                   isEs ? 'Casos y Prescripciones' : 'Casos e Prescrições',
                   style: const TextStyle(
-                    fontSize: 15, fontWeight: FontWeight.w800,
-                    color: Colors.white, letterSpacing: -0.2),
+                    fontSize: 16, fontWeight: FontWeight.w800,
+                    color: _kText, letterSpacing: -0.3),
                 ),
-                const SizedBox(height: 2),
+                const SizedBox(height: 1),
                 Text(
-                  isEs
-                      ? 'Visualización de muestra'
-                      : 'Visualização de amostra',
-                  style: TextStyle(
-                    fontSize: 11, fontWeight: FontWeight.w500,
-                    color: Colors.white.withValues(alpha: 0.45)),
+                  isEs ? 'Visualización de muestra' : 'Visualização de amostra',
+                  style: const TextStyle(
+                    fontSize: 11, fontWeight: FontWeight.w400,
+                    color: _kTextMid),
                 ),
               ]),
             ),
-            // Toggle idioma — discreto
+            // Seletor idioma
             GestureDetector(
               onTap: onToggleLang,
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 7),
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
-                  color: Colors.white.withValues(alpha: 0.07),
-                  border: Border.all(color: _kGold.withValues(alpha: 0.3)),
+                  color: _kCard,
+                  border: Border.all(color: _kBorder),
                 ),
                 child: Row(mainAxisSize: MainAxisSize.min, children: [
-                  const Icon(Icons.language_rounded, size: 11, color: _kGoldL),
+                  const Icon(Icons.language_rounded, size: 13, color: _kTextMid),
                   const SizedBox(width: 4),
                   Text(
                     isEs ? 'PT' : 'ES',
                     style: const TextStyle(
-                      fontSize: 10, fontWeight: FontWeight.w900, color: _kGoldL),
+                      fontSize: 11, fontWeight: FontWeight.w700,
+                      color: _kText),
                   ),
+                  const SizedBox(width: 2),
+                  const Icon(Icons.keyboard_arrow_down_rounded, size: 14, color: _kTextMid),
                 ]),
               ),
             ),
             const SizedBox(width: 8),
-            // Entrar — botão dourado
+            // Botão Entrar
             GestureDetector(
               onTap: onLogin,
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 9),
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 9),
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
-                  gradient: const LinearGradient(
-                    colors: [Color(0xFFD4AF5A), _kGold]),
-                  boxShadow: [
-                    BoxShadow(
-                      color: _kGold.withValues(alpha: 0.35),
-                      blurRadius: 10, offset: const Offset(0, 3)),
-                  ],
+                  borderRadius: BorderRadius.circular(10),
+                  color: _kGold,
+                  boxShadow: [BoxShadow(
+                    color: _kGold.withValues(alpha: 0.4),
+                    blurRadius: 8, offset: const Offset(0, 3))],
                 ),
-                child: Text(
-                  isEs ? 'Entrar' : 'Entrar',
-                  style: const TextStyle(
-                    fontSize: 13, fontWeight: FontWeight.w900, color: _kDark),
-                ),
+                child: Row(mainAxisSize: MainAxisSize.min, children: [
+                  Text(
+                    isEs ? 'Entrar' : 'Entrar',
+                    style: const TextStyle(
+                      fontSize: 13, fontWeight: FontWeight.w800,
+                      color: _kDark),
+                  ),
+                  const SizedBox(width: 4),
+                  const Icon(Icons.arrow_forward_rounded, size: 14, color: _kDark),
+                ]),
               ),
             ),
           ]),
@@ -314,422 +309,175 @@ class _PreviewHeader extends StatelessWidget {
 }
 
 // ══════════════════════════════════════════════════════════════════════════════
-// TAB BAR
+// SECTION HEADER
 // ══════════════════════════════════════════════════════════════════════════════
-class _TabBar extends StatelessWidget {
-  final bool isEs;
-  final int activeTab;
-  final String tabCases, tabRx;
-  final ValueChanged<int> onTap;
-  const _TabBar({
-    required this.isEs, required this.activeTab,
-    required this.tabCases, required this.tabRx,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      color: _kDark,
-      padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
-      child: Container(
-        height: 38,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12),
-          color: Colors.white.withValues(alpha: 0.06),
-          border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
-        ),
-        child: Row(children: [
-          _Tab(
-            label: tabCases,
-            icon: Icons.folder_special_rounded,
-            active: activeTab == 0,
-            onTap: () => onTap(0),
-          ),
-          _Tab(
-            label: tabRx,
-            icon: Icons.medication_rounded,
-            active: activeTab == 1,
-            onTap: () => onTap(1),
-          ),
-        ]),
-      ),
-    );
-  }
-}
-
-class _Tab extends StatelessWidget {
-  final String label;
+class _SectionHeader extends StatelessWidget {
   final IconData icon;
-  final bool active;
-  final VoidCallback onTap;
-  const _Tab({
-    required this.label, required this.icon,
-    required this.active, required this.onTap,
+  final Color iconColor, iconBg, titleColor;
+  final String title, subtitle;
+  final VoidCallback onVerTodos;
+  final bool isEs;
+  final Color accentColor;
+
+  const _SectionHeader({
+    required this.icon, required this.iconColor, required this.iconBg,
+    required this.title, required this.titleColor, required this.subtitle,
+    required this.onVerTodos, required this.isEs,
+    this.accentColor = _kGreen,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: GestureDetector(
-        onTap: onTap,
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 180),
-          margin: const EdgeInsets.all(3),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(9),
-            color: active ? _kDark : Colors.transparent,
-            border: active
-                ? Border.all(color: _kGoldL.withValues(alpha: 0.3))
-                : null,
-          ),
-          child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-            Icon(icon, size: 13,
-              color: active ? _kGoldL : Colors.white38),
-            const SizedBox(width: 5),
-            Text(label,
-              style: TextStyle(
-                fontSize: 11, fontWeight: FontWeight.w800,
-                color: active ? _kGoldL : Colors.white38)),
-          ]),
-        ),
+    return Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
+      Container(
+        width: 34, height: 34,
+        decoration: BoxDecoration(shape: BoxShape.circle, color: iconBg),
+        child: Icon(icon, size: 16, color: iconColor),
       ),
-    );
-  }
-}
-
-// ══════════════════════════════════════════════════════════════════════════════
-// FAB PRIMÁRIO
-// ══════════════════════════════════════════════════════════════════════════════
-class _PrimaryFab extends StatelessWidget {
-  final String label;
-  final VoidCallback onTap;
-  const _PrimaryFab({required this.label, required this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        height: 52,
-        margin: const EdgeInsets.symmetric(horizontal: 24),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(16),
-          gradient: const LinearGradient(
-            colors: [Color(0xFFD4AF5A), _kGold]),
-          boxShadow: [
-            BoxShadow(
-              color: _kGold.withValues(alpha: 0.45),
-              blurRadius: 18, offset: const Offset(0, 6)),
-          ],
-        ),
-        child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-          const Icon(Icons.person_add_rounded, size: 18, color: _kDark),
-          const SizedBox(width: 8),
-          Text(label,
+      const SizedBox(width: 10),
+      Expanded(
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Text(title,
+            style: TextStyle(
+              fontSize: 14, fontWeight: FontWeight.w800,
+              color: titleColor, letterSpacing: 0.2)),
+          Text(subtitle,
             style: const TextStyle(
-              fontSize: 15, fontWeight: FontWeight.w900, color: _kDark)),
+              fontSize: 11, fontWeight: FontWeight.w400,
+              color: _kTextMid)),
         ]),
       ),
-    );
+      GestureDetector(
+        onTap: onVerTodos,
+        child: Row(mainAxisSize: MainAxisSize.min, children: [
+          Text(
+            isEs ? 'Ver todos' : 'Ver todos',
+            style: TextStyle(
+              fontSize: 12, fontWeight: FontWeight.w600,
+              color: accentColor)),
+          const SizedBox(width: 2),
+          Icon(Icons.arrow_forward_rounded, size: 13, color: accentColor),
+        ]),
+      ),
+    ]);
   }
 }
 
 // ══════════════════════════════════════════════════════════════════════════════
 // MODELOS
 // ══════════════════════════════════════════════════════════════════════════════
-class _DemoCase {
-  final String category, badge, title, age, dx, hipotese, excerpt, author;
+class _RxItem {
+  final IconData icon;
+  final Color iconBg;
+  final String specialty, badge, title, subtitle;
   final Color badgeColor;
-  final List<String> tags;
-  const _DemoCase({
-    required this.category, required this.badge, required this.badgeColor,
-    required this.title, required this.age, required this.dx,
-    required this.hipotese, required this.excerpt,
-    required this.author, required this.tags,
+  final int itemCount;
+  const _RxItem({
+    required this.icon, required this.iconBg,
+    required this.specialty, required this.badge, required this.badgeColor,
+    required this.title, required this.subtitle, required this.itemCount,
   });
 }
 
-class _DemoRx {
-  final String title, specialty, indication, warning;
-  final List<String> items;
-  const _DemoRx({
-    required this.title, required this.specialty, required this.indication,
-    required this.items, required this.warning,
+class _GraveItem {
+  final IconData icon;
+  final String specialty, title, subtitle, severity;
+  const _GraveItem({
+    required this.icon, required this.specialty,
+    required this.title, required this.subtitle, required this.severity,
   });
 }
 
 // ══════════════════════════════════════════════════════════════════════════════
-// CARD DE CASO CLÍNICO — clean
+// CARD MÁS VISTO — horizontal, fundo branco
 // ══════════════════════════════════════════════════════════════════════════════
-class _DemoCaseCard extends StatelessWidget {
-  final _DemoCase data;
+class _RxCard extends StatelessWidget {
+  final _RxItem data;
   final VoidCallback onTap;
   final bool isEs;
-  const _DemoCaseCard({
-    required this.data, required this.onTap, required this.isEs});
-
-  static const _bg     = Color(0xFF111D15);
-  static const _border = Color(0xFF1E3526);
+  const _RxCard({required this.data, required this.onTap, required this.isEs});
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        margin: const EdgeInsets.only(bottom: 12),
+        margin: const EdgeInsets.only(bottom: 10),
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(18),
-          color: _bg,
-          border: Border.all(color: _border),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.2),
-              blurRadius: 10, offset: const Offset(0, 3)),
-          ],
+          color: _kCard,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: _kBorder),
+          boxShadow: const [BoxShadow(color: _kShadow, blurRadius: 8, offset: Offset(0, 2))],
         ),
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-
-          // ── Topo: badges ─────────────────────────────────────────────────
-          Padding(
-            padding: const EdgeInsets.fromLTRB(14, 12, 14, 0),
-            child: Row(children: [
-              _Chip(label: data.category, color: _kGold.withValues(alpha: 0.15),
-                textColor: _kGoldL, border: _kGold.withValues(alpha: 0.25)),
-              const SizedBox(width: 6),
-              _Chip(
-                label: data.badge,
-                color: data.badgeColor.withValues(alpha: 0.15),
-                textColor: data.badgeColor == const Color(0xFF065F46)
-                    ? const Color(0xFF6BCCA0) : _kGoldL,
-                border: data.badgeColor.withValues(alpha: 0.35),
-              ),
-            ]),
-          ),
-
-          // ── Título ───────────────────────────────────────────────────────
-          Padding(
-            padding: const EdgeInsets.fromLTRB(14, 10, 14, 0),
-            child: Text(data.title,
-              style: const TextStyle(
-                fontSize: 16, fontWeight: FontWeight.w900,
-                color: Colors.white, height: 1.25, letterSpacing: -0.3),
-              maxLines: 2, overflow: TextOverflow.ellipsis),
-          ),
-
-          // ── Subtítulo — idade ─────────────────────────────────────────────
-          Padding(
-            padding: const EdgeInsets.fromLTRB(14, 4, 14, 0),
-            child: Text(data.age,
-              style: TextStyle(
-                fontSize: 11, color: Colors.white.withValues(alpha: 0.38),
-                fontWeight: FontWeight.w500)),
-          ),
-
-          // ── Dx box ───────────────────────────────────────────────────────
-          if (data.dx.isNotEmpty)
-            Container(
-              margin: const EdgeInsets.fromLTRB(14, 10, 14, 0),
-              padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 7),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                color: const Color(0xFF065F46).withValues(alpha: 0.12),
-                border: Border.all(
-                  color: const Color(0xFF065F46).withValues(alpha: 0.35)),
-              ),
-              child: Row(children: [
-                const Icon(Icons.check_circle_outline_rounded,
-                  size: 12, color: Color(0xFF6BCCA0)),
-                const SizedBox(width: 6),
-                Expanded(
-                  child: Text('Dx: ${data.dx}',
-                    style: const TextStyle(
-                      fontSize: 11, fontWeight: FontWeight.w700,
-                      color: Color(0xFF6BCCA0), height: 1.3),
-                    maxLines: 2, overflow: TextOverflow.ellipsis),
-                ),
-              ]),
-            ),
-
-          // ── Excerpt com fade ──────────────────────────────────────────────
-          Padding(
-            padding: const EdgeInsets.fromLTRB(14, 10, 14, 0),
-            child: Stack(children: [
-              Text(data.excerpt,
-                style: TextStyle(
-                  fontSize: 12, height: 1.5, fontWeight: FontWeight.w500,
-                  color: Colors.white.withValues(alpha: 0.5)),
-                maxLines: 3, overflow: TextOverflow.ellipsis),
-              Positioned(bottom: 0, left: 0, right: 0,
-                child: Container(height: 20,
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topCenter, end: Alignment.bottomCenter,
-                      colors: [_bg.withValues(alpha: 0), _bg])))),
-            ]),
-          ),
-
-          // ── Rodapé: autor + lock ──────────────────────────────────────────
-          Padding(
-            padding: const EdgeInsets.fromLTRB(14, 10, 14, 14),
-            child: Row(children: [
-              const Icon(Icons.person_outline_rounded,
-                size: 12, color: Color(0xFF4A7A5A)),
-              const SizedBox(width: 5),
-              Expanded(
-                child: Text(data.author,
-                  style: const TextStyle(
-                    fontSize: 10, fontWeight: FontWeight.w600,
-                    color: Color(0xFF4A7A5A)),
-                  overflow: TextOverflow.ellipsis),
-              ),
-              Icon(Icons.lock_rounded,
-                size: 10, color: Colors.white.withValues(alpha: 0.2)),
-              const SizedBox(width: 4),
-              Text(isEs ? 'Ver caso completo' : 'Ver caso completo',
-                style: TextStyle(
-                  fontSize: 9, fontWeight: FontWeight.w600,
-                  color: Colors.white.withValues(alpha: 0.2))),
-            ]),
-          ),
-        ]),
-      ),
-    );
-  }
-}
-
-// ══════════════════════════════════════════════════════════════════════════════
-// CARD DE PRESCRIÇÃO — clean
-// ══════════════════════════════════════════════════════════════════════════════
-class _DemoRxCard extends StatelessWidget {
-  final _DemoRx data;
-  final VoidCallback onTap;
-  final bool isEs;
-  const _DemoRxCard({
-    required this.data, required this.onTap, required this.isEs});
-
-  static const _bg     = Color(0xFF111D15);
-  static const _border = Color(0xFF1E3526);
-
-  @override
-  Widget build(BuildContext context) {
-    // Mostra apenas 2 itens — suficiente para demonstrar valor sem sobrecarregar
-    final visibleItems = data.items.take(2).toList();
-    final lockedCount  = data.items.length - visibleItems.length;
-
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        margin: const EdgeInsets.only(bottom: 12),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(18),
-          color: _bg,
-          border: Border.all(color: _border),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.2),
-              blurRadius: 10, offset: const Offset(0, 3)),
-          ],
-        ),
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-
-          // ── Topo ─────────────────────────────────────────────────────────
+        padding: const EdgeInsets.all(14),
+        child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          // Ícone
           Container(
-            width: double.infinity,
-            padding: const EdgeInsets.fromLTRB(14, 14, 14, 12),
-            decoration: const BoxDecoration(
+            width: 54, height: 54,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(14),
               gradient: LinearGradient(
                 begin: Alignment.topLeft, end: Alignment.bottomRight,
-                colors: [Color(0xFF0F1C14), Color(0xFF183024), Color(0xFF1A4A32)]),
-              borderRadius: BorderRadius.vertical(top: Radius.circular(17)),
+                colors: [data.iconBg, Color.lerp(data.iconBg, _kGreenMid, 0.5)!]),
             ),
-            child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Container(
-                padding: const EdgeInsets.all(7),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: _kGold.withValues(alpha: 0.12)),
-                child: const Icon(Icons.medication_rounded,
-                  size: 16, color: _kGoldL),
-              ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  Text(data.specialty,
-                    style: const TextStyle(
-                      fontSize: 9, fontWeight: FontWeight.w800,
-                      color: Color(0xBFFFE8A6), letterSpacing: 1.2)),
-                  const SizedBox(height: 3),
-                  Text(data.title,
-                    style: const TextStyle(
-                      fontSize: 15, fontWeight: FontWeight.w900,
-                      color: Colors.white, letterSpacing: -0.2),
-                    maxLines: 2, overflow: TextOverflow.ellipsis),
-                  const SizedBox(height: 4),
-                  Text(data.indication,
-                    style: TextStyle(
-                      fontSize: 11, fontWeight: FontWeight.w500,
-                      color: Colors.white.withValues(alpha: 0.45)),
-                    maxLines: 1, overflow: TextOverflow.ellipsis),
-                ]),
-              ),
-            ]),
+            child: Icon(data.icon, size: 26, color: _kGold),
           ),
-
-          // ── Itens visíveis ───────────────────────────────────────────────
-          Padding(
-            padding: const EdgeInsets.fromLTRB(14, 12, 14, 0),
+          const SizedBox(width: 12),
+          // Texto
+          Expanded(
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              for (final item in visibleItems)
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 8),
-                  child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                    Container(
-                      margin: const EdgeInsets.only(top: 5, right: 9),
-                      width: 5, height: 5,
-                      decoration: const BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Color(0xFF4ADE80)),
-                    ),
-                    Expanded(
-                      child: Text(item,
-                        style: const TextStyle(
-                          fontSize: 12, fontWeight: FontWeight.w600,
-                          color: Colors.white70, height: 1.4)),
-                    ),
+              // Especialidade + badge
+              Row(children: [
+                Text(data.specialty,
+                  style: const TextStyle(
+                    fontSize: 10, fontWeight: FontWeight.w600, color: _kTextMid)),
+                const SizedBox(width: 6),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
+                  decoration: BoxDecoration(
+                    color: data.badgeColor,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Text(data.badge,
+                    style: const TextStyle(
+                      fontSize: 9, fontWeight: FontWeight.w800, color: Colors.white)),
+                ),
+              ]),
+              const SizedBox(height: 4),
+              Text(data.title,
+                style: const TextStyle(
+                  fontSize: 15, fontWeight: FontWeight.w800,
+                  color: _kText, height: 1.2, letterSpacing: -0.2),
+                maxLines: 2, overflow: TextOverflow.ellipsis),
+              const SizedBox(height: 3),
+              Text(data.subtitle,
+                style: const TextStyle(
+                  fontSize: 11, color: _kTextMid, fontWeight: FontWeight.w400),
+                maxLines: 1, overflow: TextOverflow.ellipsis),
+              const SizedBox(height: 10),
+              // Rodapé
+              Row(children: [
+                const Icon(Icons.description_outlined, size: 12, color: _kTextLight),
+                const SizedBox(width: 4),
+                Text('+${data.itemCount} ${isEs ? "ítems más" : "itens"}',
+                  style: const TextStyle(
+                    fontSize: 10, color: _kTextLight, fontWeight: FontWeight.w500)),
+                const Spacer(),
+                GestureDetector(
+                  onTap: onTap,
+                  child: Row(mainAxisSize: MainAxisSize.min, children: [
+                    Text(isEs ? 'Ver protocolo completo' : 'Ver protocolo completo',
+                      style: const TextStyle(
+                        fontSize: 10, color: _kGreen, fontWeight: FontWeight.w700)),
+                    const SizedBox(width: 2),
+                    const Icon(Icons.arrow_forward_rounded, size: 11, color: _kGreen),
                   ]),
                 ),
+              ]),
             ]),
           ),
-
-          // ── Lock row — único CTA interno ─────────────────────────────────
-          if (lockedCount > 0)
-            GestureDetector(
-              onTap: onTap,
-              child: Container(
-                margin: const EdgeInsets.fromLTRB(14, 6, 14, 14),
-                padding: const EdgeInsets.symmetric(vertical: 10),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
-                  color: _kGold.withValues(alpha: 0.07),
-                  border: Border.all(color: _kGold.withValues(alpha: 0.22)),
-                ),
-                child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                  const Icon(Icons.lock_rounded, size: 13, color: _kGold),
-                  const SizedBox(width: 7),
-                  Text(
-                    '+$lockedCount ${isEs
-                        ? "ítems más — ver protocolo completo"
-                        : "itens — ver protocolo completo"}',
-                    style: const TextStyle(
-                      fontSize: 12, fontWeight: FontWeight.w700,
-                      color: _kGold)),
-                ]),
-              ),
-            )
-          else
-            const SizedBox(height: 14),
+          const SizedBox(width: 6),
+          const Icon(Icons.chevron_right_rounded, size: 20, color: _kBorder),
         ]),
       ),
     );
@@ -737,28 +485,291 @@ class _DemoRxCard extends StatelessWidget {
 }
 
 // ══════════════════════════════════════════════════════════════════════════════
-// CHIP HELPER
+// CARD MÁS GRAVE — grid 2 colunas, vermelho
 // ══════════════════════════════════════════════════════════════════════════════
-class _Chip extends StatelessWidget {
-  final String label;
-  final Color color, textColor, border;
-  const _Chip({
-    required this.label, required this.color,
-    required this.textColor, required this.border,
-  });
+class _GraveCard extends StatelessWidget {
+  final _GraveItem data;
+  final VoidCallback onTap;
+  final bool isEs;
+  const _GraveCard({required this.data, required this.onTap, required this.isEs});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        margin: const EdgeInsets.only(right: 8),
+        decoration: BoxDecoration(
+          color: _kCard,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: _kBorder),
+          boxShadow: const [BoxShadow(color: _kShadow, blurRadius: 8, offset: Offset(0, 2))],
+        ),
+        padding: const EdgeInsets.all(12),
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          // Ícone vermelho
+          Container(
+            width: 44, height: 44,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12),
+              gradient: const LinearGradient(
+                begin: Alignment.topLeft, end: Alignment.bottomRight,
+                colors: [_kRed, _kRedDark]),
+            ),
+            child: Icon(data.icon, size: 22, color: Colors.white),
+          ),
+          const SizedBox(height: 8),
+          Text(data.specialty,
+            style: const TextStyle(
+              fontSize: 9, fontWeight: FontWeight.w700,
+              color: _kRed, letterSpacing: 0.2),
+            maxLines: 1, overflow: TextOverflow.ellipsis),
+          const SizedBox(height: 3),
+          Text(data.title,
+            style: const TextStyle(
+              fontSize: 13, fontWeight: FontWeight.w800,
+              color: _kText, height: 1.2),
+            maxLines: 2, overflow: TextOverflow.ellipsis),
+          const SizedBox(height: 3),
+          Text(data.subtitle,
+            style: const TextStyle(
+              fontSize: 10, color: _kTextMid, fontWeight: FontWeight.w400, height: 1.3),
+            maxLines: 2, overflow: TextOverflow.ellipsis),
+          const SizedBox(height: 10),
+          // Badge + dots
+          Row(children: [
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
+              decoration: BoxDecoration(
+                color: _kRedLight,
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Text(data.severity,
+                style: const TextStyle(
+                  fontSize: 9, fontWeight: FontWeight.w800, color: _kRed)),
+            ),
+            const SizedBox(width: 6),
+            ...List.generate(4, (i) => Container(
+              width: 5, height: 5,
+              margin: const EdgeInsets.only(right: 3),
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: i < 2 ? _kRed : _kBorder),
+            )),
+          ]),
+          const SizedBox(height: 4),
+          // Chevron direito alinhado
+          Row(children: [
+            const Spacer(),
+            Icon(Icons.chevron_right_rounded, size: 16, color: _kRed.withValues(alpha: 0.4)),
+          ]),
+        ]),
+      ),
+    );
+  }
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// BLOCO IA MEDCASES
+// ══════════════════════════════════════════════════════════════════════════════
+class _IaBlock extends StatelessWidget {
+  final VoidCallback onTap;
+  final bool isEs;
+  const _IaBlock({required this.onTap, required this.isEs});
+
+  static const _chips = [
+    (Icons.search_rounded,            'Buscar protocolos para insuficiencia respiratoria'),
+    (Icons.description_outlined,      'Dosis de noradrenalina en shock séptico'),
+    (Icons.favorite_border_rounded,   'Manejo inicial del IAM con elevación del ST'),
+  ];
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 4),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(8),
-        color: color,
-        border: Border.all(color: border),
+        color: _kCard,
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: _kBorder),
+        boxShadow: const [BoxShadow(color: _kShadow, blurRadius: 8, offset: Offset(0, 2))],
       ),
-      child: Text(label,
-        style: TextStyle(
-          fontSize: 9, fontWeight: FontWeight.w800, color: textColor)),
+      padding: const EdgeInsets.all(16),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        // Header da IA
+        Row(children: [
+          Container(
+            width: 36, height: 36,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: _kPurpleLight,
+            ),
+            child: const Icon(Icons.auto_awesome_rounded, size: 18, color: _kPurple),
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Row(children: [
+                const Text('IA MedCases',
+                  style: TextStyle(
+                    fontSize: 14, fontWeight: FontWeight.w800, color: _kText)),
+                const SizedBox(width: 6),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
+                  decoration: BoxDecoration(
+                    color: _kPurpleLight,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: const Text('Beta',
+                    style: TextStyle(
+                      fontSize: 9, fontWeight: FontWeight.w700, color: _kPurple)),
+                ),
+              ]),
+              const Text('Tu asistente médico inteligente',
+                style: TextStyle(
+                  fontSize: 10, color: _kTextMid, fontWeight: FontWeight.w400)),
+            ]),
+          ),
+          // Botão histórico
+          Container(
+            width: 32, height: 32,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: _kPurpleLight,
+            ),
+            child: const Icon(Icons.history_rounded, size: 16, color: _kPurple),
+          ),
+        ]),
+
+        const SizedBox(height: 14),
+
+        // Balão de chat
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+          decoration: BoxDecoration(
+            color: _kPurpleLight,
+            borderRadius: const BorderRadius.only(
+              topRight: Radius.circular(14),
+              bottomLeft: Radius.circular(14),
+              bottomRight: Radius.circular(14),
+            ),
+          ),
+          child: Text(
+            isEs
+                ? '¡Hola! Soy IA MedCases.\n¿En qué puedo ayudarte hoy?'
+                : 'Olá! Sou IA MedCases.\nComo posso te ajudar hoje?',
+            style: const TextStyle(
+              fontSize: 13, color: _kPurple,
+              fontWeight: FontWeight.w600, height: 1.4),
+          ),
+        ),
+
+        const SizedBox(height: 12),
+
+        // Chips de sugestão — scroll horizontal
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(children: _chips.map((chip) => GestureDetector(
+            onTap: onTap,
+            child: Container(
+              margin: const EdgeInsets.only(right: 8),
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+              decoration: BoxDecoration(
+                color: _kCard,
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(color: _kPurple.withValues(alpha: 0.3)),
+              ),
+              child: Row(mainAxisSize: MainAxisSize.min, children: [
+                Icon(chip.$1, size: 12, color: _kPurple),
+                const SizedBox(width: 5),
+                ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 140),
+                  child: Text(chip.$2,
+                    style: const TextStyle(
+                      fontSize: 10, color: _kPurple,
+                      fontWeight: FontWeight.w500),
+                    maxLines: 1, overflow: TextOverflow.ellipsis),
+                ),
+              ]),
+            ),
+          )).toList()),
+        ),
+
+        const SizedBox(height: 12),
+
+        // Campo de input fake
+        GestureDetector(
+          onTap: onTap,
+          child: Container(
+            height: 48,
+            decoration: BoxDecoration(
+              color: _kBg,
+              borderRadius: BorderRadius.circular(24),
+              border: Border.all(color: _kBorder),
+            ),
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Row(children: [
+              Expanded(
+                child: Text(
+                  isEs ? 'Escribe tu pregunta...' : 'Escreva sua pergunta...',
+                  style: const TextStyle(
+                    fontSize: 13, color: _kTextLight)),
+              ),
+              Container(
+                width: 32, height: 32,
+                decoration: const BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: _kPurple,
+                ),
+                child: const Icon(Icons.send_rounded, size: 15, color: Colors.white),
+              ),
+            ]),
+          ),
+        ),
+      ]),
     );
+  }
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// CTA INFERIOR — pill dourado
+// ══════════════════════════════════════════════════════════════════════════════
+class _CtaButton extends StatelessWidget {
+  final String label;
+  final VoidCallback onTap;
+  final bool isEs;
+  const _CtaButton({required this.label, required this.onTap, required this.isEs});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(mainAxisSize: MainAxisSize.min, children: [
+      GestureDetector(
+        onTap: onTap,
+        child: Container(
+          height: 52,
+          margin: const EdgeInsets.symmetric(horizontal: 32),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(26),
+            color: _kGold,
+            boxShadow: [BoxShadow(
+              color: _kGold.withValues(alpha: 0.5),
+              blurRadius: 16, offset: const Offset(0, 5))],
+          ),
+          child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+            const Icon(Icons.person_add_alt_1_rounded, size: 18, color: _kDark),
+            const SizedBox(width: 8),
+            Text(label,
+              style: const TextStyle(
+                fontSize: 15, fontWeight: FontWeight.w800, color: _kDark)),
+            const SizedBox(width: 8),
+            const Icon(Icons.arrow_forward_rounded, size: 16, color: _kDark),
+          ]),
+        ),
+      ),
+      const SizedBox(height: 6),
+      Text(
+        isEs ? 'Guarda protocolos y favoritos' : 'Salva protocolos e favoritos',
+        style: const TextStyle(
+          fontSize: 10, color: _kTextMid, fontWeight: FontWeight.w400),
+      ),
+    ]);
   }
 }
