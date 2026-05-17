@@ -833,73 +833,66 @@ class _ProtocolsTabState extends State<_ProtocolsTab> {
   final _searchCtrl = TextEditingController();
   String _query = '';
 
-  // Cada categoria: (labelPt, labelEs, icon, [ids])
-  static const _categories = [
-    (
-      'Emergências', 'Emergencias', Icons.emergency_rounded,
-      [
-        'pcr_adulto', 'anafilaxia', 'sepse', 'choque_cardiogenico',
-        'choque_septico_avancado', 'choque_hipovolemico', 'tep_agudo',
-        'tromboembolismo_pulmonar', 'parada_respiratoria', 'politrauma_atls',
-        'anafilaxia_refrataria', 'hemorragia_intra_abdominal',
-      ]
-    ),
-    (
-      'Cardio / Neuro', 'Cardio / Neuro', Icons.favorite_rounded,
-      [
-        'iam_congestao', 'sindrome_coronariana_sem_st', 'fa_aguda',
-        'tpsv', 'bradiarritmia_grave', 'crise_hipertensiva',
-        'avc_isquemico', 'avc_hemorragico', 'status_epilepticus',
-        'insuficiencia_cardiaca_descomp', 'edema_agudo_pulmao',
-        'pericardite_aguda', 'miocardite_aguda',
-      ]
-    ),
-    (
-      'Respiratório', 'Respiratorio', Icons.air_rounded,
-      [
-        'asma_grave', 'dpoc_exacerbacao', 'crise_asmatica_quase_fatal',
-        'pneumonia_grave', 'pneumonia_aspirativa',
-        'hemoptise_macica', 'sindrome_compartimental',
-      ]
-    ),
-    (
-      'Metabólico', 'Metabólico', Icons.science_rounded,
-      [
-        'cad_shh', 'cetoacidose_diabetica', 'hipoglicemia_grave',
-        'hiperpotassemia_grave', 'hipercalemia_grave',
-        'hipernatremia_grave', 'hiponatremia_grave',
-        'hipocalcemia_grave', 'lesao_renal_aguda',
-        'encefalopatia_hepatica', 'crise_adrenal',
-        'crise_tireotoxica', 'rabdomiolise_aguda',
-      ]
-    ),
-    (
-      'Digestivo / Outros', 'Digestivo / Otros', Icons.local_hospital_rounded,
-      [
-        'hda_varizeal', 'hda_nao_varicosa', 'hemorragia_digestiva_baixa',
-        'pancreatite_aguda_grave', 'pancreatite_aguda',
-        'coagulacao_intravascular', 'pbe_cirrose',
-        'obstrucao_intestinal', 'apendicite_aguda',
-        'colica_nefretica', 'colangite_aguda',
-        'neutropenia_febril', 'meningite_bacteriana',
-        'intoxicacao_exogena', 'intox_paracetamol', 'intox_opioides',
-        'intox_organofosforados', 'intox_triciclicos',
-        'intox_monoxido_carbono', 'delirium_tremens',
-        'eclampsia_hellp', 'hemorragia_pos_parto',
-        'agitacao_psicomotora', 'dengue_manejo',
-      ]
-    ),
-    (
-      'Pediátrico', 'Pediátrico', Icons.child_care_rounded,
-      [
-        'pcr_pediatrica', 'anafilaxia_ped', 'crise_asmatica_ped',
-        'mal_asmatico_ped', 'bronquiolite_aguda', 'laringite_estridulosa',
-        'meningite_pediatrica', 'crise_hipertensiva_ped',
-        'tromboembolismo_venoso_ped', 'sinusite_bacteriana_ped',
-        'convulsao_febril_ped', 'crise_de_anemia_falciforme',
-      ]
-    ),
+  // ── Categorias: (labelPt, labelEs, icon, keywords_no_id)
+  // index 0 = "Todos" (sem keywords → mostra tudo)
+  // A classificação é dinâmica: cada protocolo pertence à PRIMEIRA categoria
+  // cujas keywords aparecem no seu id. Se nenhuma bater → categoria "Outros".
+  static const _catDefs = [
+    ('Todos',            'Todos',           Icons.apps_rounded,          <String>[]),
+    ('Emergências',      'Emergencias',     Icons.emergency_rounded,      <String>[
+      'pcr', 'anafilaxia', 'sepse', 'choque', 'tep_agudo', 'tromboembolismo_pulmonar',
+      'parada_respiratoria', 'politrauma', 'hemorragia_intra', 'caso_anafilaxia',
+      'caso_tep', 'caso_stemi', 'caso_sepse',
+    ]),
+    ('Cardio / Neuro',   'Cardio / Neuro',  Icons.favorite_rounded,       <String>[
+      'iam', 'coronariana', 'fa_aguda', 'tpsv', 'bradiarritmia', 'hipertensiva',
+      'avc', 'status_epilepticus', 'insuficiencia_cardiaca', 'edema_agudo_pulmao',
+      'pericardite', 'miocardite', 'caso_avc', 'caso_icc', 'caso_status_epilep',
+      'caso_enxaqueca',
+    ]),
+    ('Respiratório',     'Respiratorio',    Icons.air_rounded,            <String>[
+      'asma', 'dpoc', 'pneumonia', 'hemoptise', 'bronquiolite', 'laringite',
+      'sindrome_compartimental', 'caso_pac',
+    ]),
+    ('Metabólico',       'Metabólico',      Icons.science_rounded,        <String>[
+      'cad_shh', 'cetoacidose', 'hipoglicemia', 'hiperpotassemia', 'hipercalemia',
+      'hipernatremia', 'hiponatremia', 'hipocalcemia', 'lesao_renal', 'encefalopatia',
+      'crise_adrenal', 'crise_tireotoxica', 'rabdomiolise', 'caso_cetoacidose',
+    ]),
+    ('Digestivo',        'Digestivo',       Icons.local_hospital_rounded, <String>[
+      'hda', 'hdb', 'hemorragia_digestiva', 'pancreatite', 'pancreatitis',
+      'coagulacao_intravascular', 'pbe_cirrose', 'obstrucao_intestinal',
+      'apendicite', 'colica_nefretica', 'colangite', 'diverticulitis', 'diarrea',
+      'sindrome_ascitico', 'caso_hda',
+    ]),
+    ('Infecto',          'Infectologia',    Icons.bug_report_rounded,     <String>[
+      'meningite', 'neutropenia_febril', 'dengue', 'celulite', 'erisipela',
+      'faringit', 'faringitis', 'rinosinusitis', 'gripe', 'influenza',
+      'mastoidite', 'pielonefrite', 'itu', 'cistite', 'hepatitis', 'sepse_foco',
+      'caso_cistite', 'caso_itu', 'caso_pac_grave',
+    ]),
+    ('Intoxicações',     'Intoxicaciones',  Icons.warning_rounded,        <String>[
+      'intox', 'intoxicacao', 'delirium_tremens',
+    ]),
+    ('Outros',           'Otros',           Icons.more_horiz_rounded,     <String>[
+      'eclampsia', 'hemorragia_pos_parto', 'agitacao', 'priapismo',
+      'crise_gota', 'descolamento', 'sindrome_abst', 'caso_',
+    ]),
+    ('Pediátrico',       'Pediátrico',      Icons.child_care_rounded,     <String>[
+      '_ped', 'convulsao_febril', 'anemia_falciforme',
+    ]),
   ];
+
+  /// Retorna o índice da categoria (1-based excluindo "Todos") para um protocolo.
+  /// Se nenhuma keyword bater, retorna o índice da última categoria ("Outros").
+  int _catIndexForId(String id) {
+    // começa em 1 para pular "Todos" (index 0), para antes da última ("Outros" = last)
+    for (int ci = 1; ci < _catDefs.length - 1; ci++) {
+      final keywords = _catDefs[ci].$4;
+      if (keywords.any((kw) => id.contains(kw))) return ci;
+    }
+    return _catDefs.length - 1; // "Outros"
+  }
 
   @override
   void initState() {
@@ -928,16 +921,25 @@ class _ProtocolsTabState extends State<_ProtocolsTab> {
         final t = (pr.title[isEs ? 'es' : 'pt'] ?? pr.title['pt'] ?? '').toLowerCase();
         return t.contains(_query);
       }).toList();
+    } else if (_cat == 0) {
+      // "Todos" → lista completa ordenada por título
+      protos = [...p.protocolsDB]..sort((a, b) {
+          final ta = (a.title[isEs ? 'es' : 'pt'] ?? a.title['pt'] ?? '').toLowerCase();
+          final tb = (b.title[isEs ? 'es' : 'pt'] ?? b.title['pt'] ?? '').toLowerCase();
+          return ta.compareTo(tb);
+        });
     } else {
-      final cat = _categories[_cat];
-      final ids = cat.$4;
-      protos = ids
-          .map((id) => p.protocolsDB.where((pr) => pr.id == id).firstOrNull)
-          .whereType<ProtocolModel>()
-          .toList();
+      // Categoria específica: classifica dinamicamente por keyword no ID
+      protos = p.protocolsDB
+          .where((pr) => _catIndexForId(pr.id) == _cat)
+          .toList()
+        ..sort((a, b) {
+            final ta = (a.title[isEs ? 'es' : 'pt'] ?? a.title['pt'] ?? '').toLowerCase();
+            final tb = (b.title[isEs ? 'es' : 'pt'] ?? b.title['pt'] ?? '').toLowerCase();
+            return ta.compareTo(tb);
+          });
     }
 
-    final bg        = dark ? const Color(0xFF0A130E) : const Color(0xFFF7F8FA);
     final cardBg    = dark ? const Color(0xFF111C17) : Colors.white;
     final borderC   = dark ? const Color(0xFF1F3328) : const Color(0xFFDCEDDC);
     const green     = _kGreen;
@@ -987,9 +989,9 @@ class _ProtocolsTabState extends State<_ProtocolsTab> {
           child: SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Row(
-              children: List.generate(_categories.length, (i) {
+              children: List.generate(_catDefs.length, (i) {
                 final active = _cat == i;
-                final ci  = _categories[i];
+                final ci  = _catDefs[i];
                 final lbl = isEs ? ci.$2 : ci.$1;
                 final ico = ci.$3;
                 return GestureDetector(
