@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '../providers/app_provider.dart';
 import '../models/drug_model.dart';
@@ -268,71 +269,93 @@ class _GroupAccordion extends StatelessWidget {
         child: Column(children: [
 
           // ── Cabeçalho do grupo ──────────────────────────────────────────────
-          GestureDetector(
-            onTap: onToggle,
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-              decoration: BoxDecoration(
-                color: headerBg,
-                border: Border.all(color: headerBorder),
-                borderRadius: isExpanded
-                    ? const BorderRadius.vertical(top: Radius.circular(14))
-                    : BorderRadius.circular(14),
+          Material(
+            color: headerBg,
+            borderRadius: isExpanded
+                ? const BorderRadius.vertical(top: Radius.circular(14))
+                : BorderRadius.circular(14),
+            child: InkWell(
+              onTap: () {
+                HapticFeedback.lightImpact();
+                onToggle();
+              },
+              borderRadius: isExpanded
+                  ? const BorderRadius.vertical(top: Radius.circular(14))
+                  : BorderRadius.circular(14),
+              splashColor: (iconColor ?? c.green).withValues(alpha: 0.12),
+              highlightColor: (iconColor ?? c.green).withValues(alpha: 0.06),
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                decoration: BoxDecoration(
+                  border: Border.all(color: headerBorder),
+                  borderRadius: isExpanded
+                      ? const BorderRadius.vertical(top: Radius.circular(14))
+                      : BorderRadius.circular(14),
+                ),
+                child: Row(children: [
+                  // Ícone do grupo — maior e mais impactante
+                  Container(
+                    width: 42,
+                    height: 42,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [
+                          (iconColor ?? c.green).withValues(alpha: 0.18),
+                          (iconColor ?? c.green).withValues(alpha: 0.08),
+                        ],
+                      ),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: (iconColor ?? c.green).withValues(alpha: 0.20),
+                        width: 1,
+                      ),
+                    ),
+                    child: Center(
+                      child: iconData != null
+                          ? Icon(iconData, size: 20,
+                              color: iconColor ?? c.green)
+                          : Text(icon, style: const TextStyle(fontSize: 20)),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  // Nome e contagem
+                  Expanded(child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        groupName,
+                        style: TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w900,
+                          color: titleColor,
+                          letterSpacing: -0.2,
+                        ),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        '${drugs.length} ${drugs.length == 1 ? 'fármaco' : 'fármacos'}',
+                        style: TextStyle(
+                          fontSize: 11,
+                          fontWeight: FontWeight.w600,
+                          color: countColor,
+                        ),
+                      ),
+                    ],
+                  )),
+                  // Chevron animado
+                  AnimatedRotation(
+                    turns: isExpanded ? 0.5 : 0.0,
+                    duration: const Duration(milliseconds: 200),
+                    child: Icon(
+                      Icons.keyboard_arrow_down_rounded,
+                      size: 22,
+                      color: countColor,
+                    ),
+                  ),
+                ]),
               ),
-              child: Row(children: [
-                // Ícone do grupo
-                Container(
-                  width: 36,
-                  height: 36,
-                  decoration: BoxDecoration(
-                    color: c.surface,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Center(
-                    child: iconData != null
-                        ? Icon(iconData, size: 17,
-                            color: iconColor ?? c.green)
-                        : Text(icon, style: const TextStyle(fontSize: 18)),
-                  ),
-                ),
-                const SizedBox(width: 12),
-                // Nome e contagem
-                Expanded(child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      groupName,
-                      style: TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w900,
-                        color: titleColor,
-                        letterSpacing: -0.2,
-                      ),
-                    ),
-                    const SizedBox(height: 2),
-                    Text(
-                      p.lang == 'es'
-                        ? '${drugs.length} ${drugs.length == 1 ? 'fármaco' : 'fármacos'}'
-                        : '${drugs.length} ${drugs.length == 1 ? 'fármaco' : 'fármacos'}',
-                      style: TextStyle(
-                        fontSize: 11,
-                        fontWeight: FontWeight.w600,
-                        color: countColor,
-                      ),
-                    ),
-                  ],
-                )),
-                // Chevron animado
-                AnimatedRotation(
-                  turns: isExpanded ? 0.5 : 0.0,
-                  duration: const Duration(milliseconds: 200),
-                  child: Icon(
-                    Icons.keyboard_arrow_down_rounded,
-                    size: 22,
-                    color: countColor,
-                  ),
-                ),
-              ]),
             ),
           ),
 
@@ -404,10 +427,17 @@ class _DrugListTile extends StatelessWidget {
     final subColor = c.textSecondary;
     final warnColor = c.textSecondary;
 
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 13),
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: () {
+          HapticFeedback.lightImpact();
+          onTap();
+        },
+        splashColor: c.green.withValues(alpha: 0.10),
+        highlightColor: c.green.withValues(alpha: 0.05),
+        child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         decoration: BoxDecoration(
           border: isLast
               ? null
@@ -457,18 +487,32 @@ class _DrugListTile extends StatelessWidget {
           ])),
           const SizedBox(width: 10),
           Column(children: [
-            GestureDetector(
-              onTap: () => p.toggleFavDrug(drug.id),
-              child: Padding(
-                padding: const EdgeInsets.all(4),
-                child: Icon(
-                  isFav ? Icons.star_rounded : Icons.star_border_rounded,
-                  size: 20,
-                  color: isFav ? kGold : const Color(0xFFCCCCCC),
+            // Estrela favorito com touch target adequado
+            Material(
+              color: Colors.transparent,
+              borderRadius: BorderRadius.circular(20),
+              child: InkWell(
+                onTap: () {
+                  HapticFeedback.lightImpact();
+                  p.toggleFavDrug(drug.id);
+                },
+                borderRadius: BorderRadius.circular(20),
+                splashColor: kGold.withValues(alpha: 0.18),
+                highlightColor: kGold.withValues(alpha: 0.08),
+                child: SizedBox(
+                  width: 40,
+                  height: 40,
+                  child: Center(
+                    child: Icon(
+                      isFav ? Icons.star_rounded : Icons.star_border_rounded,
+                      size: 18,
+                      color: isFav ? kGold : const Color(0xFFCCCCCC),
+                    ),
+                  ),
                 ),
               ),
             ),
-            const SizedBox(height: 4),
+            const SizedBox(height: 2),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
               decoration: BoxDecoration(
@@ -486,6 +530,7 @@ class _DrugListTile extends StatelessWidget {
             ),
           ]),
         ]),
+      ),
       ),
     );
   }
@@ -620,23 +665,32 @@ class _DrugDetailViewState extends State<_DrugDetailView> {
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
 
         // ── Voltar ──────────────────────────────────────────────────────────
-        GestureDetector(
-          onTap: widget.onBack,
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 11),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(14),
-              border: Border.all(color: border),
-              color: cardBg,
+        Material(
+          color: cardBg,
+          borderRadius: BorderRadius.circular(14),
+          child: InkWell(
+            onTap: () {
+              HapticFeedback.lightImpact();
+              widget.onBack();
+            },
+            borderRadius: BorderRadius.circular(14),
+            splashColor: c.green.withValues(alpha: 0.12),
+            highlightColor: c.green.withValues(alpha: 0.06),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 13),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(14),
+                border: Border.all(color: border),
+              ),
+              child: Row(children: [
+                Icon(Icons.arrow_back_ios_rounded, size: 14,
+                    color: c.textPrimary),
+                const SizedBox(width: 4),
+                Text(p.t('back_drugs'),
+                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w900,
+                    color: c.textPrimary)),
+              ]),
             ),
-            child: Row(children: [
-              Icon(Icons.arrow_back_ios, size: 14,
-                  color: c.textPrimary),
-              const SizedBox(width: 4),
-              Text(p.t('back_drugs'),
-                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w900,
-                  color: c.textPrimary)),
-            ]),
           ),
         ),
         const SizedBox(height: 12),
@@ -677,19 +731,28 @@ class _DrugDetailViewState extends State<_DrugDetailView> {
                   color: Colors.white.withValues(alpha: 0.65),
                   fontWeight: FontWeight.w600)),
             ])),
-            GestureDetector(
-              onTap: () => p.toggleFavDrug(drug.id),
-              child: Container(
-                padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
-                  color: Colors.white.withValues(alpha: 0.1),
-                  border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
-                ),
-                child: Icon(
-                  isFav ? Icons.star_rounded : Icons.star_border_rounded,
-                  size: 22,
-                  color: isFav ? const Color(0xFFFFE8A6) : Colors.white54,
+            Material(
+              color: Colors.white.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(12),
+              child: InkWell(
+                onTap: () {
+                  HapticFeedback.mediumImpact();
+                  p.toggleFavDrug(drug.id);
+                },
+                borderRadius: BorderRadius.circular(12),
+                splashColor: const Color(0xFFFFE8A6).withValues(alpha: 0.25),
+                highlightColor: const Color(0xFFFFE8A6).withValues(alpha: 0.12),
+                child: Container(
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
+                  ),
+                  child: Icon(
+                    isFav ? Icons.star_rounded : Icons.star_border_rounded,
+                    size: 22,
+                    color: isFav ? const Color(0xFFFFE8A6) : Colors.white54,
+                  ),
                 ),
               ),
             ),
@@ -757,22 +820,35 @@ class _DrugDetailViewState extends State<_DrugDetailView> {
             ClinicalAlertBox(messages: dose.alerts),
             const SizedBox(height: 14),
 
-            GestureDetector(
-              onTap: () => p.setActiveDrug(drug.id),
-              child: Container(
-                width: double.infinity,
-                height: 48,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(14),
-                  color: c.darkBtn,
-                  boxShadow: [BoxShadow(
-                    color: c.darkBtn.withValues(alpha: 0.35),
-                    blurRadius: 12, offset: const Offset(0, 4))],
-                ),
-                child: Center(
-                  child: Text(p.t('use_in_cockpit'),
-                    style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w900,
-                      color: kGoldLight)),
+            Material(
+              color: c.darkBtn,
+              borderRadius: BorderRadius.circular(14),
+              child: InkWell(
+                onTap: () {
+                  HapticFeedback.mediumImpact();
+                  p.setActiveDrug(drug.id);
+                },
+                borderRadius: BorderRadius.circular(14),
+                splashColor: kGoldLight.withValues(alpha: 0.20),
+                highlightColor: kGoldLight.withValues(alpha: 0.10),
+                child: Container(
+                  width: double.infinity,
+                  height: 52,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(14),
+                    boxShadow: [BoxShadow(
+                      color: c.darkBtn.withValues(alpha: 0.35),
+                      blurRadius: 12, offset: const Offset(0, 4))],
+                  ),
+                  child: Center(
+                    child: Row(mainAxisSize: MainAxisSize.min, children: [
+                      const Icon(Icons.science_rounded, size: 16, color: kGoldLight),
+                      const SizedBox(width: 8),
+                      Text(p.t('use_in_cockpit'),
+                        style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w900,
+                          color: kGoldLight)),
+                    ]),
+                  ),
                 ),
               ),
             ),
@@ -917,26 +993,35 @@ class _SexToggleBtn extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final c = AppColors.of(context);
     return Expanded(
-      child: GestureDetector(
-        onTap: onTap,
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 160),
-          height: 38,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
-            color: active ? AppColors.of(context).darkBtn : AppColors.of(context).inputBg,
-            border: Border.all(
-              color: active ? AppColors.of(context).darkBtn : AppColors.of(context).border,
+      child: Material(
+        color: active ? c.darkBtn : c.inputBg,
+        borderRadius: BorderRadius.circular(10),
+        child: InkWell(
+          onTap: () {
+            HapticFeedback.selectionClick();
+            onTap();
+          },
+          borderRadius: BorderRadius.circular(10),
+          splashColor: kGoldLight.withValues(alpha: 0.15),
+          highlightColor: kGoldLight.withValues(alpha: 0.08),
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 160),
+            height: 44,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(
+                color: active ? c.darkBtn : c.border,
+              ),
             ),
-          ),
-          child: Center(
-            child: Text(label,
-              style: TextStyle(
-                fontSize: 13, fontWeight: FontWeight.w900,
-                color: active ? kGoldLight
-                    : AppColors.of(context).textHint,
-              )),
+            child: Center(
+              child: Text(label,
+                style: TextStyle(
+                  fontSize: 13, fontWeight: FontWeight.w900,
+                  color: active ? kGoldLight : c.textHint,
+                )),
+            ),
           ),
         ),
       ),
@@ -1503,17 +1588,18 @@ class _DrugSearchAutocompleteState extends State<_DrugSearchAutocomplete> {
               const BoxConstraints(minWidth: 40, minHeight: 40),
           // Botão de limpar campo
           suffixIcon: widget.controller.text.isNotEmpty
-              ? GestureDetector(
-                  onTap: () {
+              ? IconButton(
+                  onPressed: () {
+                    HapticFeedback.lightImpact();
                     widget.controller.clear();
                     widget.onChanged('');
                     _removeOverlay();
                   },
-                  child: const Padding(
-                    padding: EdgeInsets.only(right: 10),
-                    child: Icon(Icons.close_rounded,
-                        size: 18, color: Color(0xFFAAAAAA)),
-                  ),
+                  icon: const Icon(Icons.close_rounded,
+                      size: 18, color: Color(0xFFAAAAAA)),
+                  splashRadius: 18,
+                  padding: const EdgeInsets.only(right: 4),
+                  constraints: const BoxConstraints(minWidth: 40, minHeight: 40),
                 )
               : null,
           suffixIconConstraints:
