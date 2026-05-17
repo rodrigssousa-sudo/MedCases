@@ -742,14 +742,6 @@ class _WaHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final isConnected = geminiConnected || hasRealAi;
 
-    final String modelLabel = keyLoading
-        ? 'Conectando...'
-        : geminiConnected
-            ? 'Gemini 1.5 Flash'
-            : hasRealAi
-                ? 'GPT-4o mini'
-                : (lang == 'es' ? 'Base clínica local' : 'Base clínica local');
-
     return Container(
       decoration: const BoxDecoration(
         gradient: LinearGradient(
@@ -789,11 +781,10 @@ class _WaHeader extends StatelessWidget {
                   ),
                   const SizedBox(width: 10),
 
-                  // Título + modelo
+                  // Título + badge conexão numa linha só
                   Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         const Text(
                           'MedCases IA',
@@ -804,41 +795,64 @@ class _WaHeader extends StatelessWidget {
                             letterSpacing: -0.3,
                           ),
                         ),
-                        const SizedBox(height: 2),
-                        Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            // Dot de status
-                            if (keyLoading)
-                              SizedBox(
-                                width: 7, height: 7,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 1.2,
-                                  color: Colors.white.withValues(alpha: 0.45),
-                                ),
-                              )
-                            else
-                              Container(
-                                width: 7, height: 7,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: isConnected
-                                      ? _kGreen
-                                      : Colors.white.withValues(alpha: 0.3),
-                                ),
-                              ),
-                            const SizedBox(width: 5),
-                            Text(
-                              modelLabel,
-                              style: TextStyle(
-                                fontSize: 11,
-                                fontWeight: FontWeight.w600,
+                        const SizedBox(width: 8),
+                        // Badge Conectado / Conectar IA
+                        GestureDetector(
+                          onTap: onSettings,
+                          child: AnimatedContainer(
+                            duration: const Duration(milliseconds: 300),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 9, vertical: 4),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20),
+                              color: isConnected
+                                  ? _kGreen.withValues(alpha: 0.12)
+                                  : Colors.white.withValues(alpha: 0.07),
+                              border: Border.all(
                                 color: isConnected
-                                    ? _kGreen
-                                    : Colors.white.withValues(alpha: 0.45),
+                                    ? _kGreen.withValues(alpha: 0.45)
+                                    : Colors.white.withValues(alpha: 0.18),
                               ),
                             ),
-                          ],
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                if (keyLoading)
+                                  SizedBox(
+                                    width: 9, height: 9,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 1.2,
+                                      color: Colors.white.withValues(alpha: 0.5),
+                                    ),
+                                  )
+                                else
+                                  Icon(
+                                    isConnected
+                                        ? Icons.check_circle_rounded
+                                        : Icons.link_rounded,
+                                    size: 11,
+                                    color: isConnected
+                                        ? _kGreen
+                                        : Colors.white.withValues(alpha: 0.5),
+                                  ),
+                                const SizedBox(width: 4),
+                                Text(
+                                  keyLoading
+                                      ? 'Conectando...'
+                                      : isConnected
+                                          ? (lang == 'es' ? 'Conectado' : 'Conectado')
+                                          : (lang == 'es' ? 'Conectar IA' : 'Conectar IA'),
+                                  style: TextStyle(
+                                    fontSize: 11,
+                                    fontWeight: FontWeight.w700,
+                                    color: isConnected
+                                        ? _kGreen
+                                        : Colors.white.withValues(alpha: 0.6),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
                       ],
                     ),
@@ -934,77 +948,7 @@ class _WaHeader extends StatelessWidget {
                 ],
               ),
 
-              // ── Linha 2: badge status conexão (só quando conectado) ──
-              if (!keyLoading) ...[
-                const SizedBox(height: 8),
-                Row(
-                  children: [
-                    // Badge conexão — abre settings
-                    GestureDetector(
-                      onTap: onSettings,
-                      child: AnimatedContainer(
-                        duration: const Duration(milliseconds: 300),
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 10, vertical: 5),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20),
-                          color: isConnected
-                              ? _kGreen.withValues(alpha: 0.10)
-                              : Colors.white.withValues(alpha: 0.06),
-                          border: Border.all(
-                            color: isConnected
-                                ? _kGreen.withValues(alpha: 0.40)
-                                : Colors.white.withValues(alpha: 0.15),
-                          ),
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(
-                              isConnected
-                                  ? Icons.check_circle_rounded
-                                  : Icons.link_rounded,
-                              size: 12,
-                              color: isConnected
-                                  ? _kGreen
-                                  : Colors.white.withValues(alpha: 0.45),
-                            ),
-                            const SizedBox(width: 4),
-                            Text(
-                              isConnected
-                                  ? (lang == 'es' ? 'Conectado' : 'Conectado')
-                                  : (lang == 'es' ? 'Conectar IA' : 'Conectar IA'),
-                              style: TextStyle(
-                                fontSize: 11,
-                                fontWeight: FontWeight.w700,
-                                color: isConnected
-                                    ? _kGreen
-                                    : Colors.white.withValues(alpha: 0.55),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 6),
-                    // Modo de operação (texto pequeno)
-                    Text(
-                      isConnected
-                          ? (lang == 'es'
-                              ? 'online · siempre activo'
-                              : 'online · sempre ativo')
-                          : (lang == 'es'
-                              ? 'base clínica · siempre activo'
-                              : 'base clínica · sempre ativo'),
-                      style: TextStyle(
-                        fontSize: 10,
-                        color: Colors.white.withValues(alpha: 0.35),
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
+              // Linha 2 removida — badge movido para a linha do título
             ],
           ),
         ),
