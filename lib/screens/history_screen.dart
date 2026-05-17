@@ -385,15 +385,10 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
                           onTap: () => setState(() { _viewing = h; _viewingPublic = true; }),
                           readOnly: true,
                           onModHide: canModerate ? () async {
-                            final uid = p.currentUser?.uid ?? '';
-                            if (h.isHidden) {
-                              await FirestoreService.unhideHistory(h.id);
-                              if (context.mounted) _showModSnack(context, 'HC visível novamente');
-                            } else {
-                              await FirestoreService.hideHistory(h.id, uid);
-                              if (context.mounted) _showModSnack(context, 'HC ocultada da comunidade');
-                            }
-                            p.loadPublicHistories();
+                            final wasHidden = h.isHidden;
+                            await p.toggleHistoryHidden(h.id);
+                            if (context.mounted) _showModSnack(context,
+                              wasHidden ? 'HC visível novamente' : 'HC ocultada da comunidade');
                           } : null,
                           onModDelete: canModerate ? () async {
                             final confirm = await _confirmModDelete(context);

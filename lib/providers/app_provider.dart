@@ -887,6 +887,77 @@ class AppProvider extends ChangeNotifier {
     await saveHistory(updated);
   }
 
+  /// Modera visibilidade de uma HC pública (admin/supervisor).
+  /// Atualiza a lista em memória IMEDIATAMENTE — botão muda na hora.
+  /// Depois sincroniza com Firestore em background.
+  Future<void> toggleHistoryHidden(String historyId) async {
+    final uid = _currentUser?.uid ?? '';
+    // Encontra na lista pública local
+    final idx = _publicHistories.indexWhere((h) => h.id == historyId);
+    if (idx < 0) return;
+
+    final current = _publicHistories[idx];
+    final nowHidden = !current.isHidden;
+    final now = DateTime.now().toIso8601String();
+
+    // Atualiza em memória imediatamente (UI reflete na hora)
+    // Usa um objeto temporário para resetar os campos nullable
+    final updated = ClinicalHistoryModel(
+      id: current.id,
+      createdAt: current.createdAt,
+      authorUid: current.authorUid,
+      authorName: current.authorName,
+      authorEmail: current.authorEmail,
+      uploadedAt: current.uploadedAt,
+      updatedAt: current.updatedAt,
+      isPublic: current.isPublic,
+      patientInitials: current.patientInitials,
+      patientAge: current.patientAge,
+      patientSex: current.patientSex,
+      patientWeight: current.patientWeight,
+      patientHeight: current.patientHeight,
+      patientRecord: current.patientRecord,
+      chiefComplaint: current.chiefComplaint,
+      hpi: current.hpi,
+      pastHistory: current.pastHistory,
+      familyHistory: current.familyHistory,
+      socialHistory: current.socialHistory,
+      medications: current.medications,
+      allergies: current.allergies,
+      reviewOfSystems: current.reviewOfSystems,
+      vitalSigns: current.vitalSigns,
+      physicalExam: current.physicalExam,
+      workingDiagnosis: current.workingDiagnosis,
+      differentialDx: current.differentialDx,
+      finalDiagnosis: current.finalDiagnosis,
+      cid: current.cid,
+      labResults: current.labResults,
+      imagingResults: current.imagingResults,
+      otherResults: current.otherResults,
+      treatmentPlan: current.treatmentPlan,
+      procedures: current.procedures,
+      drugIds: current.drugIds,
+      evolutions: current.evolutions,
+      outcome: current.outcome,
+      dischargeCondition: current.dischargeCondition,
+      followUp: current.followUp,
+      category: current.category,
+      tags: current.tags,
+      isHidden: nowHidden,
+      hiddenBy: nowHidden ? uid : null,
+      hiddenAt: nowHidden ? now : null,
+    );
+    _publicHistories[idx] = updated;
+    notifyListeners();
+
+    // Sincroniza com Firestore em background
+    if (nowHidden) {
+      FirestoreService.hideHistory(historyId, uid).catchError((_) {});
+    } else {
+      FirestoreService.unhideHistory(historyId).catchError((_) {});
+    }
+  }
+
   // Completer ativo enquanto um fetch está em andamento.
   // Chamadas concorrentes aguardam o mesmo Future em vez de retornar [] silenciosamente.
   Completer<void>? _publicHistoriesCompleter;
