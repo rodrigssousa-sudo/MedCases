@@ -365,12 +365,17 @@ class AppProvider extends ChangeNotifier {
   // Chamado APÓS _loadFromLocal — atualiza silenciosamente quando há rede
   Future<void> _syncFromFirestore(String uid) async {
     try {
-      final favDrugs     = await FirestoreService.loadFavDrugs(uid);
-      final favProtocols = await FirestoreService.loadFavProtocols(uid);
-      final cases        = await FirestoreService.loadCases(uid);
-      _favDrugs     = favDrugs;
-      _favProtocols = favProtocols;
-      _customCases  = cases;
+      final results = await Future.wait([
+        FirestoreService.loadFavDrugs(uid),
+        FirestoreService.loadFavProtocols(uid),
+        FirestoreService.loadFavPrescriptions(uid),
+        FirestoreService.loadFavCases(uid),
+      ]);
+      _favDrugs         = results[0];
+      _favProtocols     = results[1];
+      _favPrescriptions = results[2];
+      _favCases         = results[3];
+      _customCases      = await FirestoreService.loadCases(uid);
       notifyListeners();
       // Persiste no cache local para próxima abertura offline
       await _saveLocal();
@@ -711,13 +716,50 @@ class AppProvider extends ChangeNotifier {
   void toggleFavPrescription(String id) {
     if (_favPrescriptions.contains(id)) _favPrescriptions.remove(id); else _favPrescriptions.add(id);
     _saveLocal();
+    if (_currentUser != null) FirestoreService.saveFavPrescriptions(_currentUser!.uid, _favPrescriptions);
     notifyListeners();
   }
 
   void toggleFavCase(String id) {
     if (_favCases.contains(id)) _favCases.remove(id); else _favCases.add(id);
     _saveLocal();
+    if (_currentUser != null) FirestoreService.saveFavCases(_currentUser!.uid, _favCases);
     notifyListeners();
+  }
+
+  // ── Recentes — chave prefixada por uid para sobreviver a logout/login ─────
+  static const _kRecentBase = 'home_recents_v1';
+
+  String _recentKey(String? uid) =>
+      uid != null ? '${uid}_$_kRecentBase' : _kRecentBase;
+
+  /// Registra um item como recente (type|id|title), com chave por uid.
+  Future<void> registerRecent(String type, String id, String title) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final key   = _recentKey(_currentUser?.uid);
+      final raw   = prefs.getStringList(key) ?? [];
+      final entry = '$type|$id|$title';
+      raw.removeWhere((e) => e.startsWith('$type|$id|'));
+      raw.insert(0, entry);
+      await prefs.setStringList(key, raw.take(20).toList());
+    } catch (_) {}
+  }
+
+  /// Lê a lista de recentes do usuário atual.
+  Future<List<Map<String, String>>> loadRecents() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final key   = _recentKey(_currentUser?.uid);
+      final raw   = prefs.getStringList(key) ?? [];
+      return raw.map((e) {
+        final parts = e.split('|');
+        if (parts.length < 3) return null;
+        return {'type': parts[0], 'id': parts[1], 'title': parts.sublist(2).join('|')};
+      }).whereType<Map<String, String>>().toList();
+    } catch (_) {
+      return [];
+    }
   }
 
   void saveCase(ClinicalCaseModel c) {

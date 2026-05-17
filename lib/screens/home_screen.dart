@@ -516,7 +516,7 @@ class _SearchSheetState extends State<_SearchSheet> {
                               onTap: () async {
                                 Navigator.pop(context);
                                 // Registra como recente imediatamente
-                                await homeRegisterRecent('drug', d.id, d.name);
+                                await homeRegisterRecent('drug', d.id, d.name, p: context.read<AppProvider>());
                                 if (context.mounted) {
                                   showDrugDetailSheet(context, d);
                                 }
@@ -542,7 +542,7 @@ class _SearchSheetState extends State<_SearchSheet> {
                                 onTap: () async {
                                   Navigator.pop(context);
                                   // Registra como recente imediatamente
-                                  await homeRegisterRecent('protocol', pr.id, title);
+                                  await homeRegisterRecent('protocol', pr.id, title, p: context.read<AppProvider>());
                                   if (context.mounted) {
                                     showProtocolDetail(context, pr);
                                   }
@@ -976,18 +976,9 @@ class _ShortcutItem {
 // ─────────────────────────────────────────────────────────────────────────────
 
 /// Chave SharedPreferences para recentes
-const _kRecentKey = 'home_recents_v1';
-
-/// Registra um item como recente (tipo:id:título)
-Future<void> homeRegisterRecent(String type, String id, String title) async {
-  try {
-    final prefs = await SharedPreferences.getInstance();
-    final raw   = prefs.getStringList(_kRecentKey) ?? [];
-    final entry = '$type|$id|$title';
-    raw.removeWhere((e) => e.startsWith('$type|$id|'));
-    raw.insert(0, entry);
-    await prefs.setStringList(_kRecentKey, raw.take(20).toList());
-  } catch (_) {}
+// homeRegisterRecent — delega ao AppProvider (chave prefixada por uid)
+Future<void> homeRegisterRecent(String type, String id, String title, {required AppProvider p}) async {
+  await p.registerRecent(type, id, title);
 }
 
 class _RecentesSheet extends StatefulWidget {
@@ -1012,14 +1003,8 @@ class _RecentesSheetState extends State<_RecentesSheet> {
 
   Future<void> _load() async {
     try {
-      final prefs = await SharedPreferences.getInstance();
-      final raw   = prefs.getStringList(_kRecentKey) ?? [];
-      final parsed = raw.map((e) {
-        final parts = e.split('|');
-        if (parts.length < 3) return null;
-        return {'type': parts[0], 'id': parts[1], 'title': parts.sublist(2).join('|')};
-      }).whereType<Map<String, String>>().toList();
-      if (mounted) setState(() { _items = parsed; _loading = false; });
+      final items = await widget.p.loadRecents();
+      if (mounted) setState(() { _items = items; _loading = false; });
     } catch (_) {
       if (mounted) setState(() => _loading = false);
     }

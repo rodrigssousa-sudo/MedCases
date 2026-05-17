@@ -1,22 +1,18 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '../providers/app_provider.dart';
 import '../models/drug_model.dart';
 import '../services/drug_interaction_service.dart';
 import '../widgets/common_widgets.dart';
 
-Future<void> _registerDrugRecent(String id, String name, DateTime openedAt) async {
+// Recentes delegados ao AppProvider (chave prefixada por uid)
+Future<void> _registerDrugRecent(BuildContext ctx, String id, String name, DateTime openedAt) async {
   final elapsed = DateTime.now().difference(openedAt);
   if (elapsed.inSeconds < 5) return;
   try {
-    final prefs = await SharedPreferences.getInstance();
-    final raw   = prefs.getStringList('home_recents_v1') ?? [];
-    final entry = 'drug|$id|$name';
-    raw.removeWhere((e) => e.startsWith('drug|$id|'));
-    raw.insert(0, entry);
-    await prefs.setStringList('home_recents_v1', raw.take(15).toList());
+    final p = ctx.read<AppProvider>();
+    await p.registerRecent('drug', id, name);
   } catch (_) {}
 }
 
@@ -29,7 +25,7 @@ void showDrugDetailSheet(BuildContext context, DrugModel drug) {
     isScrollControlled: true,
     backgroundColor: Colors.transparent,
     builder: (_) => _DrugDetailSheetWrapper(drug: drug, p: p),
-  ).then((_) => _registerDrugRecent(drug.id, drug.name, openedAt));
+  ).then((_) => _registerDrugRecent(context, drug.id, drug.name, openedAt));
 }
 
 class _DrugDetailSheetWrapper extends StatelessWidget {

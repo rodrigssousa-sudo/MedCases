@@ -187,7 +187,7 @@ class _PreLoginPreviewState extends State<PreLoginPreview> {
     }
 
     return Scaffold(
-      backgroundColor: _kDark,
+      backgroundColor: Colors.white,
       body: Column(children: [
         // ── Header limpo ─────────────────────────────────────────────────────
         _PreviewHeader(
@@ -196,24 +196,12 @@ class _PreLoginPreviewState extends State<PreLoginPreview> {
           onLogin: _goLogin,
         ),
 
-        // ── Tab selector compacto ─────────────────────────────────────────
-        _TabBar(
-          isEs: _isEs,
-          activeTab: _demoTab,
-          tabCases: _tabCases,
-          tabRx: _tabRx,
-          onTap: (i) => setState(() => _demoTab = i),
-        ),
-
-        // ── Lista de cards ────────────────────────────────────────────────
+        // ── Lista de prescrições (sem abas) ───────────────────────────────
         Expanded(
           child: ListView(
             padding: const EdgeInsets.fromLTRB(16, 16, 16, 100),
-            children: _demoTab == 0
-                ? _demoCases.map((c) => _DemoCaseCard(
-                    data: c, onTap: _goLogin, isEs: _isEs)).toList()
-                : _demoRx.map((r) => _DemoRxCard(
-                    data: r, onTap: _goLogin, isEs: _isEs)).toList(),
+            children: _demoRx.map((r) => _DemoRxCard(
+                data: r, onTap: _goLogin, isEs: _isEs)).toList(),
           ),
         ),
       ]),

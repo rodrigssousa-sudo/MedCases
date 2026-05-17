@@ -244,6 +244,42 @@ class FirestoreService {
     } catch (_) {}
   }
 
+  // ── Favoritos de prescrições ──────────────────────────────────────────────
+  static Future<Set<String>> loadFavPrescriptions(String uid) async {
+    try {
+      final doc = await _userFavs(uid).doc('prescriptions').get();
+      if (!doc.exists) return {};
+      final list = doc.data()?['ids'] as List<dynamic>?;
+      return list?.map((e) => e.toString()).toSet() ?? {};
+    } catch (_) {
+      return {};
+    }
+  }
+
+  static Future<void> saveFavPrescriptions(String uid, Set<String> ids) async {
+    try {
+      await _userFavs(uid).doc('prescriptions').set({'ids': ids.toList()});
+    } catch (_) {}
+  }
+
+  // ── Favoritos de casos clínicos ───────────────────────────────────────────
+  static Future<Set<String>> loadFavCases(String uid) async {
+    try {
+      final doc = await _userFavs(uid).doc('fav_cases').get();
+      if (!doc.exists) return {};
+      final list = doc.data()?['ids'] as List<dynamic>?;
+      return list?.map((e) => e.toString()).toSet() ?? {};
+    } catch (_) {
+      return {};
+    }
+  }
+
+  static Future<void> saveFavCases(String uid, Set<String> ids) async {
+    try {
+      await _userFavs(uid).doc('fav_cases').set({'ids': ids.toList()});
+    } catch (_) {}
+  }
+
   // ── Casos clínicos do usuário ─────────────────────────────────────────────
   static Future<List<ClinicalCaseModel>> loadCases(String uid) async {
     try {
