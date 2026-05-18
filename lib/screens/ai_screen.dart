@@ -709,6 +709,7 @@ class _AiScreenState extends State<AiScreen> {
                               onTts: _ttsReady
                                   ? () => _toggleTts(i, msg.text, p.lang)
                                   : null,
+                              scrollCtrl: _scrollCtrl,
                             ),
                     );
                   },
@@ -1411,6 +1412,8 @@ class _AiBubble extends StatefulWidget {
   final bool ttsPlaying;
   final bool ttsReady;
   final VoidCallback? onTts;
+  /// ScrollController do ListView pai — usado para compensar posição ao revelar blocos
+  final ScrollController? scrollCtrl;
   const _AiBubble({
     super.key,
     required this.text,
@@ -1420,6 +1423,7 @@ class _AiBubble extends StatefulWidget {
     this.ttsPlaying = false,
     this.ttsReady = false,
     this.onTts,
+    this.scrollCtrl,
   });
 
   @override
@@ -1474,7 +1478,47 @@ class _AiBubbleState extends State<_AiBubble> {
     for (int i = 0; i < total; i++) {
       final delayMs = i == 0 ? 120 : (i * 600).clamp(0, 2000);
       Future.delayed(Duration(milliseconds: delayMs), () {
-        if (mounted) setState(() => _visibleCount = i + 1);
+        if (!mounted) return;
+        // Captura posição ANTES de revelar o bloco
+        final ctrl = widget.scrollCtrl;
+        final posBefore = (ctrl != null && ctrl.hasClients)
+            ? ctrl.position.pixels
+            : null;
+        final maxBefore = (ctrl != null && ctrl.hasClients)
+            ? ctrl.position.maxScrollExtent
+            : null;
+        final nearBottom = (posBefore != null && maxBefore != null)
+            ? posBefore >= maxBefore - 140
+            : true;
+
+        setState(() => _visibleCount = i + 1);
+
+        // Após o layout, compensa o scroll:
+        // • perto do fundo → desce automaticamente
+        // • usuário scrollou para cima → mantém posição visual (sem pulo)
+        if (ctrl != null && ctrl.hasClients && posBefore != null) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (!mounted || !ctrl.hasClients) return;
+            if (nearBottom) {
+              // Desce suavemente para o fundo
+              ctrl.animateTo(
+                ctrl.position.maxScrollExtent,
+                duration: const Duration(milliseconds: 200),
+                curve: Curves.easeOut,
+              );
+            } else {
+              // Usuário está lendo acima: compensa a posição para o conteúdo
+              // não "puxar" a tela — mantém o mesmo ponto visual
+              final maxAfter = ctrl.position.maxScrollExtent;
+              if (maxBefore != null && maxAfter > maxBefore) {
+                final delta = maxAfter - maxBefore;
+                final correctedPos = (posBefore + delta)
+                    .clamp(0.0, ctrl.position.maxScrollExtent);
+                ctrl.jumpTo(correctedPos);
+              }
+            }
+          });
+        }
       });
     }
   }
