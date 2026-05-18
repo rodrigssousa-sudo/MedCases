@@ -1512,7 +1512,7 @@ class _ExpandedContent extends StatelessWidget {
           if (ix.references.isNotEmpty) ...[
             const SizedBox(height: 14),
             Text(
-              'FONTES',
+              isEs ? 'FUENTES' : 'FONTES',
               style: TextStyle(
                 fontSize: 10,
                 fontWeight: FontWeight.w700,
