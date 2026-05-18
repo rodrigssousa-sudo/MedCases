@@ -30,6 +30,7 @@ import 'screens/cases_screen.dart';
 import 'screens/prescripciones_screen.dart';
 import 'screens/legal_screen.dart';
 import 'screens/home_screen.dart';
+import 'screens/avaliacao_screen.dart'; // ignore: unused_import — usado via home_screen
 import 'screens/notes_screen.dart';
 import 'screens/library_screen.dart';
 import 'services/firestore_service.dart';

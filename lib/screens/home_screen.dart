@@ -13,6 +13,7 @@ import 'tools_screen.dart' show PediatricsTabContent, ToolsScreen;
 import 'prescripciones_screen.dart';
 import 'drug_interactions_screen.dart';
 import 'protocols_screen.dart' show openProtocolById, showProtocolDetail;
+import 'avaliacao_screen.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // HOME SCREEN — 4 cards de navegação principal
@@ -32,6 +33,18 @@ class HomeScreen extends StatelessWidget {
     required this.onOpenNotes,
     this.onCheckUpdate,
   });
+
+  static void _openAvaliacao(BuildContext context) {
+    Navigator.of(context).push(PageRouteBuilder(
+      pageBuilder: (_, __, ___) => const AvaliacaoScreen(),
+      transitionsBuilder: (_, anim, __, child) => SlideTransition(
+        position: Tween(begin: const Offset(0, 1), end: Offset.zero)
+            .animate(CurvedAnimation(parent: anim, curve: Curves.easeOutCubic)),
+        child: child,
+      ),
+      transitionDuration: const Duration(milliseconds: 320),
+    ));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -135,7 +148,7 @@ class HomeScreen extends StatelessWidget {
         _HomeDivider(dark: dark),
         const SizedBox(height: 16),
 
-        // ── Notas · Recentes · Favoritos · Novidades ──────────────────────
+        // ── Notas · Recentes · Favoritos · Avaliação ────────────────────
         _QuickShortcuts(
           dark: dark,
           isEs: isEs,
@@ -875,10 +888,10 @@ class _QuickShortcuts extends StatelessWidget {
         onTap: () => _openFavoritos(context),
       ),
       _ShortcutItem(
-        icon: Icons.auto_awesome_rounded,
-        color: const Color(0xFF1F6B48),
-        label: isEs ? 'Novedades' : 'Novidades',
-        onTap: onCheckUpdate ?? () {},
+        icon: Icons.assignment_ind_rounded,
+        color: const Color(0xFFDC2626),
+        label: isEs ? 'Evaluación' : 'Avaliação',
+        onTap: () => HomeScreen._openAvaliacao(context),
       ),
     ];
 
