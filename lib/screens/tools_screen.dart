@@ -2700,15 +2700,25 @@ class _PrescriptionsTab extends StatefulWidget {
 
 class _PrescriptionsTabState extends State<_PrescriptionsTab> {
   int _cat = 0;
-  final _categories = [
-    'DOR/FEBRE', 'NÁUSEA', 'INFECÇÃO', 'HAS', 'HipoK+',
-    'SEDAÇÃO', 'SEPSE', 'COAGULAÇÃO', 'ANTI-HAS GRAVE', 'DISPNEIA',
+
+  List<String> _categories(bool isEs) => [
+    isEs ? 'DOLOR/FIEBRE' : 'DOR/FEBRE',
+    isEs ? 'NÁUSEAS'      : 'NÁUSEA',
+    isEs ? 'INFECCIÓN'    : 'INFECÇÃO',
+    'HAS',
+    'HipoK+',
+    isEs ? 'SEDACIÓN'     : 'SEDAÇÃO',
+    isEs ? 'SEPSIS'       : 'SEPSE',
+    isEs ? 'COAGULACIÓN'  : 'COAGULAÇÃO',
+    isEs ? 'ANTI-HAS GRAVE' : 'ANTI-HAS GRAVE',
+    isEs ? 'DISNEA'       : 'DISPNEIA',
   ];
 
   @override
   Widget build(BuildContext context) {
     final p = context.watch<AppProvider>();
     final isEs = p.lang == 'es';
+    final categories = _categories(isEs);
 
     return Column(children: [
       Container(
@@ -2717,7 +2727,7 @@ class _PrescriptionsTabState extends State<_PrescriptionsTab> {
         child: SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           child: Row(
-            children: List.generate(_categories.length, (i) {
+            children: List.generate(categories.length, (i) {
               final active = _cat == i;
               return GestureDetector(
                 onTap: () => setState(() => _cat = i),
@@ -2730,7 +2740,7 @@ class _PrescriptionsTabState extends State<_PrescriptionsTab> {
                     color: active ? const Color(0xFFC5A365) : Colors.white.withValues(alpha: 0.08),
                     border: Border.all(color: active ? const Color(0xFFC5A365) : Colors.white.withValues(alpha: 0.15)),
                   ),
-                  child: Text(_categories[i],
+                  child: Text(categories[i],
                     style: TextStyle(fontSize: 10, fontWeight: FontWeight.w800,
                       color: active ? const Color(0xFF0F1C14) : Colors.white60, letterSpacing: 0.5)),
                 ),
@@ -2912,20 +2922,20 @@ class _PrescriptionsTabState extends State<_PrescriptionsTab> {
         title: isEs ? 'Sedación/Analgesia en UTI (PADIS 2018)' : 'Sedação/Analgesia em UTI (PADIS 2018)',
         level: 'ALTO',
         items: [
-          _PrescItem('1. Analgesia', isEs ? 'Analgesia-PRIMEIRO: Fentanil 25–50 mcg IV PRN ou Morfina 2–4 mg IV PRN.' : 'Analgesia-PRIMEIRO: Fentanil 25–50 mcg IV PRN ou Morfina 2–4 mg IV PRN.'),
-          _PrescItem('2. Sedação leve', isEs ? 'Meta RASS -1 a 0. Propofol 0,5–3 mg/kg/h IV OU Dexmedetomidina 0,2–1,5 mcg/kg/h.' : 'Meta RASS -1 a 0. Propofol 0,5–3 mg/kg/h IV OU Dexmedetomidina 0,2–1,5 mcg/kg/h.'),
-          _PrescItem('3. Delirium', isEs ? 'Haloperidol 0,25–0,5 mg IV 8/8h se agitação. Orientação + luz + mobilização precoce.' : 'Haloperidol 0,25–0,5 mg IV 8/8h se agitação. Orientação + luz + mobilização precoce.'),
-          _PrescItem('Sedação profunda', isEs ? 'Midazolam 0,02–0,1 mg/kg/h + Fentanil 25–100 mcg/h (IOT/SARA/status).' : 'Midazolam 0,02–0,1 mg/kg/h + Fentanil 25–100 mcg/h (IOT/SARA/status).'),
-          _PrescItem('Aten.', isEs ? 'Interrupção diária da sedação ("sedation vacation"). Avaliar RASS 4×/dia.' : 'Interrupção diária da sedação ("sedation vacation"). Avaliar RASS 4×/dia.'),
+          _PrescItem(isEs ? '1. Analgesia' : '1. Analgesia', isEs ? 'Analgesia-PRIMERO: Fentanil 25–50 mcg IV PRN o Morfina 2–4 mg IV PRN.' : 'Analgesia-PRIMEIRO: Fentanil 25–50 mcg IV PRN ou Morfina 2–4 mg IV PRN.'),
+          _PrescItem(isEs ? '2. Sedación leve' : '2. Sedação leve', isEs ? 'Meta RASS -1 a 0. Propofol 0,5–3 mg/kg/h IV O Dexmedetomidina 0,2–1,5 mcg/kg/h.' : 'Meta RASS -1 a 0. Propofol 0,5–3 mg/kg/h IV OU Dexmedetomidina 0,2–1,5 mcg/kg/h.'),
+          _PrescItem('3. Delirium', isEs ? 'Haloperidol 0,25–0,5 mg IV 8/8h si agitación. Orientación + luz + movilización precoz.' : 'Haloperidol 0,25–0,5 mg IV 8/8h se agitação. Orientação + luz + mobilização precoce.'),
+          _PrescItem(isEs ? 'Sedación profunda' : 'Sedação profunda', isEs ? 'Midazolam 0,02–0,1 mg/kg/h + Fentanil 25–100 mcg/h (IOT/SDRA/status).' : 'Midazolam 0,02–0,1 mg/kg/h + Fentanil 25–100 mcg/h (IOT/SARA/status).'),
+          _PrescItem('Aten.', isEs ? 'Interrupción diaria de la sedación ("sedation vacation"). Evaluar RASS 4×/día.' : 'Interrupção diária da sedação ("sedation vacation"). Avaliar RASS 4×/dia.'),
         ],
       ),
       _PrescCard(
         title: isEs ? 'Escalas RASS / BPS (referencia)' : 'Escalas RASS / BPS (referência)',
         level: 'MOD',
         items: [
-          _PrescItem('RASS', isEs ? '+4=combativo; +1=agitado; 0=alerta; -1=sonolento; -3=moderado; -5=não responsivo.' : '+4=combativo; +1=agitado; 0=alerta; -1=sonolento; -3=moderado; -5=não responsivo.'),
-          _PrescItem('BPS', isEs ? '3=sem dor; 12=dor máxima. Avaliação: expressão facial + membro + ventilação.' : '3=sem dor; 12=dor máxima. Avaliação: expressão facial + membro + ventilação.'),
-          _PrescItem('CAM-ICU', isEs ? 'Avalia delirium em ventilado: 1)início agudo+flutuação, 2)desatenção, 3)consciência alt ou pensamento desorganizado.' : 'Avalia delirium em ventilado: 1)início agudo+flutuação, 2)desatenção, 3)consciência alt. ou pensamento desorganizado.'),
+          _PrescItem('RASS', isEs ? '+4=combativo; +1=agitado; 0=alerta; -1=somnoliento; -3=moderado; -5=no responsivo.' : '+4=combativo; +1=agitado; 0=alerta; -1=sonolento; -3=moderado; -5=não responsivo.'),
+          _PrescItem('BPS', isEs ? '3=sin dolor; 12=dolor máximo. Evaluación: expresión facial + extremidad + ventilación.' : '3=sem dor; 12=dor máxima. Avaliação: expressão facial + membro + ventilação.'),
+          _PrescItem('CAM-ICU', isEs ? 'Evalúa delirium en ventilado: 1)inicio agudo+fluctuación, 2)desatención, 3)alteración consciencia o pensamiento desorganizado.' : 'Avalia delirium em ventilado: 1)início agudo+flutuação, 2)desatenção, 3)consciência alt. ou pensamento desorganizado.'),
         ],
       ),
     ]);
