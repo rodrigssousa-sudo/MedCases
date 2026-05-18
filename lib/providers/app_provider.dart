@@ -97,6 +97,12 @@ class AppProvider extends ChangeNotifier {
   bool _geminiLoading   = false;   // true durante signIn/signOut
   String _geminiEmail   = '';      // e-mail exibido na UI
 
+  // ── Estado — Modo Offline ──────────────────────────────────────────────────
+  bool _offlineMode      = false;  // true = sem rede, usa só cache local
+  bool _offlineCaching   = false;  // true durante o processo de cache
+  double _offlineProgress = 0.0;   // 0.0 → 1.0 durante caching
+  DateTime? _offlineCachedAt;      // quando foi feito o último cache
+
   // ── Getters públicos ──────────────────────────────────────────────────────
   UserModel? get currentUser => _currentUser;
   bool get firebaseReady => _firebaseReady;
@@ -136,6 +142,12 @@ class AppProvider extends ChangeNotifier {
   String get geminiEmail   => _geminiEmail;
   /// true quando qualquer IA real está disponível (OpenAI OU Gemini)
   bool get hasAnyAi => _openAiKey.isNotEmpty || _geminiConnected;
+
+  // ── Getters — Modo Offline ────────────────────────────────────────────────
+  bool   get offlineMode      => _offlineMode;
+  bool   get offlineCaching   => _offlineCaching;
+  double get offlineProgress  => _offlineProgress;
+  DateTime? get offlineCachedAt => _offlineCachedAt;
 
   // Deduplica por ID (garante que entradas duplicadas na database não apareçam duas vezes)
   List<DrugModel> get drugsDB {
@@ -445,6 +457,7 @@ class AppProvider extends ChangeNotifier {
 
   Future<void> loadPrefs() async {
     await _loadFromLocal();
+    await _loadOfflineState();
   }
 
   Future<void> _loadFromLocal({String? uid}) async {
@@ -494,6 +507,98 @@ class AppProvider extends ChangeNotifier {
       }
     } catch (_) {}
     notifyListeners();
+  }
+
+  // ── Modo Offline ──────────────────────────────────────────────────────────
+  static const _kOfflineMode      = 'offlineMode_v1';
+  static const _kOfflineCachedAt  = 'offlineCachedAt_v1';
+  static const _kOfflineDrugs     = 'offlineDrugs_v1';
+  static const _kOfflineProtocols = 'offlineProtocols_v1';
+  static const _kOfflineCases     = 'offlineCasesDb_v1';
+
+  /// Liga/desliga o modo offline. Se ligar, dispara o cache completo.
+  Future<void> setOfflineMode(bool value) async {
+    _offlineMode = value;
+    notifyListeners();
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_kOfflineMode, value);
+    if (value) {
+      await cacheAllDataForOffline();
+    }
+  }
+
+  /// Salva toda a base de dados local em SharedPreferences em chunks.
+  Future<void> cacheAllDataForOffline() async {
+    if (_offlineCaching) return;
+    _offlineCaching  = true;
+    _offlineProgress = 0.0;
+    notifyListeners();
+
+    try {
+      final prefs = await SharedPreferences.getInstance();
+
+      // 1/3 — Medicamentos (maior conjunto)
+      _offlineProgress = 0.05; notifyListeners();
+      final drugsJson = jsonEncode(
+        drugsDatabase.map((d) => {
+          'id': d.id,
+          'name': d.name,
+          'group': d.group,
+          'className': d.className,
+          'route': d.route,
+          'doseType': d.doseType,
+          'interactions': d.interactions ?? {},
+        }).toList(),
+      );
+      await prefs.setString(_kOfflineDrugs, drugsJson);
+      _offlineProgress = 0.45; notifyListeners();
+
+      // 2/3 — Protocolos
+      final protosJson = jsonEncode(
+        protocolsDatabase.map((proto) => {
+          'id': proto.id,
+          'title': proto.title,
+          'severity': proto.severity,
+          'drugs': proto.drugs,
+        }).toList(),
+      );
+      await prefs.setString(_kOfflineProtocols, protosJson);
+      _offlineProgress = 0.75; notifyListeners();
+
+      // 3/3 — Casos clínicos base
+      final casesJson = jsonEncode(
+        casesDatabase.map((c) => {
+          'id': c.id,
+          'title': c.title,
+          'category': c.category,
+          'diagnosis': c.diagnosis,
+          'history': c.history,
+        }).toList(),
+      );
+      await prefs.setString(_kOfflineCases, casesJson);
+      _offlineProgress = 0.95; notifyListeners();
+
+      // Timestamp do cache
+      final now = DateTime.now();
+      _offlineCachedAt = now;
+      await prefs.setString(_kOfflineCachedAt, now.toIso8601String());
+      _offlineProgress = 1.0;
+    } catch (_) {
+      _offlineMode = false;
+    } finally {
+      _offlineCaching = false;
+      notifyListeners();
+    }
+  }
+
+  /// Lê o estado offline salvo no boot.
+  Future<void> _loadOfflineState() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      _offlineMode = prefs.getBool(_kOfflineMode) ?? false;
+      final cachedAt = prefs.getString(_kOfflineCachedAt);
+      if (cachedAt != null) _offlineCachedAt = DateTime.tryParse(cachedAt);
+    } catch (_) {}
   }
 
   Future<void> _saveLocal({String? uid}) async {

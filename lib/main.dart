@@ -1753,6 +1753,14 @@ class _AppDrawer extends StatelessWidget {
                   ],
                 ),
 
+                // ─── Bloco: Modo Offline ─────────────────────────────────────
+                _DrawerSectionLabel(
+                  label: p.lang == 'es' ? 'MODO SIN CONEXIÓN' : 'MODO OFFLINE',
+                  dark: dark,
+                  color: const Color(0xFF1D4ED8),
+                ),
+                _OfflineDrawerCard(p: p, dark: dark),
+
                 _DrawerSectionLabel(
                   label: p.lang == 'es' ? 'LEGAL' : 'LEGAL',
                   dark: dark,
@@ -3798,6 +3806,287 @@ class _PanelNoteCard extends StatelessWidget {
           ),
         ]),
       ),
+    );
+  }
+}
+
+// ── Botão Modo Offline no Drawer ───────────────────────────────────────────
+class _OfflineDrawerCard extends StatelessWidget {
+  final AppProvider p;
+  final bool dark;
+  const _OfflineDrawerCard({required this.p, required this.dark});
+
+  static const _kBlue   = Color(0xFF1D4ED8);
+  static const _kBlueLt = Color(0xFFEFF6FF);
+
+  String _formatDate(DateTime? dt, String lang) {
+    if (dt == null) return lang == 'es' ? 'Nunca sincronizado' : 'Nunca sincronizado';
+    final diff = DateTime.now().difference(dt);
+    if (diff.inMinutes < 1)  return lang == 'es' ? 'Hace un momento' : 'Agora mesmo';
+    if (diff.inMinutes < 60) return lang == 'es'
+        ? 'Hace ${diff.inMinutes} min'
+        : 'Há ${diff.inMinutes} min';
+    if (diff.inHours < 24)   return lang == 'es'
+        ? 'Hace ${diff.inHours}h'
+        : 'Há ${diff.inHours}h';
+    return lang == 'es'
+        ? 'Hace ${diff.inDays} día(s)'
+        : 'Há ${diff.inDays} dia(s)';
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final isEs     = p.lang == 'es';
+    final offline  = p.offlineMode;
+    final caching  = p.offlineCaching;
+    final progress = p.offlineProgress;
+    final cachedAt = p.offlineCachedAt;
+
+    final cardBg = dark
+        ? (offline ? _kBlue.withValues(alpha: 0.18) : const Color(0xFF1A2030))
+        : (offline ? _kBlueLt : Colors.white);
+    final cardBorder = offline
+        ? _kBlue.withValues(alpha: dark ? 0.5 : 0.35)
+        : (dark ? Colors.white.withValues(alpha: 0.08) : const Color(0xFFE8ECEF));
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 300),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(14),
+          color: cardBg,
+          border: Border.all(color: cardBorder, width: 1.2),
+        ),
+        child: Column(
+          children: [
+            // ── Linha principal: ícone + texto + toggle ──────────────
+            Padding(
+              padding: const EdgeInsets.fromLTRB(14, 12, 12, 12),
+              child: Row(
+                children: [
+                  // Ícone animado
+                  AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 300),
+                    child: caching
+                        ? SizedBox(
+                            key: const ValueKey('loading'),
+                            width: 36, height: 36,
+                            child: Stack(alignment: Alignment.center, children: [
+                              CircularProgressIndicator(
+                                value: progress,
+                                strokeWidth: 2.5,
+                                color: _kBlue,
+                                backgroundColor: _kBlue.withValues(alpha: 0.15),
+                              ),
+                              Text('${(progress * 100).toInt()}',
+                                style: const TextStyle(
+                                  fontSize: 8, fontWeight: FontWeight.w900,
+                                  color: _kBlue)),
+                            ]),
+                          )
+                        : Container(
+                            key: const ValueKey('icon'),
+                            width: 36, height: 36,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: offline
+                                  ? _kBlue.withValues(alpha: 0.15)
+                                  : (dark ? Colors.white.withValues(alpha: 0.07)
+                                          : const Color(0xFFF0F4F8)),
+                              border: Border.all(
+                                color: offline
+                                    ? _kBlue.withValues(alpha: 0.45)
+                                    : Colors.transparent),
+                            ),
+                            child: Icon(
+                              offline
+                                  ? Icons.wifi_off_rounded
+                                  : Icons.download_for_offline_outlined,
+                              size: 18,
+                              color: offline
+                                  ? _kBlue
+                                  : (dark ? Colors.white54
+                                          : const Color(0xFF6B7280)),
+                            ),
+                          ),
+                  ),
+                  const SizedBox(width: 12),
+
+                  // Texto
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          isEs ? 'Modo sin conexión' : 'Modo offline',
+                          style: TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w700,
+                            color: offline
+                                ? _kBlue
+                                : (dark ? Colors.white70
+                                        : const Color(0xFF374151)),
+                          ),
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          caching
+                              ? (isEs ? 'Guardando base de datos…' : 'Salvando base de dados…')
+                              : offline
+                                  ? _formatDate(cachedAt, p.lang)
+                                  : (isEs
+                                      ? 'Guardar toda la base local'
+                                      : 'Salvar toda a base localmente'),
+                          style: TextStyle(
+                            fontSize: 10,
+                            color: offline
+                                ? _kBlue.withValues(alpha: 0.7)
+                                : (dark ? Colors.white38
+                                        : const Color(0xFF9CA3AF)),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  // Toggle
+                  GestureDetector(
+                    onTap: caching ? null : () => p.setOfflineMode(!offline),
+                    child: AnimatedContainer(
+                      duration: const Duration(milliseconds: 250),
+                      width: 44, height: 26,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(13),
+                        color: offline
+                            ? _kBlue
+                            : (dark ? Colors.white.withValues(alpha: 0.15)
+                                    : const Color(0xFFD1D5DB)),
+                      ),
+                      child: AnimatedAlign(
+                        duration: const Duration(milliseconds: 250),
+                        alignment: offline
+                            ? Alignment.centerRight
+                            : Alignment.centerLeft,
+                        child: Container(
+                          margin: const EdgeInsets.all(3),
+                          width: 20, height: 20,
+                          decoration: const BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            // ── Barra de progresso (só durante caching) ───────────────
+            if (caching)
+              Padding(
+                padding: const EdgeInsets.fromLTRB(14, 0, 14, 12),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(4),
+                      child: LinearProgressIndicator(
+                        value: progress,
+                        minHeight: 4,
+                        backgroundColor: _kBlue.withValues(alpha: 0.15),
+                        valueColor: const AlwaysStoppedAnimation(_kBlue),
+                      ),
+                    ),
+                    const SizedBox(height: 5),
+                    Text(
+                      isEs
+                          ? _progressLabel(progress, 'es')
+                          : _progressLabel(progress, 'pt'),
+                      style: TextStyle(
+                        fontSize: 9.5,
+                        color: _kBlue.withValues(alpha: 0.75),
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+            // ── Chips de info quando ativo ────────────────────────────
+            if (offline && !caching) ...[
+              Padding(
+                padding: const EdgeInsets.fromLTRB(14, 0, 14, 12),
+                child: Wrap(spacing: 6, runSpacing: 4, children: [
+                  _OfflineChip(label: isEs ? '501 fármacos' : '501 fármacos',    icon: Icons.medication_rounded),
+                  _OfflineChip(label: isEs ? 'Protocolos' : 'Protocolos',        icon: Icons.assignment_rounded),
+                  _OfflineChip(label: isEs ? 'Casos clínicos' : 'Casos clínicos', icon: Icons.cases_rounded),
+                  _OfflineChip(label: isEs ? 'PEWS · Doses' : 'PEWS · Doses',    icon: Icons.child_care_rounded),
+                ]),
+              ),
+            ],
+
+            // ── Botão "Atualizar cache" quando já ativo ───────────────
+            if (offline && !caching && cachedAt != null)
+              Padding(
+                padding: const EdgeInsets.fromLTRB(14, 0, 14, 12),
+                child: GestureDetector(
+                  onTap: () => p.cacheAllDataForOffline(),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: _kBlue.withValues(alpha: 0.10),
+                      border: Border.all(color: _kBlue.withValues(alpha: 0.30)),
+                    ),
+                    child: Row(mainAxisSize: MainAxisSize.min, children: [
+                      const Icon(Icons.sync_rounded, size: 13, color: _kBlue),
+                      const SizedBox(width: 6),
+                      Text(
+                        isEs ? 'Actualizar caché' : 'Atualizar cache',
+                        style: const TextStyle(
+                          fontSize: 11, fontWeight: FontWeight.w700, color: _kBlue),
+                      ),
+                    ]),
+                  ),
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  String _progressLabel(double p, String lang) {
+    if (p < 0.45) return lang == 'es' ? '📦 Guardando fármacos (501)…' : '📦 Salvando fármacos (501)…';
+    if (p < 0.75) return lang == 'es' ? '📋 Guardando protocolos…'     : '📋 Salvando protocolos…';
+    if (p < 0.95) return lang == 'es' ? '🩺 Guardando casos clínicos…' : '🩺 Salvando casos clínicos…';
+    return lang == 'es' ? '✅ Finalizando…' : '✅ Finalizando…';
+  }
+}
+
+class _OfflineChip extends StatelessWidget {
+  final String label;
+  final IconData icon;
+  const _OfflineChip({required this.label, required this.icon});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(20),
+        color: const Color(0xFF1D4ED8).withValues(alpha: 0.10),
+        border: Border.all(color: const Color(0xFF1D4ED8).withValues(alpha: 0.25)),
+      ),
+      child: Row(mainAxisSize: MainAxisSize.min, children: [
+        Icon(icon, size: 10, color: const Color(0xFF1D4ED8)),
+        const SizedBox(width: 4),
+        Text(label, style: const TextStyle(
+          fontSize: 10, fontWeight: FontWeight.w600,
+          color: Color(0xFF1D4ED8))),
+      ]),
     );
   }
 }
