@@ -1360,6 +1360,209 @@ class _HistoryEditorState extends State<_HistoryEditor> {
   String _sttInterim = '';
   webPlatform.WebSpeechRecognizer? _sttRecog;
 
+  // ── Ditáfone inteligente global ─────────────────────────────────────────
+  bool _smartDictActive = false;   // ditáfone global ativo
+  String _smartCurrentField = '';  // campo ativo atual (para feedback)
+  String _smartInterim = '';       // texto interim do ditáfone
+  webPlatform.WebSpeechRecognizer? _smartRecog;
+
+  // Mapa de palavras-gatilho → chave do campo
+  static const _kTriggers = {
+    // Queixa principal
+    'queixa principal': 'chiefComplaint', 'queixa': 'chiefComplaint',
+    'motivo da consulta': 'chiefComplaint', 'motivo': 'chiefComplaint',
+    'chief complaint': 'chiefComplaint', 'queja principal': 'chiefComplaint',
+    // HDA
+    'história da doença atual': 'hpi', 'hda': 'hpi',
+    'historia da doença': 'hpi', 'história atual': 'hpi',
+    'historia de la enfermedad': 'hpi', 'hda atual': 'hpi',
+    'doença atual': 'hpi', 'história': 'hpi',
+    // Antecedentes pessoais
+    'antecedentes pessoais': 'pastHistory', 'antecedentes': 'pastHistory',
+    'história patológica': 'pastHistory', 'patológico': 'pastHistory',
+    'antecedentes patológicos': 'pastHistory',
+    'antecedentes personales': 'pastHistory',
+    // Antecedentes familiares
+    'antecedentes familiares': 'familyHistory', 'família': 'familyHistory',
+    'historia familiar': 'familyHistory', 'familiar': 'familyHistory',
+    // História social
+    'história social': 'socialHistory', 'social': 'socialHistory',
+    'hábitos': 'socialHistory', 'historia social': 'socialHistory',
+    'tabagismo': 'socialHistory', 'etilismo': 'socialHistory',
+    // Medicamentos
+    'medicamentos': 'medications', 'medicações': 'medications',
+    'medicação': 'medications', 'medicación': 'medications',
+    'remédios': 'medications', 'uso contínuo': 'medications',
+    'em uso': 'medications',
+    // Alergias
+    'alergias': 'allergies', 'alergia': 'allergies',
+    'alergias a': 'allergies', 'hipersensibilidade': 'allergies',
+    // Revisão de sistemas
+    'revisão de sistemas': 'reviewOfSystems', 'revisão': 'reviewOfSystems',
+    'revisión de sistemas': 'reviewOfSystems',
+    'sistemas': 'reviewOfSystems',
+    // Sinais vitais
+    'sinais vitais': 'vitalSigns', 'vitais': 'vitalSigns',
+    'pressão arterial': 'vitalSigns', 'frequência cardíaca': 'vitalSigns',
+    'temperatura': 'vitalSigns', 'saturação': 'vitalSigns',
+    'signos vitales': 'vitalSigns',
+    // Exame físico
+    'exame físico': 'physicalExam', 'exame': 'physicalExam',
+    'examen físico': 'physicalExam', 'físico': 'physicalExam',
+    'exame geral': 'physicalExam', 'ausculta': 'physicalExam',
+    'abdome': 'physicalExam', 'tórax': 'physicalExam',
+    // Hipótese / diagnóstico
+    'hipótese': 'workingDiagnosis', 'hipótese diagnóstica': 'workingDiagnosis',
+    'diagnóstico de trabalho': 'workingDiagnosis',
+    'diagnóstico provável': 'workingDiagnosis',
+    // Conduta / tratamento
+    'conduta': 'treatmentPlan', 'tratamento': 'treatmentPlan',
+    'plano': 'treatmentPlan', 'plan': 'treatmentPlan',
+    'tratamiento': 'treatmentPlan',
+  };
+
+  // Determina o campo de destino a partir do texto transcrito
+  String _detectFieldFromText(String text) {
+    final lower = text.toLowerCase();
+    // Busca gatilho mais longo (mais específico) primeiro
+    String? bestKey;
+    int bestLen = 0;
+    for (final entry in _kTriggers.entries) {
+      if (lower.contains(entry.key) && entry.key.length > bestLen) {
+        bestKey = entry.value;
+        bestLen = entry.key.length;
+      }
+    }
+    return bestKey ?? _smartCurrentField;
+  }
+
+  // Nome legível do campo para feedback
+  String _fieldLabel(String key) {
+    const labels = {
+      'chiefComplaint': 'Queixa principal',
+      'hpi': 'HDA',
+      'pastHistory': 'Antecedentes pessoais',
+      'familyHistory': 'Antecedentes familiares',
+      'socialHistory': 'História social',
+      'medications': 'Medicamentos',
+      'allergies': 'Alergias',
+      'reviewOfSystems': 'Revisão de sistemas',
+      'vitalSigns': 'Sinais vitais',
+      'physicalExam': 'Exame físico',
+      'workingDiagnosis': 'Hipótese diagnóstica',
+      'treatmentPlan': 'Conduta',
+    };
+    return labels[key] ?? key;
+  }
+
+  void _toggleSmartDictaphone() {
+    if (!kIsWeb) return;
+    if (_smartDictActive) {
+      _smartRecog?.stop();
+      if (mounted) setState(() { _smartDictActive = false; _smartInterim = ''; _smartCurrentField = ''; });
+      return;
+    }
+    if (!webPlatform.webHasSpeechRecognition()) {
+      showDialog(context: context, builder: (_) => AlertDialog(
+        title: const Text('Ditado não suportado'),
+        content: const Text('Use Chrome ou Safari para o ditado.'),
+        actions: [TextButton(onPressed: () => Navigator.pop(context), child: const Text('OK'))],
+      ));
+      return;
+    }
+    // Para STT de campo individual se estava ativo
+    if (_sttListening) { _sttRecog?.stop(); setState(() { _sttListening = false; _sttActiveKey = null; _sttInterim = ''; }); }
+
+    final lang = widget.p.lang == 'es' ? 'es-ES' : 'pt-BR';
+    // Campo inicial: seção ativa
+    _smartCurrentField = _section == 1 ? 'chiefComplaint' : 'vitalSigns';
+
+    final recog = webPlatform.WebSpeechRecognizer();
+    recog.start('smart', lang,
+      onResult: (transcript, isFinal) {
+        if (!mounted) return;
+        // Detecta se há palavra-gatilho de campo no texto
+        final detected = _detectFieldFromText(transcript);
+        if (detected.isNotEmpty && detected != _smartCurrentField) {
+          setState(() => _smartCurrentField = detected);
+        }
+        if (isFinal) {
+          // Remove a palavra-gatilho do texto antes de inserir
+          String clean = transcript;
+          for (final trigger in _kTriggers.keys) {
+            clean = clean.replaceAll(RegExp(trigger, caseSensitive: false), '');
+          }
+          clean = clean.trim().replaceAll(RegExp(r'^[,:\s]+'), '');
+          if (clean.isNotEmpty && _smartCurrentField.isNotEmpty) {
+            final ctrl = _ctrls[_smartCurrentField];
+            if (ctrl != null) {
+              final cur = ctrl.text;
+              final spacer = cur.isNotEmpty && !cur.endsWith('\n') && !cur.endsWith(' ') ? ' ' : '';
+              ctrl.text = cur + spacer + clean;
+              ctrl.selection = TextSelection.fromPosition(TextPosition(offset: ctrl.text.length));
+            }
+          }
+          if (mounted) setState(() => _smartInterim = '');
+        } else {
+          if (mounted) setState(() {
+            _smartInterim = transcript;
+            final det = _detectFieldFromText(transcript);
+            if (det.isNotEmpty) _smartCurrentField = det;
+          });
+        }
+      },
+      onEnd: () {
+        // Reinicia automaticamente para ditado contínuo
+        if (_smartDictActive && mounted) {
+          Future.delayed(const Duration(milliseconds: 200), () {
+            if (_smartDictActive && mounted) _smartRecog?.start('smart', lang,
+              onResult: (t, f) {}, onEnd: () {}, onError: (_) {});
+          });
+        }
+      },
+      onError: (code) {
+        if (code != 'no-speech' && mounted) {
+          setState(() { _smartDictActive = false; _smartInterim = ''; });
+        }
+      },
+    );
+    _smartRecog = recog;
+    if (mounted) setState(() { _smartDictActive = true; _smartInterim = ''; });
+  }
+
+  void _showPreview() {
+    // Sincroniza draft com controllers antes de exibir
+    final snap = _draft.copyWith(
+      chiefComplaint: _ctrls['chiefComplaint']!.text.trim(),
+      hpi: _ctrls['hpi']!.text.trim(),
+      pastHistory: _ctrls['pastHistory']!.text.trim(),
+      familyHistory: _ctrls['familyHistory']!.text.trim(),
+      socialHistory: _ctrls['socialHistory']!.text.trim(),
+      medications: _ctrls['medications']!.text.trim(),
+      allergies: _ctrls['allergies']!.text.trim(),
+      reviewOfSystems: _ctrls['reviewOfSystems']!.text.trim(),
+      vitalSigns: _ctrls['vitalSigns']!.text.trim(),
+      physicalExam: _ctrls['physicalExam']!.text.trim(),
+      workingDiagnosis: _ctrls['workingDiagnosis']!.text.trim(),
+      differentialDx: _ctrls['differentialDx']!.text.trim(),
+      finalDiagnosis: _ctrls['finalDiagnosis']!.text.trim(),
+      cid: _ctrls['cid']!.text.trim(),
+      labResults: _ctrls['labResults']!.text.trim(),
+      imagingResults: _ctrls['imagingResults']!.text.trim(),
+      otherResults: _ctrls['otherResults']!.text.trim(),
+      treatmentPlan: _ctrls['treatmentPlan']!.text.trim(),
+      procedures: _ctrls['procedures']!.text.trim(),
+      dischargeCondition: _ctrls['dischargeCondition']!.text.trim(),
+      followUp: _ctrls['followUp']!.text.trim(),
+    );
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => _HistoryPreviewSheet(history: snap, lang: widget.p.lang),
+    );
+  }
+
   void _startStt(String key) {
     // STT só funciona na plataforma web
     if (!kIsWeb) return;
@@ -1469,6 +1672,15 @@ class _HistoryEditorState extends State<_HistoryEditor> {
             const SizedBox(width: 10),
             Expanded(child: Text(_draft.chiefComplaint.isNotEmpty ? _draft.chiefComplaint : (widget.p.lang == 'es' ? 'Nueva historia clínica' : 'Nova história clínica'),
               style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w900, color: Colors.white), overflow: TextOverflow.ellipsis)),
+            // Botão Pré-visualizar
+            GestureDetector(onTap: _showPreview,
+              child: Container(padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8), margin: const EdgeInsets.only(right: 8),
+                decoration: BoxDecoration(borderRadius: BorderRadius.circular(12), color: Colors.white.withValues(alpha: 0.12), border: Border.all(color: Colors.white.withValues(alpha: 0.2))),
+                child: const Row(mainAxisSize: MainAxisSize.min, children: [
+                  Icon(Icons.visibility_rounded, size: 14, color: Colors.white),
+                  SizedBox(width: 5),
+                  Text('Ver', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w800, color: Colors.white)),
+                ]))),
             GestureDetector(onTap: _save,
               child: Container(padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8), decoration: BoxDecoration(borderRadius: BorderRadius.circular(12), color: kGold),
                 child: Text(widget.p.lang == 'es' ? 'Guardar' : 'Salvar', style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w900, color: Color(0xFF0F1C14))))),
@@ -1510,8 +1722,47 @@ class _HistoryEditorState extends State<_HistoryEditor> {
         ]),
       ),
 
-      // ── Banner de ditado ativo ──────────────────────────────────────────
-      if (_sttListening)
+      // ── Banner do Ditáfone Inteligente ────────────────────────────────
+      if (_smartDictActive)
+        AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          margin: const EdgeInsets.only(top: 6),
+          padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(14),
+            color: const Color(0xFF1F6B48).withValues(alpha: 0.10),
+            border: Border.all(color: const Color(0xFF1F6B48).withValues(alpha: 0.45)),
+          ),
+          child: Row(children: [
+            _PulseDot(color: const Color(0xFF1F6B48)),
+            const SizedBox(width: 10),
+            Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Row(children: [
+                const Icon(Icons.auto_awesome_rounded, size: 10, color: Color(0xFF1F6B48)),
+                const SizedBox(width: 4),
+                Text('DITÁFONE INTELIGENTE • Gravando...', style: const TextStyle(fontSize: 9, fontWeight: FontWeight.w900, color: Color(0xFF1F6B48), letterSpacing: 0.5)),
+              ]),
+              const SizedBox(height: 2),
+              Row(children: [
+                const Text('Campo: ', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w700, color: Color(0xFF888888))),
+                Text(_smartCurrentField.isNotEmpty ? _fieldLabel(_smartCurrentField) : '—',
+                  style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w900, color: Color(0xFF1F6B48))),
+              ]),
+              if (_smartInterim.isNotEmpty) ...[const SizedBox(height: 2),
+                Text(_smartInterim, style: const TextStyle(fontSize: 11, color: Color(0xFF555555), fontWeight: FontWeight.w600, fontStyle: FontStyle.italic),
+                  maxLines: 2, overflow: TextOverflow.ellipsis)],
+            ])),
+            const SizedBox(width: 8),
+            GestureDetector(
+              onTap: _toggleSmartDictaphone,
+              child: Container(padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: const Color(0xFF1F6B48).withValues(alpha: 0.15)),
+                child: const Icon(Icons.stop_rounded, size: 18, color: Color(0xFF1F6B48))),
+            ),
+          ]),
+        ),
+      // ── Banner de ditado por campo ativo (STT individual) ─────────────
+      if (_sttListening && !_smartDictActive)
         AnimatedContainer(
           duration: const Duration(milliseconds: 200),
           margin: const EdgeInsets.only(top: 8),
@@ -1522,7 +1773,6 @@ class _HistoryEditorState extends State<_HistoryEditor> {
             border: Border.all(color: const Color(0xFFDC2626).withValues(alpha: 0.35)),
           ),
           child: Row(children: [
-            // Ícone pulsante
             _PulseDot(),
             const SizedBox(width: 10),
             Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -1635,6 +1885,14 @@ class _HistoryEditorState extends State<_HistoryEditor> {
 
   // ── Seção 1: Anamnese ─────────────────────────────────────────────────────
   Widget _buildAnamnesisSection() => Column(children: [
+    // ── Ditáfone inteligente ─────────────────────────────────────────────
+    _SmartDictaphoneButton(
+      active: _smartDictActive,
+      currentField: _smartCurrentField,
+      onTap: _toggleSmartDictaphone,
+      lang: widget.p.lang,
+    ),
+    const SizedBox(height: 12),
     _EditorField('Queixa principal *', _ctrls['chiefComplaint']!, hint: 'Dor torácica há 2h', multiline: true, onMic: () => _startStt('chiefComplaint'), fieldKey: 'chiefComplaint'),
     const SizedBox(height: 10),
     _EditorField('História da doença atual (HDA)', _ctrls['hpi']!, hint: 'Descrever cronologia, características, fatores...', multiline: true, lines: 5, onMic: () => _startStt('hpi'), fieldKey: 'hpi'),
@@ -1654,6 +1912,14 @@ class _HistoryEditorState extends State<_HistoryEditor> {
 
   // ── Seção 2: Exame físico ──────────────────────────────────────────────────
   Widget _buildPhysicalExamSection() => Column(children: [
+    // ── Ditáfone inteligente ─────────────────────────────────────────────
+    _SmartDictaphoneButton(
+      active: _smartDictActive,
+      currentField: _smartCurrentField,
+      onTap: _toggleSmartDictaphone,
+      lang: widget.p.lang,
+    ),
+    const SizedBox(height: 12),
     // ── Sinais Vitais Estruturados ─────────────────────────────────────────
     _VitalSignsWidget(
       controller: _ctrls['vitalSigns']!,
@@ -1976,6 +2242,8 @@ class _EditorFieldState extends State<_EditorField> {
 
 // Widget de ponto pulsante para o banner de ditado
 class _PulseDot extends StatefulWidget {
+  final Color color;
+  const _PulseDot({this.color = const Color(0xFFDC2626)});
   @override
   State<_PulseDot> createState() => _PulseDotState();
 }
@@ -1993,7 +2261,432 @@ class _PulseDotState extends State<_PulseDot> with SingleTickerProviderStateMixi
   @override
   Widget build(BuildContext context) => FadeTransition(
     opacity: _anim,
-    child: Container(width: 10, height: 10, decoration: const BoxDecoration(shape: BoxShape.circle, color: Color(0xFFDC2626))),
+    child: Container(width: 10, height: 10, decoration: BoxDecoration(shape: BoxShape.circle, color: widget.color)),
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// BOTÃO DITÁFONE INTELIGENTE
+// Botão grande único para ditado contínuo com roteamento automático de campos
+// ─────────────────────────────────────────────────────────────────────────────
+class _SmartDictaphoneButton extends StatelessWidget {
+  final bool active;
+  final String currentField;
+  final VoidCallback onTap;
+  final String lang;
+
+  const _SmartDictaphoneButton({
+    required this.active,
+    required this.currentField,
+    required this.onTap,
+    required this.lang,
+  });
+
+  static const _labels = <String, String>{
+    'chiefComplaint': 'Queixa principal',
+    'hpi': 'HDA',
+    'pastHistory': 'Antecedentes pessoais',
+    'familyHistory': 'Antecedentes familiares',
+    'socialHistory': 'História social',
+    'medications': 'Medicamentos',
+    'allergies': 'Alergias',
+    'reviewOfSystems': 'Revisão de sistemas',
+    'vitalSigns': 'Sinais vitais',
+    'physicalExam': 'Exame físico',
+    'workingDiagnosis': 'Hipótese diagnóstica',
+    'treatmentPlan': 'Conduta',
+  };
+
+  @override
+  Widget build(BuildContext context) {
+    final isEs = lang == 'es';
+    return GestureDetector(
+      onTap: onTap,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 250),
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(18),
+          gradient: active
+            ? const LinearGradient(colors: [Color(0xFF0F1C14), Color(0xFF1F6B48)], begin: Alignment.centerLeft, end: Alignment.centerRight)
+            : null,
+          color: active ? null : const Color(0xFFF0F7F4),
+          border: Border.all(
+            color: active ? const Color(0xFF1F6B48) : const Color(0xFFBBD6C8),
+            width: active ? 1.5 : 1,
+          ),
+          boxShadow: active ? [BoxShadow(color: const Color(0xFF1F6B48).withValues(alpha: 0.25), blurRadius: 16, offset: const Offset(0, 4))] : [],
+        ),
+        child: Row(children: [
+          // Ícone mic animado
+          AnimatedContainer(
+            duration: const Duration(milliseconds: 250),
+            width: 46, height: 46,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: active ? Colors.white.withValues(alpha: 0.15) : const Color(0xFF1F6B48).withValues(alpha: 0.12),
+              border: Border.all(color: active ? Colors.white.withValues(alpha: 0.3) : const Color(0xFF1F6B48).withValues(alpha: 0.3)),
+            ),
+            child: Center(child: Icon(
+              active ? Icons.mic_rounded : Icons.mic_none_rounded,
+              size: 22,
+              color: active ? Colors.white : const Color(0xFF1F6B48),
+            )),
+          ),
+          const SizedBox(width: 14),
+          Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Text(
+              active
+                ? (isEs ? 'DICTÁFONO INTELIGENTE • Grabando' : 'DITÁFONE INTELIGENTE • Gravando')
+                : (isEs ? 'Dictáfono inteligente' : 'Ditáfone inteligente'),
+              style: TextStyle(
+                fontSize: 13, fontWeight: FontWeight.w900,
+                color: active ? Colors.white : const Color(0xFF1F6B48),
+                letterSpacing: 0.2,
+              ),
+            ),
+            const SizedBox(height: 3),
+            Text(
+              active && currentField.isNotEmpty
+                ? '→ ${_labels[currentField] ?? currentField}'
+                : (isEs
+                    ? 'Diga "queja", "antecedentes", "examen"... y el texto va al campo correcto'
+                    : 'Diga "queixa", "antecedentes", "exame físico"... e o texto vai para o campo certo'),
+              style: TextStyle(
+                fontSize: 10.5, fontWeight: FontWeight.w600,
+                color: active ? Colors.white.withValues(alpha: 0.80) : const Color(0xFF666666),
+                height: 1.4,
+              ),
+              maxLines: 2,
+            ),
+          ])),
+          const SizedBox(width: 8),
+          if (active)
+            _PulseDot(color: const Color(0xFF86EFAC))
+          else
+            Icon(Icons.chevron_right_rounded, size: 20, color: const Color(0xFF1F6B48).withValues(alpha: 0.5)),
+        ]),
+      ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// PRÉ-VISUALIZAÇÃO DA HISTÓRIA CLÍNICA
+// Sheet formatado como documento clínico completo
+// ─────────────────────────────────────────────────────────────────────────────
+class _HistoryPreviewSheet extends StatelessWidget {
+  final ClinicalHistoryModel history;
+  final String lang;
+  const _HistoryPreviewSheet({required this.history, required this.lang});
+
+  @override
+  Widget build(BuildContext context) {
+    final isEs = lang == 'es';
+    final now = DateTime.now();
+    final dateStr = '${now.day.toString().padLeft(2,'0')}/${now.month.toString().padLeft(2,'0')}/${now.year}  ${now.hour.toString().padLeft(2,'0')}:${now.minute.toString().padLeft(2,'0')}';
+
+    return DraggableScrollableSheet(
+      initialChildSize: 0.92,
+      minChildSize: 0.5,
+      maxChildSize: 0.97,
+      builder: (_, ctrl) => Container(
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+        ),
+        child: Column(children: [
+          // Handle
+          Container(
+            margin: const EdgeInsets.only(top: 10),
+            width: 40, height: 4,
+            decoration: BoxDecoration(borderRadius: BorderRadius.circular(2), color: const Color(0xFFDDDDDD)),
+          ),
+          // Header da sheet
+          Container(
+            margin: const EdgeInsets.fromLTRB(16, 10, 16, 0),
+            padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(16),
+              gradient: const LinearGradient(colors: [Color(0xFF0F1C14), Color(0xFF1F6B48)], begin: Alignment.topLeft, end: Alignment.bottomRight),
+            ),
+            child: Row(children: [
+              const Icon(Icons.description_rounded, size: 20, color: Color(0xFFC5A365)),
+              const SizedBox(width: 10),
+              Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Text(isEs ? 'PRÉ-VISUALIZACIÓN' : 'PRÉ-VISUALIZAÇÃO',
+                  style: const TextStyle(fontSize: 9, fontWeight: FontWeight.w900, color: Color(0xFFC5A365), letterSpacing: 1.5)),
+                Text(isEs ? 'Historia Clínica' : 'História Clínica',
+                  style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w900, color: Colors.white)),
+              ])),
+              GestureDetector(
+                onTap: () => Navigator.pop(context),
+                child: Container(padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: Colors.white.withValues(alpha: 0.12)),
+                  child: const Icon(Icons.close_rounded, size: 16, color: Colors.white)),
+              ),
+            ]),
+          ),
+          // Conteúdo scrollável
+          Expanded(child: ListView(
+            controller: ctrl,
+            padding: const EdgeInsets.fromLTRB(16, 12, 16, 40),
+            children: [
+              // ── Cabeçalho do documento ──────────────────────────────────────
+              _PreviewDocHeader(history: history, dateStr: dateStr, isEs: isEs),
+              const SizedBox(height: 14),
+
+              // ── ANAMNESE ────────────────────────────────────────────────────
+              if (_hasAny([history.chiefComplaint, history.hpi, history.pastHistory,
+                           history.familyHistory, history.socialHistory,
+                           history.medications, history.allergies, history.reviewOfSystems])) ...[
+                _PreviewSection(
+                  title: isEs ? 'ANAMNESIS' : 'ANAMNESE',
+                  icon: Icons.history_edu_rounded,
+                  color: const Color(0xFF1E40AF),
+                  children: [
+                    if (history.chiefComplaint.isNotEmpty) _PreviewItem(isEs ? 'Queja principal' : 'Queixa principal', history.chiefComplaint),
+                    if (history.hpi.isNotEmpty) _PreviewItem(isEs ? 'Historia de la enfermedad actual' : 'História da doença atual', history.hpi),
+                    if (history.pastHistory.isNotEmpty) _PreviewItem(isEs ? 'Antecedentes personales' : 'Antecedentes pessoais', history.pastHistory),
+                    if (history.familyHistory.isNotEmpty) _PreviewItem(isEs ? 'Antecedentes familiares' : 'Antecedentes familiares', history.familyHistory),
+                    if (history.socialHistory.isNotEmpty) _PreviewItem(isEs ? 'Historia social' : 'História social', history.socialHistory),
+                    if (history.medications.isNotEmpty) _PreviewItemHighlight(isEs ? 'Medicamentos en uso' : 'Medicamentos em uso', history.medications, const Color(0xFF1E40AF)),
+                    if (history.allergies.isNotEmpty) _PreviewItemHighlight(isEs ? 'Alergias' : 'Alergias', history.allergies, const Color(0xFFDC2626)),
+                    if (history.reviewOfSystems.isNotEmpty) _PreviewItem(isEs ? 'Revisión de sistemas' : 'Revisão de sistemas', history.reviewOfSystems),
+                  ],
+                ),
+                const SizedBox(height: 12),
+              ],
+
+              // ── EXAME FÍSICO ─────────────────────────────────────────────────
+              if (_hasAny([history.vitalSigns, history.physicalExam])) ...[
+                _PreviewSection(
+                  title: isEs ? 'EXAMEN FÍSICO' : 'EXAME FÍSICO',
+                  icon: Icons.accessibility_new_rounded,
+                  color: const Color(0xFF065F46),
+                  children: [
+                    if (history.vitalSigns.isNotEmpty) _PreviewItemHighlight(isEs ? 'Signos vitales' : 'Sinais vitais', history.vitalSigns, const Color(0xFF065F46)),
+                    if (history.physicalExam.isNotEmpty) _PreviewItem(isEs ? 'Examen físico' : 'Exame físico por sistemas', history.physicalExam),
+                  ],
+                ),
+                const SizedBox(height: 12),
+              ],
+
+              // ── DIAGNÓSTICO ──────────────────────────────────────────────────
+              if (_hasAny([history.workingDiagnosis, history.finalDiagnosis, history.differentialDx])) ...[
+                _PreviewSection(
+                  title: isEs ? 'DIAGNÓSTICO' : 'DIAGNÓSTICO',
+                  icon: Icons.lightbulb_rounded,
+                  color: const Color(0xFF92400E),
+                  children: [
+                    if (history.finalDiagnosis.isNotEmpty) _PreviewItemHighlight(isEs ? 'Diagnóstico final' : 'Diagnóstico final', '${history.finalDiagnosis}${history.cid.isNotEmpty ? "  (CID: ${history.cid})" : ""}', const Color(0xFF065F46)),
+                    if (history.workingDiagnosis.isNotEmpty && history.finalDiagnosis.isEmpty) _PreviewItemHighlight(isEs ? 'Hipótesis diagnóstica' : 'Hipótese diagnóstica', history.workingDiagnosis, const Color(0xFF92400E)),
+                    if (history.differentialDx.isNotEmpty) _PreviewItem(isEs ? 'Diagnóstico diferencial' : 'Diagnóstico diferencial', history.differentialDx),
+                  ],
+                ),
+                const SizedBox(height: 12),
+              ],
+
+              // ── EXAMES ───────────────────────────────────────────────────────
+              if (_hasAny([history.labResults, history.imagingResults, history.otherResults])) ...[
+                _PreviewSection(
+                  title: isEs ? 'EXÁMENES COMPLEMENTARIOS' : 'EXAMES COMPLEMENTARES',
+                  icon: Icons.biotech_rounded,
+                  color: const Color(0xFF6B21A8),
+                  children: [
+                    if (history.labResults.isNotEmpty) _PreviewItem(isEs ? 'Laboratorio' : 'Laboratório', history.labResults),
+                    if (history.imagingResults.isNotEmpty) _PreviewItem(isEs ? 'Imagen / Otros' : 'Imagem / Outros', history.imagingResults),
+                    if (history.otherResults.isNotEmpty) _PreviewItem('ECG / Biópsia', history.otherResults),
+                  ],
+                ),
+                const SizedBox(height: 12),
+              ],
+
+              // ── CONDUTA ──────────────────────────────────────────────────────
+              if (_hasAny([history.treatmentPlan, history.procedures])) ...[
+                _PreviewSection(
+                  title: isEs ? 'PLAN TERAPÉUTICO' : 'CONDUTA / TRATAMENTO',
+                  icon: Icons.assignment_turned_in_rounded,
+                  color: const Color(0xFF0F1C14),
+                  children: [
+                    if (history.treatmentPlan.isNotEmpty) _PreviewItem(isEs ? 'Plan terapéutico' : 'Plano terapêutico', history.treatmentPlan),
+                    if (history.procedures.isNotEmpty) _PreviewItem(isEs ? 'Procedimientos' : 'Procedimentos', history.procedures),
+                  ],
+                ),
+                const SizedBox(height: 12),
+              ],
+
+              // ── DESFECHO ─────────────────────────────────────────────────────
+              if (_hasAny([history.dischargeCondition, history.followUp]) || history.outcome.isNotEmpty) ...[
+                _PreviewSection(
+                  title: isEs ? 'DESENLACE / ALTA' : 'DESFECHO / ALTA',
+                  icon: Icons.door_front_door_rounded,
+                  color: const Color(0xFF1E40AF),
+                  children: [
+                    if (history.outcome.isNotEmpty) _PreviewItemHighlight(isEs ? 'Desenlace' : 'Desfecho', _outcomeLabel(history.outcome, isEs), const Color(0xFF1E40AF)),
+                    if (history.dischargeCondition.isNotEmpty) _PreviewItem(isEs ? 'Condiciones de alta' : 'Condições de alta', history.dischargeCondition),
+                    if (history.followUp.isNotEmpty) _PreviewItem(isEs ? 'Seguimiento' : 'Seguimento', history.followUp),
+                  ],
+                ),
+                const SizedBox(height: 12),
+              ],
+
+              // Rodapé
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(borderRadius: BorderRadius.circular(12), color: const Color(0xFFF5F5F5)),
+                child: Text(
+                  isEs
+                    ? 'Documento generado el $dateStr por MedCases Pro. Para uso exclusivamente educativo.'
+                    : 'Documento gerado em $dateStr pelo MedCases Pro. Para uso exclusivamente educacional.',
+                  style: const TextStyle(fontSize: 10, color: Color(0xFFAAAAAA), fontWeight: FontWeight.w600, fontStyle: FontStyle.italic),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ],
+          )),
+        ]),
+      ),
+    );
+  }
+
+  static bool _hasAny(List<String> fields) => fields.any((f) => f.isNotEmpty);
+
+  static String _outcomeLabel(String outcome, bool isEs) {
+    if (isEs) {
+      const m = {'internado': 'Internado', 'alta': 'Alta hospitalaria', 'obito': 'Óbito', 'transferencia': 'Transferencia'};
+      return m[outcome] ?? outcome;
+    }
+    const m = {'internado': 'Internado', 'alta': 'Alta hospitalar', 'obito': 'Óbito', 'transferencia': 'Transferência'};
+    return m[outcome] ?? outcome;
+  }
+}
+
+class _PreviewDocHeader extends StatelessWidget {
+  final ClinicalHistoryModel history;
+  final String dateStr;
+  final bool isEs;
+  const _PreviewDocHeader({required this.history, required this.dateStr, required this.isEs});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(16),
+        color: const Color(0xFFF8FAFB),
+        border: Border.all(color: const Color(0xFFE0E0E0)),
+      ),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Row(children: [
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            decoration: BoxDecoration(borderRadius: BorderRadius.circular(6), color: const Color(0xFF0F1C14)),
+            child: Text('HC', style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w900, color: Color(0xFFC5A365), letterSpacing: 1)),
+          ),
+          const SizedBox(width: 8),
+          Expanded(child: Text(isEs ? 'HISTORIA CLÍNICA' : 'HISTÓRIA CLÍNICA',
+            style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w900, color: Color(0xFF333333), letterSpacing: 1.2))),
+          Text(dateStr, style: const TextStyle(fontSize: 9, color: Color(0xFFAAAAAA), fontWeight: FontWeight.w600)),
+        ]),
+        const Divider(height: 16, color: Color(0xFFEEEEEE)),
+        // Dados do paciente
+        Wrap(spacing: 16, runSpacing: 6, children: [
+          if (history.patientInitials.isNotEmpty) _PHItem('Paciente', history.patientInitials),
+          if (history.patientAge.isNotEmpty) _PHItem(isEs ? 'Edad' : 'Idade', '${history.patientAge} anos'),
+          if (history.patientSex.isNotEmpty) _PHItem(isEs ? 'Sexo' : 'Sexo', history.patientSex),
+          if (history.patientWeight.isNotEmpty) _PHItem(isEs ? 'Peso' : 'Peso', '${history.patientWeight} kg'),
+          if (history.category.isNotEmpty) _PHItem(isEs ? 'Especialidad' : 'Especialidade', history.category),
+        ]),
+      ]),
+    );
+  }
+}
+
+class _PHItem extends StatelessWidget {
+  final String label, value;
+  const _PHItem(this.label, this.value);
+  @override
+  Widget build(BuildContext context) => Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisSize: MainAxisSize.min, children: [
+    Text(label.toUpperCase(), style: const TextStyle(fontSize: 8, fontWeight: FontWeight.w900, color: Color(0xFFAAAAAA), letterSpacing: 0.8)),
+    Text(value, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w800, color: Color(0xFF222222))),
+  ]);
+}
+
+class _PreviewSection extends StatelessWidget {
+  final String title;
+  final IconData icon;
+  final Color color;
+  final List<Widget> children;
+  const _PreviewSection({required this.title, required this.icon, required this.color, required this.children});
+
+  @override
+  Widget build(BuildContext context) {
+    final visible = children.where((w) => w is! SizedBox).toList();
+    if (visible.isEmpty) return const SizedBox();
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(16),
+        color: Colors.white,
+        border: Border.all(color: const Color(0xFFEEEEEE)),
+        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.04), blurRadius: 8, offset: const Offset(0, 2))],
+      ),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        // Header
+        Container(
+          padding: const EdgeInsets.fromLTRB(14, 10, 14, 10),
+          decoration: BoxDecoration(
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+            color: color.withValues(alpha: 0.06),
+            border: Border(bottom: BorderSide(color: color.withValues(alpha: 0.12))),
+          ),
+          child: Row(children: [
+            Container(width: 28, height: 28, decoration: BoxDecoration(shape: BoxShape.circle, color: color),
+              child: Center(child: Icon(icon, size: 14, color: Colors.white))),
+            const SizedBox(width: 10),
+            Text(title, style: TextStyle(fontSize: 10, fontWeight: FontWeight.w900, letterSpacing: 1.3, color: color)),
+          ]),
+        ),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(14, 10, 14, 10),
+          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: visible),
+        ),
+      ]),
+    );
+  }
+}
+
+class _PreviewItem extends StatelessWidget {
+  final String label, text;
+  const _PreviewItem(this.label, this.text);
+  @override
+  Widget build(BuildContext context) => Padding(
+    padding: const EdgeInsets.only(bottom: 10),
+    child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      Text(label.toUpperCase(), style: const TextStyle(fontSize: 8.5, fontWeight: FontWeight.w900, color: Color(0xFF999999), letterSpacing: 0.8)),
+      const SizedBox(height: 3),
+      Text(text, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500, color: Color(0xFF222222), height: 1.55)),
+    ]),
+  );
+}
+
+class _PreviewItemHighlight extends StatelessWidget {
+  final String label, text;
+  final Color color;
+  const _PreviewItemHighlight(this.label, this.text, this.color);
+  @override
+  Widget build(BuildContext context) => Padding(
+    padding: const EdgeInsets.only(bottom: 10),
+    child: Container(
+      padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
+      decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: color.withValues(alpha: 0.06), border: Border.all(color: color.withValues(alpha: 0.18))),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Text(label.toUpperCase(), style: TextStyle(fontSize: 8.5, fontWeight: FontWeight.w900, color: color.withValues(alpha: 0.7), letterSpacing: 0.8)),
+        const SizedBox(height: 3),
+        Text(text, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: color, height: 1.5)),
+      ]),
+    ),
   );
 }
 
