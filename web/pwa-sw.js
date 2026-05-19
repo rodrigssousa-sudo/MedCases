@@ -1,17 +1,16 @@
 /**
- * MedCases Pro — PWA Service Worker v5.1.0
+ * MedCases Pro — PWA Service Worker v5.2.0
  *
- * v5.1.0: Expansão da base de fármacos — Lote 2 (+44 DrugModel)
- * - Antibióticos, tuberculostáticos, antifúngicos, antiparasitários
- * - Anestésicos inalatórios/locais, bloqueadores neuromusculares
- * - Pipeline RAG atualizado (hasDrugKeyword + conditionKeywords + conditionToGroups)
- * - Cache bust forçado — todos os usuários recebem versão nova automaticamente
+ * v5.2.0: +63 interações medicamentosas (1312 total) + 589 fármacos únicos
+ * - Cache bust triplo: pubspec version + APP_VERSION + SW_VERSION
+ * - Corrige cards com valores defasados por cache antigo
+ * - Força atualização completa em todos os usuários
  */
 
 'use strict';
 
-const SW_VERSION   = '5.1.0';
-const CACHE_STATIC = 'medcases-static-v5.1.0';
+const SW_VERSION   = '5.2.0';
+const CACHE_STATIC = 'medcases-static-v5.2.0';
 const CACHE_FONTS  = 'medcases-fonts-v1'; // fontes mudam raramente, versão fixa
 
 // Assets essenciais pré-cacheados no install
