@@ -5665,6 +5665,209 @@ ENCEFALOPATÍA HEPÁTICA AGUDA:
 ⚕ Modelo educativo — adaptar al paciente.''',
   ),
 
+  // ══════════════════════════════════════════════════════════════════════════
+  // PRESCRIPCIONES ADICIONALES
+  // ══════════════════════════════════════════════════════════════════════════
+
+  _PrescriptionModel(
+    id: 'cerumen_impactado',
+    title: 'Tapón de Cerumen',
+    subtitle: 'Lavado ótico · Ceruminolíticos',
+    category: 'Otorrinolaringología',
+    icon: Icons.hearing_rounded,
+    content: '''Uso Ótico:
+1. Gotas ceruminolíticas (ej. Otocerum® / Glicerina carbonatada)
+   Aplicar 5 gotas en el oído afectado.
+   Mantener la cabeza inclinada con el oído hacia arriba por 5 minutos.
+   Aplicar cada 8h por 5 días.
+
+Guardia:
+1. Dipirona 1 g IM (si hay queja de dolor o prurito intenso local).
+
+---
+⚕ Modelo educativo — derivar a extracción/lavado si no resuelve.''',
+  ),
+
+  _PrescriptionModel(
+    id: 'dermatitis_seborreica_leve',
+    title: 'Dermatitis Seborreica Leve',
+    subtitle: 'Ketoconazol · Hidrocortisona tópica',
+    category: 'Dermatología',
+    icon: Icons.face_retouching_natural_rounded,
+    content: '''Uso Tópico:
+1. Ketoconazol shampoo 2% (ej. Eumicel® / Micoral®)
+   Aplicar en el cuero cabelludo 3 veces por semana.
+   Dejar actuar por 5 minutos y enjuagar. Continuar por 4 semanas.
+
+2. Hidrocortisona crema 1%
+   Aplicar una fina capa 2 veces al día en las áreas eccematosas por 5 días.
+
+Guardia:
+1. Dipirona 1 g IM (si hay dolor o prurito muy intenso que afecte el descanso).''',
+  ),
+
+  _PrescriptionModel(
+    id: 'enterobiasis_oxiuros',
+    title: 'Enterobiasis / Oxiuriasis',
+    subtitle: 'Albendazol · Tratamiento familiar',
+    category: 'Infectología',
+    icon: Icons.bug_report_rounded,
+    content: '''Uso Oral:
+1. Albendazol 400 mg (o Mebendazol 200 mg)
+   Tomar 1 comprimido vía oral como dosis única.
+   Repetir la misma dosis a los 14 días.
+
+Pautas y Orientación:
+→ Lavar ropa de cama, pijamas y toallas con agua caliente.
+→ Higiene estricta de manos y uñas (mantenerlas cortas).
+→ TRATAR A TODOS los contactos domiciliarios simultáneamente.
+
+Guardia:
+1. Dipirona 1 g IM o antihistamínico (si el prurito anal es intolerable).''',
+  ),
+
+  _PrescriptionModel(
+    id: 'heridas_leves_escoriaciones',
+    title: 'Escoriaciones / Heridas Leves',
+    subtitle: 'Limpieza local · Sulfadiazina de plata',
+    category: 'Dermatología',
+    icon: Icons.healing_rounded,
+    content: '''Uso Tópico / Cuidados Locales:
+1. Solución Fisiológica (SF) 0,9%
+   Lavar la herida 2 veces al día antes de aplicar la crema.
+
+2. Sulfadiazina de Plata crema (ej. Platsul-A®)
+   Aplicar una fina capa sobre la lesión 1 a 2 veces al día hasta la cicatrización.
+
+Guardia:
+1. Dipirona 1 g IM dosis única (analgesia local aguda).
+→ Chequear esquema de vacunación antitetánica.''',
+  ),
+
+  _PrescriptionModel(
+    id: 'enfermedad_hemorroidal',
+    title: 'Enfermedad Hemorroidal / Hemorroides',
+    subtitle: 'Diosmina · Cremas tópicas · Laxantes suaves',
+    category: 'Gastroenterología',
+    icon: Icons.medical_services_rounded,
+    content: '''Uso Oral:
+1. Aceite Mineral (o Lactulosa)
+   Tomar 15 mL vía oral cada 8h (evitar constipación).
+
+2. Diosmina + Hesperidina 500 mg (ej. Daflon® / Venosmil®)
+   Tomar 1 comp cada 4h por 4 días → luego cada 6h por 3 días → luego cada 12h por 3 meses.
+
+3. Ibuprofeno 400 mg
+   Tomar 1 comp vía oral cada 12h por 5 días.
+
+4. Dipirona 500 mg
+   Tomar 1 comp vía oral cada 6h en caso de dolor.
+
+Uso Tópico:
+5. Policresuleno + Cinchocaína (ej. Proctyl®) o Lidocaína/Hidrocortisona (ej. Xyloprocto®)
+   Aplicar una fina capa en la región anal 2 a 3 veces al día.
+
+Guardia:
+1. Dipirona 1 g IM + Dexametasona (Decadron®) 4 mg IM.''',
+  ),
+
+  _PrescriptionModel(
+    id: 'intoxicacion_alimentaria_leve',
+    title: 'Intoxicación Alimentaria Leve',
+    subtitle: 'SRO · Metoclopramida · Soporte sintomático',
+    category: 'Gastroenterología',
+    icon: Icons.restaurant_menu_rounded,
+    content: '''Uso Oral:
+1. Sales de Rehidratación Oral (SRO)
+   Ingerir a demanda, especialmente un vaso después de cada evacuación líquida.
+
+2. Metoclopramida 10 mg (ej. Reliverán®)
+   Tomar 1 comp vía oral cada 8h si hay náuseas o vómitos (por un máximo de 3 días).
+
+3. Dipirona 500 mg (o Paracetamol)
+   Tomar 1 comp vía oral cada 6h si hay dolor abdominal tipo cólico o fiebre.
+
+Guardia:
+1. Metoclopramida 10 mg IM (si hay vómitos activos que impiden la vía oral).''',
+  ),
+
+  _PrescriptionModel(
+    id: 'molusco_contagioso',
+    title: 'Molusco Contagioso',
+    subtitle: 'Conducta expectante · Educación al paciente',
+    category: 'Dermatología',
+    icon: Icons.coronavirus_rounded,
+    content: '''Conducta General / Ambulatoria:
+→ Orientar conducta expectante (la resolución suele ser espontánea entre 6 y 12 meses).
+→ Evitar la manipulación, rascado o afeitado de las lesiones.
+→ No compartir toallas, esponjas ni ropa.
+
+Guardia:
+1. Dipirona 1 g IM (solo si hay dolor local significativo por inflamación).
+
+---
+⚕ Modelo educativo — Derivar a dermatología (para curetaje o crioterapia) si las lesiones son muy extensas, persistentes o están sobreinfectadas.''',
+  ),
+
+  _PrescriptionModel(
+    id: 'picadura_insecto_inflamatoria',
+    title: 'Picadura de Insecto',
+    subtitle: 'Reacción inflamatoria local · Antihistamínicos',
+    category: 'Dermatología',
+    icon: Icons.bug_report_rounded,
+    content: '''Uso Oral:
+1. Difenhidramina 50 mg (ej. Benadryl®) o Dexclorfeniramina 2 mg
+   Tomar 1 comp vía oral cada 8h por 5 días.
+
+2. Prednisona 20 mg
+   Tomar 1 comp vía oral 1 vez al día (por la mañana) por 3 días.
+
+3. Dipirona 500 mg
+   Tomar 1 comp vía oral cada 6h en caso de dolor o febrícula local.
+
+Guardia (Reacción severa sin anafilaxia):
+1. Hidrocortisona 100 mg IM (o Dexametasona 8 mg) + Dipirona 1 g IM.''',
+  ),
+
+  _PrescriptionModel(
+    id: 'tos_seca_persistente',
+    title: 'Tos Seca Persistente',
+    subtitle: 'Antitusivos · Antihistamínicos · Lavado nasal',
+    category: 'Respiratorio',
+    icon: Icons.air_rounded,
+    content: '''Uso Oral:
+1. Dextrometorfano 15 mg o Levodropropizina 60 mg (o Benzonatato si disponible)
+   Tomar 1 comp (o 10 mL de jarabe) vía oral cada 8h por hasta 5 días.
+
+2. Loratadina 10 mg
+   Tomar 1 comp vía oral 1 vez al día por 7 días.
+
+Uso Local:
+3. Solución Fisiológica (SF) 0,9%
+   Instilar en las fosas nasales (lavado nasal) 3 veces al día.
+
+Guardia:
+1. Dipirona 1 g IM (si presenta dolor torácico muscular/costal secundario al esfuerzo tusígeno).''',
+  ),
+
+  _PrescriptionModel(
+    id: 'varices_miembros_inferiores',
+    title: 'Várices en Miembros Inferiores',
+    subtitle: 'Venotónicos · Analgesia tópica',
+    category: 'Cardiovascular',
+    icon: Icons.accessibility_rounded,
+    content: '''Uso Oral:
+1. Diosmina + Hesperidina 500 mg (ej. Daflon® / Venosmil®)
+   Tomar 1 comp vía oral cada 12h por 30 días.
+
+Uso Tópico (si hay dolor/pesadez local):
+2. Polisulfato de Mucopolisacárido gel/crema (ej. Hirudoid®)
+   Aplicar una fina capa 2 veces al día en las piernas, con masaje ascendente.
+
+Guardia:
+1. Dipirona 1 g IM (si la paciente consulta por dolor local agudo/intenso).''',
+  ),
+
   _PrescriptionModel(
     id: 'nutricion_enteral_parenteral',
     title: 'Nutrición Clínica — Soporte Nutricional',

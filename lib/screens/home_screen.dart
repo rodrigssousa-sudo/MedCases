@@ -70,8 +70,8 @@ class HomeScreen extends StatelessWidget {
           icon: Icons.description_rounded,
           label: isEs ? 'PRESCRIPCIONES' : 'PRESCRIÇÕES',
           subtitle: isEs
-              ? 'Modelos · Emergencias · Guardia · Clínica'
-              : 'Modelos · Emergências · Plantão · Clínica',
+              ? '${prescriptionModels(true).length} modelos · Emergencias · Guardia · Clínica'
+              : '${prescriptionModels(false).length} modelos · Emergências · Plantão · Clínica',
           gradientColors: const [Color(0xFF2A0B52), Color(0xFF3D1280), Color(0xFF5B21B6)],
           accentColor: const Color(0xFFA78BFA),
           dark: dark,
