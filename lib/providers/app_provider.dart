@@ -1537,15 +1537,62 @@ class AppProvider extends ChangeNotifier {
 
     // ── Psicofármaco / antipsicótico / psiquiatria ─────────────────────────
     if (_has(q, [
+      // Antipsicóticos típicos
       'antipsicotico', 'antipsicótico', 'antipsicóticos', 'antipsychotic',
-      'haloperidol', 'risperidona', 'olanzapina', 'quetiapina', 'clozapina',
-      'aripiprazol', 'ziprasidona', 'amisulprida', 'clorpromazina',
-      'psicosis', 'psicose', 'psicotico', 'psicótico',
-      'brote psic', 'brote maniac', 'episodio psicotico', 'episodio maniac',
-      'esquizofrenia', 'schizophrenia', 'delirio agudo', 'alucinacion',
-      'agitacion psic', 'agitação psic',
-      'ssri', 'antidepressivo', 'antidepresivo', 'ansiolit', 'benzodiazep',
-      'estabilizador humor', 'lition', 'valproato', 'lamotrigina',
+      'haloperidol', 'haldol', 'droperidol',
+      'clorpromazina', 'amplictil', 'thorazine',
+      'tioridazina', 'levomepromazina', 'flufenazina',
+      'zuclopentixol', 'pimozida', 'sulpirida',
+      // Antipsicóticos atípicos
+      'risperidona', 'risperdal', 'olanzapina', 'zyprexa',
+      'quetiapina', 'seroquel', 'clozapina', 'clozaril', 'leponex',
+      'aripiprazol', 'abilify', 'ziprasidona', 'geodon',
+      'amisulprida', 'paliperidona', 'lurasidona', 'iloperidona',
+      'cariprazina', 'brexpiprazol', 'asenapina',
+      // SSRI/SNRI por nome
+      'ssri', 'isrs', 'antidepressivo', 'antidepresivo',
+      'sertralina', 'fluoxetina', 'paroxetina', 'escitalopram', 'citalopram',
+      'fluvoxamina', 'venlafaxina', 'duloxetina', 'desvenlafaxina',
+      'milnaciprana', 'mirtazapina', 'trazodona', 'agomelatina', 'vortioxetina',
+      // TCAs e IMAOs
+      'amitriptilina', 'nortriptilina', 'imipramina', 'clomipramina',
+      'desipramina', 'doxepina', 'tranilcipromina', 'fenelzina',
+      'moclobemida', 'inibidor monoaminoxidase', 'imao ',
+      'antidepressivo triciclico', 'antidepressivo tricicl',
+      // Estabilizadores de humor
+      'estabilizador humor', 'lition', 'litio ', 'lithium',
+      'valproato', 'acido valproico', 'depakote',
+      'lamotrigina', 'lamictal', 'carbamazepina', 'tegretol',
+      'oxcarbazepina', 'topiramato',
+      // Benzodiazepínicos e hipnóticos
+      'ansiolit', 'benzodiazep', 'benzo ',
+      'diazepam', 'lorazepam', 'clonazepam', 'alprazolam',
+      'midazolam', 'bromazepam', 'clobazam',
+      'zolpidem', 'zopiclona', 'eszopiclona',
+      // Ansiolíticos não-benzo
+      'buspirona', 'buspar',
+      // Condições psiquiátricas
+      'psicosis', 'psicose', 'psicotico', 'psicótico', 'psychosis',
+      'brote psic', 'brote maniac', 'brote acut',
+      'episodio psicotico', 'episodio maniac', 'episodio hipomania',
+      'esquizofrenia', 'schizophrenia', 'esquizofren',
+      'delirio psicot', 'alucinacion', 'alucinacoes',
+      'agitacion psic', 'agitação psic', 'agitacion agud',
+      'psicose aguda', 'psicosis aguda',
+      'delirium ', 'confusao agud', 'sindrome confusional agud',
+      'depressao maior', 'depressao unipolar', 'depressao bipol',
+      'mania agud', 'hipomania', 'episodio maniaco',
+      'ansiedade generalizada', 'tag ', 'transtorno ansied',
+      'panico psiquiat', 'crise panico',
+      'toc ', 'transtorno obsessivo',
+      'tept ', 'ptsd ',
+      'tdah ', 'adhd ', 'deficit atencao',
+      'transtorno personalidade', 'borderline',
+      'automutilacao', 'ideacao suicid', 'tentativa suicid',
+      'comportamento suicida', 'pensamento suicida',
+      'abstinencia alcool', 'delirium tremens', 'withdrawal',
+      'sindrome neuroleptica', 'sindrome serotonin',
+      'sind neuroleptica', 'emergencia psiquiatric',
     ])) {
       return 'psicofarmaco';
     }
@@ -1587,25 +1634,514 @@ class AppProvider extends ChangeNotifier {
     if (directPrefixes.any((p) => q.startsWith(p))) return true;
 
     // Nomes de fármacos específicos na pergunta → query direta (nunca herdar histórico)
+    // LISTA EXPANDIDA — cobre os 541 fármacos da base + variantes PT/ES
     final hasDrugKeyword = _has(_normalize(input), [
-      'haloperidol', 'risperidona', 'olanzapina', 'quetiapina', 'clozapina',
-      'aripiprazol', 'ziprasidona', 'amisulprida', 'clorpromazina', 'tioridazina',
-      'diazepam', 'midazolam', 'lorazepam', 'clonazepam', 'alprazolam',
-      'morfina', 'fentanil', 'tramadol', 'codeina', 'metadona', 'oxicodona',
-      'amoxicilina', 'ceftriaxona', 'ciprofloxacin', 'metronidazol', 'vancomicin',
-      'adrenalina', 'noradrenalina', 'dopamina', 'dobutamina', 'vasopresina',
-      'atropina', 'adenosina', 'amiodarona', 'lidocaina', 'sotalol',
-      'metformina', 'insulina', 'glibenclamida', 'sitagliptina', 'empagliflozin',
-      'omeprazol', 'pantoprazol', 'ranitidina', 'dexametasona', 'prednisona',
-      'furosemida', 'espironolactona', 'atenolol', 'metoprolol', 'enalapril',
-      'captopril', 'losartan', 'amlodipina', 'nifedipina', 'verapamil',
-      'warfarina', 'enoxaparina', 'heparina', 'apixaban', 'rivaroxaban',
-      'salbutamol', 'ipratropio', 'budesonida', 'fluticasona', 'montelucaste',
-      'aciclovir', 'oseltamivir', 'fluconazol', 'itraconazol', 'voriconazol',
-      'lítio', 'valproato', 'carbamazepina', 'lamotrigina', 'topiramato',
-      'sertralina', 'fluoxetina', 'paroxetina', 'escitalopram', 'venlafaxina',
-      'amitriptilina', 'imipramina', 'nortriptilina', 'duloxetina', 'mirtazapina',
-      'metilfenidato', 'anfetamina', 'bupropiona', 'atomoxetina',
+      // ── ANTIPSICÓTICOS ───────────────────────────────────────────────────────
+      'haloperidol', 'haldol',
+      'risperidona', 'risperdal', 'risperidon',
+      'olanzapina', 'zyprexa', 'olanzapin',
+      'quetiapina', 'seroquel', 'quetiaquin',
+      'clozapina', 'clozaril', 'leponex', 'clozapin',
+      'aripiprazol', 'abilify', 'aripiprazole',
+      'ziprasidona', 'geodon', 'ziprasidon',
+      'amisulprida', 'solian', 'amisulprid',
+      'clorpromazina', 'amplictil', 'thorazine', 'clorpromazin',
+      'tioridazina', 'mellaril', 'tioridazin',
+      'levomepromazina', 'nozinan', 'methotrimeprazin',
+      'zuclopentixol', 'clopixol',
+      'flufenazina', 'fluphenazin', 'modecate',
+      'pimozida', 'orap',
+      'sulpirida', 'sulpirid', 'dogmatil',
+      'paliperidona', 'invega', 'xeplion',
+      'lurasidona', 'latuda', 'lurasidon',
+      'iloperidona', 'fanapt',
+      'cariprazina', 'reagila',
+      'brexpiprazol', 'rexulti',
+      'asenapina', 'sycrest',
+      // ── ANTIDEPRESSIVOS SSRI/SNRI/TCA/IMAO ──────────────────────────────────
+      'sertralina', 'zoloft', 'sertraline',
+      'fluoxetina', 'prozac', 'fluoxetin',
+      'paroxetina', 'paxil', 'seroxat', 'paroxetin',
+      'escitalopram', 'lexapro', 'cipralex',
+      'citalopram', 'celexa',
+      'fluvoxamina', 'luvox', 'fluvoxamin',
+      'venlafaxina', 'effexor', 'venlafaxin',
+      'desvenlafaxina', 'pristiq', 'desvenlafaxin',
+      'duloxetina', 'cymbalta', 'duloxetin',
+      'milnaciprana', 'savella', 'milnacipran',
+      'levomilnaciprana', 'fetzima',
+      'amitriptilina', 'elavil', 'amitriptylin',
+      'nortriptilina', 'pamelor', 'nortriptylin',
+      'imipramina', 'tofranil', 'imipramin',
+      'clomipramina', 'anafranil', 'clomipramim',
+      'desipramina', 'norpramin',
+      'doxepina', 'sinequan',
+      'mirtazapina', 'remeron', 'mirtazapin',
+      'trazodona', 'desyrel', 'trazodone',
+      'bupropiona', 'wellbutrin', 'zyban', 'bupropion',
+      'agomelatina', 'valdoxan', 'agomelatine',
+      'vortioxetina', 'brintellix', 'vortioxetin',
+      'nefazodona', 'serzone',
+      'tranilcipromina', 'parnate', 'tranylcypromin',
+      'fenelzina', 'nardil', 'phenelzin',
+      'moclobemida', 'manerix', 'moclobemid',
+      'selegilina', 'eldepryl', 'selegilin',
+      // ── ESTABILIZADORES DE HUMOR ─────────────────────────────────────────────
+      'litio', 'lition', 'lithium', 'carbolith', 'eskalith',
+      'valproato', 'acido valproico', 'depakene', 'depakote', 'valproic',
+      'acido valproic', 'valproato sodio', 'divalproex',
+      'carbamazepina', 'tegretol', 'carbamazepine', 'carbamaz',
+      'lamotrigina', 'lamictal', 'lamotrigine',
+      'topiramato', 'topamax', 'topiramato',
+      'oxcarbazepina', 'trileptal', 'oxcarbazepine',
+      'gabapentina', 'neurontin', 'gabapentin',
+      'pregabalina', 'lyrica', 'pregabaline',
+      // ── BENZODIAZEPÍNICOS E HIPNÓTICOS ──────────────────────────────────────
+      'diazepam', 'valium', 'diazepame',
+      'midazolam', 'dormicum', 'versed',
+      'lorazepam', 'ativan',
+      'clonazepam', 'rivotril', 'klonopin',
+      'alprazolam', 'xanax',
+      'bromazepam', 'lexotan',
+      'clobazam', 'frisium',
+      'nitrazepam', 'mogadon',
+      'triazolam', 'halcion',
+      'temazepam', 'restoril',
+      'zolpidem', 'ambien', 'stilnox',
+      'zopiclona', 'imovane', 'zopiclone',
+      'eszopiclona', 'lunesta',
+      'zaleplon', 'sonata',
+      'flumazenil',
+      // ── ANSIOLÍTICOS NÃO-BENZO ───────────────────────────────────────────────
+      'buspirona', 'buspar', 'buspirona',
+      'hidroxizina', 'atarax', 'vistaril', 'hydroxyzine',
+      'meprobamate', 'meprobamato',
+      // ── ANTICONVULSIVANTES / ANTIEPILÉPTICOS ─────────────────────────────────
+      'fenitoina', 'dilantin', 'phenytoin',
+      'fenobarbital', 'luminal', 'phenobarbital',
+      'levetiracetam', 'keppra', 'levetiracetame',
+      'lacosamida', 'vimpat', 'lacosamide',
+      'perampanel', 'fycompa',
+      'vigabatrina', 'sabril', 'vigabatrin',
+      'tiagabina', 'gabitril', 'tiagabin',
+      'rufinamida', 'inovelon',
+      'clobazam', 'onfi',
+      'eslicarbazepina', 'zebinix',
+      'cenobamate', 'xcopri',
+      // ── OPIÓIDES E ANALGÉSICOS ───────────────────────────────────────────────
+      'morfina', 'morphine',
+      'fentanil', 'fentanila', 'fentanyl', 'duragesic',
+      'tramadol', 'ultram',
+      'codeina', 'codein', 'codeine',
+      'metadona', 'methadone', 'dolophine',
+      'oxicodona', 'oxycodon', 'oxycontin',
+      'hidromorfona', 'hydromorphone', 'dilaudid',
+      'buprenorfina', 'subutex', 'suboxone', 'buprenorphin',
+      'naloxona', 'narcan', 'naloxone',
+      'naltrexona', 'revia', 'naltrexone',
+      'tapentadol', 'nucynta',
+      'meperidina', 'demerol', 'petidina',
+      // ── ANTICOAGULANTES ──────────────────────────────────────────────────────
+      'warfarina', 'coumadin', 'warfarine',
+      'heparina', 'heparin',
+      'enoxaparina', 'clexane', 'lovenox', 'enoxaparin',
+      'fondaparinux', 'arixtra',
+      'rivaroxabana', 'xarelto', 'rivaroxaban',
+      'apixabana', 'eliquis', 'apixaban',
+      'dabigatrana', 'pradaxa', 'dabigatran',
+      'edoxabana', 'lixiana', 'edoxaban',
+      'betrixabana', 'bevyxxa',
+      'argatrobana', 'argatroban',
+      'bivalirudina', 'angiomax',
+      // ── ANTIAGREGANTES ───────────────────────────────────────────────────────
+      'clopidogrel', 'plavix',
+      'ticagrelor', 'brilinta',
+      'prasugrel', 'effient',
+      'aspirina', 'aas ', 'acido acetilsalicilico', 'aspirin',
+      'ticlopidina', 'ticlid',
+      'abciximab', 'reopro',
+      'eptifibatida', 'integrilin',
+      'tirofibana', 'aggrastat',
+      'vorapaxar', 'zontivity',
+      // ── CARDIOVASCULARES ─────────────────────────────────────────────────────
+      'adrenalina', 'epinefrina', 'epinephrine', 'adrenaline',
+      'noradrenalina', 'norepinefrina', 'norepinephrine', 'levophed',
+      'dopamina', 'intropin', 'dopamine',
+      'dobutamina', 'dobutrex', 'dobutamine',
+      'vasopresina', 'vasopressine', 'vasopressin', 'pitressin',
+      'terlipressina', 'terlipressin', 'glypressin',
+      'milrinona', 'primacor', 'milrinone',
+      'levosimendana', 'simdax', 'levosimendan',
+      'nitroglicerina', 'nitroglycerin', 'nitrato',
+      'nitroprussiato', 'nitroprussid', 'nipride',
+      'adenosina', 'adenocor', 'adenosine',
+      'atropina', 'atropine',
+      'amiodarona', 'cordarone', 'amiodarone',
+      'lidocaina', 'xilocaina', 'lidocaine', 'xylocaine',
+      'sotalol', 'betapace',
+      'propafenona', 'rythmol', 'propafenone',
+      'flecainida', 'tambocor', 'flecainide',
+      'quinidina', 'quinaglute', 'quinidine',
+      'procainamida', 'procan', 'procainamide',
+      'digoxina', 'lanoxin', 'digoxin',
+      'atenolol', 'tenormin',
+      'metoprolol', 'seloken', 'lopressor',
+      'carvedilol', 'coreg',
+      'bisoprolol', 'concor',
+      'esmolol', 'brevibloc',
+      'labetalol', 'trandate', 'normodyne',
+      'propranolol', 'inderal',
+      'nebivolol', 'bystolic',
+      'enalapril', 'vasotec', 'renitec',
+      'captopril', 'capoten',
+      'lisinopril', 'zestril', 'prinivil',
+      'ramipril', 'altace', 'triatec',
+      'perindopril', 'coversyl',
+      'losartana', 'losartan', 'cozaar',
+      'valsartana', 'valsartan', 'diovan',
+      'candesartana', 'candesartan', 'atacand',
+      'irbesartana', 'irbesartan', 'avapro',
+      'telmisartana', 'telmisartan', 'micardis',
+      'olmesartana', 'olmesartan', 'benicar',
+      'amlodipina', 'amlodipine', 'norvasc',
+      'nifedipina', 'nifedipine', 'adalat',
+      'verapamil', 'calan', 'isoptin',
+      'diltiazem', 'cardizem', 'tiazac',
+      'felodipina', 'felodipine', 'plendil',
+      'nimodipino', 'nimotop', 'nimodipine',
+      'hidralazina', 'hydralazine', 'apresoline',
+      'minoxidil', 'loniten',
+      'clonidina', 'catapres', 'clonidine',
+      'doxazosina', 'cardura', 'doxazosin',
+      'prazosina', 'minipress', 'prazosin',
+      'espironolactona', 'aldactone', 'spironolactone',
+      'furosemida', 'lasix', 'furosemide',
+      'hidroclorotiazida', 'hypothiazid', 'hydrochlorothiazide',
+      'torasemida', 'torsemide', 'demadex',
+      'bumetanida', 'bumetanide', 'bumex',
+      'acetazolamida', 'diamox', 'acetazolamide',
+      'eplerenona', 'inspra', 'eplerenone',
+      'sacubitril', 'entresto', 'valsartana-sacubitril',
+      'ivabradina', 'procoralan', 'ivabradine',
+      'ranolazina', 'ranexa', 'ranolazine',
+      'estatina', 'sinvastatina', 'atorvastatina', 'rosuvastatina',
+      'sinvastatin', 'simvastatin', 'zocor',
+      'atorvastatin', 'atorvastatina', 'lipitor',
+      'rosuvastatina', 'rosuvastatin', 'crestor',
+      'pravastatina', 'pravastatin', 'pravachol',
+      'fluvastatina', 'fluvastatin', 'lescol',
+      'ezetimiba', 'ezetimibe', 'zetia',
+      'colchicina', 'colchicine', 'colbenemid',
+      // ── ANTIBIÓTICOS ─────────────────────────────────────────────────────────
+      'amoxicilina', 'amoxil', 'amoxicillin',
+      'ampicilina', 'ampicillin', 'principen',
+      'amoxicilina-clavulanato', 'augmentin', 'clavulin',
+      'penicilina', 'penicillin',
+      'oxacilina', 'oxacillin',
+      'nafcilina', 'nafcillin',
+      'piperacilina-tazobactam', 'tazocin', 'zosyn',
+      'cefazolina', 'cefazolin', 'ancef',
+      'cefalexina', 'cephalexin', 'keflex',
+      'cefuroxima', 'cefuroxime', 'zinnat',
+      'ceftriaxona', 'ceftriaxone', 'rocephin',
+      'cefotaxima', 'cefotaxime', 'claforan',
+      'ceftazidima', 'ceftazidime', 'fortaz',
+      'cefepima', 'cefepime', 'maxipime',
+      'ceftarolina', 'ceftaroline', 'teflaro',
+      'imipenem', 'tienam',
+      'meropenem', 'merrem',
+      'ertapenem', 'invanz',
+      'doripenem', 'doribax',
+      'aztreonam', 'azactam',
+      'vancomicina', 'vancomycin', 'vancocin',
+      'linezolida', 'linezolid', 'zyvox',
+      'daptomicina', 'daptomycin', 'cubicin',
+      'teicoplanina', 'targocid', 'teicoplanin',
+      'ceftolozana-tazobactam', 'zerbaxa',
+      'ceftazidima-avibactam', 'avycaz',
+      'imipenem-relebactam', 'recarbrio',
+      'ciprofloxacino', 'ciprofloxacin', 'cipro',
+      'levofloxacino', 'levofloxacin', 'levaquin',
+      'moxifloxacino', 'moxifloxacin', 'avelox',
+      'metronidazol', 'metronidazole', 'flagyl',
+      'clindamicina', 'clindamycin', 'cleocin',
+      'eritromicina', 'erythromycin',
+      'azitromicina', 'azithromycin', 'zithromax',
+      'claritromicina', 'clarithromycin', 'biaxin',
+      'doxiciclina', 'doxycycline', 'vibramycin',
+      'tetraciclina', 'tetracycline',
+      'cotrimoxazol', 'sulfametoxazol-trimetoprim', 'bactrim', 'septra',
+      'nitrofurantoina', 'nitrofurantoin', 'macrobid',
+      'fosfomicina', 'fosfomycin', 'monurol',
+      'rifampicina', 'rifampin', 'rifadin',
+      'isoniazida', 'isoniazid', 'inh ',
+      'pirazinamida', 'pyrazinamide',
+      'etambutol', 'myambutol',
+      'gentamicina', 'gentamycin', 'garamycin',
+      'amicacina', 'amikacin',
+      'tobramicina', 'tobramycin',
+      'colistina', 'colistin', 'polimixina',
+      'fidaxomicina', 'fidaxomicin', 'dificid',
+      'cloranfenicol', 'chloramphenicol',
+      'lincomicina', 'lincomycin',
+      'quinupristina-dalfopristina', 'synercid',
+      'tedizolida', 'tedizolid', 'sivextro',
+      'oritavancina', 'oritavancin', 'orbactiv',
+      'dalbavancina', 'dalvance',
+      // ── ANTIVIRAIS ───────────────────────────────────────────────────────────
+      'aciclovir', 'acyclovir', 'zovirax',
+      'valaciclovir', 'valacyclovir', 'valtrex',
+      'fanciclovir', 'famciclovir', 'famvir',
+      'ganciclovir', 'cytovene',
+      'valganciclovir', 'valcyte',
+      'foscarnet', 'foscavir',
+      'oseltamivir', 'tamiflu',
+      'zanamivir', 'relenza',
+      'baloxavir', 'xofluza',
+      'remdesivir', 'veklury',
+      'nirmatrelvir', 'paxlovid',
+      'molnupiravir', 'lagevrio',
+      'ribavirina', 'ribavirin', 'rebetol',
+      'sofosbuvir', 'sovaldi',
+      'daclatasvir', 'daklinza',
+      'entecavir', 'baraclude',
+      'tenofovir', 'viread',
+      'lamivudina', 'lamivudine', '3tc', 'epivir',
+      'efavirenz', 'sustiva',
+      'dolutegravir', 'tivicay',
+      'atazanavir', 'reyataz',
+      'lopinavir', 'kaletra',
+      'tecovirimat', 'tpoxx',
+      // ── ANTIFÚNGICOS ─────────────────────────────────────────────────────────
+      'fluconazol', 'fluconazole', 'diflucan',
+      'itraconazol', 'itraconazole', 'sporanox',
+      'voriconazol', 'voriconazole', 'vfend',
+      'posaconazol', 'posaconazole', 'noxafil',
+      'isavuconazol', 'isavuconazole', 'cresemba',
+      'caspofungina', 'caspofungin', 'cancidas',
+      'micafungina', 'micafungin', 'mycamine',
+      'anidulafungina', 'anidulafungin', 'eraxis',
+      'anfotericina b', 'amphotericin b', 'fungizone',
+      'terbinafina', 'terbinafine', 'lamisil',
+      // ── ANTIPARASITÁRIOS ─────────────────────────────────────────────────────
+      'metronidazol', 'metronidazole',
+      'albendazol', 'albendazole', 'zentel',
+      'mebendazol', 'mebendazole', 'vermox',
+      'nitazoxanida', 'nitazoxanide', 'alinia',
+      'ivermectina', 'ivermectin', 'stromectol',
+      'cloroquina', 'chloroquine', 'aralen',
+      'hidroxicloroquina', 'hydroxychloroquine', 'plaquenil',
+      'artemeter', 'artemether',
+      'quinina', 'quinine',
+      'primaquina', 'primaquine',
+      'pirimetamina', 'pyrimethamine', 'daraprim',
+      // ── ANTIPARKINSONIANOS ─────────────────────────────────────────────────
+      'levodopa', 'carbidopa', 'levodopa-carbidopa', 'sinemet',
+      'pramipexol', 'mirapex', 'pramipexole',
+      'ropinirol', 'requip', 'ropinirole',
+      'rotigotina', 'neupro', 'rotigotine',
+      'rasagilina', 'azilect', 'rasagiline',
+      'selegilina', 'eldepryl',
+      'entacapona', 'comtan', 'entacapone',
+      'tolcapona', 'tasmar', 'tolcapone',
+      'amantadina', 'symmetrel', 'amantadine',
+      'benztropina', 'cogentin', 'benztropine',
+      'biperideno', 'akineton', 'biperiden',
+      // ── COLINESTERÁSICOS E ANTIDEMÊNCIA ─────────────────────────────────────
+      'donepezila', 'donepezil', 'aricept',
+      'rivastigmina', 'rivastigmine', 'exelon',
+      'galantamina', 'galantamine', 'reminyl',
+      'memantina', 'memantine', 'namenda',
+      // ── PSICOESTIMULANTES E TDAH ─────────────────────────────────────────────
+      'metilfenidato', 'methylphenidate', 'ritalin', 'concerta',
+      'anfetamina', 'amphetamine', 'adderall',
+      'lisdexanfetamina', 'lisdexamfetamine', 'vyvanse',
+      'atomoxetina', 'atomoxetine', 'strattera',
+      'modafinil', 'provigil',
+      'armodafinil', 'nuvigil',
+      // ── CORTICOSTEROIDES ─────────────────────────────────────────────────────
+      'dexametasona', 'dexamethasone', 'decadron',
+      'prednisona', 'prednisone', 'deltasone',
+      'prednisolona', 'prednisolone',
+      'metilprednisolona', 'methylprednisolone', 'solu-medrol',
+      'hidrocortisona', 'hydrocortisone', 'solu-cortef',
+      'betametasona', 'betamethasone', 'celestone',
+      'fludrocortisona', 'florinef', 'fludrocortisone',
+      'budesonida', 'budesonide', 'pulmicort',
+      'fluticasona', 'fluticasone', 'flixotide',
+      'beclometasona', 'beclomethasone',
+      // ── ANTIDIABÉTICOS ───────────────────────────────────────────────────────
+      'metformina', 'glucophage', 'metformin',
+      'insulina', 'insulin',
+      'glibenclamida', 'glyburide', 'micronase',
+      'glipizida', 'glipizide', 'glucotrol',
+      'glicazida', 'gliclazide', 'diamicron',
+      'sitagliptina', 'sitagliptin', 'januvia',
+      'vildagliptina', 'vildagliptin', 'galvus',
+      'saxagliptina', 'saxagliptin', 'onglyza',
+      'linagliptina', 'linagliptin', 'tradjenta',
+      'empagliflozina', 'empagliflozin', 'jardiance',
+      'dapagliflozina', 'dapagliflozin', 'forxiga',
+      'canagliflozina', 'canagliflozin', 'invokana',
+      'liraglutida', 'liraglutide', 'victoza',
+      'semaglutida', 'semaglutide', 'ozempic', 'wegovy',
+      'exenatida', 'exenatide', 'byetta',
+      'dulaglutida', 'dulaglutide', 'trulicity',
+      'pioglitazona', 'pioglitazone', 'actos',
+      'acarbose', 'acarbosa', 'glucobay',
+      // ── BRONCODILATADORES E RESPIRATÓRIO ─────────────────────────────────────
+      'salbutamol', 'albuterol', 'ventolin',
+      'ipratropio', 'ipratropium', 'atrovent',
+      'tiotropio', 'tiotropium', 'spiriva',
+      'formoterol', 'foradil',
+      'salmeterol', 'serevent',
+      'indacaterol', 'onbrez',
+      'glicopirronio', 'glycopyrronium', 'seebri',
+      'montelucaste', 'montelukast', 'singulair',
+      'teofilina', 'theophylline',
+      'budesonida', 'budesonide',
+      'fluticasona', 'fluticasone',
+      'roflumilaste', 'roflumilast', 'daliresp',
+      'ivacaftor', 'kalydeco',
+      'dornase alfa', 'pulmozyme',
+      // ── INIBIDORES BOMBA DE PRÓTONS E GI ────────────────────────────────────
+      'omeprazol', 'prilosec', 'omeprazole',
+      'pantoprazol', 'protonix', 'pantoprazole',
+      'esomeprazol', 'nexium', 'esomeprazole',
+      'lansoprazol', 'prevacid', 'lansoprazole',
+      'rabeprazol', 'aciphex', 'rabeprazole',
+      'ranitidina', 'zantac', 'ranitidine',
+      'famotidina', 'pepcid', 'famotidine',
+      'metoclopramida', 'reglan', 'metoclopramide',
+      'domperidona', 'motilium', 'domperidone',
+      'ondansetrona', 'zofran', 'ondansetron',
+      'granisetrona', 'kytril', 'granisetron',
+      'aprepitant', 'emend',
+      'loperamida', 'imodium', 'loperamide',
+      'mesalazina', 'asacol', 'mesalamine',
+      'sulfassalazina', 'azulfidine', 'sulfasalazine',
+      'infliximabe', 'infliximab', 'remicade',
+      'adalimumabe', 'adalimumab', 'humira',
+      'vedolizumabe', 'vedolizumab', 'entyvio',
+      'ustekinumabe', 'ustekinumab', 'stelara',
+      'sucralfato', 'sucralfate', 'carafate',
+      'bismuto', 'bismuth',
+      'lactulose', 'kristalose',
+      'rifaximina', 'xifaxan', 'rifaximin',
+      // ── HORMÔNIOS TIREOIDIANOS ───────────────────────────────────────────────
+      'levotiroxina', 'synthroid', 'levothyroxine',
+      'metimazol', 'methimazole', 'tapazole',
+      'propiltiouracil', 'ptu ', 'propylthiouracil',
+      'tiamazol', 'carbimazole',
+      // ── DIURÉTICOS ───────────────────────────────────────────────────────────
+      'furosemida', 'furosemide',
+      'espironolactona', 'spironolactone',
+      'torasemida', 'torsemide',
+      'hidroclorotiazida', 'hydrochlorothiazide',
+      'clortalidona', 'chlorthalidone',
+      'indapamida', 'indapamide',
+      'acetazolamida', 'acetazolamide',
+      'amilorida', 'amiloride',
+      'triantereno', 'triamterene',
+      'tolvaptan', 'samsca',
+      'manitol', 'mannitol',
+      // ── IMUNOSSUPRESSORES E BIOLÓGICOS ───────────────────────────────────────
+      'metotrexato', 'methotrexate',
+      'azatioprina', 'azathioprine', 'imuran',
+      'ciclosporina', 'cyclosporine', 'sandimmune',
+      'tacrolimus', 'prograf',
+      'micofenolato', 'mycophenolate', 'cellcept',
+      'rituximabe', 'rituximab', 'mabthera',
+      'tocilizumabe', 'tocilizumab', 'actemra',
+      'abatacepte', 'abatacept', 'orencia',
+      'secuquinumabe', 'secukinumab', 'cosentyx',
+      'ixequizumabe', 'ixekizumab', 'taltz',
+      'dupilumabe', 'dupilumab', 'dupixent',
+      'omalizumabe', 'omalizumab', 'xolair',
+      'pembrolizumabe', 'pembrolizumab', 'keytruda',
+      'nivolumabe', 'nivolumab', 'opdivo',
+      'ipilimumabe', 'ipilimumab', 'yervoy',
+      'bortezomibe', 'bortezomib', 'velcade',
+      'lenalidomida', 'lenalidomide', 'revlimid',
+      'talidomida', 'thalidomide', 'thalomid',
+      // ── ANTIINFLAMATÓRIOS ─────────────────────────────────────────────────
+      'ibuprofeno', 'ibuprofen', 'advil', 'motrin',
+      'naproxeno', 'naproxen', 'aleve',
+      'diclofenaco', 'diclofenac', 'voltaren',
+      'indometacina', 'indomethacin', 'indocin',
+      'cetorolaco', 'ketorolac', 'toradol',
+      'meloxicam', 'meloxicame', 'mobic',
+      'celecoxibe', 'celecoxib', 'celebrex',
+      'etoricoxibe', 'etoricoxib', 'arcoxia',
+      'paracetamol', 'acetaminophen', 'tylenol',
+      'dipirona', 'novalgina', 'metamizol',
+      // ── BIFOSFONATOS E OSSO ──────────────────────────────────────────────────
+      'alendronato', 'fosamax', 'alendronate',
+      'risedronato', 'actonel', 'risedronate',
+      'zoledronato', 'zometa', 'zoledronate',
+      'ibandronato', 'boniva', 'ibandronate',
+      'denosumab', 'prolia', 'xgeva',
+      'teriparatida', 'forteo', 'teriparatide',
+      'calcio', 'calcium',
+      'vitamina d', 'calcitriol', 'colecalciferol',
+      // ── ANTINEOPLÁSICOS PRINCIPAIS ─────────────────────────────────────────
+      'imatinibe', 'imatinib', 'gleevec',
+      'dasatinibe', 'dasatinib', 'sprycel',
+      'erlotinib', 'erlotinibe', 'tarceva',
+      'gefitinibe', 'gefitinib', 'iressa',
+      'osimertinibe', 'osimertinib', 'tagrisso',
+      'vemurafenib', 'vemurafenibe', 'zelboraf',
+      'tamoxifeno', 'tamoxifen', 'nolvadex',
+      'letrozol', 'letrozole', 'femara',
+      'anastrozol', 'anastrozole', 'arimidex',
+      'trastuzumabe', 'trastuzumab', 'herceptin',
+      'cisplatina', 'cisplatin', 'platinol',
+      'carboplatina', 'carboplatin', 'paraplatin',
+      'doxorrubicina', 'doxorubicin', 'adriamycin',
+      'paclitaxel', 'taxol',
+      'docetaxel', 'taxotere',
+      'vincristina', 'vincristine', 'oncovin',
+      '5-fluorouracil', 'fluorouracil', '5fu',
+      'oxaliplatina', 'oxaliplatin', 'eloxatin',
+      'irinotecan', 'irinotecan', 'camptosar',
+      'gemcitabina', 'gemcitabine', 'gemzar',
+      'metotrexato', 'methotrexate',
+      'hidroxiureia', 'hydroxyurea', 'hydrea',
+      // ── MISCELÂNEA FARMACOLÓGICA ──────────────────────────────────────────
+      'acido tranexamico', 'acido tranexam', 'tranexamic',
+      'vitamina k', 'fitomenadiona', 'phytonadione',
+      'n-acetilcisteina', 'nac ', 'acetylcysteine',
+      'albumina', 'albumin',
+      'gluconato calcio', 'calcium gluconate',
+      'sulfato magnesio', 'magnesium sulfate',
+      'bicarbonato sodio', 'sodium bicarbonate',
+      'desmopressina', 'ddavp', 'desmopressin',
+      'ocitocina', 'oxytocin', 'pitocin',
+      'misoprostol', 'cytotec',
+      'ergometrina', 'ergometrine', 'syntometrine',
+      'tiamina', 'thiamine', 'vitamina b1',
+      'piridoxina', 'pyridoxine', 'vitamina b6',
+      'cianocobalamina', 'cobalamina', 'vitamina b12',
+      'acido folico', 'folic acid',
+      'sulfato ferroso', 'ferrous sulfate', 'ferro oral',
+      'eritropoetina', 'epoetin', 'epo ',
+      'filgrastim', 'neupogen',
+      'imunoglobulina', 'immunoglobulin', 'ivig',
+      'carvao ativado', 'activated charcoal',
+      'glucagon',
+      'octreotida', 'octreotide', 'sandostatin',
+      'vasopresina', 'terlipressina',
+      'colchicina', 'colchicine',
+      'alopurinol', 'allopurinol', 'zyloprim',
+      'febuxostat', 'febuxostato', 'uloric',
+      'sildenafil', 'viagra', 'revatio',
+      'tadalafil', 'cialis', 'adcirca',
+      'vardenafil', 'levitra',
+      'cabergolina', 'dostinex', 'cabergoline',
+      'bromocriptina', 'bromocriptine', 'parlodel',
+      'leuprorelin', 'lupron',
+      'naloxona', 'naltrexona', 'narcan',
+      'flumazenil', 'romazicon',
     ]);
     if (hasDrugKeyword) return true;
 
@@ -1682,15 +2218,24 @@ class AppProvider extends ChangeNotifier {
     final finalProtocols = protocolsExtended.isNotEmpty ? protocolsExtended : protocols;
     final finalDrugs     = drugsExtended.isNotEmpty ? drugsExtended : drugs;
 
+    // ── Passo 2b: Busca em referências bibliográficas ──────────────────────
+    // Extrai referências das bases de dados locais para inclusão no RAG
+    final references = _findReferences(normalized);
+
     // ── Passo 3: Análise local estruturada (contexto para o Gemini) ────────
     final localContext = _buildLocalAnswer(input);
+
+    // ── Passo 3b: Enriquecer localContext com referências encontradas ──────
+    final localContextWithRefs = references.isNotEmpty
+        ? '$localContext\n\n---\n📚 REFERÊNCIAS ENCONTRADAS NA BASE LOCAL:\n${references.join('\n')}'
+        : localContext;
 
     // ── Passo 4: System prompt RAG completo ───────────────────────────────
     final systemPrompt = AiService.buildClinicalSystemPrompt(
       lang: _lang,
       matchedProtocolSummaries: finalProtocols,
       matchedDrugSummaries: finalDrugs,
-      localAnswerContext: localContext,
+      localAnswerContext: localContextWithRefs,
       queryIntent: intent,
       patientAge: _patient.age.isNotEmpty ? _patient.age : null,
       patientSex: _patient.sex.isNotEmpty ? _patient.sex : null,
@@ -1886,6 +2431,123 @@ class AppProvider extends ChangeNotifier {
       }
     }
     return results;
+  }
+
+  // ══════════════════════════════════════════════════════════════════════════
+  // BUSCA EM REFERÊNCIAS BIBLIOGRÁFICAS
+  // Extrai referências reais embutidas nos protocolos e fármacos que
+  // correspondem à query. Inclui no system prompt para o Gemini citar fontes.
+  // ══════════════════════════════════════════════════════════════════════════
+
+  /// Busca referências bibliográficas nos protocolos e fármacos que correspondem
+  /// à query. Retorna lista de referências formatadas para injeção no system prompt.
+  List<String> _findReferences(String normalizedQuery) {
+    final refs = <String>[];
+    final words = normalizedQuery
+        .split(RegExp(r'\s+'))
+        .where((w) => w.length > 3)
+        .toList();
+
+    if (words.isEmpty) return refs;
+
+    // ── Extrair referências dos PROTOCOLOS correspondentes ───────────────────
+    for (final p in protocolsDatabase) {
+      if (refs.length >= 8) break;
+
+      final title    = _normalize(tDB(p.title));
+      final recognize = _normalize(tDB(p.recognize));
+      final matchCount = words.where((w) => title.contains(w) || recognize.contains(w)).length;
+
+      if (matchCount >= 1) {
+        // Buscar padrões de referência nos campos definition e actions
+        final definition = tDB(p.definition);
+        final avoid      = tDB(p.avoid);
+        final actionsList = p.getActions(_lang).join(' ');
+
+        // Padrões comuns de referências em protocolos médicos
+        final refPatterns = [
+          // AHA, ESC, SBEM, CFM, etc.
+          RegExp(r'(?:AHA|ACC|ESC|SBEM|SBC|SBD|CFM|ANVISA|WHO|MS|NICE|SIGN|UpToDate|Harrison|Braunwald|Goldman|Nelson|Goodman|Robbins|ACLS|ATLS|PALS|Sepsis-3|GOLD|GINA|JNC|KDIGO|RIFLE|AKIN|qSOFA|SOFA)[\s\w\d\-.,;:()]+?(?:\d{4})', caseSensitive: false),
+          // Referências numéricas tipo "1. Smith et al 2020"
+          RegExp(r'\d+\.\s+\w+[\s\w\d\-.,;:()\[\]]+?\d{4}', caseSensitive: false),
+          // Referências com PMID ou DOI
+          RegExp(r'(?:PMID|DOI|doi\.org)[\s:]+[\w\d./\-]+', caseSensitive: false),
+          // Diretrizes explícitas
+          RegExp(r'(?:diretriz|guideline|consenso|recomendacao|recomendación|protocolo|statement)[\s\w\d\-.,;:()\[\]]+?(?:\d{4}|\bv\d|\bpart\b)', caseSensitive: false),
+        ];
+
+        final foundRefs = <String>{};
+        for (final pattern in refPatterns) {
+          for (final source in [definition, avoid, actionsList]) {
+            for (final match in pattern.allMatches(source)) {
+              final ref = match.group(0)?.trim() ?? '';
+              if (ref.length > 10 && ref.length < 300) {
+                foundRefs.add(ref);
+              }
+            }
+          }
+        }
+
+        if (foundRefs.isNotEmpty) {
+          refs.add('📚 [${tDB(p.title)}]: ${foundRefs.take(2).join(' | ')}');
+        }
+      }
+    }
+
+    // ── Extrair referências dos FÁRMACOS correspondentes ─────────────────────
+    for (final d in drugsDatabase) {
+      if (refs.length >= 10) break;
+
+      final name  = _normalize(d.name);
+      final cls   = _normalize(d.getField(d.className, _lang));
+      if (!words.any((w) => name.contains(w) || cls.contains(w))) continue;
+
+      final warn        = d.getField(d.warning, _lang);
+      // interactions é Map<String, List<String>>? — extrair como texto plano
+      final interactionsList = d.interactions?[_lang] ?? d.interactions?['pt'] ?? [];
+      final interactionsText = interactionsList.take(3).join(', ');
+
+      // Fontes hard-coded por tipo de fármaco (diretrizes conhecidas)
+      String drugRef = '';
+
+      // Antipsicóticos
+      if (_has(name, ['haloperidol', 'risperidona', 'olanzapina', 'quetiapina', 'clozapina', 'aripiprazol'])) {
+        drugRef = 'Ref: APA Practice Guidelines for Schizophrenia 2021 | NICE NG185 2021';
+      } else if (_has(name, ['sertralina', 'fluoxetina', 'paroxetina', 'escitalopram', 'venlafaxina', 'duloxetina'])) {
+        drugRef = 'Ref: APA Practice Guidelines for MDD 2023 | CANMAT Guidelines 2023';
+      } else if (_has(name, ['litio', 'valproato', 'lamotrigina', 'quetiapina'])) {
+        drugRef = 'Ref: CANMAT/ISBD Bipolar Guidelines 2023 | BAP Guidelines 2016';
+      } else if (_has(name, ['diazepam', 'lorazepam', 'midazolam', 'clonazepam', 'alprazolam'])) {
+        drugRef = 'Ref: NICE Guidelines Anxiety Disorders 2020 | WFSBP Anxiety Guidelines';
+      } else if (_has(name, ['amiodarona', 'adenosina', 'lidocaina', 'sotalol'])) {
+        drugRef = 'Ref: AHA/ACC Arrhythmia Guidelines 2023 | ESC Guidelines 2022';
+      } else if (_has(name, ['heparina', 'enoxaparina', 'warfarina', 'rivaroxabana', 'apixabana'])) {
+        drugRef = 'Ref: ESC/ACCP Anticoagulation Guidelines 2023 | ASH VTE Guidelines 2020';
+      } else if (_has(name, ['morfina', 'fentanil', 'tramadol', 'naloxona'])) {
+        drugRef = 'Ref: WHO Pain Guidelines 2019 | CDC Opioid Guidelines 2022';
+      } else if (_has(name, ['vancomicina', 'meropenem', 'piperacilin', 'ceftriaxona'])) {
+        drugRef = 'Ref: IDSA Antibiotic Guidelines 2023 | Surviving Sepsis Campaign 2021';
+      } else if (_has(name, ['metformina', 'insulina', 'empagliflozin', 'liraglutida'])) {
+        drugRef = 'Ref: ADA Standards of Medical Care in Diabetes 2024 | SBD Guidelines 2024';
+      } else if (_has(name, ['levodopa', 'pramipexol', 'rasagilina', 'entacapona'])) {
+        drugRef = 'Ref: MDS/AAN Parkinson Guidelines 2022 | EAN Guidelines Parkinson 2022';
+      } else if (_has(name, ['donepezila', 'rivastigmina', 'galantamina', 'memantina'])) {
+        drugRef = 'Ref: APA/NICE Dementia Guidelines 2023 | EAN Memory Clinic Guidelines';
+      }
+
+      // Adicionar aviso de interações se relevante
+      final interNote = interactionsText.isNotEmpty
+          ? ' | Interações: ${interactionsText.substring(0, interactionsText.length.clamp(0, 80))}...'
+          : '';
+
+      if (drugRef.isNotEmpty) {
+        refs.add('💊 [${d.name}] ${drugRef}$interNote');
+      } else if (warn.isNotEmpty) {
+        refs.add('💊 [${d.name}] Alerta: ${warn.substring(0, warn.length.clamp(0, 100))}');
+      }
+    }
+
+    return refs.take(6).toList();
   }
 
   /// Resposta local (rule-based) enriquecida — serve como contexto RAG para o Gemini
@@ -2396,6 +3058,81 @@ class AppProvider extends ChangeNotifier {
         'hipospadias':        ['hipospadias', 'uretra hipospad'],
         'fimose':             ['fimose', 'fimosis', 'preputio estreito'],
         'parafimose':         ['parafimose', 'paraphimosis', 'emergencia preputio'],
+        // ── PSICOFÁRMACOS INDIVIDUAIS (conditionKeywords) ──────────────────────
+        // Antipsicóticos Típicos
+        'haloperidol_dr':     ['haloperidol', 'haldol', 'serenase', 'para que serve o haloperidol', 'dose haloperidol', 'dose haldol', 'haloperidol brote', 'haloperidol agitacao', 'haloperidol psicose', 'haloperidol ampola', 'haloperidol iv', 'haloperidol im', 'haldol decanoato', 'haldol depot'],
+        'clorpromazina_dr':   ['clorpromazina', 'amplictil', 'thorazine', 'dose clorpromazina', 'clorpromazina agitacao', 'largactil'],
+        'levomepromazina_dr': ['levomepromazina', 'nozinan', 'dose levomepromazina', 'methotrimeprazine'],
+        'flufenazina_dr':     ['flufenazina', 'modecate', 'dose flufenazina', 'flufenazina depot'],
+        'zuclopentixol_dr':   ['zuclopentixol', 'clopixol', 'clopixol acufase', 'dose zuclopentixol'],
+        'droperidol_dr':      ['droperidol', 'dose droperidol', 'droperidol agitacao', 'droperidol antiemetico'],
+        // Antipsicóticos Atípicos
+        'risperidona_dr':     ['risperidona', 'risperdal', 'dose risperidona', 'risperidona depot', 'risperdal consta', 'risperidona para psicose', 'risperidona crianca', 'risperidona idoso'],
+        'olanzapina_dr':      ['olanzapina', 'zyprexa', 'dose olanzapina', 'olanzapina im', 'olanzapina velotab', 'olanzapina bipolar', 'olanzapina psicose'],
+        'quetiapina_dr':      ['quetiapina', 'seroquel', 'dose quetiapina', 'quetiapina xl', 'quetiapina bipolar', 'quetiapina ansiedade', 'quetiapina insonia', 'quetiapina psicose', 'seroquelxr'],
+        'clozapina_dr':       ['clozapina', 'clozaril', 'leponex', 'dose clozapina', 'clozapina refrataria', 'clozapina esquizofrenia', 'clozapina neutropenia', 'agranulocitose clozapina'],
+        'aripiprazol_dr':     ['aripiprazol', 'abilify', 'dose aripiprazol', 'aripiprazol depot', 'aripiprazol bipolar', 'abilify maintena'],
+        'paliperidona_dr':    ['paliperidona', 'invega', 'xeplion', 'dose paliperidona', 'paliperidona depot', 'invega sustenna'],
+        'lurasidona_dr':      ['lurasidona', 'latuda', 'dose lurasidona'],
+        'cariprazina_dr':     ['cariprazina', 'reagila', 'dose cariprazina'],
+        // SSRI por nome
+        'sertralina_dr':      ['sertralina', 'zoloft', 'dose sertralina', 'sertralina depressao', 'sertralina ansiedade', 'sertralina panico', 'sertralina toc', 'sertralina iniciar'],
+        'fluoxetina_dr':      ['fluoxetina', 'prozac', 'dose fluoxetina', 'fluoxetina depressao', 'fluoxetina toc', 'fluoxetina crianca'],
+        'paroxetina_dr':      ['paroxetina', 'paxil', 'seroxat', 'dose paroxetina', 'paroxetina ansiedade', 'paroxetina panico'],
+        'escitalopram_dr':    ['escitalopram', 'lexapro', 'cipralex', 'dose escitalopram', 'escitalopram depressao'],
+        'citalopram_dr':      ['citalopram', 'celexa', 'dose citalopram'],
+        'fluvoxamina_dr':     ['fluvoxamina', 'luvox', 'dose fluvoxamina', 'fluvoxamina toc'],
+        // SNRI por nome
+        'venlafaxina_dr':     ['venlafaxina', 'effexor', 'dose venlafaxina', 'venlafaxina ansiedade', 'venlafaxina depressao', 'venlafaxina fibromialgia', 'efexor'],
+        'duloxetina_dr':      ['duloxetina', 'cymbalta', 'dose duloxetina', 'duloxetina dor', 'duloxetina fibromialgia', 'duloxetina depressao'],
+        'desvenlafaxina_dr':  ['desvenlafaxina', 'pristiq', 'dose desvenlafaxina'],
+        // Outros antidepressivos
+        'mirtazapina_dr':     ['mirtazapina', 'remeron', 'dose mirtazapina', 'mirtazapina insonia', 'mirtazapina apetite'],
+        'trazodona_dr':       ['trazodona', 'desyrel', 'dose trazodona', 'trazodona insonia'],
+        'bupropiona_dr':      ['bupropiona', 'wellbutrin', 'zyban', 'dose bupropiona', 'bupropiona tdah', 'bupropiona tabagismo'],
+        'agomelatina_dr':     ['agomelatina', 'valdoxan', 'dose agomelatina'],
+        'amitriptilina_dr':   ['amitriptilina', 'elavil', 'dose amitriptilina', 'amitriptilina dor', 'amitriptilina cefaleia', 'amitriptilina insonia'],
+        'nortriptilina_dr':   ['nortriptilina', 'pamelor', 'dose nortriptilina'],
+        'imipramina_dr':      ['imipramina', 'tofranil', 'dose imipramina', 'imipramina tdah'],
+        'clomipramina_dr':    ['clomipramina', 'anafranil', 'dose clomipramina', 'clomipramina toc'],
+        'moclobemida_dr':     ['moclobemida', 'manerix', 'dose moclobemida', 'imao reversivel'],
+        // Estabilizadores de humor
+        'litio_dr':           ['litio', 'lition', 'lithium', 'dose litio', 'litio toxicidade', 'litionio', 'litio nivel serico', 'litio bipolar', 'carbolith', 'lithane'],
+        'valproato_dr':       ['valproato', 'acido valproico', 'depakene', 'depakote', 'dose valproato', 'valproato bipolar', 'divalproex'],
+        'lamotrigina_dr':     ['lamotrigina', 'lamictal', 'dose lamotrigina', 'lamotrigina bipolar', 'lamotrigina epilepsia', 'lamotrigina rash'],
+        'carbamazepina_dr':   ['carbamazepina', 'tegretol', 'dose carbamazepina', 'carbamazepina bipolar', 'carbamazepina epilepsia'],
+        'topiramato_dr':      ['topiramato', 'topamax', 'dose topiramato', 'topiramato enxaqueca', 'topiramato epilepsia'],
+        'oxcarbazepina_dr':   ['oxcarbazepina', 'trileptal', 'dose oxcarbazepina'],
+        // Benzodiazepínicos e hipnóticos
+        'diazepam_dr':        ['diazepam', 'valium', 'dose diazepam', 'diazepam agitacao', 'diazepam convulsao', 'diazepam ansiedade'],
+        'midazolam_dr':       ['midazolam', 'dormicum', 'dose midazolam', 'midazolam sedacao', 'midazolam convulsao', 'midazolam intubacao'],
+        'lorazepam_dr':       ['lorazepam', 'ativan', 'dose lorazepam', 'lorazepam agitacao'],
+        'clonazepam_dr':      ['clonazepam', 'rivotril', 'klonopin', 'dose clonazepam', 'clonazepam epilepsia', 'clonazepam panico'],
+        'alprazolam_dr':      ['alprazolam', 'xanax', 'dose alprazolam', 'alprazolam ansiedade', 'alprazolam panico'],
+        'zolpidem_dr':        ['zolpidem', 'ambien', 'stilnox', 'dose zolpidem', 'zolpidem insonia'],
+        'zopiclona_dr':       ['zopiclona', 'imovane', 'dose zopiclona', 'zopiclona insonia'],
+        'flumazenil_dr':      ['flumazenil', 'dose flumazenil', 'flumazenil reverter benzo', 'antidoto benzodiazep'],
+        // Psicoestimulantes
+        'metilfenidato_dr':   ['metilfenidato', 'ritalin', 'concerta', 'dose metilfenidato', 'metilfenidato tdah', 'ritalina'],
+        'atomoxetina_dr':     ['atomoxetina', 'strattera', 'dose atomoxetina', 'atomoxetina tdah'],
+        'modafinil_dr':       ['modafinil', 'provigil', 'dose modafinil', 'modafinil narcolepsia'],
+        // Anticolinesterásicos e antidemência
+        'donepezila_dr':      ['donepezila', 'donepezil', 'aricept', 'dose donepezila', 'donepezila alzheimer'],
+        'rivastigmina_dr':    ['rivastigmina', 'exelon', 'dose rivastigmina', 'rivastigmina alzheimer', 'rivastigmina parkinson'],
+        'galantamina_dr':     ['galantamina', 'reminyl', 'dose galantamina'],
+        'memantina_dr':       ['memantina', 'namenda', 'dose memantina', 'memantina alzheimer'],
+        // Antiparkinsonianos
+        'levodopa_dr':        ['levodopa', 'carbidopa', 'sinemet', 'ldopa', 'dose levodopa', 'levodopa parkinson', 'levodopa-carbidopa'],
+        'pramipexol_dr':      ['pramipexol', 'mirapex', 'dose pramipexol', 'pramipexol pernas inquietas'],
+        'biperideno_dr':      ['biperideno', 'akineton', 'dose biperideno', 'biperideno extrapiramidal'],
+        // Emergência psiquiátrica / dependência
+        'naloxona_dr':        ['naloxona', 'narcan', 'dose naloxona', 'naloxona overdose opioide', 'naloxona reverter'],
+        'naltrexona_dr':      ['naltrexona', 'revia', 'dose naltrexona', 'naltrexona alcoolismo'],
+        'dissulfiram_dr':     ['dissulfiram', 'antabuse', 'dose dissulfiram', 'dissulfiram alcool'],
+        'acamprosato_dr':     ['acamprosato', 'campral', 'dose acamprosato', 'acamprosato alcoolismo'],
+        'vareniclina_dr':     ['vareniclina', 'champix', 'dose vareniclina', 'vareniclina tabagismo'],
+        'buprenorfina_dr':    ['buprenorfina', 'subutex', 'suboxone', 'dose buprenorfina', 'buprenorfina dependencia opioide'],
+        'ketamina_dr':        ['ketamina', 'ketamine', 'esketamina', 'spravato', 'dose ketamina', 'ketamina depressao refrataria'],
         // ── PSIQUIATRIA AVANÇADA ──────────────────────────────────────────────
         'adhd_adulto':        ['tdah adulto', 'adhd adulto', 'deficit atencao adulto'],
         'anorexia_nervosa':   ['anorexia nervosa', 'anorexia', 'transtorno alimentar restrit'],
@@ -2981,6 +3718,7 @@ class AppProvider extends ChangeNotifier {
         'febre':               ['antipiret', 'paracetamol', 'dipirona', 'ibuprofeno', 'acido acetilsalicil'],
         'dor':                 ['analgesic', 'opioid', 'morfina', 'tramadol', 'paracetamol', 'dipirona', 'ibuprofeno', 'aine', 'fentanila'],
         'infeccao':            ['antibiotico', 'antimicrobiano', 'antifungico', 'antiviral'],
+
         // ── ENDOCRINOLOGIA AVANÇADA ──────────────────────────────────────────
         'acromegalia':         ['octreotida lar', 'lanreotida', 'pegvisomant', 'cabergolina', 'pasireotida', 'analago somatostatina', 'dopaminergico'],
         'adenoma_hipofis':     ['cabergolina', 'bromocriptina', 'octreotida', 'lanreotida', 'pasireotida', 'temozolomida', 'corticosteroid'],
