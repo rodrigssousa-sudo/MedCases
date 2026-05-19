@@ -6271,6 +6271,803 @@ Medidas de prevención y alivio:
 → Evitar besar bebés o inmunodeprimidos hasta que las lesiones estén en fase de costra seca.''',
   ),
 
+  // ══════════════════════════════════════════════════════════════════════════
+  // PRESCRIPCIONES ADICIONALES 2 (Frecuentes en Guardia/Consultorio Argentina)
+  // ══════════════════════════════════════════════════════════════════════════
+
+  _PrescriptionModel(
+    id: 'esguince_tobillo_traumatismo',
+    title: 'Esguince de Tobillo / Traumatismo Leve',
+    subtitle: 'Protocolo RICE + AINEs (Diclofenac/Ibuprofeno)',
+    category: 'Osteomuscular',
+    icon: Icons.personal_injury_rounded,
+    content: '''Uso Oral:
+1. Ibuprofeno 600 mg o Diclofenac 50 mg
+   Tomar 1 comp vía oral cada 8h (siempre con las comidas) por 5 a 7 días.
+
+Uso Tópico:
+2. Diclofenac gel 1% (ej. Oxa® Gel / Dioxaflex®)
+   Aplicar una fina capa en la zona afectada 3 veces al día.
+
+Indicaciones Físicas (RICE):
+→ Reposo: evitar el apoyo del pie las primeras 48h (usar muletas si es necesario).
+→ Ice (Hielo): aplicar hielo envuelto en un paño por 15-20 min, cada 4 horas.
+→ Compresión: vendaje elástico tipo "ocho" (no muy ajustado).
+→ Elevación: mantener el pie elevado por encima del nivel del corazón al estar acostado o sentado.''',
+  ),
+
+  _PrescriptionModel(
+    id: 'absceso_odontologico_flemon',
+    title: 'Absceso Odontológico / Flemón',
+    subtitle: 'Amoxicilina-Clavulánico (Optamox) + Analgesia',
+    category: 'Odontología / Clínica',
+    icon: Icons.face_rounded,
+    content: '''Uso Oral:
+1. Amoxicilina + Ácido Clavulánico 875/125 mg (ej. Optamox® / Amoxiclav®)
+   Tomar 1 comp vía oral cada 12h por 7 días.
+   (Alérgicos a penicilina: Clindamicina 300 mg cada 8h).
+
+2. Ketorolac 10 mg Sublingual (ej. Sinalgico® / Dómina®)
+   Dejar disolver 1 comp debajo de la lengua cada 8h en caso de dolor intenso (máximo 5 días).
+
+Guardia:
+1. Diclofenac 75 mg IM + Dexametasona 4 mg IM.
+→ Derivar de urgencia al odontólogo para drenaje o tratamiento de conducto.''',
+  ),
+
+  _PrescriptionModel(
+    id: 'lumbociatalgia_aguda_complejob',
+    title: 'Lumbociatalgia Aguda / Ciática',
+    subtitle: 'Diclofenac + Betametasona + Vit. B12 (Blokium B12)',
+    category: 'Osteomuscular',
+    icon: Icons.accessibility_rounded,
+    content: '''Uso Oral:
+1. Diclofenac 50 mg + Betametasona + Vit. B12 (ej. Dioxaflex B12® / Blokium B12®)
+   Tomar 1 comp vía oral cada 12h por 3 a 5 días (luego continuar solo con AINE sin corticoide).
+
+2. Pregabalina 75 mg (opcional si hay fuerte dolor neuropático)
+   Tomar 1 comp por la noche.
+
+Guardia (Crisis muy dolorosa):
+1. Inyectable combinado (ej. Dioxaflex B12 ampolla o Nervobión®) intramuscular profundo.
+→ Indicar reposo relativo en posición fetal o con almohada debajo de las rodillas.
+→ Calor local a partir de las 48h.''',
+  ),
+
+  _PrescriptionModel(
+    id: 'sindrome_intestino_irritable',
+    title: 'Síndrome de Intestino Irritable (SII)',
+    subtitle: 'Trimebutina + Simeticona (Miropen / Eumotil)',
+    category: 'Gastroenterología',
+    icon: Icons.medical_services_rounded,
+    content: '''Uso Oral:
+1. Trimebutina 200 mg + Simeticona 120 mg (ej. Miropen® / Eumotil® / Plidex®)
+   Tomar 1 comp vía oral 20 a 30 minutos ANTES del almuerzo y la cena, por 15 a 30 días.
+
+Indicaciones:
+→ Evitar bebidas gaseosas, mate en exceso, café, fritos y picantes.
+→ Derivar a Gastroenterología si hay "banderas rojas" (sangrado, pérdida de peso, anemia, edad >50 sin colonoscopía previa).''',
+  ),
+
+  _PrescriptionModel(
+    id: 'conjuntivitis_alergica',
+    title: 'Conjuntivitis Alérgica',
+    subtitle: 'Olopatadina (Patanol) + Lágrimas',
+    category: 'Oftalmología',
+    icon: Icons.visibility_rounded,
+    content: '''Uso Oftalmológico:
+1. Olopatadina 0,1% o 0,2% (ej. Patanol® / Olopat®)
+   Instilar 1 gota en cada ojo afectado cada 12h (o 1 vez al día si es 0,2%), durante 7 a 14 días.
+
+2. Lágrimas Artificiales (Hialuronato de Sodio)
+   Instilar 1 gota en cada ojo 3 a 4 veces al día (preferentemente frías de la heladera, alivia el prurito).
+
+Medidas Generales:
+→ No frotarse los ojos (empeora el cuadro).
+→ Aplicar compresas frías limpias cerrando los ojos por 10 minutos.
+→ Evitar exposición al polvo, polen o alérgenos conocidos.''',
+  ),
+
+  _PrescriptionModel(
+    id: 'onicocriptosis_una_encarnada',
+    title: 'Onicocriptosis (Uña Encarnada) Infectada',
+    subtitle: 'Cefalexina + Baños con Pervinox',
+    category: 'Dermatología',
+    icon: Icons.healing_rounded,
+    content: '''Uso Oral:
+1. Cefalexina 500 mg
+   Tomar 1 comp vía oral cada 6h por 7 días.
+
+2. Ibuprofeno 400 mg
+   Tomar 1 comp vía oral cada 8h para alivio del dolor e inflamación.
+
+Medidas Locales:
+3. Povidona Yodada (ej. Pervinox®)
+   Realizar baños de pie ("pediluvio"): colocar agua tibia en un recipiente, agregar un chorrito de Pervinox y sumergir el pie por 15 minutos, 2 veces al día.
+   Secar muy bien y no usar calzado ajustado.
+
+Guardia:
+→ Derivar a podología o cirugía general para matricectomía / extirpación de espícula si el cuadro es severo.''',
+  ),
+
+  _PrescriptionModel(
+    id: 'dolor_odontologico_pulpitis',
+    title: 'Dolor Odontológico Agudo (Pulpitis)',
+    subtitle: 'Ketorolac SL + Paracetamol',
+    category: 'Odontología / Clínica',
+    icon: Icons.face_rounded,
+    content: '''Uso Oral:
+1. Ketorolac 10 mg Sublingual (ej. Sinalgico® / Dómina®)
+   Dejar disolver 1 comp debajo de la lengua cada 8h en caso de dolor punzante/pulsátil (máximo 5 días).
+
+2. Paracetamol 1 g (o Ibuprofeno 600 mg)
+   Tomar 1 comp vía oral alternando con el Ketorolac (cada 8h) para mantener ventana analgésica estable.
+
+Guardia:
+1. Dipirona 1 g IM + Ketorolac 30 mg IM (si el dolor no cede).
+→ El dolor pulpar no se cura con analgésicos, requiere derivación odontológica urgente para apertura de la pieza dentaria.''',
+  ),
+
+  _PrescriptionModel(
+    id: 'tendinitis_hombro_codo',
+    title: 'Tendinitis / Bursitis (Hombro/Codo)',
+    subtitle: 'Etoricoxib (Arcoxia) o Diclofenac + Hielo',
+    category: 'Osteomuscular',
+    icon: Icons.accessibility_new_rounded,
+    content: '''Uso Oral:
+1. Etoricoxib 90 mg (ej. Arcoxia®) o Meloxicam 15 mg
+   Tomar 1 comp vía oral 1 vez al día (por la mañana), durante 7 días.
+   (Etoricoxib protege estómago pero se debe evitar en HTA severa o cardiópatas).
+
+Uso Tópico:
+2. Diclofenac gel 1%
+   Aplicar en la zona dolorosa 2 veces al día.
+
+Indicaciones:
+→ Aplicar hielo 15 min, 3 veces al día.
+→ Evitar el movimiento que desencadenó el dolor (suspender actividad deportiva temporalmente).
+→ Solicitar Ecografía articular y derivar a Traumatología / Kinesiología.''',
+  ),
+
+  _PrescriptionModel(
+    id: 'candidiasis_oral_muguet',
+    title: 'Candidiasis Oral (Muguet)',
+    subtitle: 'Nistatina suspensión (Micostatin)',
+    category: 'Infectología / Pediatría',
+    icon: Icons.coronavirus_rounded,
+    content: '''Uso Tópico Bucal:
+1. Nistatina Suspensión Oral 100.000 UI/mL (ej. Micostatin®)
+   - Adultos: 5 mL (1 cucharita) cada 6h. Hacer buches, retener en la boca el mayor tiempo posible y luego tragar.
+   - Lactantes/Niños: 2 mL (con jeringa o gotero) esparciendo por las paredes de la boca y encías, cada 6h, después de amamantar o comer.
+   Continuar por 7 a 14 días (y hasta 48h después de la curación clínica).
+
+Indicaciones en lactantes:
+→ Si el bebé amamanta, la madre debe tratar sus pezones con crema de Miconazol (limpiar antes de la toma).
+→ Hervir tetinas y chupetes.''',
+  ),
+
+  _PrescriptionModel(
+    id: 'cinetosis_mareo_viaje',
+    title: 'Mareo por Cinetosis (Viajes)',
+    subtitle: 'Dimenhidrinato (Dramamine)',
+    category: 'Neurología / Clínica',
+    icon: Icons.directions_car_rounded,
+    content: '''Uso Oral:
+1. Dimenhidrinato 50 mg (ej. Dramamine®)
+   Tomar 1 comp vía oral 30 a 60 minutos antes de iniciar el viaje.
+   Repetir 1 comp cada 6 a 8 horas durante el viaje si es necesario.
+
+(En niños >2 años, se usan gotas o jarabe pediátrico según peso, habitualmente 1,25 mg/kg por dosis).
+
+Precauciones:
+→ Produce somnolencia marcada (no conducir vehículos si se toma la medicación).
+→ Evitar lectura o usar pantallas durante el trayecto. Mirar al horizonte.''',
+  ),
+
+  _PrescriptionModel(
+    id: 'dispepsia_indigestion_biliar',
+    title: 'Dispepsia Biliar / Indigestión ("Ataque al hígado")',
+    subtitle: 'Domperidona (Peridon) + Dieta Hepatoprotectora',
+    category: 'Gastroenterología',
+    icon: Icons.restaurant_menu_rounded,
+    content: '''Uso Oral:
+1. Domperidona 10 mg (ej. Peridon® / Moperidona®)
+   Tomar 1 comp vía oral 20 minutos ANTES del almuerzo y la cena, por 3 a 5 días.
+
+2. Omeprazol 20 mg (Opcional, si hay acidez asociada)
+   Tomar 1 comp vía oral en ayunas.
+
+Dieta Hepatoprotectora Estricta:
+→ Evitar fritos, grasas, manteca, quesos duros, fiambres.
+→ Evitar mate, café, chocolate y alcohol.
+→ Consumir pollo hervido, zapallo, arroz, manzana rallada, caldos desgrasados.''',
+  ),
+
+  _PrescriptionModel(
+    id: 'acne_inflamatorio_leve',
+    title: 'Acné Inflamatorio Leve a Moderado',
+    subtitle: 'Peróxido de Benzoílo / Adapaleno',
+    category: 'Dermatología',
+    icon: Icons.face_retouching_natural_rounded,
+    content: '''Uso Tópico:
+1. Peróxido de Benzoílo gel 5% (ej. Benzac AC® / Cupex®) o Adapaleno 0.1%
+   Aplicar una fina capa (tamaño de una arveja para toda la cara) ÚNICAMENTE por las noches sobre las lesiones.
+   (Advertir: Mancha/destiñe la ropa de cama y toallas).
+
+2. Jabón/Gel limpiador para pieles acneicas
+   Lavar el rostro por la mañana y por la noche.
+
+Precauciones:
+→ Lavar el rostro por la mañana para retirar el producto nocturno.
+→ Uso obligatorio de Protector Solar FPS >30 (no comedogénico) durante el día.
+→ Derivar a Dermatología si no hay respuesta en 6-8 semanas o hay riesgo de cicatrices.''',
+  ),
+
+  _PrescriptionModel(
+    id: 'vppb_vertigo_posicional',
+    title: 'Vértigo Posicional (VPPB)',
+    subtitle: 'Betahistina (Meniex) + Maniobra de Epley',
+    category: 'Neurología / ORL',
+    icon: Icons.rotate_right_rounded,
+    content: '''Tratamiento Físico (Guardia / Consultorio):
+1. Realizar Maniobra de Epley o Semont en la camilla (es el tratamiento curativo de elección para el VPPB).
+
+Uso Oral (Sintomático y mantenimiento):
+2. Betahistina 16 mg o 24 mg (ej. Meniex® / Microser®)
+   Tomar 1 comp vía oral cada 12h, con las comidas, por 15 a 30 días.
+
+3. Dimenhidrinato 50 mg (Opcional, como rescate)
+   Tomar 1 comp solo si hay náuseas o mareo muy inhabilitante al inicio.
+
+Indicaciones:
+→ Evitar dormir del lado afectado.
+→ Levantarse de la cama de forma muy lenta.
+→ Derivar a ORL o Neurología Clínica si no resuelve.''',
+  ),
+
+  _PrescriptionModel(
+    id: 'itu_embarazada',
+    title: 'Infección Urinaria en Embarazada',
+    subtitle: 'Cefalexina 500 mg (Antibiótico seguro)',
+    category: 'Obstetricia / Infectología',
+    icon: Icons.pregnant_woman_rounded,
+    content: '''Uso Oral:
+1. Cefalexina 500 mg
+   Tomar 1 comp vía oral cada 6h por 7 días.
+   (Categoría B en el embarazo, es totalmente seguro).
+
+2. Paracetamol 500 mg
+   Tomar 1 comp vía oral cada 8h en caso de fiebre o dolor lumbar leve.
+
+Conducta Obligatoria:
+→ Solicitar Urocultivo + Antibiograma ANTES de iniciar el antibiótico empírico (vital en obstetricia).
+→ Aumentar la ingesta de agua (>2 litros/día).
+→ Control urgente por obstetricia si presenta fiebre alta, dolor lumbar intenso o contracciones uterinas.''',
+  ),
+
+  _PrescriptionModel(
+    id: 'hipo_persistente_singulto',
+    title: 'Hipo Persistente (Singulto)',
+    subtitle: 'Metoclopramida o Clorpromazina',
+    category: 'Gastroenterología / Clínica',
+    icon: Icons.air_rounded,
+    content: '''Medidas Físicas:
+1. Estimulación vagal: Retener la respiración (apnea voluntaria), beber un vaso de agua fría rápidamente, o respirar en una bolsa de papel.
+
+Uso Oral (Si dura >48h o agota al paciente):
+2. Metoclopramida 10 mg
+   Tomar 1 comp vía oral cada 8h.
+
+3. Baclofeno 10 mg o Clorpromazina 25 mg (2da línea, si falla lo anterior)
+   Tomar 1 comp vía oral cada 8h.
+
+Guardia:
+1. Metoclopramida 10 mg IM o EV lento.
+→ Descartar causas graves si es refractario (uremia, ACV, tumores, reflujo severo, IAM inferior).''',
+  ),
+
+  _PrescriptionModel(
+    id: 'trombosis_hemorroidal_externa',
+    title: 'Trombosis Hemorroidal Externa',
+    subtitle: 'Daflon dosis ataque + Cirugía local',
+    category: 'Proctología',
+    icon: Icons.healing_rounded,
+    content: '''Uso Tópico / Físico:
+1. Hielo local
+   Aplicar compresas frías en la región anal por 10 minutos, 3 veces al día (disminuye el edema y el dolor agudo).
+
+Uso Oral:
+2. Diosmina + Hesperidina 500 mg (ej. Daflon®)
+   Dosis de ataque: Tomar 2 comp cada 8h por 4 días → luego 2 comp cada 12h por 3 días.
+3. Diclofenac 50 mg o Ketorolac 10 mg
+   Tomar 1 comp vía oral cada 8h para el dolor intenso.
+4. Lactulosa 15 mL cada 12h (evitar constipación).
+
+Guardia:
+→ Si la trombosis tiene < 72h y el dolor es extremo: Incisión y drenaje bajo anestesia local en la guardia (cirugía menor) alivia inmediatamente el dolor.''',
+  ),
+
+  _PrescriptionModel(
+    id: 'dermatitis_panal',
+    title: 'Dermatitis del Pañal',
+    subtitle: 'Pasta al agua / Óxido de Zinc (Hipoglós)',
+    category: 'Pediatría / Dermatología',
+    icon: Icons.child_friendly_rounded,
+    content: '''Cuidados e Higiene (Fundamental):
+1. Cambio frecuente de pañal.
+2. Limpiar la zona con algodón y óleo calcáreo o agua tibia. EVITAR las toallitas húmedas perfumadas.
+3. Dejar al bebé sin pañal (al aire) el mayor tiempo posible.
+
+Uso Tópico:
+4. Pomada protectora con Óxido de Zinc y Vitamina A (ej. Hipoglós® / Pasta al agua)
+   Aplicar una capa gruesa ("efecto revoque") en la zona del pañal en cada cambio.
+
+Si hay sospecha de sobreinfección por Cándida (lesiones rojo brillante, bordes netos, lesiones satélites):
+5. Miconazol crema o Nistatina ungüento
+   Aplicar una fina capa 2 veces al día por 7 días, debajo de la pasta protectora.''',
+  ),
+
+  _PrescriptionModel(
+    id: 'golpe_de_calor_agotamiento',
+    title: 'Golpe de Calor / Agotamiento por Calor',
+    subtitle: 'SRO + Enfriamiento + Paracetamol',
+    category: 'Urgencias',
+    icon: Icons.wb_sunny_rounded,
+    content: '''Medidas Físicas y Ambulatorias:
+1. Reposo absoluto en ambiente fresco, ventilado o con aire acondicionado.
+2. Aplicar paños de agua fría en axilas, ingles y nuca.
+3. Ropa holgada y ligera.
+
+Rehidratación Oral:
+4. Sales de Rehidratación Oral (SRO) o bebidas deportivas (ej. Gatorade® diluido a la mitad con agua).
+   Ingerir líquidos de a pequeños sorbos, continuo, hasta calmar la sed.
+
+Uso Oral:
+5. Paracetamol 500 mg
+   Tomar 1 comp vía oral cada 8h si hay cefalea o fiebre.
+   (EVITAR AINEs como Ibuprofeno o Diclofenac, ya que en cuadros de deshidratación severa pueden precipitar insuficiencia renal aguda).
+
+Guardia:
+→ Si presenta alteración del estado de conciencia, vómitos incoercibles o no suda: Vía EV con Solución Fisiológica e internación (emergencia).''',
+  ),
+
+  _PrescriptionModel(
+    id: 'ojo_seco_fatiga_visual',
+    title: 'Ojo Seco / Fatiga Visual',
+    subtitle: 'Lágrimas con Hialuronato (Hyabak)',
+    category: 'Oftalmología',
+    icon: Icons.visibility_rounded,
+    content: '''Uso Oftalmológico:
+1. Lágrimas Artificiales con Hialuronato de Sodio (ej. Hyabak® / Systane®)
+   Instilar 1 gota en cada ojo 4 a 6 veces al día, según necesidad y sensación de cuerpo extraño/arenilla.
+
+Medidas de Higiene Visual:
+→ Regla 20-20-20: cada 20 minutos de uso de pantallas, desviar la mirada a 20 pies (6 metros) de distancia, durante 20 segundos.
+→ Evitar la exposición directa a ventiladores o aire acondicionado.
+→ Parpadear conscientemente al usar la computadora o celular.''',
+  ),
+
+  _PrescriptionModel(
+    id: 'pitiriasis_versicolor_micose',
+    title: 'Pitiriasis Versicolor (Hongos del Sol)',
+    subtitle: 'Ketoconazol Shampoo + Fluconazol',
+    category: 'Dermatología',
+    icon: Icons.spa_rounded,
+    content: '''Uso Tópico:
+1. Ketoconazol Shampoo 2% (ej. Eumicel® / Micoral®)
+   Utilizar como "jabón" líquido en la ducha sobre el pecho, espalda y áreas afectadas.
+   Hacer espuma, dejar actuar 5 a 10 minutos y luego enjuagar.
+   Realizar esto todos los días por 14 días.
+
+Uso Oral (Si las lesiones son muy extensas o recurrentes):
+2. Fluconazol 150 mg
+   Tomar 2 cápsulas juntas (300 mg) como DOSIS ÚNICA. Repetir la misma dosis a los 7 días.
+   (Alternativa: Itraconazol 200 mg/día por 7 días).
+
+Educación al paciente:
+→ Aclarar que el hongo muere rápido, pero las "manchas" blancas pueden tardar semanas o meses en volver a pigmentar con la exposición solar normal.''',
+  ),
+
+  // ══════════════════════════════════════════════════════════════════════════
+  // PRESCRIPCIONES ADICIONALES 3 (Nuevas - Guardia/Consultorio Argentina)
+  // ══════════════════════════════════════════════════════════════════════════
+
+  _PrescriptionModel(
+    id: 'flujo_vaginal_mixto',
+    title: 'Flujo Vaginal Mixto / Vulvovaginitis',
+    subtitle: 'Óvulos polivalentes (Ovumix / Tricomicon)',
+    category: 'Ginecología',
+    icon: Icons.spa_rounded,
+    content: '''Uso Intravaginal:
+1. Metronidazol + Miconazol + Neomicina + Centella (ej. Ovumix® / Tricomicon®)
+   Colocar 1 óvulo profundamente en la vagina, por la noche antes de acostarse, durante 6 días consecutivos.
+
+Uso Tópico Vulvar (Si hay mucha irritación externa):
+2. Crema asociada (misma marca que los óvulos o Macril®)
+   Aplicar una fina capa en la zona vulvar externa, 2 veces al día por 5 días.
+
+Indicaciones:
+→ Continuar el tratamiento aunque inicie el período menstrual.
+→ Evitar relaciones sexuales hasta finalizar el tratamiento.
+→ No realizar duchas vaginales.''',
+  ),
+
+  _PrescriptionModel(
+    id: 'orzuelo_chalazion',
+    title: 'Orzuelo / Chalazión',
+    subtitle: 'Tobramicina+Dexametasona ungüento + Calor',
+    category: 'Oftalmología',
+    icon: Icons.visibility_rounded,
+    content: '''Tratamiento Físico (Fundamental):
+1. Compresas calientes
+   Aplicar un paño limpio embebido en agua caliente (tolerable) sobre el ojo cerrado durante 10 a 15 minutos, 3 o 4 veces al día. (Ayuda a drenar la glándula obstruida).
+
+Uso Oftalmológico:
+2. Tobramicina + Dexametasona ungüento (ej. TobaDex® / Poenbioptal®)
+   Aplicar una pequeña cantidad (tira de medio centímetro) en el borde del párpado afectado o fondo de saco, cada 8 horas, por 5 a 7 días.
+
+Guardia:
+→ Explicar que NUNCA debe apretarse ni "reventarse" el orzuelo.
+→ Si no resuelve en 2 semanas o se enquista (chalazión), derivar a Oftalmología para eventual drenaje quirúrgico.''',
+  ),
+
+  _PrescriptionModel(
+    id: 'tec_leve_pautas',
+    title: 'Traumatismo de Cráneo (TEC) Leve',
+    subtitle: 'Analgesia y Pautas de Alarma (Guardia)',
+    category: 'Urgencias',
+    icon: Icons.personal_injury_rounded,
+    content: '''Uso Oral:
+1. Ibuprofeno 400 mg o Paracetamol 500 mg
+   Tomar 1 comp vía oral cada 8h en caso de cefalea leve.
+   (Evitar analgésicos más fuertes o sedantes que puedan enmascarar síntomas neurológicos).
+
+Pautas de Alarma Escritas (Entregar al paciente/familiar):
+Consultar INMEDIATAMENTE por Guardia si presenta en las próximas 48h:
+→ Vómitos explosivos o a repetición (más de 2).
+→ Somnolencia excesiva o dificultad para despertarlo.
+→ Dolor de cabeza intenso que no cede con analgésicos.
+→ Alteración en el habla, debilidad en un brazo o pierna.
+→ Convulsiones o movimientos anormales.
+→ Sangrado o salida de líquido claro por nariz u oídos.
+
+(Despertar al paciente cada 3-4 horas durante la primera noche para comprobar que responde con normalidad).''',
+  ),
+
+  _PrescriptionModel(
+    id: 'bruxismo_atm',
+    title: 'Bruxismo / Disfunción de ATM',
+    subtitle: 'Miorrelajantes nocturnos + Calor local',
+    category: 'Odontología / Clínica',
+    icon: Icons.face_retouching_natural_rounded,
+    content: '''Uso Oral:
+1. Diclofenac 50 mg + Pridinol 4 mg (ej. Dioxaflex Plus® / Blokium Flex®)
+   Tomar 1 comp vía oral por la noche, luego de la cena, por 5 días. (El miorrelajante ayudará a disminuir la tensión maseterina durante el sueño).
+
+Medidas Locales:
+2. Calor húmedo local
+   Aplicar compresas tibias en la zona de las mandíbulas (delante de los oídos) durante 15 minutos antes de dormir.
+3. Dieta blanda
+   Evitar masticar chicle, comer frutos secos, carnes duras o sándwiches grandes por 7 días.
+
+Derivación:
+→ Solicitar interconsulta con Odontología para confección de Placa de Descanso (Miorelajante) rígida.''',
+  ),
+
+  _PrescriptionModel(
+    id: 'rinitis_alergica_estacional',
+    title: 'Rinitis Alérgica Estacional',
+    subtitle: 'Mometasona spray + Levocetirizina',
+    category: 'Otorrinolaringología',
+    icon: Icons.air_rounded,
+    content: '''Uso Intranasal (Eje del tratamiento):
+1. Mometasona Furoato spray nasal 50 mcg (ej. Hexaler Nasal® / Nasonex®)
+   Aplicar 2 "puffs" en cada fosa nasal 1 vez al día (por la mañana), durante 15 a 30 días.
+   (Explicar técnica: apuntar hacia la oreja del mismo lado, no hacia el tabique).
+
+Uso Oral:
+2. Levocetirizina 5 mg o Desloratadina 5 mg
+   Tomar 1 comp vía oral 1 vez al día (preferentemente a la noche), durante 10 días o mientras duren los síntomas severos (prurito, estornudos en salva).
+
+Medidas Ambientales:
+→ Ventilar ambientes al mediodía, evitar alfombras y peluches, no barrer (usar trapo húmedo).''',
+  ),
+
+  _PrescriptionModel(
+    id: 'parasitosis_intestinal_empirica',
+    title: 'Parasitosis Intestinal (Giardiasis / Amebiasis)',
+    subtitle: 'Nitazoxanida o Secnidazol',
+    category: 'Infectología',
+    icon: Icons.bug_report_rounded,
+    content: '''Uso Oral (Opción 1 - Corta duración):
+1. Secnidazol 500 mg (ej. Secnidal®)
+   Tomar 4 comprimidos JUNTOS (Total 2 gramos) como DOSIS ÚNICA.
+   (Tomar preferentemente con la cena. NO consumir alcohol por 48h).
+
+Uso Oral (Opción 2 - Amplio espectro):
+2. Nitazoxanida 500 mg (ej. Nizonide®)
+   Tomar 1 comp vía oral cada 12h, con las comidas, por 3 días.
+   (Advertir al paciente que la orina puede teñirse de color amarillo verdoso fluorescente, es normal).
+
+Medidas Higiénico-Dietéticas:
+→ Lavado estricto de manos antes de comer y después de ir al baño.
+→ Consumir agua hervida o embotellada si no hay red segura.
+→ Lavar minuciosamente frutas y verduras frescas.''',
+  ),
+
+  _PrescriptionModel(
+    id: 'foliculitis_leve',
+    title: 'Foliculitis Leve / Infección del Vello',
+    subtitle: 'Jabón Antiséptico + Mupirocina',
+    category: 'Dermatología',
+    icon: Icons.healing_rounded,
+    content: '''Uso Tópico / Higiene:
+1. Jabón de Clorhexidina al 4% o Jabón de Glicerina
+   Lavar la zona afectada durante el baño diario, dejar actuar 2 minutos y enjuagar.
+
+2. Mupirocina 2% ungüento o crema (ej. Mupirox® / Bactroban®)
+   Aplicar una fina capa sobre las lesiones (pústulas) 2 a 3 veces al día, por 7 días.
+
+Precauciones:
+→ Suspender temporalmente la depilación (cera o rasuradora) en la zona afectada hasta la curación total.
+→ Usar ropa holgada de algodón para evitar la fricción.
+→ Si presenta fiebre, celulitis circundante o forúnculo mayor, rotar a Cefalexina vía oral.''',
+  ),
+
+  _PrescriptionModel(
+    id: 'bursitis_trocanterea_cadera',
+    title: 'Bursitis Trocantérea (Dolor de Cadera)',
+    subtitle: 'AINEs + Reposo + Kinesiología',
+    category: 'Osteomuscular',
+    icon: Icons.directions_walk_rounded,
+    content: '''Uso Oral:
+1. Naproxeno 500 mg o Diclofenac 75 mg
+   Tomar 1 comp vía oral cada 12h, siempre con el estómago lleno, por 7 a 10 días.
+
+Uso Tópico:
+2. Hielo local
+   Aplicar hielo envuelto en la cara lateral de la cadera por 15 minutos, 3 veces al día.
+
+Indicaciones:
+→ Evitar dormir sobre el lado afectado. Colocar un cojín entre las rodillas si duerme de lado.
+→ Evitar largas caminatas, subir escaleras o estar mucho tiempo de pie.
+→ Derivar a Traumatología para indicar Fisioterapia/Kinesiología (elongación de banda iliotibial) o eventual infiltración con corticoides si no cede.''',
+  ),
+
+  _PrescriptionModel(
+    id: 'dermatitis_atopica_eccema',
+    title: 'Eccema / Dermatitis Atópica (Brote)',
+    subtitle: 'Corticoide Tópico (Novacort) + Emolientes',
+    category: 'Dermatología',
+    icon: Icons.face_retouching_natural_rounded,
+    content: '''Uso Tópico (Para el brote agudo inflamatorio):
+1. Betametasona crema 0,1% (ej. Novacort® / Beta Micoter®)
+   Aplicar una fina capa SOLO sobre las placas rojas y pruriginosas, 1 vez al día (de noche) por un MÁXIMO de 5 a 7 días.
+
+Uso Tópico (Mantenimiento diario fundamental):
+2. Crema Emoliente sin perfume (ej. Dermaglós® / Cetaphil® / Bagóvit A)
+   Aplicar en todo el cuerpo, especialmente después del baño (con la piel aún húmeda) al menos 2 veces al día, de forma indefinida.
+
+Uso Oral (Si el prurito interfiere con el sueño):
+3. Hidroxicina 25 mg o Difenhidramina 50 mg
+   Tomar 1 comp a la noche, por 5 días.
+
+Recomendaciones:
+→ Baños cortos (menos de 10 min) con agua tibia, no caliente.
+→ Usar jabones "Syndet" o de glicerina neutra solo en zonas de olor.''',
+  ),
+
+  _PrescriptionModel(
+    id: 'hpb_sintomatica',
+    title: 'Hiperplasia Prostática Benigna (Síntomas Leves/Mod)',
+    subtitle: 'Tamsulosina (Secotex)',
+    category: 'Urología',
+    icon: Icons.wc_rounded,
+    content: '''Uso Oral:
+1. Tamsulosina 0.4 mg (ej. Secotex® / Omnic®)
+   Tomar 1 comp (o cápsula de liberación prolongada) vía oral 1 vez al día, SIEMPRE unos 30 minutos después de la cena.
+   (Advertir: Puede causar hipotensión ortostática al inicio, mareos al levantarse rápido, o eyaculación retrógrada).
+
+Indicaciones Generales:
+→ Evitar la ingesta abundante de líquidos después de las 19:00 hs para reducir la nocturia.
+→ Evitar café, alcohol y picantes.
+→ Derivar a Urología para control de PSA, tacto rectal y ecografía vesicoprostática con residuo post-miccional.''',
+  ),
+
+  // ══════════════════════════════════════════════════════════════════════════
+  // PRESCRIPCIONES ADICIONALES 4 (Nuevas - Guardia/Consultorio Argentina)
+  // ══════════════════════════════════════════════════════════════════════════
+
+  _PrescriptionModel(
+    id: 'artrosis_osteoartritis',
+    title: 'Artrosis / Osteoartritis (Rodilla/Cadera)',
+    subtitle: 'Paracetamol + Meloxicam + Medidas físicas',
+    category: 'Osteomuscular',
+    icon: Icons.accessible_forward_rounded,
+    content: '''Uso Oral:
+1. Paracetamol 1 g (ej. Tafirol Forte®)
+   Tomar 1 comp vía oral cada 8h en caso de dolor leve a moderado.
+
+2. Meloxicam 15 mg (ej. Mobic® / Tenaron®)
+   Tomar 1 comp vía oral 1 vez al día (por la mañana, después del desayuno) por un MÁXIMO de 7 a 10 días para los empujes inflamatorios agudos.
+
+Medidas Físico-Dietéticas:
+→ Control de peso (fundamental para articulaciones de carga).
+→ Ejercicio de bajo impacto (natación, bicicleta fija, caminata en agua).
+→ Calor local seco (almohadilla térmica) 15 minutos, 2 veces al día para aliviar rigidez matinal.''',
+  ),
+
+  _PrescriptionModel(
+    id: 'fisura_anal_aguda',
+    title: 'Fisura Anal Aguda',
+    subtitle: 'Lidocaína/Hidrocortisona + Baños de asiento',
+    category: 'Proctología',
+    icon: Icons.medical_services_rounded,
+    content: '''Uso Tópico / Físico:
+1. Pomada de Lidocaína + Hidrocortisona (ej. Xyloprocto®)
+   Aplicar una pequeña cantidad en el margen anal, 2 a 3 veces al día, especialmente después de evacuar y antes de dormir, por 7 días.
+
+2. Baños de asiento
+   Sumergir la zona anal en agua tibia (agradable, no caliente) durante 10 a 15 minutos, 3 veces al día (relaja el esfínter y mejora el dolor).
+
+Uso Oral (Para evitar constipación):
+3. Lactulosa (ej. Someral® / Tenual®)
+   Tomar 15 mL vía oral por la noche.
+   Aumentar la ingesta de fibra (frutas, verduras) y agua (mínimo 2 litros/día).
+
+(Nota: Si la fisura se vuelve crónica, derivar a proctología para tratamiento con Diltiazem gel o toxina botulínica).''',
+  ),
+
+  _PrescriptionModel(
+    id: 'rosacea_brote',
+    title: 'Rosácea (Brote Pápulo-pustuloso)',
+    subtitle: 'Metronidazol gel + Fotoprotección',
+    category: 'Dermatología',
+    icon: Icons.face_retouching_natural_rounded,
+    content: '''Uso Tópico:
+1. Metronidazol 0.75% gel o crema (ej. Rozex®)
+   Aplicar una fina capa en todo el rostro (evitando el contorno de ojos), 1 vez al día por la noche, durante 4 a 8 semanas.
+
+2. Protector Solar Facial FPS 50+ (Pieles sensibles o con tendencia a rosácea)
+   Aplicar todas las mañanas y reaplicar cada 3 horas durante el día.
+
+Medidas Generales:
+→ Evitar desencadenantes: exposición al sol sin protección, cambios bruscos de temperatura, duchas muy calientes.
+→ Evitar comidas muy picantes, especiadas, y el consumo de alcohol.
+→ Usar limpiadores faciales suaves ("Syndet") sin frotar con toalla.''',
+  ),
+
+  _PrescriptionModel(
+    id: 'larva_migrans_cutanea',
+    title: 'Larva Migrans Cutánea (Bicho Geográfico)',
+    subtitle: 'Ivermectina dosis única',
+    category: 'Dermatología / Infectología',
+    icon: Icons.pest_control_rounded,
+    content: '''Uso Oral:
+1. Ivermectina 6 mg (ej. Securo®)
+   Tomar 2 comprimidos (12 mg, calculando 200 mcg/kg para un adulto de 60 kg) JUNTOS como DOSIS ÚNICA.
+   (En casos de múltiples trayectos o resistencia, se puede repetir la misma dosis al día siguiente).
+
+Uso Tópico (Opcional, si hay mucho prurito):
+2. Betametasona crema 0.1%
+   Aplicar sobre el trayecto de la larva 2 veces al día por 3 a 5 días para desinflamar.
+
+(Nota: Frecuente tras viajes a playas en el norte argentino o Brasil, por contacto con arena contaminada con heces de perros/gatos).''',
+  ),
+
+  _PrescriptionModel(
+    id: 'verrugas_vulgares_plantares',
+    title: 'Verrugas Vulgares / Plantares',
+    subtitle: 'Ácido Salicílico + Láctico (Verruclean)',
+    category: 'Dermatología',
+    icon: Icons.healing_rounded,
+    content: '''Uso Tópico:
+1. Ácido Salicílico 27% + Ácido Láctico (ej. Verruclean® / Colloplus®)
+   Aplicar EXACTAMENTE sobre la verruga con el pincel aplicador, 1 vez al día (por la noche), durante 4 a 6 semanas.
+
+Procedimiento de aplicación (Explicar al paciente):
+→ Antes de aplicar: remojar la zona en agua tibia por 5 minutos y secar.
+→ Proteger la piel sana de alrededor con vaselina sólida o esmalte transparente.
+→ Aplicar el producto, dejar secar.
+→ A la noche siguiente, retirar la "telita" blanca que se forma, limar suavemente con piedra pómez o lima de cartón desechable y volver a aplicar.
+
+(Derivar a Dermatología para crioterapia si no hay respuesta).''',
+  ),
+
+  _PrescriptionModel(
+    id: 'vaginitis_atrofica_menopausia',
+    title: 'Vaginitis Atrófica (Menopausia)',
+    subtitle: 'Estriol tópico (Colpotrofin)',
+    category: 'Ginecología',
+    icon: Icons.spa_rounded,
+    content: '''Uso Intravaginal / Tópico:
+1. Promestriene o Estriol crema 1 mg/g (ej. Colpotrofin® / Ovestin®)
+   Aplicar 1 aplicador lleno profundamente en la vagina, por la noche, todos los días durante 2 a 3 semanas.
+   Mantenimiento: Aplicar 1 aplicador, 2 veces por semana.
+
+Medidas Coadyuvantes:
+2. Gel lubricante íntimo a base de agua o ácido hialurónico (ej. K-Y Gel® / Evagina®)
+   Utilizar a demanda, especialmente previo a las relaciones sexuales para evitar dispareunia.
+
+(Nota: Descartar contraindicaciones hormonales, como antecedentes de cáncer de mama hormonodependiente, antes de indicar estrógenos locales).''',
+  ),
+
+  _PrescriptionModel(
+    id: 'fibromialgia_dolor_cronico',
+    title: 'Fibromialgia (Dolor Crónico y Fatiga)',
+    subtitle: 'Pregabalina + Duloxetina',
+    category: 'Clínica Médica / Reumatología',
+    icon: Icons.accessibility_rounded,
+    content: '''Uso Oral (Titulación progresiva):
+1. Pregabalina 75 mg (ej. Plenica® / Lyrica®)
+   Tomar 1 cápsula por la noche durante 1 semana.
+   Si lo tolera, aumentar a 1 cápsula a la mañana y 1 a la noche (150 mg/día).
+
+2. Duloxetina 30 mg (ej. Duxetin® / Cymbalta®) - Adyuvante antidepresivo/analgésico
+   Tomar 1 cápsula por la mañana (después del desayuno).
+
+Pilares No Farmacológicos (Indispensables):
+→ Higiene del sueño (evitar pantallas 1 hora antes de dormir).
+→ Actividad física aeróbica graduada (comenzar con 15 minutos de caminata o yoga, e ir subiendo lentamente).
+→ Apoyo psicoterapéutico.''',
+  ),
+
+  _PrescriptionModel(
+    id: 'gingivitis_enfermedad_periodontal',
+    title: 'Gingivitis / Sangrado de Encías',
+    subtitle: 'Clorhexidina colutorio + Técnicas de cepillado',
+    category: 'Odontología',
+    icon: Icons.face_rounded,
+    content: '''Uso Bucal (Tópico):
+1. Clorhexidina 0.12% Colutorio (ej. Plac-Out®)
+   Realizar buches con 15 mL (sin diluir) durante 1 minuto, 2 veces al día (mañana y noche, media hora DESPUÉS del cepillado dental).
+   No enjuagar con agua después del buche.
+   Utilizar por un máximo de 10 a 14 días (el uso prolongado mancha los dientes de forma reversible y altera el gusto).
+
+Conducta / Prevención:
+→ Usar cepillo de cerdas SUAVES.
+→ Incorporar el uso diario de hilo dental o cepillos interdentales.
+→ Derivar al Odontólogo para limpieza por ultrasonido (tartrectomía), ya que la medicación no elimina el sarro endurecido.''',
+  ),
+
+  _PrescriptionModel(
+    id: 'caida_cabello_efluvio_telogeno',
+    title: 'Caída de Cabello (Efluvio Telógeno)',
+    subtitle: 'Minoxidil loción + Suplementos',
+    category: 'Dermatología',
+    icon: Icons.face_retouching_natural_rounded,
+    content: '''Uso Tópico:
+1. Minoxidil 5% loción capilar (ej. Ylox® / Anagen®)
+   Aplicar 1 mL (o 6 a 8 pulverizaciones) directamente sobre el cuero cabelludo seco, 1 a 2 veces al día.
+   Masajear suavemente con las yemas de los dedos. No lavar el cabello por al menos 4 horas.
+
+Uso Oral (Suplementos de sostén):
+2. Complejo vitamínico con L-Cistina y Biotina (ej. Megacistin® / Valcatil Max®)
+   Tomar 1 a 2 cápsulas al día (o 1 sobre disuelto en agua), preferentemente por la mañana, por 3 meses.
+
+(Nota: Explicar al paciente que en las primeras 2-4 semanas de Minoxidil puede haber una caída temporal por "efecto shedding", es normal. Los resultados reales se ven a los 4-6 meses).''',
+  ),
+
+  _PrescriptionModel(
+    id: 'cesacion_tabaquica_trn',
+    title: 'Dejar de Fumar (Cesación Tabáquica)',
+    subtitle: 'Terapia de Reemplazo de Nicotina (Parches + Chicles)',
+    category: 'Clínica Médica / Prevención',
+    icon: Icons.smoke_free_rounded,
+    content: '''Uso Transdérmico (Base diaria):
+1. Parches de Nicotina 21 mg (ej. Niquitin® / Nicotinell®) - Si fuma >10 cig/día
+   Aplicar 1 parche nuevo cada mañana sobre la piel limpia, seca y sin vello (brazo, pecho, espalda), rotando el sitio cada día.
+   Retirar antes de dormir si causa insomnio o sueños vívidos (uso de 16 a 24 horas).
+   Usar dosis de 21 mg por 4 semanas → luego 14 mg por 2 semanas → luego 7 mg por 2 semanas.
+
+Uso Oral (Para picos de "craving" o deseo intenso):
+2. Chicles o Comprimidos dispersables de Nicotina 2 mg
+   Masticar LENTAMENTE un chicle hasta sentir picor/sabor fuerte, luego "estacionarlo" entre la mejilla y la encía hasta que pase el sabor. Volver a masticar.
+   Usar a demanda cuando aparezcan ganas fuertes de fumar (máx 10-15 al día).
+
+(Regla de oro: NO FUMAR NADA mientras se utilicen los parches para evitar intoxicación).''',
+  ),
+
   _PrescriptionModel(
     id: 'nutricion_enteral_parenteral',
     title: 'Nutrición Clínica — Soporte Nutricional',
