@@ -1319,6 +1319,11 @@ class _QuestionCard extends StatelessWidget {
             minLines: question.multiline ? question.lines : 1,
             maxLines: question.multiline ? null : 2,
             keyboardType: question.multiline ? TextInputType.multiline : TextInputType.text,
+            // ── Sugestões nativas + autocorreção pelo idioma do teclado ──────
+            enableSuggestions: true,
+            autocorrect: true,
+            textCapitalization: TextCapitalization.sentences,
+            // ─────────────────────────────────────────────────────
             style: const TextStyle(
               fontSize: 13, fontWeight: FontWeight.w500, color: Color(0xFF222222),
             ),
@@ -1348,6 +1353,11 @@ class _QuestionCard extends StatelessWidget {
           TextField(
             controller: ctrl,
             maxLines: 1,
+            // ── Sugestões nativas + autocorreção pelo idioma do teclado ──────
+            enableSuggestions: true,
+            autocorrect: true,
+            textCapitalization: TextCapitalization.sentences,
+            // ─────────────────────────────────────────────────────
             style: const TextStyle(
               fontSize: 12, fontWeight: FontWeight.w500, color: Color(0xFF555555),
             ),

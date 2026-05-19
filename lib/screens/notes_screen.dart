@@ -904,6 +904,9 @@ class NoteEditorSheetState extends State<NoteEditorSheet> {
                 child: TextField(
                   controller: _titleCtrl,
                   focusNode: _titleFocus,
+                  enableSuggestions: true,
+                  autocorrect: true,
+                  textCapitalization: TextCapitalization.words,
                   style: TextStyle(
                     fontSize: 15, fontWeight: FontWeight.w800,
                     color: textCol),
@@ -937,6 +940,9 @@ class NoteEditorSheetState extends State<NoteEditorSheet> {
                   maxLines: null,
                   minLines: 5,
                   keyboardType: TextInputType.multiline,
+                  enableSuggestions: true,
+                  autocorrect: true,
+                  textCapitalization: TextCapitalization.sentences,
                   style: TextStyle(
                     fontSize: 13.5, fontWeight: FontWeight.w400,
                     color: textCol, height: 1.6),

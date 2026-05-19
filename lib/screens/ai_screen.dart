@@ -1756,8 +1756,11 @@ class _InputBar extends StatelessWidget {
                   minLines: 1,
                   // Mantém newline em mobile; no web ENTER envia via KeyboardListener
                   textInputAction: TextInputAction.newline,
-                  spellCheckConfiguration: const SpellCheckConfiguration.disabled(),
+                  // Sugestões ativas (barra superior do teclado) sem autocorrect
+                  // agressivo — termos médicos não devem ser alterados automaticamente
+                  enableSuggestions: true,
                   autocorrect: false,
+                  textCapitalization: TextCapitalization.sentences,
                   style: TextStyle(
                     fontSize: 14, fontWeight: FontWeight.w400,
                     color: textCol, height: 1.5),

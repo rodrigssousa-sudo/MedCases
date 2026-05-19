@@ -2511,6 +2511,9 @@ class _MedsAutocompleteFieldState extends State<_MedsAutocompleteField> {
         maxLines: 3,
         minLines: 2,
         onChanged: (v) => widget.onChanged(v),
+        enableSuggestions: true,
+        autocorrect: true,
+        textCapitalization: TextCapitalization.sentences,
         style: TextStyle(
           fontSize: 13,
           fontWeight: FontWeight.w600,

@@ -325,19 +325,40 @@ class MedInput extends StatelessWidget {
   final String? initialValue;
   final int? maxLines;
   final TextInputAction? textInputAction;
-  const MedInput({super.key, this.controller, this.hintText, this.keyboardType, this.onChanged, this.initialValue, this.maxLines = 1, this.textInputAction});
+  /// Força capitalize por palavra (padrão para campos de texto médico).
+  /// Passe [TextCapitalization.none] para campos numéricos/técnicos.
+  final TextCapitalization textCapitalization;
+
+  const MedInput({
+    super.key,
+    this.controller,
+    this.hintText,
+    this.keyboardType,
+    this.onChanged,
+    this.initialValue,
+    this.maxLines = 1,
+    this.textInputAction,
+    this.textCapitalization = TextCapitalization.sentences,
+  });
 
   @override
   Widget build(BuildContext context) {
     final c = AppColors.of(context);
+    // Campos numéricos não precisam de autocorrect/sugestões
+    final isNumeric = keyboardType == TextInputType.number ||
+        keyboardType == TextInputType.numberWithOptions(decimal: true) ||
+        keyboardType == TextInputType.numberWithOptions(decimal: false);
     return TextField(
       controller: controller,
       keyboardType: keyboardType,
       onChanged: onChanged,
       maxLines: maxLines,
       textInputAction: textInputAction ?? (maxLines == 1 ? TextInputAction.next : TextInputAction.newline),
-      enableSuggestions: true,
-      autocorrect: true,
+      // ── Sugestões e autocorreção do teclado nativo ────────────────────────
+      enableSuggestions: !isNumeric,
+      autocorrect: !isNumeric,
+      textCapitalization: isNumeric ? TextCapitalization.none : textCapitalization,
+      // ─────────────────────────────────────────────────────────────────────
       style: TextStyle(fontWeight: FontWeight.w700, fontSize: 15, color: c.textPrimary),
       decoration: InputDecoration(
         hintText: hintText,
