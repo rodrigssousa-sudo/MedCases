@@ -1,16 +1,17 @@
 /**
- * MedCases Pro — PWA Service Worker v5.0.0
+ * MedCases Pro — PWA Service Worker v5.1.0
  *
- * v5.0.0: Chatbot IA — ENTER envia, scroll controlado, saudação por horário,
- * - Ditado por voz (Web Speech API), respostas em áudio (TTS)
- * - Botão Ocultar/Mostrar HC com UI otimista (sem reload)
+ * v5.1.0: Expansão da base de fármacos — Lote 2 (+44 DrugModel)
+ * - Antibióticos, tuberculostáticos, antifúngicos, antiparasitários
+ * - Anestésicos inalatórios/locais, bloqueadores neuromusculares
+ * - Pipeline RAG atualizado (hasDrugKeyword + conditionKeywords + conditionToGroups)
  * - Cache bust forçado — todos os usuários recebem versão nova automaticamente
  */
 
 'use strict';
 
-const SW_VERSION   = '5.0.0';
-const CACHE_STATIC = 'medcases-static-v5.0.0';
+const SW_VERSION   = '5.1.0';
+const CACHE_STATIC = 'medcases-static-v5.1.0';
 const CACHE_FONTS  = 'medcases-fonts-v1'; // fontes mudam raramente, versão fixa
 
 // Assets essenciais pré-cacheados no install
