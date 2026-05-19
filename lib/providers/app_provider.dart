@@ -1415,6 +1415,10 @@ class AppProvider extends ChangeNotifier {
       // exigem ≥2 palavras para evitar falso positivo em queries simples.
       'eclampsia_hellp', 'hiponatremia_grave', 'intox_monoxido_carbono',
       'caso_enxaqueca_aura', 'gripe_influenza_010',
+      // Protocolos psiquiátricos — exigem 2 palavras para não contaminar
+      // queries sobre fármacos de outras especialidades (ex: "haloperidol em TEP")
+      'agitacao_psicomotriz', 'agitacion_psicom', 'psicose_aguda', 'psicosis_aguda',
+      'esquizofrenia', 'bipolar', 'delirium', 'abstinencia_alcool',
     };
 
     final results = <String>[];
@@ -1531,6 +1535,21 @@ class AppProvider extends ChangeNotifier {
       return 'tratamento';
     }
 
+    // ── Psicofármaco / antipsicótico / psiquiatria ─────────────────────────
+    if (_has(q, [
+      'antipsicotico', 'antipsicótico', 'antipsicóticos', 'antipsychotic',
+      'haloperidol', 'risperidona', 'olanzapina', 'quetiapina', 'clozapina',
+      'aripiprazol', 'ziprasidona', 'amisulprida', 'clorpromazina',
+      'psicosis', 'psicose', 'psicotico', 'psicótico',
+      'brote psic', 'brote maniac', 'episodio psicotico', 'episodio maniac',
+      'esquizofrenia', 'schizophrenia', 'delirio agudo', 'alucinacion',
+      'agitacion psic', 'agitação psic',
+      'ssri', 'antidepressivo', 'antidepresivo', 'ansiolit', 'benzodiazep',
+      'estabilizador humor', 'lition', 'valproato', 'lamotrigina',
+    ])) {
+      return 'psicofarmaco';
+    }
+
     // ── Farmacológica — sobre fármaco específico ou lista por indicação ─────
     if (_has(q, ['farmaco', 'farmacos', 'medicament', 'remedio ', 'remedios',
                   'droga ', 'antibiot', 'antibio', 'antiviral', 'antifungic',
@@ -1560,8 +1579,46 @@ class AppProvider extends ChangeNotifier {
       'search:', 'busca:', 'o que é ', 'o que e ',
       'qual é ', 'qual e ', 'como ', 'quando ', 'por que ', 'porque ',
       'explique ', 'explica ', 'defina ', 'define ',
+      'se es ', 'si es ', 'si tiene ', 'se tem ', 'se tiene ',
+      'por que no ', 'porque no ', 'por qué no ', 'por que usar ',
+      'por que não ', 'pode usar ', 'puede usar ', 'posso dar ',
+      'é indicado', 'está indicado', 'está contraindicado',
     ];
     if (directPrefixes.any((p) => q.startsWith(p))) return true;
+
+    // Nomes de fármacos específicos na pergunta → query direta (nunca herdar histórico)
+    final hasDrugKeyword = _has(_normalize(input), [
+      'haloperidol', 'risperidona', 'olanzapina', 'quetiapina', 'clozapina',
+      'aripiprazol', 'ziprasidona', 'amisulprida', 'clorpromazina', 'tioridazina',
+      'diazepam', 'midazolam', 'lorazepam', 'clonazepam', 'alprazolam',
+      'morfina', 'fentanil', 'tramadol', 'codeina', 'metadona', 'oxicodona',
+      'amoxicilina', 'ceftriaxona', 'ciprofloxacin', 'metronidazol', 'vancomicin',
+      'adrenalina', 'noradrenalina', 'dopamina', 'dobutamina', 'vasopresina',
+      'atropina', 'adenosina', 'amiodarona', 'lidocaina', 'sotalol',
+      'metformina', 'insulina', 'glibenclamida', 'sitagliptina', 'empagliflozin',
+      'omeprazol', 'pantoprazol', 'ranitidina', 'dexametasona', 'prednisona',
+      'furosemida', 'espironolactona', 'atenolol', 'metoprolol', 'enalapril',
+      'captopril', 'losartan', 'amlodipina', 'nifedipina', 'verapamil',
+      'warfarina', 'enoxaparina', 'heparina', 'apixaban', 'rivaroxaban',
+      'salbutamol', 'ipratropio', 'budesonida', 'fluticasona', 'montelucaste',
+      'aciclovir', 'oseltamivir', 'fluconazol', 'itraconazol', 'voriconazol',
+      'lítio', 'valproato', 'carbamazepina', 'lamotrigina', 'topiramato',
+      'sertralina', 'fluoxetina', 'paroxetina', 'escitalopram', 'venlafaxina',
+      'amitriptilina', 'imipramina', 'nortriptilina', 'duloxetina', 'mirtazapina',
+      'metilfenidato', 'anfetamina', 'bupropiona', 'atomoxetina',
+    ]);
+    if (hasDrugKeyword) return true;
+
+    // Termos de psicose/brote psicótico → sempre query direta
+    final hasPsychKeyword = _has(_normalize(input), [
+      'antipsicotico', 'antipsicótico', 'antipsychotic',
+      'psicotic', 'psicotico', 'psicótico', 'psicosis', 'psicose',
+      'brote psic', 'brote maniac', 'episodio maniac', 'episodio psicotico',
+      'esquizofrenia', 'schizophrenia', 'delirio ', 'alucinac',
+      'delirium ', 'agitacion psic', 'agitação psic',
+    ]);
+    if (hasPsychKeyword) return true;
+
     final hasClinicalKeywords = _has(_normalize(input), [
       'paciente', 'dor', 'febre', 'dispne', 'tontura', 'choque',
       'pa ', 'fc ', 'spo2', 'glasgow', 'ecg', 'tomograf',
@@ -1588,7 +1645,9 @@ class AppProvider extends ChangeNotifier {
 
     // Só inclui histórico se a pergunta for realmente um follow-up
     // (muito curta e sem contexto próprio — ex: "qual a dose?", "tem FA?")
-    final isFollowUp = currentInput.trim().split(' ').length <= 5;
+    // Aumentado de 5 para 4 palavras para evitar falsos follow-ups em perguntas
+    // de 6-9 palavras que já têm contexto próprio ("se es un brote... haloperidol")
+    final isFollowUp = currentInput.trim().split(' ').length <= 4;
     if (!isFollowUp) return currentInput.trim();
 
     return '${tail.join(' ')} $currentInput'.trim();
@@ -1775,6 +1834,8 @@ class AppProvider extends ChangeNotifier {
       'hsa', 'meningite', 'sepse', 'iam_congestao', 'tep', 'status_epilepticus',
       'eclampsia_hellp', 'hiponatremia_grave', 'intox_monoxido_carbono',
       'caso_enxaqueca_aura', 'gripe_influenza_010',
+      'agitacao_psicomotriz', 'agitacion_psicom', 'psicose_aguda', 'psicosis_aguda',
+      'esquizofrenia', 'bipolar', 'delirium', 'abstinencia_alcool',
     };
     final results = <String>[];
     final words = normalizedQuery

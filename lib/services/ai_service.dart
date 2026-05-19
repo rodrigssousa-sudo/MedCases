@@ -154,6 +154,12 @@ class AiService {
                           'Formato de lista numerada. Sem conteudo clinico adicional.',
       'caso_clinico'   => 'Hipotese principal, 2-3 diferenciais hierarquizados, conduta imediata, '
                           'exames-chave e tratamento inicial.',
+      'psicofarmaco'   => 'Responda ESPECIFICAMENTE sobre o psicofarmaco ou a questao psiquiatrica perguntada. '
+                          'Inclua: mecanismo de acao, indicacoes clinicas, dose habitual, '
+                          'contraindicacoes importantes, efeitos adversos relevantes e comparacao com alternativas se solicitado. '
+                          'Se a pergunta for sobre POR QUE usar ou NAO usar um farmaco em determinada situacao, '
+                          'explique a logica clinica/farmacologica de forma clara. '
+                          'NAO desvie para outros sistemas ou patologias nao relacionadas.',
       _                => 'Responda de forma abrangente e organizada em blocos curtos. '
                           'Se nao especificado agudo/cronico, adulto/pediatrico ou leve/moderado/grave, '
                           'cubra as principais variacoes clinicas de forma clara e util para a pratica.',
@@ -183,6 +189,12 @@ class AiService {
                           'Formato de lista numerada. Sin contenido clinico adicional.',
       'caso_clinico'   => 'Hipotesis principal, 2-3 diferenciales jerarquizados, conducta inmediata, '
                           'examenes clave y tratamiento inicial.',
+      'psicofarmaco'   => 'Responde ESPECIFICAMENTE sobre el psicofarmaco o la pregunta psiquiatrica planteada. '
+                          'Incluye: mecanismo de accion, indicaciones clinicas, dosis habitual, '
+                          'contraindicaciones importantes, efectos adversos relevantes y comparacion con alternativas si se solicita. '
+                          'Si la pregunta es sobre POR QUE usar o NO usar un farmaco en determinada situacion, '
+                          'explica la logica clinica/farmacologica de forma clara y directa. '
+                          'NO desvies hacia otros sistemas o patologias no relacionadas con la pregunta.',
       _                => 'Responde de forma amplia y organizada en bloques cortos. '
                           'Si no se especifica agudo/cronico, adulto/pediatrico o leve/moderado/grave, '
                           'cubre las principales variaciones clinicas de forma clara y util para la practica.',
