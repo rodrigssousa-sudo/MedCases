@@ -284,19 +284,26 @@ Dispnea (paliativa):
   // ══════════════════════════════════════════════════════════════════════════
   _PrescriptionModel(
     id: 'tsv_adenosina',
-    title: 'TSV — Adenosina',
-    subtitle: 'Taquicardia supraventricular paroxística',
+    title: 'TPSV — Adenosina',
+    subtitle: 'Taquicardia Paroxística Supraventricular — cardioversión farmacológica',
     category: 'Cardiovascular',
     icon: Icons.favorite_rounded,
     content: '''1. Adenosina 6 mg/2 mL (amp)
-   Administrar 6 mg EV en bolo rápido.
-   Si no revierte en 2 min → repetir con 12 mg.
-   Acceso venoso antecubital o yugular.
+   Administrar 6 mg EV en bolo rápido + flush rápido con 20 mL SF.
+   Si no revierte en 1–2 min → repetir con 12 mg.
+   Si no revierte → repetir 12 mg (3ra dosis).
+   Acceso venoso antecubital o yugular (cuanto más proximal, mejor efecto).
+
+Contraindicaciones absolutas:
+- BAV 2° y 3° grado.
+- Asma severa / EPOC severo (broncoespasmo grave).
+- Síndrome de Wolf-Parkinson-White (WPW) con FA o Flutter.
+- Bloqueo sinusal o disfunción sinusal sin marcapasos.
 
 Notas:
-- Monitorización ECG continua.
-- Equipo de reanimación disponible.
-- Contraindicada en: BAV 2°/3°, FA/Flutter, WPW.
+- Monitorización ECG continua durante la administración.
+- Tener equipo de reanimación disponible (puede provocar asistolia transitoria breve).
+- No es útil en FA ni Flutter auricular (los termina o enlentece transitoriamente pero no los revierte).
 
 ---
 ⚕ Modelo educativo — adaptar al paciente.''',
@@ -304,20 +311,31 @@ Notas:
 
   _PrescriptionModel(
     id: 'tv_amiodarona',
-    title: 'TV — Amiodarona',
-    subtitle: 'Taquicardia ventricular con pulso',
+    title: 'TV Monomorfa Estable — Amiodarona',
+    subtitle: 'Taquicardia ventricular con pulso — manejo inicial',
     category: 'Cardiovascular',
     icon: Icons.monitor_heart_rounded,
-    content: '''1. Amiodarona 150 mg/3 mL (amp)
-   Dosis de ataque: 150 mg EV en 10 min.
-   Mantenimiento: 1 mg/min en BIC por 6h;
-   luego 0,5 mg/min en BIC por 18h.
+    content: '''⚠️ CLASIFICACIÓN PREVIA OBLIGATORIA:
+→ TV con pulso + estable hemodinámicamente: tratamiento farmacológico.
+→ TV con pulso + inestable (hipotensión, síncope, EAP, dolor torácico): CARDIOVERSIÓN ELÉCTRICA SINCRONIZADA inmediata.
+→ TV sin pulso → protocolo de PCR / FV (desfibrilación).
 
-Preparación BIC:
+1. Amiodarona 150 mg/3 mL (amp)
+   Dosis de ataque: 150 mg EV en 10 min (diluido en 100 mL SG 5%).
+   Mantenimiento: 1 mg/min en infusión continua por 6h;
+   luego 0,5 mg/min por 18h.
+
+Preparación infusión continua (BIC):
    Diluir 3 amp (450 mg) en 250 mL SG 5%.
    Velocidad inicial: ~33 mL/h (1 mg/min).
 
-- Si inestable hemodinámicamente → cardioversión eléctrica.
+⚠️ Advertencias sobre Amiodarona:
+- Vida media extremadamente larga (40–55 días): los efectos persisten semanas.
+- Toxicidad pulmonar (neumonitis): vigilar disnea progresiva, rx tórax.
+- Toxicidad tiroidea: puede causar hipo o hipertiroidismo.
+- Toxicidad hepática: controlar enzimas hepáticas.
+- Prolongación del QT: monitorización ECG continua.
+- Interacciones: potencia efecto de warfarina, digoxina.
 
 ---
 ⚕ Modelo educativo — adaptar al paciente.''',
@@ -325,8 +343,8 @@ Preparación BIC:
 
   _PrescriptionModel(
     id: 'fa_flutter_aguda',
-    title: 'FA / Flutter — Control de FC',
-    subtitle: 'Fibrilación auricular aguda',
+    title: 'FA / Flutter — Control de Frecuencia Ventricular',
+    subtitle: 'Fibrilación auricular aguda — control de respuesta ventricular',
     category: 'Cardiovascular',
     icon: Icons.electric_bolt_rounded,
     content: '''Control de FC:
@@ -341,6 +359,15 @@ Preparación BIC:
 3. Amiodarona 150 mg/3 mL
    150 mg EV en 10 min; luego BIC 1 mg/min.
 
+Digoxina (control de FC en FA con IC sistólica asociada):
+• Digoxina 0,25 mg VO/EV c/24h (dosis de mantenimiento).
+⚠ ALERTAS SOBRE DIGOXINA:
+- Margen terapéutico ESTRECHO: nivel terapéutico 0,5–0,9 ng/mL.
+- Riesgo ALTO en insuficiencia renal: reduce dosis o evitar (ajustar según ClCr).
+- Hipopotasemia AUMENTA toxicidad: controlar K+ siempre antes.
+- Signos de intoxicación: náuseas, xantopsia, bloqueos AV, arritmias.
+- NO suspender abruptamente si se usa cronicamente.
+
 Alta (anticoagulación):
 • Apixabán 5 mg — 1 comprimido cada 12h, VO
 • Rivaroxabán 20 mg — 1 comprimido/día con cena, VO
@@ -351,23 +378,32 @@ Alta (anticoagulación):
 
   _PrescriptionModel(
     id: 'bradiarritmia_atropina',
-    title: 'Bradiarritmia Sintomática',
-    subtitle: 'Atropina / Dopamina / Adrenalina',
+    title: 'Bradicardia Sintomática',
+    subtitle: 'Atropina / Adrenalina / Marcapasos transcutáneo',
     category: 'Cardiovascular',
     icon: Icons.heart_broken_rounded,
-    content: '''1. Atropina 0,5 mg/mL (amp 1 mL)
+    content: '''\u26a0\ufe0f BRADICARDIA SINTOMÁTICA: FC <50 lpm + síntomas (hipotensión, síncope, dolor torácico, EAP).
+
+PASO 1: Suspender fármacos bradicardizantes si es posible:
+- Betabloqueantes / calcioantagonistas / digoxina / amiodarona.
+⚠ BETABLOQUEANTES: NO suspender abruptamente (fenómeno rebote simpático).
+  Reducir dosis gradualmente con monitoreo.
+
+PASO 2: Tratamiento farmacológico:
+1. Atropina 0,5 mg/mL (amp 1 mL)
    Administrar 0,5–1 mg EV en bolo.
    Repetir cada 3–5 min (máx 3 mg).
+   (Ineficaz en bloqueo AV tipo Mobitz II o bloqueo completo).
 
-2. Dopamina 50 mg/10 mL (amp)
-   Si refractaria a atropina.
-   Diluir 5 amp en 200 mL SF 0,9% → BIC 5 a 20 mcg/kg/min.
+PASO 3: Si no responde a atropina:
+2. Adrenalina (Epinefrina) 1 mg/mL
+   Diluir en infusión continua: 0,05–1 mcg/kg/min (titular).
+3. Dopamina 50 mg/10 mL
+   BIC 5–20 mcg/kg/min (segunda línea, alternativa).
 
-3. Adrenalina 1 mg/mL (amp 1 mL)
-   Si sin respuesta a dopamina.
-   Diluir en BIC: 0,05–1 mcg/kg/min.
-
-- Preparar marcapasos transcutáneo/transvenoso.
+PASO 4: Marcapasos:
+- Preparar marcapasos transcutáneo inmediatamente si hay inestabilidad.
+- Marcapasos transvenoso transitorio si bradicardia es persistente o refractaria.
 
 ---
 ⚕ Modelo educativo — adaptar al paciente.''',
@@ -433,29 +469,50 @@ Hipotensión refractaria:
   _PrescriptionModel(
     id: 'crisis_hipertensiva',
     title: 'Crisis Hipertensiva',
-    subtitle: 'Urgencia / Emergencia hipertensiva',
+    subtitle: 'Urgencia / Emergencia hipertensiva \u2014 algoritmo diferenciado',
     category: 'Cardiovascular',
     icon: Icons.speed_rounded,
-    content: '''Urgencia Hipertensiva (sin daño orgánico):
-1. Captopril 25 mg sublingual (SL)
-   Repetir cada 20–30 min si necesario.
+    content: '''\u26a0\ufe0f CLASIFICACI\u00d3N OBLIGATORIA ANTES DE TRATAR:
+\u2192 URGENCIA: PA alta sin daño de \u00f3rgano blanco \u2192 descenso gradual en 24\u201348h, VO.
+\u2192 EMERGENCIA: PA alta CON daño agudo de \u00f3rgano blanco \u2192 descenso controlado EV en UTI/guardia.
 
-Emergencia Hipertensiva (daño orgánico):
-1. Nitroprusiato [Nipride®] 50 mg/2 mL
-   Diluir en 248 mL SG 5%.
-   BIC: iniciar 5 mL/h → titular.
-   FT: 0,3–2,0 mcg/kg/min.
+URGENCIA HIPERTENSIVA (sin daño orgánico):
+1. Captopril 25 mg VO (o SL si no puede tragar)
+   Repetir cada 30\u201360 min seg\u00fan respuesta (m\u00e1x 100 mg).
+2. Clonidina 0,15 mg VO
+   Alternativa especialmente si frecuencia card\u00edaca acelerada.
+3. Labetalol 200 mg VO
+   \u00datil si hay taquicardia asociada o disinci\u00f3n aortica leve.
 
-2. Nitroglicerina [Tridil®] 50 mg/10 mL
-   Diluir en 240 mL SF 0,9% → BIC 1–2 mL/h.
-   Dosis inicial: 5 mcg/min.
+EMERGENCIA HIPERTENSIVA (con daño de órgano blanco \u2014 EV):
+A. ACV Hemorr\u00e1gico / ENC\u00c9FALO:
+   \u2022 Objetivo: PA <180/105 mmHg.
+   \u2022 Nicardipina 25 mg/10 mL: BIC 5\u201315 mg/h (titular).
+   \u2022 Labetalol 20 mg EV en 2 min \u2192 repetir 40\u201380 mg c/10 min (m\u00e1x 300 mg).
 
-Disección Aórtica:
-• Esmolol 10 mg/mL → BIC: titular FC <60 lpm
-• Metoprolol 5 mg EV lento + Morfina 2–4 mg EV
+B. EAP / INSUFICIENCIA CARD\u00cdACA:
+   \u2022 Nitroglicerina [Tridil\u00ae] 50 mg/10 mL: BIC 5\u201320 mcg/min (titular PA).
+   \u2022 Furosemida 40\u201380 mg EV \u2014 SOLO si hay sobrecarga vol\u00e9mica / EAP (NO rutinariamente).
+   \u2022 Nitroprusiato [Nipride\u00ae] si falla nitroglicerina.
+
+C. SCA / ANGINA INESTABLE:
+   \u2022 Nitroglicerina SL + BIC.
+   \u2022 Labetalol EV (si no hay IC descompensada).
+
+D. DISECCIÓN AÓRTICA (reducir FC Y PA):
+   \u2022 Esmolol 10 mg/mL: BIC 50\u2013200 mcg/kg/min \u2192 objetivo FC <60 lpm.
+   \u2022 Luego: Nitroprusiato o Nicardipina para PA objetivo <120/80.
+   \u2022 Morfina 2\u20134 mg EV para analgesia.
+
+E. ECLAMPSIA / PREECLAMPSIA GRAVE:
+   \u2022 Labetalol 20 mg EV o Hidralazina 5 mg EV (de elecci\u00f3n en embarazo).
+   \u2022 EVITAR: IECAs, ARA II, Nitroprusiato.
+
+\u26a0\ufe0f Furosemida NO se indica de rutina en Crisis Hipertensiva.
+   Solo en EAP o cuando haya evidencia de sobrecarga hidros\u00f3dica real.
 
 ---
-⚕ Modelo educativo — adaptar al paciente.''',
+\u2695 Modelo educativo \u2014 adaptar al paciente.''',
   ),
 
   _PrescriptionModel(
@@ -485,27 +542,34 @@ Trombolisis (TEP masivo/submasivo grave):
 
   _PrescriptionModel(
     id: 'aminas_vasoativas',
-    title: 'Aminas Vasoactivas — BIC',
-    subtitle: 'Noradrenalina · Dobutamina · Dopamina',
+    title: 'Vasoactivos — Infusión Continua',
+    subtitle: 'Noradrenalina · Dobutamina · Vasopresina — shock',
     category: 'Cardiovascular',
     icon: Icons.science_rounded,
-    content: '''Noradrenalina 2 mg/mL (amp 4 mL):
-   Diluir 4 amp (16 mg) en 234 mL SF 0,9%.
-   FT: 0,05–2,0 mcg/kg/min.
-   Iniciar 5 mL/h → titular.
+    content: '''VASOPRESOR DE 1° LÍNEA — Shock Séptico / Distributivo:
+Noradrenalina 2 mg/mL (amp 4 mL):
+   Diluir 4 amp (16 mg) en 234 mL SF 0,9% → concentración 0,064 mg/mL.
+   Iniciar: 5 mL/h (0,05 mcg/kg/min).
+   Rango: 0,05–2,0 mcg/kg/min. Titular por PAM objetivo ≥65 mmHg.
+   ✅ Primera línea en shock séptico (Surviving Sepsis Campaign).
 
+INOTRÓPICO — Disfunción miocárdica / bajo gasto:
 Dobutamina 250 mg/20 mL:
-   Diluir 4 amp en 170 mL SF 0,9% (4 mg/mL).
-   BIC: iniciar 2 mL/h.
-   FT: 2,5–20 mcg/kg/min.
+   Diluir 4 amp en 170 mL SF 0,9% (concentración 4 mg/mL).
+   Iniciar: 2 mL/h. Rango: 2,5–20 mcg/kg/min.
+   ⚠ Solo si hay evidencia de hipoperfusión tisular con precarga adecuada.
+   ⚠ Puede causar taquiarritmias — monitoreo ECG continuo.
 
-Dopamina 50 mg/10 mL:
-   Diluir 5 amp en 200 mL SF 0,9% (10 mg/mL).
-   FT: 5–20 mcg/kg/min.
-
+VASOPRESOR 2° LÍNEA — refractario a noradrenalina:
 Vasopresina 20 UI/amp:
    Diluir 3 amp en 57 mL SF 0,9% (1 UI/mL).
-   BIC: 0,01–0,04 UI/min.
+   BIC: 0,01–0,04 UI/min (efecto ahorrador de catecolaminas).
+
+VASOPRESOR — contexto específico (bajo gasto + bradicardia):
+Dopamina 50 mg/10 mL:
+   Diluir 5 amp en 200 mL SF 0,9% (10 mg/mL).
+   Rango: 5–20 mcg/kg/min.
+   ⚠ Mayor incidencia de arritmias que noradrenalina — no es primera línea en sepsis.
 
 ---
 ⚕ Modelo educativo — adaptar al paciente.''',
@@ -516,7 +580,7 @@ Vasopresina 20 UI/amp:
   // ══════════════════════════════════════════════════════════════════════════
   _PrescriptionModel(
     id: 'migrana_jaqueca',
-    title: 'Migraña / Jaqueca',
+    title: 'Migraña',
     subtitle: 'Manejo agudo y tratamiento profiláctico',
     category: 'Neurología',
     icon: Icons.psychology_rounded,
@@ -547,8 +611,8 @@ Profilaxis (si ≥4 episodios/mes):
 
   _PrescriptionModel(
     id: 'vertigo_cinarizina',
-    title: 'Vértigo / Síndrome Vestibular',
-    subtitle: 'Dimeninato · Cinarizina',
+    title: 'Vértigo Agudo / Síndrome Vestibular',
+    subtitle: 'Dimenhidrinato · Cinarizina · Betahistina',
     category: 'Neurología',
     icon: Icons.rotate_right_rounded,
     content: '''1. Dimeninato [Dramin®] 50 mg/mL
@@ -568,8 +632,8 @@ Profilaxis:
 
   _PrescriptionModel(
     id: 'avc_isquemico_tpa',
-    title: 'ACV Isquémico — tPA',
-    subtitle: 'Alteplase en ventana terapéutica',
+    title: 'ACV Isquémico Agudo — Trombólisis',
+    subtitle: 'Alteplasa (tPA) / Tenecteplasa — ventana terapéutica',
     category: 'Neurología',
     icon: Icons.bolt_rounded,
     content: '''Alteplase (tPA) 50 mg/frasco:
@@ -1052,8 +1116,8 @@ Hidratación EV (si vómitos o deshidratación grave):
 
   _PrescriptionModel(
     id: 'hda_varicosa',
-    title: 'Hemorragia Digestiva Alta — Varicosa',
-    subtitle: 'Terlipresina · Octreotide · Somatostatina',
+    title: 'HDA Variceal — Manejo Inicial',
+    subtitle: 'Terlipresina · Octreotide · Somatostatina · endoscopía',
     category: 'Gastroenterología',
     icon: Icons.bloodtype_rounded,
     content: '''1. Octreotide 100 mcg/mL — amp 1 mL
@@ -1078,8 +1142,8 @@ Dieta oral cero hasta endoscopía.
 
   _PrescriptionModel(
     id: 'hda_no_varicosa',
-    title: 'Hemorragia Digestiva Alta — No Varicosa',
-    subtitle: 'Úlcera péptica sangrante',
+    title: 'HDA No Variceal — Manejo Inicial',
+    subtitle: 'Úlcera péptica sangrante · IBP · endoscopía',
     category: 'Gastroenterología',
     icon: Icons.emergency_share_rounded,
     content: '''1. Pantoprazol 80 mg EV bolo.
@@ -1178,22 +1242,58 @@ Alta (postoperatorio):
   ),
 
   _PrescriptionModel(
-    id: 'reflux_dup',
-    title: 'Reflujo / Úlcera Péptica',
-    subtitle: 'IBP · Erradicación H. Pylori',
+    id: 'erge_reflujo_gastroesofagico',
+    title: 'ERGE — Reflujo Gastroesofágico',
+    subtitle: 'IBP · Omeprazol · Cambios en el estilo de vida',
     category: 'Gastroenterología',
     icon: Icons.medication_rounded,
-    content: '''Tratamiento base:
+    content: '''Tratamiento de ERGE sin esofagitis:
+1. Omeprazol 20 mg — 1 comprimido VO en ayunas × 4–8 semanas.
+   (Alternativa: Pantoprazol 20 mg o Esomeprazol 20 mg)
+
+Esofagitis moderada-grave (endoscópica):
 1. Omeprazol 40 mg — 1 comprimido VO en ayunas × 8 semanas.
    (Alternativa: Pantoprazol 40 mg o Esomeprazol 40 mg)
 
-H. Pylori positivo — Terapia triple × 14 días:
+Mantenimiento (ERGE crónico):
+• Omeprazol 20 mg VO diario (dosis mínima efectiva).
+
+Medidas no farmacológicas (fundamentales):
+→ Elevar cabecera de la cama 15–20 cm.
+→ Evitar comidas copiosas 3h antes de acostarse.
+→ Evitar alcohol, café, chocolate, cítricos, picantes, grasas.
+→ Suspender tabaco.
+→ Reducir peso corporal si hay obesidad.
+
+---
+⚕ Modelo educativo — adaptar al paciente.''',
+  ),
+
+  _PrescriptionModel(
+    id: 'ulcera_peptica_hp',
+    title: 'Úlcera Péptica — Erradicación H. Pylori',
+    subtitle: 'Terapia triple/cuádruple · IBP · Amoxicilina · Claritromicina',
+    category: 'Gastroenterología',
+    icon: Icons.medication_rounded,
+    content: '''Terapia Triple Estándar × 14 días (1° línea):
 1. Omeprazol 40 mg — 1 comprimido VO cada 12h.
 2. Amoxicilina 1 g — 1 comprimido VO cada 12h.
 3. Claritromicina 500 mg — 1 comprimido VO cada 12h.
 
-H. Pylori — Segunda línea (si falla):
-• Bismuto + Metronidazol + Tetraciclina + IBP × 14 días.
+Segunda línea (si falló Claritromicina o resistencia >15%):
+Terapia cuádruple con bismuto × 14 días:
+1. Omeprazol 40 mg VO cada 12h.
+2. Subcitrato de Bismuto 120 mg VO cada 6h.
+3. Metronidazol 500 mg VO cada 8h.
+4. Tetraciclina 500 mg VO cada 6h.
+
+Mantenimiento tras erradicación:
+• Omeprazol 20–40 mg VO diario × 4–8 semanas adicionales.
+• Confirmar erradicación: Test de aliento con urea-C13 (>4 semanas post-ATB).
+
+⚠ Indicación de estudio endoscópico:
+→ Úlcera gástrica: siempre confirmar cicatrización + biopsia.
+→ Úlcera duodenal: endoscopia post-tratamiento si síntomas persisten.
 
 ---
 ⚕ Modelo educativo — adaptar al paciente.''',
@@ -1230,8 +1330,8 @@ PBE (Peritonitis Bacteriana Espontánea):
   // ══════════════════════════════════════════════════════════════════════════
   _PrescriptionModel(
     id: 'cad_ehh',
-    title: 'CAD / EHH — Insulinoterapia',
-    subtitle: 'Cetoacidosis diabética · Estado hiperosmolar',
+    title: 'CAD / EHH — Manejo Integral',
+    subtitle: 'Fluidos · insulina · potasio · bicarbonato · monitoreo',
     category: 'Endocrinología',
     icon: Icons.science_rounded,
     content: '''Insulina Regular 100 UI/mL:
@@ -1318,7 +1418,7 @@ Esquema basal-bolo (al suspender BIC):
   // ══════════════════════════════════════════════════════════════════════════
   _PrescriptionModel(
     id: 'itu_cistitis',
-    title: 'ITU Baja — Cistitis',
+    title: 'Cistitis Aguda',
     subtitle: 'Nitrofurantoína · Fosfomicina · TMP-SMX',
     category: 'Genitourinario',
     icon: Icons.water_drop_rounded,
@@ -1764,10 +1864,20 @@ Reposición de volumen:
    SF 0,9% o Ringer Lactato 500 mL EV
    30 mL/kg en alícuotas de 500 mL. Reevaluar cada hora.
 
-Vasopresor (si PAM <65 mmHg):
+Vasopresor de PRIMERA LÍNEA (si PAM <65 mmHg):
    Noradrenalina BIC: iniciar 0,05 mcg/kg/min → titular.
+   (La noradrenalina es el vasopresor de elección en shock séptico — Surviving Sepsis Campaign).
 
-Corticoide (si >0,25 mcg/kg/min de NA × 4h):
+\u26a0\ufe0f Dopamina: NO se recomienda como estándar en shock séptico (mayor mortalidad e incidencia de arritmias vs noradrenalina).
+   Usar solo en casos seleccionados: bradicardia + riesgo de taquiarritmias bajo.
+
+Segundo vasopresor (refractario a noradrenalina):
+   Vasopresina 0,03\u20130,04 UI/min BIC (efecto ahorrador de catecolaminas).
+
+Inotrópico (si bajo gasto / disfunción miocárdica):
+   Dobutamina 2,5\u20120 mcg/kg/min BIC (Solo si evidencia de hipoperfusión tisular y volumen adecuado).
+
+Corticoide (si >0,25 mcg/kg/min de NA × 4h o shock refractario):
    Hidrocortisona 200 mg/día EV (50 mg cada 6h o BIC).
 
 ---
@@ -1828,8 +1938,8 @@ Grupo D (UCI):
 
   _PrescriptionModel(
     id: 'pep_vih_sexual',
-    title: 'PPE Sexual — VIH',
-    subtitle: 'Profilaxis post-exposición — inicio <72h',
+    title: 'PEP Sexual — VIH',
+    subtitle: 'Profilaxis Post-Exposición — inicio <72h — 28 días',
     category: 'Infectología',
     icon: Icons.security_rounded,
     content: '''INICIAR ANTES DE 72h — DURACIÓN: 28 días:
@@ -1961,7 +2071,7 @@ Grave/Inmunosuprimido — EV:
   // ══════════════════════════════════════════════════════════════════════════
   _PrescriptionModel(
     id: 'agitacion_psicomotora',
-    title: 'Agitación Psicomotora',
+    title: 'Agitación Psicomotriz',
     subtitle: 'Haloperidol · Midazolam · Prometazina — guardia',
     category: 'Psiquiatría',
     icon: Icons.psychology_rounded,
@@ -2065,7 +2175,7 @@ Otras opciones:
   // ══════════════════════════════════════════════════════════════════════════
   _PrescriptionModel(
     id: 'hipercalemia',
-    title: 'Hipercalemia — Hiperpotasemia',
+    title: 'Hiperpotasemia',
     subtitle: 'Gluconato cálcico · Insulina · Kayexalato',
     category: 'Hidroelectrolítico',
     icon: Icons.science_rounded,
@@ -2097,7 +2207,7 @@ Refractaria → Hemodiálisis de urgencia.
 
   _PrescriptionModel(
     id: 'hipocalemia',
-    title: 'Hipocalemia — Hipopotasemia',
+    title: 'Hipopotasemia',
     subtitle: 'KCl oral e IV según gravedad',
     category: 'Hidroelectrolítico',
     icon: Icons.science_rounded,
@@ -2455,8 +2565,8 @@ Crioprecipitado (1 U/10 kg):
   // ══════════════════════════════════════════════════════════════════════════
   _PrescriptionModel(
     id: 'intubacion_sri',
-    title: 'Intubación — SRI',
-    subtitle: 'Secuencia Rápida de Intubación — adulto 70 kg',
+    title: 'Intubación de Secuencia Rápida (ISR)',
+    subtitle: 'ISR — sedativo + bloqueador neuromuscular — adulto 70 kg',
     category: 'Urgencias',
     icon: Icons.air_rounded,
     content: '''SEDATIVO (elegir 1):
@@ -2649,7 +2759,7 @@ Candidiasis vaginal (B):
   // ══════════════════════════════════════════════════════════════════════════
   _PrescriptionModel(
     id: 'pcr_paro_cardiorrespiratorio',
-    title: 'PCR — Paro Cardiorrespiratorio',
+    title: 'Paro Cardiorrespiratorio (PCR)',
     subtitle: 'ACLS — adrenalina · amiodarona · RCP',
     category: 'Urgencias',
     icon: Icons.monitor_heart_rounded,
@@ -2699,8 +2809,8 @@ POST-RCE (retorno de circulación espontánea):
 
   _PrescriptionModel(
     id: 'fv_tv_sin_pulso',
-    title: 'FV / TV sin Pulso — Desfibrilación',
-    subtitle: 'Choque eléctrico + adrenalina + amiodarona',
+    title: 'FV / TV sin Pulso — ACLS',
+    subtitle: 'Desfibrilación + adrenalina + amiodarona',
     category: 'Urgencias',
     icon: Icons.electric_bolt_rounded,
     content: '''FIBRILACIÓN VENTRICULAR / TV SIN PULSO
@@ -3347,8 +3457,8 @@ EVITAR: hipoglucemia, hiponatremia, drogas que aumentan catabolismo.
 
   _PrescriptionModel(
     id: 'tormenta_tiroidea',
-    title: 'Tormenta Tiroidea / Tirotoxicosis Grave',
-    subtitle: 'PTU · propranolol · yodo · dexametasona',
+    title: 'Tormenta Tiroidea',
+    subtitle: 'PTU · propranolol · yodo · dexametasona — emergencia endocrina',
     category: 'Endocrinología',
     icon: Icons.local_fire_department_rounded,
     content: '''TORMENTA TIROIDEA — Score de Burch-Wartofsky ≥45 puntos.
@@ -3397,8 +3507,8 @@ TRATAMIENTO INMEDIATO:
 
   _PrescriptionModel(
     id: 'hipotiroidismo_mixedema',
-    title: 'Hipotiroidismo Grave / Coma Mixedematoso',
-    subtitle: 'Levotiroxina EV · hidrocortisona · soporte',
+    title: 'Coma Mixedematoso',
+    subtitle: 'Levotiroxina EV · hidrocortisona · soporte — urgencia endocrina',
     category: 'Endocrinología',
     icon: Icons.thermostat_rounded,
     content: '''COMA MIXEDEMATOSO: hipotiroidismo severo descompensado.
@@ -3634,7 +3744,7 @@ Abstinencia sexual hasta 7 días post-tratamiento de ambos.
 
   _PrescriptionModel(
     id: 'covid19_grave',
-    title: 'COVID-19 Grave / Crítico',
+    title: 'COVID-19 Grave y Crítico',
     subtitle: 'Dexametasona · anticoagulación · O₂ · antiviral',
     category: 'Infectología',
     icon: Icons.coronavirus_rounded,
@@ -3783,8 +3893,8 @@ TIH (TROMBOCITOPENIA INDUCIDA POR HEPARINA):
   // ══════════════════════════════════════════════════════════════════════════
   _PrescriptionModel(
     id: 'absceso_pulmonar',
-    title: 'Absceso Pulmonar',
-    subtitle: 'Clindamicina · amoxicilina-clavulánico · drenaje',
+    title: 'Absceso Pulmonar — Antibioticoterapia',
+    subtitle: 'Clindamicina · amoxicilina-clavulánico · drenaje broncoscópico',
     category: 'Respiratorio',
     icon: Icons.air_rounded,
     content: '''ABSCESO PULMONAR
@@ -5494,8 +5604,8 @@ CONTRAINDICACIONES DE TOCOLÍTICOS:
   // ══════════════════════════════════════════════════════════════════════════
   _PrescriptionModel(
     id: 'shock_hipovolemico',
-    title: 'Shock Hipovolémico / Hemorrágico',
-    subtitle: 'Reposición · transfusión · control de sangrado',
+    title: 'Shock Hemorrágico',
+    subtitle: 'Reposición · transfusión · control de sangrado — protocolo',
     category: 'Urgencias',
     icon: Icons.emergency_rounded,
     content: '''SHOCK HIPOVOLÉMICO / HEMORRÁGICO
@@ -5874,7 +5984,7 @@ Guardia:
 
   _PrescriptionModel(
     id: 'transgresion_alimentaria_colico',
-    title: 'Transgresión Alimentaria / Cólico',
+    title: 'Dispepsia Alimentaria Aguda',
     subtitle: 'Antiespasmódico + Analgésico (Sertal Compuesto / Buscapina)',
     category: 'Gastroenterología',
     icon: Icons.fastfood_rounded,
@@ -6649,7 +6759,7 @@ Medidas de Higiene Visual:
 
   _PrescriptionModel(
     id: 'pitiriasis_versicolor_micose',
-    title: 'Pitiriasis Versicolor (Hongos del Sol)',
+    title: 'Pitiriasis Versicolor',
     subtitle: 'Ketoconazol Shampoo + Fluconazol',
     category: 'Dermatología',
     icon: Icons.spa_rounded,
