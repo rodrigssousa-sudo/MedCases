@@ -5868,6 +5868,409 @@ Guardia:
 1. Dipirona 1 g IM (si la paciente consulta por dolor local agudo/intenso).''',
   ),
 
+  // ══════════════════════════════════════════════════════════════════════════
+  // PRESCRIPCIONES ADICIONALES — Frecuentes en Guardia/Consultorio Argentina
+  // ══════════════════════════════════════════════════════════════════════════
+
+  _PrescriptionModel(
+    id: 'transgresion_alimentaria_colico',
+    title: 'Transgresión Alimentaria / Cólico',
+    subtitle: 'Antiespasmódico + Analgésico (Sertal Compuesto / Buscapina)',
+    category: 'Gastroenterología',
+    icon: Icons.fastfood_rounded,
+    content: '''Uso Oral:
+1. Propinoxato + Clonixinato de Lisina (ej. Sertal Compuesto®)
+   Tomar 1 comp vía oral cada 8h en caso de dolor tipo cólico.
+
+2. Metoclopramida 10 mg (ej. Reliverán®)
+   Tomar 1 comp vía oral cada 8h si presenta náuseas.
+
+Guardia (Crisis de dolor cólico intenso):
+1. Hioscina (Buscapina®) 1 ampolla + Dipirona 1 g diluidos en 100 mL de SF 0,9% EV a pasar en 30 min.''',
+  ),
+
+  _PrescriptionModel(
+    id: 'mordedura_perro_gato',
+    title: 'Mordedura de Animal (Perro/Gato)',
+    subtitle: 'Profilaxis con Amoxicilina-Clavulánico (Optamox)',
+    category: 'Infectología',
+    icon: Icons.pets_rounded,
+    content: '''Uso Oral:
+1. Amoxicilina + Ácido Clavulánico 875/125 mg (ej. Optamox® / Amoxiclav®)
+   Tomar 1 comp vía oral cada 12h por 5 a 7 días.
+   (Pacientes alérgicos: Clindamicina + Ciprofloxacina).
+
+2. Ibuprofeno 400 mg
+   Tomar 1 comp vía oral cada 8h por 3 días para inflamación y dolor.
+
+Guardia:
+1. Lavado profuso con agua, jabón y solución fisiológica.
+2. Chequear y actualizar vacuna Antitetánica.
+3. Evaluar necesidad de profilaxis Antirrábica según protocolo epidemiológico local.''',
+  ),
+
+  _PrescriptionModel(
+    id: 'cervicalgia_contractura',
+    title: 'Cervicalgia / Contractura Muscular',
+    subtitle: 'Diclofenac + Pridinol (Dioxaflex Plus / Blokium)',
+    category: 'Osteomuscular',
+    icon: Icons.accessibility_new_rounded,
+    content: '''Uso Oral:
+1. Diclofenac 50 mg + Pridinol 4 mg (ej. Dioxaflex Plus® / Blokium Flex®)
+   Tomar 1 comp vía oral cada 12h por 3 a 5 días (idealmente después de las comidas).
+   *Advertir al paciente que puede dar somnolencia.*
+
+Uso Tópico / Físico:
+2. Calor local
+   Aplicar paños tibios o almohadilla térmica 15 min, 3 veces al día en la zona afectada.
+
+Guardia:
+1. Diclofenac 75 mg IM + Dexametasona 4 mg IM (en jeringas separadas o combinados si la presentación lo permite).''',
+  ),
+
+  _PrescriptionModel(
+    id: 'herida_cortante_sutura',
+    title: 'Herida Cortante / Sutura',
+    subtitle: 'Cuidados post-sutura en guardia',
+    category: 'Urgencias',
+    icon: Icons.healing_rounded,
+    content: '''Indicaciones Post-Sutura:
+1. Ibuprofeno 400 mg (o Dipirona 500 mg)
+   Tomar 1 comp vía oral cada 8h en caso de dolor.
+
+2. Cefalexina 500 mg (Opcional, solo si la herida es sucia o de alto riesgo)
+   Tomar 1 comp vía oral cada 6h por 5 días.
+
+Cuidados locales:
+→ Mantener el vendaje seco y limpio las primeras 24h.
+→ Luego, lavar diariamente con agua y jabón neutro, secar sin frotar y aplicar Povidona Yodada (Pervinox®) o Clorhexidina.
+→ Regresar a la guardia o centro de salud en 7 a 10 días para el retiro de puntos.''',
+  ),
+
+  _PrescriptionModel(
+    id: 'resfrio_comun_irs',
+    title: 'Resfrío Común / Cuadro Viral VRA',
+    subtitle: 'Tratamiento puramente sintomático',
+    category: 'Clínica Médica',
+    icon: Icons.sick_rounded,
+    content: '''Uso Oral:
+1. Paracetamol 500 mg (o Ibuprofeno 400 mg)
+   Tomar 1 comp vía oral cada 8h si presenta fiebre (≥38°C), dolor de cabeza o malestar general.
+
+2. Antigripal compuesto (ej. Qura Plus® / Refrianex®) - Opcional
+   Tomar 1 comp cada 8h por 3 a 5 días para la congestión severa.
+   (Contraindicado en hipertensos severos por contener Pseudoefedrina).
+
+Medidas Generales:
+→ Reposo relativo.
+→ Abundante hidratación (agua, tés, sopas).
+→ Lavados nasales con Solución Fisiológica a demanda.''',
+  ),
+
+  _PrescriptionModel(
+    id: 'asma_pediatrica_crisis',
+    title: 'Crisis de Asma Pediátrica',
+    subtitle: 'Salbutamol + Meprednisona (Cortipyren)',
+    category: 'Pediatría',
+    icon: Icons.child_care_rounded,
+    content: '''Tratamiento Ambulatorio (Crisis Leve):
+1. Salbutamol aerosol (100 mcg/dosis)
+   Hacer 2 a 4 puffs (disparos) con aerocámara, cada 4 o 6 horas.
+   (Agitar antes de cada disparo, esperar 30 seg entre uno y otro).
+
+2. Meprednisona gotas 4 mg/mL (ej. Deltisona B® / Cortipyren®)
+   Dar 1 gota por kg de peso/día (máximo 40 gotas), preferentemente a la mañana, por 3 a 5 días.
+
+Guardia (Crisis Moderada):
+1. Oxígeno por cánula si SatO2 < 92%.
+2. Salbutamol: 4-8 puffs con aerocámara cada 20 min por 1 hora.
+3. Dexametasona 0.6 mg/kg VO o IM (dosis única, máximo 12 mg) o Meprednisona 1 mg/kg VO.''',
+  ),
+
+  _PrescriptionModel(
+    id: 'gastroenteritis_pediatrica',
+    title: 'Gastroenteritis Pediátrica',
+    subtitle: 'SRO + Probióticos (Enterogermina) + Ondansetrón',
+    category: 'Pediatría',
+    icon: Icons.child_care_rounded,
+    content: '''Uso Oral:
+1. Sales de Rehidratación Oral (SRO)
+   Ofrecer con cucharita o jeringa, 5 a 10 mL cada 5 minutos, especialmente después de cada vómito o diarrea.
+
+2. Ondansetrón gotas o comprimidos (0.15 mg/kg)
+   Dar vía oral cada 8h SOLO si hay vómitos que impidan la tolerancia a líquidos.
+
+3. Probióticos (ej. Enterogermina® / Floratil®)
+   Tomar 1 frasco ampolla (o sobre) vía oral, 1 a 2 veces al día por 5 días para reponer flora intestinal.
+
+Alimentación:
+→ Continuar con lactancia materna a demanda.
+→ Dieta astringente sin forzar (arroz, polenta, manzana rallada, pollo hervido).''',
+  ),
+
+  _PrescriptionModel(
+    id: 'dismenorrea_dolor_menstrual',
+    title: 'Dismenorrea / Dolor Menstrual',
+    subtitle: 'Ácido Mefenámico (Ponstil) o AINEs',
+    category: 'Ginecología',
+    icon: Icons.bloodtype_rounded,
+    content: '''Uso Oral:
+1. Ácido Mefenámico 500 mg (ej. Ponstil Forte®)
+   Tomar 1 comp vía oral cada 8h durante los días de dolor menstrual intenso.
+   (Tomar siempre con el estómago lleno).
+
+2. Ibuprofeno 600 mg o Naproxeno 500 mg (Como alternativa)
+   Tomar 1 comp vía oral cada 8 a 12h.
+
+Guardia (Si el dolor es incapacitante):
+1. Hioscina (Buscapina®) + Dipirona 1 g EV diluido a pasar en 20 min.
+2. Descartar abdomen agudo quirúrgico, EPI, o embarazo ectópico si es atípico.''',
+  ),
+
+  _PrescriptionModel(
+    id: 'mastitis_puerperal',
+    title: 'Mastitis Puerperal',
+    subtitle: 'Cefalexina + Vaciado mamario',
+    category: 'Ginecología',
+    icon: Icons.pregnant_woman_rounded,
+    content: '''Uso Oral:
+1. Cefalexina 500 mg
+   Tomar 1 comp vía oral cada 6h por 10 a 14 días.
+   (Es seguro durante la lactancia).
+
+2. Ibuprofeno 400 mg (o Paracetamol 500 mg)
+   Tomar 1 comp vía oral cada 8h para dolor e inflamación.
+
+Indicaciones Fundamentales:
+→ NO suspender la lactancia. El vaciado frecuente de la mama es parte del tratamiento.
+→ Aplicar compresas tibias antes de amamantar y compresas frías después.
+→ Asegurar buen acople del bebé al pezón.
+→ Consultar urgente si aparece absceso (bulto fluctuante).''',
+  ),
+
+  _PrescriptionModel(
+    id: 'balanopostitis',
+    title: 'Balanopostitis',
+    subtitle: 'Higiene + Miconazol/Hidrocortisona (Macril)',
+    category: 'Urología',
+    icon: Icons.medical_services_rounded,
+    content: '''Uso Tópico / Higiene:
+1. Jabón de Glicerina o Neutro
+   Realizar higiene retrayendo suavemente el prepucio 2 veces al día. Secar completamente sin frotar.
+
+2. Miconazol + Hidrocortisona crema (ej. Macril® / Daktacort®)
+   Aplicar una fina capa en el glande y cara interna del prepucio, 2 veces al día por 7 días.
+
+Recomendaciones:
+→ Evitar relaciones sexuales hasta la curación clínica.
+→ Considerar tratamiento de la pareja si presenta candidiasis a repetición.
+→ Descartar Diabetes Mellitus si es a repetición.''',
+  ),
+
+  _PrescriptionModel(
+    id: 'aftas_estomatitis',
+    title: 'Aftas Bucales / Estomatitis',
+    subtitle: 'Anestésicos locales (Plac-Out / Bucal-Tacc)',
+    category: 'Odontología / Clínica',
+    icon: Icons.face_rounded,
+    content: '''Uso Tópico / Local:
+1. Clorhexidina + Bencidamina spray o colutorio (ej. Plac-Out®)
+   Realizar enjuagues o aplicar 2 aspersiones directamente sobre el afta, 3 a 4 veces al día (después de comer).
+
+2. Gel con anestésico (ej. Oralsone® o Bucal-Tacc®)
+   Aplicar una pequeña cantidad sobre el afta con hisopo de algodón, 10 minutos antes de las comidas para aliviar el dolor.
+
+Medidas Generales:
+→ Evitar alimentos cítricos, muy calientes, picantes o muy salados.
+→ Mantener buena hidratación (líquidos fríos alivian).''',
+  ),
+
+  _PrescriptionModel(
+    id: 'pediculosis_piojos',
+    title: 'Pediculosis (Piojos)',
+    subtitle: 'Permetrina loción + Peine fino',
+    category: 'Dermatología',
+    icon: Icons.pest_control_rounded,
+    content: '''Uso Tópico:
+1. Permetrina Loción 1% (ej. Nopucid®)
+   Aplicar sobre el cabello seco, masajeando desde el cuero cabelludo hasta las puntas.
+   Dejar actuar 10 a 15 minutos (según prospecto).
+   Lavar el cabello con champú normal.
+   Repetir todo el procedimiento exactamente a los 7-10 días.
+
+Mecánico (Clave del tratamiento):
+2. Peine fino (lendrera)
+   Pasar todos los días por el cabello húmedo para retirar liendres y piojos muertos.
+
+Precauciones:
+→ Lavar ropa de cama, gorros y bufandas con agua caliente.
+→ No compartir peines ni accesorios de cabello.''',
+  ),
+
+  _PrescriptionModel(
+    id: 'prostatitis_aguda',
+    title: 'Prostatitis Aguda',
+    subtitle: 'Ciprofloxacina prolongada + Tamsulosina',
+    category: 'Urología',
+    icon: Icons.healing_rounded,
+    content: '''Uso Oral:
+1. Ciprofloxacina 500 mg
+   Tomar 1 comp vía oral cada 12h por 14 a 28 días.
+   (El tratamiento es prolongado por la baja penetración del ATB en la próstata).
+
+2. Tamsulosina 0.4 mg (ej. Secotex®)
+   Tomar 1 comp vía oral por la noche, después de cenar, por 30 días.
+
+3. Ibuprofeno 400 mg (o Diclofenac)
+   Tomar 1 comp vía oral cada 8h por 5 a 7 días.
+
+Guardia (si hay retención aguda de orina o sepsis):
+→ NO colocar sonda Foley por uretra si hay fuerte sospecha de prostatitis aguda severa. Valorar punción suprapúbica.
+→ Internación para Ceftriaxona EV si hay fiebre alta y compromiso de estado general.''',
+  ),
+
+  _PrescriptionModel(
+    id: 'vomitos_embarazo',
+    title: 'Vómitos en el Embarazo (Hiperemesis Leve)',
+    subtitle: 'Doxilamina-Piridoxina / Metoclopramida',
+    category: 'Ginecología',
+    icon: Icons.pregnant_woman_rounded,
+    content: '''Uso Oral:
+1. Doxilamina 10 mg + Piridoxina 10 mg (ej. Nauseol® / Reliverán Ingesta®)
+   Tomar 2 comprimidos juntos al acostarse. Si los síntomas persisten, tomar 1 comp a la mañana y 2 a la noche.
+
+2. Metoclopramida 10 mg
+   Tomar 1 comp vía oral cada 8h (como rescate si no mejora con lo anterior).
+
+Medidas Dietéticas:
+→ Fraccionar comidas: comer pequeñas porciones cada 2-3 horas.
+→ Evitar líquidos junto con comidas sólidas.
+→ Consumir galletitas secas o tostadas antes de levantarse de la cama.
+→ Evitar grasas, picantes y olores fuertes.''',
+  ),
+
+  _PrescriptionModel(
+    id: 'hemorragia_subconjuntival',
+    title: 'Hemorragia Subconjuntival (Derrame Ocular)',
+    subtitle: 'Lágrimas artificiales + Control de Presión',
+    category: 'Oftalmología',
+    icon: Icons.visibility_rounded,
+    content: '''Tratamiento Local:
+1. Lágrimas Artificiales (Hialuronato de sodio)
+   Instilar 1 gota en el ojo afectado 3 a 4 veces al día (solo para sensación de roce/cuerpo extraño).
+
+Orientación al Paciente:
+→ Tranquilizar: Es una condición benigna que se reabsorbe sola como un moretón (suele tardar 1 a 3 semanas).
+→ No requiere colirios antibióticos ni corticoides.
+→ Controlar la Presión Arterial, ya que los picos hipertensivos son la causa más frecuente.
+→ Evitar frotarse el ojo, levantar peso o hacer maniobras de Valsalva intensas.''',
+  ),
+
+  _PrescriptionModel(
+    id: 'ulcera_corneal_abrasion',
+    title: 'Abrasión Corneal / Úlcera Traumática',
+    subtitle: 'Eritromicina ungüento / Gotas de Tobramicina',
+    category: 'Oftalmología',
+    icon: Icons.visibility_rounded,
+    content: '''Uso Oftalmológico:
+1. Tobramicina gotas (o Ciprofloxacina gotas)
+   Instilar 1 gota en el ojo afectado cada 4 a 6 horas por 5 a 7 días.
+
+2. Eritromicina Ungüento oftálmico (si está disponible)
+   Aplicar una pequeña tira dentro del párpado inferior por la noche.
+
+Uso Oral:
+3. Ibuprofeno 400 mg
+   Tomar 1 comp vía oral cada 8h para el dolor ocular.
+
+Guardia:
+→ Tinte con Fluoresceína para confirmar la abrasión.
+→ Lavado ocular profuso con solución fisiológica si hubo cuerpo extraño.
+→ NUNCA recetar colirios con anestésico para uso ambulatorio (retrasan la cicatrización).
+→ Derivar urgente a oftalmología.''',
+  ),
+
+  _PrescriptionModel(
+    id: 'fascitis_plantar',
+    title: 'Fascitis Plantar / Talalgia',
+    subtitle: 'Elongación + AINEs + Plantillas',
+    category: 'Osteomuscular',
+    icon: Icons.directions_walk_rounded,
+    content: '''Medidas Físicas y Kinesiológicas (Lo más importante):
+1. Frío local
+   Hacer rodar una botella de agua congelada bajo la planta del pie por 15 minutos, 3 veces al día.
+2. Ejercicios de elongación
+   Estirar la pantorrilla (gemelos) y la fascia plantar antes de pisar el suelo a la mañana.
+3. Uso de calzado adecuado (talón levemente elevado y acolchado, evitar andar descalzo). Considerar taloneras de silicona.
+
+Uso Oral:
+4. Ibuprofeno 600 mg o Naproxeno 500 mg
+   Tomar 1 comp vía oral cada 12h por 7 a 10 días para desinflamar.
+
+Guardia:
+→ Dipirona o Diclofenac IM si el dolor es agudamente inhabilitante. Derivar a Traumatología.''',
+  ),
+
+  _PrescriptionModel(
+    id: 'tricomoniasis_urogenital',
+    title: 'Tricomoniasis Urogenital',
+    subtitle: 'Metronidazol oral dosis única (ITS)',
+    category: 'Infectología / Ginecología',
+    icon: Icons.coronavirus_rounded,
+    content: '''Uso Oral:
+1. Metronidazol 500 mg (ej. Flagyl®)
+   Tomar 4 comprimidos juntos (Total 2 gramos) como DOSIS ÚNICA.
+   (Alternativa: 500 mg vía oral cada 12h por 7 días).
+
+Indicaciones Estrictas:
+→ TRATAMIENTO DE LA PAREJA SEXUAL es obligatorio (mismo esquema empírico), aunque esté asintomático.
+→ Abstinencia sexual hasta 7 días después de haber tomado la medicación.
+→ Efecto Antabús: PROHIBIDO consumir alcohol durante el tratamiento y hasta 48h después de terminado.''',
+  ),
+
+  _PrescriptionModel(
+    id: 'ataque_panico_guardia',
+    title: 'Ataque de Pánico en Guardia',
+    subtitle: 'Clonazepam SL + Contención verbal',
+    category: 'Psiquiatría',
+    icon: Icons.psychology_rounded,
+    content: '''Manejo Inmediato en Guardia:
+1. Descartar patología orgánica (ECG, enzimas y evaluación clínica según riesgo).
+2. Contención verbal y ambiente tranquilo (bajar luces, aislar ruidos).
+3. Ejercicios de respiración diafragmática o en bolsa de papel si hay hiperventilación severa.
+
+Farmacológico:
+4. Clonazepam 0.25 mg a 0.5 mg Sublingual (SL)
+   Colocar debajo de la lengua (acción rápida en 15-20 min).
+   (Alternativa: Lorazepam 1 mg SL o VO).
+
+Al Alta:
+→ Orientar que el ECG y el corazón están sanos.
+→ No dejar la benzodiacepina como tratamiento crónico sin control.
+→ Derivar a Psiquiatría y Psicología para tratamiento de base.''',
+  ),
+
+  _PrescriptionModel(
+    id: 'herpes_labial',
+    title: 'Herpes Labial',
+    subtitle: 'Aciclovir tópico/oral',
+    category: 'Dermatología',
+    icon: Icons.face_rounded,
+    content: '''Uso Tópico (Fase de Pródromo o inicial):
+1. Aciclovir 5% crema
+   Aplicar sobre las vesículas 5 veces al día (cada 4 horas omitiendo la noche), por 5 días.
+   (Lavarse bien las manos antes y después de aplicar).
+
+Uso Oral (Solo si es muy extenso, doloroso o en inmunosuprimidos):
+2. Aciclovir 400 mg
+   Tomar 1 comp vía oral cada 8h por 5 a 7 días.
+
+Medidas de prevención y alivio:
+→ Aplicar hielo local envuelto en un paño en las primeras horas puede reducir la inflamación.
+→ Evitar compartir vasos, cubiertos, toallas o mate.
+→ Evitar besar bebés o inmunodeprimidos hasta que las lesiones estén en fase de costra seca.''',
+  ),
+
   _PrescriptionModel(
     id: 'nutricion_enteral_parenteral',
     title: 'Nutrición Clínica — Soporte Nutricional',
