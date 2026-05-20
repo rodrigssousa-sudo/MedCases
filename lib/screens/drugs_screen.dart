@@ -72,10 +72,63 @@ class _DrugsScreenState extends State<DrugsScreen> {
   // Grupos expandidos — por padrão todos fechados
   final Set<String> _expanded = {};
 
+  // ── Cache de lista pré-processada (calculada uma vez, não a cada build) ──
+  List<DrugModel>? _cachedUnique;
+  Set<String>? _cachedFavDrugs;
+  String? _cachedLang;
+
   @override
   void dispose() {
     _searchCtrl.dispose();
     super.dispose();
+  }
+
+  // Retorna lista deduplicada + ordenada, usando cache quando os dados não mudaram
+  List<DrugModel> _getUnique(AppProvider p, String q) {
+    final isSearching = q.isNotEmpty;
+
+    // Sempre recomputa ao buscar (lista pequena, rápido)
+    if (isSearching) {
+      final allDrugs = p.drugsDB;
+      final filtered = allDrugs.where((d) {
+        return d.name.toLowerCase().contains(q) ||
+            (d.className[p.lang] ?? '').toLowerCase().contains(q) ||
+            (d.category[p.lang] ?? '').toLowerCase().contains(q) ||
+            d.group.toLowerCase().contains(q) ||
+            (d.warning?[p.lang] ?? '').toLowerCase().contains(q);
+      }).toList();
+      final seen = <String>{};
+      final unique = filtered.where((d) => seen.add(d.id)).toList();
+      unique.sort((a, b) {
+        final aFav = p.favDrugs.contains(a.id) ? 0 : 1;
+        final bFav = p.favDrugs.contains(b.id) ? 0 : 1;
+        if (aFav != bFav) return aFav.compareTo(bFav);
+        return a.name.compareTo(b.name);
+      });
+      return unique;
+    }
+
+    // Sem busca: usa cache — recalcula só se favDrugs ou lang mudou
+    if (_cachedUnique != null &&
+        _cachedFavDrugs == p.favDrugs &&
+        _cachedLang == p.lang) {
+      return _cachedUnique!;
+    }
+
+    final allDrugs = p.drugsDB; // já cacheado no provider
+    final seen = <String>{};
+    final unique = allDrugs.where((d) => seen.add(d.id)).toList();
+    unique.sort((a, b) {
+      final aFav = p.favDrugs.contains(a.id) ? 0 : 1;
+      final bFav = p.favDrugs.contains(b.id) ? 0 : 1;
+      if (aFav != bFav) return aFav.compareTo(bFav);
+      return a.name.compareTo(b.name);
+    });
+
+    _cachedUnique    = unique;
+    _cachedFavDrugs  = Set.from(p.favDrugs);
+    _cachedLang      = p.lang;
+    return unique;
   }
 
   @override
@@ -92,136 +145,114 @@ class _DrugsScreenState extends State<DrugsScreen> {
 
     final q = _searchCtrl.text.toLowerCase().trim();
     final isSearching = q.isNotEmpty;
-
-    // Filtro global
-    final allDrugs = p.drugsDB;
-    final filtered = isSearching
-        ? allDrugs.where((d) {
-            return d.name.toLowerCase().contains(q) ||
-                (d.className[p.lang] ?? '').toLowerCase().contains(q) ||
-                (d.category[p.lang] ?? '').toLowerCase().contains(q) ||
-                d.group.toLowerCase().contains(q) ||
-                (d.warning?[p.lang] ?? '').toLowerCase().contains(q);
-          }).toList()
-        : allDrugs;
-
-    // Deduplicar por id
-    final seen = <String>{};
-    final unique = filtered.where((d) => seen.add(d.id)).toList();
-
-    // Ordenar: favoritos primeiro, depois alfabético
-    unique.sort((a, b) {
-      final aFav = p.favDrugs.contains(a.id) ? 0 : 1;
-      final bFav = p.favDrugs.contains(b.id) ? 0 : 1;
-      if (aFav != bFav) return aFav.compareTo(bFav);
-      return a.name.compareTo(b.name);
-    });
-
+    final unique = _getUnique(p, q);
     final dark = p.darkMode;
 
-    return SingleChildScrollView(
-      padding: const EdgeInsets.fromLTRB(0, 8, 0, 100),
-      child: Column(children: [
+    return RepaintBoundary(
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.fromLTRB(0, 8, 0, 100),
+        child: Column(children: [
 
-        // ── Header premium (oculto quando embutido em shell) ─────────────────
-        if (!widget.hideHeader) ...[  
-          PremiumCard(
-            child: SectionTitle(
-              eyebrow: 'Knowledge Base',
-              title: p.t('drugs'),
-              subtitle: p.t('drugs_subtitle'),
-              light: true,
-            ),
-          ),
-          const SizedBox(height: 12),
-        ],
-
-        // ── Busca com autocomplete ─────────────────────────────────────────────
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            _DrugSearchAutocomplete(
-              controller: _searchCtrl,
-              hintText: p.t('drugs_search_hint'),
-              allDrugs: p.drugsDB,
-              onChanged: (_) => setState(() {}),
-              onDrugSelected: (drug) => setState(() => _selected = drug),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              '${unique.length} ${p.t('drugs_found')}',
-              style: const TextStyle(
-                fontSize: 12, fontWeight: FontWeight.w700, color: Color(0xFF888888),
+          // ── Header premium (oculto quando embutido em shell) ─────────────────
+          if (!widget.hideHeader) ...[
+            PremiumCard(
+              child: SectionTitle(
+                eyebrow: 'Knowledge Base',
+                title: p.t('drugs'),
+                subtitle: p.t('drugs_subtitle'),
+                light: true,
               ),
             ),
-          ]),
-        ),
-        const SizedBox(height: 16),
-
-        // ── Modo busca: lista flat ────────────────────────────────────────────
-        if (isSearching)
-          ...unique.map((drug) => _DrugListTile(
-            drug: drug,
-            p: p,
-            dark: dark,
-            onTap: () => setState(() => _selected = drug),
-          ))
-
-        // ── Modo normal: acordeão por grupo ──────────────────────────────────
-        else ...[
-          // Favoritos no topo (se existirem)
-          if (p.favDrugs.isNotEmpty) ...[
-            _GroupAccordion(
-              groupName: p.lang == 'es' ? 'Favoritos' : 'Favoritos',
-              icon: '',
-              iconData: Icons.star_rounded,
-              iconColor: kGold,
-              drugs: unique.where((d) => p.favDrugs.contains(d.id)).toList(),
-              isExpanded: _expanded.contains('__fav__'),
-              dark: dark,
-              p: p,
-              onToggle: () => setState(() {
-                if (_expanded.contains('__fav__')) {
-                  _expanded.remove('__fav__');
-                } else {
-                  _expanded.add('__fav__');
-                }
-              }),
-              onSelect: (drug) => setState(() => _selected = drug),
-            ),
-            const SizedBox(height: 4),
+            const SizedBox(height: 12),
           ],
 
-          // Grupos clínicos em ordem definida em DrugGroup.all
-          ...DrugGroup.all.map((groupName) {
-            final drugsInGroup = unique
-                .where((d) => d.group == groupName)
-                .toList();
-            if (drugsInGroup.isEmpty) return const SizedBox.shrink();
-            final isExp = _expanded.contains(groupName);
-            return Column(children: [
+          // ── Busca com autocomplete ─────────────────────────────────────────────
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              _DrugSearchAutocomplete(
+                controller: _searchCtrl,
+                hintText: p.t('drugs_search_hint'),
+                allDrugs: p.drugsDB,
+                onChanged: (_) => setState(() {}),
+                onDrugSelected: (drug) => setState(() => _selected = drug),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                '${unique.length} ${p.t('drugs_found')}',
+                style: const TextStyle(
+                  fontSize: 12, fontWeight: FontWeight.w700, color: Color(0xFF888888),
+                ),
+              ),
+            ]),
+          ),
+          const SizedBox(height: 16),
+
+          // ── Modo busca: lista flat ────────────────────────────────────────────
+          if (isSearching)
+            ...unique.map((drug) => _DrugListTile(
+              drug: drug,
+              p: p,
+              dark: dark,
+              onTap: () => setState(() => _selected = drug),
+            ))
+
+          // ── Modo normal: acordeão por grupo ──────────────────────────────────
+          else ...[
+            // Favoritos no topo (se existirem)
+            if (p.favDrugs.isNotEmpty) ...[
               _GroupAccordion(
-                groupName: groupName,
+                groupName: p.lang == 'es' ? 'Favoritos' : 'Favoritos',
                 icon: '',
-                iconData: DrugGroup.iconData(groupName),
-                drugs: drugsInGroup,
-                isExpanded: isExp,
+                iconData: Icons.star_rounded,
+                iconColor: kGold,
+                drugs: unique.where((d) => p.favDrugs.contains(d.id)).toList(),
+                isExpanded: _expanded.contains('__fav__'),
                 dark: dark,
                 p: p,
                 onToggle: () => setState(() {
-                  if (isExp) {
-                    _expanded.remove(groupName);
+                  if (_expanded.contains('__fav__')) {
+                    _expanded.remove('__fav__');
                   } else {
-                    _expanded.add(groupName);
+                    _expanded.add('__fav__');
                   }
                 }),
                 onSelect: (drug) => setState(() => _selected = drug),
               ),
               const SizedBox(height: 4),
-            ]);
-          }),
-        ],
-      ]),
+            ],
+
+            // Grupos clínicos em ordem definida em DrugGroup.all
+            ...DrugGroup.all.map((groupName) {
+              final drugsInGroup = unique
+                  .where((d) => d.group == groupName)
+                  .toList();
+              if (drugsInGroup.isEmpty) return const SizedBox.shrink();
+              final isExp = _expanded.contains(groupName);
+              return Column(children: [
+                _GroupAccordion(
+                  groupName: groupName,
+                  icon: '',
+                  iconData: DrugGroup.iconData(groupName),
+                  drugs: drugsInGroup,
+                  isExpanded: isExp,
+                  dark: dark,
+                  p: p,
+                  onToggle: () => setState(() {
+                    if (isExp) {
+                      _expanded.remove(groupName);
+                    } else {
+                      _expanded.add(groupName);
+                    }
+                  }),
+                  onSelect: (drug) => setState(() => _selected = drug),
+                ),
+                const SizedBox(height: 4),
+              ]);
+            }),
+          ],
+        ]),
+      ),
     );
   }
 }

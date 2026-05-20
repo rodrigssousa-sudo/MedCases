@@ -389,7 +389,7 @@
     'use strict';
 
     // ── Versão do app (alterar a cada deploy significativo) ──────────
-    var APP_VERSION = '5.0.0';
+    var APP_VERSION = '5.3.0';
     var SW_URL      = 'pwa-sw.js';
 
     // ── Remoção do splash ────────────────────────────────────────────
@@ -538,6 +538,32 @@
 
     }());
 
+    // ── Limpa parâmetro ?nocache= da URL sem reload (evita acúmulo) ──
+    (function() {
+      try {
+        var url = new URL(window.location.href);
+        if (url.searchParams.has('nocache')) {
+          url.searchParams.delete('nocache');
+          history.replaceState(null, '', url.pathname + (url.search || '') + (url.hash || ''));
+        }
+      } catch(e) {}
+    })();
+
+    // ── Força hard-reload quebrando cache HTTP ─────────────────────────
+    function _hardReload() {
+      try {
+        // Limpa localStorage de versão para forçar re-detecção no próximo load
+        localStorage.removeItem('medcases_app_version');
+      } catch(e) {}
+      // Query string com timestamp quebra cache HTTP em 100% dos browsers
+      var ts = Date.now();
+      var base = window.location.pathname;
+      window.location.replace(base + '?nocache=' + ts);
+    }
+
+    // Expõe globalmente para o Flutter chamar via js_interop se necessário
+    window.medcasesForceUpdate = _hardReload;
+
     // ── Toast de atualização ─────────────────────────────────────────
     var _waitingSW = null;
 
@@ -565,33 +591,31 @@
       // controllerchange só recarrega se foi o USUÁRIO que pediu o update
       navigator.serviceWorker.addEventListener('controllerchange', function() {
         if (_userTriggeredUpdate) {
-          window.location.reload();
+          // usa _hardReload para garantir quebra de cache HTTP também
+          _hardReload();
         }
         // Se não foi o usuário → ignora (primeiro registro, etc.)
       });
 
-      // Substitui o handler do botão para setar a flag antes do postMessage
+      // Substitui o handler do botão — limpa SW + caches + hard-reload com ?nocache
       document.getElementById('pwa-update-btn').addEventListener('click', function() {
         var toast = document.getElementById('pwa-update-toast');
         if (toast) toast.classList.remove('show');
         _userTriggeredUpdate = true;
-        // Limpa todos os caches antes de recarregar
+        // Passo 1: desregistra todos os SWs
         var swClean = navigator.serviceWorker.getRegistrations()
           .then(function(regs) {
             return Promise.all(regs.map(function(r) { return r.unregister(); }));
-          }).catch(function() {});
+          }).catch(function() { return Promise.resolve(); });
+        // Passo 2: deleta todos os caches
         var cacheClean = ('caches' in window)
           ? caches.keys().then(function(keys) {
               return Promise.all(keys.map(function(k) { return caches.delete(k); }));
-            }).catch(function() {})
+            }).catch(function() { return Promise.resolve(); })
           : Promise.resolve();
+        // Passo 3: após limpeza completa, hard-reload com query string
         Promise.all([swClean, cacheClean]).then(function() {
-          if (_waitingSW) {
-            _waitingSW.postMessage({ type: 'SKIP_WAITING' });
-            _waitingSW = null;
-          } else {
-            window.location.reload(true);
-          }
+          _hardReload();
         });
       });
 
@@ -615,8 +639,15 @@
           .catch(function() {})
           .then(function() {
             try { localStorage.setItem('medcases_app_version', APP_VERSION); } catch(e) {}
-            registerSW();
-            bootFlutter();
+            // Se a URL já tem ?nocache (viemos de um hard-reload), só registra e boota
+            var alreadyFresh = window.location.search.indexOf('nocache') !== -1;
+            if (alreadyFresh) {
+              registerSW();
+              bootFlutter();
+            } else {
+              // Primeira detecção de versão nova: hard-reload para garantir JS fresco
+              _hardReload();
+            }
           });
       } else {
         // Mesma versão: registra e boota imediatamente

@@ -1,16 +1,16 @@
 /**
- * MedCases Pro — PWA Service Worker v5.0.0
+ * MedCases Pro — PWA Service Worker v5.2.0
  *
- * v5.0.0: Chatbot IA — ENTER envia, scroll controlado, saudação por horário,
- * - Ditado por voz (Web Speech API), respostas em áudio (TTS)
- * - Botão Ocultar/Mostrar HC com UI otimista (sem reload)
- * - Cache bust forçado — todos os usuários recebem versão nova automaticamente
+ * v5.3.0: botão ATUALIZAR com hard-reload ?nocache=ts + cache bust garantido
+ * - _hardReload() quebra cache HTTP com query string timestamp
+ * - SW ignora requests ?nocache= (bypass total)
+ * - 589 fármacos únicos · 1312 interações medicamentosas
  */
 
 'use strict';
 
-const SW_VERSION   = '5.0.0';
-const CACHE_STATIC = 'medcases-static-v5.0.0';
+const SW_VERSION   = '5.3.0';
+const CACHE_STATIC = 'medcases-static-v5.3.0';
 const CACHE_FONTS  = 'medcases-fonts-v1'; // fontes mudam raramente, versão fixa
 
 // Assets essenciais pré-cacheados no install
@@ -90,6 +90,9 @@ self.addEventListener('fetch', event => {
   if (request.method !== 'GET') return;
   if (shouldNeverCache(url)) return;
   if (url.startsWith('chrome-extension://')) return;
+
+  // Hard-reload via ?nocache= → vai direto à rede, sem cache, sem SW
+  if (url.includes('nocache=')) return;
 
   // Fontes: cache-first longo
   if (isFont(url)) {

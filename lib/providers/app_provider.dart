@@ -149,10 +149,16 @@ class AppProvider extends ChangeNotifier {
   double get offlineProgress  => _offlineProgress;
   DateTime? get offlineCachedAt => _offlineCachedAt;
 
+  // ── Cache imutável (calculado uma vez no primeiro acesso) ────────────────
+  List<DrugModel>? _drugsDBCache;
+
   // Deduplica por ID (garante que entradas duplicadas na database não apareçam duas vezes)
+  // Resultado é cacheado — não recalcula a cada rebuild.
   List<DrugModel> get drugsDB {
+    if (_drugsDBCache != null) return _drugsDBCache!;
     final seen = <String>{};
-    return drugsDatabase.where((d) => seen.add(d.id)).toList();
+    _drugsDBCache = drugsDatabase.where((d) => seen.add(d.id)).toList();
+    return _drugsDBCache!;
   }
   List<ProtocolModel> get protocolsDB => protocolsDatabase;
   List<ClinicalCaseModel> get casesDB => casesDatabase;

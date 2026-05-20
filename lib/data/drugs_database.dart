@@ -5,16 +5,19 @@ import '../models/drug_model.dart';
 /// Goodman & Gilman's Pharmacological Basis of Therapeutics (14ª ed.),
 /// Micromedex, UpToDate, SBC, SBD, AHA/ACC, IDSA, SCCM guidelines.
 
-/// Retorna o número de fármacos únicos (por ID) no banco.
+/// Número de fármacos únicos (por ID) no banco — calculado uma vez e cacheado.
 /// Usa-se esta função nos headers em vez de drugsDatabase.length,
 /// pois o banco pode conter entradas duplicadas (mesmo fármaco em
 /// múltiplos grupos) para facilitar a busca por especialidade.
+int? _uniqueDrugsCountCache;
 int get uniqueDrugsCount {
+  if (_uniqueDrugsCountCache != null) return _uniqueDrugsCountCache!;
   final ids = <String>{};
   for (final d in drugsDatabase) {
     ids.add(d.id);
   }
-  return ids.length;
+  _uniqueDrugsCountCache = ids.length;
+  return _uniqueDrugsCountCache!;
 }
 
 const List<DrugModel> drugsDatabase = [

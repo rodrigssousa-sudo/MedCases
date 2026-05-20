@@ -2008,8 +2008,25 @@ class _AdultoShell extends StatelessWidget {
 // ─────────────────────────────────────────────────────────────────────────────
 // FÁRMACOS SHELL
 // ─────────────────────────────────────────────────────────────────────────────
-class _FarmacosShell extends StatelessWidget {
+class _FarmacosShell extends StatefulWidget {
   const _FarmacosShell();
+
+  @override
+  State<_FarmacosShell> createState() => _FarmacosShellState();
+}
+
+class _FarmacosShellState extends State<_FarmacosShell> {
+  // Adia a construção pesada do DrugsScreen para depois da animação de entrada
+  bool _ready = false;
+
+  @override
+  void initState() {
+    super.initState();
+    // Aguarda a animação de slide terminar (~280ms) antes de montar o DrugsScreen
+    Future.delayed(const Duration(milliseconds: 290), () {
+      if (mounted) setState(() => _ready = true);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -2029,7 +2046,41 @@ class _FarmacosShell extends StatelessWidget {
               ? '${uniqueDrugsCount} fármacos · Interacciones · Protocolos'
               : '${uniqueDrugsCount} fármacos · Interações · Protocolos',
         ),
-        const Expanded(child: DrugsScreen(hideHeader: true)),
+        Expanded(
+          child: _ready
+              ? const RepaintBoundary(child: DrugsScreen(hideHeader: true))
+              : _buildSkeleton(dark),
+        ),
+      ]),
+    );
+  }
+
+  // Placeholder leve exibido durante a animação de entrada (~280ms)
+  Widget _buildSkeleton(bool dark) {
+    final bg = dark ? const Color(0xFF1E1E1E) : const Color(0xFFEEEEEE);
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+      child: Column(children: [
+        // Barra de busca skeleton
+        Container(
+          height: 48,
+          decoration: BoxDecoration(
+            color: bg,
+            borderRadius: BorderRadius.circular(14),
+          ),
+        ),
+        const SizedBox(height: 20),
+        // Linhas de grupo skeleton
+        ...List.generate(6, (i) => Padding(
+          padding: const EdgeInsets.only(bottom: 10),
+          child: Container(
+            height: 52,
+            decoration: BoxDecoration(
+              color: bg,
+              borderRadius: BorderRadius.circular(12),
+            ),
+          ),
+        )),
       ]),
     );
   }

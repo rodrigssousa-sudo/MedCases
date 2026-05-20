@@ -1,16 +1,16 @@
 /**
  * MedCases Pro — PWA Service Worker v5.2.0
  *
- * v5.2.0: +63 interações medicamentosas (1312 total) + 589 fármacos únicos
- * - Cache bust triplo: pubspec version + APP_VERSION + SW_VERSION
- * - Corrige cards com valores defasados por cache antigo
- * - Força atualização completa em todos os usuários
+ * v5.3.0: botão ATUALIZAR com hard-reload ?nocache=ts + cache bust garantido
+ * - _hardReload() quebra cache HTTP com query string timestamp
+ * - SW ignora requests ?nocache= (bypass total)
+ * - 589 fármacos únicos · 1312 interações medicamentosas
  */
 
 'use strict';
 
-const SW_VERSION   = '5.2.0';
-const CACHE_STATIC = 'medcases-static-v5.2.0';
+const SW_VERSION   = '5.3.0';
+const CACHE_STATIC = 'medcases-static-v5.3.0';
 const CACHE_FONTS  = 'medcases-fonts-v1'; // fontes mudam raramente, versão fixa
 
 // Assets essenciais pré-cacheados no install
