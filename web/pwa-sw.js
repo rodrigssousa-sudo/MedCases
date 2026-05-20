@@ -91,6 +91,9 @@ self.addEventListener('fetch', event => {
   if (shouldNeverCache(url)) return;
   if (url.startsWith('chrome-extension://')) return;
 
+  // Hard-reload via ?nocache= → vai direto à rede, sem cache, sem SW
+  if (url.includes('nocache=')) return;
+
   // Fontes: cache-first longo
   if (isFont(url)) {
     event.respondWith(
