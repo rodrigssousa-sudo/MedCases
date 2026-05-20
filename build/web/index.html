@@ -6,6 +6,10 @@
   <!-- ═══════════════════════════════════════════════════════════════════
        CORE
   ═══════════════════════════════════════════════════════════════════ -->
+  <!-- Impede cache HTTP deste arquivo no browser e em proxies -->
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=Edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
@@ -389,6 +393,33 @@
     'use strict';
 
     // ── Versão do app (alterar a cada deploy significativo) ──────────
+    // ── ANTI-LOOP: detecta redirect em loop e boota direto ──────────
+    // sessionStorage é limpo ao fechar aba, não persiste entre sessões.
+    // Se detectar 2+ reloads rápidos (< 4s), mata SWs/caches e boota direto.
+    (function() {
+      try {
+        var _now = Date.now();
+        var _rc = parseInt(sessionStorage.getItem('_mc_rc') || '0', 10);
+        var _rt = parseInt(sessionStorage.getItem('_mc_rt') || '0', 10);
+        sessionStorage.setItem('_mc_rt', String(_now));
+        sessionStorage.setItem('_mc_rc', String((_now - _rt < 4000) ? _rc + 1 : 0));
+        if (_rc >= 2) {
+          sessionStorage.setItem('_mc_rc', '0');
+          try { localStorage.setItem('medcases_app_version', '5.3.0'); } catch(e2) {}
+          if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.getRegistrations()
+              .then(function(r) { r.forEach(function(s) { s.unregister(); }); })
+              .catch(function() {});
+          }
+          if ('caches' in window) {
+            caches.keys().then(function(ks) { ks.forEach(function(k) { caches.delete(k); }); })
+              .catch(function() {});
+          }
+          window._mcEmergencyBoot = true;
+        }
+      } catch(e) {}
+    })();
+
     var APP_VERSION = '5.3.0';
     var SW_URL      = 'pwa-sw.js';
 
@@ -564,6 +595,12 @@
 
     // ── Registro e gestão do Service Worker ─────────────────────────
     (function() {
+
+      // Se anti-loop detectou ciclo, boota direto sem nenhuma lógica de SW
+      if (window._mcEmergencyBoot) {
+        bootFlutter();
+        return;
+      }
 
       if (!('serviceWorker' in navigator)) {
         bootFlutter();
