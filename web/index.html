@@ -538,24 +538,9 @@
 
     }());
 
-    // ── Limpa parâmetro ?nocache= da URL sem reload (evita acúmulo) ──
-    (function() {
-      try {
-        var url = new URL(window.location.href);
-        if (url.searchParams.has('nocache')) {
-          url.searchParams.delete('nocache');
-          history.replaceState(null, '', url.pathname + (url.search || '') + (url.hash || ''));
-        }
-      } catch(e) {}
-    })();
-
-    // ── Força hard-reload quebrando cache HTTP ─────────────────────────
+    // ── Força hard-reload quebrando cache HTTP (apenas para botão manual) ──
+    // Usado SOMENTE pelo botão ATUALIZAR — nunca chamado automaticamente no boot.
     function _hardReload() {
-      try {
-        // Limpa localStorage de versão para forçar re-detecção no próximo load
-        localStorage.removeItem('medcases_app_version');
-      } catch(e) {}
-      // Query string com timestamp quebra cache HTTP em 100% dos browsers
       var ts = Date.now();
       var base = window.location.pathname;
       window.location.replace(base + '?nocache=' + ts);
@@ -588,42 +573,40 @@
       // Flag: indica que o reload foi iniciado pelo usuário (evita loop)
       var _userTriggeredUpdate = false;
 
-      // controllerchange só recarrega se foi o USUÁRIO que pediu o update
+      // controllerchange → recarrega apenas se o usuário pediu update
       navigator.serviceWorker.addEventListener('controllerchange', function() {
         if (_userTriggeredUpdate) {
-          // usa _hardReload para garantir quebra de cache HTTP também
-          _hardReload();
+          window.location.reload();
         }
-        // Se não foi o usuário → ignora (primeiro registro, etc.)
       });
 
-      // Substitui o handler do botão — limpa SW + caches + hard-reload com ?nocache
+      // Botão ATUALIZAR: desregistra SWs + limpa caches + hard-reload com ?nocache
       document.getElementById('pwa-update-btn').addEventListener('click', function() {
         var toast = document.getElementById('pwa-update-toast');
         if (toast) toast.classList.remove('show');
         _userTriggeredUpdate = true;
-        // Passo 1: desregistra todos os SWs
         var swClean = navigator.serviceWorker.getRegistrations()
           .then(function(regs) {
             return Promise.all(regs.map(function(r) { return r.unregister(); }));
           }).catch(function() { return Promise.resolve(); });
-        // Passo 2: deleta todos os caches
         var cacheClean = ('caches' in window)
           ? caches.keys().then(function(keys) {
               return Promise.all(keys.map(function(k) { return caches.delete(k); }));
             }).catch(function() { return Promise.resolve(); })
           : Promise.resolve();
-        // Passo 3: após limpeza completa, hard-reload com query string
         Promise.all([swClean, cacheClean]).then(function() {
           _hardReload();
         });
       });
 
+      // ── Detecção de versão nova — limpa SW/cache e boota ────────────
       var storedVersion = null;
       try { storedVersion = localStorage.getItem('medcases_app_version'); } catch(e) {}
 
-      // Limpa SW/cache antigos se versão mudou, depois registra e boota
       if (storedVersion !== APP_VERSION) {
+        // Versão nova detectada: limpa SW + caches antigos, depois boota normalmente.
+        // NÃO fazemos redirect — o redirect causava loop quando o index.html estava
+        // em cache no browser (o arquivo antigo não conhecia o mecanismo novo).
         var swClean = navigator.serviceWorker.getRegistrations()
           .then(function(regs) {
             return Promise.all(regs.map(function(r) { return r.unregister(); }));
@@ -639,15 +622,8 @@
           .catch(function() {})
           .then(function() {
             try { localStorage.setItem('medcases_app_version', APP_VERSION); } catch(e) {}
-            // Se a URL já tem ?nocache (viemos de um hard-reload), só registra e boota
-            var alreadyFresh = window.location.search.indexOf('nocache') !== -1;
-            if (alreadyFresh) {
-              registerSW();
-              bootFlutter();
-            } else {
-              // Primeira detecção de versão nova: hard-reload para garantir JS fresco
-              _hardReload();
-            }
+            registerSW();
+            bootFlutter();
           });
       } else {
         // Mesma versão: registra e boota imediatamente
