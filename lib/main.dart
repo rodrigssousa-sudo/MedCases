@@ -37,69 +37,66 @@ import 'services/firestore_service.dart';
 import 'services/gemini_service.dart';
 import 'widgets/brand_mark.dart';
 
-// Future global — já resolvido quando runApp() é chamado
-// Mantido para compatibilidade com _AuthGate FutureBuilder
+// ── Boot assíncrono global ────────────────────────────────────────────────────
+// Executa APÓS runApp() — o _AuthGate observa este Future via FutureBuilder.
+// Estratégia: runApp() imediato → splash Flutter aparece em < 1s →
+// Firebase + restoreSession correm em background → UI atualiza ao concluir.
 late final Future<void> _firebaseInit;
 
-void main() async {
+void main() {
   FlutterError.onError = (FlutterErrorDetails details) {
     FlutterError.dumpErrorToConsole(details);
   };
 
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Firebase DEVE ser inicializado com await ANTES do runApp()
-  // Sem isso, qualquer uso de Auth/Firestore explode com [core/no-app]
-  // mesmo dentro de FutureBuilder — porque streams internos disparam cedo
-  try {
-    await Firebase.initializeApp(
-      options: DefaultFirebaseOptions.currentPlatform,
-    );
-    // Já concluído — Future.value() resolve imediatamente no FutureBuilder
-    _firebaseInit = Future.value();
-  } catch (e) {
-    // Falha real de configuração (ex: firebase_options errado, JS SDK ausente)
-    // _AuthGate mostra LoginScreen graciosamente via snapshot.hasError
-    debugPrint('[MedCases] Firebase.initializeApp falhou: $e');
-    // CRÍTICO: usar Future.error() direto sem .catchError() faz o Dart emitir
-    // um "Uncaught Error" na zona global quando nenhum listener consome o erro
-    // antes do GC. Resolvemos capturando o erro antecipadamente com catchError,
-    // tornando o Future "consumido" e seguro para o FutureBuilder.
-    _firebaseInit = Future<void>.error(e)
-      ..catchError((_) {/* erro capturado — FutureBuilder lida via hasError */});
-  }
-
+  // Cria o provider e lê prefs locais de forma SÍNCRONA (sem await aqui).
+  // loadPrefs() é disparado em background — preferências chegam em ~50ms.
   final provider = AppProvider();
 
-  // SharedPreferences falha em abas anônimas (localStorage bloqueado)
-  try {
-    await provider.loadPrefs();
-  } catch (e) {
-    debugPrint('[MedCases] SharedPreferences indisponível: $e');
-  }
-
-  // ── Boot: restaura Gemini API Key do SharedPreferences/localStorage ─────────
-  // Passo 1 — async (SharedPreferences, imune ao SES/CSP): sem dart:js, sem eval.
-  // Passo 2 — sync fallback (mcLsGet via dart:js) se SharedPreferences vazio.
-  // Deve ser ANTES de restoreSession() e runApp().
-  await GeminiService.initFromStorage();
-
-  // ── Restauração silenciosa de sessão ("Manter conectado") ──────────────────
-  // Tenta renovar o refreshToken antes do runApp — se bem-sucedido, webUser.value
-  // já estará preenchido quando _AuthGate construir, saltando direto ao MainShell.
-  // Timeout de 8 s está dentro de restoreSession(); rede falha → LoginScreen normal.
-  if (kIsWeb) {
-    try {
-      await AuthService.restoreSession();
-    } catch (_) {}
-  }
-
+  // ── runApp() IMEDIATO — splash aparece em < 500ms ────────────────────────
   runApp(
     ChangeNotifierProvider.value(
       value: provider,
       child: const MedCasesApp(),
     ),
   );
+
+  // ── Boot assíncrono em background (não bloqueia a UI) ────────────────────
+  _firebaseInit = _bootInBackground(provider);
+}
+
+/// Executa todo o boot pesado após runApp() — a UI já está visível.
+Future<void> _bootInBackground(AppProvider provider) async {
+  // 1. SharedPreferences (local, rápido ~50ms) — preferências de tema/idioma
+  try {
+    await provider.loadPrefs();
+  } catch (e) {
+    debugPrint('[MedCases] SharedPreferences indisponível: $e');
+  }
+
+  // 2. Gemini key do storage local (síncrono, sem rede)
+  try {
+    await GeminiService.initFromStorage();
+  } catch (_) {}
+
+  // 3. Firebase init (pode depender de JS externo no web — até ~3s)
+  try {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+  } catch (e) {
+    debugPrint('[MedCases] Firebase.initializeApp falhou: $e');
+    // Propaga o erro — _AuthGate trata via snapshot.hasError
+    rethrow;
+  }
+
+  // 4. Restaura sessão em paralelo com outros inits (timeout já está em 8s)
+  if (kIsWeb) {
+    try {
+      await AuthService.restoreSession();
+    } catch (_) {}
+  }
 }
 
 class MedCasesApp extends StatelessWidget {
@@ -755,9 +752,17 @@ class _WebMainShellGateState extends State<_WebMainShellGate> {
     // Só chama setUser se o provider ainda não tem este usuário — evita
     // chamar duas vezes durante rebuilds do ValueListenableBuilder.
     if (p.currentUser?.uid != widget.user.uid) {
-      await p.setUser(widget.user);
+      // Timeout de segurança de 3s: se setUser() travar (rede lenta),
+      // mostra o app mesmo assim — dados mínimos já carregados pelo loadPrefs().
+      await p.setUser(widget.user).timeout(
+        const Duration(seconds: 3),
+        onTimeout: () {}, // silencioso — app abre com dados locais
+      );
     } else {
-      await p.checkGeminiSession();
+      await p.checkGeminiSession().timeout(
+        const Duration(seconds: 2),
+        onTimeout: () {},
+      );
     }
     if (mounted) setState(() => _ready = true);
   }

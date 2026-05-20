@@ -195,12 +195,12 @@ class AppProvider extends ChangeNotifier {
     // 1️⃣ Carrega cache local IMEDIATAMENTE — app responde sem esperar rede
     await _loadFromLocal(uid: user.uid);
 
-    // 2️⃣ Carrega chaves do Firestore com AWAIT — SEMPRE executa (nunca condicional).
-    //    openAiKey: garante hasAiKey=true antes da UI montar.
-    //    geminiApiKey: CRÍTICO — não tem cache local, deve ser sempre buscada.
-    //    Timeout 5s para não travar login em redes lentas; falha silenciosa = modo local.
+    // 2️⃣ Carrega chaves do Firestore com AWAIT — timeout reduzido para 2s.
+    //    GeminiService.initFromStorage() já foi chamado em _bootInBackground()
+    //    então a chave local já está disponível; Firestore apenas atualiza.
+    //    Timeout 2s: resposta rápida em redes OK; fallback para cache local.
     await _loadAiKeyFromFirestore(user.uid).timeout(
-      const Duration(seconds: 5),
+      const Duration(seconds: 2),
       onTimeout: () { _aiKeyLoading = false; },
     );
 

@@ -1,56 +1,172 @@
 /**
- * MedCases Pro — PWA Service Worker v6.0.0
- * MODO KILLER: ao instalar, limpa TODOS os caches, desregistra a si mesmo
- * e força reload em todos os clientes. Isso garante que usuários presos
- * em loops de cache antigo recebam o app atualizado imediatamente.
- *
- * Após a limpeza, o próximo SW registrado (pwa-sw.js?v=6) funcionará normalmente.
+ * MedCases Pro — PWA Service Worker v6.1.0
+ * Estratégia: cache-first para assets estáticos (main.dart.js, ícones, fontes)
+ *             network-first para index.html (sempre fresco)
+ * Resultado: primeiro load baixa o bundle; cargas subsequentes são instantâneas.
  */
 
 'use strict';
 
-const SW_VERSION = '6.0.0';
+const SW_VERSION   = '6.1.0';
+const CACHE_APP    = 'medcases-app-v6.1.0';
+const CACHE_FONTS  = 'medcases-fonts-v2';
 
-// ── INSTALL: ativa imediatamente sem esperar abas fecharem ──────────────────
+// Assets pré-cacheados no install (críticos para o boot)
+const PRECACHE = [
+  './',
+  './flutter_bootstrap.js',
+  './flutter.js',
+  './manifest.json',
+  './icons/Icon-192.png',
+  './icons/Icon-512.png',
+  './icons/Icon-maskable-192.png',
+  './icons/Icon-maskable-512.png',
+];
+
+// main.dart.js é cacheado separadamente (stale-while-revalidate)
+const BIG_ASSETS = /\/(main\.dart\.js|flutter_bootstrap\.js|flutter\.js)(\?.*)?$/;
+
+// Nunca cachear APIs, Firebase, Google Auth
+const NEVER_CACHE = [
+  /firestore\.googleapis\.com/,
+  /firebase\.googleapis\.com/,
+  /identitytoolkit\.googleapis\.com/,
+  /securetoken\.googleapis\.com/,
+  /accounts\.google\.com/,
+  /gsi\/client/,
+  /googleapis\.com\/oauth2/,
+  /chrome-extension/,
+  /\/api\//,
+];
+
+const FONT_URLS = [/fonts\.googleapis\.com/, /fonts\.gstatic\.com/];
+
+function neverCache(url) { return NEVER_CACHE.some(p => p.test(url)); }
+function isFont(url)     { return FONT_URLS.some(p => p.test(url)); }
+function isBigAsset(url) { return BIG_ASSETS.test(url); }
+function isStaticAsset(url) {
+  return /\.(js|css|png|jpg|jpeg|svg|ico|woff|woff2|ttf|json|wasm)(\?.*)?$/.test(url);
+}
+
+// ── INSTALL ────────────────────────────────────────────────────────────────────
 self.addEventListener('install', event => {
-  console.log('[SW v6] Instalando — modo killer ativo');
-  self.skipWaiting(); // ativa IMEDIATAMENTE
-});
-
-// ── ACTIVATE: limpa TODOS os caches e recarrega todos os clientes ───────────
-self.addEventListener('activate', event => {
-  console.log('[SW v6] Ativando — limpando todos os caches...');
   event.waitUntil(
-    caches.keys()
-      .then(keys => {
-        console.log('[SW v6] Caches encontrados:', keys);
-        return Promise.all(keys.map(k => {
-          console.log('[SW v6] Deletando cache:', k);
-          return caches.delete(k);
-        }));
-      })
-      .then(() => self.clients.claim())
-      .then(() => self.clients.matchAll({ type: 'window' }))
-      .then(clients => {
-        console.log('[SW v6] Recarregando', clients.length, 'clientes...');
-        clients.forEach(client => {
-          // Redireciona com ?bust= para quebrar cache HTTP também
-          const url = new URL(client.url);
-          url.searchParams.set('bust', SW_VERSION);
-          client.navigate(url.toString());
-        });
-      })
+    caches.open(CACHE_APP)
+      .then(cache => Promise.allSettled(PRECACHE.map(u => cache.add(u).catch(() => {}))))
+      .then(() => self.skipWaiting())   // ativa imediatamente — sem toast necessário
   );
 });
 
-// ── FETCH: passa tudo direto para a rede, sem cache ────────────────────────
-self.addEventListener('fetch', event => {
-  event.respondWith(fetch(event.request));
+// ── ACTIVATE ───────────────────────────────────────────────────────────────────
+// Remove caches de versões anteriores, mantém só os atuais
+self.addEventListener('activate', event => {
+  const keep = [CACHE_APP, CACHE_FONTS];
+  event.waitUntil(
+    caches.keys()
+      .then(keys => Promise.all(
+        keys.filter(k => !keep.includes(k)).map(k => caches.delete(k))
+      ))
+      .then(() => self.clients.claim())
+  );
 });
 
-// ── MESSAGE ─────────────────────────────────────────────────────────────────
+// ── FETCH ──────────────────────────────────────────────────────────────────────
+self.addEventListener('fetch', event => {
+  const { request } = event;
+  const url = request.url;
+
+  if (request.method !== 'GET') return;
+  if (neverCache(url)) return;
+  if (url.startsWith('chrome-extension://')) return;
+  // URLs com nocache= ou bust= → sempre rede (cache bust manual)
+  if (url.includes('nocache=') || url.includes('bust=')) return;
+
+  // ── Fontes: cache permanente ───────────────────────────────────────────────
+  if (isFont(url)) {
+    event.respondWith(
+      caches.open(CACHE_FONTS).then(cache =>
+        cache.match(request).then(hit => hit || fetch(request).then(res => {
+          if (res.ok) cache.put(request, res.clone());
+          return res;
+        }))
+      )
+    );
+    return;
+  }
+
+  // ── index.html: network-first (sempre fresco) ──────────────────────────────
+  if (request.mode === 'navigate') {
+    event.respondWith(
+      fetch(request)
+        .then(res => {
+          if (res.ok) {
+            caches.open(CACHE_APP).then(c => c.put(request, res.clone()));
+          }
+          return res;
+        })
+        .catch(() =>
+          caches.open(CACHE_APP)
+            .then(c => c.match('./') || c.match('./index.html'))
+            .then(cached => cached || new Response(
+              `<!DOCTYPE html><html><head><meta charset="UTF-8">
+               <title>MedCases Pro — Offline</title>
+               <style>body{background:#07110d;color:#fff;font-family:sans-serif;
+               display:flex;flex-direction:column;align-items:center;justify-content:center;
+               height:100vh;margin:0;text-align:center}h2{color:#C5A365}
+               p{color:rgba(255,255,255,.5);max-width:280px}
+               button{margin-top:24px;padding:12px 28px;border-radius:12px;
+               background:#1F6B48;color:#fff;border:none;font-size:15px;cursor:pointer}
+               </style></head><body>
+               <h2>Sem conexão</h2>
+               <p>Conecte-se à internet para usar o MedCases Pro.</p>
+               <button onclick="location.reload()">Tentar novamente</button>
+               </body></html>`,
+              { headers: { 'Content-Type': 'text/html; charset=utf-8' } }
+            ))
+        )
+    );
+    return;
+  }
+
+  // ── main.dart.js e outros JS grandes: stale-while-revalidate ──────────────
+  // Serve do cache imediatamente (boot instantâneo) + atualiza em background
+  if (isBigAsset(url)) {
+    event.respondWith(
+      caches.open(CACHE_APP).then(async cache => {
+        const cached = await cache.match(request);
+        const fetchPromise = fetch(request).then(res => {
+          if (res.ok) cache.put(request, res.clone());
+          return res;
+        }).catch(() => null);
+        return cached || fetchPromise;
+      })
+    );
+    return;
+  }
+
+  // ── Assets estáticos: cache-first ─────────────────────────────────────────
+  if (isStaticAsset(url)) {
+    event.respondWith(
+      caches.open(CACHE_APP).then(cache =>
+        cache.match(request).then(hit => hit || fetch(request).then(res => {
+          if (res.ok) cache.put(request, res.clone());
+          return res;
+        }).catch(() => null))
+      )
+    );
+    return;
+  }
+});
+
+// ── MESSAGE ────────────────────────────────────────────────────────────────────
 self.addEventListener('message', event => {
-  if (event.data && event.data.type === 'GET_VERSION') {
+  if (!event.data) return;
+  if (event.data.type === 'GET_VERSION') {
     if (event.ports[0]) event.ports[0].postMessage({ version: SW_VERSION });
+  }
+  if (event.data.type === 'CLEAR_CACHE') {
+    caches.keys()
+      .then(keys => Promise.all(keys.map(k => caches.delete(k))))
+      .then(() => { if (event.ports[0]) event.ports[0].postMessage({ ok: true }); });
   }
 });

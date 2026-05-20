@@ -125,7 +125,7 @@ class AuthService {
         Uri.parse('https://securetoken.googleapis.com/v1/token?key=$_webApiKey'),
         headers: {'Content-Type': 'application/x-www-form-urlencoded'},
         body: 'grant_type=refresh_token&refresh_token=$refreshToken',
-      ).timeout(const Duration(seconds: 8));
+      ).timeout(const Duration(seconds: 4));
 
       if (resp.statusCode != 200) {
         // Token inválido/expirado — limpa sessão e força novo login
@@ -156,7 +156,7 @@ class AuthService {
           final fsResp = await http.get(
             Uri.parse('$_fsBase/users/$uid'),
             headers: {'Authorization': 'Bearer $newIdToken'},
-          ).timeout(const Duration(seconds: 6));
+          ).timeout(const Duration(seconds: 3));
 
           if (fsResp.statusCode == 200) {
             final fsBody = jsonDecode(fsResp.body) as Map<String, dynamic>;

@@ -72,7 +72,8 @@ class FirestoreService {
   /// Todos os usuários aprovados usam essa chave — nenhuma configuração manual.
   static Future<String> loadAppAiKey() async {
     try {
-      final doc = await _db.collection('app_config').doc('global').get();
+      final doc = await _db.collection('app_config').doc('global').get()
+          .timeout(const Duration(seconds: 2));
       debugPrint('[FirestoreService] loadAppAiKey doc.exists=${doc.exists} fields=${doc.data()?.keys.toList()}');
       if (!doc.exists) return '';
       return (doc.data()?['openAiKey'] as String?) ?? '';
@@ -125,7 +126,7 @@ class FirestoreService {
       final resp = await http.get(
         Uri.parse(url),
         headers: headers,
-      ).timeout(const Duration(seconds: 8));
+      ).timeout(const Duration(seconds: 2)); // reduzido: _loadAiKeyFromFirestore já tem timeout 2s
 
       debugPrint('[FirestoreService] REST status=${resp.statusCode} body=${resp.body.substring(0, resp.body.length.clamp(0, 400))}');
 
