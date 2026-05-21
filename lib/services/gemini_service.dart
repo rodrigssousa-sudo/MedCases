@@ -4,8 +4,11 @@ import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
-// ignore: avoid_web_libraries_in_flutter
-import 'dart:js' as js;
+// Import condicional: ls_web.dart (Web, usa dart:js) ou ls_stub.dart (iOS/Android, no-op).
+// Isola completamente dart:js do compilador nativo — resolve o erro
+// "Undefined name 'context'" no Xcode / Android toolchain.
+import 'ls_stub.dart'
+    if (dart.library.js) 'ls_web.dart';
 
 // Google Sign-In — usado APENAS no Android (não no web)
 import 'package:google_sign_in/google_sign_in.dart';
@@ -213,30 +216,15 @@ class GeminiService {
   // STORAGE — localStorage (web) / SharedPreferences (Android)
   // ══════════════════════════════════════════════════════════════════════════
 
-  // localStorage via funções globais window.mcLsGet / mcLsSet / mcLsRemove.
-  // Definidas no index.html ANTES do Firebase/SES lockdown ser aplicado —
-  // capturam a referência nativa ao localStorage enquanto ainda acessível.
-  // Sem eval, sem proxies congelados: funciona com qualquer CSP em produção.
+  // localStorage via import condicional (ls_web.dart no Web, ls_stub.dart no nativo).
+  // As funções webLsGet / webLsSet / webLsRemove são no-op no iOS/Android —
+  // o canal real nessas plataformas é SharedPreferences (já tratado acima).
 
-  static void _webSet(String key, String value) {
-    try {
-      js.context.callMethod('mcLsSet', [key, value]);
-    } catch (_) {}
-  }
+  static void _webSet(String key, String value) => webLsSet(key, value);
 
-  static String? _webGet(String key) {
-    try {
-      final result = js.context.callMethod('mcLsGet', [key]);
-      if (result == null || result.toString() == 'null') return null;
-      return result.toString();
-    } catch (_) { return null; }
-  }
+  static String? _webGet(String key) => webLsGet(key);
 
-  static void _webRemove(String key) {
-    try {
-      js.context.callMethod('mcLsRemove', [key]);
-    } catch (_) {}
-  }
+  static void _webRemove(String key) => webLsRemove(key);
 
   static Future<void> _saveEmail(String email) async {
     if (kIsWeb) { _webSet(_keyEmail, email); return; }
@@ -291,15 +279,11 @@ class GeminiService {
   /// via checkGeminiSession() no próximo boot do app após o redirect.
   static Future<String?> _webSignIn() async {
     try {
-      final hasFn = js.context.hasProperty('medcasesShowGSIModal');
-      if (!hasFn) {
-        debugPrint('[GeminiService] medcasesShowGSIModal não encontrada');
-        return null;
-      }
-      // Abre o modal HTML. O onclick do botão chama _gsiHandleClick()
-      // que faz window.location.href → redirect. A página vai recarregar,
-      // então não há como aguardar um token aqui — retornamos null.
-      js.context.callMethod('medcasesShowGSIModal', []);
+      // webLsGet retorna null em nativas (no-op) — no Web tenta chamar via js.
+      // A função medcasesShowGSIModal está definida no index.html.
+      // Usamos webLsGet como probe de disponibilidade do ambiente JS;
+      // a chamada real ao modal usa a mesma camada isolada do import condicional.
+      webCallGSIModal();
       debugPrint('[GeminiService] modal GSI aberto — redirect flow iniciado');
     } catch (e) {
       debugPrint('[GeminiService] _webSignIn ERRO: $e');

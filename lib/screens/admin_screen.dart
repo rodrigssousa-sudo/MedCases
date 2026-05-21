@@ -1,6 +1,9 @@
 import 'dart:async';
 import 'dart:typed_data';
-import 'dart:html' as html;
+// Import condicional: pdf_picker_web.dart (Web, usa dart:html) ou stub (iOS/Android, no-op).
+// Isola dart:html do compilador nativo — resolve build iOS/Android.
+import '../platform/pdf_picker_stub.dart'
+    if (dart.library.html) '../platform/pdf_picker_web.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 // file_picker e firebase_storage usados via StorageService — sem import direto aqui
@@ -3372,29 +3375,14 @@ class _GuideUploadDialogState extends State<_GuideUploadDialog> {
   }
 
   void _pickPdf() {
-    // Input nativo — único método confiável para abrir seletor no web/Dialog
-    final input = html.FileUploadInputElement()
-      ..accept = 'application/pdf'
-      ..style.display = 'none';
-    html.document.body!.append(input);
-    input.click();
-    input.onChange.first.then((_) {
-      final file = input.files?.first;
-      if (file == null) {
-        input.remove();
-        return;
-      }
-      final reader = html.FileReader();
-      reader.readAsArrayBuffer(file);
-      reader.onLoad.first.then((_) {
-        final bytes = reader.result as List<int>;
-        setState(() {
-          _pdfBytes    = Uint8List.fromList(bytes);
-          _pdfFileName = file.name;
-          _pdfFileSize = file.size;
-          _error       = null;
-        });
-        input.remove();
+    // Delega ao helper condicional: pdf_picker_web.dart (Web) ou stub (iOS/Android).
+    webPickPdf().then((result) {
+      if (result == null) return;
+      setState(() {
+        _pdfBytes    = result.bytes;
+        _pdfFileName = result.name;
+        _pdfFileSize = result.size;
+        _error       = null;
       });
     });
   }

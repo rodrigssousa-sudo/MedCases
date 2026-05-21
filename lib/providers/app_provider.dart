@@ -1,8 +1,10 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
-// ignore: avoid_web_libraries_in_flutter
-import 'dart:js' as js_interop;
+// Import condicional: ls_web.dart (Web, usa dart:js) ou ls_stub.dart (iOS/Android, no-op).
+// Isola dart:js do compilador nativo — resolve "Undefined name 'context'" no Xcode.
+import '../services/ls_stub.dart'
+    if (dart.library.js) '../services/ls_web.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/drug_model.dart';
 import '../models/protocol_model.dart';
@@ -1383,9 +1385,9 @@ class AppProvider extends ChangeNotifier {
   String? _webGetLS(String key) {
     if (!kIsWeb) return null;
     try {
-      final result = js_interop.context.callMethod('mcLsGet', [key]);
+      final result = webLsGet(key);
       if (result == null || result.toString() == 'null') return null;
-      return result.toString();
+      return result;
     } catch (_) {
       return null;
     }
@@ -1397,7 +1399,7 @@ class AppProvider extends ChangeNotifier {
   void _webSetLS(String key, String value) {
     if (!kIsWeb) return;
     try {
-      js_interop.context.callMethod('mcLsSet', [key, value]);
+      webLsSet(key, value);
     } catch (_) {}
   }
 
@@ -1406,7 +1408,7 @@ class AppProvider extends ChangeNotifier {
   void _webRemoveLS(String key) {
     if (!kIsWeb) return;
     try {
-      js_interop.context.callMethod('mcLsRemove', [key]);
+      webLsRemove(key);
     } catch (_) {}
   }
 
