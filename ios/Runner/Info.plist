@@ -49,5 +49,29 @@
 	<true/>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
+
+	<!-- Privacidade: microfone e reconhecimento de voz (flutter_tts + STT) -->
+	<key>NSMicrophoneUsageDescription</key>
+	<string>O MedCases Pro usa o microfone para reconhecimento de voz durante a criação de histórias clínicas e interação com a IA.</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>O MedCases Pro usa reconhecimento de voz para transcrever suas anotações clínicas por voz de forma rápida.</string>
+
+	<!-- URL Schemes para Google Sign-In (google_sign_in no iOS)            -->
+	<!-- AÇÃO NECESSÁRIA: substitua o valor abaixo pelo REVERSED_CLIENT_ID  -->
+	<!-- do seu GoogleService-Info.plist (baixe versão completa no Firebase  -->
+	<!-- Console > Project Settings > iOS app > GoogleService-Info.plist)   -->
+	<!-- Formato: com.googleusercontent.apps.XXXXXXXXXX-YYYYY               -->
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<!-- TODO: substituir pelo REVERSED_CLIENT_ID do GoogleService-Info.plist -->
+				<string>com.medcasespro.med</string>
+			</array>
+		</dict>
+	</array>
 </dict>
 </plist>

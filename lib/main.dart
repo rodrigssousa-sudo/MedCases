@@ -18,7 +18,6 @@ import 'models/user_model.dart';
 import 'screens/login_screen.dart';
 import 'screens/pre_login_screen.dart';
 import 'screens/upgrade_screen.dart';
-import 'screens/cockpit_screen.dart';
 import 'screens/drugs_screen.dart';
 import 'screens/protocols_screen.dart';
 import 'screens/tools_screen.dart';
@@ -30,7 +29,6 @@ import 'screens/cases_screen.dart';
 import 'screens/prescripciones_screen.dart';
 import 'screens/legal_screen.dart';
 import 'screens/home_screen.dart';
-import 'screens/avaliacao_screen.dart'; // ignore: unused_import — usado via home_screen
 import 'screens/notes_screen.dart';
 import 'screens/library_screen.dart';
 import 'services/firestore_service.dart';
