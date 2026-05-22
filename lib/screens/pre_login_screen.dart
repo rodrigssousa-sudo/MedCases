@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../screens/login_screen.dart';
 import '../screens/legal_screen.dart';
-// ignore: unused_import
-import '../screens/upgrade_screen.dart';
 
 // ── Paleta ────────────────────────────────────────────────────────────────────
 const _kBg         = Color(0xFFF5F6F8);

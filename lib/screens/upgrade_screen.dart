@@ -1,7 +1,10 @@
 // ── Tela de Upgrade / Paywall Premium ────────────────────────────────────────
 // Totalmente bilíngue ES/PT — idioma inicial via parâmetro `initialLang`.
 // Botão de toggle muda idioma localmente sem afetar o AppProvider.
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'dart:io' show Platform;
 import 'package:url_launcher/url_launcher.dart';
 
 const _kDark  = Color(0xFF0F1C14);
@@ -183,6 +186,82 @@ class _UpgradeScreenState extends State<UpgradeScreen>
   void _toggleLang() => setState(() => _isEs = !_isEs);
 
   Future<void> _subscribe() async {
+    // ── iOS: Apple Guideline 3.1.1 ──────────────────────────────────────────
+    // Apps iOS não podem redirecionar para compras externas. Mostramos a URL
+    // para o usuário copiar e acessar manualmente via Safari.
+    final bool isIOS = !kIsWeb && Platform.isIOS;
+    if (isIOS) {
+      final url = _isEs
+          ? (_selectedPlan == 0 ? _linkMensalEs : _linkAnualEs)
+          : (_selectedPlan == 0 ? _linkMensalPt : _linkAnualPt);
+      if (mounted) {
+        await showDialog<void>(
+          context: context,
+          builder: (ctx) => AlertDialog(
+            backgroundColor: const Color(0xFF1a2e24),
+            title: Text(
+              _isEs ? 'Suscripción' : 'Assinatura',
+              style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+            ),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  _isEs
+                      ? 'Para suscribirte, accede al sitio web desde Safari:'
+                      : 'Para assinar, acesse o site pelo Safari:',
+                  style: TextStyle(color: Colors.white.withValues(alpha: 0.8), fontSize: 14),
+                ),
+                const SizedBox(height: 12),
+                GestureDetector(
+                  onTap: () {
+                    Clipboard.setData(ClipboardData(text: url));
+                    ScaffoldMessenger.of(ctx).showSnackBar(
+                      SnackBar(
+                        content: Text(_isEs ? 'Link copiado' : 'Link copiado'),
+                        duration: const Duration(seconds: 2),
+                      ),
+                    );
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withValues(alpha: 0.08),
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: const Color(0xFFC5A365).withValues(alpha: 0.5)),
+                    ),
+                    child: Row(children: [
+                      Expanded(
+                        child: Text(
+                          url,
+                          style: const TextStyle(color: Color(0xFFC5A365), fontSize: 12),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      const Icon(Icons.copy_rounded, size: 16, color: Color(0xFFC5A365)),
+                    ]),
+                  ),
+                ),
+              ],
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(ctx),
+                child: Text(
+                  _isEs ? 'Cerrar' : 'Fechar',
+                  style: const TextStyle(color: Color(0xFFC5A365)),
+                ),
+              ),
+            ],
+          ),
+        );
+      }
+      return;
+    }
+
+    // ── Web / Android: abre URL diretamente ─────────────────────────────────
     final url = _isEs
         ? (_selectedPlan == 0 ? _linkMensalEs : _linkAnualEs)
         : (_selectedPlan == 0 ? _linkMensalPt : _linkAnualPt);
