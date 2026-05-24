@@ -2194,6 +2194,43 @@ class AppProvider extends ChangeNotifier {
       'paciente', 'dor', 'febre', 'dispne', 'tontura', 'choque',
       'pa ', 'fc ', 'spo2', 'glasgow', 'ecg', 'tomograf',
     ]);
+
+    // ── Palavras-chave que indicam FOLLOW-UP — nunca tratar como query direta ──
+    // Estas frases curtas precisam do contexto anterior para fazer sentido.
+    // Ex: "Tratamiento farmacologico", "qual a dose", "exames", "conduta"
+    final hasFollowUpKeyword = _has(_normalize(input), [
+      // Tratamento / conduta
+      'tratamiento', 'tratamento', 'tratament',
+      'farmacolog', 'farmacol',
+      'conduta', 'conducta',
+      'medicamento', 'medicacion', 'medicação',
+      'prescr', 'prescri',
+      'terapia', 'terapeutica', 'terapêutica',
+      // Diagnóstico / exames
+      'diagnostico', 'diagnóstico', 'diagnos',
+      'exame', 'examen', 'laborator', 'exam',
+      'imagem', 'imagen', 'tomografi', 'radiograf',
+      // Dose / ajuste
+      'dose', 'dosis', 'dosagem', 'posologia',
+      'ajuste', 'ajust',
+      // Evolução / seguimento
+      'seguimento', 'seguimiento', 'seguim',
+      'evolucao', 'evolución', 'evolução', 'evoluc',
+      'prognos', 'prognostico', 'pronóstico',
+      // Cirurgia / procedimento
+      'cirurgia', 'cirugia', 'cirurg',
+      'procedimento', 'procedimiento',
+      'internacao', 'internación', 'internação', 'intern',
+      // Perguntas de contexto curto
+      'mais informacoes', 'mas informacion', 'mais info',
+      'aprofund', 'aprofundar', 'detalhe', 'detalle', 'detail',
+      'como tratar', 'cómo tratar', 'como tratar',
+      'qual a conduta', 'cual la conducta',
+      'como manejo', 'como manejo',
+    ]);
+    // Se é uma frase curta que parece follow-up → forçar expansão com histórico
+    if (hasFollowUpKeyword && input.trim().split(' ').length <= 6) return false;
+
     final isShortConceptual = input.trim().split(' ').length <= 6 && !hasClinicalKeywords;
     return isShortConceptual;
   }
@@ -2216,9 +2253,8 @@ class AppProvider extends ChangeNotifier {
 
     // Só inclui histórico se a pergunta for realmente um follow-up
     // (muito curta e sem contexto próprio — ex: "qual a dose?", "tem FA?")
-    // Aumentado de 5 para 4 palavras para evitar falsos follow-ups em perguntas
-    // de 6-9 palavras que já têm contexto próprio ("se es un brote... haloperidol")
-    final isFollowUp = currentInput.trim().split(' ').length <= 4;
+    // Threshold: 6 palavras (cobre "Tratamiento farmacologico", "qual a conduta", etc.)
+    final isFollowUp = currentInput.trim().split(' ').length <= 6;
     if (!isFollowUp) return currentInput.trim();
 
     return '${tail.join(' ')} $currentInput'.trim();
