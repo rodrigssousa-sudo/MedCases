@@ -4,6 +4,9 @@
     <!-- INTERNET: obrigatória para Firebase, HTTP REST, Firestore, Auth -->
     <uses-permission android:name="android.permission.INTERNET"/>
 
+    <!-- RECORD_AUDIO: necessária para speech_to_text (ditado por voz nativo) -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+
     <!-- POST_NOTIFICATIONS: necessária no Android 13+ para notificações do sistema -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
 

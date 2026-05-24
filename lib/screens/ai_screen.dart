@@ -270,33 +270,17 @@ class _AiScreenState extends State<AiScreen> {
         .trim();
   }
 
-  // ── Voice-to-Text (Web Speech API via dart:html) ────────────────────────
-  /// Inicia/para o reconhecimento de voz.
-  /// No web: usa Web Speech API via SttHelper (dart:html condicionado).
-  /// No mobile: exibe snack informativo.
+  // ── Voice-to-Text — Web + iOS + Android ─────────────────────────────────
+  // Web    : Web Speech API via dart:html (stt_helper_web.dart)
+  // Mobile : speech_to_text plugin nativo (stt_helper_mobile.dart)
+  // Sem restricao de plataforma — funciona em todos os targets.
+
   void _toggleStt() {
-    if (!kIsWeb) {
-      _showSttUnavailableSnack();
-      return;
-    }
     if (_sttListening) {
       _sttStop();
     } else {
       _sttStart();
     }
-  }
-
-  void _showSttUnavailableSnack() {
-    final lang = context.read<AppProvider>().lang;
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Text(lang == 'es'
-          ? 'Dictado por voz disponible en la versión web'
-          : 'Ditado por voz disponível na versão web'),
-      duration: const Duration(seconds: 2),
-      behavior: SnackBarBehavior.floating,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      margin: const EdgeInsets.fromLTRB(16, 0, 16, 80),
-    ));
   }
 
   void _sttStart() {
@@ -311,12 +295,15 @@ class _AiScreenState extends State<AiScreen> {
           final current = _queryCtrl.text.trim();
           _queryCtrl.text = current.isEmpty ? text : '$current $text';
           _queryCtrl.selection = TextSelection.fromPosition(
-            TextPosition(offset: _queryCtrl.text.length));
+            TextPosition(offset: _queryCtrl.text.length),
+          );
         });
         _focusNode.requestFocus();
       },
-      onError: (_) {
-        if (mounted) setState(() => _sttListening = false);
+      onError: (code) {
+        if (!mounted) return;
+        setState(() => _sttListening = false);
+        _showSttErrorSnack(code);
       },
       onEnd: () {
         if (mounted) setState(() => _sttListening = false);
@@ -324,9 +311,41 @@ class _AiScreenState extends State<AiScreen> {
     );
   }
 
-  void _sttStop() {
-    SttHelper.stop();
-    setState(() => _sttListening = false);
+  Future<void> _sttStop() async {
+    await SttHelper.stop();
+    if (mounted) setState(() => _sttListening = false);
+  }
+
+  /// Exibe feedback de erro do STT ao usuario (nao bloqueia — e opcional).
+  void _showSttErrorSnack(String code) {
+    final lang = context.read<AppProvider>().lang;
+    final bool isEs = lang == 'es';
+    String msg;
+    switch (code) {
+      case 'permission_denied':
+        msg = isEs
+            ? 'Permiso de microfono denegado. Habilitalo en Ajustes.'
+            : 'Permissao de microfone negada. Habilite em Configuracoes.';
+      case 'not_available':
+        msg = isEs
+            ? 'Reconocimiento de voz no disponible en este dispositivo.'
+            : 'Reconhecimento de voz nao disponivel neste dispositivo.';
+      case 'no_speech':
+        return; // silencioso — usuario simplesmente nao falou
+      case 'network':
+        msg = isEs
+            ? 'Verifica tu conexion a internet para el dictado.'
+            : 'Verifique sua conexao com a internet para o ditado.';
+      default:
+        return; // outros erros tecnicos — silencioso
+    }
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text(msg),
+      duration: const Duration(seconds: 3),
+      behavior: SnackBarBehavior.floating,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      margin: const EdgeInsets.fromLTRB(16, 0, 16, 80),
+    ));
   }
 
   void _injectGreeting() {

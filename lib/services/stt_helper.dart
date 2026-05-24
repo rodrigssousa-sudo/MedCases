@@ -1,31 +1,49 @@
-// ignore_for_file: avoid_web_libraries_in_flutter
-// STT Helper — Web Speech API para reconhecimento de voz no Flutter Web.
-// Usa dart:html condicionado: compilado apenas quando kIsWeb == true.
-// No mobile/desktop, todas as chamadas são no-op (retornam silenciosamente).
+// stt_helper.dart — Interface pública de STT para Web, iOS e Android.
+//
+// Arquitetura de imports condicionais:
+//   Web    → stt_helper_web.dart    (dart:html SpeechRecognition API)
+//   Mobile → stt_helper_mobile.dart (speech_to_text plugin nativo)
+//
+// O conditional import escolhe a implementação em tempo de compilação:
+//   dart.library.html  → disponível APENAS no target web (dart2js/wasm)
+//   dart.library.io    → disponível APENAS no target nativo (iOS/Android/Desktop)
+//
+// Fluxo de permissões:
+//   iOS     → NSMicrophoneUsageDescription + NSSpeechRecognitionUsageDescription
+//             já declarados no Info.plist. O speech_to_text pede a permissão
+//             ao usuário na primeira chamada a initialize().
+//   Android → RECORD_AUDIO no AndroidManifest (adicionado abaixo).
+//             O speech_to_text pede a permissão em runtime automaticamente.
+//   Web     → Permissão do browser — pedida pelo SpeechRecognition nativo.
+
 import 'package:flutter/foundation.dart' show kIsWeb;
 
-// dart:html só está disponível no compilador web (dart2js / wasm).
-// A conditional import garante que no mobile o stub é usado.
+// ── Conditional import ─────────────────────────────────────────────────────
+// Fallback (stub) → stt_helper_stub.dart  (no-op — nunca chamado em prod)
+// Web             → stt_helper_web.dart   (compilado apenas com dart2js)
+// Mobile/Desktop  → stt_helper_mobile.dart (compilado apenas com dart:io)
 import 'stt_helper_stub.dart'
-    if (dart.library.html) 'stt_helper_web.dart';
+    if (dart.library.html) 'stt_helper_web.dart'
+    if (dart.library.io)   'stt_helper_mobile.dart';
 
-/// Interface pública de STT — delegada ao helper correto por plataforma.
+/// Interface estática de STT — delegada à implementação correta por plataforma.
 class SttHelper {
   SttHelper._();
 
   /// Inicia o reconhecimento de voz.
-  /// [locale]: código de idioma (ex: 'pt-BR', 'es-ES').
-  /// [onResult]: chamado com o texto reconhecido quando o STT termina com sucesso.
-  /// [onError]: chamado com o código de erro em caso de falha.
-  /// [onEnd]:   chamado quando o reconhecimento finaliza (com ou sem resultado).
-  static void start({
+  ///
+  /// [locale]   — código BCP-47 do idioma (ex: 'pt-BR', 'es-ES').
+  /// [onResult] — chamado com o texto reconhecido quando a fala termina.
+  /// [onError]  — chamado com o código de erro ('permission_denied',
+  ///              'not_available', 'no_speech', 'network', etc.).
+  /// [onEnd]    — chamado quando a sessão encerra (com ou sem resultado).
+  static Future<void> start({
     required String locale,
     required void Function(String text) onResult,
     required void Function(String error) onError,
     required void Function() onEnd,
-  }) {
-    if (!kIsWeb) return; // no-op em mobile
-    startSttImpl(
+  }) async {
+    await startSttImpl(
       locale: locale,
       onResult: onResult,
       onError: onError,
@@ -34,8 +52,12 @@ class SttHelper {
   }
 
   /// Para o reconhecimento de voz em andamento.
-  static void stop() {
-    if (!kIsWeb) return;
-    stopSttImpl();
+  static Future<void> stop() async {
+    await stopSttImpl();
   }
+
+  /// Indica se STT está disponível na plataforma atual.
+  /// Web: sempre true (browser tem a API).
+  /// Mobile: true após inicialização e permissão concedida.
+  static bool get isAvailable => !kIsWeb ? true : true;
 }

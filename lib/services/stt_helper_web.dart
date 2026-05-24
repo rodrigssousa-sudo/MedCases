@@ -5,12 +5,12 @@ import 'dart:html' as html;
 
 html.SpeechRecognition? _recognition;
 
-void startSttImpl({
+Future<void> startSttImpl({
   required String locale,
   required void Function(String text) onResult,
   required void Function(String error) onError,
   required void Function() onEnd,
-}) {
+}) async {
   try {
     stopSttImpl();
 
@@ -62,7 +62,7 @@ void startSttImpl({
   }
 }
 
-void stopSttImpl() {
+Future<void> stopSttImpl() async {
   try {
     _recognition?.stop();
     _recognition?.abort();
