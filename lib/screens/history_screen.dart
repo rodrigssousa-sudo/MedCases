@@ -10,6 +10,7 @@ import '../models/clinical_history_model.dart';
 import '../services/firestore_service.dart';
 import '../services/suggestion_service.dart';
 import '../widgets/common_widgets.dart';
+import '../services/stt_helper.dart';
 import '../platform/web_impl.dart'
     if (dart.library.io) '../platform/web_stub.dart' as webPlatform;
 
@@ -1349,15 +1350,17 @@ class _HistoryEditorState extends State<_HistoryEditor> {
 
   @override
   void dispose() {
-    _sttRecog?.stop();
+    _sttRecog?.stop();          // Web: para WebSpeechRecognizer
+    SttHelper.stop();           // Mobile: para speech_to_text nativo
     for (final c in _ctrls.values) c.dispose();
     super.dispose();
   }
 
-  // ── STT (Speech-to-Text via Web Speech API) ───────────────────────────────
+  // ── STT (Speech-to-Text) — Web via dart:html | Mobile via speech_to_text ──
   String? _sttActiveKey;   // chave do campo atualmente ouvindo
   bool _sttListening = false;
   String _sttInterim = '';
+  // Web: usa WebSpeechRecognizer; Mobile: usa SttHelper (speech_to_text plugin)
   webPlatform.WebSpeechRecognizer? _sttRecog;
 
   // ── Ditáfone inteligente global ─────────────────────────────────────────
@@ -1456,6 +1459,8 @@ class _HistoryEditorState extends State<_HistoryEditor> {
   }
 
   void _toggleSmartDictaphone() {
+    // No mobile: o ditáfone inteligente global usa o mesmo _startStt() por campo.
+    // O botão de ditáfone global só está disponível no Web (requer Web Speech API contínua).
     if (!kIsWeb) return;
     if (_smartDictActive) {
       _smartRecog?.stop();
@@ -1471,7 +1476,7 @@ class _HistoryEditorState extends State<_HistoryEditor> {
       return;
     }
     // Para STT de campo individual se estava ativo
-    if (_sttListening) { _sttRecog?.stop(); setState(() { _sttListening = false; _sttActiveKey = null; _sttInterim = ''; }); }
+    if (_sttListening) _stopAllStt();
 
     final lang = widget.p.lang == 'es' ? 'es-ES' : 'pt-BR';
     // Campo inicial: seção ativa
@@ -1564,64 +1569,124 @@ class _HistoryEditorState extends State<_HistoryEditor> {
   }
 
   void _startStt(String key) {
-    // STT só funciona na plataforma web
-    if (!kIsWeb) return;
-
     // Toggle: parar se já está ouvindo este campo
     if (_sttListening && _sttActiveKey == key) {
-      _sttRecog?.stop();
-      if (mounted) setState(() { _sttListening = false; _sttActiveKey = null; _sttInterim = ''; });
+      _stopAllStt();
       return;
     }
     // Se estava ouvindo outro campo, parar antes
-    if (_sttListening) _sttRecog?.stop();
-
-    // Verificar suporte do browser
-    if (!webPlatform.webHasSpeechRecognition()) {
-      if (!mounted) return;
-      showDialog(
-        context: context,
-        builder: (_) => AlertDialog(
-          title: Text(widget.p.t('dictation_not_supported')),
-          content: Text(widget.p.t('dictation_browser_msg')),
-          actions: [TextButton(onPressed: () => Navigator.pop(context), child: const Text('OK'))],
-        ),
-      );
-      return;
-    }
+    if (_sttListening) _stopAllStt();
 
     final appLang = widget.p.lang;
-    final lang    = appLang == 'es' ? 'es-ES' : 'pt-BR';
-    final recog   = webPlatform.WebSpeechRecognizer();
+    final locale  = appLang == 'es' ? 'es-ES' : 'pt-BR';
 
-    recog.start(
-      key,
-      lang,
-      onResult: (transcript, isFinal) {
-        if (isFinal) {
-          final ctrl = _ctrls[key];
-          if (ctrl != null && transcript.isNotEmpty) {
-            final current = ctrl.text;
-            final spacer  = current.isNotEmpty && !current.endsWith(' ') && !current.endsWith('\n') ? ' ' : '';
-            ctrl.text = current + spacer + transcript;
-            ctrl.selection = TextSelection.fromPosition(TextPosition(offset: ctrl.text.length));
+    if (kIsWeb) {
+      // ── Web: usa Web Speech API via dart:html ────────────────────────────
+      if (!webPlatform.webHasSpeechRecognition()) {
+        if (!mounted) return;
+        showDialog(
+          context: context,
+          builder: (_) => AlertDialog(
+            title: Text(widget.p.t('dictation_not_supported')),
+            content: Text(widget.p.t('dictation_browser_msg')),
+            actions: [TextButton(onPressed: () => Navigator.pop(context), child: const Text('OK'))],
+          ),
+        );
+        return;
+      }
+      final recog = webPlatform.WebSpeechRecognizer();
+      recog.start(key, locale,
+        onResult: (transcript, isFinal) {
+          if (isFinal) {
+            _insertIntoField(key, transcript);
+            if (mounted) setState(() => _sttInterim = '');
+          } else {
+            if (mounted) setState(() => _sttInterim = transcript);
           }
-          if (mounted) setState(() => _sttInterim = '');
-        } else {
-          if (mounted) setState(() => _sttInterim = transcript);
-        }
-      },
-      onEnd: () {
-        if (mounted) setState(() { _sttListening = false; _sttActiveKey = null; _sttInterim = ''; });
-      },
-      onError: (code) {
-        if (mounted) setState(() { _sttListening = false; _sttActiveKey = null; _sttInterim = ''; });
-      },
-    );
+        },
+        onEnd: () {
+          if (mounted) setState(() { _sttListening = false; _sttActiveKey = null; _sttInterim = ''; });
+        },
+        onError: (_) {
+          if (mounted) setState(() { _sttListening = false; _sttActiveKey = null; _sttInterim = ''; });
+        },
+      );
+      _sttRecog = recog;
+    } else {
+      // ── Mobile (iOS / Android): usa speech_to_text nativo ───────────────
+      SttHelper.start(
+        locale: locale,
+        onResult: (transcript) {
+          if (!mounted) return;
+          _insertIntoField(key, transcript);
+          setState(() { _sttInterim = ''; });
+        },
+        onError: (code) {
+          if (!mounted) return;
+          setState(() { _sttListening = false; _sttActiveKey = null; _sttInterim = ''; });
+          _showSttMobileError(code);
+        },
+        onEnd: () {
+          if (mounted) setState(() { _sttListening = false; _sttActiveKey = null; _sttInterim = ''; });
+        },
+      );
+    }
 
-    _sttRecog  = recog;
     _sttActiveKey = key;
     if (mounted) setState(() { _sttListening = true; _sttInterim = ''; });
+  }
+
+  /// Insere texto transcrito no campo correto, com espaço inteligente.
+  void _insertIntoField(String key, String transcript) {
+    if (transcript.isEmpty) return;
+    final ctrl = _ctrls[key];
+    if (ctrl == null) return;
+    final current = ctrl.text;
+    final spacer  = current.isNotEmpty &&
+        !current.endsWith(' ') && !current.endsWith('\n') ? ' ' : '';
+    ctrl.text = current + spacer + transcript;
+    ctrl.selection = TextSelection.fromPosition(
+      TextPosition(offset: ctrl.text.length),
+    );
+  }
+
+  /// Para qualquer sessão STT ativa (web ou mobile).
+  void _stopAllStt() {
+    _sttRecog?.stop();        // Web
+    SttHelper.stop();         // Mobile
+    if (mounted) setState(() { _sttListening = false; _sttActiveKey = null; _sttInterim = ''; });
+  }
+
+  /// Exibe snackbar de erro do STT nativo (mobile).
+  void _showSttMobileError(String code) {
+    final isEs = widget.p.lang == 'es';
+    String msg;
+    switch (code) {
+      case 'permission_denied':
+        msg = isEs
+            ? 'Permiso de micrófono denegado. Habilítalo en Ajustes → MedCases Pro → Micrófono.'
+            : 'Permissão de microfone negada. Habilite em Ajustes → MedCases Pro → Microfone.';
+      case 'not_available':
+        msg = isEs
+            ? 'Reconocimiento de voz no disponible en este dispositivo.'
+            : 'Reconhecimento de voz não disponível neste dispositivo.';
+      case 'network':
+        msg = isEs
+            ? 'Verifica tu conexión a internet para el dictado.'
+            : 'Verifique sua conexão com a internet para o ditado.';
+      case 'no_speech':
+        return; // silencioso
+      default:
+        return;
+    }
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text(msg),
+      duration: const Duration(seconds: 4),
+      behavior: SnackBarBehavior.floating,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      margin: const EdgeInsets.fromLTRB(16, 0, 16, 80),
+    ));
   }
 
   void _save() {
@@ -1783,7 +1848,7 @@ class _HistoryEditorState extends State<_HistoryEditor> {
             ])),
             const SizedBox(width: 8),
             GestureDetector(
-              onTap: () { _sttRecog?.stop(); setState(() { _sttListening = false; _sttActiveKey = null; _sttInterim = ''; }); },
+              onTap: _stopAllStt,
               child: Container(
                 padding: const EdgeInsets.all(6),
                 decoration: BoxDecoration(borderRadius: BorderRadius.circular(8), color: const Color(0xFFDC2626).withValues(alpha: 0.12)),
