@@ -19,6 +19,14 @@ import '../services/drug_interaction_service.dart';
 import '../services/ai_service.dart';
 import '../services/gemini_service.dart';
 
+// ── Resultado das operações de Pin no "Meu Plantão" ───────────────────────────
+enum PinResult {
+  success,        // item fixado com sucesso
+  unpinned,       // item desafixado
+  alreadyPinned,  // item já estava fixado (noop)
+  limitReached,   // limite de itens atingido (sem replaceOldest)
+}
+
 class DoseInfo {
   final String main;
   final String detail;
@@ -75,6 +83,16 @@ class AppProvider extends ChangeNotifier {
   Set<String> _favPrescriptions = {};
   Set<String> _favCases = {};
 
+  // ── Estado — Meu Plantão (itens fixados) ──────────────────────────────────
+  // Listas ordenadas: o primeiro item é o mais recente.
+  // Limite: 5 fármacos, 3 calculadoras.
+  // Persistência: SharedPreferences com prefixo por uid (sem Firestore —
+  // preferência puramente local do dispositivo, não precisa de sync cross-device).
+  static const int _kMaxPinnedDrugs = 5;
+  static const int _kMaxPinnedCalcs = 3;
+  List<String> _pinnedDrugIds = [];   // IDs de DrugModel
+  List<String> _pinnedCalcIds = [];   // IDs de atalho de calculadora
+
   // ── Estado — Histórias Clínicas ───────────────────────────────────────────
   List<ClinicalHistoryModel> _myHistories = [];
   List<ClinicalHistoryModel> _publicHistories = [];
@@ -126,6 +144,29 @@ class AppProvider extends ChangeNotifier {
   Set<String> get favProtocols => _favProtocols;
   Set<String> get favPrescriptions => _favPrescriptions;
   Set<String> get favCases => _favCases;
+
+  // ── Getters — Meu Plantão ─────────────────────────────────────────────────
+  /// Limite público de fármacos fixáveis (usado pela UI para exibir texto de limite).
+  static int get kMaxPinnedDrugsPublic => _kMaxPinnedDrugs;
+  /// Limite público de calculadoras fixáveis (usado pela UI para exibir texto de limite).
+  static int get kMaxPinnedCalcsPublic => _kMaxPinnedCalcs;
+
+  List<String> get pinnedDrugIds => List.unmodifiable(_pinnedDrugIds);
+  List<String> get pinnedCalcIds => List.unmodifiable(_pinnedCalcIds);
+
+  /// Fármacos fixados resolvidos (DrugModel). Filtra IDs inválidos silenciosamente.
+  List<DrugModel> get pinnedDrugs {
+    final result = <DrugModel>[];
+    for (final id in _pinnedDrugIds) {
+      try {
+        result.add(drugsDB.firstWhere((d) => d.id == id));
+      } catch (_) {}
+    }
+    return result;
+  }
+
+  bool isDrugPinned(String id) => _pinnedDrugIds.contains(id);
+  bool isCalcPinned(String id) => _pinnedCalcIds.contains(id);
   List<ClinicalCaseModel> get customCases => _customCases;
 
   // ── Getters — Histórias Clínicas ─────────────────────────────────────────
@@ -304,6 +345,9 @@ class AppProvider extends ChangeNotifier {
     _aiHistory.clear();
     _geminiConnected = false;
     _geminiEmail = '';
+    // Limpa plantão (recarregado ao próximo login)
+    _pinnedDrugIds = [];
+    _pinnedCalcIds = [];
     notifyListeners();
   }
 
@@ -492,6 +536,10 @@ class AppProvider extends ChangeNotifier {
       _favProtocols     = (p.getStringList(protKey)  ?? p.getStringList('favProtocols')     ?? []).toSet();
       _favPrescriptions = (p.getStringList(prescKey) ?? p.getStringList('favPrescriptions') ?? []).toSet();
       _favCases         = (p.getStringList(favCaseKey) ?? p.getStringList('favCases')       ?? []).toSet();
+
+      // Meu Plantão — carregamento local por uid
+      _pinnedDrugIds = p.getStringList(_k('pinnedDrugs', uid)) ?? [];
+      _pinnedCalcIds = p.getStringList(_k('pinnedCalcs', uid)) ?? [];
 
       final casesJson = p.getString(caseKey) ?? p.getString('customCases');
       if (casesJson != null) {
@@ -881,6 +929,92 @@ class AppProvider extends ChangeNotifier {
     _saveLocal();
     if (_currentUser != null) FirestoreService.saveFavCases(_currentUser!.uid, _favCases);
     notifyListeners();
+  }
+
+  // ── Meu Plantão — Pin / Unpin ─────────────────────────────────────────────
+
+  /// Fixa um fármaco no plantão.
+  /// Retorna [PinResult] indicando sucesso, já fixado ou limite atingido.
+  /// Se [replaceOldest] = true e o limite foi atingido, remove o item mais antigo.
+  PinResult pinDrug(String id, {bool replaceOldest = false}) {
+    if (_pinnedDrugIds.contains(id)) return PinResult.alreadyPinned;
+    if (_pinnedDrugIds.length >= _kMaxPinnedDrugs) {
+      if (replaceOldest) {
+        _pinnedDrugIds.removeLast();
+      } else {
+        return PinResult.limitReached;
+      }
+    }
+    _pinnedDrugIds.insert(0, id);
+    _savePlantaoLocal();
+    notifyListeners();
+    return PinResult.success;
+  }
+
+  /// Remove um fármaco do plantão.
+  void unpinDrug(String id) {
+    _pinnedDrugIds.remove(id);
+    _savePlantaoLocal();
+    notifyListeners();
+  }
+
+  /// Alterna o estado de fixado do fármaco (pin/unpin).
+  /// Retorna [PinResult] com o resultado da operação.
+  PinResult togglePinDrug(String id, {bool replaceOldest = false}) {
+    if (_pinnedDrugIds.contains(id)) {
+      unpinDrug(id);
+      return PinResult.unpinned;
+    }
+    return pinDrug(id, replaceOldest: replaceOldest);
+  }
+
+  /// Fixa uma calculadora no plantão.
+  PinResult pinCalc(String id, {bool replaceOldest = false}) {
+    if (_pinnedCalcIds.contains(id)) return PinResult.alreadyPinned;
+    if (_pinnedCalcIds.length >= _kMaxPinnedCalcs) {
+      if (replaceOldest) {
+        _pinnedCalcIds.removeLast();
+      } else {
+        return PinResult.limitReached;
+      }
+    }
+    _pinnedCalcIds.insert(0, id);
+    _savePlantaoLocal();
+    notifyListeners();
+    return PinResult.success;
+  }
+
+  /// Remove uma calculadora do plantão.
+  void unpinCalc(String id) {
+    _pinnedCalcIds.remove(id);
+    _savePlantaoLocal();
+    notifyListeners();
+  }
+
+  /// Alterna o estado de fixado da calculadora.
+  PinResult togglePinCalc(String id, {bool replaceOldest = false}) {
+    if (_pinnedCalcIds.contains(id)) {
+      unpinCalc(id);
+      return PinResult.unpinned;
+    }
+    return pinCalc(id, replaceOldest: replaceOldest);
+  }
+
+  /// Limpa todos os itens fixados do plantão.
+  void clearPlantao() {
+    _pinnedDrugIds.clear();
+    _pinnedCalcIds.clear();
+    _savePlantaoLocal();
+    notifyListeners();
+  }
+
+  // Persiste o estado do plantão em SharedPreferences (local, sem Firestore)
+  void _savePlantaoLocal() {
+    final uid = _currentUser?.uid;
+    SharedPreferences.getInstance().then((p) {
+      p.setStringList(_k('pinnedDrugs', uid), _pinnedDrugIds);
+      p.setStringList(_k('pinnedCalcs', uid), _pinnedCalcIds);
+    }).catchError((_) {});
   }
 
   // ── Recentes — chave prefixada por uid para sobreviver a logout/login ─────

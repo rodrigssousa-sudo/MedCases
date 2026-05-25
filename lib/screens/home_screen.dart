@@ -14,6 +14,7 @@ import 'prescripciones_screen.dart';
 import 'drug_interactions_screen.dart';
 import 'protocols_screen.dart' show openProtocolById, showProtocolDetail;
 import 'avaliacao_screen.dart';
+import '../widgets/meu_plantao_dashboard.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // HOME SCREEN — 4 cards de navegação principal
@@ -155,6 +156,35 @@ class HomeScreen extends StatelessWidget {
           openProtocol: openProtocol,
           onOpenNotes: onOpenNotes,
           onCheckUpdate: onCheckUpdate,
+        ),
+
+        const SizedBox(height: 16),
+
+        // ── Divisor ───────────────────────────────────────────────────────
+        _HomeDivider(dark: dark),
+        const SizedBox(height: 16),
+
+        // ── Meu Plantão ───────────────────────────────────────────────────
+        MeuPlantaoDashboard(
+          onOpenDrug: (drug) => showDrugDetailSheet(context, drug),
+          onOpenCalc: (calcId) {
+            // Mapeia o ID de calc para o índice do sub-tab da ToolsScreen,
+            // muda para a aba Calculadoras (tab 4) e navega para o sub-tab.
+            const calcTabMap = {
+              'calc_biometria':  0,
+              'calc_scores':     1,
+              'calc_cardio':     2,
+              'calc_eletrólitos': 3,
+              'calc_infusao':    4,
+              'calc_referencia': 5,
+              'calc_prescricoes': 6,
+              'calc_pediatria':  7,
+            };
+            final subTab = calcTabMap[calcId] ?? 0;
+            onSubTabChange(subTab);   // atualiza sub-tab ANTES de mudar de tela
+            onTabChange(4);           // navega para aba Calculadoras (índice 4)
+          },
+          onManageTap: () => showPlantaoManageSheet(context),
         ),
 
         const SizedBox(height: 16),

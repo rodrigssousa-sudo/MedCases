@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../providers/app_provider.dart';
 import '../models/protocol_model.dart';
 import '../widgets/common_widgets.dart';
+import '../widgets/protocol_checklist_widget.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // RECENTES — regista item se o usuário ficou 5s+ vendo
@@ -1203,7 +1204,9 @@ class _RecognizeCard extends StatelessWidget {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// CARD: CONDUTA — com badge numerado + linha conectora + labels semânticos
+// CARD: CONDUTA — checklist interativo (ProtocolChecklistWidget)
+// Substitui o _ActionStepRow estático por checkboxes animados que permitem
+// ao médico marcar cada passo conforme executa. Estado local — reset ao fechar.
 // ─────────────────────────────────────────────────────────────────────────────
 class _ActionsCard extends StatelessWidget {
   final List<String> actions;
@@ -1212,47 +1215,21 @@ class _ActionsCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final dark = context.watch<AppProvider>().darkMode;
-
-    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-
-      // ── Header da seção ─────────────────────────────────────────────────
-      Padding(
-        padding: const EdgeInsets.only(bottom: 12),
-        child: Row(children: [
-          Container(
-            width: 3, height: 16,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(2),
-              color: const Color(0xFF4ADE80),
-            ),
-          ),
-          const SizedBox(width: 8),
-          Text(
-            p.t('actions').toUpperCase(),
-            style: TextStyle(
-              fontSize: 10, fontWeight: FontWeight.w900,
-              letterSpacing: 1.6,
-              color: dark ? const Color(0xFF9CA3AF) : const Color(0xFF6B7280),
-            ),
-          ),
-        ]),
-      ),
-
-      // ── Passos individuais ───────────────────────────────────────────────
-      ...List.generate(actions.length, (i) => _ActionStepRow(
-        index: i,
-        text: actions[i],
-        isLast: i == actions.length - 1,
-        p: p,
-      )),
-    ]);
+    if (actions.isEmpty) return const SizedBox.shrink();
+    final isEs = p.lang == 'es';
+    return ProtocolChecklistWidget(
+      steps: actions,
+      isEs: isEs,
+    );
   }
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// LINHA DE PASSO — badge + linha conectora + classificação semântica
+// LEGADO: _ActionStepRow, _StepType, _StepCfg foram substituídos pelo
+// ProtocolChecklistWidget (checklist interativo com checkboxes animados).
+// Mantidos abaixo apenas como referência histórica — não são mais referenciados.
 // ─────────────────────────────────────────────────────────────────────────────
+// ignore: unused_element
 class _ActionStepRow extends StatelessWidget {
   final int index;
   final String text;
@@ -1528,8 +1505,10 @@ class _ActionStepRow extends StatelessWidget {
   }
 }
 
+// ignore: unused_element
 enum _StepType { primary, urgent, avoid, monitor, prepare, secondary }
 
+// ignore: unused_element
 class _StepCfg {
   final String? label;
   final Color labelColor;
