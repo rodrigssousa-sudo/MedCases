@@ -60,13 +60,19 @@ class DrugInteraction {
   final String drug1;                // Nome do fármaco 1 (para exibição)
   final String drug2;                // Nome do fármaco 2 (para exibição)
   final InteractionSeverity severity;
-  final String mechanism;            // Mecanismo farmacológico da interacción
-  final String effect;               // Efecto clínico resultante
-  final String management;           // Conduta recomendada
-  final String clinicalAlert;        // Mensagem objetiva de alerta visual
-  final EvidenceLevel evidenceLevel; // Nivel de evidência científica
-  final Set<RiskType> riskTypes;     // Tipos de riesgo clínico envolvidos
-  final List<String> references;     // Fontes bibliográficas
+  final String mechanism;            // Mecanismo farmacológico (ES — fonte dos dados)
+  final String effect;               // Efecto clínico resultante (ES — fonte dos dados)
+  final String management;           // Conduta recomendada (ES — fonte dos dados)
+  final String clinicalAlert;        // Alerta visual objetivo (ES — fonte dos dados)
+  final EvidenceLevel evidenceLevel;
+  final Set<RiskType> riskTypes;
+  final List<String> references;
+
+  // Campos opcionais em PT — quando fornecidos, sobrepõem a tradução automática
+  final String? mechanismPt;
+  final String? effectPt;
+  final String? managementPt;
+  final String? clinicalAlertPt;
 
   const DrugInteraction({
     required this.drug1,
@@ -79,7 +85,226 @@ class DrugInteraction {
     required this.evidenceLevel,
     required this.riskTypes,
     required this.references,
+    this.mechanismPt,
+    this.effectPt,
+    this.managementPt,
+    this.clinicalAlertPt,
   });
+
+  // ── Getters bilíngues ──────────────────────────────────────────────────────
+  // Retorna o campo no idioma correto.
+  // Prioridade: campo PT explícito → tradução automática → original ES.
+  // A tradução automática cobre os padrões mais frequentes da base de dados.
+
+  String clinicalAlertL10n({bool isEs = true}) {
+    if (isEs) return clinicalAlert;
+    if (clinicalAlertPt != null) return clinicalAlertPt!;
+    return _translateAlert(clinicalAlert);
+  }
+
+  String effectL10n({bool isEs = true}) {
+    if (isEs) return effect;
+    if (effectPt != null) return effectPt!;
+    return _translateText(effect);
+  }
+
+  String mechanismL10n({bool isEs = true}) {
+    if (isEs) return mechanism;
+    if (mechanismPt != null) return mechanismPt!;
+    return _translateText(mechanism);
+  }
+
+  String managementL10n({bool isEs = true}) {
+    if (isEs) return management;
+    if (managementPt != null) return managementPt!;
+    return _translateText(management);
+  }
+
+  // ── Tradutor automático ES → PT ───────────────────────────────────────────
+  // Cobre padrões de alta frequência dos campos clinicalAlert, effect,
+  // mechanism e management da base de dados embutida.
+  static String _translateAlert(String es) {
+    return es
+      .replaceAll('Requiere monitorización clínica/laboratorial', 'Requer monitorização clínica/laboratorial')
+      .replaceAll('Requiere monitorización clínica', 'Requer monitorização clínica')
+      .replaceAll('Requiere monitorización de INR', 'Requer monitorização do INR')
+      .replaceAll('Requiere monitorización de potasio sérico', 'Requer monitorização do potássio sérico')
+      .replaceAll('Requiere monitorización de K+ sérico', 'Requer monitorização do K+ sérico')
+      .replaceAll('Requiere monitorización de nivel sérico', 'Requer monitorização do nível sérico')
+      .replaceAll('Requiere monitorización de glucemia', 'Requer monitorização da glicemia')
+      .replaceAll('Requiere monitorización de PA y función renal', 'Requer monitorização da PA e função renal')
+      .replaceAll('Requiere monitorización de TSH', 'Requer monitorização do TSH')
+      .replaceAll('Requiere monitorización renal diaria', 'Requer monitorização renal diária')
+      .replaceAll('Requiere monitorización glucémica', 'Requer monitorização glicêmica')
+      .replaceAll('Requiere monitorización', 'Requer monitorização')
+      .replaceAll('riesgo hemorrágico aditivo', 'risco hemorrágico aditivo')
+      .replaceAll('riesgo hemorrágico grave', 'risco hemorrágico grave')
+      .replaceAll('riesgo hemorrágico', 'risco hemorrágico')
+      .replaceAll('riesgo de miopatía', 'risco de miopatia')
+      .replaceAll('riesgo renal', 'risco renal')
+      .replaceAll('Elevación marcada del INR', 'Elevação marcada do INR')
+      .replaceAll('depresión respiratoria aditiva', 'depressão respiratória aditiva')
+      .replaceAll('neurotoxicidad', 'neurotoxicidade')
+      .replaceAll('signos de hipoglucemia enmascarados', 'sinais de hipoglicemia mascarados')
+      .replaceAll('toxicidad anticolinérgica aditiva', 'toxicidade anticolinérgica aditiva')
+      .replaceAll('toxicidad digitálica por aumento de nivel', 'toxicidade digitálica por aumento de nível')
+      .replaceAll('limitar simvastatina a 20 mg/día', 'limitar sinvastatina a 20 mg/dia')
+      .replaceAll('limitar dosis de estatina', 'limitar dose de estatina')
+      .replaceAll('eficacia reducida', 'eficácia reduzida')
+      .replaceAll('depleción de volumen', 'depleção de volume')
+      .replaceAll('evitar AINEs con heparina', 'evitar AINEs com heparina')
+      .replaceAll('analgesia del tramadol puede reducirse', 'analgesia do tramadol pode reduzir-se')
+      .replaceAll('reducir insulina al iniciar iSGLT2', 'reduzir insulina ao iniciar iSGLT2')
+      .replaceAll('reducir insulina al iniciar arGLP-1', 'reduzir insulina ao iniciar arGLP-1')
+      .replaceAll('reducir sulfonilurea al iniciar semaglutida', 'reduzir sulfonilureia ao iniciar semaglutida')
+      .replaceAll('Nunca suspender clonidina abruptamente', 'Nunca suspender clonidina abruptamente')
+      .replaceAll('Sin interacciones', 'Sem interações')
+      .replaceAll('con riesgo', 'com risco')
+      .replaceAll('durante el tratamiento', 'durante o tratamento');
+  }
+
+  static String _translateText(String es) {
+    return es
+      // ── Verbos comuns ──────────────────────────────────────────────────────
+      .replaceAll('Monitorizar', 'Monitorizar')
+      .replaceAll('monitorizar', 'monitorizar')
+      .replaceAll('Evitar', 'Evitar')
+      .replaceAll('evitar', 'evitar')
+      .replaceAll('Reducir', 'Reduzir')
+      .replaceAll('reducir', 'reduzir')
+      .replaceAll('Aumenta', 'Aumenta')
+      .replaceAll('aumenta', 'aumenta')
+      .replaceAll('Disminuye', 'Diminui')
+      .replaceAll('disminuye', 'diminui')
+      .replaceAll('Inhibe', 'Inibe')
+      .replaceAll('inhibe', 'inibe')
+      .replaceAll('Potencia', 'Potencializa')
+      .replaceAll('potencia', 'potencializa')
+      .replaceAll('Suspender', 'Suspender')
+      .replaceAll('suspender', 'suspender')
+      .replaceAll('Considerar', 'Considerar')
+      .replaceAll('considerar', 'considerar')
+      .replaceAll('Ajustar', 'Ajustar')
+      .replaceAll('ajustar', 'ajustar')
+      .replaceAll('Preferir', 'Preferir')
+      .replaceAll('preferir', 'preferir')
+      // ── Termos clínicos ────────────────────────────────────────────────────
+      .replaceAll('hemorragia', 'hemorragia')
+      .replaceAll('hemorrágico', 'hemorrágico')
+      .replaceAll('hemorrágica', 'hemorrágica')
+      .replaceAll('sangrado', 'sangramento')
+      .replaceAll('riesgo', 'risco')
+      .replaceAll('nivel sérico', 'nível sérico')
+      .replaceAll('niveles séricos', 'níveis séricos')
+      .replaceAll('niveles plasmáticos', 'níveis plasmáticos')
+      .replaceAll('nivel plasmático', 'nível plasmático')
+      .replaceAll('dosis', 'dose')
+      .replaceAll('función renal', 'função renal')
+      .replaceAll('función hepática', 'função hepática')
+      .replaceAll('presión arterial', 'pressão arterial')
+      .replaceAll('frecuencia cardíaca', 'frequência cardíaca')
+      .replaceAll('intervalo QT', 'intervalo QT')
+      .replaceAll('potasio sérico', 'potássio sérico')
+      .replaceAll('potasio', 'potássio')
+      .replaceAll('magnesio', 'magnésio')
+      .replaceAll('calcio', 'cálcio')
+      .replaceAll('glucemia', 'glicemia')
+      .replaceAll('glucosa', 'glicose')
+      .replaceAll('hipoglucemia', 'hipoglicemia')
+      .replaceAll('hiperpotasemia', 'hiperpotassemia')
+      .replaceAll('hipopotasemia', 'hipopotassemia')
+      .replaceAll('hipomagnesemia', 'hipomagnesemia')
+      .replaceAll('hipotensión', 'hipotensão')
+      .replaceAll('bradicardia', 'bradicardia')
+      .replaceAll('taquicardia', 'taquicardia')
+      .replaceAll('arritmia', 'arritmia')
+      .replaceAll('neurotoxicidad', 'neurotoxicidade')
+      .replaceAll('nefrotoxicidad', 'nefrotoxicidade')
+      .replaceAll('hepatotoxicidad', 'hepatotoxicidade')
+      .replaceAll('miopatía', 'miopatia')
+      .replaceAll('rabdomiólisis', 'rabdomiólise')
+      .replaceAll('mielodepresión', 'mielossupressão')
+      .replaceAll('sedación', 'sedação')
+      .replaceAll('toxicidad', 'toxicidade')
+      .replaceAll('interacción', 'interação')
+      .replaceAll('interacciones', 'interações')
+      .replaceAll('combinación', 'combinação')
+      .replaceAll('combinaciones', 'combinações')
+      .replaceAll('medicación', 'medicação')
+      .replaceAll('medicaciones', 'medicações')
+      .replaceAll('alternativa', 'alternativa')
+      .replaceAll('contraindicado', 'contraindicado')
+      .replaceAll('contraindicada', 'contraindicada')
+      .replaceAll('indicación', 'indicação')
+      .replaceAll('prescripción', 'prescrição')
+      .replaceAll('tratamiento', 'tratamento')
+      .replaceAll('terapia', 'terapia')
+      .replaceAll('vigilancia', 'vigilância')
+      .replaceAll('monitoreo', 'monitoramento')
+      .replaceAll('monitorización', 'monitorização')
+      .replaceAll('seguimiento', 'acompanhamento')
+      .replaceAll('evaluación', 'avaliação')
+      // ── Farmacocinética ────────────────────────────────────────────────────
+      .replaceAll('metabolismo hepático', 'metabolismo hepático')
+      .replaceAll('metabolismo', 'metabolismo')
+      .replaceAll('absorción', 'absorção')
+      .replaceAll('excreción', 'excreção')
+      .replaceAll('eliminación', 'eliminação')
+      .replaceAll('biodisponibilidad', 'biodisponibilidade')
+      .replaceAll('vida media', 'meia-vida')
+      .replaceAll('aclaramiento', 'depuração')
+      .replaceAll('inhibidor', 'inibidor')
+      .replaceAll('inductor', 'indutor')
+      .replaceAll('sustrato', 'substrato')
+      // ── Conectivos e preposições ───────────────────────────────────────────
+      .replaceAll('del INR', 'do INR')
+      .replaceAll('del paciente', 'do paciente')
+      .replaceAll('del tratamiento', 'do tratamento')
+      .replaceAll('de la dosis', 'da dose')
+      .replaceAll('de los síntomas', 'dos sintomas')
+      .replaceAll('con el', 'com o')
+      .replaceAll('con la', 'com a')
+      .replaceAll('con los', 'com os')
+      .replaceAll('con las', 'com as')
+      .replaceAll('durante el', 'durante o')
+      .replaceAll('durante la', 'durante a')
+      .replaceAll(' al ', ' ao ')
+      .replaceAll(' en el ', ' no ')
+      .replaceAll(' en la ', ' na ')
+      .replaceAll(' en los ', ' nos ')
+      .replaceAll('puede ', 'pode ')
+      .replaceAll('pueden ', 'podem ')
+      .replaceAll('si hay', 'se houver')
+      .replaceAll('si el', 'se o')
+      .replaceAll('si la', 'se a')
+      .replaceAll(' y ', ' e ')
+      .replaceAll(' o ', ' ou ')
+      .replaceAll('No utilizar', 'Não utilizar')
+      .replaceAll('no utilizar', 'não utilizar')
+      .replaceAll('No combinar', 'Não combinar')
+      .replaceAll('no combinar', 'não combinar')
+      .replaceAll('No recomendado', 'Não recomendado')
+      .replaceAll('no recomendado', 'não recomendado')
+      .replaceAll('Especialmente', 'Especialmente')
+      .replaceAll('especialmente', 'especialmente')
+      .replaceAll('Principalmente', 'Principalmente')
+      .replaceAll('principalmente', 'principalmente')
+      .replaceAll('Generalmente', 'Geralmente')
+      .replaceAll('generalmente', 'geralmente')
+      .replaceAll('generalmente', 'geralmente')
+      .replaceAll('grave', 'grave')
+      .replaceAll('severo', 'severo')
+      .replaceAll('severa', 'severa')
+      // ── Abreviações comuns ─────────────────────────────────────────────────
+      .replaceAll('EV', 'EV')
+      .replaceAll('VO', 'VO')
+      .replaceAll('SC', 'SC')
+      .replaceAll('IM', 'IM')
+      .replaceAll('IV', 'IV')
+      .replaceAll('/día', '/dia')
+      .replaceAll('/semana', '/semana')
+      .replaceAll('/mes', '/mês');
+  }
 
   /// Rótulo curto da severidade
   /// Badge de severidade — bilíngue (padrão: es quando isEs=true)

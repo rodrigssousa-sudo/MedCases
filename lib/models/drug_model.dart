@@ -108,4 +108,65 @@ class DrugGroup {
 
   // Mantido para compatibilidade legada — retorna string vazia (sem emoji)
   static String icon(String group) => '';
+
+  // ── Rótulo bilíngue do grupo ───────────────────────────────────────────────
+  // Grupos usam ES como idioma-base nos dados.
+  // Este método retorna a tradução PT quando isEs=false.
+  static String label(String group, {bool isEs = true}) {
+    if (isEs) return group;
+    const Map<String, String> groupPt = {
+      'Cardiovascular y HTA':                              'Cardiovascular e HAS',
+      'UCI – Críticos y Sedoanalgesia':                    'UTI – Críticos e Sedoanalgesia',
+      'Analgésicos y Antipiréticos':                       'Analgésicos e Antipiréticos',
+      'Antibióticos':                                      'Antibióticos',
+      'Infectología (Antifúngicos / Antivirales / TBC)':   'Infectologia (Antifúngicos / Antivirais / TBC)',
+      'Anticoagulantes y Hemostasia':                      'Anticoagulantes e Hemostasia',
+      'Respiratorio':                                      'Respiratório',
+      'Neurología y Psiquiatría':                          'Neurologia e Psiquiatria',
+      'Gastroenterología':                                 'Gastroenterologia',
+      'Endocrinología y Metabolismo':                      'Endocrinologia e Metabolismo',
+      'Hematología y Vitaminas':                           'Hematologia e Vitaminas',
+      'Varios / Antídotos / Otros':                        'Vários / Antídotos / Outros',
+      // Grupos secundários também presentes nos dados
+      'Cardiologia':                                       'Cardiologia',
+      'Neurologia':                                        'Neurologia',
+      'Reumatologia':                                      'Reumatologia',
+      'Imunológicos':                                      'Imunológicos',
+      'Imunossupressores':                                 'Imunossupressores',
+      'Imunobiológicos / Anti-TNF':                        'Imunobiológicos / Anti-TNF',
+      'Corticosteroides':                                  'Corticosteroides',
+      'Diuréticos':                                        'Diuréticos',
+      'Dislipidemias':                                     'Dislipidemias',
+      'Hematológicos':                                     'Hematológicos',
+      'Hemoderivados':                                     'Hemoderivados',
+      'Antiepilépticos EV':                                'Antiepilépticos EV',
+      'Anti-hipertensivos EV / Vasodilatadores':           'Anti-hipertensivos EV / Vasodilatadores',
+      'Anti-hipertensivos EV / Bloqueadores de canal de Ca': 'Anti-hipertensivos EV / Bloqueadores de canal de Ca',
+      'Anti-hipertensivos EV / Dopaminérgicos':            'Anti-hipertensivos EV / Dopaminérgicos',
+      'Betabloqueadores EV':                               'Betabloqueadores EV',
+      'Betabloqueadores EV / Anti-hipertensivos':          'Betabloqueadores EV / Anti-hipertensivos',
+      'Antifibrinolíticos':                                'Antifibrinolíticos',
+      'Antifúngicos':                                      'Antifúngicos',
+      'Antiparasitários':                                  'Antiparasitários',
+      'Antídotos / Miorrelaxantes':                        'Antídotos / Miorrelaxantes',
+      'Antídotos / Reversion ACOD':                        'Antídotos / Reversão ACOD',
+      'Antialérgicos / Angioedema':                        'Antialérgicos / Angioedema',
+      'Anestesia General':                                 'Anestesia Geral',
+      'Alzheimer y Demencias':                             'Alzheimer e Demências',
+      'Glándula Tiroides':                                 'Glândula Tireoide',
+      'Hígado / Páncreas / Vías Biliares':                 'Fígado / Pâncreas / Vias Biliares',
+      'Gastroprocinéticos / Opioides':                     'Gastroprocinéticos / Opioides',
+      'Inflamación Intestinal (EII)':                      'Inflamação Intestinal (DII)',
+      'Tocolíticos / Obstetrícia':                         'Tocolíticos / Obstetrícia',
+      'Tratamiento de Anemias':                            'Tratamento das Anemias',
+      'Hemorragias / Coagulación':                         'Hemorragias / Coagulação',
+      'Vitaminas y Suplementos':                           'Vitaminas e Suplementos',
+      'Prurito y Alergias':                                'Prurido e Alergias',
+      'Psoriasis y Caída de Pelo':                         'Psoríase e Queda de Cabelo',
+      'Psicosis / Manía / Bipolaridad':                    'Psicose / Mania / Bipolaridade',
+      'Vasoconstritores / Hepatologia':                    'Vasoconstritores / Hepatologia',
+      'Respiratorio Avanzado':                             'Respiratório Avançado',
+    };
+    return groupPt[group] ?? group;
+  }
 }

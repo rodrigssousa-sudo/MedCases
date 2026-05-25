@@ -71,7 +71,7 @@ class _PrescripcionesScreenState extends State<PrescripcionesScreen> {
               ...categories.map((cat) => Padding(
                 padding: const EdgeInsets.only(right: 6),
                 child: _CategoryChip(
-                  label: cat,
+                  label: _categoryLabel(cat, es),
                   active: _selectedCategory == cat,
                   dark: dark,
                   onTap: () => setState(() =>
@@ -108,7 +108,7 @@ class _PrescripcionesScreenState extends State<PrescripcionesScreen> {
                     children: [
                       if (showHeader) ...[
                         if (i > 0) const SizedBox(height: 12),
-                        _CategoryHeader(label: model.category, dark: dark),
+                        _CategoryHeader(label: _categoryLabel(model.category, es), dark: dark),
                         const SizedBox(height: 6),
                       ],
                       _PrescriptionCard(
@@ -152,6 +152,52 @@ class PrescriptionModel {
 
 // ignore: library_private_types_in_public_api
 typedef _PrescriptionModel = PrescriptionModel;
+
+// ── Tradutor de categoria ES → PT ─────────────────────────────────────────────
+// Os dados internos usam ES como idioma-base.
+// Esta função traduz o rótulo exibido nos chips e títulos quando isEs=false.
+String _categoryLabel(String cat, bool isEs) {
+  if (isEs) return cat;
+  const Map<String, String> ptMap = {
+    'Analgesia':                         'Analgesia',
+    'Cardiovascular':                    'Cardiovascular',
+    'Cirugía':                           'Cirurgia',
+    'Clínica Médica':                    'Clínica Médica',
+    'Clínica Médica / Prevención':       'Clínica Médica / Prevenção',
+    'Clínica Médica / Reumatología':     'Clínica Médica / Reumatologia',
+    'Dermatología':                      'Dermatologia',
+    'Dermatología / Infectología':       'Dermatologia / Infectologia',
+    'Endocrinología':                    'Endocrinologia',
+    'Gastroenterología':                 'Gastroenterologia',
+    'Gastroenterología / Clínica':       'Gastroenterologia / Clínica',
+    'Genitourinario':                    'Genitourinário',
+    'Ginecología':                       'Ginecologia',
+    'Hematología':                       'Hematologia',
+    'Hidroelectrolítico':                'Hidroeletrolítico',
+    'Infectología':                      'Infectologia',
+    'Infectología / Ginecología':        'Infectologia / Ginecologia',
+    'Infectología / Pediatría':          'Infectologia / Pediatria',
+    'Neurología':                        'Neurologia',
+    'Neurología / Clínica':              'Neurologia / Clínica',
+    'Neurología / ORL':                  'Neurologia / ORL',
+    'Obstetricia / Infectología':        'Obstetrícia / Infectologia',
+    'Odontología':                       'Odontologia',
+    'Odontología / Clínica':             'Odontologia / Clínica',
+    'Oftalmología':                      'Oftalmologia',
+    'Osteomuscular':                     'Osteomuscular',
+    'Otorrinolaringología':              'Otorrinolaringologia',
+    'Pediatría':                         'Pediatria',
+    'Pediatría / Dermatología':          'Pediatria / Dermatologia',
+    'Proctología':                       'Proctologia',
+    'Psiquiatría':                       'Psiquiatria',
+    'Respiratorio':                      'Respiratório',
+    'Reumatología':                      'Reumatologia',
+    'Toxicología':                       'Toxicologia',
+    'Urgencias':                         'Urgências',
+    'Urología':                          'Urologia',
+  };
+  return ptMap[cat] ?? cat;
+}
 
 List<PrescriptionModel> prescriptionModels(bool es) => [
 

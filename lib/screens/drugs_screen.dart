@@ -356,7 +356,7 @@ class _GroupAccordion extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        groupName,
+                        DrugGroup.label(groupName, isEs: p.lang == 'es'),
                         style: TextStyle(
                           fontSize: 13,
                           fontWeight: FontWeight.w900,
@@ -734,7 +734,7 @@ class _DrugDetailViewState extends State<_DrugDetailView> {
             color: c.surface,
           ),
           child: Text(
-            '${DrugGroup.icon(drug.group)}  ${drug.group}',
+            '${DrugGroup.icon(drug.group)}  ${DrugGroup.label(drug.group, isEs: p.lang == "es")}',
             style: TextStyle(
               fontSize: 11,
               fontWeight: FontWeight.w800,
@@ -1753,7 +1753,7 @@ class _DrugSuggestionDropdown extends StatelessWidget {
                           ),
                           const SizedBox(height: 2),
                           Text(
-                            '${drug.group} · ${drug.route}',
+                            '${DrugGroup.label(drug.group, isEs: context.read<AppProvider>().lang == "es")} · ${drug.route}',
                             style: const TextStyle(
                               fontSize: 10,
                               fontWeight: FontWeight.w500,

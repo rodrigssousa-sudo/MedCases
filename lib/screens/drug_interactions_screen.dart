@@ -340,7 +340,7 @@ class _Header extends StatelessWidget {
               ),
             ),
             child: Text(
-              isEs ? '${uniqueDrugsCount} fármacos' : '${uniqueDrugsCount} fármacos',
+              isEs ? '$uniqueDrugsCount fármacos' : '$uniqueDrugsCount fármacos',
               style: const TextStyle(
                 fontSize: 10,
                 fontWeight: FontWeight.w700,
@@ -943,7 +943,7 @@ class _ResultsHeader extends StatelessWidget {
                   const SizedBox(width: 7),
                   Text(
                     hasInteractions
-                        ? '$count ${isEs ? (count == 1 ? 'interacción' : 'interacciones') : (count == 1 ? 'interação' : 'interações')} ${isEs ? 'encontradas' : 'encontradas'}'
+                        ? '$count ${isEs ? (count == 1 ? 'interacción' : 'interacciones') : (count == 1 ? 'interação' : 'interações')} ${isEs ? 'encontrada${count == 1 ? '' : 's'}' : 'encontrada${count == 1 ? '' : 's'}'}'
                         : isEs ? 'Sin interacciones' : 'Sem interações',
                     style: TextStyle(
                       fontSize: 13,
@@ -1290,7 +1290,7 @@ class _InteractionCardState extends State<_InteractionCard> {
                     const SizedBox(width: 6),
                     Expanded(
                       child: Text(
-                        ix.clinicalAlert,
+                        ix.clinicalAlertL10n(isEs: widget.isEs),
                         style: TextStyle(
                           fontSize: 12,
                           color: _severityColor,
@@ -1389,7 +1389,7 @@ class _ExpandedContent extends StatelessWidget {
             title: isEs ? 'EFECTO CLÍNICO' : 'EFEITO CLÍNICO',
             icon: Icons.monitor_heart_rounded,
             iconColor: const Color(0xFFF87171),
-            content: ix.effect,
+            content: ix.effectL10n(isEs: isEs),
             dark: dark,
             c: c,
           ),
@@ -1401,7 +1401,7 @@ class _ExpandedContent extends StatelessWidget {
             title: isEs ? 'FISIOPATOLOGÍA DE LA INTERACCIÓN' : 'FISIOPATOLOGIA DA INTERAÇÃO',
             icon: Icons.biotech_rounded,
             iconColor: const Color(0xFF60A5FA),
-            content: ix.mechanism,
+            content: ix.mechanismL10n(isEs: isEs),
             dark: dark,
             c: c,
           ),
@@ -1410,10 +1410,10 @@ class _ExpandedContent extends StatelessWidget {
 
           // ── Manejo Clínico ───────────────────────────────────────────────
           _InfoSection(
-            title: isEs ? 'MANEJO CLÍNICO' : 'MANEJO CLÍNICO',
+            title: isEs ? 'MANEJO CLÍNICO' : 'CONDUTA CLÍNICA',
             icon: Icons.medical_services_rounded,
             iconColor: const Color(0xFF34D399),
-            content: ix.management,
+            content: ix.managementL10n(isEs: isEs),
             dark: dark,
             c: c,
           ),
