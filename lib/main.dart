@@ -2541,12 +2541,13 @@ class _AppHeader extends StatelessWidget {
 }
 
 // ── Sobre o App — sheet institucional (Apple 1.5.0) ──────────────────────────
+// Usa DraggableScrollableSheet para garantir que header+X fiquem sempre fixos
+// no topo e nunca desapareçam, independente do tamanho do conteúdo.
 class _AboutAppSheet extends StatelessWidget {
   final AppProvider p;
   final bool dark;
   const _AboutAppSheet({required this.p, required this.dark});
 
-  // Paleta interna — não depende do AppColors para funcionar em qualquer contexto
   static const _kGreen      = Color(0xFF075f45);
   static const _kGreenLight = Color(0xFF0D9488);
   static const _kGold       = Color(0xFFD4A96A);
@@ -2562,293 +2563,265 @@ class _AboutAppSheet extends StatelessWidget {
     final bdr   = dark ? const Color(0xFF1E3028) : const Color(0xFFD4E0D8);
     final accent = dark ? _kGold : _kGreen;
 
-    // ── Helper: linha label + valor ────────────────────────────────────────
-    Widget _infoRow(IconData icon, String label, String value) => Container(
+    Widget infoRow(IconData icon, String label, String value) => Container(
       margin: const EdgeInsets.only(bottom: 10),
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-      decoration: BoxDecoration(
-        color: card,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: bdr),
-      ),
+      decoration: BoxDecoration(color: card,
+          borderRadius: BorderRadius.circular(12), border: Border.all(color: bdr)),
       child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Container(
           width: 32, height: 32,
-          decoration: BoxDecoration(
-            color: accent.withValues(alpha: 0.10),
-            borderRadius: BorderRadius.circular(8),
-          ),
+          decoration: BoxDecoration(color: accent.withValues(alpha: 0.10),
+              borderRadius: BorderRadius.circular(8)),
           child: Icon(icon, size: 16, color: accent),
         ),
         const SizedBox(width: 12),
-        Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-          Text(label,
-            style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w800,
-                color: accent, letterSpacing: 0.9)),
+        Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Text(label, style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w800,
+              color: accent, letterSpacing: 0.9)),
           const SizedBox(height: 3),
-          Text(value,
-            style: TextStyle(fontSize: 13.5, fontWeight: FontWeight.w600,
-                color: ttl, height: 1.3)),
+          Text(value, style: TextStyle(fontSize: 13.5, fontWeight: FontWeight.w600,
+              color: ttl, height: 1.3)),
         ])),
       ]),
     );
 
-    // ── Helper: bloco de texto longo (comitê / propósito) ──────────────────
-    Widget _textBlock(IconData icon, String label, String value,
-        {Color? iconColor, Color? labelColor}) => Container(
+    Widget textBlock(IconData icon, String label, String value) => Container(
       margin: const EdgeInsets.only(bottom: 10),
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
-      decoration: BoxDecoration(
-        color: card,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: bdr),
-      ),
+      decoration: BoxDecoration(color: card,
+          borderRadius: BorderRadius.circular(12), border: Border.all(color: bdr)),
       child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Container(
           width: 32, height: 32,
-          decoration: BoxDecoration(
-            color: (iconColor ?? accent).withValues(alpha: 0.10),
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: Icon(icon, size: 16, color: iconColor ?? accent),
+          decoration: BoxDecoration(color: accent.withValues(alpha: 0.10),
+              borderRadius: BorderRadius.circular(8)),
+          child: Icon(icon, size: 16, color: accent),
         ),
         const SizedBox(width: 12),
-        Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-          Text(label,
-            style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w800,
-                color: labelColor ?? accent, letterSpacing: 0.9)),
+        Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Text(label, style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w800,
+              color: accent, letterSpacing: 0.9)),
           const SizedBox(height: 5),
-          Text(value,
-            style: TextStyle(fontSize: 13, color: sub, height: 1.55)),
+          Text(value, style: TextStyle(fontSize: 13, color: sub, height: 1.55)),
         ])),
       ]),
     );
 
-    // Altura máxima: 88% da tela — nunca ultrapassa, handle e X ficam sempre visíveis
-    final maxH = MediaQuery.of(context).size.height * 0.88;
+    // ── DraggableScrollableSheet garante header sempre fixo no topo ──────────
+    // initialChildSize=0.82: ocupa 82% da tela ao abrir
+    // maxChildSize=0.92: máximo de 92% — nunca cobre a status bar
+    // O builder retorna uma Column:
+    //   - Header fixo (handle + título + X + divisor) → nunca scrolla
+    //   - ListView scrollável com o restante do conteúdo
+    return DraggableScrollableSheet(
+      initialChildSize: 0.82,
+      minChildSize: 0.5,
+      maxChildSize: 0.92,
+      expand: false,
+      builder: (ctx, scrollController) {
+        return Container(
+          decoration: BoxDecoration(
+            color: bg,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
 
-    return SafeArea(
-      top: false,
-      child: Container(
-        // Limita a altura máxima do sheet para garantir que handle+título
-        // nunca fiquem acima da área visível (bug relatado: sheet muito alto)
-        constraints: BoxConstraints(maxHeight: maxH),
-        decoration: BoxDecoration(
-          color: bg,
-          borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-
-            // ── Handle (pill) — FORA do scroll, sempre visível ────────────
-            Padding(
-              padding: const EdgeInsets.only(top: 12, bottom: 4),
-              child: Center(
-                child: Container(
-                  width: 40, height: 4,
-                  decoration: BoxDecoration(
-                    color: hdl, borderRadius: BorderRadius.circular(2)),
-                ),
-              ),
-            ),
-
-            // ── Linha título + botão X — FORA do scroll, sempre visível ──
-            Padding(
-              padding: const EdgeInsets.fromLTRB(20, 6, 8, 12),
-              child: Row(children: [
-                Expanded(
-                  child: Text(
-                    isEs ? 'Sobre MedCases Pro' : 'Sobre o MedCases Pro',
-                    style: TextStyle(fontSize: 17, fontWeight: FontWeight.w900,
-                        color: ttl, letterSpacing: -0.3),
-                  ),
-                ),
-                IconButton(
-                  icon: Icon(Icons.close_rounded, size: 22, color: sub),
-                  onPressed: () => Navigator.pop(context),
-                  padding: const EdgeInsets.all(8),
-                  visualDensity: VisualDensity.compact,
-                ),
-              ]),
-            ),
-
-            // ── Divisor sutil ─────────────────────────────────────────────
-            Divider(height: 1, thickness: 0.5,
-                color: hdl.withValues(alpha: 0.6)),
-
-            // ── Conteúdo scrollável ───────────────────────────────────────
-            Expanded(
-              child: SingleChildScrollView(
-                padding: EdgeInsets.fromLTRB(20, 16, 20,
-                    MediaQuery.of(context).viewInsets.bottom + 32),
-                child: Column(mainAxisSize: MainAxisSize.min, children: [
-
-            // ── Header: ícone + nome + subtítulo ─────────────────────────
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                color: card,
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: bdr),
-              ),
-              child: Row(children: [
-                // Ícone do app
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(16),
-                  child: Image.asset(
-                    'assets/icon/app_icon.png',
-                    width: 56, height: 56, fit: BoxFit.cover,
-                    errorBuilder: (_, __, ___) => Container(
-                      width: 56, height: 56,
-                      decoration: BoxDecoration(
-                        color: _kGreen,
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                      child: const Icon(Icons.local_hospital_rounded,
-                          size: 28, color: Colors.white),
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 14),
-                Expanded(child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  Text('MedCases Pro',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900,
-                        color: ttl, letterSpacing: -0.4)),
-                  const SizedBox(height: 3),
-                  Text(
-                    isEs ? 'Apoyo clínico educativo' : 'Apoio clínico educacional',
-                    style: TextStyle(fontSize: 12, color: sub,
-                        fontWeight: FontWeight.w500)),
-                  const SizedBox(height: 6),
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+              // ── Handle pill — fixo, nunca scrolla ──────────────────────
+              Padding(
+                padding: const EdgeInsets.only(top: 12, bottom: 6),
+                child: Center(
+                  child: Container(
+                    width: 40, height: 4,
                     decoration: BoxDecoration(
-                      color: accent.withValues(alpha: 0.10),
-                      borderRadius: BorderRadius.circular(6),
-                      border: Border.all(color: accent.withValues(alpha: 0.25)),
-                    ),
-                    child: Text(
-                      isEs ? 'Herramienta educativa' : 'Ferramenta educacional',
-                      style: TextStyle(fontSize: 10, fontWeight: FontWeight.w700,
-                          color: accent, letterSpacing: 0.3)),
+                        color: hdl, borderRadius: BorderRadius.circular(2)),
                   ),
-                ])),
-              ]),
-            ),
-
-            const SizedBox(height: 16),
-
-            // ── Desenvolvedor ─────────────────────────────────────────────
-            _infoRow(
-              Icons.person_outline_rounded,
-              isEs ? 'DESARROLLADO POR' : 'DESENVOLVIDO POR',
-              'Bruno Rodrigues de Sousa',
-            ),
-
-            // ── Contato / suporte ─────────────────────────────────────────
-            _infoRow(
-              Icons.email_outlined,
-              isEs ? 'CONTACTO TÉCNICO Y SOPORTE' : 'CONTATO TÉCNICO E SUPORTE',
-              'medcasespro@gmail.com',
-            ),
-
-            // ── Comitê de Revisão Clínica (bloco destaque) ───────────────
-            Container(
-              margin: const EdgeInsets.only(bottom: 10),
-              decoration: BoxDecoration(
-                color: card,
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: _kGreenLight.withValues(alpha: 0.35)),
+                ),
               ),
-              child: Column(children: [
-                // Cabeçalho do card com fundo verde
-                Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-                  decoration: BoxDecoration(
-                    color: _kGreenLight.withValues(alpha: dark ? 0.20 : 0.10),
-                    borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
-                  ),
-                  child: Row(children: [
-                    const Icon(Icons.verified_user_rounded,
-                        size: 16, color: _kGreenLight),
-                    const SizedBox(width: 8),
-                    Text(
-                      isEs
-                        ? 'RESPONSABILIDAD TÉCNICA Y REVISIÓN MÉDICA'
-                        : 'RESPONSABILIDADE TÉCNICA E REVISÃO MÉDICA',
-                      style: const TextStyle(fontSize: 9.5,
-                          fontWeight: FontWeight.w800, color: _kGreenLight,
-                          letterSpacing: 0.8),
+
+              // ── Título + botão X — fixo, nunca scrolla ─────────────────
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 2, 8, 10),
+                child: Row(children: [
+                  Expanded(
+                    child: Text(
+                      isEs ? 'Sobre MedCases Pro' : 'Sobre o MedCases Pro',
+                      style: TextStyle(fontSize: 17, fontWeight: FontWeight.w900,
+                          color: ttl, letterSpacing: -0.3),
                     ),
-                  ]),
-                ),
-                // Corpo do card
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(14, 12, 14, 14),
-                  child: Text(
-                    isEs
-                      ? 'El contenido científico, los algoritmos de dosificación, las calculadoras '
-                        'pediátricas y las directrices clínicas incluidos en esta aplicación son '
-                        'revisados, actualizados y validados de forma continua por el Comitê de '
-                        'Revisão Clínica MedCases Pro. Este comité está integrado por profesionales '
-                        'médicos titulados y estudiantes avanzados de medicina, con base en las '
-                        'directrices internacionales vigentes de la World Allergy Organization (WAO), '
-                        'UpToDate y comités de pediatría de referencia.'
-                      : 'O conteúdo científico, algoritmos de dosagem, calculadoras pediátricas e '
-                        'diretrizes clínicas contidos neste aplicativo são revisados, atualizados e '
-                        'validados de forma contínua pelo Comitê de Revisão Clínica MedCases Pro, '
-                        'composto por profissionais médicos diplomados e acadêmicos seniores de '
-                        'medicina, com base nas diretrizes internacionais atualizadas da World Allergy '
-                        'Organization (WAO), UpToDate e comitês de pediatria de referência.',
-                    style: TextStyle(fontSize: 13, color: sub, height: 1.55),
                   ),
+                  // Botão fechar — SEMPRE visível no topo direito
+                  Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(20),
+                      onTap: () => Navigator.of(ctx).pop(),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8),
+                        child: Icon(Icons.close_rounded, size: 24, color: sub),
+                      ),
+                    ),
+                  ),
+                ]),
+              ),
+
+              // ── Divisor ────────────────────────────────────────────────
+              Divider(height: 1, thickness: 0.5, color: hdl),
+
+              // ── Conteúdo scrollável (ListView usa o scrollController) ───
+              Expanded(
+                child: ListView(
+                  controller: scrollController,
+                  padding: const EdgeInsets.fromLTRB(20, 16, 20, 40),
+                  children: [
+
+                    // Card: ícone + nome + badge
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(20),
+                      margin: const EdgeInsets.only(bottom: 16),
+                      decoration: BoxDecoration(color: card,
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(color: bdr)),
+                      child: Row(children: [
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(16),
+                          child: Image.asset(
+                            'assets/icon/app_icon.png',
+                            width: 56, height: 56, fit: BoxFit.cover,
+                            errorBuilder: (_, __, ___) => Container(
+                              width: 56, height: 56,
+                              decoration: BoxDecoration(color: _kGreen,
+                                  borderRadius: BorderRadius.circular(16)),
+                              child: const Icon(Icons.local_hospital_rounded,
+                                  size: 28, color: Colors.white),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 14),
+                        Expanded(child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start, children: [
+                          Text('MedCases Pro',
+                              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900,
+                                  color: ttl, letterSpacing: -0.4)),
+                          const SizedBox(height: 3),
+                          Text(isEs ? 'Apoyo clínico educativo' : 'Apoio clínico educacional',
+                              style: TextStyle(fontSize: 12, color: sub,
+                                  fontWeight: FontWeight.w500)),
+                          const SizedBox(height: 6),
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                            decoration: BoxDecoration(
+                              color: accent.withValues(alpha: 0.10),
+                              borderRadius: BorderRadius.circular(6),
+                              border: Border.all(color: accent.withValues(alpha: 0.25)),
+                            ),
+                            child: Text(
+                              isEs ? 'Herramienta educativa' : 'Ferramenta educacional',
+                              style: TextStyle(fontSize: 10, fontWeight: FontWeight.w700,
+                                  color: accent, letterSpacing: 0.3)),
+                          ),
+                        ])),
+                      ]),
+                    ),
+
+                    // Desenvolvedor
+                    infoRow(Icons.person_outline_rounded,
+                        isEs ? 'DESARROLLADO POR' : 'DESENVOLVIDO POR',
+                        'Bruno Rodrigues de Sousa'),
+
+                    // Contato
+                    infoRow(Icons.email_outlined,
+                        isEs ? 'CONTACTO TÉCNICO Y SOPORTE' : 'CONTATO TÉCNICO E SUPORTE',
+                        'medcasespro@gmail.com'),
+
+                    // Comitê de Revisão Clínica
+                    Container(
+                      margin: const EdgeInsets.only(bottom: 10),
+                      decoration: BoxDecoration(color: card,
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(color: _kGreenLight.withValues(alpha: 0.35))),
+                      child: Column(children: [
+                        Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                          decoration: BoxDecoration(
+                            color: _kGreenLight.withValues(alpha: dark ? 0.20 : 0.10),
+                            borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+                          ),
+                          child: Row(children: [
+                            const Icon(Icons.verified_user_rounded, size: 16, color: _kGreenLight),
+                            const SizedBox(width: 8),
+                            Flexible(
+                              child: Text(
+                                isEs
+                                    ? 'RESPONSABILIDAD TÉCNICA Y REVISIÓN MÉDICA'
+                                    : 'RESPONSABILIDADE TÉCNICA E REVISÃO MÉDICA',
+                                style: const TextStyle(fontSize: 9.5,
+                                    fontWeight: FontWeight.w800, color: _kGreenLight,
+                                    letterSpacing: 0.8),
+                              ),
+                            ),
+                          ]),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(14, 12, 14, 14),
+                          child: Text(
+                            isEs
+                                ? 'El contenido científico, los algoritmos de dosificación, las calculadoras '
+                                  'pediátricas y las directrices clínicas incluidos en esta aplicación son '
+                                  'revisados, actualizados y validados de forma continua por el Comitê de '
+                                  'Revisão Clínica MedCases Pro. Este comité está integrado por profesionales '
+                                  'médicos titulados y estudiantes avanzados de medicina, con base en las '
+                                  'directrices internacionales vigentes de la World Allergy Organization (WAO), '
+                                  'UpToDate y comités de pediatría de referencia.'
+                                : 'O conteúdo científico, algoritmos de dosagem, calculadoras pediátricas e '
+                                  'diretrizes clínicas contidos neste aplicativo são revisados, atualizados e '
+                                  'validados de forma contínua pelo Comitê de Revisão Clínica MedCases Pro, '
+                                  'composto por profissionais médicos diplomados e acadêmicos seniores de '
+                                  'medicina, com base nas diretrizes internacionais atualizadas da World Allergy '
+                                  'Organization (WAO), UpToDate e comitês de pediatria de referência.',
+                            style: TextStyle(fontSize: 13, color: sub, height: 1.55),
+                          ),
+                        ),
+                      ]),
+                    ),
+
+                    // Propósito
+                    textBlock(Icons.gavel_rounded,
+                        isEs ? 'PROPÓSITO' : 'PROPÓSITO',
+                        isEs
+                            ? 'Esta aplicación es una herramienta exclusivamente educativa de apoyo a la '
+                              'toma de decisiones clínicas. No reemplaza el juicio clínico del profesional '
+                              'de salud, ni constituye prescripción médica.'
+                            : 'Este aplicativo é uma ferramenta exclusivamente educacional de apoio à tomada '
+                              'de decisão clínica. Não substitui o julgamento clínico do profissional de '
+                              'saúde, nem constitui prescrição médica.'),
+
+                    // Site
+                    infoRow(Icons.language_outlined,
+                        isEs ? 'SITIO WEB' : 'SITE',
+                        'medcasespro.com'),
+
+                    const SizedBox(height: 8),
+
+                    // Copyright
+                    Text(
+                      'MedCases Pro © ${DateTime.now().year} — '
+                      '${isEs ? 'Todos los derechos reservados.' : 'Todos os direitos reservados.'}',
+                      style: TextStyle(fontSize: 11, color: sub.withValues(alpha: 0.6),
+                          fontWeight: FontWeight.w500),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
                 ),
-              ]),
-            ),
-
-            // ── Propósito educacional ─────────────────────────────────────
-            _textBlock(
-              Icons.gavel_rounded,
-              isEs ? 'PROPÓSITO' : 'PROPÓSITO',
-              isEs
-                ? 'Esta aplicación es una herramienta exclusivamente educativa de apoyo a la '
-                  'toma de decisiones clínicas. No reemplaza el juicio clínico del profesional '
-                  'de salud, ni constituye prescripción médica.'
-                : 'Este aplicativo é uma ferramenta exclusivamente educacional de apoio à tomada '
-                  'de decisão clínica. Não substitui o julgamento clínico do profissional de '
-                  'saúde, nem constitui prescrição médica.',
-            ),
-
-            // ── Site ──────────────────────────────────────────────────────
-            _infoRow(
-              Icons.language_outlined,
-              isEs ? 'SITIO WEB' : 'SITE',
-              'medcasespro.com',
-            ),
-
-            const SizedBox(height: 8),
-
-            // ── Rodapé de copyright ───────────────────────────────────────
-            Text(
-              'MedCases Pro © ${DateTime.now().year} — '
-              '${isEs ? 'Todos los derechos reservados.' : 'Todos os direitos reservados.'}',
-              style: TextStyle(fontSize: 11, color: sub.withValues(alpha: 0.6),
-                  fontWeight: FontWeight.w500),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 4),
-          ]),   // fim Column scrollável
-        ),      // fim SingleChildScrollView
-      ),        // fim Expanded
-    ],          // fim Column.children
-    ),          // fim Column externo
-    ),          // fim Container
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }
