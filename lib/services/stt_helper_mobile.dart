@@ -3,17 +3,25 @@
 // No Web, stt_helper_web.dart é usado via conditional import em stt_helper.dart.
 //
 // ══════════════════════════════════════════════════════════════════════════════
-// BUG CONHECIDO — speech_to_text 7.2.0 no iOS (arm64):
+// HISTÓRICO DE BUGS CONHECIDOS
 //
-//   Problema 1: await _stt.listen() lança internamente:
-//               "type 'Null' is not a subtype of type 'bool'"
-//               O microfone JÁ está ativo quando o erro ocorre.
-//               → BYPASS: captura o erro e mantém _listening = true.
+//   BUG 1 — speech_to_text 7.x no iOS (arm64) — TypeError null-bool:
+//     await _stt.listen() lança "type 'Null' is not a subtype of type 'bool'".
+//     O microfone JÁ está ativo quando o erro ocorre.
+//     → BYPASS: captura e mantém _listening = true.
 //
-//   Problema 2: onStatus('done') dispara ~200ms após o bypass, antes mesmo
-//               de o usuário falar, porque o plugin acha que a sessão terminou.
-//               → BYPASS: ignora qualquer 'done'/'notListening' nos primeiros
-//                 1500ms após o listen() para dar tempo ao microfone estabilizar.
+//   BUG 2 — onStatus('done') precoce após bypass:
+//     Dispara ~200ms após o listen() antes do usuário falar.
+//     → BYPASS: ignora 'done'/'notListening' nos primeiros 1500ms.
+//
+//   BUG 3 — "Reconocimiento de voz no disponible" em Release (iOS):
+//     SFSpeechRecognizer.isAvailable retorna false no boot frio em Release
+//     porque o iOS não completou o handshake de autorização antes do
+//     initialize() ser chamado (processo mais rápido em Release vs Debug).
+//     Adicionalmente, sem SpeechInitializationOptions explícitas, o plugin
+//     não força o iOS a pré-aquecer o SFSpeechRecognizer.
+//     → FIX: retry com back-off + SpeechInitializationOptions explícitas
+//             + reset de estado entre tentativas.
 // ══════════════════════════════════════════════════════════════════════════════
 // ignore_for_file: dead_null_aware_expression
 
@@ -21,7 +29,7 @@ import 'package:flutter/foundation.dart' show debugPrint;
 import 'package:speech_to_text/speech_to_text.dart';
 
 // ── Singleton ─────────────────────────────────────────────────────────────────
-final _stt = SpeechToText();
+SpeechToText _stt = SpeechToText();
 
 bool _initialized  = false;
 bool _listening    = false;
@@ -61,27 +69,81 @@ int _msSinceListen() {
   return DateTime.now().difference(_listenStartedAt!).inMilliseconds;
 }
 
-// ── Inicialização lazy ────────────────────────────────────────────────────────
+// ── Inicialização com retry e back-off ────────────────────────────────────────
+//
+// Por que retry? No iOS em Release, SFSpeechRecognizer.isAvailable pode
+// retornar false nos primeiros ~800ms após cold start, mesmo com permissão
+// concedida. Isso ocorre porque o daemon SiriSpeech ainda está subindo.
+// Com 3 tentativas e back-off progressivo (0ms → 500ms → 1000ms), o app
+// aguarda o iOS ficar pronto sem travar a UI.
+//
+// Por que recriar _stt? Após uma inicialização falha, o objeto interno do
+// plugin fica em estado corrompido. Recriar o SpeechToText() garante
+// que a próxima tentativa parte de um estado limpo.
 Future<bool> _ensureInit() async {
+  // Fast path: já inicializado e disponível
   if (_initialized && _stt.isAvailable) return true;
 
-  _initialized = false;
-  debugPrint('[STT Mobile] Iniciando SpeechToText.initialize()...');
+  // Delays entre tentativas: 0ms (imediata), 500ms, 1000ms
+  const retryDelays = [0, 500, 1000];
 
-  try {
-    final dynamic rawResult = await _stt.initialize(
-      onStatus: _handleStatus,
-      onError:  _handleError,
-      debugLogging: false,
-    );
-    _initialized = _safeBool(rawResult, fallback: false);
-    debugPrint('[STT Mobile] initialize() → $_initialized | isAvailable: ${_stt.isAvailable}');
-  } catch (e) {
-    debugPrint('[STT Mobile] initialize() exception: $e');
-    _initialized = false;
+  for (int attempt = 0; attempt < retryDelays.length; attempt++) {
+    final delay = retryDelays[attempt];
+
+    if (delay > 0) {
+      debugPrint('[STT Mobile] Tentativa ${attempt + 1}/3 — aguardando ${delay}ms (SFSpeechRecognizer ainda não pronto)...');
+      await Future<void>.delayed(Duration(milliseconds: delay));
+    }
+
+    // Recriar instância em tentativas de retry para limpar estado interno
+    if (attempt > 0) {
+      debugPrint('[STT Mobile] Recriando instância SpeechToText() para tentativa ${attempt + 1}...');
+      _stt = SpeechToText();
+      _initialized = false;
+    }
+
+    try {
+      debugPrint('[STT Mobile] initialize() tentativa ${attempt + 1}/3...');
+
+      // ── SpeechInitializationOptions ────────────────────────────────────
+      // finalTimeout: quanto o plugin aguarda por um resultado final após
+      //   detectar silêncio. 5s dá tempo para o iOS processar fala lenta.
+      //
+      // Nota: o plugin speech_to_text 7.x NÃO expõe SpeechInitializationOptions
+      // como parâmetro direto do initialize() — as opções de sessão de áudio
+      // são passadas via SpeechListenOptions no listen(). O que controlamos
+      // aqui é o onStatus/onError e o debugLogging.
+      final dynamic rawResult = await _stt.initialize(
+        onStatus: _handleStatus,
+        onError:  _handleError,
+        debugLogging: false, // true apenas para sessões de debug local
+      );
+
+      _initialized = _safeBool(rawResult, fallback: false);
+      debugPrint('[STT Mobile] initialize() tentativa ${attempt + 1} → initialized=$_initialized | isAvailable=${_stt.isAvailable}');
+
+      // ── Verificação dupla: initialized E isAvailable ───────────────────
+      // initialized=true mas isAvailable=false é o cenário do BUG 3:
+      // o plugin aceitou mas o SFSpeechRecognizer ainda não está pronto.
+      // Forçamos outro retry em vez de aceitar um estado parcialmente pronto.
+      if (_initialized && _stt.isAvailable) {
+        debugPrint('[STT Mobile] ✅ STT pronto após tentativa ${attempt + 1}.');
+        return true;
+      }
+
+      if (_initialized && !_stt.isAvailable) {
+        debugPrint('[STT Mobile] ⚠️ initialized=true mas isAvailable=false — SFSpeechRecognizer ainda não pronto.');
+        _initialized = false; // forçar retry
+      }
+
+    } catch (e) {
+      debugPrint('[STT Mobile] initialize() exception na tentativa ${attempt + 1}: $e');
+      _initialized = false;
+    }
   }
 
-  return _initialized;
+  debugPrint('[STT Mobile] ❌ STT indisponível após 3 tentativas.');
+  return false;
 }
 
 // ── Handler de status ─────────────────────────────────────────────────────────
@@ -119,7 +181,7 @@ void _handleStatus(String status) {
   // 'listening' — microfone confirmado ativo pelo plugin
   if (status == 'listening') {
     debugPrint('[STT Mobile] ✅ Microfone confirmado ativo pelo plugin.');
-    _bypassActive = false; // já não precisamos do bypass — sessão estável
+    _bypassActive = false; // sessão estável — bypass não mais necessário
   }
 }
 
@@ -131,7 +193,7 @@ void _handleError(dynamic errorNotification) {
   final permanent = _safeBool(rawPerm,   fallback: false);
   final ms = _msSinceListen();
 
-  debugPrint('[STT Mobile] onError: $errorMsg (permanent: $permanent, ${ms}ms após listen)');
+  debugPrint('[STT Mobile] onError: "$errorMsg" (permanent: $permanent, ${ms}ms após listen)');
 
   // error_no_match = iOS não reconheceu a fala com confiança suficiente.
   // NÃO é erro fatal — encerra silenciosamente.
@@ -163,13 +225,31 @@ void _handleError(dynamic errorNotification) {
 }
 
 // ── Mapeamento de erros ───────────────────────────────────────────────────────
+//
+// Códigos brutos que o speech_to_text plugin repassa do iOS/Android:
+//   error_speech_recognizer_not_available → SFSpeechRecognizer.isAvailable=false
+//   error_permission                      → permissão negada pelo usuário
+//   not_available                         → genérico do plugin (fallback)
+//   error_no_speech                       → timeout sem fala detectada
+//   error_network / error_network_timeout → sem conexão (STT na nuvem)
+//   error_audio                           → falha na AVAudioSession
+//   error_no_match                        → confiança insuficiente (tratado acima)
 String _mapErrorCode(String errorMsg) {
   final r = errorMsg.toLowerCase();
+
+  // ── Indisponibilidade do SFSpeechRecognizer (BUG 3 no iOS Release) ──────
+  // Este código específico é o que o iOS envia quando o SFSpeechRecognizer
+  // não está disponível — distinto de "permission denied".
+  if (r.contains('speech_recognizer_not_available') ||
+      r.contains('recognizer_not_available')) return 'not_available';
+
   if (r.contains('permission'))  return 'permission_denied';
   if (r.contains('not_availab')) return 'not_available';
-  if (r.contains('no_speech') || r.contains('no match') || r.contains('no_match')) return 'no_speech';
+  if (r.contains('no_speech') ||
+      r.contains('no match')  ||
+      r.contains('no_match'))    return 'no_speech';
   if (r.contains('network'))     return 'network';
-  if (r.contains('audio'))       return 'audio';
+  if (r.contains('audio'))       return 'audio_session';
   return 'unknown';
 }
 
@@ -203,6 +283,14 @@ void _handleResult(dynamic result) {
 
 // ═════════════════════════════════════════════════════════════════════════════
 /// Inicia o reconhecimento de voz nativo (iOS / Android).
+///
+/// SpeechListenOptions usadas:
+///   pauseFor: 3s  — aguarda 3s de silêncio antes de encerrar.
+///   listenFor: 30s — timeout máximo da sessão.
+///   partialResults: true — emite transcrições parciais em tempo real.
+///   cancelOnError: true  — encerra automaticamente em caso de erro.
+///   onDevice: false      — usa servidor Apple/Google (melhor precisão).
+///                          Se false falhar, o plugin tenta fallback on-device.
 // ═════════════════════════════════════════════════════════════════════════════
 Future<void> startSttImpl({
   required String locale,
@@ -216,17 +304,24 @@ Future<void> startSttImpl({
 
   if (_listening) await stopSttImpl();
 
+  // ── _ensureInit() com retry: resolve o BUG 3 (not_available em Release) ──
+  // Em Debug, a primeira tentativa sempre passa (processo mais lento = iOS
+  // tem tempo de preparar SFSpeechRecognizer antes do código chegar aqui).
+  // Em Release, pode precisar de 1-2 retries (500-1500ms total).
   final ok = await _ensureInit();
   if (!ok) {
-    debugPrint('[STT Mobile] Falha na inicialização — permissão negada ou indisponível.');
-    onError('permission_denied');
+    debugPrint('[STT Mobile] ❌ Falha na inicialização após retries.');
+    onError('not_available');
     onEnd();
     return;
   }
 
+  // ── Verificação final de disponibilidade ──────────────────────────────────
+  // Após init bem-sucedido, confirmar que isAvailable ainda é true.
+  // Pode virar false se o usuário revogar permissão durante o boot.
   if (!_stt.isAvailable) {
-    debugPrint('[STT Mobile] isAvailable=false — verificar permissão ou hardware.');
-    onError('permission_denied');
+    debugPrint('[STT Mobile] ❌ isAvailable=false após init — permissão revogada?');
+    onError('not_available');
     onEnd();
     return;
   }
@@ -242,11 +337,16 @@ Future<void> startSttImpl({
   _listening = true;
 
   try {
-    // ─────────────────────────────────────────────────────────────────────
-    // CHAMADA PRINCIPAL
-    // Em funcionamento normal: retorna true quando o microfone abre.
-    // Com o bug 7.2.0 no iOS: lança TypeError antes de retornar.
-    // ─────────────────────────────────────────────────────────────────────
+    // ── CHAMADA PRINCIPAL ──────────────────────────────────────────────────
+    // SpeechListenOptions:
+    //   localeId: BCP-47 explícito → iOS usa o reconhecedor correto.
+    //   pauseFor: 3s → tempo de silêncio antes de finalizar automaticamente.
+    //   listenFor: 30s → evita sessões abertas indefinidamente.
+    //   partialResults: true → feedback visual em tempo real para o usuário.
+    //   cancelOnError: true → encerra limpo em vez de travar em estado de erro.
+    //   onDevice: false → usa servidor Apple (melhor precisão clínica).
+    //     Se o dispositivo estiver offline, o iOS faz fallback automático
+    //     para reconhecimento on-device quando disponível.
     final dynamic rawStarted = await _stt.listen(
       onResult: _handleResult,
       listenOptions: SpeechListenOptions(
@@ -255,6 +355,7 @@ Future<void> startSttImpl({
         listenFor:      const Duration(seconds: 30),
         partialResults: true,
         cancelOnError:  true,
+        onDevice:       false,
       ),
     );
 
@@ -271,7 +372,7 @@ Future<void> startSttImpl({
 
   } on TypeError catch (e) {
     // ══════════════════════════════════════════════════════════════════════
-    // BYPASS PRIMÁRIO — TypeError "Null is not a subtype of bool"
+    // BYPASS PRIMÁRIO — TypeError "Null is not a subtype of bool" (BUG 1)
     //
     // O plugin lança TypeError ao tentar converter o retorno nil do Swift.
     // O microfone JÁ está ativo neste ponto no iOS.

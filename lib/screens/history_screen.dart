@@ -1668,12 +1668,16 @@ class _HistoryEditorState extends State<_HistoryEditor> {
             : 'Permissão de microfone negada. Habilite em Ajustes → MedCases Pro → Microfone.';
       case 'not_available':
         msg = isEs
-            ? 'Reconocimiento de voz no disponible en este dispositivo.'
-            : 'Reconhecimento de voz não disponível neste dispositivo.';
+            ? 'Dictado no disponible. Verifica que el Reconocimiento de Voz esté activo en Ajustes → Accesibilidad → Texto introducido.'
+            : 'Ditado indisponível. Verifique se o Reconhecimento de Voz está ativo em Ajustes → Acessibilidade → Texto Digitado.';
       case 'network':
         msg = isEs
             ? 'Verifica tu conexión a internet para el dictado.'
             : 'Verifique sua conexão com a internet para o ditado.';
+      case 'audio_session':
+        msg = isEs
+            ? 'Error de sesión de audio. Cierra y vuelve a abrir la app.'
+            : 'Erro na sessão de áudio. Feche e reabra o app.';
       case 'no_speech':
         return; // silencioso
       default:

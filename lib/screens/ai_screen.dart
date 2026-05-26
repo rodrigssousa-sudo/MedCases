@@ -328,14 +328,18 @@ class _AiScreenState extends State<AiScreen> {
             : 'Permissao de microfone negada. Habilite em Configuracoes.';
       case 'not_available':
         msg = isEs
-            ? 'Reconocimiento de voz no disponible en este dispositivo.'
-            : 'Reconhecimento de voz nao disponivel neste dispositivo.';
+            ? 'Dictado no disponible. Verifica que el Reconocimiento de Voz esté activo en Ajustes → Accesibilidad → Texto introducido.'
+            : 'Ditado indisponível. Verifique se o Reconhecimento de Voz está ativo em Ajustes → Acessibilidade → Texto Digitado.';
       case 'no_speech':
         return; // silencioso — usuario simplesmente nao falou
       case 'network':
         msg = isEs
             ? 'Verifica tu conexion a internet para el dictado.'
             : 'Verifique sua conexao com a internet para o ditado.';
+      case 'audio_session':
+        msg = isEs
+            ? 'Error de sesión de audio. Cierra y vuelve a abrir la app.'
+            : 'Erro na sessão de áudio. Feche e reabra o app.';
       default:
         return; // outros erros tecnicos — silencioso
     }
