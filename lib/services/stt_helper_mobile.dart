@@ -3,25 +3,40 @@
 // No Web, stt_helper_web.dart é usado via conditional import em stt_helper.dart.
 //
 // ══════════════════════════════════════════════════════════════════════════════
-// HISTÓRICO DE BUGS CONHECIDOS
+// HISTÓRICO DE BUGS E SOLUÇÕES
 //
 //   BUG 1 — speech_to_text 7.x no iOS (arm64) — TypeError null-bool:
 //     await _stt.listen() lança "type 'Null' is not a subtype of type 'bool'".
 //     O microfone JÁ está ativo quando o erro ocorre.
-//     → BYPASS: captura e mantém _listening = true.
+//     → BYPASS: captura TypeError e mantém _listening = true.
 //
 //   BUG 2 — onStatus('done') precoce após bypass:
 //     Dispara ~200ms após o listen() antes do usuário falar.
 //     → BYPASS: ignora 'done'/'notListening' nos primeiros 1500ms.
 //
 //   BUG 3 — "Reconocimiento de voz no disponible" em Release (iOS):
-//     SFSpeechRecognizer.isAvailable retorna false no boot frio em Release
-//     porque o iOS não completou o handshake de autorização antes do
-//     initialize() ser chamado (processo mais rápido em Release vs Debug).
-//     Adicionalmente, sem SpeechInitializationOptions explícitas, o plugin
-//     não força o iOS a pré-aquecer o SFSpeechRecognizer.
-//     → FIX: retry com back-off + SpeechInitializationOptions explícitas
-//             + reset de estado entre tentativas.
+//     SFSpeechRecognizer.isAvailable = false nos primeiros ~800ms após cold
+//     start em Release (boot mais rápido que em Debug — race condition com
+//     o daemon SiriSpeech).
+//     → FIX: _ensureInit() com retry de 3 tentativas e back-off progressivo.
+//
+//   BUG 4 — Erro persiste após retry (causa raiz real):
+//     O locale solicitado ('es-ES' ou 'pt-BR') pode ter o SFSpeechRecognizer
+//     indisponível porque o servidor Apple daquele idioma está inacessível
+//     naquele momento, ou o iOS não tem o modelo para aquele locale instalado.
+//     O modo ListenMode.confirmation (padrão do plugin) rejeita terminologia
+//     médica por não ser "utterance curta de confirmação".
+//     → FIX: locale fallback chain (preferido → sistema → en-US) +
+//             ListenMode.dictation (otimizado para texto livre longo).
+//
+//   ARMADILHA — onDevice: true NÃO é a solução:
+//     O código Swift do plugin (SpeechToTextPlugin.swift:508-511) retorna
+//     FlutterError imediatamente se o dispositivo não tiver
+//     supportsOnDeviceRecognition=true. O modelo offline NÃO vem
+//     pré-instalado no iOS — é baixado em background pelo sistema.
+//     onDevice: true em um dispositivo sem o modelo = erro permanente,
+//     sem fallback, pior que o estado atual.
+//     → MANTIDO: onDevice: false (usa servidor Apple com fallback automático).
 // ══════════════════════════════════════════════════════════════════════════════
 // ignore_for_file: dead_null_aware_expression
 
@@ -71,103 +86,140 @@ int _msSinceListen() {
 
 // ── Inicialização com retry e back-off ────────────────────────────────────────
 //
-// Por que retry? No iOS em Release, SFSpeechRecognizer.isAvailable pode
-// retornar false nos primeiros ~800ms após cold start, mesmo com permissão
-// concedida. Isso ocorre porque o daemon SiriSpeech ainda está subindo.
-// Com 3 tentativas e back-off progressivo (0ms → 500ms → 1000ms), o app
-// aguarda o iOS ficar pronto sem travar a UI.
-//
-// Por que recriar _stt? Após uma inicialização falha, o objeto interno do
-// plugin fica em estado corrompido. Recriar o SpeechToText() garante
-// que a próxima tentativa parte de um estado limpo.
+// No iOS em Release, o SFSpeechRecognizer pode não estar pronto nos primeiros
+// ~800ms após cold start (o daemon SiriSpeech ainda está subindo). O retry
+// aguarda o sistema ficar pronto sem travar a UI.
+// A instância _stt é recriada em cada retry: após uma init falha, o objeto
+// interno do plugin fica em estado corrompido e precisa ser descartado.
 Future<bool> _ensureInit() async {
-  // Fast path: já inicializado e disponível
   if (_initialized && _stt.isAvailable) return true;
 
-  // Delays entre tentativas: 0ms (imediata), 500ms, 1000ms
-  const retryDelays = [0, 500, 1000];
+  const retryDelays = [0, 600, 1200]; // ms: imediata → 600ms → 1200ms
 
   for (int attempt = 0; attempt < retryDelays.length; attempt++) {
     final delay = retryDelays[attempt];
-
     if (delay > 0) {
-      debugPrint('[STT Mobile] Tentativa ${attempt + 1}/3 — aguardando ${delay}ms (SFSpeechRecognizer ainda não pronto)...');
+      debugPrint('[STT] Tentativa ${attempt + 1}/3 — aguardando ${delay}ms...');
       await Future<void>.delayed(Duration(milliseconds: delay));
     }
 
-    // Recriar instância em tentativas de retry para limpar estado interno
     if (attempt > 0) {
-      debugPrint('[STT Mobile] Recriando instância SpeechToText() para tentativa ${attempt + 1}...');
+      debugPrint('[STT] Recriando SpeechToText() para tentativa ${attempt + 1}...');
       _stt = SpeechToText();
       _initialized = false;
     }
 
     try {
-      debugPrint('[STT Mobile] initialize() tentativa ${attempt + 1}/3...');
-
-      // ── SpeechInitializationOptions ────────────────────────────────────
-      // finalTimeout: quanto o plugin aguarda por um resultado final após
-      //   detectar silêncio. 5s dá tempo para o iOS processar fala lenta.
-      //
-      // Nota: o plugin speech_to_text 7.x NÃO expõe SpeechInitializationOptions
-      // como parâmetro direto do initialize() — as opções de sessão de áudio
-      // são passadas via SpeechListenOptions no listen(). O que controlamos
-      // aqui é o onStatus/onError e o debugLogging.
+      debugPrint('[STT] initialize() tentativa ${attempt + 1}/3...');
       final dynamic rawResult = await _stt.initialize(
         onStatus: _handleStatus,
         onError:  _handleError,
-        debugLogging: false, // true apenas para sessões de debug local
+        debugLogging: false,
       );
-
       _initialized = _safeBool(rawResult, fallback: false);
-      debugPrint('[STT Mobile] initialize() tentativa ${attempt + 1} → initialized=$_initialized | isAvailable=${_stt.isAvailable}');
+      debugPrint('[STT] → initialized=$_initialized | isAvailable=${_stt.isAvailable}');
 
-      // ── Verificação dupla: initialized E isAvailable ───────────────────
-      // initialized=true mas isAvailable=false é o cenário do BUG 3:
-      // o plugin aceitou mas o SFSpeechRecognizer ainda não está pronto.
-      // Forçamos outro retry em vez de aceitar um estado parcialmente pronto.
+      // Verificação dupla: initialized=true mas isAvailable=false indica que
+      // o SFSpeechRecognizer ainda não está pronto → forçar retry.
       if (_initialized && _stt.isAvailable) {
-        debugPrint('[STT Mobile] ✅ STT pronto após tentativa ${attempt + 1}.');
+        debugPrint('[STT] ✅ STT pronto na tentativa ${attempt + 1}.');
         return true;
       }
-
       if (_initialized && !_stt.isAvailable) {
-        debugPrint('[STT Mobile] ⚠️ initialized=true mas isAvailable=false — SFSpeechRecognizer ainda não pronto.');
-        _initialized = false; // forçar retry
+        debugPrint('[STT] ⚠️ initialized=true mas isAvailable=false — retry.');
+        _initialized = false;
       }
-
     } catch (e) {
-      debugPrint('[STT Mobile] initialize() exception na tentativa ${attempt + 1}: $e');
+      debugPrint('[STT] initialize() exception: $e');
       _initialized = false;
     }
   }
 
-  debugPrint('[STT Mobile] ❌ STT indisponível após 3 tentativas.');
+  debugPrint('[STT] ❌ STT indisponível após 3 tentativas.');
   return false;
+}
+
+// ── Locale fallback chain ────────────────────────────────────────────────────
+//
+// CAUSA RAIZ DO BUG 4:
+//   No iOS, o SFSpeechRecognizer é criado por locale. Se o recognizer para
+//   'es-ES' ou 'pt-BR' retornar isAvailable=false (servidor inacessível,
+//   modelo não instalado, locale não suportado no dispositivo), o listen()
+//   falha silenciosamente com 'not_available'.
+//
+// SOLUÇÃO — locale fallback chain:
+//   1. Locale preferido do usuário ('es-ES' ou 'pt-BR')
+//   2. Locale do sistema (o que o iOS já tem configurado e funcionando)
+//   3. 'en-US' — sempre disponível em qualquer iPhone com iOS instalado
+//
+// O método _stt.locales() retorna os locales que o SFSpeechRecognizer
+// suporta neste dispositivo. Se o locale preferido não estiver na lista,
+// pulamos para o próximo.
+//
+// Nota: suportado ≠ disponível. Um locale pode estar na lista mas ter
+// isAvailable=false no momento (servidor offline). Por isso tentamos na
+// ordem e detectamos o erro no listen().
+Future<String> _resolveLocale(String preferredLocale) async {
+  try {
+    final List<LocaleName> available = await _stt.locales()
+        .timeout(const Duration(seconds: 3));
+
+    final ids = available.map((l) => l.localeId).toList();
+    debugPrint('[STT] Locales disponíveis no dispositivo: $ids');
+
+    // 1. Locale exato solicitado
+    if (ids.contains(preferredLocale)) {
+      debugPrint('[STT] Locale preferido disponível: $preferredLocale');
+      return preferredLocale;
+    }
+
+    // 2. Variante do mesmo idioma (ex: 'pt-BR' ausente mas 'pt-PT' presente)
+    final lang = preferredLocale.split('-').first.toLowerCase();
+    final variant = ids.firstWhere(
+      (id) => id.toLowerCase().startsWith(lang),
+      orElse: () => '',
+    );
+    if (variant.isNotEmpty) {
+      debugPrint('[STT] Locale preferido ausente → usando variante: $variant');
+      return variant;
+    }
+
+    // 3. Locale do sistema (quase sempre disponível e pronto)
+    final systemLocale = await _stt.systemLocale()
+        .timeout(const Duration(seconds: 2));
+    if (systemLocale != null && systemLocale.localeId.isNotEmpty) {
+      debugPrint('[STT] Fallback para locale do sistema: ${systemLocale.localeId}');
+      return systemLocale.localeId;
+    }
+
+    // 4. en-US — garantido em todos os iPhones
+    debugPrint('[STT] Fallback final: en-US');
+    return 'en-US';
+
+  } catch (e) {
+    // Se locales() falhar (plugin ainda não inicializado, timeout), usa
+    // o locale solicitado diretamente e deixa o iOS decidir.
+    debugPrint('[STT] locales() exception — usando locale direto: $preferredLocale ($e)');
+    return preferredLocale;
+  }
 }
 
 // ── Handler de status ─────────────────────────────────────────────────────────
 void _handleStatus(String status) {
   final ms = _msSinceListen();
-  debugPrint('[STT Mobile] onStatus: $status (${ms}ms após listen)');
+  debugPrint('[STT] onStatus: $status (${ms}ms após listen)');
 
   if (status == 'done' || status == 'notListening') {
-
-    // ══════════════════════════════════════════════════════════════════════
-    // GUARD DE TEMPO — ignora 'done' precoce após bypass do bug null-bool.
-    //
-    // Quando o bypass está ativo, o plugin dispara onStatus('done') em ~200ms
-    // mesmo com o microfone aberto. Ignoramos qualquer 'done' nos primeiros
-    // 1500ms para dar tempo ao iOS estabilizar a sessão de reconhecimento.
-    // Após 1500ms, um 'done' real (fim de fala ou timeout) é processado.
-    // ══════════════════════════════════════════════════════════════════════
+    // GUARD: ignora 'done' precoce enquanto o bypass do bug null-bool está ativo.
+    // O plugin dispara onStatus('done') em ~200ms mesmo com microfone aberto.
+    // Ignoramos por 1500ms para dar tempo ao iOS estabilizar a sessão.
     if (_bypassActive && ms < 1500) {
-      debugPrint('[STT Mobile] ⚠️ onStatus("$status") ignorado — muito precoce (${ms}ms). Microfone mantido ativo.');
+      debugPrint('[STT] ⚠️ onStatus("$status") ignorado — muito precoce (${ms}ms).');
       return;
     }
 
     if (_listening) {
-      debugPrint('[STT Mobile] Sessão encerrada via onStatus("$status") após ${ms}ms.');
+      debugPrint('[STT] Sessão encerrada via onStatus("$status") após ${ms}ms.');
       _listening    = false;
       _bypassActive = false;
       final cb = _onEndCb;
@@ -178,10 +230,9 @@ void _handleStatus(String status) {
     }
   }
 
-  // 'listening' — microfone confirmado ativo pelo plugin
   if (status == 'listening') {
-    debugPrint('[STT Mobile] ✅ Microfone confirmado ativo pelo plugin.');
-    _bypassActive = false; // sessão estável — bypass não mais necessário
+    debugPrint('[STT] ✅ Microfone confirmado ativo.');
+    _bypassActive = false;
   }
 }
 
@@ -193,10 +244,10 @@ void _handleError(dynamic errorNotification) {
   final permanent = _safeBool(rawPerm,   fallback: false);
   final ms = _msSinceListen();
 
-  debugPrint('[STT Mobile] onError: "$errorMsg" (permanent: $permanent, ${ms}ms após listen)');
+  debugPrint('[STT] onError: "$errorMsg" (permanent: $permanent, ${ms}ms após listen)');
 
-  // error_no_match = iOS não reconheceu a fala com confiança suficiente.
-  // NÃO é erro fatal — encerra silenciosamente.
+  // error_no_match: iOS não reconheceu a fala com confiança suficiente.
+  // Encerra silenciosamente — não é erro fatal.
   if (errorMsg == 'error_no_match') {
     if (_listening) {
       _listening    = false;
@@ -226,30 +277,25 @@ void _handleError(dynamic errorNotification) {
 
 // ── Mapeamento de erros ───────────────────────────────────────────────────────
 //
-// Códigos brutos que o speech_to_text plugin repassa do iOS/Android:
+// Códigos brutos do iOS (via speech_to_text plugin):
 //   error_speech_recognizer_not_available → SFSpeechRecognizer.isAvailable=false
 //   error_permission                      → permissão negada pelo usuário
 //   not_available                         → genérico do plugin (fallback)
 //   error_no_speech                       → timeout sem fala detectada
-//   error_network / error_network_timeout → sem conexão (STT na nuvem)
+//   error_network / error_network_timeout → sem conexão com servidor Apple
 //   error_audio                           → falha na AVAudioSession
 //   error_no_match                        → confiança insuficiente (tratado acima)
 String _mapErrorCode(String errorMsg) {
   final r = errorMsg.toLowerCase();
-
-  // ── Indisponibilidade do SFSpeechRecognizer (BUG 3 no iOS Release) ──────
-  // Este código específico é o que o iOS envia quando o SFSpeechRecognizer
-  // não está disponível — distinto de "permission denied".
   if (r.contains('speech_recognizer_not_available') ||
       r.contains('recognizer_not_available')) return 'not_available';
-
-  if (r.contains('permission'))  return 'permission_denied';
-  if (r.contains('not_availab')) return 'not_available';
+  if (r.contains('permission'))               return 'permission_denied';
+  if (r.contains('not_availab'))              return 'not_available';
   if (r.contains('no_speech') ||
       r.contains('no match')  ||
-      r.contains('no_match'))    return 'no_speech';
-  if (r.contains('network'))     return 'network';
-  if (r.contains('audio'))       return 'audio_session';
+      r.contains('no_match'))                 return 'no_speech';
+  if (r.contains('network'))                  return 'network';
+  if (r.contains('audio'))                    return 'audio_session';
   return 'unknown';
 }
 
@@ -261,7 +307,7 @@ void _handleResult(dynamic result) {
   final words   = _safeString(rawWords, fallback: '');
   final ms = _msSinceListen();
 
-  debugPrint('[STT Mobile] onResult: "$words" final=$isFinal (${ms}ms)');
+  debugPrint('[STT] onResult: "$words" final=$isFinal (${ms}ms)');
 
   if (isFinal) {
     final text = words.trim();
@@ -275,7 +321,7 @@ void _handleResult(dynamic result) {
     if (text.isNotEmpty) {
       cbResult?.call(text);
     } else {
-      debugPrint('[STT Mobile] Resultado final vazio — encerrando silenciosamente.');
+      debugPrint('[STT] Resultado final vazio — encerrando silenciosamente.');
     }
     cbEnd?.call();
   }
@@ -284,13 +330,10 @@ void _handleResult(dynamic result) {
 // ═════════════════════════════════════════════════════════════════════════════
 /// Inicia o reconhecimento de voz nativo (iOS / Android).
 ///
-/// SpeechListenOptions usadas:
-///   pauseFor: 3s  — aguarda 3s de silêncio antes de encerrar.
-///   listenFor: 30s — timeout máximo da sessão.
-///   partialResults: true — emite transcrições parciais em tempo real.
-///   cancelOnError: true  — encerra automaticamente em caso de erro.
-///   onDevice: false      — usa servidor Apple/Google (melhor precisão).
-///                          Se false falhar, o plugin tenta fallback on-device.
+/// Fluxo:
+///   1. _ensureInit()      — inicializa com retry (resolve BUG 3)
+///   2. _resolveLocale()   — locale fallback chain (resolve BUG 4)
+///   3. _stt.listen()      — inicia sessão com ListenMode.dictation
 // ═════════════════════════════════════════════════════════════════════════════
 Future<void> startSttImpl({
   required String locale,
@@ -304,55 +347,76 @@ Future<void> startSttImpl({
 
   if (_listening) await stopSttImpl();
 
-  // ── _ensureInit() com retry: resolve o BUG 3 (not_available em Release) ──
-  // Em Debug, a primeira tentativa sempre passa (processo mais lento = iOS
-  // tem tempo de preparar SFSpeechRecognizer antes do código chegar aqui).
-  // Em Release, pode precisar de 1-2 retries (500-1500ms total).
+  // ── Etapa 1: Inicialização com retry ─────────────────────────────────────
   final ok = await _ensureInit();
   if (!ok) {
-    debugPrint('[STT Mobile] ❌ Falha na inicialização após retries.');
+    debugPrint('[STT] ❌ Falha na inicialização após retries.');
     onError('not_available');
     onEnd();
     return;
   }
 
-  // ── Verificação final de disponibilidade ──────────────────────────────────
-  // Após init bem-sucedido, confirmar que isAvailable ainda é true.
-  // Pode virar false se o usuário revogar permissão durante o boot.
   if (!_stt.isAvailable) {
-    debugPrint('[STT Mobile] ❌ isAvailable=false após init — permissão revogada?');
+    debugPrint('[STT] ❌ isAvailable=false após init.');
     onError('not_available');
     onEnd();
     return;
   }
 
-  debugPrint('[STT Mobile] Iniciando listen() — locale: $locale');
+  // ── Etapa 2: Locale fallback chain ───────────────────────────────────────
+  // Resolve o locale real a usar — se o locale pedido não estiver disponível
+  // no dispositivo neste momento, desce pela cadeia até en-US.
+  final resolvedLocale = await _resolveLocale(locale);
+  debugPrint('[STT] Locale resolvido: $resolvedLocale (solicitado: $locale)');
 
-  // Registra o timestamp ANTES do listen() para o guard de tempo
+  // ── Etapa 3: Iniciar sessão de escuta ────────────────────────────────────
+  debugPrint('[STT] Iniciando listen()...');
   _listenStartedAt = DateTime.now();
   _bypassActive    = false;
-
-  // Marca _listening = true ANTES de chamar listen() porque o microfone
-  // iOS pode abrir de forma assíncrona e o bug pode lançar logo em seguida.
-  _listening = true;
+  _listening       = true;
 
   try {
-    // ── CHAMADA PRINCIPAL ──────────────────────────────────────────────────
-    // SpeechListenOptions:
-    //   localeId: BCP-47 explícito → iOS usa o reconhecedor correto.
-    //   pauseFor: 3s → tempo de silêncio antes de finalizar automaticamente.
-    //   listenFor: 30s → evita sessões abertas indefinidamente.
-    //   partialResults: true → feedback visual em tempo real para o usuário.
-    //   cancelOnError: true → encerra limpo em vez de travar em estado de erro.
-    //   onDevice: false → usa servidor Apple (melhor precisão clínica).
-    //     Se o dispositivo estiver offline, o iOS faz fallback automático
-    //     para reconhecimento on-device quando disponível.
+    // ─────────────────────────────────────────────────────────────────────
+    // CHAMADA PRINCIPAL — SpeechListenOptions:
+    //
+    //   localeId: resolvedLocale
+    //     Locale resolvido pela fallback chain — garante que existe no
+    //     dispositivo mesmo se o preferido estiver offline.
+    //
+    //   listenMode: ListenMode.dictation          ← MUDANÇA CRÍTICA
+    //     O modo padrão do plugin é 'confirmation' (para comandos curtos
+    //     como "sim" / "não"). Para terminologia médica — nomes de
+    //     fármacos, doses, descrições de exame físico — o iOS precisa do
+    //     modo 'dictation', que mantém o contexto de fala contínua e
+    //     aceita vocabulário técnico sem rejeitar por ser "longo demais".
+    //
+    //   pauseFor: 4s (era 3s)
+    //     Médicos ditam em ritmo clínico — pausas entre termos técnicos
+    //     são frequentes. 4s evita encerramento precoce.
+    //
+    //   listenFor: 60s (era 30s)
+    //     Evoluções clínicas completas podem levar mais de 30s de ditado.
+    //
+    //   partialResults: true
+    //     Feedback visual em tempo real enquanto o usuário fala.
+    //
+    //   cancelOnError: true
+    //     Encerra limpo em caso de erro em vez de travar em estado aberto.
+    //
+    //   onDevice: false                           ← MANTIDO INTENCIONALMENTE
+    //     true retorna FlutterError imediato se o dispositivo não tiver o
+    //     modelo offline instalado (supportsOnDeviceRecognition=false).
+    //     O modelo NÃO vem pré-instalado — é baixado em background pelo iOS.
+    //     Com false, o iOS usa o servidor Apple e faz fallback automático
+    //     para on-device quando o modelo está disponível E a rede falha.
+    // ─────────────────────────────────────────────────────────────────────
     final dynamic rawStarted = await _stt.listen(
       onResult: _handleResult,
       listenOptions: SpeechListenOptions(
-        localeId:       locale,
-        pauseFor:       const Duration(seconds: 3),
-        listenFor:      const Duration(seconds: 30),
+        localeId:       resolvedLocale,
+        listenMode:     ListenMode.dictation,
+        pauseFor:       const Duration(seconds: 4),
+        listenFor:      const Duration(seconds: 60),
         partialResults: true,
         cancelOnError:  true,
         onDevice:       false,
@@ -362,48 +426,35 @@ Future<void> startSttImpl({
     final bool started = _safeBool(rawStarted, fallback: false);
 
     if (!started) {
-      debugPrint('[STT Mobile] listen() retornou false — sessão recusada pelo plugin.');
+      debugPrint('[STT] listen() retornou false — sessão recusada.');
       _listening = false;
       onError('not_available');
       onEnd();
     } else {
-      debugPrint('[STT Mobile] ✅ listen() OK — aguardando fala...');
+      debugPrint('[STT] ✅ listen() OK — aguardando fala em "$resolvedLocale"...');
     }
 
   } on TypeError catch (e) {
-    // ══════════════════════════════════════════════════════════════════════
-    // BYPASS PRIMÁRIO — TypeError "Null is not a subtype of bool" (BUG 1)
-    //
-    // O plugin lança TypeError ao tentar converter o retorno nil do Swift.
-    // O microfone JÁ está ativo neste ponto no iOS.
-    //
-    // _bypassActive = true → guard de tempo em _handleStatus ignorará
-    // qualquer 'done' nos próximos 1500ms (evita fechamento precoce).
-    // ══════════════════════════════════════════════════════════════════════
+    // ── BYPASS PRIMÁRIO — BUG 1: TypeError "Null is not a subtype of bool" ──
+    // O plugin lança TypeError ao converter o retorno nil do Swift.
+    // O microfone JÁ está ativo quando este erro ocorre no iOS.
     if (_isNullBoolBug(e)) {
       _bypassActive = true;
-      debugPrint('[STT Mobile] ⚠️ BYPASS ATIVADO (TypeError): bug null-bool detectado.');
-      debugPrint('[STT Mobile] Microfone ativo — ignorando "done" precoces por 1500ms...');
-      // _listening permanece true — aguarda onResult ou onStatus tardio
+      debugPrint('[STT] ⚠️ BYPASS (TypeError): microfone ativo, ignorando done por 1500ms.');
     } else {
-      debugPrint('[STT Mobile] TypeError não relacionado ao bug: $e');
+      debugPrint('[STT] TypeError inesperado: $e');
       _listening = false;
       onError('unknown');
       onEnd();
     }
 
   } catch (e) {
-    // ══════════════════════════════════════════════════════════════════════
-    // BYPASS SECUNDÁRIO — catch genérico
-    // Cobre variantes de mensagem ou versões futuras com o mesmo bug.
-    // ══════════════════════════════════════════════════════════════════════
+    // ── BYPASS SECUNDÁRIO — catch genérico (variantes do BUG 1) ─────────────
     if (_isNullBoolBug(e)) {
       _bypassActive = true;
-      debugPrint('[STT Mobile] ⚠️ BYPASS ATIVADO (catch genérico): $e');
-      debugPrint('[STT Mobile] Microfone ativo — ignorando "done" precoces por 1500ms...');
-      // _listening permanece true
+      debugPrint('[STT] ⚠️ BYPASS (catch): microfone ativo, ignorando done por 1500ms.');
     } else {
-      debugPrint('[STT Mobile] listen() exception inesperada: $e');
+      debugPrint('[STT] listen() exception: $e');
       _listening = false;
       onError('unknown');
       onEnd();
@@ -416,12 +467,12 @@ Future<void> startSttImpl({
 // ═════════════════════════════════════════════════════════════════════════════
 Future<void> stopSttImpl() async {
   if (!_listening && !_stt.isListening) return;
-  debugPrint('[STT Mobile] stopSttImpl() chamado.');
+  debugPrint('[STT] stopSttImpl() chamado.');
   _bypassActive = false;
   try {
     await _stt.stop();
   } catch (e) {
-    debugPrint('[STT Mobile] stop() exception: $e');
+    debugPrint('[STT] stop() exception: $e');
   }
   _listening  = false;
   _onResultCb = null;
