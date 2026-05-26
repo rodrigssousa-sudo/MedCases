@@ -295,35 +295,42 @@ class _AuthGateState extends State<_AuthGate> {
   );
 
   // ── Chama setUser() uma única vez por uid ──────────────────────────────
-  // Chamado de dentro do build() via context.read (não watch) — sem causar
-  // loop de rebuild. A flag _setUserCalledForUid garante idempotência.
+  // Sempre chamado de dentro de um builder: (StreamBuilder / ValueListenableBuilder),
+  // ou seja, DURANTE o build(). Por isso TODA mutação de state e toda chamada
+  // que dispara notifyListeners() é adiada via addPostFrameCallback — o Flutter
+  // proíbe setState() ou markNeedsBuild() durante o ciclo de build ativo.
   void _onUserResolved(UserModel user) {
     if (_setUserCalledForUid == user.uid) return; // já chamado para este uid
 
+    // Marca a flag IMEDIATAMENTE (valor primitivo, sem setState) para que
+    // chamadas síncronas subsequentes no mesmo frame sejam ignoradas.
     _setUserCalledForUid = user.uid;
 
-    // Atualiza _stableUser em setState ANTES de chamar setUser() para evitar
-    // que um rebuild intermediário veja _stableUser == null.
-    if (_stableUser?.uid != user.uid) {
-      setState(() => _stableUser = user);
-    }
-
-    // Adia para o próximo frame — o build() atual precisa completar antes
-    // de chamar setUser() (que dispara notifyListeners() → rebuild).
-    // Mas como agora _AuthGate usa context.read (não watch), o rebuild do
-    // AppProvider NÃO reconstrói o _AuthGate — o loop está quebrado.
+    // Adia setState + setUser() para APÓS o término do frame de build atual.
+    // Isso elimina o "setState() called during build" que o Xcode reportava
+    // na linha 443 (chamada de _onUserResolved dentro do builder do StreamBuilder).
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
+      // Atualiza _stableUser somente se o uid realmente mudou
+      if (_stableUser?.uid != user.uid) {
+        setState(() => _stableUser = user);
+      }
+      // setUser() dispara notifyListeners() — feito após setState para que
+      // _stableUser já esteja definido quando os listeners reconstruírem
       context.read<AppProvider>().setUser(user);
     });
   }
 
   // ── Logout: zera state local para permitir novo ciclo de auth ─────────
+  // Também chamado de dentro de builders (StreamBuilder / ValueListenableBuilder),
+  // portanto setState() deve ser adiado para evitar "setState() during build".
   void _onLogout() {
-    if (_stableUser != null || _setUserCalledForUid != null) {
-      setState(() {
-        _stableUser = null;
-        _setUserCalledForUid = null;
+    // Zera a flag imediatamente (sem setState) para bloquear re-entradas
+    _setUserCalledForUid = null;
+    if (_stableUser != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        setState(() => _stableUser = null);
       });
     }
   }
