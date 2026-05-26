@@ -19,7 +19,7 @@ import '../widgets/meu_plantao_dashboard.dart';
 // ─────────────────────────────────────────────────────────────────────────────
 // HOME SCREEN — 4 cards de navegação principal
 // ─────────────────────────────────────────────────────────────────────────────
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   final ValueChanged<int> onTabChange;
   final ValueChanged<int> onSubTabChange;
   final Function(String) openProtocol;
@@ -47,11 +47,22 @@ class HomeScreen extends StatelessWidget {
     ));
   }
 
+  // Método estático de rota — acessível de qualquer lugar sem instância
+  static Route slideRoute(Widget page) => _HomeScreenState._slide(page);
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
-    final p    = context.watch<AppProvider>();
-    final dark = p.darkMode;
-    final isEs = p.lang == 'es';
+    // context.select — rebuilt APENAS quando darkMode ou lang muda,
+    // não a cada notifyListeners() geral do AppProvider
+    final dark = context.select<AppProvider, bool>((p) => p.darkMode);
+    final isEs = context.select<AppProvider, bool>((p) => p.lang == 'es');
+    // p via read para campos que não disparam rebuild por si só
+    final p    = context.read<AppProvider>();
 
     return SingleChildScrollView(
       physics: const BouncingScrollPhysics(),
@@ -77,7 +88,7 @@ class HomeScreen extends StatelessWidget {
           accentColor: const Color(0xFFA78BFA),
           dark: dark,
           onTap: () => Navigator.of(context).push(
-            _slideRoute(const _PrescripcionesShell()),
+            _HomeScreenState._slide(const _PrescripcionesShell()),
           ),
         ),
         const SizedBox(height: 12),
@@ -93,7 +104,7 @@ class HomeScreen extends StatelessWidget {
           accentColor: const Color(0xFFFBBF24),
           dark: dark,
           onTap: () => Navigator.of(context).push(
-            _slideRoute(const _FarmacosShell()),
+            _HomeScreenState._slide(const _FarmacosShell()),
           ),
         ),
         const SizedBox(height: 12),
@@ -109,7 +120,7 @@ class HomeScreen extends StatelessWidget {
           accentColor: const Color(0xFFFF6BA0),
           dark: dark,
           onTap: () => Navigator.of(context).push(
-            _slideRoute(const DrugInteractionsScreen()),
+            _HomeScreenState._slide(const DrugInteractionsScreen()),
           ),
         ),
         const SizedBox(height: 12),
@@ -124,7 +135,7 @@ class HomeScreen extends StatelessWidget {
               accentColor: const Color(0xFF4ADE80),
               dark: dark,
               onTap: () => Navigator.of(context).push(
-                _slideRoute(_AdultoShell(openProtocol: openProtocol)),
+                _HomeScreenState._slide(_AdultoShell(openProtocol: widget.openProtocol)),
               ),
             ),
           ),
@@ -137,7 +148,7 @@ class HomeScreen extends StatelessWidget {
               accentColor: const Color(0xFF93C5FD),
               dark: dark,
               onTap: () => Navigator.of(context).push(
-                _slideRoute(const _PediatricsShell()),
+                _HomeScreenState._slide(const _PediatricsShell()),
               ),
             ),
           ),
@@ -153,9 +164,9 @@ class HomeScreen extends StatelessWidget {
         _QuickShortcuts(
           dark: dark,
           isEs: isEs,
-          openProtocol: openProtocol,
-          onOpenNotes: onOpenNotes,
-          onCheckUpdate: onCheckUpdate,
+          openProtocol: widget.openProtocol,
+          onOpenNotes: widget.onOpenNotes,
+          onCheckUpdate: widget.onCheckUpdate,
         ),
 
         const SizedBox(height: 16),
@@ -181,8 +192,8 @@ class HomeScreen extends StatelessWidget {
               'calc_pediatria':  7,
             };
             final subTab = calcTabMap[calcId] ?? 0;
-            onSubTabChange(subTab);   // atualiza sub-tab ANTES de mudar de tela
-            onTabChange(4);           // navega para aba Calculadoras (índice 4)
+            widget.onSubTabChange(subTab);   // atualiza sub-tab ANTES de mudar de tela
+            widget.onTabChange(4);           // navega para aba Calculadoras (índice 4)
           },
           onManageTap: () => showPlantaoManageSheet(context),
         ),
@@ -194,12 +205,10 @@ class HomeScreen extends StatelessWidget {
         const SizedBox(height: 16),
 
         // ── Emergências (4 cards + ver mais) ──────────────────────────────
-        _QuickEmergencies(p: p, dark: dark, isEs: isEs, openProtocol: openProtocol),
+        _QuickEmergencies(p: p, dark: dark, isEs: isEs, openProtocol: widget.openProtocol),
       ]),
     );
   }
-
-  static Route _slideRoute(Widget page) => _slide(page);
 
   static Route _slide(Widget page) {
     return PageRouteBuilder(
@@ -1048,6 +1057,7 @@ class _RecentesSheet extends StatefulWidget {
 class _RecentesSheetState extends State<_RecentesSheet> {
   List<Map<String, String>> _items = [];
   bool _loading = true;
+  bool _hasLoaded = false; // trava — garante fetch Firestore apenas uma vez
 
   @override
   void initState() {
@@ -1056,6 +1066,8 @@ class _RecentesSheetState extends State<_RecentesSheet> {
   }
 
   Future<void> _load() async {
+    if (_hasLoaded) return; // bloqueia re-entrada em caso de rebuild
+    _hasLoaded = true;
     try {
       final items = await widget.p.loadRecents();
       if (mounted) setState(() { _items = items; _loading = false; });
@@ -1184,7 +1196,7 @@ class _RecentesSheetState extends State<_RecentesSheet> {
                                   showDrugDetailSheet(ctx, drug);
                                 } catch (_) {
                                   Navigator.of(ctx).push(
-                                    HomeScreen._slide(const _FarmacosShell()),
+                                    _HomeScreenState._slide(const _FarmacosShell()),
                                   );
                                 }
                               }
