@@ -393,7 +393,10 @@ class _ConsentGateState extends State<_ConsentGate> {
       Positioned.fill(child: ColoredBox(color: Colors.black.withValues(alpha: 0.55))),
       Positioned(
         left: 0, right: 0, bottom: 0,
-        child: ConsentModal(lang: 'pt', onAccepted: _onAccepted),
+        child: ConsentModal(
+          lang: Localizations.localeOf(context).languageCode == 'es' ? 'es' : 'pt',
+          onAccepted: _onAccepted,
+        ),
       ),
     ]);
   }
@@ -2486,79 +2489,84 @@ class _AboutAppSheet extends StatelessWidget {
       ]),
     );
 
-    return Container(
-      decoration: BoxDecoration(
-        color: bg,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-      ),
-      padding: EdgeInsets.fromLTRB(24, 0, 24,
-          MediaQuery.of(context).viewInsets.bottom + 36),
-      child: Column(mainAxisSize: MainAxisSize.min, children: [
-        // Handle
-        Padding(
-          padding: const EdgeInsets.only(top: 12, bottom: 20),
-          child: Container(
-            width: 40, height: 4,
-            decoration: BoxDecoration(
-              color: handle, borderRadius: BorderRadius.circular(2),
-            ),
-          ),
+    return SafeArea(
+      top: false,
+      child: Container(
+        decoration: BoxDecoration(
+          color: bg,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
         ),
+        child: SingleChildScrollView(
+          padding: EdgeInsets.fromLTRB(24, 0, 24,
+              MediaQuery.of(context).viewInsets.bottom + 36),
+          child: Column(mainAxisSize: MainAxisSize.min, children: [
+            // Handle
+            Padding(
+              padding: const EdgeInsets.only(top: 12, bottom: 20),
+              child: Container(
+                width: 40, height: 4,
+                decoration: BoxDecoration(
+                  color: handle, borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+            ),
 
-        // Logo + nome
-        Row(children: [
-          Container(
-            padding: const EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              color: const Color(0xFF075f45).withValues(alpha: 0.10),
-              borderRadius: BorderRadius.circular(14),
-              border: Border.all(
-                  color: const Color(0xFF075f45).withValues(alpha: 0.25)),
-            ),
-            child: const Icon(Icons.local_hospital_rounded,
-                size: 24, color: Color(0xFF075f45)),
-          ),
-          const SizedBox(width: 14),
-          Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text('MedCases Pro',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900,
-                  color: title, letterSpacing: -0.3)),
-            Text(
-              isEs ? 'Apoyo clínico educativo' : 'Apoio clínico educacional',
-              style: TextStyle(fontSize: 12, color: body),
-            ),
+            // Logo + nome
+            Row(children: [
+              Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF075f45).withValues(alpha: 0.10),
+                  borderRadius: BorderRadius.circular(14),
+                  border: Border.all(
+                      color: const Color(0xFF075f45).withValues(alpha: 0.25)),
+                ),
+                child: const Icon(Icons.local_hospital_rounded,
+                    size: 24, color: Color(0xFF075f45)),
+              ),
+              const SizedBox(width: 14),
+              Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Text('MedCases Pro',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900,
+                      color: title, letterSpacing: -0.3)),
+                Text(
+                  isEs ? 'Apoyo clínico educativo' : 'Apoio clínico educacional',
+                  style: TextStyle(fontSize: 12, color: body),
+                ),
+              ])),
+            ]),
+
+            const SizedBox(height: 24),
+            Divider(color: handle, height: 1),
+            const SizedBox(height: 20),
+
+            // Informações do desenvolvedor
+            _row(Icons.business_rounded,
+              isEs ? 'DESARROLLADO POR' : 'DESENVOLVIDO POR',
+              'MedCases Pro — Tecnologia em Saúde'),
+
+            _row(Icons.email_outlined,
+              isEs ? 'SOPORTE / CONTACTO' : 'SUPORTE / CONTATO',
+              'suporte@medcasespro.com'),
+
+            _row(Icons.verified_outlined,
+              isEs ? 'REVISIÓN DE CONTENIDO' : 'REVISÃO DE CONTEÚDO',
+              isEs
+                ? 'Contenido clínico revisado y validado por médicos especialistas con registro activo en los respectivos consejos de medicina.'
+                : 'Conteúdo clínico revisado e validado por médicos especialistas com registro ativo nos respectivos Conselhos de Medicina.'),
+
+            _row(Icons.gavel_outlined,
+              isEs ? 'PROPÓSITO' : 'PROPÓSITO',
+              isEs
+                ? 'Esta aplicación es una herramienta exclusivamente educativa de apoyo a la toma de decisiones clínicas. No reemplaza el juicio clínico del profesional de salud, ni constituye prescripción médica.'
+                : 'Este aplicativo é uma ferramenta exclusivamente educacional de apoio à tomada de decisão clínica. Não substitui o julgamento clínico do profissional de saúde, nem constitui prescrição médica.'),
+
+            _row(Icons.language_outlined,
+              isEs ? 'SITIO WEB' : 'SITE',
+              'medcasespro.com'),
           ]),
-        ]),
-
-        const SizedBox(height: 24),
-        Divider(color: handle, height: 1),
-        const SizedBox(height: 20),
-
-        // Informações do desenvolvedor
-        _row(Icons.business_rounded,
-          isEs ? 'DESARROLLADO POR' : 'DESENVOLVIDO POR',
-          'MedCases Pro — Tecnologia em Saúde'),
-
-        _row(Icons.email_outlined,
-          isEs ? 'SOPORTE / CONTACTO' : 'SUPORTE / CONTATO',
-          'suporte@medcasespro.com'),
-
-        _row(Icons.verified_outlined,
-          isEs ? 'REVISIÓN DE CONTENIDO' : 'REVISÃO DE CONTEÚDO',
-          isEs
-            ? 'Contenido clínico revisado y validado por médicos especialistas con registro activo en los respectivos consejos de medicina.'
-            : 'Conteúdo clínico revisado e validado por médicos especialistas com registro ativo nos respectivos Conselhos de Medicina.'),
-
-        _row(Icons.gavel_outlined,
-          isEs ? 'PROPÓSITO' : 'PROPÓSITO',
-          isEs
-            ? 'Esta aplicación es una herramienta exclusivamente educativa de apoyo a la toma de decisiones clínicas. No reemplaza el juicio clínico del profesional de salud, ni constituye prescripción médica.'
-            : 'Este aplicativo é uma ferramenta exclusivamente educacional de apoio à tomada de decisão clínica. Não substitui o julgamento clínico do profissional de saúde, nem constitui prescrição médica.'),
-
-        _row(Icons.language_outlined,
-          isEs ? 'SITIO WEB' : 'SITE',
-          'medcasespro.com'),
-      ]),
+        ),
+      ),
     );
   }
 }
