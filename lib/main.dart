@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'package:url_launcher/url_launcher.dart';
 import 'package:provider/provider.dart';
@@ -109,6 +110,20 @@ class MedCasesApp extends StatelessWidget {
       theme: _buildTheme(false),
       darkTheme: _buildTheme(true),
       themeMode: p.darkMode ? ThemeMode.dark : ThemeMode.light,
+      // ── Localização: informa ao Flutter os idiomas suportados ──────────────
+      // Necessário para que widgets nativos (DatePicker, etc.) usem o idioma certo
+      // e para que Localizations.localeOf(context) funcione corretamente.
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: const [
+        Locale('pt', 'BR'), // Português Brasil
+        Locale('pt'),       // Português (genérico)
+        Locale('es'),       // Espanhol
+        Locale('en'),       // Inglês (fallback padrão do Flutter)
+      ],
       home: const _AuthGate(),
     );
   }
@@ -1737,11 +1752,14 @@ class _AppDrawer extends StatelessWidget {
                 _DrawerBlock(
                   dividerColor: divider,
                   children: [
-                    // Idioma
+                    // Idioma — toca para alternar PT ↔ ES
                     _DrawerRow(
                       icon: Icons.language_rounded,
                       iconColor: const Color(0xFF1E88E5),
                       title: p.lang == 'es' ? 'Idioma' : 'Idioma',
+                      subtitle: p.lang == 'es'
+                          ? 'Toca para cambiar a Português'
+                          : 'Toque para mudar para Español',
                       dark: dark,
                       textCol: textCol,
                       subCol: subCol,
@@ -1749,6 +1767,7 @@ class _AppDrawer extends StatelessWidget {
                       onTap: () {
                         final newLang = p.lang == 'pt' ? 'es' : 'pt';
                         p.setLang(newLang);
+                        // Persiste explicitamente para sobrescrever o padrão do sistema
                         SharedPreferences.getInstance()
                             .then((prefs) => prefs.setString('lang', newLang));
                       },
@@ -2253,6 +2272,7 @@ class _DrawerRow extends StatelessWidget {
   final IconData icon;
   final Color iconColor;
   final String title;
+  final String? subtitle;
   final bool dark;
   final Color textCol;
   final Color subCol;
@@ -2268,6 +2288,7 @@ class _DrawerRow extends StatelessWidget {
     required this.textCol,
     required this.subCol,
     required this.onTap,
+    this.subtitle,
     this.trailing,
     this.showDivider = true,
   });
@@ -2288,16 +2309,34 @@ class _DrawerRow extends StatelessWidget {
             child: Icon(icon, size: 20, color: iconColor),
           ),
           const SizedBox(width: 4),
-          // Título
+          // Título + subtítulo opcional
           Expanded(
-            child: Text(
-              title,
-              style: TextStyle(
-                fontSize: 13.5,
-                fontWeight: FontWeight.w600,
-                color: textCol,
-                letterSpacing: -0.1,
-              ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  title,
+                  style: TextStyle(
+                    fontSize: 13.5,
+                    fontWeight: FontWeight.w600,
+                    color: textCol,
+                    letterSpacing: -0.1,
+                  ),
+                ),
+                if (subtitle != null) ...
+                  [
+                    const SizedBox(height: 1),
+                    Text(
+                      subtitle!,
+                      style: TextStyle(
+                        fontSize: 10.5,
+                        fontWeight: FontWeight.w500,
+                        color: subCol.withValues(alpha: 0.65),
+                      ),
+                    ),
+                  ],
+              ],
             ),
           ),
           // Trailing ou chevron
@@ -2316,6 +2355,8 @@ class _LangBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Mostra a bandeira + nome curto do idioma atual
+    final label = lang == 'pt' ? '🇧🇷 PT' : '🇪🇸 ES';
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 4),
       decoration: BoxDecoration(
@@ -2324,8 +2365,8 @@ class _LangBadge extends StatelessWidget {
         border: Border.all(color: const Color(0xFFC5A365).withValues(alpha: 0.38)),
       ),
       child: Text(
-        lang.toUpperCase(),
-        style: const TextStyle(fontSize: 10.5, fontWeight: FontWeight.w900, color: Color(0xFFC5A365), letterSpacing: 1),
+        label,
+        style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w800, color: Color(0xFFC5A365), letterSpacing: 0.5),
       ),
     );
   }

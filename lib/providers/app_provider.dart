@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:ui' as ui;
 import 'package:flutter/foundation.dart';
 // Import condicional: ls_web.dart (Web, usa dart:js) ou ls_stub.dart (iOS/Android, no-op).
 // Isola dart:js do compilador nativo — resolve "Undefined name 'context'" no Xcode.
@@ -63,12 +64,20 @@ class HemoData {
 }
 
 class AppProvider extends ChangeNotifier {
+  // ── Idioma padrão baseado no locale do sistema operacional ────────────────
+  /// Retorna 'pt' para português (pt, pt_BR) e 'es' para qualquer outro idioma.
+  /// Usado apenas quando o usuário nunca escolheu um idioma explicitamente.
+  static String _systemLang() {
+    final locale = ui.PlatformDispatcher.instance.locale;
+    return locale.languageCode == 'pt' ? 'pt' : 'es';
+  }
+
   // ── Estado Firebase ───────────────────────────────────────────────────────
   UserModel? _currentUser;
   bool _firebaseReady = false;
 
   // ── Estado local ──────────────────────────────────────────────────────────
-  String _lang = 'es';
+  String _lang = _systemLang();
   bool _darkMode = false;
 
   PatientData _patient = PatientData();
@@ -517,7 +526,8 @@ class AppProvider extends ChangeNotifier {
       final p = await SharedPreferences.getInstance();
 
       // Preferências globais (independentes de usuário)
-      _lang     = p.getString('lang')     ?? 'es';
+      // Fallback: idioma do sistema operacional (pt para português, es para outros)
+      _lang     = p.getString('lang')     ?? _systemLang();
       _darkMode = p.getBool('darkMode')   ?? false;
       // Chave de IA — lida com prefixo de usuário se disponível (fallback offline)
       if (uid != null) {
