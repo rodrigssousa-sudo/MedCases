@@ -1125,10 +1125,11 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    // context.select — rebuild APENAS quando darkMode ou lang muda.
+    // context.select — rebuild apenas quando darkMode OU lang muda.
     // Evita que os 8+ notifyListeners() do boot rebuildem toda a árvore.
     final dark = context.select<AppProvider, bool>((p) => p.darkMode);
-    // p via read — usado para _AppDrawer (abre on-tap) e p.t() (só muda com lang)
+    final _    = context.select<AppProvider, String>((p) => p.lang); // reativa nav bar ao trocar idioma
+    // p via read — _AppDrawer (abre on-tap) e p.t() já reativado pelo select acima
     final p = context.read<AppProvider>();
     final bg = dark ? const Color(0xFF141414) : const Color(0xFFF7F8FA);
     final navBg = dark ? const Color(0xFF1E1E1E) : Colors.white;
