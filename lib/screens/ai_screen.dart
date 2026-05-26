@@ -245,11 +245,13 @@ class _AiScreenState extends State<AiScreen> {
     if (_ttsPlayingIndex == msgIndex) {
       // Já tocando esta mensagem → para
       await _tts.stop();
+      if (!mounted) return;
       setState(() => _ttsPlayingIndex = -1);
       return;
     }
     // Para qualquer reprodução anterior
     await _tts.stop();
+    if (!mounted) return;
     setState(() => _ttsPlayingIndex = msgIndex);
     // Configura idioma
     final locale = lang == 'es' ? 'es-ES' : 'pt-BR';

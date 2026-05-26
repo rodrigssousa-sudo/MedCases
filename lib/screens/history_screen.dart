@@ -94,6 +94,7 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
       },
     );
     if (picked != null) {
+      if (!mounted) return;
       setState(() => _dateFilter = picked);
     }
   }
@@ -147,6 +148,7 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
         p: p,
         onSave: (h) async {
           await p.saveHistory(h);
+          if (!mounted) return;
           setState(() => _editing = null);
         },
         onCancel: () => setState(() => _editing = null),
@@ -166,6 +168,7 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
         },
         onDelete: _viewingPublic ? null : () async {
           await p.deleteHistory(_viewing!.id, wasPublic: _viewing!.isPublic);
+          if (!mounted) return;
           setState(() => _viewing = null);
         },
       );

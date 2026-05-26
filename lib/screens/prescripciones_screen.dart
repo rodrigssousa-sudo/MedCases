@@ -7395,6 +7395,7 @@ class _PrescriptionCardState extends State<_PrescriptionCard> {
 
   void _copy() async {
     await Clipboard.setData(ClipboardData(text: widget.model.content));
+    if (!mounted) return;
     setState(() => _copied = true);
     await Future.delayed(const Duration(seconds: 2));
     if (mounted) setState(() => _copied = false);
