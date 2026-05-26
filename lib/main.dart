@@ -249,16 +249,84 @@ class MedCasesApp extends StatelessWidget {
 }
 
 // ── Auth Gate ─────────────────────────────────────────────────────────────────
-// Recebe o Future de boot como parâmetro — sem globals, sem `late`.
-// Cada cold-start do app passa um Future novo e fresco.
-class _AuthGate extends StatelessWidget {
+// StatefulWidget — armazena _stableUser em state local para quebrar o loop:
+//
+//  LOOP ANTIGO (StatelessWidget):
+//   _buildMaintenanceGate rebuild
+//   → addPostFrameCallback → setUser()
+//   → notifyListeners() (múltiplos: _loadAiKey, _syncFromFirestore, _startUsageTimer)
+//   → MedCasesApp rebuild (context.watch<AppProvider>())
+//   → _AuthGate rebuild (StatelessWidget recria tudo)
+//   → StreamBuilder<UserModel?> resubscreve
+//   → currentUserStream().snapshots() emite (escrita do _startUsageTimer no Firestore)
+//   → _buildMaintenanceGate rebuild → addPostFrameCallback → ... infinito
+//
+//  SOLUÇÃO (StatefulWidget + _stableUser):
+//   • _stableUser guarda o UserModel aprovado — nunca muda dentro de uma sessão
+//   • setUser() é chamado em _onUserResolved(), que usa uma flag _setUserCalled
+//     para garantir chamada única por sessão (uid estável)
+//   • _buildMaintenanceGate não usa addPostFrameCallback — sem callbacks pendentes
+//   • notifyListeners() do AppProvider causa rebuild apenas de widgets que usam
+//     context.watch<AppProvider>() — não mais do _AuthGate (que usa context.read)
+//   • _MaintenanceShell é um StatefulWidget próprio que ouve o stream de
+//     manutenção de forma isolada, sem propagar rebuilds para cima
+class _AuthGate extends StatefulWidget {
   final Future<void> firebaseInit;
   const _AuthGate({required this.firebaseInit});
+
+  @override
+  State<_AuthGate> createState() => _AuthGateState();
+}
+
+class _AuthGateState extends State<_AuthGate> {
+  // ── Usuário estável — definido UMA vez por sessão ──────────────────────
+  // Nunca é zerado por rebuilds do StreamBuilder. Só muda quando o uid
+  // realmente troca (logout → login de outro usuário).
+  UserModel? _stableUser;
+
+  // ── Flag: setUser() já foi chamado para este uid ───────────────────────
+  // Garante chamada única mesmo que o stream emita múltiplos snapshots
+  // com o mesmo uid (escritas do _startUsageTimer, _syncFromFirestore etc.)
+  String? _setUserCalledForUid;
 
   Widget _wrapAuth(Widget child) => Theme(
     data: MedCasesApp._authTheme,
     child: child,
   );
+
+  // ── Chama setUser() uma única vez por uid ──────────────────────────────
+  // Chamado de dentro do build() via context.read (não watch) — sem causar
+  // loop de rebuild. A flag _setUserCalledForUid garante idempotência.
+  void _onUserResolved(UserModel user) {
+    if (_setUserCalledForUid == user.uid) return; // já chamado para este uid
+
+    _setUserCalledForUid = user.uid;
+
+    // Atualiza _stableUser em setState ANTES de chamar setUser() para evitar
+    // que um rebuild intermediário veja _stableUser == null.
+    if (_stableUser?.uid != user.uid) {
+      setState(() => _stableUser = user);
+    }
+
+    // Adia para o próximo frame — o build() atual precisa completar antes
+    // de chamar setUser() (que dispara notifyListeners() → rebuild).
+    // Mas como agora _AuthGate usa context.read (não watch), o rebuild do
+    // AppProvider NÃO reconstrói o _AuthGate — o loop está quebrado.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      context.read<AppProvider>().setUser(user);
+    });
+  }
+
+  // ── Logout: zera state local para permitir novo ciclo de auth ─────────
+  void _onLogout() {
+    if (_stableUser != null || _setUserCalledForUid != null) {
+      setState(() {
+        _stableUser = null;
+        _setUserCalledForUid = null;
+      });
+    }
+  }
 
   // ── Web: ouve ValueNotifier (persiste valor entre rebuilds) ─────────────
   // StreamBuilder perde eventos emitidos ANTES de subscrever.
@@ -269,12 +337,14 @@ class _AuthGate extends StatelessWidget {
       builder: (context, user, _) {
         // Sem usuário → preview pré-login com histórias públicas
         if (user == null) {
+          _onLogout();
           return _wrapAuth(const PreLoginPreview());
         }
 
         // Usuário bloqueado
         if (user.isBlocked) {
           AuthService.logout();
+          _onLogout();
           return _wrapAuth(_BlockedScreen(user: user));
         }
 
@@ -283,51 +353,9 @@ class _AuthGate extends StatelessWidget {
           return _wrapAuth(_PendingScreen(user: user));
         }
 
-        // Usuário aprovado → stream de manutenção
-        return _buildMaintenanceGate(context, user);
-      },
-    );
-  }
-
-  // ── Etapa final: manutenção → MainShell ──────────────────────────────────
-  Widget _buildMaintenanceGate(BuildContext context, UserModel user) {
-    // ── Web: NÃO abre stream do Firestore SDK ────────────────────────────
-    // FirestoreService.maintenanceStream() usa .snapshots() do SDK do Firestore.
-    // No domínio medcasespro.com (não autorizado no Firebase Console), esse SDK
-    // falha com CORS silencioso → StreamBuilder fica em ConnectionState.waiting
-    // para sempre → MainShell nunca é exibido.
-    //
-    // Solução: no Web, usamos _WebMainShellGate — um StatefulWidget que chama
-    // setUser() no initState e só exibe MainShell após o Future completar.
-    // Isso garante que o token está cacheado ANTES de qualquer tela tentar
-    // chamar loadPublicHistories(), eliminando a race condition.
-    if (kIsWeb) {
-      return _WebMainShellGate(user: user);
-    }
-
-    // ── Android: stream normal do Firestore SDK (sem CORS) ───────────────
-    return StreamBuilder<Map<String, dynamic>>(
-      stream: FirestoreService.maintenanceStream(),
-      builder: (context, maintSnap) {
-        final isMaintenanceEnabled = maintSnap.data?['enabled'] == true;
-        final maintenanceMessage   = maintSnap.data?['message'] as String? ?? '';
-
-        // Admin / Master passam pela manutenção direto
-        final bypassMaintenance = user.isAdmin || user.isMaster;
-
-        if (isMaintenanceEnabled && !bypassMaintenance) {
-          return _wrapAuth(MaintenanceScreen(message: maintenanceMessage));
-        }
-
-        // Aprovado → atualiza provider e abre o app
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          final p = context.read<AppProvider>();
-          if (p.currentUser?.uid != user.uid) {
-            p.setUser(user);
-          }
-        });
-
-        return const MainShell();
+        // Usuário aprovado → stream de manutenção (Web usa _WebMainShellGate)
+        _onUserResolved(user);
+        return _WebMainShellGate(user: user);
       },
     );
   }
@@ -336,7 +364,7 @@ class _AuthGate extends StatelessWidget {
   Widget build(BuildContext context) {
     // Etapa 1: aguarda Firebase init (em paralelo ao runApp)
     return FutureBuilder<void>(
-      future: firebaseInit,
+      future: widget.firebaseInit,
       builder: (context, firebaseSnap) {
         // Firebase ainda inicializando → splash nativa Flutter (sem tela verde)
         if (firebaseSnap.connectionState != ConnectionState.done) {
@@ -361,6 +389,7 @@ class _AuthGate extends StatelessWidget {
         if (kIsWeb) {
           return _buildWebAuthGate(context);
         }
+
         return StreamBuilder<User?>(
           stream: AuthService.authStateChanges,
           builder: (context, authSnap) {
@@ -370,6 +399,7 @@ class _AuthGate extends StatelessWidget {
 
             // Não autenticado → consent gate → login
             if (authSnap.data == null) {
+              _onLogout();
               return _wrapAuth(const _ConsentGate());
             }
 
@@ -378,6 +408,14 @@ class _AuthGate extends StatelessWidget {
               stream: AuthService.currentUserStream(),
               builder: (context, userSnap) {
                 if (userSnap.connectionState == ConnectionState.waiting) {
+                  // Se já temos _stableUser, não mostra splash de novo
+                  // (evita piscar ao receber snapshot atualizado do Firestore)
+                  if (_stableUser != null) {
+                    return _MaintenanceShell(
+                      user: _stableUser!,
+                      wrapAuth: _wrapAuth,
+                    );
+                  }
                   return _wrapAuth(const _SplashScreen());
                 }
 
@@ -385,11 +423,13 @@ class _AuthGate extends StatelessWidget {
 
                 if (user == null) {
                   AuthService.logout();
+                  _onLogout();
                   return _wrapAuth(const LoginScreen());
                 }
 
                 if (user.isBlocked) {
                   AuthService.logout();
+                  _onLogout();
                   return _wrapAuth(_BlockedScreen(user: user));
                 }
 
@@ -397,12 +437,66 @@ class _AuthGate extends StatelessWidget {
                   return _wrapAuth(_PendingScreen(user: user));
                 }
 
-                // Etapa 4: perfil OK → stream de manutenção (só para usuários logados)
-                return _buildMaintenanceGate(context, user);
+                // Etapa 4: perfil OK → registra setUser() UMA vez + exibe MainShell
+                // _onUserResolved() usa flag de uid — idempotente mesmo que o stream
+                // emita múltiplos snapshots (escritas do timer, sync de favoritos, etc.)
+                _onUserResolved(user);
+
+                // _stableUser pode ser null no primeiro frame antes de setState concluir.
+                // Usa o user atual do stream como fallback seguro.
+                return _MaintenanceShell(
+                  user: _stableUser ?? user,
+                  wrapAuth: _wrapAuth,
+                );
               },
             );
           },
         );
+      },
+    );
+  }
+}
+
+// ── Maintenance Shell — StatefulWidget isolado ────────────────────────────────
+// Ouve o stream de manutenção de forma completamente isolada do _AuthGate.
+// Rebuilds deste widget NÃO propagam para cima — quebra o segundo vetor do loop:
+//
+//  LOOP ANTIGO: maintenanceStream emite → _buildMaintenanceGate (método de
+//    _AuthGate) reconstrói → addPostFrameCallback → setUser() → notifyListeners()
+//    → MedCasesApp rebuild → _AuthGate rebuild → StreamBuilder<UserModel?> rebuild
+//    → maintenanceStream emite novamente → ...
+//
+//  AGORA: maintenanceStream emite → _MaintenanceShellState.build() reconstrói
+//    (widget isolado) → NÃO propaga para _AuthGate — loop quebrado.
+class _MaintenanceShell extends StatefulWidget {
+  final UserModel user;
+  final Widget Function(Widget) wrapAuth;
+  const _MaintenanceShell({required this.user, required this.wrapAuth});
+
+  @override
+  State<_MaintenanceShell> createState() => _MaintenanceShellState();
+}
+
+class _MaintenanceShellState extends State<_MaintenanceShell> {
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<Map<String, dynamic>>(
+      stream: FirestoreService.maintenanceStream(),
+      builder: (context, maintSnap) {
+        final isMaintenanceEnabled = maintSnap.data?['enabled'] == true;
+        final maintenanceMessage   = maintSnap.data?['message'] as String? ?? '';
+
+        // Admin / Master passam pela manutenção direto
+        final bypassMaintenance = widget.user.isAdmin || widget.user.isMaster;
+
+        if (isMaintenanceEnabled && !bypassMaintenance) {
+          return widget.wrapAuth(MaintenanceScreen(message: maintenanceMessage));
+        }
+
+        // Aprovado → MainShell
+        // NÃO há addPostFrameCallback aqui — setUser() é gerenciado pelo
+        // _AuthGateState._onUserResolved() com flag de idempotência.
+        return const MainShell();
       },
     );
   }
