@@ -948,21 +948,41 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
   // sub-tab dentro do combo Rx+Proto: 0=Rx, 1=Protocolos
   int _rxProtoSub = 0;
 
-
-  // ── Performance: telas estáticas criadas uma única vez no initState ──────
+  // ── Performance: telas criadas uma única vez no initState ─────────────────
+  // CRÍTICO: HomeScreen e _RxProtoCombo NÃO podem ser instanciadas dentro de
+  // build() — cada notifyListeners() do AppProvider reconstrói o MainShell e
+  // recriaria essas telas do zero, causando loop de piscar.
+  // Solução: criar TODAS as telas no initState com callbacks estáveis (métodos
+  // da classe, não lambdas inline) e reutilizá-las via IndexedStack.
   late final List<Widget> _staticScreens;
+
+  // ── Callbacks estáveis para HomeScreen ────────────────────────────────────
+  // Lambdas inline no build() são recriadas a cada rebuild — geram instabilidade.
+  // Métodos da classe são referências estáveis: mesma instância entre rebuilds.
+  void _onTabChange(int t)    => setState(() => _tab = t);
+  void _onSubTabChange(int i) => setState(() => _rxProtoSub = i);
+  void _onOpenNotes()         => showNotesSheet(context);
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
 
-    // Instancia telas estáticas UMA VEZ — IndexedStack não recria entre trocas de tab
+    // Instancia TODAS as telas UMA VEZ — IndexedStack reutiliza entre rebuilds.
+    // HomeScreen e _RxProtoCombo agora ficam aqui (não mais no build()) para
+    // que notifyListeners() do AppProvider não as recrie a cada rebuild.
     _staticScreens = [
-      // 0 — HomeScreen (nova tela inicial com os 4 cards)
-      // Nota: construída no build() porque precisa de setState callback
-      const Placeholder(),
-      const Placeholder(),                         // 1 — _RxProtoCombo (dinâmico)
+      HomeScreen(                                  // 0 — tela inicial
+        onTabChange:    _onTabChange,
+        onSubTabChange: _onSubTabChange,
+        openProtocol:   _openProtocol,
+        onOpenNotes:    _onOpenNotes,
+        onCheckUpdate:  _forceShowUpdate,
+      ),
+      _RxProtoCombo(                               // 1 — Rx/Proto combo
+        subTab: _rxProtoSub,
+        onSubTabChange: _onSubTabChange,
+      ),
       const AiScreen(),                            // 2
       const HistoryScreen(),                       // 3
       const ToolsScreen(),                         // 4
@@ -1107,28 +1127,10 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
     final navBg = dark ? const Color(0xFF1E1E1E) : Colors.white;
     final navBorder = dark ? const Color(0xFF333333) : const Color(0xFFE8E1D2);
 
-    // HomeScreen e _RxProtoCombo são dinâmicos (precisam de callbacks setState).
-    // As demais telas são reutilizadas de _staticScreens.
-    final mainScreens = [
-      HomeScreen(                                  // 0 — nova tela inicial
-        onTabChange: (t) => setState(() => _tab = t),
-        onSubTabChange: (i) => setState(() => _rxProtoSub = i),
-        openProtocol: _openProtocol,
-        onOpenNotes: () => showNotesSheet(context),
-        onCheckUpdate: _forceShowUpdate,
-      ),
-      _RxProtoCombo(                               // 1 — Rx/Proto combo
-        subTab: _rxProtoSub,
-        onSubTabChange: (i) => setState(() => _rxProtoSub = i),
-      ),
-      _staticScreens[2], // AiScreen
-      _staticScreens[3], // HistoryScreen
-      _staticScreens[4], // ToolsScreen
-      _staticScreens[5], // LibraryScreen
-    ];
-
-    // stackIdx = _tab direto (todas as telas no stack agora)
-    final stackIdx = _tab.clamp(0, mainScreens.length - 1);
+    // Todas as telas vêm de _staticScreens — criadas uma vez no initState.
+    // notifyListeners() do AppProvider reconstrói apenas o build() do MainShell
+    // (tema, cores, nav bar) sem recriar as telas filhas.
+    final stackIdx = _tab.clamp(0, _staticScreens.length - 1);
 
     return Scaffold(
       backgroundColor: bg,
@@ -1139,16 +1141,15 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
           // Nas demais abas: oculto para liberar espaço — cada tela tem header próprio.
           // O _AppHeader já tem SafeArea interno. Nas outras abas usamos SafeArea aqui
           // para garantir que o status bar seja respeitado sem duplicar em cada tela.
-          // AppHeader só na tab 0 (Home) — as demais têm header próprio
           if (_tab == 0)
             _AppHeader(
-              onTabChange: (t) => setState(() => _tab = t),
+              onTabChange: _onTabChange,
               currentTab: _tab,
             )
           else
-            SafeArea(bottom: false, child: const SizedBox.shrink()),
+            const SafeArea(bottom: false, child: SizedBox.shrink()),
 
-          Expanded(child: IndexedStack(index: stackIdx.clamp(0, mainScreens.length - 1), children: mainScreens)),
+          Expanded(child: IndexedStack(index: stackIdx, children: _staticScreens)),
         ]),
 
 
@@ -1344,7 +1345,12 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
 }
 
 // ── Combo Rx + Protocolos ─────────────────────────────────────────────────────
-class _RxProtoCombo extends StatelessWidget {
+// _RxProtoCombo — StatefulWidget com sub-tab interno.
+// CRÍTICO: mora em _staticScreens (criado no initState do MainShell) para que
+// notifyListeners() do AppProvider não o recrie a cada rebuild do pai.
+// O sub-tab é estado interno (_sub) — independente de rebuild externo.
+// onSubTabChange notifica o MainShell apenas para sincronismo (ex: deep links).
+class _RxProtoCombo extends StatefulWidget {
   final int subTab;
   final ValueChanged<int> onSubTabChange;
 
@@ -1352,6 +1358,25 @@ class _RxProtoCombo extends StatelessWidget {
     required this.subTab,
     required this.onSubTabChange,
   });
+
+  @override
+  State<_RxProtoCombo> createState() => _RxProtoComboState();
+}
+
+class _RxProtoComboState extends State<_RxProtoCombo> {
+  late int _sub;
+
+  @override
+  void initState() {
+    super.initState();
+    _sub = widget.subTab;
+  }
+
+  void _select(int i) {
+    if (_sub == i) return;
+    setState(() => _sub = i);
+    widget.onSubTabChange(i);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -1383,33 +1408,33 @@ class _RxProtoCombo extends StatelessWidget {
             _SubTabBtn(
               icon: Icons.description_rounded,
               label: p.t('prescriptions'),
-              active: subTab == 0,
+              active: _sub == 0,
               dark: dark,
-              onTap: () => onSubTabChange(0),
+              onTap: () => _select(0),
             ),
             Container(width: 1, height: 24, color: borderCol),
             _SubTabBtn(
               icon: Icons.medication_rounded,
               label: p.t('drugs'),
-              active: subTab == 1,
+              active: _sub == 1,
               dark: dark,
-              onTap: () => onSubTabChange(1),
+              onTap: () => _select(1),
             ),
             Container(width: 1, height: 24, color: borderCol),
             _SubTabBtn(
               icon: Icons.emergency_rounded,
               label: p.t('protocols'),
-              active: subTab == 2,
+              active: _sub == 2,
               dark: dark,
-              onTap: () => onSubTabChange(2),
+              onTap: () => _select(2),
             ),
             Container(width: 1, height: 24, color: borderCol),
             _SubTabBtn(
               icon: Icons.folder_open_rounded,
               label: p.t('cases'),
-              active: subTab == 3,
+              active: _sub == 3,
               dark: dark,
-              onTap: () => onSubTabChange(3),
+              onTap: () => _select(3),
             ),
           ]),
         ),
@@ -1417,12 +1442,12 @@ class _RxProtoCombo extends StatelessWidget {
       // ── Conteúdo ──────────────────────────────────────────────────────────
       Expanded(
         child: IndexedStack(
-          index: subTab,
-          children: [
-            const PrescripcionesScreen(),
-            const DrugsScreen(),
-            const ProtocolsScreen(),
-            const CasesScreen(),
+          index: _sub,
+          children: const [
+            PrescripcionesScreen(),
+            DrugsScreen(),
+            ProtocolsScreen(),
+            CasesScreen(),
           ],
         ),
       ),
