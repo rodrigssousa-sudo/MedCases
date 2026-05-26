@@ -33,6 +33,16 @@
 	<key>NSSpeechRecognitionUsageDescription</key>
 	<string>MedCases Pro utiliza o reconhecimento de voz do iOS estritamente para transcrever ditados clínicos de profissionais de saúde — como evoluções de pacientes e anotações de plantão — transformando a fala em texto dentro do prontuário. Nenhum áudio é enviado a servidores externos nem armazenado após a transcrição. O recurso é ativado apenas quando o profissional aciona manualmente o ditafone.</string>
 
+	<!-- ── Biblioteca de fotos ───────────────────────────────────────────── -->
+	<!-- file_picker 8.x e share_plus 12.x exigem esta key — crash sem ela    -->
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>MedCases Pro solicita acceso a su biblioteca de fotos únicamente para que el profesional de salud pueda adjuntar imágenes clínicas relevantes — como fotografías de lesiones, resultados de exámenes o documentos médicos — directamente a sus anotaciones y fichas de pacientes. Las imágenes se utilizan exclusivamente dentro de la aplicación y no se comparten con terceros.</string>
+
+	<!-- NSPhotoLibraryAddUsageDescription: exigida pelo share_plus ao salvar  -->
+	<!-- imagens no rolo da câmera (ex.: exportar gráfico ou PDF como imagem)  -->
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>MedCases Pro puede guardar imágenes generadas por la aplicación — como gráficos de seguimiento clínico o capturas de protocolos — directamente en su biblioteca de fotos, exclusivamente cuando usted lo solicite de forma explícita.</string>
+
 	<!-- ── Orientação iPhone: somente portrait ───────────────────────────── -->
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
@@ -44,6 +54,14 @@
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
 		<string>UIInterfaceOrientationPortraitUpsideDown</string>
+	</array>
+
+	<!-- ── Modos de background ───────────────────────────────────────────── -->
+	<!-- audio: exigido pelo speech_to_text para manter sessão STT ativa      -->
+	<!-- quando o app vai para background durante ditado clínico              -->
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>audio</string>
 	</array>
 
 	<!-- ── Launch / Main storyboard ─────────────────────────────────────── -->
