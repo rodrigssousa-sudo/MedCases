@@ -37,12 +37,6 @@ import 'services/firestore_service.dart';
 import 'services/gemini_service.dart';
 import 'widgets/brand_mark.dart';
 
-// ── Boot assíncrono global ────────────────────────────────────────────────────
-// Executa APÓS runApp() — o _AuthGate observa este Future via FutureBuilder.
-// Estratégia: runApp() imediato → splash Flutter aparece em < 1s →
-// Firebase + restoreSession correm em background → UI atualiza ao concluir.
-late final Future<void> _firebaseInit;
-
 Future<void> main() async {
   FlutterError.onError = (FlutterErrorDetails details) {
     FlutterError.dumpErrorToConsole(details);
@@ -58,20 +52,24 @@ Future<void> main() async {
     DeviceOrientation.portraitDown,
   ]);
 
-  // Cria o provider e lê prefs locais de forma SÍNCRONA (sem await aqui).
-  // loadPrefs() é disparado em background — preferências chegam em ~50ms.
+  // Cria o provider — sem await aqui, boot é disparado em background.
   final provider = AppProvider();
+
+  // ── Future criado ANTES do runApp — sem `late`, sem estado global ────────
+  // Ao usar `late final`, o iOS pode reutilizar o isolate após force-close e
+  // encontrar a variável marcada como inicializada com um Future morto.
+  // Solução: variável `final` comum, atribuída antes do runApp(), passada
+  // como parâmetro para MedCasesApp → _AuthGate. Cada cold-start cria um
+  // Future novo garantido.
+  final firebaseInit = _bootInBackground(provider);
 
   // ── runApp() IMEDIATO — splash aparece em < 500ms ────────────────────────
   runApp(
     ChangeNotifierProvider.value(
       value: provider,
-      child: const MedCasesApp(),
+      child: MedCasesApp(firebaseInit: firebaseInit),
     ),
   );
-
-  // ── Boot assíncrono em background (não bloqueia a UI) ────────────────────
-  _firebaseInit = _bootInBackground(provider);
 }
 
 /// Executa todo o boot pesado após runApp() — a UI já está visível.
@@ -123,7 +121,8 @@ Future<void> _bootInBackground(AppProvider provider) async {
 }
 
 class MedCasesApp extends StatelessWidget {
-  const MedCasesApp({super.key});
+  final Future<void> firebaseInit;
+  const MedCasesApp({super.key, required this.firebaseInit});
 
   @override
   Widget build(BuildContext context) {
@@ -148,7 +147,7 @@ class MedCasesApp extends StatelessWidget {
         Locale('es'),       // Espanhol
         Locale('en'),       // Inglês (fallback padrão do Flutter)
       ],
-      home: const _AuthGate(),
+      home: _AuthGate(firebaseInit: firebaseInit),
       // ── Contenção de largura para iPad e telas grandes ─────────────────────
       // Em iPhones (< 600 px) o builder é transparente — nada muda.
       // Em iPads o conteúdo fica centralizado com no máximo 560 px de largura,
@@ -250,11 +249,11 @@ class MedCasesApp extends StatelessWidget {
 }
 
 // ── Auth Gate ─────────────────────────────────────────────────────────────────
-// Firebase já está inicializado quando chegamos aqui (await no main)
-// _AuthGate: aguarda Firebase inicializar via FutureBuilder,
-// depois ouve o stream de auth — runApp() já aconteceu, splash aparece imediatamente
+// Recebe o Future de boot como parâmetro — sem globals, sem `late`.
+// Cada cold-start do app passa um Future novo e fresco.
 class _AuthGate extends StatelessWidget {
-  const _AuthGate();
+  final Future<void> firebaseInit;
+  const _AuthGate({required this.firebaseInit});
 
   Widget _wrapAuth(Widget child) => Theme(
     data: MedCasesApp._authTheme,
@@ -337,7 +336,7 @@ class _AuthGate extends StatelessWidget {
   Widget build(BuildContext context) {
     // Etapa 1: aguarda Firebase init (em paralelo ao runApp)
     return FutureBuilder<void>(
-      future: _firebaseInit,
+      future: firebaseInit,
       builder: (context, firebaseSnap) {
         // Firebase ainda inicializando → splash nativa Flutter (sem tela verde)
         if (firebaseSnap.connectionState != ConnectionState.done) {
