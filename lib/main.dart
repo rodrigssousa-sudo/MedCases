@@ -126,13 +126,17 @@ class MedCasesApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final p = context.watch<AppProvider>();
+    // context.select — rebuild APENAS quando darkMode muda (troca de tema).
+    // Antes usava context.watch que rebuildava MaterialApp inteiro a cada
+    // notifyListeners() do AppProvider — propagando rebuild para toda a árvore:
+    // MaterialApp → _AuthGate → StreamBuilder → MainShell → HomeScreen (piscar).
+    final darkMode = context.select<AppProvider, bool>((p) => p.darkMode);
     return MaterialApp(
       title: 'MedCases Pro',
       debugShowCheckedModeBanner: false,
       theme: _buildTheme(false),
       darkTheme: _buildTheme(true),
-      themeMode: p.darkMode ? ThemeMode.dark : ThemeMode.light,
+      themeMode: darkMode ? ThemeMode.dark : ThemeMode.light,
       // ── Localização: informa ao Flutter os idiomas suportados ──────────────
       // Necessário para que widgets nativos (DatePicker, etc.) usem o idioma certo
       // e para que Localizations.localeOf(context) funcione corretamente.
@@ -1665,8 +1669,8 @@ class _LegalBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final p         = context.watch<AppProvider>();
-    final isEs      = p.lang == 'es';
+    // context.select — rebuild apenas quando lang muda
+    final isEs = context.select<AppProvider, bool>((p) => p.lang == 'es');
     final bg        = dark ? const Color(0xFF080F0B) : const Color(0xFFF0F2F4);
     final border    = dark ? const Color(0xFF1A2820) : const Color(0xFFDDE1E6);
     final textColor = dark
@@ -2578,7 +2582,9 @@ class _AppHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final p = context.watch<AppProvider>();
+    // context.select — rebuild apenas quando userName ou lang muda
+    final userName = context.select<AppProvider, String>((p) => p.userName);
+    final lang     = context.select<AppProvider, String>((p) => p.lang);
     return Container(
       decoration: BoxDecoration(
         gradient: const LinearGradient(
@@ -2618,7 +2624,7 @@ class _AppHeader extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    p.userName.isNotEmpty ? p.userName : 'MedCases Pro',
+                    userName.isNotEmpty ? userName : 'MedCases Pro',
                     style: const TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.w800,
@@ -2630,7 +2636,7 @@ class _AppHeader extends StatelessWidget {
                   ),
                   const SizedBox(height: 2),
                   Text(
-                    p.lang == 'es' ? 'Apoyo clínico educativo' : 'Apoio clínico educacional',
+                    lang == 'es' ? 'Apoyo clínico educativo' : 'Apoio clínico educacional',
                     style: TextStyle(
                       fontSize: 10,
                       color: Colors.white.withValues(alpha: 0.48),
