@@ -128,6 +128,7 @@ class _LoginScreenState extends State<LoginScreen>
         institution: _instCtrl.text.isNotEmpty ? _instCtrl.text : null,
       );
       if (result.success && result.user != null && result.user!.isPending) {
+        if (!mounted) return;
         setState(() {
           _loading = false;
           _success = _registerSuccessMsg();
@@ -139,6 +140,7 @@ class _LoginScreenState extends State<LoginScreen>
     } else {
       result = await AuthService.resetPassword(_emailCtrl.text);
       if (result.success) {
+        if (!mounted) return;
         setState(() {
           _loading = false;
           _success = _resetSuccessMsg(_emailCtrl.text);
@@ -147,6 +149,7 @@ class _LoginScreenState extends State<LoginScreen>
       }
     }
 
+    if (!mounted) return;
     setState(() {
       _loading = false;
       if (!result.success) _error = result.error;
