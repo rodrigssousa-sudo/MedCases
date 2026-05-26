@@ -101,18 +101,16 @@ Future<void> _bootInBackground(AppProvider provider) async {
   // em vez de travar em loading infinito.
   try {
     if (Firebase.apps.isEmpty) {
+      // Timeout de 8s: se Firebase demorar mais, o app não trava.
+      // TimeoutException é capturada pelo catch abaixo — sem rethrow.
       await Firebase.initializeApp(
         options: DefaultFirebaseOptions.currentPlatform,
-      ).timeout(
-        const Duration(seconds: 8),
-        onTimeout: () {
-          debugPrint('[MedCases] Firebase.initializeApp timeout — continuando sem Firebase SDK');
-        },
-      );
+      ).timeout(const Duration(seconds: 8));
     }
   } catch (e) {
     // NÃO faz rethrow — deixa _AuthGate lidar com a ausência do Firebase
     // (no Android, vai para LoginScreen; no Web, usa fluxo REST independente)
+    // Cobre tanto TimeoutException quanto PlatformException do Firebase
     debugPrint('[MedCases] Firebase.initializeApp falhou (ignorado): $e');
   }
 
@@ -2628,34 +2626,38 @@ class _AboutAppSheet extends StatelessWidget {
       ]),
     );
 
+    // Altura máxima: 88% da tela — nunca ultrapassa, handle e X ficam sempre visíveis
+    final maxH = MediaQuery.of(context).size.height * 0.88;
+
     return SafeArea(
       top: false,
       child: Container(
+        // Limita a altura máxima do sheet para garantir que handle+título
+        // nunca fiquem acima da área visível (bug relatado: sheet muito alto)
+        constraints: BoxConstraints(maxHeight: maxH),
         decoration: BoxDecoration(
           color: bg,
           borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
         ),
-        child: SingleChildScrollView(
-          padding: EdgeInsets.fromLTRB(20, 0, 20,
-              MediaQuery.of(context).viewInsets.bottom + 32),
-          child: Column(mainAxisSize: MainAxisSize.min, children: [
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
 
-            // ── Handle + botão fechar ─────────────────────────────────────
+            // ── Handle (pill) — FORA do scroll, sempre visível ────────────
             Padding(
               padding: const EdgeInsets.only(top: 12, bottom: 4),
-              child: Row(children: [
-                const Spacer(),
-                Container(
+              child: Center(
+                child: Container(
                   width: 40, height: 4,
                   decoration: BoxDecoration(
                     color: hdl, borderRadius: BorderRadius.circular(2)),
                 ),
-                const Spacer(),
-              ]),
+              ),
             ),
-            // Linha título + X
+
+            // ── Linha título + botão X — FORA do scroll, sempre visível ──
             Padding(
-              padding: const EdgeInsets.fromLTRB(20, 8, 8, 16),
+              padding: const EdgeInsets.fromLTRB(20, 6, 8, 12),
               child: Row(children: [
                 Expanded(
                   child: Text(
@@ -2672,6 +2674,17 @@ class _AboutAppSheet extends StatelessWidget {
                 ),
               ]),
             ),
+
+            // ── Divisor sutil ─────────────────────────────────────────────
+            Divider(height: 1, thickness: 0.5,
+                color: hdl.withValues(alpha: 0.6)),
+
+            // ── Conteúdo scrollável ───────────────────────────────────────
+            Expanded(
+              child: SingleChildScrollView(
+                padding: EdgeInsets.fromLTRB(20, 16, 20,
+                    MediaQuery.of(context).viewInsets.bottom + 32),
+                child: Column(mainAxisSize: MainAxisSize.min, children: [
 
             // ── Header: ícone + nome + subtítulo ─────────────────────────
             Container(
@@ -2830,9 +2843,12 @@ class _AboutAppSheet extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 4),
-          ]),
-        ),
-      ),
+          ]),   // fim Column scrollável
+        ),      // fim SingleChildScrollView
+      ),        // fim Expanded
+    ],          // fim Column.children
+    ),          // fim Column externo
+    ),          // fim Container
     );
   }
 }
