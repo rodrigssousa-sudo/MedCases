@@ -1121,15 +1121,18 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    final p = context.watch<AppProvider>();
-    final dark = p.darkMode;
+    // context.select — rebuild APENAS quando darkMode ou lang muda.
+    // Evita que os 8+ notifyListeners() do boot rebuildem toda a árvore.
+    final dark = context.select<AppProvider, bool>((p) => p.darkMode);
+    // p via read — usado para _AppDrawer (abre on-tap) e p.t() (só muda com lang)
+    final p = context.read<AppProvider>();
     final bg = dark ? const Color(0xFF141414) : const Color(0xFFF7F8FA);
     final navBg = dark ? const Color(0xFF1E1E1E) : Colors.white;
     final navBorder = dark ? const Color(0xFF333333) : const Color(0xFFE8E1D2);
 
     // Todas as telas vêm de _staticScreens — criadas uma vez no initState.
-    // notifyListeners() do AppProvider reconstrói apenas o build() do MainShell
-    // (tema, cores, nav bar) sem recriar as telas filhas.
+    // Com context.select, este build() só roda quando darkMode ou lang muda —
+    // não mais a cada notifyListeners() geral do AppProvider.
     final stackIdx = _tab.clamp(0, _staticScreens.length - 1);
 
     return Scaffold(
@@ -1380,8 +1383,10 @@ class _RxProtoComboState extends State<_RxProtoCombo> {
 
   @override
   Widget build(BuildContext context) {
-    final p = context.watch<AppProvider>();
-    final dark = p.darkMode;
+    // context.select — rebuild apenas quando darkMode ou lang muda
+    final dark = context.select<AppProvider, bool>((p) => p.darkMode);
+    // p via read — usado somente para p.t() (só muda quando lang muda)
+    final p = context.read<AppProvider>();
     final bg = dark ? const Color(0xFF121E18) : const Color(0xFFF5F6F8);
     final borderCol = dark ? const Color(0xFF2A3A30) : const Color(0xFFE0E4E8);
 
