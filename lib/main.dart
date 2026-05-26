@@ -1478,11 +1478,18 @@ class _LegalBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final p         = context.watch<AppProvider>();
+    final isEs      = p.lang == 'es';
     final bg        = dark ? const Color(0xFF080F0B) : const Color(0xFFF0F2F4);
     final border    = dark ? const Color(0xFF1A2820) : const Color(0xFFDDE1E6);
     final textColor = dark
         ? Colors.white.withValues(alpha: 0.28)
         : const Color(0xFF98A0A8);
+
+    // Texto exigido pela Apple guideline 1.4.1 — permanece visível em todas as telas
+    final disclaimer = isEs
+        ? 'Herramienta educativa de apoyo clínico. La decisión y verificación de dosis son responsabilidad exclusiva del médico asistente.'
+        : 'Ferramenta educacional de apoio clínico. A decisão e verificação de doses são de responsabilidade exclusiva do médico assistente.';
 
     // Container fora do SafeArea: a borda e o bg cobrem toda a largura,
     // o SafeArea interno só aplica padding no conteúdo — sem sobrepor a nav bar.
@@ -1495,19 +1502,19 @@ class _LegalBar extends StatelessWidget {
       child: SafeArea(
         top: false,
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 5),
           child: Row(children: [
             Icon(Icons.info_outline_rounded, size: 8.5, color: textColor.withValues(alpha: 0.7)),
             const SizedBox(width: 5),
             Expanded(
               child: Text(
-                'Fines educativos y soporte a la decisión clínica. No reemplaza el juicio médico profesional.',
+                disclaimer,
                 style: TextStyle(
                   fontSize: 7.5, color: textColor,
-                  height: 1.3, letterSpacing: 0.15,
+                  height: 1.35, letterSpacing: 0.15,
                   fontWeight: FontWeight.w500,
                 ),
-                maxLines: 1,
+                maxLines: 2,
                 overflow: TextOverflow.ellipsis,
               ),
             ),
@@ -1764,6 +1771,35 @@ class _AppDrawer extends StatelessWidget {
                   color: const Color(0xFF1D4ED8),
                 ),
                 _OfflineDrawerCard(p: p, dark: dark),
+
+                // ─── Bloco: Sobre o App (exigido pela Apple 1.5.0) ──────────
+                _DrawerSectionLabel(
+                  label: p.lang == 'es' ? 'ACERCA DE' : 'SOBRE O APP',
+                  dark: dark,
+                ),
+                _DrawerBlock(
+                  dividerColor: divider,
+                  children: [
+                    _DrawerRow(
+                      icon: Icons.info_outline_rounded,
+                      iconColor: const Color(0xFF0D9488),
+                      title: p.lang == 'es' ? 'Sobre MedCases Pro' : 'Sobre o MedCases Pro',
+                      dark: dark,
+                      textCol: textCol,
+                      subCol: subCol,
+                      showDivider: false,
+                      onTap: () {
+                        _close(context);
+                        showModalBottomSheet(
+                          context: context,
+                          isScrollControlled: true,
+                          backgroundColor: Colors.transparent,
+                          builder: (_) => _AboutAppSheet(p: p, dark: dark),
+                        );
+                      },
+                    ),
+                  ],
+                ),
 
                 _DrawerSectionLabel(
                   label: p.lang == 'es' ? 'LEGAL' : 'LEGAL',
@@ -2417,6 +2453,112 @@ class _AppHeader extends StatelessWidget {
           ]),
         ),
       ),
+    );
+  }
+}
+
+// ── Sobre o App — sheet com informações do desenvolvedor (Apple 1.5.0) ───────
+class _AboutAppSheet extends StatelessWidget {
+  final AppProvider p;
+  final bool dark;
+  const _AboutAppSheet({required this.p, required this.dark});
+
+  @override
+  Widget build(BuildContext context) {
+    final isEs   = p.lang == 'es';
+    final bg     = dark ? const Color(0xFF1C1C1E) : Colors.white;
+    final handle = dark ? const Color(0xFF48484A) : const Color(0xFFDDDDDD);
+    final title  = dark ? const Color(0xFFE8E8EA) : const Color(0xFF07110d);
+    final body   = dark ? const Color(0xFFB0B0B8) : const Color(0xFF444455);
+    final accent = dark ? const Color(0xFFD4A96A) : const Color(0xFF075f45);
+
+    Widget _row(IconData icon, String label, String value) => Padding(
+      padding: const EdgeInsets.only(bottom: 14),
+      child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Icon(icon, size: 16, color: accent),
+        const SizedBox(width: 10),
+        Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Text(label, style: TextStyle(fontSize: 10, fontWeight: FontWeight.w800,
+              color: accent, letterSpacing: 0.8)),
+          const SizedBox(height: 2),
+          Text(value, style: TextStyle(fontSize: 13, color: body, height: 1.4)),
+        ])),
+      ]),
+    );
+
+    return Container(
+      decoration: BoxDecoration(
+        color: bg,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      padding: EdgeInsets.fromLTRB(24, 0, 24,
+          MediaQuery.of(context).viewInsets.bottom + 36),
+      child: Column(mainAxisSize: MainAxisSize.min, children: [
+        // Handle
+        Padding(
+          padding: const EdgeInsets.only(top: 12, bottom: 20),
+          child: Container(
+            width: 40, height: 4,
+            decoration: BoxDecoration(
+              color: handle, borderRadius: BorderRadius.circular(2),
+            ),
+          ),
+        ),
+
+        // Logo + nome
+        Row(children: [
+          Container(
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              color: const Color(0xFF075f45).withValues(alpha: 0.10),
+              borderRadius: BorderRadius.circular(14),
+              border: Border.all(
+                  color: const Color(0xFF075f45).withValues(alpha: 0.25)),
+            ),
+            child: const Icon(Icons.local_hospital_rounded,
+                size: 24, color: Color(0xFF075f45)),
+          ),
+          const SizedBox(width: 14),
+          Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Text('MedCases Pro',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900,
+                  color: title, letterSpacing: -0.3)),
+            Text(
+              isEs ? 'Apoyo clínico educativo' : 'Apoio clínico educacional',
+              style: TextStyle(fontSize: 12, color: body),
+            ),
+          ]),
+        ]),
+
+        const SizedBox(height: 24),
+        Divider(color: handle, height: 1),
+        const SizedBox(height: 20),
+
+        // Informações do desenvolvedor
+        _row(Icons.business_rounded,
+          isEs ? 'DESARROLLADO POR' : 'DESENVOLVIDO POR',
+          'MedCases Pro — Tecnologia em Saúde'),
+
+        _row(Icons.email_outlined,
+          isEs ? 'SOPORTE / CONTACTO' : 'SUPORTE / CONTATO',
+          'suporte@medcasespro.com'),
+
+        _row(Icons.verified_outlined,
+          isEs ? 'REVISIÓN DE CONTENIDO' : 'REVISÃO DE CONTEÚDO',
+          isEs
+            ? 'Contenido clínico revisado y validado por médicos especialistas con registro activo en los respectivos consejos de medicina.'
+            : 'Conteúdo clínico revisado e validado por médicos especialistas com registro ativo nos respectivos Conselhos de Medicina.'),
+
+        _row(Icons.gavel_outlined,
+          isEs ? 'PROPÓSITO' : 'PROPÓSITO',
+          isEs
+            ? 'Esta aplicación es una herramienta exclusivamente educativa de apoyo a la toma de decisiones clínicas. No reemplaza el juicio clínico del profesional de salud, ni constituye prescripción médica.'
+            : 'Este aplicativo é uma ferramenta exclusivamente educacional de apoio à tomada de decisão clínica. Não substitui o julgamento clínico do profissional de saúde, nem constitui prescrição médica.'),
+
+        _row(Icons.language_outlined,
+          isEs ? 'SITIO WEB' : 'SITE',
+          'medcasespro.com'),
+      ]),
     );
   }
 }

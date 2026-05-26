@@ -642,9 +642,10 @@ class _DrugDetailViewState extends State<_DrugDetailView> {
     final alerts = <String>[];
 
     if ((drug.doseType == 'weight' || drug.doseType == 'infusion') && w == null) {
+      // Mostra alerta informativo mas não bloqueia a exibição da dose de referência
       alerts.add(lang == 'es'
-          ? 'Peso obligatorio para cálculo por kg o infusión.'
-          : 'Peso obrigatório para cálculo por kg ou infusão.');
+          ? 'Ingrese el peso del paciente para calcular la dosis exacta en mg/kg. La dosis de referencia abajo es para orientación general.'
+          : 'Informe o peso do paciente para calcular a dose exata em mg/kg. A dose de referência abaixo é para orientação geral.');
     }
 
     final renalAlert = drug.getField(drug.renalAlert, lang);

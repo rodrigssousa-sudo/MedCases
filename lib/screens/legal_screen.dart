@@ -614,8 +614,8 @@ class _ConsentModalState extends State<ConsentModal> {
                   _ConsentCheck(
                     value: _c4,
                     isEs: _isEs,
-                    labelPt: 'Compreendo que esta plataforma é educacional e não substitui avaliação médica — ',
-                    labelEs: 'Entiendo que esta plataforma es educativa y no reemplaza la evaluación médica — ',
+                    labelPt: 'Declaro que sou profissional de saúde habilitado e compreendo que doses, protocolos e cálculos são ferramentas educativas de apoio. A verificação e a decisão clínica final são de minha exclusiva responsabilidade — ',
+                    labelEs: 'Declaro que soy profesional de la salud habilitado y comprendo que las dosis, protocolos y cálculos son herramientas educativas de apoyo. La verificación y la decisión clínica final son de mi exclusiva responsabilidad — ',
                     linkTextPt: 'ver Aviso Médico',
                     linkTextEs: 'ver Aviso Médico',
                     onChanged: (v) => setState(() => _c4 = v),

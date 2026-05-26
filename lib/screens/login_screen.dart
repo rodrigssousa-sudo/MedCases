@@ -273,18 +273,19 @@ class _LoginScreenState extends State<LoginScreen>
         _isEs ? 'Apoyo clínico educativo' : 'Apoio clínico educacional',
         style: TextStyle(fontSize: 12, color: Colors.white.withValues(alpha: 0.40),
           fontWeight: FontWeight.w500, letterSpacing: 0.2)),
-      const SizedBox(height: 12),
-      // Badge beta
-      Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(20),
-          color: const Color(0xFFFFB800).withValues(alpha: 0.08),
-          border: Border.all(color: const Color(0xFFFFB800).withValues(alpha: 0.35)),
+      const SizedBox(height: 8),
+      // Linha de apoio educacional (substitui o badge beta — App Store 2.2.0)
+      Text(
+        _isEs
+          ? 'Apoyo a la decisión clínica · Solo para profesionales de salud'
+          : 'Apoio à decisão clínica · Exclusivo para profissionais de saúde',
+        style: TextStyle(
+          fontSize: 9.5,
+          fontWeight: FontWeight.w500,
+          color: Colors.white.withValues(alpha: 0.32),
+          letterSpacing: 0.3,
         ),
-        child: const Text('VERSÃO BETA — App em fase de testes',
-          style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w700,
-            color: Color(0xFFFFCC44), letterSpacing: 0.5)),
+        textAlign: TextAlign.center,
       ),
     ]);
   }

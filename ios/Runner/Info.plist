@@ -26,12 +26,12 @@
 	<true/>
 
 	<!-- ── Privacidade ───────────────────────────────────────────────────── -->
-	<!-- Microfone: flutter_tts usa AVAudioSession para síntese de voz       -->
+	<!-- Microfone: exclusivamente para ditado de evolução clínica (STT)     -->
 	<key>NSMicrophoneUsageDescription</key>
-	<string>O MedCases Pro usa o microfone para reconhecimento de voz durante a criação de anotações clínicas e interação com a IA.</string>
-	<!-- Reconhecimento de voz: STT para transcrição de anotações clínicas   -->
+	<string>MedCases Pro precisa acessar o microfone exclusivamente para permitir que o profissional médico dite evoluções clínicas e anotações do prontuário por voz, convertendo a fala em texto diretamente no dispositivo. O áudio é processado apenas localmente pelo sistema de reconhecimento de voz do iOS e não é armazenado, transmitido ou compartilhado com servidores externos.</string>
+	<!-- Reconhecimento de voz: transcrição local de anotações clínicas      -->
 	<key>NSSpeechRecognitionUsageDescription</key>
-	<string>O MedCases Pro usa reconhecimento de voz para transcrever anotações clínicas por voz de forma rápida e precisa.</string>
+	<string>MedCases Pro utiliza o reconhecimento de voz do iOS estritamente para transcrever ditados clínicos de profissionais de saúde — como evoluções de pacientes e anotações de plantão — transformando a fala em texto dentro do prontuário. Nenhum áudio é enviado a servidores externos nem armazenado após a transcrição. O recurso é ativado apenas quando o profissional aciona manualmente o ditafone.</string>
 
 	<!-- ── Orientação iPhone: somente portrait ───────────────────────────── -->
 	<key>UISupportedInterfaceOrientations</key>
@@ -61,6 +61,23 @@
 	<!-- Suporte a trackpad/mouse via iPad (Magic Keyboard, Pencil, etc.)    -->
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+
+	<!-- ── Google Sign-In ────────────────────────────────────────────────── -->
+	<!-- GIDClientID: OAuth 2.0 client ID do projeto Firebase (iOS)          -->
+	<key>GIDClientID</key>
+	<string>1076800980330-h06p1o1t4ll48qsqk5ovkfse8e0t98g0.apps.googleusercontent.com</string>
+	<!-- CFBundleURLTypes: URL Scheme reverso para callback OAuth do Google   -->
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.googleusercontent.apps.1076800980330-h06p1o1t4ll48qsqk5ovkfse8e0t98g0</string>
+			</array>
+		</dict>
+	</array>
 
 	<!-- ── Criptografia ──────────────────────────────────────────────────── -->
 	<!-- false = app usa apenas HTTPS padrão do iOS (sem criptografia própria)-->

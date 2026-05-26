@@ -754,9 +754,10 @@ class AppProvider extends ChangeNotifier {
     final alerts = <String>[];
 
     if ((drug.doseType == 'weight' || drug.doseType == 'infusion') && w == null) {
+      // Informativo — não bloqueia exibição da dose de referência
       alerts.add(_lang == 'es'
-          ? 'Peso obligatorio para cálculo por kg o infusión.'
-          : 'Peso obrigatório para cálculo por kg ou infusão.');
+          ? 'Ingrese el peso del paciente para calcular la dosis exacta en mg/kg.'
+          : 'Informe o peso do paciente para calcular a dose exata em mg/kg.');
     }
 
     final renalAlert = drug.getField(drug.renalAlert, _lang);
