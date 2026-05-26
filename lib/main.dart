@@ -75,34 +75,51 @@ Future<void> main() async {
 }
 
 /// Executa todo o boot pesado após runApp() — a UI já está visível.
+/// Timeout global de 10s: garante que o app NUNCA fica preso em loading
+/// após fechamento forçado, suspensão pelo iOS/Android ou reinicialização.
+/// 
+/// IMPORTANTE: NÃO usa rethrow — qualquer falha aqui resulta em
+/// snapshot.hasError = false → _AuthGate segue para o fluxo normal de auth.
+/// Isso evita a tela "loading infinito" após force-close no iOS.
 Future<void> _bootInBackground(AppProvider provider) async {
   // 1. SharedPreferences (local, rápido ~50ms) — preferências de tema/idioma
   try {
-    await provider.loadPrefs();
+    await provider.loadPrefs().timeout(const Duration(seconds: 3));
   } catch (e) {
     debugPrint('[MedCases] SharedPreferences indisponível: $e');
   }
 
   // 2. Gemini key do storage local (síncrono, sem rede)
   try {
-    await GeminiService.initFromStorage();
+    await GeminiService.initFromStorage().timeout(const Duration(seconds: 2));
   } catch (_) {}
 
-  // 3. Firebase init (pode depender de JS externo no web — até ~3s)
+  // 3. Firebase init — com timeout e sem rethrow
+  // Guard `Firebase.apps.isEmpty` previne dupla inicialização quando o
+  // processo iOS/Android é reutilizado após force-close ou suspensão.
+  // Sem rethrow: se Firebase falhar, _AuthGate ainda tenta o fluxo web-auth
+  // em vez de travar em loading infinito.
   try {
-    await Firebase.initializeApp(
-      options: DefaultFirebaseOptions.currentPlatform,
-    );
+    if (Firebase.apps.isEmpty) {
+      await Firebase.initializeApp(
+        options: DefaultFirebaseOptions.currentPlatform,
+      ).timeout(
+        const Duration(seconds: 8),
+        onTimeout: () {
+          debugPrint('[MedCases] Firebase.initializeApp timeout — continuando sem Firebase SDK');
+        },
+      );
+    }
   } catch (e) {
-    debugPrint('[MedCases] Firebase.initializeApp falhou: $e');
-    // Propaga o erro — _AuthGate trata via snapshot.hasError
-    rethrow;
+    // NÃO faz rethrow — deixa _AuthGate lidar com a ausência do Firebase
+    // (no Android, vai para LoginScreen; no Web, usa fluxo REST independente)
+    debugPrint('[MedCases] Firebase.initializeApp falhou (ignorado): $e');
   }
 
-  // 4. Restaura sessão em paralelo com outros inits (timeout já está em 8s)
+  // 4. Restaura sessão web em paralelo com timeout de segurança
   if (kIsWeb) {
     try {
-      await AuthService.restoreSession();
+      await AuthService.restoreSession().timeout(const Duration(seconds: 5));
     } catch (_) {}
   }
 }
@@ -2623,14 +2640,37 @@ class _AboutAppSheet extends StatelessWidget {
               MediaQuery.of(context).viewInsets.bottom + 32),
           child: Column(mainAxisSize: MainAxisSize.min, children: [
 
-            // ── Handle ────────────────────────────────────────────────────
+            // ── Handle + botão fechar ─────────────────────────────────────
             Padding(
-              padding: const EdgeInsets.only(top: 12, bottom: 22),
-              child: Container(
-                width: 40, height: 4,
-                decoration: BoxDecoration(
-                  color: hdl, borderRadius: BorderRadius.circular(2)),
-              ),
+              padding: const EdgeInsets.only(top: 12, bottom: 4),
+              child: Row(children: [
+                const Spacer(),
+                Container(
+                  width: 40, height: 4,
+                  decoration: BoxDecoration(
+                    color: hdl, borderRadius: BorderRadius.circular(2)),
+                ),
+                const Spacer(),
+              ]),
+            ),
+            // Linha título + X
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 8, 8, 16),
+              child: Row(children: [
+                Expanded(
+                  child: Text(
+                    isEs ? 'Sobre MedCases Pro' : 'Sobre o MedCases Pro',
+                    style: TextStyle(fontSize: 17, fontWeight: FontWeight.w900,
+                        color: ttl, letterSpacing: -0.3),
+                  ),
+                ),
+                IconButton(
+                  icon: Icon(Icons.close_rounded, size: 22, color: sub),
+                  onPressed: () => Navigator.pop(context),
+                  padding: const EdgeInsets.all(8),
+                  visualDensity: VisualDensity.compact,
+                ),
+              ]),
             ),
 
             // ── Header: ícone + nome + subtítulo ─────────────────────────
@@ -2882,7 +2922,7 @@ class _ProfileEditSheetState extends State<_ProfileEditSheet> {
             ),
             const SizedBox(height: 20),
 
-            // Título
+            // Título + botão fechar
             Row(children: [
               Container(
                 padding: const EdgeInsets.all(8),
@@ -2894,10 +2934,16 @@ class _ProfileEditSheetState extends State<_ProfileEditSheet> {
                 child: const Icon(Icons.person_outline_rounded, size: 18, color: Color(0xFFC5A365)),
               ),
               const SizedBox(width: 12),
-              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                 Text(widget.p.lang == 'es' ? 'Editar perfil' : 'Editar perfil', style: TextStyle(fontSize: 17, fontWeight: FontWeight.w900, color: titleColor)),
                 Text(widget.p.lang == 'es' ? 'Tu información profesional' : 'Suas informações profissionais', style: TextStyle(fontSize: 11, color: subColor, fontWeight: FontWeight.w500)),
-              ]),
+              ])),
+              IconButton(
+                icon: Icon(Icons.close_rounded, size: 22, color: subColor),
+                onPressed: () => Navigator.pop(context),
+                padding: const EdgeInsets.all(8),
+                visualDensity: VisualDensity.compact,
+              ),
             ]),
             const SizedBox(height: 24),
 
@@ -3305,7 +3351,7 @@ class _FeedbackSheetState extends State<_FeedbackSheet> {
               ),
             ),
 
-            // Título
+            // Título + botão fechar
             Row(children: [
               Container(
                 padding: const EdgeInsets.all(8),
@@ -3317,10 +3363,16 @@ class _FeedbackSheetState extends State<_FeedbackSheet> {
                     color: Color(0xFF7C3AED), size: 20),
               ),
               const SizedBox(width: 12),
-              Text(
+              Expanded(child: Text(
                 _isEs ? 'Enviar Feedback' : 'Enviar Feedback',
                 style: TextStyle(
                     fontSize: 18, fontWeight: FontWeight.w800, color: textCol),
+              )),
+              IconButton(
+                icon: Icon(Icons.close_rounded, size: 22, color: subCol),
+                onPressed: () => Navigator.pop(context),
+                padding: const EdgeInsets.all(8),
+                visualDensity: VisualDensity.compact,
               ),
             ]),
             const SizedBox(height: 4),
