@@ -1007,20 +1007,22 @@ class _PlantaoManageSheetState extends State<_PlantaoManageSheet>
     final p = context.watch<AppProvider>();
     final c = AppColors.of(context);
     final isEs = p.lang == 'es';
+    final screenH = MediaQuery.of(context).size.height;
 
-    return DraggableScrollableSheet(
-      initialChildSize: 0.88,
-      minChildSize: 0.5,
-      maxChildSize: 0.96,
-      expand: false,
-      builder: (_, scrollCtrl) => Container(
+    // ── Altura fixa do sheet (88% da tela) ───────────────────────────────────
+    // Usamos SizedBox com altura explícita em vez de DraggableScrollableSheet
+    // para evitar o conflito de Expanded + scroll infinito que causava o
+    // "BOTTOM OVERFLOWED BY 99870 PIXELS".
+    return SizedBox(
+      height: screenH * 0.88,
+      child: Container(
         decoration: BoxDecoration(
           color: c.cardBg,
           borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
         ),
         child: Column(
           children: [
-            // Handle
+            // ── Handle ──────────────────────────────────────────────────────
             const SizedBox(height: 10),
             Center(
               child: Container(
@@ -1034,20 +1036,22 @@ class _PlantaoManageSheetState extends State<_PlantaoManageSheet>
             ),
             const SizedBox(height: 16),
 
-            // Título do sheet
+            // ── Título ──────────────────────────────────────────────────────
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Row(
                 children: [
                   Icon(Icons.push_pin_outlined, size: 20, color: c.gold),
                   const SizedBox(width: 10),
-                  Text(
-                    isEs ? 'Gestionar Mi Guardia' : 'Gerenciar Meu Plantão',
-                    style: TextStyle(
-                      fontSize: 17,
-                      fontWeight: FontWeight.w900,
-                      color: c.textPrimary,
-                      letterSpacing: -0.4,
+                  Expanded(
+                    child: Text(
+                      isEs ? 'Gestionar Mi Guardia' : 'Gerenciar Meu Plantão',
+                      style: TextStyle(
+                        fontSize: 17,
+                        fontWeight: FontWeight.w900,
+                        color: c.textPrimary,
+                        letterSpacing: -0.4,
+                      ),
                     ),
                   ),
                 ],
@@ -1058,8 +1062,8 @@ class _PlantaoManageSheetState extends State<_PlantaoManageSheet>
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Text(
                 isEs
-                    ? 'Mantén pulsado un item para desfijar. Límites: ${AppProvider.kMaxPinnedDrugsPublic} fármacos, ${AppProvider.kMaxPinnedCalcsPublic} calculadoras.'
-                    : 'Pressione longo para desafixar. Limites: ${AppProvider.kMaxPinnedDrugsPublic} fármacos, ${AppProvider.kMaxPinnedCalcsPublic} calculadoras.',
+                    ? 'Toca para fijar/desfijar. Límites: ${AppProvider.kMaxPinnedDrugsPublic} fármacos, ${AppProvider.kMaxPinnedCalcsPublic} calculadoras.'
+                    : 'Toque para fixar/desafixar. Limites: ${AppProvider.kMaxPinnedDrugsPublic} fármacos, ${AppProvider.kMaxPinnedCalcsPublic} calculadoras.',
                 style: TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.w500,
@@ -1070,50 +1074,52 @@ class _PlantaoManageSheetState extends State<_PlantaoManageSheet>
             ),
             const SizedBox(height: 14),
 
-            // Tabs
-            Container(
-              margin: const EdgeInsets.symmetric(horizontal: 20),
-              decoration: BoxDecoration(
-                color: c.surface,
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: TabBar(
-                controller: _tabCtrl,
-                labelColor: Colors.white,
-                unselectedLabelColor: c.textSecondary,
-                indicator: BoxDecoration(
-                  color: c.green,
-                  borderRadius: BorderRadius.circular(8),
+            // ── TabBar (não-scrollable, fill) ────────────────────────────────
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: c.surface,
+                  borderRadius: BorderRadius.circular(10),
                 ),
-                indicatorSize: TabBarIndicatorSize.tab,
-                padding: const EdgeInsets.all(3),
-                labelStyle: const TextStyle(
-                    fontSize: 12, fontWeight: FontWeight.w800),
-                tabs: [
-                  Tab(text: isEs ? 'Fármacos' : 'Fármacos'),
-                  Tab(text: isEs ? 'Calculadoras' : 'Calculadoras'),
-                ],
+                child: TabBar(
+                  controller: _tabCtrl,
+                  // tabAlignment: fill só é válido com isScrollable: false (padrão)
+                  // Não definir isScrollable → padrão false → fill é válido
+                  labelColor: Colors.white,
+                  unselectedLabelColor: c.textSecondary,
+                  indicator: BoxDecoration(
+                    color: c.green,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  indicatorSize: TabBarIndicatorSize.tab,
+                  dividerColor: Colors.transparent,
+                  padding: const EdgeInsets.all(3),
+                  labelStyle: const TextStyle(
+                      fontSize: 12, fontWeight: FontWeight.w800),
+                  tabs: [
+                    Tab(text: isEs ? 'Fármacos' : 'Fármacos'),
+                    Tab(text: isEs ? 'Calculadoras' : 'Calculadoras'),
+                  ],
+                ),
               ),
             ),
             const SizedBox(height: 12),
 
-            // Busca (só na aba de fármacos)
+            // ── Busca (só aba fármacos) ──────────────────────────────────────
             AnimatedBuilder(
               animation: _tabCtrl,
               builder: (_, __) {
                 if (_tabCtrl.index != 0) return const SizedBox.shrink();
                 return Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  padding: const EdgeInsets.fromLTRB(20, 0, 20, 8),
                   child: TextField(
                     controller: _searchCtrl,
                     onChanged: (_) => setState(() {}),
                     style: TextStyle(fontSize: 14, color: c.textPrimary),
                     decoration: InputDecoration(
-                      hintText: isEs
-                          ? 'Buscar fármaco…'
-                          : 'Buscar fármaco…',
-                      hintStyle:
-                          TextStyle(fontSize: 13, color: c.textHint),
+                      hintText: isEs ? 'Buscar fármaco…' : 'Buscar fármaco…',
+                      hintStyle: TextStyle(fontSize: 13, color: c.textHint),
                       prefixIcon: Icon(Icons.search_rounded,
                           color: c.textHint, size: 18),
                       filled: true,
@@ -1129,16 +1135,14 @@ class _PlantaoManageSheetState extends State<_PlantaoManageSheet>
                 );
               },
             ),
-            const SizedBox(height: 8),
 
-            // Content
+            // ── Conteúdo das abas (Expanded para preencher o restante) ───────
             Expanded(
               child: TabBarView(
                 controller: _tabCtrl,
                 children: [
-                  // Aba fármacos
+                  // Aba fármacos — ListView próprio com scroll independente
                   _DrugSelectorList(
-                    scrollCtrl: scrollCtrl,
                     searchQuery: _searchCtrl.text,
                     p: p,
                     c: c,
@@ -1146,7 +1150,6 @@ class _PlantaoManageSheetState extends State<_PlantaoManageSheet>
                   ),
                   // Aba calculadoras
                   _CalcSelectorList(
-                    scrollCtrl: scrollCtrl,
                     p: p,
                     c: c,
                     isEs: isEs,
@@ -1166,14 +1169,12 @@ class _PlantaoManageSheetState extends State<_PlantaoManageSheet>
 // ─────────────────────────────────────────────────────────────────────────────
 
 class _DrugSelectorList extends StatelessWidget {
-  final ScrollController scrollCtrl;
   final String searchQuery;
   final AppProvider p;
   final AppColors c;
   final bool isEs;
 
   const _DrugSelectorList({
-    required this.scrollCtrl,
     required this.searchQuery,
     required this.p,
     required this.c,
@@ -1203,7 +1204,6 @@ class _DrugSelectorList extends StatelessWidget {
     }
 
     return ListView.builder(
-      controller: scrollCtrl,
       padding: const EdgeInsets.fromLTRB(20, 4, 20, 40),
       itemCount: drugs.length,
       itemBuilder: (_, i) {
@@ -1326,13 +1326,11 @@ class _DrugSelectorList extends StatelessWidget {
 // ─────────────────────────────────────────────────────────────────────────────
 
 class _CalcSelectorList extends StatelessWidget {
-  final ScrollController scrollCtrl;
   final AppProvider p;
   final AppColors c;
   final bool isEs;
 
   const _CalcSelectorList({
-    required this.scrollCtrl,
     required this.p,
     required this.c,
     required this.isEs,
@@ -1341,7 +1339,6 @@ class _CalcSelectorList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-      controller: scrollCtrl,
       padding: const EdgeInsets.fromLTRB(20, 4, 20, 40),
       itemCount: kAvailableCalcs.length,
       itemBuilder: (_, i) {
