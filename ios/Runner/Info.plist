@@ -39,13 +39,11 @@
 		<string>UIInterfaceOrientationPortrait</string>
 	</array>
 
-	<!-- ── Orientação iPad: todas as orientações (obrigatório para iPad) ─── -->
+	<!-- ── Orientação iPad: somente portrait (app não foi projetado para landscape) -->
 	<key>UISupportedInterfaceOrientations~ipad</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
 		<string>UIInterfaceOrientationPortraitUpsideDown</string>
-		<string>UIInterfaceOrientationLandscapeLeft</string>
-		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 
 	<!-- ── Launch / Main storyboard ─────────────────────────────────────── -->

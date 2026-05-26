@@ -818,16 +818,28 @@ class _DrugDetailViewState extends State<_DrugDetailView> {
             const SizedBox(height: 12),
 
             Row(children: [
-              Expanded(child: _LocalField(label: widget.p.lang == 'es' ? 'Peso (kg)' : 'Peso (kg)',    ctrl: _weightCtrl, dark: dark, onChanged: (_) => setState(() {}))),
+              Expanded(child: _LocalField(
+                label: widget.p.lang == 'es' ? 'Peso (kg)' : 'Peso (kg)',
+                hintText: 'ex: 70',
+                ctrl: _weightCtrl, dark: dark, onChanged: (_) => setState(() {}))),
               const SizedBox(width: 8),
-              Expanded(child: _LocalField(label: widget.p.lang == 'es' ? 'Talla (cm)' : 'Altura (cm)',  ctrl: _heightCtrl, dark: dark, onChanged: (_) => setState(() {}))),
+              Expanded(child: _LocalField(
+                label: widget.p.lang == 'es' ? 'Talla (cm)' : 'Altura (cm)',
+                hintText: 'ex: 170',
+                ctrl: _heightCtrl, dark: dark, onChanged: (_) => setState(() {}))),
             ]),
             const SizedBox(height: 8),
 
             Row(children: [
-              Expanded(child: _LocalField(label: widget.p.lang == 'es' ? 'Edad (años)' : 'Idade (anos)', ctrl: _ageCtrl,    dark: dark, onChanged: (_) => setState(() {}))),
+              Expanded(child: _LocalField(
+                label: widget.p.lang == 'es' ? 'Edad (años)' : 'Idade (anos)',
+                hintText: 'ex: 40',
+                ctrl: _ageCtrl, dark: dark, onChanged: (_) => setState(() {}))),
               const SizedBox(width: 8),
-              Expanded(child: _LocalField(label: 'Creatinina (mg/dL)', ctrl: _creatCtrl, dark: dark, onChanged: (_) => setState(() {}))),
+              Expanded(child: _LocalField(
+                label: 'Creatinina (mg/dL)',
+                hintText: 'ex: 1,0',
+                ctrl: _creatCtrl, dark: dark, onChanged: (_) => setState(() {}))),
             ]),
             const SizedBox(height: 12),
 
@@ -966,12 +978,14 @@ class _FieldLabel extends StatelessWidget {
 
 class _LocalField extends StatelessWidget {
   final String label;
+  final String? hintText;
   final TextEditingController ctrl;
   final bool dark;
   final ValueChanged<String> onChanged;
   const _LocalField({
     required this.label, required this.ctrl,
     required this.dark,  required this.onChanged,
+    this.hintText,
   });
 
   @override
@@ -995,6 +1009,12 @@ class _LocalField extends StatelessWidget {
           contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
           filled: true,
           fillColor: bg,
+          hintText: hintText,
+          hintStyle: TextStyle(
+            fontSize: 13,
+            fontWeight: FontWeight.w400,
+            color: const Color(0xFF999999).withValues(alpha: 0.5),
+          ),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
             borderSide: BorderSide(color: border),

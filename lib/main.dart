@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter_localizations/flutter_localizations.dart';
 
@@ -42,12 +43,20 @@ import 'widgets/brand_mark.dart';
 // Firebase + restoreSession correm em background → UI atualiza ao concluir.
 late final Future<void> _firebaseInit;
 
-void main() {
+Future<void> main() async {
   FlutterError.onError = (FlutterErrorDetails details) {
     FlutterError.dumpErrorToConsole(details);
   };
 
   WidgetsFlutterBinding.ensureInitialized();
+
+  // ── Trava orientação: portrait-only em iPhone e iPad ─────────────────────
+  // Info.plist já declara apenas portrait para iOS, mas esta chamada cobre
+  // também Android e garante que o SystemChrome respeite no runtime.
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
 
   // Cria o provider e lê prefs locais de forma SÍNCRONA (sem await aqui).
   // loadPrefs() é disparado em background — preferências chegam em ~50ms.
@@ -125,6 +134,21 @@ class MedCasesApp extends StatelessWidget {
         Locale('en'),       // Inglês (fallback padrão do Flutter)
       ],
       home: const _AuthGate(),
+      // ── Contenção de largura para iPad e telas grandes ─────────────────────
+      // Em iPhones (< 600 px) o builder é transparente — nada muda.
+      // Em iPads o conteúdo fica centralizado com no máximo 560 px de largura,
+      // garantindo que o layout de celular não "estique" em telas grandes.
+      builder: (context, child) {
+        final screenW = MediaQuery.of(context).size.width;
+        if (screenW <= 600) return child ?? const SizedBox.shrink();
+        // Tela larga (iPad): centraliza com faixa de no máximo 560 px
+        return Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 560),
+            child: child ?? const SizedBox.shrink(),
+          ),
+        );
+      },
     );
   }
 
