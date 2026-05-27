@@ -268,9 +268,9 @@ void main() {
         queryIntent: 'caso_clinico',
         userQuery: 'paciente com dor toracica e troponina elevada');
       expect(pt, contains('MOTOR DE DIFERENCIAIS'));
-      expect(pt, contains('Hipotese PRINCIPAL'));
-      expect(pt, contains('Hipotese PERIGOSA'));
-      expect(pt, contains('Hipoteses PROVAVEIS'));
+      expect(pt, contains('Hipotese Principal'));
+      expect(pt, contains('Hipotese Perigosa'));
+      expect(pt, contains('Hipoteses Secundarias'));
       expect(pt, contains('FAVORECE'));
       print('  [OK] caso_clinico PT → differential ativo');
     });
@@ -281,8 +281,8 @@ void main() {
         queryIntent: 'caso_clinico',
         userQuery: 'caso clinico dolor toracico troponina elevada');
       expect(es, contains('MOTOR DE DIFERENCIALES'));
-      expect(es, contains('Hipotesis PRINCIPAL'));
-      expect(es, contains('Hipotesis PELIGROSA'));
+      expect(es, contains('Hipotesis Principal'));
+      expect(es, contains('Hipotesis Peligrosa'));
       expect(es, contains('FAVORECE'));
       print('  [OK] caso_clinico ES → differential ativo');
     });
