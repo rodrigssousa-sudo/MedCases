@@ -4634,19 +4634,35 @@ class _ResultTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final hasVal = value != null && value != '—';
+    final hasVal  = value != null && value != '—';
+    final dark    = Theme.of(context).brightness == Brightness.dark;
     final noteColor = (note ?? '').startsWith('BAIXO') || (note ?? '').startsWith('ATENÇÃO') || (note ?? '').startsWith('GRAVE') || (note ?? '').startsWith('CRÍTICO') || (note ?? '').startsWith('FALÊNCIA') || (note ?? '').startsWith('ALTO') || (note ?? '').startsWith('DÉFICIT')
         ? const Color(0xFFCC2222)
         : (note ?? '').startsWith('RISCO') || (note ?? '').contains('↑') || (note ?? '').contains('Hipercalcemia')
         ? const Color(0xFFB45309)
-        : const Color(0xFF065F46);
+        : (dark ? const Color(0xFF34D399) : const Color(0xFF065F46));
+
+    // Cores adaptativas ao tema:
+    //  Modo claro: fundo verde-menta suave (0xFFECFDF5) — padrão original
+    //  Modo escuro: fundo verde escuro sutil (0xFF0D2B1E) — hierarquia clara
+    final tileBg     = hasVal
+        ? (dark ? const Color(0xFF0D2B1E) : const Color(0xFFECFDF5))
+        : AppColors.of(context).surface;
+    final tileBorder = hasVal
+        ? (dark ? const Color(0xFF1A4D35) : const Color(0xFFBBF7D0))
+        : AppColors.of(context).border;
+    // Valor numérico: no dark mode usa verde-menta vibrante para destacar
+    final valueColor = hasVal
+        ? (dark ? const Color(0xFF6EE7B7) : AppColors.of(context).textPrimary)
+        : (dark ? const Color(0xFF4B5563) : const Color(0xFFCCCCCC));
+
     return Container(
       width: full ? double.infinity : null,
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(14),
-        color: hasVal ? const Color(0xFFECFDF5) : AppColors.of(context).surface,
-        border: Border.all(color: hasVal ? const Color(0xFFBBF7D0) : AppColors.of(context).border),
+        color: tileBg,
+        border: Border.all(color: tileBorder),
       ),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Text(label, style: TextStyle(fontSize: 9, fontWeight: FontWeight.w900, letterSpacing: 1.2, color: AppColors.of(context).textHint)),
@@ -4654,7 +4670,7 @@ class _ResultTile extends StatelessWidget {
         Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
           Flexible(child: Text(value ?? '—',
             style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900,
-              color: hasVal ? AppColors.of(context).textPrimary : const Color(0xFFCCCCCC), letterSpacing: -0.5))),
+              color: valueColor, letterSpacing: -0.5))),
           if (unit != null && unit!.isNotEmpty && hasVal) ...[
             const SizedBox(width: 3),
             Padding(padding: const EdgeInsets.only(bottom: 2),

@@ -1724,6 +1724,11 @@ class _QuickEmergenciesState extends State<_QuickEmergencies> {
     ('crise_hipertensiva',    'Crise HAS',      Icons.speed_rounded),
     ('tep_agudo',             'TEP',            Icons.bloodtype_rounded),
     ('status_epilepticus',    'Status Epil.',   Icons.psychology_rounded),
+    // novos cards
+    ('iam_supra',             'IAM',            Icons.favorite_border_rounded),
+    ('edema_agudo_pulmao',    'EAP',            Icons.water_drop_rounded),
+    ('crise_convulsiva',      'Convulsão',      Icons.electric_bolt_rounded),
+    ('intoxicacao_overdose',  'Intoxicação',    Icons.warning_rounded),
   ];
 
   Widget _buildCard(String id, String label, IconData icon) {
@@ -1777,7 +1782,7 @@ class _QuickEmergenciesState extends State<_QuickEmergencies> {
     final dark = widget.dark;
     final isEs = widget.isEs;
 
-    // visíveis: sempre 4 primeiros; expandido = todos 12
+    // visíveis: sempre 4 primeiros; expandido = todos 16
     final visible = _expanded ? _protocols : _protocols.sublist(0, 4);
 
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -1854,6 +1859,7 @@ class _QuickEmergenciesState extends State<_QuickEmergencies> {
         crossAxisCount: 4,
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
+        padding: EdgeInsets.zero,
         mainAxisSpacing: 8,
         crossAxisSpacing: 8,
         childAspectRatio: 1.55,
