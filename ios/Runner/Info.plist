@@ -56,6 +56,14 @@
 		<string>UIInterfaceOrientationPortraitUpsideDown</string>
 	</array>
 
+	<!-- ── Tela cheia no iPad ───────────────────────────────────────────── -->
+	<!-- Informa à App Store que o app requer tela cheia (não suporta        -->
+	<!-- multitarefa Split View / Slide Over do iPad). Sem esta chave, a     -->
+	<!-- Apple exige que UISupportedInterfaceOrientations~ipad inclua todas  -->
+	<!-- as 4 orientações — erro de upload code 90474 (Invalid bundle).      -->
+	<key>UIRequiresFullScreen</key>
+	<true/>
+
 	<!-- ── Modos de background ───────────────────────────────────────────── -->
 	<!-- audio: exigido pelo speech_to_text para manter sessão STT ativa      -->
 	<!-- quando o app vai para background durante ditado clínico              -->
