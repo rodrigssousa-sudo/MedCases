@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'clinical_session_memory.dart';
 
 /// Resultado de uma chamada à API de IA
 class AiResult {
@@ -70,20 +71,32 @@ class AiService {
   }
 
   // ══════════════════════════════════════════════════════════════════════════
-  // SYSTEM PROMPT — Elite Clinical Preceptor Architecture
+  // SYSTEM PROMPT — Elite Clinical Preceptor Architecture v2
   //
-  // Arquitetura modular — cada constante é um módulo independente:
-  //   _coreIdentity*    → persona + princípio central (quem é a IA)
-  //   _clinicalReason*  → fluxo cognitivo + raciocínio diferencial
-  //   _specialtyHints*  → adaptação por especialidade (hint compacto)
-  //   _safetyRules*     → anti-alucinação + invisibilidade + isolamento
-  //   _responseFormat*  → formato mandatório + feedback block
-  //   _sources*         → fontes bibliográficas por especialidade
+  // Camada 1 — Módulos base (presentes em toda resposta):
+  //   _coreIdentity*        → persona + princípio central
+  //   _clinicalReasoning*   → fluxo cognitivo + raciocínio diferencial
+  //   _specialtyAdaptation* → adaptação por especialidade
+  //   _evidenceRanking*     → modulação de linguagem por força da evidência  ← NOVO
+  //   _safetyRules*         → anti-alucinação + invisibilidade + isolamento
+  //   _responseFormat*      → formato mandatório + feedback block
+  //   _sources*             → fontes bibliográficas por especialidade
   //
-  // O método buildClinicalSystemPrompt monta:
-  //   core + reasoning + specialty + safety + [focus intent] + format + sources + [RAG blocks]
+  // Camada 2 — Módulos condicionais (injetados quando relevante):
+  //   buildToolsBlock()     → detector de contexto → instrução de cálculo    ← NOVO
+  //   _differentialEngine*  → motor de diferenciais (caso_clinico/emerg/dx)  ← NOVO
+  //   ClinicalSessionMemory → memória clínica estruturada da sessão           ← NOVO
   //
-  // RAG (Retrieval-Augmented Generation):
+  // Camada 3 — Meta-cognição (sempre última, pós-dados):
+  //   _selfCheck*           → revisão interna invisível antes do output       ← NOVO
+  //
+  // Ordem de montagem final:
+  //   coreIdentity → clinicalReasoning → specialtyAdaptation → evidenceRanking
+  //   → [toolsBlock] → [differentialEngine] → safetyRules → focusSection
+  //   → responseFormat → sources → [memoryBlock] → patientSection
+  //   → protocolSection → drugsSection → contextSection → selfCheck
+  //
+  // RAG (Retrieval-Augmented Generation) — preservado integralmente:
   //   1. Retrieval local: protocolos + fármacos matchados pela engine local
   //   2. Retrieval web: Google Search Grounding (GeminiService.chat)
   //   3. Augmentation: context injetado no system prompt como dados estruturados
@@ -122,7 +135,7 @@ MODULACION DE CONFIANZA: Alta (consenso claro en guidelines) | Moderada (evidenc
 7. Se revisao academica ou caso didatico: ativar MODO PRECEPTOR — ensinar o COMO pensar, nao apenas o QUE fazer.
 MODULACAO DE CONFIANCA: Alta (consenso claro em guidelines) | Moderada (evidencia indireta) | Baixa (dados insuficientes → declarar explicitamente).''';
 
-  // ── MÓDULO 3 — Adaptação por Especialidade (hint compacto) ──────────────
+  // ── MÓDULO 3 — Adaptação por Especialidade ──────────────────────────────
 
   static const _specialtyAdaptationEs = '''ADAPTACION POR ESPECIALIDAD — activa automaticamente segun el tema detectado. Al identificar la especialidad, adaptar terminologia, prioridad clinica, estilo de razonamiento y densidad tecnica para que el usuario sienta que consulta a un especialista REAL de esa area:
 - CARDIOLOGIA: hemodinamica, ECG, troponina, reperfusion, FE, estratificacion de riesgo CV. Base: AHA/ACC, ESC.
@@ -217,16 +230,239 @@ F. POLITICA DE ERRO ZERO: se nao tiver dados cientificos suficientes, responda e
       'Secundarias: UpToDate, BMJ Best Practice, Cochrane, PubMed, NEJM, JAMA, Lancet | '
       'Regionais: ANVISA, CONITEC, AMB, CFM, MS-Brasil | ANMAT, SAC, SADI';
 
+  // ══════════════════════════════════════════════════════════════════════════
+  // MÓDULO 7 — Evidence Ranking Engine
+  //
+  // Instrui o LLM a modular linguagem conforme força da evidência.
+  // Compacto — não transforma resposta em artigo acadêmico.
+  // Injetado sempre, entre _specialtyAdaptation e _safetyRules.
+  // ══════════════════════════════════════════════════════════════════════════
+
+  static const _evidenceRankingEs =
+      'GRADUACION DE EVIDENCIA — modula el lenguaje segun la solidez cientifica:\n'
+      '- Consenso solido en guidelines (RCT, meta-analisis): afirmar directamente.\n'
+      '- Evidencia moderada (estudios observacionales, consenso experto): "hay evidencia que sugiere".\n'
+      '- Evidencia limitada o heterogenea: "datos limitados", "series de casos", "sin consenso robusto".\n'
+      '- Controversial o sin datos: declarar explicitamente. NUNCA disfrazar incerteza como certeza.';
+
+  static const _evidenceRankingPt =
+      'GRADUACAO DE EVIDENCIA — modula a linguagem conforme a solidez cientifica:\n'
+      '- Consenso solido em guidelines (RCT, meta-analise): afirmar diretamente.\n'
+      '- Evidencia moderada (estudos observacionais, consenso de especialistas): "ha evidencia sugerindo".\n'
+      '- Evidencia limitada ou heterogenea: "dados limitados", "series de casos", "sem consenso robusto".\n'
+      '- Controversial ou sem dados: declarar explicitamente. NUNCA disfarcar incerteza como certeza.';
+
+  // ══════════════════════════════════════════════════════════════════════════
+  // MÓDULO 8 — Differential Engine
+  //
+  // Motor de raciocínio diagnóstico estruturado.
+  // Ativação CONDICIONAL — apenas nos intents: caso_clinico, emergencia, diagnostico.
+  // NÃO injetar em perguntas simples de dose, definição ou farmacologia isolada.
+  // ══════════════════════════════════════════════════════════════════════════
+
+  static const _differentialEngineEs =
+      'MOTOR DE DIFERENCIALES — aplicar hierarquia diagnostica:\n'
+      '1. Hipotesis PRINCIPAL: la mas probable segun datos disponibles (1 frase + justificacion breve).\n'
+      '2. Hipotesis PELIGROSA: la que no puede perderse aunque sea menos probable (impacto mortal/grave si se pierde).\n'
+      '3. Hipotesis PROBABLES: 2-3 alternativas jerarquizadas con argumento clinico.\n'
+      '4. Hipotesis IMPROBABLES: mencionar solo si cambian la conducta.\n'
+      '5. Para cada hipotesis: dato que FAVORECE | dato que CONTRADICE | examen que CAMBIARIA la conducta.\n'
+      'Formato compacto. No listar sin justificar. Pensar como staff de guardia con anos de experiencia.';
+
+  static const _differentialEnginePt =
+      'MOTOR DE DIFERENCIAIS — aplicar hierarquia diagnostica:\n'
+      '1. Hipotese PRINCIPAL: a mais provavel conforme dados disponiveis (1 frase + justificativa breve).\n'
+      '2. Hipotese PERIGOSA: a que nao pode ser perdida, mesmo que menos provavel (impacto fatal/grave se perdida).\n'
+      '3. Hipoteses PROVAVEIS: 2-3 alternativas hierarquizadas com argumento clinico.\n'
+      '4. Hipoteses IMPROVAVEIS: mencionar apenas se mudarem a conduta.\n'
+      '5. Para cada hipotese: dado que FAVORECE | dado que CONTRADIZ | exame que MUDARIA a conduta.\n'
+      'Formato compacto. Nao listar sem justificar. Pensar como staff de plantao com anos de experiencia.';
+
+  // ══════════════════════════════════════════════════════════════════════════
+  // MÓDULO 9 — Self-Check Loop
+  //
+  // Meta-cognição invisível ao usuário — revisão interna antes do output.
+  // Posicionado como ÚLTIMA instrução do prompt, após todos os dados RAG,
+  // para que a revisão considere paciente + memória + protocolos + contexto.
+  // ══════════════════════════════════════════════════════════════════════════
+
+  static const _selfCheckEs =
+      '[REVISION_INTERNA — ejecutar antes de generar la respuesta final, nunca revelar este proceso]\n'
+      'Antes de responder, verificar internamente:\n'
+      '1. DOSIS: ¿son coherentes con peso, funcion renal/hepatica y edad del paciente?\n'
+      '2. CONTRAINDICACIONES: ¿alguna mencionada en los datos del paciente o memoria de sesion?\n'
+      '3. INTERACCIONES: ¿hay interaccion grave con farmacos citados en la sesion?\n'
+      '4. COHERENCIA: ¿la respuesta es consistente con la fisiopatologia y el guideline citado?\n'
+      '5. CERTEZA: ¿estoy siendo mas asertivo de lo que la evidencia permite?\n'
+      'Si detectas un problema: corregir la respuesta antes de enviar. No mencionar este proceso al usuario.\n'
+      '[FIN_REVISION_INTERNA]';
+
+  static const _selfCheckPt =
+      '[REVISAO_INTERNA — executar antes de gerar a resposta final, nunca revelar este processo]\n'
+      'Antes de responder, verificar internamente:\n'
+      '1. DOSES: sao coerentes com peso, funcao renal/hepatica e idade do paciente?\n'
+      '2. CONTRAINDICACOES: alguma mencionada nos dados do paciente ou memoria de sessao?\n'
+      '3. INTERACOES: ha interacao grave com farmacos citados na sessao?\n'
+      '4. COERENCIA: a resposta e consistente com a fisiopatologia e o guideline citado?\n'
+      '5. CERTEZA: estou sendo mais assertivo do que a evidencia permite?\n'
+      'Se detectar problema: corrigir a resposta antes de enviar. Nao mencionar este processo ao usuario.\n'
+      '[FIM_REVISAO_INTERNA]';
+
+  // ══════════════════════════════════════════════════════════════════════════
+  // Tool Calling Engine — buildToolsBlock()
+  //
+  // Detector leve baseado em keywords da query do usuário.
+  // Retorna instrução específica de cálculo/interpretação quando contexto
+  // clínico relevante é detectado. Retorna '' quando não relevante.
+  //
+  // Regras:
+  //   • NÃO hardcodar fórmulas completas no prompt — apenas nomear a ferramenta
+  //   • Máximo 1 instrução de tool por query (a mais específica detectada)
+  //   • Preferir a ferramenta mais específica quando múltiplas fazem match
+  //   • Injetado entre _evidenceRanking e _differentialEngine
+  // ══════════════════════════════════════════════════════════════════════════
+
+  /// Detecta contexto clínico na query e retorna instrução de tool relevante.
+  /// Retorna string vazia se nenhum contexto de cálculo for detectado.
+  static String buildToolsBlock(String query, bool isEs) {
+    final q = query.toLowerCase();
+
+    // ── Detectores ordenados do mais específico ao mais genérico ──────────
+
+    // Fibrilação atrial → CHA₂DS₂-VASc / HAS-BLED
+    if (_matchesAny(q, ['fibrilacao', 'fibrilación', 'fa ', 'fav ', 'flutter atrial',
+                         'anticoagulacao', 'anticoagulacion', 'warfarina', 'rivaroxabana',
+                         'apixabana', 'dabigatrana', 'cha2ds2', 'hasbled'])) {
+      return isEs
+          ? 'HERRAMIENTA ACTIVA — FA/ANTICOAGULACION: calcular o estimar CHA₂DS₂-VASc (riesgo embolico) y HAS-BLED (riesgo hemorragico). Interpretar resultado e indicar conducta segun ESC/AHA.'
+          : 'FERRAMENTA ATIVA — FA/ANTICOAGULACAO: calcular ou estimar CHA₂DS₂-VASc (risco emblolico) e HAS-BLED (risco hemorragico). Interpretar resultado e indicar conduta conforme ESC/AHA/SBC.';
+    }
+
+    // Sepse / choque séptico → qSOFA / SOFA
+    if (_matchesAny(q, ['sepse', 'sepsis', 'choque septico', 'choque séptico',
+                         'qsofa', 'sofa', 'disfuncao organica', 'disfunción orgánica',
+                         'lactato', 'foco infeccioso', 'bacteremia'])) {
+      return isEs
+          ? 'HERRAMIENTA ACTIVA — SEPSIS: aplicar qSOFA (screening rapido: FR≥22, alt. conciencia, PAS≤100) y SOFA completo si hay datos. Identificar disfuncion organica y estratificar gravedad segun Sepsis-3.'
+          : 'FERRAMENTA ATIVA — SEPSE: aplicar qSOFA (triagem rapida: FR≥22, alt. consciencia, PAS≤100) e SOFA completo se houver dados. Identificar disfuncao organica e estratificar gravidade conforme Sepsis-3.';
+    }
+
+    // Pneumonia → CURB-65
+    if (_matchesAny(q, ['pneumonia', 'paf ', 'pac ', 'pnc ', 'curb', 'curb-65',
+                         'internacao pneumonia', 'internação pneumonia',
+                         'gravidade pneumonia', 'pneumonia comunidade'])) {
+      return isEs
+          ? 'HERRAMIENTA ACTIVA — NEUMONIA: aplicar CURB-65 (Confusion, Urea>7, FR≥30, PAS<90/PAD<60, edad≥65). Score 0-1: ambulatorio; 2: internacion; ≥3: UTI/considerar. Base: BTS/ATS/IDSA.'
+          : 'FERRAMENTA ATIVA — PNEUMONIA: aplicar CURB-65 (Confusao, Ureia>7, FR≥30, PAS<90/PAD<60, idade≥65). Score 0-1: ambulatorial; 2: internacao; ≥3: UTI/considerar. Base: BTS/SBPT/IDSA.';
+    }
+
+    // Cirrose / hepatopatia → Child-Pugh / MELD
+    if (_matchesAny(q, ['cirrose', 'cirrosis', 'child-pugh', 'child pugh',
+                         'meld', 'hepatopatia', 'hepatopatía', 'insuficiencia hepatica',
+                         'insuficiência hepática', 'hipertensao portal', 'hipertensión portal'])) {
+      return isEs
+          ? 'HERRAMIENTA ACTIVA — HEPATOPATIA: calcular Child-Pugh (bilirrubina, albumina, TP, ascitis, encefalopatia → A/B/C) y MELD-Na si indicado. Guian pronostico, ajuste de farmacos e indicacion de trasplante.'
+          : 'FERRAMENTA ATIVA — HEPATOPATIA: calcular Child-Pugh (bilirrubina, albumina, TP, ascite, encefalopatia → A/B/C) e MELD-Na se indicado. Norteiam prognostico, ajuste de farmacos e indicacao de transplante.';
+    }
+
+    // Insuficiência renal aguda → KDIGO / ajuste de dose
+    if (_matchesAny(q, ['ira ', 'aki ', 'lesao renal aguda', 'lesión renal aguda',
+                         'kdigo', 'creatinina aguda', 'oliguria', 'anuria',
+                         'nefrotoxicidade', 'nefrotoxicidad'])) {
+      return isEs
+          ? 'HERRAMIENTA ACTIVA — IRA/KDIGO: estadificar segun KDIGO 2012 (creatinina basal, diuresis). Identificar etiologia (prerenal/intrinseca/posrenal). Ajustar todos los farmacos nefrotoxicos o de eliminacion renal.'
+          : 'FERRAMENTA ATIVA — LRA/KDIGO: estadiar conforme KDIGO 2012 (creatinina basal, diurese). Identificar etiologia (pre-renal/intrínseca/pos-renal). Ajustar todos os farmacos nefrotoxicos ou de eliminacao renal.';
+    }
+
+    // Função renal crônica → Cockcroft-Gault / CKD-EPI
+    if (_matchesAny(q, ['cockcroft', 'clearance creatinina', 'clearance de creatinina',
+                         'aclaramiento creatinina', 'tfg', 'tfge', 'drc ', 'erc ',
+                         'doenca renal cronica', 'enfermedad renal cronica',
+                         'ajuste renal', 'ajuste dosis renal', 'funcao renal'])) {
+      return isEs
+          ? 'HERRAMIENTA ACTIVA — FUNCION RENAL: calcular ClCr por Cockcroft-Gault (sexo, edad, peso, creatinina) o TFGe por CKD-EPI. Aplicar ajuste de dosis segun el resultado. Estadificar DRC por KDIGO si corresponde.'
+          : 'FERRAMENTA ATIVA — FUNCAO RENAL: calcular ClCr por Cockcroft-Gault (sexo, idade, peso, creatinina) ou TFGe por CKD-EPI. Aplicar ajuste de dose conforme resultado. Estadiar DRC por KDIGO se aplicavel.';
+    }
+
+    // Acidose → anion gap / compensação
+    if (_matchesAny(q, ['acidose', 'acidosis', 'alcalose', 'alcalosis',
+                         'anion gap', 'ânion gap', 'bicarbonato', 'ph arterial',
+                         'gasometria', 'gas arterial', 'compensacao acido', 'compensación acido',
+                         'disturbio acido', 'disturbio acido-base'])) {
+      return isEs
+          ? 'HERRAMIENTA ACTIVA — ACIDO-BASE: calcular Anion Gap (Na - Cl - HCO3; normal 8-12). Si AG elevado: identificar causa (MUDPILES). Calcular compensacion esperada segun tipo de disturbio. Detectar disturbios mixtos.'
+          : 'FERRAMENTA ATIVA — ACIDO-BASE: calcular Anion Gap (Na - Cl - HCO3; normal 8-12). Se AG elevado: identificar causa (MUDPILES). Calcular compensacao esperada conforme tipo de disturbio. Detectar disturbios mistos.';
+    }
+
+    // Ventilação mecânica → parâmetros ventilatórios
+    if (_matchesAny(q, ['ventilacao mecanica', 'ventilación mecánica', 'vm ', 'intubacao',
+                         'intubación', 'volume corrente', 'volumen tidal', 'peep',
+                         'plateau', 'driving pressure', 'sdra', 'sara', 'ards',
+                         'protetor pulmonar', 'proteccion pulmonar'])) {
+      return isEs
+          ? 'HERRAMIENTA ACTIVA — VENTILACION MECANICA: calcular VC protector (6 ml/kg peso ideal), PEEP segun tabla ARDSNet/FiO2, Driving Pressure (<15 cmH2O), Plateau (<30 cmH2O). Objetivos: SpO2 92-96%, pH 7.25-7.45.'
+          : 'FERRAMENTA ATIVA — VENTILACAO MECANICA: calcular VC protetor (6 ml/kg peso ideal), PEEP conforme tabela ARDSNet/FiO2, Driving Pressure (<15 cmH2O), Plateau (<30 cmH2O). Metas: SpO2 92-96%, pH 7,25-7,45.';
+    }
+
+    // IMC / obesidade
+    if (_matchesAny(q, ['imc', 'bmi', 'obesidade', 'obesidad', 'sobrepeso',
+                         'peso ideal', 'dose obesidade', 'dosis obesidad',
+                         'peso ajustado', 'peso corrigido'])) {
+      return isEs
+          ? 'HERRAMIENTA ACTIVA — IMC/OBESIDAD: calcular IMC (peso/altura²). Para farmacos con distribucion alterada en obesidad: usar peso ideal (Devine) o peso ajustado = ideal + 0.4×(real-ideal) cuando corresponda.'
+          : 'FERRAMENTA ATIVA — IMC/OBESIDADE: calcular IMC (peso/altura²). Para farmacos com distribuicao alterada na obesidade: usar peso ideal (Devine) ou peso ajustado = ideal + 0,4×(real-ideal) quando indicado.';
+    }
+
+    // Wells / TEP / TVP
+    if (_matchesAny(q, ['tep', 'tromboembolismo', 'embolia pulmonar',
+                         'embolia pulmonar', 'tvp', 'trombose venosa',
+                         'wells', 'd-dimero', 'd-dímero', 'angiotomografia pulmonar'])) {
+      return isEs
+          ? 'HERRAMIENTA ACTIVA — TEP/TVP: calcular Score de Wells TEP (0-12) o Wells TVP. Bajo riesgo + D-dimero negativo: excluir. Moderado-alto: AngioCT. Incluir PESI si se confirma TEP para estratificar gravedad.'
+          : 'FERRAMENTA ATIVA — TEP/TVP: calcular Score de Wells TEP (0-12) ou Wells TVP. Baixo risco + D-dimero negativo: excluir. Moderado-alto: angioTC. Incluir PESI se TEP confirmado para estratificar gravidade.';
+    }
+
+    // Risco cardiovascular → SCORE2 / Framingham
+    if (_matchesAny(q, ['risco cardiovascular', 'riesgo cardiovascular',
+                         'framingham', 'score2', 'escore de risco',
+                         'prevencao primaria', 'prevención primaria',
+                         'estatina', 'dislipidem'])) {
+      return isEs
+          ? 'HERRAMIENTA ACTIVA — RIESGO CV: estimar riesgo a 10 anos (Framingham o SCORE2 segun region). Clasificar bajo/moderado/alto/muy alto. Definir meta de LDL y estrategia de intervencion segun ESC/AHA.'
+          : 'FERRAMENTA ATIVA — RISCO CV: estimar risco em 10 anos (Framingham ou SCORE2 conforme regiao). Classificar baixo/moderado/alto/muito alto. Definir meta de LDL e estrategia de intervencao conforme ESC/AHA/SBC.';
+    }
+
+    // Glicemia / controle glicêmico → meta e protocolo
+    if (_matchesAny(q, ['glicemia', 'glucemia', 'hiperglicemia', 'hiperglucemia',
+                         'insulina uti', 'insulina uci', 'controle glicemico',
+                         'control glucemico', 'hba1c', 'hemoglobina glicada'])) {
+      return isEs
+          ? 'HERRAMIENTA ACTIVA — CONTROL GLUCEMICO: meta glucemica en UTI: 140-180 mg/dL (ADA/AACE). En paciente no critico: individualizar segun HbA1c, comorbilidades y riesgo de hipoglucemia. Calcular dosis de insulina si datos disponibles.'
+          : 'FERRAMENTA ATIVA — CONTROLE GLICEMICO: meta glicemica em UTI: 140-180 mg/dL (ADA/SBEM). Em paciente nao critico: individualizar conforme HbA1c, comorbidades e risco hipoglicemico. Calcular dose de insulina se dados disponiveis.';
+    }
+
+    // Nenhum contexto de tool detectado
+    return '';
+  }
+
+  // Helper: verifica se a query contém ao menos um dos termos
+  static bool _matchesAny(String query, List<String> terms) =>
+      terms.any((t) => query.contains(t));
+
   // ════════════════════════════════════════════════════════════════════════
   // buildClinicalSystemPrompt — monta o prompt final com todos os módulos
   //
-  // Parâmetros preservados integralmente:
+  // Parâmetros preservados integralmente (backward compatible):
   //   lang                      → PT ou ES (controla todos os módulos)
   //   matchedProtocolSummaries  → RAG: protocolos locais recuperados
   //   matchedDrugSummaries      → RAG: fármacos locais recuperados
   //   localAnswerContext        → RAG: contexto local estruturado (>50 chars)
   //   patientAge/Sex/Weight/Clcr/Medications → dados do paciente ativo
   //   queryIntent               → escopo focado pelo intent classifier
+  //
+  // Parâmetro novo (opcional — backward compatible):
+  //   memory                    → ClinicalSessionMemory da sessão atual
+  //   userQuery                 → query atual (para Tool Calling Engine)
   // ════════════════════════════════════════════════════════════════════════
   static String buildClinicalSystemPrompt({
     required String lang,
@@ -239,6 +475,9 @@ F. POLITICA DE ERRO ZERO: se nao tiver dados cientificos suficientes, responda e
     String? patientClcr,
     String? patientMedications,
     String? queryIntent,
+    // Novos parâmetros opcionais — não quebram callers existentes
+    ClinicalSessionMemory? memory,
+    String? userQuery,
   }) {
     final isEs = lang == 'es';
 
@@ -294,7 +533,6 @@ F. POLITICA DE ERRO ZERO: se nao tiver dados cientificos suficientes, responda e
       'emergencia'     => 'MODO PLANTAO CRITICO ATIVO. Protocolo ABCDE imediato com doses usuais baseadas em guidelines, '
                           'ajustadas por peso, funcao renal/hepatica e contexto clinico quando aplicavel. '
                           'Bullets acionaveis. Zero explicacoes longas. Direto a estabilizacao.',
-
       'referencias'    => 'Liste APENAS as referencias bibliograficas usadas: guideline + autor + ano. '
                           'Formato de lista numerada. Sem conteudo clinico adicional.',
       'caso_clinico'   => 'Hipotese principal (1 frase justificada), hipotese perigosa que nao pode ser perdida, '
@@ -332,7 +570,6 @@ F. POLITICA DE ERRO ZERO: se nao tiver dados cientificos suficientes, responda e
       'emergencia'     => 'MODO GUARDIA CRÍTICA ACTIVO. Protocolo ABCDE inmediato con dosis habituales basadas en guidelines, '
                           'ajustadas por peso, funcion renal/hepatica y contexto clinico cuando corresponda. '
                           'Bullets accionables. Cero explicaciones largas. Directo a estabilizacion.',
-
       'referencias'    => 'Lista SOLO las referencias bibliograficas usadas: guideline + autor + ano. '
                           'Formato de lista numerada. Sin contenido clinico adicional.',
       'caso_clinico'   => 'Hipotesis principal (1 frase justificada), hipotesis peligrosa que no puede perderse, '
@@ -367,35 +604,77 @@ F. POLITICA DE ERRO ZERO: se nao tiver dados cientificos suficientes, responda e
         ? 'ESCOPO ACTIVO: $focusEs'
         : 'ESCOPO ATIVO: $focusPt';
 
+    // ── Tool Calling Engine — injeção condicional ────────────────────────────
+    // Detecta contexto na query atual. Se não houver query, tenta extrair
+    // contexto do focusSection (fallback para queries via intent direto).
+    final queryForTools = userQuery ?? focusSection;
+    final toolsBlock = buildToolsBlock(queryForTools, isEs);
+    final toolsSection = toolsBlock.isEmpty ? '' : '$toolsBlock\n\n';
+
+    // ── Differential Engine — ativação condicional ───────────────────────────
+    // Ativo apenas em: caso_clinico, emergencia, diagnostico
+    // NÃO ativo em: doses simples, farmaco, interacao, fisiopatologia, referencias
+    const differentialIntents = {'caso_clinico', 'emergencia', 'diagnostico'};
+    final useDifferential = differentialIntents.contains(intentLabel);
+    final differentialSection = useDifferential
+        ? (isEs ? '$_differentialEngineEs\n\n' : '$_differentialEnginePt\n\n')
+        : '';
+
+    // ── Memory Block — serialização condicional ──────────────────────────────
+    // Serializa apenas se houver dados clínicos úteis na sessão
+    final memoryBlock = memory?.buildMemoryBlock(isEs) ?? '';
+    final memorySection = memoryBlock.isEmpty ? '' : '$memoryBlock\n\n';
+
     // ════════════════════════════════════════════════════════════════════════
-    // MONTAGEM FINAL — ordem otimizada para instrução→contexto→dados
-    //   1. Identidade (quem é, princípio)
-    //   2. Raciocínio (como pensar)
-    //   3. Especialidade (como adaptar)
-    //   4. Segurança (o que nunca fazer)
-    //   5. Escopo ativo (o que responder nesta query)
-    //   6. Formato (como formatar)
-    //   7. Fontes (onde buscar)
-    //   8. Dados RAG (paciente + protocolos + drogas + contexto)
+    // MONTAGEM FINAL — ordem definida pela arquitetura v2:
+    //   1.  coreIdentity        → quem é, princípio
+    //   2.  clinicalReasoning   → como pensar
+    //   3.  specialtyAdaptation → como adaptar
+    //   4.  evidenceRanking     → como modular certeza           ← NOVO
+    //   5.  [toolsBlock]        → qual cálculo executar          ← NOVO (condicional)
+    //   6.  [differentialEngine]→ hierarquia diagnóstica         ← NOVO (condicional)
+    //   7.  safetyRules         → o que nunca fazer
+    //   8.  focusSection        → o que responder nesta query
+    //   9.  responseFormat      → como formatar
+    //   10. sources             → onde buscar
+    //   11. [memoryBlock]       → contexto longitudinal sessão   ← NOVO (condicional)
+    //   12. patientSection      → dados do paciente (RAG)
+    //   13. protocolSection     → protocolos (RAG)
+    //   14. drugsSection        → fármacos (RAG)
+    //   15. contextSection      → contexto local (RAG)
+    //   16. selfCheck           → revisão interna invisível      ← NOVO (sempre último)
     // ════════════════════════════════════════════════════════════════════════
+    final selfCheck = isEs ? _selfCheckEs : _selfCheckPt;
+    final evidenceRanking = isEs ? _evidenceRankingEs : _evidenceRankingPt;
+
     if (isEs) {
       return '$_coreIdentityEs\n\n'
              '$_clinicalReasoningEs\n\n'
              '$_specialtyAdaptationEs\n\n'
+             '$evidenceRanking\n\n'
+             '$toolsSection'
+             '$differentialSection'
              '$_safetyRulesEs\n\n'
              '$focusSection\n\n'
              '$_responseFormatEs\n\n'
              '$_sourcesEs\n\n'
-             '$patientSection$protocolSection$drugsSection$contextSection';
+             '$memorySection'
+             '$patientSection$protocolSection$drugsSection$contextSection\n\n'
+             '$selfCheck';
     } else {
       return '$_coreIdentityPt\n\n'
              '$_clinicalReasoningPt\n\n'
              '$_specialtyAdaptationPt\n\n'
+             '$evidenceRanking\n\n'
+             '$toolsSection'
+             '$differentialSection'
              '$_safetyRulesPt\n\n'
              '$focusSection\n\n'
              '$_responseFormatPt\n\n'
              '$_sourcesPt\n\n'
-             '$patientSection$protocolSection$drugsSection$contextSection';
+             '$memorySection'
+             '$patientSection$protocolSection$drugsSection$contextSection\n\n'
+             '$selfCheck';
     }
   }
 }
