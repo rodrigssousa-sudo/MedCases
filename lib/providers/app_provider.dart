@@ -2519,7 +2519,24 @@ class AppProvider extends ChangeNotifier {
   //   6. Chamar Gemini (com Google Search Grounding) ou OpenAI
   //   7. Salvar no histórico e retornar
   // ══════════════════════════════════════════════════════════════════════════
+  // Guard de concorrência: impede que chamadas simultâneas (Enter + botão) dupliquem resposta.
+  bool _aiAnswerInProgress = false;
+
   Future<String> buildAIAnswer(String input) async {
+    // Guard: rejeita chamada se já há uma em andamento (evita duplicação)
+    if (_aiAnswerInProgress) {
+      debugPrint('[buildAIAnswer] chamada ignorada — já há resposta em andamento');
+      return '';
+    }
+    _aiAnswerInProgress = true;
+    try {
+      return await _buildAIAnswerImpl(input);
+    } finally {
+      _aiAnswerInProgress = false;
+    }
+  }
+
+  Future<String> _buildAIAnswerImpl(String input) async {
     // ── Fix 3: Detectar mudança de tema e resetar memória clínica ─────────
     // Deve ocorrer ANTES de montar o prompt para garantir que o memoryBlock
     // injetado reflita o contexto atual (não contaminado por tema anterior).
@@ -2607,7 +2624,7 @@ class AppProvider extends ChangeNotifier {
         userMessage: input,
         systemPrompt: systemPrompt,
         history: List.unmodifiable(_aiHistory),
-        maxTokens: 1100,  // Ajustado para respostas abrangentes sem truncar
+        maxTokens: 2200,  // Token base elevado — retry automático até 4000 se truncar
         useGrounding: true,
       );
 

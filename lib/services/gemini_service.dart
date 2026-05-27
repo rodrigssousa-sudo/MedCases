@@ -429,7 +429,7 @@ class GeminiService {
     required String userMessage,
     required String systemPrompt,
     List<Map<String, String>> history = const [],
-    int maxTokens = 1800,
+    int maxTokens = 2200,
     bool useGrounding = true, // Google Search Grounding ativado por padrão
   }) async {
     if (_geminiApiKey.isEmpty) {
@@ -536,15 +536,18 @@ class GeminiService {
           return GeminiResult.error('EMPTY_TEXT', 'unknown');
         }
 
-        // ── MAX_TOKENS — detectar truncamento e retentar ──────────────────────
-        // Se finishReason == MAX_TOKENS, verificar se a frase termina incompleta.
-        // Se sim: retry automático com +50% tokens (cap 3000).
-        // Nunca renderizar "o tratamento deve ser ot..." ao usuário.
-        if (finishReason == 'MAX_TOKENS') {
-          debugPrint('[GeminiService] MAX_TOKENS — verificando frase incompleta');
-          if (_isTruncated(cleanedText) && maxTokens < 3000) {
-            final expandedTokens = (maxTokens * 1.5).round().clamp(maxTokens + 300, 3000);
-            debugPrint('[GeminiService] Truncamento detectado — retry $maxTokens→$expandedTokens tokens');
+        // ── MAX_TOKENS / TRUNCAMENTO — detectar e retentar ─────────────────────
+        // Regra 1: finishReason == MAX_TOKENS → texto cortado pelo modelo.
+        // Regra 2: _isTruncated() detecta frases abertas independente do finishReason
+        //          (pode ocorrer mesmo com STOP se o modelo parar no meio de bullet).
+        // Em AMBOS os casos: retry com +60% tokens (cap 4000).
+        // O usuário NUNCA deve ver resposta incompleta como mensagem final.
+        final truncated = finishReason == 'MAX_TOKENS' || _isTruncated(cleanedText);
+        if (truncated) {
+          debugPrint('[GeminiService] Truncamento detectado — finishReason=$finishReason, isTruncated=${_isTruncated(cleanedText)}');
+          if (maxTokens < 4000) {
+            final expandedTokens = (maxTokens * 1.6).round().clamp(maxTokens + 500, 4000);
+            debugPrint('[GeminiService] Retry $maxTokens→$expandedTokens tokens');
             return chat(
               userMessage: userMessage,
               systemPrompt: systemPrompt,
@@ -553,7 +556,8 @@ class GeminiService {
               useGrounding: useGrounding,
             );
           }
-          debugPrint('[GeminiService] MAX_TOKENS mas frase completa — resposta aceitável');
+          // Já no limite: retorna o que tem mas loga
+          debugPrint('[GeminiService] MAX_TOKENS no limite (4000) — resposta pode estar incompleta');
         }
 
         return GeminiResult(text: cleanedText);

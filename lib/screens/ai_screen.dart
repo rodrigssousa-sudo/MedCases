@@ -87,9 +87,17 @@ const _suggestions = [
 
 // ─────────────────────────────────────────────────────────────────────────────
 class _ChatMsg {
+  // ID único estável — garante que Keys do ListView nunca mudam para a mesma mensagem.
+  // Evita que o Flutter destrua/recrie bubbles ao rebuild durante streaming.
+  final String id;
   final String role;
   final String text;
-  const _ChatMsg({required this.role, required this.text});
+
+  _ChatMsg({required this.role, required this.text})
+      : id = '${role}_${DateTime.now().microsecondsSinceEpoch}';
+
+  // Construtor para restauração do histórico JSON (pode não ter id)
+  _ChatMsg.withId({required this.id, required this.role, required this.text});
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -112,7 +120,8 @@ class _ChatSession {
     'id': id,
     'savedAt': savedAt.toIso8601String(),
     'summary': summary,
-    'messages': messages.map((m) => {'role': m.role, 'text': m.text}).toList(),
+    // Persiste o id junto — restaura keys estáveis ao carregar do JSON
+    'messages': messages.map((m) => {'id': m.id, 'role': m.role, 'text': m.text}).toList(),
   };
 
   factory _ChatSession.fromJson(Map<String, dynamic> j) => _ChatSession(
@@ -120,7 +129,11 @@ class _ChatSession {
     savedAt: DateTime.parse(j['savedAt'] as String),
     summary: j['summary'] as String? ?? '',
     messages: (j['messages'] as List? ?? []).map((m) =>
-      _ChatMsg(role: m['role'] as String, text: m['text'] as String)
+      _ChatMsg.withId(
+        id: m['id'] as String? ?? '${m['role']}_${DateTime.now().microsecondsSinceEpoch}',
+        role: m['role'] as String,
+        text: m['text'] as String,
+      )
     ).toList(),
   );
 }
@@ -572,9 +585,16 @@ class _AiScreenState extends State<AiScreen> {
     });
   }
 
+  // Guard local de envio: complementa o guard no provider.
+  // Evita que ENTER + click simultâneo no botão dispare 2 envios.
+  bool _sendGuard = false;
+
   Future<void> _send(String text, AppProvider p) async {
     final trimmed = text.trim();
-    if (trimmed.isEmpty || _thinking) return;
+    // Bloqueia: texto vazio, IA pensando, ou guard ativo (duplo envio)
+    if (trimmed.isEmpty || _thinking || _sendGuard) return;
+
+    _sendGuard = true;
     _focusNode.unfocus();
     setState(() {
       _messages.add(_ChatMsg(role: 'user', text: trimmed));
@@ -587,19 +607,42 @@ class _AiScreenState extends State<AiScreen> {
     _queryCtrl.clear();
     _scrollDown(force: true); // força scroll ao enviar mensagem do usuário
 
-    // Chamada real (ou fallback local se sem chave)
-    final answer = await p.buildAIAnswer(trimmed);
+    try {
+      // Chamada real (ou fallback local se sem chave)
+      final answer = await p.buildAIAnswer(trimmed);
 
-    if (!mounted) return;
-    // Detecta se foi erro de chave inválida para mostrar banner
-    final isKeyError = answer.startsWith('ERRO') && answer.contains('API');
-    setState(() {
-      _lastAiIndex = _messages.length; // índice que será inserido
-      _messages.add(_ChatMsg(role: 'ai', text: answer));
-      _thinking = false;
-      _aiError  = isKeyError;
-    });
-    _scrollDown(); // scroll suave ao receber resposta (respeita _userScrolledUp)
+      if (!mounted) return;
+
+      // Guard do provider retornou '' — ignora (não adiciona bubble vazia)
+      if (answer.isEmpty) {
+        setState(() {
+          _thinking = false;
+          // Remove a mensagem do usuário que acabou de ser adicionada
+          // (o send foi rejeitado pelo guard do provider — duplicação evitada)
+          if (_messages.isNotEmpty && _messages.last.role == 'user' &&
+              _messages.last.text == trimmed) {
+            _messages.removeLast();
+          }
+        });
+        return;
+      }
+
+      // Detecta se foi erro de chave inválida para mostrar banner
+      final isKeyError = answer.startsWith('ERRO') && answer.contains('API');
+      setState(() {
+        _lastAiIndex = _messages.length; // índice que será inserido
+        _messages.add(_ChatMsg(role: 'ai', text: answer));
+        _thinking = false;
+        _aiError  = isKeyError;
+      });
+      _scrollDown(); // scroll suave ao receber resposta (respeita _userScrolledUp)
+    } finally {
+      // Libera o guard após a resposta chegar (ou em erro)
+      // Pequeno delay para absorver double-tap acidental
+      Future.delayed(const Duration(milliseconds: 300), () {
+        _sendGuard = false;
+      });
+    }
   }
 
   void _copyMsg(String text) {
@@ -720,11 +763,14 @@ class _AiScreenState extends State<AiScreen> {
                     // ⚡ key por índice garante que Flutter reutilize o widget
                     // ao invés de destruir e recriar ao sair/entrar da viewport
                     return KeyedSubtree(
-                      key: ValueKey('msg_$i'),
+                      // Key baseada no ID único da mensagem — não no índice.
+                      // Garante que o Flutter reutilize o mesmo widget mesmo que
+                      // a lista mude de tamanho (streaming, rebuild, etc.)
+                      key: ValueKey('msg_${msg.id}'),
                       child: msg.role == 'user'
                           ? _UserBubble(text: msg.text, dark: dark)
                           : _AiBubble(
-                              key: ValueKey('ai_$i'),
+                              key: ValueKey('ai_${msg.id}'),
                               text: msg.text,
                               dark: dark,
                               animate: i == _lastAiIndex,

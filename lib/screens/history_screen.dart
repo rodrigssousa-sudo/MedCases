@@ -14,6 +14,359 @@ import '../services/stt_helper.dart';
 import '../platform/web_impl.dart'
     if (dart.library.io) '../platform/web_stub.dart' as webPlatform;
 
+// ─────────────────────────────────────────────────────────────────────────────
+// i18n PT/ES para História Clínica
+// Uso: _hcT(lang, 'key')   onde lang = AppProvider.lang ('pt' | 'es')
+// ─────────────────────────────────────────────────────────────────────────────
+const _hcStrings = <String, Map<String, String>>{
+  // Header
+  'tab_title':          {'pt': 'HISTÓRIA CLÍNICA',         'es': 'HISTORIA CLÍNICA'},
+  'tab_subtitle':       {'pt': 'Registro clínico completo', 'es': 'Registro clínico completo'},
+  'new_hc':             {'pt': 'Nova HC',                   'es': 'Nueva HC'},
+  'my_hcs':             {'pt': 'Minhas HCs',                'es': 'Mis HCs'},
+  'community':          {'pt': 'Comunidade',                'es': 'Comunidad'},
+  'search_hint':        {'pt': 'Buscar por diagnóstico, queixa, tags...', 'es': 'Buscar por diagnóstico, queja, etiquetas...'},
+  // Tabs contagem
+  'my_hcs_count':       {'pt': 'minhas',                   'es': 'mis HCs'},
+  'pub_count':          {'pt': 'públicas',                  'es': 'públicas'},
+  // Lista
+  'open':               {'pt': 'Abrir',                     'es': 'Abrir'},
+  'view':               {'pt': 'Ver',                       'es': 'Ver'},
+  'edit_btn':           {'pt': 'Editar',                    'es': 'Editar'},
+  'delete_btn':         {'pt': 'Excluir',                   'es': 'Eliminar'},
+  'public_badge':       {'pt': 'Público',                   'es': 'Público'},
+  'private_badge':      {'pt': 'Privado',                   'es': 'Privado'},
+  'hidden_mod':         {'pt': 'Oculta por moderador',      'es': 'Oculta por moderador'},
+  'show_mod':           {'pt': 'Mostrar',                   'es': 'Mostrar'},
+  'hide_mod':           {'pt': 'Ocultar',                   'es': 'Ocultar'},
+  'anon':               {'pt': 'Anônimo',                   'es': 'Anónimo'},
+  'years':              {'pt': 'anos',                      'es': 'años'},
+  // Diálogos confirmação
+  'del_title':          {'pt': 'Excluir história clínica?',             'es': '¿Eliminar historia clínica?'},
+  'del_content':        {'pt': 'Esta ação não pode ser desfeita.',      'es': 'Esta acción no se puede deshacer.'},
+  'cancel':             {'pt': 'Cancelar',                              'es': 'Cancelar'},
+  'del_confirm':        {'pt': 'Excluir',                               'es': 'Eliminar'},
+  'del_mod_title':      {'pt': 'Excluir HC da Comunidade?',             'es': '¿Eliminar HC de la Comunidad?'},
+  'del_mod_content':    {'pt': 'Esta ação é permanente e remove a história clínica de todos os usuários.\n\nProceder com a exclusão?',
+                          'es': 'Esta acción es permanente y elimina la historia clínica de todos los usuarios.\n\n¿Proceder con la eliminación?'},
+  'del_perm':           {'pt': 'Excluir permanentemente',               'es': 'Eliminar permanentemente'},
+  // Snackbar moderação
+  'hc_visible':         {'pt': 'HC visível novamente',                  'es': 'HC visible nuevamente'},
+  'hc_hidden':          {'pt': 'HC ocultada da comunidade',             'es': 'HC ocultada de la comunidad'},
+  'hc_del_perm':        {'pt': 'HC excluída permanentemente',           'es': 'HC eliminada permanentemente'},
+  // Detalhe / Visualizador
+  'copy_hc':            {'pt': 'Copiar HC',                             'es': 'Copiar HC'},
+  'copied':             {'pt': 'História copiada',                      'es': 'Historia copiada'},
+  'pdf_hint':           {'pt': 'PDF abre janela de impressão  •  PNG salva imagem da HC', 'es': 'PDF abre ventana de impresión  •  PNG guarda imagen de la HC'},
+  'export_png_ok':      {'pt': 'PNG gerado — verifique seus downloads', 'es': 'PNG generado — revise sus descargas'},
+  'export_png_err':     {'pt': 'Erro ao exportar PNG:',                 'es': 'Error al exportar PNG:'},
+  'back':               {'pt': 'Voltar',                                'es': 'Volver'},
+  // HeroHeader
+  'pront':              {'pt': 'Pront.',                                'es': 'Expte.'},
+  // Copiar conteúdo (StringBuffer)
+  'copy_header':        {'pt': '=== MEDCASES PRO — HISTÓRIA CLÍNICA ===', 'es': '=== MEDCASES PRO — HISTORIA CLÍNICA ==='},
+  'copy_date':          {'pt': 'Data:',                                 'es': 'Fecha:'},
+  'copy_author':        {'pt': 'Autor:',                                'es': 'Autor:'},
+  'copy_patient':       {'pt': 'Paciente:',                            'es': 'Paciente:'},
+  'copy_chief':         {'pt': '\nQUEIXA PRINCIPAL:\n',                 'es': '\nMOTIVO DE CONSULTA:\n'},
+  'copy_hpi':           {'pt': '\nHISTÓRIA DA DOENÇA ATUAL:\n',        'es': '\nENFERMEDAD ACTUAL:\n'},
+  'copy_past':          {'pt': '\nANTECEDENTES PESSOAIS:\n',           'es': '\nANTECEDENTES PERSONALES:\n'},
+  'copy_meds':          {'pt': '\nMEDICAMENTOS EM USO:\n',             'es': '\nMEDICACIÓN HABITUAL:\n'},
+  'copy_allerg':        {'pt': '\nALERGIAS: ',                         'es': '\nALERGIAS: '},
+  'copy_vitals':        {'pt': '\nSINAIS VITAIS:\n',                   'es': '\nSIGNOS VITALES:\n'},
+  'copy_pe':            {'pt': '\nEXAME FÍSICO:\n',                    'es': '\nEXAMEN FÍSICO:\n'},
+  'copy_work_dx':       {'pt': '\nHIPÓTESE DIAGNÓSTICA: ',             'es': '\nHIPÓTESIS DIAGNÓSTICA: '},
+  'copy_final_dx':      {'pt': 'DIAGNÓSTICO FINAL: ',                  'es': 'DIAGNÓSTICO FINAL: '},
+  'copy_lab':           {'pt': '\nEXAMES LABORATORIAIS:\n',            'es': '\nESTUDIOS DE LABORATORIO:\n'},
+  'copy_img':           {'pt': '\nEXAMES DE IMAGEM:\n',                'es': '\nESTUDIOS DE IMAGEN:\n'},
+  'copy_treat':         {'pt': '\nCONDUTA / TRATAMENTO:\n',            'es': '\nCONDUCTA / TRATAMIENTO:\n'},
+  'copy_evol':          {'pt': '\nEVOLUÇÃO ',                          'es': '\nEVOLUCIÓN '},
+  'copy_outcome':       {'pt': '\nDESFECHO: ',                         'es': '\nDESENLACE: '},
+  'copy_followup':      {'pt': 'SEGUIMENTO: ',                         'es': 'SEGUIMIENTO: '},
+  // PDF sections
+  'pdf_hc_title':       {'pt': 'História Clínica',                     'es': 'Historia Clínica'},
+  'pdf_section1':       {'pt': '1. Identificação do Paciente',         'es': '1. Identificación del Paciente'},
+  'pdf_initials':       {'pt': 'Iniciais',                             'es': 'Iniciales'},
+  'pdf_demog':          {'pt': 'Dados demográficos',                   'es': 'Datos demográficos'},
+  'pdf_section2':       {'pt': '2. Queixa Principal',                  'es': '2. Motivo de Consulta'},
+  'pdf_section3':       {'pt': '3. Anamnese',                          'es': '3. Anamnesis'},
+  'pdf_hpi':            {'pt': 'História da doença atual',             'es': 'Enfermedad actual'},
+  'pdf_past':           {'pt': 'Antecedentes pessoais',                'es': 'Antecedentes personales'},
+  'pdf_family':         {'pt': 'Antecedentes familiares',              'es': 'Antecedentes familiares'},
+  'pdf_social':         {'pt': 'História social (tabagismo, etilismo, ocupação)', 'es': 'Historia social (tabaquismo, alcohol, ocupación)'},
+  'pdf_rvs':            {'pt': 'Revisão de sistemas',                  'es': 'Revisión de sistemas'},
+  'pdf_meds':           {'pt': 'Medicamentos em uso',                  'es': 'Medicación habitual'},
+  'pdf_section4':       {'pt': '4. Exame Físico',                      'es': '4. Examen Físico'},
+  'pdf_vitals':         {'pt': 'Sinais vitais',                        'es': 'Signos vitales'},
+  'pdf_pe':             {'pt': 'Exame físico por sistemas',            'es': 'Examen físico por sistemas'},
+  'pdf_section5':       {'pt': '5. Hipóteses Diagnósticas',            'es': '5. Hipótesis Diagnósticas'},
+  'pdf_work_dx':        {'pt': 'Hipótese principal',                   'es': 'Hipótesis principal'},
+  'pdf_diff_dx':        {'pt': 'Diagnósticos diferenciais',            'es': 'Diagnósticos diferenciales'},
+  'pdf_section6':       {'pt': '6. Exames Complementares',             'es': '6. Estudios Complementarios'},
+  'pdf_lab':            {'pt': 'Exames laboratoriais',                 'es': 'Estudios de laboratorio'},
+  'pdf_ecg':            {'pt': 'ECG / Outros (biópsia, EEG...)',       'es': 'ECG / Otros (biopsia, EEG...)'},
+  'pdf_img':            {'pt': 'Exames de imagem',                     'es': 'Estudios de imagen'},
+  'pdf_section7':       {'pt': '7. DIAGNÓSTICO FINAL',                 'es': '7. DIAGNÓSTICO FINAL'},
+  'pdf_cid':            {'pt': 'CID-10:',                              'es': 'CIE-10:'},
+  'pdf_section8':       {'pt': '8. Conduta e Plano Terapêutico',       'es': '8. Conducta y Plan Terapéutico'},
+  'pdf_plan':           {'pt': 'Plano terapêutico',                    'es': 'Plan terapéutico'},
+  'pdf_proc':           {'pt': 'Procedimentos realizados',             'es': 'Procedimientos realizados'},
+  'pdf_section9':       {'pt': '9. Evolução Clínica',                  'es': '9. Evolución Clínica'},
+  'pdf_section10':      {'pt': '10. Desfecho e Alta',                  'es': '10. Desenlace y Alta'},
+  'pdf_discharge':      {'pt': 'Condições de alta',                    'es': 'Condiciones de alta'},
+  'pdf_followup':       {'pt': 'Seguimento / Orientações',             'es': 'Seguimiento / Indicaciones'},
+  'pdf_footer':         {'pt': 'Gerado por MedCases Pro — Uso exclusivamente educacional e de apoio clínico. Não substitui avaliação médica individual presencial.',
+                          'es': 'Generado por MedCases Pro — Uso exclusivamente educativo y de apoyo clínico. No sustituye la evaluación médica individual presencial.'},
+  // PDF evolução tipos
+  'evo_med':            {'pt': 'Evolução Médica',                      'es': 'Evolución Médica'},
+  'evo_nurs':           {'pt': 'Nota de Enfermagem',                   'es': 'Nota de Enfermería'},
+  'evo_lab':            {'pt': 'Resultado Lab',                        'es': 'Resultado Lab'},
+  'evo_img':            {'pt': 'Laudo Imagem',                         'es': 'Informe Imagen'},
+  'evo_proc':           {'pt': 'Procedimento',                         'es': 'Procedimiento'},
+  'evo_default':        {'pt': 'Evolução',                             'es': 'Evolución'},
+  // PDF outcomes
+  'out_internado':      {'pt': 'Internado',                            'es': 'Hospitalizado'},
+  'out_alta':           {'pt': 'Alta hospitalar',                      'es': 'Alta hospitalaria'},
+  'out_obito':          {'pt': 'Óbito',                                'es': 'Fallecimiento'},
+  'out_transfer':       {'pt': 'Transferência',                        'es': 'Traslado'},
+  // Visualizador — seções com ícones
+  'det_anamnese':       {'pt': 'ANAMNESE',                             'es': 'ANAMNESIS'},
+  'det_chief':          {'pt': 'Queixa principal',                     'es': 'Motivo de consulta'},
+  'det_hpi':            {'pt': 'História da doença atual',             'es': 'Enfermedad actual'},
+  'det_past':           {'pt': 'Antecedentes pessoais',                'es': 'Antecedentes personales'},
+  'det_family':         {'pt': 'Antecedentes familiares',              'es': 'Antecedentes familiares'},
+  'det_social':         {'pt': 'História social',                      'es': 'Historia social'},
+  'det_meds':           {'pt': 'Medicamentos em uso',                  'es': 'Medicación habitual'},
+  'det_rvs':            {'pt': 'Revisão de sistemas',                  'es': 'Revisión de sistemas'},
+  'det_exam':           {'pt': 'EXAME FÍSICO',                         'es': 'EXAMEN FÍSICO'},
+  'det_vitals':         {'pt': 'Sinais vitais',                        'es': 'Signos vitales'},
+  'det_pe':             {'pt': 'Exame físico',                         'es': 'Examen físico'},
+  'det_labs':           {'pt': 'EXAMES COMPLEMENTARES',                'es': 'ESTUDIOS COMPLEMENTARIOS'},
+  'det_lab_res':        {'pt': 'Laboratório',                          'es': 'Laboratorio'},
+  'det_img':            {'pt': 'Imagem',                               'es': 'Imagen'},
+  'det_other':          {'pt': 'Outros (ECG, biópsia...)',              'es': 'Otros (ECG, biopsia...)'},
+  'det_treat':          {'pt': 'CONDUTA E TRATAMENTO',                 'es': 'CONDUCTA Y TRATAMIENTO'},
+  'det_plan':           {'pt': 'Plano terapêutico',                    'es': 'Plan terapéutico'},
+  'det_proc':           {'pt': 'Procedimentos',                        'es': 'Procedimientos'},
+  'det_outcome':        {'pt': 'DESFECHO E ALTA',                      'es': 'DESENLACE Y ALTA'},
+  'det_discharge':      {'pt': 'Condições de alta',                    'es': 'Condiciones de alta'},
+  'det_followup':       {'pt': 'Seguimento',                           'es': 'Seguimiento'},
+  // Card lista — outcomes label
+  'outcome_alta':       {'pt': 'Alta',                                  'es': 'Alta'},
+  'outcome_obito':      {'pt': 'Óbito',                                 'es': 'Fallecimiento'},
+  'outcome_transfer':   {'pt': 'Transferência',                         'es': 'Traslado'},
+  'outcome_internado':  {'pt': 'Internado',                             'es': 'Hospitalizado'},
+  // Card lista — hipótese
+  'card_dx':            {'pt': 'Dx:',                                   'es': 'Dx:'},
+  'card_hypo':          {'pt': 'Hipótese:',                             'es': 'Hipótesis:'},
+  // Estado vazio
+  'empty_title':        {'pt': 'Nenhuma história clínica',              'es': 'Ninguna historia clínica'},
+  'empty_sub':          {'pt': 'Crie e documente seus casos clínicos\nde forma estruturada e completa', 'es': 'Cree y documente sus casos clínicos\nde forma estructurada y completa'},
+  'empty_btn':          {'pt': '+ Nova história clínica',               'es': '+ Nueva historia clínica'},
+  'empty_comm_title':   {'pt': 'Nenhuma história pública',              'es': 'Ninguna historia pública'},
+  'empty_comm_sub':     {'pt': 'Seja o primeiro a compartilhar!\nAnonimize e compartilhe seus casos.', 'es': '¡Sé el primero en compartir!\nAnonimiza y comparte tus casos.'},
+  'refresh':            {'pt': 'Atualizar',                             'es': 'Actualizar'},
+  'loading_comm':       {'pt': 'Carregando histórias da comunidade…',   'es': 'Cargando historias de la comunidad…'},
+  // Editor — header
+  'new_hc_title':       {'pt': 'Nova história clínica',                 'es': 'Nueva historia clínica'},
+  'preview_btn':        {'pt': 'Ver',                                   'es': 'Ver'},
+  'save_btn':           {'pt': 'Salvar',                                'es': 'Guardar'},
+  'progress_label':     {'pt': '% preenchido',                          'es': '% completado'},
+  // Editor — tabs seções
+  'sec_pe':             {'pt': 'Exame Físico',                          'es': 'Examen Físico'},
+  'sec_treat':          {'pt': 'Conduta',                               'es': 'Conducta'},
+  'sec_evol':           {'pt': 'Evolução',                              'es': 'Evolución'},
+  // Editor — seção Paciente
+  'f_initials':         {'pt': 'Iniciais do paciente *',                'es': 'Iniciales del paciente *'},
+  'h_initials':         {'pt': 'J.S. (preservar privacidade)',          'es': 'J.S. (preservar privacidad)'},
+  'f_age':              {'pt': 'Idade',                                  'es': 'Edad'},
+  'f_sex':              {'pt': 'SEXO',                                   'es': 'SEXO'},
+  'sex_male':           {'pt': 'Masculino',                              'es': 'Masculino'},
+  'sex_female':         {'pt': 'Feminino',                               'es': 'Femenino'},
+  'f_weight':           {'pt': 'Peso (kg)',                              'es': 'Peso (kg)'},
+  'f_height':           {'pt': 'Altura (cm)',                            'es': 'Talla (cm)'},
+  'f_record':           {'pt': 'Nº Prontuário (opcional)',               'es': 'Nº Historia clínica (opcional)'},
+  'f_category':         {'pt': 'CATEGORIA / ESPECIALIDADE',              'es': 'CATEGORÍA / ESPECIALIDAD'},
+  'f_tags':             {'pt': 'Tags (ex: sepse, UTI, DM2)',             'es': 'Etiquetas (ej: sepsis, UCI, DM2)'},
+  'h_tags':             {'pt': 'sepse, pneumonia, idoso',                'es': 'sepsis, neumonía, anciano'},
+  'public_on':          {'pt': 'História pública — visível na Comunidade', 'es': 'Historia pública — visible en la Comunidad'},
+  'public_off':         {'pt': 'História privada — somente você vê',     'es': 'Historia privada — solo tú la ves'},
+  'public_hint':        {'pt': 'Toque para alternar. Dados do paciente são anonimizados (iniciais).', 'es': 'Toca para alternar. Los datos del paciente son anonimizados (iniciales).'},
+  // Editor — Anamnese
+  'f_chief':            {'pt': 'Queixa principal *',                     'es': 'Motivo de consulta *'},
+  'h_chief':            {'pt': 'Dor torácica há 2h',                    'es': 'Dolor torácico desde hace 2h'},
+  'f_hpi':              {'pt': 'História da doença atual (HDA)',         'es': 'Enfermedad actual (EA)'},
+  'h_hpi':              {'pt': 'Descrever cronologia, características, fatores...', 'es': 'Describir cronología, características, factores...'},
+  'f_past':             {'pt': 'Antecedentes pessoais',                  'es': 'Antecedentes personales'},
+  'h_past':             {'pt': 'HAS, DM2, IAM prévio, cirurgias...',    'es': 'HTA, DM2, IAM previo, cirugías...'},
+  'f_family':           {'pt': 'Antecedentes familiares',                'es': 'Antecedentes familiares'},
+  'h_family':           {'pt': 'Pai: IAM aos 55 anos. Mãe: DM2...',     'es': 'Padre: IAM a los 55 años. Madre: DM2...'},
+  'f_social':           {'pt': 'História social',                        'es': 'Historia social'},
+  'h_social':           {'pt': 'Tabagismo, etilismo, drogas, atividade física, profissão...', 'es': 'Tabaquismo, alcohol, drogas, actividad física, ocupación...'},
+  'f_meds':             {'pt': 'Medicamentos em uso',                    'es': 'Medicación habitual'},
+  'h_meds':             {'pt': 'AAS 100mg/dia, metformina 850mg 2x/dia...', 'es': 'AAS 100mg/día, metformina 850mg 2v/día...'},
+  'f_allerg':           {'pt': 'Alergias',                               'es': 'Alergias'},
+  'h_allerg':           {'pt': 'Penicilina (urticária), dipirona (angioedema)...', 'es': 'Penicilina (urticaria), dipirona (angioedema)...'},
+  'f_rvs':              {'pt': 'Revisão de sistemas',                    'es': 'Revisión de sistemas'},
+  'h_rvs':              {'pt': 'Cardiovascular, respiratório, GI, neurológico...', 'es': 'Cardiovascular, respiratorio, GI, neurológico...'},
+  // Editor — Exame Físico
+  'f_pe':               {'pt': 'Exame físico por sistemas',              'es': 'Examen físico por sistemas'},
+  'h_pe':               {'pt': 'Geral: BEG, corado, hidratado...\nCV: RCR 2T, sem sopros...\nTórax: MV+ bilateral, sem RA...\nAbdome: RHA+, indolor...', 'es': 'General: BEG, normocolor, hidratado...\nCV: RCR 2T, sin soplos...\nTórax: MV+ bilateral, sin RA...\nAbdomen: RHA+, indoloro...'},
+  'f_work_dx':          {'pt': 'Hipótese diagnóstica principal',         'es': 'Hipótesis diagnóstica principal'},
+  'h_work_dx':          {'pt': 'Síndrome Coronariana Aguda STEMI anterior', 'es': 'Síndrome Coronario Agudo SCAEST anterior'},
+  'f_diff_dx':          {'pt': 'Diagnóstico diferencial',                'es': 'Diagnóstico diferencial'},
+  'h_diff_dx':          {'pt': 'Pericardite aguda, dissecção aórtica, TEP...', 'es': 'Pericarditis aguda, disección aórtica, TEP...'},
+  'f_final_dx':         {'pt': 'Diagnóstico final',                      'es': 'Diagnóstico final'},
+  'h_final_dx':         {'pt': 'IAM STEMI anterior',                    'es': 'IAM SCAEST anterior'},
+  // Editor — Exames
+  'f_img':              {'pt': 'Exames de imagem / Outros',              'es': 'Estudios de imagen / Otros'},
+  'h_img':              {'pt': 'RX tórax: sem congestão, ICT normal...\nEco: FE 48%, hipocinesia anterior...\nTC crânio: sem lesões agudas...', 'es': 'RX tórax: sin congestión, ICT normal...\nEco: FE 48%, hipocinesia anterior...\nTC cráneo: sin lesiones agudas...'},
+  // Editor — Conduta
+  'f_plan':             {'pt': 'Plano terapêutico / Conduta',            'es': 'Plan terapéutico / Conducta'},
+  'h_plan':             {'pt': '1. AAS 300mg VO imediato\n2. Ticagrelor 180mg VO\n3. Heparina NF EV\n4. Ativar hemodinâmica (meta porta-balão < 90min)...', 'es': '1. AAS 300mg VO inmediato\n2. Ticagrelor 180mg VO\n3. Heparina no fraccionada EV\n4. Activar hemodinamia (meta puerta-balón < 90min)...'},
+  'f_proc':             {'pt': 'Procedimentos realizados',               'es': 'Procedimientos realizados'},
+  'h_proc':             {'pt': 'Cateterismo + angioplastia com stent em DA proximal...', 'es': 'Cateterismo + angioplastia con stent en DA proximal...'},
+  // Editor — Evolução
+  'evol_title':         {'pt': 'NOTAS DE EVOLUÇÃO',                      'es': 'NOTAS DE EVOLUCIÓN'},
+  'evol_hint':          {'pt': 'Registre a evolução cronológica do paciente (diária, por turno, por evento).', 'es': 'Registre la evolución cronológica del paciente (diaria, por turno, por evento).'},
+  'add_evol':           {'pt': 'Adicionar nota de evolução',             'es': 'Agregar nota de evolución'},
+  'evol_author_hint':   {'pt': 'Dr./Enf. nome do profissional',          'es': 'Dr./Enf. nombre del profesional'},
+  'evol_text_hint':     {'pt': 'Nota de evolução...',                    'es': 'Nota de evolución...'},
+  // Editor — Desfecho
+  'outcome_title':      {'pt': 'DESFECHO',                               'es': 'DESENLACE'},
+  'f_discharge':        {'pt': 'Condições de alta',                      'es': 'Condiciones de alta'},
+  'h_discharge':        {'pt': 'BEG, estável, orientado, tolerando VO...', 'es': 'BEG, estable, orientado, tolerando VO...'},
+  'f_followup':         {'pt': 'Seguimento / Orientações',               'es': 'Seguimiento / Indicaciones'},
+  'h_followup':         {'pt': 'Retorno em 7 dias com cardiologista. Manter AAS + ticagrelor por 12 meses...', 'es': 'Retorno en 7 días con cardiólogo. Mantener AAS + ticagrelor por 12 meses...'},
+  // Outcomes labels editor
+  'ol_internado':       {'pt': 'Internado',                              'es': 'Hospitalizado'},
+  'ol_alta':            {'pt': 'Alta',                                   'es': 'Alta'},
+  'ol_obito':           {'pt': 'Óbito',                                  'es': 'Fallec.'},
+  'ol_transfer':        {'pt': 'Transferência',                          'es': 'Traslado'},
+  // Ditáfone
+  'dictaphone':         {'pt': 'Ditáfone inteligente',                   'es': 'Dictáfono inteligente'},
+  'dictaphone_active':  {'pt': 'DITÁFONE INTELIGENTE • Gravando',        'es': 'DICTÁFONO INTELIGENTE • Grabando'},
+  'dictaphone_hint':    {'pt': 'Diga "queixa", "antecedentes", "exame físico"... e o texto vai para o campo certo', 'es': 'Diga "queja", "antecedentes", "examen"... y el texto va al campo correcto'},
+  'field_label':        {'pt': 'Campo: ',                                 'es': 'Campo: '},
+  'dictating':          {'pt': 'Ouvindo...',                             'es': 'Escuchando...'},
+  'dictate_btn':        {'pt': 'Ditar',                                  'es': 'Dictar'},
+  'dict_not_supported': {'pt': 'Ditado não suportado',                   'es': 'Dictado no soportado'},
+  'dict_browser_msg':   {'pt': 'Use Chrome ou Safari para o ditado.',    'es': 'Use Chrome o Safari para el dictado.'},
+  // STT labels de campos
+  'stt_chief':          {'pt': 'Queixa principal',                       'es': 'Motivo de consulta'},
+  'stt_hpi':            {'pt': 'HDA',                                    'es': 'EA'},
+  'stt_past':           {'pt': 'Antecedentes pessoais',                  'es': 'Antecedentes personales'},
+  'stt_family':         {'pt': 'Antecedentes familiares',                'es': 'Antecedentes familiares'},
+  'stt_social':         {'pt': 'História social',                        'es': 'Historia social'},
+  'stt_meds':           {'pt': 'Medicamentos',                           'es': 'Medicación'},
+  'stt_allerg':         {'pt': 'Alergias',                               'es': 'Alergias'},
+  'stt_rvs':            {'pt': 'Revisão de sistemas',                    'es': 'Revisión de sistemas'},
+  'stt_vitals':         {'pt': 'Sinais vitais',                          'es': 'Signos vitales'},
+  'stt_pe':             {'pt': 'Exame físico',                           'es': 'Examen físico'},
+  'stt_work_dx':        {'pt': 'Hipótese diagnóstica',                   'es': 'Hipótesis diagnóstica'},
+  'stt_treat':          {'pt': 'Conduta',                                 'es': 'Conducta'},
+  // Pré-visualização
+  'preview_title':      {'pt': 'PRÉ-VISUALIZAÇÃO',                       'es': 'PREVISUALIZACIÓN'},
+  'prev_anamnese':      {'pt': 'ANAMNESE',                               'es': 'ANAMNESIS'},
+  'prev_chief':         {'pt': 'Queja principal',                        'es': 'Motivo de consulta'},
+  'prev_hpi':           {'pt': 'Historia de la enfermedad actual',       'es': 'Enfermedad actual'},
+  'prev_past':          {'pt': 'Antecedentes pessoais',                  'es': 'Antecedentes personales'},
+  'prev_social':        {'pt': 'História social',                        'es': 'Historia social'},
+  'prev_meds':          {'pt': 'Medicamentos em uso',                    'es': 'Medicación habitual'},
+  'prev_allerg':        {'pt': 'Alergias',                               'es': 'Alergias'},
+  'prev_rvs':           {'pt': 'Revisão de sistemas',                    'es': 'Revisión de sistemas'},
+  'prev_exam':          {'pt': 'EXAME FÍSICO',                           'es': 'EXAMEN FÍSICO'},
+  'prev_vitals':        {'pt': 'Sinais vitais',                          'es': 'Signos vitales'},
+  'prev_pe':            {'pt': 'Exame físico por sistemas',              'es': 'Examen físico por sistemas'},
+  'prev_dx':            {'pt': 'DIAGNÓSTICO',                            'es': 'DIAGNÓSTICO'},
+  'prev_work_dx':       {'pt': 'Hipótese diagnóstica',                   'es': 'Hipótesis diagnóstica'},
+  'prev_final_dx':      {'pt': 'Diagnóstico final',                      'es': 'Diagnóstico final'},
+  'prev_diff_dx':       {'pt': 'Diagnósticos diferenciais',              'es': 'Diagnósticos diferenciales'},
+  'prev_labs':          {'pt': 'EXAMES COMPLEMENTARES',                  'es': 'ESTUDIOS COMPLEMENTARIOS'},
+  'prev_lab':           {'pt': 'Laboratorio',                            'es': 'Laboratorio'},
+  'prev_img':           {'pt': 'Imagem',                                 'es': 'Imagen'},
+  'prev_other':         {'pt': 'Outros',                                 'es': 'Otros'},
+  'prev_treat':         {'pt': 'CONDUTA',                                'es': 'CONDUCTA'},
+  'prev_plan':          {'pt': 'Plano terapêutico',                      'es': 'Plan terapéutico'},
+  'prev_proc':          {'pt': 'Procedimentos',                          'es': 'Procedimientos'},
+  'prev_evol':          {'pt': 'EVOLUÇÃO',                               'es': 'EVOLUCIÓN'},
+  'prev_outcome':       {'pt': 'DESFECHO',                               'es': 'DESENLACE'},
+  'prev_discharge':     {'pt': 'Condições de alta',                      'es': 'Condiciones de alta'},
+  'prev_followup':      {'pt': 'Seguimento',                             'es': 'Seguimiento'},
+  // OCR / Lab
+  'ocr_reading':        {'pt': 'Lendo imagem...',                        'es': 'Leyendo imagen...'},
+  'ocr_manual':         {'pt': 'Imagem carregada — preencha os campos manualmente ou instale Tesseract.js', 'es': 'Imagen cargada — complete los campos manualmente o instale Tesseract.js'},
+  'ocr_ok':             {'pt': 'Texto extraído! Revise os campos.',      'es': 'Texto extraído. Revise los campos.'},
+  'ocr_err':            {'pt': 'Falha OCR:',                             'es': 'Error OCR:'},
+  'ocr_btn':            {'pt': 'Foto/OCR',                               'es': 'Foto/OCR'},
+  'ocr_loading':        {'pt': 'Lendo...',                               'es': 'Leyendo...'},
+  'lab_filled':         {'pt': 'preenchido',                             'es': 'completado'},
+  'lab_exams':          {'pt': 'EXAMES LABORATORIAIS',                   'es': 'ESTUDIOS DE LABORATORIO'},
+  'lab_others_hint':    {'pt': 'Gasometria, hormônios, sorologia, culturas...', 'es': 'Gasometría, hormonas, serología, cultivos...'},
+  // ── Seções do editor (tabs) ─────────────────────────────────────────────
+  'sec_patient':        {'pt': 'Paciente',                                'es': 'Paciente'},
+  'sec_anamnesis':      {'pt': 'Anamnese',                                'es': 'Anamnesis'},
+  'sec_physical':       {'pt': 'Exame Físico',                            'es': 'Examen Físico'},
+  'sec_exams':          {'pt': 'Exames',                                  'es': 'Estudios'},
+  'sec_treatment':      {'pt': 'Conduta',                                 'es': 'Conducta'},
+  'sec_evolution':      {'pt': 'Evolução',                                'es': 'Evolución'},
+  'sec_outcome':        {'pt': 'Desfecho',                                'es': 'Desenlace'},
+  // ── Desfecho labels (botões) ─────────────────────────────────────────────
+  'out_transf':         {'pt': 'Transferência',                           'es': 'Transferencia'},
+  // ── Labels de campos do editor ──────────────────────────────────────────
+  'f_allergies':        {'pt': 'Alergias',                                'es': 'Alergias'},
+  'f_cid':              {'pt': 'CID',                                     'es': 'CIE'},
+  'f_diffdx':           {'pt': 'Diagnóstico diferencial',                 'es': 'Diagnóstico diferencial'},
+  'f_finaldx':          {'pt': 'Diagnóstico final',                       'es': 'Diagnóstico final'},
+  'f_imaging':          {'pt': 'Exames de imagem / Outros',               'es': 'Estudios de imagen / Otros'},
+  'f_procedures':       {'pt': 'Procedimentos realizados',                'es': 'Procedimientos realizados'},
+  'f_ros':              {'pt': 'Revisão de sistemas',                     'es': 'Revisión de sistemas'},
+  'f_wdx':              {'pt': 'Hipótese diagnóstica principal',          'es': 'Hipótesis diagnóstica principal'},
+  // ── Hints de campos do editor ────────────────────────────────────────────
+  'h_allergies':        {'pt': 'Penicilina (urticária), dipirona (angioedema)...', 'es': 'Penicilina (urticaria), dipirona (angioedema)...'},
+  'h_diffdx':           {'pt': 'Pericardite aguda, dissecção aórtica, TEP...', 'es': 'Pericarditis aguda, disección aórtica, TEP...'},
+  'h_finaldx':          {'pt': 'IAM STEMI anterior',                     'es': 'IAM STEMI anterior'},
+  'h_imaging':          {'pt': 'RX tórax: sem congestão... Eco: FE 48%... TC crânio: sem lesões agudas...', 'es': 'RX tórax: sin congestión... Eco: FE 48%... TC cráneo: sin lesiones agudas...'},
+  'h_procedures':       {'pt': 'Cateterismo + angioplastia com stent em DA proximal...', 'es': 'Cateterismo + angioplastia con stent en DA proximal...'},
+  'h_ros':              {'pt': 'Cardiovascular, respiratório, GI, neurológico...', 'es': 'Cardiovascular, respiratorio, GI, neurológico...'},
+  'h_wdx':              {'pt': 'Síndrome Coronariana Aguda STEMI anterior', 'es': 'Síndrome Coronario Agudo STEMI anterior'},
+  // ── Ditáfone STT labels ──────────────────────────────────────────────────
+  'stt_allergies':      {'pt': 'Alergias',                                'es': 'Alergias'},
+  'stt_plan':           {'pt': 'Conduta',                                 'es': 'Conducta'},
+  'stt_ros':            {'pt': 'Revisão de sistemas',                     'es': 'Revisión de sistemas'},
+  'stt_wdx':            {'pt': 'Hipótese diagnóstica',                    'es': 'Hipótesis diagnóstica'},
+  // ── ECG labels ──────────────────────────────────────────────────────────
+  'ecg_ritmo':          {'pt': 'Ritmo',                                   'es': 'Ritmo'},
+  'ecg_st':             {'pt': 'Alterações ST/T',                         'es': 'Alteraciones ST/T'},
+  'ecg_outros':         {'pt': 'Outros Achados',                          'es': 'Otros Hallazgos'},
+  // ── Lab labels ───────────────────────────────────────────────────────────
+  'lab_others_title':   {'pt': 'Outros / Observações',                    'es': 'Otros / Observaciones'},
+  // ── Sinais vitais ─────────────────────────────────────────────────────
+  'vitals_title':       {'pt': 'Sinais Vitais',                           'es': 'Signos Vitales'},
+  // ── PDF labels (seções 5-10) ─────────────────────────────────────────
+  'pdf_lab_results':    {'pt': 'Exames laboratoriais',                    'es': 'Estudios de laboratorio'},
+  'pdf_ecg_others':     {'pt': 'ECG / Outros (biópsia, EEG...)',          'es': 'ECG / Otros (biopsia, EEG...)'},
+  'pdf_imaging_results':{'pt': 'Exames de imagem',                        'es': 'Estudios de imagen'},
+  'pdf_procedures':     {'pt': 'Procedimentos realizados',                'es': 'Procedimientos realizados'},
+  'pdf_out_alta':       {'pt': 'Alta hospitalar',                         'es': 'Alta hospitalaria'},
+  // ── PDF evolução typeMap ─────────────────────────────────────────────
+  'pdf_evo_med':        {'pt': 'Evolução Médica',                         'es': 'Evolución Médica'},
+  'pdf_evo_nurse':      {'pt': 'Nota de Enfermagem',                      'es': 'Nota de Enfermería'},
+  'pdf_evo_lab':        {'pt': 'Resultado Lab',                           'es': 'Resultado Lab'},
+  'pdf_evo_img':        {'pt': 'Laudo Imagem',                            'es': 'Informe de Imagen'},
+  'pdf_evo_proc':       {'pt': 'Procedimento',                            'es': 'Procedimiento'},
+  // ── Estado vazio — histórias ──────────────────────────────────────────
+  'new_history_btn':    {'pt': '+ Nova história clínica',                 'es': '+ Nuevo caso clínico'},
+};
+
+/// Retorna a string traduzida para o idioma dado.
+/// Fallback: chave (nunca lança).
+String _hcT(String lang, String key) {
+  final map = _hcStrings[key];
+  if (map == null) return key;
+  return map[lang] ?? map['pt'] ?? key;
+}
+
 // Helper global — formata ISO para 'dd/mm/yyyy às hh:mm'
 String _formatUploadedAt(String iso) {
   try {
@@ -73,12 +426,13 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
 
   // Abre o seletor de intervalo de datas
   Future<void> _showDateFilter() async {
+    final lang = context.read<AppProvider>().lang;
     final picked = await showDateRangePicker(
       context: context,
       firstDate: DateTime(2020),
       lastDate: DateTime.now().add(const Duration(days: 1)),
       initialDateRange: _dateFilter,
-      locale: const Locale('pt', 'BR'),
+      locale: lang == 'es' ? const Locale('es', 'ES') : const Locale('pt', 'BR'),
       builder: (context, child) {
         return Theme(
           data: Theme.of(context).copyWith(
@@ -140,6 +494,7 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
   @override
   Widget build(BuildContext context) {
     final p = context.watch<AppProvider>();
+    final lang = p.lang;
 
     // ── Modo edição ────────────────────────────────────────────────────────
     if (_editing != null) {
@@ -193,20 +548,18 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
             child: Row(children: [
               Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                 Text(
-                  p.lang == 'es' ? 'HISTORIA CLÍNICA' : 'HISTÓRIA CLÍNICA',
+                  _hcT(lang, 'tab_title'),
                   style: const TextStyle(
                     fontSize: 9, fontWeight: FontWeight.w900,
                     color: Color(0xBFFFE8A6), letterSpacing: 2)),
                 const SizedBox(height: 2),
                 Text(
-                  p.lang == 'es' ? 'Registro clínico completo' : 'Registro clínico completo',
+                  _hcT(lang, 'tab_subtitle'),
                   style: const TextStyle(
                     fontSize: 17, fontWeight: FontWeight.w900, color: Colors.white)),
                 const SizedBox(height: 2),
                 Text(
-                  p.lang == 'es'
-                    ? '${mine.length} mis HCs • ${pub.length} públicas'
-                    : '${mine.length} minhas • ${pub.length} públicas',
+                  '${mine.length} ${_hcT(lang, 'my_hcs_count')} • ${pub.length} ${_hcT(lang, 'pub_count')}',
                   style: TextStyle(fontSize: 11,
                     color: Colors.white.withValues(alpha: 0.55),
                     fontWeight: FontWeight.w500)),
@@ -214,7 +567,7 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
               GestureDetector(
                 onTap: () {
                   final uid  = p.currentUser?.uid ?? 'local';
-                  final name = p.currentUser?.displayName ?? p.currentUser?.email ?? 'Anônimo';
+                  final name = p.currentUser?.displayName ?? p.currentUser?.email ?? _hcT(lang, 'anon');
                   final email = p.currentUser?.email ?? '';
                   setState(() => _editing = ClinicalHistoryModel.blank(
                     authorUid: uid, authorName: name, authorEmail: email));
@@ -226,10 +579,10 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
                     color: Colors.white.withValues(alpha: 0.15),
                     border: Border.all(color: Colors.white.withValues(alpha: 0.2)),
                   ),
-                  child: const Row(children: [
-                    Icon(Icons.add_rounded, size: 15, color: Color(0xFFFFE8A6)),
-                    SizedBox(width: 4),
-                    Text('Nova HC', style: TextStyle(
+                  child: Row(children: [
+                    const Icon(Icons.add_rounded, size: 15, color: Color(0xFFFFE8A6)),
+                    const SizedBox(width: 4),
+                    Text(_hcT(lang, 'new_hc'), style: const TextStyle(
                       fontSize: 12, fontWeight: FontWeight.w800,
                       color: Color(0xFFFFE8A6))),
                   ]),
@@ -255,8 +608,8 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
             unselectedLabelColor: const Color(0xFF888888),
             dividerColor: Colors.transparent,
             tabs: [
-              Tab(text: 'Minhas HCs (${mine.length})'),
-              Tab(text: 'Comunidade (${pub.length})'),
+              Tab(text: '${_hcT(lang, 'my_hcs')} (${mine.length})'),
+              Tab(text: '${_hcT(lang, 'community')} (${pub.length})'),
             ],
           ),
         ),
@@ -269,7 +622,7 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
           Expanded(
             child: MedInput(
               controller: _searchCtrl,
-              hintText: 'Buscar por diagnóstico, queixa, tags...',
+              hintText: _hcT(lang, 'search_hint'),
               onChanged: (_) => setState(() {}),
             ),
           ),
@@ -337,9 +690,9 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
           children: [
             // ── Minhas HCs ──────────────────────────────────────────────
             mine.isEmpty
-              ? _EmptyHistoryState(onNew: () {
+              ? _EmptyHistoryState(lang: lang, onNew: () {
                   final uid = p.currentUser?.uid ?? 'local';
-                  final name = p.currentUser?.displayName ?? p.currentUser?.email ?? 'Anônimo';
+                  final name = p.currentUser?.displayName ?? p.currentUser?.email ?? _hcT(lang, 'anon');
                   final email = p.currentUser?.email ?? '';
                   setState(() => _editing = ClinicalHistoryModel.blank(authorUid: uid, authorName: name, authorEmail: email));
                 })
@@ -360,19 +713,19 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
 
             // ── Comunidade ───────────────────────────────────────────────
             p.isLoadingPublic
-              ? const Center(
+              ? Center(
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      CircularProgressIndicator(color: kGreen, strokeWidth: 2.5),
-                      SizedBox(height: 14),
-                      Text('Carregando histórias da comunidade…',
-                        style: TextStyle(fontSize: 12, color: Color(0xFF888888), fontWeight: FontWeight.w600)),
+                      const CircularProgressIndicator(color: kGreen, strokeWidth: 2.5),
+                      const SizedBox(height: 14),
+                      Text(_hcT(lang, 'loading_comm'),
+                        style: const TextStyle(fontSize: 12, color: Color(0xFF888888), fontWeight: FontWeight.w600)),
                     ],
                   ),
                 )
               : pub.isEmpty
-                ? _EmptyCommunityState(onRefresh: () => p.loadPublicHistories())
+                ? _EmptyCommunityState(lang: lang, onRefresh: () => p.loadPublicHistories())
                 : RefreshIndicator(
                     color: kGreen,
                     onRefresh: () => p.loadPublicHistories(),
@@ -392,14 +745,14 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
                             final wasHidden = h.isHidden;
                             await p.toggleHistoryHidden(h.id);
                             if (context.mounted) _showModSnack(context,
-                              wasHidden ? 'HC visível novamente' : 'HC ocultada da comunidade');
+                              _hcT(lang, wasHidden ? 'hc_visible' : 'hc_hidden'));
                           } : null,
                           onModDelete: canModerate ? () async {
                             final confirm = await _confirmModDelete(context);
                             if (!confirm) return;
                             await FirestoreService.adminDeletePublicHistory(h.id);
                             p.loadPublicHistories();
-                            if (context.mounted) _showModSnack(context, 'HC excluída permanentemente', isError: true);
+                            if (context.mounted) _showModSnack(context, _hcT(lang, 'hc_del_perm'), isError: true);
                           } : null,
                         );
                       },
@@ -412,40 +765,42 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
   }
 
   Future<bool> _confirmDelete(BuildContext context) async {
+    final lang = context.read<AppProvider>().lang;
     return await showDialog<bool>(
       context: context,
       builder: (_) => AlertDialog(
-        title: const Text('Excluir história clínica?'),
-        content: const Text('Esta ação não pode ser desfeita.'),
+        title: Text(_hcT(lang, 'del_title')),
+        content: Text(_hcT(lang, 'del_content')),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('Cancelar')),
+          TextButton(onPressed: () => Navigator.pop(context, false), child: Text(_hcT(lang, 'cancel'))),
           TextButton(onPressed: () => Navigator.pop(context, true),
-            child: const Text('Excluir', style: TextStyle(color: Colors.red))),
+            child: Text(_hcT(lang, 'del_confirm'), style: const TextStyle(color: Colors.red))),
         ],
       ),
     ) ?? false;
   }
 
   Future<bool> _confirmModDelete(BuildContext context) async {
+    final lang = context.read<AppProvider>().lang;
     return await showDialog<bool>(
       context: context,
       builder: (_) => AlertDialog(
         backgroundColor: const Color(0xFFFFFDF8),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: const Text('Excluir HC da Comunidade?',
-          style: TextStyle(fontWeight: FontWeight.w900, fontSize: 16, color: Color(0xFF0F1C14))),
-        content: const Text(
-          'Esta ação é permanente e remove a história clínica de todos os usuários.\n\nProceder com a exclusão?',
-          style: TextStyle(fontSize: 13, color: Color(0xFF444444))),
+        title: Text(_hcT(lang, 'del_mod_title'),
+          style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 16, color: Color(0xFF0F1C14))),
+        content: Text(
+          _hcT(lang, 'del_mod_content'),
+          style: const TextStyle(fontSize: 13, color: Color(0xFF444444))),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: const Text('Cancelar', style: TextStyle(color: Colors.grey)),
+            child: Text(_hcT(lang, 'cancel'), style: const TextStyle(color: Colors.grey)),
           ),
           ElevatedButton(
             onPressed: () => Navigator.pop(context, true),
             style: ElevatedButton.styleFrom(backgroundColor: Colors.red, foregroundColor: Colors.white),
-            child: const Text('Excluir permanentemente'),
+            child: Text(_hcT(lang, 'del_perm')),
           ),
         ],
       ),
@@ -491,17 +846,18 @@ class _HistoryCard extends StatelessWidget {
     }
   }
 
-  String get _outcomeLabel {
+  String _outcomeLabel(String lang) {
     switch (h.outcome) {
-      case 'alta': return 'Alta';
-      case 'obito': return 'Óbito';
-      case 'transferencia': return 'Transferência';
-      default: return 'Internado';
+      case 'alta': return _hcT(lang, 'outcome_alta');
+      case 'obito': return _hcT(lang, 'outcome_obito');
+      case 'transferencia': return _hcT(lang, 'outcome_transfer');
+      default: return _hcT(lang, 'outcome_internado');
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final lang = p.lang;
     final completion = h.completionRatio;
     return GestureDetector(
         onTap: onTap,
@@ -521,14 +877,14 @@ class _HistoryCard extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                 decoration: BoxDecoration(borderRadius: BorderRadius.circular(8), color: _outcomeColor.withValues(alpha: 0.12), border: Border.all(color: _outcomeColor.withValues(alpha: 0.3))),
-                child: Text(_outcomeLabel, style: TextStyle(fontSize: 9, fontWeight: FontWeight.w900, color: _outcomeColor)),
+                child: Text(_outcomeLabel(lang), style: TextStyle(fontSize: 9, fontWeight: FontWeight.w900, color: _outcomeColor)),
               ),
               if (h.isPublic) ...[
                 const SizedBox(width: 6),
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                   decoration: BoxDecoration(borderRadius: BorderRadius.circular(8), color: const Color(0xFF1E40AF).withValues(alpha: 0.1), border: Border.all(color: const Color(0xFF1E40AF).withValues(alpha: 0.3))),
-                  child: const Text('Público', style: TextStyle(fontSize: 9, fontWeight: FontWeight.w900, color: Color(0xFF1E40AF))),
+                  child: Text(_hcT(lang, 'public_badge'), style: const TextStyle(fontSize: 9, fontWeight: FontWeight.w900, color: Color(0xFF1E40AF))),
                 ),
               ],
               const Spacer(),
@@ -538,7 +894,7 @@ class _HistoryCard extends StatelessWidget {
             Text(h.displayTitle, style: TextStyle(fontSize: 15, fontWeight: FontWeight.w900, color: AppColors.of(context).textPrimary), maxLines: 2, overflow: TextOverflow.ellipsis),
             if (h.patientInitials.isNotEmpty || h.patientAge.isNotEmpty) ...[
               const SizedBox(height: 4),
-              Text('${h.patientInitials.isNotEmpty ? h.patientInitials : ''}${h.patientAge.isNotEmpty ? " • ${h.patientAge} anos" : ""} • ${h.patientSex}',
+              Text('${h.patientInitials.isNotEmpty ? h.patientInitials : ''}${h.patientAge.isNotEmpty ? " • ${h.patientAge} ${_hcT(p.lang, "years")}" : ""} • ${h.patientSex}',
                 style: const TextStyle(fontSize: 11, color: Color(0xFF888888), fontWeight: FontWeight.w600)),
             ],
             if (h.finalDiagnosis.isNotEmpty) ...[
@@ -590,7 +946,7 @@ class _HistoryCard extends StatelessWidget {
                       Icon(h.isPublic ? Icons.public_rounded : Icons.lock_outline_rounded, size: 12,
                         color: h.isPublic ? const Color(0xFF1E40AF) : const Color(0xFF888888)),
                       const SizedBox(width: 4),
-                      Text(h.isPublic ? 'Público' : 'Privado',
+                      Text(h.isPublic ? _hcT(p.lang, 'public_badge') : _hcT(p.lang, 'private_badge'),
                         style: TextStyle(fontSize: 10, fontWeight: FontWeight.w900,
                           color: h.isPublic ? const Color(0xFF1E40AF) : const Color(0xFF888888))),
                     ]),
@@ -602,7 +958,7 @@ class _HistoryCard extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                   decoration: BoxDecoration(color: AppColors.of(context).darkBtn, borderRadius: BorderRadius.circular(10)),
-                  child: const Text('Abrir', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w900, color: kGoldLight)),
+                  child: Text(_hcT(p.lang, 'open'), style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w900, color: kGoldLight)),
                 ),
               ]),
             ] else ...[
@@ -619,7 +975,7 @@ class _HistoryCard extends StatelessWidget {
                   child: Row(children: [
                     const Icon(Icons.visibility_off_rounded, size: 12, color: Colors.orange),
                     const SizedBox(width: 6),
-                    const Text('Oculta por moderador', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w800, color: Colors.orange)),
+                    Text(_hcT(p.lang, 'hidden_mod'), style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w800, color: Colors.orange)),
                   ]),
                 ),
               ],
@@ -628,7 +984,7 @@ class _HistoryCard extends StatelessWidget {
                 Icon(Icons.person_outline_rounded, size: 12, color: Colors.grey[400]),
                 const SizedBox(width: 4),
                 Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  Text(h.authorName.isNotEmpty ? h.authorName : 'Anônimo',
+                  Text(h.authorName.isNotEmpty ? h.authorName : _hcT(p.lang, 'anon'),
                     style: const TextStyle(fontSize: 10, color: Color(0xFF333333), fontWeight: FontWeight.w700)),
                   if (h.authorEmail.isNotEmpty)
                     Text(h.authorEmail,
@@ -641,7 +997,7 @@ class _HistoryCard extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                   decoration: BoxDecoration(color: AppColors.of(context).darkBtn, borderRadius: BorderRadius.circular(10)),
-                  child: const Text('Ver', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w900, color: kGoldLight)),
+                  child: Text(_hcT(p.lang, 'view'), style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w900, color: kGoldLight)),
                 ),
               ]),
               // Botões de moderação
@@ -661,7 +1017,7 @@ class _HistoryCard extends StatelessWidget {
                         child: Row(mainAxisSize: MainAxisSize.min, children: [
                           Icon(h.isHidden ? Icons.visibility_rounded : Icons.visibility_off_rounded, size: 12, color: Colors.orange),
                           const SizedBox(width: 4),
-                          Text(h.isHidden ? 'Mostrar' : 'Ocultar',
+                          Text(h.isHidden ? _hcT(p.lang, 'show_mod') : _hcT(p.lang, 'hide_mod'),
                             style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w800, color: Colors.orange)),
                         ]),
                       ),
@@ -718,32 +1074,33 @@ class _HistoryDetailState extends State<_HistoryDetail> {
   bool get readOnly => widget.readOnly;
 
   void _copy() {
+    final lang = p.lang;
     final buf = StringBuffer();
-    buf.writeln('=== MEDCASES PRO — HISTÓRIA CLÍNICA ===');
-    buf.writeln('Data: ${history.formattedDate}');
-    if (history.authorName.isNotEmpty) buf.writeln('Autor: ${history.authorName}${history.authorEmail.isNotEmpty ? " (${history.authorEmail})" : ""}');
-    if (history.patientInitials.isNotEmpty) buf.writeln('Paciente: ${history.patientInitials} • ${history.patientAge} anos • ${history.patientSex}');
-    if (history.chiefComplaint.isNotEmpty) buf.writeln('\nQUEIXA PRINCIPAL:\n${history.chiefComplaint}');
-    if (history.hpi.isNotEmpty) buf.writeln('\nHISTÓRIA DA DOENÇA ATUAL:\n${history.hpi}');
-    if (history.pastHistory.isNotEmpty) buf.writeln('\nANTECEDENTES PESSOAIS:\n${history.pastHistory}');
-    if (history.medications.isNotEmpty) buf.writeln('\nMEDICAMENTOS EM USO:\n${history.medications}');
-    if (history.allergies.isNotEmpty) buf.writeln('\nALERGIAS: ${history.allergies}');
-    if (history.vitalSigns.isNotEmpty) buf.writeln('\nSINAIS VITAIS:\n${history.vitalSigns}');
-    if (history.physicalExam.isNotEmpty) buf.writeln('\nEXAME FÍSICO:\n${history.physicalExam}');
-    if (history.workingDiagnosis.isNotEmpty) buf.writeln('\nHIPÓTESE DIAGNÓSTICA: ${history.workingDiagnosis}');
-    if (history.finalDiagnosis.isNotEmpty) buf.writeln('DIAGNÓSTICO FINAL: ${history.finalDiagnosis}${history.cid.isNotEmpty ? " (${history.cid})" : ""}');
-    if (history.labResults.isNotEmpty) buf.writeln('\nEXAMES LABORATORIAIS:\n${history.labResults}');
-    if (history.imagingResults.isNotEmpty) buf.writeln('\nEXAMES DE IMAGEM:\n${history.imagingResults}');
-    if (history.treatmentPlan.isNotEmpty) buf.writeln('\nCONDUTA / TRATAMENTO:\n${history.treatmentPlan}');
+    buf.writeln(_hcT(lang, 'copy_header'));
+    buf.writeln('${_hcT(lang, 'copy_date')} ${history.formattedDate}');
+    if (history.authorName.isNotEmpty) buf.writeln('${_hcT(lang, 'copy_author')} ${history.authorName}${history.authorEmail.isNotEmpty ? " (${history.authorEmail})" : ""}');
+    if (history.patientInitials.isNotEmpty) buf.writeln('${_hcT(lang, 'copy_patient')} ${history.patientInitials} • ${history.patientAge} ${_hcT(lang, 'years')} • ${history.patientSex}');
+    if (history.chiefComplaint.isNotEmpty) buf.writeln('${_hcT(lang, 'copy_chief')}${history.chiefComplaint}');
+    if (history.hpi.isNotEmpty) buf.writeln('${_hcT(lang, 'copy_hpi')}${history.hpi}');
+    if (history.pastHistory.isNotEmpty) buf.writeln('${_hcT(lang, 'copy_past')}${history.pastHistory}');
+    if (history.medications.isNotEmpty) buf.writeln('${_hcT(lang, 'copy_meds')}${history.medications}');
+    if (history.allergies.isNotEmpty) buf.writeln('${_hcT(lang, 'copy_allerg')}${history.allergies}');
+    if (history.vitalSigns.isNotEmpty) buf.writeln('${_hcT(lang, 'copy_vitals')}${history.vitalSigns}');
+    if (history.physicalExam.isNotEmpty) buf.writeln('${_hcT(lang, 'copy_pe')}${history.physicalExam}');
+    if (history.workingDiagnosis.isNotEmpty) buf.writeln('${_hcT(lang, 'copy_work_dx')}${history.workingDiagnosis}');
+    if (history.finalDiagnosis.isNotEmpty) buf.writeln('${_hcT(lang, 'copy_final_dx')}${history.finalDiagnosis}${history.cid.isNotEmpty ? " (${history.cid})" : ""}');
+    if (history.labResults.isNotEmpty) buf.writeln('${_hcT(lang, 'copy_lab')}${history.labResults}');
+    if (history.imagingResults.isNotEmpty) buf.writeln('${_hcT(lang, 'copy_img')}${history.imagingResults}');
+    if (history.treatmentPlan.isNotEmpty) buf.writeln('${_hcT(lang, 'copy_treat')}${history.treatmentPlan}');
     for (final e in history.evolutions) {
       final dt = DateTime.tryParse(e.date);
-      final dateStr = dt != null ? '${dt.day.toString().padLeft(2,'0')}/${dt.month.toString().padLeft(2,'0')} ${dt.hour.toString().padLeft(2,'0')}:${dt.minute.toString().padLeft(2,'0')}' : '';
-      buf.writeln('\nEVOLUÇÃO ($dateStr — ${e.author}):\n${e.text}');
+      final dateStr = dt != null ? '${dt.day.toString().padLeft(2, "0")}/${dt.month.toString().padLeft(2, "0")} ${dt.hour.toString().padLeft(2, "0")}:${dt.minute.toString().padLeft(2, "0")}' : '';
+      buf.writeln('${_hcT(lang, "copy_evol")}($dateStr — ${e.author}):\n${e.text}');
     }
-    if (history.outcome != 'internado') buf.writeln('\nDESFECHO: ${history.outcome.toUpperCase()}');
-    if (history.followUp.isNotEmpty) buf.writeln('SEGUIMENTO: ${history.followUp}');
+    if (history.outcome != 'internado') buf.writeln('${_hcT(lang, "copy_outcome")}${history.outcome.toUpperCase()}');
+    if (history.followUp.isNotEmpty) buf.writeln('${_hcT(lang, "copy_followup")}${history.followUp}');
     Clipboard.setData(ClipboardData(text: buf.toString()));
-    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('História copiada'), duration: Duration(seconds: 1)));
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(_hcT(lang, "copied")), duration: const Duration(seconds: 1)));
   }
 
   // ── Exportar como PNG (web: download direto) ──────────────────────────────
@@ -757,9 +1114,9 @@ class _HistoryDetailState extends State<_HistoryDetail> {
       if (byteData == null) return;
       final bytes = byteData.buffer.asUint8List();
       _downloadBytes(bytes, '${_safeFilename()}.png', 'image/png');
-      if (mounted) ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('PNG gerado — verifique seus downloads'), duration: Duration(seconds: 2)));
+      if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(_hcT(p.lang, "export_png_ok")), duration: const Duration(seconds: 2)));
     } catch (e) {
-      if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Erro ao exportar PNG: $e')));
+      if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('${_hcT(p.lang, "export_png_err")} $e')));
     } finally {
       if (mounted) setState(() => _exporting = false);
     }
@@ -770,7 +1127,7 @@ class _HistoryDetailState extends State<_HistoryDetail> {
     final buf = StringBuffer();
     buf.write('''<!DOCTYPE html><html><head>
 <meta charset="utf-8">
-<title>História Clínica — MedCases Pro</title>
+<title>${_hcT(p.lang, 'pdf_hc_title')} — MedCases Pro</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: Georgia, serif; font-size: 13px; color: #111; background: #fff; padding: 40px; line-height: 1.6; }
@@ -796,10 +1153,10 @@ class _HistoryDetailState extends State<_HistoryDetail> {
 </style>
 </head><body>
 <div class="header">
-  <div class="meta">MedCases Pro • História Clínica</div>
+  <div class="meta">MedCases Pro • ${_hcT(p.lang, 'pdf_hc_title')}</div>
   <h1>${_esc(history.displayTitle)}</h1>
   <div class="meta">${history.category} &nbsp;|&nbsp; ${history.formattedDate}</div>
-  ${history.authorName.isNotEmpty ? '<div class="meta" style="margin-top:4px">Autor: ${_esc(history.authorName)}${history.authorEmail.isNotEmpty ? " &lt;${_esc(history.authorEmail)}&gt;" : ""}${history.uploadedAt.isNotEmpty ? " — Publicado: ${_formatUploadedAt(history.uploadedAt)}" : ""}</div>' : ''}
+  ${history.authorName.isNotEmpty ? '<div class="meta" style="margin-top:4px">${_hcT(p.lang, 'copy_author')} ${_esc(history.authorName)}${history.authorEmail.isNotEmpty ? " &lt;${_esc(history.authorEmail)}&gt;" : ""}${history.uploadedAt.isNotEmpty ? " — Publicado: ${_formatUploadedAt(history.uploadedAt)}" : ""}</div>' : ''}
 </div>
 ''');
 
@@ -819,11 +1176,11 @@ class _HistoryDetailState extends State<_HistoryDetail> {
 
     // ── 1. IDENTIFICAÇÃO DO PACIENTE ──────────────────────────────────────
     if (history.patientInitials.isNotEmpty || history.patientAge.isNotEmpty) {
-      buf.write('<div class="section"><div class="section-title">1. Identificação do Paciente</div>');
+      buf.write('<div class="section"><div class="section-title">${_hcT(p.lang, "pdf_section1")}</div>');
       if (history.patientInitials.isNotEmpty)
-        buf.write('<div class="field-label">Iniciais</div><div class="field-value">${_esc(history.patientInitials)}</div>');
-      buf.write('<div class="field-label">Dados demográficos</div><div class="field-value">'
-          '${history.patientAge.isNotEmpty ? "${history.patientAge} anos" : ""}${history.patientAge.isNotEmpty ? " • " : ""}${history.patientSex}'
+        buf.write('<div class="field-label">${_hcT(p.lang, "pdf_initials")}</div><div class="field-value">${_esc(history.patientInitials)}</div>');
+      buf.write('<div class="field-label">${_hcT(p.lang, "pdf_demog")}</div><div class="field-value">'
+          '${history.patientAge.isNotEmpty ? "${history.patientAge} ${_hcT(p.lang, 'years')}" : ""}${history.patientAge.isNotEmpty ? " • " : ""}${history.patientSex}'
           '${history.patientWeight.isNotEmpty ? " • ${history.patientWeight} kg" : ""}'
           '${history.patientHeight.isNotEmpty ? " • ${history.patientHeight} cm" : ""}'
           '${history.patientRecord.isNotEmpty ? " • Pront. ${_esc(history.patientRecord)}" : ""}'
@@ -833,52 +1190,52 @@ class _HistoryDetailState extends State<_HistoryDetail> {
 
     // ── 2. QUEIXA PRINCIPAL ────────────────────────────────────────────────
     if (history.chiefComplaint.isNotEmpty) {
-      buf.write('<div class="section"><div class="section-title">2. Queixa Principal</div>');
+      buf.write('<div class="section"><div class="section-title">${_hcT(p.lang, "pdf_section2")}</div>');
       buf.write('<div class="field-value" style="font-size:15px;font-weight:700">${_esc(history.chiefComplaint)}</div>');
       buf.write('</div>');
     }
 
     // ── 3. ANAMNESE ────────────────────────────────────────────────────────
-    section('3. Anamnese', [
-      ('História da doença atual', history.hpi),
-      ('Antecedentes pessoais', history.pastHistory),
-      ('Antecedentes familiares', history.familyHistory),
-      ('História social (tabagismo, etilismo, ocupação)', history.socialHistory),
-      ('Revisão de sistemas', history.reviewOfSystems),
-      ('Medicamentos em uso', history.medications),
+    section(_hcT(p.lang, 'pdf_section3'), [
+      (_hcT(p.lang, 'pdf_hpi'), history.hpi),
+      (_hcT(p.lang, 'pdf_past'), history.pastHistory),
+      (_hcT(p.lang, 'pdf_family'), history.familyHistory),
+      (_hcT(p.lang, 'pdf_social'), history.socialHistory),
+      (_hcT(p.lang, 'pdf_rvs'), history.reviewOfSystems),
+      (_hcT(p.lang, 'pdf_meds'), history.medications),
     ], allergyText: history.allergies);
 
     // ── 4. EXAME FÍSICO ────────────────────────────────────────────────────
-    section('4. Exame Físico', [
-      ('Sinais vitais', history.vitalSigns),
-      ('Exame físico por sistemas', history.physicalExam),
+    section(_hcT(p.lang, 'pdf_section4'), [
+      (_hcT(p.lang, 'pdf_vitals'), history.vitalSigns),
+      (_hcT(p.lang, 'pdf_pe'), history.physicalExam),
     ]);
 
     // ── 5. HIPÓTESES DIAGNÓSTICAS ──────────────────────────────────────────
     if (history.workingDiagnosis.isNotEmpty || history.differentialDx.isNotEmpty) {
-      buf.write('<div class="section"><div class="section-title">5. Hipóteses Diagnósticas</div>');
+      buf.write('<div class="section"><div class="section-title">${_hcT(p.lang, "pdf_section5")}</div>');
       if (history.workingDiagnosis.isNotEmpty) {
-        buf.write('<div class="field-label">Hipótese principal</div>');
+        buf.write('<div class="field-label">${_hcT(p.lang, "pdf_work_dx")}</div>');
         buf.write('<div class="field-value" style="font-size:14px;font-weight:700;color:#064E3B">${_esc(history.workingDiagnosis)}</div>');
       }
       if (history.differentialDx.isNotEmpty) {
-        buf.write('<div class="field-label" style="margin-top:10px">Diagnósticos diferenciais</div>');
+        buf.write('<div class="field-label" style="margin-top:10px">${_hcT(p.lang, "pdf_diff_dx")}</div>');
         buf.write('<div class="field-value">${_escNl(history.differentialDx)}</div>');
       }
       buf.write('</div>');
     }
 
     // ── 6. EXAMES COMPLEMENTARES ──────────────────────────────────────────
-    section('6. Exames Complementares', [
-      ('Exames laboratoriais', history.labResults),
-      ('ECG / Outros (biópsia, EEG...)', history.otherResults),
-      ('Exames de imagem', history.imagingResults),
+    section(_hcT(p.lang, 'pdf_section6'), [
+      (_hcT(p.lang, 'pdf_lab_results'), history.labResults),
+      (_hcT(p.lang, 'pdf_ecg_others'), history.otherResults),
+      (_hcT(p.lang, 'pdf_imaging_results'), history.imagingResults),
     ]);
 
     // ── 7. DIAGNÓSTICO FINAL ───────────────────────────────────────────────
     if (history.finalDiagnosis.isNotEmpty) {
       buf.write('<div class="dx-box">');
-      buf.write('<h2>7. DIAGNÓSTICO FINAL</h2>');
+      buf.write('<h2>${_hcT(p.lang, "pdf_section7")}</h2>');
       buf.write('<p>${_esc(history.finalDiagnosis)}</p>');
       if (history.cid.isNotEmpty)
         buf.write('<div style="font-size:12px;color:#065F46;margin-top:6px;font-weight:700">CID-10: ${_esc(history.cid)}</div>');
@@ -886,20 +1243,20 @@ class _HistoryDetailState extends State<_HistoryDetail> {
     }
 
     // ── 8. CONDUTA / TRATAMENTO ────────────────────────────────────────────
-    section('8. Conduta e Plano Terapêutico', [
-      ('Plano terapêutico', history.treatmentPlan),
-      ('Procedimentos realizados', history.procedures),
+    section(_hcT(p.lang, 'pdf_section8'), [
+      (_hcT(p.lang, 'pdf_plan'), history.treatmentPlan),
+      (_hcT(p.lang, 'pdf_procedures'), history.procedures),
     ]);
 
     // ── 9. EVOLUÇÃO CLÍNICA ────────────────────────────────────────────────
     if (history.evolutions.isNotEmpty) {
-      buf.write('<div class="section"><div class="section-title">9. Evolução Clínica</div>');
+      buf.write('<div class="section"><div class="section-title">${_hcT(p.lang, "pdf_section9")}</div>');
       for (final e in history.evolutions) {
         final dt = DateTime.tryParse(e.date)?.toLocal();
         final ds = dt != null
             ? '${dt.day.toString().padLeft(2,'0')}/${dt.month.toString().padLeft(2,'0')}/${dt.year} ${dt.hour.toString().padLeft(2,'0')}:${dt.minute.toString().padLeft(2,'0')}'
             : '';
-        final typeMap = {'evolution': 'Evolução Médica', 'nursing': 'Nota de Enfermagem', 'lab': 'Resultado Lab', 'imaging': 'Laudo Imagem', 'procedure': 'Procedimento'};
+        final typeMap = {'evolution': _hcT(p.lang, 'pdf_evo_med'), 'nursing': _hcT(p.lang, 'pdf_evo_nurse'), 'lab': _hcT(p.lang, 'pdf_evo_lab'), 'imaging': _hcT(p.lang, 'pdf_evo_img'), 'procedure': _hcT(p.lang, 'pdf_evo_proc')};
         buf.write('<div class="evolution">');
         buf.write('<div class="evo-meta">${typeMap[e.type] ?? 'Evolução'} — $ds${e.author.isNotEmpty ? " — ${_esc(e.author)}" : ""}</div>');
         buf.write('<div class="field-value" style="margin-top:4px">${_escNl(e.text)}</div>');
@@ -909,19 +1266,19 @@ class _HistoryDetailState extends State<_HistoryDetail> {
     }
 
     // ── 10. DESFECHO E ALTA ────────────────────────────────────────────────
-    final outcomeMap = {'internado': 'Internado', 'alta': 'Alta hospitalar', 'obito': 'Óbito', 'transferencia': 'Transferência'};
+    final outcomeMap = {'internado': _hcT(p.lang, 'out_internado'), 'alta': _hcT(p.lang, 'pdf_out_alta'), 'obito': _hcT(p.lang, 'out_obito'), 'transferencia': _hcT(p.lang, 'out_transf')};
     if (history.outcome != 'internado' || history.dischargeCondition.isNotEmpty || history.followUp.isNotEmpty) {
-      buf.write('<div class="section"><div class="section-title">10. Desfecho e Alta</div>');
+      buf.write('<div class="section"><div class="section-title">${_hcT(p.lang, "pdf_section10")}</div>');
       buf.write('<div class="outcome">${outcomeMap[history.outcome] ?? history.outcome}</div>');
       if (history.dischargeCondition.isNotEmpty)
-        buf.write('<div class="field-label">Condições de alta</div><div class="field-value">${_escNl(history.dischargeCondition)}</div>');
+        buf.write('<div class="field-label">${_hcT(p.lang, "f_discharge")}</div><div class="field-value">${_escNl(history.dischargeCondition)}</div>');
       if (history.followUp.isNotEmpty)
-        buf.write('<div class="field-label">Seguimento / Orientações</div><div class="field-value">${_escNl(history.followUp)}</div>');
+        buf.write('<div class="field-label">${_hcT(p.lang, "f_followup")}</div><div class="field-value">${_escNl(history.followUp)}</div>');
       buf.write('</div>');
     }
 
-    buf.write('''<div class="footer">Gerado por MedCases Pro — Uso exclusivamente educacional e de apoio clínico. Não substitui avaliação médica individual presencial.</div>
-</body></html>''');
+    buf.write('<div class="footer">${_hcT(p.lang, "pdf_footer")}</div>');
+    buf.write('\n</body></html>');
 
     // Abre janela de impressão (PDF via browser)
     webPlatform.webOpenHtmlPrint(buf.toString());
@@ -949,6 +1306,7 @@ class _HistoryDetailState extends State<_HistoryDetail> {
             readOnly: readOnly,
             onBack: widget.onBack,
             onEdit: widget.onEdit,
+            lang: p.lang,
           ),
           const SizedBox(height: 14),
 
@@ -966,35 +1324,35 @@ class _HistoryDetailState extends State<_HistoryDetail> {
                   if (history.finalDiagnosis.isNotEmpty || history.workingDiagnosis.isNotEmpty) const SizedBox(height: 14),
 
                   // ══ SEÇÃO ANAMNESE com ícones circulares verdes ══════════════
-                  _DetailCard(icon: Icons.record_voice_over_rounded, title: 'ANAMNESE', children: [
-                    if (history.chiefComplaint.isNotEmpty) _SectionBlock('Queixa principal', history.chiefComplaint, icon: Icons.announcement_rounded),
-                    if (history.hpi.isNotEmpty) _SectionBlock('História da doença atual', history.hpi, icon: Icons.history_edu_rounded),
-                    if (history.pastHistory.isNotEmpty) _SectionBlock('Antecedentes pessoais', history.pastHistory, icon: Icons.person_rounded),
-                    if (history.familyHistory.isNotEmpty) _SectionBlock('Antecedentes familiares', history.familyHistory, icon: Icons.family_restroom_rounded),
-                    if (history.socialHistory.isNotEmpty) _SectionBlock('História social', history.socialHistory, icon: Icons.groups_rounded),
-                    if (history.medications.isNotEmpty) _SectionBlock('Medicamentos em uso', history.medications, icon: Icons.medication_rounded),
-                    if (history.reviewOfSystems.isNotEmpty) _SectionBlock('Revisão de sistemas', history.reviewOfSystems, icon: Icons.checklist_rounded),
+                  _DetailCard(icon: Icons.record_voice_over_rounded, title: _hcT(p.lang, 'det_anamnese'), children: [
+                    if (history.chiefComplaint.isNotEmpty) _SectionBlock(_hcT(p.lang, 'det_chief'), history.chiefComplaint, icon: Icons.announcement_rounded),
+                    if (history.hpi.isNotEmpty) _SectionBlock(_hcT(p.lang, 'det_hpi'), history.hpi, icon: Icons.history_edu_rounded),
+                    if (history.pastHistory.isNotEmpty) _SectionBlock(_hcT(p.lang, 'det_past'), history.pastHistory, icon: Icons.person_rounded),
+                    if (history.familyHistory.isNotEmpty) _SectionBlock(_hcT(p.lang, 'det_family'), history.familyHistory, icon: Icons.family_restroom_rounded),
+                    if (history.socialHistory.isNotEmpty) _SectionBlock(_hcT(p.lang, 'det_social'), history.socialHistory, icon: Icons.groups_rounded),
+                    if (history.medications.isNotEmpty) _SectionBlock(_hcT(p.lang, 'det_meds'), history.medications, icon: Icons.medication_rounded),
+                    if (history.reviewOfSystems.isNotEmpty) _SectionBlock(_hcT(p.lang, 'det_rvs'), history.reviewOfSystems, icon: Icons.checklist_rounded),
                     // ── Bloco ALERGIAS em destaque vermelho ──────────────────
                     if (history.allergies.isNotEmpty) _AllergyBanner(history.allergies),
                   ]),
                   const SizedBox(height: 12),
 
-                  _DetailCard(icon: Icons.monitor_heart_rounded, title: 'EXAME FÍSICO', children: [
-                    if (history.vitalSigns.isNotEmpty) _SectionBlock('Sinais vitais', history.vitalSigns, icon: Icons.favorite_rounded),
-                    if (history.physicalExam.isNotEmpty) _SectionBlock('Exame físico', history.physicalExam, icon: Icons.accessibility_new_rounded),
+                  _DetailCard(icon: Icons.monitor_heart_rounded, title: _hcT(p.lang, 'det_exam'), children: [
+                    if (history.vitalSigns.isNotEmpty) _SectionBlock(_hcT(p.lang, 'det_vitals'), history.vitalSigns, icon: Icons.favorite_rounded),
+                    if (history.physicalExam.isNotEmpty) _SectionBlock(_hcT(p.lang, 'det_pe'), history.physicalExam, icon: Icons.accessibility_new_rounded),
                   ]),
                   const SizedBox(height: 12),
 
-                  _DetailCard(icon: Icons.science_rounded, title: 'EXAMES COMPLEMENTARES', children: [
-                    if (history.labResults.isNotEmpty) _SectionBlock('Laboratório', history.labResults, icon: Icons.biotech_rounded),
-                    if (history.imagingResults.isNotEmpty) _SectionBlock('Imagem', history.imagingResults, icon: Icons.image_search_rounded),
-                    if (history.otherResults.isNotEmpty) _SectionBlock('Outros (ECG, biópsia...)', history.otherResults, icon: Icons.analytics_rounded),
+                  _DetailCard(icon: Icons.science_rounded, title: _hcT(p.lang, 'det_labs'), children: [
+                    if (history.labResults.isNotEmpty) _SectionBlock(_hcT(p.lang, 'det_lab_res'), history.labResults, icon: Icons.biotech_rounded),
+                    if (history.imagingResults.isNotEmpty) _SectionBlock(_hcT(p.lang, 'det_img'), history.imagingResults, icon: Icons.image_search_rounded),
+                    if (history.otherResults.isNotEmpty) _SectionBlock(_hcT(p.lang, 'det_other'), history.otherResults, icon: Icons.analytics_rounded),
                   ]),
                   const SizedBox(height: 12),
 
-                  _DetailCard(icon: Icons.medical_services_rounded, title: 'CONDUTA E TRATAMENTO', children: [
-                    if (history.treatmentPlan.isNotEmpty) _SectionBlock('Plano terapêutico', history.treatmentPlan, icon: Icons.assignment_turned_in_rounded),
-                    if (history.procedures.isNotEmpty) _SectionBlock('Procedimentos', history.procedures, icon: Icons.build_circle_rounded),
+                  _DetailCard(icon: Icons.medical_services_rounded, title: _hcT(p.lang, 'det_treat'), children: [
+                    if (history.treatmentPlan.isNotEmpty) _SectionBlock(_hcT(p.lang, 'det_plan'), history.treatmentPlan, icon: Icons.assignment_turned_in_rounded),
+                    if (history.procedures.isNotEmpty) _SectionBlock(_hcT(p.lang, 'det_proc'), history.procedures, icon: Icons.build_circle_rounded),
                     if (history.drugIds.isNotEmpty) _DrugChips(history.drugIds, p),
                   ]),
                   const SizedBox(height: 12),
@@ -1007,10 +1365,10 @@ class _HistoryDetailState extends State<_HistoryDetail> {
 
                   // Desfecho
                   if (history.outcome != 'internado' || history.dischargeCondition.isNotEmpty || history.followUp.isNotEmpty)
-                    _DetailCard(icon: Icons.flag_rounded, title: 'DESFECHO E ALTA', children: [
+                    _DetailCard(icon: Icons.flag_rounded, title: _hcT(p.lang, 'det_outcome'), children: [
                       _OutcomeBadge(history.outcome),
-                      if (history.dischargeCondition.isNotEmpty) _SectionBlock('Condições de alta', history.dischargeCondition, icon: Icons.door_front_door_rounded),
-                      if (history.followUp.isNotEmpty) _SectionBlock('Seguimento', history.followUp, icon: Icons.event_note_rounded),
+                      if (history.dischargeCondition.isNotEmpty) _SectionBlock(_hcT(p.lang, 'det_discharge'), history.dischargeCondition, icon: Icons.door_front_door_rounded),
+                      if (history.followUp.isNotEmpty) _SectionBlock(_hcT(p.lang, 'det_followup'), history.followUp, icon: Icons.event_note_rounded),
                     ]),
                 ]),
               ),
@@ -1022,10 +1380,10 @@ class _HistoryDetailState extends State<_HistoryDetail> {
                 Expanded(child: GestureDetector(
                   onTap: _copy,
                   child: Container(height: 48, decoration: BoxDecoration(borderRadius: BorderRadius.circular(14), color: kDark, boxShadow: [BoxShadow(color: kDark.withValues(alpha: 0.25), blurRadius: 10, offset: const Offset(0,4))]),
-                    child: const Center(child: Row(mainAxisSize: MainAxisSize.min, children: [
-                      Icon(Icons.copy_rounded, size: 14, color: kGoldLight),
-                      SizedBox(width: 6),
-                      Text('Copiar HC', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w900, color: kGoldLight)),
+                    child: Center(child: Row(mainAxisSize: MainAxisSize.min, children: [
+                      const Icon(Icons.copy_rounded, size: 14, color: kGoldLight),
+                      const SizedBox(width: 6),
+                      Text(_hcT(p.lang, 'copy_hc'), style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w900, color: kGoldLight)),
                     ]))),
                 )),
                 const SizedBox(width: 8),
@@ -1062,7 +1420,7 @@ class _HistoryDetailState extends State<_HistoryDetail> {
               Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                 Icon(Icons.info_outline_rounded, size: 11, color: Colors.grey[400]),
                 const SizedBox(width: 4),
-                Text('PDF abre janela de impressão  •  PNG salva imagem da HC', style: TextStyle(fontSize: 10, color: Colors.grey[400], fontWeight: FontWeight.w500)),
+                Text(_hcT(p.lang, 'pdf_hint'), style: TextStyle(fontSize: 10, color: Colors.grey[400], fontWeight: FontWeight.w500)),
               ]),
             ],
           )),
@@ -1106,12 +1464,14 @@ class _HistoryHeroHeader extends StatelessWidget {
   final bool readOnly;
   final VoidCallback onBack;
   final VoidCallback? onEdit;
+  final String lang;
 
   const _HistoryHeroHeader({
     required this.history,
     required this.readOnly,
     required this.onBack,
     this.onEdit,
+    this.lang = 'pt',
   });
 
   @override
@@ -1160,7 +1520,7 @@ class _HistoryHeroHeader extends StatelessWidget {
                 child: Row(mainAxisSize: MainAxisSize.min, children: [
                   const Icon(Icons.arrow_back_ios_rounded, size: 13, color: Colors.white),
                   const SizedBox(width: 4),
-                  Text('Voltar', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: Colors.white.withValues(alpha: 0.9))),
+                  Text(_hcT(lang, 'back'), style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: Colors.white.withValues(alpha: 0.9))),
                 ]),
               ),
             ),
@@ -1235,13 +1595,13 @@ class _HistoryHeroHeader extends StatelessWidget {
                 if (history.patientInitials.isNotEmpty) _PatientBadge(
                   icon: Icons.badge_rounded, text: history.patientInitials, accent: const Color(0xFF4ADE80)),
                 if (history.patientAge.isNotEmpty) _PatientBadge(
-                  icon: Icons.cake_rounded, text: '${history.patientAge} anos', accent: const Color(0xFF93C5FD)),
+                  icon: Icons.cake_rounded, text: '${history.patientAge} ${_hcT(lang, 'years')}', accent: const Color(0xFF93C5FD)),
                 if (history.patientSex.isNotEmpty) _PatientBadge(
                   icon: Icons.wc_rounded, text: history.patientSex, accent: const Color(0xFFF9A8D4)),
                 if (history.patientWeight.isNotEmpty) _PatientBadge(
                   icon: Icons.monitor_weight_rounded, text: '${history.patientWeight} kg', accent: const Color(0xFFFBD38D)),
                 if (history.patientRecord.isNotEmpty) _PatientBadge(
-                  icon: Icons.folder_shared_rounded, text: 'Pront. ${history.patientRecord}', accent: const Color(0xFFFFE8A6)),
+                  icon: Icons.folder_shared_rounded, text: '${_hcT(lang, 'pront')} ${history.patientRecord}', accent: const Color(0xFFFFE8A6)),
               ]),
             ],
 
@@ -1302,19 +1662,24 @@ class _HistoryEditorState extends State<_HistoryEditor> {
   // Controllers
   late final Map<String, TextEditingController> _ctrls;
 
-  static const _sections = [
-    ('', 'Paciente'),
-    ('', 'Anamnese'),
-    ('', 'Exame Físico'),
-    ('', 'Exames'),
-    ('', 'Conduta'),
-    ('', 'Evolução'),
-    ('', 'Desfecho'),
+  List<(String, String)> get _sections => [
+    ('', _hcT(widget.p.lang, 'sec_patient')),
+    ('', _hcT(widget.p.lang, 'sec_anamnesis')),
+    ('', _hcT(widget.p.lang, 'sec_physical')),
+    ('', _hcT(widget.p.lang, 'sec_exams')),
+    ('', _hcT(widget.p.lang, 'sec_treatment')),
+    ('', _hcT(widget.p.lang, 'sec_evolution')),
+    ('', _hcT(widget.p.lang, 'sec_outcome')),
   ];
 
   static const _categories = ['Clínica Geral', 'Cardiology', 'Emergência', 'Pneumologia', 'Neurologia', 'Gastro', 'Endocrinologia', 'Nefrologia', 'Infectologia', 'Cirurgia', 'Pediatria', 'Ginecologia', 'Ortopedia', 'Outro'];
   static const _outcomes = ['internado', 'alta', 'obito', 'transferencia'];
-  static const _outcomesLabel = ['Internado', 'Alta', 'Óbito', 'Transferência'];
+  List<String> get _outcomesLabel => [
+    _hcT(widget.p.lang, 'out_internado'),
+    _hcT(widget.p.lang, 'out_alta'),
+    _hcT(widget.p.lang, 'out_obito'),
+    _hcT(widget.p.lang, 'out_transf'),
+  ];
 
   @override
   void initState() {
@@ -1444,19 +1809,20 @@ class _HistoryEditorState extends State<_HistoryEditor> {
 
   // Nome legível do campo para feedback
   String _fieldLabel(String key) {
-    const labels = {
-      'chiefComplaint': 'Queixa principal',
-      'hpi': 'HDA',
-      'pastHistory': 'Antecedentes pessoais',
-      'familyHistory': 'Antecedentes familiares',
-      'socialHistory': 'História social',
-      'medications': 'Medicamentos',
-      'allergies': 'Alergias',
-      'reviewOfSystems': 'Revisão de sistemas',
-      'vitalSigns': 'Sinais vitais',
-      'physicalExam': 'Exame físico',
-      'workingDiagnosis': 'Hipótese diagnóstica',
-      'treatmentPlan': 'Conduta',
+    final lang = widget.p.lang;
+    final labels = {
+      'chiefComplaint': _hcT(lang, 'stt_chief'),
+      'hpi': _hcT(lang, 'stt_hpi'),
+      'pastHistory': _hcT(lang, 'stt_past'),
+      'familyHistory': _hcT(lang, 'stt_family'),
+      'socialHistory': _hcT(lang, 'stt_social'),
+      'medications': _hcT(lang, 'stt_meds'),
+      'allergies': _hcT(lang, 'stt_allergies'),
+      'reviewOfSystems': _hcT(lang, 'stt_ros'),
+      'vitalSigns': _hcT(lang, 'stt_vitals'),
+      'physicalExam': _hcT(lang, 'stt_pe'),
+      'workingDiagnosis': _hcT(lang, 'stt_wdx'),
+      'treatmentPlan': _hcT(lang, 'stt_plan'),
     };
     return labels[key] ?? key;
   }
@@ -1755,7 +2121,7 @@ class _HistoryEditorState extends State<_HistoryEditor> {
                 ]))),
             GestureDetector(onTap: _save,
               child: Container(padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8), decoration: BoxDecoration(borderRadius: BorderRadius.circular(12), color: kGold),
-                child: Text(widget.p.lang == 'es' ? 'Guardar' : 'Salvar', style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w900, color: Color(0xFF0F1C14))))),
+                child: Text(_hcT(widget.p.lang, 'save_btn'), style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w900, color: Color(0xFF0F1C14))))),
           ]),
           const SizedBox(height: 10),
           // Barra de progresso
@@ -1764,7 +2130,7 @@ class _HistoryEditorState extends State<_HistoryEditor> {
               child: LinearProgressIndicator(value: completion, minHeight: 4, backgroundColor: Colors.white.withValues(alpha: 0.15),
                 valueColor: const AlwaysStoppedAnimation(kGold)))),
             const SizedBox(width: 8),
-            Text('${(completion * 100).round()}% preenchido', style: TextStyle(fontSize: 9, color: Colors.white.withValues(alpha: 0.7), fontWeight: FontWeight.w700)),
+            Text('${(completion * 100).round()}${_hcT(widget.p.lang, "progress_label")}', style: TextStyle(fontSize: 9, color: Colors.white.withValues(alpha: 0.7), fontWeight: FontWeight.w700)),
           ]),
           const SizedBox(height: 10),
           // Navegação de seções
@@ -1848,7 +2214,7 @@ class _HistoryEditorState extends State<_HistoryEditor> {
             _PulseDot(),
             const SizedBox(width: 10),
             Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              const Text('Ouvindo...', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w900, color: Color(0xFFDC2626), letterSpacing: 0.5)),
+              Text(_hcT(widget.p.lang, 'dictating'), style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w900, color: Color(0xFFDC2626), letterSpacing: 0.5)),
               if (_sttInterim.isNotEmpty)
                 Text(_sttInterim, style: const TextStyle(fontSize: 12, color: Color(0xFF555555), fontWeight: FontWeight.w600, fontStyle: FontStyle.italic),
                   maxLines: 2, overflow: TextOverflow.ellipsis),
@@ -1888,36 +2254,36 @@ class _HistoryEditorState extends State<_HistoryEditor> {
 
   // ── Seção 0: Paciente ──────────────────────────────────────────────────────
   Widget _buildPatientSection() => Column(children: [
-    _EditorField('Iniciais do paciente *', _ctrls['patientInitials']!, hint: 'J.S. (preservar privacidade)'),
+    _EditorField(_hcT(widget.p.lang, 'f_initials'), _ctrls['patientInitials']!, hint: _hcT(widget.p.lang, 'h_initials')),
     const SizedBox(height: 10),
     Row(children: [
-      Expanded(child: _EditorField('Idade', _ctrls['patientAge']!, hint: '68', numeric: true)),
+      Expanded(child: _EditorField(_hcT(widget.p.lang, 'f_age'), _ctrls['patientAge']!, hint: '68', numeric: true)),
       const SizedBox(width: 10),
       Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        const Text('SEXO', style: TextStyle(fontSize: 9, fontWeight: FontWeight.w900, letterSpacing: 1.4, color: Color(0xFF888888))),
+        Text(_hcT(widget.p.lang, 'f_sex').toUpperCase(), style: const TextStyle(fontSize: 9, fontWeight: FontWeight.w900, letterSpacing: 1.4, color: Color(0xFF888888))),
         const SizedBox(height: 5),
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 12), height: 44,
           decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(14), border: Border.all(color: kBorder)),
           child: DropdownButtonHideUnderline(child: DropdownButton<String>(
             value: _draft.patientSex, isExpanded: true,
-            items: ['Masculino', 'Feminino'].map((s) => DropdownMenuItem(value: s, child: Text(s, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w700)))).toList(),
-            onChanged: (v) => setState(() => _draft = _draft.copyWith(patientSex: v ?? 'Masculino')),
+            items: [_hcT(widget.p.lang, 'sex_male'), _hcT(widget.p.lang, 'sex_female')].map((s) => DropdownMenuItem(value: s, child: Text(s, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w700)))).toList(),
+            onChanged: (v) => setState(() => _draft = _draft.copyWith(patientSex: v ?? _hcT(widget.p.lang, 'sex_male'))),
           )),
         ),
       ])),
     ]),
     const SizedBox(height: 10),
     Row(children: [
-      Expanded(child: _EditorField('Peso (kg)', _ctrls['patientWeight']!, hint: '72', numeric: true)),
+      Expanded(child: _EditorField(_hcT(widget.p.lang, 'f_weight'), _ctrls['patientWeight']!, hint: '72', numeric: true)),
       const SizedBox(width: 10),
-      Expanded(child: _EditorField('Altura (cm)', _ctrls['patientHeight']!, hint: '170', numeric: true)),
+      Expanded(child: _EditorField(_hcT(widget.p.lang, 'f_height'), _ctrls['patientHeight']!, hint: '170', numeric: true)),
     ]),
     const SizedBox(height: 10),
-    _EditorField('Nº Prontuário (opcional)', _ctrls['patientRecord']!, hint: '00123456'),
+    _EditorField(_hcT(widget.p.lang, 'f_record'), _ctrls['patientRecord']!, hint: '00123456'),
     const SizedBox(height: 10),
     Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      const Text('CATEGORIA / ESPECIALIDADE', style: TextStyle(fontSize: 9, fontWeight: FontWeight.w900, letterSpacing: 1.4, color: Color(0xFF888888))),
+      Text(_hcT(widget.p.lang, 'f_category').toUpperCase(), style: const TextStyle(fontSize: 9, fontWeight: FontWeight.w900, letterSpacing: 1.4, color: Color(0xFF888888))),
       const SizedBox(height: 5),
       Container(
         padding: const EdgeInsets.symmetric(horizontal: 12), height: 44,
@@ -1930,7 +2296,7 @@ class _HistoryEditorState extends State<_HistoryEditor> {
       ),
     ]),
     const SizedBox(height: 10),
-    _EditorField('Tags (ex: sepse, UTI, DM2)', _ctrls['tags']!, hint: 'sepse, pneumonia, idoso'),
+    _EditorField(_hcT(widget.p.lang, 'f_tags'), _ctrls['tags']!, hint: _hcT(widget.p.lang, 'h_tags')),
     const SizedBox(height: 14),
     // Compartilhar toggle
     GestureDetector(
@@ -1943,10 +2309,10 @@ class _HistoryEditorState extends State<_HistoryEditor> {
           Icon(_draft.isPublic ? Icons.public_rounded : Icons.lock_outline_rounded, size: 20, color: _draft.isPublic ? const Color(0xFF1E40AF) : const Color(0xFF888888)),
           const SizedBox(width: 12),
           Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text(_draft.isPublic ? 'História pública — visível na Comunidade' : 'História privada — somente você vê',
+            Text(_draft.isPublic ? _hcT(widget.p.lang, 'public_on') : _hcT(widget.p.lang, 'public_off'),
               style: TextStyle(fontSize: 13, fontWeight: FontWeight.w900, color: _draft.isPublic ? const Color(0xFF1E40AF) : kDark)),
             const SizedBox(height: 2),
-            const Text('Toque para alternar. Dados do paciente são anonimizados (iniciais).', style: TextStyle(fontSize: 10, color: Color(0xFF888888), fontWeight: FontWeight.w600)),
+            Text(_hcT(widget.p.lang, 'public_hint'), style: const TextStyle(fontSize: 10, color: Color(0xFF888888), fontWeight: FontWeight.w600)),
           ])),
           Switch(value: _draft.isPublic, onChanged: (v) => setState(() => _draft = _draft.copyWith(isPublic: v)),
             activeThumbColor: const Color(0xFF1E40AF)),
@@ -1965,21 +2331,21 @@ class _HistoryEditorState extends State<_HistoryEditor> {
       lang: widget.p.lang,
     ),
     const SizedBox(height: 12),
-    _EditorField('Queixa principal *', _ctrls['chiefComplaint']!, hint: 'Dor torácica há 2h', multiline: true, onMic: () => _startStt('chiefComplaint'), fieldKey: 'chiefComplaint'),
+    _EditorField(_hcT(widget.p.lang, 'f_chief'), _ctrls['chiefComplaint']!, hint: _hcT(widget.p.lang, 'h_chief'), multiline: true, onMic: () => _startStt('chiefComplaint'), fieldKey: 'chiefComplaint'),
     const SizedBox(height: 10),
-    _EditorField('História da doença atual (HDA)', _ctrls['hpi']!, hint: 'Descrever cronologia, características, fatores...', multiline: true, lines: 5, onMic: () => _startStt('hpi'), fieldKey: 'hpi'),
+    _EditorField(_hcT(widget.p.lang, 'f_hpi'), _ctrls['hpi']!, hint: _hcT(widget.p.lang, 'h_hpi'), multiline: true, lines: 5, onMic: () => _startStt('hpi'), fieldKey: 'hpi'),
     const SizedBox(height: 10),
-    _EditorField('Antecedentes pessoais', _ctrls['pastHistory']!, hint: 'HAS, DM2, IAM prévio, cirurgias...', multiline: true, onMic: () => _startStt('pastHistory'), fieldKey: 'pastHistory'),
+    _EditorField(_hcT(widget.p.lang, 'f_past'), _ctrls['pastHistory']!, hint: _hcT(widget.p.lang, 'h_past'), multiline: true, onMic: () => _startStt('pastHistory'), fieldKey: 'pastHistory'),
     const SizedBox(height: 10),
-    _EditorField('Antecedentes familiares', _ctrls['familyHistory']!, hint: 'Pai: IAM aos 55 anos. Mãe: DM2...', multiline: true, onMic: () => _startStt('familyHistory'), fieldKey: 'familyHistory'),
+    _EditorField(_hcT(widget.p.lang, 'f_family'), _ctrls['familyHistory']!, hint: _hcT(widget.p.lang, 'h_family'), multiline: true, onMic: () => _startStt('familyHistory'), fieldKey: 'familyHistory'),
     const SizedBox(height: 10),
-    _EditorField('História social', _ctrls['socialHistory']!, hint: 'Tabagismo, etilismo, drogas, atividade física, profissão...', multiline: true, onMic: () => _startStt('socialHistory'), fieldKey: 'socialHistory'),
+    _EditorField(_hcT(widget.p.lang, 'f_social'), _ctrls['socialHistory']!, hint: _hcT(widget.p.lang, 'h_social'), multiline: true, onMic: () => _startStt('socialHistory'), fieldKey: 'socialHistory'),
     const SizedBox(height: 10),
-    _EditorField('Medicamentos em uso', _ctrls['medications']!, hint: 'AAS 100mg/dia, metformina 850mg 2x/dia...', multiline: true, onMic: () => _startStt('medications'), fieldKey: 'medications'),
+    _EditorField(_hcT(widget.p.lang, 'f_meds'), _ctrls['medications']!, hint: _hcT(widget.p.lang, 'h_meds'), multiline: true, onMic: () => _startStt('medications'), fieldKey: 'medications'),
     const SizedBox(height: 10),
-    _EditorField('Alergias', _ctrls['allergies']!, hint: 'Penicilina (urticária), dipirona (angioedema)...', multiline: true, onMic: () => _startStt('allergies'), fieldKey: 'allergies'),
+    _EditorField(_hcT(widget.p.lang, 'f_allergies'), _ctrls['allergies']!, hint: _hcT(widget.p.lang, 'h_allergies'), multiline: true, onMic: () => _startStt('allergies'), fieldKey: 'allergies'),
     const SizedBox(height: 10),
-    _EditorField('Revisão de sistemas', _ctrls['reviewOfSystems']!, hint: 'Cardiovascular, respiratório, GI, neurológico...', multiline: true, onMic: () => _startStt('reviewOfSystems'), fieldKey: 'reviewOfSystems'),
+    _EditorField(_hcT(widget.p.lang, 'f_ros'), _ctrls['reviewOfSystems']!, hint: _hcT(widget.p.lang, 'h_ros'), multiline: true, onMic: () => _startStt('reviewOfSystems'), fieldKey: 'reviewOfSystems'),
   ]);
 
   // ── Seção 2: Exame físico ──────────────────────────────────────────────────
@@ -1998,17 +2364,17 @@ class _HistoryEditorState extends State<_HistoryEditor> {
       onMic: () => _startStt('vitalSigns'),
     ),
     const SizedBox(height: 10),
-    _EditorField('Exame físico por sistemas', _ctrls['physicalExam']!, hint: 'Geral: BEG, corado, hidratado...\nCV: RCR 2T, sem sopros...\nTórax: MV+ bilateral, sem RA...\nAbdome: RHA+, indolor...', multiline: true, lines: 8, onMic: () => _startStt('physicalExam'), fieldKey: 'physicalExam'),
+    _EditorField(_hcT(widget.p.lang, 'f_pe'), _ctrls['physicalExam']!, hint: _hcT(widget.p.lang, 'h_pe'), multiline: true, lines: 8, onMic: () => _startStt('physicalExam'), fieldKey: 'physicalExam'),
     const SizedBox(height: 10),
     // Diagnóstico logo após o exame físico
-    _EditorField('Hipótese diagnóstica principal', _ctrls['workingDiagnosis']!, hint: 'Síndrome Coronariana Aguda STEMI anterior', fieldKey: 'workingDiagnosis'),
+    _EditorField(_hcT(widget.p.lang, 'f_wdx'), _ctrls['workingDiagnosis']!, hint: _hcT(widget.p.lang, 'h_wdx'), fieldKey: 'workingDiagnosis'),
     const SizedBox(height: 10),
-    _EditorField('Diagnóstico diferencial', _ctrls['differentialDx']!, hint: 'Pericardite aguda, dissecção aórtica, TEP...', multiline: true, fieldKey: 'differentialDx'),
+    _EditorField(_hcT(widget.p.lang, 'f_diffdx'), _ctrls['differentialDx']!, hint: _hcT(widget.p.lang, 'h_diffdx'), multiline: true, fieldKey: 'differentialDx'),
     const SizedBox(height: 10),
     Row(children: [
-      Expanded(flex: 2, child: _EditorField('Diagnóstico final', _ctrls['finalDiagnosis']!, hint: 'IAM STEMI anterior')),
+      Expanded(flex: 2, child: _EditorField(_hcT(widget.p.lang, 'f_finaldx'), _ctrls['finalDiagnosis']!, hint: _hcT(widget.p.lang, 'h_finaldx'))),
       const SizedBox(width: 10),
-      Expanded(child: _EditorField('CID', _ctrls['cid']!, hint: 'I21.0')),
+      Expanded(child: _EditorField(_hcT(widget.p.lang, 'f_cid'), _ctrls['cid']!, hint: 'I21.0')),
     ]),
   ]);
 
@@ -2021,22 +2387,22 @@ class _HistoryEditorState extends State<_HistoryEditor> {
     _EcgStructuredWidget(controller: _ctrls['otherResults']!),
     const SizedBox(height: 10),
     // ── Exames de imagem ───────────────────────────────────────────────────
-    _EditorField('Exames de imagem / Outros', _ctrls['imagingResults']!, hint: 'RX tórax: sem congestão, ICT normal...\nEco: FE 48%, hipocinesia anterior...\nTC crânio: sem lesões agudas...', multiline: true, lines: 5, fieldKey: 'imagingResults'),
+    _EditorField(_hcT(widget.p.lang, 'f_imaging'), _ctrls['imagingResults']!, hint: _hcT(widget.p.lang, 'h_imaging'), multiline: true, lines: 5, fieldKey: 'imagingResults'),
   ]);
 
   // ── Seção 4: Conduta / Tratamento ────────────────────────────────────────
   Widget _buildTreatmentSection() => Column(children: [
-    _EditorField('Plano terapêutico / Conduta', _ctrls['treatmentPlan']!, hint: '1. AAS 300mg VO imediato\n2. Ticagrelor 180mg VO\n3. Heparina NF EV\n4. Ativar hemodinâmica (meta porta-balão < 90min)...', multiline: true, lines: 7, onMic: () => _startStt('treatmentPlan'), fieldKey: 'treatmentPlan'),
+    _EditorField(_hcT(widget.p.lang, 'f_plan'), _ctrls['treatmentPlan']!, hint: _hcT(widget.p.lang, 'h_plan'), multiline: true, lines: 7, onMic: () => _startStt('treatmentPlan'), fieldKey: 'treatmentPlan'),
     const SizedBox(height: 10),
-    _EditorField('Procedimentos realizados', _ctrls['procedures']!, hint: 'Cateterismo + angioplastia com stent em DA proximal...', multiline: true, onMic: () => _startStt('procedures'), fieldKey: 'procedures'),
+    _EditorField(_hcT(widget.p.lang, 'f_procedures'), _ctrls['procedures']!, hint: _hcT(widget.p.lang, 'h_procedures'), multiline: true, onMic: () => _startStt('procedures'), fieldKey: 'procedures'),
   ]);
 
   // ── Seção 5: Evolução ─────────────────────────────────────────────────────
   Widget _buildEvolutionSection() {
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      const Text('NOTAS DE EVOLUÇÃO', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w900, letterSpacing: 1.4, color: Color(0xFF888888))),
+      Text(_hcT(widget.p.lang, 'evol_title').toUpperCase(), style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w900, letterSpacing: 1.4, color: Color(0xFF888888))),
       const SizedBox(height: 4),
-      const Text('Registre a evolução cronológica do paciente (diária, por turno, por evento).', style: TextStyle(fontSize: 11, color: Color(0xFF888888), fontWeight: FontWeight.w600)),
+      Text(_hcT(widget.p.lang, 'evol_hint'), style: const TextStyle(fontSize: 11, color: Color(0xFF888888), fontWeight: FontWeight.w600)),
       const SizedBox(height: 12),
       ..._draft.evolutions.asMap().entries.map((entry) {
         final i = entry.key;
@@ -2065,10 +2431,10 @@ class _HistoryEditorState extends State<_HistoryEditor> {
         child: Container(
           width: double.infinity, height: 48,
           decoration: BoxDecoration(borderRadius: BorderRadius.circular(14), border: Border.all(color: kBorder, style: BorderStyle.solid), color: kSurface),
-          child: const Center(child: Row(mainAxisSize: MainAxisSize.min, children: [
-            Icon(Icons.add_circle_outline_rounded, size: 16, color: kGold),
-            SizedBox(width: 6),
-            Text('Adicionar nota de evolução', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w900, color: kGold)),
+          child: Center(child: Row(mainAxisSize: MainAxisSize.min, children: [
+            const Icon(Icons.add_circle_outline_rounded, size: 16, color: kGold),
+            const SizedBox(width: 6),
+            Text(_hcT(widget.p.lang, 'add_evol'), style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w900, color: kGold)),
           ])),
         ),
       ),
@@ -2077,7 +2443,7 @@ class _HistoryEditorState extends State<_HistoryEditor> {
 
   // ── Seção 6: Desfecho ──────────────────────────────────────────────────────
   Widget _buildOutcomeSection() => Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-    const Text('DESFECHO', style: TextStyle(fontSize: 9, fontWeight: FontWeight.w900, letterSpacing: 1.4, color: Color(0xFF888888))),
+    Text(_hcT(widget.p.lang, 'outcome_title').toUpperCase(), style: const TextStyle(fontSize: 9, fontWeight: FontWeight.w900, letterSpacing: 1.4, color: Color(0xFF888888))),
     const SizedBox(height: 8),
     Row(children: List.generate(_outcomes.length, (i) {
       final selected = _draft.outcome == _outcomes[i];
@@ -2102,9 +2468,9 @@ class _HistoryEditorState extends State<_HistoryEditor> {
       ));
     })),
     const SizedBox(height: 14),
-    _EditorField('Condições de alta', _ctrls['dischargeCondition']!, hint: 'BEG, estável, orientado, tolerando VO...', multiline: true, fieldKey: 'dischargeCondition'),
+    _EditorField(_hcT(widget.p.lang, 'f_discharge'), _ctrls['dischargeCondition']!, hint: _hcT(widget.p.lang, 'h_discharge'), multiline: true, fieldKey: 'dischargeCondition'),
     const SizedBox(height: 10),
-    _EditorField('Seguimento / Orientações', _ctrls['followUp']!, hint: 'Retorno em 7 dias com cardiologista. Manter AAS + ticagrelor por 12 meses...', multiline: true, fieldKey: 'followUp'),
+    _EditorField(_hcT(widget.p.lang, 'f_followup'), _ctrls['followUp']!, hint: _hcT(widget.p.lang, 'h_followup'), multiline: true, fieldKey: 'followUp'),
   ]);
 }
 
@@ -2233,11 +2599,14 @@ class _EditorFieldState extends State<_EditorField> {
                 color: const Color(0xFFDC2626).withValues(alpha: 0.08),
                 border: Border.all(color: const Color(0xFFDC2626).withValues(alpha: 0.25)),
               ),
-              child: const Row(mainAxisSize: MainAxisSize.min, children: [
-                Icon(Icons.mic_rounded, size: 11, color: Color(0xFFDC2626)),
-                SizedBox(width: 4),
-                Text('Ditar', style: TextStyle(fontSize: 9, fontWeight: FontWeight.w800, color: Color(0xFFDC2626))),
-              ]),
+              child: Builder(builder: (ctx) {
+                final localLang = ctx.read<AppProvider>().lang;
+                return Row(mainAxisSize: MainAxisSize.min, children: [
+                  const Icon(Icons.mic_rounded, size: 11, color: Color(0xFFDC2626)),
+                  const SizedBox(width: 4),
+                  Text(_hcT(localLang, 'dictate_btn'), style: const TextStyle(fontSize: 9, fontWeight: FontWeight.w800, color: Color(0xFFDC2626))),
+                ]);
+              }),
             ),
           ),
         ],
@@ -2967,14 +3336,23 @@ class _OutcomeBadge extends StatelessWidget {
   const _OutcomeBadge(this.outcome);
   @override
   Widget build(BuildContext context) {
-    final map = {'internado': ('Internado', const Color(0xFFC5A365)), 'alta': ('Alta hospitalar', const Color(0xFF065F46)), 'obito': ('Óbito', const Color(0xFFCC2222)), 'transferencia': ('Transferência', const Color(0xFF1E40AF))};
-    final info = map[outcome] ?? ('Internado', kGold);
+    final lang = context.read<AppProvider>().lang;
+    final map = {
+      'internado': (_hcT(lang, 'out_internado'), const Color(0xFFC5A365)),
+      'alta': (_hcT(lang, 'pdf_out_alta'), const Color(0xFF065F46)),
+      'obito': (_hcT(lang, 'out_obito'), const Color(0xFFCC2222)),
+      'transferencia': (_hcT(lang, 'out_transf'), const Color(0xFF1E40AF)),
+    };
+    final info = map[outcome] ?? (_hcT(lang, 'out_internado'), kGold);
+    final outcomeLabel = info.$1;
+    final outcomeColor = info.$2;
+    final outcomePrefix = _hcT(lang, 'outcome_title');
     return Padding(
       padding: const EdgeInsets.only(bottom: 10),
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-        decoration: BoxDecoration(borderRadius: BorderRadius.circular(12), color: info.$2.withValues(alpha: 0.1), border: Border.all(color: info.$2.withValues(alpha: 0.3))),
-        child: Text('Desfecho: ${info.$1}', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w900, color: info.$2)),
+        decoration: BoxDecoration(borderRadius: BorderRadius.circular(12), color: outcomeColor.withValues(alpha: 0.1), border: Border.all(color: outcomeColor.withValues(alpha: 0.3))),
+        child: Text('$outcomePrefix: $outcomeLabel', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w900, color: outcomeColor)),
       ),
     );
   }
@@ -3119,37 +3497,39 @@ class _EvolutionEditorCardState extends State<_EvolutionEditorCard> {
 
 class _EmptyHistoryState extends StatelessWidget {
   final VoidCallback onNew;
-  const _EmptyHistoryState({required this.onNew});
+  final String lang;
+  const _EmptyHistoryState({required this.onNew, this.lang = 'pt'});
   @override
   Widget build(BuildContext context) {
     return Center(child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
       Icon(Icons.description_outlined, size: 56, color: Colors.grey[300]),
       const SizedBox(height: 14),
-      const Text('Nenhuma história clínica', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w900, color: Color(0xFFAAAAAA))),
+      Text(_hcT(lang, 'empty_title'), style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w900, color: Color(0xFFAAAAAA))),
       const SizedBox(height: 6),
-      const Text('Crie e documente seus casos clínicos\nde forma estruturada e completa', textAlign: TextAlign.center, style: TextStyle(fontSize: 12, color: Color(0xFFBBBBBB), fontWeight: FontWeight.w600)),
+      Text(_hcT(lang, 'empty_sub'), textAlign: TextAlign.center, style: const TextStyle(fontSize: 12, color: Color(0xFFBBBBBB), fontWeight: FontWeight.w600)),
       const SizedBox(height: 20),
-      MedButton(label: '+ Nova história clínica', onTap: onNew),
+      MedButton(label: _hcT(lang, "new_history_btn"), onTap: onNew),
     ]));
   }
 }
 
 class _EmptyCommunityState extends StatelessWidget {
   final VoidCallback onRefresh;
-  const _EmptyCommunityState({required this.onRefresh});
+  final String lang;
+  const _EmptyCommunityState({required this.onRefresh, this.lang = 'pt'});
   @override
   Widget build(BuildContext context) {
     return Center(child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
       Icon(Icons.people_outline_rounded, size: 56, color: Colors.grey[300]),
       const SizedBox(height: 14),
-      const Text('Nenhuma história pública', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w900, color: Color(0xFFAAAAAA))),
+      Text(_hcT(lang, 'empty_comm_title'), style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w900, color: Color(0xFFAAAAAA))),
       const SizedBox(height: 6),
-      const Text('Seja o primeiro a compartilhar!\nAnonimize e compartilhe seus casos.', textAlign: TextAlign.center, style: TextStyle(fontSize: 12, color: Color(0xFFBBBBBB), fontWeight: FontWeight.w600)),
+      Text(_hcT(lang, 'empty_comm_sub'), textAlign: TextAlign.center, style: const TextStyle(fontSize: 12, color: Color(0xFFBBBBBB), fontWeight: FontWeight.w600)),
       const SizedBox(height: 20),
       GestureDetector(onTap: onRefresh, child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         decoration: BoxDecoration(borderRadius: BorderRadius.circular(12), color: kDark),
-        child: const Text('Atualizar', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w900, color: kGoldLight)),
+        child: Text(_hcT(lang, 'refresh'), style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w900, color: kGoldLight)),
       )),
     ]));
   }
@@ -3311,7 +3691,7 @@ class _VitalSignsWidgetState extends State<_VitalSignsWidget> {
         Row(children: [
           const Icon(Icons.monitor_heart_rounded, size: 14, color: kGreen),
           const SizedBox(width: 6),
-          const Text('SINAIS VITAIS', style: TextStyle(fontSize: 9, fontWeight: FontWeight.w900, letterSpacing: 1.4, color: Color(0xFF555555))),
+          Text(_hcT(context.read<AppProvider>().lang, 'vitals_title').toUpperCase(), style: const TextStyle(fontSize: 9, fontWeight: FontWeight.w900, letterSpacing: 1.4, color: Color(0xFF555555))),
           const Spacer(),
           if (widget.onMic != null)
             GestureDetector(
@@ -3319,11 +3699,14 @@ class _VitalSignsWidgetState extends State<_VitalSignsWidget> {
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                 decoration: BoxDecoration(borderRadius: BorderRadius.circular(8), color: const Color(0xFFDC2626).withValues(alpha: 0.08), border: Border.all(color: const Color(0xFFDC2626).withValues(alpha: 0.25))),
-                child: const Row(mainAxisSize: MainAxisSize.min, children: [
-                  Icon(Icons.mic_rounded, size: 11, color: Color(0xFFDC2626)),
-                  SizedBox(width: 3),
-                  Text('Ditar', style: TextStyle(fontSize: 9, fontWeight: FontWeight.w800, color: Color(0xFFDC2626))),
-                ]),
+                child: Builder(builder: (ctx) {
+                  final localLang = ctx.read<AppProvider>().lang;
+                  return Row(mainAxisSize: MainAxisSize.min, children: [
+                    const Icon(Icons.mic_rounded, size: 11, color: Color(0xFFDC2626)),
+                    const SizedBox(width: 3),
+                    Text(_hcT(localLang, 'dictate_btn'), style: const TextStyle(fontSize: 9, fontWeight: FontWeight.w800, color: Color(0xFFDC2626))),
+                  ]);
+                }),
               ),
             ),
         ]),
@@ -3459,7 +3842,7 @@ class _EcgStructuredWidgetState extends State<_EcgStructuredWidget> {
           const Divider(height: 1, color: kBorder),
           Padding(padding: const EdgeInsets.all(12), child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             // Ritmo
-            const Text('RITMO', style: TextStyle(fontSize: 8, fontWeight: FontWeight.w900, letterSpacing: 0.8, color: Color(0xFF888888))),
+            Text(_hcT(context.read<AppProvider>().lang, 'ecg_ritmo').toUpperCase(), style: const TextStyle(fontSize: 8, fontWeight: FontWeight.w900, letterSpacing: 0.8, color: Color(0xFF888888))),
             const SizedBox(height: 6),
             SingleChildScrollView(scrollDirection: Axis.horizontal, child: Row(children: _ritmos.map((r) {
               final sel = r == _ritmo;
@@ -3482,7 +3865,7 @@ class _EcgStructuredWidgetState extends State<_EcgStructuredWidget> {
             const SizedBox(height: 10),
             // ST livre
             Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              const Text('ALTERAÇÕES ST/T', style: TextStyle(fontSize: 8, fontWeight: FontWeight.w900, letterSpacing: 0.8, color: Color(0xFF888888))),
+              Text(_hcT(context.read<AppProvider>().lang, 'ecg_st').toUpperCase(), style: const TextStyle(fontSize: 8, fontWeight: FontWeight.w900, letterSpacing: 0.8, color: Color(0xFF888888))),
               const SizedBox(height: 3),
               TextField(controller: _st, onChanged: (_) => _sync(),
                 enableSuggestions: true,
@@ -3498,7 +3881,7 @@ class _EcgStructuredWidgetState extends State<_EcgStructuredWidget> {
             ]),
             const SizedBox(height: 8),
             Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              const Text('OUTROS ACHADOS', style: TextStyle(fontSize: 8, fontWeight: FontWeight.w900, letterSpacing: 0.8, color: Color(0xFF888888))),
+              Text(_hcT(context.read<AppProvider>().lang, 'ecg_outros').toUpperCase(), style: const TextStyle(fontSize: 8, fontWeight: FontWeight.w900, letterSpacing: 0.8, color: Color(0xFF888888))),
               const SizedBox(height: 3),
               TextField(controller: _outros, onChanged: (_) => _sync(),
                 enableSuggestions: true,
@@ -3661,10 +4044,10 @@ class _LabStructuredWidgetState extends State<_LabStructuredWidget> {
           child: Padding(padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10), child: Row(children: [
             const Icon(Icons.science_rounded, size: 14, color: Color(0xFF065F46)),
             const SizedBox(width: 6),
-            const Text('EXAMES LABORATORIAIS', style: TextStyle(fontSize: 9, fontWeight: FontWeight.w900, letterSpacing: 1.2, color: Color(0xFF555555))),
+            Text(_hcT(context.read<AppProvider>().lang, 'lab_exams').toUpperCase(), style: const TextStyle(fontSize: 9, fontWeight: FontWeight.w900, letterSpacing: 1.2, color: Color(0xFF555555))),
             const SizedBox(width: 8),
             if (widget.controller.text.isNotEmpty && !_expanded)
-              const Expanded(child: Text('preenchido', style: TextStyle(fontSize: 10, color: Color(0xFF065F46), fontWeight: FontWeight.w700))),
+              Expanded(child: Text(_hcT(context.read<AppProvider>().lang, 'lab_filled'), style: const TextStyle(fontSize: 10, color: Color(0xFF065F46), fontWeight: FontWeight.w700))),
             const Spacer(),
             // Botão OCR
             GestureDetector(
@@ -3678,7 +4061,7 @@ class _LabStructuredWidgetState extends State<_LabStructuredWidget> {
                   else
                     const Icon(Icons.document_scanner_rounded, size: 11, color: Color(0xFF065F46)),
                   const SizedBox(width: 3),
-                  Text(_ocrLoading ? 'Lendo...' : 'Foto/OCR', style: const TextStyle(fontSize: 9, fontWeight: FontWeight.w800, color: Color(0xFF065F46))),
+                  Text(_ocrLoading ? _hcT(context.read<AppProvider>().lang, 'ocr_loading') : _hcT(context.read<AppProvider>().lang, 'ocr_btn'), style: const TextStyle(fontSize: 9, fontWeight: FontWeight.w800, color: Color(0xFF065F46))),
                 ]),
               ),
             ),
@@ -3728,7 +4111,7 @@ class _LabStructuredWidgetState extends State<_LabStructuredWidget> {
             const SizedBox(height: 10),
             // Campo livre
             Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              const Text('OUTROS / OBSERVAÇÕES', style: TextStyle(fontSize: 8, fontWeight: FontWeight.w900, letterSpacing: 0.8, color: Color(0xFFAAAAAA))),
+              Text(_hcT(context.read<AppProvider>().lang, 'lab_others_title').toUpperCase(), style: const TextStyle(fontSize: 8, fontWeight: FontWeight.w900, letterSpacing: 0.8, color: Color(0xFFAAAAAA))),
               const SizedBox(height: 3),
               TextField(controller: _outros,
                 maxLines: 3,
@@ -3737,7 +4120,7 @@ class _LabStructuredWidgetState extends State<_LabStructuredWidget> {
                 textCapitalization: TextCapitalization.sentences,
                 style: const TextStyle(fontSize: 12),
                 decoration: InputDecoration(isDense: true, contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-                  hintText: 'Gasometria, hormônios, sorologia, culturas...',
+                  hintText: _hcT(context.read<AppProvider>().lang, 'lab_others_hint'),
                   hintStyle: const TextStyle(fontSize: 11, color: Color(0xFFBBBBBB)), filled: true, fillColor: const Color(0xFFF8F8F8),
                   border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: const BorderSide(color: kBorder)),
                   enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: const BorderSide(color: kBorder)),
