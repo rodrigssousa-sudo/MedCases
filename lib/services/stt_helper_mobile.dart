@@ -29,6 +29,16 @@
 //     → FIX: locale fallback chain (preferido → sistema → en-US) +
 //             ListenMode.dictation (otimizado para texto livre longo).
 //
+//   BUG 5 — "Dictado no disponible" após _resolveLocale() já ter feito fallback:
+//     O locale retornado por _resolveLocale() pode aparecer na lista de locales
+//     suportados, mas o SFSpeechRecognizer para aquele locale pode retornar
+//     isAvailable=false no momento exato do listen() (servidor Apple offline,
+//     modelo não carregado ainda, race condition de cold start).
+//     → FIX: quando listen() retorna false, retry imediato com localeId: ''
+//             (string vazia = iOS usa o locale configurado em Ajustes → Ditado),
+//             que é o mesmo locale que o teclado nativo já usa e portanto
+//             garantidamente disponível quando o Ditado está ativado.
+//
 //   ARMADILHA — onDevice: true NÃO é a solução:
 //     O código Swift do plugin (SpeechToTextPlugin.swift:508-511) retorna
 //     FlutterError imediatamente se o dispositivo não tiver
@@ -426,10 +436,70 @@ Future<void> startSttImpl({
     final bool started = _safeBool(rawStarted, fallback: false);
 
     if (!started) {
-      debugPrint('[STT] listen() retornou false — sessão recusada.');
-      _listening = false;
-      onError('not_available');
-      onEnd();
+      // ── FALLBACK DE LOCALE ────────────────────────────────────────────────
+      // listen() retornou false com o locale resolvido. Isso ocorre quando o
+      // SFSpeechRecognizer para aquele locale está momentaneamente indisponível
+      // (servidor Apple offline, modelo não instalado, cold-start race).
+      //
+      // Solução: retry com localeId vazio — o iOS usa o locale configurado
+      // em Ajustes → Geral → Ditado, que é sempre funcional quando o usuário
+      // tem "Ditado" ativado. Este é o mesmo locale que o teclado nativo usa.
+      //
+      // Nota: localeId: '' não é o mesmo que omitir o campo; passa string
+      // vazia que o iOS interpreta como "use o locale padrão do sistema".
+      debugPrint('[STT] listen() retornou false com locale "$resolvedLocale" '
+          '— retry com locale do sistema (localeId vazio)...');
+
+      await Future<void>.delayed(const Duration(milliseconds: 300));
+
+      try {
+        final dynamic rawRetry = await _stt.listen(
+          onResult: _handleResult,
+          listenOptions: SpeechListenOptions(
+            localeId:       '',            // ← iOS usa locale de Ditado dos Ajustes
+            listenMode:     ListenMode.dictation,
+            pauseFor:       const Duration(seconds: 4),
+            listenFor:      const Duration(seconds: 60),
+            partialResults: true,
+            cancelOnError:  true,
+            onDevice:       false,
+          ),
+        );
+        // Bypass deliberado: rawRetry pode ser null (BUG 1) — tratamos null
+        // como true porque nesse caso o microfone já está ativo.
+        final bool retryStarted = _safeBool(rawRetry, fallback: true);
+        if (!retryStarted) {
+          debugPrint('[STT] ❌ Retry sem locale também falhou — STT indisponível.');
+          _listening = false;
+          onError('not_available');
+          onEnd();
+        } else {
+          debugPrint('[STT] ✅ listen() OK via locale do sistema (fallback).');
+        }
+      } on TypeError catch (te) {
+        // BUG 1 pode ocorrer aqui também → mesmo bypass
+        if (_isNullBoolBug(te)) {
+          _bypassActive = true;
+          debugPrint('[STT] ⚠️ BYPASS (TypeError) no retry sem locale: '
+              'microfone ativo, ignorando done por 1500ms.');
+        } else {
+          debugPrint('[STT] TypeError no retry sem locale: $te');
+          _listening = false;
+          onError('unknown');
+          onEnd();
+        }
+      } catch (re) {
+        if (_isNullBoolBug(re)) {
+          _bypassActive = true;
+          debugPrint('[STT] ⚠️ BYPASS (catch) no retry sem locale: '
+              'microfone ativo, ignorando done por 1500ms.');
+        } else {
+          debugPrint('[STT] Retry sem locale exception: $re');
+          _listening = false;
+          onError('unknown');
+          onEnd();
+        }
+      }
     } else {
       debugPrint('[STT] ✅ listen() OK — aguardando fala em "$resolvedLocale"...');
     }
