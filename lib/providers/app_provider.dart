@@ -18,6 +18,7 @@ import '../data/cases_database.dart';
 import '../services/firestore_service.dart';
 import '../services/drug_interaction_service.dart';
 import '../services/ai_service.dart';
+import '../services/clinical_session_memory.dart';
 import '../services/gemini_service.dart';
 
 // ── Resultado das operações de Pin no "Meu Plantão" ───────────────────────────
@@ -120,6 +121,11 @@ class AppProvider extends ChangeNotifier {
   bool _aiKeyLoading = false; // true enquanto busca chave no Firestore
   // Histórico de conversa para contexto multi-turn (máx 10 pares)
   final List<Map<String, String>> _aiHistory = [];
+
+  // ── Fix 3: Memória clínica estruturada da sessão ──────────────────────────
+  // Instância única por sessão de chat — reseta automaticamente ao mudar de tema.
+  // Não persiste entre sessões (RAM only, by design).
+  final ClinicalSessionMemory _sessionMemory = ClinicalSessionMemory();
 
   // ── Estado — Gemini OAuth (paralelo ao OpenAI, nunca interfere) ───────────
   bool _geminiConnected = false;   // true quando conta Google autorizada
@@ -1557,6 +1563,75 @@ class AppProvider extends ChangeNotifier {
     } catch (_) {}
   }
 
+  // ── Stopwords clínicas — palavras genéricas que sozinhas NÃO ativam RAG ──
+  // Uma query composta apenas por estas palavras não deve puxar nenhum protocolo
+  // nem fármaco, pois o match seria falso positivo (ex: "qual a dose?" → não
+  // deve puxar "Doença de Chagas" só porque "dose" aparece lá dentro).
+  // IMPORTANTE: sem duplicatas — Dart `const Set` falha se houver elemento repetido.
+  static const _clinicalStopwords = <String>{
+    // ── Genéricos de tratamento (PT-BR) ──────────────────────────────────────
+    'tratamento', 'tratar', 'terapia', 'terapeutica',
+    'adequar', 'ajustar', 'ajuste',
+    // ── Paciente (PT-BR) ─────────────────────────────────────────────────────
+    'paciente', 'doente', 'individuo', 'pessoa',
+    // ── Dose (PT-BR) ─────────────────────────────────────────────────────────
+    'dose', 'dosagem', 'posologia',
+    // ── Uso (PT-BR) ──────────────────────────────────────────────────────────
+    'usar', 'uso', 'utilizacao', 'utilizar',
+    // ── Quadro clínico (PT-BR) ───────────────────────────────────────────────
+    'quadro', 'apresenta', 'apresentacao',
+    // ── Caso (PT-BR) ─────────────────────────────────────────────────────────
+    'caso', 'casos',
+    // ── Faixa etária (PT-BR) ─────────────────────────────────────────────────
+    'adulto', 'adultos', 'idoso', 'idosos', 'pediatrico', 'crianca',
+    // ── Diagnóstico genérico (PT-BR) ─────────────────────────────────────────
+    'doenca', 'patologia', 'condicao', 'sindrome',
+    // ── Conduta (PT-BR) ──────────────────────────────────────────────────────
+    'conduta', 'manejo', 'abordagem', 'protocolo',
+    // ── Prescrição (PT-BR) ───────────────────────────────────────────────────
+    'prescricao', 'prescrever', 'medicamento', 'medicacao',
+    // ── Interrogativas (PT-BR) ───────────────────────────────────────────────
+    'quando', 'como', 'qual', 'quais', 'onde', 'porque', 'motivo',
+    // ── Tempo (PT-BR) ────────────────────────────────────────────────────────
+    'inicio', 'duracao', 'tempo', 'periodo',
+    // ── Sintoma (PT-BR) ──────────────────────────────────────────────────────
+    'sintoma', 'sinal', 'queixa', 'historia',
+    // ── Forma/tipo (PT-BR) ───────────────────────────────────────────────────
+    'forma', 'tipo', 'tipos', 'classe', 'grupo',
+    // ── Genéricos de tratamento (ES) — apenas os não presentes acima ─────────
+    'tratamiento', 'terapeutico', 'adecuar',
+    // ── Paciente (ES) ────────────────────────────────────────────────────────
+    'enfermo',
+    // ── Dose (ES) ────────────────────────────────────────────────────────────
+    'dosis',
+    // ── Uso (ES) ─────────────────────────────────────────────────────────────
+    'utilizacion',
+    // ── Quadro clínico (ES) ──────────────────────────────────────────────────
+    'cuadro', 'presenta', 'presentacion',
+    // ── Faixa etária (ES) ────────────────────────────────────────────────────
+    'anciano',
+    // ── Diagnóstico genérico (ES) ────────────────────────────────────────────
+    'enfermedad', 'condicion',
+    // ── Conduta (ES) ─────────────────────────────────────────────────────────
+    'conducta', 'abordaje',
+    // ── Prescrição (ES) ──────────────────────────────────────────────────────
+    'prescripcion', 'prescribir',
+    // ── Interrogativas (ES) — apenas as que diferem de PT ────────────────────
+    'cuando', 'cuales',
+    // ── Tempo (ES) ───────────────────────────────────────────────────────────
+    'duracion', 'tiempo',
+    // ── Sintoma (ES) ─────────────────────────────────────────────────────────
+    'signo', 'queja',
+    // ── Forma/tipo (ES) ──────────────────────────────────────────────────────
+    'clase',
+  };
+
+  /// Verifica se a query tem pelo menos uma palavra clínica substantiva
+  /// (não-stopword, length > 3). Usado para evitar match em queries genéricas.
+  bool _hasSubstantiveWord(List<String> words) {
+    return words.any((w) => w.length > 3 && !_clinicalStopwords.contains(w));
+  }
+
   /// Retorna sumários dos protocolos cujos títulos/reconhecer contenham keywords da query
   List<String> _matchProtocols(String normalizedQuery) {
     // Protocolos de alta emergência exigem ≥2 palavras da query para match,
@@ -1574,17 +1649,31 @@ class AppProvider extends ChangeNotifier {
       'esquizofrenia', 'bipolar', 'delirium', 'abstinencia_alcool',
     };
 
-    final results = <String>[];
-    final words = normalizedQuery
+    final allWords = normalizedQuery
         .split(RegExp(r'\s+'))
         .where((w) => w.length > 3)
         .toList();
+
+    // Fix 2: Bloquear match se não houver pelo menos 1 palavra clínica substantiva
+    // (palavra fora das stopwords). Impede "qual a conduta para o paciente?"
+    // de puxar qualquer protocolo.
+    if (!_hasSubstantiveWord(allWords)) return [];
+
+    // Filtrar stopwords para o match — só palavras com conteúdo clínico real
+    final words = allWords
+        .where((w) => !_clinicalStopwords.contains(w))
+        .toList();
+
+    // Se após filtrar não sobrar nenhuma palavra, abortar retrieval
+    if (words.isEmpty) return [];
+
+    final results = <String>[];
 
     for (final p in protocolsDatabase) {
       final title    = _normalize(tDB(p.title));
       final recognize = _normalize(tDB(p.recognize));
 
-      // Conta quantas palavras da query aparecem no título ou recognize
+      // Conta quantas palavras clínicas (não-stopword) da query aparecem no título ou recognize
       final matchCount = words.where((w) => title.contains(w) || recognize.contains(w)).length;
 
       // Protocolo de alta emergência: exige ≥2 palavras para evitar falso positivo
@@ -1603,12 +1692,25 @@ class AppProvider extends ChangeNotifier {
   /// Retorna sumários dos fármacos que correspondem à query
   List<String> _matchDrugs(String normalizedQuery) {
     final results = <String>[];
+
+    final allWords = normalizedQuery
+        .split(RegExp(r'\s+'))
+        .where((w) => w.length > 3)
+        .toList();
+
+    // Fix 2: sem palavra clínica substantiva → sem retrieval de fármacos
+    if (!_hasSubstantiveWord(allWords)) return [];
+
+    final words = allWords
+        .where((w) => !_clinicalStopwords.contains(w))
+        .toList();
+
+    if (words.isEmpty) return [];
+
     for (final d in drugsDatabase) {
       final name  = _normalize(d.name);
       final cls   = _normalize(d.getField(d.className, _lang));
       final mech  = _normalize(d.getField(d.mechanism, _lang));
-      final words = normalizedQuery.split(RegExp(r'\s+'))
-          .where((w) => w.length > 3).toList();
       if (words.any((w) => name.contains(w) || cls.contains(w) || mech.contains(w))) {
         final dose = d.getField(d.fixedDose, _lang);
         final warn = d.getField(d.warning, _lang);
@@ -2418,6 +2520,15 @@ class AppProvider extends ChangeNotifier {
   //   7. Salvar no histórico e retornar
   // ══════════════════════════════════════════════════════════════════════════
   Future<String> buildAIAnswer(String input) async {
+    // ── Fix 3: Detectar mudança de tema e resetar memória clínica ─────────
+    // Deve ocorrer ANTES de montar o prompt para garantir que o memoryBlock
+    // injetado reflita o contexto atual (não contaminado por tema anterior).
+    // Ex: otite (5 turnos) → ICFEr: reseta memória de otite antes do prompt ICFEr.
+    final topicReset = _sessionMemory.resetIfTopicChanged(input);
+    if (topicReset) {
+      debugPrint('[buildAIAnswer] Mudança de tema detectada — memória clínica resetada');
+    }
+
     // ── Passo 1: Classificar intent ────────────────────────────────────────
     final intent        = _classifyIntent(input);
     final expandedInput = _expandedQuery(input);
@@ -2447,6 +2558,9 @@ class AppProvider extends ChangeNotifier {
         : localContext;
 
     // ── Passo 4: System prompt RAG completo ───────────────────────────────
+    // Passa userQuery explicitamente para que o RAG Relevance Gate no
+    // ai_service.dart filtre protocolos/fármacos/contexto por relevância
+    // temática, evitando contaminação cruzada (ex: otite → ICFEr).
     final systemPrompt = AiService.buildClinicalSystemPrompt(
       lang: _lang,
       matchedProtocolSummaries: finalProtocols,
@@ -2458,6 +2572,8 @@ class AppProvider extends ChangeNotifier {
       patientWeight: _patient.weight.isNotEmpty ? _patient.weight : null,
       patientClcr: clcr,
       patientMedications: _patient.medications.isNotEmpty ? _patient.medications : null,
+      userQuery: input,    // ← RAG gate usa a query real (não expandida) para filtro temático
+      memory: _sessionMemory, // ← Fix 3: memória clínica da sessão (já resetada se tema mudou)
     );
 
     // ── Passo 5: Gemini (prioridade) com Google Search Grounding ──────────
@@ -2599,10 +2715,21 @@ class AppProvider extends ChangeNotifier {
       'esquizofrenia', 'bipolar', 'delirium', 'abstinencia_alcool',
     };
     final results = <String>[];
-    final words = normalizedQuery
+
+    final allWords = normalizedQuery
         .split(RegExp(r'\s+'))
         .where((w) => w.length > 3)
         .toList();
+
+    // Fix 2: sem palavra clínica substantiva → sem retrieval
+    if (!_hasSubstantiveWord(allWords)) return [];
+
+    // Apenas palavras não-genéricas participam do match
+    final words = allWords
+        .where((w) => !_clinicalStopwords.contains(w))
+        .toList();
+
+    if (words.isEmpty) return [];
 
     for (final p in protocolsDatabase) {
       final title    = _normalize(tDB(p.title));
@@ -2626,12 +2753,26 @@ class AppProvider extends ChangeNotifier {
   // ── Retrieval estendido de fármacos: retorna até 6 ─────────────────────
   List<String> _matchDrugsExtended(String normalizedQuery) {
     final results = <String>[];
+
+    final allWords = normalizedQuery
+        .split(RegExp(r'\s+'))
+        .where((w) => w.length > 3)
+        .toList();
+
+    // Fix 2: sem palavra clínica substantiva → sem retrieval de fármacos
+    if (!_hasSubstantiveWord(allWords)) return [];
+
+    // Palavras não-genéricas para match
+    final words = allWords
+        .where((w) => !_clinicalStopwords.contains(w))
+        .toList();
+
+    if (words.isEmpty) return [];
+
     for (final d in drugsDatabase) {
       final name  = _normalize(d.name);
       final cls   = _normalize(d.getField(d.className, _lang));
       final mech  = _normalize(d.getField(d.mechanism, _lang));
-      final words = normalizedQuery.split(RegExp(r'\s+'))
-          .where((w) => w.length > 3).toList();
       if (words.any((w) => name.contains(w) || cls.contains(w) || mech.contains(w))) {
         final dose    = d.getField(d.fixedDose, _lang);
         final warn    = d.getField(d.warning, _lang);

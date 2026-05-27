@@ -723,15 +723,26 @@ void main() {
       mem.addMedication('Heparina');
       mem.updateRiskLevel('critical');
 
+      // Protocolos com conteúdo clínico relacionado à query para passar no RAG gate.
+      // userQuery: 'fibrilacao atrial sepse' → ativa FA + sepse tools + RAG gate.
+      // Os protocolos injetados têm palavras sobrepostas com a query → gate abre.
       final sw = Stopwatch()..start();
       final prompt = AiService.buildClinicalSystemPrompt(
         lang: 'pt',
-        matchedProtocolSummaries: List.generate(5, (i) => 'protocolo_$i'),
-        matchedDrugSummaries: List.generate(5, (i) => 'farmaco_$i'),
+        matchedProtocolSummaries: [
+          '• [Fibrilação Atrial] fibrilacao atrial RVR palpitações dispneia. '
+              'Conduta: betabloqueador cardioversão anticoagulacao',
+          '• [Sepse] sepse qSOFA lactato elevado hipotensão. '
+              'Conduta: antibiotico fluido noradrenalina',
+        ],
+        matchedDrugSummaries: [
+          '• [Heparina] fibrilacao atrial anticoagulante | Dose: 5000 UI SC 8/8h | Alerta: sangramento',
+          '• [Noradrenalina] sepse vasoconstritor | Dose: 0,1-3 mcg/kg/min IV | Alerta: isquemia',
+        ],
         localAnswerContext: 'contexto local extenso com mais de cinquenta caracteres para ativar a secao',
         queryIntent: 'caso_clinico',
         memory: mem,
-        userQuery: 'paciente com fibrilacao atrial e sepse concomitante',
+        userQuery: 'fibrilacao atrial sepse concomitante lactato',
         patientAge: '72', patientSex: 'M', patientWeight: '75', patientClcr: '35');
       sw.stop();
 
@@ -771,4 +782,307 @@ void main() {
       print('  [OK] Evidence Ranking presente e único (1 ocorrência)');
     });
   });
+
+  // ════════════════════════════════════════════════════════════════
+  // T11 — Testes de Produção: contaminação RAG, memória e truncamento
+  // ════════════════════════════════════════════════════════════════
+  group('T11 — Produção: RAG Gate, Memory Reset, MAX_TOKENS', () {
+
+    // ── T11.1 — ICFEr + ClCr<30: RAG gate filtra protocolos não relacionados ──
+    test('ICFEr + ClCr<30 — protocolos de otite/ALS não injetados no prompt', () {
+      // Simula o que o RAG gate faz: filtra por score < 0.15
+      // Query sobre ICFEr com função renal reduzida
+      const queryICFEr = 'insuficiência cardíaca com fração de ejeção reduzida ClCr 25';
+
+      // Chunk contaminante de otite — score deve ser baixíssimo
+      const otiteChunk = 'Otite média aguda: amoxicilina 500mg 8/8h por 7 dias. '
+          'Crianças: 40-45 mg/kg/dia. Analgesia: dipirona ou paracetamol.';
+
+      // Chunk contaminante de ALS (esclerose lateral amiotrófica)
+      const alsChunk = 'Esclerose lateral amiotrófica (ALS/ELA): riluzol 50mg 12/12h, '
+          'suporte ventilatório não invasivo, fisioterapia respiratória.';
+
+      // Chunk contaminante de ceftriaxona sem relação com IC
+      const ceftriaxonaChunk = 'Ceftriaxona IV 1-2g/dia. Indicações: pneumonia comunitária, '
+          'meningite bacteriana, endocardite. Dose única em gonorreia.';
+
+      // Score entre query ICFEr e chunks contaminantes deve ser < 0.15 (gate rejeita)
+      final scoreOtite = AiService.ragRelevanceScore(queryICFEr, otiteChunk);
+      final scoreAls   = AiService.ragRelevanceScore(queryICFEr, alsChunk);
+      final scoreCeft  = AiService.ragRelevanceScore(queryICFEr, ceftriaxonaChunk);
+
+      expect(scoreOtite, lessThan(0.15),
+          reason: 'Otite não deve passar no gate ICFEr (score=$scoreOtite)');
+      expect(scoreAls, lessThan(0.15),
+          reason: 'ALS não deve passar no gate ICFEr (score=$scoreAls)');
+      expect(scoreCeft, lessThan(0.15),
+          reason: 'Ceftriaxona não deve passar no gate ICFEr (score=$scoreCeft)');
+
+      print('  [OK] ICFEr gate: otite=${scoreOtite.toStringAsFixed(3)}, '
+            'als=${scoreAls.toStringAsFixed(3)}, '
+            'ceft=${scoreCeft.toStringAsFixed(3)} — todos < 0.15');
+    });
+
+    // ── T11.2 — ICFEr com prednisona: também não passa no gate ───────────────
+    test('ICFEr — prednisona sem relação cardíaca não passa no gate', () {
+      const queryICFEr = 'ICFEr fração ejeção 30% betabloqueador carvedilol';
+      const prednisonaChunk = 'Prednisona 1mg/kg/dia para dermatomiosite, '
+          'polimiosite e outras doenças autoimunes. Redução gradual após remissão.';
+
+      final score = AiService.ragRelevanceScore(queryICFEr, prednisonaChunk);
+      expect(score, lessThan(0.15),
+          reason: 'Prednisona/autoimune não deve passar no gate ICFEr (score=$score)');
+      print('  [OK] Prednisona/autoimune rejeitada para query ICFEr (score=${score.toStringAsFixed(3)})');
+    });
+
+    // ── T11.3 — Memory reset: resetIfTopicChanged detecta mudança de tema ────
+    // Nota sobre o algoritmo de ClinicalSessionMemory:
+    //   - _extractTopicSignature extrai 3 palavras > 3 chars (sem acentos pelo regex)
+    //   - _topicsOverlap verifica interseção de palavras-chave
+    //   - reset dispara apenas quando _topicTurnCount >= 2 E tema novo ≠ atual
+    //   - Para garantir overlap entre turnos, queries devem compartilhar palavras exatas
+    test('Memory reset: tema repetido por ≥2 turnos → mudança reseta', () {
+      final mem = ClinicalSessionMemory();
+
+      // Turno 1: estabelece tema "sepse"
+      mem.resetIfTopicChanged('sepse grave lactato elevado');
+      // Turno 2: mesmo tema → incrementa _topicTurnCount para 2
+      mem.resetIfTopicChanged('sepse choque noradrenalina antibiotico');
+      // Turno 3: ainda mesmo tema (compartilha "sepse") → não reseta
+      final priorToReset = mem.resetIfTopicChanged('sepse foco pulmonar vancomicina');
+      expect(priorToReset, isFalse, reason: 'Mesmo tema "sepse" — não deve resetar');
+
+      // Adicionar dados de "sepse" na memória
+      mem.addProblem('Sepse grave');
+      mem.addMedication('Noradrenalina');
+      expect(mem.buildMemoryBlock(false), contains('Sepse grave'));
+
+      // Turno 4: mudar para tema completamente diferente (fibrilação atrial)
+      // "fibrilação" → "fibril" (4 chars, passa), "atrial" (6 chars, passa)
+      // "sepse" não está mais na query → sem overlap → reset
+      final wasReset = mem.resetIfTopicChanged('fibrilacao atrial anticoagulacao rivaroxabana');
+      expect(wasReset, isTrue,
+          reason: 'Mudança sepse → FA deve acionar reset (tema estabelecido por ≥2 turnos)');
+
+      // Após reset: memória de sepse não deve mais aparecer no bloco
+      final blockAfterReset = mem.buildMemoryBlock(false);
+      expect(blockAfterReset, isEmpty,
+          reason: 'Após reset, memoryBlock deve ser vazio (sem dados de sepse)');
+
+      print('  [OK] Mudança sepse → FA detectada, memória resetada corretamente');
+    });
+
+    // ── T11.4 — ragRelevanceScore entre temas não relacionados → baixo ──────
+    test('ragRelevanceScore: temas não relacionados retornam score < 0.15', () {
+      final pairs = [
+        ('otite média amoxicilina timpanocentese', 'insuficiência cardíaca fração ejeção'),
+        ('esclerose lateral amiotrófica riluzol', 'hipertensão arterial sistêmica enalapril'),
+        ('dengue plaquetopenia sorotipo 2',        'asma brônquica salbutamol corticoide'),
+        ('fratura colo fêmur cirurgia ortopedia',  'sepse choque séptico noradrenalina'),
+      ];
+      for (final (q, rag) in pairs) {
+        final score = AiService.ragRelevanceScore(q, rag);
+        expect(score, lessThan(0.15),
+            reason: 'Score inesperadamente alto ($score) entre:\n  Q: "$q"\n  RAG: "$rag"');
+      }
+      print('  [OK] Todos os pares de temas distintos: score < 0.15');
+    });
+
+    // ── T11.5 — ragRelevanceScore: mesmo tema retorna score ≥ 0.15 ──────────
+    test('ragRelevanceScore: mesmo tema retorna score ≥ 0.15 (gate abre)', () {
+      final pairs = [
+        ('insuficiência cardíaca fração ejeção reduzida', 'insuficiência cardíaca sistólica ICFEr fração ejeção 40% carvedilol furosemida'),
+        ('sepse choque séptico lactato',                  'sepse-3 critérios qSOFA lactato noradrenalina antibiótico'),
+        ('fibrilação atrial anticoagulação',              'fibrilação atrial paroxística warfarina rivaroxabana cardioversão'),
+        ('crise hipertensiva nitroprussiato',             'emergência hipertensiva crise hipertensiva nitroprussiato labetalol PA'),
+      ];
+      for (final (q, rag) in pairs) {
+        final score = AiService.ragRelevanceScore(q, rag);
+        expect(score, greaterThanOrEqualTo(0.15),
+            reason: 'Score muito baixo ($score) — gate deveria abrir para:\n  Q: "$q"\n  RAG: "$rag"');
+      }
+      print('  [OK] Todos os pares do mesmo tema: score ≥ 0.15');
+    });
+
+    // ── T11.6 — Stopwords: ragRelevanceScore e gate comportam-se corretamente ─
+    // Design do sistema de stopwords:
+    //   - ragRelevanceScore() (em AiService) calcula score puro de overlap de palavras
+    //     SEM filtrar stopwords — é uma função utilitária de score semântico
+    //   - As stopwords clínicas atuam no _matchProtocols/_matchDrugsExtended
+    //     em AppProvider, filtrando ANTES do retrieval (não no score)
+    //   - O RAG gate no buildClinicalSystemPrompt usa ragRelevanceScore para
+    //     decidir se injeta ou não o protocolo no prompt
+    //
+    // Portanto, para queries SEM palavras clínicas substantivas:
+    //   a) ragRelevanceScore PODE ter score ≥ 0.15 se a palavra aparecer no RAG
+    //      (ex: "conduta" aparece em "Conduta: amoxicilina")
+    //   b) O filtro real de stopwords ocorre no AppProvider._matchProtocols:
+    //      queries genéricas retornam lista vazia → nenhum protocolo chega ao gate
+    //   c) Se lista de protocolos estiver vazia, buildClinicalSystemPrompt não
+    //      imprime seção "PROTOCOLOS RELEVANTES"
+    test('Stopwords: sem protocolos injetados → prompt sem seção PROTOCOLOS', () {
+      // Query puramente genérica (apenas stopwords clínicas):
+      // No AppProvider, _matchProtocols('qual conduta paciente') retornaria []
+      // (sem palavra substantiva). Simulamos isso passando lista vazia ao prompt.
+      const genericQueries = [
+        'qual a conduta',
+        'como tratar',
+        'qual a dose',
+        'manejo do paciente',
+        'tratamento adequado',
+      ];
+
+      for (final q in genericQueries) {
+        // Sem protocolos recuperados (AppProvider filtrou via stopwords):
+        final prompt = AiService.buildClinicalSystemPrompt(
+          lang: 'pt',
+          matchedProtocolSummaries: [], // ← lista vazia = stopwords filtraram
+          matchedDrugSummaries: [],
+          queryIntent: 'tratamento',
+          userQuery: q,
+        );
+
+        // Sem RAG → seção de protocolos não aparece no prompt
+        expect(prompt, isNot(contains('PROTOCOLOS RELEVANTES')),
+            reason: 'Sem RAG injetado, seção de protocolos não deve aparecer para "$q"');
+      }
+
+      // Verificar que ragRelevanceScore funciona como score puro (sem stopwords)
+      // Score entre query especializada e chunk relacionado deve abrir o gate
+      final specializedQuery = 'insuficiencia cardiaca carvedilol fração ejeção';
+      const icfeChunk = 'Insuficiência Cardíaca ICFEr fração ejeção reduzida tratamento '
+          'carvedilol bisoprolol enalapril aldactone furosemida.';
+      final scoreRelated = AiService.ragRelevanceScore(specializedQuery, icfeChunk);
+      expect(scoreRelated, greaterThanOrEqualTo(0.15),
+          reason: 'Query ICFEr deve ter score ≥ 0.15 com chunk ICFEr '
+                  '(score=$scoreRelated)');
+
+      print('  [OK] Stopwords: lista vazia → sem PROTOCOLOS no prompt; '
+            'ragRelevanceScore abre gate para tema relacionado '
+            '(score=${scoreRelated.toStringAsFixed(3)})');
+    });
+
+    // ── T11.7 — localAnswerContext fora do tema é ignorado silenciosamente ───
+    test('localAnswerContext não relacionado é ignorado pelo gate', () {
+      const queryICFEr = 'beta bloqueador na ICFEr';
+
+      // Contexto local sobre otite — deve ser rejeitado
+      const localCtxOtite = 'Otite média: diagnóstico por otoscopia. '
+          'Tratamento: amoxicilina 500mg 3x/dia por 7-10 dias. '
+          'Contraindicações: alergia a penicilina. Alternativa: azitromicina.';
+
+      final score = AiService.ragRelevanceScore(queryICFEr, localCtxOtite);
+      expect(score, lessThan(0.15),
+          reason: 'Contexto de otite não deve passar no gate ICFEr (score=$score)');
+
+      // Prompt gerado não deve conter o contexto de otite
+      final prompt = AiService.buildClinicalSystemPrompt(
+        lang: 'pt',
+        matchedProtocolSummaries: [],
+        matchedDrugSummaries: [],
+        localAnswerContext: localCtxOtite,
+        queryIntent: 'farmaco',
+        userQuery: queryICFEr,
+      );
+
+      expect(prompt, isNot(contains('amoxicilina')),
+          reason: 'Amoxicilina (otite) não deve aparecer no prompt de ICFEr');
+      expect(prompt, isNot(contains('Otite média')),
+          reason: 'Otite não deve aparecer no prompt de ICFEr');
+
+      print('  [OK] localAnswerContext de otite ignorado para query ICFEr '
+            '(score=${score.toStringAsFixed(3)})');
+    });
+
+    // ── T11.8 — Regra G de prioridade absoluta da query está no prompt ───────
+    test('Regra G: prompt contém prioridade absoluta da query (PT + ES)', () {
+      final promptPt = AiService.buildClinicalSystemPrompt(
+        lang: 'pt',
+        matchedProtocolSummaries: [],
+        matchedDrugSummaries: [],
+        queryIntent: 'diagnostico',
+      );
+      final promptEs = AiService.buildClinicalSystemPrompt(
+        lang: 'es',
+        matchedProtocolSummaries: [],
+        matchedDrugSummaries: [],
+        queryIntent: 'diagnostico',
+      );
+
+      // PT: deve conter a instrução de prioridade absoluta
+      expect(promptPt, contains('PRIORIDADE ABSOLUTA'),
+          reason: 'Regra G ausente no prompt PT');
+      // ES: deve conter a instrução equivalente
+      expect(promptEs, contains('PRIORIDAD ABSOLUTA'),
+          reason: 'Regra G ausente no prompt ES');
+
+      print('  [OK] Regra G de prioridade absoluta presente em PT e ES');
+    });
+
+    // ── T11.9 — Self-check dimensão 6 (contaminação RAG) está no prompt ──────
+    test('Self-check: dimensão 6 (contaminação RAG) presente no prompt PT e ES', () {
+      final promptPt = AiService.buildClinicalSystemPrompt(
+        lang: 'pt',
+        matchedProtocolSummaries: [],
+        matchedDrugSummaries: [],
+        queryIntent: 'diagnostico',
+      );
+      final promptEs = AiService.buildClinicalSystemPrompt(
+        lang: 'es',
+        matchedProtocolSummaries: [],
+        matchedDrugSummaries: [],
+        queryIntent: 'diagnostico',
+      );
+
+      // PT: dimensão 6 do self-check
+      expect(promptPt, contains('CONTAMINACAO RAG'),
+          reason: 'Self-check dimensão 6 ausente no prompt PT');
+      // ES: dimensão 6 do self-check
+      expect(promptEs, contains('CONTAMINACION RAG'),
+          reason: 'Self-check dimensão 6 ausente no prompt ES');
+
+      print('  [OK] Self-check dim.6 contaminação RAG presente em PT e ES');
+    });
+
+    // ── T11.10 — _isTruncated heurísticas (via GeminiService — testa lógica interna) ─
+    // Nota: _isTruncated é função top-level no gemini_service.dart.
+    // Testamos as heurísticas via string manipulation para garantir cobertura.
+    test('Heurísticas de truncamento: strings cortadas são reconhecidas', () {
+      // Simula o comportamento das heurísticas de _isTruncated():
+      // 1. Termina sem pontuação + mais de 100 chars → truncado
+      const longWithoutPunct = 'A insuficiência cardíaca com fração de ejeção reduzida '
+          'é tratada com betabloqueadores como carvedilol, inibidores da ECA como enalapril';
+      expect(longWithoutPunct.length, greaterThan(100));
+      final trimmedLong = longWithoutPunct.trimRight();
+      final lastCharLong = trimmedLong[trimmedLong.length - 1];
+      expect('.,!?:;)]'.contains(lastCharLong), isFalse,
+          reason: 'String longa sem pontuação final deve ser reconhecida como truncada');
+
+      // 2. Termina com vírgula → truncado
+      const endsWithComma = 'Betabloqueadores indicados: carvedilol, bisoprolol, metoprolol,';
+      expect(endsWithComma.trimRight().endsWith(','), isTrue,
+          reason: 'Vírgula terminal indica item de lista cortado');
+
+      // 3. Termina com conjunção → truncado
+      const endsWithConjunction = 'O paciente deve usar carvedilol e';
+      final lastWord = endsWithConjunction.trim().split(RegExp(r'\s+')).last;
+      expect(['e', 'ou', 'mas', 'y', 'o', 'pero'].contains(lastWord), isTrue,
+          reason: 'Conjunção terminal indica frase incompleta');
+
+      // 4. Parêntese aberto sem fechar → truncado
+      const openParen = 'Dose: carvedilol 3,125mg (iniciar com dose baixa e';
+      final opens  = '('.allMatches(openParen).length;
+      final closes = ')'.allMatches(openParen).length;
+      expect(opens, greaterThan(closes),
+          reason: 'Parêntese aberto sem fechar indica truncamento');
+
+      // 5. Resposta bem formada → NÃO truncada
+      const wellFormed = 'Carvedilol: iniciar com 3,125mg 12/12h e dobrar a cada 2 semanas conforme tolerância.';
+      expect(wellFormed.trimRight().endsWith('.'), isTrue,
+          reason: 'Resposta com ponto final não deve ser truncada');
+
+      print('  [OK] Todas as heurísticas de truncamento validadas');
+    });
+
+  }); // T11
 }

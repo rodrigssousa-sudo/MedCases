@@ -131,6 +131,58 @@ String _cleanInternalBlocks(String raw) {
   return cleanParagraphs.join('\n\n').trim();
 }
 
+// ─────────────────────────────────────────────────────────────────────────────
+// _isTruncated — detecta se uma resposta clínica foi cortada no meio da frase.
+//
+// Heurísticas (qualquer uma basta):
+//   1. Termina sem pontuação final (. ! ? : — após trim)
+//   2. Última palavra tem < 3 chars (fragmento cortado: "ot", "tr", "de")
+//   3. Termina com vírgula, reticências truncadas ou abre parêntese sem fechar
+//   4. Termina com conjunção/preposição (indica continuação esperada)
+// ─────────────────────────────────────────────────────────────────────────────
+bool _isTruncated(String text) {
+  if (text.isEmpty) return false;
+  final trimmed = text.trimRight();
+  if (trimmed.isEmpty) return false;
+
+  final lastChar = trimmed[trimmed.length - 1];
+
+  // 1. Sem pontuação final — frase aberta
+  const validEndings = {'.', '!', '?', ':', ';', ')', ']', '*', '…', '—'};
+  if (!validEndings.contains(lastChar)) {
+    // 2. Última "palavra" é um fragmento muito curto (< 3 chars)
+    final words = trimmed.split(RegExp(r'\s+'));
+    final lastWord = words.last;
+    if (lastWord.length < 3) return true;
+
+    // 3. Termina com conjunção/preposição/artigo — indica continuação esperada
+    // PT-BR + ES — sem duplicatas para evitar equal_elements_in_const_set
+    const openWords = {
+      // português
+      'e', 'o', 'a', 'os', 'as', 'de', 'do', 'da', 'em', 'no', 'na',
+      'por', 'para', 'com', 'sem', 'se', 'que', 'ou', 'mas', 'como',
+      // espanhol (apenas os que não existem em PT acima)
+      'y', 'el', 'la', 'los', 'las', 'del', 'en', 'con', 'sin', 'pero', 'si',
+    };
+    if (openWords.contains(lastWord.toLowerCase())) return true;
+
+    // 4. Termina com vírgula = item de lista cortado
+    if (lastChar == ',') return true;
+
+    // 5. Resposta clinicamente incompleta — termina sem pontuação E
+    //    tem mais de 100 chars (não é um bullet curto proposital)
+    if (trimmed.length > 100) return true;
+  }
+
+  // 6. Abre parêntese sem fechar
+  final opens = trimmed.split('(').length - 1;
+  final closes = trimmed.split(')').length - 1;
+  if (opens > closes) return true;
+
+  return false;
+}
+
+
 class GeminiService {
   // gemini-1.5-flash foi descontinuado em Mai/2025 → atualizado para gemini-2.5-flash
   static const _endpoint =
@@ -458,30 +510,20 @@ class GeminiService {
           }
           return GeminiResult.error('BLOCKED: $finishReason', 'blocked');
         }
-        // MAX_TOKENS — resposta cortada mas usável
-        if (finishReason == 'MAX_TOKENS') {
-          debugPrint('[GeminiService] MAX_TOKENS atingido — usando resposta parcial');
-        }
         final parts = candidate['content']?['parts'] as List?;
         if (parts == null || parts.isEmpty) {
           debugPrint('[GeminiService] parts vazio. candidate=$candidate');
           return GeminiResult.error('EMPTY_RESPONSE', 'unknown');
         }
         // Concatena apenas parts de texto final visível ao usuário.
-        // Filtra: thought (raciocínio interno), functionCall (chamada de ferramenta),
-        // executableCode (código Python do grounding) e codeExecutionResult (resultado).
+        // Filtra: thought, functionCall, executableCode, codeExecutionResult.
         final text = parts
             .where((p) {
               final part = p as Map<String, dynamic>;
-              // Parts com {"thought": true} = raciocínio interno — nunca exibir
               if (part['thought'] == true) return false;
-              // Parts com "functionCall" = chamada de busca/ferramenta — nunca exibir
               if (part.containsKey('functionCall')) return false;
-              // Parts com "executableCode" = código Python interno — nunca exibir
               if (part.containsKey('executableCode')) return false;
-              // Parts com "codeExecutionResult" = resultado de execução — nunca exibir
               if (part.containsKey('codeExecutionResult')) return false;
-              // Parts sem campo "text" = tipo não reconhecido — ignorar com segurança
               if (!part.containsKey('text')) return false;
               return true;
             })
@@ -493,6 +535,27 @@ class GeminiService {
           debugPrint('[GeminiService] texto vazio após join/clean. parts=$parts');
           return GeminiResult.error('EMPTY_TEXT', 'unknown');
         }
+
+        // ── MAX_TOKENS — detectar truncamento e retentar ──────────────────────
+        // Se finishReason == MAX_TOKENS, verificar se a frase termina incompleta.
+        // Se sim: retry automático com +50% tokens (cap 3000).
+        // Nunca renderizar "o tratamento deve ser ot..." ao usuário.
+        if (finishReason == 'MAX_TOKENS') {
+          debugPrint('[GeminiService] MAX_TOKENS — verificando frase incompleta');
+          if (_isTruncated(cleanedText) && maxTokens < 3000) {
+            final expandedTokens = (maxTokens * 1.5).round().clamp(maxTokens + 300, 3000);
+            debugPrint('[GeminiService] Truncamento detectado — retry $maxTokens→$expandedTokens tokens');
+            return chat(
+              userMessage: userMessage,
+              systemPrompt: systemPrompt,
+              history: history,
+              maxTokens: expandedTokens,
+              useGrounding: useGrounding,
+            );
+          }
+          debugPrint('[GeminiService] MAX_TOKENS mas frase completa — resposta aceitável');
+        }
+
         return GeminiResult(text: cleanedText);
       }
 
