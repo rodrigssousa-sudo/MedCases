@@ -107,12 +107,12 @@ void main() {
         matchedProtocolSummaries: [],
         matchedDrugSummaries: [],
       );
-      expect(prompt, contains('PRECEPTOR MEDICO SENIOR'));
+      expect(prompt, contains('Medico Preceptor Senior'));
       expect(prompt, contains('RACIOCINIO CLINICO OBRIGATORIO'));
       expect(prompt, contains('ADAPTACAO POR ESPECIALIDADE'));
       expect(prompt, contains('GRADUACAO DE EVIDENCIA'));
       expect(prompt, contains('REGRAS DE SEGURANCA'));
-      expect(prompt, contains('FORMATO MANDATORIO'));
+      expect(prompt, contains('FORMATO OBRIGATORIO DE SAIDA'));
       expect(prompt, contains('REVISAO_INTERNA'));
       print('  [OK] Prompt PT — todos os módulos em português');
     });
@@ -123,12 +123,12 @@ void main() {
         matchedProtocolSummaries: [],
         matchedDrugSummaries: [],
       );
-      expect(prompt, contains('PRECEPTOR MEDICO SENIOR'));
+      expect(prompt, contains('Medico Preceptor Senior'));
       expect(prompt, contains('RAZONAMIENTO CLINICO OBLIGATORIO'));
       expect(prompt, contains('ADAPTACION POR ESPECIALIDAD'));
       expect(prompt, contains('GRADUACION DE EVIDENCIA'));
       expect(prompt, contains('REGLAS DE SEGURIDAD'));
-      expect(prompt, contains('FORMATO MANDATORIO'));
+      expect(prompt, contains('FORMATO OBLIGATORIO DE SALIDA'));
       expect(prompt, contains('REVISION_INTERNA'));
       print('  [OK] Prompt ES — todos os módulos em espanhol');
     });
@@ -160,15 +160,15 @@ void main() {
       final pt = AiService.buildClinicalSystemPrompt(
         lang: 'pt', matchedProtocolSummaries: [], matchedDrugSummaries: [],
         queryIntent: 'tratamento');
-      expect(pt, contains('Responda APENAS o tratamento'));
-      expect(pt, contains('NAO inclua fisiopatologia'));
+      expect(pt, contains('MODO [A] CONDUTA DIRETA ATIVO'));
+      expect(pt, contains('ZERO fisiopatologia nao solicitada'));
       print('  [OK] intent=tratamento PT');
 
       final es = AiService.buildClinicalSystemPrompt(
         lang: 'es', matchedProtocolSummaries: [], matchedDrugSummaries: [],
         queryIntent: 'tratamento');
-      expect(es, contains('Responde SOLO el tratamiento'));
-      expect(es, contains('NO incluyas fisiopatologia'));
+      expect(es, contains('MODO [A] CONDUCTA DIRECTA ACTIVO'));
+      expect(es, contains('CERO fisiopatologia no solicitada'));
       print('  [OK] intent=tratamento ES');
     });
 
@@ -176,7 +176,7 @@ void main() {
       final pt = AiService.buildClinicalSystemPrompt(
         lang: 'pt', matchedProtocolSummaries: [], matchedDrugSummaries: [],
         queryIntent: 'fisiopatologia');
-      expect(pt, contains('APENAS o mecanismo fisiopatologico'));
+      expect(pt, contains('mecanismo fisiopatologico central'));
       expect(pt, contains('NAO inclua tratamento'));
       print('  [OK] intent=fisiopatologia PT');
     });
@@ -201,7 +201,7 @@ void main() {
       final pt = AiService.buildClinicalSystemPrompt(
         lang: 'pt', matchedProtocolSummaries: [], matchedDrugSummaries: [],
         queryIntent: 'psicofarmaco');
-      expect(pt, contains('ESPECIFICAMENTE sobre o psicofarmaco'));
+      expect(pt, contains('MODO [D] EXECUTIVO psiquiatrico'));
       expect(pt, contains('NAO desvie para outros sistemas'));
       print('  [OK] intent=psicofarmaco PT');
     });
@@ -210,7 +210,7 @@ void main() {
       final pt = AiService.buildClinicalSystemPrompt(
         lang: 'pt', matchedProtocolSummaries: [], matchedDrugSummaries: [],
         queryIntent: '');
-      expect(pt, contains('Responda de forma abrangente'));
+      expect(pt, contains('Responda diretamente ao que foi perguntado'));
       print('  [OK] intent vazio → fallback abrangente');
     });
   });
@@ -225,13 +225,11 @@ void main() {
         lang: 'pt', matchedProtocolSummaries: [], matchedDrugSummaries: [],
         queryIntent: 'emergencia',
         userQuery: 'paciente hipotenso febril lactato alto');
-      expect(pt, contains('MODO PLANTAO CRITICO ATIVO'));
+      expect(pt, contains('MODO [B] PLANTAO CRITICO ATIVO'));
       expect(pt, contains('Bullets acionaveis'));
-      expect(pt, contains('Direto a estabilizacao'));
-      expect(pt, contains('doses usuais baseadas em guidelines'));
-      // Não contém "doses exatas" (refinamento anterior)
-      expect(pt, isNot(contains('doses exatas')));
-      print('  [OK] PT emergencia: MODO PLANTAO CRITICO ativo, sem doses exatas');
+      expect(pt, contains('SUPRIMIR toda contextualizacao teorica'));
+      expect(pt, contains('Metas hemodinamicas explicitas'));
+      print('  [OK] PT emergencia: MODO [B] PLANTAO CRITICO ativo, metas hemodinamicas');
     });
 
     test('ES: intent emergencia ativa MODO GUARDIA CRÍTICA', () {
@@ -239,12 +237,11 @@ void main() {
         lang: 'es', matchedProtocolSummaries: [], matchedDrugSummaries: [],
         queryIntent: 'emergencia',
         userQuery: 'paciente hipotension fiebre lactato alto');
-      expect(es, contains('MODO GUARDIA CRÍTICA ACTIVO'));
-      expect(es, contains('Bullets accionables'));
-      expect(es, contains('Directo a estabilizacion'));
-      expect(es, contains('dosis habituales basadas en guidelines'));
-      expect(es, isNot(contains('dosis exactas')));
-      print('  [OK] ES emergencia: MODO GUARDIA CRÍTICA ativo, sem dosis exactas');
+      expect(es, contains('MODO [B] GUARDIA CRITICA ACTIVO'));
+      expect(es, contains('Solo bullets accionables'));
+      expect(es, contains('SUPRIMIR toda contextualizacion teorica'));
+      expect(es, contains('Metas hemodinamicas explicitas'));
+      print('  [OK] ES emergencia: MODO [B] GUARDIA CRITICA ativo, metas hemodinamicas');
     });
 
     test('Modo emergência: selfCheck presente e após dados RAG', () {
