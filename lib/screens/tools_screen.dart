@@ -105,19 +105,26 @@ class _ToolsScreenState extends State<ToolsScreen> with SingleTickerProviderStat
       ),
 
       // ── Content ─────────────────────────────────────────────────
+      // GestureDetector com behavior translucent: um tap em qualquer área
+      // vazia (fora de TextField) fecha o teclado sem bloquear scroll nem
+      // gestos internos (botões, seletores, swipe de tab).
       Expanded(
-        child: TabBarView(
-          controller: _tabCtrl,
-          children: [
-            _BiometricsTab(),
-            _ScoresTab(),
-            _CardioTab(),
-            _ElectrolytesTab(),
-            _InfusionTab(),
-            _ReferenceTab(),
-            _PrescriptionsTab(),
-            PediatricsTabContent(),
-          ],
+        child: GestureDetector(
+          behavior: HitTestBehavior.translucent,
+          onTap: () => FocusScope.of(context).unfocus(),
+          child: TabBarView(
+            controller: _tabCtrl,
+            children: [
+              _BiometricsTab(),
+              _ScoresTab(),
+              _CardioTab(),
+              _ElectrolytesTab(),
+              _InfusionTab(),
+              _ReferenceTab(),
+              _PrescriptionsTab(),
+              PediatricsTabContent(),
+            ],
+          ),
         ),
       ),
     ]);
