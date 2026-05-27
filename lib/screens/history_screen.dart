@@ -910,7 +910,7 @@ class _HistoryCard extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                 decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: const Color(0xFFFFF8E6), border: Border.all(color: const Color(0xFFFFE0A0))),
-                child: Text('Hipótese: ${h.workingDiagnosis}',
+                child: Text('${p.lang == "es" ? "Hipótesis" : "Hipótese"}: ${h.workingDiagnosis}',
                   style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: Color(0xFF92400E)), overflow: TextOverflow.ellipsis),
               ),
             ],
@@ -1258,7 +1258,7 @@ class _HistoryDetailState extends State<_HistoryDetail> {
             : '';
         final typeMap = {'evolution': _hcT(p.lang, 'pdf_evo_med'), 'nursing': _hcT(p.lang, 'pdf_evo_nurse'), 'lab': _hcT(p.lang, 'pdf_evo_lab'), 'imaging': _hcT(p.lang, 'pdf_evo_img'), 'procedure': _hcT(p.lang, 'pdf_evo_proc')};
         buf.write('<div class="evolution">');
-        buf.write('<div class="evo-meta">${typeMap[e.type] ?? 'Evolução'} — $ds${e.author.isNotEmpty ? " — ${_esc(e.author)}" : ""}</div>');
+        buf.write('<div class="evo-meta">${typeMap[e.type] ?? _hcT(p.lang, "pdf_evo_med")} — $ds${e.author.isNotEmpty ? " — ${_esc(e.author)}" : ""}</div>');
         buf.write('<div class="field-value" style="margin-top:4px">${_escNl(e.text)}</div>');
         buf.write('</div>');
       }
@@ -1672,7 +1672,9 @@ class _HistoryEditorState extends State<_HistoryEditor> {
     ('', _hcT(widget.p.lang, 'sec_outcome')),
   ];
 
-  static const _categories = ['Clínica Geral', 'Cardiology', 'Emergência', 'Pneumologia', 'Neurologia', 'Gastro', 'Endocrinologia', 'Nefrologia', 'Infectologia', 'Cirurgia', 'Pediatria', 'Ginecologia', 'Ortopedia', 'Outro'];
+  static const _categoriesPt = ['Clínica Geral', 'Cardiologia', 'Emergência', 'Pneumologia', 'Neurologia', 'Gastroenterologia', 'Endocrinologia', 'Nefrologia', 'Infectologia', 'Cirurgia', 'Pediatria', 'Ginecologia', 'Ortopedia', 'Outro'];
+  static const _categoriesEs = ['Medicina General', 'Cardiología', 'Urgencias', 'Neumología', 'Neurología', 'Gastroenterología', 'Endocrinología', 'Nefrología', 'Infectología', 'Cirugía', 'Pediatría', 'Ginecología', 'Traumatología', 'Otro'];
+  List<String> get _categories => widget.p.lang == 'es' ? _categoriesEs : _categoriesPt;
   static const _outcomes = ['internado', 'alta', 'obito', 'transferencia'];
   List<String> get _outcomesLabel => [
     _hcT(widget.p.lang, 'out_internado'),
@@ -2723,7 +2725,20 @@ class _SmartDictaphoneButton extends StatelessWidget {
     required this.lang,
   });
 
-  static const _labels = <String, String>{
+  static Map<String, String> _labels(String lang) => lang == 'es' ? {
+    'chiefComplaint': 'Motivo de consulta',
+    'hpi': 'Enfermedad actual',
+    'pastHistory': 'Antecedentes personales',
+    'familyHistory': 'Antecedentes familiares',
+    'socialHistory': 'Historia social',
+    'medications': 'Medicación habitual',
+    'allergies': 'Alergias',
+    'reviewOfSystems': 'Revisión de sistemas',
+    'vitalSigns': 'Signos vitales',
+    'physicalExam': 'Examen físico',
+    'workingDiagnosis': 'Hipótesis diagnóstica',
+    'treatmentPlan': 'Plan terapéutico',
+  } : {
     'chiefComplaint': 'Queixa principal',
     'hpi': 'HDA',
     'pastHistory': 'Antecedentes pessoais',
@@ -2790,7 +2805,7 @@ class _SmartDictaphoneButton extends StatelessWidget {
             const SizedBox(height: 3),
             Text(
               active && currentField.isNotEmpty
-                ? '→ ${_labels[currentField] ?? currentField}'
+                ? '→ ${_labels(lang)[currentField] ?? currentField}'
                 : (isEs
                     ? 'Diga "queja", "antecedentes", "examen"... y el texto va al campo correcto'
                     : 'Diga "queixa", "antecedentes", "exame físico"... e o texto vai para o campo certo'),
@@ -3035,7 +3050,7 @@ class _PreviewDocHeader extends StatelessWidget {
         // Dados do paciente
         Wrap(spacing: 16, runSpacing: 6, children: [
           if (history.patientInitials.isNotEmpty) _PHItem('Paciente', history.patientInitials),
-          if (history.patientAge.isNotEmpty) _PHItem(isEs ? 'Edad' : 'Idade', '${history.patientAge} anos'),
+          if (history.patientAge.isNotEmpty) _PHItem(isEs ? 'Edad' : 'Idade', '${history.patientAge} ${isEs ? "años" : "anos"}'),
           if (history.patientSex.isNotEmpty) _PHItem(isEs ? 'Sexo' : 'Sexo', history.patientSex),
           if (history.patientWeight.isNotEmpty) _PHItem(isEs ? 'Peso' : 'Peso', '${history.patientWeight} kg'),
           if (history.category.isNotEmpty) _PHItem(isEs ? 'Especialidad' : 'Especialidade', history.category),
@@ -3394,11 +3409,14 @@ class _EvolutionSection extends StatelessWidget {
         ]),
         const SizedBox(height: 12),
         ...evolutions.map((e) {
+          final _lang4 = context.read<AppProvider>().lang;
           final dt = DateTime.tryParse(e.date);
           final dateStr = dt != null
-            ? '${dt.day.toString().padLeft(2,'0')}/${dt.month.toString().padLeft(2,'0')} às ${dt.hour.toString().padLeft(2,'0')}:${dt.minute.toString().padLeft(2,'0')}'
+            ? '${dt.day.toString().padLeft(2,'0')}/${dt.month.toString().padLeft(2,'0')} ${_lang4 == "es" ? "a las" : "às"} ${dt.hour.toString().padLeft(2,'0')}:${dt.minute.toString().padLeft(2,'0')}'
             : '';
-          final typeLabels = {'evolution': 'Evolução', 'nursing': 'Enfermagem', 'lab': 'Lab', 'imaging': 'Imagem', 'procedure': 'Procedimento'};
+          final typeLabels = _lang4 == 'es'
+            ? {'evolution': 'Evolución', 'nursing': 'Enfermería', 'lab': 'Lab', 'imaging': 'Imagen', 'procedure': 'Procedimiento'}
+            : {'evolution': 'Evolução', 'nursing': 'Enfermagem', 'lab': 'Lab', 'imaging': 'Imagem', 'procedure': 'Procedimento'};
           return Padding(
             padding: const EdgeInsets.only(bottom: 12),
             child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -3409,7 +3427,7 @@ class _EvolutionSection extends StatelessWidget {
               const SizedBox(width: 10),
               Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                 Row(children: [
-                  Text(typeLabels[e.type] ?? 'Evolução', style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w900, color: kGold)),
+                  Text(typeLabels[e.type] ?? (_lang4 == 'es' ? 'Evolución' : 'Evolução'), style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w900, color: kGold)),
                   const Spacer(),
                   Text(dateStr, style: const TextStyle(fontSize: 10, color: Color(0xFF888888), fontWeight: FontWeight.w600)),
                 ]),
@@ -3440,7 +3458,8 @@ class _EvolutionEditorCardState extends State<_EvolutionEditorCard> {
   late String _type;
 
   static const _types = ['evolution', 'nursing', 'lab', 'imaging', 'procedure'];
-  static const _typeLabels = ['Evolução', 'Enfermagem', 'Lab', 'Imagem', 'Procedimento'];
+  static const _typeLabelsEs = ['Evolución', 'Enfermería', 'Lab', 'Imagen', 'Procedimiento'];
+  static const _typeLabels   = ['Evolução',  'Enfermagem', 'Lab', 'Imagem', 'Procedimento'];
 
   @override
   void initState() {
@@ -3464,6 +3483,8 @@ class _EvolutionEditorCardState extends State<_EvolutionEditorCard> {
   @override
   Widget build(BuildContext context) {
     final dt = DateTime.tryParse(widget.evo.date);
+    final _evoLang = context.read<AppProvider>().lang;
+    final _evoLabels = _evoLang == 'es' ? _typeLabelsEs : _typeLabels;
     final dateStr = dt != null ? '${dt.day.toString().padLeft(2,'0')}/${dt.month.toString().padLeft(2,'0')} ${dt.hour.toString().padLeft(2,'0')}:${dt.minute.toString().padLeft(2,'0')}' : '';
     return Container(
       margin: const EdgeInsets.only(bottom: 10),
@@ -3483,13 +3504,13 @@ class _EvolutionEditorCardState extends State<_EvolutionEditorCard> {
             onTap: () { setState(() => _type = _types[i]); _update(); },
             child: Container(padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
               decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: sel ? kDark : Colors.white, border: Border.all(color: sel ? kDark : kBorder)),
-              child: Text(_typeLabels[i], style: TextStyle(fontSize: 10, fontWeight: FontWeight.w800, color: sel ? kGoldLight : const Color(0xFF888888)))),
+              child: Text(_evoLabels[i], style: TextStyle(fontSize: 10, fontWeight: FontWeight.w800, color: sel ? kGoldLight : const Color(0xFF888888)))),
           ));
         }))),
         const SizedBox(height: 8),
-        MedInput(controller: _authorCtrl, hintText: 'Dr./Enf. nome do profissional', onChanged: (_) => _update()),
+        MedInput(controller: _authorCtrl, hintText: _evoLang == 'es' ? 'Dr./Enf. nombre del profesional' : 'Dr./Enf. nome do profissional', onChanged: (_) => _update()),
         const SizedBox(height: 6),
-        MedInput(controller: _textCtrl, hintText: 'Nota de evolução...', maxLines: 4, onChanged: (_) => _update()),
+        MedInput(controller: _textCtrl, hintText: _evoLang == 'es' ? 'Nota de evolución...' : 'Nota de evolução...', maxLines: 4, onChanged: (_) => _update()),
       ]),
     );
   }
