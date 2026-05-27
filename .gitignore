@@ -41,6 +41,8 @@ build/macos/
 build/windows/
 build/flutter_assets/
 build/unit_test_assets/
+build/native_assets/
+build/test_cache/
 # Artefatos de build Android/plugins (não commitar)
 build/.cxx/
 build/reports/
