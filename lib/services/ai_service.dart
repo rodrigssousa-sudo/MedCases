@@ -330,7 +330,7 @@ F. POLITICA DE ERRO ZERO: se nao tiver dados cientificos suficientes, responda e
     // ── Detectores ordenados do mais específico ao mais genérico ──────────
 
     // Fibrilação atrial → CHA₂DS₂-VASc / HAS-BLED
-    if (_matchesAny(q, ['fibrilacao', 'fibrilación', 'fa ', 'fav ', 'flutter atrial',
+    if (_matchesAny(q, ['fibrilacao', 'fibrilación', 'fibrilacion', 'fa ', 'fav ', 'flutter atrial',
                          'anticoagulacao', 'anticoagulacion', 'warfarina', 'rivaroxabana',
                          'apixabana', 'dabigatrana', 'cha2ds2', 'hasbled'])) {
       return isEs
