@@ -1,3 +1,4 @@
+import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../services/auth_service.dart';
@@ -13,7 +14,7 @@ class LoginScreen extends StatefulWidget {
 enum _Mode { login, register, reset }
 
 class _LoginScreenState extends State<LoginScreen>
-    with SingleTickerProviderStateMixin {
+    with TickerProviderStateMixin {
   _Mode _mode = _Mode.login;
   bool _loading = false;
   bool _obscure = true;
@@ -28,29 +29,48 @@ class _LoginScreenState extends State<LoginScreen>
   final _profCtrl  = TextEditingController();
   final _instCtrl  = TextEditingController();
   final _formKey   = GlobalKey<FormState>();
-  late AnimationController _anim;
-  late Animation<double>   _fade;
 
-  // ── Paleta ────────────────────────────────────────────────────────────────
-  static const kDark  = Color(0xFF0F1C14);
-  static const kGreen = Color(0xFF075f45);
-  static const kGold  = Color(0xFFC5A365);
-  static const kGoldL = Color(0xFFFFE8A6);
-  static const kCream = Color(0xFFFFFDF8);
+  late AnimationController _slideCtrl;
+  late AnimationController _heroCtrl;
+  late Animation<Offset>   _slideAnim;
+  late Animation<double>   _heroRot;
+
+  // ── Nova paleta ────────────────────────────────────────────────────────────
+  // Verde profundo diferente do anterior (#0F1C14 → #061A12)
+  static const kBg        = Color(0xFF061A12);   // fundo hero — verde bem escuro
+  static const kForest    = Color(0xFF0D3324);   // camada intermediária
+  static const kGreen     = Color(0xFF0E7C52);   // verde principal (mais vivo)
+  static const kGreenMid  = Color(0xFF13A06A);   // verde médio — novo acento
+  static const kPanel     = Color(0xFFF0F4F0);   // painel inferior — gelo levemente verde
+  static const kPanelCard = Color(0xFFFFFFFF);   // cartão interno
+  static const kText      = Color(0xFF0D2B1E);   // texto escuro no painel
+  static const kTextMid   = Color(0xFF4A6B58);   // texto médio
+  static const kGold      = Color(0xFFD4A853);   // dourado — acento
+  static const kGoldL     = Color(0xFFFFE8A6);   // dourado claro
 
   static const _kPrefEmail    = 'login_saved_email';
   static const _kPrefRemember = 'login_remember_email';
   static const _kKeepLoggedIn = 'session_keep_logged_in';
 
   // ── Onboarding steps (modo registro) ────────────────────────────────────
-  int _regStep = 0; // 0=conta, 1=perfil, 2=confirmação
+  int _regStep = 0; // 0=conta, 1=perfil
 
   @override
   void initState() {
     super.initState();
-    _anim = AnimationController(vsync: this, duration: const Duration(milliseconds: 380));
-    _fade = CurvedAnimation(parent: _anim, curve: Curves.easeOut);
-    _anim.forward();
+    _slideCtrl = AnimationController(
+      vsync: this, duration: const Duration(milliseconds: 480));
+    _slideAnim = Tween<Offset>(
+      begin: const Offset(0, 0.35), end: Offset.zero,
+    ).animate(CurvedAnimation(parent: _slideCtrl, curve: Curves.easeOutCubic));
+
+    _heroCtrl = AnimationController(
+      vsync: this, duration: const Duration(seconds: 18))
+      ..repeat();
+    _heroRot = Tween<double>(begin: 0, end: 2 * math.pi)
+        .animate(_heroCtrl);
+
+    _slideCtrl.forward();
     _loadSavedEmail();
   }
 
@@ -90,7 +110,8 @@ class _LoginScreenState extends State<LoginScreen>
 
   @override
   void dispose() {
-    _anim.dispose();
+    _slideCtrl.dispose();
+    _heroCtrl.dispose();
     _emailCtrl.dispose(); _passCtrl.dispose(); _nameCtrl.dispose();
     _profCtrl.dispose();  _instCtrl.dispose();
     super.dispose();
@@ -98,16 +119,15 @@ class _LoginScreenState extends State<LoginScreen>
 
   void _switchMode(_Mode m) {
     setState(() { _mode = m; _error = null; _success = null; _regStep = 0; });
-    _anim.forward(from: 0);
+    _slideCtrl.forward(from: 0);
   }
 
   Future<void> _submit() async {
     if (!(_formKey.currentState?.validate() ?? false)) return;
 
-    // No modo registro: avança steps antes de submeter
     if (_mode == _Mode.register && _regStep < 1) {
       setState(() => _regStep++);
-      _anim.forward(from: 0);
+      _slideCtrl.forward(from: 0);
       return;
     }
 
@@ -173,73 +193,109 @@ class _LoginScreenState extends State<LoginScreen>
   // ─────────────────────────────────────────────────────────────────────────
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    // Proporção: 42% hero topo / 58% painel inferior
+    final heroH  = size.height * 0.42;
+
     return Scaffold(
-      backgroundColor: kDark,
+      backgroundColor: kBg,
       body: Stack(children: [
-        // ── fundo decorativo ───────────────────────────────────────────────
-        Positioned(
-          top: -80, right: -60,
-          child: Container(
-            width: 280, height: 280,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: kGreen.withValues(alpha: 0.07),
-            ),
-          ),
-        ),
-        Positioned(
-          bottom: -60, left: -40,
-          child: Container(
-            width: 220, height: 220,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: kGold.withValues(alpha: 0.05),
-            ),
-          ),
+        // ── Hero geométrico de topo (fundo do topo) ───────────────────────
+        Positioned(top: 0, left: 0, right: 0,
+          height: heroH + 32,
+          child: _HeroGeometric(rotAnim: _heroRot, lang: _currentLang),
         ),
 
-        // ── conteúdo ──────────────────────────────────────────────────────
-        SafeArea(
-          child: Column(children: [
-            // Botão voltar
-            if (widget.onBack != null)
-              Align(
-                alignment: Alignment.topLeft,
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(14, 10, 0, 0),
-                  child: Material(
-                    color: Colors.transparent,
-                    child: InkWell(
-                      onTap: widget.onBack,
-                      borderRadius: BorderRadius.circular(10),
-                      child: Container(
-                        padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          color: Colors.white.withValues(alpha: 0.06),
-                          border: Border.all(color: Colors.white.withValues(alpha: 0.12)),
-                        ),
-                        child: const Icon(Icons.arrow_back_ios_new_rounded,
-                          color: Colors.white70, size: 18),
-                      ),
+        // ── Botão voltar ──────────────────────────────────────────────────
+        if (widget.onBack != null)
+          Positioned(
+            top: MediaQuery.of(context).padding.top + 12,
+            left: 14,
+            child: SafeArea(
+              bottom: false,
+              child: Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  onTap: widget.onBack,
+                  borderRadius: BorderRadius.circular(8),
+                  child: Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                      color: Colors.white.withValues(alpha: 0.12),
+                      border: Border.all(color: Colors.white.withValues(alpha: 0.20)),
                     ),
+                    child: const Icon(Icons.arrow_back_ios_new_rounded,
+                      color: Colors.white70, size: 18),
                   ),
                 ),
               ),
+            ),
+          ),
 
-            Expanded(
+        // ── Painel inferior em slide ───────────────────────────────────────
+        Positioned(
+          top: heroH - 20,
+          left: 0, right: 0, bottom: 0,
+          child: SlideTransition(
+            position: _slideAnim,
+            child: Container(
+              decoration: const BoxDecoration(
+                color: kPanel,
+                borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+              ),
               child: SingleChildScrollView(
-                padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 16),
-                child: FadeTransition(
-                  opacity: _fade,
+                padding: EdgeInsets.only(
+                  left: 24, right: 24,
+                  top: 28, bottom: MediaQuery.of(context).padding.bottom + 24),
+                child: Form(
+                  key: _formKey,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      _buildHeader(),
-                      const SizedBox(height: 28),
-                      if (_mode == _Mode.register) _buildStepIndicator(),
-                      if (_mode == _Mode.register) const SizedBox(height: 18),
-                      _buildCard(),
+                      // ── Handle visual ───────────────────────────────────
+                      Center(
+                        child: Container(
+                          width: 40, height: 4,
+                          margin: const EdgeInsets.only(bottom: 24),
+                          decoration: BoxDecoration(
+                            color: kTextMid.withValues(alpha: 0.20),
+                            borderRadius: BorderRadius.circular(2),
+                          ),
+                        ),
+                      ),
+
+                      // ── Cabeçalho do modo ───────────────────────────────
+                      _buildModeHeader(),
+                      const SizedBox(height: 20),
+
+                      // ── Step indicator (registro) ───────────────────────
+                      if (_mode == _Mode.register) ...[
+                        _buildStepIndicator(),
+                        const SizedBox(height: 18),
+                      ],
+
+                      // ── Banner sucesso ──────────────────────────────────
+                      if (_success != null) ...[
+                        _banner(_success!, isError: false),
+                        const SizedBox(height: 14),
+                      ],
+
+                      // ── Campos ──────────────────────────────────────────
+                      if (_mode == _Mode.login)    ..._loginFields(),
+                      if (_mode == _Mode.register) ..._registerFields(),
+                      if (_mode == _Mode.reset)    ..._resetFields(),
+
+                      // ── Banner erro ─────────────────────────────────────
+                      if (_error != null) ...[
+                        const SizedBox(height: 10),
+                        _banner(_error!, isError: true),
+                      ],
+
+                      const SizedBox(height: 20),
+                      _submitBtn(),
+                      const SizedBox(height: 16),
+                      _buildLinks(),
                       const SizedBox(height: 20),
                       _buildDisclaimer(),
                     ],
@@ -247,57 +303,45 @@ class _LoginScreenState extends State<LoginScreen>
                 ),
               ),
             ),
-          ]),
+          ),
         ),
       ]),
     );
   }
 
-  // ── Header ────────────────────────────────────────────────────────────────
-  Widget _buildHeader() {
-    return Column(children: [
-      // Logo com glow dourado
+  // ── Cabeçalho do modo ─────────────────────────────────────────────────────
+  Widget _buildModeHeader() {
+    return Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
       Container(
+        width: 44, height: 44,
         decoration: BoxDecoration(
-          shape: BoxShape.circle,
+          color: kGreen,
+          borderRadius: BorderRadius.circular(10),
           boxShadow: [
-            BoxShadow(color: kGold.withValues(alpha: 0.22), blurRadius: 44, spreadRadius: 8),
-            BoxShadow(color: kGreen.withValues(alpha: 0.18), blurRadius: 60, spreadRadius: 4),
+            BoxShadow(color: kGreen.withValues(alpha: 0.30),
+              blurRadius: 10, offset: const Offset(0, 4)),
           ],
         ),
-        child: Image.asset('assets/icon/app_icon.png', width: 88, height: 88, fit: BoxFit.contain),
+        child: Icon(_modeIcon, size: 20, color: Colors.white),
       ),
-      const SizedBox(height: 16),
-      const Text('MedCases Pro', style: TextStyle(
-        fontSize: 28, fontWeight: FontWeight.w900,
-        color: Colors.white, letterSpacing: -0.8, height: 1.0)),
-      const SizedBox(height: 5),
-      Text(
-        _isEs ? 'Apoyo clínico educativo' : 'Apoio clínico educacional',
-        style: TextStyle(fontSize: 12, color: Colors.white.withValues(alpha: 0.40),
-          fontWeight: FontWeight.w500, letterSpacing: 0.2)),
-      const SizedBox(height: 8),
-      // Linha de apoio educacional (substitui o badge beta — App Store 2.2.0)
-      Text(
-        _isEs
-          ? 'Apoyo a la decisión clínica · Solo para profesionales de salud'
-          : 'Apoio à decisão clínica · Exclusivo para profissionais de saúde',
-        style: TextStyle(
-          fontSize: 9.5,
-          fontWeight: FontWeight.w500,
-          color: Colors.white.withValues(alpha: 0.32),
-          letterSpacing: 0.3,
-        ),
-        textAlign: TextAlign.center,
+      const SizedBox(width: 14),
+      Expanded(
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Text(_modeTitle, style: const TextStyle(
+            fontSize: 20, fontWeight: FontWeight.w700,
+            color: kText, letterSpacing: -0.4, height: 1.1)),
+          const SizedBox(height: 2),
+          Text(_modeSubtitle, style: TextStyle(
+            fontSize: 11, color: kTextMid,
+            fontWeight: FontWeight.w500)),
+        ]),
       ),
     ]);
   }
 
-  // ── Step indicator (registro) ─────────────────────────────────────────────
+  // ── Step indicator ────────────────────────────────────────────────────────
   Widget _buildStepIndicator() {
-    final steps = _isEs
-        ? ['Cuenta', 'Perfil']
-        : ['Conta', 'Perfil'];
+    final steps = _isEs ? ['Cuenta', 'Perfil'] : ['Conta', 'Perfil'];
     return Row(children: List.generate(steps.length, (i) {
       final done   = i < _regStep;
       final active = i == _regStep;
@@ -307,93 +351,32 @@ class _LoginScreenState extends State<LoginScreen>
             duration: const Duration(milliseconds: 250),
             height: 3,
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(2),
-              color: done || active ? kGold : Colors.white.withValues(alpha: 0.12),
+              borderRadius: BorderRadius.circular(1.5),
+              color: done || active ? kGreen : kTextMid.withValues(alpha: 0.20),
             ),
           ),
           const SizedBox(height: 5),
           Text(steps[i], style: TextStyle(
             fontSize: 10, fontWeight: active ? FontWeight.w800 : FontWeight.w500,
-            color: active ? kGoldL : (done ? kGold : Colors.white.withValues(alpha: 0.3)))),
+            color: active ? kGreen : (done ? kGreenMid : kTextMid))),
         ])),
         if (i < steps.length - 1) const SizedBox(width: 8),
       ]));
     }));
   }
 
-  // ── Card do formulário ────────────────────────────────────────────────────
-  Widget _buildCard() {
-    return Container(
-      decoration: BoxDecoration(
-        color: kCream,
-        borderRadius: BorderRadius.circular(22),
-        boxShadow: [
-          BoxShadow(color: Colors.black.withValues(alpha: 0.35), blurRadius: 40, offset: const Offset(0, 12)),
-          BoxShadow(color: kGreen.withValues(alpha: 0.10), blurRadius: 60, offset: const Offset(0, 20)),
-        ],
-      ),
-      padding: const EdgeInsets.all(22),
-      child: Form(
-        key: _formKey,
-        child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-          // Título do modo
-          Row(children: [
-            Container(
-              padding: const EdgeInsets.all(7),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(9),
-                color: kGreen.withValues(alpha: 0.10),
-                border: Border.all(color: kGreen.withValues(alpha: 0.25)),
-              ),
-              child: Icon(_modeIcon, size: 16, color: kGreen),
-            ),
-            const SizedBox(width: 10),
-            Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text(_modeTitle, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w900, color: kDark)),
-              Text(_modeSubtitle, style: TextStyle(fontSize: 11, color: kDark.withValues(alpha: 0.45), fontWeight: FontWeight.w500)),
-            ]),
-          ]),
-          const SizedBox(height: 18),
-
-          // Banner sucesso
-          if (_success != null) ...[
-            _banner(_success!, isError: false),
-            const SizedBox(height: 14),
-          ],
-
-          // ── Campos por modo / step ──────────────────────────────────────
-          if (_mode == _Mode.login) ..._loginFields(),
-          if (_mode == _Mode.register) ..._registerFields(),
-          if (_mode == _Mode.reset)   ..._resetFields(),
-
-          // Banner erro
-          if (_error != null) ...[
-            const SizedBox(height: 10),
-            _banner(_error!, isError: true),
-          ],
-
-          const SizedBox(height: 16),
-          _submitBtn(),
-          const SizedBox(height: 14),
-          _buildLinks(),
-        ]),
-      ),
-    );
-  }
-
   // ── Campos login ──────────────────────────────────────────────────────────
   List<Widget> _loginFields() => [
-    _field(_emailLabel, _emailCtrl, Icons.email_outlined,
+    _field(_emailLabel, _emailCtrl, Icons.alternate_email_rounded,
       keyboard: TextInputType.emailAddress,
       validator: (v) {
         if (v?.trim().isEmpty ?? true) return _emailRequiredMsg;
         if (!RegExp(r'^[\w.-]+@[\w.-]+\.\w+$').hasMatch(v!.trim())) return _emailInvalidMsg;
         return null;
       }),
-    const SizedBox(height: 10),
+    const SizedBox(height: 12),
     _fieldPassword(),
-    const SizedBox(height: 10),
-    // Manter conectado
+    const SizedBox(height: 12),
     _checkRow(
       value: _keepLoggedIn,
       label: _keepLoggedInLabel,
@@ -404,36 +387,34 @@ class _LoginScreenState extends State<LoginScreen>
     ),
   ];
 
-  // ── Campos registro por step ───────────────────────────────────────────────
+  // ── Campos registro ───────────────────────────────────────────────────────
   List<Widget> _registerFields() {
     if (_regStep == 0) {
-      // Step 0: e-mail + senha
       return [
-        _field(_emailLabel, _emailCtrl, Icons.email_outlined,
+        _field(_emailLabel, _emailCtrl, Icons.alternate_email_rounded,
           keyboard: TextInputType.emailAddress,
           validator: (v) {
             if (v?.trim().isEmpty ?? true) return _emailRequiredMsg;
             if (!RegExp(r'^[\w.-]+@[\w.-]+\.\w+$').hasMatch(v!.trim())) return _emailInvalidMsg;
             return null;
           }),
-        const SizedBox(height: 10),
+        const SizedBox(height: 12),
         _fieldPassword(),
       ];
     }
-    // Step 1: nome + profissão + instituição
     return [
-      _field(_fullNameLabel, _nameCtrl, Icons.person_outline_rounded,
+      _field(_fullNameLabel, _nameCtrl, Icons.badge_outlined,
         validator: (v) => (v?.trim().isEmpty ?? true) ? _nameRequiredMsg : null),
-      const SizedBox(height: 10),
-      _field(_professionLabel, _profCtrl, Icons.work_outline_rounded),
-      const SizedBox(height: 10),
-      _field(_institutionLabel, _instCtrl, Icons.local_hospital_outlined),
+      const SizedBox(height: 12),
+      _field(_professionLabel, _profCtrl, Icons.medical_services_outlined),
+      const SizedBox(height: 12),
+      _field(_institutionLabel, _instCtrl, Icons.apartment_rounded),
     ];
   }
 
-  // ── Campos reset ───────────────────────────────────────────────────────────
+  // ── Campos reset ──────────────────────────────────────────────────────────
   List<Widget> _resetFields() => [
-    _field(_emailLabel, _emailCtrl, Icons.email_outlined,
+    _field(_emailLabel, _emailCtrl, Icons.alternate_email_rounded,
       keyboard: TextInputType.emailAddress,
       validator: (v) {
         if (v?.trim().isEmpty ?? true) return _emailRequiredMsg;
@@ -442,7 +423,7 @@ class _LoginScreenState extends State<LoginScreen>
       }),
   ];
 
-  // ── Campo genérico ─────────────────────────────────────────────────────────
+  // ── Campo genérico — borda 8px (sharp, diferente do 12px anterior) ─────
   Widget _field(String label, TextEditingController ctrl, IconData icon, {
     TextInputType keyboard = TextInputType.text,
     String? Function(String?)? validator,
@@ -455,19 +436,29 @@ class _LoginScreenState extends State<LoginScreen>
       enableSuggestions: false,
       spellCheckConfiguration: const SpellCheckConfiguration.disabled(),
       autocorrect: false,
-      style: const TextStyle(fontSize: 14, color: kDark, fontWeight: FontWeight.w600),
+      style: const TextStyle(fontSize: 14, color: kText, fontWeight: FontWeight.w600),
       decoration: InputDecoration(
         labelText: label,
-        labelStyle: TextStyle(fontSize: 12, color: kDark.withValues(alpha: 0.50), fontWeight: FontWeight.w600),
-        prefixIcon: Icon(icon, size: 18, color: kGreen),
+        labelStyle: TextStyle(
+          fontSize: 12, color: kTextMid, fontWeight: FontWeight.w500),
+        prefixIcon: Icon(icon, size: 18, color: kGreenMid),
         filled: true,
-        fillColor: const Color(0xFFF5F0E8),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
-        enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide(color: kDark.withValues(alpha: 0.09))),
-        focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: kGreen, width: 1.5)),
-        errorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: Colors.red)),
-        focusedErrorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: Colors.red, width: 1.5)),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        fillColor: kPanelCard,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8), borderSide: BorderSide.none),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: BorderSide(color: kTextMid.withValues(alpha: 0.18))),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: const BorderSide(color: kGreen, width: 2)),
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: const BorderSide(color: Colors.red)),
+        focusedErrorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: const BorderSide(color: Colors.red, width: 1.5)),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
       ),
     );
   }
@@ -483,29 +474,44 @@ class _LoginScreenState extends State<LoginScreen>
       validator: _mode == _Mode.register
           ? (v) => (v?.length ?? 0) < 6 ? _passwordMinMsg : null
           : (v) => (v?.isEmpty ?? true) ? _passwordRequiredMsg : null,
-      style: const TextStyle(fontSize: 14, color: kDark, fontWeight: FontWeight.w600),
+      style: const TextStyle(fontSize: 14, color: kText, fontWeight: FontWeight.w600),
       decoration: InputDecoration(
         labelText: _passwordLabel,
-        labelStyle: TextStyle(fontSize: 12, color: kDark.withValues(alpha: 0.50), fontWeight: FontWeight.w600),
-        prefixIcon: const Icon(Icons.lock_outline_rounded, size: 18, color: kGreen),
+        labelStyle: TextStyle(
+          fontSize: 12, color: kTextMid, fontWeight: FontWeight.w500),
+        prefixIcon: const Icon(Icons.lock_outline_rounded, size: 18, color: kGreenMid),
         suffixIcon: IconButton(
-          icon: Icon(_obscure ? Icons.visibility_off_outlined : Icons.visibility_outlined,
-            size: 18, color: kDark.withValues(alpha: 0.35)),
+          icon: Icon(
+            _obscure ? Icons.visibility_off_outlined : Icons.visibility_outlined,
+            size: 18, color: kTextMid),
           onPressed: () => setState(() => _obscure = !_obscure),
         ),
         filled: true,
-        fillColor: const Color(0xFFF5F0E8),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
-        enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide(color: kDark.withValues(alpha: 0.09))),
-        focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: kGreen, width: 1.5)),
-        errorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: Colors.red)),
-        focusedErrorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: Colors.red, width: 1.5)),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        fillColor: kPanelCard,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8), borderSide: BorderSide.none),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: BorderSide(color: kTextMid.withValues(alpha: 0.18))),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: const BorderSide(color: kGreen, width: 2)),
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: const BorderSide(color: Colors.red)),
+        focusedErrorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: const BorderSide(color: Colors.red, width: 1.5)),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
       ),
     );
   }
 
-  Widget _checkRow({required bool value, required String label, required ValueChanged<bool?> onChanged}) {
+  Widget _checkRow({
+    required bool value,
+    required String label,
+    required ValueChanged<bool?> onChanged,
+  }) {
     return GestureDetector(
       onTap: () => onChanged(!value),
       child: Row(children: [
@@ -514,66 +520,75 @@ class _LoginScreenState extends State<LoginScreen>
             value: value, onChanged: onChanged,
             activeColor: kGreen,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
-            side: BorderSide(color: kDark.withValues(alpha: 0.25), width: 1.5),
+            side: BorderSide(color: kTextMid.withValues(alpha: 0.35), width: 1.5),
             materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
           )),
         const SizedBox(width: 8),
-        Text(label, style: TextStyle(fontSize: 12, color: kDark.withValues(alpha: 0.60), fontWeight: FontWeight.w600)),
+        Text(label, style: TextStyle(
+          fontSize: 12, color: kTextMid, fontWeight: FontWeight.w500)),
       ]),
     );
   }
 
   Widget _banner(String msg, {required bool isError}) {
-    final color = isError ? Colors.red : kGreen;
+    final color = isError ? Colors.red.shade700 : kGreen;
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.07),
-        borderRadius: BorderRadius.circular(11),
-        border: Border.all(color: color.withValues(alpha: 0.28)),
+        color: color.withValues(alpha: 0.06),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: color.withValues(alpha: 0.25)),
       ),
       child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Icon(isError ? Icons.error_outline_rounded : Icons.check_circle_outline_rounded, size: 16, color: color),
+        Icon(
+          isError ? Icons.warning_amber_rounded : Icons.check_circle_outline_rounded,
+          size: 16, color: color),
         const SizedBox(width: 8),
-        Expanded(child: Text(msg, style: TextStyle(fontSize: 12, color: color, fontWeight: FontWeight.w600, height: 1.4))),
+        Expanded(child: Text(msg, style: TextStyle(
+          fontSize: 12, color: color, fontWeight: FontWeight.w600, height: 1.4))),
       ]),
     );
   }
 
-  // ── Botão principal ────────────────────────────────────────────────────────
+  // ── Botão principal — borda 10px, gradiente verde direto (não preto) ────
   Widget _submitBtn() {
-    // Label dinâmico por step
     String btnLabel = _modeBtn;
     if (_mode == _Mode.register && _regStep == 0) {
-      btnLabel = _isEs ? 'Continuar →' : 'Continuar →';
+      btnLabel = _isEs ? 'Continuar' : 'Continuar';
     }
 
     return SizedBox(
       height: 52,
       child: DecoratedBox(
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(14),
-          gradient: _loading ? null : const LinearGradient(
+          borderRadius: BorderRadius.circular(10),
+          gradient: _loading ? null : LinearGradient(
             begin: Alignment.topLeft, end: Alignment.bottomRight,
-            colors: [Color(0xFF162E1F), Color(0xFF0F1C14), Color(0xFF0A3022)],
+            colors: [kGreenMid, kGreen, const Color(0xFF075A3A)],
           ),
           boxShadow: _loading ? null : [
-            BoxShadow(color: const Color(0xFF0F1C14).withValues(alpha: 0.50), blurRadius: 14, offset: const Offset(0, 5)),
+            BoxShadow(
+              color: kGreen.withValues(alpha: 0.38),
+              blurRadius: 12, offset: const Offset(0, 5)),
           ],
         ),
         child: ElevatedButton(
           onPressed: _loading ? null : _submit,
           style: ElevatedButton.styleFrom(
             backgroundColor: Colors.transparent,
-            foregroundColor: kGoldL,
+            foregroundColor: Colors.white,
             shadowColor: Colors.transparent,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10)),
             elevation: 0,
           ),
           child: _loading
               ? const SizedBox(width: 22, height: 22,
-                  child: CircularProgressIndicator(strokeWidth: 2.5, color: kGoldL))
-              : Text(btnLabel, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w900, letterSpacing: 0.3, color: kGoldL)),
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2.5, color: Colors.white))
+              : Text(btnLabel, style: const TextStyle(
+                  fontSize: 15, fontWeight: FontWeight.w700,
+                  letterSpacing: 0.2, color: Colors.white)),
         ),
       ),
     );
@@ -583,9 +598,10 @@ class _LoginScreenState extends State<LoginScreen>
   Widget _buildLinks() {
     if (_mode == _Mode.register && _regStep > 0) {
       return TextButton(
-        onPressed: () { setState(() => _regStep--); _anim.forward(from: 0); },
+        onPressed: () { setState(() => _regStep--); _slideCtrl.forward(from: 0); },
         child: Text(_isEs ? '← Volver' : '← Voltar',
-          style: TextStyle(fontSize: 12, color: kGreen, fontWeight: FontWeight.w700)),
+          style: const TextStyle(
+            fontSize: 12, color: kGreen, fontWeight: FontWeight.w700)),
       );
     }
     if (_mode == _Mode.login) {
@@ -593,17 +609,19 @@ class _LoginScreenState extends State<LoginScreen>
         TextButton(
           onPressed: () => _switchMode(_Mode.reset),
           child: Text(_forgotPasswordLabel,
-            style: TextStyle(fontSize: 12, color: kGreen, fontWeight: FontWeight.w700)),
+            style: const TextStyle(
+              fontSize: 12, color: kGreenMid, fontWeight: FontWeight.w600)),
         ),
-        const Divider(height: 1),
+        Divider(height: 1, color: kTextMid.withValues(alpha: 0.15)),
         const SizedBox(height: 10),
         Row(mainAxisAlignment: MainAxisAlignment.center, children: [
           Text(_noAccountLabel,
-            style: TextStyle(fontSize: 12, color: kDark.withValues(alpha: 0.50))),
+            style: TextStyle(fontSize: 12, color: kTextMid)),
           GestureDetector(
             onTap: () => _switchMode(_Mode.register),
             child: Text(_signUpLabel,
-              style: const TextStyle(fontSize: 12, color: kGreen, fontWeight: FontWeight.w900)),
+              style: const TextStyle(
+                fontSize: 12, color: kGreen, fontWeight: FontWeight.w800)),
           ),
         ]),
       ]);
@@ -611,24 +629,25 @@ class _LoginScreenState extends State<LoginScreen>
     return TextButton(
       onPressed: () => _switchMode(_Mode.login),
       child: Text(_backToLoginLabel,
-        style: TextStyle(fontSize: 12, color: kGreen, fontWeight: FontWeight.w700)),
+        style: const TextStyle(
+          fontSize: 12, color: kGreen, fontWeight: FontWeight.w700)),
     );
   }
 
-  // ── Disclaimer ────────────────────────────────────────────────────────────
   Widget _buildDisclaimer() {
     return Text(
       _legalDisclaimer,
       textAlign: TextAlign.center,
-      style: TextStyle(fontSize: 9.5, color: Colors.white.withValues(alpha: 0.28),
-        fontWeight: FontWeight.w500, height: 1.5),
+      style: TextStyle(
+        fontSize: 9.5, color: kTextMid.withValues(alpha: 0.55),
+        fontWeight: FontWeight.w400, height: 1.5),
     );
   }
 
   // ── Strings i18n ──────────────────────────────────────────────────────────
   IconData get _modeIcon {
     switch (_mode) {
-      case _Mode.login:    return Icons.login_rounded;
+      case _Mode.login:    return Icons.fingerprint_rounded;
       case _Mode.register: return Icons.person_add_outlined;
       case _Mode.reset:    return Icons.lock_reset_rounded;
     }
@@ -636,52 +655,260 @@ class _LoginScreenState extends State<LoginScreen>
 
   String get _modeTitle {
     switch (_mode) {
-      case _Mode.login:    return _isEs ? 'Iniciar sesión'          : 'Entrar na sua conta';
-      case _Mode.register: return _isEs ? 'Crear cuenta'            : 'Criar conta';
-      case _Mode.reset:    return _isEs ? 'Restablecer contraseña'  : 'Redefinir senha';
+      case _Mode.login:    return _isEs ? 'Acceder a mi cuenta'        : 'Acessar minha conta';
+      case _Mode.register: return _isEs ? 'Solicitar acceso'           : 'Solicitar acesso';
+      case _Mode.reset:    return _isEs ? 'Recuperar contraseña'       : 'Recuperar senha';
     }
   }
 
   String get _modeSubtitle {
     switch (_mode) {
-      case _Mode.login:    return _isEs ? 'Usa tu correo y contraseña registrados'               : 'Use seu e-mail e senha cadastrados';
-      case _Mode.register: return _isEs ? 'Registro sujeto a aprobación del administrador'       : 'Cadastro sujeito à aprovação do administrador';
-      case _Mode.reset:    return _isEs ? 'Enviaremos un enlace a tu correo'                     : 'Enviaremos um link para seu e-mail';
+      case _Mode.login:    return _isEs ? 'Plataforma exclusiva para profesionales'         : 'Plataforma exclusiva para profissionais';
+      case _Mode.register: return _isEs ? 'Acceso aprobado por el equipo MedCases'         : 'Acesso aprovado pela equipe MedCases';
+      case _Mode.reset:    return _isEs ? 'Te enviamos un enlace de recuperación por email' : 'Enviaremos um link de recuperação por e-mail';
     }
   }
 
   String get _modeBtn {
     switch (_mode) {
-      case _Mode.login:    return _isEs ? 'Iniciar sesión'   : 'Entrar';
-      case _Mode.register: return _isEs ? 'Solicitar acceso' : 'Solicitar acesso';
-      case _Mode.reset:    return _isEs ? 'Enviar enlace'    : 'Enviar link';
+      case _Mode.login:    return _isEs ? 'Iniciar sesión'    : 'Entrar';
+      case _Mode.register: return _isEs ? 'Enviar solicitação': 'Enviar solicitação';
+      case _Mode.reset:    return _isEs ? 'Enviar enlace'     : 'Enviar link';
     }
   }
 
-  String get _keepLoggedInLabel   => _isEs ? 'Mantener sesión iniciada'              : 'Manter conectado';
-  String get _fullNameLabel       => _isEs ? 'Nombre completo'                       : 'Nome completo';
-  String get _nameRequiredMsg     => _isEs ? 'Ingresa tu nombre'                     : 'Informe seu nome';
-  String get _emailLabel          => _isEs ? 'Correo profesional'                    : 'E-mail profissional';
-  String get _emailRequiredMsg    => _isEs ? 'Ingresa el correo'                     : 'Informe o e-mail';
-  String get _emailInvalidMsg     => _isEs ? 'Correo inválido'                       : 'E-mail inválido';
-  String get _professionLabel     => _isEs ? 'Profesión (ej: Médico, Residente)'     : 'Profissão (ex: Médico, Residente)';
-  String get _institutionLabel    => _isEs ? 'Institución / Hospital'                : 'Instituição / Hospital';
-  String get _forgotPasswordLabel => _isEs ? '¿Olvidaste tu contraseña?'             : 'Esqueceu a senha?';
-  String get _noAccountLabel      => _isEs ? '¿No tienes cuenta?  '                 : 'Não tem conta?  ';
-  String get _signUpLabel         => _isEs ? 'Registrarse'                           : 'Cadastrar-se';
-  String get _backToLoginLabel    => _isEs ? '← Volver al inicio de sesión'         : '← Voltar para o login';
-  String get _passwordLabel       => _isEs ? 'Contraseña'                            : 'Senha';
-  String get _passwordMinMsg      => _isEs ? 'Mínimo 6 caracteres'                   : 'Mínimo 6 caracteres';
-  String get _passwordRequiredMsg => _isEs ? 'Ingresa la contraseña'                 : 'Informe a senha';
+  String get _keepLoggedInLabel   => _isEs ? 'Mantener sesión activa'                  : 'Manter-me conectado';
+  String get _fullNameLabel       => _isEs ? 'Nombre completo'                         : 'Nome completo';
+  String get _nameRequiredMsg     => _isEs ? 'Ingresa tu nombre'                       : 'Informe seu nome';
+  String get _emailLabel          => _isEs ? 'E-mail institucional'                    : 'E-mail institucional';
+  String get _emailRequiredMsg    => _isEs ? 'Ingresa el correo'                       : 'Informe o e-mail';
+  String get _emailInvalidMsg     => _isEs ? 'Correo inválido'                         : 'E-mail inválido';
+  String get _professionLabel     => _isEs ? 'Especialidad / Cargo'                    : 'Especialidade / Cargo';
+  String get _institutionLabel    => _isEs ? 'Hospital / Institución'                  : 'Hospital / Instituição';
+  String get _forgotPasswordLabel => _isEs ? '¿Olvidaste tu contraseña?'               : 'Esqueceu a senha?';
+  String get _noAccountLabel      => _isEs ? '¿Sin cuenta?  '                          : 'Sem conta?  ';
+  String get _signUpLabel         => _isEs ? 'Solicitar acceso'                         : 'Solicitar acesso';
+  String get _backToLoginLabel    => _isEs ? '← Volver al inicio'                      : '← Voltar ao início';
+  String get _passwordLabel       => _isEs ? 'Contraseña'                               : 'Senha';
+  String get _passwordMinMsg      => _isEs ? 'Mínimo 6 caracteres'                      : 'Mínimo 6 caracteres';
+  String get _passwordRequiredMsg => _isEs ? 'Ingresa la contraseña'                    : 'Informe a senha';
   String get _legalDisclaimer     => _isEs
-      ? 'Uso educativo y de apoyo clínico. No reemplaza la evaluación médica individual ni las directrices institucionales.'
-      : 'Uso educacional e de apoio clínico. Não substitui avaliação médica individual nem diretrizes institucionais.';
+      ? 'Herramienta de apoyo clínico educativo. No sustituye el juicio clínico individual ni las guías institucionales vigentes.'
+      : 'Ferramenta de apoio clínico educacional. Não substitui o julgamento clínico individual nem as diretrizes institucionais vigentes.';
 
   String _registerSuccessMsg() => _isEs
-      ? 'Registro realizado. Tu cuenta está pendiente de aprobación del administrador. Recibirás acceso en breve.'
-      : 'Cadastro realizado. Sua conta está aguardando aprovação do administrador. Você receberá acesso em breve.';
+      ? 'Solicitud enviada. Tu acceso será revisado y habilitado por el equipo MedCases en breve.'
+      : 'Solicitação enviada. Seu acesso será revisado e habilitado pela equipe MedCases em breve.';
 
   String _resetSuccessMsg(String email) => _isEs
-      ? 'Enlace de restablecimiento enviado a $email. Revisa tu bandeja de entrada.'
-      : 'Link de redefinição enviado para $email. Verifique sua caixa de entrada.';
+      ? 'Enlace de recuperación enviado a $email. Revisa tu bandeja de entrada.'
+      : 'Link de recuperação enviado para $email. Verifique sua caixa de entrada.';
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// HERO GEOMÉTRICO ANIMADO — formas vazadas (sem preenchimento sólido)
+// ══════════════════════════════════════════════════════════════════════════════
+class _HeroGeometric extends StatelessWidget {
+  final Animation<double> rotAnim;
+  final String lang;
+  const _HeroGeometric({required this.rotAnim, required this.lang});
+
+  bool get _isEs => lang == 'es';
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Color(0xFF061A12),  // verde muito escuro
+            Color(0xFF0D3324),  // verde floresta
+            Color(0xFF0A2218),  // intermediário
+          ],
+          stops: [0.0, 0.60, 1.0],
+        ),
+      ),
+      child: Stack(children: [
+        // ── Formas geométricas vazadas (stroke apenas) ─────────────────
+        AnimatedBuilder(
+          animation: rotAnim,
+          builder: (_, __) => CustomPaint(
+            painter: _GeoPainter(rotAnim.value),
+            size: Size.infinite,
+          ),
+        ),
+
+        // ── Logo + texto hero ──────────────────────────────────────────
+        SafeArea(
+          bottom: false,
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(32, 28, 32, 0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Badge topo
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withValues(alpha: 0.08),
+                    borderRadius: BorderRadius.circular(4),
+                    border: Border.all(
+                      color: const Color(0xFF0E7C52).withValues(alpha: 0.40)),
+                  ),
+                  child: Row(mainAxisSize: MainAxisSize.min, children: [
+                    Container(
+                      width: 6, height: 6,
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Color(0xFF13A06A),
+                      ),
+                    ),
+                    const SizedBox(width: 6),
+                    Text(
+                      _isEs ? 'Para profesionales de salud' : 'Para profissionais de saúde',
+                      style: const TextStyle(
+                        fontSize: 10, fontWeight: FontWeight.w600,
+                        color: Color(0xFF13A06A), letterSpacing: 0.2),
+                    ),
+                  ]),
+                ),
+
+                const SizedBox(height: 18),
+
+                // Logo — posicionado à esquerda (não centralizado como antes)
+                Row(children: [
+                  Image.asset(
+                    'assets/icon/app_icon.png',
+                    width: 52, height: 52,
+                    fit: BoxFit.contain,
+                  ),
+                  const SizedBox(width: 14),
+                  Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                    const Text('MedCases Pro',
+                      style: TextStyle(
+                        fontSize: 24, fontWeight: FontWeight.w700,
+                        color: Colors.white, letterSpacing: -0.5, height: 1.0)),
+                    const SizedBox(height: 2),
+                    Text(
+                      _isEs ? 'Clínica • Protocolos • IA' : 'Clínica • Protocolos • IA',
+                      style: TextStyle(
+                        fontSize: 11,
+                        color: const Color(0xFF13A06A).withValues(alpha: 0.90),
+                        fontWeight: FontWeight.w600, letterSpacing: 0.5)),
+                  ]),
+                ]),
+
+                const SizedBox(height: 20),
+
+                // Headline — tipografia diferente (não centralizada, peso 700)
+                Text(
+                  _isEs
+                    ? 'Decisiones clínicas\nrespaldadas por evidencia'
+                    : 'Decisões clínicas\nembasadas em evidências',
+                  style: const TextStyle(
+                    fontSize: 22, fontWeight: FontWeight.w700,
+                    color: Colors.white, height: 1.25, letterSpacing: -0.5),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  _isEs
+                    ? 'Protocolos, prescripciones y IA médica\nen un solo lugar.'
+                    : 'Protocolos, prescrições e IA médica\nem um só lugar.',
+                  style: TextStyle(
+                    fontSize: 13,
+                    color: Colors.white.withValues(alpha: 0.55),
+                    fontWeight: FontWeight.w400, height: 1.4),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ]),
+    );
+  }
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// PAINTER — formas geométricas vazadas rotacionando lentamente
+// ══════════════════════════════════════════════════════════════════════════════
+class _GeoPainter extends CustomPainter {
+  final double rotation;
+  const _GeoPainter(this.rotation);
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paintStroke = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.0;
+
+    // Hexágono grande direito superior — stroke verde claro
+    paintStroke.color = const Color(0xFF0E7C52).withValues(alpha: 0.22);
+    _drawHexagon(canvas, Offset(size.width * 0.85, size.height * 0.15),
+      size.width * 0.38, rotation * 0.3, paintStroke);
+
+    // Hexágono médio esquerdo — stroke verde médio
+    paintStroke.color = const Color(0xFF13A06A).withValues(alpha: 0.15);
+    _drawHexagon(canvas, Offset(size.width * 0.10, size.height * 0.68),
+      size.width * 0.22, rotation * 0.5, paintStroke);
+
+    // Círculo grande — stroke fino muito suave
+    paintStroke.color = Colors.white.withValues(alpha: 0.04);
+    paintStroke.strokeWidth = 0.8;
+    canvas.drawCircle(
+      Offset(size.width * 0.72, size.height * 0.78),
+      size.width * 0.30, paintStroke);
+
+    // Losango pequeno — stroke verde
+    paintStroke.color = const Color(0xFF0E7C52).withValues(alpha: 0.18);
+    paintStroke.strokeWidth = 1.0;
+    _drawDiamond(canvas, Offset(size.width * 0.22, size.height * 0.25),
+      size.width * 0.09, rotation * 0.8, paintStroke);
+
+    // Cruz/plus geométrico
+    paintStroke.color = const Color(0xFF13A06A).withValues(alpha: 0.12);
+    _drawPlus(canvas, Offset(size.width * 0.60, size.height * 0.50),
+      size.width * 0.05, rotation, paintStroke);
+  }
+
+  void _drawHexagon(Canvas canvas, Offset center, double radius,
+      double rot, Paint paint) {
+    final path = Path();
+    for (int i = 0; i < 6; i++) {
+      final angle = rot + (i * math.pi / 3);
+      final x = center.dx + radius * math.cos(angle);
+      final y = center.dy + radius * math.sin(angle);
+      i == 0 ? path.moveTo(x, y) : path.lineTo(x, y);
+    }
+    path.close();
+    canvas.drawPath(path, paint);
+  }
+
+  void _drawDiamond(Canvas canvas, Offset center, double r,
+      double rot, Paint paint) {
+    final path = Path();
+    for (int i = 0; i < 4; i++) {
+      final angle = rot + (i * math.pi / 2) + math.pi / 4;
+      final x = center.dx + r * math.cos(angle);
+      final y = center.dy + r * math.sin(angle);
+      i == 0 ? path.moveTo(x, y) : path.lineTo(x, y);
+    }
+    path.close();
+    canvas.drawPath(path, paint);
+  }
+
+  void _drawPlus(Canvas canvas, Offset center, double r,
+      double rot, Paint paint) {
+    canvas.save();
+    canvas.translate(center.dx, center.dy);
+    canvas.rotate(rot);
+    canvas.drawLine(Offset(-r, 0), Offset(r, 0), paint);
+    canvas.drawLine(Offset(0, -r), Offset(0, r), paint);
+    canvas.restore();
+  }
+
+  @override
+  bool shouldRepaint(_GeoPainter oldDelegate) =>
+      oldDelegate.rotation != rotation;
 }

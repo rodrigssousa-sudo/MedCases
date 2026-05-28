@@ -564,50 +564,160 @@ class _ConsentGateState extends State<_ConsentGate> {
   }
 }
 
-// ── Splash Screen ─────────────────────────────────────────────────────────────
-class _SplashScreen extends StatelessWidget {
+// ── Splash Screen — redesign v2: logo terço superior + animação scale+slide ──
+class _SplashScreen extends StatefulWidget {
   const _SplashScreen();
+  @override
+  State<_SplashScreen> createState() => _SplashScreenState();
+}
+
+class _SplashScreenState extends State<_SplashScreen>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _ctrl;
+  late Animation<double>   _scale;
+  late Animation<double>   _fade;
+  late Animation<Offset>   _slide;
+
+  @override
+  void initState() {
+    super.initState();
+    _ctrl = AnimationController(
+      vsync: this, duration: const Duration(milliseconds: 700));
+    _scale = Tween<double>(begin: 0.72, end: 1.0)
+        .animate(CurvedAnimation(parent: _ctrl, curve: Curves.easeOutBack));
+    _fade  = Tween<double>(begin: 0.0, end: 1.0)
+        .animate(CurvedAnimation(parent: _ctrl, curve: const Interval(0.0, 0.6)));
+    _slide = Tween<Offset>(begin: const Offset(0, 0.14), end: Offset.zero)
+        .animate(CurvedAnimation(parent: _ctrl, curve: Curves.easeOutCubic));
+    _ctrl.forward();
+  }
+
+  @override
+  void dispose() { _ctrl.dispose(); super.dispose(); }
 
   @override
   Widget build(BuildContext context) {
+    final h = MediaQuery.of(context).size.height;
+    // Logo posicionado no terço superior (h * 0.32 do topo)
+    final logoTop = h * 0.28;
+
     return Scaffold(
-      backgroundColor: const Color(0xFF0A1610),
-      body: Center(
-        child: Column(mainAxisSize: MainAxisSize.min, children: [
-          // Logo com glow sutil
-          Container(
+      backgroundColor: const Color(0xFF061A12), // novo fundo — mais escuro que #0A1610
+      body: Stack(children: [
+        // Detalhe geométrico de fundo sutil — diferente do splash anterior
+        Positioned(
+          top: -h * 0.05,
+          right: -80,
+          child: Container(
+            width: 260, height: 260,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              boxShadow: [
-                BoxShadow(
-                  color: const Color(0xFFC5A365).withValues(alpha: 0.20),
-                  blurRadius: 48,
-                  spreadRadius: 8,
+              color: const Color(0xFF0E7C52).withValues(alpha: 0.06),
+            ),
+          ),
+        ),
+        Positioned(
+          bottom: h * 0.15,
+          left: -60,
+          child: Container(
+            width: 180, height: 180,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: const Color(0xFF13A06A).withValues(alpha: 0.04),
+            ),
+          ),
+        ),
+
+        // ── Conteúdo animado ─────────────────────────────────────────────
+        Positioned(
+          top: logoTop,
+          left: 0, right: 0,
+          child: FadeTransition(
+            opacity: _fade,
+            child: SlideTransition(
+              position: _slide,
+              child: ScaleTransition(
+                scale: _scale,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    // Logo — glow verde (antes era dourado)
+                    Container(
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        boxShadow: [
+                          BoxShadow(
+                            color: const Color(0xFF0E7C52).withValues(alpha: 0.28),
+                            blurRadius: 52, spreadRadius: 10,
+                          ),
+                        ],
+                      ),
+                      child: const BrandMark(small: false),
+                    ),
+
+                    const SizedBox(height: 20),
+
+                    // Nome do app — peso 700 (antes era 900)
+                    const Text(
+                      'MedCases Pro',
+                      style: TextStyle(
+                        fontSize: 26,
+                        fontWeight: FontWeight.w700,
+                        color: Colors.white,
+                        letterSpacing: -0.5,
+                      ),
+                    ),
+
+                    const SizedBox(height: 6),
+
+                    // Tagline nova — diferente do anterior
+                    Text(
+                      'Clínica · Protocolos · IA',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: const Color(0xFF13A06A).withValues(alpha: 0.85),
+                        fontWeight: FontWeight.w500,
+                        letterSpacing: 1.2,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+
+        // ── Indicador de carga — posicionado no terço inferior ───────────
+        Positioned(
+          bottom: h * 0.18,
+          left: 0, right: 0,
+          child: FadeTransition(
+            opacity: _fade,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                SizedBox(
+                  width: 20, height: 20,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 1.8,
+                    color: const Color(0xFF0E7C52).withValues(alpha: 0.55),
+                  ),
+                ),
+                const SizedBox(height: 14),
+                Text(
+                  'Iniciando...',
+                  style: TextStyle(
+                    fontSize: 11,
+                    color: Colors.white.withValues(alpha: 0.25),
+                    fontWeight: FontWeight.w400,
+                    letterSpacing: 0.5,
+                  ),
                 ),
               ],
             ),
-            child: const BrandMark(small: false),
           ),
-          const SizedBox(height: 36),
-          SizedBox(
-            width: 24, height: 24,
-            child: CircularProgressIndicator(
-              strokeWidth: 2,
-              color: const Color(0xFFFFE8A6).withValues(alpha: 0.55),
-            ),
-          ),
-          const SizedBox(height: 18),
-          Text(
-            'Cargando MedCases Pro...',
-            style: TextStyle(
-              fontSize: 11,
-              color: Colors.white.withValues(alpha: 0.30),
-              fontWeight: FontWeight.w500,
-              letterSpacing: 0.3,
-            ),
-          ),
-        ]),
-      ),
+        ),
+      ]),
     );
   }
 }
