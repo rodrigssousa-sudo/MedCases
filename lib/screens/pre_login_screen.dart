@@ -4,24 +4,21 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../screens/login_screen.dart';
 import '../screens/legal_screen.dart';
 
-// ── Nova paleta dark-forest (radicalmente diferente da v3 branca/cinza) ───────
-const _kBg          = Color(0xFF07180F);   // fundo escuro — verde floresta profundo
-const _kBgCard      = Color(0xFF0D2B1C);   // card escuro
-const _kBgCardHi    = Color(0xFF102E1E);   // card highlight
+// ── Paleta MedixAI Premium (dark neon / glassmorphism médico) ─────────────────
+const _kBg          = Color(0xFF06110C);   // fundo — preto-verde profundo (MedixAI)
+const _kBgCard      = Color(0xFF0E1A14);   // card escuro MedixAI
 const _kGreen       = Color(0xFF0E7C52);   // verde principal
 const _kGreenMid    = Color(0xFF13A06A);   // verde médio
 const _kGreenLight  = Color(0xFF1DBF7B);   // verde claro acento
-const _kGreenFaint  = Color(0xFF0D2B1C);   // verde muito escuro (fundo sutil)
-const _kGold        = Color(0xFFD4A853);   // dourado — CTA principal
-const _kGoldLight   = Color(0xFFFFE8A6);   // dourado claro
-const _kText        = Color(0xFFF0FAF4);   // texto principal (quase branco verde)
-const _kTextMid     = Color(0xFF8DB89E);   // texto secundário
+const _kNeon        = Color(0xFF33FF88);   // neon verde MedixAI
+const _kNeonGlow    = Color(0xFF2AF07A);   // cor do glow neon
+const _kGold        = Color(0xFFD4A853);   // dourado — CTA
+const _kText        = Color(0xFFEAF6EF);   // texto principal MedixAI (quase branco)
+const _kTextMid     = Color(0xFF9FB4A6);   // texto secundário MedixAI
 const _kTextDim     = Color(0xFF3D6B52);   // texto suave
-const _kBorder      = Color(0xFF163D27);   // bordas
+const _kBorder      = Color(0xFF1A3828);   // bordas MedixAI
 const _kRed         = Color(0xFFE05252);   // vermelho acento
 const _kRedDark     = Color(0xFFC13030);
-const _kPurple      = Color(0xFF8B72FF);
-const _kPurpleDark  = Color(0xFF6B4FE0);
 
 // ══════════════════════════════════════════════════════════════════════════════
 class PreLoginPreview extends StatefulWidget {
@@ -123,9 +120,9 @@ class _PreLoginPreviewState extends State<PreLoginPreview> {
     }
 
     return Scaffold(
-      backgroundColor: _kBg,
+      backgroundColor: const Color(0xFF06110C),   // MedixAI dark bg
       body: Column(children: [
-        // ── Novo header: fundo verde escuro (não branco) ──────────────────
+        // ── Header ────────────────────────────────────────────────────────────────
         _DarkHeader(isEs: _isEs, onToggleLang: _toggleLang, onLogin: _goLogin),
         Expanded(
           child: ListView(
@@ -204,13 +201,14 @@ class _DarkHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: const Color(0xFF061A12),
+      color: const Color(0xFF060F0A),
       child: SafeArea(
         bottom: false,
         child: Container(
-          decoration: const BoxDecoration(
+          decoration: BoxDecoration(
             border: Border(
-              bottom: BorderSide(color: _kBorder, width: 0.8)),
+              bottom: BorderSide(
+                color: _kNeonGlow.withValues(alpha: 0.12), width: 0.8)),
           ),
           padding: const EdgeInsets.fromLTRB(16, 10, 16, 10),
           child: Row(children: [
@@ -499,7 +497,7 @@ class _CritCard extends StatelessWidget {
 }
 
 // ══════════════════════════════════════════════════════════════════════════════
-// BLOCO IA — dark (verde escuro, não violeta)
+// BLOCO IA — MedixAI Premium: neon glow + radial gradient + glassmorphism
 // ══════════════════════════════════════════════════════════════════════════════
 class _IaBlockDark extends StatelessWidget {
   final VoidCallback onTap;
@@ -514,150 +512,234 @@ class _IaBlockDark extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: _kBgCard,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: _kPurple.withValues(alpha: 0.25)),
-      ),
-      padding: const EdgeInsets.all(16),
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        // Header IA — horizontal, sem círculo violeta grande
-        Row(children: [
-          Container(
-            width: 32, height: 32,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(6),
-              color: _kPurple.withValues(alpha: 0.12),
-            ),
-            child: const Icon(
-              Icons.auto_awesome_rounded, size: 16, color: _kPurple),
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        decoration: BoxDecoration(
+          // ── RadialGradient sutil para profundidade (MedixAI) ─────────────
+          gradient: const RadialGradient(
+            center: Alignment(-0.6, -0.7),
+            radius: 1.2,
+            colors: [
+              Color(0xFF112B1A),   // centro levemente mais claro
+              Color(0xFF0E1A14),   // _kBgCard
+            ],
           ),
-          const SizedBox(width: 10),
-          Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text(
-              isEs ? 'Asistente IA Clínico' : 'Assistente IA Clínico',
-              style: const TextStyle(
-                fontSize: 14, fontWeight: FontWeight.w700,
-                color: _kText)),
-            Text(
-              isEs ? 'Respuestas basadas en evidencia' : 'Respostas baseadas em evidências',
-              style: const TextStyle(
-                fontSize: 10, color: _kTextMid)),
-          ]),
-          const Spacer(),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(4),
-              color: _kPurple.withValues(alpha: 0.12),
-              border: Border.all(color: _kPurple.withValues(alpha: 0.30)),
-            ),
-            child: const Text('Beta',
-              style: TextStyle(
-                fontSize: 9, fontWeight: FontWeight.w700, color: _kPurple)),
+          borderRadius: BorderRadius.circular(14),
+          // ── Borda verde neon sutil ────────────────────────────────────────
+          border: Border.all(
+            color: _kNeonGlow.withValues(alpha: 0.20),
+            width: 1.0,
           ),
-        ]),
-
-        const SizedBox(height: 14),
-
-        // Exemplo de resposta IA — diferente (não balão)
-        Container(
-          padding: const EdgeInsets.all(12),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(8),
-            color: _kBgCardHi,
-            border: Border.all(color: _kBorder),
-          ),
-          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Row(children: [
-              Container(
-                width: 4, height: 4,
-                decoration: const BoxDecoration(
-                  shape: BoxShape.circle, color: _kGreenLight),
-              ),
-              const SizedBox(width: 6),
-              Text(
-                isEs ? 'IA MedCases responde:' : 'IA MedCases responde:',
-                style: const TextStyle(
-                  fontSize: 10, fontWeight: FontWeight.w600,
-                  color: _kGreenLight)),
-            ]),
-            const SizedBox(height: 6),
-            Text(
-              isEs
-                ? 'Noradrenalina 0,1–0,2 μg/kg/min IV em bomba. Titular conforme PAM ≥ 65 mmHg. Acesso venoso central preferencial...'
-                : 'Noradrenalina 0,1–0,2 μg/kg/min IV em bomba. Titular conforme PAM ≥ 65 mmHg. Acesso venoso central preferencialmente...',
-              style: const TextStyle(
-                fontSize: 12, color: _kText,
-                fontWeight: FontWeight.w400, height: 1.5),
-              maxLines: 3, overflow: TextOverflow.ellipsis,
+          // ── Neon glow 2 camadas (inner glow + outer diffuse) ─────────────
+          boxShadow: [
+            BoxShadow(
+              color: _kNeonGlow.withValues(alpha: 0.22),
+              blurRadius: 20,
+              spreadRadius: 0,
+              offset: const Offset(0, 0),
             ),
-          ]),
+            BoxShadow(
+              color: _kNeonGlow.withValues(alpha: 0.10),
+              blurRadius: 55,
+              spreadRadius: 6,
+              offset: const Offset(0, 4),
+            ),
+          ],
         ),
+        padding: const EdgeInsets.all(16),
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          // ── Header IA — ícone neon + badge AI POWERED ────────────────────
+          Row(children: [
+            // Ícone circular com glow sutil
+            Container(
+              width: 38, height: 38,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: _kNeonGlow.withValues(alpha: 0.10),
+                border: Border.all(
+                  color: _kNeonGlow.withValues(alpha: 0.30), width: 1.0),
+                boxShadow: [
+                  BoxShadow(
+                    color: _kNeonGlow.withValues(alpha: 0.18),
+                    blurRadius: 10,
+                    spreadRadius: 0,
+                  ),
+                ],
+              ),
+              child: const Icon(
+                Icons.psychology_outlined, size: 18, color: _kNeon),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    isEs ? 'Asistente IA Clínico' : 'Assistente IA Clínico',
+                    style: const TextStyle(
+                      fontSize: 15, fontWeight: FontWeight.w700,
+                      color: _kText, letterSpacing: -0.2)),
+                  Text(
+                    isEs
+                        ? 'Respuestas basadas en evidencia'
+                        : 'Respostas baseadas em evidências',
+                    style: const TextStyle(
+                      fontSize: 10.5, color: _kTextMid)),
+                ],
+              ),
+            ),
+            // Badge AI POWERED — estilo MedixAI
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(4),
+                color: _kNeonGlow.withValues(alpha: 0.10),
+                border: Border.all(
+                  color: _kNeonGlow.withValues(alpha: 0.28), width: 0.8),
+              ),
+              child: Row(mainAxisSize: MainAxisSize.min, children: [
+                Container(
+                  width: 5, height: 5,
+                  decoration: const BoxDecoration(
+                    shape: BoxShape.circle, color: _kNeon),
+                ),
+                const SizedBox(width: 5),
+                const Text('AI',
+                  style: TextStyle(
+                    fontSize: 9, fontWeight: FontWeight.w800,
+                    color: _kNeon, letterSpacing: 0.5)),
+              ]),
+            ),
+          ]),
 
-        const SizedBox(height: 12),
+          const SizedBox(height: 14),
 
-        // Chips — horizontal scroll, estilo dark
-        SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Row(children: _prompts.map((p) => GestureDetector(
+          // ── Resposta IA — glassmorphism interno ──────────────────────────
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(8),
+              color: const Color(0xFF0B1710),
+              border: Border.all(
+                color: _kNeonGlow.withValues(alpha: 0.12), width: 0.8),
+            ),
+            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Row(children: [
+                Container(
+                  width: 5, height: 5,
+                  decoration: const BoxDecoration(
+                    shape: BoxShape.circle, color: _kNeon),
+                ),
+                const SizedBox(width: 6),
+                Text(
+                  isEs ? 'IA MedCases responde:' : 'IA MedCases responde:',
+                  style: const TextStyle(
+                    fontSize: 10, fontWeight: FontWeight.w600,
+                    color: _kNeon)),
+              ]),
+              const SizedBox(height: 7),
+              Text(
+                isEs
+                  ? 'Noradrenalina 0,1–0,2 μg/kg/min IV em bomba. Titular conforme PAM ≥ 65 mmHg. Acesso venoso central preferencial...'
+                  : 'Noradrenalina 0,1–0,2 μg/kg/min IV em bomba. Titular conforme PAM ≥ 65 mmHg. Acesso venoso central preferencialmente...',
+                style: const TextStyle(
+                  fontSize: 12, color: _kText,
+                  fontWeight: FontWeight.w400, height: 1.55),
+                maxLines: 3, overflow: TextOverflow.ellipsis,
+              ),
+            ]),
+          ),
+
+          const SizedBox(height: 12),
+
+          // ── Chips sugestão — estilo MedixAI ─────────────────────────────
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: _prompts.map((p) => GestureDetector(
+                onTap: onTap,
+                child: Container(
+                  margin: const EdgeInsets.only(right: 8),
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF0B1710),
+                    borderRadius: BorderRadius.circular(5),
+                    border: Border.all(
+                      color: _kNeonGlow.withValues(alpha: 0.15), width: 0.8),
+                  ),
+                  child: Text(p,
+                    style: const TextStyle(
+                      fontSize: 10, color: _kTextMid,
+                      fontWeight: FontWeight.w500)),
+                ),
+              )).toList(),
+            ),
+          ),
+
+          const SizedBox(height: 12),
+
+          // ── Input fake — neon border verde ───────────────────────────────
+          GestureDetector(
             onTap: onTap,
             child: Container(
-              margin: const EdgeInsets.only(right: 8),
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+              height: 46,
               decoration: BoxDecoration(
-                color: _kBgCardHi,
-                borderRadius: BorderRadius.circular(4),
-                border: Border.all(color: _kBorder),
+                color: const Color(0xFF0B1710),
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(
+                  color: _kNeonGlow.withValues(alpha: 0.30), width: 1.0),
+                boxShadow: [
+                  BoxShadow(
+                    color: _kNeonGlow.withValues(alpha: 0.08),
+                    blurRadius: 8,
+                    spreadRadius: 0,
+                  ),
+                ],
               ),
-              child: Text(p,
-                style: const TextStyle(
-                  fontSize: 10, color: _kTextMid,
-                  fontWeight: FontWeight.w500)),
-            ),
-          )).toList()),
-        ),
-
-        const SizedBox(height: 12),
-
-        // Input fake — retangular (não pill circular)
-        GestureDetector(
-          onTap: onTap,
-          child: Container(
-            height: 44,
-            decoration: BoxDecoration(
-              color: _kBgCardHi,
-              borderRadius: BorderRadius.circular(6),
-              border: Border.all(color: _kGreen.withValues(alpha: 0.35)),
-            ),
-            padding: const EdgeInsets.symmetric(horizontal: 14),
-            child: Row(children: [
-              Expanded(
-                child: Text(
-                  isEs ? 'Consultar caso clínico...' : 'Consultar caso clínico...',
-                  style: const TextStyle(
-                    fontSize: 12, color: _kTextDim)),
-              ),
-              Container(
-                padding: const EdgeInsets.all(6),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(4),
-                  color: _kGreen,
+              padding: const EdgeInsets.symmetric(horizontal: 14),
+              child: Row(children: [
+                const Icon(Icons.search_rounded,
+                  size: 16, color: _kTextMid),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    isEs ? 'Consultar caso clínico...' : 'Consultar caso clínico...',
+                    style: const TextStyle(
+                      fontSize: 12, color: _kTextDim)),
                 ),
-                child: const Icon(Icons.send_rounded,
-                  size: 13, color: Colors.white),
-              ),
-            ]),
+                // Botão send neon
+                Container(
+                  padding: const EdgeInsets.all(7),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(5),
+                    gradient: const LinearGradient(
+                      colors: [Color(0xFF13A06A), Color(0xFF0E7C52)],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: _kNeonGlow.withValues(alpha: 0.25),
+                        blurRadius: 8,
+                        spreadRadius: 0,
+                      ),
+                    ],
+                  ),
+                  child: const Icon(Icons.send_rounded,
+                    size: 13, color: Colors.white),
+                ),
+              ]),
+            ),
           ),
-        ),
-      ]),
+        ]),
+      ),
     );
   }
 }
 
 // ══════════════════════════════════════════════════════════════════════════════
-// MÉTRICAS RÁPIDAS — componente novo, não existia na v3
+// MÉTRICAS RÁPIDAS — MedixAI Premium: 2 cards lado a lado, ícone circular neon
 // ══════════════════════════════════════════════════════════════════════════════
 class _MetricsRow extends StatelessWidget {
   final bool isEs;
@@ -665,40 +747,123 @@ class _MetricsRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final items = [
-      ('+2.400', isEs ? 'Protocolos' : 'Protocolos', Icons.description_outlined),
-      ('+180',   isEs ? 'Especialidades' : 'Especialidades', Icons.biotech_outlined),
-      ('IA',     isEs ? 'Asistente' : 'Assistente', Icons.smart_toy_outlined),
-    ];
-    return Row(children: items.asMap().entries.map((e) {
-      final i = e.key;
-      final item = e.value;
-      return Expanded(
-        child: Container(
-          margin: EdgeInsets.only(right: i < items.length - 1 ? 8 : 0),
-          padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 10),
-          decoration: BoxDecoration(
-            color: _kBgCard,
-            borderRadius: BorderRadius.circular(8),
-            border: Border.all(color: _kBorder),
-          ),
-          child: Column(children: [
-            Icon(item.$3, size: 18, color: _kGreenMid),
-            const SizedBox(height: 6),
-            Text(item.$1,
-              style: const TextStyle(
-                fontSize: 16, fontWeight: FontWeight.w800,
-                color: _kText)),
-            const SizedBox(height: 2),
-            Text(item.$2,
-              style: const TextStyle(
-                fontSize: 9, color: _kTextMid,
-                fontWeight: FontWeight.w500),
-              textAlign: TextAlign.center),
-          ]),
+    return Row(children: [
+      // ── Card 1: +2.400 Condutas ─────────────────────────────────────────
+      Expanded(
+        child: _MetricCard(
+          icon: Icons.menu_book_rounded,
+          iconBg: const Color(0xFF0D2018),
+          stat: '+2.400',
+          title: isEs ? 'Condutas Médicas' : 'Condutas Médicas',
+          subtitle: isEs ? 'Guiadas por IA' : 'Guiadas por IA',
+          trailingIcon: Icons.trending_up_rounded,
         ),
-      );
-    }).toList());
+      ),
+      const SizedBox(width: 10),
+      // ── Card 2: Atualização Contínua ─────────────────────────────────────
+      Expanded(
+        child: _MetricCard(
+          icon: Icons.verified_rounded,
+          iconBg: const Color(0xFF0D2018),
+          stat: isEs ? '100%' : '100%',
+          title: isEs ? 'Actualización' : 'Atualização',
+          subtitle: isEs ? 'Por comité experto' : 'Contínua por experts',
+          trailingIcon: Icons.shield_rounded,
+        ),
+      ),
+    ]);
+  }
+}
+
+// ── Card de métrica individual — MedixAI style ──────────────────────────────
+class _MetricCard extends StatelessWidget {
+  final IconData icon;
+  final Color iconBg;
+  final String stat;
+  final String title;
+  final String subtitle;
+  final IconData trailingIcon;
+
+  const _MetricCard({
+    required this.icon,
+    required this.iconBg,
+    required this.stat,
+    required this.title,
+    required this.subtitle,
+    required this.trailingIcon,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.fromLTRB(14, 14, 12, 14),
+      decoration: BoxDecoration(
+        color: _kBgCard,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: _kNeonGlow.withValues(alpha: 0.15), width: 0.9),
+        boxShadow: [
+          BoxShadow(
+            color: _kNeonGlow.withValues(alpha: 0.10),
+            blurRadius: 16,
+            spreadRadius: 0,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // ── Ícone circular medallion ─────────────────────────────────────
+          Container(
+            width: 40, height: 40,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: iconBg,
+              border: Border.all(
+                color: _kNeonGlow.withValues(alpha: 0.22), width: 1.0),
+              boxShadow: [
+                BoxShadow(
+                  color: _kNeonGlow.withValues(alpha: 0.14),
+                  blurRadius: 8,
+                  spreadRadius: 0,
+                ),
+              ],
+            ),
+            child: Icon(icon, size: 18, color: _kNeon),
+          ),
+          const SizedBox(height: 12),
+          // ── Número em destaque neon ───────────────────────────────────────
+          Text(stat,
+            style: const TextStyle(
+              fontSize: 26, fontWeight: FontWeight.w800,
+              color: _kNeon, letterSpacing: -0.5,
+              height: 1.0,
+            )),
+          const SizedBox(height: 4),
+          // ── Título ───────────────────────────────────────────────────────
+          Text(title,
+            style: const TextStyle(
+              fontSize: 12, fontWeight: FontWeight.w700,
+              color: _kText, height: 1.2),
+            maxLines: 1, overflow: TextOverflow.ellipsis),
+          const SizedBox(height: 2),
+          // ── Subtítulo + ícone trailing ────────────────────────────────────
+          Row(children: [
+            Expanded(
+              child: Text(subtitle,
+                style: const TextStyle(
+                  fontSize: 10, color: _kTextMid,
+                  fontWeight: FontWeight.w400, height: 1.3),
+                maxLines: 2, overflow: TextOverflow.ellipsis),
+            ),
+            const SizedBox(width: 4),
+            Icon(trailingIcon, size: 13,
+              color: _kNeonGlow.withValues(alpha: 0.55)),
+          ]),
+        ],
+      ),
+    );
   }
 }
 

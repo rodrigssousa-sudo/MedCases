@@ -1281,13 +1281,100 @@ class _UserBubble extends StatelessWidget {
 
 /// Limpa marcadores markdown da resposta da IA antes de exibir.
 /// Remove ##, **, --, --- e formata hifens de lista.
+// ─────────────────────────────────────────────────────────────────────────────
+// HARD-FILTER: Camada de proteção de renderização — P1 Anti-CoT
+//
+// Remove QUALQUER fragmento de chain-of-thought, scratchpad, planning interno,
+// hidden prompts ou meta-comentários do modelo antes de exibir ao usuário.
+// O usuário vê APENAS a resposta clínica final, limpa e estruturada.
+//
+// Padrões eliminados:
+//   1. Blocos XML/tag de raciocínio: <thinking>...</thinking>, <scratchpad>
+//   2. Prefixos de planning vazados: "My response should focus on:"
+//   3. Tags de revisão interna: [REVISAO_INTERNA], [REVISION_INTERNA], [FIM_...]
+//   4. Cabeçalhos Markdown desnecessários: ## ### (mantém estrutura via negrito)
+//   5. Separadores decorativos: ---, --
+//   6. Asteriscos triplos ou mais: ***
+//   7. Comentários de auto-avaliação: "Let me think", "I'll structure", etc.
+// ─────────────────────────────────────────────────────────────────────────────
 String _cleanAiText(String raw) {
-  return raw
-      .replaceAll(RegExp(r'^#{1,3}\s*', multiLine: true), '')   // ## ### títulos
-      .replaceAll('---', '')                                      // separadores
-      .replaceAll('--', '')                                       // traços duplos
-      .replaceAll(RegExp(r'\*{3,}'), '')                         // *** ou mais
-      .trim();
+  String s = raw;
+
+  // ── 1. Blocos XML de raciocínio interno (qualquer tag de CoT) ────────────
+  // Remove tudo entre <thinking>...</thinking>, <scratchpad>...</scratchpad>,
+  // <clinical_thinking>...</clinical_thinking>, etc. (greedy=false, dotAll)
+  s = s.replaceAll(
+    RegExp(
+      r'<(thinking|scratchpad|internal|clinical_thinking|reasoning|planning|reflection|analysis|chain_of_thought|cot|thought|inner_monologue)>.*?<\/\1>',
+      caseSensitive: false,
+      dotAll: true,
+    ),
+    '',
+  );
+  // Remove tags órfãs (abertas sem fechar ou vice-versa)
+  s = s.replaceAll(
+    RegExp(
+      r'<\/?(?:thinking|scratchpad|internal|clinical_thinking|reasoning|planning|reflection|analysis|chain_of_thought|cot|thought|inner_monologue)[^>]*>',
+      caseSensitive: false,
+    ),
+    '',
+  );
+
+  // ── 2. Blocos de revisão interna com colchetes ────────────────────────────
+  // Ex: [REVISAO_INTERNA...FIM_REVISAO_INTERNA] / [REVISION_INTERNA...]
+  s = s.replaceAll(
+    RegExp(
+      r'\[(?:REVISAO_INTERNA|REVISION_INTERNA|FIM_REVISAO_INTERNA|FIN_REVISION_INTERNA|INTERNAL_REVIEW)[^\]]*\]',
+      caseSensitive: false,
+    ),
+    '',
+  );
+  // Linhas isoladas que comecem com [REVISAO ou [REVISION ou [FIM
+  s = s.replaceAll(
+    RegExp(
+      r'^\[(?:REVISAO|REVISION|FIM|FIN|INTERNAL|CHECKING|REVIEW)[^\]\n]*\]\s*$',
+      caseSensitive: false,
+      multiLine: true,
+    ),
+    '',
+  );
+
+  // ── 3. Prefixos de planning/estruturação vazados ──────────────────────────
+  // Padrões comuns de CoT que o modelo deixa escapar:
+  final _cotPhrases = RegExp(
+    r"^(My response should|I will structure|I need to|Let me think|I'll organize|"
+    r"I should focus|I'm going to|Para responder|Vou estruturar|Devo focar|"
+    r"Mi respuesta debe|Voy a estructurar|Estructurando|Pensando en|"
+    r"Analizando el caso|Analisando o caso|Antes de responder|Before responding|"
+    r"Step \d+:|Paso \d+:|Etapa \d+:|Planning:|Reasoning:|Chain of thought:).*",
+    caseSensitive: false,
+    multiLine: true,
+  );
+  s = s.replaceAll(_cotPhrases, '');
+
+  // ── 4. Linhas de meta-comentário sobre o processo de resposta ─────────────
+  s = s.replaceAll(
+    RegExp(
+      r'^(Agora vou|Now I will|I will now|Vou agora|Ahora voy a|'
+      r'Deixe-me|Let me|Permíteme|Deixa eu pensar|'
+      r'Thinking\.\.\.|Analyzing\.\.\.|Processing\.\.\.).*$',
+      caseSensitive: false,
+      multiLine: true,
+    ),
+    '',
+  );
+
+  // ── 5. Sanitização final de formatação ───────────────────────────────────
+  s = s
+      .replaceAll(RegExp(r'^#{1,3}\s*', multiLine: true), '')  // ## ### títulos
+      .replaceAll('---', '')                                     // separadores HR
+      .replaceAll('--', '')                                      // traços duplos
+      .replaceAll(RegExp(r'\*{3,}'), '');                        // *** ou mais
+
+  // ── 6. Normaliza linhas em branco excessivas (≥3 → 2) ────────────────────
+  s = s.replaceAll(RegExp(r'\n{3,}'), '\n\n');
+
+  return s.trim();
 }
 
 /// Divide o texto em blocos lógicos separados por linha(s) em branco.
@@ -1358,7 +1445,8 @@ Widget _buildInlineText(String line, Color textColor, {bool isBold = false}) {
   );
 }
 
-/// Widget de um único bloco da IA — uma bolha WhatsApp.
+/// Widget de um único bloco da IA — bolha hospitalar com hierarquia visual.
+/// P4: Densidade hospitalar + leitura rápida de plantão.
 class _AiBlockBubble extends StatelessWidget {
   final String block;
   final bool dark;
@@ -1378,16 +1466,74 @@ class _AiBlockBubble extends StatelessWidget {
     this.ttsReady = false,
   });
 
+  // ── Detectores de tipo de linha para hierarquia visual hospitalar ────────
+
+  /// Linha HARD STOP — alerta de contraindicação crítica
+  bool _isHardStop(String line) {
+    final t = line.trim().toUpperCase();
+    return t.contains('HARD STOP') || t.contains('HARD_STOP') ||
+           t.contains('CONTRAINDICAÇÃO ABSOLUTA') || t.contains('CONTRAINDICACION ABSOLUTA');
+  }
+
+  /// Linha de seção principal (### ou marcador clínico padrão)
+  bool _isSectionHeader(String line) {
+    final t = line.trim();
+    return t.startsWith('###') ||
+           RegExp(r'^(Hipótese|Hipotesis|Conduta|Conducta|Exames|Examenes|'
+                  r'Monitoriz|Evitar|Escalonamento|Escalonamiento|'
+                  r'AGORA|AHORA|QUICK|CLINICAL|TEACH|'
+                  r'Primeira Escolha|Primera Elección|'
+                  r'Confiança|Confianza)', caseSensitive: false).hasMatch(t);
+  }
+
+  /// Linha de alerta/atenção (mas não hard stop)
+  bool _isWarning(String line) {
+    final t = line.trim().toUpperCase();
+    return (t.startsWith('⚠') || t.startsWith('ATENÇÃO') || t.startsWith('ATENCIÓN') ||
+            t.startsWith('ALERTA') || t.startsWith('CUIDADO') ||
+            t.startsWith('NOTA:') || t.startsWith('OBS:')) &&
+           !_isHardStop(line);
+  }
+
+  /// Linha de referência bibliográfica
+  bool _isReference(String line) {
+    final t = line.trim();
+    return t.startsWith('📚') || t.startsWith('Ref') || t.startsWith('Fonte') ||
+           t.startsWith('Fuente') || t.startsWith('[ESC') || t.startsWith('[AHA') ||
+           t.startsWith('[IDSA') || t.startsWith('[ACC') || t.startsWith('[GOLD') ||
+           (t.startsWith('[') && t.endsWith(']') && t.length < 60);
+  }
+
+  /// Linha de item de lista (bullet)
+  bool _isListItem(String line) {
+    final t = line.trimLeft();
+    return t.startsWith('- ') || t.startsWith('• ') ||
+           t.startsWith('→ ') || t.startsWith('▸ ') ||
+           RegExp(r'^\d+\.\s').hasMatch(t);
+  }
+
   @override
   Widget build(BuildContext context) {
-    final bubbleBg  = dark ? const Color(0xFF1F2E26) : Colors.white;
-    final textColor = dark ? const Color(0xFFE8E8E8) : const Color(0xFF1A1A1A);
+    final bubbleBg  = dark ? const Color(0xFF1A2820) : Colors.white;
+    final textColor = dark ? const Color(0xFFE8F5EE) : const Color(0xFF1A1A1A);
+
+    // Cores do sistema hospitalar
+    const kGreen      = Color(0xFF1F6B48);
+    const kGreenLight = Color(0xFF2E8B57);
+    const kRed        = Color(0xFFB91C1C);
+    const kRedLight   = Color(0xFFFFEEEE);
+    const kRedDark    = Color(0xFF3A0000);
+    const kAmber      = Color(0xFFB45309);
+    const kRef        = Color(0xFF64748B);
 
     final lines = block.split('\n');
 
+    // ── Detecta se o bloco inteiro é HARD STOP ────────────────────────────
+    final bool isHardStopBlock = lines.any(_isHardStop);
+
     return Padding(
       padding: EdgeInsets.only(
-        bottom: isLast ? 6 : 3,   // última bolha tem mais espaço abaixo
+        bottom: isLast ? 6 : 3,
         right: 52,
       ),
       child: Align(
@@ -1401,7 +1547,12 @@ class _AiBlockBubble extends StatelessWidget {
               bottomLeft:  Radius.circular(16),
               bottomRight: Radius.circular(16),
             ),
-            color: bubbleBg,
+            color: isHardStopBlock
+                ? (dark ? kRedDark : kRedLight)
+                : bubbleBg,
+            border: isHardStopBlock
+                ? Border.all(color: kRed.withValues(alpha: 0.35), width: 1.0)
+                : null,
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withValues(alpha: dark ? 0.3 : 0.08),
@@ -1413,22 +1564,128 @@ class _AiBlockBubble extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Linhas do bloco com suporte a negrito inline
+              // ── Renderização linha a linha com hierarquia visual ─────────
               ...lines.map((line) {
-                if (line.trim().isEmpty) return const SizedBox(height: 3);
-                // Item de lista: começa com - ou •
-                final isList = line.trimLeft().startsWith('-') ||
-                               line.trimLeft().startsWith('•');
+                final trimmed = line.trim();
+                if (trimmed.isEmpty) return const SizedBox(height: 2);
+
+                // HARD STOP — destaque vermelho máximo
+                if (_isHardStop(line)) {
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 4, top: 2),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(6),
+                        color: kRed.withValues(alpha: dark ? 0.25 : 0.12),
+                        border: Border.all(color: kRed.withValues(alpha: 0.5)),
+                      ),
+                      child: Row(children: [
+                        const Icon(Icons.dangerous_rounded, size: 13, color: kRed),
+                        const SizedBox(width: 6),
+                        Expanded(child: _buildInlineText(
+                          trimmed.replaceAll(RegExp(r'\*\*HARD.STOP[:\s]*', caseSensitive: false), '').trim(),
+                          kRed, isBold: true,
+                        )),
+                      ]),
+                    ),
+                  );
+                }
+
+                // Linha de seção principal — destaque verde sutil
+                if (_isSectionHeader(line)) {
+                  final label = trimmed.replaceFirst(RegExp(r'^###?\s*'), '');
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 3, top: 6),
+                    child: Row(children: [
+                      Container(
+                        width: 3, height: 14,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(2),
+                          color: kGreenLight,
+                        ),
+                      ),
+                      const SizedBox(width: 7),
+                      Expanded(child: Text(
+                        label,
+                        style: TextStyle(
+                          fontSize: 12.5,
+                          fontWeight: FontWeight.w700,
+                          color: dark ? const Color(0xFF4ADE80) : kGreen,
+                          letterSpacing: 0.1,
+                          height: 1.3,
+                        ),
+                      )),
+                    ]),
+                  );
+                }
+
+                // Linha de alerta/atenção — destaque âmbar
+                if (_isWarning(line)) {
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 3, top: 1),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(5),
+                        color: kAmber.withValues(alpha: dark ? 0.15 : 0.08),
+                        border: Border.all(color: kAmber.withValues(alpha: 0.25)),
+                      ),
+                      child: _buildInlineText(trimmed, dark ? const Color(0xFFFFD580) : kAmber),
+                    ),
+                  );
+                }
+
+                // Linha de referência — texto compacto cinza
+                if (_isReference(line)) {
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 1, top: 1),
+                    child: Text(
+                      trimmed,
+                      style: TextStyle(
+                        fontSize: 10,
+                        color: dark ? Colors.white38 : kRef,
+                        fontStyle: FontStyle.italic,
+                        height: 1.4,
+                      ),
+                    ),
+                  );
+                }
+
+                // Item de lista — bullet com indent
+                if (_isListItem(line)) {
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 2, left: 2),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(top: 5, right: 6),
+                          child: Container(
+                            width: 4, height: 4,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: kGreenLight.withValues(alpha: 0.7),
+                            ),
+                          ),
+                        ),
+                        Expanded(child: _buildInlineText(
+                          trimmed.replaceFirst(RegExp(r'^[-•→▸\d+\.]\s*'), ''),
+                          textColor,
+                        )),
+                      ],
+                    ),
+                  );
+                }
+
+                // Texto normal
                 return Padding(
                   padding: const EdgeInsets.only(bottom: 2),
-                  child: _buildInlineText(
-                    isList ? line : line,
-                    textColor,
-                  ),
+                  child: _buildInlineText(trimmed, textColor),
                 );
               }),
 
-              // Rodapé só na última bolha: horário + áudio + copiar
+              // ── Rodapé: hora + TTS + copiar (apenas última bolha) ────────
               if (isLast) ...[
                 const SizedBox(height: 6),
                 Row(children: [
@@ -1440,7 +1697,6 @@ class _AiBlockBubble extends StatelessWidget {
                     ),
                   ),
                   const Spacer(),
-                  // Botão TTS — ouvir resposta em áudio
                   if (onTts != null && ttsReady) ...[
                     GestureDetector(
                       onTap: onTts,
@@ -1450,7 +1706,7 @@ class _AiBlockBubble extends StatelessWidget {
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(8),
                           color: ttsPlaying
-                              ? const Color(0xFF1F6B48).withValues(alpha: 0.15)
+                              ? kGreen.withValues(alpha: 0.15)
                               : Colors.transparent,
                         ),
                         child: Row(mainAxisSize: MainAxisSize.min, children: [
@@ -1460,7 +1716,7 @@ class _AiBlockBubble extends StatelessWidget {
                                 : Icons.volume_up_rounded,
                             size: 13,
                             color: ttsPlaying
-                                ? const Color(0xFF1F6B48)
+                                ? kGreen
                                 : (dark ? Colors.white38 : Colors.black38),
                           ),
                           const SizedBox(width: 3),
@@ -1470,7 +1726,7 @@ class _AiBlockBubble extends StatelessWidget {
                               fontSize: 10,
                               fontWeight: FontWeight.w600,
                               color: ttsPlaying
-                                  ? const Color(0xFF1F6B48)
+                                  ? kGreen
                                   : (dark ? Colors.white38 : Colors.black38),
                             ),
                           ),

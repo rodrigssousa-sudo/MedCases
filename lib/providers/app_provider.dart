@@ -127,6 +127,48 @@ class AppProvider extends ChangeNotifier {
   // Não persiste entre sessões (RAM only, by design).
   final ClinicalSessionMemory _sessionMemory = ClinicalSessionMemory();
 
+  // ── PRIORIDADE 3 — globalLanguageLock() ───────────────────────────────────
+  // Bloqueia o idioma da IA na primeira mensagem da sessão.
+  // Se o usuário iniciou em ES → toda a sessão responde em ES (vice-versa PT).
+  // Reset apenas ao limpar o histórico (clearAiHistory).
+  // Null = nenhuma mensagem ainda (detecta na primeira chamada).
+  String? _sessionLockedLang;
+
+  /// Detecta idioma predominante da mensagem e bloqueia para a sessão.
+  /// Retorna o lang a usar no system prompt (pode diferir de _lang global).
+  String _resolveSessionLang(String input) {
+    if (_sessionLockedLang != null) return _sessionLockedLang!;
+
+    // Detecta idioma da primeira mensagem com heurística lexical simples
+    final q = input.toLowerCase();
+    // Tokens ES exclusivos (não existem em PT ou são raros)
+    final esTokens = ['paciente con', 'manejo de', 'tratamiento', 'conducta',
+        'dosis de', 'cual es', 'como tratar', 'primera linea', 'que dar',
+        'que farmaco', 'para qué', 'cuándo', 'también', 'además', 'siempre',
+        'nunca', 'fiebre', 'dolor', 'choque', 'sangrado', 'tension'];
+    // Tokens PT exclusivos
+    final ptTokens = ['paciente com', 'manejo de', 'tratamento', 'conduta',
+        'dose de', 'qual é', 'como tratar', 'primeira linha', 'o que dar',
+        'qual farmaco', 'para quê', 'quando', 'também', 'além', 'sempre',
+        'febre', 'dor ', 'choque', 'sangramento', 'pressao'];
+
+    int esScore = esTokens.where((t) => q.contains(t)).length;
+    int ptScore = ptTokens.where((t) => q.contains(t)).length;
+
+    // Tiebreak: usa o idioma atual do app (_lang)
+    String detected;
+    if (esScore > ptScore) {
+      detected = 'es';
+    } else if (ptScore > esScore) {
+      detected = 'pt';
+    } else {
+      detected = _lang; // fallback = preferência do app
+    }
+
+    _sessionLockedLang = detected;
+    return detected;
+  }
+
   // ── Estado — Gemini OAuth (paralelo ao OpenAI, nunca interfere) ───────────
   bool _geminiConnected = false;   // true quando conta Google autorizada
   bool _geminiLoading   = false;   // true durante signIn/signOut
@@ -1359,7 +1401,10 @@ class AppProvider extends ChangeNotifier {
   }
 
   /// Limpa o histórico de conversa da IA (nova conversa)
-  void clearAiHistory() => _aiHistory.clear();
+  void clearAiHistory() {
+    _aiHistory.clear();
+    _sessionLockedLang = null; // reset language lock ao iniciar nova sessão
+  }
 
   // ── Gemini OAuth — conectar / desconectar ─────────────────────────────────
 
@@ -2546,6 +2591,11 @@ class AppProvider extends ChangeNotifier {
       debugPrint('[buildAIAnswer] Mudança de tema detectada — memória clínica resetada');
     }
 
+    // ── Passo 0: globalLanguageLock — bloqueia idioma da sessão ──────────────
+    // Detecta idioma da primeira mensagem e bloqueia para toda a sessão.
+    // O prompt é sempre gerado no idioma detectado/bloqueado, nunca misturado.
+    final sessionLang = _resolveSessionLang(input);
+
     // ── Passo 1: Classificar intent ────────────────────────────────────────
     final intent        = _classifyIntent(input);
     final expandedInput = _expandedQuery(input);
@@ -2579,7 +2629,7 @@ class AppProvider extends ChangeNotifier {
     // ai_service.dart filtre protocolos/fármacos/contexto por relevância
     // temática, evitando contaminação cruzada (ex: otite → ICFEr).
     final systemPrompt = AiService.buildClinicalSystemPrompt(
-      lang: _lang,
+      lang: sessionLang,   // ← globalLanguageLock: idioma bloqueado da sessão
       matchedProtocolSummaries: finalProtocols,
       matchedDrugSummaries: finalDrugs,
       localAnswerContext: localContextWithRefs,
