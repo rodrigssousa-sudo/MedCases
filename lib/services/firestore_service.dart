@@ -23,6 +23,7 @@ class FirestoreService {
   static bool get _isIosWeb => kIsWeb && defaultTargetPlatform == TargetPlatform.iOS;
   static const _guidesCacheKey = 'clinical_guides_cache_v1';
   static const _guidesCacheFirstOpenResetKey = 'clinical_guides_cache_first_open_reset_v2';
+  static const _publicHistoriesCacheKey = 'public_histories_cache_v1';
   static String _lastGuidesErrorMessage = '';
   static String _lastPublicHistoriesErrorMessage = '';
 
@@ -423,6 +424,50 @@ class FirestoreService {
     return list.take(50).toList();
   }
 
+  static Future<List<ClinicalHistoryModel>> loadCachedPublicHistories() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final raw = prefs.getString(_publicHistoriesCacheKey);
+      if (raw == null || raw.trim().isEmpty) {
+        return const <ClinicalHistoryModel>[];
+      }
+
+      final decoded = jsonDecode(raw);
+      if (decoded is! List) {
+        return const <ClinicalHistoryModel>[];
+      }
+
+      final cached = _normalizePublicHistories(
+        decoded.whereType<Map>().map(
+          (item) => ClinicalHistoryModel.fromJson(
+            Map<String, dynamic>.from(item),
+          ),
+        ),
+      );
+      _debugPublicHistories('cache read count=${cached.length}');
+      return cached;
+    } catch (e) {
+      _debugPublicHistories('cache read failed error=$e');
+      return const <ClinicalHistoryModel>[];
+    }
+  }
+
+  static Future<void> _saveCachedPublicHistories(
+    List<ClinicalHistoryModel> histories,
+  ) async {
+    if (histories.isEmpty) return;
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString(
+        _publicHistoriesCacheKey,
+        jsonEncode(histories.map((h) => h.toJson()).toList()),
+      );
+      _debugPublicHistories('cache write count=${histories.length}');
+    } catch (e) {
+      _debugPublicHistories('cache write failed error=$e');
+    }
+  }
+
   // ── Helpers REST para public_histories ───────────────────────────────────
 
   /// Converte um documento Firestore REST em Map<String, dynamic> Dart.
@@ -612,6 +657,7 @@ class FirestoreService {
       final list = _normalizePublicHistories(
         snap.docs.map((d) => ClinicalHistoryModel.fromJson({...d.data(), 'id': d.id})),
       );
+      await _saveCachedPublicHistories(list);
       _clearPublicHistoriesError();
       _debugPublicHistories('sdk load count=${list.length} source=${source ?? 'default'}');
       return list;
@@ -623,25 +669,47 @@ class FirestoreService {
   }
 
   static Future<List<ClinicalHistoryModel>> loadPublicHistories({bool forceRemote = false}) async {
+    final bool useIosWebFallback =
+        kIsWeb && defaultTargetPlatform == TargetPlatform.iOS;
+    final cached = await loadCachedPublicHistories();
     _debugPublicHistories(
-      'loadPublicHistories start forceRemote=$forceRemote kIsWeb=$kIsWeb isIosWeb=$_isIosWeb',
+      'loadPublicHistories start forceRemote=$forceRemote kIsWeb=$kIsWeb useIosWebFallback=$useIosWebFallback cached=${cached.length}',
     );
 
-    if (!_isIosWeb && !forceRemote) {
+    if (!useIosWebFallback) {
       final server = await _loadPublicHistoriesSdk(source: Source.server);
       if (server.isNotEmpty) return server;
 
-      final fallbackSdk = await _loadPublicHistoriesSdk();
-      if (fallbackSdk.isNotEmpty) return fallbackSdk;
-    }
+      if (!forceRemote) {
+        final fallbackSdk = await _loadPublicHistoriesSdk();
+        if (fallbackSdk.isNotEmpty) return fallbackSdk;
+      }
 
-    if (!_isIosWeb && forceRemote) {
-      final server = await _loadPublicHistoriesSdk(source: Source.server);
-      if (server.isNotEmpty) return server;
+      if (cached.isNotEmpty) {
+        _debugPublicHistories(
+          'loadPublicHistories returning cached after sdk failure count=${cached.length}',
+        );
+        return cached;
+      }
+
+      _debugPublicHistories(
+        'loadPublicHistories returning empty after sdk-only flow error=${lastPublicHistoriesErrorMessage.isNotEmpty}',
+      );
+      return const <ClinicalHistoryModel>[];
     }
 
     final rest = await _loadPublicHistoriesRest();
     if (rest.isNotEmpty) return rest;
+
+    final fallbackSdk = await _loadPublicHistoriesSdk();
+    if (fallbackSdk.isNotEmpty) return fallbackSdk;
+
+    if (cached.isNotEmpty) {
+      _debugPublicHistories(
+        'loadPublicHistories returning cached after ios web fallback failure count=${cached.length}',
+      );
+      return cached;
+    }
 
     _debugPublicHistories(
       'loadPublicHistories returning empty error=${lastPublicHistoriesErrorMessage.isNotEmpty}',
@@ -710,6 +778,7 @@ class FirestoreService {
       }
 
       final list = parseResponse(resp);
+      await _saveCachedPublicHistories(list);
       _clearPublicHistoriesError();
       _debugPublicHistories('rest load count=${list.length}');
       return list;
