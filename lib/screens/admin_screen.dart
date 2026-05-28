@@ -660,10 +660,12 @@ class _SystemTabState extends State<_SystemTab> {
                           : Switch(
                               value: isEnabled,
                               onChanged: widget.onToggle,
-                              activeThumbColor: Colors.orange,
-                              activeTrackColor: Colors.orange.withValues(alpha: 0.25),
-                              inactiveThumbColor: kGreen,
-                              inactiveTrackColor: kGreen.withValues(alpha: 0.2),
+                              thumbColor: WidgetStateProperty.resolveWith((states) =>
+                                states.contains(WidgetState.selected) ? Colors.orange : kGreen),
+                              trackColor: WidgetStateProperty.resolveWith((states) =>
+                                states.contains(WidgetState.selected)
+                                  ? Colors.orange.withValues(alpha: 0.25)
+                                  : kGreen.withValues(alpha: 0.2)),
                             ),
                     ]),
                   ),

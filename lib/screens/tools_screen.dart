@@ -855,7 +855,9 @@ class _ScoresTabState extends State<_ScoresTab> {
                   style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: AppColors.of(context).textPrimary))),
                 Switch(
                   value: _news_supo2,
-                  activeThumbColor: kToolGreen,
+                  thumbColor: WidgetStateProperty.resolveWith(
+                    (states) => states.contains(WidgetState.selected) ? kToolGreen : null,
+                  ),
                   onChanged: (v) => setState(() => _news_supo2 = v),
                 ),
               ]),
