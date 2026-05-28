@@ -1,0 +1,130 @@
+rules_version = '2';
+
+// ══════════════════════════════════════════════════════════════════════════════
+// MedCases Pro — Firestore Security Rules
+// Versão: 2025-05-28
+//
+// RESUMO DE ACESSO:
+//  • users/{uid}/**         → leitura/escrita: apenas o próprio usuário
+//  • clinical_guides        → leitura: qualquer usuário autenticado (isPublished=true é filtrado no client)
+//  • public_histories       → leitura: qualquer usuário autenticado
+//                           → escrita: apenas o dono do documento (uid == authorUid)
+//  • app_config/global      → leitura: apenas admin (contém Gemini API Key — NUNCA expor publicamente)
+//  • app_config/maintenance → leitura: qualquer autenticado; escrita: apenas admin
+//  • app_updates/current    → leitura: qualquer autenticado; escrita: apenas admin
+//  • email_campaigns        → leitura/escrita: apenas admin
+// ══════════════════════════════════════════════════════════════════════════════
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ── Helpers ─────────────────────────────────────────────────────────────
+
+    // Usuário autenticado (qualquer status)
+    function isAuthed() {
+      return request.auth != null;
+    }
+
+    // Usuário é o dono do recurso
+    function isOwner(uid) {
+      return isAuthed() && request.auth.uid == uid;
+    }
+
+    // Admin: tem custom claim isAdmin=true OU é o uid do desenvolvedor
+    // SUBSTITUA 'SEU_UID_ADMIN_AQUI' pelo UID real do admin no Firebase Auth Console
+    function isAdmin() {
+      return isAuthed() && (
+        request.auth.token.get('isAdmin', false) == true ||
+        request.auth.token.get('role', '') == 'admin'
+      );
+    }
+
+    // ── Perfis de usuário ────────────────────────────────────────────────────
+    // Leitura/escrita: apenas o próprio usuário
+    match /users/{uid} {
+      allow read, write: if isOwner(uid);
+
+      // Sub-coleções do usuário (casos, favoritos, histórico IA, prefs, etc.)
+      match /{subcollection}/{docId} {
+        allow read, write: if isOwner(uid);
+
+        // Sub-sub-coleções (ex: users/{uid}/prefs/settings)
+        match /{subSubDoc} {
+          allow read, write: if isOwner(uid);
+        }
+      }
+    }
+
+    // ── Biblioteca Clínica (clinical_guides) ─────────────────────────────────
+    // Leitura: qualquer usuário autenticado pode listar e ler guias
+    // O filtro isPublished=true é responsabilidade do cliente (query SDK)
+    // Escrita: apenas admin
+    match /clinical_guides/{guideId} {
+      allow read: if isAuthed();
+      allow write: if isAdmin();
+    }
+
+    // ── Histórias Clínicas Públicas (public_histories) ───────────────────────
+    // Leitura: qualquer usuário autenticado
+    // Criação/atualização: usuário autenticado cujo uid == authorUid no documento
+    // Deleção: o próprio autor OU admin (moderação)
+    match /public_histories/{historyId} {
+      allow read: if isAuthed();
+
+      // Criação: authorUid no payload deve coincidir com o uid do solicitante
+      allow create: if isAuthed()
+        && request.resource.data.get('authorUid', '') == request.auth.uid;
+
+      // Atualização: apenas o autor pode editar sua própria HC
+      allow update: if isAuthed()
+        && resource.data.get('authorUid', '') == request.auth.uid;
+
+      // Deleção: autor OU admin (moderação)
+      allow delete: if isAuthed() && (
+        resource.data.get('authorUid', '') == request.auth.uid ||
+        isAdmin()
+      );
+    }
+
+    // ── Configuração Global do App (app_config) ───────────────────────────────
+    // ATENÇÃO: app_config/global contém a Gemini API Key.
+    // NUNCA permitir leitura pública. Apenas admin lê e escreve.
+    // app_config/maintenance → qualquer autenticado pode LER (saber se há manutenção)
+    match /app_config/{docId} {
+
+      // maintenance: leitura pública autenticada (todos precisam saber)
+      allow read: if docId == 'maintenance' && isAuthed();
+
+      // global e emailjs: apenas admin
+      allow read: if (docId == 'global' || docId == 'emailjs') && isAdmin();
+
+      // Qualquer escrita em app_config: apenas admin
+      allow write: if isAdmin();
+    }
+
+    // ── Notificações de Atualização (app_updates) ────────────────────────────
+    // Leitura: qualquer usuário autenticado (saber sobre novas versões)
+    // Escrita: apenas admin
+    match /app_updates/{docId} {
+      allow read: if isAuthed();
+      allow write: if isAdmin();
+    }
+
+    // ── Campanhas de Email ────────────────────────────────────────────────────
+    // Apenas admin lê e escreve
+    match /email_campaigns/{campaignId} {
+      allow read, write: if isAdmin();
+    }
+
+    // ── Legado: config/emailjs (path antigo) ─────────────────────────────────
+    match /config/{docId} {
+      allow read: if isAdmin();
+      allow write: if isAdmin();
+    }
+
+    // ── Bloquear tudo que não foi explicitamente declarado ───────────────────
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

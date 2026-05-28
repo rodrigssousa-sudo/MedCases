@@ -21,6 +21,14 @@ class FirestoreService {
   static const _fsBase    = 'https://firestore.googleapis.com/v1/projects/$_projectId/databases/(default)/documents';
   static String get _firebaseApiKey => DefaultFirebaseOptions.currentPlatform.apiKey;
   static bool get _isIosWeb => kIsWeb && defaultTargetPlatform == TargetPlatform.iOS;
+
+  // Cooldown por endpoint após 403 — evita retry storm
+  static DateTime? _guidesRestRetryAfter;
+  static DateTime? _publicHistoriesRestRetryAfter;
+
+  static bool _isRestCoolingDown(DateTime? retryAfter) =>
+      retryAfter != null && DateTime.now().isBefore(retryAfter);
+
   static const _guidesCacheKey = 'clinical_guides_cache_v1';
   static const _guidesCacheFirstOpenResetKey = 'clinical_guides_cache_first_open_reset_v2';
   static const _publicHistoriesCacheKey = 'public_histories_cache_v1';
@@ -84,8 +92,7 @@ class FirestoreService {
     } catch (_) {}
   }
 
-  static bool _isRetryBlocked(DateTime? retryAfter) =>
-      retryAfter != null && DateTime.now().isBefore(retryAfter);
+  // _isRetryBlocked removido: idêntico a _isRestCoolingDown (consolidado)
 
   static Map<String, String> _restHeaders(String token) {
     final headers = <String, String>{
@@ -128,7 +135,8 @@ class FirestoreService {
     if (_cachedAppConfigGlobal.isNotEmpty) {
       return Map<String, dynamic>.from(_cachedAppConfigGlobal);
     }
-    if (_isRetryBlocked(_appConfigGlobalRetryAfter)) {
+    if (_isRestCoolingDown(_appConfigGlobalRetryAfter)) {
+      debugPrint('[FirestoreService] app_config/global em cooldown — retornando cache');
       return Map<String, dynamic>.from(_cachedAppConfigGlobal);
     }
     final inFlight = _appConfigGlobalInFlight;
@@ -136,43 +144,30 @@ class FirestoreService {
 
     final future = () async {
       try {
-        if (!kIsWeb) {
+        // SDK sempre — web e nativo. app_config/global requer admin token via rules.
+        // Não usar REST neste endpoint: expõe a API Key do Gemini em logs de rede.
+        // Se o SDK retornar permission-denied (403), aplica cooldown silencioso.
+        try {
           final doc = await _db.collection('app_config').doc('global').get()
-              .timeout(const Duration(seconds: 2));
-          debugPrint('[FirestoreService] app_config/global SDK exists=${doc.exists} fields=${doc.data()?.keys.toList()}');
+              .timeout(const Duration(seconds: 4));
+          debugPrint('[FirestoreService] app_config/global SDK exists=${doc.exists}');
           final data = doc.data() ?? <String, dynamic>{};
           if (data.isNotEmpty) {
             _cachedAppConfigGlobal = Map<String, dynamic>.from(data);
+            _appConfigGlobalRetryAfter = null;
           }
           return Map<String, dynamic>.from(data);
-        }
-
-        final token = await AuthService.getAdminToken();
-        final url = '$_fsBase/app_config/global?key=$_firebaseApiKey';
-        debugPrint('[FirestoreService] REST token.isNotEmpty=${token.isNotEmpty}');
-        debugPrint('[FirestoreService] REST GET $url');
-        final resp = await http.get(
-          Uri.parse(url),
-          headers: _restHeaders(token),
-        ).timeout(const Duration(seconds: 2));
-
-        debugPrint('[FirestoreService] REST status=${resp.statusCode} body=${resp.body.substring(0, resp.body.length.clamp(0, 400))}');
-
-        if (resp.statusCode != 200) {
-          if (resp.statusCode == 401 || resp.statusCode == 403) {
+        } on FirebaseException catch (e) {
+          // permission-denied = regras bloquearam (usuário não é admin)
+          // Aplica cooldown para não tentar de novo nesta sessão
+          if (e.code == 'permission-denied') {
             _appConfigGlobalRetryAfter = DateTime.now().add(_restRetryCooldown);
+            debugPrint('[FirestoreService] app_config/global permission-denied — cooldown ativo');
+          } else {
+            debugPrint('[FirestoreService] app_config/global SDK erro: ${e.code}');
           }
-          debugPrint('[FirestoreService] REST ERRO ${resp.statusCode}: ${resp.body}');
           return Map<String, dynamic>.from(_cachedAppConfigGlobal);
         }
-
-        _appConfigGlobalRetryAfter = null;
-        final data = _decodeFirestoreFields(resp.body);
-        debugPrint('[FirestoreService] REST campos disponíveis: ${data.keys.toList()}');
-        if (data.isNotEmpty) {
-          _cachedAppConfigGlobal = Map<String, dynamic>.from(data);
-        }
-        return data;
       } catch (e) {
         debugPrint('[FirestoreService] _loadAppConfigGlobalData ERRO: $e');
         return Map<String, dynamic>.from(_cachedAppConfigGlobal);
@@ -703,19 +698,37 @@ class FirestoreService {
 
   static Future<List<ClinicalHistoryModel>> _loadPublicHistoriesSdk({Source? source}) async {
     try {
-      final query = _publicHistories.limit(100);
+      // Filtra isPublic=true via query SDK — reduz transferência e respeita rules.
+      // isHidden é filtrado em memória (campo opcional, pode estar ausente).
+      final query = _publicHistories
+          .where('isPublic', isEqualTo: true)
+          .limit(100);
       final snap = source == null
           ? await query.get().timeout(const Duration(seconds: 8))
           : await query
               .get(GetOptions(source: source))
               .timeout(const Duration(seconds: 8));
       final list = _normalizePublicHistories(
-        snap.docs.map((d) => ClinicalHistoryModel.fromJson({...d.data(), 'id': d.id})),
+        snap.docs
+            .map((d) => ClinicalHistoryModel.fromJson({...d.data(), 'id': d.id}))
+            .where((h) => !h.isHidden),
       );
-      await _saveCachedPublicHistories(list);
-      _clearPublicHistoriesError();
+      if (list.isNotEmpty) {
+        await _saveCachedPublicHistories(list);
+        _clearPublicHistoriesError();
+      }
       _debugPublicHistories('sdk load count=${list.length} source=${source ?? 'default'}');
       return list;
+    } on FirebaseException catch (e) {
+      // permission-denied: rules bloquearam — não logar como erro crítico
+      if (e.code == 'permission-denied') {
+        _setPublicHistoriesError('Acesso negado (verifique Firestore Rules para public_histories)');
+        _debugPublicHistories('sdk permission-denied source=${source ?? 'default'}');
+      } else {
+        _setPublicHistoriesError('SDK public_histories erro: ${e.code}');
+        _debugPublicHistories('sdk firebase error ${e.code} source=${source ?? 'default'}');
+      }
+      return [];
     } catch (e) {
       _setPublicHistoriesError('SDK public_histories falhou (${source ?? 'default'}): $e');
       _debugPublicHistories('sdk load failed source=${source ?? 'default'} error=$e');
@@ -724,51 +737,45 @@ class FirestoreService {
   }
 
   static Future<List<ClinicalHistoryModel>> loadPublicHistories({bool forceRemote = false}) async {
-    final bool useIosWebFallback =
-        kIsWeb && defaultTargetPlatform == TargetPlatform.iOS;
     final cached = await loadCachedPublicHistories();
     _debugPublicHistories(
-      'loadPublicHistories start forceRemote=$forceRemote kIsWeb=$kIsWeb useIosWebFallback=$useIosWebFallback cached=${cached.length}',
+      'loadPublicHistories start forceRemote=$forceRemote kIsWeb=$kIsWeb cached=${cached.length}',
     );
 
-    if (!useIosWebFallback) {
-      final server = await _loadPublicHistoriesSdk(source: Source.server);
-      if (server.isNotEmpty) return server;
+    // ── ETAPA 1: SDK Firestore (Chrome, Firefox, Safari — qualquer browser) ──
+    // O SDK funciona em todos os browsers quando as Firestore Rules permitem.
+    // Antes só era tentado fora do iOS Web — erro: Safari também tem SDK funcional
+    // se as rules estiverem corretas. iOS Web usava REST direto → 403 inevitável
+    // quando public_histories exige autenticação nas rules.
+    final sdkServer = await _loadPublicHistoriesSdk(source: Source.server);
+    if (sdkServer.isNotEmpty) return sdkServer;
 
-      if (!forceRemote) {
-        final fallbackSdk = await _loadPublicHistoriesSdk();
-        if (fallbackSdk.isNotEmpty) return fallbackSdk;
+    final sdkDefault = await _loadPublicHistoriesSdk();
+    if (sdkDefault.isNotEmpty) return sdkDefault;
+
+    _debugPublicHistories('sdk failed — trying REST fallback');
+
+    // ── ETAPA 2: REST fallback — apenas se SDK falhou E cooldown não ativo ──
+    if (!_isRestCoolingDown(_publicHistoriesRestRetryAfter)) {
+      final rest = await _loadPublicHistoriesRest();
+      if (rest.isNotEmpty) return rest;
+      // Se REST retornou 403, aplica cooldown para evitar retry storm
+      final restError = lastPublicHistoriesErrorMessage;
+      if (restError.contains('HTTP 403') || restError.contains('403')) {
+        _publicHistoriesRestRetryAfter = DateTime.now().add(_restRetryCooldown);
+        _debugPublicHistories('REST 403 — cooldown até $_publicHistoriesRestRetryAfter');
       }
-
-      if (cached.isNotEmpty) {
-        _debugPublicHistories(
-          'loadPublicHistories returning cached after sdk failure count=${cached.length}',
-        );
-        return cached;
-      }
-
-      _debugPublicHistories(
-        'loadPublicHistories returning empty after sdk-only flow error=${lastPublicHistoriesErrorMessage.isNotEmpty}',
-      );
-      return const <ClinicalHistoryModel>[];
+    } else {
+      _debugPublicHistories('REST em cooldown — pulando');
     }
 
-    final rest = await _loadPublicHistoriesRest();
-    if (rest.isNotEmpty) return rest;
-
-    final fallbackSdk = await _loadPublicHistoriesSdk();
-    if (fallbackSdk.isNotEmpty) return fallbackSdk;
-
+    // ── ETAPA 3: Cache local ─────────────────────────────────────────────────
     if (cached.isNotEmpty) {
-      _debugPublicHistories(
-        'loadPublicHistories returning cached after ios web fallback failure count=${cached.length}',
-      );
+      _debugPublicHistories('returning cached count=${cached.length}');
       return cached;
     }
 
-    _debugPublicHistories(
-      'loadPublicHistories returning empty error=${lastPublicHistoriesErrorMessage.isNotEmpty}',
-    );
+    _debugPublicHistories('returning empty error=${lastPublicHistoriesErrorMessage.isNotEmpty}');
     return const <ClinicalHistoryModel>[];
   }
 
@@ -989,7 +996,8 @@ class FirestoreService {
     if (_cachedAppUpdate.isNotEmpty) {
       return Map<String, dynamic>.from(_cachedAppUpdate);
     }
-    if (_isRetryBlocked(_appUpdateRetryAfter)) {
+    if (_isRestCoolingDown(_appUpdateRetryAfter)) {
+      debugPrint('[FirestoreService] app_updates/current em cooldown — retornando cache');
       return Map<String, dynamic>.from(_cachedAppUpdate);
     }
     final inFlight = _appUpdateInFlight;
@@ -997,16 +1005,33 @@ class FirestoreService {
 
     final future = () async {
       try {
-        if (!kIsWeb) {
-          final doc = await _db.collection('app_updates').doc('current').get();
+        // ── SDK primeiro (web e nativo) ──────────────────────────────────────
+        // Rules: allow read if isAuthed() — qualquer usuário logado pode ler.
+        // Usar SDK evita o 403 do REST que aparecia nos logs quando as rules
+        // exigiam autenticação mas o REST não enviava token corretamente.
+        try {
+          final doc = await _db.collection('app_updates').doc('current').get()
+              .timeout(const Duration(seconds: 4));
           final data = doc.data() ?? <String, dynamic>{};
           if (data.isNotEmpty) {
             _cachedAppUpdate = Map<String, dynamic>.from(data);
+            _appUpdateRetryAfter = null;
           }
+          debugPrint('[FirestoreService] app_updates/current SDK ok data.isNotEmpty=${data.isNotEmpty}');
           return Map<String, dynamic>.from(data);
+        } on FirebaseException catch (e) {
+          if (e.code == 'permission-denied') {
+            // Regras bloquearam: aplica cooldown, não tenta REST (evita spam 403)
+            _appUpdateRetryAfter = DateTime.now().add(_restRetryCooldown);
+            debugPrint('[FirestoreService] app_updates/current permission-denied — cooldown');
+            return Map<String, dynamic>.from(_cachedAppUpdate);
+          }
+          debugPrint('[FirestoreService] app_updates/current SDK erro: ${e.code} — tentando REST');
+          // Outros erros SDK: tenta REST como fallback
+          return await _loadAppUpdateRest();
         }
-        return await _loadAppUpdateRest();
-      } catch (_) {
+      } catch (e) {
+        debugPrint('[FirestoreService] loadAppUpdate ERRO: $e');
         return Map<String, dynamic>.from(_cachedAppUpdate);
       } finally {
         _appUpdateInFlight = null;
@@ -1464,6 +1489,15 @@ class FirestoreService {
       }
       _debugGuides('sdk load count=${guides.length} source=${source ?? 'default'}');
       return guides;
+    } on FirebaseException catch (e) {
+      if (e.code == 'permission-denied') {
+        _setGuidesError('Acesso negado (verifique Firestore Rules para clinical_guides)');
+        _debugGuides('sdk permission-denied source=${source ?? 'default'}');
+      } else {
+        _setGuidesError('SDK clinical_guides erro: ${e.code}');
+        _debugGuides('sdk firebase error ${e.code} source=${source ?? 'default'}');
+      }
+      return [];
     } catch (e) {
       _setGuidesError('SDK clinical_guides falhou (${source ?? 'default'}): $e');
       _debugGuides('sdk load failed source=${source ?? 'default'} error=$e');
@@ -1551,34 +1585,44 @@ class FirestoreService {
 
   static Future<List<GuideModel>> loadPublishedGuides({bool forceRemote = false}) async {
     final cached = await loadCachedPublishedGuides();
-    final useIosWebFallback = kIsWeb && defaultTargetPlatform == TargetPlatform.iOS;
     _debugGuides(
-      'loadPublishedGuides start forceRemote=$forceRemote kIsWeb=$kIsWeb iosWebFallback=$useIosWebFallback cached=${cached.length}',
+      'loadPublishedGuides start forceRemote=$forceRemote kIsWeb=$kIsWeb cached=${cached.length}',
     );
 
-    if (!useIosWebFallback && !forceRemote) {
-      final server = await _loadPublishedGuidesSdk(source: Source.server);
-      if (server.isNotEmpty) return server;
+    // ── ETAPA 1: SDK Firestore (todos os browsers — Safari incluído) ─────────
+    // SDK funciona quando rules permitem read para isAuthed().
+    // Antes: Safari (iOS Web) era redirecionado direto ao REST → 403 inevitável.
+    // Fix: SDK primeiro para todos. REST só como fallback final com cooldown.
+    final sdkServer = await _loadPublishedGuidesSdk(source: Source.server);
+    if (sdkServer.isNotEmpty) return sdkServer;
 
-      final fallbackSdk = await _loadPublishedGuidesSdk();
-      if (fallbackSdk.isNotEmpty) return fallbackSdk;
+    final sdkDefault = await _loadPublishedGuidesSdk();
+    if (sdkDefault.isNotEmpty) return sdkDefault;
+
+    _debugGuides('sdk failed — trying REST fallback');
+
+    // ── ETAPA 2: REST fallback — apenas se SDK falhou E cooldown não ativo ──
+    if (!_isRestCoolingDown(_guidesRestRetryAfter)) {
+      final rest = await _loadPublishedGuidesRest();
+      if (rest.isNotEmpty) return rest;
+      // Se REST retornou 403, aplica cooldown
+      final restError = lastGuidesErrorMessage;
+      if (restError.contains('HTTP 403') || restError.contains('403')) {
+        _guidesRestRetryAfter = DateTime.now().add(_restRetryCooldown);
+        _debugGuides('REST 403 — cooldown até $_guidesRestRetryAfter');
+      }
+    } else {
+      _debugGuides('REST em cooldown — pulando');
     }
 
-    if (!useIosWebFallback && forceRemote) {
-      final server = await _loadPublishedGuidesSdk(source: Source.server);
-      if (server.isNotEmpty) return server;
-    }
-
-    final rest = await _loadPublishedGuidesRest();
-    if (rest.isNotEmpty) return rest;
-
+    // ── ETAPA 3: Cache local ─────────────────────────────────────────────────
     if (cached.isNotEmpty) {
       _debugGuides('remote failed/empty, returning cache count=${cached.length}');
       return cached;
     }
 
     if (lastGuidesErrorMessage.isEmpty) {
-      _setGuidesError('clinical_guides sem dados disponíveis após fallback SDK/REST/cache.');
+      _setGuidesError('clinical_guides: SDK e REST falharam — sem cache disponível.');
     }
     _debugGuides('remote empty and cache empty');
     return const <GuideModel>[];
@@ -1588,9 +1632,10 @@ class FirestoreService {
   /// Web/PWA usa polling REST para evitar inconsistências do SDK no mobile web.
   /// Nativo mantém snapshots do SDK, com fallback local/remoto tratado pela tela.
   static Stream<List<GuideModel>> guidesStream() {
-    if (kIsWeb && defaultTargetPlatform == TargetPlatform.iOS) {
-      return _guidesStreamRest();
-    }
+    // SDK stream para todos os browsers — Safari incluído.
+    // Antes Safari usava _guidesStreamRest() que fazia REST polling → 403.
+    // Com as Firestore Rules corretas (read: isAuthed()), o SDK funciona em Safari.
+    // _guidesStreamRest() é mantido apenas como fallback de último recurso.
     return _guides
         .where('isPublished', isEqualTo: true)
         .orderBy('uploadedAt', descending: true)

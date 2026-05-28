@@ -110,6 +110,118 @@
   </script>
 
   <!-- ═══════════════════════════════════════════════════════════════════
+       FIRESTORE REST AUTH INTERCEPTOR
+       Intercepta chamadas fetch() ao Firestore REST API e injeta o token
+       do Firebase Auth automaticamente. Resolve o erro 403 que ocorre
+       quando o código compilado (main.dart.js) faz REST sem Authorization.
+       Funciona em Chrome, Firefox e Safari (iOS/macOS).
+  ═══════════════════════════════════════════════════════════════════ -->
+  <script>
+  (function() {
+    'use strict';
+    var _origFetch = window.fetch;
+    // Cache do token com TTL de 55 minutos (tokens Firebase expiram em 60min)
+    var _cachedToken = null;
+    var _tokenExpiry = 0;
+    var _tokenFetchInFlight = null;
+
+    // Função exposta para o Flutter/Dart registrar o token quando o usuário loga
+    // Chamada de firestore_service.dart ou app_provider.dart via js_interop
+    window.mcSetFirestoreToken = function(token, expiresInSeconds) {
+      _cachedToken = token || null;
+      _tokenExpiry = token ? (Date.now() + ((expiresInSeconds || 3300) * 1000)) : 0;
+    };
+
+    // Obtém token do Firebase Auth JS SDK (compat) quando disponível
+    function _getFirebaseToken() {
+      if (_tokenFetchInFlight) return _tokenFetchInFlight;
+      // Token em cache e ainda válido (com 30s de margem)
+      if (_cachedToken && Date.now() < (_tokenExpiry - 30000)) {
+        return Promise.resolve(_cachedToken);
+      }
+      // Tenta obter via Firebase Auth compat SDK (carregado após flutter-first-frame)
+      _tokenFetchInFlight = (function() {
+        try {
+          var fb = window.firebase;
+          if (!fb || !fb.auth) return Promise.resolve(_cachedToken);
+          var auth = fb.auth();
+          var user = auth && auth.currentUser;
+          if (!user || !user.getIdToken) return Promise.resolve(_cachedToken);
+          return user.getIdToken(false).then(function(tok) {
+            if (tok) {
+              _cachedToken = tok;
+              // Firebase tokens expiram em 60min; cacheia por 55min
+              _tokenExpiry = Date.now() + 55 * 60 * 1000;
+            }
+            return tok || null;
+          }).catch(function() { return _cachedToken; });
+        } catch(e) {
+          return Promise.resolve(_cachedToken);
+        }
+      })().then(function(tok) {
+        _tokenFetchInFlight = null;
+        return tok;
+      }, function(e) {
+        _tokenFetchInFlight = null;
+        return _cachedToken;
+      });
+      return _tokenFetchInFlight;
+    }
+
+    // Verifica se é uma chamada REST Firestore que precisa de auth
+    function _needsAuth(url, headers) {
+      if (!url || url.indexOf('firestore.googleapis.com') === -1) return false;
+      // Não interfere se já tem Authorization
+      if (!headers) return true;
+      var authHeader = '';
+      try {
+        if (headers instanceof Headers) {
+          authHeader = headers.get('Authorization') || '';
+        } else if (typeof headers === 'object') {
+          authHeader = (headers['Authorization'] || headers['authorization'] || '');
+        }
+      } catch(e) {}
+      return !authHeader;
+    }
+
+    // Patched fetch — injeta token em chamadas Firestore GET sem auth
+    window.fetch = function(input, init) {
+      var url = typeof input === 'string' ? input : (input && input.url ? input.url : String(input));
+      var method = (init && init.method) || (input && input.method) || 'GET';
+      // Só intercepta GET ao Firestore sem Authorization já presente
+      if (method.toUpperCase() !== 'GET' || !_needsAuth(url, init && init.headers)) {
+        return _origFetch.apply(this, arguments);
+      }
+      var args = arguments;
+      return _getFirebaseToken().then(function(token) {
+        if (!token) return _origFetch.apply(window, args);
+        // Clona init e injeta o header
+        var newInit = {};
+        if (init) {
+          for (var k in init) { if (Object.prototype.hasOwnProperty.call(init, k)) newInit[k] = init[k]; }
+        }
+        var existingHeaders = newInit.headers || {};
+        var newHeaders = {};
+        try {
+          if (existingHeaders instanceof Headers) {
+            existingHeaders.forEach(function(v, k) { newHeaders[k] = v; });
+          } else {
+            for (var hk in existingHeaders) {
+              if (Object.prototype.hasOwnProperty.call(existingHeaders, hk)) newHeaders[hk] = existingHeaders[hk];
+            }
+          }
+        } catch(e) {}
+        newHeaders['Authorization'] = 'Bearer ' + token;
+        newInit.headers = newHeaders;
+        return _origFetch.call(window, input, newInit);
+      }).catch(function() {
+        return _origFetch.apply(window, args);
+      });
+    };
+  })();
+  </script>
+
+  <!-- ═══════════════════════════════════════════════════════════════════
        GOOGLE SIGN-IN SDK
   ═══════════════════════════════════════════════════════════════════ -->
   <script src="https://accounts.google.com/gsi/client" async defer></script>
@@ -133,8 +245,13 @@
         document.head.appendChild(s);
       });
     }
-    window.addEventListener('flutter-first-frame', function() { setTimeout(_loadFirebase, 200); });
-    setTimeout(_loadFirebase, 6000); // fallback
+    // Carrega Firebase compat SDK o mais cedo possível:
+    // - Após o primeiro frame do Flutter (prioridade normal)
+    // - Fallback em 3s se flutter-first-frame não disparar (Safari PWA)
+    // - Fallback adicional em 8s para garantia
+    window.addEventListener('flutter-first-frame', function() { setTimeout(_loadFirebase, 100); });
+    setTimeout(_loadFirebase, 3000);  // fallback Safari PWA
+    setTimeout(_loadFirebase, 8000);  // fallback de segurança
   </script>
 
   <!-- ═══════════════════════════════════════════════════════════════════
@@ -431,8 +548,8 @@
       } catch(e) {}
     })();
 
-    var APP_VERSION = '6.2.2';
-    var SW_URL      = 'pwa-sw.js?v=6.2.2';
+    var APP_VERSION = '6.2.3';
+    var SW_URL      = 'pwa-sw.js?v=6.2.3';
 
     // ── Remoção do splash ────────────────────────────────────────────
     var _splashRemoved = false;
