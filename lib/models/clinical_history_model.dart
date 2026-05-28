@@ -257,52 +257,83 @@ class ClinicalHistoryModel {
     'hiddenAt': hiddenAt,
   };
 
+  /// Parse seguro de List<dynamic> → List<String>, sem lançar em release.
+  /// .cast<String>() quebra em release quando algum elemento não é String
+  /// (ex: int/bool vindo do Firestore REST). Usamos map+toString para garantir.
+  static List<String> _safeStringList(dynamic raw) {
+    if (raw == null) return const [];
+    final list = raw as List<dynamic>? ?? [];
+    return list.map((e) => e?.toString() ?? '').where((s) => s.isNotEmpty).toList();
+  }
+
+  /// Parse seguro de List<dynamic> → List<EvolutionEntry>.
+  /// Cada item é envolto em try/catch individual para não quebrar a lista inteira.
+  static List<EvolutionEntry> _safeEvolutionList(dynamic raw) {
+    if (raw == null) return const [];
+    final list = raw as List<dynamic>? ?? [];
+    final result = <EvolutionEntry>[];
+    for (final e in list) {
+      try {
+        if (e is Map<String, dynamic>) {
+          result.add(EvolutionEntry.fromJson(e));
+        } else if (e is Map) {
+          result.add(EvolutionEntry.fromJson(Map<String, dynamic>.from(e)));
+        }
+      } catch (_) {
+        // item malformado — ignora, não quebra os demais
+      }
+    }
+    return result;
+  }
+
   factory ClinicalHistoryModel.fromJson(Map<String, dynamic> j) {
-    final evoRaw = j['evolutions'] as List<dynamic>? ?? [];
     return ClinicalHistoryModel(
-      id: j['id'] ?? '',
-      createdAt: j['createdAt'] ?? DateTime.now().toIso8601String(),
-      updatedAt: j['updatedAt'] ?? DateTime.now().toIso8601String(),
-      authorUid: j['authorUid'] ?? '',
-      authorName: j['authorName'] ?? '',
-      authorEmail: j['authorEmail'] ?? '',
-      uploadedAt: j['uploadedAt'] ?? '',
-      isPublic: j['isPublic'] ?? false,
-      patientInitials: j['patientInitials'] ?? '',
+      id: j['id']?.toString() ?? '',
+      createdAt: j['createdAt']?.toString() ?? DateTime.now().toIso8601String(),
+      updatedAt: j['updatedAt']?.toString() ?? DateTime.now().toIso8601String(),
+      authorUid: j['authorUid']?.toString() ?? '',
+      authorName: j['authorName']?.toString() ?? '',
+      authorEmail: j['authorEmail']?.toString() ?? '',
+      uploadedAt: j['uploadedAt']?.toString() ?? '',
+      // isPublic pode chegar como bool (SDK) ou bool (REST booleanValue já decodificado)
+      isPublic: j['isPublic'] == true || j['isPublic'].toString() == 'true',
+      patientInitials: j['patientInitials']?.toString() ?? '',
       patientAge: j['patientAge']?.toString() ?? '',
-      patientSex: j['patientSex'] ?? 'Masculino',
+      patientSex: j['patientSex']?.toString() ?? 'Masculino',
       patientWeight: j['patientWeight']?.toString() ?? '',
       patientHeight: j['patientHeight']?.toString() ?? '',
-      patientRecord: j['patientRecord'] ?? '',
-      chiefComplaint: j['chiefComplaint'] ?? '',
-      hpi: j['hpi'] ?? '',
-      pastHistory: j['pastHistory'] ?? '',
-      familyHistory: j['familyHistory'] ?? '',
-      socialHistory: j['socialHistory'] ?? '',
-      medications: j['medications'] ?? '',
-      allergies: j['allergies'] ?? '',
-      reviewOfSystems: j['reviewOfSystems'] ?? '',
-      vitalSigns: j['vitalSigns'] ?? '',
-      physicalExam: j['physicalExam'] ?? '',
-      workingDiagnosis: j['workingDiagnosis'] ?? '',
-      differentialDx: j['differentialDx'] ?? '',
-      finalDiagnosis: j['finalDiagnosis'] ?? '',
-      cid: j['cid'] ?? '',
-      labResults: j['labResults'] ?? '',
-      imagingResults: j['imagingResults'] ?? '',
-      otherResults: j['otherResults'] ?? '',
-      treatmentPlan: j['treatmentPlan'] ?? '',
-      procedures: j['procedures'] ?? '',
-      drugIds: (j['drugIds'] as List<dynamic>? ?? []).cast<String>(),
-      evolutions: evoRaw.map((e) => EvolutionEntry.fromJson(e as Map<String, dynamic>)).toList(),
-      outcome: j['outcome'] ?? 'internado',
-      dischargeCondition: j['dischargeCondition'] ?? '',
-      followUp: j['followUp'] ?? '',
-      category: j['category'] ?? 'Clínica Geral',
-      tags: j['tags'] ?? '',
-      isHidden: j['isHidden'] as bool? ?? false,
-      hiddenBy: j['hiddenBy'] as String?,
-      hiddenAt: j['hiddenAt'] as String?,
+      patientRecord: j['patientRecord']?.toString() ?? '',
+      chiefComplaint: j['chiefComplaint']?.toString() ?? '',
+      hpi: j['hpi']?.toString() ?? '',
+      pastHistory: j['pastHistory']?.toString() ?? '',
+      familyHistory: j['familyHistory']?.toString() ?? '',
+      socialHistory: j['socialHistory']?.toString() ?? '',
+      medications: j['medications']?.toString() ?? '',
+      allergies: j['allergies']?.toString() ?? '',
+      reviewOfSystems: j['reviewOfSystems']?.toString() ?? '',
+      vitalSigns: j['vitalSigns']?.toString() ?? '',
+      physicalExam: j['physicalExam']?.toString() ?? '',
+      workingDiagnosis: j['workingDiagnosis']?.toString() ?? '',
+      differentialDx: j['differentialDx']?.toString() ?? '',
+      finalDiagnosis: j['finalDiagnosis']?.toString() ?? '',
+      cid: j['cid']?.toString() ?? '',
+      labResults: j['labResults']?.toString() ?? '',
+      imagingResults: j['imagingResults']?.toString() ?? '',
+      otherResults: j['otherResults']?.toString() ?? '',
+      treatmentPlan: j['treatmentPlan']?.toString() ?? '',
+      procedures: j['procedures']?.toString() ?? '',
+      // CRÍTICO: .cast<String>() quebra em release se algum elemento não for String.
+      // _safeStringList usa .toString() em cada elemento — nunca lança TypeError.
+      drugIds: _safeStringList(j['drugIds']),
+      evolutions: _safeEvolutionList(j['evolutions']),
+      outcome: j['outcome']?.toString() ?? 'internado',
+      dischargeCondition: j['dischargeCondition']?.toString() ?? '',
+      followUp: j['followUp']?.toString() ?? '',
+      category: j['category']?.toString() ?? 'Clínica Geral',
+      tags: j['tags']?.toString() ?? '',
+      isHidden: j['isHidden'] == true || j['isHidden'].toString() == 'true',
+      hiddenBy: j['hiddenBy']?.toString(),
+      hiddenAt: j['hiddenAt']?.toString(),
     );
   }
 

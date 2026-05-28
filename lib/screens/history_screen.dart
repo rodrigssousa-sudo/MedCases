@@ -2564,7 +2564,8 @@ class _HistoryEditorState extends State<_HistoryEditor> {
             Text(_hcT(widget.p.lang, 'public_hint'), style: const TextStyle(fontSize: 10, color: Color(0xFF888888), fontWeight: FontWeight.w600)),
           ])),
           Switch(value: _draft.isPublic, onChanged: (v) => setState(() => _draft = _draft.copyWith(isPublic: v)),
-            activeThumbColor: const Color(0xFF1E40AF)),
+            thumbColor: WidgetStateProperty.resolveWith((states) =>
+              states.contains(WidgetState.selected) ? const Color(0xFF1E40AF) : null)),
         ]),
       ),
     ),

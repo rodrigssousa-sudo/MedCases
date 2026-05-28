@@ -237,14 +237,13 @@
                 console.warn('[MedCases XHR Auth] origSend failed after auth:', e);
               }
             } else {
-              // Sem token: envia sem Authorization — Firestore decide (public_histories é allow read: if true)
+              // Sem token após 3s: envia SEM Authorization — deixa o Firestore decidir.
+              // public_histories tem allow read: if true → vai funcionar sem auth.
               console.warn(
                 '[MedCases XHR Auth] ⚠️ no token after 3s — sending without auth (public read allowed)',
                 '| url:', url
               );
-              try { _origSend.call(xhr, body); } catch(e) {
-                console.warn('[MedCases XHR Auth] origSend (no-auth) failed:', e);
-              }
+              try { _origSend.call(xhr, body); } catch(e) {}
             }
           }).catch(function(err) {
             console.warn(
@@ -332,7 +331,8 @@
         return _origFetch.call(window, input, newInit);
       }
 
-      // Sem token: passa sem Authorization — Firestore decide (public_histories é allow read: if true)
+      // Sem token após 3s: envia SEM Authorization — deixa o Firestore decidir.
+      // public_histories tem allow read: if true → vai funcionar sem auth.
       console.warn(
         '[Fetch Interceptor] ⚠️ no token after 3s — sending without auth (public read allowed)',
         '| url:', url

@@ -529,24 +529,52 @@ class FirestoreService {
   static Map<String, dynamic> _decodeFields(Map<String, dynamic> fields) {
     final result = <String, dynamic>{};
     fields.forEach((key, val) {
-      result[key] = _decodeValue(val as Map<String, dynamic>);
+      try {
+        if (val is Map<String, dynamic>) {
+          result[key] = _decodeValue(val);
+        } else if (val is Map) {
+          result[key] = _decodeValue(Map<String, dynamic>.from(val));
+        } else {
+          // Valor inesperado — usa direto sem decodificação Firestore
+          result[key] = val;
+        }
+      } catch (_) {
+        result[key] = null; // campo malformado — não quebra o documento inteiro
+      }
     });
     return result;
   }
 
   static dynamic _decodeValue(Map<String, dynamic> v) {
     if (v.containsKey('stringValue'))  return v['stringValue'];
-    if (v.containsKey('booleanValue')) return v['booleanValue'];
-    if (v.containsKey('integerValue')) return int.tryParse(v['integerValue'].toString()) ?? 0;
-    if (v.containsKey('doubleValue'))  return (v['doubleValue'] as num).toDouble();
+    if (v.containsKey('booleanValue')) return v['booleanValue'] == true;
+    if (v.containsKey('integerValue')) {
+      final raw = v['integerValue'];
+      return raw is int ? raw : int.tryParse(raw?.toString() ?? '') ?? 0;
+    }
+    if (v.containsKey('doubleValue')) {
+      final raw = v['doubleValue'];
+      return raw is double ? raw : (raw as num?)?.toDouble() ?? 0.0;
+    }
     if (v.containsKey('nullValue'))    return null;
     if (v.containsKey('mapValue')) {
-      final f = v['mapValue']['fields'] as Map<String, dynamic>? ?? {};
-      return _decodeFields(f);
+      try {
+        final mapVal = v['mapValue'];
+        final f = (mapVal is Map ? mapVal['fields'] : null) as Map<String, dynamic>? ?? {};
+        return _decodeFields(f);
+      } catch (_) { return <String, dynamic>{}; }
     }
     if (v.containsKey('arrayValue')) {
-      final vals = v['arrayValue']['values'] as List<dynamic>? ?? [];
-      return vals.map((e) => _decodeValue(e as Map<String, dynamic>)).toList();
+      try {
+        final arrVal = v['arrayValue'];
+        final vals = (arrVal is Map ? arrVal['values'] : null) as List<dynamic>? ?? [];
+        return vals
+            .whereType<Map>()
+            .map((e) => _decodeValue(
+                  e is Map<String, dynamic> ? e : Map<String, dynamic>.from(e),
+                ))
+            .toList();
+      } catch (_) { return <dynamic>[]; }
     }
     return null;
   }
@@ -827,14 +855,26 @@ class FirestoreService {
     List<ClinicalHistoryModel> parseResponse(http.Response resp) {
       final body = jsonDecode(resp.body) as Map<String, dynamic>;
       final documents = body['documents'] as List<dynamic>? ?? [];
-      return _normalizePublicHistories(
-        documents.map((doc) {
-          final rawDoc = doc as Map<String, dynamic>;
+      final parsed = <ClinicalHistoryModel>[];
+      for (final doc in documents) {
+        try {
+          // Cast defensivo: doc pode ser Map<String, dynamic> ou Map<dynamic, dynamic>
+          final rawDoc = doc is Map<String, dynamic>
+              ? doc
+              : Map<String, dynamic>.from(doc as Map);
           final data = _restDocToMap(rawDoc);
-          data['id'] = data['id'] ?? (rawDoc['name'] as String? ?? '').split('/').last;
-          return ClinicalHistoryModel.fromJson(data);
-        }),
-      );
+          // Garante que o id está presente (REST usa o campo 'name' como path)
+          if (data['id'] == null || (data['id'] as String).isEmpty) {
+            final name = rawDoc['name'] as String? ?? '';
+            data['id'] = name.isNotEmpty ? name.split('/').last : '';
+          }
+          parsed.add(ClinicalHistoryModel.fromJson(data));
+        } catch (e, st) {
+          // Documento malformado — loga e pula; não quebra os demais
+          _debugPublicHistories('REST parse: documento ignorado por erro — $e\n$st');
+        }
+      }
+      return _normalizePublicHistories(parsed);
     }
 
     try {
@@ -864,6 +904,10 @@ class FirestoreService {
       if (resp.statusCode != 200) {
         final snippet = resp.body.length > 220 ? resp.body.substring(0, 220) : resp.body;
         _setPublicHistoriesError('REST public_histories HTTP ${resp.statusCode}: $snippet');
+        // Aplica cooldown em qualquer erro HTTP (403, 401, 500...) para evitar retry storm.
+        // O cooldown de 2 minutos garante que não haverá loop infinito de tentativas.
+        _publicHistoriesRestRetryAfter = DateTime.now().add(_restRetryCooldown);
+        _debugPublicHistories('REST ${resp.statusCode} — cooldown 2min aplicado');
         return const <ClinicalHistoryModel>[];
       }
 
