@@ -502,6 +502,94 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
     return '${fmt(s)} – ${fmt(e)}';
   }
 
+  void _startNewHistory(AppProvider p, String lang) {
+    final uid = p.currentUser?.uid ?? 'local';
+    final name = p.currentUser?.displayName ??
+        p.currentUser?.email ??
+        _hcT(lang, 'anon');
+    final email = p.currentUser?.email ?? '';
+    setState(
+      () => _editing = ClinicalHistoryModel.blank(
+        authorUid: uid,
+        authorName: name,
+        authorEmail: email,
+      ),
+    );
+  }
+
+  List<ClinicalHistoryModel> _visibleCommunityHistories(
+    List<ClinicalHistoryModel> histories,
+    AppProvider p,
+  ) {
+    if (p.canModerateContent) return histories;
+    return histories.where((h) => !h.isHidden).toList();
+  }
+
+  Widget _buildTabScrollView({
+    required List<Widget> slivers,
+    Future<void> Function()? onRefresh,
+  }) {
+    final scrollView = CustomScrollView(
+      physics: const AlwaysScrollableScrollPhysics(),
+      slivers: slivers,
+    );
+
+    if (onRefresh == null) return scrollView;
+
+    return RefreshIndicator(
+      color: kGreen,
+      onRefresh: onRefresh,
+      child: scrollView,
+    );
+  }
+
+  Widget _wrapHistoryCard({
+    required MedBreakpoints bp,
+    required Widget child,
+  }) {
+    if (!bp.isDesktop) return child;
+    return Center(
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 900),
+        child: child,
+      ),
+    );
+  }
+
+  List<Widget> _buildListSlivers({
+    required MedBreakpoints bp,
+    required int itemCount,
+    required Widget Function(BuildContext context, int index) itemBuilder,
+  }) {
+    return <Widget>[
+      const SliverToBoxAdapter(child: SizedBox(height: 8)),
+      SliverPadding(
+        padding: EdgeInsets.fromLTRB(
+          bp.isDesktop ? bp.hPadding : 0,
+          0,
+          bp.isDesktop ? bp.hPadding : 0,
+          100,
+        ),
+        sliver: SliverList(
+          delegate: SliverChildBuilderDelegate(
+            itemBuilder,
+            childCount: itemCount,
+          ),
+        ),
+      ),
+    ];
+  }
+
+  List<Widget> _buildStateSlivers(Widget child) {
+    return <Widget>[
+      const SliverToBoxAdapter(child: SizedBox(height: 8)),
+      SliverFillRemaining(
+        hasScrollBody: false,
+        child: child,
+      ),
+    ];
+  }
+
   @override
   Widget build(BuildContext context) {
     final p = context.watch<AppProvider>();
@@ -527,292 +615,386 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
         history: _viewing!,
         p: p,
         readOnly: _viewingPublic,
-        onBack: () => setState(() { _viewing = null; _viewingPublic = false; }),
-        onEdit: _viewingPublic ? null : () {
-          final h = _viewing!;
-          setState(() { _viewing = null; _editing = h; });
-        },
-        onDelete: _viewingPublic ? null : () async {
-          await p.deleteHistory(_viewing!.id, wasPublic: _viewing!.isPublic);
-          if (!mounted) return;
-          setState(() => _viewing = null);
-        },
+        onBack: () => setState(() {
+          _viewing = null;
+          _viewingPublic = false;
+        }),
+        onEdit: _viewingPublic
+            ? null
+            : () {
+                final h = _viewing!;
+                setState(() {
+                  _viewing = null;
+                  _editing = h;
+                });
+              },
+        onDelete: _viewingPublic
+            ? null
+            : () async {
+                await p.deleteHistory(_viewing!.id, wasPublic: _viewing!.isPublic);
+                if (!mounted) return;
+                setState(() => _viewing = null);
+              },
       );
     }
 
     // ── Lista ───────────────────────────────────────────────────────────────
     final mine = _applyFilters(p.myHistories);
-    final pub  = _applyFilters(p.publicHistories);
-    final bp   = MedBreakpoints.of(context);
+    final pub = _applyFilters(p.publicHistories);
+    final visiblePub = _visibleCommunityHistories(pub, p);
+    final bp = MedBreakpoints.of(context);
+    final bg = p.darkMode ? const Color(0xFF0A130E) : const Color(0xFFF7F8FA);
 
-    return Column(children: [
-      // Header — SafeArea próprio (header global removido para tab 3)
-      Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [Color(0xFF0F1C14), Color(0xFF1B3D2A), Color(0xFF1F6B48)],
-          ),
-        ),
-        child: Padding(
-            padding: EdgeInsets.fromLTRB(bp.hPadding, 10, bp.hPadding, 12),
-            child: Row(children: [
-              Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Text(
-                  _hcT(lang, 'tab_title'),
-                  style: const TextStyle(
-                    fontSize: 9, fontWeight: FontWeight.w900,
-                    color: Color(0xBFFFE8A6), letterSpacing: 2)),
-                const SizedBox(height: 2),
-                Text(
-                  _hcT(lang, 'tab_subtitle'),
-                  style: const TextStyle(
-                    fontSize: 17, fontWeight: FontWeight.w900, color: Colors.white)),
-                const SizedBox(height: 2),
-                Text(
-                  '${mine.length} ${_hcT(lang, 'my_hcs_count')} • ${pub.length} ${_hcT(lang, 'pub_count')}',
-                  style: TextStyle(fontSize: 11,
-                    color: Colors.white.withValues(alpha: 0.55),
-                    fontWeight: FontWeight.w500)),
-              ])),
-              GestureDetector(
-                onTap: () {
-                  final uid  = p.currentUser?.uid ?? 'local';
-                  final name = p.currentUser?.displayName ?? p.currentUser?.email ?? _hcT(lang, 'anon');
-                  final email = p.currentUser?.email ?? '';
-                  setState(() => _editing = ClinicalHistoryModel.blank(
-                    authorUid: uid, authorName: name, authorEmail: email));
-                },
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12),
-                    color: Colors.white.withValues(alpha: 0.15),
-                    border: Border.all(color: Colors.white.withValues(alpha: 0.2)),
-                  ),
-                  child: Row(children: [
-                    const Icon(Icons.add_rounded, size: 15, color: Color(0xFFFFE8A6)),
-                    const SizedBox(width: 4),
-                    Text(_hcT(lang, 'new_hc'), style: const TextStyle(
-                      fontSize: 12, fontWeight: FontWeight.w800,
-                      color: Color(0xFFFFE8A6))),
-                  ]),
+    Future<void> refreshCommunity() => p.loadPublicHistories(forceRemote: true);
+    void triggerCommunityRefresh() {
+      unawaited(refreshCommunity());
+    }
+
+    final mineTab = mine.isEmpty
+        ? _buildTabScrollView(
+            slivers: _buildStateSlivers(
+              _EmptyHistoryState(
+                lang: lang,
+                onNew: () => _startNewHistory(p, lang),
+              ),
+            ),
+          )
+        : _buildTabScrollView(
+            slivers: _buildListSlivers(
+              bp: bp,
+              itemCount: mine.length,
+              itemBuilder: (_, i) => _wrapHistoryCard(
+                bp: bp,
+                child: _HistoryCard(
+                  h: mine[i],
+                  p: p,
+                  onTap: () => setState(() {
+                    _viewing = mine[i];
+                    _viewingPublic = false;
+                  }),
+                  onEdit: () => setState(() => _editing = mine[i]),
+                  onDelete: () async {
+                    final confirm = await _confirmDelete(context);
+                    if (confirm) {
+                      await p.deleteHistory(
+                        mine[i].id,
+                        wasPublic: mine[i].isPublic,
+                      );
+                    }
+                  },
+                  onTogglePublic: () => p.toggleHistoryPublic(mine[i]),
                 ),
               ),
-            ]),
-          ),
-      ),
+            ),
+          );
 
-      // Tabs
-      Padding(
-        padding: const EdgeInsets.fromLTRB(16, 10, 16, 0),
-        child: Container(
-          height: 40,
-          decoration: BoxDecoration(borderRadius: BorderRadius.circular(14), color: AppColors.of(context).cardBg, border: Border.all(color: AppColors.of(context).border)),
-          child: TabBar(
-            controller: _tabCtrl,
-            indicator: BoxDecoration(borderRadius: BorderRadius.circular(12), color: AppColors.of(context).darkBtn),
-            indicatorSize: TabBarIndicatorSize.tab,
-            labelStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.w900),
-            unselectedLabelStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.w700),
-            labelColor: kGoldLight,
-            unselectedLabelColor: const Color(0xFF888888),
-            dividerColor: Colors.transparent,
-            tabs: [
-              Tab(text: '${_hcT(lang, 'my_hcs')} (${mine.length})'),
-              Tab(text: '${_hcT(lang, 'community')} (${pub.length})'),
+    final communityTab = p.isLoadingPublic
+        ? _buildTabScrollView(
+            onRefresh: refreshCommunity,
+            slivers: _buildStateSlivers(_CommunityLoadingState(lang: lang)),
+          )
+        : visiblePub.isEmpty
+            ? _buildTabScrollView(
+                onRefresh: refreshCommunity,
+                slivers: _buildStateSlivers(
+                  p.publicLoadError.trim().isNotEmpty
+                      ? _CommunityErrorState(
+                          lang: lang,
+                          errorMessage: p.publicLoadError.trim(),
+                          onRefresh: triggerCommunityRefresh,
+                        )
+                      : _EmptyCommunityState(
+                          lang: lang,
+                          onRefresh: triggerCommunityRefresh,
+                        ),
+                ),
+              )
+            : _buildTabScrollView(
+                onRefresh: refreshCommunity,
+                slivers: _buildListSlivers(
+                  bp: bp,
+                  itemCount: visiblePub.length,
+                  itemBuilder: (_, i) {
+                    final h = visiblePub[i];
+                    final canModerate = p.canModerateContent;
+                    return _wrapHistoryCard(
+                      bp: bp,
+                      child: _HistoryCard(
+                        h: h,
+                        p: p,
+                        onTap: () => setState(() {
+                          _viewing = h;
+                          _viewingPublic = true;
+                        }),
+                        readOnly: true,
+                        onModHide: canModerate
+                            ? () async {
+                                final wasHidden = h.isHidden;
+                                await p.toggleHistoryHidden(h.id);
+                                if (context.mounted) {
+                                  _showModSnack(
+                                    context,
+                                    _hcT(lang, wasHidden ? 'hc_visible' : 'hc_hidden'),
+                                  );
+                                }
+                              }
+                            : null,
+                        onModDelete: canModerate
+                            ? () async {
+                                final confirm = await _confirmModDelete(context);
+                                if (!confirm) return;
+                                await FirestoreService.adminDeletePublicHistory(h.id);
+                                await p.loadPublicHistories(forceRemote: true);
+                                if (context.mounted) {
+                                  _showModSnack(
+                                    context,
+                                    _hcT(lang, 'hc_del_perm'),
+                                    isError: true,
+                                  );
+                                }
+                              }
+                            : null,
+                      ),
+                    );
+                  },
+                ),
+              );
+
+    return SafeArea(
+      top: false,
+      bottom: false,
+      child: SizedBox.expand(
+        child: ColoredBox(
+          color: bg,
+          child: Column(
+            children: [
+              // Header — SafeArea próprio (header global removido para tab 3)
+              Container(
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      Color(0xFF0F1C14),
+                      Color(0xFF1B3D2A),
+                      Color(0xFF1F6B48),
+                    ],
+                  ),
+                ),
+                child: Padding(
+                  padding: EdgeInsets.fromLTRB(bp.hPadding, 10, bp.hPadding, 12),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              _hcT(lang, 'tab_title'),
+                              style: const TextStyle(
+                                fontSize: 9,
+                                fontWeight: FontWeight.w900,
+                                color: Color(0xBFFFE8A6),
+                                letterSpacing: 2,
+                              ),
+                            ),
+                            const SizedBox(height: 2),
+                            Text(
+                              _hcT(lang, 'tab_subtitle'),
+                              style: const TextStyle(
+                                fontSize: 17,
+                                fontWeight: FontWeight.w900,
+                                color: Colors.white,
+                              ),
+                            ),
+                            const SizedBox(height: 2),
+                            Text(
+                              '${mine.length} ${_hcT(lang, 'my_hcs_count')} • ${visiblePub.length} ${_hcT(lang, 'pub_count')}',
+                              style: TextStyle(
+                                fontSize: 11,
+                                color: Colors.white.withValues(alpha: 0.55),
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      GestureDetector(
+                        onTap: () => _startNewHistory(p, lang),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 8,
+                          ),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(12),
+                            color: Colors.white.withValues(alpha: 0.15),
+                            border: Border.all(
+                              color: Colors.white.withValues(alpha: 0.2),
+                            ),
+                          ),
+                          child: Row(
+                            children: [
+                              const Icon(
+                                Icons.add_rounded,
+                                size: 15,
+                                color: Color(0xFFFFE8A6),
+                              ),
+                              const SizedBox(width: 4),
+                              Text(
+                                _hcT(lang, 'new_hc'),
+                                style: const TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w800,
+                                  color: Color(0xFFFFE8A6),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 10, 16, 0),
+                child: Container(
+                  height: 40,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(14),
+                    color: AppColors.of(context).cardBg,
+                    border: Border.all(color: AppColors.of(context).border),
+                  ),
+                  child: TabBar(
+                    controller: _tabCtrl,
+                    indicator: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12),
+                      color: AppColors.of(context).darkBtn,
+                    ),
+                    indicatorSize: TabBarIndicatorSize.tab,
+                    labelStyle: const TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w900,
+                    ),
+                    unselectedLabelStyle: const TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w700,
+                    ),
+                    labelColor: kGoldLight,
+                    unselectedLabelColor: const Color(0xFF888888),
+                    dividerColor: Colors.transparent,
+                    tabs: [
+                      Tab(text: '${_hcT(lang, 'my_hcs')} (${mine.length})'),
+                      Tab(text: '${_hcT(lang, 'community')} (${visiblePub.length})'),
+                    ],
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 10, 16, 0),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: MedInput(
+                        controller: _searchCtrl,
+                        hintText: _hcT(lang, 'search_hint'),
+                        onChanged: (_) => setState(() {}),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    GestureDetector(
+                      onTap: _showDateFilter,
+                      child: Container(
+                        height: 46,
+                        padding: const EdgeInsets.symmetric(horizontal: 12),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(12),
+                          color: _dateFilter != null
+                              ? AppColors.of(context).darkBtn
+                              : AppColors.of(context).cardBg,
+                          border: Border.all(
+                            color: _dateFilter != null
+                                ? AppColors.of(context).darkBtn
+                                : AppColors.of(context).border,
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              Icons.date_range_rounded,
+                              size: 16,
+                              color: _dateFilter != null
+                                  ? const Color(0xFFFFE8A6)
+                                  : const Color(0xFF888888),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              if (_dateFilter != null)
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+                  child: Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 6,
+                        ),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          color: AppColors.of(context).surface,
+                          border: Border.all(color: AppColors.of(context).border),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              Icons.date_range_rounded,
+                              size: 12,
+                              color: AppColors.of(context).textPrimary,
+                            ),
+                            const SizedBox(width: 6),
+                            Text(
+                              _dateFilterLabel,
+                              style: TextStyle(
+                                fontSize: 11,
+                                fontWeight: FontWeight.w700,
+                                color: AppColors.of(context).textPrimary,
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            GestureDetector(
+                              onTap: _clearDateFilter,
+                              child: const Icon(
+                                Icons.close_rounded,
+                                size: 13,
+                                color: Color(0xFF555555),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              const SizedBox(height: 4),
+              Expanded(
+                child: TabBarView(
+                  controller: _tabCtrl,
+                  children: [mineTab, communityTab],
+                ),
+              ),
             ],
           ),
         ),
       ),
-
-      // Busca + Filtro por data
-      Padding(
-        padding: const EdgeInsets.fromLTRB(16, 10, 16, 0),
-        child: Row(children: [
-          Expanded(
-            child: MedInput(
-              controller: _searchCtrl,
-              hintText: _hcT(lang, 'search_hint'),
-              onChanged: (_) => setState(() {}),
-            ),
-          ),
-          const SizedBox(width: 8),
-          // Botão filtro por data
-          GestureDetector(
-            onTap: _showDateFilter,
-            child: Container(
-              height: 46,
-              padding: const EdgeInsets.symmetric(horizontal: 12),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(12),
-                color: _dateFilter != null
-                    ? AppColors.of(context).darkBtn
-                    : AppColors.of(context).cardBg,
-                border: Border.all(
-                  color: _dateFilter != null
-                      ? AppColors.of(context).darkBtn
-                      : AppColors.of(context).border,
-                ),
-              ),
-              child: Row(mainAxisSize: MainAxisSize.min, children: [
-                Icon(Icons.date_range_rounded, size: 16,
-                    color: _dateFilter != null
-                        ? const Color(0xFFFFE8A6)
-                        : const Color(0xFF888888)),
-              ]),
-            ),
-          ),
-        ]),
-      ),
-
-      // Chip do filtro de data ativo
-      if (_dateFilter != null)
-        Padding(
-          padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
-          child: Row(children: [
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20),
-                color: AppColors.of(context).surface,
-                border: Border.all(color: AppColors.of(context).border),
-              ),
-              child: Row(mainAxisSize: MainAxisSize.min, children: [
-                Icon(Icons.date_range_rounded, size: 12, color: AppColors.of(context).textPrimary),
-                const SizedBox(width: 6),
-                Text(_dateFilterLabel,
-                    style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: AppColors.of(context).textPrimary)),
-                const SizedBox(width: 8),
-                GestureDetector(
-                  onTap: _clearDateFilter,
-                  child: const Icon(Icons.close_rounded, size: 13, color: Color(0xFF555555)),
-                ),
-              ]),
-            ),
-          ]),
-        ),
-
-      const SizedBox(height: 4),
-
-      Expanded(
-        child: TabBarView(
-          controller: _tabCtrl,
-          children: [
-            // ── Minhas HCs ──────────────────────────────────────────────
-            mine.isEmpty
-              ? _EmptyHistoryState(lang: lang, onNew: () {
-                  final uid = p.currentUser?.uid ?? 'local';
-                  final name = p.currentUser?.displayName ?? p.currentUser?.email ?? _hcT(lang, 'anon');
-                  final email = p.currentUser?.email ?? '';
-                  setState(() => _editing = ClinicalHistoryModel.blank(authorUid: uid, authorName: name, authorEmail: email));
-                })
-              : ListView.builder(
-                  padding: EdgeInsets.fromLTRB(
-                    bp.isDesktop ? bp.hPadding : 0,
-                    8,
-                    bp.isDesktop ? bp.hPadding : 0,
-                    100,
-                  ),
-                  itemCount: mine.length,
-                  itemBuilder: (_, i) => bp.isDesktop
-                      ? Center(child: ConstrainedBox(
-                          constraints: const BoxConstraints(maxWidth: 900),
-                          child: _HistoryCard(
-                            h: mine[i], p: p,
-                            onTap: () => setState(() { _viewing = mine[i]; _viewingPublic = false; }),
-                            onEdit: () => setState(() => _editing = mine[i]),
-                            onDelete: () async {
-                              final confirm = await _confirmDelete(context);
-                              if (confirm) await p.deleteHistory(mine[i].id, wasPublic: mine[i].isPublic);
-                            },
-                            onTogglePublic: () => p.toggleHistoryPublic(mine[i]),
-                          ),
-                        ))
-                      : _HistoryCard(
-                          h: mine[i], p: p,
-                          onTap: () => setState(() { _viewing = mine[i]; _viewingPublic = false; }),
-                          onEdit: () => setState(() => _editing = mine[i]),
-                          onDelete: () async {
-                            final confirm = await _confirmDelete(context);
-                            if (confirm) await p.deleteHistory(mine[i].id, wasPublic: mine[i].isPublic);
-                          },
-                          onTogglePublic: () => p.toggleHistoryPublic(mine[i]),
-                        ),
-                ),
-
-            // ── Comunidade ───────────────────────────────────────────────
-            p.isLoadingPublic
-              ? Center(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const CircularProgressIndicator(color: kGreen, strokeWidth: 2.5),
-                      const SizedBox(height: 14),
-                      Text(_hcT(lang, 'loading_comm'),
-                        style: const TextStyle(fontSize: 12, color: Color(0xFF888888), fontWeight: FontWeight.w600)),
-                    ],
-                  ),
-                )
-              : pub.isEmpty
-                ? p.publicLoadError.trim().isNotEmpty
-                    ? _CommunityErrorState(
-                        lang: lang,
-                        errorMessage: p.publicLoadError.trim(),
-                        onRefresh: () => p.loadPublicHistories(forceRemote: true),
-                      )
-                    : _EmptyCommunityState(
-                        lang: lang,
-                        onRefresh: () => p.loadPublicHistories(forceRemote: true),
-                      )
-                : RefreshIndicator(
-                    color: kGreen,
-                    onRefresh: () => p.loadPublicHistories(forceRemote: true),
-                    child: ListView.builder(
-                      padding: EdgeInsets.fromLTRB(
-                        bp.isDesktop ? bp.hPadding : 0,
-                        8,
-                        bp.isDesktop ? bp.hPadding : 0,
-                        100,
-                      ),
-                      itemCount: pub.length,
-                      itemBuilder: (ctx, i) {
-                        final h = pub[i];
-                        final canModerate = p.canModerateContent;
-                        // Usuários comuns não veem HCs ocultas
-                        if (h.isHidden && !canModerate) return const SizedBox.shrink();
-                        final card = _HistoryCard(
-                          h: h, p: p,
-                          onTap: () => setState(() { _viewing = h; _viewingPublic = true; }),
-                          readOnly: true,
-                          onModHide: canModerate ? () async {
-                            final wasHidden = h.isHidden;
-                            await p.toggleHistoryHidden(h.id);
-                            if (context.mounted) _showModSnack(context,
-                              _hcT(lang, wasHidden ? 'hc_visible' : 'hc_hidden'));
-                          } : null,
-                          onModDelete: canModerate ? () async {
-                            final confirm = await _confirmModDelete(context);
-                            if (!confirm) return;
-                            await FirestoreService.adminDeletePublicHistory(h.id);
-                            p.loadPublicHistories(forceRemote: true);
-                            if (context.mounted) _showModSnack(context, _hcT(lang, 'hc_del_perm'), isError: true);
-                          } : null,
-                        );
-                        return bp.isDesktop
-                            ? Center(child: ConstrainedBox(
-                                constraints: const BoxConstraints(maxWidth: 900),
-                                child: card,
-                              ))
-                            : card;
-                      },
-                    ),
-                  ),
-          ],
-        ),
-      ),
-    ]);
+    );
   }
 
   Future<bool> _confirmDelete(BuildContext context) async {
@@ -3577,6 +3759,33 @@ class _EvolutionEditorCardState extends State<_EvolutionEditorCard> {
         const SizedBox(height: 6),
         MedInput(controller: _textCtrl, hintText: _evoLang == 'es' ? 'Nota de evolución...' : 'Nota de evolução...', maxLines: 4, onChanged: (_) => _update()),
       ]),
+    );
+  }
+}
+
+class _CommunityLoadingState extends StatelessWidget {
+  final String lang;
+  const _CommunityLoadingState({this.lang = 'pt'});
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const CircularProgressIndicator(color: kGreen, strokeWidth: 2.5),
+          const SizedBox(height: 14),
+          Text(
+            _hcT(lang, 'loading_comm'),
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+              fontSize: 12,
+              color: Color(0xFF888888),
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
