@@ -264,39 +264,89 @@
       };
     })();
 
-    // ── 2. fetch interceptor (libs futuras / SDK compat) ─────────────────────
+    // ── 2. fetch interceptor — bloqueia public_histories sem token ─────────────
     var _origFetch = window.fetch;
-    window.fetch = function(input, init) {
-      var url = typeof input === 'string' ? input : (input && input.url ? input.url : String(input));
+    window.fetch = async function(input, init) {
+      // Extrai URL independente de fetch(string), fetch(Request) ou fetch(URL)
+      var url = typeof input === 'string'
+        ? input
+        : (input && typeof input.url === 'string' ? input.url : String(input));
       var method = (init && init.method) || (input && input.method) || 'GET';
+
+      // Passa adiante tudo que não for GET ao Firestore
       if (method.toUpperCase() !== 'GET' || !_isFirestoreUrl(url)) {
         return _origFetch.apply(this, arguments);
       }
-      // Verifica se Authorization já está presente nos headers
+
+      // Log diagnóstico para todo fetch ao Firestore
+      var isPublicHistories = url.indexOf('public_histories') !== -1;
+      console.log(
+        '[Fetch Interceptor] intercepted',
+        '| url:', url,
+        '| isPublicHistories:', isPublicHistories
+      );
+
+      // Verifica se Authorization já está presente (ex: SDK compat)
       var hasAuth = false;
       try {
         var h = init && init.headers;
         if (h) {
-          hasAuth = !!(h instanceof Headers ? h.get('authorization') : (h['Authorization'] || h['authorization']));
+          hasAuth = !!(h instanceof Headers
+            ? h.get('authorization')
+            : (h['Authorization'] || h['authorization']));
         }
       } catch(e) {}
-      if (hasAuth) return _origFetch.apply(this, arguments);
+      if (hasAuth) {
+        console.log('[Fetch Interceptor] Authorization already present — passing through');
+        return _origFetch.apply(this, arguments);
+      }
 
-      var args = arguments;
-      return _getFirebaseToken().then(function(token) {
-        if (!token) return _origFetch.apply(window, args);
+      // Aguarda token com timeout de 3s
+      var token = await Promise.race([
+        _getFirebaseToken(),
+        new Promise(function(resolve) { setTimeout(resolve, 3000, null); })
+      ]);
+
+      if (token) {
+        console.log(
+          '[Fetch Interceptor] ✅ injecting token for public_histories',
+          '| tokenLength:', token.length,
+          '| url:', url
+        );
+        // Constrói novo init preservando headers existentes
         var newInit = {};
-        if (init) { for (var k in init) { if (Object.prototype.hasOwnProperty.call(init, k)) newInit[k] = init[k]; } }
+        if (init) {
+          for (var k in init) {
+            if (Object.prototype.hasOwnProperty.call(init, k)) newInit[k] = init[k];
+          }
+        }
         var existingH = newInit.headers || {};
         var newH = {};
         try {
-          if (existingH instanceof Headers) { existingH.forEach(function(v, k) { newH[k] = v; }); }
-          else { for (var hk in existingH) { if (Object.prototype.hasOwnProperty.call(existingH, hk)) newH[hk] = existingH[hk]; } }
+          if (existingH instanceof Headers) {
+            existingH.forEach(function(v, hk) { newH[hk] = v; });
+          } else {
+            for (var hk in existingH) {
+              if (Object.prototype.hasOwnProperty.call(existingH, hk)) newH[hk] = existingH[hk];
+            }
+          }
         } catch(e) {}
         newH['Authorization'] = 'Bearer ' + token;
         newInit.headers = newH;
         return _origFetch.call(window, input, newInit);
-      }).catch(function() { return _origFetch.apply(window, args); });
+      }
+
+      // Sem token: BLOQUEIA — não deixa request zumbi sair para a rede
+      console.warn(
+        '[Fetch Interceptor] 🛑 REQUISIÇÃO ZUMBI ABORTADA: public_histories sem token',
+        '| firebase present:', !!window.firebase,
+        '| firebase.auth present:', !!(window.firebase && window.firebase.auth),
+        '| currentUser:', !!(window.firebase && window.firebase.auth && window.firebase.auth().currentUser),
+        '| url:', url
+      );
+      return Promise.reject(
+        new Error('Blocked by MedCases Fetch Interceptor: No Auth Token available for public_histories')
+      );
     };
 
   })();
@@ -314,13 +364,11 @@
   window.addEventListener('unhandledrejection', function(event) {
     var reason = event.reason;
     var msg = (reason && (reason.message || String(reason))) || '';
-    // Silencia erros de public_histories REST que escaparam do try/catch
-    if (msg.indexOf('public_histories') !== -1 ||
-        msg.indexOf('REST public_histories') !== -1) {
+    // Captura apenas o erro específico do fetch interceptor (bloqueio controlado)
+    // Não suprime erros genéricos de public_histories — eles devem aparecer no console
+    if (msg.indexOf('Blocked by MedCases Fetch Interceptor') !== -1) {
       event.preventDefault();
-      if (typeof console !== 'undefined') {
-        console.warn('[MedCases] REST public_histories error suppressed (handled by SDK path):', msg);
-      }
+      console.warn('[MedCases] Fetch bloqueado (sem token) — nenhuma requisição zumbi enviada:', msg);
     }
   });
   </script>
