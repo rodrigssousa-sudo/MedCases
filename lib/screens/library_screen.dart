@@ -227,44 +227,20 @@ class _LibraryScreenState extends State<LibraryScreen>
 
   @override
   Widget build(BuildContext context) {
-    final p    = context.watch<AppProvider>();
+    final p = context.watch<AppProvider>();
     final dark = p.darkMode;
     final isEs = p.lang == 'es';
-    final bg   = dark ? const Color(0xFF0A130E) : const Color(0xFFF7F8FA);
+    final bg = dark ? const Color(0xFF0A130E) : const Color(0xFFF7F8FA);
     final filtered = _filtered;
 
-    // ⚠️ Não usa Scaffold próprio — fica dentro do IndexedStack do _MainShellState.
-    // Usa LayoutBuilder para capturar as constraints exatas do pai e convertê-las
-    // em SizedBox com altura definida — elimina ambiguidade de constraints loose
-    // que causava tela cinza no mobile (Column+Expanded sem altura bounded).
-    // ⚠️ Não usa Scaffold próprio — fica dentro do IndexedStack do _MainShellState.
-    //
-    // ESTRATÉGIA DE CONSTRAINTS (mobile fix):
-    // O Scaffold.body já fornece constraints tight (bounded) ao IndexedStack.
-    // O LayoutBuilder captura essas constraints e força o SizedBox a ter
-    // dimensões explícitas, garantindo que o Expanded(TabBarView) funcione.
-    //
-    // Guard de segurança: se maxHeight vier como infinity (cenário improvável
-    // mas defensivo), usa MediaQuery para calcular a altura disponível real.
-    return ColoredBox(
-      color: bg,
-      child: LayoutBuilder(
-        builder: (context, constraints) {
-          final mq = MediaQuery.of(context);
-          // Altura segura: usa constraints se finita; caso contrário calcula
-          // manualmente (tela - status bar - bottom insets).
-          final safeH = constraints.maxHeight.isFinite
-              ? constraints.maxHeight
-              : mq.size.height - mq.padding.top - mq.padding.bottom;
-          final safeW = constraints.maxWidth.isFinite
-              ? constraints.maxWidth
-              : mq.size.width;
-
-          return SizedBox(
-            width: safeW,
-            height: safeH,
-            child: Column(children: [
-              // ── Header com TabBar embutida ─────────────────────────────────
+    return SafeArea(
+      top: false,
+      bottom: false,
+      child: SizedBox.expand(
+        child: ColoredBox(
+          color: bg,
+          child: Column(
+            children: [
               _LibraryHeader(
                 dark: dark,
                 isEs: isEs,
@@ -272,13 +248,10 @@ class _LibraryScreenState extends State<LibraryScreen>
                 onRefreshGuides: _handleManualRefresh,
                 refreshing: _loading,
               ),
-
-              // ── Body com abas — ocupa 100% da altura restante ──────────────
               Expanded(
                 child: TabBarView(
                   controller: _tabCtrl,
                   children: [
-                    // ── Aba 0: Guias / PDFs ──────────────────────────────────
                     _GuidesTab(
                       dark: dark,
                       isEs: isEs,
@@ -292,18 +265,14 @@ class _LibraryScreenState extends State<LibraryScreen>
                       onOpen: _openPdf,
                       onRetry: _handleManualRefresh,
                     ),
-
-                    // ── Aba 1: Casos Clínicos ────────────────────────────────
                     _CasosClinicosTab(dark: dark, isEs: isEs, p: p),
-
-                    // ── Aba 2: Protocolos Clínicos ───────────────────────────
                     _ProtocolsTab(dark: dark, isEs: isEs, p: p),
                   ],
                 ),
               ),
-            ]),
-          );
-        },
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -442,57 +411,76 @@ class _GuidesTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(children: [
-      // Filtro de categoria
-      if (categories.length > 1)
-        _CategoryFilter(
-          categories: categories,
-          selected: selectedCategory,
-          dark: dark,
-          onSelect: onCategorySelect,
-        ),
-
-      // Busca
-      Padding(
-        padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
-        child: TextField(
-          controller: searchCtrl,
-          style: const TextStyle(fontSize: 13),
-          decoration: InputDecoration(
-            hintText: isEs ? 'Buscar guías...' : 'Buscar guias...',
-            hintStyle: TextStyle(fontSize: 13, color: Colors.grey[400]),
-            prefixIcon: const Icon(Icons.search_rounded, size: 18),
-            contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-            isDense: true,
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-          ),
-        ),
-      ),
-
-      // Lista
-      Expanded(
-        child: loading
-            ? const Center(child: CircularProgressIndicator(color: _kGreen, strokeWidth: 2))
-            : filtered.isEmpty
-                ? (errorMessage.isNotEmpty && searchCtrl.text.isEmpty
+    final hasSearch = searchCtrl.text.isNotEmpty;
+    final bodySliver = loading
+        ? const SliverFillRemaining(
+            hasScrollBody: false,
+            child: Center(
+              child: CircularProgressIndicator(color: _kGreen, strokeWidth: 2),
+            ),
+          )
+        : filtered.isEmpty
+            ? SliverFillRemaining(
+                hasScrollBody: false,
+                child: errorMessage.isNotEmpty && !hasSearch
                     ? _GuideErrorState(
                         dark: dark,
                         isEs: isEs,
                         message: errorMessage,
                         onRetry: onRetry,
                       )
-                    : _EmptyState(dark: dark, isEs: isEs, hasSearch: searchCtrl.text.isNotEmpty))
-                : ListView.builder(
-                    padding: const EdgeInsets.fromLTRB(16, 8, 16, 100),
-                    itemCount: filtered.length,
-                    itemBuilder: (_, i) => _GuideCard(
+                    : _EmptyState(
+                        dark: dark,
+                        isEs: isEs,
+                        hasSearch: hasSearch,
+                      ),
+              )
+            : SliverPadding(
+                padding: const EdgeInsets.fromLTRB(16, 8, 16, 100),
+                sliver: SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                    (_, i) => _GuideCard(
                       guide: filtered[i],
                       dark: dark,
                       onOpen: () => onOpen(filtered[i]),
                     ),
+                    childCount: filtered.length,
                   ),
-      ),
-    ]);
+                ),
+              );
+
+    return CustomScrollView(
+      primary: false,
+      slivers: [
+        if (categories.length > 1)
+          SliverToBoxAdapter(
+            child: _CategoryFilter(
+              categories: categories,
+              selected: selectedCategory,
+              dark: dark,
+              onSelect: onCategorySelect,
+            ),
+          ),
+        SliverToBoxAdapter(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
+            child: TextField(
+              controller: searchCtrl,
+              style: const TextStyle(fontSize: 13),
+              decoration: InputDecoration(
+                hintText: isEs ? 'Buscar guías...' : 'Buscar guias...',
+                hintStyle: TextStyle(fontSize: 13, color: Colors.grey[400]),
+                prefixIcon: const Icon(Icons.search_rounded, size: 18),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                isDense: true,
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+              ),
+            ),
+          ),
+        ),
+        bodySliver,
+      ],
+    );
   }
 }
 
