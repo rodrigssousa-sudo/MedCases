@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../widgets/common_widgets.dart' show MedBreakpoints;
 import 'package:flutter_tts/flutter_tts.dart';
 import 'dart:convert';
 import '../providers/app_provider.dart';
@@ -715,8 +716,62 @@ class _AiScreenState extends State<AiScreen> {
   Widget build(BuildContext context) {
     final p    = context.watch<AppProvider>();
     final dark = p.darkMode;
+    final bp   = MedBreakpoints.of(context);
     // Fundo estilo WhatsApp — levíssimo padrão
     final chatBg = dark ? const Color(0xFF101E16) : const Color(0xFFECE5DD);
+
+    // No desktop: centraliza o chat com largura máxima elegante
+    final double? chatMaxWidth = bp.isDesktop ? 960 : null;
+    final hPad = bp.isDesktop ? 0.0 : 12.0;
+
+    Widget chatList = _messages.isEmpty
+        ? _EmptyChat(dark: dark, lang: p.lang)
+        : ListView.builder(
+            controller: _scrollCtrl,
+            padding: EdgeInsets.fromLTRB(
+              bp.isDesktop ? 24 : 12,
+              12,
+              bp.isDesktop ? 24 : 12,
+              8,
+            ),
+            cacheExtent: 2000,
+            physics: const ClampingScrollPhysics(),
+            itemCount: _messages.length + (_thinking ? 1 : 0),
+            itemBuilder: (context, i) {
+              if (_thinking && i == _messages.length) {
+                return _ThinkingBubble(dark: dark);
+              }
+              final msg = _messages[i];
+              return KeyedSubtree(
+                key: ValueKey('msg_${msg.id}'),
+                child: msg.role == 'user'
+                    ? _UserBubble(text: msg.text, dark: dark)
+                    : _AiBubble(
+                        key: ValueKey('ai_${msg.id}'),
+                        text: msg.text,
+                        dark: dark,
+                        animate: i == _lastAiIndex,
+                        onCopy: () => _copyMsg(msg.text),
+                        ttsPlaying: _ttsPlayingIndex == i,
+                        ttsReady: _ttsReady,
+                        onTts: _ttsReady
+                            ? () => _toggleTts(i, msg.text, p.lang)
+                            : null,
+                        scrollCtrl: _scrollCtrl,
+                      ),
+              );
+            },
+          );
+
+    // No desktop: envolve o chat em coluna centralizada com max-width
+    if (chatMaxWidth != null) {
+      chatList = Center(
+        child: ConstrainedBox(
+          constraints: BoxConstraints(maxWidth: chatMaxWidth),
+          child: chatList,
+        ),
+      );
+    }
 
     return Column(children: [
       // ── Header fino estilo WhatsApp ──────────────────────────────────────
@@ -745,46 +800,7 @@ class _AiScreenState extends State<AiScreen> {
       Expanded(
         child: Container(
           color: chatBg,
-          child: _messages.isEmpty
-              ? _EmptyChat(dark: dark, lang: p.lang)
-              : ListView.builder(
-                  controller: _scrollCtrl,
-                  padding: const EdgeInsets.fromLTRB(12, 12, 12, 8),
-                  // ⚡ cacheExtent alto: mantém bubbles renderizados fora da viewport
-                  // evita reconstituição ao scrollar — elimina o "salto" entre mensagens
-                  cacheExtent: 2000,
-                  physics: const ClampingScrollPhysics(),
-                  itemCount: _messages.length + (_thinking ? 1 : 0),
-                  itemBuilder: (context, i) {
-                    if (_thinking && i == _messages.length) {
-                      return _ThinkingBubble(dark: dark);
-                    }
-                    final msg = _messages[i];
-                    // ⚡ key por índice garante que Flutter reutilize o widget
-                    // ao invés de destruir e recriar ao sair/entrar da viewport
-                    return KeyedSubtree(
-                      // Key baseada no ID único da mensagem — não no índice.
-                      // Garante que o Flutter reutilize o mesmo widget mesmo que
-                      // a lista mude de tamanho (streaming, rebuild, etc.)
-                      key: ValueKey('msg_${msg.id}'),
-                      child: msg.role == 'user'
-                          ? _UserBubble(text: msg.text, dark: dark)
-                          : _AiBubble(
-                              key: ValueKey('ai_${msg.id}'),
-                              text: msg.text,
-                              dark: dark,
-                              animate: i == _lastAiIndex,
-                              onCopy: () => _copyMsg(msg.text),
-                              ttsPlaying: _ttsPlayingIndex == i,
-                              ttsReady: _ttsReady,
-                              onTts: _ttsReady
-                                  ? () => _toggleTts(i, msg.text, p.lang)
-                                  : null,
-                              scrollCtrl: _scrollCtrl,
-                            ),
-                    );
-                  },
-                ),
+          child: chatList,
         ),
       ),
 
@@ -801,19 +817,37 @@ class _AiScreenState extends State<AiScreen> {
             : const SizedBox.shrink(),
       ),
 
-      // ── Barra de input ─────────────────────────────────────────────────
-      _InputBar(
-        ctrl: _queryCtrl,
-        focusNode: _focusNode,
-        dark: dark,
-        hasFocus: _hasFocus,
-        thinking: _thinking,
-        onSend: () => _send(_queryCtrl.text, context.read<AppProvider>()),
-        hint: p.t('ai_placeholder'),
-        onVoice: _toggleStt,
-        sttListening: _sttListening,
-        lang: p.lang,
-      ),
+      // ── Barra de input — centralizada no desktop ───────────────────────
+      chatMaxWidth != null
+          ? Center(
+              child: ConstrainedBox(
+                constraints: BoxConstraints(maxWidth: chatMaxWidth),
+                child: _InputBar(
+                  ctrl: _queryCtrl,
+                  focusNode: _focusNode,
+                  dark: dark,
+                  hasFocus: _hasFocus,
+                  thinking: _thinking,
+                  onSend: () => _send(_queryCtrl.text, context.read<AppProvider>()),
+                  hint: p.t('ai_placeholder'),
+                  onVoice: _toggleStt,
+                  sttListening: _sttListening,
+                  lang: p.lang,
+                ),
+              ),
+            )
+          : _InputBar(
+              ctrl: _queryCtrl,
+              focusNode: _focusNode,
+              dark: dark,
+              hasFocus: _hasFocus,
+              thinking: _thinking,
+              onSend: () => _send(_queryCtrl.text, context.read<AppProvider>()),
+              hint: p.t('ai_placeholder'),
+              onVoice: _toggleStt,
+              sttListening: _sttListening,
+              lang: p.lang,
+            ),
     ]);
   }
 }

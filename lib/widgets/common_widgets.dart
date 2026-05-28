@@ -1,6 +1,66 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import '../services/drug_interaction_service.dart';
 import '../models/drug_model.dart';
+
+// ─────────────────────────────────────────────────────────────────────────────
+// MED BREAKPOINTS — sistema de breakpoints responsivos unificado
+// Uso:  final bp = MedBreakpoints.of(context);
+//       if (bp.isDesktop) { ... }
+// ─────────────────────────────────────────────────────────────────────────────
+class MedBreakpoints {
+  final double width;
+
+  const MedBreakpoints._(this.width);
+
+  factory MedBreakpoints.of(BuildContext context) {
+    return MedBreakpoints._(MediaQuery.of(context).size.width);
+  }
+
+  /// < 768 px — smartphone
+  bool get isMobile   => width < 768;
+  /// 768–1023 px — tablet
+  bool get isTablet   => width >= 768 && width < 1024;
+  /// >= 1024 px — desktop/laptop
+  bool get isDesktop  => width >= 1024;
+  /// >= 1440 px — widescreen/ultrawide
+  bool get isUltra    => width >= 1440;
+
+  /// true quando a tela é tablet ou maior
+  bool get isTabletOrLarger  => width >= 768;
+  /// true quando a tela é desktop ou maior
+  bool get isDesktopOrLarger => width >= 1024;
+
+  /// Largura disponível para conteúdo principal (desktop: limitado ao útil)
+  double get contentMaxWidth {
+    if (isUltra)   return 1600;
+    if (isDesktop) return 1280;
+    return double.infinity;
+  }
+
+  /// Número ideal de colunas para grids de cards
+  int get gridColumns {
+    if (isUltra)   return 4;
+    if (isDesktop) return 3;
+    if (isTablet)  return 2;
+    return 1;
+  }
+
+  /// Padding horizontal responsivo
+  double get hPadding {
+    if (isDesktop) return 32;
+    if (isTablet)  return 24;
+    return 18;
+  }
+
+  /// Largura da sidebar de navegação no desktop
+  static const double sidebarWidth = 72;
+  /// Largura da sidebar expandida (com labels)
+  static const double sidebarExpandedWidth = 200;
+
+  /// Detecta se estamos em contexto web (não nativo iOS/Android)
+  static bool get isWebContext => kIsWeb;
+}
 
 // ─────────────────────────────────────────────────────────────────────────────
 // CONSTANTES ESTÁTICAS (light mode — valores históricos mantidos para

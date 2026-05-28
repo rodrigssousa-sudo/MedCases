@@ -36,6 +36,7 @@ import 'screens/library_screen.dart';
 import 'services/firestore_service.dart';
 import 'services/gemini_service.dart';
 import 'widgets/brand_mark.dart';
+import 'widgets/common_widgets.dart' show MedBreakpoints;
 
 Future<void> main() async {
   FlutterError.onError = (FlutterErrorDetails details) {
@@ -1134,13 +1135,76 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
     final _    = context.select<AppProvider, String>((p) => p.lang); // reativa nav bar ao trocar idioma
     // p via read — _AppDrawer (abre on-tap) e p.t() já reativado pelo select acima
     final p = context.read<AppProvider>();
+    final bp = MedBreakpoints.of(context);
+
+    // Desktop: sidebar lateral + conteúdo expandido sem bottom nav
+    if (bp.isDesktop) {
+      return _buildDesktopShell(context, dark, p);
+    }
+    // Mobile/Tablet: layout original com bottom nav
+    return _buildMobileShell(context, dark, p);
+  }
+
+  /// Layout desktop: Row(sidebar | conteúdo)
+  Widget _buildDesktopShell(BuildContext context, bool dark, AppProvider p) {
+    final bg       = dark ? const Color(0xFF141414) : const Color(0xFFF7F8FA);
+    final stackIdx = _tab.clamp(0, _staticScreens.length - 1);
+
+    return Scaffold(
+      backgroundColor: bg,
+      endDrawer: _AppDrawer(p: p),
+      body: SafeArea(
+        child: Row(
+          children: [
+            // ── Sidebar de navegação vertical ─────────────────────────────
+            _DesktopSidebar(
+              currentTab: _tab,
+              dark: dark,
+              p: p,
+              onTabChange: (t) => setState(() => _tab = t),
+              onOpenDrawer: () => Scaffold.of(context).openEndDrawer(),
+            ),
+
+            // ── Divisor vertical sutil ─────────────────────────────────────
+            Container(
+              width: 1,
+              color: dark ? const Color(0xFF2A2A2A) : const Color(0xFFE8E1D2),
+            ),
+
+            // ── Conteúdo principal expansivo ──────────────────────────────
+            Expanded(
+              child: Column(
+                children: [
+                  // Header só na tab 0 (Home/Cockpit)
+                  if (_tab == 0)
+                    _AppHeader(
+                      onTabChange: (t) => setState(() => _tab = t),
+                      currentTab: _tab,
+                    ),
+
+                  Expanded(
+                    child: IndexedStack(
+                      index: stackIdx,
+                      children: _staticScreens,
+                    ),
+                  ),
+
+                  // Legal bar na parte inferior
+                  _LegalBar(dark: dark),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  /// Layout mobile/tablet: Scaffold com bottom nav (layout original)
+  Widget _buildMobileShell(BuildContext context, bool dark, AppProvider p) {
     final bg = dark ? const Color(0xFF141414) : const Color(0xFFF7F8FA);
     final navBg = dark ? const Color(0xFF1E1E1E) : Colors.white;
     final navBorder = dark ? const Color(0xFF333333) : const Color(0xFFE8E1D2);
-
-    // Todas as telas vêm de _staticScreens — criadas uma vez no initState.
-    // Com context.select, este build() só roda quando darkMode ou lang muda —
-    // não mais a cada notifyListeners() geral do AppProvider.
     final stackIdx = _tab.clamp(0, _staticScreens.length - 1);
 
     return Scaffold(
@@ -1149,9 +1213,6 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
       body: Stack(children: [
         Column(children: [
           // Header global só na tab 0 (Início/Cockpit).
-          // Nas demais abas: oculto para liberar espaço — cada tela tem header próprio.
-          // O _AppHeader já tem SafeArea interno. Nas outras abas usamos SafeArea aqui
-          // para garantir que o status bar seja respeitado sem duplicar em cada tela.
           if (_tab == 0)
             _AppHeader(
               onTabChange: _onTabChange,
@@ -1162,8 +1223,6 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
 
           Expanded(child: IndexedStack(index: stackIdx, children: _staticScreens)),
         ]),
-
-
       ]),
       bottomNavigationBar: Column(
         mainAxisSize: MainAxisSize.min,
@@ -1349,6 +1408,210 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
               child: Text(p.t('ai')),
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// DESKTOP SIDEBAR — navegação vertical estilo rail
+// ─────────────────────────────────────────────────────────────────────────────
+class _DesktopSidebar extends StatelessWidget {
+  final int currentTab;
+  final bool dark;
+  final AppProvider p;
+  final ValueChanged<int> onTabChange;
+  final VoidCallback onOpenDrawer;
+
+  const _DesktopSidebar({
+    required this.currentTab,
+    required this.dark,
+    required this.p,
+    required this.onTabChange,
+    required this.onOpenDrawer,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final bg          = dark ? const Color(0xFF1A1A1A) : Colors.white;
+    final activeCol   = dark ? const Color(0xFFFFE8A6) : const Color(0xFF0F1C14);
+    final inactiveCol = dark ? Colors.white.withValues(alpha: 0.32) : const Color(0xFFB0B8C0);
+    final activeBg    = dark
+        ? const Color(0xFFFFE8A6).withValues(alpha: 0.10)
+        : const Color(0xFF0F1C14).withValues(alpha: 0.07);
+    final isEs        = p.lang == 'es';
+
+    return Container(
+      width: MedBreakpoints.sidebarWidth,
+      color: bg,
+      child: Column(
+        children: [
+          const SizedBox(height: 16),
+
+          // Logo / brandmark compacto
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            child: Container(
+              width: 44,
+              height: 44,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                gradient: const LinearGradient(
+                  colors: [Color(0xFF1F6B48), Color(0xFF0F1C14)],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+                border: Border.all(
+                  color: const Color(0xFF4ADE80).withValues(alpha: 0.3),
+                  width: 1.5,
+                ),
+              ),
+              child: const Center(
+                child: Text('M',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w900,
+                    color: Color(0xFFFFE8A6),
+                  ),
+                ),
+              ),
+            ),
+          ),
+
+          const SizedBox(height: 20),
+
+          // ── Itens de navegação ──────────────────────────────────────────
+          _SidebarItem(
+            icon: Icons.home_rounded,
+            label: isEs ? 'Inicio' : 'Início',
+            active: currentTab == 0,
+            dark: dark,
+            activeCol: activeCol,
+            inactiveCol: inactiveCol,
+            activeBg: activeBg,
+            onTap: () => onTabChange(0),
+          ),
+          _SidebarItem(
+            icon: Icons.auto_awesome_rounded,
+            label: isEs ? 'IA' : 'IA',
+            active: currentTab == 2,
+            dark: dark,
+            activeCol: const Color(0xFFC5A365),
+            inactiveCol: inactiveCol,
+            activeBg: const Color(0xFFC5A365).withValues(alpha: 0.10),
+            onTap: () => onTabChange(2),
+          ),
+          _SidebarItem(
+            icon: Icons.folder_shared_rounded,
+            label: isEs ? 'H. Clínica' : 'H. Clínica',
+            active: currentTab == 3,
+            dark: dark,
+            activeCol: activeCol,
+            inactiveCol: inactiveCol,
+            activeBg: activeBg,
+            onTap: () => onTabChange(3),
+          ),
+          _SidebarItem(
+            icon: Icons.menu_book_rounded,
+            label: isEs ? 'Biblio.' : 'Biblio.',
+            active: currentTab == 5,
+            dark: dark,
+            activeCol: activeCol,
+            inactiveCol: inactiveCol,
+            activeBg: activeBg,
+            onTap: () => onTabChange(5),
+          ),
+          _SidebarItem(
+            icon: Icons.calculate_rounded,
+            label: isEs ? 'Calc.' : 'Calc.',
+            active: currentTab == 4,
+            dark: dark,
+            activeCol: activeCol,
+            inactiveCol: inactiveCol,
+            activeBg: activeBg,
+            onTap: () => onTabChange(4),
+          ),
+
+          const Spacer(),
+
+          // Botão de menu (drawer)
+          _SidebarItem(
+            icon: Icons.menu_rounded,
+            label: '',
+            active: false,
+            dark: dark,
+            activeCol: activeCol,
+            inactiveCol: inactiveCol,
+            activeBg: activeBg,
+            onTap: onOpenDrawer,
+          ),
+          const SizedBox(height: 16),
+        ],
+      ),
+    );
+  }
+}
+
+class _SidebarItem extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final bool active;
+  final bool dark;
+  final Color activeCol;
+  final Color inactiveCol;
+  final Color activeBg;
+  final VoidCallback onTap;
+
+  const _SidebarItem({
+    required this.icon,
+    required this.label,
+    required this.active,
+    required this.dark,
+    required this.activeCol,
+    required this.inactiveCol,
+    required this.activeBg,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final iconColor = active ? activeCol : inactiveCol;
+    return Tooltip(
+      message: label,
+      preferBelow: false,
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: onTap,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          curve: Curves.easeOutCubic,
+          margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(14),
+            color: active ? activeBg : Colors.transparent,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(icon, size: 20, color: iconColor),
+              if (label.isNotEmpty) ...[
+                const SizedBox(height: 3),
+                Text(
+                  label,
+                  style: TextStyle(
+                    fontSize: 7.5,
+                    fontWeight: active ? FontWeight.w800 : FontWeight.w500,
+                    color: iconColor,
+                    letterSpacing: 0.2,
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                  textAlign: TextAlign.center,
+                ),
+              ],
+            ],
+          ),
         ),
       ),
     );

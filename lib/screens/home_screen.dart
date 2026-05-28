@@ -62,8 +62,192 @@ class _HomeScreenState extends State<HomeScreen> {
     final dark = context.select<AppProvider, bool>((p) => p.darkMode);
     final isEs = context.select<AppProvider, bool>((p) => p.lang == 'es');
     // p via read para campos que não disparam rebuild por si só
-    final p    = context.read<AppProvider>();
+    final p  = context.read<AppProvider>();
+    final bp = MedBreakpoints.of(context);
 
+    // Desktop: layout em 2 colunas
+    if (bp.isDesktop) {
+      return _buildDesktopLayout(context, dark, isEs, p, bp);
+    }
+    // Mobile/Tablet: layout original em coluna única
+    return _buildMobileLayout(context, dark, isEs, p);
+  }
+
+  Widget _buildDesktopLayout(BuildContext context, bool dark, bool isEs, AppProvider p, MedBreakpoints bp) {
+    final hPad = bp.hPadding;
+
+    // Helpers de navegação inline para o desktop
+    void push(Widget page) => Navigator.of(context).push(_HomeScreenState._slide(page));
+
+    // Definição dos cards principais para o grid desktop
+    final mainCards = [
+      _HomeCardData(
+        icon: Icons.description_rounded,
+        label: isEs ? 'PRESCRIPCIONES' : 'PRESCRIÇÕES',
+        subtitle: isEs
+            ? '${prescriptionModels(true).length} modelos · Emergencias · Guardia · Clínica'
+            : '${prescriptionModels(false).length} modelos · Emergências · Plantão · Clínica',
+        gradientColors: const [Color(0xFF2A0B52), Color(0xFF3D1280), Color(0xFF5B21B6)],
+        accentColor: const Color(0xFFA78BFA),
+        onTap: () => push(const _PrescripcionesShell()),
+      ),
+      _HomeCardData(
+        icon: Icons.medication_rounded,
+        label: 'FÁRMACOS',
+        subtitle: isEs
+            ? '${uniqueDrugsCount} fármacos · Interacciones · Protocolos'
+            : '${uniqueDrugsCount} fármacos · Interações · Protocolos',
+        gradientColors: const [Color(0xFF3B2200), Color(0xFF6B3A00), Color(0xFF9A5B00)],
+        accentColor: const Color(0xFFFBBF24),
+        onTap: () => push(const _FarmacosShell()),
+      ),
+      _HomeCardData(
+        icon: Icons.compare_arrows_rounded,
+        label: isEs ? 'INTERACCIONES' : 'INTERAÇÕES',
+        subtitle: isEs
+            ? '${DrugInteractionService.totalInteractions} pares · Severidad · Manejo clínico'
+            : '${DrugInteractionService.totalInteractions} pares · Severidade · Manejo clínico',
+        gradientColors: const [Color(0xFF3B0A1E), Color(0xFF5E1234), Color(0xFF8B1E4F)],
+        accentColor: const Color(0xFFFF6BA0),
+        onTap: () => push(const DrugInteractionsScreen()),
+      ),
+      _HomeCardData(
+        icon: Icons.person_rounded,
+        label: 'ADULTO',
+        subtitle: isEs ? 'Protocolos adulto' : 'Protocolos adulto',
+        gradientColors: const [Color(0xFF052E1A), Color(0xFF0A5C2E), Color(0xFF15803D)],
+        accentColor: const Color(0xFF4ADE80),
+        onTap: () => push(_AdultoShell(openProtocol: widget.openProtocol)),
+      ),
+      _HomeCardData(
+        icon: Icons.child_care_rounded,
+        label: isEs ? 'PEDIATRÍA' : 'PEDIATRIA',
+        subtitle: isEs ? 'Protocolos pediátricos' : 'Protocolos pediátricos',
+        gradientColors: const [Color(0xFF0A2540), Color(0xFF103D70), Color(0xFF2563EB)],
+        accentColor: const Color(0xFF93C5FD),
+        onTap: () => push(const _PediatricsShell()),
+      ),
+    ];
+
+    return SingleChildScrollView(
+      physics: const BouncingScrollPhysics(),
+      padding: EdgeInsets.fromLTRB(hPad, 20, hPad, 40),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+
+        // ── Linha superior: pesquisa ──────────────────────────────────────
+        _HomeSearchBar(dark: dark, isEs: isEs),
+        const SizedBox(height: 24),
+
+        // ── Grid de cards principais — 3 colunas no desktop ───────────────
+        LayoutBuilder(builder: (context, constraints) {
+          const cols   = 3;
+          const gap    = 14.0;
+          final width  = (constraints.maxWidth - gap * (cols - 1)) / cols;
+          final rows   = (mainCards.length / cols).ceil();
+
+          return Column(
+            children: List.generate(rows, (rowIdx) {
+              final start = rowIdx * cols;
+              final end   = (start + cols).clamp(0, mainCards.length);
+              final rowItems = mainCards.sublist(start, end);
+
+              return Padding(
+                padding: EdgeInsets.only(bottom: rowIdx < rows - 1 ? gap : 0),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    for (int i = 0; i < rowItems.length; i++) ...[
+                      if (i > 0) const SizedBox(width: gap),
+                      SizedBox(
+                        width: width,
+                        child: _HomeCard(
+                          icon:           rowItems[i].icon,
+                          label:          rowItems[i].label,
+                          subtitle:       rowItems[i].subtitle,
+                          gradientColors: rowItems[i].gradientColors,
+                          accentColor:    rowItems[i].accentColor,
+                          dark:           dark,
+                          onTap:          rowItems[i].onTap,
+                        ),
+                      ),
+                    ],
+                    // Preenche colunas vazias na última linha
+                    for (int i = rowItems.length; i < cols; i++) ...[
+                      if (i > 0 || rowItems.isNotEmpty) const SizedBox(width: gap),
+                      SizedBox(width: width),
+                    ],
+                  ],
+                ),
+              );
+            }),
+          );
+        }),
+
+        const SizedBox(height: 24),
+        _HomeDivider(dark: dark),
+        const SizedBox(height: 20),
+
+        // ── Layout de 2 colunas: Shortcuts + Emergências ─────────────────
+        LayoutBuilder(builder: (context, constraints) {
+          final half = (constraints.maxWidth - 20) / 2;
+          return Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Coluna 1: Atalhos + Plantão
+              SizedBox(
+                width: half,
+                child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  _QuickShortcuts(
+                    dark: dark,
+                    isEs: isEs,
+                    openProtocol: widget.openProtocol,
+                    onOpenNotes: widget.onOpenNotes,
+                    onCheckUpdate: widget.onCheckUpdate,
+                  ),
+                  const SizedBox(height: 20),
+                  _HomeDivider(dark: dark),
+                  const SizedBox(height: 20),
+                  MeuPlantaoDashboard(
+                    onOpenDrug: (drug) => showDrugDetailSheet(context, drug),
+                    onOpenCalc: (calcId) {
+                      const calcTabMap = {
+                        'calc_biometria':   0,
+                        'calc_scores':      1,
+                        'calc_cardio':      2,
+                        'calc_eletrólitos': 3,
+                        'calc_infusao':     4,
+                        'calc_referencia':  5,
+                        'calc_prescricoes': 6,
+                        'calc_pediatria':   7,
+                      };
+                      widget.onSubTabChange(calcTabMap[calcId] ?? 0);
+                      widget.onTabChange(4);
+                    },
+                    onManageTap: () => showPlantaoManageSheet(context),
+                  ),
+                ]),
+              ),
+
+              const SizedBox(width: 20),
+
+              // Coluna 2: Emergências
+              SizedBox(
+                width: half,
+                child: _QuickEmergencies(
+                  p: p,
+                  dark: dark,
+                  isEs: isEs,
+                  openProtocol: widget.openProtocol,
+                ),
+              ),
+            ],
+          );
+        }),
+      ]),
+    );
+  }
+
+  Widget _buildMobileLayout(BuildContext context, bool dark, bool isEs, AppProvider p) {
     return SingleChildScrollView(
       physics: const BouncingScrollPhysics(),
       padding: const EdgeInsets.fromLTRB(18, 14, 18, 100),
@@ -1496,6 +1680,24 @@ class _FavoritosSheet extends StatelessWidget {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
+// Data class para lista de cards (usado no layout desktop)
+class _HomeCardData {
+  final IconData icon;
+  final String label;
+  final String subtitle;
+  final List<Color> gradientColors;
+  final Color accentColor;
+  final VoidCallback onTap;
+  const _HomeCardData({
+    required this.icon,
+    required this.label,
+    required this.subtitle,
+    required this.gradientColors,
+    required this.accentColor,
+    required this.onTap,
+  });
+}
+
 // CARD PRINCIPAL DE NAVEGAÇÃO
 // ─────────────────────────────────────────────────────────────────────────────
 class _HomeCard extends StatefulWidget {

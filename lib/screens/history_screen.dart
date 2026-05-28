@@ -540,6 +540,7 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
     // ── Lista ───────────────────────────────────────────────────────────────
     final mine = _applyFilters(p.myHistories);
     final pub  = _applyFilters(p.publicHistories);
+    final bp   = MedBreakpoints.of(context);
 
     return Column(children: [
       // Header — SafeArea próprio (header global removido para tab 3)
@@ -552,7 +553,7 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
           ),
         ),
         child: Padding(
-            padding: const EdgeInsets.fromLTRB(16, 10, 16, 12),
+            padding: EdgeInsets.fromLTRB(bp.hPadding, 10, bp.hPadding, 12),
             child: Row(children: [
               Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                 Text(
@@ -705,18 +706,37 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
                   setState(() => _editing = ClinicalHistoryModel.blank(authorUid: uid, authorName: name, authorEmail: email));
                 })
               : ListView.builder(
-                  padding: const EdgeInsets.fromLTRB(0, 8, 0, 100),
-                  itemCount: mine.length,
-                  itemBuilder: (_, i) => _HistoryCard(
-                    h: mine[i], p: p,
-                    onTap: () => setState(() { _viewing = mine[i]; _viewingPublic = false; }),
-                    onEdit: () => setState(() => _editing = mine[i]),
-                    onDelete: () async {
-                      final confirm = await _confirmDelete(context);
-                      if (confirm) await p.deleteHistory(mine[i].id, wasPublic: mine[i].isPublic);
-                    },
-                    onTogglePublic: () => p.toggleHistoryPublic(mine[i]),
+                  padding: EdgeInsets.fromLTRB(
+                    bp.isDesktop ? bp.hPadding : 0,
+                    8,
+                    bp.isDesktop ? bp.hPadding : 0,
+                    100,
                   ),
+                  itemCount: mine.length,
+                  itemBuilder: (_, i) => bp.isDesktop
+                      ? Center(child: ConstrainedBox(
+                          constraints: const BoxConstraints(maxWidth: 900),
+                          child: _HistoryCard(
+                            h: mine[i], p: p,
+                            onTap: () => setState(() { _viewing = mine[i]; _viewingPublic = false; }),
+                            onEdit: () => setState(() => _editing = mine[i]),
+                            onDelete: () async {
+                              final confirm = await _confirmDelete(context);
+                              if (confirm) await p.deleteHistory(mine[i].id, wasPublic: mine[i].isPublic);
+                            },
+                            onTogglePublic: () => p.toggleHistoryPublic(mine[i]),
+                          ),
+                        ))
+                      : _HistoryCard(
+                          h: mine[i], p: p,
+                          onTap: () => setState(() { _viewing = mine[i]; _viewingPublic = false; }),
+                          onEdit: () => setState(() => _editing = mine[i]),
+                          onDelete: () async {
+                            final confirm = await _confirmDelete(context);
+                            if (confirm) await p.deleteHistory(mine[i].id, wasPublic: mine[i].isPublic);
+                          },
+                          onTogglePublic: () => p.toggleHistoryPublic(mine[i]),
+                        ),
                 ),
 
             // ── Comunidade ───────────────────────────────────────────────
@@ -738,14 +758,19 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
                     color: kGreen,
                     onRefresh: () => p.loadPublicHistories(),
                     child: ListView.builder(
-                      padding: const EdgeInsets.fromLTRB(0, 8, 0, 100),
+                      padding: EdgeInsets.fromLTRB(
+                        bp.isDesktop ? bp.hPadding : 0,
+                        8,
+                        bp.isDesktop ? bp.hPadding : 0,
+                        100,
+                      ),
                       itemCount: pub.length,
                       itemBuilder: (ctx, i) {
                         final h = pub[i];
                         final canModerate = p.canModerateContent;
                         // Usuários comuns não veem HCs ocultas
                         if (h.isHidden && !canModerate) return const SizedBox.shrink();
-                        return _HistoryCard(
+                        final card = _HistoryCard(
                           h: h, p: p,
                           onTap: () => setState(() { _viewing = h; _viewingPublic = true; }),
                           readOnly: true,
@@ -763,6 +788,12 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
                             if (context.mounted) _showModSnack(context, _hcT(lang, 'hc_del_perm'), isError: true);
                           } : null,
                         );
+                        return bp.isDesktop
+                            ? Center(child: ConstrainedBox(
+                                constraints: const BoxConstraints(maxWidth: 900),
+                                child: card,
+                              ))
+                            : card;
                       },
                     ),
                   ),
@@ -2241,10 +2272,24 @@ class _HistoryEditorState extends State<_HistoryEditor> {
           ]),
         ),
 
-      // Conteúdo da seção
-      Expanded(child: SingleChildScrollView(
-        padding: const EdgeInsets.fromLTRB(16, 14, 16, 100),
-        child: _buildSection(),
+      // Conteúdo da seção — no desktop: centraliza com max-width maior
+      Expanded(child: LayoutBuilder(
+        builder: (context, constraints) {
+          final isDesktop = constraints.maxWidth >= 1024;
+          final hPad = isDesktop ? 48.0 : 16.0;
+          Widget content = SingleChildScrollView(
+            padding: EdgeInsets.fromLTRB(hPad, 14, hPad, 100),
+            child: isDesktop
+                ? Center(
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints(maxWidth: 900),
+                      child: _buildSection(),
+                    ),
+                  )
+                : _buildSection(),
+          );
+          return content;
+        },
       )),
     ]);
   }
