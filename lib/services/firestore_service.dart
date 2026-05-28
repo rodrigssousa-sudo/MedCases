@@ -1,7 +1,8 @@
 // firestore_service.dart — dados por usuário no Firestore
 import 'dart:async';
 import 'dart:convert';
-import 'package:flutter/foundation.dart' show kDebugMode, kIsWeb, debugPrint;
+import 'package:flutter/foundation.dart'
+    show kDebugMode, kIsWeb, debugPrint, defaultTargetPlatform, TargetPlatform;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:http/http.dart' as http;
@@ -19,6 +20,7 @@ class FirestoreService {
   static const _projectId = 'medcases-pro';
   static const _fsBase    = 'https://firestore.googleapis.com/v1/projects/$_projectId/databases/(default)/documents';
   static String get _firebaseApiKey => DefaultFirebaseOptions.currentPlatform.apiKey;
+  static bool get _isIosWeb => kIsWeb && defaultTargetPlatform == TargetPlatform.iOS;
   static const _guidesCacheKey = 'clinical_guides_cache_v1';
   static const _guidesCacheFirstOpenResetKey = 'clinical_guides_cache_first_open_reset_v2';
   static String _lastGuidesErrorMessage = '';
@@ -621,14 +623,21 @@ class FirestoreService {
   }
 
   static Future<List<ClinicalHistoryModel>> loadPublicHistories({bool forceRemote = false}) async {
-    _debugPublicHistories('loadPublicHistories start forceRemote=$forceRemote kIsWeb=$kIsWeb');
+    _debugPublicHistories(
+      'loadPublicHistories start forceRemote=$forceRemote kIsWeb=$kIsWeb isIosWeb=$_isIosWeb',
+    );
 
-    if (!kIsWeb && !forceRemote) {
+    if (!_isIosWeb && !forceRemote) {
       final server = await _loadPublicHistoriesSdk(source: Source.server);
       if (server.isNotEmpty) return server;
 
       final fallbackSdk = await _loadPublicHistoriesSdk();
       if (fallbackSdk.isNotEmpty) return fallbackSdk;
+    }
+
+    if (!_isIosWeb && forceRemote) {
+      final server = await _loadPublicHistoriesSdk(source: Source.server);
+      if (server.isNotEmpty) return server;
     }
 
     final rest = await _loadPublicHistoriesRest();
@@ -653,7 +662,12 @@ class FirestoreService {
       return http
           .get(
             Uri.parse('$_fsBase/public_histories?pageSize=100&key=$apiKey'),
-            headers: {...authHeaders, ...?headers},
+            headers: {
+              'Content-Type': 'application/json',
+              'X-Firebase-API-Key': apiKey,
+              ...authHeaders,
+              ...?headers,
+            },
           )
           .timeout(const Duration(seconds: 12));
     }
@@ -1323,7 +1337,12 @@ class FirestoreService {
       return http
           .get(
             Uri.parse('$_fsBase/clinical_guides?pageSize=200&key=$apiKey'),
-            headers: {...authHeaders, ...?headers},
+            headers: {
+              'Content-Type': 'application/json',
+              'X-Firebase-API-Key': apiKey,
+              ...authHeaders,
+              ...?headers,
+            },
           )
           .timeout(const Duration(seconds: 12));
     }
@@ -1387,14 +1406,22 @@ class FirestoreService {
 
   static Future<List<GuideModel>> loadPublishedGuides({bool forceRemote = false}) async {
     final cached = await loadCachedPublishedGuides();
-    _debugGuides('loadPublishedGuides start forceRemote=$forceRemote kIsWeb=$kIsWeb cached=${cached.length}');
+    final useIosWebFallback = kIsWeb && defaultTargetPlatform == TargetPlatform.iOS;
+    _debugGuides(
+      'loadPublishedGuides start forceRemote=$forceRemote kIsWeb=$kIsWeb iosWebFallback=$useIosWebFallback cached=${cached.length}',
+    );
 
-    if (!kIsWeb) {
+    if (!useIosWebFallback && !forceRemote) {
       final server = await _loadPublishedGuidesSdk(source: Source.server);
       if (server.isNotEmpty) return server;
 
       final fallbackSdk = await _loadPublishedGuidesSdk();
       if (fallbackSdk.isNotEmpty) return fallbackSdk;
+    }
+
+    if (!useIosWebFallback && forceRemote) {
+      final server = await _loadPublishedGuidesSdk(source: Source.server);
+      if (server.isNotEmpty) return server;
     }
 
     final rest = await _loadPublishedGuidesRest();
@@ -1416,7 +1443,9 @@ class FirestoreService {
   /// Web/PWA usa polling REST para evitar inconsistências do SDK no mobile web.
   /// Nativo mantém snapshots do SDK, com fallback local/remoto tratado pela tela.
   static Stream<List<GuideModel>> guidesStream() {
-    if (kIsWeb) return _guidesStreamRest();
+    if (kIsWeb && defaultTargetPlatform == TargetPlatform.iOS) {
+      return _guidesStreamRest();
+    }
     return _guides
         .where('isPublished', isEqualTo: true)
         .orderBy('uploadedAt', descending: true)
