@@ -1545,6 +1545,7 @@ class FirestoreService {
   }
 
   static Future<List<GuideModel>> _loadPublishedGuidesSdk({Source? source}) async {
+    // Tentativa 1: query com orderBy (requer índice composto no Firestore)
     try {
       final query = _guides
           .where('isPublished', isEqualTo: true)
@@ -1561,20 +1562,54 @@ class FirestoreService {
         _clearGuidesError();
         await _saveGuidesCache(guides);
       }
-      _debugGuides('sdk load count=${guides.length} source=${source ?? 'default'}');
+      _debugGuides('sdk load (orderBy) count=${guides.length} source=${source ?? 'default'}');
+      return guides;
+    } on FirebaseException catch (e) {
+      // failed-precondition = índice composto não existe → fallback sem orderBy
+      if (e.code == 'failed-precondition' || e.code == 'unimplemented') {
+        _debugGuides('sdk orderBy falhou (sem índice) — tentando sem orderBy: ${e.code}');
+      } else if (e.code == 'permission-denied') {
+        _setGuidesError('Acesso negado (verifique Firestore Rules para clinical_guides)');
+        _debugGuides('sdk permission-denied source=${source ?? 'default'}');
+        return [];
+      } else {
+        _setGuidesError('SDK clinical_guides erro: ${e.code}');
+        _debugGuides('sdk firebase error ${e.code} source=${source ?? 'default'}');
+        return [];
+      }
+    } catch (e) {
+      _debugGuides('sdk orderBy falhou — tentando sem orderBy: $e');
+    }
+
+    // Tentativa 2: query SEM orderBy — não requer índice composto.
+    // Ordenação é feita localmente em _normalizeGuides().
+    try {
+      final query = _guides.where('isPublished', isEqualTo: true);
+      final snap = source == null
+          ? await query.get().timeout(const Duration(seconds: 8))
+          : await query
+              .get(GetOptions(source: source))
+              .timeout(const Duration(seconds: 8));
+      final guides = _normalizeGuides(
+        snap.docs.map((d) => GuideModel.fromJson({...d.data(), 'id': d.id})),
+      );
+      if (guides.isNotEmpty) {
+        _clearGuidesError();
+        await _saveGuidesCache(guides);
+      }
+      _debugGuides('sdk load (sem orderBy) count=${guides.length} source=${source ?? 'default'}');
       return guides;
     } on FirebaseException catch (e) {
       if (e.code == 'permission-denied') {
         _setGuidesError('Acesso negado (verifique Firestore Rules para clinical_guides)');
-        _debugGuides('sdk permission-denied source=${source ?? 'default'}');
       } else {
-        _setGuidesError('SDK clinical_guides erro: ${e.code}');
-        _debugGuides('sdk firebase error ${e.code} source=${source ?? 'default'}');
+        _setGuidesError('SDK clinical_guides erro (sem orderBy): ${e.code}');
       }
+      _debugGuides('sdk sem orderBy error ${e.code} source=${source ?? 'default'}');
       return [];
     } catch (e) {
-      _setGuidesError('SDK clinical_guides falhou (${source ?? 'default'}): $e');
-      _debugGuides('sdk load failed source=${source ?? 'default'} error=$e');
+      _setGuidesError('SDK clinical_guides falhou (sem orderBy): $e');
+      _debugGuides('sdk sem orderBy failed source=${source ?? 'default'} error=$e');
       return [];
     }
   }
@@ -1603,14 +1638,24 @@ class FirestoreService {
     List<GuideModel> parseResponse(http.Response resp) {
       final body = jsonDecode(resp.body) as Map<String, dynamic>;
       final documents = body['documents'] as List<dynamic>? ?? [];
-      return _normalizeGuides(
-        documents.map((doc) {
-          final rawDoc = doc as Map<String, dynamic>;
+      final parsed = <GuideModel>[];
+      for (final doc in documents) {
+        try {
+          final rawDoc = doc is Map<String, dynamic>
+              ? doc
+              : Map<String, dynamic>.from(doc as Map);
           final data = _restDocToMap(rawDoc);
-          data['id'] = data['id'] ?? (rawDoc['name'] as String? ?? '').split('/').last;
-          return GuideModel.fromJson(data);
-        }).where((guide) => guide.isPublished),
-      );
+          if (data['id'] == null || (data['id'] as String).isEmpty) {
+            final name = rawDoc['name'] as String? ?? '';
+            data['id'] = name.isNotEmpty ? name.split('/').last : '';
+          }
+          final guide = GuideModel.fromJson(data);
+          if (guide.isPublished) parsed.add(guide);
+        } catch (e, st) {
+          _debugGuides('REST parseResponse: guia ignorado por erro — $e\n$st');
+        }
+      }
+      return _normalizeGuides(parsed);
     }
 
     try {
@@ -1631,9 +1676,11 @@ class FirestoreService {
       }
 
       if (resp.statusCode != 200) {
-        _setGuidesError(
-          'REST clinical_guides HTTP ${resp.statusCode}: ${resp.body.substring(0, resp.body.length.clamp(0, 220))}',
-        );
+        final snippet = resp.body.substring(0, resp.body.length.clamp(0, 220));
+        _setGuidesError('REST clinical_guides HTTP ${resp.statusCode}: $snippet');
+        // Cooldown 2min em qualquer HTTP != 200 — evita retry storm
+        _guidesRestRetryAfter = DateTime.now().add(_restRetryCooldown);
+        _debugGuides('REST ${resp.statusCode} — cooldown 2min aplicado');
         return [];
       }
 
