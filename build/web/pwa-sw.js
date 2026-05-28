@@ -7,8 +7,8 @@
 
 'use strict';
 
-const SW_VERSION   = '6.2.2';
-const CACHE_APP    = 'medcases-app-v6.2.2';
+const SW_VERSION   = '6.2.3';
+const CACHE_APP    = 'medcases-app-v6.2.3';
 const CACHE_FONTS  = 'medcases-fonts-v2';
 
 // Assets pré-cacheados no install (críticos para o boot)
