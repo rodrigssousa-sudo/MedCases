@@ -6,6 +6,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import '../firebase_options.dart';
 import '../models/clinical_case_model.dart';
 import '../models/clinical_history_model.dart';
 import '../models/guide_model.dart';
@@ -17,6 +18,7 @@ class FirestoreService {
 
   static const _projectId = 'medcases-pro';
   static const _fsBase    = 'https://firestore.googleapis.com/v1/projects/$_projectId/databases/(default)/documents';
+  static String get _firebaseApiKey => DefaultFirebaseOptions.currentPlatform.apiKey;
   static const _guidesCacheKey = 'clinical_guides_cache_v1';
   static const _guidesCacheFirstOpenResetKey = 'clinical_guides_cache_first_open_reset_v2';
   static String _lastGuidesErrorMessage = '';
@@ -645,11 +647,12 @@ class FirestoreService {
     final authHeaders = (token != null && token.isNotEmpty)
         ? <String, String>{'Authorization': 'Bearer $token'}
         : <String, String>{};
+    final apiKey = _firebaseApiKey;
 
     Future<http.Response> doGet({Map<String, String>? headers}) {
       return http
           .get(
-            Uri.parse('$_fsBase/public_histories?pageSize=100'),
+            Uri.parse('$_fsBase/public_histories?pageSize=100&key=$apiKey'),
             headers: {...authHeaders, ...?headers},
           )
           .timeout(const Duration(seconds: 12));
@@ -1314,11 +1317,12 @@ class FirestoreService {
     final authHeaders = (token != null && token.isNotEmpty)
         ? <String, String>{'Authorization': 'Bearer $token'}
         : <String, String>{};
+    final apiKey = _firebaseApiKey;
 
     Future<http.Response> doGet({Map<String, String>? headers}) {
       return http
           .get(
-            Uri.parse('$_fsBase/clinical_guides?pageSize=200'),
+            Uri.parse('$_fsBase/clinical_guides?pageSize=200&key=$apiKey'),
             headers: {...authHeaders, ...?headers},
           )
           .timeout(const Duration(seconds: 12));
