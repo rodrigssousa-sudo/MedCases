@@ -19,6 +19,7 @@ class FirestoreService {
   static const _guidesCacheKey = 'clinical_guides_cache_v1';
   static const _guidesCacheFirstOpenResetKey = 'clinical_guides_cache_first_open_reset_v2';
   static String _lastGuidesErrorMessage = '';
+  static String _lastPublicHistoriesErrorMessage = '';
 
   // ── Referências por usuário ───────────────────────────────────────────────
   static DocumentReference<Map<String, dynamic>> _userDoc(String uid) =>
@@ -390,6 +391,33 @@ class FirestoreService {
   static CollectionReference<Map<String, dynamic>> get _publicHistories =>
       _db.collection('public_histories');
 
+  static void _debugPublicHistories(String message) {
+    if (kDebugMode) debugPrint('[FirestoreService.publicHistories] $message');
+  }
+
+  static String get lastPublicHistoriesErrorMessage => _lastPublicHistoriesErrorMessage;
+
+  static void _setPublicHistoriesError(String message) {
+    _lastPublicHistoriesErrorMessage = message.trim();
+    if (_lastPublicHistoriesErrorMessage.isNotEmpty) {
+      _debugPublicHistories('error=$_lastPublicHistoriesErrorMessage');
+    }
+  }
+
+  static void _clearPublicHistoriesError() {
+    _lastPublicHistoriesErrorMessage = '';
+  }
+
+  static List<ClinicalHistoryModel> _normalizePublicHistories(
+    Iterable<ClinicalHistoryModel> histories,
+  ) {
+    final list = histories
+        .where((h) => h.id.trim().isNotEmpty)
+        .toList();
+    list.sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
+    return list.take(50).toList();
+  }
+
   // ── Helpers REST para public_histories ───────────────────────────────────
 
   /// Converte um documento Firestore REST em Map<String, dynamic> Dart.
@@ -568,56 +596,109 @@ class FirestoreService {
     } catch (_) {}
   }
 
-  static Future<List<ClinicalHistoryModel>> loadPublicHistories() async {
-    // Web: usa REST puro (HTTP GET sem auth).
-    // O SDK Firestore usa WebSocket que falha com CORS em domínios não
-    // cadastrados no Firebase Console — a REST API não tem essa limitação.
-    // Nativo (Android/iOS): SDK direto, sem restrições CORS.
-    if (kIsWeb) {
-      return _loadPublicHistoriesRest();
-    }
-    // Nativo — SDK funciona normalmente
+  static Future<List<ClinicalHistoryModel>> _loadPublicHistoriesSdk({Source? source}) async {
     try {
-      final snap = await _publicHistories
-          .limit(100)
-          .get(const GetOptions(source: Source.server));
-      final list = snap.docs
-          .map((d) => ClinicalHistoryModel.fromJson(d.data()))
-          .toList();
-      list.sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
-      return list.take(50).toList();
-    } catch (_) {
-      final snap = await _publicHistories.limit(100).get();
-      final list = snap.docs
-          .map((d) => ClinicalHistoryModel.fromJson(d.data()))
-          .toList();
-      list.sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
-      return list.take(50).toList();
+      final query = _publicHistories.limit(100);
+      final snap = source == null
+          ? await query.get().timeout(const Duration(seconds: 8))
+          : await query
+              .get(GetOptions(source: source))
+              .timeout(const Duration(seconds: 8));
+      final list = _normalizePublicHistories(
+        snap.docs.map((d) => ClinicalHistoryModel.fromJson({...d.data(), 'id': d.id})),
+      );
+      _clearPublicHistoriesError();
+      _debugPublicHistories('sdk load count=${list.length} source=${source ?? 'default'}');
+      return list;
+    } catch (e) {
+      _setPublicHistoriesError('SDK public_histories falhou (${source ?? 'default'}): $e');
+      _debugPublicHistories('sdk load failed source=${source ?? 'default'} error=$e');
+      return [];
     }
   }
 
-  /// Leitura pública via Firestore REST API — sem token, sem SDK, sem CORS.
-  /// Funciona em qualquer domínio web porque é HTTP GET simples.
-  static Future<List<ClinicalHistoryModel>> _loadPublicHistoriesRest() async {
-    const url = '$_fsBase/public_histories?pageSize=100';
-    final resp = await http.get(
-      Uri.parse(url),
-    ).timeout(const Duration(seconds: 15));
+  static Future<List<ClinicalHistoryModel>> loadPublicHistories({bool forceRemote = false}) async {
+    _debugPublicHistories('loadPublicHistories start forceRemote=$forceRemote kIsWeb=$kIsWeb');
 
-    if (resp.statusCode != 200) {
-      throw Exception('REST public_histories: HTTP ${resp.statusCode} — ${resp.body}');
+    if (!kIsWeb && !forceRemote) {
+      final server = await _loadPublicHistoriesSdk(source: Source.server);
+      if (server.isNotEmpty) return server;
+
+      final fallbackSdk = await _loadPublicHistoriesSdk();
+      if (fallbackSdk.isNotEmpty) return fallbackSdk;
     }
 
-    final body = jsonDecode(resp.body) as Map<String, dynamic>;
-    final documents = body['documents'] as List<dynamic>? ?? [];
+    final rest = await _loadPublicHistoriesRest();
+    if (rest.isNotEmpty) return rest;
 
-    final list = documents
-        .map((doc) => _restDocToMap(doc as Map<String, dynamic>))
-        .map((data) => ClinicalHistoryModel.fromJson(data))
-        .toList();
+    _debugPublicHistories(
+      'loadPublicHistories returning empty error=${lastPublicHistoriesErrorMessage.isNotEmpty}',
+    );
+    return const <ClinicalHistoryModel>[];
+  }
 
-    list.sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
-    return list.take(50).toList();
+  /// Leitura pública via Firestore REST API — sem SDK e com retry autenticado.
+  /// Funciona como fallback para Safari/PWA quando o SDK do Firebase fica pendurado.
+  static Future<List<ClinicalHistoryModel>> _loadPublicHistoriesRest() async {
+    Future<http.Response> doGet({Map<String, String>? headers}) {
+      return http
+          .get(
+            Uri.parse('$_fsBase/public_histories?pageSize=100'),
+            headers: headers,
+          )
+          .timeout(const Duration(seconds: 12));
+    }
+
+    List<ClinicalHistoryModel> parseResponse(http.Response resp) {
+      final body = jsonDecode(resp.body) as Map<String, dynamic>;
+      final documents = body['documents'] as List<dynamic>? ?? [];
+      return _normalizePublicHistories(
+        documents.map((doc) {
+          final rawDoc = doc as Map<String, dynamic>;
+          final data = _restDocToMap(rawDoc);
+          data['id'] = data['id'] ?? (rawDoc['name'] as String? ?? '').split('/').last;
+          return ClinicalHistoryModel.fromJson(data);
+        }),
+      );
+    }
+
+    try {
+      _debugPublicHistories('rest load start kIsWeb=$kIsWeb');
+      var resp = await doGet();
+      _debugPublicHistories('rest load unauth status=${resp.statusCode}');
+
+      if (resp.statusCode == 401 || resp.statusCode == 403) {
+        final token = await AuthService.getAdminToken().timeout(
+          const Duration(seconds: 4),
+          onTimeout: () => '',
+        );
+        _debugPublicHistories('rest auth retry tokenPresent=${token.isNotEmpty}');
+        if (token.isNotEmpty) {
+          resp = await doGet(headers: {'Authorization': 'Bearer $token'});
+          _debugPublicHistories('rest load auth status=${resp.statusCode}');
+        }
+      }
+
+      if (resp.statusCode != 200) {
+        _setPublicHistoriesError(
+          'REST public_histories HTTP ${resp.statusCode}: ${resp.body.substring(0, resp.body.length.clamp(0, 220))}',
+        );
+        return [];
+      }
+
+      final list = parseResponse(resp);
+      _clearPublicHistoriesError();
+      _debugPublicHistories('rest load count=${list.length}');
+      return list;
+    } on TimeoutException catch (e) {
+      _setPublicHistoriesError('REST public_histories timeout: $e');
+      _debugPublicHistories('rest load timeout error=$e');
+      return [];
+    } catch (e) {
+      _setPublicHistoriesError('REST public_histories falhou: $e');
+      _debugPublicHistories('rest load failed error=$e');
+      return [];
+    }
   }
 
   static Stream<List<ClinicalHistoryModel>> historiesStream(String uid) {

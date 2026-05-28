@@ -1324,7 +1324,11 @@ class AppProvider extends ChangeNotifier {
   // Chamadas concorrentes aguardam o mesmo Future em vez de retornar [] silenciosamente.
   Completer<void>? _publicHistoriesCompleter;
 
-  Future<void> loadPublicHistories() async {
+  void _debugPublicHistories(String message) {
+    if (kDebugMode) debugPrint('[AppProvider.publicHistories] $message');
+  }
+
+  Future<void> loadPublicHistories({bool forceRemote = false}) async {
     // Já há um fetch em andamento — aguarda ele terminar (não cancela nem ignora)
     if (_publicHistoriesCompleter != null) {
       await _publicHistoriesCompleter!.future;
@@ -1334,9 +1338,12 @@ class AppProvider extends ChangeNotifier {
     _publicHistoriesCompleter = Completer<void>();
     _isLoadingPublic = true;
     _publicLoadError = '';
+    _debugPublicHistories('load start forceRemote=$forceRemote existing=${_publicHistories.length}');
     notifyListeners();
     try {
-      final fetched = await FirestoreService.loadPublicHistories();
+      final fetched = await FirestoreService.loadPublicHistories(forceRemote: forceRemote);
+      final serviceError = FirestoreService.lastPublicHistoriesErrorMessage.trim();
+
       // Mescla: preserva HCs locais do criador que ainda não chegaram ao servidor
       final mergedIds = <String>{};
       final merged = <ClinicalHistoryModel>[];
@@ -1351,8 +1358,15 @@ class AppProvider extends ChangeNotifier {
       }
       merged.sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
       _publicHistories = merged;
+      _publicLoadError = merged.isEmpty ? serviceError : '';
+      _debugPublicHistories(
+        'load done fetched=${fetched.length} merged=${merged.length} errorSet=${_publicLoadError.isNotEmpty}',
+      );
     } catch (e, st) {
-      _publicLoadError = '$e\n$st';
+      _publicLoadError = FirestoreService.lastPublicHistoriesErrorMessage.trim().isNotEmpty
+          ? FirestoreService.lastPublicHistoriesErrorMessage.trim()
+          : 'Falha ao carregar histórias da comunidade: $e';
+      _debugPublicHistories('load failed error=$e stack=$st');
     } finally {
       _isLoadingPublic = false;
       _publicHistoriesCompleter!.complete();
