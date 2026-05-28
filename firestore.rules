@@ -65,11 +65,12 @@ service cloud.firestore {
     }
 
     // ── Histórias Clínicas Públicas (public_histories) ───────────────────────
-    // Leitura: qualquer usuário autenticado
+    // Leitura: PÚBLICA — sem autenticação (conteúdo educativo, visível para todos)
+    // As 26+ histórias públicas devem ser visíveis mesmo antes do login.
     // Criação/atualização: usuário autenticado cujo uid == authorUid no documento
     // Deleção: o próprio autor OU admin (moderação)
     match /public_histories/{historyId} {
-      allow read: if isAuthed();
+      allow read: if true;
 
       // Criação: authorUid no payload deve coincidir com o uid do solicitante
       allow create: if isAuthed()
