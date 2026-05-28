@@ -19,6 +19,7 @@ class UserModel {
   final bool darkMode;
   final int totalUsageSeconds;   // tempo total de uso acumulado (em segundos)
   final DateTime? lastSeenAt;    // última vez ativo no app
+  final String? referredBy;      // id do influenciador que trouxe este usuário
 
   const UserModel({
     required this.uid,
@@ -35,6 +36,7 @@ class UserModel {
     this.darkMode = false,
     this.totalUsageSeconds = 0,
     this.lastSeenAt,
+    this.referredBy,
   });
 
   bool get isAdmin => role == UserRole.admin;
@@ -71,6 +73,7 @@ class UserModel {
     'darkMode': darkMode,
     'totalUsageSeconds': totalUsageSeconds,
     'lastSeenAt': lastSeenAt?.toUtc().toIso8601String(),
+    'referred_by': referredBy,
   };
 
   factory UserModel.fromJson(Map<String, dynamic> m) => UserModel(
@@ -94,6 +97,7 @@ class UserModel {
     lastSeenAt: m['lastSeenAt'] != null
         ? DateTime.tryParse(m['lastSeenAt'] as String)
         : null,
+    referredBy: m['referred_by'] as String?,
   );
 
   // ── Serialização Firestore SDK ────────────────────────────────────────────
@@ -112,6 +116,7 @@ class UserModel {
     'darkMode': darkMode,
     'totalUsageSeconds': totalUsageSeconds,
     'lastSeenAt': lastSeenAt != null ? Timestamp.fromDate(lastSeenAt!) : null,
+    'referred_by': referredBy,
   };
 
   factory UserModel.fromMap(Map<String, dynamic> m) => UserModel(
@@ -129,6 +134,7 @@ class UserModel {
     darkMode: m['darkMode'] as bool? ?? false,
     totalUsageSeconds: (m['totalUsageSeconds'] as num?)?.toInt() ?? 0,
     lastSeenAt: _parseDate(m['lastSeenAt']),
+    referredBy: m['referred_by'] as String?,
   );
 
   factory UserModel.fromDoc(DocumentSnapshot doc) =>
@@ -146,6 +152,7 @@ class UserModel {
     bool? darkMode,
     int? totalUsageSeconds,
     DateTime? lastSeenAt,
+    String? referredBy,
   }) =>
       UserModel(
         uid: uid,
@@ -162,6 +169,7 @@ class UserModel {
         darkMode: darkMode ?? this.darkMode,
         totalUsageSeconds: totalUsageSeconds ?? this.totalUsageSeconds,
         lastSeenAt: lastSeenAt ?? this.lastSeenAt,
+        referredBy: referredBy ?? this.referredBy,
       );
 
   // ── Helpers ───────────────────────────────────────────────────────────────

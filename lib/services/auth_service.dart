@@ -315,22 +315,26 @@ class AuthService {
     required String displayName,
     String? profession,
     String? institution,
+    String? referredBy,
   }) async {
     if (kIsWeb) {
       return _registerWeb(
         email: email, password: password, displayName: displayName,
         profession: profession, institution: institution,
+        referredBy: referredBy,
       );
     }
     return _registerNative(
       email: email, password: password, displayName: displayName,
       profession: profession, institution: institution,
+      referredBy: referredBy,
     );
   }
 
   static Future<AuthResult> _registerNative({
     required String email, required String password,
     required String displayName, String? profession, String? institution,
+    String? referredBy,
   }) async {
     try {
       final cred = await _auth.createUserWithEmailAndPassword(
@@ -340,6 +344,7 @@ class AuthService {
       final user = _buildNewUser(
         uid: cred.user!.uid, email: email,
         displayName: displayName, profession: profession, institution: institution,
+        referredBy: referredBy,
       );
       await _db.collection('users').doc(user.uid).set(user.toMap());
       return AuthResult.success(user);
@@ -353,6 +358,7 @@ class AuthService {
   static Future<AuthResult> _registerWeb({
     required String email, required String password,
     required String displayName, String? profession, String? institution,
+    String? referredBy,
   }) async {
     try {
       final resp = await http.post(
@@ -378,6 +384,7 @@ class AuthService {
       final user = _buildNewUser(
         uid: uid, email: email, displayName: displayName,
         profession: profession, institution: institution,
+        referredBy: referredBy,
       );
       await _createUserDocRest(user: user, idToken: idToken);
       webUser.value = user;
@@ -822,6 +829,7 @@ class AuthService {
     String? displayName,
     String? profession,
     String? institution,
+    String? referredBy,
   }) {
     final isAdmin = email.trim().toLowerCase() == adminEmail.toLowerCase();
     return UserModel(
@@ -835,6 +843,7 @@ class AuthService {
       approvedBy: isAdmin ? 'system' : null,
       profession: profession,
       institution: institution,
+      referredBy: (referredBy != null && referredBy.isNotEmpty) ? referredBy : null,
     );
   }
 

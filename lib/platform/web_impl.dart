@@ -79,6 +79,18 @@ Future<String> _runOcr(String dataUrl) async {
   return c.future;
 }
 
+/// Lê o parâmetro ?ref= da URL atual do browser e retorna o valor.
+/// Retorna string vazia se o parâmetro não existir ou ocorrer erro.
+String webGetRefParam() {
+  try {
+    final href = html.window.location.href;
+    final uri  = Uri.parse(href);
+    return uri.queryParameters['ref'] ?? '';
+  } catch (_) {
+    return '';
+  }
+}
+
 /// Retorna true se o browser tem SpeechRecognition API.
 bool webHasSpeechRecognition() {
   final w = js.context;

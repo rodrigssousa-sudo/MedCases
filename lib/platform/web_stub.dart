@@ -9,6 +9,9 @@ void webOpenHtmlPrint(String htmlContent) {}
 
 Future<String> webPickImageAndOcr() async => '';
 
+/// Stub: retorna string vazia em plataformas não-web (Android/iOS).
+String webGetRefParam() => '';
+
 bool webHasSpeechRecognition() => false;
 
 class WebSpeechRecognizer {

@@ -140,12 +140,21 @@ class _LoginScreenState extends State<LoginScreen>
         email: _emailCtrl.text, password: _passCtrl.text);
       if (result.success) await _saveSessionIfRequested(result);
     } else if (_mode == _Mode.register) {
+      // Captura referral_code salvo na boot (capturado de ?ref= na URL)
+      String? referredBy;
+      try {
+        final prefs = await SharedPreferences.getInstance();
+        final code = prefs.getString('referral_code') ?? '';
+        if (code.isNotEmpty) referredBy = code;
+      } catch (_) {}
+
       result = await AuthService.register(
         email: _emailCtrl.text,
         password: _passCtrl.text,
         displayName: _nameCtrl.text,
         profession: _profCtrl.text.isNotEmpty ? _profCtrl.text : null,
         institution: _instCtrl.text.isNotEmpty ? _instCtrl.text : null,
+        referredBy: referredBy,
       );
       if (result.success && result.user != null && result.user!.isPending) {
         if (!mounted) return;

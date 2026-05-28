@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:typed_data';
+import 'package:flutter/services.dart' show Clipboard, ClipboardData;
 // Import condicional: pdf_picker_web.dart (Web, usa dart:html) ou stub (iOS/Android, no-op).
 // Isola dart:html do compilador nativo — resolve build iOS/Android.
 import '../platform/pdf_picker_stub.dart'
@@ -9,9 +10,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 // file_picker e firebase_storage usados via StorageService — sem import direto aqui
 import '../models/user_model.dart';
 import '../models/guide_model.dart';
+import '../models/influencer_model.dart';
 import '../services/auth_service.dart';
 import '../services/firestore_service.dart';
 import '../services/storage_service.dart';
+import '../services/referral_service.dart';
 import '../widgets/common_widgets.dart';
 
 class AdminScreen extends StatefulWidget {
@@ -226,6 +229,8 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
                     _EmailTab(allUsers: _allUsers, currentAdmin: widget.currentAdmin),
                     // ── Tab 7: Biblioteca ─────────────────────────────────
                     _BibliotecaAdminTab(currentAdmin: widget.currentAdmin),
+                    // ── Tab 8: Indicações ─────────────────────────────────
+                    const _InfluencersTab(),
                   ],
                 ),
               ),
@@ -3666,6 +3671,566 @@ class _GuideUploadDialogState extends State<_GuideUploadDialog> {
     if (bytes < 1024) return '${bytes}B';
     if (bytes < 1024 * 1024) return '${(bytes / 1024).toStringAsFixed(1)}KB';
     return '${(bytes / (1024 * 1024)).toStringAsFixed(1)}MB';
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// _InfluencersTab — Sistema de Indicações (Referral)
+// ─────────────────────────────────────────────────────────────────────────────
+
+class _InfluencersTab extends StatefulWidget {
+  const _InfluencersTab();
+
+  @override
+  State<_InfluencersTab> createState() => _InfluencersTabState();
+}
+
+class _InfluencersTabState extends State<_InfluencersTab> {
+  static const kDark  = Color(0xFF07110d);
+  static const kGreen = Color(0xFF075f45);
+  static const kGold  = Color(0xFFC5A365);
+  static const kGoldL = Color(0xFFFFE8A6);
+
+  // ── Formulário ──────────────────────────────────────────────────────────
+  final _nameCtrl     = TextEditingController();
+  final _couponCtrl   = TextEditingController();
+  final _discCtrl     = TextEditingController();
+  final _slugPreview  = ValueNotifier<String>('');
+  bool  _saving       = false;
+  String? _formError;
+
+  // ── Lista + contagens ────────────────────────────────────────────────────
+  List<InfluencerModel> _influencers = [];
+  Map<String, int>      _counts      = {};
+  bool _listLoading = true;
+
+  // URL base do app para gerar o link de indicação
+  static const _baseUrl = 'https://medcasespro.com';
+
+  @override
+  void initState() {
+    super.initState();
+    _nameCtrl.addListener(_onNameChanged);
+    _loadInfluencers();
+  }
+
+  @override
+  void dispose() {
+    _nameCtrl.removeListener(_onNameChanged);
+    _nameCtrl.dispose();
+    _couponCtrl.dispose();
+    _discCtrl.dispose();
+    _slugPreview.dispose();
+    super.dispose();
+  }
+
+  void _onNameChanged() {
+    final slug = ReferralService.generateSlug(_nameCtrl.text);
+    _slugPreview.value = slug;
+  }
+
+  Future<void> _loadInfluencers() async {
+    setState(() => _listLoading = true);
+    try {
+      final list = await ReferralService.getInfluencers();
+      final ids  = list.map((i) => i.id).toList();
+      final counts = ids.isEmpty
+          ? <String, int>{}
+          : await ReferralService.getBatchConversionCounts(ids);
+      if (!mounted) return;
+      setState(() {
+        _influencers  = list;
+        _counts       = counts;
+        _listLoading  = false;
+      });
+    } catch (e) {
+      if (!mounted) return;
+      setState(() => _listLoading = false);
+      _showSnack('Erro ao carregar indicadores: $e', isError: true);
+    }
+  }
+
+  Future<void> _save() async {
+    final name = _nameCtrl.text.trim();
+    if (name.isEmpty) {
+      setState(() => _formError = 'Nome obrigatório.');
+      return;
+    }
+    final coupon = _couponCtrl.text.trim();
+    final discStr = _discCtrl.text.trim();
+    final disc    = discStr.isNotEmpty ? int.tryParse(discStr) : null;
+    if (discStr.isNotEmpty && disc == null) {
+      setState(() => _formError = 'Desconto deve ser um número inteiro (ex: 20).');
+      return;
+    }
+    setState(() { _saving = true; _formError = null; });
+
+    try {
+      await ReferralService.createInfluencer(
+        name:            name,
+        couponCode:      coupon.isNotEmpty ? coupon : null,
+        discountPercent: disc,
+      );
+      _nameCtrl.clear();
+      _couponCtrl.clear();
+      _discCtrl.clear();
+      _showSnack('Influenciador cadastrado com sucesso!');
+      await _loadInfluencers();
+    } catch (e) {
+      setState(() => _formError = e.toString().replaceFirst('Exception: ', ''));
+    } finally {
+      if (mounted) setState(() => _saving = false);
+    }
+  }
+
+  Future<void> _delete(InfluencerModel inf) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (_) => AlertDialog(
+        backgroundColor: const Color(0xFF0F1F17),
+        title: const Text('Remover influenciador?',
+            style: TextStyle(color: Colors.white, fontSize: 16)),
+        content: Text(
+          'O influenciador "${inf.name}" será removido permanentemente.\n'
+          'Os usuários já indicados por ele NÃO serão afetados.',
+          style: const TextStyle(color: Colors.white70, fontSize: 13),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Cancelar', style: TextStyle(color: Colors.white54)),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text('Remover', style: TextStyle(color: Colors.redAccent)),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true) return;
+    try {
+      await ReferralService.deleteInfluencer(inf.id);
+      _showSnack('Influenciador removido.');
+      await _loadInfluencers();
+    } catch (e) {
+      _showSnack('Erro ao remover: $e', isError: true);
+    }
+  }
+
+  void _copyLink(String slug) {
+    final link = '$_baseUrl?ref=$slug';
+    // Clipboard funciona em web via Flutter
+    Clipboard.setData(ClipboardData(text: link));
+    _showSnack('Link copiado: $link');
+  }
+
+  void _showSnack(String msg, {bool isError = false}) {
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text(msg, style: const TextStyle(fontSize: 13)),
+      backgroundColor: isError ? Colors.red[700] : kGreen,
+      duration: const Duration(seconds: 3),
+    ));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: kDark,
+      child: ListView(
+        padding: const EdgeInsets.all(16),
+        children: [
+          // ── Cabeçalho ──────────────────────────────────────────────────
+          Row(children: [
+            const Icon(Icons.people_alt_rounded, color: kGold, size: 20),
+            const SizedBox(width: 8),
+            const Text('Sistema de Indicações',
+                style: TextStyle(color: kGoldL, fontSize: 16,
+                    fontWeight: FontWeight.w800)),
+            const Spacer(),
+            IconButton(
+              tooltip: 'Atualizar lista',
+              onPressed: _loadInfluencers,
+              icon: const Icon(Icons.refresh_rounded, color: Colors.white54, size: 18),
+            ),
+          ]),
+          const SizedBox(height: 4),
+          const Text(
+            'Cadastre influenciadores para gerar links únicos (?ref=slug). '
+            'Os usuários que acessarem via link serão vinculados automaticamente.',
+            style: TextStyle(color: Colors.white54, fontSize: 11),
+          ),
+          const SizedBox(height: 20),
+
+          // ── Formulário de cadastro ──────────────────────────────────────
+          Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: Colors.white.withValues(alpha: 0.05),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: kGreen.withValues(alpha: 0.4)),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text('Cadastrar novo influenciador',
+                    style: TextStyle(color: kGoldL, fontSize: 13,
+                        fontWeight: FontWeight.w700)),
+                const SizedBox(height: 12),
+
+                // Nome
+                _InfluField(
+                  label: 'Nome do influenciador *',
+                  hint: 'Ex: Dr. Marcos - Cardiologia',
+                  controller: _nameCtrl,
+                ),
+                const SizedBox(height: 8),
+
+                // Preview do slug gerado
+                ValueListenableBuilder<String>(
+                  valueListenable: _slugPreview,
+                  builder: (_, slug, __) {
+                    if (slug.isEmpty) return const SizedBox.shrink();
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 8),
+                      child: Row(children: [
+                        const Icon(Icons.link_rounded,
+                            size: 13, color: Colors.white38),
+                        const SizedBox(width: 4),
+                        Expanded(
+                          child: Text(
+                            '$_baseUrl?ref=$slug',
+                            style: const TextStyle(
+                                color: Colors.white38, fontSize: 11),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ]),
+                    );
+                  },
+                ),
+
+                // Cupom + Desconto em linha
+                Row(children: [
+                  Expanded(
+                    child: _InfluField(
+                      label: 'Código do cupom (opcional)',
+                      hint: 'Ex: PLANTAO20',
+                      controller: _couponCtrl,
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  SizedBox(
+                    width: 90,
+                    child: _InfluField(
+                      label: 'Desconto %',
+                      hint: '20',
+                      controller: _discCtrl,
+                      keyboardType: TextInputType.number,
+                    ),
+                  ),
+                ]),
+                const SizedBox(height: 12),
+
+                // Erro do formulário
+                if (_formError != null) ...[
+                  Text(_formError!,
+                      style: const TextStyle(
+                          color: Colors.redAccent, fontSize: 12)),
+                  const SizedBox(height: 8),
+                ],
+
+                // Botão Cadastrar
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton.icon(
+                    onPressed: _saving ? null : _save,
+                    icon: _saving
+                        ? const SizedBox(
+                            width: 14, height: 14,
+                            child: CircularProgressIndicator(
+                                strokeWidth: 2, color: Colors.white))
+                        : const Icon(Icons.add_rounded, size: 16),
+                    label: Text(_saving ? 'Cadastrando...' : 'Cadastrar Influenciador'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: kGreen,
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      textStyle: const TextStyle(
+                          fontSize: 13, fontWeight: FontWeight.w700),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10)),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 24),
+
+          // ── Tabela de influenciadores ───────────────────────────────────
+          Row(children: [
+            const Text('Influenciadores Cadastrados',
+                style: TextStyle(color: Colors.white,
+                    fontSize: 13, fontWeight: FontWeight.w700)),
+            const SizedBox(width: 8),
+            if (!_listLoading)
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                decoration: BoxDecoration(
+                  color: kGreen.withValues(alpha: 0.3),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Text('${_influencers.length}',
+                    style: const TextStyle(
+                        color: kGoldL, fontSize: 11, fontWeight: FontWeight.w800)),
+              ),
+          ]),
+          const SizedBox(height: 10),
+
+          if (_listLoading)
+            const Center(child: Padding(
+              padding: EdgeInsets.all(32),
+              child: CircularProgressIndicator(color: kGreen),
+            ))
+          else if (_influencers.isEmpty)
+            Center(
+              child: Padding(
+                padding: const EdgeInsets.all(32),
+                child: Column(
+                  children: [
+                    Icon(Icons.people_outline_rounded,
+                        size: 48, color: Colors.white24),
+                    const SizedBox(height: 12),
+                    const Text('Nenhum influenciador cadastrado ainda.',
+                        style: TextStyle(color: Colors.white38, fontSize: 13)),
+                  ],
+                ),
+              ),
+            )
+          else
+            // Tabela responsiva com scroll horizontal
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                    minWidth: MediaQuery.of(context).size.width - 32),
+                child: DataTable(
+                  headingRowColor: WidgetStateProperty.all(
+                      kGreen.withValues(alpha: 0.25)),
+                  dataRowColor: WidgetStateProperty.resolveWith(
+                    (states) => states.contains(WidgetState.selected)
+                        ? kGreen.withValues(alpha: 0.15)
+                        : Colors.white.withValues(alpha: 0.03),
+                  ),
+                  columnSpacing: 20,
+                  headingTextStyle: const TextStyle(
+                      color: kGoldL, fontSize: 11, fontWeight: FontWeight.w800),
+                  dataTextStyle: const TextStyle(
+                      color: Colors.white, fontSize: 12),
+                  columns: const [
+                    DataColumn(label: Text('Nome do Influenciador')),
+                    DataColumn(label: Text('Cupom')),
+                    DataColumn(label: Text('Link de Indicação')),
+                    DataColumn(label: Text('Conversões'), numeric: true),
+                    DataColumn(label: Text('Ações')),
+                  ],
+                  rows: _influencers.map((inf) {
+                    final count = _counts[inf.id] ?? 0;
+                    final link  = '$_baseUrl?ref=${inf.id}';
+                    return DataRow(cells: [
+                      // Nome
+                      DataCell(
+                        ConstrainedBox(
+                          constraints: const BoxConstraints(maxWidth: 180),
+                          child: Text(inf.name,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(
+                                  fontSize: 12, fontWeight: FontWeight.w600)),
+                        ),
+                      ),
+                      // Cupom
+                      DataCell(
+                        Text(inf.couponLabel,
+                            style: TextStyle(
+                                fontSize: 11,
+                                color: inf.couponCode != null
+                                    ? kGoldL
+                                    : Colors.white38)),
+                      ),
+                      // Link com botão Copiar
+                      DataCell(
+                        Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            ConstrainedBox(
+                              constraints: const BoxConstraints(maxWidth: 180),
+                              child: Text(link,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: const TextStyle(
+                                      fontSize: 10, color: Colors.white54)),
+                            ),
+                            const SizedBox(width: 6),
+                            InkWell(
+                              onTap: () => _copyLink(inf.id),
+                              borderRadius: BorderRadius.circular(6),
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 8, vertical: 4),
+                                decoration: BoxDecoration(
+                                  color: kGreen.withValues(alpha: 0.3),
+                                  borderRadius: BorderRadius.circular(6),
+                                ),
+                                child: const Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Icon(Icons.copy_rounded,
+                                        size: 11, color: kGoldL),
+                                    SizedBox(width: 4),
+                                    Text('Copiar',
+                                        style: TextStyle(
+                                            fontSize: 10,
+                                            color: kGoldL,
+                                            fontWeight: FontWeight.w700)),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      // Contagem de conversões
+                      DataCell(
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 4),
+                          decoration: BoxDecoration(
+                            color: count > 0
+                                ? kGreen.withValues(alpha: 0.35)
+                                : Colors.white.withValues(alpha: 0.07),
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: Text(
+                            '$count',
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w800,
+                              color: count > 0 ? kGoldL : Colors.white38,
+                            ),
+                          ),
+                        ),
+                      ),
+                      // Ações
+                      DataCell(
+                        IconButton(
+                          tooltip: 'Remover influenciador',
+                          icon: const Icon(Icons.delete_outline_rounded,
+                              size: 16, color: Colors.redAccent),
+                          onPressed: () => _delete(inf),
+                        ),
+                      ),
+                    ]);
+                  }).toList(),
+                ),
+              ),
+            ),
+          const SizedBox(height: 32),
+
+          // ── Nota informativa ────────────────────────────────────────────
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: Colors.amber.withValues(alpha: 0.07),
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(
+                  color: Colors.amber.withValues(alpha: 0.25)),
+            ),
+            child: const Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(children: [
+                  Icon(Icons.info_outline_rounded,
+                      size: 14, color: Colors.amber),
+                  SizedBox(width: 6),
+                  Text('Como funciona',
+                      style: TextStyle(color: Colors.amber,
+                          fontSize: 12, fontWeight: FontWeight.w700)),
+                ]),
+                SizedBox(height: 8),
+                Text(
+                  '1. Cadastre o influenciador — o slug é gerado automaticamente pelo nome.\n'
+                  '2. Compartilhe o link gerado (ex: medcasespro.com?ref=dr_marcos).\n'
+                  '3. Quando um médico acessa via esse link e se cadastra, '
+                     'ele é vinculado automaticamente ao influenciador.\n'
+                  '4. "Conversões" = médicos que completaram o cadastro pelo link.\n'
+                  '5. Cupom e desconto ficam prontos para aplicação automática '
+                     'no checkout assim que a monetização for ativada.',
+                  style: TextStyle(color: Colors.white54, fontSize: 11, height: 1.6),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ── Input field estilizado para a aba Indicações ──────────────────────────────
+
+class _InfluField extends StatelessWidget {
+  final String label;
+  final String hint;
+  final TextEditingController controller;
+  final TextInputType keyboardType;
+
+  const _InfluField({
+    required this.label,
+    required this.hint,
+    required this.controller,
+    this.keyboardType = TextInputType.text,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(label,
+            style: const TextStyle(
+                color: Colors.white70, fontSize: 11,
+                fontWeight: FontWeight.w600)),
+        const SizedBox(height: 4),
+        TextField(
+          controller: controller,
+          keyboardType: keyboardType,
+          style: const TextStyle(color: Colors.white, fontSize: 13),
+          decoration: InputDecoration(
+            hintText: hint,
+            hintStyle: const TextStyle(color: Colors.white30, fontSize: 12),
+            filled: true,
+            fillColor: Colors.white.withValues(alpha: 0.06),
+            contentPadding:
+                const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8),
+              borderSide: BorderSide(
+                  color: const Color(0xFF075f45).withValues(alpha: 0.4)),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8),
+              borderSide: BorderSide(
+                  color: Colors.white.withValues(alpha: 0.12)),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8),
+              borderSide: const BorderSide(color: Color(0xFF075f45)),
+            ),
+            isDense: true,
+          ),
+        ),
+      ],
+    );
   }
 }
 

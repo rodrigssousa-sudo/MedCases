@@ -37,6 +37,8 @@ import 'services/firestore_service.dart';
 import 'services/gemini_service.dart';
 import 'widgets/brand_mark.dart';
 import 'widgets/common_widgets.dart' show MedBreakpoints;
+import 'platform/web_impl.dart'
+    if (dart.library.io) 'platform/web_stub.dart' as webPlatform;
 
 Future<void> main() async {
   FlutterError.onError = (FlutterErrorDetails details) {
@@ -113,7 +115,27 @@ Future<void> _bootInBackground(AppProvider provider) async {
     debugPrint('[MedCases] Firebase.initializeApp falhou (ignorado): $e');
   }
 
-  // 4. Restaura sessão web em paralelo com timeout de segurança
+  // 4. Captura parâmetro ?ref= da URL e persiste em SharedPreferences
+  // Feito ANTES de restoreSession para garantir que referral_code já está
+  // disponível quando o formulario de registro for aberto.
+  if (kIsWeb) {
+    try {
+      final refCode = webPlatform.webGetRefParam();
+      if (refCode.isNotEmpty) {
+        final prefs = await SharedPreferences.getInstance();
+        // Só grava se ainda não houver código salvo (first-touch attribution)
+        final existing = prefs.getString('referral_code') ?? '';
+        if (existing.isEmpty) {
+          await prefs.setString('referral_code', refCode);
+          debugPrint('[Referral] Código capturado da URL: $refCode');
+        }
+      }
+    } catch (e) {
+      debugPrint('[Referral] Falha ao capturar ?ref= param: $e');
+    }
+  }
+
+  // 5. Restaura sessão web em paralelo com timeout de segurança
   if (kIsWeb) {
     try {
       await AuthService.restoreSession().timeout(const Duration(seconds: 5));
