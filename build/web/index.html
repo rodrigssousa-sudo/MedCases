@@ -199,28 +199,66 @@
       };
 
       XMLHttpRequest.prototype.send = function(body) {
-        // Só injeta em GETs ao Firestore sem Authorization já presente
-        if (this._mcMethod === 'GET' &&
-            _isFirestoreUrl(this._mcUrl) &&
-            !this._mcHasAuth) {
+        var url    = this._mcUrl    || '';
+        var method = this._mcMethod || '';
+        var isFirestoreGet = (method === 'GET') && _isFirestoreUrl(url);
+
+        // ── DIAGNÓSTICO: loga todo XHR para firestore.googleapis.com ────────
+        if (_isFirestoreUrl(url)) {
+          console.log(
+            '[MedCases XHR] send() intercepted',
+            '| method:', method,
+            '| url:', url,
+            '| hasAuth:', this._mcHasAuth,
+            '| cachedToken:', !!_cachedToken,
+            '| tokenExpiry:', _tokenExpiry ? new Date(_tokenExpiry).toISOString() : 'none',
+            '| firebase.auth.currentUser:', !!(window.firebase && window.firebase.auth && window.firebase.auth().currentUser)
+          );
+        }
+
+        // Só intercepta GETs ao Firestore que não têm Authorization já injetado
+        if (isFirestoreGet && !this._mcHasAuth) {
           var xhr = this;
-          // ASYNC: aguarda token antes de enviar (resolve race 3 s fallback)
+          // ASYNC: aguarda token antes de enviar (race com timeout de 3 s)
           Promise.race([
             _getFirebaseToken(),
             new Promise(function(resolve) { setTimeout(resolve, 3000, null); })
           ]).then(function(token) {
             if (token) {
-              console.log('[MedCases XHR Auth] injecting token for Firestore REST');
-              try { _origSetRH.call(xhr, 'Authorization', 'Bearer ' + token); } catch(e) {}
+              console.log(
+                '[MedCases XHR Auth] ✅ token obtained — injecting Authorization',
+                '| tokenLength:', token.length,
+                '| url:', url
+              );
+              try { _origSetRH.call(xhr, 'Authorization', 'Bearer ' + token); } catch(e) {
+                console.warn('[MedCases XHR Auth] setRequestHeader failed:', e);
+              }
+              try { _origSend.call(xhr, body); } catch(e) {
+                console.warn('[MedCases XHR Auth] origSend failed after auth:', e);
+              }
             } else {
-              console.log('[MedCases XHR Auth] no token available, sending without auth');
+              // Sem token: aborta o request — não envia para a rede
+              console.warn(
+                '[MedCases XHR Auth] ❌ no token after 3s — ABORTING request',
+                '| url:', url,
+                '| firebase present:', !!window.firebase,
+                '| firebase.auth present:', !!(window.firebase && window.firebase.auth),
+                '| currentUser:', !!(window.firebase && window.firebase.auth && window.firebase.auth().currentUser)
+              );
+              // Não chama _origSend: o request não sai para a rede
+              // O Dart vai receber um erro de rede (timeout/abort) — controlado
+              try { xhr.abort(); } catch(e) {}
             }
-            try { _origSend.call(xhr, body); } catch(e) {}
-          }).catch(function() {
-            console.log('[MedCases XHR Auth] no token available, sending without auth');
-            try { _origSend.call(xhr, body); } catch(e) {}
+          }).catch(function(err) {
+            console.warn(
+              '[MedCases XHR Auth] ❌ _getFirebaseToken() threw — ABORTING',
+              '| err:', err,
+              '| url:', url
+            );
+            // Não chama _origSend
+            try { xhr.abort(); } catch(e) {}
           });
-          return; // async path calls _origSend; don't fall through
+          return; // async path — _origSend é chamado dentro do .then()
         }
         return _origSend.apply(this, arguments);
       };
