@@ -198,18 +198,29 @@
         return _origSetRH.apply(this, arguments);
       };
 
-      XMLHttpRequest.prototype.send = function() {
+      XMLHttpRequest.prototype.send = function(body) {
         // Só injeta em GETs ao Firestore sem Authorization já presente
         if (this._mcMethod === 'GET' &&
             _isFirestoreUrl(this._mcUrl) &&
             !this._mcHasAuth) {
-          var tok = _getCachedToken();
-          if (tok) {
-            try {
-              _origSetRH.call(this, 'Authorization', 'Bearer ' + tok);
-              this._mcHasAuth = true;
-            } catch(e) {}
-          }
+          var xhr = this;
+          // ASYNC: aguarda token antes de enviar (resolve race 3 s fallback)
+          Promise.race([
+            _getFirebaseToken(),
+            new Promise(function(resolve) { setTimeout(resolve, 3000, null); })
+          ]).then(function(token) {
+            if (token) {
+              console.log('[MedCases XHR Auth] injecting token for Firestore REST');
+              try { _origSetRH.call(xhr, 'Authorization', 'Bearer ' + token); } catch(e) {}
+            } else {
+              console.log('[MedCases XHR Auth] no token available, sending without auth');
+            }
+            try { _origSend.call(xhr, body); } catch(e) {}
+          }).catch(function() {
+            console.log('[MedCases XHR Auth] no token available, sending without auth');
+            try { _origSend.call(xhr, body); } catch(e) {}
+          });
+          return; // async path calls _origSend; don't fall through
         }
         return _origSend.apply(this, arguments);
       };
