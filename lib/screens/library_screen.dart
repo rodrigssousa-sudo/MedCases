@@ -146,15 +146,21 @@ class _LibraryScreenState extends State<LibraryScreen>
   Future<void> _initGuides() async {
     _log('init start kIsWeb=$kIsWeb');
     try {
-      final cacheCleared = await FirestoreService.clearPublishedGuidesCacheOnFirstOpen();
-      _log('init first-open cacheCleared=$cacheCleared');
-      final cached = await FirestoreService.loadCachedPublishedGuides().timeout(
-        const Duration(seconds: 4),
-        onTimeout: () => const <GuideModel>[],
-      );
-      if (!mounted) return;
+      try {
+        final cacheCleared = await FirestoreService.clearPublishedGuidesCacheOnFirstOpen();
+        _log('init first-open cacheCleared=$cacheCleared');
+      } catch (e) {
+        _log('error clear cache first open: $e');
+      }
 
-      if (cached.isNotEmpty) {
+      final cached = await FirestoreService.loadCachedPublishedGuides()
+          .timeout(
+            const Duration(seconds: 4),
+            onTimeout: () => const <GuideModel>[],
+          )
+          .catchError((_) => const <GuideModel>[]);
+
+      if (mounted && cached.isNotEmpty) {
         setState(() {
           _guides = cached;
           _guidesError = '';
@@ -163,18 +169,21 @@ class _LibraryScreenState extends State<LibraryScreen>
         });
         _log('init cache preload count=${cached.length}');
       }
-
-      await _refreshGuides(forceRemote: true, reason: 'init');
-      if (!mounted) return;
-      _subscribeGuidesStream();
     } catch (e) {
-      _log('init failed error=$e');
-      if (!mounted) return;
-      setState(() {
-        _guidesError = e.toString();
-        _loading = false;
-      });
+      _log('critical error in _initGuides: $e');
     } finally {
+      try {
+        await _refreshGuides(forceRemote: true, reason: 'init-fallback');
+      } catch (e) {
+        _log('init fallback refresh failed: $e');
+      }
+
+      try {
+        if (mounted) _subscribeGuidesStream();
+      } catch (e) {
+        _log('init stream subscribe failed: $e');
+      }
+
       if (mounted && _loading) {
         setState(() => _loading = false);
       }
