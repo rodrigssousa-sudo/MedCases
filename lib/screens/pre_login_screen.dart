@@ -128,7 +128,26 @@ class _PreLoginPreviewState extends State<PreLoginPreview> {
           child: ListView(
             padding: const EdgeInsets.fromLTRB(16, 20, 16, 130),
             children: [
-              // ── Título da seção — estilo radicalmente diferente ─────────
+
+              // ══════════════════════════════════════════════════════════════
+              // BLOCO 1 — DESTAQUE PRINCIPAL: Assistente IA Clínico
+              // Primeira coisa que o usuário vê — máximo impacto visual
+              // ══════════════════════════════════════════════════════════════
+              _IaBlockDark(onTap: _goLogin, isEs: _isEs),
+
+              const SizedBox(height: 20),
+
+              // ══════════════════════════════════════════════════════════════
+              // BLOCO 2 — AUTORIDADE & ESTATÍSTICAS: Cards lado a lado
+              // Valida o valor da IA imediatamente após o usuário ler sobre ela
+              // ══════════════════════════════════════════════════════════════
+              _MetricsRow(isEs: _isEs),
+
+              const SizedBox(height: 28),
+
+              // ══════════════════════════════════════════════════════════════
+              // BLOCO 3 — CONTEÚDO: Protocolos Clínicos
+              // ══════════════════════════════════════════════════════════════
               _SectionTitle(
                 label: _isEs ? 'PROTOCOLOS CLÍNICOS' : 'PROTOCOLOS CLÍNICOS',
                 sub: _isEs
@@ -139,13 +158,14 @@ class _PreLoginPreviewState extends State<PreLoginPreview> {
               ),
               const SizedBox(height: 12),
 
-              // ── Cards de protocolos — novo estilo dark horizontal ───────
               ..._protocols.map((p) => _ProtoCard(
                 data: p, onTap: _goLogin, isEs: _isEs)),
 
               const SizedBox(height: 24),
 
-              // ── Seção crítica — grid horizontal 2 colunas ───────────────
+              // ══════════════════════════════════════════════════════════════
+              // BLOCO 4 — BASE: Casos de Alta Gravidade (blur/cadeado)
+              // ══════════════════════════════════════════════════════════════
               _SectionTitle(
                 label: _isEs ? 'ALTA GRAVIDADE' : 'ALTA GRAVIDADE',
                 sub: _isEs
@@ -164,16 +184,6 @@ class _PreLoginPreviewState extends State<PreLoginPreview> {
                     ),
                   ))
                   .toList()),
-
-              const SizedBox(height: 24),
-
-              // ── Bloco IA — estilo dark, não violeta ─────────────────────
-              _IaBlockDark(onTap: _goLogin, isEs: _isEs),
-
-              const SizedBox(height: 24),
-
-              // ── Métricas rápidas — novo componente (não existia antes) ──
-              _MetricsRow(isEs: _isEs),
             ],
           ),
         ),
