@@ -50,7 +50,7 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
   @override
   void initState() {
     super.initState();
-    _tabs = TabController(length: 8, vsync: this);
+    _tabs = TabController(length: 9, vsync: this);
     _loadLang();
     _subscribeUsers();
   }
@@ -124,7 +124,7 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
           unselectedLabelColor: Colors.white,
           labelStyle: const TextStyle(fontSize: 10, fontWeight: FontWeight.w800),
           isScrollable: true,
-          tabAlignment: TabAlignment.fill,
+          tabAlignment: TabAlignment.start,
           tabs: [
             Tab(icon: const Icon(Icons.pending_actions_rounded, size: 16), text: _pendingLabel),
             Tab(icon: const Icon(Icons.people_rounded, size: 16), text: _approvedLabel),
@@ -134,13 +134,16 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
             const Tab(icon: Icon(Icons.bar_chart_rounded, size: 16), text: 'Stats'),
             const Tab(icon: Icon(Icons.mark_email_unread_rounded, size: 16), text: 'E-mail'),
             const Tab(icon: Icon(Icons.menu_book_rounded, size: 16), text: 'Biblioteca'),
+            const Tab(icon: Icon(Icons.people_alt_rounded, size: 16), text: 'Indicações'),
           ],
         ),
       ),
       body: AnimatedBuilder(
         animation: _tabs,
         builder: (context, _) {
-          final isSystemTab = _tabs.index == 3 || _tabs.index == 4 || _tabs.index == 5 || _tabs.index == 6 || _tabs.index == 7;
+          // Tabs de "sistema" não têm barra de busca: 3=Sistema, 4=Novidades,
+          // 5=Stats, 6=E-mail, 7=Biblioteca, 8=Indicações
+          final isSystemTab = _tabs.index >= 3;
           return Column(
             children: [
               // Barra de busca — só nas tabs de usuários (0, 1, 2)
@@ -4009,130 +4012,205 @@ class _InfluencersTabState extends State<_InfluencersTab> {
               ),
             )
           else
-            // Tabela responsiva com scroll horizontal
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: ConstrainedBox(
-                constraints: BoxConstraints(
-                    minWidth: MediaQuery.of(context).size.width - 32),
-                child: DataTable(
-                  headingRowColor: WidgetStateProperty.all(
-                      kGreen.withValues(alpha: 0.25)),
-                  dataRowColor: WidgetStateProperty.resolveWith(
-                    (states) => states.contains(WidgetState.selected)
-                        ? kGreen.withValues(alpha: 0.15)
-                        : Colors.white.withValues(alpha: 0.03),
-                  ),
-                  columnSpacing: 20,
-                  headingTextStyle: const TextStyle(
-                      color: kGoldL, fontSize: 11, fontWeight: FontWeight.w800),
-                  dataTextStyle: const TextStyle(
-                      color: Colors.white, fontSize: 12),
-                  columns: const [
-                    DataColumn(label: Text('Nome do Influenciador')),
-                    DataColumn(label: Text('Cupom')),
-                    DataColumn(label: Text('Link de Indicação')),
-                    DataColumn(label: Text('Conversões'), numeric: true),
-                    DataColumn(label: Text('Ações')),
-                  ],
-                  rows: _influencers.map((inf) {
-                    final count = _counts[inf.id] ?? 0;
-                    final link  = '$_baseUrl?ref=${inf.id}';
-                    return DataRow(cells: [
-                      // Nome
-                      DataCell(
-                        ConstrainedBox(
-                          constraints: const BoxConstraints(maxWidth: 180),
-                          child: Text(inf.name,
-                              overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(
-                                  fontSize: 12, fontWeight: FontWeight.w600)),
+            // Layout adaptativo: cards no mobile, DataTable no desktop
+            LayoutBuilder(
+              builder: (context, constraints) {
+                final isMobile = constraints.maxWidth < 600;
+                if (isMobile) {
+                  // ── Cards para mobile ──────────────────────────────────────
+                  return Column(
+                    children: _influencers.map((inf) {
+                      final count = _counts[inf.id] ?? 0;
+                      final link  = '$_baseUrl?ref=${inf.id}';
+                      return Container(
+                        margin: const EdgeInsets.only(bottom: 10),
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withValues(alpha: 0.05),
+                          borderRadius: BorderRadius.circular(10),
+                          border: Border.all(
+                              color: kGreen.withValues(alpha: 0.3)),
                         ),
-                      ),
-                      // Cupom
-                      DataCell(
-                        Text(inf.couponLabel,
-                            style: TextStyle(
-                                fontSize: 11,
-                                color: inf.couponCode != null
-                                    ? kGoldL
-                                    : Colors.white38)),
-                      ),
-                      // Link com botão Copiar
-                      DataCell(
-                        Row(
-                          mainAxisSize: MainAxisSize.min,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            ConstrainedBox(
-                              constraints: const BoxConstraints(maxWidth: 180),
-                              child: Text(link,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: const TextStyle(
-                                      fontSize: 10, color: Colors.white54)),
-                            ),
-                            const SizedBox(width: 6),
-                            InkWell(
-                              onTap: () => _copyLink(inf.id),
-                              borderRadius: BorderRadius.circular(6),
-                              child: Container(
+                            // Nome + badge conversões
+                            Row(children: [
+                              Expanded(
+                                child: Text(inf.name,
+                                    style: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.w700)),
+                              ),
+                              Container(
                                 padding: const EdgeInsets.symmetric(
-                                    horizontal: 8, vertical: 4),
+                                    horizontal: 8, vertical: 3),
                                 decoration: BoxDecoration(
-                                  color: kGreen.withValues(alpha: 0.3),
-                                  borderRadius: BorderRadius.circular(6),
+                                  color: count > 0
+                                      ? kGreen.withValues(alpha: 0.35)
+                                      : Colors.white.withValues(alpha: 0.07),
+                                  borderRadius: BorderRadius.circular(20),
                                 ),
-                                child: const Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Icon(Icons.copy_rounded,
-                                        size: 11, color: kGoldL),
-                                    SizedBox(width: 4),
-                                    Text('Copiar',
-                                        style: TextStyle(
-                                            fontSize: 10,
-                                            color: kGoldL,
-                                            fontWeight: FontWeight.w700)),
-                                  ],
+                                child: Text('$count conv.',
+                                    style: TextStyle(
+                                        fontSize: 10,
+                                        fontWeight: FontWeight.w800,
+                                        color: count > 0
+                                            ? kGoldL
+                                            : Colors.white38)),
+                              ),
+                            ]),
+                            const SizedBox(height: 6),
+                            // Cupom (se houver)
+                            if (inf.couponCode != null)
+                              Padding(
+                                padding: const EdgeInsets.only(bottom: 6),
+                                child: Row(children: [
+                                  const Icon(Icons.discount_outlined,
+                                      size: 12, color: kGoldL),
+                                  const SizedBox(width: 4),
+                                  Text(inf.couponLabel,
+                                      style: const TextStyle(
+                                          fontSize: 11, color: kGoldL)),
+                                ]),
+                              ),
+                            // Link
+                            Text(link,
+                                style: const TextStyle(
+                                    fontSize: 10, color: Colors.white38),
+                                overflow: TextOverflow.ellipsis),
+                            const SizedBox(height: 8),
+                            // Botões — Copiar + Remover
+                            Row(children: [
+                              Expanded(
+                                child: OutlinedButton.icon(
+                                  onPressed: () => _copyLink(inf.id),
+                                  icon: const Icon(Icons.copy_rounded,
+                                      size: 13, color: kGoldL),
+                                  label: const Text('Copiar Link',
+                                      style: TextStyle(
+                                          fontSize: 11,
+                                          color: kGoldL,
+                                          fontWeight: FontWeight.w700)),
+                                  style: OutlinedButton.styleFrom(
+                                    side: BorderSide(
+                                        color: kGold.withValues(alpha: 0.4)),
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 6),
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(8)),
+                                  ),
                                 ),
                               ),
-                            ),
+                              const SizedBox(width: 8),
+                              IconButton(
+                                tooltip: 'Remover',
+                                icon: const Icon(Icons.delete_outline_rounded,
+                                    size: 18, color: Colors.redAccent),
+                                onPressed: () => _delete(inf),
+                              ),
+                            ]),
                           ],
                         ),
+                      );
+                    }).toList(),
+                  );
+                }
+
+                // ── DataTable para desktop ─────────────────────────────────
+                return SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(
+                        minWidth: constraints.maxWidth),
+                    child: DataTable(
+                      headingRowColor: WidgetStateProperty.all(
+                          kGreen.withValues(alpha: 0.25)),
+                      dataRowColor: WidgetStateProperty.resolveWith(
+                        (states) => states.contains(WidgetState.selected)
+                            ? kGreen.withValues(alpha: 0.15)
+                            : Colors.white.withValues(alpha: 0.03),
                       ),
-                      // Contagem de conversões
-                      DataCell(
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 10, vertical: 4),
-                          decoration: BoxDecoration(
-                            color: count > 0
-                                ? kGreen.withValues(alpha: 0.35)
-                                : Colors.white.withValues(alpha: 0.07),
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child: Text(
-                            '$count',
-                            style: TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w800,
-                              color: count > 0 ? kGoldL : Colors.white38,
+                      columnSpacing: 20,
+                      headingTextStyle: const TextStyle(
+                          color: kGoldL, fontSize: 11, fontWeight: FontWeight.w800),
+                      dataTextStyle: const TextStyle(
+                          color: Colors.white, fontSize: 12),
+                      columns: const [
+                        DataColumn(label: Text('Nome do Influenciador')),
+                        DataColumn(label: Text('Cupom')),
+                        DataColumn(label: Text('Link de Indicação')),
+                        DataColumn(label: Text('Conversões'), numeric: true),
+                        DataColumn(label: Text('Ações')),
+                      ],
+                      rows: _influencers.map((inf) {
+                        final count = _counts[inf.id] ?? 0;
+                        final link  = '$_baseUrl?ref=${inf.id}';
+                        return DataRow(cells: [
+                          DataCell(ConstrainedBox(
+                            constraints: const BoxConstraints(maxWidth: 180),
+                            child: Text(inf.name,
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600)),
+                          )),
+                          DataCell(Text(inf.couponLabel,
+                              style: TextStyle(
+                                  fontSize: 11,
+                                  color: inf.couponCode != null ? kGoldL : Colors.white38))),
+                          DataCell(Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              ConstrainedBox(
+                                constraints: const BoxConstraints(maxWidth: 180),
+                                child: Text(link,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: const TextStyle(fontSize: 10, color: Colors.white54)),
+                              ),
+                              const SizedBox(width: 6),
+                              InkWell(
+                                onTap: () => _copyLink(inf.id),
+                                borderRadius: BorderRadius.circular(6),
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                  decoration: BoxDecoration(
+                                    color: kGreen.withValues(alpha: 0.3),
+                                    borderRadius: BorderRadius.circular(6),
+                                  ),
+                                  child: const Row(mainAxisSize: MainAxisSize.min, children: [
+                                    Icon(Icons.copy_rounded, size: 11, color: kGoldL),
+                                    SizedBox(width: 4),
+                                    Text('Copiar', style: TextStyle(fontSize: 10, color: kGoldL, fontWeight: FontWeight.w700)),
+                                  ]),
+                                ),
+                              ),
+                            ],
+                          )),
+                          DataCell(Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                            decoration: BoxDecoration(
+                              color: count > 0
+                                  ? kGreen.withValues(alpha: 0.35)
+                                  : Colors.white.withValues(alpha: 0.07),
+                              borderRadius: BorderRadius.circular(20),
                             ),
-                          ),
-                        ),
-                      ),
-                      // Ações
-                      DataCell(
-                        IconButton(
-                          tooltip: 'Remover influenciador',
-                          icon: const Icon(Icons.delete_outline_rounded,
-                              size: 16, color: Colors.redAccent),
-                          onPressed: () => _delete(inf),
-                        ),
-                      ),
-                    ]);
-                  }).toList(),
-                ),
-              ),
+                            child: Text('$count',
+                                style: TextStyle(fontSize: 12, fontWeight: FontWeight.w800,
+                                    color: count > 0 ? kGoldL : Colors.white38)),
+                          )),
+                          DataCell(IconButton(
+                            tooltip: 'Remover influenciador',
+                            icon: const Icon(Icons.delete_outline_rounded,
+                                size: 16, color: Colors.redAccent),
+                            onPressed: () => _delete(inf),
+                          )),
+                        ]);
+                      }).toList(),
+                    ),
+                  ),
+                );
+              },
             ),
           const SizedBox(height: 32),
 

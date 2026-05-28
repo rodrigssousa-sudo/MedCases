@@ -90,44 +90,70 @@ class _LibraryScreenState extends State<LibraryScreen>
     final bg   = dark ? const Color(0xFF0A130E) : const Color(0xFFF7F8FA);
     final filtered = _filtered;
 
-    // ⚠️ Não usa Scaffold próprio — esta tela fica dentro do IndexedStack do
-    // _MainShellState, que já fornece Scaffold com AppBar (mobile) ou sidebar
-    // (desktop). Scaffold aninhado causava conflito de MediaQuery no mobile:
-    // o Scaffold interno recebia height=0 e renderizava tela cinza/vazia.
-    // Solução: Material + Column (sem Scaffold), igual ao padrão de ToolsScreen.
-    return Material(
+    // ⚠️ Não usa Scaffold próprio — fica dentro do IndexedStack do _MainShellState.
+    // Usa LayoutBuilder para capturar as constraints exatas do pai e convertê-las
+    // em SizedBox com altura definida — elimina ambiguidade de constraints loose
+    // que causava tela cinza no mobile (Column+Expanded sem altura bounded).
+    // ⚠️ Não usa Scaffold próprio — fica dentro do IndexedStack do _MainShellState.
+    //
+    // ESTRATÉGIA DE CONSTRAINTS (mobile fix):
+    // O Scaffold.body já fornece constraints tight (bounded) ao IndexedStack.
+    // O LayoutBuilder captura essas constraints e força o SizedBox a ter
+    // dimensões explícitas, garantindo que o Expanded(TabBarView) funcione.
+    //
+    // Guard de segurança: se maxHeight vier como infinity (cenário improvável
+    // mas defensivo), usa MediaQuery para calcular a altura disponível real.
+    return ColoredBox(
       color: bg,
-      child: Column(children: [
-        // ── Header ──────────────────────────────────────────────────────────
-        _LibraryHeader(dark: dark, isEs: isEs, tabCtrl: _tabCtrl),
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final mq = MediaQuery.of(context);
+          // Altura segura: usa constraints se finita; caso contrário calcula
+          // manualmente (tela - status bar - bottom insets).
+          final safeH = constraints.maxHeight.isFinite
+              ? constraints.maxHeight
+              : mq.size.height - mq.padding.top - mq.padding.bottom;
+          final safeW = constraints.maxWidth.isFinite
+              ? constraints.maxWidth
+              : mq.size.width;
 
-        // ── Body com abas ────────────────────────────────────────────────────
-        Expanded(
-          child: TabBarView(
-            controller: _tabCtrl,
-            children: [
-              // ── Aba 0: Guias / PDFs ────────────────────────────────────────
-              _GuidesTab(
-                dark: dark,
-                isEs: isEs,
-                loading: _loading,
-                filtered: filtered,
-                categories: _categories,
-                selectedCategory: _category,
-                searchCtrl: _searchCtrl,
-                onCategorySelect: (c) => setState(() => _category = c),
-                onOpen: _openPdf,
+          return SizedBox(
+            width: safeW,
+            height: safeH,
+            child: Column(children: [
+              // ── Header com TabBar embutida ─────────────────────────────────
+              _LibraryHeader(dark: dark, isEs: isEs, tabCtrl: _tabCtrl),
+
+              // ── Body com abas — ocupa 100% da altura restante ──────────────
+              Expanded(
+                child: TabBarView(
+                  controller: _tabCtrl,
+                  children: [
+                    // ── Aba 0: Guias / PDFs ──────────────────────────────────
+                    _GuidesTab(
+                      dark: dark,
+                      isEs: isEs,
+                      loading: _loading,
+                      filtered: filtered,
+                      categories: _categories,
+                      selectedCategory: _category,
+                      searchCtrl: _searchCtrl,
+                      onCategorySelect: (c) => setState(() => _category = c),
+                      onOpen: _openPdf,
+                    ),
+
+                    // ── Aba 1: Casos Clínicos ────────────────────────────────
+                    _CasosClinicosTab(dark: dark, isEs: isEs, p: p),
+
+                    // ── Aba 2: Protocolos Clínicos ───────────────────────────
+                    _ProtocolsTab(dark: dark, isEs: isEs, p: p),
+                  ],
+                ),
               ),
-
-              // ── Aba 1: Casos Clínicos ─────────────────────────────────────
-              _CasosClinicosTab(dark: dark, isEs: isEs, p: p),
-
-              // ── Aba 2: Protocolos Clínicos ────────────────────────────────
-              _ProtocolsTab(dark: dark, isEs: isEs, p: p),
-            ],
-          ),
-        ),
-      ]),
+            ]),
+          );
+        },
+      ),
     );
   }
 }

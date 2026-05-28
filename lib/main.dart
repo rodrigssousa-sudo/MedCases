@@ -2430,6 +2430,42 @@ class _AppDrawer extends StatelessWidget {
               physics: const ClampingScrollPhysics(),
               children: [
 
+                // ─── Bloco: Admin (TOPO — visível sem scroll) ────────────────
+                // Posicionado primeiro para que o admin encontre o painel
+                // imediatamente ao abrir o Drawer, sem precisar rolar.
+                if ((p.isAdmin || p.isMaster) && p.currentUser != null) ...[
+                  _DrawerSectionLabel(
+                    label: p.isMaster ? '⚡ MASTER' : '⚡ ADMIN',
+                    dark: dark,
+                    color: const Color(0xFFFF8C00),
+                  ),
+                  _DrawerBlock(
+                    children: [
+                      _DrawerRow(
+                        icon: Icons.admin_panel_settings_rounded,
+                        iconColor: const Color(0xFFFF8C00),
+                        title: p.lang == 'es' ? 'Panel Admin' : 'Painel Admin',
+                        subtitle: p.lang == 'es'
+                            ? 'Usuários · Links · Indicações'
+                            : 'Usuários · Links · Indicações',
+                        dark: dark,
+                        textCol: textCol,
+                        subCol: subCol,
+                        showDivider: false,
+                        onTap: () {
+                          _close(context);
+                          final admin = p.currentUser;
+                          if (admin == null) return;
+                          Navigator.push(context, MaterialPageRoute(
+                            builder: (_) => AdminScreen(currentAdmin: admin),
+                          ));
+                        },
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 4),
+                ],
+
                 // ─── Bloco: Premium ─────────────────────────────────────────
                 _DrawerBlock(
                   children: [
@@ -2586,35 +2622,6 @@ class _AppDrawer extends StatelessWidget {
                     ),
                   ],
                 ),
-
-                // ─── Bloco: Admin (condicional) ──────────────────────────────
-                if ((p.isAdmin || p.isMaster) && p.currentUser != null) ...[
-                  _DrawerSectionLabel(
-                    label: p.isMaster ? 'MASTER' : 'ADMIN',
-                    dark: dark,
-                    color: const Color(0xFFFF8C00),
-                  ),
-                  _DrawerBlock(
-                    children: [
-                      _DrawerRow(
-                        icon: Icons.admin_panel_settings_rounded,
-                        iconColor: const Color(0xFFFF8C00),
-                        title: p.lang == 'es' ? 'Panel Admin' : 'Painel Admin',
-                        dark: dark,
-                        textCol: textCol,
-                        subCol: subCol,
-                        onTap: () {
-                          _close(context);
-                          final admin = p.currentUser;
-                          if (admin == null) return;
-                          Navigator.push(context, MaterialPageRoute(
-                            builder: (_) => AdminScreen(currentAdmin: admin),
-                          ));
-                        },
-                      ),
-                    ],
-                  ),
-                ],
 
                 _DrawerSectionLabel(
                   label: p.lang == 'es' ? 'CUENTA' : 'CONTA',
