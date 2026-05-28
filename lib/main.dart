@@ -1272,12 +1272,18 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
           // ── Sidebar de navegação vertical (contém logo + nav + hamburger) ──
           SafeArea(
             right: false,
-            child: _DesktopSidebar(
-              currentTab: _tab,
-              dark: dark,
-              p: p,
-              onTabChange: (t) => setState(() => _tab = t),
-              onOpenDrawer: () => Scaffold.of(context).openEndDrawer(),
+            child: Builder(
+              builder: (scaffoldCtx) => _DesktopSidebar(
+                currentTab: _tab,
+                dark: dark,
+                p: p,
+                // Volta para Home (tab 0) e scrolla para o topo
+                onLogoTap: () => setState(() => _tab = 0),
+                onTabChange: (t) => setState(() => _tab = t),
+                // Builder garante que scaffoldCtx está DENTRO do Scaffold
+                // → Scaffold.of() encontra o endDrawer corretamente
+                onOpenDrawer: () => Scaffold.of(scaffoldCtx).openEndDrawer(),
+              ),
             ),
           ),
 
@@ -1519,6 +1525,7 @@ class _DesktopSidebar extends StatelessWidget {
   final AppProvider p;
   final ValueChanged<int> onTabChange;
   final VoidCallback onOpenDrawer;
+  final VoidCallback onLogoTap; // navega para Home (tab 0)
 
   const _DesktopSidebar({
     required this.currentTab,
@@ -1526,6 +1533,7 @@ class _DesktopSidebar extends StatelessWidget {
     required this.p,
     required this.onTabChange,
     required this.onOpenDrawer,
+    required this.onLogoTap,
   });
 
   @override
@@ -1538,10 +1546,6 @@ class _DesktopSidebar extends StatelessWidget {
         : const Color(0xFF0A7C4E).withValues(alpha: 0.08);
     final isEs        = p.lang == 'es';
 
-    // Avatar com iniciais do usuário para o botão de menu
-    final initials = p.userName.isNotEmpty
-        ? p.userName.trim().split(' ').take(2).map((w) => w[0].toUpperCase()).join()
-        : 'M';
 
     return RepaintBoundary(
       child: Container(
@@ -1549,39 +1553,47 @@ class _DesktopSidebar extends StatelessWidget {
         color: bg,
         child: Column(
           children: [
-            // ── Logo M+ no TOPO — ícone do app real ──────────────────────
+            // ── Logo M+ no TOPO — clicável → volta para Home ────────────
             const SizedBox(height: 12),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: Container(
-                width: 46,
-                height: 46,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
-                  gradient: const LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [Color(0xFF0E7C52), Color(0xFF064D32)],
-                  ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: const Color(0xFF0E7C52).withValues(alpha: 0.35),
-                      blurRadius: 10,
-                      offset: const Offset(0, 3),
+              child: Tooltip(
+                message: 'Início',
+                preferBelow: true,
+                child: GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: onLogoTap,
+                  child: Container(
+                    width: 46,
+                    height: 46,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12),
+                      gradient: const LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [Color(0xFF0E7C52), Color(0xFF064D32)],
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: const Color(0xFF0E7C52).withValues(alpha: 0.35),
+                          blurRadius: 10,
+                          offset: const Offset(0, 3),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(12),
-                  child: Image.asset(
-                    'assets/icon/app_icon.png',
-                    width: 46, height: 46,
-                    fit: BoxFit.cover,
-                    errorBuilder: (_, __, ___) => const Center(
-                      child: Text('M+',
-                        style: TextStyle(
-                          fontSize: 16, fontWeight: FontWeight.w900,
-                          color: Color(0xFFFFE8A6))),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(12),
+                      child: Image.asset(
+                        'assets/icon/app_icon.png',
+                        width: 46, height: 46,
+                        fit: BoxFit.cover,
+                        errorBuilder: (_, __, ___) => const Center(
+                          child: Text('M+',
+                            style: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.w900,
+                              color: Color(0xFFFFE8A6))),
+                        ),
+                      ),
                     ),
                   ),
                 ),
@@ -1665,59 +1677,43 @@ class _DesktopSidebar extends StatelessWidget {
             ),
             const SizedBox(height: 8),
 
-            // ── Botão hambúrguer na BASE (com avatar do usuário) ──────────
+            // ── Botão hambúrguer na BASE — abre drawer de perfil/menu ─────
             Tooltip(
               message: p.userName.isNotEmpty ? p.userName : 'Menu',
               preferBelow: false,
-              child: GestureDetector(
-                behavior: HitTestBehavior.opaque,
-                onTap: onOpenDrawer,
-                child: AnimatedContainer(
-                  duration: const Duration(milliseconds: 180),
-                  margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12),
-                    color: Colors.transparent,
-                  ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      // Avatar circular com iniciais
-                      Container(
-                        width: 32, height: 32,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: dark
-                              ? const Color(0xFF1F6B48)
-                              : const Color(0xFF0A7C4E),
-                          border: Border.all(
-                            color: dark
-                                ? const Color(0xFF4ADE80).withValues(alpha: 0.30)
-                                : const Color(0xFF0A7C4E).withValues(alpha: 0.25),
-                            width: 1.5,
-                          ),
-                        ),
-                        child: Center(
-                          child: Text(initials,
-                            style: const TextStyle(
-                              fontSize: 11,
-                              fontWeight: FontWeight.w800,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 3),
-                      Text(
-                        'Menu',
-                        style: TextStyle(
-                          fontSize: 7.0,
-                          fontWeight: FontWeight.w500,
+              child: Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(12),
+                  onTap: onOpenDrawer,
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 160),
+                    margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                    padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 6),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12),
+                      color: Colors.transparent,
+                    ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        // Ícone hambúrguer (3 linhas) — claramente indica "menu"
+                        Icon(
+                          Icons.menu_rounded,
+                          size: 26,
                           color: inactiveCol,
                         ),
-                      ),
-                    ],
+                        const SizedBox(height: 3),
+                        Text(
+                          'Menu',
+                          style: TextStyle(
+                            fontSize: 7.0,
+                            fontWeight: FontWeight.w500,
+                            color: inactiveCol,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
