@@ -49,8 +49,15 @@ class _LibraryScreenState extends State<LibraryScreen>
   Future<void> _refreshGuides({
     bool forceRemote = false,
     String reason = 'manual',
+    bool showLoader = false,
   }) async {
     _log('refresh start reason=$reason forceRemote=$forceRemote kIsWeb=$kIsWeb');
+    if (mounted && showLoader) {
+      setState(() {
+        _loading = true;
+        _guidesError = '';
+      });
+    }
     try {
       final list = await FirestoreService.loadPublishedGuides(
         forceRemote: forceRemote,
@@ -124,9 +131,23 @@ class _LibraryScreenState extends State<LibraryScreen>
         });
   }
 
+  Future<void> _handleManualRefresh() async {
+    _log('manual refresh requested');
+    await FirestoreService.clearPublishedGuidesCache(reason: 'manual-refresh-button');
+    await _refreshGuides(
+      forceRemote: true,
+      reason: 'manual-refresh-button',
+      showLoader: true,
+    );
+    if (!mounted) return;
+    _subscribeGuidesStream();
+  }
+
   Future<void> _initGuides() async {
     _log('init start kIsWeb=$kIsWeb');
     try {
+      final cacheCleared = await FirestoreService.clearPublishedGuidesCacheOnFirstOpen();
+      _log('init first-open cacheCleared=$cacheCleared');
       final cached = await FirestoreService.loadCachedPublishedGuides().timeout(
         const Duration(seconds: 4),
         onTimeout: () => const <GuideModel>[],
@@ -244,7 +265,13 @@ class _LibraryScreenState extends State<LibraryScreen>
             height: safeH,
             child: Column(children: [
               // ── Header com TabBar embutida ─────────────────────────────────
-              _LibraryHeader(dark: dark, isEs: isEs, tabCtrl: _tabCtrl),
+              _LibraryHeader(
+                dark: dark,
+                isEs: isEs,
+                tabCtrl: _tabCtrl,
+                onRefreshGuides: _handleManualRefresh,
+                refreshing: _loading,
+              ),
 
               // ── Body com abas — ocupa 100% da altura restante ──────────────
               Expanded(
@@ -263,10 +290,7 @@ class _LibraryScreenState extends State<LibraryScreen>
                       errorMessage: _guidesError,
                       onCategorySelect: (c) => setState(() => _category = c),
                       onOpen: _openPdf,
-                      onRetry: () => _refreshGuides(
-                        forceRemote: true,
-                        reason: 'manual-retry',
-                      ),
+                      onRetry: _handleManualRefresh,
                     ),
 
                     // ── Aba 1: Casos Clínicos ────────────────────────────────
@@ -292,7 +316,15 @@ class _LibraryHeader extends StatelessWidget {
   final bool dark;
   final bool isEs;
   final TabController tabCtrl;
-  const _LibraryHeader({required this.dark, required this.isEs, required this.tabCtrl});
+  final VoidCallback onRefreshGuides;
+  final bool refreshing;
+  const _LibraryHeader({
+    required this.dark,
+    required this.isEs,
+    required this.tabCtrl,
+    required this.onRefreshGuides,
+    required this.refreshing,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -331,6 +363,36 @@ class _LibraryHeader extends StatelessWidget {
                     style: TextStyle(fontSize: 11, color: Colors.white.withValues(alpha: 0.5)),
                   ),
                 ]),
+              ),
+              const SizedBox(width: 8),
+              Tooltip(
+                message: isEs ? 'Actualizar guías' : 'Atualizar guias',
+                child: InkWell(
+                  onTap: refreshing ? null : onRefreshGuides,
+                  borderRadius: BorderRadius.circular(10),
+                  child: Container(
+                    width: 38,
+                    height: 38,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: _kGreen.withValues(alpha: 0.22),
+                      border: Border.all(color: _kGreen.withValues(alpha: 0.45)),
+                    ),
+                    child: refreshing
+                        ? const Padding(
+                            padding: EdgeInsets.all(10),
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              valueColor: AlwaysStoppedAnimation<Color>(_kGoldL),
+                            ),
+                          )
+                        : const Icon(
+                            Icons.refresh_rounded,
+                            color: _kGoldL,
+                            size: 20,
+                          ),
+                  ),
+                ),
               ),
             ]),
           ),

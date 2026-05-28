@@ -17,6 +17,7 @@ class FirestoreService {
   static const _projectId = 'medcases-pro';
   static const _fsBase    = 'https://firestore.googleapis.com/v1/projects/$_projectId/databases/(default)/documents';
   static const _guidesCacheKey = 'clinical_guides_cache_v1';
+  static const _guidesCacheFirstOpenResetKey = 'clinical_guides_cache_first_open_reset_v2';
   static String _lastGuidesErrorMessage = '';
 
   // ── Referências por usuário ───────────────────────────────────────────────
@@ -1145,6 +1146,34 @@ class FirestoreService {
       _debugGuides('cache saved count=${guides.length}');
     } catch (e) {
       _debugGuides('cache save failed: $e');
+    }
+  }
+
+  static Future<void> clearPublishedGuidesCache({String reason = 'manual'}) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.remove(_guidesCacheKey);
+      _debugGuides('cache cleared reason=$reason');
+    } catch (e) {
+      _debugGuides('cache clear failed reason=$reason error=$e');
+    }
+  }
+
+  static Future<bool> clearPublishedGuidesCacheOnFirstOpen() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final alreadyReset = prefs.getBool(_guidesCacheFirstOpenResetKey) ?? false;
+      if (alreadyReset) {
+        _debugGuides('first-open cache reset already done');
+        return false;
+      }
+      await prefs.remove(_guidesCacheKey);
+      await prefs.setBool(_guidesCacheFirstOpenResetKey, true);
+      _debugGuides('first-open cache reset executed');
+      return true;
+    } catch (e) {
+      _debugGuides('first-open cache reset failed: $e');
+      return false;
     }
   }
 
