@@ -1,9 +1,10 @@
 // firestore_service.dart — dados por usuário no Firestore
 import 'dart:async';
 import 'dart:convert';
-import 'package:flutter/foundation.dart' show kIsWeb, debugPrint;
+import 'package:flutter/foundation.dart' show kDebugMode, kIsWeb, debugPrint;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 import '../models/clinical_case_model.dart';
 import '../models/clinical_history_model.dart';
 import '../models/guide_model.dart';
@@ -15,6 +16,7 @@ class FirestoreService {
 
   static const _projectId = 'medcases-pro';
   static const _fsBase    = 'https://firestore.googleapis.com/v1/projects/$_projectId/databases/(default)/documents';
+  static const _guidesCacheKey = 'clinical_guides_cache_v1';
 
   // ── Referências por usuário ───────────────────────────────────────────────
   static DocumentReference<Map<String, dynamic>> _userDoc(String uid) =>
@@ -1106,15 +1108,162 @@ class FirestoreService {
   static CollectionReference<Map<String, dynamic>> get _guides =>
       _db.collection('clinical_guides');
 
+  static void _debugGuides(String message) {
+    if (kDebugMode) debugPrint('[FirestoreService.guides] $message');
+  }
+
+  static List<GuideModel> _normalizeGuides(Iterable<GuideModel> guides) {
+    final list = guides
+        .where((g) => g.id.trim().isNotEmpty)
+        .where((g) => g.title.trim().isNotEmpty)
+        .where((g) => g.pdfUrl.trim().isNotEmpty)
+        .toList();
+    list.sort((a, b) => b.uploadedAt.compareTo(a.uploadedAt));
+    return list;
+  }
+
+  static Future<void> _saveGuidesCache(List<GuideModel> guides) async {
+    if (guides.isEmpty) return;
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final raw = guides.map((g) => g.toJson()).toList();
+      await prefs.setString(_guidesCacheKey, jsonEncode(raw));
+      _debugGuides('cache saved count=${guides.length}');
+    } catch (e) {
+      _debugGuides('cache save failed: $e');
+    }
+  }
+
+  static Future<List<GuideModel>> loadCachedPublishedGuides() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final raw = prefs.getString(_guidesCacheKey) ?? '';
+      if (raw.isEmpty) return [];
+      final decoded = jsonDecode(raw) as List<dynamic>;
+      final guides = _normalizeGuides(
+        decoded.map((item) => GuideModel.fromJson(
+              Map<String, dynamic>.from(item as Map),
+            )),
+      );
+      _debugGuides('cache hit count=${guides.length}');
+      return guides;
+    } catch (e) {
+      _debugGuides('cache read failed: $e');
+      return [];
+    }
+  }
+
+  static Future<List<GuideModel>> _loadPublishedGuidesSdk({Source? source}) async {
+    try {
+      final query = _guides
+          .where('isPublished', isEqualTo: true)
+          .orderBy('uploadedAt', descending: true);
+      final snap = source == null
+          ? await query.get().timeout(const Duration(seconds: 8))
+          : await query
+              .get(GetOptions(source: source))
+              .timeout(const Duration(seconds: 8));
+      final guides = _normalizeGuides(
+        snap.docs.map((d) => GuideModel.fromJson({...d.data(), 'id': d.id})),
+      );
+      if (guides.isNotEmpty) {
+        await _saveGuidesCache(guides);
+      }
+      _debugGuides('sdk load count=${guides.length} source=${source ?? 'default'}');
+      return guides;
+    } catch (e) {
+      _debugGuides('sdk load failed source=${source ?? 'default'} error=$e');
+      return [];
+    }
+  }
+
+  static Future<List<GuideModel>> _loadPublishedGuidesRest() async {
+    try {
+      final resp = await http
+          .get(Uri.parse('$_fsBase/clinical_guides?pageSize=200'))
+          .timeout(const Duration(seconds: 12));
+      if (resp.statusCode != 200) {
+        _debugGuides('rest load failed status=${resp.statusCode}');
+        return [];
+      }
+
+      final body = jsonDecode(resp.body) as Map<String, dynamic>;
+      final documents = body['documents'] as List<dynamic>? ?? [];
+      final guides = _normalizeGuides(
+        documents.map((doc) {
+          final rawDoc = doc as Map<String, dynamic>;
+          final data = _restDocToMap(rawDoc);
+          data['id'] = data['id'] ?? (rawDoc['name'] as String? ?? '').split('/').last;
+          return GuideModel.fromJson(data);
+        }).where((guide) => guide.isPublished),
+      );
+      if (guides.isNotEmpty) {
+        await _saveGuidesCache(guides);
+      }
+      _debugGuides('rest load count=${guides.length}');
+      return guides;
+    } catch (e) {
+      _debugGuides('rest load failed error=$e');
+      return [];
+    }
+  }
+
+  static Future<List<GuideModel>> loadPublishedGuides({bool forceRemote = false}) async {
+    final cached = forceRemote ? const <GuideModel>[] : await loadCachedPublishedGuides();
+
+    if (!kIsWeb) {
+      final server = await _loadPublishedGuidesSdk(source: Source.server);
+      if (server.isNotEmpty) return server;
+
+      final fallbackSdk = await _loadPublishedGuidesSdk();
+      if (fallbackSdk.isNotEmpty) return fallbackSdk;
+    }
+
+    final rest = await _loadPublishedGuidesRest();
+    if (rest.isNotEmpty) return rest;
+
+    _debugGuides('remote empty, returning cache count=${cached.length}');
+    return cached;
+  }
+
   /// Stream de todas as guias publicadas (ordenadas por data).
+  /// Web/PWA usa polling REST para evitar inconsistências do SDK no mobile web.
+  /// Nativo mantém snapshots do SDK, com fallback local/remoto tratado pela tela.
   static Stream<List<GuideModel>> guidesStream() {
+    if (kIsWeb) return _guidesStreamRest();
     return _guides
         .where('isPublished', isEqualTo: true)
         .orderBy('uploadedAt', descending: true)
         .snapshots()
-        .map((snap) => snap.docs
-            .map((d) => GuideModel.fromJson({...d.data(), 'id': d.id}))
-            .toList());
+        .map((snap) => _normalizeGuides(
+              snap.docs.map((d) => GuideModel.fromJson({...d.data(), 'id': d.id})),
+            ));
+  }
+
+  static Stream<List<GuideModel>> _guidesStreamRest() {
+    late StreamController<List<GuideModel>> ctrl;
+    Timer? timer;
+
+    Future<void> fetch() async {
+      final remote = await loadPublishedGuides(forceRemote: true);
+      if (!ctrl.isClosed) ctrl.add(remote);
+    }
+
+    ctrl = StreamController<List<GuideModel>>(
+      onListen: () {
+        loadCachedPublishedGuides().then((cached) {
+          if (!ctrl.isClosed && cached.isNotEmpty) ctrl.add(cached);
+        });
+        fetch();
+        timer = Timer.periodic(const Duration(seconds: 20), (_) => fetch());
+      },
+      onCancel: () {
+        timer?.cancel();
+        timer = null;
+      },
+    );
+
+    return ctrl.stream;
   }
 
   /// Stream de TODAS as guias para o admin (incluindo não publicadas).

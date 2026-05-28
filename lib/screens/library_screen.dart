@@ -34,15 +34,60 @@ class _LibraryScreenState extends State<LibraryScreen>
   List<GuideModel> _guides = [];
   bool _loading = true;
 
+  void _syncCategoryWithData() {
+    if (_category == 'Todos') return;
+    final exists = _guides.any((g) => g.category == _category);
+    if (!exists) _category = 'Todos';
+  }
+
+  Future<void> _refreshGuides({bool forceRemote = false}) async {
+    final list = await FirestoreService.loadPublishedGuides(
+      forceRemote: forceRemote,
+    );
+    if (!mounted) return;
+    setState(() {
+      if (list.isNotEmpty || _guides.isEmpty) {
+        _guides = list;
+      }
+      _syncCategoryWithData();
+      _loading = false;
+    });
+  }
+
+  Future<void> _initGuides() async {
+    final cached = await FirestoreService.loadCachedPublishedGuides();
+    if (!mounted) return;
+
+    if (cached.isNotEmpty) {
+      setState(() {
+        _guides = cached;
+        _syncCategoryWithData();
+        _loading = false;
+      });
+    }
+
+    await _refreshGuides(forceRemote: true);
+    if (!mounted) return;
+
+    _sub = FirestoreService.guidesStream().listen((list) {
+      if (!mounted) return;
+      setState(() {
+        if (list.isNotEmpty || _guides.isEmpty) {
+          _guides = list;
+        }
+        _syncCategoryWithData();
+        _loading = false;
+      });
+    }, onError: (_) async {
+      await _refreshGuides(forceRemote: true);
+    });
+  }
+
   @override
   void initState() {
     super.initState();
     _tabCtrl = TabController(length: 3, vsync: this);
-    _sub = FirestoreService.guidesStream().listen((list) {
-      if (mounted) setState(() { _guides = list; _loading = false; });
-    }, onError: (_) {
-      if (mounted) setState(() => _loading = false);
-    });
+    _initGuides();
     _searchCtrl.addListener(() {
       if (mounted) setState(() => _search = _searchCtrl.text.toLowerCase());
     });
