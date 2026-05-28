@@ -1,14 +1,14 @@
 /**
- * MedCases Pro — PWA Service Worker v6.1.0
- * Estratégia: cache-first para assets estáticos (main.dart.js, ícones, fontes)
- *             network-first para index.html (sempre fresco)
- * Resultado: primeiro load baixa o bundle; cargas subsequentes são instantâneas.
+ * MedCases Pro — PWA Service Worker v6.2.0
+ * Estratégia: network-first para main.dart.js e index.html (sempre frescos)
+ *             cache-first para assets estáticos, ícones e fontes.
+ * Resultado: bundles antigos deixam de ser servidos de imediato após deploy.
  */
 
 'use strict';
 
-const SW_VERSION   = '6.1.0';
-const CACHE_APP    = 'medcases-app-v6.1.0';
+const SW_VERSION   = '6.2.0';
+const CACHE_APP    = 'medcases-app-v6.2.0';
 const CACHE_FONTS  = 'medcases-fonts-v2';
 
 // Assets pré-cacheados no install (críticos para o boot)
@@ -23,8 +23,8 @@ const PRECACHE = [
   './icons/Icon-maskable-512.png',
 ];
 
-// main.dart.js é cacheado separadamente (stale-while-revalidate)
-const BIG_ASSETS = /\/(main\.dart\.js|flutter_bootstrap\.js|flutter\.js)(\?.*)?$/;
+// Assets grandes continuam cacheados, exceto main.dart.js
+const BIG_ASSETS = /\/(flutter_bootstrap\.js|flutter\.js)(\?.*)?$/;
 
 // Nunca cachear APIs, Firebase, Google Auth
 const NEVER_CACHE = [
@@ -128,8 +128,28 @@ self.addEventListener('fetch', event => {
     return;
   }
 
-  // ── main.dart.js e outros JS grandes: stale-while-revalidate ──────────────
-  // Serve do cache imediatamente (boot instantâneo) + atualiza em background
+  // ── main.dart.js: network-first + fallback ao cache offline ───────────────
+  if (url.pathname.endsWith('/main.dart.js')) {
+    event.respondWith(
+      fetch(request, { cache: 'no-store' })
+        .then(res => {
+          if (res && res.ok) {
+            const clone = res.clone();
+            caches.open(CACHE_APP).then(cache => {
+              cache.put(request, clone);
+            });
+          }
+          return res;
+        })
+        .catch(async () => {
+          const cache = await caches.open(CACHE_APP);
+          return cache.match(request);
+        })
+    );
+    return;
+  }
+
+  // ── flutter_bootstrap.js e flutter.js: stale-while-revalidate ─────────────
   if (isBigAsset(url)) {
     event.respondWith(
       caches.open(CACHE_APP).then(async cache => {
