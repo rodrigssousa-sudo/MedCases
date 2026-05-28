@@ -137,7 +137,20 @@
       _tokenExpiry = token ? (Date.now() + ((expiresInSeconds || 3300) * 1000)) : 0;
     };
 
-    // Retorna o token cacheado se válido, senão tenta via Firebase compat SDK
+    // Retorna o token cacheado se válido, senão tenta via Firebase compat SDK.
+    // BLINDAGEM: verifica que firebase.apps.length > 0 (SDK inicializado) antes
+    // de chamar firebase.auth() — evita TypeError: Cannot read properties of
+    // undefined (reading 'INTERNAL') quando o compat SDK ainda está carregando.
+    function _isFirebaseReady() {
+      try {
+        var fb = window.firebase;
+        // firebase.apps só existe após firebase-app-compat.js executar;
+        // firebase.auth só existe após firebase-auth-compat.js executar.
+        // firebase.apps.length > 0 confirma que initializeApp() foi chamado.
+        return !!(fb && fb.apps && fb.apps.length > 0 && typeof fb.auth === 'function');
+      } catch(e) { return false; }
+    }
+
     function _getFirebaseToken() {
       if (_tokenFetchInFlight) return _tokenFetchInFlight;
       if (_cachedToken && Date.now() < (_tokenExpiry - 30000)) {
@@ -145,16 +158,20 @@
       }
       _tokenFetchInFlight = (function() {
         try {
-          var fb = window.firebase;
-          if (!fb || !fb.auth) return Promise.resolve(_cachedToken);
-          var auth = fb.auth();
+          // GUARD: Firebase compat SDK ainda não inicializou — não chamar auth()
+          if (!_isFirebaseReady()) return Promise.resolve(_cachedToken);
+          var auth = window.firebase.auth();
           var user = auth && auth.currentUser;
-          if (!user || !user.getIdToken) return Promise.resolve(_cachedToken);
+          if (!user || typeof user.getIdToken !== 'function') return Promise.resolve(_cachedToken);
           return user.getIdToken(false).then(function(tok) {
             if (tok) { _cachedToken = tok; _tokenExpiry = Date.now() + 55 * 60 * 1000; }
             return tok || null;
           }).catch(function() { return _cachedToken; });
-        } catch(e) { return Promise.resolve(_cachedToken); }
+        } catch(e) {
+          // Silencia qualquer TypeError do SDK compat em inicialização
+          console.warn('[MedCases] _getFirebaseToken: SDK não pronto —', e && e.message);
+          return Promise.resolve(_cachedToken);
+        }
       })().then(function(tok) { _tokenFetchInFlight = null; return tok; },
                 function()    { _tokenFetchInFlight = null; return _cachedToken; });
       return _tokenFetchInFlight;
@@ -163,8 +180,8 @@
     // Retorna token SINCRONAMENTE do cache (usado pelo XHR interceptor no send)
     function _getCachedToken() {
       if (_cachedToken && Date.now() < (_tokenExpiry - 30000)) return _cachedToken;
-      // Dispara refresh assíncrono para próxima chamada mas não bloqueia
-      _getFirebaseToken();
+      // Dispara refresh assíncrono apenas se Firebase já está pronto
+      if (_isFirebaseReady()) _getFirebaseToken();
       return _cachedToken;
     }
 
@@ -347,16 +364,33 @@
     function _loadFirebase() {
       if (window._firebaseLoaded) return;
       window._firebaseLoaded = true;
+
+      // CARREGAMENTO SEQUENCIAL (app → auth → firestore).
+      // Carregar em paralelo com async puro causa race condition:
+      //   firebase-auth-compat.js tenta acessar firebase.INTERNAL antes
+      //   de firebase-app-compat.js terminar → TypeError: Cannot read
+      //   properties of undefined (reading 'INTERNAL').
+      // Solução: cada script dispara o próximo no onload.
       var urls = [
         'https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js',
         'https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js',
         'https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js'
       ];
-      urls.forEach(function(src) {
+
+      function loadNext(i) {
+        if (i >= urls.length) return;
         var s = document.createElement('script');
-        s.src = src; s.async = true;
+        s.src = urls[i];
+        s.async = false;  // garante execução em ordem quando injetado
+        s.onload = function() { loadNext(i + 1); };
+        s.onerror = function() {
+          console.error('[MedCases] Falha ao carregar Firebase compat:', urls[i]);
+          loadNext(i + 1); // continua mesmo em caso de falha de rede
+        };
         document.head.appendChild(s);
-      });
+      }
+
+      loadNext(0);
     }
     // Carrega Firebase compat SDK o mais cedo possível:
     // - Após o primeiro frame do Flutter (prioridade normal)
