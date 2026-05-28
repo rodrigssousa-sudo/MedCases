@@ -1368,10 +1368,15 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
       // ── Body: IndexedStack ocupa 100% do espaço disponível ──────────────
       // MediaQuery.removePadding remove o padding top residual que o appBar
       // já consumiu — evita que telas com SafeArea interna fiquem deslocadas.
+      // SizedBox.expand garante constraints finitas (width+height) para o
+      // IndexedStack e todos os seus filhos — corrige tela cinza em mobile
+      // causada por RenderBox unbounded height em LibraryScreen/HistoryScreen.
       body: MediaQuery.removePadding(
         context: context,
         removeTop: true,
-        child: IndexedStack(index: stackIdx, children: _staticScreens),
+        child: SizedBox.expand(
+          child: IndexedStack(index: stackIdx, children: _staticScreens),
+        ),
       ),
       bottomNavigationBar: Column(
         mainAxisSize: MainAxisSize.min,
