@@ -148,7 +148,9 @@ class _LibraryHeader extends StatelessWidget {
         color: _kDark,
         boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.3), blurRadius: 8)],
       ),
-      child: Column(children: [
+      child: Column(
+        mainAxisSize: MainAxisSize.min, // ← CRÍTICO: não expande além do necessário
+        children: [
           // Título — sem SafeArea: o Scaffold pai (shell) já gerencia o inset
           // do status bar. SafeArea duplo causava padding extra no desktop e
           // layout incorreto no mobile com AppBar.
