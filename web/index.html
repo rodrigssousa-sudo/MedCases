@@ -89,10 +89,8 @@
   <link rel="preconnect" href="https://accounts.google.com" crossorigin>
   <link rel="preconnect" href="https://firestore.googleapis.com" crossorigin>
 
-  <!-- ═══════════════════════════════════════════════════════════════════
-       PRELOAD — recursos críticos de boot
-  ═══════════════════════════════════════════════════════════════════ -->
-  <link rel="preload" href="flutter_bootstrap.js" as="script">
+  <!-- flutter_bootstrap.js é injetado via JS (bootFlutter) — sem preload
+       para evitar o aviso "preloaded but not used within window load event" -->
 
   <!-- ═══════════════════════════════════════════════════════════════════
        LOCALSTORAGE HELPERS — criados ANTES do Firebase/SES lockdown.
@@ -433,8 +431,8 @@
       } catch(e) {}
     })();
 
-    var APP_VERSION = '6.2.1';
-    var SW_URL      = 'pwa-sw.js?v=6.2.1';
+    var APP_VERSION = '6.2.2';
+    var SW_URL      = 'pwa-sw.js?v=6.2.2';
 
     // ── Remoção do splash ────────────────────────────────────────────
     var _splashRemoved = false;
@@ -653,10 +651,17 @@
       var storedVersion = null;
       try { storedVersion = localStorage.getItem('medcases_app_version'); } catch(e) {}
 
+      // ── BOOT IMEDIATO — Flutter inicia antes da limpeza de SW ────────────
+      // Antes: bootFlutter() ficava dentro de Promise.all([swClean, cacheClean]).then()
+      // Problema: qualquer lentidão no unregister/caches.delete travava o boot.
+      // Fix: bootFlutter() é chamado SEMPRE de forma síncrona, e a limpeza
+      // de SW/cache ocorre em paralelo no background, sem bloquear o Flutter.
+      registerSW();
+      bootFlutter();
+
       if (storedVersion !== APP_VERSION) {
-        // Versão nova detectada: limpa SW + caches antigos, depois boota normalmente.
-        // NÃO fazemos redirect — o redirect causava loop quando o index.html estava
-        // em cache no browser (o arquivo antigo não conhecia o mecanismo novo).
+        // Versão nova detectada: limpa SW + caches antigos EM PARALELO com o boot.
+        // Flutter já está iniciando — limpeza não bloqueia mais a splash.
         var swClean = navigator.serviceWorker.getRegistrations()
           .then(function(regs) {
             return Promise.all(regs.map(function(r) { return r.unregister(); }));
@@ -672,13 +677,7 @@
           .catch(function() {})
           .then(function() {
             try { localStorage.setItem('medcases_app_version', APP_VERSION); } catch(e) {}
-            registerSW();
-            bootFlutter();
           });
-      } else {
-        // Mesma versão: registra e boota imediatamente
-        registerSW();
-        bootFlutter();
       }
 
       function registerSW() {
