@@ -751,6 +751,7 @@ class _AiScreenState extends State<AiScreen> {
                         text: msg.text,
                         dark: dark,
                         animate: i == _lastAiIndex,
+                        lang: p.lang,
                         onCopy: () => _copyMsg(msg.text),
                         ttsPlaying: _ttsPlayingIndex == i,
                         ttsReady: _ttsReady,
@@ -1455,6 +1456,7 @@ class _AiBlockBubble extends StatelessWidget {
   final VoidCallback? onTts;
   final bool ttsPlaying;
   final bool ttsReady;
+  final String lang;  // globalLanguageLock — controla textos da UI
 
   const _AiBlockBubble({
     required this.block,
@@ -1464,6 +1466,7 @@ class _AiBlockBubble extends StatelessWidget {
     this.onTts,
     this.ttsPlaying = false,
     this.ttsReady = false,
+    this.lang = 'pt',
   });
 
   // ── Detectores de tipo de linha para hierarquia visual hospitalar ────────
@@ -1475,9 +1478,12 @@ class _AiBlockBubble extends StatelessWidget {
            t.contains('CONTRAINDICAÇÃO ABSOLUTA') || t.contains('CONTRAINDICACION ABSOLUTA');
   }
 
-  /// Linha de seção principal (### ou marcador clínico padrão)
+  /// Linha de seção principal (### ou marcador clínico padrão ou 4-blocos emoji)
   bool _isSectionHeader(String line) {
     final t = line.trim();
+    // Reconhece os 4 blocos oficiais premium: 🚨 💊 ⛔ 📌
+    if (t.startsWith('🚨') || t.startsWith('💊') ||
+        t.startsWith('⛔') || t.startsWith('📌')) return true;
     return t.startsWith('###') ||
            RegExp(r'^(Hipótese|Hipotesis|Conduta|Conducta|Exames|Examenes|'
                   r'Monitoriz|Evitar|Escalonamento|Escalonamiento|'
@@ -1533,13 +1539,13 @@ class _AiBlockBubble extends StatelessWidget {
 
     return Padding(
       padding: EdgeInsets.only(
-        bottom: isLast ? 6 : 3,
-        right: 52,
+        bottom: isLast ? 5 : 2,
+        right: 48,
       ),
       child: Align(
         alignment: Alignment.centerLeft,
         child: Container(
-          padding: const EdgeInsets.fromLTRB(13, 10, 13, 8),
+          padding: const EdgeInsets.fromLTRB(11, 8, 11, 6),
           decoration: BoxDecoration(
             borderRadius: const BorderRadius.only(
               topLeft:     Radius.circular(4),
@@ -1567,14 +1573,14 @@ class _AiBlockBubble extends StatelessWidget {
               // ── Renderização linha a linha com hierarquia visual ─────────
               ...lines.map((line) {
                 final trimmed = line.trim();
-                if (trimmed.isEmpty) return const SizedBox(height: 2);
+                if (trimmed.isEmpty) return const SizedBox(height: 1);
 
                 // HARD STOP — destaque vermelho máximo
                 if (_isHardStop(line)) {
                   return Padding(
-                    padding: const EdgeInsets.only(bottom: 4, top: 2),
+                    padding: const EdgeInsets.only(bottom: 3, top: 2),
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                      padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 5),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(6),
                         color: kRed.withValues(alpha: dark ? 0.25 : 0.12),
@@ -1592,17 +1598,34 @@ class _AiBlockBubble extends StatelessWidget {
                   );
                 }
 
-                // Linha de seção principal — destaque verde sutil
+                // Linha de seção principal — hierarquia visual por emoji de bloco
                 if (_isSectionHeader(line)) {
                   final label = trimmed.replaceFirst(RegExp(r'^###?\s*'), '');
+                  // Cor da barra lateral baseada no bloco oficial
+                  final Color barColor;
+                  final Color labelColor;
+                  if (trimmed.startsWith('🚨')) {
+                    barColor   = kRed;
+                    labelColor = dark ? const Color(0xFFFF8080) : kRed;
+                  } else if (trimmed.startsWith('⛔')) {
+                    barColor   = kAmber;
+                    labelColor = dark ? const Color(0xFFFFD580) : kAmber;
+                  } else if (trimmed.startsWith('📌')) {
+                    barColor   = const Color(0xFF4A90D9);
+                    labelColor = dark ? const Color(0xFF89C4FF) : const Color(0xFF2563EB);
+                  } else {
+                    // 💊 e padrão → verde
+                    barColor   = kGreenLight;
+                    labelColor = dark ? const Color(0xFF4ADE80) : kGreen;
+                  }
                   return Padding(
-                    padding: const EdgeInsets.only(bottom: 3, top: 6),
+                    padding: const EdgeInsets.only(bottom: 2, top: 5),
                     child: Row(children: [
                       Container(
-                        width: 3, height: 14,
+                        width: 3, height: 13,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(2),
-                          color: kGreenLight,
+                          color: barColor,
                         ),
                       ),
                       const SizedBox(width: 7),
@@ -1611,7 +1634,7 @@ class _AiBlockBubble extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 12.5,
                           fontWeight: FontWeight.w700,
-                          color: dark ? const Color(0xFF4ADE80) : kGreen,
+                          color: labelColor,
                           letterSpacing: 0.1,
                           height: 1.3,
                         ),
@@ -1623,9 +1646,9 @@ class _AiBlockBubble extends StatelessWidget {
                 // Linha de alerta/atenção — destaque âmbar
                 if (_isWarning(line)) {
                   return Padding(
-                    padding: const EdgeInsets.only(bottom: 3, top: 1),
+                    padding: const EdgeInsets.only(bottom: 2, top: 1),
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(5),
                         color: kAmber.withValues(alpha: dark ? 0.15 : 0.08),
@@ -1655,12 +1678,12 @@ class _AiBlockBubble extends StatelessWidget {
                 // Item de lista — bullet com indent
                 if (_isListItem(line)) {
                   return Padding(
-                    padding: const EdgeInsets.only(bottom: 2, left: 2),
+                    padding: const EdgeInsets.only(bottom: 1, left: 2),
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Padding(
-                          padding: const EdgeInsets.only(top: 5, right: 6),
+                          padding: const EdgeInsets.only(top: 5, right: 5),
                           child: Container(
                             width: 4, height: 4,
                             decoration: BoxDecoration(
@@ -1680,14 +1703,14 @@ class _AiBlockBubble extends StatelessWidget {
 
                 // Texto normal
                 return Padding(
-                  padding: const EdgeInsets.only(bottom: 2),
+                  padding: const EdgeInsets.only(bottom: 1),
                   child: _buildInlineText(trimmed, textColor),
                 );
               }),
 
               // ── Rodapé: hora + TTS + copiar (apenas última bolha) ────────
               if (isLast) ...[
-                const SizedBox(height: 6),
+                const SizedBox(height: 5),
                 Row(children: [
                   Text(
                     _fakeTime(),
@@ -1721,7 +1744,9 @@ class _AiBlockBubble extends StatelessWidget {
                           ),
                           const SizedBox(width: 3),
                           Text(
-                            ttsPlaying ? 'Parar' : 'Ouvir',
+                            ttsPlaying
+                                ? (lang == 'es' ? 'Detener' : 'Parar')
+                                : (lang == 'es' ? 'Escuchar' : 'Ouvir'),
                             style: TextStyle(
                               fontSize: 10,
                               fontWeight: FontWeight.w600,
@@ -1742,7 +1767,7 @@ class _AiBlockBubble extends StatelessWidget {
                         Icon(Icons.copy_rounded, size: 12,
                           color: dark ? Colors.white24 : Colors.black26),
                         const SizedBox(width: 3),
-                        Text('Copiar',
+                        Text(lang == 'es' ? 'Copiar' : 'Copiar',
                           style: TextStyle(
                             fontSize: 10,
                             color: dark ? Colors.white24 : Colors.black26)),
@@ -1769,6 +1794,7 @@ class _AiBubble extends StatefulWidget {
   final bool dark;
   final VoidCallback onCopy;
   final bool animate;
+  final String lang;  // globalLanguageLock — propagado para _AiBlockBubble
   // TTS
   final bool ttsPlaying;
   final bool ttsReady;
@@ -1781,6 +1807,7 @@ class _AiBubble extends StatefulWidget {
     required this.dark,
     required this.onCopy,
     this.animate = false,
+    this.lang = 'pt',
     this.ttsPlaying = false,
     this.ttsReady = false,
     this.onTts,
@@ -1898,6 +1925,7 @@ class _AiBubbleState extends State<_AiBubble> {
               onTts: widget.onTts,
               ttsPlaying: widget.ttsPlaying,
               ttsReady: widget.ttsReady,
+              lang: widget.lang,
             )
           : const SizedBox.shrink();
     }
@@ -1918,6 +1946,7 @@ class _AiBubbleState extends State<_AiBubble> {
             onTts:      isLast ? widget.onTts  : null,
             ttsPlaying: isLast && widget.ttsPlaying,
             ttsReady:   widget.ttsReady,
+            lang: widget.lang,
           ),
         );
       }),
@@ -1960,7 +1989,7 @@ class _ThinkingBubbleState extends State<_ThinkingBubble>
       child: Align(
         alignment: Alignment.centerLeft,
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
           decoration: BoxDecoration(
             borderRadius: const BorderRadius.only(
               topLeft: Radius.circular(4),
