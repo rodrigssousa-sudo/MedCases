@@ -152,14 +152,17 @@ class MedCasesApp extends StatelessWidget {
         Locale('en'),       // Inglês (fallback padrão do Flutter)
       ],
       home: _AuthGate(firebaseInit: firebaseInit),
-      // ── Contenção de largura para iPad e telas grandes ─────────────────────
-      // Em iPhones (< 600 px) o builder é transparente — nada muda.
-      // Em iPads o conteúdo fica centralizado com no máximo 560 px de largura,
-      // garantindo que o layout de celular não "estique" em telas grandes.
+      // ── Contenção de largura para iPad nativo (não afeta web desktop) ────────
+      // • Web desktop (kIsWeb): sem restrição — ocupa toda a viewport.
+      // • iPhone (< 600 px): transparente — nada muda.
+      // • iPad nativo (>= 600 px, não web): centraliza com no máximo 560 px
+      //   para que o layout de celular não "estique" em telas grandes.
       builder: (context, child) {
+        // Web: nunca restringir — o app deve ocupar a tela toda
+        if (kIsWeb) return child ?? const SizedBox.shrink();
         final screenW = MediaQuery.of(context).size.width;
         if (screenW <= 600) return child ?? const SizedBox.shrink();
-        // Tela larga (iPad): centraliza com faixa de no máximo 560 px
+        // iPad nativo: centraliza com faixa de no máximo 560 px
         return Center(
           child: ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 560),
