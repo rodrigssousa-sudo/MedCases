@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -572,9 +574,11 @@ class _SearchSheet extends StatefulWidget {
 class _SearchSheetState extends State<_SearchSheet> {
   final _ctrl = TextEditingController();
   String _q = '';
+  Timer? _debounce;
 
   @override
   void dispose() {
+    _debounce?.cancel();
     _ctrl.dispose();
     super.dispose();
   }
@@ -677,7 +681,12 @@ class _SearchSheetState extends State<_SearchSheet> {
                           isDense: true,
                           contentPadding: EdgeInsets.zero,
                         ),
-                        onChanged: (v) => setState(() => _q = v),
+                        onChanged: (v) {
+                          _debounce?.cancel();
+                          _debounce = Timer(const Duration(milliseconds: 300), () {
+                            if (mounted) setState(() => _q = v);
+                          });
+                        },
                       ),
                     ),
                     if (_q.isNotEmpty)

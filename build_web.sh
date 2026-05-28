@@ -1,5 +1,5 @@
 #!/bin/bash
-# build_web.sh — Build Flutter Web sem Service Worker
+# build_web.sh — Build Flutter Web sem Service Worker + Cache Busting
 # Uso: bash build_web.sh
 
 set -e
@@ -64,12 +64,98 @@ self.addEventListener('activate', function(e) {
 self.addEventListener('fetch', function(e) { e.respondWith(fetch(e.request)); });
 SWEOF
 
+# ═══════════════════════════════════════════════════════════════════════════════
+# CACHE BUSTING — Injeta git commit hash como query param em todos os
+# arquivos JS críticos referenciados no index.html.
+# Isso força CDN (Cloudflare) e nginx a servir a versão nova, pois a URL
+# muda a cada deploy:  flutter_bootstrap.js?v=a1b2c3d
+# ═══════════════════════════════════════════════════════════════════════════════
+echo ""
+echo "🔑 Injetando cache-bust hash no index.html..."
+
+# Gera hash único: git short hash + timestamp para garantir unicidade absoluta
+BUILD_HASH=$(git rev-parse --short HEAD 2>/dev/null || echo "$(date +%s)")
+BUILD_TS=$(date +%s)
+CACHE_KEY="${BUILD_HASH}-${BUILD_TS}"
+
+echo "  → Hash: ${CACHE_KEY}"
+
+python3 - <<PYEOF2
+import re
+
+cache_key = "${CACHE_KEY}"
+
+with open('build/web/index.html', 'r', encoding='utf-8') as f:
+    html = f.read()
+
+original = html
+
+# ── 1. Preload links: href="flutter_bootstrap.js" → href="flutter_bootstrap.js?v=HASH"
+# Remove versão anterior se já existir (?v=...) antes de injetar nova
+html = re.sub(
+    r'(href=["\'])flutter_bootstrap\.js(?:\?v=[^"\']*)?(["\'])',
+    lambda m: m.group(1) + 'flutter_bootstrap.js?v=' + cache_key + m.group(2),
+    html
+)
+
+# ── 2. Preload links: href="main.dart.js" → href="main.dart.js?v=HASH"
+html = re.sub(
+    r'(href=["\'])main\.dart\.js(?:\?v=[^"\']*)?(["\'])',
+    lambda m: m.group(1) + 'main.dart.js?v=' + cache_key + m.group(2),
+    html
+)
+
+# ── 3. Script src: src="flutter_bootstrap.js" → src="flutter_bootstrap.js?v=HASH"
+html = re.sub(
+    r'(src=["\'])flutter_bootstrap\.js(?:\?v=[^"\']*)?(["\'])',
+    lambda m: m.group(1) + 'flutter_bootstrap.js?v=' + cache_key + m.group(2),
+    html
+)
+
+# ── 4. JS dinâmico: s.src = 'flutter_bootstrap.js' → s.src = 'flutter_bootstrap.js?v=HASH'
+html = re.sub(
+    r"(s\.src\s*=\s*['\"])flutter_bootstrap\.js(?:\?v=[^'\"]*)?(['\"])",
+    lambda m: m.group(1) + 'flutter_bootstrap.js?v=' + cache_key + m.group(2),
+    html
+)
+
+# ── 5. Atualiza APP_VERSION no index.html para forçar limpeza de SW/cache no browser
+# Usa o CACHE_KEY como versão — muda a cada deploy
+html = re.sub(
+    r"var APP_VERSION\s*=\s*'[^']*'",
+    "var APP_VERSION = '" + cache_key + "'",
+    html
+)
+html = re.sub(
+    r'var APP_VERSION\s*=\s*"[^"]*"',
+    'var APP_VERSION = "' + cache_key + '"',
+    html
+)
+
+if html != original:
+    with open('build/web/index.html', 'w', encoding='utf-8') as f:
+        f.write(html)
+    print("  ✅ Cache-bust injetado com sucesso:")
+    # Confirma as substituições
+    import re as _re
+    matches = _re.findall(r'flutter_bootstrap\.js\?v=[^\'">\s]+', html)
+    for m in set(matches):
+        print(f"    {m}")
+else:
+    print("  ⚠️  Nenhuma substituição aplicada — verifique o index.html")
+
+PYEOF2
+
+echo ""
 echo "✅ Build completo! Arquivos em build/web/"
 echo ""
 echo "Verificando resultado:"
 grep "loader.load" build/web/flutter_bootstrap.js | tail -3
 echo ""
 head -2 build/web/flutter_service_worker.js
+echo ""
+echo "Cache-bust no index.html:"
+grep -o 'flutter_bootstrap\.js?v=[^"'\''> ]*' build/web/index.html | head -5
 
 echo ""
 echo "📦 Commitando build/web no git (necessário para deploy DigitalOcean)..."
@@ -78,6 +164,6 @@ git add -f build/web/
 if git diff --cached --quiet; then
   echo "  ℹ️  Nenhuma mudança no build/web — nada a commitar"
 else
-  git commit -m "build: atualiza build/web para deploy [$(date '+%Y-%m-%d %H:%M')]"
-  echo "  ✅ build/web commitado"
+  git commit -m "build: cache-bust ${CACHE_KEY} [$(date '+%Y-%m-%d %H:%M')]"
+  echo "  ✅ build/web commitado com hash ${CACHE_KEY}"
 fi
