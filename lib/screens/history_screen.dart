@@ -172,6 +172,9 @@ const _hcStrings = <String, Map<String, String>>{
   'empty_btn':          {'pt': '+ Nova história clínica',               'es': '+ Nueva historia clínica'},
   'empty_comm_title':   {'pt': 'Nenhuma história pública',              'es': 'Ninguna historia pública'},
   'empty_comm_sub':     {'pt': 'Seja o primeiro a compartilhar!\nAnonimize e compartilhe seus casos.', 'es': '¡Sé el primero en compartir!\nAnonimiza y comparte tus casos.'},
+  'community_error_title': {'pt': 'Erro ao carregar comunidade',        'es': 'Error al cargar comunidad'},
+  'community_error_sub':   {'pt': 'Não foi possível buscar as histórias públicas agora.\nToque em atualizar para tentar novamente.', 'es': 'No fue posible cargar las historias públicas ahora.\nToque actualizar para reintentar.'},
+  'error_details':      {'pt': 'Detalhes técnicos',                     'es': 'Detalles técnicos'},
   'refresh':            {'pt': 'Atualizar',                             'es': 'Actualizar'},
   'loading_comm':       {'pt': 'Carregando histórias da comunidade…',   'es': 'Cargando historias de la comunidad…'},
   // Editor — header
@@ -753,10 +756,19 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
                   ),
                 )
               : pub.isEmpty
-                ? _EmptyCommunityState(lang: lang, onRefresh: () => p.loadPublicHistories())
+                ? p.publicLoadError.trim().isNotEmpty
+                    ? _CommunityErrorState(
+                        lang: lang,
+                        errorMessage: p.publicLoadError.trim(),
+                        onRefresh: () => p.loadPublicHistories(forceRemote: true),
+                      )
+                    : _EmptyCommunityState(
+                        lang: lang,
+                        onRefresh: () => p.loadPublicHistories(forceRemote: true),
+                      )
                 : RefreshIndicator(
                     color: kGreen,
-                    onRefresh: () => p.loadPublicHistories(),
+                    onRefresh: () => p.loadPublicHistories(forceRemote: true),
                     child: ListView.builder(
                       padding: EdgeInsets.fromLTRB(
                         bp.isDesktop ? bp.hPadding : 0,
@@ -784,7 +796,7 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
                             final confirm = await _confirmModDelete(context);
                             if (!confirm) return;
                             await FirestoreService.adminDeletePublicHistory(h.id);
-                            p.loadPublicHistories();
+                            p.loadPublicHistories(forceRemote: true);
                             if (context.mounted) _showModSnack(context, _hcT(lang, 'hc_del_perm'), isError: true);
                           } : null,
                         );
@@ -3606,6 +3618,81 @@ class _EmptyCommunityState extends StatelessWidget {
         child: Text(_hcT(lang, 'refresh'), style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w900, color: kGoldLight)),
       )),
     ]));
+  }
+}
+
+class _CommunityErrorState extends StatelessWidget {
+  final VoidCallback onRefresh;
+  final String lang;
+  final String errorMessage;
+  const _CommunityErrorState({
+    required this.onRefresh,
+    required this.errorMessage,
+    this.lang = 'pt',
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final details = errorMessage.trim();
+    return Center(
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(Icons.cloud_off_rounded, size: 58, color: Color(0xFFD97D54)),
+            const SizedBox(height: 14),
+            Text(
+              _hcT(lang, 'community_error_title'),
+              textAlign: TextAlign.center,
+              style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w900, color: Color(0xFFAAAAAA)),
+            ),
+            const SizedBox(height: 6),
+            Text(
+              _hcT(lang, 'community_error_sub'),
+              textAlign: TextAlign.center,
+              style: const TextStyle(fontSize: 12, color: Color(0xFFBBBBBB), fontWeight: FontWeight.w600),
+            ),
+            if (details.isNotEmpty) ...[
+              const SizedBox(height: 16),
+              Container(
+                width: double.infinity,
+                constraints: const BoxConstraints(maxWidth: 560),
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFF7E7E1),
+                  borderRadius: BorderRadius.circular(14),
+                  border: Border.all(color: const Color(0xFFE5B8A8)),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      _hcT(lang, 'error_details'),
+                      style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w800, color: Color(0xFF7A3C20)),
+                    ),
+                    const SizedBox(height: 6),
+                    SelectableText(
+                      details,
+                      style: const TextStyle(fontSize: 11, height: 1.35, color: Color(0xFF8D4C2A), fontWeight: FontWeight.w600),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+            const SizedBox(height: 20),
+            GestureDetector(
+              onTap: onRefresh,
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                decoration: BoxDecoration(borderRadius: BorderRadius.circular(12), color: kDark),
+                child: Text(_hcT(lang, 'refresh'), style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w900, color: kGoldLight)),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
 
