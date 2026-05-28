@@ -2582,13 +2582,15 @@ class AppProvider extends ChangeNotifier {
   }
 
   Future<String> _buildAIAnswerImpl(String input) async {
-    // ── Fix 3: Detectar mudança de tema e resetar memória clínica ─────────
-    // Deve ocorrer ANTES de montar o prompt para garantir que o memoryBlock
-    // injetado reflita o contexto atual (não contaminado por tema anterior).
-    // Ex: otite (5 turnos) → ICFEr: reseta memória de otite antes do prompt ICFEr.
+    // ── strictContextIsolation — Passo A: detectar mudança de tema ────────
+    // Deve ocorrer ANTES de montar o prompt. Ao mudar de tema:
+    //   1. Memória clínica é resetada (sem dados do tema anterior)
+    //   2. Retrieval RAG usa APENAS a query pura (sem expansão por histórico)
+    //   Isso previne que blocos farmacológicos/clínicos de respostas anteriores
+    //   contaminem o novo caso (ex: "Betametasona" aparecendo num caso de TEP).
     final topicReset = _sessionMemory.resetIfTopicChanged(input);
     if (topicReset) {
-      debugPrint('[buildAIAnswer] Mudança de tema detectada — memória clínica resetada');
+      debugPrint('[buildAIAnswer] strictContextIsolation: tema mudou — memória e retrieval isolados');
     }
 
     // ── Passo 0: globalLanguageLock — bloqueia idioma da sessão ──────────────
@@ -2597,8 +2599,13 @@ class AppProvider extends ChangeNotifier {
     final sessionLang = _resolveSessionLang(input);
 
     // ── Passo 1: Classificar intent ────────────────────────────────────────
-    final intent        = _classifyIntent(input);
-    final expandedInput = _expandedQuery(input);
+    final intent = _classifyIntent(input);
+
+    // strictContextIsolation — Passo B: retrieval isolado por tema
+    // Se houve mudança de tema, usa SOMENTE a query pura para o retrieval
+    // (sem _expandedQuery que usa histórico do tema anterior e polui RAG).
+    // Se mesmo tema, mantém expansão para melhor recall.
+    final expandedInput = topicReset ? input : _expandedQuery(input);
     final normalized    = _normalize(expandedInput);
 
     // ── Passo 2: Retrieval local (protocolos + fármacos) ───────────────────
