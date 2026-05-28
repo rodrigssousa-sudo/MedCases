@@ -14,6 +14,34 @@ import '../models/guide_model.dart';
 import 'auth_service.dart';
 
 class FirestoreService {
+  // ── Safe type helpers — imunes a TypeError em dart2js release mode ───────
+  /// Converte qualquer valor para String sem lançar TypeError.
+  static String safeString(dynamic v) => v?.toString() ?? '';
+
+  /// Converte qualquer valor para bool sem lançar TypeError.
+  static bool safeBool(dynamic v) => v == true || v?.toString() == 'true';
+
+  /// Converte qualquer valor para int sem lançar TypeError.
+  static int safeInt(dynamic v) =>
+      v is int ? v : int.tryParse(v?.toString() ?? '') ?? 0;
+
+  /// Converte qualquer valor para Map<String,dynamic> sem lançar TypeError.
+  static Map<String, dynamic> safeMap(dynamic v) {
+    if (v is Map<String, dynamic>) return v;
+    if (v is Map) return Map<String, dynamic>.from(v);
+    return <String, dynamic>{};
+  }
+
+  /// Converte qualquer valor para List<String> sem lançar TypeError.
+  static List<String> safeStringList(dynamic v) {
+    if (v == null) return const [];
+    if (v is! List) return const [];
+    return v
+        .map((e) => e?.toString() ?? '')
+        .where((s) => s.isNotEmpty)
+        .toList();
+  }
+
   // Getter lazy — só acessa Firestore APÓS Firebase.initializeApp() completar
   static FirebaseFirestore get _db => FirebaseFirestore.instance;
 
@@ -105,30 +133,56 @@ class FirestoreService {
     return headers;
   }
 
+  /// Decodifica o payload REST do Firestore para Map<String, dynamic>.
+  /// USA APENAS safe helpers — zero casts diretos — imune a TypeError em release.
   static Map<String, dynamic> _decodeFirestoreFields(String bodyText) {
-    final body = jsonDecode(bodyText) as Map<String, dynamic>;
-    final fields = body['fields'] as Map<String, dynamic>? ?? <String, dynamic>{};
-    final data = <String, dynamic>{};
+    try {
+      final body   = safeMap(jsonDecode(bodyText));
+      final fields = safeMap(body['fields']);
+      final data   = <String, dynamic>{};
 
-    fields.forEach((key, rawValue) {
-      final value = rawValue as Map<String, dynamic>? ?? <String, dynamic>{};
-      if (value.containsKey('stringValue')) {
-        data[key] = value['stringValue'] as String? ?? '';
-      } else if (value.containsKey('booleanValue')) {
-        data[key] = value['booleanValue'] == true;
-      } else if (value.containsKey('integerValue')) {
-        data[key] = int.tryParse(value['integerValue']?.toString() ?? '');
-      } else if (value.containsKey('doubleValue')) {
-        data[key] = (value['doubleValue'] as num?)?.toDouble();
-      } else if (value.containsKey('arrayValue')) {
-        final items = (value['arrayValue'] as Map<String, dynamic>?)?['values'] as List<dynamic>? ?? const <dynamic>[];
-        data[key] = items
-            .map((item) => (item as Map<String, dynamic>)['stringValue'] as String? ?? '')
-            .toList();
-      }
-    });
+      fields.forEach((key, rawValue) {
+        try {
+          final value = safeMap(rawValue);
+          if (value.containsKey('stringValue')) {
+            data[key] = safeString(value['stringValue']);
+          } else if (value.containsKey('booleanValue')) {
+            data[key] = safeBool(value['booleanValue']);
+          } else if (value.containsKey('integerValue')) {
+            data[key] = safeInt(value['integerValue']);
+          } else if (value.containsKey('doubleValue')) {
+            final raw = value['doubleValue'];
+            data[key] = raw is double
+                ? raw
+                : (raw is num
+                    ? raw.toDouble()
+                    : double.tryParse(raw?.toString() ?? '') ?? 0.0);
+          } else if (value.containsKey('arrayValue')) {
+            final arrRaw  = safeMap(value['arrayValue']);
+            final valsList = arrRaw['values'];
+            final items   = valsList is List ? valsList : const <dynamic>[];
+            data[key] = items.map((item) {
+              final m = safeMap(item);
+              if (m.containsKey('stringValue'))  return safeString(m['stringValue']);
+              if (m.containsKey('integerValue')) return safeString(m['integerValue']);
+              if (m.containsKey('booleanValue')) return safeBool(m['booleanValue']).toString();
+              return safeString(m.isNotEmpty ? m.values.first : '');
+            }).toList();
+          } else if (value.containsKey('mapValue')) {
+            data[key] = safeMap(safeMap(value['mapValue'])['fields']);
+          } else if (value.containsKey('nullValue')) {
+            data[key] = null;
+          }
+        } catch (_) {
+          data[key] = null; // campo malformado — não quebra os demais
+        }
+      });
 
-    return data;
+      return data;
+    } catch (e) {
+      debugPrint('[FirestoreService] _decodeFirestoreFields ERRO: $e');
+      return <String, dynamic>{};
+    }
   }
 
   static Future<Map<String, dynamic>> _loadAppConfigGlobalData() async {
@@ -151,7 +205,8 @@ class FirestoreService {
           final doc = await _db.collection('app_config').doc('global').get()
               .timeout(const Duration(seconds: 4));
           debugPrint('[FirestoreService] app_config/global SDK exists=${doc.exists}');
-          final data = doc.data() ?? <String, dynamic>{};
+          // safeMap: protege contra tipos inesperados do SDK em dart2js release
+          final data = doc.exists ? safeMap(doc.data()) : <String, dynamic>{};
           if (data.isNotEmpty) {
             _cachedAppConfigGlobal = Map<String, dynamic>.from(data);
             _appConfigGlobalRetryAfter = null;
@@ -187,7 +242,7 @@ class FirestoreService {
   static Future<String> loadAppAiKey() async {
     try {
       final data = await _loadAppConfigGlobalData();
-      final key = (data['openAiKey'] as String?)?.trim() ?? '';
+      final key = safeString(data['openAiKey']).trim();
       debugPrint('[FirestoreService] loadAppAiKey key.isNotEmpty=${key.isNotEmpty}');
       return key;
     } catch (e) {
@@ -203,8 +258,9 @@ class FirestoreService {
   static Future<String> loadGeminiApiKey() async {
     try {
       final data = await _loadAppConfigGlobalData();
-      final key = (data['apiKey'] as String?)?.trim() ??
-          (data['geminiApiKey'] as String?)?.trim() ?? '';
+      final key = safeString(data['apiKey']).trim().isNotEmpty
+          ? safeString(data['apiKey']).trim()
+          : safeString(data['geminiApiKey']).trim();
       debugPrint('[FirestoreService] loadGeminiApiKey key.isNotEmpty=${key.isNotEmpty}');
       return key;
     } catch (e) {
@@ -233,7 +289,7 @@ class FirestoreService {
     try {
       final doc = await _userPrefs(uid).get();
       if (!doc.exists) return '';
-      return (doc.data()?['openAiKey'] as String?) ?? '';
+      return safeString(doc.data()?['openAiKey']);
     } catch (_) {
       return '';
     }
@@ -275,8 +331,7 @@ class FirestoreService {
     try {
       final doc = await _userFavs(uid).doc('drugs').get();
       if (!doc.exists) return {};
-      final list = doc.data()?['ids'] as List<dynamic>?;
-      return list?.map((e) => e.toString()).toSet() ?? {};
+      return safeStringList(doc.data()?['ids']).toSet();
     } catch (_) {
       return {};
     }
@@ -293,8 +348,7 @@ class FirestoreService {
     try {
       final doc = await _userFavs(uid).doc('protocols').get();
       if (!doc.exists) return {};
-      final list = doc.data()?['ids'] as List<dynamic>?;
-      return list?.map((e) => e.toString()).toSet() ?? {};
+      return safeStringList(doc.data()?['ids']).toSet();
     } catch (_) {
       return {};
     }
@@ -311,8 +365,7 @@ class FirestoreService {
     try {
       final doc = await _userFavs(uid).doc('prescriptions').get();
       if (!doc.exists) return {};
-      final list = doc.data()?['ids'] as List<dynamic>?;
-      return list?.map((e) => e.toString()).toSet() ?? {};
+      return safeStringList(doc.data()?['ids']).toSet();
     } catch (_) {
       return {};
     }
@@ -331,8 +384,8 @@ class FirestoreService {
   /// Salva UMA sessão de chat no Firestore (upsert por session.id).
   static Future<void> saveAiSession(String uid, Map<String, dynamic> session) async {
     try {
-      final id = session['id'] as String?;
-      if (id == null || id.isEmpty) return;
+      final id = safeString(session['id']);
+      if (id.isEmpty) return;
       await _userAiHistory(uid).doc(id).set(session);
     } catch (_) {}
   }
@@ -373,8 +426,7 @@ class FirestoreService {
     try {
       final doc = await _userRecents(uid).get();
       if (!doc.exists) return [];
-      final list = doc.data()?['items'] as List<dynamic>?;
-      return list?.map((e) => e.toString()).toList() ?? [];
+      return safeStringList(doc.data()?['items']);
     } catch (_) {
       return [];
     }
@@ -385,8 +437,7 @@ class FirestoreService {
     try {
       final doc = await _userFavs(uid).doc('fav_cases').get();
       if (!doc.exists) return {};
-      final list = doc.data()?['ids'] as List<dynamic>?;
-      return list?.map((e) => e.toString()).toSet() ?? {};
+      return safeStringList(doc.data()?['ids']).toSet();
     } catch (_) {
       return {};
     }
@@ -522,7 +573,7 @@ class FirestoreService {
 
   /// Converte um documento Firestore REST em Map<String, dynamic> Dart.
   static Map<String, dynamic> _restDocToMap(Map<String, dynamic> doc) {
-    final fields = doc['fields'] as Map<String, dynamic>? ?? {};
+    final fields = safeMap(doc['fields']);
     return _decodeFields(fields);
   }
 
@@ -554,20 +605,21 @@ class FirestoreService {
     }
     if (v.containsKey('doubleValue')) {
       final raw = v['doubleValue'];
-      return raw is double ? raw : (raw as num?)?.toDouble() ?? 0.0;
+      return raw is double ? raw : (raw is num ? raw.toDouble() : double.tryParse(raw?.toString() ?? '') ?? 0.0);
     }
     if (v.containsKey('nullValue'))    return null;
     if (v.containsKey('mapValue')) {
       try {
         final mapVal = v['mapValue'];
-        final f = (mapVal is Map ? mapVal['fields'] : null) as Map<String, dynamic>? ?? {};
+        final f = safeMap(mapVal is Map ? mapVal['fields'] : null);
         return _decodeFields(f);
       } catch (_) { return <String, dynamic>{}; }
     }
     if (v.containsKey('arrayValue')) {
       try {
         final arrVal = v['arrayValue'];
-        final vals = (arrVal is Map ? arrVal['values'] : null) as List<dynamic>? ?? [];
+        final rawVals = (arrVal is Map) ? arrVal['values'] : null;
+        final vals = rawVals is List ? rawVals : const <dynamic>[];
         return vals
             .whereType<Map>()
             .map((e) => _decodeValue(
@@ -853,19 +905,18 @@ class FirestoreService {
     }
 
     List<ClinicalHistoryModel> parseResponse(http.Response resp) {
-      final body = jsonDecode(resp.body) as Map<String, dynamic>;
-      final documents = body['documents'] as List<dynamic>? ?? [];
+      // safeMap/safeString: sem casts diretos \u2014 imune a TypeError em dart2js release
+      final body = safeMap(jsonDecode(resp.body));
+      final docsList = body['documents'];
+      final documents = docsList is List ? docsList : const <dynamic>[];
       final parsed = <ClinicalHistoryModel>[];
       for (final doc in documents) {
         try {
-          // Cast defensivo: doc pode ser Map<String, dynamic> ou Map<dynamic, dynamic>
-          final rawDoc = doc is Map<String, dynamic>
-              ? doc
-              : Map<String, dynamic>.from(doc as Map);
+          final rawDoc = safeMap(doc);
           final data = _restDocToMap(rawDoc);
-          // Garante que o id está presente (REST usa o campo 'name' como path)
-          if (data['id'] == null || (data['id'] as String).isEmpty) {
-            final name = rawDoc['name'] as String? ?? '';
+          // Garante que o id est\u00e1 presente (REST usa o campo 'name' como path)
+          if (data['id'] == null || safeString(data['id']).isEmpty) {
+            final name = safeString(rawDoc['name']);
             data['id'] = name.isNotEmpty ? name.split('/').last : '';
           }
           parsed.add(ClinicalHistoryModel.fromJson(data));
@@ -1002,16 +1053,17 @@ class FirestoreService {
 
         if (resp.statusCode != 200) return;
 
-        final body   = jsonDecode(resp.body) as Map<String, dynamic>;
-        final fields = body['fields'] as Map<String, dynamic>? ?? {};
+        // safeMap: sem casts diretos — imune a TypeError em dart2js release
+        final body   = safeMap(jsonDecode(resp.body));
+        final fields = safeMap(body['fields']);
         final data   = <String, dynamic>{};
 
         fields.forEach((key, value) {
-          final v = value as Map<String, dynamic>;
+          final v = safeMap(value);
           if (v.containsKey('booleanValue')) {
-            data[key] = v['booleanValue'];
+            data[key] = safeBool(v['booleanValue']);
           } else if (v.containsKey('stringValue')) {
-            data[key] = v['stringValue'];
+            data[key] = safeString(v['stringValue']);
           } else if (v.containsKey('nullValue')) {
             data[key] = null;
           }
@@ -1086,7 +1138,8 @@ class FirestoreService {
         try {
           final doc = await _db.collection('app_updates').doc('current').get()
               .timeout(const Duration(seconds: 4));
-          final data = doc.data() ?? <String, dynamic>{};
+          // safeMap: protege contra tipos inesperados do SDK em dart2js release
+          final data = doc.exists ? safeMap(doc.data()) : <String, dynamic>{};
           if (data.isNotEmpty) {
             _cachedAppUpdate = Map<String, dynamic>.from(data);
             _appUpdateRetryAfter = null;
@@ -1136,7 +1189,8 @@ class FirestoreService {
         _cachedAppUpdate = Map<String, dynamic>.from(data);
       }
       return data;
-    } catch (_) {
+    } catch (e) {
+      debugPrint('[FirestoreService] _loadAppUpdateRest ERRO: $e');
       return Map<String, dynamic>.from(_cachedAppUpdate);
     }
   }
@@ -1325,11 +1379,11 @@ class FirestoreService {
     try {
       final doc = await _db.collection('app_config').doc('emailjs').get();
       if (doc.exists) {
-        final d = doc.data()!;
+        final d = safeMap(doc.data());
         return {
-          'serviceId':  (d['serviceId']  as String?) ?? '',
-          'templateId': (d['templateId'] as String?) ?? '',
-          'publicKey':  (d['publicKey']  as String?) ?? '',
+          'serviceId':  safeString(d['serviceId']),
+          'templateId': safeString(d['templateId']),
+          'publicKey':  safeString(d['publicKey']),
         };
       }
     } catch (_) {}
@@ -1337,11 +1391,11 @@ class FirestoreService {
     try {
       final doc = await _db.collection('config').doc('emailjs').get();
       if (!doc.exists) return {};
-      final d = doc.data()!;
+      final d = safeMap(doc.data());
       return {
-        'serviceId':  (d['serviceId']  as String?) ?? '',
-        'templateId': (d['templateId'] as String?) ?? '',
-        'publicKey':  (d['publicKey']  as String?) ?? '',
+        'serviceId':  safeString(d['serviceId']),
+        'templateId': safeString(d['templateId']),
+        'publicKey':  safeString(d['publicKey']),
       };
     } catch (_) {
       return {};
@@ -1361,12 +1415,13 @@ class FirestoreService {
       ).timeout(const Duration(seconds: 8));
       if (resp.statusCode == 404) return {};
       if (resp.statusCode != 200) return {};
-      final body   = jsonDecode(resp.body) as Map<String, dynamic>;
-      final fields = body['fields'] as Map<String, dynamic>? ?? {};
+      // safeMap: sem casts diretos — imune a TypeError em dart2js release
+      final body   = safeMap(jsonDecode(resp.body));
+      final fields = safeMap(body['fields']);
       return {
-        'serviceId':  (fields['serviceId']?['stringValue']  as String?) ?? '',
-        'templateId': (fields['templateId']?['stringValue'] as String?) ?? '',
-        'publicKey':  (fields['publicKey']?['stringValue']  as String?) ?? '',
+        'serviceId':  safeString(safeMap(fields['serviceId'])['stringValue']),
+        'templateId': safeString(safeMap(fields['templateId'])['stringValue']),
+        'publicKey':  safeString(safeMap(fields['publicKey'])['stringValue']),
       };
     } catch (_) {
       return {};
@@ -1530,10 +1585,11 @@ class FirestoreService {
       final prefs = await SharedPreferences.getInstance();
       final raw = prefs.getString(_guidesCacheKey) ?? '';
       if (raw.isEmpty) return [];
-      final decoded = jsonDecode(raw) as List<dynamic>;
+      final rawDecoded = jsonDecode(raw);
+      final decoded = rawDecoded is List ? rawDecoded : const <dynamic>[];
       final guides = _normalizeGuides(
-        decoded.map((item) => GuideModel.fromJson(
-              Map<String, dynamic>.from(item as Map),
+        decoded.whereType<Map>().map((item) => GuideModel.fromJson(
+              Map<String, dynamic>.from(item),
             )),
       );
       _debugGuides('cache hit count=${guides.length}');
@@ -1636,17 +1692,17 @@ class FirestoreService {
     }
 
     List<GuideModel> parseResponse(http.Response resp) {
-      final body = jsonDecode(resp.body) as Map<String, dynamic>;
-      final documents = body['documents'] as List<dynamic>? ?? [];
+      // safeMap: sem casts diretos \u2014 imune a TypeError em dart2js release
+      final body = safeMap(jsonDecode(resp.body));
+      final docsList = body['documents'];
+      final documents = docsList is List ? docsList : const <dynamic>[];
       final parsed = <GuideModel>[];
       for (final doc in documents) {
         try {
-          final rawDoc = doc is Map<String, dynamic>
-              ? doc
-              : Map<String, dynamic>.from(doc as Map);
+          final rawDoc = safeMap(doc);
           final data = _restDocToMap(rawDoc);
-          if (data['id'] == null || (data['id'] as String).isEmpty) {
-            final name = rawDoc['name'] as String? ?? '';
+          if (data['id'] == null || safeString(data['id']).isEmpty) {
+            final name = safeString(rawDoc['name']);
             data['id'] = name.isNotEmpty ? name.split('/').last : '';
           }
           final guide = GuideModel.fromJson(data);
