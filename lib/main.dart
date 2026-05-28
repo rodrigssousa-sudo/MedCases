@@ -1339,7 +1339,7 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
     );
   }
 
-  /// Layout mobile/tablet: Scaffold com bottom nav — sem AppHeader (barra superior removida)
+  /// Layout mobile/tablet: Scaffold com AppBar no topo + bottom nav
   Widget _buildMobileShell(BuildContext context, bool dark, AppProvider p) {
     final bg = dark ? const Color(0xFF141414) : const Color(0xFFF7F8FA);
     final navBg = dark ? const Color(0xFF1E1E1E) : Colors.white;
@@ -1349,8 +1349,23 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
     return Scaffold(
       backgroundColor: bg,
       endDrawer: _AppDrawer(p: p),
-      body: SafeArea(
-        bottom: false,
+      // ── AppBar mobile — logo + hambúrguer para abrir o endDrawer ─────────
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(56),
+        child: Builder(
+          builder: (scaffoldCtx) => _MobileAppBar(
+            dark: dark,
+            onLogoTap: () => setState(() => _tab = 0),
+            onMenuTap: () => Scaffold.of(scaffoldCtx).openEndDrawer(),
+          ),
+        ),
+      ),
+      // ── Body: IndexedStack ocupa 100% do espaço disponível ──────────────
+      // MediaQuery.removePadding remove o padding top residual que o appBar
+      // já consumiu — evita que telas com SafeArea interna fiquem deslocadas.
+      body: MediaQuery.removePadding(
+        context: context,
+        removeTop: true,
         child: IndexedStack(index: stackIdx, children: _staticScreens),
       ),
       bottomNavigationBar: Column(
@@ -1532,6 +1547,78 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
               child: Text(p.t('ai')),
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// MOBILE APP BAR — topo do Scaffold mobile com logo + hambúrguer
+// Isolado do _AppHeader (desktop) para não quebrar o layout desktop.
+// ─────────────────────────────────────────────────────────────────────────────
+class _MobileAppBar extends StatelessWidget {
+  final bool dark;
+  final VoidCallback onLogoTap;
+  final VoidCallback onMenuTap;
+
+  const _MobileAppBar({
+    required this.dark,
+    required this.onLogoTap,
+    required this.onMenuTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final bg         = dark ? const Color(0xFF0F1C14) : const Color(0xFFF0F5F1);
+    final borderCol  = dark ? const Color(0xFF1A2E20) : const Color(0xFFD4E0D8);
+    final iconBg     = dark ? Colors.white.withValues(alpha: 0.07) : const Color(0xFF0A7C4E).withValues(alpha: 0.08);
+    final iconBorder = dark ? Colors.white.withValues(alpha: 0.12) : const Color(0xFF0A7C4E).withValues(alpha: 0.20);
+    final iconColor  = dark ? const Color(0xFFFFE8A6) : const Color(0xFF0A7C4E);
+
+    return Container(
+      decoration: BoxDecoration(
+        color: bg,
+        border: Border(bottom: BorderSide(color: borderCol, width: 0.5)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: dark ? 0.25 : 0.06),
+            blurRadius: 12,
+            offset: const Offset(0, 3),
+          ),
+        ],
+      ),
+      child: SafeArea(
+        bottom: false,
+        child: SizedBox(
+          height: 56,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Row(
+              children: [
+                // ── Logo / Brand clicável → volta para Home ────────────────
+                GestureDetector(
+                  onTap: onLogoTap,
+                  child: const BrandMark(small: true),
+                ),
+                const Spacer(),
+                // ── Botão hambúrguer → abre endDrawer ─────────────────────
+                GestureDetector(
+                  onTap: onMenuTap,
+                  child: Container(
+                    width: 38,
+                    height: 38,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12),
+                      color: iconBg,
+                      border: Border.all(color: iconBorder, width: 1),
+                    ),
+                    child: Icon(Icons.menu_rounded, size: 20, color: iconColor),
+                  ),
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );
