@@ -493,145 +493,206 @@ class _CasosClinicosTab extends StatelessWidget {
   final AppProvider p;
   const _CasosClinicosTab({required this.dark, required this.isEs, required this.p});
 
+  static const Set<String> _allCasoIds = {
+    'caso_enxaqueca_aura', 'caso_avc_isquemico', 'caso_status_epilepticus',
+    'caso_stemi', 'caso_icc_descompensada', 'caso_tep_alto_risco', 'caso_pac_grave',
+    'caso_cistite_aguda', 'caso_itu_recorrente', 'caso_sepse_idoso',
+    'caso_cetoacidose_diabetica', 'caso_anafilaxia_grave', 'caso_hda_varicosa',
+    'pancreatitis_aguda_005', 'diarrea_aguda_009', 'hda_ulcera_peptica_013',
+    'hdb_sangrado_rectal_014', 'diverticulitis_aguda_015',
+    'sindrome_ascitico_debut_016', 'sindrome_ascitico_edematoso_017',
+    'hepatitis_b_aguda_detallada_2026', 'hepatitis_c_cronica_detallada_2026',
+    'gripe_influenza_010',
+    'rinosinusitis_aguda_007', 'faringitis_estreptococica_008',
+    'faringitis_viral_011', 'faringitis_bacteriana_012',
+  };
+
+  static const List<_CasoGroupConfig> _groupConfigs = [
+    _CasoGroupConfig(
+      icon: Icons.psychology_outlined,
+      titlePt: 'Neurologia',
+      titleEs: 'Neurología',
+      color: Color(0xFFF5F0FF),
+      borderColor: Color(0xFFCCBBEE),
+      iconColor: Color(0xFF5C2D91),
+      ids: {'caso_enxaqueca_aura', 'caso_avc_isquemico', 'caso_status_epilepticus'},
+    ),
+    _CasoGroupConfig(
+      icon: Icons.favorite_outline_rounded,
+      titlePt: 'Cardiologia & Pneumologia',
+      titleEs: 'Cardiología & Neumología',
+      color: Color(0xFFFFF0F5),
+      borderColor: Color(0xFFFFCCDD),
+      iconColor: Color(0xFFAA1144),
+      ids: {'caso_stemi', 'caso_icc_descompensada', 'caso_tep_alto_risco', 'caso_pac_grave'},
+    ),
+    _CasoGroupConfig(
+      icon: Icons.biotech_outlined,
+      titlePt: 'Infectologia, Emergência & Metabólico',
+      titleEs: 'Infectología, Emergencia & Metabólico',
+      color: Color(0xFFF0FFF4),
+      borderColor: Color(0xFFBBE8CC),
+      iconColor: Color(0xFF075F45),
+      ids: {
+        'caso_cistite_aguda', 'caso_itu_recorrente', 'caso_sepse_idoso',
+        'caso_cetoacidose_diabetica', 'caso_anafilaxia_grave', 'caso_hda_varicosa',
+      },
+    ),
+    _CasoGroupConfig(
+      icon: Icons.local_hospital_outlined,
+      titlePt: 'Gastroenterologia & Hepatologia',
+      titleEs: 'Gastroenterología & Hepatología',
+      color: Color(0xFFF5F5F0),
+      borderColor: Color(0xFFD8D4C0),
+      iconColor: Color(0xFF555544),
+      ids: {
+        'pancreatitis_aguda_005', 'diarrea_aguda_009', 'hda_ulcera_peptica_013',
+        'hdb_sangrado_rectal_014', 'diverticulitis_aguda_015',
+        'sindrome_ascitico_debut_016', 'sindrome_ascitico_edematoso_017',
+      },
+    ),
+    _CasoGroupConfig(
+      icon: Icons.science_outlined,
+      titlePt: 'Hepatites Virais & Gripe',
+      titleEs: 'Hepatitis Virales & Gripe',
+      color: Color(0xFFFFF8EC),
+      borderColor: Color(0xFFEED8A0),
+      iconColor: Color(0xFF8B6000),
+      ids: {
+        'hepatitis_b_aguda_detallada_2026', 'hepatitis_c_cronica_detallada_2026',
+        'gripe_influenza_010',
+      },
+    ),
+    _CasoGroupConfig(
+      icon: Icons.hearing_outlined,
+      titlePt: 'ORL & Medicina Geral',
+      titleEs: 'ORL & Medicina General',
+      color: Color(0xFFF0F8FF),
+      borderColor: Color(0xFFBBD6F0),
+      iconColor: Color(0xFF1A5E8A),
+      ids: {
+        'rinosinusitis_aguda_007', 'faringitis_estreptococica_008',
+        'faringitis_viral_011', 'faringitis_bacteriana_012',
+      },
+    ),
+  ];
+
   @override
   Widget build(BuildContext context) {
-    final seen  = <String>{};
+    final seen = <String>{};
     final allDB = p.protocolsDB.where((x) => seen.add(x.id)).toList();
+    final totalCasos = allDB.where((d) => _allCasoIds.contains(d.id)).length;
+    final groups = _groupConfigs
+        .where((group) => allDB.any((item) => group.ids.contains(item.id)))
+        .toList();
 
-    // IDs de todos os casos clínicos
-    const allCasoIds = {
-      'caso_enxaqueca_aura', 'caso_avc_isquemico', 'caso_status_epilepticus',
-      'caso_stemi', 'caso_icc_descompensada', 'caso_tep_alto_risco', 'caso_pac_grave',
-      'caso_cistite_aguda', 'caso_itu_recorrente', 'caso_sepse_idoso',
-      'caso_cetoacidose_diabetica', 'caso_anafilaxia_grave', 'caso_hda_varicosa',
-      'pancreatitis_aguda_005', 'diarrea_aguda_009', 'hda_ulcera_peptica_013',
-      'hdb_sangrado_rectal_014', 'diverticulitis_aguda_015',
-      'sindrome_ascitico_debut_016', 'sindrome_ascitico_edematoso_017',
-      'hepatitis_b_aguda_detallada_2026', 'hepatitis_c_cronica_detallada_2026',
-      'gripe_influenza_010',
-      'rinosinusitis_aguda_007', 'faringitis_estreptococica_008',
-      'faringitis_viral_011', 'faringitis_bacteriana_012',
-    };
+    final bodySliver = groups.isEmpty
+        ? SliverFillRemaining(
+            hasScrollBody: false,
+            child: _LibraryTabEmptyState(
+              dark: dark,
+              icon: Icons.cases_outlined,
+              title: isEs ? 'Sin casos clínicos disponibles' : 'Nenhum caso clínico disponível',
+              subtitle: isEs
+                  ? 'Los casos aparecerán aquí cuando estén disponibles en la base.'
+                  : 'Os casos aparecerão aqui quando estiverem disponíveis na base.',
+            ),
+          )
+        : SliverPadding(
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 100),
+            sliver: SliverList(
+              delegate: SliverChildBuilderDelegate(
+                (_, i) {
+                  final group = groups[i];
+                  return Padding(
+                    padding: EdgeInsets.only(bottom: i == groups.length - 1 ? 0 : 10),
+                    child: _CasoGroup(
+                      icon: group.icon,
+                      titlePt: group.titlePt,
+                      titleEs: group.titleEs,
+                      color: group.color,
+                      borderColor: group.borderColor,
+                      iconColor: group.iconColor,
+                      ids: group.ids,
+                      allDB: allDB,
+                      isEs: isEs,
+                      p: p,
+                    ),
+                  );
+                },
+                childCount: groups.length,
+              ),
+            ),
+          );
 
-    final totalCasos = allDB.where((d) => allCasoIds.contains(d.id)).length;
-
-    return SingleChildScrollView(
-      padding: const EdgeInsets.fromLTRB(16, 16, 16, 100),
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-
-        // ── Banner informativo ──────────────────────────────────────────────
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-          decoration: BoxDecoration(
-            color: dark ? const Color(0xFF0D1F16) : const Color(0xFFEAF5EE),
-            borderRadius: BorderRadius.circular(14),
-            border: Border.all(color: _kGreen.withValues(alpha: 0.3)),
-          ),
-          child: Row(children: [
-            Icon(Icons.cases_rounded, color: _kGreen, size: 22),
-            const SizedBox(width: 12),
-            Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text(
-                isEs ? 'Casos Clínicos' : 'Casos Clínicos',
-                style: TextStyle(
-                  fontSize: 14, fontWeight: FontWeight.w900,
-                  color: dark ? Colors.white : const Color(0xFF0F1C14),
+    return CustomScrollView(
+      primary: false,
+      slivers: [
+        SliverToBoxAdapter(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              decoration: BoxDecoration(
+                color: dark ? const Color(0xFF0D1F16) : const Color(0xFFEAF5EE),
+                borderRadius: BorderRadius.circular(14),
+                border: Border.all(color: _kGreen.withValues(alpha: 0.3)),
+              ),
+              child: Row(children: [
+                Icon(Icons.cases_rounded, color: _kGreen, size: 22),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        isEs ? 'Casos Clínicos' : 'Casos Clínicos',
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w900,
+                          color: dark ? Colors.white : const Color(0xFF0F1C14),
+                        ),
+                      ),
+                      Text(
+                        isEs
+                            ? '$totalCasos casos organizados por especialidad'
+                            : '$totalCasos casos organizados por especialidade',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: dark ? Colors.white54 : Colors.black.withValues(alpha: 0.45),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              Text(
-                isEs
-                    ? '$totalCasos casos organizados por especialidad'
-                    : '$totalCasos casos organizados por especialidade',
-                style: TextStyle(fontSize: 12, color: dark ? Colors.white54 : Colors.black.withValues(alpha: 0.45)),
-              ),
-            ])),
-          ]),
+              ]),
+            ),
+          ),
         ),
-        const SizedBox(height: 16),
-
-        // ── Neurologia ───────────────────────────────────────────────────────
-        _CasoGroup(
-          icon: Icons.psychology_outlined,
-          titlePt: 'Neurologia', titleEs: 'Neurología',
-          color: const Color(0xFFF5F0FF), borderColor: const Color(0xFFCCBBEE),
-          iconColor: const Color(0xFF5C2D91),
-          ids: const {'caso_enxaqueca_aura','caso_avc_isquemico','caso_status_epilepticus'},
-          allDB: allDB, isEs: isEs, p: p,
-        ),
-        const SizedBox(height: 10),
-
-        // ── Cardiologia & Pneumologia ────────────────────────────────────────
-        _CasoGroup(
-          icon: Icons.favorite_outline_rounded,
-          titlePt: 'Cardiologia & Pneumologia', titleEs: 'Cardiología & Neumología',
-          color: const Color(0xFFFFF0F5), borderColor: const Color(0xFFFFCCDD),
-          iconColor: const Color(0xFFAA1144),
-          ids: const {'caso_stemi','caso_icc_descompensada','caso_tep_alto_risco','caso_pac_grave'},
-          allDB: allDB, isEs: isEs, p: p,
-        ),
-        const SizedBox(height: 10),
-
-        // ── Infectologia, Emergência & Metabólico ────────────────────────────
-        _CasoGroup(
-          icon: Icons.biotech_outlined,
-          titlePt: 'Infectologia, Emergência & Metabólico',
-          titleEs: 'Infectología, Emergencia & Metabólico',
-          color: const Color(0xFFF0FFF4), borderColor: const Color(0xFFBBE8CC),
-          iconColor: const Color(0xFF075F45),
-          ids: const {
-            'caso_cistite_aguda','caso_itu_recorrente','caso_sepse_idoso',
-            'caso_cetoacidose_diabetica','caso_anafilaxia_grave','caso_hda_varicosa',
-          },
-          allDB: allDB, isEs: isEs, p: p,
-        ),
-        const SizedBox(height: 10),
-
-        // ── Gastroenterologia & Hepatologia ─────────────────────────────────
-        _CasoGroup(
-          icon: Icons.local_hospital_outlined,
-          titlePt: 'Gastroenterologia & Hepatologia',
-          titleEs: 'Gastroenterología & Hepatología',
-          color: const Color(0xFFF5F5F0), borderColor: const Color(0xFFD8D4C0),
-          iconColor: const Color(0xFF555544),
-          ids: const {
-            'pancreatitis_aguda_005','diarrea_aguda_009','hda_ulcera_peptica_013',
-            'hdb_sangrado_rectal_014','diverticulitis_aguda_015',
-            'sindrome_ascitico_debut_016','sindrome_ascitico_edematoso_017',
-          },
-          allDB: allDB, isEs: isEs, p: p,
-        ),
-        const SizedBox(height: 10),
-
-        // ── Hepatites Virais & Gripe ─────────────────────────────────────────
-        _CasoGroup(
-          icon: Icons.science_outlined,
-          titlePt: 'Hepatites Virais & Gripe', titleEs: 'Hepatitis Virales & Gripe',
-          color: const Color(0xFFFFF8EC), borderColor: const Color(0xFFEED8A0),
-          iconColor: const Color(0xFF8B6000),
-          ids: const {
-            'hepatitis_b_aguda_detallada_2026','hepatitis_c_cronica_detallada_2026',
-            'gripe_influenza_010',
-          },
-          allDB: allDB, isEs: isEs, p: p,
-        ),
-        const SizedBox(height: 10),
-
-        // ── ORL & Medicina Geral ─────────────────────────────────────────────
-        _CasoGroup(
-          icon: Icons.hearing_outlined,
-          titlePt: 'ORL & Medicina Geral', titleEs: 'ORL & Medicina General',
-          color: const Color(0xFFF0F8FF), borderColor: const Color(0xFFBBD6F0),
-          iconColor: const Color(0xFF1A5E8A),
-          ids: const {
-            'rinosinusitis_aguda_007','faringitis_estreptococica_008',
-            'faringitis_viral_011','faringitis_bacteriana_012',
-          },
-          allDB: allDB, isEs: isEs, p: p,
-        ),
-        const SizedBox(height: 10),
-      ]),
+        bodySliver,
+      ],
     );
   }
+}
+
+class _CasoGroupConfig {
+  final IconData icon;
+  final String titlePt;
+  final String titleEs;
+  final Color color;
+  final Color borderColor;
+  final Color iconColor;
+  final Set<String> ids;
+
+  const _CasoGroupConfig({
+    required this.icon,
+    required this.titlePt,
+    required this.titleEs,
+    required this.color,
+    required this.borderColor,
+    required this.iconColor,
+    required this.ids,
+  });
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -1105,12 +1166,11 @@ class _ProtocolsTabState extends State<_ProtocolsTab> {
   /// Retorna o índice da categoria (1-based excluindo "Todos") para um protocolo.
   /// Se nenhuma keyword bater, retorna o índice da última categoria ("Outros").
   int _catIndexForId(String id) {
-    // começa em 1 para pular "Todos" (index 0), para antes da última ("Outros" = last)
     for (int ci = 1; ci < _catDefs.length - 1; ci++) {
       final keywords = _catDefs[ci].$4;
       if (keywords.any((kw) => id.contains(kw))) return ci;
     }
-    return _catDefs.length - 1; // "Outros"
+    return _catDefs.length - 1;
   }
 
   @override
@@ -1129,11 +1189,10 @@ class _ProtocolsTabState extends State<_ProtocolsTab> {
 
   @override
   Widget build(BuildContext context) {
-    final p    = context.watch<AppProvider>();
+    final p = context.watch<AppProvider>();
     final dark = widget.dark;
     final isEs = widget.isEs;
 
-    // Busca global: se há query, ignora categoria e busca em todos
     final List<ProtocolModel> protos;
     if (_query.isNotEmpty) {
       protos = p.protocolsDB.where((pr) {
@@ -1141,14 +1200,12 @@ class _ProtocolsTabState extends State<_ProtocolsTab> {
         return t.contains(_query);
       }).toList();
     } else if (_cat == 0) {
-      // "Todos" → lista completa ordenada por título
       protos = [...p.protocolsDB]..sort((a, b) {
           final ta = (a.title[isEs ? 'es' : 'pt'] ?? a.title['pt'] ?? '').toLowerCase();
           final tb = (b.title[isEs ? 'es' : 'pt'] ?? b.title['pt'] ?? '').toLowerCase();
           return ta.compareTo(tb);
         });
     } else {
-      // Categoria específica: classifica dinamicamente por keyword no ID
       protos = p.protocolsDB
           .where((pr) => _catIndexForId(pr.id) == _cat)
           .toList()
@@ -1159,145 +1216,42 @@ class _ProtocolsTabState extends State<_ProtocolsTab> {
           });
     }
 
-    final cardBg    = dark ? const Color(0xFF111C17) : Colors.white;
-    final borderC   = dark ? const Color(0xFF1F3328) : const Color(0xFFDCEDDC);
-    const green     = _kGreen;
+    final cardBg = dark ? const Color(0xFF111C17) : Colors.white;
+    final borderC = dark ? const Color(0xFF1F3328) : const Color(0xFFDCEDDC);
+    const green = _kGreen;
 
-    return Column(children: [
-      // ── Barra de busca ────────────────────────────────────────────────────
-      Container(
-        color: _kDark,
-        padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
-        child: TextField(
-          controller: _searchCtrl,
-          style: const TextStyle(color: Colors.white, fontSize: 13),
-          decoration: InputDecoration(
-            hintText: isEs ? 'Buscar protocolo…' : 'Buscar protocolo…',
-            hintStyle: TextStyle(color: Colors.white.withValues(alpha: 0.4), fontSize: 13),
-            prefixIcon: const Icon(Icons.search_rounded, color: _kGold, size: 18),
-            suffixIcon: _query.isNotEmpty
-                ? GestureDetector(
-                    onTap: () => _searchCtrl.clear(),
-                    child: const Icon(Icons.close_rounded, color: Colors.white38, size: 18),
-                  )
-                : null,
-            filled: true,
-            fillColor: Colors.white.withValues(alpha: 0.08),
-            contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.15)),
+    final bodySliver = protos.isEmpty
+        ? SliverFillRemaining(
+            hasScrollBody: false,
+            child: _LibraryTabEmptyState(
+              dark: dark,
+              icon: Icons.search_off_rounded,
+              title: isEs ? 'Sin protocolos en esta categoría' : 'Nenhum protocolo nesta categoria',
+              subtitle: _query.isNotEmpty
+                  ? (isEs
+                      ? 'Intenta ajustar tu búsqueda para encontrar otros protocolos.'
+                      : 'Tente ajustar sua busca para encontrar outros protocolos.')
+                  : (isEs
+                      ? 'Selecciona otra categoría para ver más protocolos.'
+                      : 'Selecione outra categoria para ver mais protocolos.'),
             ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.15)),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: _kGold),
-            ),
-          ),
-        ),
-      ),
-
-      // ── Chips de categoria (oculto durante busca) ─────────────────────────
-      if (_query.isEmpty)
-        Container(
-          color: dark ? const Color(0xFF0D1A12) : const Color(0xFFF2F8F2),
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-          child: SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Row(
-              children: List.generate(_catDefs.length, (i) {
-                final active = _cat == i;
-                final ci  = _catDefs[i];
-                final lbl = isEs ? ci.$2 : ci.$1;
-                final ico = ci.$3;
-                return GestureDetector(
-                  onTap: () => setState(() => _cat = i),
-                  child: AnimatedContainer(
-                    duration: const Duration(milliseconds: 160),
-                    margin: const EdgeInsets.only(right: 8),
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      color: active ? green : Colors.transparent,
-                      border: Border.all(
-                        color: active
-                            ? green
-                            : (dark ? Colors.white24 : Colors.black.withValues(alpha: 0.12))),
-                    ),
-                    child: Row(mainAxisSize: MainAxisSize.min, children: [
-                      Icon(ico, size: 12,
-                        color: active
-                            ? Colors.white
-                            : (dark ? Colors.white54 : Colors.black.withValues(alpha: 0.45))),
-                      const SizedBox(width: 5),
-                      Text(lbl,
-                        style: TextStyle(
-                          fontSize: 11, fontWeight: FontWeight.w700,
-                          color: active
-                              ? Colors.white
-                              : (dark ? Colors.white54 : Colors.black.withValues(alpha: 0.54)))),
-                    ]),
-                  ),
-                );
-              }),
-            ),
-          ),
-        ),
-
-      // ── Contador de resultados ─────────────────────────────────────────────
-      if (_query.isNotEmpty)
-        Container(
-          width: double.infinity,
-          color: dark ? const Color(0xFF0D1A12) : const Color(0xFFF2F8F2),
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-          child: Text(
-            isEs
-                ? '${protos.length} resultado(s) para "$_query"'
-                : '${protos.length} resultado(s) para "$_query"',
-            style: TextStyle(
-              fontSize: 11, fontWeight: FontWeight.w600,
-              color: dark ? Colors.white54 : Colors.black.withValues(alpha: 0.45)),
-          ),
-        ),
-
-      // ── Lista de protocolos ───────────────────────────────────────────────
-      Expanded(
-        child: protos.isEmpty
-            ? Center(
-                child: Padding(
-                  padding: const EdgeInsets.all(40),
-                  child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-                    Icon(Icons.search_off_rounded, size: 48,
-                      color: dark ? Colors.white12 : Colors.black.withValues(alpha: 0.12)),
-                    const SizedBox(height: 12),
-                    Text(
-                      isEs ? 'Sin protocolos en esta categoría'
-                           : 'Nenhum protocolo nesta categoria',
-                      style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600,
-                        color: dark ? Colors.white30 : Colors.black.withValues(alpha: 0.26)),
-                      textAlign: TextAlign.center,
-                    ),
-                  ]),
-                ),
-              )
-            : ListView.builder(
-                padding: const EdgeInsets.fromLTRB(16, 12, 16, 100),
-                itemCount: protos.length,
-                itemBuilder: (ctx, i) {
-                  final proto    = protos[i];
-                  final title    = proto.getField(proto.title,    isEs ? 'es' : 'pt');
+          )
+        : SliverPadding(
+            padding: const EdgeInsets.fromLTRB(16, 12, 16, 100),
+            sliver: SliverList(
+              delegate: SliverChildBuilderDelegate(
+                (ctx, i) {
+                  final proto = protos[i];
+                  final title = proto.getField(proto.title, isEs ? 'es' : 'pt');
                   final severity = proto.getField(proto.severity, isEs ? 'es' : 'pt');
 
                   final sevLow = severity.toLowerCase();
                   final Color sevColor;
                   if (sevLow.contains('crítico') || sevLow.contains('crítica') ||
-                      sevLow.contains('grave')    || sevLow.contains('alto')) {
+                      sevLow.contains('grave') || sevLow.contains('alto')) {
                     sevColor = const Color(0xFFDC2626);
                   } else if (sevLow.contains('moderado') || sevLow.contains('médio') ||
-                             sevLow.contains('urgência')  || sevLow.contains('urgencia')) {
+                      sevLow.contains('urgência') || sevLow.contains('urgencia')) {
                     sevColor = const Color(0xFFD97706);
                   } else {
                     sevColor = const Color(0xFF16A34A);
@@ -1315,63 +1269,252 @@ class _ProtocolsTabState extends State<_ProtocolsTab> {
                         boxShadow: [
                           BoxShadow(
                             color: Colors.black.withValues(alpha: dark ? 0.2 : 0.05),
-                            blurRadius: 6, offset: const Offset(0, 2)),
+                            blurRadius: 6,
+                            offset: const Offset(0, 2),
+                          ),
                         ],
                       ),
                       child: Row(children: [
                         Container(
-                          width: 36, height: 36,
+                          width: 36,
+                          height: 36,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(10),
                             color: sevColor.withValues(alpha: 0.12),
                           ),
-                          child: Icon(Icons.article_rounded,
-                            size: 18, color: sevColor),
+                          child: Icon(Icons.article_rounded, size: 18, color: sevColor),
                         ),
                         const SizedBox(width: 12),
-                        Expanded(child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(title,
-                              style: TextStyle(
-                                fontSize: 13, fontWeight: FontWeight.w700,
-                                color: dark ? Colors.white : const Color(0xFF1A1A1A),
-                                height: 1.3)),
-                            if (severity.isNotEmpty) ...[
-                              const SizedBox(height: 4),
-                              Container(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 7, vertical: 2),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(6),
-                                  color: sevColor.withValues(alpha: 0.12),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                title,
+                                style: TextStyle(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w700,
+                                  color: dark ? Colors.white : const Color(0xFF1A1A1A),
+                                  height: 1.3,
                                 ),
-                                child: Text(
-                                  severity,
-                                  style: TextStyle(
-                                    fontSize: 10, fontWeight: FontWeight.w700,
-                                    color: sevColor)),
                               ),
+                              if (severity.isNotEmpty) ...[
+                                const SizedBox(height: 4),
+                                Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(6),
+                                    color: sevColor.withValues(alpha: 0.12),
+                                  ),
+                                  child: Text(
+                                    severity,
+                                    style: TextStyle(
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.w700,
+                                      color: sevColor,
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ],
-                          ],
-                        )),
+                          ),
+                        ),
                         const SizedBox(width: 8),
-                        Icon(Icons.chevron_right_rounded,
+                        Icon(
+                          Icons.chevron_right_rounded,
                           size: 20,
-                          color: dark ? Colors.white24 : Colors.black.withValues(alpha: 0.20)),
+                          color: dark ? Colors.white24 : Colors.black.withValues(alpha: 0.20),
+                        ),
                       ]),
                     ),
                   );
                 },
+                childCount: protos.length,
               ),
-      ),
-    ]);
+            ),
+          );
+
+    return CustomScrollView(
+      primary: false,
+      slivers: [
+        SliverToBoxAdapter(
+          child: Container(
+            color: _kDark,
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
+            child: TextField(
+              controller: _searchCtrl,
+              style: const TextStyle(color: Colors.white, fontSize: 13),
+              decoration: InputDecoration(
+                hintText: isEs ? 'Buscar protocolo…' : 'Buscar protocolo…',
+                hintStyle: TextStyle(
+                  color: Colors.white.withValues(alpha: 0.4),
+                  fontSize: 13,
+                ),
+                prefixIcon: const Icon(Icons.search_rounded, color: _kGold, size: 18),
+                suffixIcon: _query.isNotEmpty
+                    ? GestureDetector(
+                        onTap: () => _searchCtrl.clear(),
+                        child: const Icon(Icons.close_rounded, color: Colors.white38, size: 18),
+                      )
+                    : null,
+                filled: true,
+                fillColor: Colors.white.withValues(alpha: 0.08),
+                contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.15)),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.15)),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: const BorderSide(color: _kGold),
+                ),
+              ),
+            ),
+          ),
+        ),
+        if (_query.isEmpty)
+          SliverToBoxAdapter(
+            child: Container(
+              color: dark ? const Color(0xFF0D1A12) : const Color(0xFFF2F8F2),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: List.generate(_catDefs.length, (i) {
+                    final active = _cat == i;
+                    final ci = _catDefs[i];
+                    final lbl = isEs ? ci.$2 : ci.$1;
+                    final ico = ci.$3;
+                    return GestureDetector(
+                      onTap: () => setState(() => _cat = i),
+                      child: AnimatedContainer(
+                        duration: const Duration(milliseconds: 160),
+                        margin: const EdgeInsets.only(right: 8),
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          color: active ? green : Colors.transparent,
+                          border: Border.all(
+                            color: active
+                                ? green
+                                : (dark ? Colors.white24 : Colors.black.withValues(alpha: 0.12)),
+                          ),
+                        ),
+                        child: Row(mainAxisSize: MainAxisSize.min, children: [
+                          Icon(
+                            ico,
+                            size: 12,
+                            color: active
+                                ? Colors.white
+                                : (dark
+                                    ? Colors.white54
+                                    : Colors.black.withValues(alpha: 0.45)),
+                          ),
+                          const SizedBox(width: 5),
+                          Text(
+                            lbl,
+                            style: TextStyle(
+                              fontSize: 11,
+                              fontWeight: FontWeight.w700,
+                              color: active
+                                  ? Colors.white
+                                  : (dark
+                                      ? Colors.white54
+                                      : Colors.black.withValues(alpha: 0.54)),
+                            ),
+                          ),
+                        ]),
+                      ),
+                    );
+                  }),
+                ),
+              ),
+            ),
+          ),
+        if (_query.isNotEmpty)
+          SliverToBoxAdapter(
+            child: Container(
+              width: double.infinity,
+              color: dark ? const Color(0xFF0D1A12) : const Color(0xFFF2F8F2),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+              child: Text(
+                isEs
+                    ? '${protos.length} resultado(s) para "$_query"'
+                    : '${protos.length} resultado(s) para "$_query"',
+                style: TextStyle(
+                  fontSize: 11,
+                  fontWeight: FontWeight.w600,
+                  color: dark ? Colors.white54 : Colors.black.withValues(alpha: 0.45),
+                ),
+              ),
+            ),
+          ),
+        bodySliver,
+      ],
+    );
   }
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// ESTADO VAZIO
+// ESTADOS DE ABA / ERRO
 // ─────────────────────────────────────────────────────────────────────────────
+class _LibraryTabEmptyState extends StatelessWidget {
+  final bool dark;
+  final IconData icon;
+  final String title;
+  final String subtitle;
+
+  const _LibraryTabEmptyState({
+    required this.dark,
+    required this.icon,
+    required this.title,
+    required this.subtitle,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(40),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              icon,
+              size: 52,
+              color: dark ? Colors.white12 : Colors.black.withValues(alpha: 0.12),
+            ),
+            const SizedBox(height: 14),
+            Text(
+              title,
+              style: TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.w700,
+                color: dark ? Colors.white54 : Colors.black.withValues(alpha: 0.52),
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 8),
+            Text(
+              subtitle,
+              style: TextStyle(
+                fontSize: 12,
+                height: 1.4,
+                color: dark ? Colors.white30 : Colors.black.withValues(alpha: 0.34),
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 class _GuideErrorState extends StatelessWidget {
   final bool dark;
   final bool isEs;
