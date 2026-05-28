@@ -3,6 +3,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/foundation.dart' show kDebugMode, kIsWeb, debugPrint;
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/clinical_case_model.dart';
@@ -640,11 +641,16 @@ class FirestoreService {
   /// Leitura pública via Firestore REST API — sem SDK e com retry autenticado.
   /// Funciona como fallback para Safari/PWA quando o SDK do Firebase fica pendurado.
   static Future<List<ClinicalHistoryModel>> _loadPublicHistoriesRest() async {
+    final token = await FirebaseAuth.instance.currentUser?.getIdToken();
+    final authHeaders = (token != null && token.isNotEmpty)
+        ? <String, String>{'Authorization': 'Bearer $token'}
+        : <String, String>{};
+
     Future<http.Response> doGet({Map<String, String>? headers}) {
       return http
           .get(
             Uri.parse('$_fsBase/public_histories?pageSize=100'),
-            headers: headers,
+            headers: {...authHeaders, ...?headers},
           )
           .timeout(const Duration(seconds: 12));
     }
@@ -663,19 +669,19 @@ class FirestoreService {
     }
 
     try {
-      _debugPublicHistories('rest load start kIsWeb=$kIsWeb');
+      _debugPublicHistories('rest load start kIsWeb=$kIsWeb tokenPresent=${authHeaders.isNotEmpty}');
       var resp = await doGet();
-      _debugPublicHistories('rest load unauth status=${resp.statusCode}');
+      _debugPublicHistories('rest load initial status=${resp.statusCode}');
 
       if (resp.statusCode == 401 || resp.statusCode == 403) {
-        final token = await AuthService.getAdminToken().timeout(
-          const Duration(seconds: 4),
-          onTimeout: () => '',
-        );
-        _debugPublicHistories('rest auth retry tokenPresent=${token.isNotEmpty}');
-        if (token.isNotEmpty) {
-          resp = await doGet(headers: {'Authorization': 'Bearer $token'});
-          _debugPublicHistories('rest load auth status=${resp.statusCode}');
+        final refreshedToken = await FirebaseAuth.instance.currentUser?.getIdToken(true);
+        final retryHeaders = (refreshedToken != null && refreshedToken.isNotEmpty)
+            ? <String, String>{'Authorization': 'Bearer $refreshedToken'}
+            : <String, String>{};
+        _debugPublicHistories('rest auth retry tokenPresent=${retryHeaders.isNotEmpty}');
+        if (retryHeaders.isNotEmpty) {
+          resp = await doGet(headers: retryHeaders);
+          _debugPublicHistories('rest load retry status=${resp.statusCode}');
         }
       }
 
@@ -1304,11 +1310,16 @@ class FirestoreService {
   }
 
   static Future<List<GuideModel>> _loadPublishedGuidesRest() async {
+    final token = await FirebaseAuth.instance.currentUser?.getIdToken();
+    final authHeaders = (token != null && token.isNotEmpty)
+        ? <String, String>{'Authorization': 'Bearer $token'}
+        : <String, String>{};
+
     Future<http.Response> doGet({Map<String, String>? headers}) {
       return http
           .get(
             Uri.parse('$_fsBase/clinical_guides?pageSize=200'),
-            headers: headers,
+            headers: {...authHeaders, ...?headers},
           )
           .timeout(const Duration(seconds: 12));
     }
@@ -1327,19 +1338,19 @@ class FirestoreService {
     }
 
     try {
-      _debugGuides('rest load start kIsWeb=$kIsWeb');
+      _debugGuides('rest load start kIsWeb=$kIsWeb tokenPresent=${authHeaders.isNotEmpty}');
       var resp = await doGet();
-      _debugGuides('rest load unauth status=${resp.statusCode}');
+      _debugGuides('rest load initial status=${resp.statusCode}');
 
       if (resp.statusCode == 401 || resp.statusCode == 403) {
-        final token = await AuthService.getAdminToken().timeout(
-          const Duration(seconds: 4),
-          onTimeout: () => '',
-        );
-        _debugGuides('rest auth retry tokenPresent=${token.isNotEmpty}');
-        if (token.isNotEmpty) {
-          resp = await doGet(headers: {'Authorization': 'Bearer $token'});
-          _debugGuides('rest load auth status=${resp.statusCode}');
+        final refreshedToken = await FirebaseAuth.instance.currentUser?.getIdToken(true);
+        final retryHeaders = (refreshedToken != null && refreshedToken.isNotEmpty)
+            ? <String, String>{'Authorization': 'Bearer $refreshedToken'}
+            : <String, String>{};
+        _debugGuides('rest auth retry tokenPresent=${retryHeaders.isNotEmpty}');
+        if (retryHeaders.isNotEmpty) {
+          resp = await doGet(headers: retryHeaders);
+          _debugGuides('rest load retry status=${resp.statusCode}');
         }
       }
 
