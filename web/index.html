@@ -866,7 +866,38 @@
       setTimeout(function() {
         if (toast) toast.classList.remove('show');
       }, 15000);
+      // Notifica o Dart (Flutter) que há um update disponível.
+      // O Dart registra window.onFlutterWebUpdateAvailable via dart:js_interop
+      // (UpdateService.setupUpdateListener). Se ainda não foi registrado, a
+      // flag _mcUpdatePending garante que o Dart seja notificado na próxima
+      // chamada a setupUpdateListener.
+      window._mcUpdatePending = true;
+      try {
+        if (typeof window.onFlutterWebUpdateAvailable === 'function') {
+          window.onFlutterWebUpdateAvailable();
+        }
+      } catch(e) {}
     }
+
+    // Aplica o update: envia SKIP_WAITING ao SW waiting e recarrega a página.
+    // Chamado pelo Dart quando o usuário clica em "Atualizar Agora".
+    // Fallback: se não há SW waiting, faz hard-reload quebrando cache.
+    window.medcasesApplyUpdate = function() {
+      try {
+        window._mcUserTriggeredUpdate = true;
+        if (_waitingSW && typeof _waitingSW.postMessage === 'function') {
+          _waitingSW.postMessage({ type: 'SKIP_WAITING' });
+          // controllerchange vai disparar → reload (listener acima o detecta).
+          // Timeout de segurança: se controllerchange não disparar em 2s, recarrega.
+          setTimeout(function() { window.location.reload(true); }, 2000);
+        } else {
+          // Sem SW waiting: hard-reload quebrando cache
+          window.location.reload(true);
+        }
+      } catch(e) {
+        window.location.reload(true);
+      }
+    };
 
     // ── Registro e gestão do Service Worker ─────────────────────────
     (function() {
@@ -886,11 +917,15 @@
       var _userTriggeredUpdate = false;
 
       // controllerchange → recarrega apenas se o usuário pediu update
+      // (via botão HTML *ou* via medcasesApplyUpdate chamado pelo Dart)
       navigator.serviceWorker.addEventListener('controllerchange', function() {
-        if (_userTriggeredUpdate) {
+        if (_userTriggeredUpdate || window._mcUserTriggeredUpdate) {
           window.location.reload();
         }
       });
+
+      // Flag global para que medcasesApplyUpdate possa sinalizar o reload
+      window._mcUserTriggeredUpdate = false;
 
       // Botão ATUALIZAR: desregistra SWs + limpa caches + hard-reload com ?nocache
       document.getElementById('pwa-update-btn').addEventListener('click', function() {

@@ -189,4 +189,10 @@ self.addEventListener('message', event => {
       .then(keys => Promise.all(keys.map(k => caches.delete(k))))
       .then(() => { if (event.ports[0]) event.ports[0].postMessage({ ok: true }); });
   }
+  // Recebe sinal da página para ativar o novo SW imediatamente.
+  // A página envia {type:'SKIP_WAITING'} quando o usuário clica em "Atualizar Agora".
+  // Após skipWaiting(), o evento 'controllerchange' dispara na página → reload.
+  if (event.data.type === 'SKIP_WAITING') {
+    self.skipWaiting();
+  }
 });
