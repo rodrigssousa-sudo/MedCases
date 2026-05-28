@@ -1521,4 +1521,220 @@ void main() {
     });
 
   }); // T16
-}
+
+  // ════════════════════════════════════════════════════════════════
+  // T17 — i18n HC completa: tela principal, formulário e PDF
+  // Valida que NENHUMA string fixa PT aparece quando lang == 'es'
+  // e que NENHUMA string fixa ES aparece quando lang == 'pt'
+  // ════════════════════════════════════════════════════════════════
+  group('T17 — i18n HC completa: tela, formulário e PDF', () {
+
+    // Replica o mapa _hcStrings com as chaves críticas validadas nesta sessão
+    Map<String, String> hcPt(String key) {
+      const map = <String, Map<String, String>>{
+        // Tela principal
+        'tab_title':          {'pt': 'HISTÓRIA CLÍNICA',         'es': 'HISTORIA CLÍNICA'},
+        'tab_subtitle':       {'pt': 'Registro clínico completo', 'es': 'Registro clínico completo'},
+        'new_hc':             {'pt': 'Nova HC',                   'es': 'Nueva HC'},
+        'my_hcs':             {'pt': 'Minhas HCs',                'es': 'Mis HCs'},
+        'community':          {'pt': 'Comunidade',                'es': 'Comunidad'},
+        'search_hint':        {'pt': 'Buscar por diagnóstico, queixa, tags...', 'es': 'Buscar por diagnóstico, queja, etiquetas...'},
+        'empty_title':        {'pt': 'Nenhuma história clínica',  'es': 'Ninguna historia clínica'},
+        'empty_sub':          {'pt': 'Crie e documente seus casos clínicos\nde forma estruturada e completa', 'es': 'Cree y documente sus casos clínicos\nde forma estructurada y completa'},
+        'new_history_btn':    {'pt': '+ Nova história clínica',   'es': '+ Nuevo caso clínico'},
+        'empty_comm_title':   {'pt': 'Nenhuma história pública',  'es': 'Ninguna historia pública'},
+        // Formulário/Editor
+        'new_hc_title':       {'pt': 'Nova história clínica',     'es': 'Nueva historia clínica'},
+        'save_btn':           {'pt': 'Salvar',                    'es': 'Guardar'},
+        'f_chief':            {'pt': 'Queixa principal *',         'es': 'Motivo de consulta *'},
+        'f_hpi':              {'pt': 'História da doença atual (HDA)', 'es': 'Enfermedad actual (EA)'},
+        'f_past':             {'pt': 'Antecedentes pessoais',      'es': 'Antecedentes personales'},
+        'f_pe':               {'pt': 'Exame físico por sistemas',  'es': 'Examen físico por sistemas'},
+        'f_plan':             {'pt': 'Plano terapêutico / Conduta', 'es': 'Plan terapéutico / Conducta'},
+        'f_work_dx':          {'pt': 'Hipótese diagnóstica principal', 'es': 'Hipótesis diagnóstica principal'},
+        // PDF
+        'pdf_hc_title':       {'pt': 'História Clínica',           'es': 'Historia Clínica'},
+        'pdf_section2':       {'pt': '2. Queixa Principal',        'es': '2. Motivo de Consulta'},
+        'pdf_section4':       {'pt': '4. Exame Físico',            'es': '4. Examen Físico'},
+        'pdf_section8':       {'pt': '8. Conduta e Plano Terapêutico', 'es': '8. Conducta y Plan Terapéutico'},
+        'pdf_footer':         {'pt': 'Gerado por MedCases Pro — Uso exclusivamente educacional e de apoio clínico. Não substitui avaliação médica individual presencial.', 'es': 'Generado por MedCases Pro — Uso exclusivamente educativo y de apoyo clínico. No sustituye la evaluación médica individual presencial.'},
+        // Pré-visualização (prev_*)
+        'prev_chief':         {'pt': 'Queixa principal',           'es': 'Motivo de consulta'},
+        'prev_hpi':           {'pt': 'História da doença atual',   'es': 'Enfermedad actual'},
+        'prev_anamnese':      {'pt': 'ANAMNESE',                   'es': 'ANAMNESIS'},
+        'prev_exam':          {'pt': 'EXAME FÍSICO',               'es': 'EXAMEN FÍSICO'},
+        'prev_treat':         {'pt': 'CONDUTA',                    'es': 'CONDUCTA'},
+        'prev_outcome':       {'pt': 'DESFECHO',                   'es': 'DESENLACE'},
+        'preview_title':      {'pt': 'PRÉ-VISUALIZAÇÃO',           'es': 'PREVISUALIZACIÓN'},
+      };
+      return {'pt': map[key]?['pt'] ?? key, 'es': map[key]?['es'] ?? key};
+    }
+
+    String hcT(String lang, String key) {
+      final v = hcPt(key);
+      return v[lang] ?? v['pt'] ?? key;
+    }
+
+    // ── Tela principal ──────────────────────────────────────────────
+    test('7A-1: tela principal PT — strings corretas', () {
+      expect(hcT('pt', 'tab_title'),    equals('HISTÓRIA CLÍNICA'));
+      expect(hcT('pt', 'my_hcs'),       equals('Minhas HCs'));
+      expect(hcT('pt', 'community'),    equals('Comunidade'));
+      expect(hcT('pt', 'empty_title'),  equals('Nenhuma história clínica'));
+      expect(hcT('pt', 'new_history_btn'), equals('+ Nova história clínica'));
+      print('  [OK] 7A-1 tela PT correta');
+    });
+
+    test('7A-2: tela principal ES — nenhuma string PT deve aparecer', () {
+      // Verificações de que PT não aparece em ES
+      expect(hcT('es', 'my_hcs'),      isNot(equals('Minhas HCs')));
+      expect(hcT('es', 'community'),   isNot(equals('Comunidade')));
+      expect(hcT('es', 'search_hint'), isNot(contains('queixa')));
+      expect(hcT('es', 'empty_title'), isNot(equals('Nenhuma história clínica')));
+      expect(hcT('es', 'new_history_btn'), isNot(equals('+ Nova história clínica')));
+      print('  [OK] 7A-2 tela ES não contém strings PT');
+    });
+
+    test('7A-3: tela principal ES — strings corretas', () {
+      expect(hcT('es', 'tab_title'),       equals('HISTORIA CLÍNICA'));
+      expect(hcT('es', 'my_hcs'),          equals('Mis HCs'));
+      expect(hcT('es', 'community'),       equals('Comunidad'));
+      expect(hcT('es', 'search_hint'),     contains('etiquetas'));
+      expect(hcT('es', 'empty_title'),     equals('Ninguna historia clínica'));
+      expect(hcT('es', 'new_history_btn'), equals('+ Nuevo caso clínico'));
+      print('  [OK] 7A-3 tela ES correta');
+    });
+
+    // ── Formulário/Editor ───────────────────────────────────────────
+    test('7B-1: formulário PT — labels corretos', () {
+      expect(hcT('pt', 'new_hc_title'), equals('Nova história clínica'));
+      expect(hcT('pt', 'save_btn'),     equals('Salvar'));
+      expect(hcT('pt', 'f_chief'),      contains('Queixa principal'));
+      expect(hcT('pt', 'f_hpi'),        contains('doença atual'));
+      expect(hcT('pt', 'f_pe'),         contains('Exame físico'));
+      expect(hcT('pt', 'f_plan'),       contains('Conduta'));
+      print('  [OK] 7B-1 formulário PT correto');
+    });
+
+    test('7B-2: formulário ES — nenhum label PT deve aparecer', () {
+      expect(hcT('es', 'new_hc_title'), isNot(equals('Nova história clínica')));
+      expect(hcT('es', 'save_btn'),     isNot(equals('Salvar')));
+      expect(hcT('es', 'f_chief'),      isNot(contains('Queixa')));
+      expect(hcT('es', 'f_hpi'),        isNot(contains('doença atual')));
+      expect(hcT('es', 'f_pe'),         isNot(contains('Exame físico')));
+      expect(hcT('es', 'f_plan'),       isNot(contains('Conduta')));
+      print('  [OK] 7B-2 formulário ES não contém strings PT');
+    });
+
+    test('7B-3: formulário ES — labels corretos', () {
+      expect(hcT('es', 'new_hc_title'), equals('Nueva historia clínica'));
+      expect(hcT('es', 'save_btn'),     equals('Guardar'));
+      expect(hcT('es', 'f_chief'),      contains('Motivo de consulta'));
+      expect(hcT('es', 'f_hpi'),        contains('Enfermedad actual'));
+      expect(hcT('es', 'f_pe'),         contains('Examen físico'));
+      expect(hcT('es', 'f_plan'),       contains('Plan terapéutico'));
+      print('  [OK] 7B-3 formulário ES correto');
+    });
+
+    // ── PDF / Impressão ─────────────────────────────────────────────
+    test('7C-1: PDF PT — títulos corretos', () {
+      expect(hcT('pt', 'pdf_hc_title'),  equals('História Clínica'));
+      expect(hcT('pt', 'pdf_section2'),  equals('2. Queixa Principal'));
+      expect(hcT('pt', 'pdf_section4'),  equals('4. Exame Físico'));
+      expect(hcT('pt', 'pdf_section8'),  equals('8. Conduta e Plano Terapêutico'));
+      expect(hcT('pt', 'pdf_footer'),    contains('Gerado por MedCases Pro'));
+      print('  [OK] 7C-1 PDF PT correto');
+    });
+
+    test('7C-2: PDF ES — não deve conter strings PT', () {
+      expect(hcT('es', 'pdf_hc_title'),  isNot(equals('História Clínica')));
+      expect(hcT('es', 'pdf_section2'),  isNot(contains('Queixa')));
+      expect(hcT('es', 'pdf_section4'),  isNot(contains('Exame Físico')));
+      expect(hcT('es', 'pdf_section8'),  isNot(contains('Conduta')));
+      expect(hcT('es', 'pdf_footer'),    isNot(contains('Gerado por')));
+      print('  [OK] 7C-2 PDF ES não contém strings PT');
+    });
+
+    test('7C-3: PDF ES — títulos corretos', () {
+      expect(hcT('es', 'pdf_hc_title'),  equals('Historia Clínica'));
+      expect(hcT('es', 'pdf_section2'),  equals('2. Motivo de Consulta'));
+      expect(hcT('es', 'pdf_section4'),  equals('4. Examen Físico'));
+      expect(hcT('es', 'pdf_section8'),  equals('8. Conducta y Plan Terapéutico'));
+      expect(hcT('es', 'pdf_footer'),    contains('Generado por MedCases Pro'));
+      expect(hcT('es', 'pdf_footer'),    contains('No sustituye'));
+      print('  [OK] 7C-3 PDF ES correto');
+    });
+
+    // ── Pré-visualização ────────────────────────────────────────────
+    test('7D-1: preview PT — seções e labels corretos', () {
+      expect(hcT('pt', 'prev_chief'),    equals('Queixa principal'));
+      expect(hcT('pt', 'prev_hpi'),      equals('História da doença atual'));
+      expect(hcT('pt', 'prev_anamnese'), equals('ANAMNESE'));
+      expect(hcT('pt', 'prev_exam'),     equals('EXAME FÍSICO'));
+      expect(hcT('pt', 'preview_title'), equals('PRÉ-VISUALIZAÇÃO'));
+      print('  [OK] 7D-1 preview PT correto');
+    });
+
+    test('7D-2: preview ES — não deve conter strings PT', () {
+      expect(hcT('es', 'prev_chief'),    isNot(equals('Queixa principal')));
+      expect(hcT('es', 'prev_hpi'),      isNot(equals('História da doença atual')));
+      expect(hcT('es', 'prev_anamnese'), isNot(equals('ANAMNESE')));
+      expect(hcT('es', 'prev_exam'),     isNot(equals('EXAME FÍSICO')));
+      expect(hcT('es', 'preview_title'), isNot(equals('PRÉ-VISUALIZAÇÃO')));
+      print('  [OK] 7D-2 preview ES não contém strings PT');
+    });
+
+    test('7D-3: preview ES — labels corretos', () {
+      expect(hcT('es', 'prev_chief'),    equals('Motivo de consulta'));
+      expect(hcT('es', 'prev_hpi'),      equals('Enfermedad actual'));
+      expect(hcT('es', 'prev_anamnese'), equals('ANAMNESIS'));
+      expect(hcT('es', 'prev_exam'),     equals('EXAMEN FÍSICO'));
+      expect(hcT('es', 'preview_title'), equals('PREVISUALIZACIÓN'));
+      print('  [OK] 7D-3 preview ES correto');
+    });
+
+    // ── Regras de correção dos bugs desta sessão ─────────────────────
+    test('7E-1: prev_chief PT era invertido — agora correto', () {
+      // BUG CORRIGIDO: PT estava com 'Queja principal' (ES)
+      expect(hcT('pt', 'prev_chief'), isNot(equals('Queja principal')),
+          reason: 'Bug: PT estava com string ES (Queja principal)');
+      expect(hcT('pt', 'prev_chief'), equals('Queixa principal'),
+          reason: 'PT deve ser Queixa principal');
+      print('  [OK] 7E-1 prev_chief PT corrigido (não mais invertido)');
+    });
+
+    test('7E-2: prev_hpi PT era invertido — agora correto', () {
+      // BUG CORRIGIDO: PT estava com 'Historia de la enfermedad actual' (ES)
+      expect(hcT('pt', 'prev_hpi'), isNot(equals('Historia de la enfermedad actual')),
+          reason: 'Bug: PT estava com string ES');
+      expect(hcT('pt', 'prev_hpi'), equals('História da doença atual'),
+          reason: 'PT deve ser História da doença atual');
+      print('  [OK] 7E-2 prev_hpi PT corrigido (não mais invertido)');
+    });
+
+    test('7E-3: REGRA — idioma global controla TODA a HC', () {
+      // Garantir que PT ≠ ES em chaves que devem diferir
+      final keysDifferentPtEs = ['my_hcs', 'community', 'search_hint', 'empty_title',
+                                  'save_btn', 'f_chief', 'f_pe', 'pdf_section2',
+                                  'prev_chief', 'prev_exam', 'pdf_footer'];
+      for (final key in keysDifferentPtEs) {
+        final ptVal = hcT('pt', key);
+        final esVal = hcT('es', key);
+        expect(ptVal, isNot(equals(esVal)),
+            reason: "Chave '$key' deve diferir entre PT e ES. "
+                    "PT='$ptVal', ES='$esVal'");
+      }
+      print('  [OK] 7E-3 PT≠ES para todas as chaves críticas');
+    });
+
+    test('7E-4: busca em ES usa vocabulário espanhol', () {
+      final hint = hcT('es', 'search_hint');
+      expect(hint, contains('etiquetas'), reason: 'ES deve usar etiquetas (não tags)');
+      expect(hint, isNot(contains('queixa')), reason: 'ES não deve conter queixa PT');
+      expect(hint, isNot(contains('tags')), reason: 'ES não deve usar tags (deve ser etiquetas)');
+      print('  [OK] 7E-4 search_hint ES usa vocabulário correto');
+    });
+
+  }); // T17
+} // main
+

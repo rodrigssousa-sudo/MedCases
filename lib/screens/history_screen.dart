@@ -88,6 +88,9 @@ const _hcStrings = <String, Map<String, String>>{
   'pdf_section1':       {'pt': '1. Identificação do Paciente',         'es': '1. Identificación del Paciente'},
   'pdf_initials':       {'pt': 'Iniciais',                             'es': 'Iniciales'},
   'pdf_demog':          {'pt': 'Dados demográficos',                   'es': 'Datos demográficos'},
+  'pdf_patient':        {'pt': 'Paciente',                             'es': 'Paciente'},
+  'pdf_age_label':      {'pt': 'Idade',                                'es': 'Edad'},
+  'pdf_specialty':      {'pt': 'Especialidade',                        'es': 'Especialidad'},
   'pdf_section2':       {'pt': '2. Queixa Principal',                  'es': '2. Motivo de Consulta'},
   'pdf_section3':       {'pt': '3. Anamnese',                          'es': '3. Anamnesis'},
   'pdf_hpi':            {'pt': 'História da doença atual',             'es': 'Enfermedad actual'},
@@ -117,6 +120,10 @@ const _hcStrings = <String, Map<String, String>>{
   'pdf_followup':       {'pt': 'Seguimento / Orientações',             'es': 'Seguimiento / Indicaciones'},
   'pdf_footer':         {'pt': 'Gerado por MedCases Pro — Uso exclusivamente educacional e de apoio clínico. Não substitui avaliação médica individual presencial.',
                           'es': 'Generado por MedCases Pro — Uso exclusivamente educativo y de apoyo clínico. No sustituye la evaluación médica individual presencial.'},
+  // Banner de diagnóstico
+  'dx_final_label':     {'pt': 'DIAGNÓSTICO FINAL',                    'es': 'DIAGNÓSTICO FINAL'},
+  'dx_working_label':   {'pt': 'HIPÓTESE DIAGNÓSTICA',                 'es': 'HIPÓTESIS DIAGNÓSTICA'},
+  'dx_diff_label':      {'pt': 'DIAGNÓSTICO DIFERENCIAL',              'es': 'DIAGNÓSTICO DIFERENCIAL'},
   // PDF evolução tipos
   'evo_med':            {'pt': 'Evolução Médica',                      'es': 'Evolución Médica'},
   'evo_nurs':           {'pt': 'Nota de Enfermagem',                   'es': 'Nota de Enfermería'},
@@ -268,10 +275,11 @@ const _hcStrings = <String, Map<String, String>>{
   // Pré-visualização
   'preview_title':      {'pt': 'PRÉ-VISUALIZAÇÃO',                       'es': 'PREVISUALIZACIÓN'},
   'prev_anamnese':      {'pt': 'ANAMNESE',                               'es': 'ANAMNESIS'},
-  'prev_chief':         {'pt': 'Queja principal',                        'es': 'Motivo de consulta'},
-  'prev_hpi':           {'pt': 'Historia de la enfermedad actual',       'es': 'Enfermedad actual'},
+  'prev_chief':         {'pt': 'Queixa principal',                        'es': 'Motivo de consulta'},
+  'prev_hpi':           {'pt': 'História da doença atual',               'es': 'Enfermedad actual'},
   'prev_past':          {'pt': 'Antecedentes pessoais',                  'es': 'Antecedentes personales'},
   'prev_social':        {'pt': 'História social',                        'es': 'Historia social'},
+  'prev_family':        {'pt': 'Antecedentes familiares',                'es': 'Antecedentes familiares'},
   'prev_meds':          {'pt': 'Medicamentos em uso',                    'es': 'Medicación habitual'},
   'prev_allerg':        {'pt': 'Alergias',                               'es': 'Alergias'},
   'prev_rvs':           {'pt': 'Revisão de sistemas',                    'es': 'Revisión de sistemas'},
@@ -1320,7 +1328,7 @@ class _HistoryDetailState extends State<_HistoryDetail> {
                 key: _printKey,
                 child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                   if (history.finalDiagnosis.isNotEmpty || history.workingDiagnosis.isNotEmpty)
-                    _DxBanner(final_: history.finalDiagnosis, working: history.workingDiagnosis, cid: history.cid, differential: history.differentialDx),
+                    _DxBanner(final_: history.finalDiagnosis, working: history.workingDiagnosis, cid: history.cid, differential: history.differentialDx, lang: p.lang),
                   if (history.finalDiagnosis.isNotEmpty || history.workingDiagnosis.isNotEmpty) const SizedBox(height: 14),
 
                   // ══ SEÇÃO ANAMNESE com ícones circulares verdes ══════════════
@@ -2110,7 +2118,7 @@ class _HistoryEditorState extends State<_HistoryEditor> {
               child: Container(padding: const EdgeInsets.all(8), decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: Colors.white.withValues(alpha: 0.1)),
                 child: const Icon(Icons.close_rounded, size: 16, color: Colors.white))),
             const SizedBox(width: 10),
-            Expanded(child: Text(_draft.chiefComplaint.isNotEmpty ? _draft.chiefComplaint : (widget.p.lang == 'es' ? 'Nueva historia clínica' : 'Nova história clínica'),
+            Expanded(child: Text(_draft.chiefComplaint.isNotEmpty ? _draft.chiefComplaint : _hcT(widget.p.lang, 'new_hc_title'),
               style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w900, color: Colors.white), overflow: TextOverflow.ellipsis)),
             // Botão Pré-visualizar
             GestureDetector(onTap: _showPreview,
@@ -2794,8 +2802,8 @@ class _SmartDictaphoneButton extends StatelessWidget {
           Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Text(
               active
-                ? (isEs ? 'DICTÁFONO INTELIGENTE • Grabando' : 'DITÁFONE INTELIGENTE • Gravando')
-                : (isEs ? 'Dictáfono inteligente' : 'Ditáfone inteligente'),
+                ? _hcT(lang, 'dictaphone_active')
+                : _hcT(lang, 'dictaphone'),
               style: TextStyle(
                 fontSize: 13, fontWeight: FontWeight.w900,
                 color: active ? Colors.white : const Color(0xFF1F6B48),
@@ -2871,9 +2879,9 @@ class _HistoryPreviewSheet extends StatelessWidget {
               const Icon(Icons.description_rounded, size: 20, color: Color(0xFFC5A365)),
               const SizedBox(width: 10),
               Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Text(isEs ? 'PRÉ-VISUALIZACIÓN' : 'PRÉ-VISUALIZAÇÃO',
+                Text(_hcT(lang, 'preview_title'),
                   style: const TextStyle(fontSize: 9, fontWeight: FontWeight.w900, color: Color(0xFFC5A365), letterSpacing: 1.5)),
-                Text(isEs ? 'Historia Clínica' : 'História Clínica',
+                Text(_hcT(lang, 'pdf_hc_title'),
                   style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w900, color: Colors.white)),
               ])),
               GestureDetector(
@@ -2898,18 +2906,18 @@ class _HistoryPreviewSheet extends StatelessWidget {
                            history.familyHistory, history.socialHistory,
                            history.medications, history.allergies, history.reviewOfSystems])) ...[
                 _PreviewSection(
-                  title: isEs ? 'ANAMNESIS' : 'ANAMNESE',
+                  title: _hcT(lang, 'prev_anamnese'),
                   icon: Icons.history_edu_rounded,
                   color: const Color(0xFF1E40AF),
                   children: [
-                    if (history.chiefComplaint.isNotEmpty) _PreviewItem(isEs ? 'Queja principal' : 'Queixa principal', history.chiefComplaint),
-                    if (history.hpi.isNotEmpty) _PreviewItem(isEs ? 'Historia de la enfermedad actual' : 'História da doença atual', history.hpi),
-                    if (history.pastHistory.isNotEmpty) _PreviewItem(isEs ? 'Antecedentes personales' : 'Antecedentes pessoais', history.pastHistory),
-                    if (history.familyHistory.isNotEmpty) _PreviewItem(isEs ? 'Antecedentes familiares' : 'Antecedentes familiares', history.familyHistory),
-                    if (history.socialHistory.isNotEmpty) _PreviewItem(isEs ? 'Historia social' : 'História social', history.socialHistory),
-                    if (history.medications.isNotEmpty) _PreviewItemHighlight(isEs ? 'Medicamentos en uso' : 'Medicamentos em uso', history.medications, const Color(0xFF1E40AF)),
-                    if (history.allergies.isNotEmpty) _PreviewItemHighlight(isEs ? 'Alergias' : 'Alergias', history.allergies, const Color(0xFFDC2626)),
-                    if (history.reviewOfSystems.isNotEmpty) _PreviewItem(isEs ? 'Revisión de sistemas' : 'Revisão de sistemas', history.reviewOfSystems),
+                    if (history.chiefComplaint.isNotEmpty) _PreviewItem(_hcT(lang, 'prev_chief'), history.chiefComplaint),
+                    if (history.hpi.isNotEmpty) _PreviewItem(_hcT(lang, 'prev_hpi'), history.hpi),
+                    if (history.pastHistory.isNotEmpty) _PreviewItem(_hcT(lang, 'prev_past'), history.pastHistory),
+                    if (history.familyHistory.isNotEmpty) _PreviewItem(_hcT(lang, 'prev_family'), history.familyHistory),
+                    if (history.socialHistory.isNotEmpty) _PreviewItem(_hcT(lang, 'prev_social'), history.socialHistory),
+                    if (history.medications.isNotEmpty) _PreviewItemHighlight(_hcT(lang, 'prev_meds'), history.medications, const Color(0xFF1E40AF)),
+                    if (history.allergies.isNotEmpty) _PreviewItemHighlight(_hcT(lang, 'prev_allerg'), history.allergies, const Color(0xFFDC2626)),
+                    if (history.reviewOfSystems.isNotEmpty) _PreviewItem(_hcT(lang, 'prev_rvs'), history.reviewOfSystems),
                   ],
                 ),
                 const SizedBox(height: 12),
@@ -2918,12 +2926,12 @@ class _HistoryPreviewSheet extends StatelessWidget {
               // ── EXAME FÍSICO ─────────────────────────────────────────────────
               if (_hasAny([history.vitalSigns, history.physicalExam])) ...[
                 _PreviewSection(
-                  title: isEs ? 'EXAMEN FÍSICO' : 'EXAME FÍSICO',
+                  title: _hcT(lang, 'prev_exam'),
                   icon: Icons.accessibility_new_rounded,
                   color: const Color(0xFF065F46),
                   children: [
-                    if (history.vitalSigns.isNotEmpty) _PreviewItemHighlight(isEs ? 'Signos vitales' : 'Sinais vitais', history.vitalSigns, const Color(0xFF065F46)),
-                    if (history.physicalExam.isNotEmpty) _PreviewItem(isEs ? 'Examen físico' : 'Exame físico por sistemas', history.physicalExam),
+                    if (history.vitalSigns.isNotEmpty) _PreviewItemHighlight(_hcT(lang, 'prev_vitals'), history.vitalSigns, const Color(0xFF065F46)),
+                    if (history.physicalExam.isNotEmpty) _PreviewItem(_hcT(lang, 'prev_pe'), history.physicalExam),
                   ],
                 ),
                 const SizedBox(height: 12),
@@ -2932,13 +2940,13 @@ class _HistoryPreviewSheet extends StatelessWidget {
               // ── DIAGNÓSTICO ──────────────────────────────────────────────────
               if (_hasAny([history.workingDiagnosis, history.finalDiagnosis, history.differentialDx])) ...[
                 _PreviewSection(
-                  title: isEs ? 'DIAGNÓSTICO' : 'DIAGNÓSTICO',
+                  title: _hcT(lang, 'prev_dx'),
                   icon: Icons.lightbulb_rounded,
                   color: const Color(0xFF92400E),
                   children: [
-                    if (history.finalDiagnosis.isNotEmpty) _PreviewItemHighlight(isEs ? 'Diagnóstico final' : 'Diagnóstico final', '${history.finalDiagnosis}${history.cid.isNotEmpty ? "  (CID: ${history.cid})" : ""}', const Color(0xFF065F46)),
-                    if (history.workingDiagnosis.isNotEmpty && history.finalDiagnosis.isEmpty) _PreviewItemHighlight(isEs ? 'Hipótesis diagnóstica' : 'Hipótese diagnóstica', history.workingDiagnosis, const Color(0xFF92400E)),
-                    if (history.differentialDx.isNotEmpty) _PreviewItem(isEs ? 'Diagnóstico diferencial' : 'Diagnóstico diferencial', history.differentialDx),
+                    if (history.finalDiagnosis.isNotEmpty) _PreviewItemHighlight(_hcT(lang, 'prev_final_dx'), '${history.finalDiagnosis}${history.cid.isNotEmpty ? "  (CID: ${history.cid})" : ""}', const Color(0xFF065F46)),
+                    if (history.workingDiagnosis.isNotEmpty && history.finalDiagnosis.isEmpty) _PreviewItemHighlight(_hcT(lang, 'prev_work_dx'), history.workingDiagnosis, const Color(0xFF92400E)),
+                    if (history.differentialDx.isNotEmpty) _PreviewItem(_hcT(lang, 'prev_diff_dx'), history.differentialDx),
                   ],
                 ),
                 const SizedBox(height: 12),
@@ -2947,12 +2955,12 @@ class _HistoryPreviewSheet extends StatelessWidget {
               // ── EXAMES ───────────────────────────────────────────────────────
               if (_hasAny([history.labResults, history.imagingResults, history.otherResults])) ...[
                 _PreviewSection(
-                  title: isEs ? 'EXÁMENES COMPLEMENTARIOS' : 'EXAMES COMPLEMENTARES',
+                  title: _hcT(lang, 'prev_labs'),
                   icon: Icons.biotech_rounded,
                   color: const Color(0xFF6B21A8),
                   children: [
-                    if (history.labResults.isNotEmpty) _PreviewItem(isEs ? 'Laboratorio' : 'Laboratório', history.labResults),
-                    if (history.imagingResults.isNotEmpty) _PreviewItem(isEs ? 'Imagen / Otros' : 'Imagem / Outros', history.imagingResults),
+                    if (history.labResults.isNotEmpty) _PreviewItem(_hcT(lang, 'prev_lab'), history.labResults),
+                    if (history.imagingResults.isNotEmpty) _PreviewItem(_hcT(lang, 'prev_img'), history.imagingResults),
                     if (history.otherResults.isNotEmpty) _PreviewItem('ECG / Biópsia', history.otherResults),
                   ],
                 ),
@@ -2962,12 +2970,12 @@ class _HistoryPreviewSheet extends StatelessWidget {
               // ── CONDUTA ──────────────────────────────────────────────────────
               if (_hasAny([history.treatmentPlan, history.procedures])) ...[
                 _PreviewSection(
-                  title: isEs ? 'PLAN TERAPÉUTICO' : 'CONDUTA / TRATAMENTO',
+                  title: _hcT(lang, 'prev_treat'),
                   icon: Icons.assignment_turned_in_rounded,
                   color: const Color(0xFF0F1C14),
                   children: [
-                    if (history.treatmentPlan.isNotEmpty) _PreviewItem(isEs ? 'Plan terapéutico' : 'Plano terapêutico', history.treatmentPlan),
-                    if (history.procedures.isNotEmpty) _PreviewItem(isEs ? 'Procedimientos' : 'Procedimentos', history.procedures),
+                    if (history.treatmentPlan.isNotEmpty) _PreviewItem(_hcT(lang, 'prev_plan'), history.treatmentPlan),
+                    if (history.procedures.isNotEmpty) _PreviewItem(_hcT(lang, 'prev_proc'), history.procedures),
                   ],
                 ),
                 const SizedBox(height: 12),
@@ -2976,13 +2984,13 @@ class _HistoryPreviewSheet extends StatelessWidget {
               // ── DESFECHO ─────────────────────────────────────────────────────
               if (_hasAny([history.dischargeCondition, history.followUp]) || history.outcome.isNotEmpty) ...[
                 _PreviewSection(
-                  title: isEs ? 'DESENLACE / ALTA' : 'DESFECHO / ALTA',
+                  title: _hcT(lang, 'prev_outcome'),
                   icon: Icons.door_front_door_rounded,
                   color: const Color(0xFF1E40AF),
                   children: [
-                    if (history.outcome.isNotEmpty) _PreviewItemHighlight(isEs ? 'Desenlace' : 'Desfecho', _outcomeLabel(history.outcome, isEs), const Color(0xFF1E40AF)),
-                    if (history.dischargeCondition.isNotEmpty) _PreviewItem(isEs ? 'Condiciones de alta' : 'Condições de alta', history.dischargeCondition),
-                    if (history.followUp.isNotEmpty) _PreviewItem(isEs ? 'Seguimiento' : 'Seguimento', history.followUp),
+                    if (history.outcome.isNotEmpty) _PreviewItemHighlight(_hcT(lang, 'prev_discharge'), _outcomeLabel(history.outcome, isEs), const Color(0xFF1E40AF)),
+                    if (history.dischargeCondition.isNotEmpty) _PreviewItem(_hcT(lang, 'prev_discharge'), history.dischargeCondition),
+                    if (history.followUp.isNotEmpty) _PreviewItem(_hcT(lang, 'prev_followup'), history.followUp),
                   ],
                 ),
                 const SizedBox(height: 12),
@@ -3042,18 +3050,18 @@ class _PreviewDocHeader extends StatelessWidget {
             child: Text('HC', style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w900, color: Color(0xFFC5A365), letterSpacing: 1)),
           ),
           const SizedBox(width: 8),
-          Expanded(child: Text(isEs ? 'HISTORIA CLÍNICA' : 'HISTÓRIA CLÍNICA',
+          Expanded(child: Text(_hcT(isEs ? 'es' : 'pt', 'tab_title'),
             style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w900, color: Color(0xFF333333), letterSpacing: 1.2))),
           Text(dateStr, style: const TextStyle(fontSize: 9, color: Color(0xFFAAAAAA), fontWeight: FontWeight.w600)),
         ]),
         const Divider(height: 16, color: Color(0xFFEEEEEE)),
         // Dados do paciente
         Wrap(spacing: 16, runSpacing: 6, children: [
-          if (history.patientInitials.isNotEmpty) _PHItem('Paciente', history.patientInitials),
-          if (history.patientAge.isNotEmpty) _PHItem(isEs ? 'Edad' : 'Idade', '${history.patientAge} ${isEs ? "años" : "anos"}'),
+          if (history.patientInitials.isNotEmpty) _PHItem(_hcT(isEs ? 'es' : 'pt', 'pdf_patient'), history.patientInitials),
+          if (history.patientAge.isNotEmpty) _PHItem(_hcT(isEs ? 'es' : 'pt', 'pdf_age_label'), '${history.patientAge} ${_hcT(isEs ? "es" : "pt", "years")}'),
           if (history.patientSex.isNotEmpty) _PHItem(isEs ? 'Sexo' : 'Sexo', history.patientSex),
           if (history.patientWeight.isNotEmpty) _PHItem(isEs ? 'Peso' : 'Peso', '${history.patientWeight} kg'),
-          if (history.category.isNotEmpty) _PHItem(isEs ? 'Especialidad' : 'Especialidade', history.category),
+          if (history.category.isNotEmpty) _PHItem(_hcT(isEs ? 'es' : 'pt', 'pdf_specialty'), history.category),
         ]),
       ]),
     );
@@ -3275,8 +3283,8 @@ class _AllergyBanner extends StatelessWidget {
 }
 
 class _DxBanner extends StatelessWidget {
-  final String final_, working, cid, differential;
-  const _DxBanner({required this.final_, required this.working, required this.cid, required this.differential});
+  final String final_, working, cid, differential, lang;
+  const _DxBanner({required this.final_, required this.working, required this.cid, required this.differential, required this.lang});
   @override
   Widget build(BuildContext context) {
     final hasFinal = final_.isNotEmpty;
@@ -3314,7 +3322,7 @@ class _DxBanner extends StatelessWidget {
             ),
             const SizedBox(width: 10),
             Text(
-              hasFinal ? 'DIAGNÓSTICO FINAL' : 'HIPÓTESE DIAGNÓSTICA',
+              hasFinal ? _hcT(lang, 'dx_final_label') : _hcT(lang, 'dx_working_label'),
               style: TextStyle(fontSize: 10, fontWeight: FontWeight.w900,
                 letterSpacing: 1.3, color: primaryColor),
             ),
@@ -3336,7 +3344,7 @@ class _DxBanner extends StatelessWidget {
                 child: Text('CID-10: $cid', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: primaryColor)),
               )],
             if (differential.isNotEmpty) ...[const SizedBox(height: 8),
-              Text('DIAGNÓSTICO DIFERENCIAL', style: TextStyle(fontSize: 9, fontWeight: FontWeight.w900, color: primaryColor.withValues(alpha: 0.6), letterSpacing: 1.1)),
+              Text(_hcT(lang, 'dx_diff_label'), style: TextStyle(fontSize: 9, fontWeight: FontWeight.w900, color: primaryColor.withValues(alpha: 0.6), letterSpacing: 1.1)),
               const SizedBox(height: 3),
               Text(differential, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Color(0xFF555555), height: 1.4))],
           ],
