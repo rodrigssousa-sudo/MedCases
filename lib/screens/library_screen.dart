@@ -90,9 +90,14 @@ class _LibraryScreenState extends State<LibraryScreen>
     final bg   = dark ? const Color(0xFF0A130E) : const Color(0xFFF7F8FA);
     final filtered = _filtered;
 
-    return Scaffold(
-      backgroundColor: bg,
-      body: Column(children: [
+    // ⚠️ Não usa Scaffold próprio — esta tela fica dentro do IndexedStack do
+    // _MainShellState, que já fornece Scaffold com AppBar (mobile) ou sidebar
+    // (desktop). Scaffold aninhado causava conflito de MediaQuery no mobile:
+    // o Scaffold interno recebia height=0 e renderizava tela cinza/vazia.
+    // Solução: Material + Column (sem Scaffold), igual ao padrão de ToolsScreen.
+    return Material(
+      color: bg,
+      child: Column(children: [
         // ── Header ──────────────────────────────────────────────────────────
         _LibraryHeader(dark: dark, isEs: isEs, tabCtrl: _tabCtrl),
 
@@ -143,10 +148,10 @@ class _LibraryHeader extends StatelessWidget {
         color: _kDark,
         boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.3), blurRadius: 8)],
       ),
-      child: SafeArea(
-        bottom: false,
-        child: Column(children: [
-          // Título
+      child: Column(children: [
+          // Título — sem SafeArea: o Scaffold pai (shell) já gerencia o inset
+          // do status bar. SafeArea duplo causava padding extra no desktop e
+          // layout incorreto no mobile com AppBar.
           Padding(
             padding: const EdgeInsets.fromLTRB(20, 14, 20, 10),
             child: Row(children: [
@@ -190,7 +195,6 @@ class _LibraryHeader extends StatelessWidget {
             ],
           ),
         ]),
-      ),
     );
   }
 }

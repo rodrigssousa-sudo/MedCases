@@ -1350,8 +1350,13 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
       backgroundColor: bg,
       endDrawer: _AppDrawer(p: p),
       // ── AppBar mobile — logo + hambúrguer para abrir o endDrawer ─────────
+      // ── AppBar mobile — PreferredSize calcula altura = status bar + 56px ──
+      // O Scaffold nativo já posiciona o body abaixo da AppBar automaticamente;
+      // não precisamos de SafeArea manual no _MobileAppBar.
       appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(56),
+        preferredSize: Size.fromHeight(
+          MediaQuery.of(context).padding.top + 56,
+        ),
         child: Builder(
           builder: (scaffoldCtx) => _MobileAppBar(
             dark: dark,
