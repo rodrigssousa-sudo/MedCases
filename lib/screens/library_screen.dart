@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:flutter/foundation.dart' show kDebugMode, kIsWeb, debugPrint;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -33,6 +34,11 @@ class _LibraryScreenState extends State<LibraryScreen>
   StreamSubscription<List<GuideModel>>? _sub;
   List<GuideModel> _guides = [];
   bool _loading = true;
+  String _guidesError = '';
+
+  void _log(String message) {
+    if (kDebugMode) debugPrint('[LibraryScreen] $message');
+  }
 
   void _syncCategoryWithData() {
     if (_category == 'Todos') return;
@@ -40,47 +46,118 @@ class _LibraryScreenState extends State<LibraryScreen>
     if (!exists) _category = 'Todos';
   }
 
-  Future<void> _refreshGuides({bool forceRemote = false}) async {
-    final list = await FirestoreService.loadPublishedGuides(
-      forceRemote: forceRemote,
-    );
-    if (!mounted) return;
-    setState(() {
-      if (list.isNotEmpty || _guides.isEmpty) {
-        _guides = list;
-      }
-      _syncCategoryWithData();
-      _loading = false;
-    });
-  }
-
-  Future<void> _initGuides() async {
-    final cached = await FirestoreService.loadCachedPublishedGuides();
-    if (!mounted) return;
-
-    if (cached.isNotEmpty) {
-      setState(() {
-        _guides = cached;
-        _syncCategoryWithData();
-        _loading = false;
-      });
-    }
-
-    await _refreshGuides(forceRemote: true);
-    if (!mounted) return;
-
-    _sub = FirestoreService.guidesStream().listen((list) {
+  Future<void> _refreshGuides({
+    bool forceRemote = false,
+    String reason = 'manual',
+  }) async {
+    _log('refresh start reason=$reason forceRemote=$forceRemote kIsWeb=$kIsWeb');
+    try {
+      final list = await FirestoreService.loadPublishedGuides(
+        forceRemote: forceRemote,
+      ).timeout(
+        const Duration(seconds: 18),
+        onTimeout: () => throw TimeoutException(
+          'Library guides refresh timeout after 18s ($reason)',
+        ),
+      );
+      final serviceError = FirestoreService.lastGuidesErrorMessage;
       if (!mounted) return;
       setState(() {
         if (list.isNotEmpty || _guides.isEmpty) {
           _guides = list;
         }
+        _guidesError = (_guides.isEmpty && serviceError.isNotEmpty)
+            ? serviceError
+            : '';
         _syncCategoryWithData();
         _loading = false;
       });
-    }, onError: (_) async {
-      await _refreshGuides(forceRemote: true);
-    });
+      _log('refresh done reason=$reason count=${list.length} error="$serviceError"');
+    } catch (e) {
+      _log('refresh failed reason=$reason error=$e');
+      if (!mounted) return;
+      setState(() {
+        _guidesError = e.toString();
+        _loading = false;
+      });
+    }
+  }
+
+  void _subscribeGuidesStream() {
+    _log('subscribe stream start kIsWeb=$kIsWeb');
+    _sub?.cancel();
+    _sub = FirestoreService.guidesStream()
+        .timeout(
+          const Duration(seconds: 25),
+          onTimeout: (sink) {
+            sink.addError(
+              TimeoutException('Library guides stream timeout: no events in 25s'),
+            );
+          },
+        )
+        .listen((list) {
+          _log('stream event count=${list.length}');
+          if (!mounted) return;
+          setState(() {
+            if (list.isNotEmpty || _guides.isEmpty) {
+              _guides = list;
+            }
+            _guidesError = (_guides.isEmpty &&
+                    FirestoreService.lastGuidesErrorMessage.isNotEmpty)
+                ? FirestoreService.lastGuidesErrorMessage
+                : '';
+            _syncCategoryWithData();
+            _loading = false;
+          });
+        }, onError: (Object error, StackTrace stackTrace) async {
+          _log('stream error=$error');
+          if (mounted) {
+            setState(() {
+              _guidesError = error.toString();
+              _loading = false;
+            });
+          }
+          await _refreshGuides(
+            forceRemote: true,
+            reason: 'stream-error',
+          );
+        });
+  }
+
+  Future<void> _initGuides() async {
+    _log('init start kIsWeb=$kIsWeb');
+    try {
+      final cached = await FirestoreService.loadCachedPublishedGuides().timeout(
+        const Duration(seconds: 4),
+        onTimeout: () => const <GuideModel>[],
+      );
+      if (!mounted) return;
+
+      if (cached.isNotEmpty) {
+        setState(() {
+          _guides = cached;
+          _guidesError = '';
+          _syncCategoryWithData();
+          _loading = false;
+        });
+        _log('init cache preload count=${cached.length}');
+      }
+
+      await _refreshGuides(forceRemote: true, reason: 'init');
+      if (!mounted) return;
+      _subscribeGuidesStream();
+    } catch (e) {
+      _log('init failed error=$e');
+      if (!mounted) return;
+      setState(() {
+        _guidesError = e.toString();
+        _loading = false;
+      });
+    } finally {
+      if (mounted && _loading) {
+        setState(() => _loading = false);
+      }
+    }
   }
 
   @override
@@ -183,8 +260,13 @@ class _LibraryScreenState extends State<LibraryScreen>
                       categories: _categories,
                       selectedCategory: _category,
                       searchCtrl: _searchCtrl,
+                      errorMessage: _guidesError,
                       onCategorySelect: (c) => setState(() => _category = c),
                       onOpen: _openPdf,
+                      onRetry: () => _refreshGuides(
+                        forceRemote: true,
+                        reason: 'manual-retry',
+                      ),
                     ),
 
                     // ── Aba 1: Casos Clínicos ────────────────────────────────
@@ -283,14 +365,17 @@ class _GuidesTab extends StatelessWidget {
   final List<String> categories;
   final String selectedCategory;
   final TextEditingController searchCtrl;
+  final String errorMessage;
   final ValueChanged<String> onCategorySelect;
   final ValueChanged<GuideModel> onOpen;
+  final VoidCallback onRetry;
 
   const _GuidesTab({
     required this.dark, required this.isEs, required this.loading,
     required this.filtered, required this.categories,
     required this.selectedCategory, required this.searchCtrl,
-    required this.onCategorySelect, required this.onOpen,
+    required this.errorMessage, required this.onCategorySelect,
+    required this.onOpen, required this.onRetry,
   });
 
   @override
@@ -327,7 +412,14 @@ class _GuidesTab extends StatelessWidget {
         child: loading
             ? const Center(child: CircularProgressIndicator(color: _kGreen, strokeWidth: 2))
             : filtered.isEmpty
-                ? _EmptyState(dark: dark, isEs: isEs, hasSearch: searchCtrl.text.isNotEmpty)
+                ? (errorMessage.isNotEmpty && searchCtrl.text.isEmpty
+                    ? _GuideErrorState(
+                        dark: dark,
+                        isEs: isEs,
+                        message: errorMessage,
+                        onRetry: onRetry,
+                      )
+                    : _EmptyState(dark: dark, isEs: isEs, hasSearch: searchCtrl.text.isNotEmpty))
                 : ListView.builder(
                     padding: const EdgeInsets.fromLTRB(16, 8, 16, 100),
                     itemCount: filtered.length,
@@ -1230,6 +1322,63 @@ class _ProtocolsTabState extends State<_ProtocolsTab> {
 // ─────────────────────────────────────────────────────────────────────────────
 // ESTADO VAZIO
 // ─────────────────────────────────────────────────────────────────────────────
+class _GuideErrorState extends StatelessWidget {
+  final bool dark;
+  final bool isEs;
+  final String message;
+  final VoidCallback onRetry;
+  const _GuideErrorState({
+    required this.dark,
+    required this.isEs,
+    required this.message,
+    required this.onRetry,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final fg = dark ? Colors.white70 : const Color(0xFF3B1F1F);
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.cloud_off_rounded,
+                size: 56,
+                color: dark ? Colors.orangeAccent.withValues(alpha: 0.7) : Colors.redAccent),
+            const SizedBox(height: 14),
+            Text(
+              isEs ? 'Error al cargar guías' : 'Erro ao carregar guias',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w800, color: fg),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 8),
+            Text(
+              message,
+              style: TextStyle(
+                fontSize: 12,
+                height: 1.4,
+                color: dark ? Colors.white54 : Colors.black.withValues(alpha: 0.62),
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 16),
+            FilledButton.icon(
+              onPressed: onRetry,
+              icon: const Icon(Icons.refresh_rounded, size: 18),
+              label: Text(isEs ? 'Reintentar' : 'Tentar novamente'),
+              style: FilledButton.styleFrom(
+                backgroundColor: _kGreen,
+                foregroundColor: Colors.white,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 class _EmptyState extends StatelessWidget {
   final bool dark;
   final bool isEs;

@@ -17,6 +17,7 @@ class FirestoreService {
   static const _projectId = 'medcases-pro';
   static const _fsBase    = 'https://firestore.googleapis.com/v1/projects/$_projectId/databases/(default)/documents';
   static const _guidesCacheKey = 'clinical_guides_cache_v1';
+  static String _lastGuidesErrorMessage = '';
 
   // ── Referências por usuário ───────────────────────────────────────────────
   static DocumentReference<Map<String, dynamic>> _userDoc(String uid) =>
@@ -1112,6 +1113,19 @@ class FirestoreService {
     if (kDebugMode) debugPrint('[FirestoreService.guides] $message');
   }
 
+  static String get lastGuidesErrorMessage => _lastGuidesErrorMessage;
+
+  static void _setGuidesError(String message) {
+    _lastGuidesErrorMessage = message.trim();
+    if (_lastGuidesErrorMessage.isNotEmpty) {
+      _debugGuides('error=$_lastGuidesErrorMessage');
+    }
+  }
+
+  static void _clearGuidesError() {
+    _lastGuidesErrorMessage = '';
+  }
+
   static List<GuideModel> _normalizeGuides(Iterable<GuideModel> guides) {
     final list = guides
         .where((g) => g.id.trim().isNotEmpty)
@@ -1167,29 +1181,32 @@ class FirestoreService {
         snap.docs.map((d) => GuideModel.fromJson({...d.data(), 'id': d.id})),
       );
       if (guides.isNotEmpty) {
+        _clearGuidesError();
         await _saveGuidesCache(guides);
       }
       _debugGuides('sdk load count=${guides.length} source=${source ?? 'default'}');
       return guides;
     } catch (e) {
+      _setGuidesError('SDK clinical_guides falhou (${source ?? 'default'}): $e');
       _debugGuides('sdk load failed source=${source ?? 'default'} error=$e');
       return [];
     }
   }
 
   static Future<List<GuideModel>> _loadPublishedGuidesRest() async {
-    try {
-      final resp = await http
-          .get(Uri.parse('$_fsBase/clinical_guides?pageSize=200'))
+    Future<http.Response> doGet({Map<String, String>? headers}) {
+      return http
+          .get(
+            Uri.parse('$_fsBase/clinical_guides?pageSize=200'),
+            headers: headers,
+          )
           .timeout(const Duration(seconds: 12));
-      if (resp.statusCode != 200) {
-        _debugGuides('rest load failed status=${resp.statusCode}');
-        return [];
-      }
+    }
 
+    List<GuideModel> parseResponse(http.Response resp) {
       final body = jsonDecode(resp.body) as Map<String, dynamic>;
       final documents = body['documents'] as List<dynamic>? ?? [];
-      final guides = _normalizeGuides(
+      return _normalizeGuides(
         documents.map((doc) {
           final rawDoc = doc as Map<String, dynamic>;
           final data = _restDocToMap(rawDoc);
@@ -1197,19 +1214,55 @@ class FirestoreService {
           return GuideModel.fromJson(data);
         }).where((guide) => guide.isPublished),
       );
+    }
+
+    try {
+      _debugGuides('rest load start kIsWeb=$kIsWeb');
+      var resp = await doGet();
+      _debugGuides('rest load unauth status=${resp.statusCode}');
+
+      if (resp.statusCode == 401 || resp.statusCode == 403) {
+        final token = await AuthService.getAdminToken().timeout(
+          const Duration(seconds: 4),
+          onTimeout: () => '',
+        );
+        _debugGuides('rest auth retry tokenPresent=${token.isNotEmpty}');
+        if (token.isNotEmpty) {
+          resp = await doGet(headers: {'Authorization': 'Bearer $token'});
+          _debugGuides('rest load auth status=${resp.statusCode}');
+        }
+      }
+
+      if (resp.statusCode != 200) {
+        _setGuidesError(
+          'REST clinical_guides HTTP ${resp.statusCode}: ${resp.body.substring(0, resp.body.length.clamp(0, 220))}',
+        );
+        return [];
+      }
+
+      final guides = parseResponse(resp);
       if (guides.isNotEmpty) {
+        _clearGuidesError();
         await _saveGuidesCache(guides);
+      } else {
+        _setGuidesError('REST clinical_guides retornou 0 guias publicados.');
       }
       _debugGuides('rest load count=${guides.length}');
       return guides;
+    } on TimeoutException catch (e) {
+      _setGuidesError('REST clinical_guides timeout: $e');
+      _debugGuides('rest load timeout error=$e');
+      return [];
     } catch (e) {
+      _setGuidesError('REST clinical_guides falhou: $e');
       _debugGuides('rest load failed error=$e');
       return [];
     }
   }
 
   static Future<List<GuideModel>> loadPublishedGuides({bool forceRemote = false}) async {
-    final cached = forceRemote ? const <GuideModel>[] : await loadCachedPublishedGuides();
+    final cached = await loadCachedPublishedGuides();
+    _debugGuides('loadPublishedGuides start forceRemote=$forceRemote kIsWeb=$kIsWeb cached=${cached.length}');
 
     if (!kIsWeb) {
       final server = await _loadPublishedGuidesSdk(source: Source.server);
@@ -1222,8 +1275,16 @@ class FirestoreService {
     final rest = await _loadPublishedGuidesRest();
     if (rest.isNotEmpty) return rest;
 
-    _debugGuides('remote empty, returning cache count=${cached.length}');
-    return cached;
+    if (cached.isNotEmpty) {
+      _debugGuides('remote failed/empty, returning cache count=${cached.length}');
+      return cached;
+    }
+
+    if (lastGuidesErrorMessage.isEmpty) {
+      _setGuidesError('clinical_guides sem dados disponíveis após fallback SDK/REST/cache.');
+    }
+    _debugGuides('remote empty and cache empty');
+    return const <GuideModel>[];
   }
 
   /// Stream de todas as guias publicadas (ordenadas por data).
@@ -1245,21 +1306,58 @@ class FirestoreService {
     Timer? timer;
 
     Future<void> fetch() async {
-      final remote = await loadPublishedGuides(forceRemote: true);
-      if (!ctrl.isClosed) ctrl.add(remote);
+      try {
+        _debugGuides('rest stream fetch start');
+        final remote = await loadPublishedGuides(forceRemote: true).timeout(
+          const Duration(seconds: 15),
+          onTimeout: () {
+            _setGuidesError('Stream REST clinical_guides timeout: nenhuma resposta em 15s.');
+            return const <GuideModel>[];
+          },
+        );
+        if (ctrl.isClosed) return;
+        if (remote.isNotEmpty) {
+          ctrl.add(remote);
+          _debugGuides('rest stream emitted count=${remote.length}');
+          return;
+        }
+
+        final cached = await loadCachedPublishedGuides();
+        if (ctrl.isClosed) return;
+        if (cached.isNotEmpty) {
+          ctrl.add(cached);
+          _debugGuides('rest stream emitted cached count=${cached.length}');
+          return;
+        }
+
+        final error = lastGuidesErrorMessage.isEmpty
+            ? 'Stream REST clinical_guides retornou vazio sem cache.'
+            : lastGuidesErrorMessage;
+        ctrl.addError(StateError(error));
+        _debugGuides('rest stream emitted error=$error');
+      } catch (e) {
+        final error = 'Stream REST clinical_guides falhou: $e';
+        _setGuidesError(error);
+        if (!ctrl.isClosed) ctrl.addError(StateError(error));
+      }
     }
 
     ctrl = StreamController<List<GuideModel>>(
       onListen: () {
+        _debugGuides('rest stream onListen');
         loadCachedPublishedGuides().then((cached) {
-          if (!ctrl.isClosed && cached.isNotEmpty) ctrl.add(cached);
+          if (!ctrl.isClosed && cached.isNotEmpty) {
+            ctrl.add(cached);
+            _debugGuides('rest stream preloaded cache count=${cached.length}');
+          }
         });
-        fetch();
-        timer = Timer.periodic(const Duration(seconds: 20), (_) => fetch());
+        unawaited(fetch());
+        timer = Timer.periodic(const Duration(seconds: 20), (_) => unawaited(fetch()));
       },
       onCancel: () {
         timer?.cancel();
         timer = null;
+        _debugGuides('rest stream cancelled');
       },
     );
 
