@@ -237,26 +237,22 @@
                 console.warn('[MedCases XHR Auth] origSend failed after auth:', e);
               }
             } else {
-              // Sem token: aborta o request — não envia para a rede
+              // Sem token: envia sem Authorization — Firestore decide (public_histories é allow read: if true)
               console.warn(
-                '[MedCases XHR Auth] ❌ no token after 3s — ABORTING request',
-                '| url:', url,
-                '| firebase present:', !!window.firebase,
-                '| firebase.auth present:', !!(window.firebase && window.firebase.auth),
-                '| currentUser:', !!(window.firebase && window.firebase.auth && window.firebase.auth().currentUser)
+                '[MedCases XHR Auth] ⚠️ no token after 3s — sending without auth (public read allowed)',
+                '| url:', url
               );
-              // Não chama _origSend: o request não sai para a rede
-              // O Dart vai receber um erro de rede (timeout/abort) — controlado
-              try { xhr.abort(); } catch(e) {}
+              try { _origSend.call(xhr, body); } catch(e) {
+                console.warn('[MedCases XHR Auth] origSend (no-auth) failed:', e);
+              }
             }
           }).catch(function(err) {
             console.warn(
-              '[MedCases XHR Auth] ❌ _getFirebaseToken() threw — ABORTING',
+              '[MedCases XHR Auth] ⚠️ _getFirebaseToken() threw — sending without auth',
               '| err:', err,
               '| url:', url
             );
-            // Não chama _origSend
-            try { xhr.abort(); } catch(e) {}
+            try { _origSend.call(xhr, body); } catch(e) {}
           });
           return; // async path — _origSend é chamado dentro do .then()
         }
@@ -336,17 +332,12 @@
         return _origFetch.call(window, input, newInit);
       }
 
-      // Sem token: BLOQUEIA — não deixa request zumbi sair para a rede
+      // Sem token: passa sem Authorization — Firestore decide (public_histories é allow read: if true)
       console.warn(
-        '[Fetch Interceptor] 🛑 REQUISIÇÃO ZUMBI ABORTADA: public_histories sem token',
-        '| firebase present:', !!window.firebase,
-        '| firebase.auth present:', !!(window.firebase && window.firebase.auth),
-        '| currentUser:', !!(window.firebase && window.firebase.auth && window.firebase.auth().currentUser),
+        '[Fetch Interceptor] ⚠️ no token after 3s — sending without auth (public read allowed)',
         '| url:', url
       );
-      return Promise.reject(
-        new Error('Blocked by MedCases Fetch Interceptor: No Auth Token available for public_histories')
-      );
+      return _origFetch.apply(window, arguments);
     };
 
   })();
