@@ -110,36 +110,39 @@
   </script>
 
   <!-- ═══════════════════════════════════════════════════════════════════
-       FIRESTORE REST AUTH INTERCEPTOR
-       Intercepta chamadas fetch() ao Firestore REST API e injeta o token
-       do Firebase Auth automaticamente. Resolve o erro 403 que ocorre
-       quando o código compilado (main.dart.js) faz REST sem Authorization.
+       FIRESTORE REST AUTH INTERCEPTOR — XHR + fetch
+       Dart's http package usa XMLHttpRequest (XHR), não window.fetch.
+       O código compilado (main.dart.js / avE()) chama:
+         A.oG(url, null).hE(...)  →  XHR GET sem Authorization header.
+       Este interceptor patcha AMBOS os transportes antes do Flutter bootar:
+         1. XMLHttpRequest.prototype.open  — captura a URL alvo
+         2. XMLHttpRequest.prototype.send  — injeta Authorization síncrono
+            via token cacheado (sem await; XHR.send é síncrono neste ponto)
+         3. window.fetch                  — fallback para libs que usam fetch
        Funciona em Chrome, Firefox e Safari (iOS/macOS).
   ═══════════════════════════════════════════════════════════════════ -->
   <script>
   (function() {
     'use strict';
-    var _origFetch = window.fetch;
-    // Cache do token com TTL de 55 minutos (tokens Firebase expiram em 60min)
+
+    // ── Token cache ──────────────────────────────────────────────────────────
+    // TTL de 55 minutos (tokens Firebase expiram em 60min)
     var _cachedToken = null;
     var _tokenExpiry = 0;
     var _tokenFetchInFlight = null;
 
-    // Função exposta para o Flutter/Dart registrar o token quando o usuário loga
-    // Chamada de firestore_service.dart ou app_provider.dart via js_interop
+    // Exposto para o Dart registrar o token logo após login (via js_interop)
     window.mcSetFirestoreToken = function(token, expiresInSeconds) {
       _cachedToken = token || null;
       _tokenExpiry = token ? (Date.now() + ((expiresInSeconds || 3300) * 1000)) : 0;
     };
 
-    // Obtém token do Firebase Auth JS SDK (compat) quando disponível
+    // Retorna o token cacheado se válido, senão tenta via Firebase compat SDK
     function _getFirebaseToken() {
       if (_tokenFetchInFlight) return _tokenFetchInFlight;
-      // Token em cache e ainda válido (com 30s de margem)
       if (_cachedToken && Date.now() < (_tokenExpiry - 30000)) {
         return Promise.resolve(_cachedToken);
       }
-      // Tenta obter via Firebase Auth compat SDK (carregado após flutter-first-frame)
       _tokenFetchInFlight = (function() {
         try {
           var fb = window.firebase;
@@ -148,77 +151,129 @@
           var user = auth && auth.currentUser;
           if (!user || !user.getIdToken) return Promise.resolve(_cachedToken);
           return user.getIdToken(false).then(function(tok) {
-            if (tok) {
-              _cachedToken = tok;
-              // Firebase tokens expiram em 60min; cacheia por 55min
-              _tokenExpiry = Date.now() + 55 * 60 * 1000;
-            }
+            if (tok) { _cachedToken = tok; _tokenExpiry = Date.now() + 55 * 60 * 1000; }
             return tok || null;
           }).catch(function() { return _cachedToken; });
-        } catch(e) {
-          return Promise.resolve(_cachedToken);
-        }
-      })().then(function(tok) {
-        _tokenFetchInFlight = null;
-        return tok;
-      }, function(e) {
-        _tokenFetchInFlight = null;
-        return _cachedToken;
-      });
+        } catch(e) { return Promise.resolve(_cachedToken); }
+      })().then(function(tok) { _tokenFetchInFlight = null; return tok; },
+                function()    { _tokenFetchInFlight = null; return _cachedToken; });
       return _tokenFetchInFlight;
     }
 
-    // Verifica se é uma chamada REST Firestore que precisa de auth
-    function _needsAuth(url, headers) {
-      if (!url || url.indexOf('firestore.googleapis.com') === -1) return false;
-      // Não interfere se já tem Authorization
-      if (!headers) return true;
-      var authHeader = '';
-      try {
-        if (headers instanceof Headers) {
-          authHeader = headers.get('Authorization') || '';
-        } else if (typeof headers === 'object') {
-          authHeader = (headers['Authorization'] || headers['authorization'] || '');
-        }
-      } catch(e) {}
-      return !authHeader;
+    // Retorna token SINCRONAMENTE do cache (usado pelo XHR interceptor no send)
+    function _getCachedToken() {
+      if (_cachedToken && Date.now() < (_tokenExpiry - 30000)) return _cachedToken;
+      // Dispara refresh assíncrono para próxima chamada mas não bloqueia
+      _getFirebaseToken();
+      return _cachedToken;
     }
 
-    // Patched fetch — injeta token em chamadas Firestore GET sem auth
+    function _isFirestoreUrl(url) {
+      return url && url.indexOf('firestore.googleapis.com') !== -1;
+    }
+
+    // ── 1. XHR interceptor ───────────────────────────────────────────────────
+    // Dart's http package usa XHR internamente. Precisamos interceptar
+    // XMLHttpRequest.prototype.open (para guardar a URL) e
+    // XMLHttpRequest.prototype.setRequestHeader (para detectar se Authorization
+    // já foi definido) e XMLHttpRequest.prototype.send (para injetar o header).
+    (function() {
+      var _origOpen  = XMLHttpRequest.prototype.open;
+      var _origSetRH = XMLHttpRequest.prototype.setRequestHeader;
+      var _origSend  = XMLHttpRequest.prototype.send;
+
+      XMLHttpRequest.prototype.open = function(method, url) {
+        // Guarda metadata no objeto XHR para uso no send()
+        this._mcMethod  = (method || '').toUpperCase();
+        this._mcUrl     = url || '';
+        this._mcHasAuth = false;
+        return _origOpen.apply(this, arguments);
+      };
+
+      XMLHttpRequest.prototype.setRequestHeader = function(name, value) {
+        // Detecta se Authorization já foi definido pelo chamador
+        if (name && (name.toLowerCase() === 'authorization')) {
+          this._mcHasAuth = true;
+        }
+        return _origSetRH.apply(this, arguments);
+      };
+
+      XMLHttpRequest.prototype.send = function() {
+        // Só injeta em GETs ao Firestore sem Authorization já presente
+        if (this._mcMethod === 'GET' &&
+            _isFirestoreUrl(this._mcUrl) &&
+            !this._mcHasAuth) {
+          var tok = _getCachedToken();
+          if (tok) {
+            try {
+              _origSetRH.call(this, 'Authorization', 'Bearer ' + tok);
+              this._mcHasAuth = true;
+            } catch(e) {}
+          }
+        }
+        return _origSend.apply(this, arguments);
+      };
+    })();
+
+    // ── 2. fetch interceptor (libs futuras / SDK compat) ─────────────────────
+    var _origFetch = window.fetch;
     window.fetch = function(input, init) {
       var url = typeof input === 'string' ? input : (input && input.url ? input.url : String(input));
       var method = (init && init.method) || (input && input.method) || 'GET';
-      // Só intercepta GET ao Firestore sem Authorization já presente
-      if (method.toUpperCase() !== 'GET' || !_needsAuth(url, init && init.headers)) {
+      if (method.toUpperCase() !== 'GET' || !_isFirestoreUrl(url)) {
         return _origFetch.apply(this, arguments);
       }
+      // Verifica se Authorization já está presente nos headers
+      var hasAuth = false;
+      try {
+        var h = init && init.headers;
+        if (h) {
+          hasAuth = !!(h instanceof Headers ? h.get('authorization') : (h['Authorization'] || h['authorization']));
+        }
+      } catch(e) {}
+      if (hasAuth) return _origFetch.apply(this, arguments);
+
       var args = arguments;
       return _getFirebaseToken().then(function(token) {
         if (!token) return _origFetch.apply(window, args);
-        // Clona init e injeta o header
         var newInit = {};
-        if (init) {
-          for (var k in init) { if (Object.prototype.hasOwnProperty.call(init, k)) newInit[k] = init[k]; }
-        }
-        var existingHeaders = newInit.headers || {};
-        var newHeaders = {};
+        if (init) { for (var k in init) { if (Object.prototype.hasOwnProperty.call(init, k)) newInit[k] = init[k]; } }
+        var existingH = newInit.headers || {};
+        var newH = {};
         try {
-          if (existingHeaders instanceof Headers) {
-            existingHeaders.forEach(function(v, k) { newHeaders[k] = v; });
-          } else {
-            for (var hk in existingHeaders) {
-              if (Object.prototype.hasOwnProperty.call(existingHeaders, hk)) newHeaders[hk] = existingHeaders[hk];
-            }
-          }
+          if (existingH instanceof Headers) { existingH.forEach(function(v, k) { newH[k] = v; }); }
+          else { for (var hk in existingH) { if (Object.prototype.hasOwnProperty.call(existingH, hk)) newH[hk] = existingH[hk]; } }
         } catch(e) {}
-        newHeaders['Authorization'] = 'Bearer ' + token;
-        newInit.headers = newHeaders;
+        newH['Authorization'] = 'Bearer ' + token;
+        newInit.headers = newH;
         return _origFetch.call(window, input, newInit);
-      }).catch(function() {
-        return _origFetch.apply(window, args);
-      });
+      }).catch(function() { return _origFetch.apply(window, args); });
     };
+
   })();
+  </script>
+
+  <!-- ═══════════════════════════════════════════════════════════════════
+       SAFETY NET: captura erros não tratados do código compilado antigo.
+       O avE() em main.dart.js lança "REST public_histories: HTTP 403"
+       via throw se o XHR retornar != 200. Com o XHR interceptor, o token
+       já é injetado antes do send() e o 403 não deve mais ocorrer.
+       Este handler é a última linha de defesa: silencia o erro para evitar
+       tela cinza caso algum edge case ainda produza um rejection não capturado.
+  ═══════════════════════════════════════════════════════════════════ -->
+  <script>
+  window.addEventListener('unhandledrejection', function(event) {
+    var reason = event.reason;
+    var msg = (reason && (reason.message || String(reason))) || '';
+    // Silencia erros de public_histories REST que escaparam do try/catch
+    if (msg.indexOf('public_histories') !== -1 ||
+        msg.indexOf('REST public_histories') !== -1) {
+      event.preventDefault();
+      if (typeof console !== 'undefined') {
+        console.warn('[MedCases] REST public_histories error suppressed (handled by SDK path):', msg);
+      }
+    }
+  });
   </script>
 
   <!-- ═══════════════════════════════════════════════════════════════════

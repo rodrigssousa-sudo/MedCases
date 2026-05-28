@@ -779,16 +779,38 @@ class FirestoreService {
     return const <ClinicalHistoryModel>[];
   }
 
-  /// Leitura pública via Firestore REST API — sem SDK e com retry autenticado.
-  /// Funciona como fallback para Safari/PWA quando o SDK do Firebase fica pendurado.
+  /// Leitura pública via Firestore REST API — fallback autenticado.
+  /// NUNCA chama REST sem token: se o usuário não estiver logado, retorna []
+  /// imediatamente sem fazer nenhuma requisição de rede.
+  /// Isso evita o 403 que o código compilado (avE() em main.dart.js) gerava
+  /// ao chamar GET /public_histories?pageSize=100 sem Authorization header.
   static Future<List<ClinicalHistoryModel>> _loadPublicHistoriesRest() async {
-    final token = await FirebaseAuth.instance.currentUser?.getIdToken();
-    final authHeaders = (token != null && token.isNotEmpty)
-        ? <String, String>{'Authorization': 'Bearer $token'}
-        : <String, String>{};
-    final apiKey = _firebaseApiKey;
+    // ── GUARD: sem usuário logado → sem REST → evita 403 garantido ───────────
+    final currentUser = FirebaseAuth.instance.currentUser;
+    if (currentUser == null) {
+      _debugPublicHistories('rest skipped — no authenticated user');
+      // Não define erro: ausência de login não é um erro de rede
+      return const <ClinicalHistoryModel>[];
+    }
 
-    Future<http.Response> doGet({Map<String, String>? headers}) {
+    // Obtém token — se falhar, aborta (não faz REST sem auth)
+    String? token;
+    try {
+      token = await currentUser.getIdToken();
+    } catch (e) {
+      _debugPublicHistories('rest skipped — getIdToken failed: $e');
+      return const <ClinicalHistoryModel>[];
+    }
+
+    if (token == null || token.isEmpty) {
+      _debugPublicHistories('rest skipped — token empty after getIdToken()');
+      return const <ClinicalHistoryModel>[];
+    }
+
+    final apiKey = _firebaseApiKey;
+    final authHeaders = <String, String>{'Authorization': 'Bearer $token'};
+
+    Future<http.Response> doGet({Map<String, String>? extraHeaders}) {
       return http
           .get(
             Uri.parse('$_fsBase/public_histories?pageSize=100&key=$apiKey'),
@@ -796,7 +818,7 @@ class FirestoreService {
               'Content-Type': 'application/json',
               'X-Firebase-API-Key': apiKey,
               ...authHeaders,
-              ...?headers,
+              ...?extraHeaders,
             },
           )
           .timeout(const Duration(seconds: 12));
@@ -816,42 +838,50 @@ class FirestoreService {
     }
 
     try {
-      _debugPublicHistories('rest load start kIsWeb=$kIsWeb tokenPresent=${authHeaders.isNotEmpty}');
+      _debugPublicHistories('rest load start kIsWeb=$kIsWeb');
       var resp = await doGet();
       _debugPublicHistories('rest load initial status=${resp.statusCode}');
 
+      // 401/403: tenta refresh do token UMA vez
       if (resp.statusCode == 401 || resp.statusCode == 403) {
-        final refreshedToken = await FirebaseAuth.instance.currentUser?.getIdToken(true);
-        final retryHeaders = (refreshedToken != null && refreshedToken.isNotEmpty)
-            ? <String, String>{'Authorization': 'Bearer $refreshedToken'}
-            : <String, String>{};
-        _debugPublicHistories('rest auth retry tokenPresent=${retryHeaders.isNotEmpty}');
-        if (retryHeaders.isNotEmpty) {
-          resp = await doGet(headers: retryHeaders);
+        String? refreshed;
+        try {
+          refreshed = await FirebaseAuth.instance.currentUser?.getIdToken(true);
+        } catch (_) {}
+        if (refreshed != null && refreshed.isNotEmpty) {
+          _debugPublicHistories('rest auth retry with refreshed token');
+          resp = await doGet(extraHeaders: {'Authorization': 'Bearer $refreshed'});
           _debugPublicHistories('rest load retry status=${resp.statusCode}');
+        } else {
+          // Token refresh falhou — aplica cooldown imediatamente
+          _publicHistoriesRestRetryAfter = DateTime.now().add(_restRetryCooldown);
+          _setPublicHistoriesError('REST public_histories HTTP ${resp.statusCode}: sem token após refresh');
+          _debugPublicHistories('rest 403 e refresh falhou — cooldown aplicado');
+          return const <ClinicalHistoryModel>[];
         }
       }
 
       if (resp.statusCode != 200) {
-        _setPublicHistoriesError(
-          'REST public_histories HTTP ${resp.statusCode}: ${resp.body.substring(0, resp.body.length.clamp(0, 220))}',
-        );
-        return [];
+        final snippet = resp.body.length > 220 ? resp.body.substring(0, 220) : resp.body;
+        _setPublicHistoriesError('REST public_histories HTTP ${resp.statusCode}: $snippet');
+        return const <ClinicalHistoryModel>[];
       }
 
       final list = parseResponse(resp);
-      await _saveCachedPublicHistories(list);
-      _clearPublicHistoriesError();
+      if (list.isNotEmpty) {
+        await _saveCachedPublicHistories(list);
+        _clearPublicHistoriesError();
+      }
       _debugPublicHistories('rest load count=${list.length}');
       return list;
     } on TimeoutException catch (e) {
       _setPublicHistoriesError('REST public_histories timeout: $e');
       _debugPublicHistories('rest load timeout error=$e');
-      return [];
+      return const <ClinicalHistoryModel>[];
     } catch (e) {
       _setPublicHistoriesError('REST public_histories falhou: $e');
       _debugPublicHistories('rest load failed error=$e');
-      return [];
+      return const <ClinicalHistoryModel>[];
     }
   }
 
