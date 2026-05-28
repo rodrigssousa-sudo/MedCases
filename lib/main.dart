@@ -35,6 +35,7 @@ import 'screens/notes_screen.dart';
 import 'screens/library_screen.dart';
 import 'services/firestore_service.dart';
 import 'services/gemini_service.dart';
+import 'services/update_service.dart';
 import 'widgets/brand_mark.dart';
 import 'widgets/common_widgets.dart' show MedBreakpoints;
 import 'platform/web_impl.dart'
@@ -1133,6 +1134,12 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
       const RepaintBoundary(child: LibraryScreen()), // 5
     ];
 
+    // ── Auto-Update / Cache Eviction (Service Worker) ──────────────────────
+    // Registra window.onFlutterWebUpdateAvailable ANTES do primeiro frame.
+    // Se um SW novo foi detectado antes do boot, a flag _mcUpdatePending já
+    // está `true` → banner aparecerá assim que o widget for exibido.
+    if (kIsWeb) UpdateService.setupUpdateListener();
+
     // Verifica novidades ao abrir o app (delay para não competir com splash)
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Future.delayed(const Duration(milliseconds: 800), () {
@@ -1329,6 +1336,13 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
                       ),
                     ),
                   ),
+                  // Banner de auto-update: exibido entre o conteúdo e a LegalBar.
+                  // ValueListenableBuilder garante rebuild mínimo — só o banner muda.
+                  ValueListenableBuilder<bool>(
+                    valueListenable: UpdateService.swUpdateAvailable,
+                    builder: (_, hasUpdate, __) =>
+                        hasUpdate ? const _UpdateBanner() : const SizedBox.shrink(),
+                  ),
                   _LegalBar(dark: dark),
                 ],
               ),
@@ -1371,11 +1385,21 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
       // SizedBox.expand garante constraints finitas (width+height) para o
       // IndexedStack e todos os seus filhos — corrige tela cinza em mobile
       // causada por RenderBox unbounded height em LibraryScreen/HistoryScreen.
+      // ValueListenableBuilder garante rebuild mínimo: apenas o banner muda,
+      // o IndexedStack e todas as telas filhas NÃO são reconstruídas.
       body: MediaQuery.removePadding(
         context: context,
         removeTop: true,
         child: SizedBox.expand(
-          child: IndexedStack(index: stackIdx, children: _staticScreens),
+          child: ValueListenableBuilder<bool>(
+            valueListenable: UpdateService.swUpdateAvailable,
+            builder: (ctx, hasUpdate, _) => Stack(
+              children: [
+                IndexedStack(index: stackIdx, children: _staticScreens),
+                if (hasUpdate) const _UpdateBanner(),
+              ],
+            ),
+          ),
         ),
       ),
       bottomNavigationBar: Column(
@@ -2216,6 +2240,97 @@ class _MiniContextBar extends StatelessWidget {
               ),
             ),
           ]),
+        ),
+      ),
+    );
+  }
+}
+
+// ── Banner de Auto-Update (Service Worker) ────────────────────────────────────
+// Exibido como overlay fixo na parte inferior do app quando um novo SW é detectado.
+// Ocupa toda a largura, fundo verde escuro com borda dourada sutil.
+// "Atualizar Agora" → chama UpdateService.applyUpdate() → SKIP_WAITING → reload.
+// "✕" → dispensa o banner sem atualizar (aparece novamente ao redetectar SW).
+class _UpdateBanner extends StatelessWidget {
+  const _UpdateBanner();
+
+  @override
+  Widget build(BuildContext context) {
+    final dark = Theme.of(context).brightness == Brightness.dark;
+    final bg   = dark ? const Color(0xFF0F2A1C) : const Color(0xFF0F3D2E);
+    final border = const Color(0xFFC5A365);
+
+    return Align(
+      alignment: Alignment.bottomCenter,
+      child: Material(
+        color: Colors.transparent,
+        child: Container(
+          width: double.infinity,
+          decoration: BoxDecoration(
+            color: bg,
+            border: Border(
+              top: BorderSide(color: border.withValues(alpha: 0.45), width: 1),
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.35),
+                blurRadius: 16,
+                offset: const Offset(0, -4),
+              ),
+            ],
+          ),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+          child: Row(
+            children: [
+              // Ícone
+              const Icon(Icons.system_update_alt_rounded,
+                  color: Color(0xFFC5A365), size: 20),
+              const SizedBox(width: 10),
+              // Texto
+              const Expanded(
+                child: Text(
+                  'Uma nova atualização do MedCases está disponível!',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 13,
+                    fontWeight: FontWeight.w500,
+                    height: 1.3,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 8),
+              // Botão "Atualizar Agora"
+              TextButton(
+                onPressed: UpdateService.applyUpdate,
+                style: TextButton.styleFrom(
+                  backgroundColor: const Color(0xFFC5A365),
+                  foregroundColor: const Color(0xFF07110d),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                  minimumSize: Size.zero,
+                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  textStyle: const TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                child: const Text('Atualizar'),
+              ),
+              // Botão fechar
+              const SizedBox(width: 4),
+              IconButton(
+                icon: const Icon(Icons.close_rounded,
+                    color: Colors.white54, size: 18),
+                onPressed: UpdateService.dismissUpdate,
+                padding: EdgeInsets.zero,
+                constraints: const BoxConstraints(minWidth: 28, minHeight: 28),
+                tooltip: 'Dispensar',
+              ),
+            ],
+          ),
         ),
       ),
     );
