@@ -1087,24 +1087,28 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
     WidgetsBinding.instance.addObserver(this);
 
     // Instancia TODAS as telas UMA VEZ — IndexedStack reutiliza entre rebuilds.
-    // HomeScreen e _RxProtoCombo agora ficam aqui (não mais no build()) para
-    // que notifyListeners() do AppProvider não as recrie a cada rebuild.
+    // Cada tela é envolta em RepaintBoundary — isola o repaint de cada screen,
+    // evitando que a mudança de tab force repaint das telas não visíveis.
     _staticScreens = [
-      HomeScreen(                                  // 0 — tela inicial
-        onTabChange:    _onTabChange,
-        onSubTabChange: _onSubTabChange,
-        openProtocol:   _openProtocol,
-        onOpenNotes:    _onOpenNotes,
-        onCheckUpdate:  _forceShowUpdate,
+      RepaintBoundary(                             // 0 — tela inicial
+        child: HomeScreen(
+          onTabChange:    _onTabChange,
+          onSubTabChange: _onSubTabChange,
+          openProtocol:   _openProtocol,
+          onOpenNotes:    _onOpenNotes,
+          onCheckUpdate:  _forceShowUpdate,
+        ),
       ),
-      _RxProtoCombo(                               // 1 — Rx/Proto combo
-        subTab: _rxProtoSub,
-        onSubTabChange: _onSubTabChange,
+      RepaintBoundary(                             // 1 — Rx/Proto combo
+        child: _RxProtoCombo(
+          subTab: _rxProtoSub,
+          onSubTabChange: _onSubTabChange,
+        ),
       ),
-      const AiScreen(),                            // 2
-      const HistoryScreen(),                       // 3
-      const ToolsScreen(),                         // 4
-      const LibraryScreen(),                       // 5
+      const RepaintBoundary(child: AiScreen()),    // 2
+      const RepaintBoundary(child: HistoryScreen()), // 3
+      const RepaintBoundary(child: ToolsScreen()), // 4
+      const RepaintBoundary(child: LibraryScreen()), // 5
     ];
 
     // Verifica novidades ao abrir o app (delay para não competir com splash)
@@ -1255,7 +1259,7 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
     return _buildMobileShell(context, dark, p);
   }
 
-  /// Layout desktop: Row(sidebar | conteúdo)
+  /// Layout desktop: Row(sidebar | conteúdo) — sem AppHeader (barra superior removida)
   Widget _buildDesktopShell(BuildContext context, bool dark, AppProvider p) {
     final bg       = dark ? const Color(0xFF141414) : const Color(0xFFF7F8FA);
     final stackIdx = _tab.clamp(0, _staticScreens.length - 1);
@@ -1263,54 +1267,51 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
     return Scaffold(
       backgroundColor: bg,
       endDrawer: _AppDrawer(p: p),
-      body: SafeArea(
-        child: Row(
-          children: [
-            // ── Sidebar de navegação vertical ─────────────────────────────
-            _DesktopSidebar(
+      body: Row(
+        children: [
+          // ── Sidebar de navegação vertical (contém logo + nav + hamburger) ──
+          SafeArea(
+            right: false,
+            child: _DesktopSidebar(
               currentTab: _tab,
               dark: dark,
               p: p,
               onTabChange: (t) => setState(() => _tab = t),
               onOpenDrawer: () => Scaffold.of(context).openEndDrawer(),
             ),
+          ),
 
-            // ── Divisor vertical sutil ─────────────────────────────────────
-            Container(
-              width: 1,
-              color: dark ? const Color(0xFF2A2A2A) : const Color(0xFFE8E1D2),
-            ),
+          // ── Divisor vertical sutil ─────────────────────────────────────────
+          Container(
+            width: 1,
+            color: dark ? const Color(0xFF2A2A2A) : const Color(0xFFE8E1D2),
+          ),
 
-            // ── Conteúdo principal expansivo ──────────────────────────────
-            Expanded(
+          // ── Conteúdo principal — sem header, SafeArea apenas no topo ────────
+          Expanded(
+            child: SafeArea(
+              left: false,
               child: Column(
                 children: [
-                  // Header só na tab 0 (Home/Cockpit)
-                  if (_tab == 0)
-                    _AppHeader(
-                      onTabChange: (t) => setState(() => _tab = t),
-                      currentTab: _tab,
-                    ),
-
                   Expanded(
-                    child: IndexedStack(
-                      index: stackIdx,
-                      children: _staticScreens,
+                    child: RepaintBoundary(
+                      child: IndexedStack(
+                        index: stackIdx,
+                        children: _staticScreens,
+                      ),
                     ),
                   ),
-
-                  // Legal bar na parte inferior
                   _LegalBar(dark: dark),
                 ],
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
 
-  /// Layout mobile/tablet: Scaffold com bottom nav (layout original)
+  /// Layout mobile/tablet: Scaffold com bottom nav — sem AppHeader (barra superior removida)
   Widget _buildMobileShell(BuildContext context, bool dark, AppProvider p) {
     final bg = dark ? const Color(0xFF141414) : const Color(0xFFF7F8FA);
     final navBg = dark ? const Color(0xFF1E1E1E) : Colors.white;
@@ -1320,20 +1321,10 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
     return Scaffold(
       backgroundColor: bg,
       endDrawer: _AppDrawer(p: p),
-      body: Stack(children: [
-        Column(children: [
-          // Header global só na tab 0 (Início/Cockpit).
-          if (_tab == 0)
-            _AppHeader(
-              onTabChange: _onTabChange,
-              currentTab: _tab,
-            )
-          else
-            const SafeArea(bottom: false, child: SizedBox.shrink()),
-
-          Expanded(child: IndexedStack(index: stackIdx, children: _staticScreens)),
-        ]),
-      ]),
+      body: SafeArea(
+        bottom: false,
+        child: IndexedStack(index: stackIdx, children: _staticScreens),
+      ),
       bottomNavigationBar: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -1397,8 +1388,8 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
   }
 
   Widget _buildNavBtn(int idx, IconData icon, String label, bool dark, dynamic p) {
-    final active = _tab == idx;
-    final activeColor  = dark ? const Color(0xFFFFE8A6) : const Color(0xFF0F1C14);
+    final active        = _tab == idx;
+    final activeColor   = dark ? const Color(0xFF4ADE80) : const Color(0xFF0A7C4E);
     final inactiveColor = dark ? Colors.white.withValues(alpha: 0.32) : const Color(0xFFB0B8C0);
 
     return Expanded(
@@ -1407,33 +1398,28 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
         onTap: () => setState(() => _tab = idx),
         child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
           AnimatedContainer(
-            duration: const Duration(milliseconds: 220),
-            curve: Curves.easeOutCubic,
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 1),
+            duration: const Duration(milliseconds: 160),
+            curve: Curves.easeOut,
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(10),
               color: active
                   ? (dark
-                      ? const Color(0xFFFFE8A6).withValues(alpha: 0.10)
-                      : const Color(0xFF0F1C14).withValues(alpha: 0.08))
+                      ? const Color(0xFF4ADE80).withValues(alpha: 0.10)
+                      : const Color(0xFF0A7C4E).withValues(alpha: 0.08))
                   : Colors.transparent,
             ),
-            child: Icon(
-              icon,
-              size: 17,
-              color: active ? activeColor : inactiveColor,
-            ),
+            child: Icon(icon, size: 17,
+              color: active ? activeColor : inactiveColor),
           ),
           const SizedBox(height: 1),
-          AnimatedDefaultTextStyle(
-            duration: const Duration(milliseconds: 200),
+          Text(label,
+            overflow: TextOverflow.ellipsis,
             style: TextStyle(
               fontSize: 7.5,
-              fontWeight: active ? FontWeight.w800 : FontWeight.w500,
+              fontWeight: active ? FontWeight.w700 : FontWeight.w500,
               color: active ? activeColor : inactiveColor,
-              letterSpacing: active ? 0.2 : 0,
             ),
-            child: Text(label, overflow: TextOverflow.ellipsis),
           ),
         ]),
       ),
@@ -1544,120 +1530,201 @@ class _DesktopSidebar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bg          = dark ? const Color(0xFF1A1A1A) : Colors.white;
-    final activeCol   = dark ? const Color(0xFFFFE8A6) : const Color(0xFF0F1C14);
-    final inactiveCol = dark ? Colors.white.withValues(alpha: 0.32) : const Color(0xFFB0B8C0);
+    final bg          = dark ? const Color(0xFF111111) : const Color(0xFFFFFFFF);
+    final activeCol   = dark ? const Color(0xFF4ADE80) : const Color(0xFF0A7C4E);
+    final inactiveCol = dark ? Colors.white.withValues(alpha: 0.30) : const Color(0xFFADB5BD);
     final activeBg    = dark
-        ? const Color(0xFFFFE8A6).withValues(alpha: 0.10)
-        : const Color(0xFF0F1C14).withValues(alpha: 0.07);
+        ? const Color(0xFF4ADE80).withValues(alpha: 0.10)
+        : const Color(0xFF0A7C4E).withValues(alpha: 0.08);
     final isEs        = p.lang == 'es';
 
-    return Container(
-      width: MedBreakpoints.sidebarWidth,
-      color: bg,
-      child: Column(
-        children: [
-          const SizedBox(height: 16),
+    // Avatar com iniciais do usuário para o botão de menu
+    final initials = p.userName.isNotEmpty
+        ? p.userName.trim().split(' ').take(2).map((w) => w[0].toUpperCase()).join()
+        : 'M';
 
-          // Logo / brandmark compacto
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-            child: Container(
-              width: 44,
-              height: 44,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                gradient: const LinearGradient(
-                  colors: [Color(0xFF1F6B48), Color(0xFF0F1C14)],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
+    return RepaintBoundary(
+      child: Container(
+        width: MedBreakpoints.sidebarWidth,
+        color: bg,
+        child: Column(
+          children: [
+            // ── Logo M+ no TOPO — ícone do app real ──────────────────────
+            const SizedBox(height: 12),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: Container(
+                width: 46,
+                height: 46,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12),
+                  gradient: const LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [Color(0xFF0E7C52), Color(0xFF064D32)],
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: const Color(0xFF0E7C52).withValues(alpha: 0.35),
+                      blurRadius: 10,
+                      offset: const Offset(0, 3),
+                    ),
+                  ],
                 ),
-                border: Border.all(
-                  color: const Color(0xFF4ADE80).withValues(alpha: 0.3),
-                  width: 1.5,
-                ),
-              ),
-              child: const Center(
-                child: Text('M',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w900,
-                    color: Color(0xFFFFE8A6),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(12),
+                  child: Image.asset(
+                    'assets/icon/app_icon.png',
+                    width: 46, height: 46,
+                    fit: BoxFit.cover,
+                    errorBuilder: (_, __, ___) => const Center(
+                      child: Text('M+',
+                        style: TextStyle(
+                          fontSize: 16, fontWeight: FontWeight.w900,
+                          color: Color(0xFFFFE8A6))),
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
 
-          const SizedBox(height: 20),
+            const SizedBox(height: 18),
 
-          // ── Itens de navegação ──────────────────────────────────────────
-          _SidebarItem(
-            icon: Icons.home_rounded,
-            label: isEs ? 'Inicio' : 'Início',
-            active: currentTab == 0,
-            dark: dark,
-            activeCol: activeCol,
-            inactiveCol: inactiveCol,
-            activeBg: activeBg,
-            onTap: () => onTabChange(0),
-          ),
-          _SidebarItem(
-            icon: Icons.auto_awesome_rounded,
-            label: isEs ? 'IA' : 'IA',
-            active: currentTab == 2,
-            dark: dark,
-            activeCol: const Color(0xFFC5A365),
-            inactiveCol: inactiveCol,
-            activeBg: const Color(0xFFC5A365).withValues(alpha: 0.10),
-            onTap: () => onTabChange(2),
-          ),
-          _SidebarItem(
-            icon: Icons.folder_shared_rounded,
-            label: isEs ? 'H. Clínica' : 'H. Clínica',
-            active: currentTab == 3,
-            dark: dark,
-            activeCol: activeCol,
-            inactiveCol: inactiveCol,
-            activeBg: activeBg,
-            onTap: () => onTabChange(3),
-          ),
-          _SidebarItem(
-            icon: Icons.menu_book_rounded,
-            label: isEs ? 'Biblio.' : 'Biblio.',
-            active: currentTab == 5,
-            dark: dark,
-            activeCol: activeCol,
-            inactiveCol: inactiveCol,
-            activeBg: activeBg,
-            onTap: () => onTabChange(5),
-          ),
-          _SidebarItem(
-            icon: Icons.calculate_rounded,
-            label: isEs ? 'Calc.' : 'Calc.',
-            active: currentTab == 4,
-            dark: dark,
-            activeCol: activeCol,
-            inactiveCol: inactiveCol,
-            activeBg: activeBg,
-            onTap: () => onTabChange(4),
-          ),
+            // ── Divisor sutil ─────────────────────────────────────────────
+            Container(
+              height: 1,
+              margin: const EdgeInsets.symmetric(horizontal: 12),
+              color: dark
+                  ? Colors.white.withValues(alpha: 0.06)
+                  : Colors.black.withValues(alpha: 0.05),
+            ),
 
-          const Spacer(),
+            const SizedBox(height: 10),
 
-          // Botão de menu (drawer)
-          _SidebarItem(
-            icon: Icons.menu_rounded,
-            label: '',
-            active: false,
-            dark: dark,
-            activeCol: activeCol,
-            inactiveCol: inactiveCol,
-            activeBg: activeBg,
-            onTap: onOpenDrawer,
-          ),
-          const SizedBox(height: 16),
-        ],
+            // ── Itens de navegação ────────────────────────────────────────
+            _SidebarItem(
+              icon: Icons.home_rounded,
+              label: isEs ? 'Inicio' : 'Início',
+              active: currentTab == 0,
+              dark: dark,
+              activeCol: activeCol,
+              inactiveCol: inactiveCol,
+              activeBg: activeBg,
+              onTap: () => onTabChange(0),
+            ),
+            _SidebarItem(
+              icon: Icons.psychology_rounded,
+              label: 'IA',
+              active: currentTab == 2,
+              dark: dark,
+              activeCol: dark ? const Color(0xFFC5A365) : const Color(0xFF8B6914),
+              inactiveCol: inactiveCol,
+              activeBg: const Color(0xFFC5A365).withValues(alpha: 0.10),
+              onTap: () => onTabChange(2),
+            ),
+            _SidebarItem(
+              icon: Icons.folder_shared_rounded,
+              label: isEs ? 'H. Clínica' : 'H. Clínica',
+              active: currentTab == 3,
+              dark: dark,
+              activeCol: activeCol,
+              inactiveCol: inactiveCol,
+              activeBg: activeBg,
+              onTap: () => onTabChange(3),
+            ),
+            _SidebarItem(
+              icon: Icons.menu_book_rounded,
+              label: isEs ? 'Biblio.' : 'Biblio.',
+              active: currentTab == 5,
+              dark: dark,
+              activeCol: activeCol,
+              inactiveCol: inactiveCol,
+              activeBg: activeBg,
+              onTap: () => onTabChange(5),
+            ),
+            _SidebarItem(
+              icon: Icons.calculate_rounded,
+              label: isEs ? 'Calc.' : 'Calc.',
+              active: currentTab == 4,
+              dark: dark,
+              activeCol: activeCol,
+              inactiveCol: inactiveCol,
+              activeBg: activeBg,
+              onTap: () => onTabChange(4),
+            ),
+
+            const Spacer(),
+
+            // ── Divisor antes do rodapé ───────────────────────────────────
+            Container(
+              height: 1,
+              margin: const EdgeInsets.symmetric(horizontal: 12),
+              color: dark
+                  ? Colors.white.withValues(alpha: 0.06)
+                  : Colors.black.withValues(alpha: 0.05),
+            ),
+            const SizedBox(height: 8),
+
+            // ── Botão hambúrguer na BASE (com avatar do usuário) ──────────
+            Tooltip(
+              message: p.userName.isNotEmpty ? p.userName : 'Menu',
+              preferBelow: false,
+              child: GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: onOpenDrawer,
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 180),
+                  margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                    color: Colors.transparent,
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      // Avatar circular com iniciais
+                      Container(
+                        width: 32, height: 32,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: dark
+                              ? const Color(0xFF1F6B48)
+                              : const Color(0xFF0A7C4E),
+                          border: Border.all(
+                            color: dark
+                                ? const Color(0xFF4ADE80).withValues(alpha: 0.30)
+                                : const Color(0xFF0A7C4E).withValues(alpha: 0.25),
+                            width: 1.5,
+                          ),
+                        ),
+                        child: Center(
+                          child: Text(initials,
+                            style: const TextStyle(
+                              fontSize: 11,
+                              fontWeight: FontWeight.w800,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 3),
+                      Text(
+                        'Menu',
+                        style: TextStyle(
+                          fontSize: 7.0,
+                          fontWeight: FontWeight.w500,
+                          color: inactiveCol,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 10),
+          ],
+        ),
       ),
     );
   }
@@ -1690,16 +1757,17 @@ class _SidebarItem extends StatelessWidget {
     return Tooltip(
       message: label,
       preferBelow: false,
+      waitDuration: const Duration(milliseconds: 600),
       child: GestureDetector(
         behavior: HitTestBehavior.opaque,
         onTap: onTap,
         child: AnimatedContainer(
-          duration: const Duration(milliseconds: 200),
-          curve: Curves.easeOutCubic,
-          margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+          duration: const Duration(milliseconds: 160),
+          curve: Curves.easeOut,
+          margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(14),
+            borderRadius: BorderRadius.circular(10),
             color: active ? activeBg : Colors.transparent,
           ),
           child: Column(
@@ -1712,9 +1780,9 @@ class _SidebarItem extends StatelessWidget {
                   label,
                   style: TextStyle(
                     fontSize: 7.5,
-                    fontWeight: active ? FontWeight.w800 : FontWeight.w500,
+                    fontWeight: active ? FontWeight.w700 : FontWeight.w500,
                     color: iconColor,
-                    letterSpacing: 0.2,
+                    letterSpacing: 0.1,
                   ),
                   overflow: TextOverflow.ellipsis,
                   textAlign: TextAlign.center,
