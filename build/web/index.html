@@ -201,87 +201,65 @@
       XMLHttpRequest.prototype.send = function(body) {
         var url    = this._mcUrl    || '';
         var method = this._mcMethod || '';
-        var isFirestoreGet = (method === 'GET') && _isFirestoreUrl(url);
 
-        // ── DIAGNÓSTICO: loga todo XHR para firestore.googleapis.com ────────
-        if (_isFirestoreUrl(url)) {
-          console.log(
-            '[MedCases XHR] send() intercepted',
-            '| method:', method,
-            '| url:', url,
-            '| hasAuth:', this._mcHasAuth,
-            '| cachedToken:', !!_cachedToken,
-            '| tokenExpiry:', _tokenExpiry ? new Date(_tokenExpiry).toISOString() : 'none',
-            '| firebase.auth.currentUser:', !!(window.firebase && window.firebase.auth && window.firebase.auth().currentUser)
-          );
-        }
+        // ESCOPO RESTRITO: só intercepta GET /public_histories sem Authorization.
+        // clinical_guides, app_config, app_updates e qualquer outro endpoint
+        // passam direto — sem delay, sem modificação.
+        var isPublicHistoriesGet = (method === 'GET')
+          && _isFirestoreUrl(url)
+          && url.indexOf('public_histories') !== -1
+          && !this._mcHasAuth;
 
-        // Só intercepta GETs ao Firestore que não têm Authorization já injetado
-        if (isFirestoreGet && !this._mcHasAuth) {
+        if (isPublicHistoriesGet) {
           var xhr = this;
-          // ASYNC: aguarda token antes de enviar (race com timeout de 3 s)
+          console.log('[MedCases XHR] public_histories GET sem auth — aguardando token 3s', '| url:', url);
+          // Aguarda token com timeout 3s
           Promise.race([
             _getFirebaseToken(),
             new Promise(function(resolve) { setTimeout(resolve, 3000, null); })
           ]).then(function(token) {
             if (token) {
-              console.log(
-                '[MedCases XHR Auth] ✅ token obtained — injecting Authorization',
-                '| tokenLength:', token.length,
-                '| url:', url
-              );
-              try { _origSetRH.call(xhr, 'Authorization', 'Bearer ' + token); } catch(e) {
-                console.warn('[MedCases XHR Auth] setRequestHeader failed:', e);
-              }
-              try { _origSend.call(xhr, body); } catch(e) {
-                console.warn('[MedCases XHR Auth] origSend failed after auth:', e);
-              }
+              console.log('[MedCases XHR] ✅ token → injetando Authorization | url:', url);
+              try { _origSetRH.call(xhr, 'Authorization', 'Bearer ' + token); } catch(e) {}
+              try { _origSend.call(xhr, body); } catch(e) {}
             } else {
-              // Sem token após 3s: envia SEM Authorization — deixa o Firestore decidir.
-              // public_histories tem allow read: if true → vai funcionar sem auth.
-              console.warn(
-                '[MedCases XHR Auth] ⚠️ no token after 3s — sending without auth (public read allowed)',
-                '| url:', url
-              );
+              console.warn('[MedCases XHR] ⚠️ sem token 3s — enviando sem auth (allow read: if true) | url:', url);
               try { _origSend.call(xhr, body); } catch(e) {}
             }
           }).catch(function(err) {
-            console.warn(
-              '[MedCases XHR Auth] ⚠️ _getFirebaseToken() threw — sending without auth',
-              '| err:', err,
-              '| url:', url
-            );
+            console.warn('[MedCases XHR] ⚠️ token error — enviando sem auth | err:', err);
             try { _origSend.call(xhr, body); } catch(e) {}
           });
-          return; // async path — _origSend é chamado dentro do .then()
+          return; // async — _origSend chamado dentro do .then()
         }
+
+        // Tudo mais (clinical_guides, SDK listen, app_config, etc.) → passa direto
         return _origSend.apply(this, arguments);
       };
     })();
 
-    // ── 2. fetch interceptor — bloqueia public_histories sem token ─────────────
+    // ── 2. fetch interceptor — ESCOPO: public_histories sem token APENAS ────────
+    // IMPORTANTE: qualquer outro endpoint Firestore (clinical_guides, app_config,
+    // SDK gRPC/listen, etc.) passa COMPLETAMENTE INTOCADO — sem delay, sem await.
+    // O interceptor NÃO adiciona nem remove headers de outras URLs.
     var _origFetch = window.fetch;
     window.fetch = async function(input, init) {
-      // Extrai URL independente de fetch(string), fetch(Request) ou fetch(URL)
       var url = typeof input === 'string'
         ? input
         : (input && typeof input.url === 'string' ? input.url : String(input));
       var method = (init && init.method) || (input && input.method) || 'GET';
 
-      // Passa adiante tudo que não for GET ao Firestore
-      if (method.toUpperCase() !== 'GET' || !_isFirestoreUrl(url)) {
+      // Só intercepta GET para public_histories sem Authorization já presente.
+      // Tudo o mais (clinical_guides, app_config, SDK listen, PATCH, POST...) → direto.
+      var isPublicHistoriesGet = method.toUpperCase() === 'GET'
+        && _isFirestoreUrl(url)
+        && url.indexOf('public_histories') !== -1;
+
+      if (!isPublicHistoriesGet) {
         return _origFetch.apply(this, arguments);
       }
 
-      // Log diagnóstico para todo fetch ao Firestore
-      var isPublicHistories = url.indexOf('public_histories') !== -1;
-      console.log(
-        '[Fetch Interceptor] intercepted',
-        '| url:', url,
-        '| isPublicHistories:', isPublicHistories
-      );
-
-      // Verifica se Authorization já está presente (ex: SDK compat)
+      // Verifica se Authorization já presente — se sim, passa direto
       var hasAuth = false;
       try {
         var h = init && init.headers;
@@ -292,23 +270,19 @@
         }
       } catch(e) {}
       if (hasAuth) {
-        console.log('[Fetch Interceptor] Authorization already present — passing through');
         return _origFetch.apply(this, arguments);
       }
 
-      // Aguarda token com timeout de 3s
+      console.log('[Fetch] public_histories GET sem auth — aguardando token 3s | url:', url);
+
+      // Aguarda token com timeout 3s
       var token = await Promise.race([
         _getFirebaseToken(),
         new Promise(function(resolve) { setTimeout(resolve, 3000, null); })
       ]);
 
       if (token) {
-        console.log(
-          '[Fetch Interceptor] ✅ injecting token for public_histories',
-          '| tokenLength:', token.length,
-          '| url:', url
-        );
-        // Constrói novo init preservando headers existentes
+        console.log('[Fetch] ✅ token obtido — injetando Authorization | url:', url);
         var newInit = {};
         if (init) {
           for (var k in init) {
@@ -331,12 +305,8 @@
         return _origFetch.call(window, input, newInit);
       }
 
-      // Sem token após 3s: envia SEM Authorization — deixa o Firestore decidir.
-      // public_histories tem allow read: if true → vai funcionar sem auth.
-      console.warn(
-        '[Fetch Interceptor] ⚠️ no token after 3s — sending without auth (public read allowed)',
-        '| url:', url
-      );
+      // Sem token após 3s → passa sem auth (allow read: if true nas rules)
+      console.warn('[Fetch] ⚠️ sem token 3s — enviando sem auth (public_histories allow read: if true) | url:', url);
       return _origFetch.apply(window, arguments);
     };
 

@@ -71,19 +71,24 @@ class GuideModel {
   };
 
   factory GuideModel.fromJson(Map<String, dynamic> json) => GuideModel(
-    id: json['id'] ?? '',
-    title: json['title'] ?? '',
-    description: json['description'] ?? '',
-    category: json['category'] ?? 'Geral',
-    authors: json['authors'] ?? '',
-    year: json['year'] ?? '',
-    pdfUrl: json['pdfUrl'] ?? '',
-    fileName: json['fileName'] ?? '',
-    fileSize: (json['fileSize'] as num?)?.toInt() ?? 0,
-    uploadedAt: json['uploadedAt'] ?? '',
-    uploadedBy: json['uploadedBy'] ?? '',
-    isPublished: json['isPublished'] ?? true,
-    downloadCount: (json['downloadCount'] as num?)?.toInt() ?? 0,
+    id: json['id']?.toString() ?? '',
+    title: json['title']?.toString() ?? '',
+    description: json['description']?.toString() ?? '',
+    category: json['category']?.toString() ?? 'Geral',
+    authors: json['authors']?.toString() ?? '',
+    year: json['year']?.toString() ?? '',
+    pdfUrl: json['pdfUrl']?.toString() ?? '',
+    fileName: json['fileName']?.toString() ?? '',
+    fileSize: (json['fileSize'] is num)
+        ? (json['fileSize'] as num).toInt()
+        : int.tryParse(json['fileSize']?.toString() ?? '') ?? 0,
+    uploadedAt: json['uploadedAt']?.toString() ?? '',
+    uploadedBy: json['uploadedBy']?.toString() ?? '',
+    // REST Firestore pode retornar boolValue já decodificado como bool
+    isPublished: json['isPublished'] == true || json['isPublished'].toString() == 'true',
+    downloadCount: (json['downloadCount'] is num)
+        ? (json['downloadCount'] as num).toInt()
+        : int.tryParse(json['downloadCount']?.toString() ?? '') ?? 0,
   );
 
   GuideModel copyWith({

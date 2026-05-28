@@ -6,7 +6,7 @@ rules_version = '2';
 //
 // RESUMO DE ACESSO:
 //  • users/{uid}/**         → leitura/escrita: apenas o próprio usuário
-//  • clinical_guides        → leitura: qualquer usuário autenticado (isPublished=true é filtrado no client)
+//  • clinical_guides        → leitura: PÚBLICA (conteúdo educativo — isPublished=true filtrado no client)
 //  • public_histories       → leitura: qualquer usuário autenticado
 //                           → escrita: apenas o dono do documento (uid == authorUid)
 //  • app_config/global      → leitura: apenas admin (contém Gemini API Key — NUNCA expor publicamente)
@@ -56,11 +56,12 @@ service cloud.firestore {
     }
 
     // ── Biblioteca Clínica (clinical_guides) ─────────────────────────────────
-    // Leitura: qualquer usuário autenticado pode listar e ler guias
-    // O filtro isPublished=true é responsabilidade do cliente (query SDK)
+    // Leitura: PÚBLICA — sem autenticação (conteúdo educativo, biblioteca clínica).
+    // A Biblioteca deve abrir e mostrar guias mesmo antes do login.
+    // O filtro isPublished=true é responsabilidade do cliente (query SDK/REST).
     // Escrita: apenas admin
     match /clinical_guides/{guideId} {
-      allow read: if isAuthed();
+      allow read: if true;
       allow write: if isAdmin();
     }
 
