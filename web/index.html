@@ -93,7 +93,6 @@
        PRELOAD — recursos críticos de boot
   ═══════════════════════════════════════════════════════════════════ -->
   <link rel="preload" href="flutter_bootstrap.js" as="script">
-  <link rel="preload" href="main.dart.js" as="script">
 
   <!-- ═══════════════════════════════════════════════════════════════════
        LOCALSTORAGE HELPERS — criados ANTES do Firebase/SES lockdown.
@@ -434,8 +433,8 @@
       } catch(e) {}
     })();
 
-    var APP_VERSION = '6.1.0';
-    var SW_URL      = 'pwa-sw.js?v=6.2.0';
+    var APP_VERSION = '6.2.1';
+    var SW_URL      = 'pwa-sw.js?v=6.2.1';
 
     // ── Remoção do splash ────────────────────────────────────────────
     var _splashRemoved = false;

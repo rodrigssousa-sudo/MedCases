@@ -1,5 +1,5 @@
 /**
- * MedCases Pro — PWA Service Worker v6.2.0
+ * MedCases Pro — PWA Service Worker v6.2.1
  * Estratégia: network-first para main.dart.js e index.html (sempre frescos)
  *             cache-first para assets estáticos, ícones e fontes.
  * Resultado: bundles antigos deixam de ser servidos de imediato após deploy.
@@ -7,8 +7,8 @@
 
 'use strict';
 
-const SW_VERSION   = '6.2.0';
-const CACHE_APP    = 'medcases-app-v6.2.0';
+const SW_VERSION   = '6.2.1';
+const CACHE_APP    = 'medcases-app-v6.2.1';
 const CACHE_FONTS  = 'medcases-fonts-v2';
 
 // Assets pré-cacheados no install (críticos para o boot)

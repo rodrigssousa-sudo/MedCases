@@ -24,8 +24,15 @@ class FirestoreService {
   static const _guidesCacheKey = 'clinical_guides_cache_v1';
   static const _guidesCacheFirstOpenResetKey = 'clinical_guides_cache_first_open_reset_v2';
   static const _publicHistoriesCacheKey = 'public_histories_cache_v1';
+  static const _restRetryCooldown = Duration(minutes: 2);
   static String _lastGuidesErrorMessage = '';
   static String _lastPublicHistoriesErrorMessage = '';
+  static Map<String, dynamic> _cachedAppConfigGlobal = <String, dynamic>{};
+  static Future<Map<String, dynamic>>? _appConfigGlobalInFlight;
+  static DateTime? _appConfigGlobalRetryAfter;
+  static Map<String, dynamic> _cachedAppUpdate = <String, dynamic>{};
+  static Future<Map<String, dynamic>>? _appUpdateInFlight;
+  static DateTime? _appUpdateRetryAfter;
 
   // ── Referências por usuário ───────────────────────────────────────────────
   static DocumentReference<Map<String, dynamic>> _userDoc(String uid) =>
@@ -77,17 +84,117 @@ class FirestoreService {
     } catch (_) {}
   }
 
+  static bool _isRetryBlocked(DateTime? retryAfter) =>
+      retryAfter != null && DateTime.now().isBefore(retryAfter);
+
+  static Map<String, String> _restHeaders(String token) {
+    final headers = <String, String>{
+      'Content-Type': 'application/json',
+      'X-Firebase-API-Key': _firebaseApiKey,
+    };
+    if (token.isNotEmpty) {
+      headers['Authorization'] = 'Bearer $token';
+    }
+    return headers;
+  }
+
+  static Map<String, dynamic> _decodeFirestoreFields(String bodyText) {
+    final body = jsonDecode(bodyText) as Map<String, dynamic>;
+    final fields = body['fields'] as Map<String, dynamic>? ?? <String, dynamic>{};
+    final data = <String, dynamic>{};
+
+    fields.forEach((key, rawValue) {
+      final value = rawValue as Map<String, dynamic>? ?? <String, dynamic>{};
+      if (value.containsKey('stringValue')) {
+        data[key] = value['stringValue'] as String? ?? '';
+      } else if (value.containsKey('booleanValue')) {
+        data[key] = value['booleanValue'] == true;
+      } else if (value.containsKey('integerValue')) {
+        data[key] = int.tryParse(value['integerValue']?.toString() ?? '');
+      } else if (value.containsKey('doubleValue')) {
+        data[key] = (value['doubleValue'] as num?)?.toDouble();
+      } else if (value.containsKey('arrayValue')) {
+        final items = (value['arrayValue'] as Map<String, dynamic>?)?['values'] as List<dynamic>? ?? const <dynamic>[];
+        data[key] = items
+            .map((item) => (item as Map<String, dynamic>)['stringValue'] as String? ?? '')
+            .toList();
+      }
+    });
+
+    return data;
+  }
+
+  static Future<Map<String, dynamic>> _loadAppConfigGlobalData() async {
+    if (_cachedAppConfigGlobal.isNotEmpty) {
+      return Map<String, dynamic>.from(_cachedAppConfigGlobal);
+    }
+    if (_isRetryBlocked(_appConfigGlobalRetryAfter)) {
+      return Map<String, dynamic>.from(_cachedAppConfigGlobal);
+    }
+    final inFlight = _appConfigGlobalInFlight;
+    if (inFlight != null) return inFlight;
+
+    final future = () async {
+      try {
+        if (!kIsWeb) {
+          final doc = await _db.collection('app_config').doc('global').get()
+              .timeout(const Duration(seconds: 2));
+          debugPrint('[FirestoreService] app_config/global SDK exists=${doc.exists} fields=${doc.data()?.keys.toList()}');
+          final data = doc.data() ?? <String, dynamic>{};
+          if (data.isNotEmpty) {
+            _cachedAppConfigGlobal = Map<String, dynamic>.from(data);
+          }
+          return Map<String, dynamic>.from(data);
+        }
+
+        final token = await AuthService.getAdminToken();
+        final url = '$_fsBase/app_config/global?key=$_firebaseApiKey';
+        debugPrint('[FirestoreService] REST token.isNotEmpty=${token.isNotEmpty}');
+        debugPrint('[FirestoreService] REST GET $url');
+        final resp = await http.get(
+          Uri.parse(url),
+          headers: _restHeaders(token),
+        ).timeout(const Duration(seconds: 2));
+
+        debugPrint('[FirestoreService] REST status=${resp.statusCode} body=${resp.body.substring(0, resp.body.length.clamp(0, 400))}');
+
+        if (resp.statusCode != 200) {
+          if (resp.statusCode == 401 || resp.statusCode == 403) {
+            _appConfigGlobalRetryAfter = DateTime.now().add(_restRetryCooldown);
+          }
+          debugPrint('[FirestoreService] REST ERRO ${resp.statusCode}: ${resp.body}');
+          return Map<String, dynamic>.from(_cachedAppConfigGlobal);
+        }
+
+        _appConfigGlobalRetryAfter = null;
+        final data = _decodeFirestoreFields(resp.body);
+        debugPrint('[FirestoreService] REST campos disponíveis: ${data.keys.toList()}');
+        if (data.isNotEmpty) {
+          _cachedAppConfigGlobal = Map<String, dynamic>.from(data);
+        }
+        return data;
+      } catch (e) {
+        debugPrint('[FirestoreService] _loadAppConfigGlobalData ERRO: $e');
+        return Map<String, dynamic>.from(_cachedAppConfigGlobal);
+      } finally {
+        _appConfigGlobalInFlight = null;
+      }
+    }();
+
+    _appConfigGlobalInFlight = future;
+    return future;
+  }
+
   // ── Chave OpenAI do APP (compartilhada) ──────────────────────────────────
   /// Carrega a chave OpenAI global do app, salva pelo administrador.
   /// Armazenada em app_config/global campo 'openAiKey'.
   /// Todos os usuários aprovados usam essa chave — nenhuma configuração manual.
   static Future<String> loadAppAiKey() async {
     try {
-      final doc = await _db.collection('app_config').doc('global').get()
-          .timeout(const Duration(seconds: 2));
-      debugPrint('[FirestoreService] loadAppAiKey doc.exists=${doc.exists} fields=${doc.data()?.keys.toList()}');
-      if (!doc.exists) return '';
-      return (doc.data()?['openAiKey'] as String?) ?? '';
+      final data = await _loadAppConfigGlobalData();
+      final key = (data['openAiKey'] as String?)?.trim() ?? '';
+      debugPrint('[FirestoreService] loadAppAiKey key.isNotEmpty=${key.isNotEmpty}');
+      return key;
     } catch (e) {
       debugPrint('[FirestoreService] loadAppAiKey ERRO: $e');
       return '';
@@ -98,67 +205,15 @@ class FirestoreService {
   /// Carrega a Gemini API Key global do app, salva pelo administrador.
   /// Armazenada em app_config/global campo 'apiKey'.
   /// Usada diretamente nas chamadas à API do Gemini (sem OAuth token).
-  ///
-  /// Web: usa REST HTTP puro (firestore.googleapis.com) para bypassar o
-  /// flutter_service_worker.js que intercepta e rejeita fetch do SDK Firestore.
-  /// Nativo: SDK Firestore direto (sem restrições).
   static Future<String> loadGeminiApiKey() async {
-    if (kIsWeb) return _loadGeminiApiKeyRest();
     try {
-      final doc = await _db.collection('app_config').doc('global').get();
-      debugPrint('[FirestoreService] loadGeminiApiKey (SDK) doc.exists=${doc.exists} fields=${doc.data()?.keys.toList()}');
-      if (!doc.exists) return '';
-      final data = doc.data()!;
-      // 'apiKey' é o nome real no banco; 'geminiApiKey' mantido como fallback legado
+      final data = await _loadAppConfigGlobalData();
       final key = (data['apiKey'] as String?)?.trim() ??
-                  (data['geminiApiKey'] as String?)?.trim() ?? '';
-      debugPrint('[FirestoreService] loadGeminiApiKey (SDK) key.isNotEmpty=${key.isNotEmpty}');
+          (data['geminiApiKey'] as String?)?.trim() ?? '';
+      debugPrint('[FirestoreService] loadGeminiApiKey key.isNotEmpty=${key.isNotEmpty}');
       return key;
     } catch (e) {
-      debugPrint('[FirestoreService] loadGeminiApiKey (SDK) ERRO: $e');
-      return '';
-    }
-  }
-
-  /// Lê app_config/global.apiKey via Firestore REST API.
-  /// Usa idToken do usuário autenticado para authorização (regras de segurança).
-  /// O token é obtido via securetoken.googleapis.com — domínio externo,
-  /// não interceptado pelo service worker de medcasespro.com.
-  static Future<String> _loadGeminiApiKeyRest() async {
-    try {
-      final token = await AuthService.getAdminToken();
-      debugPrint('[FirestoreService] REST token.isNotEmpty=${token.isNotEmpty}');
-      final headers = token.isNotEmpty
-          ? {'Authorization': 'Bearer $token'}
-          : <String, String>{};
-
-      final url = '$_fsBase/app_config/global';
-      debugPrint('[FirestoreService] REST GET $url');
-      final resp = await http.get(
-        Uri.parse(url),
-        headers: headers,
-      ).timeout(const Duration(seconds: 2)); // reduzido: _loadAiKeyFromFirestore já tem timeout 2s
-
-      debugPrint('[FirestoreService] REST status=${resp.statusCode} body=${resp.body.substring(0, resp.body.length.clamp(0, 400))}');
-
-      if (resp.statusCode != 200) {
-        debugPrint('[FirestoreService] REST ERRO ${resp.statusCode}: ${resp.body}');
-        return '';
-      }
-
-      final body   = jsonDecode(resp.body) as Map<String, dynamic>;
-      final fields = body['fields'] as Map<String, dynamic>? ?? {};
-      debugPrint('[FirestoreService] REST campos disponíveis: ${fields.keys.toList()}');
-
-      // Tenta 'apiKey' (nome real), depois 'geminiApiKey' (legado)
-      final apiKeyField    = fields['apiKey']      as Map<String, dynamic>?;
-      final geminiKeyField = fields['geminiApiKey'] as Map<String, dynamic>?;
-      final key = (apiKeyField?['stringValue'] as String?)?.trim() ??
-                  (geminiKeyField?['stringValue'] as String?)?.trim() ?? '';
-      debugPrint('[FirestoreService] REST key.isNotEmpty=${key.isNotEmpty}');
-      return key;
-    } catch (e) {
-      debugPrint('[FirestoreService] _loadGeminiApiKeyRest ERRO: $e');
+      debugPrint('[FirestoreService] loadGeminiApiKey ERRO: $e');
       return '';
     }
   }
@@ -931,39 +986,60 @@ class FirestoreService {
 
   /// Lê o documento app_updates/current via REST (web) ou SDK (nativo).
   static Future<Map<String, dynamic>> loadAppUpdate() async {
-    if (kIsWeb) return _loadAppUpdateRest();
-    try {
-      final doc = await _db.collection('app_updates').doc('current').get();
-      if (!doc.exists) return {};
-      return doc.data() ?? {};
-    } catch (_) { return {}; }
+    if (_cachedAppUpdate.isNotEmpty) {
+      return Map<String, dynamic>.from(_cachedAppUpdate);
+    }
+    if (_isRetryBlocked(_appUpdateRetryAfter)) {
+      return Map<String, dynamic>.from(_cachedAppUpdate);
+    }
+    final inFlight = _appUpdateInFlight;
+    if (inFlight != null) return inFlight;
+
+    final future = () async {
+      try {
+        if (!kIsWeb) {
+          final doc = await _db.collection('app_updates').doc('current').get();
+          final data = doc.data() ?? <String, dynamic>{};
+          if (data.isNotEmpty) {
+            _cachedAppUpdate = Map<String, dynamic>.from(data);
+          }
+          return Map<String, dynamic>.from(data);
+        }
+        return await _loadAppUpdateRest();
+      } catch (_) {
+        return Map<String, dynamic>.from(_cachedAppUpdate);
+      } finally {
+        _appUpdateInFlight = null;
+      }
+    }();
+
+    _appUpdateInFlight = future;
+    return future;
   }
 
   static Future<Map<String, dynamic>> _loadAppUpdateRest() async {
     try {
       final token = await AuthService.getAdminToken();
-      final headers = token.isNotEmpty
-          ? {'Authorization': 'Bearer $token'}
-          : <String, String>{};
       final resp = await http.get(
-        Uri.parse('$_fsBase/app_updates/current'),
-        headers: headers,
-      );
-      if (resp.statusCode != 200) return {};
-      final body   = jsonDecode(resp.body) as Map<String, dynamic>;
-      final fields = body['fields'] as Map<String, dynamic>? ?? {};
-      final data   = <String, dynamic>{};
-      fields.forEach((k, v) {
-        final val = v as Map<String, dynamic>;
-        if (val.containsKey('stringValue'))  data[k] = val['stringValue'];
-        if (val.containsKey('booleanValue')) data[k] = val['booleanValue'];
-        if (val.containsKey('arrayValue')) {
-          final arr = (val['arrayValue']['values'] as List<dynamic>? ?? []);
-          data[k] = arr.map((e) => (e as Map)['stringValue'] as String? ?? '').toList();
+        Uri.parse('$_fsBase/app_updates/current?key=$_firebaseApiKey'),
+        headers: _restHeaders(token),
+      ).timeout(const Duration(seconds: 2));
+      if (resp.statusCode != 200) {
+        if (resp.statusCode == 401 || resp.statusCode == 403) {
+          _appUpdateRetryAfter = DateTime.now().add(_restRetryCooldown);
         }
-      });
+        debugPrint('[FirestoreService] app_updates/current REST ${resp.statusCode}: ${resp.body.substring(0, resp.body.length.clamp(0, 220))}');
+        return Map<String, dynamic>.from(_cachedAppUpdate);
+      }
+      _appUpdateRetryAfter = null;
+      final data = _decodeFirestoreFields(resp.body);
+      if (data.isNotEmpty) {
+        _cachedAppUpdate = Map<String, dynamic>.from(data);
+      }
       return data;
-    } catch (_) { return {}; }
+    } catch (_) {
+      return Map<String, dynamic>.from(_cachedAppUpdate);
+    }
   }
 
   /// Salva nova atualização em app_updates/current (admin only).

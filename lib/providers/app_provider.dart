@@ -173,6 +173,10 @@ class AppProvider extends ChangeNotifier {
   bool _geminiConnected = false;   // true quando conta Google autorizada
   bool _geminiLoading   = false;   // true durante signIn/signOut
   String _geminiEmail   = '';      // e-mail exibido na UI
+  static const _geminiRetryCooldown = Duration(minutes: 2);
+  DateTime? _geminiRetryAfter;
+  Future<void>? _geminiSessionCheckInFlight;
+  bool _geminiApiKeyUnavailable = false;
 
   // ── Estado — Modo Offline ──────────────────────────────────────────────────
   bool _offlineMode      = false;  // true = sem rede, usa só cache local
@@ -402,6 +406,9 @@ class AppProvider extends ChangeNotifier {
     _aiHistory.clear();
     _geminiConnected = false;
     _geminiEmail = '';
+    _geminiRetryAfter = null;
+    _geminiSessionCheckInFlight = null;
+    _geminiApiKeyUnavailable = false;
     // Limpa plantão (recarregado ao próximo login)
     _pinnedDrugIds = [];
     _pinnedCalcIds = [];
@@ -1483,6 +1490,78 @@ class AppProvider extends ChangeNotifier {
     }
   }
 
+  bool _isGeminiRetryBlocked() =>
+      _geminiRetryAfter != null && DateTime.now().isBefore(_geminiRetryAfter!);
+
+  void _clearGeminiConfigUnavailable() {
+    _geminiApiKeyUnavailable = false;
+    _geminiRetryAfter = null;
+  }
+
+  void _markGeminiConfigUnavailable([Object? error]) {
+    _geminiApiKeyUnavailable = true;
+    _geminiRetryAfter = DateTime.now().add(_geminiRetryCooldown);
+    if (error != null) {
+      debugPrint('[checkGeminiSession] app_config/global indisponível: $error');
+    }
+  }
+
+  void _setGeminiConnectionState({
+    required bool connected,
+    String email = '',
+    bool notify = true,
+  }) {
+    final nextEmail = connected ? email : '';
+    if (_geminiConnected == connected && _geminiEmail == nextEmail) return;
+    _geminiConnected = connected;
+    _geminiEmail = nextEmail;
+    if (notify) notifyListeners();
+  }
+
+  Future<bool> _ensureGeminiApiKey({required String source}) async {
+    if (GeminiService.hasApiKey) {
+      _clearGeminiConfigUnavailable();
+      return true;
+    }
+
+    await GeminiService.initFromStorage();
+    if (GeminiService.hasApiKey) {
+      _clearGeminiConfigUnavailable();
+      debugPrint('[checkGeminiSession] API Key restaurada do SharedPrefs ($source) ✓');
+      return true;
+    }
+
+    if (_geminiApiKeyUnavailable && _isGeminiRetryBlocked()) {
+      debugPrint('[checkGeminiSession] cooldown ativo para app_config/global até $_geminiRetryAfter — sem novo retry');
+      return false;
+    }
+
+    debugPrint('[checkGeminiSession] API Key ausente — tentando Firestore...');
+    try {
+      final geminiKey = await FirestoreService.loadGeminiApiKey()
+          .timeout(const Duration(seconds: 5));
+      if (geminiKey.isNotEmpty) {
+        GeminiService.setGeminiApiKey(geminiKey);
+        _clearGeminiConfigUnavailable();
+        debugPrint('[checkGeminiSession] API Key recarregada do Firestore ✓');
+        return true;
+      }
+    } catch (e) {
+      debugPrint('[checkGeminiSession] Firestore falhou: $e — tentando SharedPrefs...');
+    }
+
+    await GeminiService.initFromStorage();
+    if (GeminiService.hasApiKey) {
+      _clearGeminiConfigUnavailable();
+      debugPrint('[checkGeminiSession] API Key restaurada do SharedPrefs (fallback) ✓');
+      return true;
+    }
+
+    _markGeminiConfigUnavailable();
+    debugPrint('[checkGeminiSession] API Key indisponível — novo retry só após $_geminiRetryAfter');
+    return false;
+  }
+
   /// Verifica silenciosamente se há sessão Gemini ativa (chamado no login).
   /// Nunca propaga exceção nem modifica _geminiLoading — é 100% silencioso.
   ///
@@ -1491,100 +1570,68 @@ class AppProvider extends ChangeNotifier {
   ///   1. JS em index.html salva email (via tokeninfo) + seta 'medcases_gsi_pending'
   ///   2. Este método detecta a flag, lê o email do localStorage
   ///   3. _geminiConnected = true se email salvo E Gemini API Key carregada
-  Future<void> checkGeminiSession() async {
-    try {
-      if (kIsWeb) {
-        // Limpa flag de modal órfã (pode sobrar de tentativas anteriores)
-        _webRemoveLS('medcases_gsi_modal_opened');
+  Future<void> checkGeminiSession() {
+    final inFlight = _geminiSessionCheckInFlight;
+    if (inFlight != null) return inFlight;
 
-        // ── Detecta retorno do redirect OAuth ───────────────────────────────
-        final pending = _webGetLS('medcases_gsi_pending');
-        if (pending == 'true') {
-          _webRemoveLS('medcases_gsi_pending');
-
-          // Com API Key arch: apenas o email é necessário (token não é usado)
-          var email = _webGetLS('gemini_google_email') ?? '';
-          if (email.isEmpty) {
-            // Email ainda não chegou (fetch async do JS) — aguarda até 1s
-            await Future.delayed(const Duration(milliseconds: 600));
-            email = _webGetLS('gemini_google_email') ?? '';
-          }
-          if (email.isEmpty) {
-            email = await GeminiService.connectedEmail() ?? '';
-          }
-          if (email.isNotEmpty) {
-            // Email presente = usuário autenticou com sucesso.
-            // Garante que a API Key está carregada (pode ter sido perdida por reload)
-            if (!GeminiService.hasApiKey) {
-              debugPrint('[checkGeminiSession] API Key ausente após redirect — tentando Firestore REST...');
-              try {
-                final geminiKey = await FirestoreService.loadGeminiApiKey()
-                    .timeout(const Duration(seconds: 8));
-                if (geminiKey.isNotEmpty) {
-                  GeminiService.setGeminiApiKey(geminiKey); // persiste em SharedPrefs + mcLsSet
-                  debugPrint('[checkGeminiSession] API Key recarregada do Firestore REST ✓');
-                } else {
-                  // Firestore vazio — SharedPreferences é o fallback primário (sem dart:js)
-                  await GeminiService.initFromStorage();
-                  if (GeminiService.hasApiKey) {
-                    debugPrint('[checkGeminiSession] API Key restaurada do SharedPrefs (pós-redirect) ✓');
-                  }
-                }
-              } catch (e) {
-                debugPrint('[checkGeminiSession] Firestore REST falhou: $e — tentando SharedPrefs...');
-                await GeminiService.initFromStorage();
-                if (GeminiService.hasApiKey) {
-                  debugPrint('[checkGeminiSession] API Key restaurada do SharedPrefs (pós-redirect fallback) ✓');
-                }
-              }
-            }
-            _geminiConnected = true;
-            _geminiEmail = email;
-            debugPrint('[checkGeminiSession] redirect OAuth OK — $email, apiKey: ${GeminiService.hasApiKey}');
-            notifyListeners();
-            return;
-          }
+    final future = () async {
+      try {
+        if (_geminiConnected && _geminiEmail.isNotEmpty && GeminiService.hasApiKey) {
+          return;
         }
-      }
 
-      // ── Verificação normal de sessão existente (não-redirect) ──────────
-      // Garante API Key carregada antes de verificar isConnected()
-      if (!GeminiService.hasApiKey) {
-        debugPrint('[checkGeminiSession] API Key ausente — tentando Firestore...');
-        try {
-          final geminiKey = await FirestoreService.loadGeminiApiKey()
-              .timeout(const Duration(seconds: 5));
-          if (geminiKey.isNotEmpty) {
-            GeminiService.setGeminiApiKey(geminiKey); // persiste em SharedPrefs + mcLsSet
-            debugPrint('[checkGeminiSession] API Key recarregada do Firestore ✓');
-          } else {
-            // Firestore vazio — SharedPreferences é o fallback primário (sem dart:js/eval)
-            await GeminiService.initFromStorage();
-            if (GeminiService.hasApiKey) {
-              debugPrint('[checkGeminiSession] API Key restaurada do SharedPrefs ✓');
+        if (kIsWeb) {
+          // Limpa flag de modal órfã (pode sobrar de tentativas anteriores)
+          _webRemoveLS('medcases_gsi_modal_opened');
+
+          // ── Detecta retorno do redirect OAuth ─────────────────────────────
+          final pending = _webGetLS('medcases_gsi_pending');
+          if (pending == 'true') {
+            _webRemoveLS('medcases_gsi_pending');
+
+            var email = _webGetLS('gemini_google_email') ?? '';
+            if (email.isEmpty) {
+              await Future.delayed(const Duration(milliseconds: 600));
+              email = _webGetLS('gemini_google_email') ?? '';
+            }
+            if (email.isEmpty) {
+              email = await GeminiService.connectedEmail() ?? '';
+            }
+            if (email.isNotEmpty) {
+              final hasKey = await _ensureGeminiApiKey(source: 'pós-redirect');
+              if (!hasKey) return;
+              _setGeminiConnectionState(connected: true, email: email);
+              debugPrint('[checkGeminiSession] redirect OAuth OK — $email, apiKey: ${GeminiService.hasApiKey}');
+              return;
             }
           }
-        } catch (e) {
-          debugPrint('[checkGeminiSession] Firestore falhou: $e — tentando SharedPrefs...');
-          await GeminiService.initFromStorage();
-          if (GeminiService.hasApiKey) {
-            debugPrint('[checkGeminiSession] API Key restaurada do SharedPrefs (fallback) ✓');
-          }
         }
+
+        final hasKey = await _ensureGeminiApiKey(source: 'sessão existente');
+        if (!hasKey) return;
+
+        final connected = await GeminiService.isConnected()
+            .timeout(const Duration(seconds: 5), onTimeout: () => false);
+        if (connected) {
+          final email = await GeminiService.connectedEmail() ?? '';
+          _setGeminiConnectionState(connected: true, email: email);
+          debugPrint('[checkGeminiSession] sessão existente — $email, apiKey: ${GeminiService.hasApiKey}');
+          return;
+        }
+
+        if (_geminiConnected || _geminiEmail.isNotEmpty) {
+          _setGeminiConnectionState(connected: false, notify: false);
+        }
+      } catch (e) {
+        debugPrint('[checkGeminiSession] erro: $e');
+        _setGeminiConnectionState(connected: false, notify: false);
+      } finally {
+        _geminiSessionCheckInFlight = null;
       }
-      final connected = await GeminiService.isConnected()
-          .timeout(const Duration(seconds: 5), onTimeout: () => false);
-      if (connected) {
-        _geminiConnected = true;
-        _geminiEmail = await GeminiService.connectedEmail() ?? '';
-        debugPrint('[checkGeminiSession] sessão existente — $_geminiEmail, apiKey: ${GeminiService.hasApiKey}');
-        notifyListeners();
-      }
-    } catch (e) {
-      debugPrint('[checkGeminiSession] erro: $e');
-      _geminiConnected = false;
-      _geminiEmail = '';
-    }
+    }();
+
+    _geminiSessionCheckInFlight = future;
+    return future;
   }
 
 

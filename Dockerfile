@@ -20,6 +20,10 @@ COPY build/web /usr/share/nginx/html
 # quebrando o ciclo vicioso de cache stale. Deve ser aplicado SEMPRE após o COPY.
 COPY web/flutter_service_worker.js /usr/share/nginx/html/flutter_service_worker.js
 
+# ── PWA SW customizado: mantém a versão fonte acima do artifact build/web ─────
+# Evita que um build/web commitado com pwa-sw.js antigo volte a servir bundle stale.
+COPY web/pwa-sw.js /usr/share/nginx/html/pwa-sw.js
+
 # Health check
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
   CMD wget -qO- http://localhost:8080/health || exit 1

@@ -64,11 +64,13 @@ self.addEventListener('activate', function(e) {
 self.addEventListener('fetch', function(e) { e.respondWith(fetch(e.request)); });
 SWEOF
 
+echo "🧩 Sincronizando pwa-sw.js customizado..."
+cp web/pwa-sw.js build/web/pwa-sw.js
+
 # ═══════════════════════════════════════════════════════════════════════════════
-# CACHE BUSTING — Injeta git commit hash como query param em todos os
-# arquivos JS críticos referenciados no index.html.
-# Isso força CDN (Cloudflare) e nginx a servir a versão nova, pois a URL
-# muda a cada deploy:  flutter_bootstrap.js?v=a1b2c3d
+# CACHE BUSTING — Injeta git commit hash no bootstrap e APP_VERSION.
+# main.dart.js NÃO recebe preload/cache-bust aqui porque o pwa-sw.js usa
+# network-first para ele, evitando servir bundle antigo e warnings de preload.
 # ═══════════════════════════════════════════════════════════════════════════════
 echo ""
 echo "🔑 Injetando cache-bust hash no index.html..."
@@ -98,10 +100,10 @@ html = re.sub(
     html
 )
 
-# ── 2. Preload links: href="main.dart.js" → href="main.dart.js?v=HASH"
+# ── 2. Remove preload de main.dart.js (network-first no pwa-sw.js)
 html = re.sub(
-    r'(href=["\'])main\.dart\.js(?:\?v=[^"\']*)?(["\'])',
-    lambda m: m.group(1) + 'main.dart.js?v=' + cache_key + m.group(2),
+    r'\s*<link rel=["\']preload["\'] href=["\']main\.dart\.js(?:\?v=[^"\']*)?["\'] as=["\']script["\']>\s*\n?',
+    '\n',
     html
 )
 
