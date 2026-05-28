@@ -92,8 +92,8 @@
   <!-- ═══════════════════════════════════════════════════════════════════
        PRELOAD — recursos críticos de boot
   ═══════════════════════════════════════════════════════════════════ -->
-  <link rel="preload" href="flutter_bootstrap.js?v=dc2ea17-1779969195" as="script">
-  <link rel="preload" href="main.dart.js?v=dc2ea17-1779969195" as="script">
+  <link rel="preload" href="flutter_bootstrap.js?v=dbf7040-1779969449" as="script">
+  <link rel="preload" href="main.dart.js?v=dbf7040-1779969449" as="script">
 
   <!-- ═══════════════════════════════════════════════════════════════════
        LOCALSTORAGE HELPERS — criados ANTES do Firebase/SES lockdown.
@@ -434,7 +434,7 @@
       } catch(e) {}
     })();
 
-    var APP_VERSION = 'dc2ea17-1779969195';
+    var APP_VERSION = 'dbf7040-1779969449';
     var SW_URL      = 'pwa-sw.js';
 
     // ── Remoção do splash ────────────────────────────────────────────
@@ -476,7 +476,7 @@
     // ── Boot do Flutter ──────────────────────────────────────────────
     function bootFlutter() {
       var s = document.createElement('script');
-      s.src = 'flutter_bootstrap.js?v=dc2ea17-1779969195';
+      s.src = 'flutter_bootstrap.js?v=dbf7040-1779969449';
       s.async = true;
       document.head.appendChild(s);
     }
