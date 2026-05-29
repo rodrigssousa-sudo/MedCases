@@ -202,20 +202,23 @@ class _LoginScreenState extends State<LoginScreen>
   // ─────────────────────────────────────────────────────────────────────────
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
+    final size   = MediaQuery.of(context).size;
+    // Em tablets/iPad limita a largura para evitar layout de smartphone esticado.
+    // Em phones usa a largura total.
+    final isTablet  = size.width >= 600;
+    final panelW    = isTablet ? 460.0 : size.width;
     // Proporção: 42% hero topo / 58% painel inferior
     final heroH  = size.height * 0.42;
 
     return Scaffold(
       backgroundColor: kBg,
       body: Stack(children: [
-        // ── Hero geométrico de topo (fundo do topo) ───────────────────────
-        Positioned(top: 0, left: 0, right: 0,
-          height: heroH + 32,
+        // ── Hero ocupa sempre a tela inteira (fundo) ──────────────────────
+        Positioned.fill(
           child: _HeroGeometric(rotAnim: _heroRot, lang: _currentLang),
         ),
 
-        // ── Botão voltar ──────────────────────────────────────────────────
+        // ── Botão voltar — sempre no canto esquerdo da tela ───────────────
         if (widget.onBack != null)
           Positioned(
             top: MediaQuery.of(context).padding.top + 12,
@@ -242,26 +245,29 @@ class _LoginScreenState extends State<LoginScreen>
             ),
           ),
 
-        // ── Painel inferior em slide ───────────────────────────────────────
+        // ── Painel inferior centralizado (tablet: largura limitada) ───────
         Positioned(
           top: heroH - 20,
           left: 0, right: 0, bottom: 0,
-          child: SlideTransition(
-            position: _slideAnim,
-            child: Container(
-              decoration: const BoxDecoration(
-                color: kPanel,
-                borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
-              ),
-              child: SingleChildScrollView(
-                padding: EdgeInsets.only(
-                  left: 24, right: 24,
-                  top: 28, bottom: MediaQuery.of(context).padding.bottom + 24),
-                child: Form(
-                  key: _formKey,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
+          child: Center(
+            child: SizedBox(
+              width: panelW,
+              child: SlideTransition(
+                position: _slideAnim,
+                child: Container(
+                  decoration: const BoxDecoration(
+                    color: kPanel,
+                    borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+                  ),
+                  child: SingleChildScrollView(
+                    padding: EdgeInsets.only(
+                      left: 28, right: 28,
+                      top: 28, bottom: MediaQuery.of(context).padding.bottom + 24),
+                    child: Form(
+                      key: _formKey,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
                       // ── Handle visual ───────────────────────────────────
                       Center(
                         child: Container(
@@ -307,7 +313,9 @@ class _LoginScreenState extends State<LoginScreen>
                       _buildLinks(),
                       const SizedBox(height: 20),
                       _buildDisclaimer(),
-                    ],
+                        ],
+                      ),
+                    ),
                   ),
                 ),
               ),
@@ -749,87 +757,102 @@ class _HeroGeometric extends StatelessWidget {
           ),
         ),
 
-        // ── Logo + texto hero ──────────────────────────────────────────
-        SafeArea(
-          bottom: false,
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(32, 28, 32, 0),
+        // ── Logo + texto hero — centralizado na tela ──────────────────
+        Positioned.fill(
+          child: SafeArea(
+            bottom: false,
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // Badge topo
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                  decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: 0.08),
-                    borderRadius: BorderRadius.circular(4),
-                    border: Border.all(
-                      color: const Color(0xFF0E7C52).withValues(alpha: 0.40)),
-                  ),
-                  child: Row(mainAxisSize: MainAxisSize.min, children: [
-                    Container(
-                      width: 6, height: 6,
-                      decoration: const BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Color(0xFF13A06A),
+                // Empurra para a metade superior (hero ocupa 42%)
+                Expanded(
+                  flex: 42,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      // Badge topo — centralizado
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withValues(alpha: 0.08),
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(
+                            color: const Color(0xFF0E7C52).withValues(alpha: 0.45)),
+                        ),
+                        child: Row(mainAxisSize: MainAxisSize.min, children: [
+                          Container(
+                            width: 6, height: 6,
+                            decoration: const BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Color(0xFF13A06A),
+                            ),
+                          ),
+                          const SizedBox(width: 6),
+                          Text(
+                            _isEs ? 'Para profesionales de salud' : 'Para profissionais de saúde',
+                            style: const TextStyle(
+                              fontSize: 11, fontWeight: FontWeight.w600,
+                              color: Color(0xFF13A06A), letterSpacing: 0.3),
+                          ),
+                        ]),
                       ),
-                    ),
-                    const SizedBox(width: 6),
-                    Text(
-                      _isEs ? 'Para profesionales de salud' : 'Para profissionais de saúde',
-                      style: const TextStyle(
-                        fontSize: 10, fontWeight: FontWeight.w600,
-                        color: Color(0xFF13A06A), letterSpacing: 0.2),
-                    ),
-                  ]),
-                ),
 
-                const SizedBox(height: 18),
+                      const SizedBox(height: 20),
 
-                // Logo — posicionado à esquerda (não centralizado como antes)
-                Row(children: [
-                  Image.asset(
-                    'assets/icon/app_icon.png',
-                    width: 52, height: 52,
-                    fit: BoxFit.contain,
+                      // Logo — centralizado com ícone maior
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Image.asset(
+                            'assets/icon/app_icon.png',
+                            width: 56, height: 56,
+                            fit: BoxFit.contain,
+                          ),
+                          const SizedBox(width: 14),
+                          Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                            const Text('MedCases Pro',
+                              style: TextStyle(
+                                fontSize: 26, fontWeight: FontWeight.w800,
+                                color: Colors.white, letterSpacing: -0.5, height: 1.0)),
+                            const SizedBox(height: 4),
+                            Text(
+                              _isEs ? 'Clínica • Protocolos • IA' : 'Clínica • Protocolos • IA',
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: const Color(0xFF13A06A).withValues(alpha: 0.90),
+                                fontWeight: FontWeight.w600, letterSpacing: 0.5)),
+                          ]),
+                        ],
+                      ),
+
+                      const SizedBox(height: 22),
+
+                      // Headline — centralizada, com mais impacto
+                      Text(
+                        _isEs
+                          ? 'Decisiones clínicas\nrespaldadas por evidencia'
+                          : 'Decisões clínicas\nembasadas em evidências',
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          fontSize: 23, fontWeight: FontWeight.w700,
+                          color: Colors.white, height: 1.25, letterSpacing: -0.5),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        _isEs
+                          ? 'Protocolos, prescripciones y IA médica en un solo lugar.'
+                          : 'Protocolos, prescrições e IA médica em um só lugar.',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 13,
+                          color: Colors.white.withValues(alpha: 0.60),
+                          fontWeight: FontWeight.w400, height: 1.45),
+                      ),
+                    ],
                   ),
-                  const SizedBox(width: 14),
-                  Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                    const Text('MedCases Pro',
-                      style: TextStyle(
-                        fontSize: 24, fontWeight: FontWeight.w700,
-                        color: Colors.white, letterSpacing: -0.5, height: 1.0)),
-                    const SizedBox(height: 2),
-                    Text(
-                      _isEs ? 'Clínica • Protocolos • IA' : 'Clínica • Protocolos • IA',
-                      style: TextStyle(
-                        fontSize: 11,
-                        color: const Color(0xFF13A06A).withValues(alpha: 0.90),
-                        fontWeight: FontWeight.w600, letterSpacing: 0.5)),
-                  ]),
-                ]),
-
-                const SizedBox(height: 20),
-
-                // Headline — tipografia diferente (não centralizada, peso 700)
-                Text(
-                  _isEs
-                    ? 'Decisiones clínicas\nrespaldadas por evidencia'
-                    : 'Decisões clínicas\nembasadas em evidências',
-                  style: const TextStyle(
-                    fontSize: 22, fontWeight: FontWeight.w700,
-                    color: Colors.white, height: 1.25, letterSpacing: -0.5),
                 ),
-                const SizedBox(height: 8),
-                Text(
-                  _isEs
-                    ? 'Protocolos, prescripciones y IA médica\nen un solo lugar.'
-                    : 'Protocolos, prescrições e IA médica\nem um só lugar.',
-                  style: TextStyle(
-                    fontSize: 13,
-                    color: Colors.white.withValues(alpha: 0.55),
-                    fontWeight: FontWeight.w400, height: 1.4),
-                ),
+                // Espaço reservado para o painel inferior (58%)
+                const Expanded(flex: 58, child: SizedBox()),
               ],
             ),
           ),
