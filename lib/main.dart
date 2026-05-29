@@ -232,6 +232,11 @@ class MedCasesApp extends StatelessWidget {
     useMaterial3: true,
     fontFamily: 'Roboto',
     brightness: dark ? Brightness.dark : Brightness.light,
+    // ── Drawer global: scrim escuro e sem largura forçada pelo tema ──────────
+    drawerTheme: DrawerThemeData(
+      scrimColor: Colors.black.withValues(alpha: 0.52),
+      // width: null → cada Drawer define a própria via MediaQuery
+    ),
     colorScheme: dark
         ? ColorScheme.dark(
             // ── Dark mode: neutro, menos verde, maior contraste ──────────
@@ -1327,6 +1332,8 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
     return Scaffold(
       backgroundColor: bg,
       endDrawer: _AppDrawer(p: p),
+      // Scrim escuro explícito para iPad/desktop (reforça o DrawerTheme global)
+      drawerScrimColor: Colors.black.withValues(alpha: 0.52),
       body: Row(
         children: [
           // ── Sidebar de navegação vertical (contém logo + nav + hamburger) ──
@@ -1394,6 +1401,8 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
     return Scaffold(
       backgroundColor: bg,
       endDrawer: _AppDrawer(p: p),
+      // Scrim escuro explícito para iPad/tablet (reforça o DrawerTheme global)
+      drawerScrimColor: Colors.black.withValues(alpha: 0.52),
       // ── AppBar mobile — logo + hambúrguer para abrir o endDrawer ─────────
       // PreferredSize: APENAS 56 px (altura visual da barra).
       // O Scaffold já adiciona automaticamente o padding da status bar acima
@@ -2554,9 +2563,26 @@ class _AppDrawer extends StatelessWidget {
         ? p.userName.trim().split(' ').take(2).map((w) => w[0].toUpperCase()).join()
         : 'MC';
 
+    // ── Largura responsiva: max 380 em tablets/desktop, 85% em mobile ────────
+    final screenW   = MediaQuery.of(context).size.width;
+    final isTablet  = screenW >= 600;
+    final drawerW   = isTablet ? screenW.clamp(0.0, 380.0) : screenW * 0.85;
+
+    // ── Shape: cantos arredondados à esquerda apenas em tablets ──────────────
+    // (endDrawer desliza da direita → arredondar topLeft + bottomLeft)
+    final drawerShape = isTablet
+        ? const RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+              topLeft:    Radius.circular(20),
+              bottomLeft: Radius.circular(20),
+            ),
+          )
+        : const RoundedRectangleBorder(borderRadius: BorderRadius.zero);
+
     return Drawer(
-      width: 288,
+      width: drawerW,
       backgroundColor: bg,
+      shape: drawerShape,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -2830,7 +2856,9 @@ class _AppDrawer extends StatelessWidget {
               border: Border(top: BorderSide(color: divider, width: 0.5)),
             ),
             child: SafeArea(
-              top: false,
+              top:   false,
+              left:  false,  // evitar padding duplo no endDrawer
+              right: false,
               child: Text(
                 'MedCases Pro · ${p.lang == 'es' ? 'Solo uso educativo' : 'Uso educacional'}',
                 style: TextStyle(fontSize: 9.5, color: subCol, fontWeight: FontWeight.w500, letterSpacing: 0.2),
@@ -2876,6 +2904,8 @@ class _DrawerHeader extends StatelessWidget {
       ),
       child: SafeArea(
         bottom: false,
+        left:   false,   // endDrawer está na direita — não duplicar padding esquerdo
+        right:  false,   // borda arredondada já cuida do espaçamento visual direito
         child: Padding(
           padding: const EdgeInsets.fromLTRB(16, 14, 14, 16),
           child: Column(
