@@ -102,6 +102,41 @@ class FirestoreService {
     return v.toString();
   }
 
+  /// Versão que aceita qualquer Map — necessário em dart2js release onde
+  /// d.data() retorna Map<String, Object?> em vez de Map<String, dynamic>.
+  /// Nunca usa cast direto — imune a TypeError.
+  static Map<String, dynamic> sdkDocToSafeMapAny(dynamic data) {
+    if (data == null) return <String, dynamic>{};
+    try {
+      if (data is Map<String, dynamic>) return sdkDocToSafeMap(data);
+      if (data is Map) {
+        final result = <String, dynamic>{};
+        data.forEach((key, value) {
+          try {
+            result[key.toString()] = _sanitizeSdkValue(value);
+          } catch (_) {
+            result[key.toString()] = value?.toString() ?? '';
+          }
+        });
+        return result;
+      }
+    } catch (_) {}
+    return <String, dynamic>{};
+  }
+
+  /// Converte um DocumentSnapshot do SDK em Map<String, dynamic> seguro,
+  /// garantindo que o campo 'id' está presente — sem spread literal que
+  /// quebra em dart2js release mode (Map<String,Object?> vs Map<String,dynamic>).
+  static Map<String, dynamic> sdkDocWithId(dynamic docSnapshot) {
+    try {
+      final data = sdkDocToSafeMapAny((docSnapshot as dynamic).data());
+      data['id'] = (docSnapshot as dynamic).id?.toString() ?? '';
+      return data;
+    } catch (_) {
+      return <String, dynamic>{};
+    }
+  }
+
   // Getter lazy — só acessa Firestore APÓS Firebase.initializeApp() completar
   static FirebaseFirestore get _db => FirebaseFirestore.instance;
 
@@ -866,7 +901,7 @@ class FirestoreService {
               .timeout(const Duration(seconds: 8));
       final list = _normalizePublicHistories(
         snap.docs
-            .map((d) => ClinicalHistoryModel.fromJson({...sdkDocToSafeMap(d.data()), 'id': d.id}))
+            .map((d) => ClinicalHistoryModel.fromJson(sdkDocWithId(d)))
             .where((h) => !h.isHidden),
       );
       if (list.isNotEmpty) {
@@ -1738,7 +1773,7 @@ class FirestoreService {
               .get(GetOptions(source: source))
               .timeout(const Duration(seconds: 8));
       final guides = _normalizeGuides(
-        snap.docs.map((d) => GuideModel.fromJson({...sdkDocToSafeMap(d.data()), 'id': d.id})),
+        snap.docs.map((d) => GuideModel.fromJson(sdkDocWithId(d))),
       );
       if (guides.isNotEmpty) {
         _clearGuidesError();
@@ -1773,7 +1808,7 @@ class FirestoreService {
               .get(GetOptions(source: source))
               .timeout(const Duration(seconds: 8));
       final guides = _normalizeGuides(
-        snap.docs.map((d) => GuideModel.fromJson({...sdkDocToSafeMap(d.data()), 'id': d.id})),
+        snap.docs.map((d) => GuideModel.fromJson(sdkDocWithId(d))),
       );
       if (guides.isNotEmpty) {
         _clearGuidesError();
@@ -2067,7 +2102,7 @@ class FirestoreService {
         .orderBy('uploadedAt', descending: true)
         .snapshots()
         .map((snap) => _normalizeGuides(
-              snap.docs.map((d) => GuideModel.fromJson({...sdkDocToSafeMap(d.data()), 'id': d.id})),
+              snap.docs.map((d) => GuideModel.fromJson(sdkDocWithId(d))),
             ));
   }
 
@@ -2140,7 +2175,7 @@ class FirestoreService {
         .orderBy('uploadedAt', descending: true)
         .snapshots()
         .map((snap) => snap.docs
-            .map((d) => GuideModel.fromJson({...sdkDocToSafeMap(d.data()), 'id': d.id}))
+            .map((d) => GuideModel.fromJson(sdkDocWithId(d)))
             .toList());
   }
 
