@@ -122,16 +122,27 @@ class FirestoreService {
 
   // _isRetryBlocked removido: idêntico a _isRestCoolingDown (consolidado)
 
-  static Map<String, String> _restHeaders(String token) {
-    final headers = <String, String>{
-      'Content-Type': 'application/json',
-      'X-Firebase-API-Key': _firebaseApiKey,
-    };
-    if (token.isNotEmpty) {
-      headers['Authorization'] = 'Bearer $token';
-    }
-    return headers;
+  // ── REST headers helpers ──────────────────────────────────────────────────
+  //
+  // CORS NOTE: Firestore REST aceita `key=<apiKey>` na URL E/OU
+  // `Authorization: Bearer <idToken>` no header.
+  //
+  // Nunca enviar `X-Firebase-API-Key` ou `Content-Type` em requisições GET:
+  //   • X-Firebase-API-Key é header customizado → força preflight OPTIONS que
+  //     o Firestore CORS não autoriza → "No 'Access-Control-Allow-Origin' header"
+  //   • Content-Type em GET body=null também pode provocar preflight desnecessário.
+  // Regra: GET usa SOMENTE Authorization; POST/PATCH usa Authorization+Content-Type.
+
+  /// Headers para requisições GET ao Firestore REST (sem corpo).
+  /// Inclui Authorization apenas se o token for não-vazio.
+  static Map<String, String> _restGetHeaders(String token) {
+    if (token.isNotEmpty) return {'Authorization': 'Bearer $token'};
+    return const {};
   }
+
+  // Nota: _restHeaders() foi removido — todas as chamadas de escrita (PATCH/POST/DELETE)
+  // usam headers inline: {'Authorization': 'Bearer $token', 'Content-Type': 'application/json'}.
+  // Isso torna cada chamada explícita e evita confusão sobre quando Content-Type é enviado.
 
   /// Decodifica o payload REST do Firestore para Map<String, dynamic>.
   /// USA APENAS safe helpers — zero casts diretos — imune a TypeError em release.
@@ -891,15 +902,13 @@ class FirestoreService {
     final authHeaders = <String, String>{'Authorization': 'Bearer $token'};
 
     Future<http.Response> doGet({Map<String, String>? extraHeaders}) {
+      // GET: SOMENTE Authorization — nunca Content-Type nem X-Firebase-API-Key
+      // (headers customizados causam preflight CORS que Firestore rejeita)
+      final hdrs = <String, String>{...authHeaders, ...?extraHeaders};
       return http
           .get(
             Uri.parse('$_fsBase/public_histories?pageSize=100&key=$apiKey'),
-            headers: {
-              'Content-Type': 'application/json',
-              'X-Firebase-API-Key': apiKey,
-              ...authHeaders,
-              ...?extraHeaders,
-            },
+            headers: hdrs,
           )
           .timeout(const Duration(seconds: 12));
     }
@@ -1041,9 +1050,10 @@ class FirestoreService {
           return;
         }
 
+        // GET: apenas Authorization (sem Content-Type/custom headers — evita preflight CORS)
         final resp = await http.get(
           Uri.parse('$_fsBase/app_config/maintenance'),
-          headers: {'Authorization': 'Bearer $token'},
+          headers: _restGetHeaders(token),
         );
 
         if (resp.statusCode == 404) {
@@ -1172,9 +1182,10 @@ class FirestoreService {
   static Future<Map<String, dynamic>> _loadAppUpdateRest() async {
     try {
       final token = await AuthService.getAdminToken();
+      // GET: usa _restGetHeaders (sem Content-Type nem X-Firebase-API-Key)
       final resp = await http.get(
         Uri.parse('$_fsBase/app_updates/current?key=$_firebaseApiKey'),
-        headers: _restHeaders(token),
+        headers: _restGetHeaders(token),
       ).timeout(const Duration(seconds: 2));
       if (resp.statusCode != 200) {
         if (resp.statusCode == 401 || resp.statusCode == 403) {
@@ -1678,15 +1689,13 @@ class FirestoreService {
     final apiKey = _firebaseApiKey;
 
     Future<http.Response> doGet({Map<String, String>? headers}) {
+      // GET: SOMENTE Authorization — nunca Content-Type nem X-Firebase-API-Key
+      // (headers customizados causam preflight CORS que Firestore rejeita)
+      final hdrs = <String, String>{...authHeaders, ...?headers};
       return http
           .get(
             Uri.parse('$_fsBase/clinical_guides?pageSize=200&key=$apiKey'),
-            headers: {
-              'Content-Type': 'application/json',
-              'X-Firebase-API-Key': apiKey,
-              ...authHeaders,
-              ...?headers,
-            },
+            headers: hdrs,
           )
           .timeout(const Duration(seconds: 12));
     }
