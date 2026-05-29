@@ -186,18 +186,42 @@ class MedCasesApp extends StatelessWidget {
       // ── Contenção de largura para iPad nativo (não afeta web desktop) ────────
       // • Web desktop (kIsWeb): sem restrição — ocupa toda a viewport.
       // • iPhone (< 600 px): transparente — nada muda.
-      // • iPad nativo (>= 600 px, não web): centraliza com no máximo 560 px
-      //   para que o layout de celular não "estique" em telas grandes.
+      // • iPad nativo (>= 600 px, não web): centraliza com maxWidth 560 px
+      //   e reescrita de MediaQuery.size para que SafeArea, MediaQuery.of()
+      //   e Scaffold.bottomNavigationBar usem a largura contida, não a tela real.
       builder: (context, child) {
         // Web: nunca restringir — o app deve ocupar a tela toda
         if (kIsWeb) return child ?? const SizedBox.shrink();
-        final screenW = MediaQuery.of(context).size.width;
+        final mq      = MediaQuery.of(context);
+        final screenW = mq.size.width;
         if (screenW <= 600) return child ?? const SizedBox.shrink();
-        // iPad nativo: centraliza com faixa de no máximo 560 px
+        // iPad nativo: contém em 560 px e reescreve MediaQuery para que
+        // SafeArea e bottomNavigationBar enxerguem a largura correta.
+        const double maxW = 560;
+        final newMq = mq.copyWith(
+          size: Size(maxW, mq.size.height),
+          // Redistribui o padding horizontal (home indicator lateral do iPad)
+          // para dentro dos 560 px — evita que SafeArea use a tela cheia.
+          padding: mq.padding.copyWith(
+            left:  0,
+            right: 0,
+          ),
+          viewPadding: mq.viewPadding.copyWith(
+            left:  0,
+            right: 0,
+          ),
+          viewInsets: mq.viewInsets.copyWith(
+            left:  0,
+            right: 0,
+          ),
+        );
         return Center(
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 560),
-            child: child ?? const SizedBox.shrink(),
+          child: SizedBox(
+            width: maxW,
+            child: MediaQuery(
+              data: newMq,
+              child: child ?? const SizedBox.shrink(),
+            ),
           ),
         );
       },
@@ -1371,13 +1395,11 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
       backgroundColor: bg,
       endDrawer: _AppDrawer(p: p),
       // ── AppBar mobile — logo + hambúrguer para abrir o endDrawer ─────────
-      // ── AppBar mobile — PreferredSize calcula altura = status bar + 56px ──
-      // O Scaffold nativo já posiciona o body abaixo da AppBar automaticamente;
-      // não precisamos de SafeArea manual no _MobileAppBar.
+      // PreferredSize: APENAS 56 px (altura visual da barra).
+      // O Scaffold já adiciona automaticamente o padding da status bar acima
+      // do appBar — somar padding.top aqui causaria AppBar duplo no iPad/iPhone.
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(
-          MediaQuery.of(context).padding.top + 56,
-        ),
+        preferredSize: const Size.fromHeight(56),
         child: Builder(
           builder: (scaffoldCtx) => _MobileAppBar(
             dark: dark,
@@ -1409,32 +1431,37 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
           ),
         ),
       ),
-      bottomNavigationBar: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          // ── Barra de navegação principal ─────────────────────────────────
-          Container(
-            decoration: BoxDecoration(
-              color: navBg,
-              border: Border(top: BorderSide(color: navBorder, width: 0.5)),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: dark ? 0.30 : 0.10),
-                  blurRadius: 24,
-                  offset: const Offset(0, -6),
-                ),
-                BoxShadow(
-                  color: (dark ? const Color(0xFF1F6B48) : const Color(0xFF0F1C14))
-                      .withValues(alpha: 0.04),
-                  blurRadius: 12,
-                  offset: const Offset(0, -2),
-                ),
-              ],
+      // ── Bottom navigation bar + legal disclaimer ──────────────────────────
+      // SafeArea envolve TODA a coluna (nav + legal) com bottom:true para que
+      // o home indicator do iPad/iPhone não corte nenhum elemento.
+      // O Container externo cobre cor e borda até a borda física da tela;
+      // o SafeArea interno recua apenas o conteúdo (não o fundo).
+      bottomNavigationBar: Container(
+        decoration: BoxDecoration(
+          color: navBg,
+          border: Border(top: BorderSide(color: navBorder, width: 0.5)),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: dark ? 0.30 : 0.10),
+              blurRadius: 24,
+              offset: const Offset(0, -6),
             ),
-            child: SafeArea(
-              top: false,
-              bottom: false,
-              child: SizedBox(
+            BoxShadow(
+              color: (dark ? const Color(0xFF1F6B48) : const Color(0xFF0F1C14))
+                  .withValues(alpha: 0.04),
+              blurRadius: 12,
+              offset: const Offset(0, -2),
+            ),
+          ],
+        ),
+        child: SafeArea(
+          top: false,
+          // bottom:true (padrão) garante recuo acima do home indicator do iPad/iPhone
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // ── Barra de botões de navegação ─────────────────────────────
+              SizedBox(
                 height: 42,
                 child: Stack(
                   clipBehavior: Clip.none,
@@ -1462,11 +1489,11 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
                   ],
                 ),
               ),
-            ),
+              // ── Disclaimer legal — dentro do SafeArea, nunca cortado ──────
+              _LegalBar(dark: dark, insideSafeArea: true),
+            ],
           ),
-          // ── Disclaimer legal — ABAIXO da nav bar ─────────────────────────
-          _LegalBar(dark: dark),
-        ],
+        ),
       ),
     );
   }
@@ -2347,7 +2374,10 @@ class _UpdateBanner extends StatelessWidget {
 // ── Barra legal ───────────────────────────────────────────────────────────────
 class _LegalBar extends StatelessWidget {
   final bool dark;
-  const _LegalBar({required this.dark});
+  /// true quando o widget já está dentro de um SafeArea pai (ex.: bottom nav).
+  /// Evita duplo recuo — SafeArea aninhado sem parâmetro correto some do layout.
+  final bool insideSafeArea;
+  const _LegalBar({required this.dark, this.insideSafeArea = false});
 
   @override
   Widget build(BuildContext context) {
@@ -2364,37 +2394,35 @@ class _LegalBar extends StatelessWidget {
         ? 'Herramienta educativa de apoyo clínico. La decisión y verificación de dosis son responsabilidad exclusiva del médico asistente.'
         : 'Ferramenta educacional de apoio clínico. A decisão e verificação de doses são de responsabilidade exclusiva do médico assistente.';
 
-    // Container fora do SafeArea: a borda e o bg cobrem toda a largura,
-    // o SafeArea interno só aplica padding no conteúdo — sem sobrepor a nav bar.
-    return Container(
+    final content = Container(
       width: double.infinity,
       decoration: BoxDecoration(
         color: bg,
         border: Border(top: BorderSide(color: border, width: 0.5)),
       ),
-      child: SafeArea(
-        top: false,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 5),
-          child: Row(children: [
-            Icon(Icons.info_outline_rounded, size: 8.5, color: textColor.withValues(alpha: 0.7)),
-            const SizedBox(width: 5),
-            Expanded(
-              child: Text(
-                disclaimer,
-                style: TextStyle(
-                  fontSize: 7.5, color: textColor,
-                  height: 1.35, letterSpacing: 0.15,
-                  fontWeight: FontWeight.w500,
-                ),
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-              ),
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 5),
+      child: Row(children: [
+        Icon(Icons.info_outline_rounded, size: 8.5, color: textColor.withValues(alpha: 0.7)),
+        const SizedBox(width: 5),
+        Expanded(
+          child: Text(
+            disclaimer,
+            style: TextStyle(
+              fontSize: 7.5, color: textColor,
+              height: 1.35, letterSpacing: 0.15,
+              fontWeight: FontWeight.w500,
             ),
-          ]),
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+          ),
         ),
-      ),
+      ]),
     );
+
+    // Quando está dentro de um SafeArea pai, não precisamos de outro SafeArea.
+    // Quando está standalone (ex.: layout desktop), envolve com SafeArea.
+    if (insideSafeArea) return content;
+    return SafeArea(top: false, child: content);
   }
 }
 
