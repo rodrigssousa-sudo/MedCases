@@ -53,7 +53,10 @@ dependencies:
   # flutter_secure_storage: 9.2.2  # mobile-only — não usar no Web
 
   # Notificações locais (mobile-only — não usar no Web)
-  # flutter_local_notifications: 18.0.1
+  flutter_local_notifications: ^18.0.1
+
+  # Timezone para agendamentos precisos com flutter_local_notifications
+  timezone: ^0.10.0
 
 dev_dependencies:
   flutter_test:

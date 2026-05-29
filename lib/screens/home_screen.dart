@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../providers/app_provider.dart';
@@ -8,6 +9,7 @@ import '../widgets/common_widgets.dart';
 import '../data/drugs_database.dart';
 import '../models/drug_model.dart';
 import '../services/drug_interaction_service.dart';
+import '../services/notification_service.dart';
 import 'cockpit_screen.dart';
 import 'drugs_screen.dart' show DrugsScreen, showDrugDetailSheet;
 import 'prescripciones_screen.dart' show PrescripcionesScreen, prescriptionModels;
@@ -138,6 +140,10 @@ class _HomeScreenState extends State<HomeScreen> {
 
         // ── Linha superior: pesquisa ──────────────────────────────────────
         _HomeSearchBar(dark: dark, isEs: isEs),
+        const SizedBox(height: 14),
+
+        // ── Timer Rápido de Plantão ───────────────────────────────────────
+        _ShiftTimerBar(dark: dark, isEs: isEs),
         const SizedBox(height: 24),
 
         // ── Grid de cards principais — 3 colunas no desktop ───────────────
@@ -257,7 +263,11 @@ class _HomeScreenState extends State<HomeScreen> {
 
         // ── Barra de pesquisa ─────────────────────────────────────────────
         _HomeSearchBar(dark: dark, isEs: isEs),
-        const SizedBox(height: 18),
+        const SizedBox(height: 14),
+
+        // ── Timer Rápido de Plantão ───────────────────────────────────────
+        _ShiftTimerBar(dark: dark, isEs: isEs),
+        const SizedBox(height: 14),
 
         // ── Divisor ───────────────────────────────────────────────────────
         _HomeDivider(dark: dark),
@@ -1065,6 +1075,446 @@ class _HomeCardHalfState extends State<_HomeCardHalf>
             ),
           ]),
         ),
+      ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// SHIFT TIMER BAR — Timer Rápido de Plantão (barra compacta + bottom sheet)
+// ─────────────────────────────────────────────────────────────────────────────
+class _ShiftTimerBar extends StatefulWidget {
+  final bool dark;
+  final bool isEs;
+  const _ShiftTimerBar({required this.dark, required this.isEs});
+
+  @override
+  State<_ShiftTimerBar> createState() => _ShiftTimerBarState();
+}
+
+class _ShiftTimerBarState extends State<_ShiftTimerBar> {
+  int    _notifId        = -1;    // ID da notificação agendada
+  bool   _active         = false; // timer ativo?
+  int    _remainingSecs  = 0;     // segundos restantes (atualizado a cada 1s)
+  Timer? _ticker;
+  String _label          = '';    // descrição do timer ativo
+
+  @override
+  void dispose() {
+    _ticker?.cancel();
+    if (_notifId >= 0) NotificationService.cancel(_notifId);
+    super.dispose();
+  }
+
+  void _start(int seconds, String description) {
+    // Cancela timer anterior
+    _ticker?.cancel();
+    if (_notifId >= 0) NotificationService.cancel(_notifId);
+
+    final label = description.trim().isNotEmpty
+        ? description.trim()
+        : (widget.isEs ? 'Recordatorio de Guardia' : 'Lembrete de Plantão');
+
+    setState(() {
+      _active        = true;
+      _remainingSecs = seconds;
+      _label         = label;
+    });
+
+    // Tick a cada segundo para atualizar o contador na UI
+    _ticker = Timer.periodic(const Duration(seconds: 1), (t) {
+      if (!mounted) { t.cancel(); return; }
+      setState(() {
+        _remainingSecs--;
+        if (_remainingSecs <= 0) {
+          _remainingSecs = 0;
+          _active = false;
+          t.cancel();
+        }
+      });
+    });
+
+    // Agenda notificação nativa
+    NotificationService.scheduleTimer(
+      seconds: seconds,
+      title:   'MedCases Pro',
+      body:    label,
+      payload: 'shift_timer',
+    ).then((id) { if (mounted) _notifId = id; });
+  }
+
+  void _cancel() {
+    _ticker?.cancel();
+    if (_notifId >= 0) {
+      NotificationService.cancel(_notifId);
+      _notifId = -1;
+    }
+    if (mounted) setState(() { _active = false; _remainingSecs = 0; _label = ''; });
+  }
+
+  String get _timeLabel {
+    if (_remainingSecs <= 0) return '0s';
+    final h = _remainingSecs ~/ 3600;
+    final m = (_remainingSecs % 3600) ~/ 60;
+    final s = _remainingSecs % 60;
+    if (h > 0) return '${h}h ${m.toString().padLeft(2,'0')}m';
+    if (m > 0) return '${m}m ${s.toString().padLeft(2,'0')}s';
+    return '${s}s';
+  }
+
+  void _openSheet() {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => _ShiftTimerSheet(
+        dark: widget.dark,
+        isEs: widget.isEs,
+        onStart: _start,
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final dark = widget.dark;
+    final isEs = widget.isEs;
+
+    final bg     = dark ? const Color(0xFF1A2820) : const Color(0xFFECFDF5);
+    final border = dark
+        ? const Color(0xFF1F6B48).withValues(alpha: 0.35)
+        : const Color(0xFF1F6B48).withValues(alpha: 0.25);
+    final accent = const Color(0xFF1F6B48);
+    final textC  = dark ? Colors.white : const Color(0xFF0D2218);
+    final subC   = dark ? Colors.white54 : const Color(0xFF4B7A62);
+
+    return GestureDetector(
+      onTap: _active ? null : _openSheet,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 11),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(14),
+          color: bg,
+          border: Border.all(color: border),
+        ),
+        child: Row(children: [
+          // Ícone
+          Container(
+            width: 36, height: 36,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: accent.withValues(alpha: _active ? 0.18 : 0.10),
+            ),
+            child: Icon(
+              _active ? Icons.alarm_on_rounded : Icons.alarm_add_rounded,
+              color: _active ? const Color(0xFF4ADE80) : accent,
+              size: 19,
+            ),
+          ),
+          const SizedBox(width: 12),
+          // Texto
+          Expanded(child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                _active
+                    ? (_label.isNotEmpty ? _label
+                        : (isEs ? 'Recordatorio de Guardia' : 'Lembrete de Plantão'))
+                    : (isEs ? 'Timer Rápido de Guardia' : 'Timer Rápido de Plantão'),
+                style: TextStyle(
+                  fontSize: 13, fontWeight: FontWeight.w800,
+                  color: textC, letterSpacing: -0.2),
+                maxLines: 1, overflow: TextOverflow.ellipsis,
+              ),
+              Text(
+                _active
+                    ? _timeLabel
+                    : (isEs ? 'Toca para iniciar un recordatorio' : 'Toque para iniciar um lembrete'),
+                style: TextStyle(fontSize: 11, color: subC),
+              ),
+            ],
+          )),
+          // Botão cancelar (quando ativo) ou seta
+          if (_active)
+            GestureDetector(
+              onTap: _cancel,
+              child: Container(
+                padding: const EdgeInsets.all(7),
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: const Color(0xFFEF4444).withValues(alpha: 0.10),
+                ),
+                child: const Icon(Icons.close_rounded,
+                  size: 16, color: Color(0xFFEF4444)),
+              ),
+            )
+          else
+            Icon(Icons.chevron_right_rounded, color: subC, size: 20),
+        ]),
+      ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// SHIFT TIMER SHEET — bottom sheet para configurar o timer
+// ─────────────────────────────────────────────────────────────────────────────
+class _ShiftTimerSheet extends StatefulWidget {
+  final bool dark;
+  final bool isEs;
+  final void Function(int seconds, String description) onStart;
+
+  const _ShiftTimerSheet({
+    required this.dark,
+    required this.isEs,
+    required this.onStart,
+  });
+
+  @override
+  State<_ShiftTimerSheet> createState() => _ShiftTimerSheetState();
+}
+
+class _ShiftTimerSheetState extends State<_ShiftTimerSheet> {
+  // Seletor: horas + minutos separados
+  int _hours   = 0;
+  int _minutes = 5;
+
+  final _descCtrl = TextEditingController();
+
+  // Presets rápidos: (label, hours, minutes)
+  static const _presets = [
+    ('5 min',  0,  5),
+    ('10 min', 0, 10),
+    ('15 min', 0, 15),
+    ('30 min', 0, 30),
+    ('1 h',    1,  0),
+    ('2 h',    2,  0),
+    ('4 h',    4,  0),
+    ('6 h',    6,  0),
+  ];
+
+  int get _totalSeconds => (_hours * 60 + _minutes) * 60;
+
+  @override
+  void dispose() { _descCtrl.dispose(); super.dispose(); }
+
+  void _confirm() {
+    if (_totalSeconds <= 0) return;
+    Navigator.of(context).pop();
+    widget.onStart(_totalSeconds, _descCtrl.text.trim());
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final dark  = widget.dark;
+    final isEs  = widget.isEs;
+    final bg    = dark ? const Color(0xFF1A1A1A) : Colors.white;
+    final textC = dark ? Colors.white : const Color(0xFF0D2218);
+    final subC  = dark ? Colors.white38 : Colors.black38;
+    final divC  = dark ? Colors.white10 : const Color(0xFFEEEEEE);
+    final accent = const Color(0xFF1F6B48);
+    final kb    = MediaQuery.viewInsetsOf(context).bottom;
+
+    return Container(
+      decoration: BoxDecoration(
+        color: bg,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      padding: EdgeInsets.fromLTRB(20, 0, 20, kb + 24),
+      child: Column(mainAxisSize: MainAxisSize.min, children: [
+
+        // Handle
+        Padding(
+          padding: const EdgeInsets.only(top: 12, bottom: 8),
+          child: Center(child: Container(
+            width: 36, height: 4,
+            decoration: BoxDecoration(
+              color: dark ? Colors.white24 : Colors.black12,
+              borderRadius: BorderRadius.circular(2)),
+          )),
+        ),
+
+        // Título
+        Padding(
+          padding: const EdgeInsets.only(bottom: 18),
+          child: Row(children: [
+            Container(
+              width: 38, height: 38,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: accent.withValues(alpha: 0.12),
+              ),
+              child: Icon(Icons.alarm_add_rounded, color: accent, size: 20),
+            ),
+            const SizedBox(width: 12),
+            Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Text(
+                isEs ? 'Timer Rápido de Guardia' : 'Timer Rápido de Plantão',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w900, color: textC),
+              ),
+              Text(
+                isEs ? 'Recibe una notificación cuando el tiempo acabe'
+                     : 'Receba uma notificação quando o tempo acabar',
+                style: TextStyle(fontSize: 11, color: subC),
+              ),
+            ])),
+          ]),
+        ),
+
+        // Presets rápidos
+        Wrap(
+          spacing: 8, runSpacing: 8,
+          children: _presets.map((p) {
+            final sel = _hours == p.$2 && _minutes == p.$3;
+            return GestureDetector(
+              onTap: () => setState(() { _hours = p.$2; _minutes = p.$3; }),
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 150),
+                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: sel ? accent : (dark ? const Color(0xFF252525) : const Color(0xFFF3F4F6)),
+                  border: Border.all(
+                    color: sel ? accent : (dark ? Colors.white12 : const Color(0xFFE0E0E0))),
+                ),
+                child: Text(p.$1, style: TextStyle(
+                  fontSize: 13, fontWeight: FontWeight.w800,
+                  color: sel ? Colors.white : textC,
+                )),
+              ),
+            );
+          }).toList(),
+        ),
+
+        const SizedBox(height: 20),
+        Divider(color: divC, height: 1),
+        const SizedBox(height: 16),
+
+        // Seletor manual: horas e minutos
+        Row(children: [
+          // Horas
+          Expanded(child: Column(children: [
+            Text(isEs ? 'Horas' : 'Horas',
+              style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700,
+                color: subC, letterSpacing: 0.5)),
+            const SizedBox(height: 8),
+            Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+              _StepBtn(
+                icon: Icons.remove,
+                onTap: () { if (_hours > 0) setState(() => _hours--); },
+                dark: dark,
+              ),
+              SizedBox(width: 48, child: Center(
+                child: Text('$_hours', style: TextStyle(
+                  fontSize: 22, fontWeight: FontWeight.w900, color: textC)),
+              )),
+              _StepBtn(
+                icon: Icons.add,
+                onTap: () { if (_hours < 12) setState(() => _hours++); },
+                dark: dark,
+              ),
+            ]),
+          ])),
+          Container(width: 1, height: 48, color: divC),
+          // Minutos
+          Expanded(child: Column(children: [
+            Text(isEs ? 'Minutos' : 'Minutos',
+              style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700,
+                color: subC, letterSpacing: 0.5)),
+            const SizedBox(height: 8),
+            Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+              _StepBtn(
+                icon: Icons.remove,
+                onTap: () { if (_minutes > 0) setState(() => _minutes--); else if (_hours > 0) { _hours--; _minutes = 59; setState((){}); } },
+                dark: dark,
+              ),
+              SizedBox(width: 48, child: Center(
+                child: Text(_minutes.toString().padLeft(2,'0'), style: TextStyle(
+                  fontSize: 22, fontWeight: FontWeight.w900, color: textC)),
+              )),
+              _StepBtn(
+                icon: Icons.add,
+                onTap: () { if (_minutes < 59) setState(() => _minutes++); else { _hours++; _minutes = 0; setState((){}); } },
+                dark: dark,
+              ),
+            ]),
+          ])),
+        ]),
+
+        const SizedBox(height: 18),
+        Divider(color: divC, height: 1),
+        const SizedBox(height: 14),
+
+        // Campo de descrição
+        Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+            color: dark ? const Color(0xFF252525) : const Color(0xFFF5F7FA),
+            border: Border.all(color: divC),
+          ),
+          child: TextField(
+            controller: _descCtrl,
+            style: TextStyle(fontSize: 13.5, color: textC),
+            textCapitalization: TextCapitalization.sentences,
+            decoration: InputDecoration(
+              hintText: isEs
+                  ? 'Descripción (ej: Ver resultado lab cama 4)…'
+                  : 'Descrição (ex: Ver exame do Leito 4)…',
+              hintStyle: TextStyle(fontSize: 13, color: subC),
+              border: InputBorder.none,
+              contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+              prefixIcon: Icon(Icons.edit_note_rounded, color: subC, size: 18),
+            ),
+          ),
+        ),
+
+        const SizedBox(height: 18),
+
+        // Botão confirmar
+        SizedBox(
+          width: double.infinity,
+          child: ElevatedButton.icon(
+            onPressed: _totalSeconds > 0 ? _confirm : null,
+            icon: const Icon(Icons.alarm_on_rounded, size: 18),
+            label: Text(
+              isEs ? 'Iniciar Timer' : 'Iniciar Timer',
+              style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w800),
+            ),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: accent,
+              foregroundColor: Colors.white,
+              disabledBackgroundColor: accent.withValues(alpha: 0.35),
+              padding: const EdgeInsets.symmetric(vertical: 15),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+              elevation: 0,
+            ),
+          ),
+        ),
+      ]),
+    );
+  }
+}
+
+// Botão de incremento/decremento do seletor de tempo
+class _StepBtn extends StatelessWidget {
+  final IconData icon;
+  final VoidCallback onTap;
+  final bool dark;
+  const _StepBtn({required this.icon, required this.onTap, required this.dark});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: 32, height: 32,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: dark ? Colors.white.withValues(alpha: 0.08) : const Color(0xFFEFF2F7),
+        ),
+        child: Icon(icon, size: 16,
+          color: dark ? Colors.white70 : const Color(0xFF334155)),
       ),
     );
   }

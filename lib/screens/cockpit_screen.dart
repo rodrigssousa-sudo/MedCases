@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '../providers/app_provider.dart';
 import '../services/drug_interaction_service.dart';
+import '../services/notification_service.dart';
 import '../widgets/common_widgets.dart';
 
 class CockpitScreen extends StatefulWidget {
@@ -29,14 +30,26 @@ class _CockpitScreenState extends State<CockpitScreen> {
   int? _reminderMinutes;      // null = sem lembrete ativo
   DateTime? _reminderAt;      // quando o lembrete foi definido
   bool _reminderExpired = false;
+  int  _notifId = -1;         // ID da notificação agendada (para cancelar)
 
   void _setReminder(int minutes) {
+    // Cancela notificação anterior se existir
+    if (_notifId >= 0) NotificationService.cancel(_notifId);
+
     setState(() {
-      _reminderMinutes = minutes;
-      _reminderAt = DateTime.now();
-      _reminderExpired = false;
+      _reminderMinutes  = minutes;
+      _reminderAt       = DateTime.now();
+      _reminderExpired  = false;
     });
-    // Dispara callback após o tempo escolhido
+
+    // Agenda notificação nativa + in-app overlay
+    final lang = context.read<AppProvider>().lang;
+    NotificationService.scheduleCockpitReminder(
+      minutes: minutes,
+      lang:    lang,
+    ).then((id) => _notifId = id);
+
+    // Fallback in-app: marca como expirado na UI (cockpit aberto)
     Future.delayed(Duration(minutes: minutes), () {
       if (mounted && _reminderMinutes == minutes &&
           _reminderAt != null &&
@@ -47,9 +60,13 @@ class _CockpitScreenState extends State<CockpitScreen> {
   }
 
   void _cancelReminder() {
+    if (_notifId >= 0) {
+      NotificationService.cancel(_notifId);
+      _notifId = -1;
+    }
     setState(() {
       _reminderMinutes = null;
-      _reminderAt = null;
+      _reminderAt      = null;
       _reminderExpired = false;
     });
   }

@@ -35,6 +35,7 @@ import 'screens/notes_screen.dart';
 import 'screens/library_screen.dart';
 import 'services/firestore_service.dart';
 import 'services/gemini_service.dart';
+import 'services/notification_service.dart';
 import 'services/update_service.dart';
 import 'widgets/brand_mark.dart';
 import 'widgets/common_widgets.dart' show MedBreakpoints;
@@ -96,6 +97,12 @@ Future<void> _bootInBackground(AppProvider provider) async {
     await GeminiService.initFromStorage().timeout(const Duration(seconds: 2));
   } catch (_) {}
 
+  // 2b. NotificationService — sem await para não atrasar boot; timezone init
+  //     é síncrono mas leve (~20ms). Não faz nada no Web.
+  NotificationService.init().catchError((e) {
+    debugPrint('[MedCases] NotificationService.init falhou (ignorado): $e');
+  });
+
   // 3. Firebase init — com timeout e sem rethrow
   // Guard `Firebase.apps.isEmpty` previne dupla inicialização quando o
   // processo iOS/Android é reutilizado após force-close ou suspensão.
@@ -155,7 +162,7 @@ class MedCasesApp extends StatelessWidget {
     // notifyListeners() do AppProvider — propagando rebuild para toda a árvore:
     // MaterialApp → _AuthGate → StreamBuilder → MainShell → HomeScreen (piscar).
     final darkMode = context.select<AppProvider, bool>((p) => p.darkMode);
-    return MaterialApp(
+    return NotificationOverlay(child: MaterialApp(
       title: 'MedCases Pro',
       debugShowCheckedModeBanner: false,
       theme: _buildTheme(false),
@@ -194,7 +201,7 @@ class MedCasesApp extends StatelessWidget {
           ),
         );
       },
-    );
+    ));  // fecha NotificationOverlay
   }
 
   ThemeData _buildTheme(bool dark) => ThemeData(

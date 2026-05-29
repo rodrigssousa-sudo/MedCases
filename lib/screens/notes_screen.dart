@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/app_provider.dart';
 import '../services/firestore_service.dart';
+import '../services/notification_service.dart';
 
 // ── Paleta de cores das notas (6 cores) ──────────────────────────────────────
 class _NoteColor {
@@ -711,6 +712,10 @@ class NoteEditorSheetState extends State<NoteEditorSheet> {
   final _titleFocus   = FocusNode();
   final _contentFocus = FocusNode();
 
+  // ── Alerta agendado (opcional) ────────────────────────────────────────────
+  // null = sem alerta; valor = minutos a partir de "salvar"
+  int? _alertMinutes;
+
   bool get _isNew => widget.note == null;
   bool get _isEs  => widget.lang == 'es';
 
@@ -752,15 +757,31 @@ class NoteEditorSheetState extends State<NoteEditorSheet> {
     }
     setState(() => _saving = true);
     try {
+      final noteId = widget.note?['id'] as String?
+          ?? DateTime.now().millisecondsSinceEpoch.toString();
+      final displayTitle = title.isEmpty
+          ? (content.split('\n').first.substring(0, content.length.clamp(0, 40)))
+          : title;
+
       await FirestoreService.saveNote(
         uid:     widget.uid,
         noteId:  widget.note?['id'] as String?,
-        title:   title.isEmpty ? (content.split('\n').first.substring(
-            0, content.length.clamp(0, 40))) : title,
+        title:   displayTitle,
         content: content,
         color:   _selectedColor,
         tags:    _tags,
       );
+
+      // Agenda notificação se alerta foi configurado
+      if (_alertMinutes != null && _alertMinutes! > 0) {
+        await NotificationService.scheduleNoteAlert(
+          noteId:    noteId,
+          noteTitle: displayTitle,
+          seconds:   _alertMinutes! * 60,
+          lang:      widget.lang,
+        );
+      }
+
       if (mounted) Navigator.of(context).pop();
     } catch (_) {
       if (mounted) setState(() => _saving = false);
@@ -1055,6 +1076,16 @@ class NoteEditorSheetState extends State<NoteEditorSheet> {
 
               const SizedBox(height: 20),
 
+              // ── Alerta agendado (opcional) ───────────────────────────────
+              _NoteAlertPicker(
+                dark:          widget.dark,
+                isEs:          _isEs,
+                selectedMinutes: _alertMinutes,
+                onChanged:     (v) => setState(() => _alertMinutes = v),
+              ),
+
+              const SizedBox(height: 20),
+
               // ── Botão salvar ─────────────────────────────────────────────
               SizedBox(
                 width: double.infinity,
@@ -1088,6 +1119,128 @@ class NoteEditorSheetState extends State<NoteEditorSheet> {
           ],
         ),
       ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Seletor de alerta para anotação
+// ─────────────────────────────────────────────────────────────────────────────
+class _NoteAlertPicker extends StatelessWidget {
+  final bool dark;
+  final bool isEs;
+  final int? selectedMinutes;
+  final void Function(int?) onChanged;
+
+  const _NoteAlertPicker({
+    required this.dark,
+    required this.isEs,
+    required this.selectedMinutes,
+    required this.onChanged,
+  });
+
+  // Opções de tempo: null = sem alerta, outros = minutos
+  static const _options = <int?>[null, 5, 10, 15, 30, 60, 120, 240];
+
+  String _label(int? m) {
+    if (m == null) return isEs ? 'Sin alerta' : 'Sem alerta';
+    if (m < 60) return '${m} min';
+    return '${m ~/ 60}h';
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final subCol  = dark ? Colors.white38 : Colors.black38;
+    final divCol  = dark ? Colors.white12 : Colors.black.withValues(alpha: 0.07);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Divider(color: divCol, height: 1),
+        const SizedBox(height: 12),
+        Row(children: [
+          Icon(
+            selectedMinutes != null
+                ? Icons.alarm_on_rounded
+                : Icons.alarm_add_rounded,
+            size: 15,
+            color: selectedMinutes != null
+                ? const Color(0xFF1F6B48)
+                : subCol,
+          ),
+          const SizedBox(width: 6),
+          Text(
+            isEs ? 'Alerta (opcional)' : 'Alerta (opcional)',
+            style: TextStyle(
+              fontSize: 11, fontWeight: FontWeight.w700,
+              color: selectedMinutes != null
+                  ? const Color(0xFF1F6B48)
+                  : subCol,
+              letterSpacing: 0.5,
+            ),
+          ),
+          if (selectedMinutes != null) ...[
+            const Spacer(),
+            Text(
+              isEs
+                  ? 'en ${_label(selectedMinutes)}'
+                  : 'em ${_label(selectedMinutes)}',
+              style: const TextStyle(
+                fontSize: 11, fontWeight: FontWeight.w800,
+                color: Color(0xFF1F6B48),
+              ),
+            ),
+          ],
+        ]),
+        const SizedBox(height: 8),
+        // Chips de opções
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            children: _options.map((opt) {
+              final selected = selectedMinutes == opt;
+              return GestureDetector(
+                onTap: () => onChanged(opt),
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 180),
+                  margin: const EdgeInsets.only(right: 7),
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                    color: selected
+                        ? const Color(0xFF1F6B48)
+                        : (dark
+                            ? Colors.white.withValues(alpha: 0.07)
+                            : const Color(0xFFF0F0F0)),
+                    border: Border.all(
+                      color: selected
+                          ? const Color(0xFF1F6B48)
+                          : (dark
+                              ? Colors.white.withValues(alpha: 0.10)
+                              : const Color(0xFFDDDDDD)),
+                    ),
+                  ),
+                  child: Row(mainAxisSize: MainAxisSize.min, children: [
+                    if (selected && opt != null) ...[
+                      const Icon(Icons.alarm_rounded, size: 11, color: Colors.white),
+                      const SizedBox(width: 4),
+                    ],
+                    Text(
+                      _label(opt),
+                      style: TextStyle(
+                        fontSize: 11, fontWeight: FontWeight.w700,
+                        color: selected
+                            ? Colors.white
+                            : (dark ? Colors.white54 : const Color(0xFF666666)),
+                      ),
+                    ),
+                  ]),
+                ),
+              );
+            }).toList(),
+          ),
+        ),
+      ],
     );
   }
 }

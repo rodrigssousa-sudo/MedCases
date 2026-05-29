@@ -10,6 +10,14 @@
     <!-- POST_NOTIFICATIONS: necessária no Android 13+ para notificações do sistema -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
 
+    <!-- EXACT ALARMS: precisão cirúrgica para timers de plantão (Android 12+) -->
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM"/>
+    <!-- Fallback para Android 12+ quando SCHEDULE_EXACT_ALARM for negado -->
+    <uses-permission android:name="android.permission.USE_EXACT_ALARM"/>
+
+    <!-- RECEIVE_BOOT_COMPLETED: reagenda notificações após reboot do aparelho -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+
     <application
         android:label="MedCases Pro"
         android:name="${applicationName}"
@@ -34,6 +42,22 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2"/>
+
+        <!-- flutter_local_notifications: receiver para exact alarms -->
+        <receiver
+            android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationReceiver"
+            android:exported="false"/>
+        <receiver
+            android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationBootReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED"/>
+            </intent-filter>
+        </receiver>
+        <receiver
+            android:name="com.dexterous.flutterlocalnotifications.ActionBroadcastReceiver"
+            android:exported="false"/>
     </application>
 
     <queries>
