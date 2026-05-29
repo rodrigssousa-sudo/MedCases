@@ -881,16 +881,35 @@ class _ProtocolDetailSheet extends StatelessWidget {
       ),
       child: Column(children: [
 
-        // ── Alça de arraste ────────────────────────────────────────────────
+        // ── Alça de arraste + botão fechar ────────────────────────────────
         Padding(
-          padding: const EdgeInsets.only(top: 10, bottom: 4),
-          child: Container(
-            width: 40, height: 4,
-            decoration: BoxDecoration(
-              color: Colors.black.withValues(alpha: 0.15),
-              borderRadius: BorderRadius.circular(2),
+          padding: const EdgeInsets.fromLTRB(16, 10, 8, 4),
+          child: Row(children: [
+            const Spacer(),
+            Container(
+              width: 40, height: 4,
+              decoration: BoxDecoration(
+                color: Colors.black.withValues(alpha: 0.15),
+                borderRadius: BorderRadius.circular(2),
+              ),
             ),
-          ),
+            Expanded(
+              child: Align(
+                alignment: Alignment.centerRight,
+                child: GestureDetector(
+                  onTap: () => Navigator.pop(context),
+                  child: Container(
+                    width: 32, height: 32,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: const Color(0xFFE5E7EB),
+                    ),
+                    child: const Icon(Icons.close_rounded, size: 18, color: Color(0xFF6B7280)),
+                  ),
+                ),
+              ),
+            ),
+          ]),
         ),
 
         // ── Conteúdo scrollável ────────────────────────────────────────────
