@@ -52,6 +52,7 @@ typedef InAppAlertCb = void Function({
   required String title,
   required String body,
   required String payload,
+  VoidCallback? onStop,   // callback opcional para "Parar" o timer agendado
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -65,7 +66,9 @@ class NotificationService {
 
   static void Function(NotifPayload)? _onTap;
   static InAppAlertCb? _inAppAlert;
-  static final Map<int, Timer> _inAppTimers = {};
+  static final Map<int, Timer>        _inAppTimers = {};
+  // Callbacks de "parar" por ID — registados pelos widgets proprietários do timer
+  static final Map<int, VoidCallback> _stopCallbacks = {};
   static int _idCounter = 1000;
 
   static const _chShift   = 'medcases_shift';
@@ -74,8 +77,16 @@ class NotificationService {
 
   // ── Registro de callbacks ─────────────────────────────────────────────────
 
-  static void setOnTap(void Function(NotifPayload) cb)  => _onTap     = cb;
-  static void setInAppAlert(InAppAlertCb cb)             => _inAppAlert = cb;
+  static void setOnTap(void Function(NotifPayload) cb) => _onTap     = cb;
+  static void setInAppAlert(InAppAlertCb cb)            => _inAppAlert = cb;
+
+  /// Registra um callback chamado quando o usuário toca "Parar" no pop-up.
+  /// O widget que agendou o timer (ex.: _ShiftTimerBarState) deve registrar
+  /// aqui o seu método de cancelamento para que a UI pare imediatamente.
+  static void registerStopCallback(int id, VoidCallback cb) =>
+      _stopCallbacks[id] = cb;
+
+  static void _unregisterStopCallback(int id) => _stopCallbacks.remove(id);
 
   // ── Inicialização ─────────────────────────────────────────────────────────
 
@@ -253,6 +264,7 @@ class NotificationService {
   static Future<void> cancel(int id) async {
     _inAppTimers[id]?.cancel();
     _inAppTimers.remove(id);
+    _unregisterStopCallback(id);
     if (kIsWeb || id < 0) return;
     try { await _plugin.cancel(id); } catch (_) {}
     debugPrint('[Notif] Cancelado id=$id');
@@ -261,6 +273,7 @@ class NotificationService {
   static Future<void> cancelAll() async {
     for (final t in _inAppTimers.values) { t.cancel(); }
     _inAppTimers.clear();
+    _stopCallbacks.clear();
     if (kIsWeb) return;
     try { await _plugin.cancelAll(); } catch (_) {}
   }
@@ -277,7 +290,17 @@ class NotificationService {
     _inAppTimers[id]?.cancel();
     _inAppTimers[id] = Timer(Duration(seconds: seconds), () {
       _inAppTimers.remove(id);
-      _inAppAlert?.call(title: title, body: body, payload: payload);
+      // onStop: cancela o agendamento E chama o widget proprietário (ex.: _ShiftTimerBar)
+      _inAppAlert?.call(
+        title:   title,
+        body:    body,
+        payload: payload,
+        onStop:  () {
+          cancel(id);
+          _stopCallbacks[id]?.call();
+          _unregisterStopCallback(id);
+        },
+      );
     });
   }
 
@@ -319,9 +342,13 @@ class NotificationService {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// NotificationOverlay — envolve o app e exibe banners in-app
+// NotificationOverlay — envolve o app e exibe pop-up modal in-app
 // ─────────────────────────────────────────────────────────────────────────────
 
+/// Wrapper raiz: registra o callback in-app e abre o diálogo quando dispara.
+/// No Web (e foreground mobile) exibe um Dialog modal centralizado com
+/// botão "Parar" (cancela o timer) e "Fechar" (apenas fecha o pop-up).
+/// Não há auto-dismiss nem piscamento.
 class NotificationOverlay extends StatefulWidget {
   final Widget child;
   const NotificationOverlay({super.key, required this.child});
@@ -331,7 +358,8 @@ class NotificationOverlay extends StatefulWidget {
 }
 
 class _NotificationOverlayState extends State<NotificationOverlay> {
-  final List<_BannerEntry> _queue = [];
+  // Evita abrir dois diálogos simultâneos para a mesma notificação
+  bool _dialogOpen = false;
 
   @override
   void initState() {
@@ -340,177 +368,208 @@ class _NotificationOverlayState extends State<NotificationOverlay> {
       required String title,
       required String body,
       required String payload,
+      VoidCallback?  onStop,
     }) {
-      if (!mounted) return;
-      setState(() {
-        final entry = _BannerEntry(
-          key:     ValueKey('b_${DateTime.now().microsecondsSinceEpoch}'),
+      if (!mounted || _dialogOpen) return;
+      _dialogOpen = true;
+      showDialog<void>(
+        context:     context,
+        barrierDismissible: false, // só fecha pelos botões
+        builder:     (_) => _NotifDialog(
           title:   title,
           body:    body,
           payload: payload,
-        );
-        _queue.add(entry);
-        if (_queue.length > 3) _queue.removeAt(0); // máx 3 sobrepostos
-      });
+          onStop:  onStop,
+        ),
+      ).then((_) => _dialogOpen = false);
     });
   }
 
-  void _dismiss(_BannerEntry e) {
-    if (mounted) setState(() => _queue.remove(e));
-  }
-
-  void _tapBanner(String payload) {
-    if (mounted) setState(() => _queue.clear());
-    NotificationService._onTap?.call(NotifPayload(payload));
-  }
-
   @override
-  Widget build(BuildContext context) {
-    if (_queue.isEmpty) return widget.child;
-    return Stack(children: [
-      widget.child,
-      Positioned(
-        top:   MediaQuery.of(context).padding.top + 8,
-        left:  12,
-        right: 12,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: _queue.map((e) => _InAppBannerWidget(
-            key:       e.key,
-            title:     e.title,
-            body:      e.body,
-            payload:   e.payload,
-            onDismiss: () => _dismiss(e),
-            onTap:     _tapBanner,
-          )).toList(),
-        ),
-      ),
-    ]);
-  }
+  Widget build(BuildContext context) => widget.child;
 }
 
-class _BannerEntry {
-  final Key    key;
+// ─────────────────────────────────────────────────────────────────────────────
+// Dialog modal de notificação
+// ─────────────────────────────────────────────────────────────────────────────
+class _NotifDialog extends StatelessWidget {
   final String title;
   final String body;
   final String payload;
-  _BannerEntry({required this.key, required this.title, required this.body, required this.payload});
-}
+  final VoidCallback? onStop;
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Banner animado individual
-// ─────────────────────────────────────────────────────────────────────────────
-class _InAppBannerWidget extends StatefulWidget {
-  final String title, body, payload;
-  final VoidCallback        onDismiss;
-  final void Function(String) onTap;
-
-  const _InAppBannerWidget({
-    super.key,
+  const _NotifDialog({
     required this.title,
     required this.body,
     required this.payload,
-    required this.onDismiss,
-    required this.onTap,
+    this.onStop,
   });
 
-  @override
-  State<_InAppBannerWidget> createState() => _InAppBannerWidgetState();
-}
-
-class _InAppBannerWidgetState extends State<_InAppBannerWidget>
-    with SingleTickerProviderStateMixin {
-  late final AnimationController _ctrl;
-  late final Animation<Offset>   _slide;
-  late final Animation<double>   _fade;
-  Timer? _auto;
-
-  @override
-  void initState() {
-    super.initState();
-    _ctrl  = AnimationController(vsync: this, duration: const Duration(milliseconds: 300));
-    _slide = Tween<Offset>(begin: const Offset(0, -1.4), end: Offset.zero)
-        .animate(CurvedAnimation(parent: _ctrl, curve: Curves.easeOutCubic));
-    _fade  = Tween<double>(begin: 0.0, end: 1.0)
-        .animate(CurvedAnimation(parent: _ctrl, curve: Curves.easeOut));
-    _ctrl.forward();
-    _auto = Timer(const Duration(seconds: 6), _dismiss);
-  }
-
-  @override
-  void dispose() { _auto?.cancel(); _ctrl.dispose(); super.dispose(); }
-
-  Future<void> _dismiss() async {
-    _auto?.cancel();
-    if (!mounted) return;
-    await _ctrl.reverse();
-    widget.onDismiss();
+  // Ícone por tipo de payload
+  IconData get _icon {
+    if (payload.startsWith('note:'))    return Icons.note_rounded;
+    if (payload.startsWith('cockpit:')) return Icons.monitor_heart_rounded;
+    return Icons.alarm_rounded; // shift_timer
   }
 
   @override
   Widget build(BuildContext context) {
     final dark = Theme.of(context).brightness == Brightness.dark;
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
-      child: FadeTransition(
-        opacity: _fade,
-        child: SlideTransition(
-          position: _slide,
-          child: GestureDetector(
-            onTap: () => widget.onTap(widget.payload),
-            child: Material(
-              elevation: 0,
-              color: Colors.transparent,
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(16),
-                  color: dark ? const Color(0xFF18281E) : const Color(0xFF0D2218),
-                  border: Border.all(
-                    color: const Color(0xFF1F6B48).withValues(alpha: 0.55), width: 1.2),
-                  boxShadow: [BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.40),
-                    blurRadius: 18, offset: const Offset(0, 5))],
-                ),
-                padding: const EdgeInsets.fromLTRB(14, 11, 8, 11),
-                child: Row(children: [
-                  Container(
-                    width: 40, height: 40,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: const Color(0xFF1F6B48).withValues(alpha: 0.20),
-                    ),
-                    child: const Icon(Icons.alarm_rounded,
-                      color: Color(0xFF4ADE80), size: 22),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(widget.title, style: const TextStyle(
-                        fontSize: 13, fontWeight: FontWeight.w900,
-                        color: Colors.white, letterSpacing: -0.2)),
-                      if (widget.body.isNotEmpty) ...[
-                        const SizedBox(height: 2),
-                        Text(widget.body, maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(fontSize: 12, height: 1.3,
-                            color: Colors.white.withValues(alpha: 0.72))),
-                      ],
-                    ],
-                  )),
-                  GestureDetector(
-                    onTap: _dismiss,
-                    child: Padding(
-                      padding: const EdgeInsets.all(8),
-                      child: Icon(Icons.close_rounded, size: 16,
-                        color: Colors.white.withValues(alpha: 0.45)),
-                    ),
-                  ),
-                ]),
+
+    final cardBg    = dark ? const Color(0xFF18281E) : Colors.white;
+    final accentGrn = const Color(0xFF1F6B48);
+    final liveGrn   = const Color(0xFF4ADE80);
+    final titleC    = dark ? Colors.white : const Color(0xFF0D2218);
+    final bodyC     = dark
+        ? Colors.white.withValues(alpha: 0.72)
+        : const Color(0xFF334155);
+
+    return Dialog(
+      backgroundColor: Colors.transparent,
+      insetPadding: const EdgeInsets.symmetric(horizontal: 28, vertical: 80),
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(22),
+          color: cardBg,
+          border: Border.all(
+            color: accentGrn.withValues(alpha: dark ? 0.50 : 0.20), width: 1.4),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: dark ? 0.55 : 0.14),
+              blurRadius: 32, offset: const Offset(0, 8)),
+          ],
+        ),
+        padding: const EdgeInsets.fromLTRB(24, 28, 24, 22),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+
+            // ── Ícone ────────────────────────────────────────────────────────
+            Container(
+              width: 60, height: 60,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: accentGrn.withValues(alpha: dark ? 0.22 : 0.10),
               ),
+              child: Icon(_icon, color: liveGrn, size: 30),
             ),
-          ),
+            const SizedBox(height: 18),
+
+            // ── Título ───────────────────────────────────────────────────────
+            Text(
+              title,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 17, fontWeight: FontWeight.w900,
+                color: titleC, letterSpacing: -0.3, height: 1.2),
+            ),
+
+            // ── Corpo ────────────────────────────────────────────────────────
+            if (body.isNotEmpty) ...[
+              const SizedBox(height: 8),
+              Text(
+                body,
+                textAlign: TextAlign.center,
+                maxLines: 4,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontSize: 13.5, height: 1.45, color: bodyC),
+              ),
+            ],
+
+            const SizedBox(height: 26),
+
+            // ── Botões ───────────────────────────────────────────────────────
+            Row(children: [
+
+              // Botão "Fechar" — apenas fecha o diálogo, timer segue agendado
+              Expanded(
+                child: _DialogBtn(
+                  label:   'Fechar',
+                  icon:    Icons.close_rounded,
+                  filled:  false,
+                  dark:    dark,
+                  onTap:   () => Navigator.of(context).pop(),
+                ),
+              ),
+
+              // Só mostra "Parar" se onStop foi fornecido (shift_timer / cockpit)
+              if (onStop != null) ...[
+                const SizedBox(width: 10),
+                Expanded(
+                  child: _DialogBtn(
+                    label:  'Parar',
+                    icon:   Icons.stop_circle_rounded,
+                    filled: true,
+                    dark:   dark,
+                    onTap:  () {
+                      onStop!();
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ),
+              ],
+            ]),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Botão reutilizável do diálogo
+// ─────────────────────────────────────────────────────────────────────────────
+class _DialogBtn extends StatelessWidget {
+  final String    label;
+  final IconData  icon;
+  final bool      filled;
+  final bool      dark;
+  final VoidCallback onTap;
+
+  const _DialogBtn({
+    required this.label,
+    required this.icon,
+    required this.filled,
+    required this.dark,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final accentGrn = const Color(0xFF1F6B48);
+    final bg = filled
+        ? accentGrn
+        : (dark
+            ? Colors.white.withValues(alpha: 0.07)
+            : const Color(0xFFF1F5F9));
+    final fgColor = filled
+        ? Colors.white
+        : (dark ? Colors.white70 : const Color(0xFF475569));
+    final borderColor = filled
+        ? Colors.transparent
+        : (dark
+            ? Colors.white.withValues(alpha: 0.12)
+            : const Color(0xFFCBD5E1));
+
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        height: 44,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12),
+          color: bg,
+          border: Border.all(color: borderColor, width: 1),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(icon, size: 16, color: fgColor),
+            const SizedBox(width: 6),
+            Text(label, style: TextStyle(
+              fontSize: 13.5, fontWeight: FontWeight.w700,
+              color: fgColor, letterSpacing: -0.1)),
+          ],
         ),
       ),
     );

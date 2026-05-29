@@ -1134,13 +1134,18 @@ class _ShiftTimerBarState extends State<_ShiftTimerBar> {
       });
     });
 
-    // Agenda notificação nativa
+    // Agenda notificação nativa e registra callback de parada
     NotificationService.scheduleTimer(
       seconds: seconds,
       title:   'MedCases Pro',
       body:    label,
       payload: 'shift_timer',
-    ).then((id) { if (mounted) _notifId = id; });
+    ).then((id) {
+      if (!mounted) return;
+      _notifId = id;
+      // Quando o pop-up tocar "Parar", o _cancel() desta barra é chamado
+      NotificationService.registerStopCallback(id, _cancel);
+    });
   }
 
   void _cancel() {

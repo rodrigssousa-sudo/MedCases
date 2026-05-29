@@ -774,12 +774,15 @@ class NoteEditorSheetState extends State<NoteEditorSheet> {
 
       // Agenda notificação se alerta foi configurado
       if (_alertMinutes != null && _alertMinutes! > 0) {
-        await NotificationService.scheduleNoteAlert(
+        final notifId = await NotificationService.scheduleNoteAlert(
           noteId:    noteId,
           noteTitle: displayTitle,
           seconds:   _alertMinutes! * 60,
           lang:      widget.lang,
         );
+        // Registra stop callback — "Parar" no pop-up cancela a notificação
+        NotificationService.registerStopCallback(
+            notifId, () => NotificationService.cancel(notifId));
       }
 
       if (mounted) Navigator.of(context).pop();

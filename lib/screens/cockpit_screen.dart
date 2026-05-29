@@ -47,7 +47,11 @@ class _CockpitScreenState extends State<CockpitScreen> {
     NotificationService.scheduleCockpitReminder(
       minutes: minutes,
       lang:    lang,
-    ).then((id) => _notifId = id);
+    ).then((id) {
+      _notifId = id;
+      // Quando pop-up tocar "Parar", cancela o lembrete do cockpit
+      NotificationService.registerStopCallback(id, _cancelReminder);
+    });
 
     // Fallback in-app: marca como expirado na UI (cockpit aberto)
     Future.delayed(Duration(minutes: minutes), () {
