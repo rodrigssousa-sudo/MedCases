@@ -42,6 +42,65 @@ class FirestoreService {
         .toList();
   }
 
+  /// Converte Firestore Timestamp → ISO8601 String, ou retorna string direta.
+  /// Necessário porque o SDK Flutter retorna Timestamp para campos de data,
+  /// não String — e o toString() de Timestamp não é ISO8601.
+  static String safeTimestampToString(dynamic v) {
+    if (v == null) return '';
+    if (v is String) return v;
+    // Firestore Timestamp — acessado via reflexão segura para evitar import circular
+    try {
+      // Tenta acessar .toDate() se disponível (Timestamp do Firestore)
+      final dynamic ts = v;
+      final dynamic date = (ts as dynamic).toDate();
+      if (date != null) {
+        return (date as DateTime).toIso8601String();
+      }
+    } catch (_) {}
+    // Fallback: toString() (pode retornar "Timestamp(seconds=..., nanoseconds=...)")
+    return v.toString();
+  }
+
+  /// Converte Map do SDK Firestore para Map<String, dynamic> seguro para fromJson.
+  /// Converte Timestamp → ISO8601, List<Object> → List<dynamic>, etc.
+  /// Protege contra TypeError em dart2js release mode.
+  static Map<String, dynamic> sdkDocToSafeMap(Map<String, dynamic> data) {
+    final result = <String, dynamic>{};
+    data.forEach((key, value) {
+      try {
+        result[key] = _sanitizeSdkValue(value);
+      } catch (_) {
+        result[key] = value?.toString() ?? '';
+      }
+    });
+    return result;
+  }
+
+  static dynamic _sanitizeSdkValue(dynamic v) {
+    if (v == null) return null;
+    if (v is String) return v;
+    if (v is bool) return v;
+    if (v is int) return v;
+    if (v is double) return v;
+    if (v is List) {
+      return v.map(_sanitizeSdkValue).toList();
+    }
+    if (v is Map<String, dynamic>) {
+      return sdkDocToSafeMap(v);
+    }
+    if (v is Map) {
+      return sdkDocToSafeMap(Map<String, dynamic>.from(v));
+    }
+    // Tenta converter Timestamp do Firestore para ISO8601
+    try {
+      final dynamic ts = v;
+      final dynamic date = ts.toDate();
+      if (date is DateTime) return date.toIso8601String();
+    } catch (_) {}
+    // Qualquer outro tipo: converte para string
+    return v.toString();
+  }
+
   // Getter lazy — só acessa Firestore APÓS Firebase.initializeApp() completar
   static FirebaseFirestore get _db => FirebaseFirestore.instance;
 
@@ -471,7 +530,7 @@ class FirestoreService {
           .where('isCustom', isEqualTo: true)
           .get();
       final cases = snap.docs
-          .map((d) => ClinicalCaseModel.fromJson(d.data()))
+          .map((d) => ClinicalCaseModel.fromJson(sdkDocToSafeMap(d.data())))
           .toList();
       cases.sort((a, b) => (b.createdAt ?? '').compareTo(a.createdAt ?? ''));
       return cases;
@@ -499,7 +558,7 @@ class FirestoreService {
         .snapshots()
         .map((snap) {
       final cases = snap.docs
-          .map((d) => ClinicalCaseModel.fromJson(d.data()))
+          .map((d) => ClinicalCaseModel.fromJson(sdkDocToSafeMap(d.data())))
           .toList();
       cases.sort((a, b) => (b.createdAt ?? '').compareTo(a.createdAt ?? ''));
       return cases;
@@ -675,7 +734,7 @@ class FirestoreService {
       // Sem orderBy — evita índice composto. Ordenação em memória.
       final snap = await _userHistories(uid).get();
       final list = snap.docs
-          .map((d) => ClinicalHistoryModel.fromJson(d.data()))
+          .map((d) => ClinicalHistoryModel.fromJson(sdkDocToSafeMap(d.data())))
           .toList();
       list.sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
       return list;
@@ -805,7 +864,7 @@ class FirestoreService {
               .timeout(const Duration(seconds: 8));
       final list = _normalizePublicHistories(
         snap.docs
-            .map((d) => ClinicalHistoryModel.fromJson({...d.data(), 'id': d.id}))
+            .map((d) => ClinicalHistoryModel.fromJson({...sdkDocToSafeMap(d.data()), 'id': d.id}))
             .where((h) => !h.isHidden),
       );
       if (list.isNotEmpty) {
@@ -998,7 +1057,7 @@ class FirestoreService {
         .orderBy('updatedAt', descending: true)
         .snapshots()
         .map((snap) => snap.docs
-            .map((d) => ClinicalHistoryModel.fromJson(d.data()))
+            .map((d) => ClinicalHistoryModel.fromJson(sdkDocToSafeMap(d.data())))
             .toList());
   }
 
@@ -1629,7 +1688,7 @@ class FirestoreService {
               .get(GetOptions(source: source))
               .timeout(const Duration(seconds: 8));
       final guides = _normalizeGuides(
-        snap.docs.map((d) => GuideModel.fromJson({...d.data(), 'id': d.id})),
+        snap.docs.map((d) => GuideModel.fromJson({...sdkDocToSafeMap(d.data()), 'id': d.id})),
       );
       if (guides.isNotEmpty) {
         _clearGuidesError();
@@ -1664,7 +1723,7 @@ class FirestoreService {
               .get(GetOptions(source: source))
               .timeout(const Duration(seconds: 8));
       final guides = _normalizeGuides(
-        snap.docs.map((d) => GuideModel.fromJson({...d.data(), 'id': d.id})),
+        snap.docs.map((d) => GuideModel.fromJson({...sdkDocToSafeMap(d.data()), 'id': d.id})),
       );
       if (guides.isNotEmpty) {
         _clearGuidesError();
@@ -1870,7 +1929,7 @@ class FirestoreService {
         .orderBy('uploadedAt', descending: true)
         .snapshots()
         .map((snap) => _normalizeGuides(
-              snap.docs.map((d) => GuideModel.fromJson({...d.data(), 'id': d.id})),
+              snap.docs.map((d) => GuideModel.fromJson({...sdkDocToSafeMap(d.data()), 'id': d.id})),
             ));
   }
 
@@ -1943,7 +2002,7 @@ class FirestoreService {
         .orderBy('uploadedAt', descending: true)
         .snapshots()
         .map((snap) => snap.docs
-            .map((d) => GuideModel.fromJson({...d.data(), 'id': d.id}))
+            .map((d) => GuideModel.fromJson({...sdkDocToSafeMap(d.data()), 'id': d.id}))
             .toList());
   }
 
