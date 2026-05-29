@@ -1609,11 +1609,9 @@ class FirestoreService {
     return _userNotes(uid)
         .orderBy('updatedAt', descending: true)
         .snapshots()
-        .map((snap) => snap.docs.map((d) {
-              final data = Map<String, dynamic>.from(d.data());
-              data['id'] = d.id;
-              return data;
-            }).toList());
+        // sdkDocWithId: evita Map<String,dynamic>.from() que lança em dart2js release
+        // quando o SDK retorna Map<String,Object?> em vez de Map<String,dynamic>.
+        .map((snap) => snap.docs.map(sdkDocWithId).toList());
   }
 
   /// Deleta uma anotação.
