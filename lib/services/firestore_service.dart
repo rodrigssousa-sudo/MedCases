@@ -1841,11 +1841,39 @@ class FirestoreService {
     }
     debugPrint('[clinical_guides DEBUG] fsBase=$_fsBase');
 
-    final token = await FirebaseAuth.instance.currentUser?.getIdToken();
+    // ── AUTH DIAGNÓSTICO ────────────────────────────────────────────────────
+    final currentUser = FirebaseAuth.instance.currentUser;
+    debugPrint('[clinical_guides DEBUG] currentUser=${currentUser?.uid ?? 'null (não logado)'}');
+    debugPrint('[clinical_guides DEBUG] currentUser.email=${currentUser?.email ?? 'null'}');
+
+    final token = await currentUser?.getIdToken();
+    debugPrint('[clinical_guides DEBUG] tokenPresent=${token != null && token.isNotEmpty}');
+    debugPrint('[clinical_guides DEBUG] tokenLength=${token?.length ?? 0}');
+
     final authHeaders = (token != null && token.isNotEmpty)
         ? <String, String>{'Authorization': 'Bearer $token'}
         : <String, String>{};
+    debugPrint('[clinical_guides DEBUG] authHeader=${authHeaders.containsKey('Authorization')}');
+
+    // ── SDK DIRETO: teste isolado sem REST ───────────────────────────────────
+    // Se SDK retornar docs e REST retornar 403 → problema exclusivo no endpoint REST.
+    try {
+      final sdkSnap = await FirebaseFirestore.instance
+          .collection('clinical_guides')
+          .limit(1)
+          .get()
+          .timeout(const Duration(seconds: 6));
+      debugPrint('[clinical_guides DEBUG] SDK direto docs=${sdkSnap.docs.length}');
+      if (sdkSnap.docs.isNotEmpty) {
+        final d = sdkSnap.docs.first;
+        debugPrint('[clinical_guides DEBUG] SDK primeiro doc id=${d.id} fields=${d.data().keys.toList()}');
+      }
+    } catch (e) {
+      debugPrint('[clinical_guides DEBUG] SDK direto ERRO=$e');
+    }
+
     final apiKey = _firebaseApiKey;
+    debugPrint('[clinical_guides DEBUG] apiKey(10)=${apiKey.substring(0, apiKey.length.clamp(0, 10))}...');
 
     // ── TAREFA 4: confirmar nome exato da coleção usada ──────────────────────
     const targetCollection = 'clinical_guides';
@@ -1857,8 +1885,8 @@ class FirestoreService {
       // (headers customizados causam preflight CORS que Firestore rejeita)
       final hdrs = <String, String>{...authHeaders, ...?headers};
       final url = '$_fsBase/$collection?pageSize=200&key=$apiKey';
-      // ── TAREFA 2: logar a URL REST completa ──────────────────────────────
       debugPrint('[clinical_guides DEBUG] REST URL=$url');
+      debugPrint('[clinical_guides DEBUG] REST headers keys=${hdrs.keys.toList()}');
       return http
           .get(Uri.parse(url), headers: hdrs)
           .timeout(const Duration(seconds: 12));
@@ -1944,7 +1972,16 @@ class FirestoreService {
       }
 
       if (resp.statusCode != 200) {
-        final snippet = resp.body.substring(0, resp.body.length.clamp(0, 220));
+        // ── LOG COMPLETO DO ERRO ─────────────────────────────────────────────
+        debugPrint('[clinical_guides DEBUG] FIRESTORE ERROR status=${resp.statusCode}');
+        debugPrint('[clinical_guides DEBUG] FIRESTORE ERROR BODY: ${resp.body}');
+        // Diagnóstico do tipo de 403:
+        // - "Missing or insufficient permissions" → Firestore Rules negando acesso
+        // - "UNAUTHENTICATED"                    → token ausente ou expirado
+        // - "API key not valid"                  → _firebaseApiKey errada
+        // - "Firebase App Check"                 → App Check ativado sem attestation
+        // - "Requests to this API ... disabled"  → Firestore API desabilitada no GCP
+        final snippet = resp.body.substring(0, resp.body.length.clamp(0, 400));
         _setGuidesError('REST clinical_guides HTTP ${resp.statusCode}: $snippet');
         // Cooldown 2min em qualquer HTTP != 200 — evita retry storm
         _guidesRestRetryAfter = DateTime.now().add(_restRetryCooldown);
