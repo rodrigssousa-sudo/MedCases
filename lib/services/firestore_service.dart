@@ -224,13 +224,17 @@ class FirestoreService {
           }
           return Map<String, dynamic>.from(data);
         } on FirebaseException catch (e) {
-          // permission-denied = regras bloquearam (usuário não é admin)
-          // Aplica cooldown para não tentar de novo nesta sessão
+          // permission-denied = regras bloquearam (usuário não é admin).
+          // NÃO aplica cooldown para permission-denied: esse erro ocorre SEMPRE
+          // para usuários não-admin e aplicar cooldown impede retentativas após
+          // eventual elevação de privilégio ou mudança de conta.
+          // O cooldown é aplicado apenas para erros de rede/timeout.
           if (e.code == 'permission-denied') {
-            _appConfigGlobalRetryAfter = DateTime.now().add(_restRetryCooldown);
-            debugPrint('[FirestoreService] app_config/global permission-denied — cooldown ativo');
+            debugPrint('[FirestoreService] app_config/global permission-denied (usuário não é admin — comportamento esperado)');
           } else {
             debugPrint('[FirestoreService] app_config/global SDK erro: ${e.code}');
+            // Erros de rede/quota: aplica cooldown curto para evitar retry storm
+            _appConfigGlobalRetryAfter = DateTime.now().add(const Duration(seconds: 30));
           }
           return Map<String, dynamic>.from(_cachedAppConfigGlobal);
         }
@@ -1158,9 +1162,11 @@ class FirestoreService {
           return Map<String, dynamic>.from(data);
         } on FirebaseException catch (e) {
           if (e.code == 'permission-denied') {
-            // Regras bloquearam: aplica cooldown, não tenta REST (evita spam 403)
-            _appUpdateRetryAfter = DateTime.now().add(_restRetryCooldown);
-            debugPrint('[FirestoreService] app_updates/current permission-denied — cooldown');
+            // permission-denied: usuário não está autenticado ainda ou token expirou.
+            // Aplica cooldown CURTO (15s) para aguardar conclusão do login antes de retentar.
+            // Não usar 2min: prejudica usuários que fazem login logo em seguida.
+            _appUpdateRetryAfter = DateTime.now().add(const Duration(seconds: 15));
+            debugPrint('[FirestoreService] app_updates/current permission-denied — aguardando autenticação (15s)');
             return Map<String, dynamic>.from(_cachedAppUpdate);
           }
           debugPrint('[FirestoreService] app_updates/current SDK erro: ${e.code} — tentando REST');
@@ -1754,7 +1760,20 @@ class FirestoreService {
         _clearGuidesError();
         await _saveGuidesCache(guides);
       } else {
-        _setGuidesError('REST clinical_guides retornou 0 guias publicados.');
+        // Zero guias publicados: verifica quantos documentos existem no total
+        // para dar mensagem mais diagnóstica ao admin.
+        try {
+          final bodyParsed = safeMap(jsonDecode(resp.body));
+          final docsList2  = bodyParsed['documents'];
+          final totalDocs  = docsList2 is List ? docsList2.length : 0;
+          _setGuidesError(
+            totalDocs > 0
+                ? 'Nenhuma guia publicada ($totalDocs docs sem isPublished=true ou pdfUrl vazio)'
+                : 'Biblioteca clínica vazia no servidor',
+          );
+        } catch (_) {
+          _setGuidesError('REST clinical_guides retornou 0 guias publicados.');
+        }
       }
       _debugGuides('rest load count=${guides.length}');
       return guides;
@@ -1775,9 +1794,32 @@ class FirestoreService {
       'loadPublishedGuides start forceRemote=$forceRemote kIsWeb=$kIsWeb cached=${cached.length}',
     );
 
+    // forceRemote (botão "Tentar novamente"): limpa cooldowns para nova tentativa
+    if (forceRemote) {
+      _guidesRestRetryAfter = null;
+      _clearGuidesError();
+      _debugGuides('forceRemote=true — cooldowns resetados');
+    }
+
+    // ── ETAPA 0: Cache imediato (quando não é forceRemote e há cache) ─────────
+    // Retorna cache imediatamente para evitar tela em branco, atualiza em bg.
+    if (!forceRemote && cached.isNotEmpty) {
+      _debugGuides('cache hit etapa 0 count=${cached.length} — retornando cache e atualizando em bg');
+      Future.microtask(() async {
+        try {
+          final fresh = await _loadPublishedGuidesSdk(source: Source.server);
+          if (fresh.isNotEmpty) {
+            _clearGuidesError();
+            await _saveGuidesCache(fresh);
+            _debugGuides('bg refresh ok count=${fresh.length}');
+          }
+        } catch (_) {}
+      });
+      return cached;
+    }
+
     // ── ETAPA 1: SDK Firestore (todos os browsers — Safari incluído) ─────────
-    // SDK funciona quando rules permitem read para isAuthed().
-    // Antes: Safari (iOS Web) era redirecionado direto ao REST → 403 inevitável.
+    // SDK funciona quando rules permitem read para isAuthed() ou read: if true.
     // Fix: SDK primeiro para todos. REST só como fallback final com cooldown.
     final sdkServer = await _loadPublishedGuidesSdk(source: Source.server);
     if (sdkServer.isNotEmpty) return sdkServer;
@@ -1801,8 +1843,9 @@ class FirestoreService {
       _debugGuides('REST em cooldown — pulando');
     }
 
-    // ── ETAPA 3: Cache local ─────────────────────────────────────────────────
+    // ── ETAPA 3: Cache local (fallback final) ────────────────────────────────
     if (cached.isNotEmpty) {
+      _clearGuidesError(); // dados em cache — não exibe erro para o usuário
       _debugGuides('remote failed/empty, returning cache count=${cached.length}');
       return cached;
     }

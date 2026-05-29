@@ -1524,6 +1524,7 @@ class AppProvider extends ChangeNotifier {
       return true;
     }
 
+    // Tenta restaurar do SharedPreferences/localStorage (sem rede)
     await GeminiService.initFromStorage();
     if (GeminiService.hasApiKey) {
       _clearGeminiConfigUnavailable();
@@ -1531,10 +1532,10 @@ class AppProvider extends ChangeNotifier {
       return true;
     }
 
-    if (_geminiApiKeyUnavailable && _isGeminiRetryBlocked()) {
-      debugPrint('[checkGeminiSession] cooldown ativo para app_config/global até $_geminiRetryAfter — sem novo retry');
-      return false;
-    }
+    // Nota: cooldown de _ensureGeminiApiKey foi removido.
+    // O FirestoreService já gerencia cooldown interno para erros de rede/quota.
+    // Para permission-denied (usuário não-admin), não há cooldown — a chamada
+    // é rápida e é esperado que falhe; o fallback para SharedPrefs já foi tentado.
 
     debugPrint('[checkGeminiSession] API Key ausente — tentando Firestore...');
     try {
@@ -1550,6 +1551,7 @@ class AppProvider extends ChangeNotifier {
       debugPrint('[checkGeminiSession] Firestore falhou: $e — tentando SharedPrefs...');
     }
 
+    // Segunda tentativa de SharedPrefs (pode ter sido persistido após a primeira tentativa)
     await GeminiService.initFromStorage();
     if (GeminiService.hasApiKey) {
       _clearGeminiConfigUnavailable();
@@ -1557,8 +1559,9 @@ class AppProvider extends ChangeNotifier {
       return true;
     }
 
-    _markGeminiConfigUnavailable();
-    debugPrint('[checkGeminiSession] API Key indisponível — novo retry só após $_geminiRetryAfter');
+    // API Key não disponível para este usuário (não-admin sem chave cacheada)
+    _geminiApiKeyUnavailable = true;
+    debugPrint('[checkGeminiSession] API Key não disponível para este usuário (Firestore: permission-denied ou vazio)');
     return false;
   }
 
