@@ -92,34 +92,40 @@ class ClinicalCaseModel {
 
   factory ClinicalCaseModel.fromJson(Map<String, dynamic> json) {
     // Support both old multilingual format and new flat format
+    // SEGURO: nunca usa `as String` — dart2js release lança TypeError em qualquer cast errado
     String _resolveField(dynamic field) {
       if (field == null) return '';
       if (field is String) return field;
       if (field is Map) {
-        return (field['pt'] ?? field['es'] ?? field.values.firstOrNull ?? '') as String;
+        // SEGURO: usa ?.toString() em vez de `as String`
+        final v = field['pt'] ?? field['es'] ?? (field.isNotEmpty ? field.values.first : null);
+        return v?.toString() ?? '';
       }
-      return '';
+      return field.toString();
     }
 
     // Old format had 'drugs', new format has 'drugIds'
-    final drugsRaw = json['drugIds'] ?? json['drugs'] ?? [];
-    final drugIds = (drugsRaw is List) ? drugsRaw.cast<String>() : <String>[];
+    // SEGURO: usa map(e => toString()) em vez de .cast<String>() que falha em release
+    final drugsRaw = json['drugIds'] ?? json['drugs'] ?? const [];
+    final drugIds = (drugsRaw is List)
+        ? drugsRaw.map((e) => e?.toString() ?? '').where((s) => s.isNotEmpty).toList()
+        : <String>[];
 
     return ClinicalCaseModel(
-      id: json['id'] ?? 'case_${UniqueKey().hashCode}',
+      id: json['id']?.toString() ?? 'case_${UniqueKey().hashCode}',
       title: _resolveField(json['title']),
-      patientAge: json['patientAge'] ?? _resolveField(json['patient'])
+      patientAge: json['patientAge']?.toString() ?? _resolveField(json['patient'])
           .split('•').skip(1).firstOrNull?.replaceAll(RegExp(r'[^\d]'), '').trim() ?? '',
-      patientSex: json['patientSex'] ?? 'Masculino',
-      patientWeight: json['patientWeight'] ?? '',
+      patientSex: json['patientSex']?.toString() ?? 'Masculino',
+      patientWeight: json['patientWeight']?.toString() ?? '',
       history: _resolveField(json['history']),
       diagnosis: _resolveField(json['diagnosis']),
       plan: _resolveField(json['plan']),
-      notes: json['notes'] ?? '',
-      category: json['category'] ?? 'Emergência',
+      notes: json['notes']?.toString() ?? '',
+      category: json['category']?.toString() ?? 'Emergência',
       drugIds: drugIds,
-      isCustom: json['isCustom'] ?? false,
-      createdAt: json['createdAt'],
+      isCustom: json['isCustom'] == true || json['isCustom']?.toString() == 'true',
+      createdAt: json['createdAt']?.toString(),
     );
   }
 }

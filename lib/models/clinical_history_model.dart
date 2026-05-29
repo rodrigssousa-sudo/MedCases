@@ -258,27 +258,31 @@ class ClinicalHistoryModel {
   };
 
   /// Parse seguro de List<dynamic> → List<String>, sem lançar em release.
-  /// .cast<String>() quebra em release quando algum elemento não é String
-  /// (ex: int/bool vindo do Firestore REST). Usamos map+toString para garantir.
+  /// NUNCA usa `as` para cast — dart2js release mode lança TypeError para
+  /// qualquer tipo inesperado (Timestamp, Map, etc.).
   static List<String> _safeStringList(dynamic raw) {
     if (raw == null) return const [];
-    final list = raw as List<dynamic>? ?? [];
-    return list.map((e) => e?.toString() ?? '').where((s) => s.isNotEmpty).toList();
+    // SEGURO: verifica is List antes de iterar (evita `as List` que falha em release)
+    if (raw is! List) return const [];
+    return raw.map((e) => e?.toString() ?? '').where((s) => s.isNotEmpty).toList();
   }
 
   /// Parse seguro de List<dynamic> → List<EvolutionEntry>.
   /// Cada item é envolto em try/catch individual para não quebrar a lista inteira.
+  /// NUNCA usa `as` para cast — dart2js release mode lança TypeError.
   static List<EvolutionEntry> _safeEvolutionList(dynamic raw) {
     if (raw == null) return const [];
-    final list = raw as List<dynamic>? ?? [];
+    // SEGURO: verifica is List antes de iterar (evita `as List` que falha em release)
+    if (raw is! List) return const [];
     final result = <EvolutionEntry>[];
-    for (final e in list) {
+    for (final e in raw) {
       try {
         if (e is Map<String, dynamic>) {
           result.add(EvolutionEntry.fromJson(e));
         } else if (e is Map) {
           result.add(EvolutionEntry.fromJson(Map<String, dynamic>.from(e)));
         }
+        // outros tipos (Timestamp, String, etc.) são ignorados silenciosamente
       } catch (_) {
         // item malformado — ignora, não quebra os demais
       }

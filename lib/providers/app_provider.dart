@@ -609,10 +609,15 @@ class AppProvider extends ChangeNotifier {
       final casesJson = p.getString(caseKey) ?? p.getString('customCases');
       if (casesJson != null) {
         try {
-          final list = jsonDecode(casesJson) as List;
-          _customCases = list
-              .map((e) => ClinicalCaseModel.fromJson(e as Map<String, dynamic>))
-              .toList();
+          final decoded = jsonDecode(casesJson);
+          if (decoded is List) {
+            _customCases = decoded
+                .whereType<Map>()
+                .map((e) => ClinicalCaseModel.fromJson(
+                      e is Map<String, dynamic> ? e : Map<String, dynamic>.from(e),
+                    ))
+                .toList();
+          }
         } catch (_) {}
       }
 
@@ -620,10 +625,15 @@ class AppProvider extends ChangeNotifier {
       final histJson = p.getString(histKey);
       if (histJson != null) {
         try {
-          final list = jsonDecode(histJson) as List;
-          _myHistories = list
-              .map((e) => ClinicalHistoryModel.fromJson(e as Map<String, dynamic>))
-              .toList();
+          final decoded = jsonDecode(histJson);
+          if (decoded is List) {
+            _myHistories = decoded
+                .whereType<Map>()
+                .map((e) => ClinicalHistoryModel.fromJson(
+                      e is Map<String, dynamic> ? e : Map<String, dynamic>.from(e),
+                    ))
+                .toList();
+          }
         } catch (_) {}
       }
     } catch (_) {}
