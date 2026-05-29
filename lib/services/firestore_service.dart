@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart'
     show kDebugMode, kIsWeb, debugPrint, defaultTargetPlatform, TargetPlatform;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import '../firebase_options.dart';
@@ -1695,6 +1696,37 @@ class FirestoreService {
   }
 
   static Future<List<GuideModel>> _loadPublishedGuidesSdk({Source? source}) async {
+    // ── LOG: projeto Firebase em uso (SDK) ──────────────────────────────────
+    try {
+      final opts = Firebase.app().options;
+      debugPrint('[clinical_guides DEBUG] projectId=${opts.projectId}');
+      debugPrint('[clinical_guides DEBUG] appId=${opts.appId}');
+      debugPrint('[clinical_guides DEBUG] apiKey=${opts.apiKey.substring(0, opts.apiKey.length.clamp(0, 10))}...');
+    } catch (e) {
+      debugPrint('[clinical_guides DEBUG] Firebase.app().options erro=$e');
+    }
+    debugPrint('[clinical_guides DEBUG] collection=clinical_guides');
+
+    // ── PROBE SDK: testa 5 coleções sem filtro para achar onde estão os docs ─
+    const probeCollections = [
+      'clinical_guides',
+      'guides',
+      'medical_guides',
+      'biblioteca_clinica',
+      'clinical_library',
+    ];
+    for (final col in probeCollections) {
+      try {
+        final snap = await _db.collection(col)
+            .limit(5)
+            .get()
+            .timeout(const Duration(seconds: 6));
+        debugPrint('[clinical_guides DEBUG] collection=$col docs=${snap.docs.length}');
+      } catch (e) {
+        debugPrint('[clinical_guides DEBUG] collection=$col erro=$e');
+      }
+    }
+
     // Tentativa 1: query com orderBy (requer índice composto no Firestore)
     try {
       final query = _guides
@@ -1765,8 +1797,15 @@ class FirestoreService {
   }
 
   static Future<List<GuideModel>> _loadPublishedGuidesRest() async {
-    // ── TAREFA 1: logar projectId e fsBase ───────────────────────────────────
-    debugPrint('[clinical_guides DEBUG] projectId=$_projectId');
+    // ── LOG: projeto Firebase em uso (REST) ──────────────────────────────────
+    try {
+      final opts = Firebase.app().options;
+      debugPrint('[clinical_guides DEBUG] projectId=${opts.projectId}');
+      debugPrint('[clinical_guides DEBUG] appId=${opts.appId}');
+      debugPrint('[clinical_guides DEBUG] apiKey=${opts.apiKey.substring(0, opts.apiKey.length.clamp(0, 10))}...');
+    } catch (e) {
+      debugPrint('[clinical_guides DEBUG] projectId=$_projectId (fallback — Firebase.app() erro=$e)');
+    }
     debugPrint('[clinical_guides DEBUG] fsBase=$_fsBase');
 
     final token = await FirebaseAuth.instance.currentUser?.getIdToken();
@@ -1776,11 +1815,11 @@ class FirestoreService {
     final apiKey = _firebaseApiKey;
 
     // ── TAREFA 4: confirmar nome exato da coleção usada ──────────────────────
-    const _targetCollection = 'clinical_guides';
+    const targetCollection = 'clinical_guides';
     debugPrint('[clinical_guides DEBUG] coleção alvo=$_targetCollection '
         '(NÃO é: clinicalGuides, guides, medical_guides, biblioteca_clinica, clinical_library)');
 
-    Future<http.Response> doGet({Map<String, String>? headers, String collection = _targetCollection}) {
+    Future<http.Response> doGet({Map<String, String>? headers, String collection = targetCollection}) {
       // GET: SOMENTE Authorization — nunca Content-Type nem X-Firebase-API-Key
       // (headers customizados causam preflight CORS que Firestore rejeita)
       final hdrs = <String, String>{...authHeaders, ...?headers};
@@ -1891,13 +1930,13 @@ class FirestoreService {
       // Dispara apenas quando a coleção principal retornou 0 documentos.
       // Ordem de tentativa conforme especificado.
       debugPrint('[clinical_guides DEBUG] clinical_guides vazia — iniciando probe de coleções alternativas');
-      const _altCollections = [
+      const altCollections = [
         'guides',
         'medical_guides',
         'biblioteca_clinica',
         'clinical_library',
       ];
-      for (final altCol in _altCollections) {
+      for (final altCol in altCollections) {
         try {
           debugPrint('[clinical_guides DEBUG] probe: tentando coleção=$altCol');
           final altResp = await doGet(collection: altCol)
