@@ -1816,7 +1816,7 @@ class FirestoreService {
 
     // ── TAREFA 4: confirmar nome exato da coleção usada ──────────────────────
     const targetCollection = 'clinical_guides';
-    debugPrint('[clinical_guides DEBUG] coleção alvo=$_targetCollection '
+    debugPrint('[clinical_guides DEBUG] coleção alvo=$targetCollection '
         '(NÃO é: clinicalGuides, guides, medical_guides, biblioteca_clinica, clinical_library)');
 
     Future<http.Response> doGet({Map<String, String>? headers, String collection = targetCollection}) {
