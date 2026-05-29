@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart' show debugPrint;
+
 class GuideModel {
   final String id;
   final String title;
@@ -70,26 +72,64 @@ class GuideModel {
     'downloadCount': downloadCount,
   };
 
-  factory GuideModel.fromJson(Map<String, dynamic> json) => GuideModel(
-    id: json['id']?.toString() ?? '',
-    title: json['title']?.toString() ?? '',
-    description: json['description']?.toString() ?? '',
-    category: json['category']?.toString() ?? 'Geral',
-    authors: json['authors']?.toString() ?? '',
-    year: json['year']?.toString() ?? '',
-    pdfUrl: json['pdfUrl']?.toString() ?? '',
-    fileName: json['fileName']?.toString() ?? '',
-    fileSize: (json['fileSize'] is num)
-        ? (json['fileSize'] as num).toInt()
-        : int.tryParse(json['fileSize']?.toString() ?? '') ?? 0,
-    uploadedAt: json['uploadedAt']?.toString() ?? '',
-    uploadedBy: json['uploadedBy']?.toString() ?? '',
-    // REST Firestore pode retornar boolValue já decodificado como bool
-    isPublished: json['isPublished'] == true || json['isPublished'].toString() == 'true',
-    downloadCount: (json['downloadCount'] is num)
-        ? (json['downloadCount'] as num).toInt()
-        : int.tryParse(json['downloadCount']?.toString() ?? '') ?? 0,
-  );
+  /// Parse seguro: aceita campos alternativos de URL e título.
+  /// Nunca usa casts diretos (as T) — imune a TypeError em dart2js release.
+  factory GuideModel.fromJson(Map<String, dynamic> json) {
+    // ── pdfUrl: aceita pdfUrl, fileUrl, url, downloadUrl ──────────────────
+    final pdfUrl = _firstNonEmpty(json, ['pdfUrl', 'fileUrl', 'url', 'downloadUrl']);
+
+    // ── title: aceita title, name, titulo ─────────────────────────────────
+    final title = _firstNonEmpty(json, ['title', 'name', 'titulo']);
+
+    // ── isPublished: aceita bool true ou string "true" ─────────────────────
+    // SEGURO: sem cast — testa igualdade antes
+    final rawPublished = json['isPublished'];
+    final isPublished  = rawPublished == true
+        || rawPublished?.toString().toLowerCase() == 'true';
+
+    // ── fileSize e downloadCount: aceita num ou string ─────────────────────
+    final rawSize  = json['fileSize'];
+    final fileSize = rawSize is num
+        ? rawSize.toInt()
+        : int.tryParse(rawSize?.toString() ?? '') ?? 0;
+
+    final rawCount    = json['downloadCount'];
+    final downloadCount = rawCount is num
+        ? rawCount.toInt()
+        : int.tryParse(rawCount?.toString() ?? '') ?? 0;
+
+    // ── LOG diagnóstico (kDebugMode via debugPrint — silencioso em release) ─
+    debugPrint(
+      '[GuideModel.fromJson] id=${json['id']?.toString() ?? ''} '
+      'title="$title" pdfUrl="$pdfUrl" '
+      'isPublished=$isPublished rawPublished=$rawPublished',
+    );
+
+    return GuideModel(
+      id:            json['id']?.toString() ?? '',
+      title:         title,
+      description:   json['description']?.toString() ?? '',
+      category:      json['category']?.toString() ?? 'Geral',
+      authors:       json['authors']?.toString() ?? '',
+      year:          json['year']?.toString() ?? '',
+      pdfUrl:        pdfUrl,
+      fileName:      json['fileName']?.toString() ?? '',
+      fileSize:      fileSize,
+      uploadedAt:    json['uploadedAt']?.toString() ?? '',
+      uploadedBy:    json['uploadedBy']?.toString() ?? '',
+      isPublished:   isPublished,
+      downloadCount: downloadCount,
+    );
+  }
+
+  /// Retorna o primeiro valor não-vazio dos campos tentados, em ordem.
+  static String _firstNonEmpty(Map<String, dynamic> json, List<String> keys) {
+    for (final k in keys) {
+      final v = json[k]?.toString().trim() ?? '';
+      if (v.isNotEmpty) return v;
+    }
+    return '';
+  }
 
   GuideModel copyWith({
     String? id, String? title, String? description, String? category,

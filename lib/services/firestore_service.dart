@@ -270,7 +270,8 @@ class FirestoreService {
       try {
         // SDK sempre — web e nativo. app_config/global requer admin token via rules.
         // Não usar REST neste endpoint: expõe a API Key do Gemini em logs de rede.
-        // Se o SDK retornar permission-denied (403), aplica cooldown silencioso.
+        // Se o SDK retornar permission-denied: comportamento esperado para não-admin,
+        // NÃO aplica cooldown (ver tratamento abaixo).
         try {
           final doc = await _db.collection('app_config').doc('global').get()
               .timeout(const Duration(seconds: 4));
@@ -1607,13 +1608,30 @@ class FirestoreService {
   }
 
   static List<GuideModel> _normalizeGuides(Iterable<GuideModel> guides) {
-    final list = guides
-        .where((g) => g.id.trim().isNotEmpty)
-        .where((g) => g.title.trim().isNotEmpty)
-        .where((g) => g.pdfUrl.trim().isNotEmpty)
-        .toList();
-    list.sort((a, b) => b.uploadedAt.compareTo(a.uploadedAt));
-    return list;
+    final all   = guides.toList();
+    final valid = <GuideModel>[];
+
+    for (final g in all) {
+      final missingId    = g.id.trim().isEmpty;
+      final missingTitle = g.title.trim().isEmpty;
+      final missingPdf   = g.pdfUrl.trim().isEmpty;
+
+      if (missingId || missingTitle || missingPdf) {
+        // LOG diagnóstico: informa qual campo faltou para cada guia descartada
+        debugPrint(
+          '[clinical_guides DEBUG] guia IGNORADA '
+          'id="${g.id}" title="${g.title}" '
+          'pdfUrl="${g.pdfUrl}" '
+          'missingId=$missingId missingTitle=$missingTitle missingPdfUrl=$missingPdf',
+        );
+      } else {
+        valid.add(g);
+      }
+    }
+
+    debugPrint('[clinical_guides DEBUG] _normalizeGuides: total=${all.length} valid=${valid.length}');
+    valid.sort((a, b) => b.uploadedAt.compareTo(a.uploadedAt));
+    return valid;
   }
 
   static Future<void> _saveGuidesCache(List<GuideModel> guides) async {
@@ -1766,26 +1784,61 @@ class FirestoreService {
     }
 
     List<GuideModel> parseResponse(http.Response resp) {
-      // safeMap: sem casts diretos \u2014 imune a TypeError em dart2js release
-      final body = safeMap(jsonDecode(resp.body));
-      final docsList = body['documents'];
+      // safeMap: sem casts diretos — imune a TypeError em dart2js release
+      final body      = safeMap(jsonDecode(resp.body));
+      final docsList  = body['documents'];
       final documents = docsList is List ? docsList : const <dynamic>[];
-      final parsed = <GuideModel>[];
+      final totalDocs = documents.length;
+
+      debugPrint('[clinical_guides DEBUG] totalDocs=$totalDocs');
+
+      final allParsed    = <GuideModel>[];
+      final unpublished  = <String>[];
+
       for (final doc in documents) {
         try {
           final rawDoc = safeMap(doc);
-          final data = _restDocToMap(rawDoc);
+          final data   = _restDocToMap(rawDoc);
+
+          // Garante que o id está preenchido a partir do campo 'name' do REST
           if (data['id'] == null || safeString(data['id']).isEmpty) {
             final name = safeString(rawDoc['name']);
             data['id'] = name.isNotEmpty ? name.split('/').last : '';
           }
+
+          // LOG amostra dos campos-chave de cada documento para diagnóstico
+          debugPrint(
+            '[clinical_guides DEBUG] sampleData: '
+            'id=${data['id']} '
+            'title=${data['title']} '
+            'pdfUrl=${data['pdfUrl']} '
+            'fileUrl=${data['fileUrl']} '
+            'url=${data['url']} '
+            'isPublished=${data['isPublished']} '
+            'fields=${data.keys.toList()}',
+          );
+
           final guide = GuideModel.fromJson(data);
-          if (guide.isPublished) parsed.add(guide);
+          allParsed.add(guide);
+
+          if (!guide.isPublished) {
+            unpublished.add('id=${guide.id}');
+          }
         } catch (e, st) {
           _debugGuides('REST parseResponse: guia ignorado por erro — $e\n$st');
         }
       }
-      return _normalizeGuides(parsed);
+
+      final publishedGuides = allParsed.where((g) => g.isPublished).toList();
+      debugPrint('[clinical_guides DEBUG] parsed=${allParsed.length}');
+      debugPrint('[clinical_guides DEBUG] published=${publishedGuides.length}');
+      if (unpublished.isNotEmpty) {
+        debugPrint('[clinical_guides DEBUG] unpublished: $unpublished');
+      }
+
+      final normalized = _normalizeGuides(publishedGuides);
+      debugPrint('[clinical_guides DEBUG] validPdfTitle=${normalized.length}');
+      return normalized;
     }
 
     try {
