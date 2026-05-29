@@ -6,11 +6,13 @@ import 'package:provider/provider.dart';
 import 'package:printing/printing.dart';
 import 'package:pdf/pdf.dart' show PdfPageFormat;
 import 'dart:async';
+import 'dart:convert';
 import 'dart:ui' as ui;
 import '../providers/app_provider.dart';
 import '../models/clinical_history_model.dart';
 import '../services/firestore_service.dart';
 import '../services/suggestion_service.dart';
+import '../services/ai_service.dart';
 import '../widgets/common_widgets.dart';
 import '../services/stt_helper.dart';
 import '../platform/web_impl.dart'
@@ -264,6 +266,19 @@ const _hcStrings = <String, Map<String, String>>{
   'dictate_btn':        {'pt': 'Ditar',                                  'es': 'Dictar'},
   'dict_not_supported': {'pt': 'Ditado não suportado',                   'es': 'Dictado no soportado'},
   'dict_browser_msg':   {'pt': 'Use Chrome ou Safari para o ditado.',    'es': 'Use Chrome o Safari para el dictado.'},
+  // Relato Livre — modo IA
+  'relato_btn':         {'pt': 'Relato Livre',                           'es': 'Relato Libre'},
+  'relato_active':      {'pt': 'GRAVANDO SEU RELATO CLÍNICO...',         'es': 'GRABANDO TU RELATO CLÍNICO...'},
+  'relato_hint':        {'pt': 'Fale livremente. A IA distribuirá nos campos ao final.', 'es': 'Habla libremente. La IA distribuirá en los campos al finalizar.'},
+  'relato_ready':       {'pt': 'Microfone pronto. Toque para ditar.',    'es': 'Micrófono listo. Toca para dictar.'},
+  'relato_processing':  {'pt': 'IA estruturando prontuário...',          'es': 'IA estructurando historia clínica...'},
+  'relato_done':        {'pt': 'Prontuário preenchido pela IA!',         'es': '¡Historia clínica completada por IA!'},
+  'relato_error':       {'pt': 'Erro ao processar com IA. Tente novamente.', 'es': 'Error al procesar con IA. Intenta de nuevo.'},
+  'relato_no_key':      {'pt': 'Configure a chave OpenAI nas configurações para usar este recurso.', 'es': 'Configura la clave OpenAI en ajustes para usar esta función.'},
+  'relato_empty':       {'pt': 'Nenhum áudio capturado. Tente novamente.', 'es': 'No se capturó audio. Intenta de nuevo.'},
+  // Barra de navegação entre campos
+  'nav_prev':           {'pt': 'Campo anterior',                         'es': 'Campo anterior'},
+  'nav_next':           {'pt': 'Próximo campo',                          'es': 'Siguiente campo'},
   // STT labels de campos
   'stt_chief':          {'pt': 'Queixa principal',                       'es': 'Motivo de consulta'},
   'stt_hpi':            {'pt': 'HDA',                                    'es': 'EA'},
@@ -2267,6 +2282,7 @@ class _HistoryEditorState extends State<_HistoryEditor> {
   @override
   void dispose() {
     _sttRecog?.stop();          // Web: para WebSpeechRecognizer
+    _relatoRecog?.stop();       // Web: para relato livre
     SttHelper.stop();           // Mobile: para speech_to_text nativo
     for (final c in _ctrls.values) c.dispose();
     super.dispose();
@@ -2284,6 +2300,13 @@ class _HistoryEditorState extends State<_HistoryEditor> {
   String _smartCurrentField = '';  // campo ativo atual (para feedback)
   String _smartInterim = '';       // texto interim do ditáfone
   webPlatform.WebSpeechRecognizer? _smartRecog;
+
+  // ── Relato Livre — captura contínua → IA estrutura nos campos ────────────
+  bool   _relatoActive    = false;  // gravação de relato livre ativa
+  bool   _aiProcessing    = false;  // IA processando a transcrição
+  String _relatoBuffer    = '';     // buffer acumulado de texto final
+  String _relatoInterim   = '';     // texto interim (exibido em tempo real)
+  webPlatform.WebSpeechRecognizer? _relatoRecog; // Web recognizer do relato
 
   // Mapa de palavras-gatilho → chave do campo
   static const _kTriggers = {
@@ -2492,6 +2515,186 @@ class _HistoryEditorState extends State<_HistoryEditor> {
       startMobileLoop();
     }
     if (mounted) setState(() { _smartDictActive = true; _smartInterim = ''; });
+  }
+
+  // ── Relato Livre — toggle de gravação contínua ───────────────────────────
+  void _toggleRelatoLivre() {
+    if (_relatoActive) {
+      // Parar gravação e processar com IA
+      _relatoRecog?.stop();
+      SttHelper.stop();
+      final captured = _relatoBuffer.trim();
+      if (mounted) setState(() { _relatoActive = false; _relatoInterim = ''; });
+      if (captured.isEmpty) {
+        _showRelatoSnack(_hcT(widget.p.lang, 'relato_empty'));
+        return;
+      }
+      _processRelatoWithAI(captured);
+      return;
+    }
+
+    // Para outros STTs se ativos
+    if (_sttListening) _stopAllStt();
+    if (_smartDictActive) {
+      _smartRecog?.stop();
+      SttHelper.stop();
+      if (mounted) setState(() { _smartDictActive = false; _smartInterim = ''; _smartCurrentField = ''; });
+    }
+
+    _relatoBuffer = '';
+    final locale  = widget.p.lang == 'es' ? 'es-ES' : 'pt-BR';
+
+    if (kIsWeb) {
+      if (!webPlatform.webHasSpeechRecognition()) {
+        showDialog(context: context, builder: (_) => AlertDialog(
+          title: Text(_hcT(widget.p.lang, 'dict_not_supported')),
+          content: Text(_hcT(widget.p.lang, 'dict_browser_msg')),
+          actions: [TextButton(onPressed: () => Navigator.pop(context), child: const Text('OK'))],
+        ));
+        return;
+      }
+      final recog = webPlatform.WebSpeechRecognizer();
+      recog.start('relato', locale,
+        onResult: (transcript, isFinal) {
+          if (!mounted) return;
+          if (isFinal) {
+            _relatoBuffer += (_relatoBuffer.isEmpty ? '' : ' ') + transcript.trim();
+            if (mounted) setState(() => _relatoInterim = '');
+          } else {
+            if (mounted) setState(() => _relatoInterim = transcript);
+          }
+        },
+        onEnd: () {
+          // Auto-reinicia enquanto relato estiver ativo
+          if (_relatoActive && mounted) {
+            Future.delayed(const Duration(milliseconds: 200), () {
+              if (_relatoActive && mounted) _relatoRecog?.start('relato', locale,
+                onResult: (t, f) {}, onEnd: () {}, onError: (_) {});
+            });
+          }
+        },
+        onError: (code) {
+          if (code != 'no-speech' && mounted) {
+            setState(() { _relatoActive = false; _relatoInterim = ''; });
+          }
+        },
+      );
+      _relatoRecog = recog;
+    } else {
+      // Mobile: captura em loop, acumulando buffer
+      void startLoop() {
+        SttHelper.start(
+          locale: locale,
+          onResult: (transcript) {
+            if (!mounted || !_relatoActive) return;
+            _relatoBuffer += (_relatoBuffer.isEmpty ? '' : ' ') + transcript.trim();
+            if (mounted) setState(() => _relatoInterim = '');
+          },
+          onError: (code) {
+            if (!mounted) return;
+            if (code == 'no_speech' || code == 'no-speech') {
+              if (_relatoActive) Future.delayed(const Duration(milliseconds: 300), startLoop);
+              return;
+            }
+            setState(() { _relatoActive = false; _relatoInterim = ''; });
+          },
+          onEnd: () {
+            if (_relatoActive && mounted) {
+              Future.delayed(const Duration(milliseconds: 300), startLoop);
+            }
+          },
+        );
+      }
+      startLoop();
+    }
+    if (mounted) setState(() { _relatoActive = true; _relatoInterim = ''; });
+  }
+
+  // ── Envia transcrição bruta para IA estruturar nos campos do prontuário ──
+  Future<void> _processRelatoWithAI(String rawText) async {
+    final apiKey = widget.p.openAiKey;
+    if (apiKey.isEmpty) {
+      _showRelatoSnack(_hcT(widget.p.lang, 'relato_no_key'));
+      return;
+    }
+    if (mounted) setState(() => _aiProcessing = true);
+
+    const systemPrompt =
+        'Você é um assistente de inteligência artificial médica especializado em '
+        'estruturação de prontuários.\n'
+        'Receba o texto bruto de uma transcrição médica ditada e distribua as '
+        'informações de forma inteligente nos campos correspondentes.\n\n'
+        'Retorne RIGOROSAMENTE apenas um objeto JSON (sem formatação markdown ```json) '
+        'com a seguinte estrutura:\n'
+        '{\n'
+        '  "motivo_consulta": "Se extraído, o motivo da consulta. Caso contrário, string vazia.",\n'
+        '  "anamnese": "Histórico do paciente, sintomas, evolução. Caso contrário, string vazia.",\n'
+        '  "exame_fisico": "Sinais vitais, dados do exame clínico. Caso contrário, string vazia.",\n'
+        '  "conduta": "Condutas, medicações prescritas e próximos passos. Caso contrário, string vazia."\n'
+        '}';
+
+    final result = await AiService.chat(
+      apiKey:     apiKey,
+      systemPrompt: systemPrompt,
+      userMessage: 'Texto Transcrito:\n$rawText',
+      maxTokens:  800,
+    );
+
+    if (!mounted) return;
+    setState(() => _aiProcessing = false);
+
+    if (result.isError) {
+      _showRelatoSnack(_hcT(widget.p.lang, 'relato_error'));
+      return;
+    }
+
+    try {
+      // Limpa possíveis backticks de markdown caso o modelo não obedeça
+      final clean = result.text
+          .replaceAll(RegExp(r'```json\s*', caseSensitive: false), '')
+          .replaceAll('```', '')
+          .trim();
+
+      final Map<String, dynamic> data = jsonDecode(clean) as Map<String, dynamic>;
+
+      void _fill(String ctrlKey, String jsonKey) {
+        final val = (data[jsonKey] ?? '').toString().trim();
+        if (val.isEmpty) return;
+        final ctrl = _ctrls[ctrlKey];
+        if (ctrl == null) return;
+        // Append inteligente: não duplica conteúdo já existente
+        final existing = ctrl.text.trim();
+        ctrl.text = existing.isEmpty ? val : '$existing\n$val';
+        ctrl.selection = TextSelection.fromPosition(
+          TextPosition(offset: ctrl.text.length));
+      }
+
+      _fill('chiefComplaint', 'motivo_consulta');
+      _fill('hpi',            'anamnese');
+      _fill('physicalExam',   'exame_fisico');
+      _fill('treatmentPlan',  'conduta');
+
+      _showRelatoSnack(_hcT(widget.p.lang, 'relato_done'), success: true);
+    } catch (_) {
+      _showRelatoSnack(_hcT(widget.p.lang, 'relato_error'));
+    }
+  }
+
+  void _showRelatoSnack(String msg, {bool success = false}) {
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Row(children: [
+        Icon(success ? Icons.check_circle_outline_rounded : Icons.error_outline_rounded,
+          size: 18, color: Colors.white),
+        const SizedBox(width: 8),
+        Expanded(child: Text(msg, style: const TextStyle(fontSize: 13))),
+      ]),
+      backgroundColor: success ? const Color(0xFF1F6B48) : const Color(0xFFB91C1C),
+      duration: Duration(seconds: success ? 3 : 5),
+      behavior: SnackBarBehavior.floating,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      margin: const EdgeInsets.fromLTRB(16, 0, 16, 88),
+    ));
   }
 
   void _showPreview() {
@@ -2759,8 +2962,9 @@ class _HistoryEditorState extends State<_HistoryEditor> {
           final hPad = isDesktop ? 48.0 : 16.0;
           // Seções que têm campos de texto ditáveis (não Exames/Desfecho)
           final hasMic = _section == 1 || _section == 2 || _section == 4 || _section == 5;
+          // Altura da barra inferior: 136px (status 44 + nav 48 + padding 44)
           Widget content = SingleChildScrollView(
-            padding: EdgeInsets.fromLTRB(hPad, 14, hPad, hasMic ? 110 : 24),
+            padding: EdgeInsets.fromLTRB(hPad, 14, hPad, hasMic ? 148 : 24),
             child: isDesktop
                 ? Center(
                     child: ConstrainedBox(
@@ -2774,19 +2978,25 @@ class _HistoryEditorState extends State<_HistoryEditor> {
           return Stack(
             children: [
               content,
-              // ── Botão Mic Central flutuante ─────────────────────────────
+              // ── Barra de controle inferior (mic + IA + navegação) ────────
               Positioned(
-                left: 0, right: 0, bottom: 20,
-                child: Center(
-                  child: _CentralMicButton(
-                    active: _smartDictActive || _sttListening,
-                    smartActive: _smartDictActive,
-                    sttListening: _sttListening,
-                    currentField: _smartDictActive ? _smartCurrentField : (_sttActiveKey ?? ''),
-                    interim: _smartDictActive ? _smartInterim : _sttInterim,
-                    lang: widget.p.lang,
-                    onTap: _toggleSmartDictaphone,
-                  ),
+                left: 0, right: 0, bottom: 0,
+                child: _MicControlBar(
+                  lang:          widget.p.lang,
+                  // Estado ditáfone inteligente
+                  smartActive:   _smartDictActive,
+                  sttListening:  _sttListening,
+                  currentField:  _smartDictActive ? _smartCurrentField : (_sttActiveKey ?? ''),
+                  smartInterim:  _smartDictActive ? _smartInterim : _sttInterim,
+                  onTapSmart:    _toggleSmartDictaphone,
+                  // Estado relato livre
+                  relatoActive:  _relatoActive,
+                  aiProcessing:  _aiProcessing,
+                  relatoInterim: _relatoInterim,
+                  onTapRelato:   _toggleRelatoLivre,
+                  // Navegação entre campos
+                  onPrevField:   () => FocusScope.of(context).previousFocus(),
+                  onNextField:   () => FocusScope.of(context).nextFocus(),
                 ),
               ),
             ],
@@ -3365,6 +3575,397 @@ class _SmartDictaphoneButton extends StatelessWidget {
       ),
     );
   }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// MIC CONTROL BAR — barra inferior completa (status + ditáfone + relato + nav)
+// Substitui o botão mic central flutuante isolado.
+// ─────────────────────────────────────────────────────────────────────────────
+class _MicControlBar extends StatelessWidget {
+  final String lang;
+
+  // Ditáfone inteligente
+  final bool smartActive;
+  final bool sttListening;
+  final String currentField;
+  final String smartInterim;
+  final VoidCallback onTapSmart;
+
+  // Relato livre (IA)
+  final bool relatoActive;
+  final bool aiProcessing;
+  final String relatoInterim;
+  final VoidCallback onTapRelato;
+
+  // Navegação de campos
+  final VoidCallback onPrevField;
+  final VoidCallback onNextField;
+
+  const _MicControlBar({
+    required this.lang,
+    required this.smartActive,
+    required this.sttListening,
+    required this.currentField,
+    required this.smartInterim,
+    required this.onTapSmart,
+    required this.relatoActive,
+    required this.aiProcessing,
+    required this.relatoInterim,
+    required this.onTapRelato,
+    required this.onPrevField,
+    required this.onNextField,
+  });
+
+  bool get _anyActive => smartActive || sttListening || relatoActive || aiProcessing;
+
+  @override
+  Widget build(BuildContext context) {
+    const bg         = Color(0xFFF8FAF9);
+    const bgDark     = Color(0xFF141F19);
+    const border     = Color(0xFFD4E8DC);
+    final isDark     = Theme.of(context).brightness == Brightness.dark;
+    final cardBg     = isDark ? bgDark : bg;
+    final cardBorder = isDark ? const Color(0xFF1F3829) : border;
+    final isEs       = lang == 'es';
+
+    return Container(
+      decoration: BoxDecoration(
+        color: cardBg,
+        border: Border(top: BorderSide(color: cardBorder, width: 1)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: isDark ? 0.40 : 0.08),
+            blurRadius: 20, offset: const Offset(0, -4)),
+        ],
+      ),
+      child: SafeArea(
+        top: false,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(12, 10, 12, 8),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // ── Linha 1: Indicador de status de gravação ─────────────────
+              _MicStatusBadge(
+                lang:          lang,
+                smartActive:   smartActive || sttListening,
+                relatoActive:  relatoActive,
+                aiProcessing:  aiProcessing,
+                currentField:  currentField,
+                interim:       relatoActive ? relatoInterim : smartInterim,
+              ),
+              const SizedBox(height: 10),
+
+              // ── Linha 2: Botões de ação ───────────────────────────────────
+              Row(children: [
+                // — Ditáfone inteligente ──────────────────────────
+                Expanded(
+                  child: _MicActionBtn(
+                    icon:    smartActive || sttListening
+                        ? Icons.mic_rounded
+                        : Icons.mic_none_rounded,
+                    label:   smartActive || sttListening
+                        ? _hcT(lang, 'dictaphone_active').replaceAll(' • Gravando', '').replaceAll(' • Grabando', '')
+                        : _hcT(lang, 'dictaphone'),
+                    active:  smartActive || sttListening,
+                    color:   const Color(0xFF1F6B48),
+                    onTap:   onTapSmart,
+                    enabled: !relatoActive && !aiProcessing,
+                  ),
+                ),
+                const SizedBox(width: 8),
+
+                // — Relato Livre (IA) ──────────────────────────────
+                Expanded(
+                  child: _MicActionBtn(
+                    icon:    aiProcessing
+                        ? Icons.auto_awesome_rounded
+                        : (relatoActive
+                            ? Icons.stop_circle_rounded
+                            : Icons.record_voice_over_rounded),
+                    label:   aiProcessing
+                        ? _hcT(lang, 'relato_processing')
+                        : (relatoActive
+                            ? _hcT(lang, 'relato_active')
+                            : _hcT(lang, 'relato_btn')),
+                    active:  relatoActive,
+                    color:   relatoActive
+                        ? const Color(0xFFDC2626)
+                        : const Color(0xFF7C3AED),
+                    onTap:   onTapRelato,
+                    enabled: !smartActive && !sttListening && !aiProcessing,
+                    loading: aiProcessing,
+                  ),
+                ),
+
+                const SizedBox(width: 8),
+
+                // — Navegação entre campos ─────────────────────────
+                _FieldNavBar(
+                  onPrev: onPrevField,
+                  onNext: onNextField,
+                  isDark: isDark,
+                ),
+              ]),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// MIC STATUS BADGE — indicador visual de estado de captação
+// Vermelho quando gravando, Verde quando pronto, Roxo quando IA processa
+// ─────────────────────────────────────────────────────────────────────────────
+class _MicStatusBadge extends StatelessWidget {
+  final String lang;
+  final bool smartActive;
+  final bool relatoActive;
+  final bool aiProcessing;
+  final String currentField;
+  final String interim;
+
+  const _MicStatusBadge({
+    required this.lang,
+    required this.smartActive,
+    required this.relatoActive,
+    required this.aiProcessing,
+    required this.currentField,
+    required this.interim,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    // Determina estado dominante
+    final isRecording = relatoActive || smartActive;
+    final Color bgColor;
+    final Color dotColor;
+    final String label;
+    final IconData icon;
+
+    if (aiProcessing) {
+      bgColor  = const Color(0xFF7C3AED).withValues(alpha: 0.10);
+      dotColor = const Color(0xFF7C3AED);
+      icon     = Icons.auto_awesome_rounded;
+      label    = _hcT(lang, 'relato_processing');
+    } else if (relatoActive) {
+      bgColor  = const Color(0xFFDC2626).withValues(alpha: 0.08);
+      dotColor = const Color(0xFFDC2626);
+      icon     = Icons.fiber_manual_record_rounded;
+      label    = _hcT(lang, 'relato_active');
+    } else if (smartActive) {
+      bgColor  = const Color(0xFF1F6B48).withValues(alpha: 0.08);
+      dotColor = const Color(0xFF16A34A);
+      icon     = Icons.fiber_manual_record_rounded;
+      label    = _hcT(lang, 'dictaphone_active');
+    } else {
+      bgColor  = const Color(0xFF1F6B48).withValues(alpha: 0.06);
+      dotColor = const Color(0xFF1F6B48);
+      icon     = Icons.mic_none_rounded;
+      label    = _hcT(lang, 'relato_ready');
+    }
+
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 250),
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12),
+        color: bgColor,
+        border: Border.all(color: dotColor.withValues(alpha: 0.20), width: 1),
+      ),
+      child: Row(children: [
+        // Ícone / dot pulsante
+        if (isRecording || aiProcessing)
+          _PulseDot(color: dotColor)
+        else
+          Icon(icon, size: 14, color: dotColor),
+        const SizedBox(width: 8),
+        // Texto principal
+        Expanded(
+          child: Text(
+            interim.isNotEmpty ? interim : label,
+            style: TextStyle(
+              fontSize: 11.5,
+              fontWeight: isRecording ? FontWeight.w800 : FontWeight.w600,
+              color: dotColor,
+              letterSpacing: isRecording ? 0.3 : 0,
+              fontStyle: interim.isNotEmpty ? FontStyle.italic : FontStyle.normal,
+            ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+        // Campo ativo (ditáfone inteligente)
+        if (smartActive && currentField.isNotEmpty) ...[
+          const SizedBox(width: 6),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(8),
+              color: dotColor.withValues(alpha: 0.12),
+            ),
+            child: Text(
+              currentField.length > 14 ? '${currentField.substring(0, 12)}…' : currentField,
+              style: TextStyle(fontSize: 9, fontWeight: FontWeight.w900, color: dotColor),
+            ),
+          ),
+        ],
+      ]),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// MIC ACTION BTN — botão compacto de ação na barra inferior
+// ─────────────────────────────────────────────────────────────────────────────
+class _MicActionBtn extends StatelessWidget {
+  final IconData icon;
+  final String   label;
+  final bool     active;
+  final bool     enabled;
+  final bool     loading;
+  final Color    color;
+  final VoidCallback onTap;
+
+  const _MicActionBtn({
+    required this.icon,
+    required this.label,
+    required this.active,
+    required this.color,
+    required this.onTap,
+    this.enabled = true,
+    this.loading = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final effectiveColor = enabled ? color : color.withValues(alpha: 0.35);
+    return GestureDetector(
+      onTap: enabled ? onTap : null,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        height: 48,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(14),
+          color: active
+              ? effectiveColor.withValues(alpha: 0.12)
+              : Colors.transparent,
+          border: Border.all(
+            color: active
+                ? effectiveColor.withValues(alpha: 0.55)
+                : effectiveColor.withValues(alpha: 0.25),
+            width: active ? 1.5 : 1,
+          ),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            if (loading)
+              SizedBox(
+                width: 15, height: 15,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  valueColor: AlwaysStoppedAnimation(effectiveColor),
+                ),
+              )
+            else
+              Icon(icon, size: 17, color: effectiveColor),
+            const SizedBox(width: 6),
+            Flexible(
+              child: Text(
+                label,
+                style: TextStyle(
+                  fontSize: 10.5,
+                  fontWeight: active ? FontWeight.w800 : FontWeight.w600,
+                  color: effectiveColor,
+                  letterSpacing: 0.1,
+                ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// FIELD NAV BAR — botões de navegação anterior/próximo campo
+// ─────────────────────────────────────────────────────────────────────────────
+class _FieldNavBar extends StatelessWidget {
+  final VoidCallback onPrev;
+  final VoidCallback onNext;
+  final bool isDark;
+
+  const _FieldNavBar({
+    required this.onPrev,
+    required this.onNext,
+    required this.isDark,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final btnBg     = isDark
+        ? Colors.white.withValues(alpha: 0.07)
+        : const Color(0xFFEFF2F5);
+    final btnBorder = isDark
+        ? Colors.white.withValues(alpha: 0.10)
+        : const Color(0xFFD1D9E0);
+    final iconColor = isDark ? Colors.white70 : const Color(0xFF475569);
+
+    return Row(mainAxisSize: MainAxisSize.min, children: [
+      _NavBtn(
+        icon:    Icons.keyboard_arrow_up_rounded,
+        bg:      btnBg,
+        border:  btnBorder,
+        iconC:   iconColor,
+        onTap:   onPrev,
+        tooltip: 'Campo anterior',
+      ),
+      const SizedBox(width: 6),
+      _NavBtn(
+        icon:    Icons.keyboard_arrow_down_rounded,
+        bg:      btnBg,
+        border:  btnBorder,
+        iconC:   iconColor,
+        onTap:   onNext,
+        tooltip: 'Próximo campo',
+      ),
+    ]);
+  }
+}
+
+class _NavBtn extends StatelessWidget {
+  final IconData icon;
+  final Color    bg;
+  final Color    border;
+  final Color    iconC;
+  final VoidCallback onTap;
+  final String   tooltip;
+  const _NavBtn({required this.icon, required this.bg, required this.border,
+    required this.iconC, required this.onTap, required this.tooltip});
+
+  @override
+  Widget build(BuildContext context) => Tooltip(
+    message: tooltip,
+    child: GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: 40, height: 48,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12),
+          color: bg,
+          border: Border.all(color: border, width: 1),
+        ),
+        child: Icon(icon, size: 22, color: iconC),
+      ),
+    ),
+  );
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
