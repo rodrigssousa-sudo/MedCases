@@ -604,7 +604,7 @@ class _AiScreenState extends State<AiScreen> {
       if (_userScrolledUp && !force) return;
       _scrollCtrl.animateTo(
         _scrollCtrl.position.maxScrollExtent,
-        duration: const Duration(milliseconds: 280),
+        duration: const Duration(milliseconds: 300),
         curve: Curves.easeOut,
       );
     });
@@ -749,7 +749,7 @@ class _AiScreenState extends State<AiScreen> {
     final hPad = bp.isDesktop ? 0.0 : 12.0;
 
     Widget chatList = _messages.isEmpty
-        ? _EmptyChat(dark: dark, lang: p.lang)
+        ? _EmptyChat(dark: dark, lang: p.lang, onConnectApi: _openAiSettings)
         : ListView.builder(
             controller: _scrollCtrl,
             padding: EdgeInsets.fromLTRB(
@@ -928,9 +928,7 @@ class _WaHeader extends StatelessWidget {
           bottom: BorderSide(color: Color(0xFF3A3A3A), width: 1),
         ),
       ),
-      child: SafeArea(
-        bottom: false,
-        child: Padding(
+      child: Padding(
           padding: const EdgeInsets.fromLTRB(14, 10, 10, 10),
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -1143,59 +1141,137 @@ class _WaHeader extends StatelessWidget {
             ],
           ),
         ),
-      ),
     );
   }
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Estado vazio — mensagem central minimalista
+// Estado vazio — card "Configuração Necessária" centralizado
 // ─────────────────────────────────────────────────────────────────────────────
 class _EmptyChat extends StatelessWidget {
   final bool dark;
   final String lang;
-  const _EmptyChat({required this.dark, required this.lang});
+  final VoidCallback? onConnectApi;
+  const _EmptyChat({
+    required this.dark,
+    required this.lang,
+    this.onConnectApi,
+  });
 
   @override
   Widget build(BuildContext context) {
-    final isEs = lang == 'es';
+    final isEs   = lang == 'es';
+    final cardBg = dark ? const Color(0xFF1A2820) : Colors.white;
+    final subCol = dark ? Colors.white54 : Colors.black54;
+    final textCol = dark ? Colors.white : const Color(0xFF1A1A1A);
+
     return Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            width: 64, height: 64,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: dark
-                ? Colors.white.withValues(alpha: 0.06)
-                : Colors.black.withValues(alpha: 0.05),
-            ),
-            child: Center(
-              child: Icon(Icons.psychology_outlined,
-                size: 32,
-                color: dark ? Colors.white24 : Colors.black26),
-            ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 28),
+        child: Container(
+          padding: const EdgeInsets.fromLTRB(24, 28, 24, 24),
+          decoration: BoxDecoration(
+            color: cardBg,
+            borderRadius: BorderRadius.circular(20),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: dark ? 0.35 : 0.10),
+                blurRadius: 20,
+                offset: const Offset(0, 6),
+              ),
+            ],
           ),
-          const SizedBox(height: 14),
-          Text(
-            isEs ? 'Describa el caso clínico' : 'Descreva o caso clínico',
-            style: TextStyle(
-              fontSize: 15, fontWeight: FontWeight.w700,
-              color: dark ? Colors.white60 : const Color(0xFF3A3A3A)),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // ── Ícone âmbar de API / conexão ─────────────────────────
+              Container(
+                width: 72, height: 72,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: const Color(0xFFF59E0B).withValues(alpha: 0.12),
+                  border: Border.all(
+                    color: const Color(0xFFF59E0B).withValues(alpha: 0.35),
+                    width: 1.5,
+                  ),
+                ),
+                child: const Center(
+                  child: Icon(
+                    Icons.api_rounded,
+                    size: 34,
+                    color: Color(0xFFF59E0B),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
+
+              // ── Título ────────────────────────────────────────────────
+              Text(
+                isEs ? 'Configuración Necesaria' : 'Configuração Necessária',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 17,
+                  fontWeight: FontWeight.w800,
+                  color: textCol,
+                  letterSpacing: -0.3,
+                ),
+              ),
+              const SizedBox(height: 10),
+
+              // ── Subtítulo ─────────────────────────────────────────────
+              Text(
+                isEs
+                    ? 'Por favor, asegúrese de conectar la API de IA antes de iniciar sus consultas clínicas para activar los diagnósticos.'
+                    : 'Por favor, certifique-se de conectar a API da IA antes de iniciar suas consultas clínicas para ativar os diagnósticos.',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w400,
+                  color: subCol,
+                  height: 1.55,
+                ),
+              ),
+              const SizedBox(height: 24),
+
+              // ── Botão verde "Conectar API Agora" ─────────────────────
+              GestureDetector(
+                onTap: onConnectApi,
+                child: Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(14),
+                    color: const Color(0xFF1F6B48),
+                    boxShadow: [
+                      BoxShadow(
+                        color: const Color(0xFF1F6B48).withValues(alpha: 0.35),
+                        blurRadius: 10,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(Icons.link_rounded,
+                          color: Colors.white, size: 18),
+                      const SizedBox(width: 8),
+                      Text(
+                        isEs ? 'Conectar API Ahora' : 'Conectar API Agora',
+                        style: const TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w700,
+                          color: Colors.white,
+                          letterSpacing: 0.2,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
           ),
-          const SizedBox(height: 6),
-          Text(
-            isEs
-              ? 'Use las sugerencias de abajo o escriba libremente'
-              : 'Use as sugestões abaixo ou escreva livremente',
-            style: TextStyle(
-              fontSize: 12,
-              color: dark ? Colors.white30 : Colors.black38,
-              fontWeight: FontWeight.w400,
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }
@@ -1912,21 +1988,25 @@ class _AiBubbleState extends State<_AiBubble> {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             if (!mounted || !ctrl.hasClients) return;
             if (nearBottom) {
-              // Desce suavemente para o fundo
+              // Desce suavemente para o fundo — WhatsApp-style (300ms easeOut)
               ctrl.animateTo(
                 ctrl.position.maxScrollExtent,
-                duration: const Duration(milliseconds: 200),
+                duration: const Duration(milliseconds: 300),
                 curve: Curves.easeOut,
               );
             } else {
               // Usuário está lendo acima: compensa a posição para o conteúdo
-              // não "puxar" a tela — mantém o mesmo ponto visual
+              // não "puxar" a tela — mantém o mesmo ponto visual de forma suave
               final maxAfter = ctrl.position.maxScrollExtent;
               if (maxBefore != null && maxAfter > maxBefore) {
                 final delta = maxAfter - maxBefore;
                 final correctedPos = (posBefore + delta)
                     .clamp(0.0, ctrl.position.maxScrollExtent);
-                ctrl.jumpTo(correctedPos);
+                ctrl.animateTo(
+                  correctedPos,
+                  duration: const Duration(milliseconds: 300),
+                  curve: Curves.easeOut,
+                );
               }
             }
           });
