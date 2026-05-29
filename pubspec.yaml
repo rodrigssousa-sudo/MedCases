@@ -47,6 +47,7 @@ dependencies:
 
   # Speech-to-Text nativo iOS/Android + Web Speech API fallback
   speech_to_text: ^7.4.0
+  printing: ^5.14.3
 
   # Armazenamento seguro de tokens (Keychain iOS / Keystore Android)
   # flutter_secure_storage: 9.2.2  # mobile-only — não usar no Web

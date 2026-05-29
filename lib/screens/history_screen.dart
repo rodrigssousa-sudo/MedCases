@@ -3,6 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:provider/provider.dart';
+import 'package:printing/printing.dart';
+import 'package:pdf/pdf.dart' show PdfPageFormat;
 import 'dart:async';
 import 'dart:ui' as ui;
 import '../providers/app_provider.dart';
@@ -1355,8 +1357,8 @@ class _HistoryDetailState extends State<_HistoryDetail> {
     }
   }
 
-  // ── Exportar como PDF (web: janela de impressão) ──────────────────────────
-  void _exportPdf() {
+  // ── Exportar como PDF (web: janela de impressão | mobile: diálogo nativo) ─
+  Future<void> _exportPdf() async {
     final buf = StringBuffer();
     buf.write('''<!DOCTYPE html><html><head>
 <meta charset="utf-8">
@@ -1513,8 +1515,24 @@ class _HistoryDetailState extends State<_HistoryDetail> {
     buf.write('<div class="footer">${_hcT(p.lang, "pdf_footer")}</div>');
     buf.write('\n</body></html>');
 
-    // Abre janela de impressão (PDF via browser)
-    webPlatform.webOpenHtmlPrint(buf.toString());
+    final htmlStr = buf.toString();
+
+    if (kIsWeb) {
+      // Web: abre blob HTML em nova aba para impressão/PDF via browser
+      webPlatform.webOpenHtmlPrint(htmlStr);
+    } else {
+      // Mobile (iOS / Android): usa o pacote printing para abrir diálogo nativo
+      await Printing.layoutPdf(
+        onLayout: (_) async {
+          // Converte HTML para PDF usando o motor do pacote printing
+          return Printing.convertHtml(
+            format: PdfPageFormat.a4,
+            html: htmlStr,
+          );
+        },
+        name: _safeFilename(),
+      );
+    }
   }
 
   String _esc(String s) => s.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;');
