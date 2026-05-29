@@ -1765,25 +1765,38 @@ class FirestoreService {
   }
 
   static Future<List<GuideModel>> _loadPublishedGuidesRest() async {
+    // ── TAREFA 1: logar projectId e fsBase ───────────────────────────────────
+    debugPrint('[clinical_guides DEBUG] projectId=$_projectId');
+    debugPrint('[clinical_guides DEBUG] fsBase=$_fsBase');
+
     final token = await FirebaseAuth.instance.currentUser?.getIdToken();
     final authHeaders = (token != null && token.isNotEmpty)
         ? <String, String>{'Authorization': 'Bearer $token'}
         : <String, String>{};
     final apiKey = _firebaseApiKey;
 
-    Future<http.Response> doGet({Map<String, String>? headers}) {
+    // ── TAREFA 4: confirmar nome exato da coleção usada ──────────────────────
+    const _targetCollection = 'clinical_guides';
+    debugPrint('[clinical_guides DEBUG] coleção alvo=$_targetCollection '
+        '(NÃO é: clinicalGuides, guides, medical_guides, biblioteca_clinica, clinical_library)');
+
+    Future<http.Response> doGet({Map<String, String>? headers, String collection = _targetCollection}) {
       // GET: SOMENTE Authorization — nunca Content-Type nem X-Firebase-API-Key
       // (headers customizados causam preflight CORS que Firestore rejeita)
       final hdrs = <String, String>{...authHeaders, ...?headers};
+      final url = '$_fsBase/$collection?pageSize=200&key=$apiKey';
+      // ── TAREFA 2: logar a URL REST completa ──────────────────────────────
+      debugPrint('[clinical_guides DEBUG] REST URL=$url');
       return http
-          .get(
-            Uri.parse('$_fsBase/clinical_guides?pageSize=200&key=$apiKey'),
-            headers: hdrs,
-          )
+          .get(Uri.parse(url), headers: hdrs)
           .timeout(const Duration(seconds: 12));
     }
 
     List<GuideModel> parseResponse(http.Response resp) {
+      // ── TAREFA 3: logar status e body bruto ──────────────────────────────
+      debugPrint('[clinical_guides DEBUG] REST status=${resp.statusCode}');
+      debugPrint('[clinical_guides DEBUG] REST body=${resp.body.length > 1500 ? resp.body.substring(0, 1500) : resp.body}');
+
       // safeMap: sem casts diretos — imune a TypeError em dart2js release
       final body      = safeMap(jsonDecode(resp.body));
       final docsList  = body['documents'];
@@ -1871,24 +1884,57 @@ class FirestoreService {
       if (guides.isNotEmpty) {
         _clearGuidesError();
         await _saveGuidesCache(guides);
-      } else {
-        // Zero guias publicados: verifica quantos documentos existem no total
-        // para dar mensagem mais diagnóstica ao admin.
+        return guides;
+      }
+
+      // ── TAREFA 5 & 6: clinical_guides vazia → probe coleções alternativas ──
+      // Dispara apenas quando a coleção principal retornou 0 documentos.
+      // Ordem de tentativa conforme especificado.
+      debugPrint('[clinical_guides DEBUG] clinical_guides vazia — iniciando probe de coleções alternativas');
+      const _altCollections = [
+        'guides',
+        'medical_guides',
+        'biblioteca_clinica',
+        'clinical_library',
+      ];
+      for (final altCol in _altCollections) {
         try {
-          final bodyParsed = safeMap(jsonDecode(resp.body));
-          final docsList2  = bodyParsed['documents'];
-          final totalDocs  = docsList2 is List ? docsList2.length : 0;
-          _setGuidesError(
-            totalDocs > 0
-                ? 'Nenhuma guia publicada ($totalDocs docs sem isPublished=true ou pdfUrl vazio)'
-                : 'Biblioteca clínica vazia no servidor',
-          );
-        } catch (_) {
-          _setGuidesError('REST clinical_guides retornou 0 guias publicados.');
+          debugPrint('[clinical_guides DEBUG] probe: tentando coleção=$altCol');
+          final altResp = await doGet(collection: altCol)
+              .timeout(const Duration(seconds: 8));
+          debugPrint('[clinical_guides DEBUG] probe: $altCol status=${altResp.statusCode}');
+          if (altResp.statusCode == 200) {
+            final altBody = safeMap(jsonDecode(altResp.body));
+            final altDocs = altBody['documents'];
+            final altCount = altDocs is List ? altDocs.length : 0;
+            if (altCount > 0) {
+              // ── TAREFA 6: logar coleção encontrada ──────────────────────
+              debugPrint('[clinical_guides DEBUG] coleção encontrada: $altCol totalDocs=$altCount');
+            } else {
+              debugPrint('[clinical_guides DEBUG] probe: $altCol retornou 0 docs');
+            }
+          }
+        } catch (e) {
+          debugPrint('[clinical_guides DEBUG] probe: $altCol erro=$e');
         }
       }
-      _debugGuides('rest load count=${guides.length}');
-      return guides;
+
+      // Mensagem diagnóstica final (zero guias na coleção principal)
+      try {
+        final bodyParsed = safeMap(jsonDecode(resp.body));
+        final docsList2  = bodyParsed['documents'];
+        final totalDocs  = docsList2 is List ? docsList2.length : 0;
+        _setGuidesError(
+          totalDocs > 0
+              ? 'Nenhuma guia publicada ($totalDocs docs sem isPublished=true ou pdfUrl vazio)'
+              : 'Biblioteca clínica vazia no servidor',
+        );
+      } catch (_) {
+        _setGuidesError('REST clinical_guides retornou 0 guias publicados.');
+      }
+
+      _debugGuides('rest load count=0 (probe completo — verifique logs acima)');
+      return [];
     } on TimeoutException catch (e) {
       _setGuidesError('REST clinical_guides timeout: $e');
       _debugGuides('rest load timeout error=$e');
