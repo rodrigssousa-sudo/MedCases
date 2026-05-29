@@ -2063,79 +2063,121 @@ class _HistoryEditorState extends State<_HistoryEditor> {
   }
 
   void _toggleSmartDictaphone() {
-    // No mobile: o ditáfone inteligente global usa o mesmo _startStt() por campo.
-    // O botão de ditáfone global só está disponível no Web (requer Web Speech API contínua).
-    if (!kIsWeb) return;
     if (_smartDictActive) {
       _smartRecog?.stop();
+      SttHelper.stop();
       if (mounted) setState(() { _smartDictActive = false; _smartInterim = ''; _smartCurrentField = ''; });
-      return;
-    }
-    if (!webPlatform.webHasSpeechRecognition()) {
-      showDialog(context: context, builder: (_) => AlertDialog(
-        title: const Text('Ditado não suportado'),
-        content: const Text('Use Chrome ou Safari para o ditado.'),
-        actions: [TextButton(onPressed: () => Navigator.pop(context), child: const Text('OK'))],
-      ));
       return;
     }
     // Para STT de campo individual se estava ativo
     if (_sttListening) _stopAllStt();
 
-    final lang = widget.p.lang == 'es' ? 'es-ES' : 'pt-BR';
-    // Campo inicial: seção ativa
-    _smartCurrentField = _section == 1 ? 'chiefComplaint' : 'vitalSigns';
+    // Campo inicial baseado na seção ativa
+    _smartCurrentField = _section == 2 ? 'vitalSigns'
+        : _section == 4 ? 'treatmentPlan'
+        : 'chiefComplaint';
 
-    final recog = webPlatform.WebSpeechRecognizer();
-    recog.start('smart', lang,
-      onResult: (transcript, isFinal) {
-        if (!mounted) return;
-        // Detecta se há palavra-gatilho de campo no texto
-        final detected = _detectFieldFromText(transcript);
-        if (detected.isNotEmpty && detected != _smartCurrentField) {
-          setState(() => _smartCurrentField = detected);
-        }
-        if (isFinal) {
-          // Remove a palavra-gatilho do texto antes de inserir
-          String clean = transcript;
-          for (final trigger in _kTriggers.keys) {
-            clean = clean.replaceAll(RegExp(trigger, caseSensitive: false), '');
+    final appLang  = widget.p.lang;
+    final locale   = appLang == 'es' ? 'es-ES' : 'pt-BR';
+
+    if (kIsWeb) {
+      // ── Web: Web Speech API contínua ────────────────────────────────────
+      if (!webPlatform.webHasSpeechRecognition()) {
+        showDialog(context: context, builder: (_) => AlertDialog(
+          title: Text(widget.p.t('dictation_not_supported')),
+          content: Text(widget.p.t('dictation_browser_msg')),
+          actions: [TextButton(onPressed: () => Navigator.pop(context), child: const Text('OK'))],
+        ));
+        return;
+      }
+      final recog = webPlatform.WebSpeechRecognizer();
+      recog.start('smart', locale,
+        onResult: (transcript, isFinal) {
+          if (!mounted) return;
+          final detected = _detectFieldFromText(transcript);
+          if (detected.isNotEmpty && detected != _smartCurrentField) {
+            setState(() => _smartCurrentField = detected);
           }
-          clean = clean.trim().replaceAll(RegExp(r'^[,:\s]+'), '');
-          if (clean.isNotEmpty && _smartCurrentField.isNotEmpty) {
-            final ctrl = _ctrls[_smartCurrentField];
-            if (ctrl != null) {
-              final cur = ctrl.text;
-              final spacer = cur.isNotEmpty && !cur.endsWith('\n') && !cur.endsWith(' ') ? ' ' : '';
-              ctrl.text = cur + spacer + clean;
-              ctrl.selection = TextSelection.fromPosition(TextPosition(offset: ctrl.text.length));
+          if (isFinal) {
+            String clean = transcript;
+            for (final trigger in _kTriggers.keys) {
+              clean = clean.replaceAll(RegExp(trigger, caseSensitive: false), '');
             }
+            clean = clean.trim().replaceAll(RegExp(r'^[,:\s]+'), '');
+            if (clean.isNotEmpty && _smartCurrentField.isNotEmpty) {
+              _insertIntoField(_smartCurrentField, clean);
+            }
+            if (mounted) setState(() => _smartInterim = '');
+          } else {
+            if (mounted) setState(() {
+              _smartInterim = transcript;
+              final det = _detectFieldFromText(transcript);
+              if (det.isNotEmpty) _smartCurrentField = det;
+            });
           }
-          if (mounted) setState(() => _smartInterim = '');
-        } else {
-          if (mounted) setState(() {
-            _smartInterim = transcript;
-            final det = _detectFieldFromText(transcript);
-            if (det.isNotEmpty) _smartCurrentField = det;
-          });
-        }
-      },
-      onEnd: () {
-        // Reinicia automaticamente para ditado contínuo
-        if (_smartDictActive && mounted) {
-          Future.delayed(const Duration(milliseconds: 200), () {
-            if (_smartDictActive && mounted) _smartRecog?.start('smart', lang,
-              onResult: (t, f) {}, onEnd: () {}, onError: (_) {});
-          });
-        }
-      },
-      onError: (code) {
-        if (code != 'no-speech' && mounted) {
-          setState(() { _smartDictActive = false; _smartInterim = ''; });
-        }
-      },
-    );
-    _smartRecog = recog;
+        },
+        onEnd: () {
+          if (_smartDictActive && mounted) {
+            Future.delayed(const Duration(milliseconds: 200), () {
+              if (_smartDictActive && mounted) _smartRecog?.start('smart', locale,
+                onResult: (t, f) {}, onEnd: () {}, onError: (_) {});
+            });
+          }
+        },
+        onError: (code) {
+          if (code != 'no-speech' && mounted) {
+            setState(() { _smartDictActive = false; _smartInterim = ''; });
+          }
+        },
+      );
+      _smartRecog = recog;
+    } else {
+      // ── Mobile: speech_to_text — uma frase por vez, auto-reinicia ────────
+      void startMobileLoop() {
+        SttHelper.start(
+          locale: locale,
+          onResult: (transcript) {
+            if (!mounted) return;
+            // Detecta campo por palavra-gatilho
+            final detected = _detectFieldFromText(transcript);
+            if (detected.isNotEmpty) {
+              _smartCurrentField = detected;
+            }
+            String clean = transcript;
+            for (final trigger in _kTriggers.keys) {
+              clean = clean.replaceAll(RegExp(trigger, caseSensitive: false), '');
+            }
+            clean = clean.trim().replaceAll(RegExp(r'^[,:\s]+'), '');
+            if (clean.isNotEmpty && _smartCurrentField.isNotEmpty) {
+              _insertIntoField(_smartCurrentField, clean);
+            }
+            if (mounted) setState(() => _smartInterim = '');
+          },
+          onError: (code) {
+            if (!mounted) return;
+            if (code == 'no_speech' || code == 'no-speech') {
+              // Auto-reinicia silenciosamente
+              if (_smartDictActive) {
+                Future.delayed(const Duration(milliseconds: 300), () {
+                  if (_smartDictActive && mounted) startMobileLoop();
+                });
+              }
+              return;
+            }
+            setState(() { _smartDictActive = false; _smartInterim = ''; });
+            _showSttMobileError(code);
+          },
+          onEnd: () {
+            if (_smartDictActive && mounted) {
+              Future.delayed(const Duration(milliseconds: 300), () {
+                if (_smartDictActive && mounted) startMobileLoop();
+              });
+            }
+          },
+        );
+      }
+      startMobileLoop();
+    }
     if (mounted) setState(() { _smartDictActive = true; _smartInterim = ''; });
   }
 
@@ -2395,84 +2437,17 @@ class _HistoryEditorState extends State<_HistoryEditor> {
         ]),
       ),
 
-      // ── Banner do Ditáfone Inteligente ────────────────────────────────
-      if (_smartDictActive)
-        AnimatedContainer(
-          duration: const Duration(milliseconds: 200),
-          margin: const EdgeInsets.only(top: 6),
-          padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(14),
-            color: const Color(0xFF1F6B48).withValues(alpha: 0.10),
-            border: Border.all(color: const Color(0xFF1F6B48).withValues(alpha: 0.45)),
-          ),
-          child: Row(children: [
-            _PulseDot(color: const Color(0xFF1F6B48)),
-            const SizedBox(width: 10),
-            Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Row(children: [
-                const Icon(Icons.auto_awesome_rounded, size: 10, color: Color(0xFF1F6B48)),
-                const SizedBox(width: 4),
-                Text('DITÁFONE INTELIGENTE • Gravando...', style: const TextStyle(fontSize: 9, fontWeight: FontWeight.w900, color: Color(0xFF1F6B48), letterSpacing: 0.5)),
-              ]),
-              const SizedBox(height: 2),
-              Row(children: [
-                const Text('Campo: ', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w700, color: Color(0xFF888888))),
-                Text(_smartCurrentField.isNotEmpty ? _fieldLabel(_smartCurrentField) : '—',
-                  style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w900, color: Color(0xFF1F6B48))),
-              ]),
-              if (_smartInterim.isNotEmpty) ...[const SizedBox(height: 2),
-                Text(_smartInterim, style: const TextStyle(fontSize: 11, color: Color(0xFF555555), fontWeight: FontWeight.w600, fontStyle: FontStyle.italic),
-                  maxLines: 2, overflow: TextOverflow.ellipsis)],
-            ])),
-            const SizedBox(width: 8),
-            GestureDetector(
-              onTap: _toggleSmartDictaphone,
-              child: Container(padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: const Color(0xFF1F6B48).withValues(alpha: 0.15)),
-                child: const Icon(Icons.stop_rounded, size: 18, color: Color(0xFF1F6B48))),
-            ),
-          ]),
-        ),
-      // ── Banner de ditado por campo ativo (STT individual) ─────────────
-      if (_sttListening && !_smartDictActive)
-        AnimatedContainer(
-          duration: const Duration(milliseconds: 200),
-          margin: const EdgeInsets.only(top: 8),
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(14),
-            color: const Color(0xFFDC2626).withValues(alpha: 0.08),
-            border: Border.all(color: const Color(0xFFDC2626).withValues(alpha: 0.35)),
-          ),
-          child: Row(children: [
-            _PulseDot(),
-            const SizedBox(width: 10),
-            Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text(_hcT(widget.p.lang, 'dictating'), style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w900, color: Color(0xFFDC2626), letterSpacing: 0.5)),
-              if (_sttInterim.isNotEmpty)
-                Text(_sttInterim, style: const TextStyle(fontSize: 12, color: Color(0xFF555555), fontWeight: FontWeight.w600, fontStyle: FontStyle.italic),
-                  maxLines: 2, overflow: TextOverflow.ellipsis),
-            ])),
-            const SizedBox(width: 8),
-            GestureDetector(
-              onTap: _stopAllStt,
-              child: Container(
-                padding: const EdgeInsets.all(6),
-                decoration: BoxDecoration(borderRadius: BorderRadius.circular(8), color: const Color(0xFFDC2626).withValues(alpha: 0.12)),
-                child: const Icon(Icons.mic_off_rounded, size: 16, color: Color(0xFFDC2626)),
-              ),
-            ),
-          ]),
-        ),
+
 
       // Conteúdo da seção — no desktop: centraliza com max-width maior
       Expanded(child: LayoutBuilder(
         builder: (context, constraints) {
           final isDesktop = constraints.maxWidth >= 1024;
           final hPad = isDesktop ? 48.0 : 16.0;
+          // Seções que têm campos de texto ditáveis (não Exames/Desfecho)
+          final hasMic = _section == 1 || _section == 2 || _section == 4 || _section == 5;
           Widget content = SingleChildScrollView(
-            padding: EdgeInsets.fromLTRB(hPad, 14, hPad, 100),
+            padding: EdgeInsets.fromLTRB(hPad, 14, hPad, hasMic ? 110 : 24),
             child: isDesktop
                 ? Center(
                     child: ConstrainedBox(
@@ -2482,7 +2457,27 @@ class _HistoryEditorState extends State<_HistoryEditor> {
                   )
                 : _buildSection(),
           );
-          return content;
+          if (!hasMic) return content;
+          return Stack(
+            children: [
+              content,
+              // ── Botão Mic Central flutuante ─────────────────────────────
+              Positioned(
+                left: 0, right: 0, bottom: 20,
+                child: Center(
+                  child: _CentralMicButton(
+                    active: _smartDictActive || _sttListening,
+                    smartActive: _smartDictActive,
+                    sttListening: _sttListening,
+                    currentField: _smartDictActive ? _smartCurrentField : (_sttActiveKey ?? ''),
+                    interim: _smartDictActive ? _smartInterim : _sttInterim,
+                    lang: widget.p.lang,
+                    onTap: _toggleSmartDictaphone,
+                  ),
+                ),
+              ),
+            ],
+          );
         },
       )),
     ]);
@@ -2573,48 +2568,31 @@ class _HistoryEditorState extends State<_HistoryEditor> {
 
   // ── Seção 1: Anamnese ─────────────────────────────────────────────────────
   Widget _buildAnamnesisSection() => Column(children: [
-    // ── Ditáfone inteligente ─────────────────────────────────────────────
-    _SmartDictaphoneButton(
-      active: _smartDictActive,
-      currentField: _smartCurrentField,
-      onTap: _toggleSmartDictaphone,
-      lang: widget.p.lang,
-    ),
-    const SizedBox(height: 12),
-    _EditorField(_hcT(widget.p.lang, 'f_chief'), _ctrls['chiefComplaint']!, hint: _hcT(widget.p.lang, 'h_chief'), multiline: true, onMic: () => _startStt('chiefComplaint'), fieldKey: 'chiefComplaint'),
+    _EditorField(_hcT(widget.p.lang, 'f_chief'), _ctrls['chiefComplaint']!, hint: _hcT(widget.p.lang, 'h_chief'), multiline: true, fieldKey: 'chiefComplaint'),
     const SizedBox(height: 10),
-    _EditorField(_hcT(widget.p.lang, 'f_hpi'), _ctrls['hpi']!, hint: _hcT(widget.p.lang, 'h_hpi'), multiline: true, lines: 5, onMic: () => _startStt('hpi'), fieldKey: 'hpi'),
+    _EditorField(_hcT(widget.p.lang, 'f_hpi'), _ctrls['hpi']!, hint: _hcT(widget.p.lang, 'h_hpi'), multiline: true, lines: 5, fieldKey: 'hpi'),
     const SizedBox(height: 10),
-    _EditorField(_hcT(widget.p.lang, 'f_past'), _ctrls['pastHistory']!, hint: _hcT(widget.p.lang, 'h_past'), multiline: true, onMic: () => _startStt('pastHistory'), fieldKey: 'pastHistory'),
+    _EditorField(_hcT(widget.p.lang, 'f_past'), _ctrls['pastHistory']!, hint: _hcT(widget.p.lang, 'h_past'), multiline: true, fieldKey: 'pastHistory'),
     const SizedBox(height: 10),
-    _EditorField(_hcT(widget.p.lang, 'f_family'), _ctrls['familyHistory']!, hint: _hcT(widget.p.lang, 'h_family'), multiline: true, onMic: () => _startStt('familyHistory'), fieldKey: 'familyHistory'),
+    _EditorField(_hcT(widget.p.lang, 'f_family'), _ctrls['familyHistory']!, hint: _hcT(widget.p.lang, 'h_family'), multiline: true, fieldKey: 'familyHistory'),
     const SizedBox(height: 10),
-    _EditorField(_hcT(widget.p.lang, 'f_social'), _ctrls['socialHistory']!, hint: _hcT(widget.p.lang, 'h_social'), multiline: true, onMic: () => _startStt('socialHistory'), fieldKey: 'socialHistory'),
+    _EditorField(_hcT(widget.p.lang, 'f_social'), _ctrls['socialHistory']!, hint: _hcT(widget.p.lang, 'h_social'), multiline: true, fieldKey: 'socialHistory'),
     const SizedBox(height: 10),
-    _EditorField(_hcT(widget.p.lang, 'f_meds'), _ctrls['medications']!, hint: _hcT(widget.p.lang, 'h_meds'), multiline: true, onMic: () => _startStt('medications'), fieldKey: 'medications'),
+    _EditorField(_hcT(widget.p.lang, 'f_meds'), _ctrls['medications']!, hint: _hcT(widget.p.lang, 'h_meds'), multiline: true, fieldKey: 'medications'),
     const SizedBox(height: 10),
-    _EditorField(_hcT(widget.p.lang, 'f_allergies'), _ctrls['allergies']!, hint: _hcT(widget.p.lang, 'h_allergies'), multiline: true, onMic: () => _startStt('allergies'), fieldKey: 'allergies'),
+    _EditorField(_hcT(widget.p.lang, 'f_allergies'), _ctrls['allergies']!, hint: _hcT(widget.p.lang, 'h_allergies'), multiline: true, fieldKey: 'allergies'),
     const SizedBox(height: 10),
-    _EditorField(_hcT(widget.p.lang, 'f_ros'), _ctrls['reviewOfSystems']!, hint: _hcT(widget.p.lang, 'h_ros'), multiline: true, onMic: () => _startStt('reviewOfSystems'), fieldKey: 'reviewOfSystems'),
+    _EditorField(_hcT(widget.p.lang, 'f_ros'), _ctrls['reviewOfSystems']!, hint: _hcT(widget.p.lang, 'h_ros'), multiline: true, fieldKey: 'reviewOfSystems'),
   ]);
 
   // ── Seção 2: Exame físico ──────────────────────────────────────────────────
   Widget _buildPhysicalExamSection() => Column(children: [
-    // ── Ditáfone inteligente ─────────────────────────────────────────────
-    _SmartDictaphoneButton(
-      active: _smartDictActive,
-      currentField: _smartCurrentField,
-      onTap: _toggleSmartDictaphone,
-      lang: widget.p.lang,
-    ),
-    const SizedBox(height: 12),
     // ── Sinais Vitais Estruturados ─────────────────────────────────────────
     _VitalSignsWidget(
       controller: _ctrls['vitalSigns']!,
-      onMic: () => _startStt('vitalSigns'),
     ),
     const SizedBox(height: 10),
-    _EditorField(_hcT(widget.p.lang, 'f_pe'), _ctrls['physicalExam']!, hint: _hcT(widget.p.lang, 'h_pe'), multiline: true, lines: 8, onMic: () => _startStt('physicalExam'), fieldKey: 'physicalExam'),
+    _EditorField(_hcT(widget.p.lang, 'f_pe'), _ctrls['physicalExam']!, hint: _hcT(widget.p.lang, 'h_pe'), multiline: true, lines: 8, fieldKey: 'physicalExam'),
     const SizedBox(height: 10),
     // Diagnóstico logo após o exame físico
     _EditorField(_hcT(widget.p.lang, 'f_wdx'), _ctrls['workingDiagnosis']!, hint: _hcT(widget.p.lang, 'h_wdx'), fieldKey: 'workingDiagnosis'),
@@ -2642,9 +2620,9 @@ class _HistoryEditorState extends State<_HistoryEditor> {
 
   // ── Seção 4: Conduta / Tratamento ────────────────────────────────────────
   Widget _buildTreatmentSection() => Column(children: [
-    _EditorField(_hcT(widget.p.lang, 'f_plan'), _ctrls['treatmentPlan']!, hint: _hcT(widget.p.lang, 'h_plan'), multiline: true, lines: 7, onMic: () => _startStt('treatmentPlan'), fieldKey: 'treatmentPlan'),
+    _EditorField(_hcT(widget.p.lang, 'f_plan'), _ctrls['treatmentPlan']!, hint: _hcT(widget.p.lang, 'h_plan'), multiline: true, lines: 7, fieldKey: 'treatmentPlan'),
     const SizedBox(height: 10),
-    _EditorField(_hcT(widget.p.lang, 'f_procedures'), _ctrls['procedures']!, hint: _hcT(widget.p.lang, 'h_procedures'), multiline: true, onMic: () => _startStt('procedures'), fieldKey: 'procedures'),
+    _EditorField(_hcT(widget.p.lang, 'f_procedures'), _ctrls['procedures']!, hint: _hcT(widget.p.lang, 'h_procedures'), multiline: true, fieldKey: 'procedures'),
   ]);
 
   // ── Seção 5: Evolução ─────────────────────────────────────────────────────
@@ -3073,6 +3051,268 @@ class _SmartDictaphoneButton extends StatelessWidget {
         ]),
       ),
     );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// BOTÃO MIC CENTRAL — estilo Gemini
+// Único microfone flutuante, centralizado, com animação de ondas quando ativo
+// ─────────────────────────────────────────────────────────────────────────────
+class _CentralMicButton extends StatefulWidget {
+  final bool active;
+  final bool smartActive;
+  final bool sttListening;
+  final String currentField;
+  final String interim;
+  final String lang;
+  final VoidCallback onTap;
+
+  const _CentralMicButton({
+    required this.active,
+    required this.smartActive,
+    required this.sttListening,
+    required this.currentField,
+    required this.interim,
+    required this.lang,
+    required this.onTap,
+  });
+
+  @override
+  State<_CentralMicButton> createState() => _CentralMicButtonState();
+}
+
+class _CentralMicButtonState extends State<_CentralMicButton>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _wave;
+  late Animation<double> _ring1;
+  late Animation<double> _ring2;
+  late Animation<double> _ring3;
+
+  static const Map<String, String> _labelsEs = {
+    'chiefComplaint': 'Motivo de consulta',
+    'hpi': 'Enfermedad actual',
+    'pastHistory': 'Antecedentes personales',
+    'familyHistory': 'Antecedentes familiares',
+    'socialHistory': 'Historia social',
+    'medications': 'Medicación habitual',
+    'allergies': 'Alergias',
+    'reviewOfSystems': 'Revisión de sistemas',
+    'vitalSigns': 'Signos vitales',
+    'physicalExam': 'Examen físico',
+    'workingDiagnosis': 'Hipótesis diagnóstica',
+    'treatmentPlan': 'Plan terapéutico',
+    'procedures': 'Procedimientos',
+  };
+  static const Map<String, String> _labelsPt = {
+    'chiefComplaint': 'Queixa principal',
+    'hpi': 'HDA',
+    'pastHistory': 'Antecedentes pessoais',
+    'familyHistory': 'Antecedentes familiares',
+    'socialHistory': 'História social',
+    'medications': 'Medicamentos',
+    'allergies': 'Alergias',
+    'reviewOfSystems': 'Revisão de sistemas',
+    'vitalSigns': 'Sinais vitais',
+    'physicalExam': 'Exame físico',
+    'workingDiagnosis': 'Hipótese diagnóstica',
+    'treatmentPlan': 'Conduta',
+    'procedures': 'Procedimentos',
+  };
+
+  String _fieldLabel(String key) {
+    final map = widget.lang == 'es' ? _labelsEs : _labelsPt;
+    return map[key] ?? key;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _wave = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1800),
+    );
+    // Três anéis desfasados
+    _ring1 = Tween<double>(begin: 1.0, end: 1.9).animate(
+        CurvedAnimation(parent: _wave, curve: const Interval(0.0, 0.7, curve: Curves.easeOut)));
+    _ring2 = Tween<double>(begin: 1.0, end: 1.65).animate(
+        CurvedAnimation(parent: _wave, curve: const Interval(0.2, 0.9, curve: Curves.easeOut)));
+    _ring3 = Tween<double>(begin: 1.0, end: 1.38).animate(
+        CurvedAnimation(parent: _wave, curve: const Interval(0.4, 1.0, curve: Curves.easeOut)));
+    if (widget.active) _wave.repeat();
+  }
+
+  @override
+  void didUpdateWidget(_CentralMicButton old) {
+    super.didUpdateWidget(old);
+    if (widget.active && !old.active) {
+      _wave.repeat();
+    } else if (!widget.active && old.active) {
+      _wave.stop();
+      _wave.reset();
+    }
+  }
+
+  @override
+  void dispose() {
+    _wave.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final active = widget.active;
+    const kGreen  = Color(0xFF1F6B48);
+    const kGreenL = Color(0xFF34A870);
+    final btnColor = active ? kGreen : const Color(0xFFF0F7F4);
+    final iconColor = active ? Colors.white : kGreen;
+    const btnSize  = 64.0;
+
+    return Column(mainAxisSize: MainAxisSize.min, children: [
+      // ── Texto interim / campo ativo ─────────────────────────────────────
+      if (active && (widget.interim.isNotEmpty || widget.currentField.isNotEmpty))
+        AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          margin: const EdgeInsets.only(bottom: 10),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          constraints: const BoxConstraints(maxWidth: 320),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(24),
+            color: Colors.white,
+            boxShadow: [BoxShadow(color: kGreen.withValues(alpha: 0.15), blurRadius: 16, offset: const Offset(0, 4))],
+            border: Border.all(color: kGreen.withValues(alpha: 0.25)),
+          ),
+          child: Column(mainAxisSize: MainAxisSize.min, children: [
+            if (widget.currentField.isNotEmpty)
+              Row(mainAxisSize: MainAxisSize.min, children: [
+                const Icon(Icons.arrow_right_alt_rounded, size: 14, color: kGreen),
+                const SizedBox(width: 4),
+                Text(
+                  _fieldLabel(widget.currentField),
+                  style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w900, color: kGreen),
+                ),
+              ]),
+            if (widget.interim.isNotEmpty) ...[
+              const SizedBox(height: 3),
+              Text(
+                widget.interim,
+                style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Color(0xFF444444), fontStyle: FontStyle.italic),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ]),
+        ),
+
+      // ── Botão mic com ondas ─────────────────────────────────────────────
+      GestureDetector(
+        onTap: widget.onTap,
+        child: AnimatedBuilder(
+          animation: _wave,
+          builder: (ctx, child) {
+            return SizedBox(
+              width: btnSize * 2.2,
+              height: btnSize * 2.2,
+              child: Stack(alignment: Alignment.center, children: [
+                // Anel externo
+                if (active)
+                  Transform.scale(
+                    scale: _ring1.value,
+                    child: Container(
+                      width: btnSize,
+                      height: btnSize,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: kGreen.withValues(alpha: (1 - _ring1.value / 2.0).clamp(0.0, 0.12)),
+                        border: Border.all(color: kGreen.withValues(alpha: (1 - _ring1.value / 2.0).clamp(0.0, 0.25)), width: 1),
+                      ),
+                    ),
+                  ),
+                // Anel médio
+                if (active)
+                  Transform.scale(
+                    scale: _ring2.value,
+                    child: Container(
+                      width: btnSize,
+                      height: btnSize,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: kGreen.withValues(alpha: (1 - _ring2.value / 1.8).clamp(0.0, 0.12)),
+                        border: Border.all(color: kGreen.withValues(alpha: (1 - _ring2.value / 1.8).clamp(0.0, 0.3)), width: 1.2),
+                      ),
+                    ),
+                  ),
+                // Anel interno
+                if (active)
+                  Transform.scale(
+                    scale: _ring3.value,
+                    child: Container(
+                      width: btnSize,
+                      height: btnSize,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: kGreen.withValues(alpha: (1 - _ring3.value / 1.5).clamp(0.0, 0.12)),
+                        border: Border.all(color: kGreen.withValues(alpha: (1 - _ring3.value / 1.5).clamp(0.0, 0.35)), width: 1.5),
+                      ),
+                    ),
+                  ),
+                // Botão central
+                AnimatedContainer(
+                  duration: const Duration(milliseconds: 300),
+                  curve: Curves.easeInOut,
+                  width: active ? btnSize + 8 : btnSize,
+                  height: active ? btnSize + 8 : btnSize,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: btnColor,
+                    gradient: active
+                        ? const LinearGradient(
+                            colors: [kGreen, kGreenL],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          )
+                        : null,
+                    border: Border.all(
+                      color: active ? kGreen : kGreen.withValues(alpha: 0.35),
+                      width: active ? 0 : 1.5,
+                    ),
+                    boxShadow: active
+                        ? [
+                            BoxShadow(color: kGreen.withValues(alpha: 0.40), blurRadius: 24, spreadRadius: 2, offset: const Offset(0, 6)),
+                            BoxShadow(color: kGreen.withValues(alpha: 0.15), blurRadius: 8, offset: const Offset(0, 2)),
+                          ]
+                        : [BoxShadow(color: Colors.black.withValues(alpha: 0.10), blurRadius: 12, offset: const Offset(0, 4))],
+                  ),
+                  child: Icon(
+                    active ? Icons.mic_rounded : Icons.mic_none_rounded,
+                    size: active ? 32 : 28,
+                    color: iconColor,
+                  ),
+                ),
+              ]),
+            );
+          },
+        ),
+      ),
+
+      // ── Label abaixo ────────────────────────────────────────────────────
+      const SizedBox(height: 4),
+      AnimatedSwitcher(
+        duration: const Duration(milliseconds: 200),
+        child: Text(
+          active
+              ? (widget.lang == 'es' ? 'Tocá para detener' : 'Toque para parar')
+              : (widget.lang == 'es' ? 'Dictar' : 'Ditar'),
+          key: ValueKey(active),
+          style: TextStyle(
+            fontSize: 10,
+            fontWeight: FontWeight.w700,
+            color: active ? kGreen : const Color(0xFF888888),
+            letterSpacing: 0.3,
+          ),
+        ),
+      ),
+    ]);
   }
 }
 
@@ -3945,8 +4185,7 @@ class _DecimalInputFormatter extends TextInputFormatter {
 // ─────────────────────────────────────────────────────────────────────────────
 class _VitalSignsWidget extends StatefulWidget {
   final TextEditingController controller;
-  final VoidCallback? onMic;
-  const _VitalSignsWidget({required this.controller, this.onMic});
+  const _VitalSignsWidget({required this.controller});
   @override
   State<_VitalSignsWidget> createState() => _VitalSignsWidgetState();
 }
@@ -4064,22 +4303,7 @@ class _VitalSignsWidgetState extends State<_VitalSignsWidget> {
           const SizedBox(width: 6),
           Text(_hcT(context.read<AppProvider>().lang, 'vitals_title').toUpperCase(), style: const TextStyle(fontSize: 9, fontWeight: FontWeight.w900, letterSpacing: 1.4, color: Color(0xFF555555))),
           const Spacer(),
-          if (widget.onMic != null)
-            GestureDetector(
-              onTap: widget.onMic,
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                decoration: BoxDecoration(borderRadius: BorderRadius.circular(8), color: const Color(0xFFDC2626).withValues(alpha: 0.08), border: Border.all(color: const Color(0xFFDC2626).withValues(alpha: 0.25))),
-                child: Builder(builder: (ctx) {
-                  final localLang = ctx.read<AppProvider>().lang;
-                  return Row(mainAxisSize: MainAxisSize.min, children: [
-                    const Icon(Icons.mic_rounded, size: 11, color: Color(0xFFDC2626)),
-                    const SizedBox(width: 3),
-                    Text(_hcT(localLang, 'dictate_btn'), style: const TextStyle(fontSize: 9, fontWeight: FontWeight.w800, color: Color(0xFFDC2626))),
-                  ]);
-                }),
-              ),
-            ),
+
         ]),
         const SizedBox(height: 10),
         // Linha 1: PA (2 campos) + FC + FR
