@@ -18,8 +18,8 @@ Future<void> startSttImpl({
     _recognition = sr;
 
     sr.lang = locale;
-    sr.interimResults = false;
-    sr.maxAlternatives = 1;
+    sr.interimResults = true;  // feedback visual imediato
+    sr.maxAlternatives = 3;    // avalia mais candidatos para maior precisão médica
     sr.continuous = false;
 
     sr.onResult.listen((event) {

@@ -2248,6 +2248,16 @@ class _HistoryEditorState extends State<_HistoryEditor> {
   void initState() {
     super.initState();
     _draft = widget.initial;
+    // Inicializa FocusNodes para campos ditáveis e adiciona listeners de foco
+    for (final key in _kDictableFields) {
+      final fn = FocusNode();
+      fn.addListener(() {
+        if (fn.hasFocus && _smartDictActive && mounted) {
+          setState(() => _smartCurrentField = key);
+        }
+      });
+      _fieldFocusNodes[key] = fn;
+    }
     _ctrls = {
       'patientInitials': TextEditingController(text: _draft.patientInitials),
       'patientAge': TextEditingController(text: _draft.patientAge),
@@ -2285,6 +2295,7 @@ class _HistoryEditorState extends State<_HistoryEditor> {
     _relatoRecog?.stop();       // Web: para relato livre
     SttHelper.stop();           // Mobile: para speech_to_text nativo
     for (final c in _ctrls.values) c.dispose();
+    for (final fn in _fieldFocusNodes.values) fn.dispose();
     super.dispose();
   }
 
@@ -2300,6 +2311,15 @@ class _HistoryEditorState extends State<_HistoryEditor> {
   String _smartCurrentField = '';  // campo ativo atual (para feedback)
   String _smartInterim = '';       // texto interim do ditáfone
   webPlatform.WebSpeechRecognizer? _smartRecog;
+
+  // ── FocusNodes por campo ditável — rastreia campo focado pelas setas ────
+  // Permite atualizar _smartCurrentField ao navegar com prev/nextFocus
+  final Map<String, FocusNode> _fieldFocusNodes = {};
+  static const _kDictableFields = [
+    'chiefComplaint', 'hpi', 'pastHistory', 'familyHistory', 'socialHistory',
+    'medications', 'allergies', 'reviewOfSystems', 'vitalSigns', 'physicalExam',
+    'workingDiagnosis', 'treatmentPlan', 'procedures', 'dischargeCondition', 'followUp',
+  ];
 
   // ── Relato Livre — captura contínua → IA estrutura nos campos ────────────
   bool   _relatoActive    = false;  // gravação de relato livre ativa
@@ -2997,6 +3017,7 @@ class _HistoryEditorState extends State<_HistoryEditor> {
                   // Navegação entre campos
                   onPrevField:   () => FocusScope.of(context).previousFocus(),
                   onNextField:   () => FocusScope.of(context).nextFocus(),
+
                 ),
               ),
             ],
@@ -3091,21 +3112,21 @@ class _HistoryEditorState extends State<_HistoryEditor> {
 
   // ── Seção 1: Anamnese ─────────────────────────────────────────────────────
   Widget _buildAnamnesisSection() => Column(children: [
-    _EditorField(_hcT(widget.p.lang, 'f_chief'), _ctrls['chiefComplaint']!, hint: _hcT(widget.p.lang, 'h_chief'), multiline: true, fieldKey: 'chiefComplaint'),
+    _EditorField(_hcT(widget.p.lang, 'f_chief'), _ctrls['chiefComplaint']!, hint: _hcT(widget.p.lang, 'h_chief'), multiline: true, fieldKey: 'chiefComplaint', focusNode: _fieldFocusNodes['chiefComplaint']),
     const SizedBox(height: 10),
-    _EditorField(_hcT(widget.p.lang, 'f_hpi'), _ctrls['hpi']!, hint: _hcT(widget.p.lang, 'h_hpi'), multiline: true, lines: 5, fieldKey: 'hpi'),
+    _EditorField(_hcT(widget.p.lang, 'f_hpi'), _ctrls['hpi']!, hint: _hcT(widget.p.lang, 'h_hpi'), multiline: true, lines: 5, fieldKey: 'hpi', focusNode: _fieldFocusNodes['hpi']),
     const SizedBox(height: 10),
-    _EditorField(_hcT(widget.p.lang, 'f_past'), _ctrls['pastHistory']!, hint: _hcT(widget.p.lang, 'h_past'), multiline: true, fieldKey: 'pastHistory'),
+    _EditorField(_hcT(widget.p.lang, 'f_past'), _ctrls['pastHistory']!, hint: _hcT(widget.p.lang, 'h_past'), multiline: true, fieldKey: 'pastHistory', focusNode: _fieldFocusNodes['pastHistory']),
     const SizedBox(height: 10),
-    _EditorField(_hcT(widget.p.lang, 'f_family'), _ctrls['familyHistory']!, hint: _hcT(widget.p.lang, 'h_family'), multiline: true, fieldKey: 'familyHistory'),
+    _EditorField(_hcT(widget.p.lang, 'f_family'), _ctrls['familyHistory']!, hint: _hcT(widget.p.lang, 'h_family'), multiline: true, fieldKey: 'familyHistory', focusNode: _fieldFocusNodes['familyHistory']),
     const SizedBox(height: 10),
-    _EditorField(_hcT(widget.p.lang, 'f_social'), _ctrls['socialHistory']!, hint: _hcT(widget.p.lang, 'h_social'), multiline: true, fieldKey: 'socialHistory'),
+    _EditorField(_hcT(widget.p.lang, 'f_social'), _ctrls['socialHistory']!, hint: _hcT(widget.p.lang, 'h_social'), multiline: true, fieldKey: 'socialHistory', focusNode: _fieldFocusNodes['socialHistory']),
     const SizedBox(height: 10),
-    _EditorField(_hcT(widget.p.lang, 'f_meds'), _ctrls['medications']!, hint: _hcT(widget.p.lang, 'h_meds'), multiline: true, fieldKey: 'medications'),
+    _EditorField(_hcT(widget.p.lang, 'f_meds'), _ctrls['medications']!, hint: _hcT(widget.p.lang, 'h_meds'), multiline: true, fieldKey: 'medications', focusNode: _fieldFocusNodes['medications']),
     const SizedBox(height: 10),
-    _EditorField(_hcT(widget.p.lang, 'f_allergies'), _ctrls['allergies']!, hint: _hcT(widget.p.lang, 'h_allergies'), multiline: true, fieldKey: 'allergies'),
+    _EditorField(_hcT(widget.p.lang, 'f_allergies'), _ctrls['allergies']!, hint: _hcT(widget.p.lang, 'h_allergies'), multiline: true, fieldKey: 'allergies', focusNode: _fieldFocusNodes['allergies']),
     const SizedBox(height: 10),
-    _EditorField(_hcT(widget.p.lang, 'f_ros'), _ctrls['reviewOfSystems']!, hint: _hcT(widget.p.lang, 'h_ros'), multiline: true, fieldKey: 'reviewOfSystems'),
+    _EditorField(_hcT(widget.p.lang, 'f_ros'), _ctrls['reviewOfSystems']!, hint: _hcT(widget.p.lang, 'h_ros'), multiline: true, fieldKey: 'reviewOfSystems', focusNode: _fieldFocusNodes['reviewOfSystems']),
   ]);
 
   // ── Seção 2: Exame físico ──────────────────────────────────────────────────
@@ -3115,10 +3136,10 @@ class _HistoryEditorState extends State<_HistoryEditor> {
       controller: _ctrls['vitalSigns']!,
     ),
     const SizedBox(height: 10),
-    _EditorField(_hcT(widget.p.lang, 'f_pe'), _ctrls['physicalExam']!, hint: _hcT(widget.p.lang, 'h_pe'), multiline: true, lines: 8, fieldKey: 'physicalExam'),
+    _EditorField(_hcT(widget.p.lang, 'f_pe'), _ctrls['physicalExam']!, hint: _hcT(widget.p.lang, 'h_pe'), multiline: true, lines: 8, fieldKey: 'physicalExam', focusNode: _fieldFocusNodes['physicalExam']),
     const SizedBox(height: 10),
     // Diagnóstico logo após o exame físico
-    _EditorField(_hcT(widget.p.lang, 'f_wdx'), _ctrls['workingDiagnosis']!, hint: _hcT(widget.p.lang, 'h_wdx'), fieldKey: 'workingDiagnosis'),
+    _EditorField(_hcT(widget.p.lang, 'f_wdx'), _ctrls['workingDiagnosis']!, hint: _hcT(widget.p.lang, 'h_wdx'), fieldKey: 'workingDiagnosis', focusNode: _fieldFocusNodes['workingDiagnosis']),
     const SizedBox(height: 10),
     _EditorField(_hcT(widget.p.lang, 'f_diffdx'), _ctrls['differentialDx']!, hint: _hcT(widget.p.lang, 'h_diffdx'), multiline: true, fieldKey: 'differentialDx'),
     const SizedBox(height: 10),
@@ -3143,9 +3164,9 @@ class _HistoryEditorState extends State<_HistoryEditor> {
 
   // ── Seção 4: Conduta / Tratamento ────────────────────────────────────────
   Widget _buildTreatmentSection() => Column(children: [
-    _EditorField(_hcT(widget.p.lang, 'f_plan'), _ctrls['treatmentPlan']!, hint: _hcT(widget.p.lang, 'h_plan'), multiline: true, lines: 7, fieldKey: 'treatmentPlan'),
+    _EditorField(_hcT(widget.p.lang, 'f_plan'), _ctrls['treatmentPlan']!, hint: _hcT(widget.p.lang, 'h_plan'), multiline: true, lines: 7, fieldKey: 'treatmentPlan', focusNode: _fieldFocusNodes['treatmentPlan']),
     const SizedBox(height: 10),
-    _EditorField(_hcT(widget.p.lang, 'f_procedures'), _ctrls['procedures']!, hint: _hcT(widget.p.lang, 'h_procedures'), multiline: true, fieldKey: 'procedures'),
+    _EditorField(_hcT(widget.p.lang, 'f_procedures'), _ctrls['procedures']!, hint: _hcT(widget.p.lang, 'h_procedures'), multiline: true, fieldKey: 'procedures', focusNode: _fieldFocusNodes['procedures']),
   ]);
 
   // ── Seção 5: Evolução ─────────────────────────────────────────────────────
@@ -3219,9 +3240,9 @@ class _HistoryEditorState extends State<_HistoryEditor> {
       ));
     })),
     const SizedBox(height: 14),
-    _EditorField(_hcT(widget.p.lang, 'f_discharge'), _ctrls['dischargeCondition']!, hint: _hcT(widget.p.lang, 'h_discharge'), multiline: true, fieldKey: 'dischargeCondition'),
+    _EditorField(_hcT(widget.p.lang, 'f_discharge'), _ctrls['dischargeCondition']!, hint: _hcT(widget.p.lang, 'h_discharge'), multiline: true, fieldKey: 'dischargeCondition', focusNode: _fieldFocusNodes['dischargeCondition']),
     const SizedBox(height: 10),
-    _EditorField(_hcT(widget.p.lang, 'f_followup'), _ctrls['followUp']!, hint: _hcT(widget.p.lang, 'h_followup'), multiline: true, fieldKey: 'followUp'),
+    _EditorField(_hcT(widget.p.lang, 'f_followup'), _ctrls['followUp']!, hint: _hcT(widget.p.lang, 'h_followup'), multiline: true, fieldKey: 'followUp', focusNode: _fieldFocusNodes['followUp']),
   ]);
 }
 
@@ -3239,6 +3260,10 @@ class _EditorField extends StatefulWidget {
   /// Chave usada para persistir sugestões adaptativas (ex: 'hpi', 'physicalExam').
   /// Se null, autocomplete não é habilitado para este campo.
   final String? fieldKey;
+  /// FocusNode externo — permite rastrear qual campo está focado (nav pelas setas).
+  final FocusNode? focusNode;
+  /// Chamado com a fieldKey quando este campo ganha foco (para atualizar badge do ditáfone).
+  final void Function(String key)? onFocused;
 
   const _EditorField(this.label, this.ctrl, {
     required this.hint,
@@ -3247,6 +3272,8 @@ class _EditorField extends StatefulWidget {
     this.lines = 3,
     this.onMic,
     this.fieldKey,
+    this.focusNode,
+    this.onFocused,
   });
 
   @override
@@ -3365,7 +3392,11 @@ class _EditorFieldState extends State<_EditorField> {
       const SizedBox(height: 5),
       // ── Campo de texto ─────────────────────────────────────────────────────
       Focus(
+        focusNode: widget.focusNode,
         onFocusChange: (hasFocus) {
+          if (hasFocus && widget.fieldKey != null && widget.onFocused != null) {
+            widget.onFocused!(widget.fieldKey!);
+          }
           if (!hasFocus) {
             _saveSuggestions();
             if (_showSuggestions) setState(() { _showSuggestions = false; });
@@ -3600,6 +3631,8 @@ class _MicControlBar extends StatelessWidget {
   // Navegação de campos
   final VoidCallback onPrevField;
   final VoidCallback onNextField;
+  // Callback disparado quando um campo ganha foco via seta (para atualizar badge)
+  final void Function(String fieldKey)? onFieldFocused;
 
   const _MicControlBar({
     required this.lang,
@@ -3614,6 +3647,7 @@ class _MicControlBar extends StatelessWidget {
     required this.onTapRelato,
     required this.onPrevField,
     required this.onNextField,
+    this.onFieldFocused,
   });
 
   bool get _anyActive => smartActive || sttListening || relatoActive || aiProcessing;
@@ -3705,6 +3739,7 @@ class _MicControlBar extends StatelessWidget {
                   onPrev: onPrevField,
                   onNext: onNextField,
                   isDark: isDark,
+                  onFieldFocused: onFieldFocused,
                 ),
               ]),
             ],
@@ -3736,6 +3771,28 @@ class _MicStatusBadge extends StatelessWidget {
     required this.interim,
   });
 
+  // Mapa de chaves internas → nomes legíveis por idioma
+  static String _fieldReadable(String key, String lang) {
+    final isEs = lang == 'es';
+    const Map<String, Map<String, String>> _map = {
+      'chiefComplaint': {'pt': 'Queixa principal',        'es': 'Motivo de consulta'},
+      'hpi':            {'pt': 'HDA',                      'es': 'Enfermedad actual'},
+      'pastHistory':    {'pt': 'Antecedentes pessoais',    'es': 'Antecedentes personales'},
+      'familyHistory':  {'pt': 'Antecedentes familiares',  'es': 'Antecedentes familiares'},
+      'socialHistory':  {'pt': 'História social',          'es': 'Historia social'},
+      'medications':    {'pt': 'Medicamentos',             'es': 'Medicación'},
+      'allergies':      {'pt': 'Alergias',                 'es': 'Alergias'},
+      'reviewOfSystems':{'pt': 'Revisão de sistemas',      'es': 'Revisión de sistemas'},
+      'vitalSigns':     {'pt': 'Sinais vitais',            'es': 'Signos vitales'},
+      'physicalExam':   {'pt': 'Exame físico',             'es': 'Examen físico'},
+      'workingDiagnosis':{'pt': 'Hipótese diagnóstica',    'es': 'Hipótesis diagnóstica'},
+      'treatmentPlan':  {'pt': 'Conduta',                  'es': 'Plan terapéutico'},
+    };
+    final entry = _map[key];
+    if (entry == null) return '';
+    return isEs ? (entry['es'] ?? '') : (entry['pt'] ?? '');
+  }
+
   @override
   Widget build(BuildContext context) {
     // Determina estado dominante
@@ -3744,6 +3801,12 @@ class _MicStatusBadge extends StatelessWidget {
     final Color dotColor;
     final String label;
     final IconData icon;
+
+    // ── Rótulo do campo ativo para o ditáfone inteligente ─────────────────
+    final String fieldReadable = currentField.isNotEmpty
+        ? _fieldReadable(currentField, lang)
+        : '';
+    final bool isEs = lang == 'es';
 
     if (aiProcessing) {
       bgColor  = const Color(0xFF7C3AED).withValues(alpha: 0.10);
@@ -3756,10 +3819,13 @@ class _MicStatusBadge extends StatelessWidget {
       icon     = Icons.fiber_manual_record_rounded;
       label    = _hcT(lang, 'relato_active');
     } else if (smartActive) {
-      bgColor  = const Color(0xFF1F6B48).withValues(alpha: 0.08);
+      bgColor  = const Color(0xFF1F6B48).withValues(alpha: 0.10);
       dotColor = const Color(0xFF16A34A);
       icon     = Icons.fiber_manual_record_rounded;
-      label    = _hcT(lang, 'dictaphone_active');
+      // ✅ MELHORIA 1: mostra exatamente qual campo está escutando
+      label    = fieldReadable.isNotEmpty
+          ? (isEs ? 'Grabando: $fieldReadable' : 'Gravando: $fieldReadable')
+          : _hcT(lang, 'dictaphone_active');
     } else {
       bgColor  = const Color(0xFF1F6B48).withValues(alpha: 0.06);
       dotColor = const Color(0xFF1F6B48);
@@ -3783,34 +3849,36 @@ class _MicStatusBadge extends StatelessWidget {
         else
           Icon(icon, size: 14, color: dotColor),
         const SizedBox(width: 8),
-        // Texto principal
+        // Texto principal — mostra interim se houver, senão o label do campo
         Expanded(
-          child: Text(
-            interim.isNotEmpty ? interim : label,
-            style: TextStyle(
-              fontSize: 11.5,
-              fontWeight: isRecording ? FontWeight.w800 : FontWeight.w600,
-              color: dotColor,
-              letterSpacing: isRecording ? 0.3 : 0,
-              fontStyle: interim.isNotEmpty ? FontStyle.italic : FontStyle.normal,
+          child: AnimatedSwitcher(
+            duration: const Duration(milliseconds: 200),
+            child: Text(
+              key: ValueKey(interim.isNotEmpty ? 'interim' : label),
+              interim.isNotEmpty ? interim : label,
+              style: TextStyle(
+                fontSize: 11.5,
+                fontWeight: isRecording ? FontWeight.w800 : FontWeight.w600,
+                color: dotColor,
+                letterSpacing: isRecording ? 0.3 : 0,
+                fontStyle: interim.isNotEmpty ? FontStyle.italic : FontStyle.normal,
+              ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
             ),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
           ),
         ),
-        // Campo ativo (ditáfone inteligente)
-        if (smartActive && currentField.isNotEmpty) ...[
+        // Chip com seta de campo para ditáfone inteligente
+        // (campo legível já aparece no texto principal — chip vira ícone de microfone)
+        if (smartActive) ...[
           const SizedBox(width: 6),
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+            padding: const EdgeInsets.all(4),
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(8),
-              color: dotColor.withValues(alpha: 0.12),
+              shape: BoxShape.circle,
+              color: dotColor.withValues(alpha: 0.15),
             ),
-            child: Text(
-              currentField.length > 14 ? '${currentField.substring(0, 12)}…' : currentField,
-              style: TextStyle(fontSize: 9, fontWeight: FontWeight.w900, color: dotColor),
-            ),
+            child: Icon(Icons.hearing_rounded, size: 12, color: dotColor),
           ),
         ],
       ]),
@@ -3901,12 +3969,38 @@ class _FieldNavBar extends StatelessWidget {
   final VoidCallback onPrev;
   final VoidCallback onNext;
   final bool isDark;
+  /// Chamado após mover o foco — recebe a fieldKey do campo que ganhou foco.
+  final void Function(String fieldKey)? onFieldFocused;
 
   const _FieldNavBar({
     required this.onPrev,
     required this.onNext,
     required this.isDark,
+    this.onFieldFocused,
   });
+
+  // Mapa de debugLabel → fieldKey dos _EditorField que usam fieldKey
+  static const _kKnownKeys = [
+    'chiefComplaint', 'hpi', 'pastHistory', 'familyHistory',
+    'socialHistory', 'medications', 'allergies', 'reviewOfSystems',
+    'vitalSigns', 'physicalExam', 'workingDiagnosis', 'treatmentPlan',
+    'procedures', 'evolution', 'dischargeCondition', 'followUp',
+  ];
+
+  void _afterNav(BuildContext context) {
+    if (onFieldFocused == null) return;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      try {
+        final scope   = FocusScope.of(context);
+        final focused = scope.focusedChild;
+        if (focused == null) return;
+        final label = focused.debugLabel ?? '';
+        for (final key in _kKnownKeys) {
+          if (label.contains(key)) { onFieldFocused!(key); return; }
+        }
+      } catch (_) {}
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -3924,7 +4018,7 @@ class _FieldNavBar extends StatelessWidget {
         bg:      btnBg,
         border:  btnBorder,
         iconC:   iconColor,
-        onTap:   onPrev,
+        onTap:   () { onPrev(); _afterNav(context); },
         tooltip: 'Campo anterior',
       ),
       const SizedBox(width: 6),
@@ -3933,7 +4027,7 @@ class _FieldNavBar extends StatelessWidget {
         bg:      btnBg,
         border:  btnBorder,
         iconC:   iconColor,
-        onTap:   onNext,
+        onTap:   () { onNext(); _afterNav(context); },
         tooltip: 'Próximo campo',
       ),
     ]);

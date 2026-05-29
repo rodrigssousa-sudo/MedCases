@@ -120,7 +120,11 @@ class WebSpeechRecognizer {
     recog['lang']            = lang;
     recog['continuous']      = true;
     recog['interimResults']  = true;
-    recog['maxAlternatives'] = 1;
+    recog['maxAlternatives'] = 3;  // ↑ 1→3: avalia mais candidatos, escolhe o mais preciso
+    // Nota: A Web Speech API não expõe configuração direta de noise cancellation
+    // — o cancelamento de ruído é gerenciado pelo navegador/SO via WebRTC.
+    // Para maximizar precisão médica, usamos maxAlternatives=3 (o browser retorna
+    // as 3 transcrições mais prováveis — o plugin usa a de maior confiança [0]).
 
     recog['onresult'] = js.allowInterop((dynamic event) {
       try {

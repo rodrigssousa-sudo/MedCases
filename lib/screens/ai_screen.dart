@@ -748,9 +748,14 @@ class _AiScreenState extends State<AiScreen> {
     final double? chatMaxWidth = bp.isDesktop ? 960 : null;
     final hPad = bp.isDesktop ? 0.0 : 12.0;
 
-    Widget chatList = _messages.isEmpty
-        ? _EmptyChat(dark: dark, lang: p.lang, onConnectApi: _openAiSettings)
-        : ListView.builder(
+    // Estado de conexão da IA — controla exibição do card "IA Desconectada"
+    final bool isConnected = p.hasAnyAi || p.geminiConnected;
+    // Mostra card de desconexão quando IA não está conectada E usuário
+    // ainda não enviou nenhuma mensagem (só greeting automática existe)
+    final bool showDisconnectCard = !isConnected &&
+        _messages.where((m) => m.role == 'user').isEmpty;
+
+    Widget chatList = ListView.builder(
             controller: _scrollCtrl,
             padding: EdgeInsets.fromLTRB(
               bp.isDesktop ? 24 : 12,
@@ -821,11 +826,24 @@ class _AiScreenState extends State<AiScreen> {
           onFix: _openAiSettings,
         ),
 
-      // ── Área de chat ─────────────────────────────────────────────────────
+      // ── Área de chat (com overlay de desconexão quando necessário) ───────
       Expanded(
         child: Container(
           color: chatBg,
-          child: chatList,
+          child: Stack(
+            children: [
+              chatList,
+              // Card "IA Desconectada" — sobreposto quando IA não está conectada
+              // e o médico ainda não enviou nenhuma mensagem
+              if (showDisconnectCard)
+                _EmptyChat(
+                  dark: dark,
+                  lang: p.lang,
+                  isConnected: false,
+                  onConnectApi: _openAiSettings,
+                ),
+            ],
+          ),
         ),
       ),
 
@@ -1146,60 +1164,76 @@ class _WaHeader extends StatelessWidget {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Estado vazio — card "Configuração Necessária" centralizado
+// Card de desconexão — "IA Desconectada"
+// Exibido como overlay centralizado quando a IA não está conectada.
+// Some automaticamente ao conectar (isConnected = true).
 // ─────────────────────────────────────────────────────────────────────────────
 class _EmptyChat extends StatelessWidget {
   final bool dark;
   final String lang;
+  final bool isConnected;
   final VoidCallback? onConnectApi;
   const _EmptyChat({
     required this.dark,
     required this.lang,
+    this.isConnected = false,
     this.onConnectApi,
   });
 
   @override
   Widget build(BuildContext context) {
-    final isEs   = lang == 'es';
-    final cardBg = dark ? const Color(0xFF1A2820) : Colors.white;
-    final subCol = dark ? Colors.white54 : Colors.black54;
-    final textCol = dark ? Colors.white : const Color(0xFF1A1A1A);
+    // Se a IA já está conectada, o card não é renderizado
+    if (isConnected) return const SizedBox.shrink();
+
+    final isEs = lang == 'es';
+
+    // ── Paleta do card (combina com o _WaHeader escuro) ───────────────────
+    // Fundo escuro #1E1E1E independente do darkMode — combina com o header preto
+    const cardBg     = Color(0xFF1E1E1E);
+    const amberColor = Color(0xFFF59E0B);
+    const amberBg    = Color(0x1FF59E0B);   // âmbar 12% opacidade
+    const amberBorder = Color(0x52F59E0B);  // âmbar 32% opacidade
 
     return Center(
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 28),
+        padding: const EdgeInsets.symmetric(horizontal: 24),
         child: Container(
           padding: const EdgeInsets.fromLTRB(24, 28, 24, 24),
           decoration: BoxDecoration(
             color: cardBg,
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: BorderRadius.circular(22),
+            border: Border.all(color: amberBorder, width: 1.5),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withValues(alpha: dark ? 0.35 : 0.10),
-                blurRadius: 20,
-                offset: const Offset(0, 6),
+                color: Colors.black.withValues(alpha: 0.55),
+                blurRadius: 32,
+                offset: const Offset(0, 8),
+              ),
+              BoxShadow(
+                color: amberColor.withValues(alpha: 0.06),
+                blurRadius: 40,
+                offset: const Offset(0, 0),
               ),
             ],
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              // ── Ícone âmbar de API / conexão ─────────────────────────
+              // ── Ícone de link quebrado em âmbar ───────────────────────
               Container(
-                width: 72, height: 72,
-                decoration: BoxDecoration(
+                width: 76, height: 76,
+                decoration: const BoxDecoration(
                   shape: BoxShape.circle,
-                  color: const Color(0xFFF59E0B).withValues(alpha: 0.12),
-                  border: Border.all(
-                    color: const Color(0xFFF59E0B).withValues(alpha: 0.35),
-                    width: 1.5,
+                  color: amberBg,
+                  border: Border.fromBorderSide(
+                    BorderSide(color: amberBorder, width: 1.5),
                   ),
                 ),
                 child: const Center(
                   child: Icon(
-                    Icons.api_rounded,
-                    size: 34,
-                    color: Color(0xFFF59E0B),
+                    Icons.link_off_rounded,
+                    size: 36,
+                    color: amberColor,
                   ),
                 ),
               ),
@@ -1207,33 +1241,53 @@ class _EmptyChat extends StatelessWidget {
 
               // ── Título ────────────────────────────────────────────────
               Text(
-                isEs ? 'Configuración Necesaria' : 'Configuração Necessária',
+                isEs ? 'IA Desconectada' : 'IA Desconectada',
                 textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 17,
+                style: const TextStyle(
+                  fontSize: 18,
                   fontWeight: FontWeight.w800,
-                  color: textCol,
-                  letterSpacing: -0.3,
+                  color: Colors.white,
+                  letterSpacing: -0.4,
                 ),
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 12),
 
               // ── Subtítulo ─────────────────────────────────────────────
               Text(
                 isEs
-                    ? 'Por favor, asegúrese de conectar la API de IA antes de iniciar sus consultas clínicas para activar los diagnósticos.'
-                    : 'Por favor, certifique-se de conectar a API da IA antes de iniciar suas consultas clínicas para ativar os diagnósticos.',
+                    ? "Por favor, haga clic en el botón 'Conectar IA' en el menú superior negro para activar las guías clínicas y garantizar el funcionamiento 100% de los diagnósticos."
+                    : "Por favor, clique no botão 'Conectar IA' localizado no menu superior preto para ativar as diretrizes clínicas e garantir o funcionamento 100% dos diagnósticos.",
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 13,
                   fontWeight: FontWeight.w400,
-                  color: subCol,
-                  height: 1.55,
+                  color: Colors.white.withValues(alpha: 0.60),
+                  height: 1.6,
                 ),
               ),
               const SizedBox(height: 24),
 
-              // ── Botão verde "Conectar API Agora" ─────────────────────
+              // ── Seta apontando para o botão "Conectar IA" no header ──
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(Icons.arrow_upward_rounded,
+                      color: amberColor, size: 14),
+                  const SizedBox(width: 6),
+                  Text(
+                    isEs ? 'Botão no menu acima' : 'Botão no menu acima',
+                    style: TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w600,
+                      color: amberColor.withValues(alpha: 0.80),
+                      letterSpacing: 0.3,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+
+              // ── Botão alternativo direto ──────────────────────────────
               GestureDetector(
                 onTap: onConnectApi,
                 child: Container(
@@ -1241,11 +1295,11 @@ class _EmptyChat extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(vertical: 14),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(14),
-                    color: const Color(0xFF1F6B48),
+                    color: amberColor,
                     boxShadow: [
                       BoxShadow(
-                        color: const Color(0xFF1F6B48).withValues(alpha: 0.35),
-                        blurRadius: 10,
+                        color: amberColor.withValues(alpha: 0.30),
+                        blurRadius: 12,
                         offset: const Offset(0, 4),
                       ),
                     ],
@@ -1253,15 +1307,15 @@ class _EmptyChat extends StatelessWidget {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Icon(Icons.link_rounded,
-                          color: Colors.white, size: 18),
+                      const Icon(Icons.bolt_rounded,
+                          color: Color(0xFF1A1100), size: 18),
                       const SizedBox(width: 8),
                       Text(
-                        isEs ? 'Conectar API Ahora' : 'Conectar API Agora',
+                        isEs ? 'Conectar IA Agora' : 'Conectar IA Agora',
                         style: const TextStyle(
                           fontSize: 14,
-                          fontWeight: FontWeight.w700,
-                          color: Colors.white,
+                          fontWeight: FontWeight.w800,
+                          color: Color(0xFF1A1100),
                           letterSpacing: 0.2,
                         ),
                       ),

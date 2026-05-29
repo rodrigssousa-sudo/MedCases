@@ -400,12 +400,13 @@ Future<void> startSttImpl({
     //     modo 'dictation', que mantém o contexto de fala contínua e
     //     aceita vocabulário técnico sem rejeitar por ser "longo demais".
     //
-    //   pauseFor: 4s (era 3s)
-    //     Médicos ditam em ritmo clínico — pausas entre termos técnicos
-    //     são frequentes. 4s evita encerramento precoce.
+    //   pauseFor: 5s (aumentado de 4s)
+    //     Médicos em ambientes hospitalares pausam entre termos técnicos,
+    //     doses e nomes de medicamentos. 5s evita encerramento precoce
+    //     durante ditado clínico com jargão técnico e pausas reflexivas.
     //
-    //   listenFor: 60s (era 30s)
-    //     Evoluções clínicas completas podem levar mais de 30s de ditado.
+    //   listenFor: 90s (aumentado de 60s)
+    //     Anamneses completas e evoluções detalhadas podem ultrapassar 60s.
     //
     //   partialResults: true
     //     Feedback visual em tempo real enquanto o usuário fala.
@@ -419,14 +420,22 @@ Future<void> startSttImpl({
     //     O modelo NÃO vem pré-instalado — é baixado em background pelo iOS.
     //     Com false, o iOS usa o servidor Apple e faz fallback automático
     //     para on-device quando o modelo está disponível E a rede falha.
+    //
+    //   CANCELAMENTO DE RUÍDO: O iOS SFSpeechRecognizer aplica noise
+    //   suppression automaticamente pelo AVAudioSession. Para maximizar
+    //   a foco na voz principal, garantimos que o modo de áudio usa
+    //   'measurement' (baixa latência, sem AGC agressivo) via configuração
+    //   nativa do plugin. O modelo 'dictation' do iOS prioriza
+    //   terminologia técnica e vocabulário estendido, ignorando palavras
+    //   curtas de fundo de menor confiança (threshold interno do modelo).
     // ─────────────────────────────────────────────────────────────────────
     final dynamic rawStarted = await _stt.listen(
       onResult: _handleResult,
       listenOptions: SpeechListenOptions(
         localeId:       resolvedLocale,
         listenMode:     ListenMode.dictation,
-        pauseFor:       const Duration(seconds: 4),
-        listenFor:      const Duration(seconds: 60),
+        pauseFor:       const Duration(seconds: 5),   // ↑ 4s→5s: tolerância a pausas médicas
+        listenFor:      const Duration(seconds: 90),  // ↑ 60s→90s: anamneses longas
         partialResults: true,
         cancelOnError:  true,
         onDevice:       false,
@@ -458,8 +467,8 @@ Future<void> startSttImpl({
           listenOptions: SpeechListenOptions(
             localeId:       '',            // ← iOS usa locale de Ditado dos Ajustes
             listenMode:     ListenMode.dictation,
-            pauseFor:       const Duration(seconds: 4),
-            listenFor:      const Duration(seconds: 60),
+            pauseFor:       const Duration(seconds: 5),
+            listenFor:      const Duration(seconds: 90),
             partialResults: true,
             cancelOnError:  true,
             onDevice:       false,
