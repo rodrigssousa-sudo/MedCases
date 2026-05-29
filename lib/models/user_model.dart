@@ -57,6 +57,23 @@ class UserModel {
     return '<1min';
   }
 
+  // ── Safe helpers — sem cast direto, imunes a TypeError em dart2js ──────────
+  static String _s(dynamic v, [String fallback = '']) =>
+      v?.toString() ?? fallback;
+
+  static bool _b(dynamic v, [bool fallback = false]) {
+    if (v == true || v?.toString() == 'true') return true;
+    if (v == false || v?.toString() == 'false') return false;
+    return fallback;
+  }
+
+  static int _i(dynamic v, [int fallback = 0]) {
+    if (v is int) return v;
+    if (v is double) return v.toInt();
+    if (v is num) return v.toInt();
+    return int.tryParse(v?.toString() ?? '') ?? fallback;
+  }
+
   // ── Serialização JSON pura (SharedPreferences) ────────────────────────────
   Map<String, dynamic> toJson() => {
     'uid': uid,
@@ -77,27 +94,21 @@ class UserModel {
   };
 
   factory UserModel.fromJson(Map<String, dynamic> m) => UserModel(
-    uid: m['uid'] as String? ?? '',
-    email: m['email'] as String? ?? '',
-    displayName: m['displayName'] as String? ?? '',
-    role: _parseRole(m['role'] as String?),
-    status: _parseStatus(m['status'] as String?),
-    createdAt: m['createdAt'] != null
-        ? DateTime.parse(m['createdAt'] as String)
-        : DateTime.now(),
-    approvedAt: m['approvedAt'] != null
-        ? DateTime.parse(m['approvedAt'] as String)
-        : null,
-    approvedBy: m['approvedBy'] as String?,
-    profession: m['profession'] as String?,
-    institution: m['institution'] as String?,
-    lang: m['lang'] as String? ?? 'pt',
-    darkMode: m['darkMode'] as bool? ?? false,
-    totalUsageSeconds: (m['totalUsageSeconds'] as num?)?.toInt() ?? 0,
-    lastSeenAt: m['lastSeenAt'] != null
-        ? DateTime.tryParse(m['lastSeenAt'] as String)
-        : null,
-    referredBy: m['referred_by'] as String?,
+    uid:               _s(m['uid']),
+    email:             _s(m['email']),
+    displayName:       _s(m['displayName']),
+    role:              _parseRole(_s(m['role'])),
+    status:            _parseStatus(_s(m['status'])),
+    createdAt:         _parseDate(m['createdAt']) ?? DateTime.now(),
+    approvedAt:        _parseDate(m['approvedAt']),
+    approvedBy:        _sn(m['approvedBy']),
+    profession:        _sn(m['profession']),
+    institution:       _sn(m['institution']),
+    lang:              _s(m['lang'], 'pt'),
+    darkMode:          _b(m['darkMode']),
+    totalUsageSeconds: _i(m['totalUsageSeconds']),
+    lastSeenAt:        _parseDate(m['lastSeenAt']),
+    referredBy:        _sn(m['referred_by']),
   );
 
   // ── Serialização Firestore SDK ────────────────────────────────────────────
@@ -120,25 +131,30 @@ class UserModel {
   };
 
   factory UserModel.fromMap(Map<String, dynamic> m) => UserModel(
-    uid: m['uid'] as String? ?? '',
-    email: m['email'] as String? ?? '',
-    displayName: m['displayName'] as String? ?? '',
-    role: _parseRole(m['role'] as String?),
-    status: _parseStatus(m['status'] as String?),
-    createdAt: _parseDate(m['createdAt']) ?? DateTime.now(),
-    approvedAt: _parseDate(m['approvedAt']),
-    approvedBy: m['approvedBy'] as String?,
-    profession: m['profession'] as String?,
-    institution: m['institution'] as String?,
-    lang: m['lang'] as String? ?? 'pt',
-    darkMode: m['darkMode'] as bool? ?? false,
-    totalUsageSeconds: (m['totalUsageSeconds'] as num?)?.toInt() ?? 0,
-    lastSeenAt: _parseDate(m['lastSeenAt']),
-    referredBy: m['referred_by'] as String?,
+    uid:               _s(m['uid']),
+    email:             _s(m['email']),
+    displayName:       _s(m['displayName']),
+    role:              _parseRole(_s(m['role'])),
+    status:            _parseStatus(_s(m['status'])),
+    createdAt:         _parseDate(m['createdAt']) ?? DateTime.now(),
+    approvedAt:        _parseDate(m['approvedAt']),
+    approvedBy:        _sn(m['approvedBy']),
+    profession:        _sn(m['profession']),
+    institution:       _sn(m['institution']),
+    lang:              _s(m['lang'], 'pt'),
+    darkMode:          _b(m['darkMode']),
+    totalUsageSeconds: _i(m['totalUsageSeconds']),
+    lastSeenAt:        _parseDate(m['lastSeenAt']),
+    referredBy:        _sn(m['referred_by']),
   );
 
-  factory UserModel.fromDoc(DocumentSnapshot doc) =>
-      UserModel.fromMap(doc.data() as Map<String, dynamic>);
+  /// fromDoc — aceita qualquer Map retornado pelo SDK (Map<String,Object?> em dart2js)
+  factory UserModel.fromDoc(DocumentSnapshot doc) {
+    final raw = doc.data();
+    if (raw is Map<String, dynamic>) return UserModel.fromMap(raw);
+    if (raw is Map) return UserModel.fromMap(Map<String, dynamic>.from(raw));
+    return UserModel(uid: doc.id, email: '', displayName: '', createdAt: DateTime.now());
+  }
 
   UserModel copyWith({
     String? displayName,
@@ -173,16 +189,24 @@ class UserModel {
       );
 
   // ── Helpers ───────────────────────────────────────────────────────────────
+  /// Retorna null se o valor for nulo ou vazio — nunca lança TypeError.
+  static String? _sn(dynamic v) {
+    if (v == null) return null;
+    final s = v.toString();
+    return s.isEmpty ? null : s;
+  }
+
   static DateTime? _parseDate(dynamic v) {
     if (v == null) return null;
     if (v is Timestamp) return v.toDate();
+    if (v is DateTime) return v;
     if (v is String && v.isNotEmpty) {
       try { return DateTime.parse(v); } catch (_) {}
     }
     return null;
   }
 
-  static UserRole _parseRole(String? s) {
+  static UserRole _parseRole(String s) {
     switch (s) {
       case 'admin':      return UserRole.admin;
       case 'supervisor': return UserRole.supervisor;
@@ -190,7 +214,7 @@ class UserModel {
     }
   }
 
-  static UserStatus _parseStatus(String? s) {
+  static UserStatus _parseStatus(String s) {
     switch (s) {
       case 'approved': return UserStatus.approved;
       case 'blocked':  return UserStatus.blocked;
