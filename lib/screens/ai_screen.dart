@@ -117,26 +117,50 @@ class _ChatSession {
     required this.messages,
   });
 
+  /// Serializa para JSON/Firestore.
+  /// NOTA: o campo `updatedAt` NÃO é incluído aqui — é injetado como
+  /// FieldValue.serverTimestamp() pelo FirestoreService.saveAiSession,
+  /// garantindo timestamp do servidor (cross-device) sem risco de clock skew.
   Map<String, dynamic> toJson() => {
     'id': id,
+    // savedAt como ISO8601 — fallback para leitura offline (SharedPreferences)
     'savedAt': savedAt.toIso8601String(),
     'summary': summary,
-    // Persiste o id junto — restaura keys estáveis ao carregar do JSON
     'messages': messages.map((m) => {'id': m.id, 'role': m.role, 'text': m.text}).toList(),
   };
 
-  factory _ChatSession.fromJson(Map<String, dynamic> j) => _ChatSession(
-    id: j['id'] as String,
-    savedAt: DateTime.parse(j['savedAt'] as String),
-    summary: j['summary'] as String? ?? '',
-    messages: (j['messages'] as List? ?? []).map((m) =>
-      _ChatMsg.withId(
-        id: m['id'] as String? ?? '${m['role']}_${DateTime.now().microsecondsSinceEpoch}',
-        role: m['role'] as String,
-        text: m['text'] as String,
-      )
-    ).toList(),
-  );
+  /// Desserializa de JSON (SharedPreferences) ou de documento Firestore
+  /// (já passado por sdkDocToSafeMap → todos os Timestamps vieram como ISO8601).
+  factory _ChatSession.fromJson(Map<String, dynamic> j) {
+    // ID: obrigatório. Se vier vazio usa timestamp local como fallback.
+    final id = j['id']?.toString() ?? DateTime.now().toIso8601String();
+
+    // savedAt: aceita ISO8601 string. Fallback para updatedAt (campo do Firestore)
+    // e depois para now() para nunca explodir com parse exception.
+    DateTime savedAt;
+    final rawDate = j['savedAt'] ?? j['updatedAt'];
+    try {
+      savedAt = rawDate != null
+          ? DateTime.parse(rawDate.toString())
+          : DateTime.now();
+    } catch (_) {
+      savedAt = DateTime.now();
+    }
+
+    return _ChatSession(
+      id: id,
+      savedAt: savedAt,
+      summary: j['summary']?.toString() ?? '',
+      messages: (j['messages'] as List? ?? []).map((m) {
+        final map = m is Map ? Map<String, dynamic>.from(m) : <String, dynamic>{};
+        return _ChatMsg.withId(
+          id: map['id']?.toString() ?? '${map['role']}_${DateTime.now().microsecondsSinceEpoch}',
+          role: map['role']?.toString() ?? 'user',
+          text: map['text']?.toString() ?? '',
+        );
+      }).toList(),
+    );
+  }
 }
 
 // ─────────────────────────────────────────────────────────────────────────────

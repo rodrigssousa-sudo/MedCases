@@ -493,11 +493,17 @@ class FirestoreService {
       _db.collection('users').doc(uid).collection('ai_chat_history');
 
   /// Salva UMA sessão de chat no Firestore (upsert por session.id).
+  /// Injeta sempre `updatedAt` como server timestamp para que a query
+  /// orderBy('updatedAt') funcione em todos os dispositivos.
   static Future<void> saveAiSession(String uid, Map<String, dynamic> session) async {
     try {
       final id = safeString(session['id']);
       if (id.isEmpty) return;
-      await _userAiHistory(uid).doc(id).set(session);
+      // Copia o doc e injeta updatedAt como timestamp do servidor.
+      // Isso garante ordenação cross-device mesmo que o relógio local esteja errado.
+      final data = Map<String, dynamic>.from(session);
+      data['updatedAt'] = FieldValue.serverTimestamp();
+      await _userAiHistory(uid).doc(id).set(data);
     } catch (_) {}
   }
 
@@ -509,13 +515,15 @@ class FirestoreService {
   }
 
   /// Carrega as últimas 20 sessões, ordenadas por updatedAt desc.
+  /// Usa sdkDocToSafeMap para converter Timestamp → ISO8601 string antes
+  /// de passar para _ChatSession.fromJson (que usa DateTime.parse).
   static Future<List<Map<String, dynamic>>> loadAiSessions(String uid) async {
     try {
       final snap = await _userAiHistory(uid)
           .orderBy('updatedAt', descending: true)
           .limit(20)
           .get();
-      return snap.docs.map((d) => d.data()).toList();
+      return snap.docs.map((d) => sdkDocToSafeMap(d.data())).toList();
     } catch (_) {
       return [];
     }
