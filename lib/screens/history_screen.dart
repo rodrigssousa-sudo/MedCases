@@ -777,47 +777,88 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                     colors: [
-                      Color(0xFF0F1C14),
-                      Color(0xFF1B3D2A),
-                      Color(0xFF1F6B48),
+                      Color(0xFF0D1B2A),  // navy profundo
+                      Color(0xFF1A2F4A),  // azul meia-noite
+                      Color(0xFF1E3A5F),  // azul médico
                     ],
                   ),
                 ),
                 child: Padding(
-                  padding: EdgeInsets.fromLTRB(bp.hPadding, 10, bp.hPadding, 12),
+                  padding: EdgeInsets.fromLTRB(bp.hPadding, 10, bp.hPadding, 14),
                   child: Row(
                     children: [
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              _hcT(lang, 'tab_title'),
-                              style: const TextStyle(
-                                fontSize: 9,
-                                fontWeight: FontWeight.w900,
-                                color: Color(0xBFFFE8A6),
-                                letterSpacing: 2,
+                            Row(children: [
+                              Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(6),
+                                  color: const Color(0xFF3B82F6).withValues(alpha: 0.25),
+                                  border: Border.all(color: const Color(0xFF60A5FA).withValues(alpha: 0.4)),
+                                ),
+                                child: Row(mainAxisSize: MainAxisSize.min, children: [
+                                  const Icon(Icons.folder_special_rounded, size: 9, color: Color(0xFF93C5FD)),
+                                  const SizedBox(width: 4),
+                                  Text(
+                                    _hcT(lang, 'tab_title'),
+                                    style: const TextStyle(
+                                      fontSize: 9,
+                                      fontWeight: FontWeight.w900,
+                                      color: Color(0xFF93C5FD),
+                                      letterSpacing: 1.5,
+                                    ),
+                                  ),
+                                ]),
                               ),
-                            ),
-                            const SizedBox(height: 2),
+                            ]),
+                            const SizedBox(height: 6),
                             Text(
                               _hcT(lang, 'tab_subtitle'),
                               style: const TextStyle(
-                                fontSize: 17,
+                                fontSize: 20,
                                 fontWeight: FontWeight.w900,
                                 color: Colors.white,
+                                height: 1.15,
+                                letterSpacing: -0.3,
                               ),
                             ),
-                            const SizedBox(height: 2),
-                            Text(
-                              '${mine.length} ${_hcT(lang, 'my_hcs_count')} • ${visiblePub.length} ${_hcT(lang, 'pub_count')}',
-                              style: TextStyle(
-                                fontSize: 11,
-                                color: Colors.white.withValues(alpha: 0.55),
-                                fontWeight: FontWeight.w500,
+                            const SizedBox(height: 5),
+                            Row(children: [
+                              Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(6),
+                                  color: Colors.white.withValues(alpha: 0.08),
+                                ),
+                                child: Text(
+                                  '${mine.length} ${_hcT(lang, 'my_hcs_count')}',
+                                  style: TextStyle(
+                                    fontSize: 10,
+                                    color: Colors.white.withValues(alpha: 0.70),
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
                               ),
-                            ),
+                              const SizedBox(width: 6),
+                              Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(6),
+                                  color: const Color(0xFF3B82F6).withValues(alpha: 0.18),
+                                ),
+                                child: Text(
+                                  '${visiblePub.length} ${_hcT(lang, 'pub_count')}',
+                                  style: const TextStyle(
+                                    fontSize: 10,
+                                    color: Color(0xFF93C5FD),
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
+                              ),
+                            ]),
                           ],
                         ),
                       ),
@@ -825,30 +866,38 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
                         onTap: () => _startNewHistory(p, lang),
                         child: Container(
                           padding: const EdgeInsets.symmetric(
-                            horizontal: 12,
-                            vertical: 8,
+                            horizontal: 14,
+                            vertical: 10,
                           ),
                           decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(12),
-                            color: Colors.white.withValues(alpha: 0.15),
-                            border: Border.all(
-                              color: Colors.white.withValues(alpha: 0.2),
+                            borderRadius: BorderRadius.circular(14),
+                            gradient: const LinearGradient(
+                              colors: [Color(0xFF3B82F6), Color(0xFF1D4ED8)],
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
                             ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: const Color(0xFF3B82F6).withValues(alpha: 0.4),
+                                blurRadius: 10,
+                                offset: const Offset(0, 4),
+                              ),
+                            ],
                           ),
                           child: Row(
                             children: [
                               const Icon(
                                 Icons.add_rounded,
-                                size: 15,
-                                color: Color(0xFFFFE8A6),
+                                size: 16,
+                                color: Colors.white,
                               ),
-                              const SizedBox(width: 4),
+                              const SizedBox(width: 5),
                               Text(
                                 _hcT(lang, 'new_hc'),
                                 style: const TextStyle(
                                   fontSize: 12,
-                                  fontWeight: FontWeight.w800,
-                                  color: Color(0xFFFFE8A6),
+                                  fontWeight: FontWeight.w900,
+                                  color: Colors.white,
                                 ),
                               ),
                             ],
@@ -1090,197 +1139,443 @@ class _HistoryCard extends StatelessWidget {
     }
   }
 
+  // Cor lateral do card baseada no outcome
+  Color get _cardAccent {
+    switch (h.outcome) {
+      case 'alta':          return const Color(0xFF10B981); // verde alta
+      case 'obito':         return const Color(0xFFEF4444); // vermelho
+      case 'transferencia': return const Color(0xFF3B82F6); // azul
+      default:              return const Color(0xFFF59E0B); // âmbar internado
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final lang = p.lang;
     final completion = h.completionRatio;
+    final accent = _cardAccent;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return GestureDetector(
-        onTap: onTap,
-        child: Container(
-          padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
-          decoration: BoxDecoration(border: Border(bottom: BorderSide(color: AppColors.of(context).border))),
-          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Row(children: [
-              // Categoria badge
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                decoration: BoxDecoration(borderRadius: BorderRadius.circular(8), color: AppColors.of(context).darkBtn),
-                child: Text(h.category, style: const TextStyle(fontSize: 9, fontWeight: FontWeight.w900, color: kGoldLight)),
-              ),
-              const SizedBox(width: 6),
-              // Outcome badge
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                decoration: BoxDecoration(borderRadius: BorderRadius.circular(8), color: _outcomeColor.withValues(alpha: 0.12), border: Border.all(color: _outcomeColor.withValues(alpha: 0.3))),
-                child: Text(_outcomeLabel(lang), style: TextStyle(fontSize: 9, fontWeight: FontWeight.w900, color: _outcomeColor)),
-              ),
-              if (h.isPublic) ...[
-                const SizedBox(width: 6),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(8), color: const Color(0xFF1E40AF).withValues(alpha: 0.1), border: Border.all(color: const Color(0xFF1E40AF).withValues(alpha: 0.3))),
-                  child: Text(_hcT(lang, 'public_badge'), style: const TextStyle(fontSize: 9, fontWeight: FontWeight.w900, color: Color(0xFF1E40AF))),
-                ),
-              ],
-              const Spacer(),
-              Text(h.formattedDate, style: const TextStyle(fontSize: 10, color: Color(0xFF888888), fontWeight: FontWeight.w600)),
-            ]),
-            const SizedBox(height: 8),
-            Text(h.displayTitle, style: TextStyle(fontSize: 15, fontWeight: FontWeight.w900, color: AppColors.of(context).textPrimary), maxLines: 2, overflow: TextOverflow.ellipsis),
-            if (h.patientInitials.isNotEmpty || h.patientAge.isNotEmpty) ...[
-              const SizedBox(height: 4),
-              Text('${h.patientInitials.isNotEmpty ? h.patientInitials : ''}${h.patientAge.isNotEmpty ? " • ${h.patientAge} ${_hcT(p.lang, "years")}" : ""} • ${h.patientSex}',
-                style: const TextStyle(fontSize: 11, color: Color(0xFF888888), fontWeight: FontWeight.w600)),
-            ],
-            if (h.finalDiagnosis.isNotEmpty) ...[
-              const SizedBox(height: 6),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: const Color(0xFFECFDF5), border: Border.all(color: const Color(0xFFBBF7D0))),
-                child: Text('Dx: ${h.finalDiagnosis}',
-                  style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: Color(0xFF065F46)), overflow: TextOverflow.ellipsis),
-              ),
-            ] else if (h.workingDiagnosis.isNotEmpty) ...[
-              const SizedBox(height: 6),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: const Color(0xFFFFF8E6), border: Border.all(color: const Color(0xFFFFE0A0))),
-                child: Text('${p.lang == "es" ? "Hipótesis" : "Hipótese"}: ${h.workingDiagnosis}',
-                  style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: Color(0xFF92400E)), overflow: TextOverflow.ellipsis),
-              ),
-            ],
-            const SizedBox(height: 10),
-            // Barra de progresso
-            Row(children: [
-              Expanded(child: ClipRRect(
-                borderRadius: BorderRadius.circular(4),
-                child: LinearProgressIndicator(
-                  value: completion,
-                  minHeight: 4,
-                  backgroundColor: AppColors.of(context).border,
-                  valueColor: AlwaysStoppedAnimation(completion > 0.7 ? const Color(0xFF065F46) : completion > 0.4 ? kGold : const Color(0xFFCCCCCC)),
-                ),
-              )),
-              const SizedBox(width: 8),
-              Text('${(completion * 100).round()}%', style: const TextStyle(fontSize: 9, fontWeight: FontWeight.w900, color: Color(0xFF888888))),
-            ]),
-            if (!readOnly) ...[
-              const SizedBox(height: 10),
-              Row(children: [
-                // Compartilhar
-                GestureDetector(
-                  onTap: onTogglePublic,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      color: h.isPublic ? const Color(0xFF1E40AF).withValues(alpha: 0.1) : AppColors.of(context).surface,
-                      border: Border.all(color: h.isPublic ? const Color(0xFF1E40AF).withValues(alpha: 0.3) : AppColors.of(context).border),
-                    ),
-                    child: Row(children: [
-                      Icon(h.isPublic ? Icons.public_rounded : Icons.lock_outline_rounded, size: 12,
-                        color: h.isPublic ? const Color(0xFF1E40AF) : const Color(0xFF888888)),
-                      const SizedBox(width: 4),
-                      Text(h.isPublic ? _hcT(p.lang, 'public_badge') : _hcT(p.lang, 'private_badge'),
-                        style: TextStyle(fontSize: 10, fontWeight: FontWeight.w900,
-                          color: h.isPublic ? const Color(0xFF1E40AF) : const Color(0xFF888888))),
-                    ]),
-                  ),
-                ),
-                const Spacer(),
-                GestureDetector(onTap: onEdit, child: const Padding(padding: EdgeInsets.all(6), child: Icon(Icons.edit_rounded, size: 16, color: kGold))),
-                GestureDetector(onTap: onDelete, child: const Padding(padding: EdgeInsets.all(6), child: Icon(Icons.delete_outline_rounded, size: 16, color: Color(0xFFCC2222)))),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                  decoration: BoxDecoration(color: AppColors.of(context).darkBtn, borderRadius: BorderRadius.circular(10)),
-                  child: Text(_hcT(p.lang, 'open'), style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w900, color: kGoldLight)),
-                ),
-              ]),
-            ] else ...[
-              // Banner de HC oculta (visível apenas para moderadores)
-              if (h.isHidden) ...[
-                const SizedBox(height: 8),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    color: Colors.orange.withValues(alpha: 0.1),
-                    border: Border.all(color: Colors.orange.withValues(alpha: 0.4)),
-                  ),
-                  child: Row(children: [
-                    const Icon(Icons.visibility_off_rounded, size: 12, color: Colors.orange),
-                    const SizedBox(width: 6),
-                    Text(_hcT(p.lang, 'hidden_mod'), style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w800, color: Colors.orange)),
-                  ]),
-                ),
-              ],
-              const SizedBox(height: 8),
-              Row(children: [
-                Icon(Icons.person_outline_rounded, size: 12, color: Colors.grey[400]),
-                const SizedBox(width: 4),
-                Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  Text(h.authorName.isNotEmpty ? h.authorName : _hcT(p.lang, 'anon'),
-                    style: const TextStyle(fontSize: 10, color: Color(0xFF333333), fontWeight: FontWeight.w700)),
-                  if (h.authorEmail.isNotEmpty)
-                    Text(h.authorEmail,
-                      style: const TextStyle(fontSize: 9, color: Color(0xFF888888), fontWeight: FontWeight.w500)),
-                  if (h.uploadedAt.isNotEmpty)
-                    Text(_formatUploadedAt(h.uploadedAt),
-                      style: const TextStyle(fontSize: 9, color: Color(0xFF888888), fontWeight: FontWeight.w500)),
-                ])),
-                const SizedBox(width: 8),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                  decoration: BoxDecoration(color: AppColors.of(context).darkBtn, borderRadius: BorderRadius.circular(10)),
-                  child: Text(_hcT(p.lang, 'view'), style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w900, color: kGoldLight)),
-                ),
-              ]),
-              // Botões de moderação
-              if (onModHide != null || onModDelete != null) ...[
-                const SizedBox(height: 8),
-                Row(children: [
-                  if (onModHide != null)
-                    GestureDetector(
-                      onTap: onModHide,
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          color: Colors.orange.withValues(alpha: 0.08),
-                          border: Border.all(color: Colors.orange.withValues(alpha: 0.3)),
-                        ),
-                        child: Row(mainAxisSize: MainAxisSize.min, children: [
-                          Icon(h.isHidden ? Icons.visibility_rounded : Icons.visibility_off_rounded, size: 12, color: Colors.orange),
-                          const SizedBox(width: 4),
-                          Text(h.isHidden ? _hcT(p.lang, 'show_mod') : _hcT(p.lang, 'hide_mod'),
-                            style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w800, color: Colors.orange)),
-                        ]),
-                      ),
-                    ),
-                  if (onModHide != null && onModDelete != null) const SizedBox(width: 8),
-                  if (onModDelete != null)
-                    GestureDetector(
-                      onTap: onModDelete,
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          color: Colors.red.withValues(alpha: 0.07),
-                          border: Border.all(color: Colors.red.withValues(alpha: 0.25)),
-                        ),
-                        child: const Row(mainAxisSize: MainAxisSize.min, children: [
-                          Icon(Icons.delete_forever_rounded, size: 12, color: Colors.red),
-                          SizedBox(width: 4),
-                          Text('Excluir', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w800, color: Colors.red)),
-                        ]),
-                      ),
-                    ),
-                ]),
-              ],
-            ],
-          ]),
+      onTap: onTap,
+      child: Container(
+        margin: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(16),
+          color: isDark ? const Color(0xFF1C2230) : Colors.white,
+          border: Border.all(
+            color: isDark ? const Color(0xFF2D3748) : const Color(0xFFE8EDF2),
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: isDark ? 0.25 : 0.06),
+              blurRadius: 12,
+              offset: const Offset(0, 3),
+            ),
+          ],
         ),
-    );
+        child: IntrinsicHeight(
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              // ── Barra colorida lateral (accent do outcome) ──────────────
+              Container(
+                width: 4,
+                decoration: BoxDecoration(
+                  borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(16),
+                    bottomLeft: Radius.circular(16),
+                  ),
+                  color: accent,
+                ),
+              ),
+              // ── Conteúdo principal ───────────────────────────────────────
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
+                  child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+
+                    // ── LINHA 1: categoria + data ──────────────────────────
+                    Row(children: [
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(6),
+                          color: accent.withValues(alpha: 0.12),
+                        ),
+                        child: Text(
+                          h.category,
+                          style: TextStyle(fontSize: 9, fontWeight: FontWeight.w900, color: accent),
+                        ),
+                      ),
+                      const SizedBox(width: 6),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(6),
+                          color: (isDark ? Colors.white : Colors.black).withValues(alpha: 0.05),
+                        ),
+                        child: Text(
+                          _outcomeLabel(lang),
+                          style: TextStyle(
+                            fontSize: 9, fontWeight: FontWeight.w800,
+                            color: isDark ? Colors.white60 : const Color(0xFF666666),
+                          ),
+                        ),
+                      ),
+                      if (h.isPublic) ...[
+                        const SizedBox(width: 6),
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(6),
+                            color: const Color(0xFF3B82F6).withValues(alpha: 0.10),
+                          ),
+                          child: Row(mainAxisSize: MainAxisSize.min, children: [
+                            const Icon(Icons.public_rounded, size: 8, color: Color(0xFF3B82F6)),
+                            const SizedBox(width: 3),
+                            Text(_hcT(lang, 'public_badge'),
+                              style: const TextStyle(fontSize: 9, fontWeight: FontWeight.w800, color: Color(0xFF3B82F6))),
+                          ]),
+                        ),
+                      ],
+                      const Spacer(),
+                      Text(
+                        h.formattedDate,
+                        style: TextStyle(
+                          fontSize: 10,
+                          color: isDark ? Colors.white38 : const Color(0xFFAAAAAA),
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ]),
+
+                    const SizedBox(height: 9),
+
+                    // ── LINHA 2: Título principal ──────────────────────────
+                    Text(
+                      h.displayTitle,
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w900,
+                        color: isDark ? Colors.white : const Color(0xFF0D1B2A),
+                        height: 1.25,
+                        letterSpacing: -0.3,
+                      ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+
+                    // ── LINHA 3: Paciente (se houver) ─────────────────────
+                    if (h.patientInitials.isNotEmpty || h.patientAge.isNotEmpty) ...[
+                      const SizedBox(height: 5),
+                      Row(children: [
+                        Icon(Icons.person_rounded, size: 11,
+                          color: isDark ? Colors.white38 : const Color(0xFFAAAAAA)),
+                        const SizedBox(width: 4),
+                        Expanded(
+                          child: Text(
+                            [
+                              if (h.patientInitials.isNotEmpty) h.patientInitials,
+                              if (h.patientAge.isNotEmpty) '${h.patientAge} ${_hcT(p.lang, "years")}',
+                              if (h.patientSex.isNotEmpty) h.patientSex,
+                              if (h.patientWeight.isNotEmpty) '${h.patientWeight} kg',
+                            ].join(' · '),
+                            style: TextStyle(
+                              fontSize: 11,
+                              color: isDark ? Colors.white54 : const Color(0xFF778899),
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      ]),
+                    ],
+
+                    // ── LINHA 4: Diagnóstico em destaque ──────────────────
+                    if (h.finalDiagnosis.isNotEmpty) ...[
+                      const SizedBox(height: 8),
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: const Color(0xFF065F46).withValues(alpha: 0.08),
+                          border: Border.all(color: const Color(0xFF065F46).withValues(alpha: 0.20)),
+                        ),
+                        child: Row(children: [
+                          const Icon(Icons.check_circle_rounded, size: 13, color: Color(0xFF065F46)),
+                          const SizedBox(width: 6),
+                          Expanded(child: Text(
+                            'Dx: ${h.finalDiagnosis}',
+                            style: const TextStyle(
+                              fontSize: 12, fontWeight: FontWeight.w800,
+                              color: Color(0xFF065F46),
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                          )),
+                        ]),
+                      ),
+                    ] else if (h.workingDiagnosis.isNotEmpty) ...[
+                      const SizedBox(height: 8),
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: const Color(0xFFF59E0B).withValues(alpha: 0.08),
+                          border: Border.all(color: const Color(0xFFF59E0B).withValues(alpha: 0.25)),
+                        ),
+                        child: Row(children: [
+                          const Icon(Icons.pending_rounded, size: 13, color: Color(0xFF92400E)),
+                          const SizedBox(width: 6),
+                          Expanded(child: Text(
+                            '${p.lang == "es" ? "Hip." : "Hip."}: ${h.workingDiagnosis}',
+                            style: const TextStyle(
+                              fontSize: 12, fontWeight: FontWeight.w800,
+                              color: Color(0xFF92400E),
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                          )),
+                        ]),
+                      ),
+                    ],
+
+                    const SizedBox(height: 10),
+
+                    // ── LINHA 5: Progresso ────────────────────────────────
+                    Row(children: [
+                      Expanded(child: ClipRRect(
+                        borderRadius: BorderRadius.circular(4),
+                        child: LinearProgressIndicator(
+                          value: completion,
+                          minHeight: 3,
+                          backgroundColor: isDark
+                              ? Colors.white.withValues(alpha: 0.08)
+                              : const Color(0xFFEEF2F7),
+                          valueColor: AlwaysStoppedAnimation(
+                            completion >= 1.0
+                              ? const Color(0xFF10B981)
+                              : completion > 0.5
+                                  ? const Color(0xFF3B82F6)
+                                  : const Color(0xFFF59E0B),
+                          ),
+                        ),
+                      )),
+                      const SizedBox(width: 8),
+                      Text(
+                        '${(completion * 100).round()}%',
+                        style: TextStyle(
+                          fontSize: 9, fontWeight: FontWeight.w900,
+                          color: completion >= 1.0
+                              ? const Color(0xFF10B981)
+                              : isDark ? Colors.white38 : const Color(0xFFAAAAAA),
+                        ),
+                      ),
+                    ]),
+
+                    const SizedBox(height: 10),
+
+                    // ── LINHA 6: Rodapé (ações ou autor) ──────────────────
+                    if (!readOnly) ...[
+                      // Divisor sutil
+                      Divider(
+                        height: 1, thickness: 0.5,
+                        color: isDark ? Colors.white.withValues(alpha: 0.08) : const Color(0xFFEEF2F7),
+                      ),
+                      const SizedBox(height: 10),
+                      Row(children: [
+                        GestureDetector(
+                          onTap: onTogglePublic,
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              color: h.isPublic
+                                  ? const Color(0xFF3B82F6).withValues(alpha: 0.10)
+                                  : (isDark ? Colors.white.withValues(alpha: 0.05) : const Color(0xFFF5F7FA)),
+                              border: Border.all(
+                                color: h.isPublic
+                                    ? const Color(0xFF3B82F6).withValues(alpha: 0.30)
+                                    : (isDark ? Colors.white.withValues(alpha: 0.08) : const Color(0xFFDDE3ED)),
+                              ),
+                            ),
+                            child: Row(mainAxisSize: MainAxisSize.min, children: [
+                              Icon(
+                                h.isPublic ? Icons.public_rounded : Icons.lock_outline_rounded,
+                                size: 11,
+                                color: h.isPublic ? const Color(0xFF3B82F6) : const Color(0xFF888888),
+                              ),
+                              const SizedBox(width: 4),
+                              Text(
+                                h.isPublic ? _hcT(p.lang, 'public_badge') : _hcT(p.lang, 'private_badge'),
+                                style: TextStyle(
+                                  fontSize: 10, fontWeight: FontWeight.w800,
+                                  color: h.isPublic ? const Color(0xFF3B82F6) : const Color(0xFF888888),
+                                ),
+                              ),
+                            ]),
+                          ),
+                        ),
+                        const Spacer(),
+                        GestureDetector(
+                          onTap: onEdit,
+                          child: Container(
+                            padding: const EdgeInsets.all(7),
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: kGold.withValues(alpha: 0.10),
+                            ),
+                            child: const Icon(Icons.edit_rounded, size: 14, color: kGold),
+                          ),
+                        ),
+                        const SizedBox(width: 6),
+                        GestureDetector(
+                          onTap: onDelete,
+                          child: Container(
+                            padding: const EdgeInsets.all(7),
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: const Color(0xFFEF4444).withValues(alpha: 0.08),
+                            ),
+                            child: const Icon(Icons.delete_outline_rounded, size: 14, color: Color(0xFFEF4444)),
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        GestureDetector(
+                          onTap: onTap,
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              color: AppColors.of(context).darkBtn,
+                              boxShadow: [
+                                BoxShadow(color: Colors.black.withValues(alpha: 0.15), blurRadius: 4, offset: const Offset(0, 2)),
+                              ],
+                            ),
+                            child: Text(_hcT(p.lang, 'open'), style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w900, color: kGoldLight)),
+                          ),
+                        ),
+                      ]),
+                    ] else ...[
+                      // Banner de HC oculta
+                      if (h.isHidden) ...[
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8),
+                            color: Colors.orange.withValues(alpha: 0.08),
+                            border: Border.all(color: Colors.orange.withValues(alpha: 0.3)),
+                          ),
+                          child: Row(mainAxisSize: MainAxisSize.min, children: [
+                            const Icon(Icons.visibility_off_rounded, size: 11, color: Colors.orange),
+                            const SizedBox(width: 5),
+                            Text(_hcT(p.lang, 'hidden_mod'), style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w800, color: Colors.orange)),
+                          ]),
+                        ),
+                        const SizedBox(height: 8),
+                      ],
+                      // Divisor sutil
+                      Divider(
+                        height: 1, thickness: 0.5,
+                        color: isDark ? Colors.white.withValues(alpha: 0.08) : const Color(0xFFEEF2F7),
+                      ),
+                      const SizedBox(height: 8),
+                      Row(children: [
+                        Container(
+                          width: 28, height: 28,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: isDark ? Colors.white.withValues(alpha: 0.07) : const Color(0xFFEEF2F7),
+                          ),
+                          child: Icon(Icons.person_rounded, size: 14,
+                            color: isDark ? Colors.white38 : const Color(0xFFAAAAAA)),
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                          Text(
+                            h.authorName.isNotEmpty ? h.authorName : _hcT(p.lang, 'anon'),
+                            style: TextStyle(
+                              fontSize: 11, fontWeight: FontWeight.w800,
+                              color: isDark ? Colors.white70 : const Color(0xFF2D3748),
+                            ),
+                          ),
+                          if (h.uploadedAt.isNotEmpty)
+                            Text(
+                              _formatUploadedAt(h.uploadedAt),
+                              style: TextStyle(
+                                fontSize: 9, fontWeight: FontWeight.w600,
+                                color: isDark ? Colors.white30 : const Color(0xFFAAAAAA),
+                              ),
+                            ),
+                        ])),
+                        const SizedBox(width: 8),
+                        GestureDetector(
+                          onTap: onTap,
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              color: AppColors.of(context).darkBtn,
+                              boxShadow: [
+                                BoxShadow(color: Colors.black.withValues(alpha: 0.15), blurRadius: 4, offset: const Offset(0, 2)),
+                              ],
+                            ),
+                            child: Text(_hcT(p.lang, 'view'), style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w900, color: kGoldLight)),
+                          ),
+                        ),
+                      ]),
+                    ],
+
+                    // ── Botões de moderação (admin/supervisor) ─────────────
+                    if (onModHide != null || onModDelete != null) ...[
+                      const SizedBox(height: 8),
+                      Row(children: [
+                        if (onModHide != null)
+                          GestureDetector(
+                            onTap: onModHide,
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                color: Colors.orange.withValues(alpha: 0.08),
+                                border: Border.all(color: Colors.orange.withValues(alpha: 0.3)),
+                              ),
+                              child: Row(mainAxisSize: MainAxisSize.min, children: [
+                                Icon(h.isHidden ? Icons.visibility_rounded : Icons.visibility_off_rounded, size: 12, color: Colors.orange),
+                                const SizedBox(width: 4),
+                                Text(h.isHidden ? _hcT(p.lang, 'show_mod') : _hcT(p.lang, 'hide_mod'),
+                                  style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w800, color: Colors.orange)),
+                              ]),
+                            ),
+                          ),
+                        if (onModHide != null && onModDelete != null) const SizedBox(width: 8),
+                        if (onModDelete != null)
+                          GestureDetector(
+                            onTap: onModDelete,
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                color: Colors.red.withValues(alpha: 0.07),
+                                border: Border.all(color: Colors.red.withValues(alpha: 0.25)),
+                              ),
+                              child: const Row(mainAxisSize: MainAxisSize.min, children: [
+                                Icon(Icons.delete_forever_rounded, size: 12, color: Colors.red),
+                                SizedBox(width: 4),
+                                Text('Excluir', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w800, color: Colors.red)),
+                              ]),
+                            ),
+                          ),
+                      ]),
+                    ],
+
+                  ]),          // ← Column children end
+                ),             // ← Padding end
+              ),               // ← Expanded end
+            ]),                // ← Row children end (accent bar + Expanded)
+          ),                   // ← IntrinsicHeight end
+        ),                     // ← Container (card) end
+    );                         // ← GestureDetector end
   }
 }
 

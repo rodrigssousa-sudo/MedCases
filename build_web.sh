@@ -5,7 +5,7 @@
 set -e
 
 echo "🔨 Building Flutter Web (release)..."
-flutter build web --release --dart-define=flutter.inspector.structuredErrors=false
+/home/user/flutter/bin/flutter build web --release --dart-define=flutter.inspector.structuredErrors=false
 
 echo "🔪 Removendo serviceWorkerSettings do flutter_bootstrap.js..."
 # Remove a linha que registra o SW — mantém tudo mais
