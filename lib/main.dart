@@ -183,48 +183,13 @@ class MedCasesApp extends StatelessWidget {
         Locale('en'),       // Inglês (fallback padrão do Flutter)
       ],
       home: _AuthGate(firebaseInit: firebaseInit),
-      // ── Contenção de largura para iPad nativo (não afeta web desktop) ────────
-      // • Web desktop (kIsWeb): sem restrição — ocupa toda a viewport.
-      // • iPhone (< 600 px): transparente — nada muda.
-      // • iPad nativo (>= 600 px, não web): centraliza com maxWidth 560 px
-      //   e reescrita de MediaQuery.size para que SafeArea, MediaQuery.of()
-      //   e Scaffold.bottomNavigationBar usem a largura contida, não a tela real.
-      builder: (context, child) {
-        // Web: nunca restringir — o app deve ocupar a tela toda
-        if (kIsWeb) return child ?? const SizedBox.shrink();
-        final mq      = MediaQuery.of(context);
-        final screenW = mq.size.width;
-        if (screenW <= 600) return child ?? const SizedBox.shrink();
-        // iPad nativo: contém em 560 px e reescreve MediaQuery para que
-        // SafeArea e bottomNavigationBar enxerguem a largura correta.
-        const double maxW = 560;
-        final newMq = mq.copyWith(
-          size: Size(maxW, mq.size.height),
-          // Redistribui o padding horizontal (home indicator lateral do iPad)
-          // para dentro dos 560 px — evita que SafeArea use a tela cheia.
-          padding: mq.padding.copyWith(
-            left:  0,
-            right: 0,
-          ),
-          viewPadding: mq.viewPadding.copyWith(
-            left:  0,
-            right: 0,
-          ),
-          viewInsets: mq.viewInsets.copyWith(
-            left:  0,
-            right: 0,
-          ),
-        );
-        return Center(
-          child: SizedBox(
-            width: maxW,
-            child: MediaQuery(
-              data: newMq,
-              child: child ?? const SizedBox.shrink(),
-            ),
-          ),
-        );
-      },
+      // ── Layout 100% responsivo — sem restrição de largura máxima ─────────────
+      // O app ocupa toda a tela em qualquer dispositivo: Web, iPhone, iPad e tablet.
+      // O layout responsivo é gerenciado internamente por MedBreakpoints:
+      //   < 1024 px  → mobile/tablet shell (AppBar + bottom nav)
+      //   >= 1024 px → desktop shell (sidebar lateral + conteúdo expandido)
+      // Não há mais centralização forçada ou clamp de 560 px no iPad.
+      builder: (context, child) => child ?? const SizedBox.shrink(),
     ));  // fecha NotificationOverlay
   }
 

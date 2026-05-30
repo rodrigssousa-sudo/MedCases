@@ -40,10 +40,15 @@ class _ToolsScreenState extends State<ToolsScreen> with SingleTickerProviderStat
   Widget build(BuildContext context) {
     final p = context.watch<AppProvider>();
     final isEs = p.lang == 'es';
+    // No desktop a sidebar substitui o shell AppBar → mantém o header próprio.
+    // Em mobile/tablet o shell AppBar já está visível → oculta o header próprio
+    // para evitar double-header (duas barras empilhadas).
+    final bp = MedBreakpoints.of(context);
+    final showHeader = widget.hideHeader ? false : bp.isDesktop;
 
     return Column(children: [
-      // ── Header (oculto quando embutido em shell) ─────────────────
-      if (!widget.hideHeader)
+      // ── Header (visível apenas no desktop ou quando explicitamente solicitado)
+      if (showHeader)
         Container(
           decoration: const BoxDecoration(
             gradient: LinearGradient(

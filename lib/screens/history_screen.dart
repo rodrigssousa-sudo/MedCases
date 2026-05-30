@@ -778,6 +778,10 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
                 ),
               );
 
+    // Desktop: sem shell AppBar → mostra header próprio.
+    // Mobile/tablet: shell AppBar já visível → oculta header para evitar double-header.
+    final showListHeader = bp.isDesktop;
+
     return SafeArea(
       top: false,
       bottom: false,
@@ -786,7 +790,8 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
           color: bg,
           child: Column(
             children: [
-              // Header — SafeArea próprio (header global removido para tab 3)
+              // Header — visível apenas no desktop (sem shell AppBar)
+              if (showListHeader)
               Container(
                 decoration: const BoxDecoration(
                   gradient: LinearGradient(
@@ -924,6 +929,39 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
                   ),
                 ),
               ),
+              // Mobile: barra compacta com contadores + botão Nova HC
+              if (!showListHeader)
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(14, 8, 14, 0),
+                  child: Row(children: [
+                    Text('${mine.length} ${_hcT(lang, 'my_hcs_count')}',
+                      style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700,
+                        color: const Color(0xFF3B82F6).withValues(alpha: 0.9))),
+                    const SizedBox(width: 8),
+                    Text('${visiblePub.length} ${_hcT(lang, 'pub_count')}',
+                      style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700,
+                        color: Color(0xFF93C5FD))),
+                    const Spacer(),
+                    GestureDetector(
+                      onTap: () => _startNewHistory(p, lang),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          gradient: const LinearGradient(
+                            colors: [Color(0xFF3B82F6), Color(0xFF1D4ED8)],
+                          ),
+                        ),
+                        child: Row(mainAxisSize: MainAxisSize.min, children: [
+                          const Icon(Icons.add_rounded, size: 14, color: Colors.white),
+                          const SizedBox(width: 4),
+                          Text(_hcT(lang, 'new_hc'),
+                            style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w900, color: Colors.white)),
+                        ]),
+                      ),
+                    ),
+                  ]),
+                ),
               Padding(
                 padding: const EdgeInsets.fromLTRB(16, 10, 16, 0),
                 child: Container(
@@ -1856,14 +1894,26 @@ class _HistoryDetailState extends State<_HistoryDetail> {
 
   @override
   Widget build(BuildContext context) {
+    final bp = MedBreakpoints.of(context);
     return Stack(children: [
       // ── Conteúdo principal scrollável ──────────────────────────────────────
       SingleChildScrollView(
         padding: const EdgeInsets.fromLTRB(0, 0, 0, 120),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
 
-          // ══ HEADER CARD VERDE ESCURO COM GRADIENTE ══════════════════════════
+          // ══ HEADER HERO ══════════════════════════════════════════════════════
+          // Desktop: gradiente completo com decorações.
+          // Mobile/tablet: compacto sem gradiente (shell AppBar já no topo).
+          if (bp.isDesktop)
           _HistoryHeroHeader(
+            history: history,
+            readOnly: readOnly,
+            onBack: widget.onBack,
+            onEdit: widget.onEdit,
+            lang: p.lang,
+          )
+          else
+          _HistoryHeroHeaderCompact(
             history: history,
             readOnly: readOnly,
             onBack: widget.onBack,
@@ -2173,6 +2223,93 @@ class _HistoryHeroHeader extends StatelessWidget {
             ],
           ]),
         ),
+      ]),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// HEADER COMPACTO — mobile/tablet (sem gradiente decorativo, shell AppBar já visível)
+// ─────────────────────────────────────────────────────────────────────────────
+class _HistoryHeroHeaderCompact extends StatelessWidget {
+  final ClinicalHistoryModel history;
+  final bool readOnly;
+  final VoidCallback onBack;
+  final VoidCallback? onEdit;
+  final String lang;
+
+  const _HistoryHeroHeaderCompact({
+    required this.history,
+    required this.readOnly,
+    required this.onBack,
+    this.onEdit,
+    this.lang = 'pt',
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [Color(0xFF071A10), Color(0xFF155131)],
+        ),
+      ),
+      padding: const EdgeInsets.fromLTRB(14, 10, 14, 12),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        // Linha 1: botão voltar + categoria badge + (optional) editar
+        Row(children: [
+          GestureDetector(
+            onTap: onBack,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                color: Colors.white.withValues(alpha: 0.12),
+                border: Border.all(color: Colors.white.withValues(alpha: 0.18)),
+              ),
+              child: Row(mainAxisSize: MainAxisSize.min, children: [
+                const Icon(Icons.arrow_back_ios_rounded, size: 12, color: Colors.white),
+                const SizedBox(width: 3),
+                Text(_hcT(lang, 'back'), style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: Colors.white)),
+              ]),
+            ),
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              history.displayTitle,
+              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w900, color: Colors.white, letterSpacing: -0.2),
+              overflow: TextOverflow.ellipsis,
+              maxLines: 1,
+            ),
+          ),
+          if (!readOnly && onEdit != null) ...[
+            const SizedBox(width: 8),
+            GestureDetector(
+              onTap: onEdit,
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: kGold.withValues(alpha: 0.15),
+                  border: Border.all(color: kGold.withValues(alpha: 0.4)),
+                ),
+                child: const Icon(Icons.edit_rounded, size: 14, color: kGoldLight),
+              ),
+            ),
+          ],
+        ]),
+        // Linha 2: badges do paciente (se houver)
+        if (history.patientInitials.isNotEmpty || history.patientAge.isNotEmpty) ...[
+          const SizedBox(height: 8),
+          Wrap(spacing: 6, runSpacing: 4, children: [
+            if (history.patientInitials.isNotEmpty) _PatientBadge(icon: Icons.badge_rounded, text: history.patientInitials, accent: const Color(0xFF4ADE80)),
+            if (history.patientAge.isNotEmpty) _PatientBadge(icon: Icons.cake_rounded, text: '${history.patientAge} ${_hcT(lang, 'years')}', accent: const Color(0xFF93C5FD)),
+            if (history.patientSex.isNotEmpty) _PatientBadge(icon: Icons.wc_rounded, text: history.patientSex, accent: const Color(0xFFF9A8D4)),
+          ]),
+        ],
       ]),
     );
   }
@@ -2939,42 +3076,54 @@ class _HistoryEditorState extends State<_HistoryEditor> {
   @override
   Widget build(BuildContext context) {
     final completion = _draft.completionRatio;
+    final bp = MedBreakpoints.of(context);
+    // Desktop: header gradiente completo (sem shell AppBar).
+    // Mobile/tablet: shell AppBar já visível → header compacto sem gradiente
+    // (apenas barra de ações + progresso + tabs — sem duplicar o título).
+    final showFullEditorHeader = bp.isDesktop;
+
+    // Conteúdo da barra de ações (Row com fechar, título, ver, salvar)
+    final actionRow = Row(children: [
+      GestureDetector(onTap: widget.onCancel,
+        child: Container(padding: const EdgeInsets.all(8), decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: Colors.white.withValues(alpha: 0.1)),
+          child: const Icon(Icons.close_rounded, size: 16, color: Colors.white))),
+      const SizedBox(width: 10),
+      Expanded(child: Text(_draft.chiefComplaint.isNotEmpty ? _draft.chiefComplaint : _hcT(widget.p.lang, 'new_hc_title'),
+        style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w900, color: Colors.white), overflow: TextOverflow.ellipsis)),
+      // Botão Pré-visualizar
+      GestureDetector(onTap: _showPreview,
+        child: Container(padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8), margin: const EdgeInsets.only(right: 8),
+          decoration: BoxDecoration(borderRadius: BorderRadius.circular(12), color: Colors.white.withValues(alpha: 0.12), border: Border.all(color: Colors.white.withValues(alpha: 0.2))),
+          child: const Row(mainAxisSize: MainAxisSize.min, children: [
+            Icon(Icons.visibility_rounded, size: 14, color: Colors.white),
+            SizedBox(width: 5),
+            Text('Ver', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w800, color: Colors.white)),
+          ]))),
+      GestureDetector(onTap: _save,
+        child: Container(padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8), decoration: BoxDecoration(borderRadius: BorderRadius.circular(12), color: kGold),
+          child: Text(_hcT(widget.p.lang, 'save_btn'), style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w900, color: Color(0xFF0F1C14))))),
+    ]);
+
+    // Barra de progresso
+    final progressRow = Row(children: [
+      Expanded(child: ClipRRect(borderRadius: BorderRadius.circular(4),
+        child: LinearProgressIndicator(value: completion, minHeight: 4, backgroundColor: Colors.white.withValues(alpha: 0.15),
+          valueColor: const AlwaysStoppedAnimation(kGold)))),
+      const SizedBox(width: 8),
+      Text('${(completion * 100).round()}${_hcT(widget.p.lang, "progress_label")}', style: TextStyle(fontSize: 9, color: Colors.white.withValues(alpha: 0.7), fontWeight: FontWeight.w700)),
+    ]);
+
     return Column(children: [
-      // Header
-      PremiumCard(
-        padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
-        child: Column(children: [
-          Row(children: [
-            GestureDetector(onTap: widget.onCancel,
-              child: Container(padding: const EdgeInsets.all(8), decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: Colors.white.withValues(alpha: 0.1)),
-                child: const Icon(Icons.close_rounded, size: 16, color: Colors.white))),
-            const SizedBox(width: 10),
-            Expanded(child: Text(_draft.chiefComplaint.isNotEmpty ? _draft.chiefComplaint : _hcT(widget.p.lang, 'new_hc_title'),
-              style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w900, color: Colors.white), overflow: TextOverflow.ellipsis)),
-            // Botão Pré-visualizar
-            GestureDetector(onTap: _showPreview,
-              child: Container(padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8), margin: const EdgeInsets.only(right: 8),
-                decoration: BoxDecoration(borderRadius: BorderRadius.circular(12), color: Colors.white.withValues(alpha: 0.12), border: Border.all(color: Colors.white.withValues(alpha: 0.2))),
-                child: const Row(mainAxisSize: MainAxisSize.min, children: [
-                  Icon(Icons.visibility_rounded, size: 14, color: Colors.white),
-                  SizedBox(width: 5),
-                  Text('Ver', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w800, color: Colors.white)),
-                ]))),
-            GestureDetector(onTap: _save,
-              child: Container(padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8), decoration: BoxDecoration(borderRadius: BorderRadius.circular(12), color: kGold),
-                child: Text(_hcT(widget.p.lang, 'save_btn'), style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w900, color: Color(0xFF0F1C14))))),
-          ]),
-          const SizedBox(height: 10),
-          // Barra de progresso
-          Row(children: [
-            Expanded(child: ClipRRect(borderRadius: BorderRadius.circular(4),
-              child: LinearProgressIndicator(value: completion, minHeight: 4, backgroundColor: Colors.white.withValues(alpha: 0.15),
-                valueColor: const AlwaysStoppedAnimation(kGold)))),
-            const SizedBox(width: 8),
-            Text('${(completion * 100).round()}${_hcT(widget.p.lang, "progress_label")}', style: TextStyle(fontSize: 9, color: Colors.white.withValues(alpha: 0.7), fontWeight: FontWeight.w700)),
-          ]),
-          const SizedBox(height: 10),
-          // Navegação de seções
+      // Header — desktop: gradiente completo; mobile: compacto sem gradiente duplicado
+      if (showFullEditorHeader)
+        PremiumCard(
+          padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
+          child: Column(children: [
+            actionRow,
+            const SizedBox(height: 10),
+            progressRow,
+            const SizedBox(height: 10),
+            // Navegação de seções
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Row(children: List.generate(_sections.length, (i) {
@@ -3015,9 +3164,64 @@ class _HistoryEditorState extends State<_HistoryEditor> {
             })),
           ),
         ]),
-      ),
-
-
+      )
+      else
+        // Mobile/tablet: header compacto — ações + progresso + tabs sem gradiente
+        Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [Color(0xFF07110d), Color(0xFF0F2D1C)],
+            ),
+            border: Border(bottom: BorderSide(color: Color(0xFF1A3A28), width: 1)),
+          ),
+          padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
+          child: Column(mainAxisSize: MainAxisSize.min, children: [
+            actionRow,
+            const SizedBox(height: 8),
+            progressRow,
+            const SizedBox(height: 8),
+            // Navegação de seções (tabs compactos)
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(children: List.generate(_sections.length, (i) {
+                final active = _section == i;
+                return Padding(
+                  padding: const EdgeInsets.only(right: 6),
+                  child: GestureDetector(
+                    onTap: () => setState(() {
+                      _section = i;
+                      if (_smartDictActive) {
+                        final newField = _defaultFieldForSection(i);
+                        if (newField == null) {
+                          _smartRecog?.stop();
+                          SttHelper.stop();
+                          _smartDictActive = false;
+                          _smartInterim = '';
+                          _smartCurrentField = '';
+                        } else {
+                          _smartCurrentField = newField;
+                        }
+                      }
+                    }),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: active ? kGold : Colors.white.withValues(alpha: 0.1),
+                        border: Border.all(color: active ? kGold : Colors.white.withValues(alpha: 0.15)),
+                      ),
+                      child: Text(_sections[i].$2,
+                        style: TextStyle(fontSize: 10, fontWeight: FontWeight.w800,
+                          color: active ? const Color(0xFF0F1C14) : Colors.white.withValues(alpha: 0.85))),
+                    ),
+                  ),
+                );
+              })),
+            ),
+          ]),
+        ),
 
       // Conteúdo da seção — no desktop: centraliza com max-width maior
       Expanded(child: LayoutBuilder(

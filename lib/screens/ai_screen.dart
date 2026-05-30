@@ -803,8 +803,15 @@ class _AiScreenState extends State<AiScreen> {
       );
     }
 
+    // Desktop: sem shell AppBar → mostra _WaHeader próprio.
+    // Mobile/tablet: shell AppBar já visível → oculta _WaHeader para evitar
+    // double-header. Botões de ação (Limpar, Histórico) ficam acessíveis via
+    // menu sanduíche ou gestos internos.
+    final showWaHeader = bp.isDesktop;
+
     return Column(children: [
-      // ── Header fino estilo WhatsApp ──────────────────────────────────────
+      // ── Header fino estilo WhatsApp (desktop only) ───────────────────────
+      if (showWaHeader)
       _WaHeader(
         dark: dark,
         hasMessages: _messages.isNotEmpty,

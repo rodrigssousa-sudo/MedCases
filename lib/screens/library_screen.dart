@@ -7,6 +7,7 @@ import '../providers/app_provider.dart';
 import '../services/firestore_service.dart';
 import '../models/guide_model.dart';
 import '../models/protocol_model.dart';
+import '../widgets/common_widgets.dart' show MedBreakpoints;
 import 'protocols_screen.dart' show showProtocolDetail;
 
 const _kDark  = Color(0xFF07110d);
@@ -241,6 +242,9 @@ class _LibraryScreenState extends State<LibraryScreen>
     final isEs = p.lang == 'es';
     final bg = dark ? const Color(0xFF0A130E) : const Color(0xFFF7F8FA);
     final filtered = _filtered;
+    // Desktop: sem shell AppBar → mostra header próprio.
+    // Mobile/tablet: shell AppBar já visível → oculta header próprio.
+    final showHeader = MedBreakpoints.of(context).isDesktop;
 
     return SafeArea(
       top: false,
@@ -250,6 +254,7 @@ class _LibraryScreenState extends State<LibraryScreen>
           color: bg,
           child: Column(
             children: [
+              if (showHeader)
               _LibraryHeader(
                 dark: dark,
                 isEs: isEs,
