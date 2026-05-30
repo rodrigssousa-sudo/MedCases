@@ -1,14 +1,14 @@
 /**
- * MedCases Pro — PWA Service Worker v6.2.1
+ * MedCases Pro — PWA Service Worker v7.0.0
+ * BREAKING CHANGE: cache bumped para forçar evicção total em todos os devices.
  * Estratégia: network-first para main.dart.js e index.html (sempre frescos)
  *             cache-first para assets estáticos, ícones e fontes.
- * Resultado: bundles antigos deixam de ser servidos de imediato após deploy.
  */
 
 'use strict';
 
-const SW_VERSION   = '6.2.3';
-const CACHE_APP    = 'medcases-app-v6.2.3';
+const SW_VERSION   = '7.0.0';
+const CACHE_APP    = 'medcases-app-v7.0.0';   // ← BUMPED: força limpeza total
 const CACHE_FONTS  = 'medcases-fonts-v2';
 
 // Assets pré-cacheados no install (críticos para o boot)
@@ -22,9 +22,6 @@ const PRECACHE = [
   './icons/Icon-maskable-192.png',
   './icons/Icon-maskable-512.png',
 ];
-
-// Assets grandes continuam cacheados, exceto main.dart.js
-const BIG_ASSETS = /\/(flutter_bootstrap\.js|flutter\.js)(\?.*)?$/;
 
 // Nunca cachear APIs, Firebase, Google Auth
 const NEVER_CACHE = [
@@ -43,7 +40,14 @@ const FONT_URLS = [/fonts\.googleapis\.com/, /fonts\.gstatic\.com/];
 
 function neverCache(url) { return NEVER_CACHE.some(p => p.test(url)); }
 function isFont(url)     { return FONT_URLS.some(p => p.test(url)); }
-function isBigAsset(url) { return BIG_ASSETS.test(url); }
+
+// CRÍTICO: usa string .includes() não url.pathname (que seria undefined numa string)
+function isMainDartJs(url) {
+  return url.includes('main.dart.js');
+}
+function isBigAsset(url) {
+  return url.includes('flutter_bootstrap.js') || url.includes('flutter.js');
+}
 function isStaticAsset(url) {
   return /\.(js|css|png|jpg|jpeg|svg|ico|woff|woff2|ttf|json|wasm)(\?.*)?$/.test(url);
 }
@@ -53,18 +57,21 @@ self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(CACHE_APP)
       .then(cache => Promise.allSettled(PRECACHE.map(u => cache.add(u).catch(() => {}))))
-      .then(() => self.skipWaiting())   // ativa imediatamente — sem toast necessário
+      .then(() => self.skipWaiting())   // ativa imediatamente
   );
 });
 
 // ── ACTIVATE ───────────────────────────────────────────────────────────────────
-// Remove caches de versões anteriores, mantém só os atuais
+// Apaga TODOS os caches antigos — versão nova = tudo do zero
 self.addEventListener('activate', event => {
   const keep = [CACHE_APP, CACHE_FONTS];
   event.waitUntil(
     caches.keys()
       .then(keys => Promise.all(
-        keys.filter(k => !keep.includes(k)).map(k => caches.delete(k))
+        keys.filter(k => !keep.includes(k)).map(k => {
+          console.log('[SW v7] deletando cache antigo:', k);
+          return caches.delete(k);
+        })
       ))
       .then(() => self.clients.claim())
   );
@@ -73,12 +80,11 @@ self.addEventListener('activate', event => {
 // ── FETCH ──────────────────────────────────────────────────────────────────────
 self.addEventListener('fetch', event => {
   const { request } = event;
-  const url = request.url;
+  const url = request.url;   // string — NÃO é um objeto URL
 
   if (request.method !== 'GET') return;
   if (neverCache(url)) return;
   if (url.startsWith('chrome-extension://')) return;
-  // URLs com nocache= ou bust= → sempre rede (cache bust manual)
   if (url.includes('nocache=') || url.includes('bust=')) return;
 
   // ── Fontes: cache permanente ───────────────────────────────────────────────
@@ -128,16 +134,15 @@ self.addEventListener('fetch', event => {
     return;
   }
 
-  // ── main.dart.js: network-first + fallback ao cache offline ───────────────
-  if (url.pathname.endsWith('/main.dart.js')) {
+  // ── main.dart.js: SEMPRE network-first com cache: no-store ─────────────────
+  // CRÍTICO: isMainDartJs usa string.includes(), não url.pathname (seria undefined)
+  if (isMainDartJs(url)) {
     event.respondWith(
       fetch(request, { cache: 'no-store' })
         .then(res => {
           if (res && res.ok) {
             const clone = res.clone();
-            caches.open(CACHE_APP).then(cache => {
-              cache.put(request, clone);
-            });
+            caches.open(CACHE_APP).then(cache => cache.put(request, clone));
           }
           return res;
         })
@@ -149,17 +154,20 @@ self.addEventListener('fetch', event => {
     return;
   }
 
-  // ── flutter_bootstrap.js e flutter.js: stale-while-revalidate ─────────────
+  // ── flutter_bootstrap.js e flutter.js: network-first (têm ?v= hash) ────────
   if (isBigAsset(url)) {
     event.respondWith(
-      caches.open(CACHE_APP).then(async cache => {
-        const cached = await cache.match(request);
-        const fetchPromise = fetch(request).then(res => {
-          if (res.ok) cache.put(request, res.clone());
+      fetch(request, { cache: 'no-store' })
+        .then(res => {
+          if (res && res.ok) {
+            caches.open(CACHE_APP).then(cache => cache.put(request, res.clone()));
+          }
           return res;
-        }).catch(() => null);
-        return cached || fetchPromise;
-      })
+        })
+        .catch(async () => {
+          const cache = await caches.open(CACHE_APP);
+          return cache.match(request);
+        })
     );
     return;
   }
@@ -189,9 +197,6 @@ self.addEventListener('message', event => {
       .then(keys => Promise.all(keys.map(k => caches.delete(k))))
       .then(() => { if (event.ports[0]) event.ports[0].postMessage({ ok: true }); });
   }
-  // Recebe sinal da página para ativar o novo SW imediatamente.
-  // A página envia {type:'SKIP_WAITING'} quando o usuário clica em "Atualizar Agora".
-  // Após skipWaiting(), o evento 'controllerchange' dispara na página → reload.
   if (event.data.type === 'SKIP_WAITING') {
     self.skipWaiting();
   }

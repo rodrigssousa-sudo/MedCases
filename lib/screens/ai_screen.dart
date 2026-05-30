@@ -180,6 +180,10 @@ class AiScreen extends StatefulWidget {
   static final clearChatCallback = ValueNotifier<VoidCallback?>(null);
   /// callback para abrir o histórico (null quando o widget não está montado)
   static final openHistoryCallback = ValueNotifier<VoidCallback?>(null);
+  /// true quando IA está conectada (Gemini ou chave OpenAI configurada)
+  static final aiConnectedNotifier = ValueNotifier<bool>(false);
+  /// callback para abrir as configurações de IA (null quando não montado)
+  static final openSettingsCallback = ValueNotifier<VoidCallback?>(null);
 }
 
 class _AiScreenState extends State<AiScreen> {
@@ -227,6 +231,12 @@ class _AiScreenState extends State<AiScreen> {
     final cnt = _chatHistory.length;
     if (AiScreen.historyCountNotifier.value != cnt) {
       AiScreen.historyCountNotifier.value = cnt;
+    }
+    // aiConnected: gemini ou chave OpenAI configurada
+    final p = context.read<AppProvider>();
+    final connected = p.geminiConnected || p.hasAnyAi;
+    if (AiScreen.aiConnectedNotifier.value != connected) {
+      AiScreen.aiConnectedNotifier.value = connected;
     }
   }
 
@@ -287,6 +297,10 @@ class _AiScreenState extends State<AiScreen> {
     AiScreen.openHistoryCallback.value = () {
       if (!mounted) return;
       _openHistory(context.read<AppProvider>());
+    };
+    AiScreen.openSettingsCallback.value = () {
+      if (!mounted) return;
+      _openAiSettings();
     };
 
     // Verifica sessão Gemini ao montar — captura token de redirect OAuth
@@ -469,8 +483,10 @@ class _AiScreenState extends State<AiScreen> {
     // Limpa callbacks do shell AppBar — widget desmontado
     AiScreen.clearChatCallback.value   = null;
     AiScreen.openHistoryCallback.value = null;
+    AiScreen.openSettingsCallback.value = null;
     AiScreen.hasMessagesNotifier.value  = false;
     AiScreen.historyCountNotifier.value = 0;
+    AiScreen.aiConnectedNotifier.value  = false;
     super.dispose();
   }
 

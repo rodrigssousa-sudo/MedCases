@@ -1661,6 +1661,44 @@ class _MobileAppBar extends StatelessWidget {
 
                 // ── Botões contextuais da IA (só na aba 2) ─────────────────
                 if (currentTab == _kAiTab) ...[
+                  // Botão Conectar IA — aparece quando IA não está conectada
+                  ValueListenableBuilder<bool>(
+                    valueListenable: AiScreen.aiConnectedNotifier,
+                    builder: (_, isConnected, __) => isConnected
+                        ? const SizedBox.shrink()
+                        : GestureDetector(
+                            onTap: AiScreen.openSettingsCallback.value,
+                            child: Container(
+                              height: 38,
+                              margin: const EdgeInsets.only(right: 8),
+                              padding: const EdgeInsets.symmetric(horizontal: 10),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(12),
+                                color: const Color(0xFFC5A365),
+                                border: Border.all(
+                                    color: const Color(0xFFFFE8A6).withValues(alpha: 0.4),
+                                    width: 1),
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  const Icon(Icons.link_rounded, size: 14,
+                                      color: Color(0xFF1A1100)),
+                                  const SizedBox(width: 5),
+                                  Text(
+                                    lang == 'es' ? 'Conectar IA' : 'Conectar IA',
+                                    style: const TextStyle(
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.w800,
+                                      color: Color(0xFF1A1100),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                  ),
+
                   // Botão Histórico — badge com contagem de sessões salvas
                   ValueListenableBuilder<int>(
                     valueListenable: AiScreen.historyCountNotifier,
