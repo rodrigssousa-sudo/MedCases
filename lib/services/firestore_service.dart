@@ -84,22 +84,36 @@ class FirestoreService {
     if (v is int) return v;
     if (v is double) return v;
     if (v is List) {
-      return v.map(_sanitizeSdkValue).toList();
+      // Cada elemento é sanitizado individualmente — um elemento ruim não
+      // quebra a lista inteira. Crítico para o array 'evolutions' em dart2js.
+      final result = <dynamic>[];
+      for (final item in v) {
+        try {
+          result.add(_sanitizeSdkValue(item));
+        } catch (_) {
+          try { result.add(item?.toString() ?? ''); } catch (_) {}
+        }
+      }
+      return result;
     }
     if (v is Map<String, dynamic>) {
       return sdkDocToSafeMap(v);
     }
     if (v is Map) {
-      return sdkDocToSafeMap(Map<String, dynamic>.from(v));
+      // CRÍTICO: nunca usar Map<String, dynamic>.from(v) em dart2js release —
+      // quando v é JavaScriptObject (Map<String, Object?>) o from() pode lançar
+      // TypeError para valores cujo tipo JS não mapeia para Object.
+      // Usa sdkDocToSafeMapAny que itera entry-by-entry com try/catch individual.
+      return sdkDocToSafeMapAny(v);
     }
-    // Tenta converter Timestamp do Firestore para ISO8601
+    // Tenta converter Timestamp do Firestore → ISO8601 via reflexão dinâmica
     try {
       final dynamic ts = v;
       final dynamic date = ts.toDate();
       if (date is DateTime) return date.toIso8601String();
     } catch (_) {}
-    // Qualquer outro tipo: converte para string
-    return v.toString();
+    // Último recurso: toString() — nunca lança
+    try { return v.toString(); } catch (_) { return ''; }
   }
 
   /// Versão que aceita qualquer Map — necessário em dart2js release onde
@@ -135,6 +149,55 @@ class FirestoreService {
     } catch (_) {
       return <String, dynamic>{};
     }
+  }
+
+  // ── Helpers de conversão defensiva para listas de documentos ────────────
+  // Cada documento é processado individualmente em try/catch.
+  // Um documento malformado é silenciosamente descartado — não quebra os demais.
+  // CRÍTICO para dart2js release/minified no mobile web onde tipos JS inesperados
+  // causam TypeError não capturado se usarmos .map().toList() sem proteção.
+
+  /// Converte uma lista de QueryDocumentSnapshot → List<ClinicalHistoryModel>
+  /// com proteção individual por documento. Imune a TypeError em dart2js release.
+  static List<ClinicalHistoryModel> _safeDocsToHistoryList(dynamic docs) {
+    final result = <ClinicalHistoryModel>[];
+    try {
+      final list = docs is List ? docs : (docs as dynamic).toList();
+      for (final doc in list as List) {
+        try {
+          final data = sdkDocWithId(doc);
+          if (data.isEmpty) continue;
+          result.add(ClinicalHistoryModel.fromJson(data));
+        } catch (e) {
+          // Documento malformado — descarta sem propagar erro
+          if (kDebugMode) debugPrint('[safeDocsToHistoryList] doc ignorado: $e');
+        }
+      }
+    } catch (e) {
+      if (kDebugMode) debugPrint('[safeDocsToHistoryList] falha ao iterar docs: $e');
+    }
+    return result;
+  }
+
+  /// Converte uma lista de QueryDocumentSnapshot → List<GuideModel>
+  /// com proteção individual por documento. Imune a TypeError em dart2js release.
+  static List<GuideModel> _safeDocsToGuideList(dynamic docs) {
+    final result = <GuideModel>[];
+    try {
+      final list = docs is List ? docs : (docs as dynamic).toList();
+      for (final doc in list as List) {
+        try {
+          final data = sdkDocWithId(doc);
+          if (data.isEmpty) continue;
+          result.add(GuideModel.fromJson(data));
+        } catch (e) {
+          if (kDebugMode) debugPrint('[safeDocsToGuideList] doc ignorado: $e');
+        }
+      }
+    } catch (e) {
+      if (kDebugMode) debugPrint('[safeDocsToGuideList] falha ao iterar docs: $e');
+    }
+    return result;
   }
 
   // Getter lazy — só acessa Firestore APÓS Firebase.initializeApp() completar
@@ -574,9 +637,12 @@ class FirestoreService {
       final snap = await _userCases(uid)
           .where('isCustom', isEqualTo: true)
           .get();
-      final cases = snap.docs
-          .map((d) => ClinicalCaseModel.fromJson(sdkDocToSafeMap(d.data())))
-          .toList();
+      final cases = <ClinicalCaseModel>[];
+      for (final d in snap.docs) {
+        try {
+          cases.add(ClinicalCaseModel.fromJson(sdkDocWithId(d)));
+        } catch (_) {}
+      }
       cases.sort((a, b) => (b.createdAt ?? '').compareTo(a.createdAt ?? ''));
       return cases;
     } catch (_) {
@@ -602,9 +668,12 @@ class FirestoreService {
         .where('isCustom', isEqualTo: true)
         .snapshots()
         .map((snap) {
-      final cases = snap.docs
-          .map((d) => ClinicalCaseModel.fromJson(sdkDocToSafeMap(d.data())))
-          .toList();
+      final cases = <ClinicalCaseModel>[];
+      for (final d in snap.docs) {
+        try {
+          cases.add(ClinicalCaseModel.fromJson(sdkDocWithId(d)));
+        } catch (_) {}
+      }
       cases.sort((a, b) => (b.createdAt ?? '').compareTo(a.createdAt ?? ''));
       return cases;
     });
@@ -907,10 +976,11 @@ class FirestoreService {
           : await query
               .get(GetOptions(source: source))
               .timeout(const Duration(seconds: 8));
+      // _safeDocsToHistoryList: cada documento em try/catch individual —
+      // imune a TypeError em dart2js release quando data() retorna Map<String,Object?>
+      final rawList = _safeDocsToHistoryList(snap.docs);
       final list = _normalizePublicHistories(
-        snap.docs
-            .map((d) => ClinicalHistoryModel.fromJson(sdkDocWithId(d)))
-            .where((h) => !h.isHidden),
+        rawList.where((h) => !h.isHidden),
       );
       if (list.isNotEmpty) {
         await _saveCachedPublicHistories(list);
@@ -1101,9 +1171,9 @@ class FirestoreService {
     return _userHistories(uid)
         .orderBy('updatedAt', descending: true)
         .snapshots()
-        .map((snap) => snap.docs
-            .map((d) => ClinicalHistoryModel.fromJson(sdkDocToSafeMap(d.data())))
-            .toList());
+        // _safeDocsToHistoryList: proteção individual por documento —
+        // imune a TypeError em dart2js release quando d.data() retorna Map<String,Object?>
+        .map((snap) => _safeDocsToHistoryList(snap.docs));
   }
 
   // ── Último paciente (cockpit) ─────────────────────────────────────────────
@@ -1617,9 +1687,14 @@ class FirestoreService {
     return _userNotes(uid)
         .orderBy('updatedAt', descending: true)
         .snapshots()
-        // sdkDocWithId: evita Map<String,dynamic>.from() que lança em dart2js release
-        // quando o SDK retorna Map<String,Object?> em vez de Map<String,dynamic>.
-        .map((snap) => snap.docs.map(sdkDocWithId).toList());
+        // Cada doc em try/catch individual via helper — imune a TypeError dart2js
+        .map((snap) {
+          final result = <Map<String, dynamic>>[];
+          for (final doc in snap.docs) {
+            try { result.add(sdkDocWithId(doc)); } catch (_) {}
+          }
+          return result;
+        });
   }
 
   /// Deleta uma anotação.
@@ -1778,9 +1853,7 @@ class FirestoreService {
           : await query
               .get(GetOptions(source: source))
               .timeout(const Duration(seconds: 8));
-      final guides = _normalizeGuides(
-        snap.docs.map((d) => GuideModel.fromJson(sdkDocWithId(d))),
-      );
+      final guides = _normalizeGuides(_safeDocsToGuideList(snap.docs));
       if (guides.isNotEmpty) {
         _clearGuidesError();
         await _saveGuidesCache(guides);
@@ -1813,9 +1886,7 @@ class FirestoreService {
           : await query
               .get(GetOptions(source: source))
               .timeout(const Duration(seconds: 8));
-      final guides = _normalizeGuides(
-        snap.docs.map((d) => GuideModel.fromJson(sdkDocWithId(d))),
-      );
+      final guides = _normalizeGuides(_safeDocsToGuideList(snap.docs));
       if (guides.isNotEmpty) {
         _clearGuidesError();
         await _saveGuidesCache(guides);
@@ -2144,9 +2215,7 @@ class FirestoreService {
         .where('isPublished', isEqualTo: true)
         .orderBy('uploadedAt', descending: true)
         .snapshots()
-        .map((snap) => _normalizeGuides(
-              snap.docs.map((d) => GuideModel.fromJson(sdkDocWithId(d))),
-            ));
+        .map((snap) => _normalizeGuides(_safeDocsToGuideList(snap.docs)));
   }
 
   static Stream<List<GuideModel>> _guidesStreamRest() {
@@ -2217,9 +2286,7 @@ class FirestoreService {
     return _guides
         .orderBy('uploadedAt', descending: true)
         .snapshots()
-        .map((snap) => snap.docs
-            .map((d) => GuideModel.fromJson(sdkDocWithId(d)))
-            .toList());
+        .map((snap) => _safeDocsToGuideList(snap.docs));
   }
 
   /// Salva metadados de uma guia no Firestore.
