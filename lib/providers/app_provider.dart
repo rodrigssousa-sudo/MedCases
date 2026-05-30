@@ -1830,7 +1830,11 @@ class AppProvider extends ChangeNotifier {
       final name  = _normalize(d.name);
       final cls   = _normalize(d.getField(d.className, _lang));
       final mech  = _normalize(d.getField(d.mechanism, _lang));
-      if (words.any((w) => name.contains(w) || cls.contains(w) || mech.contains(w))) {
+      // Expandido: group + category para capturar classes farmacológicas
+      final grp   = _normalize(d.group);
+      final cat   = _normalize(d.getField(d.category, _lang));
+      if (words.any((w) => name.contains(w) || cls.contains(w) ||
+                           mech.contains(w) || grp.contains(w) || cat.contains(w))) {
         final dose = d.getField(d.fixedDose, _lang);
         final warn = d.getField(d.warning, _lang);
         results.add('• [${d.name}] Classe: ${d.getField(d.className, _lang)} | Dose: ${dose.isNotEmpty ? dose : "ver ficha"} | Alerta: ${warn.isNotEmpty ? warn.substring(0, warn.length.clamp(0, 80)) : "—"}');
@@ -2697,6 +2701,13 @@ class AppProvider extends ChangeNotifier {
     // Extrai referências das bases de dados locais para inclusão no RAG
     final references = _findReferences(normalized);
 
+    // RAG telemetry — visível apenas em kDebugMode
+    if (kDebugMode) {
+      debugPrint('[RAG] intent=$intent | protocols=${finalProtocols.length} | drugs=${finalDrugs.length} | refs=${references.length}');
+      if (finalProtocols.isNotEmpty) debugPrint('[RAG] protocols: ${finalProtocols.map((p) => p.substring(0, p.length.clamp(0, 60))).toList()}');
+      if (finalDrugs.isNotEmpty) debugPrint('[RAG] drugs: ${finalDrugs.map((d) => d.substring(0, d.length.clamp(0, 60))).toList()}');
+    }
+
     // ── Passo 3: Análise local estruturada (contexto para o Gemini) ────────
     final localContext = _buildLocalAnswer(input);
 
@@ -2921,7 +2932,12 @@ class AppProvider extends ChangeNotifier {
       final name  = _normalize(d.name);
       final cls   = _normalize(d.getField(d.className, _lang));
       final mech  = _normalize(d.getField(d.mechanism, _lang));
-      if (words.any((w) => name.contains(w) || cls.contains(w) || mech.contains(w))) {
+      // Expandido: também busca em group e category para capturar
+      // queries de classe farmacológica ex: "antipsicótico atípico", "psiquiatria"
+      final grp   = _normalize(d.group);
+      final cat   = _normalize(d.getField(d.category, _lang));
+      if (words.any((w) => name.contains(w) || cls.contains(w) ||
+                           mech.contains(w) || grp.contains(w) || cat.contains(w))) {
         final dose    = d.getField(d.fixedDose, _lang);
         final warn    = d.getField(d.warning, _lang);
         final mechStr = d.getField(d.mechanism, _lang);
