@@ -277,12 +277,24 @@ class ClinicalHistoryModel {
     final result = <EvolutionEntry>[];
     for (final e in raw) {
       try {
+        if (e == null) continue;
+        // CRÍTICO: nunca usar Map<String,dynamic>.from() em dart2js release —
+        // quando e é JavaScriptObject o .from() pode lançar TypeError.
+        // Em vez disso, itera entry-by-entry manualmente.
+        final Map<String, dynamic> safe;
         if (e is Map<String, dynamic>) {
-          result.add(EvolutionEntry.fromJson(e));
+          safe = e;
         } else if (e is Map) {
-          result.add(EvolutionEntry.fromJson(Map<String, dynamic>.from(e)));
+          // Converte sem .from() — entrada por entrada com try/catch
+          final tmp = <String, dynamic>{};
+          e.forEach((k, v) {
+            try { tmp[k.toString()] = v; } catch (_) {}
+          });
+          safe = tmp;
+        } else {
+          continue; // tipos primitivos (Timestamp, String, etc.) — ignora
         }
-        // outros tipos (Timestamp, String, etc.) são ignorados silenciosamente
+        result.add(EvolutionEntry.fromJson(safe));
       } catch (_) {
         // item malformado — ignora, não quebra os demais
       }

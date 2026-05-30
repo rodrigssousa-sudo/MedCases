@@ -1,0 +1,1126 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MedCases Pro — Firestore Security Rules</title>
+  <style>
+    :root {
+      --bg:         #0f1117;
+      --surface:    #1a1d2e;
+      --surface2:   #232640;
+      --border:     #2e3155;
+      --accent:     #6c63ff;
+      --accent2:    #00d4aa;
+      --danger:     #ff4d6d;
+      --warn:       #f9a825;
+      --info:       #29b6f6;
+      --success:    #66bb6a;
+      --text:       #e2e4f0;
+      --muted:      #7c7f9e;
+      --code-bg:    #0d1117;
+      --public:     #00d4aa;
+      --auth:       #29b6f6;
+      --admin:      #ff7043;
+      --owner:      #ab47bc;
+      --denied:     #546e7a;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+
+    /* ── Header ── */
+    header {
+      background: linear-gradient(135deg, #1a1d2e 0%, #141728 100%);
+      border-bottom: 1px solid var(--border);
+      padding: 24px 32px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(12px);
+    }
+    .header-icon {
+      width: 44px; height: 44px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px; flex-shrink: 0;
+    }
+    .header-text h1 { font-size: 1.3rem; font-weight: 700; }
+    .header-text p  { font-size: 0.82rem; color: var(--muted); }
+    .version-badge {
+      margin-left: auto;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 4px 14px;
+      font-size: 0.78rem;
+      color: var(--accent2);
+    }
+
+    /* ── Layout ── */
+    .wrapper { max-width: 1300px; margin: 0 auto; padding: 32px 24px; }
+
+    /* ── Tabs ── */
+    .tabs {
+      display: flex; gap: 4px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 4px;
+      margin-bottom: 32px;
+      width: fit-content;
+    }
+    .tab {
+      padding: 8px 22px;
+      border-radius: 9px;
+      cursor: pointer;
+      font-size: 0.88rem;
+      font-weight: 500;
+      color: var(--muted);
+      transition: all 0.2s;
+      border: none;
+      background: transparent;
+    }
+    .tab:hover { color: var(--text); background: var(--surface2); }
+    .tab.active { background: var(--accent); color: #fff; }
+
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    /* ── Legend ── */
+    .legend {
+      display: flex; flex-wrap: wrap; gap: 10px;
+      margin-bottom: 28px;
+    }
+    .legend-item {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 0.8rem; color: var(--muted);
+    }
+    .legend-dot {
+      width: 10px; height: 10px; border-radius: 50%;
+    }
+
+    /* ── Permission Matrix ── */
+    .matrix-wrap { overflow-x: auto; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+      min-width: 700px;
+    }
+    thead th {
+      background: var(--surface2);
+      padding: 12px 16px;
+      text-align: left;
+      font-weight: 600;
+      color: var(--muted);
+      border-bottom: 2px solid var(--border);
+      white-space: nowrap;
+    }
+    thead th:first-child { border-radius: 8px 0 0 0; }
+    thead th:last-child  { border-radius: 0 8px 0 0; }
+
+    tbody tr {
+      border-bottom: 1px solid var(--border);
+      transition: background 0.15s;
+    }
+    tbody tr:hover { background: var(--surface2); }
+    tbody tr:last-child { border-bottom: none; }
+
+    td { padding: 11px 16px; vertical-align: middle; }
+    td:first-child { font-weight: 600; font-family: 'Courier New', monospace; font-size: 0.82rem; }
+
+    .badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 3px 10px; border-radius: 20px;
+      font-size: 0.75rem; font-weight: 600;
+      white-space: nowrap;
+    }
+    .badge-public  { background: rgba(0,212,170,.15); color: var(--public);  border: 1px solid rgba(0,212,170,.3); }
+    .badge-auth    { background: rgba(41,182,246,.15); color: var(--auth);   border: 1px solid rgba(41,182,246,.3); }
+    .badge-admin   { background: rgba(255,112,67,.15); color: var(--admin);  border: 1px solid rgba(255,112,67,.3); }
+    .badge-owner   { background: rgba(171,71,188,.15); color: var(--owner);  border: 1px solid rgba(171,71,188,.3); }
+    .badge-denied  { background: rgba(84,110,122,.12); color: var(--denied); border: 1px solid rgba(84,110,122,.3); }
+    .badge-mod     { background: rgba(249,168,37,.15); color: var(--warn);   border: 1px solid rgba(249,168,37,.3); }
+
+    /* ── Cards ── */
+    .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 20px; }
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+    .card:hover { border-color: var(--accent); transform: translateY(-2px); }
+
+    .card-header {
+      padding: 16px 20px;
+      display: flex; align-items: center; gap: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+    .card-icon {
+      width: 36px; height: 36px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px; flex-shrink: 0;
+    }
+    .card-title { font-weight: 700; font-size: 0.95rem; }
+    .card-path  { font-family: 'Courier New', monospace; font-size: 0.77rem; color: var(--accent2); margin-top: 2px; }
+
+    .card-body { padding: 16px 20px; }
+    .perm-row {
+      display: flex; align-items: flex-start; gap: 10px;
+      padding: 7px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+    }
+    .perm-row:last-child { border-bottom: none; }
+    .perm-op {
+      font-family: 'Courier New', monospace;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--muted);
+      min-width: 58px;
+      margin-top: 2px;
+    }
+    .perm-details { flex: 1; }
+    .perm-rule { font-size: 0.83rem; color: var(--text); margin-bottom: 3px; }
+    .perm-note { font-size: 0.75rem; color: var(--muted); font-style: italic; }
+
+    /* ── Functions Section ── */
+    .fn-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }
+    .fn-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px;
+    }
+    .fn-name {
+      font-family: 'Courier New', monospace;
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--accent2);
+      margin-bottom: 8px;
+    }
+    .fn-signature {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-family: 'Courier New', monospace;
+      font-size: 0.78rem;
+      color: #c9d1d9;
+      line-height: 1.7;
+      margin-bottom: 10px;
+    }
+    .kw   { color: #ff7b72; }
+    .fn   { color: #d2a8ff; }
+    .str  { color: #a5d6ff; }
+    .bool { color: #79c0ff; }
+    .op   { color: #ffa657; }
+    .fn-desc { font-size: 0.82rem; color: var(--muted); }
+
+    /* ── Diff View ── */
+    .diff-section { margin-bottom: 32px; }
+    .diff-section h2 {
+      font-size: 1rem; font-weight: 700; margin-bottom: 16px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .diff-section h2 .dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--accent);
+    }
+
+    .diff-table { width: 100%; border-collapse: collapse; font-size: 0.83rem; }
+    .diff-table th {
+      background: var(--surface2);
+      padding: 10px 16px;
+      text-align: left;
+      font-weight: 600;
+      color: var(--muted);
+      border-bottom: 1px solid var(--border);
+    }
+    .diff-table td {
+      padding: 10px 16px;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      vertical-align: middle;
+    }
+    .diff-table tr:hover td { background: rgba(255,255,255,0.02); }
+    .diff-changed { background: rgba(249,168,37,.06) !important; }
+    .diff-same    { }
+    .diff-old { color: var(--danger); text-decoration: line-through; font-family: monospace; font-size: 0.8rem; }
+    .diff-new { color: var(--success); font-family: monospace; font-size: 0.8rem; }
+    .arrow { color: var(--muted); margin: 0 6px; }
+
+    /* ── Alert box ── */
+    .alert {
+      display: flex; gap: 12px; align-items: flex-start;
+      padding: 14px 18px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      font-size: 0.85rem;
+    }
+    .alert-warn  { background: rgba(249,168,37,.1);  border: 1px solid rgba(249,168,37,.3);  color: var(--warn); }
+    .alert-info  { background: rgba(41,182,246,.1);  border: 1px solid rgba(41,182,246,.3);  color: var(--info); }
+    .alert-danger{ background: rgba(255,77,109,.1);  border: 1px solid rgba(255,77,109,.3);  color: var(--danger); }
+    .alert-ok    { background: rgba(102,187,106,.1); border: 1px solid rgba(102,187,106,.3); color: var(--success); }
+    .alert-icon { font-size: 1.1rem; flex-shrink: 0; margin-top: 1px; }
+    .alert-body strong { display: block; margin-bottom: 3px; font-weight: 700; }
+
+    /* ── Source code viewer ── */
+    .code-block {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .code-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 10px 18px;
+      background: var(--surface2);
+      border-bottom: 1px solid var(--border);
+      font-size: 0.8rem; color: var(--muted);
+    }
+    .code-body {
+      padding: 20px;
+      overflow-x: auto;
+      font-family: 'Courier New', monospace;
+      font-size: 0.8rem;
+      line-height: 1.8;
+      color: #c9d1d9;
+      white-space: pre;
+    }
+    .ln { color: #444; margin-right: 16px; user-select: none; display: inline-block; min-width: 28px; text-align: right; }
+    .c  { color: #8b949e; }   /* comment */
+    .k  { color: #ff7b72; }   /* keyword */
+    .f  { color: #d2a8ff; }   /* function name */
+    .s  { color: #a5d6ff; }   /* string */
+    .b  { color: #79c0ff; }   /* boolean / value */
+    .p  { color: var(--accent2); } /* path */
+    .n  { color: var(--warn); }   /* number */
+
+    /* ── Responsive ── */
+    @media (max-width: 680px) {
+      header { padding: 16px; }
+      .wrapper { padding: 20px 14px; }
+      .cards { grid-template-columns: 1fr; }
+      .fn-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-icon">🔒</div>
+  <div class="header-text">
+    <h1>MedCases Pro — Firestore Security Rules</h1>
+    <p>Visualizador de regras de segurança do banco de dados</p>
+  </div>
+  <span class="version-badge">v2 · 2025-05-28</span>
+</header>
+
+<div class="wrapper">
+
+  <!-- ── Tabs ── -->
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('matrix')">📊 Matriz de Acesso</button>
+    <button class="tab" onclick="switchTab('cards')">🗂 Coleções</button>
+    <button class="tab" onclick="switchTab('functions')">⚙️ Funções Helper</button>
+    <button class="tab" onclick="switchTab('diff')">🔄 Diff de Versões</button>
+    <button class="tab" onclick="switchTab('source')">📄 Fonte (atual)</button>
+  </div>
+
+  <!-- ════════════════════════════════════════════════════
+       TAB 1 — MATRIX
+  ════════════════════════════════════════════════════ -->
+  <div id="tab-matrix" class="tab-content active">
+
+    <div class="alert alert-warn">
+      <span class="alert-icon">⚠️</span>
+      <div class="alert-body">
+        <strong>Atenção: mudança nas regras submetidas</strong>
+        As regras coladas na sua mensagem diferem do arquivo <code>firestore.rules</code> em disco.
+        A versão no disco usa <em>custom claims</em> (<code>isAdmin</code>, <code>role</code>) e é mais segura.
+        A versão submetida usa Firestore para buscar o <code>role</code> do usuário via <code>get()</code>, o que introduz uma chamada extra e diferentes funções helper. O diff completo está na aba <strong>🔄 Diff de Versões</strong>.
+      </div>
+    </div>
+
+    <div class="legend">
+      <div class="legend-item"><div class="legend-dot" style="background:var(--public)"></div> Público (sem login)</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--auth)"></div> Autenticado</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--owner)"></div> Próprio dono (uid)</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--warn)"></div> Moderador / Supervisor</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--admin)"></div> Admin / Master</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--denied)"></div> Negado</div>
+    </div>
+
+    <div class="matrix-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Coleção / Path</th>
+            <th>READ</th>
+            <th>CREATE</th>
+            <th>UPDATE</th>
+            <th>DELETE</th>
+            <th>WRITE (geral)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- users -->
+          <tr>
+            <td>/users/{uid}</td>
+            <td>
+              <span class="badge badge-owner">👤 Owner</span>
+              <span class="badge badge-mod" style="margin-top:4px;display:inline-flex;">🛡 Moderador¹</span>
+            </td>
+            <td><span class="badge badge-owner">👤 Owner</span></td>
+            <td><span class="badge badge-owner">👤 Owner</span></td>
+            <td><span class="badge badge-owner">👤 Owner</span></td>
+            <td>—</td>
+          </tr>
+          <!-- users sub -->
+          <tr>
+            <td>/users/{uid}/{sub}/{doc}</td>
+            <td><span class="badge badge-owner">👤 Owner</span></td>
+            <td><span class="badge badge-owner">👤 Owner</span></td>
+            <td><span class="badge badge-owner">👤 Owner</span></td>
+            <td><span class="badge badge-owner">👤 Owner</span></td>
+            <td>—</td>
+          </tr>
+          <!-- clinical_guides -->
+          <tr>
+            <td>/clinical_guides/{id}</td>
+            <td><span class="badge badge-public">🌍 Público</span></td>
+            <td><span class="badge badge-admin">🔑 Admin</span></td>
+            <td><span class="badge badge-admin">🔑 Admin</span></td>
+            <td><span class="badge badge-admin">🔑 Admin</span></td>
+            <td>—</td>
+          </tr>
+          <!-- public_histories -->
+          <tr>
+            <td>/public_histories/{id}</td>
+            <td><span class="badge badge-public">🌍 Público</span></td>
+            <td><span class="badge badge-auth">🔐 Auth (authorUid=uid)</span></td>
+            <td>
+              <span class="badge badge-owner" style="margin-bottom:3px;display:inline-flex;">👤 Owner (versão disco)</span>
+              <span class="badge badge-mod" style="display:inline-flex;">🛡 Mod (versão submetida)</span>
+            </td>
+            <td>
+              <span class="badge badge-owner" style="margin-bottom:3px;display:inline-flex;">👤 Owner</span>
+              <span class="badge badge-admin" style="display:inline-flex;">🔑 Admin</span>
+            </td>
+            <td>—</td>
+          </tr>
+          <!-- app_config/maintenance -->
+          <tr>
+            <td>/app_config/maintenance</td>
+            <td><span class="badge badge-auth">🔐 Autenticado</span></td>
+            <td><span class="badge badge-admin">🔑 Admin</span></td>
+            <td><span class="badge badge-admin">🔑 Admin</span></td>
+            <td><span class="badge badge-admin">🔑 Admin</span></td>
+            <td>—</td>
+          </tr>
+          <!-- app_config/global -->
+          <tr>
+            <td>/app_config/global</td>
+            <td><span class="badge badge-admin">🔑 Admin</span></td>
+            <td><span class="badge badge-admin">🔑 Admin</span></td>
+            <td><span class="badge badge-admin">🔑 Admin</span></td>
+            <td><span class="badge badge-admin">🔑 Admin</span></td>
+            <td>—</td>
+          </tr>
+          <!-- app_config/emailjs -->
+          <tr>
+            <td>/app_config/emailjs</td>
+            <td><span class="badge badge-admin">🔑 Admin</span></td>
+            <td><span class="badge badge-admin">🔑 Admin</span></td>
+            <td><span class="badge badge-admin">🔑 Admin</span></td>
+            <td><span class="badge badge-admin">🔑 Admin</span></td>
+            <td>—</td>
+          </tr>
+          <!-- app_updates -->
+          <tr>
+            <td>/app_updates/{id}</td>
+            <td><span class="badge badge-auth">🔐 Autenticado</span></td>
+            <td><span class="badge badge-admin">🔑 Admin</span></td>
+            <td><span class="badge badge-admin">🔑 Admin</span></td>
+            <td><span class="badge badge-admin">🔑 Admin</span></td>
+            <td>—</td>
+          </tr>
+          <!-- email_campaigns -->
+          <tr>
+            <td>/email_campaigns/{id}</td>
+            <td><span class="badge badge-admin">🔑 Admin</span></td>
+            <td><span class="badge badge-admin">🔑 Admin</span></td>
+            <td><span class="badge badge-admin">🔑 Admin</span></td>
+            <td><span class="badge badge-admin">🔑 Admin</span></td>
+            <td>—</td>
+          </tr>
+          <!-- influencers -->
+          <tr>
+            <td>/influencers/{slug} <span style="color:var(--warn);font-size:0.72rem;">(somente versão submetida)</span></td>
+            <td><span class="badge badge-mod">🛡 Moderador</span></td>
+            <td><span class="badge badge-mod">🛡 Moderador</span></td>
+            <td><span class="badge badge-mod">🛡 Moderador</span></td>
+            <td><span class="badge badge-mod">🛡 Moderador</span></td>
+            <td>—</td>
+          </tr>
+          <!-- config/emailjs (legado) -->
+          <tr>
+            <td>/config/{id} <span style="color:var(--muted);font-size:0.72rem;">(legado)</span></td>
+            <td><span class="badge badge-admin">🔑 Admin</span></td>
+            <td><span class="badge badge-admin">🔑 Admin</span></td>
+            <td><span class="badge badge-admin">🔑 Admin</span></td>
+            <td><span class="badge badge-admin">🔑 Admin</span></td>
+            <td>—</td>
+          </tr>
+          <!-- catch-all -->
+          <tr>
+            <td>/**  <span style="color:var(--muted);font-size:0.72rem;">(catch-all)</span></td>
+            <td><span class="badge badge-denied">🚫 Negado</span></td>
+            <td><span class="badge badge-denied">🚫 Negado</span></td>
+            <td><span class="badge badge-denied">🚫 Negado</span></td>
+            <td><span class="badge badge-denied">🚫 Negado</span></td>
+            <td><span class="badge badge-denied">🚫 Negado</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="margin-top:12px;font-size:0.76rem;color:var(--muted);">¹ Na versão submetida, a leitura de <code>/users/{uid}</code> também é permitida para Moderador (role: admin/master/supervisor).</p>
+  </div>
+
+  <!-- ════════════════════════════════════════════════════
+       TAB 2 — CARDS
+  ════════════════════════════════════════════════════ -->
+  <div id="tab-cards" class="tab-content">
+    <div class="cards">
+
+      <!-- users -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-icon" style="background:rgba(171,71,188,.2)">👤</div>
+          <div>
+            <div class="card-title">Perfis de Usuário</div>
+            <div class="card-path">/users/{uid} + subcoleções</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="perm-row">
+            <div class="perm-op">READ</div>
+            <div class="perm-details">
+              <div class="perm-rule"><span class="badge badge-owner">👤 Owner</span></div>
+              <div class="perm-note">Somente o próprio usuário lê seu perfil. (+ Mod na versão submetida)</div>
+            </div>
+          </div>
+          <div class="perm-row">
+            <div class="perm-op">WRITE</div>
+            <div class="perm-details">
+              <div class="perm-rule"><span class="badge badge-owner">👤 Owner</span></div>
+              <div class="perm-note">Somente o próprio usuário altera seus dados.</div>
+            </div>
+          </div>
+          <div class="perm-row">
+            <div class="perm-op">SUB</div>
+            <div class="perm-details">
+              <div class="perm-rule"><span class="badge badge-owner">👤 Owner</span></div>
+              <div class="perm-note">Casos, favoritos, histórico IA, prefs — todos protegidos por uid.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- clinical_guides -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-icon" style="background:rgba(0,212,170,.2)">📚</div>
+          <div>
+            <div class="card-title">Biblioteca Clínica</div>
+            <div class="card-path">/clinical_guides/{guideId}</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="perm-row">
+            <div class="perm-op">READ</div>
+            <div class="perm-details">
+              <div class="perm-rule"><span class="badge badge-public">🌍 Público</span></div>
+              <div class="perm-note">Conteúdo educativo visível sem login. Filtro <code>isPublished=true</code> no client.</div>
+            </div>
+          </div>
+          <div class="perm-row">
+            <div class="perm-op">WRITE</div>
+            <div class="perm-details">
+              <div class="perm-rule"><span class="badge badge-admin">🔑 Admin / Master</span></div>
+              <div class="perm-note">Apenas administradores criam/atualizam guias.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- public_histories -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-icon" style="background:rgba(41,182,246,.2)">📖</div>
+          <div>
+            <div class="card-title">Histórias Clínicas Públicas</div>
+            <div class="card-path">/public_histories/{historyId}</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="perm-row">
+            <div class="perm-op">READ</div>
+            <div class="perm-details">
+              <div class="perm-rule"><span class="badge badge-public">🌍 Público</span></div>
+              <div class="perm-note">26+ histórias visíveis antes do login.</div>
+            </div>
+          </div>
+          <div class="perm-row">
+            <div class="perm-op">CREATE</div>
+            <div class="perm-details">
+              <div class="perm-rule"><span class="badge badge-auth">🔐 Auth</span></div>
+              <div class="perm-note"><code>authorUid</code> no payload deve coincidir com <code>request.auth.uid</code>.</div>
+            </div>
+          </div>
+          <div class="perm-row">
+            <div class="perm-op">UPDATE</div>
+            <div class="perm-details">
+              <div class="perm-rule"><span class="badge badge-owner">👤 Owner</span> <span class="badge badge-mod" style="margin-left:4px;">🛡 Mod (v. submetida)</span></div>
+              <div class="perm-note">No disco: só autor. Na versão submetida: autor ou moderador.</div>
+            </div>
+          </div>
+          <div class="perm-row">
+            <div class="perm-op">DELETE</div>
+            <div class="perm-details">
+              <div class="perm-rule"><span class="badge badge-owner">👤 Owner</span> <span class="badge badge-admin" style="margin-left:4px;">🔑 Admin</span></div>
+              <div class="perm-note">Moderação por admin, deleção pelo próprio autor.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- app_config -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-icon" style="background:rgba(255,77,109,.2)">🔑</div>
+          <div>
+            <div class="card-title">Configuração do App</div>
+            <div class="card-path">/app_config/{docId}</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="perm-row">
+            <div class="perm-op">maintenance</div>
+            <div class="perm-details">
+              <div class="perm-rule"><span class="badge badge-auth">🔐 Autenticado</span> (read) · <span class="badge badge-admin">🔑 Admin</span> (write)</div>
+              <div class="perm-note">Todos os usuários logados podem saber sobre manutenção.</div>
+            </div>
+          </div>
+          <div class="perm-row">
+            <div class="perm-op">global</div>
+            <div class="perm-details">
+              <div class="perm-rule"><span class="badge badge-admin">🔑 Admin</span></div>
+              <div class="perm-note">⚠️ Contém Gemini API Key. NUNCA expor publicamente.</div>
+            </div>
+          </div>
+          <div class="perm-row">
+            <div class="perm-op">emailjs</div>
+            <div class="perm-details">
+              <div class="perm-rule"><span class="badge badge-admin">🔑 Admin</span></div>
+              <div class="perm-note">Credenciais de email marketing protegidas.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- app_updates -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-icon" style="background:rgba(102,187,106,.2)">🔔</div>
+          <div>
+            <div class="card-title">Atualizações do App</div>
+            <div class="card-path">/app_updates/{docId}</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="perm-row">
+            <div class="perm-op">READ</div>
+            <div class="perm-details">
+              <div class="perm-rule"><span class="badge badge-auth">🔐 Autenticado</span></div>
+              <div class="perm-note">Todos os usuários logados veem novas versões.</div>
+            </div>
+          </div>
+          <div class="perm-row">
+            <div class="perm-op">WRITE</div>
+            <div class="perm-details">
+              <div class="perm-rule"><span class="badge badge-admin">🔑 Admin</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- email_campaigns -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-icon" style="background:rgba(255,112,67,.2)">📧</div>
+          <div>
+            <div class="card-title">Campanhas de Email</div>
+            <div class="card-path">/email_campaigns/{campaignId}</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="perm-row">
+            <div class="perm-op">READ/WRITE</div>
+            <div class="perm-details">
+              <div class="perm-rule"><span class="badge badge-admin">🔑 Admin / Master</span></div>
+              <div class="perm-note">Totalmente restrito a administradores.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- influencers -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-icon" style="background:rgba(249,168,37,.2)">🌟</div>
+          <div>
+            <div class="card-title">Influencers / Referral</div>
+            <div class="card-path">/influencers/{slug} <span style="color:var(--warn);font-size:0.72rem;">só v. submetida</span></div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="perm-row">
+            <div class="perm-op">READ/WRITE</div>
+            <div class="perm-details">
+              <div class="perm-rule"><span class="badge badge-mod">🛡 Moderador</span></div>
+              <div class="perm-note">admin, master, supervisor podem gerenciar influencers.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- catch-all -->
+      <div class="card" style="border-color:rgba(255,77,109,.3)">
+        <div class="card-header" style="background:rgba(255,77,109,.05)">
+          <div class="card-icon" style="background:rgba(255,77,109,.2)">🚫</div>
+          <div>
+            <div class="card-title">Catch-all (todo o resto)</div>
+            <div class="card-path">/{document=**}</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="perm-row">
+            <div class="perm-op">READ/WRITE</div>
+            <div class="perm-details">
+              <div class="perm-rule"><span class="badge badge-denied">🚫 Negado (false)</span></div>
+              <div class="perm-note">Qualquer coleção não declarada explicitamente é bloqueada.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════════════════
+       TAB 3 — FUNCTIONS
+  ════════════════════════════════════════════════════ -->
+  <div id="tab-functions" class="tab-content">
+
+    <div class="alert alert-info">
+      <span class="alert-icon">ℹ️</span>
+      <div class="alert-body">
+        <strong>Duas versões de helpers</strong>
+        A versão em disco usa <strong>Custom Claims JWT</strong> para verificar admin (sem chamada extra ao Firestore).
+        A versão submetida usa <strong>get()</strong> para buscar o role do usuário — adiciona uma leitura extra mas permite roles dinâmicos sem reemitir token.
+      </div>
+    </div>
+
+    <h3 style="margin-bottom:16px;color:var(--muted);font-size:0.9rem;text-transform:uppercase;letter-spacing:.05em;">Versão em Disco (firestore.rules — recomendada)</h3>
+    <div class="fn-grid" style="margin-bottom:36px;">
+
+      <div class="fn-card">
+        <div class="fn-name">isAuthed()</div>
+        <div class="fn-signature"><span class="k">function</span> <span class="f">isAuthed</span>() {
+  <span class="k">return</span> request.auth != <span class="b">null</span>;
+}</div>
+        <div class="fn-desc">Verifica se há um usuário autenticado na requisição.</div>
+      </div>
+
+      <div class="fn-card">
+        <div class="fn-name">isOwner(uid)</div>
+        <div class="fn-signature"><span class="k">function</span> <span class="f">isOwner</span>(uid) {
+  <span class="k">return</span> <span class="f">isAuthed</span>() &&
+    request.auth.uid == uid;
+}</div>
+        <div class="fn-desc">Verifica se o usuário autenticado é o dono do recurso comparando o UID.</div>
+      </div>
+
+      <div class="fn-card">
+        <div class="fn-name">isAdmin()</div>
+        <div class="fn-signature"><span class="k">function</span> <span class="f">isAdmin</span>() {
+  <span class="k">return</span> <span class="f">isAuthed</span>() && (
+    request.auth.token
+      .<span class="f">get</span>(<span class="s">'isAdmin'</span>, <span class="b">false</span>) == <span class="b">true</span> ||
+    request.auth.token
+      .<span class="f">get</span>(<span class="s">'role'</span>, <span class="s">''</span>) == <span class="s">'admin'</span>
+  );
+}</div>
+        <div class="fn-desc">Usa <strong>custom claims JWT</strong>. Sem chamada extra ao Firestore. Requer <code>setCustomUserClaims()</code> no Auth.</div>
+      </div>
+
+    </div>
+
+    <h3 style="margin-bottom:16px;color:var(--muted);font-size:0.9rem;text-transform:uppercase;letter-spacing:.05em;">Versão Submetida (usa get() no Firestore)</h3>
+    <div class="fn-grid">
+
+      <div class="fn-card">
+        <div class="fn-name">isAuth()</div>
+        <div class="fn-signature"><span class="k">function</span> <span class="f">isAuth</span>() {
+  <span class="k">return</span> request.auth != <span class="b">null</span>;
+}</div>
+        <div class="fn-desc">Equivalente a <code>isAuthed()</code>, apenas renomeada.</div>
+      </div>
+
+      <div class="fn-card">
+        <div class="fn-name">isOwner(uid)</div>
+        <div class="fn-signature"><span class="k">function</span> <span class="f">isOwner</span>(uid) {
+  <span class="k">return</span> <span class="f">isAuth</span>() &&
+    request.auth.uid == uid;
+}</div>
+        <div class="fn-desc">Idêntica à versão em disco.</div>
+      </div>
+
+      <div class="fn-card">
+        <div class="fn-name">userRole()</div>
+        <div class="fn-signature"><span class="k">function</span> <span class="f">userRole</span>() {
+  <span class="k">return</span> <span class="f">isAuth</span>()
+    ? <span class="f">get</span>(/databases/$(database)
+        /documents/users/$(request.auth.uid))
+        .data.role
+    : <span class="s">''</span>;
+}</div>
+        <div class="fn-desc">⚠️ Faz uma chamada <code>get()</code> ao Firestore a cada avaliação. Lento e consome leituras extras.</div>
+      </div>
+
+      <div class="fn-card">
+        <div class="fn-name">isModerator()</div>
+        <div class="fn-signature"><span class="k">function</span> <span class="f">isModerator</span>() {
+  <span class="k">return</span> <span class="f">isAuth</span>() &&
+    <span class="f">userRole</span>() <span class="k">in</span>
+    [<span class="s">'admin'</span>, <span class="s">'master'</span>, <span class="s">'supervisor'</span>];
+}</div>
+        <div class="fn-desc">Inclui o role <code>supervisor</code> como moderador. Não existe na versão em disco.</div>
+      </div>
+
+      <div class="fn-card">
+        <div class="fn-name">isAdmin()</div>
+        <div class="fn-signature"><span class="k">function</span> <span class="f">isAdmin</span>() {
+  <span class="k">return</span> <span class="f">isAuth</span>() &&
+    <span class="f">userRole</span>() <span class="k">in</span>
+    [<span class="s">'admin'</span>, <span class="s">'master'</span>];
+}</div>
+        <div class="fn-desc">Roles aceitos: <code>admin</code> e <code>master</code>. Busca via get() no documento do usuário.</div>
+      </div>
+
+    </div>
+
+    <div class="alert alert-warn" style="margin-top:28px;">
+      <span class="alert-icon">💡</span>
+      <div class="alert-body">
+        <strong>Recomendação</strong>
+        Prefira a versão em disco com <strong>Custom Claims</strong>. Claims ficam no token JWT e não geram leituras extras ao Firestore. Para atualizar o role de um usuário, use o Firebase Admin SDK: <code>admin.auth().setCustomUserClaims(uid, {'{'} isAdmin: true {'}'}</code>).
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════════════════
+       TAB 4 — DIFF
+  ════════════════════════════════════════════════════ -->
+  <div id="tab-diff" class="tab-content">
+
+    <div class="alert alert-info" style="margin-bottom:24px;">
+      <span class="alert-icon">🔄</span>
+      <div class="alert-body">
+        <strong>Comparação: versão em disco vs. versão submetida</strong>
+        Verde = novo/alterado para melhor · Vermelho = removido/regredido · Amarelo = mudança de comportamento
+      </div>
+    </div>
+
+    <div class="diff-section">
+      <h2><span class="dot"></span> Funções Helper</h2>
+      <table class="diff-table">
+        <thead><tr><th>Aspecto</th><th>Em disco (atual)</th><th>Versão submetida</th><th>Impacto</th></tr></thead>
+        <tbody>
+          <tr class="diff-changed">
+            <td>Nome autenticação</td>
+            <td><code>isAuthed()</code></td>
+            <td><code>isAuth()</code></td>
+            <td>⚠️ Só cosmético, mas quebra referências</td>
+          </tr>
+          <tr class="diff-changed">
+            <td>Verificação de admin</td>
+            <td><span style="color:var(--success)">Custom Claim JWT<br><code>token.isAdmin</code> / <code>token.role</code></span></td>
+            <td><span style="color:var(--danger)">get() no Firestore<br><code>users/{uid}.role</code></span></td>
+            <td>🔴 Leitura extra por requisição</td>
+          </tr>
+          <tr class="diff-changed">
+            <td>Função moderador</td>
+            <td><span style="color:var(--muted)">Não existe</span></td>
+            <td><code>isModerator()</code> → admin/master/supervisor</td>
+            <td>🟡 Novo role supervisor adicionado</td>
+          </tr>
+          <tr>
+            <td>isOwner(uid)</td>
+            <td><code>isAuthed() && uid == uid</code></td>
+            <td><code>isAuth() && uid == uid</code></td>
+            <td>✅ Equivalente</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="diff-section">
+      <h2><span class="dot" style="background:var(--accent2)"></span> Coleções — Diferenças de Acesso</h2>
+      <table class="diff-table">
+        <thead><tr><th>Coleção</th><th>Operação</th><th>Em disco</th><th>Versão submetida</th></tr></thead>
+        <tbody>
+          <tr class="diff-changed">
+            <td><code>/users/{uid}</code></td>
+            <td>READ</td>
+            <td>Owner apenas</td>
+            <td>Owner <strong>OU isModerator()</strong></td>
+          </tr>
+          <tr class="diff-changed">
+            <td><code>/public_histories</code></td>
+            <td>UPDATE</td>
+            <td>Somente o autor (<code>authorUid == uid</code>)</td>
+            <td>Autor <strong>OU isModerator()</strong></td>
+          </tr>
+          <tr class="diff-changed">
+            <td><code>/public_histories</code></td>
+            <td>DELETE</td>
+            <td>Autor OU <strong>isAdmin()</strong></td>
+            <td>Autor OU <strong>isModerator()</strong> (inclui supervisor)</td>
+          </tr>
+          <tr class="diff-changed">
+            <td><code>/influencers/{slug}</code></td>
+            <td>READ/WRITE</td>
+            <td><span style="color:var(--muted)">Coleção não existe — cai no catch-all (negado)</span></td>
+            <td>isModerator() — nova regra adicionada</td>
+          </tr>
+          <tr>
+            <td><code>/clinical_guides</code></td>
+            <td>READ/WRITE</td>
+            <td>Público / Admin</td>
+            <td>Público / Admin — <strong>idêntico</strong></td>
+          </tr>
+          <tr>
+            <td><code>/app_config</code></td>
+            <td>READ/WRITE</td>
+            <td>Como descrito</td>
+            <td><strong>Idêntico</strong></td>
+          </tr>
+          <tr>
+            <td><code>/app_updates</code></td>
+            <td>READ/WRITE</td>
+            <td>Auth / Admin</td>
+            <td><strong>Idêntico</strong></td>
+          </tr>
+          <tr>
+            <td><code>/email_campaigns</code></td>
+            <td>READ/WRITE</td>
+            <td>Admin</td>
+            <td><strong>Idêntico</strong></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="diff-section">
+      <h2><span class="dot" style="background:var(--warn)"></span> Análise de Segurança</h2>
+      <div class="alert alert-danger">
+        <span class="alert-icon">🔴</span>
+        <div class="alert-body">
+          <strong>Regressão — get() no Firestore para verificar role</strong>
+          A versão submetida lê <code>/users/{uid}</code> para obter o role. Um usuário mal-intencionado que consiga escrever em seu próprio documento poderia alterar o campo <code>role</code> e escalar privilégios, a menos que a regra de write de <code>/users/{uid}</code> bloqueie isso. Verifique se o campo <code>role</code> não pode ser escrito pelo próprio usuário.
+        </div>
+      </div>
+      <div class="alert alert-warn">
+        <span class="alert-icon">⚠️</span>
+        <div class="alert-body">
+          <strong>Custo de leitura</strong>
+          Cada chamada a <code>isModerator()</code> ou <code>isAdmin()</code> na versão submetida dispara um <code>get()</code> ao documento do usuário. Em coleções com múltiplas regras que chamam essas funções, uma única requisição pode acumular 2–3 leituras extras, aumentando custos e latência.
+        </div>
+      </div>
+      <div class="alert alert-ok">
+        <span class="alert-icon">✅</span>
+        <div class="alert-body">
+          <strong>Versão em disco é mais segura</strong>
+          Custom Claims no JWT não custam leituras adicionais, são verificados localmente no token e não podem ser alterados pelo usuário final sem o Firebase Admin SDK.
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ════════════════════════════════════════════════════
+       TAB 5 — SOURCE (arquivo em disco)
+  ════════════════════════════════════════════════════ -->
+  <div id="tab-source" class="tab-content">
+    <div class="code-block">
+      <div class="code-header">
+        <span>📄 firestore.rules — versão em disco (2025-05-28)</span>
+        <span style="color:var(--accent2)">rules_version = '2'</span>
+      </div>
+      <div class="code-body" id="source-code"></div>
+    </div>
+  </div>
+
+</div><!-- /wrapper -->
+
+<script>
+// ── Tab switching ──────────────────────────────────────────
+function switchTab(name) {
+  document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(el => el.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  event.target.classList.add('active');
+}
+
+// ── Syntax-highlighted source ─────────────────────────────
+const raw = `rules_version = '2';
+
+// ══════════════════════════════════════════════════════════════════════════════
+// MedCases Pro — Firestore Security Rules
+// Versão: 2025-05-28
+//
+// RESUMO DE ACESSO:
+//  • users/{uid}/**         → leitura/escrita: apenas o próprio usuário
+//  • clinical_guides        → leitura: PÚBLICA (conteúdo educativo)
+//  • public_histories       → leitura: PÚBLICA
+//                           → escrita: apenas o dono do documento
+//  • app_config/global      → leitura: apenas admin (contém Gemini API Key)
+//  • app_config/maintenance → leitura: qualquer autenticado
+//  • app_updates/current    → leitura: qualquer autenticado
+//  • email_campaigns        → leitura/escrita: apenas admin
+// ══════════════════════════════════════════════════════════════════════════════
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isAuthed() {
+      return request.auth != null;
+    }
+
+    function isOwner(uid) {
+      return isAuthed() && request.auth.uid == uid;
+    }
+
+    // Admin: custom claim isAdmin=true OU role='admin'
+    function isAdmin() {
+      return isAuthed() && (
+        request.auth.token.get('isAdmin', false) == true ||
+        request.auth.token.get('role', '') == 'admin'
+      );
+    }
+
+    // ── Perfis de usuário ────────────────────────────────────────────────────
+    match /users/{uid} {
+      allow read, write: if isOwner(uid);
+
+      match /{subcollection}/{docId} {
+        allow read, write: if isOwner(uid);
+
+        match /{subSubDoc} {
+          allow read, write: if isOwner(uid);
+        }
+      }
+    }
+
+    // ── Biblioteca Clínica ────────────────────────────────────────────────────
+    match /clinical_guides/{guideId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // ── Histórias Clínicas Públicas ───────────────────────────────────────────
+    match /public_histories/{historyId} {
+      allow read: if true;
+
+      allow create: if isAuthed()
+        && request.resource.data.get('authorUid', '') == request.auth.uid;
+
+      allow update: if isAuthed()
+        && resource.data.get('authorUid', '') == request.auth.uid;
+
+      allow delete: if isAuthed() && (
+        resource.data.get('authorUid', '') == request.auth.uid ||
+        isAdmin()
+      );
+    }
+
+    // ── Configuração Global do App ────────────────────────────────────────────
+    match /app_config/{docId} {
+      allow read: if docId == 'maintenance' && isAuthed();
+      allow read: if (docId == 'global' || docId == 'emailjs') && isAdmin();
+      allow write: if isAdmin();
+    }
+
+    // ── Notificações de Atualização ───────────────────────────────────────────
+    match /app_updates/{docId} {
+      allow read: if isAuthed();
+      allow write: if isAdmin();
+    }
+
+    // ── Campanhas de Email ────────────────────────────────────────────────────
+    match /email_campaigns/{campaignId} {
+      allow read, write: if isAdmin();
+    }
+
+    // ── Legado: config/emailjs ────────────────────────────────────────────────
+    match /config/{docId} {
+      allow read: if isAdmin();
+      allow write: if isAdmin();
+    }
+
+    // ── Bloquear tudo o mais ──────────────────────────────────────────────────
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}`;
+
+function syntaxHighlight(code) {
+  return code
+    .split('\n')
+    .map((line, i) => {
+      const num = String(i + 1).padStart(3, ' ');
+      let hl = line
+        // comments
+        .replace(/(\/\/.*$)/g, '<span class="c">$1</span>')
+        // keywords
+        .replace(/\b(function|return|match|allow|if|in|true|false|null|service|let)\b/g, '<span class="k">$1</span>')
+        // strings
+        .replace(/('(?:[^'\\]|\\.)*')/g, '<span class="s">$1</span>')
+        // function calls
+        .replace(/\b(isAuthed|isOwner|isAdmin|isAuth|isModerator|userRole|get)\s*\(/g, '<span class="f">$1</span>(');
+      return `<span class="ln">${num}</span>${hl}`;
+    })
+    .join('\n');
+}
+
+document.getElementById('source-code').innerHTML = syntaxHighlight(raw);
+</script>
+
+</body>
+</html>

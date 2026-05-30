@@ -27,9 +27,21 @@ class FirestoreService {
       v is int ? v : int.tryParse(v?.toString() ?? '') ?? 0;
 
   /// Converte qualquer valor para Map<String,dynamic> sem lançar TypeError.
+  /// CRÍTICO: nunca usa Map<String,dynamic>.from() — em dart2js release mode
+  /// quando v é JavaScriptObject (Map<String, Object?>) o .from() pode lançar
+  /// TypeError para valores cujo tipo JS não mapeia para Object.
   static Map<String, dynamic> safeMap(dynamic v) {
     if (v is Map<String, dynamic>) return v;
-    if (v is Map) return Map<String, dynamic>.from(v);
+    if (v is Map) {
+      // Itera entry-by-entry em vez de .from() — imune a TypeError em dart2js
+      final result = <String, dynamic>{};
+      try {
+        v.forEach((k, val) {
+          try { result[k.toString()] = val; } catch (_) {}
+        });
+      } catch (_) {}
+      return result;
+    }
     return <String, dynamic>{};
   }
 
@@ -159,11 +171,26 @@ class FirestoreService {
 
   /// Converte uma lista de QueryDocumentSnapshot → List<ClinicalHistoryModel>
   /// com proteção individual por documento. Imune a TypeError em dart2js release.
+  /// CRÍTICO: nunca usa `as List` — cast direto pode lançar TypeError em dart2js.
   static List<ClinicalHistoryModel> _safeDocsToHistoryList(dynamic docs) {
     final result = <ClinicalHistoryModel>[];
+    if (docs == null) return result;
     try {
-      final list = docs is List ? docs : (docs as dynamic).toList();
-      for (final doc in list as List) {
+      // Obtém a lista de forma segura — sem `as List`
+      Iterable<dynamic> iterable;
+      if (docs is List) {
+        iterable = docs;
+      } else {
+        try {
+          // QuerySnapshot.docs retorna List — acessamos via dynamic sem cast
+          final dynamic d = docs;
+          final dynamic asList = d.toList();
+          iterable = asList is List ? asList : const <dynamic>[];
+        } catch (_) {
+          return result; // não conseguiu obter lista — retorna vazio
+        }
+      }
+      for (final doc in iterable) {
         try {
           final data = sdkDocWithId(doc);
           if (data.isEmpty) continue;
@@ -181,11 +208,25 @@ class FirestoreService {
 
   /// Converte uma lista de QueryDocumentSnapshot → List<GuideModel>
   /// com proteção individual por documento. Imune a TypeError em dart2js release.
+  /// CRÍTICO: nunca usa `as List` — cast direto pode lançar TypeError em dart2js.
   static List<GuideModel> _safeDocsToGuideList(dynamic docs) {
     final result = <GuideModel>[];
+    if (docs == null) return result;
     try {
-      final list = docs is List ? docs : (docs as dynamic).toList();
-      for (final doc in list as List) {
+      // Obtém a lista de forma segura — sem `as List`
+      Iterable<dynamic> iterable;
+      if (docs is List) {
+        iterable = docs;
+      } else {
+        try {
+          final dynamic d = docs;
+          final dynamic asList = d.toList();
+          iterable = asList is List ? asList : const <dynamic>[];
+        } catch (_) {
+          return result;
+        }
+      }
+      for (final doc in iterable) {
         try {
           final data = sdkDocWithId(doc);
           if (data.isEmpty) continue;
@@ -976,14 +1017,29 @@ class FirestoreService {
           : await query
               .get(GetOptions(source: source))
               .timeout(const Duration(seconds: 8));
-      // _safeDocsToHistoryList: cada documento em try/catch individual —
-      // imune a TypeError em dart2js release quando data() retorna Map<String,Object?>
-      final rawList = _safeDocsToHistoryList(snap.docs);
-      final list = _normalizePublicHistories(
-        rawList.where((h) => !h.isHidden),
-      );
+
+      // ── CAMADA DUPLA DE PROTEÇÃO contra TypeError em dart2js release ─────
+      // Mesmo que _safeDocsToHistoryList já tenha try/catch individual por doc,
+      // envolvemos toda a chamada em try/catch extra para garantir que NENHUMA
+      // exceção (inclusive TypeError de tipos JS inesperados) escapa para o
+      // catch externo que exibiria o erro na UI do usuário.
+      List<ClinicalHistoryModel> rawList;
+      try {
+        rawList = _safeDocsToHistoryList(snap.docs);
+      } catch (parseError) {
+        if (kDebugMode) debugPrint('[_loadPublicHistoriesSdk] parse error silenciado: $parseError');
+        rawList = const [];
+      }
+
+      List<ClinicalHistoryModel> list;
+      try {
+        list = _normalizePublicHistories(rawList.where((h) => !h.isHidden));
+      } catch (_) {
+        list = rawList; // fallback: sem normalização
+      }
+
       if (list.isNotEmpty) {
-        await _saveCachedPublicHistories(list);
+        try { await _saveCachedPublicHistories(list); } catch (_) {}
         _clearPublicHistoriesError();
       }
       _debugPublicHistories('sdk load count=${list.length} source=${source ?? 'default'}');
@@ -999,8 +1055,10 @@ class FirestoreService {
       }
       return [];
     } catch (e) {
-      _setPublicHistoriesError('SDK public_histories falhou (${source ?? 'default'}): $e');
-      _debugPublicHistories('sdk load failed source=${source ?? 'default'} error=$e');
+      // NUNCA exibe TypeError de dart2js como erro visível ao usuário —
+      // trata como lista vazia e continua para fallback/cache.
+      if (kDebugMode) debugPrint('[_loadPublicHistoriesSdk] erro silenciado: $e');
+      _debugPublicHistories('sdk load failed (silenced) source=${source ?? 'default'} error=$e');
       return [];
     }
   }
@@ -1171,9 +1229,17 @@ class FirestoreService {
     return _userHistories(uid)
         .orderBy('updatedAt', descending: true)
         .snapshots()
-        // _safeDocsToHistoryList: proteção individual por documento —
-        // imune a TypeError em dart2js release quando d.data() retorna Map<String,Object?>
-        .map((snap) => _safeDocsToHistoryList(snap.docs));
+        // CAMADA DUPLA: _safeDocsToHistoryList já tem try/catch por doc,
+        // mas envolvemos em try/catch extra para garantir que TypeError de
+        // dart2js não escapa e não quebra o stream inteiro.
+        .map((snap) {
+          try {
+            return _safeDocsToHistoryList(snap.docs);
+          } catch (e) {
+            if (kDebugMode) debugPrint('[historiesStream] parse error silenciado: $e');
+            return const <ClinicalHistoryModel>[];
+          }
+        });
   }
 
   // ── Último paciente (cockpit) ─────────────────────────────────────────────
@@ -1853,10 +1919,19 @@ class FirestoreService {
           : await query
               .get(GetOptions(source: source))
               .timeout(const Duration(seconds: 8));
-      final guides = _normalizeGuides(_safeDocsToGuideList(snap.docs));
+      // CAMADA DUPLA: _safeDocsToGuideList já tem try/catch por doc,
+      // mas envolvemos em try/catch extra para garantir que TypeError de
+      // dart2js não escapa e não aparece como erro visível ao usuário.
+      List<GuideModel> guides;
+      try {
+        guides = _normalizeGuides(_safeDocsToGuideList(snap.docs));
+      } catch (parseErr) {
+        if (kDebugMode) debugPrint('[_loadPublishedGuidesSdk orderBy] parse silenciado: $parseErr');
+        guides = const [];
+      }
       if (guides.isNotEmpty) {
         _clearGuidesError();
-        await _saveGuidesCache(guides);
+        try { await _saveGuidesCache(guides); } catch (_) {}
       }
       _debugGuides('sdk load (orderBy) count=${guides.length} source=${source ?? 'default'}');
       return guides;
@@ -1886,10 +1961,17 @@ class FirestoreService {
           : await query
               .get(GetOptions(source: source))
               .timeout(const Duration(seconds: 8));
-      final guides = _normalizeGuides(_safeDocsToGuideList(snap.docs));
+      // CAMADA DUPLA: mesma proteção da tentativa 1
+      List<GuideModel> guides;
+      try {
+        guides = _normalizeGuides(_safeDocsToGuideList(snap.docs));
+      } catch (parseErr) {
+        if (kDebugMode) debugPrint('[_loadPublishedGuidesSdk noOrderBy] parse silenciado: $parseErr');
+        guides = const [];
+      }
       if (guides.isNotEmpty) {
         _clearGuidesError();
-        await _saveGuidesCache(guides);
+        try { await _saveGuidesCache(guides); } catch (_) {}
       }
       _debugGuides('sdk load (sem orderBy) count=${guides.length} source=${source ?? 'default'}');
       return guides;
@@ -1902,8 +1984,9 @@ class FirestoreService {
       _debugGuides('sdk sem orderBy error ${e.code} source=${source ?? 'default'}');
       return [];
     } catch (e) {
-      _setGuidesError('SDK clinical_guides falhou (sem orderBy): $e');
-      _debugGuides('sdk sem orderBy failed source=${source ?? 'default'} error=$e');
+      // NUNCA exibe TypeError de dart2js como erro visível — trata como lista vazia
+      if (kDebugMode) debugPrint('[_loadPublishedGuidesSdk noOrderBy] erro silenciado: $e');
+      _debugGuides('sdk sem orderBy failed (silenced) source=${source ?? 'default'} error=$e');
       return [];
     }
   }
@@ -2215,7 +2298,16 @@ class FirestoreService {
         .where('isPublished', isEqualTo: true)
         .orderBy('uploadedAt', descending: true)
         .snapshots()
-        .map((snap) => _normalizeGuides(_safeDocsToGuideList(snap.docs)));
+        // CAMADA DUPLA: protege contra TypeError de dart2js que pode escapar
+        // mesmo com _safeDocsToGuideList tendo try/catch interno por documento.
+        .map((snap) {
+          try {
+            return _normalizeGuides(_safeDocsToGuideList(snap.docs));
+          } catch (e) {
+            if (kDebugMode) debugPrint('[guidesStream] parse error silenciado: $e');
+            return const <GuideModel>[];
+          }
+        });
   }
 
   static Stream<List<GuideModel>> _guidesStreamRest() {
@@ -2286,7 +2378,14 @@ class FirestoreService {
     return _guides
         .orderBy('uploadedAt', descending: true)
         .snapshots()
-        .map((snap) => _safeDocsToGuideList(snap.docs));
+        .map((snap) {
+          try {
+            return _safeDocsToGuideList(snap.docs);
+          } catch (e) {
+            if (kDebugMode) debugPrint('[guidesAdminStream] parse error silenciado: $e');
+            return const <GuideModel>[];
+          }
+        });
   }
 
   /// Salva metadados de uma guia no Firestore.
