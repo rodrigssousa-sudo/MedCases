@@ -3,6 +3,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
 import '../providers/app_provider.dart';
 import '../widgets/common_widgets.dart';
+import '../widgets/lab_exam_bottom_sheet.dart';
 
 // ──────────────────────────────────────────────────────────────────
 // COLOR CONSTANTS — alinhadas com common_widgets.dart
@@ -1224,6 +1225,158 @@ class _PressureConvWidgetState extends State<_PressureConvWidget> {
 }
 
 // ══════════════════════════════════════════════════════════════════
+//  CARD: Importar Exame por IA (gatilho do LabParserService)
+// ══════════════════════════════════════════════════════════════════
+class _LabImportCard extends StatelessWidget {
+  final String locale;
+  const _LabImportCard({required this.locale});
+
+  @override
+  Widget build(BuildContext context) {
+    final isEs = locale == 'es';
+
+    return GestureDetector(
+      onTap: () => showAnalyzeExamBottomSheet(context, locale),
+      child: Container(
+        decoration: BoxDecoration(
+          // Gradiente escuro alinhado ao header do app
+          gradient: const LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [Color(0xFF0F1C14), Color(0xFF1B3D2A), Color(0xFF17502E)],
+            stops: [0.0, 0.55, 1.0],
+          ),
+          borderRadius: BorderRadius.circular(18),
+          border: Border.all(
+            color: kGold.withValues(alpha: 0.35),
+            width: 1.2,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.30),
+              blurRadius: 12,
+              offset: const Offset(0, 4),
+            ),
+            BoxShadow(
+              color: const Color(0xFF1F6B48).withValues(alpha: 0.12),
+              blurRadius: 20,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Material(
+          color: Colors.transparent,
+          borderRadius: BorderRadius.circular(18),
+          child: InkWell(
+            onTap: () => showAnalyzeExamBottomSheet(context, locale),
+            borderRadius: BorderRadius.circular(18),
+            splashColor: kGoldLight.withValues(alpha: 0.06),
+            highlightColor: kGoldLight.withValues(alpha: 0.03),
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(16, 14, 16, 14),
+              child: Row(
+                children: [
+                  // Ícone central
+                  Container(
+                    width: 48,
+                    height: 48,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(13),
+                      color: kGold.withValues(alpha: 0.12),
+                      border: Border.all(
+                        color: kGold.withValues(alpha: 0.30),
+                        width: 1.0,
+                      ),
+                    ),
+                    child: const Icon(
+                      Icons.document_scanner_rounded,
+                      color: kGoldLight,
+                      size: 24,
+                    ),
+                  ),
+
+                  const SizedBox(width: 14),
+
+                  // Texto
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          isEs
+                              ? 'Importar Examen por IA'
+                              : 'Importar Exame por IA',
+                          style: const TextStyle(
+                            color: kGoldLight,
+                            fontSize: 14.5,
+                            fontWeight: FontWeight.w800,
+                            letterSpacing: -0.2,
+                          ),
+                        ),
+                        const SizedBox(height: 3),
+                        Text(
+                          isEs
+                              ? 'Foto · PDF · Screenshot · Texto — preenche os campos automaticamente'
+                              : 'Foto · PDF · Screenshot · Texto — preenche os campos automaticamente',
+                          style: TextStyle(
+                            color: Colors.white.withValues(alpha: 0.52),
+                            fontSize: 11.5,
+                            height: 1.35,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  const SizedBox(width: 10),
+
+                  // Seta + badge IA
+                  Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 3,
+                        ),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(6),
+                          color: const Color(0xFF46E28C).withValues(alpha: 0.14),
+                          border: Border.all(
+                            color: const Color(0xFF46E28C).withValues(alpha: 0.35),
+                            width: 0.8,
+                          ),
+                        ),
+                        child: const Text(
+                          'IA',
+                          style: TextStyle(
+                            color: Color(0xFF46E28C),
+                            fontSize: 9.5,
+                            fontWeight: FontWeight.w900,
+                            letterSpacing: 0.8,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 6),
+                      Icon(
+                        Icons.arrow_forward_ios_rounded,
+                        size: 13,
+                        color: Colors.white.withValues(alpha: 0.30),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// ══════════════════════════════════════════════════════════════════
 //  TAB 4 — ELETRÓLITOS
 // ══════════════════════════════════════════════════════════════════
 class _ElectrolytesTab extends StatefulWidget {
@@ -1350,6 +1503,10 @@ class _ElectrolytesTabState extends State<_ElectrolytesTab> {
     return SingleChildScrollView(
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 100),
       child: Column(children: [
+
+        // ── Card de importação automática por IA ─────────────────────────
+        _LabImportCard(locale: p.lang),
+        const SizedBox(height: 12),
 
         _SectionCard(
           title: isEs ? 'Electrolitos' : 'Eletrólitos',
