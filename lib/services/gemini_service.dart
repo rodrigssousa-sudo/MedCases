@@ -253,6 +253,11 @@ class GeminiService {
   /// Verifica se a API Key foi carregada (sem expor a chave em si).
   static bool get hasApiKey => _geminiApiKey.isNotEmpty;
 
+  /// Expõe a chave para serviços internos que fazem chamadas diretas
+  /// (ex: LabParserService — que precisa enviar imagem/PDF inline).
+  /// NÃO use fora do escopo interno do app.
+  static String get apiKeyForLab => _geminiApiKey;
+
   // Chaves de storage
   static const _keyEmail = 'gemini_google_email';
   // _keyToken mantido para limpeza de localStorage legado (não mais usado para auth)
