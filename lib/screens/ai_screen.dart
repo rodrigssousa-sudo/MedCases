@@ -168,6 +168,18 @@ class AiScreen extends StatefulWidget {
   const AiScreen({super.key});
   @override
   State<AiScreen> createState() => _AiScreenState();
+
+  // ── Notifiers estáticos para comunicação com o shell mobile ──────────────
+  // O shell AppBar lê estes valores para injetar botões contextuais quando
+  // a aba da IA está ativa, sem prop drilling nem InheritedWidget extra.
+  /// true quando há mensagens no chat (além da saudação automática)
+  static final hasMessagesNotifier = ValueNotifier<bool>(false);
+  /// quantidade de sessões no histórico de chat
+  static final historyCountNotifier = ValueNotifier<int>(0);
+  /// callback para limpar o chat (null quando o widget não está montado)
+  static final clearChatCallback = ValueNotifier<VoidCallback?>(null);
+  /// callback para abrir o histórico (null quando o widget não está montado)
+  static final openHistoryCallback = ValueNotifier<VoidCallback?>(null);
 }
 
 class _AiScreenState extends State<AiScreen> {
@@ -203,6 +215,31 @@ class _AiScreenState extends State<AiScreen> {
 
   // Sugestões ficam visíveis apenas no estado vazio + sem foco
   bool get _showSuggestions => _messages.isEmpty && !_hasFocus;
+
+  /// Sincroniza os ValueNotifiers estáticos com o estado atual.
+  /// Chamado automaticamente a cada setState via [_setState].
+  void _syncShellNotifiers() {
+    // hasMessages: true se existem mensagens além da saudação automática de IA
+    final hasReal = _messages.any((m) => m.role == 'user');
+    if (AiScreen.hasMessagesNotifier.value != hasReal) {
+      AiScreen.hasMessagesNotifier.value = hasReal;
+    }
+    final cnt = _chatHistory.length;
+    if (AiScreen.historyCountNotifier.value != cnt) {
+      AiScreen.historyCountNotifier.value = cnt;
+    }
+  }
+
+  /// setState que também sincroniza o shell AppBar.
+  @override
+  void setState(VoidCallback fn) {
+    super.setState(fn);
+    // Agenda sync pós-frame para garantir que _messages/_chatHistory
+    // já foram atualizados antes de notificar o shell.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) _syncShellNotifiers();
+    });
+  }
 
   // ── Saudação padronizada por horário — SEMPRE em espanhol conforme spec ──
   // 00–06: "Buena madrugada"  |  06–12: "Buenos días"
@@ -244,6 +281,13 @@ class _AiScreenState extends State<AiScreen> {
     _loadChatHistory();
     // Inicializa TTS
     _initTts();
+    // Registra callbacks no shell AppBar via notifiers estáticos.
+    // O shell lê estes valores para exibir botões contextuais na aba da IA.
+    AiScreen.clearChatCallback.value   = _clearChat;
+    AiScreen.openHistoryCallback.value = () {
+      if (!mounted) return;
+      _openHistory(context.read<AppProvider>());
+    };
 
     // Verifica sessão Gemini ao montar — captura token de redirect OAuth
     if (kIsWeb) {
@@ -422,6 +466,11 @@ class _AiScreenState extends State<AiScreen> {
     _scrollCtrl.dispose();
     _focusNode.dispose();
     _tts.stop();
+    // Limpa callbacks do shell AppBar — widget desmontado
+    AiScreen.clearChatCallback.value   = null;
+    AiScreen.openHistoryCallback.value = null;
+    AiScreen.hasMessagesNotifier.value  = false;
+    AiScreen.historyCountNotifier.value = 0;
     super.dispose();
   }
 

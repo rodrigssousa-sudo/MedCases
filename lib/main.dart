@@ -1377,6 +1377,8 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
         child: Builder(
           builder: (scaffoldCtx) => _MobileAppBar(
             dark: dark,
+            currentTab: _tab,
+            lang: p.lang,
             onLogoTap: () => setState(() => _tab = 0),
             onMenuTap: () => Scaffold.of(scaffoldCtx).openEndDrawer(),
           ),
@@ -1596,19 +1598,31 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// MOBILE APP BAR — topo do Scaffold mobile com logo + hambúrguer
+// MOBILE APP BAR — topo do Scaffold mobile com logo + ações contextuais + hambúrguer
 // Isolado do _AppHeader (desktop) para não quebrar o layout desktop.
+// Quando currentTab == 2 (IA MedCases), injeta botões "Histórico" e "Limpar"
+// antes do hambúrguer, usando os ValueNotifiers estáticos do AiScreen.
 // ─────────────────────────────────────────────────────────────────────────────
 class _MobileAppBar extends StatelessWidget {
   final bool dark;
+  final int  currentTab;
+  final String lang;
   final VoidCallback onLogoTap;
   final VoidCallback onMenuTap;
 
   const _MobileAppBar({
     required this.dark,
+    required this.currentTab,
+    required this.lang,
     required this.onLogoTap,
     required this.onMenuTap,
   });
+
+  // Tab index da tela de IA (deve corresponder a _staticScreens[2])
+  static const _kAiTab = 2;
+  // Paleta dourada para botões AI (combina com o _WaHeader)
+  static const _kGold  = Color(0xFFC5A365);
+  static const _kGoldL = Color(0xFFFFE8A6);
 
   @override
   Widget build(BuildContext context) {
@@ -1644,6 +1658,87 @@ class _MobileAppBar extends StatelessWidget {
                   child: const BrandMark(small: true),
                 ),
                 const Spacer(),
+
+                // ── Botões contextuais da IA (só na aba 2) ─────────────────
+                if (currentTab == _kAiTab) ...[
+                  // Botão Histórico — badge com contagem de sessões salvas
+                  ValueListenableBuilder<int>(
+                    valueListenable: AiScreen.historyCountNotifier,
+                    builder: (_, count, __) => GestureDetector(
+                      onTap: AiScreen.openHistoryCallback.value,
+                      child: Stack(
+                        clipBehavior: Clip.none,
+                        children: [
+                          Container(
+                            width: 38, height: 38,
+                            margin: const EdgeInsets.only(right: 8),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(12),
+                              color: iconBg,
+                              border: Border.all(color: iconBorder, width: 1),
+                            ),
+                            child: Icon(Icons.history_rounded, size: 20, color: iconColor),
+                          ),
+                          if (count > 0)
+                            Positioned(
+                              top: -3, right: 5,
+                              child: Container(
+                                width: 15, height: 15,
+                                decoration: const BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: _kGold,
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    '$count',
+                                    style: const TextStyle(
+                                      fontSize: 8,
+                                      fontWeight: FontWeight.w900,
+                                      color: Color(0xFF1A1100),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                        ],
+                      ),
+                    ),
+                  ),
+
+                  // Botão Limpar — só aparece quando há mensagens reais
+                  ValueListenableBuilder<bool>(
+                    valueListenable: AiScreen.hasMessagesNotifier,
+                    builder: (_, hasMessages, __) => hasMessages
+                        ? GestureDetector(
+                            onTap: AiScreen.clearChatCallback.value,
+                            child: Container(
+                              height: 38,
+                              margin: const EdgeInsets.only(right: 8),
+                              padding: const EdgeInsets.symmetric(horizontal: 12),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(12),
+                                color: _kGold,
+                                border: Border.all(
+                                    color: _kGoldL.withValues(alpha: 0.4), width: 1),
+                              ),
+                              child: Center(
+                                child: Text(
+                                  lang == 'es'
+                                      ? 'Limpiar'
+                                      : 'Limpar',
+                                  style: const TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w800,
+                                    color: Color(0xFF1A1100),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          )
+                        : const SizedBox.shrink(),
+                  ),
+                ],
+
                 // ── Botão hambúrguer → abre endDrawer ─────────────────────
                 GestureDetector(
                   onTap: onMenuTap,

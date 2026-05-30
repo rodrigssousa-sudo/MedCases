@@ -3230,9 +3230,11 @@ class _HistoryEditorState extends State<_HistoryEditor> {
           final hPad = isDesktop ? 48.0 : 16.0;
           // Seções que têm campos de texto ditáveis (não Exames/Desfecho)
           final hasMic = _section == 1 || _section == 2 || _section == 4 || _section == 5;
-          // Altura da barra inferior: 136px (status 44 + nav 48 + padding 44)
+          // Padding inferior quando barra de mic está visível:
+          //   110px (conteúdo da barra) + 34px (SafeArea iPhone) + 24px (buffer)
+          //   = 168px → último campo sempre visível acima da barra em qualquer dispositivo
           Widget content = SingleChildScrollView(
-            padding: EdgeInsets.fromLTRB(hPad, 14, hPad, hasMic ? 148 : 24),
+            padding: EdgeInsets.fromLTRB(hPad, 14, hPad, hasMic ? 168 : 24),
             child: isDesktop
                 ? Center(
                     child: ConstrainedBox(
