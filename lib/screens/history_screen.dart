@@ -67,61 +67,94 @@ const _hcStrings = <String, Map<String, String>>{
   'back':               {'pt': 'Voltar',                                'es': 'Volver'},
   // HeroHeader
   'pront':              {'pt': 'Pront.',                                'es': 'Expte.'},
-  // Copiar conteúdo (StringBuffer)
-  'copy_header':        {'pt': '=== MEDCASES PRO — HISTÓRIA CLÍNICA ===', 'es': '=== MEDCASES PRO — HISTORIA CLÍNICA ==='},
-  'copy_date':          {'pt': 'Data:',                                 'es': 'Fecha:'},
-  'copy_author':        {'pt': 'Autor:',                                'es': 'Autor:'},
+  // ── Copiar conteúdo (StringBuffer) — Esquema 11 secciones Argentina ─────
+  'copy_header':        {'pt': '=== MEDCASES PRO — HISTÓRIA CLÍNICA ===',
+                          'es': '══════════════════════════════════════════════════════════════════\nHISTORIA CLÍNICA — MEDCASES PRO  |  ARGENTINA\n══════════════════════════════════════════════════════════════════'},
+  'copy_date':          {'pt': 'Data:',                                 'es': 'Fecha y hora de ingreso:'},
+  'copy_author':        {'pt': 'Autor:',                                'es': 'Profesional:'},
   'copy_patient':       {'pt': 'Paciente:',                            'es': 'Paciente:'},
-  'copy_chief':         {'pt': '\nQUEIXA PRINCIPAL:\n',                 'es': '\nMOTIVO DE CONSULTA:\n'},
-  'copy_hpi':           {'pt': '\nHISTÓRIA DA DOENÇA ATUAL:\n',        'es': '\nENFERMEDAD ACTUAL:\n'},
-  'copy_past':          {'pt': '\nANTECEDENTES PESSOAIS:\n',           'es': '\nANTECEDENTES PERSONALES:\n'},
-  'copy_meds':          {'pt': '\nMEDICAMENTOS EM USO:\n',             'es': '\nMEDICACIÓN HABITUAL:\n'},
-  'copy_allerg':        {'pt': '\nALERGIAS: ',                         'es': '\nALERGIAS: '},
-  'copy_vitals':        {'pt': '\nSINAIS VITAIS:\n',                   'es': '\nSIGNOS VITALES:\n'},
-  'copy_pe':            {'pt': '\nEXAME FÍSICO:\n',                    'es': '\nEXAMEN FÍSICO:\n'},
-  'copy_work_dx':       {'pt': '\nHIPÓTESE DIAGNÓSTICA: ',             'es': '\nHIPÓTESIS DIAGNÓSTICA: '},
-  'copy_final_dx':      {'pt': 'DIAGNÓSTICO FINAL: ',                  'es': 'DIAGNÓSTICO FINAL: '},
-  'copy_lab':           {'pt': '\nEXAMES LABORATORIAIS:\n',            'es': '\nESTUDIOS DE LABORATORIO:\n'},
-  'copy_img':           {'pt': '\nEXAMES DE IMAGEM:\n',                'es': '\nESTUDIOS DE IMAGEN:\n'},
-  'copy_treat':         {'pt': '\nCONDUTA / TRATAMENTO:\n',            'es': '\nCONDUCTA / TRATAMIENTO:\n'},
-  'copy_evol':          {'pt': '\nEVOLUÇÃO ',                          'es': '\nEVOLUCIÓN '},
-  'copy_outcome':       {'pt': '\nDESFECHO: ',                         'es': '\nDESENLACE: '},
-  'copy_followup':      {'pt': 'SEGUIMENTO: ',                         'es': 'SEGUIMIENTO: '},
-  // PDF sections
+  // Sección 1
+  'copy_s1':            {'pt': '\n── 1. IDENTIFICAÇÃO DO PACIENTE ──',  'es': '\n── 1. DATOS DE FILIACIÓN Y ADMINISTRATIVOS ──'},
+  'copy_nombre':        {'pt': 'Iniciais:',                             'es': 'Nombre y Apellido:'},
+  'copy_edad':          {'pt': 'Idade / Nascimento:',                   'es': 'Edad / Fecha de Nacimiento:'},
+  'copy_sexo':          {'pt': 'Sexo:',                                 'es': 'Sexo / Género:'},
+  'copy_dni':           {'pt': 'Prontuário:',                           'es': 'DNI / Pasaporte:'},
+  'copy_peso_talla':    {'pt': 'Peso / Altura:',                        'es': 'Peso / Talla:'},
+  'copy_obra_social':   {'pt': 'Convênio:',                             'es': 'Obra Social / Prepaga o Plan de Salud:'},
+  // Sección 2
+  'copy_chief':         {'pt': '\n── 2. QUEIXA PRINCIPAL ──\n',         'es': '\n── 2. MOTIVO DE CONSULTA ──\n'},
+  // Sección 3
+  'copy_hpi':           {'pt': '\n── 3. HISTÓRIA DA DOENÇA ATUAL ──\n', 'es': '\n── 3. ENFERMEDAD ACTUAL (EA) ──\n'},
+  // Sección 4
+  'copy_s4':            {'pt': '\n── 4. ANTECEDENTES PESSOAIS ──',      'es': '\n── 4. ANTECEDENTES PERSONALES ──'},
+  'copy_past':          {'pt': '  Patológicos:',                        'es': '  Patológicos:'},
+  'copy_allerg':        {'pt': '  Alergias:',                           'es': '  Alérgicos:'},
+  'copy_meds':          {'pt': '  Medicamentos habituais:',             'es': '  Medicamentos habituales (droga, dosis, tiempo):'},
+  'copy_social':        {'pt': '  Hábitos:',                            'es': '  Hábitos (tabaquismo, alcohol, actividad física):'},
+  'copy_rvs':           {'pt': '  Revisão de sistemas:',                'es': '  Gineco-obstétricos (si corresponde):'},
+  // Sección 5
+  'copy_family':        {'pt': '\n── 5. ANTECEDENTES FAMILIARES ──\n',  'es': '\n── 5. ANTECEDENTES FAMILIARES ──\n'},
+  // Sección 6
+  'copy_s6':            {'pt': '\n── 6. EXAME FÍSICO ──',               'es': '\n── 6. EXAMEN FÍSICO ──'},
+  'copy_vitals':        {'pt': '  Sinais vitais (PA, FC, FR, T°, SpO2, Peso, Altura, IMC):',
+                          'es': '  Signos Vitales — TA, FC, FR, T°, SatO2, Peso, Talla, IMC:'},
+  'copy_pe':            {'pt': '  Exame físico por sistemas:\n',         'es': '  Examen por Sistemas/Aparatos:\n'},
+  // Sección 7
+  'copy_lab':           {'pt': '\n── 7. EXAMES COMPLEMENTARES ──\n',    'es': '\n── 7. ESTUDIOS COMPLEMENTARIOS ──\n'},
+  'copy_img':           {'pt': '  Imagem:\n',                           'es': '  Estudios de Imagen:\n'},
+  // Sección 8
+  'copy_work_dx':       {'pt': '\n── 8. HIPÓTESE DIAGNÓSTICA ──\n',     'es': '\n── 8. IMPRESIÓN DIAGNÓSTICA ──\n'},
+  'copy_final_dx':      {'pt': 'DIAGNÓSTICO FINAL: ',                   'es': 'Diagnóstico confirmado (CIE-10): '},
+  // Sección 9
+  'copy_evol':          {'pt': '\n── 9. EVOLUÇÃO CLÍNICA ──\nEvolução ', 'es': '\n── 9. EVOLUCIÓN CLÍNICA ──\nRegistro '},
+  // Sección 10
+  'copy_treat':         {'pt': '\n── 10. CONDUTAS E INDICAÇÕES MÉDICAS ──\n', 'es': '\n── 10. INDICACIONES MÉDICAS ──\n'},
+  // Sección 11
+  'copy_outcome':       {'pt': '\n── 11. DESFECHO E ALTA ──\nDesfecho: ', 'es': '\n── 11. EPICRISIS / RESUMEN DE ALTA ──\nDesenlace: '},
+  'copy_followup':      {'pt': 'Seguimento: ',                          'es': 'Indicaciones al alta / Seguimiento ambulatorio:\n'},
+  // ── PDF sections — Esquema 11 secciones Argentina ─────────────────────
   'pdf_hc_title':       {'pt': 'História Clínica',                     'es': 'Historia Clínica'},
-  'pdf_section1':       {'pt': '1. Identificação do Paciente',         'es': '1. Identificación del Paciente'},
-  'pdf_initials':       {'pt': 'Iniciais',                             'es': 'Iniciales'},
-  'pdf_demog':          {'pt': 'Dados demográficos',                   'es': 'Datos demográficos'},
-  'pdf_patient':        {'pt': 'Paciente',                             'es': 'Paciente'},
-  'pdf_age_label':      {'pt': 'Idade',                                'es': 'Edad'},
-  'pdf_specialty':      {'pt': 'Especialidade',                        'es': 'Especialidad'},
-  'pdf_section2':       {'pt': '2. Queixa Principal',                  'es': '2. Motivo de Consulta'},
-  'pdf_section3':       {'pt': '3. Anamnese',                          'es': '3. Anamnesis'},
-  'pdf_hpi':            {'pt': 'História da doença atual',             'es': 'Enfermedad actual'},
-  'pdf_past':           {'pt': 'Antecedentes pessoais',                'es': 'Antecedentes personales'},
-  'pdf_family':         {'pt': 'Antecedentes familiares',              'es': 'Antecedentes familiares'},
-  'pdf_social':         {'pt': 'História social (tabagismo, etilismo, ocupação)', 'es': 'Historia social (tabaquismo, alcohol, ocupación)'},
-  'pdf_rvs':            {'pt': 'Revisão de sistemas',                  'es': 'Revisión de sistemas'},
-  'pdf_meds':           {'pt': 'Medicamentos em uso',                  'es': 'Medicación habitual'},
-  'pdf_section4':       {'pt': '4. Exame Físico',                      'es': '4. Examen Físico'},
-  'pdf_vitals':         {'pt': 'Sinais vitais',                        'es': 'Signos vitales'},
-  'pdf_pe':             {'pt': 'Exame físico por sistemas',            'es': 'Examen físico por sistemas'},
-  'pdf_section5':       {'pt': '5. Hipóteses Diagnósticas',            'es': '5. Hipótesis Diagnósticas'},
-  'pdf_work_dx':        {'pt': 'Hipótese principal',                   'es': 'Hipótesis principal'},
-  'pdf_diff_dx':        {'pt': 'Diagnósticos diferenciais',            'es': 'Diagnósticos diferenciales'},
-  'pdf_section6':       {'pt': '6. Exames Complementares',             'es': '6. Estudios Complementarios'},
-  'pdf_lab':            {'pt': 'Exames laboratoriais',                 'es': 'Estudios de laboratorio'},
-  'pdf_ecg':            {'pt': 'ECG / Outros (biópsia, EEG...)',       'es': 'ECG / Otros (biopsia, EEG...)'},
-  'pdf_img':            {'pt': 'Exames de imagem',                     'es': 'Estudios de imagen'},
-  'pdf_section7':       {'pt': '7. DIAGNÓSTICO FINAL',                 'es': '7. DIAGNÓSTICO FINAL'},
-  'pdf_cid':            {'pt': 'CID-10:',                              'es': 'CIE-10:'},
-  'pdf_section8':       {'pt': '8. Conduta e Plano Terapêutico',       'es': '8. Conducta y Plan Terapéutico'},
-  'pdf_plan':           {'pt': 'Plano terapêutico',                    'es': 'Plan terapéutico'},
-  'pdf_proc':           {'pt': 'Procedimentos realizados',             'es': 'Procedimientos realizados'},
-  'pdf_section9':       {'pt': '9. Evolução Clínica',                  'es': '9. Evolución Clínica'},
-  'pdf_section10':      {'pt': '10. Desfecho e Alta',                  'es': '10. Desenlace y Alta'},
-  'pdf_discharge':      {'pt': 'Condições de alta',                    'es': 'Condiciones de alta'},
-  'pdf_followup':       {'pt': 'Seguimento / Orientações',             'es': 'Seguimiento / Indicaciones'},
+  'pdf_section1':       {'pt': '1. IDENTIFICAÇÃO DO PACIENTE',          'es': '1. DATOS DE FILIACIÓN Y ADMINISTRATIVOS'},
+  'pdf_initials':       {'pt': 'Iniciais / Nome',                       'es': 'Nombre y Apellido'},
+  'pdf_demog':          {'pt': 'Dados demográficos',                    'es': 'Edad / Fecha de Nacimiento · Sexo / Género'},
+  'pdf_patient':        {'pt': 'Paciente',                              'es': 'Paciente'},
+  'pdf_age_label':      {'pt': 'Idade',                                 'es': 'Edad'},
+  'pdf_specialty':      {'pt': 'Especialidade',                         'es': 'Especialidad'},
+  'pdf_dni':            {'pt': 'Prontuário',                            'es': 'DNI / Pasaporte'},
+  'pdf_record':         {'pt': 'Nº Prontuário',                         'es': 'Nº Historia Clínica / Expediente'},
+  'pdf_obra_social':    {'pt': 'Convênio / Plano de Saúde',             'es': 'Obra Social / Prepaga o Plan de Salud'},
+  'pdf_ingreso':        {'pt': 'Data e hora de internação',             'es': 'Fecha y hora de ingreso'},
+  'pdf_contacto':       {'pt': 'Contato (familiar/responsável)',        'es': 'Persona de contacto (familiar/tutor)'},
+  'pdf_section2':       {'pt': '2. QUEIXA PRINCIPAL',                   'es': '2. MOTIVO DE CONSULTA'},
+  'pdf_section3':       {'pt': '3. ENFERMIDADE ATUAL (EA)',             'es': '3. ENFERMEDAD ACTUAL (EA)'},
+  'pdf_hpi':            {'pt': 'História da doença atual',              'es': 'Descripción cronológica detallada'},
+  'pdf_section4':       {'pt': '4. ANTECEDENTES PESSOAIS',              'es': '4. ANTECEDENTES PERSONALES'},
+  'pdf_past':           {'pt': 'Antecedentes patológicos',              'es': 'Patológicos (enfermedades, cirugías, internaciones)'},
+  'pdf_allerg':         {'pt': 'Alergias',                              'es': 'Alérgicos (medicamentos, alimentos, ambientales)'},
+  'pdf_meds':           {'pt': 'Medicamentos em uso',                   'es': 'Medicamentos habituales (droga, dosis, tiempo de uso)'},
+  'pdf_social':         {'pt': 'Hábitos (tabagismo, etilismo, atividade física)', 'es': 'Hábitos (tabaquismo, alcohol, actividad física, dieta)'},
+  'pdf_rvs':            {'pt': 'Revisão de sistemas',                   'es': 'Gineco-obstétricos (si corresponde)'},
+  'pdf_section5':       {'pt': '5. ANTECEDENTES FAMILIARES',            'es': '5. ANTECEDENTES FAMILIARES'},
+  'pdf_family':         {'pt': 'Antecedentes familiares',               'es': 'Enfermedades relevantes en familiares de 1ª y 2ª línea'},
+  'pdf_section6':       {'pt': '6. EXAME FÍSICO',                       'es': '6. EXAMEN FÍSICO'},
+  'pdf_vitals':         {'pt': 'Sinais vitais',                         'es': 'Signos Vitales — TA · FC · FR · T° · SatO2 · Peso · Talla · IMC'},
+  'pdf_vitals_sub':     {'pt': 'PA, FC, FR, T°, SpO2, Peso, Altura, IMC', 'es': 'Tensión arterial (TA), Frecuencia cardíaca (FC), Frecuencia respiratoria (FR), Temperatura (T°), Saturación de oxígeno (SatO2), Peso, Talla, IMC'},
+  'pdf_exam_gen':       {'pt': 'Exame geral',                           'es': 'Examen General (conciencia, piel/mucosas, TCS, ganglios)'},
+  'pdf_pe':             {'pt': 'Exame físico por sistemas',             'es': 'Examen por Sistemas/Aparatos (CV · Resp · Abdomen · SN · GU · Osteoarticular)'},
+  'pdf_section7':       {'pt': '7. EXAMES COMPLEMENTARES',             'es': '7. ESTUDIOS COMPLEMENTARIOS'},
+  'pdf_lab':            {'pt': 'Exames laboratoriais',                  'es': 'Análisis de laboratorio'},
+  'pdf_ecg':            {'pt': 'ECG / Outros (biópsia, EEG...)',        'es': 'ECG / Otros (biopsia, EEG, espirometría...)'},
+  'pdf_img':            {'pt': 'Exames de imagem',                      'es': 'Estudios por imágenes'},
+  'pdf_section8':       {'pt': '8. IMPRESIÓN DIAGNÓSTICA',              'es': '8. IMPRESIÓN DIAGNÓSTICA'},
+  'pdf_work_dx':        {'pt': 'Hipótese principal',                    'es': 'Presunciones diagnósticas (por orden de prioridad clínica)'},
+  'pdf_diff_dx':        {'pt': 'Diagnósticos diferenciais',             'es': 'Diagnósticos diferenciales / HCOP'},
+  'pdf_section9':       {'pt': '9. EVOLUÇÃO CLÍNICA',                   'es': '9. EVOLUCIÓN CLÍNICA'},
+  'pdf_section10':      {'pt': '10. CONDUTAS E INDICAÇÕES MÉDICAS',     'es': '10. INDICACIONES MÉDICAS'},
+  'pdf_plan':           {'pt': 'Plano terapêutico',                     'es': 'Dieta · Posición · Hidratación · Medicación (droga/dosis/vía/frecuencia)'},
+  'pdf_proc':           {'pt': 'Procedimentos realizados',              'es': 'Controles (signos vitales, balance hídrico) · Pedidos de estudios'},
+  'pdf_section11':      {'pt': '11. DESFECHO E ALTA',                   'es': '11. EPICRISIS / RESUMEN DE ALTA'},
+  'pdf_discharge':      {'pt': 'Condições de alta',                     'es': 'Diagnóstico de egreso · Condiciones de alta'},
+  'pdf_followup':       {'pt': 'Seguimento / Orientações ao alta',      'es': 'Tratamiento farmacológico · Pautas de alarma · Seguimiento ambulatorio'},
   'pdf_footer':         {'pt': 'Gerado por MedCases Pro — Uso exclusivamente educacional e de apoio clínico. Não substitui avaliação médica individual presencial.',
                           'es': 'Generado por MedCases Pro — Uso exclusivamente educativo y de apoyo clínico. No sustituye la evaluación médica individual presencial.'},
   // Banner de diagnóstico
@@ -1660,31 +1693,119 @@ class _HistoryDetailState extends State<_HistoryDetail> {
   void _copy() {
     final lang = p.lang;
     final buf = StringBuffer();
+
+    // ══ ENCABEZADO ══════════════════════════════════════════════════════════
     buf.writeln(_hcT(lang, 'copy_header'));
     buf.writeln('${_hcT(lang, 'copy_date')} ${history.formattedDate}');
-    if (history.authorName.isNotEmpty) buf.writeln('${_hcT(lang, 'copy_author')} ${history.authorName}${history.authorEmail.isNotEmpty ? " (${history.authorEmail})" : ""}');
-    if (history.patientInitials.isNotEmpty) buf.writeln('${_hcT(lang, 'copy_patient')} ${history.patientInitials} • ${history.patientAge} ${_hcT(lang, 'years')} • ${history.patientSex}');
-    if (history.chiefComplaint.isNotEmpty) buf.writeln('${_hcT(lang, 'copy_chief')}${history.chiefComplaint}');
-    if (history.hpi.isNotEmpty) buf.writeln('${_hcT(lang, 'copy_hpi')}${history.hpi}');
-    if (history.pastHistory.isNotEmpty) buf.writeln('${_hcT(lang, 'copy_past')}${history.pastHistory}');
-    if (history.medications.isNotEmpty) buf.writeln('${_hcT(lang, 'copy_meds')}${history.medications}');
-    if (history.allergies.isNotEmpty) buf.writeln('${_hcT(lang, 'copy_allerg')}${history.allergies}');
-    if (history.vitalSigns.isNotEmpty) buf.writeln('${_hcT(lang, 'copy_vitals')}${history.vitalSigns}');
-    if (history.physicalExam.isNotEmpty) buf.writeln('${_hcT(lang, 'copy_pe')}${history.physicalExam}');
-    if (history.workingDiagnosis.isNotEmpty) buf.writeln('${_hcT(lang, 'copy_work_dx')}${history.workingDiagnosis}');
-    if (history.finalDiagnosis.isNotEmpty) buf.writeln('${_hcT(lang, 'copy_final_dx')}${history.finalDiagnosis}${history.cid.isNotEmpty ? " (${history.cid})" : ""}');
-    if (history.labResults.isNotEmpty) buf.writeln('${_hcT(lang, 'copy_lab')}${history.labResults}');
-    if (history.imagingResults.isNotEmpty) buf.writeln('${_hcT(lang, 'copy_img')}${history.imagingResults}');
-    if (history.treatmentPlan.isNotEmpty) buf.writeln('${_hcT(lang, 'copy_treat')}${history.treatmentPlan}');
+    if (history.authorName.isNotEmpty) {
+      buf.writeln('${_hcT(lang, 'copy_author')} ${history.authorName}'
+          '${history.authorEmail.isNotEmpty ? " <${history.authorEmail}>" : ""}');
+    }
+
+    // ── 1. DATOS DE FILIACIÓN Y ADMINISTRATIVOS ──────────────────────────
+    buf.writeln(_hcT(lang, 'copy_s1'));
+    if (history.patientInitials.isNotEmpty)
+      buf.writeln('${_hcT(lang, 'copy_nombre')} ${history.patientInitials}');
+    if (history.patientAge.isNotEmpty)
+      buf.writeln('${_hcT(lang, 'copy_edad')} ${history.patientAge} ${_hcT(lang, 'years')}');
+    if (history.patientSex.isNotEmpty)
+      buf.writeln('${_hcT(lang, 'copy_sexo')} ${history.patientSex}');
+    if (history.patientRecord.isNotEmpty)
+      buf.writeln('${_hcT(lang, 'copy_dni')} ${history.patientRecord}');
+    if (history.patientWeight.isNotEmpty || history.patientHeight.isNotEmpty) {
+      final pw = history.patientWeight.isNotEmpty ? '${history.patientWeight} kg' : '';
+      final ph = history.patientHeight.isNotEmpty ? '${history.patientHeight} cm' : '';
+      buf.writeln('${_hcT(lang, 'copy_peso_talla')} ${[pw, ph].where((s) => s.isNotEmpty).join(' / ')}');
+    }
+
+    // ── 2. MOTIVO DE CONSULTA ────────────────────────────────────────────
+    if (history.chiefComplaint.isNotEmpty)
+      buf.writeln('${_hcT(lang, 'copy_chief')}${history.chiefComplaint}');
+
+    // ── 3. ENFERMEDAD ACTUAL (EA) ─────────────────────────────────────────
+    if (history.hpi.isNotEmpty)
+      buf.writeln('${_hcT(lang, 'copy_hpi')}${history.hpi}');
+
+    // ── 4. ANTECEDENTES PERSONALES ────────────────────────────────────────
+    final hasAnt4 = history.pastHistory.isNotEmpty || history.allergies.isNotEmpty ||
+        history.medications.isNotEmpty || history.socialHistory.isNotEmpty ||
+        history.reviewOfSystems.isNotEmpty;
+    if (hasAnt4) {
+      buf.writeln(_hcT(lang, 'copy_s4'));
+      if (history.pastHistory.isNotEmpty)
+        buf.writeln('${_hcT(lang, 'copy_past')} ${history.pastHistory}');
+      if (history.allergies.isNotEmpty)
+        buf.writeln('${_hcT(lang, 'copy_allerg')} ${history.allergies}');
+      if (history.medications.isNotEmpty)
+        buf.writeln('${_hcT(lang, 'copy_meds')} ${history.medications}');
+      if (history.socialHistory.isNotEmpty)
+        buf.writeln('${_hcT(lang, 'copy_social')} ${history.socialHistory}');
+      if (history.reviewOfSystems.isNotEmpty)
+        buf.writeln('${_hcT(lang, 'copy_rvs')} ${history.reviewOfSystems}');
+    }
+
+    // ── 5. ANTECEDENTES FAMILIARES ────────────────────────────────────────
+    if (history.familyHistory.isNotEmpty)
+      buf.writeln('${_hcT(lang, 'copy_family')}${history.familyHistory}');
+
+    // ── 6. EXAMEN FÍSICO ──────────────────────────────────────────────────
+    if (history.vitalSigns.isNotEmpty || history.physicalExam.isNotEmpty) {
+      buf.writeln(_hcT(lang, 'copy_s6'));
+      if (history.vitalSigns.isNotEmpty)
+        buf.writeln('${_hcT(lang, 'copy_vitals')} ${history.vitalSigns}');
+      if (history.physicalExam.isNotEmpty)
+        buf.writeln('${_hcT(lang, 'copy_pe')}${history.physicalExam}');
+    }
+
+    // ── 7. ESTUDIOS COMPLEMENTARIOS ───────────────────────────────────────
+    if (history.labResults.isNotEmpty || history.imagingResults.isNotEmpty || history.otherResults.isNotEmpty) {
+      buf.writeln(_hcT(lang, 'copy_lab'));
+      if (history.labResults.isNotEmpty)   buf.writeln(history.labResults);
+      if (history.otherResults.isNotEmpty) buf.writeln(history.otherResults);
+      if (history.imagingResults.isNotEmpty)
+        buf.writeln('${_hcT(lang, 'copy_img')}${history.imagingResults}');
+    }
+
+    // ── 8. IMPRESIÓN DIAGNÓSTICA ──────────────────────────────────────────
+    if (history.workingDiagnosis.isNotEmpty || history.differentialDx.isNotEmpty || history.finalDiagnosis.isNotEmpty) {
+      buf.writeln(_hcT(lang, 'copy_work_dx'));
+      if (history.workingDiagnosis.isNotEmpty) buf.writeln(history.workingDiagnosis);
+      if (history.differentialDx.isNotEmpty)   buf.writeln(history.differentialDx);
+      if (history.finalDiagnosis.isNotEmpty)
+        buf.writeln('${_hcT(lang, 'copy_final_dx')}${history.finalDiagnosis}'
+            '${history.cid.isNotEmpty ? " (CIE-10: ${history.cid})" : ""}');
+    }
+
+    // ── 9. EVOLUCIÓN CLÍNICA ──────────────────────────────────────────────
     for (final e in history.evolutions) {
       final dt = DateTime.tryParse(e.date);
-      final dateStr = dt != null ? '${dt.day.toString().padLeft(2, "0")}/${dt.month.toString().padLeft(2, "0")} ${dt.hour.toString().padLeft(2, "0")}:${dt.minute.toString().padLeft(2, "0")}' : '';
+      final dateStr = dt != null
+          ? '${dt.day.toString().padLeft(2, "0")}/${dt.month.toString().padLeft(2, "0")}/${dt.year} ${dt.hour.toString().padLeft(2, "0")}:${dt.minute.toString().padLeft(2, "0")}'
+          : '';
       buf.writeln('${_hcT(lang, "copy_evol")}($dateStr — ${e.author}):\n${e.text}');
     }
-    if (history.outcome != 'internado') buf.writeln('${_hcT(lang, "copy_outcome")}${history.outcome.toUpperCase()}');
-    if (history.followUp.isNotEmpty) buf.writeln('${_hcT(lang, "copy_followup")}${history.followUp}');
+
+    // ── 10. INDICACIONES MÉDICAS ──────────────────────────────────────────
+    if (history.treatmentPlan.isNotEmpty || history.procedures.isNotEmpty) {
+      buf.writeln(_hcT(lang, 'copy_treat'));
+      if (history.treatmentPlan.isNotEmpty) buf.writeln(history.treatmentPlan);
+      if (history.procedures.isNotEmpty)    buf.writeln(history.procedures);
+    }
+
+    // ── 11. EPICRISIS / RESUMEN DE ALTA ──────────────────────────────────
+    if (history.outcome != 'internado' || history.dischargeCondition.isNotEmpty || history.followUp.isNotEmpty) {
+      buf.writeln('${_hcT(lang, "copy_outcome")}${history.outcome.toUpperCase()}');
+      if (history.dischargeCondition.isNotEmpty) buf.writeln(history.dischargeCondition);
+      if (history.followUp.isNotEmpty)
+        buf.writeln('${_hcT(lang, "copy_followup")}${history.followUp}');
+    }
+
+    buf.writeln('\n════════════════════════════════════════════════════════');
+    buf.writeln('MedCases Pro — ${_hcT(lang, "pdf_footer")}');
+
     Clipboard.setData(ClipboardData(text: buf.toString()));
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(_hcT(lang, "copied")), duration: const Duration(seconds: 1)));
+    ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(_hcT(lang, "copied")), duration: const Duration(seconds: 1)));
   }
 
   // ── Exportar como PNG (web: download direto) ──────────────────────────────
@@ -1707,161 +1828,355 @@ class _HistoryDetailState extends State<_HistoryDetail> {
   }
 
   // ── Exportar como PDF (web: janela de impressão | mobile: diálogo nativo) ─
+  // Esquema oficial 11 secciones — Argentina — fondo blanco clínico puro
   Future<void> _exportPdf() async {
+    final lang = p.lang;
     final buf = StringBuffer();
-    buf.write('''<!DOCTYPE html><html><head>
+
+    // ── CSS: Fondo blanco clínico, tipografía grafito oscuro, divisores dorados finos ─
+    buf.write('''<!DOCTYPE html><html lang="es"><head>
 <meta charset="utf-8">
-<title>${_hcT(p.lang, 'pdf_hc_title')} — MedCases Pro</title>
+<title>Historia Clínica — MedCases Pro</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: Georgia, serif; font-size: 13px; color: #111; background: #fff; padding: 40px; line-height: 1.6; }
-  .header { background: #07110d; color: #FFE8A6; padding: 20px 24px; border-radius: 10px; margin-bottom: 24px; }
-  .header h1 { font-size: 22px; font-weight: 900; margin-bottom: 4px; }
-  .header .meta { font-size: 11px; opacity: 0.75; }
-  .section { margin-bottom: 18px; border: 1px solid #ddd; border-radius: 8px; padding: 14px 16px; }
-  .section-title { font-size: 10px; font-weight: 900; letter-spacing: 1.5px; color: #555; text-transform: uppercase; margin-bottom: 8px; border-bottom: 1px solid #eee; padding-bottom: 6px; }
-  .field-label { font-size: 9px; font-weight: 700; color: #888; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 2px; margin-top: 10px; }
-  .field-value { font-size: 13px; color: #222; line-height: 1.6; }
-  .dx-box { background: #ECFDF5; border: 1px solid #BBF7D0; border-radius: 8px; padding: 12px 14px; margin-bottom: 18px; }
-  .dx-box h2 { font-size: 10px; font-weight: 900; color: #065F46; letter-spacing: 1.2px; margin-bottom: 4px; }
-  .dx-box p { font-size: 16px; font-weight: 900; color: #064E3B; }
-  .allergy-box { background: #FFF0F0; border: 1px solid #FFCCCC; border-radius: 8px; padding: 10px 12px; margin-top: 8px; }
-  .allergy-box .label { color: #CC2222; font-size: 9px; font-weight: 900; letter-spacing: 1px; }
-  .allergy-box p { color: #CC2222; font-weight: 700; }
-  .author-row { font-size: 11px; color: #555; margin-top: 6px; }
-  .evolution { border-left: 3px solid #C5A365; padding-left: 10px; margin-bottom: 12px; }
-  .evolution .evo-meta { font-size: 10px; color: #888; font-weight: 700; }
-  .outcome { display: inline-block; padding: 5px 12px; border-radius: 6px; font-size: 12px; font-weight: 900; background: #ECFDF5; color: #065F46; margin-bottom: 10px; }
-  .footer { margin-top: 30px; font-size: 10px; color: #aaa; text-align: center; border-top: 1px solid #eee; padding-top: 12px; }
-  @media print { body { padding: 20px; } }
+  body {
+    font-family: -apple-system, "Segoe UI", Arial, sans-serif;
+    font-size: 12.5px; color: #1a1a1a; background: #ffffff;
+    padding: 36px 44px; line-height: 1.65;
+  }
+  /* ── Cabeçalho limpo: logo esquerda | metadados direita ── */
+  .page-header {
+    display: flex; align-items: flex-start; justify-content: space-between;
+    padding-bottom: 12px; margin-bottom: 18px;
+    border-bottom: 1.5px solid rgba(197,163,101,0.55);
+  }
+  .logo-block { display: flex; align-items: center; gap: 10px; }
+  .logo-badge {
+    width: 36px; height: 36px; border-radius: 9px;
+    background: #0F2D1C; display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 900; color: #FFE8A6; letter-spacing: -0.5px;
+    flex-shrink: 0;
+  }
+  .logo-text { font-size: 15px; font-weight: 800; color: #0F2D1C; line-height: 1.2; }
+  .logo-sub  { font-size: 10px; font-weight: 500; color: #6b7280; margin-top: 1px; }
+  .meta-block { text-align: right; font-size: 10.5px; color: #4b5563; line-height: 1.55; }
+  .meta-block .prof { font-weight: 700; color: #1a1a1a; }
+  /* ── Título del caso ── */
+  .case-title {
+    font-size: 19px; font-weight: 800; color: #111827; margin-bottom: 4px;
+  }
+  .case-sub {
+    font-size: 11px; color: #6b7280; margin-bottom: 20px;
+    padding-bottom: 14px; border-bottom: 0.5px solid rgba(197,163,101,0.35);
+  }
+  /* ── Sección: título en bold compacto + divisor dorado ── */
+  .section { margin-bottom: 16px; }
+  .section-title {
+    font-size: 9.5px; font-weight: 900; letter-spacing: 1.8px;
+    color: #111827; text-transform: uppercase;
+    padding-bottom: 5px; margin-bottom: 9px;
+    border-bottom: 0.75px solid rgba(197,163,101,0.6);
+  }
+  /* ── Etiqueta de campo (gris medio) + valor (grafito oscuro) ── */
+  .field-row { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 6px; }
+  .field-group { flex: 1; min-width: 180px; }
+  .field-label {
+    font-size: 8.5px; font-weight: 700; color: #6b7280;
+    text-transform: uppercase; letter-spacing: 1px;
+    margin-bottom: 1px; margin-top: 8px;
+  }
+  .field-value { font-size: 12.5px; color: #1a1a1a; line-height: 1.6; }
+  .field-value-lg { font-size: 14px; font-weight: 700; color: #111827; line-height: 1.5; }
+  /* ── Bloco alergias (vermelho discreto) ── */
+  .allergy-box {
+    background: #fff5f5; border-left: 3px solid #dc2626;
+    padding: 8px 12px; margin: 8px 0; border-radius: 4px;
+  }
+  .allergy-label { font-size: 8.5px; font-weight: 900; color: #dc2626; letter-spacing: 1px; margin-bottom: 3px; }
+  .allergy-text  { font-size: 12px; font-weight: 600; color: #991b1b; }
+  /* ── Impresión diagnóstica (verde esmeralda discreto) ── */
+  .dx-section {
+    background: #f0fdf4; border-left: 3px solid #16a34a;
+    padding: 10px 14px; margin-bottom: 16px; border-radius: 4px;
+  }
+  .dx-label { font-size: 8.5px; font-weight: 900; color: #15803d; letter-spacing: 1.4px; margin-bottom: 5px; text-transform: uppercase; }
+  .dx-working { font-size: 13.5px; font-weight: 800; color: #14532d; margin-bottom: 4px; }
+  .dx-diff    { font-size: 11.5px; color: #166534; margin-top: 4px; }
+  .dx-final   {
+    font-size: 15px; font-weight: 900; color: #0d4a24;
+    margin-top: 8px; padding-top: 8px;
+    border-top: 0.5px solid rgba(22,163,74,0.35);
+  }
+  .cie-tag { font-size: 11px; color: #15803d; font-weight: 700; margin-top: 3px; }
+  /* ── Evolución: línea dorada izquierda ── */
+  .evolution {
+    border-left: 2.5px solid rgba(197,163,101,0.75);
+    padding-left: 10px; margin-bottom: 11px;
+  }
+  .evo-meta { font-size: 9.5px; color: #6b7280; font-weight: 700; margin-bottom: 3px; }
+  /* ── Epicrisis / Alta ── */
+  .outcome-badge {
+    display: inline-block; padding: 3px 10px; border-radius: 20px;
+    font-size: 11px; font-weight: 800; margin-bottom: 8px;
+    background: #f0fdf4; color: #15803d;
+    border: 1px solid rgba(22,163,74,0.4);
+  }
+  /* ── Pie de página ── */
+  .footer {
+    margin-top: 28px; font-size: 9px; color: #9ca3af;
+    text-align: center; border-top: 0.5px solid rgba(197,163,101,0.4);
+    padding-top: 10px; line-height: 1.5;
+  }
+  @media print {
+    body { padding: 18px 22px; }
+    .page-header { break-inside: avoid; }
+    .section { break-inside: avoid; }
+  }
 </style>
 </head><body>
-<div class="header">
-  <div class="meta">MedCases Pro • ${_hcT(p.lang, 'pdf_hc_title')}</div>
-  <h1>${_esc(history.displayTitle)}</h1>
-  <div class="meta">${history.category} &nbsp;|&nbsp; ${history.formattedDate}</div>
-  ${history.authorName.isNotEmpty ? '<div class="meta" style="margin-top:4px">${_hcT(p.lang, 'copy_author')} ${_esc(history.authorName)}${history.authorEmail.isNotEmpty ? " &lt;${_esc(history.authorEmail)}&gt;" : ""}${history.uploadedAt.isNotEmpty ? " — Publicado: ${_formatUploadedAt(history.uploadedAt)}" : ""}</div>' : ''}
-</div>
 ''');
 
-    void section(String title, List<(String, String)> fields, {String? allergyText}) {
-      final hasContent = fields.any((f) => f.$2.isNotEmpty) || (allergyText?.isNotEmpty ?? false);
+    // ── Cabeçalho da página: logo [M+] à esquerda | metadados do profissional à direita ──
+    buf.write('<div class="page-header">');
+    buf.write('<div class="logo-block">');
+    buf.write('<div class="logo-badge">M+</div>');
+    buf.write('<div><div class="logo-text">MedCases Pro</div>');
+    buf.write('<div class="logo-sub">Historia Clínica Oficial</div></div>');
+    buf.write('</div>');
+    buf.write('<div class="meta-block">');
+    if (history.authorName.isNotEmpty) {
+      buf.write('<div class="prof">${_esc(history.authorName)}</div>');
+      if (history.authorEmail.isNotEmpty)
+        buf.write('<div>${_esc(history.authorEmail)}</div>');
+    }
+    buf.write('<div>${history.category.isNotEmpty ? _esc(history.category) : "Clínica General"}</div>');
+    buf.write('<div>${history.formattedDate}</div>');
+    buf.write('</div></div>');
+
+    // ── Título del caso ──
+    buf.write('<div class="case-title">${_esc(history.displayTitle)}</div>');
+    buf.write('<div class="case-sub">');
+    buf.write('Historia Clínica Completa');
+    if (history.tags.isNotEmpty) buf.write(' &nbsp;·&nbsp; ${_esc(history.tags)}');
+    buf.write('</div>');
+
+    // ══════════════════════════════════════════════════════════════════════
+    // FUNCIÓN auxiliar: sección simple con campos
+    // ══════════════════════════════════════════════════════════════════════
+    void sec(String title, List<(String, String)> fields, {bool large = false}) {
+      final hasContent = fields.any((f) => f.$2.isNotEmpty);
       if (!hasContent) return;
       buf.write('<div class="section"><div class="section-title">$title</div>');
-      if (allergyText != null && allergyText.isNotEmpty) {
-        buf.write('<div class="allergy-box"><div class="label">⚠ ALERGIAS</div><p>${_esc(allergyText)}</p></div>');
-      }
       for (final f in fields) {
         if (f.$2.isEmpty) continue;
-        buf.write('<div class="field-label">${f.$1}</div><div class="field-value">${_escNl(f.$2)}</div>');
+        buf.write('<div class="field-label">${f.$1}</div>');
+        buf.write('<div class="${large ? "field-value-lg" : "field-value"}">${_escNl(f.$2)}</div>');
       }
       buf.write('</div>');
     }
 
-    // ── 1. IDENTIFICAÇÃO DO PACIENTE ──────────────────────────────────────
-    if (history.patientInitials.isNotEmpty || history.patientAge.isNotEmpty) {
-      buf.write('<div class="section"><div class="section-title">${_hcT(p.lang, "pdf_section1")}</div>');
-      if (history.patientInitials.isNotEmpty)
-        buf.write('<div class="field-label">${_hcT(p.lang, "pdf_initials")}</div><div class="field-value">${_esc(history.patientInitials)}</div>');
-      buf.write('<div class="field-label">${_hcT(p.lang, "pdf_demog")}</div><div class="field-value">'
-          '${history.patientAge.isNotEmpty ? "${history.patientAge} ${_hcT(p.lang, 'years')}" : ""}${history.patientAge.isNotEmpty ? " • " : ""}${history.patientSex}'
-          '${history.patientWeight.isNotEmpty ? " • ${history.patientWeight} kg" : ""}'
-          '${history.patientHeight.isNotEmpty ? " • ${history.patientHeight} cm" : ""}'
-          '${history.patientRecord.isNotEmpty ? " • Pront. ${_esc(history.patientRecord)}" : ""}'
-          '</div>');
+    // ══ 1. DATOS DE FILIACIÓN Y ADMINISTRATIVOS ════════════════════════════
+    final hasSec1 = history.patientInitials.isNotEmpty || history.patientAge.isNotEmpty ||
+        history.patientSex.isNotEmpty || history.patientRecord.isNotEmpty ||
+        history.patientWeight.isNotEmpty || history.patientHeight.isNotEmpty;
+    if (hasSec1) {
+      buf.write('<div class="section"><div class="section-title">${_hcT(lang, "pdf_section1")}</div>');
+      // Fila superior: Nombre | Edad+Sexo | DNI
+      buf.write('<div class="field-row">');
+      if (history.patientInitials.isNotEmpty) {
+        buf.write('<div class="field-group">');
+        buf.write('<div class="field-label">${_hcT(lang, "pdf_initials")}</div>');
+        buf.write('<div class="field-value">${_esc(history.patientInitials)}</div>');
+        buf.write('</div>');
+      }
+      if (history.patientAge.isNotEmpty || history.patientSex.isNotEmpty) {
+        buf.write('<div class="field-group">');
+        buf.write('<div class="field-label">${_hcT(lang, "pdf_demog")}</div>');
+        buf.write('<div class="field-value">');
+        if (history.patientAge.isNotEmpty) buf.write('${history.patientAge} ${_hcT(lang, "years")}');
+        if (history.patientAge.isNotEmpty && history.patientSex.isNotEmpty) buf.write(' &nbsp;·&nbsp; ');
+        if (history.patientSex.isNotEmpty) buf.write(_esc(history.patientSex));
+        buf.write('</div></div>');
+      }
+      if (history.patientRecord.isNotEmpty) {
+        buf.write('<div class="field-group">');
+        buf.write('<div class="field-label">${_hcT(lang, "pdf_record")}</div>');
+        buf.write('<div class="field-value">${_esc(history.patientRecord)}</div>');
+        buf.write('</div>');
+      }
+      buf.write('</div>');
+      // Fila inferior: Peso/Talla | Fecha ingreso
+      if (history.patientWeight.isNotEmpty || history.patientHeight.isNotEmpty) {
+        buf.write('<div class="field-row">');
+        buf.write('<div class="field-group">');
+        buf.write('<div class="field-label">Peso / Talla</div>');
+        buf.write('<div class="field-value">');
+        if (history.patientWeight.isNotEmpty) buf.write('${history.patientWeight} kg');
+        if (history.patientWeight.isNotEmpty && history.patientHeight.isNotEmpty) buf.write(' &nbsp;·&nbsp; ');
+        if (history.patientHeight.isNotEmpty) buf.write('${history.patientHeight} cm');
+        buf.write('</div></div>');
+        buf.write('<div class="field-group">');
+        buf.write('<div class="field-label">${_hcT(lang, "pdf_ingreso")}</div>');
+        buf.write('<div class="field-value">${history.formattedDate}</div>');
+        buf.write('</div></div>');
+      }
       buf.write('</div>');
     }
 
-    // ── 2. QUEIXA PRINCIPAL ────────────────────────────────────────────────
+    // ══ 2. MOTIVO DE CONSULTA ══════════════════════════════════════════════
     if (history.chiefComplaint.isNotEmpty) {
-      buf.write('<div class="section"><div class="section-title">${_hcT(p.lang, "pdf_section2")}</div>');
-      buf.write('<div class="field-value" style="font-size:15px;font-weight:700">${_esc(history.chiefComplaint)}</div>');
+      buf.write('<div class="section"><div class="section-title">${_hcT(lang, "pdf_section2")}</div>');
+      buf.write('<div class="field-value-lg">${_escNl(history.chiefComplaint)}</div>');
       buf.write('</div>');
     }
 
-    // ── 3. ANAMNESE ────────────────────────────────────────────────────────
-    section(_hcT(p.lang, 'pdf_section3'), [
-      (_hcT(p.lang, 'pdf_hpi'), history.hpi),
-      (_hcT(p.lang, 'pdf_past'), history.pastHistory),
-      (_hcT(p.lang, 'pdf_family'), history.familyHistory),
-      (_hcT(p.lang, 'pdf_social'), history.socialHistory),
-      (_hcT(p.lang, 'pdf_rvs'), history.reviewOfSystems),
-      (_hcT(p.lang, 'pdf_meds'), history.medications),
-    ], allergyText: history.allergies);
-
-    // ── 4. EXAME FÍSICO ────────────────────────────────────────────────────
-    section(_hcT(p.lang, 'pdf_section4'), [
-      (_hcT(p.lang, 'pdf_vitals'), history.vitalSigns),
-      (_hcT(p.lang, 'pdf_pe'), history.physicalExam),
+    // ══ 3. ENFERMEDAD ACTUAL (EA) ══════════════════════════════════════════
+    sec(_hcT(lang, 'pdf_section3'), [
+      (_hcT(lang, 'pdf_hpi'), history.hpi),
     ]);
 
-    // ── 5. HIPÓTESES DIAGNÓSTICAS ──────────────────────────────────────────
-    if (history.workingDiagnosis.isNotEmpty || history.differentialDx.isNotEmpty) {
-      buf.write('<div class="section"><div class="section-title">${_hcT(p.lang, "pdf_section5")}</div>');
-      if (history.workingDiagnosis.isNotEmpty) {
-        buf.write('<div class="field-label">${_hcT(p.lang, "pdf_work_dx")}</div>');
-        buf.write('<div class="field-value" style="font-size:14px;font-weight:700;color:#064E3B">${_esc(history.workingDiagnosis)}</div>');
+    // ══ 4. ANTECEDENTES PERSONALES ════════════════════════════════════════
+    final hasSec4 = history.pastHistory.isNotEmpty || history.allergies.isNotEmpty ||
+        history.medications.isNotEmpty || history.socialHistory.isNotEmpty ||
+        history.reviewOfSystems.isNotEmpty;
+    if (hasSec4) {
+      buf.write('<div class="section"><div class="section-title">${_hcT(lang, "pdf_section4")}</div>');
+      if (history.pastHistory.isNotEmpty) {
+        buf.write('<div class="field-label">${_hcT(lang, "pdf_past")}</div>');
+        buf.write('<div class="field-value">${_escNl(history.pastHistory)}</div>');
       }
-      if (history.differentialDx.isNotEmpty) {
-        buf.write('<div class="field-label" style="margin-top:10px">${_hcT(p.lang, "pdf_diff_dx")}</div>');
-        buf.write('<div class="field-value">${_escNl(history.differentialDx)}</div>');
+      if (history.allergies.isNotEmpty) {
+        buf.write('<div class="allergy-box">');
+        buf.write('<div class="allergy-label">⚠ ${_hcT(lang, "pdf_allerg")}</div>');
+        buf.write('<div class="allergy-text">${_esc(history.allergies)}</div>');
+        buf.write('</div>');
+      }
+      if (history.medications.isNotEmpty) {
+        buf.write('<div class="field-label">${_hcT(lang, "pdf_meds")}</div>');
+        buf.write('<div class="field-value">${_escNl(history.medications)}</div>');
+      }
+      if (history.socialHistory.isNotEmpty) {
+        buf.write('<div class="field-label">${_hcT(lang, "pdf_social")}</div>');
+        buf.write('<div class="field-value">${_escNl(history.socialHistory)}</div>');
+      }
+      if (history.reviewOfSystems.isNotEmpty) {
+        buf.write('<div class="field-label">${_hcT(lang, "pdf_rvs")}</div>');
+        buf.write('<div class="field-value">${_escNl(history.reviewOfSystems)}</div>');
       }
       buf.write('</div>');
     }
 
-    // ── 6. EXAMES COMPLEMENTARES ──────────────────────────────────────────
-    section(_hcT(p.lang, 'pdf_section6'), [
-      (_hcT(p.lang, 'pdf_lab_results'), history.labResults),
-      (_hcT(p.lang, 'pdf_ecg_others'), history.otherResults),
-      (_hcT(p.lang, 'pdf_imaging_results'), history.imagingResults),
+    // ══ 5. ANTECEDENTES FAMILIARES ════════════════════════════════════════
+    sec(_hcT(lang, 'pdf_section5'), [
+      (_hcT(lang, 'pdf_family'), history.familyHistory),
     ]);
 
-    // ── 7. DIAGNÓSTICO FINAL ───────────────────────────────────────────────
-    if (history.finalDiagnosis.isNotEmpty) {
-      buf.write('<div class="dx-box">');
-      buf.write('<h2>${_hcT(p.lang, "pdf_section7")}</h2>');
-      buf.write('<p>${_esc(history.finalDiagnosis)}</p>');
-      if (history.cid.isNotEmpty)
-        buf.write('<div style="font-size:12px;color:#065F46;margin-top:6px;font-weight:700">CID-10: ${_esc(history.cid)}</div>');
+    // ══ 6. EXAMEN FÍSICO ══════════════════════════════════════════════════
+    if (history.vitalSigns.isNotEmpty || history.physicalExam.isNotEmpty) {
+      buf.write('<div class="section"><div class="section-title">${_hcT(lang, "pdf_section6")}</div>');
+      if (history.vitalSigns.isNotEmpty) {
+        buf.write('<div class="field-label">${_hcT(lang, "pdf_vitals")}</div>');
+        buf.write('<div class="field-value" style="font-family:monospace;font-size:12px">${_escNl(history.vitalSigns)}</div>');
+      }
+      if (history.physicalExam.isNotEmpty) {
+        buf.write('<div class="field-label" style="margin-top:10px">${_hcT(lang, "pdf_pe")}</div>');
+        buf.write('<div class="field-value">${_escNl(history.physicalExam)}</div>');
+      }
       buf.write('</div>');
     }
 
-    // ── 8. CONDUTA / TRATAMENTO ────────────────────────────────────────────
-    section(_hcT(p.lang, 'pdf_section8'), [
-      (_hcT(p.lang, 'pdf_plan'), history.treatmentPlan),
-      (_hcT(p.lang, 'pdf_procedures'), history.procedures),
-    ]);
+    // ══ 7. ESTUDIOS COMPLEMENTARIOS ══════════════════════════════════════
+    if (history.labResults.isNotEmpty || history.imagingResults.isNotEmpty || history.otherResults.isNotEmpty) {
+      buf.write('<div class="section"><div class="section-title">${_hcT(lang, "pdf_section7")}</div>');
+      if (history.labResults.isNotEmpty) {
+        buf.write('<div class="field-label">${_hcT(lang, "pdf_lab")}</div>');
+        buf.write('<div class="field-value">${_escNl(history.labResults)}</div>');
+      }
+      if (history.otherResults.isNotEmpty) {
+        buf.write('<div class="field-label" style="margin-top:8px">${_hcT(lang, "pdf_ecg")}</div>');
+        buf.write('<div class="field-value">${_escNl(history.otherResults)}</div>');
+      }
+      if (history.imagingResults.isNotEmpty) {
+        buf.write('<div class="field-label" style="margin-top:8px">${_hcT(lang, "pdf_img")}</div>');
+        buf.write('<div class="field-value">${_escNl(history.imagingResults)}</div>');
+      }
+      buf.write('</div>');
+    }
 
-    // ── 9. EVOLUÇÃO CLÍNICA ────────────────────────────────────────────────
+    // ══ 8. IMPRESIÓN DIAGNÓSTICA ══════════════════════════════════════════
+    if (history.workingDiagnosis.isNotEmpty || history.differentialDx.isNotEmpty || history.finalDiagnosis.isNotEmpty) {
+      buf.write('<div class="dx-section">');
+      buf.write('<div class="dx-label">${_hcT(lang, "pdf_section8")}</div>');
+      if (history.workingDiagnosis.isNotEmpty)
+        buf.write('<div class="dx-working">${_esc(history.workingDiagnosis)}</div>');
+      if (history.differentialDx.isNotEmpty)
+        buf.write('<div class="dx-diff">${_escNl(history.differentialDx)}</div>');
+      if (history.finalDiagnosis.isNotEmpty) {
+        buf.write('<div class="dx-final">${_esc(history.finalDiagnosis)}</div>');
+        if (history.cid.isNotEmpty)
+          buf.write('<div class="cie-tag">CIE-10: ${_esc(history.cid)}</div>');
+      }
+      buf.write('</div>');
+    }
+
+    // ══ 9. EVOLUCIÓN CLÍNICA ═════════════════════════════════════════════
     if (history.evolutions.isNotEmpty) {
-      buf.write('<div class="section"><div class="section-title">${_hcT(p.lang, "pdf_section9")}</div>');
+      buf.write('<div class="section"><div class="section-title">${_hcT(lang, "pdf_section9")}</div>');
       for (final e in history.evolutions) {
         final dt = DateTime.tryParse(e.date)?.toLocal();
         final ds = dt != null
-            ? '${dt.day.toString().padLeft(2,'0')}/${dt.month.toString().padLeft(2,'0')}/${dt.year} ${dt.hour.toString().padLeft(2,'0')}:${dt.minute.toString().padLeft(2,'0')}'
+            ? '${dt.day.toString().padLeft(2,'0')}/${dt.month.toString().padLeft(2,'0')}/${dt.year}  ${dt.hour.toString().padLeft(2,'0')}:${dt.minute.toString().padLeft(2,'0')}'
             : '';
-        final typeMap = {'evolution': _hcT(p.lang, 'pdf_evo_med'), 'nursing': _hcT(p.lang, 'pdf_evo_nurse'), 'lab': _hcT(p.lang, 'pdf_evo_lab'), 'imaging': _hcT(p.lang, 'pdf_evo_img'), 'procedure': _hcT(p.lang, 'pdf_evo_proc')};
+        final typeMap = {
+          'evolution': _hcT(lang, 'evo_med'), 'nursing': _hcT(lang, 'evo_nurs'),
+          'lab': _hcT(lang, 'evo_lab'), 'imaging': _hcT(lang, 'evo_img'),
+          'procedure': _hcT(lang, 'evo_proc'),
+        };
         buf.write('<div class="evolution">');
-        buf.write('<div class="evo-meta">${typeMap[e.type] ?? _hcT(p.lang, "pdf_evo_med")} — $ds${e.author.isNotEmpty ? " — ${_esc(e.author)}" : ""}</div>');
-        buf.write('<div class="field-value" style="margin-top:4px">${_escNl(e.text)}</div>');
+        buf.write('<div class="evo-meta">${typeMap[e.type] ?? _hcT(lang, "evo_default")} &nbsp;·&nbsp; $ds'
+            '${e.author.isNotEmpty ? " &nbsp;·&nbsp; ${_esc(e.author)}" : ""}</div>');
+        buf.write('<div class="field-value" style="margin-top:3px">${_escNl(e.text)}</div>');
         buf.write('</div>');
       }
       buf.write('</div>');
     }
 
-    // ── 10. DESFECHO E ALTA ────────────────────────────────────────────────
-    final outcomeMap = {'internado': _hcT(p.lang, 'out_internado'), 'alta': _hcT(p.lang, 'pdf_out_alta'), 'obito': _hcT(p.lang, 'out_obito'), 'transferencia': _hcT(p.lang, 'out_transf')};
-    if (history.outcome != 'internado' || history.dischargeCondition.isNotEmpty || history.followUp.isNotEmpty) {
-      buf.write('<div class="section"><div class="section-title">${_hcT(p.lang, "pdf_section10")}</div>');
-      buf.write('<div class="outcome">${outcomeMap[history.outcome] ?? history.outcome}</div>');
-      if (history.dischargeCondition.isNotEmpty)
-        buf.write('<div class="field-label">${_hcT(p.lang, "f_discharge")}</div><div class="field-value">${_escNl(history.dischargeCondition)}</div>');
-      if (history.followUp.isNotEmpty)
-        buf.write('<div class="field-label">${_hcT(p.lang, "f_followup")}</div><div class="field-value">${_escNl(history.followUp)}</div>');
+    // ══ 10. INDICACIONES MÉDICAS ══════════════════════════════════════════
+    if (history.treatmentPlan.isNotEmpty || history.procedures.isNotEmpty) {
+      buf.write('<div class="section"><div class="section-title">${_hcT(lang, "pdf_section10")}</div>');
+      if (history.treatmentPlan.isNotEmpty) {
+        buf.write('<div class="field-label">${_hcT(lang, "pdf_plan")}</div>');
+        buf.write('<div class="field-value">${_escNl(history.treatmentPlan)}</div>');
+      }
+      if (history.procedures.isNotEmpty) {
+        buf.write('<div class="field-label" style="margin-top:8px">${_hcT(lang, "pdf_proc")}</div>');
+        buf.write('<div class="field-value">${_escNl(history.procedures)}</div>');
+      }
       buf.write('</div>');
     }
 
-    buf.write('<div class="footer">${_hcT(p.lang, "pdf_footer")}</div>');
+    // ══ 11. EPICRISIS / RESUMEN DE ALTA ══════════════════════════════════
+    final outcomeLabels = {
+      'internado': lang == 'es' ? 'Hospitalizado' : 'Internado',
+      'alta': lang == 'es' ? 'Alta hospitalaria' : 'Alta hospitalar',
+      'obito': lang == 'es' ? 'Fallecimiento' : 'Óbito',
+      'transferencia': lang == 'es' ? 'Traslado' : 'Transferência',
+    };
+    if (history.outcome != 'internado' || history.dischargeCondition.isNotEmpty || history.followUp.isNotEmpty) {
+      buf.write('<div class="section"><div class="section-title">${_hcT(lang, "pdf_section11")}</div>');
+      buf.write('<div class="outcome-badge">${outcomeLabels[history.outcome] ?? history.outcome}</div>');
+      if (history.dischargeCondition.isNotEmpty) {
+        buf.write('<div class="field-label">${_hcT(lang, "pdf_discharge")}</div>');
+        buf.write('<div class="field-value">${_escNl(history.dischargeCondition)}</div>');
+      }
+      if (history.followUp.isNotEmpty) {
+        buf.write('<div class="field-label" style="margin-top:8px">${_hcT(lang, "pdf_followup")}</div>');
+        buf.write('<div class="field-value">${_escNl(history.followUp)}</div>');
+      }
+      buf.write('</div>');
+    }
+
+    buf.write('<div class="footer">${_hcT(lang, "pdf_footer")}</div>');
     buf.write('\n</body></html>');
 
     final htmlStr = buf.toString();
@@ -1926,63 +2241,212 @@ class _HistoryDetailState extends State<_HistoryDetail> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
 
-              // ══ CARD DIAGNÓSTICO FINAL (verde menta com check) ═══════════════
-              // Tudo que será capturado como PNG
+              // ══ PNG CANVAS — fondo blanco clínico puro, esquema 11 secciones ══
               RepaintBoundary(
                 key: _printKey,
-                child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  if (history.finalDiagnosis.isNotEmpty || history.workingDiagnosis.isNotEmpty)
-                    _DxBanner(final_: history.finalDiagnosis, working: history.workingDiagnosis, cid: history.cid, differential: history.differentialDx, lang: p.lang),
-                  if (history.finalDiagnosis.isNotEmpty || history.workingDiagnosis.isNotEmpty) const SizedBox(height: 14),
+                child: Container(
+                  color: Colors.white,
+                  padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
+                  child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
 
-                  // ══ SEÇÃO ANAMNESE com ícones circulares verdes ══════════════
-                  _DetailCard(icon: Icons.record_voice_over_rounded, title: _hcT(p.lang, 'det_anamnese'), children: [
-                    if (history.chiefComplaint.isNotEmpty) _SectionBlock(_hcT(p.lang, 'det_chief'), history.chiefComplaint, icon: Icons.announcement_rounded),
-                    if (history.hpi.isNotEmpty) _SectionBlock(_hcT(p.lang, 'det_hpi'), history.hpi, icon: Icons.history_edu_rounded),
-                    if (history.pastHistory.isNotEmpty) _SectionBlock(_hcT(p.lang, 'det_past'), history.pastHistory, icon: Icons.person_rounded),
-                    if (history.familyHistory.isNotEmpty) _SectionBlock(_hcT(p.lang, 'det_family'), history.familyHistory, icon: Icons.family_restroom_rounded),
-                    if (history.socialHistory.isNotEmpty) _SectionBlock(_hcT(p.lang, 'det_social'), history.socialHistory, icon: Icons.groups_rounded),
-                    if (history.medications.isNotEmpty) _SectionBlock(_hcT(p.lang, 'det_meds'), history.medications, icon: Icons.medication_rounded),
-                    if (history.reviewOfSystems.isNotEmpty) _SectionBlock(_hcT(p.lang, 'det_rvs'), history.reviewOfSystems, icon: Icons.checklist_rounded),
-                    // ── Bloco ALERGIAS em destaque vermelho ──────────────────
-                    if (history.allergies.isNotEmpty) _AllergyBanner(history.allergies),
-                  ]),
-                  const SizedBox(height: 12),
-
-                  _DetailCard(icon: Icons.monitor_heart_rounded, title: _hcT(p.lang, 'det_exam'), children: [
-                    if (history.vitalSigns.isNotEmpty) _SectionBlock(_hcT(p.lang, 'det_vitals'), history.vitalSigns, icon: Icons.favorite_rounded),
-                    if (history.physicalExam.isNotEmpty) _SectionBlock(_hcT(p.lang, 'det_pe'), history.physicalExam, icon: Icons.accessibility_new_rounded),
-                  ]),
-                  const SizedBox(height: 12),
-
-                  _DetailCard(icon: Icons.science_rounded, title: _hcT(p.lang, 'det_labs'), children: [
-                    if (history.labResults.isNotEmpty) _SectionBlock(_hcT(p.lang, 'det_lab_res'), history.labResults, icon: Icons.biotech_rounded),
-                    if (history.imagingResults.isNotEmpty) _SectionBlock(_hcT(p.lang, 'det_img'), history.imagingResults, icon: Icons.image_search_rounded),
-                    if (history.otherResults.isNotEmpty) _SectionBlock(_hcT(p.lang, 'det_other'), history.otherResults, icon: Icons.analytics_rounded),
-                  ]),
-                  const SizedBox(height: 12),
-
-                  _DetailCard(icon: Icons.medical_services_rounded, title: _hcT(p.lang, 'det_treat'), children: [
-                    if (history.treatmentPlan.isNotEmpty) _SectionBlock(_hcT(p.lang, 'det_plan'), history.treatmentPlan, icon: Icons.assignment_turned_in_rounded),
-                    if (history.procedures.isNotEmpty) _SectionBlock(_hcT(p.lang, 'det_proc'), history.procedures, icon: Icons.build_circle_rounded),
-                    if (history.drugIds.isNotEmpty) _DrugChips(history.drugIds, p),
-                  ]),
-                  const SizedBox(height: 12),
-
-                  // Evoluções
-                  if (history.evolutions.isNotEmpty) ...[
-                    _EvolutionSection(evolutions: history.evolutions),
-                    const SizedBox(height: 12),
-                  ],
-
-                  // Desfecho
-                  if (history.outcome != 'internado' || history.dischargeCondition.isNotEmpty || history.followUp.isNotEmpty)
-                    _DetailCard(icon: Icons.flag_rounded, title: _hcT(p.lang, 'det_outcome'), children: [
-                      _OutcomeBadge(history.outcome),
-                      if (history.dischargeCondition.isNotEmpty) _SectionBlock(_hcT(p.lang, 'det_discharge'), history.dischargeCondition, icon: Icons.door_front_door_rounded),
-                      if (history.followUp.isNotEmpty) _SectionBlock(_hcT(p.lang, 'det_followup'), history.followUp, icon: Icons.event_note_rounded),
+                    // ── Cabeçalho da imagem: [M+] logo esq | metadados prof dir ─
+                    Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                      // Logo badge
+                      Container(
+                        width: 34, height: 34,
+                        decoration: BoxDecoration(
+                          color: const Color(0xFF0F2D1C),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: const Center(child: Text('M+',
+                            style: TextStyle(fontSize: 12, fontWeight: FontWeight.w900,
+                                color: Color(0xFFFFE8A6), letterSpacing: -0.5))),
+                      ),
+                      const SizedBox(width: 9),
+                      Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                        const Text('MedCases Pro',
+                            style: TextStyle(fontSize: 13, fontWeight: FontWeight.w800,
+                                color: Color(0xFF0F2D1C))),
+                        Text('Historia Clínica Oficial',
+                            style: TextStyle(fontSize: 9, color: Colors.grey[500], fontWeight: FontWeight.w500)),
+                      ]),
+                      const Spacer(),
+                      Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
+                        if (history.authorName.isNotEmpty)
+                          Text(history.authorName,
+                              style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w700,
+                                  color: Color(0xFF1a1a1a))),
+                        Text(history.category.isNotEmpty ? history.category : 'Clínica General',
+                            style: TextStyle(fontSize: 9, color: Colors.grey[500])),
+                        Text(history.formattedDate,
+                            style: TextStyle(fontSize: 9, color: Colors.grey[500])),
+                      ]),
                     ]),
-                ]),
+
+                    // Divisor dorado fino
+                    const SizedBox(height: 10),
+                    Container(height: 1.5,
+                        color: const Color(0xFFC5A365).withValues(alpha: 0.55)),
+                    const SizedBox(height: 10),
+
+                    // Título do caso
+                    Text(history.displayTitle,
+                        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w800,
+                            color: Color(0xFF111827))),
+                    const SizedBox(height: 12),
+
+                    // ── Widget helper para seção com divisor dourado ────────────
+                    // (definido inline via funções locais não é possível — usamos
+                    //  _PngSection widgets abaixo)
+
+                    // ── 1. DATOS DE FILIACIÓN ────────────────────────────────
+                    if (history.patientInitials.isNotEmpty || history.patientAge.isNotEmpty)
+                      _PngSection(
+                        title: _hcT(p.lang, 'pdf_section1'),
+                        children: [
+                          if (history.patientInitials.isNotEmpty)
+                            _PngField(_hcT(p.lang, 'pdf_initials'), history.patientInitials),
+                          _PngField(_hcT(p.lang, 'pdf_demog'),
+                            [
+                              if (history.patientAge.isNotEmpty) '${history.patientAge} ${_hcT(p.lang, 'years')}',
+                              if (history.patientSex.isNotEmpty) history.patientSex,
+                            ].join('  ·  ')),
+                          if (history.patientRecord.isNotEmpty)
+                            _PngField(_hcT(p.lang, 'pdf_record'), history.patientRecord),
+                          if (history.patientWeight.isNotEmpty || history.patientHeight.isNotEmpty)
+                            _PngField('Peso / Talla',
+                              [
+                                if (history.patientWeight.isNotEmpty) '${history.patientWeight} kg',
+                                if (history.patientHeight.isNotEmpty) '${history.patientHeight} cm',
+                              ].join('  ·  ')),
+                        ],
+                      ),
+
+                    // ── 2. MOTIVO DE CONSULTA ────────────────────────────────
+                    if (history.chiefComplaint.isNotEmpty)
+                      _PngSection(
+                        title: _hcT(p.lang, 'pdf_section2'),
+                        children: [_PngField('', history.chiefComplaint, large: true)],
+                      ),
+
+                    // ── 3. ENFERMEDAD ACTUAL ──────────────────────────────────
+                    if (history.hpi.isNotEmpty)
+                      _PngSection(
+                        title: _hcT(p.lang, 'pdf_section3'),
+                        children: [_PngField(_hcT(p.lang, 'pdf_hpi'), history.hpi)],
+                      ),
+
+                    // ── 4. ANTECEDENTES PERSONALES ────────────────────────────
+                    if (history.pastHistory.isNotEmpty || history.allergies.isNotEmpty ||
+                        history.medications.isNotEmpty || history.socialHistory.isNotEmpty)
+                      _PngSection(
+                        title: _hcT(p.lang, 'pdf_section4'),
+                        children: [
+                          if (history.pastHistory.isNotEmpty)
+                            _PngField(_hcT(p.lang, 'pdf_past'), history.pastHistory),
+                          if (history.allergies.isNotEmpty)
+                            _PngAllergyField(history.allergies),
+                          if (history.medications.isNotEmpty)
+                            _PngField(_hcT(p.lang, 'pdf_meds'), history.medications),
+                          if (history.socialHistory.isNotEmpty)
+                            _PngField(_hcT(p.lang, 'pdf_social'), history.socialHistory),
+                          if (history.reviewOfSystems.isNotEmpty)
+                            _PngField(_hcT(p.lang, 'pdf_rvs'), history.reviewOfSystems),
+                        ],
+                      ),
+
+                    // ── 5. ANTECEDENTES FAMILIARES ────────────────────────────
+                    if (history.familyHistory.isNotEmpty)
+                      _PngSection(
+                        title: _hcT(p.lang, 'pdf_section5'),
+                        children: [_PngField(_hcT(p.lang, 'pdf_family'), history.familyHistory)],
+                      ),
+
+                    // ── 6. EXAMEN FÍSICO ──────────────────────────────────────
+                    if (history.vitalSigns.isNotEmpty || history.physicalExam.isNotEmpty)
+                      _PngSection(
+                        title: _hcT(p.lang, 'pdf_section6'),
+                        children: [
+                          if (history.vitalSigns.isNotEmpty)
+                            _PngField(_hcT(p.lang, 'pdf_vitals'), history.vitalSigns, mono: true),
+                          if (history.physicalExam.isNotEmpty)
+                            _PngField(_hcT(p.lang, 'pdf_pe'), history.physicalExam),
+                        ],
+                      ),
+
+                    // ── 7. ESTUDIOS COMPLEMENTARIOS ───────────────────────────
+                    if (history.labResults.isNotEmpty || history.imagingResults.isNotEmpty || history.otherResults.isNotEmpty)
+                      _PngSection(
+                        title: _hcT(p.lang, 'pdf_section7'),
+                        children: [
+                          if (history.labResults.isNotEmpty)
+                            _PngField(_hcT(p.lang, 'pdf_lab'), history.labResults),
+                          if (history.otherResults.isNotEmpty)
+                            _PngField(_hcT(p.lang, 'pdf_ecg'), history.otherResults),
+                          if (history.imagingResults.isNotEmpty)
+                            _PngField(_hcT(p.lang, 'pdf_img'), history.imagingResults),
+                        ],
+                      ),
+
+                    // ── 8. IMPRESIÓN DIAGNÓSTICA ──────────────────────────────
+                    if (history.workingDiagnosis.isNotEmpty || history.differentialDx.isNotEmpty || history.finalDiagnosis.isNotEmpty)
+                      _PngDxSection(
+                        title: _hcT(p.lang, 'pdf_section8'),
+                        working: history.workingDiagnosis,
+                        differential: history.differentialDx,
+                        final_: history.finalDiagnosis,
+                        cid: history.cid,
+                      ),
+
+                    // ── 9. EVOLUCIÓN CLÍNICA ──────────────────────────────────
+                    if (history.evolutions.isNotEmpty)
+                      _PngSection(
+                        title: _hcT(p.lang, 'pdf_section9'),
+                        children: history.evolutions.map((e) {
+                          final dt = DateTime.tryParse(e.date);
+                          final ds = dt != null
+                              ? '${dt.day.toString().padLeft(2,'0')}/${dt.month.toString().padLeft(2,'0')}/${dt.year}  ${dt.hour.toString().padLeft(2,'0')}:${dt.minute.toString().padLeft(2,'0')}'
+                              : '';
+                          return _PngEvolution(dateStr: ds, author: e.author, text: e.text);
+                        }).toList(),
+                      ),
+
+                    // ── 10. INDICACIONES MÉDICAS ──────────────────────────────
+                    if (history.treatmentPlan.isNotEmpty || history.procedures.isNotEmpty)
+                      _PngSection(
+                        title: _hcT(p.lang, 'pdf_section10'),
+                        children: [
+                          if (history.treatmentPlan.isNotEmpty)
+                            _PngField(_hcT(p.lang, 'pdf_plan'), history.treatmentPlan),
+                          if (history.procedures.isNotEmpty)
+                            _PngField(_hcT(p.lang, 'pdf_proc'), history.procedures),
+                          if (history.drugIds.isNotEmpty) _DrugChips(history.drugIds, p),
+                        ],
+                      ),
+
+                    // ── 11. EPICRISIS / RESUMEN DE ALTA ──────────────────────
+                    if (history.outcome != 'internado' || history.dischargeCondition.isNotEmpty || history.followUp.isNotEmpty)
+                      _PngSection(
+                        title: _hcT(p.lang, 'pdf_section11'),
+                        children: [
+                          _PngOutcomeBadge(history.outcome, p.lang),
+                          if (history.dischargeCondition.isNotEmpty)
+                            _PngField(_hcT(p.lang, 'pdf_discharge'), history.dischargeCondition),
+                          if (history.followUp.isNotEmpty)
+                            _PngField(_hcT(p.lang, 'pdf_followup'), history.followUp),
+                        ],
+                      ),
+
+                    // ── Pie / footer ──────────────────────────────────────────
+                    const SizedBox(height: 12),
+                    Container(height: 0.5,
+                        color: const Color(0xFFC5A365).withValues(alpha: 0.4)),
+                    const SizedBox(height: 6),
+                    Text(_hcT(p.lang, 'pdf_footer'),
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontSize: 8.5, color: Colors.grey[400])),
+                  ]),
+                ),
               ),
 
               const SizedBox(height: 16),
@@ -5994,6 +6458,233 @@ class _LabStructuredWidgetState extends State<_LabStructuredWidget> {
           ),
         ],
       ]),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// PNG CANVAS HELPERS — Widgets para captura RepaintBoundary (fondo blanco)
+// Esquema oficial 11 secciones — Argentina — MedCases Pro
+// ─────────────────────────────────────────────────────────────────────────────
+
+// Divisor dourado fino reutilizável
+class _PngDivider extends StatelessWidget {
+  const _PngDivider();
+  @override
+  Widget build(BuildContext context) => Container(
+    height: 0.75, margin: const EdgeInsets.symmetric(vertical: 7),
+    color: const Color(0xFFC5A365).withValues(alpha: 0.55),
+  );
+}
+
+// Título de seção: texto UPPERCASE bold + divisor dourado fino
+class _PngSection extends StatelessWidget {
+  final String title;
+  final List<Widget> children;
+  const _PngSection({required this.title, required this.children});
+
+  @override
+  Widget build(BuildContext context) {
+    final nonEmpty = children.where((w) => w is! SizedBox).toList();
+    if (nonEmpty.isEmpty) return const SizedBox.shrink();
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      const _PngDivider(),
+      Text(title,
+          style: const TextStyle(fontSize: 8.5, fontWeight: FontWeight.w900,
+              letterSpacing: 1.6, color: Color(0xFF111827))),
+      const SizedBox(height: 6),
+      ...children,
+      const SizedBox(height: 4),
+    ]);
+  }
+}
+
+// Campo individual: etiqueta cinza + valor grafito
+class _PngField extends StatelessWidget {
+  final String label;
+  final String value;
+  final bool large;
+  final bool mono;
+  const _PngField(this.label, this.value, {this.large = false, this.mono = false});
+
+  @override
+  Widget build(BuildContext context) {
+    if (value.isEmpty) return const SizedBox.shrink();
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 5),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        if (label.isNotEmpty)
+          Text(label.toUpperCase(),
+              style: const TextStyle(fontSize: 7.5, fontWeight: FontWeight.w700,
+                  color: Color(0xFF6b7280), letterSpacing: 0.9)),
+        if (label.isNotEmpty) const SizedBox(height: 1),
+        Text(value,
+            style: TextStyle(
+              fontSize: large ? 13 : 11,
+              fontWeight: large ? FontWeight.w700 : FontWeight.w400,
+              color: const Color(0xFF1a1a1a),
+              fontFamily: mono ? 'monospace' : null,
+              height: 1.5,
+            )),
+      ]),
+    );
+  }
+}
+
+// Bloco de alergias: linha vermelha discreta
+class _PngAllergyField extends StatelessWidget {
+  final String value;
+  const _PngAllergyField(this.value);
+
+  @override
+  Widget build(BuildContext context) {
+    if (value.isEmpty) return const SizedBox.shrink();
+    return Container(
+      margin: const EdgeInsets.only(bottom: 5),
+      padding: const EdgeInsets.fromLTRB(8, 5, 8, 5),
+      decoration: BoxDecoration(
+        color: const Color(0xFFFFF5F5),
+        border: Border(left: BorderSide(color: const Color(0xFFDC2626), width: 2.5)),
+        borderRadius: BorderRadius.circular(3),
+      ),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        const Text('⚠ ALÉRGICOS',
+            style: TextStyle(fontSize: 7.5, fontWeight: FontWeight.w900,
+                color: Color(0xFFDC2626), letterSpacing: 0.9)),
+        const SizedBox(height: 2),
+        Text(value,
+            style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600,
+                color: Color(0xFF991B1B), height: 1.4)),
+      ]),
+    );
+  }
+}
+
+// Sección diagnóstica con fondo verde muy suave
+class _PngDxSection extends StatelessWidget {
+  final String title;
+  final String working;
+  final String differential;
+  final String final_;
+  final String cid;
+  const _PngDxSection({
+    required this.title, required this.working,
+    required this.differential, required this.final_, required this.cid,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    if (working.isEmpty && differential.isEmpty && final_.isEmpty)
+      return const SizedBox.shrink();
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      const _PngDivider(),
+      Text(title,
+          style: const TextStyle(fontSize: 8.5, fontWeight: FontWeight.w900,
+              letterSpacing: 1.6, color: Color(0xFF111827))),
+      const SizedBox(height: 6),
+      Container(
+        width: double.infinity,
+        padding: const EdgeInsets.fromLTRB(10, 8, 10, 8),
+        decoration: BoxDecoration(
+          color: const Color(0xFFF0FDF4),
+          border: Border(left: BorderSide(color: const Color(0xFF16A34A), width: 2.5)),
+          borderRadius: BorderRadius.circular(3),
+        ),
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          if (working.isNotEmpty) ...[
+            const Text('IMPRESIÓN / HIPÓTESIS',
+                style: TextStyle(fontSize: 7.5, fontWeight: FontWeight.w900,
+                    color: Color(0xFF15803D), letterSpacing: 0.9)),
+            const SizedBox(height: 2),
+            Text(working,
+                style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w700,
+                    color: Color(0xFF14532D), height: 1.4)),
+          ],
+          if (differential.isNotEmpty) ...[
+            const SizedBox(height: 5),
+            const Text('DIAGNÓSTICOS DIFERENCIALES',
+                style: TextStyle(fontSize: 7.5, fontWeight: FontWeight.w700,
+                    color: Color(0xFF15803D), letterSpacing: 0.9)),
+            const SizedBox(height: 2),
+            Text(differential,
+                style: const TextStyle(fontSize: 10.5, color: Color(0xFF166534), height: 1.4)),
+          ],
+          if (final_.isNotEmpty) ...[
+            if (working.isNotEmpty || differential.isNotEmpty) ...[
+              const SizedBox(height: 6),
+              Container(height: 0.5, color: const Color(0xFF16A34A).withValues(alpha: 0.35)),
+              const SizedBox(height: 6),
+            ],
+            Text(final_,
+                style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w900,
+                    color: Color(0xFF0D4A24), height: 1.4)),
+            if (cid.isNotEmpty)
+              Text('CIE-10: $cid',
+                  style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w700,
+                      color: Color(0xFF15803D))),
+          ],
+        ]),
+      ),
+      const SizedBox(height: 4),
+    ]);
+  }
+}
+
+// Entrada de evolución clínica (línea dorada izquierda)
+class _PngEvolution extends StatelessWidget {
+  final String dateStr;
+  final String author;
+  final String text;
+  const _PngEvolution({required this.dateStr, required this.author, required this.text});
+
+  @override
+  Widget build(BuildContext context) {
+    if (text.isEmpty) return const SizedBox.shrink();
+    return Container(
+      margin: const EdgeInsets.only(bottom: 8),
+      padding: const EdgeInsets.fromLTRB(8, 4, 0, 4),
+      decoration: const BoxDecoration(
+        border: Border(left: BorderSide(color: Color(0xFFC5A365), width: 2)),
+      ),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Text(
+          [if (dateStr.isNotEmpty) dateStr, if (author.isNotEmpty) author].join('  ·  '),
+          style: const TextStyle(fontSize: 8.5, fontWeight: FontWeight.w700,
+              color: Color(0xFF6b7280)),
+        ),
+        const SizedBox(height: 2),
+        Text(text,
+            style: const TextStyle(fontSize: 10.5, color: Color(0xFF1a1a1a), height: 1.5)),
+      ]),
+    );
+  }
+}
+
+// Badge de desfecho/alta
+class _PngOutcomeBadge extends StatelessWidget {
+  final String outcome;
+  final String lang;
+  const _PngOutcomeBadge(this.outcome, this.lang);
+
+  @override
+  Widget build(BuildContext context) {
+    final labels = {
+      'internado':    lang == 'es' ? 'Hospitalizado'   : 'Internado',
+      'alta':         lang == 'es' ? 'Alta hospitalaria' : 'Alta hospitalar',
+      'obito':        lang == 'es' ? 'Fallecimiento'   : 'Óbito',
+      'transferencia': lang == 'es' ? 'Traslado'        : 'Transferência',
+    };
+    return Container(
+      margin: const EdgeInsets.only(bottom: 6),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
+      decoration: BoxDecoration(
+        color: const Color(0xFFF0FDF4),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: const Color(0xFF16A34A).withValues(alpha: 0.4), width: 1),
+      ),
+      child: Text(labels[outcome] ?? outcome,
+          style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w800,
+              color: Color(0xFF15803D))),
     );
   }
 }
