@@ -363,6 +363,7 @@ const _hcStrings = <String, Map<String, String>>{
   'stt_plan':           {'pt': 'Conduta',                                 'es': 'Conducta'},
   'stt_ros':            {'pt': 'Revisão de sistemas',                     'es': 'Revisión de sistemas'},
   'stt_wdx':            {'pt': 'Hipótese diagnóstica',                    'es': 'Hipótesis diagnóstica'},
+  'stt_evol_note':      {'pt': 'Nota de evolução',                       'es': 'Nota de evolución'},
   // ── ECG labels ──────────────────────────────────────────────────────────
   'ecg_ritmo':          {'pt': 'Ritmo',                                   'es': 'Ritmo'},
   'ecg_st':             {'pt': 'Alterações ST/T',                         'es': 'Alteraciones ST/T'},
@@ -2414,8 +2415,21 @@ class _HistoryEditorState extends State<_HistoryEditor> {
       'physicalExam': _hcT(lang, 'stt_pe'),
       'workingDiagnosis': _hcT(lang, 'stt_wdx'),
       'treatmentPlan': _hcT(lang, 'stt_plan'),
+      'evolutionNote': _hcT(lang, 'stt_evol_note'),
     };
     return labels[key] ?? key;
+  }
+
+  /// Retorna o campo padrão inicial para cada seção com microfone ativo.
+  /// Retorna null para seções sem microfone (0=Paciente, 3=Exames, 6=Desfecho).
+  String? _defaultFieldForSection(int section) {
+    switch (section) {
+      case 1: return 'chiefComplaint';   // Anamnese
+      case 2: return 'vitalSigns';       // Exame Físico
+      case 4: return 'treatmentPlan';    // Conduta
+      case 5: return 'evolutionNote';    // Evolução (sentinel → insere no primeiro card)
+      default: return null;              // 0=Paciente, 3=Exames, 6=Desfecho → sem mic
+    }
   }
 
   void _toggleSmartDictaphone() {
@@ -2429,9 +2443,7 @@ class _HistoryEditorState extends State<_HistoryEditor> {
     if (_sttListening) _stopAllStt();
 
     // Campo inicial baseado na seção ativa
-    _smartCurrentField = _section == 2 ? 'vitalSigns'
-        : _section == 4 ? 'treatmentPlan'
-        : 'chiefComplaint';
+    _smartCurrentField = _defaultFieldForSection(_section) ?? 'chiefComplaint';
 
     final appLang  = widget.p.lang;
     final locale   = appLang == 'es' ? 'es-ES' : 'pt-BR';
@@ -2821,6 +2833,22 @@ class _HistoryEditorState extends State<_HistoryEditor> {
   /// Insere texto transcrito no campo correto, com espaço inteligente.
   void _insertIntoField(String key, String transcript) {
     if (transcript.isEmpty) return;
+    // Caso especial: evolutionNote → insere no último card de evolução (ou cria um)
+    if (key == 'evolutionNote') {
+      setState(() {
+        final list = List<EvolutionEntry>.from(_draft.evolutions);
+        if (list.isEmpty) {
+          list.add(EvolutionEntry.blank().copyWith(text: transcript));
+        } else {
+          final last = list.last;
+          final spacer = last.text.isNotEmpty &&
+              !last.text.endsWith(' ') && !last.text.endsWith('\n') ? ' ' : '';
+          list[list.length - 1] = last.copyWith(text: last.text + spacer + transcript);
+        }
+        _draft = _draft.copyWith(evolutions: list);
+      });
+      return;
+    }
     final ctrl = _ctrls[key];
     if (ctrl == null) return;
     final current = ctrl.text;
@@ -2954,7 +2982,23 @@ class _HistoryEditorState extends State<_HistoryEditor> {
               return Padding(
                 padding: const EdgeInsets.only(right: 6),
                 child: GestureDetector(
-                  onTap: () => setState(() => _section = i),
+                  onTap: () => setState(() {
+                    _section = i;
+                    if (_smartDictActive) {
+                      final newField = _defaultFieldForSection(i);
+                      if (newField == null) {
+                        // Seção sem microfone (Paciente, Exames, Desfecho) → para o ditado
+                        _smartRecog?.stop();
+                        SttHelper.stop();
+                        _smartDictActive = false;
+                        _smartInterim = '';
+                        _smartCurrentField = '';
+                      } else {
+                        // Seção com microfone → redireciona para o campo padrão da nova seção
+                        _smartCurrentField = newField;
+                      }
+                    }
+                  }),
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
                     decoration: BoxDecoration(
@@ -3787,6 +3831,7 @@ class _MicStatusBadge extends StatelessWidget {
       'physicalExam':   {'pt': 'Exame físico',             'es': 'Examen físico'},
       'workingDiagnosis':{'pt': 'Hipótese diagnóstica',    'es': 'Hipótesis diagnóstica'},
       'treatmentPlan':  {'pt': 'Conduta',                  'es': 'Plan terapéutico'},
+      'evolutionNote':  {'pt': 'Nota de evolução',         'es': 'Nota de evolución'},
     };
     final entry = _map[key];
     if (entry == null) return '';
