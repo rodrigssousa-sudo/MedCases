@@ -2927,9 +2927,9 @@ class _AppDrawer extends StatelessWidget {
                 _DrawerBlock(
                   children: [
                     _DrawerRow(
-                      icon: Icons.rate_review_rounded,
+                      icon: Icons.support_agent_rounded,
                       iconColor: const Color(0xFF7C3AED),
-                      title: 'Enviar Feedback',
+                      title: p.lang == 'es' ? 'Feedback y Soporte' : 'Feedback e Suporte',
                       dark: dark,
                       textCol: textCol,
                       subCol: subCol,
@@ -4451,16 +4451,20 @@ class _FeedbackSheetState extends State<_FeedbackSheet> {
   bool get _isEs => widget.p.lang == 'es';
 
   final List<Map<String, String>> _categoriesPt = const [
+    {'icon': '🆘', 'label': 'Suporte / Ajuda'},
     {'icon': '🐛', 'label': 'Erro no app'},
     {'icon': '💡', 'label': 'Sugestão'},
     {'icon': '💊', 'label': 'Fármaco/Protocolo'},
+    {'icon': '💳', 'label': 'Assinatura / Conta'},
     {'icon': '⭐', 'label': 'Elogio'},
     {'icon': '❓', 'label': 'Outro'},
   ];
   final List<Map<String, String>> _categoriesEs = const [
+    {'icon': '🆘', 'label': 'Soporte / Ayuda'},
     {'icon': '🐛', 'label': 'Error en la app'},
     {'icon': '💡', 'label': 'Sugerencia'},
     {'icon': '💊', 'label': 'Fármaco/Protocolo'},
+    {'icon': '💳', 'label': 'Suscripción / Cuenta'},
     {'icon': '⭐', 'label': 'Elogio'},
     {'icon': '❓', 'label': 'Otro'},
   ];
@@ -4470,7 +4474,7 @@ class _FeedbackSheetState extends State<_FeedbackSheet> {
   @override
   void initState() {
     super.initState();
-    _category = _isEs ? 'Sugerencia' : 'Sugestão';
+    _category = _isEs ? 'Soporte / Ayuda' : 'Suporte / Ajuda';
   }
 
   @override
@@ -4498,7 +4502,7 @@ class _FeedbackSheetState extends State<_FeedbackSheet> {
       final subject = Uri.encodeComponent('[MedCases Feedback] $_category — $userName');
       final body = Uri.encodeComponent(
         '━━━━━━━━━━━━━━━━━━━━━━━\n'
-        'FEEDBACK — MedCases Pro\n'
+        'FEEDBACK & SUPORTE — MedCases Pro\n'
         '━━━━━━━━━━━━━━━━━━━━━━━\n\n'
         '👤 Usuário: $userName\n'
         '📧 E-mail: $userEmail\n'
@@ -4586,12 +4590,12 @@ class _FeedbackSheetState extends State<_FeedbackSheet> {
                   color: const Color(0xFF7C3AED).withValues(alpha: 0.12),
                   borderRadius: BorderRadius.circular(10),
                 ),
-                child: const Icon(Icons.rate_review_rounded,
+                child: const Icon(Icons.support_agent_rounded,
                     color: Color(0xFF7C3AED), size: 20),
               ),
               const SizedBox(width: 12),
               Expanded(child: Text(
-                _isEs ? 'Enviar Feedback' : 'Enviar Feedback',
+                _isEs ? 'Feedback y Soporte' : 'Feedback e Suporte',
                 style: TextStyle(
                     fontSize: 18, fontWeight: FontWeight.w800, color: textCol),
               )),
@@ -4605,8 +4609,8 @@ class _FeedbackSheetState extends State<_FeedbackSheet> {
             const SizedBox(height: 4),
             Text(
               _isEs
-                  ? 'Tu opinión nos ayuda a mejorar el app.'
-                  : 'Sua opinião nos ajuda a melhorar o app.',
+                  ? 'Feedback, problemas, sugerencias o cualquier duda — estamos aquí.'
+                  : 'Feedback, problemas, sugestões ou qualquer dúvida — estamos aqui.',
               style: TextStyle(fontSize: 13, color: subCol),
             ),
             const SizedBox(height: 24),
@@ -4700,8 +4704,8 @@ class _FeedbackSheetState extends State<_FeedbackSheet> {
               style: TextStyle(fontSize: 14, color: textCol),
               decoration: InputDecoration(
                 hintText: _isEs
-                    ? 'Cuéntanos tu experiencia o sugerencia...'
-                    : 'Conta sua experiência ou sugestão...',
+                    ? 'Describe tu problema, sugerencia o lo que necesitas...'
+                    : 'Descreva seu problema, sugestão ou o que precisar...',
                 hintStyle: TextStyle(color: subCol, fontSize: 13),
                 filled: true,
                 fillColor: surfCol,
@@ -4769,8 +4773,8 @@ class _FeedbackSheetState extends State<_FeedbackSheet> {
             Center(
               child: Text(
                 _isEs
-                    ? 'Se abrirá tu app de correo con el mensaje listo.'
-                    : 'Seu app de e-mail abrirá com a mensagem pronta.',
+                    ? 'Se abrirá tu app de correo con el mensaje listo. Respondemos en hasta 48h.'
+                    : 'Seu app de e-mail abrirá com a mensagem pronta. Respondemos em até 48h.',
                 style: TextStyle(fontSize: 11, color: subCol),
                 textAlign: TextAlign.center,
               ),
