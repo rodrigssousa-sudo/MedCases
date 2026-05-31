@@ -1026,90 +1026,116 @@ class _WaHeader extends StatelessWidget {
                   ),
 
                   // ── Ações direita ────────────────────────────────────
-                  // Botão histórico
-                  GestureDetector(
-                    onTap: onHistory,
-                    child: Stack(
-                      clipBehavior: Clip.none,
-                      children: [
-                        Container(
+                  // Botão histórico — SizedBox garante zona de toque mínima
+                  // mesmo com badge Positioned(-4,-4) extravasando o Stack.
+                  // Padding externo (left: 4) isola da área clicável do Expanded.
+                  Padding(
+                    padding: const EdgeInsets.only(left: 4),
+                    child: SizedBox(
+                      // 44px = mínimo Apple HIG; badge de 15px cabe nos 4px extras
+                      width: 44,
+                      height: 44,
+                      child: GestureDetector(
+                        onTap: onHistory,
+                        // opaque: registra toque mesmo em área transparente
+                        behavior: HitTestBehavior.opaque,
+                        child: Stack(
+                          // clipBehavior.none mantém badge visível fora dos 36px
+                          clipBehavior: Clip.none,
+                          alignment: Alignment.center,
+                          children: [
+                            Container(
+                              width: 36, height: 36,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                color: Colors.white.withValues(alpha: 0.07),
+                                border: Border.all(
+                                    color: Colors.white.withValues(alpha: 0.10)),
+                              ),
+                              child: Icon(Icons.history_rounded, size: 18,
+                                  color: Colors.white.withValues(alpha: 0.75)),
+                            ),
+                            if (historyCount > 0)
+                              Positioned(
+                                top: 0, right: 0,
+                                child: Container(
+                                  width: 15, height: 15,
+                                  decoration: const BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: _kGold,
+                                  ),
+                                  child: Center(
+                                    child: Text(
+                                      '$historyCount',
+                                      style: const TextStyle(
+                                        fontSize: 8,
+                                        fontWeight: FontWeight.w900,
+                                        color: Color(0xFF1A1A1A),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  // Botão Limpar — só com mensagens; padding separa da zona do histórico
+                  if (hasMessages) ...[
+                    const SizedBox(width: 4),
+                    SizedBox(
+                      height: 44,
+                      child: GestureDetector(
+                        onTap: onClear,
+                        behavior: HitTestBehavior.opaque,
+                        child: Center(
+                          child: Container(
+                            height: 36,
+                            padding: const EdgeInsets.symmetric(horizontal: 12),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              color: _kGold,
+                              border: Border.all(
+                                  color: _kGoldL.withValues(alpha: 0.4), width: 1),
+                            ),
+                            child: Center(
+                              child: Text(
+                                lang == 'es' ? 'Limpiar' : 'Limpar',
+                                style: const TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w800,
+                                  color: Color(0xFF1A1100),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+
+                  // Botão menu — padding de separação garantido
+                  const SizedBox(width: 4),
+                  SizedBox(
+                    width: 44, height: 44,
+                    child: GestureDetector(
+                      onTap: () => Scaffold.of(context).openEndDrawer(),
+                      behavior: HitTestBehavior.opaque,
+                      child: Center(
+                        child: Container(
                           width: 36, height: 36,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(10),
                             color: Colors.white.withValues(alpha: 0.07),
                             border: Border.all(
-                              color: Colors.white.withValues(alpha: 0.10)),
+                                color: Colors.white.withValues(alpha: 0.10)),
                           ),
-                          child: Icon(Icons.history_rounded, size: 18,
-                            color: Colors.white.withValues(alpha: 0.75)),
-                        ),
-                        if (historyCount > 0)
-                          Positioned(
-                            top: -4, right: -4,
-                            child: Container(
-                              width: 15, height: 15,
-                              decoration: const BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: _kGold,
-                              ),
-                              child: Center(
-                                child: Text(
-                                  '$historyCount',
-                                  style: const TextStyle(
-                                    fontSize: 8,
-                                    fontWeight: FontWeight.w900,
-                                    color: Color(0xFF1A1A1A),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(width: 6),
-
-                  // Botão Limpar — só com mensagens
-                  if (hasMessages) ...[
-                    GestureDetector(
-                      onTap: onClear,
-                      child: Container(
-                        height: 36,
-                        padding: const EdgeInsets.symmetric(horizontal: 12),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          color: _kGold,
-                          border: Border.all(
-                            color: _kGoldL.withValues(alpha: 0.4), width: 1),
-                        ),
-                        child: Center(
-                          child: Text(
-                            lang == 'es' ? 'Limpiar' : 'Limpar',
-                            style: const TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w800,
-                              color: Color(0xFF1A1100),
-                            ),
-                          ),
+                          child: Icon(Icons.menu_rounded, size: 18,
+                              color: Colors.white.withValues(alpha: 0.75)),
                         ),
                       ),
-                    ),
-                    const SizedBox(width: 6),
-                  ],
-
-                  // Botão menu
-                  GestureDetector(
-                    onTap: () => Scaffold.of(context).openEndDrawer(),
-                    child: Container(
-                      width: 36, height: 36,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        color: Colors.white.withValues(alpha: 0.07),
-                        border: Border.all(
-                          color: Colors.white.withValues(alpha: 0.10)),
-                      ),
-                      child: Icon(Icons.menu_rounded, size: 18,
-                        color: Colors.white.withValues(alpha: 0.75)),
                     ),
                   ),
                 ],
