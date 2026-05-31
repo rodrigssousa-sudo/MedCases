@@ -401,11 +401,24 @@ class _AuthGateState extends State<_AuthGate> {
 
   @override
   Widget build(BuildContext context) {
+    // _TimedSplash garante visibilidade mínima de 1.2s + fade-out suave.
+    // Quando splash e boot terminam → readyBuilder() exibe o fluxo real de auth.
+    // A lógica de auth (FutureBuilder → StreamBuilder) é preservada intacta.
+    return _TimedSplash(
+      bootFuture: widget.firebaseInit,
+      splash: _wrapAuth(const _SplashScreen()),
+      readyBuilder: (context) => _buildAuthFlow(context),
+    );
+  }
+
+  /// Fluxo de autenticação original — sem nenhuma mudança de lógica.
+  /// Extraído para método separado apenas para não misturar com o _TimedSplash.
+  Widget _buildAuthFlow(BuildContext context) {
     // Etapa 1: aguarda Firebase init (em paralelo ao runApp)
     return FutureBuilder<void>(
       future: widget.firebaseInit,
       builder: (context, firebaseSnap) {
-        // Firebase ainda inicializando → splash nativa Flutter (sem tela verde)
+        // Firebase ainda inicializando → splash (pode ocorrer em edge cases)
         if (firebaseSnap.connectionState != ConnectionState.done) {
           return _wrapAuth(const _SplashScreen());
         }
@@ -588,7 +601,7 @@ class _ConsentGateState extends State<_ConsentGate> {
   }
 }
 
-// ── Splash Screen — redesign v2: logo terço superior + animação scale+slide ──
+// ── Splash Screen — v3: tagline atualizada + mesma animação scale+slide ───────
 class _SplashScreen extends StatefulWidget {
   const _SplashScreen();
   @override
@@ -694,14 +707,14 @@ class _SplashScreenState extends State<_SplashScreen>
 
                     const SizedBox(height: 6),
 
-                    // Tagline nova — diferente do anterior
+                    // Tagline — posicionamento de produto
                     Text(
-                      'Clínica · Protocolos · IA',
+                      'IA Clínica de bolso',
                       style: TextStyle(
                         fontSize: 12,
                         color: const Color(0xFF13A06A).withValues(alpha: 0.85),
                         fontWeight: FontWeight.w500,
-                        letterSpacing: 1.2,
+                        letterSpacing: 1.1,
                       ),
                     ),
                   ],
@@ -742,6 +755,79 @@ class _SplashScreenState extends State<_SplashScreen>
           ),
         ),
       ]),
+    );
+  }
+}
+
+// ── Timed Splash wrapper ──────────────────────────────────────────────────────
+// Garante que a splash fica visível por pelo menos [minDuration] ms,
+// independentemente de quão rápido o boot terminar.
+// Sem _TimedSplash: se o Firebase inicializar em < 200ms, a splash pisca
+// brevemente — visível apenas em cold starts rápidos (cache quente, WiFi).
+// Com _TimedSplash: a splash sempre exibe por mínimo 1.2s → transição suave.
+//
+// Lógica: dois semáforos em paralelo —
+//   • timer 1.2s           → _minTimeDone = true
+//   • bootFuture.complete  → _bootDone    = true
+// Quando AMBOS são true → chama readyBuilder() (exibe home/login).
+// O AnimatedSwitcher no _AuthGate cuida do fade-out automático.
+class _TimedSplash extends StatefulWidget {
+  final Future<void> bootFuture;
+  final Widget Function(BuildContext) readyBuilder;
+  final Widget splash;
+
+  const _TimedSplash({
+    required this.bootFuture,
+    required this.readyBuilder,
+    required this.splash,
+  });
+
+  @override
+  State<_TimedSplash> createState() => _TimedSplashState();
+}
+
+class _TimedSplashState extends State<_TimedSplash> {
+  static const _kMinMs = 1200; // mínimo 1.2s
+
+  bool _minTimeDone = false;
+  bool _bootDone    = false;
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Timer mínimo
+    Future<void>.delayed(const Duration(milliseconds: _kMinMs), () {
+      if (mounted) setState(() => _minTimeDone = true);
+    });
+
+    // Boot future (Firebase + prefs + auth)
+    widget.bootFuture.whenComplete(() {
+      if (mounted) setState(() => _bootDone = true);
+    });
+  }
+
+  bool get _ready => _minTimeDone && _bootDone;
+
+  @override
+  Widget build(BuildContext context) {
+    // AnimatedSwitcher com fade 350ms entre splash e conteúdo real
+    return AnimatedSwitcher(
+      duration: const Duration(milliseconds: 350),
+      // FadeTransition personalizado — evita o piscar de borda do default
+      transitionBuilder: (child, animation) => FadeTransition(
+        opacity: animation,
+        child: child,
+      ),
+      child: _ready
+          ? KeyedSubtree(
+              key: const ValueKey('ready'),
+              child: widget.readyBuilder(context),
+            )
+          : KeyedSubtree(
+              key: const ValueKey('splash'),
+              child: widget.splash,
+            ),
     );
   }
 }
@@ -1079,6 +1165,12 @@ class _WebMainShellGateState extends State<_WebMainShellGate> {
 class MainShell extends StatefulWidget {
   const MainShell({super.key});
 
+  /// ValueNotifier estático para navegação de tabs a partir do Drawer.
+  /// O Drawer não recebe onTabChange — usa este notifier para comunicar ao _MainShellState.
+  /// Uso: MainShell.pendingTab.value = 2; → navega para IA.
+  /// Após processar, _MainShellState reseta para -1 automaticamente.
+  static final pendingTab = ValueNotifier<int>(-1);
+
   @override
   State<MainShell> createState() => _MainShellState();
 }
@@ -1109,6 +1201,9 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+
+    // Ouve pendingTab para navegação iniciada pelo Drawer (sem onTabChange no _AppDrawer)
+    MainShell.pendingTab.addListener(_onPendingTab);
 
     // Instancia TODAS as telas UMA VEZ — IndexedStack reutiliza entre rebuilds.
     // Cada tela é envolta em RepaintBoundary — isola o repaint de cada screen,
@@ -1216,8 +1311,17 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
     } catch (_) {}
   }
 
+  void _onPendingTab() {
+    final t = MainShell.pendingTab.value;
+    if (t >= 0 && mounted) {
+      setState(() => _tab = t.clamp(0, 5));
+      MainShell.pendingTab.value = -1; // reset imediato após consumir
+    }
+  }
+
   @override
   void dispose() {
+    MainShell.pendingTab.removeListener(_onPendingTab);
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
@@ -2709,9 +2813,8 @@ class _AppDrawer extends StatelessWidget {
               physics: const ClampingScrollPhysics(),
               children: [
 
-                // ─── Bloco: Admin (TOPO — visível sem scroll) ────────────────
-                // Posicionado primeiro para que o admin encontre o painel
-                // imediatamente ao abrir o Drawer, sem precisar rolar.
+                // ─── 1. Bloco: Admin (TOPO — visível sem scroll) ─────────────
+                // Permissões inalteradas: if (p.isAdmin || p.isMaster)
                 if ((p.isAdmin || p.isMaster) && p.currentUser != null) ...[
                   _DrawerSectionLabel(
                     label: p.isMaster ? '⚡ MASTER' : '⚡ ADMIN',
@@ -2724,9 +2827,7 @@ class _AppDrawer extends StatelessWidget {
                         icon: Icons.admin_panel_settings_rounded,
                         iconColor: const Color(0xFFFF8C00),
                         title: p.lang == 'es' ? 'Panel Admin' : 'Painel Admin',
-                        subtitle: p.lang == 'es'
-                            ? 'Usuários · Links · Indicações'
-                            : 'Usuários · Links · Indicações',
+                        subtitle: 'Usuários · Links · Indicações',
                         dark: dark,
                         textCol: textCol,
                         subCol: subCol,
@@ -2745,7 +2846,7 @@ class _AppDrawer extends StatelessWidget {
                   const SizedBox(height: 4),
                 ],
 
-                // ─── Bloco: Premium ─────────────────────────────────────────
+                // ─── 2. Bloco: Premium (upgrade) ────────────────────────────
                 _DrawerBlock(
                   children: [
                     _DrawerItemPremium(
@@ -2758,157 +2859,34 @@ class _AppDrawer extends StatelessWidget {
                   ],
                 ),
 
-                // ─── Bloco: Suporte ──────────────────────────────────────────
+                // ─── 3. Acesso Rápido ─────────────────────────────────────
                 _DrawerSectionLabel(
-                  label: p.lang == 'es' ? 'SOPORTE' : 'SUPORTE',
+                  label: p.lang == 'es' ? 'ACCESO RÁPIDO' : 'ACESSO RÁPIDO',
                   dark: dark,
                 ),
-                _DrawerBlock(
-                  children: [
-                    _DrawerRow(
-                      icon: Icons.rate_review_rounded,
-                      iconColor: const Color(0xFF7C3AED),
-                      title: 'Enviar Feedback',
-                      dark: dark,
-                      textCol: textCol,
-                      subCol: subCol,
-                      showDivider: false,
-                      onTap: () {
-                        _close(context);
-                        showModalBottomSheet(
-                          context: context,
-                          isScrollControlled: true,
-                          backgroundColor: Colors.transparent,
-                          builder: (_) => _FeedbackSheet(p: p, dark: dark),
-                        );
-                      },
-                    ),
-                  ],
+                _DrawerQuickAccess(
+                  p: p,
+                  dark: dark,
+                  onClose: () => _close(context),
                 ),
 
+                // ─── 4. Sua Atividade (oculto se vazio) ──────────────────
                 _DrawerSectionLabel(
-                  label: p.lang == 'es' ? 'PREFERENCIAS' : 'PREFERÊNCIAS',
+                  label: p.lang == 'es' ? 'TU ACTIVIDAD' : 'SUA ATIVIDADE',
                   dark: dark,
                 ),
-
-                // ─── Bloco: Preferências ─────────────────────────────────────
-                _DrawerBlock(
-                  dividerColor: divider,
-                  children: [
-                    // Idioma — toca para alternar PT ↔ ES
-                    _DrawerRow(
-                      icon: Icons.language_rounded,
-                      iconColor: const Color(0xFF1E88E5),
-                      title: p.lang == 'es' ? 'Idioma' : 'Idioma',
-                      subtitle: p.lang == 'es'
-                          ? 'Toca para cambiar a Português'
-                          : 'Toque para mudar para Español',
-                      dark: dark,
-                      textCol: textCol,
-                      subCol: subCol,
-                      trailing: _LangBadge(lang: p.lang),
-                      onTap: () {
-                        final newLang = p.lang == 'pt' ? 'es' : 'pt';
-                        p.setLang(newLang);
-                        // Persiste explicitamente para sobrescrever o padrão do sistema
-                        SharedPreferences.getInstance()
-                            .then((prefs) => prefs.setString('lang', newLang));
-                      },
-                    ),
-                    // Tema
-                    _DrawerRow(
-                      icon: dark ? Icons.light_mode_rounded : Icons.dark_mode_rounded,
-                      iconColor: dark ? const Color(0xFFFFCC44) : const Color(0xFF6B6B8A),
-                      title: p.lang == 'es' ? 'Apariencia' : 'Aparência',
-                      dark: dark,
-                      textCol: textCol,
-                      subCol: subCol,
-                      trailing: _ThemeToggle(dark: dark),
-                      onTap: () => p.toggleDarkMode(),
-                    ),
-                  ],
-                ),
-
-                // ─── Bloco: Modo Offline ─────────────────────────────────────
-                _DrawerSectionLabel(
-                  label: p.lang == 'es' ? 'MODO SIN CONEXIÓN' : 'MODO OFFLINE',
+                _DrawerActivity(
+                  p: p,
                   dark: dark,
-                  color: const Color(0xFF1D4ED8),
+                  onClose: () => _close(context),
                 ),
-                _OfflineDrawerCard(p: p, dark: dark),
 
-                // ─── Bloco: Sobre o App (exigido pela Apple 1.5.0) ──────────
+                // ─── 5. Conta e Gestão (zona de perigo) ──────────────────
                 _DrawerSectionLabel(
-                  label: p.lang == 'es' ? 'ACERCA DE' : 'SOBRE O APP',
-                  dark: dark,
-                ),
-                _DrawerBlock(
-                  dividerColor: divider,
-                  children: [
-                    _DrawerRow(
-                      icon: Icons.info_outline_rounded,
-                      iconColor: const Color(0xFF0D9488),
-                      title: p.lang == 'es' ? 'Sobre MedCases Pro' : 'Sobre o MedCases Pro',
-                      dark: dark,
-                      textCol: textCol,
-                      subCol: subCol,
-                      showDivider: false,
-                      onTap: () {
-                        _close(context);
-                        showModalBottomSheet(
-                          context: context,
-                          isScrollControlled: true,
-                          backgroundColor: Colors.transparent,
-                          builder: (_) => _AboutAppSheet(p: p, dark: dark),
-                        );
-                      },
-                    ),
-                  ],
-                ),
-
-                _DrawerSectionLabel(
-                  label: p.lang == 'es' ? 'LEGAL' : 'LEGAL',
-                  dark: dark,
-                ),
-
-                // ─── Bloco: Legal ────────────────────────────────────────────
-                _DrawerBlock(
-                  dividerColor: divider,
-                  children: [
-                    _DrawerRow(
-                      icon: Icons.article_outlined,
-                      iconColor: const Color(0xFF546E7A),
-                      title: p.lang == 'es' ? 'Términos de Uso' : 'Termos de Uso',
-                      dark: dark,
-                      textCol: textCol,
-                      subCol: subCol,
-                      onTap: () {
-                        _close(context);
-                        showLegalSheet(context, LegalType.terms, p.lang);
-                      },
-                    ),
-                    _DrawerRow(
-                      icon: Icons.shield_outlined,
-                      iconColor: const Color(0xFF546E7A),
-                      title: p.lang == 'es' ? 'Política de Privacidad' : 'Política de Privacidade',
-                      dark: dark,
-                      textCol: textCol,
-                      subCol: subCol,
-                      onTap: () {
-                        _close(context);
-                        showLegalSheet(context, LegalType.privacy, p.lang);
-                      },
-                    ),
-                  ],
-                ),
-
-                _DrawerSectionLabel(
-                  label: p.lang == 'es' ? 'CUENTA' : 'CONTA',
+                  label: p.lang == 'es' ? 'CUENTA Y GESTIÓN' : 'CONTA E GESTÃO',
                   dark: dark,
                   color: const Color(0xFFCC3333),
                 ),
-
-                // ─── Bloco: Zona de perigo ───────────────────────────────────
                 _DrawerBlock(
                   dividerColor: divider,
                   children: [
@@ -2936,6 +2914,136 @@ class _AppDrawer extends StatelessWidget {
                         _close(context);
                         await AuthService.logout();
                         if (context.mounted) context.read<AppProvider>().clearUser();
+                      },
+                    ),
+                  ],
+                ),
+
+                // ─── 6. Suporte ──────────────────────────────────────────
+                _DrawerSectionLabel(
+                  label: p.lang == 'es' ? 'SOPORTE' : 'SUPORTE',
+                  dark: dark,
+                ),
+                _DrawerBlock(
+                  children: [
+                    _DrawerRow(
+                      icon: Icons.rate_review_rounded,
+                      iconColor: const Color(0xFF7C3AED),
+                      title: 'Enviar Feedback',
+                      dark: dark,
+                      textCol: textCol,
+                      subCol: subCol,
+                      showDivider: false,
+                      onTap: () {
+                        _close(context);
+                        showModalBottomSheet(
+                          context: context,
+                          isScrollControlled: true,
+                          backgroundColor: Colors.transparent,
+                          builder: (_) => _FeedbackSheet(p: p, dark: dark),
+                        );
+                      },
+                    ),
+                  ],
+                ),
+
+                // ─── 7. Preferências ────────────────────────────────────
+                _DrawerSectionLabel(
+                  label: p.lang == 'es' ? 'PREFERENCIAS' : 'PREFERÊNCIAS',
+                  dark: dark,
+                ),
+                _DrawerBlock(
+                  dividerColor: divider,
+                  children: [
+                    // Idioma — toca para alternar PT ↔ ES
+                    _DrawerRow(
+                      icon: Icons.language_rounded,
+                      iconColor: const Color(0xFF1E88E5),
+                      title: 'Idioma',
+                      subtitle: p.lang == 'es'
+                          ? 'Toca para cambiar a Português'
+                          : 'Toque para mudar para Español',
+                      dark: dark,
+                      textCol: textCol,
+                      subCol: subCol,
+                      trailing: _LangBadge(lang: p.lang),
+                      onTap: () {
+                        final newLang = p.lang == 'pt' ? 'es' : 'pt';
+                        p.setLang(newLang);
+                        SharedPreferences.getInstance()
+                            .then((prefs) => prefs.setString('lang', newLang));
+                      },
+                    ),
+                    // Tema
+                    _DrawerRow(
+                      icon: dark ? Icons.light_mode_rounded : Icons.dark_mode_rounded,
+                      iconColor: dark ? const Color(0xFFFFCC44) : const Color(0xFF6B6B8A),
+                      title: p.lang == 'es' ? 'Apariencia' : 'Aparência',
+                      dark: dark,
+                      textCol: textCol,
+                      subCol: subCol,
+                      trailing: _ThemeToggle(dark: dark),
+                      onTap: () => p.toggleDarkMode(),
+                    ),
+                  ],
+                ),
+
+                // ─── 8. Modo Offline ─────────────────────────────────────
+                _DrawerSectionLabel(
+                  label: p.lang == 'es' ? 'MODO SIN CONEXIÓN' : 'MODO OFFLINE',
+                  dark: dark,
+                  color: const Color(0xFF1D4ED8),
+                ),
+                _OfflineDrawerCard(p: p, dark: dark),
+
+                // ─── 9. Sobre + Legal (unificados) ───────────────────────
+                _DrawerSectionLabel(
+                  label: p.lang == 'es' ? 'SOBRE Y LEGAL' : 'SOBRE E LEGAL',
+                  dark: dark,
+                ),
+                _DrawerBlock(
+                  dividerColor: divider,
+                  children: [
+                    _DrawerRow(
+                      icon: Icons.info_outline_rounded,
+                      iconColor: const Color(0xFF0D9488),
+                      title: p.lang == 'es' ? 'Sobre MedCases Pro' : 'Sobre o MedCases Pro',
+                      dark: dark,
+                      textCol: textCol,
+                      subCol: subCol,
+                      onTap: () {
+                        _close(context);
+                        showModalBottomSheet(
+                          context: context,
+                          isScrollControlled: true,
+                          backgroundColor: Colors.transparent,
+                          builder: (_) => _AboutAppSheet(p: p, dark: dark),
+                        );
+                      },
+                    ),
+                    _DrawerRow(
+                      icon: Icons.article_outlined,
+                      iconColor: const Color(0xFF546E7A),
+                      title: p.lang == 'es' ? 'Términos de Uso' : 'Termos de Uso',
+                      dark: dark,
+                      textCol: textCol,
+                      subCol: subCol,
+                      onTap: () {
+                        _close(context);
+                        showLegalSheet(context, LegalType.terms, p.lang);
+                      },
+                    ),
+                    _DrawerRow(
+                      icon: Icons.shield_outlined,
+                      iconColor: const Color(0xFF546E7A),
+                      title: p.lang == 'es' ? 'Política de Privacidad' : 'Política de Privacidade',
+                      dark: dark,
+                      textCol: textCol,
+                      subCol: subCol,
+                      showDivider: false,
+                      onTap: () {
+                        _close(context);
+                        showLegalSheet(context, LegalType.privacy, p.lang);
                       },
                     ),
                   ],
@@ -2970,7 +3078,11 @@ class _AppDrawer extends StatelessWidget {
   }
 }
 
-// ── Cabeçalho do Drawer (card de perfil) ──────────────────────────────────────
+// ── Cabeçalho do Drawer — v3 compacto ─────────────────────────────────────────
+// Layout de 2 linhas (reduzido de 3):
+//   Linha 1: logo BrandMark (esq) + [ADMIN badge opcional] + botão ✕ (dir)
+//   Linha 2: avatar 42px + nome/profissão + botão Editar
+// Altura total ~20% menor que v2; não mexe em nenhuma lógica ou permissão.
 class _DrawerHeader extends StatelessWidget {
   final AppProvider p;
   final String initials;
@@ -2991,6 +3103,8 @@ class _DrawerHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final hasBadge = p.isAdmin || p.isMaster;
+
     return Container(
       decoration: const BoxDecoration(
         gradient: LinearGradient(
@@ -3002,39 +3116,71 @@ class _DrawerHeader extends StatelessWidget {
       ),
       child: SafeArea(
         bottom: false,
-        left:   false,   // endDrawer está na direita — não duplicar padding esquerdo
-        right:  false,   // borda arredondada já cuida do espaçamento visual direito
+        left:   false,
+        right:  false,
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(16, 14, 14, 16),
+          padding: const EdgeInsets.fromLTRB(16, 12, 14, 14),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              // Linha 1: logo + botão fechar
-              Row(children: [
-                const BrandMark(small: true),
-                const Spacer(),
-                GestureDetector(
-                  onTap: onClose,
-                  child: Container(
-                    width: 32, height: 32,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      color: Colors.white.withValues(alpha: 0.07),
-                      border: Border.all(color: Colors.white.withValues(alpha: 0.10), width: 0.8),
+
+              // ── Linha 1: logo  |  badge admin (opcional)  |  botão ✕ ───────
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  const BrandMark(small: true),
+                  const SizedBox(width: 8),
+                  // Badge Admin/Master — inline na mesma linha do logo
+                  if (hasBadge) ...[
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        color: _kGold.withValues(alpha: 0.14),
+                        border: Border.all(color: _kGold.withValues(alpha: 0.40)),
+                      ),
+                      child: Row(mainAxisSize: MainAxisSize.min, children: [
+                        const Icon(Icons.verified_rounded, size: 9, color: _kGoldL),
+                        const SizedBox(width: 3),
+                        Text(
+                          p.isMaster ? 'MASTER' : 'ADMIN',
+                          style: const TextStyle(
+                            fontSize: 8.5, fontWeight: FontWeight.w900,
+                            color: _kGoldL, letterSpacing: 0.8,
+                          ),
+                        ),
+                      ]),
                     ),
-                    child: Icon(Icons.close_rounded, size: 15, color: Colors.white.withValues(alpha: 0.55)),
+                  ],
+                  const Spacer(),
+                  // Botão fechar
+                  GestureDetector(
+                    onTap: onClose,
+                    child: Container(
+                      width: 30, height: 30,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(9),
+                        color: Colors.white.withValues(alpha: 0.07),
+                        border: Border.all(
+                          color: Colors.white.withValues(alpha: 0.10), width: 0.8),
+                      ),
+                      child: Icon(
+                        Icons.close_rounded, size: 14,
+                        color: Colors.white.withValues(alpha: 0.55),
+                      ),
+                    ),
                   ),
-                ),
-              ]),
+                ],
+              ),
 
-              const SizedBox(height: 14),
+              const SizedBox(height: 12),
 
-              // Linha 2: Avatar + info + botão editar
+              // ── Linha 2: avatar 42px + nome/profissão + botão editar ─────────
               Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
-                // Avatar
+                // Avatar compacto 42px
                 Container(
-                  width: 46, height: 46,
+                  width: 42, height: 42,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     gradient: const LinearGradient(
@@ -3042,25 +3188,27 @@ class _DrawerHeader extends StatelessWidget {
                       end: Alignment.bottomRight,
                       colors: [Color(0xFF1F4030), Color(0xFF101E16)],
                     ),
-                    border: Border.all(color: _kGold.withValues(alpha: 0.55), width: 1.8),
+                    border: Border.all(
+                      color: _kGold.withValues(alpha: 0.55), width: 1.6),
                     boxShadow: [
                       BoxShadow(
-                        color: _kGold.withValues(alpha: 0.20),
-                        blurRadius: 12,
-                        offset: const Offset(0, 3),
+                        color: _kGold.withValues(alpha: 0.18),
+                        blurRadius: 10,
+                        offset: const Offset(0, 2),
                       ),
                     ],
                   ),
                   child: Center(
                     child: Text(
                       initials,
-                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w900, color: _kGoldL),
+                      style: const TextStyle(
+                        fontSize: 15, fontWeight: FontWeight.w900, color: _kGoldL),
                     ),
                   ),
                 ),
-                const SizedBox(width: 12),
+                const SizedBox(width: 11),
 
-                // Nome + profissão
+                // Nome + profissão/instituição
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -3069,7 +3217,7 @@ class _DrawerHeader extends StatelessWidget {
                       Text(
                         p.userName.isNotEmpty ? p.userName : 'MedCases Pro',
                         style: const TextStyle(
-                          fontSize: 14.5, fontWeight: FontWeight.w900,
+                          fontSize: 14, fontWeight: FontWeight.w900,
                           color: Colors.white, letterSpacing: -0.3, height: 1.15,
                         ),
                         overflow: TextOverflow.ellipsis,
@@ -3077,7 +3225,7 @@ class _DrawerHeader extends StatelessWidget {
                       ),
                       if ((p.currentUser?.profession?.isNotEmpty ?? false) ||
                           (p.currentUser?.institution?.isNotEmpty ?? false)) ...[
-                        const SizedBox(height: 3),
+                        const SizedBox(height: 2),
                         Text(
                           [
                             if (p.currentUser?.profession?.isNotEmpty ?? false)
@@ -3086,13 +3234,13 @@ class _DrawerHeader extends StatelessWidget {
                               p.currentUser!.institution!,
                           ].join(' · '),
                           style: TextStyle(
-                            fontSize: 10.5,
-                            color: Colors.white.withValues(alpha: 0.45),
+                            fontSize: 10,
+                            color: Colors.white.withValues(alpha: 0.42),
                             fontWeight: FontWeight.w500,
                             height: 1.3,
                           ),
                           overflow: TextOverflow.ellipsis,
-                          maxLines: 2,
+                          maxLines: 1,
                         ),
                       ],
                     ],
@@ -3105,46 +3253,25 @@ class _DrawerHeader extends StatelessWidget {
                 GestureDetector(
                   onTap: onEditProfile,
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+                    padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 6),
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(9),
                       color: _kGold.withValues(alpha: 0.14),
-                      border: Border.all(color: _kGold.withValues(alpha: 0.40), width: 0.9),
+                      border: Border.all(
+                        color: _kGold.withValues(alpha: 0.40), width: 0.9),
                     ),
                     child: Row(mainAxisSize: MainAxisSize.min, children: [
-                      const Icon(Icons.edit_rounded, size: 13, color: _kGoldL),
-                      const SizedBox(width: 5),
-                      Text(
-                        p.lang == 'es' ? 'Editar' : 'Editar',
-                        style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: _kGoldL),
+                      const Icon(Icons.edit_rounded, size: 12, color: _kGoldL),
+                      const SizedBox(width: 4),
+                      const Text(
+                        'Editar',
+                        style: TextStyle(
+                          fontSize: 10.5, fontWeight: FontWeight.w700, color: _kGoldL),
                       ),
                     ]),
                   ),
                 ),
               ]),
-
-              // Badge admin/master (inline, compacto)
-              if (p.isAdmin || p.isMaster) ...[
-                const SizedBox(height: 10),
-                Row(children: [
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      color: _kGold.withValues(alpha: 0.14),
-                      border: Border.all(color: _kGold.withValues(alpha: 0.40)),
-                    ),
-                    child: Row(mainAxisSize: MainAxisSize.min, children: [
-                      const Icon(Icons.verified_rounded, size: 10, color: _kGoldL),
-                      const SizedBox(width: 4),
-                      Text(
-                        p.isMaster ? 'MASTER' : 'ADMIN',
-                        style: const TextStyle(fontSize: 9, fontWeight: FontWeight.w900, color: _kGoldL, letterSpacing: 0.8),
-                      ),
-                    ]),
-                  ),
-                ]),
-              ],
             ],
           ),
         ),
@@ -3418,6 +3545,136 @@ class _ThemeToggle extends StatelessWidget {
 }
 
 
+
+// ── Bloco "Acesso Rápido" do Drawer ───────────────────────────────────────────
+// 4 atalhos para as principais telas: usa MainShell.pendingTab para navegar
+// sem precisar de onTabChange. Zero lógica de permissão.
+class _DrawerQuickAccess extends StatelessWidget {
+  final AppProvider p;
+  final bool dark;
+  final VoidCallback onClose;
+
+  const _DrawerQuickAccess({
+    required this.p,
+    required this.dark,
+    required this.onClose,
+  });
+
+  void _go(BuildContext context, int tab) {
+    onClose();
+    // Post-frame para garantir que o drawer fechou antes de mudar de tab
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      MainShell.pendingTab.value = tab;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final isEs    = p.lang == 'es';
+    final textCol = dark ? const Color(0xFFEEEEEE) : const Color(0xFF0F1C14);
+    final subCol  = dark ? Colors.white.withValues(alpha: 0.36) : const Color(0xFF9AA0A8);
+    final divider = dark ? const Color(0xFF1A2E22) : const Color(0xFFF0EDE8);
+
+    return _DrawerBlock(
+      dividerColor: divider,
+      children: [
+        // Nova Consulta → tab 0 (HomeScreen)
+        _DrawerRow(
+          icon: Icons.medical_services_outlined,
+          iconColor: const Color(0xFF10B981),
+          title: isEs ? 'Nueva Consulta' : 'Nova Consulta',
+          subtitle: isEs ? 'Iniciar caso clínico' : 'Iniciar caso clínico',
+          dark: dark, textCol: textCol, subCol: subCol,
+          onTap: () => _go(context, 0),
+        ),
+        // Assistente IA → tab 2
+        _DrawerRow(
+          icon: Icons.smart_toy_outlined,
+          iconColor: const Color(0xFF8B5CF6),
+          title: isEs ? 'Asistente IA' : 'Assistente IA',
+          subtitle: isEs ? 'IA Clínica de bolsillo' : 'IA Clínica de bolso',
+          dark: dark, textCol: textCol, subCol: subCol,
+          onTap: () => _go(context, 2),
+        ),
+        // Protocolos → tab 1 (sub 1)
+        _DrawerRow(
+          icon: Icons.assignment_outlined,
+          iconColor: const Color(0xFF0EA5E9),
+          title: isEs ? 'Protocolos' : 'Protocolos',
+          subtitle: isEs ? 'Guías y directrices' : 'Rx e diretrizes',
+          dark: dark, textCol: textCol, subCol: subCol,
+          onTap: () => _go(context, 1),
+        ),
+        // Farmacologia → tab 1 (o combo inclui farmacologia como sub 0)
+        _DrawerRow(
+          icon: Icons.medication_outlined,
+          iconColor: const Color(0xFFF59E0B),
+          title: isEs ? 'Farmacología' : 'Farmacologia',
+          subtitle: isEs ? 'Base de medicamentos' : 'Base de medicamentos',
+          dark: dark, textCol: textCol, subCol: subCol,
+          showDivider: false,
+          onTap: () => _go(context, 1),
+        ),
+      ],
+    );
+  }
+}
+
+// ── Bloco "Sua Atividade" do Drawer ───────────────────────────────────────────
+// Mostra atalho para Histórico de Consultas (tab 3).
+// Oculto automaticamente quando p.aiSessionsCount == 0 (zero atividade).
+class _DrawerActivity extends StatelessWidget {
+  final AppProvider p;
+  final bool dark;
+  final VoidCallback onClose;
+
+  const _DrawerActivity({
+    required this.p,
+    required this.dark,
+    required this.onClose,
+  });
+
+  void _goHistory(BuildContext context) {
+    onClose();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      MainShell.pendingTab.value = 3;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // Usa AiScreen.historyCountNotifier para contagem em tempo real de sessões.
+    // Se 0 → oculta o bloco inteiro (sem atividade ainda).
+    return ValueListenableBuilder<int>(
+      valueListenable: AiScreen.historyCountNotifier,
+      builder: (context, count, _) {
+        if (count <= 0) return const SizedBox.shrink();
+
+        final isEs    = p.lang == 'es';
+        final textCol = dark ? const Color(0xFFEEEEEE) : const Color(0xFF0F1C14);
+        final subCol  = dark ? Colors.white.withValues(alpha: 0.36) : const Color(0xFF9AA0A8);
+        final divider = dark ? const Color(0xFF1A2E22) : const Color(0xFFF0EDE8);
+
+        return _DrawerBlock(
+          dividerColor: divider,
+          children: [
+            _DrawerRow(
+              icon: Icons.history_edu_rounded,
+              iconColor: const Color(0xFF6366F1),
+              title: isEs ? 'Historial de Consultas' : 'Histórico de Consultas',
+              subtitle: isEs
+                  ? '$count ${count == 1 ? 'sesión guardada' : 'sesiones guardadas'}'
+                  : '$count ${count == 1 ? 'sessão salva' : 'sessões salvas'}',
+              dark: dark, textCol: textCol, subCol: subCol,
+              showDivider: false,
+              onTap: () => _goHistory(context),
+            ),
+          ],
+        );
+      },
+    );
+  }
+}
 
 // ── Header do app ─────────────────────────────────────────────────────────────
 class _AppHeader extends StatelessWidget {
