@@ -12,12 +12,19 @@
 ///      `window.medcasesApplyUpdate()` que envia `SKIP_WAITING` ao SW e
 ///      aguarda `controllerchange` → `window.location.reload()`.
 ///
-/// Compatibilidade:
-///   • Web: usa `dart:js` (mesmo padrão de ls_web.dart).
-///   • iOS/Android: todas as operações são no-ops seguros.
+/// Isolamento de plataforma:
+///   • Web (dart.library.js)  → update_service_web.dart  (usa dart:js)
+///   • iOS / Android / Desktop → update_service_stub.dart (no-ops, sem dart:js)
 ///
-// ignore: avoid_web_libraries_in_flutter
-import 'dart:js' as js;
+/// Isso resolve "Error: Undefined name 'context'" no compilador nativo (Xcode/NDK)
+/// causado pelo import direto de dart:js — idêntico ao padrão de ls_web.dart.
+
+// Import condicional: update_service_web.dart (Web, usa dart:js)
+//                 ou update_service_stub.dart  (iOS/Android, no-op, sem dart:js).
+// Isola dart:js do compilador nativo — resolve "Undefined name 'context'" no Xcode.
+import 'update_service_stub.dart'
+    if (dart.library.js) 'update_service_web.dart';
+
 import 'package:flutter/foundation.dart';
 
 class UpdateService {
@@ -31,42 +38,23 @@ class UpdateService {
   /// havia um update pendente antes do Dart bootar (`window._mcUpdatePending`).
   ///
   /// Deve ser chamado UMA vez no `initState` do widget raiz (MainShell).
+  /// iOS/Android: no-op seguro — dart:js nunca é carregado.
   static void setupUpdateListener() {
     if (!kIsWeb) return;
-    try {
-      // Registra a callback global que o JS invocará quando um novo SW for detectado.
-      js.context['onFlutterWebUpdateAvailable'] = js.allowInterop(() {
-        debugPrint('[UpdateService] Nova versão do SW detectada — update disponível.');
-        swUpdateAvailable.value = true;
-      });
-
-      // Se o SW já foi detectado antes do Dart bootar (race condition),
-      // a flag _mcUpdatePending estará `true` — notifica imediatamente.
-      final pending = js.context['_mcUpdatePending'];
-      if (pending == true) {
-        debugPrint('[UpdateService] Update já estava pendente antes do boot — notificando.');
-        swUpdateAvailable.value = true;
-      }
-    } catch (e) {
-      debugPrint('[UpdateService] setupUpdateListener error: $e');
-    }
+    // Delega para update_service_web.dart (Web) ou update_service_stub.dart (nativo).
+    // O compilador iOS/Android nunca vê o corpo de update_service_web.dart.
+    setupUpdateListenerImpl(() {
+      swUpdateAvailable.value = true;
+    });
   }
 
   /// Aplica o update: chama `window.medcasesApplyUpdate()` definido em index.html.
   /// Isso envia `{type: "SKIP_WAITING"}` ao SW em waiting e, após
   /// `controllerchange` disparar, recarrega a página com cache limpo.
+  /// iOS/Android: no-op seguro.
   static void applyUpdate() {
     if (!kIsWeb) return;
-    try {
-      if (js.context.hasProperty('medcasesApplyUpdate')) {
-        js.context.callMethod('medcasesApplyUpdate', []);
-      } else {
-        // Fallback: reload direto se a função não foi encontrada
-        js.context.callMethod('eval', ['window.location.reload(true)']);
-      }
-    } catch (e) {
-      debugPrint('[UpdateService] applyUpdate error: $e');
-    }
+    applyUpdateImpl();
   }
 
   /// Dispensa o banner sem aplicar o update.
