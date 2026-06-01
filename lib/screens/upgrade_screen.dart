@@ -944,12 +944,24 @@ class _BgPainter extends CustomPainter {
 //
 // 🔒 PAYWALL BLOQUEADO — desativar antes do lançamento oficial
 // Para reativar: remover o bloco "if (_kPaywallLocked)" abaixo.
+//
+// ── isReviewMode — Apple App Store Review bypass ─────────────────────────────
+// Quando `kIsReviewMode = true`, toda a UI de assinatura/paywall/VIP é ocultada.
+// O revisor da Apple terá acesso livre a todo o conteúdo do app sem paywall.
+// IMPORTANTE: altere para `false` antes do lançamento oficial ao público.
 // ─────────────────────────────────────────────────────────────────────────────
+
+/// Feature flag de modo de revisão — Apple App Store Review.
+/// `true`  → oculta todo paywall/premium; revisor tem acesso livre.
+/// `false` → comportamento normal de produção (paywall ativo).
+const bool kIsReviewMode = true;
 
 /// Mude para `false` para liberar o paywall no lançamento oficial.
 const bool _kPaywallLocked = true;
 
 void showUpgradeScreen(BuildContext context, {String lang = 'es'}) {
+  // Em modo de revisão Apple: nunca exibe paywall
+  if (kIsReviewMode) return;
   if (_kPaywallLocked) return;
 
   showModalBottomSheet(
