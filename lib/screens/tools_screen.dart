@@ -2103,22 +2103,49 @@ class _InfusionTabState extends State<_InfusionTab> {
                     ]),
                   ),
                   const SizedBox(height: 8),
-                  // ── Citação de fonte ──────────────────────────────────────
-                  Row(children: [
-                    const Text('📚 ', style: TextStyle(fontSize: 10)),
-                    Expanded(
-                      child: Text(
-                        isEs
-                            ? 'Fuente: Cálculo estándar de infusión clínica.'
-                            : 'Fonte: Cálculo padrão de infusão clínica.',
-                        style: TextStyle(
-                          fontSize: 9,
-                          color: Colors.white.withValues(alpha: 0.50),
-                          fontStyle: FontStyle.italic,
-                        ),
-                      ),
+                  // ── Citações de fonte específicas ─────────────────────────
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                    decoration: BoxDecoration(
+                      color: Colors.black.withValues(alpha: 0.18),
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(
+                          color: Colors.white.withValues(alpha: 0.08), width: 0.8),
                     ),
-                  ]),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          isEs ? '📚 Referencias bibliográficas:' : '📚 Referências bibliográficas:',
+                          style: TextStyle(
+                            fontSize: 8.5,
+                            fontWeight: FontWeight.w700,
+                            color: const Color(0xBFFFE8A6),
+                            letterSpacing: 0.4,
+                          ),
+                        ),
+                        const SizedBox(height: 5),
+                        _RefLine(
+                          text: isEs
+                              ? '1. Fórmula: Dosis (mg/h) = Conc. (mg/mL) × Velocidad (mL/h)\n   Brunton LL, et al. Goodman & Gilman\'s The Pharmacological Basis of Therapeutics, 14th ed. McGraw-Hill, 2023.'
+                              : '1. Fórmula: Dose (mg/h) = Conc. (mg/mL) × Velocidade (mL/h)\n   Brunton LL, et al. Goodman & Gilman\'s The Pharmacological Basis of Therapeutics, 14ª ed. McGraw-Hill, 2023.',
+                        ),
+                        const SizedBox(height: 4),
+                        _RefLine(
+                          text: isEs
+                              ? '2. Conversión mcg/kg/min: Dosis = (mg/h × 1000) ÷ (Peso kg × 60)\n   Marino PL. The ICU Book, 4th ed. Lippincott Williams & Wilkins, 2014.'
+                              : '2. Conversão mcg/kg/min: Dose = (mg/h × 1000) ÷ (Peso kg × 60)\n   Marino PL. The ICU Book, 4ª ed. Lippincott Williams & Wilkins, 2014.',
+                        ),
+                        const SizedBox(height: 4),
+                        _RefLine(
+                          text: isEs
+                              ? '3. Verificar concentración y velocidad según protocolo institucional.\n   Rhodes A, et al. Surviving Sepsis Campaign Guidelines. Crit Care Med. 2017;45(3):486-552.'
+                              : '3. Verificar concentração e velocidade conforme protocolo institucional.\n   Rhodes A, et al. Surviving Sepsis Campaign Guidelines. Crit Care Med. 2017;45(3):486-552.',
+                        ),
+                      ],
+                    ),
+                  ),
                 ],
               ]),
             ),
@@ -4931,6 +4958,26 @@ class _ResultTile extends StatelessWidget {
           Text(note!, style: TextStyle(fontSize: 10, fontWeight: FontWeight.w700, color: noteColor, height: 1.3)),
         ],
       ]),
+    );
+  }
+}
+
+// Linha de referência bibliográfica dentro do card de resultado da infusão
+class _RefLine extends StatelessWidget {
+  final String text;
+  const _RefLine({required this.text});
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      text,
+      style: TextStyle(
+        fontSize: 9,
+        fontWeight: FontWeight.w400,
+        color: Colors.white.withValues(alpha: 0.48),
+        fontStyle: FontStyle.italic,
+        height: 1.5,
+      ),
     );
   }
 }
