@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/app_provider.dart';
+import '../data/evidence_database.dart';
 import '../widgets/common_widgets.dart';
 import '../services/drug_interaction_service.dart';
 import '../data/drugs_database.dart';
@@ -240,7 +241,21 @@ class _DrugInteractionsScreenState extends State<DrugInteractionsScreen> {
                           dark: dark,
                           onTap: _reset,
                         ),
+                        const SizedBox(height: 16),
+                        // ── Evidencia por fármaco ─────────────────────────
+                        ..._selectedDrugs.map((drugName) {
+                          final ev = getGlobalEvidence(drugName);
+                          if (ev == null) return const SizedBox.shrink();
+                          return Padding(
+                            padding: const EdgeInsets.only(bottom: 10),
+                            child: EvidenceCardWidget(ev: ev, compact: true),
+                          );
+                        }),
                       ],
+                      // ── Aviso regulatorio siempre visible ───────────────
+                      const SizedBox(height: 12),
+                      const PharmacologicalDisclaimer(),
+                      const SizedBox(height: 24),
                     ],
                   ),
                 ),

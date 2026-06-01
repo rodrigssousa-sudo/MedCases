@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '../providers/app_provider.dart';
+import '../data/evidence_database.dart';
 import '../widgets/common_widgets.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -90,7 +91,12 @@ class _PrescripcionesScreenState extends State<PrescripcionesScreen> {
           ),
         ]),
       ),
-      const SizedBox(height: 12),
+      // ── Aviso regulatorio Apple 1.4.1 ────────────────────────────────────
+      const Padding(
+        padding: EdgeInsets.fromLTRB(16, 4, 16, 0),
+        child: PharmacologicalDisclaimer(),
+      ),
+      const SizedBox(height: 8),
 
       // ── Lista de modelos ─────────────────────────────────────────────────
       Expanded(
@@ -7539,6 +7545,19 @@ class _PrescriptionCardState extends State<_PrescriptionCard> {
                 ),
               ),
               const SizedBox(height: 10),
+              // ── Evidencia farmacológica (base global) ────────────────────
+              Builder(builder: (ctx) {
+                final globalEv = getGlobalEvidence(widget.model.title);
+                if (globalEv != null) {
+                  return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                    EvidenceBadgesRow(ev: globalEv, compact: true),
+                    const SizedBox(height: 8),
+                    EvidenceCardWidget(ev: globalEv),
+                    const SizedBox(height: 10),
+                  ]);
+                }
+                return const SizedBox.shrink();
+              }),
               // Botão copiar expandido
               SizedBox(
                 width: double.infinity,

@@ -891,3 +891,489 @@ class _DrugSuggestionsDropdown extends StatelessWidget {
     );
   }
 }
+
+// ─────────────────────────────────────────────────────────────────────────────
+// IMPORTS ADICIONALES para widgets de evidencia
+// ─────────────────────────────────────────────────────────────────────────────
+// (DrugEvidenceModel ya importado desde drug_model.dart arriba)
+
+// ═════════════════════════════════════════════════════════════════════════════
+// EVIDENCE BADGES ROW — fila compacta de badges de calidad
+// Uso: EvidenceBadgesRow(ev: evidenceModel)
+// ═════════════════════════════════════════════════════════════════════════════
+class EvidenceBadgesRow extends StatelessWidget {
+  final DrugEvidenceModel ev;
+  final bool compact;
+  const EvidenceBadgesRow({super.key, required this.ev, this.compact = false});
+
+  @override
+  Widget build(BuildContext context) {
+    final c    = AppColors.of(context);
+    final dark = c.dark;
+    final badges = <_EvBadge>[
+      _EvBadge('✓ Revisado',            const Color(0xFF059669)),
+      _EvBadge('✓ Actualizado',         const Color(0xFF0EA5E9)),
+      _EvBadge('✓ Basado en Evidencias', const Color(0xFF8B5CF6)),
+      _EvBadge('✓ Fuente Verificada',   const Color(0xFFF59E0B)),
+    ];
+
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        children: badges.map((b) => Padding(
+          padding: const EdgeInsets.only(right: 6),
+          child: Container(
+            padding: EdgeInsets.symmetric(
+              horizontal: compact ? 7 : 9,
+              vertical:   compact ? 3 : 4,
+            ),
+            decoration: BoxDecoration(
+              color:        b.color.withValues(alpha: dark ? 0.15 : 0.09),
+              borderRadius: BorderRadius.circular(6),
+              border:       Border.all(color: b.color.withValues(alpha: 0.30)),
+            ),
+            child: Text(b.label,
+              style: TextStyle(
+                fontSize:   compact ? 9.0 : 10.0,
+                fontWeight: FontWeight.w700,
+                color:      b.color,
+                letterSpacing: 0.1,
+              ),
+            ),
+          ),
+        )).toList(),
+      ),
+    );
+  }
+}
+
+class _EvBadge {
+  final String label;
+  final Color  color;
+  const _EvBadge(this.label, this.color);
+}
+
+// ═════════════════════════════════════════════════════════════════════════════
+// EVIDENCE CARD WIDGET — tarjeta completa de evidencia farmacológica
+// Uso: EvidenceCardWidget(ev: evidenceModel)
+//      EvidenceCardWidget(ev: evidenceModel, compact: true)
+// ═════════════════════════════════════════════════════════════════════════════
+class EvidenceCardWidget extends StatefulWidget {
+  final DrugEvidenceModel ev;
+  final bool compact;
+  const EvidenceCardWidget({super.key, required this.ev, this.compact = false});
+
+  @override
+  State<EvidenceCardWidget> createState() => _EvidenceCardWidgetState();
+}
+
+class _EvidenceCardWidgetState extends State<EvidenceCardWidget> {
+  bool _refsExpanded  = false;
+  bool _linksExpanded = false;
+
+  Color _typeColor(String type) {
+    switch (type) {
+      case 'Directriz':      return const Color(0xFF059669);
+      case 'Base de Datos':  return const Color(0xFF0EA5E9);
+      case 'Estudio':        return const Color(0xFF8B5CF6);
+      case 'Libro-Texto':    return const Color(0xFFF59E0B);
+      case 'Protocolo':      return const Color(0xFF06B6D4);
+      case 'FDA Label':      return const Color(0xFFDC2626);
+      default:               return const Color(0xFF6B7280);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final c    = AppColors.of(context);
+    final dark = c.dark;
+    final ev   = widget.ev;
+
+    return Container(
+      decoration: BoxDecoration(
+        color:        c.cardBg,
+        borderRadius: BorderRadius.circular(16),
+        border:       Border.all(color: c.border),
+      ),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+
+        // ── Header con metadatos ─────────────────────────────────────────────
+        Container(
+          padding: const EdgeInsets.all(14),
+          decoration: BoxDecoration(
+            color: c.surface,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(15)),
+            border: Border(bottom: BorderSide(color: c.border)),
+          ),
+          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+
+            // Título + ícono
+            Row(children: [
+              const Icon(Icons.verified_rounded, size: 13, color: Color(0xFF059669)),
+              const SizedBox(width: 7),
+              Expanded(
+                child: Text('EVIDENCIA CIENTÍFICA',
+                  style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w900,
+                    letterSpacing: 1.4, color: c.textPrimary)),
+              ),
+              // ATC code badge si disponible
+              if (ev.atcCode != null)
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF059669).withValues(alpha: 0.10),
+                    borderRadius: BorderRadius.circular(5),
+                    border: Border.all(color: const Color(0xFF059669).withValues(alpha: 0.25)),
+                  ),
+                  child: Text('ATC: ${ev.atcCode}',
+                    style: const TextStyle(fontSize: 8.5, fontWeight: FontWeight.w800,
+                      color: Color(0xFF059669), letterSpacing: 0.3)),
+                ),
+            ]),
+
+            const SizedBox(height: 10),
+
+            // Chips de metadatos
+            Wrap(spacing: 8, runSpacing: 6, children: [
+              _EvMetaChip(
+                label: 'Fuente Principal',
+                value: ev.primarySource,
+                color: const Color(0xFF059669), c: c,
+              ),
+              _EvMetaChip(
+                label: 'Directriz Utilizada',
+                value: ev.guidelineSource,
+                color: const Color(0xFF0EA5E9), c: c,
+              ),
+              _EvMetaChip(
+                label: 'Nivel de Evidencia',
+                value: ev.evidenceLevel,
+                color: const Color(0xFF8B5CF6), c: c,
+              ),
+              _EvMetaChip(
+                label: 'Recomendación',
+                value: ev.recommendation,
+                color: const Color(0xFF06B6D4), c: c,
+              ),
+              _EvMetaChip(
+                label: 'Última Revisión',
+                value: ev.lastReviewed,
+                color: const Color(0xFFF59E0B), c: c,
+              ),
+              _EvMetaChip(
+                label: 'Estado',
+                value: ev.reviewStatus,
+                color: const Color(0xFF059669), c: c,
+              ),
+            ]),
+
+            const SizedBox(height: 10),
+            // Badges de calidad
+            EvidenceBadgesRow(ev: ev, compact: true),
+          ]),
+        ),
+
+        // ── Referencias bibliográficas colapsibles ──────────────────────────
+        if (ev.references.isNotEmpty) ...[
+          Material(
+            color: Colors.transparent,
+            child: InkWell(
+              onTap: () => setState(() => _refsExpanded = !_refsExpanded),
+              borderRadius: const BorderRadius.all(Radius.circular(0)),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 11),
+                child: Row(children: [
+                  Icon(Icons.menu_book_rounded, size: 13,
+                    color: dark ? const Color(0xFFFFE8A6) : const Color(0xFF075f45)),
+                  const SizedBox(width: 7),
+                  Expanded(
+                    child: Text('REFERENCIAS BIBLIOGRÁFICAS (${ev.references.length})',
+                      style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w900,
+                        letterSpacing: 1.1, color: c.textPrimary)),
+                  ),
+                  AnimatedRotation(
+                    turns: _refsExpanded ? 0.5 : 0.0,
+                    duration: const Duration(milliseconds: 200),
+                    child: Icon(Icons.keyboard_arrow_down_rounded,
+                      size: 18, color: c.textHint),
+                  ),
+                ]),
+              ),
+            ),
+          ),
+          Container(height: 1, color: c.border),
+          AnimatedCrossFade(
+            duration: const Duration(milliseconds: 220),
+            crossFadeState: _refsExpanded
+                ? CrossFadeState.showFirst
+                : CrossFadeState.showSecond,
+            firstChild: Padding(
+              padding: const EdgeInsets.fromLTRB(14, 10, 14, 4),
+              child: Column(
+                children: ev.references.map((ref) =>
+                  _EvRefRow(ref: ref, typeColor: _typeColor(ref.type), c: c)
+                ).toList(),
+              ),
+            ),
+            secondChild: const SizedBox(width: double.infinity),
+          ),
+        ],
+
+        // ── Links oficiales colapsibles ──────────────────────────────────────
+        if (ev.links.isNotEmpty) ...[
+          Container(height: 1, color: c.border),
+          Material(
+            color: Colors.transparent,
+            child: InkWell(
+              onTap: () => setState(() => _linksExpanded = !_linksExpanded),
+              borderRadius: const BorderRadius.vertical(bottom: Radius.circular(15)),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 11),
+                child: Row(children: [
+                  Icon(Icons.link_rounded, size: 13,
+                    color: dark ? const Color(0xFFFFE8A6) : const Color(0xFF075f45)),
+                  const SizedBox(width: 7),
+                  Expanded(
+                    child: Text('DOCUMENTOS OFICIALES (${ev.links.length})',
+                      style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w900,
+                        letterSpacing: 1.1, color: c.textPrimary)),
+                  ),
+                  AnimatedRotation(
+                    turns: _linksExpanded ? 0.5 : 0.0,
+                    duration: const Duration(milliseconds: 200),
+                    child: Icon(Icons.keyboard_arrow_down_rounded,
+                      size: 18, color: c.textHint),
+                  ),
+                ]),
+              ),
+            ),
+          ),
+          AnimatedCrossFade(
+            duration: const Duration(milliseconds: 220),
+            crossFadeState: _linksExpanded
+                ? CrossFadeState.showFirst
+                : CrossFadeState.showSecond,
+            firstChild: Container(
+              padding: const EdgeInsets.fromLTRB(14, 0, 14, 14),
+              decoration: BoxDecoration(
+                border: Border(top: BorderSide(color: c.border)),
+                borderRadius: const BorderRadius.vertical(
+                    bottom: Radius.circular(15)),
+              ),
+              child: Column(children: [
+                const SizedBox(height: 10),
+                ...ev.links.map((link) => Padding(
+                  padding: const EdgeInsets.only(bottom: 7),
+                  child: Material(
+                    color: const Color(0xFF0EA5E9).withValues(alpha: 0.06),
+                    borderRadius: BorderRadius.circular(10),
+                    child: InkWell(
+                      onTap: () {},
+                      borderRadius: BorderRadius.circular(10),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 12, vertical: 11),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          border: Border.all(
+                            color: const Color(0xFF0EA5E9).withValues(alpha: 0.20)),
+                        ),
+                        child: Row(children: [
+                          Icon(link.icon, size: 14,
+                            color: const Color(0xFF0EA5E9)),
+                          const SizedBox(width: 10),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(link.label,
+                                  style: const TextStyle(fontSize: 11,
+                                    fontWeight: FontWeight.w800,
+                                    color: Color(0xFF0EA5E9))),
+                                if (link.org.isNotEmpty && link.org != 'Other')
+                                  Text(link.org,
+                                    style: TextStyle(fontSize: 9,
+                                      fontWeight: FontWeight.w600,
+                                      color: c.textHint)),
+                              ],
+                            ),
+                          ),
+                          Icon(Icons.open_in_new_rounded, size: 12,
+                            color: const Color(0xFF0EA5E9).withValues(alpha: 0.7)),
+                        ]),
+                      ),
+                    ),
+                  ),
+                )),
+              ]),
+            ),
+            secondChild: const SizedBox(width: double.infinity),
+          ),
+        ],
+
+      ]),
+    );
+  }
+}
+
+class _EvMetaChip extends StatelessWidget {
+  final String label, value;
+  final Color color;
+  final AppColors c;
+  const _EvMetaChip({
+    required this.label, required this.value,
+    required this.color, required this.c,
+  });
+  @override
+  Widget build(BuildContext context) => Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Text(label.toUpperCase(),
+        style: TextStyle(fontSize: 7.5, fontWeight: FontWeight.w800,
+          letterSpacing: 0.8, color: c.textHint)),
+      const SizedBox(height: 2),
+      Container(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+        decoration: BoxDecoration(
+          color:        color.withValues(alpha: 0.10),
+          borderRadius: BorderRadius.circular(6),
+          border:       Border.all(color: color.withValues(alpha: 0.22)),
+        ),
+        child: Text(value,
+          style: TextStyle(fontSize: 10, fontWeight: FontWeight.w800, color: color)),
+      ),
+    ],
+  );
+}
+
+class _EvRefRow extends StatelessWidget {
+  final DrugEvidenceRef ref;
+  final Color typeColor;
+  final AppColors c;
+  const _EvRefRow({
+    required this.ref, required this.typeColor, required this.c,
+  });
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 8),
+      padding: const EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        color:        c.surface,
+        borderRadius: BorderRadius.circular(10),
+        border:       Border.all(color: c.border),
+      ),
+      child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        // Número
+        Container(
+          width: 22, height: 22,
+          decoration: BoxDecoration(
+            color:  typeColor.withValues(alpha: 0.12),
+            shape:  BoxShape.circle,
+            border: Border.all(color: typeColor.withValues(alpha: 0.35)),
+          ),
+          child: Center(
+            child: Text('${ref.num}',
+              style: TextStyle(fontSize: 10, fontWeight: FontWeight.w900,
+                color: typeColor)),
+          ),
+        ),
+        const SizedBox(width: 10),
+        Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Row(children: [
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+              decoration: BoxDecoration(
+                color:        typeColor.withValues(alpha: 0.12),
+                borderRadius: BorderRadius.circular(4),
+              ),
+              child: Text(ref.type.toUpperCase(),
+                style: TextStyle(fontSize: 7.5, fontWeight: FontWeight.w900,
+                  letterSpacing: 0.6, color: typeColor)),
+            ),
+            const SizedBox(width: 6),
+            Text(ref.year,
+              style: TextStyle(fontSize: 9, fontWeight: FontWeight.w700,
+                color: c.textHint)),
+          ]),
+          const SizedBox(height: 3),
+          Text(ref.title,
+            style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700,
+              color: c.textPrimary)),
+          const SizedBox(height: 1),
+          Text(ref.source,
+            style: TextStyle(fontSize: 10.5, fontWeight: FontWeight.w500,
+              color: c.textSecondary)),
+          if (ref.doi != null) ...[
+            const SizedBox(height: 2),
+            Text('DOI: ${ref.doi}',
+              style: const TextStyle(fontSize: 9, fontWeight: FontWeight.w500,
+                color: Color(0xFF0EA5E9))),
+          ],
+        ])),
+      ]),
+    );
+  }
+}
+
+// ═════════════════════════════════════════════════════════════════════════════
+// PHARMACOLOGICAL DISCLAIMER — aviso regulatorio Apple 1.4.1/1.4.2
+// Uso: PharmacologicalDisclaimer()
+//      PharmacologicalDisclaimer(customText: '...')
+// ═════════════════════════════════════════════════════════════════════════════
+class PharmacologicalDisclaimer extends StatelessWidget {
+  final String? customText;
+  const PharmacologicalDisclaimer({super.key, this.customText});
+
+  static const _defaultText =
+      'La información farmacológica presentada tiene carácter exclusivamente '
+      'educativo y de referencia clínica. No sustituye el criterio médico '
+      'profesional, la evaluación clínica individualizada ni las recomendaciones '
+      'de las guías institucionales vigentes. Las dosis, indicaciones y '
+      'contraindicaciones deben verificarse siempre en fuentes actualizadas '
+      '(Micromedex, Lexicomp, FDA, AHA, ESC) antes de cualquier decisión '
+      'terapéutica. El uso clínico es responsabilidad exclusiva del profesional '
+      'de salud. • Apple App Store Guideline 1.4.1 / 1.4.2 Compliance';
+
+  @override
+  Widget build(BuildContext context) {
+    final c    = AppColors.of(context);
+    final dark = c.dark;
+
+    return Container(
+      margin:  const EdgeInsets.symmetric(horizontal: 0, vertical: 8),
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: dark
+            ? const Color(0xFF1A1A1A)
+            : const Color(0xFFF8F8F2),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: dark
+              ? const Color(0xFF333333)
+              : const Color(0xFFD1D5DB),
+        ),
+      ),
+      child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Icon(
+          Icons.info_outline_rounded,
+          size: 14,
+          color: dark ? const Color(0xFF9CA3AF) : const Color(0xFF6B7280),
+        ),
+        const SizedBox(width: 9),
+        Expanded(
+          child: Text(
+            customText ?? _defaultText,
+            style: TextStyle(
+              fontSize: 9.5,
+              fontWeight: FontWeight.w500,
+              color: dark ? const Color(0xFF9CA3AF) : const Color(0xFF6B7280),
+              height: 1.55,
+              letterSpacing: 0.1,
+            ),
+          ),
+        ),
+      ]),
+    );
+  }
+}

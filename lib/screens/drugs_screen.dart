@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '../providers/app_provider.dart';
 import '../models/drug_model.dart';
+import '../data/evidence_database.dart';
 import '../services/drug_interaction_service.dart';
 import '../widgets/common_widgets.dart';
 import '../services/activity_service.dart';
@@ -1057,7 +1058,7 @@ const Map<String, _DrugEvidence> _kDrugEvidenceDB = {
   ),
 };
 
-/// Retorna evidência do banco para um fármaco, buscando por nome normalizado.
+/// Retorna evidência local (dosage tables, etc.) para um fármaco.
 _DrugEvidence? _getEvidence(String drugName) {
   final key = drugName.toLowerCase()
     .replaceAll('é', 'e').replaceAll('á', 'a').replaceAll('ó', 'o')
@@ -1100,15 +1101,12 @@ class _DrugDetailViewState extends State<_DrugDetailView>
   // ── Tab clínica ────────────────────────────────────────────────────────────
   late TabController _tabCtrl;
   static const _tabs = [
-    'Informação Clínica',
+    'Información Clínica',
     'Uso Clínico',
-    'Efeitos Adversos',
-    'Contraindicações',
+    'Efectos Adversos',
+    'Contraindicaciones',
     'Farmacocinética',
   ];
-
-  // ── Panels expansíveis ─────────────────────────────────────────────────────
-  bool _linksExpanded = false;
 
   @override
   void initState() {
@@ -1206,6 +1204,8 @@ class _DrugDetailViewState extends State<_DrugDetailView>
     final dark   = p.darkMode;
     final c      = AppColors.of(context);
     final ev     = _getEvidence(drug.name);
+    // Evidencia global (base de datos unificada — 30+ fármacos en Español)
+    final globalEv = getGlobalEvidence(drug.name);
 
     return SingleChildScrollView(
       controller: widget.scrollController,
@@ -1217,6 +1217,7 @@ class _DrugDetailViewState extends State<_DrugDetailView>
         // ═══════════════════════════════════════════════════════════════════
         _ClinicalHeader(
           drug: drug, p: p, isFav: isFav, c: c, dark: dark, ev: ev,
+          globalEv: globalEv,
           onBack: widget.onBack,
           onFav: () { HapticFeedback.mediumImpact(); p.toggleFavDrug(drug.id); },
           onCockpit: () { HapticFeedback.mediumImpact(); p.setActiveDrug(drug.id); },
@@ -1232,7 +1233,7 @@ class _DrugDetailViewState extends State<_DrugDetailView>
             padding: const EdgeInsets.symmetric(horizontal: 14),
             child: _DrugSectionTitle(
               icon: Icons.medication_liquid_outlined,
-              label: 'DOSES RECOMENDADAS',
+              label: 'DOSIS RECOMENDADAS',
               c: c, dark: dark,
             ),
           ),
@@ -1251,7 +1252,7 @@ class _DrugDetailViewState extends State<_DrugDetailView>
           padding: const EdgeInsets.symmetric(horizontal: 14),
           child: _DrugSectionTitle(
             icon: Icons.calculate_outlined,
-            label: 'CALCULADORA DE DOSE',
+            label: 'CALCULADORA DE DOSIS',
             c: c, dark: dark,
           ),
         ),
@@ -1276,7 +1277,7 @@ class _DrugDetailViewState extends State<_DrugDetailView>
           padding: const EdgeInsets.symmetric(horizontal: 14),
           child: _DrugSectionTitle(
             icon: Icons.fact_check_outlined,
-            label: 'INFORMAÇÃO CLÍNICA',
+            label: 'INFORMACIÓN CLÍNICA',
             c: c, dark: dark,
           ),
         ),
@@ -1285,41 +1286,32 @@ class _DrugDetailViewState extends State<_DrugDetailView>
           padding: const EdgeInsets.symmetric(horizontal: 14),
           child: _ClinicalTabCard(
             drug: drug, p: p, c: c, dark: dark, ev: ev,
+            globalEv: globalEv,
             tabCtrl: _tabCtrl, tabs: _tabs,
           ),
         ),
         const SizedBox(height: 16),
 
         // ═══════════════════════════════════════════════════════════════════
-        // 5. EVIDÊNCIA E REFERÊNCIAS (painel direito Amboss-style)
+        // 5. EVIDENCIA Y REFERENCIAS — tarjeta global (base unificada)
         // ═══════════════════════════════════════════════════════════════════
-        if (ev != null) ...[
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 14),
-            child: _DrugSectionTitle(
-              icon: Icons.library_books_outlined,
-              label: 'REFERÊNCIAS E EVIDÊNCIA',
-              c: c, dark: dark,
-            ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 14),
+          child: _DrugSectionTitle(
+            icon: Icons.library_books_outlined,
+            label: 'EVIDENCIA Y REFERENCIAS CIENTÍFICAS',
+            c: c, dark: dark,
           ),
-          const SizedBox(height: 8),
+        ),
+        const SizedBox(height: 8),
+        if (globalEv != null) ...[
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 14),
-            child: _EvidencePanelCard(ev: ev, c: c, dark: dark),
-          ),
-          const SizedBox(height: 8),
-          // ── Links oficiais colapsíveis ──────────────────────────────────
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 14),
-            child: _OfficialLinksCard(
-              ev: ev, c: c, dark: dark,
-              expanded: _linksExpanded,
-              onToggle: () => setState(() => _linksExpanded = !_linksExpanded),
-            ),
+            child: EvidenceCardWidget(ev: globalEv),
           ),
           const SizedBox(height: 16),
         ] else ...[
-          // Fallback sem dados no banco
+          // Fallback cuando no hay datos en la base global
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 14),
             child: _GenericReferencesCard(c: c, dark: dark),
@@ -1328,11 +1320,11 @@ class _DrugDetailViewState extends State<_DrugDetailView>
         ],
 
         // ═══════════════════════════════════════════════════════════════════
-        // 6. AVISO REGULATÓRIO — Apple 1.4.1 compliance
+        // 6. AVISO REGULATORIO — Apple 1.4.1 / 1.4.2 compliance
         // ═══════════════════════════════════════════════════════════════════
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 14),
-          child: _RegulatoryDisclaimerCard(c: c, dark: dark, p: p),
+          child: const PharmacologicalDisclaimer(),
         ),
         const SizedBox(height: 24),
       ]),
@@ -1350,6 +1342,7 @@ class _ClinicalHeader extends StatelessWidget {
   final AppColors c;
   final bool dark;
   final _DrugEvidence? ev;
+  final DrugEvidenceModel? globalEv;
   final VoidCallback onBack;
   final VoidCallback onFav;
   final VoidCallback onCockpit;
@@ -1357,6 +1350,7 @@ class _ClinicalHeader extends StatelessWidget {
   const _ClinicalHeader({
     required this.drug, required this.p, required this.isFav,
     required this.c, required this.dark, required this.ev,
+    this.globalEv,
     required this.onBack, required this.onFav, required this.onCockpit,
   });
 
@@ -1523,7 +1517,7 @@ class _ClinicalHeader extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 14),
           child: Row(children: [
-            if (ev?.atcCode.isNotEmpty == true) ...[
+            if ((globalEv?.atcCode ?? ev?.atcCode ?? '').isNotEmpty) ...[
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 4),
                 decoration: BoxDecoration(
@@ -1531,13 +1525,13 @@ class _ClinicalHeader extends StatelessWidget {
                   borderRadius: BorderRadius.circular(6),
                   border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
                 ),
-                child: Text('Código ATC: ${ev!.atcCode}',
+                child: Text('ATC: ${globalEv?.atcCode ?? ev?.atcCode}',
                   style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w600,
                     color: Colors.white.withValues(alpha: 0.5))),
               ),
               const SizedBox(width: 8),
             ],
-            // Via de administração
+            // Via de administración
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 4),
               decoration: BoxDecoration(
@@ -1545,7 +1539,7 @@ class _ClinicalHeader extends StatelessWidget {
                 borderRadius: BorderRadius.circular(6),
                 border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
               ),
-              child: Text('Via: ${drug.route}',
+              child: Text('Vía: ${drug.route}',
                 style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w600,
                   color: Colors.white.withValues(alpha: 0.5))),
             ),
@@ -1554,18 +1548,19 @@ class _ClinicalHeader extends StatelessWidget {
 
         const SizedBox(height: 14),
 
-        // ── Badges: Adulto / Pediatria / Emergência / UTI ───────────────────
-        if (ev != null) Padding(
+        // ── Badges: Adulto / Pediatría / Emergencia / UCI ───────────────────
+        if ((globalEv?.contextBadges ?? ev?.badges ?? []).isNotEmpty) Padding(
           padding: const EdgeInsets.symmetric(horizontal: 14),
           child: Wrap(spacing: 6, runSpacing: 6, children: [
-            ...ev!.badges.map((b) => _ContextBadge(label: b)),
+            ...(globalEv?.contextBadges ?? ev?.badges ?? [])
+                .map((b) => _ContextBadge(label: b)),
           ]),
         ),
 
         const SizedBox(height: 12),
 
-        // ── Linha: Evidência status ─────────────────────────────────────────
-        if (ev != null)
+        // ── Línea: Estado de evidencia ──────────────────────────────────────
+        if (globalEv != null || ev != null)
           Container(
             margin: const EdgeInsets.symmetric(horizontal: 14),
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
@@ -1579,7 +1574,9 @@ class _ClinicalHeader extends StatelessWidget {
               const SizedBox(width: 8),
               Expanded(
                 child: Text(
-                  'Conteúdo Baseado em Evidências  ·  ${ev!.guidelineSource}  ·  Atualizado ${ev!.lastReviewed}',
+                  'Contenido Basado en Evidencias  ·  '
+                  '${globalEv?.guidelineSource ?? ev?.guidelineSource ?? '—'}'
+                  '  ·  Actualizado ${globalEv?.lastReviewed ?? ev?.lastReviewed ?? '—'}',
                   style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w700,
                     color: Color(0xFF86EFAC)),
                 ),
@@ -1799,7 +1796,7 @@ class _DoseCalculatorCard extends StatelessWidget {
           child: Row(children: [
             const Icon(Icons.person_outline_rounded, size: 15, color: Color(0xFF075f45)),
             const SizedBox(width: 8),
-            Text('DADOS DO PACIENTE',
+            Text('DATOS DEL PACIENTE',
               style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w900,
                 letterSpacing: 1.4, color: c.textPrimary)),
           ]),
@@ -1886,7 +1883,7 @@ class _DoseCalculatorCard extends StatelessWidget {
                     color: const Color(0xFFFFE8A6).withValues(alpha: 0.18),
                     borderRadius: BorderRadius.circular(4),
                   ),
-                  child: const Text('DOSE CALCULADA',
+                  child: const Text('DOSIS CALCULADA',
                     style: TextStyle(fontSize: 8.5, fontWeight: FontWeight.w900,
                       color: Color(0xFFFFE8A6), letterSpacing: 1.8)),
                 ),
@@ -1919,12 +1916,14 @@ class _ClinicalTabCard extends StatelessWidget {
   final AppColors c;
   final bool dark;
   final _DrugEvidence? ev;
+  final DrugEvidenceModel? globalEv;
   final TabController tabCtrl;
   final List<String> tabs;
 
   const _ClinicalTabCard({
     required this.drug, required this.p, required this.c,
     required this.dark, required this.ev,
+    this.globalEv,
     required this.tabCtrl, required this.tabs,
   });
 
@@ -1962,26 +1961,26 @@ class _ClinicalTabCard extends StatelessWidget {
           ),
         ),
 
-        // ── Conteúdo das tabs ───────────────────────────────────────────────
+        // ── Contenido de las tabs ───────────────────────────────────────────
         SizedBox(
-          height: 260,
+          height: 280,
           child: TabBarView(
             controller: tabCtrl,
             physics: const ClampingScrollPhysics(),
             children: [
 
-              // TAB 0: Informação Clínica
+              // TAB 0: Información Clínica
               _TabContent(children: [
                 _ClinInfoBlock(
                   icon: Icons.memory_outlined,
-                  title: p.t('mechanism'),
+                  title: 'MECANISMO DE ACCIÓN',
                   content: p.tDB(drug.mechanism),
                   color: const Color(0xFF059669), c: c,
                 ),
                 const SizedBox(height: 10),
                 _ClinInfoBlock(
                   icon: Icons.warning_amber_rounded,
-                  title: p.t('warning'),
+                  title: 'ADVERTENCIAS',
                   content: p.tDB(drug.warning),
                   color: const Color(0xFFF59E0B), c: c,
                 ),
@@ -1989,87 +1988,89 @@ class _ClinicalTabCard extends StatelessWidget {
                 if (ev?.renalAdjustment != null)
                   _ClinInfoBlock(
                     icon: Icons.water_drop_outlined,
-                    title: p.t('renal_alert'),
+                    title: 'AJUSTE RENAL',
                     content: ev!.renalAdjustment!,
                     color: const Color(0xFF0EA5E9), c: c,
                   )
                 else
                   _ClinInfoBlock(
                     icon: Icons.water_drop_outlined,
-                    title: p.t('renal_alert'),
+                    title: 'AJUSTE RENAL',
                     content: p.tDB(drug.renalAlert),
                     color: const Color(0xFF0EA5E9), c: c,
                   ),
                 const SizedBox(height: 10),
                 _ClinInfoBlock(
                   icon: Icons.elderly_outlined,
-                  title: p.t('elderly_alert'),
+                  title: 'PACIENTE ANCIANO',
                   content: p.tDB(drug.elderlyAlert),
                   color: const Color(0xFF8B5CF6), c: c,
                 ),
               ]),
 
-              // TAB 1: Uso Clínico (indicações)
+              // TAB 1: Uso Clínico (indicaciones)
               _TabContent(children: [
-                if (ev?.indications.isNotEmpty == true) ...[
+                if ((globalEv?.indications ?? ev?.indications ?? []).isNotEmpty) ...[
                   _ClinListBlock(
                     icon: Icons.check_circle_outline_rounded,
-                    title: 'INDICAÇÕES PRINCIPAIS',
-                    items: ev!.indications,
+                    title: 'INDICACIONES PRINCIPALES',
+                    items: (globalEv?.indications ?? ev!.indications),
                     color: const Color(0xFF059669), c: c,
                   ),
                 ] else
-                  _EmptyTabMsg(msg: 'Indicações não disponíveis para este fármaco.', c: c),
+                  _EmptyTabMsg(msg: 'Indicaciones no disponibles para este fármaco.', c: c),
               ]),
 
-              // TAB 2: Efeitos Adversos
+              // TAB 2: Efectos Adversos
               _TabContent(children: [
-                if (ev?.sideEffects.isNotEmpty == true) ...[
+                if ((globalEv?.sideEffects ?? ev?.sideEffects ?? []).isNotEmpty) ...[
                   _ClinChipBlock(
                     icon: Icons.report_problem_outlined,
-                    title: 'EFEITOS ADVERSOS',
-                    items: ev!.sideEffects,
+                    title: 'EFECTOS ADVERSOS',
+                    items: (globalEv?.sideEffects ?? ev!.sideEffects),
                     color: const Color(0xFFDC2626), c: c, dark: dark,
                   ),
                 ] else if (adverse.isNotEmpty) ...[
                   _ClinChipBlock(
                     icon: Icons.report_problem_outlined,
-                    title: 'EFEITOS ADVERSOS',
+                    title: 'EFECTOS ADVERSOS',
                     items: adverse,
                     color: const Color(0xFFDC2626), c: c, dark: dark,
                   ),
                 ] else
-                  _EmptyTabMsg(msg: 'Dados de efeitos adversos não disponíveis.', c: c),
+                  _EmptyTabMsg(msg: 'Datos de efectos adversos no disponibles.', c: c),
               ]),
 
-              // TAB 3: Contraindicações
+              // TAB 3: Contraindicaciones
               _TabContent(children: [
-                if (ev?.contraindications.isNotEmpty == true) ...[
+                if ((globalEv?.contraindications ?? ev?.contraindications ?? []).isNotEmpty) ...[
                   _ClinListBlock(
                     icon: Icons.block_rounded,
-                    title: 'CONTRAINDICAÇÕES',
-                    items: ev!.contraindications,
+                    title: 'CONTRAINDICACIONES',
+                    items: (globalEv?.contraindications ?? ev!.contraindications),
                     color: const Color(0xFFDC2626), c: c,
                   ),
-                  if (ev?.interactions.isNotEmpty == true) ...[
+                  if ((globalEv?.interactions ?? ev?.interactions ?? []).isNotEmpty) ...[
                     const SizedBox(height: 14),
                     _ClinListBlock(
                       icon: Icons.swap_horiz_rounded,
-                      title: 'INTERAÇÕES IMPORTANTES',
-                      items: ev!.interactions,
+                      title: 'INTERACCIONES IMPORTANTES',
+                      items: (globalEv?.interactions ?? ev!.interactions),
                       color: const Color(0xFFF59E0B), c: c,
                     ),
                   ],
                 ] else
-                  _EmptyTabMsg(msg: 'Dados de contraindicações não disponíveis.', c: c),
+                  _EmptyTabMsg(msg: 'Datos de contraindicaciones no disponibles.', c: c),
               ]),
 
               // TAB 4: Farmacocinética
               _TabContent(children: [
-                if (ev != null) ...[
+                if (globalEv != null) ...[
+                  _PKGridGlobal(ev: globalEv!, c: c, dark: dark),
+                ] else if (ev != null) ...[
                   _PKGrid(ev: ev!, c: c, dark: dark),
                 ] else
-                  _EmptyTabMsg(msg: 'Dados farmacocinéticos não disponíveis.', c: c),
+                  _EmptyTabMsg(msg: 'Datos farmacocinéticos no disponibles.', c: c),
               ]),
             ],
           ),
@@ -2246,6 +2247,54 @@ class _PKGrid extends StatelessWidget {
   }
 }
 
+// PKGrid usando DrugEvidenceModel (base de datos global)
+class _PKGridGlobal extends StatelessWidget {
+  final DrugEvidenceModel ev;
+  final AppColors c;
+  final bool dark;
+  const _PKGridGlobal({required this.ev, required this.c, required this.dark});
+
+  @override
+  Widget build(BuildContext context) {
+    final items = <Map<String, String?>>[
+      {'label': 'Inicio de Acción', 'value': ev.pkOnset},
+      {'label': 'Duración',         'value': ev.pkDuration},
+      {'label': 'Vida Media (t½)',  'value': ev.pkHalfLife},
+      {'label': 'Eliminación',      'value': ev.pkElimination},
+      {'label': 'Unión Proteica',   'value': ev.pkProteinBinding},
+    ].where((e) => e['value'] != null).toList();
+
+    if (items.isEmpty) {
+      return _EmptyTabMsg(
+        msg: 'Datos farmacocinéticos no disponibles para este fármaco.', c: c);
+    }
+
+    return Wrap(
+      spacing: 8, runSpacing: 8,
+      children: items.map((item) => SizedBox(
+        width: (MediaQuery.of(context).size.width - 64) / 2,
+        child: Container(
+          padding: const EdgeInsets.all(10),
+          decoration: BoxDecoration(
+            color: c.surface,
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(color: c.border),
+          ),
+          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Text(item['label']!,
+              style: TextStyle(fontSize: 8.5, fontWeight: FontWeight.w800,
+                color: c.textHint, letterSpacing: 0.5)),
+            const SizedBox(height: 4),
+            Text(item['value']!,
+              style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.w700,
+                color: c.textPrimary, height: 1.35)),
+          ]),
+        ),
+      )).toList(),
+    );
+  }
+}
+
 class _EmptyTabMsg extends StatelessWidget {
   final String msg;
   final AppColors c;
@@ -2258,272 +2307,8 @@ class _EmptyTabMsg extends StatelessWidget {
   );
 }
 
-// ═════════════════════════════════════════════════════════════════════════════
-// PAINEL DE EVIDÊNCIA E REFERÊNCIAS (Amboss / UpToDate style)
-// ═════════════════════════════════════════════════════════════════════════════
-class _EvidencePanelCard extends StatelessWidget {
-  final _DrugEvidence ev;
-  final AppColors c;
-  final bool dark;
-  const _EvidencePanelCard({required this.ev, required this.c, required this.dark});
 
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: c.cardBg,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: c.border),
-      ),
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-
-        // ── Header com metadados ────────────────────────────────────────────
-        Container(
-          padding: const EdgeInsets.all(14),
-          decoration: BoxDecoration(
-            color: c.surface,
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(15)),
-            border: Border(bottom: BorderSide(color: c.border)),
-          ),
-          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Row(children: [
-              const Icon(Icons.verified_rounded, size: 13, color: Color(0xFF059669)),
-              const SizedBox(width: 7),
-              Text('EVIDÊNCIA CIENTÍFICA',
-                style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w900,
-                  letterSpacing: 1.4, color: c.textPrimary)),
-            ]),
-            const SizedBox(height: 10),
-            // Linha de metadados
-            Wrap(spacing: 8, runSpacing: 6, children: [
-              _EvidMetaChip(label: 'Fonte Principal', value: ev.guidelineSource,
-                color: const Color(0xFF059669), c: c),
-              _EvidMetaChip(label: 'Nível de Evidência', value: ev.evidenceLevel,
-                color: const Color(0xFF0EA5E9), c: c),
-              _EvidMetaChip(label: 'Força da Recomendação', value: ev.recommendation,
-                color: const Color(0xFF8B5CF6), c: c),
-              _EvidMetaChip(label: 'Última Atualização', value: ev.lastReviewed,
-                color: const Color(0xFFF59E0B), c: c),
-            ]),
-          ]),
-        ),
-
-        // ── Referências numeradas ───────────────────────────────────────────
-        Padding(
-          padding: const EdgeInsets.all(14),
-          child: Column(children: ev.references.map((ref) =>
-            _ReferenceRow(ref: ref, c: c, dark: dark),
-          ).toList()),
-        ),
-      ]),
-    );
-  }
-}
-
-class _EvidMetaChip extends StatelessWidget {
-  final String label, value;
-  final Color color;
-  final AppColors c;
-  const _EvidMetaChip({
-    required this.label, required this.value, required this.color, required this.c,
-  });
-  @override
-  Widget build(BuildContext context) {
-    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      Text(label.toUpperCase(),
-        style: TextStyle(fontSize: 7.5, fontWeight: FontWeight.w800,
-          letterSpacing: 0.8, color: c.textHint)),
-      const SizedBox(height: 2),
-      Container(
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-        decoration: BoxDecoration(
-          color: color.withValues(alpha: 0.1),
-          borderRadius: BorderRadius.circular(6),
-          border: Border.all(color: color.withValues(alpha: 0.2)),
-        ),
-        child: Text(value,
-          style: TextStyle(fontSize: 10, fontWeight: FontWeight.w800, color: color)),
-      ),
-    ]);
-  }
-}
-
-class _ReferenceRow extends StatelessWidget {
-  final _EvidenceRef ref;
-  final AppColors c;
-  final bool dark;
-  const _ReferenceRow({required this.ref, required this.c, required this.dark});
-
-  Color get _typeColor {
-    switch (ref.type) {
-      case 'Diretriz':    return const Color(0xFF059669);
-      case 'Base de Dados': return const Color(0xFF0EA5E9);
-      case 'Estudo':      return const Color(0xFF8B5CF6);
-      default:            return const Color(0xFFF59E0B);
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 8),
-      padding: const EdgeInsets.all(10),
-      decoration: BoxDecoration(
-        color: c.surface,
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: c.border),
-      ),
-      child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        // Número
-        Container(
-          width: 22, height: 22,
-          decoration: BoxDecoration(
-            color: _typeColor.withValues(alpha: 0.12),
-            shape: BoxShape.circle,
-            border: Border.all(color: _typeColor.withValues(alpha: 0.35)),
-          ),
-          child: Center(
-            child: Text('${ref.num}',
-              style: TextStyle(fontSize: 10, fontWeight: FontWeight.w900, color: _typeColor)),
-          ),
-        ),
-        const SizedBox(width: 10),
-        Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Row(children: [
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-              decoration: BoxDecoration(
-                color: _typeColor.withValues(alpha: 0.12),
-                borderRadius: BorderRadius.circular(4),
-              ),
-              child: Text(ref.type.toUpperCase(),
-                style: TextStyle(fontSize: 7.5, fontWeight: FontWeight.w900,
-                  letterSpacing: 0.6, color: _typeColor)),
-            ),
-            const SizedBox(width: 6),
-            Text(ref.year,
-              style: TextStyle(fontSize: 9, fontWeight: FontWeight.w700, color: c.textHint)),
-          ]),
-          const SizedBox(height: 3),
-          Text(ref.title,
-            style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: c.textPrimary)),
-          const SizedBox(height: 1),
-          Text(ref.source,
-            style: TextStyle(fontSize: 10.5, fontWeight: FontWeight.w500, color: c.textSecondary)),
-          if (ref.doi != null) ...[
-            const SizedBox(height: 2),
-            Text('DOI: ${ref.doi}',
-              style: const TextStyle(fontSize: 9, fontWeight: FontWeight.w500,
-                color: Color(0xFF0EA5E9))),
-          ],
-        ])),
-      ]),
-    );
-  }
-}
-
-// ═════════════════════════════════════════════════════════════════════════════
-// LINKS OFICIAIS COLAPSÍVEIS
-// ═════════════════════════════════════════════════════════════════════════════
-class _OfficialLinksCard extends StatelessWidget {
-  final _DrugEvidence ev;
-  final AppColors c;
-  final bool dark;
-  final bool expanded;
-  final VoidCallback onToggle;
-  const _OfficialLinksCard({
-    required this.ev, required this.c, required this.dark,
-    required this.expanded, required this.onToggle,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: c.cardBg,
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: c.border),
-      ),
-      child: Column(children: [
-        // Header colapsível
-        Material(
-          color: Colors.transparent,
-          borderRadius: BorderRadius.circular(13),
-          child: InkWell(
-            onTap: () { HapticFeedback.lightImpact(); onToggle(); },
-            borderRadius: BorderRadius.circular(13),
-            child: Padding(
-              padding: const EdgeInsets.all(13),
-              child: Row(children: [
-                Icon(Icons.link_rounded, size: 15,
-                  color: dark ? const Color(0xFFFFE8A6) : const Color(0xFF075f45)),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Text('DOCUMENTOS OFICIAIS',
-                    style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w900,
-                      letterSpacing: 1.4, color: c.textPrimary)),
-                ),
-                AnimatedRotation(
-                  turns: expanded ? 0.5 : 0.0,
-                  duration: const Duration(milliseconds: 200),
-                  child: Icon(Icons.keyboard_arrow_down_rounded, size: 18, color: c.textHint),
-                ),
-              ]),
-            ),
-          ),
-        ),
-        // Links expansíveis
-        AnimatedCrossFade(
-          duration: const Duration(milliseconds: 220),
-          crossFadeState: expanded ? CrossFadeState.showFirst : CrossFadeState.showSecond,
-          firstChild: Container(
-            padding: const EdgeInsets.fromLTRB(13, 0, 13, 13),
-            decoration: BoxDecoration(
-              border: Border(top: BorderSide(color: c.border)),
-            ),
-            child: Column(children: [
-              const SizedBox(height: 10),
-              ...ev.links.map((link) => Padding(
-                padding: const EdgeInsets.only(bottom: 7),
-                child: Material(
-                  color: const Color(0xFF0EA5E9).withValues(alpha: 0.06),
-                  borderRadius: BorderRadius.circular(10),
-                  child: InkWell(
-                    onTap: () {}, // url_launcher pode ser adicionado
-                    borderRadius: BorderRadius.circular(10),
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 11),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        border: Border.all(
-                          color: const Color(0xFF0EA5E9).withValues(alpha: 0.2)),
-                      ),
-                      child: Row(children: [
-                        const Icon(Icons.open_in_new_rounded, size: 13,
-                          color: Color(0xFF0EA5E9)),
-                        const SizedBox(width: 8),
-                        Expanded(
-                          child: Text(link.label,
-                            style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w700,
-                              color: Color(0xFF0EA5E9))),
-                        ),
-                        Text('Abrir', style: TextStyle(fontSize: 10,
-                          fontWeight: FontWeight.w600, color: c.textHint)),
-                      ]),
-                    ),
-                  ),
-                ),
-              )),
-            ]),
-          ),
-          secondChild: const SizedBox(width: double.infinity),
-        ),
-      ]),
-    );
-  }
-}
-
-// Fallback quando não há dados no banco
+// Fallback cuando no hay datos en la base de evidencias
 class _GenericReferencesCard extends StatelessWidget {
   final AppColors c;
   final bool dark;
@@ -2541,15 +2326,16 @@ class _GenericReferencesCard extends StatelessWidget {
         const Row(children: [
           Icon(Icons.library_books_outlined, size: 13, color: Color(0xFF0EA5E9)),
           SizedBox(width: 7),
-          Text('REFERÊNCIAS E EVIDÊNCIAS',
+          Text('EVIDENCIA Y REFERENCIAS',
             style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w900,
               letterSpacing: 1.3, color: Color(0xFF0EA5E9))),
         ]),
         const SizedBox(height: 10),
         Text(
-          'As informações deste fármaco são baseadas em diretrizes clínicas reconhecidas (AHA, ESC, WHO, SSC), '
-          'bases de dados farmacológicas (Micromedex®, Lexicomp®, UpToDate) e protocolos nacionais e internacionais. '
-          'Consulte as fontes originais para verificação.',
+          'La información de este fármaco está basada en guías clínicas reconocidas '
+          '(AHA, ESC, OMS, SSC), bases de datos farmacológicas (Micromedex®, Lexicomp®, '
+          'UpToDate) y protocolos nacionales e internacionales vigentes. '
+          'Consulte las fuentes originales para verificación.',
           style: TextStyle(fontSize: 12, color: c.textSecondary, height: 1.5),
         ),
       ]),
@@ -2557,75 +2343,7 @@ class _GenericReferencesCard extends StatelessWidget {
   }
 }
 
-// ═════════════════════════════════════════════════════════════════════════════
-// AVISO REGULATÓRIO — Apple App Store 1.4.1 / 1.4.2 compliance
-// ═════════════════════════════════════════════════════════════════════════════
-class _RegulatoryDisclaimerCard extends StatelessWidget {
-  final AppColors c;
-  final bool dark;
-  final AppProvider p;
-  const _RegulatoryDisclaimerCard({required this.c, required this.dark, required this.p});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: dark ? const Color(0xFF1A1510) : const Color(0xFFFFF8F0),
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(
-          color: dark ? const Color(0xFF4A3820) : const Color(0xFFE8D8A0)),
-      ),
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Row(children: [
-          const Icon(Icons.gavel_rounded, size: 13, color: Color(0xFFC5A365)),
-          const SizedBox(width: 7),
-          Text('IMPORTANTE — AVISO REGULATÓRIO',
-            style: const TextStyle(fontSize: 9.5, fontWeight: FontWeight.w900,
-              letterSpacing: 1.2, color: Color(0xFFC5A365))),
-        ]),
-        const SizedBox(height: 10),
-        Text(
-          'Esta ferramenta tem finalidade educacional e de apoio à decisão clínica. '
-          'A prescrição, administração e monitorização dos medicamentos são de responsabilidade '
-          'exclusiva do profissional de saúde habilitado.',
-          style: TextStyle(fontSize: 11.5, color: c.textPrimary, height: 1.55,
-            fontWeight: FontWeight.w500),
-        ),
-        const SizedBox(height: 8),
-        Text(
-          'O MedCases Pro não substitui o julgamento clínico, protocolos institucionais '
-          'ou a avaliação médica individual do paciente. Doses e posologias devem ser '
-          'confirmadas nas bulas oficiais e diretrizes vigentes antes de qualquer prescrição.',
-          style: TextStyle(fontSize: 11.5, color: c.textSecondary, height: 1.55,
-            fontWeight: FontWeight.w500),
-        ),
-        const SizedBox(height: 10),
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-          decoration: BoxDecoration(
-            color: const Color(0xFFC5A365).withValues(alpha: 0.1),
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: Row(children: [
-            const Icon(Icons.verified_user_outlined, size: 11, color: Color(0xFFC5A365)),
-            const SizedBox(width: 6),
-            Expanded(
-              child: Text(
-                'Conteúdo elaborado com base em diretrizes AHA, ESC, WHO, SSC, Lexicomp® e Micromedex® '
-                '(${DateTime.now().year}). Atualizado periodicamente pelo Comitê Médico MedCases.',
-                style: const TextStyle(fontSize: 9.5, fontWeight: FontWeight.w600,
-                  color: Color(0xFFC5A365)),
-              ),
-            ),
-          ]),
-        ),
-      ]),
-    );
-  }
-}
-
-// ── Helpers locais ────────────────────────────────────────────────────────────
+// ── Helpers locales ───────────────────────────────────────────────────────────
 
 class _LocalField extends StatelessWidget {
   final String label;

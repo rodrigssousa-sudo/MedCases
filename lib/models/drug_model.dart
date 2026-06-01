@@ -1,5 +1,129 @@
 import 'package:flutter/material.dart';
 
+// ─────────────────────────────────────────────────────────────────────────────
+// GLOBAL EVIDENCE MODEL — Apple App Store Guideline 1.4.1 compliance
+// Used by ALL pharmacological screens: Drugs, Prescriptions, Protocols,
+// Pediatrics, Emergencies, Calculators, AI responses, Drug Interactions.
+// ─────────────────────────────────────────────────────────────────────────────
+
+/// Single bibliographic reference attached to a drug/protocol.
+class DrugEvidenceRef {
+  final int num;
+  /// e.g. 'AHA ACLS 2020', 'Micromedex', 'Lexicomp'
+  final String source;
+  /// Short citation or full title
+  final String title;
+  /// Publication year
+  final String year;
+  /// 'Diretriz' | 'Base de Dados' | 'Estudo' | 'Livro-Texto' | 'Protocolo' | 'FDA Label'
+  final String type;
+  /// Optional DOI / PubMed ID
+  final String? doi;
+  /// Direct URL to reference
+  final String? url;
+  const DrugEvidenceRef({
+    required this.num,
+    required this.source,
+    required this.title,
+    required this.year,
+    required this.type,
+    this.doi,
+    this.url,
+  });
+}
+
+/// Official regulatory / guideline link shown as action button.
+class DrugOfficialLink {
+  final String label;
+  final String url;
+  final IconData icon;
+  /// 'AHA' | 'ESC' | 'FDA' | 'EMA' | 'SSC' | 'WHO' | 'ANVISA' | 'PubMed' | 'Other'
+  final String org;
+  const DrugOfficialLink({
+    required this.label,
+    required this.url,
+    required this.icon,
+    this.org = 'Other',
+  });
+}
+
+/// Global evidence/compliance record for a single drug or therapeutic protocol.
+/// Attach one of these to any pharmacological content to achieve full
+/// Apple Guideline 1.4.1 compliance.
+class DrugEvidenceModel {
+  // ── Identity ────────────────────────────────────────────────────────────
+  /// Drug name (lowercase normalized key)
+  final String drugKey;
+  /// Display name (proper case)
+  final String displayName;
+  /// ATC code if available
+  final String? atcCode;
+  /// Drug class e.g. 'Antiarrítmico – Classe III'
+  final String? drugClass;
+
+  // ── Evidence metadata ────────────────────────────────────────────────────
+  /// Primary data source: 'Micromedex', 'Lexicomp', 'UpToDate', etc.
+  final String primarySource;
+  /// Main guideline used: 'AHA ACLS 2025', 'ESC HF 2021', etc.
+  final String guidelineSource;
+  /// Evidence level: 'Alta', 'Moderada', 'Baixa', 'Especialista'
+  final String evidenceLevel;
+  /// Recommendation class: 'Classe I', 'Classe IIa', 'Classe IIb', 'Forte', 'Condicional'
+  final String recommendation;
+  /// ISO date or 'Junho 2026'
+  final String lastReviewed;
+  /// 'Revisado' | 'Pendente' | 'Em revisão'
+  final String reviewStatus;
+
+  // ── References ──────────────────────────────────────────────────────────
+  final List<DrugEvidenceRef> references;
+
+  // ── Official links ──────────────────────────────────────────────────────
+  final List<DrugOfficialLink> links;
+
+  // ── Context badges ──────────────────────────────────────────────────────
+  /// e.g. ['Adulto', 'Pediatria', 'Emergência', 'UTI']
+  final List<String> contextBadges;
+
+  // ── Quick clinical pointers ─────────────────────────────────────────────
+  final List<String> indications;
+  final List<String> contraindications;
+  final List<String> sideEffects;
+  final List<String> interactions;
+
+  // ── PK summary ──────────────────────────────────────────────────────────
+  final String? pkOnset;
+  final String? pkDuration;
+  final String? pkHalfLife;
+  final String? pkElimination;
+  final String? pkProteinBinding;
+
+  const DrugEvidenceModel({
+    required this.drugKey,
+    required this.displayName,
+    this.atcCode,
+    this.drugClass,
+    required this.primarySource,
+    required this.guidelineSource,
+    required this.evidenceLevel,
+    required this.recommendation,
+    required this.lastReviewed,
+    this.reviewStatus = 'Revisado',
+    required this.references,
+    this.links = const [],
+    this.contextBadges = const [],
+    this.indications = const [],
+    this.contraindications = const [],
+    this.sideEffects = const [],
+    this.interactions = const [],
+    this.pkOnset,
+    this.pkDuration,
+    this.pkHalfLife,
+    this.pkElimination,
+    this.pkProteinBinding,
+  });
+}
+
 class DrugModel {
   final String id;
   final String name;
