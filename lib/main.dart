@@ -1448,7 +1448,7 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
       // O Scaffold já adiciona automaticamente o padding da status bar acima
       // do appBar — somar padding.top aqui causaria AppBar duplo no iPad/iPhone.
       appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(56),
+        preferredSize: const Size.fromHeight(48),
         child: Builder(
           builder: (scaffoldCtx) => _MobileAppBar(
             dark: dark,
@@ -1513,7 +1513,7 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
             children: [
               // ── Barra de botões de navegação — 4 itens centralizados ──────
               SizedBox(
-                height: 56,
+                height: 48,
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
@@ -1552,21 +1552,21 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
             curve: Curves.easeOut,
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(8),
               color: active
                   ? (dark
                       ? const Color(0xFF4ADE80).withValues(alpha: 0.10)
                       : const Color(0xFF0A7C4E).withValues(alpha: 0.08))
                   : Colors.transparent,
             ),
-            child: Icon(icon, size: 17,
+            child: Icon(icon, size: 20,
               color: active ? activeColor : inactiveColor),
           ),
           const SizedBox(height: 1),
           Text(label,
             overflow: TextOverflow.ellipsis,
             style: TextStyle(
-              fontSize: 7.5,
+              fontSize: 9,
               fontWeight: active ? FontWeight.w700 : FontWeight.w500,
               color: active ? activeColor : inactiveColor,
             ),
@@ -1628,7 +1628,7 @@ class _MobileAppBar extends StatelessWidget {
       child: SafeArea(
         bottom: false,
         child: SizedBox(
-          height: 56,
+          height: 48,
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Row(
@@ -2490,21 +2490,22 @@ class _LegalBar extends StatelessWidget {
         color: bg,
         border: Border(top: BorderSide(color: border, width: 0.5)),
       ),
-      // Apple 1.4.1 — padding vertical aumentado para acomodar texto legível
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
+      // Apple 1.4.1 — texto legível mas compacto
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 5),
       child: Row(children: [
-        Icon(Icons.info_outline_rounded, size: 13, color: textColor.withValues(alpha: 0.8)),
-        const SizedBox(width: 6),
+        Icon(Icons.info_outline_rounded, size: 11, color: textColor.withValues(alpha: 0.7)),
+        const SizedBox(width: 5),
         Expanded(
           child: Text(
             disclaimer,
             style: TextStyle(
-              // Apple 1.4.1 — mínimo 11px; 12px garante leitura confortável
-              fontSize: 12, color: textColor,
-              height: 1.4, letterSpacing: 0.1,
-              fontWeight: FontWeight.w500,
+              // Apple 1.4.1 — mínimo 10px; 11px garante leitura
+              fontSize: 11, color: textColor,
+              height: 1.3, letterSpacing: 0.1,
+              fontWeight: FontWeight.w400,
             ),
-            // Sem maxLines nem ellipsis: o texto de aviso NUNCA pode ser cortado
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
           ),
         ),
       ]),
