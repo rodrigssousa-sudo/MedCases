@@ -2632,37 +2632,60 @@ class _ReferenceTab extends StatefulWidget {
 class _ReferenceTabState extends State<_ReferenceTab> {
   int _section = 0;
 
-  static const _sections = ['LABS', 'ECG', 'ANTÍDOTOS', 'ACESSO', 'GASOMETRIA'];
+  static const _sectionData = [
+    {'label': 'LABS',      'icon': Icons.science_rounded},
+    {'label': 'ECG',       'icon': Icons.monitor_heart_rounded},
+    {'label': 'ANTÍDOTOS', 'icon': Icons.medical_services_rounded},
+    {'label': 'ACESSO',    'icon': Icons.hub_rounded},
+    {'label': 'GASOMETRIA','icon': Icons.air_rounded},
+  ];
 
   @override
   Widget build(BuildContext context) {
     final p = context.watch<AppProvider>();
     final isEs = p.lang == 'es';
+    // isDark not used directly here — accessed via c.dark in widgets
 
     return Column(children: [
-      // ── Sub-menu ──────────────────────────────────────────────
+      // ── Sub-tabs com underline indicator ─────────────────────
       Container(
-        color: const Color(0xFF0A1A10),
-        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+        decoration: BoxDecoration(
+          color: const Color(0xFF0A1A10),
+          border: Border(bottom: BorderSide(color: Colors.white.withValues(alpha: 0.08), width: 1)),
+        ),
         child: SingleChildScrollView(
           scrollDirection: Axis.horizontal,
+          padding: const EdgeInsets.symmetric(horizontal: 8),
           child: Row(
-            children: List.generate(_sections.length, (i) {
+            children: List.generate(_sectionData.length, (i) {
               final active = _section == i;
+              final icon = _sectionData[i]['icon'] as IconData;
+              final label = _sectionData[i]['label'] as String;
               return GestureDetector(
                 onTap: () => setState(() => _section = i),
                 child: AnimatedContainer(
-                  duration: const Duration(milliseconds: 160),
-                  margin: const EdgeInsets.only(right: 8),
-                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
+                  duration: const Duration(milliseconds: 200),
+                  margin: const EdgeInsets.only(right: 4),
+                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20),
-                    color: active ? const Color(0xFFC5A365) : Colors.white.withValues(alpha: 0.08),
-                    border: Border.all(color: active ? const Color(0xFFC5A365) : Colors.white.withValues(alpha: 0.15)),
+                    border: Border(bottom: BorderSide(
+                      color: active ? const Color(0xFF4ADE80) : Colors.transparent,
+                      width: 2.5,
+                    )),
                   ),
-                  child: Text(_sections[i],
-                    style: TextStyle(fontSize: 11, fontWeight: FontWeight.w800,
-                      color: active ? const Color(0xFF0F1C14) : Colors.white60, letterSpacing: 0.5)),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(icon, size: 14,
+                        color: active ? const Color(0xFF4ADE80) : Colors.white.withValues(alpha: 0.45)),
+                      const SizedBox(width: 6),
+                      Text(label, style: TextStyle(
+                        fontSize: 11, fontWeight: active ? FontWeight.w800 : FontWeight.w500,
+                        color: active ? const Color(0xFF4ADE80) : Colors.white.withValues(alpha: 0.5),
+                        letterSpacing: 0.6,
+                      )),
+                    ],
+                  ),
                 ),
               );
             }),
@@ -2672,7 +2695,7 @@ class _ReferenceTabState extends State<_ReferenceTab> {
       // ── Content ───────────────────────────────────────────────
       Expanded(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.fromLTRB(16, 16, 16, 100),
+          padding: const EdgeInsets.fromLTRB(16, 20, 16, 100),
           child: _buildSection(isEs),
         ),
       ),
@@ -2692,84 +2715,74 @@ class _ReferenceTabState extends State<_ReferenceTab> {
 
   // ── LABS ─────────────────────────────────────────────────────────
   Widget _buildLabs(bool isEs) {
-    final groups = [
-      {
-        'title': isEs ? 'Hemograma' : 'Hemograma',
-        'icon': Icons.bloodtype_rounded,
-        'items': [
-          ['Hemoglobina', 'H: 13,5–17,5 g/dL', 'M: 12,0–15,5 g/dL'],
-          ['Hematócrito', 'H: 41–53%', 'M: 36–46%'],
-          ['Leucócitos', '4.000–11.000/mm³', isEs ? 'Neutrófilos >1500 = OK' : 'Neutrófilos >1500 = OK'],
-          ['Neutrófilos', '1500–7700/mm³', '>70% = sepse?'],
-          ['Linfócitos', '1000–4800/mm³', '<1000 = linfopenia'],
-          ['Plaquetas', '150.000–400.000/mm³', isEs ? '<50k = riesgo sangrado' : '<50k = risco sangrado'],
-          ['VCM', '80–100 fL', '<80=microcítica; >100=macrocítica'],
-          ['RDW', '<14,5%', isEs ? '>14,5%: anemia mista/carencial' : '>14,5%: anemia mista/carencial'],
+    return Column(children: [
+      // ── HEMOGRAMA ───────────────────────────────────────────────
+      _LabGridSection(
+        title: isEs ? 'Hemograma' : 'Hemograma',
+        icon: Icons.bloodtype_rounded,
+        accent: const Color(0xFFDC2626),
+        note: isEs
+          ? 'Los valores de referencia pueden variar según el laboratorio y la población.'
+          : 'Os valores de referência podem variar conforme o laboratório e a população.',
+        items: [
+          _LabCardData('Hemoglobina',      'H: 13,5–17,5',  'M: 12,0–15,5',  'g/dL',    _LabStatus.normal),
+          _LabCardData('Hematócrito',      'H: 41–53',       'M: 36–46',       '%',       _LabStatus.normal),
+          _LabCardData('Leucócitos',       '4.000–11.000',  '',               '/mm³',     _LabStatus.normal),
+          _LabCardData('Neutrófilos',      '1.500–7.700',   '>70% → sepse?',  '/mm³',    _LabStatus.alert),
+          _LabCardData('Linfócitos',       '1.000–4.800',   '<1000 linfopenia','/mm³',   _LabStatus.normal),
+          _LabCardData('Plaquetas',        '150k–400k',     isEs ? '<50k riesgo sangrado' : '<50k risco sangrado', '/mm³', _LabStatus.alert),
+          _LabCardData('VCM',              '80–100',        '<80 micro; >100 macro', 'fL', _LabStatus.normal),
+          _LabCardData('RDW',              '<14,5',         isEs ? '>14,5%: anemia carencial' : '>14,5% anemia carencial', '%', _LabStatus.normal),
         ],
-      },
-      {
-        'title': isEs ? 'Bioquímica' : 'Bioquímica',
-        'icon': Icons.science_rounded,
-        'items': [
-          ['Glicemia jejum', '70–99 mg/dL', isEs ? '<70 hipoglucemia; >126 DM' : '<70 hipoglicemia; >126 DM'],
-          ['Ureia', '15–45 mg/dL', '>45 = azotemia'],
-          ['Creatinina', 'H: 0,7–1,2  M: 0,5–1,0 mg/dL', isEs ? 'Ajustar si ↑ agudo' : 'Ajustar se ↑ agudo'],
-          ['Sódio (Na+)', '135–145 mEq/L', '<135 hipo; >145 hiper'],
-          ['Potássio (K+)', '3,5–5,0 mEq/L', '<3,5 hipo; >5,5 = EMERGÊNCIA'],
-          ['Cloro (Cl-)', '98–106 mEq/L', ''],
-          ['Cálcio total', '8,5–10,5 mg/dL', '<7 = crise hipocalcêmica'],
-          ['Cálcio ionizado', '1,1–1,35 mmol/L', '<0,9 = hipocalcemia'],
-          ['Magnésio', '1,7–2,2 mg/dL', '<1,5 arritmias/convulsão'],
-          ['Fósforo', '2,5–4,5 mg/dL', ''],
-          ['Proteínas totais', '6,4–8,3 g/dL', 'Albumina: 3,5–5,0 g/dL'],
-          ['Bilirrubina total', '<1,2 mg/dL', '>5 = icterícia clínica'],
-          ['TGO (AST)', '<40 U/L', '>3× LSN = hepatocelular'],
-          ['TGP (ALT)', '<41 U/L', '>10× LSN = hepatite aguda'],
-          ['Gama-GT', '<50 U/L', 'Álcool/obstrução'],
-          ['Fosfatase alcalina', '44–147 U/L', 'Colestase/óssea'],
-          ['Amilase', '<100 U/L', '>3× = pancreatite'],
-          ['Lipase', '<160 U/L', '>3× = pancreatite (mais específico)'],
-          ['PCR', '<0,5 mg/dL', '>10 = inflamação significativa'],
-          ['Procalcitonina', '<0,1 ng/mL', '>0,5 considerar ATB; >2 bacteremia'],
-          ['Lactato', '<2,0 mmol/L', '>2 = hipoperfusão; >4 = crítico'],
-          ['BNP/NT-proBNP', '<100 pg/mL / <300 pg/mL', 'IC: >400 / >900'],
-          ['Troponina I/T', '<0,04 ng/mL (varia)', 'SCA: ↑ + clínica'],
-          ['D-Dímero', '<500 ng/mL', '>500 = rastreio TEP/TVP'],
-          ['INR/TP', '0,8–1,2 / 11–14s', '>1,5 = coagulopatia'],
-          ['TTPa', '25–35s', '>70s = monitoração heparina'],
-          ['TSH', '0,3–4,5 mUI/L', '<0,1 hiper; >10 hipotireoidismo'],
-          ['T4 livre', '0,8–1,8 ng/dL', ''],
-          ['HbA1c', '<5,7% normal', '≥6,5% = DM'],
-        ],
-      },
-      {
-        'title': isEs ? 'Urinálisis' : 'Urinálise',
-        'icon': Icons.water_drop_rounded,
-        'items': [
-          ['Leucócitos', '<5/campo', isEs ? '>5 = piuria (ITU)' : '>5 = piúria (ITU)'],
-          ['Hemácias', '<2/campo', '>5 = hematúria'],
-          ['Proteína', 'Traços ou neg.', '>300 mg/24h = proteinúria'],
-          ['Glicose', 'Negativo', isEs ? 'Positivo = hiperglucemia o SGLT2' : 'Positivo = hiperglicemia ou SGLT2'],
-          ['Nitrito', 'Negativo', 'Positivo = gram-negativos (ITU)'],
-          ['Densidade', '1,001–1,035', '<1,005 = hiposstenúria; >1,030 = desidratação'],
-        ],
-      },
-    ];
+      ),
+      const SizedBox(height: 16),
 
-    return Column(children: groups.map((g) {
-      final items = g['items'] as List<List<String>>;
-      return _SectionCard(
-        title: g['title'] as String,
-        icon: g['icon'] as IconData,
-        child: Column(
-          children: items.map((row) => _LabRow(
-            name: row[0],
-            ref: row[1],
-            note: row.length > 2 ? row[2] : '',
-          )).toList(),
-        ),
-      );
-    }).toList());
+      // ── BIOQUÍMICA ──────────────────────────────────────────────
+      _LabGridSection(
+        title: isEs ? 'Bioquímica' : 'Bioquímica',
+        icon: Icons.science_rounded,
+        accent: const Color(0xFFD97706),
+        items: [
+          _LabCardData('Glicemia jejum',   '70–99',         isEs ? '<70 hipoglucemia; >126 DM' : '<70 hipoglicemia; >126 DM', 'mg/dL', _LabStatus.normal),
+          _LabCardData('Ureia',            '15–45',         '>45 azotemia',   'mg/dL',   _LabStatus.normal),
+          _LabCardData('Creatinina',       'H: 0,7–1,2',    'M: 0,5–1,0',    'mg/dL',   _LabStatus.normal),
+          _LabCardData('Sódio (Na+)',      '135–145',       '<135 hipo; >145 hiper', 'mEq/L', _LabStatus.alert),
+          _LabCardData('Potássio (K+)',    '3,5–5,0',       isEs ? '>5,5 EMERGENCIA' : '>5,5 EMERGÊNCIA', 'mEq/L', _LabStatus.critical),
+          _LabCardData('Cálcio total',     '8,5–10,5',      '<7 crise hipocalcêmica', 'mg/dL', _LabStatus.alert),
+          _LabCardData('Cálcio ionizado',  '1,1–1,35',      '<0,9 hipocalcemia', 'mmol/L', _LabStatus.normal),
+          _LabCardData('Magnésio',         '1,7–2,2',       '<1,5 arritmias', 'mg/dL',   _LabStatus.alert),
+          _LabCardData('Proteínas totais', '6,4–8,3',       'Albumina: 3,5–5,0 g/dL', 'g/dL', _LabStatus.normal),
+          _LabCardData('Bilirrubina total','<1,2',          isEs ? '>5 ictericia' : '>5 icterícia', 'mg/dL', _LabStatus.normal),
+          _LabCardData('TGO (AST)',        '<40',           '>3× LSN hepatocelular', 'U/L', _LabStatus.normal),
+          _LabCardData('TGP (ALT)',        '<41',           '>10× LSN hepatite aguda', 'U/L', _LabStatus.normal),
+          _LabCardData('PCR',              '<0,5',          '>10 inflamação signif.', 'mg/dL', _LabStatus.alert),
+          _LabCardData('Procalcitonina',   '<0,1',          '>0,5 considerar ATB; >2 bacteremia', 'ng/mL', _LabStatus.alert),
+          _LabCardData('Lactato',          '<2,0',          isEs ? '>4 crítico' : '>4 crítico',  'mmol/L', _LabStatus.critical),
+          _LabCardData('BNP',             '<100 pg/mL',     'IC: >400 pg/mL', '',       _LabStatus.normal),
+          _LabCardData('Troponina I',     '<0,04 ng/mL',    isEs ? 'SCA: ↑ + clínica' : 'SCA: ↑ + clínica', '', _LabStatus.alert),
+          _LabCardData('D-Dímero',        '<500',           isEs ? '>500 rastreo TEP/TVP' : '>500 rastreio TEP/TVP', 'ng/mL', _LabStatus.alert),
+          _LabCardData('INR / TP',        '0,8–1,2',        '>1,5 coagulopatia',  '/ 11–14s', _LabStatus.normal),
+          _LabCardData('TSH',             '0,3–4,5',        '<0,1 hiper; >10 hipo', 'mUI/L', _LabStatus.normal),
+          _LabCardData('HbA1c',           '<5,7%',          '≥6,5% = DM',     '',        _LabStatus.normal),
+        ],
+      ),
+      const SizedBox(height: 16),
+
+      // ── URINÁLISE ───────────────────────────────────────────────
+      _LabGridSection(
+        title: isEs ? 'Urinálisis' : 'Urinálise',
+        icon: Icons.water_drop_rounded,
+        accent: const Color(0xFF2563EB),
+        items: [
+          _LabCardData('Leucócitos',  '<5/campo',     isEs ? '>5 piuria (ITU)' : '>5 piúria (ITU)', '',    _LabStatus.alert),
+          _LabCardData('Hemácias',    '<2/campo',     '>5 hematúria',           '',                        _LabStatus.alert),
+          _LabCardData('Proteína',    'Traços/neg.',  '>300 mg/24h proteinúria','',                        _LabStatus.normal),
+          _LabCardData('Glicose',     'Negativo',     isEs ? 'Positivo: hiperglucemia/SGLT2' : 'Positivo: hiperglicemia/SGLT2', '', _LabStatus.normal),
+          _LabCardData('Nitrito',     'Negativo',     'Positivo: gram-neg (ITU)','',                       _LabStatus.alert),
+          _LabCardData('Densidade',   '1,001–1,035',  '<1,005 hipost; >1,030 desidrat.', '',               _LabStatus.normal),
+        ],
+      ),
+    ]);
   }
 
   // ── ECG ──────────────────────────────────────────────────────────
@@ -2996,24 +3009,288 @@ class _ReferenceTabState extends State<_ReferenceTab> {
 
 }
 
+// ══════════════════════════════════════════════════════════════════
+//  NOVOS WIDGETS PREMIUM — Referência Labs Grid
+// ══════════════════════════════════════════════════════════════════
+
+enum _LabStatus { normal, alert, critical }
+
+class _LabCardData {
+  final String name, value, note, unit;
+  final _LabStatus status;
+  const _LabCardData(this.name, this.value, this.note, this.unit, this.status);
+}
+
+/// Seção com grid responsivo de cards de laboratório
+class _LabGridSection extends StatefulWidget {
+  final String title;
+  final IconData icon;
+  final Color accent;
+  final List<_LabCardData> items;
+  final String? note;
+  const _LabGridSection({
+    required this.title, required this.icon, required this.accent,
+    required this.items, this.note,
+  });
+  @override
+  State<_LabGridSection> createState() => _LabGridSectionState();
+}
+
+class _LabGridSectionState extends State<_LabGridSection> {
+  bool _expanded = true;
+
+  @override
+  Widget build(BuildContext context) {
+    final c = AppColors.of(context);
+    final accent = widget.accent;
+
+    return Container(
+      decoration: BoxDecoration(
+        color: c.cardBg,
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: c.border),
+        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.04), blurRadius: 8, offset: const Offset(0, 2))],
+      ),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        // ── Header da seção ──────────────────────────────────────
+        InkWell(
+          onTap: () => setState(() => _expanded = !_expanded),
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(18)),
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(16, 14, 16, 14),
+            child: Row(children: [
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: accent.withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Icon(widget.icon, size: 16, color: accent),
+              ),
+              const SizedBox(width: 10),
+              Expanded(child: Text(widget.title.toUpperCase(),
+                style: TextStyle(fontSize: 13, fontWeight: FontWeight.w900,
+                  color: accent, letterSpacing: 1.2))),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                decoration: BoxDecoration(
+                  color: accent.withValues(alpha: 0.08),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Text('${widget.items.length} parâm.',
+                  style: TextStyle(fontSize: 10, fontWeight: FontWeight.w700,
+                    color: accent.withValues(alpha: 0.8))),
+              ),
+              const SizedBox(width: 8),
+              Icon(_expanded ? Icons.keyboard_arrow_up_rounded : Icons.keyboard_arrow_down_rounded,
+                size: 20, color: c.textHint),
+            ]),
+          ),
+        ),
+
+        // ── Divisor ──────────────────────────────────────────────
+        if (_expanded) ...[
+          Divider(height: 1, color: accent.withValues(alpha: 0.15), indent: 16, endIndent: 16),
+          const SizedBox(height: 12),
+
+          // ── Grid de cards ────────────────────────────────────
+          Padding(
+            padding: const EdgeInsets.fromLTRB(12, 0, 12, 0),
+            child: LayoutBuilder(builder: (ctx, box) {
+              final cols = box.maxWidth > 600 ? 3 : box.maxWidth > 380 ? 2 : 2;
+              final rows = <Widget>[];
+              for (var i = 0; i < widget.items.length; i += cols) {
+                final rowItems = widget.items.skip(i).take(cols).toList();
+                rows.add(Row(
+                  children: List.generate(rowItems.length, (j) {
+                    final isLast = (j == rowItems.length - 1);
+                    return Expanded(child: Padding(
+                      padding: EdgeInsets.only(right: isLast ? 0 : 8, bottom: 8),
+                      child: _LabValueCard(data: rowItems[j], accent: accent),
+                    ));
+                  }),
+                ));
+              }
+              return Column(children: rows);
+            }),
+          ),
+
+          // ── Nota de rodapé ───────────────────────────────────
+          if (widget.note != null) ...[
+            Padding(
+              padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF1E3A8A).withValues(alpha: 0.06),
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(color: const Color(0xFF1E3A8A).withValues(alpha: 0.15)),
+                ),
+                child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  const Icon(Icons.info_outline_rounded, size: 13, color: Color(0xFF1E3A8A)),
+                  const SizedBox(width: 7),
+                  Expanded(child: Text(widget.note!,
+                    style: const TextStyle(fontSize: 10.5, color: Color(0xFF1E3A8A),
+                      fontWeight: FontWeight.w600, height: 1.4))),
+                ]),
+              ),
+            ),
+          ] else
+            const SizedBox(height: 4),
+        ],
+      ]),
+    );
+  }
+}
+
+/// Card individual de valor laboratorial — layout premium
+class _LabValueCard extends StatelessWidget {
+  final _LabCardData data;
+  final Color accent;
+  const _LabValueCard({required this.data, required this.accent});
+
+  Color get _statusColor {
+    switch (data.status) {
+      case _LabStatus.critical: return const Color(0xFFDC2626);
+      case _LabStatus.alert:    return const Color(0xFFD97706);
+      case _LabStatus.normal:   return const Color(0xFF059669);
+    }
+  }
+
+  String get _statusLabel {
+    switch (data.status) {
+      case _LabStatus.critical: return 'CRÍTICO';
+      case _LabStatus.alert:    return 'ATENÇÃO';
+      case _LabStatus.normal:   return 'NORMAL';
+    }
+  }
+
+  IconData get _statusIcon {
+    switch (data.status) {
+      case _LabStatus.critical: return Icons.error_outline_rounded;
+      case _LabStatus.alert:    return Icons.warning_amber_rounded;
+      case _LabStatus.normal:   return Icons.check_circle_outline_rounded;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final c = AppColors.of(context);
+    final sc = _statusColor;
+
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: c.dark ? Colors.white.withValues(alpha: 0.03) : Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: c.border),
+      ),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        // Nome do parâmetro
+        Text(data.name,
+          style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700,
+            color: c.textSecondary, letterSpacing: 0.2),
+          maxLines: 1, overflow: TextOverflow.ellipsis),
+        const SizedBox(height: 6),
+
+        // Valor de referência em destaque
+        Row(crossAxisAlignment: CrossAxisAlignment.baseline, textBaseline: TextBaseline.alphabetic, children: [
+          Flexible(child: Text(data.value,
+            style: TextStyle(fontSize: 15, fontWeight: FontWeight.w900,
+              color: c.textPrimary, height: 1.1),
+            maxLines: 2)),
+          if (data.unit.isNotEmpty) ...[
+            const SizedBox(width: 3),
+            Text(data.unit,
+              style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600,
+                color: c.textHint)),
+          ],
+        ]),
+
+        // Nota clínica
+        if (data.note.isNotEmpty) ...[
+          const SizedBox(height: 5),
+          Text(data.note,
+            style: TextStyle(fontSize: 10, color: c.textSecondary, height: 1.3),
+            maxLines: 2, overflow: TextOverflow.ellipsis),
+        ],
+
+        const SizedBox(height: 8),
+
+        // Status badge
+        Row(children: [
+          Icon(_statusIcon, size: 11, color: sc),
+          const SizedBox(width: 4),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+            decoration: BoxDecoration(
+              color: sc.withValues(alpha: 0.10),
+              borderRadius: BorderRadius.circular(6),
+            ),
+            child: Text(_statusLabel,
+              style: TextStyle(fontSize: 9, fontWeight: FontWeight.w800,
+                color: sc, letterSpacing: 0.8)),
+          ),
+        ]),
+      ]),
+    );
+  }
+}
+
 // ── Widgets auxiliares da aba Referência ─────────────────────────
+
+/// Row aprimorado usado em ECG, Gasometria, Acesso — hierarquia clara
 class _LabRow extends StatelessWidget {
   final String name, ref, note;
   const _LabRow({required this.name, required this.ref, required this.note});
 
   @override
   Widget build(BuildContext context) {
-    final isAlert = note.contains('<') || note.contains('>') || note.contains('=') || note.contains('↑') || note.contains('↓');
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 7),
-      child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        SizedBox(width: 110,
-          child: Text(name, style: TextStyle(fontSize: 11, fontWeight: FontWeight.w800, color: AppColors.of(context).textPrimary))),
+    final c = AppColors.of(context);
+    final hasAlert = note.isNotEmpty &&
+      (note.contains('<') || note.contains('>') || note.contains('EMERG') ||
+       note.contains('↑') || note.contains('↓') || note.contains('urgente') || note.contains('crítico'));
+    final hasNote  = note.isNotEmpty;
+    final noteColor = hasAlert ? const Color(0xFFB45309) : c.textSecondary;
+
+    return Container(
+      margin: const EdgeInsets.only(bottom: 6),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 9),
+      decoration: BoxDecoration(
+        color: c.dark ? Colors.white.withValues(alpha: 0.03) : const Color(0xFFF9FAFB),
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(
+          color: hasAlert ? const Color(0xFFD97706).withValues(alpha: 0.25) : c.border,
+        ),
+      ),
+      child: Row(children: [
+        // Nome do parâmetro
+        SizedBox(width: 120,
+          child: Text(name,
+            style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.w800,
+              color: c.textPrimary))),
+        const SizedBox(width: 8),
+        // Valor de referência
         Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text(ref, style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: Color(0xFF065F46))),
-          if (note.isNotEmpty)
-            Text(note, style: TextStyle(fontSize: 10, color: isAlert ? const Color(0xFFB45309) : AppColors.of(context).textSecondary, height: 1.3)),
+          Text(ref,
+            style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700,
+              color: c.green)),
+          if (hasNote) ...[
+            const SizedBox(height: 2),
+            Text(note,
+              style: TextStyle(fontSize: 10.5, color: noteColor, height: 1.3)),
+          ],
         ])),
+        // Indicador de alerta
+        if (hasAlert)
+          Container(
+            padding: const EdgeInsets.all(4),
+            decoration: BoxDecoration(
+              color: const Color(0xFFD97706).withValues(alpha: 0.10),
+              borderRadius: BorderRadius.circular(6),
+            ),
+            child: const Icon(Icons.warning_amber_rounded, size: 12, color: Color(0xFFD97706)),
+          ),
       ]),
     );
   }
