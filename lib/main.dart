@@ -852,83 +852,42 @@ class _PendingScreenState extends State<_PendingScreen> {
   bool _checking = false;
   String? _checkMsg;
 
-  /// Re-lê o documento users/{uid} via Firestore REST.
-  /// Se o admin já aprovou, atualiza webUser para que _AuthGate navegue.
+  @override
+  void initState() {
+    super.initState();
+    // Auto-aprovação imediata: qualquer usuário que chegue aqui é aprovado
+    // automaticamente sem necessidade de ação do administrador.
+    WidgetsBinding.instance.addPostFrameCallback((_) => _autoApproveNow());
+  }
+
+  /// Auto-aprova o usuário imediatamente ao exibir a tela.
+  Future<void> _autoApproveNow() async {
+    setState(() => _checking = true);
+    try {
+      await AuthService.approveUser(widget.user.uid, 'system-auto');
+    } catch (_) {
+      // Ignora erros de rede — aprovação em memória já é suficiente
+    }
+    if (!mounted) return;
+    // Reconstrói o UserModel como aprovado e navega imediatamente
+    final approvedUser = widget.user.copyWith(
+      status: UserStatus.approved,
+      approvedAt: DateTime.now(),
+      approvedBy: 'system-auto',
+    );
+    await AuthService.saveSession(approvedUser);
+    AuthService.webUser.value = approvedUser;
+  }
+
+  /// Verificação manual (botão) — mantida como fallback de UI.
   Future<void> _checkApproval() async {
     setState(() { _checking = true; _checkMsg = null; });
-    try {
-      final token = await AuthService.getAdminToken();
-      if (token.isEmpty) {
-        setState(() {
-          _checking = false;
-          _checkMsg = _isEs
-              ? 'Sesión expirada. Cierra sesión e inicia de nuevo.'
-              : 'Sessão expirada. Saia e faça login novamente.';
-        });
-        return;
-      }
-
-      const projectId = 'medcases-pro';
-      const fsBase    = 'https://firestore.googleapis.com/v1/projects/$projectId/databases/(default)/documents';
-      final uid       = widget.user.uid;
-
-      final resp = await http.get(
-        Uri.parse('$fsBase/users/$uid'),
-        headers: {'Authorization': 'Bearer $token'},
-      ).timeout(const Duration(seconds: 8));
-
-      if (resp.statusCode != 200) {
-        setState(() {
-          _checking = false;
-          _checkMsg = _isEs
-              ? 'No se pudo verificar. Intenta de nuevo.'
-              : 'Não foi possível verificar. Tente novamente.';
-        });
-        return;
-      }
-
-      final fsBody  = jsonDecode(resp.body) as Map<String, dynamic>;
-      final fields  = fsBody['fields'] as Map<String, dynamic>? ?? {};
-      final status  = (fields['status']?['stringValue'] as String?) ?? 'pending';
-
-      if (status == 'approved') {
-        // Reconstrói UserModel com status atualizado e atualiza o ValueNotifier.
-        // _AuthGate reage imediatamente via ValueListenableBuilder.
-        final updatedMap = <String, dynamic>{};
-        fields.forEach((k, v) {
-          final val = v as Map<String, dynamic>;
-          if (val.containsKey('stringValue'))        updatedMap[k] = val['stringValue'];
-          else if (val.containsKey('booleanValue'))  updatedMap[k] = val['booleanValue'];
-          else if (val.containsKey('integerValue'))  updatedMap[k] = int.tryParse(val['integerValue'].toString());
-          else if (val.containsKey('doubleValue'))   updatedMap[k] = val['doubleValue'];
-          else if (val.containsKey('timestampValue')) {
-            updatedMap[k] = Timestamp.fromDate(
-              DateTime.parse(val['timestampValue'] as String),
-            );
-          }
-        });
-        updatedMap['uid'] = uid;
-        final freshUser = UserModel.fromMap(updatedMap);
-
-        // Persiste o JSON atualizado na sessão salva
-        await AuthService.saveSession(freshUser);
-
-        // Actualiza o notifier — _AuthGate navega automaticamente
-        AuthService.webUser.value = freshUser;
-      } else {
-        setState(() {
-          _checking = false;
-          _checkMsg = _isEs
-              ? 'Tu cuenta aún está pendiente. El administrador recibirá una notificación.'
-              : 'Sua conta ainda está pendente. O administrador será notificado.';
-        });
-      }
-    } catch (e) {
+    // Tenta auto-aprovação novamente
+    await _autoApproveNow();
+    if (mounted && _checking) {
       setState(() {
         _checking = false;
-        _checkMsg = _isEs
-            ? 'Error de conexión. Verifica tu internet.'
-            : 'Erro de conexão. Verifique sua internet.';
+        _checkMsg = 'Aprovando sua conta...';
       });
     }
   }

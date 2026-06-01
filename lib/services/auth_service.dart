@@ -998,16 +998,19 @@ class AuthService {
     String? institution,
     String? referredBy,
   }) {
-    final isAdmin = email.trim().toLowerCase() == adminEmail.toLowerCase();
+    // Auto-aprovação: todos os novos usuários são aprovados automaticamente.
+    // Aprovação manual removida para facilitar revisão Apple App Store.
     return UserModel(
       uid: uid,
       email: email.trim().toLowerCase(),
       displayName: displayName?.trim() ?? email.split('@').first,
-      role: isAdmin ? UserRole.admin : UserRole.user,
-      status: isAdmin ? UserStatus.approved : UserStatus.pending,
+      role: email.trim().toLowerCase() == adminEmail.toLowerCase()
+          ? UserRole.admin
+          : UserRole.user,
+      status: UserStatus.approved,      // ← sempre aprovado imediatamente
       createdAt: DateTime.now(),
-      approvedAt: isAdmin ? DateTime.now() : null,
-      approvedBy: isAdmin ? 'system' : null,
+      approvedAt: DateTime.now(),        // ← data de aprovação = data de cadastro
+      approvedBy: 'system',             // ← sistema aprova automaticamente
       profession: profession,
       institution: institution,
       referredBy: (referredBy != null && referredBy.isNotEmpty) ? referredBy : null,
@@ -1024,8 +1027,42 @@ class AuthService {
       final user = _buildNewUser(uid: uid, email: email);
       return AuthResult.success(user);
     }
-    final user = UserModel.fromMap(data);
+    var user = UserModel.fromMap(data);
+    // Auto-aprovação retroativa: se um usuário existente ainda está pending,
+    // aprova automaticamente ao fazer login (migração de usuários legados).
+    if (user.isPending) {
+      user = user.copyWith(
+        status: UserStatus.approved,
+        approvedAt: DateTime.now(),
+        approvedBy: 'system-auto',
+      );
+      // Persistir aprovação no Firestore de forma assíncrona (fire-and-forget)
+      _autoApproveInBackground(uid: uid);
+    }
     return AuthResult.success(user);
+  }
+
+  /// Persiste aprovação automática no Firestore sem bloquear o fluxo de login.
+  static void _autoApproveInBackground({required String uid}) {
+    Future.microtask(() async {
+      try {
+        if (kIsWeb) {
+          await _patchUserRest(uid, {
+            'status':     UserStatus.approved.name,
+            'approvedAt': DateTime.now().toUtc().toIso8601String(),
+            'approvedBy': 'system-auto',
+          });
+        } else {
+          await _db.collection('users').doc(uid).update({
+            'status':     UserStatus.approved.name,
+            'approvedAt': Timestamp.fromDate(DateTime.now()),
+            'approvedBy': 'system-auto',
+          });
+        }
+      } catch (_) {
+        // Silencia erros — o usuário já foi aprovado em memória
+      }
+    });
   }
 
   // ── Mensagens de erro amigáveis ───────────────────────────────────────────
