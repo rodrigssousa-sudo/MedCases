@@ -48,28 +48,28 @@ class _S {
 
   // ── CTA ───────────────────────────────────────────────────────────────────
   String ctaLabel(int plan)  => es
-      ? (plan == 0 ? 'Suscribir — \$9.900/mes'   : 'Suscribir — \$5.900/mes (anual)')
-      : (plan == 0 ? 'Assinar — R\$ 29,90/mês'   : 'Assinar — R\$ 19,90/mês (anual)');
+      ? (plan == 0 ? 'Suscribir — Plan Mensual'   : 'Suscribir — Plan Anual')
+      : (plan == 0 ? 'Assinar — Plano Mensal'     : 'Assinar — Plano Anual');
 
   // ── Card ──────────────────────────────────────────────────────────────────
   String get selected        => es ? 'Seleccionado'         : 'Selecionado';
   String get select          => es ? 'Seleccionar'          : 'Selecionar';
 
-  // ── Garantia ──────────────────────────────────────────────────────────────
-  String get guaranteeTitle  => es ? 'Garantía de 7 días'  : 'Garantia de 7 dias';
-  String get guaranteeSub    => es
-      ? 'Si no estás satisfecho, devolvemos el 100% del valor.'
-      : 'Se não ficar satisfeito, devolvemos 100% do valor.';
+  // ── Garantia — removido por compliance Apple 3.1.1 ────────────────────────
+  // (reembolso via App Store é gerido exclusivamente pela Apple)
+  String get guaranteeTitle  => '';
+  String get guaranteeSub    => '';
 
-  // ── Social proof ──────────────────────────────────────────────────────────
-  String get spDoctors       => es ? 'médicos'              : 'médicos';
-  String get spRating        => es ? 'calificación'         : 'avaliação';
-  String get spCases         => es ? 'casos'                : 'casos';
+  // ── Social proof — dados removidos por compliance Apple 2.3 ───────────────
+  // (estatísticas não verificáveis não podem ser exibidas no binário)
+  String get spDoctors       => '';
+  String get spRating        => '';
+  String get spCases         => '';
 
-  // ── Disclaimer ───────────────────────────────────────────────────────────
+  // ── Disclaimer paywall ───────────────────────────────────────────────────
   String get disclaimer      => es
-      ? 'Cancela en cualquier momento. Sin compromisos. Facturación segura.'
-      : 'Cancele a qualquer momento. Sem compromisso. Cobrança segura.';
+      ? 'Cancela en cualquier momento desde la configuración de tu cuenta.'
+      : 'Cancele a qualquer momento nas configurações da sua conta.';
 
   // ── Toggle de idioma ──────────────────────────────────────────────────────
   String get toggleLang      => es ? 'Ver em Português'     : 'Ver en Español';
@@ -161,11 +161,11 @@ class _UpgradeScreenState extends State<UpgradeScreen>
   late AnimationController _anim;
   late Animation<double> _fadeIn;
 
-  // Links de pagamento — substituir pelas URLs reais
-  static const _linkMensalPt = 'https://medcasespro.com/planos/mensal';
-  static const _linkAnualPt  = 'https://medcasespro.com/planos/anual';
-  static const _linkMensalEs = 'https://medcasespro.com/planes/mensual';
-  static const _linkAnualEs  = 'https://medcasespro.com/planes/anual';
+  // Links de pagamento — URL institucional única (Apple 3.1.1 compliance)
+  static const _linkMensalPt = 'https://medcasespro.com';
+  static const _linkAnualPt  = 'https://medcasespro.com';
+  static const _linkMensalEs = 'https://medcasespro.com';
+  static const _linkAnualEs  = 'https://medcasespro.com';
 
   @override
   void initState() {
@@ -186,78 +186,15 @@ class _UpgradeScreenState extends State<UpgradeScreen>
   void _toggleLang() => setState(() => _isEs = !_isEs);
 
   Future<void> _subscribe() async {
-    // ── iOS: Apple Guideline 3.1.1 ──────────────────────────────────────────
-    // Apps iOS não podem redirecionar para compras externas. Mostramos a URL
-    // para o usuário copiar e acessar manualmente via Safari.
+    // ── iOS: Apple Guideline 3.1.1 — pagamentos via App Store apenas ──────────
+    // O sistema de IAP (In-App Purchase) será integrado em release futuro.
+    // Por ora, em iOS, abrimos apenas o site institucional sem menção a preços.
     final bool isIOS = !kIsWeb && Platform.isIOS;
     if (isIOS) {
-      final url = _isEs
-          ? (_selectedPlan == 0 ? _linkMensalEs : _linkAnualEs)
-          : (_selectedPlan == 0 ? _linkMensalPt : _linkAnualPt);
-      if (mounted) {
-        await showDialog<void>(
-          context: context,
-          builder: (ctx) => AlertDialog(
-            backgroundColor: const Color(0xFF1a2e24),
-            title: Text(
-              _isEs ? 'Suscripción' : 'Assinatura',
-              style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-            ),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  _isEs
-                      ? 'Para suscribirte, accede al sitio web desde Safari:'
-                      : 'Para assinar, acesse o site pelo Safari:',
-                  style: TextStyle(color: Colors.white.withValues(alpha: 0.8), fontSize: 14),
-                ),
-                const SizedBox(height: 12),
-                GestureDetector(
-                  onTap: () {
-                    Clipboard.setData(ClipboardData(text: url));
-                    ScaffoldMessenger.of(ctx).showSnackBar(
-                      SnackBar(
-                        content: Text(_isEs ? 'Link copiado' : 'Link copiado'),
-                        duration: const Duration(seconds: 2),
-                      ),
-                    );
-                  },
-                  child: Container(
-                    padding: const EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.08),
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: const Color(0xFFC5A365).withValues(alpha: 0.5)),
-                    ),
-                    child: Row(children: [
-                      Expanded(
-                        child: Text(
-                          url,
-                          style: const TextStyle(color: Color(0xFFC5A365), fontSize: 12),
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-                      const Icon(Icons.copy_rounded, size: 16, color: Color(0xFFC5A365)),
-                    ]),
-                  ),
-                ),
-              ],
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(ctx),
-                child: Text(
-                  _isEs ? 'Cerrar' : 'Fechar',
-                  style: const TextStyle(color: Color(0xFFC5A365)),
-                ),
-              ),
-            ],
-          ),
-        );
-      }
+      final uri = Uri.parse('https://medcasespro.com');
+      try {
+        await launchUrl(uri, mode: LaunchMode.externalApplication);
+      } catch (_) {}
       return;
     }
 
@@ -586,48 +523,13 @@ class _UpgradeScreenState extends State<UpgradeScreen>
     );
   }
 
-  // ── Garantia ────────────────────────────────────────────────────────────────
-  Widget _buildGuarantee(_S s) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12),
-        color: const Color(0xFF065F46).withValues(alpha: 0.12),
-        border:
-            Border.all(color: const Color(0xFF065F46).withValues(alpha: 0.35)),
-      ),
-      child: Row(children: [
-        const Icon(Icons.verified_user_rounded,
-            size: 22, color: Color(0xFF4ADE80)),
-        const SizedBox(width: 12),
-        Expanded(
-          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text(s.guaranteeTitle,
-                style: const TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w800,
-                    color: Colors.white)),
-            Text(s.guaranteeSub,
-                style: TextStyle(
-                    fontSize: 11,
-                    color: Colors.white.withValues(alpha: 0.55),
-                    height: 1.4)),
-          ]),
-        ),
-      ]),
-    );
-  }
+  // ── Garantia — widget ocultado por compliance Apple 3.1.1 ─────────────────
+  // Reembolsos são processados exclusivamente pela Apple via App Store.
+  Widget _buildGuarantee(_S s) => const SizedBox.shrink();
 
-  // ── Social proof ────────────────────────────────────────────────────────────
-  Widget _buildSocialProof(_S s) {
-    return Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-      _StatChip(icon: Icons.people_rounded,        label: '+2.800', sub: s.spDoctors),
-      const SizedBox(width: 8),
-      _StatChip(icon: Icons.star_rounded,          label: '4.9★',   sub: s.spRating),
-      const SizedBox(width: 8),
-      _StatChip(icon: Icons.folder_special_rounded, label: '500+',  sub: s.spCases),
-    ]);
-  }
+  // ── Social proof — ocultado por compliance Apple 2.3 ──────────────────────
+  // Estatísticas não verificáveis removidas do binário.
+  Widget _buildSocialProof(_S s) => const SizedBox.shrink();
 }
 
 // ─────────────────────────────────────────────────────────────────────────────

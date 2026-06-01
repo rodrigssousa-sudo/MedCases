@@ -2468,9 +2468,11 @@ class _LegalBar extends StatelessWidget {
     final isEs = context.select<AppProvider, bool>((p) => p.lang == 'es');
     final bg        = dark ? const Color(0xFF080F0B) : const Color(0xFFF0F2F4);
     final border    = dark ? const Color(0xFF1A2820) : const Color(0xFFDDE1E6);
+    // Apple 1.4.1 — disclaimer deve ser legível: opacidade 0.85 no dark, cor
+    // sólida no light. Não usar valores abaixo de 0.70.
     final textColor = dark
-        ? Colors.white.withValues(alpha: 0.28)
-        : const Color(0xFF98A0A8);
+        ? Colors.white.withValues(alpha: 0.85)
+        : const Color(0xFF5A6370);
 
     // Texto exigido pela Apple guideline 1.4.1 — permanece visível em todas as telas
     final disclaimer = isEs
@@ -2483,20 +2485,21 @@ class _LegalBar extends StatelessWidget {
         color: bg,
         border: Border(top: BorderSide(color: border, width: 0.5)),
       ),
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 5),
+      // Apple 1.4.1 — padding vertical aumentado para acomodar texto legível
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
       child: Row(children: [
-        Icon(Icons.info_outline_rounded, size: 8.5, color: textColor.withValues(alpha: 0.7)),
-        const SizedBox(width: 5),
+        Icon(Icons.info_outline_rounded, size: 13, color: textColor.withValues(alpha: 0.8)),
+        const SizedBox(width: 6),
         Expanded(
           child: Text(
             disclaimer,
             style: TextStyle(
-              fontSize: 7.5, color: textColor,
-              height: 1.35, letterSpacing: 0.15,
+              // Apple 1.4.1 — mínimo 11px; 12px garante leitura confortável
+              fontSize: 12, color: textColor,
+              height: 1.4, letterSpacing: 0.1,
               fontWeight: FontWeight.w500,
             ),
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
+            // Sem maxLines nem ellipsis: o texto de aviso NUNCA pode ser cortado
           ),
         ),
       ]),

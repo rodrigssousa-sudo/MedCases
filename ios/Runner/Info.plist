@@ -43,13 +43,10 @@
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>MedCases Pro puede guardar imágenes generadas por la aplicación — como gráficos de seguimiento clínico o capturas de protocolos — directamente en su biblioteca de fotos, exclusivamente cuando usted lo solicite de forma explícita.</string>
 
-	<!-- ── ATT — App Tracking Transparency (Apple Guideline 5.1.2) ─────── -->
-	<!-- Obrigatório quando o app usa Firebase Analytics / Crashlytics.       -->
-	<!-- O pop-up só é exibido se você chamar                                 -->
-	<!-- AppTrackingTransparency.requestTrackingAuthorization() no código.    -->
-	<!-- Sem esta key o iOS lança NSInternalInconsistencyException.           -->
-	<key>NSUserTrackingUsageDescription</key>
-	<string>O MedCases Pro coleta dados anônimos de uso — como quais módulos clínicos são mais acessados e o tempo de resposta da IA — exclusivamente para melhorar a qualidade das respostas clínicas e a experiência do profissional de saúde. Nenhum dado pessoal identificável, informação de paciente ou conteúdo de consultas é coletado ou compartilhado com terceiros.</string>
+	<!-- ── ATT removida — o app não faz tracking de terceiros para anúncios ── -->
+	<!-- NSUserTrackingUsageDescription REMOVIDA: sem Firebase Analytics,      -->
+	<!-- sem IDFA, sem SDKs de publicidade. Compliance Apple Guideline 5.1.2.  -->
+	<!-- Declarar "No data used to track you" no App Store Connect Privacy.    -->
 
 	<!-- ── Orientação iPhone: somente portrait ───────────────────────────── -->
 	<key>UISupportedInterfaceOrientations</key>
@@ -57,35 +54,16 @@
 		<string>UIInterfaceOrientationPortrait</string>
 	</array>
 
-	<!-- ── Orientação iPad: somente portrait (app não foi projetado para landscape) -->
+	<!-- ── Orientação iPad: portrait + landscape (Apple HIG 4.0 multitasking) ── -->
+	<!-- UIRequiresFullScreen REMOVIDA para habilitar Split View / Slide Over.  -->
+	<!-- Apple exige suporte a landscape no iPad para aprovação na App Store.   -->
 	<key>UISupportedInterfaceOrientations~ipad</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
 		<string>UIInterfaceOrientationPortraitUpsideDown</string>
+		<string>UIInterfaceOrientationLandscapeLeft</string>
+		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
-
-	<!-- ── Tela cheia no iPad ───────────────────────────────────────────── -->
-	<!-- Informa à App Store que o app requer tela cheia (não suporta        -->
-	<!-- multitarefa Split View / Slide Over do iPad). Sem esta chave, a     -->
-	<!-- Apple exige que UISupportedInterfaceOrientations~ipad inclua todas  -->
-	<!-- as 4 orientações — erro de upload code 90474 (Invalid bundle).      -->
-	<key>UIRequiresFullScreen</key>
-	<true/>
-
-	<!-- ╔══════════════════════════════════════════════════════════════════╗ -->
-	<!-- ║  OPÇÃO 2 — MODO COMPATIBILIDADE iPHONE NO iPAD                  ║ -->
-	<!-- ║  Para ativar: descomente as 4 linhas abaixo E remova as         ║ -->
-	<!-- ║  chaves UISupportedInterfaceOrientations~ipad e                 ║ -->
-	<!-- ║  UIRequiresFullScreen acima.                                    ║ -->
-	<!-- ║                                                                  ║ -->
-	<!-- ║  Efeito: app roda centralizado na tela do iPad com bordas        ║ -->
-	<!-- ║  pretas nas laterais, mantendo proporção de iPhone.             ║ -->
-	<!-- ║  Sem precisar corrigir nada no código Flutter.                  ║ -->
-	<!-- ╚══════════════════════════════════════════════════════════════════╝ -->
-	<!-- <key>UIDeviceFamily</key>    -->
-	<!-- <array>                      -->
-	<!--   <integer>1</integer>       -->  <!-- 1 = iPhone apenas (exclui iPad) -->
-	<!-- </array>                     -->
 
 	<!-- ── Modos de background ───────────────────────────────────────────── -->
 	<!-- audio: exigido pelo speech_to_text para manter sessão STT ativa      -->
