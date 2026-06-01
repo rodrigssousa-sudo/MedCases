@@ -2510,9 +2510,8 @@ class _LegalBar extends StatelessWidget {
 }
 
 // ── Task 9: URLs de Privacy Policy e Terms of Use (Guideline 5.1) ────────────
-// Atualizar estas constantes quando o site tiver as páginas publicadas.
-const String _kPrivacyUrl = 'https://medcasespro.com/privacidade';
-const String _kTermsUrl   = 'https://medcasespro.com/termos';
+const String _kPrivacyUrl = 'https://rodrigssousa.wixsite.com/medcases-pro/politica-de-privacidade';
+const String _kTermsUrl   = 'https://rodrigssousa.wixsite.com/medcases-pro/termos-de-uso';
 
 // ── Drawer lateral — redesenhado (v2) ─────────────────────────────────────────
 class _AppDrawer extends StatelessWidget {
