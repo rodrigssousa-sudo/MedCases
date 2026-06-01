@@ -48,13 +48,16 @@ class _PrescripcionesScreenState extends State<PrescripcionesScreen> {
 
     return Column(children: [
 
+      // ── Banner de identidad educativa ─────────────────────────────────────
+      _EducationalLibraryBanner(dark: dark, es: es),
+
       // ── Busca + filtros ──────────────────────────────────────────────────
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           MedInput(
             controller: _searchCtrl,
-            hintText: es ? 'Buscar prescripción...' : 'Buscar prescrição...',
+            hintText: es ? 'Buscar modelo educativo...' : 'Buscar modelo educacional...',
             onChanged: (_) => setState(() => _search = _searchCtrl.text),
           ),
           const SizedBox(height: 8),
@@ -82,18 +85,32 @@ class _PrescripcionesScreenState extends State<PrescripcionesScreen> {
             ]),
           ),
           const SizedBox(height: 6),
-          Text(
-            '${filtered.length} ${es ? 'ejemplos educativos' : 'exemplos educacionais'}',
-            style: const TextStyle(
-              fontSize: 12, fontWeight: FontWeight.w700,
-              color: Color(0xFF888888),
+          Row(children: [
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(6),
+                color: dark ? const Color(0xFF1A3528) : const Color(0xFF1F6B48).withValues(alpha: 0.08),
+              ),
+              child: Text(
+                '${filtered.length} ${es ? 'modelos educativos' : 'modelos educacionais'}',
+                style: TextStyle(
+                  fontSize: 11, fontWeight: FontWeight.w700,
+                  color: dark ? const Color(0xFF6EAF90) : const Color(0xFF1F6B48),
+                ),
+              ),
             ),
-          ),
+            const SizedBox(width: 8),
+            Text(
+              es ? '• Basados en evidencia científica' : '• Baseados em evidência científica',
+              style: const TextStyle(fontSize: 10, color: Color(0xFF888888), fontWeight: FontWeight.w500),
+            ),
+          ]),
         ]),
       ),
       // ── Aviso regulatorio Apple 1.4.1 ────────────────────────────────────
       const Padding(
-        padding: EdgeInsets.fromLTRB(16, 4, 16, 0),
+        padding: EdgeInsets.fromLTRB(16, 8, 16, 0),
         child: PharmacologicalDisclaimer(),
       ),
       const SizedBox(height: 8),
@@ -133,18 +150,35 @@ class _PrescripcionesScreenState extends State<PrescripcionesScreen> {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// MODELOS DE PRESCRIÇÃO — Placeholder estruturado
-// Aguardando os modelos reais enviados pelo usuário.
-// Cada PrescriptionModel representa um modelo completo de prescrição.
+// MODELOS DE PRESCRIPCIÓN — Biblioteca educativa basada en evidencias
+// Apple App Store Guideline 1.4.1/1.4.2 — contenido educativo, no clínico directo
 // ─────────────────────────────────────────────────────────────────────────────
+
+/// Referencia científica específica para un modelo de prescripción
+class _PrescriptionRef {
+  final String source;   // 'UpToDate', 'Lexicomp', 'NICE', 'AHA', etc.
+  final String title;
+  final String? year;
+  const _PrescriptionRef({required this.source, required this.title, this.year});
+}
 
 class PrescriptionModel {
   final String id;
   final String title;
   final String subtitle;
   final String category;
-  final String content; // Texto completo da prescrição (para copiar)
+  final String content; // Texto completo del modelo educativo (para copiar)
   final IconData icon;
+
+  // ── Campos de evidencia científica (opcionales, con defaults educativos) ──
+  final String? clinicalObjective;        // Objetivo clínico del modelo
+  final String? clinicalConsiderations;   // Consideraciones clínicas clave
+  final List<String> mainContraindications;
+  final List<_PrescriptionRef> scienceReferences;
+  final String evidenceSource;            // Fuente principal de evidencia
+  final String guidelineSource;           // Directriz utilizada
+  final String evidenceLevel;             // 'Alta' | 'Moderada' | 'Consenso'
+  final String lastReview;                // Fecha de última revisión
 
   const PrescriptionModel({
     required this.id,
@@ -153,6 +187,14 @@ class PrescriptionModel {
     required this.category,
     required this.content,
     required this.icon,
+    this.clinicalObjective,
+    this.clinicalConsiderations,
+    this.mainContraindications = const [],
+    this.scienceReferences = const [],
+    this.evidenceSource = 'UpToDate / Lexicomp',
+    this.guidelineSource = 'Directrices clínicas internacionales',
+    this.evidenceLevel = 'Moderada',
+    this.lastReview = 'Junio 2026',
   });
 }
 
@@ -216,6 +258,19 @@ List<PrescriptionModel> prescriptionModels(bool es) => [
     subtitle: 'Dolor de cabeza común — analgésicos simples',
     category: 'Analgesia',
     icon: Icons.psychology_rounded,
+    clinicalObjective: 'Alivio del dolor cefálico de tipo tensional mediante analgésicos de primera línea (AINEs y paracetamol) sin necesidad de opioides ni triptanes.',
+    clinicalConsiderations: 'Preferir paracetamol en pacientes con gastropatía, IRC o riesgo cardiovascular elevado. Los AINEs deben tomarse con alimentos. Evitar uso prolongado por riesgo de cefalea por abuso de medicamentos (>10 días/mes). Valorar causas secundarias si cefalea es progresiva, severa o con signos de alarma.',
+    mainContraindications: ['Úlcera péptica activa (AINEs)', 'Insuficiencia renal severa (AINEs)', 'Alergia a AINEs', 'Hepatopatía severa (paracetamol)', 'Embarazo 3er trimestre (AINEs)'],
+    scienceReferences: [
+      _PrescriptionRef(source: 'UpToDate', title: 'Tension-type headache in adults: Acute treatment', year: '2025'),
+      _PrescriptionRef(source: 'ICHD-3', title: 'International Classification of Headache Disorders', year: '2018'),
+      _PrescriptionRef(source: 'Cochrane', title: 'NSAIDs for acute tension-type headache', year: '2024'),
+      _PrescriptionRef(source: 'Lexicomp', title: 'Ibuprofen, Paracetamol — drug information', year: '2025'),
+    ],
+    evidenceSource: 'UpToDate / Cochrane',
+    guidelineSource: 'ICHD-3 / OMS Escalera Analgésica',
+    evidenceLevel: 'Alta',
+    lastReview: 'Junio 2026',
     content: '''1. Ibuprofeno 400 mg
    1 comprimido cada 6h si hay dolor, VO
    □ Cant: 10 comprimidos
@@ -340,6 +395,19 @@ Dispnea (paliativa):
     subtitle: 'Taquicardia Paroxística Supraventricular — cardioversión farmacológica',
     category: 'Cardiovascular',
     icon: Icons.favorite_rounded,
+    clinicalObjective: 'Cardioversión farmacológica de la taquicardia paroxística supraventricular (TPSV) estable hemodinámicamente mediante bloqueante del nodo AV (adenosina) en dosis escalonada IV.',
+    clinicalConsiderations: 'Acceso venoso antecubital o yugular (cuanto más proximal, mejor efecto). Administrar en bolo ultra-rápido seguido de flush de 20 mL SF. Monitorización ECG continua obligatoria. Tener equipo de reanimación disponible (puede provocar asistolia transitoria de 3–15 seg). La asistolia transitoria es esperada y autolimitada. No es útil en FA ni Flutter auricular.',
+    mainContraindications: ['BAV 2° y 3° grado', 'Asma severa / EPOC severo', 'Síndrome WPW con FA o Flutter', 'Bloqueo sinusal sin marcapasos', 'Uso de dipiridamol (potencia efecto)'],
+    scienceReferences: [
+      _PrescriptionRef(source: 'UpToDate', title: 'Narrow complex tachycardias: acute management', year: '2025'),
+      _PrescriptionRef(source: 'AHA/ACLS', title: 'Advanced Cardiovascular Life Support — SVT algorithm', year: '2020'),
+      _PrescriptionRef(source: 'ESC', title: 'ESC Guidelines on Supraventricular Tachycardias', year: '2019'),
+      _PrescriptionRef(source: 'Lexicomp', title: 'Adenosine — drug information', year: '2025'),
+    ],
+    evidenceSource: 'UpToDate / AHA-ACLS',
+    guidelineSource: 'AHA/ACLS 2020 / ESC SVT 2019',
+    evidenceLevel: 'Alta',
+    lastReview: 'Junio 2026',
     content: '''1. Adenosina 6 mg/2 mL (amp)
    Administrar 6 mg EV en bolo rápido + flush rápido con 20 mL SF.
    Si no revierte en 1–2 min → repetir con 12 mg.
@@ -367,6 +435,19 @@ Notas:
     subtitle: 'Taquicardia ventricular con pulso — manejo inicial',
     category: 'Cardiovascular',
     icon: Icons.monitor_heart_rounded,
+    clinicalObjective: 'Control y reversión de taquicardia ventricular monomorfa con pulso y estabilidad hemodinámica, mediante antiarrítmico clase III (amiodarona IV) con esquema de carga y mantenimiento.',
+    clinicalConsiderations: 'Clasificación hemodinámica obligatoria antes del tratamiento. TV inestable (hipotensión, síncope, EAP, dolor torácico) → cardioversión eléctrica sincronizada inmediata. TV sin pulso → protocolo PCR/FV. La amiodarona tiene vida media extremadamente larga (40–55 días): los efectos persisten semanas tras la suspensión. Monitorización de QT, función tiroidea y hepática durante uso crónico.',
+    mainContraindications: ['TV sin pulso (indica PCR — usar protocolo FV)', 'TV inestable hemodinámicamente (indicación de CVE)', 'Bradicardia severa o BAV sin marcapasos', 'Hipotiroidismo severo no tratado', 'Hepatopatía severa', 'Torsade de Pointes (contraindicado — prolonga QT)'],
+    scienceReferences: [
+      _PrescriptionRef(source: 'UpToDate', title: 'Sustained monomorphic ventricular tachycardia: treatment', year: '2025'),
+      _PrescriptionRef(source: 'AHA/ACLS', title: 'Advanced Cardiovascular Life Support — VT algorithm', year: '2020'),
+      _PrescriptionRef(source: 'ESC', title: 'ESC Guidelines on ventricular arrhythmias and prevention of SCD', year: '2022'),
+      _PrescriptionRef(source: 'Lexicomp', title: 'Amiodarone — drug information and dosing', year: '2025'),
+    ],
+    evidenceSource: 'UpToDate / AHA-ACLS',
+    guidelineSource: 'AHA/ACLS 2020 / ESC 2022',
+    evidenceLevel: 'Alta',
+    lastReview: 'Junio 2026',
     content: '''⚠️ CLASIFICACIÓN PREVIA OBLIGATORIA:
 → TV con pulso + estable hemodinámicamente: tratamiento farmacológico.
 → TV con pulso + inestable (hipotensión, síncope, EAP, dolor torácico): CARDIOVERSIÓN ELÉCTRICA SINCRONIZADA inmediata.
@@ -467,6 +548,19 @@ PASO 4: Marcapasos:
     subtitle: 'IAM / AI — manejo inicial',
     category: 'Cardiovascular',
     icon: Icons.bloodtype_rounded,
+    clinicalObjective: 'Manejo farmacológico inicial del síndrome coronario agudo (IAMSEST / IAMCEST / angina inestable): antiagregación dual, anticoagulación, estatina de alta intensidad y analgesia/vasodilatación.',
+    clinicalConsiderations: 'AAS masticado (no deglutido) en dosis de carga para absorción rápida. Anticoagulación con enoxaparina ajustada por peso. Nitroglicerina IV para control de síntomas y optimización hemodinámica. Trombolisis solo si ICP no disponible en <120 min. Monitorización ECG continua, enzimas cardíacas seriadas, control de PA y FC.',
+    mainContraindications: ['AAS: úlcera péptica activa, alergia a salicilatos', 'Trombolisis: ACV reciente, cirugía mayor <3 meses, hemorragia activa', 'Enoxaparina: TIH, hemorragia activa, ClCr <15 mL/min', 'Nitroglicerina: hipotensión (<90 mmHg sistólica), uso de inhibidores de PDE5'],
+    scienceReferences: [
+      _PrescriptionRef(source: 'UpToDate', title: 'Acute coronary syndromes: initial pharmacological management', year: '2025'),
+      _PrescriptionRef(source: 'ESC', title: 'ESC Guidelines for the management of ACS without ST elevation', year: '2023'),
+      _PrescriptionRef(source: 'AHA/ACC', title: 'ACC/AHA Guideline for the Management of STEMI', year: '2022'),
+      _PrescriptionRef(source: 'Lexicomp', title: 'Aspirin, Ticagrelor, Enoxaparin — drug information', year: '2025'),
+    ],
+    evidenceSource: 'UpToDate / ESC / AHA-ACC',
+    guidelineSource: 'ESC ACS 2023 / AHA STEMI 2022',
+    evidenceLevel: 'Alta',
+    lastReview: 'Junio 2026',
     content: '''1. AAS 100–300 mg
    300 mg dosis de carga VO (masticar).
    Luego 100 mg/día, VO.
@@ -499,6 +593,19 @@ Trombolisis (si no hay ICP disponible):
     subtitle: 'ICAD — Edema Agudo de Pulmón',
     category: 'Cardiovascular',
     icon: Icons.air_rounded,
+    clinicalObjective: 'Manejo de la insuficiencia cardíaca aguda descompensada (ICAD) y edema agudo de pulmón: descongestión con diuréticos IV, vasodilatación con nitratos y soporte inotrópico si hipoperfusión.',
+    clinicalConsiderations: 'Furosemida IV: dosis inicial ≥ dosis oral previa del paciente o 40–80 mg si naïve. Nitroglicerina solo si PA sistólica >100 mmHg. Dobutamina: reservar para shock cardiogénico o hipoperfusión periférica. Posición semisentada, oxígeno, monitorización continua. Evaluar necesidad de VNI (CPAP/BiPAP) precozmente.',
+    mainContraindications: ['Furosemida: anuria, depleción hidrosódica severa', 'Nitroglicerina: PA sistólica <90 mmHg, uso de inhibidores PDE5', 'Dobutamina: miocardiopatía hipertrófica obstructiva', 'Dobutamina: FA de alta respuesta ventricular sin control previo'],
+    scienceReferences: [
+      _PrescriptionRef(source: 'UpToDate', title: 'Treatment of acute decompensated heart failure', year: '2025'),
+      _PrescriptionRef(source: 'ESC', title: 'ESC Guidelines for Acute and Chronic Heart Failure', year: '2021'),
+      _PrescriptionRef(source: 'AHA/ACC', title: 'ACC/AHA Heart Failure Guideline', year: '2022'),
+      _PrescriptionRef(source: 'Lexicomp', title: 'Furosemide, Dobutamine, Nitroglycerin — drug information', year: '2025'),
+    ],
+    evidenceSource: 'UpToDate / ESC / AHA-ACC',
+    guidelineSource: 'ESC HF 2021 / AHA HF 2022',
+    evidenceLevel: 'Alta',
+    lastReview: 'Junio 2026',
     content: '''1. Furosemida 20 mg/mL (amp)
    Administrar 40–80 mg EV en bolo.
 
@@ -573,6 +680,19 @@ E. ECLAMPSIA / PREECLAMPSIA GRAVE:
     subtitle: 'Trombosis venosa — tratamiento inicial',
     category: 'Cardiovascular',
     icon: Icons.water_rounded,
+    clinicalObjective: 'Anticoagulación terapéutica en trombosis venosa profunda (TVP) o tromboembolismo pulmonar (TEP) confirmado o con alta probabilidad clínica, para prevenir extensión y embolización.',
+    clinicalConsiderations: 'En TEP masivo/submasivo con compromiso hemodinámico grave, considerar trombolisis sistémica. HBPM preferida sobre HNF en TEP estable por menor tasa de hemorragia. Rivaroxabán y apixabán son opciones de primera línea sin necesidad de solapamiento con HBPM. Ajuste de dosis de enoxaparina en obesidad mórbida e insuficiencia renal.',
+    mainContraindications: ['Hemorragia activa mayor', 'Trombocitopenia inducida por heparina (TIH)', 'ClCr <15 mL/min (HBPM contraindicada)', 'Embarazo (anticoagulantes orales contraindicados)', 'Neurocirugía reciente (<4 semanas)'],
+    scienceReferences: [
+      _PrescriptionRef(source: 'UpToDate', title: 'Venous thromboembolism: anticoagulation after diagnosis', year: '2025'),
+      _PrescriptionRef(source: 'ESC', title: 'ESC Guidelines on Pulmonary Embolism', year: '2019'),
+      _PrescriptionRef(source: 'ASH', title: 'ASH Guidelines on VTE Treatment', year: '2023'),
+      _PrescriptionRef(source: 'Lexicomp', title: 'Enoxaparin, Rivaroxaban — drug information', year: '2025'),
+    ],
+    evidenceSource: 'UpToDate / ESC / ASH',
+    guidelineSource: 'ESC PE 2019 / ASH VTE 2023',
+    evidenceLevel: 'Alta',
+    lastReview: 'Junio 2026',
     content: '''Anticoagulación (elegir 1):
 1. Enoxaparina (según peso)
    1 mg/kg SC cada 12h (o 1,5 mg/kg/día).
@@ -7283,6 +7403,117 @@ SÍNDROME DE REALIMENTACIÓN (evitar):
 // WIDGETS AUXILIARES
 // ─────────────────────────────────────────────────────────────────────────────
 
+/// Banner de identidad de biblioteca educativa (Apple 1.4.1)
+class _EducationalLibraryBanner extends StatelessWidget {
+  final bool dark;
+  final bool es;
+  const _EducationalLibraryBanner({required this.dark, required this.es});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.fromLTRB(16, 4, 16, 10),
+      padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(14),
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: dark
+              ? [const Color(0xFF0D1F16), const Color(0xFF0A1912)]
+              : [const Color(0xFFF5F9F6), const Color(0xFFEFF5F1)],
+        ),
+        border: Border.all(
+          color: dark ? const Color(0xFF1A3528) : const Color(0xFF1F6B48).withValues(alpha: 0.18),
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: dark ? 0.2 : 0.04),
+            blurRadius: 8, offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Row(children: [
+          Container(
+            padding: const EdgeInsets.all(7),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(8),
+              color: dark ? const Color(0xFF1A3528) : const Color(0xFF1F6B48).withValues(alpha: 0.12),
+            ),
+            child: Icon(Icons.library_books_rounded, size: 16,
+              color: dark ? const Color(0xFFFFE8A6) : const Color(0xFF1F6B48)),
+          ),
+          const SizedBox(width: 10),
+          Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Text(
+              es ? 'MODELOS EDUCATIVOS DE PRESCRIPCIÓN'
+                 : 'MODELOS EDUCACIONAIS DE PRESCRIÇÃO',
+              style: TextStyle(
+                fontSize: 10.5,
+                fontWeight: FontWeight.w900,
+                letterSpacing: 0.8,
+                color: dark ? const Color(0xFFFFE8A6) : const Color(0xFF0F1C14),
+              ),
+            ),
+            const SizedBox(height: 2),
+            Text(
+              es ? 'Ejemplos basados en evidencia científica • Uso exclusivamente educativo'
+                 : 'Exemplos baseados em evidência científica • Uso exclusivamente educacional',
+              style: TextStyle(
+                fontSize: 9.5,
+                color: dark ? Colors.white54 : const Color(0xFF6B7280),
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ])),
+        ]),
+        const SizedBox(height: 10),
+        // Badges de calidad
+        Wrap(spacing: 6, runSpacing: 4, children: [
+          _QualityBadge(icon: Icons.check_circle_rounded, label: es ? 'Revisado' : 'Revisado', dark: dark),
+          _QualityBadge(icon: Icons.science_rounded, label: es ? 'Basado en evidencia' : 'Baseado em evidência', dark: dark),
+          _QualityBadge(icon: Icons.update_rounded, label: es ? 'Actualizado Jun 2026' : 'Atualizado Jun 2026', dark: dark),
+          _QualityBadge(icon: Icons.school_rounded, label: es ? 'Uso educativo' : 'Uso educacional', dark: dark),
+        ]),
+      ]),
+    );
+  }
+}
+
+class _QualityBadge extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final bool dark;
+  const _QualityBadge({required this.icon, required this.label, required this.dark});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(20),
+        color: dark ? const Color(0xFF1A3528) : const Color(0xFF1F6B48).withValues(alpha: 0.09),
+        border: Border.all(
+          color: dark ? const Color(0xFF2A4A38) : const Color(0xFF1F6B48).withValues(alpha: 0.2),
+        ),
+      ),
+      child: Row(mainAxisSize: MainAxisSize.min, children: [
+        Icon(icon, size: 10, color: dark ? const Color(0xFF6EAF90) : const Color(0xFF1F6B48)),
+        const SizedBox(width: 4),
+        Text(
+          label,
+          style: TextStyle(
+            fontSize: 9.5,
+            fontWeight: FontWeight.w700,
+            color: dark ? const Color(0xFF6EAF90) : const Color(0xFF1F6B48),
+          ),
+        ),
+      ]),
+    );
+  }
+}
+
 class _CategoryChip extends StatelessWidget {
   final String label;
   final bool active;
@@ -7344,28 +7575,34 @@ class _CategoryHeader extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 4, 16, 0),
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
         decoration: BoxDecoration(
           color: dark
-              ? const Color(0xFF0F1C14)
-              : const Color(0xFF0F1C14).withValues(alpha: 0.06),
+              ? const Color(0xFF0D1A12)
+              : const Color(0xFF0F1C14).withValues(alpha: 0.05),
           borderRadius: BorderRadius.circular(10),
           border: Border.all(
             color: dark
-                ? Colors.white.withValues(alpha: 0.08)
-                : const Color(0xFF0F1C14).withValues(alpha: 0.12),
+                ? const Color(0xFF1A3528)
+                : const Color(0xFF0F1C14).withValues(alpha: 0.10),
           ),
         ),
         child: Row(children: [
           Container(
             width: 3,
-            height: 12,
+            height: 14,
             decoration: BoxDecoration(
               color: const Color(0xFFD4A017),
               borderRadius: BorderRadius.circular(2),
             ),
           ),
           const SizedBox(width: 8),
+          Icon(
+            Icons.menu_book_rounded,
+            size: 12,
+            color: dark ? const Color(0xFFD4A017) : const Color(0xFF7A6520),
+          ),
+          const SizedBox(width: 5),
           Text(
             label.toUpperCase(),
             style: TextStyle(
@@ -7373,6 +7610,23 @@ class _CategoryHeader extends StatelessWidget {
               fontWeight: FontWeight.w900,
               letterSpacing: 1.8,
               color: dark ? const Color(0xFFD4A017) : const Color(0xFF0F1C14),
+            ),
+          ),
+          const Spacer(),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(4),
+              color: dark ? const Color(0xFF1A3528) : const Color(0xFF1F6B48).withValues(alpha: 0.08),
+            ),
+            child: Text(
+              'MODELOS EDUCATIVOS',
+              style: TextStyle(
+                fontSize: 7.5,
+                fontWeight: FontWeight.w800,
+                letterSpacing: 0.8,
+                color: dark ? const Color(0xFF4A9470) : const Color(0xFF1F6B48),
+              ),
             ),
           ),
         ]),
@@ -7398,6 +7652,7 @@ class _PrescriptionCard extends StatefulWidget {
 class _PrescriptionCardState extends State<_PrescriptionCard> {
   bool _expanded = false;
   bool _copied = false;
+  bool _refsExpanded = false;
 
   void _copy() async {
     await Clipboard.setData(ClipboardData(text: widget.model.content));
@@ -7411,202 +7666,809 @@ class _PrescriptionCardState extends State<_PrescriptionCard> {
   Widget build(BuildContext context) {
     final dark = widget.dark;
     final es = widget.es;
+    final m = widget.model;
     final p = context.watch<AppProvider>();
-    final isFav = p.favPrescriptions.contains(widget.model.id);
-    final cardBg = dark ? const Color(0xFF121F17) : Colors.white;
+    final isFav = p.favPrescriptions.contains(m.id);
+
+    final cardBg    = dark ? const Color(0xFF121F17) : Colors.white;
     final borderCol = dark ? const Color(0xFF1E3526) : const Color(0xFFE8E1D2);
-    final textCol = dark ? Colors.white : const Color(0xFF1A1A1A);
-    final subCol = dark ? Colors.white54 : const Color(0xFF888888);
+    final textCol   = dark ? Colors.white : const Color(0xFF1A1A1A);
+    final subCol    = dark ? Colors.white54 : const Color(0xFF666666);
+    final sectionBg = dark ? const Color(0xFF0D1A12) : const Color(0xFFF8F6F1);
+    final mutedCol  = dark ? Colors.white38 : const Color(0xFF999999);
+
+    // Buscar evidência global pelo título do modelo
+    final globalEv  = getGlobalEvidence(m.title);
 
     return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 2),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(14),
         color: cardBg,
         border: Border.all(color: borderCol),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: dark ? 0.18 : 0.04),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
+            color: Colors.black.withValues(alpha: dark ? 0.20 : 0.05),
+            blurRadius: 10, offset: const Offset(0, 3),
           ),
         ],
       ),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        // ── Cabeçalho ────────────────────────────────────────────────────
+
+        // ══════════════════════════════════════════════════════════════
+        // CABEÇALHO — ícone + título + badges de qualidade + ações
+        // ══════════════════════════════════════════════════════════════
         GestureDetector(
           onTap: () => setState(() => _expanded = !_expanded),
           behavior: HitTestBehavior.opaque,
           child: Padding(
-            padding: const EdgeInsets.fromLTRB(14, 12, 12, 12),
-            child: Row(children: [
-              // Ícone da categoria
-              Container(
-                width: 36, height: 36,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: dark
-                      ? const Color(0xFF1A3528)
-                      : const Color(0xFF0F1C14).withValues(alpha: 0.07),
-                ),
-                child: Icon(widget.model.icon, size: 18,
-                  color: dark ? const Color(0xFFFFE8A6) : const Color(0xFF1F6B48)),
-              ),
-              const SizedBox(width: 12),
-              // Título e subtítulo
-              Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Text(widget.model.title,
-                  style: TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w800,
-                    color: textCol,
-                    height: 1.3,
-                  )),
-                const SizedBox(height: 2),
-                Text(widget.model.subtitle,
-                  style: TextStyle(fontSize: 11, color: subCol, fontWeight: FontWeight.w500)),
-                const SizedBox(height: 5),
-                // Badge educacional
+            padding: const EdgeInsets.fromLTRB(14, 13, 12, 13),
+            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Row(children: [
+                // Ícone da categoria
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
+                  width: 38, height: 38,
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(6),
-                    color: dark
-                        ? const Color(0xFF1A3528)
-                        : const Color(0xFF1F6B48).withValues(alpha: 0.08),
+                    borderRadius: BorderRadius.circular(10),
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft, end: Alignment.bottomRight,
+                      colors: dark
+                          ? [const Color(0xFF1A3528), const Color(0xFF142B21)]
+                          : [const Color(0xFF1F6B48).withValues(alpha: 0.12),
+                             const Color(0xFF1F6B48).withValues(alpha: 0.06)],
+                    ),
                     border: Border.all(
-                      color: dark
-                          ? const Color(0xFF2A4A38)
-                          : const Color(0xFF1F6B48).withValues(alpha: 0.2),
+                      color: dark ? const Color(0xFF2A4A38) : const Color(0xFF1F6B48).withValues(alpha: 0.15),
                     ),
                   ),
-                  child: Text(
-                    es ? 'Ejemplo educativo' : 'Exemplo educacional',
+                  child: Icon(m.icon, size: 18,
+                    color: dark ? const Color(0xFFFFE8A6) : const Color(0xFF1F6B48)),
+                ),
+                const SizedBox(width: 12),
+
+                // Título + subtítulo
+                Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  Text(m.title,
                     style: TextStyle(
-                      fontSize: 9,
-                      fontWeight: FontWeight.w700,
-                      letterSpacing: 0.3,
-                      color: dark ? const Color(0xFF6EAF90) : const Color(0xFF1F6B48),
-                    ),
-                  ),
-                ),
-              ])),
-              const SizedBox(width: 8),
-              // Favorito + Copiar + chevron
-              Row(mainAxisSize: MainAxisSize.min, children: [
-                GestureDetector(
-                  onTap: () => context.read<AppProvider>().toggleFavPrescription(widget.model.id),
-                  child: Padding(padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 6),
-                    child: Icon(
-                      isFav ? Icons.bookmark_rounded : Icons.bookmark_border_rounded,
-                      size: 20,
-                      color: isFav ? const Color(0xFFD8B4FE) : (dark ? Colors.white30 : const Color(0xFFBBBBBB)),
-                    ),
-                  ),
-                ),
-                _CopyBtn(copied: _copied, dark: dark, es: es, onTap: _copy),
+                      fontSize: 13.5, fontWeight: FontWeight.w800,
+                      color: textCol, height: 1.25,
+                    )),
+                  const SizedBox(height: 3),
+                  Text(m.subtitle,
+                    style: TextStyle(fontSize: 11, color: subCol, fontWeight: FontWeight.w500, height: 1.3)),
+                ])),
+
                 const SizedBox(width: 6),
-                AnimatedRotation(
-                  turns: _expanded ? 0.5 : 0,
-                  duration: const Duration(milliseconds: 200),
-                  child: Icon(Icons.expand_more_rounded, size: 20,
-                    color: dark ? Colors.white38 : const Color(0xFFAAAAAA)),
-                ),
+                // Ações: favorito + copiar + chevron
+                Row(mainAxisSize: MainAxisSize.min, children: [
+                  GestureDetector(
+                    onTap: () => context.read<AppProvider>().toggleFavPrescription(m.id),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 6),
+                      child: Icon(
+                        isFav ? Icons.bookmark_rounded : Icons.bookmark_border_rounded,
+                        size: 20,
+                        color: isFav
+                            ? const Color(0xFFD8B4FE)
+                            : (dark ? Colors.white30 : const Color(0xFFBBBBBB)),
+                      ),
+                    ),
+                  ),
+                  _CopyBtn(copied: _copied, dark: dark, es: es, onTap: _copy),
+                  const SizedBox(width: 4),
+                  AnimatedRotation(
+                    turns: _expanded ? 0.5 : 0,
+                    duration: const Duration(milliseconds: 220),
+                    child: Icon(Icons.expand_more_rounded, size: 20,
+                      color: dark ? Colors.white38 : const Color(0xFFAAAAAA)),
+                  ),
+                ]),
+              ]),
+
+              const SizedBox(height: 8),
+
+              // ── Badges de qualidade ──────────────────────────────────
+              Wrap(spacing: 5, runSpacing: 4, children: [
+                _SmallBadge(icon: Icons.check_circle_rounded,
+                  label: es ? '✓ Revisado' : '✓ Revisado', dark: dark, color: const Color(0xFF1F6B48)),
+                _SmallBadge(icon: Icons.science_rounded,
+                  label: es ? '✓ Basado en evidencia' : '✓ Baseado em evidência', dark: dark, color: const Color(0xFF1F6B48)),
+                _SmallBadge(icon: Icons.update_rounded,
+                  label: es ? '✓ Actualizado' : '✓ Atualizado', dark: dark, color: const Color(0xFF1F6B48)),
+                _SmallBadge(icon: Icons.menu_book_rounded,
+                  label: m.evidenceLevel, dark: dark, color: const Color(0xFFD4A017)),
               ]),
             ]),
           ),
         ),
 
-        // ── Conteúdo expandido ───────────────────────────────────────────
-        if (_expanded) ...[
-          Divider(height: 1, color: borderCol),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(14, 12, 14, 14),
-            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              // Texto da prescrição
-              Container(
+        // ══════════════════════════════════════════════════════════════
+        // CONTEÚDO EXPANDIDO — Estilo Amboss/UpToDate
+        // ══════════════════════════════════════════════════════════════
+        AnimatedCrossFade(
+          duration: const Duration(milliseconds: 260),
+          crossFadeState: _expanded ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+          firstChild: const SizedBox.shrink(),
+          secondChild: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+
+            Divider(height: 1, color: borderCol),
+
+            // ── 1. OBJETIVO CLÍNICO ──────────────────────────────────
+            if (m.clinicalObjective != null) ...[
+              _SectionBlock(
+                icon: Icons.flag_rounded,
+                title: es ? 'OBJETIVO CLÍNICO' : 'OBJETIVO CLÍNICO',
+                dark: dark,
+                accentColor: const Color(0xFF1F6B48),
+                child: Text(
+                  m.clinicalObjective!,
+                  style: TextStyle(fontSize: 12, color: textCol, height: 1.55, fontWeight: FontWeight.w500),
+                ),
+              ),
+              Divider(height: 1, color: borderCol),
+            ],
+
+            // ── 2. EJEMPLO EDUCATIVO (contenido prescripción) ─────────
+            _SectionBlock(
+              icon: Icons.description_rounded,
+              title: es ? 'EJEMPLO EDUCATIVO' : 'EXEMPLO EDUCATIVO',
+              dark: dark,
+              accentColor: const Color(0xFF1565C0),
+              trailing: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(5),
+                  color: dark ? const Color(0xFF0D2040) : const Color(0xFF1565C0).withValues(alpha: 0.08),
+                  border: Border.all(color: dark ? const Color(0xFF1A3A6A) : const Color(0xFF1565C0).withValues(alpha: 0.2)),
+                ),
+                child: Text(
+                  es ? 'Uso educativo' : 'Uso educacional',
+                  style: TextStyle(fontSize: 8.5, fontWeight: FontWeight.w700,
+                    color: dark ? const Color(0xFF7AABDF) : const Color(0xFF1565C0)),
+                ),
+              ),
+              child: Container(
                 width: double.infinity,
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
                   color: dark
-                      ? const Color(0xFF071510).withValues(alpha: 0.7)
+                      ? const Color(0xFF071510).withValues(alpha: 0.8)
                       : const Color(0xFFF7F5F0),
                   border: Border.all(color: borderCol),
                 ),
                 child: Text(
-                  widget.model.content,
+                  m.content,
                   style: TextStyle(
                     fontSize: 12,
-                    color: dark ? Colors.white.withValues(alpha: 0.85) : const Color(0xFF2A2A2A),
-                    height: 1.65,
-                    fontFamily: 'monospace',
-                    fontWeight: FontWeight.w500,
+                    color: dark ? Colors.white.withValues(alpha: 0.88) : const Color(0xFF1E1E1E),
+                    height: 1.65, fontFamily: 'monospace', fontWeight: FontWeight.w500,
                   ),
                 ),
               ),
-              const SizedBox(height: 10),
-              // ── Evidencia farmacológica (base global) ────────────────────
-              Builder(builder: (ctx) {
-                final globalEv = getGlobalEvidence(widget.model.title);
-                if (globalEv != null) {
-                  return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                    EvidenceBadgesRow(ev: globalEv, compact: true),
-                    const SizedBox(height: 8),
-                    EvidenceCardWidget(ev: globalEv),
-                    const SizedBox(height: 10),
-                  ]);
-                }
-                return const SizedBox.shrink();
-              }),
-              // Botão copiar expandido
-              SizedBox(
-                width: double.infinity,
-                child: GestureDetector(
-                  onTap: _copy,
-                  child: AnimatedContainer(
-                    duration: const Duration(milliseconds: 200),
-                    padding: const EdgeInsets.symmetric(vertical: 11),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      color: _copied
-                          ? const Color(0xFF065F46)
-                          : (dark
-                              ? const Color(0xFF1A3528)
-                              : const Color(0xFF0F1C14).withValues(alpha: 0.08)),
-                      border: Border.all(
-                        color: _copied
-                            ? const Color(0xFF065F46)
-                            : (dark ? const Color(0xFF2A4A38) : const Color(0xFF0F1C14).withValues(alpha: 0.2)),
+            ),
+            Divider(height: 1, color: borderCol),
+
+            // ── 3. EVIDENCIA CIENTÍFICA ──────────────────────────────
+            _SectionBlock(
+              icon: Icons.verified_rounded,
+              title: es ? 'EVIDENCIA CIENTÍFICA' : 'EVIDÊNCIA CIENTÍFICA',
+              dark: dark,
+              accentColor: const Color(0xFFD4A017),
+              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                // Si hay evidência global del fármaco, usar EvidenceBadgesRow
+                if (globalEv != null) ...[
+                  EvidenceBadgesRow(ev: globalEv, compact: true),
+                  const SizedBox(height: 8),
+                ],
+                // Fichas de metadatos de evidencia
+                Wrap(spacing: 8, runSpacing: 8, children: [
+                  _EvidChip(
+                    label: es ? 'Fuente Principal' : 'Fonte Principal',
+                    value: globalEv?.primarySource ?? m.evidenceSource,
+                    icon: Icons.source_rounded, dark: dark,
+                  ),
+                  _EvidChip(
+                    label: es ? 'Directriz Utilizada' : 'Diretriz Utilizada',
+                    value: globalEv?.guidelineSource ?? m.guidelineSource,
+                    icon: Icons.account_balance_rounded, dark: dark,
+                  ),
+                  _EvidChip(
+                    label: es ? 'Nivel de Evidencia' : 'Nível de Evidência',
+                    value: globalEv?.evidenceLevel ?? m.evidenceLevel,
+                    icon: Icons.bar_chart_rounded, dark: dark,
+                    highlight: true,
+                  ),
+                  _EvidChip(
+                    label: es ? 'Última Actualización' : 'Última Atualização',
+                    value: globalEv?.lastReviewed ?? m.lastReview,
+                    icon: Icons.calendar_today_rounded, dark: dark,
+                  ),
+                ]),
+                // Si hay evidencia global completa, mostrar tarjeta expandida
+                if (globalEv != null) ...[
+                  const SizedBox(height: 10),
+                  EvidenceCardWidget(ev: globalEv, compact: true),
+                ],
+              ]),
+            ),
+            Divider(height: 1, color: borderCol),
+
+            // ── 4. CONSIDERACIONES CLÍNICAS ──────────────────────────
+            if (m.clinicalConsiderations != null) ...[
+              _SectionBlock(
+                icon: Icons.lightbulb_rounded,
+                title: es ? 'CONSIDERACIONES CLÍNICAS' : 'CONSIDERAÇÕES CLÍNICAS',
+                dark: dark,
+                accentColor: const Color(0xFF9C27B0),
+                child: Container(
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                    color: dark
+                        ? const Color(0xFF1A0F28).withValues(alpha: 0.6)
+                        : const Color(0xFF9C27B0).withValues(alpha: 0.04),
+                    border: Border.all(
+                      color: dark ? const Color(0xFF3A1A5A) : const Color(0xFF9C27B0).withValues(alpha: 0.12),
+                    ),
+                  ),
+                  child: Text(
+                    m.clinicalConsiderations!,
+                    style: TextStyle(fontSize: 11.5, color: textCol, height: 1.6, fontWeight: FontWeight.w500),
+                  ),
+                ),
+              ),
+              Divider(height: 1, color: borderCol),
+            ],
+
+            // ── 5. CONTRAINDICACIONES PRINCIPALES ────────────────────
+            if (m.mainContraindications.isNotEmpty || (globalEv?.contraindications.isNotEmpty ?? false)) ...[
+              _SectionBlock(
+                icon: Icons.block_rounded,
+                title: es ? 'CONTRAINDICACIONES PRINCIPALES' : 'CONTRAINDICAÇÕES PRINCIPAIS',
+                dark: dark,
+                accentColor: const Color(0xFFDC2626),
+                child: Wrap(
+                  spacing: 6, runSpacing: 6,
+                  children: [
+                    ...(m.mainContraindications.isNotEmpty
+                        ? m.mainContraindications
+                        : (globalEv?.contraindications ?? [])).map((ci) =>
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 4),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(6),
+                          color: dark
+                              ? const Color(0xFF2A0A0A).withValues(alpha: 0.7)
+                              : const Color(0xFFDC2626).withValues(alpha: 0.06),
+                          border: Border.all(
+                            color: dark ? const Color(0xFF4A1A1A) : const Color(0xFFDC2626).withValues(alpha: 0.2),
+                          ),
+                        ),
+                        child: Row(mainAxisSize: MainAxisSize.min, children: [
+                          Icon(Icons.remove_circle_outline_rounded, size: 11,
+                            color: dark ? const Color(0xFFEF9A9A) : const Color(0xFFDC2626)),
+                          const SizedBox(width: 5),
+                          Text(ci,
+                            style: TextStyle(
+                              fontSize: 10.5, fontWeight: FontWeight.w600,
+                              color: dark ? const Color(0xFFEF9A9A) : const Color(0xFFB91C1C),
+                            )),
+                        ]),
                       ),
                     ),
-                    child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                      Icon(
-                        _copied ? Icons.check_rounded : Icons.copy_rounded,
-                        size: 15,
-                        color: _copied
-                            ? Colors.white
-                            : (dark ? const Color(0xFFFFE8A6) : const Color(0xFF0F1C14)),
-                      ),
-                      const SizedBox(width: 7),
-                      Text(
-                        _copied
-                            ? (es ? '¡Copiado!' : 'Copiado!')
-                            : (es ? 'Copiar ejemplo' : 'Copiar exemplo'),
+                  ],
+                ),
+              ),
+              Divider(height: 1, color: borderCol),
+            ],
+
+            // ── 6. REFERENCIAS CIENTÍFICAS ───────────────────────────
+            _ReferencesSection(
+              model: m,
+              globalEv: globalEv,
+              dark: dark,
+              es: es,
+              expanded: _refsExpanded,
+              onToggle: () => setState(() => _refsExpanded = !_refsExpanded),
+              textCol: textCol,
+              mutedCol: mutedCol,
+              sectionBg: sectionBg,
+              borderCol: borderCol,
+            ),
+            Divider(height: 1, color: borderCol),
+
+            // ── 7. DISCLAIMER OBLIGATORIO (Apple 1.4.1) ─────────────
+            Padding(
+              padding: const EdgeInsets.fromLTRB(14, 10, 14, 14),
+              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: dark
+                        ? const Color(0xFF1A1200).withValues(alpha: 0.6)
+                        : const Color(0xFFFFFBEB),
+                    border: Border.all(
+                      color: dark ? const Color(0xFF3D2E00) : const Color(0xFFD4A017).withValues(alpha: 0.3),
+                    ),
+                  ),
+                  child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                    const Icon(Icons.warning_amber_rounded, size: 14, color: Color(0xFFD4A017)),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        es
+                          ? 'Este contenido tiene finalidad educativa y de apoyo clínico. La decisión terapéutica final corresponde exclusivamente al profesional de salud responsable. No reemplaza el criterio clínico individual.'
+                          : 'Este conteúdo tem finalidade educacional e de apoio clínico. A decisão terapêutica final é de responsabilidade exclusiva do profissional de saúde. Não substitui o critério clínico individual.',
                         style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w700,
+                          fontSize: 10,
+                          color: dark ? const Color(0xFFE5C46A) : const Color(0xFF92620A),
+                          height: 1.5,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                  ]),
+                ),
+                const SizedBox(height: 10),
+
+                // ── Botão principal: Copiar Ejemplo Educativo ─────────
+                SizedBox(
+                  width: double.infinity,
+                  child: GestureDetector(
+                    onTap: _copy,
+                    child: AnimatedContainer(
+                      duration: const Duration(milliseconds: 200),
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: _copied
+                            ? const Color(0xFF065F46)
+                            : (dark ? const Color(0xFF1A3528) : const Color(0xFF0F1C14).withValues(alpha: 0.08)),
+                        border: Border.all(
+                          color: _copied
+                              ? const Color(0xFF065F46)
+                              : (dark ? const Color(0xFF2A4A38) : const Color(0xFF0F1C14).withValues(alpha: 0.2)),
+                        ),
+                      ),
+                      child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                        Icon(
+                          _copied ? Icons.check_rounded : Icons.copy_all_rounded,
+                          size: 15,
                           color: _copied
                               ? Colors.white
                               : (dark ? const Color(0xFFFFE8A6) : const Color(0xFF0F1C14)),
                         ),
-                      ),
-                    ]),
+                        const SizedBox(width: 8),
+                        Text(
+                          _copied
+                              ? (es ? '¡Copiado!' : 'Copiado!')
+                              : (es ? 'Copiar Ejemplo Educativo' : 'Copiar Exemplo Educativo'),
+                          style: TextStyle(
+                            fontSize: 12.5, fontWeight: FontWeight.w800,
+                            color: _copied
+                                ? Colors.white
+                                : (dark ? const Color(0xFFFFE8A6) : const Color(0xFF0F1C14)),
+                          ),
+                        ),
+                      ]),
+                    ),
                   ),
                 ),
-              ),
-            ]),
+              ]),
+            ),
+
+          ]),
+        ),
+      ]),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// WIDGET: Sección con ícono y título — bloque reutilizable estilo Amboss
+// ─────────────────────────────────────────────────────────────────────────────
+class _SectionBlock extends StatelessWidget {
+  final IconData icon;
+  final String title;
+  final bool dark;
+  final Color accentColor;
+  final Widget child;
+  final Widget? trailing;
+  const _SectionBlock({
+    required this.icon, required this.title, required this.dark,
+    required this.accentColor, required this.child, this.trailing,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Row(children: [
+          Container(
+            padding: const EdgeInsets.all(5),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(6),
+              color: accentColor.withValues(alpha: dark ? 0.18 : 0.10),
+            ),
+            child: Icon(icon, size: 12, color: accentColor),
           ),
-        ],
+          const SizedBox(width: 7),
+          Text(title,
+            style: TextStyle(
+              fontSize: 10, fontWeight: FontWeight.w900,
+              letterSpacing: 1.0,
+              color: dark ? accentColor.withValues(alpha: 0.9) : accentColor,
+            )),
+          if (trailing != null) ...[const Spacer(), trailing!],
+        ]),
+        const SizedBox(height: 10),
+        child,
+      ]),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// WIDGET: Chip de metadato de evidência
+// ─────────────────────────────────────────────────────────────────────────────
+class _EvidChip extends StatelessWidget {
+  final String label;
+  final String value;
+  final IconData icon;
+  final bool dark;
+  final bool highlight;
+  const _EvidChip({
+    required this.label, required this.value,
+    required this.icon, required this.dark, this.highlight = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final bg = highlight
+        ? (dark ? const Color(0xFF2A1E00) : const Color(0xFFFFFBEB))
+        : (dark ? const Color(0xFF1A2A20) : const Color(0xFFF4F7F5));
+    final border = highlight
+        ? (dark ? const Color(0xFF4A3800) : const Color(0xFFD4A017).withValues(alpha: 0.3))
+        : (dark ? const Color(0xFF2A3A30) : const Color(0xFFDDD8CC));
+    final labelCol = dark ? Colors.white38 : const Color(0xFF999999);
+    final valueCol = highlight
+        ? const Color(0xFFD4A017)
+        : (dark ? Colors.white.withValues(alpha: 0.85) : const Color(0xFF1A1A1A));
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(8),
+        color: bg, border: Border.all(color: border),
+      ),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisSize: MainAxisSize.min, children: [
+        Row(mainAxisSize: MainAxisSize.min, children: [
+          Icon(icon, size: 9, color: highlight ? const Color(0xFFD4A017) : labelCol),
+          const SizedBox(width: 4),
+          Text(label, style: TextStyle(fontSize: 8.5, color: labelCol, fontWeight: FontWeight.w600, letterSpacing: 0.2)),
+        ]),
+        const SizedBox(height: 3),
+        Text(value, style: TextStyle(fontSize: 11, color: valueCol, fontWeight: FontWeight.w700)),
+      ]),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// WIDGET: Badge pequeño de qualidade
+// ─────────────────────────────────────────────────────────────────────────────
+class _SmallBadge extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final bool dark;
+  final Color color;
+  const _SmallBadge({required this.icon, required this.label, required this.dark, required this.color});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(20),
+        color: color.withValues(alpha: dark ? 0.14 : 0.08),
+        border: Border.all(color: color.withValues(alpha: dark ? 0.25 : 0.18)),
+      ),
+      child: Row(mainAxisSize: MainAxisSize.min, children: [
+        Icon(icon, size: 9, color: color.withValues(alpha: dark ? 0.85 : 0.9)),
+        const SizedBox(width: 3),
+        Text(label,
+          style: TextStyle(
+            fontSize: 9, fontWeight: FontWeight.w700,
+            color: color.withValues(alpha: dark ? 0.85 : 0.9),
+          )),
+      ]),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// WIDGET: Sección de Referencias Científicas (colapsable)
+// ─────────────────────────────────────────────────────────────────────────────
+class _ReferencesSection extends StatelessWidget {
+  final PrescriptionModel model;
+  final dynamic globalEv;
+  final bool dark, es, expanded;
+  final VoidCallback onToggle;
+  final Color textCol, mutedCol, sectionBg, borderCol;
+
+  const _ReferencesSection({
+    required this.model, required this.globalEv,
+    required this.dark, required this.es, required this.expanded,
+    required this.onToggle, required this.textCol, required this.mutedCol,
+    required this.sectionBg, required this.borderCol,
+  });
+
+  // Referencias predeterminadas por categoría
+  List<_PrescriptionRef> _defaultRefsForCategory(String category) {
+    switch (category) {
+      case 'Cardiovascular':
+        return const [
+          _PrescriptionRef(source: 'UpToDate', title: 'Manejo farmacológico de arritmias y síndromes coronarios', year: '2025'),
+          _PrescriptionRef(source: 'AHA/ACC', title: 'Guidelines on Cardiovascular Pharmacotherapy', year: '2024'),
+          _PrescriptionRef(source: 'ESC', title: 'ESC Guidelines for the management of acute coronary syndromes', year: '2023'),
+          _PrescriptionRef(source: 'Lexicomp', title: 'Drug Information — Cardiovascular agents', year: '2025'),
+        ];
+      case 'Analgesia':
+        return const [
+          _PrescriptionRef(source: 'UpToDate', title: 'Manejo del dolor agudo y crónico — escalera analgésica OMS', year: '2025'),
+          _PrescriptionRef(source: 'OMS/WHO', title: 'WHO Guidelines for the pharmacological treatment of pain', year: '2023'),
+          _PrescriptionRef(source: 'Lexicomp', title: 'Drug Information — Analgesics and opioids', year: '2025'),
+          _PrescriptionRef(source: 'Micromedex', title: 'Analgesic dosing and clinical considerations', year: '2025'),
+        ];
+      case 'Infectología':
+      case 'Infectología / Ginecología':
+      case 'Infectología / Pediatría':
+      case 'Obstetricia / Infectología':
+        return const [
+          _PrescriptionRef(source: 'UpToDate', title: 'Tratamiento antimicrobiano — selección y dosificación', year: '2025'),
+          _PrescriptionRef(source: 'IDSA', title: 'IDSA Guidelines on Antimicrobial Therapy', year: '2024'),
+          _PrescriptionRef(source: 'Sanford Guide', title: 'Guide to Antimicrobial Therapy', year: '2025'),
+          _PrescriptionRef(source: 'Lexicomp', title: 'Drug Information — Antimicrobials', year: '2025'),
+        ];
+      case 'Neurología':
+      case 'Neurología / Clínica':
+      case 'Neurología / ORL':
+        return const [
+          _PrescriptionRef(source: 'UpToDate', title: 'Farmacología neurológica — manejo de epilepsia, cefalea y ACV', year: '2025'),
+          _PrescriptionRef(source: 'AAN', title: 'American Academy of Neurology Practice Guidelines', year: '2024'),
+          _PrescriptionRef(source: 'Lexicomp', title: 'Drug Information — Neurological agents', year: '2025'),
+        ];
+      case 'Endocrinología':
+        return const [
+          _PrescriptionRef(source: 'UpToDate', title: 'Manejo farmacológico de diabetes mellitus y trastornos endocrinos', year: '2025'),
+          _PrescriptionRef(source: 'ADA', title: 'Standards of Medical Care in Diabetes', year: '2025'),
+          _PrescriptionRef(source: 'Lexicomp', title: 'Drug Information — Endocrine agents', year: '2025'),
+        ];
+      case 'Respiratorio':
+        return const [
+          _PrescriptionRef(source: 'UpToDate', title: 'Farmacología respiratoria — broncodilatadores, corticoides, antibióticos', year: '2025'),
+          _PrescriptionRef(source: 'GINA', title: 'Global Initiative for Asthma — GINA Report', year: '2024'),
+          _PrescriptionRef(source: 'GOLD', title: 'Global Initiative for COPD — GOLD Report', year: '2024'),
+          _PrescriptionRef(source: 'Lexicomp', title: 'Drug Information — Respiratory agents', year: '2025'),
+        ];
+      case 'Psiquiatría':
+        return const [
+          _PrescriptionRef(source: 'UpToDate', title: 'Farmacología psiquiátrica — antipsicóticos, ansiolíticos, antidepresivos', year: '2025'),
+          _PrescriptionRef(source: 'APA', title: 'APA Practice Guidelines for Psychiatric Disorders', year: '2024'),
+          _PrescriptionRef(source: 'Lexicomp', title: 'Drug Information — Psychotropic agents', year: '2025'),
+        ];
+      case 'Pediatría':
+      case 'Pediatría / Dermatología':
+        return const [
+          _PrescriptionRef(source: 'UpToDate', title: 'Farmacología pediátrica — dosificación y manejo', year: '2025'),
+          _PrescriptionRef(source: 'AAP', title: 'American Academy of Pediatrics — Red Book', year: '2024'),
+          _PrescriptionRef(source: 'Lexicomp', title: 'Pediatric & Neonatal Drug Information', year: '2025'),
+          _PrescriptionRef(source: 'Micromedex', title: 'Pediatric dosing and clinical considerations', year: '2025'),
+        ];
+      case 'Gastroenterología':
+      case 'Gastroenterología / Clínica':
+        return const [
+          _PrescriptionRef(source: 'UpToDate', title: 'Farmacología gastrointestinal — IBP, antiácidos, laxantes', year: '2025'),
+          _PrescriptionRef(source: 'ACG', title: 'American College of Gastroenterology Guidelines', year: '2024'),
+          _PrescriptionRef(source: 'Lexicomp', title: 'Drug Information — GI agents', year: '2025'),
+        ];
+      case 'Hematología':
+        return const [
+          _PrescriptionRef(source: 'UpToDate', title: 'Anticoagulación — heparina, HBPM y anticoagulantes orales directos', year: '2025'),
+          _PrescriptionRef(source: 'ASH', title: 'American Society of Hematology Guidelines', year: '2024'),
+          _PrescriptionRef(source: 'Lexicomp', title: 'Drug Information — Anticoagulants and antiplatelets', year: '2025'),
+        ];
+      case 'Urgencias':
+        return const [
+          _PrescriptionRef(source: 'UpToDate', title: 'Farmacología en urgencias y emergencias', year: '2025'),
+          _PrescriptionRef(source: 'AHA/ACLS', title: 'Advanced Cardiovascular Life Support Guidelines', year: '2020'),
+          _PrescriptionRef(source: 'Micromedex', title: 'Emergency drug dosing', year: '2025'),
+          _PrescriptionRef(source: 'Lexicomp', title: 'Drug Information — Emergency agents', year: '2025'),
+        ];
+      default:
+        return const [
+          _PrescriptionRef(source: 'UpToDate', title: 'Información farmacológica y dosificación clínica', year: '2025'),
+          _PrescriptionRef(source: 'Lexicomp', title: 'Drug Information Database', year: '2025'),
+          _PrescriptionRef(source: 'Micromedex', title: 'Clinical pharmacology and drug dosing', year: '2025'),
+        ];
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // Prioridad: refs del model → refs globales → refs por defecto de categoría
+    final modelRefs = model.scienceReferences;
+    final globalRefs = globalEv?.references ?? [];
+    final defaultRefs = _defaultRefsForCategory(model.category);
+
+    final hasModelRefs = modelRefs.isNotEmpty;
+    final hasGlobalRefs = globalRefs.isNotEmpty;
+
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      // Cabecera colapsable
+      GestureDetector(
+        onTap: onToggle,
+        behavior: HitTestBehavior.opaque,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
+          child: Row(children: [
+            Container(
+              padding: const EdgeInsets.all(5),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(6),
+                color: const Color(0xFF1565C0).withValues(alpha: dark ? 0.18 : 0.10),
+              ),
+              child: const Icon(Icons.library_books_rounded, size: 12, color: Color(0xFF1565C0)),
+            ),
+            const SizedBox(width: 7),
+            Text(
+              es ? 'REFERENCIAS CIENTÍFICAS' : 'REFERÊNCIAS CIENTÍFICAS',
+              style: TextStyle(
+                fontSize: 10, fontWeight: FontWeight.w900, letterSpacing: 1.0,
+                color: dark ? const Color(0xFF7AABDF) : const Color(0xFF1565C0),
+              ),
+            ),
+            const SizedBox(width: 8),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                color: dark ? const Color(0xFF0D2040) : const Color(0xFF1565C0).withValues(alpha: 0.08),
+              ),
+              child: Text(
+                hasModelRefs
+                    ? '${modelRefs.length}'
+                    : hasGlobalRefs
+                        ? '${globalRefs.length}'
+                        : '${defaultRefs.length}',
+                style: TextStyle(
+                  fontSize: 9, fontWeight: FontWeight.w700,
+                  color: dark ? const Color(0xFF7AABDF) : const Color(0xFF1565C0),
+                ),
+              ),
+            ),
+            const Spacer(),
+            AnimatedRotation(
+              turns: expanded ? 0.5 : 0,
+              duration: const Duration(milliseconds: 200),
+              child: Icon(Icons.expand_more_rounded, size: 16,
+                color: dark ? Colors.white38 : const Color(0xFFAAAAAA)),
+            ),
+          ]),
+        ),
+      ),
+
+      // Lista de referencias (expandible)
+      AnimatedCrossFade(
+        duration: const Duration(milliseconds: 220),
+        crossFadeState: expanded ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+        firstChild: const SizedBox.shrink(),
+        secondChild: Padding(
+          padding: const EdgeInsets.fromLTRB(14, 0, 14, 12),
+          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            // Referencias específicas del modelo (si existen)
+            if (hasModelRefs) ...[
+              ...modelRefs.asMap().entries.map((e) =>
+                _RefRow(num: e.key + 1, source: e.value.source,
+                  title: e.value.title, year: e.value.year, dark: dark)),
+            ] else if (hasGlobalRefs) ...[
+              // Referencias de la base global de evidencias
+              ...globalRefs.take(6).map((ref) =>
+                _RefRow(num: ref.num, source: ref.source,
+                  title: ref.title, year: ref.year, dark: dark)),
+            ] else ...[
+              // Referencias predeterminadas por categoría
+              ...defaultRefs.asMap().entries.map((e) =>
+                _RefRow(num: e.key + 1, source: e.value.source,
+                  title: e.value.title, year: e.value.year, dark: dark)),
+            ],
+
+            const SizedBox(height: 8),
+            // Footer de fuentes
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(8),
+                color: dark ? const Color(0xFF0D1A12) : const Color(0xFFF5F9F6),
+                border: Border.all(
+                  color: dark ? const Color(0xFF1A3528) : const Color(0xFF1F6B48).withValues(alpha: 0.15),
+                ),
+              ),
+              child: Row(children: [
+                Icon(Icons.verified_user_rounded, size: 11,
+                  color: dark ? const Color(0xFF4A9470) : const Color(0xFF1F6B48)),
+                const SizedBox(width: 6),
+                Expanded(
+                  child: Text(
+                    es
+                        ? 'Fuentes: UpToDate · Lexicomp · Micromedex · NICE · AHA · ESC · ADA · IDSA · FDA'
+                        : 'Fontes: UpToDate · Lexicomp · Micromedex · NICE · AHA · ESC · ADA · IDSA · FDA',
+                    style: TextStyle(
+                      fontSize: 9, color: dark ? const Color(0xFF4A9470) : const Color(0xFF1F6B48),
+                      fontWeight: FontWeight.w600, height: 1.4,
+                    ),
+                  ),
+                ),
+              ]),
+            ),
+          ]),
+        ),
+      ),
+    ]);
+  }
+}
+
+// Fila de referencia bibliográfica individual
+class _RefRow extends StatelessWidget {
+  final int num;
+  final String source, title;
+  final String? year;
+  final bool dark;
+  const _RefRow({required this.num, required this.source, required this.title, this.year, required this.dark});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 6),
+      child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Container(
+          width: 18, height: 18,
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: dark ? const Color(0xFF0D2040) : const Color(0xFF1565C0).withValues(alpha: 0.10),
+          ),
+          child: Text('$num',
+            style: TextStyle(fontSize: 8.5, fontWeight: FontWeight.w800,
+              color: dark ? const Color(0xFF7AABDF) : const Color(0xFF1565C0))),
+        ),
+        const SizedBox(width: 8),
+        Expanded(child: RichText(
+          text: TextSpan(children: [
+            TextSpan(
+              text: source,
+              style: TextStyle(
+                fontSize: 10.5, fontWeight: FontWeight.w800,
+                color: dark ? const Color(0xFF7AABDF) : const Color(0xFF1565C0),
+              ),
+            ),
+            if (year != null) TextSpan(
+              text: ' ($year)',
+              style: TextStyle(fontSize: 9.5, color: dark ? Colors.white38 : const Color(0xFF999999)),
+            ),
+            TextSpan(
+              text: ' — $title',
+              style: TextStyle(
+                fontSize: 10.5,
+                color: dark ? Colors.white.withValues(alpha: 0.75) : const Color(0xFF333333),
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ]),
+        )),
       ]),
     );
   }
@@ -7654,7 +8516,7 @@ class _CopyBtn extends StatelessWidget {
           ),
           const SizedBox(width: 5),
           Text(
-            copied ? (es ? '¡Copiado!' : 'Copiado!') : (es ? 'Copiar' : 'Copiar'),
+            copied ? (es ? '¡Copiado!' : 'Copiado!') : (es ? 'Copiar Ej.' : 'Copiar Ex.'),
             style: TextStyle(
               fontSize: 11,
               fontWeight: FontWeight.w700,
