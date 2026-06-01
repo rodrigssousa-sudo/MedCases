@@ -114131,11 +114131,11 @@ k=A.mi(a0,B.e_,B.oy,new A.aVe(g,a5,a0),!0,a4,f,a3,k,f)
 j=l?"T\xe9rminos de Uso":"Termos de Uso"
 i=l?e:d
 h=l?c:b
-j=A.bFk(a0,h,"https://medcasespro.com/termos",B.awM,B.G_,new A.aV3(g,a5),!0,a4,i,a3,j)
+j=A.bFk(a0,h,"https://rodrigssousa.wixsite.com/medcases-pro/termos-de-uso",B.awM,B.G_,new A.aV3(g,a5),!0,a4,i,a3,j)
 i=l?"Pol\xedtica de Privacidad":"Pol\xedtica de Privacidade"
 h=l?e:d
 l=l?c:b
-m.push(new A.p5(A.a([k,j,A.bFk(a0,l,"https://medcasespro.com/privacidade",B.z4,B.G_,new A.aV4(g,a5),!1,a4,h,a3,i)],s),a2,f))
+m.push(new A.p5(A.a([k,j,A.bFk(a0,l,"https://rodrigssousa.wixsite.com/medcases-pro/politica-de-privacidade",B.z4,B.G_,new A.aV4(g,a5),!1,a4,h,a3,i)],s),a2,f))
 m.push(B.aW)
 m=A.H(A.oo(m,f,B.av,B.m8,f,B.af,!1),1)
 l=a0?B.abJ:B.oL
