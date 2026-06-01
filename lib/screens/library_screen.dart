@@ -254,14 +254,22 @@ class _LibraryScreenState extends State<LibraryScreen>
           color: bg,
           child: Column(
             children: [
+              // Desktop: header completo com título + TabBar
               if (showHeader)
-              _LibraryHeader(
-                dark: dark,
-                isEs: isEs,
-                tabCtrl: _tabCtrl,
-                onRefreshGuides: _handleManualRefresh,
-                refreshing: _loading,
-              ),
+                _LibraryHeader(
+                  dark: dark,
+                  isEs: isEs,
+                  tabCtrl: _tabCtrl,
+                  onRefreshGuides: _handleManualRefresh,
+                  refreshing: _loading,
+                ),
+              // Mobile/tablet: só a TabBar (o título fica na AppBar do shell)
+              if (!showHeader)
+                _MobileLibraryTabBar(
+                  dark: dark,
+                  isEs: isEs,
+                  tabCtrl: _tabCtrl,
+                ),
               Expanded(
                 child: TabBarView(
                   controller: _tabCtrl,
@@ -287,6 +295,83 @@ class _LibraryScreenState extends State<LibraryScreen>
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// MOBILE TAB BAR — exibida abaixo do shell AppBar no mobile/tablet
+// 3 abas: Guias PDF · Casos Clínicos · Protocolos
+// ─────────────────────────────────────────────────────────────────────────────
+class _MobileLibraryTabBar extends StatelessWidget {
+  final bool dark;
+  final bool isEs;
+  final TabController tabCtrl;
+
+  const _MobileLibraryTabBar({
+    required this.dark,
+    required this.isEs,
+    required this.tabCtrl,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final bg         = dark ? const Color(0xFF0F1C14) : Colors.white;
+    final border     = dark
+        ? Colors.white.withValues(alpha: 0.07)
+        : const Color(0xFFDDE8E2);
+    final activeCol  = dark ? const Color(0xFF4ADE80) : const Color(0xFF075f45);
+    final inactiveCol= dark
+        ? Colors.white.withValues(alpha: 0.40)
+        : const Color(0xFF90A89E);
+    final indicatorCol = dark ? const Color(0xFF4ADE80) : const Color(0xFF075f45);
+
+    return Container(
+      decoration: BoxDecoration(
+        color: bg,
+        border: Border(bottom: BorderSide(color: border, width: 1)),
+        boxShadow: dark
+            ? []
+            : [BoxShadow(
+                color: Colors.black.withValues(alpha: 0.05),
+                blurRadius: 4,
+                offset: const Offset(0, 2),
+              )],
+      ),
+      child: TabBar(
+        controller: tabCtrl,
+        indicatorColor: indicatorCol,
+        indicatorWeight: 2.5,
+        indicatorSize: TabBarIndicatorSize.tab,
+        labelColor: activeCol,
+        unselectedLabelColor: inactiveCol,
+        labelStyle: const TextStyle(
+          fontSize: 12.5,
+          fontWeight: FontWeight.w800,
+          letterSpacing: 0.1,
+        ),
+        unselectedLabelStyle: const TextStyle(
+          fontSize: 12.5,
+          fontWeight: FontWeight.w500,
+        ),
+        tabs: [
+          Tab(
+            icon: const Icon(Icons.picture_as_pdf_rounded, size: 16),
+            text: isEs ? 'Guías PDF' : 'Guias PDF',
+            iconMargin: const EdgeInsets.only(bottom: 2),
+          ),
+          Tab(
+            icon: const Icon(Icons.cases_rounded, size: 16),
+            text: isEs ? 'Casos' : 'Casos',
+            iconMargin: const EdgeInsets.only(bottom: 2),
+          ),
+          Tab(
+            icon: const Icon(Icons.fact_check_rounded, size: 16),
+            text: 'Protocolos',
+            iconMargin: const EdgeInsets.only(bottom: 2),
+          ),
+        ],
       ),
     );
   }
