@@ -30,6 +30,7 @@ import 'screens/maintenance_screen.dart';
 import 'screens/cases_screen.dart';
 import 'screens/prescripciones_screen.dart';
 import 'screens/legal_screen.dart';
+import 'screens/professional_gate_screen.dart';
 import 'screens/fontes_screen.dart';
 import 'screens/home_screen.dart';
 import 'screens/notes_screen.dart';
@@ -552,10 +553,12 @@ class _MaintenanceShellState extends State<_MaintenanceShell> {
           return widget.wrapAuth(MaintenanceScreen(message: maintenanceMessage));
         }
 
-        // Aprovado → MainShell
+        // Aprovado → MainShell (com gate de declaração profissional)
         // NÃO há addPostFrameCallback aqui — setUser() é gerenciado pelo
         // _AuthGateState._onUserResolved() com flag de idempotência.
-        return const MainShell();
+        return const ProfessionalDeclarationGateWidget(
+          child: MainShell(),
+        );
       },
     );
   }
@@ -1123,7 +1126,9 @@ class _WebMainShellGateState extends State<_WebMainShellGate> {
     if (!_ready) {
       return const _SplashScreen();
     }
-    return const MainShell();
+    return const ProfessionalDeclarationGateWidget(
+      child: MainShell(),
+    );
   }
 }
 
