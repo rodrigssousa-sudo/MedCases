@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/app_provider.dart';
 import '../models/protocol_model.dart';
+import '../data/evidence_database.dart';
 import '../widgets/common_widgets.dart';
 import '../widgets/protocol_checklist_widget.dart';
 import '../services/activity_service.dart';
@@ -1159,6 +1160,21 @@ class _ProtocolDetailSheet extends StatelessWidget {
                   const SizedBox(height: 10),
                 ],
               ],
+
+              // ── Evidencia por fármaco del protocolo ───────────────────
+              if (drugs.isNotEmpty) ...
+                drugs.map((drug) {
+                  final ev = getGlobalEvidence(drug);
+                  if (ev == null) return const SizedBox.shrink();
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 10),
+                    child: EvidenceCardWidget(ev: ev),
+                  );
+                }).toList(),
+
+              // ── Aviso regulatorio ──────────────────────────────────────
+              const PharmacologicalDisclaimer(),
+              const SizedBox(height: 14),
 
               // ── Botão fechar ─────────────────────────────────────────────
               GestureDetector(

@@ -3,7 +3,9 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../widgets/common_widgets.dart' show MedBreakpoints;
+import '../widgets/common_widgets.dart' show MedBreakpoints, PharmacologicalDisclaimer, EvidenceCardWidget, EvidenceBadgesRow;
+import '../models/drug_model.dart' show DrugEvidenceModel;
+import '../data/evidence_database.dart';
 import '../widgets/error_state_widget.dart'
     show InlineConnectionBanner;
 import 'package:flutter_tts/flutter_tts.dart';
@@ -810,6 +812,42 @@ class _AiScreenState extends State<AiScreen> {
     }
   }
 
+  /// Detecta si el texto de la IA menciona un fármaco y retorna su evidencia global.
+  /// Busca las primeras 3 palabras de cada línea como posible nombre de fármaco.
+  DrugEvidenceModel? _detectDrugEvidence(String text) {
+    // Palabras clave que indican contenido farmacológico
+    final pharmKeywords = RegExp(
+      r'\b(dosis|dose|administr|mg\/kg|mcg\/kg|infus[ií]on|bolo|IV|IM|SC|ampollas?|comprimido|'
+      r'antibi[oó]tico|analgésico|sedaci[oó]n|anticoagulante|vasopressor|broncodilatador)\b',
+      caseSensitive: false,
+    );
+    if (!pharmKeywords.hasMatch(text)) return null;
+
+    // Lista de fármacos de alta prioridad para detección
+    const drugKeywords = [
+      'adenosina', 'amiodarona', 'noradrenalina', 'adrenalina', 'epinefrina',
+      'atropina', 'morfina', 'fentanil', 'fentanilo', 'ketamina',
+      'midazolam', 'propofol', 'dexmedetomidina', 'haloperidol',
+      'metoprolol', 'furosemida', 'dobutamina', 'dopamina', 'vasopresina',
+      'nitroglicerina', 'heparina', 'enoxaparina', 'rivaroxabana', 'varfarina',
+      'clopidogrel', 'salbutamol', 'dexametasona', 'insulina', 'metformina',
+      'omeprazol', 'ondansetrona', 'enalapril', 'losartana', 'paracetamol',
+      'ibuprofeno', 'tramadol', 'naloxona', 'succinilcolina', 'ceftriaxona',
+      'vancomicina', 'meropenem', 'piperacilina', 'fluconazol', 'aciclovir',
+      'sulfato de magnesio', 'ácido tranexámico', 'levetiracetam', 'fenitoína',
+      'clonazepam',
+    ];
+
+    final textLower = text.toLowerCase();
+    for (final keyword in drugKeywords) {
+      if (textLower.contains(keyword)) {
+        final ev = getGlobalEvidence(keyword);
+        if (ev != null) return ev;
+      }
+    }
+    return null;
+  }
+
   void _copyMsg(String text) {
     Clipboard.setData(ClipboardData(text: text));
     ScaffoldMessenger.of(context).showSnackBar(
@@ -912,24 +950,50 @@ class _AiScreenState extends State<AiScreen> {
                 return _ThinkingBubble(dark: dark);
               }
               final msg = _messages[i];
+              if (msg.role == 'user') {
+                return KeyedSubtree(
+                  key: ValueKey('msg_${msg.id}'),
+                  child: _UserBubble(text: msg.text, dark: dark),
+                );
+              }
+              // ── AI message — detectar fármaco en texto ──────────────────
+              final detectedEv = _detectDrugEvidence(msg.text);
               return KeyedSubtree(
                 key: ValueKey('msg_${msg.id}'),
-                child: msg.role == 'user'
-                    ? _UserBubble(text: msg.text, dark: dark)
-                    : _AiBubble(
-                        key: ValueKey('ai_${msg.id}'),
-                        text: msg.text,
-                        dark: dark,
-                        animate: i == _lastAiIndex,
-                        lang: p.lang,
-                        onCopy: () => _copyMsg(msg.text),
-                        ttsPlaying: _ttsPlayingIndex == i,
-                        ttsReady: _ttsReady,
-                        onTts: _ttsReady
-                            ? () => _toggleTts(i, msg.text, p.lang)
-                            : null,
-                        scrollCtrl: _scrollCtrl,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _AiBubble(
+                      key: ValueKey('ai_${msg.id}'),
+                      text: msg.text,
+                      dark: dark,
+                      animate: i == _lastAiIndex,
+                      lang: p.lang,
+                      onCopy: () => _copyMsg(msg.text),
+                      ttsPlaying: _ttsPlayingIndex == i,
+                      ttsReady: _ttsReady,
+                      onTts: _ttsReady
+                          ? () => _toggleTts(i, msg.text, p.lang)
+                          : null,
+                      scrollCtrl: _scrollCtrl,
+                    ),
+                    // Tarjeta de evidencia si el mensaje menciona un fármaco
+                    if (detectedEv != null)
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(12, 4, 12, 0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            EvidenceBadgesRow(ev: detectedEv, compact: true),
+                            const SizedBox(height: 6),
+                            EvidenceCardWidget(ev: detectedEv),
+                            const SizedBox(height: 6),
+                            const PharmacologicalDisclaimer(),
+                          ],
+                        ),
                       ),
+                  ],
+                ),
               );
             },
           );

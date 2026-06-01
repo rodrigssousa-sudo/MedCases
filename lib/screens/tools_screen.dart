@@ -3,6 +3,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '../providers/app_provider.dart';
+import '../data/evidence_database.dart';
 import '../widgets/common_widgets.dart';
 import '../widgets/lab_exam_bottom_sheet.dart';
 import '../services/activity_service.dart';
@@ -5673,7 +5674,7 @@ class _PedDoseRowState extends State<_PedDoseRow> {
                   ),
                 ),
 
-              // Referências e Evidências (Apple Guideline 1.4.2)
+              // Referências locales + evidencia global (Apple Guideline 1.4.2)
               if (refs.isNotEmpty)
                 Padding(
                   padding: const EdgeInsets.fromLTRB(14, 10, 14, 0),
@@ -5682,7 +5683,7 @@ class _PedDoseRowState extends State<_PedDoseRow> {
                       Icon(Icons.menu_book_rounded, size: 12,
                         color: widget.color.withValues(alpha: 0.8)),
                       const SizedBox(width: 6),
-                      Text('Referências e Evidências',
+                      Text('Referencias y Evidencias',
                         style: TextStyle(fontSize: 10, fontWeight: FontWeight.w900,
                           color: widget.color, letterSpacing: 0.2)),
                     ]),
@@ -5690,6 +5691,16 @@ class _PedDoseRowState extends State<_PedDoseRow> {
                     ...refs.map((ref) => _PedRefCitation(ref: ref, accent: widget.color)),
                   ]),
                 ),
+
+              // Tarjeta de evidencia global (base de datos unificada)
+              Builder(builder: (ctx) {
+                final globalEv = getGlobalEvidence(widget.label);
+                if (globalEv == null) return const SizedBox.shrink();
+                return Padding(
+                  padding: const EdgeInsets.fromLTRB(14, 6, 14, 0),
+                  child: EvidenceCardWidget(ev: globalEv),
+                );
+              }),
 
               const SizedBox(height: 12),
             ] else
@@ -6466,76 +6477,52 @@ class _PedRefPremiumViewState extends State<_PedRefPremiumView> {
   // REGULATORY FOOTER
   // ─────────────────────────────────────────────────────────────────────────
   Widget _buildRegulatoryFooter(AppColors c, bool dark) {
-    return Container(
-      margin: const EdgeInsets.fromLTRB(20, 16, 20, 24),
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: dark ? const Color(0xFF1A1510) : const Color(0xFFFFF9F0),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: dark
-              ? const Color(0xFF4A3820)
-              : const Color(0xFFE8D5A0)),
-        boxShadow: dark
-            ? []
-            : [BoxShadow(color: const Color(0xFFC8A86B).withValues(alpha: 0.06),
-                blurRadius: 12, offset: const Offset(0, 2))],
-      ),
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Row(children: [
-          Container(
-            width: 28, height: 28,
-            decoration: BoxDecoration(
-              color: const Color(0xFFC8A86B).withValues(alpha: 0.14),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: const Center(
-              child: Icon(Icons.gavel_rounded, size: 13,
-                  color: Color(0xFFC8A86B)),
-            ),
+        // Fuentes pediátricas
+        Container(
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: const Color(0xFFC8A86B).withValues(alpha: dark ? 0.08 : 0.06),
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(
+                color: const Color(0xFFC8A86B).withValues(alpha: 0.20)),
           ),
-          const SizedBox(width: 10),
-          Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            const Text('AVISO REGULATÓRIO',
-              style: TextStyle(fontSize: 9, fontWeight: FontWeight.w900,
-                letterSpacing: 1.2, color: Color(0xFFC8A86B))),
-            Text('Apple App Store Guidelines 1.4.1',
-              style: TextStyle(fontSize: 8.5, fontWeight: FontWeight.w500,
-                color: const Color(0xFFC8A86B).withValues(alpha: 0.65))),
+          child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            const Icon(Icons.verified_user_outlined, size: 13,
+                color: Color(0xFFC8A86B)),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Column(crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text('FUENTES PEDIÁTRICAS',
+                    style: TextStyle(fontSize: 8.5, fontWeight: FontWeight.w900,
+                      letterSpacing: 1.2, color: Color(0xFFC8A86B))),
+                  const SizedBox(height: 4),
+                  Text(
+                    'Nelson Textbook of Pediatrics 2025 · AAP Guidelines · '
+                    'WHO Pediatric Standards · PALS 2020 · Harriet Lane 22ª ed. · '
+                    'Pediatric Emergency Standards (AHA/ILCOR 2020)',
+                    style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w600,
+                      color: const Color(0xFFC8A86B).withValues(alpha: 0.80),
+                      height: 1.4),
+                  ),
+                ],
+              ),
+            ),
           ]),
-        ]),
-        const SizedBox(height: 10),
-        Container(height: 1,
-          color: const Color(0xFFC8A86B).withValues(alpha: 0.15)),
-        const SizedBox(height: 10),
-        Text(
-          '⚠️  Esta ferramenta tem finalidade educacional e de apoio clínico. '
-          'Os valores laboratoriais podem variar conforme idade, sexo, método '
-          'laboratorial e protocolos institucionais. A interpretação clínica é '
-          'de responsabilidade exclusiva do profissional assistente.',
-          style: TextStyle(fontSize: 11, color: c.textSecondary,
-              height: 1.6, fontWeight: FontWeight.w500),
         ),
         const SizedBox(height: 10),
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
-          decoration: BoxDecoration(
-            color: const Color(0xFFC8A86B).withValues(alpha: 0.08),
-            borderRadius: BorderRadius.circular(8),
-            border: Border.all(
-                color: const Color(0xFFC8A86B).withValues(alpha: 0.18)),
-          ),
-          child: const Row(children: [
-            Icon(Icons.verified_user_outlined, size: 11,
-                color: Color(0xFFC8A86B)),
-            SizedBox(width: 7),
-            Expanded(child: Text(
-              'Fontes: Nelson Textbook of Pediatrics 2025 · AAP Guidelines · '
-              'WHO Pediatric Standards · PALS 2020 · Harriet Lane 22ª ed.',
-              style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w600,
-                color: Color(0xFFC8A86B), height: 1.4),
-            )),
-          ]),
+        // Aviso regulatorio global
+        const PharmacologicalDisclaimer(
+          customText:
+            'Los valores de referencia pediátricos pueden variar según edad, sexo, '
+            'método de laboratorio y protocolos institucionales. La interpretación '
+            'clínica y las dosis pediátricas son responsabilidad exclusiva del '
+            'profesional de salud. Verificar siempre en fuentes actualizadas antes '
+            'de cualquier decisión terapéutica. '
+            '• Apple App Store Guideline 1.4.1 / 1.4.2 Compliance',
         ),
       ]),
     );
