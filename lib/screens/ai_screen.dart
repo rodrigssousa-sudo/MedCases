@@ -296,10 +296,13 @@ class _AiScreenState extends State<AiScreen> {
     });
     // Listener de scroll: detecta se usuário scrollou para cima
     _scrollCtrl.addListener(_onScroll);
+    // Home V2: escuta pendingQuery em tempo real — dispara sempre que a Home
+    // injeta uma nova query, mesmo que o AiScreen já esteja montado no IndexedStack.
+    AiScreen.pendingQuery.addListener(_onPendingQuery);
     // Injeta saudação após o primeiro frame (AppProvider já disponível)
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _injectGreeting();
-      // Home V2: consome query pendente injetada pelo _HomeIaCard
+      // Consome query que possa ter sido setada antes do listener estar ativo
       _consumePendingQuery();
     });
     // Carrega histórico de chats do SharedPrefs
@@ -468,11 +471,16 @@ class _AiScreenState extends State<AiScreen> {
   /// Home V2 — Consome a query pendente setada pelo _HomeIaCard antes de
   /// navegar para a aba de IA. O pequeno delay garante que o greeting já
   /// foi injetado e os providers estão prontos antes do envio.
+  /// Chamado pelo listener do pendingQuery — funciona mesmo com AiScreen já montado.
+  void _onPendingQuery() {
+    _consumePendingQuery();
+  }
+
   void _consumePendingQuery() {
     final q = AiScreen.pendingQuery.value;
     if (q.isEmpty || !mounted) return;
     AiScreen.pendingQuery.value = '';  // limpa imediatamente para não re-disparar
-    Future.delayed(const Duration(milliseconds: 350), () {
+    Future.delayed(const Duration(milliseconds: 150), () {
       if (!mounted) return;
       final p = context.read<AppProvider>();
       _send(q, p);
@@ -505,6 +513,7 @@ class _AiScreenState extends State<AiScreen> {
   @override
   void dispose() {
     _scrollCtrl.removeListener(_onScroll);
+    AiScreen.pendingQuery.removeListener(_onPendingQuery);
     _queryCtrl.dispose();
     _scrollCtrl.dispose();
     _focusNode.dispose();
