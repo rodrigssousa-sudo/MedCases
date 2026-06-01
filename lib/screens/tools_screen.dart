@@ -2034,120 +2034,14 @@ class _InfusionTabState extends State<_InfusionTab> {
               label: isEs ? 'Peso (kg) — opcional para mcg/kg/min' : 'Peso (kg) — opcional para mcg/kg/min',
               ctrl: _infWeightCtrl, onChanged: (_) => setState(() {}), hint: '70'),
             const SizedBox(height: 14),
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(16),
-                gradient: const LinearGradient(begin: Alignment.topLeft, end: Alignment.bottomRight,
-                  colors: [Color(0xFF07110d), Color(0xFF1B3D2A), kToolGreen]),
-              ),
-              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                // ── Título Apple-compliant ──────────────────────────────────
-                Text(
-                  isEs ? 'Dosis de referencia calculada:' : 'Dose de referência calculada:',
-                  style: const TextStyle(fontSize: 9, fontWeight: FontWeight.w900,
-                      color: Color(0xBFFFE8A6), letterSpacing: 1.4),
-                ),
-                const SizedBox(height: 6),
-                // ── Nome do fármaco ─────────────────────────────────────────
-                Text(
-                  _infDrugCtrl.text.isNotEmpty ? _infDrugCtrl.text : (isEs ? 'Fármaco' : 'Fármaco'),
-                  style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w700,
-                      color: Color(0x99FFFFFF)),
-                ),
-                const SizedBox(height: 4),
-                // ── Valor calculado ─────────────────────────────────────────
-                Text(
-                  _infusionRate ?? (isEs ? 'Ingrese concentración y velocidad' : 'Informe concentração e velocidade'),
-                  style: TextStyle(
-                    fontSize: _infusionRate != null ? 20 : 13,
-                    fontWeight: FontWeight.w900,
-                    color: Colors.white,
-                    letterSpacing: -0.5,
-                    height: 1.4,
-                  ),
-                ),
-                // ── Fórmula explícita ───────────────────────────────────────
-                if (_infusionFormula != null) ...[
-                  const SizedBox(height: 10),
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
-                    decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.07),
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(
-                          color: Colors.white.withValues(alpha: 0.12), width: 0.8),
-                    ),
-                    child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                      Text(
-                        isEs ? 'Fórmula:' : 'Fórmula:',
-                        style: const TextStyle(
-                          fontSize: 8.5,
-                          fontWeight: FontWeight.w700,
-                          color: Color(0xBFFFE8A6),
-                          letterSpacing: 0.5,
-                        ),
-                      ),
-                      const SizedBox(height: 3),
-                      Text(
-                        _infusionFormula!,
-                        style: const TextStyle(
-                          fontSize: 11,
-                          fontWeight: FontWeight.w500,
-                          color: Colors.white,
-                          height: 1.5,
-                        ),
-                      ),
-                    ]),
-                  ),
-                  const SizedBox(height: 8),
-                  // ── Citações de fonte específicas ─────────────────────────
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-                    decoration: BoxDecoration(
-                      color: Colors.black.withValues(alpha: 0.18),
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(
-                          color: Colors.white.withValues(alpha: 0.08), width: 0.8),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          isEs ? '📚 Referencias bibliográficas:' : '📚 Referências bibliográficas:',
-                          style: TextStyle(
-                            fontSize: 8.5,
-                            fontWeight: FontWeight.w700,
-                            color: const Color(0xBFFFE8A6),
-                            letterSpacing: 0.4,
-                          ),
-                        ),
-                        const SizedBox(height: 5),
-                        _RefLine(
-                          text: isEs
-                              ? '1. Fórmula: Dosis (mg/h) = Conc. (mg/mL) × Velocidad (mL/h)\n   Brunton LL, et al. Goodman & Gilman\'s The Pharmacological Basis of Therapeutics, 14th ed. McGraw-Hill, 2023.'
-                              : '1. Fórmula: Dose (mg/h) = Conc. (mg/mL) × Velocidade (mL/h)\n   Brunton LL, et al. Goodman & Gilman\'s The Pharmacological Basis of Therapeutics, 14ª ed. McGraw-Hill, 2023.',
-                        ),
-                        const SizedBox(height: 4),
-                        _RefLine(
-                          text: isEs
-                              ? '2. Conversión mcg/kg/min: Dosis = (mg/h × 1000) ÷ (Peso kg × 60)\n   Marino PL. The ICU Book, 4th ed. Lippincott Williams & Wilkins, 2014.'
-                              : '2. Conversão mcg/kg/min: Dose = (mg/h × 1000) ÷ (Peso kg × 60)\n   Marino PL. The ICU Book, 4ª ed. Lippincott Williams & Wilkins, 2014.',
-                        ),
-                        const SizedBox(height: 4),
-                        _RefLine(
-                          text: isEs
-                              ? '3. Verificar concentración y velocidad según protocolo institucional.\n   Rhodes A, et al. Surviving Sepsis Campaign Guidelines. Crit Care Med. 2017;45(3):486-552.'
-                              : '3. Verificar concentração e velocidade conforme protocolo institucional.\n   Rhodes A, et al. Surviving Sepsis Campaign Guidelines. Crit Care Med. 2017;45(3):486-552.',
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ]),
+            // ════════════════════════════════════════════════════════════════
+            // CARD RESULTADO PREMIUM — layout visual exclusivo
+            // ════════════════════════════════════════════════════════════════
+            _InfusionResultCard(
+              isEs: isEs,
+              drugName: _infDrugCtrl.text,
+              infusionRate: _infusionRate,
+              infusionFormula: _infusionFormula,
             ),
             const SizedBox(height: 8),
             _InfoNote(text: isEs
@@ -2202,6 +2096,287 @@ class _InfusionTabState extends State<_InfusionTab> {
   }
 }
 
+
+// ─────────────────────────────────────────────────────────────────────────────
+// CARD RESULTADO PREMIUM — Calculadora de Infusão
+// Layout exclusivo com gradiente, valores lado a lado, fórmula e referências
+// ─────────────────────────────────────────────────────────────────────────────
+class _InfusionResultCard extends StatelessWidget {
+  final bool isEs;
+  final String drugName;
+  final String? infusionRate;
+  final String? infusionFormula;
+
+  const _InfusionResultCard({
+    required this.isEs,
+    required this.drugName,
+    required this.infusionRate,
+    required this.infusionFormula,
+  });
+
+  // Divide o _infusionRate (pode ter \n) em 2 linhas para layout side-by-side
+  List<String> get _rateParts {
+    if (infusionRate == null) return [];
+    return infusionRate!.split('\n');
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final hasResult = infusionRate != null;
+    final parts = _rateParts;
+
+    return Container(
+      width: double.infinity,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(20),
+        gradient: const LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [Color(0xFF071510), Color(0xFF0D2B1C), Color(0xFF0F3D28), Color(0xFF075f45)],
+          stops: [0.0, 0.35, 0.65, 1.0],
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFF075f45).withValues(alpha: 0.35),
+            blurRadius: 20,
+            offset: const Offset(0, 6),
+          ),
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.4),
+            blurRadius: 10,
+            offset: const Offset(0, 3),
+          ),
+        ],
+        border: Border.all(
+          color: const Color(0xFF1F6B48).withValues(alpha: 0.6),
+          width: 1,
+        ),
+      ),
+      child: Stack(
+        children: [
+          // ── Decoração de fundo: ícone fantasma ──────────────────────────
+          Positioned(
+            right: -10,
+            top: -10,
+            child: Opacity(
+              opacity: 0.06,
+              child: Icon(
+                Icons.water_drop_rounded,
+                size: 120,
+                color: Colors.white,
+              ),
+            ),
+          ),
+          // ── Conteúdo principal ──────────────────────────────────────────
+          Padding(
+            padding: const EdgeInsets.all(18),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // ── Cabeçalho: badge + nome do fármaco ─────────────────────
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFFFE8A6).withValues(alpha: 0.15),
+                        borderRadius: BorderRadius.circular(6),
+                        border: Border.all(
+                          color: const Color(0xFFFFE8A6).withValues(alpha: 0.30),
+                        ),
+                      ),
+                      child: Text(
+                        isEs ? 'RESULTADO DE LA INFUSIÓN' : 'RESULTADO DA INFUSÃO',
+                        style: const TextStyle(
+                          fontSize: 8,
+                          fontWeight: FontWeight.w900,
+                          color: Color(0xFFFFE8A6),
+                          letterSpacing: 1.2,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 10),
+                // ── Nome do fármaco ─────────────────────────────────────────
+                Text(
+                  drugName.isNotEmpty ? drugName : (isEs ? 'Fármaco' : 'Fármaco'),
+                  style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w800,
+                    color: Colors.white.withValues(alpha: hasResult ? 1.0 : 0.5),
+                    letterSpacing: -0.3,
+                  ),
+                ),
+                const SizedBox(height: 12),
+
+                if (!hasResult)
+                  // ── Estado vazio elegante ─────────────────────────────────
+                  Container(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    child: Row(
+                      children: [
+                        Icon(Icons.info_outline_rounded,
+                            size: 16, color: Colors.white.withValues(alpha: 0.35)),
+                        const SizedBox(width: 8),
+                        Text(
+                          isEs ? 'Ingrese concentración y velocidad' : 'Informe concentração e velocidade',
+                          style: TextStyle(
+                            fontSize: 13,
+                            color: Colors.white.withValues(alpha: 0.40),
+                            fontStyle: FontStyle.italic,
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                else ...[
+                  // ── Valores: lado a lado se 2 unidades, empilhado se 1 ─────
+                  if (parts.length >= 2)
+                    Row(
+                      children: [
+                        Expanded(child: _ResultMetric(value: parts[0], label: _labelFor(parts[0], isEs))),
+                        Container(width: 1, height: 60, color: Colors.white.withValues(alpha: 0.12)),
+                        Expanded(child: _ResultMetric(value: parts[1], label: _labelFor(parts[1], isEs))),
+                      ],
+                    )
+                  else
+                    _ResultMetric(value: parts[0], label: _labelFor(parts[0], isEs), large: true),
+
+                  const SizedBox(height: 14),
+                  // ── Fórmula utilizada ───────────────────────────────────────
+                  if (infusionFormula != null)
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 9),
+                      decoration: BoxDecoration(
+                        color: Colors.black.withValues(alpha: 0.25),
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(
+                          color: Colors.white.withValues(alpha: 0.10),
+                        ),
+                      ),
+                      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                        Row(children: [
+                          Icon(Icons.functions_rounded,
+                              size: 11, color: const Color(0xBFFFE8A6)),
+                          const SizedBox(width: 5),
+                          Text(
+                            isEs ? 'FÓRMULA UTILIZADA' : 'FÓRMULA UTILIZADA',
+                            style: const TextStyle(
+                              fontSize: 8,
+                              fontWeight: FontWeight.w900,
+                              color: Color(0xBFFFE8A6),
+                              letterSpacing: 1.0,
+                            ),
+                          ),
+                        ]),
+                        const SizedBox(height: 5),
+                        Text(
+                          infusionFormula!,
+                          style: const TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white,
+                            height: 1.5,
+                          ),
+                        ),
+                      ]),
+                    ),
+                  const SizedBox(height: 12),
+                  // ── Referências bibliográficas ──────────────────────────────
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 9),
+                    decoration: BoxDecoration(
+                      color: Colors.black.withValues(alpha: 0.20),
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(color: Colors.white.withValues(alpha: 0.07)),
+                    ),
+                    child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                      Row(children: [
+                        Icon(Icons.menu_book_rounded,
+                            size: 11, color: const Color(0xBFFFE8A6)),
+                        const SizedBox(width: 5),
+                        Text(
+                          isEs ? 'REFERENCIAS BIBLIOGRÁFICAS' : 'REFERÊNCIAS BIBLIOGRÁFICAS',
+                          style: const TextStyle(
+                            fontSize: 8,
+                            fontWeight: FontWeight.w900,
+                            color: Color(0xBFFFE8A6),
+                            letterSpacing: 1.0,
+                          ),
+                        ),
+                      ]),
+                      const SizedBox(height: 6),
+                      _RefLine(text: isEs
+                        ? '1. Brunton LL, et al. Goodman & Gilman\'s Pharmacological Basis of Therapeutics, 14th ed. McGraw-Hill, 2023.'
+                        : '1. Brunton LL, et al. Goodman & Gilman\'s Pharmacological Basis of Therapeutics, 14ª ed. McGraw-Hill, 2023.'),
+                      const SizedBox(height: 3),
+                      _RefLine(text: isEs
+                        ? '2. Marino PL. The ICU Book, 4th ed. Lippincott Williams & Wilkins, 2014.'
+                        : '2. Marino PL. The ICU Book, 4ª ed. Lippincott Williams & Wilkins, 2014.'),
+                      const SizedBox(height: 3),
+                      _RefLine(text: isEs
+                        ? '3. Rhodes A, et al. Surviving Sepsis Campaign Guidelines. Crit Care Med. 2017;45(3):486-552.'
+                        : '3. Rhodes A, et al. Surviving Sepsis Campaign Guidelines. Crit Care Med. 2017;45(3):486-552.'),
+                    ]),
+                  ),
+                ],
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // Infere o label da unidade a partir do valor calculado
+  String _labelFor(String val, bool isEs) {
+    if (val.contains('mcg/kg/min')) return isEs ? 'Microgramos/kg/min' : 'Microgramos/kg/min';
+    if (val.contains('mcg/h'))     return isEs ? 'Microgramos por hora' : 'Microgramas por hora';
+    if (val.contains('mg/h'))      return isEs ? 'Miligramos por hora'  : 'Miligramas por hora';
+    if (val.contains('mL/h'))      return isEs ? 'Mililitros por hora'  : 'Mililitros por hora';
+    return '';
+  }
+}
+
+// Métrica individual dentro do card de resultado
+class _ResultMetric extends StatelessWidget {
+  final String value;
+  final String label;
+  final bool large;
+  const _ResultMetric({required this.value, required this.label, this.large = false});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Text(
+          value,
+          style: TextStyle(
+            fontSize: large ? 28 : 22,
+            fontWeight: FontWeight.w900,
+            color: Colors.white,
+            letterSpacing: -0.8,
+            height: 1.1,
+          ),
+        ),
+        const SizedBox(height: 3),
+        Text(
+          label,
+          style: TextStyle(
+            fontSize: 10,
+            color: Colors.white.withValues(alpha: 0.50),
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+      ]),
+    );
+  }
+}
 
 class _VasoRefRow extends StatelessWidget {
   final String drug, dose, note;
