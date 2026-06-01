@@ -48,12 +48,12 @@ class _PrescripcionesScreenState extends State<PrescripcionesScreen> {
 
     return Column(children: [
 
-      // ── Banner de identidad educativa ─────────────────────────────────────
+      // ── Barra única colapsável: título + disclaimer Apple 1.4.1 ──────────
       _EducationalLibraryBanner(dark: dark, es: es),
 
       // ── Busca + filtros ──────────────────────────────────────────────────
       Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
+        padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           MedInput(
             controller: _searchCtrl,
@@ -107,11 +107,6 @@ class _PrescripcionesScreenState extends State<PrescripcionesScreen> {
             ),
           ]),
         ]),
-      ),
-      // ── Aviso regulatorio Apple 1.4.1 — compacto colapsável ──────────────
-      const Padding(
-        padding: EdgeInsets.fromLTRB(16, 6, 16, 0),
-        child: PharmacologicalDisclaimer(),
       ),
       const SizedBox(height: 6),
 
@@ -7404,79 +7399,137 @@ SÍNDROME DE REALIMENTACIÓN (evitar):
 // ─────────────────────────────────────────────────────────────────────────────
 
 /// Banner de identidad de biblioteca educativa (Apple 1.4.1)
-class _EducationalLibraryBanner extends StatelessWidget {
+// Banner colapsável: 1 linha por padrão, expande para mostrar disclaimer + badges
+class _EducationalLibraryBanner extends StatefulWidget {
   final bool dark;
   final bool es;
   const _EducationalLibraryBanner({required this.dark, required this.es});
+  @override
+  State<_EducationalLibraryBanner> createState() => _EducationalLibraryBannerState();
+}
+
+class _EducationalLibraryBannerState extends State<_EducationalLibraryBanner> {
+  bool _expanded = false;
+
+  static const _disclaimerEs =
+      'La información farmacológica presentada tiene carácter exclusivamente '
+      'educativo y de referencia clínica. No sustituye el criterio médico '
+      'profesional, la evaluación clínica individualizada ni las recomendaciones '
+      'de las guías institucionales vigentes. Las dosis, indicaciones y '
+      'contraindicaciones deben verificarse siempre en fuentes actualizadas '
+      '(Micromedex, Lexicomp, FDA, AHA, ESC) antes de cualquier decisión '
+      'terapéutica. El uso clínico es responsabilidad exclusiva del profesional '
+      'de salud. • Apple App Store Guideline 1.4.1 / 1.4.2 Compliance';
+
+  static const _disclaimerPt =
+      'A informação farmacológica apresentada tem caráter exclusivamente '
+      'educacional e de referência clínica. Não substitui o critério médico '
+      'profissional, a avaliação clínica individualizada nem as recomendações '
+      'das diretrizes institucionais vigentes. As doses, indicações e '
+      'contraindicações devem ser sempre verificadas em fontes atualizadas '
+      '(Micromedex, Lexicomp, FDA, AHA, ESC) antes de qualquer decisão '
+      'terapêutica. O uso clínico é responsabilidade exclusiva do profissional '
+      'de saúde. • Apple App Store Guideline 1.4.1 / 1.4.2 Compliance';
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.fromLTRB(16, 4, 16, 10),
-      padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(14),
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: dark
-              ? [const Color(0xFF0D1F16), const Color(0xFF0A1912)]
-              : [const Color(0xFFF5F9F6), const Color(0xFFEFF5F1)],
-        ),
-        border: Border.all(
-          color: dark ? const Color(0xFF1A3528) : const Color(0xFF1F6B48).withValues(alpha: 0.18),
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: dark ? 0.2 : 0.04),
-            blurRadius: 8, offset: const Offset(0, 2),
+    final dark = widget.dark;
+    final es   = widget.es;
+
+    final greenMain  = dark ? const Color(0xFF6EAF90) : const Color(0xFF1F6B48);
+    final greenBg    = dark ? const Color(0xFF0D1A11) : const Color(0xFFF2F8F4);
+    final greenBdr   = dark ? const Color(0xFF1A3528) : const Color(0xFF1F6B48).withValues(alpha: 0.18);
+    final mutedText  = dark ? const Color(0xFF7A9B8A) : const Color(0xFF6B7280);
+
+    return GestureDetector(
+      onTap: () => setState(() => _expanded = !_expanded),
+      child: AnimatedSize(
+        duration: const Duration(milliseconds: 240),
+        curve: Curves.easeInOut,
+        child: Container(
+          margin: const EdgeInsets.fromLTRB(16, 4, 16, 8),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 9),
+          decoration: BoxDecoration(
+            color: greenBg,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: greenBdr),
           ),
-        ],
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // ── Linha única sempre visível ─────────────────────────────
+              Row(children: [
+                Icon(Icons.library_books_rounded, size: 14, color: greenMain),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    es ? 'MODELOS EDUCATIVOS DE PRESCRIPCIÓN'
+                       : 'MODELOS EDUCACIONAIS DE PRESCRIÇÃO',
+                    style: TextStyle(
+                      fontSize: 10.5,
+                      fontWeight: FontWeight.w900,
+                      letterSpacing: 0.6,
+                      color: dark ? const Color(0xFFD4EAD9) : const Color(0xFF0F1C14),
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+                const SizedBox(width: 6),
+                Icon(
+                  _expanded ? Icons.expand_less_rounded : Icons.expand_more_rounded,
+                  size: 16,
+                  color: mutedText,
+                ),
+              ]),
+
+              // ── Conteúdo expandido: disclaimer + badges ────────────────
+              if (_expanded) ...[
+                const SizedBox(height: 10),
+                // Disclaimer
+                Container(
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                    color: dark
+                        ? const Color(0xFF111111).withValues(alpha: 0.6)
+                        : const Color(0xFFF8FBF9),
+                    border: Border.all(color: greenBdr),
+                  ),
+                  child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                    Icon(Icons.info_outline_rounded, size: 12, color: mutedText),
+                    const SizedBox(width: 7),
+                    Expanded(
+                      child: Text(
+                        es ? _disclaimerEs : _disclaimerPt,
+                        style: TextStyle(
+                          fontSize: 9.5,
+                          color: mutedText,
+                          height: 1.5,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                    ),
+                  ]),
+                ),
+                const SizedBox(height: 8),
+                // Badges de qualidade
+                Wrap(spacing: 6, runSpacing: 4, children: [
+                  _QualityBadge(icon: Icons.check_circle_rounded,
+                    label: es ? 'Revisado' : 'Revisado', dark: dark),
+                  _QualityBadge(icon: Icons.science_rounded,
+                    label: es ? 'Basado en evidencia' : 'Baseado em evidência', dark: dark),
+                  _QualityBadge(icon: Icons.update_rounded,
+                    label: es ? 'Actualizado Jun 2026' : 'Atualizado Jun 2026', dark: dark),
+                  _QualityBadge(icon: Icons.school_rounded,
+                    label: es ? 'Uso educativo' : 'Uso educacional', dark: dark),
+                ]),
+              ],
+            ],
+          ),
+        ),
       ),
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Row(children: [
-          Container(
-            padding: const EdgeInsets.all(7),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(8),
-              color: dark ? const Color(0xFF1A3528) : const Color(0xFF1F6B48).withValues(alpha: 0.12),
-            ),
-            child: Icon(Icons.library_books_rounded, size: 16,
-              color: dark ? const Color(0xFFFFE8A6) : const Color(0xFF1F6B48)),
-          ),
-          const SizedBox(width: 10),
-          Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text(
-              es ? 'MODELOS EDUCATIVOS DE PRESCRIPCIÓN'
-                 : 'MODELOS EDUCACIONAIS DE PRESCRIÇÃO',
-              style: TextStyle(
-                fontSize: 10.5,
-                fontWeight: FontWeight.w900,
-                letterSpacing: 0.8,
-                color: dark ? const Color(0xFFFFE8A6) : const Color(0xFF0F1C14),
-              ),
-            ),
-            const SizedBox(height: 2),
-            Text(
-              es ? 'Ejemplos basados en evidencia científica • Uso exclusivamente educativo'
-                 : 'Exemplos baseados em evidência científica • Uso exclusivamente educacional',
-              style: TextStyle(
-                fontSize: 9.5,
-                color: dark ? Colors.white54 : const Color(0xFF6B7280),
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-          ])),
-        ]),
-        const SizedBox(height: 10),
-        // Badges de calidad
-        Wrap(spacing: 6, runSpacing: 4, children: [
-          _QualityBadge(icon: Icons.check_circle_rounded, label: es ? 'Revisado' : 'Revisado', dark: dark),
-          _QualityBadge(icon: Icons.science_rounded, label: es ? 'Basado en evidencia' : 'Baseado em evidência', dark: dark),
-          _QualityBadge(icon: Icons.update_rounded, label: es ? 'Actualizado Jun 2026' : 'Atualizado Jun 2026', dark: dark),
-          _QualityBadge(icon: Icons.school_rounded, label: es ? 'Uso educativo' : 'Uso educacional', dark: dark),
-        ]),
-      ]),
     );
   }
 }
