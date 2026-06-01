@@ -1,7 +1,7 @@
 // user_model.dart — modelo de usuário MedCases Pro
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-enum UserRole { admin, supervisor, user }
+enum UserRole { master, admin, supervisor, user }
 enum UserStatus { pending, approved, blocked }
 
 class UserModel {
@@ -39,10 +39,9 @@ class UserModel {
     this.referredBy,
   });
 
-  bool get isAdmin => role == UserRole.admin;
+  bool get isMaster    => role == UserRole.master;
+  bool get isAdmin     => role == UserRole.admin || role == UserRole.master;
   bool get isSupervisor => role == UserRole.supervisor;
-  static const String _masterEmail = 'rodrigssousa@gmail.com';
-  bool get isMaster => email.toLowerCase() == _masterEmail.toLowerCase();
   bool get isApproved => status == UserStatus.approved;
   bool get isPending => status == UserStatus.pending;
   bool get isBlocked => status == UserStatus.blocked;
@@ -208,6 +207,7 @@ class UserModel {
 
   static UserRole _parseRole(String s) {
     switch (s) {
+      case 'master':     return UserRole.master;
       case 'admin':      return UserRole.admin;
       case 'supervisor': return UserRole.supervisor;
       default:           return UserRole.user;
@@ -224,7 +224,8 @@ class UserModel {
 
   String get roleLabel {
     switch (role) {
-      case UserRole.admin:      return isMaster ? 'Master' : 'Admin';
+      case UserRole.master:     return 'Master';
+      case UserRole.admin:      return 'Admin';
       case UserRole.supervisor: return 'Supervisor';
       case UserRole.user:       return 'Usuário';
     }
