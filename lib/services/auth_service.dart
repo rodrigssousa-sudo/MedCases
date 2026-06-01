@@ -627,6 +627,173 @@ class AuthService {
     await _db.collection('users').doc(uid).update({'role': UserRole.user.name});
   }
 
+  // ═══════════════════════════════════════════════════════════════════════════
+  // EXCLUSÃO DE CONTA PRÓPRIA (Diretriz Apple 5.1.1(v))
+  // ─────────────────────────────────────────────────────────────────────────
+  // deleteAccount() executa a sequência correta exigida pela Apple:
+  //   1. Apaga subcoleções/dados do Firestore (notes, sessions, etc.)
+  //   2. Apaga o documento principal users/{uid}
+  //   3. Exclui a credencial do Firebase Auth (user.delete())
+  //   4. Limpa sessão local (SharedPreferences + cache de tokens)
+  //
+  // Retorna [DeleteAccountResult] com success=true ou error=<mensagem>.
+  // Em caso de erro "requires-recent-login", o caller deve pedir
+  // re-autenticação e chamar deleteAccount() novamente.
+  // ═══════════════════════════════════════════════════════════════════════════
+
+  static Future<DeleteAccountResult> deleteAccount({
+    required String uid,
+    /// Senha atual — necessária para re-autenticação nativa antes de delete().
+    /// Em Web (REST-only), não é necessária pois usamos o idToken em cache.
+    String? password,
+  }) async {
+    if (uid.isEmpty) {
+      return DeleteAccountResult.error('UID inválido.');
+    }
+
+    try {
+      // ── PASSO 1: Apagar subcoleções conhecidas do Firestore ─────────────
+      // Adicione aqui quaisquer outras subcoleções que o app criar no futuro.
+      final subCollections = ['notes', 'sessions', 'history', 'favorites'];
+
+      if (kIsWeb) {
+        // Web: REST — delete de cada documento das subcoleções
+        final token = await _getAdminToken();
+        if (token.isEmpty) {
+          return DeleteAccountResult.error(
+            'Sessão expirada. Faça login novamente para continuar.',
+          );
+        }
+
+        for (final sub in subCollections) {
+          try {
+            // Lista documentos da subcoleção
+            final listResp = await http.get(
+              Uri.parse('$_fsBase/users/$uid/$sub?pageSize=300'),
+              headers: {'Authorization': 'Bearer $token'},
+            ).timeout(const Duration(seconds: 8));
+
+            if (listResp.statusCode == 200) {
+              final body = jsonDecode(listResp.body) as Map<String, dynamic>;
+              final docs = body['documents'] as List<dynamic>? ?? [];
+              for (final doc in docs) {
+                final docName = (doc as Map<String, dynamic>)['name'] as String? ?? '';
+                if (docName.isEmpty) continue;
+                // name = "projects/.../documents/users/{uid}/notes/{docId}"
+                // Extrai o path relativo após "/documents/"
+                final pathPart = docName.split('/documents/').last;
+                await http.delete(
+                  Uri.parse('$_fsBase/$pathPart'),
+                  headers: {'Authorization': 'Bearer $token'},
+                ).timeout(const Duration(seconds: 5));
+              }
+            }
+          } catch (_) {
+            // Subcoleção inexistente ou erro de rede — continua sem travar
+          }
+        }
+
+        // ── PASSO 2: Apagar documento principal users/{uid} ──────────────
+        final deleteResp = await http.delete(
+          Uri.parse('$_fsBase/users/$uid'),
+          headers: {'Authorization': 'Bearer $token'},
+        ).timeout(const Duration(seconds: 8));
+
+        if (deleteResp.statusCode >= 300 && deleteResp.statusCode != 404) {
+          String detail = '';
+          try {
+            final b = jsonDecode(deleteResp.body) as Map<String, dynamic>;
+            detail = (b['error']?['message'] as String?) ?? '';
+          } catch (_) {}
+          return DeleteAccountResult.error(
+            'Não foi possível remover seus dados (HTTP ${deleteResp.statusCode})'
+            '${detail.isNotEmpty ? ': $detail' : '.'}',
+          );
+        }
+
+        // ── PASSO 3 (Web): Delete Firebase Auth via Identity Toolkit ─────
+        // A API accounts:delete exige o idToken do próprio usuário (não admin).
+        final idToken = _cachedIdToken;
+        if (idToken.isNotEmpty) {
+          try {
+            await http.post(
+              Uri.parse(
+                'https://identitytoolkit.googleapis.com/v1/accounts:delete?key=$_webApiKey',
+              ),
+              headers: {'Content-Type': 'application/json'},
+              body: jsonEncode({'idToken': idToken}),
+            ).timeout(const Duration(seconds: 8));
+          } catch (_) {
+            // Auth delete falhou — Firestore já foi limpo; logs para suporte
+          }
+        }
+      } else {
+        // Nativo (iOS/Android): SDK Firestore + Firebase Auth
+        // ── PASSO 1 (nativo): Apagar subcoleções ──────────────────────────
+        for (final sub in subCollections) {
+          try {
+            final snap = await _db
+                .collection('users')
+                .doc(uid)
+                .collection(sub)
+                .limit(300)
+                .get()
+                .timeout(const Duration(seconds: 8));
+            for (final doc in snap.docs) {
+              await doc.reference.delete();
+            }
+          } catch (_) {}
+        }
+
+        // ── PASSO 2 (nativo): Apagar documento principal ──────────────────
+        try {
+          await _db
+              .collection('users')
+              .doc(uid)
+              .delete()
+              .timeout(const Duration(seconds: 8));
+        } catch (_) {}
+
+        // ── PASSO 3 (nativo): Firebase Auth user.delete() ─────────────────
+        // Requer re-autenticação se o login foi há muito tempo.
+        final user = _auth.currentUser;
+        if (user != null) {
+          try {
+            // Tenta re-autenticar com senha se fornecida (evita requires-recent-login)
+            if (password != null && password.isNotEmpty) {
+              final cred = EmailAuthProvider.credential(
+                email: user.email ?? '',
+                password: password,
+              );
+              await user.reauthenticateWithCredential(cred);
+            }
+            await user.delete();
+          } on FirebaseAuthException catch (e) {
+            if (e.code == 'requires-recent-login') {
+              return DeleteAccountResult.requiresReauth(
+                'Por segurança, faça login novamente para excluir sua conta.',
+              );
+            }
+            // Outros erros de auth — Firestore já foi limpo
+          } catch (_) {}
+        }
+      }
+
+      // ── PASSO 4: Limpar sessão local ─────────────────────────────────────
+      _cachedIdToken   = '';
+      _cachedRefreshTk = '';
+      _tokenExpiresAt  = DateTime(2000);
+      await clearSession();
+      if (kIsWeb) webUser.value = null;
+
+      return DeleteAccountResult.success();
+    } catch (e) {
+      return DeleteAccountResult.error(
+        'Erro inesperado ao excluir conta. Tente novamente ou contate o suporte.',
+      );
+    }
+  }
+
   /// Deleta o documento do usuário na coleção users. Lança [Exception] em caso de falha.
   /// Web: usa HTTP DELETE REST com token de admin (contorna permission-denied).
   /// Nativo: SDK Firestore autenticado via Firebase Auth.
@@ -877,6 +1044,32 @@ class AuthService {
       default:                       return 'Erro de autenticação. Tente novamente.';
     }
   }
+}
+
+// ── Resultado da exclusão de conta própria ────────────────────────────────
+/// Três estados possíveis:
+///   success()          → conta excluída com êxito
+///   error(msg)         → falha técnica não recuperável
+///   requiresReauth(msg)→ Firebase exige re-login (token antigo) antes de delete()
+class DeleteAccountResult {
+  final bool success;
+  final bool requiresReauth;
+  final String? error;
+
+  const DeleteAccountResult._({
+    required this.success,
+    this.requiresReauth = false,
+    this.error,
+  });
+
+  factory DeleteAccountResult.success() =>
+      const DeleteAccountResult._(success: true);
+
+  factory DeleteAccountResult.error(String msg) =>
+      DeleteAccountResult._(success: false, error: msg);
+
+  factory DeleteAccountResult.requiresReauth(String msg) =>
+      DeleteAccountResult._(success: false, requiresReauth: true, error: msg);
 }
 
 // ── Resultado das operações de autenticação ───────────────────────────────

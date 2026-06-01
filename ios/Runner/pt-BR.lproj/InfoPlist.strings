@@ -32,6 +32,12 @@
 /* Usado para salvar gráficos ou capturas de protocolos no rolo da câmera.      */
 "NSPhotoLibraryAddUsageDescription" = "O MedCases Pro pode salvar imagens geradas pelo app — como gráficos de acompanhamento clínico ou capturas de protocolos — diretamente na sua biblioteca de fotos, somente quando você solicitar explicitamente.";
 
+/* ── Rastreamento (ATT — App Tracking Transparency) ───────────────────────── */
+/* Obrigatório se o app usa Firebase Analytics, Crashlytics ou AdMob.           */
+/* Apple Guideline 5.1.2: exibir o pop-up ATT antes de coletar dados.           */
+/* O texto deve explicar especificamente como os dados melhoram a experiência.  */
+"NSUserTrackingUsageDescription" = "O MedCases Pro coleta dados anônimos de uso — como quais módulos clínicos são mais acessados e o tempo de resposta da IA — exclusivamente para melhorar a qualidade das respostas clínicas e a experiência do profissional de saúde. Nenhum dado pessoal identificável, informação de paciente ou conteúdo de consultas é coletado ou compartilhado com terceiros.";
+
 /* ── Câmera (reservado para uso futuro) ────────────────────────────────────── */
 /* Incluir apenas se o app usar a câmera para capturar imagens diretamente.     */
 /* "NSCameraUsageDescription" = "O MedCases Pro usa a câmera para capturar imagens clínicas — como fotografias de lesões ou documentos médicos — e anexá-las diretamente às anotações de pacientes. As imagens são armazenadas apenas no seu dispositivo."; */
