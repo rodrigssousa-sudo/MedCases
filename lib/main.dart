@@ -30,6 +30,7 @@ import 'screens/maintenance_screen.dart';
 import 'screens/cases_screen.dart';
 import 'screens/prescripciones_screen.dart';
 import 'screens/legal_screen.dart';
+import 'screens/fontes_screen.dart';
 import 'screens/home_screen.dart';
 import 'screens/notes_screen.dart';
 import 'screens/library_screen.dart';
@@ -2846,18 +2847,19 @@ class _AppDrawer extends StatelessWidget {
                   const SizedBox(height: 4),
                 ],
 
-                // ─── 2. Bloco: Premium (upgrade) ────────────────────────────
-                _DrawerBlock(
-                  children: [
-                    _DrawerItemPremium(
-                      dark: dark,
-                      onTap: () {
-                        _close(context);
-                        showUpgradeScreen(context, lang: p.lang);
-                      },
-                    ),
-                  ],
-                ),
+                // ─── 2. Bloco: Premium (upgrade) — oculto em modo de revisão Apple
+                if (!kIsReviewMode)
+                  _DrawerBlock(
+                    children: [
+                      _DrawerItemPremium(
+                        dark: dark,
+                        onTap: () {
+                          _close(context);
+                          showUpgradeScreen(context, lang: p.lang);
+                        },
+                      ),
+                    ],
+                  ),
 
                 // ─── 3. Acesso Rápido ─────────────────────────────────────
                 _DrawerSectionLabel(
@@ -2925,7 +2927,24 @@ class _AppDrawer extends StatelessWidget {
                   dark: dark,
                 ),
                 _DrawerBlock(
+                  dividerColor: divider,
                   children: [
+                    // ── Fontes e Diretrizes (Task 6 — App Store Guideline 1.4.1) ──
+                    _DrawerRow(
+                      icon: Icons.menu_book_rounded,
+                      iconColor: const Color(0xFF0D7A55),
+                      title: p.lang == 'es' ? 'Fuentes y Directrices' : 'Fontes e Diretrizes',
+                      subtitle: p.lang == 'es'
+                          ? 'AHA, Harrison, ESC, IDSA y más'
+                          : 'AHA, Harrison, ESC, IDSA e mais',
+                      dark: dark,
+                      textCol: textCol,
+                      subCol: subCol,
+                      onTap: () {
+                        _close(context);
+                        showFontesScreen(context, isEs: p.lang == 'es');
+                      },
+                    ),
                     _DrawerRow(
                       icon: Icons.support_agent_rounded,
                       iconColor: const Color(0xFF7C3AED),

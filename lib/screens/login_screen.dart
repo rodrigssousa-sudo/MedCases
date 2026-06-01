@@ -23,6 +23,11 @@ class _LoginScreenState extends State<LoginScreen>
   String? _error;
   String? _success;
 
+  // ── Task 3: Disclaimer médico obrigatório ─────────────────────────────────
+  // Deve ser aceito na etapa de perfil (regStep==1) do cadastro.
+  bool _disclaimerAccepted = false;
+  bool _disclaimerError    = false;
+
   final _emailCtrl = TextEditingController();
   final _passCtrl  = TextEditingController();
   final _nameCtrl  = TextEditingController();
@@ -118,7 +123,7 @@ class _LoginScreenState extends State<LoginScreen>
   }
 
   void _switchMode(_Mode m) {
-    setState(() { _mode = m; _error = null; _success = null; _regStep = 0; });
+    setState(() { _mode = m; _error = null; _success = null; _regStep = 0; _disclaimerAccepted = false; _disclaimerError = false; });
     _slideCtrl.forward(from: 0);
   }
 
@@ -128,6 +133,12 @@ class _LoginScreenState extends State<LoginScreen>
     if (_mode == _Mode.register && _regStep < 1) {
       setState(() => _regStep++);
       _slideCtrl.forward(from: 0);
+      return;
+    }
+
+    // ── Task 3: bloqueia envio se disclaimer não foi aceito ────────────────
+    if (_mode == _Mode.register && !_disclaimerAccepted) {
+      setState(() => _disclaimerError = true);
       return;
     }
 
@@ -156,13 +167,34 @@ class _LoginScreenState extends State<LoginScreen>
         institution: _instCtrl.text.isNotEmpty ? _instCtrl.text : null,
         referredBy: referredBy,
       );
-      if (result.success && result.user != null && result.user!.isPending) {
+
+      // ── Task 2: Auto-login após cadastro bem-sucedido ─────────────────────
+      // Após o registro, faz login automático com as mesmas credenciais para
+      // que o revisor da Apple (e novos usuários) não precisem redigitar a senha.
+      // O AuthGate detecta o novo usuário e roteará para HomeScreen ou tela
+      // de pendência conforme o status retornado pelo servidor.
+      if (result.success) {
+        final loginResult = await AuthService.login(
+          email: _emailCtrl.text,
+          password: _passCtrl.text,
+        );
+        if (loginResult.success) {
+          if (_keepLoggedIn && loginResult.user != null) {
+            await AuthService.saveSession(loginResult.user!);
+          }
+          // AuthGate detecta o usuário logado e navega automaticamente
+          if (!mounted) return;
+          setState(() { _loading = false; });
+          return;
+        }
+        // Fallback: auto-login falhou → redireciona ao login com mensagem
         if (!mounted) return;
         setState(() {
           _loading = false;
           _success = _registerSuccessMsg();
           _mode = _Mode.login;
           _regStep = 0;
+          _disclaimerAccepted = false;
         });
         return;
       }
@@ -426,6 +458,17 @@ class _LoginScreenState extends State<LoginScreen>
       _field(_professionLabel, _profCtrl, Icons.medical_services_outlined),
       const SizedBox(height: 12),
       _field(_institutionLabel, _instCtrl, Icons.apartment_rounded),
+      const SizedBox(height: 18),
+      // ── Task 3: Disclaimer médico obrigatório ──────────────────────────────
+      _MedicalDisclaimerCheckbox(
+        isEs: _isEs,
+        accepted: _disclaimerAccepted,
+        hasError: _disclaimerError,
+        onChanged: (v) => setState(() {
+          _disclaimerAccepted = v ?? false;
+          if (_disclaimerAccepted) _disclaimerError = false;
+        }),
+      ),
     ];
   }
 
@@ -943,4 +986,163 @@ class _GeoPainter extends CustomPainter {
   @override
   bool shouldRepaint(_GeoPainter oldDelegate) =>
       oldDelegate.rotation != rotation;
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// TASK 3 — Widget de Disclaimer Médico Obrigatório
+// Aceito via checkbox no momento do cadastro (regStep==1 — etapa Perfil).
+// Exigência Apple Guideline 1.4.1 — ferramenta educacional, não substitui médico.
+// ══════════════════════════════════════════════════════════════════════════════
+class _MedicalDisclaimerCheckbox extends StatelessWidget {
+  final bool isEs;
+  final bool accepted;
+  final bool hasError;
+  final ValueChanged<bool?> onChanged;
+
+  const _MedicalDisclaimerCheckbox({
+    required this.isEs,
+    required this.accepted,
+    required this.hasError,
+    required this.onChanged,
+  });
+
+  static const _textPt =
+      'O MedCases Pro é uma ferramenta de apoio educacional e consulta clínica '
+      'para profissionais de saúde. As informações não substituem o julgamento '
+      'clínico, protocolos institucionais ou avaliação médica individualizada.';
+
+  static const _textEs =
+      'MedCases Pro es una herramienta de apoyo educativo y consulta clínica '
+      'para profesionales de salud. La información no sustituye el juicio '
+      'clínico, los protocolos institucionales ni la evaluación médica '
+      'individualizada.';
+
+  @override
+  Widget build(BuildContext context) {
+    final disclaimerText = isEs ? _textEs : _textPt;
+    final labelAccept = isEs
+        ? 'Li e aceito os termos acima'
+        : 'Li e aceito os termos acima';
+    final errorMsg = isEs
+        ? 'É necessário aceitar o termo para continuar.'
+        : 'É necessário aceitar o termo para continuar.';
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        // ── Caixa de texto do disclaimer ───────────────────────────────────
+        Container(
+          padding: const EdgeInsets.all(14),
+          decoration: BoxDecoration(
+            color: hasError
+                ? Colors.red.withValues(alpha: 0.05)
+                : const Color(0xFF0E7C52).withValues(alpha: 0.06),
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(
+              color: hasError
+                  ? Colors.red.withValues(alpha: 0.45)
+                  : const Color(0xFF0E7C52).withValues(alpha: 0.30),
+              width: 1.3,
+            ),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(children: [
+                Icon(
+                  Icons.health_and_safety_rounded,
+                  size: 16,
+                  color: hasError ? Colors.red.shade700 : const Color(0xFF0E7C52),
+                ),
+                const SizedBox(width: 7),
+                Text(
+                  isEs ? 'Declaración de uso profesional' : 'Declaração de uso profissional',
+                  style: TextStyle(
+                    fontSize: 11,
+                    fontWeight: FontWeight.w800,
+                    color: hasError ? Colors.red.shade700 : const Color(0xFF0D2B1E),
+                  ),
+                ),
+              ]),
+              const SizedBox(height: 8),
+              Text(
+                disclaimerText,
+                style: const TextStyle(
+                  fontSize: 11,
+                  color: Color(0xFF4A6B58),
+                  height: 1.5,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
+          ),
+        ),
+
+        const SizedBox(height: 10),
+
+        // ── Checkbox de aceite ─────────────────────────────────────────────
+        GestureDetector(
+          onTap: () => onChanged(!accepted),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(
+                width: 22, height: 22,
+                child: Checkbox(
+                  value: accepted,
+                  onChanged: onChanged,
+                  activeColor: const Color(0xFF0E7C52),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(4)),
+                  side: BorderSide(
+                    color: hasError
+                        ? Colors.red
+                        : const Color(0xFF4A6B58).withValues(alpha: 0.40),
+                    width: 1.5,
+                  ),
+                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                ),
+              ),
+              const SizedBox(width: 9),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 2),
+                  child: Text(
+                    labelAccept,
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                      color: hasError
+                          ? Colors.red.shade700
+                          : const Color(0xFF4A6B58),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+
+        // ── Mensagem de erro se não aceito ─────────────────────────────────
+        if (hasError) ...[
+          const SizedBox(height: 6),
+          Row(children: [
+            Icon(Icons.warning_amber_rounded,
+                size: 13, color: Colors.red.shade700),
+            const SizedBox(width: 5),
+            Expanded(
+              child: Text(
+                errorMsg,
+                style: TextStyle(
+                  fontSize: 11,
+                  color: Colors.red.shade700,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          ]),
+        ],
+      ],
+    );
+  }
 }
