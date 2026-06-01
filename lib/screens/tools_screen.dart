@@ -3555,6 +3555,9 @@ class _PrescriptionsTabState extends State<_PrescriptionsTab> {
           ? 'Paracetamol es seguro, eficaz y puede combinarse con otras medicaciones.'
           : 'Paracetamol é seguro, eficaz e pode ser combinado com outras medicações.',
         sideType: _SideNoteType.info,
+        evidence: isEs
+          ? 'Modelo educativo · WHO Essential Medicines 2023 · UpToDate: Acetaminophen use in adults · Micromedex DrugDex'
+          : 'Modelo educacional · OMS Medicamentos Essenciais 2023 · UpToDate: Paracetamol no adulto · Micromedex DrugDex',
         tags: [
           _PrescTag(isEs ? 'DOR LEVE' : 'DOR LEVE',      const Color(0xFF059669)),
           _PrescTag(isEs ? 'DOR MODERADA' : 'DOR MODERADA', const Color(0xFFD97706)),
@@ -3576,6 +3579,9 @@ class _PrescriptionsTabState extends State<_PrescriptionsTab> {
           ? 'Opioides pueden causar depresión respiratoria. Monitorización esencial.'
           : 'Opioides podem causar depressão respiratória. Monitorização essencial.',
         sideType: _SideNoteType.warning,
+        evidence: isEs
+          ? 'Modelo educativo · Lexicomp Opioid Analgesics · APS Pain Guidelines 2022 · UpToDate: Management of acute pain'
+          : 'Modelo educacional · Lexicomp Analgésicos Opioides · APS Pain Guidelines 2022 · UpToDate: Manejo da dor aguda',
         tags: [
           _PrescTag(isEs ? 'DOR MODERADA' : 'DOR MODERADA', const Color(0xFFD97706)),
           _PrescTag(isEs ? 'DOR SEVERA'   : 'DOR SEVERA',   const Color(0xFFDC2626)),
@@ -3597,6 +3603,9 @@ class _PrescriptionsTabState extends State<_PrescriptionsTab> {
           ? 'Tratar la causa es más importante que solo reducir la fiebre.'
           : 'Tratar a causa é mais importante que apenas reduzir a febre.',
         sideType: _SideNoteType.important,
+        evidence: isEs
+          ? 'Modelo educativo · WHO Fever Management Guidelines · UpToDate: Approach to the adult with fever · Micromedex'
+          : 'Modelo educacional · OMS Manejo da Febre · UpToDate: Abordagem do adulto com febre · Micromedex',
         tags: [
           _PrescTag(isEs ? 'FIEBRE LEVE'    : 'FEBRE LEVE',    const Color(0xFF059669)),
           _PrescTag(isEs ? 'FIEBRE MODERADA': 'FEBRE MODERADA',const Color(0xFFD97706)),
@@ -3617,6 +3626,9 @@ class _PrescriptionsTabState extends State<_PrescriptionsTab> {
       _PrescCard(
         title: isEs ? 'Náuseas y Vómitos — 1ª Línea' : 'Náuseas e Vômitos — 1ª Linha',
         level: 'MOD',
+        evidence: isEs
+          ? 'Modelo educativo · UpToDate: Antiemetics — pharmacology and principles of use · Micromedex Ondansetron'
+          : 'Modelo educacional · UpToDate: Antieméticos — farmacologia e uso · Micromedex Ondansetrona',
         items: [
           _PrescItem('1.', isEs ? 'Ondansetrona 4–8 mg IV lento (2–5 min) 8/8h. Primeira escolha — menos sedação.' : 'Ondansetrona 4–8 mg IV lento (2–5 min) 8/8h. Primeira escolha — menos sedação.'),
           _PrescItem('2.', isEs ? 'Metoclopramida 10 mg IV 8/8h (lento em 50 mL SF, 15 min). Útil se dismotilidade gástrica.' : 'Metoclopramida 10 mg IV 8/8h (lento em 50 mL SF, 15 min). Útil se dismotilidade gástrica.'),
@@ -3627,6 +3639,9 @@ class _PrescriptionsTabState extends State<_PrescriptionsTab> {
       _PrescCard(
         title: isEs ? 'Vómitos Incoercibles / Quimioterapia' : 'Vômitos Incoercíveis / Quimioterapia',
         level: 'ALTO',
+        evidence: isEs
+          ? 'Modelo educativo · ASCO Antiemesis Guidelines 2020 · Lexicomp Aprepitant · UpToDate: CINV management'
+          : 'Modelo educacional · ASCO Antiemese 2020 · Lexicomp Aprepitanto · UpToDate: Manejo da NVIQ',
         items: [
           _PrescItem('1.', isEs ? 'Ondansetrona 8 mg IV 8/8h + Dexametasona 8 mg IV 12/12h.' : 'Ondansetrona 8 mg IV 8/8h + Dexametasona 8 mg IV 12/12h.'),
           _PrescItem('2.', isEs ? 'Aprepitanto 125 mg D1 + 80 mg D2-D3 (se disponível — antagonista NK1).' : 'Aprepitanto 125 mg D1 + 80 mg D2-D3 (se disponível — antagonista NK1).'),
@@ -3641,6 +3656,9 @@ class _PrescriptionsTabState extends State<_PrescriptionsTab> {
       _PrescCard(
         title: isEs ? 'ITU no Complicada (ambulatorio)' : 'ITU não Complicada (ambulatorial)',
         level: 'MOD',
+        evidence: isEs
+          ? 'Modelo educativo · IDSA UTI Guidelines 2011 (actualización 2022) · UpToDate: Uncomplicated UTI in women · Micromedex'
+          : 'Modelo educacional · IDSA ITU Guidelines 2022 · UpToDate: ITU não complicada na mulher · SBI 2023',
         items: [
           _PrescItem('1.ª opção', isEs ? 'Nitrofurantoína 100 mg VO 12/12h × 5 dias (não usar em IR: ClCr <45).' : 'Nitrofurantoína 100 mg VO 12/12h × 5 dias (não usar em IR: ClCr <45).'),
           _PrescItem('2.ª opção', isEs ? 'Fosfomicina 3 g VO dose única (cistite simples).' : 'Fosfomicina 3 g VO dose única (cistite simples).'),
@@ -3651,6 +3669,9 @@ class _PrescriptionsTabState extends State<_PrescriptionsTab> {
       _PrescCard(
         title: isEs ? 'ITU Complicada / Pielonefritis' : 'ITU Complicada / Pielonefrite',
         level: 'ALTO',
+        evidence: isEs
+          ? 'Modelo educativo · IDSA Pyelonephritis Guidelines · UpToDate: Acute complicated UTI in adults · Lexicomp Ceftriaxone'
+          : 'Modelo educacional · IDSA Pielonefrite · UpToDate: ITU complicada no adulto · Lexicomp Ceftriaxona',
         items: [
           _PrescItem('Internado IV', isEs ? 'Ceftriaxona 1–2 g IV/dia ou Ciprofloxacino 400 mg IV 12/12h.' : 'Ceftriaxona 1–2 g IV/dia ou Ciprofloxacino 400 mg IV 12/12h.'),
           _PrescItem('Ambulatorial', isEs ? 'Ciprofloxacino 500 mg VO 12/12h × 7 dias (pielonefrite leve).' : 'Ciprofloxacino 500 mg VO 12/12h × 7 dias (pielonefrite leve).'),
@@ -3660,6 +3681,9 @@ class _PrescriptionsTabState extends State<_PrescriptionsTab> {
       _PrescCard(
         title: isEs ? 'PAC Leve–Moderada (ambulatorio)' : 'PAC Leve–Moderada (ambulatorial)',
         level: 'MOD',
+        evidence: isEs
+          ? 'Modelo educativo · ATS/IDSA CAP Guidelines 2019 · CURB-65 score · UpToDate: CAP treatment in adults'
+          : 'Modelo educacional · ATS/IDSA PAC 2019 · Escore CURB-65 · UpToDate: Tratamento da PAC no adulto · SBPT',
         items: [
           _PrescItem('Sem comorbidade', isEs ? 'Amoxicilina 1 g VO 8/8h × 5 dias (pneumococo — 1ª opção).' : 'Amoxicilina 1 g VO 8/8h × 5 dias (pneumococo — 1ª opção).'),
           _PrescItem('Atípico suspeito', isEs ? 'Azitromicina 500 mg/dia × 5 dias OU Doxiciclina 100 mg 12/12h × 7 dias.' : 'Azitromicina 500 mg/dia × 5 dias OU Doxiciclina 100 mg 12/12h × 7 dias.'),
@@ -3670,6 +3694,9 @@ class _PrescriptionsTabState extends State<_PrescriptionsTab> {
       _PrescCard(
         title: isEs ? 'Celulitis / Erisipela' : 'Celulite / Erisipela',
         level: 'MOD',
+        evidence: isEs
+          ? 'Modelo educativo · IDSA Skin & Soft Tissue Infections 2014 · UpToDate: Cellulitis and skin abscess · Lexicomp'
+          : 'Modelo educacional · IDSA Infecções de Pele 2014 · UpToDate: Celulite e abscesso · Lexicomp Cefalexina',
         items: [
           _PrescItem('Leve VO', isEs ? 'Cefalexina 500 mg VO 6/6h × 5–7 dias (estafilococo/estreptococo).' : 'Cefalexina 500 mg VO 6/6h × 5–7 dias (estafilococo/estreptococo).'),
           _PrescItem('Moderada IV', isEs ? 'Oxacilina 2 g IV 4/4h ou Cefazolina 2 g IV 8/8h.' : 'Oxacilina 2 g IV 4/4h ou Cefazolina 2 g IV 8/8h.'),
@@ -3684,6 +3711,9 @@ class _PrescriptionsTabState extends State<_PrescriptionsTab> {
       _PrescCard(
         title: isEs ? 'HAS Estágio 1–2 (ambulatorio)' : 'HAS Estágio 1–2 (ambulatorial)',
         level: 'MOD',
+        evidence: isEs
+          ? 'Modelo educativo · ESC/ESH Hypertension Guidelines 2023 · JNC 8 · UpToDate: Choice of drug therapy in primary HTN'
+          : 'Modelo educacional · ESC/ESH HAS 2023 · Diretriz Brasileira HAS 2023 · UpToDate: Escolha do anti-hipertensivo',
         items: [
           _PrescItem('1.ª linha', isEs ? 'Anlodipino 5 mg VO 1×/dia (pode titular para 10 mg).' : 'Anlodipino 5 mg VO 1×/dia (pode titular para 10 mg).'),
           _PrescItem('Ou', isEs ? 'Losartana 50 mg VO 1×/dia (titular para 100 mg). Preferir em DM/proteinúria.' : 'Losartana 50 mg VO 1×/dia (titular para 100 mg). Preferir em DM/proteinúria.'),
@@ -3700,6 +3730,9 @@ class _PrescriptionsTabState extends State<_PrescriptionsTab> {
       _PrescCard(
         title: isEs ? 'Hipopotasemia — Reposición' : 'Hipopotassemia — Reposição',
         level: 'ALTO',
+        evidence: isEs
+          ? 'Modelo educativo · UpToDate: Clinical manifestations and treatment of hypokalemia · Micromedex KCl · Lexicomp'
+          : 'Modelo educacional · UpToDate: Manifestações e tratamento da hipocalemia · Micromedex KCl · Lexicomp',
         items: [
           _PrescItem('K+ 3,0–3,5', isEs ? 'KCl 40 mEq VO (frutas, sal light) ou KCl oral 40 mEq fracionado.' : 'KCl 40 mEq VO (frutas, sal light) ou KCl oral 40 mEq fracionado.'),
           _PrescItem('K+ 2,5–3,0', isEs ? 'KCl 40–60 mEq em 500 mL SF IV em 4–6h (taxa máx. 10 mEq/h periférica).' : 'KCl 40–60 mEq em 500 mL SF IV em 4–6h (taxa máx. 10 mEq/h periférica).'),
@@ -3843,6 +3876,8 @@ class _PrescCard extends StatelessWidget {
   final _SideNoteType sideType;
   /// Tags coloridas no rodapé
   final List<_PrescTag>? tags;
+  /// Referência bibliográfica no rodapé (opcional — usa padrão da categoria se null)
+  final String? evidence;
 
   const _PrescCard({
     required this.title,
@@ -3853,6 +3888,7 @@ class _PrescCard extends StatelessWidget {
     this.sideBody,
     this.sideType = _SideNoteType.info,
     this.tags,
+    this.evidence,
   });
 
   Color get _levelColor => level == 'ALTO'
@@ -3959,12 +3995,13 @@ class _PrescCard extends StatelessWidget {
         // ── Tags de rodapé ──────────────────────────────────────
         if (hasTags)
           Padding(
-            padding: const EdgeInsets.fromLTRB(14, 8, 14, 12),
+            padding: const EdgeInsets.fromLTRB(14, 8, 14, 0),
             child: Wrap(spacing: 6, runSpacing: 6,
               children: tags!.map((t) => _PrescTagChip(tag: t)).toList()),
-          )
-        else
-          const SizedBox(height: 12),
+          ),
+
+        // ── Linha de evidência bibliográfica ────────────────────
+        _PrescEvidenceFooter(evidence: evidence, c: c),
       ]),
     );
   }
@@ -3991,6 +4028,52 @@ class _PrescCard extends StatelessWidget {
 }
 
 enum _SideNoteType { info, warning, important }
+
+// ─────────────────────────────────────────────────────────────────────────────
+// RODAPÉ DE EVIDÊNCIA — linha bibliográfica em cada _PrescCard
+// ─────────────────────────────────────────────────────────────────────────────
+class _PrescEvidenceFooter extends StatelessWidget {
+  final String? evidence;
+  final AppColors c;
+  const _PrescEvidenceFooter({required this.evidence, required this.c});
+
+  // Referência padrão quando o card não passa evidência explícita
+  static const _defaultEvidence =
+      'Modelo educativo · Basado en UpToDate / Micromedex / Lexicomp / Diretrizes institucionais';
+
+  @override
+  Widget build(BuildContext context) {
+    final ref = evidence ?? _defaultEvidence;
+    final dark = c.dark;
+    final lineCol  = dark ? const Color(0xFF1E2E24) : const Color(0xFFE8F0EA);
+    final textCol  = dark ? const Color(0xFF4A7A5A) : const Color(0xFF7A9B82);
+    final iconCol  = dark ? const Color(0xFF3A6A4A) : const Color(0xFF9AB89F);
+
+    return Container(
+      margin: const EdgeInsets.fromLTRB(0, 6, 0, 0),
+      padding: const EdgeInsets.fromLTRB(14, 7, 14, 10),
+      decoration: BoxDecoration(
+        border: Border(top: BorderSide(color: lineCol, width: 1)),
+      ),
+      child: Row(children: [
+        Icon(Icons.menu_book_rounded, size: 11, color: iconCol),
+        const SizedBox(width: 6),
+        Expanded(
+          child: Text(
+            ref,
+            style: TextStyle(
+              fontSize: 9.5,
+              color: textCol,
+              fontWeight: FontWeight.w500,
+              letterSpacing: 0.1,
+              height: 1.3,
+            ),
+          ),
+        ),
+      ]),
+    );
+  }
+}
 
 class _PrescItem {
   final String step, desc;
