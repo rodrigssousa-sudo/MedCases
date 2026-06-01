@@ -981,16 +981,7 @@ class _AiScreenState extends State<AiScreen> {
                     if (detectedEv != null)
                       Padding(
                         padding: const EdgeInsets.fromLTRB(12, 4, 12, 0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            EvidenceBadgesRow(ev: detectedEv, compact: true),
-                            const SizedBox(height: 6),
-                            EvidenceCardWidget(ev: detectedEv),
-                            const SizedBox(height: 6),
-                            const PharmacologicalDisclaimer(),
-                          ],
-                        ),
+                        child: _CollapsibleEvidenceBlock(ev: detectedEv, dark: dark),
                       ),
                   ],
                 ),
@@ -3422,6 +3413,96 @@ class _ChatHistorySheet extends StatelessWidget {
                 ),
               ),
       ]),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// _CollapsibleEvidenceBlock — chip colapsável de evidência no chat da IA
+// Padrão: 1 linha "📊 EVIDENCIA CIENTÍFICA ▾"
+// Expandido: EvidenceBadgesRow + EvidenceCardWidget + PharmacologicalDisclaimer
+// ─────────────────────────────────────────────────────────────────────────────
+class _CollapsibleEvidenceBlock extends StatefulWidget {
+  final DrugEvidenceModel ev;
+  final bool dark;
+  const _CollapsibleEvidenceBlock({required this.ev, required this.dark});
+
+  @override
+  State<_CollapsibleEvidenceBlock> createState() => _CollapsibleEvidenceBlockState();
+}
+
+class _CollapsibleEvidenceBlockState extends State<_CollapsibleEvidenceBlock> {
+  bool _expanded = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final dark = widget.dark;
+
+    // Cores
+    final chipBg     = dark ? const Color(0xFF1A2E22) : const Color(0xFFE8F5EE);
+    final chipBorder = dark ? const Color(0xFF2E7D52) : const Color(0xFF81C784);
+    final labelColor = dark ? const Color(0xFF4ADE80) : const Color(0xFF2E7D52);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // ── Chip colapsável ──────────────────────────────────────────────────
+        GestureDetector(
+          onTap: () => setState(() => _expanded = !_expanded),
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            decoration: BoxDecoration(
+              color: chipBg,
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: chipBorder, width: 1),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Text('📊', style: TextStyle(fontSize: 14)),
+                const SizedBox(width: 6),
+                Text(
+                  'EVIDENCIA CIENTÍFICA',
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w700,
+                    color: labelColor,
+                    letterSpacing: 0.5,
+                  ),
+                ),
+                const SizedBox(width: 6),
+                AnimatedRotation(
+                  turns: _expanded ? 0.5 : 0.0,
+                  duration: const Duration(milliseconds: 250),
+                  child: Icon(Icons.keyboard_arrow_down_rounded,
+                      size: 18, color: labelColor),
+                ),
+              ],
+            ),
+          ),
+        ),
+
+        // ── Conteúdo expandido ───────────────────────────────────────────────
+        AnimatedSize(
+          duration: const Duration(milliseconds: 280),
+          curve: Curves.easeInOut,
+          child: _expanded
+              ? Padding(
+                  padding: const EdgeInsets.only(top: 8),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      EvidenceBadgesRow(ev: widget.ev, compact: true),
+                      const SizedBox(height: 6),
+                      EvidenceCardWidget(ev: widget.ev),
+                      const SizedBox(height: 6),
+                      const PharmacologicalDisclaimer(),
+                    ],
+                  ),
+                )
+              : const SizedBox.shrink(),
+        ),
+      ],
     );
   }
 }
