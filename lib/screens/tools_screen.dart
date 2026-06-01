@@ -1977,6 +1977,22 @@ class _InfusionTabState extends State<_InfusionTab> {
     return '${_fmt(mgH, dec: 2)} mg/h\n${_fmt(mcgH, dec: 0)} mcg/h';
   }
 
+  /// Retorna a fórmula matemática explícita do cálculo Velocidade → Dose
+  String? get _infusionFormula {
+    final conc   = _n(_infConcCtrl);
+    final rate   = _n(_infRateCtrl);
+    final weight = _n(_infWeightCtrl);
+    if (conc == null || rate == null) return null;
+    final mgH  = conc * rate;
+    final mcgH = mgH * 1000;
+    if (weight != null && weight > 0) {
+      final mcgKgMin = mcgH / (weight * 60);
+      return '${_fmt(conc)} mg/mL × ${_fmt(rate)} mL/h = ${_fmt(mgH)} mg/h\n'
+             '÷ (${_fmt(weight)} kg × 60 min) = ${_fmt(mcgKgMin, dec: 3)} mcg/kg/min';
+    }
+    return '${_fmt(conc)} mg/mL × ${_fmt(rate)} mL/h = ${_fmt(mgH)} mg/h';
+  }
+
   String? get _doseToRate {
     final dose = _n(_doseCtrl);
     final conc = _n(_concCalcCtrl);
@@ -2027,14 +2043,83 @@ class _InfusionTabState extends State<_InfusionTab> {
                   colors: [Color(0xFF07110d), Color(0xFF1B3D2A), kToolGreen]),
               ),
               child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                const Text('RESULTADO', style: TextStyle(fontSize: 9, fontWeight: FontWeight.w900, color: Color(0xBFFFE8A6), letterSpacing: 2)),
+                // ── Título Apple-compliant ──────────────────────────────────
+                Text(
+                  isEs ? 'Dosis de referencia calculada:' : 'Dose de referência calculada:',
+                  style: const TextStyle(fontSize: 9, fontWeight: FontWeight.w900,
+                      color: Color(0xBFFFE8A6), letterSpacing: 1.4),
+                ),
                 const SizedBox(height: 6),
-                Text(_infDrugCtrl.text.isNotEmpty ? _infDrugCtrl.text : 'Fármaco',
-                  style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: Color(0x99FFFFFF))),
+                // ── Nome do fármaco ─────────────────────────────────────────
+                Text(
+                  _infDrugCtrl.text.isNotEmpty ? _infDrugCtrl.text : (isEs ? 'Fármaco' : 'Fármaco'),
+                  style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w700,
+                      color: Color(0x99FFFFFF)),
+                ),
                 const SizedBox(height: 4),
-                Text(_infusionRate ?? (isEs ? 'Ingrese concentración y velocidad' : 'Informe concentração e velocidade'),
-                  style: TextStyle(fontSize: _infusionRate != null ? 20 : 13,
-                    fontWeight: FontWeight.w900, color: Colors.white, letterSpacing: -0.5, height: 1.4)),
+                // ── Valor calculado ─────────────────────────────────────────
+                Text(
+                  _infusionRate ?? (isEs ? 'Ingrese concentración y velocidad' : 'Informe concentração e velocidade'),
+                  style: TextStyle(
+                    fontSize: _infusionRate != null ? 20 : 13,
+                    fontWeight: FontWeight.w900,
+                    color: Colors.white,
+                    letterSpacing: -0.5,
+                    height: 1.4,
+                  ),
+                ),
+                // ── Fórmula explícita ───────────────────────────────────────
+                if (_infusionFormula != null) ...[
+                  const SizedBox(height: 10),
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withValues(alpha: 0.07),
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(
+                          color: Colors.white.withValues(alpha: 0.12), width: 0.8),
+                    ),
+                    child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                      Text(
+                        isEs ? 'Fórmula:' : 'Fórmula:',
+                        style: const TextStyle(
+                          fontSize: 8.5,
+                          fontWeight: FontWeight.w700,
+                          color: Color(0xBFFFE8A6),
+                          letterSpacing: 0.5,
+                        ),
+                      ),
+                      const SizedBox(height: 3),
+                      Text(
+                        _infusionFormula!,
+                        style: const TextStyle(
+                          fontSize: 11,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.white,
+                          height: 1.5,
+                        ),
+                      ),
+                    ]),
+                  ),
+                  const SizedBox(height: 8),
+                  // ── Citação de fonte ──────────────────────────────────────
+                  Row(children: [
+                    const Text('📚 ', style: TextStyle(fontSize: 10)),
+                    Expanded(
+                      child: Text(
+                        isEs
+                            ? 'Fuente: Cálculo estándar de infusión clínica.'
+                            : 'Fonte: Cálculo padrão de infusão clínica.',
+                        style: TextStyle(
+                          fontSize: 9,
+                          color: Colors.white.withValues(alpha: 0.50),
+                          fontStyle: FontStyle.italic,
+                        ),
+                      ),
+                    ),
+                  ]),
+                ],
               ]),
             ),
             const SizedBox(height: 8),

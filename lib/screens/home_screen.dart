@@ -1049,14 +1049,7 @@ class _HomeIaCardState extends State<_HomeIaCard> {
               children: [
                 Expanded(
                   child: GestureDetector(
-                    onTap: () {
-                      // Se campo vazio ao clicar: vai para IA sem query
-                      if (_ctrl.text.trim().isEmpty) {
-                        _navigate('');
-                      } else {
-                        _focus.requestFocus();
-                      }
-                    },
+                    onTap: () => _focus.requestFocus(),
                     child: Container(
                       padding: const EdgeInsets.symmetric(
                           horizontal: 14, vertical: 11),
@@ -1083,14 +1076,6 @@ class _HomeIaCardState extends State<_HomeIaCard> {
                         ),
                         textInputAction: TextInputAction.send,
                         onSubmitted: (_) => _navigate(),
-                        onTap: () {
-                          // Ao focar no field: vai para IA para melhor UX mobile
-                          Future.delayed(const Duration(milliseconds: 100), () {
-                            if (_ctrl.text.trim().isEmpty && mounted) {
-                              _navigate('');
-                            }
-                          });
-                        },
                       ),
                     ),
                   ),
@@ -1337,9 +1322,8 @@ class _HomeMiGuardiaSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final c        = AppColors.of(context);
-    final cardBg   = dark ? const Color(0xFF0E1A12) : Colors.white;
-    final border   = dark
+    final cardBg = dark ? const Color(0xFF0E1A12) : Colors.white;
+    final border = dark
         ? Colors.white.withValues(alpha: 0.06)
         : const Color(0xFFE4EEE9);
 
@@ -1358,64 +1342,10 @@ class _HomeMiGuardiaSection extends StatelessWidget {
                 ),
               ],
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // ── Cabeçalho da seção ──────────────────────────────────────────
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 14, 16, 0),
-            child: Row(children: [
-              Container(
-                width: 32, height: 32,
-                decoration: BoxDecoration(
-                  color: const Color(0xFF0D7A55).withValues(alpha: 0.12),
-                  borderRadius: BorderRadius.circular(9),
-                ),
-                child: const Icon(Icons.dashboard_customize_rounded,
-                    size: 17, color: Color(0xFF0D7A55)),
-              ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      isEs ? 'MI GUARDIA' : 'MIGUARDIA',
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w900,
-                        letterSpacing: 0.8,
-                        color: c.textPrimary,
-                      ),
-                    ),
-                    Text(
-                      isEs
-                          ? 'Tu guardia personalizada con acceso rápido a lo que más usas'
-                          : 'Sua guarda personalizada com acesso rápido ao que você mais utiliza',
-                      style: TextStyle(
-                        fontSize: 10,
-                        color: c.textHint,
-                        height: 1.3,
-                      ),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ],
-                ),
-              ),
-            ]),
-          ),
-          const SizedBox(height: 8),
-          // ── Dashboard ───────────────────────────────────────────────────
-          Padding(
-            padding: const EdgeInsets.fromLTRB(0, 0, 0, 4),
-            child: MeuPlantaoDashboard(
-              onOpenDrug:  onOpenDrug,
-              onOpenCalc:  onOpenCalc,
-              onManageTap: onManageTap,
-            ),
-          ),
-        ],
+      child: MeuPlantaoDashboard(
+        onOpenDrug:  onOpenDrug,
+        onOpenCalc:  onOpenCalc,
+        onManageTap: onManageTap,
       ),
     );
   }
