@@ -3940,19 +3940,20 @@ class _PrescCard extends StatelessWidget {
         // ── Body ────────────────────────────────────────────────
         Padding(
           padding: const EdgeInsets.fromLTRB(14, 12, 14, 0),
-          child: hasSide
-            ? Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                // Lista de passos
-                Expanded(child: _buildSteps(context, steps, specials, c)),
-                const SizedBox(width: 12),
-                // Painel lateral
-                SizedBox(width: 168, child: _PrescSideNote(
-                  title: sideTitle!,
-                  body: sideBody!,
-                  type: sideType,
-                )),
-              ])
-            : _buildSteps(context, steps, specials, c),
+          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            // Steps sempre full-width
+            _buildSteps(context, steps, specials, c),
+            // SideNote abaixo dos steps, full-width compacto
+            if (hasSide) ...[
+              const SizedBox(height: 10),
+              _PrescSideNote(
+                title: sideTitle!,
+                body: sideBody!,
+                type: sideType,
+                fullWidth: true,
+              ),
+            ],
+          ]),
         ),
 
         // ── Tags de rodapé ──────────────────────────────────────
@@ -4092,7 +4093,8 @@ class _PrescAttenRow extends StatelessWidget {
 class _PrescSideNote extends StatelessWidget {
   final String title, body;
   final _SideNoteType type;
-  const _PrescSideNote({required this.title, required this.body, required this.type});
+  final bool fullWidth;
+  const _PrescSideNote({required this.title, required this.body, required this.type, this.fullWidth = false});
 
   Color get _accent {
     switch (type) {
@@ -4114,6 +4116,36 @@ class _PrescSideNote extends StatelessWidget {
   Widget build(BuildContext context) {
     final c = AppColors.of(context);
     final accent = _accent;
+
+    // fullWidth: layout horizontal compacto (ícone + título | corpo)
+    if (fullWidth) {
+      return Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 9),
+        decoration: BoxDecoration(
+          color: accent.withValues(alpha: 0.05),
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: accent.withValues(alpha: 0.18)),
+        ),
+        child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Icon(_icon, size: 13, color: accent),
+          const SizedBox(width: 7),
+          Expanded(child: RichText(
+            text: TextSpan(children: [
+              TextSpan(
+                text: '$title  ',
+                style: TextStyle(fontSize: 11, fontWeight: FontWeight.w800,
+                    color: accent),
+              ),
+              TextSpan(
+                text: body,
+                style: TextStyle(fontSize: 11, color: c.textSecondary,
+                    height: 1.4, fontWeight: FontWeight.w400),
+              ),
+            ]),
+          )),
+        ]),
+      );
+    }
 
     return Container(
       padding: const EdgeInsets.all(12),

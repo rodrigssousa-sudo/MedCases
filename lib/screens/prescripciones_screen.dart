@@ -108,12 +108,12 @@ class _PrescripcionesScreenState extends State<PrescripcionesScreen> {
           ]),
         ]),
       ),
-      // ── Aviso regulatorio Apple 1.4.1 ────────────────────────────────────
+      // ── Aviso regulatorio Apple 1.4.1 — compacto colapsável ──────────────
       const Padding(
-        padding: EdgeInsets.fromLTRB(16, 8, 16, 0),
+        padding: EdgeInsets.fromLTRB(16, 6, 16, 0),
         child: PharmacologicalDisclaimer(),
       ),
-      const SizedBox(height: 8),
+      const SizedBox(height: 6),
 
       // ── Lista de modelos ─────────────────────────────────────────────────
       Expanded(

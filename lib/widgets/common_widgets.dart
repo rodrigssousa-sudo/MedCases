@@ -1320,12 +1320,19 @@ class _EvRefRow extends StatelessWidget {
 
 // ═════════════════════════════════════════════════════════════════════════════
 // PHARMACOLOGICAL DISCLAIMER — aviso regulatorio Apple 1.4.1/1.4.2
+// Colapsável: por padrão exibe apenas 1 linha. Toque para expandir.
 // Uso: PharmacologicalDisclaimer()
 //      PharmacologicalDisclaimer(customText: '...')
 // ═════════════════════════════════════════════════════════════════════════════
-class PharmacologicalDisclaimer extends StatelessWidget {
+class PharmacologicalDisclaimer extends StatefulWidget {
   final String? customText;
   const PharmacologicalDisclaimer({super.key, this.customText});
+  @override
+  State<PharmacologicalDisclaimer> createState() => _PharmacologicalDisclaimerState();
+}
+
+class _PharmacologicalDisclaimerState extends State<PharmacologicalDisclaimer> {
+  bool _expanded = false;
 
   static const _defaultText =
       'La información farmacológica presentada tiene carácter exclusivamente '
@@ -1341,41 +1348,57 @@ class PharmacologicalDisclaimer extends StatelessWidget {
   Widget build(BuildContext context) {
     final c    = AppColors.of(context);
     final dark = c.dark;
+    final text = widget.customText ?? _defaultText;
 
-    return Container(
-      margin:  const EdgeInsets.symmetric(horizontal: 0, vertical: 8),
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: dark
-            ? const Color(0xFF1A1A1A)
-            : const Color(0xFFF8F8F2),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: dark
-              ? const Color(0xFF333333)
-              : const Color(0xFFD1D5DB),
+    const subtleGrey = Color(0xFF9CA3AF);
+    final borderCol  = dark ? const Color(0xFF2A2A2A) : const Color(0xFFE5E7EB);
+    final bgCol      = dark ? const Color(0xFF161616) : const Color(0xFFFAFAF8);
+
+    return GestureDetector(
+      onTap: () => setState(() => _expanded = !_expanded),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 220),
+        curve: Curves.easeInOut,
+        margin: const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        decoration: BoxDecoration(
+          color: bgCol,
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: borderCol),
         ),
-      ),
-      child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Icon(
-          Icons.info_outline_rounded,
-          size: 14,
-          color: dark ? const Color(0xFF9CA3AF) : const Color(0xFF6B7280),
-        ),
-        const SizedBox(width: 9),
-        Expanded(
-          child: Text(
-            customText ?? _defaultText,
-            style: TextStyle(
-              fontSize: 9.5,
-              fontWeight: FontWeight.w500,
-              color: dark ? const Color(0xFF9CA3AF) : const Color(0xFF6B7280),
-              height: 1.55,
-              letterSpacing: 0.1,
+        child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          // Ícone fixo
+          Padding(
+            padding: const EdgeInsets.only(top: 1),
+            child: Icon(Icons.info_outline_rounded, size: 13, color: subtleGrey),
+          ),
+          const SizedBox(width: 8),
+          // Texto — 1 linha colapsado, completo expandido
+          Expanded(
+            child: Text(
+              text,
+              maxLines: _expanded ? null : 1,
+              overflow: _expanded ? TextOverflow.visible : TextOverflow.ellipsis,
+              style: const TextStyle(
+                fontSize: 9.5,
+                fontWeight: FontWeight.w400,
+                color: subtleGrey,
+                height: 1.5,
+                letterSpacing: 0.1,
+              ),
             ),
           ),
-        ),
-      ]),
+          // Chevron de expandir
+          Padding(
+            padding: const EdgeInsets.only(top: 1, left: 6),
+            child: Icon(
+              _expanded ? Icons.expand_less_rounded : Icons.expand_more_rounded,
+              size: 15,
+              color: subtleGrey,
+            ),
+          ),
+        ]),
+      ),
     );
   }
 }
