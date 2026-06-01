@@ -408,7 +408,14 @@ Confianca: Alta | Moderada | Baixa — [1 linha de motivo]
       'Ginecologia: Williams Obstetrics, FEBRASGO | Psiquiatria: Kaplan & Sadock, DSM-5-TR | '
       'Reumatologia: EULAR, ACR | Oncologia: NCCN 2024, ASCO, ESMO | '
       'Secundarias: UpToDate, BMJ Best Practice, Cochrane, PubMed | '
-      'Regionales: ANMAT, SAC, SADI (Argentina) | ANVISA, CFM, MS-Brasil';
+      'Regionales: ANMAT, SAC, SADI (Argentina) | ANVISA, CFM, MS-Brasil\n\n'
+      // ── Task 6 Level 3 — Rodapé de referências obrigatório (Apple Guideline 1.4.1)
+      // Garante transparência bibliográfica em TODAS as respostas da IA.
+      'RODAPE DE REFERENCIAS OBLIGATORIO — incluir al FINAL de CADA respuesta clinica:\n'
+      '📚 Referencias base: Harrison · PubMed · [guideline mas relevante para el tema]. Valide clinicamente.\n'
+      'Esta instruccion es ABSOLUTA. SIEMPRE incluir el rodape, sin excepcion.\n'
+      'Formato exacto: una linea con icono 📚, separada del contenido por una linea en blanco.\n'
+      'EXCEPCION: NO incluir en saludos, preguntas de soporte tecnico o conversacion no clinica.';
 
   static const _sourcesPt =
       'FONTES (citar as mais relevantes): Harrison 21ed, Goldman-Cecil, CMDT 2024 | '
@@ -422,7 +429,14 @@ Confianca: Alta | Moderada | Baixa — [1 linha de motivo]
       'Ginecologia: Williams Obstetrics, FEBRASGO | Psiquiatria: Kaplan & Sadock, DSM-5-TR, CID-11 | '
       'Reumatologia: EULAR, ACR, SBR | Oncologia: NCCN 2024, ASCO, ESMO, SBOC | '
       'Secundarias: UpToDate, BMJ Best Practice, Cochrane, PubMed, NEJM, JAMA, Lancet | '
-      'Regionais: ANVISA, CONITEC, AMB, CFM, MS-Brasil | ANMAT, SAC, SADI';
+      'Regionais: ANVISA, CONITEC, AMB, CFM, MS-Brasil | ANMAT, SAC, SADI\n\n'
+      // ── Task 6 Level 3 — Rodapé de referências obrigatório (Apple Guideline 1.4.1)
+      // Garante transparência bibliográfica em TODAS as respostas da IA.
+      'RODAPE DE REFERENCIAS OBRIGATORIO — incluir ao FINAL de CADA resposta clinica:\n'
+      '📚 Referências base: Harrison · PubMed · [guideline mais relevante para o tema]. Valide clinicamente.\n'
+      'Esta instrucao e ABSOLUTA. SEMPRE incluir o rodape, sem excecao.\n'
+      'Formato exato: uma linha com icone 📚, separada do conteudo por uma linha em branco.\n'
+      'EXCECAO: NAO incluir em saudacoes, perguntas de suporte tecnico ou conversa nao clinica.';
 
   // ══════════════════════════════════════════════════════════════════════════
   // MÓDULO 7 — Evidence Ranking Engine
