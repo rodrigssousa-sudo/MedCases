@@ -3456,6 +3456,20 @@ class _PrescriptionsTabState extends State<_PrescriptionsTab> {
     isEs ? 'DISNEA'       : 'DISPNEIA',
   ];
 
+  // Ícones por categoria de prescrição
+  static const _catIcons = [
+    Icons.healing_rounded,         // DOR/FEBRE
+    Icons.sick_rounded,            // NÁUSEA
+    Icons.coronavirus_rounded,     // INFECÇÃO
+    Icons.monitor_heart_rounded,   // HAS
+    Icons.science_rounded,         // HipoK+
+    Icons.bedtime_rounded,         // SEDAÇÃO
+    Icons.warning_amber_rounded,   // SEPSE
+    Icons.bloodtype_rounded,       // COAGULAÇÃO
+    Icons.local_fire_department_rounded, // ANTI-HAS GRAVE
+    Icons.air_rounded,             // DISPNEIA
+  ];
+
   @override
   Widget build(BuildContext context) {
     final p = context.watch<AppProvider>();
@@ -3463,28 +3477,40 @@ class _PrescriptionsTabState extends State<_PrescriptionsTab> {
     final categories = _categories(isEs);
 
     return Column(children: [
+      // ── Sub-tabs com underline indicator ──────────────────────
       Container(
-        color: const Color(0xFF0A1A10),
-        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+        decoration: BoxDecoration(
+          color: const Color(0xFF0A1A10),
+          border: Border(bottom: BorderSide(color: Colors.white.withValues(alpha: 0.08), width: 1)),
+        ),
         child: SingleChildScrollView(
           scrollDirection: Axis.horizontal,
+          padding: const EdgeInsets.symmetric(horizontal: 8),
           child: Row(
             children: List.generate(categories.length, (i) {
               final active = _cat == i;
               return GestureDetector(
                 onTap: () => setState(() => _cat = i),
                 child: AnimatedContainer(
-                  duration: const Duration(milliseconds: 160),
-                  margin: const EdgeInsets.only(right: 8),
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
+                  duration: const Duration(milliseconds: 200),
+                  margin: const EdgeInsets.only(right: 2),
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 11),
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20),
-                    color: active ? const Color(0xFFC5A365) : Colors.white.withValues(alpha: 0.08),
-                    border: Border.all(color: active ? const Color(0xFFC5A365) : Colors.white.withValues(alpha: 0.15)),
+                    border: Border(bottom: BorderSide(
+                      color: active ? const Color(0xFF4ADE80) : Colors.transparent,
+                      width: 2.5,
+                    )),
                   ),
-                  child: Text(categories[i],
-                    style: TextStyle(fontSize: 10, fontWeight: FontWeight.w800,
-                      color: active ? const Color(0xFF0F1C14) : Colors.white60, letterSpacing: 0.5)),
+                  child: Row(mainAxisSize: MainAxisSize.min, children: [
+                    Icon(_catIcons[i], size: 13,
+                      color: active ? const Color(0xFF4ADE80) : Colors.white.withValues(alpha: 0.40)),
+                    const SizedBox(width: 5),
+                    Text(categories[i], style: TextStyle(
+                      fontSize: 10.5, fontWeight: active ? FontWeight.w800 : FontWeight.w500,
+                      color: active ? const Color(0xFF4ADE80) : Colors.white.withValues(alpha: 0.45),
+                      letterSpacing: 0.5,
+                    )),
+                  ]),
                 ),
               );
             }),
@@ -3493,7 +3519,7 @@ class _PrescriptionsTabState extends State<_PrescriptionsTab> {
       ),
       Expanded(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.fromLTRB(16, 16, 16, 100),
+          padding: const EdgeInsets.fromLTRB(16, 20, 16, 100),
           child: _buildPrescription(isEs),
         ),
       ),
@@ -3521,6 +3547,17 @@ class _PrescriptionsTabState extends State<_PrescriptionsTab> {
       _PrescCard(
         title: isEs ? 'Dolor Leve–Moderado (Adulto)' : 'Dor Leve–Moderada (Adulto)',
         level: 'MOD',
+        badge: isEs ? '1ª Elección' : '1ª Escolha',
+        sideTitle: isEs ? 'Claves rápidas' : 'Pontos-chave',
+        sideBody: isEs
+          ? 'Paracetamol es seguro, eficaz y puede combinarse con otras medicaciones.'
+          : 'Paracetamol é seguro, eficaz e pode ser combinado com outras medicações.',
+        sideType: _SideNoteType.info,
+        tags: [
+          _PrescTag(isEs ? 'DOR LEVE' : 'DOR LEVE',      const Color(0xFF059669)),
+          _PrescTag(isEs ? 'DOR MODERADA' : 'DOR MODERADA', const Color(0xFFD97706)),
+          _PrescTag('Adulto', const Color(0xFF6366F1)),
+        ],
         items: [
           _PrescItem('1.', isEs ? 'Paracetamol 1 g VO/IV 6/6h (máx. 4 g/dia). Preferir para febre e dor leve.' : 'Paracetamol 1 g VO/IV 6/6h (máx. 4 g/dia). Preferir para febre e dor leve.'),
           _PrescItem('2.', isEs ? 'SE necessário: Ibuprofeno 400–600 mg 8/8h VO (com alimento). Evitar em IR, úlcera, ICC.' : 'SE necessário: Ibuprofeno 400–600 mg 8/8h VO (com alimento). Evitar IR, úlcera, ICC.'),
@@ -3531,6 +3568,17 @@ class _PrescriptionsTabState extends State<_PrescriptionsTab> {
       _PrescCard(
         title: isEs ? 'Dolor Moderado–Severo' : 'Dor Moderada–Grave',
         level: 'ALTO',
+        badge: isEs ? 'Uso cuidadoso' : 'Uso cuidadoso',
+        sideTitle: isEs ? 'Precaución' : 'Precaução',
+        sideBody: isEs
+          ? 'Opioides pueden causar depresión respiratoria. Monitorización esencial.'
+          : 'Opioides podem causar depressão respiratória. Monitorização essencial.',
+        sideType: _SideNoteType.warning,
+        tags: [
+          _PrescTag(isEs ? 'DOR MODERADA' : 'DOR MODERADA', const Color(0xFFD97706)),
+          _PrescTag(isEs ? 'DOR SEVERA'   : 'DOR SEVERA',   const Color(0xFFDC2626)),
+          _PrescTag('Adulto', const Color(0xFF6366F1)),
+        ],
         items: [
           _PrescItem('1.', isEs ? 'Tramadol 50–100 mg VO 8/8h (ou IV lento em 100 mL SF). Máx. 400 mg/dia.' : 'Tramadol 50–100 mg VO 8/8h (ou IV lento em 100 mL SF). Máx. 400 mg/dia.'),
           _PrescItem('2.', isEs ? 'Morfina 2–5 mg IV lento a cada 4h. Titular pela dor (EV ou PO). Cuidado: depressão respiratória.' : 'Morfina 2–5 mg IV lento a cada 4h. Titular pela dor (EV ou PO). Cuidado: depressão resp.'),
@@ -3541,6 +3589,17 @@ class _PrescriptionsTabState extends State<_PrescriptionsTab> {
       _PrescCard(
         title: isEs ? 'Fiebre (T >38,3°C)' : 'Febre (T >38,3°C)',
         level: 'MOD',
+        badge: isEs ? '1ª Elección' : '1ª Escolha',
+        sideTitle: isEs ? 'Importante' : 'Importante',
+        sideBody: isEs
+          ? 'Tratar la causa es más importante que solo reducir la fiebre.'
+          : 'Tratar a causa é mais importante que apenas reduzir a febre.',
+        sideType: _SideNoteType.important,
+        tags: [
+          _PrescTag(isEs ? 'FIEBRE LEVE'    : 'FEBRE LEVE',    const Color(0xFF059669)),
+          _PrescTag(isEs ? 'FIEBRE MODERADA': 'FEBRE MODERADA',const Color(0xFFD97706)),
+          _PrescTag('Adulto', const Color(0xFF6366F1)),
+        ],
         items: [
           _PrescItem('1.', isEs ? 'Paracetamol 750 mg–1 g VO/IV 6/6h. Primeira escolha — seguro e eficaz.' : 'Paracetamol 750 mg–1 g VO/IV 6/6h. Primeira escolha — seguro e eficaz.'),
           _PrescItem('2.', isEs ? 'Dipirona 1 g IV 6/6h (lento) se febre persistente ou mal-tolerada.' : 'Dipirona 1 g IV 6/6h (lento) se febre persistente ou mal-tolerada.'),
@@ -3770,61 +3829,336 @@ class _PrescriptionsTabState extends State<_PrescriptionsTab> {
   }
 }
 
+/// Card de Prescrição — redesign premium com numeração visual, painel lateral e badges
 class _PrescCard extends StatelessWidget {
   final String title, level;
   final List<_PrescItem> items;
-  const _PrescCard({required this.title, required this.level, required this.items});
+  /// Texto do badge top-right (ex: '1ª Elección', 'Uso cuidadoso')
+  final String? badge;
+  /// Nota lateral (ex: 'Claves rápidas', 'Precaución')
+  final String? sideTitle;
+  final String? sideBody;
+  final _SideNoteType sideType;
+  /// Tags coloridas no rodapé
+  final List<_PrescTag>? tags;
+
+  const _PrescCard({
+    required this.title,
+    required this.level,
+    required this.items,
+    this.badge,
+    this.sideTitle,
+    this.sideBody,
+    this.sideType = _SideNoteType.info,
+    this.tags,
+  });
+
+  Color get _levelColor => level == 'ALTO'
+    ? const Color(0xFFDC2626)
+    : level == 'MOD'
+      ? const Color(0xFFD97706)
+      : const Color(0xFF059669);
+
+  Color get _levelBg => level == 'ALTO'
+    ? const Color(0xFFDC2626).withValues(alpha: 0.10)
+    : level == 'MOD'
+      ? const Color(0xFFD97706).withValues(alpha: 0.10)
+      : const Color(0xFF059669).withValues(alpha: 0.10);
 
   @override
   Widget build(BuildContext context) {
-    return StandardCard(
+    final c = AppColors.of(context);
+    final hasSide = sideTitle != null && sideBody != null;
+    final hasTags = tags != null && tags!.isNotEmpty;
+    final isAlto = level == 'ALTO';
+
+    // Separar itens numerados vs "Aten." vs "Contra."
+    final steps   = items.where((i) => !_isSpecial(i.step)).toList();
+    final specials = items.where((i) => _isSpecial(i.step)).toList();
+
+    return Container(
+      margin: const EdgeInsets.only(bottom: 14),
+      decoration: BoxDecoration(
+        color: c.cardBg,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: isAlto
+          ? const Color(0xFFDC2626).withValues(alpha: 0.20)
+          : c.border),
+        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.05),
+          blurRadius: 8, offset: const Offset(0, 2))],
+      ),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Row(children: [
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(6),
-              color: level == 'ALTO'
-                  ? const Color(0xFFCC2222).withValues(alpha: 0.10)
-                  : const Color(0xFFC5A365).withValues(alpha: 0.12),
-            ),
-            child: Text(
-              level,
-              style: TextStyle(
-                fontSize: 8, fontWeight: FontWeight.w900, letterSpacing: 1.2,
-                color: level == 'ALTO'
-                    ? const Color(0xFFCC2222)
-                    : const Color(0xFFC5A365),
-              ),
-            ),
+
+        // ── Header colorido ──────────────────────────────────────
+        Container(
+          padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
+          decoration: BoxDecoration(
+            color: isAlto
+              ? const Color(0xFFDC2626).withValues(alpha: 0.04)
+              : const Color(0xFFD97706).withValues(alpha: 0.04),
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+            border: Border(bottom: BorderSide(color: isAlto
+              ? const Color(0xFFDC2626).withValues(alpha: 0.12)
+              : const Color(0xFFD97706).withValues(alpha: 0.12))),
           ),
-          const SizedBox(width: 10),
-          Expanded(child: Text(title,
-            style: TextStyle(fontSize: 14, fontWeight: FontWeight.w900, color: AppColors.of(context).textPrimary, letterSpacing: -0.3))),
-        ]),
-        const SizedBox(height: 10),
-        Divider(color: kToolBorder, height: 1),
-        const SizedBox(height: 10),
-        ...items.map((item) => Padding(
-          padding: const EdgeInsets.only(bottom: 8),
-          child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          child: Row(children: [
+            // Level badge
             Container(
-              constraints: const BoxConstraints(minWidth: 56),
-              child: Text(item.step,
-                style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w900, color: Color(0xFF1F6B48))),
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+              decoration: BoxDecoration(
+                color: _levelBg,
+                borderRadius: BorderRadius.circular(7),
+              ),
+              child: Text(level, style: TextStyle(
+                fontSize: 9, fontWeight: FontWeight.w900,
+                letterSpacing: 1.2, color: _levelColor)),
             ),
-            Expanded(child: Text(item.desc,
-              style: TextStyle(fontSize: 12, color: AppColors.of(context).textSecondary, height: 1.45))),
+            const SizedBox(width: 10),
+            // Título
+            Expanded(child: Text(title, style: TextStyle(
+              fontSize: 14, fontWeight: FontWeight.w900,
+              color: c.textPrimary, letterSpacing: -0.3))),
+            // Badge top-right
+            if (badge != null)
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 4),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(color: isAlto
+                    ? const Color(0xFFDC2626).withValues(alpha: 0.4)
+                    : c.border),
+                ),
+                child: Text(badge!, style: TextStyle(
+                  fontSize: 10, fontWeight: FontWeight.w700,
+                  color: isAlto ? const Color(0xFFDC2626) : c.textSecondary)),
+              ),
           ]),
+        ),
+
+        // ── Body ────────────────────────────────────────────────
+        Padding(
+          padding: const EdgeInsets.fromLTRB(14, 12, 14, 0),
+          child: hasSide
+            ? Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                // Lista de passos
+                Expanded(child: _buildSteps(context, steps, specials, c)),
+                const SizedBox(width: 12),
+                // Painel lateral
+                SizedBox(width: 168, child: _PrescSideNote(
+                  title: sideTitle!,
+                  body: sideBody!,
+                  type: sideType,
+                )),
+              ])
+            : _buildSteps(context, steps, specials, c),
+        ),
+
+        // ── Tags de rodapé ──────────────────────────────────────
+        if (hasTags)
+          Padding(
+            padding: const EdgeInsets.fromLTRB(14, 8, 14, 12),
+            child: Wrap(spacing: 6, runSpacing: 6,
+              children: tags!.map((t) => _PrescTagChip(tag: t)).toList()),
+          )
+        else
+          const SizedBox(height: 12),
+      ]),
+    );
+  }
+
+  bool _isSpecial(String step) =>
+    step.startsWith('Aten') || step.startsWith('Contra') ||
+    step.startsWith('⚠') || step.startsWith('!');
+
+  Widget _buildSteps(BuildContext context, List<_PrescItem> steps,
+      List<_PrescItem> specials, AppColors c) {
+    int stepNum = 0;
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      ...steps.map((item) {
+        // Detectar se é numerado (começa com dígito ou "1." etc.) ou label
+        final isNum = RegExp(r'^\d').hasMatch(item.step);
+        if (isNum) stepNum++;
+        final numToShow = isNum ? stepNum : null;
+        return _PrescStepRow(item: item, stepNum: numToShow, isAlto: level == 'ALTO');
+      }),
+      if (specials.isNotEmpty) const SizedBox(height: 4),
+      ...specials.map((item) => _PrescAttenRow(item: item)),
+    ]);
+  }
+}
+
+enum _SideNoteType { info, warning, important }
+
+class _PrescItem {
+  final String step, desc;
+  const _PrescItem(this.step, this.desc);
+}
+
+class _PrescTag {
+  final String label;
+  final Color color;
+  const _PrescTag(this.label, this.color);
+}
+
+/// Linha numerada ou com label — suporte a círculo colorido
+class _PrescStepRow extends StatelessWidget {
+  final _PrescItem item;
+  final int? stepNum;
+  final bool isAlto;
+  const _PrescStepRow({required this.item, this.stepNum, this.isAlto = false});
+
+  @override
+  Widget build(BuildContext context) {
+    final c = AppColors.of(context);
+    final circleColor = isAlto ? const Color(0xFFDC2626) : const Color(0xFF059669);
+
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 9),
+      child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        // Número circular OU label step
+        if (stepNum != null)
+          Container(
+            width: 22, height: 22,
+            decoration: BoxDecoration(color: circleColor, shape: BoxShape.circle),
+            alignment: Alignment.center,
+            child: Text('$stepNum', style: const TextStyle(
+              fontSize: 10, fontWeight: FontWeight.w900, color: Colors.white)),
+          )
+        else
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+            decoration: BoxDecoration(
+              color: const Color(0xFF1F6B48).withValues(alpha: 0.10),
+              borderRadius: BorderRadius.circular(5),
+            ),
+            child: Text(item.step, style: const TextStyle(
+              fontSize: 9, fontWeight: FontWeight.w900,
+              color: Color(0xFF1F6B48), letterSpacing: 0.5)),
+          ),
+        const SizedBox(width: 10),
+        Expanded(child: Padding(
+          padding: EdgeInsets.only(top: stepNum != null ? 3 : 1),
+          child: Text(item.desc, style: TextStyle(
+            fontSize: 12.5, color: c.textSecondary, height: 1.45)),
         )),
       ]),
     );
   }
 }
 
-class _PrescItem {
-  final String step, desc;
-  const _PrescItem(this.step, this.desc);
+/// Linha de atenção/contraindicação com ícone de alerta
+class _PrescAttenRow extends StatelessWidget {
+  final _PrescItem item;
+  const _PrescAttenRow({required this.item});
+
+  bool get _isContra => item.step.toLowerCase().startsWith('contra');
+
+  @override
+  Widget build(BuildContext context) {
+    final c = AppColors.of(context);
+    final isContra = _isContra;
+    final bgColor  = isContra ? const Color(0xFFDC2626) : const Color(0xFFD97706);
+    final bgFill   = bgColor.withValues(alpha: 0.07);
+    final border   = bgColor.withValues(alpha: 0.20);
+
+    return Container(
+      margin: const EdgeInsets.only(bottom: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+      decoration: BoxDecoration(
+        color: bgFill,
+        borderRadius: BorderRadius.circular(9),
+        border: Border.all(color: border),
+      ),
+      child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Icon(isContra ? Icons.block_rounded : Icons.warning_amber_rounded,
+          size: 14, color: bgColor),
+        const SizedBox(width: 7),
+        Container(
+          margin: const EdgeInsets.only(right: 6, top: 1),
+          child: Text(item.step, style: TextStyle(
+            fontSize: 10, fontWeight: FontWeight.w900,
+            color: bgColor, letterSpacing: 0.3)),
+        ),
+        Expanded(child: Text(item.desc, style: TextStyle(
+          fontSize: 11.5, color: c.textSecondary, height: 1.4))),
+      ]),
+    );
+  }
+}
+
+/// Painel lateral com nota clínica (Claves rápidas, Precaución, Importante)
+class _PrescSideNote extends StatelessWidget {
+  final String title, body;
+  final _SideNoteType type;
+  const _PrescSideNote({required this.title, required this.body, required this.type});
+
+  Color get _accent {
+    switch (type) {
+      case _SideNoteType.warning:   return const Color(0xFFDC2626);
+      case _SideNoteType.important: return const Color(0xFFD97706);
+      case _SideNoteType.info:      return const Color(0xFF059669);
+    }
+  }
+
+  IconData get _icon {
+    switch (type) {
+      case _SideNoteType.warning:   return Icons.warning_amber_rounded;
+      case _SideNoteType.important: return Icons.lightbulb_outline_rounded;
+      case _SideNoteType.info:      return Icons.tips_and_updates_outlined;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final c = AppColors.of(context);
+    final accent = _accent;
+
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: accent.withValues(alpha: 0.06),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: accent.withValues(alpha: 0.20)),
+      ),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Row(children: [
+          Icon(_icon, size: 14, color: accent),
+          const SizedBox(width: 6),
+          Expanded(child: Text(title, style: TextStyle(
+            fontSize: 11, fontWeight: FontWeight.w800, color: accent))),
+        ]),
+        const SizedBox(height: 7),
+        Text(body, style: TextStyle(
+          fontSize: 11, color: c.textSecondary, height: 1.4)),
+      ]),
+    );
+  }
+}
+
+/// Tag colorida de rodapé do card
+class _PrescTagChip extends StatelessWidget {
+  final _PrescTag tag;
+  const _PrescTagChip({required this.tag});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+      decoration: BoxDecoration(
+        color: tag.color.withValues(alpha: 0.10),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: tag.color.withValues(alpha: 0.25)),
+      ),
+      child: Row(mainAxisSize: MainAxisSize.min, children: [
+        Container(width: 6, height: 6,
+          decoration: BoxDecoration(color: tag.color, shape: BoxShape.circle)),
+        const SizedBox(width: 5),
+        Text(tag.label, style: TextStyle(
+          fontSize: 10, fontWeight: FontWeight.w700,
+          color: tag.color)),
+      ]),
+    );
+  }
 }
 
 // ══════════════════════════════════════════════════════════════════
