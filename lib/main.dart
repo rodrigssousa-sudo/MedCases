@@ -2638,6 +2638,11 @@ class _LegalBar extends StatelessWidget {
   }
 }
 
+// ── Task 9: URLs de Privacy Policy e Terms of Use (Guideline 5.1) ────────────
+// Atualizar estas constantes quando o site tiver as páginas publicadas.
+const String _kPrivacyUrl = 'https://medcasespro.com/privacidade';
+const String _kTermsUrl   = 'https://medcasespro.com/termos';
+
 // ── Drawer lateral — redesenhado (v2) ─────────────────────────────────────────
 class _AppDrawer extends StatelessWidget {
   final AppProvider p;
@@ -2646,112 +2651,320 @@ class _AppDrawer extends StatelessWidget {
   void _close(BuildContext context) => Navigator.of(context).pop();
 
   // ── Dialog de eliminação de conta ────────────────────────────────────────
+  // ── Task 8 — Exclusão de Conta Obrigatória (Apple Guideline 5.1.1(v)) ─────
+  // Diálogo em 2 etapas:
+  //   Etapa 1: aviso + digitação de "EXCLUIR" para confirmação
+  //   Etapa 2: campo de senha (necessário para re-autenticação iOS/Android)
+  // Chama AuthService.deleteAccount() que apaga: subcoleções Firestore,
+  // documento users/{uid}, credencial Firebase Auth e sessão local.
   Future<void> _showDeleteAccountDialog(BuildContext context, AppProvider p) async {
-    final isEs   = p.lang == 'es';
-    final titleT = isEs ? 'Eliminar cuenta' : 'Eliminar conta';
-    final body1  = isEs
-        ? 'Esta acción es permanente e irreversible. Se eliminarán todos sus datos del sistema, incluido su historial de consultas y configuraciones.'
-        : 'Esta ação é permanente e irreversível. Todos os seus dados serão removidos do sistema, incluindo histórico de consultas e configurações.';
-    final body2  = isEs
-        ? 'Para confirmar, escriba ELIMINAR en el campo abajo.'
-        : 'Para confirmar, digite ELIMINAR no campo abaixo.';
-    final cancelT  = isEs ? 'Cancelar'  : 'Cancelar';
-    final confirmT = isEs ? 'Eliminar'  : 'Eliminar';
-    final errorT   = isEs
-        ? 'Escribe ELIMINAR para confirmar'
-        : 'Digite ELIMINAR para confirmar';
+    final isEs = p.lang == 'es';
+    final dark = p.darkMode;
+    final uid  = p.currentUser?.uid ?? '';
+    if (uid.isEmpty) return;
 
-    final ctrl = TextEditingController();
-    String? fieldError;
+    // ── Strings bilíngues ─────────────────────────────────────────────────
+    final titleT   = isEs ? 'Eliminar cuenta'  : 'Excluir minha conta';
+    final body1    = isEs
+        ? 'Esta acción es PERMANENTE e IRREVERSIBLE.\n\n'
+          '• Todos tus datos clínicos serán eliminados\n'
+          '• Historial de consultas con la IA\n'
+          '• Anotaciones y configuraciones\n'
+          '• Tu acceso a MedCases Pro\n\n'
+          'Esta operación no puede deshacerse.'
+        : 'Esta ação é PERMANENTE e IRREVERSÍVEL.\n\n'
+          '• Todos os seus dados clínicos serão apagados\n'
+          '• Histórico de consultas com a IA\n'
+          '• Anotações e configurações\n'
+          '• Seu acesso ao MedCases Pro\n\n'
+          'Esta operação não pode ser desfeita.';
+    final step1Label  = isEs ? 'Para continuar, escreva EXCLUIR abaixo:' : 'Para continuar, digite EXCLUIR abaixo:';
+    final step2Title  = isEs ? 'Confirma tu contraseña' : 'Confirme sua senha';
+    final step2Label  = isEs ? 'Senha atual' : 'Senha atual';
+    final step2Hint   = isEs ? 'Digite sua senha para confirmar' : 'Digite sua senha para confirmar';
+    final cancelT     = isEs ? 'Cancelar'  : 'Cancelar';
+    final continueT   = isEs ? 'Continuar' : 'Continuar';
+    final confirmT    = isEs ? 'Excluir minha cuenta' : 'Excluir minha conta';
+    final wordError   = isEs ? 'Escribe EXCLUIR para continuar' : 'Digite EXCLUIR para continuar';
+
+    final confirmCtrl = TextEditingController();
+    final passCtrl    = TextEditingController();
+    String? confirmErr;
+    String? passErr;
+    bool step2         = false; // false = etapa 1 (palavra), true = etapa 2 (senha)
+    bool loading       = false;
+    bool passObscure   = true;
 
     await showDialog<void>(
       context: context,
+      barrierDismissible: false,
       builder: (ctx) => StatefulBuilder(
-        builder: (ctx, setS) => AlertDialog(
-          backgroundColor: p.darkMode ? const Color(0xFF1C1C1E) : Colors.white,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-          title: Row(children: [
-            const Icon(Icons.warning_amber_rounded, color: Color(0xFFCC3333), size: 22),
-            const SizedBox(width: 8),
-            Text(titleT,
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w800, color: Color(0xFFCC3333)),
-            ),
-          ]),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(body1, style: TextStyle(
-                fontSize: 12.5, height: 1.5,
-                color: p.darkMode ? Colors.white70 : const Color(0xFF333344),
-              )),
-              const SizedBox(height: 14),
-              Text(body2, style: TextStyle(
-                fontSize: 12, fontWeight: FontWeight.w600,
-                color: p.darkMode ? Colors.white60 : const Color(0xFF555555),
-              )),
-              const SizedBox(height: 10),
-              TextField(
-                controller: ctrl,
-                autofocus: true,
-                style: const TextStyle(fontWeight: FontWeight.w700, letterSpacing: 1.5),
-                decoration: InputDecoration(
-                  hintText: 'ELIMINAR',
-                  errorText: fieldError,
-                  isDense: true,
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    borderSide: const BorderSide(color: Color(0xFFCC3333), width: 1.5),
-                  ),
-                ),
-                onChanged: (_) {
-                  if (fieldError != null) setS(() => fieldError = null);
-                },
-              ),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(ctx),
-              child: Text(cancelT, style: const TextStyle(color: Color(0xFF888888))),
-            ),
-            FilledButton(
-              style: FilledButton.styleFrom(
+        builder: (ctx, setS) {
+
+          // ── Botão "Excluir definitivamente" ──────────────────────────────
+          Future<void> doDelete() async {
+            if (loading) return;
+            final pwd = passCtrl.text.trim();
+            if (!kIsWeb && pwd.isEmpty) {
+              setS(() => passErr = isEs
+                  ? 'Contraseña obligatoria'
+                  : 'Senha obrigatória');
+              return;
+            }
+            setS(() { loading = true; passErr = null; });
+            Navigator.pop(ctx);
+
+            // Loading overlay enquanto processa
+            if (context.mounted) {
+              showDialog<void>(
+                context: context,
+                barrierDismissible: false,
+                builder: (_) => const _DeletingAccountOverlay(),
+              );
+            }
+
+            final result = await AuthService.deleteAccount(
+              uid: uid,
+              password: kIsWeb ? null : pwd,
+            );
+
+            // Fecha overlay
+            if (context.mounted) Navigator.of(context, rootNavigator: true).pop();
+
+            if (result.success) {
+              if (context.mounted) context.read<AppProvider>().clearUser();
+              return;
+            }
+
+            if (result.requiresReauth && context.mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                content: Text(isEs
+                    ? 'Por seguridad, inicia sesión de nuevo e intenta otra vez.'
+                    : 'Por segurança, faça login novamente e tente outra vez.'),
                 backgroundColor: const Color(0xFFCC3333),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                duration: const Duration(seconds: 4),
+              ));
+              return;
+            }
+
+            if (context.mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                content: Text(result.error ??
+                    (isEs ? 'Error al eliminar la cuenta.' : 'Erro ao excluir conta.')),
+                backgroundColor: const Color(0xFFCC3333),
+                duration: const Duration(seconds: 4),
+              ));
+            }
+          }
+
+          return AlertDialog(
+            backgroundColor: dark ? const Color(0xFF1C1C1E) : Colors.white,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+            contentPadding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+            title: Row(children: [
+              Container(
+                padding: const EdgeInsets.all(6),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFCC3333).withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: const Icon(Icons.delete_forever_rounded,
+                    color: Color(0xFFCC3333), size: 22),
               ),
-              onPressed: () async {
-                if (ctrl.text.trim() != 'ELIMINAR') {
-                  setS(() => fieldError = errorT);
-                  return;
-                }
-                Navigator.pop(ctx);
-                try {
-                  final user = FirebaseAuth.instance.currentUser;
-                  if (user != null) {
-                    await user.delete();
-                  }
-                  await AuthService.logout();
-                  if (context.mounted) context.read<AppProvider>().clearUser();
-                } catch (e) {
-                  if (context.mounted) {
-                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                      content: Text(isEs
-                          ? 'Error al eliminar la cuenta. Vuelve a iniciar sesión e inténtalo de nuevo.'
-                          : 'Erro ao eliminar conta. Faça login novamente e tente outra vez.'),
-                      backgroundColor: const Color(0xFFCC3333),
-                    ));
-                  }
-                }
-              },
-              child: Text(confirmT),
+              const SizedBox(width: 10),
+              Flexible(
+                child: Text(titleT, style: const TextStyle(
+                    fontSize: 15, fontWeight: FontWeight.w800,
+                    color: Color(0xFFCC3333))),
+              ),
+            ]),
+            content: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (!step2) ...[ // ── Etapa 1: aviso + palavra ──────────
+                    Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFCC3333).withValues(alpha: 0.07),
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(
+                          color: const Color(0xFFCC3333).withValues(alpha: 0.25)),
+                      ),
+                      child: Text(body1, style: TextStyle(
+                        fontSize: 12.5, height: 1.6,
+                        color: dark ? Colors.white70 : const Color(0xFF333344),
+                      )),
+                    ),
+                    const SizedBox(height: 16),
+                    Text(step1Label, style: TextStyle(
+                      fontSize: 12, fontWeight: FontWeight.w600,
+                      color: dark ? Colors.white60 : const Color(0xFF555555),
+                    )),
+                    const SizedBox(height: 8),
+                    TextField(
+                      controller: confirmCtrl,
+                      autofocus: true,
+                      textCapitalization: TextCapitalization.characters,
+                      style: const TextStyle(
+                          fontWeight: FontWeight.w800, letterSpacing: 2.0),
+                      decoration: InputDecoration(
+                        hintText: 'EXCLUIR',
+                        errorText: confirmErr,
+                        isDense: true,
+                        contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 12, vertical: 11),
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10)),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: const BorderSide(
+                              color: Color(0xFFCC3333), width: 1.5),
+                        ),
+                        errorBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: const BorderSide(
+                              color: Color(0xFFCC3333)),
+                        ),
+                      ),
+                      onChanged: (_) {
+                        if (confirmErr != null) {
+                          setS(() => confirmErr = null);
+                        }
+                      },
+                    ),
+                  ] else ...[ // ── Etapa 2: confirmação de senha (nativo) ─
+                    Text(step2Title, style: TextStyle(
+                      fontSize: 14, fontWeight: FontWeight.w700,
+                      color: dark ? Colors.white : const Color(0xFF222222),
+                    )),
+                    const SizedBox(height: 6),
+                    Text(step2Label, style: TextStyle(
+                      fontSize: 12, color: dark ? Colors.white60 : Colors.grey[600],
+                    )),
+                    const SizedBox(height: 8),
+                    TextField(
+                      controller: passCtrl,
+                      autofocus: true,
+                      obscureText: passObscure,
+                      decoration: InputDecoration(
+                        hintText: step2Hint,
+                        errorText: passErr,
+                        isDense: true,
+                        contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 12, vertical: 11),
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10)),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: const BorderSide(
+                              color: Color(0xFFCC3333), width: 1.5),
+                        ),
+                        suffixIcon: IconButton(
+                          icon: Icon(passObscure
+                              ? Icons.visibility_off_outlined
+                              : Icons.visibility_outlined,
+                              size: 20),
+                          onPressed: () =>
+                              setS(() => passObscure = !passObscure),
+                        ),
+                      ),
+                      onChanged: (_) {
+                        if (passErr != null) setS(() => passErr = null);
+                      },
+                    ),
+                  ],
+                  const SizedBox(height: 4),
+                ],
+              ),
             ),
-          ],
-        ),
+            actions: [
+              TextButton(
+                onPressed: loading ? null : () => Navigator.pop(ctx),
+                child: Text(cancelT,
+                    style: const TextStyle(color: Color(0xFF888888))),
+              ),
+              if (!step2)
+                FilledButton(
+                  style: FilledButton.styleFrom(
+                    backgroundColor: const Color(0xFFCC3333),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10)),
+                  ),
+                  onPressed: () {
+                    if (confirmCtrl.text.trim().toUpperCase() != 'EXCLUIR') {
+                      setS(() => confirmErr = wordError);
+                      return;
+                    }
+                    // Web não precisa de senha — vai direto para exclusão
+                    if (kIsWeb) {
+                      Navigator.pop(ctx);
+                      _executeDeleteAccount(context, p, uid, null);
+                    } else {
+                      setS(() => step2 = true);
+                    }
+                  },
+                  child: Text(continueT),
+                )
+              else
+                FilledButton(
+                  style: FilledButton.styleFrom(
+                    backgroundColor: const Color(0xFFCC3333),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10)),
+                  ),
+                  onPressed: loading ? null : doDelete,
+                  child: loading
+                      ? const SizedBox(
+                          width: 18, height: 18,
+                          child: CircularProgressIndicator(
+                              strokeWidth: 2, color: Colors.white))
+                      : Text(confirmT),
+                ),
+            ],
+          );
+        },
       ),
     );
+  }
+
+  /// Executa deleteAccount com loading overlay.
+  /// Separado do dialog para permitir chamada direta na branch Web (sem senha).
+  Future<void> _executeDeleteAccount(
+    BuildContext context,
+    AppProvider p,
+    String uid,
+    String? password,
+  ) async {
+    final isEs = p.lang == 'es';
+
+    // Loading overlay
+    if (context.mounted) {
+      showDialog<void>(
+        context: context,
+        barrierDismissible: false,
+        builder: (_) => const _DeletingAccountOverlay(),
+      );
+    }
+
+    final result = await AuthService.deleteAccount(uid: uid, password: password);
+
+    if (context.mounted) Navigator.of(context, rootNavigator: true).pop();
+
+    if (result.success) {
+      if (context.mounted) context.read<AppProvider>().clearUser();
+      return;
+    }
+
+    if (context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(result.error ??
+            (isEs ? 'Error al eliminar la cuenta.' : 'Erro ao excluir conta.')),
+        backgroundColor: const Color(0xFFCC3333),
+        duration: const Duration(seconds: 4),
+      ));
+    }
   }
 
   @override
@@ -3040,25 +3253,39 @@ class _AppDrawer extends StatelessWidget {
                         );
                       },
                     ),
-                    _DrawerRow(
+                    // Task 9 — Termos: in-app viewer + botão link externo
+                    _DrawerLegalRow(
                       icon: Icons.article_outlined,
                       iconColor: const Color(0xFF546E7A),
                       title: p.lang == 'es' ? 'Términos de Uso' : 'Termos de Uso',
+                      subtitle: p.lang == 'es' ? 'Ver en la app' : 'Ver no app',
                       dark: dark,
                       textCol: textCol,
                       subCol: subCol,
+                      externalUrl: _kTermsUrl,
+                      externalTooltip: p.lang == 'es'
+                          ? 'Abrir en navegador'
+                          : 'Abrir no navegador',
                       onTap: () {
                         _close(context);
                         showLegalSheet(context, LegalType.terms, p.lang);
                       },
                     ),
-                    _DrawerRow(
+                    // Task 9 — Privacidade: in-app viewer + botão link externo
+                    _DrawerLegalRow(
                       icon: Icons.shield_outlined,
                       iconColor: const Color(0xFF546E7A),
-                      title: p.lang == 'es' ? 'Política de Privacidad' : 'Política de Privacidade',
+                      title: p.lang == 'es'
+                          ? 'Política de Privacidad'
+                          : 'Política de Privacidade',
+                      subtitle: p.lang == 'es' ? 'Ver en la app' : 'Ver no app',
                       dark: dark,
                       textCol: textCol,
                       subCol: subCol,
+                      externalUrl: _kPrivacyUrl,
+                      externalTooltip: p.lang == 'es'
+                          ? 'Abrir en navegador'
+                          : 'Abrir no navegador',
                       showDivider: false,
                       onTap: () {
                         _close(context);
@@ -3508,6 +3735,122 @@ class _DrawerRow extends StatelessWidget {
           else Icon(Icons.chevron_right_rounded, size: 16, color: subCol.withValues(alpha: 0.45)),
         ]),
       ),
+    );
+  }
+}
+
+// ── Task 9: DrawerRow com botão de link externo (Privacy / Terms) ─────────────
+// Exibe o item normal do drawer (abre in-app) + um ícone de "abrir no navegador"
+// à direita. O Apple App Store exige que links de Privacy Policy e EULA estejam
+// acessíveis diretamente no app E também como URL pública.
+class _DrawerLegalRow extends StatelessWidget {
+  final IconData icon;
+  final Color    iconColor;
+  final String   title;
+  final String?  subtitle;
+  final bool     dark;
+  final Color    textCol;
+  final Color    subCol;
+  final String   externalUrl;
+  final String   externalTooltip;
+  final VoidCallback onTap;
+  final bool     showDivider;
+
+  const _DrawerLegalRow({
+    required this.icon,
+    required this.iconColor,
+    required this.title,
+    required this.dark,
+    required this.textCol,
+    required this.subCol,
+    required this.externalUrl,
+    required this.externalTooltip,
+    required this.onTap,
+    this.subtitle,
+    this.showDivider = true,
+  });
+
+  Future<void> _launch() async {
+    final uri = Uri.parse(externalUrl);
+    try {
+      if (await canLaunchUrl(uri)) {
+        await launchUrl(uri, mode: LaunchMode.externalApplication);
+      }
+    } catch (_) {}
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final dividerColor = dark
+        ? const Color(0xFF1A2E22)
+        : const Color(0xFFF0EDE8);
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(14),
+          splashColor: iconColor.withValues(alpha: 0.07),
+          highlightColor: iconColor.withValues(alpha: 0.04),
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(14, 11, 4, 11),
+            child: Row(children: [
+              SizedBox(
+                width: 36,
+                child: Icon(icon, size: 20, color: iconColor),
+              ),
+              const SizedBox(width: 4),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      title,
+                      style: TextStyle(
+                        fontSize: 13.5,
+                        fontWeight: FontWeight.w600,
+                        color: textCol,
+                        letterSpacing: -0.1,
+                      ),
+                    ),
+                    if (subtitle != null) ...[
+                      const SizedBox(height: 1),
+                      Text(
+                        subtitle!,
+                        style: TextStyle(
+                          fontSize: 10.5,
+                          fontWeight: FontWeight.w500,
+                          color: subCol.withValues(alpha: 0.65),
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+              // Botão ícone: abre no navegador externo
+              Tooltip(
+                message: externalTooltip,
+                child: IconButton(
+                  icon: Icon(
+                    Icons.open_in_new_rounded,
+                    size: 18,
+                    color: const Color(0xFF1E88E5).withValues(alpha: 0.75),
+                  ),
+                  onPressed: _launch,
+                  splashRadius: 18,
+                  padding: const EdgeInsets.all(8),
+                  constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
+                ),
+              ),
+            ]),
+          ),
+        ),
+        if (showDivider)
+          Divider(height: 1, thickness: 0.7, color: dividerColor,
+              indent: 14, endIndent: 14),
+      ],
     );
   }
 }
@@ -5745,6 +6088,68 @@ class _OfflineDrawerCard extends StatelessWidget {
     if (p < 0.75) return lang == 'es' ? '📋 Guardando protocolos…'     : '📋 Salvando protocolos…';
     if (p < 0.95) return lang == 'es' ? '🩺 Guardando casos clínicos…' : '🩺 Salvando casos clínicos…';
     return lang == 'es' ? '✅ Finalizando…' : '✅ Finalizando…';
+  }
+}
+
+// ── Task 8: Loading overlay durante exclusão de conta ─────────────────────
+class _DeletingAccountOverlay extends StatelessWidget {
+  const _DeletingAccountOverlay();
+
+  @override
+  Widget build(BuildContext context) {
+    final dark = Theme.of(context).brightness == Brightness.dark;
+    return PopScope(
+      canPop: false,
+      child: Dialog(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 24),
+          decoration: BoxDecoration(
+            color: dark ? const Color(0xFF1C1C1E) : Colors.white,
+            borderRadius: BorderRadius.circular(16),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.18),
+                blurRadius: 24,
+                offset: const Offset(0, 8),
+              ),
+            ],
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const SizedBox(
+                width: 40, height: 40,
+                child: CircularProgressIndicator(
+                  strokeWidth: 3,
+                  color: Color(0xFFCC3333),
+                ),
+              ),
+              const SizedBox(height: 16),
+              Text(
+                'Excluindo sua conta…',
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                  color: dark ? Colors.white : const Color(0xFF222222),
+                ),
+              ),
+              const SizedBox(height: 6),
+              Text(
+                'Removendo todos os seus dados.\nIsso pode levar alguns segundos.',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 12,
+                  color: dark ? Colors.white54 : Colors.grey[600],
+                  height: 1.5,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }
 
