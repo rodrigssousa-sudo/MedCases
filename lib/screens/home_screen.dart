@@ -19,6 +19,7 @@ import 'drug_interactions_screen.dart';
 import 'protocols_screen.dart' show openProtocolById, showProtocolDetail;
 import 'avaliacao_screen.dart';
 import '../widgets/meu_plantao_dashboard.dart';
+import 'ai_screen.dart' show AiScreen;
 
 // ─────────────────────────────────────────────────────────────────────────────
 // HOME SCREEN — 4 cards de navegação principal
@@ -255,25 +256,22 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  // ── HOME V2 — layout mobile ───────────────────────────────────────────────
   Widget _buildMobileLayout(BuildContext context, bool dark, bool isEs, AppProvider p) {
     return SingleChildScrollView(
       physics: const BouncingScrollPhysics(),
-      padding: const EdgeInsets.fromLTRB(18, 14, 18, 100),
+      padding: const EdgeInsets.fromLTRB(16, 12, 16, 110),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
 
-        // ── Barra de pesquisa ─────────────────────────────────────────────
-        _HomeSearchBar(dark: dark, isEs: isEs),
+        // ── 1. IA MEDCASES — destaque principal ──────────────────────────
+        _HomeIaCard(
+          dark: dark,
+          isEs: isEs,
+          onNavigateToAi: widget.onTabChange,
+        ),
         const SizedBox(height: 14),
 
-        // ── Timer Rápido de Plantão ───────────────────────────────────────
-        _ShiftTimerBar(dark: dark, isEs: isEs),
-        const SizedBox(height: 14),
-
-        // ── Divisor ───────────────────────────────────────────────────────
-        _HomeDivider(dark: dark),
-        const SizedBox(height: 16),
-
-        // 1 — Prescripciones (card largo)
+        // ── 2. PRESCRIÇÕES ───────────────────────────────────────────────
         _HomeCard(
           icon: Icons.description_rounded,
           label: isEs ? 'PRESCRIPCIONES' : 'PRESCRIÇÕES',
@@ -287,9 +285,9 @@ class _HomeScreenState extends State<HomeScreen> {
             _HomeScreenState._slide(const _PrescripcionesShell()),
           ),
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: 10),
 
-        // 2 — Fármacos (card largo)
+        // ── 3. FÁRMACOS ──────────────────────────────────────────────────
         _HomeCard(
           icon: Icons.medication_rounded,
           label: 'FÁRMACOS',
@@ -303,9 +301,9 @@ class _HomeScreenState extends State<HomeScreen> {
             _HomeScreenState._slide(const _FarmacosShell()),
           ),
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: 10),
 
-        // 3 — Interacciones (card largo)
+        // ── 4. INTERAÇÕES ────────────────────────────────────────────────
         _HomeCard(
           icon: Icons.compare_arrows_rounded,
           label: isEs ? 'INTERACCIONES' : 'INTERAÇÕES',
@@ -319,88 +317,40 @@ class _HomeScreenState extends State<HomeScreen> {
             _HomeScreenState._slide(const DrugInteractionsScreen()),
           ),
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: 10),
 
-        // 4 — Adulto + Pediatría (lado a lado, metade da largura)
-        Row(children: [
-          Expanded(
-            child: _HomeCardHalf(
-              icon: Icons.person_rounded,
-              label: 'ADULTO',
-              gradientColors: const [Color(0xFF052E1A), Color(0xFF0A5C2E), Color(0xFF15803D)],
-              accentColor: const Color(0xFF4ADE80),
-              dark: dark,
-              onTap: () => Navigator.of(context).push(
-                _HomeScreenState._slide(_AdultoShell(openProtocol: widget.openProtocol)),
-              ),
-            ),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: _HomeCardHalf(
-              icon: Icons.child_care_rounded,
-              label: isEs ? 'PEDIATRÍA' : 'PEDIATRIA',
-              gradientColors: const [Color(0xFF0A2540), Color(0xFF103D70), Color(0xFF2563EB)],
-              accentColor: const Color(0xFF93C5FD),
-              dark: dark,
-              onTap: () => Navigator.of(context).push(
-                _HomeScreenState._slide(const _PediatricsShell()),
-              ),
-            ),
-          ),
-        ]),
-
-        const SizedBox(height: 16),
-
-        // ── Divisor ───────────────────────────────────────────────────────
-        _HomeDivider(dark: dark),
-        const SizedBox(height: 16),
-
-        // ── Notas · Recentes · Favoritos · Avaliação ────────────────────
-        _QuickShortcuts(
+        // ── 5. ADULTO / PEDIATRIA — cards compactos lado a lado ──────────
+        _HomeAdultoPediatriaRow(
           dark: dark,
           isEs: isEs,
-          openProtocol: widget.openProtocol,
-          onOpenNotes: widget.onOpenNotes,
-          onCheckUpdate: widget.onCheckUpdate,
+          onTapAdulto: () => Navigator.of(context).push(
+            _HomeScreenState._slide(_AdultoShell(openProtocol: widget.openProtocol)),
+          ),
+          onTapPediatria: () => Navigator.of(context).push(
+            _HomeScreenState._slide(const _PediatricsShell()),
+          ),
         ),
-
         const SizedBox(height: 16),
 
-        // ── Divisor ───────────────────────────────────────────────────────
-        _HomeDivider(dark: dark),
-        const SizedBox(height: 16),
-
-        // ── Meu Plantão ───────────────────────────────────────────────────
-        MeuPlantaoDashboard(
-          onOpenDrug: (drug) => showDrugDetailSheet(context, drug),
-          onOpenCalc: (calcId) {
-            // Mapeia o ID de calc para o índice do sub-tab da ToolsScreen,
-            // muda para a aba Calculadoras (tab 4) e navega para o sub-tab.
+        // ── 6. MIGUARDIA — dashboard personalizado ───────────────────────
+        _HomeMiGuardiaSection(
+          dark: dark,
+          isEs: isEs,
+          onOpenDrug:  (drug) => showDrugDetailSheet(context, drug),
+          onOpenCalc:  (calcId) {
             const calcTabMap = {
-              'calc_biometria':  0,
-              'calc_scores':     1,
-              'calc_cardio':     2,
-              'calc_eletrólitos': 3,
-              'calc_infusao':    4,
-              'calc_referencia': 5,
-              'calc_prescricoes': 6,
-              'calc_pediatria':  7,
+              'calc_biometria': 0, 'calc_scores': 1, 'calc_cardio': 2,
+              'calc_eletrólitos': 3, 'calc_infusao': 4, 'calc_referencia': 5,
+              'calc_prescricoes': 6, 'calc_pediatria': 7,
             };
-            final subTab = calcTabMap[calcId] ?? 0;
-            widget.onSubTabChange(subTab);   // atualiza sub-tab ANTES de mudar de tela
-            widget.onTabChange(4);           // navega para aba Calculadoras (índice 4)
+            widget.onSubTabChange(calcTabMap[calcId] ?? 0);
+            widget.onTabChange(4);
           },
           onManageTap: () => showPlantaoManageSheet(context),
         ),
-
         const SizedBox(height: 16),
 
-        // ── Divisor ───────────────────────────────────────────────────────
-        _HomeDivider(dark: dark),
-        const SizedBox(height: 16),
-
-        // ── Emergências (4 cards + ver mais) ──────────────────────────────
+        // ── 7. EMERGÊNCIAS RÁPIDAS ────────────────────────────────────────
         _QuickEmergencies(p: p, dark: dark, isEs: isEs, openProtocol: widget.openProtocol),
       ]),
     );
@@ -900,6 +850,573 @@ class _SearchResultTile extends StatelessWidget {
         ),
         Container(height: 1, color: divColor),
       ],
+    );
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// HOME V2 — IA MEDCASES CARD (item 1 da Home)
+// Card premium branco/escuro com campo de pergunta, chips rápidos e botão enviar.
+// Ao clicar/enviar: seta AiScreen.pendingQuery e navega para aba 2 (IA).
+// ═══════════════════════════════════════════════════════════════════════════════
+class _HomeIaCard extends StatefulWidget {
+  final bool dark;
+  final bool isEs;
+  final ValueChanged<int> onNavigateToAi; // callback para mudar aba → IA (tab 2)
+
+  const _HomeIaCard({
+    required this.dark,
+    required this.isEs,
+    required this.onNavigateToAi,
+  });
+
+  @override
+  State<_HomeIaCard> createState() => _HomeIaCardState();
+}
+
+class _HomeIaCardState extends State<_HomeIaCard> {
+  final _ctrl = TextEditingController();
+  final _focus = FocusNode();
+
+  static const _kGreen     = Color(0xFF0D7A55);
+  static const _kGreenBg   = Color(0xFF0D7A55);
+  static const _kGreenBord = Color(0xFF0D9E6E);
+
+  // Chips de exemplo bilíngues
+  static const _chipsEs = ['Choque séptico', 'Noradrenalina', 'ECG FA', 'Hipercalemia', 'Cetoacidosis'];
+  static const _chipsPt = ['Choque séptico', 'Noradrenalina', 'ECG FA', 'Hipercalemia', 'Cetoacidose'];
+
+  @override
+  void dispose() {
+    _ctrl.dispose();
+    _focus.dispose();
+    super.dispose();
+  }
+
+  void _navigate([String? query]) {
+    final q = (query ?? _ctrl.text).trim();
+    if (q.isNotEmpty) {
+      AiScreen.pendingQuery.value = q;
+    }
+    _ctrl.clear();
+    _focus.unfocus();
+    widget.onNavigateToAi(2); // navega para aba 2 (IA)
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final dark   = widget.dark;
+    final isEs   = widget.isEs;
+    final chips  = isEs ? _chipsEs : _chipsPt;
+
+    final cardBg = dark ? const Color(0xFF0E1A12) : Colors.white;
+    final borderColor = dark
+        ? _kGreenBord.withValues(alpha: 0.35)
+        : _kGreenBord.withValues(alpha: 0.22);
+    final fieldBg = dark
+        ? const Color(0xFF162A1C)
+        : const Color(0xFFF4FAF7);
+    final fieldBorder = dark
+        ? _kGreenBord.withValues(alpha: 0.22)
+        : _kGreenBord.withValues(alpha: 0.18);
+    final textColor = dark ? Colors.white : const Color(0xFF0F1C14);
+    final hintColor = dark
+        ? Colors.white.withValues(alpha: 0.38)
+        : const Color(0xFF7A9E8E);
+    final chipBg = dark
+        ? const Color(0xFF162A1C)
+        : _kGreen.withValues(alpha: 0.07);
+    final chipBorder = dark
+        ? _kGreenBord.withValues(alpha: 0.25)
+        : _kGreenBord.withValues(alpha: 0.22);
+    final chipText = dark
+        ? const Color(0xFF4ADE80)
+        : _kGreen;
+
+    return Container(
+      decoration: BoxDecoration(
+        color: cardBg,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: borderColor, width: 1.2),
+        boxShadow: dark
+            ? [
+                BoxShadow(
+                  color: _kGreenBg.withValues(alpha: 0.08),
+                  blurRadius: 20,
+                  offset: const Offset(0, 4),
+                ),
+              ]
+            : [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.07),
+                  blurRadius: 16,
+                  offset: const Offset(0, 4),
+                ),
+                BoxShadow(
+                  color: _kGreen.withValues(alpha: 0.06),
+                  blurRadius: 24,
+                  offset: const Offset(0, 6),
+                ),
+              ],
+      ),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(16, 16, 16, 14),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+
+            // ── Header: ícone + título + badge NOVO ──────────────────────
+            Row(children: [
+              Container(
+                width: 38, height: 38,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(11),
+                  gradient: const LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [Color(0xFF0F9E6A), Color(0xFF064D32)],
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: _kGreenBg.withValues(alpha: 0.35),
+                      blurRadius: 10,
+                      offset: const Offset(0, 3),
+                    ),
+                  ],
+                ),
+                child: const Icon(Icons.psychology_rounded,
+                    size: 22, color: Colors.white),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Text(
+                          'IA MEDCASES',
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w900,
+                            letterSpacing: 0.5,
+                            color: textColor,
+                          ),
+                        ),
+                        const SizedBox(width: 7),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 7, vertical: 2),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFF0D7A55),
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: const Text(
+                            'NOVO',
+                            style: TextStyle(
+                              fontSize: 8,
+                              fontWeight: FontWeight.w800,
+                              color: Colors.white,
+                              letterSpacing: 0.8,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      isEs
+                          ? 'Asistente clínico · Farmacología · Protocolos · MBE'
+                          : 'Assistente clínico · Farmacologia · Protocolos · MBE',
+                      style: TextStyle(
+                        fontSize: 10.5,
+                        color: dark
+                            ? Colors.white.withValues(alpha: 0.45)
+                            : const Color(0xFF4A7A63),
+                        height: 1.3,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ]),
+
+            const SizedBox(height: 13),
+
+            // ── Campo de texto + botão enviar ────────────────────────────
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Expanded(
+                  child: GestureDetector(
+                    onTap: () {
+                      // Se campo vazio ao clicar: vai para IA sem query
+                      if (_ctrl.text.trim().isEmpty) {
+                        _navigate('');
+                      } else {
+                        _focus.requestFocus();
+                      }
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 14, vertical: 11),
+                      decoration: BoxDecoration(
+                        color: fieldBg,
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: fieldBorder),
+                      ),
+                      child: TextField(
+                        controller: _ctrl,
+                        focusNode: _focus,
+                        style: TextStyle(
+                          fontSize: 13.5,
+                          color: textColor,
+                        ),
+                        decoration: InputDecoration.collapsed(
+                          hintText: isEs
+                              ? 'Escribe tu pregunta clínica…'
+                              : 'Digite sua pergunta clínica…',
+                          hintStyle: TextStyle(
+                            fontSize: 13.5,
+                            color: hintColor,
+                          ),
+                        ),
+                        textInputAction: TextInputAction.send,
+                        onSubmitted: (_) => _navigate(),
+                        onTap: () {
+                          // Ao focar no field: vai para IA para melhor UX mobile
+                          Future.delayed(const Duration(milliseconds: 100), () {
+                            if (_ctrl.text.trim().isEmpty && mounted) {
+                              _navigate('');
+                            }
+                          });
+                        },
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                GestureDetector(
+                  onTap: () => _navigate(),
+                  child: Container(
+                    width: 44, height: 44,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12),
+                      gradient: const LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [Color(0xFF0F9E6A), Color(0xFF064D32)],
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: _kGreenBg.withValues(alpha: 0.40),
+                          blurRadius: 10,
+                          offset: const Offset(0, 3),
+                        ),
+                      ],
+                    ),
+                    child: const Icon(Icons.arrow_upward_rounded,
+                        color: Colors.white, size: 22),
+                  ),
+                ),
+              ],
+            ),
+
+            const SizedBox(height: 11),
+
+            // ── Chips de exemplos rápidos ─────────────────────────────────
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              physics: const BouncingScrollPhysics(),
+              child: Row(
+                children: chips.map((chip) => GestureDetector(
+                  onTap: () => _navigate(chip),
+                  child: Container(
+                    margin: const EdgeInsets.only(right: 7),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 11, vertical: 5),
+                    decoration: BoxDecoration(
+                      color: chipBg,
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(color: chipBorder),
+                    ),
+                    child: Text(
+                      chip,
+                      style: TextStyle(
+                        fontSize: 11.5,
+                        fontWeight: FontWeight.w600,
+                        color: chipText,
+                      ),
+                    ),
+                  ),
+                )).toList(),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// HOME V2 — ADULTO / PEDIATRIA (item 5) — row de 2 cards compactos modernos
+// ═══════════════════════════════════════════════════════════════════════════════
+class _HomeAdultoPediatriaRow extends StatelessWidget {
+  final bool dark;
+  final bool isEs;
+  final VoidCallback onTapAdulto;
+  final VoidCallback onTapPediatria;
+
+  const _HomeAdultoPediatriaRow({
+    required this.dark,
+    required this.isEs,
+    required this.onTapAdulto,
+    required this.onTapPediatria,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(children: [
+      Expanded(child: _AgeCard(
+        icon: Icons.person_rounded,
+        label: 'ADULTO',
+        subtitle: isEs ? 'Protocolos adulto' : 'Protocolos adulto',
+        gradientColors: const [Color(0xFF052E1A), Color(0xFF0A5C2E), Color(0xFF15803D)],
+        accentColor: const Color(0xFF4ADE80),
+        dark: dark,
+        onTap: onTapAdulto,
+      )),
+      const SizedBox(width: 10),
+      Expanded(child: _AgeCard(
+        icon: Icons.child_care_rounded,
+        label: isEs ? 'PEDIATRÍA' : 'PEDIATRIA',
+        subtitle: isEs ? 'Protocolos pediátricos' : 'Protocolos pediátricos',
+        gradientColors: const [Color(0xFF0A2540), Color(0xFF103D70), Color(0xFF2563EB)],
+        accentColor: const Color(0xFF93C5FD),
+        dark: dark,
+        onTap: onTapPediatria,
+      )),
+    ]);
+  }
+}
+
+class _AgeCard extends StatefulWidget {
+  final IconData icon;
+  final String label;
+  final String subtitle;
+  final List<Color> gradientColors;
+  final Color accentColor;
+  final bool dark;
+  final VoidCallback onTap;
+
+  const _AgeCard({
+    required this.icon,
+    required this.label,
+    required this.subtitle,
+    required this.gradientColors,
+    required this.accentColor,
+    required this.dark,
+    required this.onTap,
+  });
+
+  @override
+  State<_AgeCard> createState() => _AgeCardState();
+}
+
+class _AgeCardState extends State<_AgeCard> with SingleTickerProviderStateMixin {
+  late final AnimationController _ctrl;
+  late final Animation<double> _scale;
+
+  @override
+  void initState() {
+    super.initState();
+    _ctrl  = AnimationController(vsync: this,
+        duration: const Duration(milliseconds: 120));
+    _scale = Tween<double>(begin: 1.0, end: 0.96)
+        .animate(CurvedAnimation(parent: _ctrl, curve: Curves.easeOut));
+  }
+
+  @override
+  void dispose() { _ctrl.dispose(); super.dispose(); }
+
+  @override
+  Widget build(BuildContext context) {
+    final g = widget.gradientColors;
+    return GestureDetector(
+      onTapDown:    (_) => _ctrl.forward(),
+      onTapUp:      (_) { _ctrl.reverse(); widget.onTap(); },
+      onTapCancel:  ()  => _ctrl.reverse(),
+      child: ScaleTransition(
+        scale: _scale,
+        child: Container(
+          height: 76,
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: g,
+            ),
+            borderRadius: BorderRadius.circular(16),
+            boxShadow: [
+              BoxShadow(
+                color: g.last.withValues(alpha: 0.35),
+                blurRadius: 12,
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+            child: Row(children: [
+              Container(
+                width: 34, height: 34,
+                decoration: BoxDecoration(
+                  color: widget.accentColor.withValues(alpha: 0.15),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Icon(widget.icon, size: 18, color: widget.accentColor),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      widget.label,
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w900,
+                        letterSpacing: 0.4,
+                        color: widget.accentColor,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      widget.subtitle,
+                      style: TextStyle(
+                        fontSize: 9.5,
+                        color: Colors.white.withValues(alpha: 0.55),
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                ),
+              ),
+              Icon(Icons.chevron_right_rounded,
+                  size: 16,
+                  color: widget.accentColor.withValues(alpha: 0.6)),
+            ]),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// HOME V2 — MIGUARDIA SECTION (item 6)
+// Wrapper da seção MiGuardia com cabeçalho premium e novo subtítulo.
+// ═══════════════════════════════════════════════════════════════════════════════
+class _HomeMiGuardiaSection extends StatelessWidget {
+  final bool dark;
+  final bool isEs;
+  final Function(dynamic) onOpenDrug;
+  final Function(String) onOpenCalc;
+  final VoidCallback onManageTap;
+
+  const _HomeMiGuardiaSection({
+    required this.dark,
+    required this.isEs,
+    required this.onOpenDrug,
+    required this.onOpenCalc,
+    required this.onManageTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final c        = AppColors.of(context);
+    final cardBg   = dark ? const Color(0xFF0E1A12) : Colors.white;
+    final border   = dark
+        ? Colors.white.withValues(alpha: 0.06)
+        : const Color(0xFFE4EEE9);
+
+    return Container(
+      decoration: BoxDecoration(
+        color: cardBg,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: border, width: 1),
+        boxShadow: dark
+            ? []
+            : [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.05),
+                  blurRadius: 12,
+                  offset: const Offset(0, 3),
+                ),
+              ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // ── Cabeçalho da seção ──────────────────────────────────────────
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 14, 16, 0),
+            child: Row(children: [
+              Container(
+                width: 32, height: 32,
+                decoration: BoxDecoration(
+                  color: const Color(0xFF0D7A55).withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(9),
+                ),
+                child: const Icon(Icons.dashboard_customize_rounded,
+                    size: 17, color: Color(0xFF0D7A55)),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      isEs ? 'MI GUARDIA' : 'MIGUARDIA',
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w900,
+                        letterSpacing: 0.8,
+                        color: c.textPrimary,
+                      ),
+                    ),
+                    Text(
+                      isEs
+                          ? 'Tu guardia personalizada con acceso rápido a lo que más usas'
+                          : 'Sua guarda personalizada com acesso rápido ao que você mais utiliza',
+                      style: TextStyle(
+                        fontSize: 10,
+                        color: c.textHint,
+                        height: 1.3,
+                      ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                ),
+              ),
+            ]),
+          ),
+          const SizedBox(height: 8),
+          // ── Dashboard ───────────────────────────────────────────────────
+          Padding(
+            padding: const EdgeInsets.fromLTRB(0, 0, 0, 4),
+            child: MeuPlantaoDashboard(
+              onOpenDrug:  onOpenDrug,
+              onOpenCalc:  onOpenCalc,
+              onManageTap: onManageTap,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -2353,9 +2870,11 @@ class _HomeCardState extends State<_HomeCard>
   }
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// ACESSO RÁPIDO — EMERGÊNCIAS
-// ─────────────────────────────────────────────────────────────────────────────
+// ═══════════════════════════════════════════════════════════════════════════════
+// HOME V2 — EMERGÊNCIAS RÁPIDAS (item 7)
+// 10 protocolos críticos definidos na especificação + expandir para todos.
+// Cards com estrutura: Reconhecer → Conduta → Fármacos → Monitorização.
+// ═══════════════════════════════════════════════════════════════════════════════
 class _QuickEmergencies extends StatefulWidget {
   final AppProvider p;
   final bool dark;
@@ -2376,63 +2895,90 @@ class _QuickEmergencies extends StatefulWidget {
 class _QuickEmergenciesState extends State<_QuickEmergencies> {
   bool _expanded = false;
 
-  static const _protocols = [
-    ('anafilaxia',            'Anafilaxia',     Icons.warning_amber_rounded),
-    ('sepse',                 'Sepse/Choque',   Icons.emergency_rounded),
-    ('tpsv',                  'TPSV',           Icons.favorite_rounded),
-    ('pcr_adulto',            'PCR',            Icons.monitor_heart_rounded),
-    // extras (visíveis ao expandir)
-    ('hiperpotassemia_grave', 'K⁺ alto',        Icons.science_rounded),
-    ('avc_isquemico',         'AVC/ACV',        Icons.bolt_rounded),
-    ('choque_cardiogenico',   'Choque Card.',   Icons.heart_broken_rounded),
-    ('fa_aguda',              'FA Aguda',       Icons.electric_bolt_rounded),
-    ('asma_grave',            'Asma Grave',     Icons.air_rounded),
-    ('crise_hipertensiva',    'Crise HAS',      Icons.speed_rounded),
-    ('tep_agudo',             'TEP',            Icons.bloodtype_rounded),
-    ('status_epilepticus',    'Status Epil.',   Icons.psychology_rounded),
-    // novos cards
-    ('iam_supra',             'IAM',            Icons.favorite_border_rounded),
-    ('edema_agudo_pulmao',    'EAP',            Icons.water_drop_rounded),
-    ('crise_convulsiva',      'Convulsão',      Icons.electric_bolt_rounded),
-    ('intoxicacao_overdose',  'Intoxicação',    Icons.warning_rounded),
+  // ── 10 protocolos principais (visíveis por padrão) ─────────────────────
+  static const _mainProtocols = [
+    ('iam_supra',             'IAM',              Icons.favorite_border_rounded),
+    ('avc_isquemico',         'AVC',              Icons.bolt_rounded),
+    ('sepse',                 'Sepse',            Icons.emergency_rounded),
+    ('choque_septico',        'Choque Séptico',   Icons.warning_amber_rounded),
+    ('anafilaxia',            'Anafilaxia',       Icons.warning_rounded),
+    ('hiperpotassemia_grave', 'Hipercalemia',     Icons.science_rounded),
+    ('tep_agudo',             'TEP Instável',     Icons.bloodtype_rounded),
+    ('tpsv',                  'TPSV',             Icons.favorite_rounded),
+    ('cetoacidose',           'Cetoacidose',      Icons.water_drop_rounded),
+    ('asma_grave',            'Crise Asmática',   Icons.air_rounded),
   ];
+
+  // ── Extras (visíveis ao expandir) ──────────────────────────────────────
+  static const _extraProtocols = [
+    ('pcr_adulto',            'PCR',              Icons.monitor_heart_rounded),
+    ('fa_aguda',              'FA Aguda',         Icons.electric_bolt_rounded),
+    ('choque_cardiogenico',   'Choque Card.',     Icons.heart_broken_rounded),
+    ('crise_hipertensiva',    'Crise HAS',        Icons.speed_rounded),
+    ('edema_agudo_pulmao',    'EAP',              Icons.waves_rounded),
+    ('status_epilepticus',    'Status Epil.',     Icons.psychology_rounded),
+  ];
+
+  static const _kRed        = Color(0xFFCC2222);
+  static const _kRedDark    = Color(0xFFFF8888);
+  static const _kRedBg      = Color(0xFFFFF0F0);
+  static const _kRedBgDark  = Color(0xFF2A0A0A);
+  static const _kRedBord    = Color(0xFFFFCCCC);
+  static const _kRedBordDark = Color(0xFF6B1A1A);
 
   Widget _buildCard(String id, String label, IconData icon) {
     final dark = widget.dark;
     return GestureDetector(
       onTap: () => widget.openProtocol(id),
-      child: Container(
-        // Cards mais baixos — altura ~68 via aspectRatio 1.55 na grid
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 120),
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12),
-          color: dark
-              ? const Color(0xFF2A0A0A)
-              : const Color(0xFFFFF0F0),
+          borderRadius: BorderRadius.circular(13),
+          color: dark ? _kRedBgDark : _kRedBg,
           border: Border.all(
             color: dark
-                ? const Color(0xFF6B1A1A).withValues(alpha: 0.6)
-                : const Color(0xFFFFCCCC),
+                ? _kRedBordDark.withValues(alpha: 0.55)
+                : _kRedBord,
+            width: 1,
           ),
+          boxShadow: dark
+              ? []
+              : [
+                  BoxShadow(
+                    color: _kRed.withValues(alpha: 0.07),
+                    blurRadius: 8,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(icon, size: 18, color: const Color(0xFFCC2222)),
+            Container(
+              width: 28, height: 28,
+              decoration: BoxDecoration(
+                color: dark
+                    ? _kRed.withValues(alpha: 0.15)
+                    : _kRed.withValues(alpha: 0.09),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Icon(icon, size: 15,
+                  color: dark ? _kRedDark : _kRed),
+            ),
             const SizedBox(height: 5),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 3),
+              padding: const EdgeInsets.symmetric(horizontal: 4),
               child: Text(
                 label,
                 textAlign: TextAlign.center,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(
-                  fontSize: 9.5,
-                  fontWeight: FontWeight.w700,
-                  color: dark
-                      ? const Color(0xFFFF8888)
-                      : const Color(0xFFCC2222),
+                  fontSize: 9,
+                  fontWeight: FontWeight.w800,
+                  color: dark ? _kRedDark : _kRed,
                   height: 1.2,
+                  letterSpacing: 0.1,
                 ),
               ),
             ),
@@ -2444,95 +2990,194 @@ class _QuickEmergenciesState extends State<_QuickEmergencies> {
 
   @override
   Widget build(BuildContext context) {
-    final c    = AppColors.of(context);
     final dark = widget.dark;
     final isEs = widget.isEs;
+    final cardBg = dark ? const Color(0xFF0E1210) : Colors.white;
+    final borderColor = dark
+        ? _kRedBordDark.withValues(alpha: 0.20)
+        : _kRedBord.withValues(alpha: 0.60);
 
-    // visíveis: sempre 4 primeiros; expandido = todos 16
-    final visible = _expanded ? _protocols : _protocols.sublist(0, 4);
+    final allProtos = _expanded
+        ? [..._mainProtocols, ..._extraProtocols]
+        : _mainProtocols;
 
-    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      // Cabeçalho da seção + botão ver mais/menos
-      Padding(
-        padding: const EdgeInsets.only(left: 2, bottom: 10),
-        child: Row(children: [
-          Container(
-            width: 3,
-            height: 13,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(2),
-              color: const Color(0xFFCC2222),
-            ),
-          ),
-          const SizedBox(width: 8),
-          Text(
-            isEs ? 'EMERGENCIAS RÁPIDAS' : 'EMERGÊNCIAS RÁPIDAS',
-            style: TextStyle(
-              fontSize: 10,
-              fontWeight: FontWeight.w900,
-              letterSpacing: 1.4,
-              color: c.textHint,
-            ),
-          ),
-          const Spacer(),
-          // Botão "ver +" / "ver menos"
-          GestureDetector(
-            onTap: () => setState(() => _expanded = !_expanded),
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20),
-                color: dark
-                    ? const Color(0xFF2A0A0A)
-                    : const Color(0xFFFFF0F0),
-                border: Border.all(
-                  color: dark
-                      ? const Color(0xFF6B1A1A).withValues(alpha: 0.5)
-                      : const Color(0xFFFFCCCC),
+    return Container(
+      decoration: BoxDecoration(
+        color: cardBg,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: borderColor, width: 1),
+        boxShadow: dark
+            ? []
+            : [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.05),
+                  blurRadius: 12,
+                  offset: const Offset(0, 3),
                 ),
+              ],
+      ),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(14, 14, 14, 14),
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+
+          // ── Cabeçalho ────────────────────────────────────────────────
+          Row(children: [
+            Container(
+              width: 32, height: 32,
+              decoration: BoxDecoration(
+                color: _kRed.withValues(alpha: dark ? 0.18 : 0.09),
+                borderRadius: BorderRadius.circular(9),
               ),
-              child: Row(mainAxisSize: MainAxisSize.min, children: [
-                Text(
-                  _expanded
-                      ? (isEs ? 'ver menos' : 'ver menos')
-                      : (isEs ? 'ver +' : 'ver +'),
-                  style: TextStyle(
-                    fontSize: 10,
-                    fontWeight: FontWeight.w700,
+              child: Icon(Icons.emergency_rounded, size: 17,
+                  color: dark ? _kRedDark : _kRed),
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    isEs ? 'EMERGENCIAS RÁPIDAS' : 'EMERGÊNCIAS RÁPIDAS',
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w900,
+                      letterSpacing: 0.6,
+                      color: dark ? _kRedDark : _kRed,
+                    ),
+                  ),
+                  Text(
+                    isEs
+                        ? 'Protocolos críticos para consulta inmediata en el turno'
+                        : 'Protocolos críticos para consulta imediata durante o plantão',
+                    style: TextStyle(
+                      fontSize: 9.5,
+                      color: dark
+                          ? Colors.white.withValues(alpha: 0.40)
+                          : const Color(0xFF886666),
+                      height: 1.3,
+                    ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+              ),
+            ),
+            // Botão expandir/recolher
+            GestureDetector(
+              onTap: () => setState(() => _expanded = !_expanded),
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
+                  color: dark ? _kRedBgDark : _kRedBg,
+                  border: Border.all(
                     color: dark
-                        ? const Color(0xFFFF8888)
-                        : const Color(0xFFCC2222),
+                        ? _kRedBordDark.withValues(alpha: 0.40)
+                        : _kRedBord,
                   ),
                 ),
-                const SizedBox(width: 3),
-                Icon(
-                  _expanded
-                      ? Icons.keyboard_arrow_up_rounded
-                      : Icons.keyboard_arrow_down_rounded,
-                  size: 13,
-                  color: dark
-                      ? const Color(0xFFFF8888)
-                      : const Color(0xFFCC2222),
-                ),
-              ]),
+                child: Row(mainAxisSize: MainAxisSize.min, children: [
+                  Text(
+                    _expanded
+                        ? (isEs ? 'menos' : 'menos')
+                        : (isEs ? 'ver +' : 'ver +'),
+                    style: TextStyle(
+                      fontSize: 10,
+                      fontWeight: FontWeight.w700,
+                      color: dark ? _kRedDark : _kRed,
+                    ),
+                  ),
+                  const SizedBox(width: 2),
+                  Icon(
+                    _expanded
+                        ? Icons.keyboard_arrow_up_rounded
+                        : Icons.keyboard_arrow_down_rounded,
+                    size: 13,
+                    color: dark ? _kRedDark : _kRed,
+                  ),
+                ]),
+              ),
             ),
+          ]),
+
+          const SizedBox(height: 12),
+
+          // ── Grid 5 colunas nos primeiros 10, 3 extras ─────────────────
+          GridView.count(
+            crossAxisCount: 5,
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            padding: EdgeInsets.zero,
+            mainAxisSpacing: 8,
+            crossAxisSpacing: 8,
+            childAspectRatio: 0.85,
+            children: allProtos.map((proto) =>
+                _buildCard(proto.$1, proto.$2, proto.$3)).toList(),
+          ),
+
+          // ── Dica visual de fluxo ──────────────────────────────────────
+          const SizedBox(height: 10),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              _EmergStep(isEs ? 'Reconocer' : 'Reconhecer', dark),
+              _EmergArrow(dark),
+              _EmergStep(isEs ? 'Conducta' : 'Conduta', dark),
+              _EmergArrow(dark),
+              _EmergStep(isEs ? 'Fármacos' : 'Fármacos', dark),
+              _EmergArrow(dark),
+              _EmergStep(isEs ? 'Monitor.' : 'Monitor.', dark),
+            ],
           ),
         ]),
       ),
+    );
+  }
+}
 
-      // Grid 4 colunas — cards mais baixos (aspect ratio 1.6)
-      GridView.count(
-        crossAxisCount: 4,
-        shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
-        padding: EdgeInsets.zero,
-        mainAxisSpacing: 8,
-        crossAxisSpacing: 8,
-        childAspectRatio: 1.55,
-        children: visible.map((proto) =>
-            _buildCard(proto.$1, proto.$2, proto.$3)).toList(),
+class _EmergStep extends StatelessWidget {
+  final String label;
+  final bool dark;
+  const _EmergStep(this.label, this.dark);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
+      decoration: BoxDecoration(
+        color: const Color(0xFFCC2222).withValues(alpha: dark ? 0.12 : 0.07),
+        borderRadius: BorderRadius.circular(6),
       ),
-    ]);
+      child: Text(
+        label,
+        style: TextStyle(
+          fontSize: 9,
+          fontWeight: FontWeight.w700,
+          color: dark
+              ? const Color(0xFFFF8888)
+              : const Color(0xFFCC2222),
+        ),
+      ),
+    );
+  }
+}
+
+class _EmergArrow extends StatelessWidget {
+  final bool dark;
+  const _EmergArrow(this.dark);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 3),
+      child: Icon(
+        Icons.arrow_forward_rounded,
+        size: 11,
+        color: dark
+            ? const Color(0xFFFF8888).withValues(alpha: 0.5)
+            : const Color(0xFFCC2222).withValues(alpha: 0.4),
+      ),
+    );
   }
 }
 

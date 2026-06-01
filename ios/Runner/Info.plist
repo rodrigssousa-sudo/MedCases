@@ -43,6 +43,14 @@
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>MedCases Pro puede guardar imágenes generadas por la aplicación — como gráficos de seguimiento clínico o capturas de protocolos — directamente en su biblioteca de fotos, exclusivamente cuando usted lo solicite de forma explícita.</string>
 
+	<!-- ── ATT — App Tracking Transparency (Apple Guideline 5.1.2) ─────── -->
+	<!-- Obrigatório quando o app usa Firebase Analytics / Crashlytics.       -->
+	<!-- O pop-up só é exibido se você chamar                                 -->
+	<!-- AppTrackingTransparency.requestTrackingAuthorization() no código.    -->
+	<!-- Sem esta key o iOS lança NSInternalInconsistencyException.           -->
+	<key>NSUserTrackingUsageDescription</key>
+	<string>O MedCases Pro coleta dados anônimos de uso — como quais módulos clínicos são mais acessados e o tempo de resposta da IA — exclusivamente para melhorar a qualidade das respostas clínicas e a experiência do profissional de saúde. Nenhum dado pessoal identificável, informação de paciente ou conteúdo de consultas é coletado ou compartilhado com terceiros.</string>
+
 	<!-- ── Orientação iPhone: somente portrait ───────────────────────────── -->
 	<key>UISupportedInterfaceOrientations</key>
 	<array>

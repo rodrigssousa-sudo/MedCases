@@ -4,6 +4,8 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../widgets/common_widgets.dart' show MedBreakpoints;
+import '../widgets/error_state_widget.dart'
+    show InlineConnectionBanner;
 import 'package:flutter_tts/flutter_tts.dart';
 import 'dart:convert';
 import '../providers/app_provider.dart';
@@ -184,6 +186,12 @@ class AiScreen extends StatefulWidget {
   static final aiConnectedNotifier = ValueNotifier<bool>(false);
   /// callback para abrir as configurações de IA (null quando não montado)
   static final openSettingsCallback = ValueNotifier<VoidCallback?>(null);
+
+  // ── Home V2: Injeção de query a partir da Home ─────────────────────────
+  /// Query pendente para ser disparada automaticamente ao montar a tela de IA.
+  /// A HomeScreen seta este valor antes de navegar para a aba 2.
+  /// O _AiScreenState consome e limpa no initState/didUpdateWidget.
+  static final pendingQuery = ValueNotifier<String>('');
 }
 
 class _AiScreenState extends State<AiScreen> {
@@ -191,10 +199,13 @@ class _AiScreenState extends State<AiScreen> {
   final _scrollCtrl = ScrollController();
   final _focusNode  = FocusNode();
   final List<_ChatMsg> _messages = [];
-  bool _thinking     = false;
-  bool _hasFocus     = false;
-  bool _aiError      = false;
-  bool _greetingDone = false; // garante saudação só uma vez por sessão
+  bool _thinking      = false;
+  bool _hasFocus      = false;
+  bool _aiError       = false;
+  // Task 11 — network error banner: true quando a última chamada da IA falhou
+  // por problema de conexão (timeout, socket, etc.) vs. erro de chave API.
+  bool _networkError  = false;
+  bool _greetingDone  = false; // garante saudação só uma vez por sessão
   int  _lastAiIndex  = -1;   // índice da última resposta da IA (para animar só ela)
   // Auto-scroll: só desce automaticamente se usuário estiver perto do fundo
   bool _userScrolledUp = false; // true quando usuário scrollou para cima
@@ -286,7 +297,11 @@ class _AiScreenState extends State<AiScreen> {
     // Listener de scroll: detecta se usuário scrollou para cima
     _scrollCtrl.addListener(_onScroll);
     // Injeta saudação após o primeiro frame (AppProvider já disponível)
-    WidgetsBinding.instance.addPostFrameCallback((_) => _injectGreeting());
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _injectGreeting();
+      // Home V2: consome query pendente injetada pelo _HomeIaCard
+      _consumePendingQuery();
+    });
     // Carrega histórico de chats do SharedPrefs
     _loadChatHistory();
     // Inicializa TTS
@@ -448,6 +463,20 @@ class _AiScreenState extends State<AiScreen> {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       margin: const EdgeInsets.fromLTRB(16, 0, 16, 80),
     ));
+  }
+
+  /// Home V2 — Consome a query pendente setada pelo _HomeIaCard antes de
+  /// navegar para a aba de IA. O pequeno delay garante que o greeting já
+  /// foi injetado e os providers estão prontos antes do envio.
+  void _consumePendingQuery() {
+    final q = AiScreen.pendingQuery.value;
+    if (q.isEmpty || !mounted) return;
+    AiScreen.pendingQuery.value = '';  // limpa imediatamente para não re-disparar
+    Future.delayed(const Duration(milliseconds: 350), () {
+      if (!mounted) return;
+      final p = context.read<AppProvider>();
+      _send(q, p);
+    });
   }
 
   void _injectGreeting() {
@@ -690,6 +719,7 @@ class _AiScreenState extends State<AiScreen> {
       _messages.add(_ChatMsg(role: 'user', text: trimmed));
       _thinking = true;
       _aiError  = false;
+      _networkError = false; // limpa banner de rede ao enviar nova mensagem
       _userScrolledUp = false; // reset ao enviar — desce para mostrar "pensando"
       // Marca que o usuário enviou nova mensagem (relevante ao restaurar sessão)
       _hasNewMessageAfterRestore = true;
@@ -717,15 +747,44 @@ class _AiScreenState extends State<AiScreen> {
         return;
       }
 
-      // Detecta se foi erro de chave inválida para mostrar banner
+      // ── Task 11: Detecta tipo de erro ──────────────────────────────────
+      // isKeyError  → erro de chave API inválida (banner laranja)
+      // isNetErr    → timeout / sem rede (InlineConnectionBanner)
       final isKeyError = answer.startsWith('ERRO') && answer.contains('API');
+      final isNetErr   = answer.toLowerCase().contains('sem conexão') ||
+          answer.toLowerCase().contains('sin conexión') ||
+          answer.toLowerCase().contains('timeout') ||
+          answer.toLowerCase().contains('falha na conexão') ||
+          answer.toLowerCase().contains('falla de red');
       setState(() {
-        _lastAiIndex = _messages.length; // índice que será inserido
+        _lastAiIndex  = _messages.length; // índice que será inserido
         _messages.add(_ChatMsg(role: 'ai', text: answer));
-        _thinking = false;
-        _aiError  = isKeyError;
+        _thinking     = false;
+        _aiError      = isKeyError;
+        _networkError = isNetErr;
       });
       _scrollDown(); // scroll suave ao receber resposta (respeita _userScrolledUp)
+    } on Exception catch (e) {
+      // Task 11: captura exceções não tratadas (ex: TimeoutException, SocketException)
+      if (!mounted) return;
+      final errStr = e.toString().toLowerCase();
+      final isNetworkException = errStr.contains('socket') ||
+          errStr.contains('timeout') ||
+          errStr.contains('connection') ||
+          errStr.contains('network') ||
+          errStr.contains('unreachable');
+      setState(() {
+        _thinking     = false;
+        _networkError = isNetworkException;
+        _aiError      = !isNetworkException;
+        if (isNetworkException) {
+          // Remove mensagem do usuário se não houve resposta
+          if (_messages.isNotEmpty && _messages.last.role == 'user' &&
+              _messages.last.text == trimmed) {
+            _messages.removeLast();
+          }
+        }
+      });
     } finally {
       // Libera o guard após a resposta chegar (ou em erro)
       // Pequeno delay para absorver double-tap acidental
@@ -757,7 +816,8 @@ class _AiScreenState extends State<AiScreen> {
       _messages
         ..clear()
         ..add(_ChatMsg(role: 'ai', text: _buildGreeting(p.userName, p.lang)));
-      _aiError = false;
+      _aiError      = false;
+      _networkError = false;
       _userScrolledUp = false;
       // Reseta flags de sessão restaurada para o novo chat em branco
       _restoredSessionId = null;
@@ -896,6 +956,26 @@ class _AiScreenState extends State<AiScreen> {
           dark: dark,
           lang: p.lang,
           onFix: _openAiSettings,
+        ),
+
+      // ── Task 11: Banner de erro de rede/conexão ──────────────────────────
+      // Substituir tela branca por banner inline quando a IA falha por rede.
+      // O banner aparece no topo sem apagar o histórico do chat já carregado.
+      if (_networkError)
+        InlineConnectionBanner(
+          lang: p.lang,
+          isAiError: true,
+          onRetry: () {
+            final last = _messages.lastWhere(
+              (m) => m.role == 'user',
+              orElse: () => _ChatMsg(role: '', text: ''),
+            );
+            if (last.text.isNotEmpty) {
+              _send(last.text, p);
+            } else {
+              setState(() => _networkError = false);
+            }
+          },
         ),
 
       // ── Área de chat (com overlay de desconexão quando necessário) ───────
