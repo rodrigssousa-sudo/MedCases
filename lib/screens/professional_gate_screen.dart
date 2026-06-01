@@ -290,14 +290,14 @@ class _ProfessionalDeclarationModalState
     );
   }
 
-  // ── Corpo — Dropdown + Checkbox ────────────────────────────────────────────
+  // ── Corpo — Seleção de categoria (radio chips) + Checkbox ────────────────────
   Widget _buildBody() {
     return Padding(
       padding: const EdgeInsets.fromLTRB(24, 22, 24, 4),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Label do dropdown
+          // Label da seleção
           Text(
             _s.dropdownLabel,
             style: const TextStyle(
@@ -307,46 +307,69 @@ class _ProfessionalDeclarationModalState
               letterSpacing: 0.6,
             ),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: 10),
 
-          // Dropdown
-          Container(
-            decoration: BoxDecoration(
-              color: _surface,
-              borderRadius: BorderRadius.circular(10),
-              border: Border.all(
-                color: _selectedCategory != null
-                    ? _greenLt.withValues(alpha: 0.6)
-                    : _border,
-                width: 1,
-              ),
-            ),
-            child: DropdownButtonHideUnderline(
-              child: DropdownButton<String>(
-                value: _selectedCategory,
-                isExpanded: true,
-                dropdownColor: const Color(0xFF0F2419),
-                icon: const Icon(Icons.keyboard_arrow_down_rounded,
-                    color: _gold, size: 22),
-                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
-                hint: Text(
-                  _s.dropdownLabel,
-                  style: const TextStyle(color: _textHint, fontSize: 14),
+          // Radio chips — uma opção por linha
+          ...List.generate(_s.categories.length, (i) {
+            final cat = _s.categories[i];
+            final selected = _selectedCategory == cat;
+            return GestureDetector(
+              onTap: () => setState(() => _selectedCategory = cat),
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 180),
+                width: double.infinity,
+                margin: const EdgeInsets.only(bottom: 8),
+                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 13),
+                decoration: BoxDecoration(
+                  color: selected
+                      ? _green.withValues(alpha: 0.14)
+                      : _surface,
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(
+                    color: selected
+                        ? _greenLt.withValues(alpha: 0.65)
+                        : _border,
+                    width: 1,
+                  ),
                 ),
-                style: const TextStyle(color: _textPri, fontSize: 14),
-                items: _s.categories
-                    .map((c) => DropdownMenuItem(
-                          value: c,
-                          child: Text(c,
-                              style: const TextStyle(
-                                  color: _textPri, fontSize: 14)),
-                        ))
-                    .toList(),
-                onChanged: (val) =>
-                    setState(() => _selectedCategory = val),
+                child: Row(
+                  children: [
+                    // Círculo radio
+                    AnimatedContainer(
+                      duration: const Duration(milliseconds: 180),
+                      width: 20,
+                      height: 20,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: selected ? _green : Colors.transparent,
+                        border: Border.all(
+                          color: selected ? _green : _textHint,
+                          width: 1.5,
+                        ),
+                      ),
+                      child: selected
+                          ? const Icon(Icons.check_rounded,
+                              size: 13, color: Colors.white)
+                          : null,
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Text(
+                        cat,
+                        style: TextStyle(
+                          color: selected ? _textPri : _textSec,
+                          fontSize: 14,
+                          fontWeight: selected
+                              ? FontWeight.w600
+                              : FontWeight.w400,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ),
+            );
+          }),
 
           const SizedBox(height: 22),
 
