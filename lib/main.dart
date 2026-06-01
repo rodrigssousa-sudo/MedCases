@@ -35,6 +35,7 @@ import 'screens/home_screen.dart';
 import 'screens/notes_screen.dart';
 import 'screens/library_screen.dart';
 import 'services/firestore_service.dart';
+import 'services/activity_service.dart';
 import 'services/gemini_service.dart';
 import 'services/notification_service.dart';
 import 'services/update_service.dart';
@@ -92,6 +93,11 @@ Future<void> _bootInBackground(AppProvider provider) async {
   } catch (e) {
     debugPrint('[MedCases] SharedPreferences indisponível: $e');
   }
+
+  // 1b. Histórico de atividades recentes (local, sem rede)
+  try {
+    await ActivityService.load().timeout(const Duration(seconds: 2));
+  } catch (_) {}
 
   // 2. Gemini key do storage local (síncrono, sem rede)
   try {
@@ -3889,8 +3895,8 @@ class _DrawerQuickAccess extends StatelessWidget {
 }
 
 // ── Bloco "Sua Atividade" do Drawer ───────────────────────────────────────────
-// Mostra atalho para Histórico de Consultas (tab 3).
-// Oculto automaticamente quando p.aiSessionsCount == 0 (zero atividade).
+// Mostra as últimas atividades recentes do usuário no app (IA, Protocolos, etc.)
+// Sempre visível após a primeira ação. Abre _RecentActivitySheet ao tocar.
 class _DrawerActivity extends StatelessWidget {
   final AppProvider p;
   final bool dark;
@@ -3902,44 +3908,381 @@ class _DrawerActivity extends StatelessWidget {
     required this.onClose,
   });
 
-  void _goHistory(BuildContext context) {
+  void _openSheet(BuildContext context) {
     onClose();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      MainShell.pendingTab.value = 3;
+      if (!context.mounted) return;
+      showModalBottomSheet(
+        context: context,
+        isScrollControlled: true,
+        backgroundColor: Colors.transparent,
+        builder: (_) => _RecentActivitySheet(dark: dark, lang: p.lang),
+      );
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    // Usa AiScreen.historyCountNotifier para contagem em tempo real de sessões.
-    // Se 0 → oculta o bloco inteiro (sem atividade ainda).
-    return ValueListenableBuilder<int>(
-      valueListenable: AiScreen.historyCountNotifier,
-      builder: (context, count, _) {
-        if (count <= 0) return const SizedBox.shrink();
+    return ValueListenableBuilder<List<ActivityItem>>(
+      valueListenable: ActivityService.items,
+      builder: (context, items, _) {
+        if (items.isEmpty) return const SizedBox.shrink();
 
         final isEs    = p.lang == 'es';
         final textCol = dark ? const Color(0xFFEEEEEE) : const Color(0xFF0F1C14);
         final subCol  = dark ? Colors.white.withValues(alpha: 0.36) : const Color(0xFF9AA0A8);
         final divider = dark ? const Color(0xFF1A2E22) : const Color(0xFFF0EDE8);
+        final recent  = items.take(3).toList();
+        final total   = items.length;
 
         return _DrawerBlock(
           dividerColor: divider,
           children: [
+            // ── Header clicável ─────────────────────────────────────────────
             _DrawerRow(
               icon: Icons.history_edu_rounded,
               iconColor: const Color(0xFF6366F1),
               title: isEs ? 'Historial de Consultas' : 'Histórico de Consultas',
               subtitle: isEs
-                  ? '$count ${count == 1 ? 'sesión guardada' : 'sesiones guardadas'}'
-                  : '$count ${count == 1 ? 'sessão salva' : 'sessões salvas'}',
+                  ? '$total ${total == 1 ? 'acción reciente' : 'acciones recientes'}'
+                  : '$total ${total == 1 ? 'ação recente' : 'ações recentes'}',
               dark: dark, textCol: textCol, subCol: subCol,
-              showDivider: false,
-              onTap: () => _goHistory(context),
+              showDivider: recent.isNotEmpty,
+              onTap: () => _openSheet(context),
             ),
+            // ── Preview das 3 mais recentes ─────────────────────────────────
+            ...recent.asMap().entries.map((entry) {
+              final idx  = entry.key;
+              final item = entry.value;
+              final isLast = idx == recent.length - 1;
+              return _DrawerActivityRow(
+                item: item,
+                lang: p.lang,
+                dark: dark,
+                textCol: textCol,
+                subCol: subCol,
+                showDivider: !isLast,
+                onTap: () => _openSheet(context),
+              );
+            }),
           ],
         );
       },
+    );
+  }
+}
+
+// ── Mini-row de item de atividade no Drawer ────────────────────────────────────
+class _DrawerActivityRow extends StatelessWidget {
+  final ActivityItem item;
+  final String lang;
+  final bool dark;
+  final Color textCol;
+  final Color subCol;
+  final bool showDivider;
+  final VoidCallback onTap;
+
+  const _DrawerActivityRow({
+    required this.item,
+    required this.lang,
+    required this.dark,
+    required this.textCol,
+    required this.subCol,
+    required this.showDivider,
+    required this.onTap,
+  });
+
+  String _timeAgo(DateTime dt, String lang) {
+    final diff = DateTime.now().difference(dt);
+    final isEs = lang == 'es';
+    if (diff.inMinutes < 1)  return isEs ? 'ahora'          : 'agora';
+    if (diff.inMinutes < 60) return isEs ? 'hace ${diff.inMinutes} min' : 'há ${diff.inMinutes} min';
+    if (diff.inHours < 24)   return isEs ? 'hace ${diff.inHours} h'    : 'há ${diff.inHours} h';
+    return isEs ? 'hace ${diff.inDays} d' : 'há ${diff.inDays} d';
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final color = Color(item.type.colorValue);
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: onTap,
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 9),
+            child: Row(children: [
+              Container(
+                width: 28, height: 28,
+                decoration: BoxDecoration(
+                  color: color.withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Icon(Icons.circle, size: 8, color: color),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  Text(
+                    item.title,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(fontSize: 12.5, fontWeight: FontWeight.w600, color: textCol),
+                  ),
+                  if (item.subtitle.isNotEmpty)
+                    Text(
+                      '${item.type.label(lang)} · ${item.subtitle}',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(fontSize: 10.5, color: subCol),
+                    )
+                  else
+                    Text(
+                      item.type.label(lang),
+                      style: TextStyle(fontSize: 10.5, color: subCol),
+                    ),
+                ]),
+              ),
+              const SizedBox(width: 6),
+              Text(
+                _timeAgo(item.timestamp, lang),
+                style: TextStyle(fontSize: 9.5, color: subCol),
+              ),
+            ]),
+          ),
+          if (showDivider)
+            Divider(height: 1, indent: 52,
+                color: dark ? Colors.white.withValues(alpha: 0.06) : const Color(0xFFEEEEEE)),
+        ],
+      ),
+    );
+  }
+}
+
+// ── Bottom Sheet completo de Atividades Recentes ──────────────────────────────
+class _RecentActivitySheet extends StatelessWidget {
+  final bool dark;
+  final String lang;
+  const _RecentActivitySheet({required this.dark, required this.lang});
+
+  @override
+  Widget build(BuildContext context) {
+    final isEs  = lang == 'es';
+    final bg    = dark ? const Color(0xFF0F1C14) : Colors.white;
+    final handle= dark ? Colors.white.withValues(alpha: 0.18) : const Color(0xFFDDDDDD);
+    final title = dark ? Colors.white : const Color(0xFF0F1C14);
+    final sub   = dark ? Colors.white.withValues(alpha: 0.45) : const Color(0xFF9AA0A8);
+    final div   = dark ? Colors.white.withValues(alpha: 0.07) : const Color(0xFFF0F0F0);
+
+    return ValueListenableBuilder<List<ActivityItem>>(
+      valueListenable: ActivityService.items,
+      builder: (context, items, _) {
+        return Container(
+          decoration: BoxDecoration(
+            color: bg,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+          ),
+          constraints: BoxConstraints(
+            maxHeight: MediaQuery.of(context).size.height * 0.80,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // ── Handle ──────────────────────────────────────────────────────
+              const SizedBox(height: 10),
+              Container(width: 40, height: 4,
+                decoration: BoxDecoration(color: handle, borderRadius: BorderRadius.circular(2))),
+              const SizedBox(height: 14),
+
+              // ── Header ──────────────────────────────────────────────────────
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Row(children: [
+                  Container(
+                    width: 36, height: 36,
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF6366F1).withValues(alpha: 0.12),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: const Icon(Icons.history_edu_rounded, size: 18, color: Color(0xFF6366F1)),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                      Text(
+                        isEs ? 'Historial de Consultas' : 'Histórico de Consultas',
+                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.w900, color: title),
+                      ),
+                      Text(
+                        isEs ? 'Tus últimas acciones en el app' : 'Suas últimas ações no app',
+                        style: TextStyle(fontSize: 11, color: sub),
+                      ),
+                    ]),
+                  ),
+                  if (items.isNotEmpty)
+                    TextButton(
+                      onPressed: () async {
+                        await ActivityService.clear();
+                      },
+                      child: Text(
+                        isEs ? 'Limpiar' : 'Limpar',
+                        style: const TextStyle(
+                          fontSize: 12, color: Color(0xFFEF4444), fontWeight: FontWeight.w600),
+                      ),
+                    ),
+                ]),
+              ),
+              const SizedBox(height: 12),
+              Divider(height: 1, color: div),
+
+              // ── Lista ou empty state ─────────────────────────────────────────
+              if (items.isEmpty)
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 48),
+                  child: Column(children: [
+                    Icon(Icons.history_toggle_off_rounded, size: 52,
+                        color: dark ? Colors.white24 : Colors.black12),
+                    const SizedBox(height: 12),
+                    Text(
+                      isEs ? 'Sin actividad reciente' : 'Sem atividade recente',
+                      style: TextStyle(fontSize: 14, color: sub, fontWeight: FontWeight.w500),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      isEs
+                          ? 'Consulta protocolos, fármacos o usa la IA'
+                          : 'Consulte protocolos, fármacos ou use a IA',
+                      style: TextStyle(fontSize: 12, color: sub),
+                      textAlign: TextAlign.center,
+                    ),
+                  ]),
+                )
+              else
+                Flexible(
+                  child: ListView.separated(
+                    padding: const EdgeInsets.only(bottom: 32),
+                    shrinkWrap: true,
+                    itemCount: items.length,
+                    separatorBuilder: (_, __) => Divider(height: 1, indent: 68, color: div),
+                    itemBuilder: (context, i) {
+                      final item  = items[i];
+                      final color = Color(item.type.colorValue);
+                      return _ActivityTile(
+                        item: item, color: color, lang: lang,
+                        dark: dark, titleCol: title, subCol: sub,
+                      );
+                    },
+                  ),
+                ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+}
+
+// ── Tile individual no sheet de atividades ─────────────────────────────────────
+class _ActivityTile extends StatelessWidget {
+  final ActivityItem item;
+  final Color color;
+  final String lang;
+  final bool dark;
+  final Color titleCol;
+  final Color subCol;
+
+  const _ActivityTile({
+    required this.item,
+    required this.color,
+    required this.lang,
+    required this.dark,
+    required this.titleCol,
+    required this.subCol,
+  });
+
+  String _timeAgo(DateTime dt) {
+    final diff = DateTime.now().difference(dt);
+    final isEs = lang == 'es';
+    if (diff.inMinutes < 1)  return isEs ? 'ahora mismo'       : 'agora mesmo';
+    if (diff.inMinutes < 60) return isEs ? 'hace ${diff.inMinutes} min' : 'há ${diff.inMinutes} min';
+    if (diff.inHours < 24)   return isEs ? 'hace ${diff.inHours} h'    : 'há ${diff.inHours} h';
+    if (diff.inDays == 1)    return isEs ? 'ayer'               : 'ontem';
+    return isEs ? 'hace ${diff.inDays} días' : 'há ${diff.inDays} dias';
+  }
+
+  // Ícone real por tipo (flutter IconData)
+  IconData get _icon {
+    switch (item.type) {
+      case ActivityType.ia:          return Icons.psychology_rounded;
+      case ActivityType.protocolo:   return Icons.fact_check_rounded;
+      case ActivityType.farmaco:     return Icons.medication_rounded;
+      case ActivityType.calculadora: return Icons.calculate_rounded;
+      case ActivityType.interacao:   return Icons.swap_horiz_rounded;
+      case ActivityType.prescricao:  return Icons.receipt_long_rounded;
+      case ActivityType.laboratorio: return Icons.biotech_rounded;
+      case ActivityType.caso:        return Icons.person_rounded;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 11),
+      child: Row(children: [
+        // ── Ícone colorido ──────────────────────────────────────────────────
+        Container(
+          width: 40, height: 40,
+          decoration: BoxDecoration(
+            color: color.withValues(alpha: 0.12),
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: color.withValues(alpha: 0.20)),
+          ),
+          child: Icon(_icon, size: 18, color: color),
+        ),
+        const SizedBox(width: 12),
+        // ── Textos ─────────────────────────────────────────────────────────
+        Expanded(
+          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Text(
+              item.title,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(fontSize: 13.5, fontWeight: FontWeight.w700, color: titleCol),
+            ),
+            const SizedBox(height: 2),
+            Row(children: [
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                decoration: BoxDecoration(
+                  color: color.withValues(alpha: 0.10),
+                  borderRadius: BorderRadius.circular(5),
+                ),
+                child: Text(
+                  item.type.label(lang),
+                  style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w700, color: color),
+                ),
+              ),
+              if (item.subtitle.isNotEmpty) ...[
+                const SizedBox(width: 6),
+                Expanded(
+                  child: Text(
+                    item.subtitle,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(fontSize: 11, color: subCol),
+                  ),
+                ),
+              ],
+            ]),
+          ]),
+        ),
+        const SizedBox(width: 8),
+        // ── Timestamp ──────────────────────────────────────────────────────
+        Text(
+          _timeAgo(item.timestamp),
+          style: TextStyle(fontSize: 10, color: subCol),
+        ),
+      ]),
     );
   }
 }

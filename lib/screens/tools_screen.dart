@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../providers/app_provider.dart';
 import '../widgets/common_widgets.dart';
 import '../widgets/lab_exam_bottom_sheet.dart';
+import '../services/activity_service.dart';
 
 // ──────────────────────────────────────────────────────────────────
 // COLOR CONSTANTS — alinhadas com common_widgets.dart
@@ -1927,6 +1928,12 @@ class _InfusionTabState extends State<_InfusionTab> {
   ];
 
   void _fillAndScroll(_RescueDrug d, BuildContext ctx) {
+    // Registra uso da calculadora no histórico
+    ActivityService.log(
+      type:     ActivityType.calculadora,
+      title:    d.name,
+      subtitle: 'Calculadora de Infusão',
+    );
     setState(() {
       _infDrugCtrl.text  = d.name;
       _infConcCtrl.text  = d.concDefault;

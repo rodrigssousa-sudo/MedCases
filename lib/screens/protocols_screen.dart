@@ -5,6 +5,7 @@ import '../providers/app_provider.dart';
 import '../models/protocol_model.dart';
 import '../widgets/common_widgets.dart';
 import '../widgets/protocol_checklist_widget.dart';
+import '../services/activity_service.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // RECENTES — regista item se o usuário ficou 5s+ vendo
@@ -29,6 +30,12 @@ void showProtocolDetail(BuildContext context, ProtocolModel protocol) {
   final isEs = p.lang == 'es';
   final title = protocol.title[isEs ? 'es' : 'pt'] ?? protocol.title['pt'] ?? '';
   final openedAt = DateTime.now();
+  // Registra no histórico de atividades recentes
+  ActivityService.log(
+    type:     ActivityType.protocolo,
+    title:    title,
+    subtitle: protocol.severity[isEs ? 'es' : 'pt'] ?? '',
+  );
 
   showModalBottomSheet(
     context: context,

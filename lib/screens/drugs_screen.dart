@@ -6,6 +6,7 @@ import '../providers/app_provider.dart';
 import '../models/drug_model.dart';
 import '../services/drug_interaction_service.dart';
 import '../widgets/common_widgets.dart';
+import '../services/activity_service.dart';
 
 // Recentes delegados ao AppProvider (chave prefixada por uid)
 Future<void> _registerDrugRecent(BuildContext ctx, String id, String name, DateTime openedAt) async {
@@ -21,6 +22,13 @@ Future<void> _registerDrugRecent(BuildContext ctx, String id, String name, DateT
 void showDrugDetailSheet(BuildContext context, DrugModel drug) {
   final p = context.read<AppProvider>();
   final openedAt = DateTime.now();
+  // Registra no histórico de atividades recentes
+  final lang = p.lang;
+  ActivityService.log(
+    type:     ActivityType.farmaco,
+    title:    drug.name,
+    subtitle: drug.className[lang] ?? drug.group,
+  );
   showModalBottomSheet(
     context: context,
     isScrollControlled: true,

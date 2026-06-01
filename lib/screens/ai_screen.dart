@@ -12,6 +12,7 @@ import '../providers/app_provider.dart';
 import '../data/drugs_database.dart';
 import '../services/stt_helper.dart';
 import '../services/firestore_service.dart';
+import '../services/activity_service.dart';
 
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -724,6 +725,12 @@ class _AiScreenState extends State<AiScreen> {
 
     _sendGuard = true;
     _focusNode.unfocus();
+    // Registra no histórico de atividades recentes
+    ActivityService.log(
+      type: ActivityType.ia,
+      title: trimmed.length > 60 ? '${trimmed.substring(0, 60)}…' : trimmed,
+      subtitle: 'IA Clínica',
+    );
     setState(() {
       _messages.add(_ChatMsg(role: 'user', text: trimmed));
       _thinking = true;
