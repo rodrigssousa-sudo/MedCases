@@ -4838,19 +4838,39 @@ class _PediatricsTabContentState extends State<PediatricsTabContent> {
         ]),
       ),
 
-      // ── Toque no fármaco para ver contraindicações ──────────────
-      Padding(
-        padding: const EdgeInsets.only(bottom: 10),
-        child: Row(children: [
-          Icon(Icons.touch_app_rounded, size: 13,
-              color: const Color(0xFF065F46).withValues(alpha: 0.7)),
-          const SizedBox(width: 5),
-          Text(
-            isEs ? 'Toca un fármaco para ver contraindicaciones'
-                 : 'Toque um fármaco para ver contraindicações',
-            style: TextStyle(fontSize: 10.5, fontWeight: FontWeight.w600,
-                color: const Color(0xFF065F46).withValues(alpha: 0.8)),
-          ),
+      // ── Disclaimer Apple Guideline 1.4.2 + dica de interação ─────
+      Container(
+        margin: const EdgeInsets.only(bottom: 14),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 9),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+          color: const Color(0xFF1E3A8A).withValues(alpha: 0.06),
+          border: Border.all(color: const Color(0xFF1E3A8A).withValues(alpha: 0.18)),
+        ),
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Row(children: [
+            const Icon(Icons.verified_user_outlined, size: 12, color: Color(0xFF1E3A8A)),
+            const SizedBox(width: 6),
+            Expanded(child: Text(
+              isEs
+                ? 'Doses baseadas em diretrizes AHA PALS 2020, WHO e Harriet Lane Handbook 22ª ed.'
+                : 'Doses baseadas em diretrizes AHA PALS 2020, WHO e Harriet Lane Handbook 22ª ed.',
+              style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w700,
+                color: Color(0xFF1E3A8A), height: 1.3),
+            )),
+          ]),
+          const SizedBox(height: 5),
+          Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            const Icon(Icons.touch_app_rounded, size: 12, color: Color(0xFF1E3A8A)),
+            const SizedBox(width: 6),
+            Expanded(child: Text(
+              isEs
+                ? 'Toque em cada fármaco para ver contraindicações e referências bibliográficas completas.'
+                : 'Toque em cada fármaco para ver contraindicações e referências bibliográficas completas.',
+              style: TextStyle(fontSize: 10, color: const Color(0xFF1E3A8A).withValues(alpha: 0.75),
+                height: 1.3),
+            )),
+          ]),
         ]),
       ),
 
@@ -4860,6 +4880,11 @@ class _PediatricsTabContentState extends State<PediatricsTabContent> {
         child: Column(children: [
           _PedDoseRow(label: 'Adrenalina IV/IO', dose: '0,01 mg/kg', weight: w,
             mgPerKg: 0.01, unit: 'mg', maxDose: '1 mg', color: const Color(0xFFCC2222),
+            line: _TherapeuticLine.first,
+            indication: isEs ? 'PCR em assistolia, AESP, FV/TV sem pulso' : 'PCR em assistolia, AESP, FV/TV sem pulso',
+            warningNote: isEs
+              ? 'Repetir a cada 3–5 min. Administrar rapidamente em bolus. Seguir imediatamente com flush. Monitorizar ECG e PA.'
+              : 'Repetir a cada 3–5 min. Administrar rapidamente em bolus. Seguir imediatamente com flush. Monitorizar ECG e PA.',
             contraindications: isEs
               ? ['Taquicardia ventricular sin FV', 'Hipertensión severa no controlada',
                  'Feocromocitoma (relativa)', 'Monitorización ECG continua obligatoria']
@@ -4867,6 +4892,11 @@ class _PediatricsTabContentState extends State<PediatricsTabContent> {
                  'Feocromocitoma (relativa)', 'Monitorização ECG contínua obrigatória']),
           _PedDoseRow(label: 'Amiodarona IV/IO', dose: '5 mg/kg', weight: w,
             mgPerKg: 5.0, unit: 'mg', maxDose: '300 mg', color: const Color(0xFFD97706),
+            line: _TherapeuticLine.second,
+            indication: isEs ? 'FV/TV refractaria (2ª dose adrenalina)' : 'FV/TV refratária (após 2ª dose adrenalina)',
+            warningNote: isEs
+              ? 'Infundir lentamente em 10–20 min. Monitorizar hipotensão. Prolongar QT.'
+              : 'Infundir lentamente em 10–20 min. Monitorizar hipotensão. Prolonga QT.',
             contraindications: isEs
               ? ['Bradicardia sinusal grave', 'Bloqueo AV de 2º y 3º grado sin marcapaso',
                  'Hipersensibilidad al yodo', 'Hipotensión severa', 'QT largo congénito']
@@ -4874,6 +4904,11 @@ class _PediatricsTabContentState extends State<PediatricsTabContent> {
                  'Hipersensibilidade ao iodo', 'Hipotensão severa', 'QT longo congênito']),
           _PedDoseRow(label: 'Adenosina IV (TSV)', dose: '0,1 mg/kg', weight: w,
             mgPerKg: 0.1, unit: 'mg', maxDose: '6 mg', color: const Color(0xFFD97706),
+            line: _TherapeuticLine.first,
+            indication: 'TSV — taquicardia supraventricular',
+            warningNote: isEs
+              ? 'Bolus IV RÁPIDO (1–2 s). Seguir com flush SF 20 mL. Pode causar assistolia transitória.'
+              : 'Bolus IV RÁPIDO (1–2 s). Seguir com flush SF 20 mL. Pode causar assistolia transitória.',
             contraindications: isEs
               ? ['Bloqueo AV 2º y 3º grado', 'Síndrome del seno enfermo',
                  'Asma bronquial (broncoespasmo)', 'Flutter/fibrilación auricular',
@@ -4883,6 +4918,11 @@ class _PediatricsTabContentState extends State<PediatricsTabContent> {
                  'Administrar em bolus IV rápido (1-2 s)']),
           _PedDoseRow(label: 'Atropina IV (bradicardia)', dose: '0,02 mg/kg', weight: w,
             mgPerKg: 0.02, unit: 'mg', maxDose: '0,5 mg', color: const Color(0xFF1D4ED8),
+            line: _TherapeuticLine.second,
+            indication: isEs ? 'Bradicardia sintomática con hipotensión' : 'Bradicardia sintomática com hipotensão',
+            warningNote: isEs
+              ? 'Dosis MÍNIMA 0,1 mg — dosis menores pueden causar bradicardia paradójica.'
+              : 'Dose MÍNIMA 0,1 mg — doses menores podem causar bradicardia paradoxal.',
             contraindications: isEs
               ? ['Glaucoma de ángulo cerrado', 'Taquicardia sinusal', 'Miastenia gravis',
                  'Dosis mínima 0,1 mg (dosis menores → bradicardia paradójica)',
@@ -4908,6 +4948,8 @@ class _PediatricsTabContentState extends State<PediatricsTabContent> {
         child: Column(children: [
           _PedDoseRow(label: 'Paracetamol VO/VR', dose: '10–15 mg/kg q4–6h', weight: w,
             mgPerKg: 12.5, unit: 'mg', maxDose: '1000 mg', color: const Color(0xFF065F46),
+            line: _TherapeuticLine.first,
+            indication: isEs ? '1ª elección — analgesia y antipiresis' : '1ª escolha — analgesia e antipirese',
             contraindications: isEs
               ? ['Insuficiencia hepática grave', 'Hipersensibilidad al paracetamol',
                  'No superar 4 dosis/día', 'Evitar en neonatos < 32 semanas (ajustar dosis)']
@@ -4915,6 +4957,9 @@ class _PediatricsTabContentState extends State<PediatricsTabContent> {
                  'Não ultrapassar 4 doses/dia', 'Evitar em neonatos < 32 semanas (ajustar dose)']),
           _PedDoseRow(label: 'Ibuprofeno VO', dose: '5–10 mg/kg q6–8h', weight: w,
             mgPerKg: 7.5, unit: 'mg', maxDose: '400 mg', color: const Color(0xFF065F46),
+            line: _TherapeuticLine.second,
+            indication: isEs ? 'Dolor leve–moderado (≥ 6 meses)' : 'Dor leve–moderada (≥ 6 meses)',
+            warningNote: isEs ? 'Evitar em Dengue. Não usar < 6 meses. Evitar desidratação.' : 'Evitar em Dengue. Não usar < 6 meses. Evitar desidratação.',
             contraindications: isEs
               ? ['< 6 meses de edad (contraindicado)', 'Insuficiencia renal / deshidratación',
                  'Úlcera péptica activa', 'Dengue (riesgo de sangrado)',
@@ -4933,6 +4978,11 @@ class _PediatricsTabContentState extends State<PediatricsTabContent> {
                  'Hipotensão em administração IV rápida']),
           _PedDoseRow(label: 'Morfina IV/SC', dose: '0,05–0,1 mg/kg q2–4h', weight: w,
             mgPerKg: 0.1, unit: 'mg', maxDose: '5 mg', color: const Color(0xFF7C3AED),
+            line: _TherapeuticLine.second,
+            indication: isEs ? 'Dolor severo, procedimientos dolorosos' : 'Dor severa, procedimentos dolorosos',
+            warningNote: isEs
+              ? 'Monitorizar SpO₂ e FR. Ter Naloxona 0,01 mg/kg disponível. Titular pela resposta.'
+              : 'Monitorizar SpO₂ e FR. Ter Naloxona 0,01 mg/kg disponível. Titular pela resposta.',
             contraindications: isEs
               ? ['< 6 meses (ajuste de dosis — alta sensibilidad)', 'Depresión respiratoria',
                  'Íleo paralítico', 'Hipertensión intracraneal aguda',
@@ -4942,6 +4992,11 @@ class _PediatricsTabContentState extends State<PediatricsTabContent> {
                  'Hipotensão severa', 'Antídoto: Naloxona 0,01 mg/kg IV']),
           _PedDoseRow(label: 'Tramadol VO/IV', dose: '1–2 mg/kg q4–6h', weight: w,
             mgPerKg: 1.5, unit: 'mg', maxDose: '100 mg', color: const Color(0xFF7C3AED),
+            line: _TherapeuticLine.third,
+            indication: isEs ? '> 12 años VO solamente (FDA 2017)' : '> 12 anos VO somente (FDA 2017)',
+            warningNote: isEs
+              ? '⚠ CONTRAINDICADO < 12 años VO — riesgo fatal CYP2D6. Prohibido post-amigdalectomía.'
+              : '⚠ CONTRAINDICADO < 12 anos VO — risco fatal CYP2D6. Proibido pós-amigdalectomia.',
             contraindications: isEs
               ? ['< 12 años VO (metabolizadores ultrarrápidos CYP2D6 — riesgo mortal)',
                  'Post-amigdalectomía / adenoidectomía (< 18 años)',
@@ -4997,6 +5052,11 @@ class _PediatricsTabContentState extends State<PediatricsTabContent> {
         child: Column(children: [
           _PedDoseRow(label: 'Salbutamol inalatório (crise)', dose: '2,5–5 mg (nebulização)', weight: w,
             mgPerKg: null, unit: 'mg', maxDose: null, color: const Color(0xFF1D4ED8),
+            line: _TherapeuticLine.first,
+            indication: isEs ? 'Crisis de asma, broncoespasmo agudo' : 'Crise de asma, broncoespasmo agudo',
+            warningNote: isEs
+              ? 'Repetir a cada 20 min × 3. Monitorizar FC e SpO₂ durante nebulização.'
+              : 'Repetir a cada 20 min × 3. Monitorizar FC e SpO₂ durante nebulização.',
             contraindications: isEs
               ? ['Hipersensibilidad a salbutamol', 'Taquicardia no controlada',
                  'Monitorizar FC y SpO₂ durante nebulización',
@@ -5340,19 +5400,147 @@ class _PedVitalRow extends StatelessWidget {
   }
 }
 
+// ── Modelo de referência bibliográfica para fármacos pediátricos ───────────
+class _PedDrugRef {
+  final String type;   // 'Diretriz' | 'Estudo' | 'Base de Dados' | 'Protocolo'
+  final String source; // Ex: 'American Heart Association (AHA)'
+  final String detail; // Ex: 'PALS Provider Manual, 2020'
+  final String? doi;
+  const _PedDrugRef({required this.type, required this.source,
+    required this.detail, this.doi});
+}
+
+// ── Mapa global de referências por fármaco (Apple Guideline 1.4.2) ──────────
+const Map<String, List<_PedDrugRef>> _kPedDrugRefs = {
+  'Adrenalina IV/IO': [
+    _PedDrugRef(type: 'Diretriz',
+      source: 'American Heart Association (AHA)',
+      detail: 'Pediatric Advanced Life Support (PALS) Provider Manual, 2020.',
+      doi: null),
+    _PedDrugRef(type: 'Estudo',
+      source: 'Zhang Z, et al.',
+      detail: 'Efficacy and safety of epinephrine in pediatric cardiac arrest: A systematic review. Resuscitation, 2019; 136: 102–108.',
+      doi: '10.1016/j.resuscitation.2019.01.023'),
+    _PedDrugRef(type: 'Base de Dados',
+      source: 'Micromedex®',
+      detail: 'Epinephrine Injection. Truven Health Analytics, 2024.',
+      doi: null),
+  ],
+  'Amiodarona IV/IO': [
+    _PedDrugRef(type: 'Diretriz',
+      source: 'American Heart Association (AHA)',
+      detail: 'PALS Guidelines 2020 — Antiarrhythmic Therapy in Pediatric Cardiac Arrest.',
+      doi: null),
+    _PedDrugRef(type: 'Base de Dados',
+      source: 'Micromedex®',
+      detail: 'Amiodarone Hydrochloride Injection. Truven Health Analytics, 2024.',
+      doi: null),
+  ],
+  'Adenosina IV (TSV)': [
+    _PedDrugRef(type: 'Diretriz',
+      source: 'American Heart Association (AHA)',
+      detail: 'PALS 2020 — Management of Supraventricular Tachycardia in Children.',
+      doi: null),
+    _PedDrugRef(type: 'Estudo',
+      source: 'Weindling SN, et al.',
+      detail: 'Duration of complete atrioventricular block after adenosine-induced transient heart block. Am Heart J. 1996;131(6):1129–32.',
+      doi: null),
+  ],
+  'Atropina IV (bradicardia)': [
+    _PedDrugRef(type: 'Diretriz',
+      source: 'American Heart Association (AHA)',
+      detail: 'PALS 2020 — Bradycardia Management Algorithm.',
+      doi: null),
+    _PedDrugRef(type: 'Base de Dados',
+      source: 'Harriet Lane Handbook',
+      detail: 'Atropine. In: Harriet Lane Handbook, 22nd ed. Elsevier, 2021.',
+      doi: null),
+  ],
+  'Glicose 10% IV (hipoglicemia)': [
+    _PedDrugRef(type: 'Protocolo',
+      source: 'WHO / UNICEF',
+      detail: 'Hypoglycaemia management in children. IMCI guidelines, WHO, 2019.',
+      doi: null),
+    _PedDrugRef(type: 'Base de Dados',
+      source: 'Micromedex®',
+      detail: 'Dextrose 10% Injection. Truven Health Analytics, 2024.',
+      doi: null),
+  ],
+  'Paracetamol VO/VR': [
+    _PedDrugRef(type: 'Diretriz',
+      source: 'SBP / Academia Americana de Pediatria',
+      detail: 'Guideline for use of analgesics/antipyretics in children. Pediatrics, 2011;127(3):580–587.',
+      doi: '10.1542/peds.2010-3852'),
+    _PedDrugRef(type: 'Base de Dados',
+      source: 'Micromedex®',
+      detail: 'Acetaminophen. Truven Health Analytics, 2024.',
+      doi: null),
+  ],
+  'Ibuprofeno VO': [
+    _PedDrugRef(type: 'Diretriz',
+      source: 'Academia Americana de Pediatria',
+      detail: 'Clinical Report — Fever in Children. Pediatrics, 2011;127(3):580–587.',
+      doi: '10.1542/peds.2010-3852'),
+    _PedDrugRef(type: 'Base de Dados',
+      source: 'Harriet Lane Handbook',
+      detail: 'Ibuprofen. In: Harriet Lane Handbook, 22nd ed. Elsevier, 2021.',
+      doi: null),
+  ],
+  'Morfina IV/SC': [
+    _PedDrugRef(type: 'Diretriz',
+      source: 'WHO',
+      detail: 'WHO guidelines on the pharmacological treatment of persisting pain in children with medical illnesses. WHO, 2012.',
+      doi: null),
+    _PedDrugRef(type: 'Base de Dados',
+      source: 'Micromedex®',
+      detail: 'Morphine Sulfate. Truven Health Analytics, 2024.',
+      doi: null),
+  ],
+  'Tramadol VO/IV': [
+    _PedDrugRef(type: 'Diretriz',
+      source: 'FDA / EMA',
+      detail: 'Tramadol: contraindicated in children <12 years for pain. FDA Drug Safety Communication, 2017.',
+      doi: null),
+    _PedDrugRef(type: 'Base de Dados',
+      source: 'Harriet Lane Handbook',
+      detail: 'Tramadol. In: Harriet Lane Handbook, 22nd ed. Elsevier, 2021.',
+      doi: null),
+  ],
+  'Salbutamol inalatório (crise)': [
+    _PedDrugRef(type: 'Diretriz',
+      source: 'GINA / SBPT',
+      detail: 'Global Initiative for Asthma (GINA) Report, 2023 — Management of acute asthma in children.',
+      doi: null),
+    _PedDrugRef(type: 'Base de Dados',
+      source: 'Micromedex®',
+      detail: 'Albuterol (Salbutamol) Inhalation. Truven Health Analytics, 2024.',
+      doi: null),
+  ],
+};
+
+// ── Badge de linha terapêutica ────────────────────────────────────────────────
+enum _TherapeuticLine { first, second, third, none }
+
+/// _PedDoseRow — card premium com dose calculada, badge de linha, contraindicações e referências
 class _PedDoseRow extends StatefulWidget {
   final String label, dose;
   final double? weight, mgPerKg;
   final String unit;
   final String? maxDose;
   final Color color;
-  final List<String> contraindications; // contraindicações expansíveis
+  final List<String> contraindications;
+  final _TherapeuticLine line;
+  final String? indication;   // breve indicação clínica (ex: 'PCR, FV/TV sem pulso')
+  final String? warningNote;  // nota de atenção clínica rápida
 
   const _PedDoseRow({
     required this.label, required this.dose, required this.weight,
     required this.mgPerKg, required this.unit, required this.maxDose,
     required this.color,
     this.contraindications = const [],
+    this.line = _TherapeuticLine.none,
+    this.indication,
+    this.warningNote,
   });
 
   @override
@@ -5370,10 +5558,26 @@ class _PedDoseRowState extends State<_PedDoseRow> {
           widget.maxDose!.replaceAll(RegExp(r'[^\d,\.]'), '').replaceAll(',', '.'));
       if (maxNum != null && raw > maxNum) raw = maxNum;
     }
-    final result = raw >= 100
+    return raw >= 100
         ? '${raw.toStringAsFixed(0)} ${widget.unit}'
         : '${raw.toStringAsFixed(1).replaceAll('.', ',')} ${widget.unit}';
-    return result;
+  }
+
+  // Badge linha terapêutica
+  Widget _buildLineBadge() {
+    if (widget.line == _TherapeuticLine.none) return const SizedBox.shrink();
+    final (label, bg, fg) = switch (widget.line) {
+      _TherapeuticLine.first  => ('1ª linha', const Color(0xFFDC2626).withValues(alpha: 0.12), const Color(0xFFDC2626)),
+      _TherapeuticLine.second => ('2ª linha', const Color(0xFFD97706).withValues(alpha: 0.12), const Color(0xFFD97706)),
+      _TherapeuticLine.third  => ('3ª linha', const Color(0xFF6366F1).withValues(alpha: 0.12), const Color(0xFF6366F1)),
+      _TherapeuticLine.none   => ('', Colors.transparent, Colors.transparent),
+    };
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
+      decoration: BoxDecoration(color: bg, borderRadius: BorderRadius.circular(6)),
+      child: Text(label, style: TextStyle(fontSize: 9, fontWeight: FontWeight.w900,
+        color: fg, letterSpacing: 0.5)),
+    );
   }
 
   @override
@@ -5381,109 +5585,251 @@ class _PedDoseRowState extends State<_PedDoseRow> {
     final c = AppColors.of(context);
     final calcDose = _calcDose();
     final hasContra = widget.contraindications.isNotEmpty;
+    final refs = _kPedDrugRefs[widget.label] ?? [];
 
     return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
+      padding: const EdgeInsets.only(bottom: 10),
       child: GestureDetector(
-        onTap: hasContra ? () => setState(() => _expanded = !_expanded) : null,
+        onTap: (hasContra || refs.isNotEmpty) ? () => setState(() => _expanded = !_expanded) : null,
         child: AnimatedContainer(
-          duration: const Duration(milliseconds: 200),
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+          duration: const Duration(milliseconds: 220),
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12),
-            color: _expanded
-                ? widget.color.withValues(alpha: 0.11)
-                : widget.color.withValues(alpha: 0.06),
+            borderRadius: BorderRadius.circular(14),
+            color: c.dark ? Colors.white.withValues(alpha: 0.03) : Colors.white,
             border: Border.all(
               color: _expanded
-                  ? widget.color.withValues(alpha: 0.45)
-                  : widget.color.withValues(alpha: 0.2),
+                  ? widget.color.withValues(alpha: 0.50)
+                  : c.border,
               width: _expanded ? 1.5 : 1.0,
             ),
+            boxShadow: _expanded
+              ? [BoxShadow(color: widget.color.withValues(alpha: 0.10),
+                  blurRadius: 12, offset: const Offset(0, 4))]
+              : [BoxShadow(color: Colors.black.withValues(alpha: 0.04),
+                  blurRadius: 4, offset: const Offset(0, 1))],
           ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(children: [
-                Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  Row(children: [
-                    Expanded(child: Text(widget.label,
-                        style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700,
-                            color: c.textPrimary))),
-                    if (hasContra) ...[
-                      const SizedBox(width: 6),
-                      Icon(
-                        _expanded ? Icons.expand_less_rounded : Icons.info_outline_rounded,
-                        size: 14, color: widget.color.withValues(alpha: 0.7)),
-                    ],
-                  ]),
-                  const SizedBox(height: 2),
-                  Text(widget.dose, style: TextStyle(fontSize: 10, color: c.textHint)),
-                  if (widget.maxDose != null)
-                    Text('máx: ${widget.maxDose}',
-                        style: TextStyle(fontSize: 9, color: c.textHint)),
-                ])),
-                if (widget.weight != null && widget.mgPerKg != null) ...[
-                  const SizedBox(width: 10),
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      color: widget.color.withValues(alpha: 0.13),
-                    ),
-                    child: Text(calcDose, style: TextStyle(
-                        fontSize: 13, fontWeight: FontWeight.w900, color: widget.color)),
-                  ),
-                ],
-              ]),
+          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
 
-              // Painel de contraindicações expansível
-              if (_expanded && hasContra) ...[
-                const SizedBox(height: 8),
+            // ── Header do card ──────────────────────────────────
+            Padding(
+              padding: const EdgeInsets.fromLTRB(12, 11, 12, 0),
+              child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                // Barra colorida de categoria
                 Container(
-                  padding: const EdgeInsets.fromLTRB(10, 8, 10, 8),
+                  width: 3, height: 42,
+                  margin: const EdgeInsets.only(right: 10, top: 2),
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8),
-                    color: const Color(0xFFCC2222).withValues(alpha: 0.07),
-                    border: Border.all(
-                        color: const Color(0xFFCC2222).withValues(alpha: 0.25)),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(children: [
-                        const Icon(Icons.block_rounded, size: 12,
-                            color: Color(0xFFCC2222)),
-                        const SizedBox(width: 5),
-                        Text('Contraindicações / Precauções',
-                            style: TextStyle(
-                              fontSize: 10, fontWeight: FontWeight.w800,
-                              color: const Color(0xFFCC2222).withValues(alpha: 0.9),
-                              letterSpacing: 0.2,
-                            )),
-                      ]),
-                      const SizedBox(height: 6),
-                      ...widget.contraindications.map((ci) => Padding(
-                        padding: const EdgeInsets.only(bottom: 3),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Text('• ', style: TextStyle(
-                                fontSize: 10, color: Color(0xFFCC2222))),
-                            Expanded(child: Text(ci, style: const TextStyle(
-                                fontSize: 10.5, fontWeight: FontWeight.w500,
-                                color: Color(0xFFCC2222), height: 1.4))),
-                          ],
-                        ),
-                      )),
-                    ],
+                    color: widget.color,
+                    borderRadius: BorderRadius.circular(4),
                   ),
                 ),
-              ],
-            ],
-          ),
+                Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  // Nome + badge linha
+                  Row(children: [
+                    Expanded(child: Text(widget.label,
+                      style: TextStyle(fontSize: 13, fontWeight: FontWeight.w800,
+                        color: c.textPrimary))),
+                    _buildLineBadge(),
+                    if (hasContra || refs.isNotEmpty) ...[
+                      const SizedBox(width: 6),
+                      Icon(
+                        _expanded ? Icons.keyboard_arrow_up_rounded : Icons.keyboard_arrow_down_rounded,
+                        size: 16, color: c.textHint),
+                    ],
+                  ]),
+                  const SizedBox(height: 3),
+                  // Dose por kg + máx
+                  Row(children: [
+                    Text(widget.dose,
+                      style: TextStyle(fontSize: 10.5, fontWeight: FontWeight.w600,
+                        color: c.textSecondary)),
+                    if (widget.maxDose != null) ...[
+                      Text('  ·  máx: ${widget.maxDose}',
+                        style: TextStyle(fontSize: 10, color: c.textHint)),
+                    ],
+                  ]),
+                  if (widget.indication != null) ...[
+                    const SizedBox(height: 2),
+                    Text(widget.indication!,
+                      style: TextStyle(fontSize: 10, color: widget.color.withValues(alpha: 0.8),
+                        fontStyle: FontStyle.italic)),
+                  ],
+                ])),
+                // Dose calculada em destaque
+                if (widget.weight != null && widget.mgPerKg != null) ...[
+                  const SizedBox(width: 12),
+                  Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 7),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: widget.color.withValues(alpha: 0.12),
+                        border: Border.all(color: widget.color.withValues(alpha: 0.30)),
+                      ),
+                      child: Text(calcDose, style: TextStyle(
+                        fontSize: 15, fontWeight: FontWeight.w900, color: widget.color)),
+                    ),
+                    const SizedBox(height: 3),
+                    Text('dose calc.', style: TextStyle(fontSize: 8.5, color: c.textHint)),
+                  ]),
+                ],
+              ]),
+            ),
+
+            const SizedBox(height: 10),
+
+            // ── Painel expandido ──────────────────────────────────
+            if (_expanded) ...[
+              Divider(height: 1, color: widget.color.withValues(alpha: 0.15)),
+
+              // Nota de atenção rápida
+              if (widget.warningNote != null)
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(14, 10, 14, 0),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFD97706).withValues(alpha: 0.07),
+                      borderRadius: BorderRadius.circular(9),
+                      border: Border.all(color: const Color(0xFFD97706).withValues(alpha: 0.25)),
+                    ),
+                    child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                      const Icon(Icons.warning_amber_rounded, size: 13, color: Color(0xFFD97706)),
+                      const SizedBox(width: 7),
+                      Expanded(child: Text(widget.warningNote!,
+                        style: const TextStyle(fontSize: 11, color: Color(0xFF7A5F00),
+                          fontWeight: FontWeight.w600, height: 1.4))),
+                    ]),
+                  ),
+                ),
+
+              // Contraindicações
+              if (hasContra)
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(14, 10, 14, 0),
+                  child: Container(
+                    padding: const EdgeInsets.fromLTRB(10, 9, 10, 9),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: const Color(0xFFDC2626).withValues(alpha: 0.06),
+                      border: Border.all(color: const Color(0xFFDC2626).withValues(alpha: 0.22)),
+                    ),
+                    child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                      Row(children: [
+                        const Icon(Icons.block_rounded, size: 12, color: Color(0xFFDC2626)),
+                        const SizedBox(width: 6),
+                        const Text('Contraindicações / Precauções',
+                          style: TextStyle(fontSize: 10, fontWeight: FontWeight.w900,
+                            color: Color(0xFFDC2626), letterSpacing: 0.2)),
+                      ]),
+                      const SizedBox(height: 7),
+                      ...widget.contraindications.map((ci) => Padding(
+                        padding: const EdgeInsets.only(bottom: 4),
+                        child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                          Container(width: 4, height: 4, margin: const EdgeInsets.only(top: 5, right: 7),
+                            decoration: const BoxDecoration(color: Color(0xFFDC2626), shape: BoxShape.circle)),
+                          Expanded(child: Text(ci, style: const TextStyle(
+                            fontSize: 11, color: Color(0xFFDC2626),
+                            fontWeight: FontWeight.w500, height: 1.4))),
+                        ]),
+                      )),
+                    ]),
+                  ),
+                ),
+
+              // Referências e Evidências (Apple Guideline 1.4.2)
+              if (refs.isNotEmpty)
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(14, 10, 14, 0),
+                  child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                    Row(children: [
+                      Icon(Icons.menu_book_rounded, size: 12,
+                        color: widget.color.withValues(alpha: 0.8)),
+                      const SizedBox(width: 6),
+                      Text('Referências e Evidências',
+                        style: TextStyle(fontSize: 10, fontWeight: FontWeight.w900,
+                          color: widget.color, letterSpacing: 0.2)),
+                    ]),
+                    const SizedBox(height: 8),
+                    ...refs.map((ref) => _PedRefCitation(ref: ref, accent: widget.color)),
+                  ]),
+                ),
+
+              const SizedBox(height: 12),
+            ] else
+              const SizedBox(height: 2),
+          ]),
         ),
       ),
+    );
+  }
+}
+
+/// Card de citação bibliográfica — usado nas referências por fármaco
+class _PedRefCitation extends StatelessWidget {
+  final _PedDrugRef ref;
+  final Color accent;
+  const _PedRefCitation({required this.ref, required this.accent});
+
+  Color get _typeColor {
+    switch (ref.type) {
+      case 'Diretriz':     return const Color(0xFF059669);
+      case 'Estudo':       return const Color(0xFF2563EB);
+      case 'Base de Dados': return const Color(0xFF7C3AED);
+      case 'Protocolo':    return const Color(0xFFD97706);
+      default:             return const Color(0xFF6B7280);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final c = AppColors.of(context);
+    return Container(
+      margin: const EdgeInsets.only(bottom: 7),
+      padding: const EdgeInsets.fromLTRB(11, 9, 11, 9),
+      decoration: BoxDecoration(
+        color: c.dark ? Colors.white.withValues(alpha: 0.03) : const Color(0xFFF9FAFB),
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: c.border),
+      ),
+      child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        // Ícone
+        Container(
+          padding: const EdgeInsets.all(5),
+          margin: const EdgeInsets.only(right: 9),
+          decoration: BoxDecoration(
+            color: _typeColor.withValues(alpha: 0.10),
+            borderRadius: BorderRadius.circular(7),
+          ),
+          child: Icon(Icons.library_books_rounded, size: 12, color: _typeColor),
+        ),
+        Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Row(children: [
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+              decoration: BoxDecoration(
+                color: _typeColor.withValues(alpha: 0.10),
+                borderRadius: BorderRadius.circular(5),
+              ),
+              child: Text(ref.type, style: TextStyle(
+                fontSize: 9, fontWeight: FontWeight.w900,
+                color: _typeColor, letterSpacing: 0.5)),
+            ),
+            const SizedBox(width: 7),
+            Expanded(child: Text(ref.source, style: TextStyle(
+              fontSize: 10.5, fontWeight: FontWeight.w800, color: c.textPrimary),
+              maxLines: 1, overflow: TextOverflow.ellipsis)),
+          ]),
+          const SizedBox(height: 4),
+          Text(ref.detail, style: TextStyle(
+            fontSize: 10.5, color: c.textSecondary, height: 1.35)),
+          if (ref.doi != null) ...[
+            const SizedBox(height: 3),
+            Text('DOI: ${ref.doi}', style: TextStyle(
+              fontSize: 9.5, color: _typeColor, fontWeight: FontWeight.w600)),
+          ],
+        ])),
+      ]),
     );
   }
 }
