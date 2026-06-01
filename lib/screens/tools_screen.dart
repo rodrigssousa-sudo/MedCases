@@ -5997,7 +5997,7 @@ const _kPedLabCategories = <_PedLabCategory>[
   ),
 ];
 
-// ── Widget principal — Referência Pediátrica Premium ─────────────────────────
+// ── Widget principal — Referência Pediátrica Premium v2 ──────────────────────
 class _PedRefPremiumView extends StatefulWidget {
   final bool isEs;
   final AppColors c;
@@ -6012,10 +6012,17 @@ class _PedRefPremiumViewState extends State<_PedRefPremiumView> {
   int _ageFilter = -1;
   String _search = '';
   bool _refsExpanded = false;
+  final TextEditingController _searchCtrl = TextEditingController();
 
   static const _ageLabels = ['Neonato', 'Lactente', 'Criança', 'Adolescente'];
   static const _ageIcons  = ['👶', '🍼', '🧒', '🧑'];
-  static const _ageDescs  = ['0 – 28 dias', '1 m – 2 anos', '2 – 12 anos', '12 – 18 anos'];
+  static const _ageDescs  = ['0–28 dias', '1m–2 anos', '2–12 anos', '12–18 anos'];
+
+  @override
+  void dispose() {
+    _searchCtrl.dispose();
+    super.dispose();
+  }
 
   List<_PedLabCategory> get _filtered {
     final q = _search.toLowerCase().trim();
@@ -6042,316 +6049,504 @@ class _PedRefPremiumViewState extends State<_PedRefPremiumView> {
 
   @override
   Widget build(BuildContext context) {
-    final c = AppColors.of(context);
+    final c    = AppColors.of(context);
     final dark = c.dark;
     final cats = _filtered;
 
-    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+    return LayoutBuilder(builder: (ctx, constraints) {
+      // Use 2-column layout on wide screens (>= 820px)
+      final wide = constraints.maxWidth >= 820;
 
-      // ═══════════════════════════════════════════════════════════════
-      // 1. HEADER PREMIUM — gradiente verde escuro
-      // ═══════════════════════════════════════════════════════════════
-      Container(
-        width: double.infinity,
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft, end: Alignment.bottomRight,
-            colors: [Color(0xFF0B2E26), Color(0xFF0D3B2E), Color(0xFF0F7A5A)],
-          ),
+      return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+
+        // ═══════════════════════════════════════════════════════════════
+        // 1. HEADER PREMIUM — gradiente verde escuro com elementos Apple HIG
+        // ═══════════════════════════════════════════════════════════════
+        _buildPremiumHeader(dark),
+
+        // ═══════════════════════════════════════════════════════════════
+        // 2. EVIDENCE CARD — painel horizontal premium com meta-dados
+        // ═══════════════════════════════════════════════════════════════
+        _buildEvidenceCard(c, dark),
+
+        // ═══════════════════════════════════════════════════════════════
+        // 3. FILTROS DE IDADE + BUSCA
+        // ═══════════════════════════════════════════════════════════════
+        _buildFiltersBar(c),
+
+        // ═══════════════════════════════════════════════════════════════
+        // 4. BODY — 2 colunas (wide) ou 1 coluna (narrow)
+        // ═══════════════════════════════════════════════════════════════
+        wide
+            ? _buildWideBody(cats, c, dark)
+            : _buildNarrowBody(cats, c, dark),
+
+        // ═══════════════════════════════════════════════════════════════
+        // 5. RODAPÉ — aviso regulatório Apple 1.4.1
+        // ═══════════════════════════════════════════════════════════════
+        _buildRegulatoryFooter(c, dark),
+      ]);
+    });
+  }
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // HEADER
+  // ─────────────────────────────────────────────────────────────────────────
+  Widget _buildPremiumHeader(bool dark) {
+    return Container(
+      width: double.infinity,
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft, end: Alignment.bottomRight,
+          colors: [Color(0xFF0B2E26), Color(0xFF0C3830), Color(0xFF0F7A5A)],
+          stops: [0.0, 0.45, 1.0],
         ),
-        padding: const EdgeInsets.fromLTRB(16, 16, 16, 14),
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-
-          // Logo + título
-          Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Container(
-              width: 44, height: 44,
-              decoration: BoxDecoration(
-                color: Colors.white.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: Colors.white.withValues(alpha: 0.15)),
-              ),
-              child: const Center(
-                child: Icon(Icons.child_care_rounded, size: 24, color: Color(0xFFC8A86B)),
-              ),
-            ),
-            const SizedBox(width: 12),
-            Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                decoration: BoxDecoration(
-                  color: const Color(0xFFC8A86B).withValues(alpha: 0.18),
-                  borderRadius: BorderRadius.circular(6),
-                  border: Border.all(color: const Color(0xFFC8A86B).withValues(alpha: 0.35)),
-                ),
-                child: const Text('MEDCASES PRO',
-                  style: TextStyle(fontSize: 8, fontWeight: FontWeight.w900,
-                    color: Color(0xFFC8A86B), letterSpacing: 1.4)),
-              ),
-              const SizedBox(height: 5),
-              const Text('Referência Pediátrica',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900,
-                  color: Colors.white, letterSpacing: -0.4, height: 1.1)),
-              const SizedBox(height: 3),
-              Text(
-                'Valores laboratoriais pediátricos baseados em evidências',
-                style: TextStyle(fontSize: 11,
-                  color: Colors.white.withValues(alpha: 0.65),
-                  fontWeight: FontWeight.w500),
-              ),
-            ])),
-          ]),
-
-          const SizedBox(height: 12),
-
-          // Badges de validação
-          Wrap(spacing: 6, runSpacing: 6, children: [
-            _PedBadge(icon: Icons.verified_rounded, label: 'Revisado por Comitê Médico',
-              color: const Color(0xFF34D399)),
-            _PedBadge(icon: Icons.update_rounded, label: 'Atualizado Maio 2026',
-              color: Colors.white.withValues(alpha: 0.75)),
-            _PedBadge(icon: Icons.menu_book_rounded, label: 'Nelson Pediatrics 2025',
-              color: const Color(0xFFC8A86B)),
-            _PedBadge(icon: Icons.health_and_safety_outlined, label: 'AAP',
-              color: Colors.white.withValues(alpha: 0.75)),
-            _PedBadge(icon: Icons.public_rounded, label: 'WHO',
-              color: Colors.white.withValues(alpha: 0.75)),
-          ]),
-        ]),
       ),
-
-      // ═══════════════════════════════════════════════════════════════
-      // 2. CARD DE EVIDÊNCIA — painel horizontal premium
-      // ═══════════════════════════════════════════════════════════════
-      Container(
-        margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-        padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
-        decoration: BoxDecoration(
-          color: const Color(0xFF0B2E26).withValues(alpha: 0.06),
-          border: Border(
-            bottom: BorderSide(color: c.border),
+      padding: const EdgeInsets.fromLTRB(20, 20, 20, 18),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          // Logo icon
+          Container(
+            width: 52, height: 52,
+            decoration: BoxDecoration(
+              gradient: const LinearGradient(
+                begin: Alignment.topLeft, end: Alignment.bottomRight,
+                colors: [Color(0xFF1A4A3A), Color(0xFF0F3028)],
+              ),
+              borderRadius: BorderRadius.circular(14),
+              border: Border.all(color: Colors.white.withValues(alpha: 0.12)),
+              boxShadow: [
+                BoxShadow(color: Colors.black.withValues(alpha: 0.25),
+                    blurRadius: 12, offset: const Offset(0, 4)),
+              ],
+            ),
+            child: const Center(
+              child: Icon(Icons.child_care_rounded, size: 26,
+                  color: Color(0xFFC8A86B)),
+            ),
           ),
+          const SizedBox(width: 14),
+          Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+            // Produto badge
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+              decoration: BoxDecoration(
+                color: const Color(0xFFC8A86B).withValues(alpha: 0.16),
+                borderRadius: BorderRadius.circular(6),
+                border: Border.all(
+                    color: const Color(0xFFC8A86B).withValues(alpha: 0.3)),
+              ),
+              child: const Text('MEDCASES PRO · PEDIATRIA',
+                style: TextStyle(fontSize: 8, fontWeight: FontWeight.w900,
+                  color: Color(0xFFC8A86B), letterSpacing: 1.6)),
+            ),
+            const SizedBox(height: 6),
+            const Text('Referência Pediátrica',
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.w900,
+                color: Colors.white, letterSpacing: -0.6, height: 1.05)),
+            const SizedBox(height: 5),
+            Text(
+              'Valores laboratoriais pediátricos baseados em evidências',
+              style: TextStyle(fontSize: 12,
+                color: Colors.white.withValues(alpha: 0.62),
+                fontWeight: FontWeight.w400, height: 1.4),
+            ),
+          ])),
+        ]),
+
+        const SizedBox(height: 16),
+
+        // Divisor sutil
+        Container(height: 1,
+            color: Colors.white.withValues(alpha: 0.08)),
+        const SizedBox(height: 14),
+
+        // Badges de validação em linha
+        Wrap(spacing: 6, runSpacing: 6, children: [
+          _PedBadge(icon: Icons.verified_rounded,
+            label: 'Revisado por Comitê Médico',
+            color: const Color(0xFF34D399)),
+          _PedBadge(icon: Icons.update_rounded,
+            label: 'Atualizado Maio 2026',
+            color: Colors.white.withValues(alpha: 0.72)),
+          _PedBadge(icon: Icons.menu_book_rounded,
+            label: 'Nelson Pediatrics 2025',
+            color: const Color(0xFFC8A86B)),
+          _PedBadge(icon: Icons.health_and_safety_outlined,
+            label: 'AAP',
+            color: Colors.white.withValues(alpha: 0.72)),
+          _PedBadge(icon: Icons.public_rounded,
+            label: 'WHO',
+            color: Colors.white.withValues(alpha: 0.72)),
+        ]),
+      ]),
+    );
+  }
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // EVIDENCE CARD
+  // ─────────────────────────────────────────────────────────────────────────
+  Widget _buildEvidenceCard(AppColors c, bool dark) {
+    return Container(
+      padding: const EdgeInsets.fromLTRB(20, 16, 20, 14),
+      decoration: BoxDecoration(
+        color: dark
+            ? const Color(0xFF0D1F1A)
+            : const Color(0xFFF1FAF6),
+        border: Border(
+          top: BorderSide(color: const Color(0xFF0F7A5A).withValues(alpha: 0.18)),
+          bottom: BorderSide(color: c.border),
         ),
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          // Metadados horizontais
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Row(children: [
-              _EvidMeta(label: 'Fonte Principal', value: 'Nelson Textbook of Pediatrics',
-                color: const Color(0xFF0F7A5A), c: c),
-              _EvidSep(c: c),
-              _EvidMeta(label: 'Nível de Evidência', value: 'Alta',
-                color: const Color(0xFF059669), c: c),
-              _EvidSep(c: c),
-              _EvidMeta(label: 'Última Revisão', value: 'Maio 2026',
-                color: const Color(0xFFC8A86B), c: c),
-              _EvidSep(c: c),
-              _EvidMeta(label: 'Validação', value: 'AAP + WHO',
-                color: const Color(0xFF0EA5E9), c: c),
+      ),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        // Título seção
+        Row(children: [
+          Container(width: 3, height: 16,
+            decoration: BoxDecoration(
+              color: const Color(0xFF0F7A5A),
+              borderRadius: BorderRadius.circular(4))),
+          const SizedBox(width: 8),
+          Text('BASE DE EVIDÊNCIAS',
+            style: TextStyle(fontSize: 9, fontWeight: FontWeight.w900,
+              letterSpacing: 1.4,
+              color: dark ? const Color(0xFF34D399) : const Color(0xFF0F7A5A))),
+        ]),
+        const SizedBox(height: 12),
+
+        // Metadados horizontais
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(children: [
+            _EvidMeta(label: 'Fonte Principal',
+              value: 'Nelson Textbook of Pediatrics',
+              color: const Color(0xFF0F7A5A), c: c),
+            _EvidSep(c: c),
+            _EvidMeta(label: 'Nível de Evidência',
+              value: 'Alta',
+              color: const Color(0xFF059669), c: c),
+            _EvidSep(c: c),
+            _EvidMeta(label: 'Última Revisão',
+              value: 'Maio 2026',
+              color: const Color(0xFFC8A86B), c: c),
+            _EvidSep(c: c),
+            _EvidMeta(label: 'Validação',
+              value: 'AAP + WHO',
+              color: const Color(0xFF0EA5E9), c: c),
+          ]),
+        ),
+        const SizedBox(height: 12),
+
+        // Botão toggle referências
+        GestureDetector(
+          onTap: () => setState(() => _refsExpanded = !_refsExpanded),
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 9),
+            decoration: BoxDecoration(
+              color: const Color(0xFF0F7A5A).withValues(alpha: 0.09),
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(
+                  color: const Color(0xFF0F7A5A).withValues(alpha: 0.22)),
+            ),
+            child: Row(mainAxisSize: MainAxisSize.min, children: [
+              const Icon(Icons.library_books_outlined, size: 14,
+                color: Color(0xFF0F7A5A)),
+              const SizedBox(width: 7),
+              const Text('Ver Referências Científicas',
+                style: TextStyle(fontSize: 12, fontWeight: FontWeight.w800,
+                  color: Color(0xFF0F7A5A))),
+              const SizedBox(width: 6),
+              AnimatedRotation(
+                turns: _refsExpanded ? 0.5 : 0.0,
+                duration: const Duration(milliseconds: 220),
+                child: const Icon(Icons.keyboard_arrow_down_rounded,
+                  size: 15, color: Color(0xFF0F7A5A)),
+              ),
             ]),
           ),
-          const SizedBox(height: 10),
-          // Botão ver referências
-          GestureDetector(
-            onTap: () => setState(() => _refsExpanded = !_refsExpanded),
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
-              decoration: BoxDecoration(
-                color: const Color(0xFF0F7A5A).withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: const Color(0xFF0F7A5A).withValues(alpha: 0.25)),
-              ),
-              child: Row(mainAxisSize: MainAxisSize.min, children: [
-                const Icon(Icons.library_books_outlined, size: 12,
-                  color: Color(0xFF0F7A5A)),
-                const SizedBox(width: 6),
-                const Text('Ver Referências Científicas',
-                  style: TextStyle(fontSize: 11, fontWeight: FontWeight.w800,
-                    color: Color(0xFF0F7A5A))),
-                const SizedBox(width: 4),
-                AnimatedRotation(
-                  turns: _refsExpanded ? 0.5 : 0.0,
-                  duration: const Duration(milliseconds: 200),
-                  child: const Icon(Icons.keyboard_arrow_down_rounded,
-                    size: 14, color: Color(0xFF0F7A5A)),
-                ),
-              ]),
-            ),
-          ),
-          // Painel de referências expansível
-          AnimatedCrossFade(
-            duration: const Duration(milliseconds: 220),
-            crossFadeState: _refsExpanded
-                ? CrossFadeState.showFirst
-                : CrossFadeState.showSecond,
-            firstChild: _PedRefSidePanel(c: c, dark: dark),
-            secondChild: const SizedBox(width: double.infinity, height: 0),
-          ),
-        ]),
-      ),
-
-      // ═══════════════════════════════════════════════════════════════
-      // 3. FILTROS DE IDADE + BUSCA
-      // ═══════════════════════════════════════════════════════════════
-      Container(
-        padding: const EdgeInsets.fromLTRB(16, 12, 16, 10),
-        decoration: BoxDecoration(
-          color: c.cardBg,
-          border: Border(bottom: BorderSide(color: c.border)),
         ),
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
 
-          // Filtros de idade
-          Text('FAIXA ETÁRIA',
+        // Painel expansível
+        AnimatedCrossFade(
+          duration: const Duration(milliseconds: 260),
+          crossFadeState: _refsExpanded
+              ? CrossFadeState.showFirst
+              : CrossFadeState.showSecond,
+          firstChild: _PedRefSidePanel(c: c, dark: dark),
+          secondChild: const SizedBox(width: double.infinity, height: 0),
+        ),
+      ]),
+    );
+  }
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // FILTERS BAR
+  // ─────────────────────────────────────────────────────────────────────────
+  Widget _buildFiltersBar(AppColors c) {
+    return Container(
+      padding: const EdgeInsets.fromLTRB(20, 14, 20, 12),
+      decoration: BoxDecoration(
+        color: c.cardBg,
+        border: Border(bottom: BorderSide(color: c.border)),
+      ),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        // Label
+        Row(children: [
+          Icon(Icons.filter_list_rounded, size: 12, color: c.textHint),
+          const SizedBox(width: 6),
+          Text('FILTRAR POR FAIXA ETÁRIA',
             style: TextStyle(fontSize: 8.5, fontWeight: FontWeight.w900,
               letterSpacing: 1.4, color: c.textHint)),
-          const SizedBox(height: 8),
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Row(children: [
-              // Botão "Todas"
-              Padding(
-                padding: const EdgeInsets.only(right: 6),
-                child: _AgeFilterBtn(
-                  emoji: '📋',
-                  label: 'Todas',
-                  desc: 'Comparativo',
-                  active: _ageFilter == -1,
-                  color: const Color(0xFF0F7A5A),
-                  onTap: () => setState(() => _ageFilter = -1),
-                ),
-              ),
-              ...List.generate(4, (i) => Padding(
-                padding: const EdgeInsets.only(right: 6),
-                child: _AgeFilterBtn(
-                  emoji: _ageIcons[i],
-                  label: _ageLabels[i],
-                  desc: _ageDescs[i],
-                  active: _ageFilter == i,
-                  color: _ageColor(i),
-                  onTap: () => setState(() => _ageFilter = i),
-                ),
-              )),
-            ]),
-          ),
-
-          const SizedBox(height: 10),
-
-          // Campo de busca
-          Container(
-            decoration: BoxDecoration(
-              color: c.inputBg,
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: c.border),
-            ),
-            child: Row(children: [
-              Padding(
-                padding: const EdgeInsets.only(left: 12),
-                child: Icon(Icons.search_rounded, size: 18, color: c.textHint),
-              ),
-              const SizedBox(width: 8),
-              Expanded(
-                child: TextField(
-                  onChanged: (v) => setState(() => _search = v),
-                  style: TextStyle(fontSize: 14, color: c.textPrimary, fontWeight: FontWeight.w600),
-                  decoration: InputDecoration(
-                    hintText: 'Hemoglobina, Sódio, Potássio...',
-                    hintStyle: TextStyle(color: c.textHint, fontWeight: FontWeight.w400, fontSize: 13),
-                    border: InputBorder.none,
-                    contentPadding: const EdgeInsets.symmetric(vertical: 12),
-                    isDense: true,
-                  ),
-                ),
-              ),
-              if (_search.isNotEmpty)
-                GestureDetector(
-                  onTap: () => setState(() => _search = ''),
-                  child: Padding(
-                    padding: const EdgeInsets.only(right: 10),
-                    child: Icon(Icons.close_rounded, size: 16, color: c.textHint),
-                  ),
-                ),
-            ]),
-          ),
         ]),
-      ),
+        const SizedBox(height: 10),
 
-      // ═══════════════════════════════════════════════════════════════
-      // 4. CARDS CLÍNICOS — por categoria
-      // ═══════════════════════════════════════════════════════════════
-      Padding(
-        padding: const EdgeInsets.fromLTRB(16, 14, 16, 0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: cats.map((cat) => Padding(
-            padding: const EdgeInsets.only(bottom: 14),
-            child: _PedLabCategoryCard(
-              category: cat,
-              ageFilter: _ageFilter,
-              dark: dark,
-              c: c,
+        // Botões de idade
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(children: [
+            Padding(
+              padding: const EdgeInsets.only(right: 8),
+              child: _AgeFilterBtn(
+                emoji: '📋', label: 'Todas', desc: 'Comparativo',
+                active: _ageFilter == -1,
+                color: const Color(0xFF0F7A5A),
+                onTap: () => setState(() => _ageFilter = -1),
+              ),
             ),
-          )).toList(),
-        ),
-      ),
-
-      // ═══════════════════════════════════════════════════════════════
-      // 5. RODAPÉ — aviso regulatório Apple HIG / 1.4.1
-      // ═══════════════════════════════════════════════════════════════
-      Container(
-        margin: const EdgeInsets.fromLTRB(16, 8, 16, 20),
-        padding: const EdgeInsets.all(14),
-        decoration: BoxDecoration(
-          color: dark ? const Color(0xFF1A1510) : const Color(0xFFFFF8F0),
-          borderRadius: BorderRadius.circular(14),
-          border: Border.all(
-            color: dark ? const Color(0xFF4A3820) : const Color(0xFFE8D8A0)),
-        ),
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          const Row(children: [
-            Icon(Icons.gavel_rounded, size: 12, color: Color(0xFFC8A86B)),
-            SizedBox(width: 6),
-            Text('AVISO REGULATÓRIO',
-              style: TextStyle(fontSize: 8.5, fontWeight: FontWeight.w900,
-                letterSpacing: 1.2, color: Color(0xFFC8A86B))),
+            ...List.generate(4, (i) => Padding(
+              padding: const EdgeInsets.only(right: 8),
+              child: _AgeFilterBtn(
+                emoji: _ageIcons[i],
+                label: _ageLabels[i],
+                desc: _ageDescs[i],
+                active: _ageFilter == i,
+                color: _ageColor(i),
+                onTap: () => setState(() => _ageFilter = i),
+              ),
+            )),
           ]),
-          const SizedBox(height: 8),
-          Text(
-            'Esta ferramenta tem finalidade educacional e de apoio clínico. '
-            'Os valores laboratoriais podem variar conforme idade, sexo, método laboratorial '
-            'e protocolos institucionais. A interpretação clínica é de responsabilidade '
-            'exclusiva do profissional assistente.',
-            style: TextStyle(fontSize: 11, color: c.textSecondary, height: 1.55,
-              fontWeight: FontWeight.w500),
+        ),
+
+        const SizedBox(height: 12),
+
+        // Campo de busca premium
+        Container(
+          decoration: BoxDecoration(
+            color: c.inputBg,
+            borderRadius: BorderRadius.circular(13),
+            border: Border.all(color: c.border),
+            boxShadow: [
+              BoxShadow(color: Colors.black.withValues(alpha: 0.03),
+                  blurRadius: 6, offset: const Offset(0, 2)),
+            ],
           ),
-          const SizedBox(height: 8),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-            decoration: BoxDecoration(
-              color: const Color(0xFFC8A86B).withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(6),
+          child: Row(children: [
+            Padding(
+              padding: const EdgeInsets.only(left: 14),
+              child: Icon(Icons.search_rounded, size: 18, color: c.textHint),
             ),
-            child: const Row(children: [
-              Icon(Icons.verified_user_outlined, size: 10, color: Color(0xFFC8A86B)),
-              SizedBox(width: 5),
-              Expanded(child: Text(
-                'Baseado em: Nelson Textbook of Pediatrics 2025 · AAP Guidelines · WHO Pediatric Standards · PALS 2020',
-                style: TextStyle(fontSize: 9, fontWeight: FontWeight.w600,
-                  color: Color(0xFFC8A86B)),
+            const SizedBox(width: 8),
+            Expanded(
+              child: TextField(
+                controller: _searchCtrl,
+                onChanged: (v) => setState(() => _search = v),
+                style: TextStyle(fontSize: 14, color: c.textPrimary,
+                    fontWeight: FontWeight.w600),
+                decoration: InputDecoration(
+                  hintText: 'Hemoglobina, Sódio, Potássio...',
+                  hintStyle: TextStyle(color: c.textHint,
+                      fontWeight: FontWeight.w400, fontSize: 13),
+                  border: InputBorder.none,
+                  contentPadding: const EdgeInsets.symmetric(vertical: 13),
+                  isDense: true,
+                ),
+              ),
+            ),
+            if (_search.isNotEmpty)
+              GestureDetector(
+                onTap: () {
+                  _searchCtrl.clear();
+                  setState(() => _search = '');
+                },
+                child: Padding(
+                  padding: const EdgeInsets.only(right: 12),
+                  child: Icon(Icons.close_rounded, size: 16, color: c.textHint),
+                ),
+              ),
+          ]),
+        ),
+      ]),
+    );
+  }
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // BODY — 2 COLUNAS (desktop)
+  // ─────────────────────────────────────────────────────────────────────────
+  Widget _buildWideBody(List<_PedLabCategory> cats, AppColors c, bool dark) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+      child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        // Coluna principal — cards clínicos
+        Expanded(
+          flex: 5,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Título seção
+              Padding(
+                padding: const EdgeInsets.only(bottom: 12),
+                child: Row(children: [
+                  Container(width: 3, height: 16,
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF0F7A5A),
+                      borderRadius: BorderRadius.circular(4))),
+                  const SizedBox(width: 8),
+                  Text('PARÂMETROS LABORATORIAIS',
+                    style: TextStyle(fontSize: 9, fontWeight: FontWeight.w900,
+                      letterSpacing: 1.4, color: c.textHint)),
+                  const Spacer(),
+                  if (cats.isNotEmpty)
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 9, vertical: 3),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF0F7A5A).withValues(alpha: 0.1),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Text(
+                        '${cats.fold(0, (s, c) => s + c.params.length)} parâmetros',
+                        style: const TextStyle(fontSize: 9,
+                          fontWeight: FontWeight.w700,
+                          color: Color(0xFF0F7A5A))),
+                    ),
+                ]),
+              ),
+              ...cats.map((cat) => Padding(
+                padding: const EdgeInsets.only(bottom: 16),
+                child: _PedLabCategoryCard(
+                  category: cat,
+                  ageFilter: _ageFilter,
+                  dark: dark, c: c,
+                ),
               )),
-            ]),
+            ],
           ),
-        ]),
+        ),
+        const SizedBox(width: 20),
+        // Sidebar fixa — referências científicas
+        SizedBox(
+          width: 260,
+          child: _PedRefSidebarFixed(c: c, dark: dark),
+        ),
+      ]),
+    );
+  }
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // BODY — 1 COLUNA (mobile / narrow)
+  // ─────────────────────────────────────────────────────────────────────────
+  Widget _buildNarrowBody(List<_PedLabCategory> cats, AppColors c, bool dark) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: cats.map((cat) => Padding(
+          padding: const EdgeInsets.only(bottom: 14),
+          child: _PedLabCategoryCard(
+            category: cat,
+            ageFilter: _ageFilter,
+            dark: dark, c: c,
+          ),
+        )).toList(),
       ),
-    ]);
+    );
+  }
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // REGULATORY FOOTER
+  // ─────────────────────────────────────────────────────────────────────────
+  Widget _buildRegulatoryFooter(AppColors c, bool dark) {
+    return Container(
+      margin: const EdgeInsets.fromLTRB(20, 16, 20, 24),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: dark ? const Color(0xFF1A1510) : const Color(0xFFFFF9F0),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: dark
+              ? const Color(0xFF4A3820)
+              : const Color(0xFFE8D5A0)),
+        boxShadow: dark
+            ? []
+            : [BoxShadow(color: const Color(0xFFC8A86B).withValues(alpha: 0.06),
+                blurRadius: 12, offset: const Offset(0, 2))],
+      ),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Row(children: [
+          Container(
+            width: 28, height: 28,
+            decoration: BoxDecoration(
+              color: const Color(0xFFC8A86B).withValues(alpha: 0.14),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: const Center(
+              child: Icon(Icons.gavel_rounded, size: 13,
+                  color: Color(0xFFC8A86B)),
+            ),
+          ),
+          const SizedBox(width: 10),
+          Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            const Text('AVISO REGULATÓRIO',
+              style: TextStyle(fontSize: 9, fontWeight: FontWeight.w900,
+                letterSpacing: 1.2, color: Color(0xFFC8A86B))),
+            Text('Apple App Store Guidelines 1.4.1',
+              style: TextStyle(fontSize: 8.5, fontWeight: FontWeight.w500,
+                color: const Color(0xFFC8A86B).withValues(alpha: 0.65))),
+          ]),
+        ]),
+        const SizedBox(height: 10),
+        Container(height: 1,
+          color: const Color(0xFFC8A86B).withValues(alpha: 0.15)),
+        const SizedBox(height: 10),
+        Text(
+          '⚠️  Esta ferramenta tem finalidade educacional e de apoio clínico. '
+          'Os valores laboratoriais podem variar conforme idade, sexo, método '
+          'laboratorial e protocolos institucionais. A interpretação clínica é '
+          'de responsabilidade exclusiva do profissional assistente.',
+          style: TextStyle(fontSize: 11, color: c.textSecondary,
+              height: 1.6, fontWeight: FontWeight.w500),
+        ),
+        const SizedBox(height: 10),
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
+          decoration: BoxDecoration(
+            color: const Color(0xFFC8A86B).withValues(alpha: 0.08),
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(
+                color: const Color(0xFFC8A86B).withValues(alpha: 0.18)),
+          ),
+          child: const Row(children: [
+            Icon(Icons.verified_user_outlined, size: 11,
+                color: Color(0xFFC8A86B)),
+            SizedBox(width: 7),
+            Expanded(child: Text(
+              'Fontes: Nelson Textbook of Pediatrics 2025 · AAP Guidelines · '
+              'WHO Pediatric Standards · PALS 2020 · Harriet Lane 22ª ed.',
+              style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w600,
+                color: Color(0xFFC8A86B), height: 1.4),
+            )),
+          ]),
+        ),
+      ]),
+    );
   }
 
   Color _ageColor(int i) {
     switch (i) {
-      case 0: return const Color(0xFF8B5CF6); // neonato — roxo
-      case 1: return const Color(0xFF0EA5E9); // lactente — azul
-      case 2: return const Color(0xFF059669); // criança — verde
-      case 3: return const Color(0xFFF59E0B); // adolescente — âmbar
+      case 0: return const Color(0xFF8B5CF6);
+      case 1: return const Color(0xFF0EA5E9);
+      case 2: return const Color(0xFF059669);
+      case 3: return const Color(0xFFF59E0B);
       default: return const Color(0xFF0F7A5A);
     }
   }
@@ -6362,28 +6557,30 @@ class _PedBadge extends StatelessWidget {
   final IconData icon;
   final String label;
   final Color color;
-  const _PedBadge({required this.icon, required this.label, required this.color});
+  const _PedBadge({required this.icon, required this.label,
+      required this.color});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 4),
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.12),
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: color.withValues(alpha: 0.3)),
+        border: Border.all(color: color.withValues(alpha: 0.28)),
       ),
       child: Row(mainAxisSize: MainAxisSize.min, children: [
         Icon(icon, size: 9, color: color),
-        const SizedBox(width: 4),
+        const SizedBox(width: 5),
         Text(label,
-          style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w700, color: color)),
+          style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w700,
+              color: color)),
       ]),
     );
   }
 }
 
-// ── Chip de meta-dado de evidência ────────────────────────────────────────────
+// ── Meta-dado de evidência ────────────────────────────────────────────────────
 class _EvidMeta extends StatelessWidget {
   final String label, value;
   final Color color;
@@ -6397,16 +6594,17 @@ class _EvidMeta extends StatelessWidget {
       Text(label.toUpperCase(),
         style: TextStyle(fontSize: 7.5, fontWeight: FontWeight.w800,
           letterSpacing: 0.7, color: c.textHint)),
-      const SizedBox(height: 3),
+      const SizedBox(height: 4),
       Container(
-        padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 4),
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
         decoration: BoxDecoration(
           color: color.withValues(alpha: 0.1),
-          borderRadius: BorderRadius.circular(6),
+          borderRadius: BorderRadius.circular(7),
           border: Border.all(color: color.withValues(alpha: 0.25)),
         ),
         child: Text(value,
-          style: TextStyle(fontSize: 10.5, fontWeight: FontWeight.w800, color: color)),
+          style: TextStyle(fontSize: 11, fontWeight: FontWeight.w800,
+              color: color)),
       ),
     ]);
   }
@@ -6417,8 +6615,8 @@ class _EvidSep extends StatelessWidget {
   const _EvidSep({required this.c});
   @override
   Widget build(BuildContext context) => Container(
-    width: 1, height: 36,
-    margin: const EdgeInsets.symmetric(horizontal: 12),
+    width: 1, height: 40,
+    margin: const EdgeInsets.symmetric(horizontal: 14),
     color: c.border,
   );
 }
@@ -6441,61 +6639,377 @@ class _AgeFilterBtn extends StatelessWidget {
       onTap: () { HapticFeedback.selectionClick(); onTap(); },
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 180),
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 9),
         decoration: BoxDecoration(
-          color: active ? color.withValues(alpha: 0.12) : c.surface,
-          borderRadius: BorderRadius.circular(12),
+          color: active ? color.withValues(alpha: 0.11) : c.surface,
+          borderRadius: BorderRadius.circular(13),
           border: Border.all(
-            color: active ? color.withValues(alpha: 0.45) : c.border,
+            color: active ? color.withValues(alpha: 0.5) : c.border,
             width: active ? 1.5 : 1,
           ),
+          boxShadow: active
+              ? [BoxShadow(color: color.withValues(alpha: 0.12),
+                  blurRadius: 6, offset: const Offset(0, 2))]
+              : [],
         ),
         child: Column(children: [
-          Text(emoji, style: const TextStyle(fontSize: 18)),
-          const SizedBox(height: 3),
+          Text(emoji, style: const TextStyle(fontSize: 20)),
+          const SizedBox(height: 4),
           Text(label,
-            style: TextStyle(fontSize: 10, fontWeight: FontWeight.w800,
+            style: TextStyle(fontSize: 10.5, fontWeight: FontWeight.w800,
               color: active ? color : c.textPrimary)),
           Text(desc,
-            style: TextStyle(fontSize: 8, fontWeight: FontWeight.w500, color: c.textHint)),
+            style: TextStyle(fontSize: 8, fontWeight: FontWeight.w500,
+                color: c.textHint)),
         ]),
       ),
     );
   }
 }
 
-// ── Painel lateral de referências (colapsível) ────────────────────────────────
+// ── Sidebar fixa desktop — referências científicas ────────────────────────────
+class _PedRefSidebarFixed extends StatelessWidget {
+  final AppColors c;
+  final bool dark;
+  const _PedRefSidebarFixed({required this.c, required this.dark});
+
+  static const _refs = [
+    {
+      'num': '1',
+      'title': 'Nelson Textbook of Pediatrics',
+      'sub': 'Kliegman et al. · 21st ed. · 2025',
+      'type': 'Livro-Texto',
+      'url': 'https://www.elsevier.com/books/nelson-textbook-of-pediatrics/kliegman/978-0-323-88373-4',
+    },
+    {
+      'num': '2',
+      'title': 'AAP Clinical Practice Guidelines',
+      'sub': 'American Academy of Pediatrics · 2024',
+      'type': 'Diretriz',
+      'url': 'https://www.aap.org/en/clinical-guidelines',
+    },
+    {
+      'num': '3',
+      'title': 'WHO Pediatric Laboratory Standards',
+      'sub': 'World Health Organization · 2024',
+      'type': 'Protocolo',
+      'url': 'https://www.who.int/initiatives/who-reference-standards-for-paediatric-medicines',
+    },
+    {
+      'num': '4',
+      'title': 'UpToDate Pediatrics',
+      'sub': 'Wolters Kluwer · 2024',
+      'type': 'Base de Dados',
+      'url': 'https://www.uptodate.com',
+    },
+    {
+      'num': '5',
+      'title': 'PALS Provider Manual',
+      'sub': 'AHA · Pediatric Advanced Life Support · 2020',
+      'type': 'Diretriz',
+      'url': 'https://www.heart.org/en/cpr',
+    },
+    {
+      'num': '6',
+      'title': 'Harriet Lane Handbook',
+      'sub': 'Johns Hopkins · Elsevier · 22ª ed. 2021',
+      'type': 'Livro-Texto',
+      'url': 'https://www.elsevier.com/books/the-harriet-lane-handbook/johns-hopkins-hospital/978-0-323-67407-2',
+    },
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    const kGreen = Color(0xFF0F7A5A);
+    const kGold  = Color(0xFFC8A86B);
+    return Container(
+      decoration: BoxDecoration(
+        color: dark ? const Color(0xFF0D1F1A) : const Color(0xFFF0FBF6),
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: kGreen.withValues(alpha: 0.2)),
+        boxShadow: dark
+            ? []
+            : [BoxShadow(color: kGreen.withValues(alpha: 0.06),
+                blurRadius: 12, offset: const Offset(0, 3))],
+      ),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+
+        // Header sidebar
+        Container(
+          padding: const EdgeInsets.fromLTRB(14, 14, 14, 12),
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft, end: Alignment.bottomRight,
+              colors: [
+                kGreen.withValues(alpha: 0.14),
+                kGreen.withValues(alpha: 0.06),
+              ],
+            ),
+            borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(17)),
+            border: Border(
+                bottom: BorderSide(
+                    color: kGreen.withValues(alpha: 0.18))),
+          ),
+          child: Row(children: [
+            Container(
+              width: 32, height: 32,
+              decoration: BoxDecoration(
+                color: kGreen.withValues(alpha: 0.15),
+                borderRadius: BorderRadius.circular(9),
+                border: Border.all(color: kGreen.withValues(alpha: 0.3)),
+              ),
+              child: const Center(
+                child: Icon(Icons.library_books_rounded, size: 15,
+                    color: kGreen),
+              ),
+            ),
+            const SizedBox(width: 10),
+            Expanded(child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+              const Text('REFERÊNCIAS',
+                style: TextStyle(fontSize: 9, fontWeight: FontWeight.w900,
+                  letterSpacing: 1.3, color: kGreen)),
+              Text('Científicas validadas',
+                style: TextStyle(fontSize: 8.5, fontWeight: FontWeight.w500,
+                  color: kGreen.withValues(alpha: 0.65))),
+            ])),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
+              decoration: BoxDecoration(
+                color: kGold.withValues(alpha: 0.14),
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(color: kGold.withValues(alpha: 0.3)),
+              ),
+              child: const Text('6 fontes',
+                style: TextStyle(fontSize: 8, fontWeight: FontWeight.w800,
+                    color: kGold)),
+            ),
+          ]),
+        ),
+
+        // Lista de referências
+        Padding(
+          padding: const EdgeInsets.fromLTRB(12, 10, 12, 12),
+          child: Column(
+            children: _refs.map((ref) {
+              final typeColor = _typeColor(ref['type']!);
+              return Container(
+                margin: const EdgeInsets.only(bottom: 8),
+                decoration: BoxDecoration(
+                  color: c.cardBg,
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: c.border),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(10, 10, 10, 8),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                      Row(children: [
+                        // Número
+                        Container(
+                          width: 20, height: 20,
+                          decoration: BoxDecoration(
+                            color: kGreen.withValues(alpha: 0.12),
+                            borderRadius: BorderRadius.circular(6),
+                          ),
+                          child: Center(child: Text(ref['num']!,
+                            style: const TextStyle(fontSize: 9,
+                              fontWeight: FontWeight.w900,
+                              color: kGreen))),
+                        ),
+                        const SizedBox(width: 7),
+                        // Tipo badge
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 7, vertical: 2),
+                          decoration: BoxDecoration(
+                            color: typeColor.withValues(alpha: 0.1),
+                            borderRadius: BorderRadius.circular(4),
+                            border: Border.all(
+                                color: typeColor.withValues(alpha: 0.25)),
+                          ),
+                          child: Text(ref['type']!,
+                            style: TextStyle(fontSize: 7.5,
+                              fontWeight: FontWeight.w800,
+                              color: typeColor)),
+                        ),
+                      ]),
+                      const SizedBox(height: 6),
+                      Text(ref['title']!,
+                        style: TextStyle(fontSize: 12,
+                          fontWeight: FontWeight.w800,
+                          color: c.textPrimary, height: 1.2)),
+                      const SizedBox(height: 2),
+                      Text(ref['sub']!,
+                        style: TextStyle(fontSize: 9.5,
+                          fontWeight: FontWeight.w500,
+                          color: c.textHint, height: 1.3)),
+                    ]),
+                  ),
+                  // Botão abrir referência
+                  Container(
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF0EA5E9).withValues(alpha: 0.05),
+                      borderRadius: const BorderRadius.vertical(
+                          bottom: Radius.circular(11)),
+                      border: Border(
+                          top: BorderSide(color: c.border)),
+                    ),
+                    child: Material(
+                      color: Colors.transparent,
+                      child: InkWell(
+                        borderRadius: const BorderRadius.vertical(
+                            bottom: Radius.circular(11)),
+                        onTap: () {
+                          HapticFeedback.lightImpact();
+                          // Link externo via url_launcher se disponível
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 8),
+                          child: Row(children: [
+                            const Icon(Icons.open_in_new_rounded,
+                              size: 12,
+                              color: Color(0xFF0EA5E9)),
+                            const SizedBox(width: 6),
+                            const Text('Abrir Referência',
+                              style: TextStyle(fontSize: 10.5,
+                                fontWeight: FontWeight.w700,
+                                color: Color(0xFF0EA5E9))),
+                            const Spacer(),
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 5, vertical: 1),
+                              decoration: BoxDecoration(
+                                color: const Color(0xFF0EA5E9)
+                                    .withValues(alpha: 0.1),
+                                borderRadius: BorderRadius.circular(3),
+                              ),
+                              child: const Text('web',
+                                style: TextStyle(fontSize: 7.5,
+                                  fontWeight: FontWeight.w700,
+                                  color: Color(0xFF0EA5E9))),
+                            ),
+                          ]),
+                        ),
+                      ),
+                    ),
+                  ),
+                ]),
+              );
+            }).toList(),
+          ),
+        ),
+
+        // PubMed shortcut
+        Container(
+          margin: const EdgeInsets.fromLTRB(12, 0, 12, 12),
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                kGreen.withValues(alpha: 0.12),
+                kGreen.withValues(alpha: 0.06),
+              ],
+            ),
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: kGreen.withValues(alpha: 0.2)),
+          ),
+          child: Material(
+            color: Colors.transparent,
+            child: InkWell(
+              borderRadius: BorderRadius.circular(12),
+              onTap: () => HapticFeedback.lightImpact(),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 12, vertical: 10),
+                child: Row(children: [
+                  const Icon(Icons.biotech_outlined, size: 16,
+                      color: kGreen),
+                  const SizedBox(width: 8),
+                  Column(crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                    const Text('Abrir PubMed',
+                      style: TextStyle(fontSize: 11,
+                        fontWeight: FontWeight.w800, color: kGreen)),
+                    Text('Literatura científica pediátrica',
+                      style: TextStyle(fontSize: 8.5,
+                        fontWeight: FontWeight.w500,
+                        color: kGreen.withValues(alpha: 0.65))),
+                  ]),
+                  const Spacer(),
+                  Icon(Icons.arrow_forward_ios_rounded, size: 11,
+                      color: kGreen.withValues(alpha: 0.5)),
+                ]),
+              ),
+            ),
+          ),
+        ),
+      ]),
+    );
+  }
+
+  Color _typeColor(String type) {
+    switch (type) {
+      case 'Diretriz':    return const Color(0xFF0F7A5A);
+      case 'Base de Dados': return const Color(0xFF0EA5E9);
+      case 'Livro-Texto': return const Color(0xFFC8A86B);
+      case 'Protocolo':   return const Color(0xFF8B5CF6);
+      default:            return const Color(0xFF6B7280);
+    }
+  }
+}
+
+// ── Painel colapsível de referências (mobile/evidence card) ───────────────────
 class _PedRefSidePanel extends StatelessWidget {
   final AppColors c;
   final bool dark;
   const _PedRefSidePanel({required this.c, required this.dark});
 
   static const _refs = [
-    {'title': 'Nelson Textbook of Pediatrics', 'sub': '21st ed. Kliegman et al. · 2025', 'url': 'https://www.elsevier.com/books/nelson-textbook-of-pediatrics/kliegman/978-0-323-88373-4'},
-    {'title': 'AAP Guidelines', 'sub': 'American Academy of Pediatrics · 2024', 'url': 'https://www.aap.org/en/clinical-guidelines'},
-    {'title': 'WHO Pediatric Laboratory Standards', 'sub': 'World Health Organization · 2024', 'url': 'https://www.who.int/initiatives/who-reference-standards-for-paediatric-medicines'},
-    {'title': 'UpToDate Pediatrics', 'sub': 'Wolters Kluwer · 2024', 'url': 'https://www.uptodate.com'},
-    {'title': 'PALS Provider Manual 2020', 'sub': 'AHA · Pediatric Advanced Life Support', 'url': 'https://www.heart.org/en/cpr'},
-    {'title': 'Harriet Lane Handbook 22ª ed.', 'sub': 'Johns Hopkins · Elsevier 2021', 'url': 'https://www.elsevier.com/books/the-harriet-lane-handbook/johns-hopkins-hospital/978-0-323-67407-2'},
+    {'title': 'Nelson Textbook of Pediatrics',
+     'sub': '21st ed. Kliegman et al. · 2025',
+     'url': 'https://www.elsevier.com/books/nelson-textbook-of-pediatrics/kliegman/978-0-323-88373-4'},
+    {'title': 'AAP Clinical Practice Guidelines',
+     'sub': 'American Academy of Pediatrics · 2024',
+     'url': 'https://www.aap.org/en/clinical-guidelines'},
+    {'title': 'WHO Pediatric Laboratory Standards',
+     'sub': 'World Health Organization · 2024',
+     'url': 'https://www.who.int/initiatives/who-reference-standards-for-paediatric-medicines'},
+    {'title': 'UpToDate Pediatrics',
+     'sub': 'Wolters Kluwer · 2024',
+     'url': 'https://www.uptodate.com'},
+    {'title': 'PALS Provider Manual 2020',
+     'sub': 'AHA · Pediatric Advanced Life Support',
+     'url': 'https://www.heart.org/en/cpr'},
+    {'title': 'Harriet Lane Handbook 22ª ed.',
+     'sub': 'Johns Hopkins · Elsevier 2021',
+     'url': 'https://www.elsevier.com/books/the-harriet-lane-handbook/johns-hopkins-hospital/978-0-323-67407-2'},
   ];
 
   @override
   Widget build(BuildContext context) {
+    const kGreen = Color(0xFF0F7A5A);
     return Container(
-      margin: const EdgeInsets.only(top: 12),
+      margin: const EdgeInsets.only(top: 14),
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: dark ? const Color(0xFF111C17) : const Color(0xFFF0FBF6),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFF0F7A5A).withValues(alpha: 0.2)),
+        borderRadius: BorderRadius.circular(13),
+        border: Border.all(color: kGreen.withValues(alpha: 0.2)),
       ),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         const Row(children: [
-          Icon(Icons.library_books_outlined, size: 12, color: Color(0xFF0F7A5A)),
+          Icon(Icons.library_books_outlined, size: 12, color: kGreen),
           SizedBox(width: 6),
           Text('REFERÊNCIAS CIENTÍFICAS',
             style: TextStyle(fontSize: 9, fontWeight: FontWeight.w900,
-              letterSpacing: 1.2, color: Color(0xFF0F7A5A))),
+              letterSpacing: 1.2, color: kGreen)),
         ]),
         const SizedBox(height: 10),
         ..._refs.map((ref) => Container(
@@ -6507,7 +7021,9 @@ class _PedRefSidePanel extends StatelessWidget {
             border: Border.all(color: c.border),
           ),
           child: Row(children: [
-            Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Expanded(child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
               Text(ref['title']!,
                 style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.w700,
                   color: c.textPrimary)),
@@ -6517,19 +7033,30 @@ class _PedRefSidePanel extends StatelessWidget {
                   color: c.textHint)),
             ])),
             const SizedBox(width: 8),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 5),
-              decoration: BoxDecoration(
-                color: const Color(0xFF0EA5E9).withValues(alpha: 0.1),
+            Material(
+              color: Colors.transparent,
+              child: InkWell(
                 borderRadius: BorderRadius.circular(7),
-                border: Border.all(color: const Color(0xFF0EA5E9).withValues(alpha: 0.25)),
+                onTap: () => HapticFeedback.lightImpact(),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 9, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF0EA5E9).withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(7),
+                    border: Border.all(
+                        color: const Color(0xFF0EA5E9).withValues(alpha: 0.25)),
+                  ),
+                  child: const Row(mainAxisSize: MainAxisSize.min, children: [
+                    Icon(Icons.open_in_new_rounded, size: 11,
+                        color: Color(0xFF0EA5E9)),
+                    SizedBox(width: 4),
+                    Text('Abrir',
+                      style: TextStyle(fontSize: 10, fontWeight: FontWeight.w700,
+                        color: Color(0xFF0EA5E9))),
+                  ]),
+                ),
               ),
-              child: const Row(mainAxisSize: MainAxisSize.min, children: [
-                Icon(Icons.open_in_new_rounded, size: 11, color: Color(0xFF0EA5E9)),
-                SizedBox(width: 4),
-                Text('Abrir', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w700,
-                  color: Color(0xFF0EA5E9))),
-              ]),
             ),
           ]),
         )),
@@ -6566,55 +7093,74 @@ class _PedLabCategoryCardState extends State<_PedLabCategoryCard> {
     return Container(
       decoration: BoxDecoration(
         color: c.cardBg,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(18),
         border: Border.all(color: c.border),
         boxShadow: dark
             ? []
-            : [BoxShadow(color: Colors.black.withValues(alpha: 0.04),
-                blurRadius: 8, offset: const Offset(0, 2))],
+            : [
+                BoxShadow(color: Colors.black.withValues(alpha: 0.04),
+                    blurRadius: 10, offset: const Offset(0, 3)),
+              ],
       ),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
 
-        // ── Header da categoria ──────────────────────────────────────
+        // ── Header da categoria
         GestureDetector(
-          onTap: () { HapticFeedback.lightImpact(); setState(() => _collapsed = !_collapsed); },
+          onTap: () {
+            HapticFeedback.lightImpact();
+            setState(() => _collapsed = !_collapsed);
+          },
           child: Container(
-            padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
+            padding: const EdgeInsets.fromLTRB(16, 14, 14, 14),
             decoration: BoxDecoration(
-              color: accent.withValues(alpha: 0.07),
+              color: accent.withValues(alpha: 0.06),
               borderRadius: _collapsed
-                  ? BorderRadius.circular(15)
-                  : const BorderRadius.vertical(top: Radius.circular(15)),
-              border: Border(bottom: _collapsed
-                  ? BorderSide.none
-                  : BorderSide(color: c.border)),
+                  ? BorderRadius.circular(17)
+                  : const BorderRadius.vertical(top: Radius.circular(17)),
+              border: Border(
+                  bottom: _collapsed
+                      ? BorderSide.none
+                      : BorderSide(color: accent.withValues(alpha: 0.12))),
             ),
             child: Row(children: [
+              // Ícone categoria
               Container(
-                width: 38, height: 38,
+                width: 42, height: 42,
                 decoration: BoxDecoration(
-                  color: accent.withValues(alpha: 0.15),
-                  borderRadius: BorderRadius.circular(10),
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      accent.withValues(alpha: 0.2),
+                      accent.withValues(alpha: 0.1),
+                    ],
+                  ),
+                  borderRadius: BorderRadius.circular(12),
                   border: Border.all(color: accent.withValues(alpha: 0.3)),
                 ),
-                child: Center(child: Icon(cat.icon, size: 18, color: accent)),
+                child: Center(
+                    child: Icon(cat.icon, size: 20, color: accent)),
               ),
               const SizedBox(width: 12),
-              Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Expanded(child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
                 Text(cat.title,
-                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w900,
-                    color: c.textPrimary)),
-                const SizedBox(height: 1),
+                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.w900,
+                    color: c.textPrimary, letterSpacing: -0.2)),
+                const SizedBox(height: 2),
                 Text(cat.subtitle,
-                  style: TextStyle(fontSize: 10.5, fontWeight: FontWeight.w500,
+                  style: TextStyle(fontSize: 11, fontWeight: FontWeight.w500,
                     color: c.textHint)),
               ])),
               // Fonte badge
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
                   color: accent.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(6),
+                  borderRadius: BorderRadius.circular(7),
+                  border: Border.all(color: accent.withValues(alpha: 0.2)),
                 ),
                 child: Text(cat.source.split(' · ').first,
                   style: TextStyle(fontSize: 8, fontWeight: FontWeight.w800,
@@ -6623,25 +7169,28 @@ class _PedLabCategoryCardState extends State<_PedLabCategoryCard> {
               const SizedBox(width: 8),
               AnimatedRotation(
                 turns: _collapsed ? 0.5 : 0.0,
-                duration: const Duration(milliseconds: 200),
-                child: Icon(Icons.keyboard_arrow_down_rounded, size: 18, color: c.textHint),
+                duration: const Duration(milliseconds: 220),
+                child: Icon(Icons.keyboard_arrow_down_rounded,
+                    size: 20, color: c.textHint),
               ),
             ]),
           ),
         ),
 
-        // ── Conteúdo da categoria ────────────────────────────────────
+        // ── Conteúdo
         AnimatedCrossFade(
-          duration: const Duration(milliseconds: 220),
+          duration: const Duration(milliseconds: 240),
           crossFadeState: _collapsed
               ? CrossFadeState.showSecond
               : CrossFadeState.showFirst,
-          firstChild: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          firstChild: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+            // Header tabela comparativa
+            if (widget.ageFilter == -1)
+              _PedTableHeader(c: c, accent: accent),
 
-            // Header da tabela (se ageFilter == -1)
-            if (widget.ageFilter == -1) _PedTableHeader(c: c),
-
-            // Linhas de parâmetros
+            // Parâmetros
             ...cat.params.map((param) => _PedLabParamCard(
               param: param,
               ageFilter: widget.ageFilter,
@@ -6652,18 +7201,22 @@ class _PedLabCategoryCardState extends State<_PedLabCategoryCard> {
 
             // Fonte da categoria
             Container(
-              margin: const EdgeInsets.fromLTRB(14, 4, 14, 12),
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+              margin: const EdgeInsets.fromLTRB(14, 4, 14, 14),
+              padding: const EdgeInsets.symmetric(
+                  horizontal: 12, vertical: 7),
               decoration: BoxDecoration(
                 color: accent.withValues(alpha: 0.06),
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: accent.withValues(alpha: 0.15)),
+                borderRadius: BorderRadius.circular(9),
+                border: Border.all(
+                    color: accent.withValues(alpha: 0.15)),
               ),
               child: Row(children: [
-                Icon(Icons.library_books_outlined, size: 11, color: accent),
-                const SizedBox(width: 6),
+                Icon(Icons.library_books_outlined, size: 11,
+                    color: accent),
+                const SizedBox(width: 7),
                 Expanded(child: Text(cat.source,
-                  style: TextStyle(fontSize: 9, fontWeight: FontWeight.w700, color: accent))),
+                  style: TextStyle(fontSize: 9.5,
+                    fontWeight: FontWeight.w700, color: accent))),
               ]),
             ),
           ]),
@@ -6677,21 +7230,25 @@ class _PedLabCategoryCardState extends State<_PedLabCategoryCard> {
 // ── Header da tabela comparativa ─────────────────────────────────────────────
 class _PedTableHeader extends StatelessWidget {
   final AppColors c;
-  const _PedTableHeader({required this.c});
+  final Color accent;
+  const _PedTableHeader({required this.c, required this.accent});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.fromLTRB(14, 10, 14, 6),
+      padding: const EdgeInsets.fromLTRB(16, 10, 14, 8),
       decoration: BoxDecoration(
-        border: Border(bottom: BorderSide(color: c.border.withValues(alpha: 0.5))),
+        border: Border(
+            bottom: BorderSide(
+                color: accent.withValues(alpha: 0.12))),
       ),
       child: Row(children: [
-        const SizedBox(width: 120),
+        const SizedBox(width: 124),
         _HeaderCell(label: '👶', sub: 'Neonato', c: c),
         _HeaderCell(label: '🍼', sub: 'Lactente', c: c),
         _HeaderCell(label: '🧒', sub: 'Criança', c: c),
         _HeaderCell(label: '🧑', sub: 'Adolesc.', c: c),
+        const SizedBox(width: 16),
       ]),
     );
   }
@@ -6700,13 +7257,16 @@ class _PedTableHeader extends StatelessWidget {
 class _HeaderCell extends StatelessWidget {
   final String label, sub;
   final AppColors c;
-  const _HeaderCell({required this.label, required this.sub, required this.c});
+  const _HeaderCell({required this.label, required this.sub,
+      required this.c});
   @override
   Widget build(BuildContext context) => Expanded(
     child: Column(children: [
-      Text(label, style: const TextStyle(fontSize: 13)),
-      Text(sub, style: TextStyle(fontSize: 7.5, fontWeight: FontWeight.w800,
-        color: c.textHint, letterSpacing: 0.3), textAlign: TextAlign.center),
+      Text(label, style: const TextStyle(fontSize: 14)),
+      Text(sub,
+        style: TextStyle(fontSize: 7.5, fontWeight: FontWeight.w800,
+          color: c.textHint, letterSpacing: 0.3),
+        textAlign: TextAlign.center),
     ]),
   );
 }
@@ -6732,170 +7292,222 @@ class _PedLabParamCardState extends State<_PedLabParamCard> {
 
   @override
   Widget build(BuildContext context) {
-    final param  = widget.param;
-    final c      = widget.c;
-    final accent = widget.accent;
-    final dark   = widget.dark;
-    final af     = widget.ageFilter;
+    final param     = widget.param;
+    final c         = widget.c;
+    final accent    = widget.accent;
+    final dark      = widget.dark;
+    final af        = widget.ageFilter;
     final hasInterp = param.lowInterp != null || param.highInterp != null;
 
     return GestureDetector(
-      onTap: hasInterp ? () { HapticFeedback.lightImpact(); setState(() => _expanded = !_expanded); } : null,
+      onTap: hasInterp
+          ? () {
+              HapticFeedback.lightImpact();
+              setState(() => _expanded = !_expanded);
+            }
+          : null,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
         margin: const EdgeInsets.fromLTRB(14, 0, 14, 6),
-        padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
         decoration: BoxDecoration(
           color: _expanded
-              ? accent.withValues(alpha: 0.05)
-              : (dark ? Colors.white.withValues(alpha: 0.02) : Colors.white),
-          borderRadius: BorderRadius.circular(12),
+              ? accent.withValues(alpha: 0.04)
+              : (dark
+                  ? Colors.white.withValues(alpha: 0.02)
+                  : const Color(0xFFFAFAFA)),
+          borderRadius: BorderRadius.circular(13),
           border: Border.all(
-            color: _expanded ? accent.withValues(alpha: 0.35) : c.border.withValues(alpha: 0.6),
+            color: _expanded
+                ? accent.withValues(alpha: 0.35)
+                : c.border.withValues(alpha: 0.55),
             width: _expanded ? 1.5 : 1.0,
           ),
           boxShadow: _expanded && !dark
-              ? [BoxShadow(color: accent.withValues(alpha: 0.08),
-                  blurRadius: 8, offset: const Offset(0, 2))]
+              ? [BoxShadow(
+                  color: accent.withValues(alpha: 0.07),
+                  blurRadius: 10, offset: const Offset(0, 3))]
               : [],
         ),
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
 
-          // ── Linha principal ───────────────────────────────────────
+          // ── Linha principal
           Padding(
-            padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
+            padding: const EdgeInsets.fromLTRB(14, 11, 12, 11),
             child: af == -1
-                // Vista comparativa todas as idades
+                // Vista comparativa
                 ? Row(children: [
                     // Barra colorida
-                    Container(width: 3, height: 32,
-                      margin: const EdgeInsets.only(right: 9),
-                      decoration: BoxDecoration(color: accent,
+                    Container(
+                      width: 3, height: 34,
+                      margin: const EdgeInsets.only(right: 10),
+                      decoration: BoxDecoration(
+                        color: accent,
                         borderRadius: BorderRadius.circular(4))),
                     // Nome + unidade
                     SizedBox(
-                      width: 107,
-                      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                      width: 110,
+                      child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
                         Text(param.name,
-                          style: TextStyle(fontSize: 11, fontWeight: FontWeight.w800,
+                          style: TextStyle(fontSize: 11.5,
+                            fontWeight: FontWeight.w800,
                             color: c.textPrimary)),
                         if (param.unit.isNotEmpty)
                           Text(param.unit,
-                            style: TextStyle(fontSize: 8.5, fontWeight: FontWeight.w500,
+                            style: TextStyle(fontSize: 8.5,
+                              fontWeight: FontWeight.w500,
                               color: c.textHint)),
                       ]),
                     ),
-                    // Valores das 4 colunas
-                    Expanded(child: Text(param.neo, textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 10, fontWeight: FontWeight.w700,
+                    // 4 colunas de valores
+                    Expanded(child: Text(param.neo,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 10.5,
+                        fontWeight: FontWeight.w700,
                         color: c.textPrimary))),
-                    Expanded(child: Text(param.lac, textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 10, fontWeight: FontWeight.w700,
+                    Expanded(child: Text(param.lac,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 10.5,
+                        fontWeight: FontWeight.w700,
                         color: c.textPrimary))),
-                    Expanded(child: Text(param.cri, textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 10, fontWeight: FontWeight.w700,
+                    Expanded(child: Text(param.cri,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 10.5,
+                        fontWeight: FontWeight.w700,
                         color: c.textPrimary))),
-                    Expanded(child: Text(param.ado, textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 10, fontWeight: FontWeight.w700,
+                    Expanded(child: Text(param.ado,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 10.5,
+                        fontWeight: FontWeight.w700,
                         color: c.textPrimary))),
+                    // Ícone expand
                     if (hasInterp)
-                      Icon(
-                        _expanded ? Icons.keyboard_arrow_up_rounded : Icons.keyboard_arrow_down_rounded,
-                        size: 14, color: c.textHint),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 4),
+                        child: Icon(
+                          _expanded
+                              ? Icons.keyboard_arrow_up_rounded
+                              : Icons.keyboard_arrow_down_rounded,
+                          size: 15, color: c.textHint),
+                      ),
                   ])
                 // Vista faixa etária selecionada
                 : Row(children: [
-                    Container(width: 3, height: 40,
-                      margin: const EdgeInsets.only(right: 10),
-                      decoration: BoxDecoration(color: accent,
+                    Container(
+                      width: 3, height: 44,
+                      margin: const EdgeInsets.only(right: 12),
+                      decoration: BoxDecoration(
+                        color: accent,
                         borderRadius: BorderRadius.circular(4))),
-                    Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                    Expanded(child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
                       Text(param.name,
-                        style: TextStyle(fontSize: 13, fontWeight: FontWeight.w800,
+                        style: TextStyle(fontSize: 14,
+                          fontWeight: FontWeight.w800,
                           color: c.textPrimary)),
                       if (param.unit.isNotEmpty)
                         Text(param.unit,
-                          style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w500,
+                          style: TextStyle(fontSize: 10,
+                            fontWeight: FontWeight.w500,
                             color: c.textHint)),
                     ])),
-                    // Valor grande destaque
+                    // Valor em destaque
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 9),
                       decoration: BoxDecoration(
                         color: accent.withValues(alpha: 0.1),
-                        borderRadius: BorderRadius.circular(10),
-                        border: Border.all(color: accent.withValues(alpha: 0.25)),
+                        borderRadius: BorderRadius.circular(11),
+                        border: Border.all(
+                            color: accent.withValues(alpha: 0.25)),
                       ),
                       child: Text(
                         _ageValue(af, param),
-                        style: TextStyle(fontSize: 15, fontWeight: FontWeight.w900,
-                          color: accent),
+                        style: TextStyle(fontSize: 16,
+                          fontWeight: FontWeight.w900, color: accent),
                       ),
                     ),
                     const SizedBox(width: 8),
                     if (hasInterp)
                       Icon(
-                        _expanded ? Icons.keyboard_arrow_up_rounded : Icons.keyboard_arrow_down_rounded,
-                        size: 14, color: c.textHint),
+                        _expanded
+                            ? Icons.keyboard_arrow_up_rounded
+                            : Icons.keyboard_arrow_down_rounded,
+                        size: 15, color: c.textHint),
                   ]),
           ),
 
-          // ── Painel expandido — interpretação clínica ───────────────
+          // ── Interpretação expandida
           if (_expanded) ...[
             Container(
-              padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
-              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Container(height: 1, color: c.border.withValues(alpha: 0.5),
-                  margin: const EdgeInsets.only(bottom: 10)),
+              padding: const EdgeInsets.fromLTRB(14, 0, 14, 12),
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                Container(height: 1,
+                  color: accent.withValues(alpha: 0.15),
+                  margin: const EdgeInsets.only(bottom: 12)),
 
-                // Label "Interpretação Clínica"
+                // Título interpretação
                 Row(children: [
-                  Icon(Icons.fact_check_outlined, size: 11, color: accent),
-                  const SizedBox(width: 5),
+                  Icon(Icons.fact_check_outlined, size: 12,
+                      color: accent),
+                  const SizedBox(width: 6),
                   Text('INTERPRETAÇÃO CLÍNICA',
-                    style: TextStyle(fontSize: 8, fontWeight: FontWeight.w900,
+                    style: TextStyle(fontSize: 8.5,
+                      fontWeight: FontWeight.w900,
                       letterSpacing: 1.1, color: accent)),
                 ]),
-                const SizedBox(height: 8),
+                const SizedBox(height: 10),
 
                 // Valor baixo
-                if (param.lowInterp != null)
+                if (param.lowInterp != null) ...[
                   _InterpRow(
                     icon: Icons.arrow_downward_rounded,
-                    label: 'Valor Baixo',
+                    label: '⬇  Valor Baixo',
                     interp: param.lowInterp!,
                     color: const Color(0xFF0EA5E9),
                   ),
+                  if (param.highInterp != null)
+                    const SizedBox(height: 7),
+                ],
 
                 // Valor alto
-                if (param.highInterp != null) ...[
-                  if (param.lowInterp != null) const SizedBox(height: 6),
+                if (param.highInterp != null)
                   _InterpRow(
                     icon: Icons.arrow_upward_rounded,
-                    label: 'Valor Alto',
+                    label: '⬆  Valor Alto',
                     interp: param.highInterp!,
                     color: const Color(0xFFDC2626),
                   ),
-                ],
 
                 // Nota clínica
                 if (param.note != null) ...[
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 9),
                   Container(
-                    padding: const EdgeInsets.all(8),
+                    padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
-                      color: const Color(0xFFF59E0B).withValues(alpha: 0.08),
-                      borderRadius: BorderRadius.circular(8),
+                      color: const Color(0xFFF59E0B)
+                          .withValues(alpha: 0.07),
+                      borderRadius: BorderRadius.circular(9),
                       border: Border.all(
-                        color: const Color(0xFFF59E0B).withValues(alpha: 0.2)),
+                          color: const Color(0xFFF59E0B)
+                              .withValues(alpha: 0.2)),
                     ),
-                    child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                      const Icon(Icons.info_outline_rounded, size: 11,
-                        color: Color(0xFFF59E0B)),
-                      const SizedBox(width: 6),
+                    child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                      const Icon(Icons.info_outline_rounded,
+                          size: 12,
+                          color: Color(0xFFF59E0B)),
+                      const SizedBox(width: 7),
                       Expanded(child: Text(param.note!,
-                        style: TextStyle(fontSize: 10.5, fontWeight: FontWeight.w500,
-                          color: c.textSecondary, height: 1.4))),
+                        style: TextStyle(fontSize: 11,
+                          fontWeight: FontWeight.w500,
+                          color: c.textSecondary, height: 1.45))),
                     ]),
                   ),
                 ],
@@ -6917,6 +7529,7 @@ class _PedLabParamCardState extends State<_PedLabParamCard> {
   }
 }
 
+// ── Linha de interpretação ────────────────────────────────────────────────────
 class _InterpRow extends StatelessWidget {
   final IconData icon;
   final String label, interp;
@@ -6927,23 +7540,24 @@ class _InterpRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+      padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 8),
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.07),
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(9),
         border: Border.all(color: color.withValues(alpha: 0.2)),
       ),
       child: Row(children: [
-        Icon(icon, size: 12, color: color),
+        Icon(icon, size: 13, color: color),
         const SizedBox(width: 8),
-        Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Expanded(child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start, children: [
           Text(label.toUpperCase(),
             style: TextStyle(fontSize: 7.5, fontWeight: FontWeight.w900,
               letterSpacing: 0.8, color: color)),
-          const SizedBox(height: 2),
+          const SizedBox(height: 3),
           Text(interp,
-            style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600,
-              color: AppColors.of(context).textPrimary, height: 1.3)),
+            style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.w600,
+              color: AppColors.of(context).textPrimary, height: 1.35)),
         ])),
       ]),
     );
