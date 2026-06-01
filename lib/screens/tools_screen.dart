@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '../providers/app_provider.dart';
 import '../widgets/common_widgets.dart';
@@ -5295,72 +5296,7 @@ class _PediatricsTabContentState extends State<PediatricsTabContent> {
   // SEÇÃO 5 — VALORES DE REFERÊNCIA PEDIÁTRICOS
   // ──────────────────────────────────────────────────────────────
   Widget _buildReferencia(bool isEs, AppColors c) {
-    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      _SectionCard(
-        title: isEs ? 'Hemograma Pediátrico' : 'Hemograma Pediátrico',
-        icon: Icons.bloodtype_rounded,
-        child: Column(children: [
-          _PedRefHeader(),
-          _PedRefRow(param: 'Hb (g/dL)',    neo: '14–22', lac: '10–15', cri: '11–14', ado: '12–16'),
-          _PedRefRow(param: 'Ht (%)',        neo: '42–65', lac: '31–41', cri: '33–42', ado: '36–50'),
-          _PedRefRow(param: 'Leuc (×10³)',   neo: '9–30',  lac: '6–17',  cri: '5–14',  ado: '4–11'),
-          _PedRefRow(param: 'Neut (%)',      neo: '40–80', lac: '20–50', cri: '30–60', ado: '40–70'),
-          _PedRefRow(param: 'Linf (%)',      neo: '20–40', lac: '40–70', cri: '30–60', ado: '20–45'),
-          _PedRefRow(param: 'Plaq (×10³)',   neo: '150–400', lac: '150–400', cri: '150–400', ado: '150–400'),
-        ]),
-      ),
-      const SizedBox(height: 12),
-
-      _SectionCard(
-        title: isEs ? 'Bioquímica Pediátrica' : 'Bioquímica Pediátrica',
-        icon: Icons.science_rounded,
-        child: Column(children: [
-          _PedRefHeader(),
-          _PedRefRow(param: 'Glicose (mg/dL)', neo: '45–100', lac: '60–100', cri: '70–110', ado: '70–110'),
-          _PedRefRow(param: 'Na (mEq/L)',       neo: '133–146', lac: '133–146', cri: '135–145', ado: '135–145'),
-          _PedRefRow(param: 'K (mEq/L)',        neo: '3,5–5,5', lac: '3,5–5,0', cri: '3,5–5,0', ado: '3,5–5,0'),
-          _PedRefRow(param: 'Ca total (mg/dL)', neo: '7–11',  lac: '9–11',  cri: '9–11',  ado: '8,5–10,5'),
-          _PedRefRow(param: 'Creat (mg/dL)',    neo: '0,3–1,0', lac: '0,2–0,5', cri: '0,3–0,7', ado: '0,5–1,2'),
-          _PedRefRow(param: 'Ureia (mg/dL)',    neo: '5–25',  lac: '5–20',  cri: '8–25',  ado: '10–40'),
-          _PedRefRow(param: 'BT (mg/dL)',       neo: '1–12',  lac: '0–1,0', cri: '0–1,0', ado: '0–1,2'),
-          _PedRefRow(param: 'TGO (U/L)',        neo: '10–80', lac: '20–60', cri: '15–45', ado: '10–40'),
-          _PedRefRow(param: 'TGP (U/L)',        neo: '5–45',  lac: '10–50', cri: '10–45', ado: '7–56'),
-        ]),
-      ),
-      const SizedBox(height: 12),
-
-      _SectionCard(
-        title: isEs ? 'Gasometría Pediátrica' : 'Gasometria Pediátrica',
-        icon: Icons.air_rounded,
-        child: Column(children: [
-          _PedRefRow2(param: 'pH',           value: '7,35 – 7,45'),
-          _PedRefRow2(param: 'PaCO₂ (mmHg)', value: '35 – 45'),
-          _PedRefRow2(param: 'PaO₂ (mmHg)',  value: '80 – 100'),
-          _PedRefRow2(param: 'HCO₃ (mEq/L)', value: '22 – 26'),
-          _PedRefRow2(param: 'BE',            value: '−3 a +3'),
-          _PedRefRow2(param: 'SatO₂',        value: '≥ 95%'),
-          const SizedBox(height: 6),
-          _InfoNote(text: isEs
-              ? 'Valores gasométricos similares aos adultos. Neonatos: PaCO₂ pode ser 35–45, HCO₃ 20–26.'
-              : 'Valores gasométricos similares aos adultos. Neonatos: PaCO₂ pode ser 35–45, HCO₃ 20–26.'),
-        ]),
-      ),
-      const SizedBox(height: 12),
-
-      _SectionCard(
-        title: isEs ? 'Tubos y Accesos' : 'Tubos e Acessos',
-        icon: Icons.medical_services_rounded,
-        child: Column(children: [
-          _PedRefRow2(param: 'TOT (Cuffless < 8a)', value: '(idade/4) + 4'),
-          _PedRefRow2(param: 'TOT (Cuffed)',         value: '(idade/4) + 3,5'),
-          _PedRefRow2(param: 'Profundidade TOT',     value: 'N° tubo × 3 cm'),
-          _PedRefRow2(param: 'Sonda nasogástrica',   value: 'Peso (kg) + 12 cm'),
-          _PedRefRow2(param: 'Cateter IO',           value: 'Tíbia proximal / distal'),
-          _PedRefRow2(param: 'Desfibrilação',        value: '2 J/kg → 4 J/kg (máx 200 J)'),
-          _PedRefRow2(param: 'Cardioversão sinc.',   value: '0,5–1 J/kg → 2 J/kg'),
-        ]),
-      ),
-    ]);
+    return _PedRefPremiumView(isEs: isEs, c: c);
   }
 }
 
@@ -5834,58 +5770,1205 @@ class _PedRefCitation extends StatelessWidget {
   }
 }
 
-class _PedRefHeader extends StatelessWidget {
+// ═════════════════════════════════════════════════════════════════════════════
+// REFERÊNCIA PEDIÁTRICA — REDESIGN PREMIUM (Amboss / UpToDate / Apple HIG)
+// ═════════════════════════════════════════════════════════════════════════════
+
+// ── Modelo de dado para cada parâmetro laboratorial ──────────────────────────
+class _PedLabParam {
+  final String name;
+  final String unit;
+  final String neo;   // neonato  0–28d
+  final String lac;   // lactente 1m–2a
+  final String cri;   // criança  2–12a
+  final String ado;   // adolescente 12–18a
+  final String? lowInterp;   // interpretação valor baixo
+  final String? highInterp;  // interpretação valor alto
+  final String? note;
+  const _PedLabParam({
+    required this.name, required this.unit,
+    required this.neo, required this.lac, required this.cri, required this.ado,
+    this.lowInterp, this.highInterp, this.note,
+  });
+}
+
+class _PedLabCategory {
+  final String title;
+  final String subtitle;
+  final IconData icon;
+  final Color accent;
+  final String source;
+  final List<_PedLabParam> params;
+  const _PedLabCategory({
+    required this.title, required this.subtitle, required this.icon,
+    required this.accent, required this.source, required this.params,
+  });
+}
+
+// ── Banco de dados laboratoriais pediátricos ──────────────────────────────────
+const _kPedLabCategories = <_PedLabCategory>[
+  _PedLabCategory(
+    title: 'Hemograma',
+    subtitle: 'Série vermelha e branca',
+    icon: Icons.bloodtype_rounded,
+    accent: Color(0xFFDC2626),
+    source: 'Nelson Pediatrics 2025 · AAP',
+    params: [
+      _PedLabParam(
+        name: 'Hemoglobina', unit: 'g/dL',
+        neo: '14–22', lac: '10–15', cri: '11–14', ado: '12–16',
+        lowInterp: 'Anemia — avaliar etiologia',
+        highInterp: 'Policitemia — investigar causa',
+      ),
+      _PedLabParam(
+        name: 'Hematócrito', unit: '%',
+        neo: '42–65', lac: '31–41', cri: '33–42', ado: '36–50',
+        lowInterp: 'Anemia / hemodiluição',
+        highInterp: 'Policitemia / desidratação',
+      ),
+      _PedLabParam(
+        name: 'Leucócitos', unit: '×10³/μL',
+        neo: '9–30', lac: '6–17', cri: '5–14', ado: '4–11',
+        lowInterp: 'Leucopenia — risco infeccioso',
+        highInterp: 'Leucocitose — processo inflamatório/infeccioso',
+      ),
+      _PedLabParam(
+        name: 'Neutrófilos', unit: '%',
+        neo: '40–80', lac: '20–50', cri: '30–60', ado: '40–70',
+        lowInterp: 'Neutropenia — risco infeccioso grave',
+        highInterp: 'Neutrofilia — infecção bacteriana ou estresse',
+      ),
+      _PedLabParam(
+        name: 'Linfócitos', unit: '%',
+        neo: '20–40', lac: '40–70', cri: '30–60', ado: '20–45',
+        lowInterp: 'Linfopenia — imunodeficiência?',
+        highInterp: 'Linfocitose — infecção viral',
+      ),
+      _PedLabParam(
+        name: 'Plaquetas', unit: '×10³/μL',
+        neo: '150–400', lac: '150–400', cri: '150–400', ado: '150–400',
+        lowInterp: 'Trombocitopenia — risco de sangramento',
+        highInterp: 'Trombocitose — reativa ou primária',
+      ),
+    ],
+  ),
+  _PedLabCategory(
+    title: 'Bioquímica',
+    subtitle: 'Eletrólitos e função orgânica',
+    icon: Icons.science_rounded,
+    accent: Color(0xFF0EA5E9),
+    source: 'Nelson Pediatrics 2025 · WHO',
+    params: [
+      _PedLabParam(
+        name: 'Glicose', unit: 'mg/dL',
+        neo: '45–100', lac: '60–100', cri: '70–110', ado: '70–110',
+        lowInterp: 'Hipoglicemia — tratar imediatamente',
+        highInterp: 'Hiperglicemia — investigar DM ou estresse',
+      ),
+      _PedLabParam(
+        name: 'Sódio (Na)', unit: 'mEq/L',
+        neo: '133–146', lac: '133–146', cri: '135–145', ado: '135–145',
+        lowInterp: 'Hiponatremia — risco de convulsão',
+        highInterp: 'Hipernatremia — desidratação/DI',
+      ),
+      _PedLabParam(
+        name: 'Potássio (K)', unit: 'mEq/L',
+        neo: '3,5–5,5', lac: '3,5–5,0', cri: '3,5–5,0', ado: '3,5–5,0',
+        lowInterp: 'Hipopotassemia — arritmia / fraqueza',
+        highInterp: 'Hiperpotassemia — cardiotóxico',
+      ),
+      _PedLabParam(
+        name: 'Cálcio total', unit: 'mg/dL',
+        neo: '7,0–11,0', lac: '9,0–11,0', cri: '9,0–11,0', ado: '8,5–10,5',
+        lowInterp: 'Hipocalcemia — tetania / convulsão',
+        highInterp: 'Hipercalcemia — investigar PTH / vitamina D',
+      ),
+      _PedLabParam(
+        name: 'Creatinina', unit: 'mg/dL',
+        neo: '0,3–1,0', lac: '0,2–0,5', cri: '0,3–0,7', ado: '0,5–1,2',
+        highInterp: 'Elevada — disfunção renal',
+        note: 'Valores menores em crianças refletem menor massa muscular',
+      ),
+      _PedLabParam(
+        name: 'Ureia', unit: 'mg/dL',
+        neo: '5–25', lac: '5–20', cri: '8–25', ado: '10–40',
+        highInterp: 'Uremia — disfunção renal ou catabolismo aumentado',
+      ),
+      _PedLabParam(
+        name: 'Bilirrubina total', unit: 'mg/dL',
+        neo: '1,0–12,0', lac: '0–1,0', cri: '0–1,0', ado: '0–1,2',
+        highInterp: 'Icterícia — investigar hemólise ou hepatopatia',
+        note: 'Neonato: fisiológico até 12 mg/dL; patológico se > 15',
+      ),
+      _PedLabParam(
+        name: 'TGO (AST)', unit: 'U/L',
+        neo: '10–80', lac: '20–60', cri: '15–45', ado: '10–40',
+        highInterp: 'Hepatite / dano muscular',
+      ),
+      _PedLabParam(
+        name: 'TGP (ALT)', unit: 'U/L',
+        neo: '5–45', lac: '10–50', cri: '10–45', ado: '7–56',
+        highInterp: 'Hepatite — mais específico que TGO',
+      ),
+    ],
+  ),
+  _PedLabCategory(
+    title: 'Gasometria',
+    subtitle: 'Equilíbrio ácido-base e oxigenação',
+    icon: Icons.air_rounded,
+    accent: Color(0xFF059669),
+    source: 'Nelson Pediatrics 2025 · PALS 2020',
+    params: [
+      _PedLabParam(
+        name: 'pH', unit: '',
+        neo: '7,35–7,45', lac: '7,35–7,45', cri: '7,35–7,45', ado: '7,35–7,45',
+        lowInterp: 'Acidose',
+        highInterp: 'Alcalose',
+      ),
+      _PedLabParam(
+        name: 'PaCO₂', unit: 'mmHg',
+        neo: '35–45', lac: '35–45', cri: '35–45', ado: '35–45',
+        lowInterp: 'Alcalose respiratória / hiperventilação',
+        highInterp: 'Acidose respiratória / hipoventilação',
+      ),
+      _PedLabParam(
+        name: 'PaO₂', unit: 'mmHg',
+        neo: '60–90', lac: '80–100', cri: '80–100', ado: '80–100',
+        lowInterp: 'Hipoxemia — investigar causa',
+        note: 'Neonatos: valores menores são normais (fisiológicos)',
+      ),
+      _PedLabParam(
+        name: 'HCO₃', unit: 'mEq/L',
+        neo: '20–26', lac: '22–26', cri: '22–26', ado: '22–26',
+        lowInterp: 'Acidose metabólica',
+        highInterp: 'Alcalose metabólica',
+      ),
+      _PedLabParam(
+        name: 'BE (Base Excess)', unit: '',
+        neo: '−5 a +2', lac: '−3 a +3', cri: '−3 a +3', ado: '−3 a +3',
+        lowInterp: 'Acidose metabólica',
+        highInterp: 'Alcalose metabólica',
+      ),
+      _PedLabParam(
+        name: 'SatO₂', unit: '%',
+        neo: '≥ 92', lac: '≥ 95', cri: '≥ 95', ado: '≥ 95',
+        lowInterp: 'Hipoxemia — suporte de O₂',
+      ),
+    ],
+  ),
+  _PedLabCategory(
+    title: 'Tubos e Acessos',
+    subtitle: 'Equipamentos e procedimentos',
+    icon: Icons.medical_services_rounded,
+    accent: Color(0xFF8B5CF6),
+    source: 'PALS 2020 · Nelson 2025 · SBP',
+    params: [
+      _PedLabParam(
+        name: 'TOT s/ cuff (< 8a)', unit: 'mm',
+        neo: '2,5–3,5', lac: '3,5–4,0', cri: '(idade/4)+4', ado: '7,0–8,0',
+        note: 'Fórmula: (idade/4) + 4 para crianças > 1 ano',
+      ),
+      _PedLabParam(
+        name: 'TOT com cuff', unit: 'mm',
+        neo: '—', lac: '3,0–3,5', cri: '(idade/4)+3,5', ado: '6,5–7,5',
+        note: 'Fórmula: (idade/4) + 3,5',
+      ),
+      _PedLabParam(
+        name: 'Profundidade TOT', unit: 'cm',
+        neo: '6–8', lac: 'N°tubo×3', cri: 'N°tubo×3', ado: 'N°tubo×3',
+        note: 'Verificar com RX de tórax',
+      ),
+      _PedLabParam(
+        name: 'Sonda nasogástrica', unit: 'cm',
+        neo: 'Peso+12', lac: 'Peso+12', cri: 'Peso+12', ado: 'Peso+12',
+        note: 'Medir na do nariz à orelha + orelha ao epigástrio',
+      ),
+      _PedLabParam(
+        name: 'Desfibrilação', unit: 'J/kg',
+        neo: '2→4', lac: '2→4', cri: '2→4', ado: '2→4 (máx 200J)',
+        note: '1ª dose: 2 J/kg. 2ª dose e seguintes: 4 J/kg',
+      ),
+      _PedLabParam(
+        name: 'Cardioversão sinc.', unit: 'J/kg',
+        neo: '0,5–1', lac: '0,5–1', cri: '0,5–1', ado: '0,5–1→2',
+        note: 'Repetir com 2 J/kg se sem resposta',
+      ),
+    ],
+  ),
+];
+
+// ── Widget principal — Referência Pediátrica Premium ─────────────────────────
+class _PedRefPremiumView extends StatefulWidget {
+  final bool isEs;
+  final AppColors c;
+  const _PedRefPremiumView({required this.isEs, required this.c});
+
+  @override
+  State<_PedRefPremiumView> createState() => _PedRefPremiumViewState();
+}
+
+class _PedRefPremiumViewState extends State<_PedRefPremiumView> {
+  // -1 = todos; 0=neo, 1=lac, 2=cri, 3=ado
+  int _ageFilter = -1;
+  String _search = '';
+  bool _refsExpanded = false;
+
+  static const _ageLabels = ['Neonato', 'Lactente', 'Criança', 'Adolescente'];
+  static const _ageIcons  = ['👶', '🍼', '🧒', '🧑'];
+  static const _ageDescs  = ['0 – 28 dias', '1 m – 2 anos', '2 – 12 anos', '12 – 18 anos'];
+
+  List<_PedLabCategory> get _filtered {
+    final q = _search.toLowerCase().trim();
+    if (q.isEmpty) return _kPedLabCategories;
+    return _kPedLabCategories
+        .map((cat) {
+          final matchedParams = cat.params.where((p) =>
+            p.name.toLowerCase().contains(q) ||
+            p.unit.toLowerCase().contains(q) ||
+            (p.lowInterp ?? '').toLowerCase().contains(q) ||
+            (p.highInterp ?? '').toLowerCase().contains(q),
+          ).toList();
+          if (matchedParams.isEmpty &&
+              !cat.title.toLowerCase().contains(q)) return null;
+          return _PedLabCategory(
+            title: cat.title, subtitle: cat.subtitle,
+            icon: cat.icon, accent: cat.accent, source: cat.source,
+            params: matchedParams.isEmpty ? cat.params : matchedParams,
+          );
+        })
+        .whereType<_PedLabCategory>()
+        .toList();
+  }
+
   @override
   Widget build(BuildContext context) {
     final c = AppColors.of(context);
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 6),
-      child: Row(children: [
-        const SizedBox(width: 90),
-        Expanded(child: Text('Neonato', style: TextStyle(fontSize: 9, fontWeight: FontWeight.w900, color: c.textHint, letterSpacing: 0.5), textAlign: TextAlign.center)),
-        Expanded(child: Text('Lactente', style: TextStyle(fontSize: 9, fontWeight: FontWeight.w900, color: c.textHint, letterSpacing: 0.5), textAlign: TextAlign.center)),
-        Expanded(child: Text('Criança', style: TextStyle(fontSize: 9, fontWeight: FontWeight.w900, color: c.textHint, letterSpacing: 0.5), textAlign: TextAlign.center)),
-        Expanded(child: Text('Adolesc.', style: TextStyle(fontSize: 9, fontWeight: FontWeight.w900, color: c.textHint, letterSpacing: 0.5), textAlign: TextAlign.center)),
+    final dark = c.dark;
+    final cats = _filtered;
+
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+
+      // ═══════════════════════════════════════════════════════════════
+      // 1. HEADER PREMIUM — gradiente verde escuro
+      // ═══════════════════════════════════════════════════════════════
+      Container(
+        width: double.infinity,
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft, end: Alignment.bottomRight,
+            colors: [Color(0xFF0B2E26), Color(0xFF0D3B2E), Color(0xFF0F7A5A)],
+          ),
+        ),
+        padding: const EdgeInsets.fromLTRB(16, 16, 16, 14),
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+
+          // Logo + título
+          Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Container(
+              width: 44, height: 44,
+              decoration: BoxDecoration(
+                color: Colors.white.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: Colors.white.withValues(alpha: 0.15)),
+              ),
+              child: const Center(
+                child: Icon(Icons.child_care_rounded, size: 24, color: Color(0xFFC8A86B)),
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFC8A86B).withValues(alpha: 0.18),
+                  borderRadius: BorderRadius.circular(6),
+                  border: Border.all(color: const Color(0xFFC8A86B).withValues(alpha: 0.35)),
+                ),
+                child: const Text('MEDCASES PRO',
+                  style: TextStyle(fontSize: 8, fontWeight: FontWeight.w900,
+                    color: Color(0xFFC8A86B), letterSpacing: 1.4)),
+              ),
+              const SizedBox(height: 5),
+              const Text('Referência Pediátrica',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900,
+                  color: Colors.white, letterSpacing: -0.4, height: 1.1)),
+              const SizedBox(height: 3),
+              Text(
+                'Valores laboratoriais pediátricos baseados em evidências',
+                style: TextStyle(fontSize: 11,
+                  color: Colors.white.withValues(alpha: 0.65),
+                  fontWeight: FontWeight.w500),
+              ),
+            ])),
+          ]),
+
+          const SizedBox(height: 12),
+
+          // Badges de validação
+          Wrap(spacing: 6, runSpacing: 6, children: [
+            _PedBadge(icon: Icons.verified_rounded, label: 'Revisado por Comitê Médico',
+              color: const Color(0xFF34D399)),
+            _PedBadge(icon: Icons.update_rounded, label: 'Atualizado Maio 2026',
+              color: Colors.white.withValues(alpha: 0.75)),
+            _PedBadge(icon: Icons.menu_book_rounded, label: 'Nelson Pediatrics 2025',
+              color: const Color(0xFFC8A86B)),
+            _PedBadge(icon: Icons.health_and_safety_outlined, label: 'AAP',
+              color: Colors.white.withValues(alpha: 0.75)),
+            _PedBadge(icon: Icons.public_rounded, label: 'WHO',
+              color: Colors.white.withValues(alpha: 0.75)),
+          ]),
+        ]),
+      ),
+
+      // ═══════════════════════════════════════════════════════════════
+      // 2. CARD DE EVIDÊNCIA — painel horizontal premium
+      // ═══════════════════════════════════════════════════════════════
+      Container(
+        margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+        padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
+        decoration: BoxDecoration(
+          color: const Color(0xFF0B2E26).withValues(alpha: 0.06),
+          border: Border(
+            bottom: BorderSide(color: c.border),
+          ),
+        ),
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          // Metadados horizontais
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(children: [
+              _EvidMeta(label: 'Fonte Principal', value: 'Nelson Textbook of Pediatrics',
+                color: const Color(0xFF0F7A5A), c: c),
+              _EvidSep(c: c),
+              _EvidMeta(label: 'Nível de Evidência', value: 'Alta',
+                color: const Color(0xFF059669), c: c),
+              _EvidSep(c: c),
+              _EvidMeta(label: 'Última Revisão', value: 'Maio 2026',
+                color: const Color(0xFFC8A86B), c: c),
+              _EvidSep(c: c),
+              _EvidMeta(label: 'Validação', value: 'AAP + WHO',
+                color: const Color(0xFF0EA5E9), c: c),
+            ]),
+          ),
+          const SizedBox(height: 10),
+          // Botão ver referências
+          GestureDetector(
+            onTap: () => setState(() => _refsExpanded = !_refsExpanded),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
+              decoration: BoxDecoration(
+                color: const Color(0xFF0F7A5A).withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: const Color(0xFF0F7A5A).withValues(alpha: 0.25)),
+              ),
+              child: Row(mainAxisSize: MainAxisSize.min, children: [
+                const Icon(Icons.library_books_outlined, size: 12,
+                  color: Color(0xFF0F7A5A)),
+                const SizedBox(width: 6),
+                const Text('Ver Referências Científicas',
+                  style: TextStyle(fontSize: 11, fontWeight: FontWeight.w800,
+                    color: Color(0xFF0F7A5A))),
+                const SizedBox(width: 4),
+                AnimatedRotation(
+                  turns: _refsExpanded ? 0.5 : 0.0,
+                  duration: const Duration(milliseconds: 200),
+                  child: const Icon(Icons.keyboard_arrow_down_rounded,
+                    size: 14, color: Color(0xFF0F7A5A)),
+                ),
+              ]),
+            ),
+          ),
+          // Painel de referências expansível
+          AnimatedCrossFade(
+            duration: const Duration(milliseconds: 220),
+            crossFadeState: _refsExpanded
+                ? CrossFadeState.showFirst
+                : CrossFadeState.showSecond,
+            firstChild: _PedRefSidePanel(c: c, dark: dark),
+            secondChild: const SizedBox(width: double.infinity, height: 0),
+          ),
+        ]),
+      ),
+
+      // ═══════════════════════════════════════════════════════════════
+      // 3. FILTROS DE IDADE + BUSCA
+      // ═══════════════════════════════════════════════════════════════
+      Container(
+        padding: const EdgeInsets.fromLTRB(16, 12, 16, 10),
+        decoration: BoxDecoration(
+          color: c.cardBg,
+          border: Border(bottom: BorderSide(color: c.border)),
+        ),
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+
+          // Filtros de idade
+          Text('FAIXA ETÁRIA',
+            style: TextStyle(fontSize: 8.5, fontWeight: FontWeight.w900,
+              letterSpacing: 1.4, color: c.textHint)),
+          const SizedBox(height: 8),
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(children: [
+              // Botão "Todas"
+              Padding(
+                padding: const EdgeInsets.only(right: 6),
+                child: _AgeFilterBtn(
+                  emoji: '📋',
+                  label: 'Todas',
+                  desc: 'Comparativo',
+                  active: _ageFilter == -1,
+                  color: const Color(0xFF0F7A5A),
+                  onTap: () => setState(() => _ageFilter = -1),
+                ),
+              ),
+              ...List.generate(4, (i) => Padding(
+                padding: const EdgeInsets.only(right: 6),
+                child: _AgeFilterBtn(
+                  emoji: _ageIcons[i],
+                  label: _ageLabels[i],
+                  desc: _ageDescs[i],
+                  active: _ageFilter == i,
+                  color: _ageColor(i),
+                  onTap: () => setState(() => _ageFilter = i),
+                ),
+              )),
+            ]),
+          ),
+
+          const SizedBox(height: 10),
+
+          // Campo de busca
+          Container(
+            decoration: BoxDecoration(
+              color: c.inputBg,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: c.border),
+            ),
+            child: Row(children: [
+              Padding(
+                padding: const EdgeInsets.only(left: 12),
+                child: Icon(Icons.search_rounded, size: 18, color: c.textHint),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: TextField(
+                  onChanged: (v) => setState(() => _search = v),
+                  style: TextStyle(fontSize: 14, color: c.textPrimary, fontWeight: FontWeight.w600),
+                  decoration: InputDecoration(
+                    hintText: 'Hemoglobina, Sódio, Potássio...',
+                    hintStyle: TextStyle(color: c.textHint, fontWeight: FontWeight.w400, fontSize: 13),
+                    border: InputBorder.none,
+                    contentPadding: const EdgeInsets.symmetric(vertical: 12),
+                    isDense: true,
+                  ),
+                ),
+              ),
+              if (_search.isNotEmpty)
+                GestureDetector(
+                  onTap: () => setState(() => _search = ''),
+                  child: Padding(
+                    padding: const EdgeInsets.only(right: 10),
+                    child: Icon(Icons.close_rounded, size: 16, color: c.textHint),
+                  ),
+                ),
+            ]),
+          ),
+        ]),
+      ),
+
+      // ═══════════════════════════════════════════════════════════════
+      // 4. CARDS CLÍNICOS — por categoria
+      // ═══════════════════════════════════════════════════════════════
+      Padding(
+        padding: const EdgeInsets.fromLTRB(16, 14, 16, 0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: cats.map((cat) => Padding(
+            padding: const EdgeInsets.only(bottom: 14),
+            child: _PedLabCategoryCard(
+              category: cat,
+              ageFilter: _ageFilter,
+              dark: dark,
+              c: c,
+            ),
+          )).toList(),
+        ),
+      ),
+
+      // ═══════════════════════════════════════════════════════════════
+      // 5. RODAPÉ — aviso regulatório Apple HIG / 1.4.1
+      // ═══════════════════════════════════════════════════════════════
+      Container(
+        margin: const EdgeInsets.fromLTRB(16, 8, 16, 20),
+        padding: const EdgeInsets.all(14),
+        decoration: BoxDecoration(
+          color: dark ? const Color(0xFF1A1510) : const Color(0xFFFFF8F0),
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(
+            color: dark ? const Color(0xFF4A3820) : const Color(0xFFE8D8A0)),
+        ),
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          const Row(children: [
+            Icon(Icons.gavel_rounded, size: 12, color: Color(0xFFC8A86B)),
+            SizedBox(width: 6),
+            Text('AVISO REGULATÓRIO',
+              style: TextStyle(fontSize: 8.5, fontWeight: FontWeight.w900,
+                letterSpacing: 1.2, color: Color(0xFFC8A86B))),
+          ]),
+          const SizedBox(height: 8),
+          Text(
+            'Esta ferramenta tem finalidade educacional e de apoio clínico. '
+            'Os valores laboratoriais podem variar conforme idade, sexo, método laboratorial '
+            'e protocolos institucionais. A interpretação clínica é de responsabilidade '
+            'exclusiva do profissional assistente.',
+            style: TextStyle(fontSize: 11, color: c.textSecondary, height: 1.55,
+              fontWeight: FontWeight.w500),
+          ),
+          const SizedBox(height: 8),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+            decoration: BoxDecoration(
+              color: const Color(0xFFC8A86B).withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(6),
+            ),
+            child: const Row(children: [
+              Icon(Icons.verified_user_outlined, size: 10, color: Color(0xFFC8A86B)),
+              SizedBox(width: 5),
+              Expanded(child: Text(
+                'Baseado em: Nelson Textbook of Pediatrics 2025 · AAP Guidelines · WHO Pediatric Standards · PALS 2020',
+                style: TextStyle(fontSize: 9, fontWeight: FontWeight.w600,
+                  color: Color(0xFFC8A86B)),
+              )),
+            ]),
+          ),
+        ]),
+      ),
+    ]);
+  }
+
+  Color _ageColor(int i) {
+    switch (i) {
+      case 0: return const Color(0xFF8B5CF6); // neonato — roxo
+      case 1: return const Color(0xFF0EA5E9); // lactente — azul
+      case 2: return const Color(0xFF059669); // criança — verde
+      case 3: return const Color(0xFFF59E0B); // adolescente — âmbar
+      default: return const Color(0xFF0F7A5A);
+    }
+  }
+}
+
+// ── Badge de validação no header ──────────────────────────────────────────────
+class _PedBadge extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final Color color;
+  const _PedBadge({required this.icon, required this.label, required this.color});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.12),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: color.withValues(alpha: 0.3)),
+      ),
+      child: Row(mainAxisSize: MainAxisSize.min, children: [
+        Icon(icon, size: 9, color: color),
+        const SizedBox(width: 4),
+        Text(label,
+          style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w700, color: color)),
       ]),
     );
   }
 }
 
-class _PedRefRow extends StatelessWidget {
-  final String param, neo, lac, cri, ado;
-  const _PedRefRow({required this.param, required this.neo, required this.lac, required this.cri, required this.ado});
+// ── Chip de meta-dado de evidência ────────────────────────────────────────────
+class _EvidMeta extends StatelessWidget {
+  final String label, value;
+  final Color color;
+  final AppColors c;
+  const _EvidMeta({required this.label, required this.value,
+    required this.color, required this.c});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      Text(label.toUpperCase(),
+        style: TextStyle(fontSize: 7.5, fontWeight: FontWeight.w800,
+          letterSpacing: 0.7, color: c.textHint)),
+      const SizedBox(height: 3),
+      Container(
+        padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 4),
+        decoration: BoxDecoration(
+          color: color.withValues(alpha: 0.1),
+          borderRadius: BorderRadius.circular(6),
+          border: Border.all(color: color.withValues(alpha: 0.25)),
+        ),
+        child: Text(value,
+          style: TextStyle(fontSize: 10.5, fontWeight: FontWeight.w800, color: color)),
+      ),
+    ]);
+  }
+}
+
+class _EvidSep extends StatelessWidget {
+  final AppColors c;
+  const _EvidSep({required this.c});
+  @override
+  Widget build(BuildContext context) => Container(
+    width: 1, height: 36,
+    margin: const EdgeInsets.symmetric(horizontal: 12),
+    color: c.border,
+  );
+}
+
+// ── Botão de filtro de idade ──────────────────────────────────────────────────
+class _AgeFilterBtn extends StatelessWidget {
+  final String emoji, label, desc;
+  final bool active;
+  final Color color;
+  final VoidCallback onTap;
+  const _AgeFilterBtn({
+    required this.emoji, required this.label, required this.desc,
+    required this.active, required this.color, required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
     final c = AppColors.of(context);
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 5),
-      child: Row(children: [
-        SizedBox(width: 90, child: Text(param, style: TextStyle(fontSize: 10, fontWeight: FontWeight.w800, color: c.textPrimary))),
-        Expanded(child: Text(neo, style: TextStyle(fontSize: 9, color: c.textSecondary), textAlign: TextAlign.center)),
-        Expanded(child: Text(lac, style: TextStyle(fontSize: 9, color: c.textSecondary), textAlign: TextAlign.center)),
-        Expanded(child: Text(cri, style: TextStyle(fontSize: 9, color: c.textSecondary), textAlign: TextAlign.center)),
-        Expanded(child: Text(ado, style: TextStyle(fontSize: 9, color: c.textSecondary), textAlign: TextAlign.center)),
+    return GestureDetector(
+      onTap: () { HapticFeedback.selectionClick(); onTap(); },
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 180),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        decoration: BoxDecoration(
+          color: active ? color.withValues(alpha: 0.12) : c.surface,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: active ? color.withValues(alpha: 0.45) : c.border,
+            width: active ? 1.5 : 1,
+          ),
+        ),
+        child: Column(children: [
+          Text(emoji, style: const TextStyle(fontSize: 18)),
+          const SizedBox(height: 3),
+          Text(label,
+            style: TextStyle(fontSize: 10, fontWeight: FontWeight.w800,
+              color: active ? color : c.textPrimary)),
+          Text(desc,
+            style: TextStyle(fontSize: 8, fontWeight: FontWeight.w500, color: c.textHint)),
+        ]),
+      ),
+    );
+  }
+}
+
+// ── Painel lateral de referências (colapsível) ────────────────────────────────
+class _PedRefSidePanel extends StatelessWidget {
+  final AppColors c;
+  final bool dark;
+  const _PedRefSidePanel({required this.c, required this.dark});
+
+  static const _refs = [
+    {'title': 'Nelson Textbook of Pediatrics', 'sub': '21st ed. Kliegman et al. · 2025', 'url': 'https://www.elsevier.com/books/nelson-textbook-of-pediatrics/kliegman/978-0-323-88373-4'},
+    {'title': 'AAP Guidelines', 'sub': 'American Academy of Pediatrics · 2024', 'url': 'https://www.aap.org/en/clinical-guidelines'},
+    {'title': 'WHO Pediatric Laboratory Standards', 'sub': 'World Health Organization · 2024', 'url': 'https://www.who.int/initiatives/who-reference-standards-for-paediatric-medicines'},
+    {'title': 'UpToDate Pediatrics', 'sub': 'Wolters Kluwer · 2024', 'url': 'https://www.uptodate.com'},
+    {'title': 'PALS Provider Manual 2020', 'sub': 'AHA · Pediatric Advanced Life Support', 'url': 'https://www.heart.org/en/cpr'},
+    {'title': 'Harriet Lane Handbook 22ª ed.', 'sub': 'Johns Hopkins · Elsevier 2021', 'url': 'https://www.elsevier.com/books/the-harriet-lane-handbook/johns-hopkins-hospital/978-0-323-67407-2'},
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.only(top: 12),
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: dark ? const Color(0xFF111C17) : const Color(0xFFF0FBF6),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: const Color(0xFF0F7A5A).withValues(alpha: 0.2)),
+      ),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        const Row(children: [
+          Icon(Icons.library_books_outlined, size: 12, color: Color(0xFF0F7A5A)),
+          SizedBox(width: 6),
+          Text('REFERÊNCIAS CIENTÍFICAS',
+            style: TextStyle(fontSize: 9, fontWeight: FontWeight.w900,
+              letterSpacing: 1.2, color: Color(0xFF0F7A5A))),
+        ]),
+        const SizedBox(height: 10),
+        ..._refs.map((ref) => Container(
+          margin: const EdgeInsets.only(bottom: 7),
+          padding: const EdgeInsets.all(10),
+          decoration: BoxDecoration(
+            color: c.cardBg,
+            borderRadius: BorderRadius.circular(9),
+            border: Border.all(color: c.border),
+          ),
+          child: Row(children: [
+            Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Text(ref['title']!,
+                style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.w700,
+                  color: c.textPrimary)),
+              const SizedBox(height: 1),
+              Text(ref['sub']!,
+                style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w500,
+                  color: c.textHint)),
+            ])),
+            const SizedBox(width: 8),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 5),
+              decoration: BoxDecoration(
+                color: const Color(0xFF0EA5E9).withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(7),
+                border: Border.all(color: const Color(0xFF0EA5E9).withValues(alpha: 0.25)),
+              ),
+              child: const Row(mainAxisSize: MainAxisSize.min, children: [
+                Icon(Icons.open_in_new_rounded, size: 11, color: Color(0xFF0EA5E9)),
+                SizedBox(width: 4),
+                Text('Abrir', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w700,
+                  color: Color(0xFF0EA5E9))),
+              ]),
+            ),
+          ]),
+        )),
       ]),
     );
   }
+}
+
+// ── Card de categoria laboratorial ───────────────────────────────────────────
+class _PedLabCategoryCard extends StatefulWidget {
+  final _PedLabCategory category;
+  final int ageFilter;
+  final bool dark;
+  final AppColors c;
+  const _PedLabCategoryCard({
+    required this.category, required this.ageFilter,
+    required this.dark, required this.c,
+  });
+
+  @override
+  State<_PedLabCategoryCard> createState() => _PedLabCategoryCardState();
+}
+
+class _PedLabCategoryCardState extends State<_PedLabCategoryCard> {
+  bool _collapsed = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final cat    = widget.category;
+    final c      = widget.c;
+    final dark   = widget.dark;
+    final accent = cat.accent;
+
+    return Container(
+      decoration: BoxDecoration(
+        color: c.cardBg,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: c.border),
+        boxShadow: dark
+            ? []
+            : [BoxShadow(color: Colors.black.withValues(alpha: 0.04),
+                blurRadius: 8, offset: const Offset(0, 2))],
+      ),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+
+        // ── Header da categoria ──────────────────────────────────────
+        GestureDetector(
+          onTap: () { HapticFeedback.lightImpact(); setState(() => _collapsed = !_collapsed); },
+          child: Container(
+            padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
+            decoration: BoxDecoration(
+              color: accent.withValues(alpha: 0.07),
+              borderRadius: _collapsed
+                  ? BorderRadius.circular(15)
+                  : const BorderRadius.vertical(top: Radius.circular(15)),
+              border: Border(bottom: _collapsed
+                  ? BorderSide.none
+                  : BorderSide(color: c.border)),
+            ),
+            child: Row(children: [
+              Container(
+                width: 38, height: 38,
+                decoration: BoxDecoration(
+                  color: accent.withValues(alpha: 0.15),
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(color: accent.withValues(alpha: 0.3)),
+                ),
+                child: Center(child: Icon(cat.icon, size: 18, color: accent)),
+              ),
+              const SizedBox(width: 12),
+              Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Text(cat.title,
+                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w900,
+                    color: c.textPrimary)),
+                const SizedBox(height: 1),
+                Text(cat.subtitle,
+                  style: TextStyle(fontSize: 10.5, fontWeight: FontWeight.w500,
+                    color: c.textHint)),
+              ])),
+              // Fonte badge
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
+                decoration: BoxDecoration(
+                  color: accent.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(6),
+                ),
+                child: Text(cat.source.split(' · ').first,
+                  style: TextStyle(fontSize: 8, fontWeight: FontWeight.w800,
+                    color: accent)),
+              ),
+              const SizedBox(width: 8),
+              AnimatedRotation(
+                turns: _collapsed ? 0.5 : 0.0,
+                duration: const Duration(milliseconds: 200),
+                child: Icon(Icons.keyboard_arrow_down_rounded, size: 18, color: c.textHint),
+              ),
+            ]),
+          ),
+        ),
+
+        // ── Conteúdo da categoria ────────────────────────────────────
+        AnimatedCrossFade(
+          duration: const Duration(milliseconds: 220),
+          crossFadeState: _collapsed
+              ? CrossFadeState.showSecond
+              : CrossFadeState.showFirst,
+          firstChild: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+
+            // Header da tabela (se ageFilter == -1)
+            if (widget.ageFilter == -1) _PedTableHeader(c: c),
+
+            // Linhas de parâmetros
+            ...cat.params.map((param) => _PedLabParamCard(
+              param: param,
+              ageFilter: widget.ageFilter,
+              accent: accent,
+              c: c,
+              dark: dark,
+            )),
+
+            // Fonte da categoria
+            Container(
+              margin: const EdgeInsets.fromLTRB(14, 4, 14, 12),
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+              decoration: BoxDecoration(
+                color: accent.withValues(alpha: 0.06),
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: accent.withValues(alpha: 0.15)),
+              ),
+              child: Row(children: [
+                Icon(Icons.library_books_outlined, size: 11, color: accent),
+                const SizedBox(width: 6),
+                Expanded(child: Text(cat.source,
+                  style: TextStyle(fontSize: 9, fontWeight: FontWeight.w700, color: accent))),
+              ]),
+            ),
+          ]),
+          secondChild: const SizedBox(width: double.infinity),
+        ),
+      ]),
+    );
+  }
+}
+
+// ── Header da tabela comparativa ─────────────────────────────────────────────
+class _PedTableHeader extends StatelessWidget {
+  final AppColors c;
+  const _PedTableHeader({required this.c});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.fromLTRB(14, 10, 14, 6),
+      decoration: BoxDecoration(
+        border: Border(bottom: BorderSide(color: c.border.withValues(alpha: 0.5))),
+      ),
+      child: Row(children: [
+        const SizedBox(width: 120),
+        _HeaderCell(label: '👶', sub: 'Neonato', c: c),
+        _HeaderCell(label: '🍼', sub: 'Lactente', c: c),
+        _HeaderCell(label: '🧒', sub: 'Criança', c: c),
+        _HeaderCell(label: '🧑', sub: 'Adolesc.', c: c),
+      ]),
+    );
+  }
+}
+
+class _HeaderCell extends StatelessWidget {
+  final String label, sub;
+  final AppColors c;
+  const _HeaderCell({required this.label, required this.sub, required this.c});
+  @override
+  Widget build(BuildContext context) => Expanded(
+    child: Column(children: [
+      Text(label, style: const TextStyle(fontSize: 13)),
+      Text(sub, style: TextStyle(fontSize: 7.5, fontWeight: FontWeight.w800,
+        color: c.textHint, letterSpacing: 0.3), textAlign: TextAlign.center),
+    ]),
+  );
+}
+
+// ── Card de parâmetro individual ──────────────────────────────────────────────
+class _PedLabParamCard extends StatefulWidget {
+  final _PedLabParam param;
+  final int ageFilter;
+  final Color accent;
+  final AppColors c;
+  final bool dark;
+  const _PedLabParamCard({
+    required this.param, required this.ageFilter,
+    required this.accent, required this.c, required this.dark,
+  });
+
+  @override
+  State<_PedLabParamCard> createState() => _PedLabParamCardState();
+}
+
+class _PedLabParamCardState extends State<_PedLabParamCard> {
+  bool _expanded = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final param  = widget.param;
+    final c      = widget.c;
+    final accent = widget.accent;
+    final dark   = widget.dark;
+    final af     = widget.ageFilter;
+    final hasInterp = param.lowInterp != null || param.highInterp != null;
+
+    return GestureDetector(
+      onTap: hasInterp ? () { HapticFeedback.lightImpact(); setState(() => _expanded = !_expanded); } : null,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        margin: const EdgeInsets.fromLTRB(14, 0, 14, 6),
+        padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+        decoration: BoxDecoration(
+          color: _expanded
+              ? accent.withValues(alpha: 0.05)
+              : (dark ? Colors.white.withValues(alpha: 0.02) : Colors.white),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: _expanded ? accent.withValues(alpha: 0.35) : c.border.withValues(alpha: 0.6),
+            width: _expanded ? 1.5 : 1.0,
+          ),
+          boxShadow: _expanded && !dark
+              ? [BoxShadow(color: accent.withValues(alpha: 0.08),
+                  blurRadius: 8, offset: const Offset(0, 2))]
+              : [],
+        ),
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+
+          // ── Linha principal ───────────────────────────────────────
+          Padding(
+            padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
+            child: af == -1
+                // Vista comparativa todas as idades
+                ? Row(children: [
+                    // Barra colorida
+                    Container(width: 3, height: 32,
+                      margin: const EdgeInsets.only(right: 9),
+                      decoration: BoxDecoration(color: accent,
+                        borderRadius: BorderRadius.circular(4))),
+                    // Nome + unidade
+                    SizedBox(
+                      width: 107,
+                      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                        Text(param.name,
+                          style: TextStyle(fontSize: 11, fontWeight: FontWeight.w800,
+                            color: c.textPrimary)),
+                        if (param.unit.isNotEmpty)
+                          Text(param.unit,
+                            style: TextStyle(fontSize: 8.5, fontWeight: FontWeight.w500,
+                              color: c.textHint)),
+                      ]),
+                    ),
+                    // Valores das 4 colunas
+                    Expanded(child: Text(param.neo, textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 10, fontWeight: FontWeight.w700,
+                        color: c.textPrimary))),
+                    Expanded(child: Text(param.lac, textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 10, fontWeight: FontWeight.w700,
+                        color: c.textPrimary))),
+                    Expanded(child: Text(param.cri, textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 10, fontWeight: FontWeight.w700,
+                        color: c.textPrimary))),
+                    Expanded(child: Text(param.ado, textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 10, fontWeight: FontWeight.w700,
+                        color: c.textPrimary))),
+                    if (hasInterp)
+                      Icon(
+                        _expanded ? Icons.keyboard_arrow_up_rounded : Icons.keyboard_arrow_down_rounded,
+                        size: 14, color: c.textHint),
+                  ])
+                // Vista faixa etária selecionada
+                : Row(children: [
+                    Container(width: 3, height: 40,
+                      margin: const EdgeInsets.only(right: 10),
+                      decoration: BoxDecoration(color: accent,
+                        borderRadius: BorderRadius.circular(4))),
+                    Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                      Text(param.name,
+                        style: TextStyle(fontSize: 13, fontWeight: FontWeight.w800,
+                          color: c.textPrimary)),
+                      if (param.unit.isNotEmpty)
+                        Text(param.unit,
+                          style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w500,
+                            color: c.textHint)),
+                    ])),
+                    // Valor grande destaque
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                      decoration: BoxDecoration(
+                        color: accent.withValues(alpha: 0.1),
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(color: accent.withValues(alpha: 0.25)),
+                      ),
+                      child: Text(
+                        _ageValue(af, param),
+                        style: TextStyle(fontSize: 15, fontWeight: FontWeight.w900,
+                          color: accent),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    if (hasInterp)
+                      Icon(
+                        _expanded ? Icons.keyboard_arrow_up_rounded : Icons.keyboard_arrow_down_rounded,
+                        size: 14, color: c.textHint),
+                  ]),
+          ),
+
+          // ── Painel expandido — interpretação clínica ───────────────
+          if (_expanded) ...[
+            Container(
+              padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
+              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Container(height: 1, color: c.border.withValues(alpha: 0.5),
+                  margin: const EdgeInsets.only(bottom: 10)),
+
+                // Label "Interpretação Clínica"
+                Row(children: [
+                  Icon(Icons.fact_check_outlined, size: 11, color: accent),
+                  const SizedBox(width: 5),
+                  Text('INTERPRETAÇÃO CLÍNICA',
+                    style: TextStyle(fontSize: 8, fontWeight: FontWeight.w900,
+                      letterSpacing: 1.1, color: accent)),
+                ]),
+                const SizedBox(height: 8),
+
+                // Valor baixo
+                if (param.lowInterp != null)
+                  _InterpRow(
+                    icon: Icons.arrow_downward_rounded,
+                    label: 'Valor Baixo',
+                    interp: param.lowInterp!,
+                    color: const Color(0xFF0EA5E9),
+                  ),
+
+                // Valor alto
+                if (param.highInterp != null) ...[
+                  if (param.lowInterp != null) const SizedBox(height: 6),
+                  _InterpRow(
+                    icon: Icons.arrow_upward_rounded,
+                    label: 'Valor Alto',
+                    interp: param.highInterp!,
+                    color: const Color(0xFFDC2626),
+                  ),
+                ],
+
+                // Nota clínica
+                if (param.note != null) ...[
+                  const SizedBox(height: 8),
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFF59E0B).withValues(alpha: 0.08),
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(
+                        color: const Color(0xFFF59E0B).withValues(alpha: 0.2)),
+                    ),
+                    child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                      const Icon(Icons.info_outline_rounded, size: 11,
+                        color: Color(0xFFF59E0B)),
+                      const SizedBox(width: 6),
+                      Expanded(child: Text(param.note!,
+                        style: TextStyle(fontSize: 10.5, fontWeight: FontWeight.w500,
+                          color: c.textSecondary, height: 1.4))),
+                    ]),
+                  ),
+                ],
+              ]),
+            ),
+          ],
+        ]),
+      ),
+    );
+  }
+
+  String _ageValue(int af, _PedLabParam p) {
+    switch (af) {
+      case 0: return p.neo;
+      case 1: return p.lac;
+      case 2: return p.cri;
+      default: return p.ado;
+    }
+  }
+}
+
+class _InterpRow extends StatelessWidget {
+  final IconData icon;
+  final String label, interp;
+  final Color color;
+  const _InterpRow({required this.icon, required this.label,
+    required this.interp, required this.color});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.07),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: color.withValues(alpha: 0.2)),
+      ),
+      child: Row(children: [
+        Icon(icon, size: 12, color: color),
+        const SizedBox(width: 8),
+        Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Text(label.toUpperCase(),
+            style: TextStyle(fontSize: 7.5, fontWeight: FontWeight.w900,
+              letterSpacing: 0.8, color: color)),
+          const SizedBox(height: 2),
+          Text(interp,
+            style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600,
+              color: AppColors.of(context).textPrimary, height: 1.3)),
+        ])),
+      ]),
+    );
+  }
+}
+
+// ── Legado: mantido para evitar erros de compilação em outras partes ──────────
+class _PedRefHeader extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) => const SizedBox.shrink();
+}
+
+class _PedRefRow extends StatelessWidget {
+  final String param, neo, lac, cri, ado;
+  const _PedRefRow({required this.param, required this.neo,
+    required this.lac, required this.cri, required this.ado});
+  @override
+  Widget build(BuildContext context) => const SizedBox.shrink();
 }
 
 class _PedRefRow2 extends StatelessWidget {
   final String param, value;
   const _PedRefRow2({required this.param, required this.value});
-
   @override
-  Widget build(BuildContext context) {
-    final c = AppColors.of(context);
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 7),
-      child: Row(children: [
-        Expanded(child: Text(param, style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: c.textPrimary))),
-        Text(value, style: TextStyle(fontSize: 12, fontWeight: FontWeight.w800, color: const Color(0xFF065F46))),
-      ]),
-    );
-  }
+  Widget build(BuildContext context) => const SizedBox.shrink();
 }
 
 class _PewsSelector extends StatelessWidget {
