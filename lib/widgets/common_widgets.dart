@@ -1164,45 +1164,47 @@ class _EvidenceCardWidgetState extends State<EvidenceCardWidget> {
                 const SizedBox(height: 10),
                 ...ev.links.map((link) => Padding(
                   padding: const EdgeInsets.only(bottom: 7),
-                  child: Material(
-                    color: const Color(0xFF0EA5E9).withValues(alpha: 0.06),
-                    borderRadius: BorderRadius.circular(10),
-                    child: InkWell(
-                      onTap: () {},
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 12, vertical: 10),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF0EA5E9).withValues(alpha: 0.06),
                       borderRadius: BorderRadius.circular(10),
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 12, vertical: 11),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          border: Border.all(
-                            color: const Color(0xFF0EA5E9).withValues(alpha: 0.20)),
-                        ),
-                        child: Row(children: [
-                          Icon(link.icon, size: 14,
-                            color: const Color(0xFF0EA5E9)),
-                          const SizedBox(width: 10),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(link.label,
-                                  style: const TextStyle(fontSize: 11,
-                                    fontWeight: FontWeight.w800,
-                                    color: Color(0xFF0EA5E9))),
-                                if (link.org.isNotEmpty && link.org != 'Other')
-                                  Text(link.org,
-                                    style: TextStyle(fontSize: 9,
-                                      fontWeight: FontWeight.w600,
-                                      color: c.textHint)),
-                              ],
-                            ),
-                          ),
-                          Icon(Icons.open_in_new_rounded, size: 12,
-                            color: const Color(0xFF0EA5E9).withValues(alpha: 0.7)),
-                        ]),
-                      ),
+                      border: Border.all(
+                        color: const Color(0xFF0EA5E9).withValues(alpha: 0.18)),
                     ),
+                    child: Row(children: [
+                      Icon(link.icon, size: 14,
+                        color: const Color(0xFF0EA5E9)),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(link.label,
+                              style: const TextStyle(fontSize: 11,
+                                fontWeight: FontWeight.w800,
+                                color: Color(0xFF0EA5E9))),
+                            if (link.org.isNotEmpty && link.org != 'Other')
+                              Text(link.org,
+                                style: TextStyle(fontSize: 9,
+                                  fontWeight: FontWeight.w600,
+                                  color: c.textHint)),
+                          ],
+                        ),
+                      ),
+                      // Badge de fuente verificada — sem botão de link
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(4),
+                          color: const Color(0xFF0EA5E9).withValues(alpha: 0.10),
+                        ),
+                        child: const Text('fuente',
+                          style: TextStyle(fontSize: 7.5, fontWeight: FontWeight.w700,
+                            color: Color(0xFF0EA5E9))),
+                      ),
+                    ]),
                   ),
                 )),
               ]),

@@ -6839,54 +6839,26 @@ class _PedRefSidebarFixed extends StatelessWidget {
                           color: c.textHint, height: 1.3)),
                     ]),
                   ),
-                  // Botão abrir referência
+                  // Rodapé de fonte (sem botão de link)
                   Container(
                     decoration: BoxDecoration(
-                      color: const Color(0xFF0EA5E9).withValues(alpha: 0.05),
+                      color: const Color(0xFF0EA5E9).withValues(alpha: 0.04),
                       borderRadius: const BorderRadius.vertical(
                           bottom: Radius.circular(11)),
                       border: Border(
                           top: BorderSide(color: c.border)),
                     ),
-                    child: Material(
-                      color: Colors.transparent,
-                      child: InkWell(
-                        borderRadius: const BorderRadius.vertical(
-                            bottom: Radius.circular(11)),
-                        onTap: () {
-                          HapticFeedback.lightImpact();
-                          // Link externo via url_launcher se disponível
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 10, vertical: 8),
-                          child: Row(children: [
-                            const Icon(Icons.open_in_new_rounded,
-                              size: 12,
-                              color: Color(0xFF0EA5E9)),
-                            const SizedBox(width: 6),
-                            const Text('Abrir Referência',
-                              style: TextStyle(fontSize: 10.5,
-                                fontWeight: FontWeight.w700,
-                                color: Color(0xFF0EA5E9))),
-                            const Spacer(),
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 5, vertical: 1),
-                              decoration: BoxDecoration(
-                                color: const Color(0xFF0EA5E9)
-                                    .withValues(alpha: 0.1),
-                                borderRadius: BorderRadius.circular(3),
-                              ),
-                              child: const Text('web',
-                                style: TextStyle(fontSize: 7.5,
-                                  fontWeight: FontWeight.w700,
-                                  color: Color(0xFF0EA5E9))),
-                            ),
-                          ]),
-                        ),
-                      ),
-                    ),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 10, vertical: 7),
+                    child: Row(children: [
+                      const Icon(Icons.verified_rounded,
+                        size: 11, color: Color(0xFF0EA5E9)),
+                      const SizedBox(width: 5),
+                      Text('Fuente verificada · ${ref['type']!}',
+                        style: const TextStyle(fontSize: 9.5,
+                          fontWeight: FontWeight.w600,
+                          color: Color(0xFF0EA5E9))),
+                    ]),
                   ),
                 ]),
               );
@@ -6894,48 +6866,24 @@ class _PedRefSidebarFixed extends StatelessWidget {
           ),
         ),
 
-        // PubMed shortcut
+        // Nota de fuentes
         Container(
           margin: const EdgeInsets.fromLTRB(12, 0, 12, 12),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
           decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [
-                kGreen.withValues(alpha: 0.12),
-                kGreen.withValues(alpha: 0.06),
-              ],
-            ),
+            color: kGreen.withValues(alpha: 0.06),
             borderRadius: BorderRadius.circular(12),
             border: Border.all(color: kGreen.withValues(alpha: 0.2)),
           ),
-          child: Material(
-            color: Colors.transparent,
-            child: InkWell(
-              borderRadius: BorderRadius.circular(12),
-              onTap: () => HapticFeedback.lightImpact(),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: 12, vertical: 10),
-                child: Row(children: [
-                  const Icon(Icons.biotech_outlined, size: 16,
-                      color: kGreen),
-                  const SizedBox(width: 8),
-                  Column(crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                    const Text('Abrir PubMed',
-                      style: TextStyle(fontSize: 11,
-                        fontWeight: FontWeight.w800, color: kGreen)),
-                    Text('Literatura científica pediátrica',
-                      style: TextStyle(fontSize: 8.5,
-                        fontWeight: FontWeight.w500,
-                        color: kGreen.withValues(alpha: 0.65))),
-                  ]),
-                  const Spacer(),
-                  Icon(Icons.arrow_forward_ios_rounded, size: 11,
-                      color: kGreen.withValues(alpha: 0.5)),
-                ]),
-              ),
-            ),
-          ),
+          child: Row(children: [
+            const Icon(Icons.verified_user_rounded, size: 14, color: kGreen),
+            const SizedBox(width: 8),
+            Expanded(child: Text(
+              'Fuentes: Nelson Pediatrics · AAP · WHO · UpToDate · PALS · Harriet Lane',
+              style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w600,
+                color: kGreen.withValues(alpha: 0.85), height: 1.3),
+            )),
+          ]),
         ),
       ]),
     );
@@ -7008,43 +6956,27 @@ class _PedRefSidePanel extends StatelessWidget {
             border: Border.all(color: c.border),
           ),
           child: Row(children: [
+            Container(
+              padding: const EdgeInsets.all(6),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(7),
+                color: const Color(0xFF0EA5E9).withValues(alpha: 0.08),
+              ),
+              child: const Icon(Icons.library_books_rounded, size: 14,
+                color: Color(0xFF0EA5E9)),
+            ),
+            const SizedBox(width: 10),
             Expanded(child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
               Text(ref['title']!,
                 style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.w700,
                   color: c.textPrimary)),
-              const SizedBox(height: 1),
+              const SizedBox(height: 2),
               Text(ref['sub']!,
                 style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w500,
                   color: c.textHint)),
             ])),
-            const SizedBox(width: 8),
-            Material(
-              color: Colors.transparent,
-              child: InkWell(
-                borderRadius: BorderRadius.circular(7),
-                onTap: () => HapticFeedback.lightImpact(),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 9, vertical: 6),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF0EA5E9).withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(7),
-                    border: Border.all(
-                        color: const Color(0xFF0EA5E9).withValues(alpha: 0.25)),
-                  ),
-                  child: const Row(mainAxisSize: MainAxisSize.min, children: [
-                    Icon(Icons.open_in_new_rounded, size: 11,
-                        color: Color(0xFF0EA5E9)),
-                    SizedBox(width: 4),
-                    Text('Abrir',
-                      style: TextStyle(fontSize: 10, fontWeight: FontWeight.w700,
-                        color: Color(0xFF0EA5E9))),
-                  ]),
-                ),
-              ),
-            ),
           ]),
         )),
       ]),

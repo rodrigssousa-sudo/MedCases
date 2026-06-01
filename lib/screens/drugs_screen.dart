@@ -2017,8 +2017,17 @@ class _ClinicalTabCard extends StatelessWidget {
                     items: (globalEv?.indications ?? ev!.indications),
                     color: const Color(0xFF059669), c: c,
                   ),
-                ] else
-                  _EmptyTabMsg(msg: 'Indicaciones no disponibles para este fármaco.', c: c),
+                ] else ...[
+                  // Fallback: generar indicaciones desde el grupo farmacológico
+                  _ClinListBlock(
+                    icon: Icons.check_circle_outline_rounded,
+                    title: 'INDICACIONES PRINCIPALES',
+                    items: _fallbackIndications(drug),
+                    color: const Color(0xFF059669), c: c,
+                  ),
+                  const SizedBox(height: 8),
+                  _FallbackNote(c: c),
+                ],
               ]),
 
               // TAB 2: Efectos Adversos
@@ -2037,8 +2046,17 @@ class _ClinicalTabCard extends StatelessWidget {
                     items: adverse,
                     color: const Color(0xFFDC2626), c: c, dark: dark,
                   ),
-                ] else
-                  _EmptyTabMsg(msg: 'Datos de efectos adversos no disponibles.', c: c),
+                ] else ...[
+                  // Fallback: efectos adversos de clase farmacológica
+                  _ClinChipBlock(
+                    icon: Icons.report_problem_outlined,
+                    title: 'EFECTOS ADVERSOS DE CLASE',
+                    items: _fallbackSideEffects(drug),
+                    color: const Color(0xFFDC2626), c: c, dark: dark,
+                  ),
+                  const SizedBox(height: 8),
+                  _FallbackNote(c: c),
+                ],
               ]),
 
               // TAB 3: Contraindicaciones
@@ -2059,8 +2077,17 @@ class _ClinicalTabCard extends StatelessWidget {
                       color: const Color(0xFFF59E0B), c: c,
                     ),
                   ],
-                ] else
-                  _EmptyTabMsg(msg: 'Datos de contraindicaciones no disponibles.', c: c),
+                ] else ...[
+                  // Fallback: contraindicaciones de clase farmacológica
+                  _ClinListBlock(
+                    icon: Icons.block_rounded,
+                    title: 'CONTRAINDICACIONES DE CLASE',
+                    items: _fallbackContraindications(drug),
+                    color: const Color(0xFFDC2626), c: c,
+                  ),
+                  const SizedBox(height: 8),
+                  _FallbackNote(c: c),
+                ],
               ]),
 
               // TAB 4: Farmacocinética
@@ -2069,8 +2096,10 @@ class _ClinicalTabCard extends StatelessWidget {
                   _PKGridGlobal(ev: globalEv!, c: c, dark: dark),
                 ] else if (ev != null) ...[
                   _PKGrid(ev: ev!, c: c, dark: dark),
-                ] else
-                  _EmptyTabMsg(msg: 'Datos farmacocinéticos no disponibles.', c: c),
+                ] else ...[
+                  // Fallback: parámetros PK de clase farmacológica
+                  _PKFallbackGrid(drug: drug, c: c, dark: dark),
+                ],
               ]),
             ],
           ),
@@ -2305,6 +2334,225 @@ class _EmptyTabMsg extends StatelessWidget {
     child: Text(msg,
       style: TextStyle(fontSize: 12, color: c.textHint, fontStyle: FontStyle.italic)),
   );
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// NOTA DE FALLBACK — indica que os dados são genéricos de classe farmacológica
+// ─────────────────────────────────────────────────────────────────────────────
+class _FallbackNote extends StatelessWidget {
+  final AppColors c;
+  const _FallbackNote({required this.c});
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(8),
+        color: const Color(0xFFF59E0B).withValues(alpha: 0.07),
+        border: Border.all(color: const Color(0xFFF59E0B).withValues(alpha: 0.2)),
+      ),
+      child: Row(children: [
+        const Icon(Icons.info_outline_rounded, size: 12, color: Color(0xFFF59E0B)),
+        const SizedBox(width: 7),
+        Expanded(
+          child: Text(
+            'Datos de clase farmacológica. Consultar ficha técnica del fabricante para datos específicos de este fármaco.',
+            style: TextStyle(fontSize: 10, color: c.textHint, height: 1.4),
+          ),
+        ),
+      ]),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// FUNCIONES DE FALLBACK — datos genéricos por grupo farmacológico
+// ─────────────────────────────────────────────────────────────────────────────
+
+List<String> _fallbackIndications(DrugModel drug) {
+  final g = drug.group;
+  if (g.contains('Cardiovascular')) {
+    return ['Hipertensión arterial', 'Insuficiencia cardíaca', 'Angina de pecho', 'Arritmias cardíacas', 'Control de frecuencia cardíaca', 'Prevención de eventos cardiovasculares'];
+  } else if (g.contains('Analgés') || g.contains('Antipirét')) {
+    return ['Dolor agudo leve a moderado', 'Cefalea', 'Fiebre', 'Dolor musculoesquelético', 'Dismenorrea', 'Dolor postoperatorio leve'];
+  } else if (g.contains('Antibiótico')) {
+    return ['Infecciones bacterianas sensibles', 'Neumonía adquirida en comunidad', 'Infecciones de piel y tejidos blandos', 'Infecciones del tracto urinario', 'Profilaxis quirúrgica'];
+  } else if (g.contains('Anticoagulante')) {
+    return ['Trombosis venosa profunda (TVP)', 'Tromboembolismo pulmonar (TEP)', 'Fibrilación auricular — prevención de ACV', 'Síndrome coronario agudo', 'Profilaxis de TVP postquirúrgica'];
+  } else if (g.contains('Respiratorio')) {
+    return ['Asma bronquial', 'EPOC — broncoespasmo', 'Bronquitis aguda con componente obstructivo', 'Crisis asmática', 'Síntomas de obstrucción bronquial'];
+  } else if (g.contains('Neurolog') || g.contains('Psiquiat')) {
+    return ['Epilepsia / convulsiones', 'Trastornos del estado de ánimo', 'Trastornos de ansiedad', 'Dolor neuropático', 'Insomnio', 'Psicosis'];
+  } else if (g.contains('Gastro')) {
+    return ['Enfermedad por reflujo gastroesofágico (ERGE)', 'Úlcera gástrica / duodenal', 'Náuseas y vómitos', 'Síndrome de intestino irritable', 'Gastroparesia'];
+  } else if (g.contains('Endocrin') || g.contains('Metabol')) {
+    return ['Diabetes mellitus tipo 2', 'Hipoglucemia (antídotos)', 'Hipotiroidismo / hipertiroidismo', 'Osteoporosis', 'Síndrome metabólico'];
+  } else if (g.contains('UCI') || g.contains('Crítico') || g.contains('Sedoa')) {
+    return ['Sedación en UCI', 'Soporte hemodinámico en shock', 'Analgesia en paciente crítico', 'Intubación de secuencia rápida', 'Status epilepticus refractario'];
+  } else if (g.contains('Infectolog') || g.contains('Antifúng') || g.contains('Antivir')) {
+    return ['Infecciones fúngicas sistémicas', 'Infecciones virales', 'Tuberculosis', 'Infecciones por hongos oportunistas', 'Profilaxis en inmunosuprimidos'];
+  } else if (g.contains('Hematolog')) {
+    return ['Anemia por deficiencia', 'Trombocitopenia', 'Trastornos de la coagulación', 'Suplementación vitamínica', 'Profilaxis de sangrado'];
+  }
+  return ['Indicación según prescripción médica', 'Consultar ficha técnica para indicaciones específicas aprobadas'];
+}
+
+List<String> _fallbackSideEffects(DrugModel drug) {
+  final g = drug.group;
+  if (g.contains('Cardiovascular')) {
+    return ['Hipotensión', 'Bradicardia', 'Mareos / vértigo', 'Edema periférico', 'Palpitaciones', 'Cefalea', 'Astenia', 'Efectos proarrítmicos'];
+  } else if (g.contains('Analgés') || g.contains('Antipirét')) {
+    return ['Gastropatía (AINEs)', 'Hepatotoxicidad (paracetamol en sobredosis)', 'Nefrotoxicidad', 'Reacción alérgica', 'Sangrado gastrointestinal', 'Mareos'];
+  } else if (g.contains('Antibiótico')) {
+    return ['Diarrea', 'Náuseas / vómitos', 'Reacción alérgica (urticaria, anafilaxis)', 'Colitis por C. difficile', 'Fotosensibilidad (fluoroquinolonas)', 'Nefrotoxicidad (aminoglucósidos)'];
+  } else if (g.contains('Anticoagulante')) {
+    return ['Hemorragia (riesgo principal)', 'Sangrado gastrointestinal', 'Hematomas', 'Trombocitopenia inducida por heparina (TIH)', 'Sangrado intracraneal'];
+  } else if (g.contains('Respiratorio')) {
+    return ['Taquicardia', 'Temblor', 'Hipocalemia', 'Cefalea', 'Nerviosismo / insomnio (adrenérgicos)', 'Candidiasis oral (corticoides inhalados)', 'Disfonía'];
+  } else if (g.contains('Neurolog') || g.contains('Psiquiat')) {
+    return ['Sedación / somnolencia', 'Mareos / ataxia', 'Síntomas extrapiramidales', 'Prolongación del QT', 'Síndrome serotoninérgico', 'Ganancia de peso', 'Dependencia'];
+  } else if (g.contains('Gastro')) {
+    return ['Cefalea', 'Diarrea', 'Náuseas', 'Dolor abdominal', 'Hipomagnesemia (IBP prolongados)', 'Estreñimiento', 'Flatulencia'];
+  } else if (g.contains('Endocrin') || g.contains('Metabol')) {
+    return ['Hipoglucemia', 'Náuseas / vómitos (biguanidas)', 'Acidosis láctica (metformina — rara)', 'Edema', 'Ganancia de peso', 'Hipotiroidismo inducido'];
+  } else if (g.contains('UCI') || g.contains('Crítico') || g.contains('Sedoa')) {
+    return ['Hipotensión', 'Depresión respiratoria', 'Bradicardia', 'Dependencia / tolerancia (opioides)', 'Íleo paralítico', 'Delirium en UCI'];
+  } else if (g.contains('Infectolog') || g.contains('Antifúng') || g.contains('Antivir')) {
+    return ['Hepatotoxicidad', 'Nefrotoxicidad', 'Interacciones medicamentosas (CYP450)', 'Náuseas / vómitos', 'Neuropatía periférica', 'Fotosensibilidad'];
+  }
+  return ['Consultar ficha técnica del fabricante', 'Reacciones adversas variables según paciente y dosis'];
+}
+
+List<String> _fallbackContraindications(DrugModel drug) {
+  final g = drug.group;
+  if (g.contains('Cardiovascular')) {
+    return ['Hipotensión severa (PAS <90 mmHg)', 'BAV de alto grado sin marcapasos', 'Bradicardia sintomática (<40 lpm)', 'Insuficiencia cardíaca descompensada (betabloqueantes)', 'Shock cardiogénico', 'Hipersensibilidad al principio activo'];
+  } else if (g.contains('Analgés') || g.contains('Antipirét')) {
+    return ['Úlcera péptica activa (AINEs)', 'Insuficiencia renal severa (AINEs)', 'Tercer trimestre de embarazo (AINEs)', 'Hepatopatía severa (paracetamol > 2 g/día)', 'Alergia documentada al principio activo'];
+  } else if (g.contains('Antibiótico')) {
+    return ['Hipersensibilidad documentada (alergia)', 'Insuficiencia renal severa (sin ajuste de dosis)', 'Embarazo (fluoroquinolonas, tetraciclinas)', 'Uso concomitante con fármacos que prolongan QT (macrólidos)'];
+  } else if (g.contains('Anticoagulante')) {
+    return ['Hemorragia activa mayor', 'Trombocitopenia inducida por heparina (TIH)', 'Neurocirugía / cirugía oftálmica reciente', 'Embarazo (AVK contraindicados)', 'Insuficiencia renal severa (HBPM, ACODs)'];
+  } else if (g.contains('Respiratorio')) {
+    return ['Hipersensibilidad al principio activo', 'Taquiarritmias no controladas (beta-2 agonistas)', 'Tirotoxicosis (beta-2 agonistas)', 'Diabetes no controlada (corticoides sistémicos)'];
+  } else if (g.contains('Neurolog') || g.contains('Psiquiat')) {
+    return ['Depresión respiratoria severa (benzodiazepinas, opioides)', 'Hipersensibilidad documentada', 'Glaucoma de ángulo cerrado (anticolinérgicos)', 'Prolongación QTc grave (antipsicóticos)', 'Embarazo (valproato, carbamazepina — teratogénicos)'];
+  } else if (g.contains('Gastro')) {
+    return ['Hipersensibilidad documentada', 'Gastrinoma (IBP — usar con precaución)', 'Obstrucción intestinal (procinéticos)', 'Embarazo (usar solo si beneficio supera riesgo)'];
+  } else if (g.contains('Endocrin') || g.contains('Metabol')) {
+    return ['Insuficiencia renal severa (metformina — ClCr <30)', 'Cetoacidosis diabética', 'Hipersensibilidad documentada', 'Insuficiencia hepática severa (antidiabéticos orales)'];
+  } else if (g.contains('UCI') || g.contains('Crítico') || g.contains('Sedoa')) {
+    return ['Hipersensibilidad documentada', 'Shock no corregido (vasodilatadores)', 'Depresión respiratoria sin vía aérea asegurada', 'Porfiria aguda intermitente (propofol, barbitúricos)'];
+  }
+  return ['Hipersensibilidad documentada al principio activo', 'Consultar ficha técnica para contraindicaciones específicas'];
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// PK FALLBACK GRID — parâmetros farmacocinéticos de classe farmacológica
+// ─────────────────────────────────────────────────────────────────────────────
+class _PKFallbackGrid extends StatelessWidget {
+  final DrugModel drug;
+  final AppColors c;
+  final bool dark;
+  const _PKFallbackGrid({required this.drug, required this.c, required this.dark});
+
+  Map<String, String> _pkForGroup(String group) {
+    if (group.contains('Cardiovascular')) {
+      return {
+        'Vía típica': 'Oral / IV según fármaco',
+        'Inicio de Acción': 'Variable (min–horas)',
+        'Vida Media (t½)': 'Variable por fármaco',
+        'Eliminación': 'Hepática / Renal',
+        'Unión Proteica': 'Variable (ver ficha)',
+      };
+    } else if (group.contains('Antibiótico')) {
+      return {
+        'Vía típica': 'Oral / IV / IM',
+        'Inicio de Acción': '30–60 min (oral)',
+        'Vida Media (t½)': '1–24 h según fármaco',
+        'Eliminación': 'Renal (mayoría)',
+        'Unión Proteica': 'Variable por clase',
+      };
+    } else if (group.contains('Anticoagulante')) {
+      return {
+        'Vía típica': 'SC / IV / Oral',
+        'Inicio de Acción': 'Inmediato (IV) / 1–3 h (oral)',
+        'Vida Media (t½)': '4–20 h según fármaco',
+        'Eliminación': 'Renal / Hepática',
+        'Monitorización': 'TTPA (HNF) / anti-Xa (HBPM)',
+      };
+    } else if (group.contains('Respiratorio')) {
+      return {
+        'Vía típica': 'Inhalada / IV / Oral',
+        'Inicio de Acción': '5–15 min (inhalados)',
+        'Vida Media (t½)': '3–12 h según fármaco',
+        'Eliminación': 'Hepática (CYP450)',
+        'Biodisponibilidad': 'Baja por vía inhalada sistémica',
+      };
+    } else if (group.contains('Neurolog') || group.contains('Psiquiat')) {
+      return {
+        'Vía típica': 'Oral / IV / IM',
+        'Inicio de Acción': '30–120 min (oral)',
+        'Vida Media (t½)': 'Variable (horas–días)',
+        'Eliminación': 'Hepática (CYP450)',
+        'Notas': 'Alta variabilidad individual',
+      };
+    } else if (group.contains('Endocrin') || group.contains('Metabol')) {
+      return {
+        'Vía típica': 'Oral / SC (insulinas)',
+        'Inicio de Acción': '30–60 min (orales)',
+        'Vida Media (t½)': '4–12 h según clase',
+        'Eliminación': 'Renal / Hepática',
+        'Monitorización': 'Glucemia, HbA1c',
+      };
+    } else if (group.contains('UCI') || group.contains('Crítico') || group.contains('Sedoa')) {
+      return {
+        'Vía típica': 'IV / IM (urgencias)',
+        'Inicio de Acción': 'Rápido (segundos–minutos)',
+        'Vida Media (t½)': 'Variable (corta–larga)',
+        'Eliminación': 'Hepática / Redistribución',
+        'Ajuste': 'Titular por respuesta clínica',
+      };
+    }
+    return {
+      'Vía de Admin.': drug.route.isNotEmpty ? drug.route : 'Ver ficha técnica',
+      'Metabolismo': 'Hepático (CYP450) — ver ficha',
+      'Eliminación': 'Renal / Biliar — ver ficha',
+      'Referencia': 'Consultar Lexicomp / Micromedex',
+    };
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final items = _pkForGroup(drug.group).entries.toList();
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      Wrap(
+        spacing: 8, runSpacing: 8,
+        children: items.map((item) => SizedBox(
+          width: (MediaQuery.of(context).size.width - 64) / 2,
+          child: Container(
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              color: c.surface,
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(color: c.border),
+            ),
+            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Text(item.key,
+                style: TextStyle(fontSize: 8.5, fontWeight: FontWeight.w800,
+                  color: c.textHint, letterSpacing: 0.5)),
+              const SizedBox(height: 4),
+              Text(item.value,
+                style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.w700,
+                  color: c.textPrimary, height: 1.35)),
+            ]),
+          ),
+        )).toList(),
+      ),
+      const SizedBox(height: 8),
+      _FallbackNote(c: c),
+    ]);
+  }
 }
 
 
