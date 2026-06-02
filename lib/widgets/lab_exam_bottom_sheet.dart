@@ -1,19 +1,22 @@
 // ── lib/widgets/lab_exam_bottom_sheet.dart ───────────────────────────────────
 // BottomSheet de entrada para análise de exame laboratorial.
 //
-// Opções de entrada:
-//   1. Tirar foto (câmera) — via file_picker com FileType.image
-//   2. Enviar imagem/screenshot — via file_picker com FileType.image
-//   3. Enviar PDF — via file_picker com FileType.custom (.pdf)
-//   4. Colar/digitar texto do exame — TextField inline ou nova tela
+// ARQUITETURA DE CONTEXTO (crítico para iOS):
+//   ❌ ERRADO: Navigator.pop(context) ANTES da operação → invalida o context,
+//      quebra mounted checks, ScaffoldMessenger e Navigator.push no iOS.
+//   ✅ CORRETO: sheet permanece aberto durante toda a operação; loading overlay
+//      cobre o conteúdo; sheet só fecha via Navigator.pushReplacement ao
+//      navegar para LabReviewScreen, ou o usuário fecha em caso de erro.
 //
-// Fluxo após seleção:
-//   → Mostra loading overlay com mensagem contextual
-//   → Chama LabParserService (text/image/pdf)
-//   → Navega para LabReviewScreen com os resultados
-//   → Em caso de erro: SnackBar com mensagem bilíngue + botão de retry
+// Permissões (Apple Guideline 5.1):
+//   - Câmera: Permission.camera.request() — dialog no idioma do sistema iOS
+//     (NSCameraUsageDescription em Info.plist)
+//   - Galeria: Permission.photos.request() — dialog no idioma do sistema iOS
+//     (NSPhotoLibraryUsageDescription em Info.plist)
+//   - Textos dos diálogos IN-APP (negado/permanentemente negado) seguem
+//     o locale passado ao widget ('pt' ou 'es').
 //
-// Integração: usa file_picker 8.1.7 (já presente no pubspec.yaml).
+// Integração: image_picker ^1.1.2 + permission_handler ^11.3.1 + file_picker 8.1.7
 // ─────────────────────────────────────────────────────────────────────────────
 
 import 'dart:typed_data';
@@ -27,8 +30,7 @@ import '../screens/lab_review_screen.dart';
 import '../services/lab_parser_service.dart';
 import '../services/gemini_service.dart';
 
-// ── Paleta local (dark-first, alinhada ao design system) ──────────────────────
-
+// ── Paleta local (dark-first) ─────────────────────────────────────────────────
 class _C {
   static const bg          = Color(0xFF101614);
   static const surface     = Color(0xFF17211D);
@@ -46,20 +48,20 @@ class _C {
 // ── Entry point público ────────────────────────────────────────────────────────
 
 /// Abre o menu de opções de análise de exame laboratorial.
-///
-/// [locale]: 'pt' ou 'es' — controla idioma de todos os textos e do prompt Gemini.
+/// [locale]: 'pt' ou 'es' — controla idioma de todos os textos e prompts.
 void showAnalyzeExamBottomSheet(BuildContext context, String locale) {
   showModalBottomSheet(
     context: context,
     backgroundColor: Colors.transparent,
     isScrollControlled: true,
     useSafeArea: true,
+    isDismissible: true,
+    enableDrag: true,
     builder: (_) => _AnalyzeExamSheet(locale: locale),
   );
 }
 
 // ── Sheet principal ────────────────────────────────────────────────────────────
-
 class _AnalyzeExamSheet extends StatefulWidget {
   final String locale;
   const _AnalyzeExamSheet({required this.locale});
@@ -69,10 +71,10 @@ class _AnalyzeExamSheet extends StatefulWidget {
 }
 
 class _AnalyzeExamSheetState extends State<_AnalyzeExamSheet> {
-  bool _loading      = false;
-  String _loadingMsg = '';
-  final _textCtrl = TextEditingController();
-  bool _showTextInput = false;
+  bool   _loading      = false;
+  String _loadingMsg   = '';
+  final  _textCtrl     = TextEditingController();
+  bool   _showTextInput = false;
 
   bool get _isEs => widget.locale.toLowerCase() == 'es';
 
@@ -82,17 +84,18 @@ class _AnalyzeExamSheetState extends State<_AnalyzeExamSheet> {
     super.dispose();
   }
 
-  // ── Handlers de cada opção ────────────────────────────────────────────────
+  // ── Handlers de cada opção ──────────────────────────────────────────────────
+  //
+  // REGRA FUNDAMENTAL: NÃO chamar Navigator.pop(context) antes da operação.
+  // O sheet fica aberto mostrando o loading overlay durante o processamento.
+  // Só fecha ao navegar para LabReviewScreen (pushReplacement) ou em erro.
 
-  /// Câmera:
-  ///   - Web: file_picker → seletor nativo do browser
-  ///   - Nativo iOS/Android: solicita permissão explícita → image_picker
+  /// Câmera — nativo: pede permissão → image_picker | web: file_picker
   Future<void> _onCamera() async {
-    Navigator.pop(context);
-    await Future.delayed(const Duration(milliseconds: 350));
-    if (!mounted) return;
+    if (_loading) return;
 
     if (kIsWeb) {
+      // Web: file_picker abre o seletor nativo do browser
       final result = await FilePicker.platform.pickFiles(
         type: FileType.image,
         withData: true,
@@ -105,13 +108,13 @@ class _AnalyzeExamSheetState extends State<_AnalyzeExamSheet> {
       return;
     }
 
-    // ── Nativo: solicitar permissão de câmera explicitamente ──────────────
+    // Nativo: solicitar permissão de câmera
+    // O iOS exibe o diálogo nativo com NSCameraUsageDescription no idioma
+    // configurado pelo sistema — não é controlado pelo app.
     final status = await Permission.camera.request();
-
     if (!mounted) return;
 
     if (status.isGranted) {
-      // Permissão concedida → abre câmera
       final picker = ImagePicker();
       final XFile? photo = await picker.pickImage(
         source: ImageSource.camera,
@@ -124,24 +127,19 @@ class _AnalyzeExamSheetState extends State<_AnalyzeExamSheet> {
       await _analyzeImage(bytes, _guessMime(photo.name));
 
     } else if (status.isPermanentlyDenied) {
-      // Usuário negou permanentemente → orientar para configurações
       _showPermissionDeniedDialog(isCamera: true);
 
     } else {
-      // Negado desta vez — mostrar snackbar suave
+      // Negado desta vez
       _showError(_isEs
           ? 'Se necesita acceso a la cámara para fotografiar el examen.'
           : 'É necessário acesso à câmera para fotografar o exame.');
     }
   }
 
-  /// Galeria / Screenshot:
-  ///   - Web: file_picker → seletor nativo do browser
-  ///   - Nativo iOS/Android: solicita permissão de fotos → image_picker
+  /// Galeria — nativo: pede permissão → image_picker | web: file_picker
   Future<void> _onGallery() async {
-    Navigator.pop(context);
-    await Future.delayed(const Duration(milliseconds: 350));
-    if (!mounted) return;
+    if (_loading) return;
 
     if (kIsWeb) {
       final result = await FilePicker.platform.pickFiles(
@@ -156,15 +154,11 @@ class _AnalyzeExamSheetState extends State<_AnalyzeExamSheet> {
       return;
     }
 
-    // ── Nativo: solicitar permissão da biblioteca de fotos ────────────────
-    // No iOS 14+, PHPickerViewController não exige permissão para leitura
-    // limitada — mas solicitamos para garantir compatibilidade e transparência
+    // Nativo: PHPickerViewController (iOS 14+) — isLimited = acesso parcial ok
     final status = await Permission.photos.request();
-
     if (!mounted) return;
 
     if (status.isGranted || status.isLimited) {
-      // isLimited = acesso parcial (iOS 14+ "Selected Photos") — suficiente
       final picker = ImagePicker();
       final XFile? image = await picker.pickImage(
         source: ImageSource.gallery,
@@ -185,11 +179,9 @@ class _AnalyzeExamSheetState extends State<_AnalyzeExamSheet> {
     }
   }
 
-  /// PDF
+  /// PDF — file_picker em todas as plataformas (não requer permissão extra)
   Future<void> _onPdf() async {
-    Navigator.pop(context);
-    await Future.delayed(const Duration(milliseconds: 350));
-    if (!mounted) return;
+    if (_loading) return;
 
     final result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
@@ -200,29 +192,32 @@ class _AnalyzeExamSheetState extends State<_AnalyzeExamSheet> {
     if (result == null || result.files.isEmpty) return;
 
     final bytes = result.files.first.bytes;
-    if (bytes == null) return;
+    if (bytes == null) {
+      _showError(_isEs
+          ? 'No se pudo leer el PDF. Intente de nuevo.'
+          : 'Não foi possível ler o PDF. Tente novamente.');
+      return;
+    }
 
     await _analyzePdf(bytes);
   }
 
-  /// Colar texto — expande o campo inline ou envia se já tiver texto
+  /// Colar texto — expande/recolhe o campo inline
   void _onPasteText() {
+    if (_loading) return;
     setState(() => _showTextInput = !_showTextInput);
   }
 
   Future<void> _submitText() async {
     final text = _textCtrl.text.trim();
     if (text.isEmpty) return;
-    Navigator.pop(context);
-    await Future.delayed(const Duration(milliseconds: 350));
-    if (!mounted) return;
     await _analyzeText(text);
   }
 
-  // ── Chamadas ao LabParserService ──────────────────────────────────────────
+  // ── Chamadas ao LabParserService ────────────────────────────────────────────
 
   Future<void> _analyzeImage(Uint8List bytes, String mime) async {
-    _assertConnected();
+    if (!_checkConnected()) return;
     _startLoading(_isEs
         ? 'Analizando imagen del examen...'
         : 'Analisando imagem do exame...');
@@ -234,18 +229,18 @@ class _AnalyzeExamSheetState extends State<_AnalyzeExamSheet> {
       );
       _goToReview(results);
     } on LabParseException catch (e) {
+      _stopLoading();
       _showError(e.message);
-    } catch (e) {
+    } catch (_) {
+      _stopLoading();
       _showError(_isEs
           ? 'Error inesperado. Intente de nuevo.'
           : 'Erro inesperado. Tente novamente.');
-    } finally {
-      _stopLoading();
     }
   }
 
   Future<void> _analyzePdf(Uint8List bytes) async {
-    _assertConnected();
+    if (!_checkConnected()) return;
     _startLoading(_isEs
         ? 'Procesando PDF del examen...'
         : 'Processando PDF do exame...');
@@ -256,18 +251,18 @@ class _AnalyzeExamSheetState extends State<_AnalyzeExamSheet> {
       );
       _goToReview(results);
     } on LabParseException catch (e) {
+      _stopLoading();
       _showError(e.message);
-    } catch (e) {
+    } catch (_) {
+      _stopLoading();
       _showError(_isEs
           ? 'Error inesperado. Intente de nuevo.'
           : 'Erro inesperado. Tente novamente.');
-    } finally {
-      _stopLoading();
     }
   }
 
   Future<void> _analyzeText(String text) async {
-    _assertConnected();
+    if (!_checkConnected()) return;
     _startLoading(_isEs
         ? 'Extrayendo parámetros del texto...'
         : 'Extraindo parâmetros do texto...');
@@ -278,26 +273,29 @@ class _AnalyzeExamSheetState extends State<_AnalyzeExamSheet> {
       );
       _goToReview(results);
     } on LabParseException catch (e) {
+      _stopLoading();
       _showError(e.message);
-    } catch (e) {
+    } catch (_) {
+      _stopLoading();
       _showError(_isEs
           ? 'Error inesperado. Intente de nuevo.'
           : 'Erro inesperado. Tente novamente.');
-    } finally {
-      _stopLoading();
     }
   }
 
-  // ── Navegação ─────────────────────────────────────────────────────────────
+  // ── Navegação ───────────────────────────────────────────────────────────────
 
   void _goToReview(List<LabResult> results) {
     if (!mounted) return;
     if (results.isEmpty) {
+      _stopLoading();
       _showError(_isEs
           ? 'No se identificaron parámetros laboratoriales en el material enviado.'
           : 'Nenhum parâmetro laboratorial identificado no material enviado.');
       return;
     }
+    // Fecha o sheet e navega — pushReplacement preserva o contexto pai
+    Navigator.of(context).pop();
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -309,14 +307,16 @@ class _AnalyzeExamSheetState extends State<_AnalyzeExamSheet> {
     );
   }
 
-  // ── Helpers de estado ──────────────────────────────────────────────────────
+  // ── Helpers de estado ───────────────────────────────────────────────────────
 
-  void _assertConnected() {
+  bool _checkConnected() {
     if (!GeminiService.hasApiKey) {
-      throw LabParseException(_isEs
+      _showError(_isEs
           ? 'Conecta tu cuenta Google en el menú lateral para usar esta función.'
           : 'Conecte sua conta Google no menu lateral para usar esta função.');
+      return false;
     }
+    return true;
   }
 
   void _startLoading(String msg) {
@@ -332,7 +332,8 @@ class _AnalyzeExamSheetState extends State<_AnalyzeExamSheet> {
     setState(() => _loading = false);
   }
 
-  // ── Diálogo de permissão permanentemente negada ───────────────────────────
+  // ── Diálogo de permissão permanentemente negada ─────────────────────────────
+  // Textos no idioma do usuário (locale passado ao widget).
   void _showPermissionDeniedDialog({required bool isCamera}) {
     if (!mounted) return;
     showDialog(
@@ -350,20 +351,27 @@ class _AnalyzeExamSheetState extends State<_AnalyzeExamSheet> {
             child: Text(
               _isEs
                   ? (isCamera ? 'Acceso a la Cámara' : 'Acceso a la Galería')
-                  : (isCamera ? 'Acesso à Câmera' : 'Acesso à Galeria'),
+                  : (isCamera ? 'Acesso à Câmera'    : 'Acesso à Galeria'),
               style: const TextStyle(
-                color: _C.textPrimary, fontSize: 16, fontWeight: FontWeight.w700),
+                color: _C.textPrimary,
+                fontSize: 16,
+                fontWeight: FontWeight.w700,
+              ),
             ),
           ),
         ]),
         content: Text(
           _isEs
               ? (isCamera
-                  ? 'MedCases Pro necesita acceso a la cámara para fotografiar exámenes clínicos. Toque "Configuración" para habilitar el permiso.'
-                  : 'MedCases Pro necesita acceso a la galería para importar imágenes de exámenes. Toque "Configuración" para habilitar el permiso.')
+                  ? 'MedCases Pro necesita acceso a la cámara para fotografiar '
+                    'exámenes clínicos. Toque "Configuración" para habilitar el permiso.'
+                  : 'MedCases Pro necesita acceso a la galería para importar '
+                    'imágenes de exámenes. Toque "Configuración" para habilitar el permiso.')
               : (isCamera
-                  ? 'O MedCases Pro precisa de acesso à câmera para fotografar exames clínicos. Toque em "Configurações" para habilitar a permissão.'
-                  : 'O MedCases Pro precisa de acesso à galeria para importar imagens de exames. Toque em "Configurações" para habilitar a permissão.'),
+                  ? 'O MedCases Pro precisa de acesso à câmera para fotografar '
+                    'exames clínicos. Toque em "Configurações" para habilitar a permissão.'
+                  : 'O MedCases Pro precisa de acesso à galeria para importar '
+                    'imagens de exames. Toque em "Configurações" para habilitar a permissão.'),
           style: const TextStyle(color: _C.textSec, fontSize: 13, height: 1.5),
         ),
         actions: [
@@ -377,7 +385,7 @@ class _AnalyzeExamSheetState extends State<_AnalyzeExamSheet> {
           TextButton(
             onPressed: () {
               Navigator.pop(ctx);
-              openAppSettings(); // permission_handler → abre Ajustes do iOS
+              openAppSettings(); // abre Ajustes do iOS direto na tela do app
             },
             child: Text(
               _isEs ? 'Configuración' : 'Configurações',
@@ -409,7 +417,7 @@ class _AnalyzeExamSheetState extends State<_AnalyzeExamSheet> {
           ),
         ]),
         action: SnackBarAction(
-          label: _isEs ? 'OK' : 'OK',
+          label: 'OK',
           textColor: _C.red,
           onPressed: () {},
         ),
@@ -424,7 +432,7 @@ class _AnalyzeExamSheetState extends State<_AnalyzeExamSheet> {
     return 'image/jpeg';
   }
 
-  // ── Build ─────────────────────────────────────────────────────────────────
+  // ── Build ───────────────────────────────────────────────────────────────────
 
   @override
   Widget build(BuildContext context) {
@@ -437,7 +445,7 @@ class _AnalyzeExamSheetState extends State<_AnalyzeExamSheet> {
       ),
       child: Stack(
         children: [
-          // ── Conteúdo principal ─────────────────────────────────────────
+          // ── Conteúdo principal ───────────────────────────────────────────
           SafeArea(
             child: Padding(
               padding: const EdgeInsets.fromLTRB(20, 16, 20, 20),
@@ -496,7 +504,7 @@ class _AnalyzeExamSheetState extends State<_AnalyzeExamSheet> {
                     subtitle: isEs
                         ? 'Capturar con la cámara del dispositivo'
                         : 'Capturar usando a câmera do dispositivo',
-                    onTap: _onCamera,
+                    onTap: _loading ? null : _onCamera,
                   ),
                   _OptionTile(
                     icon: Icons.image_rounded,
@@ -506,7 +514,7 @@ class _AnalyzeExamSheetState extends State<_AnalyzeExamSheet> {
                     subtitle: isEs
                         ? 'Seleccionar archivo desde la galería'
                         : 'Escolher arquivo direto da galeria',
-                    onTap: _onGallery,
+                    onTap: _loading ? null : _onGallery,
                   ),
                   _OptionTile(
                     icon: Icons.picture_as_pdf_rounded,
@@ -514,7 +522,7 @@ class _AnalyzeExamSheetState extends State<_AnalyzeExamSheet> {
                     subtitle: isEs
                         ? 'Procesar laudo digital integrado'
                         : 'Processar laudo digital integrado',
-                    onTap: _onPdf,
+                    onTap: _loading ? null : _onPdf,
                   ),
 
                   // Colar texto (expansível)
@@ -533,7 +541,7 @@ class _AnalyzeExamSheetState extends State<_AnalyzeExamSheet> {
                       color: _C.textSec,
                       size: 20,
                     ),
-                    onTap: _onPasteText,
+                    onTap: _loading ? null : _onPasteText,
                   ),
 
                   // Campo de texto expansível
@@ -544,7 +552,7 @@ class _AnalyzeExamSheetState extends State<_AnalyzeExamSheet> {
                         ? _TextInputPanel(
                             controller: _textCtrl,
                             isEs: isEs,
-                            onSubmit: _submitText,
+                            onSubmit: _loading ? () {} : _submitText,
                           )
                         : const SizedBox.shrink(),
                   ),
@@ -559,12 +567,12 @@ class _AnalyzeExamSheetState extends State<_AnalyzeExamSheet> {
             ),
           ),
 
-          // ── Loading overlay ────────────────────────────────────────────
+          // ── Loading overlay ──────────────────────────────────────────────
           if (_loading)
             Positioned.fill(
               child: Container(
                 decoration: BoxDecoration(
-                  color: Colors.black.withValues(alpha: 0.75),
+                  color: Colors.black.withValues(alpha: 0.80),
                   borderRadius: const BorderRadius.vertical(
                     top: Radius.circular(24),
                   ),
@@ -573,13 +581,13 @@ class _AnalyzeExamSheetState extends State<_AnalyzeExamSheet> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     const SizedBox(
-                      width: 36, height: 36,
+                      width: 40, height: 40,
                       child: CircularProgressIndicator(
                         color: _C.green,
                         strokeWidth: 3,
                       ),
                     ),
-                    const SizedBox(height: 14),
+                    const SizedBox(height: 16),
                     Text(
                       _loadingMsg,
                       style: const TextStyle(
@@ -588,7 +596,7 @@ class _AnalyzeExamSheetState extends State<_AnalyzeExamSheet> {
                         fontWeight: FontWeight.w600,
                       ),
                     ),
-                    const SizedBox(height: 4),
+                    const SizedBox(height: 6),
                     Text(
                       isEs
                           ? 'Puede tardar hasta 30 segundos...'
@@ -606,7 +614,6 @@ class _AnalyzeExamSheetState extends State<_AnalyzeExamSheet> {
 }
 
 // ── Card de dicas de captura ───────────────────────────────────────────────────
-
 class _TipsCard extends StatelessWidget {
   final bool isEs;
   const _TipsCard({required this.isEs});
@@ -659,23 +666,20 @@ class _TipRow extends StatelessWidget {
       Icon(icon, size: 14, color: _C.green),
       const SizedBox(width: 8),
       Expanded(
-        child: Text(
-          text,
-          style: const TextStyle(color: _C.textSec, fontSize: 12),
-        ),
+        child: Text(text,
+          style: const TextStyle(color: _C.textSec, fontSize: 12)),
       ),
     ]);
   }
 }
 
 // ── Tile de opção ──────────────────────────────────────────────────────────────
-
 class _OptionTile extends StatelessWidget {
-  final IconData icon;
-  final String title;
-  final String subtitle;
-  final VoidCallback onTap;
-  final Widget? trailing;
+  final IconData       icon;
+  final String         title;
+  final String         subtitle;
+  final VoidCallback?  onTap;      // nullable → desabilitado durante loading
+  final Widget?        trailing;
 
   const _OptionTile({
     required this.icon,
@@ -687,6 +691,7 @@ class _OptionTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final disabled = onTap == null;
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
       decoration: BoxDecoration(
@@ -702,48 +707,44 @@ class _OptionTile extends StatelessWidget {
           borderRadius: BorderRadius.circular(14),
           splashColor: _C.green.withValues(alpha: 0.08),
           highlightColor: _C.green.withValues(alpha: 0.04),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-            child: Row(children: [
-              Container(
-                width: 40, height: 40,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: _C.green.withValues(alpha: 0.10),
-                ),
-                child: Icon(icon, color: _C.green, size: 20),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      title,
-                      style: const TextStyle(
-                        color: _C.textPrimary,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                    const SizedBox(height: 1),
-                    Text(
-                      subtitle,
-                      style: const TextStyle(
-                        color: _C.textSec,
-                        fontSize: 12,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              trailing ??
-                  const Icon(
-                    Icons.chevron_right_rounded,
-                    color: _C.textSec,
-                    size: 20,
+          child: Opacity(
+            opacity: disabled ? 0.45 : 1.0,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+              child: Row(children: [
+                Container(
+                  width: 40, height: 40,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: _C.green.withValues(alpha: 0.10),
                   ),
-            ]),
+                  child: Icon(icon, color: _C.green, size: 20),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(title,
+                        style: const TextStyle(
+                          color: _C.textPrimary,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w700,
+                        )),
+                      const SizedBox(height: 1),
+                      Text(subtitle,
+                        style: const TextStyle(
+                          color: _C.textSec,
+                          fontSize: 12,
+                        )),
+                    ],
+                  ),
+                ),
+                trailing ??
+                    const Icon(Icons.chevron_right_rounded,
+                        color: _C.textSec, size: 20),
+              ]),
+            ),
           ),
         ),
       ),
@@ -752,7 +753,6 @@ class _OptionTile extends StatelessWidget {
 }
 
 // ── Painel de entrada de texto ─────────────────────────────────────────────────
-
 class _TextInputPanel extends StatelessWidget {
   final TextEditingController controller;
   final bool isEs;
@@ -840,7 +840,6 @@ class _TextInputPanel extends StatelessWidget {
 }
 
 // ── Banner: API key não configurada ───────────────────────────────────────────
-
 class _NoApiKeyBanner extends StatelessWidget {
   final bool isEs;
   const _NoApiKeyBanner({required this.isEs});
@@ -852,9 +851,7 @@ class _NoApiKeyBanner extends StatelessWidget {
       decoration: BoxDecoration(
         color: _C.amberBg,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: _C.amber.withValues(alpha: 0.30),
-        ),
+        border: Border.all(color: _C.amber.withValues(alpha: 0.30)),
       ),
       child: Row(children: [
         const Icon(Icons.link_off_rounded, color: _C.amber, size: 16),
@@ -862,8 +859,8 @@ class _NoApiKeyBanner extends StatelessWidget {
         Expanded(
           child: Text(
             isEs
-                ? 'IA no conectada. Ve al menú lateral → "Conectar IA" para activar '
-                  'la extracción automática.'
+                ? 'IA no conectada. Ve al menú lateral → "Conectar IA" para '
+                  'activar la extracción automática.'
                 : 'IA não conectada. Acesse o menu lateral → "Conectar IA" para '
                   'ativar a extração automática.',
             style: const TextStyle(
