@@ -26,6 +26,9 @@
 	<true/>
 
 	<!-- ── Privacidade ───────────────────────────────────────────────────── -->
+	<!-- Câmera: captura de imagens de exames laboratoriais para análise por IA -->
+	<key>NSCameraUsageDescription</key>
+	<string>MedCases Pro accesses the camera exclusively to allow the healthcare professional to photograph laboratory reports and clinical exam results for automatic AI-assisted data extraction. Images are processed only within the application and are not stored or shared with third parties.</string>
 	<!-- Microfone: exclusivamente para ditado de evolução clínica (STT)     -->
 	<key>NSMicrophoneUsageDescription</key>
 	<string>MedCases Pro precisa acessar o microfone exclusivamente para permitir que o profissional médico dite evoluções clínicas e anotações do prontuário por voz, convertendo a fala em texto diretamente no dispositivo. O áudio é processado apenas localmente pelo sistema de reconhecimento de voz do iOS e não é armazenado, transmitido ou compartilhado com servidores externos.</string>

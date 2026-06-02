@@ -38,6 +38,7 @@ dependencies:
 
   # File picker — selecionar PDFs no web/mobile
   file_picker: 8.1.7
+  image_picker: ^1.1.2
 
   # Google Sign-In OAuth (Gemini via conta Google)
   google_sign_in: 6.2.1

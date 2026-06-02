@@ -17,8 +17,10 @@
 // ─────────────────────────────────────────────────────────────────────────────
 
 import 'dart:typed_data';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:image_picker/image_picker.dart';
 import '../models/lab_result_model.dart';
 import '../screens/lab_review_screen.dart';
 import '../services/lab_parser_service.dart';
@@ -81,44 +83,71 @@ class _AnalyzeExamSheetState extends State<_AnalyzeExamSheet> {
 
   // ── Handlers de cada opção ────────────────────────────────────────────────
 
-  /// Câmera — FilePicker abre câmera diretamente no mobile,
-  /// ou galeria no web (sem suporte a câmera via browser).
+  /// Câmera:
+  ///   - Nativo (iOS/Android): image_picker → câmera real com permissão declarada
+  ///   - Web: file_picker → seletor de arquivo (browser não tem câmera via FilePicker)
   Future<void> _onCamera() async {
-    Navigator.pop(context); // fecha o sheet antes de abrir o picker nativo
+    Navigator.pop(context);
     await Future.delayed(const Duration(milliseconds: 200));
     if (!mounted) return;
 
-    final result = await FilePicker.platform.pickFiles(
-      type: FileType.image,
-      withData: true,
-      // allowCompression: true diminui o tamanho do inline_data enviado ao Gemini
-    );
-    if (!mounted) return;
-    if (result == null || result.files.isEmpty) return;
-
-    final bytes = result.files.first.bytes;
-    if (bytes == null) return;
-
-    await _analyzeImage(bytes, _guessMime(result.files.first.name));
+    if (kIsWeb) {
+      // Web: abre galeria/arquivo do browser
+      final result = await FilePicker.platform.pickFiles(
+        type: FileType.image,
+        withData: true,
+      );
+      if (!mounted) return;
+      if (result == null || result.files.isEmpty) return;
+      final bytes = result.files.first.bytes;
+      if (bytes == null) return;
+      await _analyzeImage(bytes, _guessMime(result.files.first.name));
+    } else {
+      // Nativo: image_picker abre câmera com NSCameraUsageDescription declarada
+      final picker = ImagePicker();
+      final XFile? photo = await picker.pickImage(
+        source: ImageSource.camera,
+        imageQuality: 90,
+        preferredCameraDevice: CameraDevice.rear,
+      );
+      if (!mounted) return;
+      if (photo == null) return;
+      final bytes = await photo.readAsBytes();
+      await _analyzeImage(bytes, _guessMime(photo.name));
+    }
   }
 
-  /// Galeria / Screenshot
+  /// Galeria / Screenshot:
+  ///   - Nativo: image_picker → galeria com NSPhotoLibraryUsageDescription
+  ///   - Web: file_picker → seletor nativo do browser
   Future<void> _onGallery() async {
     Navigator.pop(context);
     await Future.delayed(const Duration(milliseconds: 200));
     if (!mounted) return;
 
-    final result = await FilePicker.platform.pickFiles(
-      type: FileType.image,
-      withData: true,
-    );
-    if (!mounted) return;
-    if (result == null || result.files.isEmpty) return;
-
-    final bytes = result.files.first.bytes;
-    if (bytes == null) return;
-
-    await _analyzeImage(bytes, _guessMime(result.files.first.name));
+    if (kIsWeb) {
+      final result = await FilePicker.platform.pickFiles(
+        type: FileType.image,
+        withData: true,
+      );
+      if (!mounted) return;
+      if (result == null || result.files.isEmpty) return;
+      final bytes = result.files.first.bytes;
+      if (bytes == null) return;
+      await _analyzeImage(bytes, _guessMime(result.files.first.name));
+    } else {
+      // Nativo: image_picker usa PHPickerViewController (iOS 14+)
+      // sem exibir o sheet nativo sobreposto do FilePicker
+      final picker = ImagePicker();
+      final XFile? image = await picker.pickImage(
+        source: ImageSource.gallery,
+        imageQuality: 90,
+      );
+      if (!mounted) return;
+      if (image == null) return;
+      final bytes = await image.readAsBytes();
+      await _analyzeImage(bytes, _guessMime(image.name));
+    }
   }
 
   /// PDF
