@@ -1304,7 +1304,7 @@ class _AgeCardState extends State<_AgeCard> with SingleTickerProviderStateMixin 
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // HOME V2 — MIGUARDIA SECTION (item 6)
-// Wrapper da seção MiGuardia com cabeçalho premium e novo subtítulo.
+// Wrapper da seção MiGuardia — card limpo com padding interno.
 // ═══════════════════════════════════════════════════════════════════════════════
 class _HomeMiGuardiaSection extends StatelessWidget {
   final bool dark;
@@ -1324,8 +1324,10 @@ class _HomeMiGuardiaSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cardBg = dark ? const Color(0xFF0E1A12) : Colors.white;
+    // Acento dourado na borda esquerda para sinalizar "item especial"
+    final leftAccent = dark ? const Color(0xFFC5A365) : const Color(0xFFB8954E);
     final border = dark
-        ? Colors.white.withValues(alpha: 0.06)
+        ? Colors.white.withValues(alpha: 0.07)
         : const Color(0xFFE4EEE9);
 
     return Container(
@@ -1338,15 +1340,33 @@ class _HomeMiGuardiaSection extends StatelessWidget {
             : [
                 BoxShadow(
                   color: Colors.black.withValues(alpha: 0.05),
-                  blurRadius: 12,
-                  offset: const Offset(0, 3),
+                  blurRadius: 14,
+                  offset: const Offset(0, 4),
                 ),
               ],
       ),
-      child: MeuPlantaoDashboard(
-        onOpenDrug:  onOpenDrug,
-        onOpenCalc:  onOpenCalc,
-        onManageTap: onManageTap,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(20),
+        child: IntrinsicHeight(
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              // Barra dourada à esquerda
+              Container(width: 3, color: leftAccent),
+              // Conteúdo principal
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(14, 14, 14, 14),
+                  child: MeuPlantaoDashboard(
+                    onOpenDrug:  onOpenDrug,
+                    onOpenCalc:  onOpenCalc,
+                    onManageTap: onManageTap,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -2831,12 +2851,12 @@ class _QuickEmergenciesState extends State<_QuickEmergencies> {
     ('iam_supra',             'IAM',              Icons.favorite_border_rounded),
     ('avc_isquemico',         'AVC',              Icons.bolt_rounded),
     ('sepse',                 'Sepse',            Icons.emergency_rounded),
-    ('choque_septico',        'Choque Séptico',   Icons.warning_amber_rounded),
+    ('choque_septico_avancado', 'Choque Séptico',  Icons.warning_amber_rounded),
     ('anafilaxia',            'Anafilaxia',       Icons.warning_rounded),
     ('hiperpotassemia_grave', 'Hipercalemia',     Icons.science_rounded),
     ('tep_agudo',             'TEP Instável',     Icons.bloodtype_rounded),
     ('tpsv',                  'TPSV',             Icons.favorite_rounded),
-    ('cetoacidose',           'Cetoacidose',      Icons.water_drop_rounded),
+    ('cetoacidose_diabetica',  'Cetoacidose',      Icons.water_drop_rounded),
     ('asma_grave',            'Crise Asmática',   Icons.air_rounded),
   ];
 

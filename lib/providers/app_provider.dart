@@ -29,6 +29,68 @@ enum PinResult {
   limitReached,   // limite de itens atingido (sem replaceOldest)
 }
 
+// ── Paciente salvo no Plantão/Guardia ─────────────────────────────────────────
+class PlantaoPatient {
+  final String id;          // UUID local
+  final String name;        // Nome do paciente
+  final String room;        // Leito / Quarto (ex: "204-A")
+  final String diagnosis;   // Diagnóstico principal
+  final String treatment;   // Tratamento em uso
+  final String notes;       // Notas livres adicionais
+  final DateTime savedAt;
+
+  PlantaoPatient({
+    required this.id,
+    required this.name,
+    required this.room,
+    required this.diagnosis,
+    required this.treatment,
+    required this.notes,
+    required this.savedAt,
+  });
+
+  PlantaoPatient copyWith({
+    String? name,
+    String? room,
+    String? diagnosis,
+    String? treatment,
+    String? notes,
+  }) => PlantaoPatient(
+    id: id,
+    name: name ?? this.name,
+    room: room ?? this.room,
+    diagnosis: diagnosis ?? this.diagnosis,
+    treatment: treatment ?? this.treatment,
+    notes: notes ?? this.notes,
+    savedAt: savedAt,
+  );
+
+  // serialização simples separada por §
+  String toRaw() =>
+      '$id§${_esc(name)}§${_esc(room)}§${_esc(diagnosis)}§${_esc(treatment)}§${_esc(notes)}§${savedAt.millisecondsSinceEpoch}';
+
+  static PlantaoPatient? fromRaw(String raw) {
+    try {
+      final p = raw.split('§');
+      if (p.length < 7) return null;
+      return PlantaoPatient(
+        id: p[0],
+        name: _unesc(p[1]),
+        room: _unesc(p[2]),
+        diagnosis: _unesc(p[3]),
+        treatment: _unesc(p[4]),
+        notes: _unesc(p[5]),
+        savedAt: DateTime.fromMillisecondsSinceEpoch(int.tryParse(p[6]) ?? 0),
+      );
+    } catch (_) {
+      return null;
+    }
+  }
+
+  static String _esc(String s)   => s.replaceAll('§', '¶').replaceAll('\n', '↵');
+  static String _unesc(String s) => s.replaceAll('¶', '§').replaceAll('↵', '\n');
+}
+
 class DoseInfo {
   final String main;
   final String detail;
@@ -102,6 +164,9 @@ class AppProvider extends ChangeNotifier {
   static const int _kMaxPinnedCalcs = 3;
   List<String> _pinnedDrugIds = [];   // IDs de DrugModel
   List<String> _pinnedCalcIds = [];   // IDs de atalho de calculadora
+
+  // ── Estado — Pacientes do Plantão ─────────────────────────────────────────
+  List<PlantaoPatient> _plantaoPatients = [];
 
   // ── Estado — Histórias Clínicas ───────────────────────────────────────────
   List<ClinicalHistoryModel> _myHistories = [];
@@ -214,6 +279,7 @@ class AppProvider extends ChangeNotifier {
 
   List<String> get pinnedDrugIds => List.unmodifiable(_pinnedDrugIds);
   List<String> get pinnedCalcIds => List.unmodifiable(_pinnedCalcIds);
+  List<PlantaoPatient> get plantaoPatients => List.unmodifiable(_plantaoPatients);
 
   /// Fármacos fixados resolvidos (DrugModel). Filtra IDs inválidos silenciosamente.
   List<DrugModel> get pinnedDrugs {
@@ -412,6 +478,7 @@ class AppProvider extends ChangeNotifier {
     // Limpa plantão (recarregado ao próximo login)
     _pinnedDrugIds = [];
     _pinnedCalcIds = [];
+    _plantaoPatients = [];
     notifyListeners();
   }
 
@@ -605,6 +672,10 @@ class AppProvider extends ChangeNotifier {
       // Meu Plantão — carregamento local por uid
       _pinnedDrugIds = p.getStringList(_k('pinnedDrugs', uid)) ?? [];
       _pinnedCalcIds = p.getStringList(_k('pinnedCalcs', uid)) ?? [];
+      _plantaoPatients = (p.getStringList(_k('plantaoPatients', uid)) ?? [])
+          .map(PlantaoPatient.fromRaw)
+          .whereType<PlantaoPatient>()
+          .toList();
 
       final casesJson = p.getString(caseKey) ?? p.getString('customCases');
       if (casesJson != null) {
@@ -1084,12 +1155,42 @@ class AppProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  // ── Pacientes do Plantão ──────────────────────────────────────────────────
+
+  /// Adiciona ou actualiza um paciente no plantão.
+  void savePlantaoPatient(PlantaoPatient patient) {
+    final idx = _plantaoPatients.indexWhere((p) => p.id == patient.id);
+    if (idx >= 0) {
+      _plantaoPatients[idx] = patient;
+    } else {
+      _plantaoPatients.insert(0, patient);
+    }
+    _savePlantaoLocal();
+    notifyListeners();
+  }
+
+  /// Remove um paciente do plantão pelo id.
+  void removePlantaoPatient(String id) {
+    _plantaoPatients.removeWhere((p) => p.id == id);
+    _savePlantaoLocal();
+    notifyListeners();
+  }
+
+  /// Limpa todos os pacientes do plantão.
+  void clearPlantaoPatients() {
+    _plantaoPatients.clear();
+    _savePlantaoLocal();
+    notifyListeners();
+  }
+
   // Persiste o estado do plantão em SharedPreferences (local, sem Firestore)
   void _savePlantaoLocal() {
     final uid = _currentUser?.uid;
     SharedPreferences.getInstance().then((p) {
       p.setStringList(_k('pinnedDrugs', uid), _pinnedDrugIds);
       p.setStringList(_k('pinnedCalcs', uid), _pinnedCalcIds);
+      p.setStringList(_k('plantaoPatients', uid),
+          _plantaoPatients.map((pt) => pt.toRaw()).toList());
     }).catchError((_) {});
   }
 
