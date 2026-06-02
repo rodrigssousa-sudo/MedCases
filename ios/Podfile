@@ -1,0 +1,100 @@
+# Podfile — MedCases Pro iOS
+# permission_handler: declarar APENAS as permissões realmente usadas no app.
+# Permissões não declaradas aqui são REMOVIDAS pelo compilador (reduz binário
+# e garante que o Info.plist não contenha chaves que a Apple pode rejeitar).
+
+platform :ios, '13.0'
+
+# CocoaPods analytics: desabilitado para builds mais rápidos
+ENV['COCOAPODS_DISABLE_STATS'] = 'true'
+
+# ── permission_handler: habilitar somente permissões utilizadas ──────────────
+# CAMERA        → _onCamera() em lab_exam_bottom_sheet.dart
+# PHOTOS        → _onGallery() em lab_exam_bottom_sheet.dart
+# MICROPHONE    → reconhecimento de voz (ditado de evolução clínica)
+# Todas as outras permissões são desabilitadas explicitamente.
+$iOSVersion = '13.0'
+
+pre_install do |installer|
+  installer.pod_targets.each do |pod|
+    if pod.name.eql?('permission_handler_apple')
+      def pod.build_type
+        Pod::BuildType.static_library
+      end
+    end
+  end
+end
+
+project 'Runner', {
+  'Debug' => :debug,
+  'Profile' => :release,
+  'Release' => :release,
+}
+
+def flutter_root
+  generated_xcode_build_settings_path = File.expand_path(File.join('..', 'Flutter', 'Generated.xcconfig'), __FILE__)
+  unless File.exist?(generated_xcode_build_settings_path)
+    raise "#{generated_xcode_build_settings_path} must exist. If you're running pod install manually, make sure flutter pub get is executed first"
+  end
+
+  File.foreach(generated_xcode_build_settings_path) do |line|
+    matches = line.match(/FLUTTER_ROOT\=(.*)/)
+    return matches[1].strip if matches
+  end
+  raise "FLUTTER_ROOT not found in #{generated_xcode_build_settings_path}. Try deleting Generated.xcconfig, then run flutter pub get"
+end
+
+require File.expand_path(File.join('packages', 'flutter_tools', 'bin', 'podhelper'), flutter_root)
+
+flutter_ios_podfile_setup
+
+target 'Runner' do
+  use_frameworks!
+  use_modular_headers!
+
+  flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))
+
+  target 'RunnerTests' do
+    inherit! :search_paths
+  end
+end
+
+post_install do |installer|
+  installer.pods_project.targets.each do |target|
+    flutter_additional_ios_build_settings(target)
+
+    # ── permission_handler: definir SOMENTE as permissões usadas ────────────
+    # Qualquer permissão listada como 0 é removida do binário final.
+    # Referência: https://pub.dev/packages/permission_handler
+    target.build_configurations.each do |config|
+      config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= [
+        '$(inherited)',
+
+        ## Permissões ATIVAS no MedCases Pro:
+        'PERMISSION_CAMERA=1',       # lab_exam_bottom_sheet: Tirar Foto
+        'PERMISSION_PHOTOS=1',       # lab_exam_bottom_sheet: Enviar Imagem
+        'PERMISSION_MICROPHONE=1',   # ditado de evolução clínica (STT)
+
+        ## Todas as demais DESABILITADAS (não usadas / não declaradas):
+        'PERMISSION_APP_TRACKING_TRANSPARENCY=0',
+        'PERMISSION_BLUETOOTH=0',
+        'PERMISSION_CALENDARS=0',
+        'PERMISSION_CONTACTS=0',
+        'PERMISSION_LOCATION=0',
+        'PERMISSION_LOCATION_ALWAYS=0',
+        'PERMISSION_LOCATION_WHEN_IN_USE=0',
+        'PERMISSION_MEDIA_LIBRARY=0',
+        'PERMISSION_MOTION=0',
+        'PERMISSION_NOTIFICATIONS=0',
+        'PERMISSION_REMINDERS=0',
+        'PERMISSION_SENSORS=0',
+        'PERMISSION_SPEECH_RECOGNIZER=0',
+        'PERMISSION_PHOTOS_ADD_ONLY=0',
+        'PERMISSION_ASSISTANT=0',
+        'PERMISSION_CRITICAL_ALERTS=0',
+        'PERMISSION_HEALTH=0',
+        'PERMISSION_BACKGROUND_REFRESH=0',
+      ]
+    end
+  end
+end

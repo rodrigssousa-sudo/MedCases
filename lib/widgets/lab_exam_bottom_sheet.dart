@@ -21,6 +21,7 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
 import '../models/lab_result_model.dart';
 import '../screens/lab_review_screen.dart';
 import '../services/lab_parser_service.dart';
@@ -84,15 +85,14 @@ class _AnalyzeExamSheetState extends State<_AnalyzeExamSheet> {
   // ── Handlers de cada opção ────────────────────────────────────────────────
 
   /// Câmera:
-  ///   - Nativo (iOS/Android): image_picker → câmera real com permissão declarada
-  ///   - Web: file_picker → seletor de arquivo (browser não tem câmera via FilePicker)
+  ///   - Web: file_picker → seletor nativo do browser
+  ///   - Nativo iOS/Android: solicita permissão explícita → image_picker
   Future<void> _onCamera() async {
     Navigator.pop(context);
     await Future.delayed(const Duration(milliseconds: 200));
     if (!mounted) return;
 
     if (kIsWeb) {
-      // Web: abre galeria/arquivo do browser
       final result = await FilePicker.platform.pickFiles(
         type: FileType.image,
         withData: true,
@@ -102,8 +102,16 @@ class _AnalyzeExamSheetState extends State<_AnalyzeExamSheet> {
       final bytes = result.files.first.bytes;
       if (bytes == null) return;
       await _analyzeImage(bytes, _guessMime(result.files.first.name));
-    } else {
-      // Nativo: image_picker abre câmera com NSCameraUsageDescription declarada
+      return;
+    }
+
+    // ── Nativo: solicitar permissão de câmera explicitamente ──────────────
+    final status = await Permission.camera.request();
+
+    if (!mounted) return;
+
+    if (status.isGranted) {
+      // Permissão concedida → abre câmera
       final picker = ImagePicker();
       final XFile? photo = await picker.pickImage(
         source: ImageSource.camera,
@@ -114,12 +122,22 @@ class _AnalyzeExamSheetState extends State<_AnalyzeExamSheet> {
       if (photo == null) return;
       final bytes = await photo.readAsBytes();
       await _analyzeImage(bytes, _guessMime(photo.name));
+
+    } else if (status.isPermanentlyDenied) {
+      // Usuário negou permanentemente → orientar para configurações
+      _showPermissionDeniedDialog(isCamera: true);
+
+    } else {
+      // Negado desta vez — mostrar snackbar suave
+      _showError(_isEs
+          ? 'Se necesita acceso a la cámara para fotografiar el examen.'
+          : 'É necessário acesso à câmera para fotografar o exame.');
     }
   }
 
   /// Galeria / Screenshot:
-  ///   - Nativo: image_picker → galeria com NSPhotoLibraryUsageDescription
   ///   - Web: file_picker → seletor nativo do browser
+  ///   - Nativo iOS/Android: solicita permissão de fotos → image_picker
   Future<void> _onGallery() async {
     Navigator.pop(context);
     await Future.delayed(const Duration(milliseconds: 200));
@@ -135,9 +153,18 @@ class _AnalyzeExamSheetState extends State<_AnalyzeExamSheet> {
       final bytes = result.files.first.bytes;
       if (bytes == null) return;
       await _analyzeImage(bytes, _guessMime(result.files.first.name));
-    } else {
-      // Nativo: image_picker usa PHPickerViewController (iOS 14+)
-      // sem exibir o sheet nativo sobreposto do FilePicker
+      return;
+    }
+
+    // ── Nativo: solicitar permissão da biblioteca de fotos ────────────────
+    // No iOS 14+, PHPickerViewController não exige permissão para leitura
+    // limitada — mas solicitamos para garantir compatibilidade e transparência
+    final status = await Permission.photos.request();
+
+    if (!mounted) return;
+
+    if (status.isGranted || status.isLimited) {
+      // isLimited = acesso parcial (iOS 14+ "Selected Photos") — suficiente
       final picker = ImagePicker();
       final XFile? image = await picker.pickImage(
         source: ImageSource.gallery,
@@ -147,6 +174,14 @@ class _AnalyzeExamSheetState extends State<_AnalyzeExamSheet> {
       if (image == null) return;
       final bytes = await image.readAsBytes();
       await _analyzeImage(bytes, _guessMime(image.name));
+
+    } else if (status.isPermanentlyDenied) {
+      _showPermissionDeniedDialog(isCamera: false);
+
+    } else {
+      _showError(_isEs
+          ? 'Se necesita acceso a la galería para seleccionar el examen.'
+          : 'É necessário acesso à galeria para selecionar o exame.');
     }
   }
 
@@ -295,6 +330,64 @@ class _AnalyzeExamSheetState extends State<_AnalyzeExamSheet> {
   void _stopLoading() {
     if (!mounted) return;
     setState(() => _loading = false);
+  }
+
+  // ── Diálogo de permissão permanentemente negada ───────────────────────────
+  void _showPermissionDeniedDialog({required bool isCamera}) {
+    if (!mounted) return;
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: const Color(0xFF101614),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: Row(children: [
+          Icon(
+            isCamera ? Icons.camera_alt_rounded : Icons.photo_library_rounded,
+            color: _C.amber, size: 20,
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Text(
+              _isEs
+                  ? (isCamera ? 'Acceso a la Cámara' : 'Acceso a la Galería')
+                  : (isCamera ? 'Acesso à Câmera' : 'Acesso à Galeria'),
+              style: const TextStyle(
+                color: _C.textPrimary, fontSize: 16, fontWeight: FontWeight.w700),
+            ),
+          ),
+        ]),
+        content: Text(
+          _isEs
+              ? (isCamera
+                  ? 'MedCases Pro necesita acceso a la cámara para fotografiar exámenes clínicos. Toque "Configuración" para habilitar el permiso.'
+                  : 'MedCases Pro necesita acceso a la galería para importar imágenes de exámenes. Toque "Configuración" para habilitar el permiso.')
+              : (isCamera
+                  ? 'O MedCases Pro precisa de acesso à câmera para fotografar exames clínicos. Toque em "Configurações" para habilitar a permissão.'
+                  : 'O MedCases Pro precisa de acesso à galeria para importar imagens de exames. Toque em "Configurações" para habilitar a permissão.'),
+          style: const TextStyle(color: _C.textSec, fontSize: 13, height: 1.5),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: Text(
+              _isEs ? 'Cancelar' : 'Cancelar',
+              style: const TextStyle(color: _C.textSec),
+            ),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(ctx);
+              openAppSettings(); // permission_handler → abre Ajustes do iOS
+            },
+            child: Text(
+              _isEs ? 'Configuración' : 'Configurações',
+              style: const TextStyle(
+                color: _C.green, fontWeight: FontWeight.w700),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   void _showError(String message) {
