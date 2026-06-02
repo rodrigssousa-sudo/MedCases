@@ -90,8 +90,8 @@ class _HomeScreenState extends State<HomeScreen> {
         icon: Icons.description_rounded,
         label: isEs ? 'PRESCRIPCIONES' : 'PRESCRIÇÕES',
         subtitle: isEs
-            ? '${prescriptionModels(true).length} modelos · Emergencias · Guardia · Clínica'
-            : '${prescriptionModels(false).length} modelos · Emergências · Plantão · Clínica',
+            ? '${prescriptionModels(true).length} ejemplos'
+            : '${prescriptionModels(false).length} exemplos',
         gradientColors: const [Color(0xFF2A0B52), Color(0xFF3D1280), Color(0xFF5B21B6)],
         accentColor: const Color(0xFFA78BFA),
         onTap: () => push(const _PrescripcionesShell()),
@@ -100,8 +100,8 @@ class _HomeScreenState extends State<HomeScreen> {
         icon: Icons.medication_rounded,
         label: 'FÁRMACOS',
         subtitle: isEs
-            ? '${uniqueDrugsCount} fármacos · Interacciones · Protocolos'
-            : '${uniqueDrugsCount} fármacos · Interações · Protocolos',
+            ? 'Actualizados en 2026'
+            : 'Atualizados em 2026',
         gradientColors: const [Color(0xFF3B2200), Color(0xFF6B3A00), Color(0xFF9A5B00)],
         accentColor: const Color(0xFFFBBF24),
         onTap: () => push(const _FarmacosShell()),
@@ -110,8 +110,8 @@ class _HomeScreenState extends State<HomeScreen> {
         icon: Icons.compare_arrows_rounded,
         label: isEs ? 'INTERACCIONES' : 'INTERAÇÕES',
         subtitle: isEs
-            ? '${DrugInteractionService.totalInteractions} pares · Severidad · Manejo clínico'
-            : '${DrugInteractionService.totalInteractions} pares · Severidade · Manejo clínico',
+            ? '+${DrugInteractionService.totalInteractions} pares con evidencia'
+            : '+${DrugInteractionService.totalInteractions} pares com evidência',
         gradientColors: const [Color(0xFF3B0A1E), Color(0xFF5E1234), Color(0xFF8B1E4F)],
         accentColor: const Color(0xFFFF6BA0),
         onTap: () => push(const DrugInteractionsScreen()),
@@ -119,7 +119,7 @@ class _HomeScreenState extends State<HomeScreen> {
       _HomeCardData(
         icon: Icons.person_rounded,
         label: 'ADULTO',
-        subtitle: isEs ? 'Protocolos adulto' : 'Protocolos adulto',
+        subtitle: isEs ? 'Crear un protocolo adulto' : 'Criar um protocolo adulto',
         gradientColors: const [Color(0xFF052E1A), Color(0xFF0A5C2E), Color(0xFF15803D)],
         accentColor: const Color(0xFF4ADE80),
         onTap: () => push(_AdultoShell(openProtocol: widget.openProtocol)),
@@ -276,8 +276,8 @@ class _HomeScreenState extends State<HomeScreen> {
           icon: Icons.description_rounded,
           label: isEs ? 'PRESCRIPCIONES' : 'PRESCRIÇÕES',
           subtitle: isEs
-              ? '${prescriptionModels(true).length} modelos · Emergencias · Guardia · Clínica'
-              : '${prescriptionModels(false).length} modelos · Emergências · Plantão · Clínica',
+              ? '${prescriptionModels(true).length} ejemplos'
+              : '${prescriptionModels(false).length} exemplos',
           gradientColors: const [Color(0xFF2A0B52), Color(0xFF3D1280), Color(0xFF5B21B6)],
           accentColor: const Color(0xFFA78BFA),
           dark: dark,
@@ -292,8 +292,8 @@ class _HomeScreenState extends State<HomeScreen> {
           icon: Icons.medication_rounded,
           label: 'FÁRMACOS',
           subtitle: isEs
-              ? '${uniqueDrugsCount} fármacos · Interacciones · Protocolos'
-              : '${uniqueDrugsCount} fármacos · Interações · Protocolos',
+              ? 'Actualizados en 2026'
+              : 'Atualizados em 2026',
           gradientColors: const [Color(0xFF3B2200), Color(0xFF6B3A00), Color(0xFF9A5B00)],
           accentColor: const Color(0xFFFBBF24),
           dark: dark,
@@ -308,8 +308,8 @@ class _HomeScreenState extends State<HomeScreen> {
           icon: Icons.compare_arrows_rounded,
           label: isEs ? 'INTERACCIONES' : 'INTERAÇÕES',
           subtitle: isEs
-              ? '${DrugInteractionService.totalInteractions} pares · Severidad · Manejo clínico'
-              : '${DrugInteractionService.totalInteractions} pares · Severidade · Manejo clínico',
+              ? '+${DrugInteractionService.totalInteractions} pares con evidencia'
+              : '+${DrugInteractionService.totalInteractions} pares com evidência',
           gradientColors: const [Color(0xFF3B0A1E), Color(0xFF5E1234), Color(0xFF8B1E4F)],
           accentColor: const Color(0xFFFF6BA0),
           dark: dark,
@@ -1166,7 +1166,7 @@ class _HomeAdultoPediatriaRow extends StatelessWidget {
       Expanded(child: _AgeCard(
         icon: Icons.person_rounded,
         label: 'ADULTO',
-        subtitle: isEs ? 'Protocolos adulto' : 'Protocolos adulto',
+        subtitle: isEs ? 'Crear un protocolo adulto' : 'Criar um protocolo adulto',
         gradientColors: const [Color(0xFF052E1A), Color(0xFF0A5C2E), Color(0xFF15803D)],
         accentColor: const Color(0xFF4ADE80),
         dark: dark,
@@ -3332,8 +3332,8 @@ class _FarmacosShellState extends State<_FarmacosShell> {
           icon:    Icons.medication_rounded,
           label:   'FÁRMACOS',
           subtitle: isEs
-              ? '${uniqueDrugsCount} fármacos · Interacciones · Protocolos'
-              : '${uniqueDrugsCount} fármacos · Interações · Protocolos',
+              ? 'Actualizados en 2026'
+              : 'Atualizados em 2026',
         ),
         Expanded(
           child: _ready
@@ -3426,8 +3426,8 @@ class _PrescripcionesShell extends StatelessWidget {
           icon:    Icons.description_rounded,
           label:   isEs ? 'PRESCRIPCIONES' : 'PRESCRIÇÕES',
           subtitle: isEs
-              ? 'Modelos · Emergencias · Guardia · Clínica'
-              : 'Modelos · Emergências · Plantão · Clínica',
+              ? '${prescriptionModels(true).length} ejemplos'
+              : '${prescriptionModels(false).length} exemplos',
         ),
         const Expanded(child: PrescripcionesScreen()),
       ]),
