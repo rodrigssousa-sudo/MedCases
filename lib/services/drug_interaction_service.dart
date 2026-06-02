@@ -97,28 +97,140 @@ class DrugInteraction {
   // A tradução automática cobre os padrões mais frequentes da base de dados.
 
   String clinicalAlertL10n({bool isEs = true}) {
-    if (isEs) return clinicalAlert;
+    if (isEs) return _toEs(clinicalAlert);
     if (clinicalAlertPt != null) return clinicalAlertPt!;
     return _translateAlert(clinicalAlert);
   }
 
   String effectL10n({bool isEs = true}) {
-    if (isEs) return effect;
+    if (isEs) return _toEs(effect);
     if (effectPt != null) return effectPt!;
     return _translateText(effect);
   }
 
   String mechanismL10n({bool isEs = true}) {
-    if (isEs) return mechanism;
+    if (isEs) return _toEs(mechanism);
     if (mechanismPt != null) return mechanismPt!;
     return _translateText(mechanism);
   }
 
   String managementL10n({bool isEs = true}) {
-    if (isEs) return management;
+    if (isEs) return _toEs(management);
     if (managementPt != null) return managementPt!;
     return _translateText(management);
   }
+
+  // ── Normalizador PT → ES ──────────────────────────────────────────────────
+  // Alguns registros da base de dados foram inseridos com texto em PT ou misto.
+  // Este método converte os padrões PT mais frequentes para ES antes de exibir,
+  // garantindo que usuários com idioma ES vejam texto consistente em espanhol.
+  static String _toEs(String s) => s
+    // ── Verbos: forma PT → ES ──────────────────────────────────────────────
+    .replaceAll('Monitorar ', 'Monitorizar ')
+    .replaceAll('monitorar ', 'monitorizar ')
+    .replaceAll('Monitorar.', 'Monitorizar.')
+    .replaceAll('monitorar.', 'monitorizar.')
+    .replaceAll('Monitorar,', 'Monitorizar,')
+    .replaceAll('monitorar,', 'monitorizar,')
+    .replaceAll('monitorar\n', 'monitorizar\n')
+    .replaceAll('Cessar ', 'Suspender ')
+    .replaceAll('cessar ', 'suspender ')
+    .replaceAll('Cessar.', 'Suspender.')
+    .replaceAll('cessar.', 'suspender.')
+    .replaceAll('inibem ', 'inhiben ')
+    .replaceAll('Inibem ', 'Inhiben ')
+    .replaceAll('causam ', 'causan ')
+    .replaceAll('Causam ', 'Causan ')
+    .replaceAll('reduzem ', 'reducen ')
+    .replaceAll('Reduzem ', 'Reducen ')
+    .replaceAll('aumentam ', 'aumentan ')
+    .replaceAll('Aumentam ', 'Aumentan ')
+    .replaceAll('elevam ', 'elevan ')
+    .replaceAll('Elevam ', 'Elevan ')
+    .replaceAll('formam ', 'forman ')
+    .replaceAll('Formam ', 'Forman ')
+    .replaceAll('deslocam ', 'desplazan ')
+    .replaceAll('Deslocam ', 'Desplazan ')
+    .replaceAll('inibem.', 'inhiben.')
+    .replaceAll('causam.', 'causan.')
+    .replaceAll('reduzem.', 'reducen.')
+    .replaceAll('aumentam.', 'aumentan.')
+    .replaceAll(' inibe ', ' inhibe ')
+    .replaceAll(' Inibe ', ' Inhibe ')
+    .replaceAll(' reduz ', ' reduce ')
+    .replaceAll(' Reduz ', ' Reduce ')
+    .replaceAll(' eleva ', ' eleva ')  // same in ES
+    .replaceAll('reduzindo ', 'reduciendo ')
+    .replaceAll('Reduzindo ', 'Reduciendo ')
+    // ── Substantivos PT → ES ───────────────────────────────────────────────
+    .replaceAll('antiagregação', 'antiagregación')
+    .replaceAll('Antiagregação', 'Antiagregación')
+    .replaceAll('anticoagulação', 'anticoagulación')
+    .replaceAll('Anticoagulação', 'Anticoagulación')
+    .replaceAll('coagulação', 'coagulación')
+    .replaceAll('Coagulação', 'Coagulación')
+    .replaceAll('ativação', 'activación')
+    .replaceAll('Ativação', 'Activación')
+    .replaceAll('inativação', 'inactivación')
+    .replaceAll('Inativação', 'Inactivación')
+    .replaceAll('inibição', 'inhibición')
+    .replaceAll('Inibição', 'Inhibición')
+    .replaceAll('quelação', 'quelación')
+    .replaceAll('Quelação', 'Quelación')
+    .replaceAll('potenciação', 'potenciación')
+    .replaceAll('Potenciação', 'Potenciación')
+    .replaceAll('hiperestimulação', 'hiperestimulación')
+    .replaceAll('Hiperestimulação', 'Hiperestimulación')
+    .replaceAll('sangramento', 'sangrado')
+    .replaceAll('Sangramento', 'Sangrado')
+    .replaceAll('tiazídicos', 'tiazídicos')  // same
+    .replaceAll('Tiazídicos', 'Tiazídicos')  // same
+    .replaceAll('serotoninérgica', 'serotoninérgica')  // accepted in ES too
+    .replaceAll('hiperestimulação', 'hiperestimulación')
+    // ── Preposições / artigos PT → ES ──────────────────────────────────────
+    .replaceAll(' pelo ', ' por el ')
+    .replaceAll(' Pelo ', ' Por el ')
+    .replaceAll(' pela ', ' por la ')
+    .replaceAll(' Pela ', ' Por la ')
+    .replaceAll(' pelo\n', ' por el\n')
+    .replaceAll(' pela\n', ' por la\n')
+    .replaceAll('(pelo ', '(por el ')
+    .replaceAll('(pela ', '(por la ')
+    .replaceAll(' após ', ' después de ')
+    .replaceAll(' Após ', ' Después de ')
+    .replaceAll('após ', 'después de ')
+    .replaceAll(' ativamente', ' activamente')
+    .replaceAll('ativamente.', 'activamente.')
+    .replaceAll('ativamente,', 'activamente,')
+    // ── Adjetivos/advérbios PT → ES ────────────────────────────────────────
+    .replaceAll('essencial', 'esencial')
+    .replaceAll('Essencial', 'Esencial')
+    .replaceAll('necessário', 'necesario')
+    .replaceAll('Necessário', 'Necesario')
+    .replaceAll('disponível', 'disponible')
+    .replaceAll('Disponível', 'Disponible')
+    .replaceAll('insolúvel', 'insoluble')
+    .replaceAll('Insolúvel', 'Insoluble')
+    .replaceAll('drásticamente', 'drásticamente')  // same in ES
+    // ── Locuções mistas comuns ─────────────────────────────────────────────
+    .replaceAll('monitorar em SCA', 'monitorizar en SCA')
+    .replaceAll('monitorar em ', 'monitorizar en ')
+    .replaceAll('quando clinicamente', 'cuando clínicamente')
+    .replaceAll('Quando clinicamente', 'Cuando clínicamente')
+    .replaceAll('em compensação', 'en compensación')
+    .replaceAll('em SCA', 'en SCA')
+    .replaceAll('Combinación usada em', 'Combinación usada en')
+    .replaceAll('combinación usada em', 'combinación usada en')
+    .replaceAll('complexo insolúvel', 'complejo insoluble')
+    .replaceAll('complexo insoluble', 'complejo insoluble')
+    .replaceAll('do riesgo', 'del riesgo')
+    .replaceAll('do nivel', 'del nivel')
+    .replaceAll(' maior', ' mayor')
+    .replaceAll('qualquer', 'cualquier')
+    .replaceAll('Qualquer', 'Cualquier')
+    // ── Preposição ' em ' (PT) → ' en ' (ES) — seguro pois 'em' não existe em ES ──
+    .replaceAll(' em ', ' en ')
+    .replaceAll(' Em ', ' En ');
 
   // ── Tradutor automático ES → PT ───────────────────────────────────────────
   // Cobre padrões de alta frequência dos campos clinicalAlert, effect,
