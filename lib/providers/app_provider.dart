@@ -671,7 +671,8 @@ class AppProvider extends ChangeNotifier {
 
       // Meu Plantão — carregamento local por uid
       _pinnedDrugIds = p.getStringList(_k('pinnedDrugs', uid)) ?? [];
-      _pinnedCalcIds = p.getStringList(_k('pinnedCalcs', uid)) ?? [];
+      _pinnedCalcIds = p.getStringList(_k('pinnedCalcs', uid))
+          ?? ['calc_scores', 'calc_cardio', 'calc_eletrólitos', 'calc_infusao'];
       _plantaoPatients = (p.getStringList(_k('plantaoPatients', uid)) ?? [])
           .map(PlantaoPatient.fromRaw)
           .whereType<PlantaoPatient>()

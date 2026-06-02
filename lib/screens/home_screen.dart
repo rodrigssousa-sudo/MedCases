@@ -13,7 +13,7 @@ import '../services/notification_service.dart';
 import 'cockpit_screen.dart';
 import 'drugs_screen.dart' show DrugsScreen, showDrugDetailSheet;
 import 'prescripciones_screen.dart' show PrescripcionesScreen, prescriptionModels;
-import 'tools_screen.dart' show PediatricsTabContent, ToolsScreen;
+import 'tools_screen.dart' show PediatricsTabContent, ToolsScreen, toolsScreenTabNotifier;
 import 'prescripciones_screen.dart';
 import 'drug_interactions_screen.dart';
 import 'protocols_screen.dart' show openProtocolById, showProtocolDetail;
@@ -230,7 +230,9 @@ class _HomeScreenState extends State<HomeScreen> {
                         'calc_prescricoes': 6,
                         'calc_pediatria':   7,
                       };
-                      widget.onSubTabChange(calcTabMap[calcId] ?? 0);
+                      // Define a aba ANTES de mudar de tela para que o listener
+                      // do ToolsScreen já receba ao montar/ativar.
+                      toolsScreenTabNotifier.value = calcTabMap[calcId] ?? 0;
                       widget.onTabChange(4);
                     },
                     onManageTap: () => showPlantaoManageSheet(context),
@@ -344,7 +346,7 @@ class _HomeScreenState extends State<HomeScreen> {
               'calc_eletrólitos': 3, 'calc_infusao': 4, 'calc_referencia': 5,
               'calc_prescricoes': 6, 'calc_pediatria': 7,
             };
-            widget.onSubTabChange(calcTabMap[calcId] ?? 0);
+            toolsScreenTabNotifier.value = calcTabMap[calcId] ?? 0;
             widget.onTabChange(4);
           },
           onManageTap: () => showPlantaoManageSheet(context),

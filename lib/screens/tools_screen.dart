@@ -17,6 +17,15 @@ const kToolBorder = Color(0xFFE2E6EA);   // mesmo kBorder
 // kToolDark removido — usar AppColors.of(context).textPrimary / .darkBtn
 const kToolGold   = kGoldLight;         // alias para kGoldLight
 
+// ──────────────────────────────────────────────────────────────────
+// NAVEGAÇÃO EXTERNA → TAB ESPECÍFICA
+// ValueNotifier global: permite que HomeScreen (ou qualquer lugar)
+// instrua o ToolsScreen a mudar para uma aba específica sem precisar
+// passar parâmetros pelo widget tree (ToolsScreen é const no IndexedStack).
+// Uso: toolsScreenTabNotifier.value = <índice da aba>;
+// ──────────────────────────────────────────────────────────────────
+final ValueNotifier<int?> toolsScreenTabNotifier = ValueNotifier<int?>(null);
+
 class ToolsScreen extends StatefulWidget {
   final bool hideHeader;
   const ToolsScreen({super.key, this.hideHeader = false});
@@ -31,10 +40,25 @@ class _ToolsScreenState extends State<ToolsScreen> with SingleTickerProviderStat
   void initState() {
     super.initState();
     _tabCtrl = TabController(length: 8, vsync: this);
+    // Ouve o notifier externo para mudar de aba
+    toolsScreenTabNotifier.addListener(_onExternalTabRequest);
+  }
+
+  void _onExternalTabRequest() {
+    final idx = toolsScreenTabNotifier.value;
+    if (idx == null) return;
+    // Usa addPostFrameCallback para garantir que o widget já está montado
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      _tabCtrl.animateTo(idx.clamp(0, 7));
+      // Reseta para null após consumir
+      toolsScreenTabNotifier.value = null;
+    });
   }
 
   @override
   void dispose() {
+    toolsScreenTabNotifier.removeListener(_onExternalTabRequest);
     _tabCtrl.dispose();
     super.dispose();
   }

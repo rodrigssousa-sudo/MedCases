@@ -502,7 +502,7 @@ class _AddFirstPatientRow extends StatelessWidget {
                   ),
                   const SizedBox(height: 2),
                   Text(
-                    isEs ? 'Quarto, diagnóstico, tratamento' : 'Quarto, diagnóstico, tratamento',
+                    isEs ? 'Habitación, diagnóstico, tratamiento' : 'Quarto, diagnóstico, tratamento',
                     style: TextStyle(fontSize: 11, color: c.textHint),
                   ),
                 ],
