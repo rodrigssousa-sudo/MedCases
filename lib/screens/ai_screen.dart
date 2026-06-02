@@ -212,6 +212,11 @@ class _AiScreenState extends State<AiScreen> {
   int  _lastAiIndex  = -1;   // índice da última resposta da IA (para animar só ela)
   // Auto-scroll: só desce automaticamente se usuário estiver perto do fundo
   bool _userScrolledUp = false; // true quando usuário scrollou para cima
+  // Anti-jump: token gerado a cada nova resposta da IA — bloqueia callbacks
+  // de reveals de bolhas antigas que ficaram pendentes.
+  int _scrollGeneration = 0;
+  // Debounce: evita múltiplos animateTo no mesmo frame (stutter)
+  bool _scrollPending = false;
   // Histórico de sessões de chat (até 10)
   final List<_ChatSession> _chatHistory = [];
   static const _kHistKey = 'medcases_ia_chat_history_v1';
@@ -705,12 +710,40 @@ class _AiScreenState extends State<AiScreen> {
     if (_userScrolledUp && !force) return;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted || !_scrollCtrl.hasClients) return;
-      // Verificação extra: se o usuário voltou a scrollar para cima enquanto
-      // aguardávamos o frame, ainda assim não interrompemos
       if (_userScrolledUp && !force) return;
       _scrollCtrl.animateTo(
         _scrollCtrl.position.maxScrollExtent,
         duration: const Duration(milliseconds: 300),
+        curve: Curves.easeOut,
+      );
+    });
+  }
+
+  /// Chamado pelo _AiBubble a cada bloco revelado.
+  /// Lógica centralizada aqui — ÚNICA fonte de verdade para scroll.
+  /// [gen] é o token de geração: se não bater com _scrollGeneration, ignora.
+  void _onBlockRevealed(int gen) {
+    // Bloco pertence a uma resposta antiga (geração diferente) → ignora completamente.
+    if (gen != _scrollGeneration) return;
+    if (!mounted || !_scrollCtrl.hasClients) return;
+
+    // Debounce por frame: se já há um scroll pendente neste frame, ignora.
+    // Evita stutter por múltiplos animateTo em rápida sucessão.
+    if (_scrollPending) return;
+    _scrollPending = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _scrollPending = false;
+      if (!mounted || !_scrollCtrl.hasClients) return;
+      if (gen != _scrollGeneration) return;
+      if (_userScrolledUp) return; // usuário está lendo — não interrompe
+
+      final pos = _scrollCtrl.position;
+      final nearBottom = pos.pixels >= pos.maxScrollExtent - 160;
+      if (!nearBottom) return; // por precaução extra
+
+      _scrollCtrl.animateTo(
+        pos.maxScrollExtent,
+        duration: const Duration(milliseconds: 280),
         curve: Curves.easeOut,
       );
     });
@@ -774,6 +807,7 @@ class _AiScreenState extends State<AiScreen> {
           answer.toLowerCase().contains('timeout') ||
           answer.toLowerCase().contains('falha na conexão') ||
           answer.toLowerCase().contains('falla de red');
+      _scrollGeneration++; // nova geração — invalida callbacks de bolhas antigas
       setState(() {
         _lastAiIndex  = _messages.length; // índice que será inserido
         _messages.add(_ChatMsg(role: 'ai', text: answer));
@@ -975,7 +1009,8 @@ class _AiScreenState extends State<AiScreen> {
                       onTts: _ttsReady
                           ? () => _toggleTts(i, msg.text, p.lang)
                           : null,
-                      scrollCtrl: _scrollCtrl,
+                      scrollGeneration: _scrollGeneration,
+                      onBlockRevealed: _onBlockRevealed,
                     ),
                     // Tarjeta de evidencia si el mensaje menciona un fármaco
                     if (detectedEv != null)
@@ -2176,8 +2211,10 @@ class _AiBubble extends StatefulWidget {
   final bool ttsPlaying;
   final bool ttsReady;
   final VoidCallback? onTts;
-  /// ScrollController do ListView pai — usado para compensar posição ao revelar blocos
-  final ScrollController? scrollCtrl;
+  /// Token de geração — invalida callbacks de bolhas antigas (anti-jump fix)
+  final int scrollGeneration;
+  /// Callback para notificar o pai que um bloco foi revelado
+  final void Function(int generation)? onBlockRevealed;
   const _AiBubble({
     super.key,
     required this.text,
@@ -2188,7 +2225,8 @@ class _AiBubble extends StatefulWidget {
     this.ttsPlaying = false,
     this.ttsReady = false,
     this.onTts,
-    this.scrollCtrl,
+    this.scrollGeneration = 0,
+    this.onBlockRevealed,
   });
 
   @override
@@ -2235,59 +2273,37 @@ class _AiBubbleState extends State<_AiBubble> {
     if (!widget.animate || total <= 1) {
       // Sem animação (histórico) ou bloco único → mostra tudo imediatamente
       if (mounted) setState(() => _visibleCount = total);
+      // Notifica o pai mesmo para bloco único (para scroll até o fundo)
+      if (widget.animate && widget.onBlockRevealed != null) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted) widget.onBlockRevealed!(widget.scrollGeneration);
+        });
+      }
       return;
     }
 
-    // Delay entre blocos: 120ms para o primeiro, depois 600ms por bloco
-    // Cap: 2s máximo por bloco (mais rápido — melhora UX e scroll)
+    // ── Revelar blocos sequencialmente ──────────────────────────────────────
+    // Delay: 80ms primeiro bloco, 450ms subsequentes (mais rápido = menos conflito)
+    // CRÍTICO: cada Future captura o `gen` no momento do agendamento.
+    // Quando o pai incrementa `_scrollGeneration`, os Futures antigos passam
+    // a enviar um gen desatualizado → _onBlockRevealed ignora. Zero jumps.
+    final gen = widget.scrollGeneration;
     for (int i = 0; i < total; i++) {
-      final delayMs = i == 0 ? 120 : (i * 600).clamp(0, 2000);
+      final delayMs = i == 0 ? 80 : (80 + i * 420).clamp(0, 3000);
       Future.delayed(Duration(milliseconds: delayMs), () {
         if (!mounted) return;
-        // Captura posição ANTES de revelar o bloco
-        final ctrl = widget.scrollCtrl;
-        final posBefore = (ctrl != null && ctrl.hasClients)
-            ? ctrl.position.pixels
-            : null;
-        final maxBefore = (ctrl != null && ctrl.hasClients)
-            ? ctrl.position.maxScrollExtent
-            : null;
-        final nearBottom = (posBefore != null && maxBefore != null)
-            ? posBefore >= maxBefore - 140
-            : true;
+        // Se a geração mudou (nova resposta chegou), não revela mais blocos.
+        if (widget.scrollGeneration != gen) return;
 
         setState(() => _visibleCount = i + 1);
 
-        // Após o layout, compensa o scroll:
-        // • perto do fundo → desce automaticamente
-        // • usuário scrollou para cima → mantém posição visual (sem pulo)
-        if (ctrl != null && ctrl.hasClients && posBefore != null) {
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            if (!mounted || !ctrl.hasClients) return;
-            if (nearBottom) {
-              // Desce suavemente para o fundo — WhatsApp-style (300ms easeOut)
-              ctrl.animateTo(
-                ctrl.position.maxScrollExtent,
-                duration: const Duration(milliseconds: 300),
-                curve: Curves.easeOut,
-              );
-            } else {
-              // Usuário está lendo acima: compensa a posição para o conteúdo
-              // não "puxar" a tela — mantém o mesmo ponto visual de forma suave
-              final maxAfter = ctrl.position.maxScrollExtent;
-              if (maxBefore != null && maxAfter > maxBefore) {
-                final delta = maxAfter - maxBefore;
-                final correctedPos = (posBefore + delta)
-                    .clamp(0.0, ctrl.position.maxScrollExtent);
-                ctrl.animateTo(
-                  correctedPos,
-                  duration: const Duration(milliseconds: 300),
-                  curve: Curves.easeOut,
-                );
-              }
-            }
-          });
-        }
+        // Delega scroll ao pai — apenas uma chamada, sem animateTo aqui.
+        // O pai (_AiScreenState._onBlockRevealed) decide o que fazer.
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (!mounted) return;
+          if (widget.scrollGeneration != gen) return;
+          widget.onBlockRevealed?.call(gen);
+        });
       });
     }
   }
