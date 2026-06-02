@@ -17,6 +17,7 @@ import 'tools_screen.dart' show PediatricsTabContent, ToolsScreen;
 import 'prescripciones_screen.dart';
 import 'drug_interactions_screen.dart';
 import 'protocols_screen.dart' show openProtocolById, showProtocolDetail;
+import '../models/protocol_model.dart';
 import 'avaliacao_screen.dart';
 import '../widgets/meu_plantao_dashboard.dart';
 import 'ai_screen.dart' show AiScreen;
@@ -1026,8 +1027,8 @@ class _HomeIaCardState extends State<_HomeIaCard> {
                     const SizedBox(height: 2),
                     Text(
                       isEs
-                          ? 'Asistente clínico · Farmacología · Protocolos · MBE'
-                          : 'Assistente clínico · Farmacologia · Protocolos · MBE',
+                          ? 'Asistente clínico educativo'
+                          : 'Assistente clínico educativo',
                       style: TextStyle(
                         fontSize: 10.5,
                         color: dark
@@ -3431,6 +3432,458 @@ class _PrescripcionesShell extends StatelessWidget {
         ),
         const Expanded(child: PrescripcionesScreen()),
       ]),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// GLOBAL SEARCH — lupa da bottom nav
+// Pesquisa simultânea em: Fármacos, Protocolos, Prescrições, Interações
+// Abre via showGlobalSearch(context) — chamado pelo botão central da nav.
+// ─────────────────────────────────────────────────────────────────────────────
+
+/// Abre o modal de busca global. Chame este método do botão lupa da bottom nav.
+void showGlobalSearch(BuildContext context) {
+  showModalBottomSheet(
+    context: context,
+    backgroundColor: Colors.transparent,
+    isScrollControlled: true,
+    useSafeArea: true,
+    builder: (_) => const _GlobalSearchModal(),
+  );
+}
+
+// ── Categorias de resultado ────────────────────────────────────────────────
+enum _SearchCat { drug, protocol, prescription, interaction }
+
+class _SearchResult {
+  final _SearchCat cat;
+  final String     title;
+  final String     subtitle;
+  final dynamic    data;      // DrugModel | ProtocolModel | PrescriptionModel | String
+
+  const _SearchResult({
+    required this.cat,
+    required this.title,
+    required this.subtitle,
+    required this.data,
+  });
+}
+
+// ── Modal ──────────────────────────────────────────────────────────────────
+class _GlobalSearchModal extends StatefulWidget {
+  const _GlobalSearchModal();
+
+  @override
+  State<_GlobalSearchModal> createState() => _GlobalSearchModalState();
+}
+
+class _GlobalSearchModalState extends State<_GlobalSearchModal> {
+  final _ctrl  = TextEditingController();
+  final _focus = FocusNode();
+  List<_SearchResult> _results = [];
+  bool _searched = false;
+
+  static const _maxPerCat = 6;
+
+  @override
+  void initState() {
+    super.initState();
+    // Teclado abre automático
+    WidgetsBinding.instance.addPostFrameCallback((_) => _focus.requestFocus());
+  }
+
+  @override
+  void dispose() {
+    _ctrl.dispose();
+    _focus.dispose();
+    super.dispose();
+  }
+
+  void _onChanged(String q) {
+    final query = q.trim().toLowerCase();
+    if (query.length < 2) {
+      setState(() { _results = []; _searched = false; });
+      return;
+    }
+    _runSearch(query);
+  }
+
+  void _runSearch(String q) {
+    final p    = context.read<AppProvider>();
+    final isEs = p.lang == 'es';
+    final res  = <_SearchResult>[];
+
+    // ── 1. Fármacos ────────────────────────────────────────────────────────
+    int drugCount = 0;
+    for (final drug in drugsDatabase) {
+      if (drugCount >= _maxPerCat) break;
+      final name  = drug.name.toLowerCase();
+      final grp   = drug.group.toLowerCase();
+      if (name.contains(q) || grp.contains(q)) {
+        res.add(_SearchResult(
+          cat:      _SearchCat.drug,
+          title:    drug.name,
+          subtitle: drug.group,
+          data:     drug,
+        ));
+        drugCount++;
+      }
+    }
+
+    // ── 2. Protocolos ──────────────────────────────────────────────────────
+    int protoCount = 0;
+    final lang = p.lang;
+    for (final proto in p.protocolsDB) {
+      if (protoCount >= _maxPerCat) break;
+      final titleText = (proto.title[lang] ?? proto.title['pt'] ?? '').toLowerCase();
+      if (titleText.contains(q)) {
+        res.add(_SearchResult(
+          cat:      _SearchCat.protocol,
+          title:    proto.title[lang] ?? proto.title['pt'] ?? '',
+          subtitle: isEs ? 'Protocolo clínico' : 'Protocolo clínico',
+          data:     proto,
+        ));
+        protoCount++;
+      }
+    }
+
+    // ── 3. Prescrições ─────────────────────────────────────────────────────
+    int prescCount = 0;
+    for (final presc in prescriptionModels(isEs)) {
+      if (prescCount >= _maxPerCat) break;
+      final t = presc.title.toLowerCase();
+      final c = presc.category.toLowerCase();
+      if (t.contains(q) || c.contains(q)) {
+        res.add(_SearchResult(
+          cat:      _SearchCat.prescription,
+          title:    presc.title,
+          subtitle: presc.category,
+          data:     presc,
+        ));
+        prescCount++;
+      }
+    }
+
+    // ── 4. Interações (nomes dos pares) ────────────────────────────────────
+    int interCount = 0;
+    final allNames = DrugInteractionService.getAllDrugNames();
+    for (final name in allNames) {
+      if (interCount >= _maxPerCat) break;
+      if (name.toLowerCase().contains(q)) {
+        res.add(_SearchResult(
+          cat:      _SearchCat.interaction,
+          title:    name,
+          subtitle: isEs ? 'Ver interacciones' : 'Ver interações',
+          data:     name,
+        ));
+        interCount++;
+      }
+    }
+
+    setState(() { _results = res; _searched = true; });
+  }
+
+  // ── Navegar ao resultado ────────────────────────────────────────────────
+  void _open(_SearchResult r) {
+    Navigator.pop(context); // fecha modal
+    switch (r.cat) {
+      case _SearchCat.drug:
+        showDrugDetailSheet(context, r.data as DrugModel);
+      case _SearchCat.protocol:
+        showProtocolDetail(context, r.data as dynamic);
+      case _SearchCat.prescription:
+        // Navega para a tela de prescrições — a própria tela já abre o detalhe
+        Navigator.of(context).push(
+          MaterialPageRoute(builder: (_) => const _PrescripcionesShell()),
+        );
+      case _SearchCat.interaction:
+        Navigator.of(context).push(
+          MaterialPageRoute(builder: (_) => const DrugInteractionsScreen()),
+        );
+    }
+  }
+
+  // ── UI ──────────────────────────────────────────────────────────────────
+  @override
+  Widget build(BuildContext context) {
+    final p    = context.watch<AppProvider>();
+    final dark = p.darkMode;
+    final isEs = p.lang == 'es';
+
+    final bg      = dark ? const Color(0xFF111714) : const Color(0xFFFFFFFF);
+    final surface = dark ? const Color(0xFF1A211D) : const Color(0xFFF4F6F5);
+    final border  = dark ? const Color(0x1AFFFFFF) : const Color(0x14000000);
+    final textPri = dark ? const Color(0xFFEEF2EE) : const Color(0xFF101C14);
+    final textSec = dark ? const Color(0xFF7A9486) : const Color(0xFF6B8272);
+    final green   = const Color(0xFF46E28C);
+
+    return Container(
+      height: MediaQuery.of(context).size.height * 0.88,
+      decoration: BoxDecoration(
+        color: bg,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      child: Column(
+        children: [
+          // Handle
+          Padding(
+            padding: const EdgeInsets.only(top: 12, bottom: 4),
+            child: Container(
+              width: 38, height: 4,
+              decoration: BoxDecoration(
+                color: Colors.white24,
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+          ),
+
+          // Título
+          Padding(
+            padding: const EdgeInsets.fromLTRB(20, 8, 20, 12),
+            child: Row(
+              children: [
+                Icon(Icons.search_rounded, color: green, size: 22),
+                const SizedBox(width: 10),
+                Text(
+                  isEs ? 'Buscar en MedCases' : 'Pesquisar no MedCases',
+                  style: TextStyle(
+                    color: textPri,
+                    fontSize: 17,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          // Campo de busca
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Container(
+              decoration: BoxDecoration(
+                color: surface,
+                borderRadius: BorderRadius.circular(14),
+                border: Border.all(color: border),
+              ),
+              child: Row(
+                children: [
+                  const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 14),
+                    child: Icon(Icons.search_rounded,
+                        color: Color(0xFF7A9486), size: 20),
+                  ),
+                  Expanded(
+                    child: TextField(
+                      controller: _ctrl,
+                      focusNode: _focus,
+                      onChanged: _onChanged,
+                      style: TextStyle(color: textPri, fontSize: 15),
+                      decoration: InputDecoration(
+                        hintText: isEs
+                            ? 'Fármacos, protocolos, prescripciones...'
+                            : 'Fármacos, protocolos, prescrições...',
+                        hintStyle: TextStyle(color: textSec, fontSize: 14),
+                        border: InputBorder.none,
+                        contentPadding:
+                            const EdgeInsets.symmetric(vertical: 14),
+                      ),
+                      textInputAction: TextInputAction.search,
+                    ),
+                  ),
+                  if (_ctrl.text.isNotEmpty)
+                    GestureDetector(
+                      onTap: () {
+                        _ctrl.clear();
+                        setState(() { _results = []; _searched = false; });
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.only(right: 12),
+                        child: Icon(Icons.close_rounded,
+                            color: textSec, size: 18),
+                      ),
+                    ),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 10),
+
+          // Chips de categoria (legenda)
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Row(
+              children: [
+                _CatChip(label: isEs ? 'Fármacos' : 'Fármacos',
+                    color: const Color(0xFFFBBF24), dark: dark),
+                const SizedBox(width: 6),
+                _CatChip(label: 'Protocolos',
+                    color: const Color(0xFF4ADE80), dark: dark),
+                const SizedBox(width: 6),
+                _CatChip(label: isEs ? 'Prescripciones' : 'Prescrições',
+                    color: const Color(0xFFA78BFA), dark: dark),
+                const SizedBox(width: 6),
+                _CatChip(label: isEs ? 'Interacciones' : 'Interações',
+                    color: const Color(0xFFFF6BA0), dark: dark),
+              ],
+            ),
+          ),
+          const SizedBox(height: 10),
+
+          // Resultados
+          Expanded(
+            child: _searched && _results.isEmpty
+                ? Center(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.search_off_rounded,
+                            color: textSec, size: 40),
+                        const SizedBox(height: 10),
+                        Text(
+                          isEs ? 'Sin resultados' : 'Nenhum resultado',
+                          style: TextStyle(color: textSec, fontSize: 14),
+                        ),
+                      ],
+                    ),
+                  )
+                : !_searched
+                    ? Padding(
+                        padding: const EdgeInsets.fromLTRB(20, 8, 20, 0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              isEs
+                                  ? 'Escribe al menos 2 letras para buscar en todo el contenido del app.'
+                                  : 'Digite ao menos 2 letras para pesquisar em todo o conteúdo do app.',
+                              style: TextStyle(
+                                  color: textSec, fontSize: 13, height: 1.5),
+                            ),
+                          ],
+                        ),
+                      )
+                    : ListView.separated(
+                        padding: const EdgeInsets.fromLTRB(16, 0, 16, 20),
+                        itemCount: _results.length,
+                        separatorBuilder: (_, __) =>
+                            Divider(height: 1, color: border),
+                        itemBuilder: (_, i) {
+                          final r = _results[i];
+                          return _GlobalSearchResultTile(
+                            result: r,
+                            dark: dark,
+                            textPri: textPri,
+                            textSec: textSec,
+                            onTap: () => _open(r),
+                          );
+                        },
+                      ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ── Category chip ──────────────────────────────────────────────────────────
+class _CatChip extends StatelessWidget {
+  final String label;
+  final Color  color;
+  final bool   dark;
+  const _CatChip({required this.label, required this.color, required this.dark});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.12),
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Row(mainAxisSize: MainAxisSize.min, children: [
+        Container(
+          width: 6, height: 6,
+          decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+        ),
+        const SizedBox(width: 5),
+        Text(label,
+            style: TextStyle(
+                color: color,
+                fontSize: 10,
+                fontWeight: FontWeight.w700)),
+      ]),
+    );
+  }
+}
+
+// ── Result tile ────────────────────────────────────────────────────────────
+class _GlobalSearchResultTile extends StatelessWidget {
+  final _SearchResult result;
+  final bool          dark;
+  final Color         textPri;
+  final Color         textSec;
+  final VoidCallback  onTap;
+
+  const _GlobalSearchResultTile({
+    required this.result,
+    required this.dark,
+    required this.textPri,
+    required this.textSec,
+    required this.onTap,
+  });
+
+  static IconData _icon(_SearchCat c) => switch (c) {
+    _SearchCat.drug         => Icons.medication_rounded,
+    _SearchCat.protocol     => Icons.assignment_rounded,
+    _SearchCat.prescription => Icons.description_rounded,
+    _SearchCat.interaction  => Icons.compare_arrows_rounded,
+  };
+
+  static Color _color(_SearchCat c) => switch (c) {
+    _SearchCat.drug         => const Color(0xFFFBBF24),
+    _SearchCat.protocol     => const Color(0xFF4ADE80),
+    _SearchCat.prescription => const Color(0xFFA78BFA),
+    _SearchCat.interaction  => const Color(0xFFFF6BA0),
+  };
+
+  @override
+  Widget build(BuildContext context) {
+    final color = _color(result.cat);
+    return InkWell(
+      onTap: onTap,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 11, horizontal: 2),
+        child: Row(children: [
+          Container(
+            width: 38, height: 38,
+            decoration: BoxDecoration(
+              color: color.withValues(alpha: 0.12),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Icon(_icon(result.cat), color: color, size: 18),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(result.title,
+                    style: TextStyle(
+                        color: textPri,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis),
+                const SizedBox(height: 2),
+                Text(result.subtitle,
+                    style: TextStyle(color: textSec, fontSize: 12)),
+              ],
+            ),
+          ),
+          Icon(Icons.chevron_right_rounded, color: textSec, size: 18),
+        ]),
+      ),
     );
   }
 }

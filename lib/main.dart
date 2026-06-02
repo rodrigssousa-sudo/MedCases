@@ -32,7 +32,7 @@ import 'screens/prescripciones_screen.dart';
 import 'screens/legal_screen.dart';
 import 'screens/professional_gate_screen.dart';
 import 'screens/fontes_screen.dart';
-import 'screens/home_screen.dart';
+import 'screens/home_screen.dart' show HomeScreen, showGlobalSearch;
 import 'screens/notes_screen.dart';
 import 'screens/library_screen.dart';
 import 'services/firestore_service.dart';
@@ -1511,7 +1511,7 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              // ── Barra de botões de navegação — 4 itens centralizados ──────
+              // ── Barra de botões de navegação — 5 itens (lupa central) ──────
               SizedBox(
                 height: 48,
                 child: Row(
@@ -1521,6 +1521,8 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
                     _buildNavBtn(0, Icons.home_rounded, p.t('cockpit'), dark, p),
                     // 3 — História Clínica
                     _buildNavBtn(3, Icons.folder_shared_rounded, 'H. Clínica', dark, p),
+                    // Centro — Botão busca global (lupa)
+                    _buildSearchBtn(dark),
                     // 5 — Biblioteca
                     _buildNavBtn(5, Icons.menu_book_rounded, 'Biblioteca', dark, p),
                     // 4 — Ferramentas
@@ -1572,6 +1574,40 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
             ),
           ),
         ]),
+      ),
+    );
+  }
+
+  // ── Botão central de busca global ────────────────────────────────────────
+  Widget _buildSearchBtn(bool dark) {
+    final green  = dark ? const Color(0xFF46E28C) : const Color(0xFF0A7C4E);
+    final bgColor = dark
+        ? const Color(0xFF1A2E22)
+        : const Color(0xFFE8F5EF);
+    final borderColor = dark
+        ? const Color(0xFF2D4A38)
+        : const Color(0xFFB8D9C8);
+
+    return Expanded(
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: () => showGlobalSearch(context),
+        child: Center(
+          child: Container(
+            width: 44,
+            height: 36,
+            decoration: BoxDecoration(
+              color: bgColor,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: borderColor, width: 1),
+            ),
+            child: Icon(
+              Icons.search_rounded,
+              color: green,
+              size: 22,
+            ),
+          ),
+        ),
       ),
     );
   }
