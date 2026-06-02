@@ -1153,6 +1153,12 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
   // sub-tab dentro do combo Rx+Proto: 0=Rx, 1=Protocolos
   int _rxProtoSub = 0;
 
+  // ── Scroll-reveal AppBar (não-HOME tabs) ─────────────────────────────────
+  // Visível: false = oculto por padrão; true = apareceu após scroll-down.
+  final _appBarVisible = ValueNotifier<bool>(false);
+  Timer? _appBarHideTimer;
+  static const _kAppBarHideDelay = Duration(seconds: 3);
+
   // ── Performance: telas criadas uma única vez no initState ─────────────────
   // CRÍTICO: HomeScreen e _RxProtoCombo NÃO podem ser instanciadas dentro de
   // build() — cada notifyListeners() do AppProvider reconstrói o MainShell e
@@ -1164,9 +1170,23 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
   // ── Callbacks estáveis para HomeScreen ────────────────────────────────────
   // Lambdas inline no build() são recriadas a cada rebuild — geram instabilidade.
   // Métodos da classe são referências estáveis: mesma instância entre rebuilds.
-  void _onTabChange(int t)    => setState(() => _tab = t);
+  void _onTabChange(int t)    { setState(() => _tab = t); _appBarVisible.value = false; _appBarHideTimer?.cancel(); }
   void _onSubTabChange(int i) => setState(() => _rxProtoSub = i);
   void _onOpenNotes()         => showNotesSheet(context);
+
+  void _onScrollNotification(ScrollNotification n) {
+    if (_tab == 0) return; // HOME sempre visível separado
+    if (n is ScrollStartNotification || n is ScrollUpdateNotification) {
+      final metrics = n.metrics;
+      if (metrics.axis == Axis.vertical && metrics.pixels > 10) {
+        if (!_appBarVisible.value) _appBarVisible.value = true;
+        _appBarHideTimer?.cancel();
+        _appBarHideTimer = Timer(_kAppBarHideDelay, () {
+          if (mounted) _appBarVisible.value = false;
+        });
+      }
+    }
+  }
 
   @override
   void initState() {
@@ -1200,6 +1220,9 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
       const RepaintBoundary(child: ToolsScreen()), // 4
       const RepaintBoundary(child: LibraryScreen()), // 5
     ];
+
+    // ── Scroll-reveal: reseta ao mudar de tab ─────────────────────────────
+    _appBarVisible.value = false;
 
     // ── Auto-Update / Cache Eviction (Service Worker) ──────────────────────
     // Registra window.onFlutterWebUpdateAvailable ANTES do primeiro frame.
@@ -1294,6 +1317,8 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
   void dispose() {
     MainShell.pendingTab.removeListener(_onPendingTab);
     WidgetsBinding.instance.removeObserver(this);
+    _appBarHideTimer?.cancel();
+    _appBarVisible.dispose();
     super.dispose();
   }
 
@@ -1437,46 +1462,79 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
     final navBg = dark ? const Color(0xFF1E1E1E) : Colors.white;
     final navBorder = dark ? const Color(0xFF333333) : const Color(0xFFE8E1D2);
     final stackIdx = _tab.clamp(0, _staticScreens.length - 1);
+    final isHome   = _tab == 0;
 
     return Scaffold(
       backgroundColor: bg,
       endDrawer: _AppDrawer(p: p),
       // Scrim escuro explícito para iPad/tablet (reforça o DrawerTheme global)
       drawerScrimColor: Colors.black.withValues(alpha: 0.52),
-      // ── AppBar mobile — logo + hambúrguer para abrir o endDrawer ─────────
-      // PreferredSize: APENAS 56 px (altura visual da barra).
-      // O Scaffold já adiciona automaticamente o padding da status bar acima
-      // do appBar — somar padding.top aqui causaria AppBar duplo no iPad/iPhone.
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(48),
-        child: Builder(
-          builder: (scaffoldCtx) => _MobileAppBar(
-            dark: dark,
-            currentTab: _tab,
-            lang: p.lang,
-            onLogoTap: () => setState(() => _tab = 0),
-            onMenuTap: () => Scaffold.of(scaffoldCtx).openEndDrawer(),
-          ),
-        ),
-      ),
-      // ── Body: IndexedStack ocupa 100% do espaço disponível ──────────────
-      // MediaQuery.removePadding remove o padding top residual que o appBar
-      // já consumiu — evita que telas com SafeArea interna fiquem deslocadas.
-      // SizedBox.expand garante constraints finitas (width+height) para o
-      // IndexedStack e todos os seus filhos — corrige tela cinza em mobile
-      // causada por RenderBox unbounded height em LibraryScreen/HistoryScreen.
-      // ValueListenableBuilder garante rebuild mínimo: apenas o banner muda,
-      // o IndexedStack e todas as telas filhas NÃO são reconstruídas.
-      body: MediaQuery.removePadding(
-        context: context,
-        removeTop: true,
-        child: SizedBox.expand(
-          child: ValueListenableBuilder<bool>(
-            valueListenable: UpdateService.swUpdateAvailable,
-            builder: (ctx, hasUpdate, _) => Stack(
+      // ── AppBar HOME: sempre visível, cor verde luxury ─────────────────────
+      // Tabs 1-5: sem appBar fixo — scroll-reveal via overlay no body.
+      appBar: isHome
+          ? PreferredSize(
+              preferredSize: const Size.fromHeight(48),
+              child: Builder(
+                builder: (scaffoldCtx) => _MobileAppBar(
+                  dark: dark,
+                  currentTab: _tab,
+                  lang: p.lang,
+                  isHome: true,
+                  onLogoTap: () => setState(() => _tab = 0),
+                  onMenuTap: () => Scaffold.of(scaffoldCtx).openEndDrawer(),
+                ),
+              ),
+            )
+          : null,
+      // ── Body: IndexedStack + scroll-reveal bar para tabs não-HOME ────────
+      body: NotificationListener<ScrollNotification>(
+        onNotification: (n) { _onScrollNotification(n); return false; },
+        child: MediaQuery.removePadding(
+          context: context,
+          removeTop: isHome, // HOME: appBar já consume o top; outros: SafeArea no Stack
+          child: SizedBox.expand(
+            child: Stack(
               children: [
-                IndexedStack(index: stackIdx, children: _staticScreens),
-                if (hasUpdate) const _UpdateBanner(),
+                // ── Conteúdo principal ───────────────────────────────────
+                ValueListenableBuilder<bool>(
+                  valueListenable: UpdateService.swUpdateAvailable,
+                  builder: (ctx, hasUpdate, _) => Stack(
+                    children: [
+                      IndexedStack(index: stackIdx, children: _staticScreens),
+                      if (hasUpdate) const _UpdateBanner(),
+                    ],
+                  ),
+                ),
+
+                // ── Scroll-reveal AppBar (tabs 1-5) ─────────────────────
+                if (!isHome)
+                  ValueListenableBuilder<bool>(
+                    valueListenable: _appBarVisible,
+                    builder: (_, visible, __) => AnimatedPositioned(
+                      duration: const Duration(milliseconds: 280),
+                      curve: Curves.easeOutCubic,
+                      top: visible
+                          ? 0
+                          : -(48 + MediaQuery.of(context).padding.top),
+                      left: 0, right: 0,
+                      child: Builder(
+                        builder: (scaffoldCtx) => _MobileAppBar(
+                          dark: dark,
+                          currentTab: _tab,
+                          lang: p.lang,
+                          isHome: false,
+                          onLogoTap: () {
+                            _appBarVisible.value = false;
+                            setState(() => _tab = 0);
+                          },
+                          onMenuTap: () {
+                            _appBarVisible.value = false;
+                            Scaffold.of(scaffoldCtx).openEndDrawer();
+                          },
+                        ),
+                      ),
+                    ),
+                  ),
               ],
             ),
           ),
@@ -1624,6 +1682,7 @@ class _MobileAppBar extends StatelessWidget {
   final bool dark;
   final int  currentTab;
   final String lang;
+  final bool isHome;
   final VoidCallback onLogoTap;
   final VoidCallback onMenuTap;
 
@@ -1631,6 +1690,7 @@ class _MobileAppBar extends StatelessWidget {
     required this.dark,
     required this.currentTab,
     required this.lang,
+    required this.isHome,
     required this.onLogoTap,
     required this.onMenuTap,
   });
@@ -1643,23 +1703,50 @@ class _MobileAppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bg         = dark ? const Color(0xFF0F1C14) : const Color(0xFFF0F5F1);
-    final borderCol  = dark ? const Color(0xFF1A2E20) : const Color(0xFFD4E0D8);
-    final iconBg     = dark ? Colors.white.withValues(alpha: 0.07) : const Color(0xFF0A7C4E).withValues(alpha: 0.08);
-    final iconBorder = dark ? Colors.white.withValues(alpha: 0.12) : const Color(0xFF0A7C4E).withValues(alpha: 0.20);
-    final iconColor  = dark ? const Color(0xFFFFE8A6) : const Color(0xFF0A7C4E);
+    // HOME: barra verde luxury; outras tabs: tema neutro + sombra flutuante
+    final bg = isHome
+        ? (dark ? const Color(0xFF0A1A10) : const Color(0xFF0A7C4E))
+        : (dark ? const Color(0xFF0F1C14) : const Color(0xFFF0F5F1));
+    final borderCol = isHome
+        ? (dark ? const Color(0xFF1A3020) : const Color(0xFF085E3A))
+        : (dark ? const Color(0xFF1A2E20) : const Color(0xFFD4E0D8));
+    final iconBg = isHome
+        ? (dark
+            ? Colors.white.withValues(alpha: 0.10)
+            : Colors.white.withValues(alpha: 0.15))
+        : (dark
+            ? Colors.white.withValues(alpha: 0.07)
+            : const Color(0xFF0A7C4E).withValues(alpha: 0.08));
+    final iconBorder = isHome
+        ? (dark
+            ? Colors.white.withValues(alpha: 0.18)
+            : Colors.white.withValues(alpha: 0.30))
+        : (dark
+            ? Colors.white.withValues(alpha: 0.12)
+            : const Color(0xFF0A7C4E).withValues(alpha: 0.20));
+    final iconColor = isHome
+        ? (dark ? const Color(0xFF7EF5B0) : Colors.white)
+        : (dark ? const Color(0xFFFFE8A6) : const Color(0xFF0A7C4E));
 
     return Container(
       decoration: BoxDecoration(
         color: bg,
         border: Border(bottom: BorderSide(color: borderCol, width: 0.5)),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: dark ? 0.25 : 0.06),
-            blurRadius: 12,
-            offset: const Offset(0, 3),
-          ),
-        ],
+        boxShadow: isHome
+            ? [
+                BoxShadow(
+                  color: const Color(0xFF064D32).withValues(alpha: dark ? 0.5 : 0.25),
+                  blurRadius: 16,
+                  offset: const Offset(0, 4),
+                ),
+              ]
+            : [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: dark ? 0.45 : 0.12),
+                  blurRadius: 16,
+                  offset: const Offset(0, 4),
+                ),
+              ],
       ),
       child: SafeArea(
         bottom: false,
@@ -2559,9 +2646,16 @@ const String _kPrivacyUrl = 'https://rodrigssousa.wixsite.com/medcases-pro/polit
 const String _kTermsUrl   = 'https://rodrigssousa.wixsite.com/medcases-pro/termos-de-uso';
 
 // ── Drawer lateral — redesenhado (v2) ─────────────────────────────────────────
-class _AppDrawer extends StatelessWidget {
+class _AppDrawer extends StatefulWidget {
   final AppProvider p;
   const _AppDrawer({required this.p});
+
+  @override
+  State<_AppDrawer> createState() => _AppDrawerState();
+}
+
+class _AppDrawerState extends State<_AppDrawer> {
+  AppProvider get p => widget.p;
 
   void _close(BuildContext context) => Navigator.of(context).pop();
 
@@ -2884,6 +2978,9 @@ class _AppDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Usa context.watch DENTRO do StatefulWidget para que rebuilds do drawer
+    // fiquem isolados — não fecham o drawer ao mudar darkMode/offlineMode.
+    final p       = context.watch<AppProvider>();
     final dark    = p.darkMode;
     final bg      = dark ? const Color(0xFF0B1510) : const Color(0xFFFAFBFC);
     final divider = dark ? const Color(0xFF1A2E22) : const Color(0xFFF0EDE8);

@@ -1559,29 +1559,67 @@ class _ClinicalHeader extends StatelessWidget {
 
         const SizedBox(height: 12),
 
-        // ── Línea: Estado de evidencia ──────────────────────────────────────
+        // ── Card de evidência — hierarquia clara, mobile-friendly ───────────
         if (globalEv != null || ev != null)
           Container(
             margin: const EdgeInsets.symmetric(horizontal: 14),
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            padding: const EdgeInsets.fromLTRB(12, 9, 12, 9),
             decoration: BoxDecoration(
-              color: const Color(0xFF059669).withValues(alpha: 0.18),
+              color: const Color(0xFF059669).withValues(alpha: 0.15),
               borderRadius: BorderRadius.circular(10),
-              border: Border.all(color: const Color(0xFF34D399).withValues(alpha: 0.3)),
+              border: Border.all(color: const Color(0xFF34D399).withValues(alpha: 0.28)),
             ),
-            child: Row(children: [
-              const Icon(Icons.verified_rounded, size: 14, color: Color(0xFF34D399)),
-              const SizedBox(width: 8),
-              Expanded(
-                child: Text(
-                  'Contenido Basado en Evidencias  ·  '
-                  '${globalEv?.guidelineSource ?? ev?.guidelineSource ?? '—'}'
-                  '  ·  Actualizado ${globalEv?.lastReviewed ?? ev?.lastReviewed ?? '—'}',
-                  style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w700,
-                    color: Color(0xFF86EFAC)),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Ícone — alinhado ao topo junto à primeira linha
+                const Padding(
+                  padding: EdgeInsets.only(top: 1),
+                  child: Icon(Icons.verified_rounded, size: 14, color: Color(0xFF34D399)),
                 ),
-              ),
-            ]),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Linha 1 — label principal
+                      Text(
+                        p.lang == 'es'
+                            ? 'Contenido Basado en Evidencias'
+                            : 'Conteúdo Baseado em Evidências',
+                        style: const TextStyle(
+                          fontSize: 10,
+                          fontWeight: FontWeight.w800,
+                          color: Color(0xFF86EFAC),
+                          letterSpacing: 0.1,
+                        ),
+                      ),
+                      const SizedBox(height: 3),
+                      // Linha 2 — fontes
+                      Text(
+                        globalEv?.guidelineSource ?? ev?.guidelineSource ?? '—',
+                        style: TextStyle(
+                          fontSize: 9.5,
+                          fontWeight: FontWeight.w600,
+                          color: const Color(0xFF86EFAC).withValues(alpha: 0.75),
+                        ),
+                      ),
+                      const SizedBox(height: 2),
+                      // Linha 3 — data atualização (menor)
+                      Text(
+                        '${p.lang == 'es' ? 'Actualizado' : 'Atualizado'} '
+                        '${globalEv?.lastReviewed ?? ev?.lastReviewed ?? '—'}',
+                        style: TextStyle(
+                          fontSize: 9,
+                          fontWeight: FontWeight.w500,
+                          color: const Color(0xFF86EFAC).withValues(alpha: 0.50),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
 
         const SizedBox(height: 16),

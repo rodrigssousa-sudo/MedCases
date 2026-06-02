@@ -20,6 +20,7 @@ class UserModel {
   final int totalUsageSeconds;   // tempo total de uso acumulado (em segundos)
   final DateTime? lastSeenAt;    // última vez ativo no app
   final String? referredBy;      // id do influenciador que trouxe este usuário
+  final int loginCount;          // vezes que entrou no app
 
   const UserModel({
     required this.uid,
@@ -37,6 +38,7 @@ class UserModel {
     this.totalUsageSeconds = 0,
     this.lastSeenAt,
     this.referredBy,
+    this.loginCount = 0,
   });
 
   bool get isMaster    => role == UserRole.master;
@@ -90,6 +92,7 @@ class UserModel {
     'totalUsageSeconds': totalUsageSeconds,
     'lastSeenAt': lastSeenAt?.toUtc().toIso8601String(),
     'referred_by': referredBy,
+    'loginCount': loginCount,
   };
 
   factory UserModel.fromJson(Map<String, dynamic> m) => UserModel(
@@ -108,6 +111,7 @@ class UserModel {
     totalUsageSeconds: _i(m['totalUsageSeconds']),
     lastSeenAt:        _parseDate(m['lastSeenAt']),
     referredBy:        _sn(m['referred_by']),
+    loginCount:        _i(m['loginCount']),
   );
 
   // ── Serialização Firestore SDK ────────────────────────────────────────────
@@ -127,6 +131,7 @@ class UserModel {
     'totalUsageSeconds': totalUsageSeconds,
     'lastSeenAt': lastSeenAt != null ? Timestamp.fromDate(lastSeenAt!) : null,
     'referred_by': referredBy,
+    'loginCount': loginCount,
   };
 
   factory UserModel.fromMap(Map<String, dynamic> m) => UserModel(
@@ -145,6 +150,7 @@ class UserModel {
     totalUsageSeconds: _i(m['totalUsageSeconds']),
     lastSeenAt:        _parseDate(m['lastSeenAt']),
     referredBy:        _sn(m['referred_by']),
+    loginCount:        _i(m['loginCount']),
   );
 
   /// fromDoc — aceita qualquer Map retornado pelo SDK (Map<String,Object?> em dart2js)

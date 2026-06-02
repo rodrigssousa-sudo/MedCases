@@ -1514,6 +1514,50 @@ class FirestoreService {
     }
   }
 
+  /// Incrementa o loginCount do usuário (+1 por sessão).
+  static Future<void> incrementLoginCount(String uid) async {
+    if (uid.isEmpty) return;
+    try {
+      await _userDoc(uid).update({
+        'loginCount': FieldValue.increment(1),
+        'lastSeenAt': FieldValue.serverTimestamp(),
+      });
+    } catch (_) {}
+  }
+
+  /// Retorna lista de UIDs de usuários com role == 'master'.
+  static Future<List<String>> getMasterUids() async {
+    try {
+      final snap = await _db
+          .collection('users')
+          .where('role', isEqualTo: 'master')
+          .get();
+      return snap.docs.map((d) => d.id).toList();
+    } catch (_) {
+      return [];
+    }
+  }
+
+  /// Grava uma notificação in-app na coleção 'notifications/{uid}/items'.
+  /// O app lê essa coleção ao iniciar para exibir alertas pendentes.
+  static Future<void> writeInAppNotification({
+    required String uid,
+    required String title,
+    required String body,
+    String payload = '',
+  }) async {
+    if (uid.isEmpty) return;
+    try {
+      await _db.collection('notifications').doc(uid).collection('items').add({
+        'title':     title,
+        'body':      body,
+        'payload':   payload,
+        'read':      false,
+        'createdAt': FieldValue.serverTimestamp(),
+      });
+    } catch (_) {}
+  }
+
   /// Deleta o documento do usuário na coleção users.
   /// Não remove a conta do Firebase Auth (requer Admin SDK server-side),
   /// mas remove o perfil — o usuário ficará sem acesso ao app.

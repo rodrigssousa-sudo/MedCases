@@ -8,6 +8,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/user_model.dart';
+import 'firestore_service.dart';
 
 class AuthService {
   static FirebaseAuth get _auth => FirebaseAuth.instance;
@@ -921,6 +922,25 @@ class AuthService {
         },
         body: jsonEncode({'fields': fields}),
       );
+
+      // ── Notifica usuários MASTER sobre novo cadastro ──────────────────────
+      _notifyMastersNewUser(user).ignore();
+    } catch (_) {}
+  }
+
+  /// Envia notificação in-app para todos os MASTER quando um novo usuário
+  /// se cadastra. Silencioso — nunca bloqueia o fluxo de criação de conta.
+  static Future<void> _notifyMastersNewUser(UserModel user) async {
+    try {
+      final masterUids = await FirestoreService.getMasterUids();
+      for (final masterUid in masterUids) {
+        await FirestoreService.writeInAppNotification(
+          uid:     masterUid,
+          title:   '👤 Novo usuário cadastrado',
+          body:    '${user.displayName.isNotEmpty ? user.displayName : user.email} acabou de se cadastrar no app.',
+          payload: 'new_user:${user.uid}',
+        );
+      }
     } catch (_) {}
   }
 
