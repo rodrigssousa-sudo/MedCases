@@ -3,6 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:provider/provider.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:printing/printing.dart';
 import 'package:pdf/pdf.dart' show PdfPageFormat;
 import 'dart:async';
@@ -13,8 +15,11 @@ import '../models/clinical_history_model.dart';
 import '../services/firestore_service.dart';
 import '../services/suggestion_service.dart';
 import '../services/ai_service.dart';
+import '../services/gemini_service.dart';
 import '../widgets/common_widgets.dart';
 import '../services/stt_helper.dart';
+import 'dart:typed_data';
+import 'package:http/http.dart' as http;
 import '../platform/web_impl.dart'
     if (dart.library.io) '../platform/web_stub.dart' as webPlatform;
 
@@ -6283,25 +6288,266 @@ class _LabStructuredWidgetState extends State<_LabStructuredWidget> {
     if (mounted) setState(() {});
   }
 
-  // ── OCR via File Input (Web) ──────────────────────────────────────────────
+  // ── OCR: Web via dart:html | Nativo via image_picker + Gemini ───────────
   Future<void> _openOcrPicker() async {
-    if (!kIsWeb) return; // OCR só disponível no web
-    setState(() { _ocrLoading = true; _ocrStatus = 'Lendo imagem...'; });
+    if (kIsWeb) {
+      // ── Web: fluxo original ──────────────────────────────────────────────
+      setState(() { _ocrLoading = true; _ocrStatus = 'Lendo imagem...'; });
+      try {
+        final text = await webPlatform.webPickImageAndOcr();
+        if (text.isEmpty) {
+          if (mounted) setState(() {
+            _ocrLoading = false;
+            _ocrStatus = 'Imagem carregada — preencha os campos manualmente';
+            _outros.text = '(Laudo de imagem — edite os valores acima)';
+          });
+        } else {
+          _applyOcrText(text);
+          if (mounted) setState(() { _ocrLoading = false; _ocrStatus = 'Texto extraído! Revise os campos.'; });
+        }
+      } catch (e) {
+        if (mounted) setState(() { _ocrLoading = false; _ocrStatus = 'Falha OCR: $e'; });
+      }
+      return;
+    }
+
+    // ── Nativo: solicitar permissão → image_picker → Gemini Vision ─────────
+    final lang = context.read<AppProvider>().lang;
+    final isEs = lang == 'es';
+
+    // Mostra bottom sheet de seleção: câmera ou galeria
+    final source = await showModalBottomSheet<ImageSource>(
+      context: context,
+      backgroundColor: const Color(0xFF101614),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (ctx) => SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(20, 16, 20, 8),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Handle
+              Center(
+                child: Container(
+                  width: 36, height: 4,
+                  decoration: BoxDecoration(
+                    color: Colors.white24,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 14),
+              Text(
+                isEs ? 'Importar Examen' : 'Importar Exame',
+                style: const TextStyle(
+                  color: Color(0xFFEEF2EE),
+                  fontSize: 16,
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                isEs
+                    ? 'Fotografíe o seleccione el examen de laboratorio'
+                    : 'Fotografe ou selecione o exame laboratorial',
+                style: const TextStyle(color: Color(0xFF7A9486), fontSize: 12),
+              ),
+              const SizedBox(height: 16),
+              // Câmera
+              ListTile(
+                contentPadding: EdgeInsets.zero,
+                leading: Container(
+                  width: 40, height: 40,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: const Color(0xFF46E28C).withValues(alpha: 0.10),
+                  ),
+                  child: const Icon(Icons.camera_alt_rounded,
+                      color: Color(0xFF46E28C), size: 20),
+                ),
+                title: Text(
+                  isEs ? 'Tirar Foto' : 'Tirar Foto',
+                  style: const TextStyle(
+                    color: Color(0xFFEEF2EE),
+                    fontSize: 14,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                subtitle: Text(
+                  isEs
+                      ? 'Capturar con la cámara del dispositivo'
+                      : 'Capturar usando a câmera do dispositivo',
+                  style: const TextStyle(
+                    color: Color(0xFF7A9486), fontSize: 12),
+                ),
+                onTap: () => Navigator.pop(ctx, ImageSource.camera),
+              ),
+              // Galeria
+              ListTile(
+                contentPadding: EdgeInsets.zero,
+                leading: Container(
+                  width: 40, height: 40,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: const Color(0xFF46E28C).withValues(alpha: 0.10),
+                  ),
+                  child: const Icon(Icons.photo_library_rounded,
+                      color: Color(0xFF46E28C), size: 20),
+                ),
+                title: Text(
+                  isEs ? 'Elegir de la Galería' : 'Escolher da Galeria',
+                  style: const TextStyle(
+                    color: Color(0xFFEEF2EE),
+                    fontSize: 14,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                subtitle: Text(
+                  isEs
+                      ? 'Seleccionar imagen guardada'
+                      : 'Selecionar imagem salva',
+                  style: const TextStyle(
+                    color: Color(0xFF7A9486), fontSize: 12),
+                ),
+                onTap: () => Navigator.pop(ctx, ImageSource.gallery),
+              ),
+              const SizedBox(height: 8),
+            ],
+          ),
+        ),
+      ),
+    );
+
+    if (source == null || !mounted) return;
+
+    // Solicitar permissão de acordo com a fonte selecionada
+    final PermissionStatus status;
+    if (source == ImageSource.camera) {
+      status = await Permission.camera.request();
+    } else {
+      status = await Permission.photos.request();
+    }
+
+    if (!mounted) return;
+
+    if (status.isPermanentlyDenied) {
+      _showOcrPermissionDenied(isEs, source == ImageSource.camera);
+      return;
+    }
+    if (!status.isGranted && !status.isLimited) {
+      _setOcrStatus(isEs
+          ? 'Permiso denegado. Intente de nuevo.'
+          : 'Permissão negada. Tente novamente.');
+      return;
+    }
+
+    // Permissão concedida → capturar imagem
+    final picker = ImagePicker();
+    final XFile? photo = await picker.pickImage(
+      source: source,
+      imageQuality: 90,
+      preferredCameraDevice: CameraDevice.rear,
+    );
+
+    if (!mounted) return;
+    if (photo == null) return;
+
+    setState(() {
+      _ocrLoading = true;
+      _ocrStatus = isEs ? 'Analizando examen...' : 'Analisando exame...';
+    });
+
     try {
-      final text = await webPlatform.webPickImageAndOcr();
-      if (text.isEmpty) {
+      final bytes = await photo.readAsBytes();
+      final ext   = photo.name.toLowerCase().split('.').last;
+      final mime  = ext == 'png' ? 'image/png'
+                  : ext == 'webp' ? 'image/webp'
+                  : 'image/jpeg';
+
+      // Gemini Vision extrai o texto do laudo
+      final results = await _LabOcrService.extractText(bytes, mime, lang);
+
+      if (results.isEmpty) {
         if (mounted) setState(() {
           _ocrLoading = false;
-          _ocrStatus = 'Imagem carregada — preencha os campos manualmente ou instale Tesseract.js';
-          _outros.text = '(Laudo de imagem — edite os valores acima)';
+          _ocrStatus = isEs
+              ? 'No se identificaron valores. Complete manualmente.'
+              : 'Nenhum valor identificado. Preencha manualmente.';
         });
       } else {
-        _applyOcrText(text);
-        if (mounted) setState(() { _ocrLoading = false; _ocrStatus = 'Texto extraído! Revise os campos.'; });
+        _applyOcrText(results);
+        if (mounted) setState(() {
+          _ocrLoading = false;
+          _ocrStatus = isEs
+              ? 'Valores extraídos. Revise los campos.'
+              : 'Valores extraídos. Revise os campos.';
+        });
       }
     } catch (e) {
-      if (mounted) setState(() { _ocrLoading = false; _ocrStatus = 'Falha OCR: $e'; });
+      if (mounted) setState(() {
+        _ocrLoading = false;
+        _ocrStatus = isEs ? 'Error: $e' : 'Erro: $e';
+      });
     }
+  }
+
+  void _setOcrStatus(String msg) {
+    if (mounted) setState(() { _ocrLoading = false; _ocrStatus = msg; });
+  }
+
+  void _showOcrPermissionDenied(bool isEs, bool isCamera) {
+    if (!mounted) return;
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: const Color(0xFF101614),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: Row(children: [
+          Icon(
+            isCamera ? Icons.camera_alt_rounded : Icons.photo_library_rounded,
+            color: const Color(0xFFF59E0B), size: 20,
+          ),
+          const SizedBox(width: 10),
+          Text(
+            isEs
+                ? (isCamera ? 'Acceso a la Cámara' : 'Acceso a la Galería')
+                : (isCamera ? 'Acesso à Câmera' : 'Acesso à Galeria'),
+            style: const TextStyle(
+              color: Color(0xFFEEF2EE),
+              fontSize: 16,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+        ]),
+        content: Text(
+          isEs
+              ? 'MedCases Pro necesita este permiso para importar exámenes. Toque "Configuración" para habilitarlo.'
+              : 'O MedCases Pro precisa desta permissão para importar exames. Toque em "Configurações" para habilitá-la.',
+          style: const TextStyle(
+            color: Color(0xFF7A9486), fontSize: 13, height: 1.5),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: Text(
+              isEs ? 'Cancelar' : 'Cancelar',
+              style: const TextStyle(color: Color(0xFF7A9486)),
+            ),
+          ),
+          TextButton(
+            onPressed: () { Navigator.pop(ctx); openAppSettings(); },
+            child: Text(
+              isEs ? 'Configuración' : 'Configurações',
+              style: const TextStyle(
+                color: Color(0xFF46E28C), fontWeight: FontWeight.w700),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   void _applyOcrText(String text) {
@@ -6686,5 +6932,85 @@ class _PngOutcomeBadge extends StatelessWidget {
           style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w800,
               color: Color(0xFF15803D))),
     );
+  }
+}
+
+// ── Serviço OCR nativo via Gemini Vision ───────────────────────────────────
+// Envia a imagem do exame laboratorial ao Gemini 2.5 Flash e retorna
+// o texto extraído. Usado exclusivamente no fluxo nativo (iOS/Android).
+// Web continua usando webPlatform.webPickImageAndOcr() (Tesseract.js).
+class _LabOcrService {
+  static const _endpoint =
+      'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent';
+
+  static final _promptPt =
+      'Você é um leitor especializado de resultados de exames laboratoriais. '
+      'Extraia TODOS os valores numéricos do exame na imagem. '
+      'Para cada parâmetro retorne uma linha no formato: "NOME: VALOR UNIDADE". '
+      'Exemplo: "Hemoglobina: 12.5 g/dL". '
+      'Inclua todos os valores visíveis. Retorne SOMENTE as linhas de resultados, sem texto adicional.';
+
+  static final _promptEs =
+      'Eres un lector especializado de resultados de exámenes de laboratorio. '
+      'Extrae TODOS los valores numéricos del examen en la imagen. '
+      'Para cada parámetro retorna una línea en el formato: "NOMBRE: VALOR UNIDAD". '
+      'Ejemplo: "Hemoglobina: 12.5 g/dL". '
+      'Incluye todos los valores visibles. Retorna SOLAMENTE las líneas de resultados, sin texto adicional.';
+
+  /// Retorna texto extraído da imagem ou string vazia se não encontrar valores.
+  static Future<String> extractText(
+    Uint8List imageBytes,
+    String mimeType,
+    String lang,
+  ) async {
+    final apiKey = GeminiService.apiKeyForLab;
+    if (apiKey.isEmpty) {
+      throw Exception(lang == 'es'
+          ? 'Conecta tu cuenta Google en el menú lateral.'
+          : 'Conecte sua conta Google no menu lateral.');
+    }
+
+    final b64 = base64Encode(imageBytes);
+    final prompt = lang == 'es' ? _promptEs : _promptPt;
+
+    final body = {
+      'contents': [
+        {
+          'parts': [
+            {'text': prompt},
+            {
+              'inline_data': {
+                'mime_type': mimeType,
+                'data': b64,
+              }
+            },
+          ]
+        }
+      ],
+      'generationConfig': {
+        'temperature': 0.1,
+        'maxOutputTokens': 1024,
+      },
+    };
+
+    final response = await http
+        .post(
+          Uri.parse('$_endpoint?key=$apiKey'),
+          headers: {'Content-Type': 'application/json'},
+          body: jsonEncode(body),
+        )
+        .timeout(const Duration(seconds: 30));
+
+    if (response.statusCode != 200) {
+      throw Exception('Gemini ${response.statusCode}');
+    }
+
+    final json = jsonDecode(response.body) as Map<String, dynamic>;
+    final candidates = json['candidates'] as List? ?? [];
+    if (candidates.isEmpty) return '';
+    final content = candidates.first['content'] as Map<String, dynamic>? ?? {};
+    final parts   = content['parts'] as List? ?? [];
+    if (parts.isEmpty) return '';
+    return (parts.first['text'] as String? ?? '').trim();
   }
 }

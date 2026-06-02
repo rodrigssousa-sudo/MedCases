@@ -89,7 +89,7 @@ class _AnalyzeExamSheetState extends State<_AnalyzeExamSheet> {
   ///   - Nativo iOS/Android: solicita permissão explícita → image_picker
   Future<void> _onCamera() async {
     Navigator.pop(context);
-    await Future.delayed(const Duration(milliseconds: 200));
+    await Future.delayed(const Duration(milliseconds: 350));
     if (!mounted) return;
 
     if (kIsWeb) {
@@ -140,7 +140,7 @@ class _AnalyzeExamSheetState extends State<_AnalyzeExamSheet> {
   ///   - Nativo iOS/Android: solicita permissão de fotos → image_picker
   Future<void> _onGallery() async {
     Navigator.pop(context);
-    await Future.delayed(const Duration(milliseconds: 200));
+    await Future.delayed(const Duration(milliseconds: 350));
     if (!mounted) return;
 
     if (kIsWeb) {
@@ -188,7 +188,7 @@ class _AnalyzeExamSheetState extends State<_AnalyzeExamSheet> {
   /// PDF
   Future<void> _onPdf() async {
     Navigator.pop(context);
-    await Future.delayed(const Duration(milliseconds: 200));
+    await Future.delayed(const Duration(milliseconds: 350));
     if (!mounted) return;
 
     final result = await FilePicker.platform.pickFiles(
@@ -214,7 +214,7 @@ class _AnalyzeExamSheetState extends State<_AnalyzeExamSheet> {
     final text = _textCtrl.text.trim();
     if (text.isEmpty) return;
     Navigator.pop(context);
-    await Future.delayed(const Duration(milliseconds: 200));
+    await Future.delayed(const Duration(milliseconds: 350));
     if (!mounted) return;
     await _analyzeText(text);
   }
