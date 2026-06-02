@@ -317,6 +317,15 @@ const _hcStrings = <String, Map<String, String>>{
   // Barra de navegação entre campos
   'nav_prev':           {'pt': 'Campo anterior',                         'es': 'Campo anterior'},
   'nav_next':           {'pt': 'Próximo campo',                          'es': 'Siguiente campo'},
+  // Organizar com IA — modo texto livre
+  'organizar_btn':      {'pt': 'Organizar com IA',                       'es': 'Organizar con IA'},
+  'organizar_hint':     {'pt': 'Digite ou cole um texto clínico contínuo. A IA irá distribuir automaticamente nos campos da HC.', 'es': 'Escribe o pega un texto clínico continuo. La IA lo distribuirá automáticamente en los campos de la HC.'},
+  'organizar_placeholder': {'pt': 'Paciente de 58 anos, HAS, DM2, queixa de dor torácica há 2h irradiando para o braço esquerdo...', 'es': 'Paciente de 58 años, HTA, DM2, queja de dolor torácico desde hace 2h irradiado al brazo izquierdo...'},
+  'organizar_process':  {'pt': 'Organizar',                              'es': 'Organizar'},
+  'organizar_done':     {'pt': 'HC preenchida com sucesso!',             'es': '¡HC completada con éxito!'},
+  'organizar_error':    {'pt': 'Erro ao processar. Tente novamente.',    'es': 'Error al procesar. Intenta de nuevo.'},
+  'organizar_empty':    {'pt': 'Digite algum texto antes de continuar.', 'es': 'Escribe algún texto antes de continuar.'},
+  'organizar_title':    {'pt': 'Texto → Campos da HC',                   'es': 'Texto → Campos de la HC'},
   // STT labels de campos
   'stt_chief':          {'pt': 'Queixa principal',                       'es': 'Motivo de consulta'},
   'stt_hpi':            {'pt': 'HDA',                                    'es': 'EA'},
@@ -2935,6 +2944,9 @@ class _HistoryEditorState extends State<_HistoryEditor> {
   String _relatoInterim   = '';     // texto interim (exibido em tempo real)
   webPlatform.WebSpeechRecognizer? _relatoRecog; // Web recognizer do relato
 
+  // ── Barra de controle — expandida / recolhida ────────────────────────────
+  bool _micBarExpanded = false;
+
   // Mapa de palavras-gatilho → chave do campo
   static const _kTriggers = {
     // Queixa principal
@@ -3039,6 +3051,8 @@ class _HistoryEditorState extends State<_HistoryEditor> {
   }
 
   void _toggleSmartDictaphone() {
+    // Esconde teclado antes de ativar — evita overlap teclado+barra
+    FocusScope.of(context).unfocus();
     if (_smartDictActive) {
       _smartRecog?.stop();
       SttHelper.stop();
@@ -3157,6 +3171,8 @@ class _HistoryEditorState extends State<_HistoryEditor> {
 
   // ── Relato Livre — toggle de gravação contínua ───────────────────────────
   void _toggleRelatoLivre() {
+    // Esconde teclado antes de ativar — evita overlap teclado+barra
+    FocusScope.of(context).unfocus();
     if (_relatoActive) {
       // Parar gravação e processar com IA
       _relatoRecog?.stop();
@@ -3316,6 +3332,44 @@ class _HistoryEditorState extends State<_HistoryEditor> {
     } catch (_) {
       _showRelatoSnack(_hcT(widget.p.lang, 'relato_error'));
     }
+  }
+
+  // ── Abre o sheet "Organizar com IA" ────────────────────────────────────────
+  void _showOrganizarIASheet() {
+    FocusScope.of(context).unfocus();
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => _OrganizarIASheet(
+        lang: widget.p.lang,
+        apiKey: widget.p.openAiKey,
+        onFill: _applyOrganizarResult,
+      ),
+    );
+  }
+
+  /// Recebe o mapa resultado do OrganizarIA e preenche os controllers.
+  void _applyOrganizarResult(Map<String, String> data) {
+    void _fill(String ctrlKey, String? val) {
+      if (val == null || val.trim().isEmpty) return;
+      final ctrl = _ctrls[ctrlKey];
+      if (ctrl == null) return;
+      final existing = ctrl.text.trim();
+      ctrl.text = existing.isEmpty ? val.trim() : '$existing\n${val.trim()}';
+      ctrl.selection = TextSelection.fromPosition(TextPosition(offset: ctrl.text.length));
+    }
+    _fill('chiefComplaint',   data['motivo_consulta']);
+    _fill('hpi',              data['anamnese']);
+    _fill('pastHistory',      data['antecedentes']);
+    _fill('medications',      data['medicamentos']);
+    _fill('allergies',        data['alergias']);
+    _fill('vitalSigns',       data['sinais_vitais']);
+    _fill('physicalExam',     data['exame_fisico']);
+    _fill('workingDiagnosis', data['hipotese_diagnostica']);
+    _fill('treatmentPlan',    data['conduta']);
+    _fill('labResults',       data['exames']);
+    _showRelatoSnack(_hcT(widget.p.lang, 'organizar_done'), success: true);
   }
 
   void _showRelatoSnack(String msg, {bool success = false}) {
@@ -3699,11 +3753,14 @@ class _HistoryEditorState extends State<_HistoryEditor> {
           final hPad = isDesktop ? 48.0 : 16.0;
           // Seções que têm campos de texto ditáveis (não Exames/Desfecho)
           final hasMic = _section == 1 || _section == 2 || _section == 4 || _section == 5;
-          // Padding inferior quando barra de mic está visível:
-          //   110px (conteúdo da barra) + 34px (SafeArea iPhone) + 24px (buffer)
-          //   = 168px → último campo sempre visível acima da barra em qualquer dispositivo
+          // Padding inferior adaptativo:
+          //   Expandida: 168px (barra completa ~110px + SafeArea 34px + buffer 24px)
+          //   Recolhida:  72px (pílula ~40px + SafeArea 24px + buffer 8px)
+          final micPad = hasMic
+              ? (_micBarExpanded ? 168.0 : 72.0)
+              : 24.0;
           Widget content = SingleChildScrollView(
-            padding: EdgeInsets.fromLTRB(hPad, 14, hPad, hasMic ? 168 : 24),
+            padding: EdgeInsets.fromLTRB(hPad, 14, hPad, micPad),
             child: isDesktop
                 ? Center(
                     child: ConstrainedBox(
@@ -3722,6 +3779,9 @@ class _HistoryEditorState extends State<_HistoryEditor> {
                 left: 0, right: 0, bottom: 0,
                 child: _MicControlBar(
                   lang:          widget.p.lang,
+                  // Colapso / expansão
+                  expanded:      _micBarExpanded,
+                  onToggleExpand: () => setState(() => _micBarExpanded = !_micBarExpanded),
                   // Estado ditáfone inteligente
                   smartActive:   _smartDictActive,
                   sttListening:  _sttListening,
@@ -3733,10 +3793,11 @@ class _HistoryEditorState extends State<_HistoryEditor> {
                   aiProcessing:  _aiProcessing,
                   relatoInterim: _relatoInterim,
                   onTapRelato:   _toggleRelatoLivre,
+                  // Organizar com IA (texto → campos)
+                  onOrganizarIA: () => _showOrganizarIASheet(),
                   // Navegação entre campos
                   onPrevField:   () => FocusScope.of(context).previousFocus(),
                   onNextField:   () => FocusScope.of(context).nextFocus(),
-
                 ),
               ),
             ],
@@ -4328,33 +4389,42 @@ class _SmartDictaphoneButton extends StatelessWidget {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// MIC CONTROL BAR — barra inferior completa (status + ditáfone + relato + nav)
-// Substitui o botão mic central flutuante isolado.
+// MIC CONTROL BAR — colapsável: pílula compacta ↔ barra completa
+// Collapsed: botão mic compacto + indicador de estado.
+// Expanded:  status badge + ditáfone + relato + organizar + navegação.
 // ─────────────────────────────────────────────────────────────────────────────
 class _MicControlBar extends StatelessWidget {
   final String lang;
 
+  // Expansão
+  final bool       expanded;
+  final VoidCallback onToggleExpand;
+
   // Ditáfone inteligente
-  final bool smartActive;
-  final bool sttListening;
+  final bool   smartActive;
+  final bool   sttListening;
   final String currentField;
   final String smartInterim;
   final VoidCallback onTapSmart;
 
   // Relato livre (IA)
-  final bool relatoActive;
-  final bool aiProcessing;
+  final bool   relatoActive;
+  final bool   aiProcessing;
   final String relatoInterim;
   final VoidCallback onTapRelato;
+
+  // Organizar com IA (texto livre → campos)
+  final VoidCallback onOrganizarIA;
 
   // Navegação de campos
   final VoidCallback onPrevField;
   final VoidCallback onNextField;
-  // Callback disparado quando um campo ganha foco via seta (para atualizar badge)
   final void Function(String fieldKey)? onFieldFocused;
 
   const _MicControlBar({
     required this.lang,
+    required this.expanded,
+    required this.onToggleExpand,
     required this.smartActive,
     required this.sttListening,
     required this.currentField,
@@ -4364,6 +4434,7 @@ class _MicControlBar extends StatelessWidget {
     required this.aiProcessing,
     required this.relatoInterim,
     required this.onTapRelato,
+    required this.onOrganizarIA,
     required this.onPrevField,
     required this.onNextField,
     this.onFieldFocused,
@@ -4379,9 +4450,13 @@ class _MicControlBar extends StatelessWidget {
     final isDark     = Theme.of(context).brightness == Brightness.dark;
     final cardBg     = isDark ? bgDark : bg;
     final cardBorder = isDark ? const Color(0xFF1F3829) : border;
-    final isEs       = lang == 'es';
 
-    return Container(
+    // Se qualquer modo está ativo, força expansão visual (botões devem aparecer)
+    final showFull = expanded || _anyActive;
+
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 240),
+      curve: Curves.easeOutCubic,
       decoration: BoxDecoration(
         color: cardBg,
         border: Border(top: BorderSide(color: cardBorder, width: 1)),
@@ -4394,75 +4469,199 @@ class _MicControlBar extends StatelessWidget {
       child: SafeArea(
         top: false,
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(12, 10, 12, 8),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              // ── Linha 1: Indicador de status de gravação ─────────────────
-              _MicStatusBadge(
-                lang:          lang,
-                smartActive:   smartActive || sttListening,
-                relatoActive:  relatoActive,
-                aiProcessing:  aiProcessing,
-                currentField:  currentField,
-                interim:       relatoActive ? relatoInterim : smartInterim,
-              ),
-              const SizedBox(height: 10),
+          padding: EdgeInsets.fromLTRB(12, showFull ? 10 : 6, 12, showFull ? 8 : 6),
+          child: showFull
+              // ── BARRA EXPANDIDA ────────────────────────────────────────────
+              ? Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    // Status badge + botão fechar
+                    Row(children: [
+                      Expanded(
+                        child: _MicStatusBadge(
+                          lang:         lang,
+                          smartActive:  smartActive || sttListening,
+                          relatoActive: relatoActive,
+                          aiProcessing: aiProcessing,
+                          currentField: currentField,
+                          interim:      relatoActive ? relatoInterim : smartInterim,
+                        ),
+                      ),
+                      // Botão recolher (só quando não há modo ativo)
+                      if (!_anyActive) ...[
+                        const SizedBox(width: 8),
+                        GestureDetector(
+                          onTap: onToggleExpand,
+                          child: Container(
+                            width: 32, height: 32,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: isDark
+                                  ? Colors.white.withValues(alpha: 0.07)
+                                  : const Color(0xFFE8EFF0),
+                              border: Border.all(
+                                color: isDark
+                                    ? Colors.white.withValues(alpha: 0.10)
+                                    : const Color(0xFFCDD8DC)),
+                            ),
+                            child: Icon(
+                              Icons.keyboard_arrow_down_rounded,
+                              size: 18,
+                              color: isDark ? Colors.white54 : const Color(0xFF607D8B),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ]),
+                    const SizedBox(height: 10),
 
-              // ── Linha 2: Botões de ação ───────────────────────────────────
-              Row(children: [
-                // — Ditáfone inteligente ──────────────────────────
-                Expanded(
-                  child: _MicActionBtn(
-                    icon:    smartActive || sttListening
-                        ? Icons.mic_rounded
-                        : Icons.mic_none_rounded,
-                    label:   smartActive || sttListening
-                        ? _hcT(lang, 'dictaphone_active').replaceAll(' • Gravando', '').replaceAll(' • Grabando', '')
-                        : _hcT(lang, 'dictaphone'),
-                    active:  smartActive || sttListening,
-                    color:   const Color(0xFF1F6B48),
-                    onTap:   onTapSmart,
-                    enabled: !relatoActive && !aiProcessing,
+                    // Botões de ação — linha 1: Ditáfone + Relato + Nav
+                    Row(children: [
+                      // Ditáfone inteligente
+                      Expanded(
+                        child: _MicActionBtn(
+                          icon:    smartActive || sttListening
+                              ? Icons.mic_rounded
+                              : Icons.mic_none_rounded,
+                          label:   smartActive || sttListening
+                              ? _hcT(lang, 'dictaphone_active').replaceAll(' • Gravando', '').replaceAll(' • Grabando', '')
+                              : _hcT(lang, 'dictaphone'),
+                          active:  smartActive || sttListening,
+                          color:   const Color(0xFF1F6B48),
+                          onTap:   onTapSmart,
+                          enabled: !relatoActive && !aiProcessing,
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+
+                      // Relato Livre (IA)
+                      Expanded(
+                        child: _MicActionBtn(
+                          icon:    aiProcessing
+                              ? Icons.auto_awesome_rounded
+                              : (relatoActive
+                                  ? Icons.stop_circle_rounded
+                                  : Icons.record_voice_over_rounded),
+                          label:   aiProcessing
+                              ? _hcT(lang, 'relato_processing')
+                              : (relatoActive
+                                  ? _hcT(lang, 'relato_active')
+                                  : _hcT(lang, 'relato_btn')),
+                          active:  relatoActive,
+                          color:   relatoActive
+                              ? const Color(0xFFDC2626)
+                              : const Color(0xFF7C3AED),
+                          onTap:   onTapRelato,
+                          enabled: !smartActive && !sttListening && !aiProcessing,
+                          loading: aiProcessing,
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+
+                      // Navegação entre campos
+                      _FieldNavBar(
+                        onPrev: onPrevField,
+                        onNext: onNextField,
+                        isDark: isDark,
+                        onFieldFocused: onFieldFocused,
+                      ),
+                    ]),
+                    const SizedBox(height: 8),
+
+                    // Botão "Organizar com IA" — linha 2, largura total
+                    GestureDetector(
+                      onTap: (!smartActive && !sttListening && !relatoActive && !aiProcessing)
+                          ? onOrganizarIA
+                          : null,
+                      child: AnimatedContainer(
+                        duration: const Duration(milliseconds: 200),
+                        height: 40,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(12),
+                          gradient: (!smartActive && !sttListening && !relatoActive && !aiProcessing)
+                              ? const LinearGradient(
+                                  colors: [Color(0xFF4F46E5), Color(0xFF7C3AED)],
+                                  begin: Alignment.centerLeft,
+                                  end: Alignment.centerRight,
+                                )
+                              : null,
+                          color: (!smartActive && !sttListening && !relatoActive && !aiProcessing)
+                              ? null
+                              : (isDark ? Colors.white12 : const Color(0xFFE8E8F0)),
+                          border: Border.all(
+                            color: (!smartActive && !sttListening && !relatoActive && !aiProcessing)
+                                ? const Color(0xFF7C3AED).withValues(alpha: 0.5)
+                                : (isDark
+                                    ? Colors.white.withValues(alpha: 0.08)
+                                    : const Color(0xFFD0D0E8)),
+                            width: 1,
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.auto_fix_high_rounded,
+                              size: 15,
+                              color: (!smartActive && !sttListening && !relatoActive && !aiProcessing)
+                                  ? Colors.white
+                                  : (isDark ? Colors.white38 : const Color(0xFFB0B0C8)),
+                            ),
+                            const SizedBox(width: 7),
+                            Text(
+                              _hcT(lang, 'organizar_btn'),
+                              style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w700,
+                                color: (!smartActive && !sttListening && !relatoActive && !aiProcessing)
+                                    ? Colors.white
+                                    : (isDark ? Colors.white38 : const Color(0xFFB0B0C8)),
+                                letterSpacing: 0.2,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                )
+              // ── PÍLULA RECOLHIDA ───────────────────────────────────────────
+              : GestureDetector(
+                  onTap: onToggleExpand,
+                  child: Container(
+                    height: 40,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20),
+                      color: isDark
+                          ? const Color(0xFF1F6B48).withValues(alpha: 0.18)
+                          : const Color(0xFF1F6B48).withValues(alpha: 0.08),
+                      border: Border.all(
+                        color: const Color(0xFF1F6B48).withValues(alpha: 0.30),
+                        width: 1,
+                      ),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.mic_none_rounded, size: 16,
+                            color: const Color(0xFF1F6B48)),
+                        const SizedBox(width: 8),
+                        Text(
+                          lang == 'es' ? 'Dictado e IA' : 'Ditado e IA',
+                          style: const TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w700,
+                            color: Color(0xFF1F6B48),
+                            letterSpacing: 0.2,
+                          ),
+                        ),
+                        const SizedBox(width: 6),
+                        Icon(Icons.keyboard_arrow_up_rounded, size: 16,
+                            color: const Color(0xFF1F6B48).withValues(alpha: 0.6)),
+                      ],
+                    ),
                   ),
                 ),
-                const SizedBox(width: 8),
-
-                // — Relato Livre (IA) ──────────────────────────────
-                Expanded(
-                  child: _MicActionBtn(
-                    icon:    aiProcessing
-                        ? Icons.auto_awesome_rounded
-                        : (relatoActive
-                            ? Icons.stop_circle_rounded
-                            : Icons.record_voice_over_rounded),
-                    label:   aiProcessing
-                        ? _hcT(lang, 'relato_processing')
-                        : (relatoActive
-                            ? _hcT(lang, 'relato_active')
-                            : _hcT(lang, 'relato_btn')),
-                    active:  relatoActive,
-                    color:   relatoActive
-                        ? const Color(0xFFDC2626)
-                        : const Color(0xFF7C3AED),
-                    onTap:   onTapRelato,
-                    enabled: !smartActive && !sttListening && !aiProcessing,
-                    loading: aiProcessing,
-                  ),
-                ),
-
-                const SizedBox(width: 8),
-
-                // — Navegação entre campos ─────────────────────────
-                _FieldNavBar(
-                  onPrev: onPrevField,
-                  onNext: onNextField,
-                  isDark: isDark,
-                  onFieldFocused: onFieldFocused,
-                ),
-              ]),
-            ],
-          ),
         ),
       ),
     );
@@ -7012,5 +7211,435 @@ class _LabOcrService {
     final parts   = content['parts'] as List? ?? [];
     if (parts.isEmpty) return '';
     return (parts.first['text'] as String? ?? '').trim();
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// ORGANIZAR COM IA — sheet de texto livre → IA distribui nos campos da HC
+// Suporta: digitação manual, colar texto ou ditado por voz.
+// Prompt completo: extrai 10 campos clínicos do texto bruto.
+// ─────────────────────────────────────────────────────────────────────────────
+class _OrganizarIASheet extends StatefulWidget {
+  final String lang;
+  final String apiKey;
+  final void Function(Map<String, String> data) onFill;
+
+  const _OrganizarIASheet({
+    required this.lang,
+    required this.apiKey,
+    required this.onFill,
+  });
+
+  @override
+  State<_OrganizarIASheet> createState() => _OrganizarIASheetState();
+}
+
+class _OrganizarIASheetState extends State<_OrganizarIASheet> {
+  final _ctrl        = TextEditingController();
+  bool  _processing  = false;
+  bool  _voiceActive = false;
+  String _voiceInterim = '';
+  String _voiceBuffer  = '';
+  webPlatform.WebSpeechRecognizer? _voiceRecog;
+
+  static const _kGreen  = Color(0xFF1F6B48);
+  static const _kPurple = Color(0xFF7C3AED);
+
+  String get _lang => widget.lang;
+  bool   get _isEs => _lang == 'es';
+
+  @override
+  void dispose() {
+    _ctrl.dispose();
+    _voiceRecog?.stop();
+    SttHelper.stop();
+    super.dispose();
+  }
+
+  // ── Ditado de voz para o campo de texto livre ─────────────────────────────
+  void _toggleVoice() {
+    FocusScope.of(context).unfocus();
+    if (_voiceActive) {
+      _voiceRecog?.stop();
+      SttHelper.stop();
+      // Flush buffer
+      if (_voiceBuffer.isNotEmpty) {
+        final existing = _ctrl.text.trim();
+        _ctrl.text = existing.isEmpty ? _voiceBuffer : '$existing $_voiceBuffer';
+        _ctrl.selection = TextSelection.fromPosition(TextPosition(offset: _ctrl.text.length));
+      }
+      if (mounted) setState(() { _voiceActive = false; _voiceInterim = ''; _voiceBuffer = ''; });
+      return;
+    }
+
+    _voiceBuffer = '';
+    final locale = _isEs ? 'es-ES' : 'pt-BR';
+
+    if (kIsWeb) {
+      final recog = webPlatform.WebSpeechRecognizer();
+      recog.start('organizar', locale,
+        onResult: (t, isFinal) {
+          if (!mounted) return;
+          if (isFinal) {
+            _voiceBuffer += (_voiceBuffer.isEmpty ? '' : ' ') + t.trim();
+            if (mounted) setState(() => _voiceInterim = '');
+          } else {
+            if (mounted) setState(() => _voiceInterim = t);
+          }
+        },
+        onEnd: () {
+          if (_voiceActive && mounted) {
+            Future.delayed(const Duration(milliseconds: 200), () {
+              if (_voiceActive && mounted) {
+                _voiceRecog?.start('organizar', locale,
+                  onResult: (t, f) {}, onEnd: () {}, onError: (_) {});
+              }
+            });
+          }
+        },
+        onError: (code) {
+          if (code != 'no-speech' && mounted) {
+            setState(() { _voiceActive = false; _voiceInterim = ''; });
+          }
+        },
+      );
+      _voiceRecog = recog;
+    } else {
+      void startLoop() {
+        SttHelper.start(
+          locale: locale,
+          onResult: (t) {
+            if (!mounted || !_voiceActive) return;
+            _voiceBuffer += (_voiceBuffer.isEmpty ? '' : ' ') + t.trim();
+            if (mounted) setState(() => _voiceInterim = '');
+          },
+          onError: (code) {
+            if (!mounted) return;
+            if (code == 'no_speech' || code == 'no-speech') {
+              if (_voiceActive) Future.delayed(const Duration(milliseconds: 300), startLoop);
+              return;
+            }
+            setState(() { _voiceActive = false; _voiceInterim = ''; });
+          },
+          onEnd: () {
+            if (_voiceActive && mounted) {
+              Future.delayed(const Duration(milliseconds: 300), startLoop);
+            }
+          },
+        );
+      }
+      startLoop();
+    }
+    if (mounted) setState(() { _voiceActive = true; _voiceInterim = ''; });
+  }
+
+  // ── Chama IA para estruturar o texto ─────────────────────────────────────
+  Future<void> _process() async {
+    // Flush voice se ativo
+    if (_voiceActive) {
+      _voiceRecog?.stop();
+      SttHelper.stop();
+      if (_voiceBuffer.isNotEmpty) {
+        final existing = _ctrl.text.trim();
+        _ctrl.text = existing.isEmpty ? _voiceBuffer : '$existing $_voiceBuffer';
+        _ctrl.selection = TextSelection.fromPosition(TextPosition(offset: _ctrl.text.length));
+      }
+      if (mounted) setState(() { _voiceActive = false; _voiceInterim = ''; _voiceBuffer = ''; });
+    }
+
+    final text = _ctrl.text.trim();
+    if (text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(_hcT(_lang, 'organizar_empty')),
+        backgroundColor: const Color(0xFFB91C1C),
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        margin: const EdgeInsets.fromLTRB(16, 0, 16, 20),
+      ));
+      return;
+    }
+
+    if (widget.apiKey.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(_hcT(_lang, 'relato_no_key')),
+        backgroundColor: const Color(0xFFB91C1C),
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        margin: const EdgeInsets.fromLTRB(16, 0, 16, 20),
+      ));
+      return;
+    }
+
+    if (mounted) setState(() => _processing = true);
+
+    const systemPrompt =
+        'Você é um assistente especializado em registros médicos. '
+        'Receba um texto clínico bruto (digitado ou ditado) e distribua '
+        'as informações nos campos corretos do prontuário médico.\n\n'
+        'Retorne SOMENTE um objeto JSON válido (sem markdown, sem ```json) '
+        'com estas chaves (use string vazia "" para campos não encontrados):\n'
+        '{\n'
+        '  "motivo_consulta": "",\n'
+        '  "anamnese": "",\n'
+        '  "antecedentes": "",\n'
+        '  "medicamentos": "",\n'
+        '  "alergias": "",\n'
+        '  "sinais_vitais": "",\n'
+        '  "exame_fisico": "",\n'
+        '  "hipotese_diagnostica": "",\n'
+        '  "conduta": "",\n'
+        '  "exames": ""\n'
+        '}';
+
+    try {
+      final result = await AiService.chat(
+        apiKey:       widget.apiKey,
+        systemPrompt: systemPrompt,
+        userMessage:  'Texto clínico:\n$text',
+        maxTokens:    1200,
+      );
+
+      if (!mounted) return;
+      setState(() => _processing = false);
+
+      if (result.isError) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(_hcT(_lang, 'organizar_error')),
+          backgroundColor: const Color(0xFFB91C1C),
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          margin: const EdgeInsets.fromLTRB(16, 0, 16, 20),
+        ));
+        return;
+      }
+
+      final clean = result.text
+          .replaceAll(RegExp(r'```json\s*', caseSensitive: false), '')
+          .replaceAll('```', '')
+          .trim();
+
+      final data = jsonDecode(clean) as Map<String, dynamic>;
+      final mapped = data.map((k, v) => MapEntry(k, v?.toString() ?? ''));
+      Navigator.of(context).pop();
+      widget.onFill(mapped);
+    } catch (_) {
+      if (mounted) setState(() => _processing = false);
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(_hcT(_lang, 'organizar_error')),
+        backgroundColor: const Color(0xFFB91C1C),
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        margin: const EdgeInsets.fromLTRB(16, 0, 16, 20),
+      ));
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final bg     = isDark ? const Color(0xFF0F1A14) : Colors.white;
+    final border = isDark ? const Color(0xFF1F3829) : const Color(0xFFE2EDE7);
+    final textCol= isDark ? Colors.white : const Color(0xFF0F1C14);
+    final subCol = isDark ? Colors.white54 : const Color(0xFF6B7280);
+
+    return Container(
+      decoration: BoxDecoration(
+        color: bg,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+        border: Border.all(color: border),
+      ),
+      padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+      child: SafeArea(
+        top: false,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // Handle
+            const SizedBox(height: 10),
+            Center(
+              child: Container(
+                width: 36, height: 4,
+                decoration: BoxDecoration(
+                  color: isDark ? Colors.white24 : const Color(0xFFCDD6E0),
+                  borderRadius: BorderRadius.circular(2)),
+              ),
+            ),
+            const SizedBox(height: 14),
+
+            // Título
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 18),
+              child: Row(children: [
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    gradient: const LinearGradient(
+                      colors: [Color(0xFF4F46E5), Color(0xFF7C3AED)]),
+                  ),
+                  child: const Icon(Icons.auto_fix_high_rounded, size: 16, color: Colors.white),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                    Text(
+                      _hcT(_lang, 'organizar_title'),
+                      style: TextStyle(
+                        fontSize: 15, fontWeight: FontWeight.w900,
+                        color: textCol),
+                    ),
+                    Text(
+                      _hcT(_lang, 'organizar_hint'),
+                      style: TextStyle(fontSize: 10, color: subCol, height: 1.4),
+                      maxLines: 2,
+                    ),
+                  ]),
+                ),
+              ]),
+            ),
+            const SizedBox(height: 14),
+
+            // Campo de texto livre
+            Flexible(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Stack(
+                  children: [
+                    ConstrainedBox(
+                      constraints: const BoxConstraints(
+                        minHeight: 120,
+                        maxHeight: 260,
+                      ),
+                      child: TextField(
+                        controller: _ctrl,
+                        maxLines: null,
+                        minLines: 5,
+                        style: TextStyle(fontSize: 13, color: textCol, height: 1.5),
+                        decoration: InputDecoration(
+                          hintText: _hcT(_lang, 'organizar_placeholder'),
+                          hintStyle: TextStyle(
+                            fontSize: 12, color: subCol.withValues(alpha: 0.6),
+                            fontStyle: FontStyle.italic),
+                          filled: true,
+                          fillColor: isDark
+                              ? Colors.white.withValues(alpha: 0.04)
+                              : const Color(0xFFF6FAF8),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(14),
+                            borderSide: BorderSide(color: border),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(14),
+                            borderSide: BorderSide(color: border),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(14),
+                            borderSide: const BorderSide(color: _kGreen, width: 1.5),
+                          ),
+                          contentPadding: const EdgeInsets.fromLTRB(14, 12, 48, 12),
+                        ),
+                      ),
+                    ),
+                    // Indicador de ditado em tempo real
+                    if (_voiceActive && _voiceInterim.isNotEmpty)
+                      Positioned(
+                        bottom: 8, left: 14, right: 48,
+                        child: Text(
+                          _voiceInterim,
+                          style: TextStyle(
+                            fontSize: 12, fontStyle: FontStyle.italic,
+                            color: _kGreen.withValues(alpha: 0.8)),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 12),
+
+            // Botões: Voz + Organizar
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 10),
+              child: Row(children: [
+                // Botão microfone
+                GestureDetector(
+                  onTap: _processing ? null : _toggleVoice,
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 200),
+                    width: 48, height: 48,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(14),
+                      color: _voiceActive
+                          ? const Color(0xFFDC2626).withValues(alpha: 0.12)
+                          : (isDark
+                              ? Colors.white.withValues(alpha: 0.06)
+                              : const Color(0xFFF0F7F4)),
+                      border: Border.all(
+                        color: _voiceActive
+                            ? const Color(0xFFDC2626).withValues(alpha: 0.45)
+                            : border,
+                        width: _voiceActive ? 1.5 : 1,
+                      ),
+                    ),
+                    child: Center(
+                      child: _voiceActive
+                          ? _PulseDot(color: const Color(0xFFDC2626))
+                          : Icon(Icons.mic_none_rounded, size: 20, color: _kGreen),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 10),
+
+                // Botão principal "Organizar"
+                Expanded(
+                  child: GestureDetector(
+                    onTap: _processing ? null : _process,
+                    child: AnimatedContainer(
+                      duration: const Duration(milliseconds: 200),
+                      height: 48,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(14),
+                        gradient: _processing
+                            ? null
+                            : const LinearGradient(
+                                colors: [Color(0xFF4F46E5), Color(0xFF7C3AED)],
+                                begin: Alignment.centerLeft,
+                                end: Alignment.centerRight,
+                              ),
+                        color: _processing
+                            ? (isDark ? Colors.white12 : const Color(0xFFE8E8F0))
+                            : null,
+                      ),
+                      child: Center(
+                        child: _processing
+                            ? const SizedBox(
+                                width: 20, height: 20,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2.5,
+                                  valueColor: AlwaysStoppedAnimation(Colors.white70),
+                                ),
+                              )
+                            : Row(mainAxisSize: MainAxisSize.min, children: [
+                                const Icon(Icons.auto_awesome_rounded, size: 16, color: Colors.white),
+                                const SizedBox(width: 8),
+                                Text(
+                                  _hcT(_lang, 'organizar_process'),
+                                  style: const TextStyle(
+                                    fontSize: 14, fontWeight: FontWeight.w800,
+                                    color: Colors.white, letterSpacing: 0.3),
+                                ),
+                              ]),
+                      ),
+                    ),
+                  ),
+                ),
+              ]),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
