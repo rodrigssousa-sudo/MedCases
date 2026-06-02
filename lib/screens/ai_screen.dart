@@ -977,6 +977,8 @@ class _AiScreenState extends State<AiScreen> {
             ),
             cacheExtent: 2000,
             physics: const ClampingScrollPhysics(),
+            // Fecha o teclado ao arrastar o chat (comportamento nativo mobile)
+            keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
             itemCount: _messages.length + (_thinking ? 1 : 0),
             itemBuilder: (context, i) {
               if (_thinking && i == _messages.length) {
@@ -1034,10 +1036,33 @@ class _AiScreenState extends State<AiScreen> {
     }
 
     // Desktop: sem shell AppBar → mostra _WaHeader próprio.
-    // Mobile/tablet: shell AppBar já visível → oculta _WaHeader para evitar
-    // double-header. Botões de ação (Limpar, Histórico) ficam acessíveis via
-    // menu sanduíche ou gestos internos.
+    // Mobile/tablet: mostra mini barra de ações inline (histórico + limpar)
+    // para garantir acesso MESMO com teclado aberto (shell AppBar não está visível).
     final showWaHeader = bp.isDesktop;
+    final showMobileActions = !bp.isDesktop;
+
+    // Fecha teclado ao tocar fora do input (área do chat)
+    final chatArea = GestureDetector(
+      behavior: HitTestBehavior.translucent,
+      onTap: () => _focusNode.unfocus(),
+      child: Container(
+        color: chatBg,
+        child: Stack(
+          children: [
+            chatList,
+            // Card "IA Desconectada" — sobreposto quando IA não está conectada
+            // e o médico ainda não enviou nenhuma mensagem
+            if (showDisconnectCard)
+              _EmptyChat(
+                dark: dark,
+                lang: p.lang,
+                isConnected: false,
+                onConnectApi: _openAiSettings,
+              ),
+          ],
+        ),
+      ),
+    );
 
     return Column(children: [
       // ── Header fino estilo WhatsApp (desktop only) ───────────────────────
@@ -1055,6 +1080,21 @@ class _AiScreenState extends State<AiScreen> {
         keyLoading: p.aiKeyLoading || p.geminiLoading,
       ),
 
+      // ── Mini barra de ações mobile — SEMPRE visível mesmo com teclado aberto
+      // Histórico + Limpar ficam acessíveis sem depender do scroll-reveal AppBar.
+      if (showMobileActions)
+        _MobileAiActionBar(
+          dark: dark,
+          lang: p.lang,
+          historyCount: _chatHistory.length,
+          hasMessages: _messages.where((m) => m.role == 'user').isNotEmpty,
+          hasRealAi: p.hasAnyAi || p.geminiConnected,
+          keyLoading: p.aiKeyLoading || p.geminiLoading,
+          onHistory: () => _openHistory(p),
+          onClear: _clearChat,
+          onSettings: _openAiSettings,
+        ),
+
       // ── Banner de erro de chave ───────────────────────────────────────────
       if (_aiError)
         _AiErrorBanner(
@@ -1063,9 +1103,7 @@ class _AiScreenState extends State<AiScreen> {
           onFix: _openAiSettings,
         ),
 
-      // ── Task 11: Banner de erro de rede/conexão ──────────────────────────
-      // Substituir tela branca por banner inline quando a IA falha por rede.
-      // O banner aparece no topo sem apagar o histórico do chat já carregado.
+      // ── Banner de erro de rede/conexão ───────────────────────────────────
       if (_networkError)
         InlineConnectionBanner(
           lang: p.lang,
@@ -1083,26 +1121,8 @@ class _AiScreenState extends State<AiScreen> {
           },
         ),
 
-      // ── Área de chat (com overlay de desconexão quando necessário) ───────
-      Expanded(
-        child: Container(
-          color: chatBg,
-          child: Stack(
-            children: [
-              chatList,
-              // Card "IA Desconectada" — sobreposto quando IA não está conectada
-              // e o médico ainda não enviou nenhuma mensagem
-              if (showDisconnectCard)
-                _EmptyChat(
-                  dark: dark,
-                  lang: p.lang,
-                  isConnected: false,
-                  onConnectApi: _openAiSettings,
-                ),
-            ],
-          ),
-        ),
-      ),
+      // ── Área de chat ─────────────────────────────────────────────────────
+      Expanded(child: chatArea),
 
       // ── Carrossel de sugestões — some quando foca ─────────────────────
       AnimatedSize(
@@ -1149,6 +1169,220 @@ class _AiScreenState extends State<AiScreen> {
               lang: p.lang,
             ),
     ]);
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Mini barra de ações mobile — SEMPRE visível no topo da tela de IA no celular.
+// Garante acesso a Histórico e Limpar mesmo com teclado aberto ou sem scroll.
+// ─────────────────────────────────────────────────────────────────────────────
+class _MobileAiActionBar extends StatelessWidget {
+  final bool dark;
+  final String lang;
+  final int historyCount;
+  final bool hasMessages;
+  final bool hasRealAi;
+  final bool keyLoading;
+  final VoidCallback onHistory;
+  final VoidCallback onClear;
+  final VoidCallback onSettings;
+
+  const _MobileAiActionBar({
+    required this.dark,
+    required this.lang,
+    required this.historyCount,
+    required this.hasMessages,
+    required this.hasRealAi,
+    required this.keyLoading,
+    required this.onHistory,
+    required this.onClear,
+    required this.onSettings,
+  });
+
+  static const _kGold  = Color(0xFFC5A365);
+  static const _kGoldL = Color(0xFFFFE8A6);
+  static const _kGreen = Color(0xFF4ADE80);
+  static const _kBg1   = Color(0xFF1A1A1A);
+  static const _kBg2   = Color(0xFF252525);
+
+  @override
+  Widget build(BuildContext context) {
+    final bgColor = dark ? _kBg2 : const Color(0xFFF5F5F5);
+    final borderColor = dark ? const Color(0xFF333333) : const Color(0xFFE0E0E0);
+    final iconColor = dark ? const Color(0xFFFFE8A6) : const Color(0xFF0A7C4E);
+    final iconBg = dark
+        ? Colors.white.withValues(alpha: 0.07)
+        : const Color(0xFF0A7C4E).withValues(alpha: 0.08);
+    final iconBorder = dark
+        ? Colors.white.withValues(alpha: 0.12)
+        : const Color(0xFF0A7C4E).withValues(alpha: 0.20);
+
+    return Container(
+      height: 44,
+      decoration: BoxDecoration(
+        color: dark ? _kBg1 : const Color(0xFFF8F8F8),
+        border: Border(bottom: BorderSide(color: borderColor, width: 0.5)),
+        gradient: dark
+            ? const LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [_kBg1, _kBg2],
+              )
+            : null,
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 12),
+        child: Row(
+          children: [
+            // ── Logo / nome ──────────────────────────────────────────────────
+            RichText(
+              text: TextSpan(
+                children: [
+                  TextSpan(
+                    text: 'M',
+                    style: TextStyle(
+                      fontSize: 17, fontWeight: FontWeight.w900,
+                      color: dark ? _kGold : const Color(0xFF0A7C4E),
+                      letterSpacing: -0.5,
+                    ),
+                  ),
+                  TextSpan(
+                    text: '+',
+                    style: TextStyle(
+                      fontSize: 12, fontWeight: FontWeight.w900,
+                      color: dark ? _kGoldL : const Color(0xFF0A7C4E),
+                    ),
+                  ),
+                  TextSpan(
+                    text: '  IA',
+                    style: TextStyle(
+                      fontSize: 14, fontWeight: FontWeight.w700,
+                      color: dark ? Colors.white70 : const Color(0xFF1A1A1A),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            // ── Badge conexão ────────────────────────────────────────────────
+            const SizedBox(width: 8),
+            GestureDetector(
+              onTap: onSettings,
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 300),
+                padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
+                  color: hasRealAi
+                      ? _kGreen.withValues(alpha: 0.12)
+                      : Colors.white.withValues(alpha: 0.07),
+                  border: Border.all(
+                    color: hasRealAi
+                        ? _kGreen.withValues(alpha: 0.45)
+                        : Colors.white.withValues(alpha: 0.18),
+                  ),
+                ),
+                child: keyLoading
+                    ? SizedBox(
+                        width: 10, height: 10,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 1.5,
+                          color: dark ? Colors.white54 : Colors.black38,
+                        ),
+                      )
+                    : Row(mainAxisSize: MainAxisSize.min, children: [
+                        Container(
+                          width: 6, height: 6,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: hasRealAi ? _kGreen : Colors.white38,
+                          ),
+                        ),
+                        const SizedBox(width: 4),
+                        Text(
+                          hasRealAi
+                              ? (lang == 'es' ? 'Conectado' : 'Conectado')
+                              : (lang == 'es' ? 'Conectar IA' : 'Conectar IA'),
+                          style: TextStyle(
+                            fontSize: 10, fontWeight: FontWeight.w700,
+                            color: hasRealAi
+                                ? _kGreen
+                                : (dark ? Colors.white54 : Colors.black45),
+                          ),
+                        ),
+                      ]),
+              ),
+            ),
+
+            const Spacer(),
+
+            // ── Botão Histórico ──────────────────────────────────────────────
+            GestureDetector(
+              onTap: onHistory,
+              child: Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  Container(
+                    width: 34, height: 34,
+                    margin: const EdgeInsets.only(right: 8),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: iconBg,
+                      border: Border.all(color: iconBorder, width: 1),
+                    ),
+                    child: Icon(Icons.history_rounded, size: 18, color: iconColor),
+                  ),
+                  if (historyCount > 0)
+                    Positioned(
+                      top: -3, right: 5,
+                      child: Container(
+                        width: 14, height: 14,
+                        decoration: const BoxDecoration(
+                          shape: BoxShape.circle, color: _kGold,
+                        ),
+                        child: Center(
+                          child: Text(
+                            '$historyCount',
+                            style: const TextStyle(
+                              fontSize: 8, fontWeight: FontWeight.w900,
+                              color: Color(0xFF1A1100),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+            ),
+
+            // ── Botão Limpar (só quando há mensagens) ───────────────────────
+            if (hasMessages)
+              GestureDetector(
+                onTap: onClear,
+                child: Container(
+                  height: 34,
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: _kGold,
+                    border: Border.all(
+                      color: _kGoldL.withValues(alpha: 0.4), width: 1),
+                  ),
+                  child: Center(
+                    child: Text(
+                      lang == 'es' ? 'Limpiar' : 'Limpar',
+                      style: const TextStyle(
+                        fontSize: 11, fontWeight: FontWeight.w800,
+                        color: Color(0xFF1A1100),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
   }
 }
 
