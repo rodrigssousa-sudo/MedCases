@@ -3543,7 +3543,7 @@ class _GlobalSearchModalState extends State<_GlobalSearchModal> {
       if (name.contains(q) || grp.contains(q)) {
         res.add(_SearchResult(
           cat:      _SearchCat.drug,
-          title:    drug.name,
+          title:    drug.nameL10n(p.lang),
           subtitle: drug.group,
           data:     drug,
         ));

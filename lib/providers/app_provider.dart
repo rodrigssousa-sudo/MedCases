@@ -3163,9 +3163,9 @@ class AppProvider extends ChangeNotifier {
           : '';
 
       if (drugRef.isNotEmpty) {
-        refs.add('💊 [${d.name}] ${drugRef}$interNote');
+        refs.add('💊 [${d.nameL10n(_lang)}] ${drugRef}$interNote');
       } else if (warn.isNotEmpty) {
-        refs.add('💊 [${d.name}] Alerta: ${warn.substring(0, warn.length.clamp(0, 100))}');
+        refs.add('💊 [${d.nameL10n(_lang)}] Alerta: ${warn.substring(0, warn.length.clamp(0, 100))}');
       }
     }
 
@@ -4888,7 +4888,7 @@ class AppProvider extends ChangeNotifier {
         buf0b.writeln('');
 
         for (final drug in indicationDrugs) {
-          buf0b.writeln('### ${drug.name}');
+          buf0b.writeln('### ${drug.nameL10n(_lang)}');
           final cls = drug.getField(drug.className, _lang);
           if (cls.isNotEmpty) buf0b.writeln('  **${es ? "Clase" : "Classe"}:** $cls');
           final fd = drug.getField(drug.fixedDose, _lang);
@@ -4965,12 +4965,12 @@ class AppProvider extends ChangeNotifier {
         buf.writeln('');
 
         for (final drug in drugsDatabase) {
-          final dName = _normalize(drug.name);
+          final dName = _normalize(drug.name);  // busca por nome PT (ID interno)
           final words = qExpanded.split(RegExp(r'\s+')).where((w) => w.length > 3);
           if (!words.any((w) => dName.contains(w))) continue;
 
           // ── Cabeçalho do fármaco ──────────────────────────────────────────
-          buf.writeln('### ${drug.name}');
+          buf.writeln('### ${drug.nameL10n(_lang)}');
           final cls = drug.getField(drug.className, _lang);
           if (cls.isNotEmpty) buf.writeln('  **${es ? "Clase" : "Classe"}:** $cls');
 
@@ -5027,7 +5027,7 @@ class AppProvider extends ChangeNotifier {
           // ── Interações com medicamentos do paciente ────────────────────────
           if (askingInter || showAll) {
             final interList = DrugInteractionService.checkInteractions(
-              selectedDrugNames: [drug.name],
+              selectedDrugNames: [drug.nameL10n(_lang)],
               patientMedicationsText: _patient.medications,
             );
             if (interList.isNotEmpty) {
@@ -5941,14 +5941,14 @@ class AppProvider extends ChangeNotifier {
             try {
               final dose   = calculateDose(drug);
               final alerts = dose.alerts.take(1).join(' | ');
-              buf.writeln('  • ${drug.name}: ${dose.main}${alerts.isNotEmpty ? '  ⚠ $alerts' : ''}');
+              buf.writeln('  • ${drug.nameL10n(_lang)}: ${dose.main}${alerts.isNotEmpty ? '  ⚠ $alerts' : ''}');
             } catch (_) {
               final fd = drug.getField(drug.fixedDose, _lang);
-              if (fd.isNotEmpty) buf.writeln('  • ${drug.name}: $fd');
+              if (fd.isNotEmpty) buf.writeln('  • ${drug.nameL10n(_lang)}: $fd');
             }
           }
         } else {
-          buf.writeln('${_lang == 'es' ? 'Fármacos protocolares' : 'Fármacos protocolares'}: ${suggestedDrugs.map((d) => d.name).join(', ')}');
+          buf.writeln('${_lang == 'es' ? 'Fármacos protocolares' : 'Fármacos protocolares'}: ${suggestedDrugs.map((d) => d.nameL10n(_lang)).join(', ')}');
         }
         buf.writeln('');
       }

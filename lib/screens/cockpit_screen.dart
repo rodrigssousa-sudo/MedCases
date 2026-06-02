@@ -89,7 +89,7 @@ class _CockpitScreenState extends State<CockpitScreen> {
     buf.writeln('ClCr: ${p.clcr ?? '—'} mL/min | IMC: ${p.bmi ?? '—'} kg/m²');
     for (final drug in p.selectedDrugs) {
       final dose = p.calculateDose(drug);
-      buf.writeln('\n>> Fármaco: ${drug.name}');
+      buf.writeln('\n>> Fármaco: ${drug.nameL10n(p.lang)}');
       buf.writeln('Dose: ${dose.main}');
       buf.writeln('Detalhe: ${dose.detail}');
       if (dose.alerts.isNotEmpty) {
@@ -1291,7 +1291,7 @@ class _DrugDoseCard extends StatelessWidget {
                 Text('${p.tDB(drug.category)} • ${drug.route}',
                   style: const TextStyle(fontSize: 9, fontWeight: FontWeight.w900, color: kGold, letterSpacing: 1.2)),
                 const SizedBox(height: 2),
-                Text(drug.name, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w900, letterSpacing: -0.3, color: kDark), overflow: TextOverflow.ellipsis),
+                Text(drug.nameL10n(p.lang), style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w900, letterSpacing: -0.3, color: kDark), overflow: TextOverflow.ellipsis),
               ])),
               GestureDetector(
                 onTap: () => p.setActiveDrug(drug.id),

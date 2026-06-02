@@ -27,7 +27,7 @@ void showDrugDetailSheet(BuildContext context, DrugModel drug) {
   final lang = p.lang;
   ActivityService.log(
     type:     ActivityType.farmaco,
-    title:    drug.name,
+    title:    drug.nameL10n(lang),
     subtitle: drug.className[lang] ?? drug.group,
   );
   showModalBottomSheet(
@@ -35,7 +35,7 @@ void showDrugDetailSheet(BuildContext context, DrugModel drug) {
     isScrollControlled: true,
     backgroundColor: Colors.transparent,
     builder: (_) => _DrugDetailSheetWrapper(drug: drug, p: p),
-  ).then((_) => _registerDrugRecent(context, drug.id, drug.name, openedAt));
+  ).then((_) => _registerDrugRecent(context, drug.id, drug.nameL10n(lang), openedAt));
 }
 
 class _DrugDetailSheetWrapper extends StatelessWidget {
@@ -492,14 +492,16 @@ class _DrugListTile extends StatelessWidget {
                   child: Icon(Icons.star_rounded, size: 12, color: kGold),
                 ),
               Flexible(
-                child: Text(
-                  drug.name,
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w900,
-                    color: nameColor,
+                child: Builder(
+                  builder: (ctx) => Text(
+                    drug.nameL10n(ctx.read<AppProvider>().lang),
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w900,
+                      color: nameColor,
+                    ),
+                    overflow: TextOverflow.ellipsis,
                   ),
-                  overflow: TextOverflow.ellipsis,
                 ),
               ),
             ]),
@@ -1498,7 +1500,7 @@ class _ClinicalHeader extends StatelessWidget {
               ]),
               const SizedBox(height: 6),
               // Nome do fármaco
-              Text(drug.name,
+              Text(drug.nameL10n(p.lang),
                 style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w900,
                   color: Colors.white, letterSpacing: -0.5, height: 1.1)),
               const SizedBox(height: 4),
@@ -3402,7 +3404,7 @@ class _DrugSuggestionDropdown extends StatelessWidget {
                         children: [
                           // Nome com realce do trecho buscado
                           _HighlightText(
-                            text: drug.name,
+                            text: drug.nameL10n(context.read<AppProvider>().lang),
                             query: query,
                             baseStyle: const TextStyle(
                               fontSize: 13,

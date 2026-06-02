@@ -1122,7 +1122,7 @@ class _DrugPinnedCardState extends State<_DrugPinnedCard> {
                           style: TextStyle(fontSize: 9, fontWeight: FontWeight.w900, color: c.green, letterSpacing: 0.5)),
                     ),
                     const Spacer(),
-                    Text(drug.name, maxLines: 1, overflow: TextOverflow.ellipsis,
+                    Text(drug.nameL10n(widget.isEs ? 'es' : 'pt'), maxLines: 1, overflow: TextOverflow.ellipsis,
                         style: TextStyle(fontSize: 13, fontWeight: FontWeight.w800, color: c.textPrimary, letterSpacing: -0.3)),
                     const SizedBox(height: 2),
                     Text(classShort, maxLines: 1, overflow: TextOverflow.ellipsis,
@@ -1834,7 +1834,7 @@ class _DrugSelectorList extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(drug.name, style: TextStyle(fontSize: 13.5, fontWeight: FontWeight.w700, color: c.textPrimary)),
+                        Text(drug.nameL10n(isEs ? 'es' : 'pt'), style: TextStyle(fontSize: 13.5, fontWeight: FontWeight.w700, color: c.textPrimary)),
                         const SizedBox(height: 2),
                         Text(drug.className[isEs ? 'es' : 'pt'] ?? drug.className['es'] ?? '',
                             style: TextStyle(fontSize: 11, fontWeight: FontWeight.w500, color: c.textHint)),

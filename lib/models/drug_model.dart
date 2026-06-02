@@ -179,6 +179,35 @@ class DrugModel {
     if (list is List) return list.cast<String>();
     return [];
   }
+
+  // ── Nome localizado do fármaco ─────────────────────────────────────────────
+  // O campo `name` está em PT (ou neutro). Quando o idioma é ES, aplica
+  // traduções para os nomes que diferem entre PT e ES.
+  // Apenas os nomes que realmente diferem precisam de entrada na tabela.
+  String nameL10n(String lang) {
+    if (lang != 'es') return name;
+    return _nameEsOverrides[name] ?? _applyNameEsRules(name);
+  }
+
+  // Tabela de substituições completas (nome PT → nome ES)
+  static const Map<String, String> _nameEsOverrides = {
+    'Bupropiona (Wellbutrin / Zyban)':         'Bupropión (Wellbutrin / Zyban)',
+    'Sinvastatina':                             'Simvastatina',
+    'Heparina Não Fracionada (HNF)':           'Heparina No Fraccionada (HNF)',
+    'Varfarina / Warfarina':                    'Warfarina',
+    'Salbutamol (Gotas para Nebulização)':      'Salbutamol (Gotas para Nebulización)',
+    'Carvão Ativado / Carbón Activado':         'Carbón Activado',
+  };
+
+  // Regras gerais PT → ES para nomes não cobertos pela tabela
+  static String _applyNameEsRules(String n) => n
+    .replaceAll(' Não ', ' No ')
+    .replaceAll('Não ', 'No ')
+    .replaceAll('ção)', 'ción)')
+    .replaceAll('ção ', 'ción ')
+    .replaceAll('ção,', 'ción,')
+    .replaceAll('ções', 'ciones')
+    .replaceAll('Carvão', 'Carbón');
 }
 
 // Categorías principales del sistema
