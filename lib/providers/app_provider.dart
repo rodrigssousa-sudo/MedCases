@@ -381,9 +381,14 @@ class AppProvider extends ChangeNotifier {
     loadPublicHistories();
 
     // 5️⃣ Restaura sessão Gemini em background — silencioso, não bloqueia UI
+    // Safari ITP: verifica também sessionStorage (imune ao ITP no redirect)
+    final _hasPendingOAuth = kIsWeb && (
+      _webGetLS('medcases_gsi_pending') == 'true' ||
+      _webSsGet('medcases_gsi_pending') == 'true'
+    );
     Future.delayed(
-      _webGetLS('medcases_gsi_pending') == 'true'
-          ? const Duration(seconds: 1)
+      _hasPendingOAuth
+          ? const Duration(seconds: 1)  // dá tempo ao fetch tokeninfo JS completar
           : Duration.zero,
       checkGeminiSession,
     );
@@ -1700,25 +1705,47 @@ class AppProvider extends ChangeNotifier {
           _webRemoveLS('medcases_gsi_modal_opened');
 
           // ── Detecta retorno do redirect OAuth ─────────────────────────────
-          final pending = _webGetLS('medcases_gsi_pending');
-          if (pending == 'true') {
-            _webRemoveLS('medcases_gsi_pending');
+          // Safari ITP pode bloquear localStorage no redirect — lê também de
+          // sessionStorage que é imune ao ITP dentro da mesma aba.
+          final pendingLs = _webGetLS('medcases_gsi_pending');
+          final pendingSs = _webSsGet('medcases_gsi_pending');
+          final pending   = pendingLs == 'true' || pendingSs == 'true';
 
+          if (pending) {
+            // Remove flag de ambos os storages
+            _webRemoveLS('medcases_gsi_pending');
+            _webSsRemove('medcases_gsi_pending');
+
+            // Tenta ler email: localStorage primeiro, depois sessionStorage
             var email = _webGetLS('gemini_google_email') ?? '';
+            if (email.isEmpty) email = _webSsGet('gemini_google_email') ?? '';
+
             if (email.isEmpty) {
-              await Future.delayed(const Duration(milliseconds: 600));
-              email = _webGetLS('gemini_google_email') ?? '';
+              // Aguarda até 1500ms pelo fetch tokeninfo (fallback assíncrono do JS)
+              // O id_token JWT já deveria ter populado o email sincronamente;
+              // este delay cobre o caso do fallback fetch (sem id_token no hash).
+              for (var i = 0; i < 3; i++) {
+                await Future.delayed(const Duration(milliseconds: 500));
+                email = _webGetLS('gemini_google_email') ?? '';
+                if (email.isEmpty) email = _webSsGet('gemini_google_email') ?? '';
+                if (email.isNotEmpty) break;
+              }
             }
             if (email.isEmpty) {
               email = await GeminiService.connectedEmail() ?? '';
             }
             if (email.isNotEmpty) {
+              // Copia email para localStorage se só estava no sessionStorage
+              if ((_webGetLS('gemini_google_email') ?? '').isEmpty) {
+                _webSetLS('gemini_google_email', email);
+              }
               final hasKey = await _ensureGeminiApiKey(source: 'pós-redirect');
               if (!hasKey) return;
               _setGeminiConnectionState(connected: true, email: email);
               debugPrint('[checkGeminiSession] redirect OAuth OK — $email, apiKey: ${GeminiService.hasApiKey}');
               return;
             }
+            debugPrint('[checkGeminiSession] pending=true mas email vazio após 1500ms — redirect falhou');
           }
         }
 
@@ -1767,7 +1794,6 @@ class AppProvider extends ChangeNotifier {
 
   /// Grava um valor no localStorage via função global window.mcLsSet.
   /// Sem eval — compatível com CSP strict e SES lockdown do Firebase Auth.
-  // ignore: unused_element
   void _webSetLS(String key, String value) {
     if (!kIsWeb) return;
     try {
@@ -1782,6 +1808,26 @@ class AppProvider extends ChangeNotifier {
     try {
       webLsRemove(key);
     } catch (_) {}
+  }
+
+  // ── sessionStorage helpers — fallback para Safari ITP ────────────────────
+  // Safari ITP pode bloquear localStorage em contexto de redirect cross-origin.
+  // sessionStorage é imune ao ITP dentro da mesma aba e sobrevive ao redirect.
+
+  String? _webSsGet(String key) {
+    if (!kIsWeb) return null;
+    try {
+      final result = webSsGet(key);
+      if (result == null || result.toString() == 'null') return null;
+      return result;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  void _webSsRemove(String key) {
+    if (!kIsWeb) return;
+    try { webSsRemove(key); } catch (_) {}
   }
 
   // ── Stopwords clínicas — palavras genéricas que sozinhas NÃO ativam RAG ──

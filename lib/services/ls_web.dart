@@ -33,6 +33,31 @@ void webLsRemove(String key) {
   } catch (_) {}
 }
 
+/// Lê do sessionStorage via window.mcSsGet (fallback Safari ITP).
+String? webSsGet(String key) {
+  try {
+    final result = js.context.callMethod('mcSsGet', [key]);
+    if (result == null || result.toString() == 'null') return null;
+    return result.toString();
+  } catch (_) {
+    return null;
+  }
+}
+
+/// Grava no sessionStorage via window.mcSsSet.
+void webSsSet(String key, String value) {
+  try {
+    js.context.callMethod('mcSsSet', [key, value]);
+  } catch (_) {}
+}
+
+/// Remove do sessionStorage via window.mcSsRemove.
+void webSsRemove(String key) {
+  try {
+    js.context.callMethod('mcSsRemove', [key]);
+  } catch (_) {}
+}
+
 /// Abre o modal GSI definido no index.html chamando window.medcasesShowGSIModal().
 /// Verifica a existência da função antes de chamar para evitar erros silenciosos.
 void webCallGSIModal() {

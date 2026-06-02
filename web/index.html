@@ -103,9 +103,14 @@
   <script>
     (function() {
       var _ls = window.localStorage;
+      var _ss = window.sessionStorage;
       window.mcLsGet    = function(k)    { try { return _ls.getItem(k);    } catch(e) { return null; } };
       window.mcLsSet    = function(k, v) { try { _ls.setItem(k, v);        } catch(e) {} };
       window.mcLsRemove = function(k)    { try { _ls.removeItem(k);        } catch(e) {} };
+      // sessionStorage — fallback para Safari ITP (mantém valores no redirect OAuth)
+      window.mcSsGet    = function(k)    { try { return _ss.getItem(k);    } catch(e) { return null; } };
+      window.mcSsSet    = function(k, v) { try { _ss.setItem(k, v);        } catch(e) {} };
+      window.mcSsRemove = function(k)    { try { _ss.removeItem(k);        } catch(e) {} };
     })();
   </script>
 
@@ -762,16 +767,52 @@
       // de pathname (trailing slash, sub-rotas, etc.) que causam redirect_uri_mismatch.
       var REDIRECT  = 'https://medcasespro.com/';
 
-      // ── 1. Verifica se voltou do redirect OAuth ──────────────────────
-      // Google retorna o token no hash: #access_token=...&token_type=Bearer&...
+      // ── Decodifica email do JWT id_token (sem fetch, 100% síncrono) ──────
+      // O id_token é um JWT base64url-encoded. O payload (parte central) contém
+      // o campo "email" diretamente. Decodificar é seguro — apenas leitura.
+      function _decodeJwtEmail(idToken) {
+        try {
+          var parts = idToken.split('.');
+          if (parts.length !== 3) return null;
+          // base64url → base64 (substitui - por + e _ por /)
+          var b64 = parts[1].replace(/-/g, '+').replace(/_/g, '/');
+          // Padding para múltiplo de 4
+          while (b64.length % 4) b64 += '=';
+          var payload = JSON.parse(atob(b64));
+          return payload.email || null;
+        } catch(e) { return null; }
+      }
+
+      // ── Salva em localStorage E sessionStorage (Safari ITP fallback) ─────
+      // Safari ITP pode bloquear localStorage em contexto de redirect cross-origin.
+      // sessionStorage sobrevive ao redirect dentro da mesma aba e é sempre acessível.
+      function _safeSave(key, value) {
+        try { localStorage.setItem(key, value); } catch(e) {}
+        try { sessionStorage.setItem(key, value); } catch(e) {}
+      }
+      function _safeRead(key) {
+        try {
+          var v = localStorage.getItem(key);
+          if (v) return v;
+        } catch(e) {}
+        try {
+          var v2 = sessionStorage.getItem(key);
+          if (v2) return v2;
+          // Copia para localStorage se encontrou no sessionStorage
+          // (garante persistência entre sessões)
+          if (v2) { try { localStorage.setItem(key, v2); } catch(e2) {} }
+          return v2;
+        } catch(e) {}
+        return null;
+      }
+
+      // ── 1. Verifica se voltou do redirect OAuth ──────────────────────────
+      // Google retorna no hash: #access_token=...&id_token=...&token_type=Bearer&...
       (function _checkRedirectReturn() {
         var hash = window.location.hash;
 
         if (!hash || hash.indexOf('access_token') === -1) {
-          // Sem token no hash — verifica se há flag pendente de boot anterior
-          var prevToken   = localStorage.getItem('gemini_access_token');
-          var prevPending = localStorage.getItem('medcases_gsi_pending');
-          return;
+          return; // Sem redirect — boot normal
         }
 
         var params = {};
@@ -780,40 +821,59 @@
           if (kv.length === 2) params[decodeURIComponent(kv[0])] = decodeURIComponent(kv[1]);
         });
 
-        var token = params['access_token'];
-        var error = params['error'];
+        var token   = params['access_token'];
+        var idToken = params['id_token'];
+        var error   = params['error'];
 
-
-        // Limpa o hash da URL sem recarregar
-        history.replaceState(null, '', window.location.pathname + window.location.search);
+        // Limpa o hash da URL sem recarregar (antes de salvar — evita loop)
+        try {
+          history.replaceState(null, '', window.location.pathname + window.location.search);
+        } catch(e) {}
 
         if (token) {
-          // CRÍTICO: salva token E flag SINCRONAMENTE antes de qualquer fetch.
-          try { localStorage.setItem('gemini_access_token', token); } catch(e) {}
-          try { localStorage.setItem('medcases_gsi_pending', 'true'); } catch(e) {}
+          // CRÍTICO: salva token E flag SINCRONAMENTE (localStorage + sessionStorage).
+          _safeSave('gemini_access_token', token);
+          _safeSave('medcases_gsi_pending', 'true');
 
-          // Busca email via tokeninfo em background
+          // ── Estratégia 1 (melhor): extrai email do id_token JWT — SÍNCRONO ──
+          // Disponível imediatamente quando Flutter carrega, sem dependência de rede.
+          if (idToken) {
+            var emailFromJwt = _decodeJwtEmail(idToken);
+            if (emailFromJwt) {
+              _safeSave('gemini_google_email', emailFromJwt);
+              // Email já salvo — Flutter vai encontrar ao iniciar checkGeminiSession
+              return;
+            }
+          }
+
+          // ── Estratégia 2 (fallback): fetch tokeninfo — assíncrono ────────────
+          // Usado se id_token não estava presente no hash (fallback para implicit flow puro).
+          // Pode demorar 200-800ms — checkGeminiSession tem delay de 1500ms para aguardar.
           fetch('https://www.googleapis.com/oauth2/v3/tokeninfo?access_token=' + token)
             .then(function(r) { return r.json(); })
             .then(function(d) {
               if (d.email) {
-                try { localStorage.setItem('gemini_google_email', d.email); } catch(e) {}
+                _safeSave('gemini_google_email', d.email);
               }
             })
             .catch(function() {});
         } else if (error) {
-          // Redirect OAuth retornou erro — ignora silenciosamente
+          // Redirect OAuth retornou erro (ex: access_denied) — limpa flags
+          try { localStorage.removeItem('medcases_gsi_pending'); } catch(e) {}
+          try { sessionStorage.removeItem('medcases_gsi_pending'); } catch(e) {}
         }
       }());
 
-      // ── 2. Botão HTML onclick — redirect direto (Safari-safe) ────────
+      // ── 2. Botão HTML onclick — redirect direto (Safari-safe) ────────────
       window._gsiHandleClick = function() {
         var url = 'https://accounts.google.com/o/oauth2/v2/auth'
           + '?client_id='     + encodeURIComponent(CLIENT_ID)
           + '&redirect_uri='  + encodeURIComponent(REDIRECT)
-          + '&response_type=token'
-          + '&scope='         + encodeURIComponent(SCOPE)
-          + '&prompt=select_account';
+          // id_token + access_token no hash — email decodificável sem fetch de rede
+          + '&response_type=' + encodeURIComponent('token id_token')
+          + '&scope='         + encodeURIComponent('email openid')
+          + '&prompt=select_account'
+          + '&nonce='         + Math.random().toString(36).substring(2); // nonce obrigatório p/ id_token
         // Redirect na mesma aba — Safari nunca bloqueia window.location
         window.location.href = url;
       };

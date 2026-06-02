@@ -14,6 +14,15 @@ String? webLsGet(String key) => null;
 /// Plataformas nativas: no-op.
 void webLsRemove(String key) {}
 
+/// Lê do sessionStorage. Plataformas nativas: sempre retorna null.
+String? webSsGet(String key) => null;
+
+/// Grava no sessionStorage. Plataformas nativas: no-op.
+void webSsSet(String key, String value) {}
+
+/// Remove do sessionStorage. Plataformas nativas: no-op.
+void webSsRemove(String key) {}
+
 /// Abre o modal GSI definido no index.html (window.medcasesShowGSIModal).
 /// Plataformas nativas: no-op (não existe modal HTML nem JS nessas plataformas).
 void webCallGSIModal() {}
