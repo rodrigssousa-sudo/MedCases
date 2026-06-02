@@ -1491,22 +1491,33 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
         onNotification: (n) { _onScrollNotification(n); return false; },
         child: MediaQuery.removePadding(
           context: context,
-          removeTop: isHome, // HOME: appBar já consume o top; outros: SafeArea no Stack
+          removeTop: true, // Sempre remove o top do MediaQuery — cada camada gerencia o próprio inset
           child: SizedBox.expand(
             child: Stack(
               children: [
-                // ── Conteúdo principal ───────────────────────────────────
-                ValueListenableBuilder<bool>(
-                  valueListenable: UpdateService.swUpdateAvailable,
-                  builder: (ctx, hasUpdate, _) => Stack(
-                    children: [
-                      IndexedStack(index: stackIdx, children: _staticScreens),
-                      if (hasUpdate) const _UpdateBanner(),
-                    ],
+                // ── Conteúdo principal — deslocado para baixo da status bar ──
+                // Padding.top = statusBarHeight garante que TODAS as telas do
+                // IndexedStack começam abaixo da status bar do dispositivo,
+                // sem depender de SafeArea(top:true) em cada tela individualmente.
+                Padding(
+                  padding: EdgeInsets.only(
+                    top: isHome ? 0 : MediaQuery.of(context).padding.top,
+                  ),
+                  child: ValueListenableBuilder<bool>(
+                    valueListenable: UpdateService.swUpdateAvailable,
+                    builder: (ctx, hasUpdate, _) => Stack(
+                      children: [
+                        IndexedStack(index: stackIdx, children: _staticScreens),
+                        if (hasUpdate) const _UpdateBanner(),
+                      ],
+                    ),
                   ),
                 ),
 
-                // ── Scroll-reveal AppBar (tabs 1-5) ─────────────────────
+                // ── Scroll-reveal AppBar (tabs 1-5) ─────────────────────────
+                // Flutua no topo do Stack — cobre apenas a status bar + 48px.
+                // SafeArea(bottom:false) interno garante que o conteúdo do AppBar
+                // fique abaixo da status bar.
                 if (!isHome)
                   ValueListenableBuilder<bool>(
                     valueListenable: _appBarVisible,
