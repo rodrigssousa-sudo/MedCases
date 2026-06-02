@@ -25,31 +25,40 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 
-	<!-- ── Privacidade ───────────────────────────────────────────────────── -->
-	<!-- Câmera: captura de imagens de exames laboratoriais para análise por IA -->
+	<!-- ══════════════════════════════════════════════════════════════════════
+	     PRIVACY USAGE DESCRIPTIONS — FALLBACK (English)
+	     These are the fallback strings shown on devices with unsupported
+	     locales. Localized strings for pt-BR, es and en are in their
+	     respective *.lproj/InfoPlist.strings files.
+	     Apple Review guideline 5.1.1: all strings must match the device
+	     language — the .lproj files handle PT and ES; this English fallback
+	     satisfies the requirement for any other locale.
+	     ══════════════════════════════════════════════════════════════════════ -->
+
+	<!-- Camera: used to photograph lab reports and exam results for AI extraction -->
 	<key>NSCameraUsageDescription</key>
-	<string>MedCases Pro accesses the camera exclusively to allow the healthcare professional to photograph laboratory reports and clinical exam results for automatic AI-assisted data extraction. Images are processed only within the application and are not stored or shared with third parties.</string>
-	<!-- Microfone: exclusivamente para ditado de evolução clínica (STT)     -->
+	<string>MedCases Pro uses the camera exclusively to allow healthcare professionals to photograph laboratory reports and clinical exam results for automatic AI-assisted data extraction. Images are processed only within the app and are never stored or shared with third parties.</string>
+
+	<!-- Microphone: used exclusively for clinical dictation (speech-to-text) -->
 	<key>NSMicrophoneUsageDescription</key>
-	<string>MedCases Pro precisa acessar o microfone exclusivamente para permitir que o profissional médico dite evoluções clínicas e anotações do prontuário por voz, convertendo a fala em texto diretamente no dispositivo. O áudio é processado apenas localmente pelo sistema de reconhecimento de voz do iOS e não é armazenado, transmitido ou compartilhado com servidores externos.</string>
-	<!-- Reconhecimento de voz: transcrição local de anotações clínicas      -->
+	<string>MedCases Pro uses the microphone exclusively to allow healthcare professionals to dictate clinical notes and medical records by voice. Audio is processed locally by the iOS speech recognition system and is never stored, transmitted, or shared with external servers.</string>
+
+	<!-- Speech Recognition: used to transcribe clinical dictations into text -->
 	<key>NSSpeechRecognitionUsageDescription</key>
-	<string>MedCases Pro utiliza o reconhecimento de voz do iOS estritamente para transcrever ditados clínicos de profissionais de saúde — como evoluções de pacientes e anotações de plantão — transformando a fala em texto dentro do prontuário. Nenhum áudio é enviado a servidores externos nem armazenado após a transcrição. O recurso é ativado apenas quando o profissional aciona manualmente o ditafone.</string>
+	<string>MedCases Pro uses iOS speech recognition strictly to transcribe clinical dictations from healthcare professionals — such as patient progress notes and shift annotations — converting speech to text within the medical record. No audio is sent to external servers or stored after transcription. The feature is activated only when the professional manually enables the dictaphone.</string>
 
-	<!-- ── Biblioteca de fotos ───────────────────────────────────────────── -->
-	<!-- file_picker 8.x e share_plus 12.x exigem esta key — crash sem ela    -->
+	<!-- Photo Library (read): used to attach clinical images to patient notes -->
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>MedCases Pro solicita acceso a su biblioteca de fotos únicamente para que el profesional de salud pueda adjuntar imágenes clínicas relevantes — como fotografías de lesiones, resultados de exámenes o documentos médicos — directamente a sus anotaciones y fichas de pacientes. Las imágenes se utilizan exclusivamente dentro de la aplicación y no se comparten con terceros.</string>
+	<string>MedCases Pro requests access to your photo library so healthcare professionals can attach relevant clinical images — such as photos of lesions, exam results, or medical documents — directly to patient notes. Images are used exclusively within the app and are not shared with third parties.</string>
 
-	<!-- NSPhotoLibraryAddUsageDescription: exigida pelo share_plus ao salvar  -->
-	<!-- imagens no rolo da câmera (ex.: exportar gráfico ou PDF como imagem)  -->
+	<!-- Photo Library (write): used to save generated charts or protocol screenshots -->
 	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>MedCases Pro puede guardar imágenes generadas por la aplicación — como gráficos de seguimiento clínico o capturas de protocolos — directamente en su biblioteca de fotos, exclusivamente cuando usted lo solicite de forma explícita.</string>
+	<string>MedCases Pro may save app-generated images — such as clinical tracking charts or protocol screenshots — directly to your photo library, only when you explicitly request it.</string>
 
-	<!-- ── ATT removida — o app não faz tracking de terceiros para anúncios ── -->
-	<!-- NSUserTrackingUsageDescription REMOVIDA: sem Firebase Analytics,      -->
-	<!-- sem IDFA, sem SDKs de publicidade. Compliance Apple Guideline 5.1.2.  -->
-	<!-- Declarar "No data used to track you" no App Store Connect Privacy.    -->
+	<!-- ── ATT removed — app does not use third-party tracking or advertising SDKs -->
+	<!-- NSUserTrackingUsageDescription REMOVED: no Firebase Analytics,      -->
+	<!-- no IDFA, no advertising SDKs. Compliance: Apple Guideline 5.1.2.    -->
+	<!-- Declare "No data used to track you" in App Store Connect Privacy.    -->
 
 	<!-- ── Orientação iPhone: somente portrait ───────────────────────────── -->
 	<key>UISupportedInterfaceOrientations</key>

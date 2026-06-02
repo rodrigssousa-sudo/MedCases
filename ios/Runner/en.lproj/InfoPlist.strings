@@ -1,0 +1,21 @@
+/* MedCases Pro — InfoPlist.strings (en)
+ * Localized permission strings for English.
+ * iOS displays these strings in permission pop-ups when the device
+ * language is English. Covers all NSUsageDescription keys in Info.plist
+ * for compliance with Apple Guideline 5.1.1.
+ */
+
+/* ── Camera ──────────────────────────────────────────────────────────────── */
+"NSCameraUsageDescription" = "MedCases Pro uses the camera exclusively to allow healthcare professionals to photograph laboratory reports and clinical exam results for automatic AI-assisted data extraction. Images are processed only within the app and are never stored or shared with third parties.";
+
+/* ── Microphone ──────────────────────────────────────────────────────────── */
+"NSMicrophoneUsageDescription" = "MedCases Pro uses the microphone exclusively to allow healthcare professionals to dictate clinical notes and medical records by voice. Audio is processed locally by the iOS speech recognition system and is never stored, transmitted, or shared with external servers.";
+
+/* ── Speech Recognition ──────────────────────────────────────────────────── */
+"NSSpeechRecognitionUsageDescription" = "MedCases Pro uses iOS speech recognition strictly to transcribe clinical dictations from healthcare professionals — such as patient progress notes and shift annotations — converting speech to text within the medical record. No audio is sent to external servers or stored after transcription. The feature is activated only when the professional manually enables the dictaphone.";
+
+/* ── Photo Library (read) ───────────────────────────────────────────────── */
+"NSPhotoLibraryUsageDescription" = "MedCases Pro requests access to your photo library so healthcare professionals can attach relevant clinical images — such as photos of lesions, exam results, or medical documents — directly to patient notes. Images are used exclusively within the app and are not shared with third parties.";
+
+/* ── Photo Library (write/save) ─────────────────────────────────────────── */
+"NSPhotoLibraryAddUsageDescription" = "MedCases Pro may save app-generated images — such as clinical tracking charts or protocol screenshots — directly to your photo library, only when you explicitly request it.";

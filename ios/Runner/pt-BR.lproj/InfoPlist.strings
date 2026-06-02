@@ -1,47 +1,21 @@
 /* MedCases Pro — InfoPlist.strings (pt-BR)
- * Task 5: Apple App Store Guideline 4 — Localização de Permissões iOS
- *
- * Este arquivo garante que os pop-ups de permissão do iOS apareçam em
- * Português do Brasil, o idioma principal do app.
- *
- * Instruções de configuração no Xcode:
- * 1. No Xcode, selecione o projeto "Runner" no Project Navigator
- * 2. Vá em "Info" → "Localizations"
- * 3. Clique em "+" e adicione "Portuguese (Brazil)" [pt-BR]
- * 4. Marque "InfoPlist.strings" quando solicitado
- * 5. O Xcode criará automaticamente o arquivo na pasta pt-BR.lproj
- * 6. Copie o conteúdo abaixo para o arquivo criado
- *
- * Referência Apple: https://developer.apple.com/documentation/bundleresources/
- *                   information-property-list/protected-resources
+ * Strings de permissão localizadas para Português do Brasil.
+ * iOS exibe estas strings nos pop-ups de permissão quando o idioma
+ * do dispositivo é pt-BR. Cobre todos os NSUsageDescription presentes
+ * no Info.plist para conformidade com Apple Guideline 5.1.1.
  */
 
-/* ── Microfone ─────────────────────────────────────────────────────────────── */
-/* Usado para ditado de evoluções clínicas e anotações por voz.                 */
-"NSMicrophoneUsageDescription" = "O MedCases Pro usa o microfone exclusivamente para permitir que profissionais de saúde ditem evoluções clínicas e anotações de prontuário por voz. O áudio é processado apenas localmente pelo sistema de reconhecimento de voz do iOS e não é armazenado nem compartilhado.";
+/* ── Câmera ─────────────────────────────────────────────────────────────── */
+"NSCameraUsageDescription" = "O MedCases Pro usa a câmera exclusivamente para que profissionais de saúde possam fotografar laudos laboratoriais e resultados de exames clínicos para extração automática de dados com auxílio de IA. As imagens são processadas apenas dentro do app e nunca são armazenadas ou compartilhadas com terceiros.";
 
-/* ── Reconhecimento de Voz ─────────────────────────────────────────────────── */
-/* Usado para transcrever ditados clínicos em texto (evoluções de pacientes).   */
-"NSSpeechRecognitionUsageDescription" = "O MedCases Pro utiliza o reconhecimento de voz do iOS para transcrever ditados clínicos de profissionais de saúde — como evoluções de pacientes e anotações de plantão. Nenhum áudio é enviado a servidores externos. O recurso é ativado somente quando acionado manualmente pelo profissional.";
+/* ── Microfone ─────────────────────────────────────────────────────────── */
+"NSMicrophoneUsageDescription" = "O MedCases Pro usa o microfone exclusivamente para permitir que profissionais de saúde ditem evoluções clínicas e anotações de prontuário por voz. O áudio é processado apenas localmente pelo sistema de reconhecimento de voz do iOS e nunca é armazenado, transmitido ou compartilhado com servidores externos.";
 
-/* ── Biblioteca de Fotos (leitura) ────────────────────────────────────────── */
-/* Usado para anexar imagens clínicas (lesões, exames, documentos) a anotações. */
+/* ── Reconhecimento de Voz ─────────────────────────────────────────────── */
+"NSSpeechRecognitionUsageDescription" = "O MedCases Pro utiliza o reconhecimento de voz do iOS para transcrever ditados clínicos de profissionais de saúde — como evoluções de pacientes e anotações de plantão — convertendo a fala em texto dentro do prontuário. Nenhum áudio é enviado a servidores externos nem armazenado após a transcrição. O recurso é ativado apenas quando o profissional aciona manualmente o ditafone.";
+
+/* ── Biblioteca de Fotos (leitura) ────────────────────────────────────── */
 "NSPhotoLibraryUsageDescription" = "O MedCases Pro solicita acesso à sua biblioteca de fotos para que o profissional de saúde possa anexar imagens clínicas — como fotografias de lesões, resultados de exames ou documentos médicos — diretamente às anotações e fichas de pacientes. As imagens são usadas exclusivamente dentro do app e não são compartilhadas com terceiros.";
 
-/* ── Biblioteca de Fotos (escrita/salvar) ─────────────────────────────────── */
-/* Usado para salvar gráficos ou capturas de protocolos no rolo da câmera.      */
+/* ── Biblioteca de Fotos (escrita/salvar) ─────────────────────────────── */
 "NSPhotoLibraryAddUsageDescription" = "O MedCases Pro pode salvar imagens geradas pelo app — como gráficos de acompanhamento clínico ou capturas de protocolos — diretamente na sua biblioteca de fotos, somente quando você solicitar explicitamente.";
-
-/* ── Rastreamento (ATT — App Tracking Transparency) ───────────────────────── */
-/* Obrigatório se o app usa Firebase Analytics, Crashlytics ou AdMob.           */
-/* Apple Guideline 5.1.2: exibir o pop-up ATT antes de coletar dados.           */
-/* O texto deve explicar especificamente como os dados melhoram a experiência.  */
-"NSUserTrackingUsageDescription" = "O MedCases Pro coleta dados anônimos de uso — como quais módulos clínicos são mais acessados e o tempo de resposta da IA — exclusivamente para melhorar a qualidade das respostas clínicas e a experiência do profissional de saúde. Nenhum dado pessoal identificável, informação de paciente ou conteúdo de consultas é coletado ou compartilhado com terceiros.";
-
-/* ── Câmera (reservado para uso futuro) ────────────────────────────────────── */
-/* Incluir apenas se o app usar a câmera para capturar imagens diretamente.     */
-/* "NSCameraUsageDescription" = "O MedCases Pro usa a câmera para capturar imagens clínicas — como fotografias de lesões ou documentos médicos — e anexá-las diretamente às anotações de pacientes. As imagens são armazenadas apenas no seu dispositivo."; */
-
-/* ── Localização (reservado para uso futuro) ───────────────────────────────── */
-/* Incluir apenas se o app usar a localização do usuário.                       */
-/* "NSLocationWhenInUseUsageDescription" = "O MedCases Pro pode usar sua localização para identificar protocolos e diretrizes específicos da sua região ou instituição de saúde."; */
