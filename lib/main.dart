@@ -1804,10 +1804,15 @@ class _MobileAppBar extends StatelessWidget {
                   ),
 
                   // Botão Histórico — badge com contagem de sessões salvas
-                  ValueListenableBuilder<int>(
+                  // IMPORTANTE: usa ValueListenableBuilder para AMBOS os notifiers
+                  // (historyCount e openHistoryCallback) para garantir que o onTap
+                  // sempre leia o callback atual — não o valor nulo do momento do build.
+                  ValueListenableBuilder<VoidCallback?>(
+                    valueListenable: AiScreen.openHistoryCallback,
+                    builder: (_, callback, __) => ValueListenableBuilder<int>(
                     valueListenable: AiScreen.historyCountNotifier,
                     builder: (_, count, __) => GestureDetector(
-                      onTap: AiScreen.openHistoryCallback.value,
+                      onTap: callback,
                       child: Stack(
                         clipBehavior: Clip.none,
                         children: [
@@ -1846,6 +1851,7 @@ class _MobileAppBar extends StatelessWidget {
                       ),
                     ),
                   ),
+                  ), // fecha ValueListenableBuilder<VoidCallback?>
 
                   // Botão Limpar — só aparece quando há mensagens reais
                   ValueListenableBuilder<bool>(

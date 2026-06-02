@@ -720,32 +720,29 @@ class _AiScreenState extends State<AiScreen> {
   }
 
   /// Chamado pelo _AiBubble a cada bloco revelado.
-  /// Lógica centralizada aqui — ÚNICA fonte de verdade para scroll.
+  /// Lógica centralizada aqui — ÚNICA fonte de verdade para scroll durante streaming.
   /// [gen] é o token de geração: se não bater com _scrollGeneration, ignora.
   void _onBlockRevealed(int gen) {
     // Bloco pertence a uma resposta antiga (geração diferente) → ignora completamente.
     if (gen != _scrollGeneration) return;
     if (!mounted || !_scrollCtrl.hasClients) return;
+    // Usuário scrollou para cima intencionalmente → não interrompe leitura.
+    if (_userScrolledUp) return;
 
     // Debounce por frame: se já há um scroll pendente neste frame, ignora.
-    // Evita stutter por múltiplos animateTo em rápida sucessão.
+    // Evita múltiplos animateTo concorrentes que causam o salto/jump.
     if (_scrollPending) return;
     _scrollPending = true;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _scrollPending = false;
       if (!mounted || !_scrollCtrl.hasClients) return;
       if (gen != _scrollGeneration) return;
-      if (_userScrolledUp) return; // usuário está lendo — não interrompe
+      if (_userScrolledUp) return;
 
-      final pos = _scrollCtrl.position;
-      final nearBottom = pos.pixels >= pos.maxScrollExtent - 160;
-      if (!nearBottom) return; // por precaução extra
-
-      _scrollCtrl.animateTo(
-        pos.maxScrollExtent,
-        duration: const Duration(milliseconds: 280),
-        curve: Curves.easeOut,
-      );
+      // Usa jumpTo para scroll instantâneo durante streaming — evita animações
+      // concorrentes que competem entre si e causam o efeito de "pulo".
+      // O resultado é um scroll suave e contínuo sem snap/jump.
+      _scrollCtrl.jumpTo(_scrollCtrl.position.maxScrollExtent);
     });
   }
 
@@ -815,7 +812,9 @@ class _AiScreenState extends State<AiScreen> {
         _aiError      = isKeyError;
         _networkError = isNetErr;
       });
-      _scrollDown(); // scroll suave ao receber resposta (respeita _userScrolledUp)
+      // NÃO chama _scrollDown() aqui — o scroll é gerenciado exclusivamente por
+      // _onBlockRevealed() durante o streaming de blocos. Chamar _scrollDown()
+      // ao mesmo tempo que _onBlockRevealed causa animações concorrentes = jump.
     } on Exception catch (e) {
       // Task 11: captura exceções não tratadas (ex: TimeoutException, SocketException)
       if (!mounted) return;
