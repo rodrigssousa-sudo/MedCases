@@ -114824,11 +114824,11 @@ k=A.lt(a1,B.dZ,B.oL,new A.aWa(f,a6,a0,a1),!0,a5,e,a4,k,e)
 j=l?"T\xe9rminos de Uso":"Termos de Uso"
 i=l?d:c
 h=l?b:a
-j=A.bHC(a1,h,"https://rodrigssousa.wixsite.com/medcases-pro/termos-de-uso",B.axW,B.Gp,new A.aWb(f,a6,a0),!0,a5,i,a4,j)
+j=A.bHC(a1,h,"https://www.promedcases.com/termos-de-uso",B.axW,B.Gp,new A.aWb(f,a6,a0),!0,a5,i,a4,j)
 i=l?"Pol\xedtica de Privacidad":"Pol\xedtica de Privacidade"
 h=l?d:c
 l=l?b:a
-m.push(new A.p9(A.a([k,j,A.bHC(a1,l,"https://rodrigssousa.wixsite.com/medcases-pro/politica-de-privacidade",B.zC,B.Gp,new A.aW_(f,a6,a0),!1,a5,h,a4,i)],s),a3,e))
+m.push(new A.p9(A.a([k,j,A.bHC(a1,l,"https://www.promedcases.com/politica-de-privacidade",B.zC,B.Gp,new A.aW_(f,a6,a0),!1,a5,h,a4,i)],s),a3,e))
 m.push(new A.nF(a0.c==="es"?"CUENTA Y GESTI\xd3N":"CONTA E GEST\xc3O",a1,B.e9,e))
 l=a0.c==="es"
 k=l?"Eliminar Cuenta":"Eliminar Conta"
