@@ -2959,10 +2959,10 @@ class _AppDrawerState extends State<_AppDrawer> {
         ? p.userName.trim().split(' ').take(2).map((w) => w[0].toUpperCase()).join()
         : 'MC';
 
-    // ── Largura responsiva: max 380 em tablets/desktop, 85% em mobile ────────
+    // ── Largura responsiva: max 300 em tablets/desktop, 72% em mobile ────────
     final screenW   = MediaQuery.of(context).size.width;
     final isTablet  = screenW >= 600;
-    final drawerW   = isTablet ? screenW.clamp(0.0, 380.0) : screenW * 0.85;
+    final drawerW   = isTablet ? screenW.clamp(0.0, 300.0) : screenW * 0.72;
 
     // ── Shape: cantos arredondados à esquerda apenas em tablets ──────────────
     // (endDrawer desliza da direita → arredondar topLeft + bottomLeft)
