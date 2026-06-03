@@ -2612,6 +2612,7 @@ class _LegalBar extends StatelessWidget {
 // ── Task 9: URLs de Privacy Policy e Terms of Use (Guideline 5.1) ────────────
 const String _kPrivacyUrl = 'https://rodrigssousa.wixsite.com/medcases-pro/politica-de-privacidade';
 const String _kTermsUrl   = 'https://rodrigssousa.wixsite.com/medcases-pro/termos-de-uso';
+const String _kSiteUrl    = 'https://promedcases.com/';
 
 // ── Drawer lateral — redesenhado (v2) ─────────────────────────────────────────
 class _AppDrawer extends StatefulWidget {
@@ -4718,9 +4719,14 @@ class _AboutAppSheet extends StatelessWidget {
                               'saúde, nem constitui prescrição médica.'),
 
                     // Site
-                    infoRow(Icons.language_outlined,
-                        isEs ? 'SITIO WEB' : 'SITE',
-                        'medcasespro.com'),
+                    GestureDetector(
+                      onTap: () => launchUrl(
+                          Uri.parse(_kSiteUrl),
+                          mode: LaunchMode.externalApplication),
+                      child: infoRow(Icons.language_outlined,
+                          isEs ? 'SITIO WEB' : 'SITE',
+                          'promedcases.com'),
+                    ),
 
                     const SizedBox(height: 8),
 
@@ -5418,6 +5424,58 @@ class _FeedbackSheetState extends State<_FeedbackSheet> {
             ],
 
             const SizedBox(height: 20),
+
+            // Site link
+            GestureDetector(
+              onTap: () => launchUrl(
+                  Uri.parse(_kSiteUrl),
+                  mode: LaunchMode.externalApplication),
+              child: Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                decoration: BoxDecoration(
+                  color: surfCol,
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(
+                      color: dark
+                          ? const Color(0xFF48484A)
+                          : const Color(0xFFD1D5DB)),
+                ),
+                child: Row(children: [
+                  Container(
+                    width: 32, height: 32,
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF7C3AED).withValues(alpha: 0.10),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: const Icon(Icons.language_outlined,
+                        size: 16, color: Color(0xFF7C3AED)),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        _isEs ? 'SITIO WEB' : 'SITE',
+                        style: const TextStyle(
+                            fontSize: 9.5, fontWeight: FontWeight.w800,
+                            color: Color(0xFF7C3AED), letterSpacing: 0.9),
+                      ),
+                      const SizedBox(height: 3),
+                      Text(
+                        'promedcases.com',
+                        style: TextStyle(
+                            fontSize: 13.5, fontWeight: FontWeight.w600,
+                            color: textCol),
+                      ),
+                    ],
+                  )),
+                  Icon(Icons.open_in_new_rounded,
+                      size: 16, color: subCol),
+                ]),
+              ),
+            ),
+            const SizedBox(height: 12),
 
             // Botão enviar
             SizedBox(
