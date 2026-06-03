@@ -98,7 +98,7 @@ class _MeuPlantaoDashboardState extends State<MeuPlantaoDashboard>
   }
 
   void _toggle(bool hasContent) {
-    HapticFeedback.selectionClick();
+    AppHaptics.selection(context);
     if (!hasContent) {
       // Se vazio, tap abre o manage sheet
       widget.onManageTap();
@@ -278,7 +278,7 @@ class _PlantaoHeader extends StatelessWidget {
           if (!isEmpty)
             GestureDetector(
               onTap: () {
-                HapticFeedback.selectionClick();
+                AppHaptics.selection(context);
                 onAddPatient();
               },
               child: Container(
@@ -306,7 +306,7 @@ class _PlantaoHeader extends StatelessWidget {
           // ── Botão Gestionar ───────────────────────────────────────────────
           GestureDetector(
             onTap: () {
-              HapticFeedback.selectionClick();
+              AppHaptics.selection(context);
               onManageTap();
             },
             child: Container(
@@ -411,7 +411,7 @@ class _PlantaoContent extends StatelessWidget {
             colors: c,
             onEdit: onEditPatient,
             onRemove: (pt) {
-              HapticFeedback.mediumImpact();
+              AppHaptics.medium(context);
               p.removePlantaoPatient(pt.id);
             },
           ),
@@ -432,7 +432,7 @@ class _PlantaoContent extends StatelessWidget {
             colors: c,
             onTap: onOpenDrug,
             onUnpin: (drug) {
-              HapticFeedback.mediumImpact();
+              AppHaptics.medium(context);
               p.unpinDrug(drug.id);
             },
           ),
@@ -449,7 +449,7 @@ class _PlantaoContent extends StatelessWidget {
             colors: c,
             onTap: onOpenCalc,
             onUnpin: (id) {
-              HapticFeedback.mediumImpact();
+              AppHaptics.medium(context);
               p.unpinCalc(id);
             },
           ),
@@ -473,7 +473,7 @@ class _AddFirstPatientRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final c = colors;
     return GestureDetector(
-      onTap: () { HapticFeedback.selectionClick(); onTap(); },
+      onTap: () { AppHaptics.selection(context); onTap(); },
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 11),
         decoration: BoxDecoration(
@@ -589,11 +589,11 @@ class _PatientCardState extends State<_PatientCard> {
     return GestureDetector(
       onTap: () {
         if (_showRemove) { setState(() => _showRemove = false); return; }
-        HapticFeedback.selectionClick();
+        AppHaptics.selection(context);
         widget.onTap();
       },
       onLongPress: () {
-        HapticFeedback.mediumImpact();
+        AppHaptics.medium(context);
         setState(() => _showRemove = true);
       },
       onTapDown: (_) => setState(() => _pressed = true),
@@ -859,7 +859,7 @@ class _EmptyStateState extends State<_EmptyState> with SingleTickerProviderState
     final c = widget.colors;
 
     return GestureDetector(
-      onTap: () { HapticFeedback.selectionClick(); widget.onTap(); },
+      onTap: () { AppHaptics.selection(context); widget.onTap(); },
       child: AnimatedBuilder(
         animation: _pulseAnim,
         builder: (_, __) => CustomPaint(
@@ -1089,10 +1089,10 @@ class _DrugPinnedCardState extends State<_DrugPinnedCard> {
     return GestureDetector(
       onTap: () {
         if (_showUnpin) { setState(() => _showUnpin = false); return; }
-        HapticFeedback.selectionClick();
+        AppHaptics.selection(context);
         widget.onTap();
       },
-      onLongPress: () { HapticFeedback.mediumImpact(); setState(() => _showUnpin = !_showUnpin); },
+      onLongPress: () { AppHaptics.medium(context); setState(() => _showUnpin = !_showUnpin); },
       onTapDown: (_) => setState(() => _pressed = true),
       onTapUp: (_) => setState(() => _pressed = false),
       onTapCancel: () => setState(() => _pressed = false),
@@ -1237,10 +1237,10 @@ class _CalcPinnedCardState extends State<_CalcPinnedCard> {
     return GestureDetector(
       onTap: () {
         if (_showUnpin) { setState(() => _showUnpin = false); return; }
-        HapticFeedback.selectionClick();
+        AppHaptics.selection(context);
         widget.onTap();
       },
-      onLongPress: () { HapticFeedback.mediumImpact(); setState(() => _showUnpin = !_showUnpin); },
+      onLongPress: () { AppHaptics.medium(context); setState(() => _showUnpin = !_showUnpin); },
       onTapDown: (_) => setState(() => _pressed = true),
       onTapUp: (_) => setState(() => _pressed = false),
       onTapCancel: () => setState(() => _pressed = false),
@@ -1345,7 +1345,7 @@ class _PatientEditSheetState extends State<_PatientEditSheet> {
     }
 
     p.savePlantaoPatient(patient);
-    HapticFeedback.mediumImpact();
+    AppHaptics.medium(context);
     Navigator.pop(context);
 
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -1494,7 +1494,7 @@ class _PatientEditSheetState extends State<_PatientEditSheet> {
                           Expanded(
                             child: GestureDetector(
                               onTap: () {
-                                HapticFeedback.mediumImpact();
+                                AppHaptics.medium(context);
                                 context.read<AppProvider>().removePlantaoPatient(widget.existing!.id);
                                 Navigator.pop(context);
                               },
@@ -1808,7 +1808,7 @@ class _DrugSelectorList extends StatelessWidget {
           padding: const EdgeInsets.only(bottom: 8),
           child: GestureDetector(
             onTap: () {
-              HapticFeedback.selectionClick();
+              AppHaptics.selection(context);
               final result = p.togglePinDrug(drug.id);
               if (result == PinResult.limitReached) {
                 ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -1890,7 +1890,7 @@ class _CalcSelectorList extends StatelessWidget {
           padding: const EdgeInsets.only(bottom: 10),
           child: GestureDetector(
             onTap: () {
-              HapticFeedback.selectionClick();
+              AppHaptics.selection(context);
               final result = p.togglePinCalc(shortcut.id);
               if (result == PinResult.limitReached) {
                 ScaffoldMessenger.of(context).showSnackBar(SnackBar(

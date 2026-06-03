@@ -1867,6 +1867,9 @@ class _StatsTab extends StatelessWidget {
   int get _totalSeconds  =>
       allUsers.fold(0, (sum, u) => sum + u.totalUsageSeconds);
 
+  int get _totalLogins   =>
+      allUsers.fold(0, (sum, u) => sum + u.loginCount);
+
   String _fmt(int s) {
     if (s <= 0) return '—';
     final h = s ~/ 3600;
@@ -1921,6 +1924,22 @@ class _StatsTab extends StatelessWidget {
             color: Colors.orange,
             value: '$_pending',
             label: 'Pendentes',
+          )),
+        ]),
+        const SizedBox(height: 10),
+        Row(children: [
+          Expanded(child: _SummaryCard(
+            icon: Icons.login_rounded,
+            color: const Color(0xFF7C3AED),
+            value: '$_totalLogins',
+            label: 'Acessos registados',
+          )),
+          const SizedBox(width: 10),
+          Expanded(child: _SummaryCard(
+            icon: Icons.person_search_rounded,
+            color: kGreen,
+            value: allUsers.where((u) => u.loginCount > 0).length.toString(),
+            label: 'Usuários ativos',
           )),
         ]),
 
@@ -2154,6 +2173,13 @@ class _UserUsageRow extends StatelessWidget {
                     ? kGold
                     : const Color(0xFF9CA3AF),
           ),
+          if (user.loginCount > 0) ...[  
+            const SizedBox(width: 6),
+            _MiniChip(
+              label: '${user.loginCount}× acessos',
+              color: const Color(0xFF7C3AED),
+            ),
+          ],
           const Spacer(),
           Text(
             'Entrou: ${user.createdAt.day.toString().padLeft(2,'0')}/'

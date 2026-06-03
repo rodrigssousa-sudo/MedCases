@@ -397,6 +397,10 @@ class AppProvider extends ChangeNotifier {
 
     // 6️⃣ Inicia contador de tempo de uso
     _startUsageTimer(user.uid);
+
+    // 7️⃣ Registra acesso — incrementa loginCount e atualiza lastSeenAt no Firestore
+    // Silencioso: falha não bloqueia o app
+    FirestoreService.incrementLoginCount(user.uid);
   }
 
   // ── Timer de uso ──────────────────────────────────────────────────────────
