@@ -1091,24 +1091,23 @@ class _HomeIaCardState extends State<_HomeIaCard> {
                 GestureDetector(
                   onTap: () => _navigate(),
                   child: Container(
-                    width: 50, height: 50,
+                    width: 38, height: 38,
+                    margin: const EdgeInsets.only(bottom: 4),
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(12),
-                      gradient: const LinearGradient(
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                        colors: [Color(0xFF0F9E6A), Color(0xFF064D32)],
+                      shape: BoxShape.circle,
+                      color: dark
+                          ? const Color(0xFF162A1C)
+                          : const Color(0xFFEAF5EF),
+                      border: Border.all(
+                        color: _kGreenBord.withValues(alpha: dark ? 0.45 : 0.50),
+                        width: 1.2,
                       ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: _kGreenBg.withValues(alpha: 0.40),
-                          blurRadius: 10,
-                          offset: const Offset(0, 3),
-                        ),
-                      ],
                     ),
-                    child: const Icon(Icons.arrow_upward_rounded,
-                        color: Colors.white, size: 22),
+                    child: Icon(
+                      Icons.arrow_upward_rounded,
+                      color: _kGreen,
+                      size: 18,
+                    ),
                   ),
                 ),
               ],
