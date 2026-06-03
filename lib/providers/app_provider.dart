@@ -908,8 +908,8 @@ class AppProvider extends ChangeNotifier {
     if ((drug.doseType == 'weight' || drug.doseType == 'infusion') && w == null) {
       // Informativo — não bloqueia exibição da dose de referência
       alerts.add(_lang == 'es'
-          ? 'Ingrese el peso del paciente para calcular la dosis exacta en mg/kg.'
-          : 'Informe o peso do paciente para calcular a dose exata em mg/kg.');
+          ? 'Ingrese el peso del paciente para visualizar los parámetros académicos de referencia (mg/kg) de la literatura médica.'
+          : 'Informe o peso do paciente para visualizar os parâmetros acadêmicos de referência (mg/kg) da literatura médica.');
     }
 
     final renalAlert = drug.getField(drug.renalAlert, _lang);
@@ -926,26 +926,26 @@ class AppProvider extends ChangeNotifier {
 
     if (drug.doseType == 'weight' && w != null && drug.mgKg != null) {
       return DoseInfo(
-        main: '${_fmt(w * drug.mgKg!)} mg/dose',
-        detail: '${drug.mgKg} mg/kg. ${drug.getField(drug.frequency, _lang)}',
+        main: 'Ref. literatura: ${_fmt(w * drug.mgKg!)} mg (simulação teórica)',
+        detail: 'Parâmetro acadêmico: ${drug.mgKg} mg/kg. ${drug.getField(drug.frequency, _lang)} — A dose final é de responsabilidade exclusiva do profissional.',
         alerts: alerts,
       );
     }
 
     if (drug.doseType == 'infusion' && w != null && drug.mcgKgMinStart != null && drug.mcgKgMinMax != null) {
       return DoseInfo(
-        main: '${_fmt(w * drug.mcgKgMinStart!)}–${_fmt(w * drug.mcgKgMinMax!)} mcg/min',
-        detail: '${drug.mcgKgMinStart}–${drug.mcgKgMinMax} mcg/kg/min em bomba. Titular por resposta clínica.',
+        main: 'Ref. literatura: ${_fmt(w * drug.mcgKgMinStart!)}–${_fmt(w * drug.mcgKgMinMax!)} mcg/min (simulação teórica)',
+        detail: 'Parâmetro acadêmico: ${drug.mcgKgMinStart}–${drug.mcgKgMinMax} mcg/kg/min em bomba. Titular por resposta — decisão exclusiva do profissional.',
         alerts: alerts,
       );
     }
 
     final fixedDose = drug.getField(drug.fixedDose, _lang);
     return DoseInfo(
-      main: fixedDose.isNotEmpty ? fixedDose : (_lang == 'es' ? 'Dosis según protocolo local' : 'Dose conforme protocolo local'),
+      main: fixedDose.isNotEmpty ? fixedDose : (_lang == 'es' ? 'Consultar literatura de referencia' : 'Consultar literatura de referência'),
       detail: _lang == 'es'
-          ? 'Individualizar por indicación, función renal/hepática, alergias y presentación disponible.'
-          : 'Individualizar por indicação, função renal/hepática, alergias e apresentação disponível.',
+          ? 'A literatura indica individualizar por indicación, función renal/hepática, alergias y presentación. La simulación basada en los parámetros del caso de estudio es responsabilidad exclusiva del profesional.'
+          : 'A literatura indica individualizar por indicação, função renal/hepática, alergias e apresentação. A simulação baseada nos parâmetros do caso de estudo é responsabilidade exclusiva do profissional.',
       alerts: alerts,
     );
   }
@@ -6080,7 +6080,7 @@ class AppProvider extends ChangeNotifier {
       'className': 'Classe', 'mechanism': 'Mecanismo', 'warning': 'Alerta crítico',
       'adverse': 'Eventos adversos', 'adverse_events': 'EVENTOS ADVERSOS',
       'renal_alert': 'Alerta renal', 'elderly_alert': 'Alerta em idosos',
-      'calculated_dose': 'DOSE CALCULADA', 'edit_to_recalc': 'Edite os dados abaixo para recalcular',
+      'calculated_dose': 'PARÂMETROS DE REFERÊNCIA', 'edit_to_recalc': 'Visualize os parâmetros acadêmicos abaixo',
       'drug_sheet': 'FICHA TÉCNICA', 'use_in_cockpit': 'Usar este fármaco no Resumo Clínico',
       'drugs_subtitle': 'Pesquise, abra o card e veja a ficha completa do fármaco.',
       'drugs_search_hint': 'Pesquisar fármaco, classe, mecanismo ou alerta...',
@@ -6138,7 +6138,7 @@ class AppProvider extends ChangeNotifier {
       'tools_title': 'Ferramentas Clínicas',
       'tools_subtitle': 'Calculadoras e escalas validadas para uso clínico',
       'score': 'Escore', 'result': 'Resultado', 'interpretation': 'Interpretação',
-      'calculate': 'Calcular', 'reset': 'Resetar',
+      'calculate': 'Consultar Tabela de Referência', 'reset': 'Resetar',
       'sbp': 'PAS (mmHg)', 'dbp': 'PAD (mmHg)',
       'sodium': 'Sódio (mEq/L)', 'chloride': 'Cloro (mEq/L)',
       'bicarbonate': 'Bicarbonato (mEq/L)', 'glucose': 'Glicose (mg/dL)',
@@ -6297,7 +6297,7 @@ class AppProvider extends ChangeNotifier {
       'className': 'Clase', 'mechanism': 'Mecanismo', 'warning': 'Alerta crítico',
       'adverse': 'Eventos adversos', 'adverse_events': 'EVENTOS ADVERSOS',
       'renal_alert': 'Alerta renal', 'elderly_alert': 'Alerta en ancianos',
-      'calculated_dose': 'DOSIS CALCULADA', 'edit_to_recalc': 'Edite los datos para recalcular',
+      'calculated_dose': 'PARÁMETROS DE REFERENCIA', 'edit_to_recalc': 'Visualice los parámetros académicos a continuación',
       'drug_sheet': 'FICHA TÉCNICA', 'use_in_cockpit': 'Usar este fármaco en Resumen Clínico',
       'drugs_subtitle': 'Busque, abra la tarjeta y vea la ficha completa del fármaco.',
       'drugs_search_hint': 'Buscar fármaco, clase, mecanismo o alerta...',
@@ -6355,7 +6355,7 @@ class AppProvider extends ChangeNotifier {
       'tools_title': 'Herramientas Clínicas',
       'tools_subtitle': 'Calculadoras y escalas validadas para uso clínico',
       'score': 'Puntuación', 'result': 'Resultado', 'interpretation': 'Interpretación',
-      'calculate': 'Calcular', 'reset': 'Reiniciar',
+      'calculate': 'Consultar Tabla de Referencia', 'reset': 'Reiniciar',
       'sbp': 'TAS (mmHg)', 'dbp': 'TAD (mmHg)',
       'sodium': 'Sodio (mEq/L)', 'chloride': 'Cloro (mEq/L)',
       'bicarbonate': 'Bicarbonato (mEq/L)', 'glucose': 'Glucosa (mg/dL)',

@@ -1162,8 +1162,8 @@ class _DrugDetailViewState extends State<_DrugDetailView>
 
     if ((drug.doseType == 'weight' || drug.doseType == 'infusion') && w == null) {
       alerts.add(lang == 'es'
-          ? 'Ingrese el peso del paciente para calcular la dosis exacta en mg/kg.'
-          : 'Informe o peso do paciente para calcular a dose exata em mg/kg.');
+          ? 'Ingrese el peso del paciente para visualizar los parámetros académicos de referencia (mg/kg) de la literatura médica.'
+          : 'Informe o peso do paciente para visualizar os parâmetros acadêmicos de referência (mg/kg) da literatura médica.');
     }
 
     final renalAlert = drug.getField(drug.renalAlert, lang);
@@ -1180,17 +1180,17 @@ class _DrugDetailViewState extends State<_DrugDetailView>
 
     if (drug.doseType == 'weight' && w != null && drug.mgKg != null) {
       return DoseInfo(
-        main: '${(w * drug.mgKg!).toStringAsFixed(1)} mg/dose',
-        detail: '${drug.mgKg} mg/kg. ${drug.getField(drug.frequency, lang)}',
+        main: 'Ref. literatura: ${(w * drug.mgKg!).toStringAsFixed(1)} mg (simulação teórica)',
+        detail: 'Parâmetro acadêmico: ${drug.mgKg} mg/kg. ${drug.getField(drug.frequency, lang)} — A dose final é de responsabilidade exclusiva do profissional.',
         alerts: alerts,
       );
     }
     if (drug.doseType == 'infusion' && w != null &&
         drug.mcgKgMinStart != null && drug.mcgKgMinMax != null) {
       return DoseInfo(
-        main: '${(w * drug.mcgKgMinStart!).toStringAsFixed(1)}–'
-              '${(w * drug.mcgKgMinMax!).toStringAsFixed(1)} mcg/min',
-        detail: '${drug.mcgKgMinStart}–${drug.mcgKgMinMax} mcg/kg/min em bomba. Titular por resposta.',
+        main: 'Ref. literatura: ${(w * drug.mcgKgMinStart!).toStringAsFixed(1)}–'
+              '${(w * drug.mcgKgMinMax!).toStringAsFixed(1)} mcg/min (simulação teórica)',
+        detail: 'Parâmetro acadêmico: ${drug.mcgKgMinStart}–${drug.mcgKgMinMax} mcg/kg/min em bomba. Titular por resposta — decisão exclusiva do profissional.',
         alerts: alerts,
       );
     }
@@ -1923,7 +1923,7 @@ class _DoseCalculatorCard extends StatelessWidget {
                     color: const Color(0xFFFFE8A6).withValues(alpha: 0.18),
                     borderRadius: BorderRadius.circular(4),
                   ),
-                  child: const Text('DOSIS CALCULADA',
+                  child: const Text('PARÂMETROS ACADÊMICOS DE REFERÊNCIA',
                     style: TextStyle(fontSize: 8.5, fontWeight: FontWeight.w900,
                       color: Color(0xFFFFE8A6), letterSpacing: 1.8)),
                 ),
@@ -2877,7 +2877,7 @@ class _DoseCard extends StatelessWidget {
                 color: const Color(0xFFFFE8A6).withValues(alpha: 0.18),
                 borderRadius: BorderRadius.circular(4),
               ),
-              child: const Text('DOSE',
+              child: const Text('REFERÊNCIA DA LITERATURA',
                 style: TextStyle(fontSize: 9, fontWeight: FontWeight.w900,
                   color: Color(0xFFFFE8A6), letterSpacing: 2.0)),
             ),
