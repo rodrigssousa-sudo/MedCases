@@ -3078,45 +3078,7 @@ class _AppDrawerState extends State<_AppDrawer> {
                   onClose: () => _close(context),
                 ),
 
-                // ─── 5. Conta e Gestão (zona de perigo) ──────────────────
-                _DrawerSectionLabel(
-                  label: p.lang == 'es' ? 'CUENTA Y GESTIÓN' : 'CONTA E GESTÃO',
-                  dark: dark,
-                  color: const Color(0xFFCC3333),
-                ),
-                _DrawerBlock(
-                  dividerColor: divider,
-                  children: [
-                    _DrawerRow(
-                      icon: Icons.delete_outline_rounded,
-                      iconColor: const Color(0xFFCC3333),
-                      title: p.lang == 'es' ? 'Eliminar Cuenta' : 'Eliminar Conta',
-                      dark: dark,
-                      textCol: const Color(0xFFCC3333),
-                      subCol: subCol,
-                      onTap: () {
-                        _close(context);
-                        _showDeleteAccountDialog(context, p);
-                      },
-                    ),
-                    _DrawerRow(
-                      icon: Icons.logout_rounded,
-                      iconColor: const Color(0xFFCC3333),
-                      title: p.lang == 'es' ? 'Cerrar sesión' : 'Sair da conta',
-                      dark: dark,
-                      textCol: const Color(0xFFCC3333),
-                      subCol: subCol,
-                      showDivider: false,
-                      onTap: () async {
-                        _close(context);
-                        await AuthService.logout();
-                        if (context.mounted) context.read<AppProvider>().clearUser();
-                      },
-                    ),
-                  ],
-                ),
-
-                // ─── 6. Suporte ──────────────────────────────────────────
+                // ─── 5. Suporte ──────────────────────────────────────────
                 _DrawerSectionLabel(
                   label: p.lang == 'es' ? 'SOPORTE' : 'SUPORTE',
                   dark: dark,
@@ -3286,6 +3248,44 @@ class _AppDrawerState extends State<_AppDrawer> {
                       onTap: () {
                         _close(context);
                         showLegalSheet(context, LegalType.privacy, p.lang);
+                      },
+                    ),
+                  ],
+                ),
+
+                // ─── 9. Conta e Gestão (zona de perigo — SEMPRE NO FINAL) ───
+                _DrawerSectionLabel(
+                  label: p.lang == 'es' ? 'CUENTA Y GESTIÓN' : 'CONTA E GESTÃO',
+                  dark: dark,
+                  color: const Color(0xFFCC3333),
+                ),
+                _DrawerBlock(
+                  dividerColor: divider,
+                  children: [
+                    _DrawerRow(
+                      icon: Icons.delete_outline_rounded,
+                      iconColor: const Color(0xFFCC3333),
+                      title: p.lang == 'es' ? 'Eliminar Cuenta' : 'Eliminar Conta',
+                      dark: dark,
+                      textCol: const Color(0xFFCC3333),
+                      subCol: subCol,
+                      onTap: () {
+                        _close(context);
+                        _showDeleteAccountDialog(context, p);
+                      },
+                    ),
+                    _DrawerRow(
+                      icon: Icons.logout_rounded,
+                      iconColor: const Color(0xFFCC3333),
+                      title: p.lang == 'es' ? 'Cerrar sesión' : 'Sair da conta',
+                      dark: dark,
+                      textCol: const Color(0xFFCC3333),
+                      subCol: subCol,
+                      showDivider: false,
+                      onTap: () async {
+                        _close(context);
+                        await AuthService.logout();
+                        if (context.mounted) context.read<AppProvider>().clearUser();
                       },
                     ),
                   ],
