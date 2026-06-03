@@ -114722,7 +114722,7 @@ if(a.gmx().length!==0){s=A.dl(A.a(B.d.T(a.gmx()).split(" "),t.s),0,A.e3(2,"count
 r=new A.P(s,new A.aVT(),s.$ti.i("P<am.E,n>")).ta(0)}else r="MC"
 q=A.bv(a5,f,t.l).w.a.a
 p=q>=600
-o=p?B.q.cj(q,0,380):q*0.85
+o=p?B.q.cj(q,0,300):q*0.72
 n=p?B.dRW:B.lL
 s=t.p
 m=A.a([],s)
