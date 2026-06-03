@@ -168,12 +168,23 @@ class _LoginScreenState extends State<LoginScreen>
         referredBy: referredBy,
       );
 
-      // ── Task 2: Auto-login após cadastro bem-sucedido ─────────────────────
-      // Após o registro, faz login automático com as mesmas credenciais para
-      // que o revisor da Apple (e novos usuários) não precisem redigitar a senha.
-      // O AuthGate detecta o novo usuário e roteará para HomeScreen ou tela
-      // de pendência conforme o status retornado pelo servidor.
+      // ── Auto-aprovação + auto-login após cadastro ────────────────────────
+      // 1. Registra o usuário
+      // 2. Aprova imediatamente (sem precisar de ação do admin)
+      // 3. Faz login automático → usuario entra direto no app na primeira vez
+      // Na segunda sessão o usuário já está aprovado e só digita email+senha.
       if (result.success) {
+        // Aprova automaticamente antes do login para que o AuthGate não
+        // roteie para _PendingScreen (o usuário entra direto no app)
+        final newUid = result.user?.uid ?? '';
+        if (newUid.isNotEmpty) {
+          try {
+            await AuthService.approveUser(newUid, 'system-auto');
+          } catch (_) {
+            // Silencioso — _PendingScreen tem fallback de auto-aprovação
+          }
+        }
+
         final loginResult = await AuthService.login(
           email: _emailCtrl.text,
           password: _passCtrl.text,
@@ -182,7 +193,7 @@ class _LoginScreenState extends State<LoginScreen>
           if (_keepLoggedIn && loginResult.user != null) {
             await AuthService.saveSession(loginResult.user!);
           }
-          // AuthGate detecta o usuário logado e navega automaticamente
+          // AuthGate detecta o usuário aprovado e navega para o MainShell
           if (!mounted) return;
           setState(() { _loading = false; });
           return;
@@ -360,32 +371,34 @@ class _LoginScreenState extends State<LoginScreen>
 
   // ── Cabeçalho do modo ─────────────────────────────────────────────────────
   Widget _buildModeHeader() {
-    return Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
-      Container(
-        width: 44, height: 44,
-        decoration: BoxDecoration(
-          color: kGreen,
-          borderRadius: BorderRadius.circular(10),
-          boxShadow: [
-            BoxShadow(color: kGreen.withValues(alpha: 0.30),
-              blurRadius: 10, offset: const Offset(0, 4)),
-          ],
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Container(
+          width: 52, height: 52,
+          decoration: BoxDecoration(
+            color: kGreen,
+            borderRadius: BorderRadius.circular(14),
+            boxShadow: [
+              BoxShadow(color: kGreen.withValues(alpha: 0.30),
+                blurRadius: 12, offset: const Offset(0, 5)),
+            ],
+          ),
+          child: Icon(_modeIcon, size: 24, color: Colors.white),
         ),
-        child: Icon(_modeIcon, size: 20, color: Colors.white),
-      ),
-      const SizedBox(width: 14),
-      Expanded(
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text(_modeTitle, style: const TextStyle(
-            fontSize: 20, fontWeight: FontWeight.w700,
+        const SizedBox(height: 12),
+        Text(_modeTitle, textAlign: TextAlign.center,
+          style: const TextStyle(
+            fontSize: 22, fontWeight: FontWeight.w700,
             color: kText, letterSpacing: -0.4, height: 1.1)),
-          const SizedBox(height: 2),
-          Text(_modeSubtitle, style: TextStyle(
-            fontSize: 11, color: kTextMid,
+        const SizedBox(height: 4),
+        Text(_modeSubtitle, textAlign: TextAlign.center,
+          style: TextStyle(
+            fontSize: 12, color: kTextMid,
             fontWeight: FontWeight.w500)),
-        ]),
-      ),
-    ]);
+      ],
+    );
   }
 
   // ── Step indicator ────────────────────────────────────────────────────────
@@ -859,37 +872,13 @@ class _HeroGeometric extends StatelessWidget {
                                 color: Colors.white, letterSpacing: -0.5, height: 1.0)),
                             const SizedBox(height: 4),
                             Text(
-                              _isEs ? 'Clínica • Protocolos • IA' : 'Clínica • Protocolos • IA',
+                              _isEs ? 'Apoyo clínico educacional' : 'Apoio clínico educacional',
                               style: TextStyle(
                                 fontSize: 12,
                                 color: const Color(0xFF13A06A).withValues(alpha: 0.90),
-                                fontWeight: FontWeight.w600, letterSpacing: 0.5)),
+                                fontWeight: FontWeight.w600, letterSpacing: 0.3)),
                           ]),
                         ],
-                      ),
-
-                      const SizedBox(height: 22),
-
-                      // Headline — centralizada, com mais impacto
-                      Text(
-                        _isEs
-                          ? 'Casos clínicos simulados\ny soporte educativo'
-                          : 'Casos clínicos simulados\ne suporte educativo',
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(
-                          fontSize: 23, fontWeight: FontWeight.w700,
-                          color: Colors.white, height: 1.25, letterSpacing: -0.5),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        _isEs
-                          ? 'Casos clínicos simulados y soporte educativo para profesionales de la salud. Protocolos de estudio y guías de referencia en un solo lugar.'
-                          : 'Casos clínicos simulados e suporte educativo para profissionais de saúde. Protocolos de estudo e guias de referência em um só lugar.',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 13,
-                          color: Colors.white.withValues(alpha: 0.60),
-                          fontWeight: FontWeight.w400, height: 1.45),
                       ),
                     ],
                   ),
