@@ -35,14 +35,14 @@ class _S {
   // ── Itens do aviso (bullets visuais) ──────────────────────────────────────
   List<String> get warningItems => es
       ? [
-          'Não substitui consulta médica real nem julgamento clínico.',
-          'Dados e protocolos são para fins de estudo e simulação.',
-          'Qualquer aplicação clínica é de responsabilidade exclusiva do profissional.',
-        ]
-      : [
           'No sustituye la consulta médica real ni el juicio clínico.',
           'Los datos y protocolos son para fines de estudio y simulación.',
           'Cualquier aplicación clínica es responsabilidad exclusiva del profesional.',
+        ]
+      : [
+          'Não substitui consulta médica real nem julgamento clínico.',
+          'Dados e protocolos são para fins de estudo e simulação.',
+          'Qualquer aplicação clínica é de responsabilidade exclusiva do profissional.',
         ];
 
   // ── Seleção de categoria ───────────────────────────────────────────────────
@@ -58,15 +58,15 @@ class _S {
   String get checkboxLabel => es ? 'Li e aceito os termos acima' : 'Li e aceito os termos acima';
 
   String get checkboxText => es
-      ? 'Declaro que sou profissional ou estudante da área de saúde. Entendo que este aplicativo é exclusivamente educacional e de simulação clínica, e que jamais utilizarei seu conteúdo para tomar decisões clínicas em pacientes reais sem o devido julgamento profissional.'
+      ? 'Declaro que soy profesional o estudiante del área de la salud. Entiendo que esta aplicación es exclusivamente educacional y de simulación clínica, y que nunca utilizaré su contenido para tomar decisiones clínicas en pacientes reales sin el debido juicio profesional.'
       : 'Declaro que sou profissional ou estudante da área de saúde. Entendo que este aplicativo é exclusivamente educacional e de simulação clínica, e que jamais utilizarei seu conteúdo para tomar decisões clínicas em pacientes reais sem o devido julgamento profissional.';
 
   // ── Botão ──────────────────────────────────────────────────────────────────
-  String get button => es ? 'Aceito — Acessar o App' : 'Aceito — Acessar o App';
+  String get button => es ? 'Acepto — Acceder a la App' : 'Aceito — Acessar o App';
 
   // ── Rodapé legal ──────────────────────────────────────────────────────────
   String get legalNote => es
-      ? 'Esta declaração tem validade legal e ficará registrada em seu dispositivo.'
+      ? 'Esta declaración tiene validez legal y quedará registrada en su dispositivo.'
       : 'Esta declaração tem validade legal e ficará registrada em seu dispositivo.';
 }
 
@@ -382,7 +382,7 @@ class _ProfessionalDeclarationModalState
                 const SizedBox(width: 8),
                 Text(
                   widget.lang == 'es'
-                      ? 'AVISO IMPORTANTE — LEIA ANTES DE CONTINUAR'
+                      ? 'AVISO IMPORTANTE — LEA ANTES DE CONTINUAR'
                       : 'AVISO IMPORTANTE — LEIA ANTES DE CONTINUAR',
                   style: const TextStyle(
                     color: _redText,
@@ -582,7 +582,7 @@ class _ProfessionalDeclarationModalState
                         Text(
                           widget.lang == 'es'
                               ? 'Leí y acepto los términos anteriores'
-                              : 'Li e aceito os termos acima',
+                          : 'Li e aceito os termos acima',
                           style: TextStyle(
                             color: _checked ? _textPri : _textSec,
                             fontSize: 13.5,
@@ -728,7 +728,7 @@ class _ProfessionalDeclarationModalState
             const SizedBox(height: 10),
             Text(
               widget.lang == 'es'
-                  ? 'Seleccione su categoría y marque el checkbox para continuar.'
+                  ? 'Seleccione su categoría y marque la casilla para continuar.'
                   : 'Selecione sua categoria e marque o checkbox para continuar.',
               textAlign: TextAlign.center,
               style: const TextStyle(
