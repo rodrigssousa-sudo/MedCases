@@ -873,8 +873,8 @@ class _HeroGeometric extends StatelessWidget {
                       // Headline — centralizada, com mais impacto
                       Text(
                         _isEs
-                          ? 'Decisiones clínicas\nrespaldadas por evidencia'
-                          : 'Decisões clínicas\nembasadas em evidências',
+                          ? 'Casos clínicos simulados\ny soporte educativo'
+                          : 'Casos clínicos simulados\ne suporte educativo',
                         textAlign: TextAlign.center,
                         style: const TextStyle(
                           fontSize: 23, fontWeight: FontWeight.w700,
@@ -883,8 +883,8 @@ class _HeroGeometric extends StatelessWidget {
                       const SizedBox(height: 8),
                       Text(
                         _isEs
-                          ? 'Protocolos, prescripciones y IA médica en un solo lugar.'
-                          : 'Protocolos, prescrições e IA médica em um só lugar.',
+                          ? 'Casos clínicos simulados y soporte educativo para profesionales de la salud. Protocolos de estudio y guías de referencia en un solo lugar.'
+                          : 'Casos clínicos simulados e suporte educativo para profissionais de saúde. Protocolos de estudo e guias de referência em um só lugar.',
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 13,
