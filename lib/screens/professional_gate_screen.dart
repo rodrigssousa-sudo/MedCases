@@ -15,29 +15,59 @@ class _S {
   final bool es;
   const _S(this.es);
 
-  String get title   => es
-      ? 'Declaración de Uso Profesional'
-      : 'Declaração de Uso Profissional';
+  // ── Header ──────────────────────────────────────────────────────────────────
+  String get title => es
+      ? 'Aviso Legal Obligatorio'
+      : 'Aviso Legal Obrigatório';
 
   String get subtitle => es
-      ? 'MedCases Pro es un software de soporte para la toma de decisiones clínicas exclusivo para el área médica y de la salud.'
-      : 'O MedCases Pro é um software de suporte à decisão clínica exclusivo para a área médica e de saúde.';
+      ? 'Lea atentamente antes de acceder a MedCases Pro.'
+      : 'Leia com atenção antes de acessar o MedCases Pro.';
 
+  // ── Badge de aviso ──────────────────────────────────────────────────────────
+  String get warningBadge => es ? 'USO EDUCATIVO EXCLUSIVO' : 'USO EDUCACIONAL EXCLUSIVO';
+
+  // ── Bloco principal de disclaimer (texto exigido) ──────────────────────────
+  String get disclaimerMain => es
+      ? 'Esta aplicación es una plataforma de simulación clínica estrictamente educacional. El contenido no debe ser utilizado para guiar diagnósticos, tratamientos ni prescripciones en pacientes reales. La responsabilidad final sobre cualquier conducta médica es exclusiva del profesional de salud habilitado.'
+      : 'Este aplicativo é uma plataforma de simulação clínica estritamente educacional. O conteúdo não deve ser utilizado para guiar diagnósticos, tratamentos ou prescrições em pacientes reais. A responsabilidade final sobre qualquer conduta médica é exclusiva do profissional de saúde habilitado.';
+
+  // ── Itens do aviso (bullets visuais) ──────────────────────────────────────
+  List<String> get warningItems => es
+      ? [
+          'Não substitui consulta médica real nem julgamento clínico.',
+          'Dados e protocolos são para fins de estudo e simulação.',
+          'Qualquer aplicação clínica é de responsabilidade exclusiva do profissional.',
+        ]
+      : [
+          'No sustituye la consulta médica real ni el juicio clínico.',
+          'Los datos y protocolos son para fines de estudio y simulación.',
+          'Cualquier aplicación clínica es responsabilidad exclusiva del profesional.',
+        ];
+
+  // ── Seleção de categoria ───────────────────────────────────────────────────
   String get dropdownLabel => es
-      ? 'Seleccione su categoría'
-      : 'Selecione sua categoria';
+      ? 'Seleccione su categoría profesional'
+      : 'Selecione sua categoria profissional';
 
   List<String> get categories => es
       ? ['Médico / Residente', 'Estudiante de Medicina', 'Otro Profesional de la Salud']
       : ['Médico / Residente', 'Estudante de Medicina', 'Outro Profissional de Saúde'];
 
-  String get checkboxText => es
-      ? 'Declaro que la información anterior es verdadera. Soy consciente de que esta aplicación es una herramienta complementaria y educativa para ayudar en la consulta de conductas. MedCases Pro no toma decisiones clínicas de forma autónoma y no reemplaza el juicio profesional y soberano del médico tratante.'
-      : 'Declaro que as informações acima são verdadeiras. Estou ciente de que este aplicativo é uma ferramenta complementar e educacional para auxiliar na consulta de condutas. O MedCases Pro não toma decisões clínicas de forma autônoma e não substitui o julgamento profissional e soberano do médico assistente.';
+  // ── Checkbox de consentimento ──────────────────────────────────────────────
+  String get checkboxLabel => es ? 'Li e aceito os termos acima' : 'Li e aceito os termos acima';
 
-  String get button => es
-      ? 'Confirmar y Acceder'
-      : 'Confirmar e Acessar';
+  String get checkboxText => es
+      ? 'Declaro que sou profissional ou estudante da área de saúde. Entendo que este aplicativo é exclusivamente educacional e de simulação clínica, e que jamais utilizarei seu conteúdo para tomar decisões clínicas em pacientes reais sem o devido julgamento profissional.'
+      : 'Declaro que sou profissional ou estudante da área de saúde. Entendo que este aplicativo é exclusivamente educacional e de simulação clínica, e que jamais utilizarei seu conteúdo para tomar decisões clínicas em pacientes reais sem o devido julgamento profissional.';
+
+  // ── Botão ──────────────────────────────────────────────────────────────────
+  String get button => es ? 'Aceito — Acessar o App' : 'Aceito — Acessar o App';
+
+  // ── Rodapé legal ──────────────────────────────────────────────────────────
+  String get legalNote => es
+      ? 'Esta declaração tem validade legal e ficará registrada em seu dispositivo.'
+      : 'Esta declaração tem validade legal e ficará registrada em seu dispositivo.';
 }
 
 // ── Serviço estático de persistência ──────────────────────────────────────────
@@ -56,7 +86,7 @@ class ProfessionalDeclarationGate {
 // ── Widget de Gate ────────────────────────────────────────────────────────────
 /// Envolve [child] com o gate de declaração profissional.
 /// Se o usuário já declarou anteriormente, exibe [child] diretamente.
-/// Caso contrário, exibe a tela de declaração em fullscreen sobre [child].
+/// Caso contrário, exibe o aviso legal obrigatório em fullscreen sobre [child].
 class ProfessionalDeclarationGateWidget extends StatefulWidget {
   final Widget child;
   const ProfessionalDeclarationGateWidget({super.key, required this.child});
@@ -99,13 +129,13 @@ class _ProfessionalDeclarationGateWidgetState
     // Já declarou → exibe o app normalmente
     if (_declared!) return widget.child;
 
-    // Precisa declarar → exibe modal sobre o app
+    // Precisa declarar → exibe aviso obrigatório sobre o app
     final lang = Localizations.localeOf(context).languageCode;
     return Stack(
       children: [
         widget.child,
         Positioned.fill(
-          child: ColoredBox(color: Colors.black.withValues(alpha: 0.72)),
+          child: ColoredBox(color: Colors.black.withValues(alpha: 0.80)),
         ),
         Positioned.fill(
           child: _ProfessionalDeclarationModal(
@@ -118,7 +148,7 @@ class _ProfessionalDeclarationGateWidgetState
   }
 }
 
-// ── Modal de Declaração ────────────────────────────────────────────────────────
+// ── Modal de Aviso Legal Obrigatório ─────────────────────────────────────────
 class _ProfessionalDeclarationModal extends StatefulWidget {
   final String lang;
   final VoidCallback onAccepted;
@@ -146,7 +176,7 @@ class _ProfessionalDeclarationModalState
   late Animation<double> _fade;
   late Animation<Offset> _slide;
 
-  // Cores fixas (dark theme — mesma paleta de legal_screen.dart / ConsentModal)
+  // Paleta dark — coerente com o restante do app
   static const _bg       = Color(0xFF07110d);
   static const _surface  = Color(0xFF0F2419);
   static const _green    = Color(0xFF075f45);
@@ -159,6 +189,12 @@ class _ProfessionalDeclarationModalState
   static const _textHint = Color(0xFF888888);
   static const _disabled = Color(0xFF2A3A30);
 
+  // Vermelho para o bloco de aviso
+  static const _redBg    = Color(0xFF1A0A0A);
+  static const _redBorder = Color(0xFF8B1A1A);
+  static const _redText  = Color(0xFFFF6B6B);
+  static const _redIcon  = Color(0xFFFF4444);
+
   @override
   void initState() {
     super.initState();
@@ -166,11 +202,11 @@ class _ProfessionalDeclarationModalState
 
     _ctrl = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 420),
+      duration: const Duration(milliseconds: 450),
     );
     _fade  = Tween<double>(begin: 0.0, end: 1.0)
         .animate(CurvedAnimation(parent: _ctrl, curve: Curves.easeOut));
-    _slide = Tween<Offset>(begin: const Offset(0, 0.06), end: Offset.zero)
+    _slide = Tween<Offset>(begin: const Offset(0, 0.05), end: Offset.zero)
         .animate(CurvedAnimation(parent: _ctrl, curve: Curves.easeOutCubic));
     _ctrl.forward();
   }
@@ -194,7 +230,7 @@ class _ProfessionalDeclarationModalState
   Widget build(BuildContext context) {
     final screenW = MediaQuery.of(context).size.width;
     final isWide  = screenW > 600;
-    final cardW   = isWide ? 520.0 : screenW;
+    final cardW   = isWide ? 540.0 : screenW;
 
     return FadeTransition(
       opacity: _fade,
@@ -203,8 +239,8 @@ class _ProfessionalDeclarationModalState
         child: Center(
           child: SingleChildScrollView(
             padding: EdgeInsets.symmetric(
-              horizontal: isWide ? 0 : 0,
               vertical: 24,
+              horizontal: isWide ? 0 : 0,
             ),
             child: Container(
               width: cardW,
@@ -220,6 +256,7 @@ class _ProfessionalDeclarationModalState
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   _buildHeader(),
+                  _buildDisclaimerBlock(),
                   _buildBody(),
                   _buildFooter(),
                 ],
@@ -231,10 +268,10 @@ class _ProfessionalDeclarationModalState
     );
   }
 
-  // ── Cabeçalho ──────────────────────────────────────────────────────────────
+  // ── 1. Cabeçalho ─────────────────────────────────────────────────────────
   Widget _buildHeader() {
     return Container(
-      padding: const EdgeInsets.fromLTRB(24, 28, 24, 20),
+      padding: const EdgeInsets.fromLTRB(24, 26, 24, 20),
       decoration: const BoxDecoration(
         color: _surface,
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
@@ -243,45 +280,73 @@ class _ProfessionalDeclarationModalState
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Ícone + título
           Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
+              // Ícone de aviso
               Container(
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
-                  color: _green.withValues(alpha: 0.18),
+                  color: _redIcon.withValues(alpha: 0.12),
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(
-                      color: _green.withValues(alpha: 0.35), width: 1),
+                    color: _redIcon.withValues(alpha: 0.30),
+                    width: 1,
+                  ),
                 ),
                 child: const Icon(
-                  Icons.verified_user_rounded,
-                  color: _gold,
+                  Icons.warning_amber_rounded,
+                  color: _redIcon,
                   size: 22,
                 ),
               ),
               const SizedBox(width: 14),
               Expanded(
-                child: Text(
-                  _s.title,
-                  style: const TextStyle(
-                    color: _textPri,
-                    fontSize: 17,
-                    fontWeight: FontWeight.w700,
-                    letterSpacing: 0.2,
-                  ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Badge
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 3),
+                      decoration: BoxDecoration(
+                        color: _redBg,
+                        borderRadius: BorderRadius.circular(4),
+                        border: Border.all(
+                            color: _redBorder.withValues(alpha: 0.5),
+                            width: 1),
+                      ),
+                      child: Text(
+                        _s.warningBadge,
+                        style: const TextStyle(
+                          color: _redText,
+                          fontSize: 9,
+                          fontWeight: FontWeight.w900,
+                          letterSpacing: 1.4,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 5),
+                    Text(
+                      _s.title,
+                      style: const TextStyle(
+                        color: _textPri,
+                        fontSize: 17,
+                        fontWeight: FontWeight.w700,
+                        letterSpacing: 0.2,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 14),
-          // Subtítulo
+          const SizedBox(height: 10),
           Text(
             _s.subtitle,
             style: const TextStyle(
               color: _textSec,
-              fontSize: 13.5,
+              fontSize: 13,
               height: 1.5,
             ),
           ),
@@ -290,10 +355,108 @@ class _ProfessionalDeclarationModalState
     );
   }
 
-  // ── Corpo — Seleção de categoria (radio chips) + Checkbox ────────────────────
+  // ── 2. Bloco de Disclaimer Obrigatório (destaque máximo) ──────────────────
+  Widget _buildDisclaimerBlock() {
+    return Container(
+      margin: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+      decoration: BoxDecoration(
+        color: _redBg,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: _redBorder, width: 1.5),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Barra de título vermelha
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+            decoration: BoxDecoration(
+              color: _redBorder.withValues(alpha: 0.25),
+              borderRadius: const BorderRadius.vertical(
+                  top: Radius.circular(11)),
+            ),
+            child: Row(
+              children: [
+                const Icon(Icons.gpp_bad_rounded,
+                    size: 15, color: _redIcon),
+                const SizedBox(width: 8),
+                Text(
+                  widget.lang == 'es'
+                      ? 'AVISO IMPORTANTE — LEIA ANTES DE CONTINUAR'
+                      : 'AVISO IMPORTANTE — LEIA ANTES DE CONTINUAR',
+                  style: const TextStyle(
+                    color: _redText,
+                    fontSize: 10,
+                    fontWeight: FontWeight.w900,
+                    letterSpacing: 1.2,
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          // Texto principal do disclaimer
+          Padding(
+            padding: const EdgeInsets.fromLTRB(14, 14, 14, 14),
+            child: Text(
+              _s.disclaimerMain,
+              style: const TextStyle(
+                color: _textPri,
+                fontSize: 13.5,
+                height: 1.65,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ),
+
+          // Divisor
+          Container(
+            height: 1,
+            color: _redBorder.withValues(alpha: 0.35),
+          ),
+
+          // Bullets de reforço
+          Padding(
+            padding: const EdgeInsets.fromLTRB(14, 12, 14, 14),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: _s.warningItems.map((item) {
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 7),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Padding(
+                        padding: EdgeInsets.only(top: 4),
+                        child: Icon(Icons.remove_circle_outline_rounded,
+                            size: 13, color: _redText),
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          item,
+                          style: TextStyle(
+                            color: _textSec.withValues(alpha: 0.9),
+                            fontSize: 12.5,
+                            height: 1.5,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              }).toList(),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // ── 3. Corpo — Seleção de categoria + Checkbox ────────────────────────────
   Widget _buildBody() {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(24, 22, 24, 4),
+      padding: const EdgeInsets.fromLTRB(20, 22, 20, 4),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -303,13 +466,13 @@ class _ProfessionalDeclarationModalState
             style: const TextStyle(
               color: _gold,
               fontSize: 12,
-              fontWeight: FontWeight.w600,
-              letterSpacing: 0.6,
+              fontWeight: FontWeight.w700,
+              letterSpacing: 0.5,
             ),
           ),
           const SizedBox(height: 10),
 
-          // Radio chips — uma opção por linha
+          // Radio chips
           ...List.generate(_s.categories.length, (i) {
             final cat = _s.categories[i];
             final selected = _selectedCategory == cat;
@@ -319,7 +482,8 @@ class _ProfessionalDeclarationModalState
                 duration: const Duration(milliseconds: 180),
                 width: double.infinity,
                 margin: const EdgeInsets.only(bottom: 8),
-                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 13),
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 14, vertical: 13),
                 decoration: BoxDecoration(
                   color: selected
                       ? _green.withValues(alpha: 0.14)
@@ -334,7 +498,6 @@ class _ProfessionalDeclarationModalState
                 ),
                 child: Row(
                   children: [
-                    // Círculo radio
                     AnimatedContainer(
                       duration: const Duration(milliseconds: 180),
                       width: 20,
@@ -371,12 +534,13 @@ class _ProfessionalDeclarationModalState
             );
           }),
 
-          const SizedBox(height: 22),
+          const SizedBox(height: 18),
 
           // Checkbox de consentimento
           GestureDetector(
             onTap: () => setState(() => _checked = !_checked),
-            child: Container(
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 180),
               padding: const EdgeInsets.all(14),
               decoration: BoxDecoration(
                 color: _checked
@@ -385,7 +549,7 @@ class _ProfessionalDeclarationModalState
                 borderRadius: BorderRadius.circular(10),
                 border: Border.all(
                   color: _checked
-                      ? _greenLt.withValues(alpha: 0.5)
+                      ? _greenLt.withValues(alpha: 0.55)
                       : _border,
                   width: 1,
                 ),
@@ -393,7 +557,6 @@ class _ProfessionalDeclarationModalState
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Checkbox customizado
                   AnimatedContainer(
                     duration: const Duration(milliseconds: 180),
                     width: 22,
@@ -412,15 +575,33 @@ class _ProfessionalDeclarationModalState
                         : null,
                   ),
                   const SizedBox(width: 12),
-                  // Texto do checkbox
                   Expanded(
-                    child: Text(
-                      _s.checkboxText,
-                      style: TextStyle(
-                        color: _checked ? _textPri : _textSec,
-                        fontSize: 13,
-                        height: 1.55,
-                      ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          widget.lang == 'es'
+                              ? 'Leí y acepto los términos anteriores'
+                              : 'Li e aceito os termos acima',
+                          style: TextStyle(
+                            color: _checked ? _textPri : _textSec,
+                            fontSize: 13.5,
+                            fontWeight: FontWeight.w700,
+                            height: 1.3,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          _s.checkboxText,
+                          style: TextStyle(
+                            color: _checked
+                                ? _textSec
+                                : _textHint,
+                            fontSize: 12,
+                            height: 1.55,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ],
@@ -428,27 +609,24 @@ class _ProfessionalDeclarationModalState
             ),
           ),
 
-          const SizedBox(height: 22),
+          const SizedBox(height: 20),
         ],
       ),
     );
   }
 
-  // ── Rodapé — Botão ─────────────────────────────────────────────────────────
+  // ── 4. Rodapé — Botão ─────────────────────────────────────────────────────
   Widget _buildFooter() {
     final enabled = _canConfirm;
 
     return Container(
-      padding: const EdgeInsets.fromLTRB(24, 4, 24, 28),
-      decoration: const BoxDecoration(
-        borderRadius: BorderRadius.vertical(bottom: Radius.circular(20)),
-      ),
+      padding: const EdgeInsets.fromLTRB(20, 0, 20, 28),
       child: Column(
         children: [
-          // Aviso legal mínimo
+          // Nota legal
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-            margin: const EdgeInsets.only(bottom: 16),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 9),
+            margin: const EdgeInsets.only(bottom: 14),
             decoration: BoxDecoration(
               color: _goldBg,
               borderRadius: BorderRadius.circular(8),
@@ -462,9 +640,7 @@ class _ProfessionalDeclarationModalState
                 const SizedBox(width: 8),
                 Expanded(
                   child: Text(
-                    widget.lang == 'es'
-                        ? 'Esta declaración tiene validez legal y quedará registrada en su dispositivo.'
-                        : 'Esta declaração tem validade legal e ficará registrada em seu dispositivo.',
+                    _s.legalNote,
                     style: TextStyle(
                       color: _gold.withValues(alpha: 0.85),
                       fontSize: 11.5,
@@ -476,11 +652,11 @@ class _ProfessionalDeclarationModalState
             ),
           ),
 
-          // Botão de confirmação
+          // Botão principal
           AnimatedContainer(
             duration: const Duration(milliseconds: 200),
             width: double.infinity,
-            height: 50,
+            height: 52,
             decoration: BoxDecoration(
               gradient: enabled
                   ? const LinearGradient(
@@ -494,10 +670,10 @@ class _ProfessionalDeclarationModalState
               boxShadow: enabled
                   ? [
                       BoxShadow(
-                        color: _green.withValues(alpha: 0.35),
-                        blurRadius: 12,
+                        color: _green.withValues(alpha: 0.40),
+                        blurRadius: 14,
                         offset: const Offset(0, 4),
-                      )
+                      ),
                     ]
                   : null,
             ),
@@ -516,21 +692,52 @@ class _ProfessionalDeclarationModalState
                             color: Colors.white,
                           ),
                         )
-                      : Text(
-                          _s.button,
-                          style: TextStyle(
-                            color: enabled
-                                ? Colors.white
-                                : _textHint,
-                            fontSize: 15,
-                            fontWeight: FontWeight.w700,
-                            letterSpacing: 0.3,
-                          ),
+                      : Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              enabled
+                                  ? Icons.check_circle_rounded
+                                  : Icons.lock_rounded,
+                              size: 18,
+                              color: enabled
+                                  ? Colors.white
+                                  : _textHint,
+                            ),
+                            const SizedBox(width: 8),
+                            Text(
+                              _s.button,
+                              style: TextStyle(
+                                color: enabled
+                                    ? Colors.white
+                                    : _textHint,
+                                fontSize: 15,
+                                fontWeight: FontWeight.w700,
+                                letterSpacing: 0.3,
+                              ),
+                            ),
+                          ],
                         ),
                 ),
               ),
             ),
           ),
+
+          // Hint quando botão bloqueado
+          if (!enabled) ...[
+            const SizedBox(height: 10),
+            Text(
+              widget.lang == 'es'
+                  ? 'Seleccione su categoría y marque el checkbox para continuar.'
+                  : 'Selecione sua categoria e marque o checkbox para continuar.',
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                color: _textHint,
+                fontSize: 11.5,
+                height: 1.4,
+              ),
+            ),
+          ],
         ],
       ),
     );
