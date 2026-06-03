@@ -131122,8 +131122,8 @@ q(a){var s=null,r=A.iN(this.c,new A.b7D(this),s),q=B.m.j(0.08),p=A.i(20),o=A.K(B
 p=A.k(s,A.v(A.a([n,B.ab,A.e(m?"Para profesionales de salud":"Para profissionais de sa\xfade",s,s,s,s,s,B.dYM,s,s,s)],l),B.j,B.c,B.M,s,s),B.i,s,s,new A.h(q,s,o,p,s,s,B.k),s,s,s,s,B.pa,s,s,s)
 o=A.a2u("assets/icon/app_icon.png",s,B.wV,56,56)
 q=A.v(A.a([o,B.ei,A.u(A.a([B.e5w,B.av,A.e("Cl\xednica \u2022 Protocolos \u2022 IA",s,s,s,s,s,A.l(s,s,B.f1.j(0.9),s,s,s,s,s,s,s,s,12,s,s,B.R,s,s,!0,s,0.5,s,s,s,s,s,s),s,s,s)],l),B.p,B.c,B.f)],l),B.j,B.aX,B.f,s,s)
-o=A.e(m?"Decisiones cl\xednicas\nrespaldadas por evidencia":"Decis\xf5es cl\xednicas\nembasadas em evid\xeancias",s,s,s,s,s,B.dZq,B.aP,s,s)
-n=m?"Protocolos, prescripciones y IA m\xe9dica en un solo lugar.":"Protocolos, prescri\xe7\xf5es e IA m\xe9dica em um s\xf3 lugar."
+o=A.e(m?"Casos cl\xednicos simulados\ny soporte educativo":"Casos cl\xednicos simulados\ne suporte educativo",s,s,s,s,s,B.dZq,B.aP,s,s)
+n=m?"Casos cl\xednicos simulados y soporte educativo para profesionales de la salud. Protocolos de estudio y gu\xedas de referencia en un solo lugar.":"Casos cl\xednicos simulados e suporte educativo para profissionais de sa\xfade. Protocolos de estudo e guias de refer\xeancia em um s\xf3 lugar."
 return A.k(s,A.eh(B.bZ,A.a([r,A.xP(0,A.eF(!1,A.u(A.a([A.G(A.u(A.a([p,B.cf,q,B.Cl,o,B.N,A.e(n,s,s,s,s,s,A.l(s,s,B.m.j(0.6),s,s,s,s,s,s,s,s,13,s,s,B.ac,s,1.45,!0,s,s,s,s,s,s,s,s),B.aP,s,s)],l),B.j,B.aX,B.f),42),B.axk],l),B.j,B.aX,B.f),!0,B.au,!0,!0))],l),B.Q,B.bX,s),B.i,s,s,B.a71,s,s,s,s,s,s,s,s)}}
 A.b7D.prototype={
 $2(a,b){var s=null,r=this.a.c,q=r.a
