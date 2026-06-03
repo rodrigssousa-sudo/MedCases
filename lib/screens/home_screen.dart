@@ -964,7 +964,7 @@ class _HomeIaCardState extends State<_HomeIaCard> {
               ],
       ),
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(16, 16, 16, 14),
+        padding: const EdgeInsets.fromLTRB(16, 20, 16, 20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -1045,7 +1045,7 @@ class _HomeIaCardState extends State<_HomeIaCard> {
               ),
             ]),
 
-            const SizedBox(height: 13),
+            const SizedBox(height: 18),
 
             // ── Campo de texto + botão enviar ────────────────────────────
             Row(
@@ -1056,25 +1056,28 @@ class _HomeIaCardState extends State<_HomeIaCard> {
                     onTap: () => _focus.requestFocus(),
                     child: Container(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 14, vertical: 11),
+                          horizontal: 14, vertical: 18),
                       decoration: BoxDecoration(
                         color: fieldBg,
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: fieldBorder),
+                        borderRadius: BorderRadius.circular(14),
+                        border: Border.all(color: fieldBorder, width: 1.2),
                       ),
                       child: TextField(
                         controller: _ctrl,
                         focusNode: _focus,
+                        minLines: 3,
+                        maxLines: 5,
                         style: TextStyle(
-                          fontSize: 13.5,
+                          fontSize: 14.5,
                           color: textColor,
+                          height: 1.55,
                         ),
                         decoration: InputDecoration.collapsed(
                           hintText: isEs
                               ? 'Escribe tu pregunta clínica…'
                               : 'Digite sua pergunta clínica…',
                           hintStyle: TextStyle(
-                            fontSize: 13.5,
+                            fontSize: 14.5,
                             color: hintColor,
                           ),
                         ),
@@ -1084,11 +1087,11 @@ class _HomeIaCardState extends State<_HomeIaCard> {
                     ),
                   ),
                 ),
-                const SizedBox(width: 8),
+                const SizedBox(width: 10),
                 GestureDetector(
                   onTap: () => _navigate(),
                   child: Container(
-                    width: 44, height: 44,
+                    width: 50, height: 50,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(12),
                       gradient: const LinearGradient(
@@ -1111,7 +1114,7 @@ class _HomeIaCardState extends State<_HomeIaCard> {
               ],
             ),
 
-            const SizedBox(height: 11),
+            const SizedBox(height: 14),
 
             // ── Chips de exemplos rápidos ─────────────────────────────────
             SingleChildScrollView(
