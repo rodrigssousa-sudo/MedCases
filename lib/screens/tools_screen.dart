@@ -6762,7 +6762,7 @@ class _AgeFilterBtn extends StatelessWidget {
   Widget build(BuildContext context) {
     final c = AppColors.of(context);
     return GestureDetector(
-      onTap: () { HapticFeedback.selectionClick(); onTap(); },
+      onTap: () { AppHaptics.selection(context); onTap(); },
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 180),
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 9),
@@ -7165,7 +7165,7 @@ class _PedLabCategoryCardState extends State<_PedLabCategoryCard> {
         // ── Header da categoria
         GestureDetector(
           onTap: () {
-            HapticFeedback.lightImpact();
+            AppHaptics.light(context);
             setState(() => _collapsed = !_collapsed);
           },
           child: Container(
@@ -7360,7 +7360,7 @@ class _PedLabParamCardState extends State<_PedLabParamCard> {
     return GestureDetector(
       onTap: hasInterp
           ? () {
-              HapticFeedback.lightImpact();
+              AppHaptics.light(context);
               setState(() => _expanded = !_expanded);
             }
           : null,

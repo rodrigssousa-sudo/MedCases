@@ -142,6 +142,7 @@ class AppProvider extends ChangeNotifier {
   // ── Estado local ──────────────────────────────────────────────────────────
   String _lang = _systemLang();
   bool _darkMode = false;
+  bool _hapticEnabled = true; // feedback tátil — ligado por padrão
 
   PatientData _patient = PatientData();
   HemoData _hemo = HemoData();
@@ -262,6 +263,7 @@ class AppProvider extends ChangeNotifier {
   String get userEmail => _currentUser?.email ?? '';
   String get lang => _lang;
   bool get darkMode => _darkMode;
+  bool get hapticEnabled => _hapticEnabled;
   PatientData get patient => _patient;
   HemoData get hemo => _hemo;
   String get activeDrugId => _activeDrugId;
@@ -654,8 +656,9 @@ class AppProvider extends ChangeNotifier {
 
       // Preferências globais (independentes de usuário)
       // Fallback: idioma do sistema operacional (pt para português, es para outros)
-      _lang     = p.getString('lang')     ?? _systemLang();
-      _darkMode = p.getBool('darkMode')   ?? false;
+      _lang          = p.getString('lang')         ?? _systemLang();
+      _darkMode      = p.getBool('darkMode')        ?? false;
+      _hapticEnabled = p.getBool('hapticEnabled')   ?? true;
       // Chave de IA — lida com prefixo de usuário se disponível (fallback offline)
       if (uid != null) {
         _openAiKey = p.getString(_k('openAiKey', uid)) ?? '';
@@ -813,8 +816,9 @@ class AppProvider extends ChangeNotifier {
     final u = uid ?? _currentUser?.uid;
     try {
       final p = await SharedPreferences.getInstance();
-      await p.setString('lang',     _lang);
-      await p.setBool('darkMode',   _darkMode);
+      await p.setString('lang',          _lang);
+      await p.setBool('darkMode',        _darkMode);
+      await p.setBool('hapticEnabled',   _hapticEnabled);
       // Chave de IA só persiste com prefixo de usuário (nunca global)
       if (u != null && _openAiKey.isNotEmpty) {
         await p.setString(_k('openAiKey', u), _openAiKey);
@@ -997,6 +1001,12 @@ class AppProvider extends ChangeNotifier {
     if (_currentUser != null) {
       FirestoreService.updateUserProfile(_currentUser!.uid, darkMode: _darkMode);
     }
+    notifyListeners();
+  }
+
+  void toggleHaptic() {
+    _hapticEnabled = !_hapticEnabled;
+    _saveLocal();
     notifyListeners();
   }
 

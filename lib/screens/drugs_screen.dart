@@ -316,7 +316,7 @@ class _GroupAccordion extends StatelessWidget {
                 : BorderRadius.circular(14),
             child: InkWell(
               onTap: () {
-                HapticFeedback.lightImpact();
+                AppHaptics.light(context);
                 onToggle();
               },
               borderRadius: isExpanded
@@ -471,7 +471,7 @@ class _DrugListTile extends StatelessWidget {
       color: Colors.transparent,
       child: InkWell(
         onTap: () {
-          HapticFeedback.lightImpact();
+          AppHaptics.light(context);
           onTap();
         },
         splashColor: c.green.withValues(alpha: 0.10),
@@ -535,7 +535,7 @@ class _DrugListTile extends StatelessWidget {
               borderRadius: BorderRadius.circular(20),
               child: InkWell(
                 onTap: () {
-                  HapticFeedback.lightImpact();
+                  AppHaptics.light(context);
                   p.toggleFavDrug(drug.id);
                 },
                 borderRadius: BorderRadius.circular(20),
@@ -1221,8 +1221,8 @@ class _DrugDetailViewState extends State<_DrugDetailView>
           drug: drug, p: p, isFav: isFav, c: c, dark: dark, ev: ev,
           globalEv: globalEv,
           onBack: widget.onBack,
-          onFav: () { HapticFeedback.mediumImpact(); p.toggleFavDrug(drug.id); },
-          onCockpit: () { HapticFeedback.mediumImpact(); p.setActiveDrug(drug.id); },
+          onFav: () { AppHaptics.medium(context); p.toggleFavDrug(drug.id); },
+          onCockpit: () { AppHaptics.medium(context); p.setActiveDrug(drug.id); },
         ),
 
         const SizedBox(height: 16),
@@ -2709,7 +2709,7 @@ class _SexToggleBtn extends StatelessWidget {
         borderRadius: BorderRadius.circular(10),
         child: InkWell(
           onTap: () {
-            HapticFeedback.selectionClick();
+            AppHaptics.selection(context);
             onTap();
           },
           borderRadius: BorderRadius.circular(10),
@@ -3288,7 +3288,7 @@ class _DrugSearchAutocompleteState extends State<_DrugSearchAutocomplete> {
           suffixIcon: widget.controller.text.isNotEmpty
               ? IconButton(
                   onPressed: () {
-                    HapticFeedback.lightImpact();
+                    AppHaptics.light(context);
                     widget.controller.clear();
                     widget.onChanged('');
                     _removeOverlay();

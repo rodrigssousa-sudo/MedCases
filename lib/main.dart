@@ -41,7 +41,7 @@ import 'services/gemini_service.dart';
 import 'services/notification_service.dart';
 import 'services/update_service.dart';
 import 'widgets/brand_mark.dart';
-import 'widgets/common_widgets.dart' show MedBreakpoints;
+import 'widgets/common_widgets.dart' show MedBreakpoints, AppHaptics;
 import 'platform/web_impl.dart'
     if (dart.library.io) 'platform/web_stub.dart' as webPlatform;
 
@@ -2614,6 +2614,7 @@ const String _kPrivacyUrl = 'https://rodrigssousa.wixsite.com/medcases-pro/polit
 const String _kTermsUrl   = 'https://rodrigssousa.wixsite.com/medcases-pro/termos-de-uso';
 const String _kSiteUrl    = 'https://promedcases.com/';
 
+
 // ── Drawer lateral — redesenhado (v2) ─────────────────────────────────────────
 class _AppDrawer extends StatefulWidget {
   final AppProvider p;
@@ -3197,6 +3198,20 @@ class _AppDrawerState extends State<_AppDrawer> {
                       subCol: subCol,
                       trailing: _ThemeToggle(dark: dark),
                       onTap: () => p.toggleDarkMode(),
+                    ),
+                    // Tato / Haptic
+                    _DrawerRow(
+                      icon: Icons.vibration_rounded,
+                      iconColor: const Color(0xFF10B981),
+                      title: p.lang == 'es' ? 'Vibración táctil' : 'Vibração tátil',
+                      subtitle: p.lang == 'es'
+                          ? (p.hapticEnabled ? 'Activada' : 'Desactivada')
+                          : (p.hapticEnabled ? 'Ativada' : 'Desativada'),
+                      dark: dark,
+                      textCol: textCol,
+                      subCol: subCol,
+                      trailing: _OnOffToggle(value: p.hapticEnabled),
+                      onTap: () => p.toggleHaptic(),
                     ),
                   ],
                 ),
@@ -3877,6 +3892,33 @@ class _ThemeToggle extends StatelessWidget {
         duration: const Duration(milliseconds: 200),
         curve: Curves.easeOutCubic,
         alignment: dark ? Alignment.centerRight : Alignment.centerLeft,
+        child: Container(
+          width: 18, height: 18,
+          margin: const EdgeInsets.symmetric(horizontal: 2),
+          decoration: const BoxDecoration(shape: BoxShape.circle, color: Colors.white),
+        ),
+      ),
+    );
+  }
+}
+
+// Toggle genérico on/off — verde quando ligado, cinza quando desligado
+class _OnOffToggle extends StatelessWidget {
+  final bool value;
+  const _OnOffToggle({required this.value});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 40, height: 22,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(11),
+        color: value ? const Color(0xFF10B981) : const Color(0xFFDDDDDD),
+      ),
+      child: AnimatedAlign(
+        duration: const Duration(milliseconds: 200),
+        curve: Curves.easeOutCubic,
+        alignment: value ? Alignment.centerRight : Alignment.centerLeft,
         child: Container(
           width: 18, height: 18,
           margin: const EdgeInsets.symmetric(horizontal: 2),

@@ -1,7 +1,46 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:provider/provider.dart';
+import '../providers/app_provider.dart';
 import '../services/drug_interaction_service.dart';
 import '../models/drug_model.dart';
+
+// ─────────────────────────────────────────────────────────────────────────────
+// APP HAPTICS — wrapper global que respeita o toggle de vibração do usuário
+// Uso:  AppHaptics.light(context);   // toque leve
+//       AppHaptics.medium(context);  // toque médio
+//       AppHaptics.selection(context); // clique de seleção
+// Não faz nada no web nem quando o usuário desativou a vibração.
+// ─────────────────────────────────────────────────────────────────────────────
+class AppHaptics {
+  AppHaptics._();
+
+  static bool _enabled(BuildContext context) {
+    if (kIsWeb) return false;
+    try {
+      return context.read<AppProvider>().hapticEnabled;
+    } catch (_) {
+      return true; // fallback seguro se o provider não estiver disponível
+    }
+  }
+
+  static void light(BuildContext context) {
+    if (_enabled(context)) HapticFeedback.lightImpact();
+  }
+
+  static void medium(BuildContext context) {
+    if (_enabled(context)) HapticFeedback.mediumImpact();
+  }
+
+  static void heavy(BuildContext context) {
+    if (_enabled(context)) HapticFeedback.heavyImpact();
+  }
+
+  static void selection(BuildContext context) {
+    if (_enabled(context)) HapticFeedback.selectionClick();
+  }
+}
 
 // ─────────────────────────────────────────────────────────────────────────────
 // MED BREAKPOINTS — sistema de breakpoints responsivos unificado

@@ -262,7 +262,11 @@ class _HomeScreenState extends State<HomeScreen> {
 
   // ── HOME V2 — layout mobile ───────────────────────────────────────────────
   Widget _buildMobileLayout(BuildContext context, bool dark, bool isEs, AppProvider p) {
-    return SingleChildScrollView(
+    return GestureDetector(
+      // Fecha o teclado ao tocar em qualquer área fora da caixa de texto da IA
+      onTap: () => FocusScope.of(context).unfocus(),
+      behavior: HitTestBehavior.translucent,
+      child: SingleChildScrollView(
       physics: const BouncingScrollPhysics(),
       padding: const EdgeInsets.fromLTRB(16, 12, 16, 110),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -357,7 +361,8 @@ class _HomeScreenState extends State<HomeScreen> {
         // ── 7. EMERGÊNCIAS RÁPIDAS ────────────────────────────────────────
         _QuickEmergencies(p: p, dark: dark, isEs: isEs, openProtocol: widget.openProtocol),
       ]),
-    );
+      ),  // SingleChildScrollView
+    );    // GestureDetector
   }
 
   static Route _slide(Widget page) {
