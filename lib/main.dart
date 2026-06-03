@@ -1153,11 +1153,8 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
   // sub-tab dentro do combo Rx+Proto: 0=Rx, 1=Protocolos
   int _rxProtoSub = 0;
 
-  // ── Scroll-reveal AppBar (não-HOME tabs) ─────────────────────────────────
-  // Visível: false = oculto por padrão; true = apareceu após scroll-down.
-  final _appBarVisible = ValueNotifier<bool>(false);
-  Timer? _appBarHideTimer;
-  static const _kAppBarHideDelay = Duration(seconds: 3);
+  // Scroll-reveal AppBar removido — era exibido de forma intermitente e
+  // perturbava a navegação nas telas internas. Infraestrutura mantida mínima.
 
   // ── Performance: telas criadas uma única vez no initState ─────────────────
   // CRÍTICO: HomeScreen e _RxProtoCombo NÃO podem ser instanciadas dentro de
@@ -1170,22 +1167,12 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
   // ── Callbacks estáveis para HomeScreen ────────────────────────────────────
   // Lambdas inline no build() são recriadas a cada rebuild — geram instabilidade.
   // Métodos da classe são referências estáveis: mesma instância entre rebuilds.
-  void _onTabChange(int t)    { setState(() => _tab = t); _appBarVisible.value = false; _appBarHideTimer?.cancel(); }
+  void _onTabChange(int t)    { setState(() => _tab = t); }
   void _onSubTabChange(int i) => setState(() => _rxProtoSub = i);
   void _onOpenNotes()         => showNotesSheet(context);
 
   void _onScrollNotification(ScrollNotification n) {
-    if (_tab == 0) return; // HOME sempre visível separado
-    if (n is ScrollStartNotification || n is ScrollUpdateNotification) {
-      final metrics = n.metrics;
-      if (metrics.axis == Axis.vertical && metrics.pixels > 10) {
-        if (!_appBarVisible.value) _appBarVisible.value = true;
-        _appBarHideTimer?.cancel();
-        _appBarHideTimer = Timer(_kAppBarHideDelay, () {
-          if (mounted) _appBarVisible.value = false;
-        });
-      }
-    }
+    // Scroll-reveal AppBar removido — não faz nada.
   }
 
   @override
@@ -1220,9 +1207,6 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
       const RepaintBoundary(child: ToolsScreen()), // 4
       const RepaintBoundary(child: LibraryScreen()), // 5
     ];
-
-    // ── Scroll-reveal: reseta ao mudar de tab ─────────────────────────────
-    _appBarVisible.value = false;
 
     // ── Auto-Update / Cache Eviction (Service Worker) ──────────────────────
     // Registra window.onFlutterWebUpdateAvailable ANTES do primeiro frame.
@@ -1317,8 +1301,6 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
   void dispose() {
     MainShell.pendingTab.removeListener(_onPendingTab);
     WidgetsBinding.instance.removeObserver(this);
-    _appBarHideTimer?.cancel();
-    _appBarVisible.dispose();
     super.dispose();
   }
 
@@ -1514,38 +1496,7 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
                   ),
                 ),
 
-                // ── Scroll-reveal AppBar (tabs 1-5) ─────────────────────────
-                // Flutua no topo do Stack — cobre apenas a status bar + 48px.
-                // SafeArea(bottom:false) interno garante que o conteúdo do AppBar
-                // fique abaixo da status bar.
-                if (!isHome)
-                  ValueListenableBuilder<bool>(
-                    valueListenable: _appBarVisible,
-                    builder: (_, visible, __) => AnimatedPositioned(
-                      duration: const Duration(milliseconds: 280),
-                      curve: Curves.easeOutCubic,
-                      top: visible
-                          ? 0
-                          : -(48 + MediaQuery.of(context).padding.top),
-                      left: 0, right: 0,
-                      child: Builder(
-                        builder: (scaffoldCtx) => _MobileAppBar(
-                          dark: dark,
-                          currentTab: _tab,
-                          lang: p.lang,
-                          isHome: false,
-                          onLogoTap: () {
-                            _appBarVisible.value = false;
-                            setState(() => _tab = 0);
-                          },
-                          onMenuTap: () {
-                            _appBarVisible.value = false;
-                            Scaffold.of(scaffoldCtx).openEndDrawer();
-                          },
-                        ),
-                      ),
-                    ),
-                  ),
+                // Scroll-reveal AppBar removido — não aparece mais nas telas internas.
               ],
             ),
           ),

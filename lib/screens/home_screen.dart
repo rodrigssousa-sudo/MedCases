@@ -86,17 +86,8 @@ class _HomeScreenState extends State<HomeScreen> {
     void push(Widget page) => Navigator.of(context).push(_HomeScreenState._slide(page));
 
     // Definição dos cards principais para o grid desktop
+    // Ordem: FÁRMACOS → INTERAÇÕES → SIMULAÇÕES → PEDIATRIA → ADULTO
     final mainCards = [
-      _HomeCardData(
-        icon: Icons.description_rounded,
-        label: isEs ? 'SIMULACIONES' : 'SIMULAÇÕES',
-        subtitle: isEs
-            ? '${prescriptionModels(true).length} ejemplos'
-            : '${prescriptionModels(false).length} exemplos',
-        gradientColors: const [Color(0xFF2A0B52), Color(0xFF3D1280), Color(0xFF5B21B6)],
-        accentColor: const Color(0xFFA78BFA),
-        onTap: () => push(const _PrescripcionesShell()),
-      ),
       _HomeCardData(
         icon: Icons.medication_rounded,
         label: 'FÁRMACOS',
@@ -118,12 +109,14 @@ class _HomeScreenState extends State<HomeScreen> {
         onTap: () => push(const DrugInteractionsScreen()),
       ),
       _HomeCardData(
-        icon: Icons.person_rounded,
-        label: 'ADULTO',
-        subtitle: isEs ? 'Crear un protocolo adulto' : 'Criar um protocolo adulto',
-        gradientColors: const [Color(0xFF052E1A), Color(0xFF0A5C2E), Color(0xFF15803D)],
-        accentColor: const Color(0xFF4ADE80),
-        onTap: () => push(_AdultoShell(openProtocol: widget.openProtocol)),
+        icon: Icons.description_rounded,
+        label: isEs ? 'SIMULACIONES' : 'SIMULAÇÕES',
+        subtitle: isEs
+            ? '${prescriptionModels(true).length} ejemplos'
+            : '${prescriptionModels(false).length} exemplos',
+        gradientColors: const [Color(0xFF2A0B52), Color(0xFF3D1280), Color(0xFF5B21B6)],
+        accentColor: const Color(0xFFA78BFA),
+        onTap: () => push(const _PrescripcionesShell()),
       ),
       _HomeCardData(
         icon: Icons.child_care_rounded,
@@ -132,6 +125,14 @@ class _HomeScreenState extends State<HomeScreen> {
         gradientColors: const [Color(0xFF0A2540), Color(0xFF103D70), Color(0xFF2563EB)],
         accentColor: const Color(0xFF93C5FD),
         onTap: () => push(const _PediatricsShell()),
+      ),
+      _HomeCardData(
+        icon: Icons.person_rounded,
+        label: 'ADULTO',
+        subtitle: isEs ? 'Crear un protocolo adulto' : 'Criar um protocolo adulto',
+        gradientColors: const [Color(0xFF052E1A), Color(0xFF0A5C2E), Color(0xFF15803D)],
+        accentColor: const Color(0xFF4ADE80),
+        onTap: () => push(_AdultoShell(openProtocol: widget.openProtocol)),
       ),
     ];
 
@@ -274,23 +275,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         const SizedBox(height: 14),
 
-        // ── 2. PRESCRIÇÕES ───────────────────────────────────────────────
-        _HomeCard(
-          icon: Icons.description_rounded,
-          label: isEs ? 'SIMULACIONES' : 'SIMULAÇÕES',
-          subtitle: isEs
-              ? '${prescriptionModels(true).length} ejemplos'
-              : '${prescriptionModels(false).length} exemplos',
-          gradientColors: const [Color(0xFF2A0B52), Color(0xFF3D1280), Color(0xFF5B21B6)],
-          accentColor: const Color(0xFFA78BFA),
-          dark: dark,
-          onTap: () => Navigator.of(context).push(
-            _HomeScreenState._slide(const _PrescripcionesShell()),
-          ),
-        ),
-        const SizedBox(height: 10),
-
-        // ── 3. FÁRMACOS ──────────────────────────────────────────────────
+        // ── 2. FÁRMACOS ──────────────────────────────────────────────────
         _HomeCard(
           icon: Icons.medication_rounded,
           label: 'FÁRMACOS',
@@ -306,7 +291,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         const SizedBox(height: 10),
 
-        // ── 4. INTERAÇÕES ────────────────────────────────────────────────
+        // ── 3. INTERAÇÕES ────────────────────────────────────────────────
         _HomeCard(
           icon: Icons.compare_arrows_rounded,
           label: isEs ? 'INTERACCIONES' : 'INTERAÇÕES',
@@ -322,7 +307,23 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         const SizedBox(height: 10),
 
-        // ── 5. ADULTO / PEDIATRIA — cards compactos lado a lado ──────────
+        // ── 4. SIMULAÇÕES ────────────────────────────────────────────────
+        _HomeCard(
+          icon: Icons.description_rounded,
+          label: isEs ? 'SIMULACIONES' : 'SIMULAÇÕES',
+          subtitle: isEs
+              ? '${prescriptionModels(true).length} ejemplos'
+              : '${prescriptionModels(false).length} exemplos',
+          gradientColors: const [Color(0xFF2A0B52), Color(0xFF3D1280), Color(0xFF5B21B6)],
+          accentColor: const Color(0xFFA78BFA),
+          dark: dark,
+          onTap: () => Navigator.of(context).push(
+            _HomeScreenState._slide(const _PrescripcionesShell()),
+          ),
+        ),
+        const SizedBox(height: 10),
+
+        // ── 5. PEDIATRIA + ADULTO — cards compactos lado a lado ──────────
         _HomeAdultoPediatriaRow(
           dark: dark,
           isEs: isEs,
