@@ -428,14 +428,48 @@ class GeminiService {
   // useGrounding=true ativa a ferramenta nativa de busca web do Gemini.
   // O modelo decide autonomamente quando buscar — ideal para perguntas
   // clínicas que podem precisar de dados atualizados (doses, guias, etc.)
+  //
+  // Rate-limit (429): retry automático com backoff exponencial
+  //   Tentativa 1 → espera 2s → Tentativa 2 → espera 4s → Tentativa 3
+  //   Se todas falharem → retorna errorCode 'quota'
+  // Fila serial: evita requisições paralelas que multiplicam o 429
   // ══════════════════════════════════════════════════════════════════════════
+
+  // ── Fila serial — garante 1 requisição ativa por vez ─────────────────────
+  static Future<void> _queue = Future.value();
 
   static Future<GeminiResult> chat({
     required String userMessage,
     required String systemPrompt,
     List<Map<String, String>> history = const [],
     int maxTokens = 2200,
-    bool useGrounding = true, // Google Search Grounding ativado por padrão
+    bool useGrounding = true,
+  }) async {
+    // Encadeia na fila serial — garante 1 requisição ativa por vez
+    final result = Completer<GeminiResult>();
+    _queue = _queue.then((_) async {
+      try {
+        result.complete(await _chatInternal(
+          userMessage: userMessage,
+          systemPrompt: systemPrompt,
+          history: history,
+          maxTokens: maxTokens,
+          useGrounding: useGrounding,
+        ));
+      } catch (e) {
+        result.completeError(e);
+      }
+    });
+    return result.future;
+  }
+
+  static Future<GeminiResult> _chatInternal({
+    required String userMessage,
+    required String systemPrompt,
+    List<Map<String, String>> history = const [],
+    int maxTokens = 2200,
+    bool useGrounding = true,
+    int retryCount = 0,
   }) async {
     if (_geminiApiKey.isEmpty) {
       return GeminiResult.error('NOT_CONNECTED', 'not_connected');
@@ -490,12 +524,13 @@ class GeminiService {
           debugPrint('[GeminiService] sem candidates. blockReason=$blockReason useGrounding=$useGrounding');
           // Se grounding falhou, tenta sem ele
           if (useGrounding) {
-            return chat(
+            return _chatInternal(
               userMessage: userMessage,
               systemPrompt: systemPrompt,
               history: history,
               maxTokens: maxTokens,
               useGrounding: false,
+              retryCount: retryCount,
             );
           }
           return GeminiResult.error('BLOCKED: ${blockReason ?? "unknown"}', 'blocked');
@@ -505,12 +540,13 @@ class GeminiService {
         debugPrint('[GeminiService] finishReason=$finishReason useGrounding=$useGrounding');
         if (finishReason == 'SAFETY' || finishReason == 'RECITATION') {
           if (useGrounding) {
-            return chat(
+            return _chatInternal(
               userMessage: userMessage,
               systemPrompt: systemPrompt,
               history: history,
               maxTokens: maxTokens,
               useGrounding: false,
+              retryCount: retryCount,
             );
           }
           return GeminiResult.error('BLOCKED: $finishReason', 'blocked');
@@ -553,12 +589,13 @@ class GeminiService {
           if (maxTokens < 4000) {
             final expandedTokens = (maxTokens * 1.6).round().clamp(maxTokens + 500, 4000);
             debugPrint('[GeminiService] Retry $maxTokens→$expandedTokens tokens');
-            return chat(
+            return _chatInternal(
               userMessage: userMessage,
               systemPrompt: systemPrompt,
               history: history,
               maxTokens: expandedTokens,
               useGrounding: useGrounding,
+              retryCount: retryCount,
             );
           }
           // Já no limite: retorna o que tem mas loga
@@ -573,7 +610,24 @@ class GeminiService {
         return GeminiResult.error('API_KEY_INVALID', 'api_key_invalid');
       }
       if (response.statusCode == 429) {
-        debugPrint('[GeminiService] 429 quota: ${response.body.substring(0, response.body.length.clamp(0, 200))}');
+        // ── Retry automático com backoff exponencial (máx 3 tentativas) ────
+        // Tentativa 0 → espera 2s → T1 → espera 4s → T2 → espera 8s → T3
+        const maxRetries = 3;
+        if (retryCount < maxRetries) {
+          final waitSeconds = [2, 4, 8][retryCount];
+          debugPrint('[GeminiService] 429 quota — retry ${retryCount + 1}/$maxRetries em ${waitSeconds}s');
+          await Future.delayed(Duration(seconds: waitSeconds));
+          return _chatInternal(
+            userMessage: userMessage,
+            systemPrompt: systemPrompt,
+            history: history,
+            maxTokens: maxTokens,
+            useGrounding: useGrounding,
+            retryCount: retryCount + 1,
+          );
+        }
+        // Todas as tentativas esgotadas
+        debugPrint('[GeminiService] 429 quota DEFINITIVO após $maxRetries retries');
         return GeminiResult.error('QUOTA_EXCEEDED', 'quota');
       }
       debugPrint('[GeminiService] HTTP ${response.statusCode}: ${response.body.substring(0, response.body.length.clamp(0, 400))}');
