@@ -358,7 +358,17 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         const SizedBox(height: 16),
 
-        // ── 7. EMERGÊNCIAS RÁPIDAS ────────────────────────────────────────
+        // ── 7. ATALHOS RÁPIDOS — Notas · Recentes · Favoritos · Avaliação ─
+        _QuickShortcuts(
+          dark: dark,
+          isEs: isEs,
+          openProtocol: widget.openProtocol,
+          onOpenNotes: widget.onOpenNotes,
+          onCheckUpdate: widget.onCheckUpdate,
+        ),
+        const SizedBox(height: 16),
+
+        // ── 8. EMERGÊNCIAS RÁPIDAS ────────────────────────────────────────
         _QuickEmergencies(p: p, dark: dark, isEs: isEs, openProtocol: widget.openProtocol),
       ]),
       ),  // SingleChildScrollView
