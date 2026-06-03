@@ -89,7 +89,7 @@ class _HomeScreenState extends State<HomeScreen> {
     final mainCards = [
       _HomeCardData(
         icon: Icons.description_rounded,
-        label: isEs ? 'PRESCRIPCIONES' : 'PRESCRIÇÕES',
+        label: isEs ? 'SIMULACIONES' : 'SIMULAÇÕES',
         subtitle: isEs
             ? '${prescriptionModels(true).length} ejemplos'
             : '${prescriptionModels(false).length} exemplos',
@@ -277,7 +277,7 @@ class _HomeScreenState extends State<HomeScreen> {
         // ── 2. PRESCRIÇÕES ───────────────────────────────────────────────
         _HomeCard(
           icon: Icons.description_rounded,
-          label: isEs ? 'PRESCRIPCIONES' : 'PRESCRIÇÕES',
+          label: isEs ? 'SIMULACIONES' : 'SIMULAÇÕES',
           subtitle: isEs
               ? '${prescriptionModels(true).length} ejemplos'
               : '${prescriptionModels(false).length} exemplos',
@@ -2484,7 +2484,7 @@ class _FavoritosSheet extends StatelessWidget {
                         Padding(
                           padding: const EdgeInsets.only(top: 12, bottom: 8),
                           child: Text(
-                            isEs ? 'PRESCRIPCIONES' : 'PRESCRIÇÕES',
+                            isEs ? 'SIMULACIONES' : 'SIMULAÇÕES',
                             style: TextStyle(
                               fontSize: 10, fontWeight: FontWeight.w800,
                               letterSpacing: 1.3,
@@ -3447,7 +3447,7 @@ class _PrescripcionesShell extends StatelessWidget {
           gradientColors: const [Color(0xFF2A0B52), Color(0xFF3D1280), Color(0xFF5B21B6)],
           accentColor:    const Color(0xFFA78BFA),
           icon:    Icons.description_rounded,
-          label:   isEs ? 'PRESCRIPCIONES' : 'PRESCRIÇÕES',
+          label:   isEs ? 'SIMULACIONES' : 'SIMULAÇÕES',
           subtitle: isEs
               ? '${prescriptionModels(true).length} ejemplos'
               : '${prescriptionModels(false).length} exemplos',
@@ -3703,8 +3703,8 @@ class _GlobalSearchModalState extends State<_GlobalSearchModal> {
                       style: TextStyle(color: textPri, fontSize: 15),
                       decoration: InputDecoration(
                         hintText: isEs
-                            ? 'Fármacos, protocolos, prescripciones...'
-                            : 'Fármacos, protocolos, prescrições...',
+                            ? 'Fármacos, protocolos, simulaciones...'
+                            : 'Fármacos, protocolos, simulações...',
                         hintStyle: TextStyle(color: textSec, fontSize: 14),
                         border: InputBorder.none,
                         contentPadding:
@@ -3742,7 +3742,7 @@ class _GlobalSearchModalState extends State<_GlobalSearchModal> {
                 _CatChip(label: 'Protocolos',
                     color: const Color(0xFF4ADE80), dark: dark),
                 const SizedBox(width: 6),
-                _CatChip(label: isEs ? 'Prescripciones' : 'Prescrições',
+                _CatChip(label: isEs ? 'Simulaciones' : 'Simulações',
                     color: const Color(0xFFA78BFA), dark: dark),
                 const SizedBox(width: 6),
                 _CatChip(label: isEs ? 'Interacciones' : 'Interações',

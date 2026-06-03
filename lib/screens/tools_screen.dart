@@ -131,7 +131,7 @@ class _ToolsScreenState extends State<ToolsScreen> with SingleTickerProviderStat
             Tab(text: isEs ? 'ELECTROLITOS' : 'ELETRÓLITOS'),
             Tab(text: isEs ? 'INFUSIÓN' : 'INFUSÃO'),
             Tab(text: isEs ? 'REFERENCIA' : 'REFERÊNCIA'),
-            Tab(text: isEs ? 'PRESCRIPCIONES' : 'PRESCRIÇÕES'),
+            Tab(text: isEs ? 'SIMULACIONES' : 'SIMULAÇÕES'),
             Tab(text: isEs ? 'PEDIATRÍA' : 'PEDIATRIA'),
           ],
         ),
@@ -2106,12 +2106,12 @@ class _InfusionTabState extends State<_InfusionTab> {
         const SizedBox(height: 12),
 
         _SectionCard(
-          title: isEs ? 'Fármacos de Rescate (toque para calcular)' : 'Fármacos de Resgate (toque para calcular)',
+          title: isEs ? 'Fármacos de Referencia (toque para simular)' : 'Fármacos de Referência (toque para simular)',
           icon: Icons.touch_app_rounded,
           child: Column(children: [
             _InfoNote(text: isEs
-              ? 'Toque en un fármaco para autocompletar la calculadora. Solo informe peso y velocidad.'
-              : 'Toque em um fármaco para preencher a calculadora. Informe apenas peso e velocidade.'),
+              ? 'Toque en un fármaco para cargar los parámetros de referencia de la literatura médica. El simulador requiere peso y velocidad teóricos.'
+              : 'Toque em um fármaco para carregar os parâmetros de referência da literatura médica. O simulador requer peso e velocidade teóricos.'),
             const SizedBox(height: 10),
             ..._rescue.map((d) => _VasoRefRow(
               drug: d.name, dose: d.dose, note: d.indication,
