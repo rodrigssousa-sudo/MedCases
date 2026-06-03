@@ -217,6 +217,8 @@ class _AiScreenState extends State<AiScreen> {
   int _scrollGeneration = 0;
   // Debounce: evita múltiplos animateTo no mesmo frame (stutter)
   bool _scrollPending = false;
+  // Sentinela no fim da lista — Scrollable.ensureVisible garante layout calculado
+  final _bottomKey = GlobalKey();
   // Histórico de sessões de chat (até 10)
   final List<_ChatSession> _chatHistory = [];
   static const _kHistKey = 'medcases_ia_chat_history_v1';
@@ -709,13 +711,23 @@ class _AiScreenState extends State<AiScreen> {
     // Regra: se o usuário scrollou para cima E não é um envio forçado → não interrompe
     if (_userScrolledUp && !force) return;
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted || !_scrollCtrl.hasClients) return;
+      if (!mounted) return;
       if (_userScrolledUp && !force) return;
-      _scrollCtrl.animateTo(
-        _scrollCtrl.position.maxScrollExtent,
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeOut,
-      );
+      final ctx = _bottomKey.currentContext;
+      if (ctx != null) {
+        Scrollable.ensureVisible(
+          ctx,
+          alignmentPolicy: ScrollPositionAlignmentPolicy.keepVisibleAtEnd,
+          duration: const Duration(milliseconds: 280),
+          curve: Curves.easeOut,
+        );
+      } else if (_scrollCtrl.hasClients) {
+        _scrollCtrl.animateTo(
+          _scrollCtrl.position.maxScrollExtent,
+          duration: const Duration(milliseconds: 280),
+          curve: Curves.easeOut,
+        );
+      }
     });
   }
 
@@ -725,24 +737,34 @@ class _AiScreenState extends State<AiScreen> {
   void _onBlockRevealed(int gen) {
     // Bloco pertence a uma resposta antiga (geração diferente) → ignora completamente.
     if (gen != _scrollGeneration) return;
-    if (!mounted || !_scrollCtrl.hasClients) return;
+    if (!mounted) return;
     // Usuário scrollou para cima intencionalmente → não interrompe leitura.
     if (_userScrolledUp) return;
 
     // Debounce por frame: se já há um scroll pendente neste frame, ignora.
-    // Evita múltiplos animateTo concorrentes que causam o salto/jump.
     if (_scrollPending) return;
     _scrollPending = true;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _scrollPending = false;
-      if (!mounted || !_scrollCtrl.hasClients) return;
+      if (!mounted) return;
       if (gen != _scrollGeneration) return;
       if (_userScrolledUp) return;
 
-      // Usa jumpTo para scroll instantâneo durante streaming — evita animações
-      // concorrentes que competem entre si e causam o efeito de "pulo".
-      // O resultado é um scroll suave e contínuo sem snap/jump.
-      _scrollCtrl.jumpTo(_scrollCtrl.position.maxScrollExtent);
+      // Usa ensureVisible no sentinela do fim da lista em vez de jumpTo(maxScrollExtent).
+      // O ensureVisible aguarda o layout estar completo antes de rolar — elimina o
+      // salto que ocorre após a mensagem 10+ quando o ListView ainda não recalculou
+      // o maxScrollExtent dos itens virtualizados.
+      final ctx = _bottomKey.currentContext;
+      if (ctx != null) {
+        Scrollable.ensureVisible(
+          ctx,
+          alignmentPolicy: ScrollPositionAlignmentPolicy.keepVisibleAtEnd,
+          duration: Duration.zero,
+        );
+      } else if (_scrollCtrl.hasClients) {
+        // Fallback: jumpTo se o sentinela ainda não foi renderizado
+        _scrollCtrl.jumpTo(_scrollCtrl.position.maxScrollExtent);
+      }
     });
   }
 
@@ -979,8 +1001,12 @@ class _AiScreenState extends State<AiScreen> {
             physics: const ClampingScrollPhysics(),
             // Fecha o teclado ao arrastar o chat (comportamento nativo mobile)
             keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-            itemCount: _messages.length + (_thinking ? 1 : 0),
+            itemCount: _messages.length + (_thinking ? 1 : 0) + 1, // +1 sentinela
             itemBuilder: (context, i) {
+              // Sentinela invisível — âncora para Scrollable.ensureVisible
+              if (i == _messages.length + (_thinking ? 1 : 0)) {
+                return SizedBox(key: _bottomKey, height: 1);
+              }
               if (_thinking && i == _messages.length) {
                 return _ThinkingBubble(dark: dark);
               }
