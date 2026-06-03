@@ -5,7 +5,10 @@
 // ─────────────────────────────────────────────────────────────────────────────
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../providers/app_provider.dart';
+import '../services/auth_service.dart';
 
 // ── Chave de persistência ──────────────────────────────────────────────────────
 const _kProfKey = 'has_declared_professional';
@@ -77,7 +80,20 @@ class ProfessionalDeclarationGate {
     return prefs.getBool(_kProfKey) ?? false;
   }
 
-  static Future<void> saveDeclaration() async {
+  static Future<void> saveDeclaration({
+    required String uid,
+    required String professionalCategory,
+  }) async {
+    // 1. Firestore — persiste entre dispositivos e reinstalações (Apple-safe)
+    try {
+      await AuthService.updateTermsAccepted(
+        uid: uid,
+        professionalCategory: professionalCategory,
+      );
+    } catch (_) {
+      // Falha silenciosa — cache local é o fallback
+    }
+    // 2. Cache local — verificação rápida no mesmo dispositivo
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool(_kProfKey, true);
   }
@@ -140,6 +156,7 @@ class _ProfessionalDeclarationGateWidgetState
         Positioned.fill(
           child: _ProfessionalDeclarationModal(
             lang: lang == 'es' ? 'es' : 'pt',
+            uid: Provider.of<AppProvider>(context, listen: false).currentUser?.uid ?? '',
             onAccepted: _onAccepted,
           ),
         ),
@@ -151,10 +168,12 @@ class _ProfessionalDeclarationGateWidgetState
 // ── Modal de Aviso Legal Obrigatório ─────────────────────────────────────────
 class _ProfessionalDeclarationModal extends StatefulWidget {
   final String lang;
+  final String uid;
   final VoidCallback onAccepted;
 
   const _ProfessionalDeclarationModal({
     required this.lang,
+    required this.uid,
     required this.onAccepted,
   });
 
@@ -222,7 +241,10 @@ class _ProfessionalDeclarationModalState
   Future<void> _onConfirm() async {
     if (!_canConfirm) return;
     setState(() => _saving = true);
-    await ProfessionalDeclarationGate.saveDeclaration();
+    await ProfessionalDeclarationGate.saveDeclaration(
+      uid: widget.uid,
+      professionalCategory: _selectedCategory!,
+    );
     if (mounted) widget.onAccepted();
   }
 

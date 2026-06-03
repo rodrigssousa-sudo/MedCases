@@ -1,6 +1,7 @@
 // auth_service.dart — Firebase Auth + Firestore via REST (Web) e SDK (nativo)
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/widgets.dart' show ValueNotifier;
 import 'package:firebase_auth/firebase_auth.dart';
@@ -226,7 +227,7 @@ class AuthService {
       await _auth.signInWithEmailAndPassword(
         email: email.trim(),
         password: password,
-      );
+      ).timeout(const Duration(seconds: 15));
       final uid = _auth.currentUser!.uid;
       final doc = await _db.collection('users').doc(uid).get();
       return _buildResultFromDoc(
@@ -235,6 +236,10 @@ class AuthService {
         uid: uid,
         email: email,
       );
+    } on TimeoutException {
+      return AuthResult.error('Conexão lenta. Verifique sua internet e tente novamente.');
+    } on SocketException {
+      return AuthResult.error('Sem conexão. Verifique sua internet e tente novamente.');
     } on FirebaseAuthException catch (e) {
       return AuthResult.error(_authErrorMessage(e.code));
     } catch (e) {
@@ -890,6 +895,27 @@ class AuthService {
     }
   }
 
+  /// Persiste o aceite dos termos no Firestore — chamado pelo ProfessionalDeclarationGate.
+  /// Web usa REST (_patchUserRest); nativo usa Firestore SDK direto.
+  static Future<void> updateTermsAccepted({
+    required String uid,
+    required String professionalCategory,
+  }) async {
+    if (kIsWeb) {
+      await _patchUserRest(uid, {
+        'acceptedTerms':        true,
+        'acceptedTermsAt':      DateTime.now().toUtc().toIso8601String(),
+        'professionalCategory': professionalCategory,
+      });
+    } else {
+      await _db.collection('users').doc(uid).update({
+        'acceptedTerms':        true,
+        'acceptedTermsAt':      FieldValue.serverTimestamp(),
+        'professionalCategory': professionalCategory,
+      });
+    }
+  }
+
   /// Cria documento de usuário no Firestore via REST (Web)
   static Future<void> _createUserDocRest({
     required UserModel user,
@@ -955,7 +981,7 @@ class AuthService {
     final result = <String, dynamic>{};
 
     // Campos que devem sempre ser tratados como Timestamp
-    const dateFields = {'createdAt', 'approvedAt', 'updatedAt', 'deletedAt'};
+    const dateFields = {'createdAt', 'approvedAt', 'updatedAt', 'deletedAt', 'acceptedTermsAt'};
 
     fields.forEach((key, value) {
       final v = value as Map<String, dynamic>;

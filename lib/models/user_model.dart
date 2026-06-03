@@ -21,6 +21,9 @@ class UserModel {
   final DateTime? lastSeenAt;    // última vez ativo no app
   final String? referredBy;      // id do influenciador que trouxe este usuário
   final int loginCount;          // vezes que entrou no app
+  final bool acceptedTerms;      // aceitou o aviso legal obrigatório
+  final DateTime? acceptedTermsAt;   // timestamp do aceite (gravado no Firestore)
+  final String? professionalCategory; // categoria selecionada no gate
 
   const UserModel({
     required this.uid,
@@ -39,6 +42,9 @@ class UserModel {
     this.lastSeenAt,
     this.referredBy,
     this.loginCount = 0,
+    this.acceptedTerms = false,
+    this.acceptedTermsAt,
+    this.professionalCategory,
   });
 
   bool get isMaster    => role == UserRole.master;
@@ -93,25 +99,31 @@ class UserModel {
     'lastSeenAt': lastSeenAt?.toUtc().toIso8601String(),
     'referred_by': referredBy,
     'loginCount': loginCount,
+    'acceptedTerms': acceptedTerms,
+    'acceptedTermsAt': acceptedTermsAt?.toUtc().toIso8601String(),
+    'professionalCategory': professionalCategory,
   };
 
   factory UserModel.fromJson(Map<String, dynamic> m) => UserModel(
-    uid:               _s(m['uid']),
-    email:             _s(m['email']),
-    displayName:       _s(m['displayName']),
-    role:              _parseRole(_s(m['role'])),
-    status:            _parseStatus(_s(m['status'])),
-    createdAt:         _parseDate(m['createdAt']) ?? DateTime.now(),
-    approvedAt:        _parseDate(m['approvedAt']),
-    approvedBy:        _sn(m['approvedBy']),
-    profession:        _sn(m['profession']),
-    institution:       _sn(m['institution']),
-    lang:              _s(m['lang'], 'pt'),
-    darkMode:          _b(m['darkMode']),
-    totalUsageSeconds: _i(m['totalUsageSeconds']),
-    lastSeenAt:        _parseDate(m['lastSeenAt']),
-    referredBy:        _sn(m['referred_by']),
-    loginCount:        _i(m['loginCount']),
+    uid:                  _s(m['uid']),
+    email:                _s(m['email']),
+    displayName:          _s(m['displayName']),
+    role:                 _parseRole(_s(m['role'])),
+    status:               _parseStatus(_s(m['status'])),
+    createdAt:            _parseDate(m['createdAt']) ?? DateTime.now(),
+    approvedAt:           _parseDate(m['approvedAt']),
+    approvedBy:           _sn(m['approvedBy']),
+    profession:           _sn(m['profession']),
+    institution:          _sn(m['institution']),
+    lang:                 _s(m['lang'], 'pt'),
+    darkMode:             _b(m['darkMode']),
+    totalUsageSeconds:    _i(m['totalUsageSeconds']),
+    lastSeenAt:           _parseDate(m['lastSeenAt']),
+    referredBy:           _sn(m['referred_by']),
+    loginCount:           _i(m['loginCount']),
+    acceptedTerms:        _b(m['acceptedTerms']),
+    acceptedTermsAt:      _parseDate(m['acceptedTermsAt']),
+    professionalCategory: _sn(m['professionalCategory']),
   );
 
   // ── Serialização Firestore SDK ────────────────────────────────────────────
@@ -132,25 +144,31 @@ class UserModel {
     'lastSeenAt': lastSeenAt != null ? Timestamp.fromDate(lastSeenAt!) : null,
     'referred_by': referredBy,
     'loginCount': loginCount,
+    'acceptedTerms': acceptedTerms,
+    'acceptedTermsAt': acceptedTermsAt != null ? Timestamp.fromDate(acceptedTermsAt!) : null,
+    'professionalCategory': professionalCategory,
   };
 
   factory UserModel.fromMap(Map<String, dynamic> m) => UserModel(
-    uid:               _s(m['uid']),
-    email:             _s(m['email']),
-    displayName:       _s(m['displayName']),
-    role:              _parseRole(_s(m['role'])),
-    status:            _parseStatus(_s(m['status'])),
-    createdAt:         _parseDate(m['createdAt']) ?? DateTime.now(),
-    approvedAt:        _parseDate(m['approvedAt']),
-    approvedBy:        _sn(m['approvedBy']),
-    profession:        _sn(m['profession']),
-    institution:       _sn(m['institution']),
-    lang:              _s(m['lang'], 'pt'),
-    darkMode:          _b(m['darkMode']),
-    totalUsageSeconds: _i(m['totalUsageSeconds']),
-    lastSeenAt:        _parseDate(m['lastSeenAt']),
-    referredBy:        _sn(m['referred_by']),
-    loginCount:        _i(m['loginCount']),
+    uid:                  _s(m['uid']),
+    email:                _s(m['email']),
+    displayName:          _s(m['displayName']),
+    role:                 _parseRole(_s(m['role'])),
+    status:               _parseStatus(_s(m['status'])),
+    createdAt:            _parseDate(m['createdAt']) ?? DateTime.now(),
+    approvedAt:           _parseDate(m['approvedAt']),
+    approvedBy:           _sn(m['approvedBy']),
+    profession:           _sn(m['profession']),
+    institution:          _sn(m['institution']),
+    lang:                 _s(m['lang'], 'pt'),
+    darkMode:             _b(m['darkMode']),
+    totalUsageSeconds:    _i(m['totalUsageSeconds']),
+    lastSeenAt:           _parseDate(m['lastSeenAt']),
+    referredBy:           _sn(m['referred_by']),
+    loginCount:           _i(m['loginCount']),
+    acceptedTerms:        _b(m['acceptedTerms']),
+    acceptedTermsAt:      _parseDate(m['acceptedTermsAt']),
+    professionalCategory: _sn(m['professionalCategory']),
   );
 
   /// fromDoc — aceita qualquer Map retornado pelo SDK (Map<String,Object?> em dart2js)
@@ -174,6 +192,9 @@ class UserModel {
     int? totalUsageSeconds,
     DateTime? lastSeenAt,
     String? referredBy,
+    bool? acceptedTerms,
+    DateTime? acceptedTermsAt,
+    String? professionalCategory,
   }) =>
       UserModel(
         uid: uid,
@@ -190,7 +211,10 @@ class UserModel {
         darkMode: darkMode ?? this.darkMode,
         totalUsageSeconds: totalUsageSeconds ?? this.totalUsageSeconds,
         lastSeenAt: lastSeenAt ?? this.lastSeenAt,
-        referredBy: referredBy ?? this.referredBy,
+        referredBy:           referredBy           ?? this.referredBy,
+        acceptedTerms:        acceptedTerms        ?? this.acceptedTerms,
+        acceptedTermsAt:      acceptedTermsAt      ?? this.acceptedTermsAt,
+        professionalCategory: professionalCategory ?? this.professionalCategory,
       );
 
   // ── Helpers ───────────────────────────────────────────────────────────────
