@@ -128651,7 +128651,7 @@ q(a){var s=t.C,r=t.y,q=A.Dd(a,new A.bad(),s,r),p=A.Dd(a,new A.bae(),s,r),o=A.bm(
 s=A.bu(a,null,t.l).w.a.a
 if(s>=1024)return this.aiX(a,q,p,o,new A.a55(s))
 return this.aj6(a,q,p,o)},
-aiX(a,b,c,d,e){var s,r,q,p,o,n,m=null,l=e.gAc(),k=new A.ba2(a),j=c?"PRESCRIPCIONES":"PRESCRI\xc7\xd5ES"
+aiX(a,b,c,d,e){var s,r,q,p,o,n,m=null,l=e.gAc(),k=new A.ba2(a),j=c?"SIMULACIONES":"SIMULA\xc7\xd5ES"
 if(c){A.vs(!0)
 s="229 ejemplos"}else{A.vs(!1)
 s="229 exemplos"}r=c?"Actualizados en 2026":"Atualizados em 2026"
@@ -128660,7 +128660,7 @@ p=c?"+1312 pares con evidencia":"+1312 pares com evid\xeancia"
 o=c?"Crear un protocolo adulto":"Criar um protocolo adulto"
 n=c?"PEDIATR\xcdA":"PEDIATRIA"
 return A.cC(A.u(A.a([new A.agH(b,c,m),B.ap,new A.Uv(b,c,m),B.eD,A.tu(new A.b9W(A.a([new A.uS(B.k7,j,s,B.Aq,B.f_,new A.b9X(k)),new A.uS(B.di,"F\xc1RMACOS",r,B.A8,B.h9,new A.b9Y(k)),new A.uS(B.lb,q,p,B.O8,B.rm,new A.b9Z(k)),new A.uS(B.ka,"ADULTO",o,B.Ao,B.bb,new A.ba_(this,k)),new A.uS(B.f7,n,"Protocolos pedi\xe1tricos",B.tt,B.ii,new A.ba0(k))],t.ja),b)),B.eD,new A.RT(b,m),B.c8,A.tu(new A.ba1(this,b,c,d))],t.p),B.p,B.c,B.f),m,B.u,m,new A.M(l,20,l,40),B.qL,B.ae)},
-aj6(a,b,c,d){var s,r,q,p=null,o=this.a,n=o.c,m=c?"PRESCRIPCIONES":"PRESCRI\xc7\xd5ES"
+aj6(a,b,c,d){var s,r,q,p=null,o=this.a,n=o.c,m=c?"SIMULACIONES":"SIMULA\xc7\xd5ES"
 if(c){A.vs(!0)
 s="229 ejemplos"}else{A.vs(!1)
 s="229 exemplos"}s=A.bzw(B.f_,b,B.Aq,B.k7,m,new A.ba3(a),s)
@@ -129378,7 +129378,7 @@ m=k.r
 if(m.length!==0){l=A.a([new A.L(B.HL,A.e("F\xc1RMACOS",j,j,j,j,j,A.l(j,j,g?B.bm:B.mn,j,j,j,j,j,j,j,j,10,j,j,B.I,j,j,!0,j,1.3,j,j,j,j,j,j),j,j,j),j)],q)
 B.e.u(l,new A.P(m,new A.b5z(h,r,k.f,k.w,p),A.Q(m).i("P<1,f>")))
 B.e.u(n,l)}m=k.x
-if(m.length!==0){l=h.d?"PRESCRIPCIONES":"PRESCRI\xc7\xd5ES"
+if(m.length!==0){l=h.d?"SIMULACIONES":"SIMULA\xc7\xd5ES"
 l=A.a([new A.L(B.p6,A.e(l,j,j,j,j,j,A.l(j,j,g?B.bm:B.mn,j,j,j,j,j,j,j,j,10,j,j,B.I,j,j,!0,j,1.3,j,j,j,j,j,j),j,j,j),j)],q)
 B.e.u(l,new A.P(m,new A.b5A(h,r,k.f,k.w,p),A.Q(m).i("P<1,f>")))
 B.e.u(n,l)}m=k.y
@@ -129590,7 +129590,7 @@ A.b5s.prototype={
 $0(){return this.a.d=!0},
 $S:0}
 A.G0.prototype={
-q(a){var s,r=null,q=A.bm(a,!0,t.C),p=q.d,o=q.c==="es",n=p?B.ic:B.h8,m=o?"PRESCRIPCIONES":"PRESCRI\xc7\xd5ES"
+q(a){var s,r=null,q=A.bm(a,!0,t.C),p=q.d,o=q.c==="es",n=p?B.ic:B.h8,m=o?"SIMULACIONES":"SIMULA\xc7\xd5ES"
 if(o){A.vs(!0)
 s="229 ejemplos"}else{A.vs(!1)
 s="229 exemplos"}return A.j2(r,n,A.u(A.a([new A.zU(B.Aq,B.f_,B.k7,m,s,r),B.axl],t.p),B.j,B.c,B.f),r,r,r,r)}}
@@ -129670,11 +129670,11 @@ c=A.i(14)
 s=A.K(h,B.o,1)
 r=o.d
 q=A.l(n,n,g,n,n,n,n,n,n,n,n,15,n,n,n,n,n,!0,n,n,n,n,n,n,n,n)
-p=k?"F\xe1rmacos, protocolos, prescripciones...":"F\xe1rmacos, protocolos, prescri\xe7\xf5es..."
+p=k?"F\xe1rmacos, protocolos, simulaciones...":"F\xe1rmacos, protocolos, simula\xe7\xf5es..."
 q=A.a([B.dsU,A.G(A.cO(!0,B.w,!1,n,!0,B.Q,n,A.cS(),r,n,n,n,n,n,2,A.cD(n,B.fH,n,B.eL,n,n,n,n,!0,n,n,n,n,n,n,n,n,n,n,n,n,n,n,n,n,n,n,n,n,n,A.l(n,n,f,n,n,n,n,n,n,n,n,14,n,n,n,n,n,!0,n,n,n,n,n,n,n,n),p,n,n,n,n,n,n,n,n,n,!0,!0,n,n,n,n,n,n,n,n,n,n,n,n,n),B.u,!0,n,!0,n,!1,o.e,B.b_,n,n,n,n,n,n,n,1,n,n,!1,"\u2022",n,o.gav5(),n,n,n,!1,n,n,!1,n,!0,n,B.aQ,n,n,B.aZ,B.aW,n,n,n,n,n,n,q,!0,B.an,n,B.bz,n,B.CL,n,n),1)],a)
 if(r.a.a.length!==0)q.push(A.ad(n,new A.L(B.p5,A.S(B.cb,f,n,18),n),B.u,!1,n,n,n,n,n,n,n,n,n,n,n,n,n,new A.b78(o),n,n,n,n,n,n))
 c=A.j(n,A.v(q,B.j,B.c,B.f,n,n),B.i,n,n,new A.h(i,n,s,c,n,n,B.k),n,n,n,n,n,n,n,n)
-s=k?"Prescripciones":"Prescri\xe7\xf5es"
+s=k?"Simulaciones":"Simula\xe7\xf5es"
 r=k?"Interacciones":"Intera\xe7\xf5es"
 r=A.v(A.a([new A.yU("F\xe1rmacos",B.h9,n),B.ab,new A.yU("Protocolos",B.bb,n),B.ab,new A.yU(s,B.f_,n),B.ab,new A.yU(r,B.rm,n)],a),B.j,B.c,B.f,n,n)
 s=o.r
@@ -132768,7 +132768,7 @@ o=A.fC(j,j,j,"CARDIO")
 n=A.fC(j,j,j,i?"ELECTROLITOS":"ELETR\xd3LITOS")
 m=A.fC(j,j,j,i?"INFUSI\xd3N":"INFUS\xc3O")
 l=A.fC(j,j,j,i?"REFERENCIA":"REFER\xcaNCIA")
-k=A.fC(j,j,j,i?"PRESCRIPCIONES":"PRESCRI\xc7\xd5ES")
+k=A.fC(j,j,j,i?"SIMULACIONES":"SIMULA\xc7\xd5ES")
 r.push(A.j(j,A.yr(h,j,j,B.a4,B.au,j,3,!0,B.a4,B.a46,j,B.vW,A.a([q,p,o,n,m,l,k,A.fC(j,j,j,i?"PEDIATR\xcdA":"PEDIATRIA")],s),B.j7,B.a3o),B.i,j,j,B.wZ,j,j,j,j,j,j,j,j))
 h=this.d
 r.push(A.G(A.ad(B.hg,A.DE(A.a([new A.PW(j),new A.U7(j),new A.Q8(j),new A.Rg(j),new A.S0(j),new A.Tx(j),new A.Th(j),new A.CB(j)],s),h,j),B.u,!1,j,j,j,j,j,j,j,j,j,j,j,j,j,new A.brT(a),j,j,j,j,j,j),1))
@@ -134240,8 +134240,8 @@ f=i?"Velocidad de Infusi\xf3n":"Velocidade de Infus\xe3o"
 s=n.gamC()
 q=i?"F\xf3rmula: Dosis \xd7 Peso \xd7 60 / (Conc \xd7 1000)":"F\xf3rmula: Dose \xd7 Peso \xd7 60 / (Conc \xd7 1000)"
 q=A.u(A.a([e,B.F,new A.dp("Peso do paciente (kg)",n.y,new A.bb6(n),"70",m),B.ap,new A.e2(f,s,"",q,!0,m)],r),B.j,B.c,B.f)
-f=i?"F\xe1rmacos de Rescate (toque para calcular)":"F\xe1rmacos de Resgate (toque para calcular)"
-e=A.a([new A.fl(i?"Toque en un f\xe1rmaco para autocompletar la calculadora. Solo informe peso y velocidad.":"Toque em um f\xe1rmaco para preencher a calculadora. Informe apenas peso e velocidade.",m),B.F],r)
+f=i?"F\xe1rmacos de Referencia (toque para simular)":"F\xe1rmacos de Refer\xeancia (toque para simular)"
+e=A.a([new A.fl(i?"Toque en un f\xe1rmaco para cargar los par\xe1metros de referencia de la literatura m\xe9dica. El simulador requiere peso y velocidad te\xf3ricos.":"Toque em um f\xe1rmaco para carregar os par\xe2metros de refer\xeancia da literatura m\xe9dica. O simulador requer peso e velocidade te\xf3ricos.",m),B.F],r)
 B.e.u(e,new A.P(B.bCN,new A.bb7(n,a),t.Ln))
 e.push(B.N)
 e.push(new A.fl(i?"Preferir CVC para vasopresores. Titular conforme PAM objetivo \u226565 mmHg.":"Preferir CVC para vasopressores. Titular conforme PAM alvo \u226565 mmHg.",m))
