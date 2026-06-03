@@ -132097,56 +132097,56 @@ return A.t(A.a6x(),$async$Ei)
 case 3:if(p.c!=null)p.a.Re()
 case 1:return A.B(q,r)}})
 return A.C($async$Ei,r)},
-q(a3){var s,r,q,p,o,n,m,l,k,j,i,h,g,f,e,d,c=this,b=null,a=A.bu(a3,b,t.l).w.a.a,a0=a>600,a1=a0?540:a,a2=c.x
-a2===$&&A.c()
-s=c.y
+q(a4){var s,r,q,p,o,n,m,l,k,j,i,h,g,f,e,d,c,b=this,a=null,a0=A.bu(a4,a,t.l).w.a.a,a1=a0>600,a2=a1?540:a0,a3=b.x
+a3===$&&A.c()
+s=b.y
 s===$&&A.c()
-r=A.i(a0?20:0)
-q=a0?A.K(B.mm,B.o,1):b
+r=A.i(a1?20:0)
+q=a1?A.K(B.mm,B.o,1):a
 p=B.oH.j(0.12)
 o=A.i(12)
-o=A.j(b,B.aBJ,B.i,b,b,new A.h(p,b,A.K(B.oH.j(0.3),B.o,1),o,b,b,B.k),b,b,b,b,B.es,b,b,b)
+o=A.j(a,B.aBJ,B.i,a,a,new A.h(p,a,A.K(B.oH.j(0.3),B.o,1),o,a,a,B.k),a,a,a,a,B.es,a,a,a)
 p=A.i(4)
 n=A.K(B.qQ.j(0.5),B.o,1)
-m=c.d
+m=b.d
 m===$&&A.c()
 m=m.a
-p=A.j(b,A.e(m?"USO EDUCATIVO EXCLUSIVO":"USO EDUCACIONAL EXCLUSIVO",b,b,b,b,b,B.e30,b,b,b),B.i,b,b,new A.h(B.GO,b,n,p,b,b,B.k),b,b,b,b,B.c1,b,b,b)
+p=A.j(a,A.e(m?"USO EDUCATIVO EXCLUSIVO":"USO EDUCACIONAL EXCLUSIVO",a,a,a,a,a,B.e30,a,a,a),B.i,a,a,new A.h(B.GO,a,n,p,a,a,B.k),a,a,a,a,B.c1,a,a,a)
 n=t.p
-p=A.v(A.a([o,B.eh,A.G(A.u(A.a([p,B.cg,A.e(m?"Aviso Legal Obligatorio":"Aviso Legal Obrigat\xf3rio",b,b,b,b,b,B.e_L,b,b,b)],n),B.p,B.c,B.f),1)],n),B.j,B.c,B.f,b,b)
-p=A.j(b,A.u(A.a([p,B.F,A.e(c.d.a?"Lea atentamente antes de acceder a MedCases Pro.":"Leia com aten\xe7\xe3o antes de acessar o MedCases Pro.",b,b,b,b,b,B.e2C,b,b,b)],n),B.p,B.c,B.f),B.i,b,b,B.a7e,b,b,b,b,B.awR,b,b,b)
-o=c.aiZ()
-m=c.aiU()
-l=c.e!=null&&c.f&&!c.r
+p=A.v(A.a([o,B.eh,A.G(A.u(A.a([p,B.cg,A.e(m?"Aviso Legal Obligatorio":"Aviso Legal Obrigat\xf3rio",a,a,a,a,a,B.e_L,a,a,a)],n),B.p,B.c,B.f),1)],n),B.j,B.c,B.f,a,a)
+p=A.j(a,A.u(A.a([p,B.F,A.e(b.d.a?"Lea atentamente antes de acceder a MedCases Pro.":"Leia com aten\xe7\xe3o antes de acessar o MedCases Pro.",a,a,a,a,a,B.e2C,a,a,a)],n),B.p,B.c,B.f),B.i,a,a,B.a7e,a,a,a,a,B.awR,a,a,a)
+o=b.aiZ()
+m=b.aiU()
+l=b.e!=null&&b.f&&!b.r
 k=A.i(8)
 j=A.K(B.dR.j(0.25),B.o,1)
-i=A.S(B.tb,B.dR.j(0.8),b,13)
-k=A.j(b,A.v(A.a([i,B.L,A.G(A.e("Esta declara\xe7\xe3o tem validade legal e ficar\xe1 registrada em seu dispositivo.",b,b,b,b,b,A.l(b,b,B.dR.j(0.85),b,b,b,b,b,b,b,b,11.5,b,b,b,b,1.4,!0,b,b,b,b,b,b,b,b),b,b,b),1)],n),B.j,B.c,B.f,b,b),B.i,b,b,new A.h(B.FU,b,j,k,b,b,B.k),b,b,b,B.jf,B.ip,b,b,b)
-j=l?B.aF_:b
-i=l?b:B.xj
+i=A.S(B.tb,B.dR.j(0.8),a,13)
+h=b.d.a?"Esta declaraci\xf3n tiene validez legal y quedar\xe1 registrada en su dispositivo.":"Esta declara\xe7\xe3o tem validade legal e ficar\xe1 registrada em seu dispositivo."
+k=A.j(a,A.v(A.a([i,B.L,A.G(A.e(h,a,a,a,a,a,A.l(a,a,B.dR.j(0.85),a,a,a,a,a,a,a,a,11.5,a,a,a,a,1.4,!0,a,a,a,a,a,a,a,a),a,a,a),1)],n),B.j,B.c,B.f,a,a),B.i,a,a,new A.h(B.FU,a,j,k,a,a,B.k),a,a,a,B.jf,B.ip,a,a,a)
+j=l?B.aF_:a
+i=l?a:B.xj
 h=A.i(12)
-g=l?A.a([new A.aB(0,B.S,B.E.j(0.4),B.d4,14)],t.V):b
-f=l?c.gav8():b
+g=l?A.a([new A.aB(0,B.S,B.E.j(0.4),B.d4,14)],t.V):a
+f=l?b.gav8():a
 e=A.i(12)
-if(c.r)d=B.dW3
+if(b.r)d=B.dW3
 else{d=l?B.fQ:B.az_
-d=A.S(d,l?B.m:B.G,b,18)
-d=A.v(A.a([d,B.L,A.e("Aceito \u2014 Acessar o App",b,b,b,b,b,A.l(b,b,l?B.m:B.G,b,b,b,b,b,b,b,b,15,b,b,B.D,b,b,!0,b,0.3,b,b,b,b,b,b),b,b,b)],n),B.j,B.c,B.M,b,b)}j=A.a([k,A.cc(A.du(B.aa,b,A.dA(!1,e,!0,A.bb(d,b,b),b,!0,b,b,b,b,b,b,b,b,b,b,f,b,b,b,b,b,b),B.i,B.T,0,b,b,b,b,b,B.c3),B.a8,new A.h(i,b,b,h,g,j,B.k),B.aa,52,b,b,1/0)],n)
-if(!l)B.e.u(j,A.a([B.F,A.e(c.a.c==="es"?"Seleccione su categor\xeda y marque el checkbox para continuar.":"Selecione sua categoria e marque o checkbox para continuar.",b,b,b,b,b,B.e2d,B.aO,b,b)],n))
-return new A.eD(a2,!1,A.qO(A.bb(A.cC(A.j(b,A.u(A.a([p,o,m,A.j(b,A.u(j,B.j,B.c,B.f),B.i,b,b,b,b,b,b,b,B.awr,b,b,b)],n),B.dT,B.c,B.M),B.i,b,b,new A.h(B.K,b,q,r,b,b,B.k),b,b,b,b,b,b,b,a1),b,B.u,b,new A.M(0,24,0,24),b,B.ae),b,b),s,b,!0),b)},
-aiZ(){var s,r,q,p,o,n=null,m=A.i(12),l=A.K(B.qQ,B.o,1.5),k=B.qQ.j(0.25)
-this.a.toString
-s=t.p
-k=A.j(n,A.v(A.a([B.aDl,B.L,A.e("AVISO IMPORTANTE \u2014 LEIA ANTES DE CONTINUAR",n,n,n,n,n,B.e2X,n,n,n)],s),B.j,B.c,B.f,n,n),B.i,n,n,new A.h(k,n,n,B.a65,n,n,B.k),n,n,n,n,B.d_,n,n,n)
-r=this.d
-r===$&&A.c()
-q=A.e(r.a?"Esta aplicaci\xf3n es una plataforma de simulaci\xf3n cl\xednica estrictamente educacional. El contenido no debe ser utilizado para guiar diagn\xf3sticos, tratamientos ni prescripciones en pacientes reales. La responsabilidad final sobre cualquier conducta m\xe9dica es exclusiva del profesional de salud habilitado.":"Este aplicativo \xe9 uma plataforma de simula\xe7\xe3o cl\xednica estritamente educacional. O conte\xfado n\xe3o deve ser utilizado para guiar diagn\xf3sticos, tratamentos ou prescri\xe7\xf5es em pacientes reais. A responsabilidade final sobre qualquer conduta m\xe9dica \xe9 exclusiva do profissional de sa\xfade habilitado.",n,n,n,n,n,B.e_v,n,n,n)
-p=A.j(n,n,B.i,B.qQ.j(0.35),n,n,n,1,n,n,n,n,n,n)
-r=t.s
-r=this.d.a?A.a(["N\xe3o substitui consulta m\xe9dica real nem julgamento cl\xednico.","Dados e protocolos s\xe3o para fins de estudo e simula\xe7\xe3o.","Qualquer aplica\xe7\xe3o cl\xednica \xe9 de responsabilidade exclusiva do profissional."],r):A.a(["No sustituye la consulta m\xe9dica real ni el juicio cl\xednico.","Los datos y protocolos son para fines de estudio y simulaci\xf3n.","Cualquier aplicaci\xf3n cl\xednica es responsabilidad exclusiva del profesional."],r)
-o=A.Q(r).i("P<1,L>")
-r=A.R(new A.P(r,new A.bj8(),o),o.i("am.E"))
-return A.j(n,A.u(A.a([k,new A.L(B.bt,q,n),p,new A.L(B.rF,A.u(r,B.p,B.c,B.f),n)],s),B.p,B.c,B.f),B.i,n,n,new A.h(B.GO,n,l,m,n,n,B.k),n,n,n,B.yU,n,n,n,n)},
+d=A.S(d,l?B.m:B.G,a,18)
+c=b.d.a?"Acepto \u2014 Acceder a la App":"Aceito \u2014 Acessar o App"
+d=A.v(A.a([d,B.L,A.e(c,a,a,a,a,a,A.l(a,a,l?B.m:B.G,a,a,a,a,a,a,a,a,15,a,a,B.D,a,a,!0,a,0.3,a,a,a,a,a,a),a,a,a)],n),B.j,B.c,B.M,a,a)}j=A.a([k,A.cc(A.du(B.aa,a,A.dA(!1,e,!0,A.bb(d,a,a),a,!0,a,a,a,a,a,a,a,a,a,a,f,a,a,a,a,a,a),B.i,B.T,0,a,a,a,a,a,B.c3),B.a8,new A.h(i,a,a,h,g,j,B.k),B.aa,52,a,a,1/0)],n)
+if(!l)B.e.u(j,A.a([B.F,A.e(b.a.c==="es"?"Seleccione su categor\xeda y marque la casilla para continuar.":"Selecione sua categoria e marque o checkbox para continuar.",a,a,a,a,a,B.e2d,B.aO,a,a)],n))
+return new A.eD(a3,!1,A.qO(A.bb(A.cC(A.j(a,A.u(A.a([p,o,m,A.j(a,A.u(j,B.j,B.c,B.f),B.i,a,a,a,a,a,a,a,B.awr,a,a,a)],n),B.dT,B.c,B.M),B.i,a,a,new A.h(B.K,a,q,r,a,a,B.k),a,a,a,a,a,a,a,a2),a,B.u,a,new A.M(0,24,0,24),a,B.ae),a,a),s,a,!0),a)},
+aiZ(){var s,r,q,p,o=null,n=A.i(12),m=A.K(B.qQ,B.o,1.5),l=B.qQ.j(0.25),k=t.p
+l=A.j(o,A.v(A.a([B.aDl,B.L,A.e(this.a.c==="es"?"AVISO IMPORTANTE \u2014 LEA ANTES DE CONTINUAR":"AVISO IMPORTANTE \u2014 LEIA ANTES DE CONTINUAR",o,o,o,o,o,B.e2X,o,o,o)],k),B.j,B.c,B.f,o,o),B.i,o,o,new A.h(l,o,o,B.a65,o,o,B.k),o,o,o,o,B.d_,o,o,o)
+s=this.d
+s===$&&A.c()
+r=A.e(s.a?"Esta aplicaci\xf3n es una plataforma de simulaci\xf3n cl\xednica estrictamente educacional. El contenido no debe ser utilizado para guiar diagn\xf3sticos, tratamientos ni prescripciones en pacientes reales. La responsabilidad final sobre cualquier conducta m\xe9dica es exclusiva del profesional de salud habilitado.":"Este aplicativo \xe9 uma plataforma de simula\xe7\xe3o cl\xednica estritamente educacional. O conte\xfado n\xe3o deve ser utilizado para guiar diagn\xf3sticos, tratamentos ou prescri\xe7\xf5es em pacientes reais. A responsabilidade final sobre qualquer conduta m\xe9dica \xe9 exclusiva do profissional de sa\xfade habilitado.",o,o,o,o,o,B.e_v,o,o,o)
+q=A.j(o,o,B.i,B.qQ.j(0.35),o,o,o,1,o,o,o,o,o,o)
+s=t.s
+s=this.d.a?A.a(["No sustituye la consulta m\xe9dica real ni el juicio cl\xednico.","Los datos y protocolos son para fines de estudio y simulaci\xf3n.","Cualquier aplicaci\xf3n cl\xednica es responsabilidad exclusiva del profesional."],s):A.a(["N\xe3o substitui consulta m\xe9dica real nem julgamento cl\xednico.","Dados e protocolos s\xe3o para fins de estudo e simula\xe7\xe3o.","Qualquer aplica\xe7\xe3o cl\xednica \xe9 de responsabilidade exclusiva do profissional."],s)
+p=A.Q(s).i("P<1,L>")
+s=A.R(new A.P(s,new A.bj8(),p),p.i("am.E"))
+return A.j(o,A.u(A.a([l,new A.L(B.bt,r,o),q,new A.L(B.rF,A.u(s,B.p,B.c,B.f),o)],k),B.p,B.c,B.f),B.i,o,o,new A.h(B.GO,o,m,n,o,o,B.k),o,o,o,B.yU,o,o,o,o)},
 aiU(){var s,r,q,p,o,n,m,l,k,j=this,i=null,h=j.d
 h===$&&A.c()
 s=t.p
@@ -132165,7 +132165,8 @@ k=o?B.JL:i
 m=A.cc(k,B.a8,new A.h(n,i,l,m,i,i,B.k),B.f4,22,i,i,22)
 n=j.a.c==="es"?"Le\xed y acepto los t\xe9rminos anteriores":"Li e aceito os termos acima"
 n=A.e(n,i,i,i,i,i,A.l(i,i,o?B.a7:B.aE,i,i,i,i,i,i,i,i,13.5,i,i,B.D,i,1.3,!0,i,i,i,i,i,i,i,i),i,i,i)
-r.push(A.ad(i,A.cc(A.v(A.a([m,B.bk,A.G(A.u(A.a([n,B.av,A.e("Declaro que sou profissional ou estudante da \xe1rea de sa\xfade. Entendo que este aplicativo \xe9 exclusivamente educacional e de simula\xe7\xe3o cl\xednica, e que jamais utilizarei seu conte\xfado para tomar decis\xf5es cl\xednicas em pacientes reais sem o devido julgamento profissional.",i,i,i,i,i,A.l(i,i,j.f?B.aE:B.G,i,i,i,i,i,i,i,i,12,i,i,i,i,1.55,!0,i,i,i,i,i,i,i,i),i,i,i)],s),B.p,B.c,B.f),1)],s),B.p,B.c,B.f,i,i),B.a8,new A.h(h,i,p,q,i,i,B.k),B.f4,i,i,B.bt,i),B.u,!1,i,i,i,i,i,i,i,i,i,i,i,i,i,new A.bj7(j),i,i,i,i,i,i))
+o=j.d.a?"Declaro que soy profesional o estudiante del \xe1rea de la salud. Entiendo que esta aplicaci\xf3n es exclusivamente educacional y de simulaci\xf3n cl\xednica, y que nunca utilizar\xe9 su contenido para tomar decisiones cl\xednicas en pacientes reales sin el debido juicio profesional.":"Declaro que sou profissional ou estudante da \xe1rea de sa\xfade. Entendo que este aplicativo \xe9 exclusivamente educacional e de simula\xe7\xe3o cl\xednica, e que jamais utilizarei seu conte\xfado para tomar decis\xf5es cl\xednicas em pacientes reais sem o devido julgamento profissional."
+r.push(A.ad(i,A.cc(A.v(A.a([m,B.bk,A.G(A.u(A.a([n,B.av,A.e(o,i,i,i,i,i,A.l(i,i,j.f?B.aE:B.G,i,i,i,i,i,i,i,i,12,i,i,i,i,1.55,!0,i,i,i,i,i,i,i,i),i,i,i)],s),B.p,B.c,B.f),1)],s),B.p,B.c,B.f,i,i),B.a8,new A.h(h,i,p,q,i,i,B.k),B.f4,i,i,B.bt,i),B.u,!1,i,i,i,i,i,i,i,i,i,i,i,i,i,new A.bj7(j),i,i,i,i,i,i))
 r.push(B.c8)
 return new A.L(B.awI,A.u(r,B.p,B.c,B.f),i)}}
 A.bj9.prototype={
