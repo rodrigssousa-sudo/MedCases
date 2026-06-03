@@ -772,10 +772,13 @@ class _AiScreenState extends State<AiScreen> {
   // Evita que ENTER + click simultâneo no botão dispare 2 envios.
   bool _sendGuard = false;
 
+  // Streaming V2: true enquanto chunks chegam (controla cursor ▌ na bolha ativa)
+  bool _isStreaming = false;
+
   Future<void> _send(String text, AppProvider p) async {
     final trimmed = text.trim();
-    // Bloqueia: texto vazio, IA pensando, ou guard ativo (duplo envio)
-    if (trimmed.isEmpty || _thinking || _sendGuard) return;
+    // Bloqueia: texto vazio, IA pensando/streaming, ou guard ativo (duplo envio)
+    if (trimmed.isEmpty || _thinking || _isStreaming || _sendGuard) return;
 
     _sendGuard = true;
     _focusNode.unfocus();
@@ -797,48 +800,109 @@ class _AiScreenState extends State<AiScreen> {
     _queryCtrl.clear();
     _scrollDown(force: true); // força scroll ao enviar mensagem do usuário
 
+    // ── Índice da bolha de streaming (-1 = não iniciada ainda) ──────────────
+    int streamingMsgIdx = -1;
+
     try {
-      // Chamada real (ou fallback local se sem chave)
-      final answer = await p.buildAIAnswer(trimmed);
-
-      if (!mounted) return;
-
-      // Guard do provider retornou '' — ignora (não adiciona bubble vazia)
-      if (answer.isEmpty) {
-        setState(() {
-          _thinking = false;
-          // Remove a mensagem do usuário que acabou de ser adicionada
-          // (o send foi rejeitado pelo guard do provider — duplicação evitada)
-          if (_messages.isNotEmpty && _messages.last.role == 'user' &&
-              _messages.last.text == trimmed) {
-            _messages.removeLast();
+      // ── Streaming V2 via sendAiMessage ────────────────────────────────────
+      // Retorna true se usou streaming (Gemini conectado), false se usou fallback.
+      await p.sendAiMessage(
+        trimmed,
+        onChunk: (accumulated) {
+          if (!mounted) return;
+          setState(() {
+            if (streamingMsgIdx == -1) {
+              // Primeiro chunk: substitui ThinkingBubble por bolha em streaming
+              _thinking = false;
+              _isStreaming = true;
+              _scrollGeneration++;
+              _lastAiIndex = _messages.length;
+              _messages.add(_ChatMsg(role: 'ai', text: accumulated));
+              streamingMsgIdx = _messages.length - 1;
+            } else {
+              // Chunks subsequentes: atualiza texto da bolha existente in-place
+              _isStreaming = true;
+              _messages[streamingMsgIdx] = _ChatMsg.withId(
+                id: _messages[streamingMsgIdx].id,
+                role: 'ai',
+                text: accumulated,
+              );
+            }
+          });
+          _scrollDown();
+        },
+        onDone: (finalText) {
+          if (!mounted) return;
+          // ── Task 11: Detecta tipo de erro no texto final ─────────────────
+          final isKeyError = finalText.startsWith('ERRO') && finalText.contains('API');
+          final isNetErr   = finalText.toLowerCase().contains('sem conexão') ||
+              finalText.toLowerCase().contains('sin conexión') ||
+              finalText.toLowerCase().contains('timeout') ||
+              finalText.toLowerCase().contains('falha na conexão') ||
+              finalText.toLowerCase().contains('falla de red');
+          setState(() {
+            _thinking    = false;
+            _isStreaming  = false;
+            _aiError      = isKeyError;
+            _networkError = isNetErr;
+            if (streamingMsgIdx >= 0) {
+              // Finaliza bolha de streaming com texto completo
+              _messages[streamingMsgIdx] = _ChatMsg.withId(
+                id: _messages[streamingMsgIdx].id,
+                role: 'ai',
+                text: finalText,
+              );
+            } else {
+              // Fallback legado (sem streaming) — adiciona bolha de uma vez
+              _scrollGeneration++;
+              _lastAiIndex = _messages.length;
+              _messages.add(_ChatMsg(role: 'ai', text: finalText));
+            }
+          });
+          // NÃO chama _scrollDown() aqui — gerenciado por _onBlockRevealed()
+        },
+        onError: (errorMsg) {
+          if (!mounted) return;
+          // Guard do provider retornou '' — ignora (não adiciona bubble vazia)
+          if (errorMsg.isEmpty) {
+            setState(() {
+              _thinking    = false;
+              _isStreaming  = false;
+              if (_messages.isNotEmpty && _messages.last.role == 'user' &&
+                  _messages.last.text == trimmed) {
+                _messages.removeLast();
+              }
+            });
+            return;
           }
-        });
-        return;
-      }
-
-      // ── Task 11: Detecta tipo de erro ──────────────────────────────────
-      // isKeyError  → erro de chave API inválida (banner laranja)
-      // isNetErr    → timeout / sem rede (InlineConnectionBanner)
-      final isKeyError = answer.startsWith('ERRO') && answer.contains('API');
-      final isNetErr   = answer.toLowerCase().contains('sem conexão') ||
-          answer.toLowerCase().contains('sin conexión') ||
-          answer.toLowerCase().contains('timeout') ||
-          answer.toLowerCase().contains('falha na conexão') ||
-          answer.toLowerCase().contains('falla de red');
-      _scrollGeneration++; // nova geração — invalida callbacks de bolhas antigas
-      setState(() {
-        _lastAiIndex  = _messages.length; // índice que será inserido
-        _messages.add(_ChatMsg(role: 'ai', text: answer));
-        _thinking     = false;
-        _aiError      = isKeyError;
-        _networkError = isNetErr;
-      });
-      // NÃO chama _scrollDown() aqui — o scroll é gerenciado exclusivamente por
-      // _onBlockRevealed() durante o streaming de blocos. Chamar _scrollDown()
-      // ao mesmo tempo que _onBlockRevealed causa animações concorrentes = jump.
+          final isKeyError = errorMsg.startsWith('ERRO') && errorMsg.contains('API');
+          final isNetErr   = errorMsg.toLowerCase().contains('sem conexão') ||
+              errorMsg.toLowerCase().contains('sin conexión') ||
+              errorMsg.toLowerCase().contains('timeout') ||
+              errorMsg.toLowerCase().contains('falha na conexão') ||
+              errorMsg.toLowerCase().contains('falla de red');
+          setState(() {
+            _thinking    = false;
+            _isStreaming  = false;
+            _scrollGeneration++;
+            if (streamingMsgIdx >= 0) {
+              // Substitui bolha parcial pelo texto de erro
+              _messages[streamingMsgIdx] = _ChatMsg.withId(
+                id: _messages[streamingMsgIdx].id,
+                role: 'ai',
+                text: errorMsg,
+              );
+            } else {
+              _lastAiIndex = _messages.length;
+              _messages.add(_ChatMsg(role: 'ai', text: errorMsg));
+            }
+            _aiError      = isKeyError;
+            _networkError = isNetErr;
+          });
+        },
+      );
     } on Exception catch (e) {
-      // Task 11: captura exceções não tratadas (ex: TimeoutException, SocketException)
+      // Captura exceções não tratadas (ex: TimeoutException, SocketException)
       if (!mounted) return;
       final errStr = e.toString().toLowerCase();
       final isNetworkException = errStr.contains('socket') ||
@@ -848,6 +912,7 @@ class _AiScreenState extends State<AiScreen> {
           errStr.contains('unreachable');
       setState(() {
         _thinking     = false;
+        _isStreaming   = false;
         _networkError = isNetworkException;
         _aiError      = !isNetworkException;
         if (isNetworkException) {
@@ -1038,6 +1103,8 @@ class _AiScreenState extends State<AiScreen> {
                           : null,
                       scrollGeneration: _scrollGeneration,
                       onBlockRevealed: _onBlockRevealed,
+                      // Mostra cursor ▌ apenas na bolha que está sendo preenchida
+                      isStreaming: _isStreaming && i == _lastAiIndex,
                     ),
                     // Tarjeta de evidencia si el mensaje menciona un fármaco
                     if (detectedEv != null)
@@ -2474,6 +2541,9 @@ class _AiBubble extends StatefulWidget {
   final int scrollGeneration;
   /// Callback para notificar o pai que um bloco foi revelado
   final void Function(int generation)? onBlockRevealed;
+  /// true enquanto esta bolha está sendo preenchida por streaming V2
+  /// (exibe cursor piscante ▌ após o texto)
+  final bool isStreaming;
   const _AiBubble({
     super.key,
     required this.text,
@@ -2486,6 +2556,7 @@ class _AiBubble extends StatefulWidget {
     this.onTts,
     this.scrollGeneration = 0,
     this.onBlockRevealed,
+    this.isStreaming = false,
   });
 
   @override
@@ -2512,15 +2583,19 @@ class _AiBubbleState extends State<_AiBubble> {
   @override
   void didUpdateWidget(_AiBubble old) {
     super.didUpdateWidget(old);
-    // Atualiza cache apenas se o texto mudou
-    if (old.text != widget.text) {
+    // Atualiza cache se o texto ou o estado de streaming mudou
+    if (old.text != widget.text || old.isStreaming != widget.isStreaming) {
       _cachedBlocks = _computeBlocks(widget.text);
     }
   }
 
   List<String> _computeBlocks(String text) {
-    final cleaned = _cleanAiText(text);
-    return _splitIntoBlocks(cleaned.isEmpty ? text.trim() : cleaned);
+    // Durante streaming: append cursor ▌ ao texto para feedback visual.
+    // O cursor é removido automaticamente quando isStreaming vai para false
+    // (didUpdateWidget regenera os blocos sem o cursor).
+    final displayText = widget.isStreaming ? '$text\u258c' : text;
+    final cleaned = _cleanAiText(displayText);
+    return _splitIntoBlocks(cleaned.isEmpty ? displayText.trim() : cleaned);
   }
 
   void _startSequence() {
@@ -2689,6 +2764,14 @@ class _ThinkingBubbleState extends State<_ThinkingBubble>
     );
   }
 }
+
+// ─────────────────────────────────────────────────────────────────────────────
+// _TypingIndicator — 3 pontos animados (alias de _ThinkingBubble)
+//
+// Exibido enquanto a IA está processando (fase de "pensando" antes do
+// primeiro chunk chegar). Transição natural: ThinkingBubble → streaming bubble.
+// ─────────────────────────────────────────────────────────────────────────────
+typedef _TypingIndicator = _ThinkingBubble;
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Input bar — ENTER envia (web/desktop), botão microfone STT, botão enviar

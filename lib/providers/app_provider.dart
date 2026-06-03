@@ -20,6 +20,7 @@ import '../services/drug_interaction_service.dart';
 import '../services/ai_service.dart';
 import '../services/clinical_session_memory.dart';
 import '../services/gemini_service.dart';
+import '../services/gemini_service_v2.dart';
 
 // ── Resultado das operações de Pin no "Meu Plantão" ───────────────────────────
 enum PinResult {
@@ -1554,6 +1555,7 @@ class AppProvider extends ChangeNotifier {
 
   /// Limpa o histórico de conversa da IA (nova conversa)
   void clearAiHistory() {
+    cancelAiStream(); // cancela streaming em curso se houver
     _aiHistory.clear();
     _sessionLockedLang = null; // reset language lock ao iniciar nova sessão
   }
@@ -2806,6 +2808,208 @@ class AppProvider extends ChangeNotifier {
   // ══════════════════════════════════════════════════════════════════════════
   // Guard de concorrência: impede que chamadas simultâneas (Enter + botão) dupliquem resposta.
   bool _aiAnswerInProgress = false;
+
+  // ══════════════════════════════════════════════════════════════════════════
+  // STREAMING V2 — sendAiMessage
+  //
+  // Substitui buildAIAnswer() quando o Gemini estiver conectado.
+  // Em vez de retornar uma String única, emite chunks via callback [onChunk]
+  // e sinaliza conclusão via [onDone] / erro via [onError].
+  //
+  // A UI (ai_screen.dart) chama este método, recebe os callbacks e atualiza
+  // a bolha de mensagem em tempo real — sem esperar a resposta completa.
+  //
+  // FALLBACK: se Gemini não estiver conectado, delega ao buildAIAnswer() legado.
+  // ══════════════════════════════════════════════════════════════════════════
+
+  /// Indica se há streaming ativo no momento.
+  bool get aiStreaming => _aiStreamActive;
+  bool _aiStreamActive = false;
+
+  /// Cancela o streaming em curso (usuário trocou de tela, limpou chat, etc.)
+  StreamSubscription<GeminiChunk>? _aiStreamSub;
+
+  void cancelAiStream() {
+    _aiStreamSub?.cancel();
+    _aiStreamSub = null;
+    if (_aiStreamActive) {
+      _aiStreamActive = false;
+      notifyListeners();
+    }
+  }
+
+  /// Envia mensagem com streaming token-a-token via GeminiServiceV2.
+  ///
+  /// Parâmetros de callback (todos opcionais mas úteis):
+  ///   [onChunk]  — chamado a cada token recebido; recebe o texto ACUMULADO até agora
+  ///   [onDone]   — chamado quando a resposta está completa; recebe o texto final
+  ///   [onError]  — chamado em caso de falha; recebe mensagem de erro amigável
+  ///
+  /// Retorna true se usou streaming V2, false se delegou ao fallback legado.
+  Future<bool> sendAiMessage(
+    String input, {
+    required void Function(String accumulated) onChunk,
+    required void Function(String finalText) onDone,
+    required void Function(String errorMsg) onError,
+  }) async {
+    // ── Guard de concorrência ──────────────────────────────────────────────
+    if (_aiAnswerInProgress || _aiStreamActive) {
+      debugPrint('[sendAiMessage] ignorado — resposta em andamento');
+      return false;
+    }
+
+    // ── Fallback: sem Gemini → usa pipeline legado (OpenAI / local) ────────
+    // O buildAIAnswer() legado cuida de OpenAI e do contexto local.
+    if (!_geminiConnected || !GeminiService.hasApiKey) {
+      _aiAnswerInProgress = true;
+      try {
+        final answer = await _buildAIAnswerImpl(input);
+        if (answer.isEmpty) return false;
+        onDone(answer);
+        return false; // indica que usou fallback, não streaming
+      } finally {
+        _aiAnswerInProgress = false;
+      }
+    }
+
+    // ── Streaming V2 via GeminiServiceV2 ───────────────────────────────────
+    _aiStreamActive = true;
+
+    // ── Reutiliza todo o pipeline de contexto do buildAIAnswer ─────────────
+    // strictContextIsolation, globalLanguageLock, RAG retrieval, system prompt
+    // — nada muda. Só o transporte (streaming vs. batch) é diferente.
+    final topicReset  = _sessionMemory.resetIfTopicChanged(input);
+    if (topicReset) {
+      debugPrint('[sendAiMessage] strictContextIsolation: tema mudou');
+    }
+    final sessionLang   = _resolveSessionLang(input);
+    final intent        = _classifyIntent(input);
+    final expandedInput = topicReset ? input : _expandedQuery(input);
+    final normalized    = _normalize(expandedInput);
+
+    final finalProtocols = _matchProtocolsExtended(normalized).isNotEmpty
+        ? _matchProtocolsExtended(normalized)
+        : _matchProtocols(normalized);
+    final finalDrugs = _matchDrugsExtended(normalized).isNotEmpty
+        ? _matchDrugsExtended(normalized)
+        : _matchDrugs(normalized);
+    final references    = _findReferences(normalized);
+    final localContext  = _buildLocalAnswer(input);
+    final localContextWithRefs = references.isNotEmpty
+        ? '$localContext\n\n---\n📚 REFERÊNCIAS:\n${references.join('\n')}'
+        : localContext;
+
+    final systemPrompt = AiService.buildClinicalSystemPrompt(
+      lang: sessionLang,
+      matchedProtocolSummaries: finalProtocols,
+      matchedDrugSummaries: finalDrugs,
+      localAnswerContext: localContextWithRefs,
+      queryIntent: intent,
+      patientAge:         _patient.age.isNotEmpty ? _patient.age : null,
+      patientSex:         _patient.sex.isNotEmpty ? _patient.sex : null,
+      patientWeight:      _patient.weight.isNotEmpty ? _patient.weight : null,
+      patientClcr:        clcr,
+      patientMedications: _patient.medications.isNotEmpty ? _patient.medications : null,
+      userQuery:          input,
+      memory:             _sessionMemory,
+    );
+
+    // Garante API key presente
+    if (!GeminiService.hasApiKey) {
+      try {
+        final key = await FirestoreService.loadGeminiApiKey()
+            .timeout(const Duration(seconds: 5));
+        if (key.isNotEmpty) GeminiService.setGeminiApiKey(key);
+        else await GeminiService.initFromStorage();
+      } catch (_) {
+        await GeminiService.initFromStorage();
+      }
+    }
+
+    if (!GeminiService.hasApiKey) {
+      _aiStreamActive = false;
+      onError(_lang == 'es'
+          ? 'No se pudo conectar al asistente. Configura la API. ⚕ Apoyo educacional.'
+          : 'Não foi possível conectar ao assistente. Configure a API. ⚕ Apoio educacional.');
+      return true;
+    }
+
+    final apiKey      = GeminiService.apiKeyForLab;
+    final accumulator = StringBuffer();
+
+    // ── Subscreve o stream de chunks ───────────────────────────────────────
+    final stream = GeminiServiceV2.sendStream(
+      apiKey:       apiKey,
+      userMessage:  input,
+      systemPrompt: systemPrompt,
+      history:      List.unmodifiable(_aiHistory),
+      useGrounding: true,
+    );
+
+    _aiStreamSub = stream.listen(
+      (chunk) {
+        if (chunk.isError) {
+          // Erro recebido como chunk — encerra e notifica
+          _aiStreamActive = false;
+          _aiStreamSub = null;
+          final msg = GeminiServiceV2.errorMessage(chunk.errorCode!, _lang);
+          onError(msg);
+          return;
+        }
+
+        if (chunk.text.isNotEmpty) {
+          accumulator.write(chunk.text);
+          onChunk(accumulator.toString()); // texto acumulado até agora
+        }
+
+        if (chunk.isDone && !chunk.isError) {
+          // Resposta completa — salva no histórico e notifica conclusão
+          final finalText = accumulator.toString().trim();
+          if (finalText.isNotEmpty) {
+            _aiHistory
+              ..add({'role': 'user',      'content': input})
+              ..add({'role': 'assistant', 'content': finalText});
+            while (_aiHistory.length > 20) _aiHistory.removeAt(0);
+          }
+          _aiStreamActive = false;
+          _aiStreamSub    = null;
+          onDone(finalText.isNotEmpty ? finalText : _lang == 'es'
+              ? 'No pude generar una respuesta. ¿Puedes reformular? ⚕ Apoyo educacional.'
+              : 'Não consegui gerar uma resposta. Pode reformular? ⚕ Apoio educacional.');
+        }
+      },
+      onError: (e) {
+        debugPrint('[sendAiMessage] stream error: $e');
+        _aiStreamActive = false;
+        _aiStreamSub    = null;
+        onError(GeminiServiceV2.errorMessage('network', _lang));
+      },
+      onDone: () {
+        // onDone do StreamController — garante limpeza mesmo sem chunk final
+        if (_aiStreamActive) {
+          final finalText = accumulator.toString().trim();
+          if (finalText.isNotEmpty) {
+            _aiHistory
+              ..add({'role': 'user',      'content': input})
+              ..add({'role': 'assistant', 'content': finalText});
+            while (_aiHistory.length > 20) _aiHistory.removeAt(0);
+            _aiStreamActive = false;
+            _aiStreamSub    = null;
+            onDone(finalText);
+          } else {
+            _aiStreamActive = false;
+            _aiStreamSub    = null;
+            onError(_lang == 'es'
+                ? 'No pude generar una respuesta. ¿Puedes reformular? ⚕ Apoyo educacional.'
+                : 'Não consegui gerar uma resposta. Pode reformular? ⚕ Apoio educacional.');
+          }
+        }
+      },
+      cancelOnError: false,
+    );
+
+    return true; // indica que usou streaming V2
+  }
 
   Future<String> buildAIAnswer(String input) async {
     // Guard: rejeita chamada se já há uma em andamento (evita duplicação)
