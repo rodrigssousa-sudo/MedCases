@@ -288,25 +288,31 @@ class _AiScreenState extends State<AiScreen> {
     });
   }
 
-  // ── Saudação padronizada por horário — SEMPRE em espanhol conforme spec ──
-  // 00–06: "Buena madrugada"  |  06–12: "Buenos días"
-  // 12–18: "Buenas tardes"    |  18–24: "Buenas noches"
+  // ── Saudação por horário — bilíngue ES/PT hermeticamente isolado ──
+  // ES  00–06: "Buena madrugada"  |  06–12: "Buenos días"
+  //     12–18: "Buenas tardes"    |  18–24: "Buenas noches"
+  // PT  00–06: "Boa madrugada"    |  06–12: "Bom dia"
+  //     12–18: "Boa tarde"        |  18–24: "Boa noite"
   String _buildGreeting(String userName, String lang) {
-    final hour = DateTime.now().hour;
+    final bool es   = lang != 'pt';
+    final int  hour = DateTime.now().hour;
     final String period;
-    if (hour < 6) {
-      period = 'Buena madrugada';
-    } else if (hour < 12) {
-      period = 'Buenos días';
-    } else if (hour < 18) {
-      period = 'Buenas tardes';
+    if (es) {
+      if (hour < 6)       period = 'Buena madrugada';
+      else if (hour < 12) period = 'Buenos días';
+      else if (hour < 18) period = 'Buenas tardes';
+      else                period = 'Buenas noches';
     } else {
-      period = 'Buenas noches';
+      if (hour < 6)       period = 'Boa madrugada';
+      else if (hour < 12) period = 'Bom dia';
+      else if (hour < 18) period = 'Boa tarde';
+      else                period = 'Boa noite';
     }
     final firstName = userName.trim().split(' ').first;
     final nameStr   = firstName.isNotEmpty ? ', $firstName' : '';
-    // Saudação estrita: só as duas frases definidas, sem listas nem extras
-    return '$period$nameStr.\n\nSoy tu IA MedCases. ¿Cómo te puedo ayudar hoy?';
+    return es
+        ? '$period$nameStr.\n\nSoy tu IA MedCases. ¿Cómo te puedo ayudar hoy?'
+        : '$period$nameStr.\n\nSou seu IA MedCases. Como posso te ajudar hoje?';
   }
 
   @override

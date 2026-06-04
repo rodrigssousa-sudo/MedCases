@@ -1102,12 +1102,14 @@ class _DrugDetailViewState extends State<_DrugDetailView>
 
   // ── Tab clínica ────────────────────────────────────────────────────────────
   late TabController _tabCtrl;
-  static const _tabs = [
-    'Información Clínica',
-    'Uso Clínico',
-    'Efectos Adversos',
-    'Contraindicaciones',
-    'Farmacocinética',
+
+  /// Returns the 5 clinical tab labels in the correct language.
+  static List<String> _tabsFor(bool isEs) => [
+    isEs ? 'Información Clínica' : 'Informação Clínica',
+    isEs ? 'Uso Clínico'         : 'Uso Clínico',
+    isEs ? 'Efectos Adversos'    : 'Efeitos Adversos',
+    isEs ? 'Contraindicaciones'  : 'Contraindicações',
+    isEs ? 'Farmacocinética'     : 'Farmacocinética',
   ];
 
   @override
@@ -1119,7 +1121,7 @@ class _DrugDetailViewState extends State<_DrugDetailView>
     _ageCtrl    = TextEditingController(text: pt.age);
     _creatCtrl  = TextEditingController(text: pt.creatinine);
     _sex        = pt.sex.isNotEmpty ? pt.sex : 'M';
-    _tabCtrl    = TabController(length: _tabs.length, vsync: this);
+    _tabCtrl    = TabController(length: 5, vsync: this);
   }
 
   @override
@@ -1170,7 +1172,7 @@ class _DrugDetailViewState extends State<_DrugDetailView>
     if (clcrV != null && clcrV > 0 && clcrV < 50 && renalAlert.isNotEmpty &&
         !renalAlert.toLowerCase().contains('sem ajuste') &&
         !renalAlert.toLowerCase().contains('sin ajuste')) {
-      alerts.add('⚠ Ajuste renal: ClCr ${_clcrLocal ?? '—'} mL/min. $renalAlert');
+      alerts.add('⚠ ${lang == 'es' ? 'Ajuste renal' : 'Ajuste renal'}: ClCr ${_clcrLocal ?? '—'} mL/min. $renalAlert');
     }
 
     final elderlyAlert = drug.getField(drug.elderlyAlert, lang);
@@ -1180,17 +1182,26 @@ class _DrugDetailViewState extends State<_DrugDetailView>
 
     if (drug.doseType == 'weight' && w != null && drug.mgKg != null) {
       return DoseInfo(
-        main: 'Ref. literatura: ${(w * drug.mgKg!).toStringAsFixed(1)} mg (simulação teórica)',
-        detail: 'Parâmetro acadêmico: ${drug.mgKg} mg/kg. ${drug.getField(drug.frequency, lang)} — A dose final é de responsabilidade exclusiva do profissional.',
+        main: lang == 'es'
+            ? 'Ref. literatura: ${(w * drug.mgKg!).toStringAsFixed(1)} mg (simulación teórica)'
+            : 'Ref. literatura: ${(w * drug.mgKg!).toStringAsFixed(1)} mg (simulação teórica)',
+        detail: lang == 'es'
+            ? 'Parámetro académico: ${drug.mgKg} mg/kg. ${drug.getField(drug.frequency, lang)} — La dosis final es responsabilidad exclusiva del profesional.'
+            : 'Parâmetro acadêmico: ${drug.mgKg} mg/kg. ${drug.getField(drug.frequency, lang)} — A dose final é de responsabilidade exclusiva do profissional.',
         alerts: alerts,
       );
     }
     if (drug.doseType == 'infusion' && w != null &&
         drug.mcgKgMinStart != null && drug.mcgKgMinMax != null) {
       return DoseInfo(
-        main: 'Ref. literatura: ${(w * drug.mcgKgMinStart!).toStringAsFixed(1)}–'
+        main: lang == 'es'
+            ? 'Ref. literatura: ${(w * drug.mcgKgMinStart!).toStringAsFixed(1)}–'
+              '${(w * drug.mcgKgMinMax!).toStringAsFixed(1)} mcg/min (simulación teórica)'
+            : 'Ref. literatura: ${(w * drug.mcgKgMinStart!).toStringAsFixed(1)}–'
               '${(w * drug.mcgKgMinMax!).toStringAsFixed(1)} mcg/min (simulação teórica)',
-        detail: 'Parâmetro acadêmico: ${drug.mcgKgMinStart}–${drug.mcgKgMinMax} mcg/kg/min em bomba. Titular por resposta — decisão exclusiva do profissional.',
+        detail: lang == 'es'
+            ? 'Parámetro académico: ${drug.mcgKgMinStart}–${drug.mcgKgMinMax} mcg/kg/min en bomba. Titular por respuesta — decisión exclusiva del profesional.'
+            : 'Parâmetro acadêmico: ${drug.mcgKgMinStart}–${drug.mcgKgMinMax} mcg/kg/min em bomba. Titular por resposta — decisão exclusiva do profissional.',
         alerts: alerts,
       );
     }
@@ -1235,7 +1246,7 @@ class _DrugDetailViewState extends State<_DrugDetailView>
             padding: const EdgeInsets.symmetric(horizontal: 14),
             child: _DrugSectionTitle(
               icon: Icons.medication_liquid_outlined,
-              label: 'DOSIS RECOMENDADAS',
+              label: p.lang == 'es' ? 'DOSIS RECOMENDADAS' : 'DOSES RECOMENDADAS',
               c: c, dark: dark,
             ),
           ),
@@ -1254,7 +1265,7 @@ class _DrugDetailViewState extends State<_DrugDetailView>
           padding: const EdgeInsets.symmetric(horizontal: 14),
           child: _DrugSectionTitle(
             icon: Icons.calculate_outlined,
-            label: 'CALCULADORA DE DOSIS',
+            label: p.lang == 'es' ? 'CALCULADORA DE DOSIS' : 'CALCULADORA DE DOSE',
             c: c, dark: dark,
           ),
         ),
@@ -1279,7 +1290,7 @@ class _DrugDetailViewState extends State<_DrugDetailView>
           padding: const EdgeInsets.symmetric(horizontal: 14),
           child: _DrugSectionTitle(
             icon: Icons.fact_check_outlined,
-            label: 'INFORMACIÓN CLÍNICA',
+            label: p.lang == 'es' ? 'INFORMACIÓN CLÍNICA' : 'INFORMAÇÃO CLÍNICA',
             c: c, dark: dark,
           ),
         ),
@@ -1289,7 +1300,7 @@ class _DrugDetailViewState extends State<_DrugDetailView>
           child: _ClinicalTabCard(
             drug: drug, p: p, c: c, dark: dark, ev: ev,
             globalEv: globalEv,
-            tabCtrl: _tabCtrl, tabs: _tabs,
+            tabCtrl: _tabCtrl, tabs: _tabsFor(p.lang == 'es'),
           ),
         ),
         const SizedBox(height: 16),
@@ -1301,7 +1312,9 @@ class _DrugDetailViewState extends State<_DrugDetailView>
           padding: const EdgeInsets.symmetric(horizontal: 14),
           child: _DrugSectionTitle(
             icon: Icons.library_books_outlined,
-            label: 'EVIDENCIA Y REFERENCIAS CIENTÍFICAS',
+            label: p.lang == 'es'
+                ? 'EVIDENCIA Y REFERENCIAS CIENTÍFICAS'
+                : 'EVIDÊNCIA E REFERÊNCIAS CIENTÍFICAS',
             c: c, dark: dark,
           ),
         ),
@@ -1541,7 +1554,7 @@ class _ClinicalHeader extends StatelessWidget {
                 borderRadius: BorderRadius.circular(6),
                 border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
               ),
-              child: Text('Vía: ${drug.route}',
+              child: Text('${p.lang == 'es' ? 'Vía' : 'Via'}: ${drug.route}',
                 style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w600,
                   color: Colors.white.withValues(alpha: 0.5))),
             ),
@@ -1637,29 +1650,27 @@ class _ContextBadge extends StatelessWidget {
   final String label;
   const _ContextBadge({required this.label});
 
+  bool get _isEmergency => label == 'Emergência' || label == 'Emergencia';
+  bool get _isPediatric  => label == 'Pediatria'  || label == 'Pediatría';
+  bool get _isICU        => label == 'UTI'         || label == 'UCI';
+
   Color get _bg {
-    switch (label) {
-      case 'Emergência': return const Color(0xFFDC2626).withValues(alpha: 0.25);
-      case 'UTI':        return const Color(0xFF9333EA).withValues(alpha: 0.25);
-      case 'Pediatria':  return const Color(0xFF0EA5E9).withValues(alpha: 0.25);
-      default:           return Colors.white.withValues(alpha: 0.12);
-    }
+    if (_isEmergency) return const Color(0xFFDC2626).withValues(alpha: 0.25);
+    if (_isICU)       return const Color(0xFF9333EA).withValues(alpha: 0.25);
+    if (_isPediatric) return const Color(0xFF0EA5E9).withValues(alpha: 0.25);
+    return Colors.white.withValues(alpha: 0.12);
   }
   Color get _fg {
-    switch (label) {
-      case 'Emergência': return const Color(0xFFFCA5A5);
-      case 'UTI':        return const Color(0xFFD8B4FE);
-      case 'Pediatria':  return const Color(0xFF7DD3FC);
-      default:           return Colors.white.withValues(alpha: 0.85);
-    }
+    if (_isEmergency) return const Color(0xFFFCA5A5);
+    if (_isICU)       return const Color(0xFFD8B4FE);
+    if (_isPediatric) return const Color(0xFF7DD3FC);
+    return Colors.white.withValues(alpha: 0.85);
   }
   Color get _border {
-    switch (label) {
-      case 'Emergência': return const Color(0xFFEF4444).withValues(alpha: 0.4);
-      case 'UTI':        return const Color(0xFFA855F7).withValues(alpha: 0.4);
-      case 'Pediatria':  return const Color(0xFF38BDF8).withValues(alpha: 0.4);
-      default:           return Colors.white.withValues(alpha: 0.15);
-    }
+    if (_isEmergency) return const Color(0xFFEF4444).withValues(alpha: 0.4);
+    if (_isICU)       return const Color(0xFFA855F7).withValues(alpha: 0.4);
+    if (_isPediatric) return const Color(0xFF38BDF8).withValues(alpha: 0.4);
+    return Colors.white.withValues(alpha: 0.15);
   }
 
   @override
@@ -1782,8 +1793,8 @@ class _DosageTableCard extends StatelessWidget {
   }
 
   Color _popColor(String pop) {
-    if (pop.contains('Pediatria')) return const Color(0xFF0EA5E9);
-    if (pop.contains('PCR') || pop.contains('emergência')) return const Color(0xFFDC2626);
+    if (pop.contains('Pediatria') || pop.contains('Pediatría')) return const Color(0xFF0EA5E9);
+    if (pop.contains('PCR') || pop.contains('emergência') || pop.contains('emergencia')) return const Color(0xFFDC2626);
     if (pop.contains('Renal')) return const Color(0xFFF59E0B);
     return const Color(0xFF059669);
   }
@@ -1836,7 +1847,7 @@ class _DoseCalculatorCard extends StatelessWidget {
           child: Row(children: [
             const Icon(Icons.person_outline_rounded, size: 15, color: Color(0xFF075f45)),
             const SizedBox(width: 8),
-            Text('DATOS DEL PACIENTE',
+            Text(p.lang == 'es' ? 'DATOS DEL PACIENTE' : 'DADOS DO PACIENTE',
               style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w900,
                 letterSpacing: 1.4, color: c.textPrimary)),
           ]),
@@ -1847,7 +1858,7 @@ class _DoseCalculatorCard extends StatelessWidget {
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
 
             // Sexo
-            Text('Sexo biológico',
+            Text(p.lang == 'es' ? 'Sexo biológico' : 'Sexo biológico',
               style: TextStyle(fontSize: 10, fontWeight: FontWeight.w800,
                 color: c.textHint, letterSpacing: 0.3)),
             const SizedBox(height: 6),
@@ -1923,13 +1934,16 @@ class _DoseCalculatorCard extends StatelessWidget {
                     color: const Color(0xFFFFE8A6).withValues(alpha: 0.18),
                     borderRadius: BorderRadius.circular(4),
                   ),
-                  child: const Text('PARÂMETROS ACADÊMICOS DE REFERÊNCIA',
-                    style: TextStyle(fontSize: 8.5, fontWeight: FontWeight.w900,
+                  child: Text(
+                    p.lang == 'es'
+                        ? 'PARÁMETROS ACADÉMICOS DE REFERENCIA'
+                        : 'PARÂMETROS ACADÊMICOS DE REFERÊNCIA',
+                    style: const TextStyle(fontSize: 8.5, fontWeight: FontWeight.w900,
                       color: Color(0xFFFFE8A6), letterSpacing: 1.8)),
                 ),
                 const Spacer(),
                 if (w != null)
-                  Text('Paciente: ${weightCtrl.text} kg',
+                  Text('${p.lang == 'es' ? 'Paciente' : 'Paciente'}: ${weightCtrl.text} kg',
                     style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w600,
                       color: Colors.white.withValues(alpha: 0.55))),
               ]),
@@ -2009,18 +2023,18 @@ class _ClinicalTabCard extends StatelessWidget {
             physics: const ClampingScrollPhysics(),
             children: [
 
-              // TAB 0: Información Clínica
+              // TAB 0: Información Clínica / Informação Clínica
               _TabContent(children: [
                 _ClinInfoBlock(
                   icon: Icons.memory_outlined,
-                  title: 'MECANISMO DE ACCIÓN',
+                  title: p.lang == 'es' ? 'MECANISMO DE ACCIÓN' : 'MECANISMO DE AÇÃO',
                   content: p.tDB(drug.mechanism),
                   color: const Color(0xFF059669), c: c,
                 ),
                 const SizedBox(height: 10),
                 _ClinInfoBlock(
                   icon: Icons.warning_amber_rounded,
-                  title: 'ADVERTENCIAS',
+                  title: p.lang == 'es' ? 'ADVERTENCIAS' : 'ADVERTÊNCIAS',
                   content: p.tDB(drug.warning),
                   color: const Color(0xFFF59E0B), c: c,
                 ),
@@ -2042,7 +2056,7 @@ class _ClinicalTabCard extends StatelessWidget {
                 const SizedBox(height: 10),
                 _ClinInfoBlock(
                   icon: Icons.elderly_outlined,
-                  title: 'PACIENTE ANCIANO',
+                  title: p.lang == 'es' ? 'PACIENTE ANCIANO' : 'PACIENTE IDOSO',
                   content: p.tDB(drug.elderlyAlert),
                   color: const Color(0xFF8B5CF6), c: c,
                 ),
@@ -2053,7 +2067,7 @@ class _ClinicalTabCard extends StatelessWidget {
                 if ((globalEv?.indications ?? ev?.indications ?? []).isNotEmpty) ...[
                   _ClinListBlock(
                     icon: Icons.check_circle_outline_rounded,
-                    title: 'INDICACIONES PRINCIPALES',
+                    title: p.lang == 'es' ? 'INDICACIONES PRINCIPALES' : 'INDICAÇÕES PRINCIPAIS',
                     items: (globalEv?.indications ?? ev!.indications),
                     color: const Color(0xFF059669), c: c,
                   ),
@@ -2061,7 +2075,7 @@ class _ClinicalTabCard extends StatelessWidget {
                   // Fallback: generar indicaciones desde el grupo farmacológico
                   _ClinListBlock(
                     icon: Icons.check_circle_outline_rounded,
-                    title: 'INDICACIONES PRINCIPALES',
+                    title: p.lang == 'es' ? 'INDICACIONES PRINCIPALES' : 'INDICAÇÕES PRINCIPAIS',
                     items: _fallbackIndications(drug),
                     color: const Color(0xFF059669), c: c,
                   ),
@@ -2075,14 +2089,14 @@ class _ClinicalTabCard extends StatelessWidget {
                 if ((globalEv?.sideEffects ?? ev?.sideEffects ?? []).isNotEmpty) ...[
                   _ClinChipBlock(
                     icon: Icons.report_problem_outlined,
-                    title: 'EFECTOS ADVERSOS',
+                    title: p.lang == 'es' ? 'EFECTOS ADVERSOS' : 'EFEITOS ADVERSOS',
                     items: (globalEv?.sideEffects ?? ev!.sideEffects),
                     color: const Color(0xFFDC2626), c: c, dark: dark,
                   ),
                 ] else if (adverse.isNotEmpty) ...[
                   _ClinChipBlock(
                     icon: Icons.report_problem_outlined,
-                    title: 'EFECTOS ADVERSOS',
+                    title: p.lang == 'es' ? 'EFECTOS ADVERSOS' : 'EFEITOS ADVERSOS',
                     items: adverse,
                     color: const Color(0xFFDC2626), c: c, dark: dark,
                   ),
@@ -2090,7 +2104,7 @@ class _ClinicalTabCard extends StatelessWidget {
                   // Fallback: efectos adversos de clase farmacológica
                   _ClinChipBlock(
                     icon: Icons.report_problem_outlined,
-                    title: 'EFECTOS ADVERSOS DE CLASE',
+                    title: p.lang == 'es' ? 'EFECTOS ADVERSOS DE CLASE' : 'EFEITOS ADVERSOS DE CLASSE',
                     items: _fallbackSideEffects(drug),
                     color: const Color(0xFFDC2626), c: c, dark: dark,
                   ),
@@ -2104,7 +2118,7 @@ class _ClinicalTabCard extends StatelessWidget {
                 if ((globalEv?.contraindications ?? ev?.contraindications ?? []).isNotEmpty) ...[
                   _ClinListBlock(
                     icon: Icons.block_rounded,
-                    title: 'CONTRAINDICACIONES',
+                    title: p.lang == 'es' ? 'CONTRAINDICACIONES' : 'CONTRAINDICAÇÕES',
                     items: (globalEv?.contraindications ?? ev!.contraindications),
                     color: const Color(0xFFDC2626), c: c,
                   ),
@@ -2112,7 +2126,7 @@ class _ClinicalTabCard extends StatelessWidget {
                     const SizedBox(height: 14),
                     _ClinListBlock(
                       icon: Icons.swap_horiz_rounded,
-                      title: 'INTERACCIONES IMPORTANTES',
+                      title: p.lang == 'es' ? 'INTERACCIONES IMPORTANTES' : 'INTERAÇÕES IMPORTANTES',
                       items: (globalEv?.interactions ?? ev!.interactions),
                       color: const Color(0xFFF59E0B), c: c,
                     ),
@@ -2121,7 +2135,7 @@ class _ClinicalTabCard extends StatelessWidget {
                   // Fallback: contraindicaciones de clase farmacológica
                   _ClinListBlock(
                     icon: Icons.block_rounded,
-                    title: 'CONTRAINDICACIONES DE CLASE',
+                    title: p.lang == 'es' ? 'CONTRAINDICACIONES DE CLASE' : 'CONTRAINDICAÇÕES DE CLASSE',
                     items: _fallbackContraindications(drug),
                     color: const Color(0xFFDC2626), c: c,
                   ),
