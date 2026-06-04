@@ -14,7 +14,7 @@
 //   • Nenhuma dependência nova — usa apenas http já presente no pubspec
 //
 // ENDPOINT:
-//   POST /v1beta/models/gemini-2.5-flash:streamGenerateContent?alt=sse&key=KEY
+//   POST /v1beta/models/gemini-2.5-flash-lite:streamGenerateContent?alt=sse&key=KEY
 //   Retorna chunks SSE: "data: {...}\n\n" — cada chunk é um candidato parcial.
 // ══════════════════════════════════════════════════════════════════════════════
 
@@ -339,7 +339,8 @@ class GeminiServiceV2 {
     //
     // Usamos um buffer de linha para montar o JSON completo de cada evento.
     final lineBuffer = StringBuffer();
-    bool hadContent = false;
+    bool hadContent    = false;
+    bool finishEmitted = false; // evita emitir GeminiChunk.done duplo
 
     try {
       await for (final bytes in response.stream) {
@@ -370,15 +371,21 @@ class GeminiServiceV2 {
                       isDone: finishReason != null,
                     ));
                   }
+                } else if (finishReason != null && !hadContent) {
+                  // Chunk vazio com finishReason — emite done sem texto
+                  if (!controller.isClosed) {
+                    controller.add(GeminiChunk(text: '', isDone: true));
+                  }
                 }
 
                 // finishReason presente → resposta completa
                 if (finishReason != null) {
                   debugPrint('[GeminiV2] finishReason=$finishReason');
+                  finishEmitted = true; // marca que done já foi emitido
                   if (finishReason == 'SAFETY' || finishReason == 'RECITATION') {
                     // Tenta sem grounding se ainda estava com grounding
                     if (useGrounding && !controller.isClosed) {
-                      controller.add(GeminiChunk(text: '', isDone: false));
+                      finishEmitted = false; // reset — vai refazer
                       // Refaz sem grounding
                       return _streamRequest(
                         controller: controller,
@@ -409,11 +416,14 @@ class GeminiServiceV2 {
       }
     }
 
-    // Fecha o controller ao terminar o stream
+    // Fecha o controller ao terminar o stream.
+    // Emite GeminiChunk.done SOMENTE se finishReason não foi detectado no stream
+    // (garante que o AppProvider sempre receba o sinal de conclusão).
     if (!controller.isClosed) {
-      controller
-        ..add(GeminiChunk.done)
-        ..close();
+      if (!finishEmitted) {
+        controller.add(GeminiChunk.done);
+      }
+      controller.close();
     }
   }
 

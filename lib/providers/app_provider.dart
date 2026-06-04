@@ -206,30 +206,85 @@ class AppProvider extends ChangeNotifier {
   String _resolveSessionLang(String input) {
     if (_sessionLockedLang != null) return _sessionLockedLang!;
 
-    // Detecta idioma da primeira mensagem com heurística lexical simples
-    final q = input.toLowerCase();
-    // Tokens ES exclusivos (não existem em PT ou são raros)
-    final esTokens = ['paciente con', 'manejo de', 'tratamiento', 'conducta',
+    final q = input.toLowerCase().trim();
+
+    // ── Nível 0: caracteres exclusivos do espanhol ─────────────────────────
+    // ñ, ¿, ¡ → ES com certeza. Nunca aparecem em PT.
+    if (RegExp(r'[ñ¿¡]').hasMatch(q)) {
+      _sessionLockedLang = 'es';
+      return 'es';
+    }
+
+    // ── Nível 0: caracteres exclusivos do português ───────────────────────
+    // ã, õ, â, ê, ô (com circunflexo) + ç — raramente usados em ES
+    // 'ão', 'ões', 'ãe' são sufixos exclusivamente PT
+    if (RegExp(r'[ãõ]').hasMatch(q) ||
+        q.contains('ão') || q.contains('ões') || q.contains('ção') ||
+        q.contains('ções') || q.contains('nha') || q.contains('nho')) {
+      _sessionLockedLang = 'pt';
+      return 'pt';
+    }
+
+    // ── Nível 1: palavras clínicas ES exclusivas (palavras soltas) ─────────
+    // Lista expandida — inclui termos de 1 palavra comuns em consultas curtas
+    final esSingleWords = [
+      // Sintomas ES
+      'diarrea', 'fiebre', 'dolor', 'sangrado', 'tension', 'vomito',
+      'nausea', 'tos', 'disnea', 'convulsion', 'cefalea', 'mareo',
+      'hematuria', 'ictericia', 'edema', 'disfagia', 'sincope',
+      'palpitaciones', 'epistaxis', 'hemoptisis', 'disuria',
+      // Condições ES
+      'hipertension', 'diabetes', 'asma', 'enfermedad', 'infeccion',
+      'sepsis', 'neumonia', 'bronquitis', 'gastritis', 'apendicitis',
+      'pancreatitis', 'colecistitis', 'pielonefritis', 'endocarditis',
+      'meningitis', 'encefalitis', 'tuberculosis', 'celulitis',
+      // Frases/verbos ES
+      'tratamiento', 'conducta', 'manejo', 'primera linea', 'dosis de',
+      'cual es', 'como tratar', 'que dar', 'que farmaco', 'cuanto',
+      'cuando', 'tambien', 'ademas', 'siempre', 'nunca', 'paciente con',
+    ];
+
+    // ── Nível 1: palavras clínicas PT exclusivas (palavras soltas) ─────────
+    final ptSingleWords = [
+      // Sintomas PT
+      'diarreia', 'febre', 'tosse', 'dispneia', 'cefale', 'tontura',
+      'hematuria', 'ictericia', 'edema', 'disfagia', 'sincope',
+      'palpitacoes', 'epistaxe', 'hemoptise', 'disuria', 'vomito',
+      // Condições PT
+      'hipertensao', 'diabetes', 'asma', 'doenca', 'infeccao',
+      'sepse', 'pneumonia', 'bronquite', 'gastrite', 'apendicite',
+      'pancreatite', 'colecistite', 'pielonefrite', 'endocardite',
+      'meningite', 'encefalite', 'tuberculose', 'celulite',
+      // Frases/verbos PT
+      'tratamento', 'conduta', 'primeira linha', 'dose de',
+      'qual e', 'como tratar', 'o que dar', 'qual farmaco', 'quanto',
+      'quando', 'tambem', 'alem', 'sempre', 'nunca', 'paciente com',
+    ];
+
+    int esScore = esSingleWords.where((t) => q.contains(t)).length;
+    int ptScore = ptSingleWords.where((t) => q.contains(t)).length;
+
+    // ── Nível 2: tokens multi-palavra ES/PT exclusivos ─────────────────────
+    final esMulti = ['paciente con', 'manejo de', 'tratamiento', 'conducta',
         'dosis de', 'cual es', 'como tratar', 'primera linea', 'que dar',
-        'que farmaco', 'para qué', 'cuándo', 'también', 'además', 'siempre',
-        'nunca', 'fiebre', 'dolor', 'choque', 'sangrado', 'tension'];
-    // Tokens PT exclusivos
-    final ptTokens = ['paciente com', 'manejo de', 'tratamento', 'conduta',
+        'que farmaco', 'para que', 'cuanto', 'también', 'además',
+        'sangrado', 'tension arterial'];
+    final ptMulti = ['paciente com', 'manejo de', 'tratamento', 'conduta',
         'dose de', 'qual é', 'como tratar', 'primeira linha', 'o que dar',
-        'qual farmaco', 'para quê', 'quando', 'também', 'além', 'sempre',
-        'febre', 'dor ', 'choque', 'sangramento', 'pressao'];
+        'qual farmaco', 'para que', 'sangramento', 'pressao arterial',
+        'febre alta', 'dor abdominal'];
 
-    int esScore = esTokens.where((t) => q.contains(t)).length;
-    int ptScore = ptTokens.where((t) => q.contains(t)).length;
+    esScore += esMulti.where((t) => q.contains(t)).length * 2; // peso dobrado
+    ptScore += ptMulti.where((t) => q.contains(t)).length * 2;
 
-    // Tiebreak: usa o idioma atual do app (_lang)
     String detected;
     if (esScore > ptScore) {
       detected = 'es';
     } else if (ptScore > esScore) {
       detected = 'pt';
     } else {
-      detected = _lang; // fallback = preferência do app
+      // Tiebreak: usa o idioma atual do app (_lang)
+      detected = _lang;
     }
 
     _sessionLockedLang = detected;
@@ -2070,10 +2125,30 @@ class AppProvider extends ChangeNotifier {
     }
 
     // ── Tratamento / conduta ────────────────────────────────────────────────
-    if (_has(q, ['tratamento', 'tratamiento', 'tratar ', 'tratar a', 'tratar o',
-                  'conduta', 'conducta', 'manejo de', 'manejo da', 'manejo do',
-                  'como tratar', 'como manejar', 'terapia para', 'terapia de',
-                  'protocolo de tratamento', 'primeira linha', 'primera linea'])) {
+    // REGRA: "tratamento" ou "tratamiento" sozinho NÃO ativa o MODO [A] —
+    // sem condição especificada, o modelo não sabe o que tratar.
+    // Palavras compostas ("tratamento da", "tratar o", "manejo de") ou
+    // queries de 2+ palavras com keyword de tratamento → MODO [A].
+    final hasTreatKeyword = _has(q, [
+      'tratamento da', 'tratamento do', 'tratamento de', 'tratamento para',
+      'tratamiento de', 'tratamiento del', 'tratamiento para',
+      'tratar ', 'tratar a', 'tratar o', 'tratar el', 'tratar la',
+      'conduta para', 'conduta da', 'conduta do', 'conducta para', 'conducta del',
+      'manejo de', 'manejo da', 'manejo do', 'manejo del',
+      'como tratar', 'como manejar', 'terapia para', 'terapia de',
+      'protocolo de tratamento', 'primeira linha', 'primera linea',
+    ]);
+    // "tratamento" ou "conduta" sozinhos com outra palavra (não é query vazia)
+    final hasTreatAlone = (q == 'tratamento' || q == 'tratamiento' ||
+                           q == 'conduta'    || q == 'conducta') &&
+                          input.trim().split(RegExp(r'\s+')).length == 1;
+    if (hasTreatKeyword && !hasTreatAlone) {
+      return 'tratamento';
+    }
+    // Também ativa se "tratamento"/"tratamiento" aparece com pelo menos 1 outra palavra
+    if (!hasTreatAlone &&
+        (_has(q, ['tratamento', 'tratamiento', 'conduta', 'conducta']) &&
+         input.trim().split(RegExp(r'\s+')).length >= 2)) {
       return 'tratamento';
     }
 
@@ -2154,6 +2229,54 @@ class AppProvider extends ChangeNotifier {
                   'clasificacion', 'o que e ', 'que es ', 'definic', 'definicion',
                   'exame para diagnosticar', 'exame', 'laborator', 'interpretar'])) {
       return 'diagnostico';
+    }
+
+    // ── Condição/doença clínica — palavra única ou curta ───────────────────
+    // Queries de 1-3 palavras que são nomes de condições → tratamento direto
+    // "diarrea", "diarréia", "pneumonia", "hipertensão" → MODO [A] conduta
+    // Sem este bloco, essas queries caem em 'geral' e geram resposta enciclopédica
+    final wordCount = input.trim().split(RegExp(r'\s+')).length;
+    if (wordCount <= 4) {
+      if (_has(q, [
+        // Gastrointestinal
+        'diarrea', 'diarreia', 'gastroenterit', 'vomito', 'nausea',
+        'constipac', 'estrenim', 'hemorragia digest', 'sangrado digest',
+        'hepatit', 'cirros', 'colecistit', 'pancreatit', 'apendicit',
+        'peritonit', 'obstrucao', 'obstruccion', 'oclusion',
+        // Respiratório
+        'pneumonia', 'bronquit', 'bronchit', 'neumonia',
+        'asma agud', 'dpoc', 'epoc', 'pleurit', 'derrame pleural',
+        'embolia pulmon', 'tep ',
+        // Cardiovascular
+        'hipertensao', 'hipertension', 'insuficiencia cardiaca', 'insuficiência cardíaca',
+        'infarto', 'angina', 'arritmia', 'fibrilacao', 'fibrilacion',
+        'trombose', 'trombosis', 'endocardite', 'endocarditis',
+        'pericardite', 'pericarditis', 'miocardite', 'miocarditis',
+        // Infeccioso
+        'sepse', 'sepsis', 'meningite', 'meningitis', 'encefalite', 'encefalitis',
+        'celulite infec', 'celulitis', 'erisipela',
+        'endocardite', 'pielonefrit', 'cistit', 'itu ', 'itu.',
+        'tuberculose', 'tuberculosis', 'dengue', 'malaria', 'paludismo',
+        'covid', 'influenza', 'hiv', 'aids', 'sida',
+        // Metabólico/Endócrino
+        'diabetes', 'cetoacidose', 'cetoacidosis', 'hipoglicemia', 'hipoglucemia',
+        'hiperglicemia', 'hiperglucemia', 'dislipidemia', 'hipotireoid', 'hipotiroidi',
+        'hipertireoid', 'hipertiroid', 'insuficiencia renal', 'insuficiência renal',
+        'insuficiencia hepatica', 'insuficiência hepática',
+        // Neurológico
+        'convulsao', 'convulsion', 'epilepsia', 'avc ', 'avc.', 'acv ', 'acv.',
+        'enxaqueca', 'migrana', 'migraine', 'delirium',
+        // Renal
+        'insuficiencia renal', 'lesao renal', 'lesión renal', 'nefrit',
+        // Hematológico
+        'anemia', 'trombocitopenia', 'leucemia', 'linfoma',
+        // Reumatológico
+        'artrit', 'lupus', 'escleroderm', 'vasculit',
+        // Dor
+        'cefaleia', 'cefalea', 'dor cronic', 'dolor cron',
+      ])) {
+        return 'tratamento';
+      }
     }
 
     return 'geral';
@@ -2937,6 +3060,12 @@ class AppProvider extends ChangeNotifier {
     final apiKey      = GeminiService.apiKeyForLab;
     final accumulator = StringBuffer();
 
+    // ── Guard anti-duplicata: onDone/onError devem disparar UMA única vez ──
+    // O stream emite chunk(text, isDone=true) com o último texto E depois
+    // GeminiChunk.done (vazio, isDone=true) como sentinela de fechamento.
+    // Sem este guard, o listener dispararia onDone duas vezes → bolha duplicada.
+    bool completionFired = false;
+
     // ── Subscreve o stream de chunks ───────────────────────────────────────
     final stream = GeminiServiceV2.sendStream(
       apiKey:       apiKey,
@@ -2949,7 +3078,9 @@ class AppProvider extends ChangeNotifier {
     _aiStreamSub = stream.listen(
       (chunk) {
         if (chunk.isError) {
-          // Erro recebido como chunk — encerra e notifica
+          // Erro recebido como chunk — encerra e notifica (somente uma vez)
+          if (completionFired) return;
+          completionFired = true;
           _aiStreamActive = false;
           _aiStreamSub = null;
           final msg = GeminiServiceV2.errorMessage(chunk.errorCode!, _lang);
@@ -2963,7 +3094,9 @@ class AppProvider extends ChangeNotifier {
         }
 
         if (chunk.isDone && !chunk.isError) {
-          // Resposta completa — salva no histórico e notifica conclusão
+          // Resposta completa — dispara somente uma vez (guard anti-duplicata)
+          if (completionFired) return;
+          completionFired = true;
           final finalText = accumulator.toString().trim();
           if (finalText.isNotEmpty) {
             _aiHistory
@@ -2980,29 +3113,37 @@ class AppProvider extends ChangeNotifier {
       },
       onError: (e) {
         debugPrint('[sendAiMessage] stream error: $e');
+        if (completionFired) return;
+        completionFired = true;
         _aiStreamActive = false;
         _aiStreamSub    = null;
         onError(GeminiServiceV2.errorMessage('network', _lang));
       },
       onDone: () {
-        // onDone do StreamController — garante limpeza mesmo sem chunk final
-        if (_aiStreamActive) {
-          final finalText = accumulator.toString().trim();
-          if (finalText.isNotEmpty) {
-            _aiHistory
-              ..add({'role': 'user',      'content': input})
-              ..add({'role': 'assistant', 'content': finalText});
-            while (_aiHistory.length > 20) _aiHistory.removeAt(0);
-            _aiStreamActive = false;
-            _aiStreamSub    = null;
-            onDone(finalText);
-          } else {
-            _aiStreamActive = false;
-            _aiStreamSub    = null;
-            onError(_lang == 'es'
-                ? 'No pude generar una respuesta. ¿Puedes reformular? ⚕ Apoyo educacional.'
-                : 'Não consegui gerar uma resposta. Pode reformular? ⚕ Apoio educacional.');
-          }
+        // onDone do StreamController — garante limpeza mesmo sem chunk isDone
+        // O guard completionFired evita duplo disparo após chunk.isDone=true
+        if (completionFired) {
+          // Já tratado pelo listener — apenas limpeza silenciosa
+          _aiStreamActive = false;
+          _aiStreamSub    = null;
+          return;
+        }
+        completionFired = true;
+        final finalText = accumulator.toString().trim();
+        if (finalText.isNotEmpty) {
+          _aiHistory
+            ..add({'role': 'user',      'content': input})
+            ..add({'role': 'assistant', 'content': finalText});
+          while (_aiHistory.length > 20) _aiHistory.removeAt(0);
+          _aiStreamActive = false;
+          _aiStreamSub    = null;
+          onDone(finalText);
+        } else {
+          _aiStreamActive = false;
+          _aiStreamSub    = null;
+          onError(_lang == 'es'
+              ? 'No pude generar una respuesta. ¿Puedes reformular? ⚕ Apoyo educacional.'
+              : 'Não consegui gerar uma resposta. Pode reformular? ⚕ Apoio educacional.');
         }
       },
       cancelOnError: false,
