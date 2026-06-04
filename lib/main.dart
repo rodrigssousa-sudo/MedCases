@@ -1531,18 +1531,13 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              // ── Barra de botões de navegação — 5 itens (lupa central) ──────
+              // ── Barra de navegação — INICIO · BUSCA · IA(central) · BIBLIOTECA [· FERRAMENTAS(web)] ──
+              // Altura 56 para acomodar o botão IA elevado (pseudo-FAB central).
               SizedBox(
-                height: 48,
+                height: 56,
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    // ── BUILD 93 — Apple review: 3 itens estritamente ──────
-                    // INICIO · LUPA · BIBLIOTECA
-                    // Itens ocultos: H. Clínica (tab 3), Ferramentas (tab 4)
-                    // Toda a lógica e telas preservadas — apenas invisíveis aqui.
-                    // Reativar após aprovação da Apple.
-                    //
                     // 0 — INICIO
                     _buildNavBtn(
                       0,
@@ -1551,8 +1546,10 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
                       dark,
                       p,
                     ),
-                    // Centro — LUPA (busca global)
+                    // LUPA — busca global (slot fixo, não tab)
                     _buildSearchBtn(dark),
+                    // IA MEDCASES — botão central elevado (abre tab 2)
+                    _buildAiCenterBtn(dark, p),
                     // 5 — BIBLIOTECA
                     _buildNavBtn(
                       5,
@@ -1561,12 +1558,7 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
                       dark,
                       p,
                     ),
-
-                    // ── ITENS OCULTOS PARA REVISÃO APPLE ──────────────────
-                    // H. Clínica (tab 3) — oculto até aprovação
-                    // if (false) _buildNavBtn(3, Icons.folder_shared_rounded, 'H. Clínica', dark, p),
-                    //
-                    // Ferramentas (tab 4) — web-only após aprovação
+                    // Ferramentas (tab 4) — web-only
                     if (kIsWeb)
                       _buildNavBtn(4, Icons.calculate_rounded, 'Ferramentas', dark, p),
                   ],
@@ -1620,38 +1612,101 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
     );
   }
 
-  // ── Botão central de busca global ────────────────────────────────────────
+  // ── Botão de busca global ─────────────────────────────────────────────────
   Widget _buildSearchBtn(bool dark) {
     final green  = dark ? const Color(0xFF46E28C) : const Color(0xFF0A7C4E);
-    final bgColor = dark
-        ? const Color(0xFF1A2E22)
-        : const Color(0xFFE8F5EF);
-    final borderColor = dark
-        ? const Color(0xFF2D4A38)
-        : const Color(0xFFB8D9C8);
+    final bgColor = dark ? const Color(0xFF1A2E22) : const Color(0xFFE8F5EF);
+    final borderColor = dark ? const Color(0xFF2D4A38) : const Color(0xFFB8D9C8);
+    final inactiveColor = dark ? Colors.white.withValues(alpha: 0.32) : const Color(0xFFB0B8C0);
 
     return Expanded(
       child: GestureDetector(
         behavior: HitTestBehavior.opaque,
         onTap: () => showGlobalSearch(context),
-        child: Center(
-          child: Container(
-            width: 44,
-            height: 36,
+        child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+          Container(
+            width: 40,
+            height: 28,
             decoration: BoxDecoration(
               color: bgColor,
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(10),
               border: Border.all(color: borderColor, width: 1),
             ),
-            child: Icon(
-              Icons.search_rounded,
-              color: green,
-              size: 22,
-            ),
+            child: Icon(Icons.search_rounded, color: green, size: 18),
           ),
-        ),
+          const SizedBox(height: 1),
+          Text(
+            _p?.lang == 'es' ? 'Buscar' : 'Buscar',
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(fontSize: 9, fontWeight: FontWeight.w500, color: inactiveColor),
+          ),
+        ]),
       ),
     );
+  }
+
+  // ── Botão IA MEDCASES central (pseudo-FAB acoplado à barra) ──────────────
+  // Posicionado no centro da barra, visualmente elevado com gradiente verde
+  // premium. Ao tocar, navega imediatamente para a tab de IA (tab 2).
+  Widget _buildAiCenterBtn(bool dark, dynamic p) {
+    final isAiActive = _tab == 2;
+    final gradStart  = dark ? const Color(0xFF0F9E6A) : const Color(0xFF0A7C4E);
+    final gradEnd    = dark ? const Color(0xFF064D32) : const Color(0xFF064D32);
+    final glowColor  = const Color(0xFF0D7A55);
+    final labelColor = dark ? const Color(0xFF4ADE80) : Colors.white;
+
+    return Expanded(
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: () => setState(() => _tab = 2),
+        child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+          AnimatedContainer(
+            duration: const Duration(milliseconds: 200),
+            curve: Curves.easeOutCubic,
+            width: 46,
+            height: 34,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [gradStart, gradEnd],
+              ),
+              borderRadius: BorderRadius.circular(14),
+              boxShadow: isAiActive
+                  ? [
+                      BoxShadow(color: glowColor.withValues(alpha: 0.55), blurRadius: 14, offset: const Offset(0, 3)),
+                      BoxShadow(color: glowColor.withValues(alpha: 0.25), blurRadius: 24, offset: const Offset(0, 6)),
+                    ]
+                  : [
+                      BoxShadow(color: glowColor.withValues(alpha: 0.30), blurRadius: 8, offset: const Offset(0, 2)),
+                    ],
+              border: Border.all(
+                color: isAiActive
+                    ? const Color(0xFF4ADE80).withValues(alpha: 0.60)
+                    : const Color(0xFF0D9E6E).withValues(alpha: 0.35),
+                width: 1.2,
+              ),
+            ),
+            child: const Icon(Icons.psychology_rounded, size: 20, color: Colors.white),
+          ),
+          const SizedBox(height: 1),
+          Text(
+            'IA',
+            style: TextStyle(
+              fontSize: 9,
+              fontWeight: isAiActive ? FontWeight.w800 : FontWeight.w600,
+              color: labelColor,
+            ),
+          ),
+        ]),
+      ),
+    );
+  }
+
+  // Referência ao provider — usado para obter lang no _buildSearchBtn
+  // sem reconstruir todo o widget.
+  AppProvider? get _p {
+    try { return context.read<AppProvider>(); } catch (_) { return null; }
   }
 
 }

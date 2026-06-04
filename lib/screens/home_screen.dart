@@ -298,14 +298,11 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
 
           // ── BLOCO 1: IA INLINE CHAT — hero principal (~40% da tela) ─────────
-          // Restrição de altura mínima garantida via ConstrainedBox para que
-          // o widget ocupe destaque absoluto independente do conteúdo atual.
-          // O chat exibe streaming real via AppProvider.sendAiMessage sem sair
-          // da tela Home.
-          ConstrainedBox(
-            constraints: BoxConstraints(
-              minHeight: screenH * 0.38,
-            ),
+          // SizedBox com altura fixa para que o Expanded interno do ListView
+          // funcione corretamente dentro de um SingleChildScrollView.
+          // Altura = 40% da tela, mínimo 260 para telas pequenas.
+          SizedBox(
+            height: (screenH * 0.40).clamp(260.0, 440.0),
             child: _HomeInlineChat(
               dark: dark,
               isEs: isEs,
@@ -961,18 +958,19 @@ class _HomeInlineChat extends StatefulWidget {
 }
 
 class _HomeInlineChatState extends State<_HomeInlineChat> {
-  final _ctrl  = TextEditingController();
-  final _focus = FocusNode();
+  final _ctrl       = TextEditingController();
+  final _focus      = FocusNode();
+  final _scrollCtrl = ScrollController();
 
   static const _kGreen     = Color(0xFF0D7A55);
   static const _kGreenBg   = Color(0xFF0D7A55);
   static const _kGreenBord = Color(0xFF0D9E6E);
 
-  String _lastQuestion = '';
-  String _lastAnswer   = '';
-  String _streaming    = '';
-  bool   _thinking     = false;
-  bool   _hasError     = false;
+  // ── Histórico de mensagens (multi-turn inline) ────────────────────────────
+  // Cada item: {'role': 'user'|'ai', 'text': '...', 'isError': bool}
+  final List<Map<String, dynamic>> _messages = [];
+  String _streaming = '';
+  bool   _thinking  = false;
 
   static const _chipsEs = ['Caso clínico', 'Diagnóstico dif.', 'Farmacología', 'Razonamiento'];
   static const _chipsPt = ['Caso clínico', 'Diagnóstico dif.', 'Farmacologia', 'Raciocínio'];
@@ -981,7 +979,34 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
   void dispose() {
     _ctrl.dispose();
     _focus.dispose();
+    _scrollCtrl.dispose();
     super.dispose();
+  }
+
+  /// Rola o ListView até o final após setState.
+  void _scrollToBottom() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (_scrollCtrl.hasClients) {
+        _scrollCtrl.animateTo(
+          _scrollCtrl.position.maxScrollExtent,
+          duration: const Duration(milliseconds: 280),
+          curve: Curves.easeOut,
+        );
+      }
+    });
+  }
+
+  /// Botão enviar — comportamento inteligente:
+  ///   campo VAZIO  → navegação direta para tela cheia de IA
+  ///   campo CHEIO  → dispara stream do mini-chat inline
+  void _onSendPressed() {
+    final text = _ctrl.text.trim();
+    if (text.isEmpty) {
+      // Campo vazio: atalho de navegação para a tela cheia da IA
+      _goToAiTab(null, false);
+      return;
+    }
+    _send(text);
   }
 
   Future<void> _send([String? preset]) async {
@@ -990,42 +1015,62 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
     _ctrl.clear();
     _focus.unfocus();
     setState(() {
-      _lastQuestion = text;
-      _lastAnswer   = '';
-      _streaming    = '';
-      _thinking     = true;
-      _hasError     = false;
+      _messages.add({'role': 'user', 'text': text, 'isError': false});
+      _streaming = '';
+      _thinking  = true;
     });
+    _scrollToBottom();
     final p = context.read<AppProvider>();
     await p.sendAiMessage(
       text,
-      onChunk: (acc) { if (mounted) setState(() => _streaming = acc); },
-      onDone:  (fin) { if (mounted) setState(() { _lastAnswer = fin; _streaming = ''; _thinking = false; }); },
-      onError: (err) { if (mounted) setState(() { _lastAnswer = err; _streaming = ''; _thinking = false; _hasError = true; }); },
+      onChunk: (acc) {
+        if (mounted) {
+          setState(() => _streaming = acc);
+          _scrollToBottom();
+        }
+      },
+      onDone: (fin) {
+        if (mounted) {
+          setState(() {
+            _messages.add({'role': 'ai', 'text': fin, 'isError': false});
+            _streaming = '';
+            _thinking  = false;
+          });
+          _scrollToBottom();
+        }
+      },
+      onError: (err) {
+        if (mounted) {
+          setState(() {
+            _messages.add({'role': 'ai', 'text': err, 'isError': true});
+            _streaming = '';
+            _thinking  = false;
+          });
+          _scrollToBottom();
+        }
+      },
     );
   }
 
   /// Navega para a aba de IA (tab 2).
   ///
   /// [q] → query opcional para disparar como nova mensagem (chips de atalho).
-  /// [withHistory] → true (padrão) quando chamado pelos botões "Ver más" /
-  ///   "Ver respuesta completa" — injeta o par pergunta/resposta atual do
-  ///   mini-chat no AiScreen para continuar a conversa de onde parou.
+  /// [withHistory] → true quando chamado por "Ver más"/"Ver resposta completa"
+  ///   — injeta o histórico completo do mini-chat no AiScreen para continuar
+  ///   a conversa de onde parou.
   void _goToAiTab([String? q, bool withHistory = false]) {
     if (q != null && q.isNotEmpty) {
-      // Chip de atalho: dispara nova query na tela de IA
+      // Chip de atalho ou campo preenchido: dispara nova query na tela de IA
       AiScreen.pendingQuery.value = q;
-    } else if (withHistory &&
-        _lastQuestion.isNotEmpty &&
-        _lastAnswer.isNotEmpty &&
-        !_hasError) {
-      // "Ver respuesta completa" / "Ver más": injeta o histórico do mini-chat.
-      // O AiScreen consume este notifier no _onPendingHistory listener,
-      // preserva a saudação e acrescenta o par pergunta/resposta.
-      AiScreen.pendingHistory.value = [
-        {'role': 'user', 'text': _lastQuestion},
-        {'role': 'ai',   'text': _lastAnswer},
-      ];
+    } else if (withHistory && _messages.isNotEmpty) {
+      // "Ver más" / "Ver resposta completa": injeta histórico do mini-chat.
+      // Filtra apenas pares user+ai sem erros para uma continuação limpa.
+      final clean = _messages.where((m) => m['isError'] != true).toList();
+      if (clean.isNotEmpty) {
+        AiScreen.pendingHistory.value = clean
+            .map((m) => {'role': m['role'] as String, 'text': m['text'] as String})
+            .toList();
+      }
     }
     widget.onNavigateToAi(2);
   }
@@ -1046,259 +1091,370 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
     final chipBorder  = dark ? _kGreenBord.withValues(alpha: 0.25) : _kGreenBord.withValues(alpha: 0.22);
     final chipText    = dark ? const Color(0xFF4ADE80) : _kGreen;
     final subText     = dark ? Colors.white38 : const Color(0xFF8BA898);
-    final displayAnswer = (_thinking && _streaming.isNotEmpty) ? _streaming : _lastAnswer;
+
+    final hasHistory = _messages.isNotEmpty;
 
     return ConstrainedBox(
       constraints: const BoxConstraints(minHeight: 220),
       child: Container(
-      decoration: BoxDecoration(
-        color: cardBg,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: borderColor, width: 1.2),
-        boxShadow: dark
-            ? [BoxShadow(color: _kGreenBg.withValues(alpha: 0.08), blurRadius: 20, offset: const Offset(0, 4))]
-            : [
-                BoxShadow(color: Colors.black.withValues(alpha: 0.07), blurRadius: 16, offset: const Offset(0, 4)),
-                BoxShadow(color: _kGreen.withValues(alpha: 0.06),      blurRadius: 24, offset: const Offset(0, 6)),
-              ],
-      ),
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(16, 14, 16, 14),
-        child: Column(
-          mainAxisSize: MainAxisSize.max,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
+        decoration: BoxDecoration(
+          color: cardBg,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: borderColor, width: 1.2),
+          boxShadow: dark
+              ? [BoxShadow(color: _kGreenBg.withValues(alpha: 0.08), blurRadius: 20, offset: const Offset(0, 4))]
+              : [
+                  BoxShadow(color: Colors.black.withValues(alpha: 0.07), blurRadius: 16, offset: const Offset(0, 4)),
+                  BoxShadow(color: _kGreen.withValues(alpha: 0.06),      blurRadius: 24, offset: const Offset(0, 6)),
+                ],
+        ),
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(16, 14, 16, 14),
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
 
-          // ── Header ────────────────────────────────────────────────────────
-          Row(children: [
-            Container(
-              width: 36, height: 36,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                gradient: const LinearGradient(
-                  begin: Alignment.topLeft, end: Alignment.bottomRight,
-                  colors: [Color(0xFF0F9E6A), Color(0xFF064D32)],
-                ),
-                boxShadow: [BoxShadow(color: _kGreenBg.withValues(alpha: 0.35), blurRadius: 10, offset: const Offset(0, 3))],
-              ),
-              child: const Icon(Icons.psychology_rounded, size: 20, color: Colors.white),
-            ),
-            const SizedBox(width: 10),
-            Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Row(children: [
-                Text('IA MEDCASES', style: TextStyle(fontSize: 13.5, fontWeight: FontWeight.w900, letterSpacing: 0.4, color: textColor)),
-                const SizedBox(width: 6),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                  decoration: BoxDecoration(color: _kGreen, borderRadius: BorderRadius.circular(20)),
-                  child: Text(isEs ? 'CHAT' : 'CHAT', // igual nos dois idiomas
-                    style: const TextStyle(fontSize: 7.5, fontWeight: FontWeight.w800, color: Colors.white, letterSpacing: 0.8)),
-                ),
-              ]),
-              const SizedBox(height: 1),
-              Text(
-                isEs ? 'Asistente clínico educativo' : 'Assistente clínico educativo',
-                style: TextStyle(fontSize: 10, color: subText, height: 1.3),
-              ),
-            ])),
-            if (_lastAnswer.isNotEmpty || _lastQuestion.isNotEmpty)
-              GestureDetector(
-                // "Ver mais": injeta histórico do mini-chat no AiScreen
-                onTap: () => _goToAiTab(null, true),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                  decoration: BoxDecoration(
-                    color: chipBg,
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(color: chipBorder),
-                  ),
-                  child: Row(mainAxisSize: MainAxisSize.min, children: [
-                    Text(isEs ? 'Ver más' : 'Ver mais',
-                      style: TextStyle(fontSize: 10.5, fontWeight: FontWeight.w600, color: chipText)),
-                    const SizedBox(width: 3),
-                    Icon(Icons.open_in_new_rounded, size: 10, color: chipText),
-                  ]),
-                ),
-              ),
-          ]),
-
-          // ── Área de conversa inline ────────────────────────────────────────
-          if (_lastQuestion.isNotEmpty || _thinking) ...[
-            const SizedBox(height: 10),
-            // Bolha usuário
-            Align(
-              alignment: Alignment.centerRight,
-              child: Container(
-                constraints: const BoxConstraints(maxWidth: 280),
-                margin: const EdgeInsets.only(bottom: 10),
-                padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 9),
+            // ── Header ──────────────────────────────────────────────────────
+            Row(children: [
+              Container(
+                width: 36, height: 36,
                 decoration: BoxDecoration(
-                  color: dark ? const Color(0xFF1A3D28) : const Color(0xFFE6F7EF),
-                  borderRadius: const BorderRadius.only(
-                    topLeft: Radius.circular(14), topRight: Radius.circular(14),
-                    bottomLeft: Radius.circular(14), bottomRight: Radius.circular(4),
+                  borderRadius: BorderRadius.circular(10),
+                  gradient: const LinearGradient(
+                    begin: Alignment.topLeft, end: Alignment.bottomRight,
+                    colors: [Color(0xFF0F9E6A), Color(0xFF064D32)],
                   ),
-                  border: Border.all(color: _kGreenBord.withValues(alpha: 0.25)),
+                  boxShadow: [BoxShadow(color: _kGreenBg.withValues(alpha: 0.35), blurRadius: 10, offset: const Offset(0, 3))],
                 ),
-                child: Text(_lastQuestion,
-                  style: TextStyle(fontSize: 13, color: textColor, height: 1.45)),
+                child: const Icon(Icons.psychology_rounded, size: 20, color: Colors.white),
               ),
-            ),
-
-            // Bolha IA — loading dots ou resposta
-            if (_thinking && _streaming.isEmpty)
-              Padding(
-                padding: const EdgeInsets.only(bottom: 10),
-                child: Row(children: [
+              const SizedBox(width: 10),
+              Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Row(children: [
+                  Text('IA MEDCASES',
+                    style: TextStyle(fontSize: 13.5, fontWeight: FontWeight.w900, letterSpacing: 0.4, color: textColor)),
+                  const SizedBox(width: 6),
                   Container(
-                    width: 32, height: 32,
-                    margin: const EdgeInsets.only(right: 8),
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: dark ? const Color(0xFF162A1C) : const Color(0xFFE6F7EF),
-                    ),
-                    child: const Icon(Icons.psychology_rounded, size: 15, color: _kGreen),
+                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                    decoration: BoxDecoration(color: _kGreen, borderRadius: BorderRadius.circular(20)),
+                    child: const Text('CHAT',
+                      style: TextStyle(fontSize: 7.5, fontWeight: FontWeight.w800, color: Colors.white, letterSpacing: 0.8)),
                   ),
-                  _ThinkingDots(dark: dark),
                 ]),
-              )
-            else if (displayAnswer.isNotEmpty)
-              Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Container(
-                  width: 28, height: 28,
-                  margin: const EdgeInsets.only(right: 8, top: 2),
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: dark ? const Color(0xFF162A1C) : const Color(0xFFE6F7EF),
-                  ),
-                  child: const Icon(Icons.psychology_rounded, size: 14, color: _kGreen),
+                const SizedBox(height: 1),
+                Text(
+                  isEs ? 'Asistente clínico educativo' : 'Assistente clínico educativo',
+                  style: TextStyle(fontSize: 10, color: subText, height: 1.3),
                 ),
-                Expanded(
+              ])),
+              // "Ver más" aparece quando há histórico
+              if (hasHistory)
+                GestureDetector(
+                  onTap: () => _goToAiTab(null, true),
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 9),
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                     decoration: BoxDecoration(
-                      color: dark ? const Color(0xFF161616) : const Color(0xFFF8F9FA),
-                      borderRadius: const BorderRadius.only(
-                        topLeft: Radius.circular(4), topRight: Radius.circular(14),
-                        bottomLeft: Radius.circular(14), bottomRight: Radius.circular(14),
-                      ),
-                      border: Border.all(color: _hasError
-                          ? Colors.red.withValues(alpha: 0.3)
-                          : (dark ? Colors.white.withValues(alpha: 0.07) : const Color(0xFFE2E8F0))),
+                      color: chipBg,
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(color: chipBorder),
                     ),
-                    child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                      Text(
-                        displayAnswer,
-                        style: TextStyle(
-                          fontSize: 13,
-                          color: _hasError ? Colors.red.shade400 : (dark ? Colors.white.withValues(alpha: 0.88) : const Color(0xFF1A202C)),
-                          height: 1.5,
-                        ),
-                        maxLines: 14,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      if (!_thinking && _lastAnswer.isNotEmpty && !_hasError) ...[
-                        const SizedBox(height: 8),
-                        GestureDetector(
-                          // "Ver respuesta completa": continua conversa no AiScreen
-                          onTap: () => _goToAiTab(null, true),
-                          child: Row(mainAxisSize: MainAxisSize.min, children: [
-                            Text(isEs ? 'Ver respuesta completa' : 'Ver resposta completa',
-                              style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: _kGreen)),
-                            const SizedBox(width: 3),
-                            const Icon(Icons.arrow_forward_rounded, size: 11, color: _kGreen),
-                          ]),
-                        ),
-                      ],
+                    child: Row(mainAxisSize: MainAxisSize.min, children: [
+                      Text(isEs ? 'Ver más' : 'Ver mais',
+                        style: TextStyle(fontSize: 10.5, fontWeight: FontWeight.w600, color: chipText)),
+                      const SizedBox(width: 3),
+                      Icon(Icons.open_in_new_rounded, size: 10, color: chipText),
                     ]),
                   ),
                 ),
-              ]),
+            ]),
+
+            // ── Área de conversa scrollável (estilo mini-WhatsApp) ───────────
+            // Sempre visível; quando vazia exibe placeholder. Com mensagens,
+            // ListView.builder com scroll independente e auto-scroll ao final.
+            const SizedBox(height: 10),
+            Expanded(
+              child: hasHistory || (_thinking && _streaming.isNotEmpty)
+                  ? ListView.builder(
+                      controller: _scrollCtrl,
+                      physics: const BouncingScrollPhysics(),
+                      itemCount: _messages.length + (_thinking ? 1 : 0),
+                      itemBuilder: (_, i) {
+                        // Último item artificial = estado de streaming/thinking
+                        if (i == _messages.length && _thinking) {
+                          return Padding(
+                            padding: const EdgeInsets.only(bottom: 10),
+                            child: _streaming.isNotEmpty
+                                // Streaming em andamento — bolha IA parcial
+                                ? Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                                    _AiBubbleAvatar(dark: dark),
+                                    Expanded(child: _AiBubble(
+                                      text: _streaming,
+                                      isError: false,
+                                      isStreaming: true,
+                                      dark: dark,
+                                      isEs: isEs,
+                                      onExpand: () => _goToAiTab(null, true),
+                                    )),
+                                  ])
+                                // Aguardando primeira palavra — dots
+                                : Row(children: [
+                                    _AiBubbleAvatar(dark: dark),
+                                    _ThinkingDots(dark: dark),
+                                  ]),
+                          );
+                        }
+
+                        final msg     = _messages[i];
+                        final isUser  = msg['role'] == 'user';
+                        final text    = msg['text'] as String;
+                        final isError = msg['isError'] == true;
+                        final isLast  = i == _messages.length - 1;
+
+                        if (isUser) {
+                          return Align(
+                            alignment: Alignment.centerRight,
+                            child: Container(
+                              constraints: const BoxConstraints(maxWidth: 280),
+                              margin: const EdgeInsets.only(bottom: 10),
+                              padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 9),
+                              decoration: BoxDecoration(
+                                color: dark ? const Color(0xFF1A3D28) : const Color(0xFFE6F7EF),
+                                borderRadius: const BorderRadius.only(
+                                  topLeft: Radius.circular(14), topRight: Radius.circular(14),
+                                  bottomLeft: Radius.circular(14), bottomRight: Radius.circular(4),
+                                ),
+                                border: Border.all(color: _kGreenBord.withValues(alpha: 0.25)),
+                              ),
+                              child: Text(text,
+                                style: TextStyle(fontSize: 13, color: textColor, height: 1.45)),
+                            ),
+                          );
+                        } else {
+                          return Padding(
+                            padding: const EdgeInsets.only(bottom: 10),
+                            child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                              _AiBubbleAvatar(dark: dark),
+                              Expanded(child: _AiBubble(
+                                text: text,
+                                isError: isError,
+                                isStreaming: false,
+                                dark: dark,
+                                isEs: isEs,
+                                // "Ver resposta completa" só no último AI bubble
+                                onExpand: isLast ? () => _goToAiTab(null, true) : null,
+                              )),
+                            ]),
+                          );
+                        }
+                      },
+                    )
+                  // Estado inicial: placeholder elegante com chamada para ação
+                  : Center(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(Icons.psychology_rounded, size: 32,
+                            color: _kGreen.withValues(alpha: 0.25)),
+                          const SizedBox(height: 8),
+                          Text(
+                            isEs
+                                ? 'Haz tu pregunta clínica\no toca para abrir el chat completo'
+                                : 'Faça sua pergunta clínica\nou toque para abrir o chat completo',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: subText,
+                              height: 1.5,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+            ),
 
             const SizedBox(height: 10),
-          ],
 
-          // Spacer empurra input+chips para o fundo (estilo WhatsApp)
-          const Spacer(),
-
-          // ── Campo de entrada ───────────────────────────────────────────────
-          Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
-            Expanded(
-              child: GestureDetector(
-                onTap: () => _focus.requestFocus(),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-                  decoration: BoxDecoration(
-                    color: fieldBg,
-                    borderRadius: BorderRadius.circular(14),
-                    border: Border.all(color: fieldBorder, width: 1.2),
-                  ),
-                  child: TextField(
-                    controller: _ctrl,
-                    focusNode: _focus,
-                    minLines: 1,
-                    maxLines: 4,
-                    style: TextStyle(fontSize: 14, color: textColor, height: 1.5),
-                    decoration: InputDecoration.collapsed(
-                      hintText: isEs ? 'Caso clínico, pregunta académica…' : 'Caso clínico, pergunta acadêmica…',
-                      hintStyle: TextStyle(fontSize: 14, color: hintColor),
+            // ── Campo de entrada + botão enviar (smart) ──────────────────────
+            // Botão VAZIO → navega para tela cheia de IA
+            // Botão CHEIO → envia no mini-chat inline
+            Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
+              Expanded(
+                child: GestureDetector(
+                  onTap: () => _focus.requestFocus(),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                    decoration: BoxDecoration(
+                      color: fieldBg,
+                      borderRadius: BorderRadius.circular(14),
+                      border: Border.all(color: fieldBorder, width: 1.2),
                     ),
-                    textInputAction: TextInputAction.send,
-                    onSubmitted: (_) => _send(),
+                    child: TextField(
+                      controller: _ctrl,
+                      focusNode: _focus,
+                      minLines: 1,
+                      maxLines: 4,
+                      style: TextStyle(fontSize: 14, color: textColor, height: 1.5),
+                      decoration: InputDecoration.collapsed(
+                        hintText: isEs ? 'Caso clínico, pregunta académica…' : 'Caso clínico, pergunta acadêmica…',
+                        hintStyle: TextStyle(fontSize: 14, color: hintColor),
+                      ),
+                      textInputAction: TextInputAction.send,
+                      onSubmitted: (_) => _send(),
+                    ),
                   ),
                 ),
               ),
-            ),
-            const SizedBox(width: 8),
-            GestureDetector(
-              onTap: _thinking ? null : () => _send(),
-              child: AnimatedContainer(
-                duration: const Duration(milliseconds: 200),
-                width: 40, height: 40,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: _thinking
-                      ? (dark ? const Color(0xFF162A1C) : const Color(0xFFDDEFE6))
-                      : _kGreen,
-                ),
-                child: _thinking
-                    ? const Padding(
-                        padding: EdgeInsets.all(11),
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                          valueColor: AlwaysStoppedAnimation<Color>(_kGreen),
-                        ),
-                      )
-                    : const Icon(Icons.arrow_upward_rounded, color: Colors.white, size: 19),
+              const SizedBox(width: 8),
+              // Botão smart: ícone muda conforme campo vazio/cheio
+              ValueListenableBuilder<TextEditingValue>(
+                valueListenable: _ctrl,
+                builder: (_, val, __) {
+                  final isEmpty = val.text.trim().isEmpty;
+                  return GestureDetector(
+                    onTap: _thinking ? null : _onSendPressed,
+                    child: AnimatedContainer(
+                      duration: const Duration(milliseconds: 200),
+                      width: 40, height: 40,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: _thinking
+                            ? (dark ? const Color(0xFF162A1C) : const Color(0xFFDDEFE6))
+                            : _kGreen,
+                      ),
+                      child: _thinking
+                          ? const Padding(
+                              padding: EdgeInsets.all(11),
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                valueColor: AlwaysStoppedAnimation<Color>(_kGreen),
+                              ),
+                            )
+                          : Icon(
+                              // Campo vazio: seta de "ir para chat" (externo)
+                              // Campo cheio: seta de enviar (cima)
+                              isEmpty
+                                  ? Icons.open_in_full_rounded
+                                  : Icons.arrow_upward_rounded,
+                              color: Colors.white,
+                              size: 18,
+                            ),
+                    ),
+                  );
+                },
+              ),
+            ]),
+
+            const SizedBox(height: 10),
+
+            // ── Chips de atalho rápido ───────────────────────────────────────
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              physics: const BouncingScrollPhysics(),
+              child: Row(
+                children: chips.map((chip) => GestureDetector(
+                  onTap: _thinking ? null : () => _send(chip),
+                  child: Container(
+                    margin: const EdgeInsets.only(right: 7),
+                    padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 5),
+                    decoration: BoxDecoration(
+                      color: chipBg,
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(color: chipBorder),
+                    ),
+                    child: Text(chip, style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.w600, color: chipText)),
+                  ),
+                )).toList(),
               ),
             ),
           ]),
-
-          const SizedBox(height: 10),
-
-          // ── Chips ──────────────────────────────────────────────────────────
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            physics: const BouncingScrollPhysics(),
-            child: Row(
-              children: chips.map((chip) => GestureDetector(
-                onTap: _thinking ? null : () => _send(chip),
-                child: Container(
-                  margin: const EdgeInsets.only(right: 7),
-                  padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 5),
-                  decoration: BoxDecoration(
-                    color: chipBg,
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(color: chipBorder),
-                  ),
-                  child: Text(chip, style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.w600, color: chipText)),
-                ),
-              )).toList(),
-            ),
-          ),
-        ]),
+        ),
       ),
-    ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// HELPERS INTERNOS — bolha de resposta IA + avatar
+// ─────────────────────────────────────────────────────────────────────────────
+class _AiBubbleAvatar extends StatelessWidget {
+  final bool dark;
+  const _AiBubbleAvatar({required this.dark});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 28, height: 28,
+      margin: const EdgeInsets.only(right: 8, top: 2),
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: dark ? const Color(0xFF162A1C) : const Color(0xFFE6F7EF),
+      ),
+      child: const Icon(Icons.psychology_rounded, size: 14, color: Color(0xFF0D7A55)),
+    );
+  }
+}
+
+class _AiBubble extends StatelessWidget {
+  final String text;
+  final bool isError;
+  final bool isStreaming;
+  final bool dark;
+  final bool isEs;
+  final VoidCallback? onExpand;
+
+  const _AiBubble({
+    required this.text,
+    required this.isError,
+    required this.isStreaming,
+    required this.dark,
+    required this.isEs,
+    this.onExpand,
+  });
+
+  static const _kGreen = Color(0xFF0D7A55);
+
+  @override
+  Widget build(BuildContext context) {
+    final bubbleBg = dark ? const Color(0xFF161616) : const Color(0xFFF8F9FA);
+    final bubbleBorder = isError
+        ? Colors.red.withValues(alpha: 0.3)
+        : (dark ? Colors.white.withValues(alpha: 0.07) : const Color(0xFFE2E8F0));
+    final textCol = isError
+        ? Colors.red.shade400
+        : (dark ? Colors.white.withValues(alpha: 0.88) : const Color(0xFF1A202C));
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 9),
+      decoration: BoxDecoration(
+        color: bubbleBg,
+        borderRadius: const BorderRadius.only(
+          topLeft: Radius.circular(4), topRight: Radius.circular(14),
+          bottomLeft: Radius.circular(14), bottomRight: Radius.circular(14),
+        ),
+        border: Border.all(color: bubbleBorder),
+      ),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Text(
+          text,
+          style: TextStyle(fontSize: 13, color: textCol, height: 1.5),
+          maxLines: isStreaming ? 20 : 14,
+          overflow: TextOverflow.ellipsis,
+        ),
+        // "Ver respuesta completa" / "Ver resposta completa" — só quando fornecido
+        if (!isStreaming && !isError && onExpand != null) ...[
+          const SizedBox(height: 8),
+          GestureDetector(
+            onTap: onExpand,
+            child: Row(mainAxisSize: MainAxisSize.min, children: [
+              Text(isEs ? 'Ver respuesta completa' : 'Ver resposta completa',
+                style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: _kGreen)),
+              const SizedBox(width: 3),
+              const Icon(Icons.arrow_forward_rounded, size: 11, color: _kGreen),
+            ]),
+          ),
+        ],
+      ]),
     );
   }
 }
@@ -1770,13 +1926,17 @@ class _AgeCardState extends State<_AgeCard> with SingleTickerProviderStateMixin 
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      widget.label,
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w900,
-                        letterSpacing: 0.4,
-                        color: widget.accentColor,
+                    FittedBox(
+                      fit: BoxFit.scaleDown,
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        widget.label,
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w900,
+                          letterSpacing: 0.4,
+                          color: widget.accentColor,
+                        ),
                       ),
                     ),
                     const SizedBox(height: 2),
@@ -3262,13 +3422,19 @@ class _HomeCardState extends State<_HomeCard>
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(
-                      widget.label,
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w900,
-                        letterSpacing: 0.4,
-                        color: widget.accentColor,
+                    // FittedBox garante que textos longos (ex: INTERACCIONES)
+                    // nunca quebrem nem overflow — encolhe o fontSize dinamicamente.
+                    FittedBox(
+                      fit: BoxFit.scaleDown,
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        widget.label,
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w900,
+                          letterSpacing: 0.4,
+                          color: widget.accentColor,
+                        ),
                       ),
                     ),
                     const SizedBox(height: 2),
