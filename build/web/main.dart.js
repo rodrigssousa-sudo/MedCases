@@ -39822,7 +39822,7 @@ a8=a7.h(a6,"role")==="assistant"?"model":"user"
 a7=a7.h(a6,"content")
 a0.push(A.T(["role",a8,"parts",A.a([A.T(["text",a7==null?"":a7],a2,a2)],a3)],a2,a4))}a0.push(A.T(["role","user","parts",A.a([A.T(["text",b8],a2,a2)],a3)],a2,a4))
 a9=b7?A.a([A.T(["google_search",A.W(a4,a4)],a2,t.f)],t.ae):null
-b0=A.T(["system_instruction",A.T(["parts",A.a([A.T(["text",b6],a2,a2)],a3)],a2,t.xW),"contents",a0,"generationConfig",A.T(["maxOutputTokens",b4,"temperature",0.4,"topP",0.95,"topK",40],a2,t.Ci),"safetySettings",A.a([A.T(["category","HARM_CATEGORY_HARASSMENT","threshold","BLOCK_NONE"],a2,a2),A.T(["category","HARM_CATEGORY_HATE_SPEECH","threshold","BLOCK_NONE"],a2,a2),A.T(["category","HARM_CATEGORY_SEXUALLY_EXPLICIT","threshold","BLOCK_NONE"],a2,a2),A.T(["category","HARM_CATEGORY_DANGEROUS_CONTENT","threshold","BLOCK_NONE"],a2,a2)],a3)],a2,a4)
+b0=A.T(["system_instruction",A.T(["parts",A.a([A.T(["text",b6],a2,a2)],a3)],a2,t.xW),"contents",a0,"generationConfig",A.T(["maxOutputTokens",b4,"temperature",0.4,"topP",0.95,"topK",40,"thinkingConfig",A.T(["thinkingBudget",0],a2,t.S)],a2,t.K),"safetySettings",A.a([A.T(["category","HARM_CATEGORY_HARASSMENT","threshold","BLOCK_NONE"],a2,a2),A.T(["category","HARM_CATEGORY_HATE_SPEECH","threshold","BLOCK_NONE"],a2,a2),A.T(["category","HARM_CATEGORY_SEXUALLY_EXPLICIT","threshold","BLOCK_NONE"],a2,a2),A.T(["category","HARM_CATEGORY_DANGEROUS_CONTENT","threshold","BLOCK_NONE"],a2,a2)],a3)],a2,a4)
 if(a9!=null)b0.p(0,"tools",a9)
 n=B.ax.eJ(b0,null)
 p=4
@@ -39981,7 +39981,8 @@ a8=J.av(a7)
 a9=a8.h(a7,"role")==="assistant"?"model":"user"
 a8=a8.h(a7,"content")
 b9.push(A.T(["role",a9,"parts",A.a([A.T(["text",a8==null?"":a8],a3,a3)],a4)],a3,a5))}b9.push(A.T(["role","user","parts",A.a([A.T(["text",c9],a3,a3)],a4)],a3,a5))
-b0=A.T(["system_instruction",A.T(["parts",A.a([A.T(["text",c7],a3,a3)],a4)],a3,t.xW),"contents",b9,"generationConfig",A.T(["maxOutputTokens",2200,"temperature",0.4,"topP",0.95,"topK",40],a3,t.Ci),"safetySettings",A.a([A.T(["category","HARM_CATEGORY_HARASSMENT","threshold","BLOCK_NONE"],a3,a3),A.T(["category","HARM_CATEGORY_HATE_SPEECH","threshold","BLOCK_NONE"],a3,a3),A.T(["category","HARM_CATEGORY_SEXUALLY_EXPLICIT","threshold","BLOCK_NONE"],a3,a3),A.T(["category","HARM_CATEGORY_DANGEROUS_CONTENT","threshold","BLOCK_NONE"],a3,a3)],a4)],a3,a5)
+a2=t.K
+b0=A.T(["system_instruction",A.T(["parts",A.a([A.T(["text",c7],a3,a3)],a4)],a3,t.xW),"contents",b9,"generationConfig",A.T(["maxOutputTokens",2200,"temperature",0.4,"topP",0.95,"topK",40,"thinkingConfig",A.T(["thinkingBudget",0],a3,t.S)],a3,a2),"safetySettings",A.a([A.T(["category","HARM_CATEGORY_HARASSMENT","threshold","BLOCK_NONE"],a3,a3),A.T(["category","HARM_CATEGORY_HATE_SPEECH","threshold","BLOCK_NONE"],a3,a3),A.T(["category","HARM_CATEGORY_SEXUALLY_EXPLICIT","threshold","BLOCK_NONE"],a3,a3),A.T(["category","HARM_CATEGORY_DANGEROUS_CONTENT","threshold","BLOCK_NONE"],a3,a3)],a4)],a3,a5)
 if(c8)b0.p(0,"tools",A.a([A.T(["google_search",A.W(a5,a5)],a3,t.f)],t.ae))
 m=B.ax.eJ(b0,null)
 l=A.c3("response")
@@ -40041,7 +40042,7 @@ c5.b8(0)}s=1
 break}j=new A.df("")
 i=!1
 p=14
-a2=new A.A8(A.e0(l.aG().w,"stream",t.K))
+a2=new A.A8(A.e0(l.aG().w,"stream",a2))
 p=17
 a3=t.P
 case 20:s=22
