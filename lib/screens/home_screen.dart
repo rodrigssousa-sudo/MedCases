@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -149,8 +150,9 @@ class _HomeScreenState extends State<HomeScreen> {
         _ShiftTimerBar(dark: dark, isEs: isEs),
         const SizedBox(height: 24),
 
-        // ── Grid de cards principais — 3 colunas no desktop ───────────────
-        LayoutBuilder(builder: (context, constraints) {
+        // ── Grid de cards principais — 3 colunas no desktop ─────────────
+        // BUILD 93: apenas Web exibe ferramentas clínicas (Apple 1.4.1)
+        if (kIsWeb) LayoutBuilder(builder: (context, constraints) {
           const cols   = 3;
           const gap    = 14.0;
           final width  = (constraints.maxWidth - gap * (cols - 1)) / cols;
@@ -194,76 +196,82 @@ class _HomeScreenState extends State<HomeScreen> {
           );
         }),
 
-        const SizedBox(height: 24),
-        _HomeDivider(dark: dark),
-        const SizedBox(height: 20),
+        // BUILD 93: seção 2 colunas (Plantão + Emergências) web-only
+        if (kIsWeb) ...[
+          const SizedBox(height: 24),
+          _HomeDivider(dark: dark),
+          const SizedBox(height: 20),
 
-        // ── Layout de 2 colunas: Shortcuts + Emergências ─────────────────
-        LayoutBuilder(builder: (context, constraints) {
-          final half = (constraints.maxWidth - 20) / 2;
-          return Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Coluna 1: Atalhos + Plantão
-              SizedBox(
-                width: half,
-                child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  _QuickShortcuts(
+          // ── Layout de 2 colunas: Shortcuts + Emergências ───────────────
+          LayoutBuilder(builder: (context, constraints) {
+            final half = (constraints.maxWidth - 20) / 2;
+            return Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Coluna 1: Atalhos + Plantão
+                SizedBox(
+                  width: half,
+                  child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                    _QuickShortcuts(
+                      dark: dark,
+                      isEs: isEs,
+                      openProtocol: widget.openProtocol,
+                      onOpenNotes: widget.onOpenNotes,
+                      onCheckUpdate: widget.onCheckUpdate,
+                    ),
+                    const SizedBox(height: 20),
+                    _HomeDivider(dark: dark),
+                    const SizedBox(height: 20),
+                    MeuPlantaoDashboard(
+                      onOpenDrug: (drug) => showDrugDetailSheet(context, drug),
+                      onOpenCalc: (calcId) {
+                        const calcTabMap = {
+                          'calc_biometria':   0,
+                          'calc_scores':      1,
+                          'calc_cardio':      2,
+                          'calc_eletrólitos': 3,
+                          'calc_infusao':     4,
+                          'calc_referencia':  5,
+                          'calc_prescricoes': 6,
+                          'calc_pediatria':   7,
+                        };
+                        toolsScreenTabNotifier.value = calcTabMap[calcId] ?? 0;
+                        widget.onTabChange(4);
+                      },
+                      onManageTap: () => showPlantaoManageSheet(context),
+                    ),
+                  ]),
+                ),
+
+                const SizedBox(width: 20),
+
+                // Coluna 2: Emergências
+                SizedBox(
+                  width: half,
+                  child: _QuickEmergencies(
+                    p: p,
                     dark: dark,
                     isEs: isEs,
                     openProtocol: widget.openProtocol,
-                    onOpenNotes: widget.onOpenNotes,
-                    onCheckUpdate: widget.onCheckUpdate,
                   ),
-                  const SizedBox(height: 20),
-                  _HomeDivider(dark: dark),
-                  const SizedBox(height: 20),
-                  MeuPlantaoDashboard(
-                    onOpenDrug: (drug) => showDrugDetailSheet(context, drug),
-                    onOpenCalc: (calcId) {
-                      const calcTabMap = {
-                        'calc_biometria':   0,
-                        'calc_scores':      1,
-                        'calc_cardio':      2,
-                        'calc_eletrólitos': 3,
-                        'calc_infusao':     4,
-                        'calc_referencia':  5,
-                        'calc_prescricoes': 6,
-                        'calc_pediatria':   7,
-                      };
-                      // Define a aba ANTES de mudar de tela para que o listener
-                      // do ToolsScreen já receba ao montar/ativar.
-                      toolsScreenTabNotifier.value = calcTabMap[calcId] ?? 0;
-                      widget.onTabChange(4);
-                    },
-                    onManageTap: () => showPlantaoManageSheet(context),
-                  ),
-                ]),
-              ),
-
-              const SizedBox(width: 20),
-
-              // Coluna 2: Emergências
-              SizedBox(
-                width: half,
-                child: _QuickEmergencies(
-                  p: p,
-                  dark: dark,
-                  isEs: isEs,
-                  openProtocol: widget.openProtocol,
                 ),
-              ),
-            ],
-          );
-        }),
+              ],
+            );
+          }),
+        ],
       ]),
     );
   }
 
   // ── HOME V2 — layout mobile ───────────────────────────────────────────────
   Widget _buildMobileLayout(BuildContext context, bool dark, bool isEs, AppProvider p) {
+    // ══════════════════════════════════════════════════════════════════════════
+    // BUILD 93 — Apple App Store compliance (Guidelines 1.4.1 & 1.4.2)
+    // Layout mobile focado 100% em Simulação Acadêmica e IA.
+    // Ferramentas clínicas (calculadoras, protocolos, Mi Guardia, Emergências)
+    // visíveis APENAS na versão Web (guard kIsWeb nos pontos de entrada).
+    // ══════════════════════════════════════════════════════════════════════════
     return GestureDetector(
-      // Fecha o teclado ao tocar em qualquer área fora da caixa de texto da IA
       onTap: () => FocusScope.of(context).unfocus(),
       behavior: HitTestBehavior.translucent,
       child: SingleChildScrollView(
@@ -271,53 +279,22 @@ class _HomeScreenState extends State<HomeScreen> {
       padding: const EdgeInsets.fromLTRB(16, 12, 16, 110),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
 
-        // ── 1. IA MEDCASES — destaque principal ──────────────────────────
+        // ── 1. IA — HERO ELEMENT: Chat de Simulação de Casos Clínicos ──────
+        // É o elemento central e de maior destaque na tela (App Store focus).
         _HomeIaCard(
           dark: dark,
           isEs: isEs,
           onNavigateToAi: widget.onTabChange,
         ),
-        const SizedBox(height: 14),
+        const SizedBox(height: 20),
 
-        // ── 2. FÁRMACOS ──────────────────────────────────────────────────
-        _HomeCard(
-          icon: Icons.medication_rounded,
-          label: 'FÁRMACOS',
-          subtitle: isEs
-              ? 'Actualizados en 2026'
-              : 'Atualizados em 2026',
-          gradientColors: const [Color(0xFF3B2200), Color(0xFF6B3A00), Color(0xFF9A5B00)],
-          accentColor: const Color(0xFFFBBF24),
-          dark: dark,
-          onTap: () => Navigator.of(context).push(
-            _HomeScreenState._slide(const _FarmacosShell()),
-          ),
-        ),
-        const SizedBox(height: 10),
-
-        // ── 3. INTERAÇÕES ────────────────────────────────────────────────
-        _HomeCard(
-          icon: Icons.compare_arrows_rounded,
-          label: isEs ? 'INTERACCIONES' : 'INTERAÇÕES',
-          subtitle: isEs
-              ? '+${DrugInteractionService.totalInteractions} pares con evidencia'
-              : '+${DrugInteractionService.totalInteractions} pares com evidência',
-          gradientColors: const [Color(0xFF3B0A1E), Color(0xFF5E1234), Color(0xFF8B1E4F)],
-          accentColor: const Color(0xFFFF6BA0),
-          dark: dark,
-          onTap: () => Navigator.of(context).push(
-            _HomeScreenState._slide(const DrugInteractionsScreen()),
-          ),
-        ),
-        const SizedBox(height: 10),
-
-        // ── 4. SIMULAÇÕES ────────────────────────────────────────────────
+        // ── 2. SIMULAÇÕES ACADÊMICAS — casos para estudo ────────────────────
         _HomeCard(
           icon: Icons.description_rounded,
-          label: isEs ? 'SIMULACIONES' : 'SIMULAÇÕES',
+          label: isEs ? 'SIMULACIONES ACADÉMICAS' : 'SIMULAÇÕES ACADÊMICAS',
           subtitle: isEs
-              ? '${prescriptionModels(true).length} ejemplos'
-              : '${prescriptionModels(false).length} exemplos',
+              ? '${prescriptionModels(true).length} casos de estudio'
+              : '${prescriptionModels(false).length} casos de estudo',
           gradientColors: const [Color(0xFF2A0B52), Color(0xFF3D1280), Color(0xFF5B21B6)],
           accentColor: const Color(0xFFA78BFA),
           dark: dark,
@@ -325,40 +302,9 @@ class _HomeScreenState extends State<HomeScreen> {
             _HomeScreenState._slide(const _PrescripcionesShell()),
           ),
         ),
-        const SizedBox(height: 10),
+        const SizedBox(height: 14),
 
-        // ── 5. PEDIATRIA + ADULTO — cards compactos lado a lado ──────────
-        _HomeAdultoPediatriaRow(
-          dark: dark,
-          isEs: isEs,
-          onTapAdulto: () => Navigator.of(context).push(
-            _HomeScreenState._slide(_AdultoShell(openProtocol: widget.openProtocol)),
-          ),
-          onTapPediatria: () => Navigator.of(context).push(
-            _HomeScreenState._slide(const _PediatricsShell()),
-          ),
-        ),
-        const SizedBox(height: 16),
-
-        // ── 6. MIGUARDIA — dashboard personalizado ───────────────────────
-        _HomeMiGuardiaSection(
-          dark: dark,
-          isEs: isEs,
-          onOpenDrug:  (drug) => showDrugDetailSheet(context, drug),
-          onOpenCalc:  (calcId) {
-            const calcTabMap = {
-              'calc_biometria': 0, 'calc_scores': 1, 'calc_cardio': 2,
-              'calc_eletrólitos': 3, 'calc_infusao': 4, 'calc_referencia': 5,
-              'calc_prescricoes': 6, 'calc_pediatria': 7,
-            };
-            toolsScreenTabNotifier.value = calcTabMap[calcId] ?? 0;
-            widget.onTabChange(4);
-          },
-          onManageTap: () => showPlantaoManageSheet(context),
-        ),
-        const SizedBox(height: 16),
-
-        // ── 7. ATALHOS RÁPIDOS — Notas · Recentes · Favoritos · Avaliação ─
+        // ── 3. ATALHOS RÁPIDOS — Notas · Recentes · Favoritos · Avaliação ──
         _QuickShortcuts(
           dark: dark,
           isEs: isEs,
@@ -366,10 +312,72 @@ class _HomeScreenState extends State<HomeScreen> {
           onOpenNotes: widget.onOpenNotes,
           onCheckUpdate: widget.onCheckUpdate,
         ),
-        const SizedBox(height: 16),
+        const SizedBox(height: 14),
 
-        // ── 8. EMERGÊNCIAS RÁPIDAS ────────────────────────────────────────
-        _QuickEmergencies(p: p, dark: dark, isEs: isEs, openProtocol: widget.openProtocol),
+        // ── 4. FERRAMENTAS CLÍNICAS (Web only) ──────────────────────────────
+        // Calculadoras, Fármacos, Interações, Pediatria, Adulto, Mi Guardia,
+        // Emergências: exibidos APENAS na versão Web conforme Apple 1.4.1/1.4.2.
+        if (kIsWeb) ...[
+          // FÁRMACOS
+          _HomeCard(
+            icon: Icons.medication_rounded,
+            label: isEs ? 'FÁRMACOS' : 'FÁRMACOS',
+            subtitle: isEs ? 'Actualizados en 2026' : 'Atualizados em 2026',
+            gradientColors: const [Color(0xFF3B2200), Color(0xFF6B3A00), Color(0xFF9A5B00)],
+            accentColor: const Color(0xFFFBBF24),
+            dark: dark,
+            onTap: () => Navigator.of(context).push(
+              _HomeScreenState._slide(const _FarmacosShell()),
+            ),
+          ),
+          const SizedBox(height: 10),
+          // INTERAÇÕES
+          _HomeCard(
+            icon: Icons.compare_arrows_rounded,
+            label: isEs ? 'INTERACCIONES' : 'INTERAÇÕES',
+            subtitle: isEs
+                ? '+\${DrugInteractionService.totalInteractions} pares con evidencia'
+                : '+\${DrugInteractionService.totalInteractions} pares com evidência',
+            gradientColors: const [Color(0xFF3B0A1E), Color(0xFF5E1234), Color(0xFF8B1E4F)],
+            accentColor: const Color(0xFFFF6BA0),
+            dark: dark,
+            onTap: () => Navigator.of(context).push(
+              _HomeScreenState._slide(const DrugInteractionsScreen()),
+            ),
+          ),
+          const SizedBox(height: 10),
+          // PEDIATRIA + ADULTO
+          _HomeAdultoPediatriaRow(
+            dark: dark,
+            isEs: isEs,
+            onTapAdulto: () => Navigator.of(context).push(
+              _HomeScreenState._slide(_AdultoShell(openProtocol: widget.openProtocol)),
+            ),
+            onTapPediatria: () => Navigator.of(context).push(
+              _HomeScreenState._slide(const _PediatricsShell()),
+            ),
+          ),
+          const SizedBox(height: 16),
+          // MI GUARDIA / MEU PLANTÃO
+          _HomeMiGuardiaSection(
+            dark: dark,
+            isEs: isEs,
+            onOpenDrug:  (drug) => showDrugDetailSheet(context, drug),
+            onOpenCalc:  (calcId) {
+              const calcTabMap = {
+                'calc_biometria': 0, 'calc_scores': 1, 'calc_cardio': 2,
+                'calc_eletrólitos': 3, 'calc_infusao': 4, 'calc_referencia': 5,
+                'calc_prescricoes': 6, 'calc_pediatria': 7,
+              };
+              toolsScreenTabNotifier.value = calcTabMap[calcId] ?? 0;
+              widget.onTabChange(4);
+            },
+            onManageTap: () => showPlantaoManageSheet(context),
+          ),
+          const SizedBox(height: 16),
+          // EMERGÊNCIAS RÁPIDAS
+          _QuickEmergencies(p: p, dark: dark, isEs: isEs, openProtocol: widget.openProtocol),
+        ],
       ]),
       ),  // SingleChildScrollView
     );    // GestureDetector
@@ -575,10 +583,13 @@ class _SearchSheetState extends State<_SearchSheet> {
     final divColor = dark ? Colors.white.withValues(alpha: 0.07) : const Color(0xFFEDF0F7);
 
     // ── Resultados ────────────────────────────────────────────────────────
+    // BUILD 93 — Apple 1.4.1/1.4.2: Fármacos e Protocolos clínicos
+    // são indexados APENAS na versão Web. No mobile/iOS apenas conteúdo
+    // educacional (Simulações Acadêmicas) aparece na busca.
     final q = _q.toLowerCase().trim();
 
-    // Fármacos — usa p.drugsDB (deduplicado)
-    final drugs = q.isEmpty
+    // Fármacos — visível apenas na Web
+    final drugs = (q.isEmpty || !kIsWeb)
         ? <DrugModel>[]
         : p.drugsDB
             .where((d) =>
@@ -588,8 +599,8 @@ class _SearchSheetState extends State<_SearchSheet> {
             .take(8)
             .toList();
 
-    // Protocolos
-    final protocols = q.isEmpty
+    // Protocolos — visível apenas na Web
+    final protocols = (q.isEmpty || !kIsWeb)
         ? <dynamic>[]
         : p.protocolsDB
             .where((pr) {
@@ -650,9 +661,10 @@ class _SearchSheetState extends State<_SearchSheet> {
                         ),
                         decoration: InputDecoration(
                           border: InputBorder.none,
+                          // BUILD 93 — hint educacional (Apple 1.4.1)
                           hintText: isEs
-                              ? 'Fármaco, protocolo, prescrição…'
-                              : 'Fármaco, protocolo, prescrição…',
+                              ? 'Caso clínico, simulación, pregunta académica…'
+                              : 'Caso clínico, simulação, pergunta acadêmica…',
                           hintStyle: TextStyle(
                             color: dark ? Colors.white30 : const Color(0xFFADB5C7),
                             fontSize: 14,
@@ -710,8 +722,8 @@ class _SearchSheetState extends State<_SearchSheet> {
                         const SizedBox(height: 12),
                         Text(
                           isEs
-                              ? 'Busca fármacos, protocolos\ny prescrições'
-                              : 'Busque fármacos, protocolos\ne prescrições',
+                              ? (kIsWeb ? 'Busca fármacos, protocolos\ny prescrições' : 'Busca casos clínicos\ny simulaciones académicas')
+                              : (kIsWeb ? 'Busque fármacos, protocolos\ne prescrições' : 'Busque casos clínicos\ne simulações acadêmicas'),
                           textAlign: TextAlign.center,
                           style: TextStyle(fontSize: 14, color: textSub),
                         ),
@@ -902,8 +914,9 @@ class _HomeIaCardState extends State<_HomeIaCard> {
   static const _kGreenBord = Color(0xFF0D9E6E);
 
   // Chips de exemplo bilíngues
-  static const _chipsEs = ['Choque séptico', 'Noradrenalina', 'ECG FA', 'Hipercalemia', 'Cetoacidosis'];
-  static const _chipsPt = ['Choque séptico', 'Noradrenalina', 'ECG FA', 'Hipercalemia', 'Cetoacidose'];
+  // BUILD 93 — chips educacionais (Apple 1.4.1: sem referência a doses/emergências)
+  static const _chipsEs = ['Caso clínico', 'Simulación', 'Aprendizaje', 'Razonamiento', 'Educación'];
+  static const _chipsPt = ['Caso clínico', 'Simulação', 'Aprendizado', 'Raciocínio', 'Educação'];
 
   @override
   void dispose() {

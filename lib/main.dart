@@ -1545,8 +1545,9 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
                     _buildSearchBtn(dark),
                     // 5 — Biblioteca
                     _buildNavBtn(5, Icons.menu_book_rounded, 'Biblioteca', dark, p),
-                    // 4 — Ferramentas
-                    _buildNavBtn(4, Icons.calculate_rounded, 'Ferramentas', dark, p),
+                    // 4 — Ferramentas (OCULTO no iOS/mobile — Apple 1.4.1)
+                    // Ferramentas clínicas ativas apenas na versão Web
+                    if (kIsWeb) _buildNavBtn(4, Icons.calculate_rounded, 'Ferramentas', dark, p),
                   ],
                 ),
               ),
@@ -3981,25 +3982,27 @@ class _DrawerQuickAccess extends StatelessWidget {
           dark: dark, textCol: textCol, subCol: subCol,
           onTap: () => _go(context, 2),
         ),
-        // Protocolos → tab 1 (sub 1)
-        _DrawerRow(
-          icon: Icons.assignment_outlined,
-          iconColor: const Color(0xFF0EA5E9),
-          title: isEs ? 'Protocolos' : 'Protocolos',
-          subtitle: isEs ? 'Guías y directrices' : 'Rx e diretrizes',
-          dark: dark, textCol: textCol, subCol: subCol,
-          onTap: () => _go(context, 1),
-        ),
-        // Farmacologia → tab 1 (o combo inclui farmacologia como sub 0)
-        _DrawerRow(
-          icon: Icons.medication_outlined,
-          iconColor: const Color(0xFFF59E0B),
-          title: isEs ? 'Farmacología' : 'Farmacologia',
-          subtitle: isEs ? 'Base de medicamentos' : 'Base de medicamentos',
-          dark: dark, textCol: textCol, subCol: subCol,
-          showDivider: false,
-          onTap: () => _go(context, 1),
-        ),
+        // PROTOCOLOS — visível apenas na Web (Apple 1.4.1: oculto no iOS)
+        if (kIsWeb) ...[
+          _DrawerRow(
+            icon: Icons.assignment_outlined,
+            iconColor: const Color(0xFF0EA5E9),
+            title: isEs ? 'Protocolos' : 'Protocolos',
+            subtitle: isEs ? 'Guías y directrices' : 'Rx e diretrizes',
+            dark: dark, textCol: textCol, subCol: subCol,
+            onTap: () => _go(context, 1),
+          ),
+          // FARMACOLOGIA — visível apenas na Web (Apple 1.4.1: oculto no iOS)
+          _DrawerRow(
+            icon: Icons.medication_outlined,
+            iconColor: const Color(0xFFF59E0B),
+            title: isEs ? 'Farmacología' : 'Farmacologia',
+            subtitle: isEs ? 'Base de medicamentos' : 'Base de medicamentos',
+            dark: dark, textCol: textCol, subCol: subCol,
+            showDivider: false,
+            onTap: () => _go(context, 1),
+          ),
+        ],
       ],
     );
   }
