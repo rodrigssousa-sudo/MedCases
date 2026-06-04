@@ -370,7 +370,9 @@ class _PlantaoContent extends StatelessWidget {
     final c = colors;
     final hasPatients = p.plantaoPatients.isNotEmpty;
     final hasDrugs    = p.pinnedDrugs.isNotEmpty;
-    final hasCalcs    = p.pinnedCalcIds.isNotEmpty;
+    // BUILD 93 — CALCULADORAS ocultas (Apple 1.4.1) — sempre false nesta seção
+    // ignore: unused_local_variable
+    const hasCalcs    = false; // p.pinnedCalcIds.isNotEmpty;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -415,11 +417,11 @@ class _PlantaoContent extends StatelessWidget {
               p.removePlantaoPatient(pt.id);
             },
           ),
-          if (hasDrugs || hasCalcs) const SizedBox(height: 20),
+          if (hasDrugs) const SizedBox(height: 20),
         ] else ...[
           // Empty patients row — botão de adicionar
           _AddFirstPatientRow(isEs: isEs, colors: c, onTap: onAddPatient),
-          if (hasDrugs || hasCalcs) const SizedBox(height: 20),
+          if (hasDrugs) const SizedBox(height: 20),
         ],
 
         // ── FÁRMACOS ────────────────────────────────────────────────────────
@@ -436,24 +438,17 @@ class _PlantaoContent extends StatelessWidget {
               p.unpinDrug(drug.id);
             },
           ),
-          if (hasCalcs) const SizedBox(height: 18),
+          // BUILD 93: hasCalcs sempre false — espaço removido
         ],
 
-        // ── CALCULADORAS ────────────────────────────────────────────────────
-        if (hasCalcs) ...[
-          _SectionLabel(icon: Icons.calculate_outlined, label: isEs ? 'CALCULADORAS' : 'CALCULADORAS', colors: c),
-          const SizedBox(height: 8),
-          _PinnedCalcsRow(
-            calcIds: p.pinnedCalcIds,
-            isEs: isEs,
-            colors: c,
-            onTap: onOpenCalc,
-            onUnpin: (id) {
-              AppHaptics.medium(context);
-              p.unpinCalc(id);
-            },
-          ),
-        ],
+        // BUILD 93 — CALCULADORAS ocultas do Mi Guardia (Apple Guideline 1.4.1)
+        // Cálculos de dose e infusão disponíveis apenas na aba Ferramentas.
+        // if (hasCalcs) ...[
+        //   _SectionLabel(icon: Icons.calculate_outlined, label: 'CALCULADORAS', colors: c),
+        //   const SizedBox(height: 8),
+        //   _PinnedCalcsRow(calcIds: p.pinnedCalcIds, isEs: isEs, colors: c,
+        //     onTap: onOpenCalc, onUnpin: (id) { p.unpinCalc(id); }),
+        // ],
       ],
     );
   }
@@ -726,7 +721,7 @@ class _PatientCardContent extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      isEs ? 'Tto: ' : 'Tto: ',
+                      isEs ? 'Tto: ' : 'Trat: ',
                       style: TextStyle(fontSize: 11, fontWeight: FontWeight.w800, color: c.textHint),
                     ),
                     Expanded(
@@ -916,7 +911,7 @@ class _EmptyStateState extends State<_EmptyState> with SingleTickerProviderState
                   padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 9),
                   decoration: BoxDecoration(color: c.green, borderRadius: BorderRadius.circular(20)),
                   child: Text(
-                    widget.isEs ? 'Começar →' : 'Começar →',
+                    widget.isEs ? 'Empezar →' : 'Começar →',
                     style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w800, color: Colors.white),
                   ),
                 ),
@@ -1401,11 +1396,11 @@ class _PatientEditSheetState extends State<_PatientEditSheet> {
                         Text(
                           isEdit
                               ? (isEs ? 'Editar Paciente' : 'Editar Paciente')
-                              : (isEs ? 'Novo Paciente no Turno' : 'Novo Paciente no Plantão'),
+                              : (isEs ? 'Nuevo Paciente en Turno' : 'Novo Paciente no Plantão'),
                           style: TextStyle(fontSize: 16, fontWeight: FontWeight.w900, color: c.textPrimary, letterSpacing: -0.3),
                         ),
                         Text(
-                          isEs ? 'Pressione salvar para fixar no turno' : 'Pressione salvar para fixar no plantão',
+                          isEs ? 'Presione guardar para fijar en el turno' : 'Pressione salvar para fixar no plantão',
                           style: TextStyle(fontSize: 11, color: c.textHint),
                         ),
                       ],
@@ -1432,7 +1427,7 @@ class _PatientEditSheetState extends State<_PatientEditSheet> {
                             label: isEs ? 'Nombre del paciente' : 'Nome do paciente',
                             icon: Icons.person_outline_rounded,
                             controller: _nameCtrl,
-                            hint: isEs ? 'Ex: João Silva' : 'Ex: João Silva',
+                            hint: isEs ? 'Ej: Juan Pérez' : 'Ex: João Silva',
                             colors: c,
                             maxLines: 1,
                           ),
@@ -1441,7 +1436,7 @@ class _PatientEditSheetState extends State<_PatientEditSheet> {
                         Expanded(
                           flex: 2,
                           child: _FieldBlock(
-                            label: isEs ? 'Quarto / Leito' : 'Quarto / Leito',
+                            label: isEs ? 'Habitación / Cama' : 'Quarto / Leito',
                             icon: Icons.bed_outlined,
                             controller: _roomCtrl,
                             hint: '204-A',
@@ -1459,7 +1454,7 @@ class _PatientEditSheetState extends State<_PatientEditSheet> {
                       label: isEs ? 'Diagnóstico principal' : 'Diagnóstico principal',
                       icon: Icons.medical_information_outlined,
                       controller: _dxCtrl,
-                      hint: isEs ? 'Ex: Pneumonia adquirida na comunidade' : 'Ex: Pneumonia adquirida na comunidade',
+                      hint: isEs ? 'Ej: Neumonía adquirida en la comunidad' : 'Ex: Pneumonia adquirida na comunidade',
                       colors: c,
                       maxLines: 3,
                     ),
@@ -1470,7 +1465,7 @@ class _PatientEditSheetState extends State<_PatientEditSheet> {
                       label: isEs ? 'Tratamiento / medicamentos' : 'Tratamento / medicamentos',
                       icon: Icons.medication_outlined,
                       controller: _ttoCtrl,
-                      hint: isEs ? 'Ex: Amoxicilina 875mg 12/12h + O2 2L/min' : 'Ex: Amoxicilina 875mg 12/12h + O2 2L/min',
+                      hint: isEs ? 'Ej: Amoxicilina 875mg 12/12h + O2 2L/min' : 'Ex: Amoxicilina 875mg 12/12h + O2 2L/min',
                       colors: c,
                       maxLines: 3,
                     ),
@@ -1741,7 +1736,7 @@ class _PlantaoManageSheetState extends State<_PlantaoManageSheet>
                     onChanged: (_) => setState(() {}),
                     style: TextStyle(fontSize: 14, color: c.textPrimary),
                     decoration: InputDecoration(
-                      hintText: isEs ? 'Buscar fármaco…' : 'Buscar fármaco…',
+                      hintText: isEs ? 'Buscar fármaco…' : 'Buscar medicamento…',
                       hintStyle: TextStyle(fontSize: 13, color: c.textHint),
                       prefixIcon: Icon(Icons.search_rounded, color: c.textHint, size: 18),
                       filled: true,

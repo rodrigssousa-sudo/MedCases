@@ -225,15 +225,18 @@ class _HomeScreenState extends State<HomeScreen> {
                     MeuPlantaoDashboard(
                       onOpenDrug: (drug) => showDrugDetailSheet(context, drug),
                       onOpenCalc: (calcId) {
+                        // BUILD 93 — Tabs visíveis: 0=Biometria 1=Scores 2=Cardio
+                        //   3=Eletrólitos 4=Referência 5=Pediatria
+                        //   Infusão e Prescrições ocultas (Apple 1.4.1) → fallback 0
                         const calcTabMap = {
                           'calc_biometria':   0,
                           'calc_scores':      1,
                           'calc_cardio':      2,
                           'calc_eletrólitos': 3,
-                          'calc_infusao':     4,
-                          'calc_referencia':  5,
-                          'calc_prescricoes': 6,
-                          'calc_pediatria':   7,
+                          'calc_infusao':     0, // oculta → fallback Biometria
+                          'calc_referencia':  4,
+                          'calc_prescricoes': 0, // oculta → fallback Biometria
+                          'calc_pediatria':   5,
                         };
                         toolsScreenTabNotifier.value = calcTabMap[calcId] ?? 0;
                         widget.onTabChange(4);
@@ -404,10 +407,14 @@ class _HomeScreenState extends State<HomeScreen> {
               isEs: isEs,
               onOpenDrug: (drug) => showDrugDetailSheet(context, drug),
               onOpenCalc: (calcId) {
+                // BUILD 93 — Tabs visíveis: 0=Biometria 1=Scores 2=Cardio
+                //   3=Eletrólitos 4=Referência 5=Pediatria
+                //   Infusão e Prescrições ocultas (Apple 1.4.1) → fallback 0
                 const calcTabMap = {
                   'calc_biometria': 0, 'calc_scores': 1, 'calc_cardio': 2,
-                  'calc_eletrólitos': 3, 'calc_infusao': 4, 'calc_referencia': 5,
-                  'calc_prescricoes': 6, 'calc_pediatria': 7,
+                  'calc_eletrólitos': 3, 'calc_infusao': 0,
+                  'calc_referencia': 4, 'calc_prescricoes': 0,
+                  'calc_pediatria': 5,
                 };
                 toolsScreenTabNotifier.value = calcTabMap[calcId] ?? 0;
                 widget.onTabChange(4);
@@ -815,7 +822,7 @@ class _SearchSheetState extends State<_SearchSheet> {
                           // ── Protocolos ───────────────────────────────
                           if (protocols.isNotEmpty) ...[
                             _SearchSectionLabel(
-                                label: isEs ? 'PROTOCOLOS' : 'PROTOCOLOS', dark: dark),
+                                label: isEs ? 'PROTOCOLOS' : 'PROTOCOLOS', dark: dark), // técnico
                             ...protocols.map((pr) {
                               final lang  = isEs ? 'es' : 'pt';
                               final title = pr.title[lang] ?? pr.title['pt'] ?? '';
@@ -823,7 +830,7 @@ class _SearchSheetState extends State<_SearchSheet> {
                                 leading: Icons.emergency_rounded,
                                 leadingColor: const Color(0xFFCC2222),
                                 title: title,
-                                subtitle: isEs ? 'Protocolo clínico' : 'Protocolo clínico',
+                                subtitle: isEs ? 'Protocolo clínico' : 'Protocolo clínico', // igual // igual
                                 dark: dark,
                                 divColor: divColor,
                                 onTap: () async {
@@ -1082,7 +1089,7 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                   decoration: BoxDecoration(color: _kGreen, borderRadius: BorderRadius.circular(20)),
-                  child: Text(isEs ? 'CHAT' : 'CHAT',
+                  child: Text(isEs ? 'CHAT' : 'CHAT', // igual nos dois idiomas
                     style: const TextStyle(fontSize: 7.5, fontWeight: FontWeight.w800, color: Colors.white, letterSpacing: 0.8)),
                 ),
               ]),
@@ -2406,7 +2413,7 @@ class _ShiftTimerSheetState extends State<_ShiftTimerSheet> {
         Row(children: [
           // Horas
           Expanded(child: Column(children: [
-            Text(isEs ? 'Horas' : 'Horas',
+            Text(isEs ? 'Horas' : 'Horas', // igual nos dois idiomas
               style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700,
                 color: subC, letterSpacing: 0.5)),
             const SizedBox(height: 8),
@@ -2430,7 +2437,7 @@ class _ShiftTimerSheetState extends State<_ShiftTimerSheet> {
           Container(width: 1, height: 48, color: divC),
           // Minutos
           Expanded(child: Column(children: [
-            Text(isEs ? 'Minutos' : 'Minutos',
+            Text(isEs ? 'Minutos' : 'Minutos', // igual nos dois idiomas
               style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700,
                 color: subC, letterSpacing: 0.5)),
             const SizedBox(height: 8),
@@ -2489,7 +2496,7 @@ class _ShiftTimerSheetState extends State<_ShiftTimerSheet> {
             onPressed: _totalSeconds > 0 ? _confirm : null,
             icon: const Icon(Icons.alarm_on_rounded, size: 18),
             label: Text(
-              isEs ? 'Iniciar Timer' : 'Iniciar Timer',
+              isEs ? 'Iniciar timer' : 'Iniciar timer', // igual nos dois idiomas
               style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w800),
             ),
             style: ElevatedButton.styleFrom(
@@ -2565,7 +2572,7 @@ class _QuickShortcuts extends StatelessWidget {
       _ShortcutItem(
         icon: Icons.sticky_note_2_rounded,
         color: const Color(0xFFFF8A00),
-        label: isEs ? 'Notas' : 'Notas',
+        label: isEs ? 'Notas' : 'Notas', // igual nos dois idiomas
         onTap: onOpenNotes,
       ),
       _ShortcutItem(
@@ -2577,7 +2584,7 @@ class _QuickShortcuts extends StatelessWidget {
       _ShortcutItem(
         icon: Icons.bookmark_rounded,
         color: const Color(0xFF6C2BD9),
-        label: isEs ? 'Favoritos' : 'Favoritos',
+        label: isEs ? 'Favoritos' : 'Favoritos', // igual nos dois idiomas
         onTap: () => _openFavoritos(context),
       ),
       _ShortcutItem(
@@ -2930,7 +2937,7 @@ class _FavoritosSheet extends StatelessWidget {
               Icon(Icons.bookmark_rounded, size: 20, color: const Color(0xFF6C2BD9)),
               const SizedBox(width: 8),
               Text(
-                isEs ? 'Favoritos' : 'Favoritos',
+                isEs ? 'Favoritos' : 'Favoritos', // igual nos dois idiomas
                 style: TextStyle(
                   fontSize: 17,
                   fontWeight: FontWeight.w800,
@@ -3028,7 +3035,7 @@ class _FavoritosSheet extends StatelessWidget {
                         Padding(
                           padding: const EdgeInsets.only(top: 12, bottom: 8),
                           child: Text(
-                            isEs ? 'PROTOCOLOS' : 'PROTOCOLOS',
+                            isEs ? 'PROTOCOLOS' : 'PROTOCOLOS', // técnico
                             style: TextStyle(
                               fontSize: 10,
                               fontWeight: FontWeight.w800,
@@ -3060,7 +3067,7 @@ class _FavoritosSheet extends StatelessWidget {
                                       color: textMain,
                                     )),
                                 subtitle: Text(
-                                  isEs ? 'Protocolo clínico' : 'Protocolo clínico',
+                                  isEs ? 'Protocolo clínico' : 'Protocolo clínico', // igual
                                   style: TextStyle(fontSize: 11, color: textSub),
                                 ),
                                 trailing: Icon(Icons.chevron_right_rounded, size: 18,
@@ -3081,7 +3088,7 @@ class _FavoritosSheet extends StatelessWidget {
                         Padding(
                           padding: const EdgeInsets.only(top: 12, bottom: 8),
                           child: Text(
-                            isEs ? 'CASOS CLÍNICOS' : 'CASOS CLÍNICOS',
+                            isEs ? 'CASOS CLÍNICOS' : 'CASOS CLÍNICOS', // igual
                             style: TextStyle(
                               fontSize: 10, fontWeight: FontWeight.w800,
                               letterSpacing: 1.3,
@@ -3539,8 +3546,8 @@ class _QuickEmergenciesState extends State<_QuickEmergencies> {
                 child: Row(mainAxisSize: MainAxisSize.min, children: [
                   Text(
                     _expanded
-                        ? (isEs ? 'menos' : 'menos')
-                        : (isEs ? 'ver +' : 'ver +'),
+                        ? (isEs ? 'menos' : 'menos') // igual nos dois idiomas
+                        : (isEs ? 'ver +' : 'ver +'), // igual nos dois idiomas
                     style: TextStyle(
                       fontSize: 10,
                       fontWeight: FontWeight.w700,
@@ -3926,8 +3933,8 @@ class _CalculadorasShell extends StatelessWidget {
           icon:    Icons.calculate_rounded,
           label:   isEs ? 'CALCULADORAS' : 'CALCULADORAS',
           subtitle: isEs
-              ? 'Scores · Cardio · Electrolitos · Infusión'
-              : 'Scores · Cardio · Eletrólitos · Infusão',
+              ? 'Scores · Cardio · Electrolitos · Referencia'
+              : 'Scores · Cardio · Eletrólitos · Referência',
         ),
         const Expanded(child: ToolsScreen(hideHeader: true)),
       ]),
@@ -4070,7 +4077,7 @@ class _GlobalSearchModalState extends State<_GlobalSearchModal> {
         res.add(_SearchResult(
           cat:      _SearchCat.protocol,
           title:    proto.title[lang] ?? proto.title['pt'] ?? '',
-          subtitle: isEs ? 'Protocolo clínico' : 'Protocolo clínico',
+          subtitle: isEs ? 'Protocolo clínico' : 'Protocolo clínico', // igual
           data:     proto,
         ));
         protoCount++;

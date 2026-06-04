@@ -39,7 +39,8 @@ class _ToolsScreenState extends State<ToolsScreen> with SingleTickerProviderStat
   @override
   void initState() {
     super.initState();
-    _tabCtrl = TabController(length: 8, vsync: this);
+    // BUILD 93 — INFUSÃO (idx 4) e SIMULAÇÕES (idx 6) ocultas → 6 tabs visíveis
+    _tabCtrl = TabController(length: 6, vsync: this);
     // Ouve o notifier externo para mudar de aba
     toolsScreenTabNotifier.addListener(_onExternalTabRequest);
   }
@@ -50,7 +51,7 @@ class _ToolsScreenState extends State<ToolsScreen> with SingleTickerProviderStat
     // Usa addPostFrameCallback para garantir que o widget já está montado
     SchedulerBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
-      _tabCtrl.animateTo(idx.clamp(0, 7));
+      _tabCtrl.animateTo(idx.clamp(0, 5)); // BUILD 93: 6 tabs visíveis (0-5)
       // Reseta para null após consumir
       toolsScreenTabNotifier.value = null;
     });
@@ -129,9 +130,11 @@ class _ToolsScreenState extends State<ToolsScreen> with SingleTickerProviderStat
             Tab(text: isEs ? 'SCORES' : 'SCORES'),
             Tab(text: isEs ? 'CARDIO' : 'CARDIO'),
             Tab(text: isEs ? 'ELECTROLITOS' : 'ELETRÓLITOS'),
-            Tab(text: isEs ? 'INFUSIÓN' : 'INFUSÃO'),
+            // BUILD 93 — INFUSIÓN oculta (Apple Guideline 1.4.1: calculadora de dose)
+            // Tab(text: isEs ? 'INFUSIÓN' : 'INFUSÃO'),
             Tab(text: isEs ? 'REFERENCIA' : 'REFERÊNCIA'),
-            Tab(text: isEs ? 'SIMULACIONES' : 'SIMULAÇÕES'),
+            // BUILD 93 — SIMULACIONES oculta (Apple Guideline 1.4.1: prescrições clínicas)
+            // Tab(text: isEs ? 'SIMULACIONES' : 'SIMULAÇÕES'),
             Tab(text: isEs ? 'PEDIATRÍA' : 'PEDIATRIA'),
           ],
         ),
@@ -152,9 +155,11 @@ class _ToolsScreenState extends State<ToolsScreen> with SingleTickerProviderStat
               _ScoresTab(),
               _CardioTab(),
               _ElectrolytesTab(),
-              _InfusionTab(),
+              // BUILD 93 — _InfusionTab oculta (Apple Guideline 1.4.1)
+              // _InfusionTab(),
               _ReferenceTab(),
-              _PrescriptionsTab(),
+              // BUILD 93 — _PrescriptionsTab oculta (Apple Guideline 1.4.1)
+              // _PrescriptionsTab(),
               PediatricsTabContent(),
             ],
           ),
@@ -2234,7 +2239,7 @@ class _InfusionResultCard extends StatelessWidget {
                 const SizedBox(height: 10),
                 // ── Nome do fármaco ─────────────────────────────────────────
                 Text(
-                  drugName.isNotEmpty ? drugName : (isEs ? 'Fármaco' : 'Fármaco'),
+                  drugName.isNotEmpty ? drugName : (isEs ? 'Fármaco' : 'Medicamento'),
                   style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w800,
@@ -2296,7 +2301,7 @@ class _InfusionResultCard extends StatelessWidget {
                               size: 11, color: const Color(0xBFFFE8A6)),
                           const SizedBox(width: 5),
                           Text(
-                            isEs ? 'FÓRMULA UTILIZADA' : 'FÓRMULA UTILIZADA',
+                            isEs ? 'FÓRMULA UTILIZADA' : 'FÓRMULA UTILIZADA', // técnico — igual em ambos os idiomas
                             style: const TextStyle(
                               fontSize: 8,
                               fontWeight: FontWeight.w900,
