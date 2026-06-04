@@ -1026,14 +1026,40 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
       text,
       onChunk: (acc) {
         if (mounted) {
-          setState(() => _streaming = acc);
+          // Strip metadados internos do stream antes de exibir
+          final cleaned = acc.replaceAll(
+            RegExp(
+              r'^[|\s]*(?:Confianza\s+Cl[ií]nica\s*:|Confiança\s+Cl[ií]nica\s*:'
+              r'|Confianza\s*[:–—]\s*\w|Confiança\s*[:–—]\s*\w'
+              r'|Clinical\s+Confidence\s*:|Nivel\s+de\s+Confianza\s*:'
+              r'|N[ií]vel\s+de\s+Confian[çc]a\s*:'
+              r'|El\s+usuario\s+(?:solicita|proporciona|pregunta|pide|quiere|busca)'
+              r'|O\s+usu[aá]rio\s+(?:solicita|fornece|pergunta|pede|quer|busca)'
+              r'|The\s+user\s+(?:is\s+asking|asks|wants|requests|provides)).*$',
+              caseSensitive: false,
+              multiLine: true,
+            ),
+            '',
+          ).trimLeft();
+          setState(() => _streaming = cleaned);
           _scrollToBottom();
         }
       },
       onDone: (fin) {
         if (mounted) {
+          // Strip metadados na resposta final também
+          final cleanFin = fin.replaceAll(
+            RegExp(
+              r'^[|\s]*(?:Confianza\s+Cl[ií]nica\s*:|Confiança\s+Cl[ií]nica\s*:'
+              r'|El\s+usuario\s+(?:solicita|proporciona|pregunta)'
+              r'|O\s+usu[aá]rio\s+(?:solicita|fornece|pergunta)).*$',
+              caseSensitive: false,
+              multiLine: true,
+            ),
+            '',
+          ).trimLeft();
           setState(() {
-            _messages.add({'role': 'ai', 'text': fin, 'isError': false});
+            _messages.add({'role': 'ai', 'text': cleanFin, 'isError': false});
             _streaming = '';
             _thinking  = false;
           });

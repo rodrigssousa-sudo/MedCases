@@ -931,6 +931,10 @@ class _AiScreenState extends State<AiScreen> {
         trimmed,
         onChunk: (accumulated) {
           if (!mounted) return;
+          // ── STREAM SANITIZER: expurga metadados antes de exibir ────────────
+          // Remove "Confianza Clínica:", "El usuario solicita..." e variantes
+          // que o modelo às vezes emite como primeiras linhas do stream.
+          final cleanedChunk = _stripMetadataHeaders(accumulated);
           setState(() {
             if (streamingMsgIdx == -1) {
               // Primeiro chunk: substitui ThinkingBubble por bolha em streaming
@@ -938,7 +942,7 @@ class _AiScreenState extends State<AiScreen> {
               _isStreaming = true;
               _scrollGeneration++;
               _lastAiIndex = _messages.length;
-              _messages.add(_ChatMsg(role: 'ai', text: accumulated));
+              _messages.add(_ChatMsg(role: 'ai', text: cleanedChunk));
               streamingMsgIdx = _messages.length - 1;
             } else {
               // Chunks subsequentes: atualiza texto da bolha existente in-place
@@ -946,7 +950,7 @@ class _AiScreenState extends State<AiScreen> {
               _messages[streamingMsgIdx] = _ChatMsg.withId(
                 id: _messages[streamingMsgIdx].id,
                 role: 'ai',
-                text: accumulated,
+                text: cleanedChunk,
               );
             }
           });
@@ -1693,11 +1697,11 @@ class _WaHeader extends StatelessWidget {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         const Text(
-                          'MedCases IA',
+                          'ConnectMind AI',
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w900,
-                            color: Colors.white,
+                            color: Color(0xFF00E5FF),
                             letterSpacing: -0.3,
                           ),
                         ),
@@ -2136,6 +2140,48 @@ class _UserBubble extends StatelessWidget {
 /// Limpa marcadores markdown da resposta da IA antes de exibir.
 /// Remove ##, **, --, --- e formata hifens de lista.
 // ─────────────────────────────────────────────────────────────────────────────
+// STREAM SANITIZER — Expurgo de metadados no buffer acumulado (Build 94)
+//
+// Chamado em CADA onChunk (texto acumulado parcial) antes de ser armazenado.
+// Remove linhas de metadados internos que vazam como primeiras linhas, ex:
+//   "Confianza Clínica: Alta — El usuario solicita..."
+//   "Confiança Clínica: Alta — O usuário solicita..."
+//   "El usuario proporciona síntomas específicos..."
+//
+// É intencalmente LEVE e sem RegExp pesado — só remove linhas inteiras que
+// começam com esses padrões, preservando o restante do texto médico.
+// A _cleanAiText() (CAMADA 2) faz a limpeza profunda na renderização.
+// ─────────────────────────────────────────────────────────────────────────────
+String _stripMetadataHeaders(String accumulated) {
+  if (accumulated.isEmpty) return accumulated;
+
+  // Padrão: linha que começa com metadados de confiança ou meta-comentário
+  // Exemplos reais capturados em produção (junho 2026):
+  //   "Confianza Clínica: Alta — El usuario solicita la creación de un ateneo..."
+  //   "| Confianza Clínica: Alta — El usuario proporciona síntomas..."
+  //   "Confiança Clínica: Alta — O usuário solicita informações sobre..."
+  return accumulated.replaceAll(
+    RegExp(
+      r'^[|\s]*(?:'
+      r'Confianza\s+Cl[ií]nica\s*:'
+      r'|Confiança\s+Cl[ií]nica\s*:'
+      r'|Confianza\s*[:–—]\s*\w'
+      r'|Confiança\s*[:–—]\s*\w'
+      r'|Clinical\s+Confidence\s*:'
+      r'|Nivel\s+de\s+Confianza\s*:'
+      r'|N[ií]vel\s+de\s+Confian[çc]a\s*:'
+      r'|El\s+usuario\s+(?:solicita|proporciona|pregunta|pide|quiere|busca|ha\s+(?:pedido|indicado))'
+      r'|O\s+usu[aá]rio\s+(?:solicita|fornece|pergunta|pede|quer|busca|indicou)'
+      r'|The\s+user\s+(?:is\s+asking|asks|wants|requests|provides|has\s+indicated)'
+      r').*$',
+      caseSensitive: false,
+      multiLine: true,
+    ),
+    '',
+  ).trimLeft(); // Remove linhas em branco iniciais deixadas pela remoção
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 // HARD-FILTER: Camada de proteção de renderização — P1 Anti-CoT
 //
 // Remove QUALQUER fragmento de chain-of-thought, scratchpad, planning interno,
@@ -2212,6 +2258,42 @@ String _cleanAiText(String raw) {
       r'^(Agora vou|Now I will|I will now|Vou agora|Ahora voy a|'
       r'Deixe-me|Let me|Permíteme|Deixa eu pensar|'
       r'Thinking\.\.\.|Analyzing\.\.\.|Processing\.\.\.).*$',
+      caseSensitive: false,
+      multiLine: true,
+    ),
+    '',
+  );
+
+  // ── 4b. EXPURGO DE METADADOS — Confianza/Confiança Clínica e padrões similares
+  //
+  // O modelo às vezes vaza cabeçalhos de metadados internos como:
+  //   "Confianza Clínica: Alta — El usuario solicita..."
+  //   "Confiança Clínica: Alta — O usuário solicita..."
+  //   "Confianza: Alta —"  /  "Clinical Confidence: High"
+  //   "Nivel de Confianza:" / "Nível de Confiança:"
+  //   "El usuario solicita..." / "O usuário solicita..." / "The user is asking..."
+  //   "El usuario proporciona..." / "El usuario pregunta..."
+  //
+  // Regra: remove a linha inteira sempre que ela COMEÇAR com esses padrões
+  // (multiLine: true — aplica ^ por linha). Safe para respostas médicas legítimas
+  // porque essas frases nunca iniciam uma sentença clínica válida.
+  s = s.replaceAll(
+    RegExp(
+      r'^[|\s]*(?:'
+      r'Confianza\s+Cl[ií]nica\s*:'
+      r'|Confiança\s+Cl[ií]nica\s*:'
+      r'|Confianza\s*[:–—]'
+      r'|Confiança\s*[:–—]'
+      r'|Clinical\s+Confidence\s*:'
+      r'|Nivel\s+de\s+Confianza\s*:'
+      r'|N[ií]vel\s+de\s+Confian[çc]a\s*:'
+      r'|El\s+usuario\s+(?:solicita|proporciona|pregunta|pide|quiere|busca|ha\s+indicado)'
+      r'|O\s+usu[aá]rio\s+(?:solicita|fornece|pergunta|pede|quer|busca|indicou)'
+      r'|The\s+user\s+(?:is\s+asking|asks|wants|requests|provides|has\s+indicated)'
+      r'|El\s+usuario\s+ha\s+pedido'
+      r'|Baseado\s+(?:no|na)\s+(?:contexto|conversa|solicita)'
+      r'|Basado\s+en\s+(?:el\s+contexto|la\s+conversaci[oó]n|la\s+solicitud)'
+      r').*$',
       caseSensitive: false,
       multiLine: true,
     ),

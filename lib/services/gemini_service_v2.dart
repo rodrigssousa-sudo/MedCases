@@ -218,7 +218,14 @@ class GeminiServiceV2 {
       '  ✗ "The user is asking..." · "The user wants..." · "I should reiterate..."\n'
       '  ✗ "I need to clarify..." · "Let me explain..." · "To summarize..."\n'
       '  ✗ Qualquer frase que resuma a intenção do usuário ou descreva o que a IA vai fazer.\n'
-      'PROIBIDO gerar análise interna, resumo de intenção ou meta-comentário.\n\n'
+      '  ✗ PROIBIDO ABSOLUTO — cabeçalhos de metadados de confiança interna:\n'
+      '    NUNCA escreva "Confianza Clínica: Alta —", "Confiança Clínica: Alta —",\n'
+      '    "Nivel de Confianza:", "Clinical Confidence:", nem qualquer variante.\n'
+      '    NUNCA escreva "El usuario solicita...", "O usuário solicita...",\n'
+      '    "El usuario proporciona...", "Baseado na conversa anterior...".\n'
+      '    Esses cabeçalhos são METADADOS INTERNOS — jamais devem aparecer na resposta.\n'
+      'PROIBIDO gerar análise interna, resumo de intenção ou meta-comentário.\n'
+      'A primeira linha da resposta DEVE SER SEMPRE a conduta clínica ou o conteúdo médico.\n\n'
       '🌐 REGRA DE IDIOMA ESPELHO — FERRO ABSOLUTO:\n'
       'Identifique o idioma da ÚLTIMA pergunta do usuário.\n'
       '  • Pergunta em ESPANHOL → resposta ESTRITAMENTE em Espanhol.\n'
@@ -1136,14 +1143,54 @@ class GeminiServiceV2 {
   // Retorna true → part descartado (não chega à UI).
   // Retorna false → part seguro para exibição.
   // ══════════════════════════════════════════════════════════════════════════
+  // _looksLikeInternalReasoning — CAMADA 1b v5.2 (Build 94)
+  //
+  // Adicionados (Build 94): detecção de cabeçalhos de metadados "Confianza Clínica"
+  // que o modelo vaza como primeira linha de resposta. São inequivocamente internos
+  // e nunca aparecem em texto clínico legítimo como sentença de abertura.
+  //
+  // NOTA IMPORTANTE: Este filtro age sobre CADA CHUNK individual do stream SSE.
+  // Se o cabeçalho vier num chunk separado (o que acontece frequentemente),
+  // ele é descartado antes de entrar no buffer acumulado. A _cleanAiText()
+  // (CAMADA 2) pega o residual caso o padrão esteja num chunk misto.
   static bool _looksLikeInternalReasoning(String text) {
     final lower = text.toLowerCase();
-    return lower.contains('the user is asking') ||
-        lower.contains('the user wants') ||
-        lower.contains('<thinking>') ||
-        lower.contains('[análise_interna]') ||
-        lower.contains('[revisão_interna]') ||
-        lower.contains('scratchpad');
+    // Padrões longos e inequívocos de CoT (calibração v5.1)
+    if (lower.contains('the user is asking')) return true;
+    if (lower.contains('the user wants')) return true;
+    if (lower.contains('<thinking>')) return true;
+    if (lower.contains('[análise_interna]')) return true;
+    if (lower.contains('[revisão_interna]')) return true;
+    if (lower.contains('scratchpad')) return true;
+
+    // Build 94 — cabeçalhos de metadados "Confianza/Confiança Clínica"
+    // Padrão: linha que começa com "Confianza Clínica:" ou variantes
+    // Detecta tanto chunks puros (só o cabeçalho) quanto chunks mistos
+    if (lower.contains('confianza clínica:') ||
+        lower.contains('confianza clinica:') ||
+        lower.contains('confiança clínica:') ||
+        lower.contains('confiança clinica:') ||
+        lower.contains('clinical confidence:') ||
+        lower.contains('nivel de confianza:') ||
+        lower.contains('nível de confiança:')) {
+      return true;
+    }
+
+    // Padrão meta-comentário: "El usuario solicita/proporciona/pregunta..."
+    // como sentença de abertura (primeiros 120 chars do chunk)
+    final head = lower.length > 120 ? lower.substring(0, 120) : lower;
+    if (RegExp(
+      r'^\s*(?:el\s+usuario\s+(?:solicita|proporciona|pregunta|pide|quiere|busca|ha\s+(?:pedido|indicado))'
+      r'|o\s+usu[aá]rio\s+(?:solicita|fornece|pergunta|pede|quer|busca|indicou)'
+      r'|the\s+user\s+(?:is\s+asking|asks|wants|requests|provides|has\s+indicated)'
+      r'|baseado\s+(?:no|na)\s+(?:contexto|conversa)'
+      r'|basado\s+en\s+(?:el\s+contexto|la\s+conversaci))',
+      caseSensitive: false,
+    ).hasMatch(head)) {
+      return true;
+    }
+
+    return false;
   }
 
   // ── Extrai finishReason do evento SSE ─────────────────────────────────────
