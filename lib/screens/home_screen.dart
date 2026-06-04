@@ -962,9 +962,10 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
   final _focus      = FocusNode();
   final _scrollCtrl = ScrollController();
 
-  static const _kGreen     = Color(0xFF0D7A55);
-  static const _kGreenBg   = Color(0xFF0D7A55);
-  static const _kGreenBord = Color(0xFF0D9E6E);
+  // ConnectMind AI palette
+  static const _kGreen     = Color(0xFF008CA4);
+  static const _kGreenBg   = Color(0xFF0A2540);
+  static const _kGreenBord = Color(0xFF00E5FF);
 
   // ── Histórico de mensagens (multi-turn inline) ────────────────────────────
   // Cada item: {'role': 'user'|'ai', 'text': '...', 'isError': bool}
@@ -1117,23 +1118,15 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
 
             // ── Header ──────────────────────────────────────────────────────
             Row(children: [
-              Container(
-                width: 36, height: 36,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  gradient: const LinearGradient(
-                    begin: Alignment.topLeft, end: Alignment.bottomRight,
-                    colors: [Color(0xFF0F9E6A), Color(0xFF064D32)],
-                  ),
-                  boxShadow: [BoxShadow(color: _kGreenBg.withValues(alpha: 0.35), blurRadius: 10, offset: const Offset(0, 3))],
-                ),
-                child: const Icon(Icons.psychology_rounded, size: 20, color: Colors.white),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(10),
+                child: Image.asset('assets/images/connectmind_logo.png', width: 36, height: 36, fit: BoxFit.cover),
               ),
               const SizedBox(width: 10),
               Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                 Row(children: [
-                  Text('IA MEDCASES',
-                    style: TextStyle(fontSize: 13.5, fontWeight: FontWeight.w900, letterSpacing: 0.4, color: textColor)),
+                  Text('ConnectMind AI',
+                    style: TextStyle(fontSize: 13.5, fontWeight: FontWeight.w900, letterSpacing: 0.4, color: dark ? const Color(0xFF00E5FF) : const Color(0xFF0A2540))),
                   const SizedBox(width: 6),
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
@@ -1144,7 +1137,7 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
                 ]),
                 const SizedBox(height: 1),
                 Text(
-                  isEs ? 'Asistente clínico educativo' : 'Assistente clínico educativo',
+                  isEs ? 'Conexión Cognitiva Avanzada' : 'Conexão Cognitiva Avançada',
                   style: TextStyle(fontSize: 10, color: subText, height: 1.3),
                 ),
               ])),
@@ -1323,7 +1316,7 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
                         shape: BoxShape.circle,
                         color: _thinking
                             ? (dark ? const Color(0xFF162A1C) : const Color(0xFFDDEFE6))
-                            : _kGreen,
+                            : const Color(0xFF008CA4),
                       ),
                       child: _thinking
                           ? const Padding(
@@ -1393,7 +1386,10 @@ class _AiBubbleAvatar extends StatelessWidget {
         shape: BoxShape.circle,
         color: dark ? const Color(0xFF162A1C) : const Color(0xFFE6F7EF),
       ),
-      child: const Icon(Icons.psychology_rounded, size: 14, color: Color(0xFF0D7A55)),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(14),
+        child: Image.asset('assets/images/connectmind_logo.png', width: 14, height: 14, fit: BoxFit.cover),
+      ),
     );
   }
 }
@@ -1453,7 +1449,7 @@ class _AiBubble extends StatelessWidget {
               Text(isEs ? 'Ver respuesta completa' : 'Ver resposta completa',
                 style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: _kGreen)),
               const SizedBox(width: 3),
-              const Icon(Icons.arrow_forward_rounded, size: 11, color: _kGreen),
+              const Icon(Icons.arrow_forward_rounded, size: 11, color: Color(0xFF008CA4)),
             ]),
           ),
         ],
@@ -1492,7 +1488,7 @@ class _ThinkingDotsState extends State<_ThinkingDots>
 
   @override
   Widget build(BuildContext context) {
-    final dotColor = widget.dark ? const Color(0xFF4ADE80) : const Color(0xFF0D7A55);
+    final dotColor = widget.dark ? const Color(0xFF00E5FF) : const Color(0xFF008CA4);
     return AnimatedBuilder(
       animation: _ctrl,
       builder: (_, __) => Row(
@@ -1600,9 +1596,14 @@ class _HomeIaCardState extends State<_HomeIaCard> {
         boxShadow: dark
             ? [
                 BoxShadow(
-                  color: _kGreenBg.withValues(alpha: 0.08),
+                  color: const Color(0xFF0A2540).withValues(alpha: 0.55),
                   blurRadius: 20,
                   offset: const Offset(0, 4),
+                ),
+                BoxShadow(
+                  color: const Color(0xFF00E5FF).withValues(alpha: 0.06),
+                  blurRadius: 28,
+                  offset: const Offset(0, 0),
                 ),
               ]
             : [
@@ -1612,39 +1613,38 @@ class _HomeIaCardState extends State<_HomeIaCard> {
                   offset: const Offset(0, 4),
                 ),
                 BoxShadow(
-                  color: _kGreen.withValues(alpha: 0.06),
+                  color: const Color(0xFF008CA4).withValues(alpha: 0.06),
                   blurRadius: 24,
                   offset: const Offset(0, 6),
                 ),
               ],
       ),
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(16, 20, 16, 20),
-        child: Column(
+      child: Stack(
+        children: [
+          Positioned(
+            right: -10, bottom: -10,
+            child: Opacity(
+              opacity: 0.035,
+              child: Image.asset(
+                'assets/images/connectmind_logo.png',
+                width: 110, height: 110, fit: BoxFit.contain,
+              ),
+            ),
+          ),
+          Padding(
+          padding: const EdgeInsets.fromLTRB(16, 20, 16, 20),
+          child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
 
-            // ── Header: ícone + título + badge NOVO ──────────────────────
+            // ── Header: logo ConnectMind + título + badge IA ──────────────────
             Row(children: [
-              Container(
-                width: 38, height: 38,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(11),
-                  gradient: const LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [Color(0xFF0F9E6A), Color(0xFF064D32)],
-                  ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: _kGreenBg.withValues(alpha: 0.35),
-                      blurRadius: 10,
-                      offset: const Offset(0, 3),
-                    ),
-                  ],
+              ClipRRect(
+                borderRadius: BorderRadius.circular(11),
+                child: Image.asset(
+                  'assets/images/connectmind_logo.png',
+                  width: 38, height: 38, fit: BoxFit.cover,
                 ),
-                child: const Icon(Icons.psychology_rounded,
-                    size: 22, color: Colors.white),
               ),
               const SizedBox(width: 10),
               Expanded(
@@ -1654,12 +1654,12 @@ class _HomeIaCardState extends State<_HomeIaCard> {
                     Row(
                       children: [
                         Text(
-                          'IA MEDCASES',
+                          'ConnectMind AI',
                           style: TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.w900,
-                            letterSpacing: 0.5,
-                            color: textColor,
+                            letterSpacing: 0.3,
+                            color: dark ? const Color(0xFF00E5FF) : const Color(0xFF0A2540),
                           ),
                         ),
                         const SizedBox(width: 7),
@@ -1667,11 +1667,13 @@ class _HomeIaCardState extends State<_HomeIaCard> {
                           padding: const EdgeInsets.symmetric(
                               horizontal: 7, vertical: 2),
                           decoration: BoxDecoration(
-                            color: const Color(0xFF0D7A55),
+                            gradient: const LinearGradient(
+                              colors: [Color(0xFF008CA4), Color(0xFF0A2540)],
+                            ),
                             borderRadius: BorderRadius.circular(20),
                           ),
                           child: const Text(
-                            'NOVO',
+                            'IA',
                             style: TextStyle(
                               fontSize: 8,
                               fontWeight: FontWeight.w800,
@@ -1685,13 +1687,13 @@ class _HomeIaCardState extends State<_HomeIaCard> {
                     const SizedBox(height: 2),
                     Text(
                       isEs
-                          ? 'Asistente clínico educativo'
-                          : 'Assistente clínico educativo',
+                          ? 'Conexión Cognitiva Avanzada'
+                          : 'Conexão Cognitiva Avançada',
                       style: TextStyle(
                         fontSize: 10.5,
                         color: dark
-                            ? Colors.white.withValues(alpha: 0.45)
-                            : const Color(0xFF4A7A63),
+                            ? const Color(0xFF00E5FF).withValues(alpha: 0.60)
+                            : const Color(0xFF008CA4),
                         height: 1.3,
                       ),
                     ),
@@ -1751,16 +1753,16 @@ class _HomeIaCardState extends State<_HomeIaCard> {
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       color: dark
-                          ? const Color(0xFF162A1C)
-                          : const Color(0xFFEAF5EF),
+                          ? const Color(0xFF0F2038)
+                          : const Color(0xFFE0F7FA),
                       border: Border.all(
-                        color: _kGreenBord.withValues(alpha: dark ? 0.45 : 0.50),
+                        color: const Color(0xFF00E5FF).withValues(alpha: dark ? 0.45 : 0.50),
                         width: 1.2,
                       ),
                     ),
-                    child: Icon(
+                    child: const Icon(
                       Icons.arrow_upward_rounded,
-                      color: _kGreen,
+                      color: Color(0xFF008CA4),
                       size: 18,
                     ),
                   ),
@@ -1799,7 +1801,9 @@ class _HomeIaCardState extends State<_HomeIaCard> {
               ),
             ),
           ],
-        ),
+          ),
+          ),
+        ],
       ),
     );
   }
@@ -2239,15 +2243,18 @@ class _HomeCardHalfState extends State<_HomeCardHalf>
                       ),
                     ),
                     const SizedBox(height: 8),
-                    Text(
-                      widget.label,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w800,
-                        color: Colors.white.withValues(alpha: 0.95),
-                        letterSpacing: -0.2,
-                        height: 1.1,
+                    FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(
+                        widget.label,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w800,
+                          color: Colors.white.withValues(alpha: 0.95),
+                          letterSpacing: -0.2,
+                          height: 1.1,
+                        ),
                       ),
                     ),
                   ],

@@ -320,8 +320,8 @@ class _AiScreenState extends State<AiScreen> {
     final firstName = userName.trim().split(' ').first;
     final nameStr   = firstName.isNotEmpty ? ', $firstName' : '';
     return es
-        ? '$period$nameStr.\n\nSoy tu IA MedCases. ¿Cómo te puedo ayudar hoy?'
-        : '$period$nameStr.\n\nSou seu IA MedCases. Como posso te ajudar hoje?';
+        ? '$period$nameStr.\n\nSoy ConnectMind AI. ¿Cómo puedo ayudarte hoy?'
+        : '$period$nameStr.\n\nSou o ConnectMind AI. Como posso te ajudar hoje?';
   }
 
   @override
@@ -1417,7 +1417,8 @@ class _MobileAiActionBar extends StatelessWidget {
 
   static const _kGold  = Color(0xFFC5A365);
   static const _kGoldL = Color(0xFFFFE8A6);
-  static const _kGreen = Color(0xFF4ADE80);
+  // ConnectMind AI — status cyan
+  static const _kGreen = Color(0xFF00E5FF);
   static const _kBg1   = Color(0xFF1A1A1A);
   static const _kBg2   = Color(0xFF252525);
 
@@ -1425,13 +1426,14 @@ class _MobileAiActionBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final bgColor = dark ? _kBg2 : const Color(0xFFF5F5F5);
     final borderColor = dark ? const Color(0xFF333333) : const Color(0xFFE0E0E0);
-    final iconColor = dark ? const Color(0xFFFFE8A6) : const Color(0xFF0A7C4E);
+    // ConnectMind AI palette — icon teal
+    final iconColor = dark ? const Color(0xFF00E5FF) : const Color(0xFF008CA4);
     final iconBg = dark
-        ? Colors.white.withValues(alpha: 0.07)
-        : const Color(0xFF0A7C4E).withValues(alpha: 0.08);
+        ? const Color(0xFF00E5FF).withValues(alpha: 0.07)
+        : const Color(0xFF008CA4).withValues(alpha: 0.08);
     final iconBorder = dark
-        ? Colors.white.withValues(alpha: 0.12)
-        : const Color(0xFF0A7C4E).withValues(alpha: 0.20);
+        ? const Color(0xFF00E5FF).withValues(alpha: 0.15)
+        : const Color(0xFF008CA4).withValues(alpha: 0.22);
 
     return Container(
       height: 44,
@@ -1450,35 +1452,25 @@ class _MobileAiActionBar extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 12),
         child: Row(
           children: [
-            // ── Logo / nome ──────────────────────────────────────────────────
-            RichText(
-              text: TextSpan(
-                children: [
-                  TextSpan(
-                    text: 'M',
-                    style: TextStyle(
-                      fontSize: 17, fontWeight: FontWeight.w900,
-                      color: dark ? _kGold : const Color(0xFF0A7C4E),
-                      letterSpacing: -0.5,
-                    ),
-                  ),
-                  TextSpan(
-                    text: '+',
-                    style: TextStyle(
-                      fontSize: 12, fontWeight: FontWeight.w900,
-                      color: dark ? _kGoldL : const Color(0xFF0A7C4E),
-                    ),
-                  ),
-                  TextSpan(
-                    text: '  IA',
-                    style: TextStyle(
-                      fontSize: 14, fontWeight: FontWeight.w700,
-                      color: dark ? Colors.white70 : const Color(0xFF1A1A1A),
-                    ),
-                  ),
-                ],
+            // ── Logo ConnectMind AI (mini) ────────────────────────────────────
+            Row(mainAxisSize: MainAxisSize.min, children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(6),
+                child: Image.asset(
+                  'assets/images/connectmind_logo.png',
+                  width: 22, height: 22, fit: BoxFit.cover,
+                ),
               ),
-            ),
+              const SizedBox(width: 5),
+              Text(
+                'ConnectMind AI',
+                style: TextStyle(
+                  fontSize: 12, fontWeight: FontWeight.w800,
+                  color: dark ? const Color(0xFF00E5FF) : const Color(0xFF0A2540),
+                  letterSpacing: -0.2,
+                ),
+              ),
+            ]),
 
             // ── Badge conexão ────────────────────────────────────────────────
             const SizedBox(width: 8),
@@ -1490,11 +1482,11 @@ class _MobileAiActionBar extends StatelessWidget {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20),
                   color: hasRealAi
-                      ? _kGreen.withValues(alpha: 0.12)
+                      ? const Color(0xFF00E5FF).withValues(alpha: 0.12)
                       : Colors.white.withValues(alpha: 0.07),
                   border: Border.all(
                     color: hasRealAi
-                        ? _kGreen.withValues(alpha: 0.45)
+                        ? const Color(0xFF00E5FF).withValues(alpha: 0.45)
                         : Colors.white.withValues(alpha: 0.18),
                   ),
                 ),
@@ -1511,7 +1503,7 @@ class _MobileAiActionBar extends StatelessWidget {
                           width: 6, height: 6,
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            color: hasRealAi ? _kGreen : Colors.white38,
+                            color: hasRealAi ? const Color(0xFF00E5FF) : Colors.white38,
                           ),
                         ),
                         const SizedBox(width: 4),
@@ -1522,7 +1514,7 @@ class _MobileAiActionBar extends StatelessWidget {
                           style: TextStyle(
                             fontSize: 10, fontWeight: FontWeight.w700,
                             color: hasRealAi
-                                ? _kGreen
+                                ? const Color(0xFF00E5FF)
                                 : (dark ? Colors.white54 : Colors.black45),
                           ),
                         ),
@@ -1629,13 +1621,13 @@ class _WaHeader extends StatelessWidget {
     this.keyLoading = false,
   });
 
-  // ── Paleta chumbo ──────────────────────────────────────────────
-  static const _kBg1   = Color(0xFF1A1A1A); // chumbo escuro
-  static const _kBg2   = Color(0xFF252525); // chumbo médio
-  static const _kBg3   = Color(0xFF2E2E2E); // chumbo claro
-  static const _kGold  = Color(0xFFC5A365); // dourado
+  // ── Paleta ConnectMind AI ──────────────────────────────────────────────
+  static const _kBg1   = Color(0xFF0A1525); // navy escuro
+  static const _kBg2   = Color(0xFF0F2038); // navy médio
+  static const _kBg3   = Color(0xFF143050); // navy claro
+  static const _kGold  = Color(0xFFC5A365); // dourado (badges)
   static const _kGoldL = Color(0xFFFFE8A6); // dourado claro
-  static const _kGreen = Color(0xFF4ADE80); // verde status
+  static const _kGreen = Color(0xFF00E5FF); // cyan ConnectMind (status)
 
   @override
   Widget build(BuildContext context) {
@@ -1648,9 +1640,9 @@ class _WaHeader extends StatelessWidget {
           end: Alignment.bottomCenter,
           colors: [_kBg1, _kBg2, _kBg3],
         ),
-        // Linha dourada sutil na base do header
+        // Linha cyan ConnectMind na base do header
         border: Border(
-          bottom: BorderSide(color: Color(0xFF3A3A3A), width: 1),
+          bottom: BorderSide(color: Color(0xFF005E9C), width: 1),
         ),
       ),
       child: Padding(
@@ -1720,11 +1712,11 @@ class _WaHeader extends StatelessWidget {
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(20),
                               color: isConnected
-                                  ? _kGreen.withValues(alpha: 0.12)
+                                  ? const Color(0xFF00E5FF).withValues(alpha: 0.12)
                                   : Colors.white.withValues(alpha: 0.07),
                               border: Border.all(
                                 color: isConnected
-                                    ? _kGreen.withValues(alpha: 0.45)
+                                    ? const Color(0xFF00E5FF).withValues(alpha: 0.45)
                                     : Colors.white.withValues(alpha: 0.18),
                               ),
                             ),
@@ -1746,7 +1738,7 @@ class _WaHeader extends StatelessWidget {
                                         : Icons.link_rounded,
                                     size: 10,
                                     color: isConnected
-                                        ? _kGreen
+                                        ? const Color(0xFF00E5FF)
                                         : Colors.white.withValues(alpha: 0.5),
                                   ),
                                 const SizedBox(width: 4),
@@ -1760,7 +1752,7 @@ class _WaHeader extends StatelessWidget {
                                     fontSize: 10,
                                     fontWeight: FontWeight.w700,
                                     color: isConnected
-                                        ? _kGreen
+                                        ? const Color(0xFF00E5FF)
                                         : Colors.white.withValues(alpha: 0.6),
                                   ),
                                 ),
@@ -2381,12 +2373,13 @@ class _AiBlockBubble extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bubbleBg  = dark ? const Color(0xFF1A2820) : Colors.white;
-    final textColor = dark ? const Color(0xFFE8F5EE) : const Color(0xFF1A1A1A);
+    // ConnectMind AI — AI bubble background (navy in dark)
+    final bubbleBg  = dark ? const Color(0xFF0F2038) : Colors.white;
+    final textColor = dark ? const Color(0xFFE8F2F5) : const Color(0xFF1A1A1A);
 
-    // Cores do sistema hospitalar
-    const kGreen      = Color(0xFF1F6B48);
-    const kGreenLight = Color(0xFF2E8B57);
+    // ConnectMind AI palette — section headers
+    const kGreen      = Color(0xFF008CA4);
+    const kGreenLight = Color(0xFF00E5FF);
     const kRed        = Color(0xFFB91C1C);
     const kRedLight   = Color(0xFFFFEEEE);
     const kRedDark    = Color(0xFF3A0000);
@@ -2475,9 +2468,9 @@ class _AiBlockBubble extends StatelessWidget {
                     barColor   = const Color(0xFF4A90D9);
                     labelColor = dark ? const Color(0xFF89C4FF) : const Color(0xFF2563EB);
                   } else {
-                    // 💊 e padrão → verde
+                    // 💊 e padrão → ConnectMind cyan
                     barColor   = kGreenLight;
-                    labelColor = dark ? const Color(0xFF4ADE80) : kGreen;
+                    labelColor = dark ? const Color(0xFF00E5FF) : kGreen;
                   }
                   return Padding(
                     padding: const EdgeInsets.only(bottom: 2, top: 5),
@@ -2998,11 +2991,11 @@ class _InputBarState extends State<_InputBar> {
     final bool isListening = widget.sttListening;
     final double level     = widget.sttSoundLevel;
 
-    // ── Cores do campo de texto
-    final fieldBg = dark ? const Color(0xFF1A2820) : Colors.white;
+    // ── Cores do campo de texto — ConnectMind AI palette
+    final fieldBg = dark ? const Color(0xFF0A1525) : Colors.white;
     final borderCol = widget.hasFocus
-        ? const Color(0xFF1F6B48)
-        : (dark ? const Color(0xFF253020) : const Color(0xFFD8D3CA));
+        ? const Color(0xFF00E5FF)
+        : (dark ? const Color(0xFF143050) : const Color(0xFFD1D6DC));
     final textCol = dark ? Colors.white : const Color(0xFF1A1A1A);
     final hintCol = dark ? Colors.white30 : Colors.black38;
 
@@ -3048,15 +3041,15 @@ class _InputBarState extends State<_InputBar> {
             filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
             child: Container(
               decoration: BoxDecoration(
-                // Fundo semitransparente — escuro em dark, branco em light
+                // Fundo semitransparente — ConnectMind navy glassmorphism
                 color: dark
-                    ? const Color(0xFF0A150E).withValues(alpha: 0.72)
-                    : Colors.white.withValues(alpha: 0.78),
+                    ? const Color(0xFF0A1525).withValues(alpha: 0.82)
+                    : Colors.white.withValues(alpha: 0.88),
                 borderRadius: BorderRadius.circular(24),
                 border: Border.all(
                   color: dark
-                      ? Colors.white.withValues(alpha: 0.10)
-                      : Colors.black.withValues(alpha: 0.08),
+                      ? const Color(0xFF00E5FF).withValues(alpha: 0.12)
+                      : const Color(0xFF008CA4).withValues(alpha: 0.18),
                   width: 0.8,
                 ),
               ),
@@ -3158,7 +3151,7 @@ class _InputBarState extends State<_InputBar> {
                         ),
                         const SizedBox(width: 7),
 
-                        // Botão enviar — círculo verde
+                        // Botão enviar — ConnectMind cyan
                         GestureDetector(
                           onTap: widget.thinking ? null : widget.onSend,
                           child: AnimatedContainer(
@@ -3167,8 +3160,8 @@ class _InputBarState extends State<_InputBar> {
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
                               color: widget.thinking
-                                  ? const Color(0xFF1F6B48).withValues(alpha: 0.45)
-                                  : const Color(0xFF1F6B48),
+                                  ? const Color(0xFF008CA4).withValues(alpha: 0.45)
+                                  : const Color(0xFF008CA4),
                             ),
                             child: Center(
                               child: widget.thinking

@@ -1650,10 +1650,11 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
   // premium. Ao tocar, navega imediatamente para a tab de IA (tab 2).
   Widget _buildAiCenterBtn(bool dark, dynamic p) {
     final isAiActive = _tab == 2;
-    final gradStart  = dark ? const Color(0xFF0F9E6A) : const Color(0xFF0A7C4E);
-    final gradEnd    = dark ? const Color(0xFF064D32) : const Color(0xFF064D32);
-    final glowColor  = const Color(0xFF0D7A55);
-    final labelColor = dark ? const Color(0xFF4ADE80) : Colors.white;
+    // ConnectMind AI — cyan/navy palette
+    final gradStart  = isAiActive ? const Color(0xFF008CA4) : (dark ? const Color(0xFF143050) : const Color(0xFF0A2540));
+    final gradEnd    = isAiActive ? const Color(0xFF0A2540) : (dark ? const Color(0xFF0A1525) : const Color(0xFF0F3B68));
+    final glowColor  = const Color(0xFF00E5FF);
+    final labelColor = isAiActive ? const Color(0xFF00E5FF) : (dark ? Colors.white54 : Colors.white70);
 
     return Expanded(
       child: GestureDetector(
@@ -1678,22 +1679,26 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
                       BoxShadow(color: glowColor.withValues(alpha: 0.25), blurRadius: 24, offset: const Offset(0, 6)),
                     ]
                   : [
-                      BoxShadow(color: glowColor.withValues(alpha: 0.30), blurRadius: 8, offset: const Offset(0, 2)),
+                      BoxShadow(color: const Color(0xFF0A2540).withValues(alpha: 0.30), blurRadius: 8, offset: const Offset(0, 2)),
                     ],
               border: Border.all(
                 color: isAiActive
-                    ? const Color(0xFF4ADE80).withValues(alpha: 0.60)
-                    : const Color(0xFF0D9E6E).withValues(alpha: 0.35),
+                    ? const Color(0xFF00E5FF).withValues(alpha: 0.65)
+                    : const Color(0xFF005E9C).withValues(alpha: 0.40),
                 width: 1.2,
               ),
             ),
-            child: const Icon(Icons.psychology_rounded, size: 20, color: Colors.white),
+            child: Icon(
+              Icons.psychology_rounded,
+              size: 20,
+              color: isAiActive ? const Color(0xFF00E5FF) : Colors.white,
+            ),
           ),
           const SizedBox(height: 1),
           Text(
-            'IA',
+            'ConnectMind',
             style: TextStyle(
-              fontSize: 9,
+              fontSize: 7.5,
               fontWeight: isAiActive ? FontWeight.w800 : FontWeight.w600,
               color: labelColor,
             ),
