@@ -149,9 +149,9 @@ class _PreLoginPreviewState extends State<PreLoginPreview> {
               // BLOCO 3 — CONTEÚDO: Protocolos Clínicos
               // ══════════════════════════════════════════════════════════════
               _SectionTitle(
-                label: _isEs ? 'PROTOCOLOS DE ESTUDO' : 'PROTOCOLOS DE ESTUDO',
+                label: _isEs ? 'PROTOCOLOS DE ESTUDIO' : 'PROTOCOLOS DE ESTUDO',
                 sub: _isEs
-                    ? 'Para consulta e referência educacional'
+                    ? 'Para consulta y referencia educacional'
                     : 'Para consulta e referência educacional',
                 accentColor: _kGreenLight,
                 iconData: Icons.science_outlined,
@@ -167,7 +167,7 @@ class _PreLoginPreviewState extends State<PreLoginPreview> {
               // BLOCO 4 — BASE: Casos de Alta Gravidade (blur/cadeado)
               // ══════════════════════════════════════════════════════════════
               _SectionTitle(
-                label: _isEs ? 'ALTA GRAVIDADE' : 'ALTA GRAVIDADE',
+                label: _isEs ? 'ALTA GRAVEDAD' : 'ALTA GRAVIDADE',
                 sub: _isEs
                     ? 'Casos de máxima urgencia clínica'
                     : 'Casos de máxima urgência clínica',
@@ -643,7 +643,7 @@ class _IaBlockDark extends StatelessWidget {
                 ),
                 const SizedBox(width: 6),
                 Text(
-                  isEs ? 'Referência educacional:' : 'Referência educacional:',
+                  isEs ? 'Referencia educacional:' : 'Referência educacional:',
                   style: const TextStyle(
                     fontSize: 10, fontWeight: FontWeight.w600,
                     color: _kNeon)),
@@ -764,8 +764,8 @@ class _MetricsRow extends StatelessWidget {
           icon: Icons.menu_book_rounded,
           iconBg: const Color(0xFF0D2018),
           stat: '+2.400',
-          title: isEs ? 'Referências Médicas' : 'Referências Médicas',
-          subtitle: isEs ? 'Para estudo clínico' : 'Para estudo clínico',
+          title: isEs ? 'Referencias Médicas' : 'Referências Médicas',
+          subtitle: isEs ? 'Para estudio clínico' : 'Para estudo clínico',
           trailingIcon: Icons.trending_up_rounded,
         ),
       ),

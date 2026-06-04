@@ -745,7 +745,7 @@ class _LoginScreenState extends State<LoginScreen>
   String get _modeBtn {
     switch (_mode) {
       case _Mode.login:    return _isEs ? 'Iniciar sesión'    : 'Entrar';
-      case _Mode.register: return _isEs ? 'Enviar solicitação': 'Enviar solicitação';
+      case _Mode.register: return _isEs ? 'Enviar solicitud'   : 'Enviar solicitação';
       case _Mode.reset:    return _isEs ? 'Enviar enlace'     : 'Enviar link';
     }
   }

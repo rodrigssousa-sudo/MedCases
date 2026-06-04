@@ -1162,9 +1162,9 @@ class _CardioTabState extends State<_CardioTab> {
               Expanded(child: _LabeledInput(label: isEs ? 'Vol Sistólico (mL)' : 'Vol Sistólico (mL)', ctrl: _svCtrl, onChanged: (_) => setState(() {}), hint: '70')),
             ]),
             const SizedBox(height: 14),
-            _ResultTile(label: isEs ? 'Débito Cardíaco (DC = FC × VS)' : 'Débito Cardíaco (DC = FC × VS)',
+            _ResultTile(label: isEs ? 'Gasto Cardíaco (GC = FC × VS)' : 'Débito Cardíaco (DC = FC × VS)',
               value: _co, unit: 'L/min', full: true,
-              note: isEs ? 'Normal: 4–8 L/min. Baixo: <4 L/min (choque de baixo débito)' : 'Normal: 4–8 L/min. Baixo: <4 L/min (choque de baixo débito)'),
+              note: isEs ? 'Normal: 4–8 L/min. Bajo: <4 L/min (choque de bajo gasto)' : 'Normal: 4–8 L/min. Baixo: <4 L/min (choque de baixo débito)'),
           ]),
         ),
 
@@ -2892,7 +2892,7 @@ class _ReferenceTabState extends State<_ReferenceTab> {
           _LabRow(name: 'DA (anterior)', ref: 'V1–V4 + aVL', note: isEs ? 'ADA: paredes anterior e septal' : 'ADA: paredes anterior e septal'),
           _LabRow(name: 'Cx (lateral)', ref: 'I, aVL, V5–V6', note: isEs ? 'Arteria circunfleja' : 'Artéria circunflexa'),
           _LabRow(name: 'CD (inferior)', ref: 'II, III, aVF', note: isEs ? 'Considerar IAM VD: V3R-V4R' : 'Considerar IAM VD: V3R-V4R'),
-          _LabRow(name: isEs ? 'Posterior' : 'Posterior', ref: 'V7–V9 (espelho V1-V3)', note: isEs ? 'Infra ST anterior = supra posterior' : 'Infra ST anterior = supra posterior'),
+          _LabRow(name: 'Posterior', ref: isEs ? 'V7–V9 (espejo V1-V3)' : 'V7–V9 (espelho V1-V3)', note: isEs ? 'Infra ST anterior = supra posterior' : 'Infra ST anterior = supra posterior'),
         ]),
       ),
     ]);
@@ -2996,42 +2996,42 @@ class _ReferenceTabState extends State<_ReferenceTab> {
         title: isEs ? 'Valores Normales — GAS Arterial' : 'Valores Normais — GAS Arterial',
         icon: Icons.air_rounded,
         child: Column(children: [
-          _LabRow(name: 'pH', ref: '7,35–7,45', note: '<7,35=acidose; >7,45=alcalose'),
-          _LabRow(name: 'PaCO2', ref: '35–45 mmHg', note: isEs ? '<35=alcalose resp; >45=acidose resp' : '<35=alcalose resp; >45=acidose resp'),
-          _LabRow(name: 'PaO2', ref: '80–100 mmHg', note: isEs ? '<80 hipoxemia (ar ambiente)' : '<80 hipoxemia (ar ambiente)'),
-          _LabRow(name: 'HCO3', ref: '22–26 mEq/L', note: isEs ? '<22=acidose met; >26=alcalose met' : '<22=acidose met; >26=alcalose met'),
-          _LabRow(name: 'BE', ref: '-2 a +2 mEq/L', note: '<-2=déficit base; >+2=excesso base'),
-          _LabRow(name: 'SpO2', ref: '95–100%', note: '<90% = hipoxemia clínica'),
-          _LabRow(name: 'PaO2/FiO2', ref: '>400', note: '<300=SRAG leve; <200=moderado; <100=grave'),
-          _LabRow(name: 'Lactato', ref: '<2 mmol/L', note: isEs ? '>2=hipoperfusão; >4=choque metabólico' : '>2=hipoperfusão; >4=choque metabólico'),
+          _LabRow(name: 'pH', ref: '7,35–7,45', note: isEs ? '<7,35=acidosis; >7,45=alcalosis' : '<7,35=acidose; >7,45=alcalose'),
+          _LabRow(name: 'PaCO2', ref: '35–45 mmHg', note: isEs ? '<35=alcalosis resp; >45=acidosis resp' : '<35=alcalose resp; >45=acidose resp'),
+          _LabRow(name: 'PaO2', ref: '80–100 mmHg', note: isEs ? '<80 hipoxemia (aire ambiente)' : '<80 hipoxemia (ar ambiente)'),
+          _LabRow(name: 'HCO3', ref: '22–26 mEq/L', note: isEs ? '<22=acidosis met; >26=alcalosis met' : '<22=acidose met; >26=alcalose met'),
+          _LabRow(name: 'BE', ref: '-2 a +2 mEq/L', note: isEs ? '<-2=déficit de base; >+2=exceso de base' : '<-2=déficit base; >+2=excesso base'),
+          _LabRow(name: 'SpO2', ref: '95–100%', note: isEs ? '<90% = hipoxemia clínica' : '<90% = hipoxemia clínica'),
+          _LabRow(name: 'PaO2/FiO2', ref: '>400', note: isEs ? '<300=SDRA leve; <200=moderado; <100=grave' : '<300=SRAG leve; <200=moderado; <100=grave'),
+          _LabRow(name: 'Lactato', ref: '<2 mmol/L', note: isEs ? '>2=hipoperfusión; >4=choque metabólico' : '>2=hipoperfusão; >4=choque metabólico'),
         ]),
       ),
       _SectionCard(
         title: isEs ? 'Algoritmo de Gasometría (4 pasos)' : 'Algoritmo de Gasometria (4 passos)',
         icon: Icons.account_tree_rounded,
         child: Column(children: [
-          _StepRow(step: '1', title: isEs ? 'pH: ácido (<7,35) ou alcalino (>7,45)?' : 'pH: ácido (<7,35) ou alcalino (>7,45)?', sub: ''),
-          _StepRow(step: '2', title: isEs ? 'Distúrbio primário: PaCO2 ou HCO3?' : 'Distúrbio primário: PaCO2 ou HCO3?',
+          _StepRow(step: '1', title: isEs ? 'pH: ácido (<7,35) o alcalino (>7,45)?' : 'pH: ácido (<7,35) ou alcalino (>7,45)?', sub: ''),
+          _StepRow(step: '2', title: isEs ? 'Trastorno primario: PaCO2 o HCO3?' : 'Distúrbio primário: PaCO2 ou HCO3?',
             sub: isEs ? 'pH↓+PaCO2↑=acid.resp | pH↓+HCO3↓=acid.met\npH↑+PaCO2↓=alc.resp | pH↑+HCO3↑=alc.met' : 'pH↓+PaCO2↑=acid.resp | pH↓+HCO3↓=acid.met\npH↑+PaCO2↓=alc.resp | pH↑+HCO3↑=alc.met'),
-          _StepRow(step: '3', title: isEs ? 'Compensação adequada?' : 'Compensação adequada?',
+          _StepRow(step: '3', title: isEs ? '¿Compensación adecuada?' : 'Compensação adequada?',
             sub: isEs
-              ? 'Acid.met: PaCO2 = 1,5×HCO3 + 8 ±2 (Winter)\nAlc.met: PaCO2 aumenta 0,7 por cada 1 mEq/L HCO3\nAcid.resp aguda: HCO3 sobe 1 por cada 10 mmHg PaCO2\nAcid.resp crônica: HCO3 sobe 3,5 por cada 10 mmHg'
+              ? 'Acid.met: PaCO2 = 1,5×HCO3 + 8 ±2 (Winter)\nAlc.met: PaCO2 ↑ 0,7 por cada 1 mEq/L HCO3\nAcid.resp aguda: HCO3 ↑ 1 por cada 10 mmHg PaCO2\nAcid.resp crónica: HCO3 ↑ 3,5 por cada 10 mmHg'
               : 'Acid.met: PaCO2 = 1,5×HCO3 + 8 ±2 (Winter)\nAlc.met: PaCO2 ↑ 0,7 por cada 1 mEq/L HCO3\nAcid.resp aguda: HCO3 ↑ 1 por cada 10 mmHg PaCO2\nAcid.resp crônica: HCO3 ↑ 3,5 por cada 10 mmHg'),
-          _StepRow(step: '4', title: isEs ? 'Anion Gap (se acidose met)' : 'Anion Gap (se acidose met)',
-            sub: isEs ? 'AG = Na – (Cl + HCO3). Normal: 8–12. >12 = AG elevado (MUDPILES).\nMUDPILES: Metanol, Uremia, DKA, Propileno, Isoniazida, Lactato, Etilenoglicol, Salicilato' : 'AG = Na – (Cl + HCO3). Normal: 8–12. >12 = AG elevado (MUDPILES).\nMUDPILES: Metanol, Uremia, CAD, Propileno, Isoniazida, Lactato, Etilenoglicol, Salicilato'),
+          _StepRow(step: '4', title: isEs ? 'Anion Gap (si acidosis met.)' : 'Anion Gap (se acidose met)',
+            sub: isEs ? 'AG = Na – (Cl + HCO3). Normal: 8–12. >12 = AG elevado (MUDPILES).\nMUDPILES: Metanol, Uremia, CAD, Propileno, Isoniazida, Lactato, Etilenoglicol, Salicilato' : 'AG = Na – (Cl + HCO3). Normal: 8–12. >12 = AG elevado (MUDPILES).\nMUDPILES: Metanol, Uremia, CAD, Propileno, Isoniazida, Lactato, Etilenoglicol, Salicilato'),
         ]),
       ),
       _SectionCard(
         title: isEs ? 'Causas de Hipoxemia' : 'Causas de Hipoxemia',
         icon: Icons.help_outline_rounded,
         child: Column(children: [
-          _LabRow(name: 'Hipoventilação', ref: isEs ? 'PaCO2 ↑, A-a normal' : 'PaCO2 ↑, A-a normal', note: isEs ? 'BNZ, opioides, miastenia' : 'BZD, opioides, miastenia'),
+          _LabRow(name: isEs ? 'Hipoventilación' : 'Hipoventilação', ref: 'PaCO2 ↑, A-a normal', note: isEs ? 'BZD, opioides, miastenia' : 'BZD, opioides, miastenia'),
           _LabRow(name: 'V/Q mismatch', ref: 'A-a ↑, responde a O2', note: isEs ? 'DPOC, asma, TEP' : 'DPOC, asma, TEP'),
-          _LabRow(name: 'Shunt', ref: 'A-a ↑, NÃO responde a O2', note: isEs ? 'SARA, pneumonia lobar, atelectasia' : 'SARA, pneumonia lobar, atelectasia'),
-          _LabRow(name: isEs ? 'Difusión' : 'Difusão', ref: 'A-a ↑, responde a O2', note: isEs ? 'Fibrose pulmonar' : 'Fibrose pulmonar'),
+          _LabRow(name: 'Shunt', ref: isEs ? 'A-a ↑, NO responde a O2' : 'A-a ↑, NÃO responde a O2', note: isEs ? 'SDRA, neumonia lobar, atelectasia' : 'SARA, pneumonia lobar, atelectasia'),
+          _LabRow(name: isEs ? 'Difusión' : 'Difusão', ref: 'A-a ↑, responde a O2', note: isEs ? 'Fibrosis pulmonar' : 'Fibrose pulmonar'),
           const SizedBox(height: 4),
           _InfoNote(text: isEs
-            ? 'Gradiente A-a = PAO2 – PaO2. PAO2 = FiO2×(Patm–PH2O) – PaCO2/0,8. Normal: <10 jovem; <25 idoso.'
+            ? 'Gradiente A-a = PAO2 – PaO2. PAO2 = FiO2×(Patm–PH2O) – PaCO2/0,8. Normal: <10 joven; <25 anciano.'
             : 'Gradiente A-a = PAO2 – PaO2. PAO2 = FiO2×(Patm–PH2O) – PaCO2/0,8. Normal: <10 jovem; <25 idoso.'),
         ]),
       ),

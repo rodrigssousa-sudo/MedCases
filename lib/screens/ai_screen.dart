@@ -1923,7 +1923,7 @@ class _EmptyChat extends StatelessWidget {
                       color: amberColor, size: 14),
                   const SizedBox(width: 6),
                   Text(
-                    isEs ? 'Botão no menu acima' : 'Botão no menu acima',
+                    isEs ? 'Botón en el menú superior' : 'Botão no menu acima',
                     style: TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.w600,
@@ -1959,7 +1959,7 @@ class _EmptyChat extends StatelessWidget {
                           color: Color(0xFF1A1100), size: 18),
                       const SizedBox(width: 8),
                       Text(
-                        isEs ? 'Conectar IA Agora' : 'Conectar IA Agora',
+                        isEs ? 'Conectar IA Ahora' : 'Conectar IA Agora',
                         style: const TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w800,
@@ -3550,7 +3550,7 @@ class _AiStatusSheetState extends State<_AiStatusSheet> {
                   dark: dark,
                   label: isEs ? 'Funciona offline' : 'Funciona offline',
                   sub: isEs
-                      ? 'Sem internet, a base local responde normalmente'
+                      ? 'Sin internet, la base local responde normalmente'
                       : 'Sem internet, a base local responde normalmente',
                 ),
               ]),

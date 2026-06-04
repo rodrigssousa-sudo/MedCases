@@ -2679,13 +2679,13 @@ class _AppDrawerState extends State<_AppDrawer> {
           '• Anotações e configurações\n'
           '• Seu acesso ao MedCases Pro\n\n'
           'Esta operação não pode ser desfeita.';
-    final step1Label  = isEs ? 'Para continuar, escreva EXCLUIR abaixo:' : 'Para continuar, digite EXCLUIR abaixo:';
+    final step1Label  = isEs ? 'Para continuar, escribe EXCLUIR a continuación:' : 'Para continuar, digite EXCLUIR abaixo:';
     final step2Title  = isEs ? 'Confirma tu contraseña' : 'Confirme sua senha';
-    final step2Label  = isEs ? 'Senha atual' : 'Senha atual';
-    final step2Hint   = isEs ? 'Digite sua senha para confirmar' : 'Digite sua senha para confirmar';
+    final step2Label  = isEs ? 'Contraseña actual' : 'Senha atual';
+    final step2Hint   = isEs ? 'Ingresa tu contraseña para confirmar' : 'Digite sua senha para confirmar';
     final cancelT     = isEs ? 'Cancelar'  : 'Cancelar';
     final continueT   = isEs ? 'Continuar' : 'Continuar';
-    final confirmT    = isEs ? 'Excluir minha cuenta' : 'Excluir minha conta';
+    final confirmT    = isEs ? 'Eliminar mi cuenta' : 'Excluir minha conta';
     final wordError   = isEs ? 'Escribe EXCLUIR para continuar' : 'Digite EXCLUIR para continuar';
 
     final confirmCtrl = TextEditingController();
@@ -3292,7 +3292,7 @@ class _AppDrawerState extends State<_AppDrawer> {
                     _DrawerRow(
                       icon: Icons.delete_outline_rounded,
                       iconColor: const Color(0xFFCC3333),
-                      title: p.lang == 'es' ? 'Eliminar Cuenta' : 'Eliminar Conta',
+                      title: p.lang == 'es' ? 'Eliminar Cuenta' : 'Excluir Conta',
                       dark: dark,
                       textCol: const Color(0xFFCC3333),
                       subCol: subCol,

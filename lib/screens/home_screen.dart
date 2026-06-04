@@ -571,7 +571,7 @@ class _HomeSearchBar extends StatelessWidget {
           const SizedBox(width: 9),
           Expanded(
             child: Text(
-              isEs ? 'Buscar fármaco, protocolo…' : 'Buscar fármaco, protocolo…',
+              isEs ? 'Buscar fármaco, protocolo…' : 'Buscar medicamento, protocolo…',
               style: TextStyle(
                 fontSize: 13.5,
                 color: dark ? Colors.white24 : const Color(0xFFAAB2C4),
