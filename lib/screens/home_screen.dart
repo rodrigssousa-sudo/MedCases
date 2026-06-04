@@ -267,9 +267,10 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _buildMobileLayout(BuildContext context, bool dark, bool isEs, AppProvider p) {
     // ══════════════════════════════════════════════════════════════════════════
     // BUILD 93 — Apple App Store compliance (Guidelines 1.4.1 & 1.4.2)
-    // Layout mobile focado 100% em Simulação Acadêmica e IA.
-    // Ferramentas clínicas (calculadoras, protocolos, Mi Guardia, Emergências)
-    // visíveis APENAS na versão Web (guard kIsWeb nos pontos de entrada).
+    // Layout mobile: IA inline chat hero + Fármacos (referência) + atalhos.
+    // SIMULAÇÕES removidas (content perigoso Apple 1.4.1).
+    // Ferramentas clínicas pesadas (calculadoras, protocolos, Mi Guardia,
+    // Emergências) visíveis APENAS na versão Web.
     // ══════════════════════════════════════════════════════════════════════════
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
@@ -279,32 +280,15 @@ class _HomeScreenState extends State<HomeScreen> {
       padding: const EdgeInsets.fromLTRB(16, 12, 16, 110),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
 
-        // ── 1. IA — HERO ELEMENT: Chat de Simulação de Casos Clínicos ──────
-        // É o elemento central e de maior destaque na tela (App Store focus).
-        _HomeIaCard(
+        // ── 1. IA INLINE CHAT — hero principal, chat real sem trocar aba ──────
+        _HomeInlineChat(
           dark: dark,
           isEs: isEs,
           onNavigateToAi: widget.onTabChange,
         ),
-        const SizedBox(height: 20),
-
-        // ── 2. SIMULAÇÕES ACADÊMICAS — casos para estudo ────────────────────
-        _HomeCard(
-          icon: Icons.description_rounded,
-          label: isEs ? 'SIMULACIONES ACADÉMICAS' : 'SIMULAÇÕES ACADÊMICAS',
-          subtitle: isEs
-              ? '${prescriptionModels(true).length} casos de estudio'
-              : '${prescriptionModels(false).length} casos de estudo',
-          gradientColors: const [Color(0xFF2A0B52), Color(0xFF3D1280), Color(0xFF5B21B6)],
-          accentColor: const Color(0xFFA78BFA),
-          dark: dark,
-          onTap: () => Navigator.of(context).push(
-            _HomeScreenState._slide(const _PrescripcionesShell()),
-          ),
-        ),
         const SizedBox(height: 14),
 
-        // ── 3. ATALHOS RÁPIDOS — Notas · Recentes · Favoritos · Avaliação ──
+        // ── 2. ATALHOS RÁPIDOS — Notas · Recentes · Favoritos · Avaliação ──
         _QuickShortcuts(
           dark: dark,
           isEs: isEs,
@@ -314,30 +298,32 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         const SizedBox(height: 14),
 
-        // ── 4. FERRAMENTAS CLÍNICAS (Web only) ──────────────────────────────
-        // Calculadoras, Fármacos, Interações, Pediatria, Adulto, Mi Guardia,
-        // Emergências: exibidos APENAS na versão Web conforme Apple 1.4.1/1.4.2.
-        if (kIsWeb) ...[
-          // FÁRMACOS
-          _HomeCard(
-            icon: Icons.medication_rounded,
-            label: isEs ? 'FÁRMACOS' : 'FÁRMACOS',
-            subtitle: isEs ? 'Actualizados en 2026' : 'Atualizados em 2026',
-            gradientColors: const [Color(0xFF3B2200), Color(0xFF6B3A00), Color(0xFF9A5B00)],
-            accentColor: const Color(0xFFFBBF24),
-            dark: dark,
-            onTap: () => Navigator.of(context).push(
-              _HomeScreenState._slide(const _FarmacosShell()),
-            ),
+        // ── 3. FÁRMACOS — referência acadêmica (sem guard kIsWeb) ────────────
+        // Conteúdo de referência educacional. NÃO é calculadora de dose.
+        _HomeCard(
+          icon: Icons.medication_rounded,
+          label: isEs ? 'FÁRMACOS' : 'FÁRMACOS',
+          subtitle: isEs ? 'Referencia farmacológica' : 'Referência farmacológica',
+          gradientColors: const [Color(0xFF3B2200), Color(0xFF6B3A00), Color(0xFF9A5B00)],
+          accentColor: const Color(0xFFFBBF24),
+          dark: dark,
+          onTap: () => Navigator.of(context).push(
+            _HomeScreenState._slide(const _FarmacosShell()),
           ),
-          const SizedBox(height: 10),
+        ),
+        const SizedBox(height: 14),
+
+        // ── 4. FERRAMENTAS CLÍNICAS (Web only) ──────────────────────────────
+        // Calculadoras, Interações, Pediatria, Adulto, Mi Guardia, Emergências:
+        // exibidos APENAS na versão Web conforme Apple 1.4.1/1.4.2.
+        if (kIsWeb) ...[
           // INTERAÇÕES
           _HomeCard(
             icon: Icons.compare_arrows_rounded,
             label: isEs ? 'INTERACCIONES' : 'INTERAÇÕES',
             subtitle: isEs
-                ? '+\${DrugInteractionService.totalInteractions} pares con evidencia'
-                : '+\${DrugInteractionService.totalInteractions} pares com evidência',
+                ? '+${DrugInteractionService.totalInteractions} pares con evidencia'
+                : '+${DrugInteractionService.totalInteractions} pares com evidência',
             gradientColors: const [Color(0xFF3B0A1E), Color(0xFF5E1234), Color(0xFF8B1E4F)],
             accentColor: const Color(0xFFFF6BA0),
             dark: dark,
@@ -886,7 +872,390 @@ class _SearchResultTile extends StatelessWidget {
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
-// HOME V2 — IA MEDCASES CARD (item 1 da Home)
+// HOME INLINE CHAT — chat real embutido na Home sem trocar de aba.
+// Streaming via AppProvider.sendAiMessage (RAG + GeminiServiceV2 completo).
+// Mostra última Q&A inline; botão "Ver completo" abre aba IA.
+// ═══════════════════════════════════════════════════════════════════════════════
+class _HomeInlineChat extends StatefulWidget {
+  final bool dark;
+  final bool isEs;
+  final ValueChanged<int> onNavigateToAi;
+
+  const _HomeInlineChat({
+    required this.dark,
+    required this.isEs,
+    required this.onNavigateToAi,
+  });
+
+  @override
+  State<_HomeInlineChat> createState() => _HomeInlineChatState();
+}
+
+class _HomeInlineChatState extends State<_HomeInlineChat> {
+  final _ctrl  = TextEditingController();
+  final _focus = FocusNode();
+
+  static const _kGreen     = Color(0xFF0D7A55);
+  static const _kGreenBg   = Color(0xFF0D7A55);
+  static const _kGreenBord = Color(0xFF0D9E6E);
+
+  String _lastQuestion = '';
+  String _lastAnswer   = '';
+  String _streaming    = '';
+  bool   _thinking     = false;
+  bool   _hasError     = false;
+
+  static const _chipsEs = ['Caso clínico', 'Diagnóstico dif.', 'Farmacología', 'Razonamiento'];
+  static const _chipsPt = ['Caso clínico', 'Diagnóstico dif.', 'Farmacologia', 'Raciocínio'];
+
+  @override
+  void dispose() {
+    _ctrl.dispose();
+    _focus.dispose();
+    super.dispose();
+  }
+
+  Future<void> _send([String? preset]) async {
+    final text = (preset ?? _ctrl.text).trim();
+    if (text.isEmpty || _thinking) return;
+    _ctrl.clear();
+    _focus.unfocus();
+    setState(() {
+      _lastQuestion = text;
+      _lastAnswer   = '';
+      _streaming    = '';
+      _thinking     = true;
+      _hasError     = false;
+    });
+    final p = context.read<AppProvider>();
+    await p.sendAiMessage(
+      text,
+      onChunk: (acc) { if (mounted) setState(() => _streaming = acc); },
+      onDone:  (fin) { if (mounted) setState(() { _lastAnswer = fin; _streaming = ''; _thinking = false; }); },
+      onError: (err) { if (mounted) setState(() { _lastAnswer = err; _streaming = ''; _thinking = false; _hasError = true; }); },
+    );
+  }
+
+  void _goToAiTab([String? q]) {
+    if (q != null && q.isNotEmpty) AiScreen.pendingQuery.value = q;
+    widget.onNavigateToAi(2);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final dark  = widget.dark;
+    final isEs  = widget.isEs;
+    final chips = isEs ? _chipsEs : _chipsPt;
+
+    final cardBg      = dark ? const Color(0xFF0E1A12) : Colors.white;
+    final borderColor = dark ? _kGreenBord.withValues(alpha: 0.35) : _kGreenBord.withValues(alpha: 0.22);
+    final fieldBg     = dark ? const Color(0xFF162A1C) : const Color(0xFFF4FAF7);
+    final fieldBorder = dark ? _kGreenBord.withValues(alpha: 0.22) : _kGreenBord.withValues(alpha: 0.18);
+    final textColor   = dark ? Colors.white : const Color(0xFF0F1C14);
+    final hintColor   = dark ? Colors.white.withValues(alpha: 0.38) : const Color(0xFF7A9E8E);
+    final chipBg      = dark ? const Color(0xFF162A1C) : _kGreen.withValues(alpha: 0.07);
+    final chipBorder  = dark ? _kGreenBord.withValues(alpha: 0.25) : _kGreenBord.withValues(alpha: 0.22);
+    final chipText    = dark ? const Color(0xFF4ADE80) : _kGreen;
+    final subText     = dark ? Colors.white38 : const Color(0xFF8BA898);
+    final displayAnswer = (_thinking && _streaming.isNotEmpty) ? _streaming : _lastAnswer;
+
+    return Container(
+      decoration: BoxDecoration(
+        color: cardBg,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: borderColor, width: 1.2),
+        boxShadow: dark
+            ? [BoxShadow(color: _kGreenBg.withValues(alpha: 0.08), blurRadius: 20, offset: const Offset(0, 4))]
+            : [
+                BoxShadow(color: Colors.black.withValues(alpha: 0.07), blurRadius: 16, offset: const Offset(0, 4)),
+                BoxShadow(color: _kGreen.withValues(alpha: 0.06),      blurRadius: 24, offset: const Offset(0, 6)),
+              ],
+      ),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(16, 18, 16, 16),
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+
+          // ── Header ────────────────────────────────────────────────────────
+          Row(children: [
+            Container(
+              width: 36, height: 36,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                gradient: const LinearGradient(
+                  begin: Alignment.topLeft, end: Alignment.bottomRight,
+                  colors: [Color(0xFF0F9E6A), Color(0xFF064D32)],
+                ),
+                boxShadow: [BoxShadow(color: _kGreenBg.withValues(alpha: 0.35), blurRadius: 10, offset: const Offset(0, 3))],
+              ),
+              child: const Icon(Icons.psychology_rounded, size: 20, color: Colors.white),
+            ),
+            const SizedBox(width: 10),
+            Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Row(children: [
+                Text('IA MEDCASES', style: TextStyle(fontSize: 13.5, fontWeight: FontWeight.w900, letterSpacing: 0.4, color: textColor)),
+                const SizedBox(width: 6),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                  decoration: BoxDecoration(color: _kGreen, borderRadius: BorderRadius.circular(20)),
+                  child: Text(isEs ? 'CHAT' : 'CHAT',
+                    style: const TextStyle(fontSize: 7.5, fontWeight: FontWeight.w800, color: Colors.white, letterSpacing: 0.8)),
+                ),
+              ]),
+              const SizedBox(height: 1),
+              Text(
+                isEs ? 'Asistente clínico educativo' : 'Assistente clínico educativo',
+                style: TextStyle(fontSize: 10, color: subText, height: 1.3),
+              ),
+            ])),
+            if (_lastAnswer.isNotEmpty || _lastQuestion.isNotEmpty)
+              GestureDetector(
+                onTap: () => _goToAiTab(),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                  decoration: BoxDecoration(
+                    color: chipBg,
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(color: chipBorder),
+                  ),
+                  child: Row(mainAxisSize: MainAxisSize.min, children: [
+                    Text(isEs ? 'Ver más' : 'Ver mais',
+                      style: TextStyle(fontSize: 10.5, fontWeight: FontWeight.w600, color: chipText)),
+                    const SizedBox(width: 3),
+                    Icon(Icons.open_in_new_rounded, size: 10, color: chipText),
+                  ]),
+                ),
+              ),
+          ]),
+
+          const SizedBox(height: 14),
+
+          // ── Área de conversa inline ────────────────────────────────────────
+          if (_lastQuestion.isNotEmpty || _thinking) ...[
+            // Bolha usuário
+            Align(
+              alignment: Alignment.centerRight,
+              child: Container(
+                constraints: const BoxConstraints(maxWidth: 280),
+                margin: const EdgeInsets.only(bottom: 10),
+                padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 9),
+                decoration: BoxDecoration(
+                  color: dark ? const Color(0xFF1A3D28) : const Color(0xFFE6F7EF),
+                  borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(14), topRight: Radius.circular(14),
+                    bottomLeft: Radius.circular(14), bottomRight: Radius.circular(4),
+                  ),
+                  border: Border.all(color: _kGreenBord.withValues(alpha: 0.25)),
+                ),
+                child: Text(_lastQuestion,
+                  style: TextStyle(fontSize: 13, color: textColor, height: 1.45)),
+              ),
+            ),
+
+            // Bolha IA — loading dots ou resposta
+            if (_thinking && _streaming.isEmpty)
+              Padding(
+                padding: const EdgeInsets.only(bottom: 10),
+                child: Row(children: [
+                  Container(
+                    width: 32, height: 32,
+                    margin: const EdgeInsets.only(right: 8),
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: dark ? const Color(0xFF162A1C) : const Color(0xFFE6F7EF),
+                    ),
+                    child: const Icon(Icons.psychology_rounded, size: 15, color: _kGreen),
+                  ),
+                  _ThinkingDots(dark: dark),
+                ]),
+              )
+            else if (displayAnswer.isNotEmpty)
+              Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Container(
+                  width: 28, height: 28,
+                  margin: const EdgeInsets.only(right: 8, top: 2),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: dark ? const Color(0xFF162A1C) : const Color(0xFFE6F7EF),
+                  ),
+                  child: const Icon(Icons.psychology_rounded, size: 14, color: _kGreen),
+                ),
+                Expanded(
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 9),
+                    decoration: BoxDecoration(
+                      color: dark ? const Color(0xFF161616) : const Color(0xFFF8F9FA),
+                      borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(4), topRight: Radius.circular(14),
+                        bottomLeft: Radius.circular(14), bottomRight: Radius.circular(14),
+                      ),
+                      border: Border.all(color: _hasError
+                          ? Colors.red.withValues(alpha: 0.3)
+                          : (dark ? Colors.white.withValues(alpha: 0.07) : const Color(0xFFE2E8F0))),
+                    ),
+                    child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                      Text(
+                        displayAnswer,
+                        style: TextStyle(
+                          fontSize: 13,
+                          color: _hasError ? Colors.red.shade400 : (dark ? Colors.white.withValues(alpha: 0.88) : const Color(0xFF1A202C)),
+                          height: 1.5,
+                        ),
+                        maxLines: 10,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      if (!_thinking && _lastAnswer.isNotEmpty && !_hasError) ...[
+                        const SizedBox(height: 8),
+                        GestureDetector(
+                          onTap: () => _goToAiTab(),
+                          child: Row(mainAxisSize: MainAxisSize.min, children: [
+                            Text(isEs ? 'Ver respuesta completa' : 'Ver resposta completa',
+                              style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: _kGreen)),
+                            const SizedBox(width: 3),
+                            const Icon(Icons.arrow_forward_rounded, size: 11, color: _kGreen),
+                          ]),
+                        ),
+                      ],
+                    ]),
+                  ),
+                ),
+              ]),
+
+            const SizedBox(height: 12),
+          ],
+
+          // ── Campo de entrada ───────────────────────────────────────────────
+          Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
+            Expanded(
+              child: GestureDetector(
+                onTap: () => _focus.requestFocus(),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                  decoration: BoxDecoration(
+                    color: fieldBg,
+                    borderRadius: BorderRadius.circular(14),
+                    border: Border.all(color: fieldBorder, width: 1.2),
+                  ),
+                  child: TextField(
+                    controller: _ctrl,
+                    focusNode: _focus,
+                    minLines: 1,
+                    maxLines: 4,
+                    style: TextStyle(fontSize: 14, color: textColor, height: 1.5),
+                    decoration: InputDecoration.collapsed(
+                      hintText: isEs ? 'Caso clínico, pregunta académica…' : 'Caso clínico, pergunta acadêmica…',
+                      hintStyle: TextStyle(fontSize: 14, color: hintColor),
+                    ),
+                    textInputAction: TextInputAction.send,
+                    onSubmitted: (_) => _send(),
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(width: 8),
+            GestureDetector(
+              onTap: _thinking ? null : () => _send(),
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 200),
+                width: 40, height: 40,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: _thinking
+                      ? (dark ? const Color(0xFF162A1C) : const Color(0xFFDDEFE6))
+                      : _kGreen,
+                ),
+                child: _thinking
+                    ? const Padding(
+                        padding: EdgeInsets.all(11),
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          valueColor: AlwaysStoppedAnimation<Color>(_kGreen),
+                        ),
+                      )
+                    : const Icon(Icons.arrow_upward_rounded, color: Colors.white, size: 19),
+              ),
+            ),
+          ]),
+
+          const SizedBox(height: 12),
+
+          // ── Chips ──────────────────────────────────────────────────────────
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            physics: const BouncingScrollPhysics(),
+            child: Row(
+              children: chips.map((chip) => GestureDetector(
+                onTap: _thinking ? null : () => _send(chip),
+                child: Container(
+                  margin: const EdgeInsets.only(right: 7),
+                  padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 5),
+                  decoration: BoxDecoration(
+                    color: chipBg,
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(color: chipBorder),
+                  ),
+                  child: Text(chip, style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.w600, color: chipText)),
+                ),
+              )).toList(),
+            ),
+          ),
+        ]),
+      ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// THINKING DOTS — animação de "pensando" para o inline chat da Home
+// ─────────────────────────────────────────────────────────────────────────────
+class _ThinkingDots extends StatefulWidget {
+  final bool dark;
+  const _ThinkingDots({required this.dark});
+
+  @override
+  State<_ThinkingDots> createState() => _ThinkingDotsState();
+}
+
+class _ThinkingDotsState extends State<_ThinkingDots>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _ctrl;
+
+  @override
+  void initState() {
+    super.initState();
+    _ctrl = AnimationController(vsync: this, duration: const Duration(milliseconds: 1200))
+      ..repeat();
+  }
+
+  @override
+  void dispose() {
+    _ctrl.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final dotColor = widget.dark ? const Color(0xFF4ADE80) : const Color(0xFF0D7A55);
+    return AnimatedBuilder(
+      animation: _ctrl,
+      builder: (_, __) => Row(
+        mainAxisSize: MainAxisSize.min,
+        children: List.generate(3, (i) {
+          final delay   = i / 3.0;
+          final t       = (_ctrl.value - delay).clamp(0.0, 1.0);
+          final opacity = (0.3 + 0.7 * (t < 0.5 ? t * 2 : (1 - t) * 2)).clamp(0.0, 1.0);
+          return Container(
+            margin: const EdgeInsets.only(right: 4),
+            width: 7, height: 7,
+            decoration: BoxDecoration(shape: BoxShape.circle, color: dotColor.withValues(alpha: opacity)),
+          );
+        }),
+      ),
+    );
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// HOME V2 — IA MEDCASES CARD (item 1 da Home) — LEGADO, mantido para web
 // Card premium branco/escuro com campo de pergunta, chips rápidos e botão enviar.
 // Ao clicar/enviar: seta AiScreen.pendingQuery e navega para aba 2 (IA).
 // ═══════════════════════════════════════════════════════════════════════════════
