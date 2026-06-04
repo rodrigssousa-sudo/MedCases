@@ -2232,48 +2232,65 @@ class AppProvider extends ChangeNotifier {
     }
 
     // ── Condição/doença clínica — palavra única ou curta ───────────────────
-    // Queries de 1-3 palavras que são nomes de condições → tratamento direto
-    // "diarrea", "diarréia", "pneumonia", "hipertensão" → MODO [A] conduta
+    // Queries de 1-4 palavras que são nomes de condições → tratamento direto
+    // "diarrea", "fiebre", "pneumonia", "hipertensão" → MODO [A] conduta
     // Sem este bloco, essas queries caem em 'geral' e geram resposta enciclopédica
     final wordCount = input.trim().split(RegExp(r'\s+')).length;
     if (wordCount <= 4) {
       if (_has(q, [
         // Gastrointestinal
-        'diarrea', 'diarreia', 'gastroenterit', 'vomito', 'nausea',
+        'diarrea', 'diarreia', 'gastroenterit', 'vomito', 'vômito', 'nausea',
         'constipac', 'estrenim', 'hemorragia digest', 'sangrado digest',
         'hepatit', 'cirros', 'colecistit', 'pancreatit', 'apendicit',
         'peritonit', 'obstrucao', 'obstruccion', 'oclusion',
+        'ictericia', 'ictericia', 'melena', 'hematoquecia',
         // Respiratório
         'pneumonia', 'bronquit', 'bronchit', 'neumonia',
-        'asma agud', 'dpoc', 'epoc', 'pleurit', 'derrame pleural',
-        'embolia pulmon', 'tep ',
+        'asma', 'dpoc', 'epoc', 'pleurit', 'derrame pleural',
+        'embolia pulmon', 'tep ', 'insuficiencia respirat', 'insuficiência respirat',
+        'dispneia', 'disnea', 'tosse', 'tos ',
         // Cardiovascular
         'hipertensao', 'hipertension', 'insuficiencia cardiaca', 'insuficiência cardíaca',
         'infarto', 'angina', 'arritmia', 'fibrilacao', 'fibrilacion',
         'trombose', 'trombosis', 'endocardite', 'endocarditis',
         'pericardite', 'pericarditis', 'miocardite', 'miocarditis',
+        'edema agudo', 'edema pulmon',
         // Infeccioso
+        'febre', 'fiebre',
         'sepse', 'sepsis', 'meningite', 'meningitis', 'encefalite', 'encefalitis',
         'celulite infec', 'celulitis', 'erisipela',
         'endocardite', 'pielonefrit', 'cistit', 'itu ', 'itu.',
         'tuberculose', 'tuberculosis', 'dengue', 'malaria', 'paludismo',
         'covid', 'influenza', 'hiv', 'aids', 'sida',
+        'leptospiros', 'chikungunya', 'zika',
         // Metabólico/Endócrino
         'diabetes', 'cetoacidose', 'cetoacidosis', 'hipoglicemia', 'hipoglucemia',
         'hiperglicemia', 'hiperglucemia', 'dislipidemia', 'hipotireoid', 'hipotiroidi',
         'hipertireoid', 'hipertiroid', 'insuficiencia renal', 'insuficiência renal',
         'insuficiencia hepatica', 'insuficiência hepática',
+        'hipocalemia', 'hipopotasemia', 'hiponatremia', 'hipercalemia', 'hipernatremia',
         // Neurológico
         'convulsao', 'convulsion', 'epilepsia', 'avc ', 'avc.', 'acv ', 'acv.',
-        'enxaqueca', 'migrana', 'migraine', 'delirium',
+        'enxaqueca', 'migrana', 'migrania', 'migraine', 'delirium',
+        'acidente vascular', 'acidente cerebro',
         // Renal
-        'insuficiencia renal', 'lesao renal', 'lesión renal', 'nefrit',
+        'insuficiencia renal', 'lesao renal', 'lesion renal', 'nefrit',
         // Hematológico
         'anemia', 'trombocitopenia', 'leucemia', 'linfoma',
+        'coagulacao intravascular', 'civd', 'cid ',
         // Reumatológico
         'artrit', 'lupus', 'escleroderm', 'vasculit',
-        // Dor
+        'gota ', 'gota.',
+        // Dor — sintoma inespecífico mas clinicamente válido
         'cefaleia', 'cefalea', 'dor cronic', 'dolor cron',
+        'dor abdomin', 'dolor abdomin', 'dor torac', 'dolor toraci',
+        // Choque / colapso
+        'choque ', 'shock ',
+        // Dermatológico
+        'dermatite', 'dermatitis', 'urticaria', 'urticária', 'prurido', 'prurito',
+        'herpes', 'celulite',
+        // Psiquiátrico leve (conduta ≠ psicofármaco)
+        'ansiedade', 'ansiedad', 'depressao', 'depresion', 'insonia', 'insomnio',
       ])) {
         return 'tratamento';
       }
@@ -6206,15 +6223,26 @@ class AppProvider extends ChangeNotifier {
             .toList();
 
         // Verificar se parece uma pergunta clínica legítima (tem termo médico)
+        // Inclui doenças comuns de 1 palavra (PT+ES) para evitar fallback vago
         final looksLikeClinical = queryTerms.isNotEmpty && (
           _has(q, ['sindrome', 'doenca', 'infec', 'lesao', 'tumor', 'cancer', 'carcinoma',
                    'insuf', 'crise', 'agud', 'cronic', 'grave', 'leve', 'moderado',
                    'tratament', 'diagnos', 'clinico', 'pacient', 'sintom',
                    'complicac', 'manejo', 'conduta', 'terapia', 'cirurgi',
+                   // doenças comuns PT (1 palavra)
+                   'diarreia', 'febre', 'tosse', 'dispneia', 'anemia', 'sepse',
+                   'pneumonia', 'asma', 'dpoc', 'diabetes', 'hipertens',
+                   'epilepsia', 'dengue', 'malaria', 'tuberculose', 'lupus',
+                   'arritmia', 'fibrilac', 'enxaqueca', 'cefaleia', 'dermatite',
+                   'pancreatite', 'colecistite', 'cirrose', 'hepatite',
+                   // doenças comuns ES (1 palavra)
+                   'diarrea', 'fiebre', 'tos ', 'disnea', 'neumonia', 'asma',
+                   'diabetes', 'hipertension', 'epilepsia', 'dengue', 'malaria',
+                   'tuberculosis', 'lupus', 'arritmia', 'migrania', 'cefalea',
+                   'pancreatitis', 'colecistitis', 'cirrosis', 'hepatitis', 'sepsis',
                    // español
-                   'sindrome', 'enfermedad', 'infeccion', 'lesion', 'tumor', 'cancer',
-                   'insuficiencia', 'crisis', 'agudo', 'cronico', 'grave',
-                   'tratamiento', 'diagnostico', 'clinico', 'paciente', 'sintoma']) ||
+                   'enfermedad', 'infeccion', 'lesion', 'insuficiencia',
+                   'tratamiento', 'diagnostico', 'paciente', 'sintoma']) ||
           queryTerms.length >= 2
         );
 

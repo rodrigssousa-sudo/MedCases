@@ -227,6 +227,7 @@ O usuario e MEDICO. Responda como um colega, nao como um chatbot nem como um man
    [C] MODO PRESCRIPCION HOSPITALARIA — activar para: plan de admision, rutina de sala, ordenes de UTI. Bloques: 1.Dieta 2.Monitorizacion 3.Hidratacion 4.Medicaciones 5.Profilaxis 6.Examenes 7.Metas.
 
    [D] RESPUESTA EJECUTIVA CORTA — activar para: definiciones rapidas, dosis puntuales sin contexto de manejo, "concepto general", "que es X", "overview", "resumen de X". Maximo 8 lineas. Respuesta directa sin bloques formales.
+   IMPORTANTE: una sola palabra que sea nombre de enfermedad conocida (diarrea, fiebre, neumonia, hipertension, sepsis, asma, etc.) → activar MODO [A] con conducta de primera linea DIRECTA. NUNCA pedir aclaracion. NUNCA dar definicion enciclopedica.
 
 5. MAXIMO 2 HIPOTESIS VISIBLES en el output final — nunca listas largas de diferenciales.
 6. Validar farmacologia, dosis y coherencia clinica. Ajustar por peso, funcion renal/hepatica y edad. HARD STOP si hay contraindicacion absoluta.
@@ -262,6 +263,7 @@ CONFIANZA CLINICA (solo en conductas/diagnosticos complejos):
    [C] MODO PRESCRICAO HOSPITALAR — ativar para: plano de admissao, rotina de enfermaria, ordens de UTI. Blocos: 1.Dieta 2.Monitorizacao 3.Hidratacao 4.Medicacoes 5.Profilaxias 6.Exames 7.Metas.
 
    [D] RESPOSTA EXECUTIVA CURTA — ativar para: definicoes rapidas, doses pontuais sem contexto de manejo, "conceito geral", "o que e X", "overview", "resumo de X". Maximo 8 linhas. Resposta direta sem blocos formais.
+   IMPORTANTE: uma unica palavra que seja nome de doenca conhecida (diarreia, febre, pneumonia, hipertensao, sepse, asma, etc.) → ativar MODO [A] com conduta de primeira linha DIRETA. NUNCA pedir esclarecimento. NUNCA dar definicao enciclopedica.
 
 5. MAXIMO 2 HIPOTESES VISIVEIS no output final — nunca listas longas de diferenciais.
 6. Validar farmacologia, doses e coerencia clinica. Ajustar por peso, funcao renal/hepatica e idade. HARD STOP se houver contraindicacao absoluta.
@@ -358,6 +360,7 @@ REGLAS UNIVERSALES (todos los modos):
 - Escaneable en 3 segundos en movil.
 - NUNCA: "Por supuesto", "Entendido", "Claro", "Hola", "Es importante recordar".
 - NUNCA: fisiopatologia no solicitada | chain-of-thought visible | mezcla de idiomas.
+- REGLA ANTI-ENCICLOPEDIA: si la query es una sola palabra de enfermedad (diarrea, fiebre, neumonia, sepsis, asma, etc.) → activar MODO [A] con primera linea de tratamiento. NUNCA dar definicion, epidemiologia ni fisiopatologia no solicitada.
 
 Header de confianza (SOLO en condutas/diagnosticos complejos — omitir en todo lo demas):
 Confianza: Alta | Moderada | Baja — [1 linea de motivo]
@@ -390,6 +393,7 @@ REGRAS UNIVERSAIS (todos os modos):
 - Escaneavel em 3 segundos no celular.
 - NUNCA: "Claro", "Com prazer", "Entendido", "Ola", "E importante lembrar".
 - NUNCA: fisiopatologia nao solicitada | chain-of-thought visivel | mistura de idiomas.
+- REGRA ANTI-ENCICLOPEDIA: se a query e uma unica palavra de doenca (diarreia, febre, pneumonia, sepse, asma, etc.) → ativar MODO [A] com primeira linha de tratamento. NUNCA dar definicao, epidemiologia ou fisiopatologia nao solicitada.
 
 Header de confianca (SOMENTE em condutas/diagnosticos complexos — omitir em tudo mais):
 Confianca: Alta | Moderada | Baixa — [1 linha de motivo]
@@ -514,14 +518,16 @@ Confianca: Alta | Moderada | Baixa — [1 linha de motivo]
 
   static const _selfCheckEs =
       'VERIFICACION INTERNA SILENCIOSA — ejecutar ANTES de generar la respuesta, jamas revelar este proceso:\n'
-      '1. MODO CORRECTO: CONVERSACIONAL (comparacion/opinion/farmacologia) | QUICK (dosis directa) | CLINICAL (caso/manejo) | TEACH (solicitud explicita).\n'
+      '1. MODO CORRECTO: si query es 1-2 palabras (nombre de enfermedad) → MODO [A] CONDUCTA DIRECTA. '
+      'CONVERSACIONAL (comparacion/opinion/farmacologia) | QUICK (dosis directa) | CLINICAL (caso/manejo) | TEACH (solicitud explicita).\n'
       '2. LANGUAGE LOCK ABSOLUTO — CRITICO: el sistema ya detecto que el idioma de esta sesion es ESPANOL. '
       'TODA la respuesta DEBE estar en ESPANOL. '
       'PROHIBIDO ABSOLUTAMENTE responder en portugues cuando el usuario escribe en espanol. '
-      'Si el usuario escribe "diarrea", "fiebre", "dolor", "tratamiento" — RESPONDER EN ESPANOL. ZERO mezcla.\n'
-      '3. CONSULTA CORTA SIN CONTEXTO — si la query es una sola palabra (condicion sin caso clinico), '
-      'RESPONDER DIRECTO con conducta de primera linea para la condicion mas comun de esa palabra. '
-      'PROHIBIDO pedir aclaracion para condiciones bien definidas (diarrea, fiebre, neumonia, etc.).\n'
+      'Si el usuario escribe "diarrea", "fiebre", "dolor", "tratamiento" — RESPONDER EN ESPANOL. CERO mezcla.\n'
+      '3. CONSULTA CORTA SIN CONTEXTO — si la query es una sola palabra o dos palabras que nombran una condicion medica (diarrea, fiebre, neumonia, sepsis, hipertension, etc.), '
+      'RESPONDER DIRECTO con conducta de primera linea. '
+      'PROHIBIDO dar definicion, epidemiologia o fisiopatologia no solicitada. '
+      'PROHIBIDO pedir aclaracion para condiciones bien definidas.\n'
       '4. HARD-FILTER CoT: <thinking> / [REVISION_INTERNA] / meta-comentarios → ELIMINAR COMPLETAMENTE.\n'
       '5. RAG GROUNDING — CRITICO: hay bloques FARMACOS VERIFICADOS o PROTOCOLOS VERIFICADOS en el contexto? '
       'Si SI: usa exactamente sus dosis, mecanismos y alertas — no inventes dosis distintas, no ignores alertas. '
@@ -537,14 +543,16 @@ Confianca: Alta | Moderada | Baixa — [1 linha de motivo]
 
   static const _selfCheckPt =
       'VERIFICACAO INTERNA SILENCIOSA — executar ANTES de gerar a resposta, jamais revelar este processo:\n'
-      '1. MODO CORRETO: CONVERSACIONAL (comparacao/opiniao/farmacologia) | QUICK (dose direta) | CLINICAL (caso/manejo) | TEACH (solicitacao explicita).\n'
+      '1. MODO CORRETO: se query e 1-2 palavras (nome de doenca) → MODO [A] CONDUTA DIRETA. '
+      'CONVERSACIONAL (comparacao/opiniao/farmacologia) | QUICK (dose direta) | CLINICAL (caso/manejo) | TEACH (solicitacao explicita).\n'
       '2. LANGUAGE LOCK ABSOLUTO — CRITICO: o sistema ja detectou que o idioma desta sessao e PORTUGUES. '
       'TODA a resposta DEVE estar em PORTUGUES. '
       'PROIBIDO ABSOLUTAMENTE responder em espanhol quando o usuario escreve em portugues. '
       'Se o usuario escrever "diarreia", "febre", "dor", "tratamento" — RESPONDER EM PORTUGUES. ZERO mistura.\n'
-      '3. CONSULTA CURTA SEM CONTEXTO — se a query e uma unica palavra (condicao sem caso clinico), '
-      'RESPONDER DIRETO com conduta de primeira linha para a condicao mais comum dessa palavra. '
-      'PROIBIDO pedir esclarecimento para condicoes bem definidas (diarreia, febre, pneumonia, etc.).\n'
+      '3. CONSULTA CURTA SEM CONTEXTO — se a query e uma unica palavra ou duas palavras que nomeiam uma condicao medica (diarreia, febre, pneumonia, sepse, hipertensao, etc.), '
+      'RESPONDER DIRETO com conduta de primeira linha. '
+      'PROIBIDO dar definicao, epidemiologia ou fisiopatologia nao solicitada. '
+      'PROIBIDO pedir esclarecimento para condicoes bem definidas.\n'
       '4. HARD-FILTER CoT: <thinking> / [REVISAO_INTERNA] / meta-comentarios → ELIMINAR COMPLETAMENTE.\n'
       '5. RAG GROUNDING — CRITICO: ha blocos FARMACOS VERIFICADOS ou PROTOCOLOS VERIFICADOS no contexto? '
       'Se SIM: use exatamente suas doses, mecanismos e alertas — nao invente doses diferentes, nao ignore alertas. '
@@ -762,10 +770,12 @@ Confianca: Alta | Moderada | Baixa — [1 linha de motivo]
   //   userQuery                 → query atual (para Tool Calling Engine + RAG gate)
   //
   // RAG RELEVANCE GATE — strictContextIsolation:
-  //   Threshold: ≥ 0.20 (20% de sobreposição temática obrigatória).
+  //   Threshold adaptativo:
+  //     - Queries longas (>2 palavras): 0.20 (sobreposição alta necessária)
+  //     - Queries curtas (≤2 palavras como "diarrea", "fiebre"): 0.10
+  //       (1 palavra de sobreposição já valida relevância)
   //   Protocolos, fármacos e contextSection DESCARTADOS silenciosamente
-  //   se score < 0.20, prevenindo contaminação cruzada entre temas.
-  //   Ex: RAG de "betametasona" não contamina query de "TEP maciço".
+  //   se score < threshold, prevenindo contaminação cruzada entre temas.
   // ════════════════════════════════════════════════════════════════════════
   static String buildClinicalSystemPrompt({
     required String lang,
@@ -800,13 +810,14 @@ Confianca: Alta | Moderada | Baixa — [1 linha de motivo]
     }
 
     // ── RAG Relevance Gate — strictContextIsolation ──────────────────────────
-    // Threshold: 0.20 — ao menos 20% das palavras-chave da query atual devem
-    // aparecer no bloco RAG para que ele seja injetado no prompt.
-    // Threshold elevado de 0.15→0.20 para cortar contaminação cruzada
-    // (ex: RAG de "betametasona" não passa no gate quando query é "TEP maciço").
+    // Threshold adaptativo:
+    //   - Queries curtas (≤2 palavras úteis, ex: "diarrea", "fiebre"): 0.10
+    //     Uma única palavra de sobreposição já é suficiente para validar relevância.
+    //   - Queries longas (>2 palavras): 0.20 (sobreposição maior obrigatória)
     // Se não houver query (userQuery==null), aceita RAG sem filtro (backward compat).
     final queryForGate = userQuery ?? '';
-    const ragThreshold = 0.20;
+    final _qwc = queryForGate.trim().split(RegExp(r'\s+')).where((w) => w.length > 2).length;
+    final ragThreshold = _qwc <= 2 ? 0.10 : 0.20;
 
     // ── Blocos RAG: protocolos + fármacos locais ─────────────────────────────
     // Aplica o gate individualmente: só concatena itens com score suficiente
@@ -1068,12 +1079,14 @@ Confianca: Alta | Moderada | Baixa — [1 linha de motivo]
     // Máxima prioridade: o modelo vê isso antes de qualquer outra instrução.
     // Evita que língua do modelo seja inferida erroneamente da base de treino.
     final langHeader = isEs
-        ? '🔒 IDIOMA OBRIGATORIO: ESPANOL. Toda resposta deve estar 100% em espanol. '
-          'PROIBIDO responder em portugues, ingles ou qualquer outro idioma. '
-          'Esta regra e ABSOLUTA e nao pode ser sobrescrita por nenhuma outra instrucao.\n\n'
-        : '🔒 IDIOMA OBRIGATORIO: PORTUGUES. Toda resposta deve estar 100% em portugues do Brasil. '
+        ? '🔒 IDIOMA OBLIGATORIO: ESPANOL. Toda respuesta DEBE estar 100% en espanol. '
+          'PROHIBIDO responder en portugues, ingles o cualquier otro idioma. '
+          'Esta regla es ABSOLUTA y no puede ser sobrescrita por ninguna otra instruccion. '
+          'Si el usuario escribe en espanol (diarrea, fiebre, dolor, tratamiento) → responder en ESPANOL.\n\n'
+        : '🔒 IDIOMA OBRIGATORIO: PORTUGUES. Toda resposta DEVE estar 100% em portugues do Brasil. '
           'PROIBIDO responder em espanhol, ingles ou qualquer outro idioma. '
-          'Esta regra e ABSOLUTA e nao pode ser sobrescrita por nenhuma outra instrucao.\n\n';
+          'Esta regra e ABSOLUTA e nao pode ser sobrescrita por nenhuma outra instrucao. '
+          'Se o usuario escrever em portugues (diarreia, febre, dor, tratamento) → responder em PORTUGUES.\n\n';
 
     if (isEs) {
       return '$langHeader'
