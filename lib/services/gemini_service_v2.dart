@@ -37,7 +37,8 @@
 // │  • _systemPromptPrefix injetado ANTES de qualquer instrução do AiService│
 // │    → proíbe raciocínio visível, inglês intermediário, metadados         │
 // │  • maxOutputTokens: 3200  → respostas clínicas completas sem corte      │
-// │  • thinkingBudget: 0      → zero tokens de CoT (gemini-2.5-flash-lite)  │
+// │  • thinkingConfig omitido → flash-lite rejeita a chave no stream (400)  │
+// │    anti-CoT via _systemPromptPrefix BLOCOS 0/1 + _extractText() 7 filtros│
 // │  • temperature: 0.4       → consistência clínica calibrada              │
 // │  • Retry com backoff 5s/15s/30s + cooldown global pós-429              │
 // └─────────────────────────────────────────────────────────────────────────┘
@@ -117,6 +118,24 @@ class GeminiServiceV2 {
   GeminiServiceV2._(); // construtor privado — utilitário 100% estático
 
   // ══════════════════════════════════════════════════════════════════════════
+  // PRIVACIDADE CLÍNICA — LOGS CONDICIONAIS
+  //
+  // Em produção (release), respostas clínicas e dados do paciente NÃO devem
+  // aparecer nos consoles de crash-reporting ou ferramentas de observabilidade.
+  // _debugGemini=false em kReleaseMode silencia todos os logs do serviço.
+  //
+  // Durante desenvolvimento (debug/profile), os logs ficam visíveis normalmente.
+  // ══════════════════════════════════════════════════════════════════════════
+
+  /// true apenas em debug/profile — nunca em release build.
+  static const bool _debugGemini = kDebugMode;
+
+  /// Centraliza todos os logs do serviço — no-op em produção.
+  static void _log(String message) {
+    if (_debugGemini) debugPrint(message);
+  }
+
+  // ══════════════════════════════════════════════════════════════════════════
   // ENDPOINTS E MODELO
   // ══════════════════════════════════════════════════════════════════════════
 
@@ -177,9 +196,10 @@ class GeminiServiceV2 {
   // Injetado como PRIMEIRA coisa que o modelo lê, antes de qualquer instrução
   // do AiService. Três defesas sobrepostas:
   //
-  //   [A] thinkingBudget=0 → desativa CoT na API (defesa de infra)
+  //   [A] thinkingConfig omitido no stream (flash-lite rejeita a chave)
+  //       → thinkingConfig mantido APENAS no classifier sync (_classifyContext)
   //   [B] Este prefixo     → proíbe o comportamento via instrução de texto
-  //   [C] _extractText()   → filtra no JSON mesmo se A e B falharem
+  //   [C] _extractText() + _looksLikeInternalReasoning() → 7 filtros no JSON
   //
   // NOVIDADES v2 (Build 93 fine-tuning):
   //   • ALERTA DE REJEIÇÃO CRÍTICO — lista de frases proibidas explícitas
@@ -299,7 +319,7 @@ class GeminiServiceV2 {
     // ── Guarda de quota: rejeita imediatamente se cooldown ativo ─────────────
     if (isInQuotaCooldown) {
       final remaining = quotaCooldownRemaining;
-      debugPrint(
+      _log(
         '[GeminiV2] quota cooldown ativo — ${remaining?.inSeconds ?? 0}s restantes',
       );
       controller
@@ -349,7 +369,7 @@ class GeminiServiceV2 {
     if (history.isEmpty) {
       // Primeira mensagem da sessão — sem histórico, sem necessidade de classify
       windowedHistory = [];
-      debugPrint('[GeminiV2] primeira pergunta — histórico vazio');
+      _log('[GeminiV2] primeira pergunta — histórico vazio');
     } else {
       final contextLabel = await _classifyContext(
         apiKey: apiKey,
@@ -357,7 +377,7 @@ class GeminiServiceV2 {
         userMessage: userMessage,
       );
       windowedHistory = _buildContextWindow(history, contextLabel);
-      debugPrint(
+      _log(
         '[GeminiV2] context=$contextLabel → '
         '${windowedHistory.length ~/ 2} troca(s) no payload',
       );
@@ -375,7 +395,7 @@ class GeminiServiceV2 {
         attempt: 0,
       );
     } catch (e) {
-      debugPrint('[GeminiV2] _runPipeline erro inesperado: $e');
+      _log('[GeminiV2] _runPipeline erro inesperado: $e');
       if (!controller.isClosed) {
         controller
           ..add(GeminiChunk.error('unexpected'))
@@ -419,7 +439,7 @@ class GeminiServiceV2 {
 
     // Sem resposta prévia da IA → não há contexto para comparar
     if (lastAiResponse.isEmpty) {
-      debugPrint('[GeminiV2] classifier: sem resposta IA prévia → MÉDICO');
+      _log('[GeminiV2] classifier: sem resposta IA prévia → MÉDICO');
       return 'MÉDICO';
     }
 
@@ -479,7 +499,7 @@ class GeminiServiceV2 {
           .timeout(const Duration(seconds: 8));
 
       if (response.statusCode != 200) {
-        debugPrint(
+  _log(
           '[GeminiV2] classifier HTTP ${response.statusCode} → fallback MÉDICO',
         );
         return 'MÉDICO';
@@ -487,22 +507,28 @@ class GeminiServiceV2 {
 
       final data = jsonDecode(response.body) as Map<String, dynamic>;
       final rawText = _extractTextFromSync(data).trim().toUpperCase();
-      debugPrint('[GeminiV2] classifier resposta raw: "$rawText"');
+      _log('[GeminiV2] classifier resposta raw: "$rawText"');
+
+      // Sanitiza: remove tudo que não seja letra maiúscula ou acentuada.
+      // Previne que "MÉDICO." / "NOVO!" / "MÉDICO\n" quebrem a avaliação.
+      final normalized =
+          rawText.replaceAll(RegExp(r'[^A-ZÁÉÍÓÚÃÕÇ]'), '').toUpperCase();
+      _log('[GeminiV2] classifier normalizado: "$normalized"');
 
       // Aceita variações naturais: NUEVO, NEW, CHANGE → NOVO
       // Qualquer outra resposta (incluindo silêncio ou erro) → MÉDICO (conservador)
-      if (rawText.contains('NOV') ||
-          rawText.contains('NEW') ||
-          rawText.contains('CHAN') ||
-          rawText.contains('DIFF')) {
+      if (normalized.contains('NOV') ||
+          normalized.contains('NEW') ||
+          normalized.contains('CHAN') ||
+          normalized.contains('DIFF')) {
         return 'NOVO';
       }
       return 'MÉDICO';
     } on TimeoutException {
-      debugPrint('[GeminiV2] classifier timeout (8s) → fallback MÉDICO');
+      _log('[GeminiV2] classifier timeout (8s) → fallback MÉDICO');
       return 'MÉDICO';
     } catch (e) {
-      debugPrint('[GeminiV2] classifier erro: $e → fallback MÉDICO');
+      _log('[GeminiV2] classifier erro: $e → fallback MÉDICO');
       return 'MÉDICO';
     }
   }
@@ -559,7 +585,7 @@ class GeminiServiceV2 {
   ) {
     if (contextLabel == 'NOVO') {
       // Assunto novo — clean slate, sem risco de misturar dados de pacientes
-      debugPrint('[GeminiV2] NOVO: histórico limpo para este payload');
+      _log('[GeminiV2] NOVO: histórico limpo para este payload');
       return [];
     }
 
@@ -573,7 +599,7 @@ class GeminiServiceV2 {
 
     // Pega as [maxEntries] entradas mais recentes
     final window = history.sublist(history.length - maxEntries);
-    debugPrint(
+    _log(
       '[GeminiV2] _buildContextWindow: ${history.length} → ${window.length} entradas',
     );
     return window;
@@ -610,7 +636,7 @@ class GeminiServiceV2 {
         attempt: attempt,
       );
     } catch (e) {
-      debugPrint('[GeminiV2] _executeWithRetry: exceção inesperada: $e');
+      _log('[GeminiV2] _executeWithRetry: exceção inesperada: $e');
       if (!controller.isClosed) {
         controller
           ..add(GeminiChunk.error('unexpected'))
@@ -630,7 +656,7 @@ class GeminiServiceV2 {
   //   contents           → histórico janelado + nova mensagem do usuário
   //                        [{role:'user'/'model', parts:[{text:'...'}]}]
   //
-  //   generationConfig   → maxOutputTokens:3200, thinkingBudget:0, temp:0.4
+  //   generationConfig   → maxOutputTokens:3200, temp:0.4 (thinkingConfig omitido)
   //
   //   safetySettings     → BLOCK_NONE em todas as categorias (conteúdo médico
   //                        frequentemente é bloqueado por filtros genéricos)
@@ -709,13 +735,18 @@ class GeminiServiceV2 {
         'topP': 0.95,
         'topK': 40,
 
-        // thinkingBudget: 0
-        //   Desativa tokens de raciocínio interno do Gemini 2.5 Flash.
-        //   Sem isso: modelo gasta ~500-2000 tokens em CoT antes de responder,
-        //   consumindo quota TPM rapidamente → 429 em poucas consultas.
-        //   Com isso: modelo responde direto, economia de ~70% de TPM.
-        //   _systemPromptPrefix e _extractText() são as camadas de backup.
-        'thinkingConfig': {'thinkingBudget': 0},
+        // thinkingConfig REMOVIDO intencionalmente do payload do stream.
+        //
+        // gemini-2.5-flash-lite rejeita esta chave no endpoint streamGenerateContent
+        // com erro 400 "Unknown field" — o modelo lite não suporta controle de
+        // thinkingBudget via generationConfig no stream.
+        //
+        // A proteção anti-CoT é mantida por duas camadas redundantes:
+        //   [B] _systemPromptPrefix BLOCO 0/1 → instrução direta ao modelo
+        //   [C] _extractText() + _looksLikeInternalReasoning() → filtros no JSON
+        //
+        // O thinkingConfig permanece APENAS no classifier (_classifyContext),
+        // onde o modelo sync aceita a chave e a velocidade é crítica (~60 tokens).
       },
 
       // safetySettings — BLOCK_NONE em todas as categorias.
@@ -759,7 +790,7 @@ class GeminiServiceV2 {
 
       response = await request.send().timeout(const Duration(seconds: 60));
     } on TimeoutException {
-      debugPrint('[GeminiV2] timeout na conexão HTTP (60s)');
+      _log('[GeminiV2] timeout na conexão HTTP (60s)');
       if (!controller.isClosed) {
         controller
           ..add(GeminiChunk.error('timeout'))
@@ -767,7 +798,7 @@ class GeminiServiceV2 {
       }
       return;
     } catch (e) {
-      debugPrint('[GeminiV2] erro de rede: $e');
+      _log('[GeminiV2] erro de rede: $e');
       if (!controller.isClosed) {
         controller
           ..add(GeminiChunk.error('network'))
@@ -790,7 +821,7 @@ class GeminiServiceV2 {
             waitTime = Duration(seconds: retrySeconds.clamp(2, 60));
           }
         }
-        debugPrint(
+  _log(
           '[GeminiV2] 429 rate limit — retry ${attempt + 1}/$_maxRetries '
           'em ${waitTime.inSeconds}s',
         );
@@ -808,7 +839,7 @@ class GeminiServiceV2 {
       }
       // Esgotou todas as tentativas → cooldown global
       _quotaUntil = DateTime.now().add(_quotaCooldown);
-      debugPrint(
+      _log(
         '[GeminiV2] 429 definitivo — cooldown de ${_quotaCooldown.inMinutes}min ativado',
       );
       if (!controller.isClosed) {
@@ -820,7 +851,7 @@ class GeminiServiceV2 {
     }
 
     if (response.statusCode == 401 || response.statusCode == 403) {
-      debugPrint('[GeminiV2] ${response.statusCode}: chave API inválida/sem permissão');
+      _log('[GeminiV2] ${response.statusCode}: chave API inválida/sem permissão');
       if (!controller.isClosed) {
         controller
           ..add(GeminiChunk.error('api_key_invalid'))
@@ -830,7 +861,7 @@ class GeminiServiceV2 {
     }
 
     if (response.statusCode != 200) {
-      debugPrint('[GeminiV2] HTTP inesperado: ${response.statusCode}');
+      _log('[GeminiV2] HTTP inesperado: ${response.statusCode}');
       if (!controller.isClosed) {
         controller
           ..add(GeminiChunk.error('http_${response.statusCode}'))
@@ -888,16 +919,27 @@ class GeminiServiceV2 {
               final textFragment = _extractText(eventData);
               final finishReason = _extractFinishReason(eventData);
 
+              // ── SAFETY/RECITATION guard: não emite isDone=true se vai fazer retry
+              final shouldRetryWithoutGrounding =
+                  (finishReason == 'SAFETY' || finishReason == 'RECITATION') &&
+                  useGrounding;
+
               if (textFragment.isNotEmpty) {
                 hadContent = true;
                 if (!controller.isClosed) {
                   controller.add(GeminiChunk(
                     text: textFragment,
-                    isDone: finishReason != null,
+                    // isDone só é true se há finishReason E não haverá retry.
+                    // Sem esse guard, a UI recebe isDone antes do retry ser
+                    // executado, quebrando a sincronia do streaming.
+                    isDone: finishReason != null && !shouldRetryWithoutGrounding,
                   ));
                 }
-              } else if (finishReason != null && !hadContent) {
-                // Chunk vazio com finishReason (ex: SAFETY sem texto gerado)
+              } else if (finishReason != null &&
+                  !hadContent &&
+                  !shouldRetryWithoutGrounding) {
+                // Chunk vazio com finishReason sem retry pendente
+                // (ex: SAFETY sem texto gerado, já na segunda tentativa)
                 if (!controller.isClosed) {
                   controller.add(const GeminiChunk(text: '', isDone: true));
                 }
@@ -905,7 +947,7 @@ class GeminiServiceV2 {
 
               // ── Tratamento de finishReason ────────────────────────────────
               if (finishReason != null) {
-                debugPrint(
+          _log(
                   '[GeminiV2] finishReason=$finishReason '
                   '(conteúdo: ${hadContent ? 'sim' : 'nenhum'})',
                 );
@@ -919,7 +961,7 @@ class GeminiServiceV2 {
                     // Limite de tokens atingido — resposta parcial entregue.
                     // maxOutputTokens=3200 previne isso na maioria dos casos.
                     // Quando ocorre, a resposta parcial é válida e útil.
-                    debugPrint(
+              _log(
                       '[GeminiV2] MAX_TOKENS: resposta parcial entregue '
                       '(aumentar maxOutputTokens se recorrente)',
                     );
@@ -931,7 +973,7 @@ class GeminiServiceV2 {
                     // Primeira tentativa: retry sem grounding (que pode
                     // trazer conteúdo que aciona o filtro).
                     if (useGrounding && !controller.isClosed) {
-                      debugPrint(
+                _log(
                         '[GeminiV2] $finishReason: retry sem grounding',
                       );
                       return _streamRequest(
@@ -954,7 +996,7 @@ class GeminiServiceV2 {
               }
             } catch (parseError) {
               // JSON mal-formado em chunk — ignora e continua processando
-              debugPrint('[GeminiV2] parse error em evento SSE: $parseError');
+        _log('[GeminiV2] parse error em evento SSE: $parseError');
             }
           } else {
             lineBuffer.write(char);
@@ -962,7 +1004,7 @@ class GeminiServiceV2 {
         }
       }
     } catch (streamError) {
-      debugPrint('[GeminiV2] erro durante leitura do stream: $streamError');
+      _log('[GeminiV2] erro durante leitura do stream: $streamError');
       if (!hadContent && !controller.isClosed) {
         controller.add(GeminiChunk.error('stream_error'));
       }
@@ -991,8 +1033,8 @@ class GeminiServiceV2 {
   //
   //   1. thought == true
   //      → Part explicitamente marcado como cadeia de pensamento (CoT).
-  //        Gemini 2.5 gera esses quando thinkingBudget > 0 ou o modelo
-  //        ignora thinkingBudget=0. JAMAIS deve chegar à UI.
+  //        Gemini 2.5 pode gerar esses mesmo sem thinkingConfig no payload
+  //        (comportamento de fallback interno do modelo). JAMAIS chega à UI.
   //
   //   2. containsKey('thoughtSignature')
   //      → Assinatura criptográfica que identifica bloco de pensamento.
@@ -1018,9 +1060,9 @@ class GeminiServiceV2 {
   //   Part tem chave 'text' (String, não-vazia) E não tem nenhuma das 6 acima.
   //   → Concatenado no buffer e retornado para o controller.
   //
-  // Esta função é a ÚLTIMA linha de defesa. Mesmo que as duas primeiras
-  // camadas (thinkingBudget=0 e _systemPromptPrefix) sejam contornadas
-  // por bug de versão do modelo, nenhum char de CoT chega à UI.
+  // Esta função é a ÚLTIMA linha de defesa. Mesmo que _systemPromptPrefix
+  // seja contornado por comportamento inesperado do modelo, nenhum char
+  // de CoT ou raciocínio interno chega à UI graças aos 7 filtros aqui.
   // ══════════════════════════════════════════════════════════════════════════
   static String _extractText(Map<String, dynamic> data) {
     try {
@@ -1047,6 +1089,11 @@ class GeminiServiceV2 {
         // ── Aceita apenas texto puro ─────────────────────────────────────
         final text = part['text'] as String?;
         if (text != null && text.isNotEmpty) {
+          // ── CAMADA 1b: Heurística anti-vazamento dentro da chave 'text' ──
+          // Defesa de último recurso: mesmo que o modelo injete raciocínio
+          // interno como texto comum (bypassando thought=true e o prefixo),
+          // descartamos o part inteiro se contiver padrões de CoT reconhecidos.
+          if (_looksLikeInternalReasoning(text)) continue;
           buffer.write(text);
         }
       }
@@ -1056,6 +1103,33 @@ class GeminiServiceV2 {
       // Exceção no parsing → retorna string vazia (seguro para o stream)
       return '';
     }
+  }
+
+  // ══════════════════════════════════════════════════════════════════════════
+  // _looksLikeInternalReasoning — CAMADA 1b: Heurística anti-CoT no texto
+  //
+  // Detecta padrões de raciocínio interno que podem vazar dentro da chave
+  // 'text' mesmo após _systemPromptPrefix BLOCOS 0/1 e os 6 filtros JSON.
+  // Chamado por _extractText() para cada part aceito pelos 6 filtros JSON.
+  //
+  // Padrões cobertos:
+  //   • Frases de chain-of-thought em inglês (observadas em produção)
+  //   • Tags de bloco de raciocínio (XML/bracket style)
+  //   • Indicadores de scratchpad
+  //
+  // Retorna true → part descartado (não chega à UI).
+  // Retorna false → part seguro para exibição.
+  // ══════════════════════════════════════════════════════════════════════════
+  static bool _looksLikeInternalReasoning(String text) {
+    final lower = text.toLowerCase();
+    return lower.contains('the user is asking') ||
+        lower.contains('the user wants') ||
+        lower.contains('i should') ||
+        lower.contains('i need to') ||
+        lower.contains('<thinking>') ||
+        lower.contains('[análise_interna]') ||
+        lower.contains('[revisão_interna]') ||
+        lower.contains('scratchpad');
   }
 
   // ── Extrai finishReason do evento SSE ─────────────────────────────────────
