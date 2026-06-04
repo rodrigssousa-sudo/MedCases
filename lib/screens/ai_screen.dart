@@ -232,8 +232,11 @@ class _AiScreenState extends State<AiScreen> {
   // Anti-jump: token gerado a cada nova resposta da IA — bloqueia callbacks
   // de reveals de bolhas antigas que ficaram pendentes.
   int _scrollGeneration = 0;
-  // Debounce: evita múltiplos animateTo no mesmo frame (stutter)
+  // Throttle de scroll suave (Build 96): substitui flag bool por timestamp.
+  // Garante que animateTo só dispara a cada ≥80ms — alinha com ~60fps sem
+  // sobrecarregar a engine de layout durante o streaming de chunks.
   bool _scrollPending = false;
+  int _lastScrollMs = 0; // epoch ms da última chamada de scroll animado
   // Sentinela no fim da lista — Scrollable.ensureVisible garante layout calculado
   final _bottomKey = GlobalKey();
   // Histórico de sessões de chat (até 10)
@@ -826,35 +829,60 @@ class _AiScreenState extends State<AiScreen> {
   }
 
   /// Desce para o fundo do chat.
-  /// [force] = true: ignora a flag _userScrolledUp (usado apenas ao ENVIAR mensagem própria).
-  /// Durante a resposta da IA (_thinking) nunca interrompe leitura do usuário.
+  /// [force] = true: ignora a flag _userScrolledUp (usado ao ENVIAR mensagem própria).
+  /// [instant] = true: animação rápida para envio de mensagem (150ms easeOutQuad).
+  ///
+  /// Build 96 — Smooth Rolling:
+  ///   • force=true  → 220ms easeOutCubic (resposta imediata ao envio do usuário)
+  ///   • force=false → throttle 80ms + 150ms easeOutQuad (scroll de streaming suave)
   void _scrollDown({bool force = false}) {
     // Regra: se o usuário scrollou para cima E não é um envio forçado → não interrompe
     if (_userScrolledUp && !force) return;
+
+    // Throttle para scroll de streaming (não-forçado): evita stutter
+    if (!force) {
+      final nowMs = DateTime.now().millisecondsSinceEpoch;
+      if (nowMs - _lastScrollMs < 80) return;
+    }
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
       if (_userScrolledUp && !force) return;
-      final ctx = _bottomKey.currentContext;
-      if (ctx != null) {
-        Scrollable.ensureVisible(
-          ctx,
-          alignmentPolicy: ScrollPositionAlignmentPolicy.keepVisibleAtEnd,
-          duration: const Duration(milliseconds: 280),
-          curve: Curves.easeOut,
-        );
-      } else if (_scrollCtrl.hasClients) {
+      if (!_scrollCtrl.hasClients) return;
+
+      final pos    = _scrollCtrl.position;
+      final target = pos.maxScrollExtent;
+
+      // Sem movimento necessário
+      if (!force && pos.pixels >= target - 4) return;
+
+      _lastScrollMs = DateTime.now().millisecondsSinceEpoch;
+
+      if (force) {
+        // Envio de mensagem pelo usuário: scroll imediato mas suave (220ms)
         _scrollCtrl.animateTo(
-          _scrollCtrl.position.maxScrollExtent,
-          duration: const Duration(milliseconds: 280),
-          curve: Curves.easeOut,
+          target,
+          duration: const Duration(milliseconds: 220),
+          curve: Curves.easeOutCubic,
+        );
+      } else {
+        // Scroll durante streaming: fluido e leve (150ms easeOutQuad)
+        _scrollCtrl.animateTo(
+          target,
+          duration: const Duration(milliseconds: 150),
+          curve: Curves.easeOutQuad,
         );
       }
     });
   }
 
-  /// Chamado pelo _AiBubble a cada bloco revelado.
+  /// Chamado pelo _AiBubble a cada bloco revelado durante streaming.
   /// Lógica centralizada aqui — ÚNICA fonte de verdade para scroll durante streaming.
   /// [gen] é o token de geração: se não bater com _scrollGeneration, ignora.
+  ///
+  /// Build 96 — Smooth Rolling: throttle de 80ms + animateTo(150ms, easeOutQuad)
+  /// elimina o efeito "saltitante" causado por múltiplos jumpTo/ensureVisible
+  /// em frames consecutivos durante o streaming de chunks.
   void _onBlockRevealed(int gen) {
     // Bloco pertence a uma resposta antiga (geração diferente) → ignora completamente.
     if (gen != _scrollGeneration) return;
@@ -862,30 +890,39 @@ class _AiScreenState extends State<AiScreen> {
     // Usuário scrollou para cima intencionalmente → não interrompe leitura.
     if (_userScrolledUp) return;
 
-    // Debounce por frame: se já há um scroll pendente neste frame, ignora.
+    // Throttle temporal: no máximo 1 scroll animado a cada 80ms.
+    // Evita sobrecarregar a engine de animação com calls a cada chunk/caractere.
+    final nowMs = DateTime.now().millisecondsSinceEpoch;
+    if (nowMs - _lastScrollMs < 80) return;
+
+    // Debounce por frame: agrupa várias revelações no mesmo frame em uma só animação.
     if (_scrollPending) return;
     _scrollPending = true;
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _scrollPending = false;
       if (!mounted) return;
       if (gen != _scrollGeneration) return;
       if (_userScrolledUp) return;
+      if (!_scrollCtrl.hasClients) return;
 
-      // Usa ensureVisible no sentinela do fim da lista em vez de jumpTo(maxScrollExtent).
-      // O ensureVisible aguarda o layout estar completo antes de rolar — elimina o
-      // salto que ocorre após a mensagem 10+ quando o ListView ainda não recalculou
-      // o maxScrollExtent dos itens virtualizados.
-      final ctx = _bottomKey.currentContext;
-      if (ctx != null) {
-        Scrollable.ensureVisible(
-          ctx,
-          alignmentPolicy: ScrollPositionAlignmentPolicy.keepVisibleAtEnd,
-          duration: Duration.zero,
-        );
-      } else if (_scrollCtrl.hasClients) {
-        // Fallback: jumpTo se o sentinela ainda não foi renderizado
-        _scrollCtrl.jumpTo(_scrollCtrl.position.maxScrollExtent);
-      }
+      // Registra timestamp APÓS confirmação de execução
+      _lastScrollMs = DateTime.now().millisecondsSinceEpoch;
+
+      final pos = _scrollCtrl.position;
+      final target = pos.maxScrollExtent;
+
+      // Já está no fundo (ou quase) → sem animação desnecessária
+      if (pos.pixels >= target - 4) return;
+
+      // Scroll suave: 150ms + easeOutQuad — sem jumpTo, sem Scrollable.ensureVisible.
+      // animateTo aguarda o layout estar calculado (addPostFrameCallback já garante isso)
+      // e produz transição fluida tipo WhatsApp/Telegram.
+      _scrollCtrl.animateTo(
+        target,
+        duration: const Duration(milliseconds: 150),
+        curve: Curves.easeOutQuad,
+      );
     });
   }
 
@@ -2155,21 +2192,35 @@ class _UserBubble extends StatelessWidget {
 String _stripMetadataHeaders(String accumulated) {
   if (accumulated.isEmpty) return accumulated;
 
-  // Padrão: linha que começa com metadados de confiança ou meta-comentário
+  // ── CAMADA 1a v6.0 — catch-all bilíngue (Build 96) ─────────────────────
+  //
+  // REGRA PRINCIPAL: qualquer linha que CONTENHA "Confian" + "Clínica/Clinica"
+  // (independente de posição, prefixos pipe/espaço, idioma ou pontuação).
   // Exemplos reais capturados em produção (junho 2026):
-  //   "Confianza Clínica: Alta — El usuario solicita la creación de un ateneo..."
-  //   "| Confianza Clínica: Alta — El usuario proporciona síntomas..."
-  //   "Confiança Clínica: Alta — O usuário solicita informações sobre..."
-  return accumulated.replaceAll(
+  //   "Confianza Clínica: Alta — El usuario solicita..."
+  //   "| Confiança Clínica: Alta — O usuário solicita..."
+  //   "Confiança Clínica Alta"          ← sem dois-pontos
+  //   "**Confianza Clínica**: Alta"     ← com markdown
+  //   "Nivel de Confianza Clínica: ..."
+  //
+  // Regex 1: linha inteira com Confian[za|ça] ... Clínica em qualquer posição
+  String result = accumulated.replaceAll(
+    RegExp(
+      r'^.*Confian[zç]a\s*(?:Cl[íi]nica)?.*$',
+      caseSensitive: false,
+      multiLine: true,
+    ),
+    '',
+  );
+
+  // Regex 2: padrões complementares de abertura de linha
+  result = result.replaceAll(
     RegExp(
       r'^[|\s]*(?:'
-      r'Confianza\s+Cl[ií]nica\s*:'
-      r'|Confiança\s+Cl[ií]nica\s*:'
-      r'|Confianza\s*[:–—]\s*\w'
-      r'|Confiança\s*[:–—]\s*\w'
+      r'Cl[íi]nica\s*[:–—]'
       r'|Clinical\s+Confidence\s*:'
       r'|Nivel\s+de\s+Confianza\s*:'
-      r'|N[ií]vel\s+de\s+Confian[çc]a\s*:'
+      r'|N[íi]vel\s+de\s+Confian[çc]a\s*:'
       r'|El\s+usuario\s+(?:solicita|proporciona|pregunta|pide|quiere|busca|ha\s+(?:pedido|indicado))'
       r'|O\s+usu[aá]rio\s+(?:solicita|fornece|pergunta|pede|quer|busca|indicou)'
       r'|The\s+user\s+(?:is\s+asking|asks|wants|requests|provides|has\s+indicated)'
@@ -2178,7 +2229,9 @@ String _stripMetadataHeaders(String accumulated) {
       multiLine: true,
     ),
     '',
-  ).trimLeft(); // Remove linhas em branco iniciais deixadas pela remoção
+  );
+
+  return result.trimLeft(); // Remove linhas em branco iniciais
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -2264,30 +2317,30 @@ String _cleanAiText(String raw) {
     '',
   );
 
-  // ── 4b. EXPURGO DE METADADOS — Confianza/Confiança Clínica e padrões similares
+  // ── 4b. EXPURGO DE METADADOS — Confianza/Confiança Clínica (CAMADA 2 v6.0, Build 96)
   //
-  // O modelo às vezes vaza cabeçalhos de metadados internos como:
-  //   "Confianza Clínica: Alta — El usuario solicita..."
-  //   "Confiança Clínica: Alta — O usuário solicita..."
-  //   "Confianza: Alta —"  /  "Clinical Confidence: High"
-  //   "Nivel de Confianza:" / "Nível de Confiança:"
-  //   "El usuario solicita..." / "O usuário solicita..." / "The user is asking..."
-  //   "El usuario proporciona..." / "El usuario pregunta..."
-  //
-  // Regra: remove a linha inteira sempre que ela COMEÇAR com esses padrões
-  // (multiLine: true — aplica ^ por linha). Safe para respostas médicas legítimas
-  // porque essas frases nunca iniciam uma sentença clínica válida.
+  // REGRA CATCH-ALL: qualquer linha que CONTENHA "Confian[za|ça]" + "Clínica"
+  // é deletada por completo — independente de posição, prefixo ou pontuação.
+  // Inclui variantes sem dois-pontos, com markdown (**), pipe, espaços extras.
+  s = s.replaceAll(
+    RegExp(
+      r'^.*Confian[zç]a\s*(?:Cl[íi]nica)?.*$',
+      caseSensitive: false,
+      multiLine: true,
+    ),
+    '',
+  );
+
+  // Padrões complementares de metadados internos
   s = s.replaceAll(
     RegExp(
       r'^[|\s]*(?:'
-      r'Confianza\s+Cl[ií]nica\s*:'
-      r'|Confiança\s+Cl[ií]nica\s*:'
-      r'|Confianza\s*[:–—]'
+      r'Confianza\s*[:–—]'
       r'|Confiança\s*[:–—]'
       r'|Clinical\s+Confidence\s*:'
       r'|Nivel\s+de\s+Confianza\s*:'
-      r'|N[ií]vel\s+de\s+Confian[çc]a\s*:'
-      r'|El\s+usuario\s+(?:solicita|proporciona|pregunta|pide|quiere|busca|ha\s+indicado)'
+      r'|N[íi]vel\s+de\s+Confian[çc]a\s*:'
+      r'|El\s+usuario\s+(?:solicita|proporciona|pregunta|pide|quiere|busca|ha\s+(?:indicado|pedido))'
       r'|O\s+usu[aá]rio\s+(?:solicita|fornece|pergunta|pede|quer|busca|indicou)'
       r'|The\s+user\s+(?:is\s+asking|asks|wants|requests|provides|has\s+indicated)'
       r'|El\s+usuario\s+ha\s+pedido'

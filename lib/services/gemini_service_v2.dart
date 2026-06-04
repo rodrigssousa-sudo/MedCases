@@ -1163,16 +1163,23 @@ class GeminiServiceV2 {
     if (lower.contains('[revisão_interna]')) return true;
     if (lower.contains('scratchpad')) return true;
 
-    // Build 94 — cabeçalhos de metadados "Confianza/Confiança Clínica"
-    // Padrão: linha que começa com "Confianza Clínica:" ou variantes
-    // Detecta tanto chunks puros (só o cabeçalho) quanto chunks mistos
-    if (lower.contains('confianza clínica:') ||
-        lower.contains('confianza clinica:') ||
-        lower.contains('confiança clínica:') ||
-        lower.contains('confiança clinica:') ||
-        lower.contains('clinical confidence:') ||
-        lower.contains('nivel de confianza:') ||
-        lower.contains('nível de confiança:')) {
+    // Build 96 — catch-all bilíngue "Confian[za|ça] Clínica" v6.0
+    // Padrão ampliado: captura QUALQUER variação que contenha "confian" + "cl"
+    // — sem dois-pontos, com markdown, com pipe, uppercase, etc.
+    if (lower.contains('confianza cl') ||
+        lower.contains('confiança cl') ||
+        lower.contains('confianza:') ||
+        lower.contains('confiança:') ||
+        lower.contains('clinical confidence') ||
+        lower.contains('nivel de confianza') ||
+        lower.contains('nível de confiança') ||
+        lower.contains('nivel de confiança') ||
+        lower.contains('nível de confianza')) {
+      return true;
+    }
+    // Regex catch-all: qualquer chunk que contenha "confian" seguido de
+    // espaços/pontuação/markdown e depois "cl" (clínica/clinica)
+    if (RegExp(r'confian[zç]a', caseSensitive: false).hasMatch(lower)) {
       return true;
     }
 
