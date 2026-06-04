@@ -1560,7 +1560,7 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
                     ),
                     // Ferramentas (tab 4) — web-only
                     if (kIsWeb)
-                      _buildNavBtn(4, Icons.calculate_rounded, 'Ferramentas', dark, p),
+                      _buildNavBtn(4, Icons.calculate_rounded, p.lang == 'es' ? 'Herramientas' : 'Ferramentas', dark, p),
                   ],
                 ),
               ),
@@ -4537,11 +4537,11 @@ class _AppHeader extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    userName.isNotEmpty ? userName : 'MedCases Pro',
+                    userName.isNotEmpty ? userName : 'ConnectMind AI',
                     style: const TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.w800,
-                      color: Colors.white,
+                      color: Color(0xFF00E5FF),
                       letterSpacing: -0.2,
                       height: 1.1,
                     ),

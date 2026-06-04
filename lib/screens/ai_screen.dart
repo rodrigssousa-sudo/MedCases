@@ -3206,6 +3206,8 @@ class _InputBarState extends State<_InputBar> {
                                 maxLines: 5,
                                 minLines: 1,
                                 textInputAction: TextInputAction.newline,
+                                keyboardType: TextInputType.multiline,
+                                autofillHints: const [],
                                 enableSuggestions: true,
                                 autocorrect: false,
                                 textCapitalization: TextCapitalization.sentences,

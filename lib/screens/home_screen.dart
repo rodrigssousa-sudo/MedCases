@@ -371,18 +371,10 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           const SizedBox(height: 20),
 
-          // ── BLOCO 4: HISTORIAL CLÍNICO — título de seção ────────────────────
-          // Movido para baixo do bloco ADULTO/PEDIATRÍA (reorder Build 93).
-          _HomeSectionHeader(
-            icon: Icons.folder_shared_rounded,
-            label: isEs ? 'HISTORIAL CLÍNICO' : 'HISTÓRICO CLÍNICO',
-            dark: dark,
-          ),
-          const SizedBox(height: 10),
-
-          // ── BLOCO 4a: Quatro atalhos utilitários ─────────────────────────────
-          // Ordem: NOTAS · RECIENTES · FAVORITOS · EVALUACIÓN
-          _QuickShortcuts(
+          // ── BLOCO 4: HISTORIAL CLÍNICO — card compacto horizontal ──────────
+          // Build 95: substituído header vertical + grid por card inline único
+          // meia-altura, largura total, layout minimalista.
+          _HistorialCompactCard(
             dark: dark,
             isEs: isEs,
             openProtocol: widget.openProtocol,
@@ -2740,7 +2732,166 @@ class _StepBtn extends StatelessWidget {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// QUICK SHORTCUTS — Notas · Recentes · Favoritos
+// HISTORIAL COMPACTO — card horizontal único, meia-altura, largura total
+// Build 95: substitui _HomeSectionHeader + _QuickShortcuts por card integrado
+// ─────────────────────────────────────────────────────────────────────────────
+class _HistorialCompactCard extends StatelessWidget {
+  final bool dark;
+  final bool isEs;
+  final Function(String) openProtocol;
+  final VoidCallback onOpenNotes;
+  final VoidCallback? onCheckUpdate;
+
+  const _HistorialCompactCard({
+    required this.dark,
+    required this.isEs,
+    required this.openProtocol,
+    required this.onOpenNotes,
+    this.onCheckUpdate,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final cardBg      = dark ? const Color(0xFF1A1A1A) : Colors.white;
+    final borderColor = dark
+        ? Colors.white.withValues(alpha: 0.07)
+        : const Color(0xFFE8ECF5);
+    final labelColor  = dark
+        ? Colors.white.withValues(alpha: 0.38)
+        : const Color(0xFF9CA3AF);
+    final dividerColor = dark
+        ? Colors.white.withValues(alpha: 0.07)
+        : const Color(0xFFECEFF7);
+    final shadow = dark
+        ? <BoxShadow>[]
+        : <BoxShadow>[
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.05),
+              blurRadius: 6,
+              offset: const Offset(0, 2),
+            ),
+          ];
+
+    final items = [
+      _ShortcutItem(
+        icon: Icons.sticky_note_2_rounded,
+        color: const Color(0xFFFF8A00),
+        label: isEs ? 'Notas' : 'Notas',
+        onTap: onOpenNotes,
+      ),
+      _ShortcutItem(
+        icon: Icons.history_rounded,
+        color: const Color(0xFF1F78FF),
+        label: isEs ? 'Recientes' : 'Recentes',
+        onTap: () {
+          final p = context.read<AppProvider>();
+          showModalBottomSheet(
+            context: context,
+            isScrollControlled: true,
+            backgroundColor: Colors.transparent,
+            builder: (_) => _RecentesSheet(dark: dark, isEs: isEs, p: p),
+          );
+        },
+      ),
+      _ShortcutItem(
+        icon: Icons.bookmark_rounded,
+        color: const Color(0xFF6C2BD9),
+        label: isEs ? 'Favoritos' : 'Favoritos',
+        onTap: () {
+          final p = context.read<AppProvider>();
+          showModalBottomSheet(
+            context: context,
+            isScrollControlled: true,
+            backgroundColor: Colors.transparent,
+            builder: (_) => _FavoritosSheet(dark: dark, isEs: isEs, p: p),
+          );
+        },
+      ),
+      _ShortcutItem(
+        icon: Icons.assignment_ind_rounded,
+        color: const Color(0xFFDC2626),
+        label: isEs ? 'Evaluación' : 'Avaliação',
+        onTap: () => HomeScreen._openAvaliacao(context),
+      ),
+    ];
+
+    return Container(
+      height: 48,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(14),
+        color: cardBg,
+        boxShadow: shadow,
+        border: Border.all(color: borderColor),
+      ),
+      child: Row(
+        children: [
+          // ── Label lateral esquerdo ──────────────────────────────────────
+          Padding(
+            padding: const EdgeInsets.only(left: 12, right: 8),
+            child: Row(mainAxisSize: MainAxisSize.min, children: [
+              Icon(
+                Icons.folder_shared_rounded,
+                size: 13,
+                color: labelColor,
+              ),
+              const SizedBox(width: 5),
+              Text(
+                isEs ? 'HISTORIAL' : 'HISTÓRICO',
+                style: TextStyle(
+                  fontSize: 9.5,
+                  fontWeight: FontWeight.w800,
+                  letterSpacing: 0.7,
+                  color: labelColor,
+                ),
+              ),
+            ]),
+          ),
+
+          // ── Divisor vertical ────────────────────────────────────────────
+          Container(width: 1, height: 28, color: dividerColor),
+
+          // ── 4 atalhos inline ────────────────────────────────────────────
+          Expanded(
+            child: Row(
+              children: List.generate(items.length * 2 - 1, (i) {
+                if (i.isOdd) {
+                  return Container(width: 1, height: 28, color: dividerColor);
+                }
+                final item = items[i ~/ 2];
+                return Expanded(
+                  child: GestureDetector(
+                    onTap: () { AppHaptics.selection(context); item.onTap(); },
+                    behavior: HitTestBehavior.opaque,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(item.icon, size: 16, color: item.color),
+                        const SizedBox(height: 2),
+                        Text(
+                          item.label,
+                          style: TextStyle(
+                            fontSize: 9,
+                            fontWeight: FontWeight.w700,
+                            color: dark
+                                ? Colors.white.withValues(alpha: 0.55)
+                                : const Color(0xFF6B7280),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              }),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// QUICK SHORTCUTS — Notas · Recentes · Favoritos (web desktop column)
 // ─────────────────────────────────────────────────────────────────────────────
 class _QuickShortcuts extends StatelessWidget {
   final bool dark;

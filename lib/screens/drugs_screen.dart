@@ -1265,7 +1265,7 @@ class _DrugDetailViewState extends State<_DrugDetailView>
           padding: const EdgeInsets.symmetric(horizontal: 14),
           child: _DrugSectionTitle(
             icon: Icons.calculate_outlined,
-            label: p.lang == 'es' ? 'CALCULADORA DE DOSIS' : 'CALCULADORA DE DOSE',
+            label: p.lang == 'es' ? 'PARÁMETROS CLÍNICOS DE REFERENCIA' : 'PARÂMETROS CLÍNICOS DE REFERÊNCIA',
             c: c, dark: dark,
           ),
         ),
