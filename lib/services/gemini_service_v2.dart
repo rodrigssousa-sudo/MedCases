@@ -31,10 +31,10 @@
 // └─────────────────────────────────────────────────────────────────────────┘
 //
 // ┌─────────────────────────────────────────────────────────────────────────┐
-// │  CAMADA 3 — CONFIGURAÇÃO REST BLINDADA + PREFIXO DE FERRO               │
+// │  CAMADA 3 — CONFIGURAÇÃO REST BLINDADA + PREFIXO DE FERRO v3            │
 // │                                                                         │
 // │  • system_instruction isolado do histórico (Content.system equivalente) │
-// │  • _systemPromptPrefix injetado ANTES de qualquer instrução do AiService│
+// │  • _systemPromptPrefix v3 injetado ANTES de qualquer instrução AiService│
 // │    → proíbe raciocínio visível, inglês intermediário, metadados         │
 // │  • maxOutputTokens: 3200  → respostas clínicas completas sem corte      │
 // │  • thinkingConfig omitido → flash-lite rejeita a chave no stream (400)  │
@@ -190,8 +190,8 @@ class GeminiServiceV2 {
   static void resetQuotaCooldown() => _quotaUntil = null;
 
   // ══════════════════════════════════════════════════════════════════════════
-  // PREFIXO DE FERRO v2 — CAMADA 3
-  // (anti-CoT visível + anti-inglês intermediário + anatomia Bupropión)
+  // PREFIXO DE FERRO v3 — CAMADA 3
+  // (anti-CoT visível + idioma espelho ES/PT + anatomia Bupropión bilíngue)
   //
   // Injetado como PRIMEIRA coisa que o modelo lê, antes de qualquer instrução
   // do AiService. Três defesas sobrepostas:
@@ -201,40 +201,52 @@ class GeminiServiceV2 {
   //   [B] Este prefixo     → proíbe o comportamento via instrução de texto
   //   [C] _extractText() + _looksLikeInternalReasoning() → 7 filtros no JSON
   //
-  // NOVIDADES v2 (Build 93 fine-tuning):
-  //   • ALERTA DE REJEIÇÃO CRÍTICO — lista de frases proibidas explícitas
-  //     que cobrem os padrões de "pensar alto" observados em testes longos
-  //     ("The user is asking...", "I should reiterate...", etc.)
-  //   • Regra de reiteração direta — quando o usuário pede para detalhar
-  //     ou repetir algo, a resposta começa na 1ª linha, sem prefácio
-  //   • ANATOMIA BUPROPIÓN — estrutura visual obrigatória para MODO FARMACO
-  //     padronizada com base no modelo de resposta aprovado em testes
+  // NOVIDADES v3 (Build 93 bilíngue — idioma espelho ES/PT):
+  //   • REGRA ESPELHO ES/PT — substituiu a regra rígida de espanhol único.
+  //     O modelo detecta o idioma da última pergunta e responde ESTRITAMENTE
+  //     nesse idioma. Mistura ES+PT na mesma resposta é terminantemente proibida.
+  //   • BLOCO 0 atualizado — TRAVA ANTI-LEAK mantida + REGRA DE IDIOMA ESPELHO
+  //     com lista explícita de proibições (mistura, idioma diferente, inglês).
+  //     REGRA DE REITERAÇÃO DIRETA expandida: "idioma detectado" em vez de fixo.
+  //   • BLOCO 1 atualizado — Regra 3 refatorada: "primeira linha no idioma
+  //     detectado da pergunta (espanhol ou português)" — sem referência a fixo.
+  //   • BLOCO 2 atualizado — ANATOMIA BUPROPIÓN com títulos bilíngues explícitos
+  //     em cada §: ES/PT lado a lado, adaptação dinâmica obrigatória.
   // ══════════════════════════════════════════════════════════════════════════
   static const _systemPromptPrefix =
 
-      // ── BLOCO 0 — TRAVA DE IDIOMA E COMPORTAMENTO DE FLUXO (ANTI-LEAK) ──
-      // Lido PRIMEIRO pelo modelo. Cobre os vazamentos observados em produção
-      // com conversas longas de follow-up.
+      // ── BLOCO 0 — TRAVA DE IDIOMA ESPELHO E ANTI-LEAK ─────────────────────
+      // Lido PRIMEIRO pelo modelo. Define a regra de idioma bilateral e cobre
+      // os vazamentos de raciocínio interno observados em produção.
       '⚠️ ALERTA DE REJEIÇÃO CRÍTICO — MÁXIMA PRIORIDADE ABSOLUTA:\n'
-      'Sob NENHUMA circunstância responda em inglês ou utilize frases de '
-      'transição de raciocínio interno visíveis ao usuário. As seguintes '
-      'expressões são TERMINANTEMENTE PROIBIDAS na chave "text" da resposta:\n'
+      'Sob NENHUMA circunstância utilize frases de transição de raciocínio '
+      'interno visíveis ao usuário. As seguintes expressões são '
+      'TERMINANTEMENTE PROIBIDAS na chave "text" da resposta:\n'
       '  ✗ "The user is asking..."\n'
       '  ✗ "The user wants..."\n'
       '  ✗ "I should reiterate..."\n'
       '  ✗ "I need to clarify..."\n'
       '  ✗ "Let me explain..."\n'
       '  ✗ "To summarize what was asked..."\n'
-      '  ✗ Qualquer frase em inglês que resuma a intenção do usuário\n'
+      '  ✗ Qualquer frase que resuma a intenção do usuário\n'
       '  ✗ Qualquer frase que descreva o que a IA "vai fazer" antes de fazer\n'
       'É TERMINANTEMENTE PROIBIDO gerar qualquer texto de análise interna, '
-      'resumo de intenção ou meta-comentário dentro da mensagem final.\n'
+      'resumo de intenção ou meta-comentário dentro da mensagem final.\n\n'
+      '🌐 REGRA DE IDIOMA ESPELHO — FERRO ABSOLUTO:\n'
+      'Identifique o idioma da ÚLTIMA pergunta do usuário.\n'
+      '  • Se o usuário perguntar em ESPANHOL → responda ESTRITAMENTE em Espanhol.\n'
+      '  • Se o usuário perguntar em PORTUGUÊS → responda ESTRITAMENTE em Português.\n'
+      'É TERMINANTEMENTE PROIBIDO:\n'
+      '  ✗ Misturar Espanhol e Português na MESMA resposta\n'
+      '  ✗ Responder em idioma diferente da pergunta do usuário\n'
+      '  ✗ Usar inglês como idioma de resposta ao usuário\n'
       'REGRA DE REITERAÇÃO DIRETA: se o usuário pedir para reiterar, detalhar '
-      'ou repetir algo → responder DIRETAMENTE na primeira linha no idioma do '
-      'usuário (espanhol ou português), sem prefácio, sem anúncio do que vai '
-      'fazer. A resposta começa imediatamente com o conteúdo clínico.\n\n'
+      'ou repetir algo → responder DIRETAMENTE na primeira linha no idioma '
+      'detectado da pergunta (espanhol ou português), sem prefácio, sem '
+      'anúncio do que vai fazer. A resposta começa imediatamente com o '
+      'conteúdo clínico.\n\n'
 
-      // ── BLOCO 1 — REGRAS ABSOLUTAS DE IDIOMA E PENSAMENTO ─────────────────
+      // ── BLOCO 1 — REGRAS ABSOLUTAS DE ANTI-CoT E FLUXO CLÍNICO ───────────
       '🔒 REGRA ABSOLUTA — LER ANTES DE QUALQUER INSTRUÇÃO:\n'
       '1. JAMAIS exiba raciocínio interno, rascunhos, modos de operação, '
       'metadados ou qualquer processo de pensamento na resposta ao usuário.\n'
@@ -242,47 +254,54 @@ class GeminiServiceV2 {
       'voz alta". Zero caracteres em inglês visíveis ao usuário — exceto '
       'termos médicos internacionais universalmente reconhecidos (SpO₂, qSOFA, '
       'SOFA, CURB-65, PCR, INR, RNI, etc.).\n'
-      '3. Responda DIRETAMENTE ao conteúdo clínico. O usuário vê APENAS a '
-      'resposta clínica limpa. Nenhum processo interno é visível.\n'
+      '3. Responda DIRETAMENTE na primeira linha no idioma detectado da '
+      'pergunta (espanhol ou português). O usuário vê APENAS a resposta '
+      'clínica limpa. Nenhum processo interno é visível.\n'
       '4. Se detectar qualquer bloco de chain-of-thought, <thinking>, '
       '[REVISÃO_INTERNA], [ANÁLISE_INTERNA], scratchpad ou raciocínio '
       '→ ELIMINAR completamente antes de formular a resposta.\n\n'
 
-      // ── BLOCO 2 — ANATOMIA BUPROPIÓN (estrutura visual obrigatória FARMACO)
+      // ── BLOCO 2 — ANATOMIA BUPROPIÓN BILÍNGUE (FARMACO MODE COMPLETO) ─────
       // Padronização baseada no modelo de resposta aprovado em testes.
       // Ativa SOMENTE em MODO FARMACO / FARMACO MODE COMPLETO.
       // Não altera QUICK, CONVERSATIONAL, CLINICAL nem TEACH.
+      // Os títulos dos §§ se adaptam DINAMICAMENTE ao idioma detectado.
       '🏗️ ANATOMIA OBRIGATÓRIA — MODO FARMACO COMPLETO (modelo Bupropión):\n'
       'Quando o modo ativo for FARMACO MODE COMPLETO, estruturar SEMPRE:\n'
+      'Adaptar os títulos dos parágrafos dinamicamente ao idioma da pergunta.\n'
       '\n'
-      '  § 1 — DEFINIÇÃO (1 parágrafo introdutório)\n'
+      '  § 1 — DEFINICIÓN / DEFINIÇÃO (1 parágrafo introdutório)\n'
+      '    ES: título "Definición" · PT: título "Definição"\n'
       '    Introdução curta e conceitual: mecanismo de ação em **negrito**, '
       'classe farmacológica, alvo molecular ou receptor. Máx. 3-4 linhas.\n'
       '\n'
-      '  § 2 — INDICAÇÕES E DOSES\n'
-      '    Iniciar OBRIGATORIAMENTE com: "Se utiliza principalmente para:"\n'
+      '  § 2 — INDICACIONES Y DOSIS / INDICAÇÕES E DOSES\n'
+      '    ES: iniciar com "Se utiliza principalmente para:"\n'
+      '    PT: iniciar com "Utilizado principalmente para:"\n'
       '    Seguido de bullet points (* ) com indicação + dosagem em **negrito**.\n'
       '    Incluir via de administração e frequência em cada bullet.\n'
       '\n'
       '  § 3 — ⛔ BLOCO DE ALERTA (se existirem contraindicações graves)\n'
       '    Gerar OBRIGATORIAMENTE quando há contraindicação absoluta, efeito '
       'adverso crítico ou risco de vida. Formato exato:\n'
-      '    > ⛔ **Está CONTRAINDICADO em:** [motivo]\n'
+      '    > ⛔ **Está CONTRAINDICADO en:** [motivo] (ES)\n'
+      '    > ⛔ **Está CONTRAINDICADO em:** [motivo] (PT)\n'
       '    Usar bloco de citação markdown (>) para que o app renderize '
       'visualmente destacado. Nunca omitir se existir risco real.\n'
       '\n'
       '  § 4 — OTROS PUNTOS / OUTROS PONTOS\n'
-      '    Iniciar com: "Otros puntos a considerar:" (ES) ou '
-      '"Outros pontos a considerar:" (PT)\n'
+      '    ES: iniciar com "Otros puntos a considerar:"\n'
+      '    PT: iniciar com "Outros pontos a considerar:"\n'
       '    Bullet points com efeitos colaterais comuns, monitoramento, '
       'interações farmacológicas relevantes e observações de plantão.\n'
       '\n'
       '  § 5 — RODAPÉ DE EVIDÊNCIA (sempre a última linha)\n'
-      '    Formato EXATO (itálico, separado por linha em branco acima):\n'
+      '    ES — formato EXATO (itálico, separado por linha em branco acima):\n'
       '    *📚 Referencias base: Harrison · PubMed · [guideline aplicável]. '
-      'Valide clinicamente.*\n'
-      '    (PT: *📚 Referências base: Harrison · PubMed · [guideline]. '
-      'Valide clinicamente.*)\n\n';
+      'Valide clínicamente.*\n'
+      '    PT — formato EXATO (itálico, separado por linha em branco acima):\n'
+      '    *📚 Referências base: Harrison · PubMed · [guideline aplicável]. '
+      'Valide clinicamente.*\n\n';
 
   // ══════════════════════════════════════════════════════════════════════════
   // sendStream — API PÚBLICA
