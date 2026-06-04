@@ -32,22 +32,27 @@ class SttHelper {
 
   /// Inicia o reconhecimento de voz.
   ///
-  /// [locale]   — código BCP-47 do idioma (ex: 'pt-BR', 'es-ES').
-  /// [onResult] — chamado com o texto reconhecido quando a fala termina.
-  /// [onError]  — chamado com o código de erro ('permission_denied',
-  ///              'not_available', 'no_speech', 'network', etc.).
-  /// [onEnd]    — chamado quando a sessão encerra (com ou sem resultado).
+  /// [locale]             — código BCP-47 do idioma (ex: 'pt-BR', 'es-ES').
+  /// [onResult]           — chamado com o texto reconhecido final (não parcial).
+  /// [onError]            — chamado com o código de erro ('permission_denied',
+  ///                        'not_available', 'no_speech', 'network', etc.).
+  /// [onEnd]              — chamado quando a sessão encerra (com ou sem resultado).
+  /// [onSoundLevelChange] — chamado com nível de som normalizado 0.0–1.0 em tempo
+  ///                        real (mobile via plugin; web recebe 0.5 constante
+  ///                        enquanto ativo, pois a Web Speech API não expõe nível).
   static Future<void> start({
     required String locale,
     required void Function(String text) onResult,
     required void Function(String error) onError,
     required void Function() onEnd,
+    void Function(double level)? onSoundLevelChange,
   }) async {
     await startSttImpl(
       locale: locale,
       onResult: onResult,
       onError: onError,
       onEnd: onEnd,
+      onSoundLevelChange: onSoundLevelChange,
     );
   }
 

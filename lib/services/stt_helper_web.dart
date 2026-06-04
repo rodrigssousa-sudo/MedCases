@@ -1,15 +1,33 @@
 // ignore_for_file: avoid_web_libraries_in_flutter
 // Implementação Web Speech API via dart:html.
 // Este arquivo só é compilado no target web (dart2js / wasm).
+//
+// ── Correção de eco / repetição ────────────────────────────────────────────
+//   A Web Speech API com interimResults=true dispara onResult para CADA chunk
+//   parcial (ex: "eu", "eu eu", "eu eu fui"). Sem a verificação de isFinal,
+//   ai_screen.dart concatenaria cada chunk parcial → "eu eu eu eu eu".
+//   FIX: só chama onResult quando firstResult.isFinal == true.
+//
+// ── Sound level na Web ─────────────────────────────────────────────────────
+//   A Web Speech API não expõe nível de microfone nativamente (AudioContext
+//   exigiria permissão separada e complexidade adicional). Para dar feedback
+//   visual de "microfone ativo", emitimos 0.5 constante a cada 100ms enquanto
+//   o reconhecimento estiver ativo, e paramos ao fechar. Isso aciona a onda
+//   de áudio no UI no nível médio sem requerer APIs extras.
+// ──────────────────────────────────────────────────────────────────────────
+
+import 'dart:async';
 import 'dart:html' as html;
 
 html.SpeechRecognition? _recognition;
+Timer? _levelTimer; // emite nível constante na web enquanto ativo
 
 Future<void> startSttImpl({
   required String locale,
   required void Function(String text) onResult,
   required void Function(String error) onError,
   required void Function() onEnd,
+  void Function(double level)? onSoundLevelChange,
 }) async {
   try {
     stopSttImpl();
@@ -18,7 +36,7 @@ Future<void> startSttImpl({
     _recognition = sr;
 
     sr.lang = locale;
-    sr.interimResults = true;  // feedback visual imediato
+    sr.interimResults = true;  // feedback visual imediato (chunks parciais)
     sr.maxAlternatives = 3;    // avalia mais candidatos para maior precisão médica
     sr.continuous = false;
 
@@ -28,6 +46,15 @@ Future<void> startSttImpl({
         if (results != null && results.isNotEmpty) {
           // results é List<SpeechRecognitionResult>
           final firstResult = results[0];
+
+          // ── CORREÇÃO DE ECO ──────────────────────────────────────────────
+          // Só processa quando isFinal=true para evitar concatenações
+          // acumulativas de chunks parciais ("eu eu eu").
+          // interimResults=true mantido para dar feedback visual ao sistema,
+          // mas o texto só é comprometido no resultado final.
+          final isFinal = firstResult.isFinal ?? false;
+          if (!isFinal) return; // ignora todos os chunks parciais
+
           final length = firstResult.length ?? 0;
           if (length > 0) {
             // SpeechRecognitionResult.item(int) → SpeechRecognitionAlternative
@@ -43,26 +70,48 @@ Future<void> startSttImpl({
 
     sr.onError.listen((event) {
       try {
+        _stopLevelTimer();
         final dynamic ev = event;
         onError(ev.error?.toString() ?? 'unknown');
       } catch (_) {
+        _stopLevelTimer();
         onError('unknown');
       }
     });
 
     sr.onEnd.listen((_) {
+      _stopLevelTimer();
+      // Emite nível zero ao encerrar — colapsa a onda de áudio para pontos
+      onSoundLevelChange?.call(0.0);
       _recognition = null;
       onEnd();
     });
 
     sr.start();
+
+    // ── Feedback de nível de som constante (Web Speech API não tem callback)
+    // Emite 0.5 a cada 80ms para dar à onda de áudio uma animação suave e
+    // contínua enquanto o microfone estiver ativo.
+    if (onSoundLevelChange != null) {
+      _levelTimer = Timer.periodic(const Duration(milliseconds: 80), (_) {
+        onSoundLevelChange(0.5);
+      });
+    }
+
   } catch (e) {
+    _stopLevelTimer();
     onError(e.toString());
     onEnd();
   }
 }
 
+void _stopLevelTimer() {
+  _levelTimer?.cancel();
+  _levelTimer = null;
+}
+
 Future<void> stopSttImpl() async {
+  _stopLevelTimer();
   try {
     _recognition?.stop();
     _recognition?.abort();

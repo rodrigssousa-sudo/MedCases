@@ -7,6 +7,7 @@ Future<void> startSttImpl({
   required void Function(String text) onResult,
   required void Function(String error) onError,
   required void Function() onEnd,
+  void Function(double level)? onSoundLevelChange,
 }) async {
   // no-op
 }

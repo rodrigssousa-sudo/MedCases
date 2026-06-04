@@ -68,6 +68,7 @@ bool _bypassActive = false;
 void Function(String)? _onResultCb;
 void Function(String)? _onErrorCb;
 void Function()?       _onEndCb;
+void Function(double)? _onLevelCb;
 
 // ── Helpers de cast seguro ────────────────────────────────────────────────────
 bool _safeBool(dynamic v, {bool fallback = false}) {
@@ -236,6 +237,7 @@ void _handleStatus(String status) {
       _onResultCb = null;
       _onErrorCb  = null;
       _onEndCb    = null;
+      _onLevelCb  = null;
       cb?.call();
     }
   }
@@ -266,6 +268,7 @@ void _handleError(dynamic errorNotification) {
       _onResultCb = null;
       _onErrorCb  = null;
       _onEndCb    = null;
+      _onLevelCb  = null;
       cb?.call();
     }
     return;
@@ -280,6 +283,7 @@ void _handleError(dynamic errorNotification) {
     _onResultCb = null;
     _onErrorCb  = null;
     _onEndCb    = null;
+    _onLevelCb  = null;
     cbError?.call(code);
     cbEnd?.call();
   }
@@ -327,6 +331,7 @@ void _handleResult(dynamic result) {
     final cbEnd    = _onEndCb;
     _onResultCb = null;
     _onEndCb    = null;
+    _onLevelCb  = null;
 
     if (text.isNotEmpty) {
       cbResult?.call(text);
@@ -350,10 +355,12 @@ Future<void> startSttImpl({
   required void Function(String text) onResult,
   required void Function(String error) onError,
   required void Function() onEnd,
+  void Function(double level)? onSoundLevelChange,
 }) async {
   _onResultCb = onResult;
   _onErrorCb  = onError;
   _onEndCb    = onEnd;
+  _onLevelCb  = onSoundLevelChange;
 
   if (_listening) await stopSttImpl();
 
@@ -431,6 +438,12 @@ Future<void> startSttImpl({
     // ─────────────────────────────────────────────────────────────────────
     final dynamic rawStarted = await _stt.listen(
       onResult: _handleResult,
+      onSoundLevelChange: (level) {
+        // Normaliza o nível de dB do plugin (range típico: -2.0 a 10.0 dB)
+        // para 0.0–1.0 usando clamp. Valores abaixo de 0 = silêncio.
+        final normalized = ((level + 2.0) / 12.0).clamp(0.0, 1.0);
+        _onLevelCb?.call(normalized);
+      },
       listenOptions: SpeechListenOptions(
         localeId:       resolvedLocale,
         listenMode:     ListenMode.dictation,
@@ -464,6 +477,10 @@ Future<void> startSttImpl({
       try {
         final dynamic rawRetry = await _stt.listen(
           onResult: _handleResult,
+          onSoundLevelChange: (level) {
+            final normalized = ((level + 2.0) / 12.0).clamp(0.0, 1.0);
+            _onLevelCb?.call(normalized);
+          },
           listenOptions: SpeechListenOptions(
             localeId:       '',            // ← iOS usa locale de Ditado dos Ajustes
             listenMode:     ListenMode.dictation,

@@ -1,3 +1,4 @@
+import 'dart:ui' show ImageFilter;
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/services.dart';
@@ -252,7 +253,15 @@ class _AiScreenState extends State<AiScreen> {
   int  _ttsPlayingIndex = -1; // índice da mensagem sendo reproduzida (-1 = nenhuma)
 
   // ── STT (Speech-to-Text via Web Speech API) ──────────────────────────────
-  bool _sttListening    = false; // microfone ativo
+  bool   _sttListening    = false; // microfone ativo
+  double _sttSoundLevel   = 0.0;   // nível de som normalizado 0.0–1.0 (onda de áudio)
+  // Buffer de texto parcial — acumulamos aqui durante o reconhecimento e só
+  // comprometemos no TextEditingController quando isFinal=true (evita eco "eu eu eu").
+  // Na web (isFinal guard no stt_helper_web.dart) este buffer não é usado
+  // para parciais — onResult já chega como final. No mobile, o buffer também
+  // não é necessário pois _handleResult só chama onResult quando isFinal.
+  // Mantido aqui como salvaguarda de estado para futuros refactors.
+  String _sttPartialBuffer = '';
 
   // Sugestões ficam visíveis apenas no estado vazio + sem foco
   bool get _showSuggestions => _messages.isEmpty && !_hasFocus;
@@ -437,36 +446,78 @@ class _AiScreenState extends State<AiScreen> {
   }
 
   void _sttStart() {
-    setState(() => _sttListening = true);
+    setState(() {
+      _sttListening     = true;
+      _sttSoundLevel    = 0.0;
+      _sttPartialBuffer = '';
+    });
     final lang = context.read<AppProvider>().lang;
     SttHelper.start(
       locale: lang == 'es' ? 'es-ES' : 'pt-BR',
+
+      // ── onResult: só chamado com texto FINAL (isFinal=true em ambas plataformas)
+      // Limpa o buffer parcial e compromete o texto final no controller.
+      // NÃO usa '$current $text' acumulativo — substitui apenas o buffer parcial
+      // para evitar o eco "eu eu eu" de chunks parciais duplicados.
       onResult: (text) {
         if (!mounted) return;
         setState(() {
-          _sttListening = false;
-          final current = _queryCtrl.text.trim();
-          _queryCtrl.text = current.isEmpty ? text : '$current $text';
+          _sttListening     = false;
+          _sttSoundLevel    = 0.0;
+          _sttPartialBuffer = '';
+          // Preserva qualquer texto que o usuário tenha digitado manualmente
+          // antes de iniciar o ditado, anexando o resultado ao final.
+          final existing = _queryCtrl.text.trim();
+          final combined = existing.isEmpty ? text : '$existing $text';
+          _queryCtrl.text = combined;
           _queryCtrl.selection = TextSelection.fromPosition(
             TextPosition(offset: _queryCtrl.text.length),
           );
         });
         _focusNode.requestFocus();
       },
+
+      // ── onError: garante limpeza total do estado antes do snackbar
       onError: (code) {
         if (!mounted) return;
-        setState(() => _sttListening = false);
+        // Fecha o canal de áudio antes de limpar o estado — evita que o
+        // microfone permaneça aberto em caso de erro no_speech/audio_session
+        SttHelper.stop();
+        setState(() {
+          _sttListening     = false;
+          _sttSoundLevel    = 0.0;
+          _sttPartialBuffer = '';
+        });
         _showSttErrorSnack(code);
       },
+
+      // ── onEnd: limpa estado ao encerrar normalmente
       onEnd: () {
-        if (mounted) setState(() => _sttListening = false);
+        if (!mounted) return;
+        setState(() {
+          _sttListening  = false;
+          _sttSoundLevel = 0.0;
+        });
+      },
+
+      // ── onSoundLevelChange: atualiza nível para a onda de áudio animada
+      onSoundLevelChange: (level) {
+        if (!mounted || !_sttListening) return;
+        // Usa setState apenas se a mudança for perceptível (evita rebuilds desnecessários)
+        if ((level - _sttSoundLevel).abs() > 0.02) {
+          setState(() => _sttSoundLevel = level);
+        }
       },
     );
   }
 
   Future<void> _sttStop() async {
     await SttHelper.stop();
-    if (mounted) setState(() => _sttListening = false);
+    if (mounted) setState(() {
+      _sttListening     = false;
+      _sttSoundLevel    = 0.0;
+      _sttPartialBuffer = '';
+    });
   }
 
   /// Exibe feedback de erro do STT ao usuario (nao bloqueia — e opcional).
@@ -1315,6 +1366,7 @@ class _AiScreenState extends State<AiScreen> {
                   hint: p.t('ai_placeholder'),
                   onVoice: _toggleStt,
                   sttListening: _sttListening,
+                  sttSoundLevel: _sttSoundLevel,
                   lang: p.lang,
                 ),
               ),
@@ -1329,6 +1381,7 @@ class _AiScreenState extends State<AiScreen> {
               hint: p.t('ai_placeholder'),
               onVoice: _toggleStt,
               sttListening: _sttListening,
+              sttSoundLevel: _sttSoundLevel,
               lang: p.lang,
             ),
     ]);
@@ -2844,9 +2897,61 @@ class _ThinkingBubbleState extends State<_ThinkingBubble>
 typedef _TypingIndicator = _ThinkingBubble;
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Input bar — ENTER envia (web/desktop), botão microfone STT, botão enviar
+// _AudioWave — 5 barras verticais finas animadas pelo nível do microfone.
+//
+// • Quando level > 0: as barras crescem proporcionalmente ao volume captado.
+// • Quando level = 0: reduzem a pontos estáticos (2×2 px) indicando standby.
+// • Usa AnimatedContainer para transições fluidas sem AnimationController externo.
 // ─────────────────────────────────────────────────────────────────────────────
-class _InputBar extends StatelessWidget {
+class _AudioWave extends StatelessWidget {
+  final double level;       // 0.0–1.0 normalizado
+  final Color  activeColor; // cor das barras ativas
+  const _AudioWave({required this.level, required this.activeColor});
+
+  @override
+  Widget build(BuildContext context) {
+    // 5 fatores de altura distintos — cria perfil de onda orgânica
+    const factors = [0.55, 0.80, 1.00, 0.80, 0.55];
+    const maxH    = 22.0; // altura máxima de cada barra em px
+    const minH    =  2.5; // altura mínima (ponto estático em silêncio)
+
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: List.generate(factors.length, (i) {
+        final targetH = level < 0.03
+            ? minH
+            : (minH + (maxH - minH) * level * factors[i]).clamp(minH, maxH);
+        return Padding(
+          padding: EdgeInsets.only(right: i < factors.length - 1 ? 3.0 : 0),
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 90),
+            curve: Curves.easeOut,
+            width: 2.0,
+            height: targetH,
+            decoration: BoxDecoration(
+              color: level < 0.03
+                  ? activeColor.withValues(alpha: 0.35)
+                  : activeColor.withValues(alpha: 0.85),
+              borderRadius: BorderRadius.circular(10),
+            ),
+          ),
+        );
+      }),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Input bar — glassmorphism flutuante premium
+//
+// Arquitetura: StatefulWidget para hospedar o FocusNode do KeyboardListener.
+// Fundo: BackdropFilter blur + cor escura semitransparente (dark) /
+//        branca semitransparente (light) + borda ultrafina + cantos 24px.
+// Layout STT: enquanto sttListening=true, mostra _AudioWave centralizada em
+//             vez do texto de status, com indicador de microfone vermelho.
+// ─────────────────────────────────────────────────────────────────────────────
+class _InputBar extends StatefulWidget {
   final TextEditingController ctrl;
   final FocusNode focusNode;
   final bool dark;
@@ -2855,6 +2960,7 @@ class _InputBar extends StatelessWidget {
   final VoidCallback onSend;
   final VoidCallback onVoice;
   final bool sttListening;
+  final double sttSoundLevel;
   final String hint;
   final String lang;
   const _InputBar({
@@ -2866,144 +2972,297 @@ class _InputBar extends StatelessWidget {
     required this.onSend,
     required this.onVoice,
     required this.sttListening,
+    required this.sttSoundLevel,
     required this.hint,
     required this.lang,
   });
 
   @override
+  State<_InputBar> createState() => _InputBarState();
+}
+
+class _InputBarState extends State<_InputBar> {
+  // FocusNode dedicado para o KeyboardListener — separado do focusNode do TextField
+  final FocusNode _keyboardListenerNode = FocusNode();
+
+  @override
+  void dispose() {
+    _keyboardListenerNode.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final barBg   = dark ? const Color(0xFF0A150E) : const Color(0xFFF0EBE3);
+    final bool dark        = widget.dark;
+    final bool isEs        = widget.lang == 'es';
+    final bool isListening = widget.sttListening;
+    final double level     = widget.sttSoundLevel;
+
+    // ── Cores do campo de texto
     final fieldBg = dark ? const Color(0xFF1A2820) : Colors.white;
-    final borderCol = hasFocus
+    final borderCol = widget.hasFocus
         ? const Color(0xFF1F6B48)
         : (dark ? const Color(0xFF253020) : const Color(0xFFD8D3CA));
     final textCol = dark ? Colors.white : const Color(0xFF1A1A1A);
     final hintCol = dark ? Colors.white30 : Colors.black38;
-    final micCol  = sttListening ? const Color(0xFFEF4444) : (dark ? Colors.white54 : Colors.black45);
 
-    // Tooltip do microfone
-    final micTip = sttListening
-        ? (lang == 'es' ? 'Detener dictado' : 'Parar ditado')
-        : (lang == 'es' ? 'Dictar mensaje' : 'Ditar mensagem');
+    // ── Cores do microfone
+    final micCol    = isListening
+        ? const Color(0xFFEF4444)
+        : (dark ? Colors.white60 : Colors.black45);
+    final micBgCol  = isListening
+        ? const Color(0xFFEF4444).withValues(alpha: 0.15)
+        : (dark
+            ? Colors.white.withValues(alpha: 0.07)
+            : Colors.black.withValues(alpha: 0.05));
+    final micBorder = isListening
+        ? const Color(0xFFEF4444).withValues(alpha: 0.55)
+        : Colors.transparent;
 
-    return Container(
-      color: barBg,
-      padding: const EdgeInsets.fromLTRB(10, 6, 10, 6),
+    // ── Cor das barras de onda
+    final waveColor = isListening
+        ? const Color(0xFFEF4444)
+        : (dark ? Colors.white54 : Colors.black38);
+
+    // ── Tooltip do microfone — bilíngue
+    final micTip = isListening
+        ? (isEs ? 'Detener dictado' : 'Parar ditado')
+        : (isEs ? 'Dictar mensaje' : 'Ditar mensagem');
+
+    // ── Texto de status STT — bilíngue, peso leve, sutil
+    final statusText = isListening
+        ? (isEs ? 'Escuchando…' : 'Ouvindo…')
+        : (isEs ? 'Micrófono listo. Toca para dictar.'
+                : 'Microfone pronto. Toque para ditar.');
+
+    // ── Glassmorphism: fundo semitransparente + blur ───────────────────────
+    // O ClipRRect é necessário para que o BackdropFilter respeite o borderRadius
+    // e não vaze para fora do card flutuante.
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: SafeArea(
         top: false,
-        child: Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
-
-          // ── Botão microfone ─────────────────────────────────────────────
-          Tooltip(
-            message: micTip,
-            child: GestureDetector(
-              onTap: onVoice,
-              child: AnimatedContainer(
-                duration: const Duration(milliseconds: 200),
-                width: 40, height: 40,
-                margin: const EdgeInsets.only(right: 6),
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: sttListening
-                      ? const Color(0xFFEF4444).withValues(alpha: 0.15)
-                      : (dark
-                          ? Colors.white.withValues(alpha: 0.07)
-                          : Colors.black.withValues(alpha: 0.05)),
-                  border: Border.all(
-                    color: sttListening
-                        ? const Color(0xFFEF4444).withValues(alpha: 0.6)
-                        : Colors.transparent,
-                    width: 1.5,
-                  ),
-                ),
-                child: Center(
-                  child: Icon(
-                    sttListening ? Icons.mic_rounded : Icons.mic_none_rounded,
-                    size: 19,
-                    color: micCol,
-                  ),
-                ),
-              ),
-            ),
-          ),
-
-          // ── Campo de texto com ENTER para enviar ────────────────────────
-          Expanded(
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(24),
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
             child: Container(
               decoration: BoxDecoration(
-                color: fieldBg,
+                // Fundo semitransparente — escuro em dark, branco em light
+                color: dark
+                    ? const Color(0xFF0A150E).withValues(alpha: 0.72)
+                    : Colors.white.withValues(alpha: 0.78),
                 borderRadius: BorderRadius.circular(24),
-                border: Border.all(color: borderCol, width: hasFocus ? 1.5 : 1.0),
-              ),
-              child: KeyboardListener(
-                focusNode: FocusNode(), // FocusNode separado para capturar teclas
-                onKeyEvent: (event) {
-                  // ENTER (sem Shift) em web/desktop → envia
-                  if (kIsWeb &&
-                      event is KeyDownEvent &&
-                      event.logicalKey == LogicalKeyboardKey.enter &&
-                      !HardwareKeyboard.instance.isShiftPressed &&
-                      !HardwareKeyboard.instance.isControlPressed &&
-                      !thinking) {
-                    onSend();
-                  }
-                },
-                child: TextField(
-                  controller: ctrl,
-                  focusNode: focusNode,
-                  maxLines: 5,
-                  minLines: 1,
-                  // Mantém newline em mobile; no web ENTER envia via KeyboardListener
-                  textInputAction: TextInputAction.newline,
-                  // Sugestões ativas (barra superior do teclado) sem autocorrect
-                  // agressivo — termos médicos não devem ser alterados automaticamente
-                  enableSuggestions: true,
-                  autocorrect: false,
-                  textCapitalization: TextCapitalization.sentences,
-                  style: TextStyle(
-                    fontSize: 14, fontWeight: FontWeight.w400,
-                    color: textCol, height: 1.5),
-                  decoration: InputDecoration(
-                    hintText: hint,
-                    hintStyle: TextStyle(
-                      fontSize: 14, color: hintCol, fontWeight: FontWeight.w400),
-                    border: InputBorder.none,
-                    contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 16, vertical: 10),
-                  ),
+                border: Border.all(
+                  color: dark
+                      ? Colors.white.withValues(alpha: 0.10)
+                      : Colors.black.withValues(alpha: 0.08),
+                  width: 0.8,
                 ),
               ),
-            ),
-          ),
-          const SizedBox(width: 8),
+              padding: const EdgeInsets.fromLTRB(10, 8, 10, 8),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
 
-          // ── Botão enviar — círculo verde ────────────────────────────────
-          GestureDetector(
-            onTap: thinking ? null : onSend,
-            child: AnimatedContainer(
-              duration: const Duration(milliseconds: 150),
-              width: 44, height: 44,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: thinking
-                    ? const Color(0xFF1F6B48).withValues(alpha: 0.45)
-                    : const Color(0xFF1F6B48),
-              ),
-              child: Center(
-                child: thinking
-                    ? const SizedBox(
-                        width: 18, height: 18,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                          color: Colors.white,
+                  // ── Painel STT — onda de áudio ou campo de texto ─────────
+                  AnimatedCrossFade(
+                    duration: const Duration(milliseconds: 220),
+                    crossFadeState: isListening
+                        ? CrossFadeState.showSecond
+                        : CrossFadeState.showFirst,
+
+                    // ── Estado normal: campo de texto ──────────────────────
+                    firstChild: Row(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+
+                        // Botão microfone — ícone outline delicado
+                        Tooltip(
+                          message: micTip,
+                          child: GestureDetector(
+                            onTap: widget.onVoice,
+                            child: AnimatedContainer(
+                              duration: const Duration(milliseconds: 200),
+                              width: 38, height: 38,
+                              margin: const EdgeInsets.only(right: 6, bottom: 1),
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: micBgCol,
+                                border: Border.all(color: micBorder, width: 1.2),
+                              ),
+                              child: Center(
+                                child: Icon(
+                                  Icons.mic_none_outlined,
+                                  size: 18,
+                                  color: micCol,
+                                ),
+                              ),
+                            ),
+                          ),
                         ),
-                      )
-                    : const Icon(Icons.arrow_upward_rounded,
-                        color: Colors.white, size: 20),
+
+                        // Campo de texto
+                        Expanded(
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: fieldBg,
+                              borderRadius: BorderRadius.circular(20),
+                              border: Border.all(
+                                color: borderCol,
+                                width: widget.hasFocus ? 1.4 : 0.9,
+                              ),
+                            ),
+                            child: KeyboardListener(
+                              focusNode: _keyboardListenerNode,
+                              onKeyEvent: (event) {
+                                if (kIsWeb &&
+                                    event is KeyDownEvent &&
+                                    event.logicalKey == LogicalKeyboardKey.enter &&
+                                    !HardwareKeyboard.instance.isShiftPressed &&
+                                    !HardwareKeyboard.instance.isControlPressed &&
+                                    !widget.thinking) {
+                                  widget.onSend();
+                                }
+                              },
+                              child: TextField(
+                                controller: widget.ctrl,
+                                focusNode: widget.focusNode,
+                                maxLines: 5,
+                                minLines: 1,
+                                textInputAction: TextInputAction.newline,
+                                enableSuggestions: true,
+                                autocorrect: false,
+                                textCapitalization: TextCapitalization.sentences,
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w400,
+                                  color: textCol,
+                                  height: 1.5,
+                                ),
+                                decoration: InputDecoration(
+                                  hintText: widget.hint,
+                                  hintStyle: TextStyle(
+                                    fontSize: 14,
+                                    color: hintCol,
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                  border: InputBorder.none,
+                                  contentPadding: const EdgeInsets.symmetric(
+                                    horizontal: 14, vertical: 9,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 7),
+
+                        // Botão enviar — círculo verde
+                        GestureDetector(
+                          onTap: widget.thinking ? null : widget.onSend,
+                          child: AnimatedContainer(
+                            duration: const Duration(milliseconds: 150),
+                            width: 42, height: 42,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: widget.thinking
+                                  ? const Color(0xFF1F6B48).withValues(alpha: 0.45)
+                                  : const Color(0xFF1F6B48),
+                            ),
+                            child: Center(
+                              child: widget.thinking
+                                  ? const SizedBox(
+                                      width: 17, height: 17,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 1.8,
+                                        color: Colors.white,
+                                      ),
+                                    )
+                                  : const Icon(
+                                      Icons.arrow_upward_rounded,
+                                      color: Colors.white,
+                                      size: 19,
+                                    ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+
+                    // ── Estado STT ativo: onda de áudio centralizada ────────
+                    secondChild: SizedBox(
+                      height: 56,
+                      child: Row(
+                        children: [
+
+                          // Botão parar ditado — ícone mic vermelho outline
+                          Tooltip(
+                            message: micTip,
+                            child: GestureDetector(
+                              onTap: widget.onVoice,
+                              child: AnimatedContainer(
+                                duration: const Duration(milliseconds: 200),
+                                width: 38, height: 38,
+                                margin: const EdgeInsets.only(right: 10),
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: const Color(0xFFEF4444).withValues(alpha: 0.12),
+                                  border: Border.all(
+                                    color: const Color(0xFFEF4444).withValues(alpha: 0.50),
+                                    width: 1.2,
+                                  ),
+                                ),
+                                child: const Center(
+                                  child: Icon(
+                                    Icons.mic_off_outlined,
+                                    size: 17,
+                                    color: Color(0xFFEF4444),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+
+                          // Onda de áudio + texto de status
+                          Expanded(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                // Onda animada
+                                _AudioWave(
+                                  level: level,
+                                  activeColor: waveColor,
+                                ),
+                                const SizedBox(height: 5),
+                                // Texto de status — leve, sutil, bilíngue
+                                Text(
+                                  statusText,
+                                  style: TextStyle(
+                                    fontSize: 12.5,
+                                    fontWeight: FontWeight.w400,
+                                    letterSpacing: 0.5,
+                                    color: dark
+                                        ? Colors.white.withValues(alpha: 0.50)
+                                        : Colors.black.withValues(alpha: 0.45),
+                                    height: 1.3,
+                                  ),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
-        ]),
+        ),
       ),
     );
   }
