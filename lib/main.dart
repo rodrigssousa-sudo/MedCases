@@ -3079,15 +3079,20 @@ class _AppDrawerState extends State<_AppDrawer> {
                   ),
 
                 // ─── 3. Acesso Rápido ─────────────────────────────────────
-                _DrawerSectionLabel(
-                  label: p.lang == 'es' ? 'ACCESO RÁPIDO' : 'ACESSO RÁPIDO',
-                  dark: dark,
-                ),
-                _DrawerQuickAccess(
-                  p: p,
-                  dark: dark,
-                  onClose: () => _close(context),
-                ),
+                // APPLE COMPLIANCE (Build 93) — bloco ACCESO RÁPIDO oculto.
+                // Guideline 1.4.1/1.4.2: links diretos para Protocolos,
+                // Farmacología, Asistente IA e Nueva Consulta foram considerados
+                // ferramentas clínicas pela revisão Apple.
+                // Widget _DrawerQuickAccess preservado intacto — reativar:
+                //   1. Remover o bloco de comentário abaixo
+                //   2. Restaurar _DrawerSectionLabel + _DrawerQuickAccess
+                // if (kIsWeb) ...[ // alternativa: reativar apenas no Web
+                //   _DrawerSectionLabel(
+                //     label: p.lang == 'es' ? 'ACCESO RÁPIDO' : 'ACESSO RÁPIDO',
+                //     dark: dark,
+                //   ),
+                //   _DrawerQuickAccess(p: p, dark: dark, onClose: () => _close(context)),
+                // ],
 
                 // ─── 4. Sua Atividade (oculto se vazio) ──────────────────
                 _DrawerSectionLabel(

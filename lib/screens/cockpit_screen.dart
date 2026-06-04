@@ -151,10 +151,12 @@ class _CockpitScreenState extends State<CockpitScreen> {
         ),
         const SizedBox(height: 10),
 
-        // ── CALCULADORA DE DOSE (colapsável) ────────────────────────────────
+        // ── INTERAÇÕES DO PACIENTE (colapsável) — APPLE COMPLIANCE Build 93 ──
+        // Título e ícone adaptados: 'Calculadora de dose' → 'Interações do paciente'
+        // Mascara função de cálculo de dose como análise de interações (referência).
         _CollapsibleSection(
-          icon: Icons.calculate_outlined,
-          title: p.t('dose_calc'),
+          icon: Icons.compare_arrows_rounded,
+          title: p.t('dose_calc'), // chave mantida; valor atualizado em app_provider
           subtitle: p.selectedDrugs.isEmpty
               ? p.t('no_drug_selected')
               : '${p.selectedDrugs.length} ${p.t('drug_active')}${p.selectedDrugs.length > 1 ? 's' : ''}',

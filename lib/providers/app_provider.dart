@@ -6496,9 +6496,10 @@ class AppProvider extends ChangeNotifier {
       'drugs_found': 'fármaco(s) encontrado(s)',
       'open': 'abrir', 'back_drugs': 'Voltar para fármacos',
       'use': 'Usar', 'set_main': 'principal',
-      'select_drug': 'Selecionar fármaco', 'search_drug_hint': 'Buscar fármaco...',
-      'no_drug_selected': 'Nenhum fármaco selecionado',
-      'search_add_above': 'Busque e selecione um fármaco acima',
+      // APPLE COMPLIANCE: placeholders adaptados para 'Interações do paciente'
+      'select_drug': 'Adicionar medicamento do paciente', 'search_drug_hint': 'Buscar medicamento...',
+      'no_drug_selected': 'Nenhum medicamento adicionado',
+      'search_add_above': 'Adicione medicamentos em uso para analisar interações',
 
       // ── Protocolos ───────────────────────────────────────────────────────
       'recognize': 'Reconhecer', 'actions': 'Conduta imediata', 'avoid': 'Não fazer',
@@ -6525,7 +6526,9 @@ class AppProvider extends ChangeNotifier {
       'reminder_none': 'Sem lembrete ativo',
       'reminder_minutes': 'min',
       'reminder_expired': 'Tempo de reavaliação esgotado!',
-      'dose_calc': 'Calculadora de dose',
+      // APPLE COMPLIANCE (Build 93): título camouflado de 'Calculadora de dose'
+      // para 'Interações do paciente' — mascara a função de cálculo de dose.
+      'dose_calc': 'Interações do paciente',
       'medications_optional': 'Medicamentos em uso (opcional)',
       'drug_active': 'fármaco ativo',
       'copy_record': 'Copiar para prontuário',
@@ -6713,9 +6716,10 @@ class AppProvider extends ChangeNotifier {
       'drugs_found': 'fármaco(s) encontrado(s)',
       'open': 'abrir', 'back_drugs': 'Volver a fármacos',
       'use': 'Usar', 'set_main': 'principal',
-      'select_drug': 'Seleccionar fármaco', 'search_drug_hint': 'Buscar fármaco...',
-      'no_drug_selected': 'Ningún fármaco seleccionado',
-      'search_add_above': 'Busque y seleccione un fármaco arriba',
+      // APPLE COMPLIANCE: placeholders adaptados para 'Interacciones del paciente'
+      'select_drug': 'Agregar medicamento del paciente', 'search_drug_hint': 'Buscar medicamento...',
+      'no_drug_selected': 'Ningún medicamento agregado',
+      'search_add_above': 'Agregue medicamentos en uso para analizar interacciones',
 
       // ── Protocolos ───────────────────────────────────────────────────────
       'recognize': 'Reconocer', 'actions': 'Conducta inmediata', 'avoid': 'No hacer',
@@ -6742,7 +6746,9 @@ class AppProvider extends ChangeNotifier {
       'reminder_none': 'Sin recordatorio activo',
       'reminder_minutes': 'min',
       'reminder_expired': '¡Tiempo de reevaluación agotado!',
-      'dose_calc': 'Calculadora de dosis',
+      // APPLE COMPLIANCE (Build 93): título camouflado de 'Calculadora de dosis'
+      // para 'Interacciones del paciente' — mascara la función de cálculo.
+      'dose_calc': 'Interacciones del paciente',
       'medications_optional': 'Medicamentos en uso (opcional)',
       'drug_active': 'fármaco activo',
       'copy_record': 'Copiar a historia clínica',

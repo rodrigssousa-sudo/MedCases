@@ -354,7 +354,25 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           const SizedBox(height: 20),
 
-          // ── BLOCO 3: HISTORIAL CLÍNICO — título de seção ────────────────────
+          // ── BLOCO 3: ADULTO + PEDIATRÍA — navegação para telas clínicas ─────
+          // BUILD 93 REORDER: cards ADULTO e PEDIATRÍA sobem para antes do
+          // HISTORIAL CLÍNICO, ficando logo abaixo do grid FÁRMACOS/INTERACCIONES.
+          // Visíveis em mobile E web (Apple-compliant: DOSES oculta na Pediatria,
+          // Calculadora renomeada para "Interacciones del paciente" no Adulto).
+          _HomeAdultoPediatriaRow(
+            dark: dark,
+            isEs: isEs,
+            onTapAdulto: () => Navigator.of(context).push(
+              _HomeScreenState._slide(_AdultoShell(openProtocol: widget.openProtocol)),
+            ),
+            onTapPediatria: () => Navigator.of(context).push(
+              _HomeScreenState._slide(const _PediatricsShell()),
+            ),
+          ),
+          const SizedBox(height: 20),
+
+          // ── BLOCO 4: HISTORIAL CLÍNICO — título de seção ────────────────────
+          // Movido para baixo do bloco ADULTO/PEDIATRÍA (reorder Build 93).
           _HomeSectionHeader(
             icon: Icons.folder_shared_rounded,
             label: isEs ? 'HISTORIAL CLÍNICO' : 'HISTÓRICO CLÍNICO',
@@ -362,8 +380,8 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           const SizedBox(height: 10),
 
-          // ── BLOCO 3a: Quatro atalhos utilitários —————————————————————————
-          // Ordem estrita: NOTAS · RECIENTES · FAVORITOS · EVALUACIÓN
+          // ── BLOCO 4a: Quatro atalhos utilitários ─────────────────────────────
+          // Ordem: NOTAS · RECIENTES · FAVORITOS · EVALUACIÓN
           _QuickShortcuts(
             dark: dark,
             isEs: isEs,
@@ -373,24 +391,11 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           const SizedBox(height: 16),
 
-          // ── BLOCO WEB-ONLY — ferramentas clínicas pesadas ───────────────────
-          // PEDIATRIA, ADULTO, MI GUARDIA, EMERGÊNCIAS:
-          // Visíveis APENAS na versão Web conforme Apple 1.4.1/1.4.2.
-          // Os widgets e toda a lógica permanecem no projeto — apenas
-          // invisíveis no iOS/mobile até reativação via In-App Browser.
+          // ── BLOCO WEB-ONLY — ferramentas clínicas avançadas ─────────────────
+          // MI GUARDIA e EMERGÊNCIAS: visíveis APENAS na Web (Apple 1.4.2).
+          // PEDIATRIA + ADULTO já exibidos acima para todos (mobile + web).
           if (kIsWeb) ...[
-            // PEDIATRIA + ADULTO (row)
-            // ignore: dead_code
-            _HomeAdultoPediatriaRow(
-              dark: dark,
-              isEs: isEs,
-              onTapAdulto: () => Navigator.of(context).push(
-                _HomeScreenState._slide(_AdultoShell(openProtocol: widget.openProtocol)),
-              ),
-              onTapPediatria: () => Navigator.of(context).push(
-                _HomeScreenState._slide(const _PediatricsShell()),
-              ),
-            ),
+            const SizedBox(height: 0), // placeholder para bloco web-only
             const SizedBox(height: 16),
             // MI GUARDIA / MEU PLANTÃO
             // ignore: dead_code
@@ -993,8 +998,28 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
     );
   }
 
-  void _goToAiTab([String? q]) {
-    if (q != null && q.isNotEmpty) AiScreen.pendingQuery.value = q;
+  /// Navega para a aba de IA (tab 2).
+  ///
+  /// [q] → query opcional para disparar como nova mensagem (chips de atalho).
+  /// [withHistory] → true (padrão) quando chamado pelos botões "Ver más" /
+  ///   "Ver respuesta completa" — injeta o par pergunta/resposta atual do
+  ///   mini-chat no AiScreen para continuar a conversa de onde parou.
+  void _goToAiTab([String? q, bool withHistory = false]) {
+    if (q != null && q.isNotEmpty) {
+      // Chip de atalho: dispara nova query na tela de IA
+      AiScreen.pendingQuery.value = q;
+    } else if (withHistory &&
+        _lastQuestion.isNotEmpty &&
+        _lastAnswer.isNotEmpty &&
+        !_hasError) {
+      // "Ver respuesta completa" / "Ver más": injeta o histórico do mini-chat.
+      // O AiScreen consume este notifier no _onPendingHistory listener,
+      // preserva a saudação e acrescenta o par pergunta/resposta.
+      AiScreen.pendingHistory.value = [
+        {'role': 'user', 'text': _lastQuestion},
+        {'role': 'ai',   'text': _lastAnswer},
+      ];
+    }
     widget.onNavigateToAi(2);
   }
 
@@ -1069,7 +1094,8 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
             ])),
             if (_lastAnswer.isNotEmpty || _lastQuestion.isNotEmpty)
               GestureDetector(
-                onTap: () => _goToAiTab(),
+                // "Ver mais": injeta histórico do mini-chat no AiScreen
+                onTap: () => _goToAiTab(null, true),
                 child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                   decoration: BoxDecoration(
@@ -1166,7 +1192,8 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
                       if (!_thinking && _lastAnswer.isNotEmpty && !_hasError) ...[
                         const SizedBox(height: 8),
                         GestureDetector(
-                          onTap: () => _goToAiTab(),
+                          // "Ver respuesta completa": continua conversa no AiScreen
+                          onTap: () => _goToAiTab(null, true),
                           child: Row(mainAxisSize: MainAxisSize.min, children: [
                             Text(isEs ? 'Ver respuesta completa' : 'Ver resposta completa',
                               style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: _kGreen)),

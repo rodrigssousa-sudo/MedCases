@@ -4373,7 +4373,12 @@ class PediatricsTabContent extends StatefulWidget {
 
 class _PediatricsTabContentState extends State<PediatricsTabContent> {
   int _section = 0;
-  static const _sections = ['BIOMETRIA', 'SCHWARTZ', 'PEWS', 'DOSES', 'REFERÊNCIA'];
+  // APPLE COMPLIANCE (Build 93): aba DOSES ocultada — fármacos com mg/kg
+  // são classificados como "calculadora clínica" pela Apple (Guideline 1.4.1).
+  // A lógica de cálculo e os dados permanecem intactos no código — apenas
+  // removidos da navegação até reativação via In-App Browser / kIsWeb guard.
+  // static const _sections = ['BIOMETRIA', 'SCHWARTZ', 'PEWS', 'DOSES', 'REFERÊNCIA'];
+  static const _sections = ['BIOMETRIA', 'SCHWARTZ', 'PEWS', 'REFERÊNCIA'];
 
   // ── Controllers ────────────────────────────────────────────────
   // Biometria
@@ -4614,12 +4619,14 @@ class _PediatricsTabContentState extends State<PediatricsTabContent> {
   }
 
   Widget _buildSection(bool isEs, AppColors c) {
+    // APPLE COMPLIANCE: DOSES (case 3) removido do roteamento.
+    // _buildDoses() e toda a lógica mg/kg permanecem no código — só inacessíveis.
+    // Reativar: restaurar _sections com 'DOSES' e adicionar case 3 abaixo.
     switch (_section) {
       case 0: return _buildBiometria(isEs, c);
       case 1: return _buildSchwartz(isEs, c);
       case 2: return _buildPews(isEs, c);
-      case 3: return _buildDoses(isEs, c);
-      case 4: return _buildReferencia(isEs, c);
+      case 3: return _buildReferencia(isEs, c); // era case 4 antes da remoção de DOSES
       default: return const SizedBox.shrink();
     }
   }

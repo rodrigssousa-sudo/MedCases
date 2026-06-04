@@ -195,6 +195,22 @@ class AiScreen extends StatefulWidget {
   /// A HomeScreen seta este valor antes de navegar para a aba 2.
   /// O _AiScreenState consome e limpa no initState/didUpdateWidget.
   static final pendingQuery = ValueNotifier<String>('');
+
+  // ── Home V2: Injeção de histórico do mini-chat inline ──────────────────
+  /// Histórico pendente do mini-chat da Home para restaurar no AiScreen.
+  ///
+  /// Quando o usuário clica "Ver respuesta completa" / "Ver mais" no mini-chat
+  /// da Home, este notifier recebe os pares de mensagens já trocados
+  /// (lista de {role: 'user'/'ai', text: '...'}).
+  ///
+  /// O _AiScreenState consome no listener e:
+  ///   1. Limpa o chat atual (saudação)
+  ///   2. Injeta os pares como _ChatMsg existentes
+  ///   3. Limpa o notifier para não re-disparar
+  ///
+  /// Formato: [{'role': 'user', 'text': '...'}, {'role': 'ai', 'text': '...'}]
+  static final pendingHistory =
+      ValueNotifier<List<Map<String, String>>>([]);
 }
 
 class _AiScreenState extends State<AiScreen> {
@@ -309,11 +325,16 @@ class _AiScreenState extends State<AiScreen> {
     // Home V2: escuta pendingQuery em tempo real — dispara sempre que a Home
     // injeta uma nova query, mesmo que o AiScreen já esteja montado no IndexedStack.
     AiScreen.pendingQuery.addListener(_onPendingQuery);
+    // Home V2: escuta pendingHistory — restaura o mini-chat da Home no AiScreen.
+    // Disparado quando o usuário clica "Ver respuesta completa" / "Ver mais".
+    AiScreen.pendingHistory.addListener(_onPendingHistory);
     // Injeta saudação após o primeiro frame (AppProvider já disponível)
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _injectGreeting();
       // Consome query que possa ter sido setada antes do listener estar ativo
       _consumePendingQuery();
+      // Consome histórico pendente (caso injetado antes do listener ativo)
+      _onPendingHistory();
     });
     // Carrega histórico de chats do SharedPrefs
     _loadChatHistory();
@@ -486,6 +507,48 @@ class _AiScreenState extends State<AiScreen> {
     _consumePendingQuery();
   }
 
+  /// Chamado pelo listener do pendingHistory.
+  /// Restaura os pares de mensagens do mini-chat da Home como conversa real.
+  void _onPendingHistory() {
+    final pairs = AiScreen.pendingHistory.value;
+    if (pairs.isEmpty || !mounted) return;
+    // Limpa imediatamente para não re-disparar em rebuilds
+    AiScreen.pendingHistory.value = [];
+
+    // Post-frame: garante que o widget está completamente montado
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      setState(() {
+        // Preserva apenas a saudação automática (primeiro msg de 'ai')
+        // e acrescenta os pares do mini-chat logo depois.
+        final greeting = _messages.isNotEmpty && _messages.first.role == 'ai'
+            ? [_messages.first]
+            : <_ChatMsg>[];
+        _messages.clear();
+        _messages.addAll(greeting);
+
+        // Injeta cada par {role, text} como _ChatMsg com ID estável
+        for (final m in pairs) {
+          final role = m['role'] ?? 'user';
+          final text = m['text'] ?? '';
+          if (text.isNotEmpty) {
+            _messages.add(_ChatMsg(role: role, text: text));
+          }
+        }
+      });
+      // Scroll para o fim após injetar as mensagens
+      Future.delayed(const Duration(milliseconds: 120), () {
+        if (!mounted || !_scrollCtrl.hasClients) return;
+        _scrollCtrl.animateTo(
+          _scrollCtrl.position.maxScrollExtent,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeOut,
+        );
+      });
+      _syncShellNotifiers();
+    });
+  }
+
   void _consumePendingQuery() {
     final q = AiScreen.pendingQuery.value;
     if (q.isEmpty || !mounted) return;
@@ -524,6 +587,7 @@ class _AiScreenState extends State<AiScreen> {
   void dispose() {
     _scrollCtrl.removeListener(_onScroll);
     AiScreen.pendingQuery.removeListener(_onPendingQuery);
+    AiScreen.pendingHistory.removeListener(_onPendingHistory);
     _queryCtrl.dispose();
     _scrollCtrl.dispose();
     _focusNode.dispose();
