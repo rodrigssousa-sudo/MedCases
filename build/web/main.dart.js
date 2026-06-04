@@ -115110,27 +115110,29 @@ A.Ej.prototype={
 T(){return new A.aco()}}
 A.aco.prototype={
 EP(a,b){return this.aAg(a,b)},
-aAg(a,b){var s=0,r=A.D(t.H),q,p=this,o,n,m,l,k,j,i,h,g,f,e
-var $async$EP=A.y(function(c,d){if(c===1)return A.A(d,r)
-while(true)switch(s){case 0:i={}
-h=b.c==="es"
-g=b.d
-f=b.a
-e=f==null?null:f.a
-if(e==null)e=""
-if(e.length===0){s=1
-break}o=h?"Eliminar cuenta":"Excluir minha conta"
-n=h?"Esta acci\xf3n es PERMANENTE e IRREVERSIBLE.\n\n\u2022 Todos tus datos cl\xednicos ser\xe1n eliminados\n\u2022 Historial de consultas con la IA\n\u2022 Anotaciones y configuraciones\n\u2022 Tu acceso a MedCases Pro\n\nEsta operaci\xf3n no puede deshacerse.":"Esta a\xe7\xe3o \xe9 PERMANENTE e IRREVERS\xcdVEL.\n\n\u2022 Todos os seus dados cl\xednicos ser\xe3o apagados\n\u2022 Hist\xf3rico de consultas com a IA\n\u2022 Anota\xe7\xf5es e configura\xe7\xf5es\n\u2022 Seu acesso ao MedCases Pro\n\nEsta opera\xe7\xe3o n\xe3o pode ser desfeita."
-m=h?"Para continuar, escreva EXCLUIR abaixo:":"Para continuar, digite EXCLUIR abaixo:"
-l=h?"Confirma tu contrase\xf1a":"Confirme sua senha"
-k=h?"Excluir minha cuenta":"Excluir minha conta"
-j=h?"Escribe EXCLUIR para continuar":"Digite EXCLUIR para continuar"
-f=$.ao()
-i.a=i.b=null
-i.c=!1
-i.d=!0
+aAg(a,b){var s=0,r=A.D(t.H),q,p=this,o,n,m,l,k,j,i,h,g,f,e,d,c
+var $async$EP=A.y(function(a0,a1){if(a0===1)return A.A(a1,r)
+while(true)switch(s){case 0:g={}
+f=b.c==="es"
+e=b.d
+d=b.a
+c=d==null?null:d.a
+if(c==null)c=""
+if(c.length===0){s=1
+break}o=f?"Eliminar cuenta":"Excluir minha conta"
+n=f?"Esta acci\xf3n es PERMANENTE e IRREVERSIBLE.\n\n\u2022 Todos tus datos cl\xednicos ser\xe1n eliminados\n\u2022 Historial de consultas con la IA\n\u2022 Anotaciones y configuraciones\n\u2022 Tu acceso a MedCases Pro\n\nEsta operaci\xf3n no puede deshacerse.":"Esta a\xe7\xe3o \xe9 PERMANENTE e IRREVERS\xcdVEL.\n\n\u2022 Todos os seus dados cl\xednicos ser\xe3o apagados\n\u2022 Hist\xf3rico de consultas com a IA\n\u2022 Anota\xe7\xf5es e configura\xe7\xf5es\n\u2022 Seu acesso ao MedCases Pro\n\nEsta opera\xe7\xe3o n\xe3o pode ser desfeita."
+m=f?"Para continuar, escribe EXCLUIR a continuaci\xf3n:":"Para continuar, digite EXCLUIR abaixo:"
+l=f?"Confirma tu contrase\xf1a":"Confirme sua senha"
+k=f?"Contrase\xf1a actual":"Senha atual"
+j=f?"Ingresa tu contrase\xf1a para confirmar":"Digite sua senha para confirmar"
+i=f?"Eliminar mi cuenta":"Excluir minha conta"
+h=f?"Escribe EXCLUIR para continuar":"Digite EXCLUIR para continuar"
+d=$.ao()
+g.a=g.b=null
+g.c=!1
+g.d=!0
 s=3
-return A.q(A.hq(null,null,!1,null,new A.aVW(i,p,new A.au(B.Z,f),a,e,h,g,o,!1,n,m,new A.au(B.Z,f),l,"Senha atual","Digite sua senha para confirmar","Cancelar",j,b,"Continuar",k),a,null,!0,!0,t.H),$async$EP)
+return A.q(A.hq(null,null,!1,null,new A.aVW(g,p,new A.au(B.Z,d),a,c,f,e,o,!1,n,m,new A.au(B.Z,d),l,k,j,"Cancelar",h,b,"Continuar",i),a,null,!0,!0,t.H),$async$EP)
 case 3:case 1:return A.B(q,r)}})
 return A.C($async$EP,r)},
 Do(a,b,c,d){return this.ano(a,b,c,d)},
@@ -115205,7 +115207,7 @@ l=l?b:a
 m.push(new A.r3(A.a([k,j,A.bGJ(a1,l,"https://www.promedcases.com/politica-de-privacidade",B.zm,B.G5,new A.aWf(f,a6,a0),!1,a5,h,a4,i)],s),a3,e))
 m.push(new A.p7(a0.c==="es"?"CUENTA Y GESTI\xd3N":"CONTA E GEST\xc3O",a1,B.e1,e))
 l=a0.c==="es"
-k=l?"Eliminar Cuenta":"Eliminar Conta"
+k=l?"Eliminar Cuenta":"Excluir Conta"
 k=A.r4(a1,B.fI,B.e1,new A.aW4(f,a6,a0),!0,a5,e,B.e1,k,e)
 l=l?"Cerrar sesi\xf3n":"Sair da conta"
 m.push(new A.r3(A.a([k,A.r4(a1,B.J8,B.e1,new A.aW5(f,a6),!1,a5,e,B.e1,l,e)],s),a3,e))
@@ -122377,13 +122379,14 @@ A.brq.prototype={
 $0(){return A.u7(this.a).I1()},
 $S:0}
 A.afr.prototype={
-q(a){var s,r,q,p=null,o=A.j(22),n=A.K(B.F4,B.o,1.5),m=t.V,l=A.a([new A.aH(0,B.V,B.I.j(0.55),B.lv,32),new A.aH(0,B.V,B.bG.j(0.06),B.H,40)],m),k=A.k(p,B.a9Q,B.i,p,p,B.a72,p,76,p,p,p,p,p,76),j=A.e("IA Desconectada",p,p,p,p,p,B.e3a,B.aL,p,p),i=this.d==="es"?"Por favor, haga clic en el bot\xf3n 'Conectar IA' en el men\xfa superior negro para activar las gu\xedas cl\xednicas y garantizar el funcionamiento 100% de los diagn\xf3sticos.":"Por favor, clique no bot\xe3o 'Conectar IA' localizado no menu superior preto para ativar as diretrizes cl\xednicas e garantir o funcionamento 100% dos diagn\xf3sticos."
-i=A.e(i,p,p,p,p,p,A.m(p,p,B.n.j(0.6),p,p,p,p,p,p,p,p,13,p,p,B.ac,p,1.6,!0,p,p,p,p,p,p,p,p),B.aL,p,p)
-s=t.p
-r=A.u(A.a([B.azx,B.ab,A.e("Bot\xe3o no menu acima",p,p,p,p,p,A.m(p,p,B.bG.j(0.8),p,p,p,p,p,p,p,p,11,p,p,B.R,p,p,!0,p,0.3,p,p,p,p,p,p),p,p,p)],s),B.l,B.aX,B.f,p,p)
+q(a){var s,r,q,p=null,o=this.d==="es",n=A.j(22),m=A.K(B.F4,B.o,1.5),l=t.V,k=A.a([new A.aH(0,B.V,B.I.j(0.55),B.lv,32),new A.aH(0,B.V,B.bG.j(0.06),B.H,40)],l),j=A.k(p,B.a9Q,B.i,p,p,B.a72,p,76,p,p,p,p,p,76),i=A.e("IA Desconectada",p,p,p,p,p,B.e3a,B.aL,p,p),h=o?"Por favor, haga clic en el bot\xf3n 'Conectar IA' en el men\xfa superior negro para activar las gu\xedas cl\xednicas y garantizar el funcionamiento 100% de los diagn\xf3sticos.":"Por favor, clique no bot\xe3o 'Conectar IA' localizado no menu superior preto para ativar as diretrizes cl\xednicas e garantir o funcionamento 100% dos diagn\xf3sticos."
+h=A.e(h,p,p,p,p,p,A.m(p,p,B.n.j(0.6),p,p,p,p,p,p,p,p,13,p,p,B.ac,p,1.6,!0,p,p,p,p,p,p,p,p),B.aL,p,p)
+s=o?"Bot\xf3n en el men\xfa superior":"Bot\xe3o no menu acima"
+r=t.p
+s=A.u(A.a([B.azx,B.ab,A.e(s,p,p,p,p,p,A.m(p,p,B.bG.j(0.8),p,p,p,p,p,p,p,p,11,p,p,B.R,p,p,!0,p,0.3,p,p,p,p,p,p),p,p,p)],r),B.l,B.aX,B.f,p,p)
 q=A.j(14)
-m=A.a([new A.aH(0,B.V,B.bG.j(0.3),B.di,12)],m)
-return A.bc(new A.L(B.yI,A.k(p,A.v(A.a([k,B.bS,j,B.a7,i,B.ey,r,B.aN,A.ae(p,A.k(p,A.u(A.a([B.aC0,B.M,A.e("Conectar IA Agora",p,p,p,p,p,B.e0_,p,p,p)],s),B.l,B.aX,B.f,p,p),B.i,p,p,new A.i(B.bG,p,p,q,m,p,B.k),p,p,p,p,B.eZ,p,p,1/0),B.u,!1,p,p,p,p,p,p,p,p,p,p,p,p,p,this.f,p,p,p,p,p,p)],s),B.l,B.d,B.L),B.i,p,p,new A.i(B.bh,p,n,o,l,p,B.k),p,p,p,p,B.awm,p,p,p),p),p,p)}}
+l=A.a([new A.aH(0,B.V,B.bG.j(0.3),B.di,12)],l)
+return A.bc(new A.L(B.yI,A.k(p,A.v(A.a([j,B.bS,i,B.a7,h,B.ey,s,B.aN,A.ae(p,A.k(p,A.u(A.a([B.aC0,B.M,A.e(o?"Conectar IA Ahora":"Conectar IA Agora",p,p,p,p,p,B.e0_,p,p,p)],r),B.l,B.aX,B.f,p,p),B.i,p,p,new A.i(B.bG,p,p,q,l,p,B.k),p,p,p,p,B.eZ,p,p,1/0),B.u,!1,p,p,p,p,p,p,p,p,p,p,p,p,p,this.f,p,p,p,p,p,p)],r),B.l,B.d,B.L),B.i,p,p,new A.i(B.bh,p,m,n,k,p,B.k),p,p,p,p,B.awm,p,p,p),p),p,p)}}
 A.amq.prototype={
 q(a){var s=null,r=this.d,q=r?B.Gn:B.n,p=r?B.i4:B.adk,o=r?B.ac_:B.abh,n=r?B.Gl:B.acC,m=r?B.ba:B.cv
 return A.k(s,new A.ax(s,34,A.ka(s,s,new A.bpi(this,this.c==="es",o,n,m),20,s,B.fl,s,B.b6),s),B.i,s,s,new A.i(q,s,new A.bR(new A.aw(p,1,B.o,-1),B.z,B.z,B.z),s,s,s,B.k),s,s,s,s,B.mC,s,s,s)}}
@@ -122758,7 +122761,8 @@ p=A.K(a6,B.o,1)
 o=a3?B.a5:a7
 if(a0)n="Gemini enriquece o que a base n\xe3o cobre"
 else n="IA enriquece o que a base n\xe3o cobre"
-c.push(A.k(e,A.v(A.a([new A.Fn(B.jb,B.a5,b,"Base cl\xednica sempre ativa","Protocolos e f\xe1rmacos do app respondem instantaneamente, sem internet",!1,e),B.F,new A.Fn(B.zM,o,b,n,"Perguntas fora da base s\xe3o respondidas com conhecimento m\xe9dico global",!a3,e),B.F,new A.Fn(B.Jo,a7,b,"Funciona offline","Sem internet, a base local responde normalmente",!1,e)],l),B.l,B.d,B.f),B.i,e,e,new A.i(a5,e,p,d,e,e,B.k),e,e,e,e,B.bo,e,e,e))
+m=a?"Sin internet, la base local responde normalmente":"Sem internet, a base local responde normalmente"
+c.push(A.k(e,A.v(A.a([new A.Fn(B.jb,B.a5,b,"Base cl\xednica sempre ativa","Protocolos e f\xe1rmacos do app respondem instantaneamente, sem internet",!1,e),B.F,new A.Fn(B.zM,o,b,n,"Perguntas fora da base s\xe3o respondidas com conhecimento m\xe9dico global",!a3,e),B.F,new A.Fn(B.Jo,a7,b,"Funciona offline",m,!1,e)],l),B.l,B.d,B.f),B.i,e,e,new A.i(a5,e,p,d,e,e,B.k),e,e,e,e,B.bo,e,e,e))
 c.push(B.aN)
 d=A.i4(e,e,B.a5,e,e,e,0,e,e,B.n,e,e,B.rw,e,new A.bH(A.j(14),B.z),e,e,e,e,e)
 c.push(new A.ax(1/0,e,A.ob(!1,A.e("Entendido",e,e,e,e,e,B.nU,e,e,e),e,e,e,e,e,e,new A.aV2(a9),e,d),e))
@@ -129383,8 +129387,10 @@ $R:4,
 $S:288}
 A.agC.prototype={
 awo(a){A.fv(B.U,new A.ba4(this),a,!0,!0,!0,null,!1,t.z)},
-q(a){var s=null,r=A.j(23),q=this.c,p=q?B.hx:B.aap,o=A.K(q?B.n.j(0.08):B.acS,B.o,1),n=A.T(B.e7,q?B.bg:B.xx,s,19),m=A.I(A.e("Buscar f\xe1rmaco, protocolo\u2026",s,s,s,s,s,A.m(s,s,q?B.c7:B.aeb,s,s,s,s,s,s,s,s,13.5,s,s,B.ac,s,s,!0,s,s,s,s,s,s,s,s),s,s,s),1),l=q?B.n.j(0.08):B.acY
-return A.ae(s,A.k(s,A.u(A.a([B.ex,n,B.lL,m,A.k(s,A.T(B.e7,q?B.bg:B.adI,s,15),B.i,s,s,new A.i(l,s,s,s,s,s,B.af),s,30,s,B.dE,s,s,s,30)],t.p),B.l,B.d,B.f,s,s),B.i,s,s,new A.i(p,s,o,r,s,s,B.k),s,46,s,s,s,s,s,s),B.u,!1,s,s,s,s,s,s,s,s,s,s,s,s,s,new A.ba5(this,a),s,s,s,s,s,s)}}
+q(a){var s,r=null,q=A.j(23),p=this.c,o=p?B.hx:B.aap,n=A.K(p?B.n.j(0.08):B.acS,B.o,1),m=A.T(B.e7,p?B.bg:B.xx,r,19),l=this.d?"Buscar f\xe1rmaco, protocolo\u2026":"Buscar medicamento, protocolo\u2026"
+l=A.I(A.e(l,r,r,r,r,r,A.m(r,r,p?B.c7:B.aeb,r,r,r,r,r,r,r,r,13.5,r,r,B.ac,r,r,!0,r,r,r,r,r,r,r,r),r,r,r),1)
+s=p?B.n.j(0.08):B.acY
+return A.ae(r,A.k(r,A.u(A.a([B.ex,m,B.lL,l,A.k(r,A.T(B.e7,p?B.bg:B.adI,r,15),B.i,r,r,new A.i(s,r,r,r,r,r,B.af),r,30,r,B.dE,r,r,r,30)],t.p),B.l,B.d,B.f,r,r),B.i,r,r,new A.i(o,r,n,q,r,r,B.k),r,46,r,r,r,r,r,r),B.u,!1,r,r,r,r,r,r,r,r,r,r,r,r,r,new A.ba5(this,a),r,r,r,r,r,r)}}
 A.ba4.prototype={
 $1(a){var s=this.a
 return new A.zL(s.c,s.d,null)},
@@ -131721,9 +131727,10 @@ gaur(){var s=this
 switch(s.d.a){case 0:return s.fr==="es"?"Plataforma exclusiva para profesionales":"Plataforma exclusiva para profissionais"
 case 1:return s.fr==="es"?"Acceso aprobado por el equipo MedCases":"Acesso aprovado pela equipe MedCases"
 case 2:return s.fr==="es"?"Te enviamos un enlace de recuperaci\xf3n por email":"Enviaremos um link de recupera\xe7\xe3o por e-mail"}},
-gaup(){switch(this.d.a){case 0:return this.fr==="es"?"Iniciar sesi\xf3n":"Entrar"
-case 1:return"Enviar solicita\xe7\xe3o"
-case 2:return this.fr==="es"?"Enviar enlace":"Enviar link"}}}
+gaup(){var s=this
+switch(s.d.a){case 0:return s.fr==="es"?"Iniciar sesi\xf3n":"Entrar"
+case 1:return s.fr==="es"?"Enviar solicitud":"Enviar solicita\xe7\xe3o"
+case 2:return s.fr==="es"?"Enviar enlace":"Enviar link"}}}
 A.bd5.prototype={
 $0(){var s=this,r=s.a,q=r.w=s.b
 q=s.c||q
@@ -132293,24 +132300,28 @@ return A.C($async$yR,r)},
 av3(){return this.t(new A.bhE(this))},
 aoX(){return this.t(new A.bhC(this))},
 aiM(){return this.t(new A.bhB(this))},
-q(a){var s,r,q,p,o,n=this,m=null
-if(n.d){s=n.e
+q(a){var s,r,q,p,o,n,m=this,l=null
+if(m.d){s=m.e
 if(s==null)return B.dQS
-if(!s)return A.eC(B.c6,A.a([new A.C9(n.gVE(),m),A.xN(0,new A.jV(B.I.j(0.55),m,m)),A.fr(0,new A.Ik(n.f,n.gav2(),m),m,m,0,0,m,m)],t.p),B.P,B.c3,m)
-return new A.C9(n.gVE(),m)}s=n.f==="es"
-r=n.gLX()
-q=t.p
-p=A.a([new A.agG(r,s,m),B.bS,new A.ahI(s,m),B.Cc,new A.U9("PROTOCOLOS DE ESTUDO","Para consulta e refer\xeancia educacional",B.on,B.mO,m),B.a7],q)
-B.e.u(p,new A.P(B.aF0,new A.bhG(n),t.j2))
+if(!s)return A.eC(B.c6,A.a([new A.C9(m.gVE(),l),A.xN(0,new A.jV(B.I.j(0.55),l,l)),A.fr(0,new A.Ik(m.f,m.gav2(),l),l,l,0,0,l,l)],t.p),B.P,B.c3,l)
+return new A.C9(m.gVE(),l)}s=m.f==="es"
+r=m.gLX()
+q=s?"PROTOCOLOS DE ESTUDIO":"PROTOCOLOS DE ESTUDO"
+p=s?"Para consulta y referencia educacional":"Para consulta e refer\xeancia educacional"
+o=t.p
+p=A.a([new A.agG(r,s,l),B.bS,new A.ahI(s,l),B.Cc,new A.U9(q,p,B.on,B.mO,l),B.a7],o)
+B.e.u(p,new A.P(B.aF0,new A.bhG(m),t.j2))
 p.push(B.ey)
-p.push(new A.U9("ALTA GRAVIDADE",n.f==="es"?"Casos de m\xe1xima urgencia cl\xednica":"Casos de m\xe1xima urg\xeancia cl\xednica",B.kG,B.e8,m))
+q=m.f==="es"
+n=q?"ALTA GRAVEDAD":"ALTA GRAVIDADE"
+p.push(new A.U9(n,q?"Casos de m\xe1xima urgencia cl\xednica":"Casos de m\xe1xima urg\xeancia cl\xednica",B.kG,B.e8,l))
 p.push(B.a7)
-o=t.lC
-o=A.R(new A.P(B.OU,new A.bhH(n),o),o.i("am.E"))
-p.push(A.u(o,B.l,B.d,B.f,m,m))
-s=A.v(A.a([new A.aef(s,n.gaBG(),r,m),A.I(A.oq(p,m,B.avC,m,m,B.ag,!1),1)],q),B.l,B.d,B.f)
-q=n.f==="es"
-return A.j2(m,B.Es,s,new A.adV(q?"Crear mi cuenta":"Criar minha conta",r,q,m),m,m,m)}}
+n=t.lC
+q=A.R(new A.P(B.OU,new A.bhH(m),n),n.i("am.E"))
+p.push(A.u(q,B.l,B.d,B.f,l,l))
+s=A.v(A.a([new A.aef(s,m.gaBG(),r,l),A.I(A.oq(p,l,B.avC,l,l,B.ag,!1),1)],o),B.l,B.d,B.f)
+q=m.f==="es"
+return A.j2(l,B.Es,s,new A.adV(q?"Crear mi cuenta":"Criar minha conta",r,q,l),l,l,l)}}
 A.bhD.prototype={
 $0(){var s=this.a
 s.f=this.b
@@ -132377,7 +132388,7 @@ s=A.u(A.a([j,B.bf,h,A.k(p,A.u(A.a([A.k(p,p,B.i,p,p,B.DU,p,5,p,p,p,p,p,5),B.c2,B.
 q=A.j(8)
 r=A.K(B.dO.j(0.12),B.o,0.8)
 h=A.k(p,p,B.i,p,p,B.DU,p,5,p,p,p,p,p,5)
-j=A.u(A.a([h,B.ab,A.e("Refer\xeancia educacional:",p,p,p,p,p,B.e0p,p,p,p)],g),B.l,B.d,B.f,p,p)
+j=A.u(A.a([h,B.ab,A.e(i?"Referencia educacional:":"Refer\xeancia educacional:",p,p,p,p,p,B.e0p,p,p,p)],g),B.l,B.d,B.f,p,p)
 j=A.k(p,A.v(A.a([j,B.a2t,A.e(i?"Estudio de referencia: vasopresores en shock circulatorio \u2014 mecanismo de acci\xf3n, rangos de dosis seg\xfan literatura y monitoreo hemodin\xe1mico...":"Refer\xeancia de estudo: vasopressores no choque circulat\xf3rio \u2014 mecanismo de a\xe7\xe3o, faixas de dose conforme literatura e monitoramento hemodin\xe2mico...",p,3,B.a_,p,p,B.dYr,p,p,p)],g),B.r,B.d,B.f),B.i,p,p,new A.i(B.x1,p,r,q,p,p,B.k),p,p,p,p,B.bk,p,p,p)
 h=t.LA
 i=A.R(new A.P(B.aMh,new A.ba6(this),h),h.i("am.E"))
@@ -132391,8 +132402,9 @@ $1(a){var s=null,r=A.j(5),q=A.K(B.dO.j(0.15),B.o,0.8)
 return A.ae(s,A.k(s,A.e(a,s,s,s,s,s,B.e2l,s,s,s),B.i,s,s,new A.i(B.x1,s,q,r,s,s,B.k),s,s,s,B.dE,B.j6,s,s,s),B.u,!1,s,s,s,s,s,s,s,s,s,s,s,s,s,this.a.c,s,s,s,s,s,s)},
 $S:101}
 A.ahI.prototype={
-q(a){var s=null,r=A.I(new A.Sw(B.f1,B.Ex,"+2.400","Refer\xeancias M\xe9dicas","Para estudo cl\xednico",B.az3,s),1)
-return A.u(A.a([r,B.a2,A.I(new A.Sw(B.k1,B.Ex,"100%","Revisado","Por especialistas",B.Jk,s),1)],t.p),B.l,B.d,B.f,s,s)}}
+q(a){var s=null,r=this.c,q=r?"Referencias M\xe9dicas":"Refer\xeancias M\xe9dicas"
+q=A.I(new A.Sw(B.f1,B.Ex,"+2.400",q,r?"Para estudio cl\xednico":"Para estudo cl\xednico",B.az3,s),1)
+return A.u(A.a([q,B.a2,A.I(new A.Sw(B.k1,B.Ex,"100%","Revisado","Por especialistas",B.Jk,s),1)],t.p),B.l,B.d,B.f,s,s)}}
 A.Sw.prototype={
 q(a){var s,r=this,q=null,p=A.j(12),o=A.K(B.dO.j(0.15),B.o,0.9),n=t.V,m=A.a([new A.aH(0,B.V,B.dO.j(0.1),B.bX,16)],n),l=A.K(B.dO.j(0.22),B.o,1)
 n=A.a([new A.aH(0,B.V,B.dO.j(0.14),B.H,8)],n)
@@ -134618,8 +134630,9 @@ j=A.v(A.a([j,B.ay,i,B.O,new A.h8(m?"PAM = (PAS + 2\xd7PAD)/3. Meta sepsis: \u226
 i=m?"Gasto Card\xedaco":"D\xe9bito Card\xedaco"
 s=A.I(new A.e0("FC (bpm)",o.f,new A.aYR(o),"80",n),1)
 s=A.u(A.a([s,B.a2,A.I(new A.e0("Vol Sist\xf3lico (mL)",o.r,new A.aYS(o),"70",n),1)],k),B.l,B.d,B.f,n,n)
-r=o.gakJ()
-s=A.v(A.a([s,B.ay,new A.eb("D\xe9bito Card\xedaco (DC = FC \xd7 VS)",r,"L/min","Normal: 4\u20138 L/min. Baixo: <4 L/min (choque de baixo d\xe9bito)",!0,n)],k),B.l,B.d,B.f)
+r=m?"Gasto Card\xedaco (GC = FC \xd7 VS)":"D\xe9bito Card\xedaco (DC = FC \xd7 VS)"
+q=o.gakJ()
+s=A.v(A.a([s,B.ay,new A.eb(r,q,"L/min",m?"Normal: 4\u20138 L/min. Bajo: <4 L/min (choque de bajo gasto)":"Normal: 4\u20138 L/min. Baixo: <4 L/min (choque de baixo d\xe9bito)",!0,n)],k),B.l,B.d,B.f)
 r=A.I(new A.e0("QT medido (ms)",o.w,new A.aYT(o),"400",n),1)
 r=A.u(A.a([r,B.a2,A.I(new A.e0("Intervalo RR (ms)",o.x,new A.aYU(o),"800",n),1)],k),B.l,B.d,B.f,n,n)
 q=o.ga_Y()
@@ -134907,24 +134920,24 @@ T(){return new A.akj()}}
 A.akj.prototype={
 q(a){var s=null,r=A.bq(a,!0,t.C).c,q=B.n.j(0.08)
 return A.v(A.a([A.k(s,A.cL(A.u(A.hf(5,new A.bjQ(this),!0,t.n),B.l,B.d,B.f,s,s),s,B.u,s,B.mF,s,B.b6),B.i,s,s,new A.i(B.Et,s,new A.bR(B.z,B.z,new A.aw(q,1,B.o,-1),B.z),s,s,s,B.k),s,s,s,s,s,s,s,s),A.I(A.cL(this.ajA(r==="es"),s,B.u,s,B.avB,s,B.ag),1)],t.p),B.l,B.d,B.f)},
-ajA(a){var s,r,q,p,o,n,m,l,k,j,i=null,h="Leuc\xf3citos",g="/mm\xb3",f="mg/dL",e="Negativo",d="A-a \u2191, responde a O2"
+ajA(a){var s,r,q,p,o,n,m,l,k,j,i,h=null,g="Leuc\xf3citos",f="/mm\xb3",e="mg/dL",d="Negativo",c="A-a \u2191, responde a O2"
 switch(this.d){case 0:s=a?"Los valores de referencia pueden variar seg\xfan el laboratorio y la poblaci\xf3n.":"Os valores de refer\xeancia podem variar conforme o laborat\xf3rio e a popula\xe7\xe3o."
 r=a?"<50k riesgo sangrado":"<50k risco sangrado"
 q=a?">14,5%: anemia carencial":">14,5% anemia carencial"
 p=t._s
-q=A.a([new A.dD("Hemoglobina","H: 13,5\u201317,5","M: 12,0\u201315,5","g/dL",B.dy),new A.dD("Hemat\xf3crito","H: 41\u201353","M: 36\u201346","%",B.dy),new A.dD(h,"4.000\u201311.000","",g,B.dy),new A.dD("Neutr\xf3filos","1.500\u20137.700",">70% \u2192 sepse?",g,B.hl),new A.dD("Linf\xf3citos","1.000\u20134.800","<1000 linfopenia",g,B.dy),new A.dD("Plaquetas","150k\u2013400k",r,g,B.hl),new A.dD("VCM","80\u2013100","<80 micro; >100 macro","fL",B.dy),new A.dD("RDW","<14,5",q,"%",B.dy)],p)
+q=A.a([new A.dD("Hemoglobina","H: 13,5\u201317,5","M: 12,0\u201315,5","g/dL",B.dy),new A.dD("Hemat\xf3crito","H: 41\u201353","M: 36\u201346","%",B.dy),new A.dD(g,"4.000\u201311.000","",f,B.dy),new A.dD("Neutr\xf3filos","1.500\u20137.700",">70% \u2192 sepse?",f,B.hl),new A.dD("Linf\xf3citos","1.000\u20134.800","<1000 linfopenia",f,B.dy),new A.dD("Plaquetas","150k\u2013400k",r,f,B.hl),new A.dD("VCM","80\u2013100","<80 micro; >100 macro","fL",B.dy),new A.dD("RDW","<14,5",q,"%",B.dy)],p)
 r=a?"<70 hipoglucemia; >126 DM":"<70 hipoglicemia; >126 DM"
 o=a?">5,5 EMERGENCIA":">5,5 EMERG\xcaNCIA"
 n=a?">5 ictericia":">5 icter\xedcia"
 m=a?">500 rastreo TEP/TVP":">500 rastreio TEP/TVP"
-m=A.a([new A.dD("Glicemia jejum","70\u201399",r,f,B.dy),new A.dD("Ureia","15\u201345",">45 azotemia",f,B.dy),new A.dD("Creatinina","H: 0,7\u20131,2","M: 0,5\u20131,0",f,B.dy),new A.dD("S\xf3dio (Na+)","135\u2013145","<135 hipo; >145 hiper","mEq/L",B.hl),new A.dD("Pot\xe1ssio (K+)","3,5\u20135,0",o,"mEq/L",B.a4s),new A.dD("C\xe1lcio total","8,5\u201310,5","<7 crise hipocalc\xeamica",f,B.hl),new A.dD("C\xe1lcio ionizado","1,1\u20131,35","<0,9 hipocalcemia","mmol/L",B.dy),new A.dD("Magn\xe9sio","1,7\u20132,2","<1,5 arritmias",f,B.hl),new A.dD("Prote\xednas totais","6,4\u20138,3","Albumina: 3,5\u20135,0 g/dL","g/dL",B.dy),new A.dD("Bilirrubina total","<1,2",n,f,B.dy),new A.dD("TGO (AST)","<40",">3\xd7 LSN hepatocelular","U/L",B.dy),new A.dD("TGP (ALT)","<41",">10\xd7 LSN hepatite aguda","U/L",B.dy),new A.dD("PCR","<0,5",">10 inflama\xe7\xe3o signif.",f,B.hl),new A.dD("Procalcitonina","<0,1",">0,5 considerar ATB; >2 bacteremia","ng/mL",B.hl),new A.dD("Lactato","<2,0",">4 cr\xedtico","mmol/L",B.a4s),new A.dD("BNP","<100 pg/mL","IC: >400 pg/mL","",B.dy),new A.dD("Troponina I","<0,04 ng/mL","SCA: \u2191 + cl\xednica","",B.hl),new A.dD("D-D\xedmero","<500",m,"ng/mL",B.hl),new A.dD("INR / TP","0,8\u20131,2",">1,5 coagulopatia","/ 11\u201314s",B.dy),new A.dD("TSH","0,3\u20134,5","<0,1 hiper; >10 hipo","mUI/L",B.dy),new A.dD("HbA1c","<5,7%","\u22656,5% = DM","",B.dy)],p)
+m=A.a([new A.dD("Glicemia jejum","70\u201399",r,e,B.dy),new A.dD("Ureia","15\u201345",">45 azotemia",e,B.dy),new A.dD("Creatinina","H: 0,7\u20131,2","M: 0,5\u20131,0",e,B.dy),new A.dD("S\xf3dio (Na+)","135\u2013145","<135 hipo; >145 hiper","mEq/L",B.hl),new A.dD("Pot\xe1ssio (K+)","3,5\u20135,0",o,"mEq/L",B.a4s),new A.dD("C\xe1lcio total","8,5\u201310,5","<7 crise hipocalc\xeamica",e,B.hl),new A.dD("C\xe1lcio ionizado","1,1\u20131,35","<0,9 hipocalcemia","mmol/L",B.dy),new A.dD("Magn\xe9sio","1,7\u20132,2","<1,5 arritmias",e,B.hl),new A.dD("Prote\xednas totais","6,4\u20138,3","Albumina: 3,5\u20135,0 g/dL","g/dL",B.dy),new A.dD("Bilirrubina total","<1,2",n,e,B.dy),new A.dD("TGO (AST)","<40",">3\xd7 LSN hepatocelular","U/L",B.dy),new A.dD("TGP (ALT)","<41",">10\xd7 LSN hepatite aguda","U/L",B.dy),new A.dD("PCR","<0,5",">10 inflama\xe7\xe3o signif.",e,B.hl),new A.dD("Procalcitonina","<0,1",">0,5 considerar ATB; >2 bacteremia","ng/mL",B.hl),new A.dD("Lactato","<2,0",">4 cr\xedtico","mmol/L",B.a4s),new A.dD("BNP","<100 pg/mL","IC: >400 pg/mL","",B.dy),new A.dD("Troponina I","<0,04 ng/mL","SCA: \u2191 + cl\xednica","",B.hl),new A.dD("D-D\xedmero","<500",m,"ng/mL",B.hl),new A.dD("INR / TP","0,8\u20131,2",">1,5 coagulopatia","/ 11\u201314s",B.dy),new A.dD("TSH","0,3\u20134,5","<0,1 hiper; >10 hipo","mUI/L",B.dy),new A.dD("HbA1c","<5,7%","\u22656,5% = DM","",B.dy)],p)
 r=a?"Urin\xe1lisis":"Urin\xe1lise"
 o=a?">5 piuria (ITU)":">5 pi\xfaria (ITU)"
 n=a?"Positivo: hiperglucemia/SGLT2":"Positivo: hiperglicemia/SGLT2"
-return A.v(A.a([new A.zn("Hemograma",B.jd,B.bs,q,s,i),B.aN,new A.zn("Bioqu\xedmica",B.de,B.d0,m,i,i),B.aN,new A.zn(r,B.ji,B.ou,A.a([new A.dD(h,"<5/campo",o,"",B.hl),new A.dD("Hem\xe1cias","<2/campo",">5 hemat\xfaria","",B.hl),new A.dD("Prote\xedna","Tra\xe7os/neg.",">300 mg/24h protein\xfaria","",B.dy),new A.dD("Glicose",e,n,"",B.dy),new A.dD("Nitrito",e,"Positivo: gram-neg (ITU)","",B.hl),new A.dD("Densidade","1,001\u20131,035","<1,005 hipost; >1,030 desidrat.","",B.dy)],p),i,i)],t.p),B.l,B.d,B.f)
+return A.v(A.a([new A.zn("Hemograma",B.jd,B.bs,q,s,h),B.aN,new A.zn("Bioqu\xedmica",B.de,B.d0,m,h,h),B.aN,new A.zn(r,B.ji,B.ou,A.a([new A.dD(g,"<5/campo",o,"",B.hl),new A.dD("Hem\xe1cias","<2/campo",">5 hemat\xfaria","",B.hl),new A.dD("Prote\xedna","Tra\xe7os/neg.",">300 mg/24h protein\xfaria","",B.dy),new A.dD("Glicose",d,n,"",B.dy),new A.dD("Nitrito",d,"Positivo: gram-neg (ITU)","",B.hl),new A.dD("Densidade","1,001\u20131,035","<1,005 hipost; >1,030 desidrat.","",B.dy)],p),h,h)],t.p),B.l,B.d,B.f)
 case 1:s=a?"Intervalos Normales":"Intervalos Normais"
 r=t.p
-q=A.v(A.a([new A.dX("FC","60\u2013100 bpm","<60 bradicardia; >100 taquicardia",i),new A.dX("PR","120\u2013200 ms",">200 ms = BAV 1\xb0",i),new A.dX("QRS","<120 ms",">120 ms = bloqueio de ramo",i),new A.dX("QTc","H <440 ms  M <460 ms",">500 ms = risco Torsades",i),new A.dX("Eixo","-30\xb0 a +90\xb0","Desvio E: HVE/BCRE; D: TEP/BCRD",i)],r),B.l,B.d,B.f)
+q=A.v(A.a([new A.dX("FC","60\u2013100 bpm","<60 bradicardia; >100 taquicardia",h),new A.dX("PR","120\u2013200 ms",">200 ms = BAV 1\xb0",h),new A.dX("QRS","<120 ms",">120 ms = bloqueio de ramo",h),new A.dX("QTc","H <440 ms  M <460 ms",">500 ms = risco Torsades",h),new A.dX("Eixo","-30\xb0 a +90\xb0","Desvio E: HVE/BCRE; D: TEP/BCRD",h)],r),B.l,B.d,B.f)
 p=a?"Patrones ECG Urgentes":"Padr\xf5es ECG de Urg\xeancia"
 o=a?"TV polim\xf3rfica, QTc prolongado. Causa: hipocalemia, hipoMg, QT-prolongadores. Tto: MgSO4 2g IV.":"TV polim\xf3rfica, QTc prolongado. Causa: hipocalemia, hipoMg, drogas. Tto: MgSO4 2g IV."
 n=a?"Progress\xe3o: ondas T picudas \u2192 PR largo \u2192 QRS ancho \u2192 sinusoidal \u2192 FV. Gluconato Ca2+ urgente.":"Progress\xe3o: T apiculadas \u2192 PR longo \u2192 QRS largo \u2192 padr\xe3o sinusoidal \u2192 FV. Gluconato Ca2+ urgente."
@@ -134932,30 +134945,45 @@ m=a?"Ritmo irregularmente irregular, sem ondas P. CHADS2-VASc para anticoagula\x
 l=a?"TEP (patr\xf3n S1Q3T3)":"TEP (padr\xe3o S1Q3T3)"
 k=a?"BAV Total (3\xb0 grado)":"BAV Total (3\xb0 grau)"
 j=a?"Achatamiento/inversi\xf3n onda T, ondas U prominentes, QTc prolongado. KCl IV urgente si K+ <2,5.":"Achatamento/invers\xe3o onda T, ondas U proeminentes, QTc prolongado. KCl IV urgente se K+ <2,5."
-j=A.v(A.a([new A.pa("IAMCSST","Supra ST \u22651mm em \u22652 deriva\xe7\xf5es cont\xedguas (\u22652mm em V1\u2013V4). Novo BCRE. Reperfus\xe3o emergente.",B.al,i),new A.pa("Torsades de Pointes",o,B.al,i),new A.pa("Hiperpotassemia",n,B.al,i),new A.pa("Fibrila\xe7\xe3o Atrial",m,B.cK,i),new A.pa(l,"S profunda em D1, Q e T invertida em D3. Taquicardia sinusal + BCRD novo = alta suspeita.",B.cK,i),new A.pa(k,"Dissocia\xe7\xe3o AV completa. Escape juncional (FC 40\u201360) ou ventricular (FC 20\u201340). Atropina + MP urgente.",B.al,i),new A.pa("Hipocalemia",j,B.cK,i)],r),B.l,B.d,B.f)
+j=A.v(A.a([new A.pa("IAMCSST","Supra ST \u22651mm em \u22652 deriva\xe7\xf5es cont\xedguas (\u22652mm em V1\u2013V4). Novo BCRE. Reperfus\xe3o emergente.",B.al,h),new A.pa("Torsades de Pointes",o,B.al,h),new A.pa("Hiperpotassemia",n,B.al,h),new A.pa("Fibrila\xe7\xe3o Atrial",m,B.cK,h),new A.pa(l,"S profunda em D1, Q e T invertida em D3. Taquicardia sinusal + BCRD novo = alta suspeita.",B.cK,h),new A.pa(k,"Dissocia\xe7\xe3o AV completa. Escape juncional (FC 40\u201360) ou ventricular (FC 20\u201340). Atropina + MP urgente.",B.al,h),new A.pa("Hipocalemia",j,B.cK,h)],r),B.l,B.d,B.f)
 o=a?"Territorios Coronarios":"Territ\xf3rios Coron\xe1rios"
 n=a?"Arteria circunfleja":"Art\xe9ria circunflexa"
-return A.v(A.a([new A.dv(s,B.dS,q,i,i,i),new A.dv(p,B.eI,j,i,i,i),new A.dv(o,B.fJ,A.v(A.a([new A.dX("DA (anterior)","V1\u2013V4 + aVL","ADA: paredes anterior e septal",i),new A.dX("Cx (lateral)","I, aVL, V5\u2013V6",n,i),new A.dX("CD (inferior)","II, III, aVF","Considerar IAM VD: V3R-V4R",i),new A.dX("Posterior","V7\u2013V9 (espelho V1-V3)","Infra ST anterior = supra posterior",i)],r),B.l,B.d,B.f),i,i,i)],r),B.l,B.d,B.f)
+m=a?"V7\u2013V9 (espejo V1-V3)":"V7\u2013V9 (espelho V1-V3)"
+return A.v(A.a([new A.dv(s,B.dS,q,h,h,h),new A.dv(p,B.eI,j,h,h,h),new A.dv(o,B.fJ,A.v(A.a([new A.dX("DA (anterior)","V1\u2013V4 + aVL","ADA: paredes anterior e septal",h),new A.dX("Cx (lateral)","I, aVL, V5\u2013V6",n,h),new A.dX("CD (inferior)","II, III, aVF","Considerar IAM VD: V3R-V4R",h),new A.dX("Posterior",m,"Infra ST anterior = supra posterior",h)],r),B.l,B.d,B.f),h,h,h)],r),B.l,B.d,B.f)
 case 2:return this.aj8(a)
 case 3:s=a?"Cat\xe9ter Venoso Central \u2014 Localizaci\xf3n":"Acesso Venoso Central \u2014 Localiza\xe7\xe3o"
 r=t.p
-q=A.v(A.a([new A.Ee("Jugular Interna D","F\xe1cil, baixo PTX, pulm\xe3o D maior","Art\xe9ria car\xf3tida pr\xf3xima",i),new A.Ee("Subcl\xe1vio","Confort\xe1vel, baixa infec\xe7\xe3o","Alto risco PTX, hemot\xf3rax",i),new A.Ee("Femoral","F\xe1cil, r\xe1pido, sem PTX","Alta infec\xe7\xe3o, TVP, n\xe3o ideal PCR",i),B.O,new A.h8("Confirmar posi\xe7\xe3o com Rx t\xf3rax antes de usar. Ponta ideal: jun\xe7\xe3o cava superior-\xe1trio direito. Eco point-of-care facilita.",i)],r),B.l,B.d,B.f)
+q=A.v(A.a([new A.Ee("Jugular Interna D","F\xe1cil, baixo PTX, pulm\xe3o D maior","Art\xe9ria car\xf3tida pr\xf3xima",h),new A.Ee("Subcl\xe1vio","Confort\xe1vel, baixa infec\xe7\xe3o","Alto risco PTX, hemot\xf3rax",h),new A.Ee("Femoral","F\xe1cil, r\xe1pido, sem PTX","Alta infec\xe7\xe3o, TVP, n\xe3o ideal PCR",h),B.O,new A.h8("Confirmar posi\xe7\xe3o com Rx t\xf3rax antes de usar. Ponta ideal: jun\xe7\xe3o cava superior-\xe1trio direito. Eco point-of-care facilita.",h)],r),B.l,B.d,B.f)
 p=a?"Tama\xf1o de Cat\xe9ter por Situaci\xf3n":"Calibre de Cateter por Situa\xe7\xe3o"
 o=a?"Prefetir subcl\xe1via/jugular interna":"Preferir subcl\xe1via/jugular interna"
 n=a?"Introdutor = fluxo m\xe1ximo":"Introdutor = maior fluxo"
-o=A.v(A.a([new A.dX("Ressuscita\xe7\xe3o","14\u201316 G perif\xe9rico","2 acessos curtos e grossos > 1 central",i),new A.dX("Vasopressor","CVC (3 lumens)",o,i),new A.dX("Transfus\xe3o r\xe1pida","14\u201316 G + introdutor 8,5Fr",n,i),new A.dX("Nutri\xe7\xe3o parenteral","PICC ou CVC","Osmolaridade > 900 mOsm = central",i),new A.dX("Hemodi\xe1lise","Cateter duplo-l\xfamen 11\u201313Fr","Jugular D > femoral > subcl\xe1via",i)],r),B.l,B.d,B.f)
+o=A.v(A.a([new A.dX("Ressuscita\xe7\xe3o","14\u201316 G perif\xe9rico","2 acessos curtos e grossos > 1 central",h),new A.dX("Vasopressor","CVC (3 lumens)",o,h),new A.dX("Transfus\xe3o r\xe1pida","14\u201316 G + introdutor 8,5Fr",n,h),new A.dX("Nutri\xe7\xe3o parenteral","PICC ou CVC","Osmolaridade > 900 mOsm = central",h),new A.dX("Hemodi\xe1lise","Cateter duplo-l\xfamen 11\u201313Fr","Jugular D > femoral > subcl\xe1via",h)],r),B.l,B.d,B.f)
 n=a?"Presiones de Referencia \u2014 Invasivo":"Press\xf5es de Refer\xeancia \u2014 Invasivo"
-return A.v(A.a([new A.dv(s,B.zM,q,i,i,i),new A.dv(p,B.ayr,o,i,i,i),new A.dv(n,B.mZ,A.v(A.a([new A.dX("PAM","70\u2013105 mmHg","Meta \u226565 no choque",i),new A.dX("PVC","2\u20138 mmHg","Isolado pouco confi\xe1vel",i),new A.dX("PCP (wedge)","6\u201312 mmHg",">18 = sobrecarga; <6 = hipovolemia",i),new A.dX("DC","4\u20138 L/min","IC: 2,5\u20134,0 L/min/m\xb2",i),new A.dX("RVSP","<30 mmHg",">35 = hipertens\xe3o pulmonar",i),new A.dX("SvO2","65\u201375%","<65% = extra\xe7\xe3o aumentada (baixo DC)",i)],r),B.l,B.d,B.f),i,i,i)],r),B.l,B.d,B.f)
+return A.v(A.a([new A.dv(s,B.zM,q,h,h,h),new A.dv(p,B.ayr,o,h,h,h),new A.dv(n,B.mZ,A.v(A.a([new A.dX("PAM","70\u2013105 mmHg","Meta \u226565 no choque",h),new A.dX("PVC","2\u20138 mmHg","Isolado pouco confi\xe1vel",h),new A.dX("PCP (wedge)","6\u201312 mmHg",">18 = sobrecarga; <6 = hipovolemia",h),new A.dX("DC","4\u20138 L/min","IC: 2,5\u20134,0 L/min/m\xb2",h),new A.dX("RVSP","<30 mmHg",">35 = hipertens\xe3o pulmonar",h),new A.dX("SvO2","65\u201375%","<65% = extra\xe7\xe3o aumentada (baixo DC)",h)],r),B.l,B.d,B.f),h,h,h)],r),B.l,B.d,B.f)
 case 4:s=a?"Valores Normales \u2014 GAS Arterial":"Valores Normais \u2014 GAS Arterial"
-r=t.p
-q=A.v(A.a([new A.dX("pH","7,35\u20137,45","<7,35=acidose; >7,45=alcalose",i),new A.dX("PaCO2","35\u201345 mmHg","<35=alcalose resp; >45=acidose resp",i),new A.dX("PaO2","80\u2013100 mmHg","<80 hipoxemia (ar ambiente)",i),new A.dX("HCO3","22\u201326 mEq/L","<22=acidose met; >26=alcalose met",i),new A.dX("BE","-2 a +2 mEq/L","<-2=d\xe9ficit base; >+2=excesso base",i),new A.dX("SpO2","95\u2013100%","<90% = hipoxemia cl\xednica",i),new A.dX("PaO2/FiO2",">400","<300=SRAG leve; <200=moderado; <100=grave",i),new A.dX("Lactato","<2 mmol/L",">2=hipoperfus\xe3o; >4=choque metab\xf3lico",i)],r),B.l,B.d,B.f)
-p=a?"Algoritmo de Gasometr\xeda (4 pasos)":"Algoritmo de Gasometria (4 passos)"
-o=a?"Acid.met: PaCO2 = 1,5\xd7HCO3 + 8 \xb12 (Winter)\nAlc.met: PaCO2 aumenta 0,7 por cada 1 mEq/L HCO3\nAcid.resp aguda: HCO3 sobe 1 por cada 10 mmHg PaCO2\nAcid.resp cr\xf4nica: HCO3 sobe 3,5 por cada 10 mmHg":"Acid.met: PaCO2 = 1,5\xd7HCO3 + 8 \xb12 (Winter)\nAlc.met: PaCO2 \u2191 0,7 por cada 1 mEq/L HCO3\nAcid.resp aguda: HCO3 \u2191 1 por cada 10 mmHg PaCO2\nAcid.resp cr\xf4nica: HCO3 \u2191 3,5 por cada 10 mmHg"
-n=a?"AG = Na \u2013 (Cl + HCO3). Normal: 8\u201312. >12 = AG elevado (MUDPILES).\nMUDPILES: Metanol, Uremia, DKA, Propileno, Isoniazida, Lactato, Etilenoglicol, Salicilato":"AG = Na \u2013 (Cl + HCO3). Normal: 8\u201312. >12 = AG elevado (MUDPILES).\nMUDPILES: Metanol, Uremia, CAD, Propileno, Isoniazida, Lactato, Etilenoglicol, Salicilato"
-n=A.v(A.a([new A.zU("1","pH: \xe1cido (<7,35) ou alcalino (>7,45)?","",i),new A.zU("2","Dist\xfarbio prim\xe1rio: PaCO2 ou HCO3?","pH\u2193+PaCO2\u2191=acid.resp | pH\u2193+HCO3\u2193=acid.met\npH\u2191+PaCO2\u2193=alc.resp | pH\u2191+HCO3\u2191=alc.met",i),new A.zU("3","Compensa\xe7\xe3o adequada?",o,i),new A.zU("4","Anion Gap (se acidose met)",n,i)],r),B.l,B.d,B.f)
-o=a?"BNZ, opioides, miastenia":"BZD, opioides, miastenia"
+r=a?"<7,35=acidosis; >7,45=alcalosis":"<7,35=acidose; >7,45=alcalose"
+q=a?"<35=alcalosis resp; >45=acidosis resp":"<35=alcalose resp; >45=acidose resp"
+p=a?"<80 hipoxemia (aire ambiente)":"<80 hipoxemia (ar ambiente)"
+o=a?"<22=acidosis met; >26=alcalosis met":"<22=acidose met; >26=alcalose met"
+n=a?"<-2=d\xe9ficit de base; >+2=exceso de base":"<-2=d\xe9ficit base; >+2=excesso base"
+m=a?"<300=SDRA leve; <200=moderado; <100=grave":"<300=SRAG leve; <200=moderado; <100=grave"
+l=a?">2=hipoperfusi\xf3n; >4=choque metab\xf3lico":">2=hipoperfus\xe3o; >4=choque metab\xf3lico"
+k=t.p
+l=A.v(A.a([new A.dX("pH","7,35\u20137,45",r,h),new A.dX("PaCO2","35\u201345 mmHg",q,h),new A.dX("PaO2","80\u2013100 mmHg",p,h),new A.dX("HCO3","22\u201326 mEq/L",o,h),new A.dX("BE","-2 a +2 mEq/L",n,h),new A.dX("SpO2","95\u2013100%","<90% = hipoxemia cl\xednica",h),new A.dX("PaO2/FiO2",">400",m,h),new A.dX("Lactato","<2 mmol/L",l,h)],k),B.l,B.d,B.f)
+r=a?"Algoritmo de Gasometr\xeda (4 pasos)":"Algoritmo de Gasometria (4 passos)"
+q=a?"pH: \xe1cido (<7,35) o alcalino (>7,45)?":"pH: \xe1cido (<7,35) ou alcalino (>7,45)?"
+p=a?"Trastorno primario: PaCO2 o HCO3?":"Dist\xfarbio prim\xe1rio: PaCO2 ou HCO3?"
+o=a?"\xbfCompensaci\xf3n adecuada?":"Compensa\xe7\xe3o adequada?"
+n=a?"Acid.met: PaCO2 = 1,5\xd7HCO3 + 8 \xb12 (Winter)\nAlc.met: PaCO2 \u2191 0,7 por cada 1 mEq/L HCO3\nAcid.resp aguda: HCO3 \u2191 1 por cada 10 mmHg PaCO2\nAcid.resp cr\xf3nica: HCO3 \u2191 3,5 por cada 10 mmHg":"Acid.met: PaCO2 = 1,5\xd7HCO3 + 8 \xb12 (Winter)\nAlc.met: PaCO2 \u2191 0,7 por cada 1 mEq/L HCO3\nAcid.resp aguda: HCO3 \u2191 1 por cada 10 mmHg PaCO2\nAcid.resp cr\xf4nica: HCO3 \u2191 3,5 por cada 10 mmHg"
+m=a?"Anion Gap (si acidosis met.)":"Anion Gap (se acidose met)"
+q=A.v(A.a([new A.zU("1",q,"",h),new A.zU("2",p,"pH\u2193+PaCO2\u2191=acid.resp | pH\u2193+HCO3\u2193=acid.met\npH\u2191+PaCO2\u2193=alc.resp | pH\u2191+HCO3\u2191=alc.met",h),new A.zU("3",o,n,h),new A.zU("4",m,"AG = Na \u2013 (Cl + HCO3). Normal: 8\u201312. >12 = AG elevado (MUDPILES).\nMUDPILES: Metanol, Uremia, CAD, Propileno, Isoniazida, Lactato, Etilenoglicol, Salicilato",h)],k),B.l,B.d,B.f)
+p=a?"Hipoventilaci\xf3n":"Hipoventila\xe7\xe3o"
+o=a?"A-a \u2191, NO responde a O2":"A-a \u2191, N\xc3O responde a O2"
+n=a?"SDRA, neumonia lobar, atelectasia":"SARA, pneumonia lobar, atelectasia"
 m=a?"Difusi\xf3n":"Difus\xe3o"
-return A.v(A.a([new A.dv(s,B.cP,q,i,i,i),new A.dv(p,B.axJ,n,i,i,i),new A.dv("Causas de Hipoxemia",B.ayk,A.v(A.a([new A.dX("Hipoventila\xe7\xe3o","PaCO2 \u2191, A-a normal",o,i),new A.dX("V/Q mismatch",d,"DPOC, asma, TEP",i),new A.dX("Shunt","A-a \u2191, N\xc3O responde a O2","SARA, pneumonia lobar, atelectasia",i),new A.dX(m,d,"Fibrose pulmonar",i),B.az,new A.h8("Gradiente A-a = PAO2 \u2013 PaO2. PAO2 = FiO2\xd7(Patm\u2013PH2O) \u2013 PaCO2/0,8. Normal: <10 jovem; <25 idoso.",i)],r),B.l,B.d,B.f),i,i,i)],r),B.l,B.d,B.f)
+j=a?"Fibrosis pulmonar":"Fibrose pulmonar"
+i=a?"Gradiente A-a = PAO2 \u2013 PaO2. PAO2 = FiO2\xd7(Patm\u2013PH2O) \u2013 PaCO2/0,8. Normal: <10 joven; <25 anciano.":"Gradiente A-a = PAO2 \u2013 PaO2. PAO2 = FiO2\xd7(Patm\u2013PH2O) \u2013 PaCO2/0,8. Normal: <10 jovem; <25 idoso."
+return A.v(A.a([new A.dv(s,B.cP,l,h,h,h),new A.dv(r,B.axJ,q,h,h,h),new A.dv("Causas de Hipoxemia",B.ayk,A.v(A.a([new A.dX(p,"PaCO2 \u2191, A-a normal","BZD, opioides, miastenia",h),new A.dX("V/Q mismatch",c,"DPOC, asma, TEP",h),new A.dX("Shunt",o,n,h),new A.dX(m,c,j,h),B.az,new A.h8(i,h)],k),B.l,B.d,B.f),h,h,h)],k),B.l,B.d,B.f)
 default:return B.vK}},
 aj8(a1){var s,r,q,p,o,n,m,l,k,j,i,h,g,f,e,d,c,b="Gluconato de C\xe1lcio",a=a1?"150 mg/kg IV em 60 min, depois 50 mg/kg em 4h, depois 100 mg/kg em 16h. Usar nomograma Rumack-Matthew.":"150 mg/kg IV em 60 min, depois 50 mg/kg em 4h, depois 100 mg/kg em 16h. Nomograma Rumack-Matthew.",a0=t.s
 a=A.a(["Paracetamol","N-Acetilciste\xedna",a,"MOD"],a0)
