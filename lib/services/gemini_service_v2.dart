@@ -1112,10 +1112,20 @@ class GeminiServiceV2 {
   // 'text' mesmo após _systemPromptPrefix BLOCOS 0/1 e os 6 filtros JSON.
   // Chamado por _extractText() para cada part aceito pelos 6 filtros JSON.
   //
-  // Padrões cobertos:
-  //   • Frases de chain-of-thought em inglês (observadas em produção)
-  //   • Tags de bloco de raciocínio (XML/bracket style)
-  //   • Indicadores de scratchpad
+  // CALIBRAÇÃO v5.1 (Build 93) — falso-positivo crítico corrigido:
+  //   'i should' e 'i need to' removidos. Eram substrings ambíguas que
+  //   apareciam em citações de diretrizes médicas legítimas, ex:
+  //     "potassium levels above 6.5 mEq/L — i need to start treatment"
+  //     "guidelines suggest i should consider calcium gluconate first"
+  //   Causavam corte abrupto do stream no meio de respostas clínicas válidas.
+  //   A proteção dessas frases é suficientemente coberta pelo BLOCO 0 do
+  //   _systemPromptPrefix (instrução direta ao modelo, camada B).
+  //
+  // Padrões mantidos — longos, explícitos e inequívocos:
+  //   • 'the user is asking' / 'the user wants' → meta-comentário de intent
+  //   • '<thinking>'                            → tag XML de CoT explícita
+  //   • '[análise_interna]' / '[revisão_interna]' → tags bracket de CoT
+  //   • 'scratchpad'                            → rascunho interno explícito
   //
   // Retorna true → part descartado (não chega à UI).
   // Retorna false → part seguro para exibição.
@@ -1124,8 +1134,6 @@ class GeminiServiceV2 {
     final lower = text.toLowerCase();
     return lower.contains('the user is asking') ||
         lower.contains('the user wants') ||
-        lower.contains('i should') ||
-        lower.contains('i need to') ||
         lower.contains('<thinking>') ||
         lower.contains('[análise_interna]') ||
         lower.contains('[revisão_interna]') ||
