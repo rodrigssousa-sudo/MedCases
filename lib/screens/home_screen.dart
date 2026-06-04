@@ -1048,7 +1048,9 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
     final subText     = dark ? Colors.white38 : const Color(0xFF8BA898);
     final displayAnswer = (_thinking && _streaming.isNotEmpty) ? _streaming : _lastAnswer;
 
-    return Container(
+    return ConstrainedBox(
+      constraints: const BoxConstraints(minHeight: 220),
+      child: Container(
       decoration: BoxDecoration(
         color: cardBg,
         borderRadius: BorderRadius.circular(20),
@@ -1061,9 +1063,9 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
               ],
       ),
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(16, 18, 16, 16),
+        padding: const EdgeInsets.fromLTRB(16, 14, 16, 14),
         child: Column(
-          mainAxisSize: MainAxisSize.min,
+          mainAxisSize: MainAxisSize.max,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
 
@@ -1120,10 +1122,9 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
               ),
           ]),
 
-          const SizedBox(height: 14),
-
           // ── Área de conversa inline ────────────────────────────────────────
           if (_lastQuestion.isNotEmpty || _thinking) ...[
+            const SizedBox(height: 10),
             // Bolha usuário
             Align(
               alignment: Alignment.centerRight,
@@ -1214,8 +1215,11 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
                 ),
               ]),
 
-            const SizedBox(height: 12),
+            const SizedBox(height: 10),
           ],
+
+          // Spacer empurra input+chips para o fundo (estilo WhatsApp)
+          const Spacer(),
 
           // ── Campo de entrada ───────────────────────────────────────────────
           Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
@@ -1270,7 +1274,7 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
             ),
           ]),
 
-          const SizedBox(height: 12),
+          const SizedBox(height: 10),
 
           // ── Chips ──────────────────────────────────────────────────────────
           SingleChildScrollView(
@@ -1294,6 +1298,7 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
           ),
         ]),
       ),
+    ),
     );
   }
 }
@@ -3206,9 +3211,9 @@ class _HomeCardState extends State<_HomeCard>
         scale: _scale,
         child: Container(
           width: double.infinity,
-          height: 88,
+          height: 76,
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(22),
+            borderRadius: BorderRadius.circular(16),
             gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
@@ -3222,15 +3227,9 @@ class _HomeCardState extends State<_HomeCard>
             ),
             boxShadow: [
               BoxShadow(
-                color: widget.gradientColors[2].withValues(alpha: 0.40),
-                blurRadius: 20,
-                offset: const Offset(0, 8),
-                spreadRadius: -2,
-              ),
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.15),
-                blurRadius: 8,
-                offset: const Offset(0, 2),
+                color: widget.gradientColors.last.withValues(alpha: 0.35),
+                blurRadius: 12,
+                offset: const Offset(0, 4),
               ),
             ],
             border: Border.all(
@@ -3238,98 +3237,60 @@ class _HomeCardState extends State<_HomeCard>
               width: 1.0,
             ),
           ),
-          child: Stack(
-            children: [
-              // Fundo decorativo — círculo de luz
-              Positioned(
-                right: -20,
-                top: -20,
-                child: Container(
-                  width: 110,
-                  height: 110,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: widget.accentColor.withValues(alpha: 0.07),
-                  ),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+            child: Row(children: [
+              // Ícone
+              Container(
+                width: 34,
+                height: 34,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: widget.accentColor.withValues(alpha: 0.15),
+                ),
+                child: Icon(
+                  widget.icon,
+                  size: 18,
+                  color: widget.accentColor,
                 ),
               ),
-              Positioned(
-                right: 10,
-                bottom: -30,
-                child: Container(
-                  width: 80,
-                  height: 80,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: widget.accentColor.withValues(alpha: 0.04),
-                  ),
-                ),
-              ),
+              const SizedBox(width: 10),
 
-              // Conteúdo
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
-                child: Row(children: [
-                  // Ícone
-                  Container(
-                    width: 48,
-                    height: 48,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(14),
-                      color: widget.accentColor.withValues(alpha: 0.14),
-                      border: Border.all(
-                        color: widget.accentColor.withValues(alpha: 0.25),
-                        width: 1.0,
+              // Textos
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      widget.label,
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w900,
+                        letterSpacing: 0.4,
+                        color: widget.accentColor,
                       ),
                     ),
-                    child: Icon(
-                      widget.icon,
-                      size: 24,
-                      color: widget.accentColor,
+                    const SizedBox(height: 2),
+                    Text(
+                      widget.subtitle,
+                      style: TextStyle(
+                        fontSize: 9.5,
+                        color: Colors.white.withValues(alpha: 0.55),
+                      ),
+                      overflow: TextOverflow.ellipsis,
                     ),
-                  ),
-                  const SizedBox(width: 16),
-
-                  // Textos
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          widget.label,
-                          style: TextStyle(
-                            fontSize: 19,
-                            fontWeight: FontWeight.w900,
-                            color: Colors.white.withValues(alpha: 0.97),
-                            letterSpacing: -0.3,
-                            height: 1.1,
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          widget.subtitle,
-                          style: TextStyle(
-                            fontSize: 11,
-                            fontWeight: FontWeight.w500,
-                            color: Colors.white.withValues(alpha: 0.55),
-                            letterSpacing: 0.1,
-                          ),
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  // Seta
-                  Icon(
-                    Icons.arrow_forward_ios_rounded,
-                    size: 14,
-                    color: Colors.white.withValues(alpha: 0.30),
-                  ),
-                ]),
+                  ],
+                ),
               ),
-            ],
+
+              // Seta
+              Icon(
+                Icons.chevron_right_rounded,
+                size: 16,
+                color: widget.accentColor.withValues(alpha: 0.6),
+              ),
+            ]),
           ),
         ),
       ),
