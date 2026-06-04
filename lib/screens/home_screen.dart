@@ -895,7 +895,7 @@ class _SearchResultTile extends StatelessWidget {
     return Column(
       children: [
         InkWell(
-          onTap: onTap,
+          onTap: () { AppHaptics.selection(context); onTap(); },
           borderRadius: BorderRadius.circular(10),
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 10),
@@ -1312,7 +1312,10 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
                 builder: (_, val, __) {
                   final isEmpty = val.text.trim().isEmpty;
                   return GestureDetector(
-                    onTap: _thinking ? null : _onSendPressed,
+                    onTap: _thinking ? null : () {
+                      AppHaptics.light(context);
+                      _onSendPressed();
+                    },
                     child: AnimatedContainer(
                       duration: const Duration(milliseconds: 200),
                       width: 40, height: 40,
@@ -1353,7 +1356,7 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
               physics: const BouncingScrollPhysics(),
               child: Row(
                 children: chips.map((chip) => GestureDetector(
-                  onTap: _thinking ? null : () => _send(chip),
+                  onTap: _thinking ? null : () { AppHaptics.selection(context); _send(chip); },
                   child: Container(
                     margin: const EdgeInsets.only(right: 7),
                     padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 5),
@@ -1741,7 +1744,7 @@ class _HomeIaCardState extends State<_HomeIaCard> {
                 ),
                 const SizedBox(width: 10),
                 GestureDetector(
-                  onTap: () => _navigate(),
+                  onTap: () { AppHaptics.light(context); _navigate(); },
                   child: Container(
                     width: 38, height: 38,
                     margin: const EdgeInsets.only(bottom: 4),
@@ -1773,7 +1776,7 @@ class _HomeIaCardState extends State<_HomeIaCard> {
               physics: const BouncingScrollPhysics(),
               child: Row(
                 children: chips.map((chip) => GestureDetector(
-                  onTap: () => _navigate(chip),
+                  onTap: () { AppHaptics.selection(context); _navigate(chip); },
                   child: Container(
                     margin: const EdgeInsets.only(right: 7),
                     padding: const EdgeInsets.symmetric(
@@ -1887,7 +1890,7 @@ class _AgeCardState extends State<_AgeCard> with SingleTickerProviderStateMixin 
   Widget build(BuildContext context) {
     final g = widget.gradientColors;
     return GestureDetector(
-      onTapDown:    (_) => _ctrl.forward(),
+      onTapDown:    (_) { _ctrl.forward(); AppHaptics.light(context); },
       onTapUp:      (_) { _ctrl.reverse(); widget.onTap(); },
       onTapCancel:  ()  => _ctrl.reverse(),
       child: ScaleTransition(
@@ -2164,7 +2167,7 @@ class _HomeCardHalfState extends State<_HomeCardHalf>
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTapDown:   (_) => _ctrl.forward(),
+      onTapDown:   (_) { _ctrl.forward(); AppHaptics.light(context); },
       onTapUp:     (_) { _ctrl.reverse(); widget.onTap(); },
       onTapCancel: ()  => _ctrl.reverse(),
       child: ScaleTransition(
@@ -2785,7 +2788,7 @@ class _QuickShortcuts extends StatelessWidget {
           final item = items[i ~/ 2];
           return Expanded(
             child: GestureDetector(
-              onTap: item.onTap,
+              onTap: () { AppHaptics.selection(context); item.onTap(); },
               behavior: HitTestBehavior.opaque,
               child: Padding(
                 padding: const EdgeInsets.symmetric(vertical: 14),
@@ -3011,6 +3014,7 @@ class _RecentesSheetState extends State<_RecentesSheet> {
                                 size: 18,
                                 color: dark ? Colors.white24 : const Color(0xFFCBD5E0)),
                             onTap: () {
+                              AppHaptics.selection(context);
                               Navigator.pop(context);
                               if (isProtocol) {
                                 openProtocolById(ctx, id);
@@ -3364,7 +3368,7 @@ class _HomeCardState extends State<_HomeCard>
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTapDown:    (_) => _ctrl.forward(),
+      onTapDown:    (_) { _ctrl.forward(); AppHaptics.light(context); },
       onTapUp:      (_) { _ctrl.reverse(); widget.onTap(); },
       onTapCancel:  ()  => _ctrl.reverse(),
       child: ScaleTransition(

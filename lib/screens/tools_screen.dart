@@ -612,7 +612,7 @@ class _ScoresTabState extends State<_ScoresTab> {
   }
 
   Widget _scoreRow(String label, bool value, VoidCallback onTap, {double points = 1}) => GestureDetector(
-    onTap: onTap,
+    onTap: () { AppHaptics.selection(context); onTap(); },
     child: Container(
       margin: const EdgeInsets.only(bottom: 6),
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
@@ -1273,7 +1273,7 @@ class _LabImportCard extends StatelessWidget {
     final isEs = locale == 'es';
 
     return GestureDetector(
-      onTap: () => showAnalyzeExamBottomSheet(context, locale),
+      onTap: () { AppHaptics.light(context); showAnalyzeExamBottomSheet(context, locale); },
       child: Container(
         decoration: BoxDecoration(
           // Gradiente escuro alinhado ao header do app
@@ -1305,7 +1305,7 @@ class _LabImportCard extends StatelessWidget {
           color: Colors.transparent,
           borderRadius: BorderRadius.circular(18),
           child: InkWell(
-            onTap: () => showAnalyzeExamBottomSheet(context, locale),
+            onTap: () { AppHaptics.light(context); showAnalyzeExamBottomSheet(context, locale); },
             borderRadius: BorderRadius.circular(18),
             splashColor: kGoldLight.withValues(alpha: 0.06),
             highlightColor: kGoldLight.withValues(alpha: 0.03),
@@ -2427,7 +2427,7 @@ class _VasoRefRow extends StatelessWidget {
     final dark = context.watch<AppProvider>().darkMode;
     final tappable = onTap != null;
     return GestureDetector(
-      onTap: onTap,
+      onTap: onTap != null ? () { AppHaptics.selection(context); onTap!(); } : null,
       child: Container(
         margin: const EdgeInsets.only(bottom: 6),
         padding: const EdgeInsets.fromLTRB(12, 11, 12, 11),
@@ -2693,7 +2693,7 @@ class _ReferenceTabState extends State<_ReferenceTab> {
               final icon = _sectionData[i]['icon'] as IconData;
               final label = _sectionData[i]['label'] as String;
               return GestureDetector(
-                onTap: () => setState(() => _section = i),
+                onTap: () { AppHaptics.selection(context); setState(() => _section = i); },
                 child: AnimatedContainer(
                   duration: const Duration(milliseconds: 200),
                   margin: const EdgeInsets.only(right: 4),
@@ -3521,7 +3521,7 @@ class _PrescriptionsTabState extends State<_PrescriptionsTab> {
             children: List.generate(categories.length, (i) {
               final active = _cat == i;
               return GestureDetector(
-                onTap: () => setState(() => _cat = i),
+                onTap: () { AppHaptics.selection(context); setState(() => _cat = i); },
                 child: AnimatedContainer(
                   duration: const Duration(milliseconds: 200),
                   margin: const EdgeInsets.only(right: 2),
@@ -4579,7 +4579,7 @@ class _PediatricsTabContentState extends State<PediatricsTabContent> {
             final active = _section == i;
             return Expanded(
               child: GestureDetector(
-                onTap: () => setState(() => _section = i),
+                onTap: () { AppHaptics.selection(context); setState(() => _section = i); },
                 child: AnimatedContainer(
                   duration: const Duration(milliseconds: 160),
                   margin: const EdgeInsets.symmetric(horizontal: 4),
@@ -6472,7 +6472,7 @@ class _PedRefPremiumViewState extends State<_PedRefPremiumView> {
                 emoji: '📋', label: 'Todas', desc: 'Comparativo',
                 active: _ageFilter == -1,
                 color: const Color(0xFF0F7A5A),
-                onTap: () => setState(() => _ageFilter = -1),
+                onTap: () { AppHaptics.selection(context); setState(() => _ageFilter = -1); },
               ),
             ),
             ...List.generate(4, (i) => Padding(
@@ -6483,7 +6483,7 @@ class _PedRefPremiumViewState extends State<_PedRefPremiumView> {
                 desc: _ageDescs[i],
                 active: _ageFilter == i,
                 color: _ageColor(i),
-                onTap: () => setState(() => _ageFilter = i),
+                onTap: () { AppHaptics.selection(context); setState(() => _ageFilter = i); },
               ),
             )),
           ]),

@@ -3387,7 +3387,7 @@ class _DrugSuggestionDropdown extends StatelessWidget {
               final drug = suggestions[i];
               // Realça parte que bate com o query no nome
               return InkWell(
-                onTap: () => onSelect(drug),
+                onTap: () { AppHaptics.light(context); onSelect(drug); },
                 splashColor: const Color(0xFFECFDF5),
                 highlightColor: const Color(0xFFF0FFF8),
                 child: Padding(
