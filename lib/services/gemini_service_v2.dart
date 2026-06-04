@@ -225,7 +225,7 @@ class GeminiServiceV2 {
       },
       'contents': contents,
       'generationConfig': {
-        'maxOutputTokens': 2200,
+        'maxOutputTokens': 3200,  // Build 93: aumentado 2200→3200 para respostas clínicas completas
         'temperature': 0.4,
         'topP': 0.95,
         'topK': 40,
