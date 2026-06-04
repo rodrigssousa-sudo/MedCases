@@ -184,9 +184,11 @@ bool _isTruncated(String text) {
 
 
 class GeminiService {
-  // gemini-1.5-flash foi descontinuado em Mai/2025 → atualizado para gemini-2.5-flash
+  // gemini-2.5-flash → quota free tier: 10 RPM (esgota rápido em uso normal)
+  // gemini-2.5-flash-lite → mesma família, quota muito maior no free tier
+  // Troca para flash-lite para evitar 429 constante em produção.
   static const _endpoint =
-      'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent';
+      'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent';
 
   // Client IDs do Google OAuth (usados pelo google_sign_in no Android e pelo
   // redirect flow no index.html — o _webClientId é usado no HTML, não aqui)

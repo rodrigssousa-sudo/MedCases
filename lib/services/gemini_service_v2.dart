@@ -57,14 +57,15 @@ class GeminiChunk {
 class GeminiServiceV2 {
   GeminiServiceV2._(); // utilitário estático — sem instâncias
 
-  // ── Endpoint SSE do Gemini 2.5 Flash ──────────────────────────────────────
+  // ── Endpoint SSE do Gemini 2.5 Flash-Lite ────────────────────────────────
   // alt=sse → resposta em Server-Sent Events (stream de chunks JSON)
+  // flash-lite: quota free tier muito maior que gemini-2.5-flash (10 RPM)
   static const _baseEndpoint =
       'https://generativelanguage.googleapis.com/v1beta/models/'
-      'gemini-2.5-flash:streamGenerateContent?alt=sse';
+      'gemini-2.5-flash-lite:streamGenerateContent?alt=sse';
 
   // ── Configurações de retry ─────────────────────────────────────────────────
-  // Backoff conservador: o Gemini free tier tem limite de 15 RPM (requests/min).
+  // Backoff conservador: aguarda antes de retentar após 429.
   // Se o 429 veio, há alta probabilidade de esgotamento real — esperar mais vale.
   // O header Retry-After é preferido quando disponível (respeitando o servidor).
   static const _maxRetries  = 3;
