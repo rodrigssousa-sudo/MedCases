@@ -64,12 +64,36 @@ class GeminiServiceV2 {
       'gemini-2.5-flash:streamGenerateContent?alt=sse';
 
   // ── Configurações de retry ─────────────────────────────────────────────────
+  // Backoff conservador: o Gemini free tier tem limite de 15 RPM (requests/min).
+  // Se o 429 veio, há alta probabilidade de esgotamento real — esperar mais vale.
+  // O header Retry-After é preferido quando disponível (respeitando o servidor).
   static const _maxRetries  = 3;
   static const _backoff     = [
-    Duration(seconds: 2),
-    Duration(seconds: 4),
-    Duration(seconds: 8),
+    Duration(seconds: 5),
+    Duration(seconds: 15),
+    Duration(seconds: 30),
   ];
+
+  // ── Cooldown global pós-429 ───────────────────────────────────────────────
+  // Após um 429 definitivo (esgotou retries), bloqueia novas requisições por
+  // [_quotaCooldown] para não desperdiçar tokens em requisições condenadas.
+  // Reset automático após o cooldown ou quando o usuário trocar de sessão.
+  static DateTime? _quotaUntil;
+  static const _quotaCooldown = Duration(minutes: 1);
+
+  /// Verifica se há cooldown ativo (pós-quota 429 definitivo).
+  static bool get isInQuotaCooldown =>
+      _quotaUntil != null && DateTime.now().isBefore(_quotaUntil!);
+
+  /// Quanto tempo falta para o cooldown terminar (null se não há cooldown).
+  static Duration? get quotaCooldownRemaining {
+    if (_quotaUntil == null) return null;
+    final remaining = _quotaUntil!.difference(DateTime.now());
+    return remaining.isNegative ? null : remaining;
+  }
+
+  /// Reseta o cooldown manualmente (ex: usuário trocou de chave API).
+  static void resetQuotaCooldown() => _quotaUntil = null;
 
   // ══════════════════════════════════════════════════════════════════════════
   // sendStream — Streaming token-a-token via SSE
@@ -97,6 +121,17 @@ class GeminiServiceV2 {
   }) {
     // Usa StreamController para poder fazer retry assíncrono dentro do stream.
     final controller = StreamController<GeminiChunk>();
+
+    // ── Verifica cooldown global pós-429 ─────────────────────────────────────
+    // Se há um 429 recente definitivo, não tenta novamente — falha imediata.
+    if (isInQuotaCooldown) {
+      final remaining = quotaCooldownRemaining;
+      debugPrint('[GeminiV2] quota cooldown ativo — ${remaining?.inSeconds}s restantes');
+      controller
+        ..add(GeminiChunk.error('quota'))
+        ..close();
+      return controller.stream;
+    }
 
     // Executa em background — não bloqueia o caller
     _executeWithRetry(
@@ -237,7 +272,17 @@ class GeminiServiceV2 {
     if (response.statusCode == 429) {
       // Rate limit — retry com backoff se ainda há tentativas disponíveis
       if (attempt < _maxRetries) {
-        final wait = _backoff[attempt];
+        // Respeita o header Retry-After se o servidor o enviar
+        Duration wait = _backoff[attempt];
+        final retryAfterHeader = response.headers['retry-after'] ??
+            response.headers['x-ratelimit-reset-requests'];
+        if (retryAfterHeader != null) {
+          final retrySeconds = int.tryParse(retryAfterHeader);
+          if (retrySeconds != null && retrySeconds > 0) {
+            // Usa o valor do servidor, mas limita a 60s para não bloquear demais
+            wait = Duration(seconds: retrySeconds.clamp(2, 60));
+          }
+        }
         debugPrint(
             '[GeminiV2] 429 — retry ${attempt + 1}/$_maxRetries em ${wait.inSeconds}s');
         await Future.delayed(wait);
@@ -252,8 +297,9 @@ class GeminiServiceV2 {
           attempt: attempt + 1,
         );
       }
-      // Esgotou retries
-      debugPrint('[GeminiV2] 429 definitivo após $_maxRetries retries');
+      // Esgotou retries — ativa cooldown global para evitar spam
+      _quotaUntil = DateTime.now().add(_quotaCooldown);
+      debugPrint('[GeminiV2] 429 definitivo — cooldown de ${_quotaCooldown.inSeconds}s ativado');
       if (!controller.isClosed) {
         controller
           ..add(GeminiChunk.error('quota'))
@@ -411,10 +457,16 @@ class GeminiServiceV2 {
   // ── Mapeia errorCode para mensagem amigável bilíngue ──────────────────────
   static String errorMessage(String code, String lang) {
     final isEs = lang == 'es';
+    // Para quota: inclui tempo restante do cooldown se disponível
+    final cooldownSecs = quotaCooldownRemaining?.inSeconds;
+    final cooldownHint = cooldownSecs != null && cooldownSecs > 0
+        ? (isEs ? ' (~${cooldownSecs}s)' : ' (~${cooldownSecs}s)')
+        : '';
+
     return switch (code) {
       'quota' => isEs
-          ? 'Muchas consultas en poco tiempo. El asistente retomará en instantes. ⚕ Apoyo educacional.'
-          : 'Muitas consultas em pouco tempo. O assistente retomará em instantes. ⚕ Apoio educacional.',
+          ? 'Límite de consultas alcanzado$cooldownHint. Intenta de nuevo en un momento. ⚕ Apoyo educacional.'
+          : 'Limite de consultas atingido$cooldownHint. Tente novamente em instantes. ⚕ Apoio educacional.',
       'api_key_invalid' => isEs
           ? 'No se pudo conectar al asistente. Verifica la configuración de la API. ⚕ Apoyo educacional.'
           : 'Não foi possível conectar ao assistente. Verifique a configuração da API. ⚕ Apoio educacional.',
