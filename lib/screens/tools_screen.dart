@@ -2100,7 +2100,7 @@ class _InfusionTabState extends State<_InfusionTab> {
               Expanded(child: _LabeledInput(label: isEs ? 'Concentración (mg/mL)' : 'Concentração (mg/mL)', ctrl: _concCalcCtrl, onChanged: (_) => setState(() {}), hint: '4')),
             ]),
             const SizedBox(height: 10),
-            _LabeledInput(label: isEs ? 'Peso do paciente (kg)' : 'Peso do paciente (kg)', ctrl: _weightCalcCtrl, onChanged: (_) => setState(() {}), hint: '70'),
+            _LabeledInput(label: isEs ? 'Peso del paciente (kg)' : 'Peso do paciente (kg)', ctrl: _weightCalcCtrl, onChanged: (_) => setState(() {}), hint: '70'),
             const SizedBox(height: 14),
             _ResultTile(label: isEs ? 'Velocidad de Infusión' : 'Velocidade de Infusão',
               value: _doseToRate, unit: '', full: true,
@@ -2856,9 +2856,9 @@ class _ReferenceTabState extends State<_ReferenceTab> {
             color: const Color(0xFFCC2222),
           ),
           _EcgPattern(
-            pattern: isEs ? 'Fibrilação Atrial' : 'Fibrilação Atrial',
+            pattern: isEs ? 'Fibrilación Auricular' : 'Fibrilação Atrial',
             desc: isEs
-              ? 'Ritmo irregularmente irregular, sem ondas P. CHADS2-VASc para anticoagulação. FC alvo <110 bpm.'
+              ? 'Ritmo irregularmente irregular, sin ondas P. CHA2DS2-VASc para anticoagulación. FC objetivo <110 lpm.'
               : 'Ritmo irregularmente irregular, sem ondas P. CHA2DS2-VASc para anticoagulação. FC alvo <110 bpm.',
             color: const Color(0xFFB45309),
           ),
@@ -2954,8 +2954,8 @@ class _ReferenceTabState extends State<_ReferenceTab> {
           ),
           _AccessRow(
             site: 'Femoral',
-            pros: isEs ? 'Fácil, rápido, sem PTX' : 'Fácil, rápido, sem PTX',
-            cons: isEs ? 'Alta infecção, TVP, não ideal PCR' : 'Alta infecção, TVP, não ideal PCR',
+            pros: isEs ? 'Fácil, rápido, sin PTX' : 'Fácil, rápido, sem PTX',
+            cons: isEs ? 'Alta infección, TVP, no ideal en RCP' : 'Alta infecção, TVP, não ideal PCR',
           ),
           const SizedBox(height: 8),
           _InfoNote(text: isEs
@@ -2967,8 +2967,8 @@ class _ReferenceTabState extends State<_ReferenceTab> {
         title: isEs ? 'Tamaño de Catéter por Situación' : 'Calibre de Cateter por Situação',
         icon: Icons.linear_scale_rounded,
         child: Column(children: [
-          _LabRow(name: isEs ? 'Ressuscitação' : 'Ressuscitação', ref: '14–16 G periférico', note: isEs ? '2 acessos curtos e grossos > 1 central' : '2 acessos curtos e grossos > 1 central'),
-          _LabRow(name: isEs ? 'Vasopressor' : 'Vasopressor', ref: 'CVC (3 lumens)', note: isEs ? 'Prefetir subclávia/jugular interna' : 'Preferir subclávia/jugular interna'),
+          _LabRow(name: isEs ? 'Resucitación' : 'Ressuscitação', ref: '14–16 G periférico', note: isEs ? '2 accesos cortos y gruesos > 1 central' : '2 acessos curtos e grossos > 1 central'),
+          _LabRow(name: isEs ? 'Vasopressor' : 'Vasopressor', ref: 'CVC (3 lumens)', note: isEs ? 'Preferir subclavia/yugular interna' : 'Preferir subclávia/jugular interna'),
           _LabRow(name: isEs ? 'Transfusão rápida' : 'Transfusão rápida', ref: '14–16 G + introdutor 8,5Fr', note: isEs ? 'Introdutor = fluxo máximo' : 'Introdutor = maior fluxo'),
           _LabRow(name: isEs ? 'Nutrição parenteral' : 'Nutrição parenteral', ref: 'PICC ou CVC', note: isEs ? 'Osmolaridade > 900 mOsm = central' : 'Osmolaridade > 900 mOsm = central'),
           _LabRow(name: isEs ? 'Hemodiálise' : 'Hemodiálise', ref: 'Cateter duplo-lúmen 11–13Fr', note: isEs ? 'Jugular D > femoral > subclávia' : 'Jugular D > femoral > subclávia'),
