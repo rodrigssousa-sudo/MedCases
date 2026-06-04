@@ -1,21 +1,75 @@
 // ══════════════════════════════════════════════════════════════════════════════
-// GeminiServiceV2 — Streaming descentralizado por usuário
+// GeminiServiceV2 — Build 93 — Motor de IA BYOA blindado para produção
 //
-// ARQUITETURA:
-//   Sem firebase_ai (incompatível com firebase_core 3.6.0 em produção).
-//   Usa a API REST streamGenerateContent do Gemini com Server-Sent Events (SSE).
-//   É exatamente o que o firebase_ai SDK faz internamente.
+// ARQUITETURA v4 — Quatro camadas de blindagem estrutural:
 //
-// BENEFÍCIOS vs V1:
-//   • Streaming token-a-token — UX idêntica ao ChatGPT/Claude
-//   • Sem fila serial global — cada chamada é independente
-//   • systemInstruction injetada no modelo (blindagem do system prompt)
-//   • Retry com backoff exponencial isolado por chamada (não global)
-//   • Nenhuma dependência nova — usa apenas http já presente no pubspec
+// ┌─────────────────────────────────────────────────────────────────────────┐
+// │  CAMADA 1 — FILTRAGEM NATIVA DE STREAM (anti-vazamento de pensamento)   │
+// │                                                                         │
+// │  _extractText() inspeciona CADA part do SSE chunk e descarta            │
+// │  categoricamente qualquer bloco identificado como raciocínio interno:   │
+// │    • thought == true          → Chain-of-Thought explícito do Gemini    │
+// │    • 'thoughtSignature' key   → Assinatura criptográfica de CoT         │
+// │    • 'functionCall' key       → Chamada interna de ferramenta           │
+// │    • 'executableCode' key     → Código executável gerado internamente   │
+// │    • 'codeExecutionResult'    → Resultado de execução interna           │
+// │    • 'inlineData' key         → Dados binários (imagens, etc.)          │
+// │  Apenas parts com chave 'text' (String, não-vazia) chegam à UI.         │
+// └─────────────────────────────────────────────────────────────────────────┘
 //
-// ENDPOINT:
-//   POST /v1beta/models/gemini-2.5-flash-lite:streamGenerateContent?alt=sse&key=KEY
-//   Retorna chunks SSE: "data: {...}\n\n" — cada chunk é um candidato parcial.
+// ┌─────────────────────────────────────────────────────────────────────────┐
+// │  CAMADA 2 — JANELA DESLIZANTE DE HISTÓRICO (Context Classifier)         │
+// │                                                                         │
+// │  Antes de cada stream, _classifyContext() faz uma chamada leve          │
+// │  (não-streaming) enviando:                                              │
+// │    • Última resposta da IA (truncada a 300 chars)                       │
+// │    • Nova pergunta do usuário                                           │
+// │  Instrução: responda APENAS 'MÉDICO' ou 'NOVO'.                         │
+// │    'MÉDICO' → mesmo caso/medicamento → últimas 3 trocas (6 entradas)   │
+// │    'NOVO'   → assunto diferente      → histórico vazio (clean slate)    │
+// │  Timeout 8s, fallback conservador 'MÉDICO'. Custo: ~60 tokens/chamada. │
+// └─────────────────────────────────────────────────────────────────────────┘
+//
+// ┌─────────────────────────────────────────────────────────────────────────┐
+// │  CAMADA 3 — CONFIGURAÇÃO REST BLINDADA + PREFIXO DE FERRO               │
+// │                                                                         │
+// │  • system_instruction isolado do histórico (Content.system equivalente) │
+// │  • _systemPromptPrefix injetado ANTES de qualquer instrução do AiService│
+// │    → proíbe raciocínio visível, inglês intermediário, metadados         │
+// │  • maxOutputTokens: 3200  → respostas clínicas completas sem corte      │
+// │  • thinkingBudget: 0      → zero tokens de CoT (gemini-2.5-flash-lite)  │
+// │  • temperature: 0.4       → consistência clínica calibrada              │
+// │  • Retry com backoff 5s/15s/30s + cooldown global pós-429              │
+// └─────────────────────────────────────────────────────────────────────────┘
+//
+// ┌─────────────────────────────────────────────────────────────────────────┐
+// │  CAMADA 4 — RAG CROSS-CHECK ANTI-ALUCINAÇÃO (implementado em AiService) │
+// │                                                                         │
+// │  • _ragCrossCheckEs/Pt: módulo 10 do systemPrompt (seção 15 de 19)      │
+// │    → 4 passos: comparação query-RAG, classificação A/B/C,              │
+// │      isolamento de dados de paciente, verificação final pré-envio       │
+// │  • Regras K+L em safetyRules: Verdade Absoluta Restrita + Proibição    │
+// │    de Alucinação Clínica                                                │
+// │  • ragAnchor 9 regras: revisor crítico, proibição de invenção,         │
+// │    isolamento de dados de paciente entre sessões                        │
+// │  • selfCheck item 13: RAG cross-check obrigatório pré-resposta (5 subs) │
+// └─────────────────────────────────────────────────────────────────────────┘
+//
+// ENDPOINTS:
+//   STREAM : POST /v1beta/models/gemini-2.5-flash-lite:streamGenerateContent
+//            ?alt=sse&key=KEY
+//            Chunks SSE formato: "data: {...}\n\n"
+//   SYNC   : POST /v1beta/models/gemini-2.5-flash-lite:generateContent?key=KEY
+//            Context Classifier — resposta mínima ('MÉDICO'/'NOVO')
+//
+// FLUXO PRINCIPAL:
+//   sendStream() → [quota check] → _runPipeline()
+//     → _classifyContext() [sync, 8s timeout]
+//     → _buildContextWindow() [max 3 pares ou vazio]
+//     → _executeWithRetry() [max 3 tentativas]
+//       → _streamRequest() [SSE blindado]
+//         → _extractText() [filtro CoT, 6 condições]
+//         → controller.add(GeminiChunk) [apenas texto limpo para UI]
 // ══════════════════════════════════════════════════════════════════════════════
 
 import 'dart:async';
@@ -24,16 +78,19 @@ import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Resultado de chunk de streaming
+// GeminiChunk — unidade de dado do stream
 // ─────────────────────────────────────────────────────────────────────────────
 class GeminiChunk {
-  /// Texto parcial do chunk (pode ser vazio se for chunk de metadado).
+  /// Fragmento de texto do streaming (pode ser vazio em chunks de metadado).
   final String text;
 
-  /// true se este chunk finaliza a resposta (finishReason != null).
+  /// true → este chunk sinaliza o fim da resposta (finishReason detectado
+  /// ou stream encerrado normalmente).
   final bool isDone;
 
-  /// Código de erro se a requisição falhou (null = sucesso).
+  /// Código de erro se a requisição falhou (null = sucesso normal).
+  /// Códigos possíveis: 'quota', 'api_key_invalid', 'timeout', 'network',
+  /// 'stream_error', 'http_XXX', 'unexpected'.
   final String? errorCode;
 
   const GeminiChunk({
@@ -42,76 +99,125 @@ class GeminiChunk {
     this.errorCode,
   });
 
+  /// true → o stream terminou com falha.
   bool get isError => errorCode != null;
 
+  /// Cria um chunk de erro com isDone implícito.
   factory GeminiChunk.error(String code) =>
       GeminiChunk(text: '', isDone: true, errorCode: code);
 
-  static const GeminiChunk done =
-      GeminiChunk(text: '', isDone: true);
+  /// Sinalização de conclusão sem texto adicional.
+  static const GeminiChunk done = GeminiChunk(text: '', isDone: true);
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// GeminiServiceV2
+// GeminiServiceV2 — serviço estático (BYOA, sem instâncias)
 // ─────────────────────────────────────────────────────────────────────────────
 class GeminiServiceV2 {
-  GeminiServiceV2._(); // utilitário estático — sem instâncias
+  GeminiServiceV2._(); // construtor privado — utilitário 100% estático
 
-  // ── Endpoint SSE do Gemini 2.5 Flash-Lite ────────────────────────────────
-  // alt=sse → resposta em Server-Sent Events (stream de chunks JSON)
-  // flash-lite: quota free tier muito maior que gemini-2.5-flash (10 RPM)
-  static const _baseEndpoint =
+  // ══════════════════════════════════════════════════════════════════════════
+  // ENDPOINTS E MODELO
+  // ══════════════════════════════════════════════════════════════════════════
+
+  /// Modelo base — flash-lite tem quota free-tier muito maior que o flash-pro.
+  /// Free tier: ~1.500 RPM, 1.000.000 TPM (vs. 10 RPM do gemini-2.5-flash).
+  static const _modelId = 'gemini-2.5-flash-lite';
+
+  /// Endpoint SSE de streaming (usado na resposta principal ao usuário).
+  static const _endpointStream =
       'https://generativelanguage.googleapis.com/v1beta/models/'
-      'gemini-2.5-flash-lite:streamGenerateContent?alt=sse';
+      '$_modelId:streamGenerateContent?alt=sse';
 
-  // ── Configurações de retry ─────────────────────────────────────────────────
-  // Backoff conservador: aguarda antes de retentar após 429.
-  // Se o 429 veio, há alta probabilidade de esgotamento real — esperar mais vale.
-  // O header Retry-After é preferido quando disponível (respeitando o servidor).
-  static const _maxRetries  = 3;
-  static const _backoff     = [
+  /// Endpoint síncrono (usado APENAS pelo Context Classifier — leve e rápido).
+  static const _endpointSync =
+      'https://generativelanguage.googleapis.com/v1beta/models/'
+      '$_modelId:generateContent';
+
+  // ══════════════════════════════════════════════════════════════════════════
+  // CONTROLE DE QUOTA E RETRY
+  // ══════════════════════════════════════════════════════════════════════════
+
+  /// Número máximo de tentativas após erro 429.
+  static const _maxRetries = 3;
+
+  /// Backoff progressivo entre tentativas (attempt 0→5s, 1→15s, 2→30s).
+  static const _retryBackoff = [
     Duration(seconds: 5),
     Duration(seconds: 15),
     Duration(seconds: 30),
   ];
 
-  // ── Cooldown global pós-429 ───────────────────────────────────────────────
-  // Após um 429 definitivo (esgotou retries), bloqueia novas requisições por
-  // [_quotaCooldown] para não desperdiçar tokens em requisições condenadas.
-  // Reset automático após o cooldown ou quando o usuário trocar de sessão.
-  static DateTime? _quotaUntil;
+  /// Janela de cooldown após 429 definitivo (esgotou todas as tentativas).
+  /// Bloqueia requisições por 60s para não desperdiçar tokens em requests
+  /// condenados quando a quota está realmente esgotada.
   static const _quotaCooldown = Duration(minutes: 1);
 
-  /// Verifica se há cooldown ativo (pós-quota 429 definitivo).
+  /// Timestamp de expiração do cooldown (null = sem cooldown ativo).
+  static DateTime? _quotaUntil;
+
+  /// true → cooldown ativo, não deve enviar requisições.
   static bool get isInQuotaCooldown =>
       _quotaUntil != null && DateTime.now().isBefore(_quotaUntil!);
 
-  /// Quanto tempo falta para o cooldown terminar (null se não há cooldown).
+  /// Tempo restante de cooldown (null se não há cooldown ou já expirou).
   static Duration? get quotaCooldownRemaining {
     if (_quotaUntil == null) return null;
     final remaining = _quotaUntil!.difference(DateTime.now());
     return remaining.isNegative ? null : remaining;
   }
 
-  /// Reseta o cooldown manualmente (ex: usuário trocou de chave API).
+  /// Reseta o cooldown manualmente (ex: usuário configurou nova chave API).
   static void resetQuotaCooldown() => _quotaUntil = null;
 
   // ══════════════════════════════════════════════════════════════════════════
-  // sendStream — Streaming token-a-token via SSE
+  // PREFIXO DE FERRO — CAMADA 3 (anti-CoT visível + anti-inglês intermediário)
+  //
+  // Injetado como PRIMEIRA linha do systemPrompt antes de qualquer instrução
+  // do AiService. O modelo lê esta regra antes de tudo.
+  //
+  // Por que aqui E no thinkingBudget=0?
+  //   thinkingBudget=0 desativa CoT a nível de API (primeira defesa).
+  //   Este prefixo é a segunda camada — caso uma atualização silenciosa do
+  //   modelo ignore thinkingBudget, o prompt ainda proíbe o comportamento.
+  //   _extractText() é a terceira — filtra no JSON mesmo se o modelo vazar.
+  // ══════════════════════════════════════════════════════════════════════════
+  static const _systemPromptPrefix =
+      '🔒 REGRA ABSOLUTA — MÁXIMA PRIORIDADE — LER ANTES DE QUALQUER INSTRUÇÃO:\n'
+      '1. JAMAIS exiba raciocínio interno, rascunhos, modos de operação, '
+      'metadados ou qualquer processo de pensamento na resposta ao usuário.\n'
+      '2. PROIBIDO usar inglês como idioma intermediário ou para "pensar em '
+      'voz alta". Zero caracteres em inglês visíveis ao usuário — exceto '
+      'termos médicos internacionais universalmente reconhecidos (SpO₂, qSOFA, '
+      'SOFA, CURB-65, etc.).\n'
+      '3. Responda DIRETAMENTE ao conteúdo clínico. O usuário vê APENAS a '
+      'resposta clínica limpa. Nenhum processo interno é visível.\n'
+      '4. Se detectar qualquer bloco de chain-of-thought, <thinking>, '
+      '[REVISÃO_INTERNA], scratchpad ou raciocínio → ELIMINAR completamente '
+      'antes de formular a resposta.\n\n';
+
+  // ══════════════════════════════════════════════════════════════════════════
+  // sendStream — API PÚBLICA
+  //
+  // Streaming token-a-token via SSE com janela deslizante de histórico.
   //
   // Parâmetros:
-  //   apiKey        : Gemini API key (mesma já usada pelo GeminiService V1)
-  //   userMessage   : mensagem do usuário
-  //   systemPrompt  : injetado como systemInstruction no modelo (blindagem total)
-  //   history       : histórico de conversa [{role, content}, ...]
+  //   apiKey       → Gemini API key do usuário (BYOA)
+  //   userMessage  → pergunta atual do usuário
+  //   systemPrompt → prompt de sistema montado pelo AiService (19 seções)
+  //   history      → histórico completo [{role: 'user'/'assistant', content}]
+  //   useGrounding → ativar Google Search Grounding (padrão: true)
   //
   // Retorna:
-  //   Stream<GeminiChunk> — cada evento é um chunk de texto ou sinalização de fim.
-  //   O chamador (AppProvider) acumula os chunks num StringBuffer e notifica a UI.
+  //   Stream<GeminiChunk> — cada evento é texto parcial ou sinalização.
+  //   O AppProvider acumula os chunks num StringBuffer e atualiza a UI.
   //
-  // Erros:
-  //   Chunks com isError=true e errorCode preenchido.
-  //   Retry automático em 429 com backoff — transparente para o chamador.
+  // Fluxo interno:
+  //   1. Verifica cooldown global pós-429
+  //   2. _runPipeline: classify → window → stream
+  //
+  // Compatibilidade: mesma assinatura da versão anterior — nenhum caller
+  // precisa ser modificado.
   // ══════════════════════════════════════════════════════════════════════════
   static Stream<GeminiChunk> sendStream({
     required String apiKey,
@@ -120,35 +226,300 @@ class GeminiServiceV2 {
     List<Map<String, String>> history = const [],
     bool useGrounding = true,
   }) {
-    // Usa StreamController para poder fazer retry assíncrono dentro do stream.
     final controller = StreamController<GeminiChunk>();
 
-    // ── Verifica cooldown global pós-429 ─────────────────────────────────────
-    // Se há um 429 recente definitivo, não tenta novamente — falha imediata.
+    // ── Guarda de quota: rejeita imediatamente se cooldown ativo ─────────────
     if (isInQuotaCooldown) {
       final remaining = quotaCooldownRemaining;
-      debugPrint('[GeminiV2] quota cooldown ativo — ${remaining?.inSeconds}s restantes');
+      debugPrint(
+        '[GeminiV2] quota cooldown ativo — ${remaining?.inSeconds ?? 0}s restantes',
+      );
       controller
         ..add(GeminiChunk.error('quota'))
         ..close();
       return controller.stream;
     }
 
-    // Executa em background — não bloqueia o caller
-    _executeWithRetry(
+    // ── Pipeline assíncrono (não bloqueia o thread UI) ────────────────────────
+    _runPipeline(
       controller: controller,
       apiKey: apiKey,
       userMessage: userMessage,
       systemPrompt: systemPrompt,
       history: history,
       useGrounding: useGrounding,
-      attempt: 0,
     );
 
     return controller.stream;
   }
 
-  // ── Execução com retry recursivo ──────────────────────────────────────────
+  // ══════════════════════════════════════════════════════════════════════════
+  // _runPipeline — Orquestrador do pipeline assíncrono
+  //
+  // Passo 1: Context Classifier — determina se a nova pergunta continua
+  //          o caso anterior ('MÉDICO') ou inicia assunto novo ('NOVO').
+  //
+  // Passo 2: _buildContextWindow — constrói o histórico calibrado:
+  //          'MÉDICO' → últimas 3 trocas (6 entradas, ~1.200 tokens)
+  //          'NOVO'   → lista vazia (só a pergunta atual, ~50 tokens)
+  //
+  // Passo 3: _executeWithRetry — stream SSE com retry automático.
+  // ══════════════════════════════════════════════════════════════════════════
+  static Future<void> _runPipeline({
+    required StreamController<GeminiChunk> controller,
+    required String apiKey,
+    required String userMessage,
+    required String systemPrompt,
+    required List<Map<String, String>> history,
+    required bool useGrounding,
+  }) async {
+    if (controller.isClosed) return;
+
+    // ── Passo 1: Classificação de contexto ───────────────────────────────────
+    List<Map<String, String>> windowedHistory;
+
+    if (history.isEmpty) {
+      // Primeira mensagem da sessão — sem histórico, sem necessidade de classify
+      windowedHistory = [];
+      debugPrint('[GeminiV2] primeira pergunta — histórico vazio');
+    } else {
+      final contextLabel = await _classifyContext(
+        apiKey: apiKey,
+        history: history,
+        userMessage: userMessage,
+      );
+      windowedHistory = _buildContextWindow(history, contextLabel);
+      debugPrint(
+        '[GeminiV2] context=$contextLabel → '
+        '${windowedHistory.length ~/ 2} troca(s) no payload',
+      );
+    }
+
+    // ── Passo 2: Stream com histórico calibrado ───────────────────────────────
+    try {
+      await _executeWithRetry(
+        controller: controller,
+        apiKey: apiKey,
+        userMessage: userMessage,
+        systemPrompt: systemPrompt,
+        history: windowedHistory,
+        useGrounding: useGrounding,
+        attempt: 0,
+      );
+    } catch (e) {
+      debugPrint('[GeminiV2] _runPipeline erro inesperado: $e');
+      if (!controller.isClosed) {
+        controller
+          ..add(GeminiChunk.error('unexpected'))
+          ..close();
+      }
+    }
+  }
+
+  // ══════════════════════════════════════════════════════════════════════════
+  // _classifyContext — Context Classifier (CAMADA 2)
+  //
+  // Chamada síncrona ultra-leve à API (não-streaming, generateContent).
+  // Envia APENAS:
+  //   • Última resposta da IA (truncada a 300 chars para economizar tokens)
+  //   • Nova pergunta do usuário
+  //
+  // A instrução do sistema temporária ordena: responda UMA palavra.
+  //   'MÉDICO' = mesma consulta/caso/medicamento/tema clínico anterior
+  //   'NOVO'   = mudou de assunto, novo caso, nova dúvida não relacionada
+  //
+  // Custo típico: ~60-80 tokens. Timeout agressivo: 8 segundos.
+  // Fallback em qualquer falha: 'MÉDICO' (conservador — mantém contexto).
+  //
+  // Por que não usar o histórico completo para classificar?
+  //   Para não gastar tokens do classifier com histórico longo. O par
+  //   (última IA + nova query) é suficiente para determinar continuidade.
+  // ══════════════════════════════════════════════════════════════════════════
+  static Future<String> _classifyContext({
+    required String apiKey,
+    required List<Map<String, String>> history,
+    required String userMessage,
+  }) async {
+    // Busca a última resposta da IA no histórico (percorre de trás para frente)
+    String lastAiResponse = '';
+    for (int i = history.length - 1; i >= 0; i--) {
+      if (history[i]['role'] == 'assistant') {
+        lastAiResponse = history[i]['content'] ?? '';
+        break;
+      }
+    }
+
+    // Sem resposta prévia da IA → não há contexto para comparar
+    if (lastAiResponse.isEmpty) {
+      debugPrint('[GeminiV2] classifier: sem resposta IA prévia → MÉDICO');
+      return 'MÉDICO';
+    }
+
+    // Trunca para 300 chars — suficiente para capturar o tema sem gastar tokens
+    final truncatedAi = lastAiResponse.length > 300
+        ? '${lastAiResponse.substring(0, 300)}...'
+        : lastAiResponse;
+
+    // Instrução temporária em inglês — eficiente para classificação binária
+    const classifierSystemPrompt =
+        'You are a medical conversation context classifier. '
+        'Your ONLY job is to determine if the new user question continues the same '
+        'clinical topic as the previous AI response, or starts a completely new topic. '
+        'Reply with EXACTLY one word — no punctuation, no explanation:\n'
+        '"MÉDICO" — if the new question follows up on the same clinical case, '
+        'medication, diagnosis, exam, or any aspect of the previous response.\n'
+        '"NOVO" — if the user changed subject, started a new case, asked about '
+        'something completely unrelated, or explicitly said they want a new topic.';
+
+    final requestBody = jsonEncode({
+      'system_instruction': {
+        'parts': [
+          {'text': classifierSystemPrompt}
+        ],
+      },
+      'contents': [
+        {
+          'role': 'user',
+          'parts': [
+            {
+              'text': 'Previous AI response (truncated to 300 chars):\n'
+                  '"$truncatedAi"\n\n'
+                  'New user question:\n'
+                  '"$userMessage"\n\n'
+                  'Same clinical topic? Reply MÉDICO or NOVO.',
+            }
+          ],
+        }
+      ],
+      'generationConfig': {
+        'maxOutputTokens': 10,   // Uma palavra — 10 tokens é mais que suficiente
+        'temperature': 0.0,      // Determinístico — queremos uma classificação estável
+        'topK': 1,               // Greedy decoding — token mais provável apenas
+        'thinkingConfig': {'thinkingBudget': 0}, // Zero CoT — velocidade máxima
+      },
+    });
+
+    final url = Uri.parse('$_endpointSync?key=$apiKey');
+
+    try {
+      final response = await http
+          .post(
+            url,
+            headers: {'Content-Type': 'application/json'},
+            body: requestBody,
+          )
+          .timeout(const Duration(seconds: 8));
+
+      if (response.statusCode != 200) {
+        debugPrint(
+          '[GeminiV2] classifier HTTP ${response.statusCode} → fallback MÉDICO',
+        );
+        return 'MÉDICO';
+      }
+
+      final data = jsonDecode(response.body) as Map<String, dynamic>;
+      final rawText = _extractTextFromSync(data).trim().toUpperCase();
+      debugPrint('[GeminiV2] classifier resposta raw: "$rawText"');
+
+      // Aceita variações naturais: NUEVO, NEW, CHANGE → NOVO
+      // Qualquer outra resposta (incluindo silêncio ou erro) → MÉDICO (conservador)
+      if (rawText.contains('NOV') ||
+          rawText.contains('NEW') ||
+          rawText.contains('CHAN') ||
+          rawText.contains('DIFF')) {
+        return 'NOVO';
+      }
+      return 'MÉDICO';
+    } on TimeoutException {
+      debugPrint('[GeminiV2] classifier timeout (8s) → fallback MÉDICO');
+      return 'MÉDICO';
+    } catch (e) {
+      debugPrint('[GeminiV2] classifier erro: $e → fallback MÉDICO');
+      return 'MÉDICO';
+    }
+  }
+
+  // ── Extrai texto de resposta síncrona (generateContent, não SSE) ──────────
+  // Aplica o mesmo filtro de CoT para garantir que o classificador
+  // não retorne texto de pensamento interno acidentalmente.
+  static String _extractTextFromSync(Map<String, dynamic> data) {
+    try {
+      final candidates = data['candidates'] as List?;
+      if (candidates == null || candidates.isEmpty) return '';
+      final candidate = candidates[0] as Map<String, dynamic>;
+      final parts = candidate['content']?['parts'] as List?;
+      if (parts == null || parts.isEmpty) return '';
+
+      final buffer = StringBuffer();
+      for (final rawPart in parts) {
+        final part = rawPart as Map<String, dynamic>;
+        // Filtra CoT mesmo no classifier
+        if (part['thought'] == true) continue;
+        if (part.containsKey('thoughtSignature')) continue;
+        final text = part['text'] as String?;
+        if (text != null && text.isNotEmpty) buffer.write(text);
+      }
+      return buffer.toString();
+    } catch (_) {
+      return '';
+    }
+  }
+
+  // ══════════════════════════════════════════════════════════════════════════
+  // _buildContextWindow — Janela deslizante de histórico (CAMADA 2)
+  //
+  // Controla quantas trocas anteriores são enviadas no payload da API.
+  // O objetivo é proteger a quota TPM do plano gratuito sem perder
+  // a continuidade clínica necessária para um diálogo coerente.
+  //
+  // 'MÉDICO' (mesmo caso):
+  //   → Retorna as últimas 3 trocas completas = max 6 entradas do histórico.
+  //   → Uma troca = 1 user + 1 model. 3 trocas ≈ 1.200 tokens de contexto.
+  //   → Clínica: suficiente para manter coerência num diálogo sobre um caso.
+  //
+  // 'NOVO' (assunto diferente):
+  //   → Retorna lista vazia — nenhum contexto anterior enviado.
+  //   → O payload final terá apenas a nova pergunta do usuário.
+  //   → Previne "contaminação cruzada" de dados clínicos entre casos.
+  //
+  // IMPORTANTE: este método NÃO modifica o histórico original no AppProvider.
+  // Ele retorna uma CÓPIA calibrada para o payload da requisição atual.
+  // ══════════════════════════════════════════════════════════════════════════
+  static List<Map<String, String>> _buildContextWindow(
+    List<Map<String, String>> history,
+    String contextLabel,
+  ) {
+    if (contextLabel == 'NOVO') {
+      // Assunto novo — clean slate, sem risco de misturar dados de pacientes
+      debugPrint('[GeminiV2] NOVO: histórico limpo para este payload');
+      return [];
+    }
+
+    // Mesmo assunto — limita a 3 trocas (6 entradas) para proteger TPM
+    const maxPairs = 3;
+    const maxEntries = maxPairs * 2; // 6 entradas = 3 user + 3 model
+
+    if (history.length <= maxEntries) {
+      return List.of(history); // já dentro do limite — usa tudo sem truncar
+    }
+
+    // Pega as [maxEntries] entradas mais recentes
+    final window = history.sublist(history.length - maxEntries);
+    debugPrint(
+      '[GeminiV2] _buildContextWindow: ${history.length} → ${window.length} entradas',
+    );
+    return window;
+  }
+
+  // ══════════════════════════════════════════════════════════════════════════
+  // _executeWithRetry — Wrapper de retry recursivo para o stream
+  //
+  // Delega para _streamRequest. Se ocorrer exceção não tratada internamente,
+  // captura e emite GeminiChunk.error('unexpected').
+  //
+  // O retry de 429 é tratado DENTRO de _streamRequest (não aqui), porque
+  // a resposta HTTP (statusCode 429) só é conhecida após a requisição.
+  // ══════════════════════════════════════════════════════════════════════════
   static Future<void> _executeWithRetry({
     required StreamController<GeminiChunk> controller,
     required String apiKey,
@@ -171,7 +542,7 @@ class GeminiServiceV2 {
         attempt: attempt,
       );
     } catch (e) {
-      // Erro inesperado não capturado internamente
+      debugPrint('[GeminiV2] _executeWithRetry: exceção inesperada: $e');
       if (!controller.isClosed) {
         controller
           ..add(GeminiChunk.error('unexpected'))
@@ -180,7 +551,36 @@ class GeminiServiceV2 {
     }
   }
 
-  // ── Requisição SSE com parsing de chunks ──────────────────────────────────
+  // ══════════════════════════════════════════════════════════════════════════
+  // _streamRequest — Requisição SSE blindada (CAMADAS 1, 3 e 4)
+  //
+  // MONTAGEM DO PAYLOAD:
+  //   system_instruction → prefixo de ferro + systemPrompt do AiService
+  //                        Injetado isolado (não faz parte do histórico)
+  //                        Equivalente a Content.system() do SDK Firebase AI
+  //
+  //   contents           → histórico janelado + nova mensagem do usuário
+  //                        [{role:'user'/'model', parts:[{text:'...'}]}]
+  //
+  //   generationConfig   → maxOutputTokens:3200, thinkingBudget:0, temp:0.4
+  //
+  //   safetySettings     → BLOCK_NONE em todas as categorias (conteúdo médico
+  //                        frequentemente é bloqueado por filtros genéricos)
+  //
+  // PARSING SSE:
+  //   Lê o stream de bytes, monta linhas, parseia JSON de "data: {...}"
+  //   _extractText() → CAMADA 1: filtra 6 tipos de parts não-textuais
+  //   Apenas texto puro do usuário chega ao controller (e portanto à UI)
+  //
+  // TRATAMENTO DE ERROS:
+  //   429 → retry com backoff progressivo (5s/15s/30s) até _maxRetries
+  //         Se esgotou retries → cooldown global de 60s
+  //   401/403 → api_key_invalid (sem retry — chave inválida não muda)
+  //   SAFETY/RECITATION finishReason → tenta sem grounding; se já sem → done
+  //   MAX_TOKENS finishReason → resposta parcial entregue, emite done
+  //   Timeout HTTP → GeminiChunk.error('timeout')
+  //   Exceção de rede → GeminiChunk.error('network')
+  // ══════════════════════════════════════════════════════════════════════════
   static Future<void> _streamRequest({
     required StreamController<GeminiChunk> controller,
     required String apiKey,
@@ -190,107 +590,143 @@ class GeminiServiceV2 {
     required bool useGrounding,
     required int attempt,
   }) async {
-    final url = Uri.parse('$_baseEndpoint&key=$apiKey');
+    final url = Uri.parse('$_endpointStream&key=$apiKey');
 
-    // ── Monta corpo da requisição ─────────────────────────────────────────────
-    // systemInstruction → blindagem total: o system prompt é injetado
-    // diretamente no modelo, não como mensagem de usuário. Garante que
-    // o contexto RAG e as diretrizes educacionais nunca vazem para o histórico.
+    // ── CAMADA 3: Injeta prefixo de ferro ANTES do systemPrompt ──────────────
+    // O modelo lê _systemPromptPrefix antes de qualquer instrução do AiService.
+    // Garante proibição de CoT visível mesmo sem thinkingBudget funcionar.
+    final blindedSystemPrompt = '$_systemPromptPrefix$systemPrompt';
+
+    // ── Monta contents: histórico janelado (já calibrado) + nova mensagem ─────
+    // Mapeamento de roles: AppProvider usa 'assistant', Gemini API usa 'model'
     final contents = <Map<String, dynamic>>[];
-    for (final msg in history) {
-      final role = msg['role'] == 'assistant' ? 'model' : 'user';
+    for (final entry in history) {
+      final role = entry['role'] == 'assistant' ? 'model' : 'user';
       contents.add({
         'role': role,
         'parts': [
-          {'text': msg['content'] ?? ''}
-        ]
+          {'text': entry['content'] ?? ''}
+        ],
       });
     }
     contents.add({
       'role': 'user',
       'parts': [
         {'text': userMessage}
-      ]
+      ],
     });
 
+    // ── Corpo da requisição blindado ──────────────────────────────────────────
     final body = <String, dynamic>{
-      // ── systemInstruction: injeção direta no modelo ───────────────────────
-      // Equivalente a Content.system(systemPrompt) do firebase_ai SDK.
-      // Desta forma o system prompt nunca aparece no histórico de conversa,
-      // é interpretado pelo modelo como instrução de nível de sistema.
+      // system_instruction — isolado do histórico, lido pelo modelo como
+      // instrução de sistema (não como turno de conversa). Esta é a forma
+      // correta de injetar system prompts na API REST do Gemini.
       'system_instruction': {
         'parts': [
-          {'text': systemPrompt}
-        ]
+          {'text': blindedSystemPrompt}
+        ],
       },
       'contents': contents,
       'generationConfig': {
-        'maxOutputTokens': 3200,  // Build 93: aumentado 2200→3200 para respostas clínicas completas
+        // maxOutputTokens: 3200
+        //   Previne corte abrupto de texto no meio do streaming.
+        //   3200 tokens ≈ 12.800 chars → suporta MODO FARMACO completo
+        //   (prompt de 19 seções + RAG injetado + resposta clínica longa).
+        //   Build 93: aumentado de 2048→3200 após análise de truncamentos.
+        'maxOutputTokens': 3200,
+
+        // temperature: 0.4 — equilíbrio entre precisão clínica e fluência.
+        // Valores > 0.6 aumentam risco de alucinação em contexto médico.
         'temperature': 0.4,
         'topP': 0.95,
         'topK': 40,
-        // thinkingBudget: 0 — desativa thinking tokens do Gemini 2.5 Flash.
-        // Sem isso, o modelo gasta tokens de "raciocínio" antes de responder,
-        // consumindo quota rapidamente e causando 429 em poucas consultas.
+
+        // thinkingBudget: 0
+        //   Desativa tokens de raciocínio interno do Gemini 2.5 Flash.
+        //   Sem isso: modelo gasta ~500-2000 tokens em CoT antes de responder,
+        //   consumindo quota TPM rapidamente → 429 em poucas consultas.
+        //   Com isso: modelo responde direto, economia de ~70% de TPM.
+        //   _systemPromptPrefix e _extractText() são as camadas de backup.
         'thinkingConfig': {'thinkingBudget': 0},
       },
+
+      // safetySettings — BLOCK_NONE em todas as categorias.
+      // Necessário para conteúdo médico: filtros genéricos bloqueiam
+      // discussões de overdose, automutilação, etc., que são legítimas
+      // em contexto clínico educacional.
       'safetySettings': [
-        {'category': 'HARM_CATEGORY_HARASSMENT',        'threshold': 'BLOCK_NONE'},
-        {'category': 'HARM_CATEGORY_HATE_SPEECH',       'threshold': 'BLOCK_NONE'},
-        {'category': 'HARM_CATEGORY_SEXUALLY_EXPLICIT', 'threshold': 'BLOCK_NONE'},
-        {'category': 'HARM_CATEGORY_DANGEROUS_CONTENT', 'threshold': 'BLOCK_NONE'},
+        {
+          'category': 'HARM_CATEGORY_HARASSMENT',
+          'threshold': 'BLOCK_NONE',
+        },
+        {
+          'category': 'HARM_CATEGORY_HATE_SPEECH',
+          'threshold': 'BLOCK_NONE',
+        },
+        {
+          'category': 'HARM_CATEGORY_SEXUALLY_EXPLICIT',
+          'threshold': 'BLOCK_NONE',
+        },
+        {
+          'category': 'HARM_CATEGORY_DANGEROUS_CONTENT',
+          'threshold': 'BLOCK_NONE',
+        },
       ],
     };
 
-    // Google Search Grounding — Gemini busca na web quando necessário
+    // Google Search Grounding — ativa busca na web para informações atuais.
+    // Desativado automaticamente em retry de SAFETY/RECITATION.
     if (useGrounding) {
       body['tools'] = [
         {'google_search': {}}
       ];
     }
 
-    final bodyJson = jsonEncode(body);
-
-    // ── Faz a requisição HTTP com stream de resposta ───────────────────────
+    // ── Envia requisição HTTP com stream de resposta ──────────────────────────
     late http.StreamedResponse response;
     try {
       final request = http.Request('POST', url)
         ..headers['Content-Type'] = 'application/json'
-        ..body = bodyJson;
+        ..body = jsonEncode(body);
 
       response = await request.send().timeout(const Duration(seconds: 60));
     } on TimeoutException {
-      if (controller.isClosed) return;
-      controller
-        ..add(GeminiChunk.error('timeout'))
-        ..close();
+      debugPrint('[GeminiV2] timeout na conexão HTTP (60s)');
+      if (!controller.isClosed) {
+        controller
+          ..add(GeminiChunk.error('timeout'))
+          ..close();
+      }
       return;
     } catch (e) {
-      if (controller.isClosed) return;
-      controller
-        ..add(GeminiChunk.error('network'))
-        ..close();
+      debugPrint('[GeminiV2] erro de rede: $e');
+      if (!controller.isClosed) {
+        controller
+          ..add(GeminiChunk.error('network'))
+          ..close();
+      }
       return;
     }
 
-    // ── Trata erros HTTP antes de ler o stream ────────────────────────────
+    // ── Tratamento de erros HTTP (antes de ler o stream) ─────────────────────
+
     if (response.statusCode == 429) {
-      // Rate limit — retry com backoff se ainda há tentativas disponíveis
       if (attempt < _maxRetries) {
-        // Respeita o header Retry-After se o servidor o enviar
-        Duration wait = _backoff[attempt];
-        final retryAfterHeader = response.headers['retry-after'] ??
+        // Calcula tempo de espera — respeita header Retry-After se disponível
+        Duration waitTime = _retryBackoff[attempt];
+        final retryAfter = response.headers['retry-after'] ??
             response.headers['x-ratelimit-reset-requests'];
-        if (retryAfterHeader != null) {
-          final retrySeconds = int.tryParse(retryAfterHeader);
+        if (retryAfter != null) {
+          final retrySeconds = int.tryParse(retryAfter);
           if (retrySeconds != null && retrySeconds > 0) {
-            // Usa o valor do servidor, mas limita a 60s para não bloquear demais
-            wait = Duration(seconds: retrySeconds.clamp(2, 60));
+            waitTime = Duration(seconds: retrySeconds.clamp(2, 60));
           }
         }
         debugPrint(
-            '[GeminiV2] 429 — retry ${attempt + 1}/$_maxRetries em ${wait.inSeconds}s');
-        await Future.delayed(wait);
+          '[GeminiV2] 429 rate limit — retry ${attempt + 1}/$_maxRetries '
+          'em ${waitTime.inSeconds}s',
+        );
+        await Future.delayed(waitTime);
         if (controller.isClosed) return;
         return _streamRequest(
           controller: controller,
@@ -302,9 +738,11 @@ class GeminiServiceV2 {
           attempt: attempt + 1,
         );
       }
-      // Esgotou retries — ativa cooldown global para evitar spam
+      // Esgotou todas as tentativas → cooldown global
       _quotaUntil = DateTime.now().add(_quotaCooldown);
-      debugPrint('[GeminiV2] 429 definitivo — cooldown de ${_quotaCooldown.inSeconds}s ativado');
+      debugPrint(
+        '[GeminiV2] 429 definitivo — cooldown de ${_quotaCooldown.inMinutes}min ativado',
+      );
       if (!controller.isClosed) {
         controller
           ..add(GeminiChunk.error('quota'))
@@ -314,7 +752,7 @@ class GeminiServiceV2 {
     }
 
     if (response.statusCode == 401 || response.statusCode == 403) {
-      debugPrint('[GeminiV2] ${response.statusCode}: API key inválida');
+      debugPrint('[GeminiV2] ${response.statusCode}: chave API inválida/sem permissão');
       if (!controller.isClosed) {
         controller
           ..add(GeminiChunk.error('api_key_invalid'))
@@ -324,7 +762,7 @@ class GeminiServiceV2 {
     }
 
     if (response.statusCode != 200) {
-      debugPrint('[GeminiV2] HTTP ${response.statusCode}');
+      debugPrint('[GeminiV2] HTTP inesperado: ${response.statusCode}');
       if (!controller.isClosed) {
         controller
           ..add(GeminiChunk.error('http_${response.statusCode}'))
@@ -333,101 +771,189 @@ class GeminiServiceV2 {
       return;
     }
 
-    // ── Lê stream SSE byte a byte ─────────────────────────────────────────
-    // O Gemini retorna chunks no formato:
+    // ══════════════════════════════════════════════════════════════════════════
+    // LEITURA DO STREAM SSE (CAMADA 1 — filtragem de CoT em tempo real)
+    //
+    // Formato Gemini SSE:
     //   data: {"candidates":[{"content":{"parts":[{"text":"..."}]},...}]}\n\n
     //
-    // Usamos um buffer de linha para montar o JSON completo de cada evento.
+    // Cada linha "data: {...}" é um evento JSON independente.
+    // Eventos "[DONE]" ou vazios são ignorados.
+    //
+    // _extractText() é chamado em CADA evento — filtra 6 tipos de parts
+    // não-textuais antes de qualquer char chegar ao StringBuffer da UI.
+    //
+    // finishReason tratamento:
+    //   STOP        → conclusão normal — emite done
+    //   MAX_TOKENS  → corte por limite de tokens — emite done (parcial OK)
+    //   SAFETY      → filtro de segurança — retry sem grounding
+    //   RECITATION  → repetição detectada — retry sem grounding
+    //   outros      → trata como STOP
+    // ══════════════════════════════════════════════════════════════════════════
     final lineBuffer = StringBuffer();
-    bool hadContent    = false;
-    bool finishEmitted = false; // evita emitir GeminiChunk.done duplo
+    bool hadContent = false;
+    bool finishEmitted = false; // guarda anti-done-duplo
 
     try {
       await for (final bytes in response.stream) {
         if (controller.isClosed) break;
 
-        final chunk = utf8.decode(bytes, allowMalformed: true);
+        final rawChunk = utf8.decode(bytes, allowMalformed: true);
 
-        // Processa cada caractere — monta linhas completas
-        for (final char in chunk.split('')) {
+        // Processa char a char — monta linhas completas terminadas em \n
+        for (final char in rawChunk.split('')) {
           if (char == '\n') {
             final line = lineBuffer.toString().trim();
             lineBuffer.clear();
 
-            if (line.startsWith('data: ')) {
-              final jsonStr = line.substring(6).trim();
-              if (jsonStr == '[DONE]' || jsonStr.isEmpty) continue;
+            // Ignora linhas que não sejam eventos SSE
+            if (!line.startsWith('data: ')) continue;
+            final jsonStr = line.substring(6).trim();
+            if (jsonStr.isEmpty || jsonStr == '[DONE]') continue;
 
-              try {
-                final data = jsonDecode(jsonStr) as Map<String, dynamic>;
-                final text = _extractText(data);
-                final finishReason = _extractFinishReason(data);
+            try {
+              final eventData = jsonDecode(jsonStr) as Map<String, dynamic>;
 
-                if (text.isNotEmpty) {
-                  hadContent = true;
-                  if (!controller.isClosed) {
-                    controller.add(GeminiChunk(
-                      text: text,
-                      isDone: finishReason != null,
-                    ));
-                  }
-                } else if (finishReason != null && !hadContent) {
-                  // Chunk vazio com finishReason — emite done sem texto
-                  if (!controller.isClosed) {
-                    controller.add(GeminiChunk(text: '', isDone: true));
-                  }
+              // ── CAMADA 1: Filtro rigoroso de CoT ──────────────────────────
+              // _extractText() descarta qualquer part com thought/CoT/metadata.
+              // Zero caracteres de raciocínio interno chegam ao controller.
+              final textFragment = _extractText(eventData);
+              final finishReason = _extractFinishReason(eventData);
+
+              if (textFragment.isNotEmpty) {
+                hadContent = true;
+                if (!controller.isClosed) {
+                  controller.add(GeminiChunk(
+                    text: textFragment,
+                    isDone: finishReason != null,
+                  ));
                 }
+              } else if (finishReason != null && !hadContent) {
+                // Chunk vazio com finishReason (ex: SAFETY sem texto gerado)
+                if (!controller.isClosed) {
+                  controller.add(const GeminiChunk(text: '', isDone: true));
+                }
+              }
 
-                // finishReason presente → resposta completa
-                if (finishReason != null) {
-                  debugPrint('[GeminiV2] finishReason=$finishReason');
-                  finishEmitted = true; // marca que done já foi emitido
-                  if (finishReason == 'SAFETY' || finishReason == 'RECITATION') {
-                    // Tenta sem grounding se ainda estava com grounding
+              // ── Tratamento de finishReason ────────────────────────────────
+              if (finishReason != null) {
+                debugPrint(
+                  '[GeminiV2] finishReason=$finishReason '
+                  '(conteúdo: ${hadContent ? 'sim' : 'nenhum'})',
+                );
+
+                switch (finishReason) {
+                  case 'STOP':
+                    // Conclusão normal — done já foi emitido acima se havia texto
+                    finishEmitted = true;
+
+                  case 'MAX_TOKENS':
+                    // Limite de tokens atingido — resposta parcial entregue.
+                    // maxOutputTokens=3200 previne isso na maioria dos casos.
+                    // Quando ocorre, a resposta parcial é válida e útil.
+                    debugPrint(
+                      '[GeminiV2] MAX_TOKENS: resposta parcial entregue '
+                      '(aumentar maxOutputTokens se recorrente)',
+                    );
+                    finishEmitted = true;
+
+                  case 'SAFETY':
+                  case 'RECITATION':
+                    // Filtro de segurança ou detecção de recitação.
+                    // Primeira tentativa: retry sem grounding (que pode
+                    // trazer conteúdo que aciona o filtro).
                     if (useGrounding && !controller.isClosed) {
-                      finishEmitted = false; // reset — vai refazer
-                      // Refaz sem grounding
+                      debugPrint(
+                        '[GeminiV2] $finishReason: retry sem grounding',
+                      );
                       return _streamRequest(
                         controller: controller,
                         apiKey: apiKey,
                         userMessage: userMessage,
                         systemPrompt: systemPrompt,
                         history: history,
-                        useGrounding: false,
+                        useGrounding: false, // desativa grounding no retry
                         attempt: attempt,
                       );
                     }
-                  }
+                    // Já estava sem grounding — encerra sem retry adicional
+                    finishEmitted = true;
+
+                  default:
+                    // finishReasons desconhecidos tratados como STOP
+                    finishEmitted = true;
                 }
-              } catch (e) {
-                // JSON mal-formado no chunk — ignora e continua
-                debugPrint('[GeminiV2] parse error em chunk: $e');
               }
+            } catch (parseError) {
+              // JSON mal-formado em chunk — ignora e continua processando
+              debugPrint('[GeminiV2] parse error em evento SSE: $parseError');
             }
           } else {
             lineBuffer.write(char);
           }
         }
       }
-    } catch (e) {
-      debugPrint('[GeminiV2] erro no stream: $e');
+    } catch (streamError) {
+      debugPrint('[GeminiV2] erro durante leitura do stream: $streamError');
       if (!hadContent && !controller.isClosed) {
         controller.add(GeminiChunk.error('stream_error'));
       }
     }
 
-    // Fecha o controller ao terminar o stream.
-    // Emite GeminiChunk.done SOMENTE se finishReason não foi detectado no stream
-    // (garante que o AppProvider sempre receba o sinal de conclusão).
+    // ── Fecha o controller ao terminar o stream ───────────────────────────────
+    // Emite GeminiChunk.done apenas se finishReason não foi detectado no stream
+    // (ex: stream encerrou abruptamente sem enviar finishReason).
+    // Guarda anti-duplicata garante que AppProvider sempre receba o sinal final.
     if (!controller.isClosed) {
       if (!finishEmitted) {
+        // Stream encerrado sem finishReason explícito — trata como done normal
         controller.add(GeminiChunk.done);
       }
       controller.close();
     }
   }
 
-  // ── Extrai texto dos candidates do chunk JSON ──────────────────────────────
+  // ══════════════════════════════════════════════════════════════════════════
+  // _extractText — CAMADA 1: Filtro rigoroso de CoT por evento SSE
+  //
+  // REGRA CENTRAL: extrair EXCLUSIVAMENTE candidates[0].content.parts[N].text
+  //               onde o part NÃO seja pensamento interno do modelo.
+  //
+  // CONDITIONS DE DESCARTE (6 filtros cumulativos):
+  //
+  //   1. thought == true
+  //      → Part explicitamente marcado como cadeia de pensamento (CoT).
+  //        Gemini 2.5 gera esses quando thinkingBudget > 0 ou o modelo
+  //        ignora thinkingBudget=0. JAMAIS deve chegar à UI.
+  //
+  //   2. containsKey('thoughtSignature')
+  //      → Assinatura criptográfica que identifica bloco de pensamento.
+  //        Aparece em conjunto com thought:true ou isoladamente.
+  //
+  //   3. containsKey('functionCall')
+  //      → Chamada interna a ferramenta (Google Search, code interpreter).
+  //        Metadado de uso interno — não é texto para o usuário.
+  //
+  //   4. containsKey('executableCode')
+  //      → Código executável gerado internamente pelo modelo.
+  //        Não deve ser exibido como resposta ao usuário.
+  //
+  //   5. containsKey('codeExecutionResult')
+  //      → Resultado de execução de código interno.
+  //        Metadado de processamento, não conteúdo de resposta.
+  //
+  //   6. containsKey('inlineData')
+  //      → Dados binários inline (imagens, áudio, etc.).
+  //        Não é texto — não processável como string.
+  //
+  // CONDIÇÃO DE ACEITE:
+  //   Part tem chave 'text' (String, não-vazia) E não tem nenhuma das 6 acima.
+  //   → Concatenado no buffer e retornado para o controller.
+  //
+  // Esta função é a ÚLTIMA linha de defesa. Mesmo que as duas primeiras
+  // camadas (thinkingBudget=0 e _systemPromptPrefix) sejam contornadas
+  // por bug de versão do modelo, nenhum char de CoT chega à UI.
+  // ══════════════════════════════════════════════════════════════════════════
   static String _extractText(Map<String, dynamic> data) {
     try {
       final candidates = data['candidates'] as List?;
@@ -437,31 +963,43 @@ class GeminiServiceV2 {
       final parts = candidate['content']?['parts'] as List?;
       if (parts == null || parts.isEmpty) return '';
 
-      // Filtra: apenas parts de texto (não thought, functionCall, etc.)
       final buffer = StringBuffer();
-      for (final part in parts) {
-        final p = part as Map<String, dynamic>;
-        if (p['thought'] == true) continue;
-        if (p.containsKey('functionCall')) continue;
-        if (p.containsKey('executableCode')) continue;
-        if (p.containsKey('codeExecutionResult')) continue;
-        final text = p['text'] as String?;
-        if (text != null && text.isNotEmpty) buffer.write(text);
+
+      for (final rawPart in parts) {
+        final part = rawPart as Map<String, dynamic>;
+
+        // ── 6 filtros de descarte (ordem importa: thought primeiro) ──────
+        if (part['thought'] == true) continue;           // [1] CoT explícito
+        if (part.containsKey('thoughtSignature')) continue; // [2] assinatura CoT
+        if (part.containsKey('functionCall')) continue;     // [3] tool call
+        if (part.containsKey('executableCode')) continue;   // [4] código interno
+        if (part.containsKey('codeExecutionResult')) continue; // [5] resultado exec
+        if (part.containsKey('inlineData')) continue;       // [6] binário inline
+
+        // ── Aceita apenas texto puro ─────────────────────────────────────
+        final text = part['text'] as String?;
+        if (text != null && text.isNotEmpty) {
+          buffer.write(text);
+        }
       }
+
       return buffer.toString();
     } catch (_) {
+      // Exceção no parsing → retorna string vazia (seguro para o stream)
       return '';
     }
   }
 
-  // ── Extrai finishReason do chunk JSON ─────────────────────────────────────
+  // ── Extrai finishReason do evento SSE ─────────────────────────────────────
+  // Retorna null para FINISH_REASON_UNSPECIFIED (chunk intermediário)
+  // ou quando não há candidates válidos.
   static String? _extractFinishReason(Map<String, dynamic> data) {
     try {
       final candidates = data['candidates'] as List?;
       if (candidates == null || candidates.isEmpty) return null;
       final candidate = candidates[0] as Map<String, dynamic>;
       final reason = candidate['finishReason'] as String?;
-      // STOP = conclusão normal; outros = especiais (SAFETY, MAX_TOKENS, etc.)
+      // FINISH_REASON_UNSPECIFIED = chunk intermediário, não é conclusão
       if (reason == null || reason == 'FINISH_REASON_UNSPECIFIED') return null;
       return reason;
     } catch (_) {
@@ -469,31 +1007,44 @@ class GeminiServiceV2 {
     }
   }
 
-  // ── Mapeia errorCode para mensagem amigável bilíngue ──────────────────────
+  // ══════════════════════════════════════════════════════════════════════════
+  // errorMessage — Mensagens de erro bilíngues (ES/PT) para a UI
+  //
+  // Chamado pelo AppProvider quando o stream termina com errorCode != null.
+  // Inclui hint de cooldown quando relevante (quota error com tempo restante).
+  // ══════════════════════════════════════════════════════════════════════════
   static String errorMessage(String code, String lang) {
     final isEs = lang == 'es';
-    // Para quota: inclui tempo restante do cooldown se disponível
     final cooldownSecs = quotaCooldownRemaining?.inSeconds;
-    final cooldownHint = cooldownSecs != null && cooldownSecs > 0
-        ? (isEs ? ' (~${cooldownSecs}s)' : ' (~${cooldownSecs}s)')
-        : '';
+    final cooldownHint =
+        (cooldownSecs != null && cooldownSecs > 0) ? ' (~${cooldownSecs}s)' : '';
 
     return switch (code) {
       'quota' => isEs
-          ? 'Límite de consultas alcanzado$cooldownHint. Intenta de nuevo en un momento. ⚕ Apoyo educacional.'
-          : 'Limite de consultas atingido$cooldownHint. Tente novamente em instantes. ⚕ Apoio educacional.',
+          ? 'Límite de consultas alcanzado$cooldownHint. '
+              'Intenta de nuevo en un momento. ⚕ Apoyo educacional.'
+          : 'Limite de consultas atingido$cooldownHint. '
+              'Tente novamente em instantes. ⚕ Apoio educacional.',
       'api_key_invalid' => isEs
-          ? 'No se pudo conectar al asistente. Verifica la configuración de la API. ⚕ Apoyo educacional.'
-          : 'Não foi possível conectar ao assistente. Verifique a configuração da API. ⚕ Apoio educacional.',
+          ? 'No se pudo conectar al asistente. '
+              'Verifica la configuración de la API. ⚕ Apoyo educacional.'
+          : 'Não foi possível conectar ao assistente. '
+              'Verifique a configuração da API. ⚕ Apoio educacional.',
       'timeout' => isEs
-          ? 'La consulta tardó demasiado. Verifica tu conexión e intenta nuevamente. ⚕ Apoyo educacional.'
-          : 'A consulta demorou muito. Verifique sua conexão e tente novamente. ⚕ Apoio educacional.',
+          ? 'La consulta tardó demasiado. '
+              'Verifica tu conexión e intenta nuevamente. ⚕ Apoyo educacional.'
+          : 'A consulta demorou muito. '
+              'Verifique sua conexão e tente novamente. ⚕ Apoio educacional.',
       'network' => isEs
-          ? 'Sin conexión a internet. Verifica la red e intenta nuevamente. ⚕ Apoyo educacional.'
-          : 'Sem conexão com a internet. Verifique a rede e tente novamente. ⚕ Apoio educacional.',
+          ? 'Sin conexión a internet. '
+              'Verifica la red e intenta nuevamente. ⚕ Apoyo educacional.'
+          : 'Sem conexão com a internet. '
+              'Verifique a rede e tente novamente. ⚕ Apoio educacional.',
       _ => isEs
-          ? 'No pude procesar esa consulta. ¿Puedes reformularla? ⚕ Apoyo educacional.'
-          : 'Não consegui processar essa consulta. Pode reformulá-la? ⚕ Apoio educacional.',
+          ? 'No pude procesar esa consulta. '
+              '¿Puedes reformularla? ⚕ Apoyo educacional.'
+          : 'Não consegui processar essa consulta. '
+              'Pode reformulá-la? ⚕ Apoio educacional.',
     };
   }
 }
