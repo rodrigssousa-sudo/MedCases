@@ -134941,25 +134941,30 @@ q=A.v(A.a([new A.dX("FC","60\u2013100 bpm","<60 bradicardia; >100 taquicardia",h
 p=a?"Patrones ECG Urgentes":"Padr\xf5es ECG de Urg\xeancia"
 o=a?"TV polim\xf3rfica, QTc prolongado. Causa: hipocalemia, hipoMg, QT-prolongadores. Tto: MgSO4 2g IV.":"TV polim\xf3rfica, QTc prolongado. Causa: hipocalemia, hipoMg, drogas. Tto: MgSO4 2g IV."
 n=a?"Progress\xe3o: ondas T picudas \u2192 PR largo \u2192 QRS ancho \u2192 sinusoidal \u2192 FV. Gluconato Ca2+ urgente.":"Progress\xe3o: T apiculadas \u2192 PR longo \u2192 QRS largo \u2192 padr\xe3o sinusoidal \u2192 FV. Gluconato Ca2+ urgente."
-m=a?"Ritmo irregularmente irregular, sem ondas P. CHADS2-VASc para anticoagula\xe7\xe3o. FC alvo <110 bpm.":"Ritmo irregularmente irregular, sem ondas P. CHA2DS2-VASc para anticoagula\xe7\xe3o. FC alvo <110 bpm."
-l=a?"TEP (patr\xf3n S1Q3T3)":"TEP (padr\xe3o S1Q3T3)"
-k=a?"BAV Total (3\xb0 grado)":"BAV Total (3\xb0 grau)"
-j=a?"Achatamiento/inversi\xf3n onda T, ondas U prominentes, QTc prolongado. KCl IV urgente si K+ <2,5.":"Achatamento/invers\xe3o onda T, ondas U proeminentes, QTc prolongado. KCl IV urgente se K+ <2,5."
-j=A.v(A.a([new A.pa("IAMCSST","Supra ST \u22651mm em \u22652 deriva\xe7\xf5es cont\xedguas (\u22652mm em V1\u2013V4). Novo BCRE. Reperfus\xe3o emergente.",B.al,h),new A.pa("Torsades de Pointes",o,B.al,h),new A.pa("Hiperpotassemia",n,B.al,h),new A.pa("Fibrila\xe7\xe3o Atrial",m,B.cK,h),new A.pa(l,"S profunda em D1, Q e T invertida em D3. Taquicardia sinusal + BCRD novo = alta suspeita.",B.cK,h),new A.pa(k,"Dissocia\xe7\xe3o AV completa. Escape juncional (FC 40\u201360) ou ventricular (FC 20\u201340). Atropina + MP urgente.",B.al,h),new A.pa("Hipocalemia",j,B.cK,h)],r),B.l,B.d,B.f)
+m=a?"Fibrilaci\xf3n Auricular":"Fibrila\xe7\xe3o Atrial"
+l=a?"Ritmo irregularmente irregular, sin ondas P. CHA2DS2-VASc para anticoagulaci\xf3n. FC objetivo <110 lpm.":"Ritmo irregularmente irregular, sem ondas P. CHA2DS2-VASc para anticoagula\xe7\xe3o. FC alvo <110 bpm."
+k=a?"TEP (patr\xf3n S1Q3T3)":"TEP (padr\xe3o S1Q3T3)"
+j=a?"BAV Total (3\xb0 grado)":"BAV Total (3\xb0 grau)"
+i=a?"Achatamiento/inversi\xf3n onda T, ondas U prominentes, QTc prolongado. KCl IV urgente si K+ <2,5.":"Achatamento/invers\xe3o onda T, ondas U proeminentes, QTc prolongado. KCl IV urgente se K+ <2,5."
+i=A.v(A.a([new A.pa("IAMCSST","Supra ST \u22651mm em \u22652 deriva\xe7\xf5es cont\xedguas (\u22652mm em V1\u2013V4). Novo BCRE. Reperfus\xe3o emergente.",B.al,h),new A.pa("Torsades de Pointes",o,B.al,h),new A.pa("Hiperpotassemia",n,B.al,h),new A.pa(m,l,B.cK,h),new A.pa(k,"S profunda em D1, Q e T invertida em D3. Taquicardia sinusal + BCRD novo = alta suspeita.",B.cK,h),new A.pa(j,"Dissocia\xe7\xe3o AV completa. Escape juncional (FC 40\u201360) ou ventricular (FC 20\u201340). Atropina + MP urgente.",B.al,h),new A.pa("Hipocalemia",i,B.cK,h)],r),B.l,B.d,B.f)
 o=a?"Territorios Coronarios":"Territ\xf3rios Coron\xe1rios"
 n=a?"Arteria circunfleja":"Art\xe9ria circunflexa"
 m=a?"V7\u2013V9 (espejo V1-V3)":"V7\u2013V9 (espelho V1-V3)"
-return A.v(A.a([new A.dv(s,B.dS,q,h,h,h),new A.dv(p,B.eI,j,h,h,h),new A.dv(o,B.fJ,A.v(A.a([new A.dX("DA (anterior)","V1\u2013V4 + aVL","ADA: paredes anterior e septal",h),new A.dX("Cx (lateral)","I, aVL, V5\u2013V6",n,h),new A.dX("CD (inferior)","II, III, aVF","Considerar IAM VD: V3R-V4R",h),new A.dX("Posterior",m,"Infra ST anterior = supra posterior",h)],r),B.l,B.d,B.f),h,h,h)],r),B.l,B.d,B.f)
+return A.v(A.a([new A.dv(s,B.dS,q,h,h,h),new A.dv(p,B.eI,i,h,h,h),new A.dv(o,B.fJ,A.v(A.a([new A.dX("DA (anterior)","V1\u2013V4 + aVL","ADA: paredes anterior e septal",h),new A.dX("Cx (lateral)","I, aVL, V5\u2013V6",n,h),new A.dX("CD (inferior)","II, III, aVF","Considerar IAM VD: V3R-V4R",h),new A.dX("Posterior",m,"Infra ST anterior = supra posterior",h)],r),B.l,B.d,B.f),h,h,h)],r),B.l,B.d,B.f)
 case 2:return this.aj8(a)
 case 3:s=a?"Cat\xe9ter Venoso Central \u2014 Localizaci\xf3n":"Acesso Venoso Central \u2014 Localiza\xe7\xe3o"
-r=t.p
-q=A.v(A.a([new A.Ee("Jugular Interna D","F\xe1cil, baixo PTX, pulm\xe3o D maior","Art\xe9ria car\xf3tida pr\xf3xima",h),new A.Ee("Subcl\xe1vio","Confort\xe1vel, baixa infec\xe7\xe3o","Alto risco PTX, hemot\xf3rax",h),new A.Ee("Femoral","F\xe1cil, r\xe1pido, sem PTX","Alta infec\xe7\xe3o, TVP, n\xe3o ideal PCR",h),B.O,new A.h8("Confirmar posi\xe7\xe3o com Rx t\xf3rax antes de usar. Ponta ideal: jun\xe7\xe3o cava superior-\xe1trio direito. Eco point-of-care facilita.",h)],r),B.l,B.d,B.f)
-p=a?"Tama\xf1o de Cat\xe9ter por Situaci\xf3n":"Calibre de Cateter por Situa\xe7\xe3o"
-o=a?"Prefetir subcl\xe1via/jugular interna":"Preferir subcl\xe1via/jugular interna"
-n=a?"Introdutor = fluxo m\xe1ximo":"Introdutor = maior fluxo"
-o=A.v(A.a([new A.dX("Ressuscita\xe7\xe3o","14\u201316 G perif\xe9rico","2 acessos curtos e grossos > 1 central",h),new A.dX("Vasopressor","CVC (3 lumens)",o,h),new A.dX("Transfus\xe3o r\xe1pida","14\u201316 G + introdutor 8,5Fr",n,h),new A.dX("Nutri\xe7\xe3o parenteral","PICC ou CVC","Osmolaridade > 900 mOsm = central",h),new A.dX("Hemodi\xe1lise","Cateter duplo-l\xfamen 11\u201313Fr","Jugular D > femoral > subcl\xe1via",h)],r),B.l,B.d,B.f)
+r=a?"F\xe1cil, r\xe1pido, sin PTX":"F\xe1cil, r\xe1pido, sem PTX"
+q=a?"Alta infecci\xf3n, TVP, no ideal en RCP":"Alta infec\xe7\xe3o, TVP, n\xe3o ideal PCR"
+p=t.p
+q=A.v(A.a([new A.Ee("Jugular Interna D","F\xe1cil, baixo PTX, pulm\xe3o D maior","Art\xe9ria car\xf3tida pr\xf3xima",h),new A.Ee("Subcl\xe1vio","Confort\xe1vel, baixa infec\xe7\xe3o","Alto risco PTX, hemot\xf3rax",h),new A.Ee("Femoral",r,q,h),B.O,new A.h8("Confirmar posi\xe7\xe3o com Rx t\xf3rax antes de usar. Ponta ideal: jun\xe7\xe3o cava superior-\xe1trio direito. Eco point-of-care facilita.",h)],p),B.l,B.d,B.f)
+r=a?"Tama\xf1o de Cat\xe9ter por Situaci\xf3n":"Calibre de Cateter por Situa\xe7\xe3o"
+o=a?"Resucitaci\xf3n":"Ressuscita\xe7\xe3o"
+n=a?"2 accesos cortos y gruesos > 1 central":"2 acessos curtos e grossos > 1 central"
+m=a?"Preferir subclavia/yugular interna":"Preferir subcl\xe1via/jugular interna"
+l=a?"Introdutor = fluxo m\xe1ximo":"Introdutor = maior fluxo"
+o=A.v(A.a([new A.dX(o,"14\u201316 G perif\xe9rico",n,h),new A.dX("Vasopressor","CVC (3 lumens)",m,h),new A.dX("Transfus\xe3o r\xe1pida","14\u201316 G + introdutor 8,5Fr",l,h),new A.dX("Nutri\xe7\xe3o parenteral","PICC ou CVC","Osmolaridade > 900 mOsm = central",h),new A.dX("Hemodi\xe1lise","Cateter duplo-l\xfamen 11\u201313Fr","Jugular D > femoral > subcl\xe1via",h)],p),B.l,B.d,B.f)
 n=a?"Presiones de Referencia \u2014 Invasivo":"Press\xf5es de Refer\xeancia \u2014 Invasivo"
-return A.v(A.a([new A.dv(s,B.zM,q,h,h,h),new A.dv(p,B.ayr,o,h,h,h),new A.dv(n,B.mZ,A.v(A.a([new A.dX("PAM","70\u2013105 mmHg","Meta \u226565 no choque",h),new A.dX("PVC","2\u20138 mmHg","Isolado pouco confi\xe1vel",h),new A.dX("PCP (wedge)","6\u201312 mmHg",">18 = sobrecarga; <6 = hipovolemia",h),new A.dX("DC","4\u20138 L/min","IC: 2,5\u20134,0 L/min/m\xb2",h),new A.dX("RVSP","<30 mmHg",">35 = hipertens\xe3o pulmonar",h),new A.dX("SvO2","65\u201375%","<65% = extra\xe7\xe3o aumentada (baixo DC)",h)],r),B.l,B.d,B.f),h,h,h)],r),B.l,B.d,B.f)
+return A.v(A.a([new A.dv(s,B.zM,q,h,h,h),new A.dv(r,B.ayr,o,h,h,h),new A.dv(n,B.mZ,A.v(A.a([new A.dX("PAM","70\u2013105 mmHg","Meta \u226565 no choque",h),new A.dX("PVC","2\u20138 mmHg","Isolado pouco confi\xe1vel",h),new A.dX("PCP (wedge)","6\u201312 mmHg",">18 = sobrecarga; <6 = hipovolemia",h),new A.dX("DC","4\u20138 L/min","IC: 2,5\u20134,0 L/min/m\xb2",h),new A.dX("RVSP","<30 mmHg",">35 = hipertens\xe3o pulmonar",h),new A.dX("SvO2","65\u201375%","<65% = extra\xe7\xe3o aumentada (baixo DC)",h)],p),B.l,B.d,B.f),h,h,h)],p),B.l,B.d,B.f)
 case 4:s=a?"Valores Normales \u2014 GAS Arterial":"Valores Normais \u2014 GAS Arterial"
 r=a?"<7,35=acidosis; >7,45=alcalosis":"<7,35=acidose; >7,45=alcalose"
 q=a?"<35=alcalosis resp; >45=acidosis resp":"<35=alcalose resp; >45=acidose resp"
