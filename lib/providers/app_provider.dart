@@ -1962,6 +1962,16 @@ class AppProvider extends ChangeNotifier {
     'signo', 'queja',
     // ── Forma/tipo (ES) ──────────────────────────────────────────────────────
     'clase',
+    // ── Modificadores de severidade (ES) ──────────────────────────────────────
+    'agudo', 'aguda', 'cronico', 'cronica', 'grave', 'leve', 'moderado', 'moderada',
+    'severo', 'severa', 'subagudo', 'subaguda',
+    // ── Indicação / linha terapêutica (ES) ────────────────────────────────────
+    'indicado', 'indicada', 'indicacion', 'indicaciones',
+    'primera', 'segunda', 'linea',
+    // ── Genérico fármaco (ES) ──────────────────────────────────────────────────
+    'farmaco', 'farmacos', 'farmacoterapia',
+    // ── Contexto / frequência (ES) ────────────────────────────────────────────
+    'segun', 'dependiendo', 'generalmente', 'habitualmente',
   };
 
   /// Verifica se a query tem pelo menos uma palavra clínica substantiva
@@ -3422,9 +3432,15 @@ class AppProvider extends ChangeNotifier {
       final minScore   = isHighRisk ? 2 : 1;
       if (matchCount >= minScore) {
         final actions = p.getActions(_lang).take(4).join(' | ');
+        // Extrai trecho da definition para contexto clínico adicional
+        final defRaw = tDB(p.definition);
+        final defExcerpt = defRaw.isNotEmpty
+            ? defRaw.substring(0, defRaw.length.clamp(0, 160))
+            : '';
+        final defLine = defExcerpt.isNotEmpty ? '\n  Contexto: $defExcerpt...' : '';
         results.add(
           '• [${tDB(p.title)}]\n'
-          '  Reconhecer: ${tDB(p.recognize).substring(0, tDB(p.recognize).length.clamp(0, 180))}...\n'
+          '  Reconhecer: ${tDB(p.recognize).substring(0, tDB(p.recognize).length.clamp(0, 180))}...$defLine\n'
           '  Conduta: $actions'
         );
         if (results.length >= 6) break;
@@ -3466,11 +3482,17 @@ class AppProvider extends ChangeNotifier {
         final warn    = d.getField(d.warning, _lang);
         final mechStr = d.getField(d.mechanism, _lang);
         final route   = d.route;
+        // Interações: extrair do mapa multilíngue se disponível
+        final interList = d.interactions?[_lang] ?? d.interactions?['pt'] ?? <String>[];
+        final interStr  = interList.take(2).join(', ');
+        final interLine = interStr.isNotEmpty
+            ? '\n  Interações: ${interStr.substring(0, interStr.length.clamp(0, 100))}'
+            : '';
         results.add(
           '• [${d.name}] ${d.getField(d.className, _lang)}\n'
           '  Mecanismo: ${mechStr.isNotEmpty ? mechStr.substring(0, mechStr.length.clamp(0, 120)) : "—"}\n'
           '  Dose: ${dose.isNotEmpty ? dose : "ver ficha"} | Via: ${route.isNotEmpty ? route : "—"}\n'
-          '  Alerta: ${warn.isNotEmpty ? warn.substring(0, warn.length.clamp(0, 120)) : "—"}'
+          '  Alerta: ${warn.isNotEmpty ? warn.substring(0, warn.length.clamp(0, 120)) : "—"}$interLine'
         );
         if (results.length >= 6) break;
       }
