@@ -2825,26 +2825,53 @@ class _HistorialCompactCard extends StatelessWidget {
       ),
       child: Row(
         children: [
-          // ── Label lateral esquerdo ──────────────────────────────────────
-          Padding(
-            padding: const EdgeInsets.only(left: 12, right: 8),
-            child: Row(mainAxisSize: MainAxisSize.min, children: [
-              Icon(
-                Icons.folder_shared_rounded,
-                size: 13,
-                color: labelColor,
+          // ── Busca — substitui label estático (Build 97) ─────────────────
+          // Abre o modal de busca global clínica (fármacos, protocolos, etc.)
+          GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: () { AppHaptics.light(context); showGlobalSearch(context); },
+            child: Padding(
+              padding: const EdgeInsets.only(left: 10, right: 10),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    width: 30,
+                    height: 24,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                      color: dark
+                          ? const Color(0xFF0A7C4E).withValues(alpha: 0.15)
+                          : const Color(0xFF0A7C4E).withValues(alpha: 0.08),
+                      border: Border.all(
+                        color: dark
+                            ? const Color(0xFF4ADE80).withValues(alpha: 0.25)
+                            : const Color(0xFF0A7C4E).withValues(alpha: 0.20),
+                        width: 1,
+                      ),
+                    ),
+                    child: Icon(
+                      Icons.search_rounded,
+                      size: 15,
+                      color: dark
+                          ? const Color(0xFF4ADE80)
+                          : const Color(0xFF0A7C4E),
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    isEs ? 'Buscar' : 'Buscar',
+                    style: TextStyle(
+                      fontSize: 9,
+                      fontWeight: FontWeight.w700,
+                      color: dark
+                          ? const Color(0xFF4ADE80).withValues(alpha: 0.80)
+                          : const Color(0xFF0A7C4E),
+                    ),
+                  ),
+                ],
               ),
-              const SizedBox(width: 5),
-              Text(
-                isEs ? 'HISTORIAL' : 'HISTÓRICO',
-                style: TextStyle(
-                  fontSize: 9.5,
-                  fontWeight: FontWeight.w800,
-                  letterSpacing: 0.7,
-                  color: labelColor,
-                ),
-              ),
-            ]),
+            ),
           ),
 
           // ── Divisor vertical ────────────────────────────────────────────

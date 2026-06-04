@@ -32,7 +32,7 @@ import 'screens/prescripciones_screen.dart';
 import 'screens/legal_screen.dart';
 import 'screens/professional_gate_screen.dart';
 import 'screens/fontes_screen.dart';
-import 'screens/home_screen.dart' show HomeScreen, showGlobalSearch;
+import 'screens/home_screen.dart' show HomeScreen;
 import 'screens/notes_screen.dart';
 import 'screens/library_screen.dart';
 import 'services/firestore_service.dart';
@@ -1546,9 +1546,15 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
                       dark,
                       p,
                     ),
-                    // LUPA — busca global (slot fixo, não tab)
-                    _buildSearchBtn(dark),
-                    // IA MEDCASES — botão central elevado (abre tab 2)
+                    // 3 — HISTÓRIA CLÍNICA (acesso global — substitui Lupa)
+                    _buildNavBtn(
+                      3,
+                      Icons.assignment_ind_outlined,
+                      p.lang == 'es' ? 'H. Clínica' : 'H. Clínica',
+                      dark,
+                      p,
+                    ),
+                    // IA ConnectMind AI — botão central elevado (abre tab 2)
                     _buildAiCenterBtn(dark, p),
                     // 5 — BIBLIOTECA
                     _buildNavBtn(
@@ -1612,40 +1618,7 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
     );
   }
 
-  // ── Botão de busca global ─────────────────────────────────────────────────
-  Widget _buildSearchBtn(bool dark) {
-    final green  = dark ? const Color(0xFF46E28C) : const Color(0xFF0A7C4E);
-    final bgColor = dark ? const Color(0xFF1A2E22) : const Color(0xFFE8F5EF);
-    final borderColor = dark ? const Color(0xFF2D4A38) : const Color(0xFFB8D9C8);
-    final inactiveColor = dark ? Colors.white.withValues(alpha: 0.32) : const Color(0xFFB0B8C0);
-
-    return Expanded(
-      child: GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onTap: () => showGlobalSearch(context),
-        child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-          Container(
-            width: 40,
-            height: 28,
-            decoration: BoxDecoration(
-              color: bgColor,
-              borderRadius: BorderRadius.circular(10),
-              border: Border.all(color: borderColor, width: 1),
-            ),
-            child: Icon(Icons.search_rounded, color: green, size: 18),
-          ),
-          const SizedBox(height: 1),
-          Text(
-            _p?.lang == 'es' ? 'Buscar' : 'Buscar',
-            overflow: TextOverflow.ellipsis,
-            style: TextStyle(fontSize: 9, fontWeight: FontWeight.w500, color: inactiveColor),
-          ),
-        ]),
-      ),
-    );
-  }
-
-  // ── Botão IA MEDCASES central (pseudo-FAB acoplado à barra) ──────────────
+  // ── Botão IA ConnectMind central (pseudo-FAB acoplado à barra) ──────────────
   // Posicionado no centro da barra, visualmente elevado com gradiente verde
   // premium. Ao tocar, navega imediatamente para a tab de IA (tab 2).
   Widget _buildAiCenterBtn(bool dark, dynamic p) {
@@ -1706,12 +1679,6 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
         ]),
       ),
     );
-  }
-
-  // Referência ao provider — usado para obter lang no _buildSearchBtn
-  // sem reconstruir todo o widget.
-  AppProvider? get _p {
-    try { return context.read<AppProvider>(); } catch (_) { return null; }
   }
 
 }
