@@ -16,7 +16,10 @@ const _kGold  = Color(0xFFC5A365);
 const _kGoldL = Color(0xFFFFE8A6);
 
 // ─────────────────────────────────────────────────────────────────────────────
-// LIBRARY SCREEN — Biblioteca Clínica (PDFs / Guias + Casos Clínicos)
+// LIBRARY SCREEN — Biblioteca Clínica
+// 2 abas: Guias PDF · Casos de Estudo
+// Apple App Store Compliance: terminologia estritamente educacional/pedagógica.
+// Nenhuma aba ou string usa "Protocolo" como rótulo navegável.
 // ─────────────────────────────────────────────────────────────────────────────
 class LibraryScreen extends StatefulWidget {
   const LibraryScreen({super.key});
@@ -27,6 +30,7 @@ class LibraryScreen extends StatefulWidget {
 
 class _LibraryScreenState extends State<LibraryScreen>
     with SingleTickerProviderStateMixin {
+  // 2 abas: índice 0 = Guias PDF, índice 1 = Casos de Estudo
   late TabController _tabCtrl;
   final _searchCtrl = TextEditingController();
   String _search    = '';
@@ -194,7 +198,8 @@ class _LibraryScreenState extends State<LibraryScreen>
   @override
   void initState() {
     super.initState();
-    _tabCtrl = TabController(length: 3, vsync: this);
+    // 2 abas apenas — "Protocolos" foi unificada com "Casos de Estudo"
+    _tabCtrl = TabController(length: 2, vsync: this);
     _initGuides();
     _searchCtrl.addListener(() {
       if (mounted) setState(() => _search = _searchCtrl.text.toLowerCase());
@@ -242,8 +247,6 @@ class _LibraryScreenState extends State<LibraryScreen>
     final isEs = p.lang == 'es';
     final bg = dark ? const Color(0xFF0A130E) : const Color(0xFFF7F8FA);
     final filtered = _filtered;
-    // Desktop: sem shell AppBar → mostra header próprio.
-    // Mobile/tablet: shell AppBar já visível → oculta header próprio.
     final showHeader = MedBreakpoints.of(context).isDesktop;
 
     return SafeArea(
@@ -263,7 +266,7 @@ class _LibraryScreenState extends State<LibraryScreen>
                   onRefreshGuides: _handleManualRefresh,
                   refreshing: _loading,
                 ),
-              // Mobile/tablet: só a TabBar (o título fica na AppBar do shell)
+              // Mobile/tablet: só a TabBar (título na AppBar do shell)
               if (!showHeader)
                 _MobileLibraryTabBar(
                   dark: dark,
@@ -274,6 +277,7 @@ class _LibraryScreenState extends State<LibraryScreen>
                 child: TabBarView(
                   controller: _tabCtrl,
                   children: [
+                    // Aba 0: Guias PDF (inalterada)
                     _GuidesTab(
                       dark: dark,
                       isEs: isEs,
@@ -287,8 +291,8 @@ class _LibraryScreenState extends State<LibraryScreen>
                       onOpen: _openPdf,
                       onRetry: _handleManualRefresh,
                     ),
-                    _CasosClinicosTab(dark: dark, isEs: isEs, p: p),
-                    _ProtocolsTab(dark: dark, isEs: isEs, p: p),
+                    // Aba 1: Casos de Estudo (fusão de Casos Clínicos + conteúdo pedagógico)
+                    _CasosDeEstudoTab(dark: dark, isEs: isEs, p: p),
                   ],
                 ),
               ),
@@ -301,8 +305,8 @@ class _LibraryScreenState extends State<LibraryScreen>
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// MOBILE TAB BAR — exibida abaixo do shell AppBar no mobile/tablet
-// 3 abas: Guias PDF · Casos Clínicos · Protocolos
+// MOBILE TAB BAR
+// 2 abas: Guias PDF · Casos de Estudo
 // ─────────────────────────────────────────────────────────────────────────────
 class _MobileLibraryTabBar extends StatelessWidget {
   final bool dark;
@@ -362,13 +366,8 @@ class _MobileLibraryTabBar extends StatelessWidget {
             iconMargin: const EdgeInsets.only(bottom: 2),
           ),
           Tab(
-            icon: const Icon(Icons.cases_rounded, size: 16),
-            text: isEs ? 'Casos' : 'Casos',
-            iconMargin: const EdgeInsets.only(bottom: 2),
-          ),
-          Tab(
-            icon: const Icon(Icons.fact_check_rounded, size: 16),
-            text: 'Protocolos',
+            icon: const Icon(Icons.school_outlined, size: 16),
+            text: isEs ? 'Casos de Estudio' : 'Casos de Estudo',
             iconMargin: const EdgeInsets.only(bottom: 2),
           ),
         ],
@@ -378,7 +377,7 @@ class _MobileLibraryTabBar extends StatelessWidget {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// HEADER com TabBar embutida
+// HEADER DESKTOP com TabBar embutida
 // ─────────────────────────────────────────────────────────────────────────────
 class _LibraryHeader extends StatelessWidget {
   final bool dark;
@@ -402,11 +401,8 @@ class _LibraryHeader extends StatelessWidget {
         boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.3), blurRadius: 8)],
       ),
       child: Column(
-        mainAxisSize: MainAxisSize.min, // ← CRÍTICO: não expande além do necessário
+        mainAxisSize: MainAxisSize.min,
         children: [
-          // Título — sem SafeArea: o Scaffold pai (shell) já gerencia o inset
-          // do status bar. SafeArea duplo causava padding extra no desktop e
-          // layout incorreto no mobile com AppBar.
           Padding(
             padding: const EdgeInsets.fromLTRB(20, 14, 20, 10),
             child: Row(children: [
@@ -427,7 +423,7 @@ class _LibraryHeader extends StatelessWidget {
                     style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w900, color: Colors.white),
                   ),
                   Text(
-                    isEs ? 'Guías • Casos • Artículos' : 'Guias • Casos • Artigos',
+                    isEs ? 'Guías • Casos de Estudio • Artículos' : 'Guias • Casos de Estudo • Artigos',
                     style: TextStyle(fontSize: 11, color: Colors.white.withValues(alpha: 0.5)),
                   ),
                 ]),
@@ -464,7 +460,7 @@ class _LibraryHeader extends StatelessWidget {
               ),
             ]),
           ),
-          // TabBar
+          // TabBar — 2 abas
           TabBar(
             controller: tabCtrl,
             indicatorColor: _kGold,
@@ -475,8 +471,7 @@ class _LibraryHeader extends StatelessWidget {
             unselectedLabelStyle: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
             tabs: [
               Tab(text: isEs ? 'Guías PDF' : 'Guias PDF'),
-              Tab(text: isEs ? 'Casos Clínicos' : 'Casos Clínicos'),
-              Tab(text: isEs ? 'Protocolos' : 'Protocolos'),
+              Tab(text: isEs ? 'Casos de Estudio' : 'Casos de Estudo'),
             ],
           ),
         ]),
@@ -485,7 +480,7 @@ class _LibraryHeader extends StatelessWidget {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// ABA 0 — Guias PDF
+// ABA 0 — Guias PDF (inalterada)
 // ─────────────────────────────────────────────────────────────────────────────
 class _GuidesTab extends StatelessWidget {
   final bool dark;
@@ -584,15 +579,29 @@ class _GuidesTab extends StatelessWidget {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// ABA 1 — Casos Clínicos (migrados de protocols_screen)
+// ABA 1 — Casos de Estudo
+// Fusão pedagógica: Casos Clínicos (simulações interativas) + Fluxos Simulados
+// por Especialidade (conteúdo antes em "Protocolos"). Nomenclatura 100%
+// educacional — sem qualquer rótulo de "Protocolo" visível ao usuário.
 // ─────────────────────────────────────────────────────────────────────────────
-class _CasosClinicosTab extends StatelessWidget {
+class _CasosDeEstudoTab extends StatefulWidget {
   final bool dark;
   final bool isEs;
   final AppProvider p;
-  const _CasosClinicosTab({required this.dark, required this.isEs, required this.p});
+  const _CasosDeEstudoTab({required this.dark, required this.isEs, required this.p});
 
-  static const Set<String> _allCasoIds = {
+  @override
+  State<_CasosDeEstudoTab> createState() => _CasosDeEstudoTabState();
+}
+
+class _CasosDeEstudoTabState extends State<_CasosDeEstudoTab> {
+  // Dois sub-segmentos dentro da aba Casos de Estudo:
+  // 0 = "Simulações" (casos clínicos narrativos do ProtocolModel com IDs de caso)
+  // 1 = "Fluxos" (todos os demais itens da base: fluxos simulados por especialidade)
+  int _segment = 0;
+
+  // ── IDs que são "Casos Clínicos Narrativos" (mantidos da lógica original) ──
+  static const Set<String> _casoNarrativoIds = {
     'caso_enxaqueca_aura', 'caso_avc_isquemico', 'caso_status_epilepticus',
     'caso_stemi', 'caso_icc_descompensada', 'caso_tep_alto_risco', 'caso_pac_grave',
     'caso_cistite_aguda', 'caso_itu_recorrente', 'caso_sepse_idoso',
@@ -604,10 +613,25 @@ class _CasosClinicosTab extends StatelessWidget {
     'gripe_influenza_010',
     'rinosinusitis_aguda_007', 'faringitis_estreptococica_008',
     'faringitis_viral_011', 'faringitis_bacteriana_012',
+    // IDs que antes figuravam apenas na aba Protocolos — agora absorbidos aqui
+    'iam_congestao', 'choque_cardiogenico', 'anafilaxia', 'tpsv', 'fa_aguda',
+    'crise_hipertensiva', 'avc_hemorragico', 'asma_grave', 'dpoc_exacerbacao',
+    'tep_agudo', 'sepse', 'cad_shh', 'pcr_adulto', 'hda_varizeal',
+    'avc_isquemico', 'status_epilepticus', 'meningite_bacteriana',
+    'cetoacidose_diabetica', 'tromboembolismo_pulmonar', 'pneumonia_grave',
+    'choque_septico_avancado', 'hiperpotassemia_grave', 'intoxicacao_exogena',
+    'pancreatite_aguda_grave', 'hda_nao_varicosa', 'lesao_renal_aguda',
+    'coagulacao_intravascular', 'politrauma_atls', 'eclampsia_hellp',
+    'crise_adrenal', 'agitacao_psicomotora', 'neutropenia_febril',
+    'pcr_pediatrica', 'bronquiolite_aguda', 'laringite_estridulosa',
+    'intox_paracetamol', 'intox_opioides', 'crise_tireotoxica',
+    'hipoglicemia_grave', 'apendicite_aguda',
+    'iam_supra', 'crise_convulsiva', 'intoxicacao_overdose',
   };
 
-  static const List<_CasoGroupConfig> _groupConfigs = [
-    _CasoGroupConfig(
+  // ── Grupos para sub-segmento "Simulações" (casos narrativos) ─────────────
+  static const List<_GrupoConfig> _gruposSimulacao = [
+    _GrupoConfig(
       icon: Icons.psychology_outlined,
       titlePt: 'Neurologia',
       titleEs: 'Neurología',
@@ -616,7 +640,7 @@ class _CasosClinicosTab extends StatelessWidget {
       iconColor: Color(0xFF5C2D91),
       ids: {'caso_enxaqueca_aura', 'caso_avc_isquemico', 'caso_status_epilepticus'},
     ),
-    _CasoGroupConfig(
+    _GrupoConfig(
       icon: Icons.favorite_outline_rounded,
       titlePt: 'Cardiologia & Pneumologia',
       titleEs: 'Cardiología & Neumología',
@@ -625,7 +649,7 @@ class _CasosClinicosTab extends StatelessWidget {
       iconColor: Color(0xFFAA1144),
       ids: {'caso_stemi', 'caso_icc_descompensada', 'caso_tep_alto_risco', 'caso_pac_grave'},
     ),
-    _CasoGroupConfig(
+    _GrupoConfig(
       icon: Icons.biotech_outlined,
       titlePt: 'Infectologia, Emergência & Metabólico',
       titleEs: 'Infectología, Emergencia & Metabólico',
@@ -637,7 +661,7 @@ class _CasosClinicosTab extends StatelessWidget {
         'caso_cetoacidose_diabetica', 'caso_anafilaxia_grave', 'caso_hda_varicosa',
       },
     ),
-    _CasoGroupConfig(
+    _GrupoConfig(
       icon: Icons.local_hospital_outlined,
       titlePt: 'Gastroenterologia & Hepatologia',
       titleEs: 'Gastroenterología & Hepatología',
@@ -650,7 +674,7 @@ class _CasosClinicosTab extends StatelessWidget {
         'sindrome_ascitico_debut_016', 'sindrome_ascitico_edematoso_017',
       },
     ),
-    _CasoGroupConfig(
+    _GrupoConfig(
       icon: Icons.science_outlined,
       titlePt: 'Hepatites Virais & Gripe',
       titleEs: 'Hepatitis Virales & Gripe',
@@ -662,7 +686,7 @@ class _CasosClinicosTab extends StatelessWidget {
         'gripe_influenza_010',
       },
     ),
-    _CasoGroupConfig(
+    _GrupoConfig(
       icon: Icons.hearing_outlined,
       titlePt: 'ORL & Medicina Geral',
       titleEs: 'ORL & Medicina General',
@@ -676,60 +700,94 @@ class _CasosClinicosTab extends StatelessWidget {
     ),
   ];
 
+  // ── Categorias para sub-segmento "Fluxos Simulados" ──────────────────────
+  // Classificação dinâmica por keywords no id — igual à lógica anterior
+  static const _catDefs = [
+    ('Todos',            'Todos',           Icons.apps_rounded,          <String>[]),
+    ('Emergências',      'Emergencias',     Icons.emergency_rounded,      <String>[
+      'pcr', 'anafilaxia', 'sepse', 'choque', 'tep_agudo', 'tromboembolismo_pulmonar',
+      'politrauma', 'caso_anafilaxia', 'caso_tep', 'caso_stemi', 'caso_sepse',
+    ]),
+    ('Cardio / Neuro',   'Cardio / Neuro',  Icons.favorite_rounded,       <String>[
+      'iam', 'fa_aguda', 'tpsv', 'hipertensiva',
+      'avc', 'status_epilepticus',
+      'caso_avc', 'caso_icc', 'caso_status_epilep', 'caso_enxaqueca',
+    ]),
+    ('Respiratório',     'Respiratorio',    Icons.air_rounded,            <String>[
+      'asma', 'dpoc', 'pneumonia', 'bronquiolite', 'laringite', 'caso_pac',
+    ]),
+    ('Metabólico',       'Metabólico',      Icons.science_rounded,        <String>[
+      'cad_shh', 'cetoacidose', 'hipoglicemia', 'hiperpotassemia',
+      'lesao_renal', 'crise_adrenal', 'crise_tireotoxica', 'caso_cetoacidose',
+    ]),
+    ('Digestivo',        'Digestivo',       Icons.local_hospital_rounded, <String>[
+      'hda', 'hdb', 'pancreatite', 'pancreatitis',
+      'coagulacao_intravascular', 'diverticulitis', 'diarrea',
+      'sindrome_ascitico', 'caso_hda',
+    ]),
+    ('Infecto',          'Infectología',    Icons.bug_report_rounded,     <String>[
+      'meningite', 'neutropenia_febril', 'faringit', 'faringitis',
+      'rinosinusitis', 'gripe', 'hepatitis', 'sepse_foco',
+      'caso_cistite', 'caso_itu', 'caso_pac_grave',
+    ]),
+    ('Intoxicações',     'Intoxicaciones',  Icons.warning_rounded,        <String>[
+      'intox', 'intoxicacao',
+    ]),
+    ('Outros',           'Otros',           Icons.more_horiz_rounded,     <String>[
+      'eclampsia', 'agitacao', 'caso_',
+    ]),
+    ('Pediátrico',       'Pediátrico',      Icons.child_care_rounded,     <String>[
+      '_ped', 'pcr_ped', 'bronquiolite', 'laringite',
+    ]),
+  ];
+
+  int _fluxoCat = 0;
+  final _searchFluxoCtrl = TextEditingController();
+  String _queryFluxo = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _searchFluxoCtrl.addListener(() {
+      if (mounted) setState(() => _queryFluxo = _searchFluxoCtrl.text.toLowerCase().trim());
+    });
+  }
+
+  @override
+  void dispose() {
+    _searchFluxoCtrl.dispose();
+    super.dispose();
+  }
+
+  int _catIndexForId(String id) {
+    for (int ci = 1; ci < _catDefs.length - 1; ci++) {
+      final keywords = _catDefs[ci].$4;
+      if (keywords.any((kw) => id.contains(kw))) return ci;
+    }
+    return _catDefs.length - 1;
+  }
+
   @override
   Widget build(BuildContext context) {
+    final p = widget.p;
+    final dark = widget.dark;
+    final isEs = widget.isEs;
+
+    // Deduplica a DB uma única vez
     final seen = <String>{};
     final allDB = p.protocolsDB.where((x) => seen.add(x.id)).toList();
-    final totalCasos = allDB.where((d) => _allCasoIds.contains(d.id)).length;
-    final groups = _groupConfigs
-        .where((group) => allDB.any((item) => group.ids.contains(item.id)))
-        .toList();
 
-    final bodySliver = groups.isEmpty
-        ? SliverFillRemaining(
-            hasScrollBody: false,
-            child: _LibraryTabEmptyState(
-              dark: dark,
-              icon: Icons.cases_outlined,
-              title: isEs ? 'Sin casos clínicos disponibles' : 'Nenhum caso clínico disponível',
-              subtitle: isEs
-                  ? 'Los casos aparecerán aquí cuando estén disponibles en la base.'
-                  : 'Os casos aparecerão aqui quando estiverem disponíveis na base.',
-            ),
-          )
-        : SliverPadding(
-            padding: const EdgeInsets.fromLTRB(16, 0, 16, 100),
-            sliver: SliverList(
-              delegate: SliverChildBuilderDelegate(
-                (_, i) {
-                  final group = groups[i];
-                  return Padding(
-                    padding: EdgeInsets.only(bottom: i == groups.length - 1 ? 0 : 10),
-                    child: _CasoGroup(
-                      icon: group.icon,
-                      titlePt: group.titlePt,
-                      titleEs: group.titleEs,
-                      color: group.color,
-                      borderColor: group.borderColor,
-                      iconColor: group.iconColor,
-                      ids: group.ids,
-                      allDB: allDB,
-                      isEs: isEs,
-                      p: p,
-                    ),
-                  );
-                },
-                childCount: groups.length,
-              ),
-            ),
-          );
+    // Conta total de itens de estudo (todos os IDs absorvidos)
+    final totalItens = allDB.where((d) => _casoNarrativoIds.contains(d.id)).length
+        + allDB.where((d) => !_casoNarrativoIds.contains(d.id)).length;
 
     return CustomScrollView(
       primary: false,
       slivers: [
+        // ── Banner de cabeçalho da aba ──────────────────────────────────────
         SliverToBoxAdapter(
           child: Padding(
-            padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
               decoration: BoxDecoration(
@@ -738,43 +796,400 @@ class _CasosClinicosTab extends StatelessWidget {
                 border: Border.all(color: _kGreen.withValues(alpha: 0.3)),
               ),
               child: Row(children: [
-                Icon(Icons.cases_rounded, color: _kGreen, size: 22),
+                Icon(Icons.school_outlined, color: _kGreen, size: 22),
                 const SizedBox(width: 12),
                 Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        isEs ? 'Casos Clínicos' : 'Casos Clínicos',
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w900,
-                          color: dark ? Colors.white : const Color(0xFF0F1C14),
-                        ),
+                  child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                    Text(
+                      isEs ? 'Casos de Estudio' : 'Casos de Estudo',
+                      style: TextStyle(
+                        fontSize: 14, fontWeight: FontWeight.w900,
+                        color: dark ? Colors.white : const Color(0xFF0F1C14),
                       ),
-                      Text(
-                        isEs
-                            ? '$totalCasos casos organizados por especialidad'
-                            : '$totalCasos casos organizados por especialidade',
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: dark ? Colors.white54 : Colors.black.withValues(alpha: 0.45),
-                        ),
+                    ),
+                    Text(
+                      isEs
+                          ? '$totalItens casos simulados para fins educacionais'
+                          : '$totalItens casos simulados para fins educacionais',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: dark ? Colors.white54 : Colors.black.withValues(alpha: 0.45),
                       ),
-                    ],
-                  ),
+                    ),
+                  ]),
                 ),
               ]),
             ),
           ),
         ),
-        bodySliver,
+
+        // ── Seletor de sub-segmento ─────────────────────────────────────────
+        SliverToBoxAdapter(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(16, 14, 16, 4),
+            child: Row(children: [
+              _SegmentBtn(
+                label: isEs ? 'Simulaciones' : 'Simulações',
+                icon: Icons.cases_rounded,
+                active: _segment == 0,
+                dark: dark,
+                onTap: () => setState(() => _segment = 0),
+              ),
+              const SizedBox(width: 8),
+              _SegmentBtn(
+                label: isEs ? 'Fluxos Simulados' : 'Fluxos Simulados',
+                icon: Icons.account_tree_outlined,
+                active: _segment == 1,
+                dark: dark,
+                onTap: () => setState(() => _segment = 1),
+              ),
+            ]),
+          ),
+        ),
+
+        // ── Conteúdo do sub-segmento ────────────────────────────────────────
+        if (_segment == 0)
+          ..._buildSimulacoesSliver(allDB, dark, isEs, p)
+        else
+          ..._buildFluxosSliver(allDB, dark, isEs),
       ],
+    );
+  }
+
+  // ── Sub-segmento 0: Simulações (grupos de casos narrativos) ────────────────
+  List<Widget> _buildSimulacoesSliver(
+    List<ProtocolModel> allDB, bool dark, bool isEs, AppProvider p,
+  ) {
+    final groups = _gruposSimulacao
+        .where((g) => allDB.any((item) => g.ids.contains(item.id)))
+        .toList();
+
+    if (groups.isEmpty) {
+      return [
+        SliverFillRemaining(
+          hasScrollBody: false,
+          child: _LibraryTabEmptyState(
+            dark: dark,
+            icon: Icons.cases_outlined,
+            title: isEs ? 'Sin casos disponibles' : 'Nenhum caso disponível',
+            subtitle: isEs
+                ? 'Los casos aparecerán aquí cuando estén disponibles.'
+                : 'Os casos aparecerão aqui quando estiverem disponíveis.',
+          ),
+        ),
+      ];
+    }
+
+    return [
+      SliverPadding(
+        padding: const EdgeInsets.fromLTRB(16, 12, 16, 100),
+        sliver: SliverList(
+          delegate: SliverChildBuilderDelegate(
+            (_, i) {
+              final group = groups[i];
+              return Padding(
+                padding: EdgeInsets.only(bottom: i == groups.length - 1 ? 0 : 10),
+                child: _GrupoCard(
+                  icon: group.icon,
+                  titlePt: group.titlePt,
+                  titleEs: group.titleEs,
+                  color: group.color,
+                  borderColor: group.borderColor,
+                  iconColor: group.iconColor,
+                  ids: group.ids,
+                  allDB: allDB,
+                  isEs: isEs,
+                  p: p,
+                ),
+              );
+            },
+            childCount: groups.length,
+          ),
+        ),
+      ),
+    ];
+  }
+
+  // ── Sub-segmento 1: Fluxos Simulados (todos os demais, com busca + filtro) ─
+  List<Widget> _buildFluxosSliver(
+    List<ProtocolModel> allDB, bool dark, bool isEs,
+  ) {
+    final List<ProtocolModel> fluxos;
+    if (_queryFluxo.isNotEmpty) {
+      fluxos = allDB.where((pr) {
+        final t = (pr.title[isEs ? 'es' : 'pt'] ?? pr.title['pt'] ?? '').toLowerCase();
+        return t.contains(_queryFluxo);
+      }).toList();
+    } else if (_fluxoCat == 0) {
+      fluxos = [...allDB]..sort((a, b) {
+          final ta = (a.title[isEs ? 'es' : 'pt'] ?? a.title['pt'] ?? '').toLowerCase();
+          final tb = (b.title[isEs ? 'es' : 'pt'] ?? b.title['pt'] ?? '').toLowerCase();
+          return ta.compareTo(tb);
+        });
+    } else {
+      fluxos = allDB
+          .where((pr) => _catIndexForId(pr.id) == _fluxoCat)
+          .toList()
+        ..sort((a, b) {
+            final ta = (a.title[isEs ? 'es' : 'pt'] ?? a.title['pt'] ?? '').toLowerCase();
+            final tb = (b.title[isEs ? 'es' : 'pt'] ?? b.title['pt'] ?? '').toLowerCase();
+            return ta.compareTo(tb);
+          });
+    }
+
+    final cardBg = dark ? const Color(0xFF111C17) : Colors.white;
+    final borderC = dark ? const Color(0xFF1F3328) : const Color(0xFFDCEDDC);
+
+    final bodySliver = fluxos.isEmpty
+        ? SliverFillRemaining(
+            hasScrollBody: false,
+            child: _LibraryTabEmptyState(
+              dark: dark,
+              icon: Icons.search_off_rounded,
+              title: isEs ? 'Sin casos en esta categoría' : 'Nenhum caso nesta categoria',
+              subtitle: _queryFluxo.isNotEmpty
+                  ? (isEs
+                      ? 'Intenta ajustar tu búsqueda.'
+                      : 'Tente ajustar sua busca.')
+                  : (isEs
+                      ? 'Selecciona otra categoría.'
+                      : 'Selecione outra categoria.'),
+            ),
+          )
+        : SliverPadding(
+            padding: const EdgeInsets.fromLTRB(16, 12, 16, 100),
+            sliver: SliverList(
+              delegate: SliverChildBuilderDelegate(
+                (ctx, i) {
+                  final item = fluxos[i];
+                  final title = item.getField(item.title, isEs ? 'es' : 'pt');
+                  final severity = item.getField(item.severity, isEs ? 'es' : 'pt');
+                  final sevLow = severity.toLowerCase();
+                  final Color sevColor;
+                  if (sevLow.contains('crítico') || sevLow.contains('crítica') ||
+                      sevLow.contains('grave') || sevLow.contains('alto')) {
+                    sevColor = const Color(0xFFDC2626);
+                  } else if (sevLow.contains('moderado') || sevLow.contains('médio') ||
+                      sevLow.contains('urgência') || sevLow.contains('urgencia')) {
+                    sevColor = const Color(0xFFD97706);
+                  } else {
+                    sevColor = const Color(0xFF16A34A);
+                  }
+                  return GestureDetector(
+                    onTap: () => showProtocolDetail(context, item),
+                    child: Container(
+                      margin: const EdgeInsets.only(bottom: 8),
+                      padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
+                      decoration: BoxDecoration(
+                        color: cardBg,
+                        borderRadius: BorderRadius.circular(14),
+                        border: Border.all(color: borderC),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: dark ? 0.2 : 0.05),
+                            blurRadius: 6, offset: const Offset(0, 2),
+                          ),
+                        ],
+                      ),
+                      child: Row(children: [
+                        Container(
+                          width: 36, height: 36,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            color: sevColor.withValues(alpha: 0.12),
+                          ),
+                          child: Icon(Icons.school_outlined, size: 18, color: sevColor),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                            Text(title,
+                              style: TextStyle(
+                                fontSize: 13, fontWeight: FontWeight.w700,
+                                color: dark ? Colors.white : const Color(0xFF1A1A1A),
+                                height: 1.3,
+                              ),
+                            ),
+                            if (severity.isNotEmpty) ...[
+                              const SizedBox(height: 4),
+                              Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(6),
+                                  color: sevColor.withValues(alpha: 0.12),
+                                ),
+                                child: Text(severity,
+                                  style: TextStyle(fontSize: 10, fontWeight: FontWeight.w700, color: sevColor)),
+                              ),
+                            ],
+                          ]),
+                        ),
+                        const SizedBox(width: 8),
+                        Icon(Icons.chevron_right_rounded, size: 20,
+                          color: dark ? Colors.white24 : Colors.black.withValues(alpha: 0.20)),
+                      ]),
+                    ),
+                  );
+                },
+                childCount: fluxos.length,
+              ),
+            ),
+          );
+
+    return [
+      // Barra de busca (estilo escuro igual ao anterior)
+      SliverToBoxAdapter(
+        child: Container(
+          color: _kDark,
+          padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
+          child: TextField(
+            controller: _searchFluxoCtrl,
+            style: const TextStyle(color: Colors.white, fontSize: 13),
+            decoration: InputDecoration(
+              hintText: isEs ? 'Buscar caso simulado…' : 'Buscar caso simulado…',
+              hintStyle: TextStyle(color: Colors.white.withValues(alpha: 0.4), fontSize: 13),
+              prefixIcon: const Icon(Icons.search_rounded, color: _kGold, size: 18),
+              suffixIcon: _queryFluxo.isNotEmpty
+                  ? GestureDetector(
+                      onTap: () => _searchFluxoCtrl.clear(),
+                      child: const Icon(Icons.close_rounded, color: Colors.white38, size: 18),
+                    )
+                  : null,
+              filled: true,
+              fillColor: Colors.white.withValues(alpha: 0.08),
+              contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.15)),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.15)),
+              ),
+              focusedBorder: const OutlineInputBorder(
+                borderRadius: BorderRadius.all(Radius.circular(12)),
+                borderSide: BorderSide(color: _kGold),
+              ),
+            ),
+          ),
+        ),
+      ),
+      // Filtro de categoria (visível quando sem busca)
+      if (_queryFluxo.isEmpty)
+        SliverToBoxAdapter(
+          child: Container(
+            color: dark ? const Color(0xFF0D1A12) : const Color(0xFFF2F8F2),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: List.generate(_catDefs.length, (i) {
+                  final active = _fluxoCat == i;
+                  final ci = _catDefs[i];
+                  final lbl = isEs ? ci.$2 : ci.$1;
+                  final ico = ci.$3;
+                  return GestureDetector(
+                    onTap: () => setState(() => _fluxoCat = i),
+                    child: AnimatedContainer(
+                      duration: const Duration(milliseconds: 160),
+                      margin: const EdgeInsets.only(right: 8),
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        color: active ? _kGreen : Colors.transparent,
+                        border: Border.all(
+                          color: active
+                              ? _kGreen
+                              : (dark ? Colors.white24 : Colors.black.withValues(alpha: 0.12)),
+                        ),
+                      ),
+                      child: Row(mainAxisSize: MainAxisSize.min, children: [
+                        Icon(ico, size: 12,
+                          color: active ? Colors.white : (dark ? Colors.white54 : Colors.black.withValues(alpha: 0.45))),
+                        const SizedBox(width: 5),
+                        Text(lbl, style: TextStyle(
+                          fontSize: 11, fontWeight: FontWeight.w700,
+                          color: active ? Colors.white : (dark ? Colors.white54 : Colors.black.withValues(alpha: 0.54)),
+                        )),
+                      ]),
+                    ),
+                  );
+                }),
+              ),
+            ),
+          ),
+        ),
+      // Contador de resultados durante busca
+      if (_queryFluxo.isNotEmpty)
+        SliverToBoxAdapter(
+          child: Container(
+            width: double.infinity,
+            color: dark ? const Color(0xFF0D1A12) : const Color(0xFFF2F8F2),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+            child: Text(
+              '${fluxos.length} resultado(s) para "$_queryFluxo"',
+              style: TextStyle(
+                fontSize: 11, fontWeight: FontWeight.w600,
+                color: dark ? Colors.white54 : Colors.black.withValues(alpha: 0.45),
+              ),
+            ),
+          ),
+        ),
+      bodySliver,
+    ];
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// BOTÃO DE SUB-SEGMENTO
+// ─────────────────────────────────────────────────────────────────────────────
+class _SegmentBtn extends StatelessWidget {
+  final String label;
+  final IconData icon;
+  final bool active;
+  final bool dark;
+  final VoidCallback onTap;
+  const _SegmentBtn({
+    required this.label, required this.icon,
+    required this.active, required this.dark, required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: GestureDetector(
+        onTap: onTap,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 180),
+          padding: const EdgeInsets.symmetric(vertical: 9),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+            color: active
+                ? _kGreen
+                : (dark ? const Color(0xFF0D1F16) : const Color(0xFFEAF5EE)),
+            border: Border.all(
+              color: active ? _kGreen : _kGreen.withValues(alpha: 0.25),
+            ),
+          ),
+          child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+            Icon(icon, size: 14,
+              color: active ? Colors.white : _kGreen.withValues(alpha: 0.7)),
+            const SizedBox(width: 6),
+            Text(label, style: TextStyle(
+              fontSize: 12, fontWeight: FontWeight.w800,
+              color: active ? Colors.white : _kGreen.withValues(alpha: 0.85),
+            )),
+          ]),
+        ),
+      ),
     );
   }
 }
 
-class _CasoGroupConfig {
+// ─────────────────────────────────────────────────────────────────────────────
+// CONFIG DE GRUPO DE SIMULAÇÃO
+// ─────────────────────────────────────────────────────────────────────────────
+class _GrupoConfig {
   final IconData icon;
   final String titlePt;
   final String titleEs;
@@ -783,7 +1198,7 @@ class _CasoGroupConfig {
   final Color iconColor;
   final Set<String> ids;
 
-  const _CasoGroupConfig({
+  const _GrupoConfig({
     required this.icon,
     required this.titlePt,
     required this.titleEs,
@@ -795,9 +1210,9 @@ class _CasoGroupConfig {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// GRUPO DE CASO CLÍNICO — card que abre bottom sheet
+// CARD DE GRUPO — abre bottom sheet com a lista de itens
 // ─────────────────────────────────────────────────────────────────────────────
-class _CasoGroup extends StatelessWidget {
+class _GrupoCard extends StatelessWidget {
   final IconData icon;
   final String titlePt;
   final String titleEs;
@@ -809,7 +1224,7 @@ class _CasoGroup extends StatelessWidget {
   final bool isEs;
   final AppProvider p;
 
-  const _CasoGroup({
+  const _GrupoCard({
     required this.icon, required this.titlePt, required this.titleEs,
     required this.color, required this.borderColor, required this.iconColor,
     required this.ids, required this.allDB, required this.isEs, required this.p,
@@ -827,7 +1242,7 @@ class _CasoGroup extends StatelessWidget {
         context: context,
         isScrollControlled: true,
         backgroundColor: Colors.transparent,
-        builder: (_) => _CasosSheet(
+        builder: (_) => _SimulacoesSheet(
           title: title, icon: icon,
           cardColor: color, borderColor: borderColor, iconColor: iconColor,
           casos: casos, p: p, isEs: isEs,
@@ -857,7 +1272,10 @@ class _CasoGroup extends StatelessWidget {
             )),
             const SizedBox(height: 3),
             Text(
-              '${casos.length} ${casos.length == 1 ? "caso clínico" : "casos clínicos"}',
+              // Bilíngue pedagógico: "casos de estudo" em vez de "casos clínicos"
+              '${casos.length} ${casos.length == 1
+                  ? (isEs ? "caso de estudio" : "caso de estudo")
+                  : (isEs ? "casos de estudio" : "casos de estudo")}',
               style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600,
                 color: iconColor.withValues(alpha: 0.55)),
             ),
@@ -878,9 +1296,9 @@ class _CasoGroup extends StatelessWidget {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// BOTTOM SHEET — lista de casos do grupo
+// BOTTOM SHEET — lista de simulações do grupo
 // ─────────────────────────────────────────────────────────────────────────────
-class _CasosSheet extends StatelessWidget {
+class _SimulacoesSheet extends StatelessWidget {
   final String title;
   final IconData icon;
   final Color cardColor;
@@ -890,7 +1308,7 @@ class _CasosSheet extends StatelessWidget {
   final AppProvider p;
   final bool isEs;
 
-  const _CasosSheet({
+  const _SimulacoesSheet({
     required this.title, required this.icon,
     required this.cardColor, required this.borderColor, required this.iconColor,
     required this.casos, required this.p, required this.isEs,
@@ -908,13 +1326,13 @@ class _CasosSheet extends StatelessWidget {
           borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
         ),
         child: Column(children: [
-          // Handle
           const SizedBox(height: 10),
           Container(width: 40, height: 4,
-            decoration: BoxDecoration(color: iconColor.withValues(alpha: 0.25),
-              borderRadius: BorderRadius.circular(2))),
+            decoration: BoxDecoration(
+              color: iconColor.withValues(alpha: 0.25),
+              borderRadius: BorderRadius.circular(2),
+            )),
           const SizedBox(height: 14),
-          // Header
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Row(children: [
@@ -931,7 +1349,6 @@ class _CasosSheet extends StatelessWidget {
           ),
           const SizedBox(height: 12),
           Divider(color: borderColor, height: 1),
-          // Lista de casos
           Expanded(
             child: ListView.builder(
               controller: ctrl,
@@ -962,14 +1379,14 @@ class _CasosSheet extends StatelessWidget {
                           color: iconColor.withValues(alpha: 0.12),
                           borderRadius: BorderRadius.circular(10),
                         ),
-                        child: Icon(Icons.cases_outlined, size: 18, color: iconColor),
+                        child: Icon(Icons.school_outlined, size: 18, color: iconColor),
                       ),
                       const SizedBox(width: 12),
                       Expanded(child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start, children: [
-                        Text(label, style: TextStyle(
+                        Text(label, style: const TextStyle(
                           fontSize: 13.5, fontWeight: FontWeight.w800,
-                          color: const Color(0xFF0F1C14), height: 1.3,
+                          color: Color(0xFF0F1C14), height: 1.3,
                         )),
                         if (severity.isNotEmpty) ...[
                           const SizedBox(height: 3),
@@ -994,7 +1411,7 @@ class _CasosSheet extends StatelessWidget {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// FILTRO DE CATEGORIA
+// FILTRO DE CATEGORIA (Guias PDF)
 // ─────────────────────────────────────────────────────────────────────────────
 class _CategoryFilter extends StatelessWidget {
   final List<String> categories;
@@ -1195,371 +1612,7 @@ class _Chip extends StatelessWidget {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// ABA 2 — Protocolos Clínicos
-// ─────────────────────────────────────────────────────────────────────────────
-class _ProtocolsTab extends StatefulWidget {
-  final bool dark;
-  final bool isEs;
-  final dynamic p;
-  const _ProtocolsTab({required this.dark, required this.isEs, required this.p});
-
-  @override
-  State<_ProtocolsTab> createState() => _ProtocolsTabState();
-}
-
-class _ProtocolsTabState extends State<_ProtocolsTab> {
-  int _cat = 0;
-  final _searchCtrl = TextEditingController();
-  String _query = '';
-
-  // ── Categorias: (labelPt, labelEs, icon, keywords_no_id)
-  // index 0 = "Todos" (sem keywords → mostra tudo)
-  // A classificação é dinâmica: cada protocolo pertence à PRIMEIRA categoria
-  // cujas keywords aparecem no seu id. Se nenhuma bater → categoria "Outros".
-  static const _catDefs = [
-    ('Todos',            'Todos',           Icons.apps_rounded,          <String>[]),
-    ('Emergências',      'Emergencias',     Icons.emergency_rounded,      <String>[
-      'pcr', 'anafilaxia', 'sepse', 'choque', 'tep_agudo', 'tromboembolismo_pulmonar',
-      'parada_respiratoria', 'politrauma', 'hemorragia_intra', 'caso_anafilaxia',
-      'caso_tep', 'caso_stemi', 'caso_sepse',
-    ]),
-    ('Cardio / Neuro',   'Cardio / Neuro',  Icons.favorite_rounded,       <String>[
-      'iam', 'coronariana', 'fa_aguda', 'tpsv', 'bradiarritmia', 'hipertensiva',
-      'avc', 'status_epilepticus', 'insuficiencia_cardiaca', 'edema_agudo_pulmao',
-      'pericardite', 'miocardite', 'caso_avc', 'caso_icc', 'caso_status_epilep',
-      'caso_enxaqueca',
-    ]),
-    ('Respiratório',     'Respiratorio',    Icons.air_rounded,            <String>[
-      'asma', 'dpoc', 'pneumonia', 'hemoptise', 'bronquiolite', 'laringite',
-      'sindrome_compartimental', 'caso_pac',
-    ]),
-    ('Metabólico',       'Metabólico',      Icons.science_rounded,        <String>[
-      'cad_shh', 'cetoacidose', 'hipoglicemia', 'hiperpotassemia', 'hipercalemia',
-      'hipernatremia', 'hiponatremia', 'hipocalcemia', 'lesao_renal', 'encefalopatia',
-      'crise_adrenal', 'crise_tireotoxica', 'rabdomiolise', 'caso_cetoacidose',
-    ]),
-    ('Digestivo',        'Digestivo',       Icons.local_hospital_rounded, <String>[
-      'hda', 'hdb', 'hemorragia_digestiva', 'pancreatite', 'pancreatitis',
-      'coagulacao_intravascular', 'pbe_cirrose', 'obstrucao_intestinal',
-      'apendicite', 'colica_nefretica', 'colangite', 'diverticulitis', 'diarrea',
-      'sindrome_ascitico', 'caso_hda',
-    ]),
-    ('Infecto',          'Infectologia',    Icons.bug_report_rounded,     <String>[
-      'meningite', 'neutropenia_febril', 'dengue', 'celulite', 'erisipela',
-      'faringit', 'faringitis', 'rinosinusitis', 'gripe', 'influenza',
-      'mastoidite', 'pielonefrite', 'itu', 'cistite', 'hepatitis', 'sepse_foco',
-      'caso_cistite', 'caso_itu', 'caso_pac_grave',
-    ]),
-    ('Intoxicações',     'Intoxicaciones',  Icons.warning_rounded,        <String>[
-      'intox', 'intoxicacao', 'delirium_tremens',
-    ]),
-    ('Outros',           'Otros',           Icons.more_horiz_rounded,     <String>[
-      'eclampsia', 'hemorragia_pos_parto', 'agitacao', 'priapismo',
-      'crise_gota', 'descolamento', 'sindrome_abst', 'caso_',
-    ]),
-    ('Pediátrico',       'Pediátrico',      Icons.child_care_rounded,     <String>[
-      '_ped', 'convulsao_febril', 'anemia_falciforme',
-    ]),
-  ];
-
-  /// Retorna o índice da categoria (1-based excluindo "Todos") para um protocolo.
-  /// Se nenhuma keyword bater, retorna o índice da última categoria ("Outros").
-  int _catIndexForId(String id) {
-    for (int ci = 1; ci < _catDefs.length - 1; ci++) {
-      final keywords = _catDefs[ci].$4;
-      if (keywords.any((kw) => id.contains(kw))) return ci;
-    }
-    return _catDefs.length - 1;
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _searchCtrl.addListener(() {
-      if (mounted) setState(() => _query = _searchCtrl.text.toLowerCase().trim());
-    });
-  }
-
-  @override
-  void dispose() {
-    _searchCtrl.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final p = context.watch<AppProvider>();
-    final dark = widget.dark;
-    final isEs = widget.isEs;
-
-    final List<ProtocolModel> protos;
-    if (_query.isNotEmpty) {
-      protos = p.protocolsDB.where((pr) {
-        final t = (pr.title[isEs ? 'es' : 'pt'] ?? pr.title['pt'] ?? '').toLowerCase();
-        return t.contains(_query);
-      }).toList();
-    } else if (_cat == 0) {
-      protos = [...p.protocolsDB]..sort((a, b) {
-          final ta = (a.title[isEs ? 'es' : 'pt'] ?? a.title['pt'] ?? '').toLowerCase();
-          final tb = (b.title[isEs ? 'es' : 'pt'] ?? b.title['pt'] ?? '').toLowerCase();
-          return ta.compareTo(tb);
-        });
-    } else {
-      protos = p.protocolsDB
-          .where((pr) => _catIndexForId(pr.id) == _cat)
-          .toList()
-        ..sort((a, b) {
-            final ta = (a.title[isEs ? 'es' : 'pt'] ?? a.title['pt'] ?? '').toLowerCase();
-            final tb = (b.title[isEs ? 'es' : 'pt'] ?? b.title['pt'] ?? '').toLowerCase();
-            return ta.compareTo(tb);
-          });
-    }
-
-    final cardBg = dark ? const Color(0xFF111C17) : Colors.white;
-    final borderC = dark ? const Color(0xFF1F3328) : const Color(0xFFDCEDDC);
-    const green = _kGreen;
-
-    final bodySliver = protos.isEmpty
-        ? SliverFillRemaining(
-            hasScrollBody: false,
-            child: _LibraryTabEmptyState(
-              dark: dark,
-              icon: Icons.search_off_rounded,
-              title: isEs ? 'Sin protocolos en esta categoría' : 'Nenhum protocolo nesta categoria',
-              subtitle: _query.isNotEmpty
-                  ? (isEs
-                      ? 'Intenta ajustar tu búsqueda para encontrar otros protocolos.'
-                      : 'Tente ajustar sua busca para encontrar outros protocolos.')
-                  : (isEs
-                      ? 'Selecciona otra categoría para ver más protocolos.'
-                      : 'Selecione outra categoria para ver mais protocolos.'),
-            ),
-          )
-        : SliverPadding(
-            padding: const EdgeInsets.fromLTRB(16, 12, 16, 100),
-            sliver: SliverList(
-              delegate: SliverChildBuilderDelegate(
-                (ctx, i) {
-                  final proto = protos[i];
-                  final title = proto.getField(proto.title, isEs ? 'es' : 'pt');
-                  final severity = proto.getField(proto.severity, isEs ? 'es' : 'pt');
-
-                  final sevLow = severity.toLowerCase();
-                  final Color sevColor;
-                  if (sevLow.contains('crítico') || sevLow.contains('crítica') ||
-                      sevLow.contains('grave') || sevLow.contains('alto')) {
-                    sevColor = const Color(0xFFDC2626);
-                  } else if (sevLow.contains('moderado') || sevLow.contains('médio') ||
-                      sevLow.contains('urgência') || sevLow.contains('urgencia')) {
-                    sevColor = const Color(0xFFD97706);
-                  } else {
-                    sevColor = const Color(0xFF16A34A);
-                  }
-
-                  return GestureDetector(
-                    onTap: () => showProtocolDetail(context, proto),
-                    child: Container(
-                      margin: const EdgeInsets.only(bottom: 8),
-                      padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
-                      decoration: BoxDecoration(
-                        color: cardBg,
-                        borderRadius: BorderRadius.circular(14),
-                        border: Border.all(color: borderC),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withValues(alpha: dark ? 0.2 : 0.05),
-                            blurRadius: 6,
-                            offset: const Offset(0, 2),
-                          ),
-                        ],
-                      ),
-                      child: Row(children: [
-                        Container(
-                          width: 36,
-                          height: 36,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            color: sevColor.withValues(alpha: 0.12),
-                          ),
-                          child: Icon(Icons.article_rounded, size: 18, color: sevColor),
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                title,
-                                style: TextStyle(
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.w700,
-                                  color: dark ? Colors.white : const Color(0xFF1A1A1A),
-                                  height: 1.3,
-                                ),
-                              ),
-                              if (severity.isNotEmpty) ...[
-                                const SizedBox(height: 4),
-                                Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(6),
-                                    color: sevColor.withValues(alpha: 0.12),
-                                  ),
-                                  child: Text(
-                                    severity,
-                                    style: TextStyle(
-                                      fontSize: 10,
-                                      fontWeight: FontWeight.w700,
-                                      color: sevColor,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ],
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                        Icon(
-                          Icons.chevron_right_rounded,
-                          size: 20,
-                          color: dark ? Colors.white24 : Colors.black.withValues(alpha: 0.20),
-                        ),
-                      ]),
-                    ),
-                  );
-                },
-                childCount: protos.length,
-              ),
-            ),
-          );
-
-    return CustomScrollView(
-      primary: false,
-      slivers: [
-        SliverToBoxAdapter(
-          child: Container(
-            color: _kDark,
-            padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
-            child: TextField(
-              controller: _searchCtrl,
-              style: const TextStyle(color: Colors.white, fontSize: 13),
-              decoration: InputDecoration(
-                hintText: isEs ? 'Buscar protocolo…' : 'Buscar protocolo…',
-                hintStyle: TextStyle(
-                  color: Colors.white.withValues(alpha: 0.4),
-                  fontSize: 13,
-                ),
-                prefixIcon: const Icon(Icons.search_rounded, color: _kGold, size: 18),
-                suffixIcon: _query.isNotEmpty
-                    ? GestureDetector(
-                        onTap: () => _searchCtrl.clear(),
-                        child: const Icon(Icons.close_rounded, color: Colors.white38, size: 18),
-                      )
-                    : null,
-                filled: true,
-                fillColor: Colors.white.withValues(alpha: 0.08),
-                contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.15)),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.15)),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: const BorderSide(color: _kGold),
-                ),
-              ),
-            ),
-          ),
-        ),
-        if (_query.isEmpty)
-          SliverToBoxAdapter(
-            child: Container(
-              color: dark ? const Color(0xFF0D1A12) : const Color(0xFFF2F8F2),
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  children: List.generate(_catDefs.length, (i) {
-                    final active = _cat == i;
-                    final ci = _catDefs[i];
-                    final lbl = isEs ? ci.$2 : ci.$1;
-                    final ico = ci.$3;
-                    return GestureDetector(
-                      onTap: () => setState(() => _cat = i),
-                      child: AnimatedContainer(
-                        duration: const Duration(milliseconds: 160),
-                        margin: const EdgeInsets.only(right: 8),
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20),
-                          color: active ? green : Colors.transparent,
-                          border: Border.all(
-                            color: active
-                                ? green
-                                : (dark ? Colors.white24 : Colors.black.withValues(alpha: 0.12)),
-                          ),
-                        ),
-                        child: Row(mainAxisSize: MainAxisSize.min, children: [
-                          Icon(
-                            ico,
-                            size: 12,
-                            color: active
-                                ? Colors.white
-                                : (dark
-                                    ? Colors.white54
-                                    : Colors.black.withValues(alpha: 0.45)),
-                          ),
-                          const SizedBox(width: 5),
-                          Text(
-                            lbl,
-                            style: TextStyle(
-                              fontSize: 11,
-                              fontWeight: FontWeight.w700,
-                              color: active
-                                  ? Colors.white
-                                  : (dark
-                                      ? Colors.white54
-                                      : Colors.black.withValues(alpha: 0.54)),
-                            ),
-                          ),
-                        ]),
-                      ),
-                    );
-                  }),
-                ),
-              ),
-            ),
-          ),
-        if (_query.isNotEmpty)
-          SliverToBoxAdapter(
-            child: Container(
-              width: double.infinity,
-              color: dark ? const Color(0xFF0D1A12) : const Color(0xFFF2F8F2),
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-              child: Text(
-                isEs
-                    ? '${protos.length} resultado(s) para "$_query"'
-                    : '${protos.length} resultado(s) para "$_query"',
-                style: TextStyle(
-                  fontSize: 11,
-                  fontWeight: FontWeight.w600,
-                  color: dark ? Colors.white54 : Colors.black.withValues(alpha: 0.45),
-                ),
-              ),
-            ),
-          ),
-        bodySliver,
-      ],
-    );
-  }
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// ESTADOS DE ABA / ERRO
+// ESTADOS VAZIOS / ERRO
 // ─────────────────────────────────────────────────────────────────────────────
 class _LibraryTabEmptyState extends StatelessWidget {
   final bool dark;
@@ -1582,27 +1635,20 @@ class _LibraryTabEmptyState extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              icon,
-              size: 52,
-              color: dark ? Colors.white12 : Colors.black.withValues(alpha: 0.12),
-            ),
+            Icon(icon, size: 52,
+              color: dark ? Colors.white12 : Colors.black.withValues(alpha: 0.12)),
             const SizedBox(height: 14),
-            Text(
-              title,
+            Text(title,
               style: TextStyle(
-                fontSize: 15,
-                fontWeight: FontWeight.w700,
+                fontSize: 15, fontWeight: FontWeight.w700,
                 color: dark ? Colors.white54 : Colors.black.withValues(alpha: 0.52),
               ),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 8),
-            Text(
-              subtitle,
+            Text(subtitle,
               style: TextStyle(
-                fontSize: 12,
-                height: 1.4,
+                fontSize: 12, height: 1.4,
                 color: dark ? Colors.white30 : Colors.black.withValues(alpha: 0.34),
               ),
               textAlign: TextAlign.center,
@@ -1635,8 +1681,7 @@ class _GuideErrorState extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.cloud_off_rounded,
-                size: 56,
+            Icon(Icons.cloud_off_rounded, size: 56,
                 color: dark ? Colors.orangeAccent.withValues(alpha: 0.7) : Colors.redAccent),
             const SizedBox(height: 14),
             Text(
@@ -1645,11 +1690,9 @@ class _GuideErrorState extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 8),
-            Text(
-              message,
+            Text(message,
               style: TextStyle(
-                fontSize: 12,
-                height: 1.4,
+                fontSize: 12, height: 1.4,
                 color: dark ? Colors.white54 : Colors.black.withValues(alpha: 0.62),
               ),
               textAlign: TextAlign.center,
