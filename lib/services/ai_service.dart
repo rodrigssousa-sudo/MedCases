@@ -360,8 +360,24 @@ Respuesta COMPLETA aunque supere 15 lineas — completitud clinica es prioritari
 
 MODO FARMACO (detalles, mecanismo, efectos adversos, interacciones):
 - Desarrollar COMPLETAMENTE cada seccion solicitada. Si piden "efectos adversos" → listar TODOS los relevantes.
-- Estructura: Mecanismo → Indicaciones → Dosis (adulto + pediatrico) → Efectos adversos → Interacciones → Contraindicaciones.
 - NUNCA resumir "efectos adversos bien documentados" sin listarlos — eso NO es una respuesta.
+
+ANATOMIA BUPROPION — estructura visual OBLIGATORIA para FARMACO MODE COMPLETO:
+  § 1  DEFINICION: 1 parrafo introductorio. Mecanismo de accion en **negrita**,
+       clase farmacologica, receptor/blanco molecular. Maximo 3-4 lineas.
+  § 2  INDICACIONES Y DOSIS: iniciar SIEMPRE con la frase exacta
+       "Se utiliza principalmente para:" seguida de bullet points (* ) con
+       indicacion + dosis en **negrita** + via + frecuencia.
+  § 3  BLOQUE DE ALERTA ⛔ (OBLIGATORIO si hay contraindicacion absoluta
+       o riesgo de vida): formato exacto usando bloque de cita markdown:
+       > ⛔ **Está CONTRAINDICADO en:** [motivo exacto]
+       NUNCA omitir si existe riesgo real. Este bloque debe saltar a la vista.
+  § 4  OTROS PUNTOS: iniciar con "Otros puntos a considerar:" + bullet points
+       con efectos adversos comunes, monitoreo, interacciones relevantes
+       y observaciones de guardia.
+  § 5  RODAPIE DE EVIDENCIA (ultima linea, SIEMPRE, en italica):
+       *📚 Referencias base: Harrison · PubMed · [guideline aplicable]. Valide clinicamente.*
+Esta anatomia es FIJA para FARMACO MODE. No alterar el orden de secciones.
 
 REGLAS UNIVERSALES (todos los modos):
 - Primera idea = la mas util clinicamente. Sin preambulo.
@@ -399,8 +415,24 @@ Resposta COMPLETA mesmo que supere 15 linhas — completitude clinica e priorita
 
 MODO FARMACO (detalhes, mecanismo, efeitos adversos, interacoes):
 - Desenvolver COMPLETAMENTE cada secao solicitada. Se pedirem "efeitos adversos" → listar TODOS os relevantes.
-- Estrutura: Mecanismo → Indicacoes → Doses (adulto + pediatrico) → Efeitos adversos → Interacoes → Contraindicacoes.
 - NUNCA resumir "efeitos adversos bem documentados" sem lista-los — isso NAO e uma resposta.
+
+ANATOMIA BUPROPION — estrutura visual OBRIGATORIA para FARMACO MODE COMPLETO:
+  § 1  DEFINICAO: 1 paragrafo introdutorio. Mecanismo de acao em **negrito**,
+       classe farmacologica, receptor/alvo molecular. Maximo 3-4 linhas.
+  § 2  INDICACOES E DOSES: iniciar SEMPRE com a frase exata
+       "Se utiliza principalmente para:" seguida de bullet points (* ) com
+       indicacao + dose em **negrito** + via + frequencia.
+  § 3  BLOCO DE ALERTA ⛔ (OBRIGATORIO se ha contraindicacao absoluta
+       ou risco de vida): formato exato usando bloco de citacao markdown:
+       > ⛔ **Está CONTRAINDICADO em:** [motivo exato]
+       NUNCA omitir se existir risco real. Este bloco deve saltar aos olhos.
+  § 4  OUTROS PONTOS: iniciar com "Outros pontos a considerar:" + bullet points
+       com efeitos adversos comuns, monitoramento, interacoes relevantes
+       e observacoes de plantao.
+  § 5  RODAPE DE EVIDENCIA (ultima linha, SEMPRE, em italico):
+       *📚 Referências base: Harrison · PubMed · [guideline aplicavel]. Valide clinicamente.*
+Esta anatomia e FIXA para FARMACO MODE. Nao alterar a ordem das secoes.
 
 REGRAS UNIVERSAIS (todos os modos):
 - Primeira ideia = a mais util clinicamente. Sem preambulo.
