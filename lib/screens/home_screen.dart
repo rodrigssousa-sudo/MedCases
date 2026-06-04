@@ -267,106 +267,163 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _buildMobileLayout(BuildContext context, bool dark, bool isEs, AppProvider p) {
     // ══════════════════════════════════════════════════════════════════════════
     // BUILD 93 — Apple App Store compliance (Guidelines 1.4.1 & 1.4.2)
-    // Layout mobile: IA inline chat hero + Fármacos (referência) + atalhos.
-    // SIMULAÇÕES removidas (content perigoso Apple 1.4.1).
-    // Ferramentas clínicas pesadas (calculadoras, protocolos, Mi Guardia,
-    // Emergências) visíveis APENAS na versão Web.
+    //
+    // ORDEM ESTRITA DA UI MOBILE:
+    //   1. IA INLINE CHAT  — hero ~40% da área vertical (chat real, streaming)
+    //   2. GRID 1          — FÁRMACOS + INTERACCIONES lado a lado
+    //   3. HISTORIAL CLÍNICO — título de seção + 4 atalhos utilitários
+    //                          NOTAS · RECIENTES · FAVORITOS · EVALUACIÓN
+    //
+    // ITENS OCULTOS PARA REVISÃO APPLE (lógica preservada, UI invisível):
+    //   • Simulaciones / Simulações  → Apple Guideline 1.4.1
+    //   • Herramientas / Ferramentas → Apple Guideline 1.4.1
+    //   • Pediatría / Pediatria      → oculto até reativação via In-App Browser
+    //   • Adulto                     → oculto até reativação via In-App Browser
+    //   • Mi Guardia / Meu Plantão   → Apple Guideline 1.4.2
+    //   • Emergências Rápidas        → Apple Guideline 1.4.1
+    //
+    // Versão Web mantém todos os elementos via guard kIsWeb.
     // ══════════════════════════════════════════════════════════════════════════
+    final screenH = MediaQuery.of(context).size.height;
+
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       behavior: HitTestBehavior.translucent,
       child: SingleChildScrollView(
-      physics: const BouncingScrollPhysics(),
-      padding: const EdgeInsets.fromLTRB(16, 12, 16, 110),
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        physics: const BouncingScrollPhysics(),
+        padding: const EdgeInsets.fromLTRB(16, 12, 16, 110),
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
 
-        // ── 1. IA INLINE CHAT — hero principal, chat real sem trocar aba ──────
-        _HomeInlineChat(
-          dark: dark,
-          isEs: isEs,
-          onNavigateToAi: widget.onTabChange,
-        ),
-        const SizedBox(height: 14),
-
-        // ── 2. ATALHOS RÁPIDOS — Notas · Recentes · Favoritos · Avaliação ──
-        _QuickShortcuts(
-          dark: dark,
-          isEs: isEs,
-          openProtocol: widget.openProtocol,
-          onOpenNotes: widget.onOpenNotes,
-          onCheckUpdate: widget.onCheckUpdate,
-        ),
-        const SizedBox(height: 14),
-
-        // ── 3. FÁRMACOS — referência acadêmica (sem guard kIsWeb) ────────────
-        // Conteúdo de referência educacional. NÃO é calculadora de dose.
-        _HomeCard(
-          icon: Icons.medication_rounded,
-          label: isEs ? 'FÁRMACOS' : 'FÁRMACOS',
-          subtitle: isEs ? 'Referencia farmacológica' : 'Referência farmacológica',
-          gradientColors: const [Color(0xFF3B2200), Color(0xFF6B3A00), Color(0xFF9A5B00)],
-          accentColor: const Color(0xFFFBBF24),
-          dark: dark,
-          onTap: () => Navigator.of(context).push(
-            _HomeScreenState._slide(const _FarmacosShell()),
-          ),
-        ),
-        const SizedBox(height: 14),
-
-        // ── 4. FERRAMENTAS CLÍNICAS (Web only) ──────────────────────────────
-        // Calculadoras, Interações, Pediatria, Adulto, Mi Guardia, Emergências:
-        // exibidos APENAS na versão Web conforme Apple 1.4.1/1.4.2.
-        if (kIsWeb) ...[
-          // INTERAÇÕES
-          _HomeCard(
-            icon: Icons.compare_arrows_rounded,
-            label: isEs ? 'INTERACCIONES' : 'INTERAÇÕES',
-            subtitle: isEs
-                ? '+${DrugInteractionService.totalInteractions} pares con evidencia'
-                : '+${DrugInteractionService.totalInteractions} pares com evidência',
-            gradientColors: const [Color(0xFF3B0A1E), Color(0xFF5E1234), Color(0xFF8B1E4F)],
-            accentColor: const Color(0xFFFF6BA0),
-            dark: dark,
-            onTap: () => Navigator.of(context).push(
-              _HomeScreenState._slide(const DrugInteractionsScreen()),
+          // ── BLOCO 1: IA INLINE CHAT — hero principal (~40% da tela) ─────────
+          // Restrição de altura mínima garantida via ConstrainedBox para que
+          // o widget ocupe destaque absoluto independente do conteúdo atual.
+          // O chat exibe streaming real via AppProvider.sendAiMessage sem sair
+          // da tela Home.
+          ConstrainedBox(
+            constraints: BoxConstraints(
+              minHeight: screenH * 0.38,
             ),
+            child: _HomeInlineChat(
+              dark: dark,
+              isEs: isEs,
+              onNavigateToAi: widget.onTabChange,
+            ),
+          ),
+          const SizedBox(height: 16),
+
+          // ── BLOCO 2: GRID 1 — FÁRMACOS + INTERACCIONES (row horizontal) ─────
+          // FÁRMACOS: referência farmacológica (sem guard kIsWeb — conteúdo
+          //           educativo, não calculadora de dose).
+          // INTERACCIONES: sempre visível no mobile como referência de pares.
+          // Ambos em Row com largura igual (Expanded cada).
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // FÁRMACOS
+              Expanded(
+                child: _HomeCard(
+                  icon: Icons.medication_rounded,
+                  label: isEs ? 'FÁRMACOS' : 'FÁRMACOS',
+                  subtitle: isEs ? 'Referencia farmacológica' : 'Referência farmacológica',
+                  gradientColors: const [Color(0xFF3B2200), Color(0xFF6B3A00), Color(0xFF9A5B00)],
+                  accentColor: const Color(0xFFFBBF24),
+                  dark: dark,
+                  onTap: () => Navigator.of(context).push(
+                    _HomeScreenState._slide(const _FarmacosShell()),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 10),
+              // INTERACCIONES / INTERAÇÕES — referência de pares de interação
+              Expanded(
+                child: _HomeCard(
+                  icon: Icons.compare_arrows_rounded,
+                  label: isEs ? 'INTERACCIONES' : 'INTERAÇÕES',
+                  subtitle: isEs
+                      ? '+${DrugInteractionService.totalInteractions} pares'
+                      : '+${DrugInteractionService.totalInteractions} pares',
+                  gradientColors: const [Color(0xFF3B0A1E), Color(0xFF5E1234), Color(0xFF8B1E4F)],
+                  accentColor: const Color(0xFFFF6BA0),
+                  dark: dark,
+                  onTap: () => Navigator.of(context).push(
+                    _HomeScreenState._slide(const DrugInteractionsScreen()),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 20),
+
+          // ── BLOCO 3: HISTORIAL CLÍNICO — título de seção ────────────────────
+          _HomeSectionHeader(
+            icon: Icons.folder_shared_rounded,
+            label: isEs ? 'HISTORIAL CLÍNICO' : 'HISTÓRICO CLÍNICO',
+            dark: dark,
           ),
           const SizedBox(height: 10),
-          // PEDIATRIA + ADULTO
-          _HomeAdultoPediatriaRow(
+
+          // ── BLOCO 3a: Quatro atalhos utilitários —————————————————————————
+          // Ordem estrita: NOTAS · RECIENTES · FAVORITOS · EVALUACIÓN
+          _QuickShortcuts(
             dark: dark,
             isEs: isEs,
-            onTapAdulto: () => Navigator.of(context).push(
-              _HomeScreenState._slide(_AdultoShell(openProtocol: widget.openProtocol)),
-            ),
-            onTapPediatria: () => Navigator.of(context).push(
-              _HomeScreenState._slide(const _PediatricsShell()),
-            ),
+            openProtocol: widget.openProtocol,
+            onOpenNotes: widget.onOpenNotes,
+            onCheckUpdate: widget.onCheckUpdate,
           ),
           const SizedBox(height: 16),
-          // MI GUARDIA / MEU PLANTÃO
-          _HomeMiGuardiaSection(
-            dark: dark,
-            isEs: isEs,
-            onOpenDrug:  (drug) => showDrugDetailSheet(context, drug),
-            onOpenCalc:  (calcId) {
-              const calcTabMap = {
-                'calc_biometria': 0, 'calc_scores': 1, 'calc_cardio': 2,
-                'calc_eletrólitos': 3, 'calc_infusao': 4, 'calc_referencia': 5,
-                'calc_prescricoes': 6, 'calc_pediatria': 7,
-              };
-              toolsScreenTabNotifier.value = calcTabMap[calcId] ?? 0;
-              widget.onTabChange(4);
-            },
-            onManageTap: () => showPlantaoManageSheet(context),
-          ),
-          const SizedBox(height: 16),
-          // EMERGÊNCIAS RÁPIDAS
-          _QuickEmergencies(p: p, dark: dark, isEs: isEs, openProtocol: widget.openProtocol),
-        ],
-      ]),
-      ),  // SingleChildScrollView
-    );    // GestureDetector
+
+          // ── BLOCO WEB-ONLY — ferramentas clínicas pesadas ───────────────────
+          // PEDIATRIA, ADULTO, MI GUARDIA, EMERGÊNCIAS:
+          // Visíveis APENAS na versão Web conforme Apple 1.4.1/1.4.2.
+          // Os widgets e toda a lógica permanecem no projeto — apenas
+          // invisíveis no iOS/mobile até reativação via In-App Browser.
+          if (kIsWeb) ...[
+            // PEDIATRIA + ADULTO (row)
+            // ignore: dead_code
+            _HomeAdultoPediatriaRow(
+              dark: dark,
+              isEs: isEs,
+              onTapAdulto: () => Navigator.of(context).push(
+                _HomeScreenState._slide(_AdultoShell(openProtocol: widget.openProtocol)),
+              ),
+              onTapPediatria: () => Navigator.of(context).push(
+                _HomeScreenState._slide(const _PediatricsShell()),
+              ),
+            ),
+            const SizedBox(height: 16),
+            // MI GUARDIA / MEU PLANTÃO
+            // ignore: dead_code
+            _HomeMiGuardiaSection(
+              dark: dark,
+              isEs: isEs,
+              onOpenDrug: (drug) => showDrugDetailSheet(context, drug),
+              onOpenCalc: (calcId) {
+                const calcTabMap = {
+                  'calc_biometria': 0, 'calc_scores': 1, 'calc_cardio': 2,
+                  'calc_eletrólitos': 3, 'calc_infusao': 4, 'calc_referencia': 5,
+                  'calc_prescricoes': 6, 'calc_pediatria': 7,
+                };
+                toolsScreenTabNotifier.value = calcTabMap[calcId] ?? 0;
+                widget.onTabChange(4);
+              },
+              onManageTap: () => showPlantaoManageSheet(context),
+            ),
+            const SizedBox(height: 16),
+            // EMERGÊNCIAS RÁPIDAS
+            // ignore: dead_code
+            _QuickEmergencies(p: p, dark: dark, isEs: isEs, openProtocol: widget.openProtocol),
+          ],
+
+          // ── ITENS OCULTOS PERMANENTEMENTE NO iOS (Apple review) ─────────────
+          // Simulaciones / Herramientas / Adulto / Pediatria standalone:
+          // Código e lógica 100% intactos. Apenas removidos da árvore de widgets.
+          // Reativar envolvendo em In-App Browser após aprovação da Apple.
+          // (see: _PrescripcionesShell, _PediatricsShell, _AdultoShell,
+          //       _CalculadorasShell, ToolsScreen, _HomeMiGuardiaSection)
+        ]),
+      ),
+    );
   }
 
   static Route _slide(Widget page) {
@@ -708,8 +765,8 @@ class _SearchSheetState extends State<_SearchSheet> {
                         const SizedBox(height: 12),
                         Text(
                           isEs
-                              ? (kIsWeb ? 'Busca fármacos, protocolos\ny prescrições' : 'Busca casos clínicos\ny simulaciones académicas')
-                              : (kIsWeb ? 'Busque fármacos, protocolos\ne prescrições' : 'Busque casos clínicos\ne simulações acadêmicas'),
+                              ? (kIsWeb ? 'Busca fármacos, protocolos\ny prescrições' : 'Busca fármacos, protocolos\ny casos clínicos')
+                              : (kIsWeb ? 'Busque fármacos, protocolos\ne prescrições' : 'Busque fármacos, protocolos\ne casos clínicos'),
                           textAlign: TextAlign.center,
                           style: TextStyle(fontSize: 14, color: textSub),
                         ),
@@ -973,7 +1030,10 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
       ),
       child: Padding(
         padding: const EdgeInsets.fromLTRB(16, 18, 16, 16),
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
 
           // ── Header ────────────────────────────────────────────────────────
           Row(children: [
@@ -1100,7 +1160,7 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
                           color: _hasError ? Colors.red.shade400 : (dark ? Colors.white.withValues(alpha: 0.88) : const Color(0xFF1A202C)),
                           height: 1.5,
                         ),
-                        maxLines: 10,
+                        maxLines: 14,
                         overflow: TextOverflow.ellipsis,
                       ),
                       if (!_thinking && _lastAnswer.isNotEmpty && !_hasError) ...[
@@ -1283,9 +1343,9 @@ class _HomeIaCardState extends State<_HomeIaCard> {
   static const _kGreenBord = Color(0xFF0D9E6E);
 
   // Chips de exemplo bilíngues
-  // BUILD 93 — chips educacionais (Apple 1.4.1: sem referência a doses/emergências)
-  static const _chipsEs = ['Caso clínico', 'Simulación', 'Aprendizaje', 'Razonamiento', 'Educación'];
-  static const _chipsPt = ['Caso clínico', 'Simulação', 'Aprendizado', 'Raciocínio', 'Educação'];
+  // BUILD 93 — chips educacionais (Apple 1.4.1: sem referência a Simulações/doses/emergências)
+  static const _chipsEs = ['Caso clínico', 'Diagnóstico dif.', 'Farmacología', 'Razonamiento', 'Educación'];
+  static const _chipsPt = ['Caso clínico', 'Diagnóstico dif.', 'Farmacologia', 'Raciocínio', 'Educação'];
 
   @override
   void dispose() {
@@ -1799,6 +1859,55 @@ class _HomeDivider extends StatelessWidget {
             ),
           ),
         ),
+      ),
+    ]);
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// HOME SECTION HEADER — título de seção com ícone e linha decorativa
+// Usado em: HISTORIAL CLÍNICO (bloco 3 do mobile layout Build 93)
+// ─────────────────────────────────────────────────────────────────────────────
+class _HomeSectionHeader extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final bool dark;
+
+  const _HomeSectionHeader({
+    required this.icon,
+    required this.label,
+    required this.dark,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final iconColor  = dark ? const Color(0xFF4ADE80) : const Color(0xFF0A7C4E);
+    final textColor  = dark ? Colors.white.withValues(alpha: 0.72) : const Color(0xFF374151);
+    final lineColor  = dark ? Colors.white.withValues(alpha: 0.08) : const Color(0xFFE5E7EB);
+
+    return Row(children: [
+      Container(
+        width: 28,
+        height: 28,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(8),
+          color: iconColor.withValues(alpha: 0.12),
+        ),
+        child: Icon(icon, size: 15, color: iconColor),
+      ),
+      const SizedBox(width: 8),
+      Text(
+        label,
+        style: TextStyle(
+          fontSize: 11.5,
+          fontWeight: FontWeight.w800,
+          letterSpacing: 0.8,
+          color: textColor,
+        ),
+      ),
+      const SizedBox(width: 10),
+      Expanded(
+        child: Container(height: 1, color: lineColor),
       ),
     ]);
   }
@@ -2879,42 +2988,13 @@ class _FavoritosSheet extends StatelessWidget {
                         )),
                       ],
 
-                      // Prescrições favoritas
-                      if (favPrescs.isNotEmpty) ...[               
-                        Padding(
-                          padding: const EdgeInsets.only(top: 12, bottom: 8),
-                          child: Text(
-                            isEs ? 'SIMULACIONES' : 'SIMULAÇÕES',
-                            style: TextStyle(
-                              fontSize: 10, fontWeight: FontWeight.w800,
-                              letterSpacing: 1.3,
-                              color: dark ? Colors.white38 : const Color(0xFF8A94A6),
-                            ),
-                          ),
-                        ),
-                        ...favPrescs.map((m) => Column(children: [
-                          ListTile(
-                            contentPadding: const EdgeInsets.symmetric(vertical: 2, horizontal: 4),
-                            leading: Container(
-                              width: 38, height: 38,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                color: const Color(0xFFD8B4FE).withValues(alpha: 0.15),
-                              ),
-                              child: Icon(m.icon, size: 18, color: const Color(0xFFD8B4FE)),
-                            ),
-                            title: Text(m.title, style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: textMain)),
-                            subtitle: Text(m.category, style: TextStyle(fontSize: 11, color: textSub)),
-                            trailing: Icon(Icons.chevron_right_rounded, size: 18, color: dark ? Colors.white24 : const Color(0xFFCBD5E0)),
-                            onTap: () {
-                              Navigator.pop(context);
-                              Navigator.of(context).push(MaterialPageRoute(
-                                builder: (_) => const _PrescripcionesShell()));
-                            },
-                          ),
-                          Container(height: 1, color: divColor),
-                        ])),
-                      ],
+                      // BUILD 93 — Prescrições/Simulações favoritas OCULTAS (Apple 1.4.1)
+                      // Reativar com In-App Browser após aprovação da Apple.
+                      // Código 100% preservado — apenas removido da árvore de widgets.
+                      // if (favPrescs.isNotEmpty) ...[
+                      //   Padding(...)  → label 'SIMULACIONES'
+                      //   ...favPrescs.map(...)  → ListTile → _PrescripcionesShell
+                      // ],
 
                       // Protocolos favoritos
                       if (favProtos.isNotEmpty) ...[
@@ -3971,21 +4051,10 @@ class _GlobalSearchModalState extends State<_GlobalSearchModal> {
     }
 
     // ── 3. Prescrições ─────────────────────────────────────────────────────
-    int prescCount = 0;
-    for (final presc in prescriptionModels(isEs)) {
-      if (prescCount >= _maxPerCat) break;
-      final t = presc.title.toLowerCase();
-      final c = presc.category.toLowerCase();
-      if (t.contains(q) || c.contains(q)) {
-        res.add(_SearchResult(
-          cat:      _SearchCat.prescription,
-          title:    presc.title,
-          subtitle: presc.category,
-          data:     presc,
-        ));
-        prescCount++;
-      }
-    }
+    // BUILD 93 — Prescrições/Simulações OCULTADAS (Apple 1.4.1)
+    // Reativar com In-App Browser após aprovação da Apple.
+    // int prescCount = 0;
+    // for (final presc in prescriptionModels(isEs)) { ... }
 
     // ── 4. Interações (nomes dos pares) ────────────────────────────────────
     int interCount = 0;
@@ -4015,10 +4084,11 @@ class _GlobalSearchModalState extends State<_GlobalSearchModal> {
       case _SearchCat.protocol:
         showProtocolDetail(context, r.data as dynamic);
       case _SearchCat.prescription:
-        // Navega para a tela de prescrições — a própria tela já abre o detalhe
-        Navigator.of(context).push(
-          MaterialPageRoute(builder: (_) => const _PrescripcionesShell()),
-        );
+        // BUILD 93 — OCULTADO (Apple 1.4.1). Reativar após aprovação.
+        // Navigator.of(context).push(
+        //   MaterialPageRoute(builder: (_) => const _PrescripcionesShell()),
+        // );
+        break;
       case _SearchCat.interaction:
         Navigator.of(context).push(
           MaterialPageRoute(builder: (_) => const DrugInteractionsScreen()),
@@ -4103,8 +4173,8 @@ class _GlobalSearchModalState extends State<_GlobalSearchModal> {
                       style: TextStyle(color: textPri, fontSize: 15),
                       decoration: InputDecoration(
                         hintText: isEs
-                            ? 'Fármacos, protocolos, simulaciones...'
-                            : 'Fármacos, protocolos, simulações...',
+                            ? 'Fármacos, protocolos, casos clínicos...'
+                            : 'Fármacos, protocolos, casos clínicos...',
                         hintStyle: TextStyle(color: textSec, fontSize: 14),
                         border: InputBorder.none,
                         contentPadding:
@@ -4142,8 +4212,10 @@ class _GlobalSearchModalState extends State<_GlobalSearchModal> {
                 _CatChip(label: 'Protocolos',
                     color: const Color(0xFF4ADE80), dark: dark),
                 const SizedBox(width: 6),
-                _CatChip(label: isEs ? 'Simulaciones' : 'Simulações',
-                    color: const Color(0xFFA78BFA), dark: dark),
+                // BUILD 93 — chip 'Simulaciones/Simulações' ocultado (Apple 1.4.1)
+                // Reativar após aprovação com In-App Browser
+                // _CatChip(label: isEs ? 'Simulaciones' : 'Simulações',
+                //     color: const Color(0xFFA78BFA), dark: dark),
                 const SizedBox(width: 6),
                 _CatChip(label: isEs ? 'Interacciones' : 'Interações',
                     color: const Color(0xFFFF6BA0), dark: dark),

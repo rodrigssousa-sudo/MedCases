@@ -1537,17 +1537,38 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    // 0 — Início
-                    _buildNavBtn(0, Icons.home_rounded, p.t('cockpit'), dark, p),
-                    // 3 — História Clínica
-                    _buildNavBtn(3, Icons.folder_shared_rounded, 'H. Clínica', dark, p),
-                    // Centro — Botão busca global (lupa)
+                    // ── BUILD 93 — Apple review: 3 itens estritamente ──────
+                    // INICIO · LUPA · BIBLIOTECA
+                    // Itens ocultos: H. Clínica (tab 3), Ferramentas (tab 4)
+                    // Toda a lógica e telas preservadas — apenas invisíveis aqui.
+                    // Reativar após aprovação da Apple.
+                    //
+                    // 0 — INICIO
+                    _buildNavBtn(
+                      0,
+                      Icons.home_rounded,
+                      p.lang == 'es' ? 'Inicio' : 'Início',
+                      dark,
+                      p,
+                    ),
+                    // Centro — LUPA (busca global)
                     _buildSearchBtn(dark),
-                    // 5 — Biblioteca
-                    _buildNavBtn(5, Icons.menu_book_rounded, 'Biblioteca', dark, p),
-                    // 4 — Ferramentas (OCULTO no iOS/mobile — Apple 1.4.1)
-                    // Ferramentas clínicas ativas apenas na versão Web
-                    if (kIsWeb) _buildNavBtn(4, Icons.calculate_rounded, 'Ferramentas', dark, p),
+                    // 5 — BIBLIOTECA
+                    _buildNavBtn(
+                      5,
+                      Icons.menu_book_rounded,
+                      'Biblioteca',
+                      dark,
+                      p,
+                    ),
+
+                    // ── ITENS OCULTOS PARA REVISÃO APPLE ──────────────────
+                    // H. Clínica (tab 3) — oculto até aprovação
+                    // if (false) _buildNavBtn(3, Icons.folder_shared_rounded, 'H. Clínica', dark, p),
+                    //
+                    // Ferramentas (tab 4) — web-only após aprovação
+                    if (kIsWeb)
+                      _buildNavBtn(4, Icons.calculate_rounded, 'Ferramentas', dark, p),
                   ],
                 ),
               ),
