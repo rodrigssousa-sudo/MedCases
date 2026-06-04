@@ -497,6 +497,10 @@ class GeminiService {
         'temperature': 0.4,  // Respostas clínicas exigem maior determinismo
         'topP': 0.95,
         'topK': 40,
+        // thinkingBudget: 0 — desativa thinking tokens do Gemini 2.5 Flash.
+        // Sem isso, o modelo gasta tokens de "raciocínio" antes de responder,
+        // consumindo quota rapidamente e causando 429 em poucas consultas.
+        'thinkingConfig': {'thinkingBudget': 0},
       },
       'safetySettings': [
         {'category': 'HARM_CATEGORY_HARASSMENT',        'threshold': 'BLOCK_NONE'},
