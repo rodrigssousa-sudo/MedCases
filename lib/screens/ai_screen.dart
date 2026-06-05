@@ -1628,7 +1628,7 @@ class _MobileAiActionBar extends StatelessWidget {
                       top: -3, right: 5,
                       child: Container(
                         width: 14, height: 14,
-                        decoration: const BoxDecoration(
+                        decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           color: Color(0xFFC5A365),
                         ),
