@@ -79,13 +79,12 @@
 
 	<!-- ── Modos de background ───────────────────────────────────────────── -->
 	<!-- audio: exigido pelo speech_to_text para manter sessão STT ativa      -->
-	<!-- fetch: permite que flutter_local_notifications dispare no background -->
-	<!-- remote-notification REMOVIDO Build 99 — firebase_messaging não está  -->
-	<!-- implementado; sem APNs delegate → rejeitaria Guideline 2.5.4.        -->
+	<!-- fetch REMOVIDO Build 100 — flutter_local_notifications usa           -->
+	<!-- UNTimeIntervalNotificationTrigger em foreground; sem handler nativo  -->
+	<!-- performFetchWithCompletionHandler → Guideline 2.5.4 rejeitaria.      -->
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>audio</string>
-		<string>fetch</string>
 	</array>
 
 	<!-- ── Launch / Main storyboard ─────────────────────────────────────── -->

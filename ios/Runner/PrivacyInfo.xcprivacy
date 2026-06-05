@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <!-- ══════════════════════════════════════════════════════════════════
+         Privacy Manifest — MedCases Pro
+         Required by Apple since May 2024 for apps using privacy-impacting
+         APIs. Xcode embeds this file into the final .ipa automatically.
+
+         Declared APIs:
+           • NSPrivacyAccessedAPICategoryUserDefaults (CA92.1)
+             Used by: shared_preferences (Flutter plugin) for persisting
+             user settings, session tokens, AI key config, language
+             preference, dark mode, and chat history cache.
+             Reason CA92.1: "Access info from the same app that wrote it."
+
+         No tracking:
+           • NSPrivacyTracking = false
+             App does not use data to track users across apps or websites.
+             No advertising SDKs, no IDFA, no Firebase Analytics.
+    ════════════════════════════════════════════════════════════════════ -->
+
+    <key>NSPrivacyAccessedAPITypes</key>
+    <array>
+        <dict>
+            <key>NSPrivacyAccessedAPIType</key>
+            <string>NSPrivacyAccessedAPICategoryUserDefaults</string>
+            <key>NSPrivacyAccessedAPITypeReasons</key>
+            <array>
+                <!-- CA92.1: Access info from the same app that wrote it -->
+                <string>CA92.1</string>
+            </array>
+        </dict>
+    </array>
+
+    <!-- App does not track users across apps/websites -->
+    <key>NSPrivacyTracking</key>
+    <false/>
+
+    <!-- No collected data types beyond what is declared above -->
+    <key>NSPrivacyCollectedDataTypes</key>
+    <array/>
+
+</dict>
+</plist>
