@@ -952,6 +952,9 @@ class _HomeInlineChat extends StatefulWidget {
 
 class _HomeInlineChatState extends State<_HomeInlineChat> {
   final _ctrl       = TextEditingController();
+  // autofocus: false é obrigatório — o FocusNode NUNCA deve adquirir foco
+  // automaticamente. Sem isso, o teclado abre sozinho ao retornar para a Home
+  // (o IndexedStack preserva o widget mas o FocusNode pode ser re-attached).
   final _focus      = FocusNode();
   final _scrollCtrl = ScrollController();
 
@@ -968,6 +971,24 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
 
   static const _chipsEs = ['Caso clínico', 'Diagnóstico dif.', 'Farmacología', 'Razonamiento'];
   static const _chipsPt = ['Caso clínico', 'Diagnóstico dif.', 'Farmacologia', 'Raciocínio'];
+
+  @override
+  void initState() {
+    super.initState();
+    // Garante que o FocusNode nunca está focado ao montar/remontar o widget.
+    // Previne teclado automático ao retornar para a Home via IndexedStack.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) _focus.unfocus();
+    });
+  }
+
+  @override
+  void didUpdateWidget(_HomeInlineChat old) {
+    super.didUpdateWidget(old);
+    // Se qualquer prop mudou (dark/isEs/etc) e o widget foi reconstruído,
+    // certificar que o foco não é reclamado automaticamente.
+    // Não chama _focus.unfocus() aqui para não interferir com digitação ativa.
+  }
 
   @override
   void dispose() {
@@ -1319,6 +1340,7 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
                     child: TextField(
                       controller: _ctrl,
                       focusNode: _focus,
+                      autofocus: false,   // CRÍTICO — nunca abrir teclado automaticamente
                       minLines: 1,
                       maxLines: 4,
                       style: TextStyle(fontSize: 14, color: textColor, height: 1.5),
