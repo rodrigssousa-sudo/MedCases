@@ -1559,72 +1559,69 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
         child: _buildAiCenterFab(dark, p),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      // ── Bottom nav: barra 48px fixos + LegalBar SEM SafeArea ────────────────
-      // MediaQuery.removePadding(removeBottom:true) aplicado APENAS ao SizedBox
-      // do BottomAppBar — garante altura física exata de 48px.
-      // _LegalBar usa insideSafeArea:true (sem SafeArea extra) → altura = só texto.
-      // Resultado: ZERO bloco preto vazio abaixo dos ícones de navegação.
-      bottomNavigationBar: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          // ── Barra de navegação — 48px físicos exatos, sem absorver home indicator ──
-          // MediaQuery.removePadding(removeBottom:true) elimina qualquer inset do
-          // Scaffold que empurraria o BottomAppBar para cima e criaria bloco preto.
-          MediaQuery.removePadding(
-            context: context,
-            removeBottom: true,
-            child: SizedBox(
+      // ── Bottom nav: BottomAppBar nativo + LegalBar ────────────────────────
+      // O Scaffold posiciona o bottomNavigationBar ACIMA do safe area automaticamente.
+      // NÃO usar MediaQuery.removePadding aqui — isso corta os ícones abaixo da tela.
+      // Estrutura: BottomAppBar(elevation:0, padding:zero) > Column >
+      //   SizedBox(height:48) com Row de ícones CENTRALIZADA
+      //   + SafeArea(top:false) > _LegalBar (absorve home indicator, sem bloco preto)
+      bottomNavigationBar: BottomAppBar(
+        color: navBg,
+        shape: const CircularNotchedRectangle(),
+        notchMargin: 5.0,
+        elevation: 0,
+        padding: EdgeInsets.zero,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // ── Barra de ícones: 48px com centralização vertical perfeita ─────
+            SizedBox(
               height: 48,
-              child: BottomAppBar(
-                color: navBg,
-                shape: const CircularNotchedRectangle(),
-                notchMargin: 5.0,
-                elevation: 2,
-                padding: EdgeInsets.zero,
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    // 0 — INICIO
-                    _buildNavBtn(
-                      0,
-                      Icons.home_rounded,
-                      p.lang == 'es' ? 'Inicio' : 'Início',
-                      dark, p,
-                    ),
-                    // 3 — HISTÓRIA CLÍNICA
-                    _buildNavBtn(
-                      3,
-                      Icons.assignment_ind_outlined,
-                      'H. Clínica',
-                      dark, p,
-                    ),
-                    // ── Slot central — FAB docked ─────────────────────────
-                    const SizedBox(width: 60),
-                    // 5 — BIBLIOTECA
-                    _buildNavBtn(
-                      5,
-                      Icons.menu_book_rounded,
-                      'Biblioteca',
-                      dark, p,
-                    ),
-                    // 4 — FERRAMENTAS
-                    _buildNavBtn(
-                      4,
-                      Icons.calculate_rounded,
-                      p.lang == 'es' ? 'Herramientas' : 'Ferramentas',
-                      dark, p,
-                    ),
-                  ],
-                ),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  // 0 — INICIO
+                  _buildNavBtn(
+                    0,
+                    Icons.home_rounded,
+                    p.lang == 'es' ? 'Inicio' : 'Início',
+                    dark, p,
+                  ),
+                  // 3 — HISTÓRIA CLÍNICA
+                  _buildNavBtn(
+                    3,
+                    Icons.assignment_ind_outlined,
+                    'H. Clínica',
+                    dark, p,
+                  ),
+                  // ── Slot central — FAB docked ───────────────────────────
+                  const SizedBox(width: 60),
+                  // 5 — BIBLIOTECA
+                  _buildNavBtn(
+                    5,
+                    Icons.menu_book_rounded,
+                    'Biblioteca',
+                    dark, p,
+                  ),
+                  // 4 — FERRAMENTAS
+                  _buildNavBtn(
+                    4,
+                    Icons.calculate_rounded,
+                    p.lang == 'es' ? 'Herramientas' : 'Ferramentas',
+                    dark, p,
+                  ),
+                ],
               ),
             ),
-          ),
-          // ── Disclaimer legal: padding bottom = MediaQuery.padding.bottom ────
-          // insideSafeArea:false → _LegalBar lê MediaQuery.padding.bottom diretamente
-          // e adiciona como padding inferior ao Container — sem SafeArea que cria
-          // bloco vazio, mas texto fica acima do home indicator (Apple 1.4.1 OK).
-          _LegalBar(dark: dark, insideSafeArea: false),
-        ],
+            // ── Disclaimer legal: SafeArea(top:false) absorve home indicator ──
+            // Isso adiciona exatamente o espaço do home indicator (~34px no iPhone)
+            // como padding ABAIXO do texto — visível + sem bloco preto extra.
+            SafeArea(
+              top: false,
+              child: _LegalBar(dark: dark, insideSafeArea: true),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -2686,22 +2683,14 @@ class _LegalBar extends StatelessWidget {
         ? 'Herramienta educativa de apoyo clínico. La decisión y verificación de dosis son responsabilidad exclusiva del médico asistente.'
         : 'Ferramenta educacional de apoio clínico. A decisão e verificação de doses são de responsabilidade exclusiva do médico assistente.';
 
-    // Home indicator padding: apenas quando standalone (desktop/tablet sem SafeArea pai).
-    // insideSafeArea=true → sem padding extra → altura = só texto (5+text+5).
-    // insideSafeArea=false → adiciona MediaQuery.padding.bottom exato (home indicator iPhone).
-    final bottomPad = insideSafeArea
-        ? 0.0
-        : MediaQuery.of(context).padding.bottom;
-
-    return Container(
+    final content = Container(
       width: double.infinity,
       decoration: BoxDecoration(
         color: bg,
         border: Border(top: BorderSide(color: border, width: 0.5)),
       ),
       // Apple 1.4.1 — texto legível mas compacto
-      // bottom: 5 + bottomPad garante que o texto não fique atrás do home indicator
-      padding: EdgeInsets.fromLTRB(14, 5, 14, 5 + bottomPad),
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 5),
       child: Row(children: [
         Icon(Icons.info_outline_rounded, size: 11, color: textColor.withValues(alpha: 0.7)),
         const SizedBox(width: 5),
@@ -2720,6 +2709,11 @@ class _LegalBar extends StatelessWidget {
         ),
       ]),
     );
+
+    // insideSafeArea=true → conteúdo puro (SafeArea já aplicado pelo pai).
+    // insideSafeArea=false → envolve com SafeArea(top:false) para standalone.
+    if (insideSafeArea) return content;
+    return SafeArea(top: false, child: content);
   }
 }
 
