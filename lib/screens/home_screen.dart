@@ -1141,47 +1141,62 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
     });
     _scrollToBottom();
     final p = context.read<AppProvider>();
-    await p.sendAiMessage(
-      text,
-      onChunk: (acc) {
-        if (mounted) {
-          // CAMADA 1 — Stream sanitizer: expurga metadados de cabeçalho antes
-          // de exibir o texto parcial. Idêntico ao pipeline de ai_screen.dart.
-          final cleaned = _homeStripMetadataHeaders(acc);
-          setState(() => _streaming = cleaned);
-          _scrollToBottom();
-        }
-      },
-      onDone: (fin) {
-        if (mounted) {
-          // CAMADA 1 + 2 — Strip cabeçalhos E limpeza profunda de CoT/tags
-          // na resposta final. Idêntico ao tratamento de ai_screen.dart.
-          final cleanFin = _cleanHomeAiText(_homeStripMetadataHeaders(fin));
-          setState(() {
-            _messages.add({'role': 'ai', 'text': cleanFin, 'isError': false});
-            _streaming = '';
-            _thinking  = false;
-          });
-          _scrollToBottom();
-          // AUTO-PERSIST: grava o turno completo (user+AI) no histórico
-          // dual-write (Firestore + SharedPreferences) fire-and-forget.
-          _homePersistTurn();
-        }
-      },
-      onError: (err) {
-        if (mounted) {
-          setState(() {
-            _messages.add({'role': 'ai', 'text': err, 'isError': true});
-            _streaming = '';
-            _thinking  = false;
-          });
-          _scrollToBottom();
-          // AUTO-PERSIST: mesmo em erro — salva o turno do usuário para
-          // que o histórico mostre a tentativa no _ChatHistorySheet.
-          _homePersistTurn();
-        }
-      },
-    );
+    try {
+      await p.sendAiMessage(
+        text,
+        onChunk: (acc) {
+          if (mounted) {
+            // CAMADA 1 — Stream sanitizer: expurga metadados de cabeçalho antes
+            // de exibir o texto parcial. Idêntico ao pipeline de ai_screen.dart.
+            final cleaned = _homeStripMetadataHeaders(acc);
+            setState(() => _streaming = cleaned);
+            _scrollToBottom();
+          }
+        },
+        onDone: (fin) {
+          if (mounted) {
+            // CAMADA 1 + 2 — Strip cabeçalhos E limpeza profunda de CoT/tags
+            // na resposta final. Idêntico ao tratamento de ai_screen.dart.
+            final cleanFin = _cleanHomeAiText(_homeStripMetadataHeaders(fin));
+            setState(() {
+              _messages.add({'role': 'ai', 'text': cleanFin, 'isError': false});
+              _streaming = '';
+              _thinking  = false;
+            });
+            _scrollToBottom();
+            // AUTO-PERSIST: grava o turno completo (user+AI) no histórico
+            // dual-write (Firestore + SharedPreferences) fire-and-forget.
+            _homePersistTurn();
+          }
+        },
+        onError: (err) {
+          if (mounted) {
+            setState(() {
+              _messages.add({'role': 'ai', 'text': err, 'isError': true});
+              _streaming = '';
+              _thinking  = false;
+            });
+            _scrollToBottom();
+            // AUTO-PERSIST: mesmo em erro — salva o turno do usuário para
+            // que o histórico mostre a tentativa no _ChatHistorySheet.
+            _homePersistTurn();
+          }
+        },
+      );
+    } catch (e) {
+      // Captura exceções não tratadas (ex: TimeoutException, SocketException)
+      // que possam escapar do onError — garante limpeza total do estado.
+      if (mounted) {
+        setState(() {
+          _streaming = '';
+          _thinking  = false;
+          // Adiciona bolha de erro genérico se não houver resposta AI ainda
+          if (_messages.isEmpty || _messages.last['role'] != 'ai') {
+            _messages.add({'role': 'ai', 'text': '⚠️ Erro de conexão. Tente novamente.', 'isError': true});
+          }
+        });
+      }
+    }
   }
 
   /// Navega para a aba de IA (tab 2).
@@ -1594,7 +1609,7 @@ String _homeStripMetadataHeaders(String accumulated) {
     '',
   );
 
-  // Regex 2: padrões complementares de abertura de linha
+  // Regex 2: padrões complementares de abertura de linha (3ª pessoa / metadados)
   result = result.replaceAll(
     RegExp(
       r'^[|\s]*(?:'
@@ -1602,9 +1617,23 @@ String _homeStripMetadataHeaders(String accumulated) {
       r'|Clinical\s+Confidence\s*:'
       r'|Nivel\s+de\s+Confianza\s*:'
       r'|N[íi]vel\s+de\s+Confian[çc]a\s*:'
-      r'|El\s+usuario\s+(?:solicita|proporciona|pregunta|pide|quiere|busca|ha\s+(?:pedido|indicado))'
-      r'|O\s+usu[aá]rio\s+(?:solicita|fornece|pergunta|pede|quer|busca|indicou)'
-      r'|The\s+user\s+(?:is\s+asking|asks|wants|requests|provides|has\s+indicated)'
+      r'|El\s+usuario\s+(?:solicita|proporciona|pregunta|pide|quiere|busca|ha\s+(?:pedido|indicado)|solicit[oó])'
+      r'|O\s+usu[aá]rio\s+(?:solicita|fornece|pergunta|pede|quer|busca|indicou|solicitou|informou|forneceu|est[aá]\s+perguntando)'
+      r'|The\s+user\s+(?:is\s+asking|asks|wants|requests|provides|has\s+indicated|has\s+asked)'
+      r'|El\s+m[eé]dico\s+(?:solicita|pregunta|pide|quiere|ha\s+(?:pedido|indicado))'
+      r'|O\s+m[eé]dico\s+(?:solicita|pergunta|pede|quer|solicitou)'
+      r'|Para\s+proporcionar\s+una\s+respuesta'
+      r'|Para\s+fornecer\s+uma\s+resposta'
+      r'|La\s+base\s+de\s+datos\s+(?:local\s+)?(?:no\s+)?(?:contiene|tiene|posee)'
+      r'|A\s+base\s+de\s+dados\s+(?:local\s+)?n[aã]o\s+(?:possui|cont[eé]m|tem)'
+      r'|Por\s+lo\s+tanto,\s+(?:la\s+mejor|el\s+mejor)'
+      r'|Portanto,\s+a\s+melhor\s+abordagem'
+      r'|(?:El|La)\s+prompt\s+(?:es|parece)\s+(?:vago|incompleto|ambiguo)'
+      r'|O\s+prompt\s+(?:é|parece)\s+(?:vago|incompleto|ambiguo)'
+      r'|A\s+continuaci[oó]n\s+(?:presento|presentar[eé]|describir[eé])'
+      r'|A\s+seguir\s+(?:apresentarei|descrevo|apresento|fornecerei)'
+      r'|Baseado\s+(?:no|na|em)\s+(?:contexto|conversa|solicita|que\s+(?:o|foi))'
+      r'|Basado\s+en\s+(?:el\s+contexto|la\s+conversaci[oó]n|la\s+solicitud|lo\s+que)'
       r').*$',
       caseSensitive: false,
       multiLine: true,
@@ -1708,6 +1737,55 @@ String _cleanHomeAiText(String raw) {
     '',
   );
 
+  // 5b. PURGA PROFUNDA — Monólogo em 3ª pessoa (espelho de ai_screen.dart 4c)
+  // Padrão PT — linhas inteiras com meta-raciocínio em 3ª pessoa
+  s = s.replaceAll(
+    RegExp(
+      r'^(?:'
+      r'O\s+usu[aá]rio\s+(?:solicitou|pediu|informou|forneceu|indicou|est[aá])'
+      r'|O\s+m[eé]dico\s+(?:solicita|pergunta|pediu|quer|solicitou)'
+      r'|Para\s+fornecer\s+uma\s+resposta\s+(?:[uú]til|adequada|completa)'
+      r'|Para\s+(?:poder\s+)?(?:dar|fornecer|oferecer)\s+(?:uma\s+)?(?:resposta|conduta|informa)'
+      r'|A\s+base\s+de\s+dados\s+(?:local\s+)?n[aã]o\s+(?:possui|cont[eé]m|tem|encontrou)'
+      r'|Portanto,?\s+a\s+melhor\s+(?:abordagem|estrategia|opcao)'
+      r'|O\s+prompt\s+(?:[eé]|parece|est[aá])\s+(?:muito\s+)?(?:vago|incompleto|ambiguo|curto|insuficiente)'
+      r'|N[aã]o\s+(?:encontrei|tenho|possuo)\s+(?:dados|informacoes|contexto)\s+suficientes'
+      r'|Precisaria\s+de\s+mais\s+(?:informacoes|dados|contexto|detalhes)'
+      r'|Com\s+base\s+no\s+que\s+o\s+usu[aá]rio'
+      r'|Baseado\s+(?:no|na|em)\s+(?:contexto|conversa|solicitacao|que\s+foi)'
+      r'|A\s+seguir\s+(?:apresentarei|descrevo|apresento|fornecerei)'
+      r'|O\s+(?:pedido|contexto|prompt|input)\s+(?:[eé]|est[aá]|foi|parece)'
+      r').*$',
+      caseSensitive: false,
+      multiLine: true,
+    ),
+    '',
+  );
+
+  // Padrão ES — equivalente espanhol
+  s = s.replaceAll(
+    RegExp(
+      r'^(?:'
+      r'El\s+usuario\s+(?:solicit[oó]|pidi[oó]|indic[oó]|ha\s+(?:pedido|indicado|solicitado))'
+      r'|El\s+m[eé]dico\s+(?:solicita|pregunta|ha\s+pedido|quiere)'
+      r'|Para\s+proporcionar\s+una\s+respuesta\s+(?:[uú]til|adecuada|completa)'
+      r'|Para\s+(?:poder\s+)?(?:dar|proporcionar|ofrecer)\s+(?:una\s+)?(?:respuesta|conducta|informa)'
+      r'|La\s+base\s+de\s+datos\s+(?:local\s+)?no\s+(?:contiene|tiene|posee|encontr[oó])'
+      r'|Por\s+lo\s+tanto,?\s+la\s+mejor\s+(?:estrategia|opci[oó]n|abordaje|aproximaci[oó]n)'
+      r'|El\s+prompt\s+(?:es|parece|est[aá])\s+(?:muy\s+)?(?:vago|incompleto|ambiguo|corto|insuficiente)'
+      r'|No\s+(?:encontr[eé]|tengo|poseo)\s+(?:datos|informaci[oó]n|contexto)\s+suficientes?'
+      r'|Necesitar[ií]a\s+(?:m[aá]s\s+)?(?:informaci[oó]n|datos|contexto|detalles)'
+      r'|Con\s+base\s+en\s+(?:lo\s+que\s+el\s+usuario|la\s+solicitud)'
+      r'|Basado\s+en\s+(?:el\s+contexto|la\s+conversaci[oó]n|la\s+solicitud|lo\s+que)'
+      r'|A\s+continuaci[oó]n\s+(?:presento|presentar[eé]|describir[eé]|proporcionar[eé])'
+      r'|La\s+(?:pregunta|solicitud|consulta|query)\s+(?:es|parece|est[aá]|resulta)'
+      r').*$',
+      caseSensitive: false,
+      multiLine: true,
+    ),
+    '',
+  );
+
   // 6. Catch-all Confianza/Confiança Clínica (CAMADA 2)
   s = s.replaceAll(
     RegExp(
@@ -1725,12 +1803,24 @@ String _cleanHomeAiText(String raw) {
       r'|Clinical\s+Confidence\s*:'
       r'|Nivel\s+de\s+Confianza\s*:'
       r'|N[íi]vel\s+de\s+Confian[çc]a\s*:'
-      r'|El\s+usuario\s+(?:solicita|proporciona|pregunta|pide|quiere|busca|ha\s+(?:indicado|pedido))'
-      r'|O\s+usu[aá]rio\s+(?:solicita|fornece|pergunta|pede|quer|busca|indicou)'
-      r'|The\s+user\s+(?:is\s+asking|asks|wants|requests|provides|has\s+indicated)'
+      r'|El\s+usuario\s+(?:solicita|proporciona|pregunta|pide|quiere|busca|ha\s+(?:indicado|pedido)|solicit[oó])'
+      r'|O\s+usu[aá]rio\s+(?:solicita|fornece|pergunta|pede|quer|busca|indicou|solicitou|informou|est[aá]\s+perguntando)'
+      r'|The\s+user\s+(?:is\s+asking|asks|wants|requests|provides|has\s+indicated|has\s+asked)'
       r'|El\s+usuario\s+ha\s+pedido'
-      r'|Baseado\s+(?:no|na)\s+(?:contexto|conversa|solicita)'
-      r'|Basado\s+en\s+(?:el\s+contexto|la\s+conversaci[oó]n|la\s+solicitud)'
+      r'|El\s+m[eé]dico\s+(?:solicita|pregunta|pide|ha\s+pedido)'
+      r'|O\s+m[eé]dico\s+(?:solicita|pergunta|pede|solicitou)'
+      r'|Baseado\s+(?:no|na|em)\s+(?:contexto|conversa|solicita|que\s+(?:o|foi))'
+      r'|Basado\s+en\s+(?:el\s+contexto|la\s+conversaci[oó]n|la\s+solicitud|lo\s+que)'
+      r'|Para\s+proporcionar\s+una\s+respuesta'
+      r'|Para\s+fornecer\s+uma\s+resposta'
+      r'|La\s+base\s+de\s+datos\s+(?:local\s+)?no\s+(?:contiene|tiene|posee)'
+      r'|A\s+base\s+de\s+dados\s+(?:local\s+)?n[aã]o\s+(?:possui|cont[eé]m|tem)'
+      r'|Por\s+lo\s+tanto,\s+(?:la\s+mejor|el\s+mejor)'
+      r'|Portanto,\s+a\s+melhor\s+abordagem'
+      r'|(?:El|La)\s+prompt\s+(?:es|parece)\s+(?:vago|incompleto)'
+      r'|O\s+prompt\s+(?:é|parece)\s+(?:vago|incompleto)'
+      r'|A\s+seguir\s+(?:apresentarei|descrevo|apresento)'
+      r'|A\s+continuaci[oó]n\s+(?:presento|presentar[eé])'
       r').*$',
       caseSensitive: false,
       multiLine: true,
