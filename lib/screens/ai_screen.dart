@@ -1495,24 +1495,23 @@ class _MobileAiActionBar extends StatelessWidget {
           children: [
             // ── Logo MedCases IA (mini) ──────────────────────────────────────
             Row(mainAxisSize: MainAxisSize.min, children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(6),
-                child: Image.asset(
-                  'assets/images/connectmind_logo.png',
-                  width: 22, height: 22, fit: BoxFit.cover,
-                  errorBuilder: (_, __, ___) => Container(
-                    width: 22, height: 22,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(6),
-                      gradient: const LinearGradient(
-                        colors: [Color(0xFF0A1525), Color(0xFF143050)],
-                      ),
-                    ),
-                    child: const Center(
-                      child: Icon(Icons.psychology_rounded, size: 13,
-                        color: Color(0xFF00E5FF)),
-                    ),
+              Container(
+                width: 22, height: 22,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(6),
+                  gradient: const LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [Color(0xFF0A1525), Color(0xFF143050)],
                   ),
+                  border: Border.all(
+                    color: Color(0xFF00E5FF).withValues(alpha: 0.25),
+                    width: 0.8,
+                  ),
+                ),
+                child: const Center(
+                  child: Icon(Icons.psychology_alt_rounded, size: 13,
+                    color: Color(0xFF00E5FF)),
                 ),
               ),
               const SizedBox(width: 5),

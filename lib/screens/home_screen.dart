@@ -1136,9 +1136,24 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
 
             // ── Header ──────────────────────────────────────────────────────
             Row(children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(10),
-                child: Image.asset('assets/images/connectmind_logo.png', width: 36, height: 36, fit: BoxFit.cover),
+              Container(
+                width: 36, height: 36,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  gradient: const LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [Color(0xFF0A1525), Color(0xFF0F2038), Color(0xFF143050)],
+                  ),
+                  border: Border.all(
+                    color: Color(0xFF00E5FF).withValues(alpha: 0.22),
+                    width: 1,
+                  ),
+                ),
+                child: const Center(
+                  child: Icon(Icons.psychology_alt_rounded,
+                    size: 20, color: Color(0xFF00E5FF)),
+                ),
               ),
               const SizedBox(width: 10),
               Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -1404,9 +1419,12 @@ class _AiBubbleAvatar extends StatelessWidget {
         shape: BoxShape.circle,
         color: dark ? const Color(0xFF162A1C) : const Color(0xFFE6F7EF),
       ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(14),
-        child: Image.asset('assets/images/connectmind_logo.png', width: 14, height: 14, fit: BoxFit.cover),
+      child: Center(
+        child: Icon(
+          Icons.psychology_alt_rounded,
+          size: 14,
+          color: dark ? const Color(0xFF00E5FF) : const Color(0xFF0A7C4E),
+        ),
       ),
     );
   }
@@ -1642,10 +1660,11 @@ class _HomeIaCardState extends State<_HomeIaCard> {
           Positioned(
             right: -10, bottom: -10,
             child: Opacity(
-              opacity: 0.035,
-              child: Image.asset(
-                'assets/images/connectmind_logo.png',
-                width: 110, height: 110, fit: BoxFit.contain,
+              opacity: 0.045,
+              child: const Icon(
+                Icons.psychology_alt_rounded,
+                size: 110,
+                color: Color(0xFF00E5FF),
               ),
             ),
           ),
@@ -1657,11 +1676,23 @@ class _HomeIaCardState extends State<_HomeIaCard> {
 
             // ── Header: logo ConnectMind + título + badge IA ──────────────────
             Row(children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(11),
-                child: Image.asset(
-                  'assets/images/connectmind_logo.png',
-                  width: 38, height: 38, fit: BoxFit.cover,
+              Container(
+                width: 38, height: 38,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(11),
+                  gradient: const LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [Color(0xFF0A1525), Color(0xFF0F2038), Color(0xFF143050)],
+                  ),
+                  border: Border.all(
+                    color: Color(0xFF00E5FF).withValues(alpha: 0.22),
+                    width: 1,
+                  ),
+                ),
+                child: const Center(
+                  child: Icon(Icons.psychology_alt_rounded,
+                    size: 21, color: Color(0xFF00E5FF)),
                 ),
               ),
               const SizedBox(width: 10),
