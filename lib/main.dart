@@ -1363,6 +1363,11 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
     final p = context.read<AppProvider>();
     final bp = MedBreakpoints.of(context);
 
+    // Web mobile (browser num celular, largura < 768px): renderiza como app nativo
+    // — mesma aparência do iOS/Android: AppBar verde, BottomNav, sem sidebar.
+    if (bp.isWebMobile) {
+      return _buildMobileShell(context, dark, p);
+    }
     // Desktop: sidebar lateral + conteúdo expandido sem bottom nav
     if (bp.isDesktop) {
       return _buildDesktopShell(context, dark, p);

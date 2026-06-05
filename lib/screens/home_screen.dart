@@ -72,7 +72,11 @@ class _HomeScreenState extends State<HomeScreen> {
     final p  = context.read<AppProvider>();
     final bp = MedBreakpoints.of(context);
 
-    // Desktop: layout em 2 colunas
+    // Web mobile (browser num celular, largura < 768px): aparência idêntica ao app
+    if (bp.isWebMobile) {
+      return _buildMobileLayout(context, dark, isEs, p);
+    }
+    // Desktop: layout em 2 colunas com sidebar
     if (bp.isDesktop) {
       return _buildDesktopLayout(context, dark, isEs, p, bp);
     }
