@@ -287,7 +287,7 @@ class _HomeScreenState extends State<HomeScreen> {
             _HomeScreenState._slide(const _PrescripcionesShell()),
           ),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: 4),
 
         // 2 — Fármacos (card largo — edge-to-edge)
         _HomeCard(
@@ -303,7 +303,7 @@ class _HomeScreenState extends State<HomeScreen> {
             _HomeScreenState._slide(const _FarmacosShell()),
           ),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: 4),
 
         // 3 — Interacciones (card largo — edge-to-edge)
         _HomeCard(
@@ -319,7 +319,7 @@ class _HomeScreenState extends State<HomeScreen> {
             _HomeScreenState._slide(const DrugInteractionsScreen()),
           ),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: 4),
 
         // 4 — Adulto + Pediatría (lado a lado, metade da largura — gap reduzido)
         Row(children: [
@@ -335,7 +335,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
           ),
-          const SizedBox(width: 6),
+          const SizedBox(width: 4),
           Expanded(
             child: _HomeCardHalf(
               icon: Icons.child_care_rounded,
@@ -992,7 +992,7 @@ class _HomeCardHalfState extends State<_HomeCardHalf>
       child: ScaleTransition(
         scale: _scale,
         child: Container(
-          height: 96,
+          height: 106,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(20),
             gradient: LinearGradient(
@@ -2223,9 +2223,9 @@ class _HomeCardState extends State<_HomeCard>
         scale: _scale,
         child: Container(
           width: double.infinity,
-          height: 88,
+          height: 100,
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(22),
+            borderRadius: BorderRadius.circular(20),
             gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
@@ -2285,14 +2285,14 @@ class _HomeCardState extends State<_HomeCard>
 
               // Conteúdo
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
+                padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
                 child: Row(children: [
                   // Ícone
                   Container(
-                    width: 48,
-                    height: 48,
+                    width: 52,
+                    height: 52,
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(14),
+                      borderRadius: BorderRadius.circular(15),
                       color: widget.accentColor.withValues(alpha: 0.14),
                       border: Border.all(
                         color: widget.accentColor.withValues(alpha: 0.25),
@@ -2301,11 +2301,11 @@ class _HomeCardState extends State<_HomeCard>
                     ),
                     child: Icon(
                       widget.icon,
-                      size: 24,
+                      size: 26,
                       color: widget.accentColor,
                     ),
                   ),
-                  const SizedBox(width: 16),
+                  const SizedBox(width: 14),
 
                   // Textos
                   Expanded(
@@ -2316,7 +2316,7 @@ class _HomeCardState extends State<_HomeCard>
                         Text(
                           widget.label,
                           style: TextStyle(
-                            fontSize: 19,
+                            fontSize: 18,
                             fontWeight: FontWeight.w900,
                             color: Colors.white.withValues(alpha: 0.97),
                             letterSpacing: -0.3,
