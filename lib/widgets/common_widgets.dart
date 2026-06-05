@@ -53,8 +53,17 @@ class MedBreakpoints {
 
   const MedBreakpoints._(this.width);
 
+  /// Lê a largura do [MediaQuery] — use apenas fora de [LayoutBuilder].
+  /// Dentro de LayoutBuilder, prefira [fromWidth] para evitar leituras stale.
   factory MedBreakpoints.of(BuildContext context) {
     return MedBreakpoints._(MediaQuery.of(context).size.width);
+  }
+
+  /// Constrói a partir de uma largura já conhecida (ex: constraints.maxWidth
+  /// obtido dentro de um LayoutBuilder). Evita leituras stale do MediaQuery
+  /// no Flutter Web durante resize ou ao usar o Chrome DevTools device emulator.
+  factory MedBreakpoints.fromWidth(double width) {
+    return MedBreakpoints._(width);
   }
 
   /// < 768 px — smartphone
@@ -66,9 +75,11 @@ class MedBreakpoints {
   /// >= 1440 px — widescreen/ultrawide
   bool get isUltra    => width >= 1440;
 
-  /// Web aberta num browser mobile (< 768px) — deve renderizar como app nativo.
-  /// Garante que a versão web no celular tenha aparência idêntica ao app iOS/Android.
-  bool get isWebMobile => kIsWeb && width < 768;
+  /// Largura abaixo de 1024 px — deve renderizar o shell mobile (BottomNav + AppBar).
+  /// NOTA: kIsWeb foi removido desta guard. O Chrome DevTools device emulator roda
+  /// com kIsWeb=true mas com width < 1024 — sem a remoção, o shell desktop era
+  /// forçado mesmo em 375px. A decisão agora é puramente dimensional.
+  bool get isWebMobile => width < 1024;
 
   /// true quando a tela é tablet ou maior
   bool get isTabletOrLarger  => width >= 768;
