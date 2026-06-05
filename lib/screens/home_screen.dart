@@ -294,7 +294,7 @@ class _HomeScreenState extends State<HomeScreen> {
       behavior: HitTestBehavior.translucent,
       child: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
-        padding: const EdgeInsets.fromLTRB(16, 12, 16, 110),
+        padding: const EdgeInsets.fromLTRB(12, 10, 12, 110),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
 
           // ── BLOCO 1: IA INLINE CHAT — hero principal (~40% da tela) ─────────
@@ -309,7 +309,7 @@ class _HomeScreenState extends State<HomeScreen> {
               onNavigateToAi: widget.onTabChange,
             ),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 10),
 
           // ── BLOCO 2: GRID 1 — FÁRMACOS + INTERACCIONES (row horizontal) ─────
           // FÁRMACOS: referência farmacológica (sem guard kIsWeb — conteúdo
@@ -333,7 +333,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
               ),
-              const SizedBox(width: 10),
+              const SizedBox(width: 8),
               // INTERACCIONES / INTERAÇÕES — referência de pares de interação
               Expanded(
                 child: _HomeCard(
@@ -352,7 +352,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ],
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 10),
 
           // ── BLOCO 3: ADULTO + PEDIATRÍA — navegação para telas clínicas ─────
           // BUILD 93 REORDER: cards ADULTO e PEDIATRÍA sobem para antes do
@@ -369,7 +369,7 @@ class _HomeScreenState extends State<HomeScreen> {
               _HomeScreenState._slide(const _PediatricsShell()),
             ),
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 10),
 
           // ── BLOCO 4: HISTORIAL CLÍNICO — card compacto horizontal ──────────
           // Build 95: substituído header vertical + grid por card inline único
@@ -1886,7 +1886,7 @@ class _HomeAdultoPediatriaRow extends StatelessWidget {
         dark: dark,
         onTap: onTapAdulto,
       )),
-      const SizedBox(width: 10),
+      const SizedBox(width: 8),
       Expanded(child: _AgeCard(
         icon: Icons.child_care_rounded,
         label: isEs ? 'PEDIATRÍA' : 'PEDIATRIA',
