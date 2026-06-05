@@ -1949,34 +1949,34 @@ class _AgeCardState extends State<_AgeCard> with SingleTickerProviderStateMixin 
       child: ScaleTransition(
         scale: _scale,
         child: Container(
-          height: 76,
+          height: 92,
           decoration: BoxDecoration(
             gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
               colors: g,
             ),
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(18),
             boxShadow: [
               BoxShadow(
-                color: g.last.withValues(alpha: 0.35),
-                blurRadius: 12,
-                offset: const Offset(0, 4),
+                color: g.last.withValues(alpha: 0.40),
+                blurRadius: 14,
+                offset: const Offset(0, 5),
               ),
             ],
           ),
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
             child: Row(children: [
               Container(
-                width: 34, height: 34,
+                width: 42, height: 42,
                 decoration: BoxDecoration(
                   color: widget.accentColor.withValues(alpha: 0.15),
-                  borderRadius: BorderRadius.circular(10),
+                  borderRadius: BorderRadius.circular(12),
                 ),
-                child: Icon(widget.icon, size: 18, color: widget.accentColor),
+                child: Icon(widget.icon, size: 22, color: widget.accentColor),
               ),
-              const SizedBox(width: 10),
+              const SizedBox(width: 12),
               Expanded(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -1988,19 +1988,19 @@ class _AgeCardState extends State<_AgeCard> with SingleTickerProviderStateMixin 
                       child: Text(
                         widget.label,
                         style: TextStyle(
-                          fontSize: 12,
+                          fontSize: 13,
                           fontWeight: FontWeight.w900,
                           letterSpacing: 0.4,
                           color: widget.accentColor,
                         ),
                       ),
                     ),
-                    const SizedBox(height: 2),
+                    const SizedBox(height: 4),
                     Text(
                       widget.subtitle,
                       style: TextStyle(
-                        fontSize: 9.5,
-                        color: Colors.white.withValues(alpha: 0.55),
+                        fontSize: 10.5,
+                        color: Colors.white.withValues(alpha: 0.60),
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -2009,8 +2009,8 @@ class _AgeCardState extends State<_AgeCard> with SingleTickerProviderStateMixin 
                 ),
               ),
               Icon(Icons.chevron_right_rounded,
-                  size: 16,
-                  color: widget.accentColor.withValues(alpha: 0.6)),
+                  size: 18,
+                  color: widget.accentColor.withValues(alpha: 0.65)),
             ]),
           ),
         ),
@@ -3617,9 +3617,9 @@ class _HomeCardState extends State<_HomeCard>
         scale: _scale,
         child: Container(
           width: double.infinity,
-          height: 76,
+          height: 92,
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(18),
             gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
@@ -3633,34 +3633,34 @@ class _HomeCardState extends State<_HomeCard>
             ),
             boxShadow: [
               BoxShadow(
-                color: widget.gradientColors.last.withValues(alpha: 0.35),
-                blurRadius: 12,
-                offset: const Offset(0, 4),
+                color: widget.gradientColors.last.withValues(alpha: 0.40),
+                blurRadius: 14,
+                offset: const Offset(0, 5),
               ),
             ],
             border: Border.all(
-              color: widget.accentColor.withValues(alpha: 0.18),
+              color: widget.accentColor.withValues(alpha: 0.20),
               width: 1.0,
             ),
           ),
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
             child: Row(children: [
               // Ícone
               Container(
-                width: 34,
-                height: 34,
+                width: 42,
+                height: 42,
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
+                  borderRadius: BorderRadius.circular(12),
                   color: widget.accentColor.withValues(alpha: 0.15),
                 ),
                 child: Icon(
                   widget.icon,
-                  size: 18,
+                  size: 22,
                   color: widget.accentColor,
                 ),
               ),
-              const SizedBox(width: 10),
+              const SizedBox(width: 12),
 
               // Textos
               Expanded(
@@ -3676,19 +3676,19 @@ class _HomeCardState extends State<_HomeCard>
                       child: Text(
                         widget.label,
                         style: TextStyle(
-                          fontSize: 12,
+                          fontSize: 13,
                           fontWeight: FontWeight.w900,
                           letterSpacing: 0.4,
                           color: widget.accentColor,
                         ),
                       ),
                     ),
-                    const SizedBox(height: 2),
+                    const SizedBox(height: 4),
                     Text(
                       widget.subtitle,
                       style: TextStyle(
-                        fontSize: 9.5,
-                        color: Colors.white.withValues(alpha: 0.55),
+                        fontSize: 10.5,
+                        color: Colors.white.withValues(alpha: 0.60),
                       ),
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -3699,8 +3699,8 @@ class _HomeCardState extends State<_HomeCard>
               // Seta
               Icon(
                 Icons.chevron_right_rounded,
-                size: 16,
-                color: widget.accentColor.withValues(alpha: 0.6),
+                size: 18,
+                color: widget.accentColor.withValues(alpha: 0.65),
               ),
             ]),
           ),
