@@ -350,11 +350,8 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ]),
 
-        const SizedBox(height: 16),
-
-        // ── Divisor ───────────────────────────────────────────────────────
-        _HomeDivider(dark: dark),
-        const SizedBox(height: 16),
+        // ── gap compacto: cards → toolbar (sem divisor) ──────────────────
+        const SizedBox(height: 8),
 
         // ── Notas · Recentes · Favoritos · Avaliação ────────────────────
         _QuickShortcuts(
@@ -365,11 +362,8 @@ class _HomeScreenState extends State<HomeScreen> {
           onCheckUpdate: widget.onCheckUpdate,
         ),
 
-        const SizedBox(height: 16),
-
-        // ── Divisor ───────────────────────────────────────────────────────
-        _HomeDivider(dark: dark),
-        const SizedBox(height: 16),
+        // ── gap compacto: toolbar → MI GUARDIA (sem divisor, sem espaço grande) ─
+        const SizedBox(height: 6),
 
         // ── Meu Plantão ───────────────────────────────────────────────────
         MeuPlantaoDashboard(
