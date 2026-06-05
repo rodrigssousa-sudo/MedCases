@@ -2847,7 +2847,7 @@ class _HistorialCompactCard extends StatelessWidget {
     ];
 
     return Container(
-      height: 48,
+      height: 58,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(14),
         color: cardBg,
@@ -2867,8 +2867,8 @@ class _HistorialCompactCard extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Container(
-                    width: 30,
-                    height: 24,
+                    width: 34,
+                    height: 28,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(8),
                       color: dark
@@ -2883,17 +2883,17 @@ class _HistorialCompactCard extends StatelessWidget {
                     ),
                     child: Icon(
                       Icons.search_rounded,
-                      size: 15,
+                      size: 18,
                       color: dark
                           ? const Color(0xFF4ADE80)
                           : const Color(0xFF0A7C4E),
                     ),
                   ),
-                  const SizedBox(height: 2),
+                  const SizedBox(height: 3),
                   Text(
                     isEs ? 'Buscar' : 'Buscar',
                     style: TextStyle(
-                      fontSize: 9,
+                      fontSize: 10,
                       fontWeight: FontWeight.w700,
                       color: dark
                           ? const Color(0xFF4ADE80).withValues(alpha: 0.80)
@@ -2906,14 +2906,14 @@ class _HistorialCompactCard extends StatelessWidget {
           ),
 
           // ── Divisor vertical ────────────────────────────────────────────
-          Container(width: 1, height: 28, color: dividerColor),
+          Container(width: 1, height: 34, color: dividerColor),
 
           // ── 4 atalhos inline ────────────────────────────────────────────
           Expanded(
             child: Row(
               children: List.generate(items.length * 2 - 1, (i) {
                 if (i.isOdd) {
-                  return Container(width: 1, height: 28, color: dividerColor);
+                  return Container(width: 1, height: 34, color: dividerColor);
                 }
                 final item = items[i ~/ 2];
                 return Expanded(
@@ -2923,12 +2923,12 @@ class _HistorialCompactCard extends StatelessWidget {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(item.icon, size: 16, color: item.color),
-                        const SizedBox(height: 2),
+                        Icon(item.icon, size: 20, color: item.color),
+                        const SizedBox(height: 3),
                         Text(
                           item.label,
                           style: TextStyle(
-                            fontSize: 9,
+                            fontSize: 10,
                             fontWeight: FontWeight.w700,
                             color: dark
                                 ? Colors.white.withValues(alpha: 0.55)
@@ -3942,15 +3942,15 @@ class _QuickEmergenciesState extends State<_QuickEmergencies> {
 
           const SizedBox(height: 12),
 
-          // ── Grid 5 colunas nos primeiros 10, 3 extras ─────────────────
+          // ── Grid 4 colunas ────────────────────────────────────────────
           GridView.count(
-            crossAxisCount: 5,
+            crossAxisCount: 4,
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
             padding: EdgeInsets.zero,
             mainAxisSpacing: 8,
             crossAxisSpacing: 8,
-            childAspectRatio: 0.85,
+            childAspectRatio: 1.10,
             children: allProtos.map((proto) =>
                 _buildCard(proto.$1, proto.$2, proto.$3)).toList(),
           ),
