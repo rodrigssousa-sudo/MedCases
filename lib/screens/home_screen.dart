@@ -311,28 +311,26 @@ class _HomeScreenState extends State<HomeScreen> {
       behavior: HitTestBehavior.translucent,
       child: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
-        padding: const EdgeInsets.fromLTRB(16, 12, 16, 110),
+        // Build 99 — padding reduzido: menos espaço morto lateral e bottom
+        // (80px → suficiente para BottomAppBar 52px + _LegalBar + safe area)
+        padding: const EdgeInsets.fromLTRB(12, 8, 12, 88),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
 
-          // ── BLOCO 1: IA INLINE CHAT — hero principal (~40% da tela) ─────────
-          // SizedBox com altura fixa para que o Expanded interno do ListView
-          // funcione corretamente dentro de um SingleChildScrollView.
-          // Altura = 40% da tela, mínimo 260 para telas pequenas.
+          // ── BLOCO 1: IA INLINE CHAT — hero principal (~38% da tela) ─────────
+          // SizedBox com altura fixa e explícita para que o ListView interno
+          // tenha bounds definidos e não conflite com o SingleChildScrollView pai.
+          // A altura usa clamp para cobrir iPhone SE (568pt) até Pro Max (932pt).
           SizedBox(
-            height: (screenH * 0.40).clamp(260.0, 440.0),
+            height: (screenH * 0.38).clamp(240.0, 420.0),
             child: _HomeInlineChat(
               dark: dark,
               isEs: isEs,
               onNavigateToAi: widget.onTabChange,
             ),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 10),
 
           // ── BLOCO 2: GRID 1 — FÁRMACOS + INTERACCIONES (row horizontal) ─────
-          // FÁRMACOS: referência farmacológica (sem guard kIsWeb — conteúdo
-          //           educativo, não calculadora de dose).
-          // INTERACCIONES: sempre visível no mobile como referência de pares.
-          // Ambos em Row com largura igual (Expanded cada).
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -369,13 +367,9 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ],
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 10),
 
           // ── BLOCO 3: ADULTO + PEDIATRÍA — navegação para telas clínicas ─────
-          // BUILD 93 REORDER: cards ADULTO e PEDIATRÍA sobem para antes do
-          // HISTORIAL CLÍNICO, ficando logo abaixo do grid FÁRMACOS/INTERACCIONES.
-          // Visíveis em mobile E web (Apple-compliant: DOSES oculta na Pediatria,
-          // Calculadora renomeada para "Interacciones del paciente" no Adulto).
           _HomeAdultoPediatriaRow(
             dark: dark,
             isEs: isEs,
@@ -386,11 +380,9 @@ class _HomeScreenState extends State<HomeScreen> {
               _HomeScreenState._slide(const _PediatricsShell()),
             ),
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 10),
 
-          // ── BLOCO 4: HISTORIAL CLÍNICO — card compacto horizontal ──────────
-          // Build 95: substituído header vertical + grid por card inline único
-          // meia-altura, largura total, layout minimalista.
+          // ── BLOCO 4: HISTORIAL CLÍNICO — barra de atalhos horizontal ────────
           _HistorialCompactCard(
             dark: dark,
             isEs: isEs,
@@ -398,20 +390,16 @@ class _HomeScreenState extends State<HomeScreen> {
             onOpenNotes: widget.onOpenNotes,
             onCheckUpdate: widget.onCheckUpdate,
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 10),
 
           // ── BLOCO 5: MI GUARDIA — visível em TODAS as plataformas ──────────────
-          // Auxiliar de plantão médico: gestão de pacientes, fármacos,
-          // calculadoras. Aprovado para iOS pois é ferramenta de suporte
-          // educativo/organizacional (não prescrição autônoma).
           _HomeMiGuardiaSection(
             dark: dark,
             isEs: isEs,
             onOpenDrug: (drug) => showDrugDetailSheet(context, drug),
             onOpenCalc: (calcId) {
-              // BUILD 93 — Tabs visíveis: 0=Biometria 1=Scores 2=Cardio
+              // Tabs visíveis: 0=Biometria 1=Scores 2=Cardio
               //   3=Eletrólitos 4=Referência 5=Pediatria
-              //   Infusão e Prescrições ocultas (Apple 1.4.1) → fallback 0
               const calcTabMap = {
                 'calc_biometria': 0, 'calc_scores': 1, 'calc_cardio': 2,
                 'calc_eletrólitos': 3, 'calc_infusao': 0,
@@ -423,10 +411,9 @@ class _HomeScreenState extends State<HomeScreen> {
             },
             onManageTap: () => showPlantaoManageSheet(context),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 10),
 
           // ── BLOCO WEB-ONLY — EMERGÊNCIAS RÁPIDAS ────────────────────────────
-          // Mantido apenas na Web (Apple Guideline 1.4.1).
           if (kIsWeb) ...[
             _QuickEmergencies(p: p, dark: dark, isEs: isEs, openProtocol: widget.openProtocol),
           ],
@@ -434,7 +421,6 @@ class _HomeScreenState extends State<HomeScreen> {
           // ── ITENS OCULTOS PERMANENTEMENTE NO iOS (Apple review) ─────────────
           // Simulaciones / Herramientas / Adulto / Pediatria standalone:
           // Código e lógica 100% intactos. Apenas removidos da árvore de widgets.
-          // Reativar envolvendo em In-App Browser após aprovação da Apple.
           // (see: _PrescripcionesShell, _PediatricsShell, _AdultoShell,
           //       _CalculadorasShell, ToolsScreen, _HomeMiGuardiaSection)
         ]),
@@ -2907,6 +2893,8 @@ class _HistorialCompactCard extends StatelessWidget {
                   const SizedBox(height: 3),
                   Text(
                     isEs ? 'Buscar' : 'Buscar',
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                     style: TextStyle(
                       fontSize: 10,
                       fontWeight: FontWeight.w700,
@@ -2942,6 +2930,8 @@ class _HistorialCompactCard extends StatelessWidget {
                         const SizedBox(height: 3),
                         Text(
                           item.label,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                           style: TextStyle(
                             fontSize: 10,
                             fontWeight: FontWeight.w700,

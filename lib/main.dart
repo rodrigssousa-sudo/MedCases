@@ -1507,120 +1507,86 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
           ),
         ),
       ),
-      // ── Bottom navigation bar + legal disclaimer ──────────────────────────
-      // SafeArea envolve TODA a coluna (nav + legal) com bottom:true para que
-      // o home indicator do iPad/iPhone não corte nenhum elemento.
-      // O Container externo cobre cor e borda até a borda física da tela;
-      // o SafeArea interno recua apenas o conteúdo (não o fundo).
-      // ── Bottom navigation bar + FAB docked ─────────────────────────────
-      // Build 98 — Barra 30% mais fina (40px) + FAB ConnectMind ressaltado:
-      //   • Container externo: clipBehavior=none para o FAB projetar para cima
-      //   • Stack: camada de barra (40px) + FAB posicionado translate(-14px Y)
-      //   • Botões laterais: ícone 17px, padding reduzido, texto 8.5px
-      //   • SafeArea cobre home indicator sem clipar o FAB elevado
-      bottomNavigationBar: SafeArea(
-        top: false,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            // ── Stack: barra fina + FAB flutuante ─────────────────────────
-            SizedBox(
-              // 40px barra + 14px overhang do FAB acima = 54px total do stack
-              height: 54,
-              child: Stack(
-                clipBehavior: Clip.none,
+      // ── Bottom navigation bar (native notch) + FAB docked ─────────────────
+      // Build 99 — substituído o Stack manual por BottomAppBar nativo com
+      // CircularNotchedRectangle + FloatingActionButtonLocation.centerDocked.
+      // Isso elimina o bug TestFlight onde o FAB sobrepunha H.Clínica e
+      // bloqueava o 5.º ícone (Ferramentas).
+      //   • floatingActionButton: _NavFab (widget separado)
+      //   • floatingActionButtonLocation: centerDocked
+      //   • BottomAppBar: notchMargin 6, Row com SizedBox(width:72) no centro
+      //   • _LegalBar abaixo do BottomAppBar via bottomNavigationBar Column
+      floatingActionButton: _buildAiCenterFab(dark, p),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      bottomNavigationBar: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          BottomAppBar(
+            color: navBg,
+            shape: const CircularNotchedRectangle(),
+            notchMargin: 6.0,
+            elevation: 12,
+            padding: EdgeInsets.zero,
+            child: SizedBox(
+              height: 52,
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  // ── Camada 1: barra de fundo (40px na base do stack) ────
-                  Positioned(
-                    left: 0, right: 0, bottom: 0,
-                    height: 40,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: navBg,
-                        border: Border(top: BorderSide(color: navBorder, width: 0.5)),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withValues(alpha: dark ? 0.28 : 0.09),
-                            blurRadius: 20,
-                            offset: const Offset(0, -4),
-                          ),
-                        ],
-                      ),
-                    ),
+                  // 0 — INICIO
+                  _buildNavBtn(
+                    0,
+                    Icons.home_rounded,
+                    p.lang == 'es' ? 'Inicio' : 'Início',
+                    dark, p,
                   ),
-
-                  // ── Camada 2: 4 botões de nav dentro da barra (40px) ────
-                  Positioned(
-                    left: 0, right: 0, bottom: 0,
-                    height: 40,
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        // 0 — INICIO
-                        _buildNavBtn(
-                          0,
-                          Icons.home_rounded,
-                          p.lang == 'es' ? 'Inicio' : 'Início',
-                          dark, p,
-                        ),
-                        // 3 — HISTÓRIA CLÍNICA
-                        _buildNavBtn(
-                          3,
-                          Icons.assignment_ind_outlined,
-                          p.lang == 'es' ? 'H. Clínica' : 'H. Clínica',
-                          dark, p,
-                        ),
-                        // ── Slot central vazio — o FAB flutua aqui via Stack ──
-                        const Expanded(child: SizedBox()),
-                        // 5 — BIBLIOTECA
-                        _buildNavBtn(
-                          5,
-                          Icons.menu_book_rounded,
-                          'Biblioteca',
-                          dark, p,
-                        ),
-                        // Ferramentas (tab 4) — web-only
-                        if (kIsWeb)
-                          _buildNavBtn(4, Icons.calculate_rounded,
-                              p.lang == 'es' ? 'Herramientas' : 'Ferramentas', dark, p),
-                      ],
-                    ),
+                  // 3 — HISTÓRIA CLÍNICA
+                  _buildNavBtn(
+                    3,
+                    Icons.assignment_ind_outlined,
+                    'H. Clínica',
+                    dark, p,
                   ),
-
-                  // ── Camada 3: FAB ConnectMind — ressaltado 14px acima ────
-                  // Transform.translate empurra o botão para cima rompendo
-                  // o limite superior da barra sem afetar o layout dos outros.
-                  Positioned(
-                    left: 0, right: 0, bottom: 0,
-                    height: 40,
-                    child: Row(
-                      children: [
-                        const Expanded(child: SizedBox()),
-                        _buildAiCenterBtn(dark, p),
-                        const Expanded(child: SizedBox()),
-                      ],
-                    ),
+                  // ── Slot central — FAB docked aqui nativamente ──────────
+                  const SizedBox(width: 72),
+                  // 5 — BIBLIOTECA
+                  _buildNavBtn(
+                    5,
+                    Icons.menu_book_rounded,
+                    'Biblioteca',
+                    dark, p,
+                  ),
+                  // Ferramentas (tab 4) — sempre visível no mobile
+                  _buildNavBtn(
+                    4,
+                    Icons.calculate_rounded,
+                    p.lang == 'es' ? 'Herramientas' : 'Ferramentas',
+                    dark, p,
                   ),
                 ],
               ),
             ),
-            // ── Disclaimer legal — abaixo do stack, dentro do SafeArea ───
-            Container(
-              color: navBg,
-              child: _LegalBar(dark: dark, insideSafeArea: false),
-            ),
-          ],
-        ),
+          ),
+          // ── Disclaimer legal — abaixo do BottomAppBar ───────────────────
+          // insideSafeArea: false → _LegalBar aplica SafeArea(bottom) próprio
+          // para cobrir o home indicator abaixo do legal disclaimer.
+          // BottomAppBar já trata o inset da barra de navegação do sistema;
+          // o _LegalBar precisa do seu próprio SafeArea para o espaço abaixo.
+          Container(
+            color: navBg,
+            child: _LegalBar(dark: dark, insideSafeArea: false),
+          ),
+        ],
       ),
     );
   }
 
-  // Build 98 — botão lateral compact: ícone 17px, padding vertical reduzido
-  // para caber na barra de 40px sem overflow.
+  // Build 99 — botão lateral BottomAppBar: ícone 20px, barra 52px.
+  // Cada botão é Expanded para dividir o espaço igualmente (2 lados × 2 botões).
+  // maxLines:1 + ellipsis previne overflow em iPhones pequenos.
   Widget _buildNavBtn(int idx, IconData icon, String label, bool dark, dynamic p) {
     final active        = _tab == idx;
     final activeColor   = dark ? const Color(0xFF4ADE80) : const Color(0xFF0A7C4E);
-    final inactiveColor = dark ? Colors.white.withValues(alpha: 0.32) : const Color(0xFFB0B8C0);
+    final inactiveColor = dark ? Colors.white.withValues(alpha: 0.35) : const Color(0xFFB0B8C0);
 
     return Expanded(
       child: GestureDetector(
@@ -1633,23 +1599,25 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
             AnimatedContainer(
               duration: const Duration(milliseconds: 160),
               curve: Curves.easeOut,
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 1),
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(7),
+                borderRadius: BorderRadius.circular(8),
                 color: active
                     ? (dark
-                        ? const Color(0xFF4ADE80).withValues(alpha: 0.10)
-                        : const Color(0xFF0A7C4E).withValues(alpha: 0.08))
+                        ? const Color(0xFF4ADE80).withValues(alpha: 0.12)
+                        : const Color(0xFF0A7C4E).withValues(alpha: 0.09))
                     : Colors.transparent,
               ),
-              child: Icon(icon, size: 17,
+              child: Icon(icon, size: 20,
                 color: active ? activeColor : inactiveColor),
             ),
-            const SizedBox(height: 1),
-            Text(label,
+            const SizedBox(height: 2),
+            Text(
+              label,
+              maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: TextStyle(
-                fontSize: 8.5,
+                fontSize: 9,
                 fontWeight: active ? FontWeight.w700 : FontWeight.w500,
                 color: active ? activeColor : inactiveColor,
                 height: 1.0,
@@ -1661,95 +1629,72 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
     );
   }
 
-  // ── FAB ConnectMind AI — ressaltado para fora da barra (Build 98) ──────────
-  // Usa Transform.translate(Offset(0, -14)) para projetar o pill acima da barra.
-  // O label fica dentro da barra (translate não aplicado a ele).
-  // Não usa Expanded — centralizado via Row com Expanded(SizedBox) nos lados.
-  Widget _buildAiCenterBtn(bool dark, dynamic p) {
+  // ── FAB ConnectMind AI — Build 99: nativo centerDocked ──────────────────────
+  // Retorna um widget pill autónomo que o Scaffold encaixa na entalhação do
+  // BottomAppBar via FloatingActionButtonLocation.centerDocked.
+  // Não usa mais Transform.translate manual — o Flutter posiciona o FAB
+  // corretamente acima da barra sem sobrepor os botões laterais.
+  Widget _buildAiCenterFab(bool dark, dynamic p) {
     final isAiActive = _tab == 2;
-    final gradStart  = isAiActive ? const Color(0xFF008CA4) : (dark ? const Color(0xFF143050) : const Color(0xFF0A2540));
-    final gradEnd    = isAiActive ? const Color(0xFF0A2540) : (dark ? const Color(0xFF0A1525) : const Color(0xFF0F3B68));
+    final gradStart  = isAiActive
+        ? const Color(0xFF008CA4)
+        : (dark ? const Color(0xFF143050) : const Color(0xFF0A2540));
+    final gradEnd    = isAiActive
+        ? const Color(0xFF0A2540)
+        : (dark ? const Color(0xFF0A1525) : const Color(0xFF0F3B68));
     final glowColor  = const Color(0xFF00E5FF);
-    final labelColor = isAiActive ? const Color(0xFF00E5FF) : (dark ? Colors.white54 : Colors.white70);
 
     return GestureDetector(
-      behavior: HitTestBehavior.opaque,
       onTap: () { AppHaptics.light(context); setState(() => _tab = 2); },
-      child: SizedBox(
-        width: 72,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.end,
-          mainAxisSize: MainAxisSize.max,
-          children: [
-            // ── Pill ressaltado — translate -14px (rompe borda superior) ──
-            Transform.translate(
-              offset: const Offset(0, -14),
-              child: AnimatedContainer(
-                duration: const Duration(milliseconds: 220),
-                curve: Curves.easeOutCubic,
-                width: 52,
-                height: 36,
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [gradStart, gradEnd],
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 220),
+        curve: Curves.easeOutCubic,
+        width: 56,
+        height: 56,
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [gradStart, gradEnd],
+          ),
+          shape: BoxShape.circle,
+          boxShadow: isAiActive
+              ? [
+                  BoxShadow(
+                    color: glowColor.withValues(alpha: 0.60),
+                    blurRadius: 16,
+                    spreadRadius: 1,
+                    offset: const Offset(0, 3),
                   ),
-                  borderRadius: BorderRadius.circular(18),
-                  boxShadow: isAiActive
-                      ? [
-                          BoxShadow(
-                            color: glowColor.withValues(alpha: 0.60),
-                            blurRadius: 16,
-                            spreadRadius: 1,
-                            offset: const Offset(0, 3),
-                          ),
-                          BoxShadow(
-                            color: glowColor.withValues(alpha: 0.28),
-                            blurRadius: 28,
-                            offset: const Offset(0, 8),
-                          ),
-                        ]
-                      : [
-                          BoxShadow(
-                            color: const Color(0xFF0A2540).withValues(alpha: 0.40),
-                            blurRadius: 12,
-                            offset: const Offset(0, 4),
-                          ),
-                          BoxShadow(
-                            color: const Color(0xFF00E5FF).withValues(alpha: 0.12),
-                            blurRadius: 8,
-                            offset: const Offset(0, 2),
-                          ),
-                        ],
-                  border: Border.all(
-                    color: isAiActive
-                        ? const Color(0xFF00E5FF).withValues(alpha: 0.70)
-                        : const Color(0xFF005E9C).withValues(alpha: 0.50),
-                    width: 1.5,
+                  BoxShadow(
+                    color: glowColor.withValues(alpha: 0.28),
+                    blurRadius: 28,
+                    offset: const Offset(0, 8),
                   ),
-                ),
-                child: Icon(
-                  Icons.psychology_rounded,
-                  size: 20,
-                  color: isAiActive ? const Color(0xFF00E5FF) : Colors.white,
-                ),
-              ),
-            ),
-            // ── Label dentro da barra (sem translate) ─────────────────────
-            Padding(
-              padding: const EdgeInsets.only(bottom: 5),
-              child: Text(
-                'MedCases IA',
-                style: TextStyle(
-                  fontSize: 7.5,
-                  fontWeight: isAiActive ? FontWeight.w800 : FontWeight.w600,
-                  color: labelColor,
-                  height: 1.0,
-                ),
-              ),
-            ),
-          ],
+                ]
+              : [
+                  BoxShadow(
+                    color: const Color(0xFF0A2540).withValues(alpha: 0.45),
+                    blurRadius: 12,
+                    offset: const Offset(0, 4),
+                  ),
+                  BoxShadow(
+                    color: const Color(0xFF00E5FF).withValues(alpha: 0.15),
+                    blurRadius: 8,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+          border: Border.all(
+            color: isAiActive
+                ? const Color(0xFF00E5FF).withValues(alpha: 0.75)
+                : const Color(0xFF005E9C).withValues(alpha: 0.55),
+            width: 1.5,
+          ),
+        ),
+        child: Icon(
+          Icons.psychology_rounded,
+          size: 26,
+          color: isAiActive ? const Color(0xFF00E5FF) : Colors.white,
         ),
       ),
     );
