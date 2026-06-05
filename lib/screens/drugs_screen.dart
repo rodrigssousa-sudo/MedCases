@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import '../theme/app_theme.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '../providers/app_provider.dart';
@@ -46,7 +47,7 @@ class _DrugDetailSheetWrapper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final dark = p.darkMode;
-    final sheetBg = dark ? const Color(0xFF1A1A1A) : Colors.white;
+    final sheetBg = dark ? const Color(0xFF1A1D23) : Colors.white;
     return DraggableScrollableSheet(
       initialChildSize: 0.92,
       minChildSize: 0.5,
@@ -190,7 +191,7 @@ class _DrugsScreenState extends State<DrugsScreen> {
               Text(
                 '${unique.length} ${p.t('drugs_found')}',
                 style: const TextStyle(
-                  fontSize: 12, fontWeight: FontWeight.w700, color: Color(0xFF888888),
+                  fontSize: 12, fontWeight: FontWeight.w700, color: Color(0xFF6B7280),
                 ),
               ),
             ]),
@@ -548,7 +549,7 @@ class _DrugListTile extends StatelessWidget {
                     child: Icon(
                       isFav ? Icons.star_rounded : Icons.star_border_rounded,
                       size: 18,
-                      color: isFav ? kGold : const Color(0xFFCCCCCC),
+                      color: isFav ? kGold : const Color(0xFFA8B2C1),
                     ),
                   ),
                 ),
@@ -1999,7 +2000,7 @@ class _ClinicalTabCard extends StatelessWidget {
             controller: tabCtrl,
             isScrollable: true,
             tabAlignment: TabAlignment.start,
-            indicatorColor: const Color(0xFF4ADE80),
+            indicatorColor: const Color(0xFF10B981),
             indicatorWeight: 2.5,
             indicatorPadding: const EdgeInsets.symmetric(horizontal: 4),
             dividerColor: c.border,
@@ -3294,7 +3295,7 @@ class _DrugSearchAutocompleteState extends State<_DrugSearchAutocomplete> {
               TextStyle(color: Colors.grey[400], fontWeight: FontWeight.w500),
           prefixIcon: const Padding(
             padding: EdgeInsets.only(left: 12, right: 8),
-            child: Icon(Icons.search_rounded, size: 20, color: Color(0xFF888888)),
+            child: Icon(Icons.search_rounded, size: 20, color: Color(0xFF6B7280)),
           ),
           prefixIconConstraints:
               const BoxConstraints(minWidth: 40, minHeight: 40),
@@ -3438,7 +3439,7 @@ class _DrugSuggestionDropdown extends StatelessWidget {
                             style: const TextStyle(
                               fontSize: 10,
                               fontWeight: FontWeight.w500,
-                              color: Color(0xFF888888),
+                              color: Color(0xFF6B7280),
                             ),
                             overflow: TextOverflow.ellipsis,
                           ),
@@ -3449,7 +3450,7 @@ class _DrugSuggestionDropdown extends StatelessWidget {
                     const Icon(
                       Icons.arrow_forward_ios_rounded,
                       size: 11,
-                      color: Color(0xFFCCCCCC),
+                      color: Color(0xFFA8B2C1),
                     ),
                   ]),
                 ),

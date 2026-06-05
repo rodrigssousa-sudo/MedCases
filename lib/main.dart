@@ -14,6 +14,7 @@ import 'package:cloud_firestore/cloud_firestore.dart'
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'firebase_options.dart';
+import 'theme/app_theme.dart';
 import 'providers/app_provider.dart';
 import 'services/auth_service.dart';
 import 'models/user_model.dart';
@@ -213,45 +214,45 @@ class MedCasesApp extends StatelessWidget {
     colorScheme: dark
         ? ColorScheme.dark(
             // ── Dark mode: neutro, menos verde, maior contraste ──────────
-            primary:                    const Color(0xFFD4A96A),   // ouro
+            primary:                    const Color(0xFF00E5FF),   // ouro
             onPrimary:                  const Color(0xFF1C1C1C),
-            secondary:                  const Color(0xFF2E8A62),   // verde médio
-            onSecondary:                const Color(0xFFF7F7F7),
-            surface:                    const Color(0xFF1E1E1E),   // cards
-            onSurface:                  const Color(0xFFF7F7F7),   // texto principal
-            surfaceContainerHighest:    const Color(0xFF252525),
-            surfaceContainerHigh:       const Color(0xFF242424),
-            surfaceContainer:           const Color(0xFF1E1E1E),
-            surfaceContainerLow:        const Color(0xFF1A1A1A),
-            surfaceDim:                 const Color(0xFF141414),
-            outline:                    const Color(0xFF333333),
-            outlineVariant:             const Color(0xFF2A2A2A),
+            secondary:                  const Color(0xFF10B981),   // verde médio
+            onSecondary:                const Color(0xFFFFFFFF),
+            surface:                    const Color(0xFF252930),   // cards
+            onSurface:                  const Color(0xFFFFFFFF),   // texto principal
+            surfaceContainerHighest:    const Color(0xFF252930),
+            surfaceContainerHigh:       const Color(0xFF252930),
+            surfaceContainer:           const Color(0xFF252930),
+            surfaceContainerLow:        const Color(0xFF1A1D23),
+            surfaceDim:                 const Color(0xFF1A1D23),
+            outline:                    const Color(0xFF374151),
+            outlineVariant:             const Color(0xFF2D3340),
             error:                      const Color(0xFFFF7070),
             onError:                    Colors.white,
-            inverseSurface:             const Color(0xFFF7F7F7),
-            onInverseSurface:           const Color(0xFF141414),
+            inverseSurface:             const Color(0xFFFFFFFF),
+            onInverseSurface:           const Color(0xFF1A1D23),
           )
         : ColorScheme.light(
-            primary: const Color(0xFF0F1C14),
-            secondary: const Color(0xFF1F6B48),
+            primary: const Color(0xFF0F1116),
+            secondary: const Color(0xFF10B981),
             surface: const Color(0xFFFFFDF8),
-            onSurface: const Color(0xFF0F1C14),
+            onSurface: const Color(0xFF0F1116),
             surfaceContainerHighest: const Color(0xFFF0EDE6),
           ),
-    scaffoldBackgroundColor: dark ? const Color(0xFF141414) : const Color(0xFFF5F6F8),
-    cardColor:               dark ? const Color(0xFF1E1E1E) : Colors.white,
-    dividerColor:            dark ? const Color(0xFF2A2A2A) : const Color(0xFFE2E6EA),
+    scaffoldBackgroundColor: dark ? const Color(0xFF1A1D23) : const Color(0xFFF5F6F8),
+    cardColor:               dark ? const Color(0xFF252930) : Colors.white,
+    dividerColor:            dark ? const Color(0xFF2D3340) : const Color(0xFFE2E6EA),
     // Textos padrão do tema
     textTheme: dark ? const TextTheme(
-      bodyLarge:   TextStyle(color: Color(0xFFF7F7F7)),
-      bodyMedium:  TextStyle(color: Color(0xFFF7F7F7)),
-      bodySmall:   TextStyle(color: Color(0xFFCCCCCC)),
-      titleLarge:  TextStyle(color: Color(0xFFF7F7F7)),
-      titleMedium: TextStyle(color: Color(0xFFF7F7F7)),
-      titleSmall:  TextStyle(color: Color(0xFFDDDDDD)),
-      labelLarge:  TextStyle(color: Color(0xFFF7F7F7)),
-      labelMedium: TextStyle(color: Color(0xFFCCCCCC)),
-      labelSmall:  TextStyle(color: Color(0xFF888888)),
+      bodyLarge:   TextStyle(color: Color(0xFFFFFFFF)),
+      bodyMedium:  TextStyle(color: Color(0xFFFFFFFF)),
+      bodySmall:   TextStyle(color: Color(0xFFA8B2C1)),
+      titleLarge:  TextStyle(color: Color(0xFFFFFFFF)),
+      titleMedium: TextStyle(color: Color(0xFFFFFFFF)),
+      titleSmall:  TextStyle(color: Color(0xFFA8B2C1)),
+      labelLarge:  TextStyle(color: Color(0xFFFFFFFF)),
+      labelMedium: TextStyle(color: Color(0xFFA8B2C1)),
+      labelSmall:  TextStyle(color: Color(0xFF6B7280)),
     ) : null,
     // Transições de página suaves
     pageTransitionsTheme: const PageTransitionsTheme(
@@ -269,11 +270,11 @@ class MedCasesApp extends StatelessWidget {
     useMaterial3: true,
     fontFamily: 'Roboto',
     brightness: Brightness.dark,
-    scaffoldBackgroundColor: const Color(0xFF0F1C14),
+    scaffoldBackgroundColor: const Color(0xFF0F1116),
     colorScheme: const ColorScheme.dark(
       primary: Color(0xFFC5A365),
-      secondary: Color(0xFF1F6B48),
-      surface: Color(0xFF0F1C14),
+      secondary: Color(0xFF10B981),
+      surface: Color(0xFF0F1116),
       onSurface: Colors.white,
     ),
     pageTransitionsTheme: const PageTransitionsTheme(
@@ -592,8 +593,8 @@ class _ConsentGateState extends State<_ConsentGate> {
   Widget build(BuildContext context) {
     if (_hasConsented == null) {
       return const Scaffold(
-        backgroundColor: Color(0xFF0F1C14),
-        body: Center(child: CircularProgressIndicator(color: Color(0xFFD4A96A))),
+        backgroundColor: Color(0xFF0F1116),
+        body: Center(child: CircularProgressIndicator(color: Color(0xFF00E5FF))),
       );
     }
     if (_hasConsented!) return const LoginScreen();
@@ -649,7 +650,7 @@ class _SplashScreenState extends State<_SplashScreen>
     final logoTop = h * 0.28;
 
     return Scaffold(
-      backgroundColor: const Color(0xFF061A12), // novo fundo — mais escuro que #0A1610
+      backgroundColor: const Color(0xFF0F1116), // novo fundo — mais escuro que #0A1610
       body: Stack(children: [
         // Detalhe geométrico de fundo sutil — diferente do splash anterior
         Positioned(
@@ -904,7 +905,7 @@ class _PendingScreenState extends State<_PendingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF0F1C14),
+      backgroundColor: const Color(0xFF0F1116),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(32),
@@ -977,13 +978,13 @@ class _PendingScreenState extends State<_PendingScreen> {
                 icon: _checking
                     ? const SizedBox(
                         width: 16, height: 16,
-                        child: CircularProgressIndicator(strokeWidth: 2, color: Color(0xFF0F1C14)),
+                        child: CircularProgressIndicator(strokeWidth: 2, color: Color(0xFF0F1116)),
                       )
                     : const Icon(Icons.refresh_rounded, size: 16),
                 label: Text(_checking ? 'Verificando...' : 'Verificar aprovação'),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFFC5A365),
-                  foregroundColor: const Color(0xFF0F1C14),
+                  foregroundColor: const Color(0xFF0F1116),
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                   padding: const EdgeInsets.symmetric(vertical: 14),
                   textStyle: const TextStyle(fontSize: 13, fontWeight: FontWeight.w800),
@@ -1017,7 +1018,7 @@ class _BlockedScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF0F1C14),
+      backgroundColor: const Color(0xFF0F1116),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(32),
@@ -1386,7 +1387,8 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
 
   /// Layout desktop: Row(sidebar | conteúdo) — sem AppHeader (barra superior removida)
   Widget _buildDesktopShell(BuildContext context, bool dark, AppProvider p) {
-    final bg       = dark ? const Color(0xFF141414) : const Color(0xFFF7F8FA);
+    final bg       = dark ? const Color(0xFF1A1D23) : const Color(0xFFF7F8FA);
+    // Desktop sidebar + content area — usa o bg principal
     final stackIdx = _tab.clamp(0, _staticScreens.length - 1);
 
     return Scaffold(
@@ -1417,7 +1419,7 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
           // ── Divisor vertical sutil ─────────────────────────────────────────
           Container(
             width: 1,
-            color: dark ? const Color(0xFF2A2A2A) : const Color(0xFFE8E1D2),
+            color: dark ? const Color(0xFF2D3340) : const Color(0xFFE8E1D2), // divisor sutil
           ),
 
           // ── Conteúdo principal — sem header, SafeArea apenas no topo ────────
@@ -1453,9 +1455,9 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
 
   /// Layout mobile/tablet: Scaffold com AppBar no topo + bottom nav
   Widget _buildMobileShell(BuildContext context, bool dark, AppProvider p) {
-    final bg = dark ? const Color(0xFF141414) : const Color(0xFFF7F8FA);
-    final navBg = dark ? const Color(0xFF1E1E1E) : Colors.white;
-    final navBorder = dark ? const Color(0xFF333333) : const Color(0xFFE8E1D2);
+    final bg = dark ? const Color(0xFF1A1D23) : const Color(0xFFF7F8FA);
+    final navBg = dark ? const Color(0xFF0F1116) : Colors.white;
+    final navBorder = dark ? const Color(0xFF2D3340) : const Color(0xFFE8E1D2);
     final stackIdx = _tab.clamp(0, _staticScreens.length - 1);
     final isHome   = _tab == 0;
 
@@ -1530,7 +1532,7 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
         mainAxisSize: MainAxisSize.min,
         children: [
           BottomAppBar(
-            color: navBg,
+            color: navBg, // #0F1116 dark
             shape: const CircularNotchedRectangle(),
             notchMargin: 6.0,
             elevation: 12,
@@ -1580,7 +1582,7 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
           // BottomAppBar já trata o inset da barra de navegação do sistema;
           // o _LegalBar precisa do seu próprio SafeArea para o espaço abaixo.
           Container(
-            color: navBg,
+            color: navBg, // consistente com BottomAppBar
             child: _LegalBar(dark: dark, insideSafeArea: false),
           ),
         ],
@@ -1593,8 +1595,8 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
   // maxLines:1 + ellipsis previne overflow em iPhones pequenos.
   Widget _buildNavBtn(int idx, IconData icon, String label, bool dark, dynamic p) {
     final active        = _tab == idx;
-    final activeColor   = dark ? const Color(0xFF4ADE80) : const Color(0xFF0A7C4E);
-    final inactiveColor = dark ? Colors.white.withValues(alpha: 0.35) : const Color(0xFFB0B8C0);
+    final activeColor   = dark ? const Color(0xFF10B981) : const Color(0xFF0A7C4E);
+    final inactiveColor = dark ? const Color(0xFF6B7280) : const Color(0xFFB0B8C0);
 
     return Expanded(
       child: GestureDetector(
@@ -1615,7 +1617,7 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
                 borderRadius: BorderRadius.circular(8),
                 color: active
                     ? (dark
-                        ? const Color(0xFF4ADE80).withValues(alpha: 0.12)
+                        ? const Color(0xFF10B981).withValues(alpha: 0.14)
                         : const Color(0xFF0A7C4E).withValues(alpha: 0.09))
                     : Colors.transparent,
               ),
@@ -1649,10 +1651,10 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
     final isAiActive = _tab == 2;
     final gradStart  = isAiActive
         ? const Color(0xFF008CA4)
-        : (dark ? const Color(0xFF143050) : const Color(0xFF0A2540));
+        : (dark ? const Color(0xFF374151) : const Color(0xFF0A2540));
     final gradEnd    = isAiActive
         ? const Color(0xFF0A2540)
-        : (dark ? const Color(0xFF0A1525) : const Color(0xFF0F3B68));
+        : (dark ? const Color(0xFF252930) : const Color(0xFF0F3B68));
     final glowColor  = const Color(0xFF00E5FF);
 
     return GestureDetector(
@@ -1744,75 +1746,39 @@ class _MobileAppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // HOME: barra verde luxury; outras tabs: tema neutro + sombra flutuante
-    final bg = isHome
-        ? (dark ? const Color(0xFF0A1A10) : const Color(0xFF0A7C4E))
-        : (dark ? const Color(0xFF0F1C14) : const Color(0xFFF0F5F1));
-    final borderCol = isHome
-        ? (dark ? const Color(0xFF1A3020) : const Color(0xFF085E3A))
-        : (dark ? const Color(0xFF1A2E20) : const Color(0xFFD4E0D8));
-    final iconBg = isHome
-        ? (dark
-            ? Colors.white.withValues(alpha: 0.10)
-            : Colors.white.withValues(alpha: 0.15))
-        : (dark
-            ? Colors.white.withValues(alpha: 0.07)
-            : const Color(0xFF0A7C4E).withValues(alpha: 0.08));
-    final iconBorder = isHome
-        ? (dark
-            ? Colors.white.withValues(alpha: 0.18)
-            : Colors.white.withValues(alpha: 0.30))
-        : (dark
-            ? Colors.white.withValues(alpha: 0.12)
-            : const Color(0xFF0A7C4E).withValues(alpha: 0.20));
-    final iconColor = isHome
-        ? (dark ? const Color(0xFF7EF5B0) : Colors.white)
-        : (dark ? const Color(0xFFFFE8A6) : const Color(0xFF0A7C4E));
+    // AppBar: header escuro uniforme em todos os contextos (dark mode)
+    final bg = dark ? const Color(0xFF0F1116) : (isHome ? const Color(0xFF0A7C4E) : const Color(0xFFF0F5F1));
+    final borderCol = dark ? const Color(0xFF2D3340) : (isHome ? const Color(0xFF085E3A) : const Color(0xFFD4E0D8));
+    final iconBg = dark
+        ? Colors.white.withValues(alpha: 0.08)
+        : (isHome ? Colors.white.withValues(alpha: 0.15) : const Color(0xFF0A7C4E).withValues(alpha: 0.08));
+    final iconBorder = dark
+        ? Colors.white.withValues(alpha: 0.12)
+        : (isHome ? Colors.white.withValues(alpha: 0.30) : const Color(0xFF0A7C4E).withValues(alpha: 0.20));
+    final iconColor = dark
+        ? Colors.white.withValues(alpha: 0.85)
+        : (isHome ? Colors.white : const Color(0xFF0A7C4E));
 
     // ── AppBar decoration ─────────────────────────────────────────────────────
-    // HOME tab: premium LinearGradient (matches ADULTO card palette) + depth shadow.
-    // Dark HOME: deep forest gradient.  Other tabs: neutral theme.
-    final BoxDecoration barDecoration = isHome
-        ? BoxDecoration(
-            gradient: dark
-                ? const LinearGradient(
-                    colors: [Color(0xFF061A10), Color(0xFF0C543A)],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  )
-                : const LinearGradient(
-                    // Light mode: deep medical green → vibrant green (ADULTO card exact match)
-                    colors: [Color(0xFF0C543A), Color(0xFF137A52)],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
-            border: Border(bottom: BorderSide(color: borderCol, width: 0.5)),
-            boxShadow: [
-              // Primary depth shadow — tight and punchy
-              BoxShadow(
-                color: Colors.black.withValues(alpha: dark ? 0.45 : 0.18),
-                blurRadius: 8.0,
-                offset: const Offset(0, 3),
-              ),
-              // Ambient green halo — soft glow matching card family
-              BoxShadow(
-                color: const Color(0xFF064D32).withValues(alpha: dark ? 0.55 : 0.22),
-                blurRadius: 18,
-                offset: const Offset(0, 5),
-              ),
-            ],
-          )
-        : BoxDecoration(
-            color: bg,
-            border: Border(bottom: BorderSide(color: borderCol, width: 0.5)),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: dark ? 0.45 : 0.12),
-                blurRadius: 16,
-                offset: const Offset(0, 4),
-              ),
-            ],
-          );
+    // Dark mode: header escuro uniforme (#0F1116) + sutil glow cyan na HOME.
+    // Light mode: verde médico na HOME, neutro nas demais.
+    final BoxDecoration barDecoration = BoxDecoration(
+      color: bg,
+      border: Border(bottom: BorderSide(color: borderCol, width: 0.5)),
+      boxShadow: [
+        BoxShadow(
+          color: Colors.black.withValues(alpha: dark ? 0.40 : 0.12),
+          blurRadius: 8.0,
+          offset: const Offset(0, 3),
+        ),
+        if (dark && isHome)
+          BoxShadow(
+            color: const Color(0xFF00E5FF).withValues(alpha: 0.04),
+            blurRadius: 14,
+            offset: const Offset(0, 4),
+          ),
+      ],
+    );
 
     return Container(
       decoration: barDecoration,
@@ -2000,11 +1966,11 @@ class _DesktopSidebar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bg          = dark ? const Color(0xFF111111) : const Color(0xFFFFFFFF);
-    final activeCol   = dark ? const Color(0xFF4ADE80) : const Color(0xFF0A7C4E);
-    final inactiveCol = dark ? Colors.white.withValues(alpha: 0.30) : const Color(0xFFADB5BD);
+    final bg          = dark ? const Color(0xFF0F1116) : const Color(0xFFFFFFFF);
+    final activeCol   = dark ? const Color(0xFF10B981) : const Color(0xFF0A7C4E);
+    final inactiveCol = dark ? const Color(0xFF6B7280) : const Color(0xFFADB5BD);
     final activeBg    = dark
-        ? const Color(0xFF4ADE80).withValues(alpha: 0.10)
+        ? const Color(0xFF10B981).withValues(alpha: 0.12)
         : const Color(0xFF0A7C4E).withValues(alpha: 0.08);
     final isEs        = p.lang == 'es';
 
@@ -2091,9 +2057,9 @@ class _DesktopSidebar extends StatelessWidget {
               label: 'IA',
               active: currentTab == 2,
               dark: dark,
-              activeCol: dark ? const Color(0xFFC5A365) : const Color(0xFF8B6914),
+              activeCol: dark ? const Color(0xFF00E5FF) : const Color(0xFF008CA4),
               inactiveCol: inactiveCol,
-              activeBg: const Color(0xFFC5A365).withValues(alpha: 0.10),
+              activeBg: const Color(0xFF00E5FF).withValues(alpha: 0.10),
               onTap: () => onTabChange(2),
             ),
             _SidebarItem(
@@ -2384,13 +2350,13 @@ class _SubTabBtn extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final activeColor   = dark ? const Color(0xFFFFE8A6) : const Color(0xFF0F1C14);
+    final activeColor   = dark ? const Color(0xFFFFE8A6) : const Color(0xFF0F1116);
     final inactiveColor = dark
         ? Colors.white.withValues(alpha: 0.30)
         : const Color(0xFFB8BEC4);
     final activeBg = dark
         ? const Color(0xFF1A3528)
-        : const Color(0xFF0F1C14).withValues(alpha: 0.09);
+        : const Color(0xFF0F1116).withValues(alpha: 0.09);
 
     return Expanded(
       child: GestureDetector(
@@ -2408,7 +2374,7 @@ class _SubTabBtn extends StatelessWidget {
                     BoxShadow(
                       color: (dark
                               ? const Color(0xFFFFE8A6)
-                              : const Color(0xFF0F1C14))
+                              : const Color(0xFF0F1116))
                           .withValues(alpha: 0.08),
                       blurRadius: 6,
                       offset: const Offset(0, 1),
@@ -2466,7 +2432,7 @@ class _MiniContextBar extends StatelessWidget {
         gradient: const LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [Color(0xFF0A1610), Color(0xFF162E1F), Color(0xFF1A5C3A)],
+          colors: [Color(0xFF1A1D23), Color(0xFF162E1F), Color(0xFF1A5C3A)],
           stops: [0.0, 0.5, 1.0],
         ),
         boxShadow: [
@@ -2668,8 +2634,8 @@ class _LegalBar extends StatelessWidget {
   Widget build(BuildContext context) {
     // context.select — rebuild apenas quando lang muda
     final isEs = context.select<AppProvider, bool>((p) => p.lang == 'es');
-    final bg        = dark ? const Color(0xFF080F0B) : const Color(0xFFF0F2F4);
-    final border    = dark ? const Color(0xFF1A2820) : const Color(0xFFDDE1E6);
+    final bg        = dark ? const Color(0xFF0F1116) : const Color(0xFFF0F2F4);
+    final border    = dark ? const Color(0xFF2D3340) : const Color(0xFFDDE1E6);
     // Apple 1.4.1 — disclaimer deve ser legível: opacidade 0.85 no dark, cor
     // sólida no light. Não usar valores abaixo de 0.70.
     final textColor = dark
@@ -2843,7 +2809,7 @@ class _AppDrawerState extends State<_AppDrawer> {
           }
 
           return AlertDialog(
-            backgroundColor: dark ? const Color(0xFF1C1C1E) : Colors.white,
+            backgroundColor: dark ? const Color(0xFF252930) : Colors.white,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
             contentPadding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
             title: Row(children: [
@@ -2968,7 +2934,7 @@ class _AppDrawerState extends State<_AppDrawer> {
               TextButton(
                 onPressed: loading ? null : () => Navigator.pop(ctx),
                 child: Text(cancelT,
-                    style: const TextStyle(color: Color(0xFF888888))),
+                    style: const TextStyle(color: Color(0xFF6B7280))),
               ),
               if (!step2)
                 FilledButton(
@@ -3058,9 +3024,9 @@ class _AppDrawerState extends State<_AppDrawer> {
     // fiquem isolados — não fecham o drawer ao mudar darkMode/offlineMode.
     final p       = context.watch<AppProvider>();
     final dark    = p.darkMode;
-    final bg      = dark ? const Color(0xFF0B1510) : const Color(0xFFFAFBFC);
-    final divider = dark ? const Color(0xFF1A2E22) : const Color(0xFFF0EDE8);
-    final textCol = dark ? const Color(0xFFEEEEEE) : const Color(0xFF0F1C14);
+    final bg      = dark ? const Color(0xFF1A1D23) : const Color(0xFFFAFBFC);
+    final divider = dark ? const Color(0xFF2D3340) : const Color(0xFFF0EDE8);
+    final textCol = dark ? const Color(0xFFEEEEEE) : const Color(0xFF0F1116);
     final subCol  = dark ? Colors.white.withValues(alpha: 0.36) : const Color(0xFF9AA0A8);
 
     final initials = p.userName.isNotEmpty
@@ -3401,7 +3367,7 @@ class _AppDrawerState extends State<_AppDrawer> {
           Container(
             padding: const EdgeInsets.fromLTRB(16, 9, 16, 10),
             decoration: BoxDecoration(
-              color: dark ? const Color(0xFF070E09) : const Color(0xFFF0EDE8),
+              color: dark ? const Color(0xFF0F1116) : const Color(0xFFF0EDE8),
               border: Border(top: BorderSide(color: divider, width: 0.5)),
             ),
             child: SafeArea(
@@ -3453,7 +3419,7 @@ class _DrawerHeader extends StatelessWidget {
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [Color(0xFF091410), Color(0xFF142A1C), Color(0xFF1A5035)],
+          colors: [Color(0xFF0F1116), Color(0xFF1A1D23), Color(0xFF252930)],
           stops: [0.0, 0.45, 1.0],
         ),
       ),
@@ -3529,7 +3495,7 @@ class _DrawerHeader extends StatelessWidget {
                     gradient: const LinearGradient(
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
-                      colors: [Color(0xFF1F4030), Color(0xFF101E16)],
+                      colors: [Color(0xFF1F4030), Color(0xFF1A1D23)],
                     ),
                     border: Border.all(
                       color: _kGold.withValues(alpha: 0.55), width: 1.6),
@@ -3667,9 +3633,9 @@ class _DrawerBlock extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final dark = Theme.of(context).brightness == Brightness.dark;
-    final cardBg = dark ? const Color(0xFF0F1A14) : Colors.white;
-    final borderCol = dark ? const Color(0xFF1A2E22) : const Color(0xFFECE9E4);
-    final divCol = dividerColor ?? (dark ? const Color(0xFF1A2E22) : const Color(0xFFECE9E4));
+    final cardBg = dark ? const Color(0xFF252930) : Colors.white;
+    final borderCol = dark ? const Color(0xFF374151) : const Color(0xFFECE9E4);
+    final divCol = dividerColor ?? (dark ? const Color(0xFF2D3340) : const Color(0xFFECE9E4));
 
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 2),
@@ -3716,8 +3682,8 @@ class _DrawerItemPremium extends StatelessWidget {
           gradient: LinearGradient(
             begin: Alignment.topLeft, end: Alignment.bottomRight,
             colors: dark
-                ? [const Color(0xFF242424), const Color(0xFF1A1A1A)]
-                : [const Color(0xFF1A3020), const Color(0xFF0F1C14)],
+                ? [const Color(0xFF252930), const Color(0xFF1A1D23)]
+                : [const Color(0xFF2D3340), const Color(0xFF0F1116)],
           ),
         ),
         child: Row(children: [
@@ -3987,7 +3953,7 @@ class _ThemeToggle extends StatelessWidget {
       width: 40, height: 22,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(11),
-        color: dark ? const Color(0xFF1F6B48) : const Color(0xFFDDDDDD),
+        color: dark ? const Color(0xFF10B981) : const Color(0xFFA8B2C1),
       ),
       child: AnimatedAlign(
         duration: const Duration(milliseconds: 200),
@@ -4014,7 +3980,7 @@ class _OnOffToggle extends StatelessWidget {
       width: 40, height: 22,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(11),
-        color: value ? const Color(0xFF10B981) : const Color(0xFFDDDDDD),
+        color: value ? const Color(0xFF10B981) : const Color(0xFFA8B2C1),
       ),
       child: AnimatedAlign(
         duration: const Duration(milliseconds: 200),
@@ -4057,7 +4023,7 @@ class _DrawerQuickAccess extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isEs    = p.lang == 'es';
-    final textCol = dark ? const Color(0xFFEEEEEE) : const Color(0xFF0F1C14);
+    final textCol = dark ? const Color(0xFFEEEEEE) : const Color(0xFF0F1116);
     final subCol  = dark ? Colors.white.withValues(alpha: 0.36) : const Color(0xFF9AA0A8);
     final divider = dark ? const Color(0xFF1A2E22) : const Color(0xFFF0EDE8);
 
@@ -4143,7 +4109,7 @@ class _DrawerActivity extends StatelessWidget {
         if (items.isEmpty) return const SizedBox.shrink();
 
         final isEs    = p.lang == 'es';
-        final textCol = dark ? const Color(0xFFEEEEEE) : const Color(0xFF0F1C14);
+        final textCol = dark ? const Color(0xFFEEEEEE) : const Color(0xFF0F1116);
         final subCol  = dark ? Colors.white.withValues(alpha: 0.36) : const Color(0xFF9AA0A8);
         final divider = dark ? const Color(0xFF1A2E22) : const Color(0xFFF0EDE8);
         final recent  = items.take(3).toList();
@@ -4282,9 +4248,9 @@ class _RecentActivitySheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isEs  = lang == 'es';
-    final bg    = dark ? const Color(0xFF0F1C14) : Colors.white;
-    final handle= dark ? Colors.white.withValues(alpha: 0.18) : const Color(0xFFDDDDDD);
-    final title = dark ? Colors.white : const Color(0xFF0F1C14);
+    final bg    = dark ? const Color(0xFF0F1116) : Colors.white;
+    final handle= dark ? Colors.white.withValues(alpha: 0.18) : const Color(0xFFA8B2C1);
+    final title = dark ? Colors.white : const Color(0xFF0F1116);
     final sub   = dark ? Colors.white.withValues(alpha: 0.45) : const Color(0xFF9AA0A8);
     final div   = dark ? Colors.white.withValues(alpha: 0.07) : const Color(0xFFF0F0F0);
 
@@ -4517,7 +4483,7 @@ class _AppHeader extends StatelessWidget {
         gradient: const LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [Color(0xFF141414), Color(0xFF1E1E1E), Color(0xFF252525)],
+          colors: [Color(0xFF1A1D23), Color(0xFF252930), Color(0xFF252930)],
           stops: [0.0, 0.5, 1.0],
         ),
         boxShadow: [
@@ -4613,13 +4579,13 @@ class _AboutAppSheet extends StatelessWidget {
 
   static const _kGreen      = Color(0xFF075f45);
   static const _kGreenLight = Color(0xFF0D9488);
-  static const _kGold       = Color(0xFFD4A96A);
+  static const _kGold       = Color(0xFF00E5FF);
 
   @override
   Widget build(BuildContext context) {
     final isEs  = p.lang == 'es';
     final bg    = dark ? const Color(0xFF111A14) : const Color(0xFFF7F9F7);
-    final card  = dark ? const Color(0xFF1A2820) : Colors.white;
+    final card  = dark ? const Color(0xFF2D3340) : Colors.white;
     final hdl   = dark ? const Color(0xFF2E4038) : const Color(0xFFDDE6E0);
     final ttl   = dark ? const Color(0xFFECECEC) : const Color(0xFF07110D);
     final sub   = dark ? const Color(0xFF8A9E92) : const Color(0xFF5A6E62);
@@ -4950,8 +4916,8 @@ class _ProfileEditSheetState extends State<_ProfileEditSheet> {
   Widget build(BuildContext context) {
     final dark = widget.p.darkMode;
     final bg = dark ? const Color(0xFF121F17) : Colors.white;
-    final titleColor = dark ? Colors.white : const Color(0xFF0F1C14);
-    final subColor = dark ? Colors.white54 : const Color(0xFF888888);
+    final titleColor = dark ? Colors.white : const Color(0xFF0F1116);
+    final subColor = dark ? Colors.white54 : const Color(0xFF6B7280);
     final borderColor = dark ? const Color(0xFF1A3528) : const Color(0xFFE8E1D2);
 
     return Padding(
@@ -5074,8 +5040,8 @@ class _ProfileEditSheetState extends State<_ProfileEditSheet> {
                     height: 46,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(12),
-                      color: const Color(0xFF0F1C14),
-                      boxShadow: [BoxShadow(color: const Color(0xFF0F1C14).withValues(alpha: 0.35), blurRadius: 12, offset: const Offset(0, 4))],
+                      color: const Color(0xFF0F1116),
+                      boxShadow: [BoxShadow(color: const Color(0xFF0F1116).withValues(alpha: 0.35), blurRadius: 12, offset: const Offset(0, 4))],
                     ),
                     alignment: Alignment.center,
                     child: _saving
@@ -5112,7 +5078,7 @@ class _SheetField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final fillColor = dark ? const Color(0xFF162820) : const Color(0xFFF5F0E8);
-    final textColor = dark ? Colors.white : const Color(0xFF0F1C14);
+    final textColor = dark ? Colors.white : const Color(0xFF0F1116);
     final hintColor = dark ? Colors.white38 : const Color(0xFFAAAAAA);
     final borderColor = dark ? const Color(0xFF1A3528) : const Color(0xFFE8E1D2);
 
@@ -5144,8 +5110,8 @@ class _AppUpdateDialog extends StatelessWidget {
   final Map<String, dynamic> data;
   const _AppUpdateDialog({required this.data});
 
-  static const _kDark  = Color(0xFF0F1C14);
-  static const _kGreen = Color(0xFF1F6B48);
+  static const _kDark  = Color(0xFF0F1116);
+  static const _kGreen = Color(0xFF10B981);
   static const _kGold  = Color(0xFFC5A365);
   static const _kGoldL = Color(0xFFFFE8A6);
 
@@ -5228,7 +5194,7 @@ class _AppUpdateDialog extends StatelessWidget {
                     const SizedBox(width: 10),
                     Expanded(
                       child: Text(item,
-                        style: const TextStyle(fontSize: 13, color: Color(0xFF1A1A1A), height: 1.4)),
+                        style: const TextStyle(fontSize: 13, color: Color(0xFF1A1D23), height: 1.4)),
                     ),
                   ]),
                 )).toList(),
@@ -5371,7 +5337,7 @@ class _FeedbackSheetState extends State<_FeedbackSheet> {
   Widget build(BuildContext context) {
     final dark = widget.dark;
     final bg   = dark ? const Color(0xFF1C1C1E) : Colors.white;
-    final textCol = dark ? Colors.white : const Color(0xFF1A1A1A);
+    final textCol = dark ? Colors.white : const Color(0xFF1A1D23);
     final subCol  = dark ? const Color(0xFF8E8E93) : const Color(0xFF6B7280);
     final surfCol = dark ? const Color(0xFF2C2C2E) : const Color(0xFFF3F4F6);
 
@@ -5682,7 +5648,7 @@ class _SuccessView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bg      = dark ? const Color(0xFF1C1C1E) : Colors.white;
-    final textCol = dark ? Colors.white : const Color(0xFF1A1A1A);
+    final textCol = dark ? Colors.white : const Color(0xFF1A1D23);
     final subCol  = dark ? const Color(0xFF8E8E93) : const Color(0xFF6B7280);
 
     return Container(
@@ -5975,8 +5941,8 @@ class _NotesPanelContentState extends State<_NotesPanelContent> {
 
     final panelBg   = dark ? const Color(0xFF161616) : const Color(0xFFF7F8FA);
     final searchBg  = dark ? const Color(0xFF222222) : Colors.white;
-    final borderCol = dark ? const Color(0xFF2A2A2A) : const Color(0xFFE0E0E0);
-    final textCol   = dark ? Colors.white             : const Color(0xFF0F1C14);
+    final borderCol = dark ? const Color(0xFF2D3340) : const Color(0xFFE0E0E0);
+    final textCol   = dark ? Colors.white             : const Color(0xFF0F1116);
     final subCol    = dark ? Colors.white54           : Colors.black45;
 
     return Material(
@@ -5993,8 +5959,8 @@ class _NotesPanelContentState extends State<_NotesPanelContent> {
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
                 colors: dark
-                    ? [const Color(0xFF0F1C14), const Color(0xFF1A2820), const Color(0xFF1F3A28)]
-                    : [const Color(0xFF0F1C14), const Color(0xFF1B3D2A), const Color(0xFF1F6B48)],
+                    ? [const Color(0xFF0F1116), const Color(0xFF2D3340), const Color(0xFF1F3A28)]
+                    : [const Color(0xFF0F1116), const Color(0xFF1B3D2A), const Color(0xFF10B981)],
               ),
             ),
             child: SafeArea(
@@ -6047,10 +6013,10 @@ class _NotesPanelContentState extends State<_NotesPanelContent> {
                         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(9),
-                          color: const Color(0xFF1F6B48),
+                          color: const Color(0xFF10B981),
                           boxShadow: [
                             BoxShadow(
-                              color: const Color(0xFF1F6B48).withValues(alpha: 0.45),
+                              color: const Color(0xFF10B981).withValues(alpha: 0.45),
                               blurRadius: 10, offset: const Offset(0, 3),
                             ),
                           ],
@@ -6114,7 +6080,7 @@ class _NotesPanelContentState extends State<_NotesPanelContent> {
           Expanded(
             child: _loading
                 ? const Center(child: CircularProgressIndicator(
-                    color: Color(0xFF1F6B48), strokeWidth: 2))
+                    color: Color(0xFF10B981), strokeWidth: 2))
                 : _filtered.isEmpty
                     ? _PanelEmptyState(isEs: isEs, dark: dark,
                         onNew: () => _openEditor())
@@ -6156,7 +6122,7 @@ class _PanelEmptyState extends StatelessWidget {
     return Center(
       child: Column(mainAxisSize: MainAxisSize.min, children: [
         Icon(Icons.edit_note_rounded, size: 48,
-          color: dark ? const Color(0xFF1F6B48).withValues(alpha: 0.50) : const Color(0xFF1F6B48).withValues(alpha: 0.35)),
+          color: dark ? const Color(0xFF10B981).withValues(alpha: 0.50) : const Color(0xFF10B981).withValues(alpha: 0.35)),
         const SizedBox(height: 12),
         Text(
           isEs ? 'Sin anotaciones aún' : 'Nenhuma anotação ainda',
@@ -6177,10 +6143,10 @@ class _PanelEmptyState extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),
-              color: const Color(0xFF1F6B48),
+              color: const Color(0xFF10B981),
               boxShadow: [
                 BoxShadow(
-                  color: const Color(0xFF1F6B48).withValues(alpha: 0.40),
+                  color: const Color(0xFF10B981).withValues(alpha: 0.40),
                   blurRadius: 12, offset: const Offset(0, 4),
                 ),
               ],
@@ -6254,7 +6220,7 @@ class _PanelNoteCard extends StatelessWidget {
     final hex     = note['color'] as String? ?? '#FFFEF0';
     final nc      = _panelColorFromHex(hex);
     final cardBg  = dark ? nc.dark : nc.light;
-    final textCol = dark ? Colors.white : const Color(0xFF1A1A1A);
+    final textCol = dark ? Colors.white : const Color(0xFF1A1D23);
     final subCol  = dark ? Colors.white54 : Colors.black45;
     final title   = note['title']   as String? ?? '';
     final content = note['content'] as String? ?? '';
@@ -6311,13 +6277,13 @@ class _PanelNoteCard extends StatelessWidget {
               showDialog(
                 context: context,
                 builder: (_) => AlertDialog(
-                  backgroundColor: dark ? const Color(0xFF1E1E1E) : Colors.white,
+                  backgroundColor: dark ? const Color(0xFF252930) : Colors.white,
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
                   title: Text(
                     isEs ? 'Eliminar nota' : 'Excluir anotação',
                     style: TextStyle(
                       fontSize: 16, fontWeight: FontWeight.w700,
-                      color: dark ? Colors.white : const Color(0xFF1A1A1A),
+                      color: dark ? Colors.white : const Color(0xFF1A1D23),
                     ),
                   ),
                   content: Text(

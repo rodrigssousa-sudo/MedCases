@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../theme/app_theme.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:provider/provider.dart';
@@ -134,52 +135,52 @@ class AppColors {
 
   // ── Fundos ────────────────────────────────────────────────────────────────
   /// Fundo de cards e superfícies elevadas
-  Color get cardBg      => dark ? const Color(0xFF1E1E1E) : Colors.white;
+  Color get cardBg      => dark ? const Color(0xFF252930) : Colors.white;
   /// Fundo de cards com leve elevação extra
-  Color get cardBg2     => dark ? const Color(0xFF252525) : const Color(0xFFF8F9FA);
+  Color get cardBg2     => dark ? const Color(0xFF252930) : const Color(0xFFF8F9FA);
   /// Fundo de inputs e campos de texto
   Color get inputBg     => dark ? const Color(0xFF1C1C1C) : Colors.white;
   /// Surface geral (fundo de chips, pills)
-  Color get surface     => dark ? const Color(0xFF242424) : const Color(0xFFF0F2F5);
+  Color get surface     => dark ? const Color(0xFF252930) : const Color(0xFFF0F2F5);
   /// Fundo do scaffold (backup — geralmente vem do theme)
-  Color get scaffoldBg  => dark ? const Color(0xFF141414) : const Color(0xFFF5F6F8);
+  Color get scaffoldBg  => dark ? const Color(0xFF1A1D23) : const Color(0xFFF5F6F8);
 
   // ── Textos ────────────────────────────────────────────────────────────────
   /// Texto principal — máximo contraste
-  Color get textPrimary   => dark ? const Color(0xFFF7F7F7) : const Color(0xFF07110d);
+  Color get textPrimary   => dark ? const Color(0xFFFFFFFF) : const Color(0xFF07110d);
   /// Texto secundário — subtítulos, labels
-  Color get textSecondary => dark ? const Color(0xFFCCCCCC) : const Color(0xFF555F58);
+  Color get textSecondary => dark ? const Color(0xFFA8B2C1) : const Color(0xFF555F58);
   /// Texto terciário — hints, captions
-  Color get textHint      => dark ? const Color(0xFF888888) : const Color(0xFF9CA3AF);
+  Color get textHint      => dark ? const Color(0xFF6B7280) : const Color(0xFF9CA3AF);
   /// Texto desabilitado
   Color get textDisabled  => dark ? const Color(0xFF555555) : const Color(0xFFBBBBBB);
 
   // ── Bordas ────────────────────────────────────────────────────────────────
-  Color get border        => dark ? const Color(0xFF333333) : const Color(0xFFE2E6EA);
+  Color get border        => dark ? const Color(0xFF374151) : const Color(0xFFE2E6EA);
   Color get borderStrong  => dark ? const Color(0xFF444444) : const Color(0xFFCDD3D8);
 
   // ── Verde / brand ─────────────────────────────────────────────────────────
   /// Verde principal — suavizado no dark para menor saturação
-  Color get green         => dark ? const Color(0xFF2E8A62) : const Color(0xFF075f45);
+  Color get green         => dark ? const Color(0xFF10B981) : const Color(0xFF075f45);
   /// Verde claro para backgrounds
   Color get greenBg       => dark ? const Color(0xFF0F2A1E) : const Color(0xFFECFDF5);
   /// Verde para bordas
   Color get greenBorder   => dark ? const Color(0xFF1A4A32) : const Color(0xFFBBF7D0);
 
   // ── Ouro / gold ───────────────────────────────────────────────────────────
-  Color get gold          => dark ? const Color(0xFFD4A96A) : const Color(0xFFC5A365);
+  Color get gold          => dark ? const Color(0xFF00E5FF) : const Color(0xFFC5A365);
   Color get goldLight     => dark ? const Color(0xFFFFE8A6) : const Color(0xFFFFE8A6);
   Color get goldBg        => dark ? const Color(0xFF2A2010) : const Color(0xFFFFFBF0);
   Color get goldBorder    => dark ? const Color(0xFF4A3820) : const Color(0xFFE8D8A0);
 
   // ── Dark base ─────────────────────────────────────────────────────────────
   /// Cor escura para botões primários — mais clara no dark
-  Color get darkBtn       => dark ? const Color(0xFF2A2A2A) : const Color(0xFF07110d);
+  Color get darkBtn       => dark ? const Color(0xFF2D3340) : const Color(0xFF07110d);
   /// Cor escura para text (alias contextual)
   Color get darkText      => textPrimary;
 
   // ── Divisores ────────────────────────────────────────────────────────────
-  Color get divider       => dark ? const Color(0xFF2A2A2A) : const Color(0xFFE8E1D2);
+  Color get divider       => dark ? const Color(0xFF2D3340) : const Color(0xFFE8E1D2);
 
   // ── Interações / alertas (não mudam entre modos) ──────────────────────────
   static const Color alertRed       = Color(0xFFCC2222);
@@ -819,7 +820,7 @@ class _DrugSuggestionsDropdown extends StatelessWidget {
     return Material(
       elevation: 10,
       borderRadius: BorderRadius.circular(14),
-      color: dark ? const Color(0xFF242424) : Colors.white,
+      color: dark ? const Color(0xFF252930) : Colors.white,
       shadowColor: Colors.black.withValues(alpha: 0.20),
       child: ConstrainedBox(
         constraints: BoxConstraints(maxWidth: 340, maxHeight: boxH),
@@ -834,7 +835,7 @@ class _DrugSuggestionsDropdown extends StatelessWidget {
               indent: 44,
               endIndent: 12,
               color: dark
-                  ? const Color(0xFF333333)
+                  ? const Color(0xFF374151)
                   : const Color(0xFFF0F0F0),
             ),
             itemBuilder: (_, i) {
@@ -852,8 +853,8 @@ class _DrugSuggestionsDropdown extends StatelessWidget {
                       fontSize: 13,
                       fontWeight: FontWeight.w600,
                       color: dark
-                          ? const Color(0xFFCCCCCC)
-                          : const Color(0xFF1A1A1A),
+                          ? const Color(0xFFA8B2C1)
+                          : const Color(0xFF1A1D23),
                     ),
                     children: [
                       if (idx > 0)
@@ -879,7 +880,7 @@ class _DrugSuggestionsDropdown extends StatelessWidget {
                       Icons.auto_awesome_rounded,
                       size: 11,
                       color: dark
-                          ? const Color(0xFF888888)
+                          ? const Color(0xFF6B7280)
                           : const Color(0xFFAAAAAA),
                     ),
                     const SizedBox(width: 4),
@@ -922,7 +923,7 @@ class _DrugSuggestionsDropdown extends StatelessWidget {
                       size: 12,
                       color: dark
                           ? const Color(0xFF555555)
-                          : const Color(0xFFCCCCCC),
+                          : const Color(0xFFA8B2C1),
                     ),
                   ]),
                 ),
@@ -1394,7 +1395,7 @@ class _PharmacologicalDisclaimerState extends State<PharmacologicalDisclaimer> {
     final text = widget.customText ?? _defaultText;
 
     const subtleGrey = Color(0xFF9CA3AF);
-    final borderCol  = dark ? const Color(0xFF2A2A2A) : const Color(0xFFE5E7EB);
+    final borderCol  = dark ? const Color(0xFF2D3340) : const Color(0xFFE5E7EB);
     final bgCol      = dark ? const Color(0xFF161616) : const Color(0xFFFAFAF8);
 
     return GestureDetector(

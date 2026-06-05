@@ -10,6 +10,7 @@
 //   • Botão "+" flutuante dentro do cabeçalho para abrir o manage sheet
 
 import 'package:flutter/material.dart';
+import '../theme/app_theme.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '../providers/app_provider.dart';
@@ -257,14 +258,14 @@ class _PlantaoHeader extends StatelessWidget {
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
               gradient: const LinearGradient(
-                colors: [Color(0xFF075f45), Color(0xFF0F8A62)],
+                colors: [Color(0xFF0A7C4E), Color(0xFF10B981)],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
               borderRadius: BorderRadius.circular(10),
               boxShadow: [
                 BoxShadow(
-                  color: const Color(0xFF075f45).withValues(alpha: 0.30),
+                  color: const Color(0xFF0A7C4E).withValues(alpha: 0.30),
                   blurRadius: 8,
                   offset: const Offset(0, 3),
                 ),
@@ -1568,13 +1569,13 @@ class _PatientEditSheetState extends State<_PatientEditSheet> {
                               padding: const EdgeInsets.symmetric(vertical: 14),
                               decoration: BoxDecoration(
                                 gradient: const LinearGradient(
-                                  colors: [Color(0xFF075f45), Color(0xFF0F8A62)],
+                                  colors: [Color(0xFF0A7C4E), Color(0xFF10B981)],
                                   begin: Alignment.topLeft,
                                   end: Alignment.bottomRight,
                                 ),
                                 borderRadius: BorderRadius.circular(14),
                                 boxShadow: [
-                                  BoxShadow(color: const Color(0xFF075f45).withValues(alpha: 0.35), blurRadius: 10, offset: const Offset(0, 4)),
+                                  BoxShadow(color: const Color(0xFF0A7C4E).withValues(alpha: 0.35), blurRadius: 10, offset: const Offset(0, 4)),
                                 ],
                               ),
                               child: Row(

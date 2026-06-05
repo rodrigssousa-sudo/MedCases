@@ -121,7 +121,7 @@ class _ProtocolsScreenState extends State<ProtocolsScreen> {
             const SizedBox(height: 8),
             Text(
               '${filtered.length} ${p.t("protocols_found")}',
-              style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: Color(0xFF888888)),
+              style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: Color(0xFF6B7280)),
             ),
           ]),
         ),
@@ -843,7 +843,7 @@ class _ProtocolListTile extends StatelessWidget {
                 child: Icon(
                   isFav ? Icons.star_rounded : Icons.star_border_rounded,
                   size: 20,
-                  color: isFav ? kGold : const Color(0xFFCCCCCC),
+                  color: isFav ? kGold : const Color(0xFFA8B2C1),
                 ),
               ),
             ),
@@ -2047,7 +2047,7 @@ class _ObjectivesCard extends StatelessWidget {
               decoration: BoxDecoration(
                 color: const Color(0xFF15803D).withValues(alpha: 0.15),
                 shape: BoxShape.circle,
-                border: Border.all(color: const Color(0xFF4ADE80).withValues(alpha: 0.4)),
+                border: Border.all(color: const Color(0xFF10B981).withValues(alpha: 0.4)),
               ),
               child: Center(
                 child: Text('${e.key + 1}',
@@ -2111,7 +2111,7 @@ class _DrugsLinesCard extends StatelessWidget {
             borderColor: const Color(0xFF86EFAC),
             textColor: const Color(0xFF14532D),
             items: firstLine,
-            bulletColor: const Color(0xFF4ADE80),
+            bulletColor: const Color(0xFF10B981),
           ),
 
         if (firstLine.isNotEmpty && secondLine.isNotEmpty)
@@ -2371,12 +2371,12 @@ class _PearlsCard extends StatelessWidget {
       ),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Row(children: [
-          const Icon(Icons.lightbulb_rounded, size: 13, color: Color(0xFF4ADE80)),
+          const Icon(Icons.lightbulb_rounded, size: 13, color: Color(0xFF10B981)),
           const SizedBox(width: 6),
           Text(p.lang == 'es' ? '💎 PERLAS CLÍNICAS' : '💎 PÉROLAS CLÍNICAS',
             style: const TextStyle(
               fontSize: 9, fontWeight: FontWeight.w900,
-              letterSpacing: 1.8, color: Color(0xFF4ADE80))),
+              letterSpacing: 1.8, color: Color(0xFF10B981))),
         ]),
         const SizedBox(height: 10),
         ...items.map((item) => Padding(
@@ -2384,7 +2384,7 @@ class _PearlsCard extends StatelessWidget {
           child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
             const Padding(
               padding: EdgeInsets.only(top: 2),
-              child: Icon(Icons.star_rounded, size: 11, color: Color(0xFF4ADE80)),
+              child: Icon(Icons.star_rounded, size: 11, color: Color(0xFF10B981)),
             ),
             const SizedBox(width: 9),
             Expanded(

@@ -1077,7 +1077,7 @@ class _NoInteractionsFound extends StatelessWidget {
         children: [
           const Icon(
             Icons.check_circle_rounded,
-            color: Color(0xFF4ADE80),
+            color: Color(0xFF10B981),
             size: 48,
           ),
           const SizedBox(height: 14),
@@ -1086,7 +1086,7 @@ class _NoInteractionsFound extends StatelessWidget {
             style: TextStyle(
               fontSize: 17,
               fontWeight: FontWeight.w800,
-              color: const Color(0xFF4ADE80),
+              color: const Color(0xFF10B981),
               letterSpacing: -0.2,
             ),
           ),

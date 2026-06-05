@@ -8,9 +8,9 @@ import '../models/clinical_history_model.dart';
 // AVALIAÇÃO FÍSICA — perguntas estruturadas por sistema
 // ─────────────────────────────────────────────────────────────────────────────
 
-const _kGreen  = Color(0xFF1F6B48);
+const _kGreen  = Color(0xFF10B981);
 const _kGold   = Color(0xFFC5A365);
-const _kDark   = Color(0xFF0F1C14);
+const _kDark   = Color(0xFF0F1116);
 const _kBorder = Color(0xFFE5E7EB);
 
 // ── Modelo de uma pergunta ────────────────────────────────────────────────────
@@ -67,7 +67,7 @@ const _kSections = <_Section>[
     title: 'Geral',
     titleEs: 'General',
     icon: Icons.person_outline_rounded,
-    color: Color(0xFF1F6B48),
+    color: Color(0xFF10B981),
     questions: [
       _Question(
         id: 'estado_geral',
@@ -978,7 +978,7 @@ class _AvalHeader extends StatelessWidget {
     return Container(
       decoration: const BoxDecoration(
         gradient: LinearGradient(
-          colors: [Color(0xFF0F1C14), Color(0xFF1B3D2A), Color(0xFF1F6B48)],
+          colors: [Color(0xFF0F1116), Color(0xFF1B3D2A), Color(0xFF10B981)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
@@ -1269,7 +1269,7 @@ class _QuestionCard extends StatelessWidget {
             fontSize: 9,
             fontWeight: FontWeight.w900,
             letterSpacing: 1.3,
-            color: hasSelection ? sectionColor : const Color(0xFF888888),
+            color: hasSelection ? sectionColor : const Color(0xFF6B7280),
           ),
         ),
         // Chips de seleção rápida
@@ -1363,7 +1363,7 @@ class _QuestionCard extends StatelessWidget {
             ),
             decoration: InputDecoration(
               hintText: isEs ? 'Complementar...' : 'Complementar...',
-              hintStyle: const TextStyle(fontSize: 11, color: Color(0xFFCCCCCC)),
+              hintStyle: const TextStyle(fontSize: 11, color: Color(0xFFA8B2C1)),
               filled: true,
               fillColor: const Color(0xFFF9FAFB),
               isDense: true,
@@ -1581,7 +1581,7 @@ class _BottomBar extends StatelessWidget {
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(12),
                     gradient: const LinearGradient(
-                      colors: [Color(0xFF0F1C14), Color(0xFF1F6B48)],
+                      colors: [Color(0xFF0F1116), Color(0xFF10B981)],
                     ),
                   ),
                   child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [

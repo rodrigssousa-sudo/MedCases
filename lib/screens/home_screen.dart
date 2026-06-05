@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
+import '../theme/app_theme.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -145,7 +146,7 @@ class _HomeScreenState extends State<HomeScreen> {
         icon: Icons.child_care_rounded,
         label: isEs ? 'PEDIATRÍA' : 'PEDIATRIA',
         subtitle: isEs ? 'Casos clínicos de referencia' : 'Casos clínicos de referência',
-        gradientColors: const [Color(0xFF0A2540), Color(0xFF103D70), Color(0xFF2563EB)],
+        gradientColors: const [Color(0xFF252930), Color(0xFF103D70), Color(0xFF2563EB)],
         accentColor: const Color(0xFF93C5FD),
         onTap: () => push(const _PediatricsShell()),
       ),
@@ -153,8 +154,8 @@ class _HomeScreenState extends State<HomeScreen> {
         icon: Icons.person_rounded,
         label: 'ADULTO',
         subtitle: isEs ? 'Explorar caso clínico' : 'Explorar caso clínico',
-        gradientColors: const [Color(0xFF052E1A), Color(0xFF0A5C2E), Color(0xFF15803D)],
-        accentColor: const Color(0xFF4ADE80),
+        gradientColors: const [Color(0xFF1A2E20), Color(0xFF0A5C2E), Color(0xFF15803D)],
+        accentColor: const Color(0xFF10B981),
         onTap: () => push(_AdultoShell(openProtocol: widget.openProtocol)),
       ),
     ];
@@ -482,12 +483,12 @@ class _Greeting extends StatelessWidget {
         decoration: BoxDecoration(
           shape: BoxShape.circle,
           gradient: const LinearGradient(
-            colors: [Color(0xFF1F6B48), Color(0xFF0F1C14)],
+            colors: [Color(0xFF10B981), Color(0xFF0F1116)],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
           border: Border.all(
-            color: const Color(0xFF4ADE80).withValues(alpha: 0.3),
+            color: const Color(0xFF10B981).withValues(alpha: 0.3),
             width: 1.5,
           ),
         ),
@@ -562,7 +563,7 @@ class _HomeSearchBar extends StatelessWidget {
         height: 46,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(23),
-          color: dark ? const Color(0xFF252525) : const Color(0xFFEFF1F7),
+          color: dark ? const Color(0xFF252930) : const Color(0xFFEFF1F7),
           border: Border.all(
             color: dark
                 ? Colors.white.withValues(alpha: 0.08)
@@ -639,8 +640,8 @@ class _SearchSheetState extends State<_SearchSheet> {
     final isEs = widget.isEs;
     final p    = context.watch<AppProvider>();
 
-    final sheetBg  = dark ? const Color(0xFF1A1A1A) : Colors.white;
-    final inputBg  = dark ? const Color(0xFF252525) : const Color(0xFFF2F4F8);
+    final sheetBg  = dark ? const Color(0xFF1A1D23) : Colors.white;
+    final inputBg  = dark ? const Color(0xFF252930) : const Color(0xFFF2F4F8);
     final textMain = dark ? Colors.white : const Color(0xFF1A202C);
     final textSub  = dark ? Colors.white54 : const Color(0xFF718096);
     final divColor = dark ? Colors.white.withValues(alpha: 0.07) : const Color(0xFFEDF0F7);
@@ -978,7 +979,7 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
 
   // ConnectMind AI palette
   static const _kGreen     = Color(0xFF008CA4);
-  static const _kGreenBg   = Color(0xFF0A2540);
+  static const _kGreenBg   = Color(0xFF252930);
   static const _kGreenBord = Color(0xFF00E5FF);
 
   // ── Histórico de mensagens (multi-turn inline) ────────────────────────────
@@ -1208,15 +1209,15 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
     final isEs  = widget.isEs;
     final chips = isEs ? _chipsEs : _chipsPt;
 
-    final cardBg      = dark ? const Color(0xFF0E1A12) : Colors.white;
+    final cardBg      = dark ? const Color(0xFF252930) : Colors.white;
     final borderColor = dark ? _kGreenBord.withValues(alpha: 0.35) : _kGreenBord.withValues(alpha: 0.22);
     final fieldBg     = dark ? const Color(0xFF162A1C) : const Color(0xFFF4FAF7);
     final fieldBorder = dark ? _kGreenBord.withValues(alpha: 0.22) : _kGreenBord.withValues(alpha: 0.18);
-    final textColor   = dark ? Colors.white : const Color(0xFF0F1C14);
+    final textColor   = dark ? Colors.white : const Color(0xFF0F1116);
     final hintColor   = dark ? Colors.white.withValues(alpha: 0.38) : const Color(0xFF7A9E8E);
     final chipBg      = dark ? const Color(0xFF162A1C) : _kGreen.withValues(alpha: 0.07);
     final chipBorder  = dark ? _kGreenBord.withValues(alpha: 0.25) : _kGreenBord.withValues(alpha: 0.22);
-    final chipText    = dark ? const Color(0xFF4ADE80) : _kGreen;
+    final chipText    = dark ? const Color(0xFF10B981) : _kGreen;
     final subText     = dark ? Colors.white38 : const Color(0xFF8BA898);
 
     final hasHistory  = _messages.isNotEmpty;
@@ -1362,7 +1363,7 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
                 gradient: const LinearGradient(
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
-                  colors: [Color(0xFF0A1525), Color(0xFF0F2038), Color(0xFF143050)],
+                  colors: [Color(0xFF252930), Color(0xFF252930), Color(0xFF374151)],
                 ),
                 border: Border.all(
                   color: Color(0xFF00E5FF).withValues(alpha: 0.22),
@@ -1378,7 +1379,7 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
             Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Row(children: [
                 Text('MedCases IA',
-                  style: TextStyle(fontSize: 13.5, fontWeight: FontWeight.w900, letterSpacing: 0.4, color: dark ? const Color(0xFF00E5FF) : const Color(0xFF0A2540))),
+                  style: TextStyle(fontSize: 13.5, fontWeight: FontWeight.w900, letterSpacing: 0.4, color: dark ? const Color(0xFF00E5FF) : const Color(0xFF252930))),
                 const SizedBox(width: 6),
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
@@ -2050,7 +2051,7 @@ class _HomeIaCardState extends State<_HomeIaCard> {
     final isEs   = widget.isEs;
     final chips  = isEs ? _chipsEs : _chipsPt;
 
-    final cardBg = dark ? const Color(0xFF0E1A12) : Colors.white;
+    final cardBg = dark ? const Color(0xFF252930) : Colors.white;
     final borderColor = dark
         ? _kGreenBord.withValues(alpha: 0.35)
         : _kGreenBord.withValues(alpha: 0.22);
@@ -2060,7 +2061,7 @@ class _HomeIaCardState extends State<_HomeIaCard> {
     final fieldBorder = dark
         ? _kGreenBord.withValues(alpha: 0.22)
         : _kGreenBord.withValues(alpha: 0.18);
-    final textColor = dark ? Colors.white : const Color(0xFF0F1C14);
+    final textColor = dark ? Colors.white : const Color(0xFF0F1116);
     final hintColor = dark
         ? Colors.white.withValues(alpha: 0.38)
         : const Color(0xFF7A9E8E);
@@ -2071,7 +2072,7 @@ class _HomeIaCardState extends State<_HomeIaCard> {
         ? _kGreenBord.withValues(alpha: 0.25)
         : _kGreenBord.withValues(alpha: 0.22);
     final chipText = dark
-        ? const Color(0xFF4ADE80)
+        ? const Color(0xFF10B981)
         : _kGreen;
 
     return Container(
@@ -2082,7 +2083,7 @@ class _HomeIaCardState extends State<_HomeIaCard> {
         boxShadow: dark
             ? [
                 BoxShadow(
-                  color: const Color(0xFF0A2540).withValues(alpha: 0.55),
+                  color: const Color(0xFF252930).withValues(alpha: 0.55),
                   blurRadius: 20,
                   offset: const Offset(0, 4),
                 ),
@@ -2133,7 +2134,7 @@ class _HomeIaCardState extends State<_HomeIaCard> {
                   gradient: const LinearGradient(
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
-                    colors: [Color(0xFF0A1525), Color(0xFF0F2038), Color(0xFF143050)],
+                    colors: [Color(0xFF252930), Color(0xFF252930), Color(0xFF374151)],
                   ),
                   border: Border.all(
                     color: Color(0xFF00E5FF).withValues(alpha: 0.22),
@@ -2158,7 +2159,7 @@ class _HomeIaCardState extends State<_HomeIaCard> {
                             fontSize: 14,
                             fontWeight: FontWeight.w900,
                             letterSpacing: 0.3,
-                            color: dark ? const Color(0xFF00E5FF) : const Color(0xFF0A2540),
+                            color: dark ? const Color(0xFF00E5FF) : const Color(0xFF252930),
                           ),
                         ),
                         const SizedBox(width: 7),
@@ -2167,7 +2168,7 @@ class _HomeIaCardState extends State<_HomeIaCard> {
                               horizontal: 7, vertical: 2),
                           decoration: BoxDecoration(
                             gradient: const LinearGradient(
-                              colors: [Color(0xFF008CA4), Color(0xFF0A2540)],
+                              colors: [Color(0xFF008CA4), Color(0xFF252930)],
                             ),
                             borderRadius: BorderRadius.circular(20),
                           ),
@@ -2252,7 +2253,7 @@ class _HomeIaCardState extends State<_HomeIaCard> {
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       color: dark
-                          ? const Color(0xFF0F2038)
+                          ? const Color(0xFF252930)
                           : const Color(0xFFE0F7FA),
                       border: Border.all(
                         color: const Color(0xFF00E5FF).withValues(alpha: dark ? 0.45 : 0.50),
@@ -2331,8 +2332,8 @@ class _HomeAdultoPediatriaRow extends StatelessWidget {
         icon: Icons.person_rounded,
         label: 'ADULTO',
         subtitle: isEs ? 'Explorar caso clínico' : 'Explorar caso clínico',
-        gradientColors: const [Color(0xFF052E1A), Color(0xFF0A5C2E), Color(0xFF15803D)],
-        accentColor: const Color(0xFF4ADE80),
+        gradientColors: const [Color(0xFF1A2E20), Color(0xFF0A5C2E), Color(0xFF15803D)],
+        accentColor: const Color(0xFF10B981),
         dark: dark,
         onTap: onTapAdulto,
       )),
@@ -2341,7 +2342,7 @@ class _HomeAdultoPediatriaRow extends StatelessWidget {
         icon: Icons.child_care_rounded,
         label: isEs ? 'PEDIATRÍA' : 'PEDIATRIA',
         subtitle: isEs ? 'Casos clínicos de referencia' : 'Casos clínicos de referência',
-        gradientColors: const [Color(0xFF0A2540), Color(0xFF103D70), Color(0xFF2563EB)],
+        gradientColors: const [Color(0xFF252930), Color(0xFF103D70), Color(0xFF2563EB)],
         accentColor: const Color(0xFF93C5FD),
         dark: dark,
         onTap: onTapPediatria,
@@ -2490,7 +2491,7 @@ class _HomeMiGuardiaSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cardBg = dark ? const Color(0xFF0E1A12) : Colors.white;
+    final cardBg = dark ? const Color(0xFF252930) : Colors.white;
     // Acento dourado na borda esquerda para sinalizar "item especial"
     final leftAccent = dark ? const Color(0xFFC5A365) : const Color(0xFFB8954E);
     final border = dark
@@ -2586,7 +2587,7 @@ class _HomeSectionHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final iconColor  = dark ? const Color(0xFF4ADE80) : const Color(0xFF0A7C4E);
+    final iconColor  = dark ? const Color(0xFF10B981) : const Color(0xFF0A7C4E);
     final textColor  = dark ? Colors.white.withValues(alpha: 0.72) : const Color(0xFF374151);
     final lineColor  = dark ? Colors.white.withValues(alpha: 0.08) : const Color(0xFFE5E7EB);
 
@@ -2872,12 +2873,12 @@ class _ShiftTimerBarState extends State<_ShiftTimerBar> {
     final dark = widget.dark;
     final isEs = widget.isEs;
 
-    final bg     = dark ? const Color(0xFF1A2820) : const Color(0xFFECFDF5);
+    final bg     = dark ? const Color(0xFF2D3340) : const Color(0xFFECFDF5);
     final border = dark
-        ? const Color(0xFF1F6B48).withValues(alpha: 0.35)
-        : const Color(0xFF1F6B48).withValues(alpha: 0.25);
-    final accent = const Color(0xFF1F6B48);
-    final textC  = dark ? Colors.white : const Color(0xFF0D2218);
+        ? const Color(0xFF10B981).withValues(alpha: 0.35)
+        : const Color(0xFF10B981).withValues(alpha: 0.25);
+    final accent = const Color(0xFF10B981);
+    final textC  = dark ? Colors.white : const Color(0xFF1A1D23);
     final subC   = dark ? Colors.white54 : const Color(0xFF4B7A62);
 
     return GestureDetector(
@@ -2899,7 +2900,7 @@ class _ShiftTimerBarState extends State<_ShiftTimerBar> {
             ),
             child: Icon(
               _active ? Icons.alarm_on_rounded : Icons.alarm_add_rounded,
-              color: _active ? const Color(0xFF4ADE80) : accent,
+              color: _active ? const Color(0xFF10B981) : accent,
               size: 19,
             ),
           ),
@@ -3001,11 +3002,11 @@ class _ShiftTimerSheetState extends State<_ShiftTimerSheet> {
   Widget build(BuildContext context) {
     final dark  = widget.dark;
     final isEs  = widget.isEs;
-    final bg    = dark ? const Color(0xFF1A1A1A) : Colors.white;
-    final textC = dark ? Colors.white : const Color(0xFF0D2218);
+    final bg    = dark ? const Color(0xFF1A1D23) : Colors.white;
+    final textC = dark ? Colors.white : const Color(0xFF1A1D23);
     final subC  = dark ? Colors.white38 : Colors.black38;
     final divC  = dark ? Colors.white10 : const Color(0xFFEEEEEE);
-    final accent = const Color(0xFF1F6B48);
+    final accent = const Color(0xFF10B981);
     final kb    = MediaQuery.viewInsetsOf(context).bottom;
 
     return Container(
@@ -3066,7 +3067,7 @@ class _ShiftTimerSheetState extends State<_ShiftTimerSheet> {
                 padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
-                  color: sel ? accent : (dark ? const Color(0xFF252525) : const Color(0xFFF3F4F6)),
+                  color: sel ? accent : (dark ? const Color(0xFF252930) : const Color(0xFFF3F4F6)),
                   border: Border.all(
                     color: sel ? accent : (dark ? Colors.white12 : const Color(0xFFE0E0E0))),
                 ),
@@ -3142,7 +3143,7 @@ class _ShiftTimerSheetState extends State<_ShiftTimerSheet> {
         Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(12),
-            color: dark ? const Color(0xFF252525) : const Color(0xFFF5F7FA),
+            color: dark ? const Color(0xFF252930) : const Color(0xFFF5F7FA),
             border: Border.all(color: divC),
           ),
           child: TextField(
@@ -3233,7 +3234,7 @@ class _HistorialCompactCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cardBg      = dark ? const Color(0xFF1A1A1A) : Colors.white;
+    final cardBg      = dark ? const Color(0xFF1A1D23) : Colors.white;
     final borderColor = dark
         ? Colors.white.withValues(alpha: 0.07)
         : const Color(0xFFE8ECF5);
@@ -3326,7 +3327,7 @@ class _HistorialCompactCard extends StatelessWidget {
                           : const Color(0xFF0A7C4E).withValues(alpha: 0.08),
                       border: Border.all(
                         color: dark
-                            ? const Color(0xFF4ADE80).withValues(alpha: 0.25)
+                            ? const Color(0xFF10B981).withValues(alpha: 0.25)
                             : const Color(0xFF0A7C4E).withValues(alpha: 0.20),
                         width: 1,
                       ),
@@ -3335,7 +3336,7 @@ class _HistorialCompactCard extends StatelessWidget {
                       Icons.search_rounded,
                       size: 18,
                       color: dark
-                          ? const Color(0xFF4ADE80)
+                          ? const Color(0xFF10B981)
                           : const Color(0xFF0A7C4E),
                     ),
                   ),
@@ -3348,7 +3349,7 @@ class _HistorialCompactCard extends StatelessWidget {
                       fontSize: 10,
                       fontWeight: FontWeight.w700,
                       color: dark
-                          ? const Color(0xFF4ADE80).withValues(alpha: 0.80)
+                          ? const Color(0xFF10B981).withValues(alpha: 0.80)
                           : const Color(0xFF0A7C4E),
                     ),
                   ),
@@ -3421,7 +3422,7 @@ class _QuickShortcuts extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cardBg = dark ? const Color(0xFF1E1E1E) : Colors.white;
+    final cardBg = dark ? const Color(0xFF252930) : Colors.white;
     final shadow = dark
         ? <BoxShadow>[]
         : <BoxShadow>[
@@ -3605,7 +3606,7 @@ class _RecentesSheetState extends State<_RecentesSheet> {
   Widget build(BuildContext context) {
     final dark = widget.dark;
     final isEs = widget.isEs;
-    final sheetBg = dark ? const Color(0xFF1A1A1A) : Colors.white;
+    final sheetBg = dark ? const Color(0xFF1A1D23) : Colors.white;
     final textMain = dark ? Colors.white : const Color(0xFF1A202C);
     final textSub  = dark ? Colors.white54 : const Color(0xFF718096);
     final divColor = dark ? Colors.white.withValues(alpha: 0.07) : const Color(0xFFEDF0F7);
@@ -3748,7 +3749,7 @@ class _FavoritosSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final sheetBg = dark ? const Color(0xFF1A1A1A) : Colors.white;
+    final sheetBg = dark ? const Color(0xFF1A1D23) : Colors.white;
     final textMain = dark ? Colors.white : const Color(0xFF1A202C);
     final textSub  = dark ? Colors.white54 : const Color(0xFF718096);
     final divColor = dark ? Colors.white.withValues(alpha: 0.07) : const Color(0xFFEDF0F7);
@@ -4610,10 +4611,10 @@ class _PediatricsShell extends StatelessWidget {
     final isEs = p.lang == 'es';
 
     return Scaffold(
-      backgroundColor: dark ? const Color(0xFF141414) : const Color(0xFFF7F8FA),
+      backgroundColor: dark ? const Color(0xFF1A1D23) : const Color(0xFFF7F8FA),
       body: Column(children: [
         _ShellHeader(
-          gradientColors: const [Color(0xFF0A2540), Color(0xFF103D70), Color(0xFF2563EB)],
+          gradientColors: const [Color(0xFF252930), Color(0xFF103D70), Color(0xFF2563EB)],
           accentColor:    const Color(0xFF93C5FD),
           icon:    Icons.child_care_rounded,
           label:   isEs ? 'PEDIATRÍA' : 'PEDIATRIA',
@@ -4641,11 +4642,11 @@ class _AdultoShell extends StatelessWidget {
     final isEs = p.lang == 'es';
 
     return Scaffold(
-      backgroundColor: dark ? const Color(0xFF141414) : const Color(0xFFF7F8FA),
+      backgroundColor: dark ? const Color(0xFF1A1D23) : const Color(0xFFF7F8FA),
       body: Column(children: [
         _ShellHeader(
-          gradientColors: const [Color(0xFF052E1A), Color(0xFF0A5C2E), Color(0xFF15803D)],
-          accentColor:    const Color(0xFF4ADE80),
+          gradientColors: const [Color(0xFF1A2E20), Color(0xFF0A5C2E), Color(0xFF15803D)],
+          accentColor:    const Color(0xFF10B981),
           icon:    Icons.person_rounded,
           label:   'ADULTO',
           subtitle: isEs
@@ -4688,7 +4689,7 @@ class _FarmacosShellState extends State<_FarmacosShell> {
     final isEs = p.lang == 'es';
 
     return Scaffold(
-      backgroundColor: dark ? const Color(0xFF141414) : const Color(0xFFF7F8FA),
+      backgroundColor: dark ? const Color(0xFF1A1D23) : const Color(0xFFF7F8FA),
       body: Column(children: [
         _ShellHeader(
           gradientColors: const [Color(0xFF3B2200), Color(0xFF6B3A00), Color(0xFF9A5B00)],
@@ -4710,7 +4711,7 @@ class _FarmacosShellState extends State<_FarmacosShell> {
 
   // Placeholder leve exibido durante a animação de entrada (~280ms)
   Widget _buildSkeleton(bool dark) {
-    final bg = dark ? const Color(0xFF1E1E1E) : const Color(0xFFEEEEEE);
+    final bg = dark ? const Color(0xFF252930) : const Color(0xFFEEEEEE);
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
       child: Column(children: [
@@ -4752,7 +4753,7 @@ class _CalculadorasShell extends StatelessWidget {
     final isEs = p.lang == 'es';
 
     return Scaffold(
-      backgroundColor: dark ? const Color(0xFF141414) : const Color(0xFFF7F8FA),
+      backgroundColor: dark ? const Color(0xFF1A1D23) : const Color(0xFFF7F8FA),
       body: Column(children: [
         _ShellHeader(
           gradientColors: const [Color(0xFF1A0F2E), Color(0xFF2D1B5A), Color(0xFF4A2D8A)],
@@ -4782,7 +4783,7 @@ class _PrescripcionesShell extends StatelessWidget {
     final isEs = p.lang == 'es';
 
     return Scaffold(
-      backgroundColor: dark ? const Color(0xFF141414) : const Color(0xFFF7F8FA),
+      backgroundColor: dark ? const Color(0xFF1A1D23) : const Color(0xFFF7F8FA),
       body: Column(children: [
         _ShellHeader(
           gradientColors: const [Color(0xFF2A0B52), Color(0xFF3D1280), Color(0xFF5B21B6)],
@@ -5071,7 +5072,7 @@ class _GlobalSearchModalState extends State<_GlobalSearchModal> {
                     color: const Color(0xFFFBBF24), dark: dark),
                 const SizedBox(width: 6),
                 _CatChip(label: 'Protocolos',
-                    color: const Color(0xFF4ADE80), dark: dark),
+                    color: const Color(0xFF10B981), dark: dark),
                 const SizedBox(width: 6),
                 // BUILD 93 — chip 'Simulaciones/Simulações' ocultado (Apple 1.4.1)
                 // Reativar após aprovação com In-App Browser
@@ -5197,7 +5198,7 @@ class _GlobalSearchResultTile extends StatelessWidget {
 
   static Color _color(_SearchCat c) => switch (c) {
     _SearchCat.drug         => const Color(0xFFFBBF24),
-    _SearchCat.protocol     => const Color(0xFF4ADE80),
+    _SearchCat.protocol     => const Color(0xFF10B981),
     _SearchCat.prescription => const Color(0xFFA78BFA),
     _SearchCat.interaction  => const Color(0xFFFF6BA0),
   };
