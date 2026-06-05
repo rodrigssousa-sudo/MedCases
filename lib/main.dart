@@ -3272,20 +3272,10 @@ class _AppDrawerState extends State<_AppDrawer> {
                       trailing: _ThemeToggle(dark: dark),
                       onTap: () => p.toggleDarkMode(),
                     ),
-                    // Tato / Haptic
-                    _DrawerRow(
-                      icon: Icons.vibration_rounded,
-                      iconColor: const Color(0xFF10B981),
-                      title: p.lang == 'es' ? 'Vibración táctil' : 'Vibração tátil',
-                      subtitle: p.lang == 'es'
-                          ? (p.hapticEnabled ? 'Activada' : 'Desactivada')
-                          : (p.hapticEnabled ? 'Ativada' : 'Desativada'),
-                      dark: dark,
-                      textCol: textCol,
-                      subCol: subCol,
-                      trailing: _OnOffToggle(value: p.hapticEnabled),
-                      onTap: () => p.toggleHaptic(),
-                    ),
+                    // Vibração tátil removida do menu lateral (Apple App Store review)
+                    // A funcionalidade haptic continua activa internamente via AppHaptics;
+                    // apenas o controle visual foi ocultado para conformidade com as
+                    // diretrizes de UI limpa e revisão Apple/Google (Build 100+).
                   ],
                 ),
 
