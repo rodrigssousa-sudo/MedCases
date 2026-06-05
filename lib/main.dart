@@ -1389,7 +1389,9 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
         final width = constraints.maxWidth;
 
         // Desktop: sidebar lateral + conteúdo expandido sem bottom nav
-        if (width >= 1024) {
+        // Threshold 768px — Chrome DevTools phone emulators (360–414px) e
+        // tablets estreitos ficam corretamente no mobile shell.
+        if (width >= 768) {
           return _buildDesktopShell(context, dark, p);
         }
         // Mobile / tablet estreito / browser redimensionado — layout nativo
@@ -1537,7 +1539,7 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
       // bloqueava o 5.º ícone (Ferramentas).
       //   • floatingActionButton: _NavFab (widget separado)
       //   • floatingActionButtonLocation: centerDocked
-      //   • BottomAppBar: notchMargin 6, Row com SizedBox(width:72) no centro
+      //   • BottomAppBar: notchMargin 5, Row com SizedBox(width:60) no centro
       //   • _LegalBar abaixo do BottomAppBar via bottomNavigationBar Column
       floatingActionButton: _buildAiCenterFab(dark, p),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
@@ -1547,11 +1549,11 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
           BottomAppBar(
             color: navBg, // #0F1116 dark
             shape: const CircularNotchedRectangle(),
-            notchMargin: 6.0,
+            notchMargin: 5.0,
             elevation: 12,
             padding: EdgeInsets.zero,
             child: SizedBox(
-              height: 52,
+              height: 42,
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
@@ -1570,7 +1572,7 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
                     dark, p,
                   ),
                   // ── Slot central — FAB docked aqui nativamente ──────────
-                  const SizedBox(width: 72),
+                  const SizedBox(width: 60),
                   // 5 — BIBLIOTECA
                   _buildNavBtn(
                     5,
@@ -1603,7 +1605,7 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
     );
   }
 
-  // Build 99 — botão lateral BottomAppBar: ícone 20px, barra 52px.
+  // Build 100 — botão lateral BottomAppBar: ícone 18px, barra 42px (-20%).
   // Cada botão é Expanded para dividir o espaço igualmente (2 lados × 2 botões).
   // maxLines:1 + ellipsis previne overflow em iPhones pequenos.
   Widget _buildNavBtn(int idx, IconData icon, String label, bool dark, dynamic p) {
@@ -1625,7 +1627,7 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
             AnimatedContainer(
               duration: const Duration(milliseconds: 160),
               curve: Curves.easeOut,
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 1),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(8),
                 color: active
@@ -1634,7 +1636,7 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
                         : const Color(0xFF0A7C4E).withValues(alpha: 0.09))
                     : Colors.transparent,
               ),
-              child: Icon(icon, size: 20,
+              child: Icon(icon, size: 18,
                 color: active ? activeColor : inactiveColor),
             ),
             const SizedBox(height: 2),
@@ -1655,7 +1657,7 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
     );
   }
 
-  // ── FAB ConnectMind AI — Build 99: nativo centerDocked ──────────────────────
+  // ── FAB ConnectMind AI — Build 100: nativo centerDocked, 46×46 (-20%) ──────────
   // Retorna um widget pill autónomo que o Scaffold encaixa na entalhação do
   // BottomAppBar via FloatingActionButtonLocation.centerDocked.
   // Não usa mais Transform.translate manual — o Flutter posiciona o FAB
@@ -1675,8 +1677,8 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 220),
         curve: Curves.easeOutCubic,
-        width: 56,
-        height: 56,
+        width: 46,
+        height: 46,
         decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topLeft,
@@ -1719,7 +1721,7 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
         ),
         child: Icon(
           Icons.psychology_rounded,
-          size: 26,
+          size: 22,
           color: isAiActive ? const Color(0xFF00E5FF) : Colors.white,
         ),
       ),
@@ -2368,7 +2370,7 @@ class _SubTabBtn extends StatelessWidget {
         ? Colors.white.withValues(alpha: 0.30)
         : const Color(0xFFB8BEC4);
     final activeBg = dark
-        ? const Color(0xFF1A3528)
+        ? const Color(0xFF2D3340)   // kBorderSoft — active highlight
         : const Color(0xFF0F1116).withValues(alpha: 0.09);
 
     return Expanded(
@@ -4928,10 +4930,10 @@ class _ProfileEditSheetState extends State<_ProfileEditSheet> {
   @override
   Widget build(BuildContext context) {
     final dark = widget.p.darkMode;
-    final bg = dark ? const Color(0xFF121F17) : Colors.white;
+    final bg = dark ? const Color(0xFF1A1D23) : Colors.white;
     final titleColor = dark ? Colors.white : const Color(0xFF0F1116);
     final subColor = dark ? Colors.white54 : const Color(0xFF6B7280);
-    final borderColor = dark ? const Color(0xFF1A3528) : const Color(0xFFE8E1D2);
+    final borderColor = dark ? const Color(0xFF2D3340) : const Color(0xFFE8E1D2);
 
     return Padding(
       padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
@@ -5090,10 +5092,10 @@ class _SheetField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final fillColor = dark ? const Color(0xFF162820) : const Color(0xFFF5F0E8);
+    final fillColor = dark ? const Color(0xFF252930) : const Color(0xFFF5F0E8);
     final textColor = dark ? Colors.white : const Color(0xFF0F1116);
     final hintColor = dark ? Colors.white38 : const Color(0xFFAAAAAA);
-    final borderColor = dark ? const Color(0xFF1A3528) : const Color(0xFFE8E1D2);
+    final borderColor = dark ? const Color(0xFF2D3340) : const Color(0xFFE8E1D2);
 
     return TextField(
       controller: controller,
