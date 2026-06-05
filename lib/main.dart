@@ -1735,7 +1735,7 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
             Padding(
               padding: const EdgeInsets.only(bottom: 5),
               child: Text(
-                'ConnectMind',
+                'MedCases IA',
                 style: TextStyle(
                   fontSize: 7.5,
                   fontWeight: isAiActive ? FontWeight.w800 : FontWeight.w600,
@@ -4573,7 +4573,7 @@ class _AppHeader extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    userName.isNotEmpty ? userName : 'ConnectMind AI',
+                    userName.isNotEmpty ? userName : 'MedCases IA',
                     style: const TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.w800,

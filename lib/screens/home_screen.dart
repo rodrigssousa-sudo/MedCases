@@ -122,7 +122,7 @@ class _HomeScreenState extends State<HomeScreen> {
       _HomeCardData(
         icon: Icons.child_care_rounded,
         label: isEs ? 'PEDIATRÍA' : 'PEDIATRIA',
-        subtitle: isEs ? 'Protocolos pediátricos' : 'Protocolos pediátricos',
+        subtitle: isEs ? 'Casos clínicos de referencia' : 'Casos clínicos de referência',
         gradientColors: const [Color(0xFF0A2540), Color(0xFF103D70), Color(0xFF2563EB)],
         accentColor: const Color(0xFF93C5FD),
         onTap: () => push(const _PediatricsShell()),
@@ -130,7 +130,7 @@ class _HomeScreenState extends State<HomeScreen> {
       _HomeCardData(
         icon: Icons.person_rounded,
         label: 'ADULTO',
-        subtitle: isEs ? 'Crear un protocolo adulto' : 'Criar um protocolo adulto',
+        subtitle: isEs ? 'Explorar caso clínico' : 'Explorar caso clínico',
         gradientColors: const [Color(0xFF052E1A), Color(0xFF0A5C2E), Color(0xFF15803D)],
         accentColor: const Color(0xFF4ADE80),
         onTap: () => push(_AdultoShell(openProtocol: widget.openProtocol)),
@@ -1143,7 +1143,7 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
               const SizedBox(width: 10),
               Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                 Row(children: [
-                  Text('ConnectMind AI',
+                  Text('MedCases IA',
                     style: TextStyle(fontSize: 13.5, fontWeight: FontWeight.w900, letterSpacing: 0.4, color: dark ? const Color(0xFF00E5FF) : const Color(0xFF0A2540))),
                   const SizedBox(width: 6),
                   Container(
@@ -1672,7 +1672,7 @@ class _HomeIaCardState extends State<_HomeIaCard> {
                     Row(
                       children: [
                         Text(
-                          'ConnectMind AI',
+                          'MedCases IA',
                           style: TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.w900,
@@ -1849,7 +1849,7 @@ class _HomeAdultoPediatriaRow extends StatelessWidget {
       Expanded(child: _AgeCard(
         icon: Icons.person_rounded,
         label: 'ADULTO',
-        subtitle: isEs ? 'Crear un protocolo adulto' : 'Criar um protocolo adulto',
+        subtitle: isEs ? 'Explorar caso clínico' : 'Explorar caso clínico',
         gradientColors: const [Color(0xFF052E1A), Color(0xFF0A5C2E), Color(0xFF15803D)],
         accentColor: const Color(0xFF4ADE80),
         dark: dark,
@@ -1859,7 +1859,7 @@ class _HomeAdultoPediatriaRow extends StatelessWidget {
       Expanded(child: _AgeCard(
         icon: Icons.child_care_rounded,
         label: isEs ? 'PEDIATRÍA' : 'PEDIATRIA',
-        subtitle: isEs ? 'Protocolos pediátricos' : 'Protocolos pediátricos',
+        subtitle: isEs ? 'Casos clínicos de referencia' : 'Casos clínicos de referência',
         gradientColors: const [Color(0xFF0A2540), Color(0xFF103D70), Color(0xFF2563EB)],
         accentColor: const Color(0xFF93C5FD),
         dark: dark,

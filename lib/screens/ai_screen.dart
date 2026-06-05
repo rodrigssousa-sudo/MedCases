@@ -323,8 +323,8 @@ class _AiScreenState extends State<AiScreen> {
     final firstName = userName.trim().split(' ').first;
     final nameStr   = firstName.isNotEmpty ? ', $firstName' : '';
     return es
-        ? '$period$nameStr.\n\nSoy ConnectMind AI. ¿Cómo puedo ayudarte hoy?'
-        : '$period$nameStr.\n\nSou o ConnectMind AI. Como posso te ajudar hoje?';
+        ? '$period$nameStr.\n\nSoy MedCases IA. ¿Cómo puedo ayudarte hoy?'
+        : '$period$nameStr.\n\nSou o MedCases IA. Como posso te ajudar hoje?';
   }
 
   @override
@@ -1458,7 +1458,7 @@ class _MobileAiActionBar extends StatelessWidget {
 
   static const _kGold  = Color(0xFFC5A365);
   static const _kGoldL = Color(0xFFFFE8A6);
-  // ConnectMind AI — status cyan
+  // MedCases IA — status cyan
   static const _kGreen = Color(0xFF00E5FF);
   static const _kBg1   = Color(0xFF1A1A1A);
   static const _kBg2   = Color(0xFF252525);
@@ -1467,7 +1467,7 @@ class _MobileAiActionBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final bgColor = dark ? _kBg2 : const Color(0xFFF5F5F5);
     final borderColor = dark ? const Color(0xFF333333) : const Color(0xFFE0E0E0);
-    // ConnectMind AI palette — icon teal
+    // MedCases IA palette — icon teal
     final iconColor = dark ? const Color(0xFF00E5FF) : const Color(0xFF008CA4);
     final iconBg = dark
         ? const Color(0xFF00E5FF).withValues(alpha: 0.07)
@@ -1493,18 +1493,31 @@ class _MobileAiActionBar extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 12),
         child: Row(
           children: [
-            // ── Logo ConnectMind AI (mini) ────────────────────────────────────
+            // ── Logo MedCases IA (mini) ──────────────────────────────────────
             Row(mainAxisSize: MainAxisSize.min, children: [
               ClipRRect(
                 borderRadius: BorderRadius.circular(6),
                 child: Image.asset(
                   'assets/images/connectmind_logo.png',
                   width: 22, height: 22, fit: BoxFit.cover,
+                  errorBuilder: (_, __, ___) => Container(
+                    width: 22, height: 22,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(6),
+                      gradient: const LinearGradient(
+                        colors: [Color(0xFF0A1525), Color(0xFF143050)],
+                      ),
+                    ),
+                    child: const Center(
+                      child: Icon(Icons.psychology_rounded, size: 13,
+                        color: Color(0xFF00E5FF)),
+                    ),
+                  ),
                 ),
               ),
               const SizedBox(width: 5),
               Text(
-                'ConnectMind AI',
+                'MedCases IA',
                 style: TextStyle(
                   fontSize: 12, fontWeight: FontWeight.w800,
                   color: dark ? const Color(0xFF00E5FF) : const Color(0xFF0A2540),
@@ -1662,13 +1675,13 @@ class _WaHeader extends StatelessWidget {
     this.keyLoading = false,
   });
 
-  // ── Paleta ConnectMind AI ──────────────────────────────────────────────
+  // ── Paleta MedCases IA ────────────────────────────────────────────────
   static const _kBg1   = Color(0xFF0A1525); // navy escuro
   static const _kBg2   = Color(0xFF0F2038); // navy médio
   static const _kBg3   = Color(0xFF143050); // navy claro
   static const _kGold  = Color(0xFFC5A365); // dourado (badges)
   static const _kGoldL = Color(0xFFFFE8A6); // dourado claro
-  static const _kGreen = Color(0xFF00E5FF); // cyan ConnectMind (status)
+  static const _kGreen = Color(0xFF00E5FF); // cyan MedCases IA (status)
 
   @override
   Widget build(BuildContext context) {
@@ -1681,7 +1694,7 @@ class _WaHeader extends StatelessWidget {
           end: Alignment.bottomCenter,
           colors: [_kBg1, _kBg2, _kBg3],
         ),
-        // Linha cyan ConnectMind na base do header
+        // Linha cyan MedCases IA na base do header
         border: Border(
           bottom: BorderSide(color: Color(0xFF005E9C), width: 1),
         ),
@@ -1734,7 +1747,7 @@ class _WaHeader extends StatelessWidget {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         const Text(
-                          'ConnectMind AI',
+                          'MedCases IA',
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w900,
