@@ -294,7 +294,7 @@ class _HomeScreenState extends State<HomeScreen> {
       behavior: HitTestBehavior.translucent,
       child: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
-        padding: const EdgeInsets.fromLTRB(12, 10, 12, 110),
+        padding: const EdgeInsets.fromLTRB(8, 10, 8, 110),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
 
           // ── BLOCO 1: IA INLINE CHAT — hero principal (~40% da tela) ─────────
@@ -2906,14 +2906,14 @@ class _HistorialCompactCard extends StatelessWidget {
           ),
 
           // ── Divisor vertical ────────────────────────────────────────────
-          Container(width: 1, height: 28, color: dividerColor),
+          Container(width: 1, height: 34, color: dividerColor),
 
           // ── 4 atalhos inline ────────────────────────────────────────────
           Expanded(
             child: Row(
               children: List.generate(items.length * 2 - 1, (i) {
                 if (i.isOdd) {
-                  return Container(width: 1, height: 28, color: dividerColor);
+                  return Container(width: 1, height: 34, color: dividerColor);
                 }
                 final item = items[i ~/ 2];
                 return Expanded(
@@ -2923,12 +2923,12 @@ class _HistorialCompactCard extends StatelessWidget {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(item.icon, size: 16, color: item.color),
-                        const SizedBox(height: 2),
+                        Icon(item.icon, size: 19, color: item.color),
+                        const SizedBox(height: 3),
                         Text(
                           item.label,
                           style: TextStyle(
-                            fontSize: 9,
+                            fontSize: 10,
                             fontWeight: FontWeight.w700,
                             color: dark
                                 ? Colors.white.withValues(alpha: 0.55)
@@ -3795,26 +3795,26 @@ class _QuickEmergenciesState extends State<_QuickEmergencies> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
-              width: 28, height: 28,
+              width: 36, height: 36,
               decoration: BoxDecoration(
                 color: dark
                     ? _kRed.withValues(alpha: 0.15)
                     : _kRed.withValues(alpha: 0.09),
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: BorderRadius.circular(10),
               ),
-              child: Icon(icon, size: 15,
+              child: Icon(icon, size: 19,
                   color: dark ? _kRedDark : _kRed),
             ),
-            const SizedBox(height: 5),
+            const SizedBox(height: 6),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 4),
+              padding: const EdgeInsets.symmetric(horizontal: 5),
               child: Text(
                 label,
                 textAlign: TextAlign.center,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(
-                  fontSize: 9,
+                  fontSize: 10,
                   fontWeight: FontWeight.w800,
                   color: dark ? _kRedDark : _kRed,
                   height: 1.2,
@@ -3942,15 +3942,15 @@ class _QuickEmergenciesState extends State<_QuickEmergencies> {
 
           const SizedBox(height: 12),
 
-          // ── Grid 5 colunas nos primeiros 10, 3 extras ─────────────────
+          // ── Grid 4 colunas (Build 99.5) ───────────────────────
           GridView.count(
-            crossAxisCount: 5,
+            crossAxisCount: 4,
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
             padding: EdgeInsets.zero,
-            mainAxisSpacing: 8,
-            crossAxisSpacing: 8,
-            childAspectRatio: 0.85,
+            mainAxisSpacing: 9,
+            crossAxisSpacing: 9,
+            childAspectRatio: 1.0,
             children: allProtos.map((proto) =>
                 _buildCard(proto.$1, proto.$2, proto.$3)).toList(),
           ),
