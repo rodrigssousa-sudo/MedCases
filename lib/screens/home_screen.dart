@@ -146,6 +146,19 @@ class _HomeScreenState extends State<HomeScreen> {
         _HomeSearchBar(dark: dark, isEs: isEs),
         const SizedBox(height: 14),
 
+        // ── IA MedCases Chat — hero desktop (mesmo do mobile) ────────────
+        // Renderizado também no layout web/desktop para consistência com
+        // o layout mobile. Altura fixa 280px (menor que mobile ~40% tela).
+        SizedBox(
+          height: 280,
+          child: _HomeInlineChat(
+            dark: dark,
+            isEs: isEs,
+            onNavigateToAi: widget.onTabChange,
+          ),
+        ),
+        const SizedBox(height: 20),
+
         // ── Timer Rápido de Plantão ───────────────────────────────────────
         _ShiftTimerBar(dark: dark, isEs: isEs),
         const SizedBox(height: 24),
