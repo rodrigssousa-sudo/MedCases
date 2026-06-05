@@ -71,19 +71,35 @@ class _HomeScreenState extends State<HomeScreen> {
     final dark = context.select<AppProvider, bool>((p) => p.darkMode);
     final isEs = context.select<AppProvider, bool>((p) => p.lang == 'es');
     // p via read para campos que não disparam rebuild por si só
-    final p  = context.read<AppProvider>();
-    final bp = MedBreakpoints.of(context);
+    final p = context.read<AppProvider>();
 
-    // Web mobile (browser num celular, largura < 768px): aparência idêntica ao app
-    if (bp.isWebMobile) {
-      return _buildMobileLayout(context, dark, isEs, p);
-    }
-    // Desktop: layout em 2 colunas com sidebar
-    if (bp.isDesktop) {
-      return _buildDesktopLayout(context, dark, isEs, p, bp);
-    }
-    // Mobile/Tablet: layout original em coluna única
-    return _buildMobileLayout(context, dark, isEs, p);
+    // ── LayoutBuilder: breakpoint switch responsivo ───────────────────────────
+    // MOTIVO: MediaQuery.of(context).size é calculado no nível do MaterialApp e
+    // pode não reagir a redimensionamentos inline (ex: Chrome DevTools device
+    // toolbar). LayoutBuilder usa BoxConstraints do parent imediato — reage
+    // instantaneamente ao resize da janela, permitindo teste mobile direto no
+    // browser sem compilar um build iOS.
+    //
+    // BREAKPOINTS:
+    //   < 650 px  → layout mobile (idêntico ao app iOS/Android)
+    //   650-1023  → layout mobile (tablet estreito — mesma coluna única)
+    //   ≥ 1024 px → layout desktop (2 colunas + sidebar)
+    //
+    // O threshold 650 foi escolhido para incluir Chrome DevTools presets:
+    //   iPhone SE (375), iPhone 14 Pro (393), Pixel 7 (412), Galaxy S23 (360)
+    //   e até iPad mini portrait (768) → todos renderizam o layout mobile fiel.
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final width = constraints.maxWidth;
+        // Desktop: layout em 2 colunas com sidebar (largura total ≥ 1024)
+        if (kIsWeb && width >= 1024) {
+          final bp = MedBreakpoints.of(context);
+          return _buildDesktopLayout(context, dark, isEs, p, bp);
+        }
+        // Mobile / tablet estreito / Web com janela reduzida — layout nativo
+        return _buildMobileLayout(context, dark, isEs, p);
+      },
+    );
   }
 
   Widget _buildDesktopLayout(BuildContext context, bool dark, bool isEs, AppProvider p, MedBreakpoints bp) {
@@ -237,26 +253,33 @@ class _HomeScreenState extends State<HomeScreen> {
                     const SizedBox(height: 20),
                     _HomeDivider(dark: dark),
                     const SizedBox(height: 20),
-                    MeuPlantaoDashboard(
-                      onOpenDrug: (drug) => showDrugDetailSheet(context, drug),
-                      onOpenCalc: (calcId) {
-                        // BUILD 93 — Tabs visíveis: 0=Biometria 1=Scores 2=Cardio
-                        //   3=Eletrólitos 4=Referência 5=Pediatria
-                        //   Infusão e Prescrições ocultas (Apple 1.4.1) → fallback 0
-                        const calcTabMap = {
-                          'calc_biometria':   0,
-                          'calc_scores':      1,
-                          'calc_cardio':      2,
-                          'calc_eletrólitos': 3,
-                          'calc_infusao':     0, // oculta → fallback Biometria
-                          'calc_referencia':  4,
-                          'calc_prescricoes': 0, // oculta → fallback Biometria
-                          'calc_pediatria':   5,
-                        };
-                        toolsScreenTabNotifier.value = calcTabMap[calcId] ?? 0;
-                        widget.onTabChange(4);
-                      },
-                      onManageTap: () => showPlantaoManageSheet(context),
+                    // ── Consumer garante rebuild do painel quando pinnedCalcIds /
+                    // pinnedDrugs / plantaoPatients mudam no Web desktop.
+                    // Sem este wrapper, o _HomeScreenState usa context.read e
+                    // não re-renderiza a coluna quando o usuário pina uma calc
+                    // via modal sheet — o Dashboard ficaria desatualizado.
+                    Consumer<AppProvider>(
+                      builder: (ctx, _, __) => MeuPlantaoDashboard(
+                        onOpenDrug: (drug) => showDrugDetailSheet(ctx, drug),
+                        onOpenCalc: (calcId) {
+                          // Tabs visíveis: 0=Biometria 1=Scores 2=Cardio
+                          //   3=Eletrólitos 4=Referência 5=Pediatria
+                          //   Infusão e Prescrições ocultas (Apple 1.4.1) → fallback 0
+                          const calcTabMap = {
+                            'calc_biometria':   0,
+                            'calc_scores':      1,
+                            'calc_cardio':      2,
+                            'calc_eletrólitos': 3,
+                            'calc_infusao':     0, // oculta → fallback Biometria
+                            'calc_referencia':  4,
+                            'calc_prescricoes': 0, // oculta → fallback Biometria
+                            'calc_pediatria':   5,
+                          };
+                          toolsScreenTabNotifier.value = calcTabMap[calcId] ?? 0;
+                          widget.onTabChange(4);
+                        },
+                        onManageTap: () => showPlantaoManageSheet(ctx),
+                      ),
                     ),
                   ]),
                 ),

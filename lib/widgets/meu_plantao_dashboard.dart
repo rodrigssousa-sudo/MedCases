@@ -83,6 +83,9 @@ class _MeuPlantaoDashboardState extends State<MeuPlantaoDashboard>
   bool _expanded = true; // começa expandido se tiver conteúdo, fechado se vazio
   late AnimationController _chevronCtrl;
   late Animation<double> _chevronAngle;
+  // Rastreia o estado vazio anterior para detectar a transição vazio→com-conteúdo
+  // e auto-expandir o painel no primeiro pin (Web + Mobile).
+  bool _wasEmpty = true;
 
   @override
   void initState() {
@@ -125,15 +128,36 @@ class _MeuPlantaoDashboardState extends State<MeuPlantaoDashboard>
 
     final hasPatients = p.plantaoPatients.isNotEmpty;
     final hasDrugs    = p.pinnedDrugs.isNotEmpty;
-    final hasCalcs    = p.pinnedCalcIds.isNotEmpty;
+    // ── Filtra IDs proibidos ao nível do estado raiz ──────────────────────────
+    // Garante que hasCalcs seja consistente com o que _PlantaoContent renderiza.
+    // Sem este filtro, pinned forbidden IDs causam isEmpty=false mas UI vazia.
+    final filteredRootCalcIds = p.pinnedCalcIds
+        .where((id) => !_kForbiddenCalcIds.contains(id))
+        .toList();
+    final hasCalcs = filteredRootCalcIds.isNotEmpty;
     final isEmpty = !hasPatients && !hasDrugs && !hasCalcs;
 
-    // Auto-colapsa quando vazio, expande quando há conteúdo
+    // ── Auto-colapsa / expande reativamente ──────────────────────────────────
+    // FIX (Web sync bug): quando o painel estava vazio e o usuário pina o
+    // primeiro item via "Gestionar", auto-expande para tornar o conteúdo visível.
+    // Isso resolve o bug principal do Web onde o dashboard permanecia colapsado
+    // após o pin porque o postFrameCallback anterior nunca forçava a expansão.
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (isEmpty && _expanded) setState(() => _expanded = false);
-      if (!isEmpty && !_expanded) {
-        // Não forçar expansão — deixar o usuário controlar
+      if (!mounted) return;
+      if (isEmpty && _expanded) {
+        setState(() {
+          _expanded = false;
+          _chevronCtrl.reverse();
+        });
       }
+      // Auto-expand na transição vazio → com-conteúdo (primeiro pin do usuário)
+      if (_wasEmpty && !isEmpty && !_expanded) {
+        setState(() {
+          _expanded = true;
+          _chevronCtrl.forward();
+        });
+      }
+      _wasEmpty = isEmpty;
     });
 
     return Column(
@@ -424,11 +448,12 @@ class _PlantaoContent extends StatelessWidget {
               p.removePlantaoPatient(pt.id);
             },
           ),
-          if (hasDrugs) const SizedBox(height: 20),
+          // Espaço condicional: apenas quando a próxima seção existe
+          if (hasDrugs || hasCalcs) const SizedBox(height: 20),
         ] else ...[
           // Empty patients row — botão de adicionar
           _AddFirstPatientRow(isEs: isEs, colors: c, onTap: onAddPatient),
-          if (hasDrugs) const SizedBox(height: 20),
+          if (hasDrugs || hasCalcs) const SizedBox(height: 20),
         ],
 
         // ── FÁRMACOS ────────────────────────────────────────────────────────
