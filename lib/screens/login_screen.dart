@@ -42,7 +42,7 @@ class _LoginScreenState extends State<LoginScreen>
 
   // ── Nova paleta ────────────────────────────────────────────────────────────
   // Verde profundo diferente do anterior (#0F1C14 → #061A12)
-  static const kBg        = Color(0xFF061A12);   // fundo hero — verde bem escuro
+  static const kBg        = Color(0xFF0F1116);   // fundo hero — verde bem escuro
   static const kForest    = Color(0xFF0D3324);   // camada intermediária
   static const kGreen     = Color(0xFF0E7C52);   // verde principal (mais vivo)
   static const kGreenMid  = Color(0xFF13A06A);   // verde médio — novo acento
@@ -796,7 +796,7 @@ class _HeroGeometric extends StatelessWidget {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            Color(0xFF061A12),  // verde muito escuro
+            Color(0xFF0F1116),  // verde muito escuro
             Color(0xFF0D3324),  // verde floresta
             Color(0xFF0A2218),  // intermediário
           ],

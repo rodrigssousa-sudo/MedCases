@@ -513,10 +513,10 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
         return Theme(
           data: Theme.of(context).copyWith(
             colorScheme: const ColorScheme.light(
-              primary: Color(0xFF0F1C14),
+              primary: Color(0xFF0F1116),
               onPrimary: Color(0xFFFFE8A6),
               surface: Colors.white,
-              onSurface: Color(0xFF0F1C14),
+              onSurface: Color(0xFF0F1116),
             ),
           ),
           child: child!,
@@ -1034,7 +1034,7 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
                       fontWeight: FontWeight.w700,
                     ),
                     labelColor: kGoldLight,
-                    unselectedLabelColor: const Color(0xFF888888),
+                    unselectedLabelColor: const Color(0xFF6B7280),
                     dividerColor: Colors.transparent,
                     tabs: [
                       Tab(text: '${_hcT(lang, 'my_hcs')} (${mine.length})'),
@@ -1079,7 +1079,7 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
                               size: 16,
                               color: _dateFilter != null
                                   ? const Color(0xFFFFE8A6)
-                                  : const Color(0xFF888888),
+                                  : const Color(0xFF6B7280),
                             ),
                           ],
                         ),
@@ -1173,7 +1173,7 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
         backgroundColor: const Color(0xFFFFFDF8),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         title: Text(_hcT(lang, 'del_mod_title'),
-          style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 16, color: Color(0xFF0F1C14))),
+          style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 16, color: Color(0xFF0F1116))),
         content: Text(
           _hcT(lang, 'del_mod_content'),
           style: const TextStyle(fontSize: 13, color: Color(0xFF444444))),
@@ -1504,14 +1504,14 @@ class _HistoryCard extends StatelessWidget {
                               Icon(
                                 h.isPublic ? Icons.public_rounded : Icons.lock_outline_rounded,
                                 size: 11,
-                                color: h.isPublic ? const Color(0xFF3B82F6) : const Color(0xFF888888),
+                                color: h.isPublic ? const Color(0xFF3B82F6) : const Color(0xFF6B7280),
                               ),
                               const SizedBox(width: 4),
                               Text(
                                 h.isPublic ? _hcT(p.lang, 'public_badge') : _hcT(p.lang, 'private_badge'),
                                 style: TextStyle(
                                   fontSize: 10, fontWeight: FontWeight.w800,
-                                  color: h.isPublic ? const Color(0xFF3B82F6) : const Color(0xFF888888),
+                                  color: h.isPublic ? const Color(0xFF3B82F6) : const Color(0xFF6B7280),
                                 ),
                               ),
                             ]),
@@ -2533,9 +2533,9 @@ class _HistoryDetailState extends State<_HistoryDetail> {
                   gradient: const LinearGradient(
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
-                    colors: [Color(0xFF1F6B48), Color(0xFF0A3D2A)],
+                    colors: [Color(0xFF10B981), Color(0xFF0A3D2A)],
                   ),
-                  boxShadow: [BoxShadow(color: const Color(0xFF1F6B48).withValues(alpha: 0.45), blurRadius: 14, offset: const Offset(0, 5))],
+                  boxShadow: [BoxShadow(color: const Color(0xFF10B981).withValues(alpha: 0.45), blurRadius: 14, offset: const Offset(0, 5))],
                 ),
                 child: const Center(child: Icon(Icons.edit_rounded, size: 22, color: Color(0xFFFFE8A6))),
               ),
@@ -2571,7 +2571,7 @@ class _HistoryHeroHeader extends StatelessWidget {
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [Color(0xFF071A10), Color(0xFF0F2D1C), Color(0xFF155131), Color(0xFF1F6B48)],
+          colors: [Color(0xFF071A10), Color(0xFF0F2D1C), Color(0xFF155131), Color(0xFF10B981)],
           stops: [0.0, 0.3, 0.7, 1.0],
         ),
         borderRadius: BorderRadius.only(
@@ -2649,10 +2649,10 @@ class _HistoryHeroHeader extends StatelessWidget {
                   width: 22, height: 22,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: const Color(0xFF4ADE80).withValues(alpha: 0.2),
-                    border: Border.all(color: const Color(0xFF4ADE80).withValues(alpha: 0.4)),
+                    color: const Color(0xFF10B981).withValues(alpha: 0.2),
+                    border: Border.all(color: const Color(0xFF10B981).withValues(alpha: 0.4)),
                   ),
-                  child: const Center(child: Icon(Icons.person_rounded, size: 12, color: Color(0xFF4ADE80))),
+                  child: const Center(child: Icon(Icons.person_rounded, size: 12, color: Color(0xFF10B981))),
                 ),
                 const SizedBox(width: 8),
                 Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -2683,7 +2683,7 @@ class _HistoryHeroHeader extends StatelessWidget {
               const SizedBox(height: 12),
               Wrap(spacing: 6, runSpacing: 6, children: [
                 if (history.patientInitials.isNotEmpty) _PatientBadge(
-                  icon: Icons.badge_rounded, text: history.patientInitials, accent: const Color(0xFF4ADE80)),
+                  icon: Icons.badge_rounded, text: history.patientInitials, accent: const Color(0xFF10B981)),
                 if (history.patientAge.isNotEmpty) _PatientBadge(
                   icon: Icons.cake_rounded, text: '${history.patientAge} ${_hcT(lang, 'years')}', accent: const Color(0xFF93C5FD)),
                 if (history.patientSex.isNotEmpty) _PatientBadge(
@@ -2783,7 +2783,7 @@ class _HistoryHeroHeaderCompact extends StatelessWidget {
         if (history.patientInitials.isNotEmpty || history.patientAge.isNotEmpty) ...[
           const SizedBox(height: 8),
           Wrap(spacing: 6, runSpacing: 4, children: [
-            if (history.patientInitials.isNotEmpty) _PatientBadge(icon: Icons.badge_rounded, text: history.patientInitials, accent: const Color(0xFF4ADE80)),
+            if (history.patientInitials.isNotEmpty) _PatientBadge(icon: Icons.badge_rounded, text: history.patientInitials, accent: const Color(0xFF10B981)),
             if (history.patientAge.isNotEmpty) _PatientBadge(icon: Icons.cake_rounded, text: '${history.patientAge} ${_hcT(lang, 'years')}', accent: const Color(0xFF93C5FD)),
             if (history.patientSex.isNotEmpty) _PatientBadge(icon: Icons.wc_rounded, text: history.patientSex, accent: const Color(0xFFF9A8D4)),
           ]),
@@ -3381,7 +3381,7 @@ class _HistoryEditorState extends State<_HistoryEditor> {
         const SizedBox(width: 8),
         Expanded(child: Text(msg, style: const TextStyle(fontSize: 13))),
       ]),
-      backgroundColor: success ? const Color(0xFF1F6B48) : const Color(0xFFB91C1C),
+      backgroundColor: success ? const Color(0xFF10B981) : const Color(0xFFB91C1C),
       duration: Duration(seconds: success ? 3 : 5),
       behavior: SnackBarBehavior.floating,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -3624,7 +3624,7 @@ class _HistoryEditorState extends State<_HistoryEditor> {
           ]))),
       GestureDetector(onTap: _save,
         child: Container(padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8), decoration: BoxDecoration(borderRadius: BorderRadius.circular(12), color: kGold),
-          child: Text(_hcT(widget.p.lang, 'save_btn'), style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w900, color: Color(0xFF0F1C14))))),
+          child: Text(_hcT(widget.p.lang, 'save_btn'), style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w900, color: Color(0xFF0F1116))))),
     ]);
 
     // Barra de progresso
@@ -3680,7 +3680,7 @@ class _HistoryEditorState extends State<_HistoryEditor> {
                     ),
                     child: Text(_sections[i].$2,
                       style: TextStyle(fontSize: 11, fontWeight: FontWeight.w800,
-                        color: active ? const Color(0xFF0F1C14) : Colors.white.withValues(alpha: 0.85))),
+                        color: active ? const Color(0xFF0F1116) : Colors.white.withValues(alpha: 0.85))),
                   ),
                 ),
               );
@@ -3737,7 +3737,7 @@ class _HistoryEditorState extends State<_HistoryEditor> {
                       ),
                       child: Text(_sections[i].$2,
                         style: TextStyle(fontSize: 10, fontWeight: FontWeight.w800,
-                          color: active ? const Color(0xFF0F1C14) : Colors.white.withValues(alpha: 0.85))),
+                          color: active ? const Color(0xFF0F1116) : Colors.white.withValues(alpha: 0.85))),
                     ),
                   ),
                 );
@@ -3828,7 +3828,7 @@ class _HistoryEditorState extends State<_HistoryEditor> {
       Expanded(child: _EditorField(_hcT(widget.p.lang, 'f_age'), _ctrls['patientAge']!, hint: '68', numeric: true)),
       const SizedBox(width: 10),
       Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Text(_hcT(widget.p.lang, 'f_sex').toUpperCase(), style: const TextStyle(fontSize: 9, fontWeight: FontWeight.w900, letterSpacing: 1.4, color: Color(0xFF888888))),
+        Text(_hcT(widget.p.lang, 'f_sex').toUpperCase(), style: const TextStyle(fontSize: 9, fontWeight: FontWeight.w900, letterSpacing: 1.4, color: Color(0xFF6B7280))),
         const SizedBox(height: 5),
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 12), height: 44,
@@ -3851,7 +3851,7 @@ class _HistoryEditorState extends State<_HistoryEditor> {
     _EditorField(_hcT(widget.p.lang, 'f_record'), _ctrls['patientRecord']!, hint: '00123456'),
     const SizedBox(height: 10),
     Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      Text(_hcT(widget.p.lang, 'f_category').toUpperCase(), style: const TextStyle(fontSize: 9, fontWeight: FontWeight.w900, letterSpacing: 1.4, color: Color(0xFF888888))),
+      Text(_hcT(widget.p.lang, 'f_category').toUpperCase(), style: const TextStyle(fontSize: 9, fontWeight: FontWeight.w900, letterSpacing: 1.4, color: Color(0xFF6B7280))),
       const SizedBox(height: 5),
       Container(
         padding: const EdgeInsets.symmetric(horizontal: 12), height: 44,
@@ -3874,13 +3874,13 @@ class _HistoryEditorState extends State<_HistoryEditor> {
         decoration: BoxDecoration(borderRadius: BorderRadius.circular(16), border: Border.all(color: _draft.isPublic ? const Color(0xFF1E40AF).withValues(alpha: 0.4) : kBorder),
           color: _draft.isPublic ? const Color(0xFF1E40AF).withValues(alpha: 0.06) : Colors.white),
         child: Row(children: [
-          Icon(_draft.isPublic ? Icons.public_rounded : Icons.lock_outline_rounded, size: 20, color: _draft.isPublic ? const Color(0xFF1E40AF) : const Color(0xFF888888)),
+          Icon(_draft.isPublic ? Icons.public_rounded : Icons.lock_outline_rounded, size: 20, color: _draft.isPublic ? const Color(0xFF1E40AF) : const Color(0xFF6B7280)),
           const SizedBox(width: 12),
           Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Text(_draft.isPublic ? _hcT(widget.p.lang, 'public_on') : _hcT(widget.p.lang, 'public_off'),
               style: TextStyle(fontSize: 13, fontWeight: FontWeight.w900, color: _draft.isPublic ? const Color(0xFF1E40AF) : kDark)),
             const SizedBox(height: 2),
-            Text(_hcT(widget.p.lang, 'public_hint'), style: const TextStyle(fontSize: 10, color: Color(0xFF888888), fontWeight: FontWeight.w600)),
+            Text(_hcT(widget.p.lang, 'public_hint'), style: const TextStyle(fontSize: 10, color: Color(0xFF6B7280), fontWeight: FontWeight.w600)),
           ])),
           Switch(value: _draft.isPublic, onChanged: (v) => setState(() => _draft = _draft.copyWith(isPublic: v)),
             thumbColor: WidgetStateProperty.resolveWith((states) =>
@@ -3952,9 +3952,9 @@ class _HistoryEditorState extends State<_HistoryEditor> {
   // ── Seção 5: Evolução ─────────────────────────────────────────────────────
   Widget _buildEvolutionSection() {
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      Text(_hcT(widget.p.lang, 'evol_title').toUpperCase(), style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w900, letterSpacing: 1.4, color: Color(0xFF888888))),
+      Text(_hcT(widget.p.lang, 'evol_title').toUpperCase(), style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w900, letterSpacing: 1.4, color: Color(0xFF6B7280))),
       const SizedBox(height: 4),
-      Text(_hcT(widget.p.lang, 'evol_hint'), style: const TextStyle(fontSize: 11, color: Color(0xFF888888), fontWeight: FontWeight.w600)),
+      Text(_hcT(widget.p.lang, 'evol_hint'), style: const TextStyle(fontSize: 11, color: Color(0xFF6B7280), fontWeight: FontWeight.w600)),
       const SizedBox(height: 12),
       ..._draft.evolutions.asMap().entries.map((entry) {
         final i = entry.key;
@@ -3995,7 +3995,7 @@ class _HistoryEditorState extends State<_HistoryEditor> {
 
   // ── Seção 6: Desfecho ──────────────────────────────────────────────────────
   Widget _buildOutcomeSection() => Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-    Text(_hcT(widget.p.lang, 'outcome_title').toUpperCase(), style: const TextStyle(fontSize: 9, fontWeight: FontWeight.w900, letterSpacing: 1.4, color: Color(0xFF888888))),
+    Text(_hcT(widget.p.lang, 'outcome_title').toUpperCase(), style: const TextStyle(fontSize: 9, fontWeight: FontWeight.w900, letterSpacing: 1.4, color: Color(0xFF6B7280))),
     const SizedBox(height: 8),
     Row(children: List.generate(_outcomes.length, (i) {
       final selected = _draft.outcome == _outcomes[i];
@@ -4011,9 +4011,9 @@ class _HistoryEditorState extends State<_HistoryEditor> {
               border: Border.all(color: selected ? colors[i] : kBorder)),
             child: Column(children: [
               Icon(i == 0 ? Icons.hotel_rounded : i == 1 ? Icons.home_rounded : i == 2 ? Icons.close_rounded : Icons.arrow_forward_rounded,
-                size: 16, color: selected ? Colors.white : const Color(0xFF888888)),
+                size: 16, color: selected ? Colors.white : const Color(0xFF6B7280)),
               const SizedBox(height: 3),
-              Text(_outcomesLabel[i], style: TextStyle(fontSize: 9, fontWeight: FontWeight.w900, color: selected ? Colors.white : const Color(0xFF888888))),
+              Text(_outcomesLabel[i], style: TextStyle(fontSize: 9, fontWeight: FontWeight.w900, color: selected ? Colors.white : const Color(0xFF6B7280))),
             ]),
           ),
         ),
@@ -4145,7 +4145,7 @@ class _EditorFieldState extends State<_EditorField> {
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       // ── Header: label + botão mic ──────────────────────────────────────────
       Row(children: [
-        Text(widget.label, style: const TextStyle(fontSize: 9, fontWeight: FontWeight.w900, letterSpacing: 1.4, color: Color(0xFF888888))),
+        Text(widget.label, style: const TextStyle(fontSize: 9, fontWeight: FontWeight.w900, letterSpacing: 1.4, color: Color(0xFF6B7280))),
         if (widget.onMic != null) ...[
           const Spacer(),
           GestureDetector(
@@ -4325,14 +4325,14 @@ class _SmartDictaphoneButton extends StatelessWidget {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(18),
           gradient: active
-            ? const LinearGradient(colors: [Color(0xFF0F1C14), Color(0xFF1F6B48)], begin: Alignment.centerLeft, end: Alignment.centerRight)
+            ? const LinearGradient(colors: [Color(0xFF0F1116), Color(0xFF10B981)], begin: Alignment.centerLeft, end: Alignment.centerRight)
             : null,
           color: active ? null : const Color(0xFFF0F7F4),
           border: Border.all(
-            color: active ? const Color(0xFF1F6B48) : const Color(0xFFBBD6C8),
+            color: active ? const Color(0xFF10B981) : const Color(0xFFBBD6C8),
             width: active ? 1.5 : 1,
           ),
-          boxShadow: active ? [BoxShadow(color: const Color(0xFF1F6B48).withValues(alpha: 0.25), blurRadius: 16, offset: const Offset(0, 4))] : [],
+          boxShadow: active ? [BoxShadow(color: const Color(0xFF10B981).withValues(alpha: 0.25), blurRadius: 16, offset: const Offset(0, 4))] : [],
         ),
         child: Row(children: [
           // Ícone mic animado
@@ -4341,13 +4341,13 @@ class _SmartDictaphoneButton extends StatelessWidget {
             width: 46, height: 46,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: active ? Colors.white.withValues(alpha: 0.15) : const Color(0xFF1F6B48).withValues(alpha: 0.12),
-              border: Border.all(color: active ? Colors.white.withValues(alpha: 0.3) : const Color(0xFF1F6B48).withValues(alpha: 0.3)),
+              color: active ? Colors.white.withValues(alpha: 0.15) : const Color(0xFF10B981).withValues(alpha: 0.12),
+              border: Border.all(color: active ? Colors.white.withValues(alpha: 0.3) : const Color(0xFF10B981).withValues(alpha: 0.3)),
             ),
             child: Center(child: Icon(
               active ? Icons.mic_rounded : Icons.mic_none_rounded,
               size: 22,
-              color: active ? Colors.white : const Color(0xFF1F6B48),
+              color: active ? Colors.white : const Color(0xFF10B981),
             )),
           ),
           const SizedBox(width: 14),
@@ -4358,7 +4358,7 @@ class _SmartDictaphoneButton extends StatelessWidget {
                 : _hcT(lang, 'dictaphone'),
               style: TextStyle(
                 fontSize: 13, fontWeight: FontWeight.w900,
-                color: active ? Colors.white : const Color(0xFF1F6B48),
+                color: active ? Colors.white : const Color(0xFF10B981),
                 letterSpacing: 0.2,
               ),
             ),
@@ -4381,7 +4381,7 @@ class _SmartDictaphoneButton extends StatelessWidget {
           if (active)
             _PulseDot(color: const Color(0xFF86EFAC))
           else
-            Icon(Icons.chevron_right_rounded, size: 20, color: const Color(0xFF1F6B48).withValues(alpha: 0.5)),
+            Icon(Icons.chevron_right_rounded, size: 20, color: const Color(0xFF10B981).withValues(alpha: 0.5)),
         ]),
       ),
     );
@@ -4527,7 +4527,7 @@ class _MicControlBar extends StatelessWidget {
                               ? _hcT(lang, 'dictaphone_active').replaceAll(' • Gravando', '').replaceAll(' • Grabando', '')
                               : _hcT(lang, 'dictaphone'),
                           active:  smartActive || sttListening,
-                          color:   const Color(0xFF1F6B48),
+                          color:   const Color(0xFF10B981),
                           onTap:   onTapSmart,
                           enabled: !relatoActive && !aiProcessing,
                         ),
@@ -4633,10 +4633,10 @@ class _MicControlBar extends StatelessWidget {
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(20),
                       color: isDark
-                          ? const Color(0xFF1F6B48).withValues(alpha: 0.18)
-                          : const Color(0xFF1F6B48).withValues(alpha: 0.08),
+                          ? const Color(0xFF10B981).withValues(alpha: 0.18)
+                          : const Color(0xFF10B981).withValues(alpha: 0.08),
                       border: Border.all(
-                        color: const Color(0xFF1F6B48).withValues(alpha: 0.30),
+                        color: const Color(0xFF10B981).withValues(alpha: 0.30),
                         width: 1,
                       ),
                     ),
@@ -4644,20 +4644,20 @@ class _MicControlBar extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Icon(Icons.mic_none_rounded, size: 16,
-                            color: const Color(0xFF1F6B48)),
+                            color: const Color(0xFF10B981)),
                         const SizedBox(width: 8),
                         Text(
                           lang == 'es' ? 'Dictado e IA' : 'Ditado e IA',
                           style: const TextStyle(
                             fontSize: 12,
                             fontWeight: FontWeight.w700,
-                            color: Color(0xFF1F6B48),
+                            color: Color(0xFF10B981),
                             letterSpacing: 0.2,
                           ),
                         ),
                         const SizedBox(width: 6),
                         Icon(Icons.keyboard_arrow_up_rounded, size: 16,
-                            color: const Color(0xFF1F6B48).withValues(alpha: 0.6)),
+                            color: const Color(0xFF10B981).withValues(alpha: 0.6)),
                       ],
                     ),
                   ),
@@ -4738,7 +4738,7 @@ class _MicStatusBadge extends StatelessWidget {
       icon     = Icons.fiber_manual_record_rounded;
       label    = _hcT(lang, 'relato_active');
     } else if (smartActive) {
-      bgColor  = const Color(0xFF1F6B48).withValues(alpha: 0.10);
+      bgColor  = const Color(0xFF10B981).withValues(alpha: 0.10);
       dotColor = const Color(0xFF16A34A);
       icon     = Icons.fiber_manual_record_rounded;
       // ✅ MELHORIA 1: mostra exatamente qual campo está escutando
@@ -4746,8 +4746,8 @@ class _MicStatusBadge extends StatelessWidget {
           ? (isEs ? 'Grabando: $fieldReadable' : 'Gravando: $fieldReadable')
           : _hcT(lang, 'dictaphone_active');
     } else {
-      bgColor  = const Color(0xFF1F6B48).withValues(alpha: 0.06);
-      dotColor = const Color(0xFF1F6B48);
+      bgColor  = const Color(0xFF10B981).withValues(alpha: 0.06);
+      dotColor = const Color(0xFF10B981);
       icon     = Icons.mic_none_rounded;
       label    = _hcT(lang, 'relato_ready');
     }
@@ -5088,7 +5088,7 @@ class _CentralMicButtonState extends State<_CentralMicButton>
   @override
   Widget build(BuildContext context) {
     final active = widget.active;
-    const kGreen  = Color(0xFF1F6B48);
+    const kGreen  = Color(0xFF10B981);
     const kGreenL = Color(0xFF34A870);
     final btnColor = active ? kGreen : const Color(0xFFF0F7F4);
     final iconColor = active ? Colors.white : kGreen;
@@ -5234,7 +5234,7 @@ class _CentralMicButtonState extends State<_CentralMicButton>
           style: TextStyle(
             fontSize: 10,
             fontWeight: FontWeight.w700,
-            color: active ? kGreen : const Color(0xFF888888),
+            color: active ? kGreen : const Color(0xFF6B7280),
             letterSpacing: 0.3,
           ),
         ),
@@ -5272,7 +5272,7 @@ class _HistoryPreviewSheet extends StatelessWidget {
           Container(
             margin: const EdgeInsets.only(top: 10),
             width: 40, height: 4,
-            decoration: BoxDecoration(borderRadius: BorderRadius.circular(2), color: const Color(0xFFDDDDDD)),
+            decoration: BoxDecoration(borderRadius: BorderRadius.circular(2), color: const Color(0xFFA8B2C1)),
           ),
           // Header da sheet
           Container(
@@ -5280,7 +5280,7 @@ class _HistoryPreviewSheet extends StatelessWidget {
             padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(16),
-              gradient: const LinearGradient(colors: [Color(0xFF0F1C14), Color(0xFF1F6B48)], begin: Alignment.topLeft, end: Alignment.bottomRight),
+              gradient: const LinearGradient(colors: [Color(0xFF0F1116), Color(0xFF10B981)], begin: Alignment.topLeft, end: Alignment.bottomRight),
             ),
             child: Row(children: [
               const Icon(Icons.description_rounded, size: 20, color: Color(0xFFC5A365)),
@@ -5379,7 +5379,7 @@ class _HistoryPreviewSheet extends StatelessWidget {
                 _PreviewSection(
                   title: _hcT(lang, 'prev_treat'),
                   icon: Icons.assignment_turned_in_rounded,
-                  color: const Color(0xFF0F1C14),
+                  color: const Color(0xFF0F1116),
                   children: [
                     if (history.treatmentPlan.isNotEmpty) _PreviewItem(_hcT(lang, 'prev_plan'), history.treatmentPlan),
                     if (history.procedures.isNotEmpty) _PreviewItem(_hcT(lang, 'prev_proc'), history.procedures),
@@ -5453,12 +5453,12 @@ class _PreviewDocHeader extends StatelessWidget {
         Row(children: [
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-            decoration: BoxDecoration(borderRadius: BorderRadius.circular(6), color: const Color(0xFF0F1C14)),
+            decoration: BoxDecoration(borderRadius: BorderRadius.circular(6), color: const Color(0xFF0F1116)),
             child: Text('HC', style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w900, color: Color(0xFFC5A365), letterSpacing: 1)),
           ),
           const SizedBox(width: 8),
           Expanded(child: Text(_hcT(isEs ? 'es' : 'pt', 'tab_title'),
-            style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w900, color: Color(0xFF333333), letterSpacing: 1.2))),
+            style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w900, color: Color(0xFF374151), letterSpacing: 1.2))),
           Text(dateStr, style: const TextStyle(fontSize: 9, color: Color(0xFFAAAAAA), fontWeight: FontWeight.w600)),
         ]),
         const Divider(height: 16, color: Color(0xFFEEEEEE)),
@@ -5635,15 +5635,15 @@ class _SectionBlock extends StatelessWidget {
             width: 28, height: 28,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: const Color(0xFF1F6B48).withValues(alpha: 0.1),
-              border: Border.all(color: const Color(0xFF1F6B48).withValues(alpha: 0.2)),
+              color: const Color(0xFF10B981).withValues(alpha: 0.1),
+              border: Border.all(color: const Color(0xFF10B981).withValues(alpha: 0.2)),
             ),
-            child: Center(child: Icon(icon, size: 13, color: const Color(0xFF1F6B48))),
+            child: Center(child: Icon(icon, size: 13, color: const Color(0xFF10B981))),
           ),
           const SizedBox(width: 10),
         ],
         Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text(label, style: const TextStyle(fontSize: 9, fontWeight: FontWeight.w900, letterSpacing: 1.2, color: Color(0xFF888888))),
+          Text(label, style: const TextStyle(fontSize: 9, fontWeight: FontWeight.w900, letterSpacing: 1.2, color: Color(0xFF6B7280))),
           const SizedBox(height: 3),
           Text(text, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: Color(0xFF222222), height: 1.55)),
         ])),
@@ -5795,7 +5795,7 @@ class _DrugChips extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      const Text('FÁRMACOS UTILIZADOS', style: TextStyle(fontSize: 9, fontWeight: FontWeight.w900, letterSpacing: 1.2, color: Color(0xFF888888))),
+      const Text('FÁRMACOS UTILIZADOS', style: TextStyle(fontSize: 9, fontWeight: FontWeight.w900, letterSpacing: 1.2, color: Color(0xFF6B7280))),
       const SizedBox(height: 6),
       Wrap(spacing: 6, runSpacing: 6, children: ids.map((id) {
         final drug = p.drugsDB.where((d) => d.id == id).firstOrNull;
@@ -5844,11 +5844,11 @@ class _EvolutionSection extends StatelessWidget {
                 Row(children: [
                   Text(typeLabels[e.type] ?? (_lang4 == 'es' ? 'Evolución' : 'Evolução'), style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w900, color: kGold)),
                   const Spacer(),
-                  Text(dateStr, style: const TextStyle(fontSize: 10, color: Color(0xFF888888), fontWeight: FontWeight.w600)),
+                  Text(dateStr, style: const TextStyle(fontSize: 10, color: Color(0xFF6B7280), fontWeight: FontWeight.w600)),
                 ]),
-                if (e.author.isNotEmpty) Text(e.author, style: const TextStyle(fontSize: 10, color: Color(0xFF888888), fontWeight: FontWeight.w600)),
+                if (e.author.isNotEmpty) Text(e.author, style: const TextStyle(fontSize: 10, color: Color(0xFF6B7280), fontWeight: FontWeight.w600)),
                 const SizedBox(height: 4),
-                Text(e.text, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Color(0xFF333333), height: 1.5)),
+                Text(e.text, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Color(0xFF374151), height: 1.5)),
               ])),
             ]),
           );
@@ -5907,7 +5907,7 @@ class _EvolutionEditorCardState extends State<_EvolutionEditorCard> {
       decoration: BoxDecoration(borderRadius: BorderRadius.circular(14), border: Border.all(color: kBorder), color: kSurface),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Row(children: [
-          Text(dateStr, style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w700, color: Color(0xFF888888))),
+          Text(dateStr, style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w700, color: Color(0xFF6B7280))),
           const Spacer(),
           GestureDetector(onTap: widget.onDelete, child: const Icon(Icons.delete_outline_rounded, size: 16, color: Color(0xFFCC2222))),
         ]),
@@ -5919,7 +5919,7 @@ class _EvolutionEditorCardState extends State<_EvolutionEditorCard> {
             onTap: () { setState(() => _type = _types[i]); _update(); },
             child: Container(padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
               decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: sel ? kDark : Colors.white, border: Border.all(color: sel ? kDark : kBorder)),
-              child: Text(_evoLabels[i], style: TextStyle(fontSize: 10, fontWeight: FontWeight.w800, color: sel ? kGoldLight : const Color(0xFF888888)))),
+              child: Text(_evoLabels[i], style: TextStyle(fontSize: 10, fontWeight: FontWeight.w800, color: sel ? kGoldLight : const Color(0xFF6B7280)))),
           ));
         }))),
         const SizedBox(height: 8),
@@ -5948,7 +5948,7 @@ class _CommunityLoadingState extends StatelessWidget {
             textAlign: TextAlign.center,
             style: const TextStyle(
               fontSize: 12,
-              color: Color(0xFF888888),
+              color: Color(0xFF6B7280),
               fontWeight: FontWeight.w600,
             ),
           ),
@@ -6177,7 +6177,7 @@ class _VitalSignsWidgetState extends State<_VitalSignsWidget> {
     return SizedBox(
       width: wide ? double.infinity : null,
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Text(label, style: const TextStyle(fontSize: 8, fontWeight: FontWeight.w900, letterSpacing: 1.0, color: Color(0xFF888888))),
+        Text(label, style: const TextStyle(fontSize: 8, fontWeight: FontWeight.w900, letterSpacing: 1.0, color: Color(0xFF6B7280))),
         const SizedBox(height: 3),
         Row(children: [
           SizedBox(
@@ -6209,7 +6209,7 @@ class _VitalSignsWidgetState extends State<_VitalSignsWidget> {
             ),
           ),
           const SizedBox(width: 3),
-          Text(unit, style: const TextStyle(fontSize: 9, color: Color(0xFF888888), fontWeight: FontWeight.w700)),
+          Text(unit, style: const TextStyle(fontSize: 9, color: Color(0xFF6B7280), fontWeight: FontWeight.w700)),
         ]),
       ]),
     );
@@ -6236,7 +6236,7 @@ class _VitalSignsWidgetState extends State<_VitalSignsWidget> {
         // Linha 1: PA (2 campos) + FC + FR
         Wrap(spacing: 10, runSpacing: 10, children: [
           Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            const Text('PA', style: TextStyle(fontSize: 8, fontWeight: FontWeight.w900, letterSpacing: 1.0, color: Color(0xFF888888))),
+            const Text('PA', style: TextStyle(fontSize: 8, fontWeight: FontWeight.w900, letterSpacing: 1.0, color: Color(0xFF6B7280))),
             const SizedBox(height: 3),
             Row(children: [
               SizedBox(width: 50, height: 36, child: TextField(
@@ -6248,7 +6248,7 @@ class _VitalSignsWidgetState extends State<_VitalSignsWidget> {
                   enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: const BorderSide(color: kBorder)),
                   focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: const BorderSide(color: kGreen, width: 1.5))),
               )),
-              const Padding(padding: EdgeInsets.symmetric(horizontal: 3), child: Text('/', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w300, color: Color(0xFF888888)))),
+              const Padding(padding: EdgeInsets.symmetric(horizontal: 3), child: Text('/', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w300, color: Color(0xFF6B7280)))),
               SizedBox(width: 50, height: 36, child: TextField(
                 controller: _pad, keyboardType: TextInputType.number,
                 style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w800),
@@ -6259,7 +6259,7 @@ class _VitalSignsWidgetState extends State<_VitalSignsWidget> {
                   focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: const BorderSide(color: kGreen, width: 1.5))),
               )),
               const SizedBox(width: 4),
-              const Text('mmHg', style: TextStyle(fontSize: 9, color: Color(0xFF888888), fontWeight: FontWeight.w700)),
+              const Text('mmHg', style: TextStyle(fontSize: 9, color: Color(0xFF6B7280), fontWeight: FontWeight.w700)),
             ]),
           ]),
           _vsField('FC', _fc, 'bpm', hint: '80'),
@@ -6327,7 +6327,7 @@ class _EcgStructuredWidgetState extends State<_EcgStructuredWidget> {
 
   Widget _numField(String label, TextEditingController ctrl, {String hint = ''}) {
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      Text(label, style: const TextStyle(fontSize: 8, fontWeight: FontWeight.w900, letterSpacing: 0.8, color: Color(0xFF888888))),
+      Text(label, style: const TextStyle(fontSize: 8, fontWeight: FontWeight.w900, letterSpacing: 0.8, color: Color(0xFF6B7280))),
       const SizedBox(height: 3),
       SizedBox(width: 64, height: 34, child: TextField(
         controller: ctrl, keyboardType: TextInputType.number, onChanged: (_) => _sync(),
@@ -6355,16 +6355,16 @@ class _EcgStructuredWidgetState extends State<_EcgStructuredWidget> {
             const Text('ECG', style: TextStyle(fontSize: 9, fontWeight: FontWeight.w900, letterSpacing: 1.4, color: Color(0xFF555555))),
             const SizedBox(width: 8),
             if (widget.controller.text.isNotEmpty)
-              Expanded(child: Text(widget.controller.text, style: const TextStyle(fontSize: 10, color: Color(0xFF888888), fontWeight: FontWeight.w600), overflow: TextOverflow.ellipsis)),
+              Expanded(child: Text(widget.controller.text, style: const TextStyle(fontSize: 10, color: Color(0xFF6B7280), fontWeight: FontWeight.w600), overflow: TextOverflow.ellipsis)),
             const Spacer(),
-            Icon(_expanded ? Icons.expand_less_rounded : Icons.expand_more_rounded, size: 18, color: const Color(0xFF888888)),
+            Icon(_expanded ? Icons.expand_less_rounded : Icons.expand_more_rounded, size: 18, color: const Color(0xFF6B7280)),
           ])),
         ),
         if (_expanded) ...[
           const Divider(height: 1, color: kBorder),
           Padding(padding: const EdgeInsets.all(12), child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             // Ritmo
-            Text(_hcT(context.read<AppProvider>().lang, 'ecg_ritmo').toUpperCase(), style: const TextStyle(fontSize: 8, fontWeight: FontWeight.w900, letterSpacing: 0.8, color: Color(0xFF888888))),
+            Text(_hcT(context.read<AppProvider>().lang, 'ecg_ritmo').toUpperCase(), style: const TextStyle(fontSize: 8, fontWeight: FontWeight.w900, letterSpacing: 0.8, color: Color(0xFF6B7280))),
             const SizedBox(height: 6),
             SingleChildScrollView(scrollDirection: Axis.horizontal, child: Row(children: _ritmos.map((r) {
               final sel = r == _ritmo;
@@ -6387,7 +6387,7 @@ class _EcgStructuredWidgetState extends State<_EcgStructuredWidget> {
             const SizedBox(height: 10),
             // ST livre
             Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text(_hcT(context.read<AppProvider>().lang, 'ecg_st').toUpperCase(), style: const TextStyle(fontSize: 8, fontWeight: FontWeight.w900, letterSpacing: 0.8, color: Color(0xFF888888))),
+              Text(_hcT(context.read<AppProvider>().lang, 'ecg_st').toUpperCase(), style: const TextStyle(fontSize: 8, fontWeight: FontWeight.w900, letterSpacing: 0.8, color: Color(0xFF6B7280))),
               const SizedBox(height: 3),
               TextField(controller: _st, onChanged: (_) => _sync(),
                 enableSuggestions: true,
@@ -6403,7 +6403,7 @@ class _EcgStructuredWidgetState extends State<_EcgStructuredWidget> {
             ]),
             const SizedBox(height: 8),
             Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text(_hcT(context.read<AppProvider>().lang, 'ecg_outros').toUpperCase(), style: const TextStyle(fontSize: 8, fontWeight: FontWeight.w900, letterSpacing: 0.8, color: Color(0xFF888888))),
+              Text(_hcT(context.read<AppProvider>().lang, 'ecg_outros').toUpperCase(), style: const TextStyle(fontSize: 8, fontWeight: FontWeight.w900, letterSpacing: 0.8, color: Color(0xFF6B7280))),
               const SizedBox(height: 3),
               TextField(controller: _outros, onChanged: (_) => _sync(),
                 enableSuggestions: true,
@@ -6782,11 +6782,11 @@ class _LabStructuredWidgetState extends State<_LabStructuredWidget> {
 
   Widget _labField(String label, TextEditingController ctrl, String hint, {Color? flagColor}) {
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      Text(label, style: const TextStyle(fontSize: 8, fontWeight: FontWeight.w900, letterSpacing: 0.8, color: Color(0xFF888888))),
+      Text(label, style: const TextStyle(fontSize: 8, fontWeight: FontWeight.w900, letterSpacing: 0.8, color: Color(0xFF6B7280))),
       const SizedBox(height: 3),
       SizedBox(width: 68, height: 34, child: TextField(
         controller: ctrl, keyboardType: TextInputType.numberWithOptions(decimal: true),
-        style: TextStyle(fontSize: 12, fontWeight: FontWeight.w800, color: flagColor ?? const Color(0xFF1A1A1A)),
+        style: TextStyle(fontSize: 12, fontWeight: FontWeight.w800, color: flagColor ?? const Color(0xFF1A1D23)),
         decoration: InputDecoration(isDense: true, contentPadding: const EdgeInsets.symmetric(horizontal: 7, vertical: 7), hintText: hint,
           hintStyle: const TextStyle(fontSize: 10, color: Color(0xFFBBBBBB)), filled: true, fillColor: const Color(0xFFF8F8F8),
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide(color: flagColor?.withValues(alpha: 0.4) ?? kBorder)),
@@ -6829,7 +6829,7 @@ class _LabStructuredWidgetState extends State<_LabStructuredWidget> {
               ),
             ),
             const SizedBox(width: 6),
-            Icon(_expanded ? Icons.expand_less_rounded : Icons.expand_more_rounded, size: 18, color: const Color(0xFF888888)),
+            Icon(_expanded ? Icons.expand_less_rounded : Icons.expand_more_rounded, size: 18, color: const Color(0xFF6B7280)),
           ])),
         ),
         if (_ocrStatus.isNotEmpty)
@@ -7242,7 +7242,7 @@ class _OrganizarIASheetState extends State<_OrganizarIASheet> {
   String _voiceBuffer  = '';
   webPlatform.WebSpeechRecognizer? _voiceRecog;
 
-  static const _kGreen  = Color(0xFF1F6B48);
+  static const _kGreen  = Color(0xFF10B981);
   static const _kPurple = Color(0xFF7C3AED);
 
   String get _lang => widget.lang;
@@ -7439,7 +7439,7 @@ class _OrganizarIASheetState extends State<_OrganizarIASheet> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final bg     = isDark ? const Color(0xFF0F1A14) : Colors.white;
     final border = isDark ? const Color(0xFF1F3829) : const Color(0xFFE2EDE7);
-    final textCol= isDark ? Colors.white : const Color(0xFF0F1C14);
+    final textCol= isDark ? Colors.white : const Color(0xFF0F1116);
     final subCol = isDark ? Colors.white54 : const Color(0xFF6B7280);
 
     return Container(

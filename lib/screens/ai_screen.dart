@@ -1,5 +1,6 @@
 import 'dart:ui' show ImageFilter;
 import 'package:flutter/material.dart';
+import '../theme/app_theme.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -1203,7 +1204,7 @@ class _AiScreenState extends State<AiScreen> {
     final dark = p.darkMode;
     final bp   = MedBreakpoints.of(context);
     // Fundo estilo WhatsApp — levíssimo padrão
-    final chatBg = dark ? const Color(0xFF101E16) : const Color(0xFFECE5DD);
+    final chatBg = dark ? const Color(0xFF1A1D23) : const Color(0xFFECE5DD);
 
     // No desktop: centraliza o chat com largura máxima elegante
     final double? chatMaxWidth = bp.isDesktop ? 960 : null;
@@ -1458,13 +1459,13 @@ class _MobileAiActionBar extends StatelessWidget {
 
   // MedCases IA — status cyan (Limpar button removed, _kGold/_kGoldL no longer needed)
   static const _kGreen = Color(0xFF00E5FF);
-  static const _kBg1   = Color(0xFF1A1A1A);
-  static const _kBg2   = Color(0xFF252525);
+  static const _kBg1   = Color(0xFF1A1D23);
+  static const _kBg2   = Color(0xFF252930);
 
   @override
   Widget build(BuildContext context) {
     final bgColor = dark ? _kBg2 : const Color(0xFFF5F5F5);
-    final borderColor = dark ? const Color(0xFF333333) : const Color(0xFFE0E0E0);
+    final borderColor = dark ? const Color(0xFF374151) : const Color(0xFFE0E0E0);
     // MedCases IA palette — icon teal
     final iconColor = dark ? const Color(0xFF00E5FF) : const Color(0xFF008CA4);
     final iconBg = dark
@@ -1500,7 +1501,7 @@ class _MobileAiActionBar extends StatelessWidget {
                   gradient: const LinearGradient(
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
-                    colors: [Color(0xFF0A1525), Color(0xFF143050)],
+                    colors: [Color(0xFF252930), Color(0xFF374151)],
                   ),
                   border: Border.all(
                     color: Color(0xFF00E5FF).withValues(alpha: 0.25),
@@ -1517,7 +1518,7 @@ class _MobileAiActionBar extends StatelessWidget {
                 'MedCases IA',
                 style: TextStyle(
                   fontSize: 12, fontWeight: FontWeight.w800,
-                  color: dark ? const Color(0xFF00E5FF) : const Color(0xFF0A2540),
+                  color: dark ? const Color(0xFF00E5FF) : const Color(0xFF252930),
                   letterSpacing: -0.2,
                 ),
               ),
@@ -1650,9 +1651,9 @@ class _WaHeader extends StatelessWidget {
   });
 
   // ── Paleta MedCases IA ────────────────────────────────────────────────
-  static const _kBg1   = Color(0xFF0A1525); // navy escuro
-  static const _kBg2   = Color(0xFF0F2038); // navy médio
-  static const _kBg3   = Color(0xFF143050); // navy claro
+  static const _kBg1   = Color(0xFF252930); // navy escuro
+  static const _kBg2   = Color(0xFF252930); // navy médio
+  static const _kBg3   = Color(0xFF374151); // navy claro
   static const _kGold  = Color(0xFFC5A365); // dourado (badges)
   static const _kGoldL = Color(0xFFFFE8A6); // dourado claro
   static const _kGreen = Color(0xFF00E5FF); // cyan MedCases IA (status)
@@ -1825,7 +1826,7 @@ class _WaHeader extends StatelessWidget {
                                   style: const TextStyle(
                                     fontSize: 8,
                                     fontWeight: FontWeight.w900,
-                                    color: Color(0xFF1A1A1A),
+                                    color: Color(0xFF1A1D23),
                                   ),
                                 ),
                               ),
@@ -1890,7 +1891,7 @@ class _EmptyChat extends StatelessWidget {
 
     // ── Paleta do card (combina com o _WaHeader escuro) ───────────────────
     // Fundo escuro #1E1E1E independente do darkMode — combina com o header preto
-    const cardBg     = Color(0xFF1E1E1E);
+    const cardBg     = Color(0xFF252930);
     const amberColor = Color(0xFFF59E0B);
     const amberBg    = Color(0x1FF59E0B);   // âmbar 12% opacidade
     const amberBorder = Color(0x52F59E0B);  // âmbar 32% opacidade
@@ -2048,11 +2049,11 @@ class _SuggestionCarousel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isEs   = lang == 'es';
-    final bg     = dark ? const Color(0xFF0A150E) : Colors.white;
-    final border = dark ? const Color(0xFF1A2820) : const Color(0xFFE5E0D8);
-    final chipBg = dark ? const Color(0xFF141F18) : const Color(0xFFF5F3EE);
-    final chipBorder = dark ? const Color(0xFF253020) : const Color(0xFFDAD5CC);
-    final textCol = dark ? Colors.white70 : const Color(0xFF2A2A2A);
+    final bg     = dark ? const Color(0xFF1A1D23) : Colors.white;
+    final border = dark ? const Color(0xFF2D3340) : const Color(0xFFE5E0D8);
+    final chipBg = dark ? const Color(0xFF252930) : const Color(0xFFF5F3EE);
+    final chipBorder = dark ? const Color(0xFF374151) : const Color(0xFFDAD5CC);
+    final textCol = dark ? Colors.white70 : const Color(0xFF2D3340);
 
     return Container(
       decoration: BoxDecoration(
@@ -2119,7 +2120,7 @@ class _UserBubble extends StatelessWidget {
               bottomRight: Radius.circular(4),
             ),
             // Verde WhatsApp característico
-            color: Color(0xFF005C4B),
+            color: Color(0xFF008CA4),
           ),
           child: Text(text,
             style: const TextStyle(
@@ -2470,8 +2471,8 @@ class _AiBlockBubble extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // ConnectMind AI — AI bubble background (navy in dark)
-    final bubbleBg  = dark ? const Color(0xFF0F2038) : Colors.white;
-    final textColor = dark ? const Color(0xFFE8F2F5) : const Color(0xFF1A1A1A);
+    final bubbleBg  = dark ? const Color(0xFF252930) : Colors.white;
+    final textColor = dark ? const Color(0xFFE8F2F5) : const Color(0xFF1A1D23);
 
     // ConnectMind AI palette — section headers
     const kGreen      = Color(0xFF008CA4);
@@ -2926,7 +2927,7 @@ class _ThinkingBubbleState extends State<_ThinkingBubble>
 
   @override
   Widget build(BuildContext context) {
-    final bg = widget.dark ? const Color(0xFF1F2E26) : Colors.white;
+    final bg = widget.dark ? const Color(0xFF252930) : Colors.white;
     return Padding(
       padding: const EdgeInsets.only(bottom: 6, right: 52),
       child: Align(
@@ -2961,7 +2962,7 @@ class _ThinkingBubbleState extends State<_ThinkingBubble>
                       child: Container(
                         width: 7, height: 7,
                         decoration: BoxDecoration(
-                          color: const Color(0xFF1F6B48).withValues(alpha: 0.6),
+                          color: const Color(0xFF10B981).withValues(alpha: 0.6),
                           shape: BoxShape.circle,
                         ),
                       ),
@@ -3088,11 +3089,11 @@ class _InputBarState extends State<_InputBar> {
     final double level     = widget.sttSoundLevel;
 
     // ── Cores do campo de texto — ConnectMind AI palette
-    final fieldBg = dark ? const Color(0xFF0A1525) : Colors.white;
+    final fieldBg = dark ? const Color(0xFF252930) : Colors.white;
     final borderCol = widget.hasFocus
         ? const Color(0xFF00E5FF)
-        : (dark ? const Color(0xFF143050) : const Color(0xFFD1D6DC));
-    final textCol = dark ? Colors.white : const Color(0xFF1A1A1A);
+        : (dark ? const Color(0xFF374151) : const Color(0xFFD1D6DC));
+    final textCol = dark ? Colors.white : const Color(0xFF1A1D23);
     final hintCol = dark ? Colors.white30 : Colors.black38;
 
     // ── Cores do microfone
@@ -3141,7 +3142,7 @@ class _InputBarState extends State<_InputBar> {
               decoration: BoxDecoration(
                 // Fundo semitransparente — ConnectMind navy glassmorphism
                 color: dark
-                    ? const Color(0xFF0A1525).withValues(alpha: 0.82)
+                    ? const Color(0xFF252930).withValues(alpha: 0.82)
                     : Colors.white.withValues(alpha: 0.88),
                 borderRadius: BorderRadius.circular(24),
                 border: Border.all(
@@ -3504,11 +3505,11 @@ class _AiStatusSheetState extends State<_AiStatusSheet> {
         final hasAnyAi       = p.hasAnyAi;
 
         final bg     = dark ? const Color(0xFF0F1A14) : Colors.white;
-        final cardBg = dark ? const Color(0xFF1A2820) : const Color(0xFFF5F7F5);
+        final cardBg = dark ? const Color(0xFF2D3340) : const Color(0xFFF5F7F5);
         final divCol = dark ? Colors.white12 : Colors.black.withValues(alpha: 0.08);
         final sub    = dark ? Colors.white54 : Colors.black54;
-        final text   = dark ? Colors.white : const Color(0xFF1A1A1A);
-        const green  = Color(0xFF1F6B48);
+        final text   = dark ? Colors.white : const Color(0xFF1A1D23);
+        const green  = Color(0xFF10B981);
         const blue   = Color(0xFF1A73E8); // cor Google azul
 
         // Determina qual label de status mostrar no badge
@@ -3565,8 +3566,8 @@ class _AiStatusSheetState extends State<_AiStatusSheet> {
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                   colors: hasAnyAi
-                      ? [const Color(0xFF064E35), const Color(0xFF1B5E3B), const Color(0xFF1F6B48)]
-                      : [dark ? const Color(0xFF1A2820) : const Color(0xFFF0F4F1),
+                      ? [const Color(0xFF064E35), const Color(0xFF1B5E3B), const Color(0xFF10B981)]
+                      : [dark ? const Color(0xFF2D3340) : const Color(0xFFF0F4F1),
                          dark ? const Color(0xFF1E2E22) : const Color(0xFFE8F0EA)],
                 ),
                 borderRadius: BorderRadius.circular(18),
@@ -3649,7 +3650,7 @@ class _AiStatusSheetState extends State<_AiStatusSheet> {
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
                             color: hasAnyAi
-                                ? const Color(0xFF4ADE80)
+                                ? const Color(0xFF10B981)
                                 : (dark ? Colors.white38 : Colors.black26)),
                         ),
                       const SizedBox(width: 5),
@@ -3709,7 +3710,7 @@ class _AiStatusSheetState extends State<_AiStatusSheet> {
                   const SizedBox(height: 8),
                   Row(children: [
                     Icon(Icons.account_circle_rounded, size: 14,
-                      color: const Color(0xFF4ADE80).withValues(alpha: 0.8)),
+                      color: const Color(0xFF10B981).withValues(alpha: 0.8)),
                     const SizedBox(width: 8),
                     Expanded(child: Text(
                       geminiEmail.isNotEmpty
@@ -3726,7 +3727,7 @@ class _AiStatusSheetState extends State<_AiStatusSheet> {
                   const SizedBox(height: 8),
                   Row(children: [
                     Icon(Icons.cloud_done_rounded, size: 14,
-                      color: const Color(0xFF4ADE80).withValues(alpha: 0.8)),
+                      color: const Color(0xFF10B981).withValues(alpha: 0.8)),
                     const SizedBox(width: 8),
                     Expanded(child: Text(
                       isEs
@@ -3958,7 +3959,7 @@ class _InfoRow extends StatelessWidget {
   });
   @override
   Widget build(BuildContext context) {
-    final textC = (dark ? Colors.white : const Color(0xFF1A1A1A))
+    final textC = (dark ? Colors.white : const Color(0xFF1A1D23))
         .withValues(alpha: dimmed ? 0.4 : 1.0);
     final subC = (dark ? Colors.white54 : Colors.black45)
         .withValues(alpha: dimmed ? 0.4 : 1.0);
@@ -4026,8 +4027,8 @@ class _ChatHistorySheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bg    = dark ? const Color(0xFF1A1A1A) : Colors.white;
-    final textP = dark ? Colors.white : const Color(0xFF1A1A1A);
+    final bg    = dark ? const Color(0xFF1A1D23) : Colors.white;
+    final textP = dark ? Colors.white : const Color(0xFF1A1D23);
     final textS = dark ? Colors.white54 : Colors.black45;
     final divC  = dark ? Colors.white10 : const Color(0xFFEEEEEE);
 
@@ -4058,10 +4059,10 @@ class _ChatHistorySheet extends StatelessWidget {
               padding: const EdgeInsets.all(7),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
-                color: const Color(0xFF1F6B48).withValues(alpha: 0.15),
+                color: const Color(0xFF10B981).withValues(alpha: 0.15),
               ),
               child: const Icon(Icons.history_rounded,
-                size: 16, color: Color(0xFF1F6B48)),
+                size: 16, color: Color(0xFF10B981)),
             ),
             const SizedBox(width: 10),
             Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -4140,14 +4141,14 @@ class _ChatHistorySheet extends StatelessWidget {
                               width: 38, height: 38,
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(10),
-                                color: const Color(0xFF1F6B48).withValues(alpha: 0.1),
+                                color: const Color(0xFF10B981).withValues(alpha: 0.1),
                               ),
                               child: Center(
                                 child: Text(
                                   '${i + 1}',
                                   style: const TextStyle(
                                     fontSize: 14, fontWeight: FontWeight.w800,
-                                    color: Color(0xFF1F6B48)),
+                                    color: Color(0xFF10B981)),
                                 ),
                               ),
                             ),
@@ -4220,7 +4221,7 @@ class _CollapsibleEvidenceBlockState extends State<_CollapsibleEvidenceBlock> {
     // Cores
     final chipBg     = dark ? const Color(0xFF1A2E22) : const Color(0xFFE8F5EE);
     final chipBorder = dark ? const Color(0xFF2E7D52) : const Color(0xFF81C784);
-    final labelColor = dark ? const Color(0xFF4ADE80) : const Color(0xFF2E7D52);
+    final labelColor = dark ? const Color(0xFF10B981) : const Color(0xFF2E7D52);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

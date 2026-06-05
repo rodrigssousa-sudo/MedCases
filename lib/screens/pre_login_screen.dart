@@ -889,7 +889,7 @@ class _CtaDark extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: const Color(0xFF061A12),
+      color: const Color(0xFF0F1116),
       padding: EdgeInsets.fromLTRB(
         20, 14, 20, MediaQuery.of(context).padding.bottom + 14),
       child: Column(mainAxisSize: MainAxisSize.min, children: [

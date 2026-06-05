@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart' show kDebugMode, kIsWeb, debugPrint;
 import 'package:flutter/material.dart';
+import '../theme/app_theme.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../providers/app_provider.dart';
@@ -321,15 +322,15 @@ class _MobileLibraryTabBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bg         = dark ? const Color(0xFF0F1C14) : Colors.white;
+    final bg         = dark ? const Color(0xFF0F1116) : Colors.white;
     final border     = dark
         ? Colors.white.withValues(alpha: 0.07)
         : const Color(0xFFDDE8E2);
-    final activeCol  = dark ? const Color(0xFF4ADE80) : const Color(0xFF075f45);
+    final activeCol  = dark ? const Color(0xFF10B981) : const Color(0xFF075f45);
     final inactiveCol= dark
         ? Colors.white.withValues(alpha: 0.40)
         : const Color(0xFF90A89E);
-    final indicatorCol = dark ? const Color(0xFF4ADE80) : const Color(0xFF075f45);
+    final indicatorCol = dark ? const Color(0xFF10B981) : const Color(0xFF075f45);
 
     return Container(
       decoration: BoxDecoration(
@@ -804,7 +805,7 @@ class _CasosDeEstudoTabState extends State<_CasosDeEstudoTab> {
                       isEs ? 'Casos de Estudio' : 'Casos de Estudo',
                       style: TextStyle(
                         fontSize: 14, fontWeight: FontWeight.w900,
-                        color: dark ? Colors.white : const Color(0xFF0F1C14),
+                        color: dark ? Colors.white : const Color(0xFF0F1116),
                       ),
                     ),
                     Text(
@@ -1006,7 +1007,7 @@ class _CasosDeEstudoTabState extends State<_CasosDeEstudoTab> {
                             Text(title,
                               style: TextStyle(
                                 fontSize: 13, fontWeight: FontWeight.w700,
-                                color: dark ? Colors.white : const Color(0xFF1A1A1A),
+                                color: dark ? Colors.white : const Color(0xFF1A1D23),
                                 height: 1.3,
                               ),
                             ),
@@ -1386,7 +1387,7 @@ class _SimulacoesSheet extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start, children: [
                         Text(label, style: const TextStyle(
                           fontSize: 13.5, fontWeight: FontWeight.w800,
-                          color: Color(0xFF0F1C14), height: 1.3,
+                          color: Color(0xFF0F1116), height: 1.3,
                         )),
                         if (severity.isNotEmpty) ...[
                           const SizedBox(height: 3),
@@ -1444,7 +1445,7 @@ class _CategoryFilter extends StatelessWidget {
                 borderRadius: BorderRadius.circular(20),
                 color: active
                     ? _kGreen
-                    : (dark ? const Color(0xFF1A2820) : Colors.white),
+                    : (dark ? const Color(0xFF2D3340) : Colors.white),
                 border: Border.all(
                   color: active ? _kGreen : (dark ? Colors.white12 : Colors.black.withValues(alpha: 0.12)),
                 ),
@@ -1536,7 +1537,7 @@ class _GuideCard extends StatelessWidget {
                 const SizedBox(height: 6),
                 Text(guide.title, style: TextStyle(
                   fontSize: 14, fontWeight: FontWeight.w800,
-                  color: dark ? Colors.white : const Color(0xFF0F1C14), height: 1.3,
+                  color: dark ? Colors.white : const Color(0xFF0F1116), height: 1.3,
                 )),
                 if (guide.authors.isNotEmpty || guide.year.isNotEmpty) ...[
                   const SizedBox(height: 4),

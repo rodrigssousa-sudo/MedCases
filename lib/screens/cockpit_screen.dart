@@ -345,9 +345,9 @@ class _MetricTile extends StatelessWidget {
       ),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Row(children: [
-          Icon(icon, size: 13, color: alert ? const Color(0xFFC5A365) : const Color(0xFF888888)),
+          Icon(icon, size: 13, color: alert ? const Color(0xFFC5A365) : const Color(0xFF6B7280)),
           const SizedBox(width: 4),
-          Text(label, style: TextStyle(fontSize: 9, fontWeight: FontWeight.w900, letterSpacing: 1.2, color: alert ? kGold : const Color(0xFF888888))),
+          Text(label, style: TextStyle(fontSize: 9, fontWeight: FontWeight.w900, letterSpacing: 1.2, color: alert ? kGold : const Color(0xFF6B7280))),
         ]),
         const SizedBox(height: 5),
         Text(value, style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900, color: alert ? kGold : kDark, letterSpacing: -0.5)),
@@ -421,13 +421,13 @@ class _CollapsibleSection extends StatelessWidget {
                     ],
                   ]),
                   const SizedBox(height: 2),
-                  Text(subtitle, style: const TextStyle(fontSize: 11, color: Color(0xFF888888), fontWeight: FontWeight.w600)),
+                  Text(subtitle, style: const TextStyle(fontSize: 11, color: Color(0xFF6B7280), fontWeight: FontWeight.w600)),
                 ])),
                 AnimatedRotation(
                   turns: isOpen ? 0.5 : 0,
                   duration: const Duration(milliseconds: 220),
                   child: const Icon(Icons.keyboard_arrow_down_rounded,
-                      color: Color(0xFF888888), size: 22),
+                      color: Color(0xFF6B7280), size: 22),
                 ),
               ]),
             ),
@@ -860,7 +860,7 @@ class _DoseBody extends StatelessWidget {
                                                     fontWeight:
                                                         FontWeight.w900,
                                                     color:
-                                                        Color(0xFF888888),
+                                                        Color(0xFF6B7280),
                                                     letterSpacing: 0.5),
                                               ),
                                               const SizedBox(height: 3),
@@ -1086,7 +1086,7 @@ class _DoseBody extends StatelessWidget {
                                       '${p.tDB(d.className)} · ${d.route}',
                                       style: const TextStyle(
                                           fontSize: 10,
-                                          color: Color(0xFF888888)),
+                                          color: Color(0xFF6B7280)),
                                     ),
                                   ],
                                 ),
@@ -1350,7 +1350,7 @@ class _MiniStat extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Text(label, style: const TextStyle(fontSize: 9, fontWeight: FontWeight.w900, letterSpacing: 1, color: Color(0xFF888888))),
+        Text(label, style: const TextStyle(fontSize: 9, fontWeight: FontWeight.w900, letterSpacing: 1, color: Color(0xFF6B7280))),
         const SizedBox(height: 2),
         Text(value, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w900, color: kDark)),
       ]),
@@ -2082,7 +2082,7 @@ class _FieldRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      Text(label, style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w900, letterSpacing: 1.4, color: Color(0xFF888888))),
+      Text(label, style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w900, letterSpacing: 1.4, color: Color(0xFF6B7280))),
       const SizedBox(height: 6),
       child,
     ]);
@@ -2217,7 +2217,7 @@ class _InteractionPanelState extends State<_InteractionPanel> {
             if (widget.hasMedications)
               Text(
                 widget.lang == 'es' ? 'Incluye medicamentos del paciente' : 'Incluindo medicamentos do paciente',
-                style: const TextStyle(fontSize: 9, color: Color(0xFF888888), fontWeight: FontWeight.w500)),
+                style: const TextStyle(fontSize: 9, color: Color(0xFF6B7280), fontWeight: FontWeight.w500)),
           ])),
         ]),
       ),
@@ -2602,7 +2602,7 @@ class _MedsSuggestionsDropdown extends StatelessWidget {
     return Material(
       elevation: 10,
       borderRadius: BorderRadius.circular(14),
-      color: dark ? const Color(0xFF242424) : Colors.white,
+      color: dark ? const Color(0xFF252930) : Colors.white,
       shadowColor: Colors.black.withValues(alpha: 0.20),
       child: ConstrainedBox(
         constraints: BoxConstraints(maxWidth: 340, maxHeight: boxHeight),
@@ -2616,7 +2616,7 @@ class _MedsSuggestionsDropdown extends StatelessWidget {
               height: 1,
               indent: 44,
               endIndent: 12,
-              color: dark ? const Color(0xFF333333) : const Color(0xFFF0F0F0),
+              color: dark ? const Color(0xFF374151) : const Color(0xFFF0F0F0),
             ),
             itemBuilder: (_, i) {
               final name      = suggestions[i];
@@ -2632,7 +2632,7 @@ class _MedsSuggestionsDropdown extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.w600,
-                      color: dark ? const Color(0xFFCCCCCC) : const Color(0xFF1A1A1A),
+                      color: dark ? const Color(0xFFA8B2C1) : const Color(0xFF1A1D23),
                     ),
                     children: [
                       if (idx > 0) TextSpan(text: name.substring(0, idx)),
@@ -2657,7 +2657,7 @@ class _MedsSuggestionsDropdown extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 13,
                     fontWeight: FontWeight.w600,
-                    color: dark ? const Color(0xFFCCCCCC) : const Color(0xFF1A1A1A),
+                    color: dark ? const Color(0xFFA8B2C1) : const Color(0xFF1A1D23),
                   ),
                   overflow: TextOverflow.ellipsis,
                 );
@@ -2703,7 +2703,7 @@ class _MedsSuggestionsDropdown extends StatelessWidget {
                       size: 14,
                       color: dark
                           ? const Color(0xFF555555)
-                          : const Color(0xFFCCCCCC),
+                          : const Color(0xFFA8B2C1),
                     ),
                   ]),
                 ),
@@ -3146,7 +3146,7 @@ class _IxDetailRow extends StatelessWidget {
             style: const TextStyle(
               fontSize: 11,
               fontWeight: FontWeight.w500,
-              color: Color(0xFF333333),
+              color: Color(0xFF374151),
               height: 1.4,
             ),
           ),
@@ -3191,7 +3191,7 @@ class _IxRow extends StatelessWidget {
       Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Text(label, style: TextStyle(fontSize: 8, fontWeight: FontWeight.w900, color: color.withValues(alpha: 0.7), letterSpacing: 0.8)),
         const SizedBox(height: 2),
-        Text(text, style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: Color(0xFF333333), height: 1.45)),
+        Text(text, style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: Color(0xFF374151), height: 1.45)),
       ])),
     ]);
   }
@@ -3306,7 +3306,7 @@ class _ReminderCardState extends State<_ReminderCard>
                 ? const Color(0xFFCC2222)
                 : hasReminder
                     ? const Color(0xFF065F46)
-                    : const Color(0xFF888888),
+                    : const Color(0xFF6B7280),
           ),
           const SizedBox(width: 6),
           Text(
@@ -3322,7 +3322,7 @@ class _ReminderCardState extends State<_ReminderCard>
                   ? const Color(0xFFCC2222)
                   : hasReminder
                       ? const Color(0xFF065F46)
-                      : const Color(0xFF888888),
+                      : const Color(0xFF6B7280),
               letterSpacing: 0.2,
             ),
           ),
@@ -3389,7 +3389,7 @@ class _ReminderCardState extends State<_ReminderCard>
                   p.t('reminder_cancel'),
                   style: const TextStyle(
                     fontSize: 12, fontWeight: FontWeight.w700,
-                    color: Color(0xFF888888),
+                    color: Color(0xFF6B7280),
                   ),
                 ),
               ),
@@ -3421,7 +3421,7 @@ class _ReminderCardState extends State<_ReminderCard>
                 flashVal,
               )!
             : hasReminder
-                ? const Color(0xFF1F6B48)
+                ? const Color(0xFF10B981)
                 : Colors.transparent;
 
         return Container(

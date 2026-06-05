@@ -166,11 +166,11 @@ class _NotesScreenState extends State<NotesScreen> {
     final lang = p.lang;
     final isEs = lang == 'es';
 
-    final bg      = dark ? const Color(0xFF141414) : const Color(0xFFF5F6F8);
-    final headerBg = dark ? const Color(0xFF1A2820) : const Color(0xFF0F1C14);
+    final bg      = dark ? const Color(0xFF1A1D23) : const Color(0xFFF5F6F8);
+    final headerBg = dark ? const Color(0xFF2D3340) : const Color(0xFF0F1116);
     final searchBg = dark ? const Color(0xFF222222) : Colors.white;
-    final searchBorder = dark ? const Color(0xFF333333) : const Color(0xFFE0E0E0);
-    final textCol  = dark ? Colors.white : const Color(0xFF0F1C14);
+    final searchBorder = dark ? const Color(0xFF374151) : const Color(0xFFE0E0E0);
+    final textCol  = dark ? Colors.white : const Color(0xFF0F1116);
     final subCol   = dark ? Colors.white54 : Colors.black45;
 
     final notes = _filtered;
@@ -186,8 +186,8 @@ class _NotesScreenState extends State<NotesScreen> {
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
                 colors: dark
-                    ? [const Color(0xFF0F1C14), const Color(0xFF1A2820), const Color(0xFF1F3A28)]
-                    : [const Color(0xFF0F1C14), const Color(0xFF1B3D2A), const Color(0xFF1F6B48)],
+                    ? [const Color(0xFF0F1116), const Color(0xFF2D3340), const Color(0xFF1F3A28)]
+                    : [const Color(0xFF0F1116), const Color(0xFF1B3D2A), const Color(0xFF10B981)],
               ),
             ),
             child: SafeArea(
@@ -242,10 +242,10 @@ class _NotesScreenState extends State<NotesScreen> {
                           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(10),
-                            color: const Color(0xFF1F6B48),
+                            color: const Color(0xFF10B981),
                             boxShadow: [
                               BoxShadow(
-                                color: const Color(0xFF1F6B48).withValues(alpha: 0.40),
+                                color: const Color(0xFF10B981).withValues(alpha: 0.40),
                                 blurRadius: 10,
                                 offset: const Offset(0, 3),
                               ),
@@ -314,7 +314,7 @@ class _NotesScreenState extends State<NotesScreen> {
             child: _loading
                 ? const Center(
                     child: CircularProgressIndicator(
-                      color: Color(0xFF1F6B48), strokeWidth: 2))
+                      color: Color(0xFF10B981), strokeWidth: 2))
                 : notes.isEmpty
                     ? _EmptyState(
                         dark: dark,
@@ -344,7 +344,7 @@ class _NotesScreenState extends State<NotesScreen> {
       floatingActionButton: _allNotes.isNotEmpty
           ? FloatingActionButton(
               onPressed: () => _openEditor(),
-              backgroundColor: const Color(0xFF1F6B48),
+              backgroundColor: const Color(0xFF10B981),
               foregroundColor: Colors.white,
               elevation: 4,
               child: const Icon(Icons.add_rounded, size: 24),
@@ -360,7 +360,7 @@ class _NotesScreenState extends State<NotesScreen> {
       builder: (dialogCtx) {
         final dark = context.read<AppProvider>().darkMode;
         return AlertDialog(
-          backgroundColor: dark ? const Color(0xFF1C1C1E) : Colors.white,
+          backgroundColor: dark ? const Color(0xFF252930) : Colors.white,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16)),
           title: Row(children: [
@@ -389,7 +389,7 @@ class _NotesScreenState extends State<NotesScreen> {
               onPressed: () => Navigator.pop(dialogCtx, false),
               child: Text(
                 isEs ? 'Cancelar' : 'Cancelar',
-                style: const TextStyle(color: Color(0xFF888888))),
+                style: const TextStyle(color: Color(0xFF6B7280))),
             ),
             FilledButton(
               onPressed: () => Navigator.pop(dialogCtx, true),
@@ -451,7 +451,7 @@ class _NoteCard extends StatelessWidget {
       } catch (_) {}
     }
 
-    final textMain = dark ? Colors.white.withValues(alpha: 0.90) : const Color(0xFF1A1A1A);
+    final textMain = dark ? Colors.white.withValues(alpha: 0.90) : const Color(0xFF1A1D23);
     final textSub  = dark ? Colors.white.withValues(alpha: 0.45) : Colors.black38;
 
     return Dismissible(
@@ -606,7 +606,7 @@ class _EmptyState extends StatelessWidget {
                 shape: BoxShape.circle,
                 color: dark
                     ? Colors.white.withValues(alpha: 0.06)
-                    : const Color(0xFF1F6B48).withValues(alpha: 0.08),
+                    : const Color(0xFF10B981).withValues(alpha: 0.08),
               ),
               child: Center(
                 child: Icon(
@@ -616,7 +616,7 @@ class _EmptyState extends StatelessWidget {
                   size: 34,
                   color: dark
                       ? Colors.white24
-                      : const Color(0xFF1F6B48).withValues(alpha: 0.4),
+                      : const Color(0xFF10B981).withValues(alpha: 0.4),
                 ),
               ),
             ),
@@ -651,10 +651,10 @@ class _EmptyState extends StatelessWidget {
                     horizontal: 24, vertical: 12),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(12),
-                    color: const Color(0xFF1F6B48),
+                    color: const Color(0xFF10B981),
                     boxShadow: [
                       BoxShadow(
-                        color: const Color(0xFF1F6B48).withValues(alpha: 0.35),
+                        color: const Color(0xFF10B981).withValues(alpha: 0.35),
                         blurRadius: 12,
                         offset: const Offset(0, 4),
                       ),
@@ -804,8 +804,8 @@ class NoteEditorSheetState extends State<NoteEditorSheet> {
   Widget build(BuildContext context) {
     final dark = widget.dark;
     final nc   = _colorFromHex(_selectedColor);
-    final sheetBg = dark ? const Color(0xFF1A1A1A) : Colors.white;
-    final textCol = dark ? Colors.white : const Color(0xFF1A1A1A);
+    final sheetBg = dark ? const Color(0xFF1A1D23) : Colors.white;
+    final textCol = dark ? Colors.white : const Color(0xFF1A1D23);
     final subCol  = dark ? Colors.white38 : Colors.black38;
     final divCol  = dark ? Colors.white12 : Colors.black.withValues(alpha: 0.07);
     final inputBg = dark ? nc.dark.withValues(alpha: 0.6) : nc.light;
@@ -902,7 +902,7 @@ class NoteEditorSheetState extends State<NoteEditorSheet> {
                       color: dark ? nc2.dark : nc2.light,
                       border: Border.all(
                         color: _selectedColor == nc2.hex
-                            ? (dark ? Colors.white60 : const Color(0xFF0F1C14))
+                            ? (dark ? Colors.white60 : const Color(0xFF0F1116))
                             : nc2.border.withValues(alpha: 0.5),
                         width: _selectedColor == nc2.hex ? 2.5 : 1.0,
                       ),
@@ -910,7 +910,7 @@ class NoteEditorSheetState extends State<NoteEditorSheet> {
                     child: _selectedColor == nc2.hex
                         ? Icon(Icons.check_rounded,
                             size: 13,
-                            color: dark ? Colors.white70 : const Color(0xFF0F1C14))
+                            color: dark ? Colors.white70 : const Color(0xFF0F1116))
                         : null,
                   ),
                 )),
@@ -1008,21 +1008,21 @@ class NoteEditorSheetState extends State<NoteEditorSheet> {
                         horizontal: 10, vertical: 4),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(20),
-                        color: const Color(0xFF1F6B48).withValues(alpha: 0.12),
+                        color: const Color(0xFF10B981).withValues(alpha: 0.12),
                         border: Border.all(
-                          color: const Color(0xFF1F6B48).withValues(alpha: 0.30)),
+                          color: const Color(0xFF10B981).withValues(alpha: 0.30)),
                       ),
                       child: Row(mainAxisSize: MainAxisSize.min, children: [
                         Text(
                           '#$tag',
                           style: const TextStyle(
                             fontSize: 11, fontWeight: FontWeight.w700,
-                            color: Color(0xFF1F6B48)),
+                            color: Color(0xFF10B981)),
                         ),
                         const SizedBox(width: 4),
                         Icon(Icons.close_rounded,
                           size: 12,
-                          color: const Color(0xFF1F6B48).withValues(alpha: 0.7)),
+                          color: const Color(0xFF10B981).withValues(alpha: 0.7)),
                       ]),
                     ),
                   )).toList(),
@@ -1036,7 +1036,7 @@ class NoteEditorSheetState extends State<NoteEditorSheet> {
                       height: 38,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
-                        color: dark ? const Color(0xFF242424) : const Color(0xFFF5F5F5),
+                        color: dark ? const Color(0xFF252930) : const Color(0xFFF5F5F5),
                         border: Border.all(color: divCol),
                       ),
                       child: TextField(
@@ -1066,12 +1066,12 @@ class NoteEditorSheetState extends State<NoteEditorSheet> {
                       height: 38, width: 38,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
-                        color: const Color(0xFF1F6B48).withValues(alpha: 0.12),
+                        color: const Color(0xFF10B981).withValues(alpha: 0.12),
                         border: Border.all(
-                          color: const Color(0xFF1F6B48).withValues(alpha: 0.25)),
+                          color: const Color(0xFF10B981).withValues(alpha: 0.25)),
                       ),
                       child: const Icon(Icons.add_rounded,
-                        size: 18, color: Color(0xFF1F6B48)),
+                        size: 18, color: Color(0xFF10B981)),
                     ),
                   ),
                 ]),
@@ -1095,10 +1095,10 @@ class NoteEditorSheetState extends State<NoteEditorSheet> {
                 child: ElevatedButton(
                   onPressed: _saving ? null : _save,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF1F6B48),
+                    backgroundColor: const Color(0xFF10B981),
                     foregroundColor: Colors.white,
                     disabledBackgroundColor:
-                        const Color(0xFF1F6B48).withValues(alpha: 0.4),
+                        const Color(0xFF10B981).withValues(alpha: 0.4),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(14)),
                     padding: const EdgeInsets.symmetric(vertical: 15),
@@ -1168,7 +1168,7 @@ class _NoteAlertPicker extends StatelessWidget {
                 : Icons.alarm_add_rounded,
             size: 15,
             color: selectedMinutes != null
-                ? const Color(0xFF1F6B48)
+                ? const Color(0xFF10B981)
                 : subCol,
           ),
           const SizedBox(width: 6),
@@ -1177,7 +1177,7 @@ class _NoteAlertPicker extends StatelessWidget {
             style: TextStyle(
               fontSize: 11, fontWeight: FontWeight.w700,
               color: selectedMinutes != null
-                  ? const Color(0xFF1F6B48)
+                  ? const Color(0xFF10B981)
                   : subCol,
               letterSpacing: 0.5,
             ),
@@ -1190,7 +1190,7 @@ class _NoteAlertPicker extends StatelessWidget {
                   : 'em ${_label(selectedMinutes)}',
               style: const TextStyle(
                 fontSize: 11, fontWeight: FontWeight.w800,
-                color: Color(0xFF1F6B48),
+                color: Color(0xFF10B981),
               ),
             ),
           ],
@@ -1211,16 +1211,16 @@ class _NoteAlertPicker extends StatelessWidget {
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(20),
                     color: selected
-                        ? const Color(0xFF1F6B48)
+                        ? const Color(0xFF10B981)
                         : (dark
                             ? Colors.white.withValues(alpha: 0.07)
                             : const Color(0xFFF0F0F0)),
                     border: Border.all(
                       color: selected
-                          ? const Color(0xFF1F6B48)
+                          ? const Color(0xFF10B981)
                           : (dark
                               ? Colors.white.withValues(alpha: 0.10)
-                              : const Color(0xFFDDDDDD)),
+                              : const Color(0xFFA8B2C1)),
                     ),
                   ),
                   child: Row(mainAxisSize: MainAxisSize.min, children: [

@@ -7,7 +7,7 @@ import 'package:flutter/services.dart';
 import 'dart:io' show Platform;
 import 'package:url_launcher/url_launcher.dart';
 
-const _kDark  = Color(0xFF0F1C14);
+const _kDark  = Color(0xFF0F1116);
 const _kGreen = Color(0xFF075f45);
 const _kGold  = Color(0xFFC5A365);
 const _kGoldL = Color(0xFFFFE8A6);
@@ -338,7 +338,7 @@ class _UpgradeScreenState extends State<UpgradeScreen>
           shape: BoxShape.circle,
           gradient: const LinearGradient(
             begin: Alignment.topLeft, end: Alignment.bottomRight,
-            colors: [Color(0xFF1F4030), Color(0xFF0A1610)],
+            colors: [Color(0xFF1F4030), Color(0xFF1A1D23)],
           ),
           border: Border.all(color: _kGold.withValues(alpha: 0.5), width: 1.5),
           boxShadow: [
@@ -757,7 +757,7 @@ class _CheckCell extends StatelessWidget {
   Widget build(BuildContext context) {
     if (checked) {
       return Icon(Icons.check_circle_rounded,
-          size: 18, color: gold ? _kGold : const Color(0xFF4ADE80));
+          size: 18, color: gold ? _kGold : const Color(0xFF10B981));
     }
     return Icon(Icons.remove_circle_outline_rounded,
         size: 18, color: Colors.white.withValues(alpha: 0.15));

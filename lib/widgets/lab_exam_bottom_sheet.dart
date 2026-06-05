@@ -36,7 +36,7 @@ class _C {
   static const surface     = Color(0xFF17211D);
   static const green       = Color(0xFF46E28C);
   // ignore: unused_field
-  static const greenDark   = Color(0xFF1F6B48);
+  static const greenDark   = Color(0xFF10B981);
   static const amber       = Color(0xFFF59E0B);
   static const amberBg     = Color(0x1DF59E0B);
   static const border      = Color(0x1AFFFFFF);

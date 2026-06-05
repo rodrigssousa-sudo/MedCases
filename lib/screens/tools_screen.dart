@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../theme/app_theme.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -82,7 +83,7 @@ class _ToolsScreenState extends State<ToolsScreen> with SingleTickerProviderStat
             gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
-              colors: [Color(0xFF0F1C14), Color(0xFF1B3D2A), Color(0xFF1F6B48)],
+              colors: [Color(0xFF0F1116), Color(0xFF1B3D2A), Color(0xFF10B981)],
             ),
           ),
           child: Column(children: [
@@ -112,7 +113,7 @@ class _ToolsScreenState extends State<ToolsScreen> with SingleTickerProviderStat
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: [Color(0xFF0F1C14), Color(0xFF1B3D2A), Color(0xFF1F6B48)],
+            colors: [Color(0xFF0F1116), Color(0xFF1B3D2A), Color(0xFF10B981)],
           ),
         ),
         child: TabBar(
@@ -625,7 +626,7 @@ class _ScoresTabState extends State<_ScoresTab> {
         Container(
           width: 22, height: 22,
           decoration: BoxDecoration(shape: BoxShape.circle, color: value ? kToolGreen : Colors.white,
-            border: Border.all(color: value ? kToolGreen : const Color(0xFFCCCCCC), width: 2)),
+            border: Border.all(color: value ? kToolGreen : const Color(0xFFA8B2C1), width: 2)),
           child: value ? const Icon(Icons.check, size: 13, color: Colors.white) : null,
         ),
         const SizedBox(width: 10),
@@ -1280,7 +1281,7 @@ class _LabImportCard extends StatelessWidget {
           gradient: const LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: [Color(0xFF0F1C14), Color(0xFF1B3D2A), Color(0xFF17502E)],
+            colors: [Color(0xFF0F1116), Color(0xFF1B3D2A), Color(0xFF17502E)],
             stops: [0.0, 0.55, 1.0],
           ),
           borderRadius: BorderRadius.circular(18),
@@ -1295,7 +1296,7 @@ class _LabImportCard extends StatelessWidget {
               offset: const Offset(0, 4),
             ),
             BoxShadow(
-              color: const Color(0xFF1F6B48).withValues(alpha: 0.12),
+              color: const Color(0xFF10B981).withValues(alpha: 0.12),
               blurRadius: 20,
               offset: const Offset(0, 2),
             ),
@@ -1616,7 +1617,7 @@ class _ElectrolytesTabState extends State<_ElectrolytesTab> {
               padding: const EdgeInsets.all(14),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(16),
-                color: const Color(0xFF0F1C14),
+                color: const Color(0xFF0F1116),
               ),
               child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                 const Text('INTERPRETAÇÃO', style: TextStyle(fontSize: 9, fontWeight: FontWeight.w900, color: Color(0xBFFFE8A6), letterSpacing: 2)),
@@ -2186,7 +2187,7 @@ class _InfusionResultCard extends StatelessWidget {
           ),
         ],
         border: Border.all(
-          color: const Color(0xFF1F6B48).withValues(alpha: 0.6),
+          color: const Color(0xFF10B981).withValues(alpha: 0.6),
           width: 1,
         ),
       ),
@@ -2462,11 +2463,11 @@ class _VasoRefRow extends StatelessWidget {
               const SizedBox(height: 3),
               Row(mainAxisSize: MainAxisSize.min, children: [
                 Icon(Icons.touch_app_rounded, size: 9,
-                  color: dark ? const Color(0xFF4ADE80) : const Color(0xFF16A34A)),
+                  color: dark ? const Color(0xFF10B981) : const Color(0xFF16A34A)),
                 const SizedBox(width: 3),
                 Text('calcular',
                   style: TextStyle(fontSize: 9, fontWeight: FontWeight.w600,
-                    color: dark ? const Color(0xFF4ADE80) : const Color(0xFF16A34A))),
+                    color: dark ? const Color(0xFF10B981) : const Color(0xFF16A34A))),
               ]),
             ],
           ]),
@@ -2484,7 +2485,7 @@ class _RiskSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final dark = context.watch<AppProvider>().darkMode;
-    final bg   = dark ? const Color(0xFF1C1C1E) : Colors.white;
+    final bg   = dark ? const Color(0xFF252930) : Colors.white;
 
     return Container(
       decoration: BoxDecoration(
@@ -2681,7 +2682,7 @@ class _ReferenceTabState extends State<_ReferenceTab> {
       // ── Sub-tabs com underline indicator ─────────────────────
       Container(
         decoration: BoxDecoration(
-          color: const Color(0xFF0A1A10),
+          color: const Color(0xFF0F1116),
           border: Border(bottom: BorderSide(color: Colors.white.withValues(alpha: 0.08), width: 1)),
         ),
         child: SingleChildScrollView(
@@ -2700,7 +2701,7 @@ class _ReferenceTabState extends State<_ReferenceTab> {
                   padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
                   decoration: BoxDecoration(
                     border: Border(bottom: BorderSide(
-                      color: active ? const Color(0xFF4ADE80) : Colors.transparent,
+                      color: active ? const Color(0xFF10B981) : Colors.transparent,
                       width: 2.5,
                     )),
                   ),
@@ -2708,11 +2709,11 @@ class _ReferenceTabState extends State<_ReferenceTab> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Icon(icon, size: 14,
-                        color: active ? const Color(0xFF4ADE80) : Colors.white.withValues(alpha: 0.45)),
+                        color: active ? const Color(0xFF10B981) : Colors.white.withValues(alpha: 0.45)),
                       const SizedBox(width: 6),
                       Text(label, style: TextStyle(
                         fontSize: 11, fontWeight: active ? FontWeight.w800 : FontWeight.w500,
-                        color: active ? const Color(0xFF4ADE80) : Colors.white.withValues(alpha: 0.5),
+                        color: active ? const Color(0xFF10B981) : Colors.white.withValues(alpha: 0.5),
                         letterSpacing: 0.6,
                       )),
                     ],
@@ -3392,8 +3393,8 @@ class _AntidoteRow extends StatelessWidget {
             Expanded(child: Text(toxin, style: TextStyle(fontSize: 12, fontWeight: FontWeight.w900, color: AppColors.of(context).textPrimary))),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-              decoration: BoxDecoration(borderRadius: BorderRadius.circular(8), color: const Color(0xFF1F6B48).withValues(alpha: 0.12)),
-              child: Text(antidote, style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w800, color: Color(0xFF1F6B48))),
+              decoration: BoxDecoration(borderRadius: BorderRadius.circular(8), color: const Color(0xFF10B981).withValues(alpha: 0.12)),
+              child: Text(antidote, style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w800, color: Color(0xFF10B981))),
             ),
           ]),
           const SizedBox(height: 5),
@@ -3511,7 +3512,7 @@ class _PrescriptionsTabState extends State<_PrescriptionsTab> {
       // ── Sub-tabs com underline indicator ──────────────────────
       Container(
         decoration: BoxDecoration(
-          color: const Color(0xFF0A1A10),
+          color: const Color(0xFF0F1116),
           border: Border(bottom: BorderSide(color: Colors.white.withValues(alpha: 0.08), width: 1)),
         ),
         child: SingleChildScrollView(
@@ -3528,17 +3529,17 @@ class _PrescriptionsTabState extends State<_PrescriptionsTab> {
                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 11),
                   decoration: BoxDecoration(
                     border: Border(bottom: BorderSide(
-                      color: active ? const Color(0xFF4ADE80) : Colors.transparent,
+                      color: active ? const Color(0xFF10B981) : Colors.transparent,
                       width: 2.5,
                     )),
                   ),
                   child: Row(mainAxisSize: MainAxisSize.min, children: [
                     Icon(_catIcons[i], size: 13,
-                      color: active ? const Color(0xFF4ADE80) : Colors.white.withValues(alpha: 0.40)),
+                      color: active ? const Color(0xFF10B981) : Colors.white.withValues(alpha: 0.40)),
                     const SizedBox(width: 5),
                     Text(categories[i], style: TextStyle(
                       fontSize: 10.5, fontWeight: active ? FontWeight.w800 : FontWeight.w500,
-                      color: active ? const Color(0xFF4ADE80) : Colors.white.withValues(alpha: 0.45),
+                      color: active ? const Color(0xFF10B981) : Colors.white.withValues(alpha: 0.45),
                       letterSpacing: 0.5,
                     )),
                   ]),
@@ -4143,12 +4144,12 @@ class _PrescStepRow extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
             decoration: BoxDecoration(
-              color: const Color(0xFF1F6B48).withValues(alpha: 0.10),
+              color: const Color(0xFF10B981).withValues(alpha: 0.10),
               borderRadius: BorderRadius.circular(5),
             ),
             child: Text(item.step, style: const TextStyle(
               fontSize: 9, fontWeight: FontWeight.w900,
-              color: Color(0xFF1F6B48), letterSpacing: 0.5)),
+              color: Color(0xFF10B981), letterSpacing: 0.5)),
           ),
         const SizedBox(width: 10),
         Expanded(child: Padding(
@@ -4570,7 +4571,7 @@ class _PediatricsTabContentState extends State<PediatricsTabContent> {
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: [Color(0xFF0A2540), Color(0xFF103D70), Color(0xFF2563EB)],
+            colors: [Color(0xFF252930), Color(0xFF103D70), Color(0xFF2563EB)],
           ),
         ),
         padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
@@ -6354,7 +6355,7 @@ class _PedRefPremiumViewState extends State<_PedRefPremiumView> {
       padding: const EdgeInsets.fromLTRB(20, 16, 20, 14),
       decoration: BoxDecoration(
         color: dark
-            ? const Color(0xFF0D1F1A)
+            ? const Color(0xFF1A1D23)
             : const Color(0xFFF1FAF6),
         border: Border(
           top: BorderSide(color: const Color(0xFF0F7A5A).withValues(alpha: 0.18)),
@@ -6862,7 +6863,7 @@ class _PedRefSidebarFixed extends StatelessWidget {
     const kGold  = Color(0xFFC8A86B);
     return Container(
       decoration: BoxDecoration(
-        color: dark ? const Color(0xFF0D1F1A) : const Color(0xFFF0FBF6),
+        color: dark ? const Color(0xFF1A1D23) : const Color(0xFFF0FBF6),
         borderRadius: BorderRadius.circular(18),
         border: Border.all(color: kGreen.withValues(alpha: 0.2)),
         boxShadow: dark
@@ -7836,7 +7837,7 @@ class _ResultTile extends StatelessWidget {
     // Valor numérico: no dark mode usa verde-menta vibrante para destacar
     final valueColor = hasVal
         ? (dark ? const Color(0xFF6EE7B7) : AppColors.of(context).textPrimary)
-        : (dark ? const Color(0xFF4B5563) : const Color(0xFFCCCCCC));
+        : (dark ? const Color(0xFF4B5563) : const Color(0xFFA8B2C1));
 
     return Container(
       width: full ? double.infinity : null,

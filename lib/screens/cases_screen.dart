@@ -112,7 +112,7 @@ class _CasesScreenState extends State<CasesScreen> with SingleTickerProviderStat
             labelStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.w900),
             unselectedLabelStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.w700),
             labelColor: kGoldLight,
-            unselectedLabelColor: const Color(0xFF888888),
+            unselectedLabelColor: const Color(0xFF6B7280),
             dividerColor: Colors.transparent,
             tabs: [
               Tab(text: '${p.t("my_cases")} (${customFiltered.length})'),
@@ -224,7 +224,7 @@ class _CaseCard extends StatelessWidget {
                   if (c.patientAge.isNotEmpty) ...[
                     const SizedBox(width: 6),
                     Text('${c.patientAge}a | ${c.patientSex}',
-                      style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w700, color: Color(0xFF888888))),
+                      style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w700, color: Color(0xFF6B7280))),
                   ],
                 ]),
                 const SizedBox(height: 6),
@@ -238,7 +238,7 @@ class _CaseCard extends StatelessWidget {
                   child: Icon(
                     p.favCases.contains(c.id) ? Icons.bookmark_rounded : Icons.bookmark_border_rounded,
                     size: 18,
-                    color: p.favCases.contains(c.id) ? const Color(0xFFFBBF24) : const Color(0xFF888888),
+                    color: p.favCases.contains(c.id) ? const Color(0xFFFBBF24) : const Color(0xFF6B7280),
                   ),
                 ),
               ),
@@ -393,7 +393,7 @@ class _CaseDetail extends StatelessWidget {
             if (caseModel.drugIds.isNotEmpty) ...[
               const SizedBox(height: 10),
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Text(p.t('drugs').toUpperCase(), style: const TextStyle(fontSize: 9, fontWeight: FontWeight.w900, letterSpacing: 1.4, color: Color(0xFF888888))),
+                Text(p.t('drugs').toUpperCase(), style: const TextStyle(fontSize: 9, fontWeight: FontWeight.w900, letterSpacing: 1.4, color: Color(0xFF6B7280))),
                 const SizedBox(height: 6),
                 Wrap(spacing: 6, runSpacing: 6, children: caseModel.drugIds.map((id) {
                   final drug = p.drugsDB.where((d) => d.id == id).firstOrNull;
@@ -485,9 +485,9 @@ class _DetailBlock extends StatelessWidget {
       padding: const EdgeInsets.all(12),
       decoration: const BoxDecoration(border: Border(bottom: BorderSide(color: kBorder))),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Text(label, style: const TextStyle(fontSize: 9, fontWeight: FontWeight.w900, letterSpacing: 1.4, color: Color(0xFF888888))),
+        Text(label, style: const TextStyle(fontSize: 9, fontWeight: FontWeight.w900, letterSpacing: 1.4, color: Color(0xFF6B7280))),
         const SizedBox(height: 6),
-        Text(text, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: Color(0xFF333333), height: 1.55)),
+        Text(text, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: Color(0xFF374151), height: 1.55)),
       ]),
     );
   }
@@ -581,7 +581,7 @@ class _CaseEditorState extends State<_CaseEditor> {
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
                 decoration: BoxDecoration(borderRadius: BorderRadius.circular(12), color: const Color(0xFFC5A365)),
-                child: Text(p.t('save'), style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w900, color: Color(0xFF0F1C14))),
+                child: Text(p.t('save'), style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w900, color: Color(0xFF0F1116))),
               ),
             ),
           ]),
@@ -595,7 +595,7 @@ class _CaseEditorState extends State<_CaseEditor> {
               Expanded(child: _EditorField(label: p.t('age'), ctrl: _ageCtrl, hint: '68', numeric: true)),
               const SizedBox(width: 10),
               Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Text(p.lang == 'es' ? 'SEXO' : 'SEXO', style: const TextStyle(fontSize: 9, fontWeight: FontWeight.w900, letterSpacing: 1.4, color: Color(0xFF888888))),
+                Text(p.lang == 'es' ? 'SEXO' : 'SEXO', style: const TextStyle(fontSize: 9, fontWeight: FontWeight.w900, letterSpacing: 1.4, color: Color(0xFF6B7280))),
                 const SizedBox(height: 5),
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -614,7 +614,7 @@ class _CaseEditorState extends State<_CaseEditor> {
             const SizedBox(height: 10),
             Row(children: [
               Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Text(p.lang == 'es' ? 'CATEGORÍA' : 'CATEGORIA', style: const TextStyle(fontSize: 9, fontWeight: FontWeight.w900, letterSpacing: 1.4, color: Color(0xFF888888))),
+                Text(p.lang == 'es' ? 'CATEGORÍA' : 'CATEGORIA', style: const TextStyle(fontSize: 9, fontWeight: FontWeight.w900, letterSpacing: 1.4, color: Color(0xFF6B7280))),
                 const SizedBox(height: 5),
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -661,7 +661,7 @@ class _EditorField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      Text(label, style: const TextStyle(fontSize: 9, fontWeight: FontWeight.w900, letterSpacing: 1.4, color: Color(0xFF888888))),
+      Text(label, style: const TextStyle(fontSize: 9, fontWeight: FontWeight.w900, letterSpacing: 1.4, color: Color(0xFF6B7280))),
       const SizedBox(height: 5),
       MedInput(
         controller: ctrl,
