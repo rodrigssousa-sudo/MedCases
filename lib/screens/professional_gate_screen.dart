@@ -146,12 +146,16 @@ class _ProfessionalDeclarationGateWidgetState
     if (_declared!) return widget.child;
 
     // Precisa declarar → exibe aviso obrigatório sobre o app
+    // AbsorbPointer no backdrop: intercepta 100% dos toques antes de
+    // chegar ao widget.child — hard-lock impossível de contornar (iOS + Android).
     final lang = Localizations.localeOf(context).languageCode;
     return Stack(
       children: [
         widget.child,
         Positioned.fill(
-          child: ColoredBox(color: Colors.black.withValues(alpha: 0.80)),
+          child: AbsorbPointer(
+            child: ColoredBox(color: Colors.black.withValues(alpha: 0.80)),
+          ),
         ),
         Positioned.fill(
           child: _ProfessionalDeclarationModal(
