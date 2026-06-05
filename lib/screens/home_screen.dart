@@ -997,8 +997,11 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
   // Chave SharedPreferences espelhando a convenção de ai_screen.dart
   static const _kHistKey = 'medcases_ia_chat_history_v1';
 
-  static const _chipsEs = ['Caso clínico', 'Diagnóstico dif.', 'Farmacología', 'Razonamiento'];
-  static const _chipsPt = ['Caso clínico', 'Diagnóstico dif.', 'Farmacologia', 'Raciocínio'];
+  // BUILD 101 — chips substituídos por gatilhos de plantão reais (PR #69)
+  // Substituição: 'Caso clínico / Diagnóstico dif. / Farmacologia / Raciocínio'
+  // → termos de emergência direta que geram respostas executivas imediatas.
+  static const _chipsEs = ['IAM (Reconocer)', 'TEP (Manejo)', 'Lab. Completo (Evaluar)', 'Sepsis (Protocolo)'];
+  static const _chipsPt = ['IAM (Reconhecer)', 'TEP (Manejo)', 'Lab. Completo (Avaliar)', 'Sepse (Protocolo)'];
 
   @override
   void initState() {
@@ -1395,8 +1398,8 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
                 style: TextStyle(fontSize: 10, color: subText, height: 1.3),
               ),
             ])),
-            // "Ver más" / "Ver mais" — aparece quando há histórico de conversa
-            if (hasHistory)
+            // "Ver más" / "Ver mais" + botão × Limpar — aparecem quando há histórico
+            if (hasHistory) ...[
               GestureDetector(
                 onTap: () => _goToAiTab(null, true),
                 child: Container(
@@ -1414,6 +1417,40 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
                   ]),
                 ),
               ),
+              const SizedBox(width: 6),
+              // ── Botão × Limpar: reseta mini-chat ao estado inicial ──────────
+              GestureDetector(
+                onTap: _thinking ? null : () {
+                  AppHaptics.light(context);
+                  setState(() {
+                    _messages.clear();
+                    _streaming = '';
+                    _thinking  = false;
+                    _sessionId = null;
+                    _ctrl.clear();
+                  });
+                  _focus.unfocus();
+                },
+                child: Container(
+                  width: 28, height: 28,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: dark
+                        ? Colors.white.withValues(alpha: 0.07)
+                        : Colors.black.withValues(alpha: 0.05),
+                    border: Border.all(
+                      color: dark
+                          ? Colors.white.withValues(alpha: 0.12)
+                          : Colors.black.withValues(alpha: 0.10),
+                    ),
+                  ),
+                  child: Icon(Icons.close_rounded, size: 14,
+                    color: dark
+                        ? Colors.white.withValues(alpha: 0.55)
+                        : const Color(0xFF6B7280)),
+                ),
+              ),
+            ],
           ]),
 
           // ── Área de conversa — cresce dinamicamente com as mensagens ──────
@@ -1447,7 +1484,7 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
                     maxLines: 4,
                     style: TextStyle(fontSize: 14, color: textColor, height: 1.5),
                     decoration: InputDecoration.collapsed(
-                      hintText: isEs ? 'Caso clínico, pregunta académica…' : 'Caso clínico, pergunta acadêmica…',
+                      hintText: isEs ? 'Sintomas, fármaco, protocolo…' : 'Sintomas, fármaco, protocolo…',
                       hintStyle: TextStyle(fontSize: 14, color: hintColor),
                     ),
                     textInputAction: TextInputAction.send,
