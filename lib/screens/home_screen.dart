@@ -75,29 +75,30 @@ class _HomeScreenState extends State<HomeScreen> {
     final p = context.read<AppProvider>();
 
     // ── LayoutBuilder: breakpoint switch responsivo ───────────────────────────
-    // MOTIVO: MediaQuery.of(context).size é calculado no nível do MaterialApp e
-    // pode não reagir a redimensionamentos inline (ex: Chrome DevTools device
-    // toolbar). LayoutBuilder usa BoxConstraints do parent imediato — reage
-    // instantaneamente ao resize da janela, permitindo teste mobile direto no
-    // browser sem compilar um build iOS.
+    // MOTIVO: MediaQuery.of(context).size pode ser stale no Flutter Web durante
+    // redimensionamento do browser ou ao activar o emulador mobile do Chrome
+    // DevTools (F12 → device toolbar). LayoutBuilder usa BoxConstraints do
+    // parent imediato e reage frame-a-frame — sem cache, sem stale reads.
     //
     // BREAKPOINTS:
-    //   < 650 px  → layout mobile (idêntico ao app iOS/Android)
-    //   650-1023  → layout mobile (tablet estreito — mesma coluna única)
-    //   ≥ 1024 px → layout desktop (2 colunas + sidebar)
+    //   < 1024 px → layout mobile (idêntico ao app iOS/Android)
+    //   ≥ 1024 px → layout desktop (2 colunas + painel lateral)
     //
-    // O threshold 650 foi escolhido para incluir Chrome DevTools presets:
-    //   iPhone SE (375), iPhone 14 Pro (393), Pixel 7 (412), Galaxy S23 (360)
-    //   e até iPad mini portrait (768) → todos renderizam o layout mobile fiel.
+    // IMPORTANTE: kIsWeb foi REMOVIDO da condição de desktop.
+    // Motivo: kIsWeb=true também no Chrome DevTools mobile emulator, o que
+    // bloqueava a entrada no branch mobile e forçava desktop mesmo em 375px.
+    // Com a remoção, a decisão é puramente dimensional — funciona corretamente
+    // em todos os contextos: browser desktop, DevTools emulator e app nativo.
     return LayoutBuilder(
       builder: (context, constraints) {
         final width = constraints.maxWidth;
-        // Desktop: layout em 2 colunas com sidebar (largura total ≥ 1024)
-        if (kIsWeb && width >= 1024) {
-          final bp = MedBreakpoints.of(context);
+        // Desktop: layout em 2 colunas (largura ≥ 1024 px)
+        if (width >= 1024) {
+          // MedBreakpoints.fromWidth para não ler MediaQuery (evita stale)
+          final bp = MedBreakpoints.fromWidth(width);
           return _buildDesktopLayout(context, dark, isEs, p, bp);
         }
-        // Mobile / tablet estreito / Web com janela reduzida — layout nativo
+        // Mobile / tablet / browser redimensionado — layout nativo
         return _buildMobileLayout(context, dark, isEs, p);
       },
     );

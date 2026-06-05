@@ -1370,19 +1370,32 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
     final _    = context.select<AppProvider, String>((p) => p.lang); // reativa nav bar ao trocar idioma
     // p via read — _AppDrawer (abre on-tap) e p.t() já reativado pelo select acima
     final p = context.read<AppProvider>();
-    final bp = MedBreakpoints.of(context);
 
-    // Web mobile (browser num celular, largura < 768px): renderiza como app nativo
-    // — mesma aparência do iOS/Android: AppBar verde, BottomNav, sem sidebar.
-    if (bp.isWebMobile) {
-      return _buildMobileShell(context, dark, p);
-    }
-    // Desktop: sidebar lateral + conteúdo expandido sem bottom nav
-    if (bp.isDesktop) {
-      return _buildDesktopShell(context, dark, p);
-    }
-    // Mobile/Tablet: layout original com bottom nav
-    return _buildMobileShell(context, dark, p);
+    // ── LayoutBuilder: breakpoint via constraints do parent imediato ──────────
+    // MOTIVO: MediaQuery.of(context).size.width pode ser stale no Flutter Web
+    // durante redimensionamento do browser ou ao alternar para o emulador mobile
+    // do Chrome DevTools (F12 → device toolbar). LayoutBuilder reage frame-a-frame
+    // às BoxConstraints do Scaffold pai — não depende do cache do MediaQuery.
+    //
+    // BREAKPOINTS:
+    //   < 1024 px  → mobile shell (BottomNav + AppBar — idêntico ao iOS/Android)
+    //   ≥ 1024 px  → desktop shell (sidebar lateral, sem bottom nav)
+    //
+    // NOTA: o threshold 1024 foi mantido igual ao de HomeScreen para consistência.
+    // Chrome DevTools presets (iPhone SE 375, Pixel 7 412, Galaxy S23 360, iPad
+    // mini 768) ficam todos abaixo de 1024 → mobile shell correto em todos eles.
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final width = constraints.maxWidth;
+
+        // Desktop: sidebar lateral + conteúdo expandido sem bottom nav
+        if (width >= 1024) {
+          return _buildDesktopShell(context, dark, p);
+        }
+        // Mobile / tablet estreito / browser redimensionado — layout nativo
+        return _buildMobileShell(context, dark, p);
+      },
+    );
   }
 
   /// Layout desktop: Row(sidebar | conteúdo) — sem AppHeader (barra superior removida)
