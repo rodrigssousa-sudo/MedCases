@@ -49,6 +49,11 @@ const List<CalcShortcut> kAvailableCalcs = [
   CalcShortcut(id: 'calc_pediatria',   labelPt: 'Pediatria',     labelEs: 'Pediatría',      icon: Icons.child_care_outlined,       color: Color(0xFFEC4899)),
 ];
 
+/// IDs de calculadoras proibidas por Apple Guideline 1.4.1 + regulatório:
+/// "Infusión EV" (calc_infusao) e "Prescripciones" (calc_prescricoes) nunca
+/// aparecem no Home Preview nem na lista de Gestionar, em nenhuma circunstância.
+const Set<String> _kForbiddenCalcIds = {'calc_infusao', 'calc_prescricoes'};
+
 CalcShortcut? calcById(String id) {
   try { return kAvailableCalcs.firstWhere((c) => c.id == id); } catch (_) { return null; }
 }
@@ -370,9 +375,11 @@ class _PlantaoContent extends StatelessWidget {
     final c = colors;
     final hasPatients = p.plantaoPatients.isNotEmpty;
     final hasDrugs    = p.pinnedDrugs.isNotEmpty;
-    // BUILD 93 — CALCULADORAS ocultas (Apple 1.4.1) — sempre false nesta seção
-    // ignore: unused_local_variable
-    const hasCalcs    = false; // p.pinnedCalcIds.isNotEmpty;
+    // Filtra IDs proibidos antes de checar se há calcs para exibir
+    final _filteredCalcIds = p.pinnedCalcIds
+        .where((id) => !_kForbiddenCalcIds.contains(id))
+        .toList();
+    final hasCalcs = _filteredCalcIds.isNotEmpty;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -438,17 +445,26 @@ class _PlantaoContent extends StatelessWidget {
               p.unpinDrug(drug.id);
             },
           ),
-          // BUILD 93: hasCalcs sempre false — espaço removido
+          if (hasCalcs) const SizedBox(height: 20),
         ],
 
-        // BUILD 93 — CALCULADORAS ocultas do Mi Guardia (Apple Guideline 1.4.1)
-        // Cálculos de dose e infusão disponíveis apenas na aba Ferramentas.
-        // if (hasCalcs) ...[
-        //   _SectionLabel(icon: Icons.calculate_outlined, label: 'CALCULADORAS', colors: c),
-        //   const SizedBox(height: 8),
-        //   _PinnedCalcsRow(calcIds: p.pinnedCalcIds, isEs: isEs, colors: c,
-        //     onTap: onOpenCalc, onUnpin: (id) { p.unpinCalc(id); }),
-        // ],
+        // ── CALCULADORAS ─────────────────────────────────────────────────────
+        // NOTA: calc_infusao e calc_prescricoes são filtrados via _kForbiddenCalcIds
+        // (Apple Guideline 1.4.1). Apenas calcs permitidas chegam aqui.
+        if (hasCalcs) ...[
+          _SectionLabel(icon: Icons.calculate_outlined, label: 'CALCULADORAS', colors: c),
+          const SizedBox(height: 8),
+          _PinnedCalcsRow(
+            calcIds: _filteredCalcIds,
+            isEs: isEs,
+            colors: c,
+            onTap: onOpenCalc,
+            onUnpin: (id) {
+              AppHaptics.medium(context);
+              p.unpinCalc(id);
+            },
+          ),
+        ],
       ],
     );
   }
@@ -1182,15 +1198,21 @@ class _PinnedCalcsRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Defesa belt-and-suspenders: nunca renderiza IDs proibidos mesmo que
+    // de alguma forma tenham chegado na lista de pinnedCalcIds.
+    final safeIds = calcIds
+        .where((id) => !_kForbiddenCalcIds.contains(id))
+        .toList();
+
     return SizedBox(
       height: 80,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         clipBehavior: Clip.none,
-        itemCount: calcIds.length,
+        itemCount: safeIds.length,
         separatorBuilder: (_, __) => const SizedBox(width: 10),
         itemBuilder: (_, i) {
-          final shortcut = calcById(calcIds[i]);
+          final shortcut = calcById(safeIds[i]);
           if (shortcut == null) return const SizedBox.shrink();
           return _CalcPinnedCard(
             shortcut: shortcut, isEs: isEs, colors: colors,
@@ -1878,6 +1900,8 @@ class _CalcSelectorList extends StatelessWidget {
       itemCount: kAvailableCalcs.length,
       itemBuilder: (_, i) {
         final shortcut = kAvailableCalcs[i];
+        // ⛔ CRÍTICO — nunca exibe calc proibida (Apple 1.4.1 + regulatório)
+        if (_kForbiddenCalcIds.contains(shortcut.id)) return const SizedBox.shrink();
         final isPinned = p.isCalcPinned(shortcut.id);
         final limitReached = p.pinnedCalcIds.length >= AppProvider.kMaxPinnedCalcsPublic;
 
