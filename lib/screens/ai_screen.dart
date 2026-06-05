@@ -3178,14 +3178,16 @@ class _InputBarState extends State<_InputBar> {
     // ── Glassmorphism: fundo semitransparente + blur ───────────────────────
     // O ClipRRect é necessário para que o BackdropFilter respeite o borderRadius
     // e não vaze para fora do card flutuante.
+    // Build 99 — removido SafeArea(top: false) que causava espaço em branco duplo
+    // entre o campo de input e o BottomAppBar. O BottomAppBar já lida com o
+    // safe area do home indicator nativamente — adicionar SafeArea aqui causava
+    // um segundo padding bottom que criava o grande vazio branco visível no screenshot.
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      child: SafeArea(
-        top: false,
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(24),
-          child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(24),
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
             child: Container(
               decoration: BoxDecoration(
                 // Fundo semitransparente — ConnectMind navy glassmorphism
@@ -3405,7 +3407,6 @@ class _InputBarState extends State<_InputBar> {
             ),
           ),
         ),
-      ),
     );
   }
 }

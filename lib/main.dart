@@ -1167,7 +1167,14 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
   // ── Callbacks estáveis para HomeScreen ────────────────────────────────────
   // Lambdas inline no build() são recriadas a cada rebuild — geram instabilidade.
   // Métodos da classe são referências estáveis: mesma instância entre rebuilds.
-  void _onTabChange(int t)    { setState(() => _tab = t); }
+  void _onTabChange(int t) {
+    // Fecha o teclado SEMPRE que o utilizador muda de aba.
+    // Isso previne o bug de "teclado automático" onde o FocusNode da aba anterior
+    // (especialmente o AiScreen tab 2) permanece ativo no IndexedStack e
+    // re-abre o teclado quando o utilizador navega de volta para a Home.
+    FocusManager.instance.primaryFocus?.unfocus();
+    setState(() => _tab = t);
+  }
   void _onSubTabChange(int i) => setState(() => _rxProtoSub = i);
   void _onOpenNotes()         => showNotesSheet(context);
 
@@ -1292,6 +1299,7 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
   void _onPendingTab() {
     final t = MainShell.pendingTab.value;
     if (t >= 0 && mounted) {
+      FocusManager.instance.primaryFocus?.unfocus();
       setState(() => _tab = t.clamp(0, 5));
       MainShell.pendingTab.value = -1; // reset imediato após consumir
     }
@@ -1397,8 +1405,8 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
                 dark: dark,
                 p: p,
                 // Volta para Home (tab 0) e scrolla para o topo
-                onLogoTap: () => setState(() => _tab = 0),
-                onTabChange: (t) => setState(() => _tab = t),
+                onLogoTap: () { FocusManager.instance.primaryFocus?.unfocus(); setState(() => _tab = 0); },
+                onTabChange: (t) { FocusManager.instance.primaryFocus?.unfocus(); setState(() => _tab = t); },
                 // Builder garante que scaffoldCtx está DENTRO do Scaffold
                 // → Scaffold.of() encontra o endDrawer corretamente
                 onOpenDrawer: () => Scaffold.of(scaffoldCtx).openEndDrawer(),
@@ -1467,7 +1475,7 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
                   currentTab: _tab,
                   lang: p.lang,
                   isHome: true,
-                  onLogoTap: () => setState(() => _tab = 0),
+                  onLogoTap: () { FocusManager.instance.primaryFocus?.unfocus(); setState(() => _tab = 0); },
                   onMenuTap: () => Scaffold.of(scaffoldCtx).openEndDrawer(),
                 ),
               ),
@@ -1591,7 +1599,10 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
     return Expanded(
       child: GestureDetector(
         behavior: HitTestBehavior.opaque,
-        onTap: () => setState(() => _tab = idx),
+        onTap: () {
+          FocusManager.instance.primaryFocus?.unfocus();
+          setState(() => _tab = idx);
+        },
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
@@ -1645,7 +1656,7 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
     final glowColor  = const Color(0xFF00E5FF);
 
     return GestureDetector(
-      onTap: () { AppHaptics.light(context); setState(() => _tab = 2); },
+      onTap: () { AppHaptics.light(context); FocusManager.instance.primaryFocus?.unfocus(); setState(() => _tab = 2); },
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 220),
         curve: Curves.easeOutCubic,
