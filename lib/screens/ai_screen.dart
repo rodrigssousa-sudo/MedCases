@@ -1165,6 +1165,31 @@ class _AiScreenState extends State<AiScreen> {
     p.clearAiHistory();
   }
 
+  // ── Nuevo Chat — salva sessão atual e abre nova sessão limpa ─────────────
+  // Diferente de _clearChat: NÃO deleta histórico. Salva em background e
+  // cria nova sessão com ID diferente (timestamp) para consulta fresca.
+  void _startNewChat() {
+    final p = context.read<AppProvider>();
+    // 1. Persiste sessão atual em background (dual-write Firestore + prefs)
+    _saveCurrentSessionToHistory(p);
+    // 2. Limpa UI e reseta flags de sessão — novo chat em branco
+    setState(() {
+      _messages
+        ..clear()
+        ..add(_ChatMsg(role: 'ai', text: _buildGreeting(p.userName, p.lang)));
+      _aiError      = false;
+      _networkError = false;
+      _userScrolledUp = false;
+      // Força novo ID de sessão — próxima mensagem cria entrada separada
+      _restoredSessionId = null;
+      _hasNewMessageAfterRestore = false;
+      _greetingDone = true;
+    });
+    _queryCtrl.clear();
+    _focusNode.unfocus();
+    p.clearAiHistory();
+  }
+
   // ── Sheet de status da IA ────────────────────────────────────────────────
   void _openAiSettings() {
     final p = context.read<AppProvider>();
@@ -1329,6 +1354,7 @@ class _AiScreenState extends State<AiScreen> {
         onClear: _clearChat,
         onSettings: _openAiSettings,
         onHistory: () => _openHistory(p),
+        onNewChat: _startNewChat,
         historyCount: _chatHistory.length,
         lang: p.lang,
         hasRealAi:       p.hasAnyAi,
@@ -1349,6 +1375,7 @@ class _AiScreenState extends State<AiScreen> {
           onHistory: () => _openHistory(p),
           onClear: _clearChat,
           onSettings: _openAiSettings,
+          onNewChat: _startNewChat,
         ),
 
       // ── Banner de erro de chave ───────────────────────────────────────────
@@ -1615,7 +1642,42 @@ class _MobileAiActionBar extends StatelessWidget {
               ),
             ),
 
-            // Botão Limpar removido — auto-persist PR #56.
+            // ── Botão Nuevo Chat ────────────────────────────────────────────────
+            GestureDetector(
+              onTap: onNewChat,
+              child: Container(
+                height: 30,
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8),
+                  color: dark
+                      ? const Color(0xFF00E5FF).withValues(alpha: 0.10)
+                      : const Color(0xFF008CA4).withValues(alpha: 0.08),
+                  border: Border.all(
+                    color: dark
+                        ? const Color(0xFF00E5FF).withValues(alpha: 0.30)
+                        : const Color(0xFF008CA4).withValues(alpha: 0.25),
+                    width: 1,
+                  ),
+                ),
+                child: Row(mainAxisSize: MainAxisSize.min, children: [
+                  Icon(
+                    Icons.add_rounded,
+                    size: 14,
+                    color: dark ? const Color(0xFF00E5FF) : const Color(0xFF008CA4),
+                  ),
+                  const SizedBox(width: 4),
+                  Text(
+                    lang == 'es' ? 'Nuevo Chat' : 'Novo Chat',
+                    style: TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w700,
+                      color: dark ? const Color(0xFF00E5FF) : const Color(0xFF008CA4),
+                    ),
+                  ),
+                ]),
+              ),
+            ),
           ],
         ),
       ),
@@ -1632,6 +1694,7 @@ class _WaHeader extends StatelessWidget {
   final VoidCallback onClear;
   final VoidCallback onSettings;
   final VoidCallback onHistory;
+  final VoidCallback onNewChat;
   final int historyCount;
   final String lang;
   final bool hasRealAi;
@@ -1643,6 +1706,7 @@ class _WaHeader extends StatelessWidget {
     required this.onClear,
     required this.onSettings,
     required this.onHistory,
+    required this.onNewChat,
     required this.historyCount,
     required this.lang,
     required this.hasRealAi,
@@ -1837,7 +1901,39 @@ class _WaHeader extends StatelessWidget {
                   ),
                   const SizedBox(width: 6),
 
-                  // Botão Limpar removido — auto-persist PR #56.
+                  // ── Botão Nuevo Chat ──────────────────────────────────────
+                  GestureDetector(
+                    onTap: onNewChat,
+                    child: Container(
+                      height: 32,
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8),
+                        color: const Color(0xFF00E5FF).withValues(alpha: 0.12),
+                        border: Border.all(
+                          color: const Color(0xFF00E5FF).withValues(alpha: 0.35),
+                          width: 1,
+                        ),
+                      ),
+                      child: Row(mainAxisSize: MainAxisSize.min, children: [
+                        const Icon(
+                          Icons.add_rounded,
+                          size: 14,
+                          color: Color(0xFF00E5FF),
+                        ),
+                        const SizedBox(width: 4),
+                        Text(
+                          lang == 'es' ? 'Nuevo Chat' : 'Novo Chat',
+                          style: const TextStyle(
+                            fontSize: 11,
+                            fontWeight: FontWeight.w700,
+                            color: Color(0xFF00E5FF),
+                          ),
+                        ),
+                      ]),
+                    ),
+                  ),
+                  const SizedBox(width: 6),
 
                   // Botão menu
                   GestureDetector(
@@ -2460,10 +2556,10 @@ class _AiBlockBubble extends StatelessWidget {
            (t.startsWith('[') && t.endsWith(']') && t.length < 60);
   }
 
-  /// Linha de item de lista (bullet)
+  /// Linha de item de lista (bullet) — inclui markdown asterisco `* `
   bool _isListItem(String line) {
     final t = line.trimLeft();
-    return t.startsWith('- ') || t.startsWith('• ') ||
+    return t.startsWith('* ') || t.startsWith('- ') || t.startsWith('• ') ||
            t.startsWith('→ ') || t.startsWith('▸ ') ||
            RegExp(r'^\d+\.\s').hasMatch(t);
   }
@@ -2644,7 +2740,7 @@ class _AiBlockBubble extends StatelessWidget {
                           ),
                         ),
                         Expanded(child: _buildInlineText(
-                          trimmed.replaceFirst(RegExp(r'^[-•→▸\d+\.]\s*'), ''),
+                          trimmed.replaceFirst(RegExp(r'^[\*\-•→▸]|\d+\.\s*'), '').trimLeft(),
                           textColor,
                         )),
                       ],
@@ -4103,8 +4199,8 @@ class _ChatHistorySheet extends StatelessWidget {
                   const SizedBox(height: 12),
                   Text(
                     lang == 'es'
-                        ? 'Aún no hay consultas guardadas.\nUsa "Limpiar" para guardar una sesión.'
-                        : 'Nenhuma consulta salva ainda.\nUse "Limpar" para salvar uma sessão.',
+                        ? 'Aún no hay consultas guardadas.\nInicia un "Nuevo Chat" para crear una sesión.'
+                        : 'Nenhuma consulta salva ainda.\nInicie um "Novo Chat" para criar uma sessão.',
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 13, color: textS, height: 1.5),

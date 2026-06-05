@@ -67,7 +67,7 @@ class MedBreakpoints {
   }
 
   /// < 768 px — smartphone
-  bool get isMobile   => width < 768;
+  bool get isMobile   => width < 650;
   /// 768–1023 px — tablet
   bool get isTablet   => width >= 768 && width < 1024;
   /// >= 1024 px — desktop/laptop
