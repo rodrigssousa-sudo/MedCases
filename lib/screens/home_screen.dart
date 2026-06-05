@@ -383,36 +383,34 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           const SizedBox(height: 16),
 
-          // ── BLOCO WEB-ONLY — ferramentas clínicas avançadas ─────────────────
-          // MI GUARDIA e EMERGÊNCIAS: visíveis APENAS na Web (Apple 1.4.2).
-          // PEDIATRIA + ADULTO já exibidos acima para todos (mobile + web).
+          // ── BLOCO 5: MI GUARDIA — visível em TODAS as plataformas ──────────────
+          // Auxiliar de plantão médico: gestão de pacientes, fármacos,
+          // calculadoras. Aprovado para iOS pois é ferramenta de suporte
+          // educativo/organizacional (não prescrição autônoma).
+          _HomeMiGuardiaSection(
+            dark: dark,
+            isEs: isEs,
+            onOpenDrug: (drug) => showDrugDetailSheet(context, drug),
+            onOpenCalc: (calcId) {
+              // BUILD 93 — Tabs visíveis: 0=Biometria 1=Scores 2=Cardio
+              //   3=Eletrólitos 4=Referência 5=Pediatria
+              //   Infusão e Prescrições ocultas (Apple 1.4.1) → fallback 0
+              const calcTabMap = {
+                'calc_biometria': 0, 'calc_scores': 1, 'calc_cardio': 2,
+                'calc_eletrólitos': 3, 'calc_infusao': 0,
+                'calc_referencia': 4, 'calc_prescricoes': 0,
+                'calc_pediatria': 5,
+              };
+              toolsScreenTabNotifier.value = calcTabMap[calcId] ?? 0;
+              widget.onTabChange(4);
+            },
+            onManageTap: () => showPlantaoManageSheet(context),
+          ),
+          const SizedBox(height: 16),
+
+          // ── BLOCO WEB-ONLY — EMERGÊNCIAS RÁPIDAS ────────────────────────────
+          // Mantido apenas na Web (Apple Guideline 1.4.1).
           if (kIsWeb) ...[
-            const SizedBox(height: 0), // placeholder para bloco web-only
-            const SizedBox(height: 16),
-            // MI GUARDIA / MEU PLANTÃO
-            // ignore: dead_code
-            _HomeMiGuardiaSection(
-              dark: dark,
-              isEs: isEs,
-              onOpenDrug: (drug) => showDrugDetailSheet(context, drug),
-              onOpenCalc: (calcId) {
-                // BUILD 93 — Tabs visíveis: 0=Biometria 1=Scores 2=Cardio
-                //   3=Eletrólitos 4=Referência 5=Pediatria
-                //   Infusão e Prescrições ocultas (Apple 1.4.1) → fallback 0
-                const calcTabMap = {
-                  'calc_biometria': 0, 'calc_scores': 1, 'calc_cardio': 2,
-                  'calc_eletrólitos': 3, 'calc_infusao': 0,
-                  'calc_referencia': 4, 'calc_prescricoes': 0,
-                  'calc_pediatria': 5,
-                };
-                toolsScreenTabNotifier.value = calcTabMap[calcId] ?? 0;
-                widget.onTabChange(4);
-              },
-              onManageTap: () => showPlantaoManageSheet(context),
-            ),
-            const SizedBox(height: 16),
-            // EMERGÊNCIAS RÁPIDAS
-            // ignore: dead_code
             _QuickEmergencies(p: p, dark: dark, isEs: isEs, openProtocol: widget.openProtocol),
           ],
 
