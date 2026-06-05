@@ -1471,8 +1471,10 @@ class _MobileAiActionBar extends StatelessWidget {
   final VoidCallback onHistory;
   final VoidCallback onClear;
   final VoidCallback onSettings;
+  final VoidCallback? onNewChat;
 
   const _MobileAiActionBar({
+    super.key,
     required this.dark,
     required this.lang,
     required this.historyCount,
@@ -1482,9 +1484,11 @@ class _MobileAiActionBar extends StatelessWidget {
     required this.onHistory,
     required this.onClear,
     required this.onSettings,
+    this.onNewChat,
   });
 
-  // MedCases IA — status cyan (Limpar button removed, _kGold/_kGoldL no longer needed)
+  // MedCases IA — palette
+  static const _kGold  = Color(0xFFC5A365); // dourado (badge histórico)
   static const _kGreen = Color(0xFF00E5FF);
   static const _kBg1   = Color(0xFF1A1D23);
   static const _kBg2   = Color(0xFF252930);
@@ -1625,7 +1629,8 @@ class _MobileAiActionBar extends StatelessWidget {
                       child: Container(
                         width: 14, height: 14,
                         decoration: const BoxDecoration(
-                          shape: BoxShape.circle, color: _kGold,
+                          shape: BoxShape.circle,
+                          color: Color(0xFFC5A365),
                         ),
                         child: Center(
                           child: Text(
