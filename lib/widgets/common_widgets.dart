@@ -65,6 +65,10 @@ class MedBreakpoints {
   /// >= 1440 px — widescreen/ultrawide
   bool get isUltra    => width >= 1440;
 
+  /// Web aberta num browser mobile (< 768px) — deve renderizar como app nativo.
+  /// Garante que a versão web no celular tenha aparência idêntica ao app iOS/Android.
+  bool get isWebMobile => kIsWeb && width < 768;
+
   /// true quando a tela é tablet ou maior
   bool get isTabletOrLarger  => width >= 768;
   /// true quando a tela é desktop ou maior

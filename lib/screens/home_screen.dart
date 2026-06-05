@@ -72,7 +72,11 @@ class _HomeScreenState extends State<HomeScreen> {
     final p  = context.read<AppProvider>();
     final bp = MedBreakpoints.of(context);
 
-    // Desktop: layout em 2 colunas
+    // Web mobile (browser num celular, largura < 768px): aparência idêntica ao app
+    if (bp.isWebMobile) {
+      return _buildMobileLayout(context, dark, isEs, p);
+    }
+    // Desktop: layout em 2 colunas com sidebar
     if (bp.isDesktop) {
       return _buildDesktopLayout(context, dark, isEs, p, bp);
     }
@@ -145,6 +149,19 @@ class _HomeScreenState extends State<HomeScreen> {
         // ── Linha superior: pesquisa ──────────────────────────────────────
         _HomeSearchBar(dark: dark, isEs: isEs),
         const SizedBox(height: 14),
+
+        // ── IA MedCases Chat — hero desktop (mesmo do mobile) ────────────
+        // Renderizado também no layout web/desktop para consistência com
+        // o layout mobile. Altura fixa 280px (menor que mobile ~40% tela).
+        SizedBox(
+          height: 280,
+          child: _HomeInlineChat(
+            dark: dark,
+            isEs: isEs,
+            onNavigateToAi: widget.onTabChange,
+          ),
+        ),
+        const SizedBox(height: 20),
 
         // ── Timer Rápido de Plantão ───────────────────────────────────────
         _ShiftTimerBar(dark: dark, isEs: isEs),
