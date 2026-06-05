@@ -1456,9 +1456,7 @@ class _MobileAiActionBar extends StatelessWidget {
     required this.onSettings,
   });
 
-  static const _kGold  = Color(0xFFC5A365);
-  static const _kGoldL = Color(0xFFFFE8A6);
-  // MedCases IA — status cyan
+  // MedCases IA — status cyan (Limpar button removed, _kGold/_kGoldL no longer needed)
   static const _kGreen = Color(0xFF00E5FF);
   static const _kBg1   = Color(0xFF1A1A1A);
   static const _kBg2   = Color(0xFF252525);
@@ -1616,30 +1614,7 @@ class _MobileAiActionBar extends StatelessWidget {
               ),
             ),
 
-            // ── Botão Limpar (só quando há mensagens) ───────────────────────
-            if (hasMessages)
-              GestureDetector(
-                onTap: onClear,
-                child: Container(
-                  height: 34,
-                  padding: const EdgeInsets.symmetric(horizontal: 10),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    color: _kGold,
-                    border: Border.all(
-                      color: _kGoldL.withValues(alpha: 0.4), width: 1),
-                  ),
-                  child: Center(
-                    child: Text(
-                      lang == 'es' ? 'Limpiar' : 'Limpar',
-                      style: const TextStyle(
-                        fontSize: 11, fontWeight: FontWeight.w800,
-                        color: Color(0xFF1A1100),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
+            // Botão Limpar removido — auto-persist PR #56.
           ],
         ),
       ),
@@ -1861,33 +1836,7 @@ class _WaHeader extends StatelessWidget {
                   ),
                   const SizedBox(width: 6),
 
-                  // Botão Limpar — só com mensagens
-                  if (hasMessages) ...[
-                    GestureDetector(
-                      onTap: onClear,
-                      child: Container(
-                        height: 36,
-                        padding: const EdgeInsets.symmetric(horizontal: 12),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          color: _kGold,
-                          border: Border.all(
-                            color: _kGoldL.withValues(alpha: 0.4), width: 1),
-                        ),
-                        child: Center(
-                          child: Text(
-                            lang == 'es' ? 'Limpiar' : 'Limpar',
-                            style: const TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w800,
-                              color: Color(0xFF1A1100),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 6),
-                  ],
+                  // Botão Limpar removido — auto-persist PR #56.
 
                   // Botão menu
                   GestureDetector(
