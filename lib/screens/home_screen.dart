@@ -1040,38 +1040,18 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
       text,
       onChunk: (acc) {
         if (mounted) {
-          // Strip metadados internos do stream antes de exibir
-          final cleaned = acc.replaceAll(
-            RegExp(
-              r'^[|\s]*(?:Confianza\s+Cl[ií]nica\s*:|Confiança\s+Cl[ií]nica\s*:'
-              r'|Confianza\s*[:–—]\s*\w|Confiança\s*[:–—]\s*\w'
-              r'|Clinical\s+Confidence\s*:|Nivel\s+de\s+Confianza\s*:'
-              r'|N[ií]vel\s+de\s+Confian[çc]a\s*:'
-              r'|El\s+usuario\s+(?:solicita|proporciona|pregunta|pide|quiere|busca)'
-              r'|O\s+usu[aá]rio\s+(?:solicita|fornece|pergunta|pede|quer|busca)'
-              r'|The\s+user\s+(?:is\s+asking|asks|wants|requests|provides)).*$',
-              caseSensitive: false,
-              multiLine: true,
-            ),
-            '',
-          ).trimLeft();
+          // CAMADA 1 — Stream sanitizer: expurga metadados de cabeçalho antes
+          // de exibir o texto parcial. Idêntico ao pipeline de ai_screen.dart.
+          final cleaned = _homeStripMetadataHeaders(acc);
           setState(() => _streaming = cleaned);
           _scrollToBottom();
         }
       },
       onDone: (fin) {
         if (mounted) {
-          // Strip metadados na resposta final também
-          final cleanFin = fin.replaceAll(
-            RegExp(
-              r'^[|\s]*(?:Confianza\s+Cl[ií]nica\s*:|Confiança\s+Cl[ií]nica\s*:'
-              r'|El\s+usuario\s+(?:solicita|proporciona|pregunta)'
-              r'|O\s+usu[aá]rio\s+(?:solicita|fornece|pergunta)).*$',
-              caseSensitive: false,
-              multiLine: true,
-            ),
-            '',
-          ).trimLeft();
+          // CAMADA 1 + 2 — Strip cabeçalhos E limpeza profunda de CoT/tags
+          // na resposta final. Idêntico ao tratamento de ai_screen.dart.
+          final cleanFin = _cleanHomeAiText(_homeStripMetadataHeaders(fin));
           setState(() {
             _messages.add({'role': 'ai', 'text': cleanFin, 'isError': false});
             _streaming = '';
@@ -1427,6 +1407,193 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
+// STREAM SANITIZER (Home inline chat) — porta idêntica de ai_screen.dart
+//
+// Camada 1 — chamada em cada onChunk (texto acumulado parcial):
+//   Remove linhas de metadados internos que o modelo às vezes vaza como
+//   primeira linha antes da resposta clínica.
+//   Exemplos reais:
+//     "Confianza Clínica: Alta — El usuario solicita..."
+//     "| Confiança Clínica: Alta — O usuário solicita..."
+//     "[DATOS_VERIFICADOS_BASE_LOCAL] CONTEXTO_INTERNO [nao exibir ao usuario]"
+//
+// Camada 2 — _cleanHomeAiText() chamada ao montar o _AiBubble:
+//   Expurga chain-of-thought, tags XML, planning interno, metadados residuais.
+// ─────────────────────────────────────────────────────────────────────────────
+
+/// CAMADA 1 — Leve, aplicada a cada chunk acumulado durante o streaming.
+/// Elimina metadados de cabeçalho antes de exibir texto parcial.
+String _homeStripMetadataHeaders(String accumulated) {
+  if (accumulated.isEmpty) return accumulated;
+
+  // Regex 1: catch-all bilíngue — qualquer linha com "Confian[za|ça]" + Clínica
+  String result = accumulated.replaceAll(
+    RegExp(
+      r'^.*Confian[zç]a\s*(?:Cl[íi]nica)?.*$',
+      caseSensitive: false,
+      multiLine: true,
+    ),
+    '',
+  );
+
+  // Regex 2: padrões complementares de abertura de linha
+  result = result.replaceAll(
+    RegExp(
+      r'^[|\s]*(?:'
+      r'Cl[íi]nica\s*[:–—]'
+      r'|Clinical\s+Confidence\s*:'
+      r'|Nivel\s+de\s+Confianza\s*:'
+      r'|N[íi]vel\s+de\s+Confian[çc]a\s*:'
+      r'|El\s+usuario\s+(?:solicita|proporciona|pregunta|pide|quiere|busca|ha\s+(?:pedido|indicado))'
+      r'|O\s+usu[aá]rio\s+(?:solicita|fornece|pergunta|pede|quer|busca|indicou)'
+      r'|The\s+user\s+(?:is\s+asking|asks|wants|requests|provides|has\s+indicated)'
+      r').*$',
+      caseSensitive: false,
+      multiLine: true,
+    ),
+    '',
+  );
+
+  // Regex 3: tags bracket de contexto interno que o modelo vaza literalmente
+  // Ex: "[DADOS_VERIFICADOS_BASE_LOCAL]", "[CONTEXTO_INTERNO]", "[nao exibir ao usuario]"
+  result = result.replaceAll(
+    RegExp(
+      r'^\s*\[(?:DADOS?_VERIFICADOS?[^\]\n]*|DATOS?_VERIFICADOS?[^\]\n]*'
+      r'|CONTEXTO_INTERNO[^\]\n]*|FIM_DADOS?[^\]\n]*|FIN_DATOS?[^\]\n]*'
+      r'|nao\s+exibir[^\]\n]*|no\s+mostrar[^\]\n]*'
+      r'|INTERNAL[^\]\n]*|BASE_LOCAL[^\]\n]*)\]\s*$',
+      caseSensitive: false,
+      multiLine: true,
+    ),
+    '',
+  );
+
+  return result.trimLeft();
+}
+
+/// CAMADA 2 — Limpeza profunda aplicada ao texto final antes de renderizar.
+/// Espelha _cleanAiText() de ai_screen.dart para resultado idêntico.
+String _cleanHomeAiText(String raw) {
+  String s = raw;
+
+  // 1. Blocos XML de raciocínio (CoT tags)
+  s = s.replaceAll(
+    RegExp(
+      r'<(thinking|scratchpad|internal|clinical_thinking|reasoning|planning|reflection|analysis|chain_of_thought|cot|thought|inner_monologue)>.*?<\/\1>',
+      caseSensitive: false,
+      dotAll: true,
+    ),
+    '',
+  );
+  // Tags órfãs
+  s = s.replaceAll(
+    RegExp(
+      r'<\/?(?:thinking|scratchpad|internal|clinical_thinking|reasoning|planning|reflection|analysis|chain_of_thought|cot|thought|inner_monologue)[^>]*>',
+      caseSensitive: false,
+    ),
+    '',
+  );
+
+  // 2. Blocos de revisão interna [REVISAO_INTERNA...]
+  s = s.replaceAll(
+    RegExp(
+      r'\[(?:REVISAO_INTERNA|REVISION_INTERNA|FIM_REVISAO_INTERNA|FIN_REVISION_INTERNA|INTERNAL_REVIEW)[^\]]*\]',
+      caseSensitive: false,
+    ),
+    '',
+  );
+  s = s.replaceAll(
+    RegExp(
+      r'^\[(?:REVISAO|REVISION|FIM|FIN|INTERNAL|CHECKING|REVIEW)[^\]\n]*\]\s*$',
+      caseSensitive: false,
+      multiLine: true,
+    ),
+    '',
+  );
+
+  // 3. Tags bracket de contexto que o modelo vaza
+  s = s.replaceAll(
+    RegExp(
+      r'^\s*\[(?:DADOS?_VERIFICADOS?[^\]\n]*|DATOS?_VERIFICADOS?[^\]\n]*'
+      r'|CONTEXTO_INTERNO[^\]\n]*|FIM_DADOS?[^\]\n]*|FIN_DATOS?[^\]\n]*'
+      r'|nao\s+exibir[^\]\n]*|no\s+mostrar[^\]\n]*'
+      r'|INTERNAL[^\]\n]*|BASE_LOCAL[^\]\n]*)\]\s*$',
+      caseSensitive: false,
+      multiLine: true,
+    ),
+    '',
+  );
+
+  // 4. Prefixos de planning/CoT vazados
+  s = s.replaceAll(
+    RegExp(
+      r"^(My response should|I will structure|I need to|Let me think|I'll organize|"
+      r"I should focus|I'm going to|Para responder|Vou estruturar|Devo focar|"
+      r"Mi respuesta debe|Voy a estructurar|Estructurando|Pensando en|"
+      r"Analizando el caso|Analisando o caso|Antes de responder|Before responding|"
+      r"Step \d+:|Paso \d+:|Etapa \d+:|Planning:|Reasoning:|Chain of thought:).*",
+      caseSensitive: false,
+      multiLine: true,
+    ),
+    '',
+  );
+
+  // 5. Linhas de meta-comentário
+  s = s.replaceAll(
+    RegExp(
+      r'^(Agora vou|Now I will|I will now|Vou agora|Ahora voy a|'
+      r'Deixe-me|Let me|Permíteme|Deixa eu pensar|'
+      r'Thinking\.\.\.|Analyzing\.\.\.|Processing\.\.\.).*$',
+      caseSensitive: false,
+      multiLine: true,
+    ),
+    '',
+  );
+
+  // 6. Catch-all Confianza/Confiança Clínica (CAMADA 2)
+  s = s.replaceAll(
+    RegExp(
+      r'^.*Confian[zç]a\s*(?:Cl[íi]nica)?.*$',
+      caseSensitive: false,
+      multiLine: true,
+    ),
+    '',
+  );
+  s = s.replaceAll(
+    RegExp(
+      r'^[|\s]*(?:'
+      r'Confianza\s*[:–—]'
+      r'|Confiança\s*[:–—]'
+      r'|Clinical\s+Confidence\s*:'
+      r'|Nivel\s+de\s+Confianza\s*:'
+      r'|N[íi]vel\s+de\s+Confian[çc]a\s*:'
+      r'|El\s+usuario\s+(?:solicita|proporciona|pregunta|pide|quiere|busca|ha\s+(?:indicado|pedido))'
+      r'|O\s+usu[aá]rio\s+(?:solicita|fornece|pergunta|pede|quer|busca|indicou)'
+      r'|The\s+user\s+(?:is\s+asking|asks|wants|requests|provides|has\s+indicated)'
+      r'|El\s+usuario\s+ha\s+pedido'
+      r'|Baseado\s+(?:no|na)\s+(?:contexto|conversa|solicita)'
+      r'|Basado\s+en\s+(?:el\s+contexto|la\s+conversaci[oó]n|la\s+solicitud)'
+      r').*$',
+      caseSensitive: false,
+      multiLine: true,
+    ),
+    '',
+  );
+
+  // 7. Sanitização final de formatação
+  s = s
+      .replaceAll(RegExp(r'^#{1,3}\s*', multiLine: true), '')
+      .replaceAll('---', '')
+      .replaceAll('--', '')
+      .replaceAll(RegExp(r'\*{3,}'), '');
+
+  // 8. Normaliza linhas em branco excessivas
+  s = s.replaceAll(RegExp(r'\n{3,}'), '\n\n');
+
+  return s.trim();
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 // HELPERS INTERNOS — bolha de resposta IA + avatar
 // ─────────────────────────────────────────────────────────────────────────────
 class _AiBubbleAvatar extends StatelessWidget {
@@ -1482,6 +1649,11 @@ class _AiBubble extends StatelessWidget {
         ? Colors.red.shade400
         : (dark ? Colors.white.withValues(alpha: 0.88) : const Color(0xFF1A202C));
 
+    // CAMADA 2 (render-time) — mesmo tratamento que ai_screen.dart aplica antes
+    // de exibir blocos. Garante que nenhum metadado, CoT ou tag interna apareça
+    // ao usuário mesmo que o onDone/onChunk não tenha capturado tudo.
+    final displayText = isError ? text : _cleanHomeAiText(text);
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 9),
       decoration: BoxDecoration(
@@ -1494,7 +1666,7 @@ class _AiBubble extends StatelessWidget {
       ),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Text(
-          text,
+          displayText,
           style: TextStyle(fontSize: 13, color: textCol, height: 1.5),
           maxLines: isStreaming ? 20 : 14,
           overflow: TextOverflow.ellipsis,

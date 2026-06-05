@@ -1769,26 +1769,53 @@ class _MobileAppBar extends StatelessWidget {
         ? (dark ? const Color(0xFF7EF5B0) : Colors.white)
         : (dark ? const Color(0xFFFFE8A6) : const Color(0xFF0A7C4E));
 
+    // ── AppBar decoration ─────────────────────────────────────────────────────
+    // HOME tab: premium LinearGradient (matches ADULTO card palette) + depth shadow.
+    // Dark HOME: deep forest gradient.  Other tabs: neutral theme.
+    final BoxDecoration barDecoration = isHome
+        ? BoxDecoration(
+            gradient: dark
+                ? const LinearGradient(
+                    colors: [Color(0xFF061A10), Color(0xFF0C543A)],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  )
+                : const LinearGradient(
+                    // Light mode: deep medical green → vibrant green (ADULTO card exact match)
+                    colors: [Color(0xFF0C543A), Color(0xFF137A52)],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+            border: Border(bottom: BorderSide(color: borderCol, width: 0.5)),
+            boxShadow: [
+              // Primary depth shadow — tight and punchy
+              BoxShadow(
+                color: Colors.black.withValues(alpha: dark ? 0.45 : 0.18),
+                blurRadius: 8.0,
+                offset: const Offset(0, 3),
+              ),
+              // Ambient green halo — soft glow matching card family
+              BoxShadow(
+                color: const Color(0xFF064D32).withValues(alpha: dark ? 0.55 : 0.22),
+                blurRadius: 18,
+                offset: const Offset(0, 5),
+              ),
+            ],
+          )
+        : BoxDecoration(
+            color: bg,
+            border: Border(bottom: BorderSide(color: borderCol, width: 0.5)),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: dark ? 0.45 : 0.12),
+                blurRadius: 16,
+                offset: const Offset(0, 4),
+              ),
+            ],
+          );
+
     return Container(
-      decoration: BoxDecoration(
-        color: bg,
-        border: Border(bottom: BorderSide(color: borderCol, width: 0.5)),
-        boxShadow: isHome
-            ? [
-                BoxShadow(
-                  color: const Color(0xFF064D32).withValues(alpha: dark ? 0.5 : 0.25),
-                  blurRadius: 16,
-                  offset: const Offset(0, 4),
-                ),
-              ]
-            : [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: dark ? 0.45 : 0.12),
-                  blurRadius: 16,
-                  offset: const Offset(0, 4),
-                ),
-              ],
-      ),
+      decoration: barDecoration,
       child: SafeArea(
         bottom: false,
         child: SizedBox(
