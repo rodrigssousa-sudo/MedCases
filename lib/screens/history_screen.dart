@@ -3757,7 +3757,7 @@ class _HistoryEditorState extends State<_HistoryEditor> {
           //   Expandida: 168px (barra completa ~110px + SafeArea 34px + buffer 24px)
           //   Recolhida:  72px (pílula ~40px + SafeArea 24px + buffer 8px)
           final micPad = hasMic
-              ? (_micBarExpanded ? 168.0 : 72.0)
+              ? (_micBarExpanded ? 118.0 : 50.0)
               : 24.0;
           Widget content = SingleChildScrollView(
             padding: EdgeInsets.fromLTRB(hPad, 14, hPad, micPad),
@@ -3830,15 +3830,23 @@ class _HistoryEditorState extends State<_HistoryEditor> {
       Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Text(_hcT(widget.p.lang, 'f_sex').toUpperCase(), style: const TextStyle(fontSize: 9, fontWeight: FontWeight.w900, letterSpacing: 1.4, color: Color(0xFF6B7280))),
         const SizedBox(height: 5),
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12), height: 44,
-          decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(14), border: Border.all(color: kBorder)),
-          child: DropdownButtonHideUnderline(child: DropdownButton<String>(
-            value: _draft.patientSex, isExpanded: true,
-            items: [_hcT(widget.p.lang, 'sex_male'), _hcT(widget.p.lang, 'sex_female')].map((s) => DropdownMenuItem(value: s, child: Text(s, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w700)))).toList(),
-            onChanged: (v) => setState(() => _draft = _draft.copyWith(patientSex: v ?? _hcT(widget.p.lang, 'sex_male'))),
-          )),
-        ),
+        Builder(builder: (ctx) {
+          final isDarkDrop = Theme.of(ctx).brightness == Brightness.dark;
+          return Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12), height: 44,
+            decoration: BoxDecoration(
+              color: isDarkDrop ? const Color(0xFF252930) : Colors.white,
+              borderRadius: BorderRadius.circular(14),
+              border: Border.all(color: isDarkDrop ? const Color(0xFF3A4A42) : kBorder)),
+            child: DropdownButtonHideUnderline(child: DropdownButton<String>(
+              value: _draft.patientSex, isExpanded: true,
+              dropdownColor: isDarkDrop ? const Color(0xFF1C2226) : Colors.white,
+              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: isDarkDrop ? const Color(0xFFE8F0EC) : const Color(0xFF0D1611)),
+              items: [_hcT(widget.p.lang, 'sex_male'), _hcT(widget.p.lang, 'sex_female')].map((s) => DropdownMenuItem(value: s, child: Text(s))).toList(),
+              onChanged: (v) => setState(() => _draft = _draft.copyWith(patientSex: v ?? _hcT(widget.p.lang, 'sex_male'))),
+            )),
+          );
+        }),
       ])),
     ]),
     const SizedBox(height: 10),
@@ -3853,15 +3861,23 @@ class _HistoryEditorState extends State<_HistoryEditor> {
     Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       Text(_hcT(widget.p.lang, 'f_category').toUpperCase(), style: const TextStyle(fontSize: 9, fontWeight: FontWeight.w900, letterSpacing: 1.4, color: Color(0xFF6B7280))),
       const SizedBox(height: 5),
-      Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12), height: 44,
-        decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(14), border: Border.all(color: kBorder)),
-        child: DropdownButtonHideUnderline(child: DropdownButton<String>(
-          value: _draft.category, isExpanded: true,
-          items: _categories.map((c) => DropdownMenuItem(value: c, child: Text(c, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w700)))).toList(),
-          onChanged: (v) => setState(() => _draft = _draft.copyWith(category: v ?? 'Clínica Geral')),
-        )),
-      ),
+      Builder(builder: (ctx) {
+        final isDarkDrop = Theme.of(ctx).brightness == Brightness.dark;
+        return Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12), height: 44,
+          decoration: BoxDecoration(
+            color: isDarkDrop ? const Color(0xFF252930) : Colors.white,
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(color: isDarkDrop ? const Color(0xFF3A4A42) : kBorder)),
+          child: DropdownButtonHideUnderline(child: DropdownButton<String>(
+            value: _draft.category, isExpanded: true,
+            dropdownColor: isDarkDrop ? const Color(0xFF1C2226) : Colors.white,
+            style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: isDarkDrop ? const Color(0xFFE8F0EC) : const Color(0xFF0D1611)),
+            items: _categories.map((c) => DropdownMenuItem(value: c, child: Text(c))).toList(),
+            onChanged: (v) => setState(() => _draft = _draft.copyWith(category: v ?? 'Clínica Geral')),
+          )),
+        );
+      }),
     ]),
     const SizedBox(height: 10),
     _EditorField(_hcT(widget.p.lang, 'f_tags'), _ctrls['tags']!, hint: _hcT(widget.p.lang, 'h_tags')),
@@ -4469,7 +4485,7 @@ class _MicControlBar extends StatelessWidget {
       child: SafeArea(
         top: false,
         child: Padding(
-          padding: EdgeInsets.fromLTRB(12, showFull ? 10 : 6, 12, showFull ? 8 : 6),
+          padding: EdgeInsets.fromLTRB(10, showFull ? 7 : 4, 10, showFull ? 5 : 3),
           child: showFull
               // ── BARRA EXPANDIDA ────────────────────────────────────────────
               ? Column(
@@ -4493,7 +4509,7 @@ class _MicControlBar extends StatelessWidget {
                         GestureDetector(
                           onTap: onToggleExpand,
                           child: Container(
-                            width: 32, height: 32,
+                            width: 26, height: 26,
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
                               color: isDark
@@ -4506,14 +4522,14 @@ class _MicControlBar extends StatelessWidget {
                             ),
                             child: Icon(
                               Icons.keyboard_arrow_down_rounded,
-                              size: 18,
+                              size: 15,
                               color: isDark ? Colors.white54 : const Color(0xFF607D8B),
                             ),
                           ),
                         ),
                       ],
                     ]),
-                    const SizedBox(height: 10),
+                    const SizedBox(height: 6),
 
                     // Botões de ação — linha 1: Ditáfone + Relato + Nav
                     Row(children: [
@@ -4566,7 +4582,7 @@ class _MicControlBar extends StatelessWidget {
                         onFieldFocused: onFieldFocused,
                       ),
                     ]),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: 5),
 
                     // Botão "Organizar com IA" — linha 2, largura total
                     GestureDetector(
@@ -4575,7 +4591,7 @@ class _MicControlBar extends StatelessWidget {
                           : null,
                       child: AnimatedContainer(
                         duration: const Duration(milliseconds: 200),
-                        height: 40,
+                        height: 34,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(12),
                           gradient: (!smartActive && !sttListening && !relatoActive && !aiProcessing)
@@ -4629,34 +4645,34 @@ class _MicControlBar extends StatelessWidget {
               : GestureDetector(
                   onTap: onToggleExpand,
                   child: Container(
-                    height: 40,
+                    height: 26,
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
+                      borderRadius: BorderRadius.circular(13),
                       color: isDark
-                          ? const Color(0xFF10B981).withValues(alpha: 0.18)
-                          : const Color(0xFF10B981).withValues(alpha: 0.08),
+                          ? const Color(0xFF10B981).withValues(alpha: 0.14)
+                          : const Color(0xFF10B981).withValues(alpha: 0.07),
                       border: Border.all(
-                        color: const Color(0xFF10B981).withValues(alpha: 0.30),
+                        color: const Color(0xFF10B981).withValues(alpha: 0.25),
                         width: 1,
                       ),
                     ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.mic_none_rounded, size: 16,
+                        Icon(Icons.mic_none_rounded, size: 13,
                             color: const Color(0xFF10B981)),
-                        const SizedBox(width: 8),
+                        const SizedBox(width: 6),
                         Text(
                           lang == 'es' ? 'Dictado e IA' : 'Ditado e IA',
                           style: const TextStyle(
-                            fontSize: 12,
+                            fontSize: 11,
                             fontWeight: FontWeight.w700,
                             color: Color(0xFF10B981),
                             letterSpacing: 0.2,
                           ),
                         ),
-                        const SizedBox(width: 6),
-                        Icon(Icons.keyboard_arrow_up_rounded, size: 16,
+                        const SizedBox(width: 5),
+                        Icon(Icons.keyboard_arrow_up_rounded, size: 13,
                             color: const Color(0xFF10B981).withValues(alpha: 0.6)),
                       ],
                     ),
@@ -4755,9 +4771,9 @@ class _MicStatusBadge extends StatelessWidget {
     return AnimatedContainer(
       duration: const Duration(milliseconds: 250),
       width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(10),
         color: bgColor,
         border: Border.all(color: dotColor.withValues(alpha: 0.20), width: 1),
       ),
@@ -4834,9 +4850,9 @@ class _MicActionBtn extends StatelessWidget {
       onTap: enabled ? onTap : null,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
-        height: 48,
+        height: 36,
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(10),
           color: active
               ? effectiveColor.withValues(alpha: 0.12)
               : Colors.transparent,
@@ -4852,20 +4868,20 @@ class _MicActionBtn extends StatelessWidget {
           children: [
             if (loading)
               SizedBox(
-                width: 15, height: 15,
+                width: 13, height: 13,
                 child: CircularProgressIndicator(
                   strokeWidth: 2,
                   valueColor: AlwaysStoppedAnimation(effectiveColor),
                 ),
               )
             else
-              Icon(icon, size: 17, color: effectiveColor),
-            const SizedBox(width: 6),
+              Icon(icon, size: 14, color: effectiveColor),
+            const SizedBox(width: 5),
             Flexible(
               child: Text(
                 label,
                 style: TextStyle(
-                  fontSize: 10.5,
+                  fontSize: 9.5,
                   fontWeight: active ? FontWeight.w800 : FontWeight.w600,
                   color: effectiveColor,
                   letterSpacing: 0.1,
@@ -6173,11 +6189,14 @@ class _VitalSignsWidgetState extends State<_VitalSignsWidget> {
     super.dispose();
   }
 
-  Widget _vsField(String label, TextEditingController ctrl, String unit, {String hint = '', bool wide = false, bool decimal = false}) {
+  Widget _vsField(String label, TextEditingController ctrl, String unit,
+      {String hint = '', bool wide = false, bool decimal = false,
+       required bool isDark, required Color inputFill, required Color inputText}) {
+    final borderColor = isDark ? const Color(0xFF3A4A42) : kBorder;
     return SizedBox(
       width: wide ? double.infinity : null,
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Text(label, style: const TextStyle(fontSize: 8, fontWeight: FontWeight.w900, letterSpacing: 1.0, color: Color(0xFF6B7280))),
+        Text(label, style: TextStyle(fontSize: 8, fontWeight: FontWeight.w900, letterSpacing: 1.0, color: isDark ? const Color(0xFF9AADA5) : const Color(0xFF6B7280))),
         const SizedBox(height: 3),
         Row(children: [
           SizedBox(
@@ -6194,22 +6213,22 @@ class _VitalSignsWidgetState extends State<_VitalSignsWidget> {
               inputFormatters: decimal
                   ? [_DecimalInputFormatter()]
                   : [FilteringTextInputFormatter.digitsOnly],
-              style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w800),
+              style: TextStyle(fontSize: 13, fontWeight: FontWeight.w800, color: inputText),
               decoration: InputDecoration(
                 isDense: true,
                 contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
                 hintText: hint,
-                hintStyle: const TextStyle(fontSize: 11, color: Color(0xFFBBBBBB)),
+                hintStyle: TextStyle(fontSize: 11, color: isDark ? const Color(0xFF5A6A62) : const Color(0xFFBBBBBB)),
                 filled: true,
-                fillColor: const Color(0xFFF8F8F8),
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: const BorderSide(color: kBorder)),
-                enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: const BorderSide(color: kBorder)),
+                fillColor: inputFill,
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide(color: borderColor)),
+                enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide(color: borderColor)),
                 focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: const BorderSide(color: kGreen, width: 1.5)),
               ),
             ),
           ),
           const SizedBox(width: 3),
-          Text(unit, style: const TextStyle(fontSize: 9, color: Color(0xFF6B7280), fontWeight: FontWeight.w700)),
+          Text(unit, style: TextStyle(fontSize: 9, color: isDark ? const Color(0xFF9AADA5) : const Color(0xFF6B7280), fontWeight: FontWeight.w700)),
         ]),
       ]),
     );
@@ -6217,18 +6236,26 @@ class _VitalSignsWidgetState extends State<_VitalSignsWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    // Dark mode: fundo do card escuro, texto de input visível
+    final cardBg    = isDark ? const Color(0xFF252930) : const Color(0xFFF8FBFA);
+    final inputFill = isDark ? const Color(0xFF1C2226) : const Color(0xFFF8F8F8);
+    final inputText = isDark ? const Color(0xFFE8F0EC) : const Color(0xFF0D1611);
+    final borderColor = isDark ? const Color(0xFF3A4A42) : kBorder;
+    final labelColor = isDark ? const Color(0xFF9AADA5) : const Color(0xFF555555);
+
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: kBorder),
-        color: const Color(0xFFF8FBFA),
+        border: Border.all(color: borderColor),
+        color: cardBg,
       ),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Row(children: [
           const Icon(Icons.monitor_heart_rounded, size: 14, color: kGreen),
           const SizedBox(width: 6),
-          Text(_hcT(context.read<AppProvider>().lang, 'vitals_title').toUpperCase(), style: const TextStyle(fontSize: 9, fontWeight: FontWeight.w900, letterSpacing: 1.4, color: Color(0xFF555555))),
+          Text(_hcT(context.read<AppProvider>().lang, 'vitals_title').toUpperCase(), style: TextStyle(fontSize: 9, fontWeight: FontWeight.w900, letterSpacing: 1.4, color: labelColor)),
           const Spacer(),
 
         ]),
@@ -6236,38 +6263,40 @@ class _VitalSignsWidgetState extends State<_VitalSignsWidget> {
         // Linha 1: PA (2 campos) + FC + FR
         Wrap(spacing: 10, runSpacing: 10, children: [
           Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            const Text('PA', style: TextStyle(fontSize: 8, fontWeight: FontWeight.w900, letterSpacing: 1.0, color: Color(0xFF6B7280))),
+            Text('PA', style: TextStyle(fontSize: 8, fontWeight: FontWeight.w900, letterSpacing: 1.0, color: isDark ? const Color(0xFF9AADA5) : const Color(0xFF6B7280))),
             const SizedBox(height: 3),
             Row(children: [
               SizedBox(width: 50, height: 36, child: TextField(
                 controller: _pas, keyboardType: TextInputType.number,
-                style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w800),
+                style: TextStyle(fontSize: 13, fontWeight: FontWeight.w800, color: inputText),
                 decoration: InputDecoration(isDense: true, contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8), hintText: '120',
-                  hintStyle: const TextStyle(fontSize: 11, color: Color(0xFFBBBBBB)), filled: true, fillColor: const Color(0xFFF8F8F8),
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: const BorderSide(color: kBorder)),
-                  enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: const BorderSide(color: kBorder)),
+                  hintStyle: TextStyle(fontSize: 11, color: isDark ? const Color(0xFF5A6A62) : const Color(0xFFBBBBBB)),
+                  filled: true, fillColor: inputFill,
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide(color: borderColor)),
+                  enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide(color: borderColor)),
                   focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: const BorderSide(color: kGreen, width: 1.5))),
               )),
-              const Padding(padding: EdgeInsets.symmetric(horizontal: 3), child: Text('/', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w300, color: Color(0xFF6B7280)))),
+              Padding(padding: const EdgeInsets.symmetric(horizontal: 3), child: Text('/', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w300, color: isDark ? const Color(0xFF9AADA5) : const Color(0xFF6B7280)))),
               SizedBox(width: 50, height: 36, child: TextField(
                 controller: _pad, keyboardType: TextInputType.number,
-                style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w800),
+                style: TextStyle(fontSize: 13, fontWeight: FontWeight.w800, color: inputText),
                 decoration: InputDecoration(isDense: true, contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8), hintText: '80',
-                  hintStyle: const TextStyle(fontSize: 11, color: Color(0xFFBBBBBB)), filled: true, fillColor: const Color(0xFFF8F8F8),
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: const BorderSide(color: kBorder)),
-                  enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: const BorderSide(color: kBorder)),
+                  hintStyle: TextStyle(fontSize: 11, color: isDark ? const Color(0xFF5A6A62) : const Color(0xFFBBBBBB)),
+                  filled: true, fillColor: inputFill,
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide(color: borderColor)),
+                  enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide(color: borderColor)),
                   focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: const BorderSide(color: kGreen, width: 1.5))),
               )),
               const SizedBox(width: 4),
-              const Text('mmHg', style: TextStyle(fontSize: 9, color: Color(0xFF6B7280), fontWeight: FontWeight.w700)),
+              Text('mmHg', style: TextStyle(fontSize: 9, color: isDark ? const Color(0xFF9AADA5) : const Color(0xFF6B7280), fontWeight: FontWeight.w700)),
             ]),
           ]),
-          _vsField('FC', _fc, 'bpm', hint: '80'),
-          _vsField('FR', _fr, 'irpm', hint: '16'),
-          _vsField('Temp', _temp, '°C', hint: '36,5', decimal: true),
-          _vsField('SpO₂', _spo2, '%', hint: '98', decimal: true),
-          _vsField('Dextro', _dext, 'mg/dL', hint: '100', decimal: true),
-          _vsField('Peso', _peso, 'kg', hint: '70', wide: true, decimal: true),
+          _vsField('FC', _fc, 'bpm', hint: '80', isDark: isDark, inputFill: inputFill, inputText: inputText),
+          _vsField('FR', _fr, 'irpm', hint: '16', isDark: isDark, inputFill: inputFill, inputText: inputText),
+          _vsField('Temp', _temp, '°C', hint: '36,5', decimal: true, isDark: isDark, inputFill: inputFill, inputText: inputText),
+          _vsField('SpO₂', _spo2, '%', hint: '98', decimal: true, isDark: isDark, inputFill: inputFill, inputText: inputText),
+          _vsField('Dextro', _dext, 'mg/dL', hint: '100', decimal: true, isDark: isDark, inputFill: inputFill, inputText: inputText),
+          _vsField('Peso', _peso, 'kg', hint: '70', wide: true, decimal: true, isDark: isDark, inputFill: inputFill, inputText: inputText),
         ]),
         if (widget.controller.text.isNotEmpty) ...[
           const SizedBox(height: 8),

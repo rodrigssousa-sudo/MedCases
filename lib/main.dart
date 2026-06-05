@@ -1569,7 +1569,7 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
             elevation: 12,
             padding: EdgeInsets.zero,
             child: SizedBox(
-              height: 42,
+              height: 32,
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
@@ -1643,25 +1643,25 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
             AnimatedContainer(
               duration: const Duration(milliseconds: 160),
               curve: Curves.easeOut,
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 1),
+              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: BorderRadius.circular(6),
                 color: active
                     ? (dark
                         ? const Color(0xFF10B981).withValues(alpha: 0.14)
                         : const Color(0xFF0A7C4E).withValues(alpha: 0.09))
                     : Colors.transparent,
               ),
-              child: Icon(icon, size: 18,
+              child: Icon(icon, size: 15,
                 color: active ? activeColor : inactiveColor),
             ),
-            const SizedBox(height: 2),
+            const SizedBox(height: 1),
             Text(
               label,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: TextStyle(
-                fontSize: 9,
+                fontSize: 8,
                 fontWeight: active ? FontWeight.w700 : FontWeight.w500,
                 color: active ? activeColor : inactiveColor,
                 height: 1.0,

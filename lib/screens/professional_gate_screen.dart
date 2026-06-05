@@ -58,7 +58,7 @@ class _S {
       : ['Médico / Residente', 'Estudante de Medicina', 'Outro Profissional de Saúde'];
 
   // ── Checkbox de consentimento ──────────────────────────────────────────────
-  String get checkboxLabel => es ? 'Li e aceito os termos acima' : 'Li e aceito os termos acima';
+  String get checkboxLabel => es ? 'Leí y acepto los términos anteriores' : 'Li e aceito os termos acima';
 
   String get checkboxText => es
       ? 'Declaro que soy profesional o estudiante del área de la salud. Entiendo que esta aplicación es exclusivamente educacional y de simulación clínica, y que nunca utilizaré su contenido para tomar decisiones clínicas en pacientes reales sin el debido juicio profesional.'
@@ -135,9 +135,9 @@ class _ProfessionalDeclarationGateWidgetState
     // Enquanto verifica o SharedPreferences, exibe splash mínimo
     if (_declared == null) {
       return const Scaffold(
-        backgroundColor: Color(0xFF07110d),
+        backgroundColor: Colors.white,
         body: Center(
-          child: CircularProgressIndicator(color: Color(0xFFD4A96A)),
+          child: CircularProgressIndicator(color: Color(0xFF075f45)),
         ),
       );
     }
@@ -190,6 +190,7 @@ class _ProfessionalDeclarationModalState
     extends State<_ProfessionalDeclarationModal>
     with SingleTickerProviderStateMixin {
   late _S _s;
+  late String _localLang; // PT/ES toggle local
   String? _selectedCategory;
   bool _checked = false;
   bool _saving = false;
@@ -199,29 +200,28 @@ class _ProfessionalDeclarationModalState
   late Animation<double> _fade;
   late Animation<Offset> _slide;
 
-  // Paleta dark — coerente com o restante do app
-  static const _bg       = Color(0xFF07110d);
-  static const _surface  = Color(0xFF0F2419);
-  static const _green    = Color(0xFF075f45);
-  static const _greenLt  = Color(0xFF2E8A62);
-  static const _gold     = Color(0xFFD4A96A);
-  static const _goldBg   = Color(0xFF1A1200);
-  static const _border   = Color(0xFF1A3828);
-  static const _textPri  = Color(0xFFF7F7F7);
-  static const _textSec  = Color(0xFFCCCCCC);
-  static const _textHint = Color(0xFF888888);
-  static const _disabled = Color(0xFF2A3A30);
+  // ── Paleta branca — design documento real (Apple-friendly) ────────────────
+  static const _bg        = Colors.white;
+  static const _surface   = Color(0xFFF7F9F8);
+  static const _green     = Color(0xFF075f45);
+  static const _greenLt   = Color(0xFF2E8A62);
+  static const _border    = Color(0xFFDDE3E0);
+  static const _textPri   = Color(0xFF0D1611);   // quase-preto
+  static const _textSec   = Color(0xFF3D4A44);   // cinza escuro
+  static const _textHint  = Color(0xFF8A9890);
+  static const _disabled  = Color(0xFFCDD6D2);
 
-  // Vermelho para o bloco de aviso
-  static const _redBg    = Color(0xFF1A0A0A);
-  static const _redBorder = Color(0xFF8B1A1A);
-  static const _redText  = Color(0xFFFF6B6B);
-  static const _redIcon  = Color(0xFFFF4444);
+  // Vermelho para o bloco de aviso (versão light)
+  static const _redBg     = Color(0xFFFFF1F1);
+  static const _redBorder = Color(0xFFE53E3E);
+  static const _redText   = Color(0xFFB91C1C);
+  static const _redIcon   = Color(0xFFDC2626);
 
   @override
   void initState() {
     super.initState();
-    _s = _S(widget.lang == 'es');
+    _localLang = widget.lang; // inicializa com lang detectado pelo sistema
+    _s = _S(_localLang == 'es');
 
     _ctrl = AnimationController(
       vsync: this,
@@ -281,6 +281,7 @@ class _ProfessionalDeclarationModalState
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
+                  _buildLangToggle(),
                   _buildHeader(),
                   _buildDisclaimerBlock(),
                   _buildBody(),
@@ -294,13 +295,57 @@ class _ProfessionalDeclarationModalState
     );
   }
 
+  // ── 0. Toggle de idioma PT / ES ──────────────────────────────────────────
+  Widget _buildLangToggle() {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: ['pt', 'es'].map((lang) {
+          final selected = _localLang == lang;
+          return GestureDetector(
+            onTap: () => setState(() {
+              _localLang = lang;
+              _s = _S(lang == 'es');
+              // Resetar seleção ao trocar idioma (labels mudam)
+              _selectedCategory = null;
+            }),
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 160),
+              margin: const EdgeInsets.only(left: 6),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20),
+                color: selected ? _green : Colors.transparent,
+                border: Border.all(
+                  color: selected ? _green : _border,
+                  width: 1,
+                ),
+              ),
+              child: Text(
+                lang == 'pt' ? 'PT' : 'ES',
+                style: TextStyle(
+                  fontSize: 11,
+                  fontWeight: FontWeight.w800,
+                  color: selected ? Colors.white : _textHint,
+                  letterSpacing: 0.8,
+                  decoration: TextDecoration.none,
+                ),
+              ),
+            ),
+          );
+        }).toList(),
+      ),
+    );
+  }
+
   // ── 1. Cabeçalho ─────────────────────────────────────────────────────────
   Widget _buildHeader() {
     return Container(
-      padding: const EdgeInsets.fromLTRB(24, 26, 24, 20),
+      padding: const EdgeInsets.fromLTRB(24, 16, 24, 18),
       decoration: const BoxDecoration(
         color: _surface,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(0)),
         border: Border(bottom: BorderSide(color: _border, width: 1)),
       ),
       child: Column(
@@ -311,19 +356,19 @@ class _ProfessionalDeclarationModalState
             children: [
               // Ícone de aviso
               Container(
-                padding: const EdgeInsets.all(10),
+                padding: const EdgeInsets.all(9),
                 decoration: BoxDecoration(
-                  color: _redIcon.withValues(alpha: 0.12),
-                  borderRadius: BorderRadius.circular(12),
+                  color: _redIcon.withValues(alpha: 0.10),
+                  borderRadius: BorderRadius.circular(10),
                   border: Border.all(
-                    color: _redIcon.withValues(alpha: 0.30),
+                    color: _redIcon.withValues(alpha: 0.25),
                     width: 1,
                   ),
                 ),
                 child: const Icon(
                   Icons.warning_amber_rounded,
                   color: _redIcon,
-                  size: 22,
+                  size: 20,
                 ),
               ),
               const SizedBox(width: 14),
@@ -334,12 +379,12 @@ class _ProfessionalDeclarationModalState
                     // Badge
                     Container(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 8, vertical: 3),
+                          horizontal: 7, vertical: 3),
                       decoration: BoxDecoration(
                         color: _redBg,
                         borderRadius: BorderRadius.circular(4),
                         border: Border.all(
-                            color: _redBorder.withValues(alpha: 0.5),
+                            color: _redBorder.withValues(alpha: 0.35),
                             width: 1),
                       ),
                       child: Text(
@@ -349,6 +394,7 @@ class _ProfessionalDeclarationModalState
                           fontSize: 9,
                           fontWeight: FontWeight.w900,
                           letterSpacing: 1.4,
+                          decoration: TextDecoration.none,
                         ),
                       ),
                     ),
@@ -357,9 +403,10 @@ class _ProfessionalDeclarationModalState
                       _s.title,
                       style: const TextStyle(
                         color: _textPri,
-                        fontSize: 17,
-                        fontWeight: FontWeight.w700,
-                        letterSpacing: 0.2,
+                        fontSize: 18,
+                        fontWeight: FontWeight.w800,
+                        letterSpacing: 0.1,
+                        decoration: TextDecoration.none,
                       ),
                     ),
                   ],
@@ -367,13 +414,14 @@ class _ProfessionalDeclarationModalState
               ),
             ],
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 8),
           Text(
             _s.subtitle,
             style: const TextStyle(
               color: _textSec,
               fontSize: 13,
               height: 1.5,
+              decoration: TextDecoration.none,
             ),
           ),
         ],
@@ -384,30 +432,30 @@ class _ProfessionalDeclarationModalState
   // ── 2. Bloco de Disclaimer Obrigatório (destaque máximo) ──────────────────
   Widget _buildDisclaimerBlock() {
     return Container(
-      margin: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+      margin: const EdgeInsets.fromLTRB(20, 18, 20, 0),
       decoration: BoxDecoration(
         color: _redBg,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: _redBorder, width: 1.5),
+        border: Border.all(color: _redBorder.withValues(alpha: 0.55), width: 1.5),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Barra de título vermelha
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 9),
             decoration: BoxDecoration(
-              color: _redBorder.withValues(alpha: 0.25),
+              color: _redBorder.withValues(alpha: 0.12),
               borderRadius: const BorderRadius.vertical(
                   top: Radius.circular(11)),
             ),
             child: Row(
               children: [
                 const Icon(Icons.gpp_bad_rounded,
-                    size: 15, color: _redIcon),
+                    size: 14, color: _redIcon),
                 const SizedBox(width: 8),
                 Text(
-                  widget.lang == 'es'
+                  _localLang == 'es'
                       ? 'AVISO IMPORTANTE — LEA ANTES DE CONTINUAR'
                       : 'AVISO IMPORTANTE — LEIA ANTES DE CONTINUAR',
                   style: const TextStyle(
@@ -415,22 +463,24 @@ class _ProfessionalDeclarationModalState
                     fontSize: 10,
                     fontWeight: FontWeight.w900,
                     letterSpacing: 1.2,
+                    decoration: TextDecoration.none,
                   ),
                 ),
               ],
             ),
           ),
 
-          // Texto principal do disclaimer
+          // Texto principal do disclaimer — bold para ênfase, sem underline
           Padding(
-            padding: const EdgeInsets.fromLTRB(14, 14, 14, 14),
+            padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
             child: Text(
               _s.disclaimerMain,
               style: const TextStyle(
                 color: _textPri,
                 fontSize: 13.5,
                 height: 1.65,
-                fontWeight: FontWeight.w500,
+                fontWeight: FontWeight.bold,
+                decoration: TextDecoration.none,
               ),
             ),
           ),
@@ -438,12 +488,12 @@ class _ProfessionalDeclarationModalState
           // Divisor
           Container(
             height: 1,
-            color: _redBorder.withValues(alpha: 0.35),
+            color: _redBorder.withValues(alpha: 0.20),
           ),
 
           // Bullets de reforço
           Padding(
-            padding: const EdgeInsets.fromLTRB(14, 12, 14, 14),
+            padding: const EdgeInsets.fromLTRB(14, 10, 14, 12),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: _s.warningItems.map((item) {
@@ -461,10 +511,11 @@ class _ProfessionalDeclarationModalState
                       Expanded(
                         child: Text(
                           item,
-                          style: TextStyle(
-                            color: _textSec.withValues(alpha: 0.9),
+                          style: const TextStyle(
+                            color: _textSec,
                             fontSize: 12.5,
                             height: 1.5,
+                            decoration: TextDecoration.none,
                           ),
                         ),
                       ),
@@ -482,23 +533,24 @@ class _ProfessionalDeclarationModalState
   // ── 3. Corpo — Seleção de categoria + Checkbox ────────────────────────────
   Widget _buildBody() {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(20, 22, 20, 4),
+      padding: const EdgeInsets.fromLTRB(20, 20, 20, 4),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Label da seleção
+          // Label da seleção — texto escuro, sem underline
           Text(
             _s.dropdownLabel,
             style: const TextStyle(
-              color: _gold,
-              fontSize: 12,
+              color: _textSec,
+              fontSize: 11,
               fontWeight: FontWeight.w700,
-              letterSpacing: 0.5,
+              letterSpacing: 0.6,
+              decoration: TextDecoration.none,
             ),
           ),
           const SizedBox(height: 10),
 
-          // Radio chips
+          // Radio chips — fundo branco, borda verde quando selecionado
           ...List.generate(_s.categories.length, (i) {
             final cat = _s.categories[i];
             final selected = _selectedCategory == cat;
@@ -509,21 +561,22 @@ class _ProfessionalDeclarationModalState
                 width: double.infinity,
                 margin: const EdgeInsets.only(bottom: 8),
                 padding: const EdgeInsets.symmetric(
-                    horizontal: 14, vertical: 13),
+                    horizontal: 14, vertical: 12),
                 decoration: BoxDecoration(
                   color: selected
-                      ? _green.withValues(alpha: 0.14)
-                      : _surface,
+                      ? _green.withValues(alpha: 0.06)
+                      : Colors.white,
                   borderRadius: BorderRadius.circular(10),
                   border: Border.all(
                     color: selected
-                        ? _greenLt.withValues(alpha: 0.65)
+                        ? _greenLt.withValues(alpha: 0.80)
                         : _border,
-                    width: 1,
+                    width: selected ? 1.5 : 1,
                   ),
                 ),
                 child: Row(
                   children: [
+                    // Radio button visual
                     AnimatedContainer(
                       duration: const Duration(milliseconds: 180),
                       width: 20,
@@ -546,11 +599,12 @@ class _ProfessionalDeclarationModalState
                       child: Text(
                         cat,
                         style: TextStyle(
-                          color: selected ? _textPri : _textSec,
+                          color: _textPri,
                           fontSize: 14,
                           fontWeight: selected
-                              ? FontWeight.w600
+                              ? FontWeight.w700
                               : FontWeight.w400,
+                          decoration: TextDecoration.none,
                         ),
                       ),
                     ),
@@ -560,7 +614,7 @@ class _ProfessionalDeclarationModalState
             );
           }),
 
-          const SizedBox(height: 18),
+          const SizedBox(height: 16),
 
           // Checkbox de consentimento
           GestureDetector(
@@ -570,19 +624,20 @@ class _ProfessionalDeclarationModalState
               padding: const EdgeInsets.all(14),
               decoration: BoxDecoration(
                 color: _checked
-                    ? _green.withValues(alpha: 0.10)
-                    : _surface,
+                    ? _green.withValues(alpha: 0.06)
+                    : Colors.white,
                 borderRadius: BorderRadius.circular(10),
                 border: Border.all(
                   color: _checked
-                      ? _greenLt.withValues(alpha: 0.55)
+                      ? _greenLt.withValues(alpha: 0.75)
                       : _border,
-                  width: 1,
+                  width: _checked ? 1.5 : 1,
                 ),
               ),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  // Checkbox visual
                   AnimatedContainer(
                     duration: const Duration(milliseconds: 180),
                     width: 22,
@@ -606,25 +661,25 @@ class _ProfessionalDeclarationModalState
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          widget.lang == 'es'
+                          _localLang == 'es'
                               ? 'Leí y acepto los términos anteriores'
-                          : 'Li e aceito os termos acima',
+                              : 'Li e aceito os termos acima',
                           style: TextStyle(
-                            color: _checked ? _textPri : _textSec,
+                            color: _textPri,
                             fontSize: 13.5,
-                            fontWeight: FontWeight.w700,
+                            fontWeight: FontWeight.bold,
                             height: 1.3,
+                            decoration: TextDecoration.none,
                           ),
                         ),
                         const SizedBox(height: 4),
                         Text(
                           _s.checkboxText,
-                          style: TextStyle(
-                            color: _checked
-                                ? _textSec
-                                : _textHint,
+                          style: const TextStyle(
+                            color: _textSec,
                             fontSize: 12,
                             height: 1.55,
+                            decoration: TextDecoration.none,
                           ),
                         ),
                       ],
@@ -635,7 +690,7 @@ class _ProfessionalDeclarationModalState
             ),
           ),
 
-          const SizedBox(height: 20),
+          const SizedBox(height: 18),
         ],
       ),
     );
@@ -649,28 +704,29 @@ class _ProfessionalDeclarationModalState
       padding: const EdgeInsets.fromLTRB(20, 0, 20, 28),
       child: Column(
         children: [
-          // Nota legal
+          // Nota legal — sem underline, sem fundo ouro escuro
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 9),
             margin: const EdgeInsets.only(bottom: 14),
             decoration: BoxDecoration(
-              color: _goldBg,
+              color: const Color(0xFFF5F5F5),
               borderRadius: BorderRadius.circular(8),
               border: Border.all(
-                  color: _gold.withValues(alpha: 0.25), width: 1),
+                  color: const Color(0xFFD0D0D0), width: 1),
             ),
             child: Row(
               children: [
-                Icon(Icons.lock_outline_rounded,
-                    size: 13, color: _gold.withValues(alpha: 0.8)),
+                const Icon(Icons.lock_outline_rounded,
+                    size: 13, color: Color(0xFF888888)),
                 const SizedBox(width: 8),
                 Expanded(
                   child: Text(
                     _s.legalNote,
-                    style: TextStyle(
-                      color: _gold.withValues(alpha: 0.85),
+                    style: const TextStyle(
+                      color: Color(0xFF555555),
                       fontSize: 11.5,
                       height: 1.4,
+                      decoration: TextDecoration.none,
                     ),
                   ),
                 ),
@@ -696,8 +752,8 @@ class _ProfessionalDeclarationModalState
               boxShadow: enabled
                   ? [
                       BoxShadow(
-                        color: _green.withValues(alpha: 0.40),
-                        blurRadius: 14,
+                        color: _green.withValues(alpha: 0.30),
+                        blurRadius: 12,
                         offset: const Offset(0, 4),
                       ),
                     ]
@@ -740,6 +796,7 @@ class _ProfessionalDeclarationModalState
                                 fontSize: 15,
                                 fontWeight: FontWeight.w700,
                                 letterSpacing: 0.3,
+                                decoration: TextDecoration.none,
                               ),
                             ),
                           ],
@@ -753,7 +810,7 @@ class _ProfessionalDeclarationModalState
           if (!enabled) ...[
             const SizedBox(height: 10),
             Text(
-              widget.lang == 'es'
+              _localLang == 'es'
                   ? 'Seleccione su categoría y marque la casilla para continuar.'
                   : 'Selecione sua categoria e marque o checkbox para continuar.',
               textAlign: TextAlign.center,
@@ -761,6 +818,7 @@ class _ProfessionalDeclarationModalState
                 color: _textHint,
                 fontSize: 11.5,
                 height: 1.4,
+                decoration: TextDecoration.none,
               ),
             ),
           ],
