@@ -11,8 +11,9 @@ import '../models/protocol_model.dart';
 import '../widgets/common_widgets.dart' show MedBreakpoints;
 import 'protocols_screen.dart' show showProtocolDetail;
 
-const _kDark  = Color(0xFF07110d);
-const _kGreen = Color(0xFF075f45);
+// Paleta dark unificada — verde-escuro legacy removido (PR #65)
+const _kDark  = Color(0xFF1A1D23); // preto/cinza neutro padrão
+const _kGreen = Color(0xFF075f45); // mantido apenas para textos/acentos ativos
 const _kGold  = Color(0xFFC5A365);
 const _kGoldL = Color(0xFFFFE8A6);
 
@@ -246,7 +247,7 @@ class _LibraryScreenState extends State<LibraryScreen>
     final p = context.watch<AppProvider>();
     final dark = p.darkMode;
     final isEs = p.lang == 'es';
-    final bg = dark ? const Color(0xFF0A130E) : const Color(0xFFF7F8FA);
+    final bg = dark ? const Color(0xFF1A1D23) : const Color(0xFFF7F8FA);
     final filtered = _filtered;
     final showHeader = MedBreakpoints.of(context).isDesktop;
 
@@ -322,7 +323,7 @@ class _MobileLibraryTabBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bg         = dark ? const Color(0xFF0F1116) : Colors.white;
+    final bg         = dark ? const Color(0xFF1A1D23) : Colors.white;
     final border     = dark
         ? Colors.white.withValues(alpha: 0.07)
         : const Color(0xFFDDE8E2);
@@ -792,7 +793,7 @@ class _CasosDeEstudoTabState extends State<_CasosDeEstudoTab> {
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
               decoration: BoxDecoration(
-                color: dark ? const Color(0xFF0D1F16) : const Color(0xFFEAF5EE),
+                color: dark ? const Color(0xFF252930) : const Color(0xFFEAF5EE),
                 borderRadius: BorderRadius.circular(14),
                 border: Border.all(color: _kGreen.withValues(alpha: 0.3)),
               ),
@@ -938,8 +939,8 @@ class _CasosDeEstudoTabState extends State<_CasosDeEstudoTab> {
           });
     }
 
-    final cardBg = dark ? const Color(0xFF111C17) : Colors.white;
-    final borderC = dark ? const Color(0xFF1F3328) : const Color(0xFFDCEDDC);
+    final cardBg = dark ? const Color(0xFF252930) : Colors.white;
+    final borderC = dark ? const Color(0xFF374151) : const Color(0xFFDCEDDC);
 
     final bodySliver = fluxos.isEmpty
         ? SliverFillRemaining(
@@ -1079,7 +1080,7 @@ class _CasosDeEstudoTabState extends State<_CasosDeEstudoTab> {
       if (_queryFluxo.isEmpty)
         SliverToBoxAdapter(
           child: Container(
-            color: dark ? const Color(0xFF0D1A12) : const Color(0xFFF2F8F2),
+            color: dark ? const Color(0xFF252930) : const Color(0xFFF2F8F2),
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
             child: SingleChildScrollView(
               scrollDirection: Axis.horizontal,
@@ -1125,7 +1126,7 @@ class _CasosDeEstudoTabState extends State<_CasosDeEstudoTab> {
         SliverToBoxAdapter(
           child: Container(
             width: double.infinity,
-            color: dark ? const Color(0xFF0D1A12) : const Color(0xFFF2F8F2),
+            color: dark ? const Color(0xFF252930) : const Color(0xFFF2F8F2),
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
             child: Text(
               '${fluxos.length} resultado(s) para "$_queryFluxo"',
@@ -1167,7 +1168,7 @@ class _SegmentBtn extends StatelessWidget {
             borderRadius: BorderRadius.circular(12),
             color: active
                 ? _kGreen
-                : (dark ? const Color(0xFF0D1F16) : const Color(0xFFEAF5EE)),
+                : (dark ? const Color(0xFF252930) : const Color(0xFFEAF5EE)),
             border: Border.all(
               color: active ? _kGreen : _kGreen.withValues(alpha: 0.25),
             ),
@@ -1487,7 +1488,7 @@ class _GuideCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cardBg   = dark ? const Color(0xFF111C15) : Colors.white;
+    final cardBg   = dark ? const Color(0xFF252930) : Colors.white;
     final border   = dark ? Colors.white.withValues(alpha: 0.07) : Colors.black.withValues(alpha: 0.06);
     final catColor = _categoryColor;
 

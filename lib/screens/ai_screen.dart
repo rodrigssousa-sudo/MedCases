@@ -192,6 +192,10 @@ class AiScreen extends StatefulWidget {
   /// callback para abrir as configurações de IA (null quando não montado)
   static final openSettingsCallback = ValueNotifier<VoidCallback?>(null);
 
+  /// true quando o teclado virtual está aberto no chat — usado pelo FAB central
+  /// em main.dart para sumir suavemente durante a digitação (Fix #5 PR #65).
+  static final chatKeyboardOpen = ValueNotifier<bool>(false);
+
   // ── Home V2: Injeção de query a partir da Home ─────────────────────────
   /// Query pendente para ser disparada automaticamente ao montar a tela de IA.
   /// A HomeScreen seta este valor antes de navegar para a aba 2.
@@ -332,7 +336,11 @@ class _AiScreenState extends State<AiScreen> {
   void initState() {
     super.initState();
     _focusNode.addListener(() {
-      if (mounted) setState(() => _hasFocus = _focusNode.hasFocus);
+      if (mounted) {
+        setState(() => _hasFocus = _focusNode.hasFocus);
+        // Fix #5: propaga foco ao FAB central (main.dart oculta o botão)
+        AiScreen.chatKeyboardOpen.value = _focusNode.hasFocus;
+      }
     });
     _queryCtrl.addListener(() {
       if (mounted && _queryCtrl.text.isNotEmpty && _hasFocus) {
@@ -660,6 +668,7 @@ class _AiScreenState extends State<AiScreen> {
     AiScreen.hasMessagesNotifier.value  = false;
     AiScreen.historyCountNotifier.value = 0;
     AiScreen.aiConnectedNotifier.value  = false;
+    AiScreen.chatKeyboardOpen.value     = false; // Fix #5: limpa ao desmontar
     super.dispose();
   }
 
@@ -1230,6 +1239,15 @@ class _AiScreenState extends State<AiScreen> {
     final bp   = MedBreakpoints.of(context);
     // Fundo estilo WhatsApp — levíssimo padrão
     final chatBg = dark ? const Color(0xFF1A1D23) : const Color(0xFFECE5DD);
+
+    // Fix #5: detecta teclado via viewInsets (cobre Web Mobile onde focus events
+    // podem não ser confiáveis). Propaga ao ValueNotifier para o FAB em main.dart.
+    final kbOpen = MediaQuery.of(context).viewInsets.bottom > 50;
+    if (AiScreen.chatKeyboardOpen.value != kbOpen) {
+      // Schedula fora do build para evitar setState-during-build
+      WidgetsBinding.instance.addPostFrameCallback(
+          (_) => AiScreen.chatKeyboardOpen.value = kbOpen);
+    }
 
     // No desktop: centraliza o chat com largura máxima elegante
     final double? chatMaxWidth = bp.isDesktop ? 960 : null;
@@ -3234,9 +3252,10 @@ class _InputBarState extends State<_InputBar> {
     // safe area do home indicator nativamente — adicionar SafeArea aqui causava
     // um segundo padding bottom que criava o grande vazio branco visível no screenshot.
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      // Padding vertical -50%: 8→4 top/bottom — barra mais compacta
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(24),
+        borderRadius: BorderRadius.circular(20),
         child: BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
             child: Container(
@@ -3245,7 +3264,7 @@ class _InputBarState extends State<_InputBar> {
                 color: dark
                     ? const Color(0xFF252930).withValues(alpha: 0.82)
                     : Colors.white.withValues(alpha: 0.88),
-                borderRadius: BorderRadius.circular(24),
+                borderRadius: BorderRadius.circular(20),
                 border: Border.all(
                   color: dark
                       ? const Color(0xFF00E5FF).withValues(alpha: 0.12)
@@ -3253,7 +3272,8 @@ class _InputBarState extends State<_InputBar> {
                   width: 0.8,
                 ),
               ),
-              padding: const EdgeInsets.fromLTRB(10, 8, 10, 8),
+              // Padding interno vertical -50%: 8→4 — mantém mic+texto centrados
+              padding: const EdgeInsets.fromLTRB(10, 4, 10, 4),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -3277,8 +3297,9 @@ class _InputBarState extends State<_InputBar> {
                             onTap: widget.onVoice,
                             child: AnimatedContainer(
                               duration: const Duration(milliseconds: 200),
-                              width: 38, height: 38,
-                              margin: const EdgeInsets.only(right: 6, bottom: 1),
+                              // Mic -50% vertical: 38→32
+                              width: 32, height: 32,
+                              margin: const EdgeInsets.only(right: 6, bottom: 0),
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
                                 color: micBgCol,
@@ -3343,8 +3364,9 @@ class _InputBarState extends State<_InputBar> {
                                     fontWeight: FontWeight.w400,
                                   ),
                                   border: InputBorder.none,
+                                  // ContentPadding -50% vertical: 9→4
                                   contentPadding: const EdgeInsets.symmetric(
-                                    horizontal: 14, vertical: 9,
+                                    horizontal: 14, vertical: 4,
                                   ),
                                 ),
                               ),
@@ -3358,7 +3380,8 @@ class _InputBarState extends State<_InputBar> {
                           onTap: widget.thinking ? null : widget.onSend,
                           child: AnimatedContainer(
                             duration: const Duration(milliseconds: 150),
-                            width: 42, height: 42,
+                            // Send btn -50% vertical: 42→34
+                            width: 34, height: 34,
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
                               color: widget.thinking
