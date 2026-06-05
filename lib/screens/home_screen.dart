@@ -287,7 +287,7 @@ class _HomeScreenState extends State<HomeScreen> {
             _HomeScreenState._slide(const _PrescripcionesShell()),
           ),
         ),
-        const SizedBox(height: 4),
+        const SizedBox(height: 8),
 
         // 2 — Fármacos (card largo — edge-to-edge)
         _HomeCard(
@@ -303,7 +303,7 @@ class _HomeScreenState extends State<HomeScreen> {
             _HomeScreenState._slide(const _FarmacosShell()),
           ),
         ),
-        const SizedBox(height: 4),
+        const SizedBox(height: 8),
 
         // 3 — Interacciones (card largo — edge-to-edge)
         _HomeCard(
@@ -319,7 +319,7 @@ class _HomeScreenState extends State<HomeScreen> {
             _HomeScreenState._slide(const DrugInteractionsScreen()),
           ),
         ),
-        const SizedBox(height: 4),
+        const SizedBox(height: 8),
 
         // 4 — Adulto + Pediatría (lado a lado, metade da largura — gap reduzido)
         Row(children: [
@@ -335,7 +335,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
           ),
-          const SizedBox(width: 4),
+          const SizedBox(width: 6),
           Expanded(
             child: _HomeCardHalf(
               icon: Icons.child_care_rounded,
@@ -350,8 +350,11 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ]),
 
-        // ── gap compacto: cards → toolbar (sem divisor) ──────────────────
-        const SizedBox(height: 8),
+        const SizedBox(height: 16),
+
+        // ── Divisor ───────────────────────────────────────────────────────
+        _HomeDivider(dark: dark),
+        const SizedBox(height: 16),
 
         // ── Notas · Recentes · Favoritos · Avaliação ────────────────────
         _QuickShortcuts(
@@ -362,8 +365,11 @@ class _HomeScreenState extends State<HomeScreen> {
           onCheckUpdate: widget.onCheckUpdate,
         ),
 
-        // ── gap compacto: toolbar → MI GUARDIA (sem divisor, sem espaço grande) ─
-        const SizedBox(height: 6),
+        const SizedBox(height: 16),
+
+        // ── Divisor ───────────────────────────────────────────────────────
+        _HomeDivider(dark: dark),
+        const SizedBox(height: 16),
 
         // ── Meu Plantão ───────────────────────────────────────────────────
         MeuPlantaoDashboard(
@@ -986,7 +992,7 @@ class _HomeCardHalfState extends State<_HomeCardHalf>
       child: ScaleTransition(
         scale: _scale,
         child: Container(
-          height: 106,
+          height: 96,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(20),
             gradient: LinearGradient(
@@ -2217,9 +2223,9 @@ class _HomeCardState extends State<_HomeCard>
         scale: _scale,
         child: Container(
           width: double.infinity,
-          height: 100,
+          height: 88,
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: BorderRadius.circular(22),
             gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
@@ -2279,14 +2285,14 @@ class _HomeCardState extends State<_HomeCard>
 
               // Conteúdo
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
                 child: Row(children: [
                   // Ícone
                   Container(
-                    width: 52,
-                    height: 52,
+                    width: 48,
+                    height: 48,
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(15),
+                      borderRadius: BorderRadius.circular(14),
                       color: widget.accentColor.withValues(alpha: 0.14),
                       border: Border.all(
                         color: widget.accentColor.withValues(alpha: 0.25),
@@ -2295,11 +2301,11 @@ class _HomeCardState extends State<_HomeCard>
                     ),
                     child: Icon(
                       widget.icon,
-                      size: 26,
+                      size: 24,
                       color: widget.accentColor,
                     ),
                   ),
-                  const SizedBox(width: 14),
+                  const SizedBox(width: 16),
 
                   // Textos
                   Expanded(
@@ -2310,7 +2316,7 @@ class _HomeCardState extends State<_HomeCard>
                         Text(
                           widget.label,
                           style: TextStyle(
-                            fontSize: 18,
+                            fontSize: 19,
                             fontWeight: FontWeight.w900,
                             color: Colors.white.withValues(alpha: 0.97),
                             letterSpacing: -0.3,
