@@ -1541,7 +1541,23 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
       //   • floatingActionButtonLocation: centerDocked
       //   • BottomAppBar: notchMargin 5, Row com SizedBox(width:60) no centro
       //   • _LegalBar abaixo do BottomAppBar via bottomNavigationBar Column
-      floatingActionButton: _buildAiCenterFab(dark, p),
+      // Fix #5: oculta o FAB quando o teclado do chat está aberto.
+      // ValueListenableBuilder reage ao ValueNotifier estático do AiScreen
+      // sem forçar rebuild de todo o Scaffold — apenas o FAB é reconstruído.
+      floatingActionButton: ValueListenableBuilder<bool>(
+        valueListenable: AiScreen.chatKeyboardOpen,
+        builder: (_, kbOpen, child) => AnimatedScale(
+          scale: kbOpen ? 0.0 : 1.0,
+          duration: const Duration(milliseconds: 180),
+          curve: Curves.easeInOut,
+          child: AnimatedOpacity(
+            opacity: kbOpen ? 0.0 : 1.0,
+            duration: const Duration(milliseconds: 160),
+            child: child,
+          ),
+        ),
+        child: _buildAiCenterFab(dark, p),
+      ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: Column(
         mainAxisSize: MainAxisSize.min,

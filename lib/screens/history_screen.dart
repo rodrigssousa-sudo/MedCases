@@ -708,7 +708,7 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
     final pub = _applyFilters(p.publicHistories);
     final visiblePub = _visibleCommunityHistories(pub, p);
     final bp = MedBreakpoints.of(context);
-    final bg = p.darkMode ? const Color(0xFF0A130E) : const Color(0xFFF7F8FA);
+    final bg = p.darkMode ? const Color(0xFF1A1D23) : const Color(0xFFF7F8FA);
 
     Future<void> refreshCommunity() => p.loadPublicHistories(forceRemote: true);
     void triggerCommunityRefresh() {
@@ -6517,7 +6517,7 @@ class _LabStructuredWidgetState extends State<_LabStructuredWidget> {
     // Mostra bottom sheet de seleção: câmera ou galeria
     final source = await showModalBottomSheet<ImageSource>(
       context: context,
-      backgroundColor: const Color(0xFF101614),
+      backgroundColor: const Color(0xFF1A1D23),
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
@@ -6702,7 +6702,7 @@ class _LabStructuredWidgetState extends State<_LabStructuredWidget> {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        backgroundColor: const Color(0xFF101614),
+        backgroundColor: const Color(0xFF1A1D23),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         title: Row(children: [
           Icon(

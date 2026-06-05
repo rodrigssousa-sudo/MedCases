@@ -6610,11 +6610,12 @@ class _PedRefPremiumViewState extends State<_PedRefPremiumView> {
   // ─────────────────────────────────────────────────────────────────────────
   Widget _buildNarrowBody(List<_PedLabCategory> cats, AppColors c, bool dark) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+      // Padding lateral reduzido: 6px em vez de 16px — cards chegam mais às bordas
+      padding: const EdgeInsets.fromLTRB(6, 12, 6, 0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: cats.map((cat) => Padding(
-          padding: const EdgeInsets.only(bottom: 14),
+          padding: const EdgeInsets.only(bottom: 10),
           child: _PedLabCategoryCard(
             category: cat,
             ageFilter: _ageFilter,
@@ -7161,19 +7162,9 @@ class _PedLabCategoryCardState extends State<_PedLabCategoryCard> {
     final dark   = widget.dark;
     final accent = cat.accent;
 
-    return Container(
-      decoration: BoxDecoration(
-        color: c.cardBg,
-        borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: c.border),
-        boxShadow: dark
-            ? []
-            : [
-                BoxShadow(color: Colors.black.withValues(alpha: 0.04),
-                    blurRadius: 10, offset: const Offset(0, 3)),
-              ],
-      ),
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+    // Container pai removido — cabeçalho e parâmetros assentam diretamente
+    // sobre o Scaffold background. Borda e sombra mantidas apenas no header.
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
 
         // ── Header da categoria
         GestureDetector(
@@ -7182,16 +7173,17 @@ class _PedLabCategoryCardState extends State<_PedLabCategoryCard> {
             setState(() => _collapsed = !_collapsed);
           },
           child: Container(
-            padding: const EdgeInsets.fromLTRB(16, 14, 14, 14),
+            padding: const EdgeInsets.fromLTRB(14, 12, 12, 12),
             decoration: BoxDecoration(
-              color: accent.withValues(alpha: 0.06),
+              color: accent.withValues(alpha: dark ? 0.08 : 0.06),
+              // Header sempre com cantos arredondados — sem container pai externo
               borderRadius: _collapsed
-                  ? BorderRadius.circular(17)
-                  : const BorderRadius.vertical(top: Radius.circular(17)),
-              border: Border(
-                  bottom: _collapsed
-                      ? BorderSide.none
-                      : BorderSide(color: accent.withValues(alpha: 0.12))),
+                  ? BorderRadius.circular(14)
+                  : const BorderRadius.vertical(top: Radius.circular(14)),
+              border: Border.all(
+                color: accent.withValues(alpha: 0.18),
+                width: 0.8,
+              ),
             ),
             child: Row(children: [
               // Ícone categoria
@@ -7272,7 +7264,7 @@ class _PedLabCategoryCardState extends State<_PedLabCategoryCard> {
 
             // Fonte da categoria
             Container(
-              margin: const EdgeInsets.fromLTRB(14, 4, 14, 14),
+              margin: const EdgeInsets.fromLTRB(4, 4, 4, 10),
               padding: const EdgeInsets.symmetric(
                   horizontal: 12, vertical: 7),
               decoration: BoxDecoration(
@@ -7293,8 +7285,7 @@ class _PedLabCategoryCardState extends State<_PedLabCategoryCard> {
           ]),
           secondChild: const SizedBox(width: double.infinity),
         ),
-      ]),
-    );
+      ]);
   }
 }
 
@@ -7379,7 +7370,8 @@ class _PedLabParamCardState extends State<_PedLabParamCard> {
           : null,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
-        margin: const EdgeInsets.fromLTRB(14, 0, 14, 6),
+        // Margem lateral reduzida: sem container pai, os cards chegam mais às bordas
+        margin: const EdgeInsets.fromLTRB(4, 0, 4, 6),
         decoration: BoxDecoration(
           color: _expanded
               ? accent.withValues(alpha: 0.04)
