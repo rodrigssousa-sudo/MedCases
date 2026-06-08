@@ -84,76 +84,92 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final topPadding = MediaQuery.of(context).padding.top;
-    final isEs       = context.read<AppProvider>().lang == 'es';
+    // Dimensões físicas reais do display — ignora qualquer inset do framework
+    final mq         = MediaQuery.of(context);
+    final screenSize  = mq.size;
+    final topPadding  = mq.padding.top;
+    final isEs        = context.read<AppProvider>().lang == 'es';
 
-    // AnnotatedRegion força a cor da status bar sem usar AppBar nativo.
-    // SizedBox.expand garante que o Material preenche 100% do espaço
-    // alocado pelo Navigator — sem nenhum padding automático do Scaffold.
+    // AnnotatedRegion: status bar icons brancos sem AppBar nativo
     return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: SystemUiOverlayStyle.light, // ícones da status bar em branco
+      value: SystemUiOverlayStyle.light,
       child: Material(
-        color: const Color(0xFF0F091E), // fundo 100% escuro, sem gaps
-        child: Stack(
-          children: [
+        color: Colors.black, // base preta evita qualquer flash de cor do sistema
+        child: SizedBox(
+          // Força o SizedBox a ter exatamente as dimensões do display físico.
+          // Isso evita que a bottom nav bar do app "roube" altura da Stack.
+          width:  screenSize.width,
+          height: screenSize.height,
+          child: Stack(
+            // clipBehavior none: widgets Positioned podem sair dos bounds sem serem cortados
+            clipBehavior: Clip.none,
+            children: [
 
-            // ── WebView: ocupa CADA PIXEL do display ───────────────────────
-            Positioned.fill(
-              child: WebViewWidget(controller: _controller),
-            ),
+              // ── CAMADA 0 — WebView: 100% do display físico ─────────────────
+              // Positioned.fill dentro de SizedBox(screenSize) = pixel perfeito
+              Positioned.fill(
+                child: WebViewWidget(controller: _controller),
+              ),
 
-            // ── Rodapé referências — Apple 1.4.1 — overlay fixo na base ───
-            Positioned(
-              bottom: 0, left: 0, right: 0,
-              child: _ReferencesFooter(isEs: isEs),
-            ),
+              // ── CAMADA 1 — Rodapé referências (Apple 1.4.1) ────────────────
+              // Overlay sobre a WebView, fixo na base, sem subtrair altura dela
+              Positioned(
+                bottom: 0,
+                left:   0,
+                right:  0,
+                child: _ReferencesFooter(isEs: isEs),
+              ),
 
-            // ── Header roxo — overlay fixo no topo ─────────────────────────
-            Positioned(
-              top: 0, left: 0, right: 0,
-              child: Container(
-                height: topPadding + 52,
-                decoration: const BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [
-                      Color(0xFF1A0F2E),
-                      Color(0xFF2D1B5A),
-                      Color(0xFF4A2D8A),
-                    ],
+              // ── CAMADA 2 — Header roxo com gradiente ───────────────────────
+              // Overlay sobre a WebView, fixo no topo, sem subtrair altura dela
+              Positioned(
+                top:   0,
+                left:  0,
+                right: 0,
+                child: Container(
+                  height: topPadding + 52,
+                  decoration: const BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end:   Alignment.bottomRight,
+                      colors: [
+                        Color(0xFF1A0F2E),
+                        Color(0xFF2D1B5A),
+                        Color(0xFF4A2D8A),
+                      ],
+                    ),
                   ),
-                ),
-                child: Padding(
-                  padding: EdgeInsets.only(top: topPadding),
-                  child: Row(
-                    children: [
-                      IconButton(
-                        icon: const Icon(
-                          Icons.arrow_back_ios_rounded,
-                          size: 18,
-                          color: Colors.white,
-                        ),
-                        onPressed: () => Navigator.of(context).pop(),
-                      ),
-                      const Expanded(
-                        child: Text(
-                          'CALCULADORA CLÍNICA',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w800,
+                  child: Padding(
+                    padding: EdgeInsets.only(top: topPadding),
+                    child: Row(
+                      children: [
+                        IconButton(
+                          icon: const Icon(
+                            Icons.arrow_back_ios_rounded,
+                            size: 18,
                             color: Colors.white,
-                            letterSpacing: 0.4,
+                          ),
+                          onPressed: () => Navigator.of(context).pop(),
+                        ),
+                        const Expanded(
+                          child: Text(
+                            'CALCULADORA CLÍNICA',
+                            style: TextStyle(
+                              fontSize:     16,
+                              fontWeight:   FontWeight.w800,
+                              color:        Colors.white,
+                              letterSpacing: 0.4,
+                            ),
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
 
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -177,7 +193,8 @@ class _ReferencesFooter extends StatelessWidget {
     return Container(
       padding: EdgeInsets.fromLTRB(14, 7, 14, 7 + bottomPadding),
       decoration: const BoxDecoration(
-        color: Color(0xF01A0F2E),
+        // Cor semi-transparente: cards da Wix aparecem rolando por baixo
+        color: Color(0xEE1A0F2E),
         border: Border(
           top: BorderSide(color: Color(0x334A2D8A), width: 0.5),
         ),
@@ -193,8 +210,8 @@ class _ReferencesFooter extends StatelessWidget {
                   : 'Referências clínicas e bibliográficas: AHA, ACC, WHO, PubMed',
               style: const TextStyle(
                 fontSize: 10,
-                color: Color(0xFFB8A8E8),
-                height: 1.3,
+                color:    Color(0xFFB8A8E8),
+                height:   1.3,
               ),
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
@@ -218,9 +235,9 @@ class _ReferencesFooter extends StatelessWidget {
               child: Text(
                 isEs ? 'Ver fuentes' : 'Ver fontes',
                 style: const TextStyle(
-                  fontSize: 10,
+                  fontSize:   10,
                   fontWeight: FontWeight.w600,
-                  color: Color(0xFFA78BFA),
+                  color:      Color(0xFFA78BFA),
                 ),
               ),
             ),
