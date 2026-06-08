@@ -329,16 +329,30 @@ class _HomeScreenState extends State<HomeScreen> {
     // Versão Web mantém todos os elementos via guard kIsWeb.
     // ══════════════════════════════════════════════════════════════════════════
 
+    // Build 102 fix definitivo: padding bottom calculado em runtime.
+    // Problema raiz: padding fixo (96px) não considerava o home indicator
+    // variável por dispositivo (34px iPhone 14 Pro, 0px iPhone SE).
+    //
+    // Cálculo:
+    //   • BottomAppBar row:  48px  (altura fixa dos ícones)
+    //   • _LegalBar:         ~30px (texto 2 linhas × 11px + padding vertical 10px)
+    //   • mediaQuery.bottom:  variável (home indicator: 34px iPhone; 0px no SE/Android)
+    //   • margem de segurança: +8px
+    //
+    // Usando MediaQuery.viewInsets / padding para cálculo preciso frame-a-frame.
+    final mqBottom = MediaQuery.of(context).padding.bottom;
+    // 48 (nav icons) + 30 (LegalBar) + mqBottom (home indicator) + 8 (margem)
+    final scrollBottomPad = 48.0 + 30.0 + mqBottom + 8.0;
+
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       behavior: HitTestBehavior.translucent,
       child: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
-        // Build 99 — padding reduzido: menos espaço morto lateral e bottom
-        // (80px → suficiente para BottomAppBar 52px + _LegalBar + safe area)
-        // Build 102: bottom padding aumentado de 88 → 96px após adição
-        // do card Calculadora Clínica (corrige BOTTOM OVERFLOWED BY 6.5 PIXELS)
-        padding: const EdgeInsets.fromLTRB(12, 8, 12, 96),
+        // Build 102 fix definitivo: padding bottom dinâmico via MediaQuery.
+        // Substitui o valor fixo (88→96px) que não compensava o home indicator
+        // variável de cada dispositivo iPhone/Android. Ver cálculo acima.
+        padding: EdgeInsets.fromLTRB(12, 8, 12, scrollBottomPad),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
 
           // ── BLOCO 1: IA INLINE CHAT — expansão vertical dinâmica ────────────
