@@ -1241,23 +1241,27 @@ class _DrugDetailViewState extends State<_DrugDetailView>
 
         // ═══════════════════════════════════════════════════════════════════
         // 2. DOSE RECOMENDADA — tabelas por população
+        // OCULTO Build 102 — Apple Guideline 1.4.1: tabelas de doses brutas
+        // (mín/máx/inicial) requerem disclaimer médico individualizado.
+        // Os dados permanecem na model _DosageTable; apenas a renderização
+        // está desativada. Reativar quando disclaimer contextual estiver pronto.
         // ═══════════════════════════════════════════════════════════════════
-        if (ev != null) ...[
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 14),
-            child: _DrugSectionTitle(
-              icon: Icons.medication_liquid_outlined,
-              label: p.lang == 'es' ? 'DOSIS RECOMENDADAS' : 'DOSES RECOMENDADAS',
-              c: c, dark: dark,
-            ),
-          ),
-          const SizedBox(height: 8),
-          ...ev.dosageTables.map((table) => Padding(
-            padding: const EdgeInsets.fromLTRB(14, 0, 14, 8),
-            child: _DosageTableCard(table: table, c: c, dark: dark),
-          )),
-          const SizedBox(height: 8),
-        ],
+        // if (ev != null) ...[
+        //   Padding(
+        //     padding: const EdgeInsets.symmetric(horizontal: 14),
+        //     child: _DrugSectionTitle(
+        //       icon: Icons.medication_liquid_outlined,
+        //       label: p.lang == 'es' ? 'DOSIS RECOMENDADAS' : 'DOSES RECOMENDADAS',
+        //       c: c, dark: dark,
+        //     ),
+        //   ),
+        //   const SizedBox(height: 8),
+        //   ...ev.dosageTables.map((table) => Padding(
+        //     padding: const EdgeInsets.fromLTRB(14, 0, 14, 8),
+        //     child: _DosageTableCard(table: table, c: c, dark: dark),
+        //   )),
+        //   const SizedBox(height: 8),
+        // ],
 
         // ═══════════════════════════════════════════════════════════════════
         // 3. CALCULADORA DE DOSE PREMIUM
