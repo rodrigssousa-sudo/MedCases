@@ -7962,7 +7962,7 @@ class _ToolsReferencesFooter extends StatelessWidget {
   final bool isEs;
   const _ToolsReferencesFooter({required this.isEs});
 
-  static const _kSourcesUrl = 'https://www.promedcases.com/fontes';
+  static const _kSourcesUrl = 'https://www.promedcases.com/fontes-e-referencias';
 
   @override
   Widget build(BuildContext context) {
