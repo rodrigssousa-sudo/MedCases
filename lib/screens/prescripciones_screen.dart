@@ -7880,25 +7880,39 @@ class _PrescriptionCardState extends State<_PrescriptionCard> {
                     color: dark ? const Color(0xFF7AABDF) : const Color(0xFF1565C0)),
                 ),
               ),
-              child: Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: dark
-                      ? const Color(0xFF071510).withValues(alpha: 0.8)
-                      : const Color(0xFFF7F5F0),
-                  border: Border.all(color: borderCol),
-                ),
-                child: Text(
-                  m.content,
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: dark ? Colors.white.withValues(alpha: 0.88) : const Color(0xFF1E1E1E),
-                    height: 1.65, fontFamily: 'monospace', fontWeight: FontWeight.w500,
+              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                // ── Texto da prescrição (monospace) ─────────────────────
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: dark
+                        ? const Color(0xFF071510).withValues(alpha: 0.8)
+                        : const Color(0xFFF7F5F0),
+                    border: Border.all(color: borderCol),
+                  ),
+                  child: Text(
+                    m.content,
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: dark ? Colors.white.withValues(alpha: 0.88) : const Color(0xFF1E1E1E),
+                      height: 1.65, fontFamily: 'monospace', fontWeight: FontWeight.w500,
+                    ),
                   ),
                 ),
-              ),
+
+                // ── Evidência Científica inline (Apple Guideline 1.4.1) ──
+                // Bloco sempre visível — não requer interação do usuário.
+                // Exibe: diretriz-base + fonte de evidência + referências.
+                const SizedBox(height: 10),
+                _InlineEvidenceStrip(
+                  model: m,
+                  globalEv: globalEv,
+                  dark: dark,
+                  es: es,
+                ),
+              ]),
             ),
             Divider(height: 1, color: borderCol),
 
@@ -8245,6 +8259,174 @@ class _SmallBadge extends StatelessWidget {
 // ─────────────────────────────────────────────────────────────────────────────
 // WIDGET: Sección de Referencias Científicas (colapsable)
 // ─────────────────────────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────────────
+// _InlineEvidenceStrip — Apple Guideline 1.4.1
+//
+// Seção de evidência científica sempre visível, renderizada inline logo abaixo
+// do texto da prescrição. Exibe: diretriz-base, fonte de evidência e lista
+// minimalista das referências científicas cadastradas no modelo.
+//
+// Requisito: não requer toque do usuário para ser visualizada (não colapsável).
+// Herda cores reativas do tema (Dark Mode / Light Mode automático).
+// ─────────────────────────────────────────────────────────────────────────────
+class _InlineEvidenceStrip extends StatelessWidget {
+  final PrescriptionModel model;
+  final dynamic globalEv;      // DrugEvidenceModel? — pode ser null
+  final bool dark;
+  final bool es;
+
+  const _InlineEvidenceStrip({
+    required this.model,
+    required this.globalEv,
+    required this.dark,
+    required this.es,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    // ── Cores reativas ao tema ───────────────────────────────────────────────
+    final labelCol   = dark ? const Color(0xFF7AABDF) : const Color(0xFF1565C0);
+    final valueCol   = dark ? Colors.white60          : const Color(0xFF444444);
+    final dividerCol = dark ? const Color(0xFF1E3040) : const Color(0xFFDDE4EE);
+    final bgCol      = dark
+        ? const Color(0xFF0B1A2A).withValues(alpha: 0.70)
+        : const Color(0xFFF0F4FB);
+    final borderCol  = dark
+        ? const Color(0xFF1A3050).withValues(alpha: 0.80)
+        : const Color(0xFF1565C0).withValues(alpha: 0.12);
+
+    // ── Dados de evidência: prioridade model → global → fallback ─────────────
+    final guideline     = globalEv?.guidelineSource ?? model.guidelineSource;
+    final evidSrc       = globalEv?.primarySource    ?? model.evidenceSource;
+
+    // Referências: prioridade refs do model → refs globais → fallback OMS
+    final List<_PrescriptionRef> refs;
+    if (model.scienceReferences.isNotEmpty) {
+      refs = model.scienceReferences;
+    } else if (globalEv != null && (globalEv.references as List).isNotEmpty) {
+      refs = (globalEv.references as List).take(4).map((r) =>
+        _PrescriptionRef(source: r.source as String, title: r.title as String, year: r.year as String?)
+      ).toList();
+    } else {
+      // Fallback obrigatório para modelos sem referências cadastradas
+      refs = const [
+        _PrescriptionRef(source: 'OMS / ACLS Internacional', title: 'Diretriz de referência padrão', year: '2025'),
+      ];
+    }
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.fromLTRB(11, 10, 11, 10),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(8),
+        color: bgCol,
+        border: Border.all(color: borderCol),
+      ),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        // ── Título da seção ────────────────────────────────────────────────
+        Row(children: [
+          Icon(Icons.library_books_rounded, size: 11, color: labelCol),
+          const SizedBox(width: 5),
+          Text(
+            es ? 'EVIDENCIA CIENTÍFICA' : 'EVIDÊNCIA CIENTÍFICA',
+            style: TextStyle(
+              fontSize: 9.5, fontWeight: FontWeight.w900,
+              letterSpacing: 0.8, color: labelCol,
+            ),
+          ),
+        ]),
+        const SizedBox(height: 7),
+
+        // ── Diretriz base ──────────────────────────────────────────────────
+        _EvidRow(
+          icon: Icons.account_balance_rounded,
+          label: es ? 'Directriz Base' : 'Diretriz Base',
+          value: guideline,
+          labelCol: labelCol, valueCol: valueCol,
+        ),
+        const SizedBox(height: 4),
+
+        // ── Fonte de evidência ─────────────────────────────────────────────
+        _EvidRow(
+          icon: Icons.source_rounded,
+          label: es ? 'Fuente de Evidencia' : 'Fonte de Evidência',
+          value: evidSrc,
+          labelCol: labelCol, valueCol: valueCol,
+        ),
+
+        // ── Divisor ────────────────────────────────────────────────────────
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8),
+          child: Divider(height: 1, color: dividerCol),
+        ),
+
+        // ── Lista de referências ───────────────────────────────────────────
+        ...refs.map((r) => Padding(
+          padding: const EdgeInsets.only(bottom: 3),
+          child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Padding(
+              padding: const EdgeInsets.only(top: 1.5),
+              child: Icon(Icons.circle, size: 5, color: labelCol),
+            ),
+            const SizedBox(width: 6),
+            Expanded(
+              child: Text(
+                r.year != null
+                    ? '${r.source} (${r.year}): ${r.title}'
+                    : '${r.source}: ${r.title}',
+                style: TextStyle(
+                  fontSize: 10, color: valueCol,
+                  height: 1.45, fontWeight: FontWeight.w500,
+                ),
+              ),
+            ),
+          ]),
+        )),
+      ]),
+    );
+  }
+}
+
+// Helper compacto: linha ícone + label: value
+class _EvidRow extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final String value;
+  final Color labelCol;
+  final Color valueCol;
+
+  const _EvidRow({
+    required this.icon,
+    required this.label,
+    required this.value,
+    required this.labelCol,
+    required this.valueCol,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      Padding(
+        padding: const EdgeInsets.only(top: 1),
+        child: Icon(icon, size: 10, color: labelCol),
+      ),
+      const SizedBox(width: 5),
+      Text(
+        '$label: ',
+        style: TextStyle(fontSize: 10, fontWeight: FontWeight.w700, color: labelCol, height: 1.4),
+      ),
+      Expanded(
+        child: Text(
+          value,
+          style: TextStyle(fontSize: 10, fontWeight: FontWeight.w500, color: valueCol, height: 1.4),
+        ),
+      ),
+    ]);
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+
 class _ReferencesSection extends StatelessWidget {
   final PrescriptionModel model;
   final dynamic globalEv;

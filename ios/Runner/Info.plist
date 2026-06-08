@@ -78,14 +78,14 @@
 	</array>
 
 	<!-- ── Modos de background ───────────────────────────────────────────── -->
-	<!-- audio: exigido pelo speech_to_text para manter sessão STT ativa      -->
+	<!-- audio REMOVIDO Build 101 — app não possui player de áudio persistente. -->
+	<!-- speech_to_text usa AVAudioSession apenas em foreground (sessão STT    -->
+	<!-- é iniciada e encerrada pelo usuário via dictaphone); não requer modo   -->
+	<!-- de background de áudio. Apple Guideline 2.5.4: declarar background    -->
+	<!-- modes não utilizados é causa de rejeição na App Store Review.         -->
 	<!-- fetch REMOVIDO Build 100 — flutter_local_notifications usa           -->
 	<!-- UNTimeIntervalNotificationTrigger em foreground; sem handler nativo  -->
 	<!-- performFetchWithCompletionHandler → Guideline 2.5.4 rejeitaria.      -->
-	<key>UIBackgroundModes</key>
-	<array>
-		<string>audio</string>
-	</array>
 
 	<!-- ── Launch / Main storyboard ─────────────────────────────────────── -->
 	<key>UILaunchStoryboardName</key>
