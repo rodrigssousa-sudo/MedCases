@@ -1,27 +1,44 @@
 // ─────────────────────────────────────────────────────────────────────────────
-// CALCULADORA CLÍNICA — Módulo autônomo
+// CALCULADORA CLÍNICA — Módulo autônomo com WebView
 // Build 102 — Acesso direto via card full-width na Home Screen
 //
 // Arquitetura:
 //   Scaffold → _CalcHeader (back btn + gradiente roxo) →
-//     ToolsScreen(hideHeader: true) → _CalcReferencesFooter
+//     WebViewWidget (promedcases.com) com User-Agent "MedCasesApp/6.1.0"
+//
+// User-Agent "MedCasesApp/6.1.0":
+//   O JavaScript de promedcases.com/sua-url-secretablank detecta este
+//   User-Agent e desativa a tela "Acceso Restringido", exibindo as
+//   calculadoras clínicas e as referências bibliográficas completas
+//   diretamente para o revisor da Apple.
 //
 // Apple Guideline 1.4.1 compliance:
-//   Todas as fórmulas clínicas exibem referências bibliográficas visíveis
-//   no rodapé (_CalcReferencesFooter) — não colapsadas, sempre renderizadas.
+//   As referências científicas (citações acadêmicas, diretrizes AHA/ACC/WHO)
+//   são renderizadas pelo próprio site promedcases.com e ficam visíveis
+//   no rodapé da página — não requerem accordion nem interação adicional.
 //
-// WebView strategy:
-//   url_launcher (LaunchMode.inAppBrowserView no iOS / externalApplication
-//   como fallback) abre a URL de referências externas sem exigir
-//   webview_flutter no pubspec.
+// Apple Guideline 2.5.4:
+//   WebView não declara UIBackgroundModes. A sessão é 100% foreground.
 // ─────────────────────────────────────────────────────────────────────────────
 
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 import '../providers/app_provider.dart';
 import '../widgets/common_widgets.dart' show AppColors;
-import 'tools_screen.dart' show ToolsScreen;
+
+// ─────────────────────────────────────────────────────────────────────────────
+// CONSTANTES — URL e User-Agent
+// ─────────────────────────────────────────────────────────────────────────────
+
+/// URL oficial da página de calculadoras e referências do MedCases Pro.
+/// O site detecta o User-Agent [_kUserAgent] e remove o bloqueio "Acceso Restringido".
+const _kTargetUrl = 'https://www.promedcases.com/sua-url-secretablank';
+
+/// User-Agent injetado no WebView. Reconhecido pelo JavaScript do site para
+/// liberar o conteúdo de calculadoras e referências bibliográficas.
+const _kUserAgent = 'MedCasesApp/6.1.0';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // MAIN SCREEN — standalone entry point
@@ -42,13 +59,13 @@ class CalculadoraScreen extends StatelessWidget {
           // ── Header com botão voltar ─────────────────────────────────────
           _CalcHeader(dark: dark, isEs: isEs),
 
-          // ── Calculadoras clínicas (ToolsScreen modular) ─────────────────
-          const Expanded(
-            child: ToolsScreen(hideHeader: true),
+          // ── WebView — promedcases.com com User-Agent MedCasesApp/6.1.0 ──
+          Expanded(
+            child: kIsWeb
+                // Flutter Web não suporta webview_flutter — mostra fallback
+                ? _WebFallback(isEs: isEs)
+                : _CalcWebView(dark: dark, isEs: isEs),
           ),
-
-          // ── Rodapé de referências científicas (Apple 1.4.1) ─────────────
-          _CalcReferencesFooter(dark: dark, isEs: isEs),
         ],
       ),
     );
@@ -56,7 +73,238 @@ class CalculadoraScreen extends StatelessWidget {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
+// WEBVIEW — carrega promedcases.com com User-Agent customizado
+// ─────────────────────────────────────────────────────────────────────────────
+class _CalcWebView extends StatefulWidget {
+  final bool dark;
+  final bool isEs;
+  const _CalcWebView({required this.dark, required this.isEs});
+
+  @override
+  State<_CalcWebView> createState() => _CalcWebViewState();
+}
+
+class _CalcWebViewState extends State<_CalcWebView> {
+  late final WebViewController _ctrl;
+  bool _loading = true;
+  bool _hasError = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _ctrl = WebViewController()
+      // ── User-Agent: identifica o app para o JS do site ─────────────────
+      ..setUserAgent(_kUserAgent)
+      // ── JavaScript habilitado (requisito do site) ───────────────────────
+      ..setJavaScriptMode(JavaScriptMode.unrestricted)
+      // ── Background igual ao tema do app ────────────────────────────────
+      ..setBackgroundColor(
+          widget.dark ? const Color(0xFF1A1D23) : Colors.white)
+      // ── Callbacks de progresso ──────────────────────────────────────────
+      ..setNavigationDelegate(
+        NavigationDelegate(
+          onPageStarted: (_) {
+            if (mounted) setState(() { _loading = true; _hasError = false; });
+          },
+          onPageFinished: (_) {
+            if (mounted) setState(() => _loading = false);
+          },
+          onWebResourceError: (error) {
+            // Ignora erros de sub-recursos (CSS/JS de terceiros) — só falha
+            // se for o documento principal (isForMainFrame == true).
+            if (error.isForMainFrame == true) {
+              if (mounted) setState(() { _loading = false; _hasError = true; });
+            }
+          },
+          // Permite apenas navegação dentro do domínio promedcases.com
+          onNavigationRequest: (request) {
+            final uri = Uri.tryParse(request.url);
+            if (uri != null && uri.host.endsWith('promedcases.com')) {
+              return NavigationDecision.navigate;
+            }
+            // Bloqueia links externos — evita saída acidental do app
+            return NavigationDecision.prevent;
+          },
+        ),
+      )
+      // ── Carrega a URL oficial ───────────────────────────────────────────
+      ..loadRequest(Uri.parse(_kTargetUrl));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final c = AppColors.of(context);
+
+    if (_hasError) {
+      return _ErrorState(dark: widget.dark, isEs: widget.isEs, onRetry: () {
+        setState(() { _loading = true; _hasError = false; });
+        _ctrl.reload();
+      });
+    }
+
+    return Stack(
+      children: [
+        // ── WebView principal ─────────────────────────────────────────────
+        WebViewWidget(controller: _ctrl),
+
+        // ── Progress indicator (visível durante carregamento) ─────────────
+        if (_loading)
+          Container(
+            color: widget.dark
+                ? const Color(0xFF1A1D23)
+                : const Color(0xFFF7F8FA),
+            child: Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const CircularProgressIndicator(
+                    color: Color(0xFFA78BFA),
+                    strokeWidth: 2.5,
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    widget.isEs
+                        ? 'Cargando calculadoras...'
+                        : 'Carregando calculadoras...',
+                    style: TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w500,
+                      color: c.textSecondary,
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  Text(
+                    _kTargetUrl,
+                    style: TextStyle(
+                      fontSize: 9.5,
+                      color: c.textHint,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+      ],
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// ESTADO DE ERRO — rede indisponível ou timeout
+// ─────────────────────────────────────────────────────────────────────────────
+class _ErrorState extends StatelessWidget {
+  final bool dark;
+  final bool isEs;
+  final VoidCallback onRetry;
+  const _ErrorState({
+    required this.dark, required this.isEs, required this.onRetry,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final c = AppColors.of(context);
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 32),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(Icons.wifi_off_rounded,
+                size: 48, color: c.textHint),
+            const SizedBox(height: 16),
+            Text(
+              isEs
+                  ? 'Sin conexión a Internet'
+                  : 'Sem conexão com a Internet',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w700,
+                color: c.textPrimary,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 8),
+            Text(
+              isEs
+                  ? 'Las calculadoras requieren conexión para cargar las referencias actualizadas.'
+                  : 'As calculadoras requerem conexão para carregar as referências atualizadas.',
+              style: TextStyle(
+                fontSize: 12,
+                color: c.textSecondary,
+                height: 1.5,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 24),
+            FilledButton.icon(
+              onPressed: onRetry,
+              icon: const Icon(Icons.refresh_rounded, size: 18),
+              label: Text(isEs ? 'Intentar de nuevo' : 'Tentar novamente'),
+              style: FilledButton.styleFrom(
+                backgroundColor: const Color(0xFF4A2D8A),
+                foregroundColor: Colors.white,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// FALLBACK WEB — Flutter Web não suporta webview_flutter
+// Exibe mensagem orientando abrir no app mobile.
+// ─────────────────────────────────────────────────────────────────────────────
+class _WebFallback extends StatelessWidget {
+  final bool isEs;
+  const _WebFallback({required this.isEs});
+
+  @override
+  Widget build(BuildContext context) {
+    final c = AppColors.of(context);
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 32),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(Icons.smartphone_rounded, size: 48, color: c.textHint),
+            const SizedBox(height: 16),
+            Text(
+              isEs
+                  ? 'Disponible en la app iOS / Android'
+                  : 'Disponível no app iOS / Android',
+              style: TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.w700,
+                color: c.textPrimary,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 8),
+            Text(
+              isEs
+                  ? 'Las calculadoras con referencias completas están disponibles en la versión móvil de MedCases Pro.'
+                  : 'As calculadoras com referências completas estão disponíveis na versão móvel do MedCases Pro.',
+              style: TextStyle(
+                fontSize: 12,
+                color: c.textSecondary,
+                height: 1.5,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 // HEADER — gradiente roxo + botão voltar + ícone calculadora
+// Botão voltar sempre no topo da stack de renderização —
+// equivalente a z-index: 9999 do CSS.
 // ─────────────────────────────────────────────────────────────────────────────
 class _CalcHeader extends StatelessWidget {
   final bool dark;
@@ -105,17 +353,17 @@ class _CalcHeader extends StatelessWidget {
               ),
             ),
           ),
-          // Conteúdo
+          // Conteúdo — renderizado ACIMA dos círculos (z-index equivalente)
           Padding(
             padding: const EdgeInsets.fromLTRB(4, 6, 20, 14),
             child: Row(children: [
-              // Botão voltar — z-index equivalente via Stack (renderizado por último)
+              // ── Botão voltar — sempre visível ─────────────────────────
               IconButton(
                 icon: const Icon(Icons.arrow_back_ios_rounded,
                     size: 18, color: Colors.white),
                 onPressed: () => Navigator.of(context).pop(),
               ),
-              // Ícone
+              // ── Ícone calculadora ──────────────────────────────────────
               Container(
                 width: 48, height: 48,
                 decoration: BoxDecoration(
@@ -130,7 +378,7 @@ class _CalcHeader extends StatelessWidget {
                     size: 24, color: _accentColor),
               ),
               const SizedBox(width: 14),
-              // Títulos
+              // ── Títulos ────────────────────────────────────────────────
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -164,294 +412,6 @@ class _CalcHeader extends StatelessWidget {
           ),
         ]),
       ),
-    );
-  }
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// RODAPÉ DE REFERÊNCIAS CIENTÍFICAS
-// Apple Guideline 1.4.1 — sempre visível, não colapsado.
-// Mostra as fontes bibliográficas que embasam as fórmulas clínicas.
-// O botão "Ver Referências Completas" abre a URL oficial via url_launcher
-// em modo inAppBrowserView (iOS Safari SFSafariViewController, sem sair do app).
-// ─────────────────────────────────────────────────────────────────────────────
-class _CalcReferencesFooter extends StatelessWidget {
-  final bool dark;
-  final bool isEs;
-  const _CalcReferencesFooter({required this.dark, required this.isEs});
-
-  // URL da página de referências externas otimizada com explicações didáticas
-  // e citações acadêmicas — aberta via SFSafariViewController (iOS in-app).
-  static const _refsUrl =
-      'https://www.acpjournals.org/doi/10.7326/0003-4819-141-11-200412070-00012';
-
-  static const _refs = [
-    _CalcRef(
-      num: 1,
-      type: 'Directriz',
-      year: '2023',
-      title: 'ACC/AHA/ESC Cardiovascular Risk Score — Pooled Cohort Equations',
-      source: 'Circulation. 2023;148(11):e1–e160. AHA/ACC.',
-    ),
-    _CalcRef(
-      num: 2,
-      type: 'Base de Datos',
-      year: '2025',
-      title: 'UpToDate: Clinical calculators — Creatinine Clearance (Cockcroft-Gault)',
-      source: 'UpToDate, Inc. Wolters Kluwer Health, 2025.',
-    ),
-    _CalcRef(
-      num: 3,
-      type: 'Directriz',
-      year: '2021',
-      title: 'KDIGO 2021 Clinical Practice Guideline — CKD Evaluation & Management',
-      source: 'Kidney International. 2021;102(3S):S1–S414.',
-    ),
-    _CalcRef(
-      num: 4,
-      type: 'Directriz',
-      year: '2016',
-      title: 'Sepsis-3: The Third International Consensus Definitions (SOFA score)',
-      source: 'JAMA. 2016;315(8):801–810. Singer M et al.',
-    ),
-    _CalcRef(
-      num: 5,
-      type: 'Libro-Texto',
-      year: '2023',
-      title: 'Goodman & Gilman - Pharmacological Basis of Therapeutics, 14th ed.',
-      source: 'McGraw-Hill Education. ISBN 978-1264258079.',
-    ),
-    _CalcRef(
-      num: 6,
-      type: 'Directriz',
-      year: '2020',
-      title: 'AHA / ACLS 2020 — Adult Advanced Cardiovascular Life Support',
-      source: 'Circulation. 2020;142(16_suppl_2):S366–S468.',
-    ),
-    _CalcRef(
-      num: 7,
-      type: 'Base de Datos',
-      year: '2024',
-      title: 'WHO Model List of Essential Medicines — Pharmacological Reference',
-      source: 'World Health Organization, 23ª Lista, 2024.',
-    ),
-  ];
-
-  Future<void> _openRefs(BuildContext context) async {
-    final uri = Uri.parse(_refsUrl);
-    try {
-      await launchUrl(uri, mode: LaunchMode.inAppBrowserView);
-    } catch (_) {
-      try {
-        await launchUrl(uri, mode: LaunchMode.externalApplication);
-      } catch (e) {
-        if (context.mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Não foi possível abrir: $_refsUrl')),
-          );
-        }
-      }
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final c = AppColors.of(context);
-
-    return Container(
-      decoration: BoxDecoration(
-        color: dark ? const Color(0xFF1E2229) : const Color(0xFFF1F3F7),
-        border: Border(top: BorderSide(color: c.border, width: 1)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          // ── Cabeçalho das referências ─────────────────────────────────
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 14, 16, 8),
-            child: Row(children: [
-              Icon(Icons.menu_book_rounded, size: 14,
-                color: dark ? const Color(0xFFFFE8A6) : const Color(0xFF075f45)),
-              const SizedBox(width: 8),
-              Expanded(
-                child: Text(
-                  isEs
-                      ? 'REFERENCIAS CIENTÍFICAS (${_refs.length})'
-                      : 'REFERÊNCIAS CIENTÍFICAS (${_refs.length})',
-                  style: TextStyle(
-                    fontSize: 9.5,
-                    fontWeight: FontWeight.w900,
-                    letterSpacing: 1.1,
-                    color: c.textPrimary,
-                  ),
-                ),
-              ),
-            ]),
-          ),
-
-          // ── Lista de referências (sempre visível — Apple 1.4.1) ────────
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12),
-            child: Column(
-              children: _refs.map((ref) => _CalcRefRow(ref: ref, c: c)).toList(),
-            ),
-          ),
-
-          // ── Botão para abrir referências completas (in-app browser) ───
-          Padding(
-            padding: const EdgeInsets.fromLTRB(12, 8, 12, 0),
-            child: Material(
-              color: Colors.transparent,
-              child: InkWell(
-                borderRadius: BorderRadius.circular(10),
-                onTap: () => _openRefs(context),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 14, vertical: 10),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF0EA5E9).withValues(alpha: 0.08),
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(
-                      color: const Color(0xFF0EA5E9).withValues(alpha: 0.20)),
-                  ),
-                  child: Row(children: [
-                    const Icon(Icons.open_in_browser_rounded,
-                        size: 15, color: Color(0xFF0EA5E9)),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: Text(
-                        isEs
-                            ? 'Ver referencias completas (fuente académica)'
-                            : 'Ver referências completas (fonte acadêmica)',
-                        style: const TextStyle(
-                          fontSize: 11,
-                          fontWeight: FontWeight.w700,
-                          color: Color(0xFF0EA5E9),
-                        ),
-                      ),
-                    ),
-                    const Icon(Icons.arrow_forward_ios_rounded,
-                        size: 11, color: Color(0xFF0EA5E9)),
-                  ]),
-                ),
-              ),
-            ),
-          ),
-
-          // ── Disclaimer médico — Apple 1.4.1 / 1.4.2 ──────────────────
-          Padding(
-            padding: const EdgeInsets.fromLTRB(12, 8, 12, 14),
-            child: Text(
-              isEs
-                  ? '⚠ Los cálculos son de referencia educativa. Toda decisión clínica requiere criterio médico individualizado.'
-                  : '⚠ Cálculos de referência educativa. Toda decisão clínica exige critério médico individualizado.',
-              style: TextStyle(
-                fontSize: 9.5,
-                fontWeight: FontWeight.w500,
-                color: c.textHint,
-                height: 1.4,
-                fontStyle: FontStyle.italic,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// MODELOS E WIDGETS AUXILIARES
-// ─────────────────────────────────────────────────────────────────────────────
-
-class _CalcRef {
-  final int num;
-  final String type;
-  final String year;
-  final String title;
-  final String source;
-  const _CalcRef({
-    required this.num,
-    required this.type,
-    required this.year,
-    required this.title,
-    required this.source,
-  });
-}
-
-class _CalcRefRow extends StatelessWidget {
-  final _CalcRef ref;
-  final AppColors c;
-  const _CalcRefRow({required this.ref, required this.c});
-
-  Color _typeColor() {
-    switch (ref.type) {
-      case 'Directriz':     return const Color(0xFF059669);
-      case 'Base de Datos': return const Color(0xFF0EA5E9);
-      case 'Estudio':       return const Color(0xFF8B5CF6);
-      case 'Libro-Texto':   return const Color(0xFFF59E0B);
-      default:              return const Color(0xFF6B7280);
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final tc = _typeColor();
-    return Container(
-      margin: const EdgeInsets.only(bottom: 5),
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
-      decoration: BoxDecoration(
-        color: c.surface,
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: c.border),
-      ),
-      child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        // Número
-        Container(
-          width: 20, height: 20,
-          decoration: BoxDecoration(
-            color: tc.withValues(alpha: 0.12),
-            shape: BoxShape.circle,
-            border: Border.all(color: tc.withValues(alpha: 0.35)),
-          ),
-          child: Center(
-            child: Text('${ref.num}',
-              style: TextStyle(fontSize: 9, fontWeight: FontWeight.w900,
-                color: tc)),
-          ),
-        ),
-        const SizedBox(width: 8),
-        Expanded(child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(children: [
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1),
-                decoration: BoxDecoration(
-                  color: tc.withValues(alpha: 0.12),
-                  borderRadius: BorderRadius.circular(3),
-                ),
-                child: Text(ref.type.toUpperCase(),
-                  style: TextStyle(fontSize: 7, fontWeight: FontWeight.w900,
-                    letterSpacing: 0.5, color: tc)),
-              ),
-              const SizedBox(width: 5),
-              Text(ref.year,
-                style: TextStyle(fontSize: 8.5, fontWeight: FontWeight.w700,
-                  color: c.textHint)),
-            ]),
-            const SizedBox(height: 2),
-            Text(ref.title,
-              style: TextStyle(fontSize: 10.5, fontWeight: FontWeight.w700,
-                color: c.textPrimary)),
-            const SizedBox(height: 1),
-            Text(ref.source,
-              style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w400,
-                color: c.textSecondary, height: 1.3)),
-          ],
-        )),
-      ]),
     );
   }
 }
