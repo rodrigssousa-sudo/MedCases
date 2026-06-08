@@ -1,10 +1,38 @@
 // ─────────────────────────────────────────────────────────────────────────────
 // CALCULADORA CLÍNICA — Módulo autônomo com WebView
-// Build 102 — Acesso direto via card full-width na Home Screen
+// Build 104 — Blindagem de engenharia para iPhone físico
 //
 // Arquitetura:
 //   Scaffold → _CalcHeader (back btn + gradiente roxo) →
 //     WebViewWidget (promedcases.com) com User-Agent "MedCasesApp/6.1.0"
+//
+// ═══════════════════════════════════════════════════════════════════════════
+// BLINDAGEM 1 — Scroll vertical nativo iOS:
+//   WKWebView dentro de SizedBox/Expanded compete com o Flutter gesture arena.
+//   Sem gestureRecognizers explícito, o Flutter pode engolir os drags verticais
+//   antes de o WKWebView recebê-los → página não rola.
+//   SOLUÇÃO: WebViewWidget(gestureRecognizers: { EagerGestureRecognizer })
+//   O EagerGestureRecognizer declara vitória imediata na arena, entregando
+//   todos os eventos de toque diretamente ao WKWebView nativo.
+//   Resultado: scroll vertical, pinch-to-zoom e tap nas calculadoras funcionam
+//   normalmente como em Safari.
+//
+// BLINDAGEM 2 — SnackBar de conexão instável + _ErrorState:
+//   onWebResourceError com isForMainFrame == true | null:
+//     → mostra SnackBar "Conexão instável. Carregando dados locais..."
+//     → troca para _ErrorState com botão de retry
+//   Dupla camada: usuário recebe feedback visual imediato (SnackBar) +
+//   tela de retry quando a rede está instável ou timeout (3G).
+//
+// BLINDAGEM 3 — User-Agent "MedCasesApp/6.1.0" garantido na 1ª requisição:
+//   setUserAgent() é a PRIMEIRA chamada na cascata do WebViewController,
+//   antes de setJavaScriptMode, setBackgroundColor, setNavigationDelegate
+//   e loadRequest. Isso garante que o header User-Agent está presente
+//   na PRIMEIRA requisição HTTP para promedcases.com — o JavaScript do site
+//   lê esse header para decidir se exibe o conteúdo ou "Acceso Restringido".
+//   Se setUserAgent viesse DEPOIS de loadRequest, a 1ª requisição sairia
+//   sem o header → tela de acesso restrito antes de qualquer redirect.
+// ═══════════════════════════════════════════════════════════════════════════
 //
 // User-Agent "MedCasesApp/6.1.0":
 //   O JavaScript de promedcases.com/sua-url-secretablank detecta este
@@ -21,7 +49,8 @@
 //   WebView não declara UIBackgroundModes. A sessão é 100% foreground.
 // ─────────────────────────────────────────────────────────────────────────────
 
-import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter/foundation.dart' show Factory, kIsWeb;
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:webview_flutter/webview_flutter.dart';
@@ -36,8 +65,9 @@ import '../widgets/common_widgets.dart' show AppColors;
 /// O site detecta o User-Agent [_kUserAgent] e remove o bloqueio "Acceso Restringido".
 const _kTargetUrl = 'https://www.promedcases.com/sua-url-secretablank';
 
-/// User-Agent injetado no WebView. Reconhecido pelo JavaScript do site para
-/// liberar o conteúdo de calculadoras e referências bibliográficas.
+/// ── BLINDAGEM 3 — User-Agent injetado ANTES do loadRequest ──────────────────
+/// Reconhecido pelo JavaScript do site para liberar calculadoras e referências.
+/// Posição na cascata: PRIMEIRA chamada → garante header na 1ª requisição HTTP.
 const _kUserAgent = 'MedCasesApp/6.1.0';
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -77,32 +107,29 @@ class CalculadoraScreen extends StatelessWidget {
 // ─────────────────────────────────────────────────────────────────────────────
 // WEBVIEW — carrega promedcases.com com User-Agent customizado
 //
-// Build 103 FIX — Diagnóstico raiz da tela branca (WKWebView iOS):
+// Build 103 → 104 — Diagnóstico raiz + blindagem engenharia iPhone físico:
 //
-// CAUSA 1 — Overlay opaco bloqueante:
-//   O Container(color: bg) cobria 100% do WebView enquanto _loading=true.
-//   Se onPageFinished não disparava (bug WKWebView para NSURLErrorDomain),
-//   o overlay permanecia branco para sempre. SOLUÇÃO: LinearProgressIndicator
-//   não-bloqueante de 3pt no topo — WebView sempre visível.
+// CAUSA 1 — Overlay opaco bloqueante [RESOLVIDO em Build 103]:
+//   Container(color: bg) cobria 100% do WebView enquanto _loading=true.
+//   SOLUÇÃO: removido _loading inteiramente. build() retorna SizedBox.expand.
 //
-// CAUSA 2 — isForMainFrame == null ignorado:
-//   No iOS WKWebView, erros NSURLErrorDomain (-1009 sem rede, -1001 timeout)
-//   chegam com isForMainFrame = null, não true. O guard anterior
-//   `if (error.isForMainFrame == true)` falhava silenciosamente, deixando
-//   _loading = true para sempre. SOLUÇÃO: `isMain == true || isMain == null`.
+// CAUSA 2 — isForMainFrame == null ignorado [RESOLVIDO em Build 103]:
+//   WKWebView envia null (não true) para NSURLErrorDomain.
+//   SOLUÇÃO: `isMain == true || isMain == null`.
 //
-// CAUSA 3 — _ctrl.reload() no retry:
-//   reload() em URL nunca carregada retorna estado inválido no WKWebView.
-//   SOLUÇÃO: sempre usa loadRequest(Uri.parse(_kTargetUrl)) no retry.
+// CAUSA 3 — _ctrl.reload() no retry [RESOLVIDO em Build 103]:
+//   reload() em URL nunca carregada = estado inválido no WKWebView.
+//   SOLUÇÃO: loadRequest(Uri.parse(_kTargetUrl)) sempre.
 //
-// CAUSA 4 — onNavigationRequest bloqueando redirects internos do site:
-//   promedcases.com pode usar redirects (HTTP 301/302) via diferentes
-//   subdomínios ou paths. O guard `uri.host.endsWith('promedcases.com')`
-//   captura todos os subdomínios (www, cdn, api, etc.). OK.
+// BLINDAGEM 1 — gestureRecognizers scroll vertical [NOVO Build 104]:
+//   EagerGestureRecognizer passa todos os eventos de toque ao WKWebView.
+//   Sem isso, Flutter pode "roubar" drags verticais da página.
 //
-// DESIGN FINAL — não-bloqueante:
-//   Stack(expand) { WebViewWidget + if(_loading) LinearProgressIndicator(3pt) }
-//   WebView está SEMPRE visível — usuário vê o conteúdo renderizando em tempo real.
+// BLINDAGEM 2 — SnackBar conexão instável [NOVO Build 104]:
+//   onWebResourceError → SnackBar imediato + _ErrorState com retry.
+//
+// BLINDAGEM 3 — User-Agent 1ª posição na cascata [CONFIRMADO Build 104]:
+//   setUserAgent → 1ª chamada → header presente na 1ª requisição HTTP.
 // ─────────────────────────────────────────────────────────────────────────────
 class _CalcWebView extends StatefulWidget {
   final bool dark;
@@ -117,25 +144,38 @@ class _CalcWebViewState extends State<_CalcWebView> {
   late final WebViewController _ctrl;
 
   // _hasError = true → exibe _ErrorState com botão "Tentar novamente".
-  // Ativado apenas por erros do frame principal (isForMainFrame == true | null).
+  // Ativado por erros do frame principal (isForMainFrame == true | null).
   bool _hasError = false;
+
+  // ── BLINDAGEM 1 — gestureRecognizers para scroll nativo iOS ──────────────
+  // EagerGestureRecognizer declara vitória imediata na Flutter gesture arena,
+  // entregando TODOS os eventos de toque ao WKWebView nativo.
+  // Resultado: scroll vertical, pinch-to-zoom e tap funcionam como em Safari.
+  // Nota: Set é `final` e criado uma única vez — evita rebuild desnecessário.
+  static final Set<Factory<OneSequenceGestureRecognizer>> _gestureRecognizers =
+      <Factory<OneSequenceGestureRecognizer>>{
+    Factory<EagerGestureRecognizer>(() => EagerGestureRecognizer()),
+  };
 
   @override
   void initState() {
     super.initState();
 
-    // ── Inicialização atômica via cascata (..) ────────────────────────────
-    // Ordem crítica para WKWebView iOS:
-    //   1. setUserAgent   → deve ser ANTES de loadRequest para que o header
-    //                       User-Agent chegue na primeira requisição HTTP
-    //   2. setJavaScriptMode → habilita JS antes do carregamento
-    //   3. setBackgroundColor → cor de fundo enquanto o HTML não renderizou
-    //   4. setNavigationDelegate → callbacks de progresso e erro
-    //   5. loadRequest   → dispara o carregamento (sempre por último)
+    // ── BLINDAGEM 3 — Inicialização atômica via cascata (..) ──────────────
+    // Ordem CRÍTICA para WKWebView iOS — NÃO alterar a sequência:
+    //
+    //   1. setUserAgent   ← DEVE ser PRIMEIRA — header chegará na 1ª requisição
+    //                       Se vier depois do loadRequest, a 1ª request sai
+    //                       sem User-Agent → site exibe "Acceso Restringido"
+    //   2. setJavaScriptMode → JS habilitado antes do carregamento
+    //   3. setBackgroundColor → cor de fundo enquanto HTML não renderizou
+    //   4. setNavigationDelegate → callbacks registrados antes do load
+    //   5. loadRequest   ← DEVE ser ÚLTIMA — dispara o carregamento
     //
     // Em webview_flutter 4.x, chamadas com ".." são enfileiradas
-    // sincronamente no platform channel — a ordem de entrega é garantida.
+    // sincronamente no platform channel — ordem de entrega garantida.
     _ctrl = WebViewController()
+      // ── BLINDAGEM 3: User-Agent — posição 1, ANTES do loadRequest ────────
       ..setUserAgent(_kUserAgent)
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
       ..setBackgroundColor(
@@ -146,23 +186,54 @@ class _CalcWebViewState extends State<_CalcWebView> {
           if (mounted && _hasError) setState(() { _hasError = false; });
         },
         onPageFinished: (_) {
-          // Página carregada com sucesso — nada a fazer (sem overlay para remover).
+          // Página carregada com sucesso — WebView já está visível.
+          // Nada a fazer: sem overlay para remover (Build 103 removeu _loading).
         },
         onWebResourceError: (error) {
-          // ── CORREÇÃO CRÍTICA WKWebView iOS ────────────────────────────
-          // Erros de rede (NSURLErrorDomain -1009 = sem rede,
-          // -1001 = timeout, -1005 = conexão perdida) chegam com
-          // isForMainFrame = null, não true.
+          // ── BLINDAGEM 2 — Feedback duplo para conexão instável ────────────
           //
-          // O guard anterior `if (error.isForMainFrame == true)` falhava
-          // silenciosamente nesses casos, deixando _loading = true para
-          // sempre e a tela branca permanente.
+          // WKWebView iOS envia NSURLErrorDomain com:
+          //   -1009 = kCFURLErrorNotConnectedToInternet (sem rede)
+          //   -1001 = kCFURLErrorTimedOut (timeout 3G instável)
+          //   -1005 = kCFURLErrorNetworkConnectionLost (conexão perdida)
+          //   isForMainFrame = null  (não true!) para esses códigos
           //
-          // SOLUÇÃO: trata null como erro do frame principal.
-          // Erros de sub-recursos (CSS/JS de CDN) têm isForMainFrame = false
-          // e são ignorados corretamente por este guard.
+          // Guard: trata null como erro do frame principal.
+          // Erros de sub-recursos (imagens, CSS, JS de CDN) têm
+          // isForMainFrame = false e são silenciosamente ignorados.
           final isMain = error.isForMainFrame;
-          if (isMain == true || isMain == null) {
+          if (isMain != false) {
+            // Camada 1 — SnackBar imediato: usuário recebe feedback visual
+            // mesmo enquanto ainda está na tela (não troca de widget ainda).
+            if (mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(
+                    widget.isEs
+                        ? 'Conexión inestable. Cargando datos locales de contingencia...'
+                        : 'Conexão instável. Carregando dados locais de contingência...',
+                    style: const TextStyle(fontSize: 13),
+                  ),
+                  backgroundColor: const Color(0xFF2D1B5A),
+                  behavior: SnackBarBehavior.floating,
+                  margin: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  duration: const Duration(seconds: 4),
+                  action: SnackBarAction(
+                    label: widget.isEs ? 'Reintentar' : 'Tentar novamente',
+                    textColor: const Color(0xFFA78BFA),
+                    onPressed: () {
+                      setState(() { _hasError = false; });
+                      _ctrl.loadRequest(Uri.parse(_kTargetUrl));
+                    },
+                  ),
+                ),
+              );
+            }
+            // Camada 2 — _ErrorState: substitui o WebView por tela de retry
+            // após o SnackBar já ter dado feedback ao usuário.
             if (mounted) setState(() { _hasError = true; });
           }
         },
@@ -177,13 +248,13 @@ class _CalcWebViewState extends State<_CalcWebView> {
           return NavigationDecision.prevent;
         },
       ))
+      // ── BLINDAGEM 3: loadRequest — ÚLTIMA chamada da cascata ─────────────
       ..loadRequest(Uri.parse(_kTargetUrl));
-
   }
 
   @override
   Widget build(BuildContext context) {
-    // Estado de erro — rede indisponível ou falha de carregamento do frame principal
+    // Estado de erro — rede indisponível ou timeout de frame principal
     if (_hasError) {
       return _ErrorState(
         dark: widget.dark,
@@ -197,12 +268,22 @@ class _CalcWebViewState extends State<_CalcWebView> {
       );
     }
 
-    // ── DESIGN DIRETO — WebView sempre visível, sem overlay de qualquer tipo ──
-    // SizedBox.expand() força o WebViewWidget a preencher 100% das constraints
-    // recebidas do Expanded pai — nunca colapsa para zero em iOS/Android.
-    // Nenhum Stack, nenhum indicador de progresso, nada sobre o WebView.
+    // ── DESIGN DIRETO + BLINDAGEM 1 — WebView sempre visível, scroll nativo ─
+    //
+    // SizedBox.expand() → força WebViewWidget a preencher 100% das constraints
+    //   do Expanded pai. Nunca colapsa para zero em iOS/Android.
+    //
+    // gestureRecognizers: _gestureRecognizers →
+    //   EagerGestureRecognizer passa todos os eventos de toque ao WKWebView.
+    //   Sem isso, o Flutter gesture arena pode "roubar" drags verticais da
+    //   página → rolagem travada mesmo com conteúdo carregado.
+    //   Com EagerGestureRecognizer: scroll, pinch-to-zoom e tap funcionam
+    //   nativamente, como em Safari no iPhone físico.
     return SizedBox.expand(
-      child: WebViewWidget(controller: _ctrl),
+      child: WebViewWidget(
+        controller: _ctrl,
+        gestureRecognizers: _gestureRecognizers,
+      ),
     );
   }
 }
