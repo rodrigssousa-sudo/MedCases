@@ -63,7 +63,18 @@ import '../widgets/common_widgets.dart' show AppColors;
 
 /// URL oficial da página de calculadoras e referências do MedCases Pro.
 /// O site detecta o User-Agent [_kUserAgent] e remove o bloqueio "Acceso Restringido".
-const _kTargetUrl = 'https://www.promedcases.com/sua-url-secretablank';
+///
+/// ⚠️  SUBSTITUA PELA URL REAL DA WIX/PROMEDCASES ANTES DE PUBLICAR  ⚠️
+// ignore: avoid_redundant_argument_values
+const _kTargetUrl = 'https://www.promedcases.com/calculadoras-referencias';
+
+/// Fallback hardcoded — ativado se _kTargetUrl estiver vazia, for placeholder
+/// ("sua-url", "placeholder") ou não tiver authority HTTP válida.
+/// Build 104 FIX: protege contra Firebase Timeout, typo de config,
+/// variável não resolvida — garante que loadRequest nunca recebe URL vazia.
+///
+/// ⚠️  SUBSTITUA TAMBÉM ESTE FALLBACK PELA URL REAL DA WIX/PROMEDCASES  ⚠️
+const _kFallbackUrl = 'https://www.promedcases.com/calculadoras-referencias';
 
 /// ── BLINDAGEM 3 — User-Agent injetado ANTES do loadRequest ──────────────────
 /// Reconhecido pelo JavaScript do site para liberar calculadoras e referências.
@@ -157,9 +168,25 @@ class _CalcWebViewState extends State<_CalcWebView> {
     Factory<EagerGestureRecognizer>(() => EagerGestureRecognizer()),
   };
 
+  // URL efetiva resolvida no initState — nunca vazia, nunca placeholder.
+  late final String _effectiveUrl;
+
   @override
   void initState() {
     super.initState();
+
+    // ── BLINDAGEM URL — Validação antes de qualquer loadRequest ──────────
+    // Se _kTargetUrl estiver vazia, for placeholder ou não tiver authority
+    // HTTP válida → usa _kFallbackUrl estável.
+    // Protege contra: Firebase Timeout, typo de config, variável não resolvida.
+    final Uri? parsedUrl = Uri.tryParse(_kTargetUrl);
+    _effectiveUrl = (_kTargetUrl.isEmpty ||
+            _kTargetUrl.contains('sua-url') ||
+            _kTargetUrl.contains('placeholder') ||
+            parsedUrl == null ||
+            !parsedUrl.hasAuthority)
+        ? _kFallbackUrl
+        : _kTargetUrl;
 
     // ── BLINDAGEM 3 — Inicialização atômica via cascata (..) ──────────────
     // Ordem CRÍTICA para WKWebView iOS — NÃO alterar a sequência:
@@ -226,7 +253,7 @@ class _CalcWebViewState extends State<_CalcWebView> {
                     textColor: const Color(0xFFA78BFA),
                     onPressed: () {
                       setState(() { _hasError = false; });
-                      _ctrl.loadRequest(Uri.parse(_kTargetUrl));
+                      _ctrl.loadRequest(Uri.parse(_effectiveUrl));
                     },
                   ),
                 ),
@@ -249,7 +276,8 @@ class _CalcWebViewState extends State<_CalcWebView> {
         },
       ))
       // ── BLINDAGEM 3: loadRequest — ÚLTIMA chamada da cascata ─────────────
-      ..loadRequest(Uri.parse(_kTargetUrl));
+      // Usa _effectiveUrl (validada acima) — nunca URL vazia ou placeholder.
+      ..loadRequest(Uri.parse(_effectiveUrl));
   }
 
   @override
@@ -263,7 +291,8 @@ class _CalcWebViewState extends State<_CalcWebView> {
           setState(() { _hasError = false; });
           // CORREÇÃO: usa loadRequest (não reload) — reload em URL nunca
           // carregada retorna estado inválido no WKWebView iOS.
-          _ctrl.loadRequest(Uri.parse(_kTargetUrl));
+          // Usa _effectiveUrl (validada no initState) — nunca URL vazia.
+          _ctrl.loadRequest(Uri.parse(_effectiveUrl));
         },
       );
     }
