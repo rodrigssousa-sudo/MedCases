@@ -92,43 +92,58 @@ class _CalcWebViewState extends State<_CalcWebView> {
   @override
   void initState() {
     super.initState();
-    _ctrl = WebViewController()
-      // ── User-Agent: identifica o app para o JS do site ─────────────────
-      ..setUserAgent(_kUserAgent)
-      // ── JavaScript habilitado (requisito do site) ───────────────────────
-      ..setJavaScriptMode(JavaScriptMode.unrestricted)
-      // ── Background igual ao tema do app ────────────────────────────────
-      ..setBackgroundColor(
-          widget.dark ? const Color(0xFF1A1D23) : Colors.white)
-      // ── Callbacks de progresso ──────────────────────────────────────────
-      ..setNavigationDelegate(
-        NavigationDelegate(
-          onPageStarted: (_) {
-            if (mounted) setState(() { _loading = true; _hasError = false; });
-          },
-          onPageFinished: (_) {
-            if (mounted) setState(() => _loading = false);
-          },
-          onWebResourceError: (error) {
-            // Ignora erros de sub-recursos (CSS/JS de terceiros) — só falha
-            // se for o documento principal (isForMainFrame == true).
-            if (error.isForMainFrame == true) {
-              if (mounted) setState(() { _loading = false; _hasError = true; });
-            }
-          },
-          // Permite apenas navegação dentro do domínio promedcases.com
-          onNavigationRequest: (request) {
-            final uri = Uri.tryParse(request.url);
-            if (uri != null && uri.host.endsWith('promedcases.com')) {
-              return NavigationDecision.navigate;
-            }
-            // Bloqueia links externos — evita saída acidental do app
-            return NavigationDecision.prevent;
-          },
-        ),
-      )
-      // ── Carrega a URL oficial ───────────────────────────────────────────
-      ..loadRequest(Uri.parse(_kTargetUrl));
+    // Build 103: inicialização em duas fases para garantir que setUserAgent e
+    // setJavaScriptMode estejam aplicados ANTES de loadRequest ser chamado.
+    // Em webview_flutter 4.x, chamadas encadeadas com ".." são síncronas na
+    // fila interna do platform channel — a ordem é preservada.
+    // NavigationDelegate é configurado PRIMEIRO para capturar onPageStarted
+    // imediatamente após loadRequest.
+    _ctrl = WebViewController();
+
+    // Fase 1: configuração obrigatória antes do carregamento
+    _ctrl.setNavigationDelegate(
+      NavigationDelegate(
+        onPageStarted: (_) {
+          if (mounted) setState(() { _loading = true; _hasError = false; });
+        },
+        onPageFinished: (_) {
+          if (mounted) setState(() => _loading = false);
+        },
+        onWebResourceError: (error) {
+          // Ignora erros de sub-recursos (CSS/JS de terceiros) — só falha
+          // se for o documento principal (isForMainFrame == true).
+          if (error.isForMainFrame == true) {
+            if (mounted) setState(() { _loading = false; _hasError = true; });
+          }
+        },
+        // Permite apenas navegação dentro do domínio promedcases.com
+        onNavigationRequest: (request) {
+          final uri = Uri.tryParse(request.url);
+          if (uri != null && uri.host.endsWith('promedcases.com')) {
+            return NavigationDecision.navigate;
+          }
+          // Bloqueia links externos — evita saída acidental do app
+          return NavigationDecision.prevent;
+        },
+      ),
+    );
+
+    // Fase 2: User-Agent + JS + background — aplicados antes de loadRequest
+    _ctrl.setUserAgent(_kUserAgent);
+    _ctrl.setJavaScriptMode(JavaScriptMode.unrestricted);
+    _ctrl.setBackgroundColor(
+        widget.dark ? const Color(0xFF1A1D23) : Colors.white);
+
+    // Fase 3: dispara o carregamento após todas as configurações
+    _ctrl.loadRequest(Uri.parse(_kTargetUrl));
+
+    // Timeout de segurança: se após 30s ainda estiver loading, esconde o
+    // overlay para não travar a UI (o WebView pode estar carregando em segundo plano).
+    Future.delayed(const Duration(seconds: 30), () {
+      if (mounted && _loading && !_hasError) {
+        setState(() => _loading = false);
+      }
+    });
   }
 
   @override
@@ -142,10 +157,14 @@ class _CalcWebViewState extends State<_CalcWebView> {
       });
     }
 
+    // Build 103: StackFit.expand garante que o WebViewWidget ocupe todo o
+    // espaço disponível do Expanded pai. Sem isso, o Stack pode colapsar
+    // para tamanho zero em alguns dispositivos iOS com webview_flutter 4.x.
     return Stack(
+      fit: StackFit.expand,
       children: [
-        // ── WebView principal ─────────────────────────────────────────────
-        WebViewWidget(controller: _ctrl),
+        // ── WebView principal — SizedBox.expand força height = max disponível
+        SizedBox.expand(child: WebViewWidget(controller: _ctrl)),
 
         // ── Progress indicator (visível durante carregamento) ─────────────
         if (_loading)

@@ -329,29 +329,34 @@ class _HomeScreenState extends State<HomeScreen> {
     // Versão Web mantém todos os elementos via guard kIsWeb.
     // ══════════════════════════════════════════════════════════════════════════
 
-    // Build 102 fix definitivo: padding bottom calculado em runtime.
-    // Problema raiz: padding fixo (96px) não considerava o home indicator
-    // variável por dispositivo (34px iPhone 14 Pro, 0px iPhone SE).
+    // Build 103 — Fix estrutural definitivo do bottom overflow.
     //
-    // Cálculo:
-    //   • BottomAppBar row:  48px  (altura fixa dos ícones)
-    //   • _LegalBar:         ~30px (texto 2 linhas × 11px + padding vertical 10px)
-    //   • mediaQuery.bottom:  variável (home indicator: 34px iPhone; 0px no SE/Android)
-    //   • margem de segurança: +8px
+    // DIAGNÓSTICO RAIZ:
+    //   O main.dart usa MediaQuery.removePadding(removeTop: true) no body
+    //   do Scaffold. Dentro do body com bottomNavigationBar nativo, o Flutter
+    //   injeta padding.bottom = 0 via MediaQuery (o Scaffold já reserva o
+    //   espaço da bottom nav automaticamente). Logo padding.bottom lido aqui
+    //   pode ser 0 — tornando qualquer cálculo baseado em MediaQuery.padding
+    //   incorreto no device físico.
     //
-    // Usando MediaQuery.viewInsets / padding para cálculo preciso frame-a-frame.
-    final mqBottom = MediaQuery.of(context).padding.bottom;
-    // 48 (nav icons) + 30 (LegalBar) + mqBottom (home indicator) + 8 (margem)
-    final scrollBottomPad = 48.0 + 30.0 + mqBottom + 8.0;
+    // SOLUÇÃO ESTRUTURAL (pedida pelo Bruno):
+    //   • MediaQuery.viewPadding.bottom lê o inset FÍSICO do dispositivo
+    //     (home indicator), ignorando o que o Scaffold já absorbeu.
+    //   • Valor fixo 86px cobre BottomAppBar(48) + _LegalBar(~30) + margem(8).
+    //   • viewPadding.bottom adiciona o home indicator físico real do device
+    //     sem ser zerado pelo Scaffold pai.
+    //   • Resultado: scrollBottomPad adapta-se a qualquer iPhone/Android.
+    final bottomViewPad = MediaQuery.of(context).viewPadding.bottom;
+    // 48 (nav icons) + 30 (LegalBar) + bottomViewPad (home indicator físico) + 8 (margem)
+    final scrollBottomPad = 86.0 + bottomViewPad;
 
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       behavior: HitTestBehavior.translucent,
       child: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
-        // Build 102 fix definitivo: padding bottom dinâmico via MediaQuery.
-        // Substitui o valor fixo (88→96px) que não compensava o home indicator
-        // variável de cada dispositivo iPhone/Android. Ver cálculo acima.
+        // Build 103: padding bottom = fixo(86) + viewPadding.bottom(home indicator físico).
+        // viewPadding não é zerado pelo Scaffold — lê o inset real do hardware.
         padding: EdgeInsets.fromLTRB(12, 8, 12, scrollBottomPad),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
 
