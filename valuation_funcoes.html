@@ -1,0 +1,1394 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MedCases Pro — Lista de Funcionalidades para Valuation</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #F8F9FA;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    color: #1A1D23;
+    padding: 32px 20px 64px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  /* Cover */
+  .cover {
+    background: linear-gradient(135deg, #0A2540 0%, #1A3A6B 50%, #0D4F3A 100%);
+    border-radius: 20px;
+    padding: 40px 44px;
+    color: white;
+    margin-bottom: 36px;
+    position: relative;
+    overflow: hidden;
+  }
+  .cover::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 250px; height: 250px;
+    border-radius: 50%;
+    background: rgba(0,229,255,0.07);
+  }
+  .cover-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(0,229,255,0.15);
+    border: 1px solid rgba(0,229,255,0.35);
+    border-radius: 20px;
+    padding: 4px 12px;
+    font-size: 11px;
+    font-weight: 700;
+    color: #00E5FF;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+  .cover h1 {
+    font-size: 32px;
+    font-weight: 900;
+    letter-spacing: -0.8px;
+    margin-bottom: 6px;
+  }
+  .cover h1 span { color: #00E5FF; }
+  .cover .subtitle {
+    font-size: 15px;
+    color: rgba(255,255,255,0.7);
+    margin-bottom: 24px;
+    font-weight: 400;
+  }
+  .cover-stats {
+    display: flex;
+    gap: 28px;
+    flex-wrap: wrap;
+  }
+  .cover-stat {
+    display: flex;
+    flex-direction: column;
+  }
+  .cover-stat .num {
+    font-size: 28px;
+    font-weight: 900;
+    color: #00E5FF;
+    line-height: 1;
+  }
+  .cover-stat .lbl {
+    font-size: 11px;
+    color: rgba(255,255,255,0.6);
+    font-weight: 500;
+    margin-top: 2px;
+  }
+  .cover-meta {
+    margin-top: 20px;
+    font-size: 11px;
+    color: rgba(255,255,255,0.45);
+  }
+
+  /* Section */
+  .section {
+    margin-bottom: 28px;
+  }
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #E5E7EB;
+  }
+  .section-icon {
+    width: 36px; height: 36px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+  .section-title {
+    font-size: 18px;
+    font-weight: 800;
+    letter-spacing: -0.3px;
+    color: #0A2540;
+  }
+  .section-sub {
+    font-size: 12px;
+    color: #6B7280;
+    font-weight: 500;
+    margin-top: 1px;
+  }
+  .section-badge {
+    margin-left: auto;
+    background: #EFF6FF;
+    border: 1px solid #BFDBFE;
+    border-radius: 20px;
+    padding: 2px 10px;
+    font-size: 11px;
+    font-weight: 700;
+    color: #1D4ED8;
+    white-space: nowrap;
+  }
+
+  /* Feature grid */
+  .feat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 10px;
+  }
+  .feat-card {
+    background: white;
+    border: 1px solid #E5E7EB;
+    border-radius: 12px;
+    padding: 12px 14px;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    transition: box-shadow 120ms;
+  }
+  .feat-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.08); }
+  .feat-icon {
+    width: 30px; height: 30px;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .feat-body { flex: 1; min-width: 0; }
+  .feat-name {
+    font-size: 13px;
+    font-weight: 700;
+    color: #111827;
+    line-height: 1.3;
+    margin-bottom: 2px;
+  }
+  .feat-desc {
+    font-size: 11px;
+    color: #6B7280;
+    line-height: 1.4;
+  }
+  .feat-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-top: 5px;
+  }
+  .tag {
+    display: inline-block;
+    padding: 1px 7px;
+    border-radius: 10px;
+    font-size: 10px;
+    font-weight: 700;
+  }
+  .tag-free   { background: #ECFDF5; color: #065F46; border: 1px solid #A7F3D0; }
+  .tag-pro    { background: #FFFBEB; color: #92400E; border: 1px solid #FCD34D; }
+  .tag-annual { background: #F5F3FF; color: #5B21B6; border: 1px solid #C4B5FD; }
+  .tag-new    { background: #EFF6FF; color: #1D4ED8; border: 1px solid #BFDBFE; }
+  .tag-ai     { background: #F0FDFA; color: #115E59; border: 1px solid #99F6E4; }
+  .tag-ios    { background: #F0F9FF; color: #0369A1; border: 1px solid #BAE6FD; }
+  .tag-android { background: #F7FEE7; color: #3F6212; border: 1px solid #BBF7D0; }
+  .tag-web    { background: #FFF7ED; color: #9A3412; border: 1px solid #FED7AA; }
+
+  /* Full-width feature row */
+  .feat-row {
+    background: white;
+    border: 1px solid #E5E7EB;
+    border-radius: 12px;
+    padding: 12px 16px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 8px;
+  }
+  .feat-row:last-child { margin-bottom: 0; }
+  .feat-row-icon {
+    width: 32px; height: 32px;
+    border-radius: 9px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px;
+    flex-shrink: 0;
+  }
+  .feat-row-body { flex: 1; }
+  .feat-row-title { font-size: 13px; font-weight: 700; color: #111827; margin-bottom: 2px; }
+  .feat-row-desc { font-size: 11px; color: #6B7280; line-height: 1.4; }
+  .feat-row-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 4px; }
+  .feat-row-count {
+    font-size: 20px;
+    font-weight: 900;
+    color: #1D4ED8;
+    white-space: nowrap;
+    align-self: center;
+  }
+
+  /* Data table */
+  .data-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid #E5E7EB;
+  }
+  .data-table th {
+    background: #F9FAFB;
+    padding: 9px 14px;
+    text-align: left;
+    font-size: 11px;
+    font-weight: 700;
+    color: #6B7280;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    border-bottom: 1px solid #E5E7EB;
+  }
+  .data-table td {
+    padding: 9px 14px;
+    font-size: 12px;
+    color: #374151;
+    border-bottom: 1px solid #F3F4F6;
+    vertical-align: top;
+  }
+  .data-table tr:last-child td { border-bottom: none; }
+  .data-table tr:hover td { background: #FAFAFA; }
+  .td-name { font-weight: 700; color: #111827; }
+  .td-count { font-weight: 800; color: #1D4ED8; text-align: center; }
+  .td-source { color: #9CA3AF; font-size: 11px; }
+
+  /* Score pills */
+  .score-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .score-pill {
+    background: white;
+    border: 1px solid #E5E7EB;
+    border-radius: 10px;
+    padding: 7px 13px;
+    font-size: 12px;
+    font-weight: 700;
+    color: #374151;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .score-pill-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  /* Protocol groups */
+  .proto-groups {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 8px;
+  }
+  .proto-group {
+    background: white;
+    border: 1px solid #E5E7EB;
+    border-radius: 10px;
+    padding: 10px 12px;
+  }
+  .proto-group-header {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    margin-bottom: 6px;
+  }
+  .proto-group-icon { font-size: 14px; }
+  .proto-group-name { font-size: 12px; font-weight: 700; color: #111827; }
+  .proto-group-count {
+    margin-left: auto;
+    font-size: 11px;
+    font-weight: 800;
+    color: #1D4ED8;
+  }
+  .proto-items { display: flex; flex-direction: column; gap: 3px; }
+  .proto-item { font-size: 10px; color: #6B7280; display: flex; align-items: center; gap: 5px; }
+  .proto-item::before { content: '•'; color: #D1D5DB; }
+
+  /* Pricing block */
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  .price-card {
+    background: white;
+    border: 2px solid #E5E7EB;
+    border-radius: 14px;
+    padding: 20px;
+  }
+  .price-card.featured {
+    border-color: #F59E0B;
+    background: linear-gradient(135deg, #FFFBEB, white);
+  }
+  .price-plan { font-size: 11px; font-weight: 700; color: #9CA3AF; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+  .price-amount { font-size: 28px; font-weight: 900; color: #111827; }
+  .price-period { font-size: 13px; color: #6B7280; font-weight: 500; }
+  .price-saving { display: inline-block; background: #FEF3C7; color: #92400E; border-radius: 6px; padding: 2px 8px; font-size: 11px; font-weight: 700; margin-top: 4px; }
+  .price-features { margin-top: 14px; display: flex; flex-direction: column; gap: 6px; }
+  .price-feat { font-size: 12px; color: #374151; display: flex; align-items: center; gap: 6px; }
+  .price-feat::before { content: '✓'; color: #10B981; font-weight: 900; }
+  .price-feat.annual-only { color: #7C3AED; }
+  .price-feat.annual-only::before { content: '★'; }
+
+  /* Summary table */
+  .summary-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+  .summary-card {
+    background: white;
+    border: 1px solid #E5E7EB;
+    border-radius: 14px;
+    padding: 18px;
+    text-align: center;
+  }
+  .summary-num {
+    font-size: 36px;
+    font-weight: 900;
+    color: #0A2540;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .summary-num span { font-size: 18px; }
+  .summary-label { font-size: 12px; font-weight: 600; color: #6B7280; }
+  .summary-sub { font-size: 10px; color: #9CA3AF; margin-top: 2px; }
+
+  /* Platform chips */
+  .platform-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 24px; }
+  .platform-chip {
+    display: flex; align-items: center; gap: 6px;
+    background: white; border: 1px solid #E5E7EB;
+    border-radius: 20px; padding: 6px 14px;
+    font-size: 12px; font-weight: 700; color: #374151;
+  }
+  .platform-chip .dot { width: 8px; height: 8px; border-radius: 50%; }
+
+  /* AI features */
+  .ai-row {
+    background: linear-gradient(135deg, #F0FDFA, #EFF6FF);
+    border: 1px solid #99F6E4;
+    border-radius: 12px;
+    padding: 14px 16px;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .ai-row-icon {
+    width: 34px; height: 34px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #008CA4, #0A2540);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+  .ai-row-body { flex: 1; }
+  .ai-row-title { font-size: 13px; font-weight: 700; color: #111827; margin-bottom: 3px; }
+  .ai-row-desc { font-size: 11px; color: #374151; line-height: 1.4; }
+
+  /* Divider */
+  .divider { border: none; border-top: 1px solid #E5E7EB; margin: 24px 0; }
+
+  /* Footer */
+  .footer {
+    background: #0A2540;
+    border-radius: 14px;
+    padding: 24px 28px;
+    color: rgba(255,255,255,0.7);
+    font-size: 11px;
+    line-height: 1.6;
+    margin-top: 32px;
+  }
+  .footer strong { color: white; }
+
+  @media (max-width: 600px) {
+    .summary-grid { grid-template-columns: repeat(2, 1fr); }
+    .pricing-grid { grid-template-columns: 1fr; }
+    .cover h1 { font-size: 24px; }
+    .cover-stats { gap: 16px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- COVER -->
+<div class="cover">
+  <div class="cover-badge">📋 Documento de Valuation · Confidencial</div>
+  <h1>MedCases <span>Pro</span></h1>
+  <div class="subtitle">Lista completa de funcionalidades · App médico multiplataforma (iOS / Android / Web)</div>
+  <div class="cover-stats">
+    <div class="cover-stat">
+      <div class="num">628</div>
+      <div class="lbl">Fármacos na base</div>
+    </div>
+    <div class="cover-stat">
+      <div class="num">123</div>
+      <div class="lbl">Protocolos clínicos</div>
+    </div>
+    <div class="cover-stat">
+      <div class="num">9</div>
+      <div class="lbl">Módulos principais</div>
+    </div>
+    <div class="cover-stat">
+      <div class="num">2</div>
+      <div class="lbl">Idiomas (PT · ES)</div>
+    </div>
+    <div class="cover-stat">
+      <div class="num">3</div>
+      <div class="lbl">Plataformas</div>
+    </div>
+  </div>
+  <div class="cover-meta">
+    Bundle ID: com.medcasespro.med · Flutter 3.35.4 · Firebase · Gemini 2.5 Flash Lite · Compilado jun/2026
+  </div>
+</div>
+
+<!-- SUMMARY STATS -->
+<div class="summary-grid">
+  <div class="summary-card">
+    <div class="summary-num">628</div>
+    <div class="summary-label">Fármacos com bula</div>
+    <div class="summary-sub">Doses · mecanismos · ajuste renal · alertas</div>
+  </div>
+  <div class="summary-card">
+    <div class="summary-num">123</div>
+    <div class="summary-label">Protocolos clínicos</div>
+    <div class="summary-sub">10 especialidades · passo a passo · evidência</div>
+  </div>
+  <div class="summary-card">
+    <div class="summary-num">14</div>
+    <div class="summary-label">Calculadoras/Scores</div>
+    <div class="summary-sub">Glasgow, SOFA, Wells, CHA₂DS₂, NEWS2…</div>
+  </div>
+  <div class="summary-card">
+    <div class="summary-num">21<span>+</span></div>
+    <div class="summary-label">Cenários IA pré-programados</div>
+    <div class="summary-sub">Urgências e emergências clínicas</div>
+  </div>
+  <div class="summary-card">
+    <div class="summary-num">49</div>
+    <div class="summary-label">Referências de evidência</div>
+    <div class="summary-sub">AHA, ESC, SSC, SBP, UpToDate, Micromedex</div>
+  </div>
+  <div class="summary-card">
+    <div class="summary-num">11</div>
+    <div class="summary-label">Seções de avaliação clínica</div>
+    <div class="summary-sub">Formulário estruturado → PDF exportável</div>
+  </div>
+</div>
+
+<!-- PLATFORMS -->
+<div class="platform-row">
+  <div class="platform-chip"><div class="dot" style="background:#007AFF;"></div> iOS (iPhone + iPad)</div>
+  <div class="platform-chip"><div class="dot" style="background:#3DDC84;"></div> Android (Phone + Tablet)</div>
+  <div class="platform-chip"><div class="dot" style="background:#F97316;"></div> Web (PWA / Browser)</div>
+  <div class="platform-chip"><div class="dot" style="background:#10B981;"></div> Português (PT-BR)</div>
+  <div class="platform-chip"><div class="dot" style="background:#F59E0B;"></div> Español (ES)</div>
+  <div class="platform-chip"><div class="dot" style="background:#8B5CF6;"></div> Modo offline completo</div>
+  <div class="platform-chip"><div class="dot" style="background:#EC4899;"></div> Dark Mode nativo</div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- 1. IA CLÍNICA -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-header">
+    <div class="section-icon" style="background:linear-gradient(135deg,#008CA4,#0A2540);">🧠</div>
+    <div>
+      <div class="section-title">1. MedCases IA — Assistente Clínico com IA</div>
+      <div class="section-sub">Chat clínico com modelo de linguagem + RAG sobre base proprietária</div>
+    </div>
+    <div class="section-badge">Módulo Premium</div>
+  </div>
+
+  <div class="ai-row">
+    <div class="ai-row-icon">💬</div>
+    <div class="ai-row-body">
+      <div class="ai-row-title">Chat clínico em linguagem natural</div>
+      <div class="ai-row-desc">Conversação contínua com histórico de sessão. O médico descreve o caso em texto livre e recebe análise estruturada em markdown com hipóteses diagnósticas, condutas e referências bibliográficas inline. Suporta até 3 pares user/model de contexto persistente.</div>
+    </div>
+  </div>
+
+  <div class="ai-row">
+    <div class="ai-row-icon">🎤</div>
+    <div class="ai-row-body">
+      <div class="ai-row-title">Entrada por voz (STT) — iOS, Android e Web</div>
+      <div class="ai-row-desc">Ditado de casos clínicos por voz. Usa speech_to_text nativo no iOS/Android e Web Speech API no browser. Indicador visual de onda de áudio durante gravação. Botão toggle para parar/retomar ditado.</div>
+    </div>
+  </div>
+
+  <div class="ai-row">
+    <div class="ai-row-icon">🔊</div>
+    <div class="ai-row-body">
+      <div class="ai-row-title">Resposta em áudio (TTS)</div>
+      <div class="ai-row-desc">Text-to-Speech das respostas da IA via flutter_tts. Funciona no iOS, Android e Web. Botão "ouvir resposta" em cada bubble da IA.</div>
+    </div>
+  </div>
+
+  <div class="ai-row">
+    <div class="ai-row-icon">⚡</div>
+    <div class="ai-row-body">
+      <div class="ai-row-title">21 cenários clínicos pré-programados (suggestion chips)</div>
+      <div class="ai-row-desc">Atalhos de um toque para os casos mais comuns em plantão: IAM, Choque, Anafilaxia, PCR, TPSV, FA, Crise Hipertensiva, Sepse, TEP, DPOC, Asma grave, AVC, Convulsão, Meningite, Cetoacidose (CAD), Hipoglicemia grave, Hemorragia digestiva, Insuficiência cardíaca, Hipercalemia, Delirium.</div>
+    </div>
+  </div>
+
+  <div class="ai-row">
+    <div class="ai-row-icon">🗂️</div>
+    <div class="ai-row-body">
+      <div class="ai-row-title">Histórico de sessões de IA (Chat History)</div>
+      <div class="ai-row-desc">Cada conversa gera sessão salva com título automático derivado do primeiro prompt. Histórico com badge de contagem. Sessões recuperáveis pelo médico. "Novo Chat" limpa contexto mantendo histórico.</div>
+    </div>
+  </div>
+
+  <div class="ai-row">
+    <div class="ai-row-icon">🔌</div>
+    <div class="ai-row-body">
+      <div class="ai-row-title">Dual AI backend — Gemini 2.5 Flash Lite + GPT-4o-mini</div>
+      <div class="ai-row-desc">Primário: Google Gemini 2.5 Flash Lite (streaming, ~1.500 RPM free tier). Fallback: OpenAI GPT-4o-mini. Conexão via conta Google OAuth + API key do usuário. Badge "Conectado/Desconectado" em tempo real. Funciona offline em modo básico (RAG local).</div>
+    </div>
+  </div>
+
+  <div class="ai-row">
+    <div class="ai-row-icon">📊</div>
+    <div class="ai-row-body">
+      <div class="ai-row-title">Resposta em markdown rico com blocos colapsáveis</div>
+      <div class="ai-row-desc">Renderização de **negrito**, listas, tabelas, blocos de código, cabeçalhos H1/H2/H3 com cores semânticas (vermelho=urgente, amarelo=atenção, azul=info, verde=normal). Bloco colapsável "📚 Evidências" ao final de cada resposta.</div>
+    </div>
+  </div>
+
+  <div class="ai-row">
+    <div class="ai-row-icon">🧬</div>
+    <div class="ai-row-body">
+      <div class="ai-row-title">RAG sobre base farmacológica e protocolos proprietários</div>
+      <div class="ai-row-desc">Retrieval-Augmented Generation: a IA busca fármacos e protocolos da base local antes de gerar a resposta. Garante que doses, interações e condutas citadas sejam consistentes com a base do app.</div>
+    </div>
+  </div>
+
+  <div class="ai-row">
+    <div class="ai-row-icon">🌐</div>
+    <div class="ai-row-body">
+      <div class="ai-row-title">Chat integrado na Home (inline chat)</div>
+      <div class="ai-row-desc">Widget de chat rápido disponível diretamente na tela inicial sem sair do contexto. Mesma engine Gemini/OpenAI do módulo IA completo.</div>
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- 2. FARMACOS -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-header">
+    <div class="section-icon" style="background:linear-gradient(135deg,#7C3AED,#4C1D95);">💊</div>
+    <div>
+      <div class="section-title">2. Base Farmacológica — 628 Fármacos</div>
+      <div class="section-sub">Referência completa com doses, mecanismo, interações e ajuste renal</div>
+    </div>
+    <div class="section-badge">628 fármacos</div>
+  </div>
+
+  <div class="feat-grid">
+    <div class="feat-card">
+      <div class="feat-icon" style="background:#F5F3FF;">📖</div>
+      <div class="feat-body">
+        <div class="feat-name">Bula completa por fármaco</div>
+        <div class="feat-desc">Dose adulto/pediátrica, mecanismo de ação, indicações, contraindicações, efeitos adversos em abas navegáveis. 5 abas por fármaco.</div>
+        <div class="feat-tags"><span class="tag tag-pro">Pro</span></div>
+      </div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon" style="background:#EEF2FF;">🔍</div>
+      <div class="feat-body">
+        <div class="feat-name">Busca por nome, classe ou grupo</div>
+        <div class="feat-desc">Busca em tempo real por nome comercial, nome genérico, classe farmacológica e grupo terapêutico. Resultados com contador.</div>
+        <div class="feat-tags"><span class="tag tag-free">Grátis</span></div>
+      </div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon" style="background:#FEF3C7;">⚠️</div>
+      <div class="feat-body">
+        <div class="feat-name">Ajuste de dose renal automático</div>
+        <div class="feat-desc">Aba dedicada de ajuste renal por ClCr/TFG. Alertas automáticos quando o ClCr do paciente exige redução de dose.</div>
+        <div class="feat-tags"><span class="tag tag-pro">Pro</span></div>
+      </div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon" style="background:#FFF1F2;">🚨</div>
+      <div class="feat-body">
+        <div class="feat-name">Alertas de segurança — idosos e renal</div>
+        <div class="feat-desc">Geração automática de alertas: paciente idoso (>65a), insuficiência renal grave (ClCr<30), gravidez, lactação. Exibidos em tempo real no cockpit.</div>
+        <div class="feat-tags"><span class="tag tag-pro">Pro</span></div>
+      </div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon" style="background:#F0FDF4;">🗂️</div>
+      <div class="feat-body">
+        <div class="feat-name">47 grupos terapêuticos categorizados</div>
+        <div class="feat-desc">Analgésicos, antibióticos, cardio, neurológico, UTI críticos, vasopressores, anticoagulantes, endocrinologia, reumatologia, obstetrícia e mais.</div>
+        <div class="feat-tags"><span class="tag tag-free">Grátis</span></div>
+      </div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon" style="background:#FFF7ED;">📌</div>
+      <div class="feat-body">
+        <div class="feat-name">Fixar fármacos no Painel de Plantão</div>
+        <div class="feat-desc">Fármaco ativo fica pinado no cockpit com cálculo de dose automático baseado no peso/ClCr do paciente atual.</div>
+        <div class="feat-tags"><span class="tag tag-pro">Pro</span></div>
+      </div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon" style="background:#F0FDFA;">🔗</div>
+      <div class="feat-body">
+        <div class="feat-name">Referências bibliográficas por fármaco</div>
+        <div class="feat-desc">49 referências de evidência mapeadas: AHA, ESC, PALS, SSC, UpToDate 2024, Micromedex, Lexicomp, SBIM, SBP. Exibidas como footnotes clicáveis.</div>
+        <div class="feat-tags"><span class="tag tag-pro">Pro</span></div>
+      </div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon" style="background:#EFF6FF;">🧪</div>
+      <div class="feat-body">
+        <div class="feat-name">Calculadora de infusão (vasopressores)</div>
+        <div class="feat-desc">Cálculo de velocidade de infusão (mL/h) e dose (mcg/kg/min) para vasopressores/inotrópicos em UTI. Norepinefrina, adrenalina, dobutamina, dopamina, vasopressina.</div>
+        <div class="feat-tags"><span class="tag tag-pro">Pro</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- 3. PROTOCOLOS -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-header">
+    <div class="section-icon" style="background:linear-gradient(135deg,#DC2626,#7F1D1D);">🚨</div>
+    <div>
+      <div class="section-title">3. Protocolos Clínicos — 123 Protocolos</div>
+      <div class="section-sub">Passo a passo estruturado com condutas, doses e checklist</div>
+    </div>
+    <div class="section-badge">10 especialidades</div>
+  </div>
+
+  <div class="proto-groups">
+    <div class="proto-group">
+      <div class="proto-group-header">
+        <div class="proto-group-icon">🆘</div>
+        <div class="proto-group-name">Reanimação & Choque</div>
+        <div class="proto-group-count">8</div>
+      </div>
+      <div class="proto-items">
+        <div class="proto-item">PCR adulto / PCR pediátrica</div>
+        <div class="proto-item">Parada respiratória</div>
+        <div class="proto-item">Anafilaxia (+ refratária)</div>
+        <div class="proto-item">Choque cardiogênico, séptico, hipovolêmico</div>
+      </div>
+    </div>
+
+    <div class="proto-group">
+      <div class="proto-group-header">
+        <div class="proto-group-icon">❤️</div>
+        <div class="proto-group-name">Cardiovascular</div>
+        <div class="proto-group-count">10</div>
+      </div>
+      <div class="proto-items">
+        <div class="proto-item">IAM · SCA s/ supradesnivelamento</div>
+        <div class="proto-item">IC descompensada · EAP</div>
+        <div class="proto-item">TPSV · FA aguda · Bradiarritmia grave</div>
+        <div class="proto-item">Crise hipertensiva · Miocardite · Pericardite</div>
+      </div>
+    </div>
+
+    <div class="proto-group">
+      <div class="proto-group-header">
+        <div class="proto-group-icon">🫁</div>
+        <div class="proto-group-name">Respiratório</div>
+        <div class="proto-group-count">8</div>
+      </div>
+      <div class="proto-items">
+        <div class="proto-item">Asma grave (+ quase-fatal)</div>
+        <div class="proto-item">DPOC exacerbação</div>
+        <div class="proto-item">TEP agudo · Tromboembolismo</div>
+        <div class="proto-item">Pneumonia grave · Aspirativa · Hemoptise</div>
+      </div>
+    </div>
+
+    <div class="proto-group">
+      <div class="proto-group-header">
+        <div class="proto-group-icon">🧠</div>
+        <div class="proto-group-name">Neurológico & Psiquiátrico</div>
+        <div class="proto-group-count">7</div>
+      </div>
+      <div class="proto-items">
+        <div class="proto-item">AVC isquêmico · AVC hemorrágico</div>
+        <div class="proto-item">Status epilepticus</div>
+        <div class="proto-item">Meningite bacteriana</div>
+        <div class="proto-item">Agitação psicomotora · Delirium tremens · Enc. hepática</div>
+      </div>
+    </div>
+
+    <div class="proto-group">
+      <div class="proto-group-header">
+        <div class="proto-group-icon">🦠</div>
+        <div class="proto-group-name">Infeccioso & Sepse</div>
+        <div class="proto-group-count">8</div>
+      </div>
+      <div class="proto-items">
+        <div class="proto-item">Sepse (Bundle Hora 1 SSC 2021)</div>
+        <div class="proto-item">Sepse foco urinário</div>
+        <div class="proto-item">Neutropenia febril</div>
+        <div class="proto-item">Pielonefrite · Celulite · Dengue · PBE</div>
+      </div>
+    </div>
+
+    <div class="proto-group">
+      <div class="proto-group-header">
+        <div class="proto-group-icon">⚖️</div>
+        <div class="proto-group-name">Metabólico & Endócrino</div>
+        <div class="proto-group-count">11</div>
+      </div>
+      <div class="proto-items">
+        <div class="proto-item">CAD · SHH · Cetoacidose diabética</div>
+        <div class="proto-item">Hipoglicemia grave</div>
+        <div class="proto-item">Hipercalemia · Hipocalcemia · Disnatremias</div>
+        <div class="proto-item">Crise adrenal · Crise tireotóxica</div>
+      </div>
+    </div>
+
+    <div class="proto-group">
+      <div class="proto-group-header">
+        <div class="proto-group-icon">🏥</div>
+        <div class="proto-group-name">Gastro, Trauma & Cirúrgico</div>
+        <div class="proto-group-count">10</div>
+      </div>
+      <div class="proto-items">
+        <div class="proto-item">HDA varicosa e não-varicosa</div>
+        <div class="proto-item">Pancreatite aguda (+ grave)</div>
+        <div class="proto-item">Apendicite · Obstrução intestinal · Trauma (ATLS)</div>
+        <div class="proto-item">Síndrome compartimental · Cólica nefrética</div>
+      </div>
+    </div>
+
+    <div class="proto-group">
+      <div class="proto-group-header">
+        <div class="proto-group-icon">🔬</div>
+        <div class="proto-group-name">Nefrologia, Hemato & Obstétrica</div>
+        <div class="proto-group-count">10</div>
+      </div>
+      <div class="proto-items">
+        <div class="proto-item">Lesão renal aguda · Rabdomiólise</div>
+        <div class="proto-item">CIVD · Crise de anemia falciforme</div>
+        <div class="proto-item">Eclâmpsia/HELLP · HPP · DPP</div>
+        <div class="proto-item">TEV pediátrico · Gota · Priapismo</div>
+      </div>
+    </div>
+
+    <div class="proto-group">
+      <div class="proto-group-header">
+        <div class="proto-group-icon">☠️</div>
+        <div class="proto-group-name">Intoxicações & Overdose</div>
+        <div class="proto-group-count">11</div>
+      </div>
+      <div class="proto-items">
+        <div class="proto-item">Opioides · Benzodiazepínicos</div>
+        <div class="proto-item">Paracetamol · Organofosforados</div>
+        <div class="proto-item">Tricíclicos · Betabloqueadores</div>
+        <div class="proto-item">Metanol · CO · Síndrome abstinência</div>
+      </div>
+    </div>
+
+    <div class="proto-group">
+      <div class="proto-group-header">
+        <div class="proto-group-icon">👶</div>
+        <div class="proto-group-name">Pediatria</div>
+        <div class="proto-group-count">6+</div>
+      </div>
+      <div class="proto-items">
+        <div class="proto-item">PCR pediátrica (PALS 2020)</div>
+        <div class="proto-item">Crise convulsiva pediátrica</div>
+        <div class="proto-item">Cetoacidose pediátrica · Choque séptico</div>
+        <div class="proto-item">Anafilaxia pediátrica</div>
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap;">
+    <div class="feat-card" style="max-width:300px;">
+      <div class="feat-icon" style="background:#F0FDF4;">☑️</div>
+      <div class="feat-body">
+        <div class="feat-name">Checklist interativo por protocolo</div>
+        <div class="feat-desc">Cada protocolo tem checklist de passos acionável. Widget dedicado (protocol_checklist_widget) com estado persistente na sessão.</div>
+        <div class="feat-tags"><span class="tag tag-pro">Pro</span></div>
+      </div>
+    </div>
+    <div class="feat-card" style="max-width:300px;">
+      <div class="feat-icon" style="background:#FFF7ED;">⭐</div>
+      <div class="feat-body">
+        <div class="feat-name">Favoritos de protocolos</div>
+        <div class="feat-desc">Médico pode favoritar protocolos. Grupo "Favoritos" aparece no topo da lista, com acesso imediato em emergências.</div>
+        <div class="feat-tags"><span class="tag tag-pro">Pro</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- 4. FERRAMENTAS CLÍNICAS -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-header">
+    <div class="section-icon" style="background:linear-gradient(135deg,#D97706,#92400E);">🧮</div>
+    <div>
+      <div class="section-title">4. Ferramentas Clínicas — Calculadoras & Scores</div>
+      <div class="section-sub">6 abas temáticas com calculadoras validadas e tabelas de referência</div>
+    </div>
+    <div class="section-badge">6 abas · 14 scores</div>
+  </div>
+
+  <!-- Tab: Biometria -->
+  <div style="margin-bottom:16px;">
+    <div style="font-size:12px;font-weight:700;color:#9CA3AF;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:8px;">ABA 1 — BIOMETRIA</div>
+    <div class="score-grid">
+      <div class="score-pill"><div class="score-pill-dot" style="background:#7C3AED;"></div> IMC (Índice de Massa Corporal)</div>
+      <div class="score-pill"><div class="score-pill-dot" style="background:#7C3AED;"></div> Peso Ideal (Devine)</div>
+      <div class="score-pill"><div class="score-pill-dot" style="background:#7C3AED;"></div> Peso Ajustado (obesos IMC>30)</div>
+      <div class="score-pill"><div class="score-pill-dot" style="background:#7C3AED;"></div> ClCr — Cockcroft-Gault</div>
+      <div class="score-pill"><div class="score-pill-dot" style="background:#7C3AED;"></div> TFG — CKD-EPI 2021</div>
+      <div class="score-pill"><div class="score-pill-dot" style="background:#7C3AED;"></div> Estadiamento DRC G1–G5</div>
+    </div>
+  </div>
+
+  <!-- Tab: Scores -->
+  <div style="margin-bottom:16px;">
+    <div style="font-size:12px;font-weight:700;color:#9CA3AF;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:8px;">ABA 2 — SCORES CLÍNICOS</div>
+    <div class="score-grid">
+      <div class="score-pill"><div class="score-pill-dot" style="background:#DC2626;"></div> Glasgow (GCS) — /15</div>
+      <div class="score-pill"><div class="score-pill-dot" style="background:#DC2626;"></div> SOFA (Sepse) — /24</div>
+      <div class="score-pill"><div class="score-pill-dot" style="background:#2563EB;"></div> CHA₂DS₂-VASc (FA)</div>
+      <div class="score-pill"><div class="score-pill-dot" style="background:#2563EB;"></div> Wells TVP (Trombose Venosa)</div>
+      <div class="score-pill"><div class="score-pill-dot" style="background:#2563EB;"></div> Wells TEP (Embolia Pulmonar)</div>
+      <div class="score-pill"><div class="score-pill-dot" style="background:#D97706;"></div> CURB-65 (PAC)</div>
+      <div class="score-pill"><div class="score-pill-dot" style="background:#D97706;"></div> PSI/PORT (PAC — Gravidade)</div>
+      <div class="score-pill"><div class="score-pill-dot" style="background:#10B981;"></div> NEWS2 (Alerta Precoce)</div>
+      <div class="score-pill"><div class="score-pill-dot" style="background:#6B7280;"></div> Child-Pugh (Hepatopatia)</div>
+    </div>
+  </div>
+
+  <!-- Tab: Cardio -->
+  <div style="margin-bottom:16px;">
+    <div style="font-size:12px;font-weight:700;color:#9CA3AF;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:8px;">ABA 3 — CARDIO</div>
+    <div class="score-grid">
+      <div class="score-pill"><div class="score-pill-dot" style="background:#DC2626;"></div> Hemodinâmica (FC, PA, PAM, PP)</div>
+      <div class="score-pill"><div class="score-pill-dot" style="background:#DC2626;"></div> Débito Cardíaco (Fick)</div>
+      <div class="score-pill"><div class="score-pill-dot" style="background:#DC2626;"></div> Intervalo QTc (Bazett)</div>
+      <div class="score-pill"><div class="score-pill-dot" style="background:#DC2626;"></div> Conversão de Pressão (mmHg/cmH₂O)</div>
+      <div class="score-pill"><div class="score-pill-dot" style="background:#DC2626;"></div> Padrões ECG de urgência (tabela)</div>
+      <div class="score-pill"><div class="score-pill-dot" style="background:#DC2626;"></div> Territórios coronários (referência)</div>
+      <div class="score-pill"><div class="score-pill-dot" style="background:#DC2626;"></div> Importação de laudo de ECG (IA)</div>
+    </div>
+  </div>
+
+  <!-- Tab: Eletrólitos -->
+  <div style="margin-bottom:16px;">
+    <div style="font-size:12px;font-weight:700;color:#9CA3AF;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:8px;">ABA 4 — ELETRÓLITOS</div>
+    <div class="score-grid">
+      <div class="score-pill"><div class="score-pill-dot" style="background:#0369A1;"></div> Interpretação de eletrólitos</div>
+      <div class="score-pill"><div class="score-pill-dot" style="background:#0369A1;"></div> Gasometria arterial interativa</div>
+      <div class="score-pill"><div class="score-pill-dot" style="background:#0369A1;"></div> Déficit de Bicarbonato</div>
+      <div class="score-pill"><div class="score-pill-dot" style="background:#0369A1;"></div> Acidose/Alcalose metabólica + respiratória</div>
+      <div class="score-pill"><div class="score-pill-dot" style="background:#0369A1;"></div> Algoritmo 4 passos gasometria</div>
+      <div class="score-pill"><div class="score-pill-dot" style="background:#0369A1;"></div> Causas de hipoxemia (tabela)</div>
+      <div class="score-pill"><div class="score-pill-dot" style="background:#0369A1;"></div> Reposição vasopressora em UTI</div>
+    </div>
+  </div>
+
+  <!-- Tab: Referência -->
+  <div style="margin-bottom:16px;">
+    <div style="font-size:12px;font-weight:700;color:#9CA3AF;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:8px;">ABA 5 — REFERÊNCIA RÁPIDA</div>
+    <div class="score-grid">
+      <div class="score-pill"><div class="score-pill-dot" style="background:#374151;"></div> Hemograma (valores normais)</div>
+      <div class="score-pill"><div class="score-pill-dot" style="background:#374151;"></div> Bioquímica completa</div>
+      <div class="score-pill"><div class="score-pill-dot" style="background:#374151;"></div> Urinálise</div>
+      <div class="score-pill"><div class="score-pill-dot" style="background:#374151;"></div> Antídotos clínicos essenciais (tabela)</div>
+      <div class="score-pill"><div class="score-pill-dot" style="background:#374151;"></div> Acesso venoso central — localização</div>
+      <div class="score-pill"><div class="score-pill-dot" style="background:#374151;"></div> Calibre de cateter por situação</div>
+      <div class="score-pill"><div class="score-pill-dot" style="background:#374151;"></div> Pressões de referência invasivo</div>
+      <div class="score-pill"><div class="score-pill-dot" style="background:#374151;"></div> GAS arterial valores normais</div>
+      <div class="score-pill"><div class="score-pill-dot" style="background:#374151;"></div> Prescrições modelo (8 situações)</div>
+    </div>
+  </div>
+
+  <!-- Tab: Pediatria -->
+  <div>
+    <div style="font-size:12px;font-weight:700;color:#9CA3AF;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:8px;">ABA 6 — PEDIATRIA (Nelson 2025 · AAP · PALS)</div>
+    <div class="score-grid">
+      <div class="score-pill"><div class="score-pill-dot" style="background:#10B981;"></div> Calculadora por faixa etária/peso</div>
+      <div class="score-pill"><div class="score-pill-dot" style="background:#10B981;"></div> Parâmetros vitais normais por idade</div>
+      <div class="score-pill"><div class="score-pill-dot" style="background:#10B981;"></div> Schwartz TFG pediátrica</div>
+      <div class="score-pill"><div class="score-pill-dot" style="background:#10B981;"></div> IMC pediátrico</div>
+      <div class="score-pill"><div class="score-pill-dot" style="background:#10B981;"></div> Reanimação PCR pediátrica (PALS)</div>
+      <div class="score-pill"><div class="score-pill-dot" style="background:#10B981;"></div> Analgesia pediátrica (doses/kg)</div>
+      <div class="score-pill"><div class="score-pill-dot" style="background:#10B981;"></div> Antipiréticos pediátricos</div>
+      <div class="score-pill"><div class="score-pill-dot" style="background:#10B981;"></div> Descongestionantes e via aérea</div>
+      <div class="score-pill"><div class="score-pill-dot" style="background:#10B981;"></div> Sedação e analgesia UTI pediátrica</div>
+      <div class="score-pill"><div class="score-pill-dot" style="background:#10B981;"></div> Antibióticos pediátricos (15+ fármacos)</div>
+      <div class="score-pill"><div class="score-pill-dot" style="background:#10B981;"></div> Crise convulsiva pediátrica</div>
+      <div class="score-pill"><div class="score-pill-dot" style="background:#10B981;"></div> Vasopressores e fluidos pediátricos</div>
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- 5. PAINEL DE PLANTÃO (COCKPIT) -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-header">
+    <div class="section-icon" style="background:linear-gradient(135deg,#0369A1,#0C4A6E);">🏥</div>
+    <div>
+      <div class="section-title">5. Painel de Plantão — Cockpit Clínico</div>
+      <div class="section-sub">Dashboard de turno com pacientes, doses, protocolos e alertas em um único painel</div>
+    </div>
+    <div class="section-badge">Módulo Exclusivo</div>
+  </div>
+
+  <div class="feat-grid">
+    <div class="feat-card">
+      <div class="feat-icon" style="background:#EFF6FF;">👥</div>
+      <div class="feat-body">
+        <div class="feat-name">Lista de pacientes do plantão</div>
+        <div class="feat-desc">Adicionar/editar/remover pacientes com nome, idade, peso, diagnóstico, observações e alergias. Estado persiste no SharedPreferences local (sem Firestore).</div>
+        <div class="feat-tags"><span class="tag tag-pro">Pro</span></div>
+      </div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon" style="background:#FEF3C7;">⚖️</div>
+      <div class="feat-body">
+        <div class="feat-name">Dados biométricos por paciente</div>
+        <div class="feat-desc">Peso, altura, IMC, ClCr (Cockcroft-Gault), TFG (CKD-EPI), alergias. Alimenta o cálculo automático de dose de fármacos e gera alertas de segurança.</div>
+        <div class="feat-tags"><span class="tag tag-pro">Pro</span></div>
+      </div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon" style="background:#FFF1F2;">💉</div>
+      <div class="feat-body">
+        <div class="feat-name">Fármacos pinados com dose automática</div>
+        <div class="feat-desc">Seleciona fármacos da base completa e pina no cockpit. Dose calculada automaticamente pelo peso/ClCr do paciente ativo. Alertas de interação entre fármacos pinados.</div>
+        <div class="feat-tags"><span class="tag tag-pro">Pro</span></div>
+      </div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon" style="background:#F0FDF4;">🚨</div>
+      <div class="feat-body">
+        <div class="feat-name">Alerta de interações medicamentosas em tempo real</div>
+        <div class="feat-desc">Banner de alerta com nível de severidade (maior/moderada/leve) quando 2+ fármacos pinados têm interação conhecida. Detalhe completo em sheet.</div>
+        <div class="feat-tags"><span class="tag tag-pro">Pro</span></div>
+      </div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon" style="background:#F5F3FF;">🧮</div>
+      <div class="feat-body">
+        <div class="feat-name">Calculadoras pinadas no plantão</div>
+        <div class="feat-desc">Acesso rápido às calculadoras mais usadas durante o turno, pintadas diretamente no dashboard. Seleção personalizada por médico.</div>
+        <div class="feat-tags"><span class="tag tag-pro">Pro</span></div>
+      </div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon" style="background:#FFF7ED;">⏱️</div>
+      <div class="feat-body">
+        <div class="feat-name">Timer de procedimento com notificação</div>
+        <div class="feat-desc">Temporizador para infusões, medicações temporais, procedimentos com prazo. Dispara notificação local (push) quando encerra. SOS badge visível.</div>
+        <div class="feat-tags"><span class="tag tag-pro">Pro</span></div>
+      </div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon" style="background:#F0FDFA;">📋</div>
+      <div class="feat-body">
+        <div class="feat-name">Protocolos de emergência no cockpit</div>
+        <div class="feat-desc">Acesso rápido aos protocolos de emergência sem sair do painel de plantão. Integração com a base de 123 protocolos.</div>
+        <div class="feat-tags"><span class="tag tag-pro">Pro</span></div>
+      </div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon" style="background:#EFF6FF;">🛡️</div>
+      <div class="feat-body">
+        <div class="feat-name">Status de segurança do paciente</div>
+        <div class="feat-desc">Painel de alertas: insuficiência renal, idoso, alergia cadastrada. Integrado com fármacos selecionados para alertas proativos de risco.</div>
+        <div class="feat-tags"><span class="tag tag-pro">Pro</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- 6. H. CLÍNICA DIGITAL -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-header">
+    <div class="section-icon" style="background:linear-gradient(135deg,#374151,#1F2937);">📋</div>
+    <div>
+      <div class="section-title">6. Histórico Clínico Digital</div>
+      <div class="section-sub">Prontuário estruturado com 11 seções · exportação PDF · modo comunidade</div>
+    </div>
+    <div class="section-badge">Só Anual</div>
+  </div>
+
+  <div class="feat-grid">
+    <div class="feat-card">
+      <div class="feat-icon" style="background:#F9FAFB;">📝</div>
+      <div class="feat-body">
+        <div class="feat-name">Prontuário com 11 seções padronizadas</div>
+        <div class="feat-desc">Identificação · Queixa principal · Enfermidade atual · Antecedentes pessoais · Antecedentes familiares · Exame físico · Exames complementares · Impressão diagnóstica · Evolução · Condutas · Desfecho/Alta. Baseado no esquema argentino e brasileiro.</div>
+        <div class="feat-tags"><span class="tag tag-annual">Só Anual</span></div>
+      </div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon" style="background:#F0FDF4;">📄</div>
+      <div class="feat-body">
+        <div class="feat-name">Exportação PDF do prontuário</div>
+        <div class="feat-desc">Geração de PDF profissional diretamente no app com layout médico. Compatível com impressão via iOS/Android Print API e download no browser.</div>
+        <div class="feat-tags"><span class="tag tag-annual">Só Anual</span></div>
+      </div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon" style="background:#EFF6FF;">🌐</div>
+      <div class="feat-body">
+        <div class="feat-name">Modo comunidade — casos anônimos</div>
+        <div class="feat-desc">Médico pode compartilhar casos anonimizados com a comunidade MedCases. Outros médicos visualizam como referência educacional. Tab "Comunidade" na tela.</div>
+        <div class="feat-tags"><span class="tag tag-annual">Só Anual</span></div>
+      </div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon" style="background:#FFFBEB;">☁️</div>
+      <div class="feat-body">
+        <div class="feat-name">Sincronização Firestore em nuvem</div>
+        <div class="feat-desc">Prontuários salvos no Cloud Firestore com acesso multidispositivo. Sincronização em background. Funciona offline com cache local.</div>
+        <div class="feat-tags"><span class="tag tag-annual">Só Anual</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- 7. AVALIAÇÃO CLÍNICA ESTRUTURADA -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-header">
+    <div class="section-icon" style="background:linear-gradient(135deg,#0891B2,#164E63);">🩺</div>
+    <div>
+      <div class="section-title">7. Avaliação Clínica — Formulário Estruturado</div>
+      <div class="section-sub">9 sistemas com campos guiados + chips de seleção rápida</div>
+    </div>
+    <div class="section-badge">9 sistemas</div>
+  </div>
+
+  <div class="score-grid">
+    <div class="score-pill"><div class="score-pill-dot" style="background:#10B981;"></div> Geral (estado geral, consciência, hidratação, cianose)</div>
+    <div class="score-pill"><div class="score-pill-dot" style="background:#DC2626;"></div> Sinais Vitais (FC, FR, PA, Tax, SpO2, dextro)</div>
+    <div class="score-pill"><div class="score-pill-dot" style="background:#7C3AED;"></div> Cabeça e Pescoço</div>
+    <div class="score-pill"><div class="score-pill-dot" style="background:#DC2626;"></div> Cardiovascular</div>
+    <div class="score-pill"><div class="score-pill-dot" style="background:#2563EB;"></div> Respiratório</div>
+    <div class="score-pill"><div class="score-pill-dot" style="background:#D97706;"></div> Abdome</div>
+    <div class="score-pill"><div class="score-pill-dot" style="background:#5C2D91;"></div> Neurológico (GCS integrado)</div>
+    <div class="score-pill"><div class="score-pill-dot" style="background:#374151;"></div> Membros</div>
+    <div class="score-pill"><div class="score-pill-dot" style="background:#6B7280;"></div> Outros</div>
+  </div>
+  <div style="margin-top:10px;font-size:12px;color:#6B7280;">Chips de seleção rápida em cada campo para preenchimento em 1 toque · Campos livres para observações · Saída integrada com H. Clínica</div>
+</div>
+
+<hr class="divider">
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- 8. BIBLIOTECA & SIMULAÇÕES -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-header">
+    <div class="section-icon" style="background:linear-gradient(135deg,#059669,#065F46);">📚</div>
+    <div>
+      <div class="section-title">8. Biblioteca Clínica & Simulações</div>
+      <div class="section-sub">Guias PDF + casos de estudo interativos</div>
+    </div>
+    <div class="section-badge">Módulo Premium</div>
+  </div>
+
+  <div class="feat-grid">
+    <div class="feat-card">
+      <div class="feat-icon" style="background:#F0FDF4;">📥</div>
+      <div class="feat-body">
+        <div class="feat-name">Biblioteca de Guias PDF</div>
+        <div class="feat-desc">Guias clínicos em PDF hospedados no Firebase Storage. Categorização por especialidade. Visualizador integrado no app. Contador de downloads. Upload por admin.</div>
+        <div class="feat-tags"><span class="tag tag-pro">Pro</span></div>
+      </div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon" style="background:#EFF6FF;">🎮</div>
+      <div class="feat-body">
+        <div class="feat-name">Casos de estudo simulados</div>
+        <div class="feat-desc">Casos clínicos interativos com fluxo de decisão. Médico escolhe hipóteses e condutas. Feedback imediato. Categorias: Simulações e Fluxos Simulados.</div>
+        <div class="feat-tags"><span class="tag tag-pro">Pro</span></div>
+      </div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon" style="background:#FFF7ED;">🔍</div>
+      <div class="feat-body">
+        <div class="feat-name">Busca e filtros por categoria</div>
+        <div class="feat-desc">Busca por título/autor em tempo real. Filtros por categoria (Cardiologia, Neurologia, UTI, etc). Chip de filtro ativo com visual claro.</div>
+        <div class="feat-tags"><span class="tag tag-pro">Pro</span></div>
+      </div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon" style="background:#F5F3FF;">🔄</div>
+      <div class="feat-body">
+        <div class="feat-name">Cache offline de guias</div>
+        <div class="feat-desc">Guias visualizados recentemente ficam em cache local para acesso sem internet. Atualização automática em background.</div>
+        <div class="feat-tags"><span class="tag tag-annual">Só Anual</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- 9. INTERAÇÕES MEDICAMENTOSAS -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-header">
+    <div class="section-icon" style="background:linear-gradient(135deg,#EF4444,#991B1B);">⚠️</div>
+    <div>
+      <div class="section-title">9. Interações Medicamentosas</div>
+      <div class="section-sub">Verificador multi-droga com severidade e mecanismo</div>
+    </div>
+  </div>
+
+  <div class="feat-grid">
+    <div class="feat-card">
+      <div class="feat-icon" style="background:#FFF1F2;">🔬</div>
+      <div class="feat-body">
+        <div class="feat-name">Verificador multi-fármaco</div>
+        <div class="feat-desc">Seleciona até N fármacos e recebe lista completa de interações pares. Classificação por severidade: Maior (vermelho), Moderada (laranja), Menor (amarelo).</div>
+        <div class="feat-tags"><span class="tag tag-pro">Pro</span></div>
+      </div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon" style="background:#FEF3C7;">📖</div>
+      <div class="feat-body">
+        <div class="feat-name">Mecanismo e manejo por interação</div>
+        <div class="feat-desc">Cada interação tem descrição do mecanismo farmacodinâmico/farmacocinético e recomendação de manejo (evitar, monitorar, ajustar dose).</div>
+        <div class="feat-tags"><span class="tag tag-pro">Pro</span></div>
+      </div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon" style="background:#F0FDF4;">🔎</div>
+      <div class="feat-body">
+        <div class="feat-name">Busca com autocomplete</div>
+        <div class="feat-desc">Campo de busca com dropdown de sugestões ao digitar. Chips visuais para fármacos selecionados com remoção individual.</div>
+        <div class="feat-tags"><span class="tag tag-pro">Pro</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- 10. SISTEMA E PLATAFORMA -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-header">
+    <div class="section-icon" style="background:linear-gradient(135deg,#1F2937,#111827);">⚙️</div>
+    <div>
+      <div class="section-title">10. Sistema, Plataforma & Infraestrutura</div>
+      <div class="section-sub">Arquitetura técnica, autenticação, notificações e compliance Apple</div>
+    </div>
+  </div>
+
+  <div class="feat-grid">
+    <div class="feat-card">
+      <div class="feat-icon" style="background:#F0F9FF;">🔐</div>
+      <div class="feat-body">
+        <div class="feat-name">Autenticação Firebase + Google OAuth</div>
+        <div class="feat-desc">Login com email/senha via Firebase Auth. Google Sign-In para conectar Gemini. Keychain iOS / Keystore Android para tokens. Sessão persistente com refresh automático.</div>
+        <div class="feat-tags"><span class="tag tag-free">Grátis</span></div>
+      </div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon" style="background:#F0FDF4;">📵</div>
+      <div class="feat-body">
+        <div class="feat-name">Modo offline completo (cache local)</div>
+        <div class="feat-desc">Download da base de fármacos, protocolos e casos para SharedPreferences. Barra de progresso durante download. Funciona 100% sem internet em plantões. Atualiza ao voltar online.</div>
+        <div class="feat-tags"><span class="tag tag-annual">Só Anual</span></div>
+      </div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon" style="background:#FFFBEB;">🔔</div>
+      <div class="feat-body">
+        <div class="feat-name">Notificações locais (push in-app)</div>
+        <div class="feat-desc">flutter_local_notifications no iOS/Android. Agendamento de lembretes do cockpit (timer). Notificação de atualização do app. Web usa NotificationOverlay customizado.</div>
+        <div class="feat-tags"><span class="tag tag-ios"/><span class="tag tag-android">Mobile</span></div>
+      </div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon" style="background:#F5F3FF;">🌙</div>
+      <div class="feat-body">
+        <div class="feat-name">Dark Mode nativo</div>
+        <div class="feat-desc">Suporte total a dark/light mode. Paleta `#1A1D23` / `#0F1116` dark premium. Persiste preferência no SharedPreferences. Toggle no perfil. Auto-detecta preferência do sistema.</div>
+        <div class="feat-tags"><span class="tag tag-free">Grátis</span></div>
+      </div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon" style="background:#F0FDF4;">🌍</div>
+      <div class="feat-body">
+        <div class="feat-name">Bilíngue PT-BR / ES auto-detectado</div>
+        <div class="feat-desc">Detecção automática de idioma pelo locale do SO. Todo o conteúdo (fármacos, protocolos, scores, UI) disponível em Português e Espanhol. Toggle manual disponível.</div>
+        <div class="feat-tags"><span class="tag tag-free">Grátis</span></div>
+      </div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon" style="background:#FFF1F2;">📱</div>
+      <div class="feat-body">
+        <div class="feat-name">Layout responsivo Mobile / Tablet / Desktop</div>
+        <div class="feat-desc">LayoutBuilder com breakpoint 1024px. Mobile: BottomAppBar + FAB. Desktop: sidebar 2 colunas. Suporta iPhone, iPad, Android phone/tablet e browser.</div>
+        <div class="feat-tags"><span class="tag tag-free">Grátis</span></div>
+      </div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon" style="background:#EFF6FF;">📤</div>
+      <div class="feat-body">
+        <div class="feat-name">Compartilhamento nativo (share_plus)</div>
+        <div class="feat-desc">Compartilhar protocolos, fármacos e prontuários via WhatsApp, e-mail, AirDrop e outros apps. Disponível em iOS, Android e Web.</div>
+        <div class="feat-tags"><span class="tag tag-pro">Pro</span></div>
+      </div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon" style="background:#F0FDFA;">🔄</div>
+      <div class="feat-body">
+        <div class="feat-name">Atualização OTA da base de dados</div>
+        <div class="feat-desc">Fármacos e protocolos carregados do Firestore em runtime. Atualizações de conteúdo clínico sem release de nova versão no App Store. Sistema de versão com fallback local.</div>
+        <div class="feat-tags"><span class="tag tag-pro">Pro</span></div>
+      </div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon" style="background:#FFFBEB;">📋</div>
+      <div class="feat-body">
+        <div class="feat-name">Compliance Apple (Guideline 1.4.1)</div>
+        <div class="feat-desc">Disclaimer médico educacional obrigatório em todas as telas (LegalBar). Telas de Privacy Policy e Terms of Use. Professional Gate (verificação de profissional de saúde).</div>
+        <div class="feat-tags"><span class="tag tag-free">Grátis</span><span class="tag tag-ios">iOS</span></div>
+      </div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon" style="background:#F9FAFB;">👤</div>
+      <div class="feat-body">
+        <div class="feat-name">Notas clínicas pessoais</div>
+        <div class="feat-desc">App de notas ricas com cores, alertas (lembrete local), busca full-text. Editor de nota com título automático. Persistência em Firestore + cache local.</div>
+        <div class="feat-tags"><span class="tag tag-pro">Pro</span></div>
+      </div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon" style="background:#EFF6FF;">🎯</div>
+      <div class="feat-body">
+        <div class="feat-name">Sistema de indicações (referral)</div>
+        <div class="feat-desc">Código de referência único por usuário. Rastreamento de novos assinantes indicados. Incentivo de crescimento viral entre médicos.</div>
+        <div class="feat-tags"><span class="tag tag-new">Crescimento</span></div>
+      </div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon" style="background:#F0FDF4;">📊</div>
+      <div class="feat-body">
+        <div class="feat-name">Activity tracking (histórico de uso)</div>
+        <div class="feat-desc">Registro de fármacos, protocolos e casos acessados recentemente. "Recentes" na Home com acesso rápido. Sincronizado com Firestore.</div>
+        <div class="feat-tags"><span class="tag tag-pro">Pro</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- PRICING -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-header">
+    <div class="section-icon" style="background:linear-gradient(135deg,#F59E0B,#92400E);">💰</div>
+    <div>
+      <div class="section-title">11. Planos e Monetização</div>
+      <div class="section-sub">Freemium → Mensal → Anual · In-app purchase (App Store / Google Play)</div>
+    </div>
+  </div>
+
+  <div class="pricing-grid">
+    <div class="price-card">
+      <div class="price-plan">Plano Gratuito</div>
+      <div class="price-amount">R$ 0</div>
+      <div class="price-period">/ para sempre</div>
+      <div class="price-features">
+        <div class="price-feat">Busca de fármacos (limitada)</div>
+        <div class="price-feat">Protocolos básicos</div>
+        <div class="price-feat">Dark mode</div>
+        <div class="price-feat">Bilíngue PT/ES</div>
+      </div>
+    </div>
+
+    <div class="price-card">
+      <div class="price-plan">Plano Mensal (Pro)</div>
+      <div class="price-amount">R$ 29,90</div>
+      <div class="price-period">/ mês</div>
+      <div class="price-features">
+        <div class="price-feat">628 fármacos completos</div>
+        <div class="price-feat">123 protocolos</div>
+        <div class="price-feat">IA Clínica sem restrições</div>
+        <div class="price-feat">Calculadoras avançadas</div>
+        <div class="price-feat">Interações medicamentosas</div>
+        <div class="price-feat">Prescrições modelo</div>
+        <div class="price-feat">Painel de plantão</div>
+      </div>
+    </div>
+
+    <div class="price-card featured" style="grid-column: 1 / -1;">
+      <div class="price-plan">Plano Anual (Mais Completo)</div>
+      <div style="display:flex;align-items:baseline;gap:10px;">
+        <div class="price-amount">R$ 19,90</div>
+        <div class="price-period">/ mês · cobrado anualmente (R$ 238,80/ano)</div>
+        <div class="price-saving">Economize 34%</div>
+      </div>
+      <div class="price-features" style="columns:2;gap:20px;margin-top:14px;">
+        <div class="price-feat">Tudo do Plano Mensal</div>
+        <div class="price-feat annual-only">Acesso offline completo</div>
+        <div class="price-feat annual-only">Histórico clínico ilimitado</div>
+        <div class="price-feat annual-only">Exportação PDF prontuário</div>
+        <div class="price-feat annual-only">Suporte prioritário (&lt;24h)</div>
+        <div class="price-feat annual-only">Cache offline base completa</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  <strong>MedCases Pro</strong> · Bundle ID: com.medcasespro.med · Flutter 3.35.4 · Dart null-safe · Firebase (Auth, Firestore, Storage) · Gemini 2.5 Flash Lite (streaming) · OpenAI GPT-4o-mini (fallback) · iOS + Android + Web<br><br>
+  Commit base: <strong>0e758d7</strong> · Branch: genspark_ai_developer · Última atualização: 05/06/2026<br><br>
+  <strong>Fontes das bases de dados clínicas:</strong> AHA/ACLS 2020, ESC 2022, Surviving Sepsis Campaign 2021, AAP/PALS 2020, Nelson Pediatrics 2025, SBP, SBIM, UpToDate 2024, Micromedex® 2024, Lexicomp® 2024, ATS/IDSA CAP Guidelines 2019, CKD-EPI 2021, PADIS 2018.<br><br>
+  <em>Documento confidencial para fins de valuation. Não distribuir sem autorização.</em>
+</div>
+
+</body>
+</html>

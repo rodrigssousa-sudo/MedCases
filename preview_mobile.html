@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MedCases Pro — Mobile Preview</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #0f0f0f;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif;
+    padding: 32px 16px 60px;
+    gap: 40px;
+    flex-wrap: wrap;
+  }
+
+  .preview-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .preview-label {
+    color: #666;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+  }
+
+  /* iPhone frame */
+  .iphone {
+    width: 393px;
+    height: 852px;
+    border-radius: 55px;
+    background: #1a1a1a;
+    border: 2px solid #333;
+    box-shadow:
+      0 0 0 6px #0a0a0a,
+      0 40px 80px rgba(0,0,0,0.8),
+      inset 0 0 0 1px #2a2a2a;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Dynamic island */
+  .dynamic-island {
+    position: absolute;
+    top: 14px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 120px;
+    height: 34px;
+    background: #0a0a0a;
+    border-radius: 20px;
+    z-index: 100;
+  }
+
+  /* Screen area */
+  .screen {
+    flex: 1;
+    overflow: hidden;
+    border-radius: 53px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ── THEME TOGGLE ── */
+  .theme-toggle {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    z-index: 200;
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 20px;
+    padding: 6px 14px;
+    cursor: pointer;
+    font-size: 12px;
+    color: #fff;
+    backdrop-filter: blur(10px);
+    transition: all 0.2s;
+  }
+  .theme-toggle:hover { background: rgba(255,255,255,0.2); }
+
+  /* ══════════════════════════════════════════
+     LIGHT THEME (default)
+  ══════════════════════════════════════════ */
+  .app { background: #F2F4F7; flex: 1; display: flex; flex-direction: column; }
+
+  /* Status bar */
+  .status-bar {
+    height: 54px;
+    background: #0A7C4E;
+    display: flex;
+    align-items: flex-end;
+    padding: 0 24px 8px;
+    flex-shrink: 0;
+  }
+  .status-time { color: #fff; font-size: 13px; font-weight: 700; }
+  .status-icons { margin-left: auto; color: #fff; font-size: 12px; display: flex; gap: 6px; align-items: center; }
+
+  /* AppBar */
+  .appbar {
+    height: 56px;
+    background: #0A7C4E;
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+    flex-shrink: 0;
+    box-shadow: 0 2px 8px rgba(10,124,78,0.3);
+  }
+  .appbar-logo {
+    width: 34px; height: 34px;
+    background: linear-gradient(135deg, #1F6B48, #0F1C14);
+    border-radius: 10px;
+    border: 1.5px solid rgba(74,222,128,0.3);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; font-weight: 900; color: #4ADE80;
+    flex-shrink: 0;
+  }
+  .appbar-title {
+    margin-left: 10px;
+    font-size: 15px; font-weight: 800;
+    color: #fff;
+    letter-spacing: 0.2px;
+  }
+  .appbar-subtitle { font-size: 10px; color: rgba(255,255,255,0.7); font-weight: 500; }
+  .appbar-menu {
+    margin-left: auto;
+    display: flex; gap: 4px; flex-direction: column;
+    cursor: pointer; padding: 4px;
+  }
+  .appbar-menu span {
+    display: block; width: 20px; height: 2px;
+    background: rgba(255,255,255,0.8); border-radius: 2px;
+  }
+
+  /* Scrollable content */
+  .content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 12px 16px 110px;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    scrollbar-width: none;
+  }
+  .content::-webkit-scrollbar { display: none; }
+
+  /* ── BLOCO 1: IA Chat ── */
+  .ia-chat-block {
+    background: #fff;
+    border-radius: 20px;
+    border: 1px solid #E4EEE9;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+    padding: 16px;
+    min-height: 200px;
+    margin-bottom: 16px;
+    position: relative;
+    overflow: hidden;
+  }
+  .ia-chat-block::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #0A7C4E, #4ADE80, #0A7C4E);
+  }
+  .ia-header {
+    display: flex; align-items: center; gap: 10px; margin-bottom: 12px;
+  }
+  .ia-icon {
+    width: 36px; height: 36px;
+    background: linear-gradient(135deg, #0A7C4E, #15803D);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+  }
+  .ia-title { font-size: 14px; font-weight: 800; color: #111827; }
+  .ia-subtitle { font-size: 10px; color: #6B7280; font-weight: 500; }
+  .ia-badge {
+    margin-left: auto;
+    background: #DCFCE7; color: #15803D;
+    font-size: 9px; font-weight: 700;
+    padding: 3px 8px; border-radius: 20px;
+    letter-spacing: 0.5px;
+  }
+  .ia-input {
+    background: #F9FAFB;
+    border: 1.5px solid #E5E7EB;
+    border-radius: 14px;
+    padding: 12px 14px;
+    font-size: 13px;
+    color: #9CA3AF;
+    margin-bottom: 10px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .ia-input-icon { font-size: 16px; opacity: 0.5; }
+  .ia-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+  .ia-tag {
+    background: #F0FDF4;
+    border: 1px solid #BBF7D0;
+    color: #15803D;
+    font-size: 10px; font-weight: 600;
+    padding: 4px 10px; border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .ia-tag:hover { background: #DCFCE7; }
+  .ia-tag.purple { background: #F5F3FF; border-color: #DDD6FE; color: #7C3AED; }
+  .ia-tag.blue { background: #EFF6FF; border-color: #BFDBFE; color: #2563EB; }
+  .ia-chat-hint {
+    margin-top: 12px;
+    display: flex; align-items: center; gap: 6px;
+    font-size: 10px; color: #9CA3AF;
+  }
+  .ia-dot { width: 6px; height: 6px; background: #4ADE80; border-radius: 50%; animation: pulse 1.5s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+  /* ── BLOCO 2+3: Cards row ── */
+  .cards-row {
+    display: flex; gap: 10px;
+    margin-bottom: 16px;
+  }
+
+  /* _HomeCard */
+  .home-card {
+    flex: 1;
+    height: 92px;
+    border-radius: 18px;
+    display: flex; align-items: center;
+    padding: 14px 16px;
+    cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s;
+    position: relative;
+    overflow: hidden;
+  }
+  .home-card:hover { transform: scale(0.97); }
+  .home-card:active { transform: scale(0.95); }
+
+  .home-card.farmacos {
+    background: linear-gradient(135deg, #3B2200, #6B3A00, #9A5B00);
+    box-shadow: 0 5px 14px rgba(154,91,0,0.40);
+  }
+  .home-card.interacoes {
+    background: linear-gradient(135deg, #3B0A1E, #5E1234, #8B1E4F);
+    box-shadow: 0 5px 14px rgba(139,30,79,0.40);
+  }
+  .home-card.adulto {
+    background: linear-gradient(135deg, #052E1A, #0A5C2E, #15803D);
+    box-shadow: 0 5px 14px rgba(21,128,61,0.40);
+  }
+  .home-card.pediatria {
+    background: linear-gradient(135deg, #0A2540, #103D70, #2563EB);
+    box-shadow: 0 5px 14px rgba(37,99,235,0.40);
+  }
+
+  .card-icon-box {
+    width: 42px; height: 42px;
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+    flex-shrink: 0;
+  }
+  .farmacos .card-icon-box { background: rgba(251,191,36,0.15); }
+  .interacoes .card-icon-box { background: rgba(255,107,160,0.15); }
+  .adulto .card-icon-box { background: rgba(74,222,128,0.15); }
+  .pediatria .card-icon-box { background: rgba(147,197,253,0.15); }
+
+  .card-text { flex: 1; margin-left: 12px; overflow: hidden; }
+  .card-title {
+    font-size: 13px; font-weight: 900;
+    letter-spacing: 0.4px;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .farmacos .card-title { color: #FBBF24; }
+  .interacoes .card-title { color: #FF6BA0; }
+  .adulto .card-title { color: #4ADE80; }
+  .pediatria .card-title { color: #93C5FD; }
+
+  .card-subtitle { font-size: 10.5px; color: rgba(255,255,255,0.60); margin-top: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .card-chevron { font-size: 16px; opacity: 0.65; flex-shrink: 0; }
+  .farmacos .card-chevron { color: #FBBF24; }
+  .interacoes .card-chevron { color: #FF6BA0; }
+  .adulto .card-chevron { color: #4ADE80; }
+  .pediatria .card-chevron { color: #93C5FD; }
+
+  /* ── BLOCO 4: Toolbar ── */
+  .toolbar {
+    height: 58px;
+    background: #fff;
+    border-radius: 14px;
+    border: 1px solid #E5E7EB;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.06);
+    display: flex;
+    align-items: center;
+    margin-bottom: 16px;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+  .toolbar-buscar {
+    padding: 0 10px;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 3px; cursor: pointer;
+    flex-shrink: 0;
+  }
+  .buscar-box {
+    width: 34px; height: 28px;
+    background: rgba(10,124,78,0.08);
+    border: 1px solid rgba(10,124,78,0.20);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+  }
+  .buscar-label { font-size: 10px; font-weight: 700; color: #0A7C4E; }
+  .toolbar-divider { width: 1px; height: 34px; background: #E5E7EB; flex-shrink: 0; }
+  .toolbar-items { flex: 1; display: flex; }
+  .toolbar-item {
+    flex: 1;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 3px; cursor: pointer;
+    padding: 0 4px;
+    transition: background 0.15s;
+  }
+  .toolbar-item:hover { background: #F9FAFB; }
+  .toolbar-item-icon { font-size: 20px; }
+  .toolbar-item-label { font-size: 10px; font-weight: 700; color: #6B7280; }
+
+  /* ── BLOCO 5: MI GUARDIA ── */
+  .mi-guardia {
+    background: #fff;
+    border-radius: 20px;
+    border: 1px solid #E4EEE9;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.05);
+    display: flex;
+    overflow: hidden;
+    margin-bottom: 16px;
+  }
+  .mi-guardia-accent { width: 3px; background: #B8954E; flex-shrink: 0; }
+  .mi-guardia-body { flex: 1; padding: 14px; }
+  .mi-guardia-header {
+    display: flex; align-items: center; gap: 8px;
+    margin-bottom: 6px;
+  }
+  .mi-guardia-icon {
+    width: 30px; height: 30px;
+    background: linear-gradient(135deg, #B8954E, #8B6914);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px; flex-shrink: 0;
+  }
+  .mi-guardia-title { font-size: 13px; font-weight: 800; color: #111827; }
+  .mi-guardia-badge {
+    margin-left: auto;
+    background: #FEF3C7; color: #92400E;
+    font-size: 9px; font-weight: 700;
+    padding: 2px 8px; border-radius: 20px;
+  }
+  .mi-guardia-subtitle { font-size: 10px; color: #6B7280; margin-bottom: 10px; }
+  .mi-guardia-chips { display: flex; gap: 6px; margin-bottom: 10px; flex-wrap: wrap; }
+  .chip {
+    padding: 5px 12px; border-radius: 20px;
+    font-size: 11px; font-weight: 600;
+    cursor: pointer; transition: opacity 0.15s;
+  }
+  .chip:hover { opacity: 0.8; }
+  .chip.blue { background: #EFF6FF; color: #2563EB; border: 1px solid #BFDBFE; }
+  .chip.green { background: #F0FDF4; color: #15803D; border: 1px solid #BBF7D0; }
+  .mi-guardia-empty {
+    background: #EFF6FF;
+    border: 1.5px dashed #BFDBFE;
+    border-radius: 12px;
+    padding: 12px;
+    text-align: center;
+    font-size: 11px; color: #2563EB; font-weight: 500;
+  }
+
+  /* ── BOTTOM NAV ── */
+  .bottom-nav {
+    height: 82px;
+    background: #fff;
+    border-top: 1px solid #F3F4F6;
+    display: flex; align-items: flex-start;
+    padding-top: 10px;
+    flex-shrink: 0;
+    box-shadow: 0 -4px 20px rgba(0,0,0,0.08);
+    position: relative;
+  }
+  .nav-item {
+    flex: 1; display: flex; flex-direction: column;
+    align-items: center; gap: 4px;
+    cursor: pointer; padding-top: 2px;
+  }
+  .nav-icon { font-size: 22px; color: #9CA3AF; transition: color 0.15s; }
+  .nav-icon.active { color: #0A7C4E; }
+  .nav-label { font-size: 9px; font-weight: 600; color: #9CA3AF; }
+  .nav-label.active { color: #0A7C4E; }
+  .nav-fab {
+    flex: 1; display: flex; flex-direction: column;
+    align-items: center; justify-content: flex-start;
+    cursor: pointer; margin-top: -20px;
+  }
+  .nav-fab-btn {
+    width: 52px; height: 52px;
+    background: linear-gradient(135deg, #1F6B48, #0F3D26);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px;
+    box-shadow: 0 4px 16px rgba(10,124,78,0.5);
+    border: 3px solid #fff;
+    transition: transform 0.15s;
+  }
+  .nav-fab-btn:hover { transform: scale(1.08); }
+  .nav-fab-label { font-size: 9px; font-weight: 600; color: #9CA3AF; margin-top: 2px; }
+
+  /* ══════════════════════════════════════════
+     DARK THEME
+  ══════════════════════════════════════════ */
+  .dark .app { background: #0D1117; }
+  .dark .status-bar { background: #0A2D1E; }
+  .dark .appbar { background: #0A2D1E; box-shadow: 0 2px 8px rgba(0,0,0,0.4); }
+
+  .dark .ia-chat-block { background: #0E1A12; border-color: rgba(255,255,255,0.07); }
+  .dark .ia-title { color: #F9FAFB; }
+  .dark .ia-subtitle { color: rgba(255,255,255,0.4); }
+  .dark .ia-input { background: #1A2820; border-color: rgba(255,255,255,0.1); color: rgba(255,255,255,0.3); }
+  .dark .ia-tag { background: rgba(74,222,128,0.08); border-color: rgba(74,222,128,0.2); color: #4ADE80; }
+  .dark .ia-tag.purple { background: rgba(167,139,250,0.1); border-color: rgba(167,139,250,0.25); color: #A78BFA; }
+  .dark .ia-tag.blue { background: rgba(96,165,250,0.1); border-color: rgba(96,165,250,0.2); color: #60A5FA; }
+  .dark .ia-chat-hint { color: rgba(255,255,255,0.3); }
+
+  .dark .toolbar { background: #161F1A; border-color: rgba(255,255,255,0.07); box-shadow: none; }
+  .dark .buscar-box { background: rgba(10,124,78,0.15); border-color: rgba(74,222,128,0.25); }
+  .dark .buscar-label { color: #4ADE80; }
+  .dark .toolbar-divider { background: rgba(255,255,255,0.08); }
+  .dark .toolbar-item-label { color: rgba(255,255,255,0.4); }
+  .dark .toolbar-item:hover { background: rgba(255,255,255,0.04); }
+
+  .dark .mi-guardia { background: #0E1A12; border-color: rgba(255,255,255,0.07); box-shadow: none; }
+  .dark .mi-guardia-accent { background: #C5A365; }
+  .dark .mi-guardia-title { color: #F9FAFB; }
+  .dark .mi-guardia-subtitle { color: rgba(255,255,255,0.4); }
+  .dark .mi-guardia-badge { background: rgba(197,163,101,0.15); color: #C5A365; }
+  .dark .chip.blue { background: rgba(37,99,235,0.15); color: #93C5FD; border-color: rgba(37,99,235,0.3); }
+  .dark .chip.green { background: rgba(21,128,61,0.15); color: #4ADE80; border-color: rgba(74,222,128,0.2); }
+  .dark .mi-guardia-empty { background: rgba(37,99,235,0.08); border-color: rgba(37,99,235,0.25); color: #93C5FD; }
+
+  .dark .bottom-nav { background: #0E1A12; border-color: rgba(255,255,255,0.07); box-shadow: 0 -4px 20px rgba(0,0,0,0.4); }
+  .dark .nav-icon { color: rgba(255,255,255,0.3); }
+  .dark .nav-icon.active { color: #4ADE80; }
+  .dark .nav-label { color: rgba(255,255,255,0.3); }
+  .dark .nav-label.active { color: #4ADE80; }
+  .dark .nav-fab-btn { border-color: #0D1117; }
+
+  /* scrollbar hint */
+  .scroll-hint {
+    position: absolute;
+    bottom: 90px; right: 12px;
+    background: rgba(0,0,0,0.5);
+    color: #fff; font-size: 10px;
+    padding: 4px 8px; border-radius: 20px;
+    pointer-events: none;
+    animation: fadeout 2s 3s forwards;
+    z-index: 50;
+  }
+  @keyframes fadeout { to { opacity: 0; } }
+
+  /* section label */
+  .section-note {
+    font-size: 9px; font-weight: 700;
+    letter-spacing: 1px; text-transform: uppercase;
+    color: #9CA3AF; margin-bottom: 8px; margin-top: 4px;
+    padding-left: 2px;
+  }
+  .dark .section-note { color: rgba(255,255,255,0.25); }
+</style>
+</head>
+<body>
+
+<!-- ── LIGHT ── -->
+<div class="preview-wrap">
+  <div class="preview-label">☀️ Light Mode</div>
+  <div class="iphone" id="phone-light">
+    <div class="dynamic-island"></div>
+    <div class="screen">
+      <div class="app" id="app-light">
+
+        <!-- Status bar -->
+        <div class="status-bar">
+          <span class="status-time">9:41</span>
+          <div class="status-icons">
+            <span>●●●</span>
+            <span>WiFi</span>
+            <span>🔋</span>
+          </div>
+        </div>
+
+        <!-- AppBar -->
+        <div class="appbar">
+          <div class="appbar-logo">M+</div>
+          <div style="margin-left:10px">
+            <div class="appbar-title">MedCases Pro</div>
+            <div class="appbar-subtitle">medcasespro.com</div>
+          </div>
+          <div class="appbar-menu">
+            <span></span><span></span><span></span>
+          </div>
+        </div>
+
+        <!-- Content -->
+        <div class="content">
+
+          <!-- BLOCO 1: IA Chat -->
+          <div class="section-note">① IA MedCases</div>
+          <div class="ia-chat-block">
+            <div class="ia-header">
+              <div class="ia-icon">🧠</div>
+              <div>
+                <div class="ia-title">MedCases IA</div>
+                <div class="ia-subtitle">Assistente clínico • Streaming</div>
+              </div>
+              <div class="ia-badge">● ONLINE</div>
+            </div>
+            <div class="ia-input">
+              <span class="ia-input-icon">🔍</span>
+              <span>Caso clínico, pergunta acadêmica...</span>
+            </div>
+            <div class="ia-tags">
+              <span class="ia-tag">Caso clínico</span>
+              <span class="ia-tag purple">Diagnóstico dif.</span>
+              <span class="ia-tag blue">Farmacologia</span>
+              <span class="ia-tag">Conduta</span>
+            </div>
+            <div class="ia-chat-hint">
+              <div class="ia-dot"></div>
+              <span>IA pronta para responder</span>
+            </div>
+          </div>
+
+          <!-- BLOCO 2: FÁRMACOS + INTERAÇÕES -->
+          <div class="section-note">② Fármacos · Interações</div>
+          <div class="cards-row">
+            <div class="home-card farmacos">
+              <div class="card-icon-box">💊</div>
+              <div class="card-text">
+                <div class="card-title">FÁRMACOS</div>
+                <div class="card-subtitle">Referência farmacológica</div>
+              </div>
+              <div class="card-chevron">›</div>
+            </div>
+            <div class="home-card interacoes">
+              <div class="card-icon-box">⇄</div>
+              <div class="card-text">
+                <div class="card-title">INTERAÇÕES</div>
+                <div class="card-subtitle">+12.400 pares</div>
+              </div>
+              <div class="card-chevron">›</div>
+            </div>
+          </div>
+
+          <!-- BLOCO 3: ADULTO + PEDIATRIA -->
+          <div class="section-note">③ Adulto · Pediatria</div>
+          <div class="cards-row">
+            <div class="home-card adulto">
+              <div class="card-icon-box">🧑‍⚕️</div>
+              <div class="card-text">
+                <div class="card-title">ADULTO</div>
+                <div class="card-subtitle">Explorar caso clínico</div>
+              </div>
+              <div class="card-chevron">›</div>
+            </div>
+            <div class="home-card pediatria">
+              <div class="card-icon-box">👶</div>
+              <div class="card-text">
+                <div class="card-title">PEDIATRIA</div>
+                <div class="card-subtitle">Casos clínicos de referência</div>
+              </div>
+              <div class="card-chevron">›</div>
+            </div>
+          </div>
+
+          <!-- BLOCO 4: Toolbar -->
+          <div class="section-note">④ Atalhos rápidos</div>
+          <div class="toolbar">
+            <div class="toolbar-buscar">
+              <div class="buscar-box">🔍</div>
+              <div class="buscar-label">Buscar</div>
+            </div>
+            <div class="toolbar-divider"></div>
+            <div class="toolbar-items">
+              <div class="toolbar-item">
+                <span class="toolbar-item-icon" style="color:#F97316">📝</span>
+                <span class="toolbar-item-label">Notas</span>
+              </div>
+              <div class="toolbar-divider"></div>
+              <div class="toolbar-item">
+                <span class="toolbar-item-icon" style="color:#3B82F6">🕐</span>
+                <span class="toolbar-item-label">Recientes</span>
+              </div>
+              <div class="toolbar-divider"></div>
+              <div class="toolbar-item">
+                <span class="toolbar-item-icon" style="color:#8B5CF6">⭐</span>
+                <span class="toolbar-item-label">Favoritos</span>
+              </div>
+              <div class="toolbar-divider"></div>
+              <div class="toolbar-item">
+                <span class="toolbar-item-icon" style="color:#EF4444">📋</span>
+                <span class="toolbar-item-label">Avaliação</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- BLOCO 5: MI GUARDIA -->
+          <div class="section-note">⑤ Mi Guardia — todas as plataformas ✅</div>
+          <div class="mi-guardia">
+            <div class="mi-guardia-accent"></div>
+            <div class="mi-guardia-body">
+              <div class="mi-guardia-header">
+                <div class="mi-guardia-icon">🏥</div>
+                <div>
+                  <div class="mi-guardia-title">MEU PLANTÃO</div>
+                  <div class="mi-guardia-subtitle">Pacientes · Fármacos · Calculadoras</div>
+                </div>
+                <div class="mi-guardia-badge">GUARDIA</div>
+              </div>
+              <div class="mi-guardia-chips">
+                <span class="chip blue">+ Paciente</span>
+                <span class="chip green">Gestionar</span>
+              </div>
+              <div class="mi-guardia-empty">
+                Agregar paciente ao turno
+              </div>
+            </div>
+          </div>
+
+          <!-- EMERGENCIAS: web only note -->
+          <div class="section-note" style="color:#EF4444;opacity:0.6">⑥ Emergências Rápidas — web only 🌐</div>
+          <div style="background:rgba(239,68,68,0.05);border:1.5px dashed rgba(239,68,68,0.2);border-radius:14px;padding:12px 14px;display:flex;align-items:center;gap:10px;margin-bottom:16px;">
+            <span style="font-size:20px">🚨</span>
+            <div>
+              <div style="font-size:11px;font-weight:700;color:#EF4444">EMERGENCIAS RÁPIDAS</div>
+              <div style="font-size:10px;color:#9CA3AF;margin-top:2px">Visível apenas na versão Web</div>
+            </div>
+          </div>
+
+        </div><!-- /content -->
+
+        <!-- Bottom nav -->
+        <div class="bottom-nav">
+          <div class="nav-item">
+            <div class="nav-icon active">🏠</div>
+            <div class="nav-label active">Inicio</div>
+          </div>
+          <div class="nav-item">
+            <div class="nav-icon">📁</div>
+            <div class="nav-label">H. Clínica</div>
+          </div>
+          <div class="nav-fab">
+            <div class="nav-fab-btn">🧠</div>
+            <div class="nav-fab-label">IA</div>
+          </div>
+          <div class="nav-item">
+            <div class="nav-icon">📚</div>
+            <div class="nav-label">Biblioteca</div>
+          </div>
+          <div class="nav-item">
+            <div class="nav-icon">🔧</div>
+            <div class="nav-label">Ferramentas</div>
+          </div>
+        </div>
+
+        <div class="scroll-hint">↕ role para ver tudo</div>
+      </div><!-- /app -->
+    </div><!-- /screen -->
+  </div><!-- /iphone -->
+</div>
+
+<!-- ── DARK ── -->
+<div class="preview-wrap">
+  <div class="preview-label">🌙 Dark Mode</div>
+  <div class="iphone" id="phone-dark">
+    <div class="dynamic-island"></div>
+    <div class="screen">
+      <div class="app dark" id="app-dark">
+
+        <!-- Status bar -->
+        <div class="status-bar">
+          <span class="status-time">9:41</span>
+          <div class="status-icons">
+            <span>●●●</span>
+            <span>WiFi</span>
+            <span>🔋</span>
+          </div>
+        </div>
+
+        <!-- AppBar -->
+        <div class="appbar">
+          <div class="appbar-logo">M+</div>
+          <div style="margin-left:10px">
+            <div class="appbar-title">MedCases Pro</div>
+            <div class="appbar-subtitle">medcasespro.com</div>
+          </div>
+          <div class="appbar-menu">
+            <span></span><span></span><span></span>
+          </div>
+        </div>
+
+        <!-- Content -->
+        <div class="content">
+
+          <div class="section-note">① IA MedCases</div>
+          <div class="ia-chat-block">
+            <div class="ia-header">
+              <div class="ia-icon">🧠</div>
+              <div>
+                <div class="ia-title">MedCases IA</div>
+                <div class="ia-subtitle">Assistente clínico • Streaming</div>
+              </div>
+              <div class="ia-badge">● ONLINE</div>
+            </div>
+            <div class="ia-input">
+              <span class="ia-input-icon">🔍</span>
+              <span>Caso clínico, pergunta acadêmica...</span>
+            </div>
+            <div class="ia-tags">
+              <span class="ia-tag">Caso clínico</span>
+              <span class="ia-tag purple">Diagnóstico dif.</span>
+              <span class="ia-tag blue">Farmacologia</span>
+              <span class="ia-tag">Conduta</span>
+            </div>
+            <div class="ia-chat-hint">
+              <div class="ia-dot"></div>
+              <span>IA pronta para responder</span>
+            </div>
+          </div>
+
+          <div class="section-note">② Fármacos · Interações</div>
+          <div class="cards-row">
+            <div class="home-card farmacos">
+              <div class="card-icon-box">💊</div>
+              <div class="card-text">
+                <div class="card-title">FÁRMACOS</div>
+                <div class="card-subtitle">Referência farmacológica</div>
+              </div>
+              <div class="card-chevron">›</div>
+            </div>
+            <div class="home-card interacoes">
+              <div class="card-icon-box">⇄</div>
+              <div class="card-text">
+                <div class="card-title">INTERAÇÕES</div>
+                <div class="card-subtitle">+12.400 pares</div>
+              </div>
+              <div class="card-chevron">›</div>
+            </div>
+          </div>
+
+          <div class="section-note">③ Adulto · Pediatria</div>
+          <div class="cards-row">
+            <div class="home-card adulto">
+              <div class="card-icon-box">🧑‍⚕️</div>
+              <div class="card-text">
+                <div class="card-title">ADULTO</div>
+                <div class="card-subtitle">Explorar caso clínico</div>
+              </div>
+              <div class="card-chevron">›</div>
+            </div>
+            <div class="home-card pediatria">
+              <div class="card-icon-box">👶</div>
+              <div class="card-text">
+                <div class="card-title">PEDIATRIA</div>
+                <div class="card-subtitle">Casos clínicos de referência</div>
+              </div>
+              <div class="card-chevron">›</div>
+            </div>
+          </div>
+
+          <div class="section-note">④ Atalhos rápidos</div>
+          <div class="toolbar">
+            <div class="toolbar-buscar">
+              <div class="buscar-box">🔍</div>
+              <div class="buscar-label">Buscar</div>
+            </div>
+            <div class="toolbar-divider"></div>
+            <div class="toolbar-items">
+              <div class="toolbar-item">
+                <span class="toolbar-item-icon" style="color:#F97316">📝</span>
+                <span class="toolbar-item-label">Notas</span>
+              </div>
+              <div class="toolbar-divider"></div>
+              <div class="toolbar-item">
+                <span class="toolbar-item-icon" style="color:#3B82F6">🕐</span>
+                <span class="toolbar-item-label">Recientes</span>
+              </div>
+              <div class="toolbar-divider"></div>
+              <div class="toolbar-item">
+                <span class="toolbar-item-icon" style="color:#8B5CF6">⭐</span>
+                <span class="toolbar-item-label">Favoritos</span>
+              </div>
+              <div class="toolbar-divider"></div>
+              <div class="toolbar-item">
+                <span class="toolbar-item-icon" style="color:#EF4444">📋</span>
+                <span class="toolbar-item-label">Avaliação</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="section-note">⑤ Mi Guardia — todas as plataformas ✅</div>
+          <div class="mi-guardia">
+            <div class="mi-guardia-accent"></div>
+            <div class="mi-guardia-body">
+              <div class="mi-guardia-header">
+                <div class="mi-guardia-icon">🏥</div>
+                <div>
+                  <div class="mi-guardia-title">MEU PLANTÃO</div>
+                  <div class="mi-guardia-subtitle">Pacientes · Fármacos · Calculadoras</div>
+                </div>
+                <div class="mi-guardia-badge">GUARDIA</div>
+              </div>
+              <div class="mi-guardia-chips">
+                <span class="chip blue">+ Paciente</span>
+                <span class="chip green">Gestionar</span>
+              </div>
+              <div class="mi-guardia-empty">
+                Agregar paciente ao turno
+              </div>
+            </div>
+          </div>
+
+          <div class="section-note" style="color:#EF4444;opacity:0.5">⑥ Emergências Rápidas — web only 🌐</div>
+          <div style="background:rgba(239,68,68,0.06);border:1.5px dashed rgba(239,68,68,0.25);border-radius:14px;padding:12px 14px;display:flex;align-items:center;gap:10px;margin-bottom:16px;">
+            <span style="font-size:20px">🚨</span>
+            <div>
+              <div style="font-size:11px;font-weight:700;color:#F87171">EMERGENCIAS RÁPIDAS</div>
+              <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-top:2px">Visível apenas na versão Web</div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Bottom nav -->
+        <div class="bottom-nav">
+          <div class="nav-item">
+            <div class="nav-icon active">🏠</div>
+            <div class="nav-label active">Inicio</div>
+          </div>
+          <div class="nav-item">
+            <div class="nav-icon">📁</div>
+            <div class="nav-label">H. Clínica</div>
+          </div>
+          <div class="nav-fab">
+            <div class="nav-fab-btn">🧠</div>
+            <div class="nav-fab-label">IA</div>
+          </div>
+          <div class="nav-item">
+            <div class="nav-icon">📚</div>
+            <div class="nav-label">Biblioteca</div>
+          </div>
+          <div class="nav-item">
+            <div class="nav-icon">🔧</div>
+            <div class="nav-label">Ferramentas</div>
+          </div>
+        </div>
+
+        <div class="scroll-hint">↕ role para ver tudo</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,1596 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MedCases Pro — Preview Barra de Ação</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #0D0F14;
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif;
+    color: #E5E7EB;
+    min-height: 100vh;
+    padding: 24px 16px 48px;
+  }
+
+  h1 {
+    text-align: center;
+    font-size: 22px;
+    font-weight: 800;
+    color: #00E5FF;
+    letter-spacing: -0.5px;
+    margin-bottom: 4px;
+  }
+  .subtitle {
+    text-align: center;
+    font-size: 12px;
+    color: #6B7280;
+    margin-bottom: 32px;
+    letter-spacing: 0.3px;
+  }
+
+  /* ─── Measurements callout ─────────────────────────────────────────────── */
+  .measurements {
+    max-width: 900px;
+    margin: 0 auto 32px;
+    background: #1A1D23;
+    border: 1px solid #374151;
+    border-radius: 14px;
+    padding: 16px 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px 24px;
+  }
+  .measurements h3 {
+    grid-column: 1 / -1;
+    font-size: 11px;
+    font-weight: 700;
+    color: #00E5FF;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    margin-bottom: 4px;
+  }
+  .mrow { display: flex; flex-direction: column; gap: 5px; }
+  .mrow-title { font-size: 10px; font-weight: 700; color: #9CA3AF; text-transform: uppercase; letter-spacing: 0.8px; }
+  .mtag {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: #252930;
+    border: 1px solid #374151;
+    border-radius: 6px;
+    padding: 3px 8px;
+    font-size: 11px;
+    font-weight: 600;
+    color: #E5E7EB;
+    width: fit-content;
+  }
+  .mtag .dot { width: 6px; height: 6px; border-radius: 50%; background: #00E5FF; flex-shrink: 0; }
+  .mtag .dot.gold { background: #C5A365; }
+  .mtag .dot.green { background: #10B981; }
+  .mtag .dot.red { background: #EF4444; }
+
+  /* ─── Phones grid ──────────────────────────────────────────────────────── */
+  .phones-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 28px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .phone-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+  .phone-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: #9CA3AF;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-align: center;
+  }
+  .phone-label .screen-tag {
+    display: block;
+    font-size: 13px;
+    font-weight: 800;
+    color: #E5E7EB;
+    text-transform: none;
+    letter-spacing: -0.2px;
+    margin-bottom: 2px;
+  }
+
+  /* ─── Phone frame ─────────────────────────────────────────────────────── */
+  .phone {
+    width: 200px;
+    height: 432px;
+    background: #1A1D23;
+    border-radius: 36px;
+    position: relative;
+    border: 2px solid #374151;
+    overflow: hidden;
+    box-shadow:
+      0 0 0 1px #252930,
+      0 20px 50px rgba(0,0,0,0.7),
+      inset 0 1px 0 rgba(255,255,255,0.06);
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Dynamic Island */
+  .dynamic-island {
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 72px;
+    height: 22px;
+    background: #000;
+    border-radius: 12px;
+    z-index: 10;
+  }
+
+  /* Status bar */
+  .status-bar {
+    height: 44px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    padding: 0 20px 4px;
+    flex-shrink: 0;
+    z-index: 5;
+    position: relative;
+    font-size: 10px;
+    font-weight: 700;
+    color: rgba(255,255,255,0.85);
+  }
+  .status-time { font-size: 11px; font-weight: 700; }
+  .status-icons { display: flex; align-items: center; gap: 4px; font-size: 9px; }
+  .bar-icon { width: 12px; height: 6px; border: 1.2px solid rgba(255,255,255,0.8); border-radius: 1.5px; position: relative; }
+  .bar-icon::after { content: ''; position: absolute; left: 1.5px; top: 1px; bottom: 1px; right: 3px; background: rgba(255,255,255,0.8); border-radius: 0.5px; }
+  .wifi-icon { font-size: 10px; }
+
+  /* App bar (top) */
+  .app-bar {
+    height: 44px;
+    display: flex;
+    align-items: center;
+    padding: 0 14px;
+    gap: 8px;
+    flex-shrink: 0;
+    border-bottom: 0.5px solid #2D3340;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.35);
+  }
+  .app-bar.home-bar { background: #0F1116; }
+  .app-bar.neutral-bar { background: #0F1116; }
+
+  .logo-pill {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .logo-icon {
+    width: 22px; height: 22px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+  }
+  .logo-text {
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: -0.2px;
+  }
+
+  .appbar-right {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .icon-btn {
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.12);
+  }
+
+  /* Screen content area */
+  .screen-content {
+    flex: 1;
+    overflow: hidden;
+    position: relative;
+  }
+
+  /* Bottom bar area */
+  .bottom-area {
+    flex-shrink: 0;
+    position: relative;
+  }
+
+  /* BottomAppBar — 42px */
+  .bottom-app-bar {
+    height: 42px;
+    background: #0F1116;
+    display: flex;
+    align-items: center;
+    padding: 0;
+    position: relative;
+    border-top: 0.5px solid #2D3340;
+    box-shadow: 0 -4px 12px rgba(0,0,0,0.4);
+  }
+
+  /* Notch cutout */
+  .notch-cutout {
+    position: absolute;
+    top: -22px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 56px;
+    height: 28px;
+    background: #0D0F14;  /* matches phone outer */
+    border-radius: 0 0 28px 28px;
+    pointer-events: none;
+  }
+  /* inner fill so it looks like actual notch cut from bar */
+  .notch-cutout::after {
+    content: '';
+    position: absolute;
+    inset: 2px 2px 0;
+    background: #1A1D23; /* matches screen bg */
+    border-radius: 0 0 26px 26px;
+  }
+
+  .nav-side {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    height: 100%;
+  }
+
+  .nav-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    flex: 1;
+    height: 100%;
+    cursor: pointer;
+  }
+  .nav-icon-wrap {
+    padding: 2px 8px 1px;
+    border-radius: 8px;
+    transition: background 160ms;
+  }
+  .nav-icon-wrap.active-green { background: rgba(16, 185, 129, 0.14); }
+  .nav-icon-wrap.active-home { background: rgba(16, 185, 129, 0.14); }
+  .nav-icon-wrap.active-ai { background: rgba(0, 229, 255, 0.12); }
+
+  .nav-icon {
+    font-size: 14px;
+    line-height: 1;
+  }
+  .nav-icon.active-green { color: #10B981; }
+  .nav-icon.active-ai { color: #00E5FF; }
+  .nav-icon.inactive { color: #6B7280; }
+
+  .nav-label {
+    font-size: 8px;
+    font-weight: 500;
+    line-height: 1;
+    color: #6B7280;
+    white-space: nowrap;
+  }
+  .nav-label.active-green { color: #10B981; font-weight: 700; }
+  .nav-label.active-ai { color: #00E5FF; font-weight: 700; }
+
+  /* Center FAB slot */
+  .center-slot {
+    width: 60px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Floating Action Button — 46×46 */
+  .fab {
+    position: absolute;
+    top: -23px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    z-index: 20;
+    transition: all 220ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  .fab.ai-active {
+    background: linear-gradient(135deg, #008CA4, #0A2540);
+    border: 1.5px solid rgba(0, 229, 255, 0.75);
+    box-shadow:
+      0 3px 16px rgba(0, 229, 255, 0.60),
+      0 8px 28px rgba(0, 229, 255, 0.28);
+    color: #00E5FF;
+  }
+  .fab.ai-inactive {
+    background: linear-gradient(135deg, #374151, #252930);
+    border: 1.5px solid rgba(0, 94, 156, 0.55);
+    box-shadow:
+      0 4px 12px rgba(10, 37, 64, 0.45),
+      0 2px 8px rgba(0, 229, 255, 0.15);
+    color: #FFFFFF;
+  }
+  .fab.fab-hidden {
+    transform: translateX(-50%) scale(0);
+    opacity: 0;
+    pointer-events: none;
+  }
+  .fab-ghost {
+    position: absolute;
+    top: -23px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    border: 1.5px dashed rgba(0,229,255,0.25);
+    z-index: 5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 8px;
+    color: rgba(0,229,255,0.35);
+    font-weight: 700;
+    letter-spacing: 0;
+  }
+
+  /* Legal bar */
+  .legal-bar {
+    background: #0F1116;
+    border-top: 0.5px solid #2D3340;
+    padding: 4px 12px 5px;
+    display: flex;
+    align-items: flex-start;
+    gap: 4px;
+  }
+  .legal-icon { font-size: 9px; color: rgba(255,255,255,0.5); margin-top: 1px; flex-shrink: 0; }
+  .legal-text { font-size: 9px; color: rgba(255,255,255,0.7); line-height: 1.3; }
+
+  /* Home indicator */
+  .home-indicator {
+    background: #0F1116;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5px 0 7px;
+  }
+  .home-pill {
+    width: 60px; height: 4px;
+    background: rgba(255,255,255,0.25);
+    border-radius: 2px;
+  }
+
+  /* ─── Screen-specific content ─────────────────────────────────────────── */
+
+  /* HOME content */
+  .home-content {
+    background: #0F1116;
+    height: 100%;
+    padding: 12px 10px;
+    overflow: hidden;
+  }
+  .home-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+  .home-greeting { font-size: 11px; font-weight: 700; color: #E5E7EB; }
+  .home-sub { font-size: 9px; color: #6B7280; margin-top: 1px; }
+  .card-row { display: flex; gap: 6px; margin-bottom: 6px; }
+  .mini-card {
+    flex: 1;
+    background: #1A1D23;
+    border: 1px solid #374151;
+    border-radius: 10px;
+    padding: 8px 7px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .mini-card-icon { font-size: 14px; }
+  .mini-card-label { font-size: 8px; font-weight: 700; color: #9CA3AF; }
+  .mini-card-title { font-size: 9px; font-weight: 700; color: #E5E7EB; line-height: 1.3; }
+  .section-title { font-size: 9px; font-weight: 700; color: #6B7280; text-transform: uppercase; letter-spacing: 0.8px; margin: 8px 0 5px; }
+  .list-item {
+    display: flex; align-items: center; gap: 7px;
+    background: #1A1D23;
+    border: 1px solid #2D3340;
+    border-radius: 8px;
+    padding: 6px 8px;
+    margin-bottom: 5px;
+  }
+  .list-dot { width: 8px; height: 8px; border-radius: 50%; background: #10B981; flex-shrink: 0; }
+  .list-text { font-size: 9px; color: #D1D5DB; line-height: 1.3; }
+
+  /* IA content */
+  .ia-content {
+    background: #1A1D23;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  /* MobileAiActionBar — 44px */
+  .ai-action-bar {
+    height: 44px;
+    background: linear-gradient(180deg, #1A1D23, #252930);
+    border-bottom: 0.5px solid #374151;
+    display: flex;
+    align-items: center;
+    padding: 0 12px;
+    gap: 0;
+    flex-shrink: 0;
+  }
+  .ai-logo-row {
+    display: flex; align-items: center; gap: 5px;
+  }
+  .ai-mini-icon {
+    width: 22px; height: 22px;
+    border-radius: 6px;
+    background: linear-gradient(135deg, #252930, #374151);
+    border: 0.8px solid rgba(0,229,255,0.25);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px;
+    color: #00E5FF;
+  }
+  .ai-title { font-size: 12px; font-weight: 800; color: #00E5FF; letter-spacing: -0.2px; }
+  .connected-badge {
+    margin-left: 8px;
+    padding: 2px 7px;
+    border-radius: 20px;
+    background: rgba(0,229,255,0.12);
+    border: 1px solid rgba(0,229,255,0.45);
+    display: flex; align-items: center; gap: 4px;
+    font-size: 9px; font-weight: 700; color: #00E5FF;
+  }
+  .badge-dot { width: 5px; height: 5px; border-radius: 50%; background: #00E5FF; }
+  .ai-spacer { flex: 1; }
+  .hist-btn {
+    width: 34px; height: 34px;
+    margin-right: 8px;
+    border-radius: 10px;
+    background: rgba(0,229,255,0.07);
+    border: 1px solid rgba(0,229,255,0.15);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; color: #00E5FF;
+    position: relative;
+  }
+  .hist-badge {
+    position: absolute; top: -3px; right: -3px;
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    background: #C5A365;
+    font-size: 7px; font-weight: 900;
+    color: #1A1100;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .novo-chat-btn {
+    height: 30px;
+    padding: 0 10px;
+    border-radius: 8px;
+    background: rgba(0,229,255,0.10);
+    border: 1px solid rgba(0,229,255,0.30);
+    display: flex; align-items: center; gap: 4px;
+    font-size: 10px; font-weight: 700; color: #00E5FF;
+  }
+  .chat-area {
+    flex: 1;
+    padding: 8px 10px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    overflow: hidden;
+  }
+  .bubble-ai {
+    align-self: flex-start;
+    background: #252930;
+    border: 1px solid #374151;
+    border-radius: 12px 12px 12px 3px;
+    padding: 6px 9px;
+    max-width: 78%;
+    font-size: 9px; color: #D1D5DB; line-height: 1.4;
+  }
+  .bubble-user {
+    align-self: flex-end;
+    background: rgba(0,229,255,0.12);
+    border: 1px solid rgba(0,229,255,0.25);
+    border-radius: 12px 12px 3px 12px;
+    padding: 6px 9px;
+    max-width: 70%;
+    font-size: 9px; color: #E5E7EB; line-height: 1.4;
+  }
+  /* _InputBar — compact -50% */
+  .input-bar-wrap {
+    padding: 4px 16px;   /* vertical: 4 (was 8) */
+  }
+  .input-bar {
+    background: rgba(37,41,48,0.82);
+    border: 0.8px solid rgba(0,229,255,0.12);
+    border-radius: 20px;           /* was 24 */
+    padding: 4px 10px;             /* vertical: 4 (was 8) */
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    backdrop-filter: blur(10px);
+  }
+  .input-bar.focused {
+    border-color: rgba(0,229,255,0.75);
+    border-width: 1px;
+  }
+  .mic-btn {
+    width: 32px; height: 32px;    /* was 38 */
+    border-radius: 50%;
+    background: rgba(255,255,255,0.07);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; color: rgba(255,255,255,0.6);
+    flex-shrink: 0;
+  }
+  .text-field {
+    flex: 1;
+    background: #252930;
+    border: 0.9px solid #374151;
+    border-radius: 20px;
+    padding: 4px 14px;            /* contentPadding vertical: 4 (was 9) */
+    font-size: 11px; color: rgba(255,255,255,0.5);
+    line-height: 1.5;
+  }
+  .text-field.has-text { color: #E5E7EB; border-color: rgba(0,229,255,0.75); border-width: 1.4px; }
+  .send-btn {
+    width: 34px; height: 34px;    /* was 42 */
+    border-radius: 50%;
+    background: #008CA4;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; color: #fff;
+    flex-shrink: 0;
+  }
+
+  /* TOOLS/PEDIATRIA content */
+  .tools-content {
+    background: #1A1D23;
+    height: 100%;
+    padding: 6px 6px 0;           /* was 16px — now 6px */
+    overflow: hidden;
+  }
+  .ped-category {
+    margin-bottom: 10px;
+  }
+  .ped-header {
+    background: rgba(16,185,129,0.08);
+    border: 0.8px solid rgba(16,185,129,0.18); /* all-sides border now */
+    border-radius: 14px;          /* was 17 — collapsed state */
+    padding: 8px 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 10px; font-weight: 700; color: #10B981;
+  }
+  .ped-header-label { display: flex; align-items: center; gap: 6px; font-size: 10px; }
+  .ped-header-icon { font-size: 12px; }
+  .ped-range { font-size: 8px; color: #6B7280; }
+  .ped-header.expanded {
+    border-radius: 14px 14px 0 0;
+  }
+  .ped-params {
+    margin: 0 4px 6px;            /* was 14px — now 4px */
+    background: #252930;
+    border: 1px solid #374151;
+    border-radius: 0 0 12px 12px;
+    overflow: hidden;
+  }
+  .ped-param-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 5px 10px;
+    border-bottom: 0.5px solid #2D3340;
+    font-size: 9px;
+  }
+  .ped-param-row:last-child { border-bottom: none; }
+  .param-name { color: #9CA3AF; }
+  .param-val { color: #E5E7EB; font-weight: 700; }
+  .param-unit { color: #6B7280; margin-left: 2px; font-size: 8px; }
+  .ped-source {
+    margin: 4px 4px 10px;         /* was 14px — now 4px */
+    background: rgba(37,41,48,0.6);
+    border: 1px solid #374151;
+    border-radius: 8px;
+    padding: 4px 8px;
+    font-size: 8px; color: #6B7280;
+  }
+
+  /* BIBLIOTECA content */
+  .lib-content {
+    background: #1A1D23;          /* was #0A130E — unified */
+    height: 100%;
+    padding: 10px;
+    overflow: hidden;
+  }
+  .lib-tab-bar {
+    display: flex;
+    background: #1A1D23;          /* was #0F1116 */
+    border: 1px solid #374151;
+    border-radius: 10px;
+    padding: 3px;
+    margin-bottom: 10px;
+    gap: 2px;
+  }
+  .lib-tab {
+    flex: 1;
+    padding: 4px 0;
+    text-align: center;
+    font-size: 9px;
+    font-weight: 600;
+    color: #6B7280;
+    border-radius: 8px;
+  }
+  .lib-tab.active {
+    background: #252930;          /* was #111C17 */
+    color: #10B981;
+    font-weight: 700;
+  }
+  .lib-card {
+    background: #252930;          /* was #111C17 */
+    border: 1px solid #374151;   /* was #1F3328 */
+    border-radius: 10px;
+    padding: 8px 10px;
+    margin-bottom: 6px;
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+  }
+  .lib-card-icon {
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    background: rgba(16,185,129,0.12);
+    border: 1px solid rgba(16,185,129,0.2);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px;
+    flex-shrink: 0;
+  }
+  .lib-card-text { flex: 1; }
+  .lib-card-title { font-size: 9px; font-weight: 700; color: #E5E7EB; margin-bottom: 2px; }
+  .lib-card-sub { font-size: 8px; color: #6B7280; line-height: 1.3; }
+
+  /* H. CLÍNICA content */
+  .hist-content {
+    background: #1A1D23;          /* was #0A130E — unified */
+    height: 100%;
+    padding: 10px;
+    overflow: hidden;
+  }
+  .patient-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #252930;
+    border: 1px solid #374151;
+    border-radius: 12px;
+    padding: 8px 10px;
+    margin-bottom: 8px;
+  }
+  .patient-avatar {
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    background: rgba(16,185,129,0.15);
+    border: 1.5px solid rgba(16,185,129,0.35);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+  .patient-name { font-size: 10px; font-weight: 800; color: #E5E7EB; }
+  .patient-meta { font-size: 8px; color: #6B7280; }
+  .hist-section-title { font-size: 8px; font-weight: 700; color: #6B7280; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 4px; }
+  .hist-item {
+    background: #252930;
+    border: 1px solid #2D3340;
+    border-radius: 8px;
+    padding: 6px 9px;
+    margin-bottom: 5px;
+    font-size: 9px; color: #D1D5DB;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .hist-item-dot { width: 6px; height: 6px; border-radius: 50%; background: #10B981; flex-shrink: 0; }
+  .hist-item-date { font-size: 8px; color: #6B7280; margin-left: auto; }
+
+  /* CHAT + KEYBOARD content */
+  .chat-kb-content {
+    background: #1A1D23;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  .keyboard-sim {
+    background: #1C1C1E;
+    border-top: 0.5px solid #3A3A3C;
+    padding: 6px 4px;
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    gap: 3px;
+    flex-shrink: 0;
+  }
+  .key {
+    background: #424242;
+    border-radius: 4px;
+    height: 24px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 8px; font-weight: 600; color: #fff;
+  }
+  .key.space { grid-column: span 5; }
+  .key.action { background: #6B6B6B; }
+  .key.dark-key { background: #2C2C2E; }
+
+  /* Annotation badges */
+  .annotation {
+    font-size: 9px;
+    font-weight: 700;
+    color: #F59E0B;
+    background: rgba(245,158,11,0.15);
+    border: 1px solid rgba(245,158,11,0.35);
+    border-radius: 6px;
+    padding: 2px 7px;
+    text-align: center;
+    max-width: 200px;
+  }
+  .annotation.cyan {
+    color: #00E5FF;
+    background: rgba(0,229,255,0.10);
+    border-color: rgba(0,229,255,0.30);
+  }
+  .annotation.green {
+    color: #10B981;
+    background: rgba(16,185,129,0.10);
+    border-color: rgba(16,185,129,0.25);
+  }
+  .annotation.red {
+    color: #EF4444;
+    background: rgba(239,68,68,0.10);
+    border-color: rgba(239,68,68,0.25);
+  }
+
+  /* ─── Palette legend ────────────────────────────────────────────────────── */
+  .palette-section {
+    max-width: 900px;
+    margin: 36px auto 0;
+    background: #1A1D23;
+    border: 1px solid #374151;
+    border-radius: 14px;
+    padding: 16px 20px;
+  }
+  .palette-section h3 {
+    font-size: 11px; font-weight: 700; color: #9CA3AF;
+    text-transform: uppercase; letter-spacing: 1.2px;
+    margin-bottom: 12px;
+  }
+  .palette-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .swatch {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #252930;
+    border: 1px solid #374151;
+    border-radius: 8px;
+    padding: 6px 10px;
+  }
+  .swatch-dot {
+    width: 18px; height: 18px;
+    border-radius: 5px;
+    flex-shrink: 0;
+  }
+  .swatch-info { display: flex; flex-direction: column; }
+  .swatch-hex { font-size: 11px; font-weight: 700; color: #E5E7EB; letter-spacing: 0.3px; }
+  .swatch-role { font-size: 9px; color: #6B7280; }
+</style>
+</head>
+<body>
+
+<h1>MedCases Pro — Barra de Ação</h1>
+<p class="subtitle">Preview pixel-accurate · Commit 0e758d7 · PR #65 merged · 5 jun 2026</p>
+
+<!-- Measurements callout -->
+<div class="measurements">
+  <h3>📐 Medidas Atuais (Build 100 · PR #65)</h3>
+  <div class="mrow">
+    <div class="mrow-title">BottomAppBar</div>
+    <div class="mtag"><span class="dot"></span> height: 42px (era 52)</div>
+    <div class="mtag"><span class="dot"></span> notchMargin: 5.0 (era 6.0)</div>
+    <div class="mtag"><span class="dot"></span> shape: CircularNotchedRectangle</div>
+    <div class="mtag"><span class="dot"></span> bg: #0F1116 dark</div>
+  </div>
+  <div class="mrow">
+    <div class="mrow-title">FAB Central</div>
+    <div class="mtag"><span class="dot"></span> 46 × 46 px (era 56)</div>
+    <div class="mtag"><span class="dot"></span> ícone: psychology_rounded 22px</div>
+    <div class="mtag"><span class="dot gold"></span> ativo: cyan glow #00E5FF</div>
+    <div class="mtag"><span class="dot"></span> inativo: gradiente blue-grey</div>
+  </div>
+  <div class="mrow">
+    <div class="mrow-title">Botões Nav</div>
+    <div class="mtag"><span class="dot green"></span> ícone: 18px (era 20)</div>
+    <div class="mtag"><span class="dot green"></span> pad vertical: 1px (era 2)</div>
+    <div class="mtag"><span class="dot green"></span> label: 9px w700/500</div>
+    <div class="mtag"><span class="dot green"></span> slot central: SizedBox(w:60)</div>
+  </div>
+  <div class="mrow">
+    <div class="mrow-title">_InputBar (-50% vertical)</div>
+    <div class="mtag"><span class="dot red"></span> outer pad: 4px (era 8)</div>
+    <div class="mtag"><span class="dot red"></span> inner pad: 4px (era 8)</div>
+    <div class="mtag"><span class="dot red"></span> contentPadding: 4px (era 9)</div>
+    <div class="mtag"><span class="dot red"></span> mic: 32×32px (era 38)</div>
+    <div class="mtag"><span class="dot red"></span> send: 34×34px (era 42)</div>
+    <div class="mtag"><span class="dot red"></span> radius: 20 (era 24)</div>
+  </div>
+  <div class="mrow">
+    <div class="mrow-title">Fix #5 — FAB Hide</div>
+    <div class="mtag"><span class="dot"></span> ValueNotifier&lt;bool&gt; chatKeyboardOpen</div>
+    <div class="mtag"><span class="dot"></span> AnimatedScale: 1.0 → 0.0 (180ms)</div>
+    <div class="mtag"><span class="dot"></span> AnimatedOpacity: 1.0 → 0.0 (160ms)</div>
+    <div class="mtag"><span class="dot"></span> easeInOut curve</div>
+  </div>
+  <div class="mrow">
+    <div class="mrow-title">Backgrounds Unificados</div>
+    <div class="mtag"><span class="dot"></span> Library bg: #1A1D23 (era #0A130E)</div>
+    <div class="mtag"><span class="dot"></span> H.Clínica bg: #1A1D23 (era #0A130E)</div>
+    <div class="mtag"><span class="dot"></span> cards: #252930 (era #111C17)</div>
+    <div class="mtag"><span class="dot"></span> borders: #374151 (era #1F3328)</div>
+  </div>
+</div>
+
+<!-- ═══ PHONES GRID ════════════════════════════════════════════════════════ -->
+<div class="phones-grid">
+
+  <!-- ─────────────── 1. INÍCIO ─────────────── -->
+  <div class="phone-wrapper">
+    <div class="phone-label">
+      <span class="screen-tag">🏠 Início</span>
+      Tab 0 · FAB inativo
+    </div>
+    <div class="phone">
+      <div class="dynamic-island"></div>
+
+      <!-- Status bar -->
+      <div class="status-bar" style="background:#0F1116;">
+        <span class="status-time">9:41</span>
+        <div class="status-icons">
+          <span class="wifi-icon">▲</span>
+          <div class="bar-icon"></div>
+          🔋
+        </div>
+      </div>
+
+      <!-- App bar -->
+      <div class="app-bar home-bar">
+        <div class="logo-pill">
+          <div class="logo-icon" style="background:linear-gradient(135deg,#0A7C4E,#065E3A);border:1px solid rgba(255,255,255,0.12);">🩺</div>
+          <div class="logo-text" style="color:#fff;font-size:11px;">MedCases Pro</div>
+        </div>
+        <div class="appbar-right">
+          <div class="icon-btn">🔔</div>
+          <div class="icon-btn">☰</div>
+        </div>
+      </div>
+
+      <!-- Screen content -->
+      <div class="screen-content">
+        <div class="home-content">
+          <div class="home-header">
+            <div>
+              <div class="home-greeting">Bom dia, Dr. Rodrigo 👋</div>
+              <div class="home-sub">Casos novos disponíveis</div>
+            </div>
+          </div>
+          <div class="card-row">
+            <div class="mini-card">
+              <div class="mini-card-icon">🧠</div>
+              <div class="mini-card-label">Neurologia</div>
+              <div class="mini-card-title">Cefaleia em salvas</div>
+            </div>
+            <div class="mini-card">
+              <div class="mini-card-icon">❤️</div>
+              <div class="mini-card-label">Cardiologia</div>
+              <div class="mini-card-title">SCA sem supradesnivelamento</div>
+            </div>
+          </div>
+          <div class="section-title">Recentes</div>
+          <div class="list-item">
+            <div class="list-dot"></div>
+            <div class="list-text">Pneumonia Adquirida na Comunidade</div>
+          </div>
+          <div class="list-item">
+            <div class="list-dot" style="background:#3B82F6;"></div>
+            <div class="list-text">Insuficiência Cardíaca Congestiva</div>
+          </div>
+          <div class="list-item">
+            <div class="list-dot" style="background:#F59E0B;"></div>
+            <div class="list-text">Diabetes Mellitus Tipo 2</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom -->
+      <div class="bottom-area">
+        <div class="bottom-app-bar">
+          <!-- FAB -->
+          <div class="fab ai-inactive">🧠</div>
+
+          <!-- Left side: Início (active) + H.Clínica -->
+          <div class="nav-side">
+            <div class="nav-btn">
+              <div class="nav-icon-wrap active-home">
+                <div class="nav-icon active-green">🏠</div>
+              </div>
+              <div class="nav-label active-green">Início</div>
+            </div>
+            <div class="nav-btn">
+              <div class="nav-icon-wrap">
+                <div class="nav-icon inactive">📋</div>
+              </div>
+              <div class="nav-label">H. Clínica</div>
+            </div>
+          </div>
+          <!-- Center slot -->
+          <div class="center-slot"></div>
+          <!-- Right side: Biblioteca + Ferramentas -->
+          <div class="nav-side">
+            <div class="nav-btn">
+              <div class="nav-icon-wrap">
+                <div class="nav-icon inactive">📚</div>
+              </div>
+              <div class="nav-label">Biblioteca</div>
+            </div>
+            <div class="nav-btn">
+              <div class="nav-icon-wrap">
+                <div class="nav-icon inactive">🔢</div>
+              </div>
+              <div class="nav-label">Ferramentas</div>
+            </div>
+          </div>
+        </div>
+        <div class="legal-bar">
+          <span class="legal-icon">ℹ</span>
+          <span class="legal-text">Ferramenta educacional de apoio clínico. A decisão e verificação de doses são de responsabilidade exclusiva do médico assistente.</span>
+        </div>
+        <div class="home-indicator"><div class="home-pill"></div></div>
+      </div>
+    </div>
+    <div class="annotation green">✅ Tab 0 ativo · FAB blue-grey<br>nav highlight verde #10B981</div>
+  </div>
+
+  <!-- ─────────────── 2. MedCases IA ─────────────── -->
+  <div class="phone-wrapper">
+    <div class="phone-label">
+      <span class="screen-tag">🧠 MedCases IA</span>
+      Tab 2 · FAB ativo cyan
+    </div>
+    <div class="phone">
+      <div class="dynamic-island"></div>
+      <div class="status-bar" style="background:#0F1116;">
+        <span class="status-time">9:41</span>
+        <div class="status-icons"><span>▲</span><div class="bar-icon"></div>🔋</div>
+      </div>
+
+      <!-- App bar: MedCases IA -->
+      <div class="app-bar neutral-bar">
+        <div class="logo-pill">
+          <div class="logo-icon" style="background:linear-gradient(135deg,#252930,#374151);border:1px solid rgba(0,229,255,0.25);">🧬</div>
+          <div class="logo-text" style="color:#00E5FF;">MedCases IA</div>
+        </div>
+        <div class="appbar-right">
+          <div class="icon-btn" style="border-color:rgba(0,229,255,0.2);color:#00E5FF;">🕐</div>
+          <div class="icon-btn" style="border-color:rgba(196,163,101,0.3);color:#C5A365;">✦</div>
+          <div class="icon-btn">☰</div>
+        </div>
+      </div>
+
+      <!-- Screen content -->
+      <div class="screen-content">
+        <div class="ia-content">
+          <!-- _MobileAiActionBar — 44px -->
+          <div class="ai-action-bar">
+            <div class="ai-logo-row">
+              <div class="ai-mini-icon">🧠</div>
+              <div class="ai-title">MedCases IA</div>
+            </div>
+            <div class="connected-badge">
+              <div class="badge-dot"></div>
+              Conectado
+            </div>
+            <div class="ai-spacer"></div>
+            <div class="hist-btn">
+              🕐
+              <div class="hist-badge">3</div>
+            </div>
+            <div class="novo-chat-btn">
+              <span>+</span> Novo Chat
+            </div>
+          </div>
+
+          <!-- Chat bubbles -->
+          <div class="chat-area">
+            <div class="bubble-ai">Olá! Sou a IA de apoio clínico do MedCases Pro. Como posso ajudar?</div>
+            <div class="bubble-user">Paciente 45a, HAS, dor precordial irradiando p/ braço esquerdo</div>
+            <div class="bubble-ai">Suspeita de SCA. Solicito ECG 12 derivações, troponina, enzimas cardíacas e RX tórax. Monitorar sinais vitais...</div>
+          </div>
+
+          <!-- _InputBar — -50% height -->
+          <div class="input-bar-wrap">
+            <div class="input-bar">
+              <div class="mic-btn">🎤</div>
+              <div class="text-field">Descreva o caso clínico…</div>
+              <div class="send-btn">➤</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom -->
+      <div class="bottom-area">
+        <div class="bottom-app-bar">
+          <div class="fab ai-active">🧠</div>
+          <div class="nav-side">
+            <div class="nav-btn">
+              <div class="nav-icon-wrap"><div class="nav-icon inactive">🏠</div></div>
+              <div class="nav-label">Início</div>
+            </div>
+            <div class="nav-btn">
+              <div class="nav-icon-wrap"><div class="nav-icon inactive">📋</div></div>
+              <div class="nav-label">H. Clínica</div>
+            </div>
+          </div>
+          <div class="center-slot"></div>
+          <div class="nav-side">
+            <div class="nav-btn">
+              <div class="nav-icon-wrap"><div class="nav-icon inactive">📚</div></div>
+              <div class="nav-label">Biblioteca</div>
+            </div>
+            <div class="nav-btn">
+              <div class="nav-icon-wrap"><div class="nav-icon inactive">🔢</div></div>
+              <div class="nav-label">Ferramentas</div>
+            </div>
+          </div>
+        </div>
+        <div class="legal-bar">
+          <span class="legal-icon">ℹ</span>
+          <span class="legal-text">Ferramenta educacional de apoio clínico. A decisão e verificação de doses são de responsabilidade exclusiva do médico assistente.</span>
+        </div>
+        <div class="home-indicator"><div class="home-pill"></div></div>
+      </div>
+    </div>
+    <div class="annotation cyan">🧠 FAB 46×46 cyan glow<br>_MobileAiActionBar 44px · InputBar -50%</div>
+  </div>
+
+  <!-- ─────────────── 3. FERRAMENTAS / PEDIATRIA ─────────────── -->
+  <div class="phone-wrapper">
+    <div class="phone-label">
+      <span class="screen-tag">🔢 Ferramentas</span>
+      Tab 4 · Pediatria · sem container pai
+    </div>
+    <div class="phone">
+      <div class="dynamic-island"></div>
+      <div class="status-bar" style="background:#0F1116;">
+        <span class="status-time">9:41</span>
+        <div class="status-icons"><span>▲</span><div class="bar-icon"></div>🔋</div>
+      </div>
+      <div class="app-bar neutral-bar">
+        <div class="logo-pill">
+          <div class="logo-icon" style="background:linear-gradient(135deg,#1A1D23,#252930);border:1px solid rgba(255,255,255,0.1);">🔢</div>
+          <div class="logo-text" style="color:#fff;">Ferramentas</div>
+        </div>
+        <div class="appbar-right">
+          <div class="icon-btn">🔍</div>
+          <div class="icon-btn">☰</div>
+        </div>
+      </div>
+
+      <div class="screen-content">
+        <div class="tools-content">
+          <!-- NO outer Container — column returned directly (Fix #1) -->
+          <!-- margin 4px (era 14px) -->
+          <div class="ped-category">
+            <!-- Header: border all-sides (era apenas bottom) — expanded -->
+            <div class="ped-header expanded">
+              <div class="ped-header-label">
+                <span class="ped-header-icon">👶</span>
+                RN / Lactente
+              </div>
+              <span>▲</span>
+            </div>
+            <!-- Param cards: margin 4px (era 14px) -->
+            <div class="ped-params">
+              <div class="ped-param-row">
+                <span class="param-name">Paracetamol</span>
+                <span><span class="param-val">15</span><span class="param-unit">mg/kg</span></span>
+              </div>
+              <div class="ped-param-row">
+                <span class="param-name">Ibuprofeno</span>
+                <span><span class="param-val">10</span><span class="param-unit">mg/kg</span></span>
+              </div>
+              <div class="ped-param-row">
+                <span class="param-name">Amoxicilina</span>
+                <span><span class="param-val">40-90</span><span class="param-unit">mg/kg/d</span></span>
+              </div>
+            </div>
+            <!-- Source badge: margin 4px -->
+            <div class="ped-source">📖 SBIM 2024 · AAP 2023</div>
+          </div>
+
+          <div class="ped-category">
+            <!-- Collapsed: border-radius 14px (all sides) -->
+            <div class="ped-header">
+              <div class="ped-header-label">
+                <span class="ped-header-icon">🧒</span>
+                Pré-escolar (1–5a)
+              </div>
+              <span>▼</span>
+            </div>
+          </div>
+
+          <div class="ped-category">
+            <div class="ped-header">
+              <div class="ped-header-label">
+                <span class="ped-header-icon">🧑</span>
+                Escolar (6–12a)
+              </div>
+              <span>▼</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bottom-area">
+        <div class="bottom-app-bar">
+          <div class="fab ai-inactive">🧠</div>
+          <div class="nav-side">
+            <div class="nav-btn">
+              <div class="nav-icon-wrap"><div class="nav-icon inactive">🏠</div></div>
+              <div class="nav-label">Início</div>
+            </div>
+            <div class="nav-btn">
+              <div class="nav-icon-wrap"><div class="nav-icon inactive">📋</div></div>
+              <div class="nav-label">H. Clínica</div>
+            </div>
+          </div>
+          <div class="center-slot"></div>
+          <div class="nav-side">
+            <div class="nav-btn">
+              <div class="nav-icon-wrap"><div class="nav-icon inactive">📚</div></div>
+              <div class="nav-label">Biblioteca</div>
+            </div>
+            <div class="nav-btn">
+              <div class="nav-icon-wrap active-green">
+                <div class="nav-icon active-green">🔢</div>
+              </div>
+              <div class="nav-label active-green">Ferramentas</div>
+            </div>
+          </div>
+        </div>
+        <div class="legal-bar">
+          <span class="legal-icon">ℹ</span>
+          <span class="legal-text">Ferramenta educacional de apoio clínico. A decisão e verificação de doses são de responsabilidade exclusiva do médico assistente.</span>
+        </div>
+        <div class="home-indicator"><div class="home-pill"></div></div>
+      </div>
+    </div>
+    <div class="annotation green">✅ Sem container pai (Fix #1)<br>padding 6px · margem 4px · border all-sides</div>
+  </div>
+
+  <!-- ─────────────── 4. BIBLIOTECA ─────────────── -->
+  <div class="phone-wrapper">
+    <div class="phone-label">
+      <span class="screen-tag">📚 Biblioteca</span>
+      Tab 5 · bg #1A1D23 unificado
+    </div>
+    <div class="phone">
+      <div class="dynamic-island"></div>
+      <div class="status-bar" style="background:#1A1D23;">
+        <span class="status-time">9:41</span>
+        <div class="status-icons"><span>▲</span><div class="bar-icon"></div>🔋</div>
+      </div>
+      <div class="app-bar" style="background:#1A1D23;border-bottom-color:#2D3340;">
+        <div class="logo-pill">
+          <div class="logo-icon" style="background:linear-gradient(135deg,#10B981,#065E3A);border:1px solid rgba(255,255,255,0.1);">📚</div>
+          <div class="logo-text" style="color:#fff;">Biblioteca</div>
+        </div>
+        <div class="appbar-right">
+          <div class="icon-btn">🔍</div>
+          <div class="icon-btn">☰</div>
+        </div>
+      </div>
+
+      <div class="screen-content">
+        <div class="lib-content">
+          <!-- Tab bar: bg #1A1D23 (era #0F1116) -->
+          <div class="lib-tab-bar">
+            <div class="lib-tab active">Artigos</div>
+            <div class="lib-tab">Protocolos</div>
+            <div class="lib-tab">Livros</div>
+          </div>
+
+          <!-- Cards: bg #252930 (era #111C17), border #374151 (era #1F3328) -->
+          <div class="lib-card">
+            <div class="lib-card-icon">📄</div>
+            <div class="lib-card-text">
+              <div class="lib-card-title">Manejo da Sepse — Surviving Sepsis 2023</div>
+              <div class="lib-card-sub">SCCM · 48 páginas · Atualizado</div>
+            </div>
+          </div>
+          <div class="lib-card">
+            <div class="lib-card-icon">🧬</div>
+            <div class="lib-card-text">
+              <div class="lib-card-title">Antibioticoterapia em UTI Neonatal</div>
+              <div class="lib-card-sub">SBP 2024 · 32 páginas</div>
+            </div>
+          </div>
+          <div class="lib-card">
+            <div class="lib-card-icon">❤️</div>
+            <div class="lib-card-text">
+              <div class="lib-card-title">Protocolo PCR — AHA 2023</div>
+              <div class="lib-card-sub">American Heart Assoc. · 61 páginas</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bottom-area">
+        <div class="bottom-app-bar">
+          <div class="fab ai-inactive">🧠</div>
+          <div class="nav-side">
+            <div class="nav-btn">
+              <div class="nav-icon-wrap"><div class="nav-icon inactive">🏠</div></div>
+              <div class="nav-label">Início</div>
+            </div>
+            <div class="nav-btn">
+              <div class="nav-icon-wrap"><div class="nav-icon inactive">📋</div></div>
+              <div class="nav-label">H. Clínica</div>
+            </div>
+          </div>
+          <div class="center-slot"></div>
+          <div class="nav-side">
+            <div class="nav-btn">
+              <div class="nav-icon-wrap active-green">
+                <div class="nav-icon active-green">📚</div>
+              </div>
+              <div class="nav-label active-green">Biblioteca</div>
+            </div>
+            <div class="nav-btn">
+              <div class="nav-icon-wrap"><div class="nav-icon inactive">🔢</div></div>
+              <div class="nav-label">Ferramentas</div>
+            </div>
+          </div>
+        </div>
+        <div class="legal-bar">
+          <span class="legal-icon">ℹ</span>
+          <span class="legal-text">Ferramenta educacional de apoio clínico. A decisão e verificação de doses são de responsabilidade exclusiva do médico assistente.</span>
+        </div>
+        <div class="home-indicator"><div class="home-pill"></div></div>
+      </div>
+    </div>
+    <div class="annotation">✅ Fix #2 — bg #1A1D23<br>cards #252930 · border #374151</div>
+  </div>
+
+  <!-- ─────────────── 5. H. CLÍNICA ─────────────── -->
+  <div class="phone-wrapper">
+    <div class="phone-label">
+      <span class="screen-tag">📋 H. Clínica</span>
+      Tab 3 · bg #1A1D23 unificado
+    </div>
+    <div class="phone">
+      <div class="dynamic-island"></div>
+      <div class="status-bar" style="background:#1A1D23;">
+        <span class="status-time">9:41</span>
+        <div class="status-icons"><span>▲</span><div class="bar-icon"></div>🔋</div>
+      </div>
+      <div class="app-bar" style="background:#1A1D23;border-bottom-color:#2D3340;">
+        <div class="logo-pill">
+          <div class="logo-icon" style="background:linear-gradient(135deg,#374151,#252930);border:1px solid rgba(255,255,255,0.1);">📋</div>
+          <div class="logo-text" style="color:#fff;">H. Clínica</div>
+        </div>
+        <div class="appbar-right">
+          <div class="icon-btn">➕</div>
+          <div class="icon-btn">☰</div>
+        </div>
+      </div>
+
+      <div class="screen-content">
+        <div class="hist-content">
+          <div class="patient-header">
+            <div class="patient-avatar">👤</div>
+            <div>
+              <div class="patient-name">João Silva</div>
+              <div class="patient-meta">45a · Masculino · HAS + DM</div>
+            </div>
+          </div>
+          <div class="hist-section-title">Consultas Recentes</div>
+          <div class="hist-item">
+            <div class="hist-item-dot"></div>
+            <div>Avaliação cardiológica — Dor precordial</div>
+            <div class="hist-item-date">03/06</div>
+          </div>
+          <div class="hist-item">
+            <div class="hist-item-dot" style="background:#3B82F6;"></div>
+            <div>Controle pressórico — PA 150/95</div>
+            <div class="hist-item-date">28/05</div>
+          </div>
+          <div class="hist-item">
+            <div class="hist-item-dot" style="background:#F59E0B;"></div>
+            <div>Glicemia em jejum — 186 mg/dL</div>
+            <div class="hist-item-date">20/05</div>
+          </div>
+          <div class="hist-item">
+            <div class="hist-item-dot"></div>
+            <div>Prescrição Metformina 1g 2x/dia</div>
+            <div class="hist-item-date">15/05</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bottom-area">
+        <div class="bottom-app-bar">
+          <div class="fab ai-inactive">🧠</div>
+          <div class="nav-side">
+            <div class="nav-btn">
+              <div class="nav-icon-wrap"><div class="nav-icon inactive">🏠</div></div>
+              <div class="nav-label">Início</div>
+            </div>
+            <div class="nav-btn">
+              <div class="nav-icon-wrap active-green">
+                <div class="nav-icon active-green">📋</div>
+              </div>
+              <div class="nav-label active-green">H. Clínica</div>
+            </div>
+          </div>
+          <div class="center-slot"></div>
+          <div class="nav-side">
+            <div class="nav-btn">
+              <div class="nav-icon-wrap"><div class="nav-icon inactive">📚</div></div>
+              <div class="nav-label">Biblioteca</div>
+            </div>
+            <div class="nav-btn">
+              <div class="nav-icon-wrap"><div class="nav-icon inactive">🔢</div></div>
+              <div class="nav-label">Ferramentas</div>
+            </div>
+          </div>
+        </div>
+        <div class="legal-bar">
+          <span class="legal-icon">ℹ</span>
+          <span class="legal-text">Ferramenta educacional de apoio clínico. A decisão e verificação de doses são de responsabilidade exclusiva do médico assistente.</span>
+        </div>
+        <div class="home-indicator"><div class="home-pill"></div></div>
+      </div>
+    </div>
+    <div class="annotation">✅ Fix #3 — bg #1A1D23<br>BottomSheet + Dialog → #1A1D23</div>
+  </div>
+
+  <!-- ─────────────── 6. CHAT + TECLADO ─────────────── -->
+  <div class="phone-wrapper">
+    <div class="phone-label">
+      <span class="screen-tag">⌨️ Chat + Teclado</span>
+      Fix #5 · FAB oculto (scale:0)
+    </div>
+    <div class="phone">
+      <div class="dynamic-island"></div>
+      <div class="status-bar" style="background:#0F1116;">
+        <span class="status-time">9:41</span>
+        <div class="status-icons"><span>▲</span><div class="bar-icon"></div>🔋</div>
+      </div>
+      <div class="app-bar neutral-bar">
+        <div class="logo-pill">
+          <div class="logo-icon" style="background:linear-gradient(135deg,#252930,#374151);border:1px solid rgba(0,229,255,0.25);">🧬</div>
+          <div class="logo-text" style="color:#00E5FF;">MedCases IA</div>
+        </div>
+        <div class="appbar-right">
+          <div class="icon-btn" style="border-color:rgba(0,229,255,0.2);color:#00E5FF;">🕐</div>
+          <div class="icon-btn">☰</div>
+        </div>
+      </div>
+
+      <div class="screen-content">
+        <div class="chat-kb-content">
+          <div class="ai-action-bar">
+            <div class="ai-logo-row">
+              <div class="ai-mini-icon">🧠</div>
+              <div class="ai-title">MedCases IA</div>
+            </div>
+            <div class="connected-badge">
+              <div class="badge-dot"></div>
+              Conectado
+            </div>
+            <div class="ai-spacer"></div>
+            <div class="hist-btn">🕐</div>
+            <div class="novo-chat-btn"><span>+</span> Novo Chat</div>
+          </div>
+
+          <!-- Reduced chat area (keyboard takes space) -->
+          <div class="chat-area" style="padding-bottom:4px;">
+            <div class="bubble-ai">Como posso ajudar hoje?</div>
+            <div class="bubble-user">Paciente 8 anos, febre 39°C há 3 dias…</div>
+            <div class="bubble-ai" style="background:rgba(0,229,255,0.05);border-color:rgba(0,229,255,0.2);">Pensando… ⏳</div>
+          </div>
+
+          <!-- InputBar focused — cyan border -->
+          <div class="input-bar-wrap">
+            <div class="input-bar focused">
+              <div class="mic-btn">🎤</div>
+              <div class="text-field has-text">Paciente 8 anos, febre…</div>
+              <div class="send-btn" style="background:#008CA4;">➤</div>
+            </div>
+          </div>
+
+          <!-- Simulated iOS keyboard -->
+          <div class="keyboard-sim">
+            <div class="key dark-key">q</div>
+            <div class="key dark-key">w</div>
+            <div class="key dark-key">e</div>
+            <div class="key dark-key">r</div>
+            <div class="key dark-key">t</div>
+            <div class="key dark-key">y</div>
+            <div class="key dark-key">u</div>
+            <div class="key dark-key">i</div>
+            <div class="key dark-key">o</div>
+            <div class="key dark-key">p</div>
+            <div class="key action" style="grid-column:span 1;"></div>
+            <div class="key dark-key">a</div>
+            <div class="key dark-key">s</div>
+            <div class="key dark-key">d</div>
+            <div class="key dark-key">f</div>
+            <div class="key dark-key">g</div>
+            <div class="key dark-key">h</div>
+            <div class="key dark-key">j</div>
+            <div class="key dark-key">k</div>
+            <div class="key dark-key">l</div>
+            <div class="key action"></div>
+            <div class="key action">⇧</div>
+            <div class="key dark-key">z</div>
+            <div class="key dark-key">x</div>
+            <div class="key dark-key">c</div>
+            <div class="key dark-key">v</div>
+            <div class="key dark-key">b</div>
+            <div class="key dark-key">n</div>
+            <div class="key dark-key">m</div>
+            <div class="key action">⌫</div>
+            <div class="key action">123</div>
+            <div class="key dark-key space">espaço</div>
+            <div class="key action" style="background:#007AFF;color:#fff;">↵</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom — FAB hidden (Fix #5) -->
+      <div class="bottom-area">
+        <div class="bottom-app-bar">
+          <!-- FAB ghost (scale:0 in real app) -->
+          <div class="fab-ghost">scale:0</div>
+          <!-- FAB hidden -->
+          <div class="fab ai-active fab-hidden">🧠</div>
+          <div class="nav-side">
+            <div class="nav-btn">
+              <div class="nav-icon-wrap"><div class="nav-icon inactive">🏠</div></div>
+              <div class="nav-label">Início</div>
+            </div>
+            <div class="nav-btn">
+              <div class="nav-icon-wrap"><div class="nav-icon inactive">📋</div></div>
+              <div class="nav-label">H. Clínica</div>
+            </div>
+          </div>
+          <div class="center-slot"></div>
+          <div class="nav-side">
+            <div class="nav-btn">
+              <div class="nav-icon-wrap"><div class="nav-icon inactive">📚</div></div>
+              <div class="nav-label">Biblioteca</div>
+            </div>
+            <div class="nav-btn">
+              <div class="nav-icon-wrap"><div class="nav-icon inactive">🔢</div></div>
+              <div class="nav-label">Ferramentas</div>
+            </div>
+          </div>
+        </div>
+        <div class="legal-bar">
+          <span class="legal-icon">ℹ</span>
+          <span class="legal-text">Ferramenta educacional de apoio clínico.</span>
+        </div>
+        <div class="home-indicator"><div class="home-pill"></div></div>
+      </div>
+    </div>
+    <div class="annotation red">🚫 Fix #5 · FAB oculto<br>AnimatedScale(0) + AnimatedOpacity(0)<br>chatKeyboardOpen.value = true</div>
+  </div>
+
+</div><!-- /phones-grid -->
+
+<!-- Palette legend -->
+<div class="palette-section">
+  <h3>🎨 Paleta Dark Unificada — PR #65</h3>
+  <div class="palette-grid">
+    <div class="swatch">
+      <div class="swatch-dot" style="background:#1A1D23;border:1px solid #374151;"></div>
+      <div class="swatch-info">
+        <div class="swatch-hex">#1A1D23</div>
+        <div class="swatch-role">Scaffold bg (Library, H.Clínica, Tools, IA)</div>
+      </div>
+    </div>
+    <div class="swatch">
+      <div class="swatch-dot" style="background:#0F1116;border:1px solid #374151;"></div>
+      <div class="swatch-info">
+        <div class="swatch-hex">#0F1116</div>
+        <div class="swatch-role">BottomAppBar · TopBar · LegalBar · Home</div>
+      </div>
+    </div>
+    <div class="swatch">
+      <div class="swatch-dot" style="background:#252930;border:1px solid #374151;"></div>
+      <div class="swatch-info">
+        <div class="swatch-hex">#252930</div>
+        <div class="swatch-role">Cards · InputBar · _MobileAiActionBar bg</div>
+      </div>
+    </div>
+    <div class="swatch">
+      <div class="swatch-dot" style="background:#374151;border:1px solid #4B5563;"></div>
+      <div class="swatch-info">
+        <div class="swatch-hex">#374151</div>
+        <div class="swatch-role">Borders · dividers (era #1F3328 verde)</div>
+      </div>
+    </div>
+    <div class="swatch">
+      <div class="swatch-dot" style="background:#00E5FF;border:1px solid rgba(0,229,255,0.5);"></div>
+      <div class="swatch-info">
+        <div class="swatch-hex">#00E5FF</div>
+        <div class="swatch-role">FAB active glow · IA accent · InputBar focus</div>
+      </div>
+    </div>
+    <div class="swatch">
+      <div class="swatch-dot" style="background:#10B981;border:1px solid rgba(16,185,129,0.4);"></div>
+      <div class="swatch-info">
+        <div class="swatch-hex">#10B981</div>
+        <div class="swatch-role">Nav active · Pediatria header · Home accent</div>
+      </div>
+    </div>
+    <div class="swatch">
+      <div class="swatch-dot" style="background:#C5A365;border:1px solid rgba(197,163,101,0.4);"></div>
+      <div class="swatch-info">
+        <div class="swatch-hex">#C5A365</div>
+        <div class="swatch-role">Badge histórico · _kGold premium</div>
+      </div>
+    </div>
+    <div class="swatch">
+      <div class="swatch-dot" style="background:#6B7280;border:1px solid #4B5563;"></div>
+      <div class="swatch-info">
+        <div class="swatch-hex">#6B7280</div>
+        <div class="swatch-role">Nav inactive icons + labels</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
