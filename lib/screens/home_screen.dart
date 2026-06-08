@@ -402,6 +402,10 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           const SizedBox(height: 10),
 
+          // ── BLOCO 3b: CALCULADORA — card full-width premium ──────────────────
+          _HomeCalculadoraCard(dark: dark, isEs: isEs),
+          const SizedBox(height: 10),
+
           // ── BLOCO 4: HISTORIAL CLÍNICO — barra de atalhos horizontal ────────
           _HistorialCompactCard(
             dark: dark,
@@ -2476,6 +2480,127 @@ class _HomeAdultoPediatriaRow extends StatelessWidget {
         onTap: onTapPediatria,
       )),
     ]);
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// HOME V2 — CALCULADORA (card full-width premium)
+// Build 102: novo acesso direto à CalculadorasShell (ToolsScreen encapsulada)
+// ═══════════════════════════════════════════════════════════════════════════════
+class _HomeCalculadoraCard extends StatefulWidget {
+  final bool dark;
+  final bool isEs;
+  const _HomeCalculadoraCard({required this.dark, required this.isEs});
+  @override
+  State<_HomeCalculadoraCard> createState() => _HomeCalculadoraCardState();
+}
+
+class _HomeCalculadoraCardState extends State<_HomeCalculadoraCard>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _ctrl;
+  late final Animation<double> _scale;
+
+  @override
+  void initState() {
+    super.initState();
+    _ctrl  = AnimationController(vsync: this,
+        duration: const Duration(milliseconds: 120));
+    _scale = Tween<double>(begin: 1.0, end: 0.96)
+        .animate(CurvedAnimation(parent: _ctrl, curve: Curves.easeOut));
+  }
+
+  @override
+  void dispose() { _ctrl.dispose(); super.dispose(); }
+
+  void _handleTap() {
+    AppHaptics.light(context);
+    Navigator.of(context).push(
+      _HomeScreenState._slide(const _CalculadorasShell()),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    const gradientColors = [
+      Color(0xFF1A0F2E),
+      Color(0xFF2D1B5A),
+      Color(0xFF4A2D8A),
+    ];
+    const accentColor = Color(0xFFA78BFA);
+
+    return GestureDetector(
+      onTapDown:   (_) { _ctrl.forward(); AppHaptics.light(context); },
+      onTapUp:     (_) { _ctrl.reverse(); _handleTap(); },
+      onTapCancel: ()  => _ctrl.reverse(),
+      child: ScaleTransition(
+        scale: _scale,
+        child: Container(
+          width: double.infinity,
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
+          decoration: BoxDecoration(
+            gradient: const LinearGradient(
+              begin: Alignment.topLeft,
+              end:   Alignment.bottomRight,
+              colors: gradientColors,
+            ),
+            borderRadius: BorderRadius.circular(18),
+            boxShadow: [
+              BoxShadow(
+                color: gradientColors.last.withValues(alpha: 0.40),
+                blurRadius: 16,
+                offset: const Offset(0, 6),
+              ),
+            ],
+          ),
+          child: Row(children: [
+            // ── Ícone ──────────────────────────────────────────────────────
+            Container(
+              width: 52, height: 52,
+              decoration: BoxDecoration(
+                color: accentColor.withValues(alpha: 0.15),
+                borderRadius: BorderRadius.circular(14),
+              ),
+              child: const Icon(Icons.calculate_rounded,
+                  size: 26, color: accentColor),
+            ),
+            const SizedBox(width: 16),
+            // ── Texto ──────────────────────────────────────────────────────
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    widget.isEs ? 'CALCULADORA CLÍNICA' : 'CALCULADORA CLÍNICA',
+                    style: const TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w900,
+                      color: Colors.white,
+                      letterSpacing: 0.6,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    widget.isEs
+                        ? 'Cálculos y Fórmulas de Referencia'
+                        : 'Scores · Cardio · Eletrólitos · Referência',
+                    style: TextStyle(
+                      fontSize: 11.5,
+                      fontWeight: FontWeight.w500,
+                      color: accentColor.withValues(alpha: 0.85),
+                      height: 1.3,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            // ── Chevron ────────────────────────────────────────────────────
+            Icon(Icons.chevron_right_rounded,
+                size: 26, color: accentColor.withValues(alpha: 0.70)),
+          ]),
+        ),
+      ),
+    );
   }
 }
 
