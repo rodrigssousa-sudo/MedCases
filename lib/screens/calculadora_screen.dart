@@ -86,60 +86,57 @@ class _CalcWebView extends StatefulWidget {
 
 class _CalcWebViewState extends State<_CalcWebView> {
   late final WebViewController _ctrl;
+  // _loading: true = LinearProgressIndicator no topo (NÃO-BLOQUEANTE)
+  // Nunca cobre o WebView com overlay opaco — o conteúdo fica sempre visível.
   bool _loading = true;
   bool _hasError = false;
 
   @override
   void initState() {
     super.initState();
-    // Build 103: inicialização em duas fases para garantir que setUserAgent e
-    // setJavaScriptMode estejam aplicados ANTES de loadRequest ser chamado.
-    // Em webview_flutter 4.x, chamadas encadeadas com ".." são síncronas na
-    // fila interna do platform channel — a ordem é preservada.
-    // NavigationDelegate é configurado PRIMEIRO para capturar onPageStarted
-    // imediatamente após loadRequest.
-    _ctrl = WebViewController();
-
-    // Fase 1: configuração obrigatória antes do carregamento
-    _ctrl.setNavigationDelegate(
-      NavigationDelegate(
+    // Configuração atômica via cascata (..) — ordem preservada no platform
+    // channel do WKWebView/AndroidWebView. setUserAgent ANTES de loadRequest
+    // garante que o header é enviado na primeira requisição HTTP.
+    _ctrl = WebViewController()
+      ..setUserAgent(_kUserAgent)
+      ..setJavaScriptMode(JavaScriptMode.unrestricted)
+      ..setBackgroundColor(
+          widget.dark ? const Color(0xFF1A1D23) : Colors.white)
+      ..setNavigationDelegate(NavigationDelegate(
         onPageStarted: (_) {
           if (mounted) setState(() { _loading = true; _hasError = false; });
         },
         onPageFinished: (_) {
+          // Dispara para sucesso E para páginas de erro HTTP (404, 503…).
+          // Garante que a barra de progresso sempre desaparece.
           if (mounted) setState(() => _loading = false);
         },
         onWebResourceError: (error) {
-          // Ignora erros de sub-recursos (CSS/JS de terceiros) — só falha
-          // se for o documento principal (isForMainFrame == true).
-          if (error.isForMainFrame == true) {
+          // WKWebView iOS: isForMainFrame pode ser null em erros de rede
+          // (NSURLErrorDomain -1009, -1001 etc.). Trata null como erro
+          // do frame principal para não deixar a tela presa em loading.
+          final isMain = error.isForMainFrame;
+          if (isMain == true || isMain == null) {
             if (mounted) setState(() { _loading = false; _hasError = true; });
           }
         },
-        // Permite apenas navegação dentro do domínio promedcases.com
         onNavigationRequest: (request) {
+          // Permite apenas domínio promedcases.com
           final uri = Uri.tryParse(request.url);
           if (uri != null && uri.host.endsWith('promedcases.com')) {
             return NavigationDecision.navigate;
           }
-          // Bloqueia links externos — evita saída acidental do app
           return NavigationDecision.prevent;
         },
-      ),
-    );
+      ))
+      ..loadRequest(Uri.parse(_kTargetUrl));
 
-    // Fase 2: User-Agent + JS + background — aplicados antes de loadRequest
-    _ctrl.setUserAgent(_kUserAgent);
-    _ctrl.setJavaScriptMode(JavaScriptMode.unrestricted);
-    _ctrl.setBackgroundColor(
-        widget.dark ? const Color(0xFF1A1D23) : Colors.white);
-
-    // Fase 3: dispara o carregamento após todas as configurações
-    _ctrl.loadRequest(Uri.parse(_kTargetUrl));
-
-    // Timeout de segurança: se após 30s ainda estiver loading, esconde o
-    // overlay para não travar a UI (o WebView pode estar carregando em segundo plano).
-    Future.delayed(const Duration(seconds: 30), () {
+    // Timeout de segurança: 12s.
+    // Cobre o caso raro onde onPageFinished NÃO dispara (bug do WKWebView
+    // em algumas versões iOS para certas respostas HTTP).
+    // Após o timeout, a barra de progresso some e o WebView fica visível
+    // como está — nunca deixa a tela travada em estado de carregamento.
+    Future.delayed(const Duration(seconds: 12), () {
       if (mounted && _loading && !_hasError) {
         setState(() => _loading = false);
       }
@@ -148,59 +145,33 @@ class _CalcWebViewState extends State<_CalcWebView> {
 
   @override
   Widget build(BuildContext context) {
-    final c = AppColors.of(context);
-
     if (_hasError) {
       return _ErrorState(dark: widget.dark, isEs: widget.isEs, onRetry: () {
         setState(() { _loading = true; _hasError = false; });
-        _ctrl.reload();
+        _ctrl.loadRequest(Uri.parse(_kTargetUrl));
       });
     }
 
-    // Build 103: StackFit.expand garante que o WebViewWidget ocupe todo o
-    // espaço disponível do Expanded pai. Sem isso, o Stack pode colapsar
-    // para tamanho zero em alguns dispositivos iOS com webview_flutter 4.x.
+    // DESIGN CORRIGIDO — sem overlay opaco bloqueante:
+    // • WebViewWidget ocupa 100% do Expanded via StackFit.expand
+    // • LinearProgressIndicator no topo: fino (3pt), não bloqueia nada
+    // • O usuário vê o WebView renderizando em tempo real
+    // Isso elimina a "tela branca" que ocorria quando o overlay opaco
+    // cobria o WebView e onPageFinished não disparava a tempo.
     return Stack(
       fit: StackFit.expand,
       children: [
-        // ── WebView principal — SizedBox.expand força height = max disponível
-        SizedBox.expand(child: WebViewWidget(controller: _ctrl)),
+        // ── WebView — sempre visível, nunca coberto ───────────────────────
+        WebViewWidget(controller: _ctrl),
 
-        // ── Progress indicator (visível durante carregamento) ─────────────
+        // ── Indicador de progresso não-bloqueante (topo da tela) ──────────
         if (_loading)
-          Container(
-            color: widget.dark
-                ? const Color(0xFF1A1D23)
-                : const Color(0xFFF7F8FA),
-            child: Center(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const CircularProgressIndicator(
-                    color: Color(0xFFA78BFA),
-                    strokeWidth: 2.5,
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    widget.isEs
-                        ? 'Cargando calculadoras...'
-                        : 'Carregando calculadoras...',
-                    style: TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w500,
-                      color: c.textSecondary,
-                    ),
-                  ),
-                  const SizedBox(height: 6),
-                  Text(
-                    _kTargetUrl,
-                    style: TextStyle(
-                      fontSize: 9.5,
-                      color: c.textHint,
-                    ),
-                  ),
-                ],
-              ),
+          const Positioned(
+            top: 0, left: 0, right: 0,
+            child: LinearProgressIndicator(
+              backgroundColor: Colors.transparent,
+              color: Color(0xFFA78BFA),
+              minHeight: 3,
             ),
           ),
       ],

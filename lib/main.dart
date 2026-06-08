@@ -1560,68 +1560,73 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       // ── Bottom nav: BottomAppBar nativo + LegalBar ────────────────────────
-      // O Scaffold posiciona o bottomNavigationBar ACIMA do safe area automaticamente.
-      // NÃO usar MediaQuery.removePadding aqui — isso corta os ícones abaixo da tela.
-      // Estrutura: BottomAppBar(elevation:0, padding:zero) > Column >
-      //   SizedBox(height:48) com Row de ícones CENTRALIZADA
-      //   + SafeArea(top:false) > _LegalBar (absorve home indicator, sem bloco preto)
-      bottomNavigationBar: BottomAppBar(
-        color: navBg,
-        shape: const CircularNotchedRectangle(),
-        notchMargin: 5.0,
-        elevation: 0,
-        padding: EdgeInsets.zero,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            // ── Barra de ícones: 48px com centralização vertical perfeita ─────
-            SizedBox(
-              height: 48,
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  // 0 — INICIO
-                  _buildNavBtn(
-                    0,
-                    Icons.home_rounded,
-                    p.lang == 'es' ? 'Inicio' : 'Início',
-                    dark, p,
-                  ),
-                  // 3 — HISTÓRIA CLÍNICA
-                  _buildNavBtn(
-                    3,
-                    Icons.assignment_ind_outlined,
-                    'H. Clínica',
-                    dark, p,
-                  ),
-                  // ── Slot central — FAB docked ───────────────────────────
-                  const SizedBox(width: 60),
-                  // 5 — BIBLIOTECA
-                  _buildNavBtn(
-                    5,
-                    Icons.menu_book_rounded,
-                    'Biblioteca',
-                    dark, p,
-                  ),
-                  // 4 — FERRAMENTAS
-                  _buildNavBtn(
-                    4,
-                    Icons.calculate_rounded,
-                    p.lang == 'es' ? 'Herramientas' : 'Ferramentas',
-                    dark, p,
-                  ),
-                ],
-              ),
+      // Build 103 FIX: A Column interna tinha 48(icons) + ~38.6(LegalBar) = 86.6pt
+      // mas o BottomAppBar padrão Flutter 3.x tem height mínimo 80pt — clampeia
+      // e causa BOTTOM OVERFLOWED BY 6.5 PIXELS na Column interna.
+      //
+      // SOLUÇÃO: BottomAppBar contém APENAS os ícones (48pt fixo, sem overflow).
+      // A _LegalBar é movida para o bottomNavigationBar como Column envolvente:
+      //   Column[
+      //     BottomAppBar (48pt, só ícones),
+      //     SafeArea(top:false) > _LegalBar (absorve homeIndicator + disclaimer)
+      //   ]
+      // O Scaffold lê a altura total da Column corretamente via IntrinsicHeight
+      // e aloca body = screen - appBar - (48 + legalBar + homeIndicator).
+      bottomNavigationBar: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // ── BottomAppBar: APENAS ícones (48pt fixo, sem SafeArea, sem overflow) ──
+          BottomAppBar(
+            color: navBg,
+            shape: const CircularNotchedRectangle(),
+            notchMargin: 5.0,
+            elevation: 0,
+            padding: EdgeInsets.zero,
+            height: 48, // altura fixa — elimina o minimumHeight:80 padrão
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                // 0 — INICIO
+                _buildNavBtn(
+                  0,
+                  Icons.home_rounded,
+                  p.lang == 'es' ? 'Inicio' : 'Início',
+                  dark, p,
+                ),
+                // 3 — HISTÓRIA CLÍNICA
+                _buildNavBtn(
+                  3,
+                  Icons.assignment_ind_outlined,
+                  'H. Clínica',
+                  dark, p,
+                ),
+                // ── Slot central — FAB docked ─────────────────────────────
+                const SizedBox(width: 60),
+                // 5 — BIBLIOTECA
+                _buildNavBtn(
+                  5,
+                  Icons.menu_book_rounded,
+                  'Biblioteca',
+                  dark, p,
+                ),
+                // 4 — FERRAMENTAS
+                _buildNavBtn(
+                  4,
+                  Icons.calculate_rounded,
+                  p.lang == 'es' ? 'Herramientas' : 'Ferramentas',
+                  dark, p,
+                ),
+              ],
             ),
-            // ── Disclaimer legal: SafeArea(top:false) absorve home indicator ──
-            // Isso adiciona exatamente o espaço do home indicator (~34px no iPhone)
-            // como padding ABAIXO do texto — visível + sem bloco preto extra.
-            SafeArea(
-              top: false,
-              child: _LegalBar(dark: dark, insideSafeArea: true),
-            ),
-          ],
-        ),
+          ),
+          // ── Disclaimer legal fora do BottomAppBar — sem risco de overflow ──
+          // SafeArea(top:false) absorve o home indicator (~34pt no iPhone)
+          // como padding ABAIXO do texto do disclaimer Apple 1.4.1.
+          SafeArea(
+            top: false,
+            child: _LegalBar(dark: dark, insideSafeArea: true),
+          ),
+        ],
       ),
     );
   }
