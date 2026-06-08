@@ -18,6 +18,7 @@ import 'cockpit_screen.dart';
 import 'drugs_screen.dart' show DrugsScreen, showDrugDetailSheet;
 import 'prescripciones_screen.dart' show PrescripcionesScreen, prescriptionModels;
 import 'tools_screen.dart' show PediatricsTabContent, ToolsScreen, toolsScreenTabNotifier;
+import 'calculadora_screen.dart' show CalculadoraScreen;
 import 'prescripciones_screen.dart';
 import 'drug_interactions_screen.dart';
 import 'protocols_screen.dart' show openProtocolById, showProtocolDetail;
@@ -335,7 +336,9 @@ class _HomeScreenState extends State<HomeScreen> {
         physics: const BouncingScrollPhysics(),
         // Build 99 — padding reduzido: menos espaço morto lateral e bottom
         // (80px → suficiente para BottomAppBar 52px + _LegalBar + safe area)
-        padding: const EdgeInsets.fromLTRB(12, 8, 12, 88),
+        // Build 102: bottom padding aumentado de 88 → 96px após adição
+        // do card Calculadora Clínica (corrige BOTTOM OVERFLOWED BY 6.5 PIXELS)
+        padding: const EdgeInsets.fromLTRB(12, 8, 12, 96),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
 
           // ── BLOCO 1: IA INLINE CHAT — expansão vertical dinâmica ────────────
@@ -2514,8 +2517,10 @@ class _HomeCalculadoraCardState extends State<_HomeCalculadoraCard>
 
   void _handleTap() {
     AppHaptics.light(context);
+    // PR #73: abre CalculadoraScreen (WebView → promedcases.com + User-Agent MedCasesApp/6.1.0)
+    // NÃO usar _CalculadorasShell (que abria ToolsScreen local — comportamento antigo)
     Navigator.of(context).push(
-      _HomeScreenState._slide(const _CalculadorasShell()),
+      _HomeScreenState._slide(const CalculadoraScreen()),
     );
   }
 
