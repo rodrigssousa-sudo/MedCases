@@ -1487,77 +1487,93 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
 
           // ── Campo de entrada + botão enviar (smart) ───────────────────────
           // Campo VAZIO → navega para tela cheia de IA
-          // Campo CHEIO → envia no mini-chat inline
-          Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
-            Expanded(
-              child: GestureDetector(
-                onTap: () => _focus.requestFocus(),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-                  decoration: BoxDecoration(
-                    color: fieldBg,
-                    borderRadius: BorderRadius.circular(14),
-                    border: Border.all(color: fieldBorder, width: 1.2),
+          // ── Campo de entrada estilo Gemini — botão embutido via suffixIcon ──
+          ValueListenableBuilder<TextEditingValue>(
+            valueListenable: _ctrl,
+            builder: (_, val, __) {
+              final isEmpty = val.text.trim().isEmpty;
+              return TextField(
+                controller: _ctrl,
+                focusNode: _focus,
+                autofocus: false, // CRÍTICO — nunca abrir teclado automaticamente
+                minLines: 1,
+                maxLines: 4,
+                style: TextStyle(fontSize: 14, color: textColor, height: 1.5),
+                textInputAction: TextInputAction.send,
+                onSubmitted: (_) => _send(),
+                decoration: InputDecoration(
+                  hintText: isEs
+                      ? 'Sintomas, fármaco, protocolo…'
+                      : 'Sintomas, fármaco, protocolo…',
+                  hintStyle: TextStyle(fontSize: 14, color: hintColor),
+                  // Espaço à esquerda do texto / à direita antes do botão
+                  contentPadding: const EdgeInsets.fromLTRB(18, 14, 6, 14),
+                  // Borda arredondada estilo Gemini
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(28),
+                    borderSide: BorderSide(color: fieldBorder, width: 1.2),
                   ),
-                  child: TextField(
-                    controller: _ctrl,
-                    focusNode: _focus,
-                    autofocus: false,   // CRÍTICO — nunca abrir teclado automaticamente
-                    minLines: 1,
-                    maxLines: 4,
-                    style: TextStyle(fontSize: 14, color: textColor, height: 1.5),
-                    decoration: InputDecoration.collapsed(
-                      hintText: isEs ? 'Sintomas, fármaco, protocolo…' : 'Sintomas, fármaco, protocolo…',
-                      hintStyle: TextStyle(fontSize: 14, color: hintColor),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(28),
+                    borderSide: BorderSide(
+                      color: dark
+                          ? const Color(0xFF008CA4)
+                          : const Color(0xFF008CA4),
+                      width: 1.5,
                     ),
-                    textInputAction: TextInputAction.send,
-                    onSubmitted: (_) => _send(),
+                  ),
+                  filled: true,
+                  fillColor: fieldBg,
+                  // ── Botão embutido — círculo colorido com ícone ────────────
+                  suffixIcon: Padding(
+                    padding: const EdgeInsets.only(right: 6),
+                    child: GestureDetector(
+                      onTap: _thinking ? null : () {
+                        AppHaptics.light(context);
+                        _onSendPressed();
+                      },
+                      child: AnimatedContainer(
+                        duration: const Duration(milliseconds: 180),
+                        width: 36, height: 36,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: _thinking
+                              ? (dark
+                                  ? const Color(0xFF162A1C)
+                                  : const Color(0xFFDDEFE6))
+                              : isEmpty
+                                  ? (dark
+                                      ? Colors.white.withValues(alpha: 0.10)
+                                      : Colors.black.withValues(alpha: 0.07))
+                                  : const Color(0xFF008CA4),
+                        ),
+                        child: _thinking
+                            ? const Padding(
+                                padding: EdgeInsets.all(10),
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  valueColor: AlwaysStoppedAnimation<Color>(_kGreen),
+                                ),
+                              )
+                            : Icon(
+                                // Vazio → "abrir chat completo" / Cheio → enviar
+                                isEmpty
+                                    ? Icons.open_in_full_rounded
+                                    : Icons.arrow_upward_rounded,
+                                color: isEmpty
+                                    ? (dark
+                                        ? Colors.white.withValues(alpha: 0.35)
+                                        : Colors.black.withValues(alpha: 0.25))
+                                    : Colors.white,
+                                size: 17,
+                              ),
+                      ),
+                    ),
                   ),
                 ),
-              ),
-            ),
-            const SizedBox(width: 8),
-            // Botão smart: ícone muda conforme campo vazio/cheio
-            ValueListenableBuilder<TextEditingValue>(
-              valueListenable: _ctrl,
-              builder: (_, val, __) {
-                final isEmpty = val.text.trim().isEmpty;
-                return GestureDetector(
-                  onTap: _thinking ? null : () {
-                    AppHaptics.light(context);
-                    _onSendPressed();
-                  },
-                  child: AnimatedContainer(
-                    duration: const Duration(milliseconds: 200),
-                    width: 40, height: 40,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: _thinking
-                          ? (dark ? const Color(0xFF162A1C) : const Color(0xFFDDEFE6))
-                          : const Color(0xFF008CA4),
-                    ),
-                    child: _thinking
-                        ? const Padding(
-                            padding: EdgeInsets.all(11),
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                              valueColor: AlwaysStoppedAnimation<Color>(_kGreen),
-                            ),
-                          )
-                        : Icon(
-                            // Campo vazio: seta de "ir para chat" (externo)
-                            // Campo cheio: seta de enviar (cima)
-                            isEmpty
-                                ? Icons.open_in_full_rounded
-                                : Icons.arrow_upward_rounded,
-                            color: Colors.white,
-                            size: 18,
-                          ),
-                  ),
-                );
-              },
-            ),
-          ]),
+              );
+            },
+          ),
 
           const SizedBox(height: 10),
 
