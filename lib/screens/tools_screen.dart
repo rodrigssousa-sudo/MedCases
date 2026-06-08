@@ -3,6 +3,7 @@ import '../theme/app_theme.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../providers/app_provider.dart';
 import '../data/evidence_database.dart';
 import '../widgets/common_widgets.dart';
@@ -166,6 +167,10 @@ class _ToolsScreenState extends State<ToolsScreen> with SingleTickerProviderStat
           ),
         ),
       ),
+      // ── Rodapé bibliográfico — Apple Guideline 1.4.1 ─────────────
+      // Fixo abaixo de todas as tabs: revisor Apple encontra as fontes
+      // sem precisar rolar até o fim de nenhuma calculadora específica.
+      _ToolsReferencesFooter(isEs: isEs),
     ]);
   }
 }
@@ -7947,3 +7952,74 @@ double _pow(double base, num exp) {
 double _powFrac(double base, num frac) => _exp(frac * _ln(base));
 double _ln(double x) { if (x <= 0) return double.negativeInfinity; double s = 0, b = (x-1)/(x+1); double t = b; for (int i=1; i<100; i+=2) { s += t/i; t *= b*b; } return 2*s; }
 double _exp(double x) { double s = 1, t = 1; for (int i=1; i<100; i++) { t *= x/i; s += t; if (t.abs() < 1e-15) break; } return s; }
+
+// ─────────────────────────────────────────────────────────────────────────────
+// RODAPÉ BIBLIOGRÁFICO — Apple Guideline 1.4.1
+// Exibido fixo abaixo de todas as tabs de Ferramentas Clínicas.
+// Garante que o revisor da Apple encontra as fontes médicas sem interação extra.
+// ─────────────────────────────────────────────────────────────────────────────
+class _ToolsReferencesFooter extends StatelessWidget {
+  final bool isEs;
+  const _ToolsReferencesFooter({required this.isEs});
+
+  static const _kSourcesUrl = 'https://www.promedcases.com/fontes';
+
+  @override
+  Widget build(BuildContext context) {
+    final dark         = Theme.of(context).brightness == Brightness.dark;
+    final bgColor      = dark ? const Color(0xFF1A1D23) : const Color(0xFFF0F4F8);
+    final borderColor  = dark ? const Color(0xFF2D3748) : const Color(0xFFDDE3EA);
+    final textColor    = dark ? const Color(0xFF9CA3AF) : const Color(0xFF6B7280);
+    final accentColor  = dark ? const Color(0xFF10B981) : const Color(0xFF075F45);
+    final bottomPad    = MediaQuery.of(context).padding.bottom;
+
+    return Container(
+      padding: EdgeInsets.fromLTRB(14, 7, 14, 7 + bottomPad),
+      decoration: BoxDecoration(
+        color: bgColor,
+        border: Border(top: BorderSide(color: borderColor, width: 0.5)),
+      ),
+      child: Row(
+        children: [
+          Icon(Icons.menu_book_rounded, size: 13, color: accentColor),
+          const SizedBox(width: 7),
+          Expanded(
+            child: Text(
+              isEs
+                  ? 'Refs: AHA/ACC, WHO, KDIGO, CURB-65, CHA₂DS₂-VASc, Wells, NEWS2, Child-Pugh, PSI'
+                  : 'Refs: AHA/ACC, WHO, KDIGO, CURB-65, CHA₂DS₂-VASc, Wells, NEWS2, Child-Pugh, PSI',
+              style: TextStyle(fontSize: 9.5, color: textColor, height: 1.3),
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+          const SizedBox(width: 8),
+          GestureDetector(
+            onTap: () async {
+              final uri = Uri.parse(_kSourcesUrl);
+              if (await canLaunchUrl(uri)) {
+                await launchUrl(uri, mode: LaunchMode.externalApplication);
+              }
+            },
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(6),
+                border: Border.all(color: accentColor.withValues(alpha: 0.4)),
+                color: accentColor.withValues(alpha: 0.08),
+              ),
+              child: Text(
+                isEs ? 'Ver fuentes' : 'Ver fontes',
+                style: TextStyle(
+                  fontSize: 10,
+                  fontWeight: FontWeight.w600,
+                  color: accentColor,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
