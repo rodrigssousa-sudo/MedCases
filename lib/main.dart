@@ -1572,7 +1572,12 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
       //   ]
       // O Scaffold lê a altura total da Column corretamente via IntrinsicHeight
       // e aloca body = screen - appBar - (48 + legalBar + homeIndicator).
-      bottomNavigationBar: Column(
+      bottomNavigationBar: SafeArea(
+        bottom: true,
+        top: false,
+        left: false,
+        right: false,
+        child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           // ── BottomAppBar: APENAS ícones (48pt fixo, sem SafeArea, sem overflow) ──
@@ -1620,13 +1625,9 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
             ),
           ),
           // ── Disclaimer legal fora do BottomAppBar — sem risco de overflow ──
-          // SafeArea(top:false) absorve o home indicator (~34pt no iPhone)
-          // como padding ABAIXO do texto do disclaimer Apple 1.4.1.
-          SafeArea(
-            top: false,
-            child: _LegalBar(dark: dark, insideSafeArea: true),
-          ),
+          _LegalBar(dark: dark, insideSafeArea: true),
         ],
+        ),
       ),
     );
   }
@@ -1662,7 +1663,7 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
                         : const Color(0xFF0A7C4E).withValues(alpha: 0.09))
                     : Colors.transparent,
               ),
-              child: Icon(icon, size: 20,
+              child: Icon(icon, size: 21,
                 color: active ? activeColor : inactiveColor),
             ),
             const SizedBox(height: 1), // 1pt entre ícone e label — colados
