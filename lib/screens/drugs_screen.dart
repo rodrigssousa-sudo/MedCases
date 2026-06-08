@@ -1387,37 +1387,47 @@ class _ClinicalHeader extends StatelessWidget {
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
 
         // ── Barra de navegação ──────────────────────────────────────────────
+        // Build 102: layout responsivo — Row n\u00e3o estoura em iPhones menores.
+        // "Voltar" cresce flex\u00edvel; ações direitas são compactas (ícone + label curto).
+        // Corrige RIGHT OVERFLOWED BY 101 PIXELS em fichas como Adenosina.
         SafeArea(
           bottom: false,
           child: Padding(
             padding: const EdgeInsets.fromLTRB(14, 12, 14, 0),
             child: Row(children: [
-              // Botão voltar
-              Material(
-                color: Colors.white.withValues(alpha: 0.08),
-                borderRadius: BorderRadius.circular(10),
-                child: InkWell(
-                  onTap: onBack,
+              // ── Botão voltar — cresce mas não expulsa os outros ───────────
+              Flexible(
+                child: Material(
+                  color: Colors.white.withValues(alpha: 0.08),
                   borderRadius: BorderRadius.circular(10),
-                  splashColor: Colors.white.withValues(alpha: 0.15),
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      border: Border.all(color: Colors.white.withValues(alpha: 0.12)),
+                  child: InkWell(
+                    onTap: onBack,
+                    borderRadius: BorderRadius.circular(10),
+                    splashColor: Colors.white.withValues(alpha: 0.15),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(color: Colors.white.withValues(alpha: 0.12)),
+                      ),
+                      child: Row(mainAxisSize: MainAxisSize.min, children: [
+                        Icon(Icons.arrow_back_ios_rounded, size: 12,
+                            color: Colors.white.withValues(alpha: 0.85)),
+                        const SizedBox(width: 4),
+                        Flexible(
+                          child: Text(p.t('back_drugs'),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700,
+                              color: Colors.white.withValues(alpha: 0.85))),
+                        ),
+                      ]),
                     ),
-                    child: Row(mainAxisSize: MainAxisSize.min, children: [
-                      Icon(Icons.arrow_back_ios_rounded, size: 12, color: Colors.white.withValues(alpha: 0.85)),
-                      const SizedBox(width: 4),
-                      Text(p.t('back_drugs'),
-                        style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700,
-                          color: Colors.white.withValues(alpha: 0.85))),
-                    ]),
                   ),
                 ),
               ),
-              const Spacer(),
-              // Favoritar
+              const SizedBox(width: 8),
+              // ── Favoritar (ícone compacto — tamanho fixo) ─────────────────
               Material(
                 color: Colors.white.withValues(alpha: 0.08),
                 borderRadius: BorderRadius.circular(10),
@@ -1439,7 +1449,7 @@ class _ClinicalHeader extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 8),
-              // Usar no cockpit
+              // ── Usar no cockpit — label curto para caber em iPhones SE/mini ─
               Material(
                 color: const Color(0xFFFFE8A6).withValues(alpha: 0.15),
                 borderRadius: BorderRadius.circular(10),
@@ -1453,9 +1463,11 @@ class _ClinicalHeader extends StatelessWidget {
                       border: Border.all(color: const Color(0xFFFFE8A6).withValues(alpha: 0.25)),
                     ),
                     child: Row(mainAxisSize: MainAxisSize.min, children: [
-                      const Icon(Icons.science_rounded, size: 13, color: Color(0xFFFFE8A6)),
+                      const Icon(Icons.science_rounded, size: 13,
+                          color: Color(0xFFFFE8A6)),
                       const SizedBox(width: 5),
-                      Text(p.t('use_in_cockpit'),
+                      // "Usar" em vez do label completo — evita overflow em telas pequenas
+                      Text(p.t('open'),
                         style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w800,
                           color: Color(0xFFFFE8A6))),
                     ]),
