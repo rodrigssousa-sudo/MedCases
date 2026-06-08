@@ -28,6 +28,7 @@ dependencies:
   # Usado por CalculadoraScreen para carregar promedcases.com/calculadoras
   # com header 'MedCasesApp/6.1.0' que desativa o bloqueio da página.
   webview_flutter: ^4.10.0
+  webview_flutter_wkwebview: ^3.18.5
 
   # Icons
   cupertino_icons: ^1.0.8
