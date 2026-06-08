@@ -94,7 +94,7 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
 
     _controller = WebViewController.fromPlatformCreationParams(params)
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
-      ..setUserAgent('MedCasesApp/6.1.0')
+      ..setUserAgent('Mozilla/5.0 (iPhone; CPU iPhone OS 15_0 like Mac OS X) MedCasesApp/6.1.0')
       ..setNavigationDelegate(NavigationDelegate(
         onPageFinished: (_) {
           // Injeção CSS/JS logo após o DOM estar pronto:
