@@ -1582,7 +1582,7 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
             notchMargin: 5.0,
             elevation: 0,
             padding: EdgeInsets.zero,
-            height: 60, // 60pt — ícones 24pt com label 10pt cabem sem overflow
+            height: 42, // 42pt — padrão premium Bruno: barra fina, ícone+label colados
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
@@ -1631,9 +1631,8 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
     );
   }
 
-  // Build 104 FIX — botão nav: ícone 24pt, barra 60pt, label 10pt.
-  // Cada botão é Expanded para dividir o espaço igualmente (2 lados × 2 botões).
-  // maxLines:1 + ellipsis previne overflow em iPhones pequenos.
+  // Build 104c — barra premium Bruno: 42pt, ícone 20pt + label 9pt colados (1pt gap).
+  // Geometria mínima: padding vertical zero no ícone, tudo centralizado nos 42pt.
   Widget _buildNavBtn(int idx, IconData icon, String label, bool dark, dynamic p) {
     final active        = _tab == idx;
     final activeColor   = dark ? const Color(0xFF10B981) : const Color(0xFF0A7C4E);
@@ -1653,26 +1652,27 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
             AnimatedContainer(
               duration: const Duration(milliseconds: 160),
               curve: Curves.easeOut,
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              // padding vertical zero — ícone ocupa apenas 20pt dos 42pt da barra
+              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 0),
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: BorderRadius.circular(6),
                 color: active
                     ? (dark
                         ? const Color(0xFF10B981).withValues(alpha: 0.14)
                         : const Color(0xFF0A7C4E).withValues(alpha: 0.09))
                     : Colors.transparent,
               ),
-              child: Icon(icon, size: 24,
+              child: Icon(icon, size: 20,
                 color: active ? activeColor : inactiveColor),
             ),
-            const SizedBox(height: 2),
+            const SizedBox(height: 1), // 1pt entre ícone e label — colados
             Text(
               label,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: TextStyle(
-                fontSize: 10,
-                fontWeight: active ? FontWeight.w700 : FontWeight.w500,
+                fontSize: 9,
+                fontWeight: active ? FontWeight.w600 : FontWeight.w400,
                 color: active ? activeColor : inactiveColor,
                 height: 1.0,
               ),
