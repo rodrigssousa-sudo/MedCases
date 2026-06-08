@@ -1,5 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+import '../providers/app_provider.dart';
+
+// URL por idioma — substituir pelos caminhos reais da Wix antes de publicar
+const _kUrlPt = 'https://www.promedcases.com/sua-url-secretablank';
+const _kUrlEs = 'https://www.promedcases.com/sua-url-secretablank-es';
 
 class CalculadoraScreen extends StatefulWidget {
   const CalculadoraScreen({super.key});
@@ -14,16 +20,23 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
   @override
   void initState() {
     super.initState();
+    // Lê o idioma ANTES de criar o controller — initState ainda tem acesso
+    // ao context para context.read (sem listen, sem rebuild).
+    final lang = context.read<AppProvider>().lang;
+    final url  = lang == 'es' ? _kUrlEs : _kUrlPt;
+
     _controller = WebViewController()
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
       ..setUserAgent('MedCasesApp/6.1.0')
-      ..loadRequest(
-          Uri.parse('https://www.promedcases.com/sua-url-secretablank'));
+      ..loadRequest(Uri.parse(url));
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // Fundo escuro — elimina o branco do Scaffold que vaza nas bordas
+      // e no overscroll do WKWebView no iPhone físico.
+      backgroundColor: const Color(0xFF0F091E),
       appBar: AppBar(
         backgroundColor: const Color(0xFF2D1B5A),
         foregroundColor: Colors.white,
@@ -55,6 +68,7 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
           ),
         ),
       ),
+      // WebView sangra até a borda física do display — sem SafeArea, sem padding
       body: WebViewWidget(controller: _controller),
     );
   }
