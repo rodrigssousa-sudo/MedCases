@@ -1,6 +1,7 @@
 import 'dart:io' show Platform;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
 import '../providers/app_provider.dart';
@@ -124,6 +125,18 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
             child: WebViewWidget(controller: _controller),
           ),
 
+          // ── Rodapé de referências — Apple Guideline 1.4.1 ────────────────
+          // Banner nativo fixo na base da tela com link explícito para as
+          // fontes bibliográficas médicas (AHA, ACC, WHO, PubMed, etc.).
+          // Garante que o revisor da Apple encontra as citações mesmo sem
+          // interagir com o WebView da Wix.
+          Positioned(
+            bottom: 0, left: 0, right: 0,
+            child: _ReferencesFooter(
+              isEs: context.read<AppProvider>().lang == 'es',
+            ),
+          ),
+
           // ── Header roxo sobreposto — NÃO consome altura do WebView ────────
           // Fica em cima do WebView via Stack.
           // O JS injetado adiciona padding-top = env(safe-area-inset-top) ao
@@ -168,6 +181,88 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
                       ),
                     ),
                   ],
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// RODAPÉ DE REFERÊNCIAS — Apple Guideline 1.4.1
+//
+// Widget nativo fixo na base da tela. Exibe texto de compliance e um botão
+// que abre promedcases.com/fontes no Safari externo.
+// A Apple exige que referências bibliográficas médicas sejam explícitas e
+// acessíveis sem depender de interação com o WebView.
+// ─────────────────────────────────────────────────────────────────────────────
+class _ReferencesFooter extends StatelessWidget {
+  final bool isEs;
+  const _ReferencesFooter({required this.isEs});
+
+  static const _kSourcesUrl = 'https://www.promedcases.com/fontes';
+
+  @override
+  Widget build(BuildContext context) {
+    final bottomPadding = MediaQuery.of(context).padding.bottom;
+
+    return Container(
+      padding: EdgeInsets.fromLTRB(14, 7, 14, 7 + bottomPadding),
+      decoration: const BoxDecoration(
+        color: Color(0xF01A0F2E), // roxo escuro 94% opaco — sobre o WebView
+        border: Border(
+          top: BorderSide(color: Color(0x334A2D8A), width: 0.5),
+        ),
+      ),
+      child: Row(
+        children: [
+          // Ícone de referência
+          const Icon(
+            Icons.menu_book_rounded,
+            size: 14,
+            color: Color(0xFFA78BFA),
+          ),
+          const SizedBox(width: 7),
+          // Texto de compliance
+          Expanded(
+            child: Text(
+              isEs
+                  ? 'Referencias clínicas y bibliográficas: AHA, ACC, WHO, PubMed'
+                  : 'Referências clínicas e bibliográficas: AHA, ACC, WHO, PubMed',
+              style: const TextStyle(
+                fontSize: 10,
+                color: Color(0xFFB8A8E8),
+                height: 1.3,
+              ),
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+          const SizedBox(width: 8),
+          // Botão — abre link de fontes no Safari externo
+          GestureDetector(
+            onTap: () async {
+              final uri = Uri.parse(_kSourcesUrl);
+              if (await canLaunchUrl(uri)) {
+                await launchUrl(uri, mode: LaunchMode.externalApplication);
+              }
+            },
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(6),
+                border: Border.all(color: const Color(0x664A2D8A)),
+                color: const Color(0x1AA78BFA),
+              ),
+              child: Text(
+                isEs ? 'Ver fuentes' : 'Ver fontes',
+                style: const TextStyle(
+                  fontSize: 10,
+                  fontWeight: FontWeight.w600,
+                  color: Color(0xFFA78BFA),
                 ),
               ),
             ),
