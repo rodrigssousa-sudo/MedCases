@@ -329,35 +329,17 @@ class _HomeScreenState extends State<HomeScreen> {
     // Versão Web mantém todos os elementos via guard kIsWeb.
     // ══════════════════════════════════════════════════════════════════════════
 
-    // Build 103 — Fix estrutural definitivo do bottom overflow.
-    //
-    // DIAGNÓSTICO RAIZ:
-    //   O main.dart usa MediaQuery.removePadding(removeTop: true) no body
-    //   do Scaffold. Dentro do body com bottomNavigationBar nativo, o Flutter
-    //   injeta padding.bottom = 0 via MediaQuery (o Scaffold já reserva o
-    //   espaço da bottom nav automaticamente). Logo padding.bottom lido aqui
-    //   pode ser 0 — tornando qualquer cálculo baseado em MediaQuery.padding
-    //   incorreto no device físico.
-    //
-    // SOLUÇÃO ESTRUTURAL (pedida pelo Bruno):
-    //   • MediaQuery.viewPadding.bottom lê o inset FÍSICO do dispositivo
-    //     (home indicator), ignorando o que o Scaffold já absorbeu.
-    //   • Valor fixo 86px cobre BottomAppBar(48) + _LegalBar(~30) + margem(8).
-    //   • viewPadding.bottom adiciona o home indicator físico real do device
-    //     sem ser zerado pelo Scaffold pai.
-    //   • Resultado: scrollBottomPad adapta-se a qualquer iPhone/Android.
-    final bottomViewPad = MediaQuery.of(context).viewPadding.bottom;
-    // 48 (nav icons) + 30 (LegalBar) + bottomViewPad (home indicator físico) + 8 (margem)
-    final scrollBottomPad = 86.0 + bottomViewPad;
-
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       behavior: HitTestBehavior.translucent,
       child: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
-        // Build 103: padding bottom = fixo(86) + viewPadding.bottom(home indicator físico).
-        // viewPadding não é zerado pelo Scaffold — lê o inset real do hardware.
-        padding: EdgeInsets.fromLTRB(12, 8, 12, scrollBottomPad),
+        // Build 103: padding bottom = 24px apenas para espaço visual após o
+        // último card. O Scaffold já reserva automaticamente o espaço do
+        // bottomNavigationBar — não precisamos compensar nada aqui.
+        // (A tentativa de compensar com valores maiores causava scroll desnecessário
+        // e não resolvia o overflow, que era interno ao BottomAppBar — ver main.dart)
+        padding: const EdgeInsets.fromLTRB(12, 8, 12, 24),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
 
           // ── BLOCO 1: IA INLINE CHAT — expansão vertical dinâmica ────────────

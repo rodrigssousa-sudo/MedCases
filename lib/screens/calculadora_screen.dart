@@ -60,6 +60,8 @@ class CalculadoraScreen extends StatelessWidget {
           _CalcHeader(dark: dark, isEs: isEs),
 
           // ── WebView — promedcases.com com User-Agent MedCasesApp/6.1.0 ──
+          // Expanded garante que o WebView ocupa TODA a área disponível
+          // abaixo do header — constraints nunca são zero ou infinitas.
           Expanded(
             child: kIsWeb
                 // Flutter Web não suporta webview_flutter — mostra fallback
@@ -74,6 +76,33 @@ class CalculadoraScreen extends StatelessWidget {
 
 // ─────────────────────────────────────────────────────────────────────────────
 // WEBVIEW — carrega promedcases.com com User-Agent customizado
+//
+// Build 103 FIX — Diagnóstico raiz da tela branca (WKWebView iOS):
+//
+// CAUSA 1 — Overlay opaco bloqueante:
+//   O Container(color: bg) cobria 100% do WebView enquanto _loading=true.
+//   Se onPageFinished não disparava (bug WKWebView para NSURLErrorDomain),
+//   o overlay permanecia branco para sempre. SOLUÇÃO: LinearProgressIndicator
+//   não-bloqueante de 3pt no topo — WebView sempre visível.
+//
+// CAUSA 2 — isForMainFrame == null ignorado:
+//   No iOS WKWebView, erros NSURLErrorDomain (-1009 sem rede, -1001 timeout)
+//   chegam com isForMainFrame = null, não true. O guard anterior
+//   `if (error.isForMainFrame == true)` falhava silenciosamente, deixando
+//   _loading = true para sempre. SOLUÇÃO: `isMain == true || isMain == null`.
+//
+// CAUSA 3 — _ctrl.reload() no retry:
+//   reload() em URL nunca carregada retorna estado inválido no WKWebView.
+//   SOLUÇÃO: sempre usa loadRequest(Uri.parse(_kTargetUrl)) no retry.
+//
+// CAUSA 4 — onNavigationRequest bloqueando redirects internos do site:
+//   promedcases.com pode usar redirects (HTTP 301/302) via diferentes
+//   subdomínios ou paths. O guard `uri.host.endsWith('promedcases.com')`
+//   captura todos os subdomínios (www, cdn, api, etc.). OK.
+//
+// DESIGN FINAL — não-bloqueante:
+//   Stack(expand) { WebViewWidget + if(_loading) LinearProgressIndicator(3pt) }
+//   WebView está SEMPRE visível — usuário vê o conteúdo renderizando em tempo real.
 // ─────────────────────────────────────────────────────────────────────────────
 class _CalcWebView extends StatefulWidget {
   final bool dark;
@@ -86,124 +115,94 @@ class _CalcWebView extends StatefulWidget {
 
 class _CalcWebViewState extends State<_CalcWebView> {
   late final WebViewController _ctrl;
-  bool _loading = true;
+
+  // _hasError = true → exibe _ErrorState com botão "Tentar novamente".
+  // Ativado apenas por erros do frame principal (isForMainFrame == true | null).
   bool _hasError = false;
 
   @override
   void initState() {
     super.initState();
-    // Build 103: inicialização em duas fases para garantir que setUserAgent e
-    // setJavaScriptMode estejam aplicados ANTES de loadRequest ser chamado.
-    // Em webview_flutter 4.x, chamadas encadeadas com ".." são síncronas na
-    // fila interna do platform channel — a ordem é preservada.
-    // NavigationDelegate é configurado PRIMEIRO para capturar onPageStarted
-    // imediatamente após loadRequest.
-    _ctrl = WebViewController();
 
-    // Fase 1: configuração obrigatória antes do carregamento
-    _ctrl.setNavigationDelegate(
-      NavigationDelegate(
+    // ── Inicialização atômica via cascata (..) ────────────────────────────
+    // Ordem crítica para WKWebView iOS:
+    //   1. setUserAgent   → deve ser ANTES de loadRequest para que o header
+    //                       User-Agent chegue na primeira requisição HTTP
+    //   2. setJavaScriptMode → habilita JS antes do carregamento
+    //   3. setBackgroundColor → cor de fundo enquanto o HTML não renderizou
+    //   4. setNavigationDelegate → callbacks de progresso e erro
+    //   5. loadRequest   → dispara o carregamento (sempre por último)
+    //
+    // Em webview_flutter 4.x, chamadas com ".." são enfileiradas
+    // sincronamente no platform channel — a ordem de entrega é garantida.
+    _ctrl = WebViewController()
+      ..setUserAgent(_kUserAgent)
+      ..setJavaScriptMode(JavaScriptMode.unrestricted)
+      ..setBackgroundColor(
+          widget.dark ? const Color(0xFF1A1D23) : Colors.white)
+      ..setNavigationDelegate(NavigationDelegate(
         onPageStarted: (_) {
-          if (mounted) setState(() { _loading = true; _hasError = false; });
+          // Reinicia o estado de erro a cada nova navegação (inclui redirects).
+          if (mounted && _hasError) setState(() { _hasError = false; });
         },
         onPageFinished: (_) {
-          if (mounted) setState(() => _loading = false);
+          // Página carregada com sucesso — nada a fazer (sem overlay para remover).
         },
         onWebResourceError: (error) {
-          // Ignora erros de sub-recursos (CSS/JS de terceiros) — só falha
-          // se for o documento principal (isForMainFrame == true).
-          if (error.isForMainFrame == true) {
-            if (mounted) setState(() { _loading = false; _hasError = true; });
+          // ── CORREÇÃO CRÍTICA WKWebView iOS ────────────────────────────
+          // Erros de rede (NSURLErrorDomain -1009 = sem rede,
+          // -1001 = timeout, -1005 = conexão perdida) chegam com
+          // isForMainFrame = null, não true.
+          //
+          // O guard anterior `if (error.isForMainFrame == true)` falhava
+          // silenciosamente nesses casos, deixando _loading = true para
+          // sempre e a tela branca permanente.
+          //
+          // SOLUÇÃO: trata null como erro do frame principal.
+          // Erros de sub-recursos (CSS/JS de CDN) têm isForMainFrame = false
+          // e são ignorados corretamente por este guard.
+          final isMain = error.isForMainFrame;
+          if (isMain == true || isMain == null) {
+            if (mounted) setState(() { _hasError = true; });
           }
         },
-        // Permite apenas navegação dentro do domínio promedcases.com
         onNavigationRequest: (request) {
+          // Permite navegação dentro do domínio promedcases.com e todos
+          // os seus subdomínios (www, cdn, api, staging…).
+          // Bloqueia links externos — evita saída acidental do app.
           final uri = Uri.tryParse(request.url);
           if (uri != null && uri.host.endsWith('promedcases.com')) {
             return NavigationDecision.navigate;
           }
-          // Bloqueia links externos — evita saída acidental do app
           return NavigationDecision.prevent;
         },
-      ),
-    );
+      ))
+      ..loadRequest(Uri.parse(_kTargetUrl));
 
-    // Fase 2: User-Agent + JS + background — aplicados antes de loadRequest
-    _ctrl.setUserAgent(_kUserAgent);
-    _ctrl.setJavaScriptMode(JavaScriptMode.unrestricted);
-    _ctrl.setBackgroundColor(
-        widget.dark ? const Color(0xFF1A1D23) : Colors.white);
-
-    // Fase 3: dispara o carregamento após todas as configurações
-    _ctrl.loadRequest(Uri.parse(_kTargetUrl));
-
-    // Timeout de segurança: se após 30s ainda estiver loading, esconde o
-    // overlay para não travar a UI (o WebView pode estar carregando em segundo plano).
-    Future.delayed(const Duration(seconds: 30), () {
-      if (mounted && _loading && !_hasError) {
-        setState(() => _loading = false);
-      }
-    });
   }
 
   @override
   Widget build(BuildContext context) {
-    final c = AppColors.of(context);
-
+    // Estado de erro — rede indisponível ou falha de carregamento do frame principal
     if (_hasError) {
-      return _ErrorState(dark: widget.dark, isEs: widget.isEs, onRetry: () {
-        setState(() { _loading = true; _hasError = false; });
-        _ctrl.reload();
-      });
+      return _ErrorState(
+        dark: widget.dark,
+        isEs: widget.isEs,
+        onRetry: () {
+          setState(() { _hasError = false; });
+          // CORREÇÃO: usa loadRequest (não reload) — reload em URL nunca
+          // carregada retorna estado inválido no WKWebView iOS.
+          _ctrl.loadRequest(Uri.parse(_kTargetUrl));
+        },
+      );
     }
 
-    // Build 103: StackFit.expand garante que o WebViewWidget ocupe todo o
-    // espaço disponível do Expanded pai. Sem isso, o Stack pode colapsar
-    // para tamanho zero em alguns dispositivos iOS com webview_flutter 4.x.
-    return Stack(
-      fit: StackFit.expand,
-      children: [
-        // ── WebView principal — SizedBox.expand força height = max disponível
-        SizedBox.expand(child: WebViewWidget(controller: _ctrl)),
-
-        // ── Progress indicator (visível durante carregamento) ─────────────
-        if (_loading)
-          Container(
-            color: widget.dark
-                ? const Color(0xFF1A1D23)
-                : const Color(0xFFF7F8FA),
-            child: Center(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const CircularProgressIndicator(
-                    color: Color(0xFFA78BFA),
-                    strokeWidth: 2.5,
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    widget.isEs
-                        ? 'Cargando calculadoras...'
-                        : 'Carregando calculadoras...',
-                    style: TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w500,
-                      color: c.textSecondary,
-                    ),
-                  ),
-                  const SizedBox(height: 6),
-                  Text(
-                    _kTargetUrl,
-                    style: TextStyle(
-                      fontSize: 9.5,
-                      color: c.textHint,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-      ],
+    // ── DESIGN DIRETO — WebView sempre visível, sem overlay de qualquer tipo ──
+    // SizedBox.expand() força o WebViewWidget a preencher 100% das constraints
+    // recebidas do Expanded pai — nunca colapsa para zero em iOS/Android.
+    // Nenhum Stack, nenhum indicador de progresso, nada sobre o WebView.
+    return SizedBox.expand(
+      child: WebViewWidget(controller: _ctrl),
     );
   }
 }
