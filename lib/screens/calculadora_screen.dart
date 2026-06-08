@@ -55,9 +55,7 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
           ),
         ),
       ),
-      body: SafeArea(
-        child: WebViewWidget(controller: _controller),
-      ),
+      body: WebViewWidget(controller: _controller),
     );
   }
 }
