@@ -8,9 +8,9 @@ import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
 import '../providers/app_provider.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
-// URL única — JS da Wix detecta navigator.language e traduz automaticamente
+// URL base — ?lang=pt ou ?lang=es é injetado em initState() conforme AppProvider
 // ─────────────────────────────────────────────────────────────────────────────
-const _kUrlCalculadora = 'https://www.promedcases.com/sua-url-secretablank';
+const _kBaseUrl = 'https://www.promedcases.com/sua-url-secretablank';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // JS injetado no onPageFinished:
@@ -58,6 +58,9 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
   void initState() {
     super.initState();
 
+    final lang      = context.read<AppProvider>().lang;
+    final langParam = lang == 'es' ? 'es' : 'pt';
+
     final PlatformWebViewControllerCreationParams params;
     if (Platform.isIOS) {
       params = WebKitWebViewControllerCreationParams(
@@ -76,7 +79,7 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
       ..setNavigationDelegate(NavigationDelegate(
         onPageFinished: (_) => _controller.runJavaScript(_kInjectJs),
       ))
-      ..loadRequest(Uri.parse(_kUrlCalculadora));
+      ..loadRequest(Uri.parse('$_kBaseUrl?lang=$langParam'));
   }
 
   @override
