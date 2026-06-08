@@ -7,10 +7,10 @@ import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
 import '../providers/app_provider.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
-// URLs por idioma — substituir pelos paths reais da Wix antes de publicar
+// URL única — o JS interno da Wix detecta navigator.language e traduz os cards
+// automaticamente. Não há necessidade de URLs separadas por idioma no Flutter.
 // ─────────────────────────────────────────────────────────────────────────────
-const _kUrlPt = 'https://www.promedcases.com/sua-url-secretablank';
-const _kUrlEs = 'https://www.promedcases.com/sua-url-secretablank-es';
+const _kUrlCalculadora = 'https://www.promedcases.com/sua-url-secretablank';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // JS injetado no onPageFinished — resolve TRÊS problemas do WKWebView/Wix:
@@ -73,9 +73,6 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
   void initState() {
     super.initState();
 
-    final lang = context.read<AppProvider>().lang;
-    final url  = lang == 'es' ? _kUrlEs : _kUrlPt;
-
     // ── iOS: WebKitWebViewControllerCreationParams ──────────────────────────
     // Ativa cache nativo do WKWebView (persistido pelo iOS automaticamente).
     // allowsInlineMediaPlayback: true  → vídeos/áudios embutidos nas calcs
@@ -103,7 +100,7 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
         },
       ))
       // loadRequest IMEDIATO — sem delay artificial, sem Timer, sem Future
-      ..loadRequest(Uri.parse(url));
+      ..loadRequest(Uri.parse(_kUrlCalculadora));
   }
 
   @override
