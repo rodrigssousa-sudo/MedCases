@@ -1582,7 +1582,7 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
             notchMargin: 5.0,
             elevation: 0,
             padding: EdgeInsets.zero,
-            height: 48, // altura fixa — elimina o minimumHeight:80 padrão
+            height: 60, // 60pt — ícones 24pt com label 10pt cabem sem overflow
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
@@ -1631,7 +1631,7 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
     );
   }
 
-  // Build 100 — botão lateral BottomAppBar: ícone 18px, barra 42px (-20%).
+  // Build 104 FIX — botão nav: ícone 24pt, barra 60pt, label 10pt.
   // Cada botão é Expanded para dividir o espaço igualmente (2 lados × 2 botões).
   // maxLines:1 + ellipsis previne overflow em iPhones pequenos.
   Widget _buildNavBtn(int idx, IconData icon, String label, bool dark, dynamic p) {
@@ -1653,25 +1653,25 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
             AnimatedContainer(
               duration: const Duration(milliseconds: 160),
               curve: Curves.easeOut,
-              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(6),
+                borderRadius: BorderRadius.circular(8),
                 color: active
                     ? (dark
                         ? const Color(0xFF10B981).withValues(alpha: 0.14)
                         : const Color(0xFF0A7C4E).withValues(alpha: 0.09))
                     : Colors.transparent,
               ),
-              child: Icon(icon, size: 15,
+              child: Icon(icon, size: 24,
                 color: active ? activeColor : inactiveColor),
             ),
-            const SizedBox(height: 1),
+            const SizedBox(height: 2),
             Text(
               label,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: TextStyle(
-                fontSize: 8,
+                fontSize: 10,
                 fontWeight: active ? FontWeight.w700 : FontWeight.w500,
                 color: active ? activeColor : inactiveColor,
                 height: 1.0,
