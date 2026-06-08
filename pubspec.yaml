@@ -24,6 +24,11 @@ dependencies:
   # URL launcher (web navigation)
   url_launcher: 6.3.1
 
+  # WebView — renderiza páginas web in-app com User-Agent customizado
+  # Usado por CalculadoraScreen para carregar promedcases.com/calculadoras
+  # com header 'MedCasesApp/6.1.0' que desativa o bloqueio da página.
+  webview_flutter: ^4.10.0
+
   # Icons
   cupertino_icons: ^1.0.8
 
