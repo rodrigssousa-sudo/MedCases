@@ -8,24 +8,24 @@ import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
 import '../providers/app_provider.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
-// URL base — ?lang=pt ou ?lang=es é injetado em initState() conforme AppProvider
+// URL base — ?lang=pt ou ?lang=es injetado em initState() conforme AppProvider
 // ─────────────────────────────────────────────────────────────────────────────
-const _kBaseUrl = 'https://www.medcasescalcu.com';
-
-// ─────────────────────────────────────────────────────────────────────────────
-// URL de fontes acadêmicas — abre no browser externo
-// ─────────────────────────────────────────────────────────────────────────────
+const _kBaseUrl    = 'https://www.medcasescalcu.com';
 const _kSourcesUrl = 'https://www.promedcases.com/fontes-e-referencias';
 
 // ─────────────────────────────────────────────────────────────────────────────
-// JS base injetado no onPageFinished:
-//  A. viewport-fit=cover → conteúdo sangra abaixo da Home Bar
-//  B. padding-top: env(safe-area-inset-top) → não fica atrás do header
-//  C. padding-bottom: env(safe-area-inset-bottom) → sem gap na base
-//  D. Remove margens horizontais desnecessárias da Wix
+// JS BASE — viewport + margens
+//
+// REGRAS:
+//  • NÃO definir height/min-height no <html> ou <body> — isso corta o scroll
+//    em páginas Wix e impede que o conteúdo abaixo do viewport seja acessível.
+//  • padding-top garante que o conteúdo não fique escondido atrás do header.
+//  • padding-bottom usa safe-area para não cortar conteúdo na home bar do iPhone.
+//  • overflow-x: hidden evita scroll lateral indesejado.
 // ─────────────────────────────────────────────────────────────────────────────
 const _kInjectJs = r"""
 (function() {
+  // ── Viewport: viewport-fit=cover para tela cheia no iOS ──────────────────
   var meta = document.querySelector('meta[name="viewport"]');
   if (meta) {
     var c = meta.getAttribute('content') || '';
@@ -38,99 +38,112 @@ const _kInjectJs = r"""
     m.content = 'width=device-width, initial-scale=1, viewport-fit=cover';
     document.head.appendChild(m);
   }
-  document.body.style.setProperty('padding-top',    'env(safe-area-inset-top)',    'important');
-  document.body.style.setProperty('padding-bottom', 'env(safe-area-inset-bottom)', 'important');
-  document.body.style.setProperty('margin',         '0',                            'important');
+
+  // ── Body: apenas margens e overflow — SEM height nem min-height ──────────
+  // Definir height:100% no body/html corta o scroll em páginas Wix:
+  // o conteúdo abaixo do viewport fica inacessível e o botão de fontes
+  // nunca aparece. Deixar o body crescer naturalmente com o conteúdo.
+  document.body.style.setProperty('padding-top',    'env(safe-area-inset-top)', 'important');
+  document.body.style.setProperty('padding-bottom', '0px',                      'important');
+  document.body.style.setProperty('margin',         '0',                        'important');
   document.body.style.setProperty('padding-left',   '0');
   document.body.style.setProperty('padding-right',  '0');
   document.documentElement.style.setProperty('overflow-x', 'hidden');
-  document.documentElement.style.setProperty('height', '100%');
-  document.body.style.setProperty('min-height', '100%');
+
+  // Remove height fixo que a Wix às vezes injeta e que impede scroll
+  document.documentElement.style.removeProperty('height');
+  document.body.style.removeProperty('height');
+  document.body.style.removeProperty('min-height');
+  document.body.style.removeProperty('max-height');
+  document.body.style.removeProperty('overflow');
+  document.body.style.removeProperty('overflow-y');
 })();
 """;
 
 // ─────────────────────────────────────────────────────────────────────────────
-// JS que injeta o botão "Ver Fuentes Académicas" no FINAL do scroll da página.
-// Substitui a barra fixa inferior — aparece somente ao rolar até o fim,
-// liberando 100% do espaço útil de leitura.
-// O botão chama window.MedCasesOpenSources() que o Flutter intercepta via
-// JavascriptChannel para abrir a URL no browser externo (sem dart:io).
+// JS DO BOTÃO DE FONTES
+//
+// REGRAS ESTRITAS:
+//  • position: relative  — NUNCA fixed ou absolute
+//  • display: block      — elemento de bloco normal no flow do HTML
+//  • margin: 40px auto   — centralizado, com respiro antes e depois
+//  • width: 90%          — responsivo
+//  • Aparece apenas ao rolar até o FIM da página — zero sobreposição
+//  • document.body.appendChild() — último elemento do DOM, após todo conteúdo
 // ─────────────────────────────────────────────────────────────────────────────
 String _buildSourcesButtonJs(bool isEs) {
   final label = isEs
-      ? 'Ver Fuentes Académicas'
-      : 'Ver Fontes Acadêmicas';
-  final sublabel = isEs
-      ? 'AHA · ACC · WHO · PubMed · UpToDate'
-      : 'AHA · ACC · WHO · PubMed · UpToDate';
+      ? 'Ver Fuentes Acad\u00e9micas'
+      : 'Ver Fontes Acad\u00eamicas';
+  final sublabel = 'AHA \u00b7 ACC \u00b7 WHO \u00b7 PubMed \u00b7 UpToDate';
 
-  return """
+  // Usa string concatenation simples para evitar problemas com interpolação Dart
+  // dentro de blocos JS com aspas aninhadas.
+  return '''
 (function() {
   if (document.getElementById('medcases-sources-btn')) return;
 
   var btn = document.createElement('div');
   btn.id = 'medcases-sources-btn';
-  btn.style.cssText = [
-    'display:flex',
-    'flex-direction:column',
-    'align-items:center',
-    'justify-content:center',
-    'gap:6px',
-    'margin:32px 20px 40px 20px',
-    'padding:14px 20px',
-    'background:rgba(167,139,250,0.08)',
-    'border:1px solid rgba(167,139,250,0.25)',
-    'border-radius:12px',
-    'cursor:pointer',
-    'user-select:none',
-    '-webkit-tap-highlight-color:transparent',
-  ].join(';');
 
-  var iconRow = document.createElement('div');
-  iconRow.style.cssText = 'display:flex;align-items:center;gap:8px';
+  // position: relative — fluxo normal do HTML, NUNCA fixed/absolute/sticky
+  // O botão fica literalmente no final do DOM, após todo o conteúdo da Wix.
+  // Só aparece quando o médico rola até o fim — 100% da tela útil preservada.
+  btn.style.cssText = [
+    'display: block',
+    'position: relative',
+    'width: 90%',
+    'margin: 40px auto 48px auto',
+    'padding: 14px 20px',
+    'background: rgba(167,139,250,0.07)',
+    'border: 1px solid rgba(167,139,250,0.22)',
+    'border-radius: 12px',
+    'text-align: center',
+    'cursor: pointer',
+    'user-select: none',
+    '-webkit-tap-highlight-color: transparent',
+    'box-sizing: border-box'
+  ].join('; ');
+
+  var iconLine = document.createElement('div');
+  iconLine.style.cssText = 'display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 4px';
 
   var icon = document.createElement('span');
-  icon.textContent = '📚';
-  icon.style.fontSize = '16px';
+  icon.textContent = '\\uD83D\\uDCDA'; // 📚
+  icon.style.fontSize = '15px';
 
   var title = document.createElement('span');
   title.textContent = '$label';
-  title.style.cssText = [
-    'font-size:13px',
-    'font-weight:700',
-    'color:#A78BFA',
-    'letter-spacing:0.2px',
-  ].join(';');
+  title.style.cssText = 'font-size: 13px; font-weight: 700; color: #A78BFA; letter-spacing: 0.2px';
 
-  iconRow.appendChild(icon);
-  iconRow.appendChild(title);
+  iconLine.appendChild(icon);
+  iconLine.appendChild(title);
 
-  var sub = document.createElement('span');
+  var sub = document.createElement('div');
   sub.textContent = '$sublabel';
-  sub.style.cssText = [
-    'font-size:10px',
-    'color:rgba(184,168,232,0.7)',
-    'letter-spacing:0.5px',
-  ].join(';');
+  sub.style.cssText = 'font-size: 10px; color: rgba(184,168,232,0.65); letter-spacing: 0.5px; margin-top: 2px';
 
-  btn.appendChild(iconRow);
+  btn.appendChild(iconLine);
   btn.appendChild(sub);
 
   btn.addEventListener('click', function() {
-    btn.style.background = 'rgba(167,139,250,0.18)';
-    setTimeout(function() {
-      btn.style.background = 'rgba(167,139,250,0.08)';
-    }, 200);
+    btn.style.background = 'rgba(167,139,250,0.16)';
+    setTimeout(function() { btn.style.background = 'rgba(167,139,250,0.07)'; }, 180);
     if (window.MedCasesChannel) {
       window.MedCasesChannel.postMessage('openSources');
     }
   });
 
+  // Append como ÚLTIMO filho do body — posição natural no flow do documento.
+  // Nunca sobrepõe nada; só visível após scroll completo.
   document.body.appendChild(btn);
 })();
-""";
+''';
 }
 
+// ─────────────────────────────────────────────────────────────────────────────
+// TELA DE CALCULADORA
+// ─────────────────────────────────────────────────────────────────────────────
 class CalculadoraScreen extends StatefulWidget {
   const CalculadoraScreen({super.key});
 
@@ -162,10 +175,11 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
 
     _controller = WebViewController.fromPlatformCreationParams(params)
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
-      ..setUserAgent('Mozilla/5.0 (iPhone; CPU iPhone OS 15_0 like Mac OS X) MedCasesApp/6.1.0')
-      // Fundo escuro desde o primeiro frame — elimina flash branco enquanto a Wix carrega
+      ..setUserAgent(
+          'Mozilla/5.0 (iPhone; CPU iPhone OS 15_0 like Mac OS X) MedCasesApp/6.1.0')
+      // Fundo escuro no primeiro frame — elimina flash branco durante carga
       ..setBackgroundColor(const Color(0xFF0F091E))
-      // Canal JS → Flutter: intercepta clique no botão de fontes
+      // Canal JS → Flutter: intercepta clique no botão de fontes acadêmicas
       ..addJavaScriptChannel(
         'MedCasesChannel',
         onMessageReceived: (msg) async {
@@ -179,9 +193,9 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
       )
       ..setNavigationDelegate(NavigationDelegate(
         onPageFinished: (_) async {
-          // 1. Aplica viewport/padding fixes
+          // Passo 1: corrige viewport e remove height fixo que trava o scroll
           await _controller.runJavaScript(_kInjectJs);
-          // 2. Injeta botão de fontes no final do scroll
+          // Passo 2: injeta botão discreto no final do DOM (flow natural)
           await _controller.runJavaScript(_buildSourcesButtonJs(_isEs));
         },
       ))
@@ -190,34 +204,34 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // Dimensões físicas reais do display — ignora qualquer inset do framework
     final mq         = MediaQuery.of(context);
-    final screenSize  = mq.size;
-    final topPadding  = mq.padding.top;
+    final screenSize = mq.size;
+    final topPadding = mq.padding.top;
 
-    // AnnotatedRegion: status bar icons brancos sem AppBar nativo
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.light,
       child: Material(
-        color: Colors.transparent, // transparente: sem fundo sólido que vaze para fora da Stack
+        color: Colors.transparent,
         child: SizedBox(
-          // Força o SizedBox a ter exatamente as dimensões do display físico.
-          // Isso evita que a bottom nav bar do app "roube" altura da Stack.
+          // SizedBox com dimensões físicas reais do display.
+          // Impede que a bottom nav bar do shell "roube" altura da WebView.
           width:  screenSize.width,
           height: screenSize.height,
           child: Stack(
-            // clipBehavior none: widgets Positioned podem sair dos bounds sem serem cortados
             clipBehavior: Clip.none,
             children: [
 
-              // ── CAMADA 0 — WebView: 100% do display físico ─────────────────
-              // Positioned.fill dentro de SizedBox(screenSize) = pixel perfeito
+              // ── CAMADA 0 — WebView ocupa 100% do display físico ─────────
+              // Positioned.fill = pixel perfect, sem padding artificial.
+              // A WebView tem scroll próprio interno — não há nada sobreposto
+              // na base da tela que tire espaço ou bloqueie o conteúdo.
               Positioned.fill(
                 child: WebViewWidget(controller: _controller),
               ),
 
-              // ── CAMADA 1 — Header roxo com gradiente ───────────────────────
-              // Overlay sobre a WebView, fixo no topo, sem subtrair altura dela
+              // ── CAMADA 1 — Header roxo (gradiente) — topo apenas ────────
+              // Único overlay autorizado: cobre apenas o topo (status bar + título).
+              // Base da tela: completamente livre — 100% para a WebView.
               Positioned(
                 top:   0,
                 left:  0,
@@ -249,11 +263,11 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
                         ),
                         const Expanded(
                           child: Text(
-                            'CALCULADORA CLÍNICA',
+                            'CALCULADORA CL\u00cdNICA',
                             style: TextStyle(
-                              fontSize:     16,
-                              fontWeight:   FontWeight.w800,
-                              color:        Colors.white,
+                              fontSize:      16,
+                              fontWeight:    FontWeight.w800,
+                              color:         Colors.white,
                               letterSpacing: 0.4,
                             ),
                           ),
@@ -263,6 +277,10 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
                   ),
                 ),
               ),
+
+              // ── BASE DA TELA: VAZIA ──────────────────────────────────────
+              // Nenhum widget, nenhuma barra, nenhum overlay.
+              // O médico tem 100% do espaço abaixo do header para a WebView.
 
             ],
           ),
