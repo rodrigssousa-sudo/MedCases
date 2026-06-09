@@ -3071,9 +3071,45 @@ class _AiBubbleState extends State<_AiBubble> {
   @override
   void didUpdateWidget(_AiBubble old) {
     super.didUpdateWidget(old);
-    // Atualiza cache se o texto ou o estado de streaming mudou
-    if (old.text != widget.text || old.isStreaming != widget.isStreaming) {
+
+    final textChanged      = old.text != widget.text;
+    final streamingChanged = old.isStreaming != widget.isStreaming;
+
+    if (!textChanged && !streamingChanged) return;
+
+    // ── CORREÇÃO CRÍTICA DE REATIVIDADE ─────────────────────────────────────
+    // BUG: didUpdateWidget atualizava _cachedBlocks mas NÃO chamava setState.
+    // Flutter só executa build() quando setState é chamado. Sem setState aqui,
+    // o widget recebia o novo texto do chunk mas a tela não se redesenhava —
+    // a bolha ficava congelada até o usuário fechar e reabrir a tela.
+    //
+    // SOLUÇÃO: setState dentro de didUpdateWidget força o rebuild imediato
+    // a cada chunk recebido, renderizando o texto crescente em tempo real.
+    setState(() {
       _cachedBlocks = _computeBlocks(widget.text);
+
+      // Durante streaming: garante que _visibleCount >= 1 assim que o
+      // primeiro bloco existe, mesmo que _startSequence ainda não rodou.
+      // Sem isso, o primeiro chunk ficava invisível (visibleCount=0).
+      if (widget.isStreaming && _cachedBlocks.isNotEmpty && _visibleCount < 1) {
+        _visibleCount = 1;
+      }
+
+      // Quando novos blocos aparecem (quebras de parágrafo no stream),
+      // avança _visibleCount para revelar imediatamente — sem delay de animação.
+      // A animação de "revelação em sequência" só se aplica à resposta final,
+      // não ao texto chegando em tempo real.
+      if (widget.isStreaming && _cachedBlocks.length > _visibleCount) {
+        _visibleCount = _cachedBlocks.length;
+      }
+    });
+
+    // Scroll para o fim a cada chunk — texto cresce e médico acompanha
+    if (widget.isStreaming && textChanged && widget.onBlockRevealed != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        widget.onBlockRevealed!(widget.scrollGeneration);
+      });
     }
   }
 
@@ -3082,8 +3118,60 @@ class _AiBubbleState extends State<_AiBubble> {
     // O cursor é removido automaticamente quando isStreaming vai para false
     // (didUpdateWidget regenera os blocos sem o cursor).
     final displayText = widget.isStreaming ? '$text\u258c' : text;
-    final cleaned = _cleanAiText(displayText);
-    return _splitIntoBlocks(cleaned.isEmpty ? displayText.trim() : cleaned);
+
+    // Durante streaming: sanitiza markdown parcial ANTES de processar.
+    // Evita exibir asteriscos soltos e marcadores incompletos enquanto a IA digita.
+    final safeText = widget.isStreaming
+        ? _sanitizePartialMarkdown(displayText)
+        : displayText;
+
+    final cleaned = _cleanAiText(safeText);
+    return _splitIntoBlocks(cleaned.isEmpty ? safeText.trim() : cleaned);
+  }
+
+  /// Sanitiza markdown incompleto durante o streaming chunk a chunk.
+  ///
+  /// Problemas comuns ao renderizar texto parcial:
+  ///  • "* " sozinho no fim  → marcador de lista sem conteúdo ainda
+  ///  • "- " sozinho no fim  → traço de lista sem texto
+  ///  • "**texto" sem fechar → negrito não terminado quebra layout
+  ///  • "### " sem título    → cabeçalho vazio
+  ///
+  /// Estratégia: inspeciona apenas a ÚLTIMA linha (fragmento em construção).
+  /// Linhas anteriores já chegaram completas e não são alteradas.
+  static String _sanitizePartialMarkdown(String text) {
+    if (text.isEmpty) return text;
+
+    final lines  = text.split('\n');
+    final lastIdx = lines.length - 1;
+    String last   = lines[lastIdx];
+
+    // Remove cursor ▌ para analisar o conteúdo real
+    final hasCursor = last.endsWith('\u258c');
+    if (hasCursor) last = last.substring(0, last.length - 1);
+
+    final trimmedLast = last.trimLeft();
+
+    // Marcador de lista sozinho ("* ", "- ", "• " sem texto após)
+    if (RegExp(r'^[\*\-•]\s*$').hasMatch(trimmedLast)) {
+      last = '';
+    }
+    // Cabeçalho markdown vazio ("## ", "### " sem título ainda)
+    else if (RegExp(r'^#{1,3}\s*$').hasMatch(trimmedLast)) {
+      last = '';
+    }
+    // Negrito não fechado: conta pares de "**" — se ímpar, está aberto
+    else {
+      final pairs = RegExp(r'\*\*').allMatches(last).length;
+      if (pairs.isOdd) {
+        // Fecha provisoriamente para não quebrar o RichText inline
+        last = '$last**';
+      }
+    }
+
+    if (hasCursor) last = '$last\u258c';
+    lines[lastIdx] = last;
+    return lines.join('\n');
   }
 
   void _startSequence() {
