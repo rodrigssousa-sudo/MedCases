@@ -10,7 +10,7 @@ import '../providers/app_provider.dart';
 // ─────────────────────────────────────────────────────────────────────────────
 // URL base — ?lang=pt ou ?lang=es é injetado em initState() conforme AppProvider
 // ─────────────────────────────────────────────────────────────────────────────
-const _kBaseUrl = 'https://www.promedcases.com/sua-url-secretablank';
+const _kBaseUrl = 'https://www.medcasescalcu.com';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // JS injetado no onPageFinished:
