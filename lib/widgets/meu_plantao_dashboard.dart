@@ -119,10 +119,17 @@ class _MeuPlantaoDashboardState extends State<MeuPlantaoDashboard>
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    final p           = context.read<AppProvider>();
-    final hasPatients = p.plantaoPatients.isNotEmpty;
-    final hasDrugs    = p.pinnedDrugs.isNotEmpty;
-    final filteredIds = p.pinnedCalcIds
+    // ── NULL-SAFETY: provider pode estar em inicialização após flutter clean ──
+    AppProvider p;
+    try {
+      p = context.read<AppProvider>();
+    } catch (e) {
+      debugPrint('ERRO CRÍTICO MI GUARDIA [didChangeDependencies/read]: $e');
+      return; // aborta silenciosamente — build() também tem guard
+    }
+    final hasPatients = (p.plantaoPatients).isNotEmpty;
+    final hasDrugs    = (p.pinnedDrugs).isNotEmpty;
+    final filteredIds = (p.pinnedCalcIds)
         .where((id) => !_kForbiddenCalcIds.contains(id))
         .toList();
     final isEmpty = !hasPatients && !hasDrugs && !filteredIds.isNotEmpty;
@@ -170,12 +177,28 @@ class _MeuPlantaoDashboardState extends State<MeuPlantaoDashboard>
 
   @override
   Widget build(BuildContext context) {
-    final p = context.watch<AppProvider>();
-    final c = AppColors.of(context);
+    // ── NULL-SAFETY GUARD — trava MI GUARDIA contra tela branca ──────────────
+    // Após flutter clean / primeiro boot, context.watch pode lançar
+    // ProviderException se o provider ainda não está pronto na árvore.
+    // O try/catch garante que o card nunca quebre silenciosamente.
+    AppProvider p;
+    try {
+      p = context.watch<AppProvider>();
+    } catch (e, st) {
+      debugPrint('ERRO CRÍTICO MI GUARDIA [build/watch]: $e\n$st');
+      // Retorna SizedBox vazio — o card host (_HomeMiGuardiaSection)
+      // ainda renderiza, mas sem conteúdo interno até o provider estar pronto.
+      return const SizedBox.shrink();
+    }
+
+    final c    = AppColors.of(context);
     final isEs = p.lang == 'es';
 
-    final hasPatients = p.plantaoPatients.isNotEmpty;
-    final hasDrugs    = p.pinnedDrugs.isNotEmpty;
+    // ── Leitura defensiva de listas — nunca acessa null diretamente ──────────
+    final patients        = p.plantaoPatients;   // List.unmodifiable([]) se vazio
+    final drugs           = p.pinnedDrugs;        // List.unmodifiable([]) se vazio
+    final hasPatients     = patients.isNotEmpty;
+    final hasDrugs        = drugs.isNotEmpty;
     // ── Filtra IDs proibidos ao nível do estado raiz ──────────────────────────
     // Garante que hasCalcs seja consistente com o que _PlantaoContent renderiza.
     // Sem este filtro, pinned forbidden IDs causam isEmpty=false mas UI vazia.

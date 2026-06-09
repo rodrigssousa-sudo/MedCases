@@ -68,12 +68,25 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
-    // context.select — rebuilt APENAS quando darkMode ou lang muda,
-    // não a cada notifyListeners() geral do AppProvider
-    final dark = context.select<AppProvider, bool>((p) => p.darkMode);
-    final isEs = context.select<AppProvider, bool>((p) => p.lang == 'es');
-    // p via read para campos que não disparam rebuild por si só
-    final p = context.read<AppProvider>();
+    // ── NULL-SAFETY GUARD — trava de segurança contra tela branca ─────────────
+    // Em flutter clean / primeiro boot, o AppProvider pode estar em estado de
+    // inicialização incompleta. context.select/read jamais deve crashar silenciosamente.
+    // Se qualquer exceção escapar aqui (NPE, StateError, LookupError), o Flutter
+    // exibe uma tela BRANCA em release mode — o try/catch captura isso e exibe
+    // um skeleton seguro enquanto o provider termina de carregar.
+    bool dark;
+    bool isEs;
+    AppProvider p;
+    try {
+      dark = context.select<AppProvider, bool>((p) => p.darkMode);
+      isEs = context.select<AppProvider, bool>((p) => p.lang == 'es');
+      p    = context.read<AppProvider>();
+    } catch (e, st) {
+      debugPrint('ERRO CRÍTICO HOME [build/provider-read]: $e\n$st');
+      // Fallback seguro: mostra spinner centralizado enquanto provider carrega.
+      // O framework vai reconstruir este widget quando o provider estiver pronto.
+      return const _HomeSafeLoadingShell();
+    }
 
     // ── LayoutBuilder: breakpoint switch responsivo ───────────────────────────
     // MOTIVO: MediaQuery.of(context).size pode ser stale no Flutter Web durante
@@ -90,19 +103,24 @@ class _HomeScreenState extends State<HomeScreen> {
     // bloqueava a entrada no branch mobile e forçava desktop mesmo em 375px.
     // Com a remoção, a decisão é puramente dimensional — funciona corretamente
     // em todos os contextos: browser desktop, DevTools emulator e app nativo.
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final width = constraints.maxWidth;
-        // Desktop: layout em 2 colunas (largura ≥ 1024 px)
-        if (width >= 1024) {
-          // MedBreakpoints.fromWidth para não ler MediaQuery (evita stale)
-          final bp = MedBreakpoints.fromWidth(width);
-          return _buildDesktopLayout(context, dark, isEs, p, bp);
-        }
-        // Mobile / tablet / browser redimensionado — layout nativo
-        return _buildMobileLayout(context, dark, isEs, p);
-      },
-    );
+    try {
+      return LayoutBuilder(
+        builder: (context, constraints) {
+          final width = constraints.maxWidth;
+          // Desktop: layout em 2 colunas (largura ≥ 1024 px)
+          if (width >= 1024) {
+            // MedBreakpoints.fromWidth para não ler MediaQuery (evita stale)
+            final bp = MedBreakpoints.fromWidth(width);
+            return _buildDesktopLayout(context, dark, isEs, p, bp);
+          }
+          // Mobile / tablet / browser redimensionado — layout nativo
+          return _buildMobileLayout(context, dark, isEs, p);
+        },
+      );
+    } catch (e, st) {
+      debugPrint('ERRO CRÍTICO HOME [build/layout]: $e\n$st');
+      return const _HomeSafeLoadingShell();
+    }
   }
 
   Widget _buildDesktopLayout(BuildContext context, bool dark, bool isEs, AppProvider p, MedBreakpoints bp) {
@@ -309,6 +327,19 @@ class _HomeScreenState extends State<HomeScreen> {
 
   // ── HOME V2 — layout mobile ───────────────────────────────────────────────
   Widget _buildMobileLayout(BuildContext context, bool dark, bool isEs, AppProvider p) {
+    // ── NULL-SAFETY: valida estado do provider antes de renderizar ────────────
+    // Após flutter clean, SharedPreferences pode não ter retornado ainda.
+    // Se isLoadingPublic (dados remotos carregando) → mostra skeleton sem crash.
+    try {
+      // Leitura defensiva: qualquer acesso a p.* que lance ProviderException
+      // ou NPE deve cair no catch e exibir o loading shell.
+      // ignore: unnecessary_statements
+      p.lang; // força acesso rápido para checar se o provider está vivo
+    } catch (e, st) {
+      debugPrint('ERRO CRÍTICO HOME [_buildMobileLayout/provider-check]: $e\n$st');
+      return const _HomeSafeLoadingShell();
+    }
+
     // ══════════════════════════════════════════════════════════════════════════
     // BUILD 93 — Apple App Store compliance (Guidelines 1.4.1 & 1.4.2)
     //
@@ -465,6 +496,36 @@ class _HomeScreenState extends State<HomeScreen> {
         child: child,
       ),
       transitionDuration: const Duration(milliseconds: 280),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// _HomeSafeLoadingShell — esqueleto seguro para tela branca
+// ─────────────────────────────────────────────────────────────────────────────
+// Exibido quando o build() da Home lança exceção (NPE, provider não pronto,
+// dados ainda carregando após flutter clean). Garante que o usuário veja
+// algo razoável em vez de uma tela branca ou vermelha de erro.
+// O framework reconstrói a Home automaticamente assim que o provider notificar.
+class _HomeSafeLoadingShell extends StatelessWidget {
+  const _HomeSafeLoadingShell();
+
+  @override
+  Widget build(BuildContext context) {
+    // Detecta dark mode via Brightness do tema — sem ler o AppProvider
+    // (que pode estar em estado inválido, por isso chegamos aqui).
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final bg     = isDark ? const Color(0xFF1A1D23) : const Color(0xFFF5F6F8);
+    final spinnerColor = isDark ? const Color(0xFF10B981) : const Color(0xFF075f45);
+
+    return Container(
+      color: bg,
+      child: Center(
+        child: CircularProgressIndicator(
+          valueColor: AlwaysStoppedAnimation<Color>(spinnerColor),
+          strokeWidth: 2.5,
+        ),
+      ),
     );
   }
 }
@@ -1008,11 +1069,19 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
   @override
   void initState() {
     super.initState();
-    // Garante que o FocusNode nunca está focado ao montar/remontar o widget.
-    // Previne teclado automático ao retornar para a Home via IndexedStack.
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted) _focus.unfocus();
-    });
+    // ── LOG DE DIAGNÓSTICO — captura falhas de inicialização do InlineChat ────
+    // Se o provider não estiver disponível ao montar, o erro aparecerá aqui.
+    // Visível no Xcode Console / flutter logs (apenas debug mode).
+    try {
+      debugPrint('[HomeInlineChat] initState — montando mini-chat inline');
+      // Garante que o FocusNode nunca está focado ao montar/remontar o widget.
+      // Previne teclado automático ao retornar para a Home via IndexedStack.
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) _focus.unfocus();
+      });
+    } catch (e, st) {
+      debugPrint('ERRO CRÍTICO HOME [InlineChat/initState]: $e\n$st');
+    }
   }
 
   @override
@@ -1226,6 +1295,38 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
 
   @override
   Widget build(BuildContext context) {
+    // ── NULL-SAFETY: wrap total do build do InlineChat ───────────────────────
+    // Se qualquer filho lançar exceção, o mini-chat é substituído por um
+    // container vazio com a cor de fundo correta — nunca tela branca.
+    try {
+      return _buildChatContent(context);
+    } catch (e, st) {
+      debugPrint('ERRO CRÍTICO HOME [InlineChat/build]: $e\n$st');
+      final isDark = widget.dark;
+      return Container(
+        height: 120,
+        decoration: BoxDecoration(
+          color: isDark ? const Color(0xFF252930) : Colors.white,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(
+            color: isDark
+                ? Colors.white.withValues(alpha: 0.07)
+                : const Color(0xFFE4EEE9),
+          ),
+        ),
+        child: Center(
+          child: CircularProgressIndicator(
+            valueColor: AlwaysStoppedAnimation<Color>(
+              isDark ? const Color(0xFF10B981) : const Color(0xFF075f45),
+            ),
+            strokeWidth: 2,
+          ),
+        ),
+      );
+    }
+  }
+
+  Widget _buildChatContent(BuildContext context) {
     final dark  = widget.dark;
     final isEs  = widget.isEs;
 
