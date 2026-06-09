@@ -811,7 +811,18 @@ class GeminiServiceV2 {
       }
       return;
     } catch (e) {
-      _log('[GeminiV2] erro de rede: $e');
+      // Classifica o tipo de erro de rede para melhor feedback ao usuário.
+      // SocketException → perda total de conectividade (Wi-Fi/4G desconectado)
+      // Outros → falha de conexão genérica
+      final errStr = e.toString().toLowerCase();
+      final isSocket = errStr.contains('socketexception') ||
+          errStr.contains('connection refused') ||
+          errStr.contains('no address associated') ||
+          errStr.contains('network is unreachable') ||
+          errStr.contains('connection reset') ||
+          errStr.contains('broken pipe') ||
+          errStr.contains('os error');
+      _log('[GeminiV2] erro de rede${isSocket ? " (SocketException)" : ""}: $e');
       if (!controller.isClosed) {
         controller
           ..add(GeminiChunk.error('network'))
@@ -1241,15 +1252,53 @@ class GeminiServiceV2 {
           : 'Não foi possível conectar ao assistente. '
               'Verifique a configuração da API. ⚕ Apoio educacional.',
       'timeout' => isEs
-          ? 'La consulta tardó demasiado. '
-              'Verifica tu conexión e intenta nuevamente. ⚕ Apoyo educacional.'
-          : 'A consulta demorou muito. '
-              'Verifique sua conexão e tente novamente. ⚕ Apoio educacional.',
+          ? '🚨 Conexión Requerida\n\n'
+              'La consulta tardó demasiado — posible señal débil en el hospital.\n\n'
+              'El resto de tus herramientas sigue operando 100% offline:\n'
+              '• 💊 Fármacos — base completa embarcada\n'
+              '• ⚠️ Interacciones — motor offline activo\n'
+              '• 🧮 Calculadoras — sin necesidad de red\n\n'
+              'Verifica tu señal y vuelve a intentarlo.'
+          : '🚨 Conexão Necessária\n\n'
+              'A consulta demorou muito — possível sinal fraco no hospital.\n\n'
+              'O restante das suas ferramentas segue operando 100% offline:\n'
+              '• 💊 Fármacos — base completa embarcada\n'
+              '• ⚠️ Interações — motor offline ativo\n'
+              '• 🧮 Calculadoras — sem necessidade de rede\n\n'
+              'Verifique seu sinal e tente novamente.',
       'network' => isEs
-          ? 'Sin conexión a internet. '
-              'Verifica la red e intenta nuevamente. ⚕ Apoyo educacional.'
-          : 'Sem conexão com a internet. '
-              'Verifique a rede e tente novamente. ⚕ Apoio educacional.',
+          ? '🚨 Conexión Requerida\n\n'
+              'La IA de MedCases requiere conexión a internet para procesar '
+              'análisis cognitivos avanzados.\n\n'
+              'El resto de tus herramientas sigue operando 100% offline:\n'
+              '• 💊 Fármacos — base completa embarcada\n'
+              '• ⚠️ Interacciones — motor offline activo\n'
+              '• 🧮 Calculadoras — sin necesidad de red\n\n'
+              'Verifica tu señal y vuelve a intentarlo.'
+          : '🚨 Conexão Necessária\n\n'
+              'A IA do MedCases requer conexão com a internet para processar '
+              'análises cognitivas avançadas.\n\n'
+              'O restante das suas ferramentas segue operando 100% offline:\n'
+              '• 💊 Fármacos — base completa embarcada\n'
+              '• ⚠️ Interações — motor offline ativo\n'
+              '• 🧮 Calculadoras — sem necessidade de rede\n\n'
+              'Verifique seu sinal e tente novamente.',
+      // stream_error = SSE caiu no meio → tratado como falha de rede
+      'stream_error' => isEs
+          ? '🚨 Conexión Requerida\n\n'
+              'La conexión con el servidor de IA se interrumpió.\n\n'
+              'El resto de tus herramientas sigue operando 100% offline:\n'
+              '• 💊 Fármacos — base completa embarcada\n'
+              '• ⚠️ Interacciones — motor offline activo\n'
+              '• 🧮 Calculadoras — sin necesidad de red\n\n'
+              'Verifica tu señal y vuelve a intentarlo.'
+          : '🚨 Conexão Necessária\n\n'
+              'A conexão com o servidor de IA foi interrompida.\n\n'
+              'O restante das suas ferramentas segue operando 100% offline:\n'
+              '• 💊 Fármacos — base completa embarcada\n'
+              '• ⚠️ Interações — motor offline ativo\n'
+              '• 🧮 Calculadoras — sem necessidade de rede\n\n'
+              'Verifique seu sinal e tente novamente.',
       _ => isEs
           ? 'No pude procesar esa consulta. '
               '¿Puedes reformularla? ⚕ Apoyo educacional.'

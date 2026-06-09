@@ -1005,19 +1005,41 @@ class _AiScreenState extends State<AiScreen> {
         },
         onDone: (finalText) {
           if (!mounted) return;
-          // ── Task 11: Detecta tipo de erro no texto final ─────────────────
+          // ── Detecta tipo de resultado ─────────────────────────────────────
           final isKeyError = finalText.startsWith('ERRO') && finalText.contains('API');
-          final isNetErr   = finalText.toLowerCase().contains('sem conexão') ||
-              finalText.toLowerCase().contains('sin conexión') ||
+          // Detecta Alerta Clínico de rede (novo formato 🚨 + legado)
+          final isNetErr = finalText.contains('🚨') ||
+              finalText.toLowerCase().contains('sem conex') ||
+              finalText.toLowerCase().contains('sin conex') ||
               finalText.toLowerCase().contains('timeout') ||
-              finalText.toLowerCase().contains('falha na conexão') ||
-              finalText.toLowerCase().contains('falla de red');
+              finalText.toLowerCase().contains('falha na conex') ||
+              finalText.toLowerCase().contains('falla de red') ||
+              finalText.toLowerCase().contains('conexão necessária') ||
+              finalText.toLowerCase().contains('conexión requerida');
           setState(() {
             _thinking    = false;
             _isStreaming  = false;
             _aiError      = isKeyError;
             _networkError = isNetErr;
-            if (streamingMsgIdx >= 0) {
+
+            if (isNetErr) {
+              // ── NETWORK SAFETY: erro de rede no onDone ───────────────────
+              // 1. Remove a mensagem do usuário do chat — nunca deixar sem resposta
+              // 2. Remove qualquer bolha parcial de streaming
+              // 3. Injeta o Alerta Clínico como bolha da IA
+              if (streamingMsgIdx >= 0 && streamingMsgIdx < _messages.length) {
+                _messages.removeAt(streamingMsgIdx);
+                streamingMsgIdx = -1;
+              }
+              // Remove mensagem do usuário (última se for do usuário)
+              if (_messages.isNotEmpty && _messages.last.role == 'user' &&
+                  _messages.last.text == trimmed) {
+                _messages.removeLast();
+              }
+              _scrollGeneration++;
+              _lastAiIndex = _messages.length;
+              _messages.add(_ChatMsg(role: 'ai', text: finalText));
+            } else if (streamingMsgIdx >= 0) {
               // Finaliza bolha de streaming com texto completo
               _messages[streamingMsgIdx] = _ChatMsg.withId(
                 id: _messages[streamingMsgIdx].id,
@@ -1031,7 +1053,7 @@ class _AiScreenState extends State<AiScreen> {
               _messages.add(_ChatMsg(role: 'ai', text: finalText));
             }
           });
-          // NÃO chama _scrollDown() aqui — gerenciado por _onBlockRevealed()
+          _scrollDown();
         },
         onError: (errorMsg) {
           if (!mounted) return;
@@ -1040,6 +1062,7 @@ class _AiScreenState extends State<AiScreen> {
             setState(() {
               _thinking    = false;
               _isStreaming  = false;
+              // Remove mensagem do usuário sem resposta
               if (_messages.isNotEmpty && _messages.last.role == 'user' &&
                   _messages.last.text == trimmed) {
                 _messages.removeLast();
@@ -1048,29 +1071,52 @@ class _AiScreenState extends State<AiScreen> {
             return;
           }
           final isKeyError = errorMsg.startsWith('ERRO') && errorMsg.contains('API');
-          final isNetErr   = errorMsg.toLowerCase().contains('sem conexão') ||
-              errorMsg.toLowerCase().contains('sin conexión') ||
+          // Detecta Alerta Clínico de rede (novo formato 🚨 + legado)
+          final isNetErr = errorMsg.contains('🚨') ||
+              errorMsg.toLowerCase().contains('sem conex') ||
+              errorMsg.toLowerCase().contains('sin conex') ||
               errorMsg.toLowerCase().contains('timeout') ||
-              errorMsg.toLowerCase().contains('falha na conexão') ||
-              errorMsg.toLowerCase().contains('falla de red');
+              errorMsg.toLowerCase().contains('falha na conex') ||
+              errorMsg.toLowerCase().contains('falla de red') ||
+              errorMsg.toLowerCase().contains('conexão necessária') ||
+              errorMsg.toLowerCase().contains('conexión requerida');
           setState(() {
             _thinking    = false;
             _isStreaming  = false;
-            _scrollGeneration++;
-            if (streamingMsgIdx >= 0) {
-              // Substitui bolha parcial pelo texto de erro
-              _messages[streamingMsgIdx] = _ChatMsg.withId(
-                id: _messages[streamingMsgIdx].id,
-                role: 'ai',
-                text: errorMsg,
-              );
-            } else {
-              _lastAiIndex = _messages.length;
-              _messages.add(_ChatMsg(role: 'ai', text: errorMsg));
-            }
             _aiError      = isKeyError;
             _networkError = isNetErr;
+            _scrollGeneration++;
+
+            if (isNetErr) {
+              // ── NETWORK SAFETY: erro de rede no onError ──────────────────
+              // Remove bolha parcial de streaming — nunca exibir dados antigos
+              if (streamingMsgIdx >= 0 && streamingMsgIdx < _messages.length) {
+                _messages.removeAt(streamingMsgIdx);
+                streamingMsgIdx = -1;
+              }
+              // Remove mensagem do usuário — não deixar pergunta sem resposta
+              if (_messages.isNotEmpty && _messages.last.role == 'user' &&
+                  _messages.last.text == trimmed) {
+                _messages.removeLast();
+              }
+              // Injeta Alerta Clínico como bolha da IA
+              _lastAiIndex = _messages.length;
+              _messages.add(_ChatMsg(role: 'ai', text: errorMsg));
+            } else {
+              // Erro não-rede (API key, quota, etc.) — substitui ou adiciona bolha
+              if (streamingMsgIdx >= 0 && streamingMsgIdx < _messages.length) {
+                _messages[streamingMsgIdx] = _ChatMsg.withId(
+                  id: _messages[streamingMsgIdx].id,
+                  role: 'ai',
+                  text: errorMsg,
+                );
+              } else {
+                _lastAiIndex = _messages.length;
+                _messages.add(_ChatMsg(role: 'ai', text: errorMsg));
+              }
+            }
           });
+          _scrollDown(force: true);
         },
       );
     } on Exception catch (e) {

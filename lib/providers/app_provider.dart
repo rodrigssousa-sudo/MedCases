@@ -3105,11 +3105,28 @@ class AppProvider extends ChangeNotifier {
     _aiStreamSub = stream.listen(
       (chunk) {
         if (chunk.isError) {
-          // Erro recebido como chunk — encerra e notifica (somente uma vez)
+          // ── NETWORK SAFETY: erro de rede — limpa histórico contaminado ────
+          // CRÍTICO: _aiHistory NÃO deve reter a troca anterior quando há falha
+          // de rede. Sem esta limpeza, a próxima consulta recebe contexto antigo
+          // e o modelo "alucina" respostas baseadas no caso anterior (ex: retorna
+          // Cetoacidose Diabética para uma pergunta sobre Tosse).
           if (completionFired) return;
           completionFired = true;
           _aiStreamActive = false;
           _aiStreamSub = null;
+          // Limpa o acumulador — nunca exibe texto parcial de resposta interrompida
+          accumulator.clear();
+          // Limpa o histórico se o erro for de conectividade (network/timeout)
+          // para evitar contaminação de contexto na próxima consulta
+          // Limpa histórico em qualquer erro de conectividade para evitar
+          // contaminação de contexto (bug: resposta anterior vaza para nova query)
+          final isConnErr = chunk.errorCode == 'network' ||
+              chunk.errorCode == 'timeout' ||
+              chunk.errorCode == 'stream_error';
+          if (isConnErr) {
+            _aiHistory.clear();
+            debugPrint('[sendAiMessage] histórico limpo — erro de rede: ${chunk.errorCode}');
+          }
           final msg = GeminiServiceV2.errorMessage(chunk.errorCode!, _lang);
           onError(msg);
           return;
@@ -3139,11 +3156,14 @@ class AppProvider extends ChangeNotifier {
         }
       },
       onError: (e) {
+        // ── NETWORK SAFETY: exceção de stream — limpa histórico ───────────
         debugPrint('[sendAiMessage] stream error: $e');
         if (completionFired) return;
         completionFired = true;
         _aiStreamActive = false;
         _aiStreamSub    = null;
+        accumulator.clear();   // descarta texto parcial — nunca exibir
+        _aiHistory.clear();    // reseta contexto — evita contaminação futura
         onError(GeminiServiceV2.errorMessage('network', _lang));
       },
       onDone: () {
@@ -3166,6 +3186,8 @@ class AppProvider extends ChangeNotifier {
           _aiStreamSub    = null;
           onDone(finalText);
         } else {
+          // Stream fechou vazio — limpa histórico (possível falha silenciosa de rede)
+          _aiHistory.clear();
           _aiStreamActive = false;
           _aiStreamSub    = null;
           onError(_lang == 'es'
