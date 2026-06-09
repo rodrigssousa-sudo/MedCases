@@ -193,10 +193,10 @@ class _ReferencesFooter extends StatelessWidget {
     return Container(
       padding: EdgeInsets.fromLTRB(14, 7, 14, 7 + bottomPadding),
       decoration: BoxDecoration(
-        // 85% opaco: efeito overlay premium — cards da Wix rolam por baixo
-        color: const Color(0xFF0F091E).withOpacity(0.85),
+        // Cor sólida idêntica ao fundo da Wix — layout unificado e selado
+        color: const Color(0xFF0F091E),
         border: Border(
-          top: BorderSide(color: Color(0x334A2D8A), width: 0.5),
+          top: BorderSide(color: Colors.white.withOpacity(0.05), width: 1),
         ),
       ),
       child: Row(
