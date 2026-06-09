@@ -1384,7 +1384,7 @@ class _ExpandedContent extends StatelessWidget {
                 const SizedBox(width: 8),
                 Expanded(
                   child: Text(
-                    ix.clinicalAlert,
+                    ix.clinicalAlertL10n(isEs: isEs),
                     style: TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.w700,

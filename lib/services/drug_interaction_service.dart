@@ -272,7 +272,27 @@ class DrugInteraction {
       .replaceAll('Nunca suspender clonidina abruptamente', 'Nunca suspender clonidina abruptamente')
       .replaceAll('Sin interacciones', 'Sem interações')
       .replaceAll('con riesgo', 'com risco')
-      .replaceAll('durante el tratamiento', 'durante o tratamento');
+      .replaceAll('durante el tratamiento', 'durante o tratamento')
+      // ── Alertas compostos de alta frequência ──────────────────────────────
+      .replaceAll('DOBLE ANTIAGREGACIÓN', 'DUPLA ANTIAGREGAÇÃO')
+      .replaceAll('Doble antiagregación', 'Dupla antiagregação')
+      .replaceAll('doble antiagregación', 'dupla antiagregação')
+      .replaceAll('SANGRADO AUMENTADO', 'SANGRAMENTO AUMENTADO')
+      .replaceAll('Sangrado aumentado', 'Sangramento aumentado')
+      .replaceAll('Necesaria en SCA/stent', 'Necessária em SCA/stent')
+      .replaceAll('necesaria en SCA/stent', 'necessária em SCA/stent')
+      .replaceAll('pero monitorar sangrado', 'mas monitorar sangramento')
+      .replaceAll('IBP obligatorio', 'IBP obrigatório')
+      .replaceAll('ibp obligatorio', 'IBP obrigatório')
+      .replaceAll('RIESGO DE', 'RISCO DE')
+      .replaceAll('Riesgo de', 'Risco de')
+      .replaceAll('riesgo de', 'risco de')
+      .replaceAll('puede causar', 'pode causar')
+      .replaceAll('GRAVE —', 'GRAVE —')
+      .replaceAll('CONTRAIND', 'CONTRAINDICADO')
+      .replaceAll('Contraindicado', 'Contraindicado')
+      .replaceAll('contraindicado', 'contraindicado')
+      .replaceAll('arritmia fatal', 'arritmia fatal');
   }
 
   static String _translateText(String es) {
