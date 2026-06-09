@@ -1,13 +1,11 @@
-// meu_plantao_dashboard.dart — v3
-// Feature "Meu Plantão / Mi Guardia"
+// meu_plantao_dashboard.dart — v4
+// Feature "Meu Plantão / Mi Guardia" — UI CLEAN MODULAR
 //
-// NOVIDADES v3:
-//   • Seção colapsável: quando vazia, aparece fechada (só cabeçalho clicável)
-//   • 3 sub-seções com hierarquia clara: PACIENTES · FÁRMACOS · CALCULADORAS
-//   • Cards de paciente: quarto, nome, diagnóstico, tratamento, notas
-//   • Sheet de edição de paciente com todos os campos
-//   • Long-press para remover qualquer item
-//   • Botão "+" flutuante dentro do cabeçalho para abrir o manage sheet
+// v4 CHANGES:
+//   • Header: título único sem subtítulo, gear icon discreto, botão Paciente sempre visível
+//   • Body: sem labels de seção (PACIENTES/FÁRMACOS/CALCULADORAS) — conteúdo direto
+//   • Calcs: grid 3 colunas com wrap, sem scroll horizontal forçado
+//   • Espaçamento limpo e consistente entre seções
 
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
@@ -275,88 +273,65 @@ class _PlantaoHeader extends StatelessWidget {
           ),
           const SizedBox(width: 10),
 
-          // ── Títulos ──────────────────────────────────────────────────────
+          // ── Título (sem subtítulo — design minimalista) ─────────────────
           Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  isEs ? 'MI GUARDIA' : 'MEU PLANTÃO',
-                  style: TextStyle(
-                    fontSize: 10,
-                    fontWeight: FontWeight.w900,
-                    letterSpacing: 2.0,
-                    color: c.gold,
-                  ),
-                ),
-                const SizedBox(height: 2),
-                Text(
-                  isEmpty
-                      ? (isEs ? 'Toca para personalizar tu guardia' : 'Toque para personalizar seu plantão')
-                      : (isEs ? 'Pacientes · Fármacos · Calculadoras' : 'Pacientes · Fármacos · Calculadoras'),
-                  style: TextStyle(
-                    fontSize: 11.5,
-                    fontWeight: FontWeight.w500,
-                    color: c.textSecondary,
-                  ),
-                ),
-              ],
+            child: Text(
+              isEs ? 'MI GUARDIA' : 'MEU PLANTÃO',
+              style: TextStyle(
+                fontSize: 10,
+                fontWeight: FontWeight.w900,
+                letterSpacing: 2.0,
+                color: c.gold,
+              ),
             ),
           ),
 
-          // ── Botão Paciente + ──────────────────────────────────────────────
-          if (!isEmpty)
-            GestureDetector(
-              onTap: () {
-                AppHaptics.selection(context);
-                onAddPatient();
-              },
-              child: Container(
-                margin: const EdgeInsets.only(right: 8),
-                padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 6),
-                decoration: BoxDecoration(
-                  color: const Color(0xFF3B82F6).withValues(alpha: 0.12),
-                  borderRadius: BorderRadius.circular(20),
-                  border: Border.all(color: const Color(0xFF3B82F6).withValues(alpha: 0.30)),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Icon(Icons.person_add_alt_1_rounded, size: 13, color: Color(0xFF3B82F6)),
-                    const SizedBox(width: 4),
-                    Text(
-                      isEs ? 'Paciente' : 'Paciente',
-                      style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: Color(0xFF3B82F6)),
-                    ),
-                  ],
-                ),
+          // ── Botão Paciente + — sempre visível (acesso rápido contextual) ───
+          GestureDetector(
+            onTap: () {
+              AppHaptics.selection(context);
+              onAddPatient();
+            },
+            child: Container(
+              margin: const EdgeInsets.only(right: 8),
+              padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 6),
+              decoration: BoxDecoration(
+                color: const Color(0xFF3B82F6).withValues(alpha: 0.12),
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(color: const Color(0xFF3B82F6).withValues(alpha: 0.30)),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(Icons.person_add_alt_1_rounded, size: 13, color: Color(0xFF3B82F6)),
+                  const SizedBox(width: 4),
+                  Text(
+                    isEs ? 'Paciente' : 'Paciente',
+                    style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: Color(0xFF3B82F6)),
+                  ),
+                ],
               ),
             ),
+          ),
 
-          // ── Botão Gestionar ───────────────────────────────────────────────
+          // ── Engrenagem de configurações (minimalista) ─────────────────
           GestureDetector(
             onTap: () {
               AppHaptics.selection(context);
               onManageTap();
             },
             child: Container(
-              margin: const EdgeInsets.only(right: 8),
-              padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 6),
+              width: 30,
+              height: 30,
+              margin: const EdgeInsets.only(right: 4),
               decoration: BoxDecoration(
-                color: c.green.withValues(alpha: 0.10),
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: c.green.withValues(alpha: 0.25)),
+                color: c.textHint.withValues(alpha: 0.08),
+                borderRadius: BorderRadius.circular(8),
               ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(Icons.tune_rounded, size: 13, color: c.green),
-                  const SizedBox(width: 4),
-                  Text(
-                    isEs ? 'Gestionar' : 'Gerenciar',
-                    style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: c.green),
-                  ),
-                ],
+              child: Icon(
+                Icons.settings_outlined,
+                size: 15,
+                color: c.textHint.withValues(alpha: 0.70),
               ),
             ),
           ),
@@ -409,36 +384,8 @@ class _PlantaoContent extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // ── PACIENTES ───────────────────────────────────────────────────────
+        // ── PACIENTES — sem label, conteúdo direto ──────────────────────────
         if (hasPatients) ...[
-          _SectionLabel(
-            icon: Icons.bed_outlined,
-            label: isEs ? 'PACIENTES' : 'PACIENTES',
-            colors: c,
-            accent: const Color(0xFF3B82F6),
-            trailing: GestureDetector(
-              onTap: onAddPatient,
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                decoration: BoxDecoration(
-                  color: const Color(0xFF3B82F6).withValues(alpha: 0.10),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Icon(Icons.add_rounded, size: 11, color: Color(0xFF3B82F6)),
-                    const SizedBox(width: 3),
-                    Text(
-                      isEs ? 'Agregar' : 'Adicionar',
-                      style: const TextStyle(fontSize: 9.5, fontWeight: FontWeight.w800, color: Color(0xFF3B82F6)),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-          const SizedBox(height: 10),
           _PatientsColumn(
             patients: p.plantaoPatients,
             isEs: isEs,
@@ -449,18 +396,15 @@ class _PlantaoContent extends StatelessWidget {
               p.removePlantaoPatient(pt.id);
             },
           ),
-          // Espaço condicional: apenas quando a próxima seção existe
-          if (hasDrugs || hasCalcs) const SizedBox(height: 20),
+          if (hasDrugs || hasCalcs) const SizedBox(height: 12),
         ] else ...[
-          // Empty patients row — botão de adicionar
+          // Linha de adicionar primeiro paciente
           _AddFirstPatientRow(isEs: isEs, colors: c, onTap: onAddPatient),
-          if (hasDrugs || hasCalcs) const SizedBox(height: 20),
+          if (hasDrugs || hasCalcs) const SizedBox(height: 12),
         ],
 
-        // ── FÁRMACOS ────────────────────────────────────────────────────────
+        // ── FÁRMACOS — sem label, scroll horizontal direto ───────────────────
         if (hasDrugs) ...[
-          _SectionLabel(icon: Icons.medication_outlined, label: isEs ? 'FÁRMACOS' : 'FÁRMACOS', colors: c),
-          const SizedBox(height: 8),
           _PinnedDrugsRow(
             drugs: p.pinnedDrugs,
             isEs: isEs,
@@ -471,16 +415,13 @@ class _PlantaoContent extends StatelessWidget {
               p.unpinDrug(drug.id);
             },
           ),
-          if (hasCalcs) const SizedBox(height: 20),
+          if (hasCalcs) const SizedBox(height: 12),
         ],
 
-        // ── CALCULADORAS ─────────────────────────────────────────────────────
-        // NOTA: calc_infusao e calc_prescricoes são filtrados via _kForbiddenCalcIds
-        // (Apple Guideline 1.4.1). Apenas calcs permitidas chegam aqui.
+        // ── CALCULADORAS — sem label, grid wrap direto, design modular limpo ─
+        // calc_infusao e calc_prescricoes filtrados via _kForbiddenCalcIds.
         if (hasCalcs) ...[
-          _SectionLabel(icon: Icons.calculate_outlined, label: 'CALCULADORAS', colors: c),
-          const SizedBox(height: 8),
-          _PinnedCalcsRow(
+          _PinnedCalcsGrid(
             calcIds: _filteredCalcIds,
             isEs: isEs,
             colors: c,
@@ -1210,7 +1151,66 @@ class _UnpinOverlay extends StatelessWidget {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// ROW DE CALCULADORAS FIXADAS
+// GRID DE CALCULADORAS FIXADAS — Wrap 3 colunas, design modular limpo
+// ─────────────────────────────────────────────────────────────────────────────
+
+class _PinnedCalcsGrid extends StatelessWidget {
+  final List<String> calcIds;
+  final bool isEs;
+  final AppColors colors;
+  final void Function(String) onTap;
+  final void Function(String) onUnpin;
+
+  const _PinnedCalcsGrid({
+    required this.calcIds,
+    required this.isEs,
+    required this.colors,
+    required this.onTap,
+    required this.onUnpin,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    // Defesa belt-and-suspenders: nunca renderiza IDs proibidos
+    final safeIds = calcIds
+        .where((id) => !_kForbiddenCalcIds.contains(id))
+        .toList();
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        // 3 colunas com gap de 8px entre elas
+        const gap = 8.0;
+        const cols = 3;
+        final itemW = (constraints.maxWidth - gap * (cols - 1)) / cols;
+
+        return Wrap(
+          spacing: gap,
+          runSpacing: gap,
+          children: [
+            for (final id in safeIds)
+              Builder(builder: (_) {
+                final shortcut = calcById(id);
+                if (shortcut == null) return const SizedBox.shrink();
+                return SizedBox(
+                  width: itemW,
+                  child: _CalcPinnedCard(
+                    shortcut: shortcut,
+                    isEs: isEs,
+                    colors: colors,
+                    onTap: () => onTap(shortcut.id),
+                    onUnpin: () => onUnpin(shortcut.id),
+                  ),
+                );
+              }),
+          ],
+        );
+      },
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// ROW DE CALCULADORAS FIXADAS — scroll horizontal (mantido para retrocompat.)
 // ─────────────────────────────────────────────────────────────────────────────
 
 class _PinnedCalcsRow extends StatelessWidget {
@@ -1224,8 +1224,6 @@ class _PinnedCalcsRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Defesa belt-and-suspenders: nunca renderiza IDs proibidos mesmo que
-    // de alguma forma tenham chegado na lista de pinnedCalcIds.
     final safeIds = calcIds
         .where((id) => !_kForbiddenCalcIds.contains(id))
         .toList();
@@ -1293,34 +1291,58 @@ class _CalcPinnedCardState extends State<_CalcPinnedCard> {
         curve: Curves.easeOutCubic,
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 250),
-          width: 110,
-          padding: const EdgeInsets.all(12),
+          // Sem width fixo — o SizedBox pai do grid controla a largura
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
           decoration: BoxDecoration(
             color: _showUnpin ? AppColors.alertRedBg : c.cardBg,
             borderRadius: BorderRadius.circular(14),
-            border: Border.all(color: _showUnpin ? AppColors.alertRedBorder : c.border, width: 1.2),
-            boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: c.dark ? 0.25 : 0.06), blurRadius: 8, offset: const Offset(0, 2))],
+            border: Border.all(
+              color: _showUnpin
+                  ? AppColors.alertRedBorder
+                  : s.color.withValues(alpha: 0.20),
+              width: 1.2,
+            ),
+            boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: c.dark ? 0.22 : 0.05), blurRadius: 6, offset: const Offset(0, 2))],
           ),
           child: _showUnpin
               ? Column(
                   mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
                   children: [
                     const Icon(Icons.remove_circle_outline, size: 18, color: AppColors.alertRed),
                     const SizedBox(height: 4),
-                    GestureDetector(onTap: widget.onUnpin, child: const Text('OK', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w900, color: AppColors.alertRed))),
+                    GestureDetector(
+                      onTap: widget.onUnpin,
+                      child: const Text('OK', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w900, color: AppColors.alertRed)),
+                    ),
                   ],
                 )
               : Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Container(
-                      padding: const EdgeInsets.all(6),
-                      decoration: BoxDecoration(color: s.color.withValues(alpha: 0.12), borderRadius: BorderRadius.circular(8)),
-                      child: Icon(s.icon, size: 16, color: s.color),
+                      padding: const EdgeInsets.all(7),
+                      decoration: BoxDecoration(
+                        color: s.color.withValues(alpha: 0.12),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Icon(s.icon, size: 18, color: s.color),
                     ),
-                    Text(s.label(widget.isEs), maxLines: 1, overflow: TextOverflow.ellipsis,
-                        style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.w800, color: c.textPrimary, letterSpacing: -0.2)),
+                    const SizedBox(height: 7),
+                    Text(
+                      s.label(widget.isEs),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w800,
+                        color: c.textPrimary,
+                        letterSpacing: -0.1,
+                      ),
+                    ),
                   ],
                 ),
         ),
