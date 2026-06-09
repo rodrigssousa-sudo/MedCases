@@ -2868,27 +2868,32 @@ class _HomeMiGuardiaSection extends StatelessWidget {
                 ),
               ],
       ),
+      // ── IMPORTANTE: IntrinsicHeight foi REMOVIDO intencionalmente ──────────
+      // IntrinsicHeight quebra quando qualquer descendente usa LayoutBuilder
+      // (ex: MeuPlantaoDashboard → AnimatedSize → didChangeDependencies).
+      // Flutter lança: "LayoutBuilder does not support returning intrinsic dimensions"
+      // Solução: barra dourada como decoração de borda esquerda no Container pai,
+      // sem Row+crossAxisAlignment.stretch — sem necessidade de IntrinsicHeight.
       child: ClipRRect(
         borderRadius: BorderRadius.circular(20),
-        child: IntrinsicHeight(
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              // Barra dourada à esquerda
-              Container(width: 3, color: leftAccent),
-              // Conteúdo principal
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(14, 14, 14, 14),
-                  child: MeuPlantaoDashboard(
-                    onOpenDrug:  onOpenDrug,
-                    onOpenCalc:  onOpenCalc,
-                    onManageTap: onManageTap,
-                  ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Barra dourada à esquerda — altura mínima garantida por DecoratedBox
+            // usando BoxDecoration no Container pai (não depende de stretch)
+            Container(width: 3, color: leftAccent),
+            // Conteúdo principal — cresce verticalmente com o MeuPlantaoDashboard
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(14, 14, 14, 14),
+                child: MeuPlantaoDashboard(
+                  onOpenDrug:  onOpenDrug,
+                  onOpenCalc:  onOpenCalc,
+                  onManageTap: onManageTap,
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
