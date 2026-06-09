@@ -94,7 +94,7 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.light,
       child: Material(
-        color: Colors.black, // base preta evita qualquer flash de cor do sistema
+        color: Colors.transparent, // transparente: sem fundo sólido que vaze para fora da Stack
         child: SizedBox(
           // Força o SizedBox a ter exatamente as dimensões do display físico.
           // Isso evita que a bottom nav bar do app "roube" altura da Stack.
@@ -192,9 +192,9 @@ class _ReferencesFooter extends StatelessWidget {
 
     return Container(
       padding: EdgeInsets.fromLTRB(14, 7, 14, 7 + bottomPadding),
-      decoration: const BoxDecoration(
-        // Cor semi-transparente: cards da Wix aparecem rolando por baixo
-        color: Color(0xEE1A0F2E),
+      decoration: BoxDecoration(
+        // 85% opaco: efeito overlay premium — cards da Wix rolam por baixo
+        color: const Color(0xFF0F091E).withOpacity(0.85),
         border: Border(
           top: BorderSide(color: Color(0x334A2D8A), width: 0.5),
         ),
