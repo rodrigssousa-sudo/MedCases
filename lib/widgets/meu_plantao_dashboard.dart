@@ -85,6 +85,8 @@ class _MeuPlantaoDashboardState extends State<MeuPlantaoDashboard>
   // Rastreia o estado vazio anterior para detectar a transição vazio→com-conteúdo
   // e auto-expandir o painel no primeiro pin (Web + Mobile).
   bool _wasEmpty = true;
+  // Cache do último isEmpty para evitar chamadas redundantes de didChangeDependencies
+  bool _lastIsEmpty = true;
 
   @override
   void initState() {
@@ -104,6 +106,50 @@ class _MeuPlantaoDashboardState extends State<MeuPlantaoDashboard>
     super.dispose();
   }
 
+  // ── Reage a mudanças no provider SEM estar dentro do build() ──────────────
+  // CORREÇÃO CRÍTICA DO BUG: o postFrameCallback estava dentro do build(),
+  // o que causava um loop destrutivo:
+  //   tap → _toggle → setState(_expanded=true) → rebuild → callback →
+  //   isEmpty && _expanded → setState(_expanded=false) → rebuild → ...
+  // Resultado: card abria e fechava instantaneamente, nunca permanécendo aberto.
+  //
+  // didChangeDependencies() é chamado quando o InheritedWidget (AppProvider)
+  // muda — ou seja, quando pinnedCalcIds/pinnedDrugs/plantaoPatients mudam.
+  // NÃO é chamado por um toggle manual, portanto não interfere no gesto do usuário.
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final p           = context.read<AppProvider>();
+    final hasPatients = p.plantaoPatients.isNotEmpty;
+    final hasDrugs    = p.pinnedDrugs.isNotEmpty;
+    final filteredIds = p.pinnedCalcIds
+        .where((id) => !_kForbiddenCalcIds.contains(id))
+        .toList();
+    final isEmpty = !hasPatients && !hasDrugs && !filteredIds.isNotEmpty;
+
+    // Só reage quando o estado vazio/não-vazio muda — nunca interrompe toggle manual
+    if (isEmpty == _lastIsEmpty) return;
+    _lastIsEmpty = isEmpty;
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      if (isEmpty && _expanded) {
+        // Todos os itens foram despinados: colapsa automaticamente
+        setState(() {
+          _expanded = false;
+          _chevronCtrl.reverse();
+        });
+      } else if (_wasEmpty && !isEmpty && !_expanded) {
+        // Primeiro item pinado: expande para revelar conteúdo
+        setState(() {
+          _expanded = true;
+          _chevronCtrl.forward();
+        });
+      }
+      _wasEmpty = isEmpty;
+    });
+  }
+
   void _toggle(bool hasContent) {
     AppHaptics.selection(context);
     if (!hasContent) {
@@ -111,8 +157,11 @@ class _MeuPlantaoDashboardState extends State<MeuPlantaoDashboard>
       widget.onManageTap();
       return;
     }
-    setState(() => _expanded = !_expanded);
-    if (_expanded) {
+    // Toggle manual: imediato, definitivo, nunca revertido pelo didChangeDependencies
+    // porque este é um gesto do usuário, não uma mudança de dados do provider.
+    final nowExpanded = !_expanded;
+    setState(() => _expanded = nowExpanded);
+    if (nowExpanded) {
       _chevronCtrl.forward();
     } else {
       _chevronCtrl.reverse();
@@ -136,28 +185,12 @@ class _MeuPlantaoDashboardState extends State<MeuPlantaoDashboard>
     final hasCalcs = filteredRootCalcIds.isNotEmpty;
     final isEmpty = !hasPatients && !hasDrugs && !hasCalcs;
 
-    // ── Auto-colapsa / expande reativamente ──────────────────────────────────
-    // FIX (Web sync bug): quando o painel estava vazio e o usuário pina o
-    // primeiro item via "Gestionar", auto-expande para tornar o conteúdo visível.
-    // Isso resolve o bug principal do Web onde o dashboard permanecia colapsado
-    // após o pin porque o postFrameCallback anterior nunca forçava a expansão.
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted) return;
-      if (isEmpty && _expanded) {
-        setState(() {
-          _expanded = false;
-          _chevronCtrl.reverse();
-        });
-      }
-      // Auto-expand na transição vazio → com-conteúdo (primeiro pin do usuário)
-      if (_wasEmpty && !isEmpty && !_expanded) {
-        setState(() {
-          _expanded = true;
-          _chevronCtrl.forward();
-        });
-      }
-      _wasEmpty = isEmpty;
-    });
+    // NOTA: a lógica de auto-colapso/auto-expand foi REMOVIDA daqui.
+    // Ela está em didChangeDependencies(), onde pertence.
+    // Colocar postFrameCallback no build() causava loop:
+    //   tap → _toggle → setState(_expanded=true) → rebuild → callback →
+    //   isEmpty && _expanded → setState(_expanded=false) → rebuild → ...
+    // O resultado era o card abrindo e fechando instantaneamente.
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -1022,6 +1055,9 @@ class _PinnedDrugsRow extends StatelessWidget {
       height: 96,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
+        // ListView horizontal dentro de SingleChildScrollView vertical:
+        // eixos diferentes, sem conflito. Height fixa via SizedBox garante
+        // que o pai não precise calcular altura — layout correto e fluido.
         clipBehavior: Clip.none,
         itemCount: drugs.length,
         separatorBuilder: (_, __) => const SizedBox(width: 10),
