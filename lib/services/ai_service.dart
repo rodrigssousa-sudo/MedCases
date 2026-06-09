@@ -1361,6 +1361,7 @@ Confianca: Alta | Moderada | Baixa — [1 linha de motivo]
     //   17. drugsSection        → fármacos (RAG — dados reais)
     //   18. contextSection      → contexto local (RAG — dados reais)
     //   19. selfCheck           → revisão interna invisível + item 13 RAG cross-check
+    //   20. contextAnchor       → ÂNCORA DE CONTEXTO ATUAL (Part C — última instrução)
     // ════════════════════════════════════════════════════════════════════════
     final selfCheck = isEs ? _selfCheckEs : _selfCheckPt;
     final evidenceRanking = isEs ? _evidenceRankingEs : _evidenceRankingPt;
@@ -1368,6 +1369,48 @@ Confianca: Alta | Moderada | Baixa — [1 linha de motivo]
     final ragCrossCheck = hasRagData
         ? (isEs ? _ragCrossCheckEs : _ragCrossCheckPt)
         : '';
+
+    // ── USER PROMPT ANCHORING (Part C — context contamination fix) ───────────
+    // Última instrução do prompt — máxima proximidade com a query do usuário.
+    // Força amnésia total sobre consultas passadas: proíbe o modelo de herdar
+    // patologias, fármacos ou condutas de turnos não relacionados ao tema atual.
+    // Estratégia: ancoragem explícita à query corrente + blacklist de inferência
+    // cruzada. Injetado SEMPRE (não condicionado a RAG) pois é defesa de dados.
+    final contextAnchor = isEs
+        ? '\n\n══════════════════════════════════════════════════\n'
+          '🔒 ANCLA DE CONTEXTO ACTUAL — INSTRUCCION ABSOLUTA FINAL\n'
+          '══════════════════════════════════════════════════\n'
+          'Tu respuesta DEBE basarse EXCLUSIVAMENTE en la query actual y en los\n'
+          'mensajes inmediatamente presentes en este historial de conversacion.\n\n'
+          'REGLAS DE AISLAMIENTO DE SESION (IRREVOCABLES):\n'
+          '1. Si la query actual menciona una patologia/tema → responde SOLO sobre ese tema.\n'
+          '2. Si la query NO cita explicitamente una patologia del historial anterior\n'
+          '   → tratarla como consulta COMPLETAMENTE NUEVA. Amnesia total de consultas pasadas.\n'
+          '3. PROHIBIDO asumir, inferir o reutilizar diagnosticos, farmacos o conductas\n'
+          '   de turnos que no esten directamente relacionados con la query actual.\n'
+          '4. PROHIBIDO heredar contexto de sesiones previas, ejemplos de entrenamiento\n'
+          '   o cualquier informacion externa a este historial visible.\n'
+          '5. Si detectas que el historial contiene topicos DISTINTOS a la query actual\n'
+          '   → IGNORAR esos turnos. Responde exclusivamente al tema de la query presente.\n'
+          '6. Cada consulta es un entorno clinico AISLADO. Seguridad clinica absoluta.\n'
+          '══════════════════════════════════════════════════\n'
+        : '\n\n══════════════════════════════════════════════════\n'
+          '🔒 ANCORA DE CONTEXTO ATUAL — INSTRUCAO ABSOLUTA FINAL\n'
+          '══════════════════════════════════════════════════\n'
+          'Sua resposta DEVE basear-se EXCLUSIVAMENTE na query atual e nas\n'
+          'mensagens imediatamente presentes neste historico de conversa.\n\n'
+          'REGRAS DE ISOLAMENTO DE SESSAO (IRREVOGAVEIS):\n'
+          '1. Se a query atual menciona uma patologia/tema → responda SOMENTE sobre esse tema.\n'
+          '2. Se a query NAO cita explicitamente uma patologia do historico anterior\n'
+          '   → tratar como consulta COMPLETAMENTE NOVA. Amnesia total de consultas passadas.\n'
+          '3. PROIBIDO assumir, inferir ou reutilizar diagnosticos, farmacos ou condutas\n'
+          '   de turnos que nao estejam diretamente relacionados com a query atual.\n'
+          '4. PROIBIDO herdar contexto de sessoes anteriores, exemplos de treinamento\n'
+          '   ou qualquer informacao externa a este historico visivel.\n'
+          '5. Se detectar que o historico contem topicos DISTINTOS da query atual\n'
+          '   → IGNORAR esses turnos. Responda exclusivamente ao tema da query presente.\n'
+          '6. Cada consulta e um ambiente clinico ISOLADO. Seguranca clinica absoluta.\n'
+          '══════════════════════════════════════════════════\n';
 
     // ── Cabeçalho de idioma obrigatório — injetado como PRIMEIRA instrução ──
     // Máxima prioridade: o modelo vê isso antes de qualquer outra instrução.
@@ -1399,7 +1442,8 @@ Confianca: Alta | Moderada | Baixa — [1 linha de motivo]
              '${ragAnchor.isNotEmpty ? "$ragAnchor\n" : ""}'
              '${ragCrossCheck.isNotEmpty ? "$ragCrossCheck\n" : ""}'
              '$protocolSection$drugsSection$contextSection\n\n'
-             '$selfCheck';
+             '$selfCheck'
+             '$contextAnchor';
     } else {
       return '$langHeader'
              '$_coreIdentityPt\n\n'
@@ -1417,7 +1461,8 @@ Confianca: Alta | Moderada | Baixa — [1 linha de motivo]
              '${ragAnchor.isNotEmpty ? "$ragAnchor\n" : ""}'
              '${ragCrossCheck.isNotEmpty ? "$ragCrossCheck\n" : ""}'
              '$protocolSection$drugsSection$contextSection\n\n'
-             '$selfCheck';
+             '$selfCheck'
+             '$contextAnchor';
     }
   }
 }

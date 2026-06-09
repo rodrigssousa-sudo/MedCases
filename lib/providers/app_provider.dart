@@ -3044,7 +3044,12 @@ class AppProvider extends ChangeNotifier {
     // — nada muda. Só o transporte (streaming vs. batch) é diferente.
     final topicReset  = _sessionMemory.resetIfTopicChanged(input);
     if (topicReset) {
-      debugPrint('[sendAiMessage] strictContextIsolation: tema mudou');
+      // ── CONTEXT ISOLATION (Part A): novo tema → apaga histórico da API ────
+      // CRÍTICO: _aiHistory contém os turnos anteriores que são enviados à Gemini
+      // como `history`. Se não limpar aqui, o modelo recebe turnos sobre Cistite
+      // quando o usuário pergunta sobre Parkinson → alucinação clínica grave.
+      _aiHistory.clear();
+      debugPrint('[sendAiMessage] strictContextIsolation: tema mudou — _aiHistory LIMPO (amnésia total de contexto anterior)');
     }
     final sessionLang   = _resolveSessionLang(input);
     final intent        = _classifyIntent(input);
@@ -3238,7 +3243,11 @@ class AppProvider extends ChangeNotifier {
     //   contaminem o novo caso (ex: "Betametasona" aparecendo num caso de TEP).
     final topicReset = _sessionMemory.resetIfTopicChanged(input);
     if (topicReset) {
-      debugPrint('[buildAIAnswer] strictContextIsolation: tema mudou — memória e retrieval isolados');
+      // ── CONTEXT ISOLATION (Part A): novo tema → apaga histórico da API ────
+      // CRÍTICO: mesma lógica de sendAiMessage — ao mudar de patologia,
+      // _aiHistory deve ser zerado antes de passar `history:` para Gemini.
+      _aiHistory.clear();
+      debugPrint('[buildAIAnswer] strictContextIsolation: tema mudou — _aiHistory LIMPO + memória e retrieval isolados');
     }
 
     // ── Passo 0: globalLanguageLock — bloqueia idioma da sessão ──────────────

@@ -129,9 +129,13 @@ class ClinicalSessionMemory {
 
   /// Verifica se a query indica mudança clara de assunto e, se sim, reseta estado.
   ///
-  /// Lógica conservadora: só reseta se o tema atual estiver estabelecido
-  /// (≥2 turnos) E o novo tema for claramente diferente.
-  /// Evita reset prematuro por variações normais do mesmo caso clínico.
+  /// Lógica AGRESSIVA (Part B — context contamination fix):
+  ///   • Qualquer mudança de tema detectada (≥1 turno) dispara reset imediato.
+  ///   • Threshold foi reduzido de ≥2 para ≥1 porque um único turno sobre
+  ///     Cistite já polui o contexto quando o usuário muda para Parkinson.
+  ///   • Segurança clínica > continuidade narrativa: falso reset (pergunta
+  ///     de follow-up detectada como novo tema) é muito menos danoso do que
+  ///     uma alucinação por contexto vazado de conversa anterior.
   bool resetIfTopicChanged(String newQuery) {
     final newTopic = _extractTopicSignature(newQuery);
 
@@ -149,17 +153,14 @@ class ClinicalSessionMemory {
       return false;
     }
 
-    // Mudança de tema detectada — reseta apenas se tema atual estabelecido
-    if (_topicTurnCount >= 2) {
-      reset();
-      _dominantTopic = newTopic;
-      _topicTurnCount = 1;
-      return true;
-    }
-
-    // Tema ainda não consolidado — atualiza silenciosamente
+    // ── RESET AGRESSIVO: qualquer mudança de tema (≥1 turno) → reset total ──
+    // Threshold anterior ≥2 era conservador e causava contaminação quando
+    // o tema anterior tinha apenas 1 turno (ex: Cistite → Parkinson sem reset).
+    // Agora ≥1 garante que QUALQUER virada de tema limpa a memória clínica.
+    reset();
     _dominantTopic = newTopic;
-    return false;
+    _topicTurnCount = 1;
+    return true;
   }
 
   /// Reseta toda a memória clínica (chamado na mudança de tema ou manualmente)
