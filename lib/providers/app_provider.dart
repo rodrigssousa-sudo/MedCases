@@ -1615,6 +1615,20 @@ class AppProvider extends ChangeNotifier {
     _sessionLockedLang = null; // reset language lock ao iniciar nova sessão
   }
 
+  /// Reset completo da sessão clínica da IA — usado pelo double-tap no FAB.
+  ///
+  /// Vai além de clearAiHistory(): também zera a memória clínica estruturada
+  /// (diagnósticos ativos, fármacos, laboratórios, contexto do paciente) para
+  /// garantir que a próxima conversa comece 100% limpa, sem nenhum contexto
+  /// residual da sessão anterior contaminando as respostas do modelo.
+  void resetAiSessionFull() {
+    cancelAiStream();           // cancela qualquer stream em andamento
+    _aiHistory.clear();         // limpa histórico de mensagens enviadas à API
+    _sessionLockedLang = null;  // libera language lock
+    _sessionMemory.reset();     // zera memória clínica estruturada (diag, meds, labs)
+    debugPrint('[AppProvider] resetAiSessionFull — sessão clínica zerada');
+  }
+
   // ── Gemini OAuth — conectar / desconectar ─────────────────────────────────
 
   /// Inicia fluxo OAuth Google → abre seletor de conta nativo.

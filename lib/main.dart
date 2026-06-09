@@ -1684,6 +1684,80 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
     );
   }
 
+  // ── Double-tap FAB: reset completo da sessão clínica (Build 105) ───────────
+  //
+  // Fluxo:
+  //   1. HapticFeedback.lightImpact() — toque físico sutil no aparelho
+  //   2. Navega para aba de IA (caso não esteja lá)
+  //   3. Dispara _clearChat() via AiScreen.clearChatCallback
+  //      → salva sessão anterior no histórico
+  //      → limpa mensagens e reinserve o greeting
+  //      → limpa campo de texto e remove foco
+  //   4. p.resetAiSessionFull()
+  //      → cancela streaming ativo
+  //      → limpa _aiHistory (contexto enviado à API)
+  //      → zera _sessionMemory (diag, meds, labs, language lock)
+  //   5. SnackBar bilíngue confirma o reset ao médico
+  void _resetAndStartNewChat() {
+    final p    = context.read<AppProvider>();
+    final isEs = p.lang == 'es';
+
+    // 1. Feedback tátil sutil — médico sente fisicamente o reset
+    AppHaptics.light(context);
+
+    // 2. Garante navegação para a aba de IA
+    if (_tab != 2) {
+      setState(() => _tab = 2);
+    }
+
+    // 3. Reseta a UI do chat via callback estático do AiScreen
+    //    (funciona mesmo quando AiScreen está desmontado — o callback
+    //    é registrado no initState e removido no dispose do AiScreen)
+    final clearFn = AiScreen.clearChatCallback.value;
+    if (clearFn != null) {
+      clearFn();
+    }
+
+    // 4. Reset profundo do contexto clínico no provider
+    //    clearFn() já chama p.clearAiHistory(), mas resetAiSessionFull()
+    //    vai além: também zera _sessionMemory (diag, meds, labs, language lock)
+    //    e cancela qualquer stream ativo que clearFn() possa ter perdido.
+    p.resetAiSessionFull();
+
+    // 5. Confirma visualmente ao médico com SnackBar clínico bilíngue
+    if (mounted) {
+      ScaffoldMessenger.of(context)
+        ..clearSnackBars()
+        ..showSnackBar(
+          SnackBar(
+            content: Row(
+              children: [
+                const Icon(Icons.restart_alt_rounded, size: 16, color: Colors.white),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Text(
+                    isEs
+                        ? 'Nueva consulta iniciada — contexto anterior eliminado'
+                        : 'Nova consulta iniciada — contexto anterior eliminado',
+                    style: const TextStyle(
+                      fontSize: 12.5,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            backgroundColor: const Color(0xFF0A7C4E),
+            behavior: SnackBarBehavior.floating,
+            duration: const Duration(seconds: 2),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            margin: const EdgeInsets.fromLTRB(16, 0, 16, 80),
+          ),
+        );
+    }
+  }
+
   // ── FAB ConnectMind AI — Build 100: nativo centerDocked, 46×46 (-20%) ──────────
   // Retorna um widget pill autónomo que o Scaffold encaixa na entalhação do
   // BottomAppBar via FloatingActionButtonLocation.centerDocked.
@@ -1700,7 +1774,17 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
     final glowColor  = const Color(0xFF00E5FF);
 
     return GestureDetector(
-      onTap: () { AppHaptics.light(context); FocusManager.instance.primaryFocus?.unfocus(); setState(() => _tab = 2); },
+      // Tap simples: navega para a aba de IA
+      onTap: () {
+        AppHaptics.light(context);
+        FocusManager.instance.primaryFocus?.unfocus();
+        setState(() => _tab = 2);
+      },
+      // Double-tap: reset completo da sessão clínica (Build 105)
+      // O médico sente que o chat foi zerado via haptic sutil +
+      // SnackBar informativo. Nenhum contexto residual da consulta
+      // anterior contamina a próxima resposta da IA.
+      onDoubleTap: () => _resetAndStartNewChat(),
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 220),
         curve: Curves.easeOutCubic,
