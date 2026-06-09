@@ -1491,6 +1491,10 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
                 autofocus: false, // CRÍTICO — nunca abrir teclado automaticamente
                 minLines: 1,
                 maxLines: 4,
+                keyboardType: TextInputType.multiline,
+                autocorrect: true,
+                enableSuggestions: true,
+                textCapitalization: TextCapitalization.sentences,
                 style: TextStyle(fontSize: 14, color: textColor, height: 1.5),
                 textInputAction: TextInputAction.send,
                 onSubmitted: (_) => _send(),
@@ -2347,6 +2351,10 @@ class _HomeIaCardState extends State<_HomeIaCard> {
                         focusNode: _focus,
                         minLines: 3,
                         maxLines: 5,
+                        keyboardType: TextInputType.multiline,
+                        autocorrect: true,
+                        enableSuggestions: true,
+                        textCapitalization: TextCapitalization.sentences,
                         style: TextStyle(
                           fontSize: 14.5,
                           color: textColor,

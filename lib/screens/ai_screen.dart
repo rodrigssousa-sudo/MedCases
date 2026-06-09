@@ -3458,7 +3458,7 @@ class _InputBarState extends State<_InputBar> {
                                 keyboardType: TextInputType.multiline,
                                 autofillHints: const [],
                                 enableSuggestions: true,
-                                autocorrect: false,
+                                autocorrect: true,
                                 textCapitalization: TextCapitalization.sentences,
                                 style: TextStyle(
                                   fontSize: 14,
