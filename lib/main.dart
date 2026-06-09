@@ -3961,16 +3961,17 @@ class _DrawerLegalRow extends StatelessWidget {
 }
 
 // ── Badge de idioma ───────────────────────────────────────────────────────────
+// Sem bandeiras — texto puro PT/ES para neutralidade global
+// (América Latina, Portugal, Guiné-Bissau, Angola, países hispânicos)
 class _LangBadge extends StatelessWidget {
   final String lang;
   const _LangBadge({required this.lang});
 
   @override
   Widget build(BuildContext context) {
-    // Mostra a bandeira + nome curto do idioma atual
-    final label = lang == 'pt' ? '🇧🇷 PT' : '🇪🇸 ES';
+    final label = lang == 'pt' ? 'PT' : 'ES';
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(7),
         color: const Color(0xFFC5A365).withValues(alpha: 0.12),
@@ -3978,7 +3979,12 @@ class _LangBadge extends StatelessWidget {
       ),
       child: Text(
         label,
-        style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w800, color: Color(0xFFC5A365), letterSpacing: 0.5),
+        style: const TextStyle(
+          fontSize: 11,
+          fontWeight: FontWeight.w800,
+          color: Color(0xFFC5A365),
+          letterSpacing: 1.2,
+        ),
       ),
     );
   }
