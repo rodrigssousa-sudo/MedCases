@@ -228,7 +228,24 @@ class AuthService {
         email: email.trim(),
         password: password,
       ).timeout(const Duration(seconds: 15));
-      final uid = _auth.currentUser!.uid;
+
+      // Aguarda o authStateChanges propagar o usuário (evita currentUser nulo
+      // imediatamente após signIn em conexões lentas)
+      User? firebaseUser = _auth.currentUser;
+      if (firebaseUser == null) {
+        firebaseUser = await _auth.authStateChanges()
+            .where((u) => u != null)
+            .first
+            .timeout(const Duration(seconds: 5), onTimeout: () => null);
+      }
+      if (firebaseUser == null) {
+        return AuthResult.error('Sessão não inicializada. Tente novamente.');
+      }
+
+      // Força refresh do token para garantir que está "quente" no servidor
+      await firebaseUser.getIdToken(true);
+
+      final uid = firebaseUser.uid;
       final doc = await _db.collection('users').doc(uid).get();
       return _buildResultFromDoc(
         exists: doc.exists,
@@ -343,16 +360,47 @@ class AuthService {
     String? referredBy,
   }) async {
     try {
+      // 1. Cria a conta
       final cred = await _auth.createUserWithEmailAndPassword(
         email: email.trim(), password: password,
       );
-      await cred.user?.updateDisplayName(displayName.trim());
+      final firebaseUser = cred.user!;
+
+      // 2. Atualiza displayName
+      await firebaseUser.updateDisplayName(displayName.trim());
+
+      // 3. FORÇA emissão do JWT imediatamente — "esquenta" a sessão no servidor
+      //    Sem isso, o token fica em estado "frio" e o signIn subsequente falha
+      //    na propagação. forceRefresh=true garante um token recém-emitido.
+      final idToken = await firebaseUser.getIdToken(true) ?? '';
+
+      // 4. Sincroniza o estado do usuário com o servidor Firebase
+      await firebaseUser.reload();
+
+      // 5. Cacheia idToken + refreshToken igual ao fluxo Web
+      //    Isso garante que _loginNative encontre a sessão já inicializada
+      final refreshToken = firebaseUser.refreshToken ?? '';
+      if (idToken.isNotEmpty) {
+        _cacheTokens(idToken: idToken, refreshToken: refreshToken);
+      }
+
+      // 6. Persiste o documento Firestore
       final user = _buildNewUser(
-        uid: cred.user!.uid, email: email,
+        uid: firebaseUser.uid, email: email,
         displayName: displayName, profession: profession, institution: institution,
         referredBy: referredBy,
       );
       await _db.collection('users').doc(user.uid).set(user.toMap());
+
+      // 7. Confirma que currentUser não é nulo antes de retornar
+      //    Aguarda até 3s para o authStateChanges propagar o novo usuário
+      if (_auth.currentUser == null) {
+        await _auth.authStateChanges()
+            .where((u) => u != null)
+            .first
+            .timeout(const Duration(seconds: 3), onTimeout: () => null);
+      }
+
       return AuthResult.success(user);
     } on FirebaseAuthException catch (e) {
       return AuthResult.error(_authErrorMessage(e.code));
