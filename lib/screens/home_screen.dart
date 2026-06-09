@@ -1005,12 +1005,6 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
   // Chave SharedPreferences espelhando a convenção de ai_screen.dart
   static const _kHistKey = 'medcases_ia_chat_history_v1';
 
-  // BUILD 101 — chips substituídos por gatilhos de plantão reais (PR #69)
-  // Substituição: 'Caso clínico / Diagnóstico dif. / Farmacologia / Raciocínio'
-  // → termos de emergência direta que geram respostas executivas imediatas.
-  static const _chipsEs = ['IAM (Reconocer)', 'TEP (Manejo)', 'Lab. Completo (Evaluar)', 'Sepsis (Protocolo)'];
-  static const _chipsPt = ['IAM (Reconhecer)', 'TEP (Manejo)', 'Lab. Completo (Avaliar)', 'Sepse (Protocolo)'];
-
   @override
   void initState() {
     super.initState();
@@ -1234,7 +1228,6 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
   Widget build(BuildContext context) {
     final dark  = widget.dark;
     final isEs  = widget.isEs;
-    final chips = isEs ? _chipsEs : _chipsPt;
 
     final cardBg      = dark ? const Color(0xFF252930) : Colors.white;
     final borderColor = dark ? _kGreenBord.withValues(alpha: 0.35) : _kGreenBord.withValues(alpha: 0.22);
@@ -1575,28 +1568,6 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
             },
           ),
 
-          const SizedBox(height: 10),
-
-          // ── Chips de atalho rápido ─────────────────────────────────────────
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            physics: const BouncingScrollPhysics(),
-            child: Row(
-              children: chips.map((chip) => GestureDetector(
-                onTap: _thinking ? null : () { AppHaptics.selection(context); _send(chip); },
-                child: Container(
-                  margin: const EdgeInsets.only(right: 7),
-                  padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 5),
-                  decoration: BoxDecoration(
-                    color: chipBg,
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(color: chipBorder),
-                  ),
-                  child: Text(chip, style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.w600, color: chipText)),
-                ),
-              )).toList(),
-            ),
-          ),
         ]),
       ),
     );
