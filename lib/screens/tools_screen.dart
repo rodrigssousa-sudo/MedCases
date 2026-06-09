@@ -167,10 +167,6 @@ class _ToolsScreenState extends State<ToolsScreen> with SingleTickerProviderStat
           ),
         ),
       ),
-      // ── Rodapé bibliográfico — Apple Guideline 1.4.1 ─────────────
-      // Fixo abaixo de todas as tabs: revisor Apple encontra as fontes
-      // sem precisar rolar até o fim de nenhuma calculadora específica.
-      _ToolsReferencesFooter(isEs: isEs),
     ]);
   }
 }
@@ -2732,8 +2728,18 @@ class _ReferenceTabState extends State<_ReferenceTab> {
       // ── Content ───────────────────────────────────────────────
       Expanded(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.fromLTRB(16, 20, 16, 100),
-          child: _buildSection(isEs),
+          padding: const EdgeInsets.fromLTRB(16, 20, 16, 24),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              _buildSection(isEs),
+              // Botão de fontes académicas — aparece ao rolar até o fim
+              // Substitui a barra fixa inferior: zero espaço roubado da tela
+              const SizedBox(height: 28),
+              _SourcesButton(isEs: isEs),
+              const SizedBox(height: 24),
+            ],
+          ),
         ),
       ),
     ]);
@@ -7954,71 +7960,69 @@ double _ln(double x) { if (x <= 0) return double.negativeInfinity; double s = 0,
 double _exp(double x) { double s = 1, t = 1; for (int i=1; i<100; i++) { t *= x/i; s += t; if (t.abs() < 1e-15) break; } return s; }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// RODAPÉ BIBLIOGRÁFICO — Apple Guideline 1.4.1
-// Exibido fixo abaixo de todas as tabs de Ferramentas Clínicas.
-// Garante que o revisor da Apple encontra as fontes médicas sem interação extra.
+// BOTÃO DE FONTES ACADÉMICAS — aparece no FINAL do scroll da aba Referência.
+// Substituiu a barra fixa inferior — libera 100% do espaço útil de leitura.
 // ─────────────────────────────────────────────────────────────────────────────
-class _ToolsReferencesFooter extends StatelessWidget {
+class _SourcesButton extends StatelessWidget {
   final bool isEs;
-  const _ToolsReferencesFooter({required this.isEs});
+  const _SourcesButton({required this.isEs});
 
   static const _kSourcesUrl = 'https://www.promedcases.com/fontes-e-referencias';
 
   @override
   Widget build(BuildContext context) {
-    final dark         = Theme.of(context).brightness == Brightness.dark;
-    final bgColor      = dark ? const Color(0xFF1A1D23) : const Color(0xFFF0F4F8);
-    final borderColor  = dark ? const Color(0xFF2D3748) : const Color(0xFFDDE3EA);
-    final textColor    = dark ? const Color(0xFF9CA3AF) : const Color(0xFF6B7280);
-    final accentColor  = dark ? const Color(0xFF10B981) : const Color(0xFF075F45);
-    final bottomPad    = MediaQuery.of(context).padding.bottom;
-
-    return Container(
-      padding: EdgeInsets.fromLTRB(14, 7, 14, 7 + bottomPad),
-      decoration: BoxDecoration(
-        color: bgColor,
-        border: Border(top: BorderSide(color: borderColor, width: 0.5)),
-      ),
-      child: Row(
-        children: [
-          Icon(Icons.menu_book_rounded, size: 13, color: accentColor),
-          const SizedBox(width: 7),
-          Expanded(
-            child: Text(
-              isEs
-                  ? 'Refs: AHA/ACC, WHO, KDIGO, CURB-65, CHA₂DS₂-VASc, Wells, NEWS2, Child-Pugh, PSI'
-                  : 'Refs: AHA/ACC, WHO, KDIGO, CURB-65, CHA₂DS₂-VASc, Wells, NEWS2, Child-Pugh, PSI',
-              style: TextStyle(fontSize: 9.5, color: textColor, height: 1.3),
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-            ),
+    return GestureDetector(
+      onTap: () async {
+        AppHaptics.light(context);
+        final uri = Uri.parse(_kSourcesUrl);
+        if (await canLaunchUrl(uri)) {
+          await launchUrl(uri, mode: LaunchMode.externalApplication);
+        }
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 20),
+        decoration: BoxDecoration(
+          color: const Color(0xFF10B981).withValues(alpha: 0.07),
+          border: Border.all(
+            color: const Color(0xFF10B981).withValues(alpha: 0.22),
+            width: 1,
           ),
-          const SizedBox(width: 8),
-          GestureDetector(
-            onTap: () async {
-              final uri = Uri.parse(_kSourcesUrl);
-              if (await canLaunchUrl(uri)) {
-                await launchUrl(uri, mode: LaunchMode.externalApplication);
-              }
-            },
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(6),
-                border: Border.all(color: accentColor.withValues(alpha: 0.4)),
-                color: accentColor.withValues(alpha: 0.08),
-              ),
-              child: Text(
-                isEs ? 'Ver fuentes' : 'Ver fontes',
-                style: TextStyle(
-                  fontSize: 10,
-                  fontWeight: FontWeight.w600,
-                  color: accentColor,
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(
+                  Icons.menu_book_rounded,
+                  size: 15,
+                  color: Color(0xFF10B981),
                 ),
+                const SizedBox(width: 8),
+                Text(
+                  isEs ? 'Ver Fuentes Académicas' : 'Ver Fontes Acadêmicas',
+                  style: const TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w700,
+                    color: Color(0xFF10B981),
+                    letterSpacing: 0.2,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 4),
+            Text(
+              'AHA · ACC · WHO · PubMed · UpToDate · KDIGO',
+              style: TextStyle(
+                fontSize: 10,
+                color: const Color(0xFF10B981).withValues(alpha: 0.6),
+                letterSpacing: 0.4,
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

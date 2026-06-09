@@ -13,7 +13,12 @@ import '../providers/app_provider.dart';
 const _kBaseUrl = 'https://www.medcasescalcu.com';
 
 // ─────────────────────────────────────────────────────────────────────────────
-// JS injetado no onPageFinished:
+// URL de fontes acadêmicas — abre no browser externo
+// ─────────────────────────────────────────────────────────────────────────────
+const _kSourcesUrl = 'https://www.promedcases.com/fontes-e-referencias';
+
+// ─────────────────────────────────────────────────────────────────────────────
+// JS base injetado no onPageFinished:
 //  A. viewport-fit=cover → conteúdo sangra abaixo da Home Bar
 //  B. padding-top: env(safe-area-inset-top) → não fica atrás do header
 //  C. padding-bottom: env(safe-area-inset-bottom) → sem gap na base
@@ -44,6 +49,88 @@ const _kInjectJs = r"""
 })();
 """;
 
+// ─────────────────────────────────────────────────────────────────────────────
+// JS que injeta o botão "Ver Fuentes Académicas" no FINAL do scroll da página.
+// Substitui a barra fixa inferior — aparece somente ao rolar até o fim,
+// liberando 100% do espaço útil de leitura.
+// O botão chama window.MedCasesOpenSources() que o Flutter intercepta via
+// JavascriptChannel para abrir a URL no browser externo (sem dart:io).
+// ─────────────────────────────────────────────────────────────────────────────
+String _buildSourcesButtonJs(bool isEs) {
+  final label = isEs
+      ? 'Ver Fuentes Académicas'
+      : 'Ver Fontes Acadêmicas';
+  final sublabel = isEs
+      ? 'AHA · ACC · WHO · PubMed · UpToDate'
+      : 'AHA · ACC · WHO · PubMed · UpToDate';
+
+  return """
+(function() {
+  if (document.getElementById('medcases-sources-btn')) return;
+
+  var btn = document.createElement('div');
+  btn.id = 'medcases-sources-btn';
+  btn.style.cssText = [
+    'display:flex',
+    'flex-direction:column',
+    'align-items:center',
+    'justify-content:center',
+    'gap:6px',
+    'margin:32px 20px 40px 20px',
+    'padding:14px 20px',
+    'background:rgba(167,139,250,0.08)',
+    'border:1px solid rgba(167,139,250,0.25)',
+    'border-radius:12px',
+    'cursor:pointer',
+    'user-select:none',
+    '-webkit-tap-highlight-color:transparent',
+  ].join(';');
+
+  var iconRow = document.createElement('div');
+  iconRow.style.cssText = 'display:flex;align-items:center;gap:8px';
+
+  var icon = document.createElement('span');
+  icon.textContent = '📚';
+  icon.style.fontSize = '16px';
+
+  var title = document.createElement('span');
+  title.textContent = '$label';
+  title.style.cssText = [
+    'font-size:13px',
+    'font-weight:700',
+    'color:#A78BFA',
+    'letter-spacing:0.2px',
+  ].join(';');
+
+  iconRow.appendChild(icon);
+  iconRow.appendChild(title);
+
+  var sub = document.createElement('span');
+  sub.textContent = '$sublabel';
+  sub.style.cssText = [
+    'font-size:10px',
+    'color:rgba(184,168,232,0.7)',
+    'letter-spacing:0.5px',
+  ].join(';');
+
+  btn.appendChild(iconRow);
+  btn.appendChild(sub);
+
+  btn.addEventListener('click', function() {
+    btn.style.background = 'rgba(167,139,250,0.18)';
+    setTimeout(function() {
+      btn.style.background = 'rgba(167,139,250,0.08)';
+    }, 200);
+    if (window.MedCasesChannel) {
+      window.MedCasesChannel.postMessage('openSources');
+    }
+  });
+
+  document.body.appendChild(btn);
+})();
+""";
+}
+
 class CalculadoraScreen extends StatefulWidget {
   const CalculadoraScreen({super.key});
 
@@ -53,6 +140,7 @@ class CalculadoraScreen extends StatefulWidget {
 
 class _CalculadoraScreenState extends State<CalculadoraScreen> {
   late final WebViewController _controller;
+  late final bool _isEs;
 
   @override
   void initState() {
@@ -60,6 +148,7 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
 
     final lang      = context.read<AppProvider>().lang;
     final langParam = lang == 'es' ? 'es' : 'pt';
+    _isEs           = lang == 'es';
 
     final PlatformWebViewControllerCreationParams params;
     if (Platform.isIOS) {
@@ -76,8 +165,25 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
       ..setUserAgent('Mozilla/5.0 (iPhone; CPU iPhone OS 15_0 like Mac OS X) MedCasesApp/6.1.0')
       // Fundo escuro desde o primeiro frame — elimina flash branco enquanto a Wix carrega
       ..setBackgroundColor(const Color(0xFF0F091E))
+      // Canal JS → Flutter: intercepta clique no botão de fontes
+      ..addJavaScriptChannel(
+        'MedCasesChannel',
+        onMessageReceived: (msg) async {
+          if (msg.message == 'openSources') {
+            final uri = Uri.parse(_kSourcesUrl);
+            if (await canLaunchUrl(uri)) {
+              await launchUrl(uri, mode: LaunchMode.externalApplication);
+            }
+          }
+        },
+      )
       ..setNavigationDelegate(NavigationDelegate(
-        onPageFinished: (_) => _controller.runJavaScript(_kInjectJs),
+        onPageFinished: (_) async {
+          // 1. Aplica viewport/padding fixes
+          await _controller.runJavaScript(_kInjectJs);
+          // 2. Injeta botão de fontes no final do scroll
+          await _controller.runJavaScript(_buildSourcesButtonJs(_isEs));
+        },
       ))
       ..loadRequest(Uri.parse('$_kBaseUrl?lang=$langParam'));
   }
@@ -88,7 +194,6 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
     final mq         = MediaQuery.of(context);
     final screenSize  = mq.size;
     final topPadding  = mq.padding.top;
-    final isEs        = context.read<AppProvider>().lang == 'es';
 
     // AnnotatedRegion: status bar icons brancos sem AppBar nativo
     return AnnotatedRegion<SystemUiOverlayStyle>(
@@ -111,16 +216,7 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
                 child: WebViewWidget(controller: _controller),
               ),
 
-              // ── CAMADA 1 — Rodapé referências (Apple 1.4.1) ────────────────
-              // Overlay sobre a WebView, fixo na base, sem subtrair altura dela
-              Positioned(
-                bottom: 0,
-                left:   0,
-                right:  0,
-                child: _ReferencesFooter(isEs: isEs),
-              ),
-
-              // ── CAMADA 2 — Header roxo com gradiente ───────────────────────
+              // ── CAMADA 1 — Header roxo com gradiente ───────────────────────
               // Overlay sobre a WebView, fixo no topo, sem subtrair altura dela
               Positioned(
                 top:   0,
@@ -171,78 +267,6 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
             ],
           ),
         ),
-      ),
-    );
-  }
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// RODAPÉ DE REFERÊNCIAS — Apple Guideline 1.4.1
-// Overlay fixo na base da Stack — não consome altura do WebView.
-// ─────────────────────────────────────────────────────────────────────────────
-class _ReferencesFooter extends StatelessWidget {
-  final bool isEs;
-  const _ReferencesFooter({required this.isEs});
-
-  static const _kSourcesUrl = 'https://www.promedcases.com/fontes-e-referencias';
-
-  @override
-  Widget build(BuildContext context) {
-    final bottomPadding = MediaQuery.of(context).padding.bottom;
-
-    return Container(
-      padding: EdgeInsets.fromLTRB(14, 7, 14, 7 + bottomPadding),
-      decoration: BoxDecoration(
-        // Cor sólida idêntica ao fundo da Wix — layout unificado e selado
-        color: const Color(0xFF0F091E),
-        border: Border(
-          top: BorderSide(color: Colors.white.withOpacity(0.05), width: 1),
-        ),
-      ),
-      child: Row(
-        children: [
-          const Icon(Icons.menu_book_rounded, size: 14, color: Color(0xFFA78BFA)),
-          const SizedBox(width: 7),
-          Expanded(
-            child: Text(
-              isEs
-                  ? 'Referencias clínicas y bibliográficas: AHA, ACC, WHO, PubMed'
-                  : 'Referências clínicas e bibliográficas: AHA, ACC, WHO, PubMed',
-              style: const TextStyle(
-                fontSize: 10,
-                color:    Color(0xFFB8A8E8),
-                height:   1.3,
-              ),
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
-          const SizedBox(width: 8),
-          GestureDetector(
-            onTap: () async {
-              final uri = Uri.parse(_kSourcesUrl);
-              if (await canLaunchUrl(uri)) {
-                await launchUrl(uri, mode: LaunchMode.externalApplication);
-              }
-            },
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(6),
-                border: Border.all(color: const Color(0x664A2D8A)),
-                color: const Color(0x1AA78BFA),
-              ),
-              child: Text(
-                isEs ? 'Ver fuentes' : 'Ver fontes',
-                style: const TextStyle(
-                  fontSize:   10,
-                  fontWeight: FontWeight.w600,
-                  color:      Color(0xFFA78BFA),
-                ),
-              ),
-            ),
-          ),
-        ],
       ),
     );
   }
