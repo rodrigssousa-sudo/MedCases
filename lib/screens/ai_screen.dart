@@ -2518,7 +2518,8 @@ String _cleanAiText(String raw) {
 
   // ── 5. Sanitização final de formatação ───────────────────────────────────
   s = s
-      .replaceAll(RegExp(r'^#{1,3}\s*', multiLine: true), '')  // ## ### títulos
+      // ## e ### NÃO são removidos aqui — _AiBlockBubble renderiza H2/H3 com
+      // hierarquia visual própria (cyan para ##, barra lateral para ###)
       .replaceAll('---', '')                                     // separadores HR
       .replaceAll('--', '')                                      // traços duplos
       .replaceAll(RegExp(r'\*{3,}'), '');                        // *** ou mais
@@ -2627,6 +2628,13 @@ class _AiBlockBubble extends StatelessWidget {
     final t = line.trim().toUpperCase();
     return t.contains('HARD STOP') || t.contains('HARD_STOP') ||
            t.contains('CONTRAINDICAÇÃO ABSOLUTA') || t.contains('CONTRAINDICACION ABSOLUTA');
+  }
+
+  /// Título H2 — linhas que começam com '## ' (dois sustenidos + espaço)
+  /// Renderizado em cyan #38BDF8, fonte 13.5→15, bold — acima do _isSectionHeader
+  bool _isH2(String line) {
+    final t = line.trim();
+    return t.startsWith('## ') && !t.startsWith('### ');
   }
 
   /// Linha de seção principal (### ou marcador clínico padrão ou 4-blocos emoji)
@@ -2750,6 +2758,24 @@ class _AiBlockBubble extends StatelessWidget {
                   );
                 }
 
+                // H2 — cabeçalho markdown '## Título' em cyan oficial
+                if (_isH2(line)) {
+                  final label = line.trim().replaceFirst(RegExp(r'^##\s+'), '');
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 3, top: 6),
+                    child: Text(
+                      label,
+                      style: const TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w700,
+                        color: Color(0xFF38BDF8), // cyan oficial
+                        letterSpacing: 0.1,
+                        height: 1.35,
+                      ),
+                    ),
+                  );
+                }
+
                 // Linha de seção principal — hierarquia visual por emoji de bloco
                 if (_isSectionHeader(line)) {
                   final label = trimmed.replaceFirst(RegExp(r'^###?\s*'), '');
@@ -2827,27 +2853,29 @@ class _AiBlockBubble extends StatelessWidget {
                   );
                 }
 
-                // Item de lista — bullet com indent
+                // Item de lista — bullet com indent (suporta '- ', '* ', '• ', '→', '▸', '1. ')
                 if (_isListItem(line)) {
+                  // Strip do marcador: remove '- ', '* ', '• ', '→ ', '▸ ' ou '1. '
+                  final content = trimmed
+                      .replaceFirst(RegExp(r'^[-\*•→▸]\s+'), '')
+                      .replaceFirst(RegExp(r'^\d+\.\s+'), '')
+                      .trimLeft();
                   return Padding(
-                    padding: const EdgeInsets.only(bottom: 1, left: 2),
+                    padding: const EdgeInsets.only(bottom: 2, left: 6),
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Padding(
-                          padding: const EdgeInsets.only(top: 5, right: 5),
+                          padding: const EdgeInsets.only(top: 6, right: 7),
                           child: Container(
-                            width: 4, height: 4,
+                            width: 5, height: 5,
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
-                              color: kGreenLight.withValues(alpha: 0.7),
+                              color: const Color(0xFF38BDF8).withValues(alpha: 0.85),
                             ),
                           ),
                         ),
-                        Expanded(child: _buildInlineText(
-                          trimmed.replaceFirst(RegExp(r'^[\*\-•→▸]|\d+\.\s*'), '').trimLeft(),
-                          textColor,
-                        )),
+                        Expanded(child: _buildInlineText(content, textColor)),
                       ],
                     ),
                   );
