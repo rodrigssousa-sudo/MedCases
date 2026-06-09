@@ -61,82 +61,176 @@ const _kInjectJs = r"""
 """;
 
 // ─────────────────────────────────────────────────────────────────────────────
-// JS DO BOTÃO DE FONTES
+// JS DA BARRA RETRÁTIL DE FONTES ACADÊMICAS
 //
-// REGRAS ESTRITAS:
-//  • position: relative  — NUNCA fixed ou absolute
-//  • display: block      — elemento de bloco normal no flow do HTML
-//  • margin: 40px auto   — centralizado, com respiro antes e depois
-//  • width: 90%          — responsivo
-//  • Aparece apenas ao rolar até o FIM da página — zero sobreposição
-//  • document.body.appendChild() — último elemento do DOM, após todo conteúdo
+// DESIGN: barra fixa no rodapé da WebView — ultra-discreta (20px colapsada).
+//  • Estado fechado : 20px de altura — apenas uma linha de texto mínima.
+//  • Estado aberto  : 120px — exibe título, sublabel e botão de link externo.
+//  • Transição CSS suave (0.3s ease) em ambas as direções.
+//  • position: fixed bottom:0 — nunca ocupa espaço no flow do conteúdo Wix.
+//  • Padding-bottom = env(safe-area-inset-bottom) — respeita home bar do iPhone.
 // ─────────────────────────────────────────────────────────────────────────────
 String _buildSourcesButtonJs(bool isEs) {
-  final label = isEs
+  final labelCollapsed = isEs
+      ? '\uD83D\uDD3C Ver Fuentes Acad\u00e9micas \u00b7 AHA \u00b7 ACC \u00b7 WHO...'
+      : '\uD83D\uDD3C Ver Fontes Acad\u00eamicas \u00b7 AHA \u00b7 ACC \u00b7 WHO...';
+  final labelExpanded = isEs
       ? 'Ver Fuentes Acad\u00e9micas'
       : 'Ver Fontes Acad\u00eamicas';
   final sublabel = 'AHA \u00b7 ACC \u00b7 WHO \u00b7 PubMed \u00b7 UpToDate';
+  final btnText = isEs ? 'Abrir referencias \u2197' : 'Abrir refer\u00eancias \u2197';
 
-  // Usa string concatenation simples para evitar problemas com interpolação Dart
-  // dentro de blocos JS com aspas aninhadas.
   return '''
 (function() {
-  if (document.getElementById('medcases-sources-btn')) return;
+  if (document.getElementById('mc-sources-bar')) return;
 
-  var btn = document.createElement('div');
-  btn.id = 'medcases-sources-btn';
-
-  // position: relative — fluxo normal do HTML, NUNCA fixed/absolute/sticky
-  // O botão fica literalmente no final do DOM, após todo o conteúdo da Wix.
-  // Só aparece quando o médico rola até o fim — 100% da tela útil preservada.
-  btn.style.cssText = [
-    'display: block',
-    'position: relative',
-    'width: 90%',
-    'margin: 40px auto 48px auto',
-    'padding: 14px 20px',
-    'background: rgba(167,139,250,0.07)',
-    'border: 1px solid rgba(167,139,250,0.22)',
-    'border-radius: 12px',
-    'text-align: center',
+  // ── Barra principal ────────────────────────────────────────────────────────
+  var bar = document.createElement('div');
+  bar.id = 'mc-sources-bar';
+  bar.style.cssText = [
+    'position: fixed !important',
+    'bottom: 0 !important',
+    'left: 0 !important',
+    'width: 100% !important',
+    'z-index: 999999 !important',
+    'box-sizing: border-box',
+    'background: rgba(30,20,50,0.95)',
+    'border-top: 1px solid rgba(167,139,250,0.28)',
+    'overflow: hidden',
+    'height: 20px',
+    'transition: height 0.3s ease',
     'cursor: pointer',
     'user-select: none',
     '-webkit-tap-highlight-color: transparent',
-    'box-sizing: border-box'
+    'padding-bottom: env(safe-area-inset-bottom)'
   ].join('; ');
 
-  var iconLine = document.createElement('div');
-  iconLine.style.cssText = 'display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 4px';
+  // ── Linha colapsada (sempre visível) ──────────────────────────────────────
+  var collapsed = document.createElement('div');
+  collapsed.id = 'mc-collapsed-line';
+  collapsed.style.cssText = [
+    'height: 20px',
+    'display: flex',
+    'align-items: center',
+    'justify-content: center',
+    'padding: 0 12px'
+  ].join('; ');
 
-  var icon = document.createElement('span');
-  icon.textContent = '\\uD83D\\uDCDA'; // 📚
-  icon.style.fontSize = '15px';
+  var collapsedText = document.createElement('span');
+  collapsedText.id = 'mc-collapsed-text';
+  collapsedText.textContent = '$labelCollapsed';
+  collapsedText.style.cssText = [
+    'font-size: 10px',
+    'color: rgba(184,168,232,0.70)',
+    'letter-spacing: 0.3px',
+    'white-space: nowrap',
+    'overflow: hidden',
+    'text-overflow: ellipsis',
+    'max-width: 100%'
+  ].join('; ');
 
-  var title = document.createElement('span');
-  title.textContent = '$label';
-  title.style.cssText = 'font-size: 13px; font-weight: 700; color: #A78BFA; letter-spacing: 0.2px';
+  collapsed.appendChild(collapsedText);
 
-  iconLine.appendChild(icon);
-  iconLine.appendChild(title);
+  // ── Painel expandido (visível apenas quando aberto) ───────────────────────
+  var expanded = document.createElement('div');
+  expanded.id = 'mc-expanded-panel';
+  expanded.style.cssText = [
+    'display: flex',
+    'flex-direction: column',
+    'align-items: center',
+    'justify-content: center',
+    'padding: 10px 16px 8px 16px',
+    'gap: 6px'
+  ].join('; ');
 
-  var sub = document.createElement('div');
-  sub.textContent = '$sublabel';
-  sub.style.cssText = 'font-size: 10px; color: rgba(184,168,232,0.65); letter-spacing: 0.5px; margin-top: 2px';
+  var titleRow = document.createElement('div');
+  titleRow.style.cssText = 'display: flex; align-items: center; gap: 6px';
 
-  btn.appendChild(iconLine);
-  btn.appendChild(sub);
+  var iconSpan = document.createElement('span');
+  iconSpan.textContent = '\\uD83D\\uDCDA';
+  iconSpan.style.fontSize = '14px';
 
-  btn.addEventListener('click', function() {
-    btn.style.background = 'rgba(167,139,250,0.16)';
-    setTimeout(function() { btn.style.background = 'rgba(167,139,250,0.07)'; }, 180);
-    if (window.MedCasesChannel) {
-      window.MedCasesChannel.postMessage('openSources');
+  var titleSpan = document.createElement('span');
+  titleSpan.textContent = '$labelExpanded';
+  titleSpan.style.cssText = [
+    'font-size: 12px',
+    'font-weight: 700',
+    'color: #A78BFA',
+    'letter-spacing: 0.2px'
+  ].join('; ');
+
+  titleRow.appendChild(iconSpan);
+  titleRow.appendChild(titleSpan);
+
+  var subSpan = document.createElement('div');
+  subSpan.textContent = '$sublabel';
+  subSpan.style.cssText = [
+    'font-size: 9px',
+    'color: rgba(184,168,232,0.60)',
+    'letter-spacing: 0.5px'
+  ].join('; ');
+
+  var linkBtn = document.createElement('div');
+  linkBtn.textContent = '$btnText';
+  linkBtn.style.cssText = [
+    'margin-top: 4px',
+    'padding: 5px 18px',
+    'background: rgba(167,139,250,0.15)',
+    'border: 1px solid rgba(167,139,250,0.35)',
+    'border-radius: 20px',
+    'font-size: 11px',
+    'font-weight: 600',
+    'color: #C4B5FD',
+    'cursor: pointer',
+    'transition: background 0.15s ease'
+  ].join('; ');
+
+  expanded.appendChild(titleRow);
+  expanded.appendChild(subSpan);
+  expanded.appendChild(linkBtn);
+
+  bar.appendChild(collapsed);
+  bar.appendChild(expanded);
+  document.body.appendChild(bar);
+
+  // ── Toggle state ───────────────────────────────────────────────────────────
+  var isOpen = false;
+
+  function openBar() {
+    isOpen = true;
+    bar.style.height = '120px';
+    collapsedText.textContent = '\\uD83D\\uDD3D $labelExpanded';
+  }
+
+  function closeBar() {
+    isOpen = false;
+    bar.style.height = '20px';
+    collapsedText.textContent = '$labelCollapsed';
+  }
+
+  bar.addEventListener('click', function(e) {
+    e.stopPropagation();
+    if (isOpen) {
+      closeBar();
+    } else {
+      openBar();
     }
   });
 
-  // Append como ÚLTIMO filho do body — posição natural no flow do documento.
-  // Nunca sobrepõe nada; só visível após scroll completo.
-  document.body.appendChild(btn);
+  // ── Link externo — não fecha a barra, apenas abre fontes ──────────────────
+  linkBtn.addEventListener('click', function(e) {
+    e.stopPropagation();
+    if (window.MedCasesChannel) {
+      window.MedCasesChannel.postMessage('openSources');
+    }
+    // Fechar após abrir o link
+    setTimeout(closeBar, 300);
+  });
+
+  // ── Padding dinâmico no body para o conteúdo não ficar atrás da barra ─────
+  // A barra fixa de 20px poderia esconder o último item da página.
+  // Adicionamos 20px de padding-bottom ao body para compensar.
+  document.body.style.setProperty('padding-bottom', '20px', 'important');
 })();
 ''';
 }
