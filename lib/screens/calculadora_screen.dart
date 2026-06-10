@@ -54,88 +54,101 @@ const _kInjectJs = r"""
   document.body.style.removeProperty('overflow');
   document.body.style.removeProperty('overflow-y');
 
-  // ── C. Remove footer e barra Wix ─────────────────────────────────────────
-  // IDs e classes conhecidos que o Wix injeta como rodapé/barra inferior.
-  // Cada seletor é tentado; se não existir ainda, o MutationObserver abaixo
-  // re-aplicará quando o Wix terminar de renderizar via React/JavaScript.
-  var WIX_FOOTER_SELECTORS = [
-    '#SITE_FOOTER',           // footer principal do Wix
-    '#SITE_FOOTER_WRAPPER',   // wrapper do footer
-    '#WIX_ADS',               // barra de anúncio "made with Wix"
-    '#wix-ads',               // variante minúscula
-    '.wix-ads',               // classe alternativa
-    '[data-testid="wix-ads"]',
-    '[id^="WIX_ADS"]',
-    'footer',                 // tag <footer> genérica que o Wix usa
-    '.site-footer',
-    '.footer-wrapper',
-    '[class*="footer"]',      // qualquer classe com "footer"
-    '[id*="footer"]',         // qualquer id com "footer"
-    '#SCROLL_TO_TOP',         // botão "scroll to top" do Wix
-    '.scrollToTop',
-    '[data-testid="scrollToTop"]',
-  ];
-
-  function hideWixJunk() {
-    WIX_FOOTER_SELECTORS.forEach(function(sel) {
-      try {
-        document.querySelectorAll(sel).forEach(function(el) {
-          el.style.setProperty('display',    'none',  'important');
-          el.style.setProperty('height',     '0px',   'important');
-          el.style.setProperty('min-height', '0px',   'important');
-          el.style.setProperty('max-height', '0px',   'important');
-          el.style.setProperty('overflow',   'hidden','important');
-          el.style.setProperty('visibility', 'hidden','important');
-          el.style.setProperty('margin',     '0',     'important');
-          el.style.setProperty('padding',    '0',     'important');
-          el.style.setProperty('opacity',    '0',     'important');
-          el.style.setProperty('pointer-events', 'none', 'important');
-        });
-      } catch(e) {}
-    });
-
-    // Também zera qualquer margin-bottom residual do container de páginas
-    var pageContainers = [
-      '#PAGES_CONTAINER',
-      '#masterPage',
-      '#site-root',
-      '[data-mesh-id="PAGES_CONTAINERinlineContent"]',
-    ];
-    pageContainers.forEach(function(sel) {
-      try {
-        document.querySelectorAll(sel).forEach(function(el) {
-          el.style.setProperty('margin-bottom',  '0', 'important');
-          el.style.setProperty('padding-bottom', '0', 'important');
-        });
-      } catch(e) {}
-    });
+  // ── C. Mata o footer do medcasescalcu.com (IDs reais extraídos do DOM) ───
+  //
+  // Engenharia reversa do HTML real de https://www.medcasescalcu.com:
+  //   <footer id="comp-kbgakxmn" class="... wixui-footer ...">
+  //     <section id="comp-kbgakxmn_r_comp-kbgakgyt" class="... wixui-footer ...">
+  //   </footer>
+  //   <div id="SCROLL_TO_BOTTOM" ...>bottom of page</div>
+  //   <div id="SCROLL_TO_TOP"    ...>top of page</div>
+  //   + legado Wix: #SITE_FOOTER, #WIX_ADS, #wix-ads
+  //
+  // ESTRATÉGIA: esconder via CSS injetado (mais robusto que style inline
+  // porque sobrevive a re-renders do React/Wix sem precisar de observer).
+  // ─────────────────────────────────────────────────────────────────────────
+  var styleId = 'mc-hide-footer-style';
+  if (!document.getElementById(styleId)) {
+    var style = document.createElement('style');
+    style.id = styleId;
+    style.textContent = [
+      // ── IDs reais do medcasescalcu.com ──
+      '#comp-kbgakxmn,',
+      '#comp-kbgakxmn_r_comp-kbgakgyt,',
+      '#comp-kbgakxmn_r_comp-mdr13kdg,',
+      '#comp-kbgakxmn_r_comp-mdr17w8k,',
+      '#SCROLL_TO_BOTTOM,',
+      '#SCROLL_TO_TOP,',
+      // ── Tags e classes semânticas Wix ──
+      'footer,',
+      '.wixui-footer,',
+      '[class*="wixui-footer"],',
+      // ── IDs legado Wix clássico ──
+      '#SITE_FOOTER,',
+      '#SITE_FOOTER_WRAPPER,',
+      '#WIX_ADS,',
+      '#wix-ads,',
+      '.wix-ads',
+      '{',
+      '  display: none !important;',
+      '  height: 0 !important;',
+      '  min-height: 0 !important;',
+      '  max-height: 0 !important;',
+      '  overflow: hidden !important;',
+      '  visibility: hidden !important;',
+      '  opacity: 0 !important;',
+      '  pointer-events: none !important;',
+      '  margin: 0 !important;',
+      '  padding: 0 !important;',
+      '}',
+      // Zera também o padding-bottom do container de páginas
+      '#PAGES_CONTAINER, #masterPage, #site-root, #SITE_PAGES {',
+      '  margin-bottom: 0 !important;',
+      '  padding-bottom: 0 !important;',
+      '}',
+    ].join('\n');
+    (document.head || document.documentElement).appendChild(style);
   }
 
-  // Executar imediatamente (para elementos já no DOM)
-  hideWixJunk();
-
-  // ── D. MutationObserver — re-aplica quando Wix re-renderizar ─────────────
-  // O Wix é um SPA: elementos são inseridos dinamicamente após o DOMContentLoaded.
-  // O observer garante que qualquer footer injetado depois também seja removido.
-  var _mcObserver = new MutationObserver(function(mutations) {
-    var shouldRun = false;
-    mutations.forEach(function(m) {
-      if (m.addedNodes.length > 0) shouldRun = true;
+  // ── D. Passagem imperativa imediata (garante elementos já no DOM) ─────────
+  var KILL_IDS = [
+    'comp-kbgakxmn',
+    'comp-kbgakxmn_r_comp-kbgakgyt',
+    'SCROLL_TO_BOTTOM',
+    'SCROLL_TO_TOP',
+    'SITE_FOOTER',
+    'SITE_FOOTER_WRAPPER',
+    'WIX_ADS',
+    'wix-ads',
+  ];
+  function killById() {
+    KILL_IDS.forEach(function(id) {
+      var el = document.getElementById(id);
+      if (el) {
+        el.style.setProperty('display',    'none',   'important');
+        el.style.setProperty('height',     '0',      'important');
+        el.style.setProperty('min-height', '0',      'important');
+        el.style.setProperty('overflow',   'hidden', 'important');
+        el.style.setProperty('margin',     '0',      'important');
+        el.style.setProperty('padding',    '0',      'important');
+      }
     });
-    if (shouldRun) hideWixJunk();
-  });
+    // Tag <footer> por querySelectorAll
+    document.querySelectorAll('footer, .wixui-footer').forEach(function(el) {
+      el.style.setProperty('display', 'none', 'important');
+      el.style.setProperty('height',  '0',    'important');
+    });
+  }
+  killById();
 
-  _mcObserver.observe(document.body || document.documentElement, {
-    childList: true,
-    subtree:   true,
+  // ── E. MutationObserver — re-aplica em cada render do SPA Wix ────────────
+  var _obs = new MutationObserver(function(mutations) {
+    var hasNewNodes = mutations.some(function(m) { return m.addedNodes.length > 0; });
+    if (hasNewNodes) killById();
   });
-
-  // Para após 8 segundos — Wix termina de renderizar bem antes disso
-  setTimeout(function() {
-    _mcObserver.disconnect();
-    // Última passagem garantida
-    hideWixJunk();
-  }, 8000);
+  _obs.observe(document.documentElement, { childList: true, subtree: true });
+  // Desliga após 10s (Wix termina de renderizar antes disso)
+  setTimeout(function() { _obs.disconnect(); killById(); }, 10000);
 
 })();
 """;
