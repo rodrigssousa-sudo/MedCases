@@ -16,25 +16,26 @@ const _kSourcesUrl = 'https://www.promedcases.com/fontes-e-referencias';
 // ─────────────────────────────────────────────────────────────────────────────
 // JS PRECOCE — injetado em onPageStarted (antes do DOMContentLoaded)
 //
-// Objetivo: bloquear IMEDIATAMENTE qualquer reserva de safe-area que o Wix
-// ou o próprio WKWebView tentaria criar durante o carregamento da página.
-// Não manipula DOM (ainda não existe) — apenas cria um <style> no <head>.
+// Injeta <style> no <head> ANTES que o Wix tenha chance de aplicar qualquer
+// env(safe-area-inset-*) ou configurar momentum scroll.
 // ─────────────────────────────────────────────────────────────────────────────
 const _kEarlyInjectJs = r"""
 (function() {
+  if (document.getElementById('mc-early-reset')) return;
   var s = document.createElement('style');
   s.id = 'mc-early-reset';
-  s.textContent =
-    'html, body {'
-    + '  margin: 0 !important;'
-    + '  padding: 0 !important;'
-    + '  overscroll-behavior: none !important;'
-    + '  -webkit-overflow-scrolling: auto !important;'
-    + '}'
-    + ':root {'
-    + '  --sat: 0px !important;'
-    + '  --sab: 0px !important;'
-    + '}';
+  s.textContent = [
+    'html, body {',
+    '  margin: 0 !important;',
+    '  padding: 0 !important;',
+    '  overscroll-behavior: none !important;',
+    '  -webkit-overflow-scrolling: auto !important;',
+    '}',
+    ':root {',
+    '  --sat: 0px !important;',
+    '  --sab: 0px !important;',
+    '}'
+  ].join('');
   (document.head || document.documentElement).appendChild(s);
 })();
 """;
@@ -45,35 +46,13 @@ const _kEarlyInjectJs = r"""
 // REGRAS:
 //  • NÃO definir height/min-height no <html> ou <body> — isso corta o scroll
 //    em páginas Wix e impede que o conteúdo abaixo do viewport seja acessível.
-//  • padding-top: 0 — Flutter header Positioned já cobre a status bar.
-//  • padding-bottom: 0 — rootNavigator garante cobertura até borda física.
-//  • overscroll-behavior: none — impede bounce do iOS de expor o ghost space.
+//  • padding-top: 0 — Flutter header (Positioned top:0) já cobre a status bar.
+//  • padding-bottom: 0 — SafeArea(bottom:false) + Expanded entrega altura real.
+//  • overscroll-behavior: none — impede bounce do iOS de expor ghost space.
+//  • -webkit-overflow-scrolling: auto — desativa momentum scroll rubber-band.
 // ─────────────────────────────────────────────────────────────────────────────
 const _kInjectJs = r"""
 (function() {
-
-  // ════════════════════════════════════════════════════════════════════════════
-  // CAUSA RAIZ IDENTIFICADA — WebViewProxyAPIDelegate.swift (wkwebview 3.18.5):
-  //
-  //   override var frame: CGRect {
-  //     set {
-  //       scrollView.contentInsetAdjustmentBehavior = .never   ← desliga iOS auto-inset
-  //       if scrollView.adjustedContentInset != .zero {
-  //         scrollView.contentInset = UIEdgeInsets(bottom: -adjustedContentInset.bottom)
-  //       }
-  //     }
-  //   }
-  //
-  // O plugin tenta compensar o adjustedContentInset (home bar do iPhone) com
-  // contentInset negativo. Quando a WebView está posicionada via rootNavigator
-  // acima do shell, o frame.set é chamado com o inset da home bar ainda ativo,
-  // e a compensação negativa deixa um "espaço fantasma" de ~34px no scroll
-  // interno do WKWebView — que aparece como barra escura na base da tela.
-  //
-  // SOLUÇÃO CSS: forçar no <html> e <body> que o scroll interno do WKWebView
-  // não reserva espaço para nenhum safe-area-inset, e que o overscroll-behavior
-  // seja 'none' para que o bounce do iOS não exponha o fundo.
-  // ════════════════════════════════════════════════════════════════════════════
 
   // ── A. Viewport: viewport-fit=cover ──────────────────────────────────────
   var meta = document.querySelector('meta[name="viewport"]');
@@ -89,40 +68,32 @@ const _kInjectJs = r"""
     document.head.appendChild(m);
   }
 
-  // ── B. CSS global injetado: zera TODOS os insets e footers de uma vez ────
+  // ── B. CSS global — zera insets, bounce e footers Wix de uma só vez ──────
   var styleId = 'mc-global-reset';
   if (!document.getElementById(styleId)) {
     var style = document.createElement('style');
     style.id = styleId;
     style.textContent = [
-      // Zera safe-area no html/body — impede que o WKWebView reserve espaço
-      // para a home bar do iPhone dentro do scroll interno do WebView.
+      // html: sem padding/margin, sem bounce
       'html {',
-      '  --sat: env(safe-area-inset-top,    0px);',
-      '  --sab: env(safe-area-inset-bottom, 0px);',
       '  padding: 0 !important;',
       '  margin:  0 !important;',
       '  overscroll-behavior: none !important;',
+      '  -webkit-overflow-scrolling: auto !important;',
       '}',
+      // body: sem padding/margin em nenhuma direção
+      //   • padding-top:    0 — Flutter header Positioned já cobre a status bar
+      //   • padding-bottom: 0 — SafeArea(bottom:false)+Expanded dá altura real
       'body {',
       '  margin:  0 !important;',
       '  padding: 0 !important;',
-      // ZERO padding-top: o Flutter (rootNavigator + header Positioned) já
-      // posiciona a WebView abaixo da status bar. Qualquer padding-top aqui
-      // cria um gap extra visível no topo do conteúdo da página.
       '  padding-top:    0px !important;',
-      // ZERO padding-bottom: o rootNavigator garante que a WebView sangra
-      // até a borda física do vidro — sem reserva para home bar aqui.
       '  padding-bottom: 0px !important;',
       '  overscroll-behavior-y: none !important;',
-      // 'auto' em vez de 'touch' — desativa o momentum scroll do WKWebView
-      // que pode arrastar o conteúdo e expor o espaço fantasma do inset.
       '  -webkit-overflow-scrolling: auto !important;',
       '}',
 
-      // Footer Wix — IDs reais extraídos do HTML live de medcasescalcu.com:
-      //   <footer id="comp-kbgakxmn" class="wixui-footer">
-      //   <div id="SCROLL_TO_BOTTOM">
+      // Footer Wix — IDs reais extraídos do HTML live de medcasescalcu.com
       '#comp-kbgakxmn,',
       '#comp-kbgakxmn_r_comp-kbgakgyt,',
       '#comp-kbgakxmn_r_comp-mdr13kdg,',
@@ -134,16 +105,16 @@ const _kInjectJs = r"""
       '[class*="wixui-footer"],',
       '#SITE_FOOTER, #SITE_FOOTER_WRAPPER,',
       '#WIX_ADS, #wix-ads, .wix-ads {',
-      '  display:       none    !important;',
-      '  height:        0       !important;',
-      '  min-height:    0       !important;',
-      '  max-height:    0       !important;',
-      '  overflow:      hidden  !important;',
-      '  visibility:    hidden  !important;',
-      '  opacity:       0       !important;',
-      '  pointer-events:none    !important;',
-      '  margin:        0       !important;',
-      '  padding:       0       !important;',
+      '  display:        none    !important;',
+      '  height:         0       !important;',
+      '  min-height:     0       !important;',
+      '  max-height:     0       !important;',
+      '  overflow:       hidden  !important;',
+      '  visibility:     hidden  !important;',
+      '  opacity:        0       !important;',
+      '  pointer-events: none    !important;',
+      '  margin:         0       !important;',
+      '  padding:        0       !important;',
       '}',
 
       // Zera margin/padding-bottom dos containers de página Wix
@@ -155,23 +126,21 @@ const _kInjectJs = r"""
     (document.head || document.documentElement).appendChild(style);
   }
 
-  // ── C. Body inline — garante aplicação mesmo antes do <head> estar pronto
+  // ── C. Inline imperativo — aplica mesmo se <head> ainda não estiver pronto
   document.body.style.setProperty('margin',                     '0',    'important');
   document.body.style.setProperty('padding-top',                '0px',  'important');
   document.body.style.setProperty('padding-bottom',             '0px',  'important');
   document.body.style.setProperty('overscroll-behavior-y',      'none', 'important');
-  // Desativa o momentum scroll do WKWebView — impede que o rubber-band do iOS
-  // arraste o conteúdo para baixo e revele o espaço fantasma do adjustedContentInset.
   document.body.style.setProperty('-webkit-overflow-scrolling', 'auto', 'important');
-  document.documentElement.style.setProperty('overscroll-behavior', 'none', 'important');
-  document.documentElement.style.setProperty('-webkit-overflow-scrolling', 'auto', 'important');
+  document.documentElement.style.setProperty('overscroll-behavior',           'none', 'important');
+  document.documentElement.style.setProperty('-webkit-overflow-scrolling',    'auto', 'important');
   document.documentElement.style.removeProperty('height');
   document.body.style.removeProperty('height');
   document.body.style.removeProperty('min-height');
   document.body.style.removeProperty('max-height');
   document.body.style.removeProperty('overflow-y');
 
-  // ── D. Passagem imperativa: mata footer já no DOM ─────────────────────────
+  // ── D. Kill imperativo do footer já no DOM ───────────────────────────────
   var KILL_IDS = [
     'comp-kbgakxmn', 'comp-kbgakxmn_r_comp-kbgakgyt',
     'SCROLL_TO_BOTTOM', 'SCROLL_TO_TOP',
@@ -181,11 +150,11 @@ const _kInjectJs = r"""
     KILL_IDS.forEach(function(id) {
       var el = document.getElementById(id);
       if (el) {
-        el.style.setProperty('display',  'none', 'important');
-        el.style.setProperty('height',   '0',    'important');
+        el.style.setProperty('display',  'none',   'important');
+        el.style.setProperty('height',   '0',      'important');
         el.style.setProperty('overflow', 'hidden', 'important');
-        el.style.setProperty('margin',   '0',    'important');
-        el.style.setProperty('padding',  '0',    'important');
+        el.style.setProperty('margin',   '0',      'important');
+        el.style.setProperty('padding',  '0',      'important');
       }
     });
     document.querySelectorAll('footer, .wixui-footer').forEach(function(el) {
@@ -195,7 +164,7 @@ const _kInjectJs = r"""
   }
   killFooter();
 
-  // ── E. MutationObserver — re-aplica no SPA Wix ───────────────────────────
+  // ── E. MutationObserver — re-aplica no SPA Wix ──────────────────────────
   var _obs = new MutationObserver(function(mutations) {
     if (mutations.some(function(m) { return m.addedNodes.length > 0; })) {
       killFooter();
@@ -215,7 +184,8 @@ const _kInjectJs = r"""
 //  • Estado aberto  : 120px — exibe título, sublabel e botão de link externo.
 //  • Transição CSS suave (0.3s ease) em ambas as direções.
 //  • position: fixed bottom:0 — nunca ocupa espaço no flow do conteúdo Wix.
-//  • Padding-bottom = env(safe-area-inset-bottom) — respeita home bar do iPhone.
+//  • Padding-bottom = 0 — a SafeArea(bottom:false) do Flutter não afeta o DOM;
+//    a home bar fica visível atrás da barra porque o WebView é transparente.
 // ─────────────────────────────────────────────────────────────────────────────
 String _buildSourcesButtonJs(bool isEs) {
   final labelCollapsed = isEs
@@ -248,8 +218,7 @@ String _buildSourcesButtonJs(bool isEs) {
     'transition: height 0.3s ease',
     'cursor: pointer',
     'user-select: none',
-    '-webkit-tap-highlight-color: transparent',
-    'padding-bottom: env(safe-area-inset-bottom)'
+    '-webkit-tap-highlight-color: transparent'
   ].join('; ');
 
   // ── Linha colapsada (sempre visível) ──────────────────────────────────────
@@ -357,26 +326,19 @@ String _buildSourcesButtonJs(bool isEs) {
 
   bar.addEventListener('click', function(e) {
     e.stopPropagation();
-    if (isOpen) {
-      closeBar();
-    } else {
-      openBar();
-    }
+    if (isOpen) { closeBar(); } else { openBar(); }
   });
 
-  // ── Link externo — não fecha a barra, apenas abre fontes ──────────────────
+  // ── Link externo ──────────────────────────────────────────────────────────
   linkBtn.addEventListener('click', function(e) {
     e.stopPropagation();
     if (window.MedCasesChannel) {
       window.MedCasesChannel.postMessage('openSources');
     }
-    // Fechar após abrir o link
     setTimeout(closeBar, 300);
   });
 
-  // ── Padding dinâmico no body para o conteúdo não ficar atrás da barra ─────
-  // A barra fixa de 20px poderia esconder o último item da página.
-  // Adicionamos 20px de padding-bottom ao body para compensar.
+  // ── Padding-bottom no body — evita que a barra cubra o último item ────────
   document.body.style.setProperty('padding-bottom', '20px', 'important');
 })();
 ''';
@@ -418,20 +380,9 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
       ..setUserAgent(
           'Mozilla/5.0 (iPhone; CPU iPhone OS 15_0 like Mac OS X) MedCasesApp/6.1.0')
-      // TRANSPARENTE — não atribuir cor sólida ao scrollView interno do WKWebView.
-      //
-      // setBackgroundColor(cor sólida) internamente faz:
-      //   wkWebView.setOpaque(false)
-      //   wkWebView.backgroundColor = UIColor.clear   ← ok
-      //   scrollView.backgroundColor = UIColor(argb)  ← PROBLEMA: scrollView fica sólido
-      //
-      // Quando a página Wix não renderiza conteúdo até o fundo do scroll, o
-      // scrollView.backgroundColor sólido fica exposto como barra escura.
-      //
-      // SOLUÇÃO: Colors.transparent → scrollView fica transparente → o ColoredBox
-      // Flutter pai (cor 0xFF0F091E) aparece atrás sem criar layer duplicado.
+      // Colors.transparent → scrollView.backgroundColor = UIColor.clear
+      // O ColoredBox Flutter pai (0xFF0F091E) aparece atrás sem criar barra sólida.
       ..setBackgroundColor(Colors.transparent)
-      // Canal JS → Flutter: intercepta clique no botão de fontes acadêmicas
       ..addJavaScriptChannel(
         'MedCasesChannel',
         onMessageReceived: (msg) async {
@@ -445,15 +396,12 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
       )
       ..setNavigationDelegate(NavigationDelegate(
         onPageStarted: (_) async {
-          // Injeta o reset de overscroll/padding-bottom logo no início do carregamento
-          // (antes do DOMContentLoaded) para que o Wix nunca chegue a renderizar
-          // o safe-area gap ou a reserva de home bar no scroll interno.
+          // Injeta CSS de reset ANTES do DOMContentLoaded — Wix não chega a
+          // reservar safe-area-inset ou configurar momentum scroll.
           await _controller.runJavaScript(_kEarlyInjectJs);
         },
         onPageFinished: (_) async {
-          // Passo 1: corrige viewport, overscroll, insets e mata footer Wix
           await _controller.runJavaScript(_kInjectJs);
-          // Passo 2: injeta barra retrátil de fontes acadêmicas
           await _controller.runJavaScript(_buildSourcesButtonJs(_isEs));
         },
       ))
@@ -462,104 +410,91 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // ── topPadding via FlutterView — imune a qualquer MediaQuery pai ──────────
-    // View.of(context).viewPadding.top = altura real da status bar em px físicos.
-    // Dividir pelo dpr converte para logical pixels sem depender do MediaQuery
-    // que o shell/SafeArea pode ter alterado.
+    // ── topPadding via FlutterView — imune ao MediaQuery do shell ─────────────
     final view       = View.of(context);
     final topPadding = view.viewPadding.top / view.devicePixelRatio;
 
-    // ── Tela cheia garantida pelo rootNavigator ───────────────────────────────
-    // Esta tela é aberta com Navigator.of(context, rootNavigator: true), então
-    // ocupa o display completo acima do shell — sem restrição de bottom nav.
-    // SizedBox.expand + Positioned.fill = WebView preenche 100% sem aritmética.
-    // bottomPadding = altura da home bar do iPhone em logical pixels.
-    // Usada para pintar uma faixa Flutter sólida NA FRENTE do WebView,
-    // cobrindo qualquer artefato do scrollView nativo que apareça abaixo.
-    final bottomPadding = view.viewPadding.bottom / view.devicePixelRatio;
-
+    // ── PADRÃO OURO: SafeArea(bottom:false) + Column + Expanded ──────────────
+    //
+    // Por que este layout elimina a barra escura:
+    //
+    // 1. SafeArea(top:true, bottom:false):
+    //    • top:true  → recua o conteúdo abaixo da status bar do SO.
+    //    • bottom:false → NÃO adiciona padding na base — o Expanded empurra
+    //      a WebView até a borda física do vidro, incluindo a área da home bar.
+    //    • Isso entrega à WKWebView um frame que toca a borda física,
+    //      então o adjustedContentInset do iOS fica zerado automaticamente.
+    //
+    // 2. Column:
+    //    • Filho 0: header fixo de (topPadding + 52) px.
+    //    • Filho 1: Expanded → WebView ocupa TODO o espaço restante.
+    //    • Sem Positioned, sem aritmética de bottomPadding, sem tampas.
+    //
+    // 3. WebView com Colors.transparent:
+    //    • scrollView.backgroundColor = UIColor.clear.
+    //    • O Scaffold.backgroundColor (0xFF0F091E) aparece atrás.
+    //    • Impossível ver barra escura mesmo se o conteúdo não cobrir o fundo.
+    //
+    // IMPORTANTE: Não usar tampa Positioned no bottom — isso "encurtava" a
+    // WebView visualmente (conteúdo HTML empurrado para cima pelo iOS) gerando
+    // a falsa impressão de que a barra persistia.
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.light,
-      child: ColoredBox(
-        // Fundo escuro em toda a área — aparece atrás do WebView transparente.
-        color: const Color(0xFF0F091E),
-        child: SizedBox.expand(
-          child: Stack(
+      child: Scaffold(
+        backgroundColor: const Color(0xFF0F091E),
+        body: SafeArea(
+          top: false,   // gerenciado manualmente abaixo via topPadding
+          bottom: false, // ← CRÍTICO: deixa a WebView tocar a borda física
+          child: Column(
             children: [
 
-              // ── CAMADA 0 — WebView: ocupa tudo abaixo do header ───────────
-              // top = altura do header (status bar + barra de título).
-              // bottom = 0 → sangra até a borda física do vidro.
-              // setBackgroundColor(transparent) → scrollView sem cor sólida,
-              // então o ColoredBox pai aparece atrás sem criar barra visível.
-              Positioned(
-                top:    topPadding + 52,
-                left:   0,
-                right:  0,
-                bottom: 0,
-                child:  WebViewWidget(controller: _controller),
+              // ── CAMADA 0 — Header gradiente ──────────────────────────────
+              Container(
+                height: topPadding + 52,
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end:   Alignment.bottomRight,
+                    colors: [
+                      Color(0xFF1A0F2E),
+                      Color(0xFF2D1B5A),
+                      Color(0xFF4A2D8A),
+                    ],
+                  ),
+                ),
+                child: Padding(
+                  padding: EdgeInsets.only(top: topPadding),
+                  child: Row(
+                    children: [
+                      IconButton(
+                        icon: const Icon(
+                          Icons.arrow_back_ios_rounded,
+                          size: 18,
+                          color: Colors.white,
+                        ),
+                        onPressed: () => Navigator.of(context).pop(),
+                      ),
+                      const Expanded(
+                        child: Text(
+                          'CALCULADORA CL\u00cdNICA',
+                          style: TextStyle(
+                            fontSize:      16,
+                            fontWeight:    FontWeight.w800,
+                            color:         Colors.white,
+                            letterSpacing: 0.4,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
 
-              // ── CAMADA 1b — Tampa de home bar (FRENTE do WebView) ─────────
-              // Pinta uma faixa sólida NA FRENTE do WebView na área da home bar.
-              // Garante que qualquer artefato do WKWebView scrollView (ghost bar,
-              // adjustedContentInset residual) seja coberto por Flutter.
-              // Visualmente idêntico ao ColoredBox pai — sem borda perceptível.
-              if (bottomPadding > 0)
-                Positioned(
-                  left:   0,
-                  right:  0,
-                  bottom: 0,
-                  height: bottomPadding,
-                  child: const ColoredBox(color: Color(0xFF0F091E)),
-                ),
-
-              // ── CAMADA 1 — Header gradiente (status bar + título) ─────────
-              // Único overlay Flutter visível — cobre apenas o topo.
-              Positioned(
-                top:   0,
-                left:  0,
-                right: 0,
-                child: Container(
-                  height: topPadding + 52,
-                  decoration: const BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end:   Alignment.bottomRight,
-                      colors: [
-                        Color(0xFF1A0F2E),
-                        Color(0xFF2D1B5A),
-                        Color(0xFF4A2D8A),
-                      ],
-                    ),
-                  ),
-                  child: Padding(
-                    padding: EdgeInsets.only(top: topPadding),
-                    child: Row(
-                      children: [
-                        IconButton(
-                          icon: const Icon(
-                            Icons.arrow_back_ios_rounded,
-                            size: 18,
-                            color: Colors.white,
-                          ),
-                          onPressed: () => Navigator.of(context).pop(),
-                        ),
-                        const Expanded(
-                          child: Text(
-                            'CALCULADORA CL\u00cdNICA',
-                            style: TextStyle(
-                              fontSize:      16,
-                              fontWeight:    FontWeight.w800,
-                              color:         Colors.white,
-                              letterSpacing: 0.4,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
+              // ── CAMADA 1 — WebView: ocupa todo o espaço restante ─────────
+              // Expanded → sem bottom fixo, sem cálculo de padding.
+              // A WKWebView recebe um frame que vai até a borda física do vidro.
+              Expanded(
+                child: WebViewWidget(controller: _controller),
               ),
 
             ],
