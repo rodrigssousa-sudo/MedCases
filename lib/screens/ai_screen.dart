@@ -2810,10 +2810,10 @@ List<String> _splitIntoBlocks(String text) {
     final lines = block.split('\n');
     if (lines.length != 1) return false; // bloco com múltiplas linhas já tem corpo
     final t = lines[0].trim();
-    // 4 blocos premium oficiais + emojis clínicos adicionais frequentes
+    // 5 blocos premium oficiais + emojis clínicos adicionais frequentes (Build 106)
     if (t.startsWith('🚨') || t.startsWith('💊') ||
         t.startsWith('⛔') || t.startsWith('📌') ||
-        t.startsWith('🏥') || t.startsWith('💉') ||
+        t.startsWith('🟥') || t.startsWith('🏥') || t.startsWith('💉') ||
         t.startsWith('🔬') || t.startsWith('📋') ||
         t.startsWith('🫀') || t.startsWith('🫁') ||
         t.startsWith('🧬') || t.startsWith('💡')) return true;
@@ -2957,9 +2957,10 @@ class _AiBlockBubble extends StatelessWidget {
   /// Linha de seção principal (### ou marcador clínico padrão ou 4-blocos emoji)
   bool _isSectionHeader(String line) {
     final t = line.trim();
-    // Reconhece os 4 blocos oficiais premium: 🚨 💊 ⛔ 📌
+    // Reconhece os 5 blocos oficiais premium: 🚨 💊 ⛔ 📌 🟥 (Build 106)
     if (t.startsWith('🚨') || t.startsWith('💊') ||
-        t.startsWith('⛔') || t.startsWith('📌')) return true;
+        t.startsWith('⛔') || t.startsWith('📌') ||
+        t.startsWith('🟥')) return true;
     return t.startsWith('###') ||
            RegExp(
              // Aceita tanto versões acentuadas quanto não-acentuadas (safety net)
@@ -3111,6 +3112,37 @@ class _AiBlockBubble extends StatelessWidget {
                         letterSpacing: 0.1,
                         height: 1.35,
                       ),
+                    ),
+                  );
+                }
+
+                // ── 🟥 CARD VERMELHO — Conduta / Prescrição Medicamentosa (Build 106) ──
+                // Widget especial com fundo vermelho tênue + ícone medicamento.
+                // Renderizado ANTES do _isSectionHeader genérico para sobrepor o
+                // estilo de barra lateral com um card completo (background + borda).
+                if (trimmed.startsWith('🟥')) {
+                  final label = trimmed
+                      .replaceFirst('🟥', '')
+                      .replaceFirst(RegExp(r'^[\s—\-:]+'), '')
+                      .trim();
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 3, top: 4),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 5),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(6),
+                        color: kRed.withValues(alpha: dark ? 0.18 : 0.08),
+                        border: Border.all(color: kRed.withValues(alpha: 0.40), width: 1.0),
+                      ),
+                      child: Row(children: [
+                        const Icon(Icons.medication_rounded, size: 14, color: kRed),
+                        const SizedBox(width: 7),
+                        Expanded(child: _buildInlineText(
+                          label.isEmpty ? trimmed : label,
+                          dark ? const Color(0xFFFF8080) : kRed,
+                          isBold: true,
+                        )),
+                      ]),
                     ),
                   );
                 }
