@@ -1022,22 +1022,39 @@ class _AiScreenState extends State<AiScreen> {
               _ft.contains('verifique sua rede') ||
               _ft.contains('ia indisponível') ||
               _ft.contains('ia indisponible');
-          setState(() {
-            _thinking    = false;
-            _isStreaming  = false;
-            _aiError      = isKeyError;
-            _networkError = isNetErr;
 
-            if (isNetErr) {
+          // ── BUILD 101 FIX: Desacopla texto final do flag _isStreaming ─────
+          // PROBLEMA RAIZ: o setState anterior combinava _isStreaming=false +
+          // texto final em um único setState. Isso fazia o _AiBubble receber
+          // isStreaming=false e texto final SIMULTANEAMENTE no mesmo frame —
+          // o _computeBlocks() removia o cursor ▌ e potencialmente produzia
+          // um número diferente de blocos. Com layout ainda incompleto, o
+          // jumpTo no onDone saltava para um maxScrollExtent MENOR que o real,
+          // congelando o scroll antes do último bloco aparecer na tela.
+          //
+          // SOLUÇÃO: 2 setStates separados:
+          // setState #1 (agora): comita texto final COM _isStreaming=true ainda
+          //   → _AiBubble já recebe o texto completo mas mantém o cursor ▌
+          //   → os novos blocos são adicionados ao layout enquanto streaming=true
+          // setState #2 (no próximo frame via addPostFrameCallback): remove cursor
+          //   → layout dos blocos finais já está calculado
+          //   → _isStreaming=false pode ser setado com segurança
+          // _scrollFinalAfterStream() (após setState #2): 3 frames encadeados
+          //   garantem que o maxScrollExtent está totalmente estabilizado
+          //   antes do scroll final — elimina o congelamento mid-screen.
+
+          if (isNetErr) {
+            // Casos de erro: mantenha comportamento original para evitar regressão
+            setState(() {
+              _thinking    = false;
+              _isStreaming  = false;
+              _aiError      = isKeyError;
+              _networkError = isNetErr;
               // ── NETWORK SAFETY: erro de rede no onDone ───────────────────
-              // 1. Remove a mensagem do usuário do chat — nunca deixar sem resposta
-              // 2. Remove qualquer bolha parcial de streaming
-              // 3. Injeta o Alerta Clínico como bolha da IA
               if (streamingMsgIdx >= 0 && streamingMsgIdx < _messages.length) {
                 _messages.removeAt(streamingMsgIdx);
                 streamingMsgIdx = -1;
               }
-              // Remove mensagem do usuário (última se for do usuário)
               if (_messages.isNotEmpty && _messages.last.role == 'user' &&
                   _messages.last.text == trimmed) {
                 _messages.removeLast();
@@ -1045,41 +1062,67 @@ class _AiScreenState extends State<AiScreen> {
               _scrollGeneration++;
               _lastAiIndex = _messages.length;
               _messages.add(_ChatMsg(role: 'ai', text: finalText));
-            } else if (streamingMsgIdx >= 0) {
-              // Finaliza bolha de streaming com texto completo
-              _messages[streamingMsgIdx] = _ChatMsg.withId(
-                id: _messages[streamingMsgIdx].id,
-                role: 'ai',
-                text: finalText,
-              );
-            } else {
-              // Fallback legado (sem streaming) — adiciona bolha de uma vez
-              _scrollGeneration++;
-              _lastAiIndex = _messages.length;
-              _messages.add(_ChatMsg(role: 'ai', text: finalText));
-            }
-          });
-          _scrollDown();
-          // ── Scroll final reativo após resposta completa (Build 99) ───────
-          // Substituiu Future.delayed(180ms) por dois addPostFrameCallback
-          // encadeados: Flutter garante que o layout de TODOS os novos blocos
-          // (incluindo respostas longas com múltiplos cards) está calculado
-          // após 2 frames consecutivos, sem depender de timing arbitrário.
-          // Frame 1: aguarda o primeiro layout pass após setState
-          // Frame 2: aguarda o segundo pass que estabiliza altura máxima
-          // jumpTo (instantâneo) é usado em vez de animateTo para evitar
-          // que o scroll "saltite" quando a posição final ainda não está
-          // estável — idêntico ao comportamento do WhatsApp/Telegram.
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            if (!mounted || _userScrolledUp) return;
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              if (!mounted || _userScrolledUp) return;
-              if (!_scrollCtrl.hasClients) return;
-              final pos = _scrollCtrl.position;
-              if (pos.pixels >= pos.maxScrollExtent - 4) return;
-              _scrollCtrl.jumpTo(pos.maxScrollExtent);
             });
-          });
+            _scrollDown(force: true);
+          } else {
+            // ── PASSO 1: comita texto final mantendo _isStreaming=true ──────
+            // O _AiBubble recebe o texto completo mas ainda não remove o cursor,
+            // permitindo que o Flutter calcule o layout dos blocos finais primeiro.
+            setState(() {
+              _thinking     = false;
+              _aiError      = isKeyError;
+              _networkError = false;
+              if (streamingMsgIdx >= 0) {
+                // Caminho normal: atualiza bolha com texto definitivo
+                _messages[streamingMsgIdx] = _ChatMsg.withId(
+                  id: _messages[streamingMsgIdx].id,
+                  role: 'ai',
+                  text: finalText,
+                );
+              } else {
+                // Fallback legado (sem streaming)
+                _scrollGeneration++;
+                _lastAiIndex = _messages.length;
+                _messages.add(_ChatMsg(role: 'ai', text: finalText));
+              }
+            });
+
+            // Scroll intermediário: avança para onde estamos agora
+            _scrollDown();
+
+            // ── PASSO 2: remove cursor no próximo frame ──────────────────
+            // Após o Flutter calcular o layout dos blocos finais (com cursor),
+            // remove o cursor setando _isStreaming=false. Neste ponto o
+            // _computeBlocks() vai recomputar sem cursor — mas o maxScrollExtent
+            // já está estável porque os blocos-base já foram medidos.
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              if (!mounted) return;
+              setState(() {
+                _isStreaming = false;
+              });
+
+              // ── PASSO 3: scroll final após remoção do cursor (3 frames) ──
+              // Frame 1: aguarda o rebuild do _AiBubble sem cursor (sem ▌)
+              // Frame 2: aguarda o segundo layout pass (altura dos blocos finais)
+              // Frame 3: maxScrollExtent totalmente estabilizado → scroll seguro
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                if (!mounted || _userScrolledUp) return;
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  if (!mounted || _userScrolledUp) return;
+                  if (!_scrollCtrl.hasClients) return;
+                  final pos = _scrollCtrl.position;
+                  if (pos.pixels >= pos.maxScrollExtent - 4) return;
+                  // animateTo (suave 200ms) em vez de jumpTo — evita "teleporte"
+                  // caso o layout ainda esteja se estabilizando no último frame.
+                  _scrollCtrl.animateTo(
+                    pos.maxScrollExtent,
+                    duration: const Duration(milliseconds: 200),
+                    curve: Curves.easeOutCubic,
+                  );
+                });
+              });
+            });
+          }
         },
         onError: (errorMsg) {
           if (!mounted) return;
@@ -3352,10 +3395,31 @@ class _AiBubbleState extends State<_AiBubble> {
       if (widget.isStreaming && _cachedBlocks.length > _visibleCount) {
         _visibleCount = _cachedBlocks.length;
       }
+
+      // ── BUILD 101 FIX: garante visibilidade total ao fim do stream ────────
+      // Quando isStreaming muda de true → false (cursor removido), o
+      // _computeBlocks() pode gerar um nº diferente de blocos (sem o ▌).
+      // Garante que _visibleCount cobre TODOS os blocos finais — evita que
+      // o último bloco fique invisível se o count anterior era para blocos-com-cursor.
+      if (!widget.isStreaming && old.isStreaming && _cachedBlocks.isNotEmpty) {
+        _visibleCount = _cachedBlocks.length;
+      }
     });
 
     // Scroll para o fim a cada chunk — texto cresce e médico acompanha
     if (widget.isStreaming && textChanged && widget.onBlockRevealed != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        widget.onBlockRevealed!(widget.scrollGeneration);
+      });
+    }
+
+    // ── BUILD 101 FIX: scroll final quando streaming termina ──────────────
+    // Quando isStreaming muda de true → false, o cursor ▌ é removido e o
+    // _computeBlocks() recomputa os blocos sem ele. Este addPostFrameCallback
+    // garante que o scroll se ajusta ao layout final DEPOIS que os blocos sem
+    // cursor foram renderizados — eliminando o congelamento mid-screen.
+    if (!widget.isStreaming && old.isStreaming && widget.onBlockRevealed != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (!mounted) return;
         widget.onBlockRevealed!(widget.scrollGeneration);
