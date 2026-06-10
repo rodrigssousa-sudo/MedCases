@@ -1007,15 +1007,21 @@ class _AiScreenState extends State<AiScreen> {
           if (!mounted) return;
           // ── Detecta tipo de resultado ─────────────────────────────────────
           final isKeyError = finalText.startsWith('ERRO') && finalText.contains('API');
-          // Detecta Alerta Clínico de rede (novo formato 🚨 + legado)
-          final isNetErr = finalText.contains('🚨') ||
-              finalText.toLowerCase().contains('sem conex') ||
-              finalText.toLowerCase().contains('sin conex') ||
-              finalText.toLowerCase().contains('timeout') ||
-              finalText.toLowerCase().contains('falha na conex') ||
-              finalText.toLowerCase().contains('falla de red') ||
-              finalText.toLowerCase().contains('conexão necessária') ||
-              finalText.toLowerCase().contains('conexión requerida');
+          // Detecta erro de rede — NÃO usa finalText.contains('🚨') como critério
+          // pois 🚨 é também marcador de seção clínica válida (ex: "🚨 INFARTO AGUDO DO MIOCÁRDIO").
+          // Usamos apenas keywords textuais específicas de mensagens de erro de rede.
+          final _ft = finalText.toLowerCase();
+          final isNetErr = _ft.contains('sem conex') ||
+              _ft.contains('sin conex') ||
+              _ft.contains('timeout') ||
+              _ft.contains('falha na conex') ||
+              _ft.contains('falla de red') ||
+              _ft.contains('conexão necessária') ||
+              _ft.contains('conexión requerida') ||
+              _ft.contains('verifique sua conex') ||
+              _ft.contains('verifique sua rede') ||
+              _ft.contains('ia indisponível') ||
+              _ft.contains('ia indisponible');
           setState(() {
             _thinking    = false;
             _isStreaming  = false;
@@ -1085,15 +1091,21 @@ class _AiScreenState extends State<AiScreen> {
             return;
           }
           final isKeyError = errorMsg.startsWith('ERRO') && errorMsg.contains('API');
-          // Detecta Alerta Clínico de rede (novo formato 🚨 + legado)
-          final isNetErr = errorMsg.contains('🚨') ||
-              errorMsg.toLowerCase().contains('sem conex') ||
-              errorMsg.toLowerCase().contains('sin conex') ||
-              errorMsg.toLowerCase().contains('timeout') ||
-              errorMsg.toLowerCase().contains('falha na conex') ||
-              errorMsg.toLowerCase().contains('falla de red') ||
-              errorMsg.toLowerCase().contains('conexão necessária') ||
-              errorMsg.toLowerCase().contains('conexión requerida');
+          // Detecta erro de rede — NÃO usa errorMsg.contains('🚨') como critério
+          // pois 🚨 é também marcador de seção clínica válida.
+          // Usamos apenas keywords textuais específicas de mensagens de erro de rede.
+          final _em = errorMsg.toLowerCase();
+          final isNetErr = _em.contains('sem conex') ||
+              _em.contains('sin conex') ||
+              _em.contains('timeout') ||
+              _em.contains('falha na conex') ||
+              _em.contains('falla de red') ||
+              _em.contains('conexão necessária') ||
+              _em.contains('conexión requerida') ||
+              _em.contains('verifique sua conex') ||
+              _em.contains('verifique sua rede') ||
+              _em.contains('ia indisponível') ||
+              _em.contains('ia indisponible');
           setState(() {
             _thinking    = false;
             _isStreaming  = false;
@@ -2599,15 +2611,54 @@ String _cleanAiText(String raw) {
 
 /// Divide o texto em blocos lógicos separados por linha(s) em branco.
 /// Cada bloco vai virar uma bolha independente.
+///
+/// REGRA ANTI-ORFÃO: se um bloco consiste apenas de uma linha que é um
+/// section-header (começa com 🚨 💊 ⛔ 📌 ### ou palavras-chave clínicas),
+/// ele é fundido com o bloco seguinte. Isso evita que o AI emita uma linha
+/// em branco entre o cabeçalho e os bullets e os dois apareçam em cards
+/// separados (ex: "🚨 **TRATAMENTO FARMACOLÓGICO DO IAM** —" num card sozinho
+/// e os bullets de medicação num card separado).
 List<String> _splitIntoBlocks(String text) {
   // Normaliza quebras de linha múltiplas em duplas
   final normalized = text.replaceAll(RegExp(r'\n{3,}'), '\n\n');
   // Divide por linha em branco
   final rawBlocks = normalized.split(RegExp(r'\n\n+'));
-  return rawBlocks
+  final blocks = rawBlocks
       .map((b) => b.trim())
       .where((b) => b.isNotEmpty)
       .toList();
+
+  // ── Passo de fusão de cabeçalhos orfãos ──────────────────────────────
+  // Detector inline (espelha _isSectionHeader e _isH2 do _AiBlockBubble).
+  // Não temos acesso ao método de instância aqui (função top-level), então
+  // replicamos a mesma lógica de detecção de forma simples.
+  bool looksLikeHeaderOnly(String block) {
+    final lines = block.split('\n');
+    if (lines.length != 1) return false; // bloco com múltiplas linhas já tem corpo
+    final t = lines[0].trim();
+    if (t.startsWith('🚨') || t.startsWith('💊') ||
+        t.startsWith('⛔') || t.startsWith('📌')) return true;
+    if (t.startsWith('## ') || t.startsWith('### ')) return true;
+    if (RegExp(r'^(Hipótese|Hipotesis|Conduta|Conducta|Exames|Examenes|'
+               r'Monitoriz|Evitar|Escalonamento|Escalonamiento|'
+               r'AGORA|AHORA|QUICK|CLINICAL|TEACH|'
+               r'Primeira Escolha|Primera Elección)',
+               caseSensitive: false).hasMatch(t)) return true;
+    return false;
+  }
+
+  final merged = <String>[];
+  for (int i = 0; i < blocks.length; i++) {
+    final b = blocks[i];
+    if (looksLikeHeaderOnly(b) && i + 1 < blocks.length) {
+      // Funde o cabeçalho orfão com o bloco seguinte, separados por \n
+      merged.add('$b\n${blocks[i + 1]}');
+      i++; // pula o próximo bloco — já foi incorporado
+    } else {
+      merged.add(b);
+    }
+  }
+  return merged;
 }
 
 /// Renderiza uma linha de texto com suporte a negrito inline via **texto**.
