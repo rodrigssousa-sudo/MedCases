@@ -299,33 +299,42 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
   @override
   Widget build(BuildContext context) {
     final mq         = MediaQuery.of(context);
-    final screenSize = mq.size;
     final topPadding = mq.padding.top;
+
+    // ── Altura física real da tela ────────────────────────────────────────────
+    // MediaQuery.of(context).size.height é reduzido pelo shell quando há uma
+    // bottom nav bar ou SafeArea inferior — deixando um fundo roxo exposto.
+    //
+    // Solução: usar View.of(context).physicalSize / devicePixelRatio para obter
+    // a altura total do display independente de qualquer widget pai que imponha
+    // restrições. Somamos viewPadding.bottom (home bar do iPhone) para cobrir
+    // até a borda física absoluta.
+    final view          = View.of(context);
+    final physicalH     = view.physicalSize.height / view.devicePixelRatio;
+    final physicalW     = view.physicalSize.width  / view.devicePixelRatio;
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.light,
       child: Material(
         color: Colors.transparent,
         child: SizedBox(
-          // SizedBox com dimensões físicas reais do display.
-          // Impede que a bottom nav bar do shell "roube" altura da WebView.
-          width:  screenSize.width,
-          height: screenSize.height,
+          // Dimensões físicas reais — ignora qualquer restrição do shell pai.
+          width:  physicalW,
+          height: physicalH,
           child: Stack(
             clipBehavior: Clip.none,
             children: [
 
-              // ── CAMADA 0 — WebView ocupa 100% do display físico ─────────
-              // Positioned.fill = pixel perfect, sem padding artificial.
-              // A WebView tem scroll próprio interno — não há nada sobreposto
-              // na base da tela que tire espaço ou bloqueie o conteúdo.
+              // ── CAMADA 0 — WebView preenche TODO o display físico ────────
+              // Positioned.fill dentro do SizedBox físico = pixel perfect.
+              // Sem padding inferior, sem reserva para barra antiga.
               Positioned.fill(
                 child: WebViewWidget(controller: _controller),
               ),
 
               // ── CAMADA 1 — Header roxo (gradiente) — topo apenas ────────
-              // Único overlay autorizado: cobre apenas o topo (status bar + título).
-              // Base da tela: completamente livre — 100% para a WebView.
+              // Único overlay: cobre status bar + título.
+              // Resto da tela 100% livre para a WebView.
               Positioned(
                 top:   0,
                 left:  0,
@@ -373,8 +382,8 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
               ),
 
               // ── BASE DA TELA: VAZIA ──────────────────────────────────────
-              // Nenhum widget, nenhuma barra, nenhum overlay.
-              // O médico tem 100% do espaço abaixo do header para a WebView.
+              // Nenhum widget, nenhuma barra Flutter sobreposta.
+              // A barra de fontes vive no DOM da WebView (JS injetado).
 
             ],
           ),
