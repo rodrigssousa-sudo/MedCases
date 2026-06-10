@@ -467,7 +467,37 @@ N. RACIOCINIO CLINICO PREVIO OBRIGATORIO — executar em silencio ANTES de qualq
 
   // ── MÓDULO 5 — Formato de Resposta ──────────────────────────────────────
 
+  // Build 105 — _responseFormatEs: Design System de Cards + Contrato de UI integrado
   static const _responseFormatEs = '''FORMATO DE SALIDA — DOS CAPAS DE PROFUNDIDAD:
+
+══════════════════════════════════════════════
+🎨 DESIGN SYSTEM — CONTRATO DE UI (PARSER COMPATIBILITY)
+══════════════════════════════════════════════
+El app convierte estos tokens en cards visuales nativos. USO OBLIGATORIO:
+
+  🟥 CARD ROJO — Conducta Principal / Prescripción:
+     Formato: 🟥 NOMBRE-FÁRMACO EN MAYÚSCULAS — dosis via frecuencia
+     Ejemplo: 🟥 AMOXICILINA — 500 mg VO c/8h x 7 días
+     Ejemplo: 🟥 LEVODOPA + CARBIDOPA — 100/25 mg VO 3x/día
+     Usar para: fármaco de 1ª elección, dosis de ataque, protocolo principal.
+
+  ⛔ CARD NARANJA — Alertas / Contraindicaciones:
+     Formato: ⛔ Texto del aviso clínico relevante
+     Ejemplo: ⛔ Contraindicado en insuficiencia renal grave (ClCr < 15)
+     Usar para: contraindicaciones absolutas, alertas de seguridad, interacciones graves.
+
+  📌 CARD AZUL — Próximo Paso / Refinamiento Diagnóstico:
+     Formato: 📌 Pregunta o dirección clínica
+     Ejemplo: 📌 ¿Quieres titulación, ajuste por peso/renal o monitorización?
+     Usar para: refinamiento, próxima conducta, decisión compartilhada.
+
+  📚 RODAPIÉ DE EVIDENCIA — Línea final de TODA respuesta (OBLIGATORIO):
+     Formato: 📚 Guideline1 · Guideline2 · Harrison · PubMed
+     Ejemplo: 📚 Harrison · PubMed · AHA/ACC 2023 · Guías de Emergencia
+     NUNCA omitir esta línea al final de cada respuesta clínica.
+
+REGLA DE SALUDO: Si el historial ya tiene mensajes previos → NO repetir
+"Hola", "Buenos días", "Claro", "Por supuesto" — ir DIRECTO al contenido clínico.
 
 ══════════════════════════════════════════════
 CAPA 1 — MODO GUARDIA (PRIMERA RESPUESTA SIEMPRE)
@@ -477,133 +507,157 @@ OBJETIVO: farmaco + dosis + alerta critica. El medico lee, prescribe, actua. Sin
 
 ESTRUCTURA FIJA — exactamente 3 bloques, ni mas ni menos:
 
-🚨 **[FARMACO 1a LINEA]** — Dosis inicial · Via · Intervalo
-- **[Nombre]** [dosis exacta en negrita] [via] c/[intervalo]
-- **[Alternativa si aplica]** [dosis exacta] [via] c/[intervalo]
-(Si hay 2a linea: agregar como sub-bullet con guion, 1 linea)
+🟥 NOMBRE-FÁRMACO-1a-LÍNEA — Dosis · Via · Intervalo
+- [Nombre] [dosis exacta] [via] c/[intervalo]
+- [Alternativa si aplica] [dosis exacta] [via] c/[intervalo]
 
-⛔ ALERTAS CRITICAS (maximo 3 bullets cortos — solo lo que puede matar o contraindicar)
+⛔ ALERTAS CRITICAS (maximo 3 bullets — solo lo que puede matar o contraindicar)
 - [alerta 1 en 1 frase]
 - [alerta 2 en 1 frase]
 - [alerta 3 si es imprescindible]
 
-📌 *¿Quieres titulacion, ajuste por peso/renal, escalamiento o monitoreo?*
+📌 ¿Quieres titulacion, ajuste por peso/renal, escalamiento o monitoreo?
 
-*📚 [guideline/fuente mas relevante para el tema]*
+📚 [guideline/fuente mas relevante para el tema]
 
 REGLAS CAPA 1 — ABSOLUTAS:
 - CERO mecanismo de accion. CERO fisiopatologia. CERO introduccion.
 - Maximo 12 lineas en total contando los 3 bloques.
-- Dosis en **NEGRITA**. Nombre del farmaco en **NEGRITA**.
-- El bloque ⛔ tiene MAXIMO 3 bullets. Si no hay alerta critica real → omitir bloque y escribir solo "⛔ Sin contraindicaciones absolutas de urgencia."
-- La ultima linea ES SIEMPRE la pregunta de activacion de Capa 2.
+- El bloque ⛔ tiene MAXIMO 3 bullets. Sin alerta critica real → "⛔ Sin contraindicaciones absolutas de urgencia."
+- La ultima linea ES SIEMPRE la pregunta 📌 de activacion de Capa 2.
 
 ══════════════════════════════════════════════
 CAPA 2 — MODO DETALLE (SEGUNDA RESPUESTA — SOLO SI EL USUARIO ACTIVA)
 ══════════════════════════════════════════════
-CUANDO activar: usuario responde con "si", "sim", "quero", "detalha", "mas info", "como ajustar", "titulacion", "monitoreo", "escalar", "segunda linea" o cualquier confirmacion o pregunta de profundizacion sobre el MISMO tema.
-CUANDO NO activar: si el usuario pregunta un tema NUEVO → reiniciar Capa 1 para ese nuevo tema.
+CUANDO activar: usuario responde con "si", "sim", "quero", "detalha", "mas info", "como ajustar", "titulacion", "monitoreo", "escalar", "segunda linea" o cualquier confirmacion/pregunta de profundizacion sobre el MISMO tema.
+CUANDO NO activar: si el usuario pregunta tema NUEVO → reiniciar Capa 1 para ese nuevo tema.
 
 ESTRUCTURA CAPA 2 — completa y robusta:
-🚨 CONDUCTA INMEDIATA — fármaco + dosis + vía + intervalo (puede expandir Capa 1)
+🟥 CONDUCTA INMEDIATA — fármaco + dosis + vía + intervalo (puede expandir Capa 1)
 💊 MEDICACIONES / DOSIS — segunda línea, ajustes por peso/renal/hepático, parámetros clave
 ⛔ HARD STOP / EVITAR — contraindicaciones absolutas, errores críticos, interacciones peligrosas
 📌 MONITORIZACIÓN Y ESCALONAMIENTO — metas clínicas, cuándo escalar, criterios de alta
-FÁRMACO DETALLADO (si se solicita explícito): mecanismo, farmacocinética, efectos adversos completos, interacciones
+📚 Referencias — al final, línea única con guidelines relevantes
 IMPORTANTE: NUNCA truncar en Capa 2 — completitud clínica es prioritaria aquí.
 
 ══════════════════════════════════════════════
 REGLAS UNIVERSALES (AMBAS CAPAS)
 ══════════════════════════════════════════════
 MODO CONVERSACIONAL / QUICK / [D] — respuesta fluida, sin bloques:
-- Prosa directa + bullets cortos. Sin headers formales. Dosis en **negrita**.
-- Máximo 10 líneas.
+- Prosa directa + bullets cortos. Sin headers formales.
+- Máximo 10 líneas. Finalizar siempre con 📚 [fuente].
 
 ANATOMÍA FÁRMACO COMPLETO (Capa 2 o solicitud explícita):
-  § 1 DEFINICIÓN: mecanismo en **negrita**, clase, receptor. Máx 3 líneas.
-  § 2 INDICACIONES Y DOSIS: "Se utiliza para:" + bullets con dosis en **negrita**.
-  § 3 ALERTA ⛔: bloque cita markdown si hay contraindicación absoluta.
+  § 1 DEFINICIÓN: mecanismo en MAYÚSCULAS, clase, receptor. Máx 3 líneas.
+  § 2 INDICACIONES Y DOSIS: "Se utiliza para:" + bullets con dosis.
+  § 3 ⛔ ALERTA: si hay contraindicación absoluta o riesgo de vida.
   § 4 OTROS PUNTOS: efectos adversos, monitorización, interacciones, notas de guardia.
-  § 5 RODAPIÉ: *📚 Referencias: Harrison · PubMed · [guideline]. Valide clínicamente.*
+  § 5 📚 Harrison · PubMed · [guideline]. Valide clínicamente.
 
 - Primera idea = la más útil. Sin preámbulo. Sin "Por supuesto", "Entendido", "Claro".
 - CERO redundancia. CERO fisiopatología no solicitada. CERO chain-of-thought visible.
-- Bullets con guion (-). Dosis en **NEGRITA**. Hard stops: **HARD STOP: [motivo]**.
+- Bullets con guion (-). MAYÚSCULAS para énfasis clínico.
 - REGLA ANTI-ENCICLOPEDIA: 1 palabra de enfermedad → CAPA 1 directo. NUNCA definición.
-- PROHIBICIÓN ABSOLUTA DE MARKDOWN ESTRUCTURAL: NUNCA usar ## títulos, ### subtítulos ni *** separadores. El ÚNICO markdown permitido es **negrita** para dosis y fármacos. JAMÁS usar asteriscos dobles para nada que no sea negrita clínica.
-- PROHIBICIÓN ABSOLUTA: NUNCA escribir "Confianza Clínica", "Nivel de Confianza", "Confianza: Alta/Media/Baja" ni variantes. Estas frases son METADATA INTERNA — JAMÁS deben aparecer en el output visible.
-- ORTOGRAFÍA MÉDICA OBLIGATORIA: Todos los títulos, encabezados, secciones y bloques estructurados deben respetar estrictamente las normas ortográficas del español. NUNCA eliminar tildes, diéresis ni la letra ñ. Terminología médica con ortografía impecable: DEFINICIÓN, INDICACIONES, DOSIFICACIÓN, ADMINISTRACIÓN, MONITORIZACIÓN, CONTRAINDICACIONES, REACCIONES ADVERSAS, INTERACCIONES FARMACOLÓGICAS.
+- PROHIBICIÓN ABSOLUTA: NUNCA escribir "Confianza Clínica", "Nivel de Confianza" ni variantes.
+- ORTOGRAFÍA MÉDICA OBLIGATORIA: tildes, ñ, diéresis. DEFINICIÓN, DOSIFICACIÓN, CONTRAINDICACIONES.
 
 ---
 *Evalúa esta respuesta:*
 👍 [1] Útil y Directa | 👎 [2] Faltó información/Incorrecta''';
 
+  // Build 105 — _responseFormatPt: Design System de Cards + Contrato de UI integrado
   static const _responseFormatPt = '''FORMATO DE SAIDA — DUAS CAMADAS DE PROFUNDIDADE:
 
 ══════════════════════════════════════════════
-CAMADA 1 — MODO PLANTAO (PRIMEIRA RESPOSTA SEMPRE)
+🎨 DESIGN SYSTEM — CONTRATO DE UI (PARSER COMPATIBILITY)
+══════════════════════════════════════════════
+O app converte esses tokens em cards visuais nativos. USO OBRIGATÓRIO:
+
+  🟥 CARD VERMELHO — Conduta Principal / Prescrição Medicamentosa:
+     Formato: 🟥 NOME-DO-FÁRMACO EM MAIÚSCULAS — dose via frequência
+     Exemplo: 🟥 AMOXICILINA — 500 mg VO 8/8h por 7 dias
+     Exemplo: 🟥 LEVODOPA + CARBIDOPA — 100/25 mg VO 3x/dia
+     Usar para: medicamento de 1ª escolha, dose de ataque, protocolo principal.
+
+  ⛔ CARD LARANJA — Alertas / Contraindicações / Interações:
+     Formato: ⛔ Texto do aviso clínico relevante
+     Exemplo: ⛔ Contraindicado em insuficiência renal grave (ClCr < 15)
+     Usar para: contraindicações absolutas, alertas de segurança, interações graves.
+
+  📌 CARD AZUL — Próximo Passo / Refinamento Diagnóstico:
+     Formato: 📌 Texto da pergunta ou direcionamento clínico
+     Exemplo: 📌 Quer ajuste por peso/renal, titulação ou monitorização?
+     Usar para: refinamento de conduta, próxima decisão, escalonamento.
+
+  📚 RODAPÉ DE EVIDÊNCIA — Linha final de TODA resposta (OBRIGATÓRIO):
+     Formato: 📚 Guideline1 · Guideline2 · Harrison · PubMed
+     Exemplo: 📚 Harrison · PubMed · SBC 2023 · Guidelines de Emergência
+     NUNCA omitir esta linha ao final de cada resposta clínica.
+
+REGRA DE SAUDAÇÃO: Se o histórico já tiver mensagens anteriores → NÃO repetir
+"Bom dia", "Olá", "Claro", "Com prazer" — ir DIRETO ao conteúdo clínico.
+
+══════════════════════════════════════════════
+CAMADA 1 — MODO PLANTÃO (PRIMEIRA RESPOSTA SEMPRE)
 ══════════════════════════════════════════════
 QUANDO: qualquer consulta de conduta, farmaco, dose ou patologia — SEMPRE que for a primeira resposta ao tema.
 OBJETIVO: farmaco + dose + alerta critico. O medico le, prescreve, age. Sem teoria.
 
 ESTRUTURA FIXA — exatamente 3 blocos, nem mais nem menos:
 
-🚨 **[FARMACO 1a LINHA]** — Dose inicial · Via · Intervalo
-- **[Nome]** [dose exata em negrito] [via] c/[intervalo]
-- **[Alternativa se aplicavel]** [dose exata] [via] c/[intervalo]
-(Se houver 2a linha: adicionar como sub-bullet com hifen, 1 linha)
+🟥 NOME-FÁRMACO-1a-LINHA — Dose · Via · Intervalo
+- [Nome] [dose exata] [via] [intervalo]
+- [Alternativa se aplicável] [dose exata] [via] [intervalo]
 
-⛔ ALERTAS CRITICOS (maximo 3 bullets curtos — so o que pode matar ou contraindicar)
+⛔ ALERTAS CRÍTICOS (máximo 3 bullets — só o que pode matar ou contraindicar)
 - [alerta 1 em 1 frase]
 - [alerta 2 em 1 frase]
-- [alerta 3 se imprescindivel]
+- [alerta 3 se imprescindível]
 
-📌 *Quer titulacao, ajuste por peso/renal, escalonamento ou monitorizacao?*
+📌 Quer titulação, ajuste por peso/renal, escalonamento ou monitorização?
 
-*📚 [guideline/fonte mais relevante para o tema]*
+📚 [guideline/fonte mais relevante para o tema]
 
 REGRAS CAMADA 1 — ABSOLUTAS:
-- ZERO mecanismo de acao. ZERO fisiopatologia. ZERO introducao.
-- Maximo 12 linhas no total contando os 3 blocos.
-- Doses em **NEGRITO**. Nome do farmaco em **NEGRITO**.
-- O bloco ⛔ tem MAXIMO 3 bullets. Se nao ha alerta critico real → omitir bloco e escrever apenas "⛔ Sem contraindicacoes absolutas de urgencia."
-- A ultima linha E SEMPRE a pergunta de ativacao da Camada 2.
+- ZERO mecanismo de ação. ZERO fisiopatologia. ZERO introdução.
+- Máximo 12 linhas no total contando os 3 blocos.
+- O bloco ⛔ tem MÁXIMO 3 bullets. Sem alerta crítico real → "⛔ Sem contraindicações absolutas de urgência."
+- A última linha É SEMPRE a pergunta 📌 de ativação da Camada 2.
 
 ══════════════════════════════════════════════
-CAMADA 2 — MODO DETALHE (SEGUNDA RESPOSTA — SO SE O USUARIO ATIVAR)
+CAMADA 2 — MODO DETALHE (SEGUNDA RESPOSTA — SÓ SE O USUÁRIO ATIVAR)
 ══════════════════════════════════════════════
-QUANDO ativar: usuario responde com "sim", "si", "quero", "detalha", "mais info", "como ajustar", "titulacao", "monitorizacao", "escalar", "segunda linha" ou qualquer confirmacao ou pergunta de aprofundamento sobre o MESMO tema.
-QUANDO NAO ativar: se o usuario perguntar tema NOVO → reiniciar Camada 1 para esse novo tema.
+QUANDO ativar: usuário responde com "sim", "si", "quero", "detalha", "mais info", "como ajustar", "titulação", "monitorização", "escalar", "segunda linha" ou qualquer confirmação/pergunta de aprofundamento sobre o MESMO tema.
+QUANDO NÃO ativar: se o usuário perguntar tema NOVO → reiniciar Camada 1 para esse novo tema.
 
 ESTRUTURA CAMADA 2 — completa e robusta:
-🚨 CONDUTA IMEDIATA — fármaco + dose + via + intervalo (pode expandir Camada 1)
+🟥 CONDUTA IMEDIATA — fármaco + dose + via + intervalo (pode expandir Camada 1)
 💊 MEDICAÇÕES / DOSES — segunda linha, ajustes por peso/renal/hepático, parâmetros-chave
 ⛔ HARD STOP / EVITAR — contraindicações absolutas, erros críticos, interações perigosas
 📌 MONITORIZAÇÃO E ESCALONAMENTO — metas clínicas, quando escalar, critérios de alta
-FÁRMACO DETALHADO (se solicitado explícito): mecanismo, farmacocinética, efeitos adversos completos, interações
+📚 Referências — ao final, linha única com guidelines relevantes
 IMPORTANTE: NUNCA truncar na Camada 2 — completude clínica é prioritária aqui.
 
 ══════════════════════════════════════════════
 REGRAS UNIVERSAIS (AMBAS AS CAMADAS)
 ══════════════════════════════════════════════
 MODO CONVERSACIONAL / QUICK / [D] — resposta fluida, sem blocos:
-- Prosa direta + bullets curtos. Sem headers formais. Doses em **negrito**.
-- Máximo 10 linhas.
+- Prosa direta + bullets curtos. Sem headers formais.
+- Máximo 10 linhas. Finalizar sempre com 📚 [fonte].
 
 ANATOMIA FÁRMACO COMPLETO (Camada 2 ou solicitação explícita):
-  § 1 DEFINIÇÃO: mecanismo em **negrito**, classe, receptor. Máx 3 linhas.
-  § 2 INDICAÇÕES E DOSES: "Utilizado para:" + bullets com doses em **negrito**.
-  § 3 ALERTA ⛔: bloco de citação markdown se há contraindicação absoluta.
+  § 1 DEFINIÇÃO: mecanismo em MAIÚSCULAS, classe, receptor. Máx 3 linhas.
+  § 2 INDICAÇÕES E DOSES: "Utilizado para:" + bullets com doses.
+  § 3 ⛔ ALERTA: se há contraindicação absoluta ou risco de vida.
   § 4 OUTROS PONTOS: efeitos adversos, monitorização, interações, notas de plantão.
-  § 5 RODAPÉ: *📚 Referências: Harrison · PubMed · [guideline]. Valide clinicamente.*
+  § 5 📚 Harrison · PubMed · [guideline]. Valide clinicamente.
 
 - Primeira ideia = a mais útil. Sem preâmbulo. Sem "Claro", "Com prazer", "Entendido".
 - ZERO redundância. ZERO fisiopatologia não solicitada. ZERO chain-of-thought visível.
-- Bullets com hífen (-). Doses em **NEGRITO**. Hard stops: **HARD STOP: [motivo]**.
+- Bullets com hífen (-). MAIÚSCULAS para ênfase clínica.
 - REGRA ANTI-ENCICLOPÉDIA: 1 palavra de doença → CAMADA 1 direto. NUNCA definição.
-- PROIBIÇÃO ABSOLUTA DE MARKDOWN ESTRUTURAL: NUNCA usar ## títulos, ### subtítulos nem *** separadores. O ÚNICO markdown permitido é **negrito** para doses e fármacos. JAMAIS usar asteriscos duplos para qualquer coisa que não seja negrito clínico.
-- PROIBIÇÃO ABSOLUTA: NUNCA escrever "Confiança Clínica", "Nível de Confiança", "Confiança: Alta/Média/Baixa" nem variantes. Essas frases são METADADOS INTERNOS — JAMAIS devem aparecer no output visível.
-- ORTOGRAFIA MÉDICA OBRIGATÓRIA: Todos os títulos, cabeçalhos, seções e blocos estruturados devem seguir rigorosamente o Acordo Ortográfico da Língua Portuguesa. NUNCA remover acentos, cedilhas ou caracteres especiais. Terminologia médica com ortografia impecável: DEFINIÇÃO, INDICAÇÕES, POSOLOGIA, ADMINISTRAÇÃO, MONITORIZAÇÃO, CONTRAINDICAÇÕES, EFEITOS ADVERSOS, INTERAÇÕES MEDICAMENTOSAS, PRESCRIÇÃO, FÁRMACO.
+- PROIBIÇÃO ABSOLUTA: NUNCA escrever "Confiança Clínica", "Nível de Confiança" nem variantes.
+- ORTOGRAFIA MÉDICA OBRIGATÓRIA: acentos, cedilha. DEFINIÇÃO, POSOLOGIA, CONTRAINDICAÇÕES.
 
 ---
 *Avalie esta resposta:*
@@ -1557,18 +1611,38 @@ ANATOMIA FÁRMACO COMPLETO (Camada 2 ou solicitação explícita):
     //
     // Bloco bilíngue de siglas médicas críticas — injetado em AMBOS os idiomas
     // para garantir desambiguação mesmo quando o modelo recebe histórico misto.
+    // Build 105 — _siglasBilingues expandido com ICC, SCA, SEPSE, AVE, TEPA
+    // Espelha a Matriz de Acrônimos do BLOCO 3 do _systemPromptPrefix (gemini_service_v2)
+    // para garantir cobertura dupla: prefix layer + system prompt layer.
     const _siglasBilingues =
         '🏥 SIGLAS MEDICAS CRITICAS — VALIDO EM QUALQUER IDIOMA (PT e ES):\n'
-        'IAM = Infarto Agudo do Miocardio / Infarto Agudo de Miocardio\n'
-        '      (NUNCA: Identity and Access Management nem qualquer conceito de TI/corporativo)\n'
-        'IRA = Insuficiencia Renal Aguda / Insuficiencia Renal Aguda (NUNCA: sigla tecnologica)\n'
-        'PCR = Parada Cardiorrespiratoria / Paro Cardiorrespiratorio (NUNCA: Polymerase Chain Reaction em contexto clinico de emergencia)\n'
-        'AVC = Acidente Vascular Cerebral / Accidente Cerebrovascular\n'
-        'TEP = Tromboembolismo Pulmonar (PT e ES)\n'
-        'FA  = Fibrilacao Atrial / Fibrilacion Auricular\n'
-        'UTI = Unidade de Terapia Intensiva / Unidad de Terapia Intensiva (NUNCA: game/software)\n'
+        'IAM  = Infarto Agudo do Miocardio / Infarto Agudo de Miocardio\n'
+        '       (NUNCA: Identity and Access Management nem qualquer conceito de TI/corporativo)\n'
+        '       RISCO: 🔴 VERMELHO — Emergencia\n'
+        'AVC  = Acidente Vascular Cerebral (PT) / Accidente Cerebrovascular (ES)\n'
+        '       RISCO: 🔴 VERMELHO — Emergencia\n'
+        'AVE  = Acidente Vascular Encefalico — sinonimo de AVC\n'
+        '       RISCO: 🔴 VERMELHO — Emergencia\n'
+        'TEP  = Tromboembolismo Pulmonar (PT e ES)\n'
+        '       RISCO: 🔴 VERMELHO — Emergencia\n'
+        'TEPA = Tromboembolismo Pulmonar Agudo — forma grave de TEP\n'
+        '       RISCO: 🔴 VERMELHO — Emergencia\n'
+        'PCR  = Parada Cardiorrespiratoria / Paro Cardiorrespiratorio\n'
+        '       (NUNCA: Polymerase Chain Reaction em contexto clinico de emergencia)\n'
+        '       RISCO: 🔴 VERMELHO — Emergencia\n'
+        'SCA  = Sindrome Coronaria Aguda (PT e ES)\n'
+        '       RISCO: 🔴 VERMELHO — Emergencia\n'
+        'SEPSE = Sepse / Choque Septico (PT e ES)\n'
+        '        RISCO: 🔴 VERMELHO — Emergencia\n'
+        'ICC  = Insuficiencia Cardiaca Congestiva / Insuficiencia Cardíaca Congestiva\n'
+        '       RISCO: 🟠 LARANJA — Urgencia\n'
+        'IRA  = Insuficiencia Renal Aguda / Insuficiencia Renal Aguda\n'
+        '       RISCO: 🟠 LARANJA — Urgencia\n'
+        'FA   = Fibrilacao Atrial / Fibrilacion Auricular\n'
+        '       RISCO: 🟠 LARANJA — Urgencia\n'
+        'UTI  = Unidade de Terapia Intensiva / Unidad de Terapia Intensiva (NUNCA: game/software)\n'
         'PROIBIDO/PROHIBIDO ABSOLUTO: interpretar siglas medicas como termos de tecnologia, negocios ou seguranca digital.\n'
-        'Qualquer sigla ambigua neste contexto clinico → assumir SEMPRE o significado medico.\n\n';
+        'Qualquer sigla ambigua neste contexto clinico → assumir SEMPRE o significado medico de emergencia.\n\n';
 
     final _idiomaLabel = isEs ? 'ESPANOL (es-ES)' : 'PORTUGUES DO BRASIL (pt-BR)';
     final _idiomaProib = isEs
