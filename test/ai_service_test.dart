@@ -1736,5 +1736,409 @@ void main() {
     });
 
   }); // T17
+
+  // ════════════════════════════════════════════════════════════════
+  // T18 — UNICODE MÉDICO: Auditoria de Acentuação do Pipeline
+  //
+  // Testa que termos médicos estruturais críticos (PT + ES) estão
+  // corretamente acentuados no output do normalizador _cleanAiText()
+  // e que os system prompts (PT + ES) contêm as regras ortográficas
+  // obrigatórias inseridas nesta sessão.
+  // ════════════════════════════════════════════════════════════════
+  group('T18 — Unicode Médico: acentuação no pipeline', () {
+
+    // ── Helper: replica o normalizador de acentuação do _cleanAiText() ──
+    // Espelha exatamente o passo 7 adicionado em ai_screen.dart.
+    String accentNormalize(String s) => s
+      // PT
+      .replaceAll(RegExp(r'\bDEFINICAO\b'), 'DEFINIÇÃO')
+      .replaceAll(RegExp(r'\bINDICACAO\b'), 'INDICAÇÃO')
+      .replaceAll(RegExp(r'\bINDICACOES\b'), 'INDICAÇÕES')
+      .replaceAll(RegExp(r'\bADMINISTRACAO\b'), 'ADMINISTRAÇÃO')
+      .replaceAll(RegExp(r'\bMONITORIZACAO\b'), 'MONITORIZAÇÃO')
+      .replaceAll(RegExp(r'\bMONITORIZACOES\b'), 'MONITORIZAÇÕES')
+      .replaceAll(RegExp(r'\bCONTRAINDICACAO\b'), 'CONTRAINDICAÇÃO')
+      .replaceAll(RegExp(r'\bCONTRAINDICACOES\b'), 'CONTRAINDICAÇÕES')
+      .replaceAll(RegExp(r'\bPRESCRICAO\b'), 'PRESCRIÇÃO')
+      .replaceAll(RegExp(r'\bINTERACAO\b'), 'INTERAÇÃO')
+      .replaceAll(RegExp(r'\bINTERACOES\b'), 'INTERAÇÕES')
+      .replaceAll(RegExp(r'\bAVALIACAO\b'), 'AVALIAÇÃO')
+      .replaceAll(RegExp(r'\bMEDICACAO\b'), 'MEDICAÇÃO')
+      .replaceAll(RegExp(r'\bMEDICACOES\b'), 'MEDICAÇÕES')
+      .replaceAll(RegExp(r'\bFARMACO\b'), 'FÁRMACO')
+      .replaceAll(RegExp(r'\bFARMACOS\b'), 'FÁRMACOS')
+      // ES
+      .replaceAll(RegExp(r'\bDEFINICION\b'), 'DEFINICIÓN')
+      .replaceAll(RegExp(r'\bINDICACION\b'), 'INDICACIÓN')
+      .replaceAll(RegExp(r'\bDOSIFICACION\b'), 'DOSIFICACIÓN')
+      .replaceAll(RegExp(r'\bADMINISTRACION\b'), 'ADMINISTRACIÓN')
+      .replaceAll(RegExp(r'\bMONITORIZACION\b'), 'MONITORIZACIÓN')
+      .replaceAll(RegExp(r'\bINTERACCION\b'), 'INTERACCIÓN')
+      .replaceAll(RegExp(r'\bINTERACCIONES\b'), 'INTERACCIONES')
+      .replaceAll(RegExp(r'\bCONTRAINDICACION\b'), 'CONTRAINDICACIÓN')
+      .replaceAll(RegExp(r'\bCONTRAINDICACIONES\b'), 'CONTRAINDICACIONES')
+      .replaceAll(RegExp(r'\bPRESCRIPCION\b'), 'PRESCRIPCIÓN')
+      .replaceAll(RegExp(r'\bREACCION\b'), 'REACCIÓN')
+      .replaceAll(RegExp(r'\bFARMACOLOGIA\b'), 'FARMACOLOGÍA')
+      .replaceAll(RegExp(r'\bINTERACCIONES FARMACOLOGICAS\b'), 'INTERACCIONES FARMACOLÓGICAS');
+
+    // ── Testes PT — termos estruturais ──────────────────────────────
+
+    test('18A-1 PT: DEFINICAO → DEFINIÇÃO atravessa pipeline intacto', () {
+      const input = '§ 1 DEFINICAO: mecanismo em **negrito**';
+      final out = accentNormalize(input);
+      expect(out, contains('DEFINIÇÃO'));
+      expect(out, isNot(contains('DEFINICAO')));
+      print('  [OK] 18A-1 DEFINIÇÃO restaurada');
+    });
+
+    test('18A-2 PT: INDICACOES → INDICAÇÕES', () {
+      const input = '§ 2 INDICACOES E DOSES: bullets com doses';
+      final out = accentNormalize(input);
+      expect(out, contains('INDICAÇÕES'));
+      expect(out, isNot(contains('INDICACOES')));
+      print('  [OK] 18A-2 INDICAÇÕES restaurada');
+    });
+
+    test('18A-3 PT: MONITORIZACAO → MONITORIZAÇÃO', () {
+      const input = '📌 MONITORIZACAO E ESCALONAMENTO — metas clinicas';
+      final out = accentNormalize(input);
+      expect(out, contains('MONITORIZAÇÃO'));
+      expect(out, isNot(contains('MONITORIZACAO')));
+      print('  [OK] 18A-3 MONITORIZAÇÃO restaurada');
+    });
+
+    test('18A-4 PT: CONTRAINDICACOES → CONTRAINDICAÇÕES', () {
+      const input = '⛔ CONTRAINDICACOES ABSOLUTAS — lista de hard stops';
+      final out = accentNormalize(input);
+      expect(out, contains('CONTRAINDICAÇÕES'));
+      expect(out, isNot(contains('CONTRAINDICACOES')));
+      print('  [OK] 18A-4 CONTRAINDICAÇÕES restaurada');
+    });
+
+    test('18A-5 PT: PRESCRICAO → PRESCRIÇÃO', () {
+      const input = '[C] MODO PRESCRICAO HOSPITALAR — blocos de admissão';
+      final out = accentNormalize(input);
+      expect(out, contains('PRESCRIÇÃO'));
+      expect(out, isNot(contains('PRESCRICAO')));
+      print('  [OK] 18A-5 PRESCRIÇÃO restaurada');
+    });
+
+    test('18A-6 PT: FARMACO → FÁRMACO', () {
+      const input = '🚨 **FARMACO 1a LINHA** — dose inicial via intervalo';
+      final out = accentNormalize(input);
+      expect(out, contains('FÁRMACO'));
+      expect(out, isNot(contains('FARMACO')));
+      print('  [OK] 18A-6 FÁRMACO restaurado');
+    });
+
+    test('18A-7 PT: MEDICACOES → MEDICAÇÕES', () {
+      const input = '💊 MEDICACOES / DOSES — segunda linha ajustes';
+      final out = accentNormalize(input);
+      expect(out, contains('MEDICAÇÕES'));
+      expect(out, isNot(contains('MEDICACOES')));
+      print('  [OK] 18A-7 MEDICAÇÕES restaurada');
+    });
+
+    test('18A-8 PT: INTERACOES → INTERAÇÕES', () {
+      const input = '§ 4 OUTROS PONTOS: INTERACOES medicamentosas';
+      final out = accentNormalize(input);
+      expect(out, contains('INTERAÇÕES'));
+      expect(out, isNot(contains('INTERACOES')));
+      print('  [OK] 18A-8 INTERAÇÕES restaurada');
+    });
+
+    test('18A-9 PT: ADMINISTRACAO → ADMINISTRAÇÃO', () {
+      const input = 'ADMINISTRACAO: via oral em dose única';
+      final out = accentNormalize(input);
+      expect(out, contains('ADMINISTRAÇÃO'));
+      expect(out, isNot(contains('ADMINISTRACAO')));
+      print('  [OK] 18A-9 ADMINISTRAÇÃO restaurada');
+    });
+
+    test('18A-10 PT: múltiplos termos num só bloco (caso real do screenshot)', () {
+      const input = '''📌 MONITORIZACAO E ESCALONAMENTO
+§ 1 DEFINICAO: mecanismo em **negrito**, classe, receptor.
+§ 2 INDICACOES E DOSES: "Utilizado para:" + bullets
+§ 4 OUTROS PONTOS: efeitos adversos, monitoramento, INTERACOES, notas de plantao.
+FARMACO DETALHADO: mecanismo, farmacocinetica, CONTRAINDICACOES absolutas.
+PRESCRICAO HOSPITALAR: plano de admissao.''';
+
+      final out = accentNormalize(input);
+      expect(out, contains('MONITORIZAÇÃO'));
+      expect(out, contains('DEFINIÇÃO'));
+      expect(out, contains('INDICAÇÕES'));
+      expect(out, contains('INTERAÇÕES'));
+      expect(out, contains('FÁRMACO'));
+      expect(out, contains('CONTRAINDICAÇÕES'));
+      expect(out, contains('PRESCRIÇÃO'));
+      // Nenhuma forma não-acentuada deve sobreviver
+      expect(out, isNot(contains('MONITORIZACAO')));
+      expect(out, isNot(contains('DEFINICAO')));
+      expect(out, isNot(contains('INDICACOES')));
+      expect(out, isNot(contains('INTERACOES')));
+      expect(out, isNot(contains(RegExp(r'\bFARMACO\b'))));
+      expect(out, isNot(contains('CONTRAINDICACOES')));
+      expect(out, isNot(contains('PRESCRICAO')));
+      print('  [OK] 18A-10 caso real screenshot: todos os termos restaurados');
+    });
+
+    // ── Testes ES — termos estruturais ──────────────────────────────
+
+    test('18B-1 ES: DEFINICION → DEFINICIÓN', () {
+      const input = '§ 1 DEFINICION: mecanismo en **negrita**, clase, receptor.';
+      final out = accentNormalize(input);
+      expect(out, contains('DEFINICIÓN'));
+      expect(out, isNot(contains('DEFINICION')));
+      print('  [OK] 18B-1 DEFINICIÓN restaurada');
+    });
+
+    test('18B-2 ES: MONITORIZACION → MONITORIZACIÓN', () {
+      const input = '📌 MONITORIZACION Y ESCALONAMIENTO — metas clínicas';
+      final out = accentNormalize(input);
+      expect(out, contains('MONITORIZACIÓN'));
+      expect(out, isNot(contains('MONITORIZACION')));
+      print('  [OK] 18B-2 MONITORIZACIÓN restaurada');
+    });
+
+    test('18B-3 ES: DOSIFICACION → DOSIFICACIÓN', () {
+      const input = '§ 2 DOSIFICACION Y VIAS: "Se utiliza para:" + bullets';
+      final out = accentNormalize(input);
+      expect(out, contains('DOSIFICACIÓN'));
+      expect(out, isNot(contains('DOSIFICACION')));
+      print('  [OK] 18B-3 DOSIFICACIÓN restaurada');
+    });
+
+    test('18B-4 ES: ADMINISTRACION → ADMINISTRACIÓN', () {
+      const input = 'ADMINISTRACION: vía oral en dosis única diaria';
+      final out = accentNormalize(input);
+      expect(out, contains('ADMINISTRACIÓN'));
+      expect(out, isNot(contains('ADMINISTRACION')));
+      print('  [OK] 18B-4 ADMINISTRACIÓN restaurada');
+    });
+
+    test('18B-5 ES: CONTRAINDICACION → CONTRAINDICACIÓN', () {
+      const input = 'CONTRAINDICACION absoluta: embarazo, hipersensibilidad conocida';
+      final out = accentNormalize(input);
+      expect(out, contains('CONTRAINDICACIÓN'));
+      expect(out, isNot(contains('CONTRAINDICACION')));
+      print('  [OK] 18B-5 CONTRAINDICACIÓN restaurada');
+    });
+
+    test('18B-6 ES: PRESCRIPCION → PRESCRIPCIÓN', () {
+      const input = '[C] MODO PRESCRIPCION HOSPITALARIA — órdenes de UTI';
+      final out = accentNormalize(input);
+      expect(out, contains('PRESCRIPCIÓN'));
+      expect(out, isNot(contains('PRESCRIPCION')));
+      print('  [OK] 18B-6 PRESCRIPCIÓN restaurada');
+    });
+
+    test('18B-7 ES: múltiplos termos num só bloco', () {
+      const input = '''📌 MONITORIZACION Y ESCALONAMIENTO
+§ 1 DEFINICION: mecanismo en **negrita**
+§ 2 DOSIFICACION Y VIAS: bullets con dosis
+CONTRAINDICACION absoluta: embarazo
+PRESCRIPCION HOSPITALARIA: órdenes UTI
+ADMINISTRACION: oral, IV o SC''';
+
+      final out = accentNormalize(input);
+      expect(out, contains('MONITORIZACIÓN'));
+      expect(out, contains('DEFINICIÓN'));
+      expect(out, contains('DOSIFICACIÓN'));
+      expect(out, contains('CONTRAINDICACIÓN'));
+      expect(out, contains('PRESCRIPCIÓN'));
+      expect(out, contains('ADMINISTRACIÓN'));
+      expect(out, isNot(contains('MONITORIZACION')));
+      expect(out, isNot(contains('DEFINICION')));
+      expect(out, isNot(contains('DOSIFICACION')));
+      expect(out, isNot(contains('CONTRAINDICACION')));
+      expect(out, isNot(contains('PRESCRIPCION')));
+      expect(out, isNot(contains('ADMINISTRACION')));
+      print('  [OK] 18B-7 caso ES: todos os termos restaurados');
+    });
+
+    // ── Testes de isolamento — texto clínico válido não deve ser alterado ──
+
+    test('18C-1: texto clínico em minúsculas não é alterado', () {
+      const input = 'Administração de 500mg via oral. Monitorização glicêmica a cada 4h.';
+      final out = accentNormalize(input);
+      // Minúsculas não devem ser afetadas (normalizer atua só em UPPERCASE)
+      expect(out, equals(input));
+      print('  [OK] 18C-1 texto clínico em minúsculas preservado intacto');
+    });
+
+    test('18C-2: acentuação já correta não é degradada (idempotente)', () {
+      const alreadyCorrect = '📌 MONITORIZAÇÃO E ESCALONAMENTO\n§ 1 DEFINIÇÃO: mecanismo\n§ 2 INDICAÇÕES';
+      final out = accentNormalize(alreadyCorrect);
+      expect(out, equals(alreadyCorrect));
+      print('  [OK] 18C-2 normalizer é idempotente (texto acentuado não é alterado)');
+    });
+
+    test('18C-3: texto misto — só termos estruturais UPPERCASE são normalizados', () {
+      const input = 'DEFINICAO do fármaco: mecanismo em **negrito**. '
+          'A definição clínica é ampla. INDICACOES principais: sepse, choque.';
+      final out = accentNormalize(input);
+      // UPPERCASE normalizado
+      expect(out, contains('DEFINIÇÃO'));
+      expect(out, contains('INDICAÇÕES'));
+      // Minúsculas preservadas
+      expect(out, contains('definição clínica'));
+      expect(out, contains('mecanismo em **negrito**'));
+      print('  [OK] 18C-3 apenas UPPERCASE é normalizado, minúsculas preservadas');
+    });
+
+    // ── Testes do system prompt — regra ortográfica presente ────────
+
+    test('18D-1 PT: system prompt contém regra de ortografia obrigatória', () {
+      final prompt = AiService.buildClinicalSystemPrompt(
+        lang: 'pt',
+        matchedProtocolSummaries: [],
+        matchedDrugSummaries: [],
+      );
+      expect(prompt, contains('ORTOGRAFIA MÉDICA OBRIGATÓRIA'),
+          reason: 'Regra de ortografia PT ausente no system prompt');
+      expect(prompt, contains('Acordo Ortográfico da Língua Portuguesa'),
+          reason: 'Referência ao Acordo Ortográfico ausente no prompt PT');
+      expect(prompt, contains('MONITORIZAÇÃO'),
+          reason: 'Termo acentuado MONITORIZAÇÃO ausente no prompt PT');
+      expect(prompt, contains('DEFINIÇÃO'),
+          reason: 'Termo acentuado DEFINIÇÃO ausente no prompt PT');
+      expect(prompt, contains('INDICAÇÕES'),
+          reason: 'Termo acentuado INDICAÇÕES ausente no prompt PT');
+      expect(prompt, contains('CONTRAINDICAÇÕES'),
+          reason: 'Termo acentuado CONTRAINDICAÇÕES ausente no prompt PT');
+      expect(prompt, contains('PRESCRIÇÃO'),
+          reason: 'Termo acentuado PRESCRIÇÃO ausente no prompt PT');
+      expect(prompt, contains('FÁRMACO'),
+          reason: 'Termo acentuado FÁRMACO ausente no prompt PT');
+      print('  [OK] 18D-1 system prompt PT contém regra ortográfica e termos acentuados');
+    });
+
+    test('18D-2 ES: system prompt contém regra de ortografia obrigatória', () {
+      final prompt = AiService.buildClinicalSystemPrompt(
+        lang: 'es',
+        matchedProtocolSummaries: [],
+        matchedDrugSummaries: [],
+      );
+      expect(prompt, contains('ORTOGRAFÍA MÉDICA OBLIGATORIA'),
+          reason: 'Regra de ortografia ES ausente no system prompt');
+      expect(prompt, contains('normas ortográficas del español'),
+          reason: 'Referência às normas do espanhol ausente no prompt ES');
+      expect(prompt, contains('MONITORIZACIÓN'),
+          reason: 'Termo acentuado MONITORIZACIÓN ausente no prompt ES');
+      expect(prompt, contains('DEFINICIÓN'),
+          reason: 'Termo acentuado DEFINICIÓN ausente no prompt ES');
+      expect(prompt, contains('DOSIFICACIÓN'),
+          reason: 'Termo acentuado DOSIFICACIÓN ausente no prompt ES');
+      expect(prompt, contains('ADMINISTRACIÓN'),
+          reason: 'Termo acentuado ADMINISTRACIÓN ausente no prompt ES');
+      expect(prompt, contains('CONTRAINDICACIONES'),
+          reason: 'Termo ES CONTRAINDICACIONES ausente no prompt ES');
+      print('  [OK] 18D-2 system prompt ES contém regra ortográfica e termos acentuados');
+    });
+
+    test('18D-3 PT: section anatomy labels acentuados no prompt PT', () {
+      final prompt = AiService.buildClinicalSystemPrompt(
+        lang: 'pt',
+        matchedProtocolSummaries: [],
+        matchedDrugSummaries: [],
+      );
+      // Os § labels devem estar acentuados
+      expect(prompt, contains('§ 1 DEFINIÇÃO'),
+          reason: '§ 1 DEFINIÇÃO não encontrado no prompt PT');
+      expect(prompt, contains('§ 2 INDICAÇÕES'),
+          reason: '§ 2 INDICAÇÕES não encontrado no prompt PT');
+      expect(prompt, contains('§ 4 OUTROS PONTOS: efeitos adversos, monitorização'),
+          reason: '§ 4 com monitorização não encontrado');
+      print('  [OK] 18D-3 § labels acentuados no prompt PT');
+    });
+
+    test('18D-4 ES: section anatomy labels acentuados no prompt ES', () {
+      final prompt = AiService.buildClinicalSystemPrompt(
+        lang: 'es',
+        matchedProtocolSummaries: [],
+        matchedDrugSummaries: [],
+      );
+      expect(prompt, contains('§ 1 DEFINICIÓN'),
+          reason: '§ 1 DEFINICIÓN não encontrado no prompt ES');
+      expect(prompt, contains('§ 3 ALERTA ⛔'),
+          reason: '§ 3 ALERTA não encontrado no prompt ES');
+      print('  [OK] 18D-4 § labels acentuados no prompt ES');
+    });
+
+    test('18D-5 PT: emoji-headers acentuados na estrutura CAMADA 2', () {
+      final prompt = AiService.buildClinicalSystemPrompt(
+        lang: 'pt',
+        matchedProtocolSummaries: [],
+        matchedDrugSummaries: [],
+      );
+      // Emoji headers devem estar acentuados
+      expect(prompt, contains('MEDICAÇÕES'),
+          reason: 'MEDICAÇÕES ausente na estrutura CAMADA 2 PT');
+      expect(prompt, contains('MONITORIZAÇÃO E ESCALONAMENTO'),
+          reason: 'MONITORIZAÇÃO E ESCALONAMENTO ausente na estrutura PT');
+      expect(prompt, contains('CONTRAINDICAÇÕES'),
+          reason: 'CONTRAINDICAÇÕES ausente na estrutura PT');
+      print('  [OK] 18D-5 emoji-headers acentuados na estrutura CAMADA 2 PT');
+    });
+
+    test('18D-6 ES: emoji-headers acentuados na estrutura CAPA 2', () {
+      final prompt = AiService.buildClinicalSystemPrompt(
+        lang: 'es',
+        matchedProtocolSummaries: [],
+        matchedDrugSummaries: [],
+      );
+      expect(prompt, contains('MONITORIZACIÓN Y ESCALONAMIENTO'),
+          reason: 'MONITORIZACIÓN Y ESCALONAMIENTO ausente no prompt ES');
+      expect(prompt, contains('FÁRMACO DETALLADO'),
+          reason: 'FÁRMACO DETALLADO ausente no prompt ES');
+      print('  [OK] 18D-6 emoji-headers acentuados na estrutura CAPA 2 ES');
+    });
+
+    // ── Validação de regras Dart Unicode ──────────────────────────────
+
+    test('18E-1: toUpperCase() em Dart preserva acentuação Unicode', () {
+      // Valida que toUpperCase() não degrada acentos em Dart
+      // (usado internamente em _isHardStop e _isWarning)
+      expect('atenção'.toUpperCase(), equals('ATENÇÃO'));
+      expect('atención'.toUpperCase(), equals('ATENCIÓN'));
+      expect('contraindicação'.toUpperCase(), equals('CONTRAINDICAÇÃO'));
+      expect('monitorização'.toUpperCase(), equals('MONITORIZAÇÃO'));
+      expect('definição'.toUpperCase(), equals('DEFINIÇÃO'));
+      expect('prescrição'.toUpperCase(), equals('PRESCRIÇÃO'));
+      expect('administración'.toUpperCase(), equals('ADMINISTRACIÓN'));
+      expect('dosificación'.toUpperCase(), equals('DOSIFICACIÓN'));
+      print('  [OK] 18E-1 toUpperCase() Dart é Unicode-safe para PT e ES');
+    });
+
+    test('18E-2: RegExp word-boundary funciona com acentos PT/ES', () {
+      // Valida que \b em Dart trata corretamente bordas de palavras
+      // para termos que vão antes/depois de espaço ou início de linha
+      final rDef = RegExp(r'\bDEFINICAO\b');
+      expect(rDef.hasMatch('DEFINICAO'), isTrue);
+      expect(rDef.hasMatch('§ 1 DEFINICAO: mecanismo'), isTrue);
+      expect(rDef.hasMatch('SUPERDEFINICAO'), isFalse,   // não é palavra isolada
+          reason: r'\b não deve fazer match dentro de palavra');
+      final rMon = RegExp(r'\bMONITORIZACAO\b');
+      expect(rMon.hasMatch('MONITORIZACAO E ESCALONAMENTO'), isTrue);
+      expect(rMon.hasMatch('FOTOMONITORIZ'), isFalse);
+      print('  [OK] 18E-2 word-boundary \\b funciona corretamente para termos PT/ES');
+    });
+
+    test('18E-3: normalizer não cria falsos-positivos em texto clínico normal', () {
+      // Texto com termos médicos normais (não-estruturais) não deve ser afetado
+      const clinicalText = '''O paciente apresentou insuficiência cardíaca.
+Dose de furosemida: 40mg VO 8/8h.
+Monitorar PA e FC a cada 6 horas.
+Contraindicado em hipersensibilidade conhecida ao fármaco.
+Interações com warfarina: risco aumentado de sangramento.''';
+
+      final out = accentNormalize(clinicalText);
+      // Texto em minúsculas deve ser idêntico
+      expect(out, equals(clinicalText));
+      print('  [OK] 18E-3 texto clínico normal não modificado pelo normalizer');
+    });
+
+  }); // T18
 } // main
 

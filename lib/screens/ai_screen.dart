@@ -2606,6 +2606,56 @@ String _cleanAiText(String raw) {
   // ── 6. Normaliza linhas em branco excessivas (≥3 → 2) ────────────────────
   s = s.replaceAll(RegExp(r'\n{3,}'), '\n\n');
 
+  // ── 7. NORMALIZADOR DE ACENTUAÇÃO MÉDICA — Safety Net Unicode ─────────────
+  // Restaura acentuação correta em termos médicos estruturais que o modelo
+  // às vezes emite sem acento (copiando labels do system prompt interno).
+  //
+  // ESTRATÉGIA: substituição por palavra inteira (word-boundary via look-ahead/
+  // look-behind de não-letra) para não afetar substrings de outras palavras.
+  // Opera somente em UPPERCASE para não alterar texto clínico em minúsculo.
+  //
+  // PORTUGUÊS — termos estruturais de saída (§ sections e emoji-headers):
+  s = s
+    // § section labels — Anatomia Fármaco
+    .replaceAll(RegExp(r'\bDEFINICAO\b'), 'DEFINIÇÃO')
+    .replaceAll(RegExp(r'\bINDICACAO\b'), 'INDICAÇÃO')
+    .replaceAll(RegExp(r'\bINDICACOES\b'), 'INDICAÇÕES')
+    .replaceAll(RegExp(r'\bPOSOLOGIA\b'), 'POSOLOGIA')   // já correto, garante
+    .replaceAll(RegExp(r'\bADMINISTRACAO\b'), 'ADMINISTRAÇÃO')
+    .replaceAll(RegExp(r'\bMONITORIZACAO\b'), 'MONITORIZAÇÃO')
+    .replaceAll(RegExp(r'\bMONITORIZACOES\b'), 'MONITORIZAÇÕES')
+    .replaceAll(RegExp(r'\bCONTRAINDICACAO\b'), 'CONTRAINDICAÇÃO')
+    .replaceAll(RegExp(r'\bCONTRAINDICACAOES\b'), 'CONTRAINDICAÇÕES')
+    .replaceAll(RegExp(r'\bCONTRAINDICACOES\b'), 'CONTRAINDICAÇÕES')
+    .replaceAll(RegExp(r'\bPRESCRICAO\b'), 'PRESCRIÇÃO')
+    .replaceAll(RegExp(r'\bINTERACAO\b'), 'INTERAÇÃO')
+    .replaceAll(RegExp(r'\bINTERACOES\b'), 'INTERAÇÕES')
+    .replaceAll(RegExp(r'\bAVALIACAO\b'), 'AVALIAÇÃO')
+    .replaceAll(RegExp(r'\bEFEITOS ADVERSOS\b'), 'EFEITOS ADVERSOS') // já OK
+    // emoji-header section titles
+    .replaceAll(RegExp(r'\bMEDICACAO\b'), 'MEDICAÇÃO')
+    .replaceAll(RegExp(r'\bMEDICACOES\b'), 'MEDICAÇÕES')
+    .replaceAll(RegExp(r'\bESCALONAMENTO\b'), 'ESCALONAMENTO')       // já OK
+    .replaceAll(RegExp(r'\bFARMACO\b'), 'FÁRMACO')
+    .replaceAll(RegExp(r'\bFARMACOS\b'), 'FÁRMACOS')
+    // ESPANHOL — termos estruturais de saída:
+    .replaceAll(RegExp(r'\bDEFINICION\b'), 'DEFINICIÓN')
+    .replaceAll(RegExp(r'\bINDICACION\b'), 'INDICACIÓN')
+    .replaceAll(RegExp(r'\bINDICACIONES\b'), 'INDICACIONES')          // já OK
+    .replaceAll(RegExp(r'\bDOSIFICACION\b'), 'DOSIFICACIÓN')
+    .replaceAll(RegExp(r'\bADMINISTRACION\b'), 'ADMINISTRACIÓN')
+    .replaceAll(RegExp(r'\bMONITORIZACION\b'), 'MONITORIZACIÓN')
+    .replaceAll(RegExp(r'\bINTERACCION\b'), 'INTERACCIÓN')
+    .replaceAll(RegExp(r'\bINTERACCIONES\b'), 'INTERACCIONES')        // já OK
+    .replaceAll(RegExp(r'\bCONTRAINDICACION\b'), 'CONTRAINDICACIÓN')
+    .replaceAll(RegExp(r'\bCONTRAINDICACIONES\b'), 'CONTRAINDICACIONES')
+    .replaceAll(RegExp(r'\bPRESCRIPCION\b'), 'PRESCRIPCIÓN')
+    .replaceAll(RegExp(r'\bINDICACION\b'), 'INDICACIÓN')
+    .replaceAll(RegExp(r'\bREACCION\b'), 'REACCIÓN')
+    .replaceAll(RegExp(r'\bREACCIONES ADVERSAS\b'), 'REACCIONES ADVERSAS')
+    .replaceAll(RegExp(r'\bFARMACOLOGIA\b'), 'FARMACOLOGÍA')
+    .replaceAll(RegExp(r'\bINTERACCIONES FARMACOLOGICAS\b'), 'INTERACCIONES FARMACOLÓGICAS');
+
   return s.trim();
 }
 
@@ -2742,10 +2792,17 @@ class _AiBlockBubble extends StatelessWidget {
   // ── Detectores de tipo de linha para hierarquia visual hospitalar ────────
 
   /// Linha HARD STOP — alerta de contraindicação crítica
+  // UNICODE-SAFE: toUpperCase() em Dart é Unicode-aware (não degrada acentos).
+  // As strings de comparação estão em UPPERCASE para match case-insensitive.
+  // Adicionadas variações sem acento como fallback de safety net.
   bool _isHardStop(String line) {
-    final t = line.trim().toUpperCase();
-    return t.contains('HARD STOP') || t.contains('HARD_STOP') ||
-           t.contains('CONTRAINDICAÇÃO ABSOLUTA') || t.contains('CONTRAINDICACION ABSOLUTA');
+    final tu = line.trim().toUpperCase();
+    return tu.contains('HARD STOP') ||
+           tu.contains('HARD_STOP') ||
+           tu.contains('CONTRAINDICAÇÃO ABSOLUTA') ||  // com acento correto
+           tu.contains('CONTRAINDICACAO ABSOLUTA') ||  // fallback sem acento
+           tu.contains('CONTRAINDICACIÓN ABSOLUTA') || // espanhol com acento
+           tu.contains('CONTRAINDICACION ABSOLUTA');   // espanhol fallback
   }
 
   /// Título H2 — linhas que começam com '## ' (dois sustenidos + espaço)
@@ -2762,11 +2819,19 @@ class _AiBlockBubble extends StatelessWidget {
     if (t.startsWith('🚨') || t.startsWith('💊') ||
         t.startsWith('⛔') || t.startsWith('📌')) return true;
     return t.startsWith('###') ||
-           RegExp(r'^(Hipótese|Hipotesis|Conduta|Conducta|Exames|Examenes|'
-                  r'Monitoriz|Evitar|Escalonamento|Escalonamiento|'
-                  r'AGORA|AHORA|QUICK|CLINICAL|TEACH|'
-                  r'Primeira Escolha|Primera Elección)',
-                  caseSensitive: false).hasMatch(t);
+           RegExp(
+             // Aceita tanto versões acentuadas quanto não-acentuadas (safety net)
+             r'^(Hipótese|Hipóteses|Hipotese|Hipoteses|'
+             r'Hipotesis|Hipótesis|'
+             r'Conduta|Conducta|'
+             r'Exames|Examenes|'
+             r'Monitoriz|Monitorizaç|'  // PT: Monitorização/Monitorização
+             r'Evitar|'
+             r'Escalonamento|Escalonamiento|'
+             r'AGORA|AHORA|QUICK|CLINICAL|TEACH|'
+             r'Primeira Escolha|Primera Elección|Primera Eleccion)',
+             caseSensitive: false,
+           ).hasMatch(t);
     // NOTA: 'Confiança|Confianza' removido — não deve renderizar como seção.
     // _cleanAiText() e _stripMetadataHeaders() já eliminam essas linhas antes
     // de chegar aqui. Manter no detector causava que linhas que escapassem das
@@ -2774,11 +2839,21 @@ class _AiBlockBubble extends StatelessWidget {
   }
 
   /// Linha de alerta/atenção (mas não hard stop)
+  // UNICODE-SAFE: não usa toUpperCase() antes de comparar com strings acentuadas
+  // como 'ATENÇÃO'/'ATENCIÓN' — toUpperCase() em Dart preserva maiúsculas Unicode
+  // corretas, mas a comparação com literal maiúsculo é segura. Checamos tanto
+  // a versão original quanto a uppercase para capturar "Atenção", "ATENÇÃO", etc.
   bool _isWarning(String line) {
-    final t = line.trim().toUpperCase();
-    return (t.startsWith('⚠') || t.startsWith('ATENÇÃO') || t.startsWith('ATENCIÓN') ||
-            t.startsWith('ALERTA') || t.startsWith('CUIDADO') ||
-            t.startsWith('NOTA:') || t.startsWith('OBS:')) &&
+    final t = line.trim();
+    final tu = t.toUpperCase();
+    return (t.startsWith('⚠') ||
+            tu.startsWith('ATENÇÃO') || tu.startsWith('ATENCIÓN') ||
+            tu.startsWith('ATENCION') ||   // fallback sem acento
+            tu.startsWith('ATENCAO') ||    // fallback sem acento
+            tu.startsWith('ALERTA') ||
+            tu.startsWith('CUIDADO') ||
+            tu.startsWith('NOTA:') ||
+            tu.startsWith('OBS:')) &&
            !_isHardStop(line);
   }
 

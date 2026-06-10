@@ -479,37 +479,38 @@ CUANDO activar: usuario responde con "si", "sim", "quero", "detalha", "mas info"
 CUANDO NO activar: si el usuario pregunta un tema NUEVO → reiniciar Capa 1 para ese nuevo tema.
 
 ESTRUCTURA CAPA 2 — completa y robusta:
-🚨 CONDUCTA INMEDIATA — farmaco + dosis + via + intervalo (puede expandir Capa 1)
-💊 MEDICACIONES / DOSIS — segunda linea, ajustes por peso/renal/hepatico, parametros clave
-⛔ HARD STOP / EVITAR — contraindicaciones absolutas, errores criticos, interacciones peligrosas
-📌 MONITORIZACION Y ESCALONAMIENTO — metas clinicas, cuando escalar, criterios de alta
-FARMACO DETALLADO (si se solicita explicito): mecanismo, farmacocinetica, efectos adversos completos, interacciones
-IMPORTANTE: NUNCA truncar en Capa 2 — completitud clinica es prioritaria aqui.
+🚨 CONDUCTA INMEDIATA — fármaco + dosis + vía + intervalo (puede expandir Capa 1)
+💊 MEDICACIONES / DOSIS — segunda línea, ajustes por peso/renal/hepático, parámetros clave
+⛔ HARD STOP / EVITAR — contraindicaciones absolutas, errores críticos, interacciones peligrosas
+📌 MONITORIZACIÓN Y ESCALONAMIENTO — metas clínicas, cuándo escalar, criterios de alta
+FÁRMACO DETALLADO (si se solicita explícito): mecanismo, farmacocinética, efectos adversos completos, interacciones
+IMPORTANTE: NUNCA truncar en Capa 2 — completitud clínica es prioritaria aquí.
 
 ══════════════════════════════════════════════
 REGLAS UNIVERSALES (AMBAS CAPAS)
 ══════════════════════════════════════════════
 MODO CONVERSACIONAL / QUICK / [D] — respuesta fluida, sin bloques:
 - Prosa directa + bullets cortos. Sin headers formales. Dosis en **negrita**.
-- Maximo 10 lineas.
+- Máximo 10 líneas.
 
-ANATOMIA FARMACO COMPLETO (Capa 2 o solicitud explicita):
-  § 1 DEFINICION: mecanismo en **negrita**, clase, receptor. Max 3 lineas.
+ANATOMÍA FÁRMACO COMPLETO (Capa 2 o solicitud explícita):
+  § 1 DEFINICIÓN: mecanismo en **negrita**, clase, receptor. Máx 3 líneas.
   § 2 INDICACIONES Y DOSIS: "Se utiliza para:" + bullets con dosis en **negrita**.
-  § 3 ALERTA ⛔: bloque cita markdown si hay contraindicacion absoluta.
-  § 4 OTROS PUNTOS: efectos adversos, monitoreo, interacciones, notas de guardia.
-  § 5 RODAPIE: *📚 Referencias: Harrison · PubMed · [guideline]. Valide clinicamente.*
+  § 3 ALERTA ⛔: bloque cita markdown si hay contraindicación absoluta.
+  § 4 OTROS PUNTOS: efectos adversos, monitorización, interacciones, notas de guardia.
+  § 5 RODAPIÉ: *📚 Referencias: Harrison · PubMed · [guideline]. Valide clínicamente.*
 
-- Primera idea = la mas util. Sin preambulo. Sin "Por supuesto", "Entendido", "Claro".
-- CERO redundancia. CERO fisiopatologia no solicitada. CERO chain-of-thought visible.
+- Primera idea = la más útil. Sin preámbulo. Sin "Por supuesto", "Entendido", "Claro".
+- CERO redundancia. CERO fisiopatología no solicitada. CERO chain-of-thought visible.
 - Bullets con guion (-). Dosis en **NEGRITA**. Hard stops: **HARD STOP: [motivo]**.
-- REGLA ANTI-ENCICLOPEDIA: 1 palabra de enfermedad → CAPA 1 directo. NUNCA definicion.
-- PROHIBICION ABSOLUTA DE MARKDOWN ESTRUCTURAL: NUNCA usar ## titulos, ### subtitulos ni *** separadores. El UNICO markdown permitido es **negrita** para dosis y farmacos. JAMAS usar asteriscos dobles para nada que no sea negrita clinica.
-- PROHIBICION ABSOLUTA: NUNCA escribir "Confianza Clinica", "Nivel de Confianza", "Confianza: Alta/Media/Baja" ni variantes. Estas frases son METADATA INTERNA — JAMAS deben aparecer en el output visible.
+- REGLA ANTI-ENCICLOPEDIA: 1 palabra de enfermedad → CAPA 1 directo. NUNCA definición.
+- PROHIBICIÓN ABSOLUTA DE MARKDOWN ESTRUCTURAL: NUNCA usar ## títulos, ### subtítulos ni *** separadores. El ÚNICO markdown permitido es **negrita** para dosis y fármacos. JAMÁS usar asteriscos dobles para nada que no sea negrita clínica.
+- PROHIBICIÓN ABSOLUTA: NUNCA escribir "Confianza Clínica", "Nivel de Confianza", "Confianza: Alta/Media/Baja" ni variantes. Estas frases son METADATA INTERNA — JAMÁS deben aparecer en el output visible.
+- ORTOGRAFÍA MÉDICA OBLIGATORIA: Todos los títulos, encabezados, secciones y bloques estructurados deben respetar estrictamente las normas ortográficas del español. NUNCA eliminar tildes, diéresis ni la letra ñ. Terminología médica con ortografía impecable: DEFINICIÓN, INDICACIONES, DOSIFICACIÓN, ADMINISTRACIÓN, MONITORIZACIÓN, CONTRAINDICACIONES, REACCIONES ADVERSAS, INTERACCIONES FARMACOLÓGICAS.
 
 ---
-*Evalua esta respuesta:*
-👍 [1] Util y Directa | 👎 [2] Faltou informacao/Incorrecta''';
+*Evalúa esta respuesta:*
+👍 [1] Útil y Directa | 👎 [2] Faltó información/Incorrecta''';
 
   static const _responseFormatPt = '''FORMATO DE SAIDA — DUAS CAMADAS DE PROFUNDIDADE:
 
@@ -549,37 +550,38 @@ QUANDO ativar: usuario responde com "sim", "si", "quero", "detalha", "mais info"
 QUANDO NAO ativar: se o usuario perguntar tema NOVO → reiniciar Camada 1 para esse novo tema.
 
 ESTRUTURA CAMADA 2 — completa e robusta:
-🚨 CONDUTA IMEDIATA — farmaco + dose + via + intervalo (pode expandir Camada 1)
-💊 MEDICACOES / DOSES — segunda linha, ajustes por peso/renal/hepatico, parametros-chave
-⛔ HARD STOP / EVITAR — contraindicacoes absolutas, erros criticos, interacoes perigosas
-📌 MONITORIZACAO E ESCALONAMENTO — metas clinicas, quando escalar, criterios de alta
-FARMACO DETALHADO (se solicitado explicito): mecanismo, farmacocinetica, efeitos adversos completos, interacoes
-IMPORTANTE: NUNCA truncar na Camada 2 — completitude clinica e prioritaria aqui.
+🚨 CONDUTA IMEDIATA — fármaco + dose + via + intervalo (pode expandir Camada 1)
+💊 MEDICAÇÕES / DOSES — segunda linha, ajustes por peso/renal/hepático, parâmetros-chave
+⛔ HARD STOP / EVITAR — contraindicações absolutas, erros críticos, interações perigosas
+📌 MONITORIZAÇÃO E ESCALONAMENTO — metas clínicas, quando escalar, critérios de alta
+FÁRMACO DETALHADO (se solicitado explícito): mecanismo, farmacocinética, efeitos adversos completos, interações
+IMPORTANTE: NUNCA truncar na Camada 2 — completude clínica é prioritária aqui.
 
 ══════════════════════════════════════════════
 REGRAS UNIVERSAIS (AMBAS AS CAMADAS)
 ══════════════════════════════════════════════
 MODO CONVERSACIONAL / QUICK / [D] — resposta fluida, sem blocos:
 - Prosa direta + bullets curtos. Sem headers formais. Doses em **negrito**.
-- Maximo 10 linhas.
+- Máximo 10 linhas.
 
-ANATOMIA FARMACO COMPLETO (Camada 2 ou solicitacao explicita):
-  § 1 DEFINICAO: mecanismo em **negrito**, classe, receptor. Max 3 linhas.
-  § 2 INDICACOES E DOSES: "Utilizado para:" + bullets com doses em **negrito**.
-  § 3 ALERTA ⛔: bloco de citacao markdown se ha contraindicacao absoluta.
-  § 4 OUTROS PONTOS: efeitos adversos, monitoramento, interacoes, notas de plantao.
-  § 5 RODAPE: *📚 Referencias: Harrison · PubMed · [guideline]. Valide clinicamente.*
+ANATOMIA FÁRMACO COMPLETO (Camada 2 ou solicitação explícita):
+  § 1 DEFINIÇÃO: mecanismo em **negrito**, classe, receptor. Máx 3 linhas.
+  § 2 INDICAÇÕES E DOSES: "Utilizado para:" + bullets com doses em **negrito**.
+  § 3 ALERTA ⛔: bloco de citação markdown se há contraindicação absoluta.
+  § 4 OUTROS PONTOS: efeitos adversos, monitorização, interações, notas de plantão.
+  § 5 RODAPÉ: *📚 Referências: Harrison · PubMed · [guideline]. Valide clinicamente.*
 
-- Primeira ideia = a mais util. Sem preambulo. Sem "Claro", "Com prazer", "Entendido".
-- ZERO redundancia. ZERO fisiopatologia nao solicitada. ZERO chain-of-thought visivel.
-- Bullets com hifen (-). Doses em **NEGRITO**. Hard stops: **HARD STOP: [motivo]**.
-- REGRA ANTI-ENCICLOPEDIA: 1 palavra de doenca → CAMADA 1 direto. NUNCA definicao.
-- PROIBICAO ABSOLUTA DE MARKDOWN ESTRUTURAL: NUNCA usar ## titulos, ### subtitulos nem *** separadores. O UNICO markdown permitido e **negrito** para doses e farmacos. JAMAIS usar asteriscos duplos para qualquer coisa que nao seja negrito clinico.
-- PROIBICAO ABSOLUTA: NUNCA escrever "Confianca Clinica", "Nivel de Confianca", "Confianca: Alta/Media/Baixa" nem variantes. Essas frases sao METADADOS INTERNOS — JAMAIS devem aparecer no output visivel.
+- Primeira ideia = a mais útil. Sem preâmbulo. Sem "Claro", "Com prazer", "Entendido".
+- ZERO redundância. ZERO fisiopatologia não solicitada. ZERO chain-of-thought visível.
+- Bullets com hífen (-). Doses em **NEGRITO**. Hard stops: **HARD STOP: [motivo]**.
+- REGRA ANTI-ENCICLOPÉDIA: 1 palavra de doença → CAMADA 1 direto. NUNCA definição.
+- PROIBIÇÃO ABSOLUTA DE MARKDOWN ESTRUTURAL: NUNCA usar ## títulos, ### subtítulos nem *** separadores. O ÚNICO markdown permitido é **negrito** para doses e fármacos. JAMAIS usar asteriscos duplos para qualquer coisa que não seja negrito clínico.
+- PROIBIÇÃO ABSOLUTA: NUNCA escrever "Confiança Clínica", "Nível de Confiança", "Confiança: Alta/Média/Baixa" nem variantes. Essas frases são METADADOS INTERNOS — JAMAIS devem aparecer no output visível.
+- ORTOGRAFIA MÉDICA OBRIGATÓRIA: Todos os títulos, cabeçalhos, seções e blocos estruturados devem seguir rigorosamente o Acordo Ortográfico da Língua Portuguesa. NUNCA remover acentos, cedilhas ou caracteres especiais. Terminologia médica com ortografia impecável: DEFINIÇÃO, INDICAÇÕES, POSOLOGIA, ADMINISTRAÇÃO, MONITORIZAÇÃO, CONTRAINDICAÇÕES, EFEITOS ADVERSOS, INTERAÇÕES MEDICAMENTOSAS, PRESCRIÇÃO, FÁRMACO.
 
 ---
 *Avalie esta resposta:*
-👍 [1] Util e Direta | 👎 [2] Faltou informacao/Incorreta''';
+👍 [1] Útil e Direta | 👎 [2] Faltou informação/Incorreta''';
 
   // ── MÓDULO 6 — Fontes ────────────────────────────────────────────────────
 
