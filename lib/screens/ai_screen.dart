@@ -3497,9 +3497,18 @@ class _AiBubbleState extends State<_AiBubble> {
   ///  • "- " sozinho no fim  → traço de lista sem texto
   ///  • "**texto" sem fechar → negrito não terminado quebra layout
   ///  • "### " sem título    → cabeçalho vazio
+  ///  • "🟥" / "⛔" sozinho  → emoji de card sem texto ainda → texto cru (Build 108)
+  ///  • "🟥 AMO" incompleto  → card parcialmente digitado → texto cru (Build 108)
   ///
   /// Estratégia: inspeciona apenas a ÚLTIMA linha (fragmento em construção).
   /// Linhas anteriores já chegaram completas e não são alteradas.
+  ///
+  /// Build 108 — STREAM TOLERANCE para tokens de card UI:
+  /// Se a última linha contém um emoji de card (🟥 ⛔ 📌 📚 🚨 💊) mas ainda
+  /// não terminou (sem \n), suprimimos temporariamente essa linha parcial para
+  /// evitar exibição de texto cru. O card correto aparece no próximo chunk
+  /// quando a linha estiver completa. Linhas anteriores completas já estão
+  /// sendo renderizadas corretamente pelo _AiBlockBubble.
   static String _sanitizePartialMarkdown(String text) {
     if (text.isEmpty) return text;
 
@@ -3513,8 +3522,24 @@ class _AiBubbleState extends State<_AiBubble> {
 
     final trimmedLast = last.trimLeft();
 
+    // ── Build 108: tokens de card UI parciais ─────────────────────────────
+    // Se a última linha começa com um emoji de card mas NÃO tem texto
+    // substantivo suficiente (< 8 chars após o emoji), suprimir temporariamente.
+    // Evita renderizar o emoji sozinho como texto cru entre cards.
+    // A linha será exibida corretamente no próximo chunk quando completar.
+    final cardEmojiRx = RegExp(r'^(🟥|⛔|📌|📚|🚨|💊)');
+    if (cardEmojiRx.hasMatch(trimmedLast)) {
+      // Conta chars úteis após o emoji (emojis têm ~2 rune units)
+      final afterEmoji = trimmedLast.replaceFirst(cardEmojiRx, '').trim();
+      if (afterEmoji.length < 6) {
+        // Linha ainda muito curta — suprime até o próximo chunk
+        last = '';
+      }
+      // Se já tem texto substantivo (>= 6 chars), deixa passar normalmente
+      // — o _AiBlockBubble abre o card com o conteúdo parcial disponível.
+    }
     // Marcador de lista sozinho ("* ", "- ", "• " sem texto após)
-    if (RegExp(r'^[\*\-•]\s*$').hasMatch(trimmedLast)) {
+    else if (RegExp(r'^[\*\-•]\s*$').hasMatch(trimmedLast)) {
       last = '';
     }
     // Cabeçalho markdown vazio ("## ", "### " sem título ainda)
