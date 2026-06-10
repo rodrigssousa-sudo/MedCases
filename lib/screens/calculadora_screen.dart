@@ -16,7 +16,7 @@ const _kSourcesUrl = 'https://www.promedcases.com/fontes-e-referencias';
 // ─────────────────────────────────────────────────────────────────────────────
 // JS PRECOCE — injetado em onPageStarted (antes do DOMContentLoaded)
 //
-// Injeta <style> no <head> ANTES que o Wix tenha chance de aplicar qualquer
+// Injeta <style> ANTES que o Wix tenha chance de aplicar qualquer
 // env(safe-area-inset-*) ou configurar momentum scroll.
 // ─────────────────────────────────────────────────────────────────────────────
 const _kEarlyInjectJs = r"""
@@ -41,15 +41,13 @@ const _kEarlyInjectJs = r"""
 """;
 
 // ─────────────────────────────────────────────────────────────────────────────
-// JS PRINCIPAL — injetado em onPageFinished (após DOM completo)
+// JS PRINCIPAL — injetado em onPageFinished
 //
 // REGRAS:
-//  • NÃO definir height/min-height no <html> ou <body> — isso corta o scroll
-//    em páginas Wix e impede que o conteúdo abaixo do viewport seja acessível.
-//  • padding-top: 0 — Flutter header (Positioned top:0) já cobre a status bar.
-//  • padding-bottom: 0 — SafeArea(bottom:false) + Expanded entrega altura real.
-//  • overscroll-behavior: none — impede bounce do iOS de expor ghost space.
-//  • -webkit-overflow-scrolling: auto — desativa momentum scroll rubber-band.
+//  • NÃO definir height/min-height no <html> ou <body>.
+//  • padding: 0 em tudo — SafeArea(bottom:false)+Expanded entrega frame real.
+//  • overscroll-behavior: none — impede bounce de expor ghost space.
+//  • NENHUMA injeção de barra/botão de fontes — movida para widget Flutter.
 // ─────────────────────────────────────────────────────────────────────────────
 const _kInjectJs = r"""
 (function() {
@@ -68,32 +66,26 @@ const _kInjectJs = r"""
     document.head.appendChild(m);
   }
 
-  // ── B. CSS global — zera insets, bounce e footers Wix de uma só vez ──────
+  // ── B. CSS global — zera insets, bounce e footers Wix ────────────────────
   var styleId = 'mc-global-reset';
   if (!document.getElementById(styleId)) {
     var style = document.createElement('style');
     style.id = styleId;
     style.textContent = [
-      // html: sem padding/margin, sem bounce
       'html {',
       '  padding: 0 !important;',
       '  margin:  0 !important;',
       '  overscroll-behavior: none !important;',
       '  -webkit-overflow-scrolling: auto !important;',
       '}',
-      // body: sem padding/margin em nenhuma direção
-      //   • padding-top:    0 — Flutter header Positioned já cobre a status bar
-      //   • padding-bottom: 0 — SafeArea(bottom:false)+Expanded dá altura real
       'body {',
-      '  margin:  0 !important;',
-      '  padding: 0 !important;',
+      '  margin:         0 !important;',
+      '  padding:        0 !important;',
       '  padding-top:    0px !important;',
       '  padding-bottom: 0px !important;',
       '  overscroll-behavior-y: none !important;',
       '  -webkit-overflow-scrolling: auto !important;',
       '}',
-
-      // Footer Wix — IDs reais extraídos do HTML live de medcasescalcu.com
       '#comp-kbgakxmn,',
       '#comp-kbgakxmn_r_comp-kbgakgyt,',
       '#comp-kbgakxmn_r_comp-mdr13kdg,',
@@ -116,8 +108,6 @@ const _kInjectJs = r"""
       '  margin:         0       !important;',
       '  padding:        0       !important;',
       '}',
-
-      // Zera margin/padding-bottom dos containers de página Wix
       '#PAGES_CONTAINER, #masterPage, #site-root, #SITE_PAGES {',
       '  margin-bottom:  0 !important;',
       '  padding-bottom: 0 !important;',
@@ -126,21 +116,21 @@ const _kInjectJs = r"""
     (document.head || document.documentElement).appendChild(style);
   }
 
-  // ── C. Inline imperativo — aplica mesmo se <head> ainda não estiver pronto
+  // ── C. Inline imperativo ─────────────────────────────────────────────────
   document.body.style.setProperty('margin',                     '0',    'important');
   document.body.style.setProperty('padding-top',                '0px',  'important');
   document.body.style.setProperty('padding-bottom',             '0px',  'important');
   document.body.style.setProperty('overscroll-behavior-y',      'none', 'important');
   document.body.style.setProperty('-webkit-overflow-scrolling', 'auto', 'important');
-  document.documentElement.style.setProperty('overscroll-behavior',           'none', 'important');
-  document.documentElement.style.setProperty('-webkit-overflow-scrolling',    'auto', 'important');
+  document.documentElement.style.setProperty('overscroll-behavior',        'none', 'important');
+  document.documentElement.style.setProperty('-webkit-overflow-scrolling', 'auto', 'important');
   document.documentElement.style.removeProperty('height');
   document.body.style.removeProperty('height');
   document.body.style.removeProperty('min-height');
   document.body.style.removeProperty('max-height');
   document.body.style.removeProperty('overflow-y');
 
-  // ── D. Kill imperativo do footer já no DOM ───────────────────────────────
+  // ── D. Kill imperativo do footer ─────────────────────────────────────────
   var KILL_IDS = [
     'comp-kbgakxmn', 'comp-kbgakxmn_r_comp-kbgakgyt',
     'SCROLL_TO_BOTTOM', 'SCROLL_TO_TOP',
@@ -177,174 +167,6 @@ const _kInjectJs = r"""
 """;
 
 // ─────────────────────────────────────────────────────────────────────────────
-// JS DA BARRA RETRÁTIL DE FONTES ACADÊMICAS
-//
-// DESIGN: barra fixa no rodapé da WebView — ultra-discreta (20px colapsada).
-//  • Estado fechado : 20px de altura — apenas uma linha de texto mínima.
-//  • Estado aberto  : 120px — exibe título, sublabel e botão de link externo.
-//  • Transição CSS suave (0.3s ease) em ambas as direções.
-//  • position: fixed bottom:0 — nunca ocupa espaço no flow do conteúdo Wix.
-//  • Padding-bottom = 0 — a SafeArea(bottom:false) do Flutter não afeta o DOM;
-//    a home bar fica visível atrás da barra porque o WebView é transparente.
-// ─────────────────────────────────────────────────────────────────────────────
-String _buildSourcesButtonJs(bool isEs) {
-  final labelCollapsed = isEs
-      ? '\uD83D\uDD3C Ver Fuentes Acad\u00e9micas \u00b7 AHA \u00b7 ACC \u00b7 WHO...'
-      : '\uD83D\uDD3C Ver Fontes Acad\u00eamicas \u00b7 AHA \u00b7 ACC \u00b7 WHO...';
-  final labelExpanded = isEs
-      ? 'Ver Fuentes Acad\u00e9micas'
-      : 'Ver Fontes Acad\u00eamicas';
-  final sublabel = 'AHA \u00b7 ACC \u00b7 WHO \u00b7 PubMed \u00b7 UpToDate';
-  final btnText = isEs ? 'Abrir referencias \u2197' : 'Abrir refer\u00eancias \u2197';
-
-  return '''
-(function() {
-  if (document.getElementById('mc-sources-bar')) return;
-
-  // ── Barra principal ────────────────────────────────────────────────────────
-  var bar = document.createElement('div');
-  bar.id = 'mc-sources-bar';
-  bar.style.cssText = [
-    'position: fixed !important',
-    'bottom: 0 !important',
-    'left: 0 !important',
-    'width: 100% !important',
-    'z-index: 999999 !important',
-    'box-sizing: border-box',
-    'background: rgba(30,20,50,0.95)',
-    'border-top: 1px solid rgba(167,139,250,0.28)',
-    'overflow: hidden',
-    'height: 20px',
-    'transition: height 0.3s ease',
-    'cursor: pointer',
-    'user-select: none',
-    '-webkit-tap-highlight-color: transparent'
-  ].join('; ');
-
-  // ── Linha colapsada (sempre visível) ──────────────────────────────────────
-  var collapsed = document.createElement('div');
-  collapsed.id = 'mc-collapsed-line';
-  collapsed.style.cssText = [
-    'height: 20px',
-    'display: flex',
-    'align-items: center',
-    'justify-content: center',
-    'padding: 0 12px'
-  ].join('; ');
-
-  var collapsedText = document.createElement('span');
-  collapsedText.id = 'mc-collapsed-text';
-  collapsedText.textContent = '$labelCollapsed';
-  collapsedText.style.cssText = [
-    'font-size: 10px',
-    'color: rgba(184,168,232,0.70)',
-    'letter-spacing: 0.3px',
-    'white-space: nowrap',
-    'overflow: hidden',
-    'text-overflow: ellipsis',
-    'max-width: 100%'
-  ].join('; ');
-
-  collapsed.appendChild(collapsedText);
-
-  // ── Painel expandido (visível apenas quando aberto) ───────────────────────
-  var expanded = document.createElement('div');
-  expanded.id = 'mc-expanded-panel';
-  expanded.style.cssText = [
-    'display: flex',
-    'flex-direction: column',
-    'align-items: center',
-    'justify-content: center',
-    'padding: 10px 16px 8px 16px',
-    'gap: 6px'
-  ].join('; ');
-
-  var titleRow = document.createElement('div');
-  titleRow.style.cssText = 'display: flex; align-items: center; gap: 6px';
-
-  var iconSpan = document.createElement('span');
-  iconSpan.textContent = '\\uD83D\\uDCDA';
-  iconSpan.style.fontSize = '14px';
-
-  var titleSpan = document.createElement('span');
-  titleSpan.textContent = '$labelExpanded';
-  titleSpan.style.cssText = [
-    'font-size: 12px',
-    'font-weight: 700',
-    'color: #A78BFA',
-    'letter-spacing: 0.2px'
-  ].join('; ');
-
-  titleRow.appendChild(iconSpan);
-  titleRow.appendChild(titleSpan);
-
-  var subSpan = document.createElement('div');
-  subSpan.textContent = '$sublabel';
-  subSpan.style.cssText = [
-    'font-size: 9px',
-    'color: rgba(184,168,232,0.60)',
-    'letter-spacing: 0.5px'
-  ].join('; ');
-
-  var linkBtn = document.createElement('div');
-  linkBtn.textContent = '$btnText';
-  linkBtn.style.cssText = [
-    'margin-top: 4px',
-    'padding: 5px 18px',
-    'background: rgba(167,139,250,0.15)',
-    'border: 1px solid rgba(167,139,250,0.35)',
-    'border-radius: 20px',
-    'font-size: 11px',
-    'font-weight: 600',
-    'color: #C4B5FD',
-    'cursor: pointer',
-    'transition: background 0.15s ease'
-  ].join('; ');
-
-  expanded.appendChild(titleRow);
-  expanded.appendChild(subSpan);
-  expanded.appendChild(linkBtn);
-
-  bar.appendChild(collapsed);
-  bar.appendChild(expanded);
-  document.body.appendChild(bar);
-
-  // ── Toggle state ───────────────────────────────────────────────────────────
-  var isOpen = false;
-
-  function openBar() {
-    isOpen = true;
-    bar.style.height = '120px';
-    collapsedText.textContent = '\\uD83D\\uDD3D $labelExpanded';
-  }
-
-  function closeBar() {
-    isOpen = false;
-    bar.style.height = '20px';
-    collapsedText.textContent = '$labelCollapsed';
-  }
-
-  bar.addEventListener('click', function(e) {
-    e.stopPropagation();
-    if (isOpen) { closeBar(); } else { openBar(); }
-  });
-
-  // ── Link externo ──────────────────────────────────────────────────────────
-  linkBtn.addEventListener('click', function(e) {
-    e.stopPropagation();
-    if (window.MedCasesChannel) {
-      window.MedCasesChannel.postMessage('openSources');
-    }
-    setTimeout(closeBar, 300);
-  });
-
-  // ── Padding-bottom no body — evita que a barra cubra o último item ────────
-  document.body.style.setProperty('padding-bottom', '20px', 'important');
-})();
-''';
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
 // TELA DE CALCULADORA
 // ─────────────────────────────────────────────────────────────────────────────
 class CalculadoraScreen extends StatefulWidget {
@@ -357,6 +179,9 @@ class CalculadoraScreen extends StatefulWidget {
 class _CalculadoraScreenState extends State<CalculadoraScreen> {
   late final WebViewController _controller;
   late final bool _isEs;
+
+  // Estado da barra de fontes nativa Flutter
+  bool _sourcesExpanded = false;
 
   @override
   void initState() {
@@ -381,74 +206,76 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
       ..setUserAgent(
           'Mozilla/5.0 (iPhone; CPU iPhone OS 15_0 like Mac OS X) MedCasesApp/6.1.0')
       // Colors.transparent → scrollView.backgroundColor = UIColor.clear
-      // O ColoredBox Flutter pai (0xFF0F091E) aparece atrás sem criar barra sólida.
+      // Scaffold.backgroundColor(0xFF0F091E) aparece atrás, sem layer sólido.
       ..setBackgroundColor(Colors.transparent)
-      ..addJavaScriptChannel(
-        'MedCasesChannel',
-        onMessageReceived: (msg) async {
-          if (msg.message == 'openSources') {
-            final uri = Uri.parse(_kSourcesUrl);
-            if (await canLaunchUrl(uri)) {
-              await launchUrl(uri, mode: LaunchMode.externalApplication);
-            }
-          }
-        },
-      )
       ..setNavigationDelegate(NavigationDelegate(
         onPageStarted: (_) async {
-          // Injeta CSS de reset ANTES do DOMContentLoaded — Wix não chega a
-          // reservar safe-area-inset ou configurar momentum scroll.
           await _controller.runJavaScript(_kEarlyInjectJs);
         },
         onPageFinished: (_) async {
           await _controller.runJavaScript(_kInjectJs);
-          await _controller.runJavaScript(_buildSourcesButtonJs(_isEs));
+          // ← _buildSourcesButtonJs REMOVIDO — barra migrada para Flutter nativo
         },
       ))
       ..loadRequest(Uri.parse('$_kBaseUrl?lang=$langParam'));
   }
 
+  Future<void> _openSourcesUrl() async {
+    final uri = Uri.parse(_kSourcesUrl);
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    // ── topPadding via FlutterView — imune ao MediaQuery do shell ─────────────
     final view       = View.of(context);
     final topPadding = view.viewPadding.top / view.devicePixelRatio;
 
-    // ── PADRÃO OURO: SafeArea(bottom:false) + Column + Expanded ──────────────
+    // ── BARRA DE FONTES — dimensões ──────────────────────────────────────────
+    // Collapsed: 24px — linha única de texto pequeno.
+    // Expanded : 108px — título, sublabel e botão de abertura.
+    const double _kBarCollapsed = 24.0;
+    const double _kBarExpanded  = 108.0;
+    final double barHeight = _sourcesExpanded ? _kBarExpanded : _kBarCollapsed;
+
+    final String labelBar = _isEs
+        ? '\uD83D\uDD3C Ver Fuentes Acad\u00e9micas \u00b7 AHA \u00b7 ACC \u00b7 WHO...'
+        : '\uD83D\uDD3C Ver Fontes Acad\u00eamicas \u00b7 AHA \u00b7 ACC \u00b7 WHO...';
+    final String labelTitle = _isEs
+        ? 'Ver Fuentes Acad\u00e9micas'
+        : 'Ver Fontes Acad\u00eamicas';
+    final String labelBtn = _isEs
+        ? 'Abrir referencias \u2197'
+        : 'Abrir refer\u00eancias \u2197';
+
+    // ── LAYOUT ────────────────────────────────────────────────────────────────
     //
-    // Por que este layout elimina a barra escura:
+    // Column[
+    //   header (topPadding + 52px),
+    //   Expanded > Stack[
+    //     Positioned.fill(bottom: barHeight) → WebView  ← não fica atrás da barra
+    //     Positioned(bottom:0, height:barHeight) → barra Flutter nativa
+    //   ]
+    // ]
     //
-    // 1. SafeArea(top:true, bottom:false):
-    //    • top:true  → recua o conteúdo abaixo da status bar do SO.
-    //    • bottom:false → NÃO adiciona padding na base — o Expanded empurra
-    //      a WebView até a borda física do vidro, incluindo a área da home bar.
-    //    • Isso entrega à WKWebView um frame que toca a borda física,
-    //      então o adjustedContentInset do iOS fica zerado automaticamente.
-    //
-    // 2. Column:
-    //    • Filho 0: header fixo de (topPadding + 52) px.
-    //    • Filho 1: Expanded → WebView ocupa TODO o espaço restante.
-    //    • Sem Positioned, sem aritmética de bottomPadding, sem tampas.
-    //
-    // 3. WebView com Colors.transparent:
-    //    • scrollView.backgroundColor = UIColor.clear.
-    //    • O Scaffold.backgroundColor (0xFF0F091E) aparece atrás.
-    //    • Impossível ver barra escura mesmo se o conteúdo não cobrir o fundo.
-    //
-    // IMPORTANTE: Não usar tampa Positioned no bottom — isso "encurtava" a
-    // WebView visualmente (conteúdo HTML empurrado para cima pelo iOS) gerando
-    // a falsa impressão de que a barra persistia.
+    // Por que funciona:
+    //  • SafeArea(bottom:false): sem padding automático do SO na base.
+    //  • Expanded: WebView + barra recebem TODO o espaço restante do Column.
+    //  • WebView termina exatamente onde a barra começa — sem sobreposição.
+    //  • Barra é um widget Flutter puro: zero JS, zero DOM, zero CSS.
+    //  • Scaffold.backgroundColor cobre qualquer pixel não pintado pelo WebView.
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.light,
       child: Scaffold(
         backgroundColor: const Color(0xFF0F091E),
         body: SafeArea(
-          top: false,   // gerenciado manualmente abaixo via topPadding
-          bottom: false, // ← CRÍTICO: deixa a WebView tocar a borda física
+          top:    false,
+          bottom: false,
           child: Column(
             children: [
 
-              // ── CAMADA 0 — Header gradiente ──────────────────────────────
+              // ── Header gradiente ──────────────────────────────────────────
               Container(
                 height: topPadding + 52,
                 decoration: const BoxDecoration(
@@ -490,17 +317,134 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
                 ),
               ),
 
-              // ── CAMADA 1 — WebView: ocupa todo o espaço restante ─────────
-              // Expanded → sem bottom fixo, sem cálculo de padding.
-              // A WKWebView recebe um frame que vai até a borda física do vidro.
+              // ── WebView + barra de fontes nativa ──────────────────────────
               Expanded(
-                child: WebViewWidget(controller: _controller),
+                child: Stack(
+                  children: [
+
+                    // WebView termina ACIMA da barra — sem sobreposição
+                    Positioned(
+                      top:    0,
+                      left:   0,
+                      right:  0,
+                      bottom: _kBarCollapsed, // sempre reserva 24px para a barra
+                      child: WebViewWidget(controller: _controller),
+                    ),
+
+                    // ── Barra de fontes Flutter nativa ────────────────────
+                    // Zero JS. Zero DOM. Zero CSS.
+                    // Widget Flutter puro — animado com AnimatedContainer.
+                    Positioned(
+                      left:   0,
+                      right:  0,
+                      bottom: 0,
+                      child: GestureDetector(
+                        onTap: () => setState(() => _sourcesExpanded = !_sourcesExpanded),
+                        child: AnimatedContainer(
+                          duration: const Duration(milliseconds: 280),
+                          curve: Curves.easeInOut,
+                          height: barHeight,
+                          decoration: BoxDecoration(
+                            color: const Color(0xFF1A0F2E).withOpacity(0.96),
+                            border: const Border(
+                              top: BorderSide(
+                                color: Color(0x47A78BFA), // rgba(167,139,250,0.28)
+                                width: 1,
+                              ),
+                            ),
+                          ),
+                          child: _sourcesExpanded
+                              ? _buildExpandedSources(labelTitle, labelBtn)
+                              : _buildCollapsedSources(labelBar),
+                        ),
+                      ),
+                    ),
+
+                  ],
+                ),
               ),
 
             ],
           ),
         ),
       ),
+    );
+  }
+
+  // ── Vista colapsada (24px) ──────────────────────────────────────────────────
+  Widget _buildCollapsedSources(String label) {
+    return Center(
+      child: Text(
+        label,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+        style: const TextStyle(
+          fontSize:      10,
+          color:         Color(0xB3B8A8E8), // rgba(184,168,232,0.70)
+          letterSpacing: 0.3,
+          height:        1.0,
+        ),
+      ),
+    );
+  }
+
+  // ── Vista expandida (108px) ─────────────────────────────────────────────────
+  Widget _buildExpandedSources(String title, String btnLabel) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        // Título
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Text('\uD83D\uDCDA', style: TextStyle(fontSize: 14)),
+            const SizedBox(width: 6),
+            Text(
+              title,
+              style: const TextStyle(
+                fontSize:      12,
+                fontWeight:    FontWeight.w700,
+                color:         Color(0xFFA78BFA),
+                letterSpacing: 0.2,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 4),
+        // Sublabel
+        const Text(
+          'AHA \u00b7 ACC \u00b7 WHO \u00b7 PubMed \u00b7 UpToDate',
+          style: TextStyle(
+            fontSize:      9,
+            color:         Color(0x99B8A8E8), // rgba(184,168,232,0.60)
+            letterSpacing: 0.5,
+          ),
+        ),
+        const SizedBox(height: 8),
+        // Botão de abertura
+        GestureDetector(
+          onTap: () {
+            setState(() => _sourcesExpanded = false);
+            _openSourcesUrl();
+          },
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 5),
+            decoration: BoxDecoration(
+              color:        const Color(0x26A78BFA), // rgba(167,139,250,0.15)
+              border:       Border.all(color: const Color(0x59A78BFA)), // 0.35 alpha
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: Text(
+              btnLabel,
+              style: const TextStyle(
+                fontSize:   11,
+                fontWeight: FontWeight.w600,
+                color:      Color(0xFFC4B5FD),
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
