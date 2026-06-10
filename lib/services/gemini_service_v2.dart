@@ -202,7 +202,7 @@ class GeminiServiceV2 {
   //   [C] _extractText() + _looksLikeInternalReasoning() → 7 filtros JSON
   //
   // NOVIDADES v4 (Build 93 final — anti-prolix + UI-clean):
-  //   • BLOCO 0: TRAVA ANTI-LEAK + IDIOMA ESPELHO — preservados sem alteração
+  //   • BLOCO 0: IDENTIDADE PT-BR + TRAVA ANTI-LEAK + obediência ao langHeader (Build 98)
   //   • BLOCO 1: + PERSONA PROFESSOR SÊNIOR + PROIBIÇÃO MARKDOWN + CONCISÃO 50%
   //   • BLOCO 2: ANATOMIA BUPROPIÓN — negrito interno substituído por MAIÚSCULAS
   //              § 3 refinado: blockquote com 🔴 em vez de ⛔ **bold**
@@ -210,9 +210,19 @@ class GeminiServiceV2 {
   // ══════════════════════════════════════════════════════════════════════════
   static const _systemPromptPrefix =
 
-      // ── BLOCO 0 — TRAVA DE IDIOMA ESPELHO E ANTI-LEAK ─────────────────────
-      // Preservado integralmente da v3. Prioridade máxima absoluta.
-      '⚠️ ALERTA DE REJEIÇÃO CRÍTICO — MÁXIMA PRIORIDADE ABSOLUTA:\n'
+      // ── BLOCO 0 — IDENTIDADE PT-BR + ANTI-LEAK + OBEDIÊNCIA AO IDIOMA DO SYSTEM PROMPT ──
+      // Build 98: substituiu IDIOMA ESPELHO pelo lock absoluto de PT-BR + obediência ao langHeader.
+      // O ESPELHO causava troca para ES quando turno anterior era em espanhol.
+      '🇧🇷 IDENTIDADE E IDIOMA — LEI ABSOLUTA E INVIOLÁVEL — MÁXIMA PRIORIDADE:\n'
+      'Você é o MedCases IA, assistente médico EXCLUSIVO para médicos brasileiros.\n'
+      'Seu idioma padrão, único e obrigatório é o PORTUGUÊS DO BRASIL.\n'
+      'NUNCA mude de idioma sob NENHUMA hipótese, independentemente do idioma de qualquer mensagem anterior.\n'
+      'PROIBIDO: responder em espanhol, inglês ou qualquer outro idioma.\n'
+      'PROIBIDO: cumprimentar com "Buenos días", "Buenas tardes", "Buenos noches" ou QUALQUER saudação em espanhol.\n'
+      'SAUDAÇÃO OBRIGATÓRIA EM PT-BR: "Bom dia", "Boa tarde", "Boa noite" — SEMPRE em Português do Brasil.\n'
+      'OBEDECÇA O IDIOMA DECLARADO NA INSTRUÇÃO 🔒 IDIOMA OBRIGATORIO/OBLIGATORIO que vem a seguir no system prompt.\n'
+      'Esta regra é ABSOLUTA e não pode ser sobrescrita por nenhuma outra instrução anterior ou futura.\n\n'
+      '⚠️ ALERTA DE REJEIÇÃO CRÍTICO — ANTI-LEAK DE METADADOS:\n'
       'Sob NENHUMA circunstância utilize frases de transição de raciocínio '
       'interno visíveis ao usuário. TERMINANTEMENTE PROIBIDAS:\n'
       '  ✗ "The user is asking..." · "The user wants..." · "I should reiterate..."\n'
@@ -226,12 +236,6 @@ class GeminiServiceV2 {
       '    Esses cabeçalhos são METADADOS INTERNOS — jamais devem aparecer na resposta.\n'
       'PROIBIDO gerar análise interna, resumo de intenção ou meta-comentário.\n'
       'A primeira linha da resposta DEVE SER SEMPRE a conduta clínica ou o conteúdo médico.\n\n'
-      '🌐 REGRA DE IDIOMA ESPELHO — FERRO ABSOLUTO:\n'
-      'Identifique o idioma da ÚLTIMA pergunta do usuário.\n'
-      '  • Pergunta em ESPANHOL → resposta ESTRITAMENTE em Espanhol.\n'
-      '  • Pergunta em PORTUGUÊS → resposta ESTRITAMENTE em Português.\n'
-      'PROIBIDO: misturar ES+PT · responder em idioma errado · usar inglês.\n'
-      'REITERAÇÃO DIRETA: responda na primeira linha sem prefácio nem anúncio.\n\n'
 
       // ── BLOCO 1 — PERSONA + ANTI-CoT + CONCISÃO + FORMATAÇÃO LIMPA ────────
       // v4: quatro sub-regras adicionadas (persona, proibição markdown,
@@ -1154,11 +1158,14 @@ class GeminiServiceV2 {
   // Retorna true → part descartado (não chega à UI).
   // Retorna false → part seguro para exibição.
   // ══════════════════════════════════════════════════════════════════════════
-  // _looksLikeInternalReasoning — CAMADA 1b v5.2 (Build 94)
+  // _looksLikeInternalReasoning — CAMADA 1b v5.3 (Build 97)
   //
-  // Adicionados (Build 94): detecção de cabeçalhos de metadados "Confianza Clínica"
-  // que o modelo vaza como primeira linha de resposta. São inequivocamente internos
-  // e nunca aparecem em texto clínico legítimo como sentença de abertura.
+  // Build 97 — adicionado: detecção de tool_code/google_search leaks.
+  // Quando o Google Search Grounding está ativo, o modelo Gemini pode vazar
+  // blocos de chamada de ferramenta como texto plain em vez de functionCall part.
+  // Exemplo de vazamento documentado no screenshot IMG_2909.jpg:
+  //   "tool_code\nprint(google_search.search(queries=[\"manejo y tratamiento..."
+  // Este bloco é puramente interno e jamais deve ser exibido ao médico.
   //
   // NOTA IMPORTANTE: Este filtro age sobre CADA CHUNK individual do stream SSE.
   // Se o cabeçalho vier num chunk separado (o que acontece frequentemente),
@@ -1166,7 +1173,22 @@ class GeminiServiceV2 {
   // (CAMADA 2) pega o residual caso o padrão esteja num chunk misto.
   static bool _looksLikeInternalReasoning(String text) {
     final lower = text.toLowerCase();
-    // Padrões longos e inequívocos de CoT (calibração v5.1)
+
+    // ── Build 97: tool_code / google_search leak detector ──────────────────
+    // Captura blocos de chamada de ferramenta vazados como texto plain.
+    // Padrões inequívocos — nunca aparecem em texto clínico legítimo.
+    if (lower.contains('tool_code')) return true;
+    if (lower.contains('google_search')) return true;
+    if (lower.contains('print(google')) return true;
+    if (lower.contains('print(perplexity')) return true;
+    if (lower.contains('perplexity_search')) return true;
+    if (lower.contains('search_query')) return true;
+    if (lower.contains('queries=[')) return true;
+    if (lower.contains('```tool_code')) return true;
+    if (lower.contains('```python')) return true;
+    if (lower.contains('```json\n{')) return true;
+
+    // ── Padrões longos e inequívocos de CoT (calibração v5.1) ──────────────
     if (lower.contains('the user is asking')) return true;
     if (lower.contains('the user wants')) return true;
     if (lower.contains('<thinking>')) return true;

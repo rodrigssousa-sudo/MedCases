@@ -56,6 +56,26 @@ String _cleanInternalBlocks(String raw) {
     '',
   );
 
+  // 1b. Build 98: Remove blocos tool_code SEM backticks (plain-text leak do Gemini 2.5 Flash).
+  //     O modelo às vezes emite a chamada de grounding como texto puro começando com
+  //     "tool_code\nprint(google_search.search(...))" sem nenhuma formatação de código.
+  //     Esta regex captura todo o bloco desde "tool_code" até o fim do parágrafo.
+  text = text.replaceAll(
+    RegExp(r'tool_code\s*\n[\s\S]*?(?=\n\n|\Z)', multiLine: true),
+    '',
+  );
+  // Remove linhas isoladas que contenham padrões de chamada de ferramentas
+  text = text.split('\n').where((line) {
+    final lower = line.toLowerCase().trim();
+    if (lower.startsWith('tool_code')) return false;
+    if (lower.startsWith('print(google_search')) return false;
+    if (lower.startsWith('print(perplexity')) return false;
+    if (lower.startsWith('google_search.search')) return false;
+    if (lower.contains('queries=[')) return false;
+    if (lower.startsWith('search_query')) return false;
+    return true;
+  }).join('\n');
+
   // 2. Remove blocos <thinking>...</thinking> do Gemini
   text = text.replaceAll(
     RegExp(r'<thinking>[\s\S]*?</thinking>', multiLine: true),
