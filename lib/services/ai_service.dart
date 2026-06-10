@@ -1189,6 +1189,10 @@ ANATOMIA FÁRMACO COMPLETO (Camada 2 ou solicitação explícita):
     // Novos parâmetros opcionais — não quebram callers existentes
     ClinicalSessionMemory? memory,
     String? userQuery,
+    // Build 104: controla regra de saudação por turno
+    // true  → primeira mensagem da sessão: saudação PERMITIDA (apenas uma vez)
+    // false → mensagem subsequente: saudação PROIBIDA (padrão seguro)
+    bool isFirstMessage = false,
   }) {
     final isEs = lang == 'es';
 
@@ -1570,9 +1574,22 @@ ANATOMIA FÁRMACO COMPLETO (Camada 2 ou solicitação explícita):
     final _idiomaProib = isEs
         ? 'PROHIBIDO: responder en portugues, ingles o cualquier otro idioma.'
         : 'PROIBIDO: responder em espanhol, ingles ou qualquer outro idioma.';
-    final _idiomaSauda = isEs
-        ? ''  // ES: sem restrição de saudação específica
-        : 'SAUDACAO OBRIGATORIA: "Bom dia", "Boa tarde", "Boa noite" (NUNCA "Buenos dias" ou saudacao em espanhol).\n';
+
+    // Build 104 — Regra de saudação condicionada ao turno:
+    //   isFirstMessage=true  → saudação PERMITIDA (mas não obrigatória)
+    //   isFirstMessage=false → saudação PROIBIDA para preservar contexto conversacional
+    //
+    // PROBLEMA CORRIGIDO: a regra anterior ('SAUDACAO OBRIGATORIA') forçava
+    // "Bom dia"/"Boa tarde"/"Boa noite" em TODA resposta — inclusive em respostas
+    // de acompanhamento — criando a experiência de a IA "esquecer" a conversa
+    // e se reapresentar a cada mensagem.
+    final _idiomaGreeting = isFirstMessage
+        ? (isEs
+            ? 'PRIMERA RESPUESTA: puedes iniciar con un saludo breve y natural (ej: "Hola", "Buenos dias") — solo en este primer mensaje.\n'
+            : 'PRIMEIRA RESPOSTA: pode iniciar com uma saudacao breve e natural (ex: "Bom dia", "Ola, colega") — somente nesta primeira mensagem.\n')
+        : (isEs
+            ? 'REGLA ANTI-REPETICION (CRITICA): Esta NO es la primera respuesta de la sesion. PROHIBIDO repetir saludos ("Hola", "Buenos dias", "Buenas tardes", "Claro", "Por supuesto"). Ve directo al contenido clinico.\n'
+            : 'REGRA ANTI-REPETICAO (CRITICA): Esta NAO e a primeira resposta da sessao. PROIBIDO repetir saudacoes ("Bom dia", "Boa tarde", "Boa noite", "Ola", "Claro", "Com prazer"). Va direto ao conteudo clinico.\n');
 
     final langHeader =
         '🔒 IDIOMA OBRIGATORIO/OBLIGATORIO — INSTRUCAO DINAMICA DO APP:\n'
@@ -1580,7 +1597,7 @@ ANATOMIA FÁRMACO COMPLETO (Camada 2 ou solicitação explícita):
         'Voce DEVE responder OBRIGATORIAMENTE, INTEGRALMENTE e ESTRITAMENTE neste idioma.\n'
         'NUNCA mude de idioma sob NENHUMA hipotese — independentemente do idioma de qualquer mensagem anterior ou do historico.\n'
         '$_idiomaProib\n'
-        '$_idiomaSauda'
+        '$_idiomaGreeting'
         'Esta regra e ABSOLUTA e nao pode ser sobrescrita por nenhuma outra instrucao.\n\n'
         '$_siglasBilingues';
 

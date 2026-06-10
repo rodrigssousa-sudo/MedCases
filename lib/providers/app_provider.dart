@@ -3072,6 +3072,12 @@ class AppProvider extends ChangeNotifier {
         ? '$localContext\n\n---\n📚 REFERÊNCIAS:\n${references.join('\n')}'
         : localContext;
 
+    // Build 104 — isFirstMessage: controla regra de saudação por turno.
+    // _aiHistory já foi limpo por resetIfTopicChanged() acima quando o tema
+    // muda, então isEmpty=true quando é a primeira mensagem da sessão OU
+    // quando o tema mudou (= primeiro turno do novo tópico). Em ambos os casos
+    // a saudação breve é permitida uma única vez. Nas mensagens subsequentes do
+    // mesmo tema isEmpty=false e o prompt proíbe repetição de saudações.
     final systemPrompt = AiService.buildClinicalSystemPrompt(
       lang: sessionLang,
       matchedProtocolSummaries: finalProtocols,
@@ -3085,6 +3091,7 @@ class AppProvider extends ChangeNotifier {
       patientMedications: _patient.medications.isNotEmpty ? _patient.medications : null,
       userQuery:          input,
       memory:             _sessionMemory,
+      isFirstMessage:     _aiHistory.isEmpty, // Build 104: true=1ª msg/novo tópico
     );
 
     // Garante API key presente
@@ -3303,6 +3310,9 @@ class AppProvider extends ChangeNotifier {
     // Passa userQuery explicitamente para que o RAG Relevance Gate no
     // ai_service.dart filtre protocolos/fármacos/contexto por relevância
     // temática, evitando contaminação cruzada (ex: otite → ICFEr).
+    // Build 104 — isFirstMessage: mesma lógica do sendAiMessage().
+    // _aiHistory já foi limpo por resetIfTopicChanged() acima quando o tema
+    // muda. isEmpty=true na 1ª mensagem da sessão OU no 1º turno de novo tópico.
     final systemPrompt = AiService.buildClinicalSystemPrompt(
       lang: sessionLang,   // ← globalLanguageLock: idioma bloqueado da sessão
       matchedProtocolSummaries: finalProtocols,
@@ -3316,6 +3326,7 @@ class AppProvider extends ChangeNotifier {
       patientMedications: _patient.medications.isNotEmpty ? _patient.medications : null,
       userQuery: input,    // ← RAG gate usa a query real (não expandida) para filtro temático
       memory: _sessionMemory, // ← Fix 3: memória clínica da sessão (já resetada se tema mudou)
+      isFirstMessage: _aiHistory.isEmpty, // Build 104: true=1ª msg/novo tópico
     );
 
     // ── Passo 5: Gemini (prioridade) com Google Search Grounding ──────────

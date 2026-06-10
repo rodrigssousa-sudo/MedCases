@@ -50,11 +50,13 @@ android {
 
     buildTypes {
         release {
-            signingConfig = if (keyPropertiesFile.exists()) {
-                signingConfigs.getByName("release")
-            } else {
-                signingConfigs.getByName("debug")
-            }
+            // Build 104 — Bug 2 fix: signingConfig aponta SEMPRE para a release config.
+            // REMOVIDO o fallback silencioso para signingConfigs.debug que causava
+            // rejeição pelo Google Play Console ("uploaded debug APK/AAB").
+            // Se key.properties não existir (ex: path incorreto na CI/CD), o build
+            // FALHARÁ explicitamente com erro de assinatura — comportamento correto:
+            // nunca assinar um release build com a debug key.
+            signingConfig = signingConfigs.getByName("release")
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(
