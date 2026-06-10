@@ -15,6 +15,9 @@ const _kSourcesUrl = 'https://www.promedcases.com/fontes-e-referencias';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // JS PRECOCE — injetado em onPageStarted (antes do DOMContentLoaded)
+//
+// Injeta <style> ANTES que o Wix tenha chance de aplicar qualquer
+// env(safe-area-inset-*) ou configurar momentum scroll.
 // ─────────────────────────────────────────────────────────────────────────────
 const _kEarlyInjectJs = r"""
 (function() {
@@ -39,6 +42,12 @@ const _kEarlyInjectJs = r"""
 
 // ─────────────────────────────────────────────────────────────────────────────
 // JS PRINCIPAL — injetado em onPageFinished
+//
+// REGRAS:
+//  • NÃO definir height/min-height no <html> ou <body>.
+//  • padding: 0 em tudo — SafeArea(bottom:false)+Expanded entrega frame real.
+//  • overscroll-behavior: none — impede bounce de expor ghost space.
+//  • NENHUMA injeção de barra/botão de fontes — movida para widget Flutter.
 // ─────────────────────────────────────────────────────────────────────────────
 const _kInjectJs = r"""
 (function() {
@@ -154,21 +163,11 @@ const _kInjectJs = r"""
   _obs.observe(document.documentElement, { childList: true, subtree: true });
   setTimeout(function() { _obs.disconnect(); killFooter(); }, 10000);
 
-  // ══════════════════════════════════════════════════════════════════════════
-  // 🔬 DIAGNÓSTICO VISUAL — bordas no DOM do Wix
-  // Verde  = borda do <html>  (documentElement)
-  // Magenta = borda do <body>
-  // Se você vê verde/magenta na tela → o WKWebView está pintando além do frame
-  // Se NÃO vê → a área invisível é Flutter/Scaffold, não o WebView.
-  // ══════════════════════════════════════════════════════════════════════════
-  document.documentElement.style.border = '3px solid green';
-  document.body.style.border            = '3px solid magenta';
-
 })();
 """;
 
 // ─────────────────────────────────────────────────────────────────────────────
-// TELA DE CALCULADORA — BUILD DE DIAGNÓSTICO
+// TELA DE CALCULADORA
 // ─────────────────────────────────────────────────────────────────────────────
 class CalculadoraScreen extends StatefulWidget {
   const CalculadoraScreen({super.key});
@@ -188,10 +187,6 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
   void initState() {
     super.initState();
 
-    // ── DIAGNÓSTICO: fixes assíncronos REMOVIDOS para raio-x limpo ──────────
-    // UniqueKey rebuild e delayed setState retirados neste build.
-    // Objetivo: ver exatamente o que cada camada pinta SEM interferência.
-
     final lang      = context.read<AppProvider>().lang;
     final langParam = lang == 'es' ? 'es' : 'pt';
     _isEs           = lang == 'es';
@@ -210,6 +205,8 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
       ..setUserAgent(
           'Mozilla/5.0 (iPhone; CPU iPhone OS 15_0 like Mac OS X) MedCasesApp/6.1.0')
+      // Colors.transparent → scrollView.backgroundColor = UIColor.clear
+      // Scaffold.backgroundColor(0xFF0F091E) aparece atrás, sem layer sólido.
       ..setBackgroundColor(Colors.transparent)
       ..setNavigationDelegate(NavigationDelegate(
         onPageStarted: (_) async {
@@ -217,7 +214,6 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
         },
         onPageFinished: (_) async {
           await _controller.runJavaScript(_kInjectJs);
-          // ← fixes async REMOVIDOS para diagnóstico limpo
         },
       ))
       ..loadRequest(Uri.parse('$_kBaseUrl?lang=$langParam'));
@@ -235,6 +231,9 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
     final view       = View.of(context);
     final topPadding = view.viewPadding.top / view.devicePixelRatio;
 
+    // ── BARRA DE FONTES — dimensões ──────────────────────────────────────────
+    // Collapsed: 24px — linha única de texto pequeno flutuando ao centro.
+    // Expanded : 108px — título, sublabel e botão de abertura.
     const double _kBarCollapsed = 24.0;
     const double _kBarExpanded  = 108.0;
     final double barHeight = _sourcesExpanded ? _kBarExpanded : _kBarCollapsed;
@@ -249,29 +248,25 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
         ? 'Abrir referencias \u2197'
         : 'Abrir refer\u00eancias \u2197';
 
-    // ══════════════════════════════════════════════════════════════════════════
-    // 🔬 DIAGNÓSTICO VISUAL — legenda das cores Flutter
+    // ── LAYOUT ────────────────────────────────────────────────────────────────
     //
-    //  🔴 VERMELHO  = Scaffold.backgroundColor
-    //                 Se a barra no fundo for VERMELHA → espaço vazio é Flutter,
-    //                 não o WebView nem o Wix.
+    // Column[
+    //   header (topPadding + 52px),
+    //   Expanded > Stack[
+    //     Positioned.fill(bottom: 24) → WebView  ← não fica atrás da barra
+    //     Positioned(bottom:0)        → barra Flutter nativa (24–108px)
+    //   ]
+    // ]
     //
-    //  🔵 AZUL (borda 3px) = Container pai do WebView (LayoutBuilder/Positioned)
-    //                 Mostra exatamente até onde o Flutter acha que o WebView vai.
-    //
-    //  🟡 AMARELO   = AnimatedContainer da barra de fontes nativa Flutter
-    //                 Confirma posição e altura da barra Flutter.
-    //
-    //  🟢 VERDE     = borda do <html> injetada via JS no Wix
-    //  🟣 MAGENTA   = borda do <body> injetada via JS no Wix
-    //                 Se aparecerem na área problemática → é o WebView/DOM.
-    //                 Se NÃO aparecerem → é Flutter.
-    // ══════════════════════════════════════════════════════════════════════════
+    // • SafeArea(bottom:false): sem padding automático do SO na base.
+    // • Expanded: WebView + barra recebem TODO o espaço restante do Column.
+    // • WebView termina exatamente onde a barra começa — sem sobreposição.
+    // • Barra é um widget Flutter puro: zero JS, zero DOM, zero CSS.
+    // • Scaffold.backgroundColor cobre qualquer pixel não pintado pelo WebView.
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.light,
       child: Scaffold(
-        // 🔴 VERMELHO: se a barra inferior for vermelha, o espaço é do Flutter
-        backgroundColor: Colors.red,
+        backgroundColor: const Color(0xFF0F091E),
         body: SafeArea(
           top:    false,
           bottom: false,
@@ -325,33 +320,26 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
                 child: Stack(
                   children: [
 
-                    // 🔵 AZUL: borda no container pai do WebView
-                    // Mostra exatamente até onde o Flutter delimita o WebView.
+                    // WebView termina ACIMA da barra — sem sobreposição
                     Positioned(
                       top:    0,
                       left:   0,
                       right:  0,
-                      bottom: _kBarCollapsed,
-                      child: Container(
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Colors.blue, width: 3),
-                        ),
-                        child: LayoutBuilder(
-                          builder: (context, constraints) {
-                            return SizedBox(
-                              width:  constraints.maxWidth,
-                              height: constraints.maxHeight,
-                              child: WebViewWidget(
-                                controller: _controller,
-                              ),
-                            );
-                          },
-                        ),
+                      bottom: _kBarCollapsed, // reserva 24px permanentes para a barra
+                      child: LayoutBuilder(
+                        builder: (context, constraints) {
+                          return SizedBox(
+                            width:  constraints.maxWidth,
+                            height: constraints.maxHeight,
+                            child: WebViewWidget(controller: _controller),
+                          );
+                        },
                       ),
                     ),
 
-                    // 🟡 AMARELO: barra de fontes Flutter nativa
-                    // Confirma posição e tamanho da barra Flutter.
+                    // ── Barra de fontes Flutter nativa ────────────────────
+                    // Zero JS. Zero DOM. Zero CSS.
+                    // Widget Flutter puro — animado com AnimatedContainer.
                     Positioned(
                       left:   0,
                       right:  0,
@@ -362,8 +350,17 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
                           duration: const Duration(milliseconds: 280),
                           curve: Curves.easeInOut,
                           height: barHeight,
-                          // 🟡 COR AMARELA para diagnóstico
-                          color: Colors.yellow,
+                          decoration: BoxDecoration(
+                            // Fundo ligeiramente mais claro que o Scaffold (0xFF0F091E)
+                            // para criar separação sutil sem quebrar a unidade do tema.
+                            color: const Color(0xFF1A1035),
+                            border: const Border(
+                              top: BorderSide(
+                                color: Color(0x33A78BFA), // violeta 20% opacidade
+                                width: 1,
+                              ),
+                            ),
+                          ),
                           child: _sourcesExpanded
                               ? _buildExpandedSources(labelTitle, labelBtn)
                               : _buildCollapsedSources(labelBar),
@@ -391,7 +388,7 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
         overflow: TextOverflow.ellipsis,
         style: const TextStyle(
           fontSize:      10,
-          color:         Colors.black,  // preto sobre amarelo para legibilidade
+          color:         Color(0xB3B8A8E8), // violeta claro 70% opacidade
           letterSpacing: 0.3,
           height:        1.0,
         ),
@@ -404,6 +401,7 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
+        // Título
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -414,22 +412,24 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
               style: const TextStyle(
                 fontSize:      12,
                 fontWeight:    FontWeight.w700,
-                color:         Colors.black,
+                color:         Color(0xFFA78BFA),
                 letterSpacing: 0.2,
               ),
             ),
           ],
         ),
         const SizedBox(height: 4),
+        // Sublabel
         const Text(
           'AHA \u00b7 ACC \u00b7 WHO \u00b7 PubMed \u00b7 UpToDate',
           style: TextStyle(
             fontSize:      9,
-            color:         Colors.black54,
+            color:         Color(0x99B8A8E8), // violeta claro 60% opacidade
             letterSpacing: 0.5,
           ),
         ),
         const SizedBox(height: 8),
+        // Botão de abertura
         GestureDetector(
           onTap: () {
             setState(() => _sourcesExpanded = false);
@@ -438,8 +438,8 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 5),
             decoration: BoxDecoration(
-              color:        const Color(0x26A78BFA),
-              border:       Border.all(color: const Color(0x59A78BFA)),
+              color:        const Color(0x26A78BFA), // violeta 15% opacidade
+              border:       Border.all(color: const Color(0x59A78BFA)), // 35% opacidade
               borderRadius: BorderRadius.circular(20),
             ),
             child: Text(
@@ -447,7 +447,7 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
               style: const TextStyle(
                 fontSize:   11,
                 fontWeight: FontWeight.w600,
-                color:      Colors.black,
+                color:      Color(0xFFC4B5FD),
               ),
             ),
           ),
