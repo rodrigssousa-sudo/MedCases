@@ -183,9 +183,24 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
   // Estado da barra de fontes nativa Flutter
   bool _sourcesExpanded = false;
 
+  // Chave para forçar rebuild do WebView após o primeiro frame
+  // (corrige bug de cálculo inicial da viewport do WKWebView no iOS)
+  Key _webViewKey = UniqueKey();
+
   @override
   void initState() {
     super.initState();
+
+    // ── Viewport fix: força rebuild do WKWebView após 300ms do primeiro frame ──
+    // O WKWebView no iOS recebe um frame errado no render inicial (antes de o SO
+    // calcular SafeArea, home indicator e viewport final). O rebuild com nova Key
+    // entrega o tamanho correto — sem isso, one-handed mode ou rotação expõem
+    // o ghost space porque o WebView "descobre" a altura real somente depois.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Future.delayed(const Duration(milliseconds: 300), () {
+        if (mounted) setState(() { _webViewKey = UniqueKey(); });
+      });
+    });
 
     final lang      = context.read<AppProvider>().lang;
     final langParam = lang == 'es' ? 'es' : 'pt';
@@ -215,6 +230,19 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
         onPageFinished: (_) async {
           await _controller.runJavaScript(_kInjectJs);
           // ← _buildSourcesButtonJs REMOVIDO — barra migrada para Flutter nativo
+
+          // ── Viewport fix: força resize JS + relayout Flutter após carga ──────
+          // 1) Despacha evento 'resize' para que o Wix recalcule layouts internos.
+          // 2) Define height/minHeight com window.innerHeight para fixar o frame.
+          // 3) setState({}) força um relayout Flutter para confirmar constraints.
+          await _controller.runJavaScript(
+            'window.dispatchEvent(new Event(\'resize\'));'
+            'document.documentElement.style.height = window.innerHeight + \'px\';'
+            'document.body.style.minHeight = window.innerHeight + \'px\';',
+          );
+          Future.delayed(const Duration(milliseconds: 300), () {
+            if (mounted) setState(() {});
+          });
         },
       ))
       ..loadRequest(Uri.parse('$_kBaseUrl?lang=$langParam'));
@@ -328,7 +356,18 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
                       left:   0,
                       right:  0,
                       bottom: _kBarCollapsed, // sempre reserva 24px para a barra
-                      child: WebViewWidget(controller: _controller),
+                      child: LayoutBuilder(
+                        builder: (context, constraints) {
+                          return SizedBox(
+                            width:  constraints.maxWidth,
+                            height: constraints.maxHeight,
+                            child: WebViewWidget(
+                              key:        _webViewKey,
+                              controller: _controller,
+                            ),
+                          );
+                        },
+                      ),
                     ),
 
                     // ── Barra de fontes Flutter nativa ────────────────────
