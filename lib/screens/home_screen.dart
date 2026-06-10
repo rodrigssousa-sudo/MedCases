@@ -2615,8 +2615,10 @@ class _HomeCalculadoraCardState extends State<_HomeCalculadoraCard>
   void _handleTap() {
     AppHaptics.light(context);
     // PR #73: abre CalculadoraScreen (WebView → promedcases.com + User-Agent MedCasesApp/6.1.0)
-    // NÃO usar _CalculadorasShell (que abria ToolsScreen local — comportamento antigo)
-    Navigator.of(context).push(
+    // rootNavigator: true → coloca a tela ACIMA do shell (bottom nav bar).
+    // Sem isso, o Navigator do shell impõe constraints de altura reduzida
+    // e deixa uma faixa escura abaixo da WebView.
+    Navigator.of(context, rootNavigator: true).push(
       _HomeScreenState._slide(const CalculadoraScreen()),
     );
   }
