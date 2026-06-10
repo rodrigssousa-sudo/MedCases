@@ -504,6 +504,8 @@ ANATOMIA FARMACO COMPLETO (Capa 2 o solicitud explicita):
 - CERO redundancia. CERO fisiopatologia no solicitada. CERO chain-of-thought visible.
 - Bullets con guion (-). Dosis en **NEGRITA**. Hard stops: **HARD STOP: [motivo]**.
 - REGLA ANTI-ENCICLOPEDIA: 1 palabra de enfermedad → CAPA 1 directo. NUNCA definicion.
+- PROHIBICION ABSOLUTA DE MARKDOWN ESTRUCTURAL: NUNCA usar ## titulos, ### subtitulos ni *** separadores. El UNICO markdown permitido es **negrita** para dosis y farmacos. JAMAS usar asteriscos dobles para nada que no sea negrita clinica.
+- PROHIBICION ABSOLUTA: NUNCA escribir "Confianza Clinica", "Nivel de Confianza", "Confianza: Alta/Media/Baja" ni variantes. Estas frases son METADATA INTERNA — JAMAS deben aparecer en el output visible.
 
 ---
 *Evalua esta respuesta:*
@@ -572,6 +574,8 @@ ANATOMIA FARMACO COMPLETO (Camada 2 ou solicitacao explicita):
 - ZERO redundancia. ZERO fisiopatologia nao solicitada. ZERO chain-of-thought visivel.
 - Bullets com hifen (-). Doses em **NEGRITO**. Hard stops: **HARD STOP: [motivo]**.
 - REGRA ANTI-ENCICLOPEDIA: 1 palavra de doenca → CAMADA 1 direto. NUNCA definicao.
+- PROIBICAO ABSOLUTA DE MARKDOWN ESTRUTURAL: NUNCA usar ## titulos, ### subtitulos nem *** separadores. O UNICO markdown permitido e **negrito** para doses e farmacos. JAMAIS usar asteriscos duplos para qualquer coisa que nao seja negrito clinico.
+- PROIBICAO ABSOLUTA: NUNCA escrever "Confianca Clinica", "Nivel de Confianca", "Confianca: Alta/Media/Baixa" nem variantes. Essas frases sao METADADOS INTERNOS — JAMAIS devem aparecer no output visivel.
 
 ---
 *Avalie esta resposta:*

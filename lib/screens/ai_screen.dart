@@ -1054,6 +1054,20 @@ class _AiScreenState extends State<AiScreen> {
             }
           });
           _scrollDown();
+          // ── Scroll final garantido após resposta completa ─────────────────
+          // Quando a IA gera múltiplos cards/blocos longos de uma só vez, o
+          // layout ainda não está totalmente calculado no onDone. O delay de
+          // 180ms deixa o Flutter terminar o layout dos novos blocos e então
+          // desce suavemente para o fim, mantendo a pergunta do usuário visível.
+          Future.delayed(const Duration(milliseconds: 180), () {
+            if (!mounted || _userScrolledUp) return;
+            if (!_scrollCtrl.hasClients) return;
+            _scrollCtrl.animateTo(
+              _scrollCtrl.position.maxScrollExtent,
+              duration: const Duration(milliseconds: 280),
+              curve: Curves.easeOutCubic,
+            );
+          });
         },
         onError: (errorMsg) {
           if (!mounted) return;
@@ -2570,6 +2584,13 @@ String _cleanAiText(String raw) {
       .replaceAll('--', '')                                      // traços duplos
       .replaceAll(RegExp(r'\*{3,}'), '');                        // *** ou mais
 
+  // ── 5b. FALLBACK ANTI-ASTERISCO — camada de segurança Flutter ────────────
+  // Remove asteriscos SIMPLES soltos (usados para itálico ou listas Markdown)
+  // que vazam como literal na UI. Os pares ** são mantidos intactos aqui pois
+  // _buildInlineText() os converte para negrito visual corretamente.
+  // Remove * isolados (não-duplos) usados como listas ou itálico Markdown:
+  s = s.replaceAll(RegExp(r'(?<!\*)\*(?!\*)'), '');
+
   // ── 6. Normaliza linhas em branco excessivas (≥3 → 2) ────────────────────
   s = s.replaceAll(RegExp(r'\n{3,}'), '\n\n');
 
@@ -2693,8 +2714,12 @@ class _AiBlockBubble extends StatelessWidget {
            RegExp(r'^(Hipótese|Hipotesis|Conduta|Conducta|Exames|Examenes|'
                   r'Monitoriz|Evitar|Escalonamento|Escalonamiento|'
                   r'AGORA|AHORA|QUICK|CLINICAL|TEACH|'
-                  r'Primeira Escolha|Primera Elección|'
-                  r'Confiança|Confianza)', caseSensitive: false).hasMatch(t);
+                  r'Primeira Escolha|Primera Elección)',
+                  caseSensitive: false).hasMatch(t);
+    // NOTA: 'Confiança|Confianza' removido — não deve renderizar como seção.
+    // _cleanAiText() e _stripMetadataHeaders() já eliminam essas linhas antes
+    // de chegar aqui. Manter no detector causava que linhas que escapassem das
+    // purgas fossem exibidas com destaque visual como seção clínica.
   }
 
   /// Linha de alerta/atenção (mas não hard stop)
