@@ -820,15 +820,20 @@ class _AiScreenState extends State<AiScreen> {
 
   /// Restaura uma sessão do histórico para o chat atual.
   void _restoreSession(_ChatSession session, AppProvider p) {
+    // Build 107 FIX: cancela streaming ativo para liberar os guards
+    p.cancelAiStream();
     setState(() {
       _messages.clear();
       _messages.addAll(session.messages);
       _lastAiIndex = -1;
       _greetingDone = true;
       _userScrolledUp = false;
-      // Marca a sessão como restaurada para não re-salvar sem alteração
       _restoredSessionId = session.id;
       _hasNewMessageAfterRestore = false;
+      // Reseta guards — session restore deve sempre permitir novo envio
+      _thinking   = false;
+      _isStreaming = false;
+      _sendGuard  = false;
     });
     p.clearAiHistory();
     // Recria o contexto de IA a partir das mensagens restauradas
@@ -1279,6 +1284,8 @@ class _AiScreenState extends State<AiScreen> {
     // Salva sessão atual no histórico antes de limpar
     // (não-op se foi sessão restaurada sem novas mensagens)
     _saveCurrentSessionToHistory(p);
+    // Build 107 — cancela streaming ativo antes de limpar
+    p.cancelAiStream();
     setState(() {
       _messages
         ..clear()
@@ -1286,9 +1293,12 @@ class _AiScreenState extends State<AiScreen> {
       _aiError      = false;
       _networkError = false;
       _userScrolledUp = false;
-      // Reseta flags de sessão restaurada para o novo chat em branco
       _restoredSessionId = null;
       _hasNewMessageAfterRestore = false;
+      // Build 107 FIX: reseta guards para desbloquear _send() após limpar
+      _thinking   = false;
+      _isStreaming = false;
+      _sendGuard  = false;
     });
     _queryCtrl.clear();
     _focusNode.unfocus();
@@ -1302,6 +1312,8 @@ class _AiScreenState extends State<AiScreen> {
     final p = context.read<AppProvider>();
     // 1. Persiste sessão atual em background (dual-write Firestore + prefs)
     _saveCurrentSessionToHistory(p);
+    // Build 107 — cancela streaming ativo antes de abrir novo chat
+    p.cancelAiStream();
     // 2. Limpa UI e reseta flags de sessão — novo chat em branco
     setState(() {
       _messages
@@ -1310,10 +1322,13 @@ class _AiScreenState extends State<AiScreen> {
       _aiError      = false;
       _networkError = false;
       _userScrolledUp = false;
-      // Força novo ID de sessão — próxima mensagem cria entrada separada
       _restoredSessionId = null;
       _hasNewMessageAfterRestore = false;
       _greetingDone = true;
+      // Build 107 FIX: garante que _send() não fique bloqueado após novo chat
+      _thinking   = false;
+      _isStreaming = false;
+      _sendGuard  = false;
     });
     _queryCtrl.clear();
     _focusNode.unfocus();

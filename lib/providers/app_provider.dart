@@ -3000,10 +3000,13 @@ class AppProvider extends ChangeNotifier {
   void cancelAiStream() {
     _aiStreamSub?.cancel();
     _aiStreamSub = null;
-    if (_aiStreamActive) {
-      _aiStreamActive = false;
-      notifyListeners();
-    }
+    // Build 107 FIX: reseta _aiAnswerInProgress também — sem isso, sendAiMessage()
+    // retorna false imediatamente ao testar o guard na linha inicial, bloqueando
+    // qualquer nova mensagem enviada após clearChat/restoreSession.
+    final wasActive = _aiStreamActive || _aiAnswerInProgress;
+    _aiStreamActive      = false;
+    _aiAnswerInProgress  = false;
+    if (wasActive) notifyListeners();
   }
 
   /// Envia mensagem com streaming token-a-token via GeminiServiceV2.
