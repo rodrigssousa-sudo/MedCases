@@ -136,7 +136,45 @@ class ClinicalSessionMemory {
   ///   • Segurança clínica > continuidade narrativa: falso reset (pergunta
   ///     de follow-up detectada como novo tema) é muito menos danoso do que
   ///     uma alucinação por contexto vazado de conversa anterior.
+  // Build 109 — whitelist de queries de follow-up que NUNCA disparam reset.
+  // Queries curtas/genéricas são continuações da conversa, não mudança de tema.
+  static const _followUpPhrases = {
+    // PT-BR
+    'mais detalhes', 'mais informações', 'mais informacoes',
+    'pode detalhar', 'pode explicar', 'me explica', 'explica melhor',
+    'continue', 'continua', 'continuar', 'próximo passo', 'proximo passo',
+    'e a dose', 'qual a dose', 'como usar', 'como administrar',
+    'e o tratamento', 'qual o tratamento', 'e agora', 'o que fazer',
+    'pode repetir', 'reformula', 'resumo', 'em resumo', 'resumindo',
+    'sim', 'não', 'nao', 'ok', 'certo', 'entendi', 'confirma',
+    'por quê', 'por que', 'como assim', 'explique', 'detalhe',
+    'e se', 'e caso', 'e quando', 'mas e', 'mas se',
+    // ES
+    'más detalles', 'más información', 'puedes detallar', 'explica mejor',
+    'continúa', 'continua', 'siguiente paso', 'cuál es la dosis',
+    'cómo usar', 'cómo administrar', 'y el tratamiento', 'qué hacer',
+    'por qué', 'cómo así', 'explica', 'detalla', 'y si', 'pero si',
+    'sí', 'si', 'no', 'ok', 'entendido', 'confirma', 'resumen',
+  };
+
   bool resetIfTopicChanged(String newQuery) {
+    final q = newQuery.trim().toLowerCase();
+
+    // ── Build 109: guard de follow-up ────────────────────────────────────────
+    // Se a query é vaga/curta (≤ 4 palavras) ou está na whitelist de follow-ups,
+    // nunca reseta. Evita que "Mais detalhes" / "E a dose?" derrubem o histórico.
+    final wordCount = q.split(RegExp(r'\s+')).where((w) => w.isNotEmpty).length;
+    final isFollowUp = wordCount <= 4 &&
+        _followUpPhrases.any((phrase) => q.contains(phrase));
+    // Também protege queries muito curtas (≤ 3 palavras) mesmo sem match exato
+    final isTooShortToBeNewTopic = wordCount <= 3;
+
+    if (isFollowUp || isTooShortToBeNewTopic) {
+      // Mantém tema atual — é continuação da conversa
+      if (_dominantTopic.isNotEmpty) _topicTurnCount++;
+      return false;
+    }
+
     final newTopic = _extractTopicSignature(newQuery);
 
     if (_dominantTopic.isEmpty) {
@@ -153,10 +191,9 @@ class ClinicalSessionMemory {
       return false;
     }
 
-    // ── RESET AGRESSIVO: qualquer mudança de tema (≥1 turno) → reset total ──
-    // Threshold anterior ≥2 era conservador e causava contaminação quando
-    // o tema anterior tinha apenas 1 turno (ex: Cistite → Parkinson sem reset).
-    // Agora ≥1 garante que QUALQUER virada de tema limpa a memória clínica.
+    // ── RESET: tema genuinamente diferente (query longa com palavras novas) ──
+    // Threshold agressivo mantido para mudanças reais de assunto (ex: IAM → Parkinson).
+    // Queries de follow-up já foram capturadas acima e nunca chegam aqui.
     reset();
     _dominantTopic = newTopic;
     _topicTurnCount = 1;
@@ -297,9 +334,12 @@ class ClinicalSessionMemory {
     return words.join('_');
   }
 
-  /// Verifica overlap temático — compartilham pelo menos 1 palavra-chave
+  /// Verifica overlap temático — compartilham pelo menos 1 palavra-chave.
+  /// Build 109: assinatura vazia (query sem keywords longas = follow-up) → true.
   bool _topicsOverlap(String topic1, String topic2) {
-    if (topic1.isEmpty || topic2.isEmpty) return false;
+    // Assinatura vazia = query muito genérica/curta = follow-up → não reseta
+    if (topic2.isEmpty) return true;
+    if (topic1.isEmpty) return false;
     final t1 = Set<String>.from(topic1.split('_'));
     final t2 = Set<String>.from(topic2.split('_'));
     return t1.intersection(t2).isNotEmpty;
