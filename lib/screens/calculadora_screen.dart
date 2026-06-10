@@ -15,9 +15,6 @@ const _kSourcesUrl = 'https://www.promedcases.com/fontes-e-referencias';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // JS PRECOCE — injetado em onPageStarted (antes do DOMContentLoaded)
-//
-// Injeta <style> ANTES que o Wix tenha chance de aplicar qualquer
-// env(safe-area-inset-*) ou configurar momentum scroll.
 // ─────────────────────────────────────────────────────────────────────────────
 const _kEarlyInjectJs = r"""
 (function() {
@@ -42,12 +39,6 @@ const _kEarlyInjectJs = r"""
 
 // ─────────────────────────────────────────────────────────────────────────────
 // JS PRINCIPAL — injetado em onPageFinished
-//
-// REGRAS:
-//  • NÃO definir height/min-height no <html> ou <body>.
-//  • padding: 0 em tudo — SafeArea(bottom:false)+Expanded entrega frame real.
-//  • overscroll-behavior: none — impede bounce de expor ghost space.
-//  • NENHUMA injeção de barra/botão de fontes — movida para widget Flutter.
 // ─────────────────────────────────────────────────────────────────────────────
 const _kInjectJs = r"""
 (function() {
@@ -163,11 +154,21 @@ const _kInjectJs = r"""
   _obs.observe(document.documentElement, { childList: true, subtree: true });
   setTimeout(function() { _obs.disconnect(); killFooter(); }, 10000);
 
+  // ══════════════════════════════════════════════════════════════════════════
+  // 🔬 DIAGNÓSTICO VISUAL — bordas no DOM do Wix
+  // Verde  = borda do <html>  (documentElement)
+  // Magenta = borda do <body>
+  // Se você vê verde/magenta na tela → o WKWebView está pintando além do frame
+  // Se NÃO vê → a área invisível é Flutter/Scaffold, não o WebView.
+  // ══════════════════════════════════════════════════════════════════════════
+  document.documentElement.style.border = '3px solid green';
+  document.body.style.border            = '3px solid magenta';
+
 })();
 """;
 
 // ─────────────────────────────────────────────────────────────────────────────
-// TELA DE CALCULADORA
+// TELA DE CALCULADORA — BUILD DE DIAGNÓSTICO
 // ─────────────────────────────────────────────────────────────────────────────
 class CalculadoraScreen extends StatefulWidget {
   const CalculadoraScreen({super.key});
@@ -183,24 +184,13 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
   // Estado da barra de fontes nativa Flutter
   bool _sourcesExpanded = false;
 
-  // Chave para forçar rebuild do WebView após o primeiro frame
-  // (corrige bug de cálculo inicial da viewport do WKWebView no iOS)
-  Key _webViewKey = UniqueKey();
-
   @override
   void initState() {
     super.initState();
 
-    // ── Viewport fix: força rebuild do WKWebView após 300ms do primeiro frame ──
-    // O WKWebView no iOS recebe um frame errado no render inicial (antes de o SO
-    // calcular SafeArea, home indicator e viewport final). O rebuild com nova Key
-    // entrega o tamanho correto — sem isso, one-handed mode ou rotação expõem
-    // o ghost space porque o WebView "descobre" a altura real somente depois.
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      Future.delayed(const Duration(milliseconds: 300), () {
-        if (mounted) setState(() { _webViewKey = UniqueKey(); });
-      });
-    });
+    // ── DIAGNÓSTICO: fixes assíncronos REMOVIDOS para raio-x limpo ──────────
+    // UniqueKey rebuild e delayed setState retirados neste build.
+    // Objetivo: ver exatamente o que cada camada pinta SEM interferência.
 
     final lang      = context.read<AppProvider>().lang;
     final langParam = lang == 'es' ? 'es' : 'pt';
@@ -220,8 +210,6 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
       ..setUserAgent(
           'Mozilla/5.0 (iPhone; CPU iPhone OS 15_0 like Mac OS X) MedCasesApp/6.1.0')
-      // Colors.transparent → scrollView.backgroundColor = UIColor.clear
-      // Scaffold.backgroundColor(0xFF0F091E) aparece atrás, sem layer sólido.
       ..setBackgroundColor(Colors.transparent)
       ..setNavigationDelegate(NavigationDelegate(
         onPageStarted: (_) async {
@@ -229,20 +217,7 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
         },
         onPageFinished: (_) async {
           await _controller.runJavaScript(_kInjectJs);
-          // ← _buildSourcesButtonJs REMOVIDO — barra migrada para Flutter nativo
-
-          // ── Viewport fix: força resize JS + relayout Flutter após carga ──────
-          // 1) Despacha evento 'resize' para que o Wix recalcule layouts internos.
-          // 2) Define height/minHeight com window.innerHeight para fixar o frame.
-          // 3) setState({}) força um relayout Flutter para confirmar constraints.
-          await _controller.runJavaScript(
-            'window.dispatchEvent(new Event(\'resize\'));'
-            'document.documentElement.style.height = window.innerHeight + \'px\';'
-            'document.body.style.minHeight = window.innerHeight + \'px\';',
-          );
-          Future.delayed(const Duration(milliseconds: 300), () {
-            if (mounted) setState(() {});
-          });
+          // ← fixes async REMOVIDOS para diagnóstico limpo
         },
       ))
       ..loadRequest(Uri.parse('$_kBaseUrl?lang=$langParam'));
@@ -260,9 +235,6 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
     final view       = View.of(context);
     final topPadding = view.viewPadding.top / view.devicePixelRatio;
 
-    // ── BARRA DE FONTES — dimensões ──────────────────────────────────────────
-    // Collapsed: 24px — linha única de texto pequeno.
-    // Expanded : 108px — título, sublabel e botão de abertura.
     const double _kBarCollapsed = 24.0;
     const double _kBarExpanded  = 108.0;
     final double barHeight = _sourcesExpanded ? _kBarExpanded : _kBarCollapsed;
@@ -277,26 +249,29 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
         ? 'Abrir referencias \u2197'
         : 'Abrir refer\u00eancias \u2197';
 
-    // ── LAYOUT ────────────────────────────────────────────────────────────────
+    // ══════════════════════════════════════════════════════════════════════════
+    // 🔬 DIAGNÓSTICO VISUAL — legenda das cores Flutter
     //
-    // Column[
-    //   header (topPadding + 52px),
-    //   Expanded > Stack[
-    //     Positioned.fill(bottom: barHeight) → WebView  ← não fica atrás da barra
-    //     Positioned(bottom:0, height:barHeight) → barra Flutter nativa
-    //   ]
-    // ]
+    //  🔴 VERMELHO  = Scaffold.backgroundColor
+    //                 Se a barra no fundo for VERMELHA → espaço vazio é Flutter,
+    //                 não o WebView nem o Wix.
     //
-    // Por que funciona:
-    //  • SafeArea(bottom:false): sem padding automático do SO na base.
-    //  • Expanded: WebView + barra recebem TODO o espaço restante do Column.
-    //  • WebView termina exatamente onde a barra começa — sem sobreposição.
-    //  • Barra é um widget Flutter puro: zero JS, zero DOM, zero CSS.
-    //  • Scaffold.backgroundColor cobre qualquer pixel não pintado pelo WebView.
+    //  🔵 AZUL (borda 3px) = Container pai do WebView (LayoutBuilder/Positioned)
+    //                 Mostra exatamente até onde o Flutter acha que o WebView vai.
+    //
+    //  🟡 AMARELO   = AnimatedContainer da barra de fontes nativa Flutter
+    //                 Confirma posição e altura da barra Flutter.
+    //
+    //  🟢 VERDE     = borda do <html> injetada via JS no Wix
+    //  🟣 MAGENTA   = borda do <body> injetada via JS no Wix
+    //                 Se aparecerem na área problemática → é o WebView/DOM.
+    //                 Se NÃO aparecerem → é Flutter.
+    // ══════════════════════════════════════════════════════════════════════════
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.light,
       child: Scaffold(
-        backgroundColor: const Color(0xFF0F091E),
+        // 🔴 VERMELHO: se a barra inferior for vermelha, o espaço é do Flutter
+        backgroundColor: Colors.red,
         body: SafeArea(
           top:    false,
           bottom: false,
@@ -350,29 +325,33 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
                 child: Stack(
                   children: [
 
-                    // WebView termina ACIMA da barra — sem sobreposição
+                    // 🔵 AZUL: borda no container pai do WebView
+                    // Mostra exatamente até onde o Flutter delimita o WebView.
                     Positioned(
                       top:    0,
                       left:   0,
                       right:  0,
-                      bottom: _kBarCollapsed, // sempre reserva 24px para a barra
-                      child: LayoutBuilder(
-                        builder: (context, constraints) {
-                          return SizedBox(
-                            width:  constraints.maxWidth,
-                            height: constraints.maxHeight,
-                            child: WebViewWidget(
-                              key:        _webViewKey,
-                              controller: _controller,
-                            ),
-                          );
-                        },
+                      bottom: _kBarCollapsed,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.blue, width: 3),
+                        ),
+                        child: LayoutBuilder(
+                          builder: (context, constraints) {
+                            return SizedBox(
+                              width:  constraints.maxWidth,
+                              height: constraints.maxHeight,
+                              child: WebViewWidget(
+                                controller: _controller,
+                              ),
+                            );
+                          },
+                        ),
                       ),
                     ),
 
-                    // ── Barra de fontes Flutter nativa ────────────────────
-                    // Zero JS. Zero DOM. Zero CSS.
-                    // Widget Flutter puro — animado com AnimatedContainer.
+                    // 🟡 AMARELO: barra de fontes Flutter nativa
+                    // Confirma posição e tamanho da barra Flutter.
                     Positioned(
                       left:   0,
                       right:  0,
@@ -383,15 +362,8 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
                           duration: const Duration(milliseconds: 280),
                           curve: Curves.easeInOut,
                           height: barHeight,
-                          decoration: BoxDecoration(
-                            color: const Color(0xFF1A0F2E).withOpacity(0.96),
-                            border: const Border(
-                              top: BorderSide(
-                                color: Color(0x47A78BFA), // rgba(167,139,250,0.28)
-                                width: 1,
-                              ),
-                            ),
-                          ),
+                          // 🟡 COR AMARELA para diagnóstico
+                          color: Colors.yellow,
                           child: _sourcesExpanded
                               ? _buildExpandedSources(labelTitle, labelBtn)
                               : _buildCollapsedSources(labelBar),
@@ -419,7 +391,7 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
         overflow: TextOverflow.ellipsis,
         style: const TextStyle(
           fontSize:      10,
-          color:         Color(0xB3B8A8E8), // rgba(184,168,232,0.70)
+          color:         Colors.black,  // preto sobre amarelo para legibilidade
           letterSpacing: 0.3,
           height:        1.0,
         ),
@@ -432,7 +404,6 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        // Título
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -443,24 +414,22 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
               style: const TextStyle(
                 fontSize:      12,
                 fontWeight:    FontWeight.w700,
-                color:         Color(0xFFA78BFA),
+                color:         Colors.black,
                 letterSpacing: 0.2,
               ),
             ),
           ],
         ),
         const SizedBox(height: 4),
-        // Sublabel
         const Text(
           'AHA \u00b7 ACC \u00b7 WHO \u00b7 PubMed \u00b7 UpToDate',
           style: TextStyle(
             fontSize:      9,
-            color:         Color(0x99B8A8E8), // rgba(184,168,232,0.60)
+            color:         Colors.black54,
             letterSpacing: 0.5,
           ),
         ),
         const SizedBox(height: 8),
-        // Botão de abertura
         GestureDetector(
           onTap: () {
             setState(() => _sourcesExpanded = false);
@@ -469,8 +438,8 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 5),
             decoration: BoxDecoration(
-              color:        const Color(0x26A78BFA), // rgba(167,139,250,0.15)
-              border:       Border.all(color: const Color(0x59A78BFA)), // 0.35 alpha
+              color:        const Color(0x26A78BFA),
+              border:       Border.all(color: const Color(0x59A78BFA)),
               borderRadius: BorderRadius.circular(20),
             ),
             child: Text(
@@ -478,7 +447,7 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
               style: const TextStyle(
                 fontSize:   11,
                 fontWeight: FontWeight.w600,
-                color:      Color(0xFFC4B5FD),
+                color:      Colors.black,
               ),
             ),
           ),
