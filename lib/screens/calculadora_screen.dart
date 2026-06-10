@@ -14,14 +14,40 @@ const _kBaseUrl    = 'https://www.medcasescalcu.com';
 const _kSourcesUrl = 'https://www.promedcases.com/fontes-e-referencias';
 
 // ─────────────────────────────────────────────────────────────────────────────
-// JS BASE — viewport + margens
+// JS PRECOCE — injetado em onPageStarted (antes do DOMContentLoaded)
+//
+// Objetivo: bloquear IMEDIATAMENTE qualquer reserva de safe-area que o Wix
+// ou o próprio WKWebView tentaria criar durante o carregamento da página.
+// Não manipula DOM (ainda não existe) — apenas cria um <style> no <head>.
+// ─────────────────────────────────────────────────────────────────────────────
+const _kEarlyInjectJs = r"""
+(function() {
+  var s = document.createElement('style');
+  s.id = 'mc-early-reset';
+  s.textContent =
+    'html, body {'
+    + '  margin: 0 !important;'
+    + '  padding: 0 !important;'
+    + '  overscroll-behavior: none !important;'
+    + '  -webkit-overflow-scrolling: auto !important;'
+    + '}'
+    + ':root {'
+    + '  --sat: 0px !important;'
+    + '  --sab: 0px !important;'
+    + '}';
+  (document.head || document.documentElement).appendChild(s);
+})();
+""";
+
+// ─────────────────────────────────────────────────────────────────────────────
+// JS PRINCIPAL — injetado em onPageFinished (após DOM completo)
 //
 // REGRAS:
 //  • NÃO definir height/min-height no <html> ou <body> — isso corta o scroll
 //    em páginas Wix e impede que o conteúdo abaixo do viewport seja acessível.
-//  • padding-top garante que o conteúdo não fique escondido atrás do header.
-//  • padding-bottom usa safe-area para não cortar conteúdo na home bar do iPhone.
-//  • overflow-x: hidden evita scroll lateral indesejado.
+//  • padding-top: 0 — Flutter header Positioned já cobre a status bar.
+//  • padding-bottom: 0 — rootNavigator garante cobertura até borda física.
+//  • overscroll-behavior: none — impede bounce do iOS de expor o ghost space.
 // ─────────────────────────────────────────────────────────────────────────────
 const _kInjectJs = r"""
 (function() {
@@ -392,8 +418,19 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
       ..setUserAgent(
           'Mozilla/5.0 (iPhone; CPU iPhone OS 15_0 like Mac OS X) MedCasesApp/6.1.0')
-      // Fundo escuro no primeiro frame — elimina flash branco durante carga
-      ..setBackgroundColor(const Color(0xFF0F091E))
+      // TRANSPARENTE — não atribuir cor sólida ao scrollView interno do WKWebView.
+      //
+      // setBackgroundColor(cor sólida) internamente faz:
+      //   wkWebView.setOpaque(false)
+      //   wkWebView.backgroundColor = UIColor.clear   ← ok
+      //   scrollView.backgroundColor = UIColor(argb)  ← PROBLEMA: scrollView fica sólido
+      //
+      // Quando a página Wix não renderiza conteúdo até o fundo do scroll, o
+      // scrollView.backgroundColor sólido fica exposto como barra escura.
+      //
+      // SOLUÇÃO: Colors.transparent → scrollView fica transparente → o ColoredBox
+      // Flutter pai (cor 0xFF0F091E) aparece atrás sem criar layer duplicado.
+      ..setBackgroundColor(Colors.transparent)
       // Canal JS → Flutter: intercepta clique no botão de fontes acadêmicas
       ..addJavaScriptChannel(
         'MedCasesChannel',
@@ -407,10 +444,16 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
         },
       )
       ..setNavigationDelegate(NavigationDelegate(
+        onPageStarted: (_) async {
+          // Injeta o reset de overscroll/padding-bottom logo no início do carregamento
+          // (antes do DOMContentLoaded) para que o Wix nunca chegue a renderizar
+          // o safe-area gap ou a reserva de home bar no scroll interno.
+          await _controller.runJavaScript(_kEarlyInjectJs);
+        },
         onPageFinished: (_) async {
-          // Passo 1: corrige viewport e remove height fixo que trava o scroll
+          // Passo 1: corrige viewport, overscroll, insets e mata footer Wix
           await _controller.runJavaScript(_kInjectJs);
-          // Passo 2: injeta botão discreto no final do DOM (flow natural)
+          // Passo 2: injeta barra retrátil de fontes acadêmicas
           await _controller.runJavaScript(_buildSourcesButtonJs(_isEs));
         },
       ))
@@ -430,10 +473,15 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
     // Esta tela é aberta com Navigator.of(context, rootNavigator: true), então
     // ocupa o display completo acima do shell — sem restrição de bottom nav.
     // SizedBox.expand + Positioned.fill = WebView preenche 100% sem aritmética.
+    // bottomPadding = altura da home bar do iPhone em logical pixels.
+    // Usada para pintar uma faixa Flutter sólida NA FRENTE do WebView,
+    // cobrindo qualquer artefato do scrollView nativo que apareça abaixo.
+    final bottomPadding = view.viewPadding.bottom / view.devicePixelRatio;
+
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.light,
       child: ColoredBox(
-        // Fundo escuro em toda a área — elimina qualquer flash ou borda visível.
+        // Fundo escuro em toda a área — aparece atrás do WebView transparente.
         color: const Color(0xFF0F091E),
         child: SizedBox.expand(
           child: Stack(
@@ -442,6 +490,8 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
               // ── CAMADA 0 — WebView: ocupa tudo abaixo do header ───────────
               // top = altura do header (status bar + barra de título).
               // bottom = 0 → sangra até a borda física do vidro.
+              // setBackgroundColor(transparent) → scrollView sem cor sólida,
+              // então o ColoredBox pai aparece atrás sem criar barra visível.
               Positioned(
                 top:    topPadding + 52,
                 left:   0,
@@ -450,8 +500,22 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
                 child:  WebViewWidget(controller: _controller),
               ),
 
+              // ── CAMADA 1b — Tampa de home bar (FRENTE do WebView) ─────────
+              // Pinta uma faixa sólida NA FRENTE do WebView na área da home bar.
+              // Garante que qualquer artefato do WKWebView scrollView (ghost bar,
+              // adjustedContentInset residual) seja coberto por Flutter.
+              // Visualmente idêntico ao ColoredBox pai — sem borda perceptível.
+              if (bottomPadding > 0)
+                Positioned(
+                  left:   0,
+                  right:  0,
+                  bottom: 0,
+                  height: bottomPadding,
+                  child: const ColoredBox(color: Color(0xFF0F091E)),
+                ),
+
               // ── CAMADA 1 — Header gradiente (status bar + título) ─────────
-              // Único overlay Flutter — cobre apenas o topo.
+              // Único overlay Flutter visível — cobre apenas o topo.
               Positioned(
                 top:   0,
                 left:  0,
