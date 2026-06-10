@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter/foundation.dart' show kIsWeb, debugPrint;
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'package:url_launcher/url_launcher.dart';
@@ -865,22 +865,45 @@ class _PendingScreenState extends State<_PendingScreen> {
   }
 
   /// Auto-aprova o usuário imediatamente ao exibir a tela.
+  ///
+  /// Build 102 Fix: no nativo (iOS/Android), além de atualizar o doc Firestore
+  /// via approveUser, chama ensureUserProfileExists para garantir que o doc
+  /// está completo. O currentUserStream() do AuthGate reage ao snapshot
+  /// atualizado e navega direto para MainShell — sem intervenção manual.
   Future<void> _autoApproveNow() async {
+    if (!mounted) return;
     setState(() => _checking = true);
     try {
-      await AuthService.approveUser(widget.user.uid, 'system-auto');
-    } catch (_) {
-      // Ignora erros de rede — aprovação em memória já é suficiente
+      // Usa ensureUserProfileExists para reparar doc + garantir approved
+      final firebaseUser = FirebaseAuth.instance.currentUser;
+      if (firebaseUser != null) {
+        await AuthService.ensureUserProfileExists(
+          firebaseUser,
+          platform: kIsWeb ? 'web' : 'ios',
+        );
+        debugPrint('[PendingScreen] ensureUserProfileExists concluído — uid=${firebaseUser.uid}');
+      } else {
+        // Fallback: se currentUser for null, tenta approveUser diretamente
+        await AuthService.approveUser(widget.user.uid, 'system-auto');
+      }
+    } catch (e) {
+      debugPrint('[PendingScreen] Auto-aprovação falhou (continuando): $e');
     }
     if (!mounted) return;
-    // Reconstrói o UserModel como aprovado e navega imediatamente
-    final approvedUser = widget.user.copyWith(
-      status: UserStatus.approved,
-      approvedAt: DateTime.now(),
-      approvedBy: 'system-auto',
-    );
-    await AuthService.saveSession(approvedUser);
-    AuthService.webUser.value = approvedUser;
+
+    // Para o fluxo Web: atualiza webUser para que o ValueListenableBuilder reaja
+    if (kIsWeb) {
+      final approvedUser = widget.user.copyWith(
+        status: UserStatus.approved,
+        approvedAt: DateTime.now(),
+        approvedBy: 'system-auto',
+      );
+      await AuthService.saveSession(approvedUser);
+      AuthService.webUser.value = approvedUser;
+    }
+    // Para o nativo (iOS/Android): currentUserStream() já reagirá ao
+    // snapshot atualizado no Firestore — não é necessário manipular webUser.
+    if (mounted) setState(() => _checking = false);
   }
 
   /// Verificação manual (botão) — mantida como fallback de UI.

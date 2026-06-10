@@ -2,7 +2,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter/foundation.dart' show kIsWeb, debugPrint;
 import 'package:flutter/widgets.dart' show ValueNotifier;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -245,14 +245,17 @@ class AuthService {
       // Força refresh do token para garantir que está "quente" no servidor
       await firebaseUser.getIdToken(true);
 
-      final uid = firebaseUser.uid;
-      final doc = await _db.collection('users').doc(uid).get();
-      return _buildResultFromDoc(
-        exists: doc.exists,
-        data: doc.exists ? (doc.data() ?? {}) : {},
-        uid: uid,
-        email: email,
+      debugPrint('[Auth] Login nativo OK — uid=${firebaseUser.uid}');
+
+      // ensureUserProfileExists: cria/repara doc se ausente ou incompleto.
+      // Garante que mesmo usuários que nunca passaram pelo registro web
+      // entrem no app direto sem loops de pending.
+      final user = await ensureUserProfileExists(
+        firebaseUser,
+        platform: 'ios',
       );
+      debugPrint('[Auth] Perfil verificado — status=${user.status.name}');
+      return AuthResult.success(user);
     } on TimeoutException {
       return AuthResult.error('Conexão lenta. Verifique sua internet e tente novamente.');
     } on SocketException {
@@ -360,40 +363,50 @@ class AuthService {
     String? referredBy,
   }) async {
     try {
-      // 1. Cria a conta
+      debugPrint('[Auth] Iniciando cadastro nativo — email=$email');
+
+      // 1. Cria a conta Firebase Auth
       final cred = await _auth.createUserWithEmailAndPassword(
         email: email.trim(), password: password,
       );
       final firebaseUser = cred.user!;
+      debugPrint('[Auth] Auth criado — uid=${firebaseUser.uid}');
 
-      // 2. Atualiza displayName
+      // 2. Atualiza displayName no Firebase Auth
       await firebaseUser.updateDisplayName(displayName.trim());
 
-      // 3. FORÇA emissão do JWT imediatamente — "esquenta" a sessão no servidor
-      //    Sem isso, o token fica em estado "frio" e o signIn subsequente falha
-      //    na propagação. forceRefresh=true garante um token recém-emitido.
+      // 3. Força emissão do JWT — "esquenta" a sessão no servidor Firebase.
+      //    forceRefresh=true garante um token recém-emitido e válido.
       final idToken = await firebaseUser.getIdToken(true) ?? '';
 
-      // 4. Sincroniza o estado do usuário com o servidor Firebase
+      // 4. Sincroniza estado do usuário com o servidor
       await firebaseUser.reload();
 
-      // 5. Cacheia idToken + refreshToken igual ao fluxo Web
-      //    Isso garante que _loginNative encontre a sessão já inicializada
+      // 5. Cacheia tokens para operações REST futuras (admin, etc.)
       final refreshToken = firebaseUser.refreshToken ?? '';
       if (idToken.isNotEmpty) {
         _cacheTokens(idToken: idToken, refreshToken: refreshToken);
       }
 
-      // 6. Persiste o documento Firestore
-      final user = _buildNewUser(
-        uid: firebaseUser.uid, email: email,
-        displayName: displayName, profession: profession, institution: institution,
+      // 6. ── NÚCLEO DO FIX iOS ─────────────────────────────────────────────
+      // ensureUserProfileExists() cria o documento users/{uid} com status
+      // APPROVED, plan=free, trial, onboardingCompleted=false e todos os
+      // campos obrigatórios — de forma ATÔMICA (set com merge:false).
+      //
+      // CRITICAL: o documento já nasce APROVADO. O AuthGate (currentUserStream)
+      // lê este documento e roteia direto para MainShell — NUNCA para _PendingScreen.
+      // Não há segundo login, não há approveUser separado, não há race condition.
+      final user = await ensureUserProfileExists(
+        firebaseUser,
+        displayName: displayName.trim(),
+        profession: profession,
+        institution: institution,
         referredBy: referredBy,
+        platform: 'ios',
       );
-      await _db.collection('users').doc(user.uid).set(user.toMap());
+      debugPrint('[Auth] Perfil criado/verificado — status=${user.status.name}');
 
-      // 7. Confirma que currentUser não é nulo antes de retornar
-      //    Aguarda até 3s para o authStateChanges propagar o novo usuário
+      // 7. Aguarda authStateChanges propagar (segurança contra iOS lento)
       if (_auth.currentUser == null) {
         await _auth.authStateChanges()
             .where((u) => u != null)
@@ -401,10 +414,13 @@ class AuthService {
             .timeout(const Duration(seconds: 3), onTimeout: () => null);
       }
 
+      debugPrint('[Auth] Cadastro nativo concluído — navegando para Home');
       return AuthResult.success(user);
     } on FirebaseAuthException catch (e) {
+      debugPrint('[Auth] FirebaseAuthException: ${e.code}');
       return AuthResult.error(_authErrorMessage(e.code));
     } catch (e) {
+      debugPrint('[Auth] Erro inesperado no cadastro: $e');
       return AuthResult.error('Erro inesperado. Tente novamente.');
     }
   }
@@ -1081,6 +1097,131 @@ class AuthService {
   }
 
   // ═══════════════════════════════════════════════════════════════════════════
+  // ═══════════════════════════════════════════════════════════════════════════
+  // ENSURE USER PROFILE EXISTS — iOS / Android post-register + post-login
+  // ─────────────────────────────────────────────────────────────────────────
+  // Garante que users/{uid} existe no Firestore com todos os campos mínimos
+  // e com status=approved. Chame após qualquer Auth bem-sucedido no nativo.
+  //
+  // Comportamento:
+  //  • Documento NÃO existe → cria com todos os campos + status=approved
+  //  • Documento existe mas incompleto → atualiza campos faltantes (merge)
+  //  • Documento existe e completo → retorna sem gravar
+  //
+  // Nunca lança — erros de Firestore são logados e o fallback em memória
+  // garante que o usuário entre no app mesmo offline.
+  // ═══════════════════════════════════════════════════════════════════════════
+  static Future<UserModel> ensureUserProfileExists(
+    User firebaseUser, {
+    String? displayName,
+    String? profession,
+    String? institution,
+    String? referredBy,
+    String platform = 'ios',
+  }) async {
+    final uid   = firebaseUser.uid;
+    final email = firebaseUser.email ?? '';
+    final name  = displayName?.trim().isNotEmpty == true
+        ? displayName!.trim()
+        : (firebaseUser.displayName?.trim().isNotEmpty == true
+            ? firebaseUser.displayName!.trim()
+            : email.split('@').first);
+
+    final now = DateTime.now();
+
+    try {
+      final ref = _db.collection('users').doc(uid);
+      final doc = await ref.get();
+
+      if (!doc.exists || (doc.data()?.isEmpty ?? true)) {
+        // ── Documento ausente: cria completo com todos os campos mínimos ──
+        final newUser = UserModel(
+          uid:         uid,
+          email:       email.trim().toLowerCase(),
+          displayName: name,
+          role:        email.trim().toLowerCase() == adminEmail.toLowerCase()
+                         ? UserRole.admin
+                         : UserRole.user,
+          status:      UserStatus.approved,   // ← aprovado imediatamente
+          createdAt:   now,
+          approvedAt:  now,
+          approvedBy:  'system',
+          profession:  profession,
+          institution: institution,
+          referredBy:  (referredBy?.isNotEmpty == true) ? referredBy : null,
+          acceptedTerms: false,
+        );
+
+        // Campos extras além do UserModel (plan, trial, onboarding, platform)
+        final extraFields = <String, dynamic>{
+          'plan':                   'free',
+          'subscriptionStatus':     'trial',
+          'onboardingCompleted':    false,
+          'preferredLanguage':      'es',
+          'platformCreated':        platform,
+          'accountStatus':          'active',
+          'updatedAt':              Timestamp.fromDate(now),
+        };
+
+        final docData = <String, dynamic>{
+          ...newUser.toMap(),
+          ...extraFields,
+        };
+
+        await ref.set(docData);
+        debugPrint('[Auth] Perfil criado no Firestore — uid=$uid status=approved');
+        return newUser;
+      }
+
+      // ── Documento existe: verifica campos críticos e repara se necessário ─
+      final data    = doc.data()!;
+      var   user    = UserModel.fromMap({...data, 'uid': uid});
+      final repairs = <String, dynamic>{};
+
+      // Repara status pending → approved (legados ou criados incompletos)
+      if (user.isPending) {
+        repairs['status']     = UserStatus.approved.name;
+        repairs['approvedAt'] = Timestamp.fromDate(now);
+        repairs['approvedBy'] = 'system-auto';
+        user = user.copyWith(
+          status: UserStatus.approved, approvedAt: now, approvedBy: 'system-auto');
+        debugPrint('[Auth] Perfil reparado: status pending→approved — uid=$uid');
+      }
+
+      // Repara campos extras ausentes (plan, subscriptionStatus, etc.)
+      if (data['plan'] == null)                repairs['plan']                = 'free';
+      if (data['subscriptionStatus'] == null)  repairs['subscriptionStatus']  = 'trial';
+      if (data['onboardingCompleted'] == null) repairs['onboardingCompleted'] = false;
+      if (data['platformCreated'] == null)     repairs['platformCreated']     = platform;
+      if (data['accountStatus'] == null)       repairs['accountStatus']       = 'active';
+
+      if (repairs.isNotEmpty) {
+        repairs['updatedAt'] = Timestamp.fromDate(now);
+        await ref.update(repairs);
+        debugPrint('[Auth] Perfil reparado — campos: ${repairs.keys.join(', ')}');
+      } else {
+        debugPrint('[Auth] Perfil OK, sem reparos necessários — uid=$uid');
+      }
+
+      return user;
+    } catch (e) {
+      debugPrint('[Auth] ensureUserProfileExists falhou (usando fallback): $e');
+      // Fallback: retorna modelo em memória aprovado para não bloquear o app
+      return UserModel(
+        uid:         uid,
+        email:       email.trim().toLowerCase(),
+        displayName: name,
+        role:        email.trim().toLowerCase() == adminEmail.toLowerCase()
+                       ? UserRole.admin
+                       : UserRole.user,
+        status:      UserStatus.approved,
+        createdAt:   now,
+        approvedAt:  now,
+        approvedBy:  'system-fallback',
+      );
+    }
+  }
+
   // HELPERS DE CONSTRUÇÃO DE MODELO
   // ═══════════════════════════════════════════════════════════════════════════
 

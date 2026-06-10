@@ -168,45 +168,24 @@ class _LoginScreenState extends State<LoginScreen>
         referredBy: referredBy,
       );
 
-      // ── Auto-aprovação + auto-login após cadastro ────────────────────────
-      // 1. Registra o usuário
-      // 2. Aprova imediatamente (sem precisar de ação do admin)
-      // 3. Faz login automático → usuario entra direto no app na primeira vez
-      // Na segunda sessão o usuário já está aprovado e só digita email+senha.
+      // ── Pós-cadastro iOS/Android (Build 102 Fix) ────────────────────────
+      // ensureUserProfileExists() já criou o doc Firestore com status=approved
+      // DENTRO de _registerNative/_registerWeb — sem segundo login necessário.
+      //
+      // O AuthGate (currentUserStream / authStateChanges) detecta o Firebase
+      // Auth já autenticado + doc aprovado e navega direto para MainShell.
+      //
+      // Não fazemos approveUser separado (race condition com currentUserStream).
+      // Não fazemos segundo login (causa loop + falha silenciosa em iOS lento).
       if (result.success) {
-        // Aprova automaticamente antes do login para que o AuthGate não
-        // roteie para _PendingScreen (o usuário entra direto no app)
-        final newUid = result.user?.uid ?? '';
-        if (newUid.isNotEmpty) {
-          try {
-            await AuthService.approveUser(newUid, 'system-auto');
-          } catch (_) {
-            // Silencioso — _PendingScreen tem fallback de auto-aprovação
-          }
+        // Persiste sessão se o usuário pediu "manter conectado"
+        if (_keepLoggedIn && result.user != null) {
+          await AuthService.saveSession(result.user!);
         }
-
-        final loginResult = await AuthService.login(
-          email: _emailCtrl.text,
-          password: _passCtrl.text,
-        );
-        if (loginResult.success) {
-          if (_keepLoggedIn && loginResult.user != null) {
-            await AuthService.saveSession(loginResult.user!);
-          }
-          // AuthGate detecta o usuário aprovado e navega para o MainShell
-          if (!mounted) return;
-          setState(() { _loading = false; });
-          return;
-        }
-        // Fallback: auto-login falhou → redireciona ao login com mensagem
+        // AuthGate já detectou authStateChanges → navega automaticamente.
+        // Apenas remove o loading — NÃO navegamos manualmente aqui.
         if (!mounted) return;
-        setState(() {
-          _loading = false;
-          _success = _registerSuccessMsg();
-          _mode = _Mode.login;
-          _regStep = 0;
-          _disclaimerAccepted = false;
-        });
+        setState(() { _loading = false; });
         return;
       }
     } else {
