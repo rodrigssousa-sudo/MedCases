@@ -4,6 +4,7 @@
 // Suporta PT (padrão) e ES via Localizations.localeOf(context).languageCode.
 // ─────────────────────────────────────────────────────────────────────────────
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -80,22 +81,51 @@ class ProfessionalDeclarationGate {
     return prefs.getBool(_kProfKey) ?? false;
   }
 
+  /// Resolve o uid do usuário atual com múltiplas camadas de fallback.
+  /// Ordem: AppProvider → FirebaseAuth.currentUser → null
+  /// NUNCA retorna string vazia ('') — retorna null se indisponível.
+  static String? _resolveUid(BuildContext context) {
+    // Camada 1: AppProvider (definido via setUser após authStateChanges)
+    final providerUid = Provider.of<AppProvider>(context, listen: false).currentUser?.uid;
+    if (providerUid != null && providerUid.isNotEmpty) return providerUid;
+
+    // Camada 2: FirebaseAuth.instance.currentUser (sempre disponível após login nativo)
+    final firebaseUid = FirebaseAuth.instance.currentUser?.uid;
+    if (firebaseUid != null && firebaseUid.isNotEmpty) return firebaseUid;
+
+    // Uid indisponível — não salvar
+    return null;
+  }
+
+  /// Salva a declaração profissional com uid resolvido e validado.
+  /// Lança [StateError] se o uid não puder ser resolvido — nunca salva com uid vazio.
   static Future<void> saveDeclaration({
     required String uid,
     required String professionalCategory,
   }) async {
+    // Guarda de segurança: bloqueia uid vazio antes de qualquer IO
+    assert(uid.isNotEmpty, 'saveDeclaration: uid não pode ser vazio');
+    if (uid.isEmpty) {
+      debugPrint('[ProfGate] ERRO: tentativa de salvar declaração com uid vazio — abortado');
+      throw StateError('uid inválido: não foi possível identificar o usuário para salvar a declaração');
+    }
+
     // 1. Firestore — persiste entre dispositivos e reinstalações (Apple-safe)
     try {
       await AuthService.updateTermsAccepted(
         uid: uid,
         professionalCategory: professionalCategory,
       );
-    } catch (_) {
-      // Falha silenciosa — cache local é o fallback
+      debugPrint('[ProfGate] Declaração salva no Firestore — uid=$uid');
+    } catch (e) {
+      // Firestore indisponível — cache local garante que o usuário não bloqueie
+      debugPrint('[ProfGate] Firestore indisponível (${e.runtimeType}) — salvo apenas localmente');
     }
+
     // 2. Cache local — verificação rápida no mesmo dispositivo
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool(_kProfKey, true);
+    debugPrint('[ProfGate] Declaração salva em SharedPreferences — uid=$uid');
   }
 }
 
@@ -103,6 +133,14 @@ class ProfessionalDeclarationGate {
 /// Envolve [child] com o gate de declaração profissional.
 /// Se o usuário já declarou anteriormente, exibe [child] diretamente.
 /// Caso contrário, exibe o aviso legal obrigatório em fullscreen sobre [child].
+///
+/// Build 103 — Fix uid vazio:
+/// O uid é resolvido com múltiplas camadas de fallback (AppProvider →
+/// FirebaseAuth.currentUser) e NUNCA salvo como string vazia. Se o uid
+/// não estiver disponível imediatamente (addPostFrameCallback de setUser ainda
+/// pendente), o gate aguarda até 3s até que o AppProvider ou o FirebaseAuth
+/// SDK o forneça. Se após todas as tentativas o uid permanecer nulo,
+/// exibe mensagem de erro clara sem salvar nada.
 class ProfessionalDeclarationGateWidget extends StatefulWidget {
   final Widget child;
   const ProfessionalDeclarationGateWidget({super.key, required this.child});
@@ -117,6 +155,9 @@ class _ProfessionalDeclarationGateWidgetState
   // null = ainda carregando; true = já declarou; false = precisa declarar
   bool? _declared;
 
+  // uid resolvido — definido antes de exibir o modal
+  String? _resolvedUid;
+
   @override
   void initState() {
     super.initState();
@@ -125,14 +166,40 @@ class _ProfessionalDeclarationGateWidgetState
 
   Future<void> _check() async {
     final ok = await ProfessionalDeclarationGate.hasDeclared();
-    if (mounted) setState(() => _declared = ok);
+    if (!mounted) return;
+
+    if (ok) {
+      // Já declarou — não precisa resolver uid
+      setState(() => _declared = true);
+      return;
+    }
+
+    // Precisa declarar — resolve uid antes de exibir o modal.
+    // setUser() é chamado via addPostFrameCallback (um frame após o render),
+    // portanto AppProvider.currentUser pode ser null no primeiro frame.
+    // Tenta até 3x com 500ms de intervalo antes de usar FirebaseAuth direto.
+    String? uid = ProfessionalDeclarationGate._resolveUid(context);
+    if (uid == null) {
+      // Aguarda até 3 frames (1.5s) para que o AppProvider complete setUser()
+      for (int i = 0; i < 3 && uid == null; i++) {
+        await Future<void>.delayed(const Duration(milliseconds: 500));
+        if (!mounted) return;
+        uid = ProfessionalDeclarationGate._resolveUid(context);
+      }
+    }
+
+    if (!mounted) return;
+    setState(() {
+      _resolvedUid = uid; // pode ser null se ambas as camadas falharam
+      _declared = false;
+    });
   }
 
   void _onAccepted() => setState(() => _declared = true);
 
   @override
   Widget build(BuildContext context) {
-    // Enquanto verifica o SharedPreferences, exibe splash mínimo
+    // Enquanto verifica o SharedPreferences / resolve uid, exibe splash mínimo
     if (_declared == null) {
       return const Scaffold(
         backgroundColor: Colors.white,
@@ -145,7 +212,46 @@ class _ProfessionalDeclarationGateWidgetState
     // Já declarou → exibe o app normalmente
     if (_declared!) return widget.child;
 
-    // Precisa declarar → exibe aviso obrigatório sobre o app
+    // Uid completamente indisponível após todas as tentativas — erro claro.
+    // Não deve ocorrer em condições normais: FirebaseAuth sempre tem currentUser
+    // quando o usuário chegou até este ponto do fluxo.
+    if (_resolvedUid == null || _resolvedUid!.isEmpty) {
+      return Scaffold(
+        backgroundColor: Colors.white,
+        body: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(32),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Icon(Icons.error_outline_rounded,
+                    size: 48, color: Color(0xFFE53E3E)),
+                const SizedBox(height: 16),
+                const Text(
+                  'Não foi possível identificar sua conta.\n'
+                  'Faça logout e entre novamente.',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 15, height: 1.5, color: Color(0xFF333333)),
+                ),
+                const SizedBox(height: 24),
+                ElevatedButton(
+                  onPressed: () async {
+                    await AuthService.logout();
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF075f45)),
+                  child: const Text('Fazer logout',
+                      style: TextStyle(color: Colors.white)),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    }
+
+    // Precisa declarar → exibe aviso obrigatório sobre o app.
     // AbsorbPointer no backdrop: intercepta 100% dos toques antes de
     // chegar ao widget.child — hard-lock impossível de contornar (iOS + Android).
     final lang = Localizations.localeOf(context).languageCode;
@@ -160,7 +266,7 @@ class _ProfessionalDeclarationGateWidgetState
         Positioned.fill(
           child: _ProfessionalDeclarationModal(
             lang: lang == 'es' ? 'es' : 'pt',
-            uid: Provider.of<AppProvider>(context, listen: false).currentUser?.uid ?? '',
+            uid: _resolvedUid!, // ← uid validado — nunca vazio aqui
             onAccepted: _onAccepted,
           ),
         ),
