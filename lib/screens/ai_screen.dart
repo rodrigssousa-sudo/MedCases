@@ -2660,7 +2660,80 @@ String _cleanAiText(String raw) {
     .replaceAll(RegExp(r'\bREACCION\b'), 'REACCIÓN')
     .replaceAll(RegExp(r'\bREACCIONES ADVERSAS\b'), 'REACCIONES ADVERSAS')
     .replaceAll(RegExp(r'\bFARMACOLOGIA\b'), 'FARMACOLOGÍA')
-    .replaceAll(RegExp(r'\bINTERACCIONES FARMACOLOGICAS\b'), 'INTERACCIONES FARMACOLÓGICAS');
+    .replaceAll(RegExp(r'\bINTERACCIONES FARMACOLOGICAS\b'), 'INTERACCIONES FARMACOLÓGICAS')
+    // ── Build 100: Expansão Step 7 — seções clínicas de alta frequência ──────
+    // Camada 2 do modelo emite esses títulos sem acento quando copia do
+    // _responseFormatPt/_responseFormatEs que por segurança usa texto sem acentos.
+    // PORTUGUÊS — seções adicionais da Camada 2:
+    .replaceAll(RegExp(r'\bHIDRATACAO\b'), 'HIDRATAÇÃO')
+    .replaceAll(RegExp(r'\bVENTILACAO\b'), 'VENTILAÇÃO')
+    .replaceAll(RegExp(r'\bINTUBACAO\b'), 'INTUBAÇÃO')
+    .replaceAll(RegExp(r'\bCOAGULACAO\b'), 'COAGULAÇÃO')
+    .replaceAll(RegExp(r'\bINTOXICACAO\b'), 'INTOXICAÇÃO')
+    .replaceAll(RegExp(r'\bFIBRILACAO ATRIAL\b'), 'FIBRILAÇÃO ATRIAL')
+    .replaceAll(RegExp(r'\bFIBRILACAO VENTRICULAR\b'), 'FIBRILAÇÃO VENTRICULAR')
+    .replaceAll(RegExp(r'\bFIBRILACAO\b'), 'FIBRILAÇÃO')
+    .replaceAll(RegExp(r'\bDISFUNCAO\b'), 'DISFUNÇÃO')
+    .replaceAll(RegExp(r'\bHIPOGLICEMIA\b'), 'HIPOGLICEMIA')   // já correto
+    .replaceAll(RegExp(r'\bHIPERGLICEMIA\b'), 'HIPERGLICEMIA') // já correto
+    .replaceAll(RegExp(r'\bINSUFICIENCIA CARDIACA\b'), 'INSUFICIÊNCIA CARDÍACA')
+    .replaceAll(RegExp(r'\bINSUFICIENCIA RENAL\b'), 'INSUFICIÊNCIA RENAL')
+    .replaceAll(RegExp(r'\bINSUFICIENCIA RESPIRATORIA\b'), 'INSUFICIÊNCIA RESPIRATÓRIA')
+    .replaceAll(RegExp(r'\bINSUFICIENCIA HEPATICA\b'), 'INSUFICIÊNCIA HEPÁTICA')
+    .replaceAll(RegExp(r'\bTROMBOEMBOLISMO PULMONAR\b'), 'TROMBOEMBOLISMO PULMONAR') // já OK
+    .replaceAll(RegExp(r'\bACIDENTE VASCULAR CEREBRAL\b'), 'ACIDENTE VASCULAR CEREBRAL') // já OK
+    .replaceAll(RegExp(r'\bPROFILAXIA\b'), 'PROFILAXIA')         // já correto
+    .replaceAll(RegExp(r'\bDIAGNOSTICO DIFERENCIAL\b'), 'DIAGNÓSTICO DIFERENCIAL')
+    .replaceAll(RegExp(r'\bDIAGNOSTICO\b'), 'DIAGNÓSTICO')
+    .replaceAll(RegExp(r'\bEMERGENCIA\b'), 'EMERGÊNCIA')
+    .replaceAll(RegExp(r'\bTRATAMENTO EMPIRICO\b'), 'TRATAMENTO EMPÍRICO')
+    .replaceAll(RegExp(r'\bTRATAMENTO FARMACOLOGICO\b'), 'TRATAMENTO FARMACOLÓGICO')
+    .replaceAll(RegExp(r'\bESTABILIZACAO\b'), 'ESTABILIZAÇÃO')
+    .replaceAll(RegExp(r'\bEVOLUCAO\b'), 'EVOLUÇÃO')
+    .replaceAll(RegExp(r'\bSEDASAO\b'), 'SEDAÇÃO')
+    .replaceAll(RegExp(r'\bSEDASAO E ANALGESIA\b'), 'SEDAÇÃO E ANALGESIA')
+    .replaceAll(RegExp(r'\bANALGESIA\b'), 'ANALGESIA')           // já correto
+    .replaceAll(RegExp(r'\bANTICOAGULACAO\b'), 'ANTICOAGULAÇÃO')
+    .replaceAll(RegExp(r'\bTRANSFUSAO\b'), 'TRANSFUSÃO')
+    .replaceAll(RegExp(r'\bINFECCAO\b'), 'INFECÇÃO')
+    .replaceAll(RegExp(r'\bINFECCAO DO TRATO\b'), 'INFECÇÃO DO TRATO')
+    .replaceAll(RegExp(r'\bCOMPLICACAO\b'), 'COMPLICAÇÃO')
+    .replaceAll(RegExp(r'\bCOMPLICACOES\b'), 'COMPLICAÇÕES')
+    .replaceAll(RegExp(r'\bATENCAO\b'), 'ATENÇÃO')
+    .replaceAll(RegExp(r'\bRECOMENDACAO\b'), 'RECOMENDAÇÃO')
+    .replaceAll(RegExp(r'\bRECOMENDACOES\b'), 'RECOMENDAÇÕES')
+    .replaceAll(RegExp(r'\bINFUSOES\b'), 'INFUSÕES')
+    .replaceAll(RegExp(r'\bINFUSAO\b'), 'INFUSÃO')
+    .replaceAll(RegExp(r'\bASSICIACAO\b'), 'ASSOCIAÇÃO')
+    .replaceAll(RegExp(r'\bASSOCIACAO\b'), 'ASSOCIAÇÃO')
+    // ESPANHOL — seções adicionais da Capa 2:
+    .replaceAll(RegExp(r'\bHIDRATACION\b'), 'HIDRATACIÓN')
+    .replaceAll(RegExp(r'\bVENTILACION\b'), 'VENTILACIÓN')
+    .replaceAll(RegExp(r'\bINTUBACION\b'), 'INTUBACIÓN')
+    .replaceAll(RegExp(r'\bCOAGULACION\b'), 'COAGULACIÓN')
+    .replaceAll(RegExp(r'\bINTOXICACION\b'), 'INTOXICACIÓN')
+    .replaceAll(RegExp(r'\bFIBRILACION AURICULAR\b'), 'FIBRILACIÓN AURICULAR')
+    .replaceAll(RegExp(r'\bFIBRILACION VENTRICULAR\b'), 'FIBRILACIÓN VENTRICULAR')
+    .replaceAll(RegExp(r'\bFIBRILACION\b'), 'FIBRILACIÓN')
+    .replaceAll(RegExp(r'\bDISFUNCION\b'), 'DISFUNCIÓN')
+    .replaceAll(RegExp(r'\bINSUFICIENCIA CARDIACA\b'), 'INSUFICIENCIA CARDÍACA')
+    .replaceAll(RegExp(r'\bINSUFICIENCIA RENAL\b'), 'INSUFICIENCIA RENAL')       // já OK
+    .replaceAll(RegExp(r'\bINSUFICIENCIA RESPIRATORIA\b'), 'INSUFICIENCIA RESPIRATORIA') // já OK
+    .replaceAll(RegExp(r'\bDIAGNOSTICO DIFERENCIAL\b'), 'DIAGNÓSTICO DIFERENCIAL')
+    .replaceAll(RegExp(r'\bEMERGENCIA\b'), 'EMERGENCIA')         // sem acento em ES — já OK
+    .replaceAll(RegExp(r'\bESTABILIZACION\b'), 'ESTABILIZACIÓN')
+    .replaceAll(RegExp(r'\bEVOLUCION\b'), 'EVOLUCIÓN')
+    .replaceAll(RegExp(r'\bSEDACION\b'), 'SEDACIÓN')
+    .replaceAll(RegExp(r'\bANTICOAGULACION\b'), 'ANTICOAGULACIÓN')
+    .replaceAll(RegExp(r'\bTRANSFUSION\b'), 'TRANSFUSIÓN')
+    .replaceAll(RegExp(r'\bINFECCION\b'), 'INFECCIÓN')
+    .replaceAll(RegExp(r'\bCOMPLICACION\b'), 'COMPLICACIÓN')
+    .replaceAll(RegExp(r'\bCOMPLICACIONES\b'), 'COMPLICACIONES')  // já OK
+    .replaceAll(RegExp(r'\bATENCION\b'), 'ATENCIÓN')
+    .replaceAll(RegExp(r'\bINFUSION\b'), 'INFUSIÓN')
+    .replaceAll(RegExp(r'\bINFUSIONES\b'), 'INFUSIONES')
+    .replaceAll(RegExp(r'\bASSOCIACION\b'), 'ASOCIACIÓN')
+    .replaceAll(RegExp(r'\bASOCIACION\b'), 'ASOCIACIÓN');
 
   return s.trim();
 }
@@ -2688,17 +2761,37 @@ List<String> _splitIntoBlocks(String text) {
   // Detector inline (espelha _isSectionHeader e _isH2 do _AiBlockBubble).
   // Não temos acesso ao método de instância aqui (função top-level), então
   // replicamos a mesma lógica de detecção de forma simples.
+  // Build 100: expandido para cobrir todos os emojis clínicos de header e
+  // linhas de blockquote (>) que o modelo emite isoladas antes dos bullets.
   bool looksLikeHeaderOnly(String block) {
     final lines = block.split('\n');
     if (lines.length != 1) return false; // bloco com múltiplas linhas já tem corpo
     final t = lines[0].trim();
+    // 4 blocos premium oficiais + emojis clínicos adicionais frequentes
     if (t.startsWith('🚨') || t.startsWith('💊') ||
-        t.startsWith('⛔') || t.startsWith('📌')) return true;
+        t.startsWith('⛔') || t.startsWith('📌') ||
+        t.startsWith('🏥') || t.startsWith('💉') ||
+        t.startsWith('🔬') || t.startsWith('📋') ||
+        t.startsWith('🫀') || t.startsWith('🫁') ||
+        t.startsWith('🧬') || t.startsWith('💡')) return true;
+    // Markdown headers
     if (t.startsWith('## ') || t.startsWith('### ')) return true;
-    if (RegExp(r'^(Hipótese|Hipotesis|Conduta|Conducta|Exames|Examenes|'
-               r'Monitoriz|Evitar|Escalonamento|Escalonamiento|'
+    // Blockquote de alerta crítico isolado (linha "> 🔴 ALERTA...")
+    if (t.startsWith('> ') && t.length < 120) return true;
+    // Títulos de seção clínica conhecidos
+    if (RegExp(r'^(Hipótese|Hipóteses|Hipotese|Hipoteses|'
+               r'Hipotesis|Hipótesis|'
+               r'Conduta|Conducta|'
+               r'Exames|Examenes|'
+               r'Monitoriz|Monitorizaç|'
+               r'Evitar|'
+               r'Escalonamento|Escalonamiento|'
                r'AGORA|AHORA|QUICK|CLINICAL|TEACH|'
-               r'Primeira Escolha|Primera Elección)',
+               r'Primeira Escolha|Primera Elección|Primera Eleccion|'
+               r'CONDUTA IMEDIATA|CONDUCTA INMEDIATA|'
+               r'MEDICAÇÕES|MEDICACIONES|'
+               r'HARD STOP|MONITORIZAÇÃO|MONITORIZACIÓN|'
+               r'FÁRMACO DETALHADO|FÁRMACO DETALLADO)',
                caseSensitive: false).hasMatch(t)) return true;
     return false;
   }

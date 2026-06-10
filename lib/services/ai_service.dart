@@ -1389,7 +1389,7 @@ ANATOMIA FÁRMACO COMPLETO (Camada 2 ou solicitação explícita):
             : 'PROTOCOLOS VERIFICADOS (base local MedCases — priorizar sobre conhecimento proprio):\n$protocolsBlock\n\n');
     final drugsSection = drugsBlock.isEmpty ? ''
         : (isEs
-            ? 'FARMACOS VERIFICADOS (base local MedCases — usar doses e alertas desta base, nao inventar):\n$drugsBlock\n\n'
+            ? 'FARMACOS VERIFICADOS (base local MedCases — usar dosis y alertas de esta base, no inventar):\n$drugsBlock\n\n'
             : 'FARMACOS VERIFICADOS (base local MedCases — usar doses e alertas desta base, nao inventar):\n$drugsBlock\n\n');
     final contextSection = hasLocalContext
         ? (isEs

@@ -1048,6 +1048,10 @@ class AppProvider extends ChangeNotifier {
 
   void setLang(String l) {
     _lang = l;
+    // Build 100: resetar o language lock da sessão ao trocar o idioma do app.
+    // Sem este reset, a IA ignorava a troca de idioma e continuava respondendo
+    // no idioma da primeira mensagem enviada antes da mudança.
+    _sessionLockedLang = null;
     _saveLocal();
     if (_currentUser != null) {
       FirestoreService.updateUserProfile(_currentUser!.uid, lang: l);

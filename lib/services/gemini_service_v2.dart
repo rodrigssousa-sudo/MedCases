@@ -1217,15 +1217,37 @@ class GeminiServiceV2 {
       return true;
     }
 
+    // ── Build 100: padrões de CoT adicionais capturados em produção ──────────
+    // Variantes não cobertas pela regex anterior — encontradas em TestFlight
+    if (lower.contains('el usuario ha indicado')) return true;
+    if (lower.contains('el usuario ha proporcionado')) return true;
+    if (lower.contains('el usuario ha solicitado')) return true;
+    if (lower.contains('o usuário informou')) return true;
+    if (lower.contains('o usuário forneceu')) return true;
+    if (lower.contains('o usuário indicou')) return true;
+    if (lower.contains('a consulta é sobre')) return true;
+    if (lower.contains('la consulta es sobre')) return true;
+    if (lower.contains('según lo solicitado')) return true;
+    if (lower.contains('conforme solicitado')) return true;
+    if (lower.contains('para responder a esta')) return true;
+    if (lower.contains('para responder esta')) return true;
+    if (lower.contains('vou responder')) return true;
+    if (lower.contains('voy a responder')) return true;
+    if (lower.contains('la pregunta del usuario')) return true;
+    if (lower.contains('a pergunta do usuário')) return true;
+    if (lower.contains('a pergunta do usuario')) return true;
+
     // Padrão meta-comentário: "El usuario solicita/proporciona/pregunta..."
     // como sentença de abertura (primeiros 120 chars do chunk)
     final head = lower.length > 120 ? lower.substring(0, 120) : lower;
     if (RegExp(
-      r'^\s*(?:el\s+usuario\s+(?:solicita|proporciona|pregunta|pide|quiere|busca|ha\s+(?:pedido|indicado))'
-      r'|o\s+usu[aá]rio\s+(?:solicita|fornece|pergunta|pede|quer|busca|indicou)'
-      r'|the\s+user\s+(?:is\s+asking|asks|wants|requests|provides|has\s+indicated)'
+      r'^\s*(?:el\s+usuario\s+(?:solicita|proporciona|pregunta|pide|quiere|busca|ha\s+(?:pedido|indicado|proporcionado|solicitado))'
+      r'|o\s+usu[aá]rio\s+(?:solicita|fornece|pergunta|pede|quer|busca|indicou|informou|forneceu)'
+      r'|the\s+user\s+(?:is\s+asking|asks|wants|requests|provides|has\s+indicated|has\s+asked)'
       r'|baseado\s+(?:no|na)\s+(?:contexto|conversa)'
-      r'|basado\s+en\s+(?:el\s+contexto|la\s+conversaci))',
+      r'|basado\s+en\s+(?:el\s+contexto|la\s+conversaci)'
+      r'|vou\s+(?:responder|elaborar|fornecer|apresentar|descrever)'
+      r'|voy\s+a\s+(?:responder|elaborar|proporcionar|presentar|describir))',
       caseSensitive: false,
     ).hasMatch(head)) {
       return true;
