@@ -298,94 +298,105 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final mq         = MediaQuery.of(context);
-    final topPadding = mq.padding.top;
+    // ── topPadding: lido do MediaQuery ANTES de remover insets ───────────────
+    // Precisamos do valor real da status bar para posicionar o header.
+    final topPadding = MediaQuery.of(context).padding.top;
 
-    // ── Altura física real da tela ────────────────────────────────────────────
-    // MediaQuery.of(context).size.height é reduzido pelo shell quando há uma
-    // bottom nav bar ou SafeArea inferior — deixando um fundo roxo exposto.
+    // ── ESTRATÉGIA TELA-CHEIA ────────────────────────────────────────────────
+    // O shell pai (bottom nav + SafeArea) injeta padding.bottom no MediaQuery
+    // E reduz o espaço disponível para este widget — criando a faixa escura.
     //
-    // Solução: usar View.of(context).physicalSize / devicePixelRatio para obter
-    // a altura total do display independente de qualquer widget pai que imponha
-    // restrições. Somamos viewPadding.bottom (home bar do iPhone) para cobrir
-    // até a borda física absoluta.
-    final view          = View.of(context);
-    final physicalH     = view.physicalSize.height / view.devicePixelRatio;
-    final physicalW     = view.physicalSize.width  / view.devicePixelRatio;
+    // Solução em 3 camadas:
+    //  1. MediaQuery.removePadding(removeBottom: true) → zera o inset inferior
+    //     que o shell/SafeArea impõe, dando ao Stack toda a altura disponível.
+    //  2. Scaffold(extendBody: true, resizeToAvoidBottomInset: false) →
+    //     estica o body por baixo de qualquer barra de sistema.
+    //  3. SizedBox.expand() → o Stack preenche TODO o espaço concedido.
+    //
+    // O JS injetado na WebView já cuida do env(safe-area-inset-bottom) do iOS,
+    // portanto NÃO precisamos que o Flutter proteja o rodapé aqui.
+    return MediaQuery.removePadding(
+      context:      context,
+      removeBottom: true,   // remove inset inferior → WebView sangra até a borda
+      child: AnnotatedRegion<SystemUiOverlayStyle>(
+        value: SystemUiOverlayStyle.light,
+        child: Scaffold(
+          // extendBody: true  → body escorre por baixo de BottomNavigationBar
+          // extendBodyBehindAppBar: true → sem AppBar nativa, mas boa prática
+          // resizeToAvoidBottomInset: false → teclado não desloca o layout
+          backgroundColor:              const Color(0xFF0F091E),
+          extendBody:                   true,
+          extendBodyBehindAppBar:        true,
+          resizeToAvoidBottomInset:      false,
+          body: SizedBox.expand(
+            // SizedBox.expand preenche TODA a área concedida pelo Scaffold
+            // após o removePadding — sem deixar nenhum espaço residual.
+            child: Stack(
+              clipBehavior: Clip.none,
+              children: [
 
-    return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: SystemUiOverlayStyle.light,
-      child: Material(
-        color: Colors.transparent,
-        child: SizedBox(
-          // Dimensões físicas reais — ignora qualquer restrição do shell pai.
-          width:  physicalW,
-          height: physicalH,
-          child: Stack(
-            clipBehavior: Clip.none,
-            children: [
+                // ── CAMADA 0 — WebView preenche tela inteira ──────────────
+                // Positioned.fill + SizedBox.expand = pixel perfect até a
+                // borda física inferior do vidro, sem faixa escura.
+                Positioned.fill(
+                  child: WebViewWidget(controller: _controller),
+                ),
 
-              // ── CAMADA 0 — WebView preenche TODO o display físico ────────
-              // Positioned.fill dentro do SizedBox físico = pixel perfect.
-              // Sem padding inferior, sem reserva para barra antiga.
-              Positioned.fill(
-                child: WebViewWidget(controller: _controller),
-              ),
-
-              // ── CAMADA 1 — Header roxo (gradiente) — topo apenas ────────
-              // Único overlay: cobre status bar + título.
-              // Resto da tela 100% livre para a WebView.
-              Positioned(
-                top:   0,
-                left:  0,
-                right: 0,
-                child: Container(
-                  height: topPadding + 52,
-                  decoration: const BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end:   Alignment.bottomRight,
-                      colors: [
-                        Color(0xFF1A0F2E),
-                        Color(0xFF2D1B5A),
-                        Color(0xFF4A2D8A),
-                      ],
+                // ── CAMADA 1 — Header roxo (gradiente) — topo apenas ──────
+                // Único overlay Flutter: status bar + título.
+                // Todo o resto da tela pertence à WebView.
+                Positioned(
+                  top:   0,
+                  left:  0,
+                  right: 0,
+                  child: Container(
+                    height: topPadding + 52,
+                    decoration: const BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end:   Alignment.bottomRight,
+                        colors: [
+                          Color(0xFF1A0F2E),
+                          Color(0xFF2D1B5A),
+                          Color(0xFF4A2D8A),
+                        ],
+                      ),
                     ),
-                  ),
-                  child: Padding(
-                    padding: EdgeInsets.only(top: topPadding),
-                    child: Row(
-                      children: [
-                        IconButton(
-                          icon: const Icon(
-                            Icons.arrow_back_ios_rounded,
-                            size: 18,
-                            color: Colors.white,
+                    child: Padding(
+                      padding: EdgeInsets.only(top: topPadding),
+                      child: Row(
+                        children: [
+                          IconButton(
+                            icon: const Icon(
+                              Icons.arrow_back_ios_rounded,
+                              size: 18,
+                              color: Colors.white,
+                            ),
+                            onPressed: () => Navigator.of(context).pop(),
                           ),
-                          onPressed: () => Navigator.of(context).pop(),
-                        ),
-                        const Expanded(
-                          child: Text(
-                            'CALCULADORA CL\u00cdNICA',
-                            style: TextStyle(
-                              fontSize:      16,
-                              fontWeight:    FontWeight.w800,
-                              color:         Colors.white,
-                              letterSpacing: 0.4,
+                          const Expanded(
+                            child: Text(
+                              'CALCULADORA CL\u00cdNICA',
+                              style: TextStyle(
+                                fontSize:      16,
+                                fontWeight:    FontWeight.w800,
+                                color:         Colors.white,
+                                letterSpacing: 0.4,
+                              ),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
 
-              // ── BASE DA TELA: VAZIA ──────────────────────────────────────
-              // Nenhum widget, nenhuma barra Flutter sobreposta.
-              // A barra de fontes vive no DOM da WebView (JS injetado).
+                // ── BASE DA TELA: VAZIA ────────────────────────────────────
+                // Zero widgets Flutter abaixo do header.
+                // A barra retrátil de fontes vive no DOM JS (position:fixed).
 
-            ],
+              ],
+            ),
           ),
         ),
       ),
