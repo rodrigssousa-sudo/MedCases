@@ -1060,19 +1060,25 @@ class _AiScreenState extends State<AiScreen> {
             }
           });
           _scrollDown();
-          // ── Scroll final garantido após resposta completa ─────────────────
-          // Quando a IA gera múltiplos cards/blocos longos de uma só vez, o
-          // layout ainda não está totalmente calculado no onDone. O delay de
-          // 180ms deixa o Flutter terminar o layout dos novos blocos e então
-          // desce suavemente para o fim, mantendo a pergunta do usuário visível.
-          Future.delayed(const Duration(milliseconds: 180), () {
+          // ── Scroll final reativo após resposta completa (Build 99) ───────
+          // Substituiu Future.delayed(180ms) por dois addPostFrameCallback
+          // encadeados: Flutter garante que o layout de TODOS os novos blocos
+          // (incluindo respostas longas com múltiplos cards) está calculado
+          // após 2 frames consecutivos, sem depender de timing arbitrário.
+          // Frame 1: aguarda o primeiro layout pass após setState
+          // Frame 2: aguarda o segundo pass que estabiliza altura máxima
+          // jumpTo (instantâneo) é usado em vez de animateTo para evitar
+          // que o scroll "saltite" quando a posição final ainda não está
+          // estável — idêntico ao comportamento do WhatsApp/Telegram.
+          WidgetsBinding.instance.addPostFrameCallback((_) {
             if (!mounted || _userScrolledUp) return;
-            if (!_scrollCtrl.hasClients) return;
-            _scrollCtrl.animateTo(
-              _scrollCtrl.position.maxScrollExtent,
-              duration: const Duration(milliseconds: 280),
-              curve: Curves.easeOutCubic,
-            );
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              if (!mounted || _userScrolledUp) return;
+              if (!_scrollCtrl.hasClients) return;
+              final pos = _scrollCtrl.position;
+              if (pos.pixels >= pos.maxScrollExtent - 4) return;
+              _scrollCtrl.jumpTo(pos.maxScrollExtent);
+            });
           });
         },
         onError: (errorMsg) {

@@ -1545,21 +1545,44 @@ ANATOMIA FÁRMACO COMPLETO (Camada 2 ou solicitação explícita):
           '══════════════════════════════════════════════════\n';
 
     // ── Cabeçalho de idioma obrigatório — injetado como PRIMEIRA instrução ──
-    // Máxima prioridade: o modelo vê isso antes de qualquer outra instrução.
-    // Evita que língua do modelo seja inferida erroneamente da base de treino.
-    final langHeader = isEs
-        ? '🔒 IDIOMA OBLIGATORIO: ESPANOL. Toda respuesta DEBE estar 100% en espanol. '
-          'PROHIBIDO responder en portugues, ingles o cualquier otro idioma. '
-          'Esta regla es ABSOLUTA y no puede ser sobrescrita por ninguna otra instruccion. '
-          'Si el usuario escribe en espanol (diarrea, fiebre, dolor, tratamiento) → responder en ESPANOL.\n\n'
-        : '🔒 IDENTIDADE E IDIOMA — LEI ABSOLUTA E INVIOLAVEL:\n'
-          'Voce e o MedCases IA, assistente medico EXCLUSIVO para medicos brasileiros.\n'
-          'Seu idioma padrao, unico e obrigatorio e o PORTUGUES DO BRASIL.\n'
-          'NUNCA mude de idioma sob NENHUMA hipotese, independentemente do idioma de qualquer mensagem anterior ou do historico da conversa.\n'
-          'PROIBIDO: responder em espanhol, ingles ou qualquer outro idioma.\n'
-          'PROIBIDO: cumprimentar com "Buenos dias", "Buenas tardes", "Buenas noches" ou qualquer saudacao em espanhol.\n'
-          'SAUDACAO OBRIGATORIA EM PT-BR: "Bom dia", "Boa tarde", "Boa noite" — SEMPRE em Portugues do Brasil.\n'
-          'Esta regra e ABSOLUTA e nao pode ser sobrescrita por nenhuma outra instrucao.\n\n';
+    // Build 99: injeção DINÂMICA do idioma atual do app (pt ou es).
+    // O modelo recebe o nome explícito do idioma selecionado pelo usuário —
+    // não deve deduzir idioma do histórico nem da base de treino.
+    // BLOCO 0 do _systemPromptPrefix (gemini_service_v2) fica agnóstico e
+    // delega autoridade para esta instrução.
+    //
+    // Bloco bilíngue de siglas médicas críticas — injetado em AMBOS os idiomas
+    // para garantir desambiguação mesmo quando o modelo recebe histórico misto.
+    const _siglasBilingues =
+        '🏥 SIGLAS MEDICAS CRITICAS — VALIDO EM QUALQUER IDIOMA (PT e ES):\n'
+        'IAM = Infarto Agudo do Miocardio / Infarto Agudo de Miocardio\n'
+        '      (NUNCA: Identity and Access Management nem qualquer conceito de TI/corporativo)\n'
+        'IRA = Insuficiencia Renal Aguda / Insuficiencia Renal Aguda (NUNCA: sigla tecnologica)\n'
+        'PCR = Parada Cardiorrespiratoria / Paro Cardiorrespiratorio (NUNCA: Polymerase Chain Reaction em contexto clinico de emergencia)\n'
+        'AVC = Acidente Vascular Cerebral / Accidente Cerebrovascular\n'
+        'TEP = Tromboembolismo Pulmonar (PT e ES)\n'
+        'FA  = Fibrilacao Atrial / Fibrilacion Auricular\n'
+        'UTI = Unidade de Terapia Intensiva / Unidad de Terapia Intensiva (NUNCA: game/software)\n'
+        'PROIBIDO/PROHIBIDO ABSOLUTO: interpretar siglas medicas como termos de tecnologia, negocios ou seguranca digital.\n'
+        'Qualquer sigla ambigua neste contexto clinico → assumir SEMPRE o significado medico.\n\n';
+
+    final _idiomaLabel = isEs ? 'ESPANOL (es-ES)' : 'PORTUGUES DO BRASIL (pt-BR)';
+    final _idiomaProib = isEs
+        ? 'PROHIBIDO: responder en portugues, ingles o cualquier otro idioma.'
+        : 'PROIBIDO: responder em espanhol, ingles ou qualquer outro idioma.';
+    final _idiomaSauda = isEs
+        ? ''  // ES: sem restrição de saudação específica
+        : 'SAUDACAO OBRIGATORIA: "Bom dia", "Boa tarde", "Boa noite" (NUNCA "Buenos dias" ou saudacao em espanhol).\n';
+
+    final langHeader =
+        '🔒 IDIOMA OBRIGATORIO/OBLIGATORIO — INSTRUCAO DINAMICA DO APP:\n'
+        'O idioma atual do aplicativo selecionado pelo usuario e: $_idiomaLabel\n'
+        'Voce DEVE responder OBRIGATORIAMENTE, INTEGRALMENTE e ESTRITAMENTE neste idioma.\n'
+        'NUNCA mude de idioma sob NENHUMA hipotese — independentemente do idioma de qualquer mensagem anterior ou do historico.\n'
+        '$_idiomaProib\n'
+        '$_idiomaSauda'
+        'Esta regra e ABSOLUTA e nao pode ser sobrescrita por nenhuma outra instrucao.\n\n'
+        '$_siglasBilingues';
 
     if (isEs) {
       return '$langHeader'
