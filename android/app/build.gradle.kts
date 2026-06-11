@@ -8,13 +8,27 @@ plugins {
     id("com.google.gms.google-services")
 }
 
-// ── Leitura do key.properties (Kotlin DSL — Build 112) ───────────────────────
-// getProperty() retorna null quando a chave não existe (seguro vs. cast "as String"
-// que lança ClassCastException em tempo de configuração do Gradle).
-// ?.let { file(it) } converte o path String → File apenas se não for null.
-val keystoreProperties = Properties()
+// ── Leitura do key.properties (Kotlin DSL — Build 113) ───────────────────────
+// Validação defensiva: falha imediatamente com mensagem clara se o arquivo ou
+// qualquer propriedade estiver ausente — em vez de NullPointerException genérico
+// em ':app:signReleaseBundle' (BundleTool não recebe null sem avisar).
 val keystorePropertiesFile = rootProject.file("key.properties")
-if (keystorePropertiesFile.exists()) {
+val keystoreProperties = Properties()
+
+if (!keystorePropertiesFile.exists()) {
+    throw GradleException(
+        "\n\n" +
+        "╔══════════════════════════════════════════════════════════════╗\n" +
+        "║  ERRO CRÍTICO DE ASSINATURA — key.properties não encontrado  ║\n" +
+        "╚══════════════════════════════════════════════════════════════╝\n" +
+        "Arquivo esperado em: ${keystorePropertiesFile.absolutePath}\n" +
+        "Crie o arquivo 'key.properties' na pasta /android com:\n" +
+        "  storePassword=<senha>\n" +
+        "  keyPassword=<senha>\n" +
+        "  keyAlias=<alias>\n" +
+        "  storeFile=../upload-keystore.jks\n"
+    )
+} else {
     keystoreProperties.load(FileInputStream(keystorePropertiesFile))
 }
 
@@ -35,10 +49,36 @@ android {
 
     signingConfigs {
         create("release") {
-            keyAlias     = keystoreProperties.getProperty("keyAlias")
-            keyPassword  = keystoreProperties.getProperty("keyPassword")
-            storeFile    = keystoreProperties.getProperty("storeFile")?.let { file(it) }
-            storePassword = keystoreProperties.getProperty("storePassword")
+            // Lê cada propriedade individualmente e valida antes de atribuir.
+            // Qualquer null gera GradleException com o nome exato da chave faltante —
+            // impede NullPointerException silencioso no BundleTool durante signReleaseBundle.
+            val alias       = keystoreProperties.getProperty("keyAlias")
+            val keyPass     = keystoreProperties.getProperty("keyPassword")
+            val storePass   = keystoreProperties.getProperty("storePassword")
+            val storeFilePath = keystoreProperties.getProperty("storeFile")
+
+            val missing = listOfNotNull(
+                if (alias         == null) "keyAlias"       else null,
+                if (keyPass       == null) "keyPassword"    else null,
+                if (storePass     == null) "storePassword"  else null,
+                if (storeFilePath == null) "storeFile"      else null,
+            )
+            if (missing.isNotEmpty()) {
+                throw GradleException(
+                    "\n\n" +
+                    "╔══════════════════════════════════════════════════════════════╗\n" +
+                    "║  ERRO CRÍTICO DE ASSINATURA — propriedades ausentes          ║\n" +
+                    "╚══════════════════════════════════════════════════════════════╝\n" +
+                    "As seguintes chaves estão AUSENTES ou com nome errado em key.properties:\n" +
+                    "  ${missing.joinToString(", ")}\n" +
+                    "Arquivo lido: ${keystorePropertiesFile.absolutePath}\n"
+                )
+            }
+
+            keyAlias      = alias
+            keyPassword   = keyPass
+            storePassword = storePass
+            storeFile     = file(storeFilePath!!)
         }
     }
 
@@ -52,10 +92,9 @@ android {
 
     buildTypes {
         release {
-            // Build 104 — signingConfig aponta SEMPRE para a release config.
-            // Nunca assinar um release build com a debug key.
-            // Build 112 — keystoreProperties.getProperty() garante que a senha
-            // 'medcases2026' seja lida corretamente do key.properties sem cast.
+            // Build 104 — signingConfig aponta SEMPRE para release. Nunca debug key.
+            // Build 113 — validação defensiva garante que todas as props chegam
+            // não-nulas ao BundleTool (resolve NullPointerException em signReleaseBundle).
             signingConfig = signingConfigs.getByName("release")
             isMinifyEnabled = true
             isShrinkResources = true
