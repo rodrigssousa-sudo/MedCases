@@ -3067,15 +3067,12 @@ class AppProvider extends ChangeNotifier {
     // ── Reutiliza todo o pipeline de contexto do buildAIAnswer ─────────────
     // strictContextIsolation, globalLanguageLock, RAG retrieval, system prompt
     // — nada muda. Só o transporte (streaming vs. batch) é diferente.
+    // Build 111: _sessionMemory.reset() (memória clínica estruturada) é separado
+    // de _aiHistory (turnos da API). Resetar _aiHistory ao mudar de tema causava
+    // amnésia — o Gemini perdia o contexto conversacional. O system_instruction
+    // já tem todo o contexto clínico via RAG; o histórico de turnos só ajuda.
     final topicReset  = _sessionMemory.resetIfTopicChanged(input);
-    if (topicReset) {
-      // ── CONTEXT ISOLATION (Part A): novo tema → apaga histórico da API ────
-      // CRÍTICO: _aiHistory contém os turnos anteriores que são enviados à Gemini
-      // como `history`. Se não limpar aqui, o modelo recebe turnos sobre Cistite
-      // quando o usuário pergunta sobre Parkinson → alucinação clínica grave.
-      _aiHistory.clear();
-      debugPrint('[sendAiMessage] strictContextIsolation: tema mudou — _aiHistory LIMPO (amnésia total de contexto anterior)');
-    }
+    // NÃO limpar _aiHistory em topicReset — preserva contexto conversacional.
     final sessionLang   = _resolveSessionLang(input);
     final intent        = _classifyIntent(input);
     final expandedInput = topicReset ? input : _expandedQuery(input);
@@ -3158,26 +3155,13 @@ class AppProvider extends ChangeNotifier {
         if (chunk.isError) {
           // ── NETWORK SAFETY: erro de rede — limpa histórico contaminado ────
           // CRÍTICO: _aiHistory NÃO deve reter a troca anterior quando há falha
-          // de rede. Sem esta limpeza, a próxima consulta recebe contexto antigo
-          // e o modelo "alucina" respostas baseadas no caso anterior (ex: retorna
-          // Cetoacidose Diabética para uma pergunta sobre Tosse).
           if (completionFired) return;
           completionFired = true;
           _aiStreamActive = false;
           _aiStreamSub = null;
-          // Limpa o acumulador — nunca exibe texto parcial de resposta interrompida
-          accumulator.clear();
-          // Limpa o histórico se o erro for de conectividade (network/timeout)
-          // para evitar contaminação de contexto na próxima consulta
-          // Limpa histórico em qualquer erro de conectividade para evitar
-          // contaminação de contexto (bug: resposta anterior vaza para nova query)
-          final isConnErr = chunk.errorCode == 'network' ||
-              chunk.errorCode == 'timeout' ||
-              chunk.errorCode == 'stream_error';
-          if (isConnErr) {
-            _aiHistory.clear();
-            debugPrint('[sendAiMessage] histórico limpo — erro de rede: ${chunk.errorCode}');
-          }
+          accumulator.clear(); // descarta texto parcial — nunca exibir fragmento
+          // Build 111: preserva _aiHistory mesmo em erro de rede.
+          // Trocas anteriores bem-sucedidas continuam válidas para o próximo turno.
           final msg = GeminiServiceV2.errorMessage(chunk.errorCode!, _lang);
           onError(msg);
           return;
@@ -3207,14 +3191,14 @@ class AppProvider extends ChangeNotifier {
         }
       },
       onError: (e) {
-        // ── NETWORK SAFETY: exceção de stream — limpa histórico ───────────
+        // Erro de stream — descarta texto parcial mas PRESERVA histórico.
+        // Build 111: um erro de rede não invalida as trocas anteriores bem-sucedidas.
         debugPrint('[sendAiMessage] stream error: $e');
         if (completionFired) return;
         completionFired = true;
         _aiStreamActive = false;
         _aiStreamSub    = null;
         accumulator.clear();   // descarta texto parcial — nunca exibir
-        _aiHistory.clear();    // reseta contexto — evita contaminação futura
         onError(GeminiServiceV2.errorMessage('network', _lang));
       },
       onDone: () {
@@ -3273,14 +3257,8 @@ class AppProvider extends ChangeNotifier {
     //   2. Retrieval RAG usa APENAS a query pura (sem expansão por histórico)
     //   Isso previne que blocos farmacológicos/clínicos de respostas anteriores
     //   contaminem o novo caso (ex: "Betametasona" aparecendo num caso de TEP).
+    // Build 111: igual sendAiMessage — preserva _aiHistory em topicReset.
     final topicReset = _sessionMemory.resetIfTopicChanged(input);
-    if (topicReset) {
-      // ── CONTEXT ISOLATION (Part A): novo tema → apaga histórico da API ────
-      // CRÍTICO: mesma lógica de sendAiMessage — ao mudar de patologia,
-      // _aiHistory deve ser zerado antes de passar `history:` para Gemini.
-      _aiHistory.clear();
-      debugPrint('[buildAIAnswer] strictContextIsolation: tema mudou — _aiHistory LIMPO + memória e retrieval isolados');
-    }
 
     // ── Passo 0: globalLanguageLock — bloqueia idioma da sessão ──────────────
     // Detecta idioma da primeira mensagem e bloqueia para toda a sessão.
