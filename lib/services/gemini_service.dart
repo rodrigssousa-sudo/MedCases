@@ -511,19 +511,30 @@ class GeminiService {
         ? [{'google_search': {}}]
         : null;
 
+    // Build 113 — CORREÇÃO CRÍTICA: thinkingConfig: {thinkingBudget: 0} é
+    // INCOMPATÍVEL com Google Search Grounding (tools: [google_search]).
+    // A API Gemini rejeita a combinação com HTTP 400 silencioso, causando
+    // fallback sem system_instruction — o que explica o vazamento de metadados
+    // ("El idioma de la última pregunta...") e respostas enciclopédicas em inglês.
+    //
+    // Regra: thinkingConfig APENAS quando grounding está desativado.
+    // Com grounding ativo, omitir thinkingConfig — o modelo usa thinking padrão
+    // mas o system_instruction é sempre respeitado (sem bypass silencioso).
+    final generationConfig = <String, dynamic>{
+      'maxOutputTokens': maxTokens,
+      'temperature': 0.4,
+      'topP': 0.95,
+      'topK': 40,
+    };
+    // thinkingConfig só é seguro sem grounding (flash-lite não suporta a combo)
+    if (!useGrounding) {
+      generationConfig['thinkingConfig'] = {'thinkingBudget': 0};
+    }
+
     final bodyMap = <String, dynamic>{
       'system_instruction': {'parts': [{'text': systemPrompt}]},
       'contents': contents,
-      'generationConfig': {
-        'maxOutputTokens': maxTokens,
-        'temperature': 0.4,  // Respostas clínicas exigem maior determinismo
-        'topP': 0.95,
-        'topK': 40,
-        // thinkingBudget: 0 — desativa thinking tokens do Gemini 2.5 Flash.
-        // Sem isso, o modelo gasta tokens de "raciocínio" antes de responder,
-        // consumindo quota rapidamente e causando 429 em poucas consultas.
-        'thinkingConfig': {'thinkingBudget': 0},
-      },
+      'generationConfig': generationConfig,
       'safetySettings': [
         {'category': 'HARM_CATEGORY_HARASSMENT',        'threshold': 'BLOCK_NONE'},
         {'category': 'HARM_CATEGORY_HATE_SPEECH',       'threshold': 'BLOCK_NONE'},
