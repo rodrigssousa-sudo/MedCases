@@ -990,27 +990,35 @@ class _AiScreenState extends State<AiScreen> {
           // ── STREAM SANITIZER: expurga metadados antes de exibir ────────────
           // Remove "Confianza Clínica:", "El usuario solicita..." e variantes
           // que o modelo às vezes emite como primeiras linhas do stream.
-          final cleanedChunk = _stripMetadataHeaders(accumulated);
-          setState(() {
-            if (streamingMsgIdx == -1) {
-              // Primeiro chunk: substitui ThinkingBubble por bolha em streaming
-              _thinking = false;
-              _isStreaming = true;
-              _scrollGeneration++;
-              _lastAiIndex = _messages.length;
-              _messages.add(_ChatMsg(role: 'ai', text: cleanedChunk));
-              streamingMsgIdx = _messages.length - 1;
-            } else {
-              // Chunks subsequentes: atualiza texto da bolha existente in-place
-              _isStreaming = true;
-              _messages[streamingMsgIdx] = _ChatMsg.withId(
-                id: _messages[streamingMsgIdx].id,
-                role: 'ai',
-                text: cleanedChunk,
-              );
-            }
-          });
-          _scrollDown();
+          // Build 114: try-catch defensivo em torno de todo o bloco onChunk.
+          // Token SSE malformado/cortado não pode crashar o browser móvel —
+          // ignoramos silenciosamente e aguardamos o próximo chunk completo.
+          try {
+            final cleanedChunk = _stripMetadataHeaders(accumulated);
+            setState(() {
+              if (streamingMsgIdx == -1) {
+                // Primeiro chunk: substitui ThinkingBubble por bolha em streaming
+                _thinking = false;
+                _isStreaming = true;
+                _scrollGeneration++;
+                _lastAiIndex = _messages.length;
+                _messages.add(_ChatMsg(role: 'ai', text: cleanedChunk));
+                streamingMsgIdx = _messages.length - 1;
+              } else {
+                // Chunks subsequentes: atualiza texto da bolha existente in-place
+                _isStreaming = true;
+                _messages[streamingMsgIdx] = _ChatMsg.withId(
+                  id: _messages[streamingMsgIdx].id,
+                  role: 'ai',
+                  text: cleanedChunk,
+                );
+              }
+            });
+            _scrollDown();
+          } catch (_) {
+            // Chunk inválido: descartado silenciosamente.
+            // O próximo chunk acumulado substituirá com o texto correto.
+          }
         },
         onDone: (finalText) {
           if (!mounted) return;
@@ -3456,33 +3464,41 @@ class _AiBubbleState extends State<_AiBubble> {
     //
     // SOLUÇÃO: setState dentro de didUpdateWidget força o rebuild imediato
     // a cada chunk recebido, renderizando o texto crescente em tempo real.
-    setState(() {
-      _cachedBlocks = _computeBlocks(widget.text);
+    // Build 114: try-catch em torno do setState + _computeBlocks.
+    // Se um chunk SSE malformado explodir dentro de _computeBlocks,
+    // o setState nunca completa e o mobile browser não crasha.
+    try {
+      setState(() {
+        _cachedBlocks = _computeBlocks(widget.text);
 
-      // Durante streaming: garante que _visibleCount >= 1 assim que o
-      // primeiro bloco existe, mesmo que _startSequence ainda não rodou.
-      // Sem isso, o primeiro chunk ficava invisível (visibleCount=0).
-      if (widget.isStreaming && _cachedBlocks.isNotEmpty && _visibleCount < 1) {
-        _visibleCount = 1;
-      }
+        // Durante streaming: garante que _visibleCount >= 1 assim que o
+        // primeiro bloco existe, mesmo que _startSequence ainda não rodou.
+        // Sem isso, o primeiro chunk ficava invisível (visibleCount=0).
+        if (widget.isStreaming && _cachedBlocks.isNotEmpty && _visibleCount < 1) {
+          _visibleCount = 1;
+        }
 
-      // Quando novos blocos aparecem (quebras de parágrafo no stream),
-      // avança _visibleCount para revelar imediatamente — sem delay de animação.
-      // A animação de "revelação em sequência" só se aplica à resposta final,
-      // não ao texto chegando em tempo real.
-      if (widget.isStreaming && _cachedBlocks.length > _visibleCount) {
-        _visibleCount = _cachedBlocks.length;
-      }
+        // Quando novos blocos aparecem (quebras de parágrafo no stream),
+        // avança _visibleCount para revelar imediatamente — sem delay de animação.
+        // A animação de "revelação em sequência" só se aplica à resposta final,
+        // não ao texto chegando em tempo real.
+        if (widget.isStreaming && _cachedBlocks.length > _visibleCount) {
+          _visibleCount = _cachedBlocks.length;
+        }
 
-      // ── BUILD 101 FIX: garante visibilidade total ao fim do stream ────────
-      // Quando isStreaming muda de true → false (cursor removido), o
-      // _computeBlocks() pode gerar um nº diferente de blocos (sem o ▌).
-      // Garante que _visibleCount cobre TODOS os blocos finais — evita que
-      // o último bloco fique invisível se o count anterior era para blocos-com-cursor.
-      if (!widget.isStreaming && old.isStreaming && _cachedBlocks.isNotEmpty) {
-        _visibleCount = _cachedBlocks.length;
-      }
-    });
+        // ── BUILD 101 FIX: garante visibilidade total ao fim do stream ────────
+        // Quando isStreaming muda de true → false (cursor removido), o
+        // _computeBlocks() pode gerar um nº diferente de blocos (sem o ▌).
+        // Garante que _visibleCount cobre TODOS os blocos finais — evita que
+        // o último bloco fique invisível se o count anterior era para blocos-com-cursor.
+        if (!widget.isStreaming && old.isStreaming && _cachedBlocks.isNotEmpty) {
+          _visibleCount = _cachedBlocks.length;
+        }
+      });
+    } catch (_) {
+      // Falha de render silenciosa: mantém estado anterior da bolha intacto.
+      // O próximo chunk válido aciona novo didUpdateWidget e recupera a tela.
+    }
 
     // Scroll para o fim a cada chunk — texto cresce e médico acompanha
     if (widget.isStreaming && textChanged && widget.onBlockRevealed != null) {
@@ -3506,19 +3522,30 @@ class _AiBubbleState extends State<_AiBubble> {
   }
 
   List<String> _computeBlocks(String text) {
-    // Durante streaming: append cursor ▌ ao texto para feedback visual.
-    // O cursor é removido automaticamente quando isStreaming vai para false
-    // (didUpdateWidget regenera os blocos sem o cursor).
-    final displayText = widget.isStreaming ? '$text\u258c' : text;
+    // Build 114: try-catch defensivo — token SSE cortado no meio não pode
+    // derrubar o paint do browser móvel. Em caso de exceção, retorna o
+    // cache anterior (se existir) ou o texto bruto como bloco único.
+    try {
+      // Durante streaming: append cursor ▌ ao texto para feedback visual.
+      // O cursor é removido automaticamente quando isStreaming vai para false
+      // (didUpdateWidget regenera os blocos sem o cursor).
+      final displayText = widget.isStreaming ? '$text\u258c' : text;
 
-    // Durante streaming: sanitiza markdown parcial ANTES de processar.
-    // Evita exibir asteriscos soltos e marcadores incompletos enquanto a IA digita.
-    final safeText = widget.isStreaming
-        ? _sanitizePartialMarkdown(displayText)
-        : displayText;
+      // Durante streaming: sanitiza markdown parcial ANTES de processar.
+      // Evita exibir asteriscos soltos e marcadores incompletos enquanto a IA digita.
+      final safeText = widget.isStreaming
+          ? _sanitizePartialMarkdown(displayText)
+          : displayText;
 
-    final cleaned = _cleanAiText(safeText);
-    return _splitIntoBlocks(cleaned.isEmpty ? safeText.trim() : cleaned);
+      final cleaned = _cleanAiText(safeText);
+      return _splitIntoBlocks(cleaned.isEmpty ? safeText.trim() : cleaned);
+    } catch (_) {
+      // Token malformado ou meio-cortado: recuperação silenciosa.
+      // Preserva o último estado estável da tela — sem crash, sem tela branca.
+      if (_cachedBlocks.isNotEmpty) return _cachedBlocks;
+      final fallback = text.trim();
+      return fallback.isEmpty ? [] : [fallback];
+    }
   }
 
   /// Sanitiza markdown incompleto durante o streaming chunk a chunk.

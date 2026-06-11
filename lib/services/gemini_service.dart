@@ -517,19 +517,16 @@ class GeminiService {
     // fallback sem system_instruction — o que explica o vazamento de metadados
     // ("El idioma de la última pregunta...") e respostas enciclopédicas em inglês.
     //
-    // Regra: thinkingConfig APENAS quando grounding está desativado.
-    // Com grounding ativo, omitir thinkingConfig — o modelo usa thinking padrão
-    // mas o system_instruction é sempre respeitado (sem bypass silencioso).
+    // Build 114: thinkingConfig REMOVIDO DEFINITIVAMENTE.
+    // flash-lite não suporta thinkingConfig + tools: [google_search] no mesmo payload.
+    // A combinação gerava HTTP 400 silencioso → bypass do system_instruction → crashes Web.
+    // Omitir thinkingConfig completamente é o comportamento correto e estável.
     final generationConfig = <String, dynamic>{
       'maxOutputTokens': maxTokens,
       'temperature': 0.4,
       'topP': 0.95,
       'topK': 40,
     };
-    // thinkingConfig só é seguro sem grounding (flash-lite não suporta a combo)
-    if (!useGrounding) {
-      generationConfig['thinkingConfig'] = {'thinkingBudget': 0};
-    }
 
     final bodyMap = <String, dynamic>{
       'system_instruction': {'parts': [{'text': systemPrompt}]},
