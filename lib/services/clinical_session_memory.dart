@@ -151,10 +151,10 @@ class ClinicalSessionMemory {
     'e se', 'e caso', 'e quando', 'mas e', 'mas se',
     // ES
     'más detalles', 'más información', 'puedes detallar', 'explica mejor',
-    'continúa', 'continua', 'siguiente paso', 'cuál es la dosis',
+    'continúa', 'siguiente paso', 'cuál es la dosis',
     'cómo usar', 'cómo administrar', 'y el tratamiento', 'qué hacer',
     'por qué', 'cómo así', 'explica', 'detalla', 'y si', 'pero si',
-    'sí', 'si', 'no', 'ok', 'entendido', 'confirma', 'resumen',
+    'sí', 'si', 'no', 'entendido', 'resumen',
   };
 
   bool resetIfTopicChanged(String newQuery) {

@@ -2449,7 +2449,7 @@ String _stripMetadataHeaders(String accumulated) {
       r'|The\s+user\s+(?:is\s+asking|asks|wants|requests|provides|has\s+indicated|has\s+asked)'
       r'|The\s+(?:doctor|physician|clinician)\s+(?:is\s+asking|asks|wants|requests)'
       r'|Let\s+me\s+(?:think|analyze|structure|break|consider|address|provide|help)'
-      r'|I(?:\'ll|\'m|\s+will|\s+should|\s+need\s+to|\s+can)\s+(?:provide|address|help|structure|analyze|respond|answer|focus)'
+      r"|I(?:'ll|'m|\s+will|\s+should|\s+need\s+to|\s+can)\s+(?:provide|address|help|structure|analyze|respond|answer|focus)"
       r'|Okay[,.]?\s+(?:so|the|I|let|this)'
       r'|First[,.]?\s+(?:I|let|the|this)'
       r'|Looking\s+at\s+(?:the|this)'
