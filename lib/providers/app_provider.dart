@@ -3047,8 +3047,30 @@ class AppProvider extends ChangeNotifier {
       return false;
     }
 
+    // ── Build 112: Race-condition guard — primeira mensagem com Gemini ────────
+    // Problema: no ambiente web, _geminiConnected pode ser false no primeiro
+    // carregamento devido a race condition entre checkGeminiSession() (assíncrono)
+    // e o primeiro sendAiMessage(). Se tiver API Key mas _geminiConnected=false,
+    // tenta reconectar silenciosamente antes de cair no fallback legado.
+    // Isso garante que o system_instruction seja sempre enviado na PRIMEIRA chamada.
+    if (!_geminiConnected && GeminiService.hasApiKey) {
+      debugPrint('[sendAiMessage] Build 112: _geminiConnected=false mas apiKey presente — tentando reconectar...');
+      try {
+        final connected = await GeminiService.isConnected()
+            .timeout(const Duration(seconds: 4), onTimeout: () => false);
+        if (connected) {
+          final email = await GeminiService.connectedEmail() ?? '';
+          _setGeminiConnectionState(connected: true, email: email);
+          debugPrint('[sendAiMessage] Build 112: reconexão silenciosa OK — $email');
+        }
+      } catch (e) {
+        debugPrint('[sendAiMessage] Build 112: reconexão silenciosa falhou: $e');
+      }
+    }
+
     // ── Fallback: sem Gemini → usa pipeline legado (OpenAI / local) ────────
     // O buildAIAnswer() legado cuida de OpenAI e do contexto local.
+    // Build 112: só cai aqui se REALMENTE não há Gemini após tentativa de reconexão.
     if (!_geminiConnected || !GeminiService.hasApiKey) {
       _aiAnswerInProgress = true;
       try {

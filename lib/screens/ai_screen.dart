@@ -2435,6 +2435,8 @@ String _stripMetadataHeaders(String accumulated) {
   );
 
   // Regex 2: padrões complementares de abertura de linha (3ª pessoa / metadados)
+  // Build 112: expandido com padrões de "thinking aloud" em inglês que vazam
+  // quando o modelo copia tom enciclopédico de textos RAG injetados.
   result = result.replaceAll(
     RegExp(
       r'^[|\s]*(?:'
@@ -2445,6 +2447,13 @@ String _stripMetadataHeaders(String accumulated) {
       r'|El\s+usuario\s+(?:solicita|proporciona|pregunta|pide|quiere|busca|ha\s+(?:pedido|indicado)|solicit[oó])'
       r'|O\s+usu[aá]rio\s+(?:solicita|fornece|pergunta|pede|quer|busca|indicou|solicitou|informou|forneceu|est[aá]\s+perguntando)'
       r'|The\s+user\s+(?:is\s+asking|asks|wants|requests|provides|has\s+indicated|has\s+asked)'
+      r'|The\s+(?:doctor|physician|clinician)\s+(?:is\s+asking|asks|wants|requests)'
+      r'|Let\s+me\s+(?:think|analyze|structure|break|consider|address|provide|help)'
+      r'|I(?:\'ll|\'m|\s+will|\s+should|\s+need\s+to|\s+can)\s+(?:provide|address|help|structure|analyze|respond|answer|focus)'
+      r'|Okay[,.]?\s+(?:so|the|I|let|this)'
+      r'|First[,.]?\s+(?:I|let|the|this)'
+      r'|Looking\s+at\s+(?:the|this)'
+      r'|Based\s+on\s+(?:the|this|my)'
       r'|El\s+m[eé]dico\s+(?:solicita|pregunta|pide|quiere|ha\s+(?:pedido|indicado))'
       r'|O\s+m[eé]dico\s+(?:solicita|pergunta|pede|quer|solicitou)'
       r'|Para\s+proporcionar\s+una\s+respuesta'
@@ -2459,7 +2468,25 @@ String _stripMetadataHeaders(String accumulated) {
       r'|A\s+seguir\s+(?:apresentarei|descrevo|apresento)'
       r'|Baseado\s+(?:no|na|em)\s+(?:contexto|conversa|solicita|que\s+(?:o|foi))'
       r'|Basado\s+en\s+(?:el\s+contexto|la\s+conversaci[oó]n|la\s+solicitud|lo\s+que)'
+      r'|Vou\s+(?:estruturar|organizar|responder|formatar|abordar|analisar)'
+      r'|Preciso\s+(?:analisar|considerar|estruturar|organizar|fornecer)'
+      r'|Analisando\s+(?:o|a|os|as|esta|este|esse)\s+(?:caso|consulta|pedido|pergunta)'
+      r'|Pensando\s+(?:sobre|em|na|no)\s+(?:isso|esta|este|essa)'
       r').*$',
+      caseSensitive: false,
+      multiLine: true,
+    ),
+    '',
+  );
+
+  // Build 112: remove linhas que contêm APENAS frases de "thinking"
+  // sem conteúdo clínico (ex: "This is a case of heart failure." sem conduta)
+  result = result.replaceAll(
+    RegExp(
+      r'^(?:This\s+is\s+(?:a\s+case|an?\s+(?:urgent|emergency|case))\s+of|'
+      r'Here\s+is\s+(?:the|a|my)\s+(?:response|answer|clinical)|'
+      r'The\s+(?:response|answer|clinical\s+response)\s+(?:below|is|will)|'
+      r'I\s+have\s+(?:analyzed|reviewed|considered|structured)).*$',
       caseSensitive: false,
       multiLine: true,
     ),
@@ -3501,22 +3528,26 @@ class _AiBubbleState extends State<_AiBubble> {
   ///  • "- " sozinho no fim  → traço de lista sem texto
   ///  • "**texto" sem fechar → negrito não terminado quebra layout
   ///  • "### " sem título    → cabeçalho vazio
-  ///  • "🟥" / "⛔" sozinho  → emoji de card sem texto ainda → texto cru (Build 108)
-  ///  • "🟥 AMO" incompleto  → card parcialmente digitado → texto cru (Build 108)
+  ///  • "🟥" / "⛔" sozinho  → emoji de card sem texto ainda
+  ///  • "🟥 AMO" incompleto  → card parcialmente digitado
   ///
   /// Estratégia: inspeciona apenas a ÚLTIMA linha (fragmento em construção).
   /// Linhas anteriores já chegaram completas e não são alteradas.
   ///
-  /// Build 108 — STREAM TOLERANCE para tokens de card UI:
-  /// Se a última linha contém um emoji de card (🟥 ⛔ 📌 📚 🚨 💊) mas ainda
-  /// não terminou (sem \n), suprimimos temporariamente essa linha parcial para
-  /// evitar exibição de texto cru. O card correto aparece no próximo chunk
-  /// quando a linha estiver completa. Linhas anteriores completas já estão
-  /// sendo renderizadas corretamente pelo _AiBlockBubble.
+  /// Build 112 — REACTIVE CARD DETECTION (substitui supressão do Build 108):
+  /// Ao detectar emoji de card (🟥 ⛔ 📌 📚 🚨 💊) na última linha, NÃO suprimir.
+  /// Em vez disso, completar o token para que o _AiBlockBubble abra o container
+  /// do card IMEDIATAMENTE, mesmo com texto parcial — eliminando o "vazamento cru".
+  ///
+  /// Estratégia v2:
+  ///  • Emoji sozinho (sem texto) → preservar com placeholder mínimo "…"
+  ///    para que o parser reconheça como header e abra o card colorido.
+  ///  • Emoji + texto parcial curto → preservar como está (card abre imediatamente).
+  ///  • Apenas texto de "thinking" interno (sem emoji de card) antes do \n → suprimir.
   static String _sanitizePartialMarkdown(String text) {
     if (text.isEmpty) return text;
 
-    final lines  = text.split('\n');
+    final lines   = text.split('\n');
     final lastIdx = lines.length - 1;
     String last   = lines[lastIdx];
 
@@ -3526,21 +3557,30 @@ class _AiBubbleState extends State<_AiBubble> {
 
     final trimmedLast = last.trimLeft();
 
-    // ── Build 108: tokens de card UI parciais ─────────────────────────────
-    // Se a última linha começa com um emoji de card mas NÃO tem texto
-    // substantivo suficiente (< 8 chars após o emoji), suprimir temporariamente.
-    // Evita renderizar o emoji sozinho como texto cru entre cards.
-    // A linha será exibida corretamente no próximo chunk quando completar.
+    // ── Build 112: tokens de card UI — detecção reativa imediata ────────────
+    // Quando a última linha começa com um emoji de card, abrimos o container
+    // do card imediatamente — sem threshold de supressão.
+    // Se o emoji está totalmente sozinho (sem nenhum char após), injetamos
+    // um placeholder mínimo para que o _AiBlockBubble reconheça como header
+    // e instancie o card colorido antes do texto chegar.
     final cardEmojiRx = RegExp(r'^(🟥|⛔|📌|📚|🚨|💊)');
     if (cardEmojiRx.hasMatch(trimmedLast)) {
-      // Conta chars úteis após o emoji (emojis têm ~2 rune units)
       final afterEmoji = trimmedLast.replaceFirst(cardEmojiRx, '').trim();
-      if (afterEmoji.length < 6) {
-        // Linha ainda muito curta — suprime até o próximo chunk
-        last = '';
+      if (afterEmoji.isEmpty) {
+        // Emoji sozinho → preserva a linha com um espaço após o emoji para que
+        // o _AiBlockBubble reconheça o token e instancie o container do card.
+        // O texto real substituirá o espaço nos próximos chunks do stream.
+        // Não há artefato visual: o container aparece imediatamente mas vazio.
+        last = '$trimmedLast ';
       }
-      // Se já tem texto substantivo (>= 6 chars), deixa passar normalmente
-      // — o _AiBlockBubble abre o card com o conteúdo parcial disponível.
+      // Se já tem qualquer texto após o emoji, deixa passar normalmente.
+      // O _AiBlockBubble já abre o card com conteúdo parcial disponível.
+    }
+    // ── Supressão de pensamento interno vazado (linha sem emoji de card) ────
+    // Padrões de CoT que ainda podem aparecer na última linha durante streaming:
+    // ex: "Let me think", "I'll structure", "Okay, I need to"
+    else if (_looksLikeLeakedThought(trimmedLast)) {
+      last = ''; // suprimir linha — CoT não deve aparecer na UI
     }
     // Marcador de lista sozinho ("* ", "- ", "• " sem texto após)
     else if (RegExp(r'^[\*\-•]\s*$').hasMatch(trimmedLast)) {
@@ -3562,6 +3602,40 @@ class _AiBubbleState extends State<_AiBubble> {
     if (hasCursor) last = '$last\u258c';
     lines[lastIdx] = last;
     return lines.join('\n');
+  }
+
+  /// Detecta padrões de "pensamento interno" (CoT leaked) na última linha
+  /// do stream — expressões que indicam o modelo "pensando em voz alta".
+  /// Usado por _sanitizePartialMarkdown() para suprimir antes da exibição.
+  static bool _looksLikeLeakedThought(String line) {
+    if (line.isEmpty) return false;
+    final lower = line.toLowerCase();
+    // Padrões em inglês (vazamento de CoT interno do modelo)
+    if (lower.startsWith("let me ") ||
+        lower.startsWith("okay, ") ||
+        lower.startsWith("i'll ") ||
+        lower.startsWith("i need to ") ||
+        lower.startsWith("i should ") ||
+        lower.startsWith("i will ") ||
+        lower.startsWith("first, i") ||
+        lower.startsWith("the user ") ||
+        lower.startsWith("the doctor ") ||
+        lower.startsWith("this is a ") ||
+        lower.startsWith("looking at ")) {
+      return true;
+    }
+    // Padrões em português (meta-comentário de intenção)
+    if (lower.startsWith("o usuário ") ||
+        lower.startsWith("o médico ") ||
+        lower.startsWith("preciso ") ||
+        lower.startsWith("vou ") ||
+        lower.startsWith("deixa eu ") ||
+        lower.startsWith("primeiro, ") ||
+        lower.startsWith("pensando ") ||
+        lower.startsWith("analisando ")) {
+      return true;
+    }
+    return false;
   }
 
   void _startSequence() {

@@ -1614,6 +1614,8 @@ ANATOMIA FÁRMACO COMPLETO (Camada 2 ou solicitação explícita):
     // Build 105 — _siglasBilingues expandido com ICC, SCA, SEPSE, AVE, TEPA
     // Espelha a Matriz de Acrônimos do BLOCO 3 do _systemPromptPrefix (gemini_service_v2)
     // para garantir cobertura dupla: prefix layer + system prompt layer.
+    // Build 112: IC adicionado — INSUFICIÊNCIA CARDÍACA (nunca Interstitial Cystitis em inglês).
+    // Cobertura dupla: espelha BLOCO 3 do _systemPromptPrefix (gemini_service_v2).
     const _siglasBilingues =
         '🏥 SIGLAS MEDICAS CRITICAS — VALIDO EM QUALQUER IDIOMA (PT e ES):\n'
         'IAM  = Infarto Agudo do Miocardio / Infarto Agudo de Miocardio\n'
@@ -1634,7 +1636,11 @@ ANATOMIA FÁRMACO COMPLETO (Camada 2 ou solicitação explícita):
         '       RISCO: 🔴 VERMELHO — Emergencia\n'
         'SEPSE = Sepse / Choque Septico (PT e ES)\n'
         '        RISCO: 🔴 VERMELHO — Emergencia\n'
+        'IC   = Insuficiencia Cardiaca / Insuficiencia Cardíaca (PT e ES)\n'
+        '       (NUNCA: "Interstitial Cystitis", "Intensive Care" ou qualquer termo em ingles)\n'
+        '       RISCO: 🟠 LARANJA — Urgencia — responder em PT-BR/ES sobre manejo cardiaco\n'
         'ICC  = Insuficiencia Cardiaca Congestiva / Insuficiencia Cardíaca Congestiva\n'
+        '       (NUNCA: qualquer expansao em ingles)\n'
         '       RISCO: 🟠 LARANJA — Urgencia\n'
         'IRA  = Insuficiencia Renal Aguda / Insuficiencia Renal Aguda\n'
         '       RISCO: 🟠 LARANJA — Urgencia\n'
