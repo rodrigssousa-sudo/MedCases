@@ -1,5 +1,5 @@
-import java.util.Properties
 import java.io.FileInputStream
+import java.util.Properties
 
 plugins {
     id("com.android.application")
@@ -8,10 +8,14 @@ plugins {
     id("com.google.gms.google-services")
 }
 
-val keyProperties = Properties()
-val keyPropertiesFile = rootProject.file("key.properties")
-if (keyPropertiesFile.exists()) {
-    keyProperties.load(FileInputStream(keyPropertiesFile))
+// ── Leitura do key.properties (Kotlin DSL — Build 112) ───────────────────────
+// getProperty() retorna null quando a chave não existe (seguro vs. cast "as String"
+// que lança ClassCastException em tempo de configuração do Gradle).
+// ?.let { file(it) } converte o path String → File apenas se não for null.
+val keystoreProperties = Properties()
+val keystorePropertiesFile = rootProject.file("key.properties")
+if (keystorePropertiesFile.exists()) {
+    keystoreProperties.load(FileInputStream(keystorePropertiesFile))
 }
 
 android {
@@ -31,12 +35,10 @@ android {
 
     signingConfigs {
         create("release") {
-            if (keyPropertiesFile.exists()) {
-                keyAlias = keyProperties["keyAlias"] as String
-                keyPassword = keyProperties["keyPassword"] as String
-                storeFile = file(keyProperties["storeFile"] as String)
-                storePassword = keyProperties["storePassword"] as String
-            }
+            keyAlias     = keystoreProperties.getProperty("keyAlias")
+            keyPassword  = keystoreProperties.getProperty("keyPassword")
+            storeFile    = keystoreProperties.getProperty("storeFile")?.let { file(it) }
+            storePassword = keystoreProperties.getProperty("storePassword")
         }
     }
 
@@ -50,12 +52,10 @@ android {
 
     buildTypes {
         release {
-            // Build 104 — Bug 2 fix: signingConfig aponta SEMPRE para a release config.
-            // REMOVIDO o fallback silencioso para signingConfigs.debug que causava
-            // rejeição pelo Google Play Console ("uploaded debug APK/AAB").
-            // Se key.properties não existir (ex: path incorreto na CI/CD), o build
-            // FALHARÁ explicitamente com erro de assinatura — comportamento correto:
-            // nunca assinar um release build com a debug key.
+            // Build 104 — signingConfig aponta SEMPRE para a release config.
+            // Nunca assinar um release build com a debug key.
+            // Build 112 — keystoreProperties.getProperty() garante que a senha
+            // 'medcases2026' seja lida corretamente do key.properties sem cast.
             signingConfig = signingConfigs.getByName("release")
             isMinifyEnabled = true
             isShrinkResources = true
