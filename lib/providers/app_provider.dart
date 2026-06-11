@@ -1619,6 +1619,24 @@ class AppProvider extends ChangeNotifier {
     _sessionLockedLang = null; // reset language lock ao iniciar nova sessão
   }
 
+  /// Build 110 — Reconstrói _aiHistory a partir de uma lista de mensagens
+  /// restauradas (ex: sessão do histórico de chats).
+  /// Recebe lista de {role: 'user'/'assistant', content: '...'}.
+  /// Limita a 10 entradas (5 pares) para não inflar o contexto.
+  void rebuildAiHistoryFromMessages(List<Map<String, String>> messages) {
+    cancelAiStream();
+    _aiHistory.clear();
+    // Filtra apenas pares válidos user/assistant com conteúdo
+    final valid = messages
+        .where((m) => (m['role'] == 'user' || m['role'] == 'assistant') &&
+            (m['content'] ?? '').isNotEmpty)
+        .toList();
+    // Pega as últimas 10 entradas (5 pares) para não exceder o limite da janela
+    final window = valid.length > 10 ? valid.sublist(valid.length - 10) : valid;
+    _aiHistory.addAll(window);
+    debugPrint('[AppProvider] rebuildAiHistoryFromMessages: ${_aiHistory.length} entradas restauradas no contexto');
+  }
+
   /// Reset completo da sessão clínica da IA — usado pelo double-tap no FAB.
   ///
   /// Vai além de clearAiHistory(): também zera a memória clínica estruturada
@@ -3219,8 +3237,8 @@ class AppProvider extends ChangeNotifier {
           _aiStreamSub    = null;
           onDone(finalText);
         } else {
-          // Stream fechou vazio — limpa histórico (possível falha silenciosa de rede)
-          _aiHistory.clear();
+          // Stream fechou vazio — NÃO limpa histórico (Build 110: manter contexto)
+          // Um stream vazio pontual não invalida o histórico da sessão.
           _aiStreamActive = false;
           _aiStreamSub    = null;
           onError(_lang == 'es'

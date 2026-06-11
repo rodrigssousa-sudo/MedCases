@@ -405,25 +405,15 @@ class GeminiServiceV2 {
   }) async {
     if (controller.isClosed) return;
 
-    // ── Passo 1: Classificação de contexto ───────────────────────────────────
-    List<Map<String, String>> windowedHistory;
-
-    if (history.isEmpty) {
-      // Primeira mensagem da sessão — sem histórico, sem necessidade de classify
-      windowedHistory = [];
-      _log('[GeminiV2] primeira pergunta — histórico vazio');
-    } else {
-      final contextLabel = await _classifyContext(
-        apiKey: apiKey,
-        history: history,
-        userMessage: userMessage,
-      );
-      windowedHistory = _buildContextWindow(history, contextLabel);
-      _log(
-        '[GeminiV2] context=$contextLabel → '
-        '${windowedHistory.length ~/ 2} troca(s) no payload',
-      );
-    }
+    // ── Passo 1: Janela de histórico ─────────────────────────────────────────
+    // Build 110: BYPASS do _classifyContext — o classificador era o ponto de
+    // falha da memória. Ele podia retornar 'NOVO' para follow-ups legítimos
+    // ('Mais detalhes', 'E a dose?') e descartar o histórico inteiro.
+    // Solução: sempre passa o histórico janelado. O Gemini com o system prompt
+    // já tem contexto suficiente para distinguir continuidade de novo tema.
+    // O _classifyContext ainda existe para uso futuro mas não bloqueia mais o histórico.
+    final windowedHistory = _buildContextWindow(history, 'MÉDICO');
+    _log('[GeminiV2] histórico → ${windowedHistory.length ~/ 2} troca(s) no payload (classifier bypass Build 110)');
 
     // ── Passo 2: Stream com histórico calibrado ───────────────────────────────
     try {

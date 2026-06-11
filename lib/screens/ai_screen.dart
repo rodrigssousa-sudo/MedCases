@@ -820,7 +820,7 @@ class _AiScreenState extends State<AiScreen> {
 
   /// Restaura uma sessão do histórico para o chat atual.
   void _restoreSession(_ChatSession session, AppProvider p) {
-    // Build 107 FIX: cancela streaming ativo para liberar os guards
+    // Build 107: cancela streaming ativo para liberar os guards
     p.cancelAiStream();
     setState(() {
       _messages.clear();
@@ -830,16 +830,20 @@ class _AiScreenState extends State<AiScreen> {
       _userScrolledUp = false;
       _restoredSessionId = session.id;
       _hasNewMessageAfterRestore = false;
-      // Reseta guards — session restore deve sempre permitir novo envio
       _thinking   = false;
       _isStreaming = false;
       _sendGuard  = false;
     });
-    p.clearAiHistory();
-    // Recria o contexto de IA a partir das mensagens restauradas
-    for (final msg in session.messages) {
-      if (msg.role != 'ai') continue; // contexto é construído internamente no provider
-    }
+    // Build 110 FIX: reconstrói _aiHistory a partir das mensagens restauradas.
+    // clearAiHistory() limpava o histórico sem repopular — a próxima mensagem
+    // enviada após restaurar uma sessão chegava ao Gemini sem nenhum contexto.
+    p.rebuildAiHistoryFromMessages(session.messages
+        .where((m) => m.role == 'user' || m.role == 'ai')
+        .map((m) => {
+              'role':    m.role == 'ai' ? 'assistant' : 'user',
+              'content': m.text,
+            })
+        .toList());
     _scrollDown(force: true);
   }
 
