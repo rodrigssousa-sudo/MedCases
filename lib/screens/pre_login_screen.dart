@@ -33,7 +33,7 @@ class _PreLoginPreviewState extends State<PreLoginPreview> {
   String _lang     = 'es';
 
   bool   get _isEs     => _lang == 'es';
-  String get _ctaLabel => _isEs ? 'Crear mi cuenta' : 'Criar minha conta';
+  String get _ctaLabel => _isEs ? 'Crear mi cuenta gratuita' : 'Criar minha conta gratuita';
 
   // ── Dados protocolos — mesmos dados, novo layout visual ──────────────────
   static const _protocols = [
@@ -149,10 +149,10 @@ class _PreLoginPreviewState extends State<PreLoginPreview> {
               // BLOCO 3 — CONTEÚDO: Protocolos Clínicos
               // ══════════════════════════════════════════════════════════════
               _SectionTitle(
-                label: _isEs ? 'PROTOCOLOS DE ESTUDIO' : 'PROTOCOLOS DE ESTUDO',
+                label: _isEs ? 'PROTOCOLOS CLÍNICOS' : 'PROTOCOLOS CLÍNICOS',
                 sub: _isEs
-                    ? 'Para consulta y referencia educacional'
-                    : 'Para consulta e referência educacional',
+                    ? 'Actualizados con evidencia reciente'
+                    : 'Atualizados com evidência recente',
                 accentColor: _kGreenLight,
                 iconData: Icons.science_outlined,
               ),
@@ -167,7 +167,7 @@ class _PreLoginPreviewState extends State<PreLoginPreview> {
               // BLOCO 4 — BASE: Casos de Alta Gravidade (blur/cadeado)
               // ══════════════════════════════════════════════════════════════
               _SectionTitle(
-                label: _isEs ? 'ALTA GRAVEDAD' : 'ALTA GRAVIDADE',
+                label: _isEs ? 'ALTA GRAVIDADE' : 'ALTA GRAVIDADE',
                 sub: _isEs
                     ? 'Casos de máxima urgencia clínica'
                     : 'Casos de máxima urgência clínica',
@@ -244,7 +244,7 @@ class _DarkHeader extends StatelessWidget {
                     fontSize: 15, fontWeight: FontWeight.w700,
                     color: _kText, letterSpacing: -0.2)),
                 Text(
-                  isEs ? 'Apoyo educacional' : 'Apoio educacional',
+                  isEs ? 'Acceso de muestra' : 'Acesso demonstrativo',
                   style: const TextStyle(
                     fontSize: 10, fontWeight: FontWeight.w400,
                     color: _kTextMid)),
@@ -515,9 +515,9 @@ class _IaBlockDark extends StatelessWidget {
   const _IaBlockDark({required this.onTap, required this.isEs});
 
   static const _prompts = [
-    'Vasopresores: mecanismo y farmacología',
-    'Criterios diagnósticos de sepsis',
-    'Fisiopatología del STEMI',
+    'Dosis de noradrenalina en choque séptico',
+    'Protocolo de sepsis en UCI',
+    'Manejo inicial de STEMI',
   ];
 
   @override
@@ -586,14 +586,14 @@ class _IaBlockDark extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    isEs ? 'Apoyo Educacional con IA' : 'Apoio Educacional com IA',
+                    isEs ? 'Asistente IA Clínico' : 'Assistente IA Clínico',
                     style: const TextStyle(
                       fontSize: 15, fontWeight: FontWeight.w700,
                       color: _kText, letterSpacing: -0.2)),
                   Text(
                     isEs
-                        ? 'Referências médicas para estudio'
-                        : 'Referências médicas para estudo',
+                        ? 'Respuestas basadas en evidencia'
+                        : 'Respostas baseadas em evidências',
                     style: const TextStyle(
                       fontSize: 10.5, color: _kTextMid)),
                 ],
@@ -643,7 +643,7 @@ class _IaBlockDark extends StatelessWidget {
                 ),
                 const SizedBox(width: 6),
                 Text(
-                  isEs ? 'Referencia educacional:' : 'Referência educacional:',
+                  isEs ? 'IA MedCases responde:' : 'IA MedCases responde:',
                   style: const TextStyle(
                     fontSize: 10, fontWeight: FontWeight.w600,
                     color: _kNeon)),
@@ -651,8 +651,8 @@ class _IaBlockDark extends StatelessWidget {
               const SizedBox(height: 7),
               Text(
                 isEs
-                  ? 'Estudio de referencia: vasopresores en shock circulatorio — mecanismo de acción, rangos de dosis según literatura y monitoreo hemodinámico...'
-                  : 'Referência de estudo: vasopressores no choque circulatório — mecanismo de ação, faixas de dose conforme literatura e monitoramento hemodinâmico...',
+                  ? 'Noradrenalina 0,1–0,2 μg/kg/min IV em bomba. Titular conforme PAM ≥ 65 mmHg. Acesso venoso central preferencial...'
+                  : 'Noradrenalina 0,1–0,2 μg/kg/min IV em bomba. Titular conforme PAM ≥ 65 mmHg. Acesso venoso central preferencialmente...',
                 style: const TextStyle(
                   fontSize: 12, color: _kText,
                   fontWeight: FontWeight.w400, height: 1.55),
@@ -714,7 +714,7 @@ class _IaBlockDark extends StatelessWidget {
                 const SizedBox(width: 8),
                 Expanded(
                   child: Text(
-                    isEs ? 'Explorar tema médico...' : 'Explorar tema médico...',
+                    isEs ? 'Consultar caso clínico...' : 'Consultar caso clínico...',
                     style: const TextStyle(
                       fontSize: 12, color: _kTextDim)),
                 ),
@@ -764,8 +764,8 @@ class _MetricsRow extends StatelessWidget {
           icon: Icons.menu_book_rounded,
           iconBg: const Color(0xFF0D2018),
           stat: '+2.400',
-          title: isEs ? 'Referencias Médicas' : 'Referências Médicas',
-          subtitle: isEs ? 'Para estudio clínico' : 'Para estudo clínico',
+          title: isEs ? 'Condutas Médicas' : 'Condutas Médicas',
+          subtitle: isEs ? 'Guiadas por IA' : 'Guiadas por IA',
           trailingIcon: Icons.trending_up_rounded,
         ),
       ),
@@ -776,8 +776,8 @@ class _MetricsRow extends StatelessWidget {
           icon: Icons.verified_rounded,
           iconBg: const Color(0xFF0D2018),
           stat: isEs ? '100%' : '100%',
-          title: isEs ? 'Revisado' : 'Revisado',
-          subtitle: isEs ? 'Por especialistas' : 'Por especialistas',
+          title: isEs ? 'Actualización' : 'Atualização',
+          subtitle: isEs ? 'Por comité experto' : 'Contínua por experts',
           trailingIcon: Icons.shield_rounded,
         ),
       ),
@@ -889,7 +889,7 @@ class _CtaDark extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: const Color(0xFF0F1116),
+      color: const Color(0xFF061A12),
       padding: EdgeInsets.fromLTRB(
         20, 14, 20, MediaQuery.of(context).padding.bottom + 14),
       child: Column(mainAxisSize: MainAxisSize.min, children: [
@@ -919,8 +919,8 @@ class _CtaDark extends StatelessWidget {
         const SizedBox(height: 6),
         Text(
           isEs
-            ? 'Plataforma educacional · Para profissionais de saúde'
-            : 'Plataforma educacional · Para profissionais de saúde',
+            ? 'Acceso gratuito · Aprobado por administrador'
+            : 'Acesso gratuito · Aprovado pelo administrador',
           style: const TextStyle(
             fontSize: 10, color: _kTextMid,
             fontWeight: FontWeight.w400),
