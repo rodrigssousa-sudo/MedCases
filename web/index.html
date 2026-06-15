@@ -685,7 +685,7 @@
         sessionStorage.setItem('_mc_rc', String((_now - _rt < 4000) ? _rc + 1 : 0));
         if (_rc >= 2) {
           sessionStorage.setItem('_mc_rc', '0');
-          try { localStorage.setItem('medcases_app_version', '6.1.0'); } catch(e2) {}
+          try { localStorage.setItem('medcases_app_version', '6.1.0-build114'); } catch(e2) {}
           if ('serviceWorker' in navigator) {
             navigator.serviceWorker.getRegistrations()
               .then(function(r) { r.forEach(function(s) { s.unregister(); }); })
@@ -700,8 +700,8 @@
       } catch(e) {}
     })();
 
-    var APP_VERSION = '6.2.3';
-    var SW_URL      = 'pwa-sw.js?v=6.2.3';
+    var APP_VERSION = '6.1.0-build114';
+    var SW_URL      = 'pwa-sw.js?v=6.1.0-build114';
 
     // ── Remoção do splash ────────────────────────────────────────────
     var _splashRemoved = false;
