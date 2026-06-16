@@ -1,14 +1,14 @@
 /**
- * MedCases Pro — PWA Service Worker v9.0.0
- * Build 115: cache bumped — corrige asteriscos vazados e fragmentação de blocos no stream.
+ * MedCases Pro — PWA Service Worker v10.0.0
+ * Build 116: bloco único contínuo, smart scroll, supressão de rótulos de modo, flutter_markdown.
  * Estratégia: network-first para main.dart.js e index.html (sempre frescos)
  *             cache-first para assets estáticos, ícones e fontes.
  */
 
 'use strict';
 
-const SW_VERSION   = '9.0.0';
-const CACHE_APP    = 'medcases-app-v9.0.0';   // ← Build 115: força limpeza total
+const SW_VERSION   = '10.0.0';
+const CACHE_APP    = 'medcases-app-v10.0.0';  // ← Build 116: força limpeza total
 const CACHE_FONTS  = 'medcases-fonts-v2';
 
 // Assets pré-cacheados no install (críticos para o boot)
@@ -69,7 +69,7 @@ self.addEventListener('activate', event => {
     caches.keys()
       .then(keys => Promise.all(
         keys.filter(k => !keep.includes(k)).map(k => {
-          console.log('[SW v9] deletando cache antigo:', k);
+          console.log('[SW v10] deletando cache antigo:', k);
           return caches.delete(k);
         })
       ))

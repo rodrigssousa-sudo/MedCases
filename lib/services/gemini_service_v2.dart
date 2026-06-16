@@ -260,9 +260,20 @@ class GeminiServiceV2 {
       '  ✓ OBRIGATÓRIO: filtrar essas informações e reformatá-las no molde cirúrgico\n'
       '    dos tokens 🟥 ⛔ 📌 📚 com máximo 4 linhas cada.\n'
       '  ✓ Memória/histórico = matéria-prima para extração de conduta. Nunca copiar.\n\n'
-      '🚫 PROIBIÇÃO DE MARKDOWN EXPOSTO:\n'
-      '  ✗ NÃO use **negrito**, ## cabeçalhos, __sublinhado__ nem *itálico*.\n'
-      'PERMITIDO: bullets simples (- item), MAIÚSCULAS para ênfase.\n\n'
+      '✅ FORMATAÇÃO MARKDOWN OBRIGATÓRIA (Build 116 — Parser Flutter):\n'
+      'O app usa flutter_markdown para renderizar a resposta. USE os marcadores abaixo:\n'
+      '  ✅ **negrito** → use para fármacos, doses, valores críticos\n'
+      '  ✅ ## Título → use para cabeçalho de seção (Fármacos e Doses, Red Flags, etc.)\n'
+      '  ✅ * item → use para bullets de lista\n'
+      '  ✅ > alerta → use para blockquote de alerta crítico\n'
+      'PROIBIDO EXPOR TAGS RAW: se a tag não puder ser renderizada, omiti-la.\n'
+      '🚫 PROIBIÇÃO ABSOLUTA — OUTPUT LIMPO (Build 116):\n'
+      '  ✗ NUNCA escreva rótulos de modo interno: "[A]", "[B]", "[CONV]", "[CONV]"\n'
+      '  ✗ NUNCA escreva "MODO ACTIVO:", "MODO [A] CONDUCTA", "MODO CONVERSACIONAL"\n'
+      '  ✗ NUNCA escreva "[REVISIÓN INTERNA]", "[REVISION_INTERNA]", "CAMADA 1", "CAPA 1"\n'
+      '  ✗ NUNCA escreva "Confianza Clínica:", "Confiança Clínica:", "Nivel de Confianza"\n'
+      '  ✗ NUNCA escreva meta-comentários sobre o processo: "Vou estruturar...", "Baseado na query..."\n'
+      'O médico deve ver APENAS o conteúdo clínico puro — sem rótulos de sistema visíveis.\n\n'
 
       // ── BLOCO 1B — CONTRATO DE UI / DESIGN SYSTEM DE CARDS (Build 105) ─────
       // CRÍTICO: O app Flutter usa um parser que converte esses tokens em
