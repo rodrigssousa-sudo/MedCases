@@ -332,21 +332,29 @@ class _AiScreenState extends State<AiScreen> {
         : '$period$nameStr.\n\nSou o MedCases IA. Como posso te ajudar hoje?';
   }
 
+  // ── Named listener refs — necessários para removeListener() no dispose() ──
+  // Build 118: listeners anônimos (lambdas) não podem ser removidos via
+  // removeListener() porque cada closure é uma instância diferente.
+  // Convertidos para métodos nomeados para remoção determinística.
+  void _onFocusChange() {
+    if (mounted) {
+      setState(() => _hasFocus = _focusNode.hasFocus);
+      // Fix #5: propaga foco ao FAB central (main.dart oculta o botão)
+      AiScreen.chatKeyboardOpen.value = _focusNode.hasFocus;
+    }
+  }
+
+  void _onQueryChange() {
+    if (mounted && _queryCtrl.text.isNotEmpty && _hasFocus) {
+      setState(() {});
+    }
+  }
+
   @override
   void initState() {
     super.initState();
-    _focusNode.addListener(() {
-      if (mounted) {
-        setState(() => _hasFocus = _focusNode.hasFocus);
-        // Fix #5: propaga foco ao FAB central (main.dart oculta o botão)
-        AiScreen.chatKeyboardOpen.value = _focusNode.hasFocus;
-      }
-    });
-    _queryCtrl.addListener(() {
-      if (mounted && _queryCtrl.text.isNotEmpty && _hasFocus) {
-        setState(() {});
-      }
-    });
+    _focusNode.addListener(_onFocusChange);
+    _queryCtrl.addListener(_onQueryChange);
     // Listener de scroll: detecta se usuário scrollou para cima
     _scrollCtrl.addListener(_onScroll);
     // Home V2: escuta pendingQuery em tempo real — dispara sempre que a Home
@@ -654,21 +662,58 @@ class _AiScreenState extends State<AiScreen> {
 
   @override
   void dispose() {
+    // ── Build 118: dispose() hardening — Zero Memory Leak ─────────────────
+    //
+    // ORDEM CRÍTICA:
+    //   1. Cancelar streams/STT ativos (fecha canal de áudio do microfone)
+    //   2. Remover todos os listeners por referência nomeada
+    //   3. Parar e liberar TTS com guard de inicialização
+    //   4. Dispose de controllers e FocusNodes
+    //   5. Limpar ValueNotifiers estáticos do shell
+    //   6. super.dispose() sempre por último
+
+    // ── 1. STT: fecha canal de áudio se microfone ainda ativo ──────────────
+    // Evita que o microfone fique aberto em celulares antigos após trocar de tela.
+    if (_sttListening) {
+      SttHelper.stop(); // fire-and-forget — não awaita em dispose()
+    }
+
+    // ── 2. Remover listeners por referência nomeada ─────────────────────────
+    // Build 118: antes usavam lambdas anônimas que NÃO podiam ser removidas.
+    // Agora usam _onFocusChange / _onQueryChange (métodos nomeados).
+    _focusNode.removeListener(_onFocusChange);
+    _queryCtrl.removeListener(_onQueryChange);
     _scrollCtrl.removeListener(_onScroll);
     AiScreen.pendingQuery.removeListener(_onPendingQuery);
     AiScreen.pendingHistory.removeListener(_onPendingHistory);
+
+    // ── 3. TTS: para reprodução e limpa handlers antes de liberar ──────────
+    // Guard: _tts é late final — inicializado de forma async em _initTts().
+    // Se dispose() disparar antes de _initTts() completar (ex: navigação rápida),
+    // acessar _tts causaria LateInitializationError. Usamos _ttsReady como sentinela.
+    if (_ttsReady) {
+      _tts.stop();
+      // Limpa handlers para desancorar closures e prevenir callbacks pós-dispose
+      _tts.setCompletionHandler(null);
+      _tts.setCancelHandler(null);
+      _tts.setErrorHandler(null);
+    }
+
+    // ── 4. Dispose de controllers e FocusNode ─────────────────────────────
     _queryCtrl.dispose();
     _scrollCtrl.dispose();
     _focusNode.dispose();
-    _tts.stop();
-    // Limpa callbacks do shell AppBar — widget desmontado
-    AiScreen.clearChatCallback.value   = null;
-    AiScreen.openHistoryCallback.value = null;
+
+    // ── 5. Limpa ValueNotifiers estáticos do shell AppBar ──────────────────
+    // Callbacks do widget desmontado — evita referências mortas no shell.
+    AiScreen.clearChatCallback.value    = null;
+    AiScreen.openHistoryCallback.value  = null;
     AiScreen.openSettingsCallback.value = null;
     AiScreen.hasMessagesNotifier.value  = false;
     AiScreen.historyCountNotifier.value = 0;
     AiScreen.aiConnectedNotifier.value  = false;
-    AiScreen.chatKeyboardOpen.value     = false; // Fix #5: limpa ao desmontar
+    AiScreen.chatKeyboardOpen.value     = false;
+
     super.dispose();
   }
 
@@ -3047,14 +3092,83 @@ List<String> _splitIntoBlocks(String text) {
   return merged;
 }
 
+// ─────────────────────────────────────────────────────────────────────────────
+// SMART TEXT-WRAP — Build 118
+//
+// Substitui o espaço simples entre número e unidade médica por NBSP (\u00A0)
+// para que doses clínicas nunca quebrem de linha de forma separada.
+//
+// Exemplos protegidos:
+//   "50 mg"        → "50\u00A0mg"
+//   "0.5 mg/kg"    → "0.5\u00A0mg/kg"
+//   "120 mg/kg/dia"→ "120\u00A0mg/kg/dia"
+//   "120/80 mmHg"  → "120/80\u00A0mmHg"
+//   "FC 98"        → "FC\u00A098"
+//   "PA 120/80"    → "PA\u00A0120/80"
+//   "SpO₂ 98%"     → "SpO₂\u00A098%"
+//
+// Regex cobre:
+//   • Grupo 1 (número antes): dígitos (com fracionário / slash) + espaço + unidade
+//   • Grupo 2 (sigla médica antes): FC|PA|SpO₂|PAS|PAD|FR|Sat|PaCO₂|PaO₂
+//     seguido de espaço + número
+// ─────────────────────────────────────────────────────────────────────────────
+String _applyMedicalNbsp(String text) {
+  const nbsp = '\u00A0';
+
+  // Padrão 1: número [fracionário/slash] + ESPAÇO + unidade médica
+  // Ex: 50 mg, 0.5 mcg/kg, 500 mg/m², 120/80 mmHg, 2 g/kg/dia
+  text = text.replaceAllMapped(
+    RegExp(
+      r'(\b\d+(?:[.,/]\d+)*)\s'
+      r'(mg(?:/kg(?:/(?:dia|day|d))?)?'
+      r'|mcg(?:/kg(?:/(?:dia|day|d))?)?'
+      r'|µg(?:/kg(?:/(?:dia|day|d))?)?'
+      r'|g(?:/kg(?:/(?:dia|day|d))?)?'
+      r'|kg(?:/m²)?'
+      r'|ml(?:/kg(?:/h)?)?'
+      r'|mEq(?:/L|/kg)?'
+      r'|mmol(?:/L)?'
+      r'|mmHg'
+      r'|cmH₂O|cmH2O'
+      r'|UI(?:/kg)?'
+      r'|U(?:/kg)?'
+      r'|%'
+      r'|x\/min|\/min'
+      r'|bpm'
+      r'|h\b|hora[s]?\b'
+      r'|min\b'
+      r'|dias?\b|days?\b'
+      r'|semanas?\b'
+      r'|comprimidos?\b|comp\b'
+      r'|amp\b|frascos?\b'
+      r'|L(?:/min|/h)?'
+      r')',
+      caseSensitive: false,
+    ),
+    (m) => '${m.group(1)}$nbsp${m.group(2)}',
+  );
+
+  // Padrão 2: sigla clínica + ESPAÇO + número
+  // Ex: FC 98, PA 120/80, SpO₂ 98, PAS 140, FR 18
+  text = text.replaceAllMapped(
+    RegExp(
+      r'\b(FC|PA|PAS|PAD|FR|Sat|SpO[₂2]|PaCO[₂2]|PaO[₂2]|PCO[₂2]|PANI|HGT|GCS)\s'
+      r'(\d)',
+      caseSensitive: true,
+    ),
+    (m) => '${m.group(1)}$nbsp${m.group(2)}',
+  );
+
+  return text;
+}
+
 /// Renderiza uma linha de texto com suporte a negrito inline via **texto**.
 /// Não exibe os asteriscos — converte para FontWeight.bold.
-/// Build 115: strip defensivo de asteriscos isolados que escapam do parser
-/// (ex: "* " no início de linha, asterisco solitário no meio do texto).
+/// Build 115: strip defensivo de asteriscos isolados que escapam do parser.
+/// Build 118: Smart Text-Wrap — NBSP entre número e unidade médica.
 Widget _buildInlineText(String line, Color textColor, {bool isBold = false}) {
   // Build 115: sanitização defensiva — remove asteriscos de bullet isolados
-  // que chegaram aqui sem passar pelo _isListItem (ex: linha "* texto" no meio
-  // de um parágrafo que não foi detectada como lista durante o stream).
+  // que chegaram aqui sem passar pelo _isListItem.
   String sanitized = line
       .replaceAll(RegExp(r'^\*\s+'), '')           // '* ' no início
       .replaceAll(RegExp(r'^\*(?=\S)'), '')         // '*texto' sem espaço
@@ -3062,6 +3176,9 @@ Widget _buildInlineText(String line, Color textColor, {bool isBold = false}) {
       .replaceAll(RegExp(r'(?<!\*)\*(?!\*)(?!\s)'), '') // asterisco solitário não-bold
       .trim();
   if (sanitized.isEmpty) sanitized = line.trim();
+
+  // Build 118: aplica NBSP entre valores numéricos e unidades médicas
+  sanitized = _applyMedicalNbsp(sanitized);
 
   // Detecta se toda a linha é um título (começa com negrito sem texto antes)
   // Padrão: **Título** ou **Título:** — ocupa a linha toda
