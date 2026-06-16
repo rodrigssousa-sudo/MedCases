@@ -1506,6 +1506,78 @@ class _AiScreenState extends State<AiScreen> {
                 isConnected: false,
                 onConnectApi: _openAiSettings,
               ),
+
+            // ── Build 116: Smart Scroll Indicator ─────────────────────────
+            // Aparece quando o usuário subiu para revisar o histórico E a IA
+            // está gerando uma resposta. Indica que o auto-scroll está pausado
+            // e oferece botão para retomar acompanhamento do stream.
+            if (_userScrolledUp && _isStreaming)
+              Positioned(
+                bottom: 12,
+                left: 0,
+                right: 0,
+                child: Center(
+                  child: GestureDetector(
+                    onTap: () {
+                      setState(() => _userScrolledUp = false);
+                      _scrollDown(force: true);
+                    },
+                    child: AnimatedOpacity(
+                      opacity: 1.0,
+                      duration: const Duration(milliseconds: 200),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 14, vertical: 7),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          color: dark
+                              ? const Color(0xFF00E5FF).withValues(alpha: 0.15)
+                              : const Color(0xFF008CA4).withValues(alpha: 0.12),
+                          border: Border.all(
+                            color: dark
+                                ? const Color(0xFF00E5FF).withValues(alpha: 0.45)
+                                : const Color(0xFF008CA4).withValues(alpha: 0.35),
+                            width: 1.0,
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withValues(
+                                  alpha: dark ? 0.35 : 0.10),
+                              blurRadius: 8,
+                              offset: const Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              Icons.arrow_downward_rounded,
+                              size: 14,
+                              color: dark
+                                  ? const Color(0xFF00E5FF)
+                                  : const Color(0xFF008CA4),
+                            ),
+                            const SizedBox(width: 6),
+                            Text(
+                              p.lang == 'es'
+                                  ? 'IA escribiendo — toca para seguir'
+                                  : 'IA respondendo — toque para acompanhar',
+                              style: TextStyle(
+                                fontSize: 11.5,
+                                fontWeight: FontWeight.w600,
+                                color: dark
+                                    ? const Color(0xFF00E5FF)
+                                    : const Color(0xFF008CA4),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
           ],
         ),
       ),
@@ -2556,6 +2628,25 @@ String _cleanAiText(String raw) {
   s = s.replaceAll(
     RegExp(
       r'^\[(?:REVISAO|REVISION|FIM|FIN|INTERNAL|CHECKING|REVIEW)[^\]\n]*\]\s*$',
+      caseSensitive: false,
+      multiLine: true,
+    ),
+    '',
+  );
+
+  // ── 2b. Rótulos de modo interno vazados (Build 116) ──────────────────────
+  // O modelo às vezes vaza rótulos do sistema de controle interno como
+  // "MODO ACTIVO: MODO [A] CONDUCTA DIRECTA" ou "[REVISIÓN INTERNA]".
+  // Estas linhas são pura instrução de sistema — jamais devem aparecer na UI.
+  s = s.replaceAll(
+    RegExp(
+      r'^(MODO ACTIVO:?.*|MODO\s+\[.\].*|MODO CONDUCTA.*|MODO CONVERSACIONAL.*|'
+      r'MODO GUARDIA.*|MODO PRESCRI.*|MODO DETALHE.*|MODO PLANTAO.*|'
+      r'CAMADA\s+\d+.*|CAPA\s+\d+.*|'
+      r'\[REVISIÓN INTERNA\].*|\[REVISION_INTERNA\].*|\[REVISAO_INTERNA\].*|'
+      r'VERIFICACAO INTERNA.*|VERIFICACIÓN INTERNA.*|'
+      r'Confianza Clínica:.*|Confiança Clínica:.*|Nivel de Confianza:.*|'
+      r'▶▶▶.*◀◀◀.*|ITEM \d+ —.*DETECTOR.*)',
       caseSensitive: false,
       multiLine: true,
     ),
@@ -3775,43 +3866,42 @@ class _AiBubbleState extends State<_AiBubble> {
 
   @override
   Widget build(BuildContext context) {
-    final blocks = _cachedBlocks;
+    // ── Build 116: BLOCO ÚNICO CONTÍNUO ─────────────────────────────────────
+    // Antes: _cachedBlocks → N × _AiBlockBubble (múltiplos containers azuis)
+    // Agora: texto completo → 1 × _AiBlockBubble (container único, sem fragmentação)
+    //
+    // Benefícios:
+    //   • Zero fragmentação visual — resposta inteira em um card contínuo
+    //   • Elimina saltos de scroll causados por layout de múltiplos containers
+    //   • Elimina quique de scroll no Web/iPad ao revelar blocos sequencialmente
+    //   • _AiBlockBubble mantém hierarquia visual completa (seções, bullets, etc.)
+    //
+    // O texto é obtido de _computeBlocks mas concatenado de volta em string única.
+    // _computeBlocks() ainda roda para: limpeza de CoT, sanitização de markdown
+    // parcial, e normalização. Apenas a fragmentação em N containers foi removida.
 
-    if (blocks.isEmpty) {
-      return _visibleCount > 0
-          ? _AiBlockBubble(
-              block: widget.text.trim(),
-              dark: widget.dark,
-              isLast: true,
-              onCopy: widget.onCopy,
-              onTts: widget.onTts,
-              ttsPlaying: widget.ttsPlaying,
-              ttsReady: widget.ttsReady,
-              lang: widget.lang,
-            )
-          : const SizedBox.shrink();
-    }
+    if (_visibleCount == 0) return const SizedBox.shrink();
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: List.generate(blocks.length, (i) {
-        if (i >= _visibleCount) return const SizedBox.shrink();
-        final isLast = i == blocks.length - 1;
-        // ⚡ RepaintBoundary isola cada bolha em sua própria camada de renderização
-        // O scroll não força repaint das bolhas que não mudaram
-        return RepaintBoundary(
-          child: _AiBlockBubble(
-            block: blocks[i],
-            dark: widget.dark,
-            isLast: isLast,
-            onCopy: isLast ? widget.onCopy : null,
-            onTts:      isLast ? widget.onTts  : null,
-            ttsPlaying: isLast && widget.ttsPlaying,
-            ttsReady:   widget.ttsReady,
-            lang: widget.lang,
-          ),
-        );
-      }),
+    // Reconstrói o texto unificado a partir dos blocos pré-processados
+    // (já passou por _cleanAiText, _sanitizePartialMarkdown, filtro de CoT).
+    // Usa \n\n para preservar espaçamento entre seções dentro do container único.
+    final unified = _cachedBlocks.isEmpty
+        ? widget.text.trim()
+        : _cachedBlocks.join('\n\n');
+
+    if (unified.isEmpty) return const SizedBox.shrink();
+
+    return RepaintBoundary(
+      child: _AiBlockBubble(
+        block: unified,
+        dark: widget.dark,
+        isLast: true,
+        onCopy: widget.onCopy,
+        onTts: widget.onTts,
+        ttsPlaying: widget.ttsPlaying,
+        ttsReady: widget.ttsReady,
+        lang: widget.lang,
+      ),
     );
   }
 }

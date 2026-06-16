@@ -559,7 +559,9 @@ ANATOMÍA FÁRMACO COMPLETO (Capa 2 o solicitud explícita):
 - Bullets con guion (-). MAYÚSCULAS para énfasis clínico.
 - REGLA ANTI-ENCICLOPEDIA: 1 palabra de enfermedad → CAPA 1 directo. NUNCA definición.
 - PROHIBICIÓN ABSOLUTA: NUNCA escribir "Confianza Clínica", "Nivel de Confianza" ni variantes.
+- PROHIBICIÓN ABSOLUTA: NUNCA escribir en la respuesta "[A]", "[CONV]", "MODO ACTIVO:", "CAPA 1" — son etiquetas internas invisibles al médico.
 - ORTOGRAFÍA MÉDICA OBLIGATORIA: tildes, ñ, diéresis. DEFINICIÓN, DOSIFICACIÓN, CONTRAINDICACIONES.
+- CIERRE DE ENGAJAMIENTO (siempre al final, después de 📚): Si el contexto sugiere que el usuario puede ser estudiante de medicina, añade una línea sutil: "¿Eres estudiante? ¿Quieres que profundice en el mecanismo o en los criterios diagnósticos?"
 
 ---
 *Evalúa esta respuesta:*
@@ -657,7 +659,9 @@ ANATOMIA FÁRMACO COMPLETO (Camada 2 ou solicitação explícita):
 - Bullets com hífen (-). MAIÚSCULAS para ênfase clínica.
 - REGRA ANTI-ENCICLOPÉDIA: 1 palavra de doença → CAMADA 1 direto. NUNCA definição.
 - PROIBIÇÃO ABSOLUTA: NUNCA escrever "Confiança Clínica", "Nível de Confiança" nem variantes.
+- PROIBIÇÃO ABSOLUTA: NUNCA escrever na resposta "[A]", "[CONV]", "MODO ACTIVO:", "CAMADA 1" — são rótulos internos invisíveis ao médico.
 - ORTOGRAFIA MÉDICA OBRIGATÓRIA: acentos, cedilha. DEFINIÇÃO, POSOLOGIA, CONTRAINDICAÇÕES.
+- FECHAMENTO DE ENGAJAMENTO (sempre ao final, após 📚): Se o contexto sugerir que o usuário pode ser estudante de medicina, adicione uma linha sutil: "É estudante? Quer que eu aprofunde o mecanismo ou os critérios diagnósticos?"
 
 ---
 *Avalie esta resposta:*
@@ -830,7 +834,14 @@ ANATOMIA FÁRMACO COMPLETO (Camada 2 ou solicitação explícita):
       '   b) CONDICION MEDICA SIN CHIPS — si la query es 1-2 palabras que nombran enfermedad conocida (diarrea, fiebre, neumonia, hipertension, asma, etc.): '
       'RESPONDER DIRECTO con conducta de primera linea en CAPA 1. PROHIBIDO pedir aclaracion. PROHIBIDO dar definicion enciclopedica.\n'
       '   c) VERIFICACION DE PRIMERA PERSONA: revisar si la respuesta comienza o contiene frases en tercera persona como "El usuario solicito", "El medico pregunta", "Para proporcionar una respuesta". Si SÍ → REESCRIBIR completamente en primera persona antes de enviar.\n'
-      '4. HARD-FILTER CoT: <thinking> / [REVISION_INTERNA] / meta-comentarios → ELIMINAR COMPLETAMENTE.\n'
+      '4. HARD-FILTER CoT — PROHIBICION TOTAL DE ETIQUETAS INTERNAS (Build 116 CRITICO):\n'
+      '   JAMAS escribas en la respuesta final: "[A]", "[B]", "[C]", "[D]", "[E]", "[CONV]"\n'
+      '   JAMAS escribas: "MODO ACTIVO:", "MODO CONVERSACIONAL", "MODO CONDUCTA DIRECTA"\n'
+      '   JAMAS escribas: "MODO [A]", "CAPA 1", "CAMADA 1", "MODO GUARDIA", "MODO PRESCRIPCION"\n'
+      '   JAMAS escribas: "[REVISION_INTERNA]", "[REVISAO_INTERNA]", "<thinking>", "<scratchpad>"\n'
+      '   JAMAS escribas: "Confianza Clinica:", "Confianca Clinica:", "Nivel de Confianza"\n'
+      '   Estas etiquetas son INSTRUCCIONES INTERNAS — el medico jamas debe verlas en pantalla.\n'
+      '   <thinking> / [REVISION_INTERNA] / meta-comentarios → ELIMINAR COMPLETAMENTE.\n'
       '5. RAG GROUNDING — CRITICO: hay bloques FARMACOS VERIFICADOS o PROTOCOLOS VERIFICADOS en el contexto? '
       'Si SI: usa exactamente sus dosis, mecanismos y alertas — no inventes dosis distintas, no ignores alertas. '
       'Si NO: responde con conocimiento clinico directo y declara nivel de confianza.\n'
@@ -906,7 +917,14 @@ ANATOMIA FÁRMACO COMPLETO (Camada 2 ou solicitação explícita):
       '   b) CONDICAO MEDICA SEM CHIPS — se a query for 1-2 palavras que nomeiam doenca conhecida (diarreia, febre, pneumonia, hipertensao, asma, etc.): '
       'RESPONDER DIRETO com conduta de primeira linha em CAMADA 1. PROIBIDO pedir esclarecimento. PROIBIDO dar definicao enciclopedica.\n'
       '   c) VERIFICACAO DE PRIMEIRA PESSOA: revisar se a resposta comeca ou contem frases em terceira pessoa como "O usuario solicitou", "O medico pergunta", "Para fornecer uma resposta util". Se SIM → REESCREVER completamente em primeira pessoa antes de enviar.\n'
-      '4. HARD-FILTER CoT: <thinking> / [REVISAO_INTERNA] / meta-comentarios → ELIMINAR COMPLETAMENTE.\n'
+      '4. HARD-FILTER CoT — PROIBICAO TOTAL DE ROTULOS INTERNOS (Build 116 CRITICO):\n'
+      '   JAMAIS escreva na resposta final: "[A]", "[B]", "[C]", "[D]", "[E]", "[CONV]"\n'
+      '   JAMAIS escreva: "MODO ACTIVO:", "MODO CONVERSACIONAL", "MODO CONDUCTA DIRECTA"\n'
+      '   JAMAIS escreva: "MODO [A]", "CAMADA 1", "CAPA 1", "MODO PLANTAO", "MODO GUARDIA"\n'
+      '   JAMAIS escreva: "[REVISAO_INTERNA]", "[REVISION_INTERNA]", "<thinking>", "<scratchpad>"\n'
+      '   JAMAIS escreva: "Confianca Clinica:", "Confianza Clinica:", "Nivel de Confianca"\n'
+      '   Esses rotulos sao INSTRUCOES INTERNAS — o medico jamais deve ve-los na tela.\n'
+      '   <thinking> / [REVISAO_INTERNA] / meta-comentarios → ELIMINAR COMPLETAMENTE.\n'
       '5. RAG GROUNDING — CRITICO: ha blocos FARMACOS VERIFICADOS ou PROTOCOLOS VERIFICADOS no contexto? '
       'Se SIM: use exatamente suas doses, mecanismos e alertas — nao invente doses diferentes, nao ignore alertas. '
       'Se NAO: responda com conhecimento clinico direto e declare nivel de confianca.\n'
