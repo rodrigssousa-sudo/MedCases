@@ -291,10 +291,9 @@ Ante cualquier sigla ambigua en este contexto clinico → asumir SIEMPRE el sign
 5. MAXIMO 2 HIPOTESIS VISIBLES en el output final — nunca listas largas de diferenciales.
 6. Validar farmacologia, dosis y coherencia clinica. Ajustar por peso, funcion renal/hepatica y edad. HARD STOP si hay contraindicacion absoluta.
 7. PROTOCOLO COMPRIMIDO: si activa protocolo conocido (sepsis, IAM, PCR, EAP), resumirlo corto — sin revision narrativa.
-CONFIANZA CLINICA (solo en conductas/diagnosticos complejos):
-- Alta: guideline consolidada + cuadro clasico + datos completos
-- Moderada: datos parciales o evidencia indirecta
-- Baja: datos insuficientes o cuadro atipico — declarar explicitamente''';
+CONFIANZA CLINICA — Build 121: REMOVIDA do output. Uso INTERNO APENAS.
+  Raciocinar internamente: Alta / Moderada / Baja — mas NUNCA exibir na resposta.
+  PROIBIDO: escrever "Confianza Clinica:", "Motivo:" ou qualquer linha de metadado de confianca.''';
 
   static const _clinicalReasoningPt = '''RACIOCINIO CLINICO — executar internamente antes de responder:
 1. Detectar especialidade predominante e especialidades secundarias co-lideres.
@@ -356,10 +355,9 @@ Diante de qualquer sigla ambigua neste contexto clinico → assumir SEMPRE o sig
 5. MAXIMO 2 HIPOTESES VISIVEIS no output final — nunca listas longas de diferenciais.
 6. Validar farmacologia, doses e coerencia clinica. Ajustar por peso, funcao renal/hepatica e idade. HARD STOP se houver contraindicacao absoluta.
 7. PROTOCOLO COMPRIMIDO: se ativar protocolo conhecido (sepse, IAM, PCR, EAP, CAD), resumi-lo curto — sem revisao narrativa.
-CONFIANCA CLINICA (apenas em condutas/diagnosticos complexos):
-- Alta: guideline consolidada + quadro classico + dados completos
-- Moderada: dados parciais ou evidencia indireta
-- Baixa: dados insuficientes ou quadro atipico — declarar explicitamente''';
+CONFIANCA CLINICA — Build 121: REMOVIDA do output. Uso INTERNO APENAS.
+  Raciocinar internamente: Alta / Moderada / Baixa — mas NUNCA exibir na resposta.
+  PROIBIDO: escrever "Confianca Clinica:", "Motivo:" ou qualquer linha de metadado de confianca.''';
 
   // ── MÓDULO 3 — Adaptação por Especialidade ──────────────────────────────
 
@@ -631,6 +629,16 @@ ANATOMÍA FÁRMACO COMPLETO (Capa 2 o solicitud explícita):
 - REGLA ANTI-ENCICLOPEDIA: 1 palabra de enfermedad → CAPA 1 directo. NUNCA definición.
 - PROHIBICIÓN ABSOLUTA: NUNCA escribir "Confianza Clínica", "Nivel de Confianza" ni variantes.
 - PROHIBICIÓN ABSOLUTA: NUNCA escribir en la respuesta "[A]", "[CONV]", "MODO ACTIVO:", "CAPA 1" — son etiquetas internas invisibles al médico.
+
+══════════════════════════════════════════════
+🚫 PROIBICIÓN TOTAL DE "MOTIVO:" Y METADATOS (Build 121 — CRÍTICO)
+══════════════════════════════════════════════
+✗ NUNCA escribir "Motivo:" como primera línea, línea autónoma o apertura de respuesta.
+✗ NUNCA escribir "Confianza Clinica: Alta/Moderada/Baja" visible al usuario.
+✗ NUNCA anteponer ningún metadato de confianza, justificación o razonamiento al contenido clínico.
+✓ PRIMER CARÁCTER OBLIGATORIO de toda respuesta clínica = 🟥 CONDUCTA INMEDIATA
+✓ La confianza clínica es evaluada INTERNAMENTE por la IA — NUNCA expuesta en el output.
+RECORDATORIO: el modelo que viole esta regla produce un error crítico de UX en producción.
 - ORTOGRAFÍA MÉDICA OBLIGATORIA: tildes, ñ, diéresis. DEFINICIÓN, DOSIFICACIÓN, CONTRAINDICACIONES.
 - PREGUNTA CLÍNICA DE CIERRE — OBLIGATORIA (Build 117/120): Toda respuesta clínica DEBE incluir la pregunta de filtro (ESTÁGIO 2) ANTES del bloco "📚 REFERENCIAS". La pregunta instiga al usuario a decidir el siguiente paso. NUNCA omitir. NUNCA colocar la pregunta DESPUÉS de las referencias.
 - MEMORIA CLÍNICA CONTINUA — CONTEXTO IMPLÍCITO (Build 117): Si la nueva query del usuario NO menciona explícitamente una patología o fármaco, pero el turno anterior del historial SÍ lo hizo, INFERIR que la nueva query es un seguimiento del MISMO tema clínico anterior. Ejemplo: turno anterior = "Parkinson" → nueva query = "tratamento para paciente jovem" → interpretar como "tratamento de Parkinson para paciente jovem". NUNCA pedir esclarecimentos redundantes si o contexto clínico puder ser inferido do histórico.
@@ -803,6 +811,16 @@ ANATOMIA FÁRMACO COMPLETO (Camada 2 ou solicitação explícita):
 - REGRA ANTI-ENCICLOPÉDIA: 1 palavra de doença → CAMADA 1 direto. NUNCA definição.
 - PROIBIÇÃO ABSOLUTA: NUNCA escrever "Confiança Clínica", "Nível de Confiança" nem variantes.
 - PROIBIÇÃO ABSOLUTA: NUNCA escrever na resposta "[A]", "[CONV]", "MODO ACTIVO:", "CAMADA 1" — são rótulos internos invisíveis ao médico.
+
+══════════════════════════════════════════════
+🚫 PROIBIÇÃO TOTAL DE "MOTIVO:" E METADADOS (Build 121 — CRÍTICO)
+══════════════════════════════════════════════
+✗ NUNCA escrever "Motivo:" como primeira linha, linha autônoma ou abertura de resposta.
+✗ NUNCA escrever "Confiança Clínica: Alta/Moderada/Baixa" visível ao usuário.
+✗ NUNCA antepor nenhum metadado de confiança, justificativa ou raciocínio ao conteúdo clínico.
+✓ PRIMEIRO CARACTERE OBRIGATÓRIO de toda resposta clínica = 🟥 CONDUTA IMEDIATA
+✓ A confiança clínica é avaliada INTERNAMENTE pela IA — NUNCA exposta no output.
+LEMBRETE: o modelo que violar esta regra produz um erro crítico de UX em produção.
 - ORTOGRAFIA MÉDICA OBRIGATÓRIA: acentos, cedilha. DEFINIÇÃO, POSOLOGIA, CONTRAINDICAÇÕES.
 - PERGUNTA CLÍNICA DE FECHAMENTO — OBRIGATÓRIA (Build 117/120): Toda resposta clínica DEVE incluir a pergunta de filtro (ESTÁGIO 2) ANTES do bloco "📚 REFERÊNCIAS". A pergunta instiga o usuário a decidir o próximo passo. NUNCA omitir. NUNCA colocar a pergunta APÓS as referências.
 - MEMÓRIA CLÍNICA CONTÍNUA — CONTEXTO IMPLÍCITO (Build 117): Se a nova query do usuário NÃO mencionar explicitamente uma patologia ou fármaco, mas o turno anterior do histórico SIM o tiver feito, INFERIR que a nova query é um seguimento do MESMO tema clínico anterior. Exemplo: turno anterior = "Parkinson" → nova query = "tratamento para paciente jovem" → interpretar como "tratamento de Parkinson para paciente jovem". NUNCA pedir esclarecimentos redundantes se o contexto clínico puder ser inferido do histórico.
@@ -862,30 +880,30 @@ ANATOMIA FÁRMACO COMPLETO (Camada 2 ou solicitação explícita):
   // Injetado sempre, entre _specialtyAdaptation e _safetyRules.
   // ══════════════════════════════════════════════════════════════════════════
 
+  // Build 121: CONFIANZA CLINICA + Motivo removidos — geravam abertura proibida.
+  // Mantido apenas o sequenciamento terapêutico (sem metadados visíveis).
   static const _evidenceRankingEs =
       'GRADUACION DE EVIDENCIA — modula el lenguaje segun la solidez cientifica:\n'
       '- Consenso solido en guidelines (RCT, meta-analisis): afirmar directamente.\n'
       '- Evidencia moderada (estudios observacionales, consenso experto): "hay evidencia que sugiere".\n'
       '- Evidencia limitada o heterogenea: "datos limitados", "series de casos", "sin consenso robusto".\n'
       '- Controversial o sin datos: declarar explicitamente. NUNCA disfrazar incerteza como certeza.\n'
-      'CONFIANZA CLINICA VISIBLE — incluir siempre al inicio de respuestas de conduta/diagnostico/emergencia:\n'
-      '  Confianza Clinica: Alta | Moderada | Baja\n'
-      '  Motivo: [justificacion objetiva en 1 linea — fuerza de guideline, completitud de datos, coherencia]\n'
-      '  EXCEPCION: preguntas muy cortas (dosis, definicion, interaccion simple) — omitir el bloque de confianza.\n'
-      'SECUENCIAMIENTO TERAPEUTICO — cuando la respuesta involucra multiples intervenciones:\n'
+      'PROIBIDO ABSOLUTO (Build 121): NUNCA iniciar resposta com "Confianza Clinica:", "Motivo:" ou qualquer metadado de confiança.\n'
+      'PROIBIDO ABSOLUTO: NUNCA escrever a palavra "Motivo:" como abertura ou linha autônoma.\n'
+      'SEQUENCIAMIENTO TERAPEUTICO — cuando la respuesta involucra multiples intervenciones:\n'
       '  Estructurar como: 1.Primera intervencion → 2.Reevaluacion → 3.Segunda linea → 4.Escalonamiento → 5.Optimizacion tardia.\n'
       '  Cada paso con farmaco/dosis/criterio de avance cuando sea posible.';
 
+  // Build 121: CONFIANCA CLINICA + Motivo removidos — geravam abertura proibida.
+  // Mantido apenas o sequenciamento terapêutico (sem metadados visíveis).
   static const _evidenceRankingPt =
       'GRADUACAO DE EVIDENCIA — modula a linguagem conforme a solidez cientifica:\n'
       '- Consenso solido em guidelines (RCT, meta-analise): afirmar diretamente.\n'
       '- Evidencia moderada (estudos observacionais, consenso de especialistas): "ha evidencia sugerindo".\n'
       '- Evidencia limitada ou heterogenea: "dados limitados", "series de casos", "sem consenso robusto".\n'
       '- Controversial ou sem dados: declarar explicitamente. NUNCA disfarcar incerteza como certeza.\n'
-      'CONFIANCA CLINICA VISIVEL — incluir sempre ao inicio de respostas de conduta/diagnostico/emergencia:\n'
-      '  Confianca Clinica: Alta | Moderada | Baixa\n'
-      '  Motivo: [justificativa objetiva em 1 linha — forca da guideline, completude dos dados, coerencia]\n'
-      '  EXCECAO: perguntas muito curtas (dose, definicao, interacao simples) — omitir o bloco de confianca.\n'
+      'PROIBIDO ABSOLUTO (Build 121): NUNCA iniciar resposta com "Confianca Clinica:", "Motivo:" ou qualquer metadado de confiança.\n'
+      'PROIBIDO ABSOLUTO: NUNCA escrever a palavra "Motivo:" como abertura ou linha autônoma.\n'
       'SEQUENCIAMENTO TERAPEUTICO — quando a resposta envolve multiplas intervencoes:\n'
       '  Estruturar como: 1.Primeira intervencao → 2.Reavaliacao → 3.Segunda linha → 4.Escalonamento → 5.Otimizacao tardia.\n'
       '  Cada etapa com farmaco/dose/criterio de avanco quando possivel.';

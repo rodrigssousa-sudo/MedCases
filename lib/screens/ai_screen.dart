@@ -2605,6 +2605,9 @@ String _stripMetadataHeaders(String accumulated) {
       r'|Preciso\s+(?:analisar|considerar|estruturar|organizar|fornecer)'
       r'|Analisando\s+(?:o|a|os|as|esta|este|esse)\s+(?:caso|consulta|pedido|pergunta)'
       r'|Pensando\s+(?:sobre|em|na|no)\s+(?:isso|esta|este|essa)'
+      r'|Motivo\s*(?:\([^)]*\))?\s*:'    // "Motivo:" / "Motivo (...):" — Build 121
+      r'|Confianza\s+Clinica\s*:'         // sem acento — Build 121
+      r'|Confianca\s+Clinica\s*:'         // PT sem acento — Build 121
       r').*$',
       caseSensitive: false,
       multiLine: true,
@@ -2699,6 +2702,8 @@ String _cleanAiText(String raw) {
       r'\[REVISIÓN INTERNA\].*|\[REVISION_INTERNA\].*|\[REVISAO_INTERNA\].*|'
       r'VERIFICACAO INTERNA.*|VERIFICACIÓN INTERNA.*|'
       r'Confianza Clínica:.*|Confiança Clínica:.*|Nivel de Confianza:.*|'
+      r'Confianza Clinica:.*|Confianca Clinica:.*|'
+      r'Motivo:.*|Motivo \(.*\):.*|'
       r'▶▶▶.*◀◀◀.*|ITEM \d+ —.*DETECTOR.*)',
       caseSensitive: false,
       multiLine: true,
@@ -2828,6 +2833,9 @@ String _cleanAiText(String raw) {
       r'|O\s+prompt\s+(?:é|parece)\s+(?:vago|incompleto)'
       r'|A\s+seguir\s+(?:apresentarei|descrevo|apresento)'
       r'|A\s+continuaci[oó]n\s+(?:presento|presentar[eé])'
+      r'|Motivo\s*(?:\([^)]*\))?\s*:'       // "Motivo:" / "Motivo (...):" — Build 121
+      r'|Confianza\s+Clinica\s*:'            // sem acento — Build 121
+      r'|Confianca\s+Clinica\s*:'            // PT sem acento — Build 121
       r').*$',
       caseSensitive: false,
       multiLine: true,
