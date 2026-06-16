@@ -2700,11 +2700,29 @@ String _cleanAiText(String raw) {
       .replaceAll(RegExp(r'\*{3,}'), '');                        // *** ou mais
 
   // ── 5b. FALLBACK ANTI-ASTERISCO — camada de segurança Flutter ────────────
-  // Remove asteriscos SIMPLES soltos (usados para itálico ou listas Markdown)
-  // que vazam como literal na UI. Os pares ** são mantidos intactos aqui pois
-  // _buildInlineText() os converte para negrito visual corretamente.
-  // Remove * isolados (não-duplos) usados como listas ou itálico Markdown:
-  s = s.replaceAll(RegExp(r'(?<!\*)\*(?!\*)'), '');
+  // Build 115 FIX CRÍTICO: A regex original '(?<!\*)\*(?!\*)' destruía
+  // marcadores de lista como '* Levodopa:' → ' Levodopa:' ANTES de
+  // _isListItem() ter chance de detectá-los. Isso causava dois bugs:
+  //   1. Asteriscos visíveis: o texto escapava sem ser detectado como lista
+  //   2. Fragmentação: sem detecção de lista, _splitIntoBlocks() criava
+  //      um _AiBlockBubble por parágrafo separado por \n\n
+  //
+  // NOVA ESTRATÉGIA: Processamento linha a linha para PRESERVAR marcadores
+  // de lista ('* texto', '* **Negrito') e remover apenas asteriscos realmente
+  // soltos (itálico Markdown não suportado, asteriscos ornamentais, etc.).
+  final lines5b = s.split('\n');
+  final fixed5b = lines5b.map((line) {
+    final t = line.trimLeft();
+    // Linha que começa com '* ' (bullet clássico) — PRESERVAR INTACTA
+    if (t.startsWith('* ')) return line;
+    // Linha que começa com '* **' (bullet + negrito) — PRESERVAR INTACTA
+    if (RegExp(r'^\*\s*\*\*').hasMatch(t)) return line;
+    // Linha que começa com '*Texto' sem espaço (Gemini Flash-Lite) — PRESERVAR
+    if (RegExp(r'^\*[^*\s]').hasMatch(t)) return line;
+    // Para todas as outras linhas: remove * simples não-duplos (itálico/ornamental)
+    return line.replaceAll(RegExp(r'(?<!\*)\*(?!\*)'), '');
+  }).toList();
+  s = fixed5b.join('\n');
 
   // ── 6. Normaliza linhas em branco excessivas (≥3 → 2) ────────────────────
   s = s.replaceAll(RegExp(r'\n{3,}'), '\n\n');
@@ -2893,13 +2911,36 @@ List<String> _splitIntoBlocks(String text) {
     return false;
   }
 
+  // ── Build 115: detector de bloco de lista ───────────────────────────────
+  // Um bloco é "só lista" se TODAS as suas linhas não-vazias são bullets.
+  // Padrão ampliado: '* ', '- ', '• ', '→ ', '▸ ', '1. ', '*texto', '* **'
+  bool looksLikeListBlock(String block) {
+    final lines = block.split('\n').where((l) => l.trim().isNotEmpty).toList();
+    if (lines.isEmpty) return false;
+    return lines.every((l) {
+      final t = l.trimLeft();
+      return t.startsWith('* ') || t.startsWith('- ') || t.startsWith('• ') ||
+             t.startsWith('→ ') || t.startsWith('▸ ') ||
+             RegExp(r'^\d+\.\s').hasMatch(t) ||
+             RegExp(r'^\*\s*\*\*').hasMatch(t) ||   // * **Negrito**
+             RegExp(r'^\*[^*\s]').hasMatch(t);       // *Texto
+    });
+  }
+
   final merged = <String>[];
   for (int i = 0; i < blocks.length; i++) {
     final b = blocks[i];
+
+    // FIX: Funde cabeçalho orfão com bloco seguinte
     if (looksLikeHeaderOnly(b) && i + 1 < blocks.length) {
-      // Funde o cabeçalho orfão com o bloco seguinte, separados por \n
       merged.add('$b\n${blocks[i + 1]}');
-      i++; // pula o próximo bloco — já foi incorporado
+      i++;
+
+    // Build 115 FIX: Funde bloco de lista com bloco anterior (texto introdutório)
+    // Evita que "Os principais grupos incluem:\n\n* Levodopa..." vire 2 containers.
+    } else if (looksLikeListBlock(b) && merged.isNotEmpty) {
+      merged[merged.length - 1] = '${merged.last}\n$b';
+
     } else {
       merged.add(b);
     }
@@ -2909,15 +2950,28 @@ List<String> _splitIntoBlocks(String text) {
 
 /// Renderiza uma linha de texto com suporte a negrito inline via **texto**.
 /// Não exibe os asteriscos — converte para FontWeight.bold.
+/// Build 115: strip defensivo de asteriscos isolados que escapam do parser
+/// (ex: "* " no início de linha, asterisco solitário no meio do texto).
 Widget _buildInlineText(String line, Color textColor, {bool isBold = false}) {
+  // Build 115: sanitização defensiva — remove asteriscos de bullet isolados
+  // que chegaram aqui sem passar pelo _isListItem (ex: linha "* texto" no meio
+  // de um parágrafo que não foi detectada como lista durante o stream).
+  String sanitized = line
+      .replaceAll(RegExp(r'^\*\s+'), '')           // '* ' no início
+      .replaceAll(RegExp(r'^\*(?=\S)'), '')         // '*texto' sem espaço
+      .replaceAll(RegExp(r'\s\*\s'), ' ')           // asterisco isolado entre espaços
+      .replaceAll(RegExp(r'(?<!\*)\*(?!\*)(?!\s)'), '') // asterisco solitário não-bold
+      .trim();
+  if (sanitized.isEmpty) sanitized = line.trim();
+
   // Detecta se toda a linha é um título (começa com negrito sem texto antes)
   // Padrão: **Título** ou **Título:** — ocupa a linha toda
   final fullBold = RegExp(r'^\*\*(.+?)\*\*:?\s*$');
-  final fullMatch = fullBold.firstMatch(line.trim());
+  final fullMatch = fullBold.firstMatch(sanitized);
   if (fullMatch != null || isBold) {
     final label = fullMatch != null
-        ? fullMatch.group(1)! + (line.trim().endsWith(':') ? ':' : '')
-        : line;
+        ? fullMatch.group(1)! + (sanitized.endsWith(':') ? ':' : '')
+        : sanitized;
     return Text(
       label,
       style: TextStyle(
@@ -2933,9 +2987,9 @@ Widget _buildInlineText(String line, Color textColor, {bool isBold = false}) {
   final parts = <TextSpan>[];
   final regex = RegExp(r'\*\*(.+?)\*\*');
   int cursor = 0;
-  for (final match in regex.allMatches(line)) {
+  for (final match in regex.allMatches(sanitized)) {
     if (match.start > cursor) {
-      parts.add(TextSpan(text: line.substring(cursor, match.start)));
+      parts.add(TextSpan(text: sanitized.substring(cursor, match.start)));
     }
     parts.add(TextSpan(
       text: match.group(1),
@@ -2943,8 +2997,8 @@ Widget _buildInlineText(String line, Color textColor, {bool isBold = false}) {
     ));
     cursor = match.end;
   }
-  if (cursor < line.length) {
-    parts.add(TextSpan(text: line.substring(cursor)));
+  if (cursor < sanitized.length) {
+    parts.add(TextSpan(text: sanitized.substring(cursor)));
   }
 
   if (parts.isEmpty) return const SizedBox.shrink();
@@ -3064,11 +3118,19 @@ class _AiBlockBubble extends StatelessWidget {
   }
 
   /// Linha de item de lista (bullet) — inclui markdown asterisco `* `
+  /// Build 115: expande para capturar `* **Negrito**` (asterisco + negrito sem espaço)
+  /// e `*Texto` (asterisco sem espaço), padrões emitidos pelo Gemini Flash-Lite.
   bool _isListItem(String line) {
     final t = line.trimLeft();
-    return t.startsWith('* ') || t.startsWith('- ') || t.startsWith('• ') ||
-           t.startsWith('→ ') || t.startsWith('▸ ') ||
-           RegExp(r'^\d+\.\s').hasMatch(t);
+    // Padrões normais: '* ', '- ', '• ', '→ ', '▸ ', '1. '
+    if (t.startsWith('* ') || t.startsWith('- ') || t.startsWith('• ') ||
+        t.startsWith('→ ') || t.startsWith('▸ ') ||
+        RegExp(r'^\d+\.\s').hasMatch(t)) return true;
+    // Build 115: '* **Negrito' — asterisco seguido direto de negrito (sem espaço)
+    if (RegExp(r'^\*\s*\*\*').hasMatch(t)) return true;
+    // Build 115: '*Texto' — asterisco sem espaço (Gemini Flash-Lite emite isso)
+    if (RegExp(r'^\*[^*\s]').hasMatch(t)) return true;
+    return false;
   }
 
   @override
@@ -3280,9 +3342,11 @@ class _AiBlockBubble extends StatelessWidget {
 
                 // Item de lista — bullet com indent (suporta '- ', '* ', '• ', '→', '▸', '1. ')
                 if (_isListItem(line)) {
-                  // Strip do marcador: remove '- ', '* ', '• ', '→ ', '▸ ' ou '1. '
+                  // Strip do marcador: remove '- ', '* ', '• ', '→ ', '▸ ', '1. '
+                  // Build 115: também remove '*' sem espaço e '* **' (asterisco + negrito)
                   final content = trimmed
-                      .replaceFirst(RegExp(r'^[-\*•→▸]\s+'), '')
+                      .replaceFirst(RegExp(r'^\*\s*(?=\*\*)'), '') // '* **' ou '*  **'
+                      .replaceFirst(RegExp(r'^[-\*•→▸]\s*'), '')   // marcador + espaço opcional
                       .replaceFirst(RegExp(r'^\d+\.\s+'), '')
                       .trimLeft();
                   return Padding(
